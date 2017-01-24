@@ -1,0 +1,15 @@
+table {
+	border-collapse: collapse;
+}
+table, td, th{
+	border: 1px solid black;
+}
+
+tr, th {
+	text-align: center;
+	vertical-align: middle;
+}
+
+svg {
+	margin-top: 5px;
+}
