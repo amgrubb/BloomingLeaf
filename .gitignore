@@ -1,3 +1,9 @@
+# Remove anything below the rappid folder.
+leaf-ui/rappid/*.*
+leaf-ui/rappid/*/*
+!leaf-ui/rappid/README.md
+
+
 *.class
 
 # Mobile Tools for Java (J2ME)
