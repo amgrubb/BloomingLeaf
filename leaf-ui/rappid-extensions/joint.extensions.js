@@ -11,7 +11,8 @@
  *
  */ 
 joint.shapes.basic.Intention = joint.shapes.basic.Generic.extend({
-	markup: '<g class="rotatable"><g class="scalable"><rect class="outer"/></g><path class="satvalue"/><text class="funcvalue"/><text class="name"/></g>',
+    // Changed satvalue to text
+	markup: '<g class="rotatable"><g class="scalable"><rect class="outer"/></g><text class="satvalue"/><text class="funcvalue"/><text class="name"/></g>',
 	defaults: joint.util.deepSupplement({
         type: "basic.Intention",
         size: {
@@ -23,9 +24,10 @@ joint.shapes.basic.Intention = joint.shapes.basic.Generic.extend({
                 width: 100,
                 height: 60
             },
+            // Navie: Changed the initial value of satvalue
             ".satvalue": {
-              	'stroke': '#FFFF00', 
-            	'stroke-width': 4,
+              	'stroke': '#000000', 
+            	'stroke-width': 1,
             	'value': 'none'
             },
             ".funcvalue": {
