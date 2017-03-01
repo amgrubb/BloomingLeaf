@@ -1,8 +1,8 @@
 # Remove anything below the rappid folder.
 leaf-ui/rappid/*.*
 leaf-ui/rappid/*/*
-!leaf-ui/rappid/README.md
-
+leaf-ui/rappid/*
+!leaf-ui/rappid/README-MISSING-RAPPID.md
 
 *.class
 
