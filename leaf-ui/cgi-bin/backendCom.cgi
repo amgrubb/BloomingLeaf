@@ -20,7 +20,8 @@ def executeCGI():
         
 	#Addind the data to result from a json file
 	#(!)THE FILE OUTPUT SHOULD CHANGE EVERY EXECUTION
-	processedFilePath = 'temp/output.json'
+	#processedFilePath = 'temp/output.json'
+	processedFilePath = 'temp/default.json'
 	fillResultData(result, processedFilePath)
 
 	#Send data back to frontend

@@ -1,0 +1,221 @@
+Copyright 2014 client IO
+http://client.io
+
+Rappid Academic License Statement and Limited Warranty
+======================================================
+
+Definitions
+-----------
+
+ "Rappid" shall mean a programmer's toolkit 
+ for building interactive diagramming applications as originally 
+ created by client IO.
+
+ "Software" shall mean Rappid, as originally created by
+ client IO.
+
+ "Licensee" is you, only if you agree to be bound by the terms
+ and conditions set forth in this Agreement.
+
+ "Source code" means the JavaScript files and other related files in the 
+ Software package.
+
+ "Permitted Academic Use" shall mean use of the Software for internal 
+ academic teaching or research purposes, and explicitly excludes any 
+ use of the Software for commercial purposes including commercial research purposes.
+
+
+This license statement and limited warranty constitutes a legal agreement 
+("License Agreement") between You (The Academic User) 
+and client IO for the software product ("Software") identified above, 
+including any software, media, and accompanying on-line or printed 
+documentation. The Academic User must be a faculty member, student or 
+researcher of a degree-granting institution to license and use the 
+Software pursuant to this Agreement. By installing, copying, or otherwise using the
+Software, you are agreeing to be bound by the terms of this Agreement. If you
+do not agree to the terms of this Agreement, you are not authorized to use
+this Software.
+
+ 
+BY INSTALLING, COPYING, OR OTHERWISE USING THE SOFTWARE, YOU AGREE TO BE BOUND 
+BY ALL OF THE TERMS AND CONDITIONS OF THE LICENSE AGREEMENT.
+
+Upon your acceptance of the terms and conditions of the License Agreement, 
+client IO grants to you the right to use the Software in the manner provided 
+below. This license is perpetual, no additional payment is required to 
+maintain it, with the exception of you breaking any part of this license, in 
+which case you lose all rights under the license.
+
+Except as provided in the License Agreement, you may not transfer, 
+rent, lease, lend, copy, modify, translate, sublicense, time-share or 
+electronically transmit or receive the Software, media or documentation. When 
+transferring licenses, the whole of the licensed product must be transferred.
+
+
+Academic User License Terms
+----------------------------
+
+Each Academic User License grants You the right for You to install and use 
+the Software in accordance with its documentation and solely for 
+the Permitted Academic Use, on as many computers, workstations, or clusters 
+as may be required for the Permitted Academic Use of the Software. 
+You may make as many copies of the Software as are reasonably required for 
+normal computer backup and archival purposes. All copies must contain all title, 
+trademark, and copyright information and restricted rights notices 
+as are provided in the Software.
+
+
+Restrictions
+------------
+
+Except as expressly permitted herein, You may not: (a) use the Software for any 
+purposes except for the Permitted Academic Use, (b) use the Software, 
+or allow the transfer, transmission, export, or re-export of the Software 
+or portion thereof in violation of any export control laws or regulations 
+administered by any government agency, (c) use the Software except as expressly 
+set forth in Section "Academic user License Terms", (d) remove or obscure any notices 
+contained with the Software.
+
+Further, You represent and warrant to client IO that You will comply at all times 
+with the terms of this Agreement and all applicable laws and regulations 
+in using the Software. If You use the Software in an unlawful manner, 
+for unlawful purposes or in any way that does not comply with this Agreement 
+or all applicable laws and regulations, then the license may be revoked by client IO and, 
+in such event, You will cease using the Software and, at client IO's discretion, 
+will uninstall the Software and either return it to client IO or destroy all copies. 
+The provisions of this section shall survive any termination or expiration of this Agreement.
+
+
+Additional Redistribution Terms for Software
+---------------------------------------------
+
+Academic User may distribute the Software solely to other faculty members, 
+students, research participants or researchers of a degree-granting institution ("Receiving Academic Users") 
+and solely for non-commercial purposes, provided that: (a) Any Receiving Academic Users 
+that receive the Software from Academic User have, at the time of distribution, 
+agreed to be subject to and comply with , at all times, the terms, conditions and 
+restrictions under this Agreement, including to only use the Software for 
+the Permitted Academic Use, and; (b) All copies of the Software must contain all title, 
+trademark, and copyright information and restricted rights notices as are provided in 
+the Software and such notices are not removed or otherwise obscured in any way.
+
+Maintenance And Support
+-----------------------
+
+The Software is licensed on an as is basis. No maintenance or support services 
+are provided to You under this Agreement.
+
+Marketing
+---------
+
+client IO is permitted to reference you as a user of the Software in customer 
+lists on any of the web sites owned by client IO, in presentations to clients and at trade events.
+
+Additional term: Attribution
+----------------------------
+
+(a) As a modest attribution to the organizer of the development of
+the Original Code ("Original Developer"), in the hope that its promotional value may help 
+justify the time, money and effort invested in writing the Original Code, the Original Developer 
+may include in Exhibit A ("Attribution Information") a requirement that each time an Executable 
+and Source Code or a Larger Work is launched or initially run (which includes initiating a session), 
+a prominent display of the Original Developer's Attribution Information (as defined below) must 
+occur on the graphic user interface employed by the end user to access such Covered Code 
+(which may include display on a splash screen), if any. The size of the graphic image should 
+be consistent with the size of the other elements of the Attribution Information. 
+If the access by the end user to the Executable and Source Code does not create a graphic 
+user interface for access to the Covered Code, this obligation shall not apply. 
+If the Original Code displays such Attribution Information in a particular form 
+(such as in the form of a splash screen, notice at login, an "about" display, or dedicated 
+attribution area on user interface screens), continued use of such form for that 
+Attribution Information is one way of meeting this requirement for notice.
+
+(b) Attribution information may only include a copyright notice, a brief phrase, 
+graphic image and a URL ("Attribution Information") and is subject to the Attribution Limits 
+as defined below. For these purposes, prominent shall mean display for sufficient duration 
+to give reasonable notice to the user of the identity of the Original Developer and that 
+if You include Attribution Information or similar information for other parties, 
+You must ensure that the Attribution Information for the Original Developer shall be no 
+less prominent than such Attribution Information or similar information for the other party. 
+For greater certainty, the Original Developer may choose to specify in Exhibit A below 
+that the above attribution requirement only applies to an Executable and Source Code 
+resulting from the Original Code or any Modification, but not a Larger Work. 
+The intent is to provide for reasonably modest attribution, therefore the Original Developer 
+cannot require that You display, at any time, more than the following information 
+as Attribution Information: (a) a copyright notice including the name of the Original Developer; 
+(b) a word or one phrase (not exceeding 10 words); (c) one graphic image provided by 
+the Original Developer; and (d) a URL (collectively, the "Attribution Limits").
+
+(c) If Exhibit A does not include any Attribution Information, then there are no requirements 
+for You to display any Attribution Information of the Original Developer.
+
+(d) You acknowledge that all trademarks, service marks and/or trade names contained 
+within the Attribution Information distributed with the Covered Code are the exclusive property 
+of their owners and may only be used with the permission of their owners, or under circumstances 
+otherwise permitted by law or as expressly set out in this License.
+
+
+Limited Warranty
+----------------
+
+client IO warrants that as provided the Software does not contain any malicious 
+code inserted to affect the functioning of the Software or any computer that 
+the Software runs on. Any Academic User using Rappid must have a broad 
+understanding of security issue relating to web application and must take all 
+reasonable steps at a system level to mitigate those risks.
+
+client IO warrants that the Software does not infringe any patent, copyright or 
+design secret of any third party. client IO is not aware of any facts upon which 
+such a claim for infringement could be based.
+
+
+TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, CLIENT IO AND ITS 
+SUPPLIERS DISCLAIM ALL OTHER WARRANTIES AND CONDITIONS, EITHER EXPRESSED OR 
+IMPLIED, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF MERCHANTABILITY, 
+FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND NON-INFRINGEMENT, WITH REGARD TO 
+THE SOFTWARE, AND THE PROVISION OF OR FAILURE TO PROVIDE SUPPORT SERVICES. THIS 
+LIMITED WARRANTY GIVES YOU SPECIFIC LEGAL RIGHTS. YOU MAY HAVE OTHERS, WHICH 
+VARY FROM STATE/JURISDICTION TO STATE/JURISDICTION.
+
+LIMITATION OF LIABILITY TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN 
+NO EVENT SHALL CLIENT IO OR ITS SUPPLIERS BE LIABLE FOR ANY SPECIAL, 
+INCIDENTAL, INDIRECT, OR CONSEQUENTIAL DAMAGES WHATSOEVER (INCLUDING, WITHOUT 
+LIMITATION, DAMAGES FOR LOSS OF BUSINESS PROFITS, BUSINESS INTERRUPTION, LOSS 
+OF BUSINESS INFORMATION, OR ANY OTHER PECUNIARY LOSS) ARISING OUT OF THE USE OF 
+OR INABILITY TO USE THE SOFTWARE PRODUCT OR THE PROVISION OF OR FAILURE TO 
+PROVIDE SUPPORT SERVICES, EVEN IF CLIENT IO HAS BEEN ADVISED OF THE 
+POSSIBILITY OF SUCH DAMAGES. BECAUSE SOME STATES AND JURISDICTIONS DO NOT 
+ALLOW THE EXCLUSION OR LIMITATION OF LIABILITY, THE ABOVE LIMITATION MAY NOT 
+APPLY TO YOU.
+
+
+General Provisions
+-------------------
+
+This License Agreement may only be modified in writing signed by you and
+client IO. If any provision of this License Agreement is found void or 
+unenforceable, the remainder will remain valid and enforceable according to its
+terms. If any remedy provided is determined to have failed for its essential
+purpose, all limitations of liability and exclusions of damages set forth in 
+the Limited Warranty shall remain in effect.
+
+Governing Law and Jurisdiction
+-------------------------------
+
+This Agreement shall be subject to and governed by the Law of The Netherlands. 
+Any dispute arising out of or in connection with this Agreement shall 
+be exclusively dealt with by the courts of The Netherlands. This License 
+Agreement gives you specific legal rights; you may have others which vary from 
+state to state and from country to country. client IO reserves all rights not 
+specifically granted in this License Agreement.
+
+Exhibit A: Attribution Information
+----------------------------------
+
+Attribution Copyright Notice: "Copyright 2014. client IO. All rights reserved."
+Attribution Phrase (not exceeding 10 words): "JointJS: an HTML 5 diagramming component."
+Attribution URL: "http://jointjs.com"
+Graphic Image as provided in the Covered Code, if any.
+
+
+Version 1.0 - 24.02.2014
