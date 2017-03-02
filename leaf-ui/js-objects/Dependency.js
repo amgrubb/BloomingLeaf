@@ -4,4 +4,3 @@ function Dependency(src, dest, type="link", activeLink = true){
 	this.type = type;
 	this.activeLink = activeLink;
 }
-

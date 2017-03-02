@@ -1,4 +1,4 @@
-function Actor(name, id, linksSrc, linksDest, actorType){
+function Actor(name = "NAME", id="NO-ID", linksSrc, linksDest, actorType){
 	this.name = name;
 	this.id = id;
 	this.linksSrc = linksSrc;
