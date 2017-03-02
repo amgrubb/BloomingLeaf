@@ -10,7 +10,7 @@ import com.google.gson.Gson;
  * This class gets called from the backend and instantiates the model spec.
  * 
  */
-public class SolveModelTest {
+public class ModelSolverMain {
 
 	public static void main(String[] args) {
 
@@ -22,7 +22,7 @@ public class SolveModelTest {
 			String outputFile = "/home/marcel/UofT/output.out";
 			FileWriter file = new FileWriter(outputFile);
 			PrintWriter printFile = new PrintWriter(file);
-			IStarSpec iStarSpec = gson.fromJson(new FileReader(filePath), IStarSpec.class);				
+			ModelSpec iStarSpec = gson.fromJson(new FileReader(filePath), ModelSpec.class);				
 			printFile.printf(gson.toJson(iStarSpec));
 			file.close();
 			
