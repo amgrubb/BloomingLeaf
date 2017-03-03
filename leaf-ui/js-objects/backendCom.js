@@ -107,8 +107,7 @@ function modelSpec(){
 			if (elements[e].get("parent")){
 				actorid = (graph.getCell(elements[e].get("parent")).prop("elementid") || "-");
 			}
-			console.log(actorid);
-
+			
 		  var type_e;
 			if (elements[e] instanceof joint.shapes.basic.Goal)
 				type_e = "G";
@@ -261,7 +260,7 @@ function modelSpec(){
 			frontendModel.maxTime;
 			frontendModel.maxEpoch;
 			frontendModel.relativePoints;
-			frontendModel.absolutePoinsts = [];
+			frontendModel.absolutePoints = [];
 			frontendModel.actors = data_actors; //OK
 			frontendModel.intentions = data_intentions; //OK
 			frontendModel.links = data_links; //OK
