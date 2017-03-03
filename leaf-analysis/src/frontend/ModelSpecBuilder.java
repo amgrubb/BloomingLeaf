@@ -9,21 +9,26 @@ import simulation.DecompositionType;
 import simulation.Dependency;
 import simulation.EpochConstraint;
 import simulation.IntentionalElement;
+import simulation.IntentionalElementDynamicType;
 import simulation.LinkableElement;
 
 public class ModelSpecBuilder {
 	public static ModelSpecPojo buildModelSpec(FrontendModel frontendModel){
 		
 		ModelSpecPojo modelSpec = new ModelSpecPojo();
+
+		try{
+			
 		
-		if(!frontendModel.getActors().isEmpty()){
-			for(DataActor dataActor: frontendModel.getActors()){
+		if(!frontendModel.actors.isEmpty()){
+			for(DataActor dataActor: frontendModel.actors){
 				modelSpec.getActors().add(new Actor(dataActor.nodeId, dataActor.nodeName, dataActor.nodeType));
 			}
 		}
 		
-		if(!frontendModel.getIntentions().isEmpty()){
-			for (DataIntention dataIntention : frontendModel.getIntentions()) {
+	
+		if(!frontendModel.intentions.isEmpty()){
+			for (DataIntention dataIntention : frontendModel.intentions) {
 				Actor nodeActor = null;
 				if(!dataIntention.nodeActorID.equals("-"))
 					for(Actor tmp : modelSpec.getActors()){
@@ -37,8 +42,8 @@ public class ModelSpecBuilder {
 			}
 		}
 		
-		if(!frontendModel.getLinks().isEmpty()){
-			for(DataLink dataLink : frontendModel.getLinks()){
+		if(!frontendModel.links.isEmpty()){
+			for(DataLink dataLink : frontendModel.links){
 				LinkableElement src = null;
 				LinkableElement dest = null;
 		        for(IntentionalElement tmp : modelSpec.getIntElements()){
@@ -56,30 +61,29 @@ public class ModelSpecBuilder {
 		        	modelSpec.getDependency().add(new Dependency(dest, src));		//TODO: Figure out if these should be flipped.
 			}
 		}
-		
-		/*
-		if(!frontendModel.getDynamics().isEmpty()){
-			for(DataDynamic dataDynamic : frontendModel.getDynamics()){
+
+		if(!frontendModel.dynamics.isEmpty()){
+			for(DataDynamic dataDynamic : frontendModel.dynamics){
 				String intentionID = dataDynamic.intentionID;
 				String dynamicType = dataDynamic.dynamicType;
 				String markedValue = dataDynamic.markedValue;
 				
-				for(IntentionalElement it : intElements){
+				for(IntentionalElement it : modelSpec.getIntElements()){
 		        	if(intentionID.equals(it.getId())){
-		        		it.setDynamicType(IntentionalElementDynamicType.getByCode(dynamicType));
-		        		if (dynamicType.equals("UD"))
-		        			it.setUserDefinedDynamicType(line, this.maxEpoch);				        			
-		        		else if (result.length > 3){
-							it.setDynamicFunctionMarkedValue(Integer.parseInt(markedValue));
-						}
+		        		it.setDynamicType(IntentionalElementDynamicType.getByCode(dataDynamic.dynamicType), Integer.parseInt(frontendModel.maxEpoch));
+		        		//if (dynamicType.equals("UD"))
+		        		//	it.setUserDefinedDynamicType(line, this.maxEpoch);				        			
+		        		//else if (result.length > 3){
+						//	it.setDynamicFunctionMarkedValue(Integer.parseInt(markedValue));
+						//}  
 		        	}
 		        }				
 			}
 
 		}
-*/
-		if(!frontendModel.getConstraints().isEmpty()){
-			for(DataConstraint dataConstraint : frontendModel.getConstraints()){
+
+		if(!frontendModel.constraints.isEmpty()){
+			for(DataConstraint dataConstraint : frontendModel.constraints){
 				String constraintType = dataConstraint.constraintType;
 				String constraintSrcID = dataConstraint.constraintSrcID;
 				String constraintSrcEB = dataConstraint.constraintSrcEB;
@@ -107,8 +111,8 @@ public class ModelSpecBuilder {
 			}
 		}
 
-		if(!frontendModel.getQueries().isEmpty()){
-			for(DataQuery dataQuery : frontendModel.getQueries()){
+		if(!frontendModel.queries.isEmpty()){
+			for(DataQuery dataQuery : frontendModel.queries){
 				String constraintSrcID = dataQuery.constraintSrcID;
 				String constraintSrcEB = dataQuery.constraintSrcEB;
 				String constraintType = dataQuery.constraintType;
@@ -126,8 +130,8 @@ public class ModelSpecBuilder {
 			}
 		}
 		
-		if(!frontendModel.getHistories().isEmpty()){
-			for(DataHistory dataHistory : frontendModel.getHistories()){
+		if(!frontendModel.histories.isEmpty()){
+			for(DataHistory dataHistory : frontendModel.histories){
 				int numHistory = Integer.parseInt(dataHistory.numHistory);
 				int numIntentions = Integer.parseInt(dataHistory.numIntentions);
 				int numTimePoints = Integer.parseInt(dataHistory.numTimePoints);
@@ -141,6 +145,10 @@ public class ModelSpecBuilder {
 				break;			
 	
 			}		
+		}
+		
+		}catch (Exception e) {
+			System.out.println(e.getMessage());
 		}
 		
 		return modelSpec;

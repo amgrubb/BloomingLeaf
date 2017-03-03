@@ -5,6 +5,4 @@ public class DataHistory {
 	String numIntentions;
 	String numTimePoints;
 	int[] history_array;
-	
-	
 }

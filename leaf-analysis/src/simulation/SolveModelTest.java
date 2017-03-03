@@ -24,14 +24,16 @@ public class SolveModelTest {
 		try {
 			//Need to create the file and folder if doesn't exist
 			String outputFile = "/home/marcel/UofT/output.out";
-			FileWriter file = new FileWriter(outputFile);
-			PrintWriter printFile = new PrintWriter(file);
+			//FileWriter file = new FileWriter(outputFile);
+			//PrintWriter printFile = new PrintWriter(file);
 			FrontendModel frontendModel = gson.fromJson(new FileReader(filePath), FrontendModel.class);
 			
 			ModelSpecPojo modelSpec = ModelSpecBuilder.buildModelSpec(frontendModel);
 			
-			printFile.printf(gson.toJson(modelSpec));
-			file.close();
+			System.out.println(modelSpec.getActors().get(0).name.toString());
+			System.out.println(modelSpec.getDecomposition().get(0).type.toString());
+			//printFile.printf(gson.toJson(modelSpec));
+			//file.close();
 			
 		} catch (Exception e) {
 			throw new RuntimeException(e.getMessage());
