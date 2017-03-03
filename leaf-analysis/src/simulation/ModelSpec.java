@@ -165,7 +165,7 @@ public class ModelSpec {
 					        		 break;
 					        	}	
 					        } 
-						IntentionalElement element = new IntentionalElement(this, nodeID, nodeName, nodeActor, nodeType, false);
+						IntentionalElement element = new IntentionalElement(nodeID, nodeName, nodeActor, nodeType, false);
 						intElements.add(element);
 						//TODO: Need to figure out how to read the values.
 						//strategyRead.addEvaluation(element, new Evaluation(element, QualitativeLabel.get(initialValue)));
@@ -221,7 +221,7 @@ public class ModelSpec {
 				        for(ListIterator<IntentionalElement> it = intElements.listIterator(); it.hasNext(); ){
 				        	IntentionalElement tmp = it.next();
 				        	if(intentionID.equals(tmp.getId())){
-				        		tmp.setDynamicType(IntentionalElementDynamicType.getByCode(dynamicType));
+				        		tmp.setDynamicType(IntentionalElementDynamicType.getByCode(dynamicType), maxEpoch);
 				        		if (dynamicType.equals("UD"))
 				        			tmp.setUserDefinedDynamicType(line, this.maxEpoch);				        			
 				        		else if (result.length > 3){

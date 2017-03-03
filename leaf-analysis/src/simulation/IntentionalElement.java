@@ -11,7 +11,6 @@ import java.util.Random;
  */
 public class IntentionalElement extends LinkableElement {
     // OBJECT VARIABLES
-	ModelSpec iStarSpec;
 	Actor actor = null;
 	IntentionalElementType type = IntentionalElementType.GOAL;
 	IntentionalElementDynamicType dynamicType = IntentionalElementDynamicType.NT;
@@ -66,11 +65,11 @@ public class IntentionalElement extends LinkableElement {
 		this.cspUDFunct = new UDFunctionCSP(this, inputLine);
 	}
 	
-	public void setDynamicType(IntentionalElementDynamicType dynamicType) {
+	public void setDynamicType(IntentionalElementDynamicType dynamicType, int maxEpoch) {
 		this.dynamicType = dynamicType;
-		if (iStarSpec.getMaxEpoch() > 1){
+		if (maxEpoch > 1){
 			Random rand = new Random();
-			this.epochBoundary = rand.nextInt(iStarSpec.getMaxEpoch() - 1);
+			this.epochBoundary = rand.nextInt(maxEpoch - 1);
 		}
 
 	}
@@ -99,18 +98,16 @@ public class IntentionalElement extends LinkableElement {
 			System.out.println("Error Assigning User-Defined: unknown epoch boundary value.");
 	}
 	
-	public IntentionalElement(ModelSpec iStarSpec, String nodeID, String nodeName, Actor nodeActor, String nodeType, String nodeDynamicType, boolean isStatic){
+	public IntentionalElement(String nodeID, String nodeName, Actor nodeActor, String nodeType, String nodeDynamicType, boolean isStatic){
 		super(nodeID, nodeName);
 		this.actor = nodeActor;
-		this.iStarSpec = iStarSpec;
 		this.type = IntentionalElementType.getByName(nodeType); 
 		this.dynamicType = IntentionalElementDynamicType.getByCode(nodeDynamicType);
 		this.staticIntention = isStatic;
 	}
-	public IntentionalElement(ModelSpec iStarSpec, String nodeID, String nodeName, Actor nodeActor, String nodeType, boolean isStatic){
+	public IntentionalElement(String nodeID, String nodeName, Actor nodeActor, String nodeType, boolean isStatic){
 		super(nodeID, nodeName);
 		this.actor = nodeActor;
-		this.iStarSpec = iStarSpec;
 		this.type = IntentionalElementType.getByName(nodeType); 
 		this.staticIntention = isStatic;
 	}

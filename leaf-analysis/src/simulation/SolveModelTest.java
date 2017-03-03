@@ -6,6 +6,10 @@ import java.io.PrintWriter;
 
 import com.google.gson.Gson;
 
+import frontend.FrontendModel;
+import frontend.ModelSpecBuilder;
+import frontend.ModelSpecPojo;
+
 /* SolveModelTest 
  * This class gets called from the backend and instantiates the model spec.
  * 
@@ -22,8 +26,11 @@ public class SolveModelTest {
 			String outputFile = "/home/marcel/UofT/output.out";
 			FileWriter file = new FileWriter(outputFile);
 			PrintWriter printFile = new PrintWriter(file);
-			IStarSpec iStarSpec = gson.fromJson(new FileReader(filePath), IStarSpec.class);				
-			printFile.printf(gson.toJson(iStarSpec));
+			FrontendModel frontendModel = gson.fromJson(new FileReader(filePath), FrontendModel.class);
+			
+			ModelSpecPojo modelSpec = ModelSpecBuilder.buildModelSpec(frontendModel);
+			
+			printFile.printf(gson.toJson(modelSpec));
 			file.close();
 			
 		} catch (Exception e) {
