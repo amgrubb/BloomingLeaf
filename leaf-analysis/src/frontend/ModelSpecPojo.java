@@ -3,6 +3,8 @@ package frontend;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jacop.core.BooleanVar;
+
 import simulation.Actor;
 import simulation.Contribution;
 import simulation.Decomposition;
@@ -26,6 +28,9 @@ public class ModelSpecPojo {
     private int[][][] history;
     private int relativeTimePoints = 0;
     private int[] absoluteTimePoints;
+    private BooleanVar[][][] initialValues;		//[this.numIntentions][this.numTimePoints][FD - index 0 / PD - index 1 / PS - index 2 / FS - index 3]
+    											// Note if model only has initial values then it will be [numintentions][1][4].
+ 
     
 	public List<IntentionalElement> getIntElements() {
 		return intElements;
