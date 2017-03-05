@@ -37,7 +37,7 @@ public class ModelSpecBuilder {
 			        		 break;
 			        	}	
 			        }
-				IntentionalElement element = new IntentionalElement(dataIntention.nodeID, dataIntention.nodeName, nodeActor, dataIntention.nodeType, false);
+				IntentionalElement element = new IntentionalElement(dataIntention.nodeID, dataIntention.nodeName, nodeActor, dataIntention.nodeType);
 				modelSpec.getIntElements().add(element);
 			}
 		}

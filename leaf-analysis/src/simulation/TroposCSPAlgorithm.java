@@ -343,7 +343,7 @@ public class TroposCSPAlgorithm {
     		IntVar[] epochs = this.epochCollection.get(element);
     		//TODO: Find a new way to get initial evalutaions.
     		int initialEvaluation = 0; // this.strategy.getEvaluation(element).getEvaluation();
-    		int dynamicValue = element.getDynamicFunctionMarkedValue();;
+    		int dynamicValue = element.oldGetDynamicFunctionMarkedValue();;
 
     		if (tempType == IntentionalElementDynamicType.CONST){
     			if (initialEvaluation == 5){
@@ -1051,7 +1051,7 @@ public class TroposCSPAlgorithm {
 
 			IntVar[] epochs = epochCollection.get(element);
 			//int initialEvaluation = this.strategy.getEvaluation(element).getEvaluation();
-			int dynamicValue = element.getDynamicFunctionMarkedValue();;
+			int dynamicValue = element.oldGetDynamicFunctionMarkedValue();;
 
 			if (tempType == IntentionalElementDynamicType.CONST){
 				PrimitiveConstraint[] tempConstant = {	//Possible Helper
