@@ -1,6 +1,7 @@
 package frontend;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.jacop.core.BooleanVar;
@@ -28,8 +29,11 @@ public class ModelSpecPojo {
     private int[][][] history;
     private int relativeTimePoints = 0;
     private int[] absoluteTimePoints;
-    private boolean[][][] initialValues;		//[this.numIntentions][this.numTimePoints][FD - index 0 / PD - index 1 / PS - index 2 / FS - index 3]
-    											// Note if model only has initial values then it will be [numintentions][1][4].
+    private boolean[][][] initialValues;		// Holds the initial values whether they are single or multiple.
+												//[this.numIntentions][this.numTimePoints][FD - index 0 / PD - index 1 / PS - index 2 / FS - index 3]
+												// Note if model only has initial values then it will be [numintentions][1][4].
+    private int[] initialValueTimePoints;		// Hold the assigned times for each of the initial Values. Should be same length of second paramater of initialValues; 
+    private HashMap<String, Integer> assignedEpochs; //Hash map to hold the epochs with assigned values.
  
     
 	public List<IntentionalElement> getIntElements() {
