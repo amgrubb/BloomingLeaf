@@ -790,7 +790,7 @@ public class TroposCSPAlgorithm {
     			ElementLink link = (ElementLink) linksIteratorDest.next();
     			if (link.isActiveLink()){
     				if (link instanceof Decomposition){
-    					if (element.getDecompositionType() == DecompositionType.AND){
+    					if (((Decomposition)link).getDecomposition() ==  DecompositionType.AND){//element.getDecompositionType() == DecompositionType.AND){
     						andDecompositionElements.add((IntentionalElement) link.getSrc());
     					} else {
     						orDecompositionElements.add((IntentionalElement) link.getSrc());

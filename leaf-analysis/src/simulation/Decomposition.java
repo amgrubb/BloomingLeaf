@@ -13,9 +13,9 @@ public class Decomposition extends ElementLink {
 	public DecompositionType getDecomposition() {
 		return decomposition;
 	}
-	public void setDecomposition(DecompositionType decomposition) {
-		this.decomposition = decomposition;
-	}
+//	public void setDecomposition(DecompositionType decomposition) {
+//		this.decomposition = decomposition;
+//	}
 	/**
 	 * @param s
 	 * @param d
