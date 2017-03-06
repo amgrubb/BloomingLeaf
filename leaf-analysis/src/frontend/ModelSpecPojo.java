@@ -28,7 +28,7 @@ public class ModelSpecPojo {
     private int[][][] history;
     private int relativeTimePoints = 0;
     private int[] absoluteTimePoints;
-    private BooleanVar[][][] initialValues;		//[this.numIntentions][this.numTimePoints][FD - index 0 / PD - index 1 / PS - index 2 / FS - index 3]
+    private boolean[][][] initialValues;		//[this.numIntentions][this.numTimePoints][FD - index 0 / PD - index 1 / PS - index 2 / FS - index 3]
     											// Note if model only has initial values then it will be [numintentions][1][4].
  
     
