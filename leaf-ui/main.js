@@ -1034,6 +1034,17 @@ function toBackEnd(simulationType, stepVal, epochVal, queryValA, queryValB){
 }
 
 function postData(simulationType, leafLines, queryLines, cspHistoryLines, queryNum){
+	console.log("simulationType");
+	console.log(simulationType);
+	console.log("leafLines");
+	console.log(leafLines);
+	console.log("queryLines");
+	console.log(queryLines);
+	console.log("cspHistoryLines");
+	console.log(cspHistoryLines);
+	console.log("queryNum");
+	console.log(queryNum);
+
 	var data = {};
 	if(queryNum == -1){
 		data.toUpload = leafLines + cspHistoryLines;
@@ -1043,7 +1054,8 @@ function postData(simulationType, leafLines, queryLines, cspHistoryLines, queryN
 		data.simgraph = JSON.stringify(graph.toJSON());
 		queryNum++;
   }
-
+  console.log('data');
+  console.log(data);
 	//Send data to backend for analysis
 	$.post("./cgi-bin/handleupload2.cgi", data, function(results, status){
 		if(status == "success"){
