@@ -165,7 +165,7 @@ public class ModelSpec {
 					        		 break;
 					        	}	
 					        } 
-						IntentionalElement element = new IntentionalElement(nodeID, nodeName, nodeActor, nodeType, false);
+						IntentionalElement element = new IntentionalElement(nodeID, nodeName, nodeActor, nodeType);
 						intElements.add(element);
 						//TODO: Need to figure out how to read the values.
 						//strategyRead.addEvaluation(element, new Evaluation(element, QualitativeLabel.get(initialValue)));
@@ -225,7 +225,7 @@ public class ModelSpec {
 				        		if (dynamicType.equals("UD"))
 				        			tmp.setUserDefinedDynamicType(line, this.maxEpoch);				        			
 				        		else if (result.length > 3){
-									tmp.setDynamicFunctionMarkedValue(Integer.parseInt(result[3]));
+									tmp.oldSetDynamicFunctionMarkedValue(Integer.parseInt(result[3]));
 								}
 				        	}
 				        }						
