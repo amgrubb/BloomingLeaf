@@ -75,7 +75,7 @@ function modelSpec(){
 			actorId = "a" + actorId;
 			actors[a].prop("elementid", actorId);
 
-			var dataActor = new DataActor();
+			var dataActor = new CommActor();
 				dataActor.nodeID = actorId;
 				dataActor.nodeName = actors[a].attr(".name/text");
 				dataActor.nodeType = (actors[a].prop("actortype") || "A")
@@ -126,7 +126,7 @@ function modelSpec(){
 		  	if((!v) || (v == "none"))
 				v = "none";
 
-			var data_intention = new DataIntention();
+			var data_intention = new CommIntention();
 				data_intention.nodeActorID = actorid;
 				data_intention.nodeID = elementID;
 				data_intention.nodeType = type_e;
@@ -150,7 +150,7 @@ function modelSpec(){
 			if (current.get("target").id)
 				target = graph.getCell(current.get("target").id).prop("elementid");
 
-			var data_link = new DataLink();
+			var data_link = new CommLink();
 			
 			if (relationship.indexOf("|") > -1){
 				evolvRelationships = relationship.replace(/\s/g, '').split("|");
@@ -179,7 +179,7 @@ function modelSpec(){
 		    var funcType = elements[e].attr(".constraints/function");
 		    var funcTypeVal = elements[e].attr(".constraints/lastval");
 		    
-		    var data_dynamic = new DataDynamic();
+		    var data_dynamic = new CommDynamic();
 		    
 		    if  (f == " "){		    	
 	    		data_dynamic.intentionID = elementID;
@@ -243,7 +243,7 @@ function modelSpec(){
 			var sourceVar = c.attr('.constraintvar/src');
 			var targetVar = c.attr('.constraintvar/tar');
 
-			var data_constraint = new DataConstraint();
+			var data_constraint = new CommConstraint();
 			
 			data_constraint.constraintType = type;
 			data_constraint.constraintSrcID = source;
@@ -266,7 +266,6 @@ function modelSpec(){
 			frontendModel.links = data_links; //OK
 			frontendModel.dynamics = data_dynamics; //OK
 			frontendModel.constraints = data_constraints; //OK
-//			frontendModel.queries = [];
 //			frontendModel.histories = [];
 		
 		return frontendModel;	

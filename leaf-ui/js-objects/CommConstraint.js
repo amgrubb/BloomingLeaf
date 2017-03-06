@@ -1,4 +1,4 @@
-function DataConstraint(){
+function CommConstraint(){
 	var constraintType;
 	var constraintSrcID;
 	var constraintSrcEB;

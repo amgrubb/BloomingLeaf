@@ -8,6 +8,5 @@ function FrontendModel(){
 	var links = [];
 	var dynamics = [];
 	var constraints = [];
-	var queries = [];
 	var histories = [];
 }

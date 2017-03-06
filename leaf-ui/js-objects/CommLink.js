@@ -1,4 +1,4 @@
-function DataLink(){
+function CommLink(){
 	var linkType;
 	var linkSrcID;
 	var linkDestID;

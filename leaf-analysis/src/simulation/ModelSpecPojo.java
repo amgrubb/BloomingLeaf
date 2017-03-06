@@ -1,18 +1,15 @@
-package frontend;
+package simulation;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.jacop.core.BooleanVar;
 
-import simulation.Actor;
-import simulation.Contribution;
-import simulation.Decomposition;
-import simulation.Dependency;
-import simulation.EpochConstraint;
-import simulation.EvolutionLink;
-import simulation.IntentionalElement;
-
+/**
+ * This class is going to be filled with data from the frontend after being processed, to be worked with in the backend.
+ * See also ModelSpecBuilde class.
+ *
+ */
 public class ModelSpecPojo {
 	
 	private List<IntentionalElement> intElements = new ArrayList<IntentionalElement>();
@@ -21,7 +18,6 @@ public class ModelSpecPojo {
 	private List<Contribution> contribution = new ArrayList<Contribution>();
 	private List<Decomposition> decomposition = new ArrayList<Decomposition>();
 	private List<Dependency> dependency = new ArrayList<Dependency>();
-	//private List<EvaluationStrategy> strategyCollection = new ArrayList<EvaluationStrategy>(); //Collection
 	private List<EpochConstraint> constraintsBetweenEpochs = new ArrayList<EpochConstraint>();
 	private int maxTime = 5;
 	private int maxEpoch = 5;
@@ -31,7 +27,6 @@ public class ModelSpecPojo {
     private BooleanVar[][][] initialValues;		//[this.numIntentions][this.numTimePoints][FD - index 0 / PD - index 1 / PS - index 2 / FS - index 3]
     											// Note if model only has initial values then it will be [numintentions][1][4].
  
-    
 	public List<IntentionalElement> getIntElements() {
 		return intElements;
 	}
