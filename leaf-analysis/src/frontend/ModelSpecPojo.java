@@ -25,7 +25,7 @@ public class ModelSpecPojo {
 	//private List<EvaluationStrategy> strategyCollection = new ArrayList<EvaluationStrategy>(); //Collection
 	private List<EpochConstraint> constraintsBetweenEpochs = new ArrayList<EpochConstraint>();
 	private int maxTime = 5;
-	private int maxEpoch = 5;
+//	private int maxEpoch = 5;
     private int[][][] history;
     private int relativeTimePoints = 0;
     private int[] absoluteTimePoints;
@@ -34,6 +34,7 @@ public class ModelSpecPojo {
 												// Note if model only has initial values then it will be [numintentions][1][4].
     private int[] initialValueTimePoints;		// Hold the assigned times for each of the initial Values. Should be same length of second paramater of initialValues; 
     private HashMap<String, Integer> assignedEpochs; //Hash map to hold the epochs with assigned values.
+    private char conflictAvoidLevel; 			// Should have the value S/M/W/N for Strong, Medium, Weak, None.
  
     
 	public List<IntentionalElement> getIntElements() {
