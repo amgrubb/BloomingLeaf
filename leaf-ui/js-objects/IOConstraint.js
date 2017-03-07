@@ -1,4 +1,4 @@
-function CommConstraint(){
+function IOConstraint(){
 	var constraintType;
 	var constraintSrcID;
 	var constraintSrcEB;

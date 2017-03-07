@@ -1,4 +1,4 @@
-function CommLink(){
+function IOLink(){
 	var linkType;
 	var linkSrcID;
 	var linkDestID;

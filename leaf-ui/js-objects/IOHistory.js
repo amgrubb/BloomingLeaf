@@ -1,4 +1,4 @@
-function CommHistory(){
+function IOHistory(){
 	var numHistory;
 	var numIntentions;
 	var numTimePoints;

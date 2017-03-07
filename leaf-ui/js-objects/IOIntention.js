@@ -1,4 +1,4 @@
-function CommIntention(){
+function IOIntention(){
 	var nodeActorID;
 	var nodeID;
 	var nodeType;
