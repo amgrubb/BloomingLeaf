@@ -8,7 +8,7 @@ package simulation;
  *
  */
 public enum DecompositionType {
-	AND (0, "AND", "And"), OR (1, "OR", "Or"), XOR (2, "XOR", "Xor");
+	AND (0, "AND", "And"), OR (1, "OR", "Or"); //, XOR (2, "XOR", "Xor");
 	
 	private int value;
 	private String code;
@@ -17,7 +17,7 @@ public enum DecompositionType {
 	private static final DecompositionType[] VALUES_ARRAY = new DecompositionType[] {
 		AND,
 		OR,
-		XOR,
+		//XOR,
 	};
 
 	public static DecompositionType getByCode(String code) {
@@ -56,7 +56,7 @@ public enum DecompositionType {
 		switch (value) {
 		case 0: return AND;
 		case 1: return OR;
-		case 2: return XOR;
+		//case 2: return XOR;
 		}
 		return null;
 	}

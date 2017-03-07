@@ -3,8 +3,6 @@
  */
 package simulation;
 
-import org.jacop.constraints.PrimitiveConstraint;
-import org.jacop.constraints.XeqC;
 
 /**
  * @author A.M.Grubb
@@ -15,7 +13,6 @@ public class IntentionalElement extends LinkableElement {
 	Actor actor = null;
 	IntentionalElementType type = IntentionalElementType.GOAL;
 	IntentionalElementDynamicType dynamicType = IntentionalElementDynamicType.NT;
-	DecompositionType decompositionType = null;
 	boolean userDefinedDynamicType = false;
 	UDFunction intUDFunct = null;	
 	UDFunctionCSP cspUDFunct = null;
@@ -24,14 +21,6 @@ public class IntentionalElement extends LinkableElement {
 	public int getIdNum() {
 		return Integer.parseInt(id);
 	}
-	
-	public DecompositionType getDecompositionType() {
-		return DecompositionType.AND; //decompositionType;
-	}
-	//TODO: This method is not currently called, and should be called by the Model Constructor.
-	public void setDecompositionType(DecompositionType decompositionType) {
-		this.decompositionType = decompositionType;
-	}	
 
 	public boolean isUserDefinedDynamicType() {
 		return userDefinedDynamicType;
@@ -74,6 +63,8 @@ public class IntentionalElement extends LinkableElement {
 		case 3:	
 			this.dynamicFunctionMarkedValue = new boolean[] {false, false, true, true};
 			break;
+		default:
+			this.dynamicFunctionMarkedValue = new boolean[] {false, false, false, false};
 		}
 	}
 	public boolean[] getDynamicFunctionMarkedValue() {

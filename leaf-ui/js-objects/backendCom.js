@@ -75,7 +75,7 @@ function modelSpec(){
 			actorId = "a" + actorId;
 			actors[a].prop("elementid", actorId);
 
-			var dataActor = new CommActor();
+			var dataActor = new IOActor();
 				dataActor.nodeID = actorId;
 				dataActor.nodeName = actors[a].attr(".name/text");
 				dataActor.nodeType = (actors[a].prop("actortype") || "A")
@@ -126,7 +126,7 @@ function modelSpec(){
 		  	if((!v) || (v == "none"))
 				v = "none";
 
-			var data_intention = new CommIntention();
+			var data_intention = new IOIntention();
 				data_intention.nodeActorID = actorid;
 				data_intention.nodeID = elementID;
 				data_intention.nodeType = type_e;
@@ -150,7 +150,7 @@ function modelSpec(){
 			if (current.get("target").id)
 				target = graph.getCell(current.get("target").id).prop("elementid");
 
-			var data_link = new CommLink();
+			var data_link = new IOLink();
 			
 			if (relationship.indexOf("|") > -1){
 				evolvRelationships = relationship.replace(/\s/g, '').split("|");
@@ -179,7 +179,7 @@ function modelSpec(){
 		    var funcType = elements[e].attr(".constraints/function");
 		    var funcTypeVal = elements[e].attr(".constraints/lastval");
 		    
-		    var data_dynamic = new CommDynamic();
+		    var data_dynamic = new IODynamic();
 		    
 		    if  (f == " "){		    	
 	    		data_dynamic.intentionID = elementID;
@@ -243,7 +243,7 @@ function modelSpec(){
 			var sourceVar = c.attr('.constraintvar/src');
 			var targetVar = c.attr('.constraintvar/tar');
 
-			var data_constraint = new CommConstraint();
+			var data_constraint = new IOConstraint();
 			
 			data_constraint.constraintType = type;
 			data_constraint.constraintSrcID = source;
@@ -257,8 +257,8 @@ function modelSpec(){
 
 		var frontendModel = new FrontendModel();
 		
-			frontendModel.maxTime;
-			frontendModel.maxEpoch;
+			frontendModel.maxTime = $("#step-num").value;
+			frontendModel.maxEpoch = $("#epoch-num").value;
 			frontendModel.relativePoints;
 			frontendModel.absolutePoints = [];
 			frontendModel.actors = data_actors; //OK
@@ -269,6 +269,45 @@ function modelSpec(){
 //			frontendModel.histories = [];
 		
 		return frontendModel;	
+}
+
+function backendResponseTest(){
+	
+	//BEGIN: Creating a Test Object	
+	var foundSolution = true;
+	var absoluteTime = [0, 1, 10, 20, 27];
+	var relativeTime = [0, 1, 2, 3, 4]; 
+	var nodes = [];
+
+	var states01 = ["0010", "0010", "0010", "0010", "0010"];	
+	var node01 = IONode("0001", states01);
+	nodes.push(node01);
+	
+	var states02 = ["0100", "1100", "0010", "1100", "1100"];
+	var node02 = IONode("0002", states02);
+	nodes.push(node02);
+
+	var states03 = ["0010", "0010", "0100", "0010", "0010"];
+	var node03 = IONode("0003", states03);
+	nodes.push(node03);
+
+	var output = new IOOutput(foundSolution, relativeTime, absoluteTime, nodes);
+	//END: Creating a Test Object
+	
+	
+	
+	
+}
+
+analysisObject.initFromObject = function(output){
+	this.elements = [];
+	this.timeScale = output.relativeTime.length - 1;
+	
+	for(var i = 0; i < output.nodes.length; i++){
+		this.elements.push(output.nodes[i].states)
+	}
+	
+	return this;
 }
 
 

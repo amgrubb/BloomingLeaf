@@ -3,11 +3,13 @@ package simulation;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 
 import com.google.gson.Gson;
 
-import interface_object.IOOutput;
 import interface_object.FrontendModel;
+import interface_object.IONode;
+import interface_object.IOOutput;
 
 /**
  * SolveModelTest 
@@ -27,8 +29,8 @@ public class SolveModelTest {
 	public static void main(String[] args) {
 
 		//This is the default filePath to be executed if no file is pass through parameters
-		String filePath = "/home/marcel/UofT/default.json";			
-		String fileName = "";
+		String filePath = "/home/marcel/UofT/";			
+		String fileName = "default";
 		
 		//Verify if there is any parameter sent otherwise run as test mode
 		//TODO: I did this because it will have to create a new file for each frontend user, so this program will execute an specific file
@@ -69,7 +71,8 @@ public class SolveModelTest {
 	private static void createOutputFile(IOOutput commOutput, String fileName) {
 		Gson gson = new Gson();		
 		//Need to create the file and folder if doesn't exist
-		String outputFile = "../public_html/BloomingLeaf/cgi-bin/temp/" + fileName + ".out";
+		String outputFile = "/home/marcel/UofT/" + fileName + ".out";
+		
 		try {
 			FileWriter file;
 			file = new FileWriter(outputFile);
@@ -79,8 +82,6 @@ public class SolveModelTest {
 		} catch (Exception e) {
 			throw new RuntimeException("Error in createOutputFile: " + e.getMessage());
 		}
-		//System.out.println(modelSpec.getActors().get(0).name.toString());
-		//System.out.println(modelSpec.getDecomposition().get(0).type.toString());
 		
 	}
 
@@ -90,9 +91,48 @@ public class SolveModelTest {
 	 * @return
 	 */
 	private static IOOutput analyseModel(ModelSpecPojo modelSpec) {
+		//TEST Here I created a simple output as a test
+		IOOutput ioOutput = new IOOutput();
+		int[] absoluteTime = {0, 1, 10, 20, 27};
+		int[] relativeTime = {0, 1, 2, 3, 4}; 
+		
+		IONode node01 = new IONode();
+		node01.setId(0);
+		node01.getStates().add("0010");
+		node01.getStates().add("0010");
+		node01.getStates().add("0010");
+		node01.getStates().add("0010");
+		node01.getStates().add("0010");
+		
+		ioOutput.getNodes().add(node01);
+
+		IONode node02 = new IONode();
+		node02.setId(1);
+		node02.getStates().add("0100");
+		node02.getStates().add("1100");
+		node02.getStates().add("0010");
+		node02.getStates().add("1100");
+		node02.getStates().add("1100");
+
+		ioOutput.getNodes().add(node02);
+
+		IONode node03 = new IONode();
+		node03.setId(2);
+		node03.getStates().add("0010");
+		node03.getStates().add("0010");
+		node03.getStates().add("0100");
+		node03.getStates().add("0010");
+		node03.getStates().add("0010");
+
+		ioOutput.getNodes().add(node03);
+		
+		ioOutput.setAbsoluteTime(absoluteTime);
+		ioOutput.setRelativeTime(relativeTime);
+		
 		// TODO Auto-generated method stub
-		return null;
+		return ioOutput;
 	}
+
 
 	/**
 	 * This method converts the model file sent by the frontend into the ModelSpecPojo in order to be analysed
