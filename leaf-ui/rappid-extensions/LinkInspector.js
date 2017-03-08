@@ -10,11 +10,21 @@ var LinkInspector = Backbone.View.extend({
     '<select class="link-type">',
       '<option value=and>And-Decomposition</option>',
       '<option value=or>Or-Decomposition (Means-end)</option>',
-      '<option value=depends>Depends</option>',
-      '<option value=makes>Makes</option>',
-      '<option value=breaks>Breaks</option>',
-      '<option value=helps>Helps</option>',
-      '<option value=hurts>Hurts</option>',
+      '<option value=PP>++</option>',
+      '<option value=NN>--</option>',
+      '<option value=P>+</option>',
+      '<option value=N>-</option>',
+      '<option value=PS>+S</option>',
+      '<option value=PPS>++S</option>',
+      '<option value=NS>-S</option>',
+      '<option value=NNS>--S</option>',
+      '<option value=PD>+D</option>',
+      '<option value=PPD>++D</option>',
+      '<option value=ND>-D</option>',
+      '<option value=NND>--D</option>',
+      '<option value=NBT>Noth Both (None)</option>',
+      '<option value=NBD>Not Both (Denied)</option>',
+
     '</select>',
     '<div id="link-div">',
       '<h5 id="repeat-error" class="inspector-error"></h5>',
@@ -52,9 +62,9 @@ var LinkInspector = Backbone.View.extend({
     var cell = this._cellView.model;
     var type = cellView.model.attributes.labels[0].attrs.text.text
 
-    this.relationTextA = ["And-Decomposition", "Or-Decomposition (Means-end)", "Depends"];
+    this.relationTextA = ["And-Decomposition", "Or-Decomposition (Means-end)"];
     this.relationTextB = ["Makes", "Breaks", "Helps", "Hurts"];
-    this.relationValA = ["and", "or", "depends"];
+    this.relationValA = ["and", "or"];
     this.relationValB = ["makes", "breaks", "helps", "hurts"];
 
     // select template
@@ -229,19 +239,11 @@ var LinkInspector = Backbone.View.extend({
     // Save based on normal relations
     }else{
       this._cellView.model.prop("link-type", this.$('.link-type').val());
-      if (this._cellView.model.prop("link-type") == 'and'){
+      if (this._cellView.model.prop("link-type") == 'and' || this._cellView.model.prop("link-type") == 'or' || this._cellView.model.prop("link-type") == 'NBT' || this._cellView.model.prop("link-type") == 'NBD'){
         link.attr({
           '.connection': {stroke: '#000000', 'stroke-dasharray': '0 0'},
           '.marker-source': {'d': '0'},
-          '.marker-target': {stroke: '#000000', 'stroke-width': 1, "d": 'M 10 0 L 10 10 M 10 5 L 0 5' }
-        });
-        link.label(0 ,{position: 0.5, attrs: {text: {text: 'and'}}});
-      
-      }else if (this._cellView.model.prop("link-type") == 'or' || this._cellView.model.prop("link-type") == 'xor'){
-        link.attr({
-          '.connection': {stroke: '#000000', 'stroke-dasharray': '5 2'},
-          '.marker-source': {'d': '0'},
-          '.marker-target': {stroke: '#000000', "d": 'M 10 0 L 0 5 L 10 10 z'}
+          '.marker-target': {stroke: '#000000', "d": 'M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5'}
         });
         link.label(0 ,{position: 0.5, attrs: {text: {text: link.prop("link-type")}}});
       
@@ -251,7 +253,8 @@ var LinkInspector = Backbone.View.extend({
           '.marker-source': {'d': '0'},
           '.marker-target': {stroke: '#000000', "d": 'M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5'}
         });
-        link.label(0 ,{position: 0.5, attrs: {text: {text: link.prop("link-type")}}});
+        console.log(this.$('.link-type'));
+        link.label(0 ,{position: 0.5, attrs: {text: {text: this.$('.link-type option:selected').text()}}});
       }
     }
   },
