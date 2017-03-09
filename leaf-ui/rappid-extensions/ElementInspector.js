@@ -704,8 +704,10 @@ var ElementInspector = Backbone.View.extend({
     //Update node display based on function and values
     var value = this.$('#init-sat-value').val();
 
-    if (value == "none")
+    if (value == "none"){ 
       cell.attr(".funcvalue/text", " ");
+      cell.attr(".satvalue/text", "");
+    }
 
     // Navie: Changed satvalue from path to text
     if (value == "satisfied"){
@@ -728,7 +730,7 @@ var ElementInspector = Backbone.View.extend({
           // C11.568,25.973,13.137,24.406,15.044,24.406z', 'stroke': '#222222', 'stroke-width': 1}});
           cell.attr(".satvalue/text", "?");
     }else {
-      cell.removeAttr(".satvalue/d");
+      // cell.removeAttr(".satvalue/text");
     }
   },
   
