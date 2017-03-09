@@ -62,10 +62,10 @@ var LinkInspector = Backbone.View.extend({
     var cell = this._cellView.model;
     var type = cellView.model.attributes.labels[0].attrs.text.text
 
-    this.relationTextA = ["And-Decomposition", "Or-Decomposition (Means-end)"];
-    this.relationTextB = ["Makes", "Breaks", "Helps", "Hurts"];
+    this.relationTextA = ["And-Decomposition", "Or-Decomposition"];
+    this.relationTextB = ["++", "--", "+", "-", "+S", "++S", "-S", "--S", "+D", "++D", "-D", "--D"];
     this.relationValA = ["and", "or"];
-    this.relationValB = ["makes", "breaks", "helps", "hurts"];
+    this.relationValB = ["PP", "NN", "P", "N", "PS", "PPS", "NS", "NNS", "PD", "PPD", "ND", "NND"];
 
     // select template
     if (cell.prop("linktype")){
@@ -222,7 +222,8 @@ var LinkInspector = Backbone.View.extend({
   //Whenever something is changed in the inspector, make the corresponding change to the link in the model.
   updateCell: function() {
     var link = this._cellView.model;
-
+    var source = link.getSourceElement();
+    var target = link.getTargetElement();
     // Save based on evolving relations
     if(this.evolvingRelations){
       var begin = $("#link-type-begin").val();
@@ -235,6 +236,8 @@ var LinkInspector = Backbone.View.extend({
         '.marker-target': {stroke: '#000000', "d": 'M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5'}
       });
       link.label(0 ,{position: 0.5, attrs: {text: {text: begin + " | " + end}}});
+      source.attr(".funcvalue/text", "");
+      target.attr(".funcvalue/text", ""); 
 
     // Save based on normal relations
     }else{
@@ -264,8 +267,6 @@ var LinkInspector = Backbone.View.extend({
         link.label(0 ,{position: 0.5, attrs: {text: {text: this.$('.link-type option:selected').text()}}});
       }
       // If link-type = NBD or NBT, set  NB to both nodes
-      var source = link.getSourceElement();
-      var target = link.getTargetElement();
       if (link.prop("link-type") == 'NBT' || link.prop("link-type") == 'NBD'){
         source.attr(".funcvalue/text", "NB");
         target.attr(".funcvalue/text", "NB");
