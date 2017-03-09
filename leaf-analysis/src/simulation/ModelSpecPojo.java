@@ -21,7 +21,7 @@ public class ModelSpecPojo {
 												//[this.numIntentions][this.numTimePoints][FD - index 0 / PD - index 1 / PS - index 2 / FS - index 3]
 												// Note if model only has initial values then it will be [numintentions][1][4].
     private int[] initialValueTimePoints;		// Hold the assigned times for each of the initial Values. Should be same length of second paramater of initialValues; 
-    private HashMap<String, Integer> assignedEpochs; //Hash map to hold the epochs with assigned values.
+    private HashMap<String, Integer> initialAssignedEpochs; //Hash map to hold the epochs with assigned values.
     private char conflictAvoidLevel; 			// Should have the value S/M/W/N for Strong, Medium, Weak, None.
     private boolean[][][] finalValues = null;	// Values assigned by the solver.
     private int[] finalValueTimePoints = null;	// Values assigned by the solver.
