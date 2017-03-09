@@ -23,8 +23,24 @@ public class ModelSpecPojo {
     private int[] initialValueTimePoints;		// Hold the assigned times for each of the initial Values. Should be same length of second paramater of initialValues; 
     private HashMap<String, Integer> assignedEpochs; //Hash map to hold the epochs with assigned values.
     private char conflictAvoidLevel; 			// Should have the value S/M/W/N for Strong, Medium, Weak, None.
- 
+    private boolean[][][] finalValues = null;	// Values assigned by the solver.
+    private int[] finalValueTimePoints = null;	// Values assigned by the solver.
+    private HashMap<String, Integer> finalAssignedEpochs = null; // Values assigned by the solver.
     
+    
+    
+	public void setFinalValues(boolean[][][] finalValues) {
+		this.finalValues = finalValues;
+	}
+
+	public void setFinalValueTimePoints(int[] finalValueTimePoints) {
+		this.finalValueTimePoints = finalValueTimePoints;
+	}
+
+	public void setFinalAssignedEpochs(HashMap<String, Integer> finalAssignedEpochs) {
+		this.finalAssignedEpochs = finalAssignedEpochs;
+	}
+
 	public List<IntentionalElement> getIntElements() {
 		return intElements;
 	}
