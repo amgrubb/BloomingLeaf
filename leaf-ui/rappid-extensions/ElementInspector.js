@@ -40,6 +40,7 @@ var ElementInspector = Backbone.View.extend({
       '<div id="function-div">',
         '<label>Function Type</label>',
         '<select class="function-type">',
+          '<option value=none> No Function </option>',
           '<option value=C> Constant </option>',
           '<option value=R> Stochastic </option>',
           '<option value=I> Increase </option>',
@@ -168,9 +169,13 @@ var ElementInspector = Backbone.View.extend({
     this.repeatConstraint("TurnOff");
 
     // Load function type
-    var functionType = cell.attr(".funcvalue/text")
-    if((functionType == "C") || (functionType == " ")){
-      this.$('.function-type').val('C')
+    var functionType = cell.attr(".funcvalue/text");
+    if((functionType == '') || (functionType == " ")){
+      this.$('.function-type').val('none');
+      this.updateHTML(null);
+    }
+    else if((functionType == "C") || (functionType == " ")){
+      this.$('.function-type').val('C');
       this.updateHTML(null);
 
     }else if(functionType != "UD"){
@@ -254,7 +259,7 @@ var ElementInspector = Backbone.View.extend({
     }
 
     // display based on function type
-    if ((functionType == "R") || (functionType == "C") || (functionType == "SD") || (functionType == "DS") || (functionType == "CR")){
+    if ((functionType == "R") || (functionType == "C") || (functionType == "SD") || (functionType == "DS") || (functionType == "CR") || (functionType == "none")){
       this.$('.function-sat-value').hide();
       this.$('#user-constraints').hide();
     }else if (functionType == "UD"){
@@ -319,6 +324,9 @@ var ElementInspector = Backbone.View.extend({
     // Rerender chart canvas
     var data = this.constraintsObject.chartData;
     var context = $("#chart").get(0).getContext("2d");
+    // Show the chart if previously hidden
+    $('#chart').show();
+
     if(this.constraintsObject.chart != null)
       this.constraintsObject.chart.destroy();
 
@@ -399,7 +407,12 @@ var ElementInspector = Backbone.View.extend({
     }else if(text == "UD"){
       this.updateGraphUserDefined(null);
       return
+    // If text = none, no chart
+    }else{
+      console.log('ayy its me');
+      $('#chart').hide();
     }
+
 
     this.constraintsObject.chart = new Chart(context).Line(data, this.chartObject.chartOptions);
     this.updateCell(null);
@@ -660,12 +673,18 @@ var ElementInspector = Backbone.View.extend({
   	}
 
     // save cell data
+    var funcType = this.$('.function-type').val();
     cell.attr(".satvalue/value", this.$('#init-sat-value').val());
-    cell.attr(".funcvalue/text", this.$('.function-type').val());
+    if (funcType != 'none'){
+      cell.attr(".funcvalue/text", funcType);
+    }
+    else {
+      cell.attr(".funcvalue/text", ""); 
+    }
     cell.attr(".constraints/lastval", this.$('.function-type').val());
 
     // save constraint data
-    var funcType = this.$('.function-type').val();
+
     if (funcType == "UD"){
 
       // for some reason directly calling .attr does not update
