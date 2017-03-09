@@ -32,25 +32,34 @@ public class TroposCSPAlgorithm {
 	private SatTranslation sat;								// Enables a SAT solver to be incorporated into CSP
     private List<Constraint> constraints;
 	
-	private ModelSpec spec;
-    //private EvaluationStrategy strategy;
-	private int numIntentions;
-	private IntentionalElement[] intentions;
+	private ModelSpec spec;									// Holds the model information.
+	private int numIntentions;								// Number of intentions in the model.
+	private IntentionalElement[] intentions;				// array of intention elements in the model
     
-    private int maxTime;
-    private int numTimePoints;
-    private int numEpochs = 0;
-    private IntVar[] timePoints;
-    private IntVar[] epochs;
-    private HashMap<IntentionalElement, IntVar[]> epochCollection;
-    private HashMap<IntVar, IntVar> epochToTimePoint;
-    private BooleanVar[][][] values;	// Holds the evaluations for each [this.numIntentions][this.numTimePoints][FS/PS/PD/FD Predicates]
-    private IntVar zero;
-    private IntVar infinity;
+    private int maxTime;									// maxTime entered by the user
+    private int numTimePoints;								// ??
+    private int numEpochs = 0;								// ??
+    private IntVar[] timePoints;							// Holds the list of time points to be solved. Names at T<A,R,E><Index>
+    private IntVar[] epochs;								// ??
+    private HashMap<IntentionalElement, IntVar[]> epochCollection;	// ??
+    private HashMap<IntVar, IntVar> epochToTimePoint;				// ??
+    private BooleanVar[][][] values;						// ** Holds the evaluations for each [this.numIntentions][this.numTimePoints][FS/PS/PD/FD Predicates]
+    private IntVar zero;									// (0) Initial Values time point.
+    private IntVar infinity;								// (maxTime + 1) Infinity used for intention functions, not a solved point.
     
+    /* New in ModelSpec
+     *     	private int relativeTimePoints = 4;
+    		private int[] absoluteTimePoints = new int[] {5, 10, 15, 20};
+    		private boolean[][][] initialValues;		// Holds the initial values whether they are single or multiple.
+    											//[this.numIntentions][this.numTimePoints][FD - index 0 / PD - index 1 / PS - index 2 / FS - index 3]
+												// Note if model only has initial values then it will be [numintentions][1][4].
+    		private int[] initialValueTimePoints = new int[] {0};		// Hold the assigned times for each of the initial Values. Should be same length of second paramater of initialValues; 
+    		private HashMap<String, Integer> assignedEpochs; //Hash map to hold the epochs with assigned values.
+    		private char conflictAvoidLevel = 'S'; 			// Should have the value S/M/W/N for Strong, Medium, Weak, None.
+
+     */
     
-	//Do not call this one directly.
-	//Need a strategy and a set of evaluations for each intention. 
+	//Do not call this one directly. 
 	public TroposCSPAlgorithm(ModelSpec spec, boolean preventStrongConflicts) {//, int maxTime, boolean preventStrongConflicts, int[] absoluteTimePoint, int numStochasticTimePoints) {
 		// Initialise Store
 		this.store = new Store();
@@ -61,7 +70,6 @@ public class TroposCSPAlgorithm {
 		
 		// Initialise Model Elements
 		this.spec = spec;
-    	//this.strategy = initialStrategy;
 		this.numIntentions = this.spec.getNumIntentions();
 		this.intentions = new IntentionalElement[this.numIntentions];
 		List<IntentionalElement> elementList = this.spec.getIntElements();
@@ -1295,12 +1303,20 @@ public class TroposCSPAlgorithm {
     	return indexOrder;
 	}
 	private void printSingleSolution(int[] indexOrder) {
+		// Print out timepoint data.
+    	for (int i = 0; i < this.timePoints.length; i++){
+    		System.out.print(this.timePoints[indexOrder[i]].id + "-" + this.timePoints[indexOrder[i]].value() + "\t");
+   		}
+    	System.out.println();
+		
+    	// Print out times.
     	System.out.print("Time:\t");
     	for (int i = 0; i < this.timePoints.length; i++){
-    		//System.out.print(this.timePoints[indexOrder[i]].id + "-" + this.timePoints[indexOrder[i]].value() + "\t");
     		System.out.print(i + "|" + this.timePoints[indexOrder[i]].value() + "\t");
    		}
     	System.out.println();
+    	
+    	// Print out Values.
     	for (int i = 0; i < this.intentions.length; i++){
     		IntentionalElement element = this.intentions[i];
     		System.out.print(element.id + ":\t");
@@ -1311,12 +1327,38 @@ public class TroposCSPAlgorithm {
     		}
     		System.out.println(element.name + "\t" + element.dynamicType.toString());
     	} 
+    	
+    	// Print out intention epoch values.
     	System.out.print("Epoch Points:\t");
    		for (int i = 0; i < this.epochs.length; i++){
     		System.out.print(this.epochs[i].id + "-" + this.epochs[i].value() + "\t");
-   		}
-    	
+   		}   		
 	}	
+	private void saveSolution(int[] indexOrder) {	
+		int[] finalValueTimePoints = new int[this.timePoints.length];
+    	for (int i = 0; i < this.timePoints.length; i++)
+    		finalValueTimePoints[i] = this.timePoints[indexOrder[i]].value();
+   		this.spec.setFinalValueTimePoints(finalValueTimePoints);
+    	
+   		boolean[][][] finalValues = new boolean[this.intentions.length][this.timePoints.length][4];
+    	for (int i = 0; i < this.intentions.length; i++){
+    		for (int t = 0; t < this.values[i].length; t++){
+        		for (int v = 0; v < this.values[i][t].length; v++)
+        			if(this.values[i][indexOrder[t]][v].value() == 1)
+        				finalValues[i][t][v] = true;
+        			else
+        				finalValues[i][t][v] = false;
+    		}
+    	} 
+    	this.spec.setFinalValues(finalValues);
+    	
+    	HashMap<String, Integer> finalAssignedEpochs = new HashMap<String, Integer>();
+    	for (int i = 0; i < this.epochs.length; i++)
+    		finalAssignedEpochs.put(this.epochs[i].id, this.epochs[i].value());	
+    	for (int i = 0; i < this.timePoints.length; i++)
+    		finalAssignedEpochs.put(this.timePoints[indexOrder[i]].id, this.timePoints[indexOrder[i]].value());
+    	this.spec.setFinalAssignedEpochs(finalAssignedEpochs);
+	}
 	
 	// Methods for secondary search.
 	private void exploreState(int stateNum, int[] timeOrder){
@@ -1402,7 +1444,7 @@ public class TroposCSPAlgorithm {
     	}
 	}
 		
-	private static final String FILENAME = "stored-models/simple-AND"; //models/UD-fuc-repeat.leaf"; //city-tropos-2.leaf"; //backward-test-helps.leaf"; //city-tropos-2.leaf";	 //sebastiani-fig1.leaf"; 
+	private static final String FILENAME = "stored-models/simple-AND"; //stored-models/simple-AND"; //models/UD-fuc-repeat.leaf"; //city-tropos-2.leaf"; //backward-test-helps.leaf"; //city-tropos-2.leaf";	 //sebastiani-fig1.leaf"; 
 	private static final boolean allowExplore = true;
 	public static void main(String[] args) {
 		try {
@@ -1412,8 +1454,7 @@ public class TroposCSPAlgorithm {
 			filename = FILENAME;
 			model = new ModelSpec(filename);
 			if (model != null){
-				//EvaluationStrategy inputStrategy11 = model.getStrategyCollection().get(0);
-				TroposCSPAlgorithm algo = new TroposCSPAlgorithm(model);//inputStrategy11);
+				TroposCSPAlgorithm algo = new TroposCSPAlgorithm(model);
 				Search<IntVar> label = new DepthFirstSearch<IntVar>();
 				if(!algo.genericFindSolution(false, algo.store, label, algo.constraints, algo.createFullModelVarList()))
 					System.out.println("Found Solution = False");
@@ -1421,6 +1462,7 @@ public class TroposCSPAlgorithm {
 					System.out.println("Found Solution = True");
 					int[] timeOrder = algo.createTimePointOrder();
 					algo.printSingleSolution(timeOrder);
+					algo.saveSolution(timeOrder);
 					
 					if (allowExplore){
 						System.out.println("\nEnter the time step number you would like to explore (or enter to exit):");
@@ -1441,17 +1483,17 @@ public class TroposCSPAlgorithm {
 				System.err.println("Stack trace: ");
 				e.printStackTrace(System.err);
 
-				Date d = new Date();
-				String formatted = new SimpleDateFormat ("yyyy-MM-dd:HH-mm-ss").format (d);
-				File file = new File("Simulation-Error"+formatted+".out");
-				if (!file.exists()) {
-					file.createNewFile();
-				}
-				PrintWriter pw = new PrintWriter(file);
-				pw.println(e.getMessage());
-				e.printStackTrace(pw);
-				pw.close();			
-				System.exit(1);
+//				Date d = new Date();
+//				String formatted = new SimpleDateFormat ("yyyy-MM-dd:HH-mm-ss").format (d);
+//				File file = new File("Simulation-Error"+formatted+".out");
+//				if (!file.exists()) {
+//					file.createNewFile();
+//				}
+//				PrintWriter pw = new PrintWriter(file);
+//				pw.println(e.getMessage());
+//				e.printStackTrace(pw);
+//				pw.close();			
+//				System.exit(1);
 			}  catch (Exception e1) {
 				System.err.println("Unknown Exception: " + e1.getMessage());
 				System.err.println("Stack trace: ");

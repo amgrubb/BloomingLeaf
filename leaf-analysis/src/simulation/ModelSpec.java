@@ -13,10 +13,14 @@ import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 //import java.util.HashMap;
 //import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
+
+import org.jacop.core.BooleanVar;
+import org.jacop.core.IntVar;
 
 /**
  * @author A.M.Grubb
@@ -38,12 +42,56 @@ public class ModelSpec {
 	private int numIntentions = 0;
 	private String inputFilename = "";
     private int[][][] history;
-    private int relativeTimePoints = 0;
-    private int[] absoluteTimePoints;
+    private int relativeTimePoints = 4;
+    private int[] absoluteTimePoints = new int[] {5, 10, 15, 20};
+    private boolean[][][] initialValues;		// Holds the initial values whether they are single or multiple.
+    											//[this.numIntentions][this.numTimePoints][FD - index 0 / PD - index 1 / PS - index 2 / FS - index 3]
+												// Note if model only has initial values then it will be [numintentions][1][4].
+    private int[] initialValueTimePoints = new int[] {0};		// Hold the assigned times for each of the initial Values. Should be same length of second paramater of initialValues; 
+    private HashMap<String, Integer> assignedEpochs; //Hash map to hold the epochs with assigned values.
+    private char conflictAvoidLevel = 'S'; 			// Should have the value S/M/W/N for Strong, Medium, Weak, None.
+    
+    private boolean[][][] finalValues = null;
+    private int[] finalValueTimePoints = null;
+    private HashMap<String, Integer> finalAssignedEpochs = null;
     
     
+    
+    /*	Set Final Methods 
+	*/
+	public void setFinalValues(boolean[][][] finalValues) {
+		this.finalValues = finalValues;
+	}
+
+	public void setFinalValueTimePoints(int[] finalValueTimePoints) {
+		this.finalValueTimePoints = finalValueTimePoints;
+	}
+
+	public void setFinalAssignedEpochs(HashMap<String, Integer> finalAssignedEpochs) {
+		this.finalAssignedEpochs = finalAssignedEpochs;
+	}
+    /*	END OF Set Final Methods 
+	*/
+
+	
+	public int[] getInitialValueTimePoints() {
+		return initialValueTimePoints;
+	}
+
+	public HashMap<String, Integer> getAssignedEpochs() {
+		return assignedEpochs;
+	}
+
+	public char getConflictAvoidLevel() {
+		return conflictAvoidLevel;
+	}
+
 	public int getNumIntentions() {
 		return numIntentions;
+	}
+
+	public boolean[][][] getInitialValues() {
+		return initialValues;
 	}
 
 	public List<EvolutionLink> getEvolutionLink() {
@@ -143,7 +191,7 @@ public class ModelSpec {
 				}
 				sNInt = input.readLine();
 				numIntentions = Integer.parseInt(sNInt);
-
+				initialValues = new boolean[numIntentions][1][4];
 				String line = null; 
 				// Reads both the intentions and the links.
 				while (( line = input.readLine()) != null){
@@ -167,7 +215,24 @@ public class ModelSpec {
 					        } 
 						IntentionalElement element = new IntentionalElement(nodeID, nodeName, nodeActor, nodeType);
 						intElements.add(element);
-						//TODO: Need to figure out how to read the values.
+						int numID = Integer.parseInt(nodeID);
+						switch (initialValue) {
+						case 0:	
+							initialValues[numID][0] = new boolean[] {true, true, false, false};
+							break;
+						case 1:	
+							initialValues[numID][0] = new boolean[] {false, true, false, false};
+							break;
+						case 2:	
+							initialValues[numID][0] = new boolean[] {false, false, true, false};
+							break;
+						case 3:	
+							initialValues[numID][0] = new boolean[] {false, false, true, true};
+							break;
+						default:
+							initialValues[numID][0] = new boolean[] {false, false, false, false};
+						}
+										
 						//strategyRead.addEvaluation(element, new Evaluation(element, QualitativeLabel.get(initialValue)));
 						
 						//Evaluation e = new Evaluation(element, QualitativeLabel.get(initialValue));
