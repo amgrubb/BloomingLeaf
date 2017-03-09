@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>
+            Growing Leaf
+        </title>
+
+        <link href="./js-objects/bootstrap/bootstrap.min.css" rel="stylesheet">
+        <link href="./js-objects/bootstrap/docs.min.css" rel="stylesheet">
+        <link href="./js-objects/vis/vis.min.css" rel="stylesheet">
+
+    </head>
+
+    <body>        
+        <div class="container-fluid">
+
+           <div class="row col-md-offset-1">
+
+			    <div class="col-md-12">
+			        <h3>Analysis View</h3>
+			        <div id="graph_prop">
+			    
+			        </div>
+			        <button id="exploreBtn" onClick="exploreState(this.value)">Explore State</button>
+			    </div>
+			</div>
+			
+			<div class="row col-md-offset-2">
+			        
+			    <div class="col-md-8 col-md-offset-2">
+			        <nav aria-label="Page navigation">
+			            <ul class="pagination pagination-sm">
+							<li><a href="#" onclick="loadDrawArea(0)">0</a></li>
+							<li><a href="#" onclick="loadDrawArea(1)">1</a></li>
+							<li><a href="#" onclick="loadDrawArea(2)">2</a></li>
+							<li><a href="#" onclick="loadDrawArea(3)">3</a></li>
+							<li><a href="#" onclick="loadDrawArea(4)">4</a></li>
+							
+			            </ul>
+			        </nav>
+			    </div>
+			 
+			</div>
+			        
+			<div id="e_points" class="row col-md-8 col-md-offset-2">
+			    
+			</div>
+			        
+			<div id="page_content" class="row col-md-8 col-md-offset-2">
+			
+			</div>
+
+		<script src="./js-objects/vis/vis.min.js"></script>
+
+
+        
+        </div>
+        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+        <script src="./js-objects/jquery.min.js"></script>
+        <!-- Include all compiled plugins (below), or include individual files as needed -->
+        <script src="./js-objects/bootstrap/bootstrap.min.js"></script>
+        
+        
+		<script> 
+		console.log(JSON.stringify(analysisObject));
+		
+	    var container = document.getElementById('page_content');
+
+	    var solution = analysisObject.foundSolution; 
+	    var relativeTimes = analysisObject.relativeTime; 
+	    var absoluteTimes = analysisObject.absoluteTime; 
+	    //var nodes = analysisObject.nodes;
+	    var links = analysisObject.links;
+	    var epochPoints = analysisObject.epochPoints;
+	    
+//	    var diagram = JSON.parse('${diagramJson}');
+//	    var totalStates = ${diagram.states};
+
+
+	    //Creating all graphs divs
+	    drawArea = document.getElementById('page_content');
+	    
+	    function loadDrawArea(id){
+	        createGraph(id);
+	        
+	        //Fill the properties StateId and AbsoluteTime
+	        document.getElementById("graph_prop").innerHTML = "<p> <strong>Solution: </strong>" + solution + " | <strong>State: </strong>" + id + " | <strong>Absolute Time: </strong>" + absoluteTimes[id] + "</p>";
+	    }
+	    
+	    function createGraph(stateId){
+	        var options = {
+	            layout: {
+	                randomSeed: 10,
+	                improvedLayout : true,
+	                 hierarchical: {
+	                    levelSeparation: 400,
+	                    nodeSpacing: 100,
+	                    blockShifting: true,
+	                    edgeMinimization: true,
+	                    direction: 'LR',        // UD, DU, LR, RL
+	                    sortMethod: 'hubsize'   // hubsize, directed
+	                  }
+	            },
+	            nodes: {
+	                scaling: {
+	                    min: 64,
+	                    max: 128
+	                    },
+	                shape:'box',
+	                shapeProperties: {
+	                    borderDashes: false, // only for borders
+	                    borderRadius: 50,     // only for box shape
+	                    interpolation: false,  // only for image and circularImage shapes
+	                    useImageSize: false,  // only for image and circularImage shapes
+	                    useBorderWithImage: false  // only for image shape
+	                  }
+
+	            },
+	            groups: {
+	                    G: {color:{background:'red'}, borderWidth:0}
+	            },
+	            edges: {
+	                smooth: false,
+	                physics : false,
+	                length : 100
+	            },
+	            physics: {
+	                barnesHut: {
+	                    avoidOverlap : 1,
+	                    springLength : 150
+	                },
+	                stabilization: true,
+	                repulsion : {
+	                    nodeDistance : 100
+	                }
+	            }
+	        };
+	        
+	        var arrayEdges = [];
+
+	        for(i=0; i < analysisObject.links.length; i++){
+	            if(analysisObject.links[i].linkType==='OR'){
+	                var edge = {
+	                    arrows: {
+	                        to:     {enabled: true, scaleFactor:2, type:'arrow'},
+	                        middle: {enabled: false, scaleFactor:1, type:'arrow'},
+	                        from:   {enabled: false, scaleFactor:1, type:'arrow'}
+	                    },
+	                    label: analysisObject.links[i].linkType,
+	                    from : analysisObject.links[i].linkSrcID,
+	                    to: analysisObject.links[i].linkDestID,
+	                    dashes: true
+	                };
+	                
+	            }else if(analysisObject.links[i].linkType==='AND'){
+	                var edge = {
+	                    arrows: {
+	                        to:     {enabled: true, scaleFactor:1, type:'circle'},
+	                        middle: {enabled: false, scaleFactor:1, type:'arrow'},
+	                        from:   {enabled: false, scaleFactor:1, type:'arrow'}
+	                    },
+	                    label: analysisObject.links[i].linkType,
+	                    from : analysisObject.links[i].linkSrcID,
+	                    to: analysisObject.links[i].linkDestID
+	                };                
+	            }else{
+	                var edge = {
+	                    arrows: {
+	                        to:     {enabled: true, scaleFactor:1, type:'arrow'},
+	                        middle: {enabled: false, scaleFactor:1, type:'arrow'},
+	                        from:   {enabled: false, scaleFactor:1, type:'arrow'}
+	                    },
+	                    label: analysisObject.links[i].linkType,
+	                    from : analysisObject.links[i].linkSrcID,
+	                    to: analysisObject.links[i].linkDestID
+	                };                
+	            }
+	            arrayEdges.push(edge);
+	        };
+
+	        var edges = new vis.DataSet(arrayEdges);    
+	        
+	        var arrayNodes = [];
+	        for(n=0; n < analysisObject.nodes.length; n++){
+	            var node;
+	            if(stateId-1>0){
+	                if(analysisObject.nodes[n].states[stateId-1] !== analysisObject.nodes[n].states[stateId]){
+	                    node = {
+	                        id: analysisObject.nodes[n].id,
+	                        label: analysisObject.nodes[n].id + "\n" 
+	                                + analysisObject.nodes[n].states[stateId],
+	                        color: {
+	                            border: 'red',
+	                            background: 'white'
+	                        }
+	                    };
+	                }else{
+	                    node = {
+                    		id: analysisObject.nodes[n].id,
+	                        label: analysisObject.nodes[n].id + "\n" 
+	                                + analysisObject.nodes[n].states[stateId],
+	                        color: {
+	                            border: 'black',
+	                            background: 'white'
+	                        }
+	                    };    
+	                }
+	            }else{
+	                node = {
+                		id: analysisObject.nodes[n].id,
+                        label: analysisObject.nodes[n].id + "\n" 
+                                + analysisObject.nodes[n].states[stateId],
+	                    color: {
+	                        border: 'black',
+	                        background: 'white'
+	                    }
+	                };
+	            }
+	            arrayNodes.push(node);
+	        }        
+	        
+	        var nodes = new vis.DataSet(arrayNodes);
+	        
+	        var data = {
+	            nodes: nodes,
+	            edges: edges
+	        };
+	        
+	        var network = new vis.Network(container, data, options);
+	    }
+
+	    function exploreState(value){
+	    	//Send value of the state to backend as cgi-bin
+	    }
+
+	    
+	  	//Draw analysis when the page is loaded
+	    document.addEventListener('DOMContentLoaded', function() {
+	        loadDrawArea(0);
+	    }, false);
+
+		</script>
+        
+    </body>
+</html>
+

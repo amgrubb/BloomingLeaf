@@ -1,6 +1,6 @@
-function IOLink(){
-	var linkType;
-	var linkSrcID;
-	var linkDestID;
-	var postType;
+function IOLink(linkType, linkSrcID, linkDestID, postType = null){
+	this.linkType = linkType;
+	this.linkSrcID = linkSrcID;
+	this.linkDestID = linkDestID;
+	this.postType = postType;
 }
