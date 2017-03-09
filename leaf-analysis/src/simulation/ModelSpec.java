@@ -48,7 +48,7 @@ public class ModelSpec {
     											//[this.numIntentions][this.numTimePoints][FD - index 0 / PD - index 1 / PS - index 2 / FS - index 3]
 												// Note if model only has initial values then it will be [numintentions][1][4].
     private int[] initialValueTimePoints = new int[] {0};		// Hold the assigned times for each of the initial Values. Should be same length of second paramater of initialValues; 
-    private HashMap<String, Integer> assignedEpochs; //Hash map to hold the epochs with assigned values.
+    private HashMap<String, Integer> initialAssignedEpochs; //Hash map to hold the epochs with assigned values.
     private char conflictAvoidLevel = 'S'; 			// Should have the value S/M/W/N for Strong, Medium, Weak, None.
     
     private boolean[][][] finalValues = null;
@@ -57,7 +57,19 @@ public class ModelSpec {
     
     
     
-    /*	Set Final Methods 
+    public boolean[][][] getFinalValues() {
+		return finalValues;
+	}
+
+	public int[] getFinalValueTimePoints() {
+		return finalValueTimePoints;
+	}
+
+	public HashMap<String, Integer> getFinalAssignedEpochs() {
+		return finalAssignedEpochs;
+	}
+
+	/*	Set Final Methods 
 	*/
 	public void setFinalValues(boolean[][][] finalValues) {
 		this.finalValues = finalValues;
@@ -73,13 +85,24 @@ public class ModelSpec {
     /*	END OF Set Final Methods 
 	*/
 
-	
 	public int[] getInitialValueTimePoints() {
 		return initialValueTimePoints;
 	}
 
-	public HashMap<String, Integer> getAssignedEpochs() {
-		return assignedEpochs;
+	public HashMap<String, Integer> getInitialAssignedEpochs() {
+		return initialAssignedEpochs;
+	}
+
+	public void setInitialAssignedEpochs(HashMap<String, Integer> initialAssignedEpochs) {
+		this.initialAssignedEpochs = initialAssignedEpochs;
+	}
+
+	public void setInitialValues(boolean[][][] initialValues) {
+		this.initialValues = initialValues;
+	}
+
+	public void setInitialValueTimePoints(int[] initialValueTimePoints) {
+		this.initialValueTimePoints = initialValueTimePoints;
 	}
 
 	public char getConflictAvoidLevel() {
