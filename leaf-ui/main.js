@@ -48,7 +48,7 @@ paper = new joint.dia.Paper({
 		'attrs': {
 			'.connection': {stroke: '#000000'},
 			'.marker-source': {'d': '0'},
-			'.marker-target': {stroke: '#000000', 'stroke-width': 1, "d": 'M 10 0 L 10 10 M 10 5 L 0 5' }
+			'.marker-target': {stroke: '#000000', "d": 'M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5'}
 			},
 		'labels': [{position: 0.5, attrs: {text: {text: "and"}}}]
 	})

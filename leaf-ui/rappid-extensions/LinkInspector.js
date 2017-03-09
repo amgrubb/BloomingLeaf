@@ -238,15 +238,22 @@ var LinkInspector = Backbone.View.extend({
 
     // Save based on normal relations
     }else{
-      this._cellView.model.prop("link-type", this.$('.link-type').val());
-      if (this._cellView.model.prop("link-type") == 'and' || this._cellView.model.prop("link-type") == 'or' || this._cellView.model.prop("link-type") == 'NBT' || this._cellView.model.prop("link-type") == 'NBD'){
+      link.prop("link-type", this.$('.link-type').val());
+      if (link.prop("link-type") == 'and' || link.prop("link-type") == 'or'){
         link.attr({
           '.connection': {stroke: '#000000', 'stroke-dasharray': '0 0'},
           '.marker-source': {'d': '0'},
           '.marker-target': {stroke: '#000000', "d": 'M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5'}
         });
         link.label(0 ,{position: 0.5, attrs: {text: {text: link.prop("link-type")}}});
-      
+
+      }else if(link.prop("link-type") == 'NBT' || link.prop("link-type") == 'NBD'){
+        link.attr({
+          '.connection': {stroke: '#000000', 'stroke-dasharray': '0 0'},
+          '.marker-source': {'d': '0'},
+          '.marker-target': {stroke: '#000000', "d": '0'}
+        });
+        link.label(0 ,{position: 0.5, attrs: {text: {text: link.prop("link-type")}}});
       }else{
         link.attr({
           '.connection': {stroke: '#000000', 'stroke-dasharray': '0 0'},
@@ -255,6 +262,18 @@ var LinkInspector = Backbone.View.extend({
         });
         console.log(this.$('.link-type'));
         link.label(0 ,{position: 0.5, attrs: {text: {text: this.$('.link-type option:selected').text()}}});
+      }
+      // If link-type = NBD or NBT, set  NB to both nodes
+      var source = link.getSourceElement();
+      var target = link.getTargetElement();
+      if (link.prop("link-type") == 'NBT' || link.prop("link-type") == 'NBD'){
+        source.attr(".funcvalue/text", "NB");
+        target.attr(".funcvalue/text", "NB");
+      }
+      // Else, set funcvalue to none
+      else {
+       source.attr(".funcvalue/text", "");
+       target.attr(".funcvalue/text", ""); 
       }
     }
   },
