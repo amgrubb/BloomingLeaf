@@ -82,7 +82,7 @@ public class TroposCSPAlgorithm {
 
 		// Determine the number of observation steps.
 		// Add constraints between Intention EBs.
-    	calculateSampleSizeAndCreateEBsAndTimePoints(this.spec.getAbsoluteTimePoints(), this.spec.getRelativeTimePoints());
+    	calculateSampleSizeAndCreateEBsAndTimePoints(this.spec.getAbsoluteTimePoints(), this.spec.getRelativeTimePoints(), this.spec.getInitialValueTimePoints(), this.spec.getInitialAssignedEpochs());
     	
     	// Initialise Values Array
     	this.values = new BooleanVar[this.numIntentions][this.numTimePoints][4];	// 4 Predicates Values 0-FD, 1-PD, 2-PS, 3-FS
@@ -102,7 +102,7 @@ public class TroposCSPAlgorithm {
 	}	
 	
 	// Methods to create initial constraint model.
-	private void calculateSampleSizeAndCreateEBsAndTimePoints(int[] absoluteTimePoint, int numStochasticTimePoints) {	//Full Model		
+	private void calculateSampleSizeAndCreateEBsAndTimePoints(int[] absoluteTimePoint, int numStochasticTimePoints, int[] initialValueTimePoints, HashMap<String, Integer> assignedEpochs) {	//Full Model		
 		List<IntVar> assignedEBs = new ArrayList<IntVar>();	//Holds the EB that have been assigned to an element in the absolute collection.
 		
     	// Step 0: Create IntVars for absoluteTimePoints.
@@ -295,31 +295,102 @@ public class TroposCSPAlgorithm {
     				}
     			}
     	}
+    	
+    	// Step 4A: Make list of previous names.
+    	//int[] initialValueTimePoints, HashMap<String, Integer> assignedEpochs
+    	// Double check the number of values added.
+    	int countTotalPreviousT = 0;
+    	String[] exisitingNamedTimePoints = new String[initialValueTimePoints.length];
+    	int maxPreviousTime = initialValueTimePoints[initialValueTimePoints.length - 1];
+    	if (initialValueTimePoints.length == 1)
+    		exisitingNamedTimePoints[0] = "TA0";
+    	else if (initialValueTimePoints.length > 1){
+    		for (HashMap.Entry<String, Integer> entry : assignedEpochs.entrySet()) {
+    		    String key = entry.getKey();
+    		    Integer value = entry.getValue();
+    		    if (key.charAt(0) == 'T'){
+    		    	countTotalPreviousT++;
+    		    	if (value <= maxPreviousTime){
+    		    		// Add to exisitingNamedTimePoints.
+    		    		for(int e = 0; e < exisitingNamedTimePoints.length; e++)
+    		    			if (value == initialValueTimePoints[e]){
+    		    				exisitingNamedTimePoints[e] = key;
+    		    				break;
+    		    			}
+    		    	}
+    		    }
+    		}
+    	}else
+    		System.err.println("Invalid Input for initialValueTimePoints and initialValues.");
+    	System.out.print("Previous Times are: ");
+    	for(int e = 0; e < exisitingNamedTimePoints.length; e++)
+    		System.out.print(exisitingNamedTimePoints[e] + "\t");
     		
-    	// Step 4: Create List of Time Points
+    	// Step 4B: Create List of Time Points
     	this.numTimePoints = 1 + absoluteCollection.size() + EBTimePoint.size() + numStochasticTimePoints;
+    	
+    	if(countTotalPreviousT != this.numTimePoints && countTotalPreviousT > 0)
+    		System.err.println("Error: Previous and Current Time Points do no match.");
+    	System.out.println("Previous Time Points: " + countTotalPreviousT + "  New Time Points: " + this.numTimePoints);
+    	
     	this.timePoints = new IntVar[this.numTimePoints];
     	// Add Zero
-    	this.timePoints[0] = new IntVar(store, "TA" + 0, 0, 0); 
-    	int tCount = 1;
-    	// Add absoluteCollection    	
-    	for (IntVar value : absoluteCollection.values()) {
-    		this.timePoints[tCount] = value;
-    		tCount++;
+    	this.timePoints[0] = new IntVar(store, exisitingNamedTimePoints[0], 0, 0); 
+
+    	
+    	// Add previousCollection
+    	for(int e = 1; e < exisitingNamedTimePoints.length; e++){
+    		// Absolute Value -> already has an assignment. 
+    		if (exisitingNamedTimePoints[e].charAt(1) == 'A'){
+    	    	this.timePoints[e] = absoluteCollection.get(initialValueTimePoints[e]);
+    	    // Epoch Values -> remove from list and assign value.
+    		} else if (exisitingNamedTimePoints[e].charAt(1) == 'E'){
+    	    	for (IntVar value : EBTimePoint) 
+    	    		if (value.id.equals(exisitingNamedTimePoints[e])){
+    	    			this.timePoints[e] = value;
+    	    			EBTimePoint.remove(value);
+    	    			constraints.add(new XeqC(value, initialValueTimePoints[e]));
+    	    			break;
+    	    		}
+    	    // Relative Values -> remove 1 from count and assign value.
+    		} else if (exisitingNamedTimePoints[e].charAt(1) == 'R'){
+        		this.timePoints[e] = new IntVar(store, "TR" + absoluteCounter, initialValueTimePoints[e], initialValueTimePoints[e]);
+        		absoluteCounter++;
+    			numStochasticTimePoints--;
+    		}
+    		
     	}
+    	
+    	int tCount = exisitingNamedTimePoints.length;
+    	//	HashMap<Integer, IntVar> absoluteCollection = new HashMap<Integer, IntVar>();
+    	// Add absoluteCollection   
+		for (HashMap.Entry<Integer, IntVar> entry : absoluteCollection.entrySet()) {
+		    Integer key = entry.getKey();
+		    IntVar value = entry.getValue();
+		    if(key > maxPreviousTime){
+    			this.timePoints[tCount] = value;
+    			tCount++;
+		    }	    
+		}
     	// Add EBs
     	for (IntVar value : EBTimePoint){
     		this.timePoints[tCount] = value;
     		tCount++;
+    		// TODO: Add constraint that must be greater than maxPreviousTime
+    		
     	}
     	// Add relative.
     	for (int i = 0; i < numStochasticTimePoints; i++){
+    		if (tCount == this.timePoints.length)
+    			System.out.println("ERROR");
     		this.timePoints[tCount] = new IntVar(store, "TR" + absoluteCounter, 1, maxTime);
     		absoluteCounter++;
     		tCount++;
+    		// TODO: Add constraint that must be greater than maxPreviousTime
     	}
     	this.constraints.add(new Alldifferent(this.timePoints));
     }
+	
 	private void initializeBooleanVarForValues() {	//Full Model
     	for (int i = 0; i < this.intentions.length; i++){
     		IntentionalElement element = this.intentions[i];
