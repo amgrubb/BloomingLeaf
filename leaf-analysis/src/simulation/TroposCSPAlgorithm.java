@@ -297,7 +297,6 @@ public class TroposCSPAlgorithm {
     	}
     	
     	// Step 4A: Make list of previous names.
-    	//int[] initialValueTimePoints, HashMap<String, Integer> assignedEpochs
     	// Double check the number of values added.
     	int countTotalPreviousT = 0;
     	String[] exisitingNamedTimePoints = new String[initialValueTimePoints.length];
@@ -362,7 +361,6 @@ public class TroposCSPAlgorithm {
     	}
     	
     	int tCount = exisitingNamedTimePoints.length;
-    	//	HashMap<Integer, IntVar> absoluteCollection = new HashMap<Integer, IntVar>();
     	// Add absoluteCollection   
 		for (HashMap.Entry<Integer, IntVar> entry : absoluteCollection.entrySet()) {
 		    Integer key = entry.getKey();
@@ -390,6 +388,7 @@ public class TroposCSPAlgorithm {
     }
 	
 	private void initializeBooleanVarForValues() {	//Full Model
+		boolean[][][] initialValues = this.spec.getInitialValues();
     	for (int i = 0; i < this.intentions.length; i++){
     		IntentionalElement element = this.intentions[i];
     		if(element.getIdNum() != i)
@@ -397,12 +396,18 @@ public class TroposCSPAlgorithm {
 
     		for (int t = 0; t < this.values[i].length; t++){
     			genericInitialNodeValues(this.store, this.sat, this.values[i][t], element.getId() + "_" + t);
-    		}    	    		
-    		// Initialise Initial Value Only when FS, PS, PD, FD.
-    		// TODO: Find a new way to initialize values....
-    		//int initialEvaluation = this.strategy.getEvaluation(element).getEvaluation();
-   			//genericAddAssignmentConstraint(this.constraints, initialEvaluation, this.values[i][0]);
+    			// Initial initialValues.
+    			if (t < initialValues[i].length){
+    				this.constraints.add(new XeqC(this.values[i][t][0], boolToInt(initialValues[i][t][0])));
+    				this.constraints.add(new XeqC(this.values[i][t][1], boolToInt(initialValues[i][t][1])));
+    				this.constraints.add(new XeqC(this.values[i][t][2], boolToInt(initialValues[i][t][2])));
+    				this.constraints.add(new XeqC(this.values[i][t][3], boolToInt(initialValues[i][t][3])));
+    			}
+    		}  
     	}
+	}
+	private int boolToInt(boolean b) {
+	    return b ? 1 : 0;
 	}
 	private void initializeStrongConflictPrevention(){	//Full Model
     	for (int i = 0; i < this.values.length; i++)
