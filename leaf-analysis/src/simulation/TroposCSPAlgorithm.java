@@ -325,7 +325,7 @@ public class TroposCSPAlgorithm {
     	System.out.print("Previous Times are: ");
     	for(int e = 0; e < exisitingNamedTimePoints.length; e++)
     		System.out.print(exisitingNamedTimePoints[e] + "\t");
-    		
+    	System.out.println(" Max Previous is: " + maxPreviousTime);	
     	// Step 4B: Create List of Time Points
     	this.numTimePoints = 1 + absoluteCollection.size() + EBTimePoint.size() + numStochasticTimePoints;
     	
@@ -376,17 +376,15 @@ public class TroposCSPAlgorithm {
     	for (IntVar value : EBTimePoint){
     		this.timePoints[tCount] = value;
     		tCount++;
-    		// TODO: Add constraint that must be greater than maxPreviousTime
-    		
+    		constraints.add(new XgtC(value, maxPreviousTime));
     	}
     	// Add relative.
     	for (int i = 0; i < numStochasticTimePoints; i++){
     		if (tCount == this.timePoints.length)
     			System.out.println("ERROR");
-    		this.timePoints[tCount] = new IntVar(store, "TR" + absoluteCounter, 1, maxTime);
+    		this.timePoints[tCount] = new IntVar(store, "TR" + absoluteCounter, maxPreviousTime + 1, maxTime);
     		absoluteCounter++;
     		tCount++;
-    		// TODO: Add constraint that must be greater than maxPreviousTime
     	}
     	this.constraints.add(new Alldifferent(this.timePoints));
     }
