@@ -26,8 +26,39 @@ public class ModelSpecPojo {
     private boolean[][][] finalValues = null;	// Values assigned by the solver.
     private int[] finalValueTimePoints = null;	// Values assigned by the solver.
     private HashMap<String, Integer> finalAssignedEpochs = null; // Values assigned by the solver.
+    private boolean solveAllSolutions = false;
+    private boolean solveSingleState = false;
+   
+    public boolean isSolveAllSolutions() {
+		return solveAllSolutions;
+	}
+
+	public void setSolveAllSolutions(boolean solveAllSolutions) {
+		this.solveAllSolutions = solveAllSolutions;
+	}
+
+	public boolean isSolveSingleState() {
+		return solveSingleState;
+	}
+
+	public void setSolveSingleState(boolean solveSingleState) {
+		this.solveSingleState = solveSingleState;
+	}
     
-    
+	public boolean[][][] getFinalValues() {
+		return finalValues;
+	}
+
+	public int[] getFinalValueTimePoints() {
+		return finalValueTimePoints;
+	}
+
+	public HashMap<String, Integer> getFinalAssignedEpochs() {
+		return finalAssignedEpochs;
+	}
+	public char getConflictAvoidLevel() {
+		return conflictAvoidLevel;
+	}
     
 	public void setFinalValues(boolean[][][] finalValues) {
 		this.finalValues = finalValues;
