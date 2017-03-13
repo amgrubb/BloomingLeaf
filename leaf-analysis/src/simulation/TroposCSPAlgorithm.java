@@ -1,12 +1,8 @@
 package simulation;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
@@ -24,10 +20,6 @@ import org.jacop.search.SelectChoicePoint;
 import org.jacop.search.SimpleSelect;
 
 public class TroposCSPAlgorithm {
-	public TroposCSPAlgorithm(ModelSpec spec) {
-		this(spec, true);
-	}
-
 	private Store store;									// CSP Store
 	private SatTranslation sat;								// Enables a SAT solver to be incorporated into CSP
     private List<Constraint> constraints;
@@ -60,7 +52,7 @@ public class TroposCSPAlgorithm {
      */
     
 	//Do not call this one directly. 
-	public TroposCSPAlgorithm(ModelSpec spec, boolean preventStrongConflicts) {//, int maxTime, boolean preventStrongConflicts, int[] absoluteTimePoint, int numStochasticTimePoints) {
+	public TroposCSPAlgorithm(ModelSpec spec) {
 		// Initialise Store
 		this.store = new Store();
 		this.sat = new SatTranslation(this.store); 
@@ -91,8 +83,7 @@ public class TroposCSPAlgorithm {
     	initializeBooleanVarForValues();
 
     	// Prevent Conflict
-    	if (preventStrongConflicts)
-    		initializeStrongConflictPrevention();
+   		initializeConflictPrevention();
 
 		// Add constraints for the links and structure of the graph.
     	genericAddLinkConstraints(this.sat, this.constraints, this.intentions, this.values);
@@ -388,7 +379,7 @@ public class TroposCSPAlgorithm {
     }
 	
 	private void initializeBooleanVarForValues() {	//Full Model
-		boolean[][][] initialValues = this.spec.getInitialValues();
+		boolean[][][] initialValues = this.spec.getInitialValues();		
     	for (int i = 0; i < this.intentions.length; i++){
     		IntentionalElement element = this.intentions[i];
     		if(element.getIdNum() != i)
@@ -409,10 +400,19 @@ public class TroposCSPAlgorithm {
 	private int boolToInt(boolean b) {
 	    return b ? 1 : 0;
 	}
-	private void initializeStrongConflictPrevention(){	//Full Model
-    	for (int i = 0; i < this.values.length; i++)
+	
+	private void initializeConflictPrevention(){	//Full Model
+		char level = this.spec.getConflictAvoidLevel();
+		if (level == 'N' || level == 'n')
+			return;
+		for (int i = 0; i < this.values.length; i++)
     		for (int t = 0; t < this.values[i].length; t++)
-    			genericWeakConflictPrevention(this.sat, this.values[i][t], this.zero);		//TODO - select appropriate conflict level.
+    			if (level == 'S' || level == 's')
+    				genericStrongConflictPrevention(this.sat, this.values[i][t], this.zero);
+    			else if (level == 'M' || level == 'm')
+    				genericMediumConflictPrevention(this.sat, this.values[i][t], this.zero);
+    			else if (level == 'W' || level == 'w')
+    				genericWeakConflictPrevention(this.sat, this.values[i][t], this.zero);
 	}
 	
 	private void initializeDynamicFunctions() {		//Full Model
@@ -1315,6 +1315,10 @@ public class TroposCSPAlgorithm {
 		}
 	
 	}
+	
+	
+	
+	
 	private boolean genericFindSolution(boolean allSolutions, Store store, Search<IntVar> label, List<Constraint> constraints, IntVar[] varList) {
 		boolean foundSolution = false;
 		//label = new DepthFirstSearch<IntVar>();
@@ -1346,28 +1350,90 @@ public class TroposCSPAlgorithm {
 
         return foundSolution;
 	}
-			
+
+	private boolean oldGenericFindSolution(boolean allSolutions, Store store, Search<IntVar> label, List<Constraint> constraints, IntVar[] varList) {
+		boolean foundSolution = false;
+		//label = new DepthFirstSearch<IntVar>();
+		if (allSolutions){
+	        label.getSolutionListener().searchAll(true); 		// Do not need to search the whole space.			
+		}else{
+	        label.getSolutionListener().searchAll(false); 		// Do not need to search the whole space.
+		}
+		label.getSolutionListener().recordSolutions(true);	// Record steps in search.
+        label.setPrintInfo(false); 							// Set to false if you don't want the CSP to print the solution as you go.
+
+        //store.print();
+        
+        // Test and Add Constraints
+        for (int i = 0; i < constraints.size(); i++) {
+        	System.out.println(constraints.get(i).toString());
+            store.impose(constraints.get(i));
+            if(!store.consistency()) {
+            	System.out.println("Constraint: " + constraints.get(i).toString());
+                System.out.println("have conflicting constraints, not solvable");            
+                return false;
+            }
+        }
+        //this.store.print();
+        //System.out.println("Start Solver");
+
+        SelectChoicePoint <IntVar> select = new SimpleSelect<IntVar>(varList, new MostConstrainedDynamic<IntVar>(), new IndomainSimpleRandom<IntVar>());//new MostConstrainedStatic<IntVar>(), new IndomainSimpleRandom<IntVar>()); 
+        foundSolution = label.labeling(store, select);
+
+        return foundSolution;
+	}
+	
+	
 	// Methods for initial search.
 	private IntVar[] createFullModelVarList(){
-        int fullListSize = (this.numIntentions * this.numTimePoints * 4) + this.timePoints.length + this.epochs.length; 
-        IntVar[] fullList = new IntVar[fullListSize];
-        int fullListIndex = 0;
-    	for (int i = 0; i < this.values.length; i++)
-    		for (int t = 0; t < this.values[i].length; t++)
-        		for (int v = 0; v < this.values[i][t].length; v++){
-        			fullList[fullListIndex] = this.values[i][t][v];
-        			fullListIndex++;
-        			
-        		}
-    	for (int i = 0; i < this.timePoints.length; i++){
-    		fullList[fullListIndex] = this.timePoints[i];
-    		fullListIndex++;
-    	}
-    	for (int i = 0; i < this.epochs.length; i++){
-    		fullList[fullListIndex] = this.epochs[i];
-    		fullListIndex++;
-    	}
-    	return fullList;
+		if (this.spec.isSolveSingleState()){
+			// Solve a single state.
+			boolean[][][] initialValues = this.spec.getInitialValues();
+			int numStates = initialValues[0].length;
+
+			int fullListSize = (this.numIntentions * numStates * 4) + this.timePoints.length + this.epochs.length; 
+			IntVar[] fullList = new IntVar[fullListSize];
+			int fullListIndex = 0;
+			for (int i = 0; i < this.values.length; i++)
+				for (int t = 0; t < numStates; t++)
+					for (int v = 0; v < this.values[i][t].length; v++){
+						fullList[fullListIndex] = this.values[i][t][v];
+						fullListIndex++;
+
+					}
+			//this is different.. 
+			//jere
+			for (int i = 0; i < this.timePoints.length; i++){
+				fullList[fullListIndex] = this.timePoints[i];
+				fullListIndex++;
+			}
+			for (int i = 0; i < this.epochs.length; i++){
+				fullList[fullListIndex] = this.epochs[i];
+				fullListIndex++;
+			}
+			return fullList;
+		}else{
+			// Solve the whole path.
+			int fullListSize = (this.numIntentions * this.numTimePoints * 4) + this.timePoints.length + this.epochs.length; 
+			IntVar[] fullList = new IntVar[fullListSize];
+			int fullListIndex = 0;
+			for (int i = 0; i < this.values.length; i++)
+				for (int t = 0; t < this.values[i].length; t++)
+					for (int v = 0; v < this.values[i][t].length; v++){
+						fullList[fullListIndex] = this.values[i][t][v];
+						fullListIndex++;
+
+					}
+			for (int i = 0; i < this.timePoints.length; i++){
+				fullList[fullListIndex] = this.timePoints[i];
+				fullListIndex++;
+			}
+			for (int i = 0; i < this.epochs.length; i++){
+				fullList[fullListIndex] = this.epochs[i];
+				fullListIndex++;
+			}
+			return fullList;
+		}
 	}
 	private int[] createTimePointOrder() {
     	//Sort Time Points.
@@ -1474,7 +1540,7 @@ public class TroposCSPAlgorithm {
 		genericInitialNextStateDynamics(constraintsExplore, this.intentions, valuesExplore, 
 				this.epochCollection, currentTime);
 
-		//storeExplore.print();
+		storeExplore.print();
 
 		//Create VarList
 		IntVar[] fullList = new IntVar[valuesExplore.length * 8];
@@ -1491,13 +1557,13 @@ public class TroposCSPAlgorithm {
 			}
 
 		Search<IntVar> label = new DepthFirstSearch<IntVar>();
-		if (!genericFindSolution(true, storeExplore, label, constraintsExplore, fullList))
+		if (!oldGenericFindSolution(true, storeExplore, label, constraintsExplore, fullList))
 			System.out.println("Found Solution = False");
 		else{
 			System.out.println("\nThere are " + label.getSolutionListener().solutionsNo() + " possible next states.");
 			
-			/// NOTE: Solution number starts at 1 not 0!!!
-			int solNum = 1;
+			
+			int solNum = 1;	/// NOTE: Solution number starts at 1 not 0!!!
 			//IntVar[] variables = label.getVariables(); 
 			//IntDomain[] solutions = (IntDomain[])label.getSolution(solNum);
 
@@ -1529,12 +1595,73 @@ public class TroposCSPAlgorithm {
 			}  
     	}
 	}
+	
+	
+	
 		
 	private static final String FILENAME = "stored-models/testEB-Values"; //stored-models/simple-AND"; //models/UD-fuc-repeat.leaf"; //city-tropos-2.leaf"; //backward-test-helps.leaf"; //city-tropos-2.leaf";	 //sebastiani-fig1.leaf"; 
 	private static final boolean allowExplore = true;
 	public static void main(String[] args) {
 		try {
-			// Version 2
+//			// Version 2
+//			String filename = "";
+//			ModelSpec model = null;
+//
+//			filename = FILENAME;
+//			model = new ModelSpec(filename);
+//			if (model != null){
+//				TroposCSPAlgorithm algo = new TroposCSPAlgorithm(model);
+//				Search<IntVar> label = new DepthFirstSearch<IntVar>();
+//				if(!algo.oldGenericFindSolution(false, algo.store, label, algo.constraints, algo.createFullModelVarList()))
+//					System.out.println("Found Solution = False");
+//				else {
+//					System.out.println("Found Solution = True");
+//					int[] timeOrder = algo.createTimePointOrder();
+//					algo.printSingleSolution(timeOrder);
+//					algo.saveSolution(timeOrder);
+//					
+//					if (allowExplore){
+//						System.out.println("\nEnter the time step number you would like to explore (or enter to exit):");
+//						BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+//						String selection = bufferedReader.readLine();					
+//						if (!selection.equals("")){
+//							int numChoice = Integer.parseInt(selection);
+//							
+//							// Update Values in the model.
+//							int[] newValueTimePoints = new int[numChoice + 1];
+//							boolean[][][] newValues = new boolean[model.getNumIntentions()][numChoice + 1][4];
+//							for (int i = 0; i < numChoice + 1; i++){
+//								newValueTimePoints[i] = model.getFinalValueTimePoints()[i];
+//								for(int j = 0; j < model.getNumIntentions(); j++)
+//									newValues[j][i] = model.getFinalValues()[j][i];
+//							}
+//							model.setInitialAssignedEpochs(model.getFinalAssignedEpochs());
+//							model.setInitialValueTimePoints(newValueTimePoints);
+//							model.setInitialValues(newValues);
+//
+//							model.setFinalAssignedEpochs(null);
+//							model.setFinalValues(null);
+//							model.setFinalAssignedEpochs(null);
+//
+//							// Get a new rest of the simulation.
+//							TroposCSPAlgorithm algo2 = new TroposCSPAlgorithm(model);
+//							Search<IntVar> label2 = new DepthFirstSearch<IntVar>();
+//							if(!algo2.oldGenericFindSolution(false, algo2.store, label2, algo2.constraints, algo2.createFullModelVarList()))
+//								System.out.println("Found Solution = False");
+//							else {
+//								System.out.println("Found Solution = True");
+//								int[] timeOrder2 = algo2.createTimePointOrder();
+//								algo2.printSingleSolution(timeOrder2);
+//								algo2.saveSolution(timeOrder2);
+//							}
+//							
+//							//algo.exploreState(numChoice, timeOrder);
+//						}
+//					}
+//				}
+//			}
+			
+			// Version 1
 			String filename = "";
 			ModelSpec model = null;
 
@@ -1554,75 +1681,15 @@ public class TroposCSPAlgorithm {
 					if (allowExplore){
 						System.out.println("\nEnter the time step number you would like to explore (or enter to exit):");
 						BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-						String selection = bufferedReader.readLine();					
+						String selection = bufferedReader.readLine();
+
 						if (!selection.equals("")){
 							int numChoice = Integer.parseInt(selection);
-							
-							// Update Values in the model.
-							int[] newValueTimePoints = new int[numChoice + 1];
-							boolean[][][] newValues = new boolean[model.getNumIntentions()][numChoice + 1][4];
-							for (int i = 0; i < numChoice + 1; i++){
-								newValueTimePoints[i] = model.getFinalValueTimePoints()[i];
-								for(int j = 0; j < model.getNumIntentions(); j++)
-									newValues[j][i] = model.getFinalValues()[j][i];
-							}
-							model.setInitialAssignedEpochs(model.getFinalAssignedEpochs());
-							model.setInitialValueTimePoints(newValueTimePoints);
-							model.setInitialValues(newValues);
-
-							model.setFinalAssignedEpochs(null);
-							model.setFinalValues(null);
-							model.setFinalAssignedEpochs(null);
-
-							// Get a new rest of the simulation.
-							TroposCSPAlgorithm algo2 = new TroposCSPAlgorithm(model);
-							Search<IntVar> label2 = new DepthFirstSearch<IntVar>();
-							if(!algo2.genericFindSolution(false, algo2.store, label2, algo2.constraints, algo2.createFullModelVarList()))
-								System.out.println("Found Solution = False");
-							else {
-								System.out.println("Found Solution = True");
-								int[] timeOrder2 = algo2.createTimePointOrder();
-								algo2.printSingleSolution(timeOrder2);
-								algo2.saveSolution(timeOrder2);
-							}
-							
-							//algo.exploreState(numChoice, timeOrder);
+							algo.exploreState(numChoice, timeOrder);
 						}
-						//algo.exploreState(1, timeOrder);
 					}
 				}
 			}
-			
-			// Version 1
-//			String filename = "";
-//			ModelSpec model = null;
-//
-//			filename = FILENAME;
-//			model = new ModelSpec(filename);
-//			if (model != null){
-//				TroposCSPAlgorithm algo = new TroposCSPAlgorithm(model);
-//				Search<IntVar> label = new DepthFirstSearch<IntVar>();
-//				if(!algo.genericFindSolution(false, algo.store, label, algo.constraints, algo.createFullModelVarList()))
-//					System.out.println("Found Solution = False");
-//				else {
-//					System.out.println("Found Solution = True");
-//					int[] timeOrder = algo.createTimePointOrder();
-//					algo.printSingleSolution(timeOrder);
-//					algo.saveSolution(timeOrder);
-//					
-//					if (allowExplore){
-//						System.out.println("\nEnter the time step number you would like to explore (or enter to exit):");
-//						BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-//						String selection = bufferedReader.readLine();
-//
-//						if (!selection.equals("")){
-//							int numChoice = Integer.parseInt(selection);
-//							algo.exploreState(numChoice, timeOrder);
-//						}
-//						//algo.exploreState(1, timeOrder);
-//					}
-//				}
-//			}
 		} catch (Exception e) {
 			try{
 				System.err.println("Unknown Exception: " + e.getMessage());
