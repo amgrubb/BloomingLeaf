@@ -82,9 +82,9 @@ public class IntentionalElement extends LinkableElement {
 				else if (!this.dynamicFunctionMarkedValue[0] && this.dynamicFunctionMarkedValue[1] && !this.dynamicFunctionMarkedValue[2] && !this.dynamicFunctionMarkedValue[3])
 					return 1; 
 				else if (!this.dynamicFunctionMarkedValue[0] && !this.dynamicFunctionMarkedValue[1] && this.dynamicFunctionMarkedValue[2] && !this.dynamicFunctionMarkedValue[3])
-					return 1; 
+					return 2; 
 				else if (!this.dynamicFunctionMarkedValue[0] && !this.dynamicFunctionMarkedValue[1] && this.dynamicFunctionMarkedValue[2] && this.dynamicFunctionMarkedValue[3])
-					return 1; 
+					return 3; 
 				else 
 					return 5; 
 	}

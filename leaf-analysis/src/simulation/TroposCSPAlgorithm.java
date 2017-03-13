@@ -423,8 +423,20 @@ public class TroposCSPAlgorithm {
         		continue;
  
     		IntVar[] epochs = this.epochCollection.get(element);
-    		//TODO: Find a new way to get initial evalutaions.
-    		int initialEvaluation = 0; // this.strategy.getEvaluation(element).getEvaluation();
+    		//TODO: Fix this throughout algorithm.
+    		int initialEvaluation;
+    		boolean[] initialIntentionValues = this.spec.getInitialValues()[i][0];
+    		if (initialIntentionValues[0] && initialIntentionValues[1] && !initialIntentionValues[2] && !initialIntentionValues[3])
+    			initialEvaluation =  0;
+    		else if (!initialIntentionValues[0] && initialIntentionValues[1] && !initialIntentionValues[2] && !initialIntentionValues[3])
+    			initialEvaluation =  1; 
+    		else if (!initialIntentionValues[0] && !initialIntentionValues[1] && initialIntentionValues[2] && !initialIntentionValues[3])
+    			initialEvaluation =  2; 
+    		else if (!initialIntentionValues[0] && !initialIntentionValues[1] && initialIntentionValues[2] && initialIntentionValues[3])
+    			initialEvaluation =  3; 
+    		else 
+    			initialEvaluation =  5; 
+
     		int dynamicValue = element.oldGetDynamicFunctionMarkedValue();;
 
     		if (tempType == IntentionalElementDynamicType.CONST){
@@ -1518,7 +1530,7 @@ public class TroposCSPAlgorithm {
     	}
 	}
 		
-	private static final String FILENAME = "stored-models/simple-AND"; //stored-models/simple-AND"; //models/UD-fuc-repeat.leaf"; //city-tropos-2.leaf"; //backward-test-helps.leaf"; //city-tropos-2.leaf";	 //sebastiani-fig1.leaf"; 
+	private static final String FILENAME = "stored-models/testEB-Values"; //stored-models/simple-AND"; //models/UD-fuc-repeat.leaf"; //city-tropos-2.leaf"; //backward-test-helps.leaf"; //city-tropos-2.leaf";	 //sebastiani-fig1.leaf"; 
 	private static final boolean allowExplore = true;
 	public static void main(String[] args) {
 		try {

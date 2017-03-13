@@ -1,9 +1,9 @@
-0	100	10	2	2	10	20
+0	100	10	8	4	10	20	70	80
 0
 4
-I	-	0000	G	6	Goal
+I	-	0000	G	0	Goal
 I	-	0001	T	0	Task A
-I	-	0002	T	5	Task B
+I	-	0002	T	0	Task B
 I	-	0003	G	5	Control
 L	AND	0001	0000
 L	AND	0002	0000
