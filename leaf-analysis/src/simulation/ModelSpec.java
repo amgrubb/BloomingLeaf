@@ -48,6 +48,7 @@ public class ModelSpec {
     private boolean[][][] finalValues = null;
     private int[] finalValueTimePoints = null;
     private HashMap<String, Integer> finalAssignedEpochs = null;
+    // TODO: Need to figure out how to return all solutions to a path and state.
     private boolean solveAllSolutions = false;
     private boolean solveSingleState = false;
    
@@ -191,7 +192,7 @@ public class ModelSpec {
 				String sNInt = null;
 				sNInt = input.readLine();
 				String[] simVals = sNInt.split("\\t");
-				int simulationType = Integer.parseInt(simVals[0]);	//Not used yet.
+				//int simulationType = Integer.parseInt(simVals[0]);	//Not used yet.
 				if (simVals.length > 1)
 					maxTime = Integer.parseInt(simVals[1]);
 				if (simVals.length > 2)
@@ -567,6 +568,7 @@ public class ModelSpec {
 	public static void main(String[] args) {
 		try {
 			String filename = "";
+			@SuppressWarnings("unused")
 			ModelSpec model = null;
 				if (args.length > 0) {
 					filename = args[0];
