@@ -218,6 +218,11 @@ body {
   border: 0;
 }
 
+#init-sat-value:disabled {
+  background-color: rgba(20, 85, 9, 1);
+  color: grey;
+}
+
 .user-defined-select, .repeat-select, .relationship-select{
   width: 104px;
   margin-bottom: 8px;

@@ -161,9 +161,7 @@ var ElementInspector = Backbone.View.extend({
     this.$('#init-sat-value').val(cell.attr(".satvalue/value") || 'none');
     if (!cell.attr(".satvalue/value")){
       cell.attr(".satvalue/value", 'none');
-      if (cell.attr(".funcvalue/text") != 'NB'){
-        cell.attr(".funcvalue/text", ' ');
-      }
+      cell.attr(".funcvalue/text", ' ');
     }
 
     // Turn off repeating by default
@@ -172,7 +170,7 @@ var ElementInspector = Backbone.View.extend({
 
     // Load function type
     var functionType = cell.attr(".funcvalue/text");
-    if((functionType == '') || (functionType == " ")){
+    if((functionType == '') || (functionType == " ") || (functionType == "NB")){
       this.$('.function-type').val('none');
       this.updateHTML(null);
     }
@@ -181,9 +179,7 @@ var ElementInspector = Backbone.View.extend({
       this.updateHTML(null);
 
     }
-    else if(functionType == "NB"){
-      this.updateHTML(null);
-    }
+
     else if(functionType != "UD"){
       this.$('.function-type').val(functionType);
 
@@ -255,14 +251,16 @@ var ElementInspector = Backbone.View.extend({
     var functionType = this.$('.function-type').val();
     var initValue = this.$('#init-sat-value').val();
     
-    // display based on inital value
-    // If functype == NB, hide function div regardless of initvalue
-    if(cell.attr('.funcvalue/text') == "NB"){
-         this.$('#function-div').hide();
-         this.updateCell(null);
-         return 
+    // Disable init value menu if functype is NB
+    if (cell.attr('.funcvalue/text') == "NB"){
+      $('#init-sat-value').prop('disabled', 'disabled');
     }
-    else if((initValue == "none") || (initValue == "conflict")){
+    else {
+      $('#init-sat-value').prop('disabled', false); 
+    }
+
+    // display based on inital value
+    if((initValue == "none") || (initValue == "conflict")){
       this.$('#function-div').hide();
       this.updateCell(null);
       return
@@ -701,11 +699,8 @@ var ElementInspector = Backbone.View.extend({
     }
     cell.attr(".constraints/lastval", this.$('.function-type').val());
 
-    // save constraint data
-    if(cell.attr(".funcvalue/text") == 'NB'){
 
-    }
-    else if (funcType == "UD"){
+    if (funcType == "UD"){
 
       // for some reason directly calling .attr does not update
       cell.attr(".constraints/function", null);
@@ -749,6 +744,7 @@ var ElementInspector = Backbone.View.extend({
       if(cell.attr(".funcvalue/text") != 'NB'){
         cell.attr(".funcvalue/text", " ");
       }
+
     }
 
     // Navie: Changed satvalue from path to text
