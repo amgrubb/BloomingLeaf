@@ -1,5 +1,7 @@
 package simulation;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,11 +33,15 @@ public class TroposCSPAlgorithm {
     private int numEpochs = 0;								// ??
     private IntVar[] timePoints;							// Holds the list of time points to be solved. Names at T<A,R,E><Index>
     private IntVar[] epochs;								// ??
-    private HashMap<IntentionalElement, IntVar[]> epochCollection;	// ??
-    private HashMap<IntVar, IntVar> epochToTimePoint;				// ??
+    private HashMap<IntentionalElement, IntVar[]> epochCollection;	// 
+    private HashMap<IntVar, IntVar> epochToTimePoint;				// Mapping between assignedEBs and other constrained values. Used in initializeDynamicFunctions for unknown constants UD functions.
     private BooleanVar[][][] values;						// ** Holds the evaluations for each [this.numIntentions][this.numTimePoints][FS/PS/PD/FD Predicates]
     private IntVar zero;									// (0) Initial Values time point.
     private IntVar infinity;								// (maxTime + 1) Infinity used for intention functions, not a solved point.
+    private IntVar[] unsolvedTimePoints;
+    private IntVar[] nextTimePoint;							// Holds the list of next possible time points. ******* Used for finding state.
+//    private HashMap<IntVar, IntVar[]> unsolvedTimePointToEpochCollection; // Used for finding a single state. 
+//    														// Mapping between timePoints -> epochs;
     
     /* New in ModelSpec
      *     	private int relativeTimePoints = 4;
@@ -72,10 +78,15 @@ public class TroposCSPAlgorithm {
 
 		// Determine the number of observation steps.
 		// Add constraints between Intention EBs.
-    	calculateSampleSizeAndCreateEBsAndTimePoints(this.spec.getAbsoluteTimePoints(), this.spec.getRelativeTimePoints(), this.spec.getInitialValueTimePoints(), this.spec.getInitialAssignedEpochs());
+    	calculateSampleSizeAndCreateEBsAndTimePoints(this.spec.getAbsoluteTimePoints(), 
+    			this.spec.getRelativeTimePoints(), this.spec.getInitialValueTimePoints(), 
+    			this.spec.getInitialAssignedEpochs(), this.spec.isSolveSingleState());
     	
     	// Initialise Values Array
-    	this.values = new BooleanVar[this.numIntentions][this.numTimePoints][4];	// 4 Predicates Values 0-FD, 1-PD, 2-PS, 3-FS
+    	if(this.spec.isSolveSingleState())
+    		this.values = new BooleanVar[this.numIntentions][this.spec.getInitialValueTimePoints().length + 1][4];	// 4 Predicates Values 0-FD, 1-PD, 2-PS, 3-FS;
+    	else
+    		this.values = new BooleanVar[this.numIntentions][this.numTimePoints][4];	// 4 Predicates Values 0-FD, 1-PD, 2-PS, 3-FS
 
     	// Initialise values and add F->P invariant.
     	initializeBooleanVarForValues();
@@ -91,7 +102,9 @@ public class TroposCSPAlgorithm {
 	}	
 	
 	// Methods to create initial constraint model.
-	private void calculateSampleSizeAndCreateEBsAndTimePoints(int[] absoluteTimePoint, int numStochasticTimePoints, int[] initialValueTimePoints, HashMap<String, Integer> assignedEpochs) {	//Full Model		
+	private void calculateSampleSizeAndCreateEBsAndTimePoints(int[] absoluteTimePoint, int numStochasticTimePoints, 
+			int[] initialValueTimePoints, HashMap<String, Integer> assignedEpochs, boolean singleState) {
+		
 		List<IntVar> assignedEBs = new ArrayList<IntVar>();	//Holds the EB that have been assigned to an element in the absolute collection.
 		
     	// Step 0: Create IntVars for absoluteTimePoints.
@@ -131,7 +144,7 @@ public class TroposCSPAlgorithm {
         		for (int u = 1; u < epochsUD.length; u++)
         			constraints.add(new XltY(epochsUD[u-1], epochsUD[u]));       			
 
-        		int[] absoluteDifferences = funcUD.absoluteEpochLengths; 
+        		int[] absoluteDifferences = funcUD.absoluteEpochLengths; 	
         		if (absoluteDifferences != null){
         			int count = 0;
         			for (int u = funcUD.getMapStart() - 1; u < funcUD.getMapEnd() - 1; u++){
@@ -160,11 +173,10 @@ public class TroposCSPAlgorithm {
     			IntVar[] srcArray = this.epochCollection.get(etmp.src);
     			IntVar src;
     			int etmpTime = etmp.getAbsoluteTime();
-    			if (srcArray.length == 1)		//Could be helper function. TODO Deal with this helper function and UD functions!!!
+    			if (srcArray.length == 1)		//Could be helper function. 
     				src = srcArray[0];
     			else{
-    				// TODO: Deal with Repeating UD Functions.
-    				int val = (int)etmp.getSrcEB().charAt(0);	//Only considers A, B, C.. values.
+    				int val = (int)etmp.getSrcEB().charAt(0);	//Only considers A, B, C.. values. //Cannot have constraints within repeating portion.
    					src = srcArray[val - 65];
     			}
     			//Check if absolute value already exists.
@@ -310,10 +322,13 @@ public class TroposCSPAlgorithm {
     		}
     	}else
     		System.err.println("Invalid Input for initialValueTimePoints and initialValues.");
+    	
+    	// Print Info to Check Calculations
     	System.out.print("Previous Times are: ");
     	for(int e = 0; e < exisitingNamedTimePoints.length; e++)
     		System.out.print(exisitingNamedTimePoints[e] + "\t");
     	System.out.println(" Max Previous is: " + maxPreviousTime);	
+    	
     	// Step 4B: Create List of Time Points
     	this.numTimePoints = 1 + absoluteCollection.size() + EBTimePoint.size() + numStochasticTimePoints;
     	
@@ -321,10 +336,10 @@ public class TroposCSPAlgorithm {
     		System.err.println("Error: Previous and Current Time Points do no match.");
     	System.out.println("Previous Time Points: " + countTotalPreviousT + "  New Time Points: " + this.numTimePoints);
     	
+    	/////// Create Time Points
     	this.timePoints = new IntVar[this.numTimePoints];
     	// Add Zero
     	this.timePoints[0] = new IntVar(store, exisitingNamedTimePoints[0], 0, 0); 
-
     	
     	// Add previousCollection
     	for(int e = 1; e < exisitingNamedTimePoints.length; e++){
@@ -348,32 +363,70 @@ public class TroposCSPAlgorithm {
     		}
     		
     	}
-    	
+    	  	
     	int tCount = exisitingNamedTimePoints.length;
+    	
+    	this.unsolvedTimePoints = new IntVar[this.numTimePoints - tCount];
+    	int uCount = 0;
+    	List<IntVar> nextTimePoint = new ArrayList<IntVar>();
+    	
+    	Integer maxKey = this.maxTime + 1;
     	// Add absoluteCollection   
 		for (HashMap.Entry<Integer, IntVar> entry : absoluteCollection.entrySet()) {
 		    Integer key = entry.getKey();
 		    IntVar value = entry.getValue();
 		    if(key > maxPreviousTime){
     			this.timePoints[tCount] = value;
+    			this.unsolvedTimePoints[uCount] = value;
     			tCount++;
-		    }	    
+    			uCount++;
+    		    if(key < maxKey)
+    		    	maxKey = key;
+		    }
 		}
+		nextTimePoint.add(absoluteCollection.get(maxKey));
+		
     	// Add EBs
     	for (IntVar value : EBTimePoint){
     		this.timePoints[tCount] = value;
-    		tCount++;
+			this.unsolvedTimePoints[uCount] = value;
+			tCount++;
+			uCount++;
     		constraints.add(new XgtC(value, maxPreviousTime));
+    		nextTimePoint.add(value);
     	}
     	// Add relative.
     	for (int i = 0; i < numStochasticTimePoints; i++){
     		if (tCount == this.timePoints.length)
     			System.out.println("ERROR");
-    		this.timePoints[tCount] = new IntVar(store, "TR" + absoluteCounter, maxPreviousTime + 1, maxTime);
+    		IntVar value = new IntVar(store, "TR" + absoluteCounter, maxPreviousTime + 1, maxTime);
+			this.timePoints[tCount] = value;
+			this.unsolvedTimePoints[uCount] = value;
+			tCount++;
+			uCount++;
     		absoluteCounter++;
-    		tCount++;
+    		if (i == 0)
+    			nextTimePoint.add(value);
     	}
     	this.constraints.add(new Alldifferent(this.timePoints));
+    	
+    	System.out.print("Unsolved Time Points: ");
+    	for (int i = 0; i < this.unsolvedTimePoints.length; i ++){
+    		System.out.print(this.unsolvedTimePoints[i] + "  ");
+    	}
+    	System.out.println();
+    	
+    	this.nextTimePoint = new IntVar[nextTimePoint.size()];
+    	for (int i = 0; i < this.nextTimePoint.length; i ++)
+    		this.nextTimePoint[i] = nextTimePoint.get(i);
+    	
+    	System.out.print("Next Time Points: ");
+    	for (int i = 0; i < this.nextTimePoint.length; i ++){
+    		System.out.print(this.nextTimePoint[i] + "  ");
+    	}
+    	System.out.println();
+    	
+   
     }
 	
 	private void initializeBooleanVarForValues() {	//Full Model
@@ -1314,9 +1367,6 @@ public class TroposCSPAlgorithm {
 	
 	}
 	
-	
-	
-	
 	private boolean genericFindSolution(boolean allSolutions, boolean singleState, Store store, Search<IntVar> label, List<Constraint> constraints, IntVar[] varList) {
 		boolean foundSolution = false;
 		//label = new DepthFirstSearch<IntVar>();
@@ -1332,7 +1382,7 @@ public class TroposCSPAlgorithm {
         
         // Test and Add Constraints
         for (int i = 0; i < constraints.size(); i++) {
-        	System.out.println(constraints.get(i).toString());
+        	//System.out.println(constraints.get(i).toString());
             store.impose(constraints.get(i));
             if(!store.consistency()) {
             	System.out.println("Constraint: " + constraints.get(i).toString());
@@ -1348,7 +1398,6 @@ public class TroposCSPAlgorithm {
 
         return foundSolution;
 	}
-	
 	
 	// Methods for initial search.
 	private IntVar[] createFullModelVarList(){
@@ -1545,14 +1594,36 @@ public class TroposCSPAlgorithm {
 			}  
     	}
 	}
-	
-	
-	
 		
 	private static final String FILENAME = "stored-models/simple-AND"; //stored-models/testEB-Values"; //stored-models/simple-AND"; //models/UD-fuc-repeat.leaf"; //city-tropos-2.leaf"; //backward-test-helps.leaf"; //city-tropos-2.leaf";	 //sebastiani-fig1.leaf"; 
+	
 	public static void main(String[] args) {
 		try {
-			// Version 3
+//			// Version 3
+//			String filename = "";
+//			ModelSpec model = null;
+//
+//			filename = FILENAME;
+//			model = new ModelSpec(filename);
+//			if (model != null){
+//				model.setSolveAllSolutions(false);		// 
+//				model.setSolveSingleState(false);		// false -> solve path
+//				
+//				TroposCSPAlgorithm algo = new TroposCSPAlgorithm(model);
+//				Search<IntVar> label = new DepthFirstSearch<IntVar>();
+//				if(!algo.genericFindSolution(model.isSolveAllSolutions(), model.isSolveSingleState(), algo.store, label, algo.constraints, algo.createFullModelVarList()))
+//					System.out.println("Found Solution = False");
+//				else{
+//					System.out.println("Found Solution = True");
+//					
+//					//TODO: What happens with output of each of the four cases.
+//					int[] timeOrder = algo.createTimePointOrder();
+//					algo.printSingleSolution(timeOrder);
+//					algo.saveSolution(timeOrder);
+//				}
+//			}			
+			
+			// Version 2
 			String filename = "";
 			ModelSpec model = null;
 
@@ -1566,73 +1637,50 @@ public class TroposCSPAlgorithm {
 				Search<IntVar> label = new DepthFirstSearch<IntVar>();
 				if(!algo.genericFindSolution(model.isSolveAllSolutions(), model.isSolveSingleState(), algo.store, label, algo.constraints, algo.createFullModelVarList()))
 					System.out.println("Found Solution = False");
-				else{
+				else {
 					System.out.println("Found Solution = True");
-					
-					//TODO: What happens with output of each of the four cases.
 					int[] timeOrder = algo.createTimePointOrder();
 					algo.printSingleSolution(timeOrder);
 					algo.saveSolution(timeOrder);
+
+
+					System.out.println("\nEnter the time step number you would like to explore (or enter to exit):");
+					BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+					String selection = bufferedReader.readLine();					
+					if (!selection.equals("")){
+						int numChoice = Integer.parseInt(selection);
+
+						// Update Values in the model.
+						int[] newValueTimePoints = new int[numChoice + 1];
+						boolean[][][] newValues = new boolean[model.getNumIntentions()][numChoice + 1][4];
+						for (int i = 0; i < numChoice + 1; i++){
+							newValueTimePoints[i] = model.getFinalValueTimePoints()[i];
+							for(int j = 0; j < model.getNumIntentions(); j++)
+								newValues[j][i] = model.getFinalValues()[j][i];
+						}
+						model.setInitialAssignedEpochs(model.getFinalAssignedEpochs());
+						model.setInitialValueTimePoints(newValueTimePoints);
+						model.setInitialValues(newValues);
+
+						model.setFinalAssignedEpochs(null);
+						model.setFinalValues(null);
+						model.setFinalAssignedEpochs(null);
+
+						// Get a new rest of the simulation.
+						TroposCSPAlgorithm algo2 = new TroposCSPAlgorithm(model);
+						Search<IntVar> label2 = new DepthFirstSearch<IntVar>();
+						if(!algo2.genericFindSolution(model.isSolveAllSolutions(), model.isSolveSingleState(), algo2.store, label2, algo2.constraints, algo2.createFullModelVarList()))
+							System.out.println("Found Solution = False");
+						else {
+							System.out.println("Found Solution = True");
+							int[] timeOrder2 = algo2.createTimePointOrder();
+							algo2.printSingleSolution(timeOrder2);
+							algo2.saveSolution(timeOrder2);
+						}
+
+					}
 				}
-			}			
-			
-//			// Version 2
-//			String filename = "";
-//			ModelSpec model = null;
-//
-//			filename = FILENAME;
-//			model = new ModelSpec(filename);
-//			if (model != null){
-//				TroposCSPAlgorithm algo = new TroposCSPAlgorithm(model);
-//				Search<IntVar> label = new DepthFirstSearch<IntVar>();
-//				if(!algo.oldGenericFindSolution(false, algo.store, label, algo.constraints, algo.createFullModelVarList()))
-//					System.out.println("Found Solution = False");
-//				else {
-//					System.out.println("Found Solution = True");
-//					int[] timeOrder = algo.createTimePointOrder();
-//					algo.printSingleSolution(timeOrder);
-//					algo.saveSolution(timeOrder);
-//					
-//					if (allowExplore){
-//						System.out.println("\nEnter the time step number you would like to explore (or enter to exit):");
-//						BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-//						String selection = bufferedReader.readLine();					
-//						if (!selection.equals("")){
-//							int numChoice = Integer.parseInt(selection);
-//							
-//							// Update Values in the model.
-//							int[] newValueTimePoints = new int[numChoice + 1];
-//							boolean[][][] newValues = new boolean[model.getNumIntentions()][numChoice + 1][4];
-//							for (int i = 0; i < numChoice + 1; i++){
-//								newValueTimePoints[i] = model.getFinalValueTimePoints()[i];
-//								for(int j = 0; j < model.getNumIntentions(); j++)
-//									newValues[j][i] = model.getFinalValues()[j][i];
-//							}
-//							model.setInitialAssignedEpochs(model.getFinalAssignedEpochs());
-//							model.setInitialValueTimePoints(newValueTimePoints);
-//							model.setInitialValues(newValues);
-//
-//							model.setFinalAssignedEpochs(null);
-//							model.setFinalValues(null);
-//							model.setFinalAssignedEpochs(null);
-//
-//							// Get a new rest of the simulation.
-//							TroposCSPAlgorithm algo2 = new TroposCSPAlgorithm(model);
-//							Search<IntVar> label2 = new DepthFirstSearch<IntVar>();
-//							if(!algo2.oldGenericFindSolution(false, algo2.store, label2, algo2.constraints, algo2.createFullModelVarList()))
-//								System.out.println("Found Solution = False");
-//							else {
-//								System.out.println("Found Solution = True");
-//								int[] timeOrder2 = algo2.createTimePointOrder();
-//								algo2.printSingleSolution(timeOrder2);
-//								algo2.saveSolution(timeOrder2);
-//							}
-//							
-//							//algo.exploreState(numChoice, timeOrder);
-//						}
-//					}
-//				}
-//			}
+			}
 			
 //			// Version 1
 //			String filename = "";
