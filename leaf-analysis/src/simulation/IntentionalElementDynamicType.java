@@ -3,8 +3,6 @@
  */
 package simulation;
 
-import java.util.Random;
-
 /**
  * @author A.M.Grubb
  *

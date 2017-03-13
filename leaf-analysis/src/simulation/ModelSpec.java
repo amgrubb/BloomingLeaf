@@ -4,23 +4,17 @@
 package simulation;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-//import java.util.HashMap;
-//import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 
-import org.jacop.core.BooleanVar;
-import org.jacop.core.IntVar;
 
 /**
  * @author A.M.Grubb
@@ -54,10 +48,26 @@ public class ModelSpec {
     private boolean[][][] finalValues = null;
     private int[] finalValueTimePoints = null;
     private HashMap<String, Integer> finalAssignedEpochs = null;
-    
-    
-    
-    public boolean[][][] getFinalValues() {
+    private boolean solveAllSolutions = false;
+    private boolean solveSingleState = false;
+   
+    public boolean isSolveAllSolutions() {
+		return solveAllSolutions;
+	}
+
+	public void setSolveAllSolutions(boolean solveAllSolutions) {
+		this.solveAllSolutions = solveAllSolutions;
+	}
+
+	public boolean isSolveSingleState() {
+		return solveSingleState;
+	}
+
+	public void setSolveSingleState(boolean solveSingleState) {
+		this.solveSingleState = solveSingleState;
+	}
+
+	public boolean[][][] getFinalValues() {
 		return finalValues;
 	}
 
