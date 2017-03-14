@@ -29,18 +29,18 @@ var ElementInspector = Backbone.View.extend({
       '<textarea class="cell-attrs-text"></textarea>',
       '<label>Initial Satisfaction Value</label>',
       '<select id="init-sat-value">',
-        '<option value=none> None </option>',
-        '<option value=conflict> Conflict </option>',
-        '<option value=satisfied> Satisfied </option>',
-        '<option value=partiallysatisfied> Partially Satisfied </option>',
+        '<option value=none> None (T, T)</option>',
+        '<option value=satisfied> Satisfied (FS, T)</option>',
+        '<option value=partiallysatisfied> Partially Satisfied (PS, T) </option>',
+        '<option value=denied> Denied (T, FD)</option>',
+        '<option value=partiallydenied> Partially Denied (T, FD)</option>',
         '<option value=unknown> Unknown </option>',
-        '<option value=partiallydenied> Partially Denied </option>',
-        '<option value=denied> Denied </option>',
 			'</select>',
       '<br>',
       '<div id="function-div">',
         '<label>Function Type</label>',
         '<select class="function-type">',
+          '<option value=none> No Function </option>',
           '<option value=C> Constant </option>',
           '<option value=R> Stochastic </option>',
           '<option value=I> Increase </option>',
@@ -169,14 +169,19 @@ var ElementInspector = Backbone.View.extend({
     this.repeatConstraint("TurnOff");
 
     // Load function type
-    var functionType = cell.attr(".funcvalue/text")
-    if((functionType == "C") || (functionType == " ")){
-      this.$('.function-type').val('C')
+    var functionType = cell.attr(".funcvalue/text");
+    if((functionType == '') || (functionType == " ") || (functionType == "NB")){
+      this.$('.function-type').val('none');
+      this.updateHTML(null);
+    }
+    else if((functionType == "C") || (functionType == " ")){
+      this.$('.function-type').val('C');
       this.updateHTML(null);
 
-    }else if(functionType != "UD"){
+    }
+
+    else if(functionType != "UD"){
       this.$('.function-type').val(functionType);
-      this.updateHTML(null);
 
     // loading user defined constraint
     }else{
@@ -242,20 +247,30 @@ var ElementInspector = Backbone.View.extend({
 
   // update satisfaction value and buttons selection based on function type selection
   updateHTML: function(event){
+    var cell = this._cellView.model;
     var functionType = this.$('.function-type').val();
     var initValue = this.$('#init-sat-value').val();
     
+    // Disable init value menu if functype is NB
+    if (cell.attr('.funcvalue/text') == "NB"){
+      $('#init-sat-value').prop('disabled', 'disabled');
+    }
+    else {
+      $('#init-sat-value').prop('disabled', false); 
+    }
+
     // display based on inital value
     if((initValue == "none") || (initValue == "conflict")){
       this.$('#function-div').hide();
       this.updateCell(null);
       return
-    }else{
+    }
+    else{
       this.$('#function-div').show("fast");
     }
 
     // display based on function type
-    if ((functionType == "R") || (functionType == "C") || (functionType == "SD") || (functionType == "DS") || (functionType == "CR")){
+    if ((functionType == "R") || (functionType == "C") || (functionType == "SD") || (functionType == "DS") || (functionType == "CR") || (functionType == "none")){
       this.$('.function-sat-value').hide();
       this.$('#user-constraints').hide();
     }else if (functionType == "UD"){
@@ -320,6 +335,9 @@ var ElementInspector = Backbone.View.extend({
     // Rerender chart canvas
     var data = this.constraintsObject.chartData;
     var context = $("#chart").get(0).getContext("2d");
+    // Show the chart if previously hidden
+    $('#chart').show();
+
     if(this.constraintsObject.chart != null)
       this.constraintsObject.chart.destroy();
 
@@ -400,7 +418,12 @@ var ElementInspector = Backbone.View.extend({
     }else if(text == "UD"){
       this.updateGraphUserDefined(null);
       return
+    // If text = none, no chart
+    }else{
+      console.log('ayy its me');
+      $('#chart').hide();
     }
+
 
     this.constraintsObject.chart = new Chart(context).Line(data, this.chartObject.chartOptions);
     this.updateCell(null);
@@ -661,12 +684,22 @@ var ElementInspector = Backbone.View.extend({
   	}
 
     // save cell data
+    var funcType = this.$('.function-type').val();
     cell.attr(".satvalue/value", this.$('#init-sat-value').val());
-    cell.attr(".funcvalue/text", this.$('.function-type').val());
+    // If funcvalue == NB, do not update anything to the cell
+    if(cell.attr(".funcvalue/text") == 'NB'){
+
+    }
+    else if (funcType != 'none'){
+      cell.attr(".funcvalue/text", funcType);
+    }
+
+    else {
+      cell.attr(".funcvalue/text", ""); 
+    }
     cell.attr(".constraints/lastval", this.$('.function-type').val());
 
-    // save constraint data
-    var funcType = this.$('.function-type').val();
+
     if (funcType == "UD"){
 
       // for some reason directly calling .attr does not update
@@ -705,25 +738,28 @@ var ElementInspector = Backbone.View.extend({
     //Update node display based on function and values
     var value = this.$('#init-sat-value').val();
 
-    if (value == "none")
-      cell.attr(".funcvalue/text", " ");
+    if (value == "none"){ 
+      cell.attr(".satvalue/text", "");
+      // If functype is NB, dont clear it
+      if(cell.attr(".funcvalue/text") != 'NB'){
+        cell.attr(".funcvalue/text", " ");
+      }
+
+    }
 
     // Navie: Changed satvalue from path to text
     if (value == "satisfied"){
       // cell.attr({ '.satvalue': {'d': 'M 0 10 L 5 20 L 20 0 L 5 20 L 0 10', 'stroke': '#00FF00', 'stroke-width':4}});      
-      cell.attr(".satvalue/text", "S");
+      cell.attr(".satvalue/text", "(FS, T)");
     }else if(value == "partiallysatisfied") {
       // cell.attr({ '.satvalue': {'d': 'M 0 8 L 5 18 L 20 0 L 5 18 L 0 8 M 17 30 L 17 15 C 17 15 30 17 18 23', 'stroke': '#00FF00', 'stroke-width':3, 'fill': 'transparent'}});
-      cell.attr(".satvalue/text", "PS");
+      cell.attr(".satvalue/text", "(PS, T)");
     }else if (value == "denied"){
       // cell.attr({ '.satvalue': {'d': 'M 0 20 L 20 0 M 10 10 L 0 0 L 20 20', 'stroke': '#FF0000', 'stroke-width': 4}});
-      cell.attr(".satvalue/text", "D");
+      cell.attr(".satvalue/text", "(T, FD)");
     }else if (value == "partiallydenied") {
       // cell.attr({ '.satvalue': {'d': 'M 0 15 L 15 0 M 15 15 L 0 0 M 17 30 L 17 15 C 17 15 30 17 18 23', 'stroke': '#FF0000', 'stroke-width': 3, 'fill': 'transparent'}});
-      cell.attr(".satvalue/text", "PD");
-    }else if (value == "conflict") {
-      // cell.attr({ '.satvalue': {'d': 'M 0 0 L 20 8 M 20 7 L 5 15 M 5 14 L 25 23', 'stroke': '#222222', 'stroke-width': 4}});
-      cell.attr(".satvalue/text", "?");
+      cell.attr(".satvalue/text", "(T, PD)");
     }else if (value == "unknown") {
       // cell.attr({ '.satvalue': {'d': 'M15.255,0c5.424,0,10.764,2.498,10.764,8.473c0,5.51-6.314,7.629-7.67,9.62c-1.018,1.481-0.678,3.562-3.475,3.562\
           // c-1.822,0-2.712-1.482-2.712-2.838c0-5.046,7.414-6.188,7.414-10.343c0-2.287-1.522-3.643-4.066-3.643\
@@ -732,7 +768,7 @@ var ElementInspector = Backbone.View.extend({
           // C11.568,25.973,13.137,24.406,15.044,24.406z', 'stroke': '#222222', 'stroke-width': 1}});
           cell.attr(".satvalue/text", "?");
     }else {
-      cell.removeAttr(".satvalue/d");
+      // cell.removeAttr(".satvalue/text");
     }
   },
   
