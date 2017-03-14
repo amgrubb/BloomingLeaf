@@ -1,5 +1,5 @@
-function IODynamic(){
-	var intentionID;
-	var dynamicType;
-	var markedValue;
+function IODynamic(intentionID, dynamicType, markedValue){
+	this.intentionID = intentionID;
+	this.dynamicType = dynamicType;
+	this.markedValue = markedValue;
 }

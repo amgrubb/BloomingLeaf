@@ -1,4 +1,4 @@
-function IOHistory(){
+function IOHistory(numHistory, numIntentions, numTimePoints, history_array){
 	var numHistory;
 	var numIntentions;
 	var numTimePoints;
