@@ -82,9 +82,10 @@ public class TroposCSPAlgorithm {
     			this.spec.getRelativeTimePoints(), this.spec.getInitialValueTimePoints(), 
     			this.spec.getInitialAssignedEpochs(), this.spec.isSolveSingleState());
     	
+    	int lengthOfInitial = this.spec.getInitialValueTimePoints().length;
     	// Initialise Values Array
     	if(this.spec.isSolveSingleState())
-    		this.values = new BooleanVar[this.numIntentions][this.spec.getInitialValueTimePoints().length + 1][4];	// 4 Predicates Values 0-FD, 1-PD, 2-PS, 3-FS;
+    		this.values = new BooleanVar[this.numIntentions][lengthOfInitial + 1][4];	// 4 Predicates Values 0-FD, 1-PD, 2-PS, 3-FS;
     	else
     		this.values = new BooleanVar[this.numIntentions][this.numTimePoints][4];	// 4 Predicates Values 0-FD, 1-PD, 2-PS, 3-FS
 
@@ -98,9 +99,15 @@ public class TroposCSPAlgorithm {
     	genericAddLinkConstraints(this.sat, this.constraints, this.intentions, this.values);
 
     	// Create constraints for Dynamic Elements.
-    	initializeDynamicFunctions();
+    	if(this.spec.isSolveSingleState())
+    		//initializeStateDynamicFunctions();
+    		genericInitialNextStateDynamics(this.constraints, this.intentions, this.values, 
+    				this.epochCollection, this.spec.getInitialValueTimePoints()[lengthOfInitial - 1], lengthOfInitial - 1);
+    	else
+    		initializePathDynamicFunctions();
 	}	
 	
+
 	// Methods to create initial constraint model.
 	private void calculateSampleSizeAndCreateEBsAndTimePoints(int[] absoluteTimePoint, int numStochasticTimePoints, 
 			int[] initialValueTimePoints, HashMap<String, Integer> assignedEpochs, boolean singleState) {
@@ -466,7 +473,8 @@ public class TroposCSPAlgorithm {
     				genericWeakConflictPrevention(this.sat, this.values[i][t], this.zero);
 	}
 	
-	private void initializeDynamicFunctions() {		//Full Model
+
+	private void initializePathDynamicFunctions() {		//Full Model
     	for (int i = 0; i < this.intentions.length; i++){
     		IntentionalElement element = this.intentions[i];
     		IntentionalElementDynamicType tempType = element.dynamicType;
@@ -1185,9 +1193,13 @@ public class TroposCSPAlgorithm {
 		satTrans.generate_implication(val[3], val[2]);
 		satTrans.generate_implication(val[0], val[1]);	
 	}
-	private static void genericInitialNextStateDynamics(List<Constraint> constraintList, IntentionalElement[] elementList, BooleanVar[][][] val, 
-			HashMap<IntentionalElement, IntVar[]>  epochCollection, int currentAbsoluteTime){ // Assume only two time steps.
+	private static void genericInitialNextStateDynamics(List<Constraint> constraintList, 
+			IntentionalElement[] elementList, BooleanVar[][][] val, 
+			HashMap<IntentionalElement, IntVar[]>  epochCollection, int currentAbsoluteTime,
+			int initialIndex){ // Assume only two time steps.
 		// Assume only two time points, current with set values, and next state.
+		// TODO: Should be more generic other than times zero and one.
+		int nextIndex = initialIndex + 1;
 		for (int i = 0; i < elementList.length; i++){
 			IntentionalElement element = elementList[i];
 			IntentionalElementDynamicType tempType = element.dynamicType;
@@ -1200,31 +1212,31 @@ public class TroposCSPAlgorithm {
 
 			if (tempType == IntentionalElementDynamicType.CONST){
 				PrimitiveConstraint[] tempConstant = {	//Possible Helper
-						new XeqY(val[i][1][3], val[i][0][3]), 
-						new XeqY(val[i][1][2], val[i][0][2]),	
-						new XeqY(val[i][1][1], val[i][0][1]),
-						new XeqY(val[i][1][0], val[i][0][0])};
+						new XeqY(val[i][nextIndex][3], val[i][initialIndex][3]), 
+						new XeqY(val[i][nextIndex][2], val[i][initialIndex][2]),	
+						new XeqY(val[i][nextIndex][1], val[i][initialIndex][1]),
+						new XeqY(val[i][nextIndex][0], val[i][initialIndex][0])};
 				constraintList.add(new And(tempConstant)); 
 			}else if ((tempType == IntentionalElementDynamicType.INC) || (tempType == IntentionalElementDynamicType.MONP)){
 				if (tempType == IntentionalElementDynamicType.MONP){
 					if(epochs[0].value() <= currentAbsoluteTime){
 						PrimitiveConstraint[] tempConstant = {	//Possible Helper
-								new XeqY(val[i][1][3], val[i][0][3]), 
-								new XeqY(val[i][1][2], val[i][0][2]),	
-								new XeqY(val[i][1][1], val[i][0][1]),
-								new XeqY(val[i][1][0], val[i][0][0])};
+								new XeqY(val[i][nextIndex][3], val[i][initialIndex][3]), 
+								new XeqY(val[i][nextIndex][2], val[i][initialIndex][2]),	
+								new XeqY(val[i][nextIndex][1], val[i][initialIndex][1]),
+								new XeqY(val[i][nextIndex][0], val[i][initialIndex][0])};
 						constraintList.add(new And(tempConstant));
 						continue;
 					}
 				}
-				PrimitiveConstraint[] tFS = genericCreateConstantCondition(3, val[i][0]);
-				PrimitiveConstraint[] tPS = genericCreateConstantCondition(2, val[i][0]);
-				PrimitiveConstraint[] tPD = genericCreateConstantCondition(1, val[i][0]);
-				PrimitiveConstraint[] tFD = genericCreateConstantCondition(0, val[i][0]);
-				PrimitiveConstraint[] sFS = genericCreateConstantCondition(3, val[i][1]);
-				PrimitiveConstraint[] sPS = genericCreateConstantCondition(2, val[i][1]);
-				PrimitiveConstraint[] sPD = genericCreateConstantCondition(1, val[i][1]);
-				PrimitiveConstraint[] sFD = genericCreateConstantCondition(0, val[i][1]);
+				PrimitiveConstraint[] tFS = genericCreateConstantCondition(3, val[i][initialIndex]);
+				PrimitiveConstraint[] tPS = genericCreateConstantCondition(2, val[i][initialIndex]);
+				PrimitiveConstraint[] tPD = genericCreateConstantCondition(1, val[i][initialIndex]);
+				PrimitiveConstraint[] tFD = genericCreateConstantCondition(0, val[i][initialIndex]);
+				PrimitiveConstraint[] sFS = genericCreateConstantCondition(3, val[i][nextIndex]);
+				PrimitiveConstraint[] sPS = genericCreateConstantCondition(2, val[i][nextIndex]);
+				PrimitiveConstraint[] sPD = genericCreateConstantCondition(1, val[i][nextIndex]);
+				PrimitiveConstraint[] sFD = genericCreateConstantCondition(0, val[i][nextIndex]);
 				constraintList.add(new IfThen(new And(tFS),
 						new And(sFS)));
 				constraintList.add(new IfThen(new And(tPS),
@@ -1237,22 +1249,22 @@ public class TroposCSPAlgorithm {
 				if (tempType == IntentionalElementDynamicType.MONN){
 					if(epochs[0].value() <= currentAbsoluteTime){
 						PrimitiveConstraint[] tempConstant = {	//Possible Helper
-								new XeqY(val[i][1][3], val[i][0][3]), 
-								new XeqY(val[i][1][2], val[i][0][2]),	
-								new XeqY(val[i][1][1], val[i][0][1]),
-								new XeqY(val[i][1][0], val[i][0][0])};
+								new XeqY(val[i][nextIndex][3], val[i][initialIndex][3]), 
+								new XeqY(val[i][nextIndex][2], val[i][initialIndex][2]),	
+								new XeqY(val[i][nextIndex][1], val[i][initialIndex][1]),
+								new XeqY(val[i][nextIndex][0], val[i][initialIndex][0])};
 						constraintList.add(new And(tempConstant));
 						continue;
 					}
 				}
-				PrimitiveConstraint[] tFS = genericCreateConstantCondition(3, val[i][0]);
-				PrimitiveConstraint[] tPS = genericCreateConstantCondition(2, val[i][0]);
-				PrimitiveConstraint[] tPD = genericCreateConstantCondition(1, val[i][0]);
-				PrimitiveConstraint[] tFD = genericCreateConstantCondition(0, val[i][0]);
-				PrimitiveConstraint[] sFS = genericCreateConstantCondition(3, val[i][1]);
-				PrimitiveConstraint[] sPS = genericCreateConstantCondition(2, val[i][1]);
-				PrimitiveConstraint[] sPD = genericCreateConstantCondition(1, val[i][1]);
-				PrimitiveConstraint[] sFD = genericCreateConstantCondition(0, val[i][1]);
+				PrimitiveConstraint[] tFS = genericCreateConstantCondition(3, val[i][initialIndex]);
+				PrimitiveConstraint[] tPS = genericCreateConstantCondition(2, val[i][initialIndex]);
+				PrimitiveConstraint[] tPD = genericCreateConstantCondition(1, val[i][initialIndex]);
+				PrimitiveConstraint[] tFD = genericCreateConstantCondition(0, val[i][initialIndex]);
+				PrimitiveConstraint[] sFS = genericCreateConstantCondition(3, val[i][nextIndex]);
+				PrimitiveConstraint[] sPS = genericCreateConstantCondition(2, val[i][nextIndex]);
+				PrimitiveConstraint[] sPD = genericCreateConstantCondition(1, val[i][nextIndex]);
+				PrimitiveConstraint[] sFD = genericCreateConstantCondition(0, val[i][nextIndex]);
 				constraintList.add(new IfThen(new And(tFS),
 						new Or(new Or(new And(sFS), new And(sPS)), new Or(new And(sPD), new And(sFD)))));
 				constraintList.add(new IfThen(new And(tPS),
@@ -1263,8 +1275,8 @@ public class TroposCSPAlgorithm {
 						new And(sFD)));
 
 			} else if (tempType == IntentionalElementDynamicType.SD){
-				PrimitiveConstraint[] tempFS = genericCreateConstantCondition(3, val[i][1]);
-				PrimitiveConstraint[] tempFD = genericCreateConstantCondition(0, val[i][1]);
+				PrimitiveConstraint[] tempFS = genericCreateConstantCondition(3, val[i][nextIndex]);
+				PrimitiveConstraint[] tempFD = genericCreateConstantCondition(0, val[i][nextIndex]);
 				if(epochs[0].value() <= currentAbsoluteTime)
 					constraintList.add(new And(tempFD));
 				else{
@@ -1272,8 +1284,8 @@ public class TroposCSPAlgorithm {
 					constraintList.add(new Or(new And(tempFS), new And(tempFD)));
 				}
 			} else if (tempType == IntentionalElementDynamicType.DS){
-				PrimitiveConstraint[] tempFS = genericCreateConstantCondition(3, val[i][1]);
-				PrimitiveConstraint[] tempFD = genericCreateConstantCondition(0, val[i][1]);
+				PrimitiveConstraint[] tempFS = genericCreateConstantCondition(3, val[i][nextIndex]);
+				PrimitiveConstraint[] tempFD = genericCreateConstantCondition(0, val[i][nextIndex]);
 				if(epochs[0].value() <= currentAbsoluteTime)
 					constraintList.add(new And(tempFS));
 				else{
@@ -1281,7 +1293,7 @@ public class TroposCSPAlgorithm {
 					constraintList.add(new Or(new And(tempFS), new And(tempFD)));
 				} 		
 			} else if (tempType == IntentionalElementDynamicType.RC){
-				PrimitiveConstraint[] tempConstant = genericCreateConstantCondition(dynamicValue, val[i][1]);
+				PrimitiveConstraint[] tempConstant = genericCreateConstantCondition(dynamicValue, val[i][nextIndex]);
 				if (tempConstant == null){
 					System.err.println("CR Initial Value for intention " + element.getId() + " has Unknown/None/Conflict value.");
 					break;
@@ -1319,20 +1331,20 @@ public class TroposCSPAlgorithm {
 						}
 					if (segmentDynamic[nS].equals(IntentionalElementDynamicType.CONST.getCode())){
 						PrimitiveConstraint[] tempConstant = {	//Possible Helper
-								new XeqY(val[i][1][3], val[i][0][3]), 
-								new XeqY(val[i][1][2], val[i][0][2]),	
-								new XeqY(val[i][1][1], val[i][0][1]),
-								new XeqY(val[i][1][0], val[i][0][0])};
+								new XeqY(val[i][nextIndex][3], val[i][initialIndex][3]), 
+								new XeqY(val[i][nextIndex][2], val[i][initialIndex][2]),	
+								new XeqY(val[i][nextIndex][1], val[i][initialIndex][1]),
+								new XeqY(val[i][nextIndex][0], val[i][initialIndex][0])};
 						constraintList.add(new And(tempConstant)); 
 					} else if (segmentDynamic[nS].equals(IntentionalElementDynamicType.INC.getCode())){	
-						PrimitiveConstraint[] tFS = genericCreateConstantCondition(3, val[i][0]);
-						PrimitiveConstraint[] tPS = genericCreateConstantCondition(2, val[i][0]);
-						PrimitiveConstraint[] tPD = genericCreateConstantCondition(1, val[i][0]);
-						PrimitiveConstraint[] tFD = genericCreateConstantCondition(0, val[i][0]);
-						PrimitiveConstraint[] sFS = genericCreateConstantCondition(3, val[i][1]);
-						PrimitiveConstraint[] sPS = genericCreateConstantCondition(2, val[i][1]);
-						PrimitiveConstraint[] sPD = genericCreateConstantCondition(1, val[i][1]);
-						PrimitiveConstraint[] sFD = genericCreateConstantCondition(0, val[i][1]);
+						PrimitiveConstraint[] tFS = genericCreateConstantCondition(3, val[i][initialIndex]);
+						PrimitiveConstraint[] tPS = genericCreateConstantCondition(2, val[i][initialIndex]);
+						PrimitiveConstraint[] tPD = genericCreateConstantCondition(1, val[i][initialIndex]);
+						PrimitiveConstraint[] tFD = genericCreateConstantCondition(0, val[i][initialIndex]);
+						PrimitiveConstraint[] sFS = genericCreateConstantCondition(3, val[i][nextIndex]);
+						PrimitiveConstraint[] sPS = genericCreateConstantCondition(2, val[i][nextIndex]);
+						PrimitiveConstraint[] sPD = genericCreateConstantCondition(1, val[i][nextIndex]);
+						PrimitiveConstraint[] sFD = genericCreateConstantCondition(0, val[i][nextIndex]);
 						constraintList.add(new IfThen(new And(tFS),
 								new And(sFS)));
 						constraintList.add(new IfThen(new And(tPS),
@@ -1342,14 +1354,14 @@ public class TroposCSPAlgorithm {
 						constraintList.add(new IfThen(new And(tFD),
 								new Or(new Or(new And(sFS), new And(sPS)), new Or(new And(sPD), new And(sFD)))));
 					} else if (segmentDynamic[nS].equals(IntentionalElementDynamicType.DEC.getCode())){
-						PrimitiveConstraint[] tFS = genericCreateConstantCondition(3, val[i][0]);
-						PrimitiveConstraint[] tPS = genericCreateConstantCondition(2, val[i][0]);
-						PrimitiveConstraint[] tPD = genericCreateConstantCondition(1, val[i][0]);
-						PrimitiveConstraint[] tFD = genericCreateConstantCondition(0, val[i][0]);
-						PrimitiveConstraint[] sFS = genericCreateConstantCondition(3, val[i][1]);
-						PrimitiveConstraint[] sPS = genericCreateConstantCondition(2, val[i][1]);
-						PrimitiveConstraint[] sPD = genericCreateConstantCondition(1, val[i][1]);
-						PrimitiveConstraint[] sFD = genericCreateConstantCondition(0, val[i][1]);
+						PrimitiveConstraint[] tFS = genericCreateConstantCondition(3, val[i][initialIndex]);
+						PrimitiveConstraint[] tPS = genericCreateConstantCondition(2, val[i][initialIndex]);
+						PrimitiveConstraint[] tPD = genericCreateConstantCondition(1, val[i][initialIndex]);
+						PrimitiveConstraint[] tFD = genericCreateConstantCondition(0, val[i][initialIndex]);
+						PrimitiveConstraint[] sFS = genericCreateConstantCondition(3, val[i][nextIndex]);
+						PrimitiveConstraint[] sPS = genericCreateConstantCondition(2, val[i][nextIndex]);
+						PrimitiveConstraint[] sPD = genericCreateConstantCondition(1, val[i][nextIndex]);
+						PrimitiveConstraint[] sFD = genericCreateConstantCondition(0, val[i][nextIndex]);
 						constraintList.add(new IfThen(new And(tFS),
 								new Or(new Or(new And(sFS), new And(sPS)), new Or(new And(sPD), new And(sFD)))));
 						constraintList.add(new IfThen(new And(tPS),
@@ -1511,6 +1523,7 @@ public class TroposCSPAlgorithm {
 	}
 	
 	// Methods for secondary search.
+	
 	@SuppressWarnings("unused")
 	private void exploreState(int stateNum, int[] timeOrder){
 		int nodeIndex = timeOrder[stateNum];
