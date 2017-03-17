@@ -1,33 +1,21 @@
 //Object related to backend object interface_object.FrontendModel
 function FrontendModel(
-		maxTime,
-		maxEpoch,
-		relativePoints,
-		absolutePoinsts,
 		actors,
 		intentions,
 		links,
 		dynamics,
 		constraints,
-		history,
-		solveAllSolutions,
-	    solveSingleState
+		allStatesModel
 	){
-	this.maxTime = maxTime;
-	this.maxEpoch = maxEpoch;
-	this.relativePoints = relativePoints;
-	this.absolutePoinsts = absolutePoinsts;// = [];
 	this.actors = actors;// = [];
 	this.intentions = intentions;// = [];
 	this.links = links;// = [];
 	this.dynamics = dynamics;// = [];
 	this.constraints = constraints;// = [];
-	this.history = history;// = [];
-	this.solveAllSolutions = solveAllSolutions;// = false;
-    this.solveSingleState = solveSingleState;// = false;
+	this.allStatesModel = allStatesModel;
 }
 
-//Get all necessary data from the frontend to be sent to backend
+//Get only model information (nodes and links)
 function getFrontendModel(){
 	//Step 0: Get elements from graph.
 	var all_elements = graph.getElements();
@@ -153,9 +141,9 @@ function getFrontendModel(){
 		
 		if (relationship.indexOf("|") > -1){
 			evolvRelationships = relationship.replace(/\s/g, '').split("|");
-			io_link = IOLink(evolvRelationships[0], source, target, evolvRelationships[1]);
+			io_link = new IOLink(evolvRelationships[0], source, target, evolvRelationships[1]);
 		}else{
-			io_link = IOLink(relationship, source, target, null)
+			io_link = new IOLink(relationship, source, target);
 		}		
 		
 		data_links.push(io_link);
@@ -212,15 +200,6 @@ function getFrontendModel(){
 	}
 
 	//CONSTRAINTS
-	
-	function DataConstraint(){
-		var constraintType;
-		var constraintSrcID;
-		var constraintSrcEB;
-		var absoluteValue;
-		var constraintDestID;
-		var constraintDestEB;
-	}
 	var data_constraints = [];
 	
 	for (var e = 0; e < savedConstraints.length; e++){
@@ -241,22 +220,72 @@ function getFrontendModel(){
 		
 		data_constraints.push(io_constraint);
 	}
+	
+	//INITIAL VALUES
+	// [time][intentions][value]
+	var time = 1; 
 
+	var allStatesModel = [];
+	
+	function StatesModel(){
+		this.intentionElements = [];
+		this.time;
+	};
+	
+	function IntentionElement(){
+		this.id;
+		this.status = [];
+	};
 
+	for(var i_time = 0; i_time < time; i_time++){
+		var stateModel = new StatesModel();
+		stateModel.time = i_time;
+		
+		for(var i_intention = 0; i_intention < data_intentions.length; i_intention++){
+			var intentionalElement = new IntentionElement();
+			intentionalElement.id = data_intentions[i_intention].nodeID;
+			
+			if(data_intentions[i_intention].initialValue == 0){
+				intentionalElement.status.push(true);				
+			}else{
+				intentionalElement.status.push(false);
+			}
+			
+			//PD
+			if(data_intentions[i_intention].initialValue == 1){
+				intentionalElement.status.push(true);								
+			}else{
+				intentionalElement.status.push(false);				
+			}
+			
+			//PS
+			if(data_intentions[i_intention].initialValue == 2){
+				intentionalElement.status.push(true);				
+			}else{
+				intentionalElement.status.push(false);				
+			}
+			
+			//FD
+			if(data_intentions[i_intention].initialValue == 3){
+				intentionalElement.status.push(true);				
+			}else{
+				intentionalElement.status.push(false);				
+			}
+			stateModel.intentionElements.push(intentionalElement);
+		}
+		allStatesModel.push(stateModel);
+	}
+	
+	console.log(allStatesModel);
+	
 	var frontendModel = new FrontendModel(
-			maxTime = null,
-			maxEpoch = null,
-			relativePoints = null,
-			absolutePoinsts = null,
-			data_actors, //OK
-			data_intentions, //OK
-			data_links, //OK
-			data_dynamics, //OK
-			data_constraints, //OK
-			history = null,
-			solveAllSolutions = null,
-		    solveSingleState = null
-		);
-
+			data_actors,
+			data_intentions,
+			data_links,
+			data_dynamics,
+			data_constraints,
+			allStatesModel
+		)
+	
 	return frontendModel;	
 }

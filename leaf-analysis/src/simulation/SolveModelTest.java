@@ -6,7 +6,7 @@ import java.io.PrintWriter;
 
 import com.google.gson.Gson;
 
-import interface_object.FrontendModel;
+import interface_object.FrontendObject;
 import interface_object.IONode;
 import interface_object.IOOutput;
 
@@ -29,7 +29,7 @@ public class SolveModelTest {
 
 		//This is the default filePath to be executed if no file is pass through parameters
 		String filePath = "/home/marcel/UofT/";			
-		String fileName = "default";
+		String fileName = "default.json";
 		
 		//Verify if there is any parameter sent otherwise run as test mode
 		//TODO: I did this because it will have to create a new file for each frontend user, so this program will execute an specific file
@@ -45,15 +45,15 @@ public class SolveModelTest {
 		}
 		
 		try {
-			
 			//creating the backend model to be analysed
-			ModelSpecPojo modelSpec = convertModelFromFile(filePath);
-			
+			FrontendModel modelSpec = convertModelFromFile(filePath+fileName);
+			//Creating a file to see what was received
+			//createOutputFile(modelSpec, "output.out");
 			//TODO: analyse the model
-			IOOutput commOutput = analyseModel(modelSpec);
+			//IOOutput commOutput = analyseModel(modelSpec);
 			
 			//TODO: get the object created in the analysis and add into a file to be sent to frontend
-			createOutputFile(commOutput, fileName);
+			//createOutputFile(commOutput, fileName);
 			
 		} catch (Exception e) {
 			throw new RuntimeException(e.getMessage());
@@ -67,7 +67,7 @@ public class SolveModelTest {
 	 * @param filePath
 	 * Name of the file to be read by CGI to be sent to frontend
 	 */
-	private static void createOutputFile(IOOutput commOutput, String fileName) {
+	private static void createOutputFile(FrontendModel commOutput, String fileName) {
 		Gson gson = new Gson();		
 		//Need to create the file and folder if doesn't exist
 		String outputFile = "/home/marcel/UofT/" + fileName + ".out";
@@ -89,7 +89,7 @@ public class SolveModelTest {
 	 * @param modelSpec
 	 * @return
 	 */
-	private static IOOutput analyseModel(ModelSpecPojo modelSpec) {
+	private static IOOutput analyseModel(FrontendModel modelSpec) {
 		//TEST Here I created a simple output as a test
 		IOOutput ioOutput = new IOOutput();
 		int[] absoluteTime = {0, 1, 10, 20, 27};
@@ -140,14 +140,14 @@ public class SolveModelTest {
 	 * @return
 	 * ModelSpecPojo backend model
 	 */
-	private static ModelSpecPojo convertModelFromFile(String filePath) {
+	private static FrontendModel convertModelFromFile(String filePath) {
 		try{
 		Gson gson = new Gson();		
-		FrontendModel frontendModel = gson.fromJson(new FileReader(filePath), FrontendModel.class);
-		ModelSpecPojo modelSpec = ModelSpecBuilder.buildModelSpec(frontendModel);
+		FrontendObject frontendObject = gson.fromJson(new FileReader(filePath), FrontendObject.class);
+		FrontendModel modelSpec = ModelSpecBuilder.buildModelSpec(frontendObject);
 		return modelSpec;
 		}catch(Exception e){
-			throw new RuntimeException("Error in convertModelFromFile method: /n" + e.getMessage());
+			throw new RuntimeException("Error in convertModelFromFile() method: /n" + e.getMessage());
 		}
 	}
 

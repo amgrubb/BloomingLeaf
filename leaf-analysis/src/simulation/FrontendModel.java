@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class ModelSpecPojo {
+public class FrontendModel {
 	
 	private List<IntentionalElement> intElements = new ArrayList<IntentionalElement>();
 	private List<Actor> actors = new ArrayList<Actor>();

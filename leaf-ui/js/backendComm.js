@@ -1,7 +1,4 @@
-function backendCom(){
-	//Create the object to be sent to backend
-	var js_object = getFrontendModel();
-	
+function backendCom(js_object){
 	//Show in console just to see what is going to backend
 	console.log(JSON.stringify(js_object));
 	
@@ -16,13 +13,13 @@ function backendCom(){
 		data: JSON.stringify(js_object),
 		success: function(response){
 		//ADD HERE WHAT TO DO WITH THE RESPONSE OBJECT
-		alert(response);
+		//alert(response);
 		console.log(response['data']);
 		}
 	})
 	.fail(function(){
 		msg = "Ops! Something went wrong";
-		alert(msg);
+		//alert(msg);
 	});
 }
 

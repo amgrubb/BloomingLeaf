@@ -1,13 +1,15 @@
 package simulation;
 
 
+import interface_object.Analysis;
+import interface_object.FrontendObject;
 import interface_object.IOActor;
 import interface_object.IOConstraint;
 import interface_object.IODynamic;
 import interface_object.IOHistory;
 import interface_object.IOIntention;
 import interface_object.IOLink;
-import interface_object.FrontendModel;
+import interface_object.Model;
 
 /**ass a
  * This class is responsible to get the frontend model and convert into the backend model filling some necessary attributes.
@@ -15,9 +17,11 @@ import interface_object.FrontendModel;
  *
  */
 public class ModelSpecBuilder {
-	public static ModelSpecPojo buildModelSpec(FrontendModel frontendModel){
+	public static FrontendModel buildModelSpec(FrontendObject frontendObject){
 		
-		ModelSpecPojo modelSpec = new ModelSpecPojo();
+		Model frontendModel = frontendObject.getModel();
+		Analysis analysis = frontendObject.getAnalysis();
+		FrontendModel modelSpec = new FrontendModel();
 
 		try{
 			
@@ -72,7 +76,7 @@ public class ModelSpecBuilder {
 				
 				for(IntentionalElement it : modelSpec.getIntElements()){
 		        	if(intentionID.equals(it.getId())){
-		        		it.setDynamicType(IntentionalElementDynamicType.getByCode(dataDynamic.getDynamicType()), Integer.parseInt(frontendModel.getMaxEpoch()));
+		        		it.setDynamicType(IntentionalElementDynamicType.getByCode(dataDynamic.getDynamicType()), Integer.parseInt(analysis.getMaxAbsTime()));
 		        		//if (dynamicType.equals("UD"))
 		        		//	it.setUserDefinedDynamicType(line, this.maxEpoch);				        			
 		        		//else if (result.length > 3){
@@ -113,7 +117,7 @@ public class ModelSpecBuilder {
 			}
 		}
 		
-		if(!frontendModel.getHistories().isEmpty()){
+/*		if(!frontendModel.getHistories().isEmpty()){
 			for(IOHistory dataHistory : frontendModel.getHistories()){
 				int numHistory = Integer.parseInt(dataHistory.getNumHistory());
 				int numIntentions = Integer.parseInt(dataHistory.getNumIntentions());
@@ -128,7 +132,7 @@ public class ModelSpecBuilder {
 				break;			
 	
 			}		
-		}
+		}*/
 		
 		}catch (Exception e) {
 			System.out.println(e.getMessage());
