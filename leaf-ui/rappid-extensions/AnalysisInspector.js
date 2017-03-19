@@ -41,7 +41,7 @@ var AnalysisInspector = Backbone.View.extend({
 	        '<option value=W> C</option>',
 	        '<option value=N> D</option>',
 		'</select>',
-
+		'<button id="btn-del-assignment" class="analysis-btns inspector-btn sub-label red-btn">Delete Selected Assignment</button>',
 		'<br>',
 		'<hr>',
 		'<button id="btn-solve-single-path" class="analysis-btns inspector-btn sub-label green-btn">Solve Single Path</button>',
