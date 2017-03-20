@@ -38,34 +38,18 @@ var AnalysisInspector = Backbone.View.extend({
 		      	    '<th>How do you call this?</th>',
 		      	    '<th>Dynamics</th>',
 		      	    '<th>Node name</th>',
-		      	    '<th>Assigned Value</th>',
+		      	    '<th>Assigned Time</th>',
 		      	    '<th>Action</th>',
-		      	  '</tr>',
-		      	  '<tr>',
-		      	    '<td>A</td>',
-		      	    '<td>RC</td>',
-		      	    '<td>Go to school</td>',
-		      	    '<td><input type="text" name="sth" value="None"></td>',
-		      	    '<td><button> Unassign </button></td>',
 		      	  '</tr>',
 		      	'</table>',
 		      '<p>Relationships</p>',
 		      	'<table id="link-list" class="abs-table">',
 		      	  '<tr>',
-		      	    '<th>How do you call this?</th>',
 		      	    '<th>Link Type</th>',
 		      	    '<th>Source Node name</th>',
 		      	    '<th>Dest Node name</th>',
-		      	    '<th>Assigned Value</th>',
+		      	    '<th>Assigned Time</th>',
 		      	    '<th>Action</th>',
-		      	  '</tr>',
-		      	  '<tr>',
-		      	    '<td>A</td>',
-		      	    '<td>makes|breaks</td>',
-		      	    '<td>Node name A</td>',
-		      	    '<td>Node name B</td>',
-		      	    '<td><input type="text" name="sth" value="5"></td>',
-		      	    '<td><button> Unassign </button></td>',
 		      	  '</tr>',
 		      	'</table>',
 		    '</div>',
@@ -105,7 +89,8 @@ var AnalysisInspector = Backbone.View.extend({
 		'click #query-btn': 'checkQuery',
 		'click #clear-query-btn': 'clearQuery',
 		'click #btn-view-assignment': 'loadModalBox',
-		'click .close': 'dismissModalBox'
+		'click .close': 'dismissModalBox',
+		'click .unassign-btn': 'unassignValue'
 
 	},
 
@@ -258,7 +243,7 @@ var AnalysisInspector = Backbone.View.extend({
 		$(".abs-table").find("tr:gt(0)").remove();
 
 
-		var btn_html = '<td><button> Unassign </button></td>';
+		var btn_html = '<td><button class="unassign-btn" > Unassign </button></td>';
 		modal.style.display = "block";
 		// Get a list of nodes
 		// Populate non UD element only
@@ -297,7 +282,25 @@ var AnalysisInspector = Backbone.View.extend({
 		}
 
 		// Get a list of links
+		for (var i = 0; i < links.length; i ++){
+			var link = links[i];
+			var source = null;
+			var target = null;
+			if (link.get("source").id){
+				source = graph.getCell(link.get("source").id);
+			}
+			if (link.get("target").id){
+				target = graph.getCell(link.get("target").id);
+			}
+			if (source && target){
+				var source_name = source.attr('.name').text;
+				var target_name = target.attr('.name').text;
+				var link_type = link.get('labels')[0].attrs.text.text;
+				$('#link-list').append('<tr><td>' + link_type + '</td><td>' + source_name + '</td><td>' + target_name +
+					'</td><td><input type="text" name="sth" value="None"</td>' + btn_html + '</tr>');
+			}
 
+		}		
 
 
 	},
@@ -306,6 +309,14 @@ var AnalysisInspector = Backbone.View.extend({
 		var modal = document.getElementById('myModal');
 		modal.style.display = "none";
 
+	},
+
+	// Trigger when unassign button is pressed. Change the assigned time of the node/link in the same row to none
+	unassignValue: function(e){
+		var button = e.target;
+		var row = $(button).closest('tr');
+		var assigned_time = row.find('input');
+		$(assigned_time).val('None');
 	}
 
 });
