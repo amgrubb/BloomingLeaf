@@ -68,8 +68,8 @@ public class IntentionalElement extends LinkableElement {
 	public void setUserDefinedDynamicType(String inputLine, int maxEpoch) {
 		this.userDefinedDynamicType = true;
 		this.dynamicType = IntentionalElementDynamicType.UD;
-		this.intUDFunct = new UDFunction(this, inputLine, maxEpoch);
-		this.cspUDFunct = new UDFunctionCSP(this, inputLine);
+		this.intUDFunct = new UDFunction(inputLine, maxEpoch);
+		this.cspUDFunct = new UDFunctionCSP(inputLine);
 	}
 	
 	public void setDynamicType(IntentionalElementDynamicType dynamicType) {

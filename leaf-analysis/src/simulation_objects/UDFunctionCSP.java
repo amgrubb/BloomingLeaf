@@ -1,7 +1,6 @@
 package simulation_objects;
 
 public class UDFunctionCSP {
-		IntentionalElement element;
 		String[] functions;
 		int[] dynamicValues;
 		char[] elementEBs;
@@ -22,11 +21,8 @@ public class UDFunctionCSP {
 		// 	D	0000	UD	4	0	A	C	2	A	B	C	3	B	C	C	0	C	1	C	1	R	A	C
 		// 	D	0000	UD	4	0	A	C	2	A	B	C	3	B	C	C	0	C	1	C	1	R	A	C	2
 		// 	D	0000	UD	4	0	A	C	2	A	B	C	3	B	C	C	0	C	1	C	1	R	A	C	2	5	5	
+
 		public UDFunctionCSP(String inputLine) {
-			this(null, inputLine);
-		}
-		public UDFunctionCSP(IntentionalElement element, String inputLine) {
-			this.element = element;
 			
 			// Step 1: Read Data
 			String[] values = inputLine.split("\\t");

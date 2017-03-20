@@ -165,22 +165,20 @@ function getFrontendModel(){
 	    }else if (f != "UD"){
     		io_dynamic = new IODynamic(elementID, f, satValueDict[funcTypeVal]);
     		// user defined constraints
-	    }
-	    
-	    data_dynamics.push(io_dynamic);
-	    
-	    /*else{
-			var begin = elements[e].attr(".constraints/beginLetter");
+	    }else{
+	    	var line = "";
+	    	
+    		var begin = elements[e].attr(".constraints/beginLetter");
 			var end = elements[e].attr(".constraints/endLetter");
 			var rBegin = elements[e].attr(".constraints/beginRepeat");
 			var rEnd = elements[e].attr(".constraints/endRepeat");
-			datastring += "D\t" + elementID + "\t" + f + "\t" + String(funcTypeVal.length);
+			line += "D\t" + elementID + "\t" + f + "\t" + String(funcTypeVal.length);
 
 			for (var l = 0; l < funcTypeVal.length; l++){
 				if(l == funcTypeVal.length - 1){
-					datastring += "\t" + begin[l] + "\t1\t" + funcType[l] + "\t" + satValueDict[funcTypeVal[l]];
+					line += "\t" + begin[l] + "\t1\t" + funcType[l] + "\t" + satValueDict[funcTypeVal[l]];
 				}else{
-					datastring += "\t" + begin[l] + "\t" + end[l] + "\t" + funcType[l] + "\t" + satValueDict[funcTypeVal[l]];
+					line += "\t" + begin[l] + "\t" + end[l] + "\t" + funcType[l] + "\t" + satValueDict[funcTypeVal[l]];
 				}
 			}
 
@@ -188,15 +186,18 @@ function getFrontendModel(){
 			if (elements[e].attr(".constraints/beginRepeat") && elements[e].attr(".constraints/endRepeat")){
 				// to infinity
 				if (rEnd == end[end.length - 1]){
-					datastring += "\tR\t" + rBegin + "\t1";
+					line += "\tR\t" + rBegin + "\t1";
 				}else{
-					datastring += "\tR\t" + rBegin + "\t" + rEnd;
+					line += "\tR\t" + rBegin + "\t" + rEnd;
 				}
 			}else{
-				datastring += "\tN";
+				line += "\tN";
 			}
-				datastring += "\n";
-			}*/
+			io_dynamic = new IODynamic(elementID, f, satValueDict[funcTypeVal], line);	
+	    }
+	    
+	    data_dynamics.push(io_dynamic);
+	   
 	}
 
 	//CONSTRAINTS

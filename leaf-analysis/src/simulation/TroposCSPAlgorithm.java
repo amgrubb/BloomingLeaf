@@ -1545,75 +1545,75 @@ public class TroposCSPAlgorithm {
     	}
 	}
 		
-	private static final String FILENAME = "stored-models/testEB-Values"; //stored-models/simple-AND"; //models/UD-fuc-repeat.leaf"; //city-tropos-2.leaf"; //backward-test-helps.leaf"; //city-tropos-2.leaf";	 //sebastiani-fig1.leaf"; 
-	private static final boolean allowExplore = true;
-	public static void main(String[] args) {
-		try {
-			// Version 2
-			String filename = "";
-			ModelSpec model = null;
-
-			filename = FILENAME;
-			model = new ModelSpec(filename);
-			if (model != null){
-				TroposCSPAlgorithm algo = new TroposCSPAlgorithm(model);
-				Search<IntVar> label = new DepthFirstSearch<IntVar>();
-				if(!algo.genericFindSolution(false, algo.store, label, algo.constraints, algo.createFullModelVarList()))
-					System.out.println("Found Solution = False");
-				else {
-					System.out.println("Found Solution = True");
-					int[] timeOrder = algo.createTimePointOrder();
-					algo.printSingleSolution(timeOrder);
-					algo.saveSolution(timeOrder);
-					
-					if (allowExplore){
-						System.out.println("\nEnter the time step number you would like to explore (or enter to exit):");
-						BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-						String selection = bufferedReader.readLine();					
-						if (!selection.equals("")){
-							int numChoice = Integer.parseInt(selection);
-							
-							// Update Values in the model.
-							int[] newValueTimePoints = new int[numChoice + 1];
-							boolean[][][] newValues = new boolean[model.getNumIntentions()][numChoice + 1][4];
-							for (int i = 0; i < numChoice + 1; i++){
-								newValueTimePoints[i] = model.getFinalValueTimePoints()[i];
-								for(int j = 0; j < model.getNumIntentions(); j++)
-									newValues[j][i] = model.getFinalValues()[j][i];
-							}
-							model.setInitialAssignedEpochs(model.getFinalAssignedEpochs());
-							model.setInitialValueTimePoints(newValueTimePoints);
-							model.setInitialValues(newValues);
-
-							model.setFinalAssignedEpochs(null);
-							model.setFinalValues(null);
-							model.setFinalAssignedEpochs(null);
-
-							// Get a new rest of the simulation.
-							TroposCSPAlgorithm algo2 = new TroposCSPAlgorithm(model);
-							Search<IntVar> label2 = new DepthFirstSearch<IntVar>();
-							if(!algo2.genericFindSolution(false, algo2.store, label2, algo2.constraints, algo2.createFullModelVarList()))
-								System.out.println("Found Solution = False");
-							else {
-								System.out.println("Found Solution = True");
-								int[] timeOrder2 = algo2.createTimePointOrder();
-								algo2.printSingleSolution(timeOrder2);
-								algo2.saveSolution(timeOrder2);
-							}
-							
-							//algo.exploreState(numChoice, timeOrder);
-						}
-						//algo.exploreState(1, timeOrder);
-					}
-				}
-			}
-			
-		} catch (Exception e) {
-				System.err.println("Unknown Exception: " + e.getMessage());
-				System.err.println("Stack trace: ");
-				e.printStackTrace(System.err);
-		}
-	}
+//	private static final String FILENAME = "stored-models/testEB-Values"; //stored-models/simple-AND"; //models/UD-fuc-repeat.leaf"; //city-tropos-2.leaf"; //backward-test-helps.leaf"; //city-tropos-2.leaf";	 //sebastiani-fig1.leaf"; 
+//	private static final boolean allowExplore = true;
+//	public static void main(String[] args) {
+//		try {
+//			// Version 2
+//			String filename = "";
+//			ModelSpec model = null;
+//
+//			filename = FILENAME;
+//			model = new ModelSpec(filename);
+//			if (model != null){
+//				TroposCSPAlgorithm algo = new TroposCSPAlgorithm(model);
+//				Search<IntVar> label = new DepthFirstSearch<IntVar>();
+//				if(!algo.genericFindSolution(false, algo.store, label, algo.constraints, algo.createFullModelVarList()))
+//					System.out.println("Found Solution = False");
+//				else {
+//					System.out.println("Found Solution = True");
+//					int[] timeOrder = algo.createTimePointOrder();
+//					algo.printSingleSolution(timeOrder);
+//					algo.saveSolution(timeOrder);
+//					
+//					if (allowExplore){
+//						System.out.println("\nEnter the time step number you would like to explore (or enter to exit):");
+//						BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+//						String selection = bufferedReader.readLine();					
+//						if (!selection.equals("")){
+//							int numChoice = Integer.parseInt(selection);
+//							
+//							// Update Values in the model.
+//							int[] newValueTimePoints = new int[numChoice + 1];
+//							boolean[][][] newValues = new boolean[model.getNumIntentions()][numChoice + 1][4];
+//							for (int i = 0; i < numChoice + 1; i++){
+//								newValueTimePoints[i] = model.getFinalValueTimePoints()[i];
+//								for(int j = 0; j < model.getNumIntentions(); j++)
+//									newValues[j][i] = model.getFinalValues()[j][i];
+//							}
+//							model.setInitialAssignedEpochs(model.getFinalAssignedEpochs());
+//							model.setInitialValueTimePoints(newValueTimePoints);
+//							model.setInitialValues(newValues);
+//
+//							model.setFinalAssignedEpochs(null);
+//							model.setFinalValues(null);
+//							model.setFinalAssignedEpochs(null);
+//
+//							// Get a new rest of the simulation.
+//							TroposCSPAlgorithm algo2 = new TroposCSPAlgorithm(model);
+//							Search<IntVar> label2 = new DepthFirstSearch<IntVar>();
+//							if(!algo2.genericFindSolution(false, algo2.store, label2, algo2.constraints, algo2.createFullModelVarList()))
+//								System.out.println("Found Solution = False");
+//							else {
+//								System.out.println("Found Solution = True");
+//								int[] timeOrder2 = algo2.createTimePointOrder();
+//								algo2.printSingleSolution(timeOrder2);
+//								algo2.saveSolution(timeOrder2);
+//							}
+//							
+//							//algo.exploreState(numChoice, timeOrder);
+//						}
+//						//algo.exploreState(1, timeOrder);
+//					}
+//				}
+//			}
+//			
+//		} catch (Exception e) {
+//				System.err.println("Unknown Exception: " + e.getMessage());
+//				System.err.println("Stack trace: ");
+//				e.printStackTrace(System.err);
+//		}
+//	}
 
 	/**
 	 * This method is responsible to execute the analysis.

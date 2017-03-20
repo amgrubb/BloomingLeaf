@@ -10,8 +10,6 @@ public class UDFunction {
 	int repeatEnd = -2;		//End of the last repeating interval.
 	int numRepeat = 1;
 	int[] repeatEpochBoundaries;
-	//int totalEB;
-	IntentionalElement element;
 	String[] epochBasicFunction;
 	int[] epochMarkedValues;
 	int[] epochBoundaries;	//Marks the end of the boundary.
@@ -24,8 +22,7 @@ public class UDFunction {
 	//	D	0029	UD	5	0	A	C	0	A	B	C	5	B	C	C	1	C	D	R	5	D	1	C	5	N
 	//	D	ElemID	UD 	#parts | (begin | End | FuncType | SatValue)* | 'N'
 	//	D	ElemID	UD 	#parts | (begin | End | FuncType | SatValue)* | 'R' | repeatBegin | repeatEnd
-	public UDFunction(IntentionalElement element, String inputLine, int maxEpoch) {
-		this.element = element;
+	public UDFunction(String inputLine, int maxEpoch) {
 		String[] values = inputLine.split("\\t");
 		// values[0-2] are "D", intentionID, and "UD".
 		numSegment = Integer.parseInt(values[3]);
@@ -343,25 +340,6 @@ public class UDFunction {
 	}
 	public int[] getEpochMarkedValues() {
 		return epochMarkedValues;
-	}
-	// For testing.
-	public static void main(String[] args) {
-		//String inputUDF = "D	0010	UD	4	0	A	C	1	A	B	C	2	B	C	I	3	C	1	C	5	N";
-		String inputUDF = "D	0011	UD	5	0	A	I	3	A	B	C	5	B	C	D	0	C	D	R	5	D	1	C	5	R	0	1";
-		UDFunction fun = new UDFunction(null, inputUDF, 25);
-		
-//		//Testing convertEBtoUDEB function.
-//		String[] values = inputUDF.split("\\t");
-//		for (int i = 0; i < values.length; i++)
-//			System.out.println(values[i] + "\tgives\t" + fun.convertEBtoUDEB(values[i]));
-
-		for (int i = 0; i < fun.epochBoundaries.length; i++)
-			System.out.println(i + "\t\t" + fun.epochBoundaries[i]);
-		if (fun.hasRepeat)
-		for (int i = 0; i < fun.repeatEpochBoundaries.length; i++)
-			System.out.println(i + "\t\t" + fun.repeatEpochBoundaries[i]);
-		
-		
 	}
 	
 }

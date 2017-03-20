@@ -36,7 +36,51 @@ public class ModelSpecBuilder {
 		ModelSpec modelSpec = new ModelSpec();
 
 		try{
+			//ANALYSIS 
+			if(analysis.getAbsVal()!=null){
+				//TODO: ???
+			}
 			
+			//Conflict level
+			if(analysis.getConflictLevel()!=null){
+				modelSpec.setConflictAvoidLevel(analysis.getConflictLevel().charAt(0));
+			}
+			
+			//Absolute Time points
+			if(analysis.getAbsTimePts().length()>0){
+				String[] absTimePts = analysis.getAbsTimePts().split(" ");
+				int[] absTimePtsInt = new int[absTimePts.length];
+				int i = 0;
+				
+				for(String absTimePt : absTimePts){
+					absTimePtsInt[i] = Integer.parseInt(absTimePt);
+					i++;
+				}
+				
+				modelSpec.setAbsoluteTimePoints(absTimePtsInt);
+			}
+			
+			//Max Absolute Time
+			if(analysis.getMaxAbsTime()!=null){
+				modelSpec.setMaxTime(Integer.parseInt(analysis.getMaxAbsTime()));	
+			}
+			
+			//Number of Relative time
+			if(analysis.getNumRelTime()!=null){
+				modelSpec.setRelativeTimePoints(Integer.parseInt(analysis.getNumRelTime()));
+			}
+			
+			//Type of analysis - Solve Single Path
+			if(analysis.getSolveSinglePath()!=null){
+				modelSpec.setSolveSinglePath(Boolean.parseBoolean(analysis.getSolveSinglePath()));
+			}
+			
+			//Type of analysis - all possible next State
+			if(analysis.getGetNextState()!=null){
+				modelSpec.setSolveNextState(Boolean.parseBoolean(analysis.getGetNextState()));
+			}
+	
+			//-----------------------------------------------------------------------------------
 			//MODEL
 			//Getting Actors
 			if(!frontendModel.getActors().isEmpty()){
@@ -65,17 +109,18 @@ public class ModelSpecBuilder {
 			if(!frontendModel.getDynamics().isEmpty()){
 				for(InputDynamic dataDynamic : frontendModel.getDynamics()){
 					String intentionID = dataDynamic.getIntentionID();
-					//String dynamicType = dataDynamic.getDynamicType();
-					//String markedValue = dataDynamic.getMarkedValue();
+					String dynamicType = dataDynamic.getDynamicType();
+//					String markedValue = dataDynamic.getMarkedValue();
+					String line = dataDynamic.getLine();
 					
 					for(IntentionalElement it : modelSpec.getIntElements()){
 			        	if(intentionID.equals(it.getId())){
 			        		it.setDynamicType(IntentionalElementDynamicType.getByCode(dataDynamic.getDynamicType()));
-			        		//if (dynamicType.equals("UD"))
-			        		//	it.setUserDefinedDynamicType(line, this.maxEpoch);				        			
-			        		//else if (result.length > 3){
-							//	it.setDynamicFunctionMarkedValue(Integer.parseInt(markedValue));
-							//}  
+			        		if (dynamicType.equals("UD"))
+			        			it.setUserDefinedDynamicType(line, Integer.parseInt(analysis.getMaxAbsTime()));				        			
+//			        		else if (result.length > 3){
+//								it.setDynamicFunctionMarkedValue(Integer.parseInt(markedValue));
+//							}  
 			        	}
 			        }				
 				}
@@ -132,52 +177,6 @@ public class ModelSpecBuilder {
 				}
 			}
 			
-			//ANALYSIS attributes
-
-			if(!analysis.getAbsVal().isEmpty()){
-				//TODO: ???
-			}
-			
-			//Conflict level
-			if(!analysis.getConflictLevel().isEmpty()){
-				modelSpec.setConflictAvoidLevel(analysis.getConflictLevel().charAt(0));
-			}
-			
-			//Absolute Time points
-			if(!analysis.getAbsTimePts().isEmpty()){
-				String[] absTimePts = analysis.getAbsTimePts().split(" ");
-				int[] absTimePtsInt = new int[absTimePts.length];
-				int i = 0;
-				
-				for(String absTimePt : absTimePts){
-					absTimePtsInt[i] = Integer.parseInt(absTimePt);
-					i++;
-				}
-				
-				modelSpec.setAbsoluteTimePoints(absTimePtsInt);
-			}
-			
-			
-			//Max Absolute Time
-			if(!analysis.getMaxAbsTime().isEmpty()){
-				modelSpec.setMaxTime(Integer.parseInt(analysis.getMaxAbsTime()));	
-			}
-			
-			//Number of Relative time
-			if(!analysis.getNumRelTime().isEmpty()){
-				modelSpec.setRelativeTimePoints(Integer.parseInt(analysis.getNumRelTime()));
-			}
-			
-			//Type of analysis - Solve Single Path
-			if(!analysis.getSolveSinglePath().isEmpty()){
-				modelSpec.setSolveSinglePath(Boolean.parseBoolean(analysis.getSolveSinglePath()));
-			}
-			
-			//Type of analysis - all possible next State
-			if(!analysis.getGetNextState().isEmpty()){
-				modelSpec.setSolveNextState(Boolean.parseBoolean(analysis.getGetNextState()));
-			}
-	
 		}catch (Exception e) {
 			throw new RuntimeException(e.getMessage()); 
 		}
