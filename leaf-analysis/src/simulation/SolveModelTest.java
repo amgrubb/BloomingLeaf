@@ -30,30 +30,14 @@ public class SolveModelTest {
 		//This is the default filePath to be executed if no file is pass through parameters
 		String filePath = "/home/marcel/UofT/";			
 		String fileName = "default.json";
-		
-		//Verify if there is any parameter sent otherwise run as test mode
-		//TODO: I did this because it will have to create a new file for each frontend user, so this program will execute an specific file
-		if(args.length > 0){
-			for(int i = 0; i < args.length; i++){
-				if(args[i].contains("-f")){
-					fileName = args[i+1];
-					filePath = "../public_html/BloomingLeaf/cgi-bin/temp/" + fileName + ".json";
-				}else{
-					printHelp();
-				}
-			}
-		}
-		
+				
 		try {
 			//creating the backend model to be analysed
-			ModelSpec frontendModel = convertModelFromFile(filePath+fileName);
-			//Creating a file to see what was received
-			//createOutputFile(modelSpec, "output.out");
-			//TODO: analyse the model
-			//IOOutput commOutput = analyseModel(modelSpec);
+			ModelSpec modelSpec = convertModelFromFile(filePath+fileName);
+			//Analyze the model
+			OutputModel outputModel = TroposCSPAlgorithm.solveModel(modelSpec);
 			
-			//TODO: get the object created in the analysis and add into a file to be sent to frontend
-			//createOutputFile(commOutput, fileName);
+			createOutputFile(outputModel, "output.out");
 			
 		} catch (Exception e) {
 			throw new RuntimeException(e.getMessage());
@@ -67,33 +51,22 @@ public class SolveModelTest {
 	 * @param filePath
 	 * Name of the file to be read by CGI to be sent to frontend
 	 */
-	private static void createOutputFile(ModelSpec commOutput, String fileName) {
+	private static void createOutputFile(OutputModel outputModel, String fileName) {
 		Gson gson = new Gson();		
-		//Need to create the file and folder if doesn't exist
+		//Need to create the file and folder if it doesn't exist
 		String outputFile = "/home/marcel/UofT/" + fileName + ".out";
 		
 		try {
 			FileWriter file;
 			file = new FileWriter(outputFile);
 			PrintWriter printFile = new PrintWriter(file);
-			printFile.printf(gson.toJson(commOutput));
+			printFile.printf(gson.toJson(outputModel));
 			file.close();
 		} catch (Exception e) {
 			throw new RuntimeException("Error in createOutputFile: " + e.getMessage());
 		}
 		
 	}
-
-	/**
-	 * This method call the analysis classes
-	 * @param modelSpec
-	 * @return
-	 */
-	private static OutputModel analyseModel(ModelSpec modelSpec) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 
 	/**
 	 * This method converts the model file sent by the frontend into the ModelSpecPojo in order to be analysed
@@ -112,14 +85,4 @@ public class SolveModelTest {
 			throw new RuntimeException("Error in convertModelFromFile() method: /n" + e.getMessage());
 		}
 	}
-
-	/**
-	 * Print the a help for input arguments
-	 */
-	private static void printHelp() {
-		System.out.println("Arguments:");
-		System.out.println("[-f] input filename.");
-		System.out.println("Example: java -jar modelsolver.jar -f name_of_file_withou_extension");
-	}
-
 }

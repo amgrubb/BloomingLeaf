@@ -23,6 +23,7 @@ import org.jacop.search.Search;
 import org.jacop.search.SelectChoicePoint;
 import org.jacop.search.SimpleSelect;
 
+import interface_objects.OutputModel;
 import simulation_objects.Actor;
 import simulation_objects.Contribution;
 import simulation_objects.ContributionType;
@@ -1612,5 +1613,18 @@ public class TroposCSPAlgorithm {
 				System.err.println("Stack trace: ");
 				e.printStackTrace(System.err);
 		}
+	}
+
+	/**
+	 * This method is responsible to execute the analysis.
+	 * @param modelSpec ModelSpec class
+	 * @return OutputModel class that should be shown in the frontend for the user
+	 */
+	public static OutputModel solveModel(ModelSpec modelSpec) {
+		TroposCSPAlgorithm algo = new TroposCSPAlgorithm(modelSpec);
+		//TODO: Assign results from analysis to an OutputObject type (not defined yet). 
+		// This OutputObject should will be sent to frontend to be worked
+
+		return null;
 	}
 }
