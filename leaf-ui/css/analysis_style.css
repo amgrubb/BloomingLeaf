@@ -72,7 +72,8 @@
 .abs-table {
     font-family: arial, sans-serif;
     border-collapse: collapse;
-    width: 100%;
+    width: 90%;
+    margin: auto;
 }
 
 .abs-table td, .abs-table th {
@@ -83,4 +84,10 @@
 
 .abs-table tr:nth-child(even) {
     background-color: #dddddd;
+}
+
+.abs-table tr td input {
+    width: 4em;
+    font-size: 100%;
+    color: black;
 }

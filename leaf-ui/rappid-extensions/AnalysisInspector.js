@@ -45,7 +45,7 @@ var AnalysisInspector = Backbone.View.extend({
 		      	    '<td>A</td>',
 		      	    '<td>RC</td>',
 		      	    '<td>Go to school</td>',
-		      	    '<td>None</td>',
+		      	    '<td><input type="text" name="sth" value="None"></td>',
 		      	    '<td><button> Unassign </button></td>',
 		      	  '</tr>',
 		      	'</table>',
@@ -64,7 +64,7 @@ var AnalysisInspector = Backbone.View.extend({
 		      	    '<td>makes|breaks</td>',
 		      	    '<td>Node name A</td>',
 		      	    '<td>Node name B</td>',
-		      	    '<td>5</td>',
+		      	    '<td><input type="text" name="sth" value="5"></td>',
 		      	    '<td><button> Unassign </button></td>',
 		      	  '</tr>',
 		      	'</table>',
@@ -75,27 +75,6 @@ var AnalysisInspector = Backbone.View.extend({
 		  '</div>',
 
 		'</div>',
-		'<br>',
-
-		// '<label class="sub-label">Absolute Values</label>',
-		// '<select id="abs-vals" class="sub-label">',
-		// 	'<option value=default disabled selected> List Absolute Values</option>',
-	 //        '<option value=S> A</option>',
-	 //        '<option value=M> B</option>',
-	 //        '<option value=W> C</option>',
-	 //        '<option value=N> D</option>',
-		// '</select>',
-		// '<label class="sub-label"> Time </label>',
-		// '<input id="num-rel-time" class="sub-label sub-input" type="number" min="0" max="20" step="1" value="0" width="100px"/>',
-		// '<button id="btn-assign-time" class="green-btn sub-btn"> Assign </button>',
-		// '<label class="sub-label">Assigned Values</label>',
-		// '<select id="assigned-vals" class="sub-label" multiple="yes">',
-	 //        '<option value=S> A</option>',
-	 //        '<option value=M> B</option>',
-	 //        '<option value=W> C</option>',
-	 //        '<option value=N> D</option>',
-		// '</select>',
-		// '<button id="btn-del-assignment" class="analysis-btns inspector-btn sub-label red-btn">Delete Selected Assignment</button>',
 		'<br>',
 		'<hr>',
 		'<button id="btn-solve-single-path" class="analysis-btns inspector-btn sub-label green-btn">Solve Single Path</button>',
@@ -266,10 +245,59 @@ var AnalysisInspector = Backbone.View.extend({
 			document.getElementById("hidden").setAttribute("style", "display:none");
 		}
 	},
+
+	clear: function(e){
+		this.$el.html('');
+	},
+	/********************** Modal box related ****************************/
+
 	// Display modal box that has a list of absolute values
 	loadModalBox: function(e){
 		var modal = document.getElementById('myModal');
+		// Clear all previous table entries
+		$(".abs-table").find("tr:gt(0)").remove();
+
+
+		var btn_html = '<td><button> Unassign </button></td>';
 		modal.style.display = "block";
+		// Get a list of nodes
+		// Populate non UD element only
+		var elements = graph.getElements();
+		var links = graph.getLinks();
+
+		for (var i = 0; i < elements.length; i ++){
+			var cellView = elements[i].findView(paper);
+			var cell = cellView.model;
+			var func = cell.attr('.funcvalue').text;
+			var name = cell.attr('.name').text;
+			if(func != 'UD'){
+				$('#node-list').append('<tr><td>' + 'A' + '</td><td>' + func + '</td><td>' + name + 
+					'</td><td><input type="text" name="sth" value="None"</td>' + btn_html + '</tr>');
+
+			}
+			// console.log(cell.attr('.constraints').function);
+		}
+		// Populate UD element
+		for (var i = 0; i < elements.length; i ++){
+			var cellView = elements[i].findView(paper);
+			var cell = cellView.model;
+			var func = cell.attr('.funcvalue').text;
+			var name = cell.attr('.name').text;
+			if(func == 'UD'){
+				var fun_len = cell.attr('.constraints').function.length;
+				var current_something = 'A';
+				for (var j = 0; j < fun_len; j++){
+					$('#node-list').append('<tr><td>' + current_something + '</td><td>' + func + '</td><td>' + name + 
+						'</td><td><input type="text" name="sth" value="None"</td>' + btn_html + '</tr>');
+					current_something = String.fromCharCode(current_something.charCodeAt(0) + 1);
+				}
+
+
+			}
+		}
+
+		// Get a list of links
+
 
 
 	},
@@ -277,9 +305,7 @@ var AnalysisInspector = Backbone.View.extend({
 	dismissModalBox: function(e){
 		var modal = document.getElementById('myModal');
 		modal.style.display = "none";
-	},
 
-	clear: function(e){
-		this.$el.html('');
 	}
+
 });
