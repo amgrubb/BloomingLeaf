@@ -227,16 +227,6 @@ function getFrontendModel(){
 
 	var allStatesModel = [];
 	
-	function StatesModel(){
-		this.intentionElements = [];
-		this.time;
-	};
-	
-	function IntentionElement(){
-		this.id;
-		this.status = [];
-	};
-
 	for(var i_time = 0; i_time < time; i_time++){
 		var stateModel = new StatesModel();
 		stateModel.time = i_time;
@@ -275,9 +265,7 @@ function getFrontendModel(){
 		}
 		allStatesModel.push(stateModel);
 	}
-	
-	console.log(allStatesModel);
-	
+
 	var frontendModel = new FrontendModel(
 			data_actors,
 			data_intentions,

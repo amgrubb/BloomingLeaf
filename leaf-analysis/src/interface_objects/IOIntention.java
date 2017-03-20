@@ -1,6 +1,6 @@
-package interface_object;
+package interface_objects;
 
-public class IntentionElements {
+public class IOIntention {
 
 	String id;
 	boolean[] status;
@@ -20,6 +20,5 @@ public class IntentionElements {
 	public void setStatus(boolean[] status) {
 		this.status = status;
 	}
-	
 	
 }

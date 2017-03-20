@@ -1,22 +1,30 @@
-package interface_object;
+package interface_objects;
 
-public class FrontendObject {
-	Model model = new Model();
-	Analysis analysis = new Analysis();
+
+/**
+ * This class is responsible to get all required input for the analysis.
+ * The model elements in the model attribute. Class related: InputModel.
+ * The analysis information in the analysis attribute.Class related: InputAnalysis.
+ * @author marcel
+ *
+ */
+public class InputObject {
+	InputModel model = new InputModel();
+	InputAnalysis analysis = new InputAnalysis();
 	
-	public Model getModel() {
+	public InputModel getModel() {
 		return model;
 	}
 	
-	public void setModel(Model model) {
+	public void setModel(InputModel model) {
 		this.model = model;
 	}
 	
-	public Analysis getAnalysis() {
+	public InputAnalysis getAnalysis() {
 		return analysis;
 	}
 	
-	public void setAnalysis(Analysis analysis) {
+	public void setAnalysis(InputAnalysis analysis) {
 		this.analysis = analysis;
 	}
 

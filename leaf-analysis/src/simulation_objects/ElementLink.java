@@ -1,13 +1,13 @@
 /**
  * 
  */
-package simulation;
+package simulation_objects;
 
 /**
  * @author A.M.Grubb
  *
  */
-public class ElementLink extends ModelElement {
+public class ElementLink {
 	LinkableElement src = null;
 	LinkableElement dest = null;
 	String type = "link";

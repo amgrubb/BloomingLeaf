@@ -1,26 +1,22 @@
-package interface_object;
+package interface_objects;
 
 import java.util.List;
 
-public class StateModel {
-	List<IntentionElements> intentionElements;
-	int time;
+/**
+ * This class represents all states from the intentional elements.
+ * @author marcel
+ *
+ */
+public class IOStateModel {
+	List<IOIntention> intentionElements;
 	
-	public List<IntentionElements> getIntentionElements() {
+	public List<IOIntention> getIntentionElements() {
 		return intentionElements;
 	}
 	
-	public void setIntentionElements(List<IntentionElements> intentionElements) {
+	public void setIntentionElements(List<IOIntention> intentionElements) {
 		this.intentionElements = intentionElements;
 	}
-	
-	public int getTime() {
-		return time;
-	}
-	
-	public void setTime(int time) {
-		this.time = time;
-	}
-	
+		
 }
 	

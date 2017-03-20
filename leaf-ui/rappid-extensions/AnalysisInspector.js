@@ -76,7 +76,6 @@ var AnalysisInspector = Backbone.View.extend({
 		var js_object = {};
 		js_object.analysis = analysisObject;
 		js_object.model = frontModel;
-		console.log(JSON.stringify(js_object));
 		//Send data to backend
 		backendCom(js_object);
 		

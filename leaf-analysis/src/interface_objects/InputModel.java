@@ -1,60 +1,66 @@
-package interface_object;
+package interface_objects;
 
 import java.util.List;
 
-public class Model {
-	private List<IOActor> actors;
-	private List<IOIntention> intentions;
-	private List<IOLink> links;
-	private List<IODynamic> dynamics;
-	private List<IOConstraint> constraints;
-    private List<StateModel> allStatesModel;
+/**
+ * Class that represents the model got from the frontend.
+ * This class must be processed to the backend model for the analysis.
+ * @author marcel
+ *
+ */
+public class InputModel {
+	private List<InputActor> actors;
+	private List<InputIntention> intentions;
+	private List<InputLink> links;
+	private List<InputDynamic> dynamics;
+	private List<InputConstraint> constraints;
+    private List<IOStateModel> allStatesModel;
 	
-	public List<IOActor> getActors() {
+	public List<InputActor> getActors() {
 		return actors;
 	}
 	
-	public void setActors(List<IOActor> actors) {
+	public void setActors(List<InputActor> actors) {
 		this.actors = actors;
 	}
 	
-	public List<IOIntention> getIntentions() {
+	public List<InputIntention> getIntentions() {
 		return intentions;
 	}
 	
-	public void setIntentions(List<IOIntention> intentions) {
+	public void setIntentions(List<InputIntention> intentions) {
 		this.intentions = intentions;
 	}
 	
-	public List<IOLink> getLinks() {
+	public List<InputLink> getLinks() {
 		return links;
 	}
 	
-	public void setLinks(List<IOLink> links) {
+	public void setLinks(List<InputLink> links) {
 		this.links = links;
 	}
 	
-	public List<IODynamic> getDynamics() {
+	public List<InputDynamic> getDynamics() {
 		return dynamics;
 	}
 	
-	public void setDynamics(List<IODynamic> dynamics) {
+	public void setDynamics(List<InputDynamic> dynamics) {
 		this.dynamics = dynamics;
 	}
 	
-	public List<IOConstraint> getConstraints() {
+	public List<InputConstraint> getConstraints() {
 		return constraints;
 	}
 	
-	public void setConstraints(List<IOConstraint> constraints) {
+	public void setConstraints(List<InputConstraint> constraints) {
 		this.constraints = constraints;
 	}
 
-	public List<StateModel> getAllStatesModel() {
+	public List<IOStateModel> getAllStatesModel() {
 		return allStatesModel;
 	}
 
-	public void setAllStatesModel(List<StateModel> allStatesModel) {
+	public void setAllStatesModel(List<IOStateModel> allStatesModel) {
 		this.allStatesModel = allStatesModel;
 	}
 	

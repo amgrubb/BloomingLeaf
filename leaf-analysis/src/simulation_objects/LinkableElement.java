@@ -1,7 +1,7 @@
 /**
  * 
  */
-package simulation;
+package simulation_objects;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.ListIterator;
  * @author A.M.Grubb
  *
  */
-public abstract class LinkableElement extends ModelElement {
+public abstract class LinkableElement{
     String name = "NAME";
     String id = "NO-ID";
     List<ElementLink> linksSrc = new ArrayList<ElementLink>();
@@ -114,12 +114,6 @@ public abstract class LinkableElement extends ModelElement {
 	public List<ElementLink> getLinksDest() {
 		return linksDest;
 	}
-//	public int getLinksSrcSize() {
-//		return linksSrc.size();
-//	}
-//	public int getLinksDestSize() {
-//		return linksDest.size();
-//	}
 
 	/**
 	 * @param linksDest the linksDest to set

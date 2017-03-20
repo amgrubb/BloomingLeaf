@@ -1,6 +1,6 @@
-package interface_object;
+package interface_objects;
 
-public class IODynamic{
+public class InputDynamic{
 	private String intentionID;
 	private String dynamicType;
 	private String markedValue;

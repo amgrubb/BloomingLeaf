@@ -6,9 +6,9 @@ import java.io.PrintWriter;
 
 import com.google.gson.Gson;
 
-import interface_object.FrontendObject;
-import interface_object.IONode;
-import interface_object.IOOutput;
+import interface_objects.InputObject;
+import interface_objects.OutputModel;
+import simulation_objects.ModelSpec;
 
 /**
  * SolveModelTest 
@@ -46,7 +46,7 @@ public class SolveModelTest {
 		
 		try {
 			//creating the backend model to be analysed
-			FrontendModel modelSpec = convertModelFromFile(filePath+fileName);
+			ModelSpec frontendModel = convertModelFromFile(filePath+fileName);
 			//Creating a file to see what was received
 			//createOutputFile(modelSpec, "output.out");
 			//TODO: analyse the model
@@ -67,7 +67,7 @@ public class SolveModelTest {
 	 * @param filePath
 	 * Name of the file to be read by CGI to be sent to frontend
 	 */
-	private static void createOutputFile(FrontendModel commOutput, String fileName) {
+	private static void createOutputFile(ModelSpec commOutput, String fileName) {
 		Gson gson = new Gson();		
 		//Need to create the file and folder if doesn't exist
 		String outputFile = "/home/marcel/UofT/" + fileName + ".out";
@@ -89,47 +89,9 @@ public class SolveModelTest {
 	 * @param modelSpec
 	 * @return
 	 */
-	private static IOOutput analyseModel(FrontendModel modelSpec) {
-		//TEST Here I created a simple output as a test
-		IOOutput ioOutput = new IOOutput();
-		int[] absoluteTime = {0, 1, 10, 20, 27};
-		int[] relativeTime = {0, 1, 2, 3, 4}; 
-		
-		IONode node01 = new IONode();
-		node01.setId(0);
-		node01.getStates().add("0010");
-		node01.getStates().add("0010");
-		node01.getStates().add("0010");
-		node01.getStates().add("0010");
-		node01.getStates().add("0010");
-		
-		ioOutput.getNodes().add(node01);
-
-		IONode node02 = new IONode();
-		node02.setId(1);
-		node02.getStates().add("0100");
-		node02.getStates().add("1100");
-		node02.getStates().add("0010");
-		node02.getStates().add("1100");
-		node02.getStates().add("1100");
-
-		ioOutput.getNodes().add(node02);
-
-		IONode node03 = new IONode();
-		node03.setId(2);
-		node03.getStates().add("0010");
-		node03.getStates().add("0010");
-		node03.getStates().add("0100");
-		node03.getStates().add("0010");
-		node03.getStates().add("0010");
-
-		ioOutput.getNodes().add(node03);
-		
-		ioOutput.setAbsoluteTime(absoluteTime);
-		ioOutput.setRelativeTime(relativeTime);
-		
+	private static OutputModel analyseModel(ModelSpec modelSpec) {
 		// TODO Auto-generated method stub
-		return ioOutput;
+		return null;
 	}
 
 
@@ -140,11 +102,11 @@ public class SolveModelTest {
 	 * @return
 	 * ModelSpecPojo backend model
 	 */
-	private static FrontendModel convertModelFromFile(String filePath) {
+	private static ModelSpec convertModelFromFile(String filePath) {
 		try{
 		Gson gson = new Gson();		
-		FrontendObject frontendObject = gson.fromJson(new FileReader(filePath), FrontendObject.class);
-		FrontendModel modelSpec = ModelSpecBuilder.buildModelSpec(frontendObject);
+		InputObject frontendObject = gson.fromJson(new FileReader(filePath), InputObject.class);
+		ModelSpec modelSpec = ModelSpecBuilder.buildModelSpec(frontendObject);
 		return modelSpec;
 		}catch(Exception e){
 			throw new RuntimeException("Error in convertModelFromFile() method: /n" + e.getMessage());

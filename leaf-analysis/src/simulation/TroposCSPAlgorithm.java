@@ -23,6 +23,20 @@ import org.jacop.search.Search;
 import org.jacop.search.SelectChoicePoint;
 import org.jacop.search.SimpleSelect;
 
+import simulation_objects.Actor;
+import simulation_objects.Contribution;
+import simulation_objects.ContributionType;
+import simulation_objects.Decomposition;
+import simulation_objects.DecompositionType;
+import simulation_objects.Dependency;
+import simulation_objects.ElementLink;
+import simulation_objects.EpochConstraint;
+import simulation_objects.IntentionalElement;
+import simulation_objects.IntentionalElementDynamicType;
+import simulation_objects.ModelSpec;
+import simulation_objects.UDFunction;
+import simulation_objects.UDFunctionCSP;
+
 public class TroposCSPAlgorithm {
 	public TroposCSPAlgorithm(ModelSpec spec) {
 		this(spec, true);
@@ -121,17 +135,17 @@ public class TroposCSPAlgorithm {
     	for (int i = 0; i < this.intentions.length; i++){
     		IntentionalElement element = this.intentions[i];
     		  		
-        	if ((element.dynamicType == IntentionalElementDynamicType.NT) || (element.dynamicType == IntentionalElementDynamicType.CONST) ||
-        			(element.dynamicType == IntentionalElementDynamicType.INC) || (element.dynamicType == IntentionalElementDynamicType.DEC) ||
-        			(element.dynamicType == IntentionalElementDynamicType.RND))	// Dynamic function contains no EB.
+        	if ((element.getDynamicType() == IntentionalElementDynamicType.NT) || (element.getDynamicType() == IntentionalElementDynamicType.CONST) ||
+        			(element.getDynamicType() == IntentionalElementDynamicType.INC) || (element.getDynamicType() == IntentionalElementDynamicType.DEC) ||
+        			(element.getDynamicType() == IntentionalElementDynamicType.RND))	// Dynamic function contains no EB.
         		continue;
-        	else if ((element.dynamicType == IntentionalElementDynamicType.SD) || (element.dynamicType == IntentionalElementDynamicType.DS) ||
-        			(element.dynamicType == IntentionalElementDynamicType.CR) || (element.dynamicType == IntentionalElementDynamicType.RC) ||
-        			(element.dynamicType == IntentionalElementDynamicType.MONP) || (element.dynamicType == IntentionalElementDynamicType.MONN)) {
+        	else if ((element.getDynamicType() == IntentionalElementDynamicType.SD) || (element.getDynamicType() == IntentionalElementDynamicType.DS) ||
+        			(element.getDynamicType() == IntentionalElementDynamicType.CR) || (element.getDynamicType() == IntentionalElementDynamicType.RC) ||
+        			(element.getDynamicType() == IntentionalElementDynamicType.MONP) || (element.getDynamicType() == IntentionalElementDynamicType.MONN)) {
         		this.numEpochs ++;
         		IntVar newEpoch = new IntVar(store, "E" + element.getId(), 1, maxTime);	
         		this.epochCollection.put(element, new IntVar[]{newEpoch});
-        	} else if (element.dynamicType == IntentionalElementDynamicType.UD){
+        	} else if (element.getDynamicType() == IntentionalElementDynamicType.UD){
         		UDFunctionCSP funcUD = element.getCspUDFunct();
         		char[] charEB = funcUD.getElementEBs();
         		IntVar[] epochsUD = new IntVar[charEB.length - 1];
@@ -142,7 +156,7 @@ public class TroposCSPAlgorithm {
         		for (int u = 1; u < epochsUD.length; u++)
         			constraints.add(new XltY(epochsUD[u-1], epochsUD[u]));       			
 
-        		int[] absoluteDifferences = funcUD.absoluteEpochLengths; 
+        		int[] absoluteDifferences = funcUD.getAbsoluteEpochLengths(); 
         		if (absoluteDifferences != null){
         			int count = 0;
         			for (int u = funcUD.getMapStart() - 1; u < funcUD.getMapEnd() - 1; u++){
@@ -157,7 +171,7 @@ public class TroposCSPAlgorithm {
         		}
         		
         	} else
-        		System.err.println("TroposCSPAlgorithm: Dynamic type not found for " + element.name);
+        		System.err.println("TroposCSPAlgorithm: Dynamic type not found for " + element.getName());
     	}
     	
     	// Step 2: Create constraints between epochs.
@@ -168,7 +182,7 @@ public class TroposCSPAlgorithm {
     		EpochConstraint etmp = ec.next();
     		String eCont = etmp.getType();
     		if (eCont.equals("A")) {	//Absolute Time Point
-    			IntVar[] srcArray = this.epochCollection.get(etmp.src);
+    			IntVar[] srcArray = this.epochCollection.get(etmp.getSrc());
     			IntVar src;
     			int etmpTime = etmp.getAbsoluteTime();
     			if (srcArray.length == 1)		//Could be helper function. TODO Deal with this helper function and UD functions!!!
@@ -196,8 +210,8 @@ public class TroposCSPAlgorithm {
     		EpochConstraint etmp = ec.next();
     		String eCont = etmp.getType();
     		if (eCont.equals("=")){
-    			IntVar[] srcArray = this.epochCollection.get(etmp.src);
-    			IntVar[] destArray = this.epochCollection.get(etmp.dest);
+    			IntVar[] srcArray = this.epochCollection.get(etmp.getSrc());
+    			IntVar[] destArray = this.epochCollection.get(etmp.getDest());
     			IntVar src;
     			IntVar dest;
     			if (srcArray.length == 1)		//Could be helper function.
@@ -244,8 +258,8 @@ public class TroposCSPAlgorithm {
     		EpochConstraint etmp = ec.next();
     		String eCont = etmp.getType();
 			if (eCont.equals("<")){
-    			IntVar[] srcArray = this.epochCollection.get(etmp.src);
-    			IntVar[] destArray = this.epochCollection.get(etmp.dest);
+    			IntVar[] srcArray = this.epochCollection.get(etmp.getSrc());
+    			IntVar[] destArray = this.epochCollection.get(etmp.getDest());
     			IntVar src;
     			IntVar dest;
     			if (srcArray.length == 1)		//Could be helper function.
@@ -418,8 +432,8 @@ public class TroposCSPAlgorithm {
 	private void initializeDynamicFunctions() {		//Full Model
     	for (int i = 0; i < this.intentions.length; i++){
     		IntentionalElement element = this.intentions[i];
-    		IntentionalElementDynamicType tempType = element.dynamicType;
-        	if ((tempType == IntentionalElementDynamicType.NT) || (element.dynamicType == IntentionalElementDynamicType.RND))
+    		IntentionalElementDynamicType tempType = element.getDynamicType();
+        	if ((tempType == IntentionalElementDynamicType.NT) || (element.getDynamicType() == IntentionalElementDynamicType.RND))
         		continue;
  
     		IntVar[] epochs = this.epochCollection.get(element);
@@ -1139,8 +1153,8 @@ public class TroposCSPAlgorithm {
 		// Assume only two time points, current with set values, and next state.
 		for (int i = 0; i < elementList.length; i++){
 			IntentionalElement element = elementList[i];
-			IntentionalElementDynamicType tempType = element.dynamicType;
-			if ((tempType == IntentionalElementDynamicType.NT) || (element.dynamicType == IntentionalElementDynamicType.RND))
+			IntentionalElementDynamicType tempType = element.getDynamicType();
+			if ((tempType == IntentionalElementDynamicType.NT) || (element.getDynamicType() == IntentionalElementDynamicType.RND))
 				continue;
 
 			IntVar[] epochs = epochCollection.get(element);
@@ -1405,13 +1419,13 @@ public class TroposCSPAlgorithm {
     	// Print out Values.
     	for (int i = 0; i < this.intentions.length; i++){
     		IntentionalElement element = this.intentions[i];
-    		System.out.print(element.id + ":\t");
+    		System.out.print(element.getId() + ":\t");
     		for (int t = 0; t < this.values[i].length; t++){
         		for (int v = 0; v < this.values[i][t].length; v++)
         			System.out.print(this.values[i][indexOrder[t]][v].value());
         		System.out.print("\t");
     		}
-    		System.out.println(element.name + "\t" + element.dynamicType.toString());
+    		System.out.println(element.getName() + "\t" + element.getDynamicType().toString());
     	} 
     	
     	// Print out intention epoch values.
@@ -1507,12 +1521,12 @@ public class TroposCSPAlgorithm {
 			System.out.println("\nOriginal Model - Time: " + currentTime);
 			for (int i = 0; i < this.intentions.length; i++){
 				IntentionalElement element = this.intentions[i];
-				System.out.print(element.id + ":\t");
+				System.out.print(element.getId() + ":\t");
 				for (int v = 0; v < 4; v++){
 					System.out.print(label.getSolution(solNum)[solIndex]);
 					solIndex++;
 				}
-				System.out.println("\t" + element.name + "\t" + element.dynamicType.toString());
+				System.out.println("\t" + element.getName() + "\t" + element.getDynamicType().toString());
 			}  	
 
 			
@@ -1520,12 +1534,12 @@ public class TroposCSPAlgorithm {
 			System.out.println("\nNext State");
 			for (int i = 0; i < this.intentions.length; i++){
 				IntentionalElement element = this.intentions[i];
-				System.out.print(element.id + ":\t");
+				System.out.print(element.getId() + ":\t");
 				for (int v = 0; v < 4; v++){
 					System.out.print(label.getSolution(solNum)[solIndex]);
 					solIndex++;
 				}
-				System.out.println("\t" + element.name + "\t" + element.dynamicType.toString());
+				System.out.println("\t" + element.getName() + "\t" + element.getDynamicType().toString());
 			}  
     	}
 	}
@@ -1593,59 +1607,10 @@ public class TroposCSPAlgorithm {
 				}
 			}
 			
-			// Version 1
-//			String filename = "";
-//			ModelSpec model = null;
-//
-//			filename = FILENAME;
-//			model = new ModelSpec(filename);
-//			if (model != null){
-//				TroposCSPAlgorithm algo = new TroposCSPAlgorithm(model);
-//				Search<IntVar> label = new DepthFirstSearch<IntVar>();
-//				if(!algo.genericFindSolution(false, algo.store, label, algo.constraints, algo.createFullModelVarList()))
-//					System.out.println("Found Solution = False");
-//				else {
-//					System.out.println("Found Solution = True");
-//					int[] timeOrder = algo.createTimePointOrder();
-//					algo.printSingleSolution(timeOrder);
-//					algo.saveSolution(timeOrder);
-//					
-//					if (allowExplore){
-//						System.out.println("\nEnter the time step number you would like to explore (or enter to exit):");
-//						BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-//						String selection = bufferedReader.readLine();
-//
-//						if (!selection.equals("")){
-//							int numChoice = Integer.parseInt(selection);
-//							algo.exploreState(numChoice, timeOrder);
-//						}
-//						//algo.exploreState(1, timeOrder);
-//					}
-//				}
-//			}
 		} catch (Exception e) {
-			try{
 				System.err.println("Unknown Exception: " + e.getMessage());
 				System.err.println("Stack trace: ");
 				e.printStackTrace(System.err);
-
-//				Date d = new Date();
-//				String formatted = new SimpleDateFormat ("yyyy-MM-dd:HH-mm-ss").format (d);
-//				File file = new File("Simulation-Error"+formatted+".out");
-//				if (!file.exists()) {
-//					file.createNewFile();
-//				}
-//				PrintWriter pw = new PrintWriter(file);
-//				pw.println(e.getMessage());
-//				e.printStackTrace(pw);
-//				pw.close();			
-//				System.exit(1);
-			}  catch (Exception e1) {
-				System.err.println("Unknown Exception: " + e1.getMessage());
-				System.err.println("Stack trace: ");
-				e1.printStackTrace(System.err);
-			}
-
 		}
 	}
 }

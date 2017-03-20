@@ -1,6 +1,6 @@
-package interface_object;
+package interface_objects;
 
-public class IOLink{
+public class InputLink{
 	private String linkType;
 	private String linkSrcID;
 	private String linkDestID;

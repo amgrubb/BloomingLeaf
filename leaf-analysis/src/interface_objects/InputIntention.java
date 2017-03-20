@@ -1,6 +1,6 @@
-package interface_object;
+package interface_objects;
 
-public class IOIntention{
+public class InputIntention{
 	private String nodeActorID;
 	private String nodeID;
 	private String nodeType;

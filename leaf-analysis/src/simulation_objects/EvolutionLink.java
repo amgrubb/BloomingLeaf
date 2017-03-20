@@ -1,4 +1,4 @@
-package simulation;
+package simulation_objects;
 
 import java.util.Random;
 
@@ -7,8 +7,6 @@ public class EvolutionLink extends ElementLink {
 	private ElementLink postLink;
 	private static Random rand = new Random();
 	int EB;
-	
-	
 	
 	public ElementLink getPreLink() {
 		return preLink;

@@ -58,7 +58,6 @@
                 <a onclick="window.open('documentation.pdf'); return false;">Documentation</a>
                 <a onclick="window.open('legend.html', 'newwindow', 'width=300, height=250'); return false;">
                 Legend</a>
-				<a onclick="backendCom()">Test Backend COM</a>
               </div>
             </div>
 
@@ -127,19 +126,24 @@
 		<script src="./js/backendComm.js"></script>
 		<script src="./js/analysisComm.js"></script>
 		
-		<!-- OBJECTS to backend communication -->
-		<script src="./js/object/AnalysisObject.js"></script>
-		<script src="./js/object/IOActor.js"></script>
-		<script src="./js/object/IOConstraint.js"></script>
-		<script src="./js/object/IODynamic.js"></script>
-		<script src="./js/object/IOHistory.js"></script>
-		<script src="./js/object/IOIntention.js"></script>
-		<script src="./js/object/IOLink.js"></script>
-		<script src="./js/object/IONode.js"></script>
-		<script src="./js/object/IOOutput.js"></script>
+		<!-- OBJECTS to be sent to backend communication -->
+		<script src="./js/object/InputAnalysis.js"></script>
+		<script src="./js/object/InputModel.js"></script>
 		
-		<script src="./js/object/FrontendModel.js"></script>
-
+		<script src="./js/object/InputActor.js"></script>
+		<script src="./js/object/InputConstraint.js"></script>
+		<script src="./js/object/InputDynamic.js"></script>
+		<script src="./js/object/InputIntention.js"></script>
+		<script src="./js/object/InputLink.js"></script>
+		
+		<!-- Objects used in both ways communication -->
+		<script src="./js/object/IOIntention.js"></script>
+		<script src="./js/object/IOStatesModel.js"></script>
+		
+		<!-- Objects received from backend  -->
+		<script src="./js/object/OutputModel.js"></script>
+		
+		
         <div class = "attribution">
             <img src=http://upload.wikimedia.org/wikipedia/en/0/04/Utoronto_coa.svg style="width:25%;height:25%;float:left">
             <br>

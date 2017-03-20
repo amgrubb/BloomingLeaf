@@ -1,14 +1,14 @@
-package interface_object;
+package interface_objects;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class IOOutput {
+public class OutputModel {
 
 	boolean foundSolution = false;
 	int[] relativeTime;
 	int[] absoluteTime;
-	List<IONode> nodes = new ArrayList<>();
+	List<IOStateModel> statesModels = new ArrayList<>();
 	
 	public boolean isFoundSolution() {
 		return foundSolution;
@@ -33,13 +33,13 @@ public class IOOutput {
 	public void setAbsoluteTime(int[] absoluteTime) {
 		this.absoluteTime = absoluteTime;
 	}
-	
-	public List<IONode> getNodes() {
-		return nodes;
+
+	public List<IOStateModel> getStateModels() {
+		return statesModels;
 	}
-	
-	public void setNodes(List<IONode> nodes) {
-		this.nodes = nodes;
+
+	public void setStateModels(List<IOStateModel> stateModels) {
+		this.statesModels = stateModels;
 	}
 	
 }

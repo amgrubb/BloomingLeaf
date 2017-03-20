@@ -1,6 +1,6 @@
-package interface_object;
+package interface_objects;
 
-public class Analysis {
+public class InputAnalysis {
 	String maxAbsTime;
 	String conflictLevel;
 	String numRelTime;

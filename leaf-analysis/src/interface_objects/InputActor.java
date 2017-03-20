@@ -1,6 +1,6 @@
-package interface_object;
+package interface_objects;
 
-public class IOActor{
+public class InputActor{
 	private String nodeId;
 	private String nodeName;
 	private String nodeType;

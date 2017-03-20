@@ -1,6 +1,6 @@
-package interface_object;
+package interface_objects;
 
-public class IOConstraint{
+public class InputConstraint{
 	private String constraintType;
 	private String constraintSrcID;
 	private String constraintSrcEB;

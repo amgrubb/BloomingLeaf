@@ -1,8 +1,6 @@
-function IOAnalysis(foundSolution = false, relativeTime, absoluteTime, nodes, links, epochPoints = null){
+function IOAnalysis(foundSolution = false, relativeTime, absoluteTime, statesModels){
 	this.foundSolution = foundSolution;
 	this.relativeTime = relativeTime;
 	this.absoluteTime = absoluteTime;
-	this.nodes = nodes;
-	this.links = links;
-	this.epochPoints = epochPoints;
+	this.statesModels = statesModels;
 }
