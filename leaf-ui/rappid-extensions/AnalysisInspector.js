@@ -48,8 +48,7 @@ var AnalysisInspector = Backbone.View.extend({
 		      	    '<th>Link Type</th>',
 		      	    '<th>Source Node name</th>',
 		      	    '<th>Dest Node name</th>',
-		      	    '<th>Assigned Time</th>',
-		      	    '<th>Action</th>',
+
 		      	  '</tr>',
 		      	'</table>',
 		    '</div>',
@@ -90,7 +89,9 @@ var AnalysisInspector = Backbone.View.extend({
 		'click #clear-query-btn': 'clearQuery',
 		'click #btn-view-assignment': 'loadModalBox',
 		'click .close': 'dismissModalBox',
-		'click .unassign-btn': 'unassignValue'
+		'click .unassign-btn': 'unassignValue',
+		'click #btn-save-assignment': 'saveAssignment',
+		'click #btn-solve-single-path': 'solvePath'
 
 	},
 
@@ -255,12 +256,21 @@ var AnalysisInspector = Backbone.View.extend({
 			var cell = cellView.model;
 			var func = cell.attr('.funcvalue').text;
 			var name = cell.attr('.name').text;
+			var assigned_time = cell.attr('.assigned_time');
 			if(func != 'UD'){
+				// If no assigned_time in the node, save 'None' into the node
+				if (!assigned_time){
+					cell.attr('.assigned_time', {0: 'None'});
+
+				}
+				assigned_time = cell.attr('.assigned_time')[0];
+
 				$('#node-list').append('<tr><td>' + 'A' + '</td><td>' + func + '</td><td>' + name + 
-					'</td><td><input type="text" name="sth" value="None"</td>' + btn_html + '</tr>');
+					'</td><td><input type="text" name="sth" value="' + assigned_time + '"></td>' + btn_html + 
+					'<input type="hidden" name="id" value="' + cell.id + '"> </td> </tr>');
 
 			}
-			// console.log(cell.attr('.constraints').function);
+			console.log(cell);
 		}
 		// Populate UD element
 		for (var i = 0; i < elements.length; i ++){
@@ -268,15 +278,29 @@ var AnalysisInspector = Backbone.View.extend({
 			var cell = cellView.model;
 			var func = cell.attr('.funcvalue').text;
 			var name = cell.attr('.name').text;
+			var assigned_time = cell.attr('.assigned_time');
+
 			if(func == 'UD'){
 				var fun_len = cell.attr('.constraints').function.length;
 				var current_something = 'A';
+				// If no assigned_time in the node, save 'None' into the node
+				if (!assigned_time){
+					cell.attr('.assigned_time', {0: 'None'});
+					assigned_time = cell.attr('.assigned_time');
+				}
+				// If the length of assigned_time does not equal to the fun_len, add none until they are equal
+				var k = 0;
+				while (Object.keys(assigned_time).length < fun_len){
+					cell.attr('.assigned_time')[k] = 'None';
+					assigned_time = cell.attr('.assigned_time');
+					k ++;
+				}
 				for (var j = 0; j < fun_len; j++){
 					$('#node-list').append('<tr><td>' + current_something + '</td><td>' + func + '</td><td>' + name + 
-						'</td><td><input type="text" name="sth" value="None"</td>' + btn_html + '</tr>');
+						'</td><td><input type="text" name="sth" value=' +assigned_time[j] + '></td>' + btn_html + 
+						'<input type="hidden" name="id" value="' + cell.id + '_' + j + '"> </td> </tr>');
 					current_something = String.fromCharCode(current_something.charCodeAt(0) + 1);
 				}
-
 
 			}
 		}
@@ -297,7 +321,7 @@ var AnalysisInspector = Backbone.View.extend({
 				var target_name = target.attr('.name').text;
 				var link_type = link.get('labels')[0].attrs.text.text;
 				$('#link-list').append('<tr><td>' + link_type + '</td><td>' + source_name + '</td><td>' + target_name +
-					'</td><td><input type="text" name="sth" value="None"</td>' + btn_html + '</tr>');
+					'</td></tr>');
 			}
 
 		}		
@@ -315,8 +339,75 @@ var AnalysisInspector = Backbone.View.extend({
 	unassignValue: function(e){
 		var button = e.target;
 		var row = $(button).closest('tr');
-		var assigned_time = row.find('input');
+		var assigned_time = row.find('input[type=text]');
 		$(assigned_time).val('None');
-	}
+	},
+	// Update all nodes with the updated assigned time
+	// TODO: Check if the times users put in are valid
+	saveAssignment: function(e){
+		$.each($('#node-list').find("tr input[type=text]"), function(){
+			var new_time = $(this).val();
+			var row = $(this).closest('tr');
+			var func_value = row.find('td:nth-child(2)').html();
+			var id = row.find('input[type=hidden]').val();
+			// If func is not UD, just find the cell and update it
+			if (func_value != 'UD'){
+				var cell = graph.getCell(id);
+				cell.attr('.assigned_time')[0] = new_time;
+			}
+			// If func is UD, extract the index i from id, and update i-th assigned time of the node
+			else {
+				var index = id[id.length - 1];
+				id = id.substring(0, id.length - 2);
+				var cell = graph.getCell(id);
+				cell.attr('.assigned_time')[index] = new_time;
+			}
 
+
+		});
+		// After that dismiss the box
+		var modal = document.getElementById('myModal');
+		modal.style.display = "none";
+
+	},
+
+	/******************** Call backend *******************/
+	solvePath: function(e){
+		var max_abs_time = $('#max-abs-time').val();
+		var conflict_level = $('#conflict-level').val();
+		var num_rel_time = $('#num-rel-time').val();
+		var abs_time_pts = $('#abs-time-pts').val();
+		// A list of nodes
+		var elements = graph.getElements();
+		// A list of links
+		var links = graph.getLinks();
+
+		// Example to get fields in nodes:
+		var cell = elements[0];
+		var type = cell.attributes.type;
+		var sat_value = cell.attr(".satvalue/value");
+		// This return empty string if user set dynamic to no function
+		var func_type = cell.attr('.funcvalue/text');
+		var name = cell.attr('.name/text');
+		// This will return undefined if user hasnt assigned a time
+		var assigned_time = cell.attr('.assigned_time');
+
+		// Example to get fields in links:
+		var link = links[0];
+		// Note this will get undefined by default. Has to manually change type through link inspector
+		var link_type = link.prop('link-type');
+		var source_node = link.get("source");
+		var target_node = link.get("target");
+
+		console.log(max_abs_time);
+		console.log(conflict_level);
+		console.log(num_rel_time);
+		console.log(abs_time_pts);
+		console.log(type);
+		console.log(sat_value);
+		console.log(func_type);
+		console.log(name);
+		console.log(assigned_time);
+
+	}
 });
