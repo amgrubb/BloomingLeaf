@@ -23,25 +23,79 @@ var AnalysisInspector = Backbone.View.extend({
 		'<input id="abs-time-pts" class="sub-label" type="text"/>',
 		'<br>',
 		'<hr>',
-		'<label class="sub-label">Absolute Values</label>',
-		'<select id="abs-vals" class="sub-label">',
-			'<option value=default disabled selected> List Absolute Values</option>',
-	        '<option value=S> A</option>',
-	        '<option value=M> B</option>',
-	        '<option value=W> C</option>',
-	        '<option value=N> D</option>',
-		'</select>',
-		'<label class="sub-label"> Time </label>',
-		'<input id="num-rel-time" class="sub-label sub-input" type="number" min="0" max="20" step="1" value="0" width="100px"/>',
-		'<button id="btn-assign-time" class="green-btn sub-btn"> Assign </button>',
-		'<label class="sub-label">Assigned Values</label>',
-		'<select id="assigned-vals" class="sub-label" multiple="yes">',
-	        '<option value=S> A</option>',
-	        '<option value=M> B</option>',
-	        '<option value=W> C</option>',
-	        '<option value=N> D</option>',
-		'</select>',
-		'<button id="btn-del-assignment" class="analysis-btns inspector-btn sub-label red-btn">Delete Selected Assignment</button>',
+		'<button id="btn-view-assignment" class="analysis-btns inspector-btn sub-label green-btn">View List of Assignments</button>',
+		// This is the modal box of assignments
+		'<div id="myModal" class="modal">',
+		  '<div class="modal-content">',
+		    '<div class="modal-header">',
+		      '<span class="close">&times;</span>',
+		      '<h2>Absolute Values</h2>',
+		    '</div>',
+		    '<div class="modal-body">',
+		      '<p>Nodes</p>',
+		      	'<table id="node-list" class="abs-table">',
+		      	  '<tr>',
+		      	    '<th>How do you call this?</th>',
+		      	    '<th>Dynamics</th>',
+		      	    '<th>Node name</th>',
+		      	    '<th>Assigned Value</th>',
+		      	    '<th>Action</th>',
+		      	  '</tr>',
+		      	  '<tr>',
+		      	    '<td>A</td>',
+		      	    '<td>RC</td>',
+		      	    '<td>Go to school</td>',
+		      	    '<td>None</td>',
+		      	    '<td><button> Unassign </button></td>',
+		      	  '</tr>',
+		      	'</table>',
+		      '<p>Relationships</p>',
+		      	'<table id="link-list" class="abs-table">',
+		      	  '<tr>',
+		      	    '<th>How do you call this?</th>',
+		      	    '<th>Link Type</th>',
+		      	    '<th>Source Node name</th>',
+		      	    '<th>Dest Node name</th>',
+		      	    '<th>Assigned Value</th>',
+		      	    '<th>Action</th>',
+		      	  '</tr>',
+		      	  '<tr>',
+		      	    '<td>A</td>',
+		      	    '<td>makes|breaks</td>',
+		      	    '<td>Node name A</td>',
+		      	    '<td>Node name B</td>',
+		      	    '<td>5</td>',
+		      	    '<td><button> Unassign </button></td>',
+		      	  '</tr>',
+		      	'</table>',
+		    '</div>',
+		    '<div class="modal-footer">',
+		    	'<button id="btn-save-assignment" class="analysis-btns inspector-btn sub-label green-btn">Save Assignments</button>',
+		    '</div>',
+		  '</div>',
+
+		'</div>',
+		'<br>',
+
+		// '<label class="sub-label">Absolute Values</label>',
+		// '<select id="abs-vals" class="sub-label">',
+		// 	'<option value=default disabled selected> List Absolute Values</option>',
+	 //        '<option value=S> A</option>',
+	 //        '<option value=M> B</option>',
+	 //        '<option value=W> C</option>',
+	 //        '<option value=N> D</option>',
+		// '</select>',
+		// '<label class="sub-label"> Time </label>',
+		// '<input id="num-rel-time" class="sub-label sub-input" type="number" min="0" max="20" step="1" value="0" width="100px"/>',
+		// '<button id="btn-assign-time" class="green-btn sub-btn"> Assign </button>',
+		// '<label class="sub-label">Assigned Values</label>',
+		// '<select id="assigned-vals" class="sub-label" multiple="yes">',
+	 //        '<option value=S> A</option>',
+	 //        '<option value=M> B</option>',
+	 //        '<option value=W> C</option>',
+	 //        '<option value=N> D</option>',
+		// '</select>',
+		// '<button id="btn-del-assignment" class="analysis-btns inspector-btn sub-label red-btn">Delete Selected Assignment</button>',
 		'<br>',
 		'<hr>',
 		'<button id="btn-solve-single-path" class="analysis-btns inspector-btn sub-label green-btn">Solve Single Path</button>',
@@ -70,7 +124,10 @@ var AnalysisInspector = Backbone.View.extend({
 		'click #concatenate-btn': 'concatenateSlider',
 		'click input.delayedprop': 'checkboxHandler',
 		'click #query-btn': 'checkQuery',
-		'click #clear-query-btn': 'clearQuery'
+		'click #clear-query-btn': 'clearQuery',
+		'click #btn-view-assignment': 'loadModalBox',
+		'click .close': 'dismissModalBox'
+
 	},
 
 	render: function(analysisFunctions) {
@@ -78,6 +135,7 @@ var AnalysisInspector = Backbone.View.extend({
 		// These functions are used to communicate between analysisInspector and Main.js
 		this._analysisFunctions = analysisFunctions;
 		this.$el.html(_.template(this.template)());
+		$('head').append('<script src="./js-objects/analysis.js"></script>');
 
 		this.$("#query-cell1").hide();
 		this.$("#query-cell2").hide();
@@ -207,6 +265,18 @@ var AnalysisInspector = Backbone.View.extend({
 		else{
 			document.getElementById("hidden").setAttribute("style", "display:none");
 		}
+	},
+	// Display modal box that has a list of absolute values
+	loadModalBox: function(e){
+		var modal = document.getElementById('myModal');
+		modal.style.display = "block";
+
+
+	},
+	// Dismiss modal box
+	dismissModalBox: function(e){
+		var modal = document.getElementById('myModal');
+		modal.style.display = "none";
 	},
 
 	clear: function(e){
