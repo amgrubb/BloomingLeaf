@@ -44,15 +44,26 @@ public class ModelSpec {
     private int[] initialValueTimePoints = new int[] {0};		// Hold the assigned times for each of the initial Values. Should be same length of second paramater of initialValues; 
     private HashMap<String, Integer> initialAssignedEpochs; //Hash map to hold the epochs with assigned values.
     private char conflictAvoidLevel = 'S'; 			// Should have the value S/M/W/N for Strong, Medium, Weak, None.
+    private boolean solveAllSolutions = false;
+    private boolean solveSingleState = false;
     
     private boolean[][][] finalValues = null;
     private int[] finalValueTimePoints = null;
     private HashMap<String, Integer> finalAssignedEpochs = null;
     // TODO: Need to figure out how to return all solutions to a path and state.
-    private boolean solveAllSolutions = false;
-    private boolean solveSingleState = false;
+    private boolean[][][][] finalAllSolutionsValues = null;
+    //private int[] finalValueTimePoints = null;
+    //private HashMap<String, Integer> finalAssignedEpochs = null;
    
-    public boolean isSolveAllSolutions() {
+    public boolean[][][][] getFinalAllSolutionsValues() {
+		return finalAllSolutionsValues;
+	}
+
+	public void setFinalAllSolutionsValues(boolean[][][][] finalAllSolutionsValues) {
+		this.finalAllSolutionsValues = finalAllSolutionsValues;
+	}
+
+	public boolean isSolveAllSolutions() {
 		return solveAllSolutions;
 	}
 
