@@ -160,6 +160,8 @@ body {
    background: transparent;
    height: 20px;
    line-height: 20px;
+   resize: none;
+
 }
 
 .inspector label {
@@ -170,6 +172,24 @@ body {
 .sub-label{
   font-size: 1em !important;
 }
+.sub-input{
+  width: 50px !important;
+  font-size: 0.9em;
+}
+.sub-btn {
+  position: relative;
+  vertical-align: top;
+  width: 50px;
+  height: 23px;
+  padding: 0;
+  color: white;
+  text-align: center;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  border: 0;
+  cursor: pointer;
+  margin-left: 5px;
+}
+
 
 .dropdown-inspector {
   display: none;
@@ -206,7 +226,8 @@ body {
 
 #init-sat-value, .actor-type, .function-type,
 .function-sat-value, .user-defined-select, .repeat-select,
-.relationship-select, .link-type{
+.relationship-select, .link-type, #conflict-level, #abs-vals,
+#assigned-vals{
   background-color: rgba(31, 150, 125, 1);
   border-color: rgba(31, 121, 101, 1);
 
@@ -216,6 +237,11 @@ body {
   width: 215px;
   margin: auto;
   border: 0;
+}
+
+#init-sat-value:disabled {
+  background-color: rgba(20, 85, 9, 1);
+  color: grey;
 }
 
 .user-defined-select, .repeat-select, .relationship-select{
@@ -314,7 +340,8 @@ select > .select-placeholder {
 }
 
 .green-btn{
-  background: #27ae60;
+  /*background: #27ae60;*/
+  background: #1E866A;
   -webkit-box-shadow: inset 0 -2px #219d55;
   box-shadow: inset 0 -2px #219d55;
 }
