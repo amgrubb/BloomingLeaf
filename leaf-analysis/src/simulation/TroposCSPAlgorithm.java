@@ -1391,23 +1391,13 @@ public class TroposCSPAlgorithm {
 	}
 	
 	private static boolean genericFindSolution(boolean allSolutions, boolean singleState, Store store, Search<IntVar> label, List<Constraint> constraints, IntVar[] varList) {
-		boolean foundSolution = false;
-		//label = new DepthFirstSearch<IntVar>();
-		if (allSolutions){
-	        label.getSolutionListener().searchAll(true); 		// Do not need to search the whole space.			
-		}else{
-	        label.getSolutionListener().searchAll(false); 		// Do not need to search the whole space.
-		}
 		label.getSolutionListener().recordSolutions(true);	// Record steps in search.
         label.setPrintInfo(false); 							// Set to false if you don't want the CSP to print the solution as you go.
-
-        //store.print();
-        //System.out.println("\n\n\n" + store.toStringChangedEl() + "\n\n\n");
         
         // Test and Add Constraints
-        System.out.println("Constraints List:");
+//        System.out.println("Constraints List:");
         for (int i = 0; i < constraints.size(); i++) {
-        	System.out.println(constraints.get(i).toString());
+//        	System.out.println(constraints.get(i).toString());
             store.impose(constraints.get(i));
             if(!store.consistency()) {
             	System.out.println("Constraint: " + constraints.get(i).toString());
@@ -1415,19 +1405,18 @@ public class TroposCSPAlgorithm {
                 return false;
             }
         }
-        //this.store.print();
-        //System.out.println("Start Solver");
 
         SelectChoicePoint <IntVar> select = new SimpleSelect<IntVar>(varList, new MostConstrainedDynamic<IntVar>(), new IndomainSimpleRandom<IntVar>());//new MostConstrainedStatic<IntVar>(), new IndomainSimpleRandom<IntVar>()); 
         
-        label.setSolutionListener(new PrintOutListener<IntVar>()); 
-        //label.getSolutionListener().searchAll(true);
-        
-        foundSolution = label.labeling(store, select);
-        
+//        label.setSolutionListener(new PrintOutListener<IntVar>()); 
 
-
-        return foundSolution;
+        if (allSolutions){
+	        label.getSolutionListener().searchAll(true); 					
+		}else{
+	        label.getSolutionListener().searchAll(false); 		
+		}
+        
+        return label.labeling(store, select);
 	}
 	
 	// Methods for initial search.
@@ -1476,6 +1465,7 @@ public class TroposCSPAlgorithm {
 	private int[] createTimePointOrder() {
 		if (this.spec.isSolveSingleState()){
 			//TODO: Actually make correct.
+			// Any changes here will affect the print/save All Solutions functions.
 			int[] indexOrder = new int[this.values[0].length];
 			int biggestMin = -1;
 			for (int i = 0; i < indexOrder.length; i++){
@@ -1571,20 +1561,67 @@ public class TroposCSPAlgorithm {
 	}
 	
 	public boolean solveModel(){
-		this.spec.setSolveAllSolutions(false); //TODO: Remove hardcoding.
 		Search<IntVar> label = new DepthFirstSearch<IntVar>();
-		
+
 		if(!genericFindSolution(this.spec.isSolveAllSolutions(), this.spec.isSolveSingleState(), this.store, label, this.constraints, this.createVarList())){
 			System.out.println("Found Solution = False");
 			return false;
 		} else {
 			System.out.println("Found Solution = True");
-			int[] timeOrder = this.createTimePointOrder();
-			this.printSingleSolution(timeOrder);
-			this.saveSingleSolution(timeOrder);
+			if (this.spec.isSolveAllSolutions()){
+				this.saveAllSolution(label);				
+			}else{
+				int[] timeOrder = this.createTimePointOrder();
+				this.printSingleSolution(timeOrder);
+				this.saveSingleSolution(timeOrder);
+			}
 			return true;
 		}
 	}
+	private void saveAllSolution(Search<IntVar> label) {
+		if (this.spec.isSolveSingleState()){
+			//TODO: Fix with proper code.
+//			int[] finalValueTimePoints = new int[indexOrder.length];
+//	    	for (int i = 0; i < indexOrder.length; i++)
+//	    		finalValueTimePoints[i] = this.timePoints[indexOrder[i]].value();
+//	   		this.spec.setFinalValueTimePoints(finalValueTimePoints);
+
+			int totalSolution = label.getSolutionListener().solutionsNo();
+
+			System.out.println("Saving all states");
+			System.out.println("\nThere are " + totalSolution + " possible next states.");
+
+			System.out.println("\n Solution: ");
+			for (int s = 1; s <= totalSolution; s++){
+				for (int v = 0; v < label.getSolution(s).length; v++)
+					System.out.print(label.getSolution(s)[v]);
+				System.out.println();
+			}
+
+			// int solNum = 1;	/// NOTE: Solution number starts at 1 not 0!!!
+			boolean[][][][] finalValues = new boolean[totalSolution][this.intentions.length][this.values[0].length][4];
+			for (int s = 1; s <= totalSolution; s++){
+				int solIndex = 0;
+				for (int i = 0; i < this.intentions.length; i++)
+					for (int t = 0; t < this.values[0].length; t++)
+						for (int v = 0; v < 4; v++){
+							if(label.getSolution(s)[solIndex].toString().equals("1"))
+								finalValues[s-1][i][t][v] = true;
+							else if(label.getSolution(s)[solIndex].toString().equals("0"))
+								finalValues[s-1][i][t][v] = false;
+							else
+								System.err.println("Error: " + label.getSolution(s)[v] + " has non-binary value.");
+							solIndex++;
+						}
+
+			}
+			this.spec.setFinalAllSolutionsValues(finalValues);
+		}else{
+			// Path
+			// TODO
+		}
+	}
+	
 	
 	@SuppressWarnings("unused")
 	private void exploreState(int stateNum, int[] timeOrder){
@@ -1669,7 +1706,8 @@ public class TroposCSPAlgorithm {
 			}  
     	}
 	}
-		
+	
+	
 	private static final String FILENAME = "stored-models/single-node"; //stored-models/testEB-Values"; //stored-models/simple-AND"; //models/UD-fuc-repeat.leaf"; //city-tropos-2.leaf"; //backward-test-helps.leaf"; //city-tropos-2.leaf";	 //sebastiani-fig1.leaf"; 
 	
 	public static void main(String[] args) {
@@ -1681,7 +1719,7 @@ public class TroposCSPAlgorithm {
 			filename = FILENAME;
 			model = new ModelSpec(filename);
 			if (model != null){
-				model.setSolveAllSolutions(false);		// 
+				model.setSolveAllSolutions(true);		// 
 				model.setSolveSingleState(true);		// false -> solve path
 
 				TroposCSPAlgorithm algo = new TroposCSPAlgorithm(model);
