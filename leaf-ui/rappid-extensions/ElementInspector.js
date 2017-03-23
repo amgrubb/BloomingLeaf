@@ -259,13 +259,22 @@ var ElementInspector = Backbone.View.extend({
       $('#init-sat-value').prop('disabled', false); 
     }
 
+
+
     // display based on inital value
     if((initValue == "none") || (initValue == "conflict")){
       this.$('#function-div').hide();
+      $('.function-type').prop('disabled', false);
       this.updateCell(null);
       return
     }
+    else if(initValue == "unknown"){
+      this.$('.function-type').val("C");
+      $('.function-type').prop('disabled', 'disabled');
+      this.$('#function-div').show("fast");
+    }
     else{
+      $('.function-type').prop('disabled', false);
       this.$('#function-div').show("fast");
     }
 
@@ -344,6 +353,7 @@ var ElementInspector = Backbone.View.extend({
     // If there is preexisting user-defined functions, clear it
     if ((text!= "UD") && (this.constraintsObject.currentUserIndex > 0))
       this.restartConstraint(null);
+
     
     // change chart based on function type
     if(text == "R"){

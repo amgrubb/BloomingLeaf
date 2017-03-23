@@ -1,6 +1,10 @@
 package simulation;
 
 
+import java.util.ArrayList;
+
+import interface_objects.IOIntention;
+import interface_objects.IOStateModel;
 import interface_objects.InputActor;
 import interface_objects.InputAnalysis;
 import interface_objects.InputConstraint;
@@ -82,8 +86,12 @@ public class ModelSpecBuilder {
 	
 			//-----------------------------------------------------------------------------------
 			//MODEL
+			
+			
 			//Getting Actors
 			if(!frontendModel.getActors().isEmpty()){
+				modelSpec.setNumActors(frontendModel.getActors().size());
+
 				for(InputActor dataActor: frontendModel.getActors()){
 					modelSpec.getActors().add(new Actor(dataActor.getNodeId(), dataActor.getNodeName(), dataActor.getNodeType()));
 				}
@@ -91,6 +99,7 @@ public class ModelSpecBuilder {
 			
 			//Getting intentional elements
 			if(!frontendModel.getIntentions().isEmpty()){
+				modelSpec.setNumIntentions(frontendModel.getIntentions().size());
 				for (InputIntention dataIntention : frontendModel.getIntentions()) {
 					Actor nodeActor = null;
 					if(!dataIntention.getNodeActorID().equals("-"))
@@ -176,6 +185,25 @@ public class ModelSpecBuilder {
 					}				
 				}
 			}
+			
+			//Getting initial Values
+			ArrayList<IOStateModel> stateModels = (ArrayList<IOStateModel>) frontendModel.getAllStatesModel();
+			
+			boolean[][][] initialValues = new boolean[stateModels.get(0).getIntentionElements().size()][stateModels.size()][4];
+			
+			int num_time = 0;
+			
+			for(IOStateModel stateModel : stateModels){
+				for(IOIntention intElement : stateModel.getIntentionElements()){
+					initialValues[Integer.parseInt(intElement.getId())][num_time][0] = intElement.getStatus()[0];
+					initialValues[Integer.parseInt(intElement.getId())][num_time][1] = intElement.getStatus()[1];
+					initialValues[Integer.parseInt(intElement.getId())][num_time][2] = intElement.getStatus()[2];
+					initialValues[Integer.parseInt(intElement.getId())][num_time][3] = intElement.getStatus()[3];
+				}
+				num_time++;
+			}
+			
+			modelSpec.setInitialValues(initialValues);
 			
 		}catch (Exception e) {
 			throw new RuntimeException(e.getMessage()); 

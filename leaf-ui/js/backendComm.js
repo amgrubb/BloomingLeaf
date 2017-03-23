@@ -1,4 +1,4 @@
-function backendCom(js_object){
+function backendComm(js_object){
 	//Show in console just to see what is going to backend
 	console.log(JSON.stringify(js_object));
 	

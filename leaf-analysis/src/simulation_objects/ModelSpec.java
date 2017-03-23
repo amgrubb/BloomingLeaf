@@ -40,6 +40,7 @@ public class ModelSpec {
     private HashMap<String, Integer> finalAssignedEpochs = null;
     private boolean solveSinglePath = false;
     private boolean solveNextState = false;
+	private boolean[][][][] allSolutionsValues;
 
 	public boolean isSolveSinglePath() {
 		return solveSinglePath;
@@ -232,5 +233,14 @@ public class ModelSpec {
 	public ModelSpec(){
 		
 	}
+
+	public boolean[][][][] getAllSolutionsValues() {
+		return allSolutionsValues;
+	}
+
+	public void setAllSolutionsValues(boolean[][][][] allSolutionsValues) {
+		this.allSolutionsValues = allSolutionsValues;
+	}
+
 
 }

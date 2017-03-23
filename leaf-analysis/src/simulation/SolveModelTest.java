@@ -7,7 +7,6 @@ import java.io.PrintWriter;
 import com.google.gson.Gson;
 
 import interface_objects.InputObject;
-import interface_objects.OutputModel;
 import simulation_objects.ModelSpec;
 
 /**
@@ -35,9 +34,12 @@ public class SolveModelTest {
 			//creating the backend model to be analysed
 			ModelSpec modelSpec = convertModelFromFile(filePath+fileName);
 			//Analyze the model
-			OutputModel outputModel = TroposCSPAlgorithm.solveModel(modelSpec);
 			
-			createOutputFile(outputModel, "output.out");
+			TroposCSPAlgorithm solver = new TroposCSPAlgorithm(modelSpec);
+			solver.solveModel();
+			
+			
+			createOutputFile(modelSpec, "output.out");
 			
 		} catch (Exception e) {
 			throw new RuntimeException(e.getMessage());
@@ -51,7 +53,7 @@ public class SolveModelTest {
 	 * @param filePath
 	 * Name of the file to be read by CGI to be sent to frontend
 	 */
-	private static void createOutputFile(OutputModel outputModel, String fileName) {
+	private static void createOutputFile(ModelSpec outputModel, String fileName) {
 		Gson gson = new Gson();		
 		//Need to create the file and folder if it doesn't exist
 		String outputFile = "/home/marcel/UofT/" + fileName + ".out";

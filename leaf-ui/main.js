@@ -126,6 +126,7 @@ if (document.cookie){
 }
 
 
+
 // ----------------------------------------------------------------- //
 // Modelling link control
 $('#symbolic-btn').on('click', function(){
@@ -1290,4 +1291,15 @@ function generateLeafFile(){
 
 	console.log(datastring);
 	return datastring
+}
+
+// ----------------------------------------------------------------- //
+// General javascript for user interaction
+
+// When the user clicks anywhere outside of the a pop up, close it
+window.onclick = function(event) {
+	var modal = document.getElementById('myModal');
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
 }
