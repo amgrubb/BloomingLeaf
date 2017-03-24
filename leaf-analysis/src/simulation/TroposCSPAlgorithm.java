@@ -109,11 +109,11 @@ public class TroposCSPAlgorithm {
 		// Add constraints between Intention EBs.
     	calculateSampleSizeAndCreateEBsAndTimePoints(this.spec.getAbsoluteTimePoints(), 
     			this.spec.getRelativeTimePoints(), this.spec.getInitialValueTimePoints(), 
-    			this.spec.getInitialAssignedEpochs(), this.spec.isSolveSinglePath());
+    			this.spec.getInitialAssignedEpochs(), this.spec.isSolveSingleState());
     	
     	int lengthOfInitial = this.spec.getInitialValueTimePoints().length;
     	// Initialise Values Array
-    	if(this.spec.isSolveSinglePath())
+    	if(this.spec.isSolveSingleState())
     		this.values = new BooleanVar[this.numIntentions][lengthOfInitial + 1][4];	// 4 Predicates Values 0-FD, 1-PD, 2-PS, 3-FS;
     	else
     		this.values = new BooleanVar[this.numIntentions][this.numTimePoints][4];	// 4 Predicates Values 0-FD, 1-PD, 2-PS, 3-FS
@@ -130,9 +130,9 @@ public class TroposCSPAlgorithm {
 		// Add constraints for the links and structure of the graph.
     	genericAddLinkConstraints(this.sat, this.constraints, this.intentions, this.values);
 
-    	System.out.println("\nMethod: initialize dynamics");
+    	System.out.println("\nMethod: initialize dynmaics");
     	// Create constraints for Dynamic Elements.
-    	if(this.spec.isSolveSinglePath())
+    	if(this.spec.isSolveSingleState())
     		//initializeStateDynamicFunctions();
     		genericInitialNextStateDynamics(this.constraints, this.intentions, this.values, 
     				this.epochCollection, this.spec.getInitialValueTimePoints()[lengthOfInitial - 1], lengthOfInitial - 1);
@@ -140,6 +140,9 @@ public class TroposCSPAlgorithm {
     		initializePathDynamicFunctions();
 	}	
 	
+
+
+
 
 	// Methods to create initial constraint model.
 	private void calculateSampleSizeAndCreateEBsAndTimePoints(int[] absoluteTimePoint, int numStochasticTimePoints, 
@@ -184,8 +187,7 @@ public class TroposCSPAlgorithm {
         		for (int u = 1; u < epochsUD.length; u++)
         			constraints.add(new XltY(epochsUD[u-1], epochsUD[u]));       			
 
-        		int[] absoluteDifferences = funcUD.getAbsoluteEpochLengths(); 
-
+        		int[] absoluteDifferences = funcUD.getAbsoluteEpochLengths(); 	
         		if (absoluteDifferences != null){
         			int count = 0;
         			for (int u = funcUD.getMapStart() - 1; u < funcUD.getMapEnd() - 1; u++){
@@ -1446,7 +1448,7 @@ public class TroposCSPAlgorithm {
 	
 	// Methods for initial search.
 	private IntVar[] createVarList(){
-		if (this.spec.isSolveSinglePath()){
+		if (this.spec.isSolveSingleState()){
 			// TODO: Test - Solve a single state.
 			// TODO: Add next state to the list.
 			int initial = this.spec.getInitialValueTimePoints().length - 1;
@@ -1488,7 +1490,7 @@ public class TroposCSPAlgorithm {
 		}
 	}
 	private int[] createTimePointOrder() {
-		if (this.spec.isSolveSinglePath()){
+		if (this.spec.isSolveSingleState()){
 			//TODO: Actually make correct.
 			// Any changes here will affect the print/save All Solutions functions.
 			int[] indexOrder = new int[this.values[0].length];
@@ -1547,8 +1549,9 @@ public class TroposCSPAlgorithm {
     		System.out.print(element.getId() + ":\t");
     		for (int t = 0; t < this.values[i].length; t++){
         		for (int v = 0; v < this.values[i][t].length; v++)
-        			System.out.print(this.values[i][t][v].value());
 //        			System.out.print(this.values[i][indexOrder[t]][v].value());
+        			System.out.print(this.values[i][t][v].value());
+
         		System.out.print("\t");
     		}
     		System.out.println(element.getName() + "\t" + element.getDynamicType().toString());
@@ -1570,7 +1573,7 @@ public class TroposCSPAlgorithm {
     	for (int i = 0; i < this.intentions.length; i++){
     		for (int t = 0; t < this.values[i].length; t++){
         		for (int v = 0; v < this.values[i][t].length; v++)
-        			if(this.values[i][indexOrder[t]][v].value() == 1)
+        			if(this.values[i][t][v].value() == 1)
         				finalValues[i][t][v] = true;
         			else
         				finalValues[i][t][v] = false;
@@ -1589,12 +1592,12 @@ public class TroposCSPAlgorithm {
 	public boolean solveModel(){
 		Search<IntVar> label = new DepthFirstSearch<IntVar>();
 
-		if(!genericFindSolution(this.spec.isSolveNextState(), this.spec.isSolveSinglePath(), this.store, label, this.constraints, this.createVarList())){
+		if(!genericFindSolution(this.spec.isSolveAllSolutions(), this.spec.isSolveSingleState(), this.store, label, this.constraints, this.createVarList())){
 			System.out.println("Found Solution = False");
 			return false;
 		} else {
 			System.out.println("Found Solution = True");
-			if (this.spec.isSolveNextState()){
+			if (this.spec.isSolveAllSolutions()){
 				this.saveAllSolution(label);				
 			}else{
 				int[] timeOrder = this.createTimePointOrder();
@@ -1605,7 +1608,7 @@ public class TroposCSPAlgorithm {
 		}
 	}
 	private void saveAllSolution(Search<IntVar> label) {
-		if (this.spec.isSolveSinglePath()){
+		if (this.spec.isSolveSingleState()){
 			//TODO: Fix with proper code.
 //			int[] finalValueTimePoints = new int[indexOrder.length];
 //	    	for (int i = 0; i < indexOrder.length; i++)
@@ -1641,7 +1644,7 @@ public class TroposCSPAlgorithm {
 						}
 
 			}
-			this.spec.setAllSolutionsValues(finalValues);
+			this.spec.setFinalAllSolutionsValues(finalValues);
 		}else{
 			// Path
 			// TODO
@@ -1732,5 +1735,5 @@ public class TroposCSPAlgorithm {
 			}  
     	}
 	}
-			
+	
 }

@@ -242,5 +242,17 @@ public class ModelSpec {
 		this.allSolutionsValues = allSolutionsValues;
 	}
 
+	public void setFinalAllSolutionsValues(boolean[][][][] finalValues2) {
+		this.allSolutionsValues = finalValues2;
+	}
+
+	public boolean isSolveSingleState() {
+	    return this.solveSinglePath;
+	}
+
+	public boolean isSolveAllSolutions() {
+	    return this.solveNextState;
+	}
+
 
 }

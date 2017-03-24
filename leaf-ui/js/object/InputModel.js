@@ -160,8 +160,10 @@ function getFrontendModel(){
 	    var funcTypeVal = elements[e].attr(".constraints/lastval");
 	    
 	    var io_dynamic;
-	    if  (f == " "){		    	
+	    if  (f == ""){		    	
     		io_dynamic = new IODynamic(elementID, "NT", null);
+	    }else if(f == " "){
+    		io_dynamic = new IODynamic(elementID, "NT", null);	    	
 	    }else if (f != "UD"){
     		io_dynamic = new IODynamic(elementID, f, satValueDict[funcTypeVal]);
     		// user defined constraints

@@ -39,7 +39,7 @@ public class SolveModelTest {
 			solver.solveModel();
 			
 			
-			createOutputFile(modelSpec, "output.out");
+			createOutputFile(modelSpec.getFinalValues(), "output");
 			
 		} catch (Exception e) {
 			throw new RuntimeException(e.getMessage());
@@ -53,16 +53,21 @@ public class SolveModelTest {
 	 * @param filePath
 	 * Name of the file to be read by CGI to be sent to frontend
 	 */
-	private static void createOutputFile(ModelSpec outputModel, String fileName) {
+	private static void createOutputFile(boolean[][][] bs, String fileName) {
 		Gson gson = new Gson();		
 		//Need to create the file and folder if it doesn't exist
 		String outputFile = "/home/marcel/UofT/" + fileName + ".out";
+		
+		int numElements = bs.length;
+		int timeScale = bs[0].length;
+		String result= numElements+"\n"+timeScale+"\n0\t1\n0\t1\n0\t1";
 		
 		try {
 			FileWriter file;
 			file = new FileWriter(outputFile);
 			PrintWriter printFile = new PrintWriter(file);
-			printFile.printf(gson.toJson(outputModel));
+			printFile.printf(result);
+			//printFile.printf(gson.toJson(bs));
 			file.close();
 		} catch (Exception e) {
 			throw new RuntimeException("Error in createOutputFile: " + e.getMessage());
