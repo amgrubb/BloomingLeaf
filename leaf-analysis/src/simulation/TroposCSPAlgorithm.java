@@ -141,9 +141,6 @@ public class TroposCSPAlgorithm {
 	}	
 	
 
-
-
-
 	// Methods to create initial constraint model.
 	private void calculateSampleSizeAndCreateEBsAndTimePoints(int[] absoluteTimePoint, int numStochasticTimePoints, 
 			int[] initialValueTimePoints, HashMap<String, Integer> assignedEpochs, boolean singleState) {
@@ -370,14 +367,14 @@ public class TroposCSPAlgorithm {
     	System.out.print("Previous Times are: ");
     	for(int e = 0; e < exisitingNamedTimePoints.length; e++)
     		System.out.print(exisitingNamedTimePoints[e] + "\t");
-    	System.out.println(" Max Previous is: " + maxPreviousTime);	
+    	//System.out.println(" Max Previous is: " + maxPreviousTime);	
     	
     	// Step 4B: Create List of Time Points
     	this.numTimePoints = 1 + absoluteCollection.size() + EBTimePoint.size() + numStochasticTimePoints;
     	
     	if(countTotalPreviousT != this.numTimePoints && countTotalPreviousT > 0)
     		System.err.println("Error: Previous and Current Time Points do no match.");
-    	System.out.println("Previous Time Points: " + countTotalPreviousT + "  New Time Points: " + this.numTimePoints);
+    	//System.out.println("Previous Time Points: " + countTotalPreviousT + "  New Time Points: " + this.numTimePoints);
     	
     	/////// Create Time Points
     	this.timePoints = new IntVar[this.numTimePoints];
@@ -457,7 +454,7 @@ public class TroposCSPAlgorithm {
     	for (int i = 0; i < this.unsolvedTimePoints.length; i ++){
     		System.out.print(this.unsolvedTimePoints[i] + "  ");
     	}
-    	System.out.println();
+    	//System.out.println();
     	
     	this.nextTimePoint = new IntVar[nextTimePoint.size()];
     	for (int i = 0; i < this.nextTimePoint.length; i ++)
@@ -467,7 +464,7 @@ public class TroposCSPAlgorithm {
     	for (int i = 0; i < this.nextTimePoint.length; i ++){
     		System.out.print(this.nextTimePoint[i] + "  ");
     	}
-    	System.out.println();
+    	//System.out.println();
     	
    
     }
@@ -1427,8 +1424,8 @@ public class TroposCSPAlgorithm {
 //        	System.out.println(constraints.get(i).toString());
             store.impose(constraints.get(i));
             if(!store.consistency()) {
-            	System.out.println("Constraint: " + constraints.get(i).toString());
-                System.out.println("have conflicting constraints, not solvable");            
+            	//System.out.println("Constraint: " + constraints.get(i).toString());
+                //System.out.println("have conflicting constraints, not solvable");            
                 return false;
             }
         }
@@ -1534,7 +1531,7 @@ public class TroposCSPAlgorithm {
     	for (int i = 0; i < indexOrder.length; i++){
     		System.out.print(this.timePoints[indexOrder[i]].id + "-" + this.timePoints[indexOrder[i]].value() + "\t");
    		}
-    	System.out.println();
+    	//System.out.println();
 		
     	// Print out times.
     	System.out.print("Time:\t");
@@ -1549,7 +1546,7 @@ public class TroposCSPAlgorithm {
     		System.out.print(element.getId() + ":\t");
     		for (int t = 0; t < this.values[i].length; t++){
         		for (int v = 0; v < this.values[i][t].length; v++)
-//        			System.out.print(this.values[i][indexOrder[t]][v].value());
+//        			//System.out.print(this.values[i][indexOrder[t]][v].value());
         			System.out.print(this.values[i][t][v].value());
 
         		System.out.print("\t");
@@ -1593,10 +1590,10 @@ public class TroposCSPAlgorithm {
 		Search<IntVar> label = new DepthFirstSearch<IntVar>();
 
 		if(!genericFindSolution(this.spec.isSolveAllSolutions(), this.spec.isSolveSingleState(), this.store, label, this.constraints, this.createVarList())){
-			System.out.println("Found Solution = False");
+			//System.out.println("Found Solution = False");
 			return false;
 		} else {
-			System.out.println("Found Solution = True");
+			//System.out.println("Found Solution = True");
 			if (this.spec.isSolveAllSolutions()){
 				this.saveAllSolution(label);				
 			}else{
@@ -1664,7 +1661,7 @@ public class TroposCSPAlgorithm {
 		BooleanVar[][][] valuesExplore = new BooleanVar[this.values.length][2][4]; 	    
 		int currentTime = this.timePoints[nodeIndex].value();
 
-		//System.out.println("The current time is: " + currentTime);
+		System.out.println("The current time is: " + currentTime);
 
 		for (int i = 0; i < valuesExplore.length; i++){
 			IntentionalElement element = this.intentions[i];

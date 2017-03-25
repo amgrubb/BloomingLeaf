@@ -112,6 +112,8 @@ public class IntentionalElement extends LinkableElement {
 	public int oldGetDynamicFunctionMarkedValue() {
 			if (userDefinedDynamicType)
 				return -1;
+			else if(this.dynamicFunctionMarkedValue == null)
+				return -1;
 			else
 				if (this.dynamicFunctionMarkedValue[0] && this.dynamicFunctionMarkedValue[1] && !this.dynamicFunctionMarkedValue[2] && !this.dynamicFunctionMarkedValue[3])
 					return 0;

@@ -27,7 +27,8 @@ public class SolveModelTest {
 	public static void main(String[] args) {
 
 		//This is the default filePath to be executed if no file is pass through parameters
-		String filePath = "/home/marcel/UofT/";			
+		String filePath = "/home/marcel/UofT/";
+		//String filePath = "/u/marcel/public_html/BloomingLeaf/leaf-ui/cgi-bin/temp/";			
 		String fileName = "default.json";
 				
 		try {
@@ -54,19 +55,49 @@ public class SolveModelTest {
 	 * Name of the file to be read by CGI to be sent to frontend
 	 */
 	private static void createOutputFile(boolean[][][] bs, String fileName) {
-		Gson gson = new Gson();		
+		//Gson gson = new Gson();		
 		//Need to create the file and folder if it doesn't exist
 		String outputFile = "/home/marcel/UofT/" + fileName + ".out";
+		//String outputFile = "/u/marcel/public_html/BloomingLeaf/leaf-ui/cgi-bin/temp/" + fileName + ".out";
 		
-		int numElements = bs.length;
-		int timeScale = bs[0].length;
-		String result= numElements+"\n"+timeScale+"\n0\t1\n0\t1\n0\t1";
+		StringBuilder sb = new StringBuilder();
+		sb.append(bs.length).append("\n"); //numElements - number of intent elements
+		sb.append(bs[0].length).append("\n"); //timeScale - number of states
+
+		for(int x = 0; x < bs.length; x++){
+			for(int y = 0; y < bs[x].length; y++){
+				String value = "";
+				for(int z = 0; z < 4; z++){
+					if(bs[x][y][z]){
+						value += "1";
+					}else{
+						value +="0";
+					}
+				}
+				
+				if(value.equals("0000")){
+					sb.append("5");
+				}else if(value.equals("1000")){
+					sb.append("3");
+				}else if(value.equals("0100")){
+					sb.append("2");
+				}else if(value.equals("0010")){
+					sb.append("1");
+				}else if(value.equals("0001")){
+					sb.append("0");
+				}else{
+					sb.append("4");
+				}
+				sb.append("\t");
+			}
+			sb.append("\n");
+		}
 		
 		try {
 			FileWriter file;
 			file = new FileWriter(outputFile);
 			PrintWriter printFile = new PrintWriter(file);
-			printFile.printf(result);
+			printFile.printf(sb.toString());
 			//printFile.printf(gson.toJson(bs));
 			file.close();
 		} catch (Exception e) {

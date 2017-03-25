@@ -17,11 +17,13 @@ def executeCGI():
 	#(!)THE FILE NAME SHOULD CHANGE EVERY EXECUTION
 	filePath = 'temp/default.json'
 	jsonToFile(myjson, filePath)
+
+	#call JAVA app        
+    os.system("/u/marcel/java/jre1.8.0_66/bin/java -jar /u/marcel/bin/marcel.jar")    
         
 	#Addind the data to result from a json file
 	#(!)THE FILE OUTPUT SHOULD CHANGE EVERY EXECUTION
-	#processedFilePath = 'temp/output.json'
-	processedFilePath = 'temp/default.json'
+	processedFilePath = 'temp/output.out'
 	fillResultData(result, processedFilePath)
 
 	#Send data back to frontend
@@ -40,8 +42,8 @@ def jsonToFile(myjson, filePath):
 #Receive as parameter the result to be sent to frontend and gets a json from a file to add into the result['data'] attribute
 def fillResultData(result, processedFilePath):
 
-	with open(processedFilePath) as json_data:
-		result['data'] = json.load(json_data)
+	with open(processedFilePath) as data:
+		result['data'] = data.readlines()
 
 	return
 
