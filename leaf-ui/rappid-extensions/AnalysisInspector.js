@@ -35,8 +35,8 @@ var AnalysisInspector = Backbone.View.extend({
 		      '<p>Nodes</p>',
 		      	'<table id="node-list" class="abs-table">',
 		      	  '<tr>',
-		      	    '<th>How do you call this?</th>',
-		      	    '<th>Dynamics</th>',
+		      	    '<th>Epoch Boundary</th>',
+		      	    '<th>Function</th>',
 		      	    '<th>Node name</th>',
 		      	    '<th>Assigned Time</th>',
 		      	    '<th>Action</th>',
@@ -48,7 +48,8 @@ var AnalysisInspector = Backbone.View.extend({
 		      	    '<th>Link Type</th>',
 		      	    '<th>Source Node name</th>',
 		      	    '<th>Dest Node name</th>',
-
+		      	    '<th>Assigned Time</th>',
+		      	    '<th>Action</th>',
 		      	  '</tr>',
 		      	'</table>',
 		    '</div>',
@@ -222,7 +223,7 @@ var AnalysisInspector = Backbone.View.extend({
 			var func = cell.attr('.funcvalue').text;
 			var name = cell.attr('.name').text;
 			var assigned_time = cell.attr('.assigned_time');
-			if(func != 'UD'){
+			if(func != 'UD' && func != 'D' && func != 'I' && func != 'C' && func != 'R'){
 				// If no assigned_time in the node, save 'None' into the node
 				if (!assigned_time){
 					cell.attr('.assigned_time', {0: 'None'});
@@ -246,7 +247,7 @@ var AnalysisInspector = Backbone.View.extend({
 			var assigned_time = cell.attr('.assigned_time');
 
 			if(func == 'UD'){
-				var fun_len = cell.attr('.constraints').function.length;
+				var fun_len = cell.attr('.constraints').function.length - 1;
 				var current_something = 'A';
 				// If no assigned_time in the node, save 'None' into the node
 				if (!assigned_time){
@@ -284,9 +285,19 @@ var AnalysisInspector = Backbone.View.extend({
 			if (source && target){
 				var source_name = source.attr('.name').text;
 				var target_name = target.attr('.name').text;
+				var assigned_time = link.attr('.assigned_time');
 				var link_type = link.get('labels')[0].attrs.text.text;
-				$('#link-list').append('<tr><td>' + link_type + '</td><td>' + source_name + '</td><td>' + target_name +
-					'</td></tr>');
+				// If no assigned_time in the link, save 'None' into the link
+				if (!assigned_time){
+					link.attr('.assigned_time', {0: 'None'});
+					assigned_time = link.attr('.assigned_time');
+				}
+				if (link_type == 'NBD' || link_type == 'NBT' || link_type.indexOf('|') > -1){
+					$('#link-list').append('<tr><td>' + link_type + '</td><td>' + source_name + '</td><td>' + target_name +
+						'</td><td><input type="text" name="sth" value=' +assigned_time[0] + '></td>' + btn_html + 
+						'<input type="hidden" name="id" value="' + link.id + '"> </td> </tr>'+ '</tr>');
+				}
+				console.log(link.id);
 			}
 
 		}		
@@ -327,6 +338,27 @@ var AnalysisInspector = Backbone.View.extend({
 				var cell = graph.getCell(id);
 				cell.attr('.assigned_time')[index] = new_time;
 			}
+
+
+		});
+
+		$.each($('#link-list').find("tr input[type=text]"), function(){
+			var new_time = $(this).val();
+			var row = $(this).closest('tr');
+			var func_value = row.find('td:nth-child(2)').html();
+			var id = row.find('input[type=hidden]').val();
+
+			var links = graph.getLinks();
+			for (var i = 0; i < links.length; i ++){
+				if (links[i].id == id) {
+					var link = links[i];
+					break;
+				}
+
+			}
+			
+			link.attr('.assigned_time')[0] = new_time;
+
 
 
 		});
