@@ -26,14 +26,14 @@ public class ModelSpec {
 	private int numIntentions = 0;
 	private String inputFilename = "";
     private int[][][] history;
-    private int relativeTimePoints = 4;
-    private int[] absoluteTimePoints = new int[] {5, 10, 15, 20};
+    private int relativeTimePoints = 0;
+    private int[] absoluteTimePoints = new int[] {};
     private boolean[][][] initialValues;		// Holds the initial values whether they are single or multiple.
     											//[this.numIntentions][this.numTimePoints][FD - index 0 / PD - index 1 / PS - index 2 / FS - index 3]
 												// Note if model only has initial values then it will be [numintentions][1][4].
     private int[] initialValueTimePoints = new int[] {0};		// Hold the assigned times for each of the initial Values. Should be same length of second paramater of initialValues; 
     private HashMap<String, Integer> initialAssignedEpochs; //Hash map to hold the epochs with assigned values.
-    private char conflictAvoidLevel = 'S'; 			// Should have the value S/M/W/N for Strong, Medium, Weak, None.
+    private char conflictAvoidLevel = 'N'; 			// Should have the value S/M/W/N for Strong, Medium, Weak, None.
     
     private boolean[][][] finalValues = null;
     private int[] finalValueTimePoints = null;
@@ -247,11 +247,11 @@ public class ModelSpec {
 	}
 
 	public boolean isSolveSingleState() {
-	    return this.solveSinglePath;
+	    return this.solveNextState;
 	}
 
 	public boolean isSolveAllSolutions() {
-	    return this.solveNextState;
+	    return this.solveSinglePath;
 	}
 
 

@@ -48,15 +48,12 @@ import simulation_objects.UDFunction;
 import simulation_objects.UDFunctionCSP;
 
 public class TroposCSPAlgorithm {
+
 	private Store store;									// CSP Store
 	private SatTranslation sat;								// Enables a SAT solver to be incorporated into CSP
     private List<Constraint> constraints;
 	
 	private ModelSpec spec;									// Holds the model information.
-	private int numIntentions;								// Number of intentions in the model.
-	private IntentionalElement[] intentions;				// array of intention elements in the model
-    
-    private int maxTime;									// maxTime entered by the user
     private int numTimePoints;								// ??
     private int numEpochs = 0;								// ??
     private IntVar[] timePoints;							// Holds the list of time points to be solved. Names at T<A,R,E><Index>
@@ -95,13 +92,7 @@ public class TroposCSPAlgorithm {
 		
 		// Initialise Model Elements
 		this.spec = spec;
-		this.numIntentions = this.spec.getNumIntentions();
-		this.intentions = new IntentionalElement[this.numIntentions];
-		List<IntentionalElement> elementList = this.spec.getIntElements();
-		for (int i = 0; i < this.intentions.length; i++)
-			this.intentions[i] = elementList.get(i);
-    	this.maxTime = spec.getMaxTime();
-		this.infinity = new IntVar(this.store, "Infinity", this.maxTime + 1, this.maxTime + 1);
+		this.infinity = new IntVar(this.store, "Infinity", spec.getMaxTime() + 1, spec.getMaxTime() + 1);
     	this.epochCollection = new HashMap<IntentionalElement, IntVar[]>();
     	this.epochToTimePoint = new HashMap<IntVar, IntVar>(); 
 
@@ -114,9 +105,9 @@ public class TroposCSPAlgorithm {
     	int lengthOfInitial = this.spec.getInitialValueTimePoints().length;
     	// Initialise Values Array
     	if(this.spec.isSolveSingleState())
-    		this.values = new BooleanVar[this.numIntentions][lengthOfInitial + 1][4];	// 4 Predicates Values 0-FD, 1-PD, 2-PS, 3-FS;
+    		this.values = new BooleanVar[this.spec.getIntElements().size()][lengthOfInitial + 1][4];	// 4 Predicates Values 0-FD, 1-PD, 2-PS, 3-FS;
     	else
-    		this.values = new BooleanVar[this.numIntentions][this.numTimePoints][4];	// 4 Predicates Values 0-FD, 1-PD, 2-PS, 3-FS
+    		this.values = new BooleanVar[this.spec.getIntElements().size()][this.numTimePoints][4];	// 4 Predicates Values 0-FD, 1-PD, 2-PS, 3-FS
 
     	System.out.println("\nMethod: initializeBooleanVarForValues();");
     	// Initialise values and add F->P invariant.
@@ -128,13 +119,13 @@ public class TroposCSPAlgorithm {
 
    		System.out.println("\nMethod: genericAddLinkConstraints(this.sat, this.constraints, this.intentions, this.values);");
 		// Add constraints for the links and structure of the graph.
-    	genericAddLinkConstraints(this.sat, this.constraints, this.intentions, this.values);
+    	genericAddLinkConstraints(this.sat, this.constraints, this.spec.getIntElements(), this.values);
 
     	System.out.println("\nMethod: initialize dynmaics");
     	// Create constraints for Dynamic Elements.
     	if(this.spec.isSolveSingleState())
     		//initializeStateDynamicFunctions();
-    		genericInitialNextStateDynamics(this.constraints, this.intentions, this.values, 
+    		genericInitialNextStateDynamics(this.constraints, spec.getIntElements(), this.values, 
     				this.epochCollection, this.spec.getInitialValueTimePoints()[lengthOfInitial - 1], lengthOfInitial - 1);
     	else
     		initializePathDynamicFunctions();
@@ -160,9 +151,7 @@ public class TroposCSPAlgorithm {
     	}
 		// Step 1: Collect and create all the Epoch IntVars.
 		this.numEpochs = 0;
-    	for (int i = 0; i < this.intentions.length; i++){
-    		IntentionalElement element = this.intentions[i];
-    		  		
+    	for (IntentionalElement element : spec.getIntElements()){
         	if ((element.getDynamicType() == IntentionalElementDynamicType.NT) || (element.getDynamicType() == IntentionalElementDynamicType.CONST) ||
         			(element.getDynamicType() == IntentionalElementDynamicType.INC) || (element.getDynamicType() == IntentionalElementDynamicType.DEC) ||
         			(element.getDynamicType() == IntentionalElementDynamicType.RND))	// Dynamic function contains no EB.
@@ -171,7 +160,7 @@ public class TroposCSPAlgorithm {
         			(element.getDynamicType() == IntentionalElementDynamicType.CR) || (element.getDynamicType() == IntentionalElementDynamicType.RC) ||
         			(element.getDynamicType() == IntentionalElementDynamicType.MONP) || (element.getDynamicType() == IntentionalElementDynamicType.MONN)) {
         		this.numEpochs ++;
-        		IntVar newEpoch = new IntVar(store, "E" + element.getId(), 1, maxTime);	
+        		IntVar newEpoch = new IntVar(store, "E" + element.getId(), 1, spec.getMaxTime());	
         		this.epochCollection.put(element, new IntVar[]{newEpoch});
         	} else if (element.getDynamicType() == IntentionalElementDynamicType.UD){
         		UDFunctionCSP funcUD = element.getCspUDFunct();
@@ -179,7 +168,7 @@ public class TroposCSPAlgorithm {
         		IntVar[] epochsUD = new IntVar[charEB.length - 1];
         		this.numEpochs += epochsUD.length;
         		for (int u = 0; u < epochsUD.length; u++)
-        			epochsUD[u] = new IntVar(store, "E" + element.getId() + "_" + charEB[u+1], 1, maxTime);
+        			epochsUD[u] = new IntVar(store, "E" + element.getId() + "_" + charEB[u+1], 1, spec.getMaxTime());
         		this.epochCollection.put(element, epochsUD);
         		for (int u = 1; u < epochsUD.length; u++)
         			constraints.add(new XltY(epochsUD[u-1], epochsUD[u]));       			
@@ -193,7 +182,7 @@ public class TroposCSPAlgorithm {
         				else if ((u+1) < epochsUD.length)
         					constraints.add(new XplusCeqZ(epochsUD[u], absoluteDifferences[count % absoluteDifferences.length], epochsUD[u+1]));
         				else if ((u+1) == epochsUD.length)
-        					constraints.add(new XeqC(epochsUD[u], this.maxTime - absoluteDifferences[count % absoluteDifferences.length]));
+        					constraints.add(new XeqC(epochsUD[u], spec.getMaxTime() - absoluteDifferences[count % absoluteDifferences.length]));
         				count++;
         			}      			        			
         		}
@@ -317,8 +306,7 @@ public class TroposCSPAlgorithm {
     	List<IntVar> EBTimePoint = new ArrayList<IntVar>();	//Holds the time points for unassgned EBs.
     	this.epochs = new IntVar[this.numEpochs]; 
     	int addEBCount = 0;
-    	for (int i = 0; i < this.intentions.length; i++){
-    		IntentionalElement element = this.intentions[i];
+    	for (IntentionalElement element : this.spec.getIntElements()){
     		IntVar[] elementEBs = epochCollection.get(element);
     		if (elementEBs == null)
     			continue;
@@ -328,7 +316,7 @@ public class TroposCSPAlgorithm {
     				this.epochs[addEBCount] = temp;
     				addEBCount++;
     				if (!assignedEBs.contains(temp)){
-    					IntVar newEB = new IntVar(store, "TE" + absoluteCounter, 1, maxTime);
+    					IntVar newEB = new IntVar(store, "TE" + absoluteCounter, 1, spec.getMaxTime());
     					EBTimePoint.add(newEB);
     					absoluteCounter++;
     					constraints.add(new XeqY(temp, newEB));
@@ -410,7 +398,7 @@ public class TroposCSPAlgorithm {
     	int uCount = 0;
     	List<IntVar> nextTimePoint = new ArrayList<IntVar>();
     	
-    	Integer maxKey = this.maxTime + 1;
+    	Integer maxKey = spec.getMaxTime() + 1;
     	// Add absoluteCollection   
 		for (HashMap.Entry<Integer, IntVar> entry : absoluteCollection.entrySet()) {
 		    Integer key = entry.getKey();
@@ -439,7 +427,7 @@ public class TroposCSPAlgorithm {
     	for (int i = 0; i < numStochasticTimePoints; i++){
     		if (tCount == this.timePoints.length)
     			System.out.println("ERROR");
-    		IntVar value = new IntVar(store, "TR" + absoluteCounter, maxPreviousTime + 1, maxTime);
+    		IntVar value = new IntVar(store, "TR" + absoluteCounter, maxPreviousTime + 1, spec.getMaxTime());
 			this.timePoints[tCount] = value;
 			this.unsolvedTimePoints[uCount] = value;
 			tCount++;
@@ -454,7 +442,7 @@ public class TroposCSPAlgorithm {
     	for (int i = 0; i < this.unsolvedTimePoints.length; i ++){
     		System.out.print(this.unsolvedTimePoints[i] + "  ");
     	}
-    	//System.out.println();
+    	System.out.println();
     	
     	this.nextTimePoint = new IntVar[nextTimePoint.size()];
     	for (int i = 0; i < this.nextTimePoint.length; i ++)
@@ -464,15 +452,15 @@ public class TroposCSPAlgorithm {
     	for (int i = 0; i < this.nextTimePoint.length; i ++){
     		System.out.print(this.nextTimePoint[i] + "  ");
     	}
-    	//System.out.println();
+    	System.out.println();
     	
    
     }
 	
 	private void initializeBooleanVarForValues() {	//Full Model
-		boolean[][][] initialValues = this.spec.getInitialValues();		
-    	for (int i = 0; i < this.intentions.length; i++){
-    		IntentionalElement element = this.intentions[i];
+		boolean[][][] initialValues = this.spec.getInitialValues();
+		int i = 0;
+    	for (IntentionalElement element : this.spec.getIntElements()){
     		if(element.getIdNum() != i)
     			System.err.println("Intention ID does not match orderied ID in TroposCSP");
 
@@ -485,7 +473,8 @@ public class TroposCSPAlgorithm {
     				this.constraints.add(new XeqC(this.values[i][t][2], boolToInt(initialValues[i][t][2])));
     				this.constraints.add(new XeqC(this.values[i][t][3], boolToInt(initialValues[i][t][3])));
     			}
-    		}  
+    		}
+    		i++;
     	}
 	}
 	private int boolToInt(boolean b) {
@@ -508,8 +497,9 @@ public class TroposCSPAlgorithm {
 	
 
 	private void initializePathDynamicFunctions() {		//Full Model
-    	for (int i = 0; i < this.intentions.length; i++){
-    		IntentionalElement element = this.intentions[i];
+		int i = -1;
+    	for (IntentionalElement element : this.spec.getIntElements()){
+    		i++;
     		IntentionalElementDynamicType tempType = element.getDynamicType();
         	if ((tempType == IntentionalElementDynamicType.NT) || (element.getDynamicType() == IntentionalElementDynamicType.RND))
         		continue;
@@ -957,9 +947,8 @@ public class TroposCSPAlgorithm {
 				break;
 		}
 	}
-	private static void genericAddLinkConstraints(SatTranslation satTrans, List<Constraint> constraints, IntentionalElement[] intentionsList, BooleanVar[][][] val){
-    	for (int e = 0; e < intentionsList.length; e++){
-    		IntentionalElement element = intentionsList[e];
+	private static void genericAddLinkConstraints(SatTranslation satTrans, List<Constraint> constraints, List<IntentionalElement> intentionsList, BooleanVar[][][] val){
+    	for (IntentionalElement element: intentionsList){
     		int targetID = element.getIdNum();
 
     		if (element.getLinksDest().size() == 0) 
@@ -985,7 +974,7 @@ public class TroposCSPAlgorithm {
     					if(link.getSrc() instanceof IntentionalElement)
     						dependencyElements.add((IntentionalElement) link.getSrc()); 
     					else if (link.getSrc() instanceof Actor)
-    						System.out.println("Actor Link found and ignored.");
+    						System.err.println("Actor Link found and ignored.");
     					else
     						System.err.println("Error: Unknown element found.");
     				} else if (link instanceof Contribution) {
@@ -1078,7 +1067,7 @@ public class TroposCSPAlgorithm {
     						constraints.add(new Not(new And(new XeqC(val[sourceID][t][2], 1), new XeqC(val[sourceID][t][1], 1)))); //Stops weak conflicts at the source.
     						constraints.add(new Not(new And(new XeqC(val[targetID][t][2], 1), new XeqC(val[targetID][t][1], 1)))); //Stops weak conflicts at the target.
     					}else
-    						System.out.println("ERROR: No rule for " + contributionTypes.get(i).toString() + " link type.");
+    						System.err.println("ERROR: No rule for " + contributionTypes.get(i).toString() + " link type.");
     				}
     			}
     		}
@@ -1188,7 +1177,7 @@ public class TroposCSPAlgorithm {
 //    						constraints.add(new Not(new And(new XeqC(val[sourceID][t][2], 1), new XeqC(val[sourceID][t][1], 1)))); //Stops weak conflicts at the source.
 //    						constraints.add(new Not(new And(new XeqC(val[targetID][t][2], 1), new XeqC(val[targetID][t][1], 1)))); //Stops weak conflicts at the target.
     					}else
-    						System.out.println("ERROR: No rule for " + contributionTypes.get(i).toString() + " link type.");
+    						System.err.println("ERROR: No rule for " + contributionTypes.get(i).toString() + " link type.");
 
     				}
 
@@ -1228,14 +1217,14 @@ public class TroposCSPAlgorithm {
 		
 	}
 	private static void genericInitialNextStateDynamics(List<Constraint> constraintList, 
-			IntentionalElement[] elementList, BooleanVar[][][] val, 
+			List<IntentionalElement> elementList, BooleanVar[][][] val, 
 			HashMap<IntentionalElement, IntVar[]>  epochCollection, int currentAbsoluteTime,
 			int initialIndex){ // Assume only two time steps.
 		// Assume only two time points, current with set values, and next state.
 		// TODO: Should be more generic other than times zero and one.
 		int nextIndex = initialIndex + 1;
-		for (int i = 0; i < elementList.length; i++){
-			IntentionalElement element = elementList[i];
+		int i = 0;
+		for (IntentionalElement element : elementList){
 			IntentionalElementDynamicType tempType = element.getDynamicType();
 			if ((tempType == IntentionalElementDynamicType.NT) || (element.getDynamicType() == IntentionalElementDynamicType.RND))
 				continue;
@@ -1410,22 +1399,24 @@ public class TroposCSPAlgorithm {
 					}
 				}
 			}
+			i++;
 		}
 	
 	}
 	
 	private static boolean genericFindSolution(boolean allSolutions, boolean singleState, Store store, Search<IntVar> label, List<Constraint> constraints, IntVar[] varList) {
 		label.getSolutionListener().recordSolutions(true);	// Record steps in search.
+		//label.getSolutionListener().recordSolutions(false);	// Record steps in search.
         label.setPrintInfo(false); 							// Set to false if you don't want the CSP to print the solution as you go.
         
         // Test and Add Constraints
-//        System.out.println("Constraints List:");
+        System.out.println("Constraints List:");
         for (int i = 0; i < constraints.size(); i++) {
-//        	System.out.println(constraints.get(i).toString());
+        	System.out.println(constraints.get(i).toString());
             store.impose(constraints.get(i));
             if(!store.consistency()) {
-            	//System.out.println("Constraint: " + constraints.get(i).toString());
-                //System.out.println("have conflicting constraints, not solvable");            
+            	System.out.println("Constraint: " + constraints.get(i).toString());
+                System.out.println("have conflicting constraints, not solvable");            
                 return false;
             }
         }
@@ -1433,8 +1424,9 @@ public class TroposCSPAlgorithm {
         SelectChoicePoint <IntVar> select = new SimpleSelect<IntVar>(varList, new MostConstrainedDynamic<IntVar>(), new IndomainSimpleRandom<IntVar>());//new MostConstrainedStatic<IntVar>(), new IndomainSimpleRandom<IntVar>()); 
         
 //        label.setSolutionListener(new PrintOutListener<IntVar>()); 
-
-        if (allSolutions){
+//        if (allSolutions){
+    	    
+        if (!allSolutions){
 	        label.getSolutionListener().searchAll(true); 					
 		}else{
 	        label.getSolutionListener().searchAll(false); 		
@@ -1450,7 +1442,7 @@ public class TroposCSPAlgorithm {
 			// TODO: Add next state to the list.
 			int initial = this.spec.getInitialValueTimePoints().length - 1;
 			//Create VarList
-			IntVar[] fullList = new IntVar[this.numIntentions * 8];
+			IntVar[] fullList = new IntVar[this.spec.getIntElements().size() * 8];
 			int fullListIndex = 0;
 			for (int i = 0; i < this.values.length; i++)
 					for (int v = 0; v < this.values[i][0].length; v++){
@@ -1465,7 +1457,7 @@ public class TroposCSPAlgorithm {
 			return fullList;
 		}else{
 			// Solve the whole path.
-			int fullListSize = (this.numIntentions * this.numTimePoints * 4) + this.timePoints.length + this.epochs.length; 
+			int fullListSize = (this.spec.getIntElements().size() * this.numTimePoints * 4) + this.timePoints.length + this.epochs.length; 
 			IntVar[] fullList = new IntVar[fullListSize];
 			int fullListIndex = 0;
 			for (int i = 0; i < this.values.length; i++)
@@ -1493,7 +1485,7 @@ public class TroposCSPAlgorithm {
 			int[] indexOrder = new int[this.values[0].length];
 			int biggestMin = -1;
 			for (int i = 0; i < indexOrder.length; i++){
-				int minVal = this.maxTime + 1;
+				int minVal = spec.getMaxTime() + 1;
 				int curMin = -1;
 				for (int j = 0; j < this.timePoints.length; j++){
 					int temp = this.timePoints[j].value();
@@ -1511,7 +1503,7 @@ public class TroposCSPAlgorithm {
 			int[] indexOrder = new int[this.timePoints.length];
 			int biggestMin = -1;
 			for (int i = 0; i < indexOrder.length; i++){
-				int minVal = this.maxTime + 1;
+				int minVal = spec.getMaxTime() + 1;
 				int curMin = -1;
 				for (int j = 0; j < this.timePoints.length; j++){
 					int temp = this.timePoints[j].value();
@@ -1531,7 +1523,7 @@ public class TroposCSPAlgorithm {
     	for (int i = 0; i < indexOrder.length; i++){
     		System.out.print(this.timePoints[indexOrder[i]].id + "-" + this.timePoints[indexOrder[i]].value() + "\t");
    		}
-    	//System.out.println();
+    	System.out.println();
 		
     	// Print out times.
     	System.out.print("Time:\t");
@@ -1541,14 +1533,13 @@ public class TroposCSPAlgorithm {
     	System.out.println();
     	
     	// Print out Values.
-    	for (int i = 0; i < this.intentions.length; i++){
-    		IntentionalElement element = this.intentions[i];
+    	int i = -1;
+    	for (IntentionalElement element : this.spec.getIntElements()){
+    		i++;
     		System.out.print(element.getId() + ":\t");
     		for (int t = 0; t < this.values[i].length; t++){
         		for (int v = 0; v < this.values[i][t].length; v++)
-//        			//System.out.print(this.values[i][indexOrder[t]][v].value());
         			System.out.print(this.values[i][t][v].value());
-
         		System.out.print("\t");
     		}
     		System.out.println(element.getName() + "\t" + element.getDynamicType().toString());
@@ -1556,8 +1547,8 @@ public class TroposCSPAlgorithm {
     	
     	// Print out intention epoch values.
     	System.out.print("Epoch Points:\t");
-   		for (int i = 0; i < this.epochs.length; i++){
-    		System.out.print(this.epochs[i].id + "-" + this.epochs[i].value() + "\t");
+   		for (int a = 0; a < this.epochs.length; a++){
+   			System.out.print(this.epochs[a].id + "-" + this.epochs[a].value() + "\t");
    		}   		
 	}	
 	private void saveSingleSolution(int[] indexOrder) {	
@@ -1566,8 +1557,8 @@ public class TroposCSPAlgorithm {
     		finalValueTimePoints[i] = this.timePoints[indexOrder[i]].value();
    		this.spec.setFinalValueTimePoints(finalValueTimePoints);
     	
-   		boolean[][][] finalValues = new boolean[this.intentions.length][indexOrder.length][4];
-    	for (int i = 0; i < this.intentions.length; i++){
+   		boolean[][][] finalValues = new boolean[this.spec.getIntElements().size()][indexOrder.length][4];
+    	for (int i = 0; i < this.spec.getIntElements().size(); i++){
     		for (int t = 0; t < this.values[i].length; t++){
         		for (int v = 0; v < this.values[i][t].length; v++)
         			if(this.values[i][t][v].value() == 1)
@@ -1590,10 +1581,10 @@ public class TroposCSPAlgorithm {
 		Search<IntVar> label = new DepthFirstSearch<IntVar>();
 
 		if(!genericFindSolution(this.spec.isSolveAllSolutions(), this.spec.isSolveSingleState(), this.store, label, this.constraints, this.createVarList())){
-			//System.out.println("Found Solution = False");
+			System.out.println("Found Solution = False");
 			return false;
 		} else {
-			//System.out.println("Found Solution = True");
+			System.out.println("Found Solution = True");
 			if (this.spec.isSolveAllSolutions()){
 				this.saveAllSolution(label);				
 			}else{
@@ -1625,10 +1616,10 @@ public class TroposCSPAlgorithm {
 			}
 
 			// int solNum = 1;	/// NOTE: Solution number starts at 1 not 0!!!
-			boolean[][][][] finalValues = new boolean[totalSolution][this.intentions.length][this.values[0].length][4];
+			boolean[][][][] finalValues = new boolean[totalSolution][this.spec.getIntElements().size()][this.values[0].length][4];
 			for (int s = 1; s <= totalSolution; s++){
 				int solIndex = 0;
-				for (int i = 0; i < this.intentions.length; i++)
+				for (int i = 0; i < this.spec.getIntElements().size(); i++)
 					for (int t = 0; t < this.values[0].length; t++)
 						for (int v = 0; v < 4; v++){
 							if(label.getSolution(s)[solIndex].toString().equals("1"))
@@ -1663,8 +1654,9 @@ public class TroposCSPAlgorithm {
 
 		System.out.println("The current time is: " + currentTime);
 
-		for (int i = 0; i < valuesExplore.length; i++){
-			IntentionalElement element = this.intentions[i];
+		int i = -1;
+		for (IntentionalElement element : this.spec.getIntElements()){
+			i++;
 			genericInitialNodeValues(storeExplore, satExplore, valuesExplore[i][0], element.getId() + "_0");
 			genericInitialNodeValues(storeExplore, satExplore, valuesExplore[i][1], element.getId() + "_1");
 
@@ -1673,8 +1665,8 @@ public class TroposCSPAlgorithm {
 				constraintsExplore.add(new XeqC(valuesExplore[i][0][j], this.values[i][nodeIndex][j].value()));
 			
 		}
-		genericAddLinkConstraints(satExplore, constraintsExplore, this.intentions, valuesExplore);
-		genericInitialNextStateDynamics(constraintsExplore, this.intentions, valuesExplore, 
+		genericAddLinkConstraints(satExplore, constraintsExplore, this.spec.getIntElements(), valuesExplore);
+		genericInitialNextStateDynamics(constraintsExplore, this.spec.getIntElements(), valuesExplore, 
 				this.epochCollection, currentTime, 0);
 
 		storeExplore.print();
@@ -1682,14 +1674,14 @@ public class TroposCSPAlgorithm {
 		//Create VarList
 		IntVar[] fullList = new IntVar[valuesExplore.length * 8];
 		int fullListIndex = 0;
-		for (int i = 0; i < valuesExplore.length; i++)
-				for (int v = 0; v < valuesExplore[i][0].length; v++){
-					fullList[fullListIndex] = valuesExplore[i][0][v];
+		for (int z = 0; z < valuesExplore.length; z++)
+				for (int v = 0; v < valuesExplore[z][0].length; v++){
+					fullList[fullListIndex] = valuesExplore[z][0][v];
 					fullListIndex++;
 				}
-		for (int i = 0; i < valuesExplore.length; i++)
-			for (int v = 0; v < valuesExplore[i][1].length; v++){
-				fullList[fullListIndex] = valuesExplore[i][1][v];
+		for (int z = 0; i < valuesExplore.length; z++)
+			for (int v = 0; v < valuesExplore[z][1].length; v++){
+				fullList[fullListIndex] = valuesExplore[z][1][v];
 				fullListIndex++;
 			}
 
@@ -1708,8 +1700,7 @@ public class TroposCSPAlgorithm {
 			int solIndex = 0;
 			// Print Original Model
 			System.out.println("\nOriginal Model - Time: " + currentTime);
-			for (int i = 0; i < this.intentions.length; i++){
-				IntentionalElement element = this.intentions[i];
+			for (IntentionalElement element : this.spec.getIntElements()){
 				System.out.print(element.getId() + ":\t");
 				for (int v = 0; v < 4; v++){
 					System.out.print(label.getSolution(solNum)[solIndex]);
@@ -1721,8 +1712,7 @@ public class TroposCSPAlgorithm {
 			
 			// Print Next State
 			System.out.println("\nNext State");
-			for (int i = 0; i < this.intentions.length; i++){
-				IntentionalElement element = this.intentions[i];
+			for (IntentionalElement element : this.spec.getIntElements()){
 				System.out.print(element.getId() + ":\t");
 				for (int v = 0; v < 4; v++){
 					System.out.print(label.getSolution(solNum)[solIndex]);
@@ -1732,5 +1722,126 @@ public class TroposCSPAlgorithm {
 			}  
     	}
 	}
-	
+
+
+	public Store getStore() {
+		return store;
+	}
+
+	public void setStore(Store store) {
+		this.store = store;
+	}
+
+	public SatTranslation getSat() {
+		return sat;
+	}
+
+	public void setSat(SatTranslation sat) {
+		this.sat = sat;
+	}
+
+	public List<Constraint> getConstraints() {
+		return constraints;
+	}
+
+	public void setConstraints(List<Constraint> constraints) {
+		this.constraints = constraints;
+	}
+
+	public ModelSpec getSpec() {
+		return spec;
+	}
+
+	public void setSpec(ModelSpec spec) {
+		this.spec = spec;
+	}
+
+	public int getNumTimePoints() {
+		return numTimePoints;
+	}
+
+	public void setNumTimePoints(int numTimePoints) {
+		this.numTimePoints = numTimePoints;
+	}
+
+	public int getNumEpochs() {
+		return numEpochs;
+	}
+
+	public void setNumEpochs(int numEpochs) {
+		this.numEpochs = numEpochs;
+	}
+
+	public IntVar[] getTimePoints() {
+		return timePoints;
+	}
+
+	public void setTimePoints(IntVar[] timePoints) {
+		this.timePoints = timePoints;
+	}
+
+	public IntVar[] getEpochs() {
+		return epochs;
+	}
+
+	public void setEpochs(IntVar[] epochs) {
+		this.epochs = epochs;
+	}
+
+	public HashMap<IntentionalElement, IntVar[]> getEpochCollection() {
+		return epochCollection;
+	}
+
+	public void setEpochCollection(HashMap<IntentionalElement, IntVar[]> epochCollection) {
+		this.epochCollection = epochCollection;
+	}
+
+	public HashMap<IntVar, IntVar> getEpochToTimePoint() {
+		return epochToTimePoint;
+	}
+
+	public void setEpochToTimePoint(HashMap<IntVar, IntVar> epochToTimePoint) {
+		this.epochToTimePoint = epochToTimePoint;
+	}
+
+	public IntVar getZero() {
+		return zero;
+	}
+
+	public void setZero(IntVar zero) {
+		this.zero = zero;
+	}
+
+	public IntVar getInfinity() {
+		return infinity;
+	}
+
+	public void setInfinity(IntVar infinity) {
+		this.infinity = infinity;
+	}
+
+	public IntVar[] getUnsolvedTimePoints() {
+		return unsolvedTimePoints;
+	}
+
+	public void setUnsolvedTimePoints(IntVar[] unsolvedTimePoints) {
+		this.unsolvedTimePoints = unsolvedTimePoints;
+	}
+
+	public IntVar[] getNextTimePoint() {
+		return nextTimePoint;
+	}
+
+	public void setNextTimePoint(IntVar[] nextTimePoint) {
+		this.nextTimePoint = nextTimePoint;
+	}
+
+	public void setValues(BooleanVar[][][] values) {
+		this.values = values;
+	}
+
+	public BooleanVar[][][] getValues() {
+		return this.values;
+	}
+
 }

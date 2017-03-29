@@ -4,6 +4,7 @@ function AnalysisObject(){
 	this.conflictLevel;
 	this.numRelTime;
 	this.absTimePts;
+	this.currentState = 0;
 	//this.absVal;
 	this.solveSinglePath;
 	this.getNextState;
@@ -15,8 +16,6 @@ function AO_getValues(analysisInterface){
 	analysisInterface.conflictLevel = $('#conflict-level').val();
 	analysisInterface.numRelTime = $('#num-rel-time').val();
 	analysisInterface.absTimePts = $('#abs-time-pts').val();
-	analysisInterface.solveSinglePath = true;
-	analysisInterface.getNextState = false;
 	return analysisInterface;
 }
 

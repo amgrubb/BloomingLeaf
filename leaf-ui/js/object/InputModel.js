@@ -16,7 +16,7 @@ function FrontendModel(
 }
 
 //Get only model information (nodes and links)
-function getFrontendModel(){
+function getFrontendModel(isSinglePath = true){
 	//Step 0: Get elements from graph.
 	var all_elements = graph.getElements();
 	var savedLinks = [];
@@ -80,17 +80,31 @@ function getFrontendModel(){
 
 	// conversion between values used in Element Inspector with values used in backend
 	var satValueDict = {
-		"unknown": 5,
-		"satisfied": 3,
-		"partiallysatisfied": 2,
-		"partiallydenied": 1,
-		"denied": 0,
-		"conflict": 4,
-		"none": 6
+		"unknown": "0000",
+		"satisfied": "1000",
+		"partiallysatisfied": "0100",
+		"partiallydenied": "0010",
+		"denied": "0001"
 	}
 
 	//INTENTIONAL ELEMENTS
 	var data_intentions = [];
+	//Verify if has conflicts
+	if(isSinglePath){
+		for (var e = 0; e < elements.length; e++){
+			var initValue = elements[e].attributes.attrs[".satvalue"].text;
+			if ((initValue == "(PS, PD)") ||
+				(initValue == "(PS, FD)") ||
+				(initValue == "(FS, PD)") ||
+				(initValue == "(FS, FD)") ){
+			
+				alert("The initial values must not be conflictant");
+				return null;
+			}
+		}		
+	}
+	
+	
 	for (var e = 0; e < elements.length; e++){
 		var elementID = e.toString();
 		while (elementID.length < 4){ elementID = "0" + elementID;}
@@ -116,8 +130,8 @@ function getFrontendModel(){
 	  	var v = elements[e].attr(".satvalue/value")
 
 	  	// treat satvalue as unknown if it is not yet defined
-	  	if((!v) || (v == "none"))
-			v = "none";
+	  	if((!v) || (v == "unknown"))
+			v = "unknown";
 
 		var io_intention = new IOIntention(actorid, elementID, type_e, satValueDict[v], elements[e].attr(".name/text").replace(/\n/g, " "));
 			
@@ -158,14 +172,18 @@ function getFrontendModel(){
 	    var f = elements[e].attr(".funcvalue/text");
 	    var funcType = elements[e].attr(".constraints/function");
 	    var funcTypeVal = elements[e].attr(".constraints/lastval");
+	    var initValue = elements[e].attributes.attrs[".satvalue"].value;
+	    if (isNaN(parseInt(initValue))){
+			initValue = satValueDict[initValue];
+		}
 	    
 	    var io_dynamic;
 	    if  (f == ""){		    	
-    		io_dynamic = new IODynamic(elementID, "NT", null);
+    		io_dynamic = new IODynamic(elementID, "NT", initValue);
 	    }else if(f == " "){
-    		io_dynamic = new IODynamic(elementID, "NT", null);	    	
+    		io_dynamic = new IODynamic(elementID, "NT", initValue);	    	
 	    }else if (f != "UD"){
-    		io_dynamic = new IODynamic(elementID, f, satValueDict[funcTypeVal]);
+    		io_dynamic = new IODynamic(elementID, f, initValue);
     		// user defined constraints
 	    }else{
 	    	var line = "";
@@ -178,9 +196,9 @@ function getFrontendModel(){
 
 			for (var l = 0; l < funcTypeVal.length; l++){
 				if(l == funcTypeVal.length - 1){
-					line += "\t" + begin[l] + "\t1\t" + funcType[l] + "\t" + satValueDict[funcTypeVal[l]];
+					line += "\t" + begin[l] + "\t1\t" + funcType[l] + "\t" + initValue;
 				}else{
-					line += "\t" + begin[l] + "\t" + end[l] + "\t" + funcType[l] + "\t" + satValueDict[funcTypeVal[l]];
+					line += "\t" + begin[l] + "\t" + end[l] + "\t" + funcType[l] + "\t" + initValue;
 				}
 			}
 
@@ -195,7 +213,7 @@ function getFrontendModel(){
 			}else{
 				line += "\tN";
 			}
-			io_dynamic = new IODynamic(elementID, f, satValueDict[funcTypeVal], line);	
+			io_dynamic = new IODynamic(elementID, f, initValue, line);	
 	    }
 	    
 	    data_dynamics.push(io_dynamic);
@@ -275,7 +293,7 @@ function getFrontendModel(){
 			data_links,
 			data_dynamics,
 			data_constraints,
-			allStatesModel
+			currentAnalysis
 		)
 	
 	return frontendModel;	

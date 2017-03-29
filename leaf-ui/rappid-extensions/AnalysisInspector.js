@@ -76,8 +76,8 @@ var AnalysisInspector = Backbone.View.extend({
 		'click .close': 'dismissModalBox',
 		'click .unassign-btn': 'unassignValue',
 		'click #btn-save-assignment': 'saveAssignment',
-		'click #btn-solve-single-path': 'solvePath'
-
+		'click #btn-solve-single-path': 'solveSinglePath',
+		'click #btn-get-next-state': 'getNextStates',
 	},
 
 	render: function(analysisFunctions) {
@@ -94,32 +94,37 @@ var AnalysisInspector = Backbone.View.extend({
 		this.$('#btn-csp-history').css("box-shadow","none");
 	},
 	solveSinglePath: function(){
-		//Getting data from the Analysis Inspector
-		var analysisObject = new AnalysisObject();
-		AO_getValues(analysisObject);
-		AO_btnSolveSinglePath(analysisObject);
-		//Getting data from the model
-		var frontModel = getFrontendModel();
+		var analysis = new AnalysisObject();
 		var js_object = {};
-		js_object.analysis = analysisObject;
-		js_object.model = frontModel;
+		AO_btnSolveSinglePath(analysis);
+		js_object.analysis = AO_getValues(analysis);
+		js_object.model = getFrontendModel(true);
+		
+		if(js_object.model == null){
+			return null;
+		}
+			
+		console.log(JSON.stringify(js_object));
 		//Send data to backend
-		backendCom(js_object);
+		backendComm(js_object);
 		
 	},
 	getNextStates: function(){
-		//Getting data from the Analysis Inspector
-		var analysisObject = new AnalysisObject();
-		AO_getValues(analysisObject);
-		AO_btnGetNextState(analysisObject);
-		//Getting data from the model
-		var frontModel = getFrontendModel();
+		var analysis = new AnalysisObject();
 		var js_object = {};
-		js_object.analysis = analysisObject;
-		js_object.model = frontModel;
+		AO_btnGetNextState(analysis);
+		analysis.currentState = $('#sliderValue').text();
+		js_object.analysis = AO_getValues(analysis);
+		js_object.model = getFrontendModel(false);
+		
+		
+		if(js_object.model == null){
+			return null;
+		}
+		
 		console.log(JSON.stringify(js_object));
 		//Send data to backend
-		backendCom(js_object);
+		backendComm(js_object);
 	},
 	loadFile: function(e){
 		this._analysisFunctions.loadAnalysisFile();

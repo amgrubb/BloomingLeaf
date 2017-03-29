@@ -5,41 +5,32 @@ import java.util.List;
 
 public class OutputModel {
 
-	boolean foundSolution = false;
-	int[] relativeTime;
-	int[] absoluteTime;
-	List<IOStateModel> statesModels = new ArrayList<>();
+	private List<String> timePoints = new ArrayList<>();
+	private List<String> unsolvedTimePoints = new ArrayList<>();
+	private List<OutputElement> elementList = new ArrayList<>();
 	
-	public boolean isFoundSolution() {
-		return foundSolution;
-	}
-	
-	public void setFoundSolution(boolean foundSolution) {
-		this.foundSolution = foundSolution;
-	}
-	
-	public int[] getRelativeTime() {
-		return relativeTime;
-	}
-	
-	public void setRelativeTime(int[] relativeTime) {
-		this.relativeTime = relativeTime;
-	}
-	
-	public int[] getAbsoluteTime() {
-		return absoluteTime;
-	}
-	
-	public void setAbsoluteTime(int[] absoluteTime) {
-		this.absoluteTime = absoluteTime;
+	public List<String> getTimePoints() {
+		return timePoints;
 	}
 
-	public List<IOStateModel> getStateModels() {
-		return statesModels;
+	public void setTimePoints(List<String> timePoints) {
+		this.timePoints = timePoints;
 	}
 
-	public void setStateModels(List<IOStateModel> stateModels) {
-		this.statesModels = stateModels;
+	public List<String> getUnsolvedTimePoints() {
+		return unsolvedTimePoints;
 	}
-	
+
+	public void setUnsolvedTimePoints(List<String> unsolvedTimePoints) {
+		this.unsolvedTimePoints = unsolvedTimePoints;
+	}
+
+	public void setElementList(List<OutputElement> elementList) {
+		this.elementList = elementList;
+	}
+
+	public List<OutputElement> getElementList() {
+		return this.elementList;
+	}
+
 }

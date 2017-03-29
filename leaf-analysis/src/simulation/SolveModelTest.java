@@ -4,9 +4,15 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 
+import org.jacop.core.BooleanVar;
+import org.jacop.core.IntVar;
+
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import interface_objects.InputObject;
+import interface_objects.OutputElement;
+import interface_objects.OutputModel;
 import simulation_objects.ModelSpec;
 
 /**
@@ -28,7 +34,7 @@ public class SolveModelTest {
 
 		//This is the default filePath to be executed if no file is pass through parameters
 		String filePath = "/home/marcel/UofT/";
-		//String filePath = "/u/marcel/public_html/BloomingLeaf/leaf-ui/cgi-bin/temp/";			
+		//String filePath = "/u/marcel/public_html/leaf/cgi-bin/temp/";			
 		String fileName = "default.json";
 				
 		try {
@@ -40,8 +46,8 @@ public class SolveModelTest {
 			solver.solveModel();
 			
 			
-			createOutputFile(modelSpec.getFinalValues(), "output");
-			
+			createOutputFile(solver, "output");
+	
 		} catch (Exception e) {
 			throw new RuntimeException(e.getMessage());
 		} 
@@ -54,51 +60,48 @@ public class SolveModelTest {
 	 * @param filePath
 	 * Name of the file to be read by CGI to be sent to frontend
 	 */
-	private static void createOutputFile(boolean[][][] bs, String fileName) {
+	private static void createOutputFile(TroposCSPAlgorithm solver, String fileName) {
 		//Gson gson = new Gson();		
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		OutputModel outputModel = new OutputModel();
+
+		for(IntVar var : solver.getTimePoints()){
+			outputModel.getTimePoints().add(var.toString().replaceAll(" = ", "_"));
+		}
+
+		for(IntVar var : solver.getUnsolvedTimePoints()){
+			outputModel.getUnsolvedTimePoints().add(var.toString().replaceAll(" = ", "_"));
+		}
+		
 		//Need to create the file and folder if it doesn't exist
 		String outputFile = "/home/marcel/UofT/" + fileName + ".out";
-		//String outputFile = "/u/marcel/public_html/BloomingLeaf/leaf-ui/cgi-bin/temp/" + fileName + ".out";
-		
-		StringBuilder sb = new StringBuilder();
-		sb.append(bs.length).append("\n"); //numElements - number of intent elements
-		sb.append(bs[0].length).append("\n"); //timeScale - number of states
+		//String outputFile = "/u/marcel/public_html/leaf/cgi-bin/temp/" + fileName + ".out";
+	
+		//Getting values
+		BooleanVar[][][] booleanVars = solver.getValues();
 
-		for(int x = 0; x < bs.length; x++){
-			for(int y = 0; y < bs[x].length; y++){
-				String value = "";
+		for(int x = 0; x < booleanVars.length; x++){
+			OutputElement outputElement = new OutputElement();
+			outputElement.setId(x);
+			for(int y = 0; y < booleanVars[x].length; y++){
+				outputElement.getStateList().add(y);
+				StringBuilder value = new StringBuilder();
 				for(int z = 0; z < 4; z++){
-					if(bs[x][y][z]){
-						value += "1";
-					}else{
-						value +="0";
-					}
+					String[] convertResults = booleanVars[x][y][z].toString().split("=");
+					value.append(convertResults[1]);
 				}
-				
-				if(value.equals("0000")){
-					sb.append("5");
-				}else if(value.equals("1000")){
-					sb.append("3");
-				}else if(value.equals("0100")){
-					sb.append("2");
-				}else if(value.equals("0010")){
-					sb.append("1");
-				}else if(value.equals("0001")){
-					sb.append("0");
-				}else{
-					sb.append("4");
-				}
-				sb.append("\t");
+				outputElement.getValuesList().add(value.toString());
 			}
-			sb.append("\n");
+			outputModel.getElementList().add(outputElement);
 		}
+
 		
 		try {
 			FileWriter file;
 			file = new FileWriter(outputFile);
 			PrintWriter printFile = new PrintWriter(file);
-			printFile.printf(sb.toString());
-			//printFile.printf(gson.toJson(bs));
+			//printFile.printf(sb.toString());
+			printFile.printf(gson.toJson(outputModel));
 			file.close();
 		} catch (Exception e) {
 			throw new RuntimeException("Error in createOutputFile: " + e.getMessage());
