@@ -455,7 +455,9 @@ public class TroposCSPAlgorithm {
     		for (int t = 0; t < this.values[i].length; t++){
     			genericInitialNodeValues(this.store, this.sat, this.values[i][t], element.getId() + "_" + t);
     			// Initial initialValues.
-    			if (t < initialValues[i].length){
+    			if ((t == 0) && (!initialValues[i][t][0] && !initialValues[i][t][1] && !initialValues[i][t][2] && !initialValues[i][t][3]))
+    				continue;
+    			else if (t < initialValues[i].length){
     				this.constraints.add(new XeqC(this.values[i][t][0], boolToInt(initialValues[i][t][0])));
     				this.constraints.add(new XeqC(this.values[i][t][1], boolToInt(initialValues[i][t][1])));
     				this.constraints.add(new XeqC(this.values[i][t][2], boolToInt(initialValues[i][t][2])));
