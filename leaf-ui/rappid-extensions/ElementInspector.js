@@ -182,7 +182,7 @@ var ElementInspector = Backbone.View.extend({
 
     else if(functionType != "UD"){
       this.$('.function-type').val(functionType);
-
+      this.updateHTML(null);
     // loading user defined constraint
     }else{
       this.$('.function-type').val(functionType);
