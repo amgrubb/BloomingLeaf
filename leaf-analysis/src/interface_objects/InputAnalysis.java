@@ -8,7 +8,16 @@ public class InputAnalysis {
 	String absVal;
 	String solveSinglePath;
 	String getNextState;
+	String currentState;
 	
+	public String getCurrentState() {
+		return currentState;
+	}
+
+	public void setCurrentState(String currentState) {
+		this.currentState = currentState;
+	}
+
 	public String getMaxAbsTime() {
 		return maxAbsTime;
 	}
@@ -66,5 +75,4 @@ public class InputAnalysis {
 	}
 	
 }
-
 

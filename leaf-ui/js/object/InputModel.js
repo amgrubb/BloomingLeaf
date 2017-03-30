@@ -81,10 +81,10 @@ function getFrontendModel(isSinglePath = true){
 	// conversion between values used in Element Inspector with values used in backend
 	var satValueDict = {
 		"unknown": "0000",
-		"satisfied": "1000",
+		"satisfied": "1100",
 		"partiallysatisfied": "0100",
 		"partiallydenied": "0010",
-		"denied": "0001"
+		"denied": "0011"
 	}
 
 	//INTENTIONAL ELEMENTS
@@ -256,32 +256,38 @@ function getFrontendModel(isSinglePath = true){
 			var intentionalElement = new IntentionElement();
 			intentionalElement.id = data_intentions[i_intention].nodeID;
 			
-			if(data_intentions[i_intention].initialValue == 0){
-				intentionalElement.status.push(true);				
-			}else{
+			//FD
+			if(data_intentions[i_intention].initialValue == "1100"){
+				intentionalElement.status.push(true);
+				intentionalElement.status.push(true);
 				intentionalElement.status.push(false);
+				intentionalElement.status.push(false);	
 			}
 			
 			//PD
-			if(data_intentions[i_intention].initialValue == 1){
-				intentionalElement.status.push(true);								
-			}else{
+			if(data_intentions[i_intention].initialValue == "0100"){
+				intentionalElement.status.push(false);				
+				intentionalElement.status.push(true);				
+				intentionalElement.status.push(false);				
 				intentionalElement.status.push(false);				
 			}
 			
 			//PS
-			if(data_intentions[i_intention].initialValue == 2){
+			if(data_intentions[i_intention].initialValue == "0010"){
+				intentionalElement.status.push(false);				
+				intentionalElement.status.push(false);				
 				intentionalElement.status.push(true);				
-			}else{
 				intentionalElement.status.push(false);				
 			}
 			
-			//FD
-			if(data_intentions[i_intention].initialValue == 3){
-				intentionalElement.status.push(true);				
-			}else{
+			//FS
+			if(data_intentions[i_intention].initialValue == "0011"){
 				intentionalElement.status.push(false);				
+				intentionalElement.status.push(false);				
+				intentionalElement.status.push(true);				
+				intentionalElement.status.push(true);				
 			}
+			
 			stateModel.intentionElements.push(intentionalElement);
 		}
 		allStatesModel.push(stateModel);

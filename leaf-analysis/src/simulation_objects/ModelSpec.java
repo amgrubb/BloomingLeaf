@@ -27,8 +27,8 @@ public class ModelSpec {
 	private String inputFilename = "";
     private int[][][] history;
     private int relativeTimePoints = 0;
-    private int[] absoluteTimePoints = new int[] {};
-    private boolean[][][] initialValues;		// Holds the initial values whether they are single or multiple.
+    private int[] absoluteTimePoints = null;
+    private boolean[][][] initialValues;	// Holds the initial values whether they are single or multiple.
     											//[this.numIntentions][this.numTimePoints][FD - index 0 / PD - index 1 / PS - index 2 / FS - index 3]
 												// Note if model only has initial values then it will be [numintentions][1][4].
     private int[] initialValueTimePoints = new int[] {0};		// Hold the assigned times for each of the initial Values. Should be same length of second paramater of initialValues; 

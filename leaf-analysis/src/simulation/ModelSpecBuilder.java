@@ -51,19 +51,21 @@ public class ModelSpecBuilder {
 			}
 			
 			//Absolute Time points
-			if(analysis.getAbsTimePts().length()>0){
-				String[] absTimePts = analysis.getAbsTimePts().split(" ");
-				int[] absTimePtsInt = new int[absTimePts.length];
-				int i = 0;
-				
-				for(String absTimePt : absTimePts){
-					absTimePtsInt[i] = Integer.parseInt(absTimePt);
-					i++;
+			if(analysis.getAbsTimePts()!=null){
+				if(analysis.getAbsTimePts().length()>0){
+					String[] absTimePts = analysis.getAbsTimePts().split(" ");
+					int[] absTimePtsInt = new int[absTimePts.length];
+					int i = 0;
+					
+					for(String absTimePt : absTimePts){
+						absTimePtsInt[i] = Integer.parseInt(absTimePt);
+						i++;
+					}
+					
+					modelSpec.setAbsoluteTimePoints(absTimePtsInt);
 				}
-				
-				modelSpec.setAbsoluteTimePoints(absTimePtsInt);
 			}
-			
+
 			//Max Absolute Time
 			if(analysis.getMaxAbsTime()!=null){
 				modelSpec.setMaxTime(Integer.parseInt(analysis.getMaxAbsTime()));	
