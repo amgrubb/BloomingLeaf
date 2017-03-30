@@ -1,3 +1,4 @@
+package simulation;
 
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -8,7 +9,6 @@ import com.google.gson.GsonBuilder;
 
 import interface_objects.InputObject;
 import interface_objects.OutputModel;
-import simulation_objects.ModelSpec;
 
 /**
  * SolveModelTest 
@@ -17,7 +17,7 @@ import simulation_objects.ModelSpec;
  * Then it executes all analysis creating a output file that has the json analysed file to be send back to the frontend.
  *
  */
-public class SolveModelTest {
+public class SolveModel {
 
 	/**
 	 * This method is responsible to execute all steps to generate the analysis file.
@@ -41,7 +41,7 @@ public class SolveModelTest {
 			solver.solveModel();
 			
 			
-			createOutputFile(solver.getSpec(), "output");
+			createOutputFile(solver, "output");
 	
 		} catch (Exception e) {
 			throw new RuntimeException(e.getMessage());
@@ -55,42 +55,14 @@ public class SolveModelTest {
 	 * @param filePath
 	 * Name of the file to be read by CGI to be sent to frontend
 	 */
-	private static void createOutputFile(ModelSpec modelSpec, String fileName) {
+	private static void createOutputFile(TroposCSPAlgorithm2 solver, String fileName) {
 		//Need to create the file and folder if it doesn't exist
 		String outputFile = "/home/marcel/UofT/" + fileName + ".out";
 		//String outputFile = "/u/marcel/public_html/leaf/cgi-bin/temp/" + fileName + ".out";
 	
 		//Gson gson = new Gson();		
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		OutputModel outputModel = new OutputModel();
-
-		modelSpec.getActors();
-		/*for(IntVar var : solver.getTimePoints()){
-			outputModel.getTimePoints().add(var.toString().replaceAll(" = ", "_"));
-		}
-
-		for(IntVar var : solver.getUnsolvedTimePoints()){
-			outputModel.getUnsolvedTimePoints().add(var.toString().replaceAll(" = ", "_"));
-		}
-		
-		//Getting values
-		BooleanVar[][][] booleanVars = solver.getValues();
-
-		for(int x = 0; x < booleanVars.length; x++){
-			OutputElement outputElement = new OutputElement();
-			outputElement.setId(x);
-			for(int y = 0; y < booleanVars[x].length; y++){
-				outputElement.getStateList().add(y);
-				StringBuilder value = new StringBuilder();
-				for(int z = 0; z < 4; z++){
-					String[] convertResults = booleanVars[x][y][z].toString().split("=");
-					value.append(convertResults[1]);
-				}
-				outputElement.getValuesList().add(value.toString());
-			}
-			outputModel.getElementList().add(outputElement);
-		}*/
-
+		OutputModel outputModel = solver.getOutputModel();
 		
 		try {
 			FileWriter file;
@@ -116,7 +88,7 @@ public class SolveModelTest {
 		try{
 		Gson gson = new Gson();		
 		InputObject frontendObject = gson.fromJson(new FileReader(filePath), InputObject.class);
-		ModelSpec modelSpec = ModelSpecBuilder.buildModelSpec(frontendObject);
+		ModelSpec modelSpec =  ModelSpecBuilder.buildModelSpec(frontendObject);
 		return modelSpec;
 		}catch(Exception e){
 			throw new RuntimeException("Error in convertModelFromFile() method: /n" + e.getMessage());

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package simulation_objects;
+package simulation;
 
 /**
  * @author A.M.Grubb

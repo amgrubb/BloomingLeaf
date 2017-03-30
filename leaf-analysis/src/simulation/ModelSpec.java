@@ -1,7 +1,7 @@
 /**
  * 
  */
-package simulation_objects;
+package simulation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -234,6 +234,10 @@ public class ModelSpec {
 		
 	}
 
+	public ModelSpec(String filename) {
+		// TODO Auto-generated constructor stub
+	}
+
 	public boolean[][][][] getAllSolutionsValues() {
 		return allSolutionsValues;
 	}
@@ -252,6 +256,15 @@ public class ModelSpec {
 
 	public boolean isSolveAllSolutions() {
 	    return this.solveSinglePath;
+	}
+
+	public void setSolveAllSolutions(boolean b) {
+		this.solveSinglePath = b;		
+	}
+
+	public void setSolveSingleState(boolean b) {
+		this.solveNextState = b;
+		
 	}
 
 

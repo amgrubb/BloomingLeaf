@@ -1,3 +1,5 @@
+package simulation;
+
 
 
 import java.util.ArrayList;
@@ -33,19 +35,8 @@ import org.jacop.search.Search;
 import org.jacop.search.SelectChoicePoint;
 import org.jacop.search.SimpleSelect;
 
-import simulation_objects.Actor;
-import simulation_objects.Contribution;
-import simulation_objects.ContributionType;
-import simulation_objects.Decomposition;
-import simulation_objects.DecompositionType;
-import simulation_objects.Dependency;
-import simulation_objects.ElementLink;
-import simulation_objects.EpochConstraint;
-import simulation_objects.IntentionalElement;
-import simulation_objects.IntentionalElementDynamicType;
-import simulation_objects.ModelSpec;
-import simulation_objects.UDFunction;
-import simulation_objects.UDFunctionCSP;
+import interface_objects.OutputElement;
+import interface_objects.OutputModel;
 
 public class TroposCSPAlgorithm2 {
 
@@ -1587,7 +1578,7 @@ public class TroposCSPAlgorithm2 {
 			return false;
 		} else {
 			System.out.println("Found Solution = True");
-			if (this.spec.isSolveAllSolutions()){
+			if (this.spec.isSolveSingleState()){
 				this.saveAllSolution(label);				
 			}else{
 				int[] timeOrder = this.createTimePointOrder();
@@ -1844,6 +1835,45 @@ public class TroposCSPAlgorithm2 {
 
 	public BooleanVar[][][] getValues() {
 		return this.values;
+	}
+
+
+	public OutputModel getOutputModel() {
+		OutputModel output = new OutputModel();
+		int[] timeOrder = this.createTimePointOrder();
+		
+		// Print out timepoint data.
+    	for (int i = 0; i < timeOrder.length; i++){
+    		output.getTimePoints().add(this.timePoints[timeOrder[i]].id + "-" + this.timePoints[timeOrder[i]].value());
+   		}
+		
+    	// Print out times.
+    	for (int i = 0; i < timeOrder.length; i++){
+    		output.getTimes().add(i + "|" + this.timePoints[timeOrder[i]].value());
+   		}
+    	
+    	// Print out Values.
+    	int i = -1;
+    	for (IntentionalElement element : this.spec.getIntElements()){
+    		i++;
+    		OutputElement outputElement = new OutputElement();
+    		
+    		System.out.print(element.getId() + ":\t");
+    		for (int t = 0; t < this.values[i].length; t++){
+    			StringBuilder value = new StringBuilder();
+    			for (int v = 0; v < this.values[i][t].length; v++){
+        			value.append(this.values[i][t][v].value());
+        		}
+        			outputElement.getValueList().add(value.toString());
+    		}
+    		output.getElementList().add(outputElement);
+    	} 
+    	
+    	// Print out intention epoch values.
+   		for (int a = 0; a < this.epochs.length; a++){
+   			output.getEpochPoints().add(this.epochs[a].id + "-" + this.epochs[a].value());
+   		}
+		return output;   		
 	}
 
 }

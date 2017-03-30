@@ -1,7 +1,7 @@
 /**
  * 
  */
-package simulation_objects;
+package simulation;
 
 /**
  * @author A.M.Grubb
@@ -11,7 +11,7 @@ public class IntentionalElement extends LinkableElement {
     // OBJECT VARIABLES
 	Actor actor = null;
 	IntentionalElementType type = IntentionalElementType.GOAL;
-	IntentionalElementDynamicType dynamicType = IntentionalElementDynamicType.NT;
+	public IntentionalElementDynamicType dynamicType = IntentionalElementDynamicType.NT;
 	boolean userDefinedDynamicType = false;
 	UDFunction intUDFunct = null;	
 	UDFunctionCSP cspUDFunct = null;

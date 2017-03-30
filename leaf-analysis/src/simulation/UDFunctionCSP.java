@@ -1,10 +1,10 @@
-package simulation_objects;
+package simulation;
 
 public class UDFunctionCSP {
 		String[] functions;
 		int[] dynamicValues;
 		char[] elementEBs;
-		int[] absoluteEpochLengths = null;
+		public int[] absoluteEpochLengths = null;
 		int mapStart;
 		int mapEnd;
 		

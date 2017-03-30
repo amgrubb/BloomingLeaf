@@ -1,3 +1,4 @@
+package simulation;
 
 import java.util.ArrayList;
 
@@ -11,17 +12,6 @@ import interface_objects.InputIntention;
 import interface_objects.InputLink;
 import interface_objects.InputModel;
 import interface_objects.InputObject;
-import simulation_objects.Actor;
-import simulation_objects.Contribution;
-import simulation_objects.ContributionType;
-import simulation_objects.Decomposition;
-import simulation_objects.DecompositionType;
-import simulation_objects.Dependency;
-import simulation_objects.EpochConstraint;
-import simulation_objects.IntentionalElement;
-import simulation_objects.IntentionalElementDynamicType;
-import simulation_objects.LinkableElement;
-import simulation_objects.ModelSpec;
 
 /**
  * This class is responsible to get the frontend model and convert into the backend model filling the necessary attributes.

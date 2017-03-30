@@ -1,7 +1,7 @@
 /**
  * 
  */
-package simulation_objects;
+package simulation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,8 +12,8 @@ import java.util.ListIterator;
  *
  */
 public abstract class LinkableElement{
-    String name = "NAME";
-    String id = "NO-ID";
+    public String name = "NAME";
+    public String id = "NO-ID";
     List<ElementLink> linksSrc = new ArrayList<ElementLink>();
     List<ElementLink> linksDest = new ArrayList<ElementLink>();
 
