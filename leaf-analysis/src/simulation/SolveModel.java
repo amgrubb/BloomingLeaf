@@ -40,7 +40,6 @@ public class SolveModel {
 			TroposCSPAlgorithm2 solver = new TroposCSPAlgorithm2(modelSpec);
 			solver.solveModel();
 			
-			
 			createOutputFile(solver, "output");
 	
 		} catch (Exception e) {
@@ -49,9 +48,9 @@ public class SolveModel {
 	}
 
 	/**
-	 * This method converts the CommmOutput object into a jason object file to be sent to frontend.
-	 * @param commOutput
-	 * Object CommOutput with all data to be sent to frontend.
+	 * This method converts the Output object with the analyzed data into a json object file to be sent to frontend.
+	 * @param TroposCSPAlgorithm
+	 * The solver object that contains all necessary data.
 	 * @param filePath
 	 * Name of the file to be read by CGI to be sent to frontend
 	 */
