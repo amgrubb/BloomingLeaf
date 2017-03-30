@@ -9,6 +9,9 @@ public class OutputModel {
 	private List<String> times = new ArrayList<>();
 	private List<OutputElement> elementList = new ArrayList<>();
 	private List<String> epochPoints = new ArrayList<>();
+	private List<String> finalAssignedEpoch = new ArrayList<>();
+	private List<String> finalValueTimePoints = new ArrayList<>();
+	
 	
 	public List<String> getEpochPoints() {
 		return epochPoints;
@@ -40,6 +43,22 @@ public class OutputModel {
 
 	public List<OutputElement> getElementList() {
 		return this.elementList;
+	}
+
+	public List<String> getFinalAssignedEpoch() {
+		return finalAssignedEpoch;
+	}
+
+	public void setFinalAssignedEpoch(List<String> finalAssignedEpoch) {
+		this.finalAssignedEpoch = finalAssignedEpoch;
+	}
+
+	public List<String> getFinalValueTimePoints() {
+		return finalValueTimePoints;
+	}
+
+	public void setFinalValueTimePoints(List<String> finalValueTimePoints) {
+		this.finalValueTimePoints = finalValueTimePoints;
 	}
 
 }

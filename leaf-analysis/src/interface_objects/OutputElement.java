@@ -5,15 +5,15 @@ import java.util.List;
 
 public class OutputElement {
 
-	private int id;
+	private String id;
 	private List<String> valueList = new ArrayList<>();
 	
-	public int getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setId(String string) {
+		this.id = string;
 	}
 
 	public List<String> getValueList() {

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 
 import org.jacop.constraints.Alldifferent;
 import org.jacop.constraints.And;
@@ -70,6 +71,129 @@ public class TroposCSPAlgorithm2 {
     		private char conflictAvoidLevel = 'S'; 			// Should have the value S/M/W/N for Strong, Medium, Weak, None.
 
      */
+    
+    
+
+
+	public Store getStore() {
+		return store;
+	}
+
+	public void setStore(Store store) {
+		this.store = store;
+	}
+
+	public SatTranslation getSat() {
+		return sat;
+	}
+
+	public void setSat(SatTranslation sat) {
+		this.sat = sat;
+	}
+
+	public List<Constraint> getConstraints() {
+		return constraints;
+	}
+
+	public void setConstraints(List<Constraint> constraints) {
+		this.constraints = constraints;
+	}
+
+	public ModelSpec getSpec() {
+		return spec;
+	}
+
+	public void setSpec(ModelSpec spec) {
+		this.spec = spec;
+	}
+
+	public int getNumTimePoints() {
+		return numTimePoints;
+	}
+
+	public void setNumTimePoints(int numTimePoints) {
+		this.numTimePoints = numTimePoints;
+	}
+
+	public int getNumEpochs() {
+		return numEpochs;
+	}
+
+	public void setNumEpochs(int numEpochs) {
+		this.numEpochs = numEpochs;
+	}
+
+	public IntVar[] getTimePoints() {
+		return timePoints;
+	}
+
+	public void setTimePoints(IntVar[] timePoints) {
+		this.timePoints = timePoints;
+	}
+
+	public IntVar[] getEpochs() {
+		return epochs;
+	}
+
+	public void setEpochs(IntVar[] epochs) {
+		this.epochs = epochs;
+	}
+
+	public HashMap<IntentionalElement, IntVar[]> getEpochCollection() {
+		return epochCollection;
+	}
+
+	public void setEpochCollection(HashMap<IntentionalElement, IntVar[]> epochCollection) {
+		this.epochCollection = epochCollection;
+	}
+
+	public HashMap<IntVar, IntVar> getEpochToTimePoint() {
+		return epochToTimePoint;
+	}
+
+	public void setEpochToTimePoint(HashMap<IntVar, IntVar> epochToTimePoint) {
+		this.epochToTimePoint = epochToTimePoint;
+	}
+
+	public IntVar getZero() {
+		return zero;
+	}
+
+	public void setZero(IntVar zero) {
+		this.zero = zero;
+	}
+
+	public IntVar getInfinity() {
+		return infinity;
+	}
+
+	public void setInfinity(IntVar infinity) {
+		this.infinity = infinity;
+	}
+
+	public IntVar[] getUnsolvedTimePoints() {
+		return unsolvedTimePoints;
+	}
+
+	public void setUnsolvedTimePoints(IntVar[] unsolvedTimePoints) {
+		this.unsolvedTimePoints = unsolvedTimePoints;
+	}
+
+	public IntVar[] getNextTimePoint() {
+		return nextTimePoint;
+	}
+
+	public void setNextTimePoint(IntVar[] nextTimePoint) {
+		this.nextTimePoint = nextTimePoint;
+	}
+
+	public void setValues(BooleanVar[][][] values) {
+		this.values = values;
+	}
+
+	public BooleanVar[][][] getValues() {
+		return this.values;
+	}
     
 	//Do not call this one directly. 
 	public TroposCSPAlgorithm2(ModelSpec spec) {
@@ -1717,127 +1841,6 @@ public class TroposCSPAlgorithm2 {
 	}
 
 
-	public Store getStore() {
-		return store;
-	}
-
-	public void setStore(Store store) {
-		this.store = store;
-	}
-
-	public SatTranslation getSat() {
-		return sat;
-	}
-
-	public void setSat(SatTranslation sat) {
-		this.sat = sat;
-	}
-
-	public List<Constraint> getConstraints() {
-		return constraints;
-	}
-
-	public void setConstraints(List<Constraint> constraints) {
-		this.constraints = constraints;
-	}
-
-	public ModelSpec getSpec() {
-		return spec;
-	}
-
-	public void setSpec(ModelSpec spec) {
-		this.spec = spec;
-	}
-
-	public int getNumTimePoints() {
-		return numTimePoints;
-	}
-
-	public void setNumTimePoints(int numTimePoints) {
-		this.numTimePoints = numTimePoints;
-	}
-
-	public int getNumEpochs() {
-		return numEpochs;
-	}
-
-	public void setNumEpochs(int numEpochs) {
-		this.numEpochs = numEpochs;
-	}
-
-	public IntVar[] getTimePoints() {
-		return timePoints;
-	}
-
-	public void setTimePoints(IntVar[] timePoints) {
-		this.timePoints = timePoints;
-	}
-
-	public IntVar[] getEpochs() {
-		return epochs;
-	}
-
-	public void setEpochs(IntVar[] epochs) {
-		this.epochs = epochs;
-	}
-
-	public HashMap<IntentionalElement, IntVar[]> getEpochCollection() {
-		return epochCollection;
-	}
-
-	public void setEpochCollection(HashMap<IntentionalElement, IntVar[]> epochCollection) {
-		this.epochCollection = epochCollection;
-	}
-
-	public HashMap<IntVar, IntVar> getEpochToTimePoint() {
-		return epochToTimePoint;
-	}
-
-	public void setEpochToTimePoint(HashMap<IntVar, IntVar> epochToTimePoint) {
-		this.epochToTimePoint = epochToTimePoint;
-	}
-
-	public IntVar getZero() {
-		return zero;
-	}
-
-	public void setZero(IntVar zero) {
-		this.zero = zero;
-	}
-
-	public IntVar getInfinity() {
-		return infinity;
-	}
-
-	public void setInfinity(IntVar infinity) {
-		this.infinity = infinity;
-	}
-
-	public IntVar[] getUnsolvedTimePoints() {
-		return unsolvedTimePoints;
-	}
-
-	public void setUnsolvedTimePoints(IntVar[] unsolvedTimePoints) {
-		this.unsolvedTimePoints = unsolvedTimePoints;
-	}
-
-	public IntVar[] getNextTimePoint() {
-		return nextTimePoint;
-	}
-
-	public void setNextTimePoint(IntVar[] nextTimePoint) {
-		this.nextTimePoint = nextTimePoint;
-	}
-
-	public void setValues(BooleanVar[][][] values) {
-		this.values = values;
-	}
-
-	public BooleanVar[][][] getValues() {
-		return this.values;
-	}
-
-
 	public OutputModel getOutputModel() {
 		OutputModel output = new OutputModel();
 		int[] timeOrder = this.createTimePointOrder();
@@ -1858,7 +1861,7 @@ public class TroposCSPAlgorithm2 {
     		i++;
     		OutputElement outputElement = new OutputElement();
     		
-    		System.out.print(element.getId() + ":\t");
+    		outputElement.setId(element.getId());
     		for (int t = 0; t < this.values[i].length; t++){
     			StringBuilder value = new StringBuilder();
     			for (int v = 0; v < this.values[i][t].length; v++){
@@ -1873,7 +1876,20 @@ public class TroposCSPAlgorithm2 {
    		for (int a = 0; a < this.epochs.length; a++){
    			output.getEpochPoints().add(this.epochs[a].id + "-" + this.epochs[a].value());
    		}
-		return output;   		
+
+   		//Get final assigned epoch
+		for (Map.Entry<String,Integer> entry : getSpec().getFinalAssignedEpochs().entrySet()) {
+		  String key = entry.getKey();
+		  Integer value = entry.getValue();
+		  output.getFinalAssignedEpoch().add(key+"_"+value);
+		}
+
+		for(int a = 0; a < getSpec().getFinalValueTimePoints().length; a++){
+			output.getFinalValueTimePoints().add(Integer.toString(getSpec().getFinalValueTimePoints()[a]));	   			
+		}
+
+		return output;
+
 	}
 
 }
