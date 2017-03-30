@@ -1,17 +1,12 @@
-package simulation;
 
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 
-import org.jacop.core.BooleanVar;
-import org.jacop.core.IntVar;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import interface_objects.InputObject;
-import interface_objects.OutputElement;
 import interface_objects.OutputModel;
 import simulation_objects.ModelSpec;
 
@@ -42,11 +37,11 @@ public class SolveModelTest {
 			ModelSpec modelSpec = convertModelFromFile(filePath+fileName);
 			//Analyze the model
 			
-			TroposCSPAlgorithm solver = new TroposCSPAlgorithm(modelSpec);
+			TroposCSPAlgorithm2 solver = new TroposCSPAlgorithm2(modelSpec);
 			solver.solveModel();
 			
 			
-			createOutputFile(solver, "output");
+			createOutputFile(solver.getSpec(), "output");
 	
 		} catch (Exception e) {
 			throw new RuntimeException(e.getMessage());
@@ -60,12 +55,17 @@ public class SolveModelTest {
 	 * @param filePath
 	 * Name of the file to be read by CGI to be sent to frontend
 	 */
-	private static void createOutputFile(TroposCSPAlgorithm solver, String fileName) {
+	private static void createOutputFile(ModelSpec modelSpec, String fileName) {
+		//Need to create the file and folder if it doesn't exist
+		String outputFile = "/home/marcel/UofT/" + fileName + ".out";
+		//String outputFile = "/u/marcel/public_html/leaf/cgi-bin/temp/" + fileName + ".out";
+	
 		//Gson gson = new Gson();		
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		OutputModel outputModel = new OutputModel();
 
-		for(IntVar var : solver.getTimePoints()){
+		modelSpec.getActors();
+		/*for(IntVar var : solver.getTimePoints()){
 			outputModel.getTimePoints().add(var.toString().replaceAll(" = ", "_"));
 		}
 
@@ -73,10 +73,6 @@ public class SolveModelTest {
 			outputModel.getUnsolvedTimePoints().add(var.toString().replaceAll(" = ", "_"));
 		}
 		
-		//Need to create the file and folder if it doesn't exist
-		String outputFile = "/home/marcel/UofT/" + fileName + ".out";
-		//String outputFile = "/u/marcel/public_html/leaf/cgi-bin/temp/" + fileName + ".out";
-	
 		//Getting values
 		BooleanVar[][][] booleanVars = solver.getValues();
 
@@ -93,7 +89,7 @@ public class SolveModelTest {
 				outputElement.getValuesList().add(value.toString());
 			}
 			outputModel.getElementList().add(outputElement);
-		}
+		}*/
 
 		
 		try {

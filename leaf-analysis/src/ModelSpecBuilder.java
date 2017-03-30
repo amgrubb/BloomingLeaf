@@ -1,5 +1,3 @@
-package simulation;
-
 
 import java.util.ArrayList;
 
@@ -193,16 +191,27 @@ public class ModelSpecBuilder {
 			
 			boolean[][][] initialValues = new boolean[stateModels.get(0).getIntentionElements().size()][stateModels.size()][4];
 			
-			int num_time = 0;
-			
+			int num_time = -1;
 			for(IOStateModel stateModel : stateModels){
-				for(IOIntention intElement : stateModel.getIntentionElements()){
-					initialValues[Integer.parseInt(intElement.getId())][num_time][0] = intElement.getStatus()[0];
-					initialValues[Integer.parseInt(intElement.getId())][num_time][1] = intElement.getStatus()[1];
-					initialValues[Integer.parseInt(intElement.getId())][num_time][2] = intElement.getStatus()[2];
-					initialValues[Integer.parseInt(intElement.getId())][num_time][3] = intElement.getStatus()[3];
-				}
 				num_time++;
+				for(IOIntention intElement : stateModel.getIntentionElements()){
+					String[] values = intElement.getStatus();
+					if(values[0]!=null){
+						for(int i = 0; i < 4; i++){
+							if(values[0].charAt(i)=='1'){
+								initialValues[Integer.parseInt(intElement.getId())][num_time][i] = true;
+							}else{
+								initialValues[Integer.parseInt(intElement.getId())][num_time][i] = false;
+							}						
+						}						
+					}else{
+						initialValues[Integer.parseInt(intElement.getId())][num_time][0] = false;
+						initialValues[Integer.parseInt(intElement.getId())][num_time][1] = false;
+						initialValues[Integer.parseInt(intElement.getId())][num_time][2] = false;
+						initialValues[Integer.parseInt(intElement.getId())][num_time][3] = false;						
+					}
+
+				}
 			}
 			
 			modelSpec.setInitialValues(initialValues);

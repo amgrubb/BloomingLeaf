@@ -255,38 +255,7 @@ function getFrontendModel(isSinglePath = true){
 		for(var i_intention = 0; i_intention < data_intentions.length; i_intention++){
 			var intentionalElement = new IntentionElement();
 			intentionalElement.id = data_intentions[i_intention].nodeID;
-			
-			//FD
-			if(data_intentions[i_intention].initialValue == "1100"){
-				intentionalElement.status.push(true);
-				intentionalElement.status.push(true);
-				intentionalElement.status.push(false);
-				intentionalElement.status.push(false);	
-			}
-			
-			//PD
-			if(data_intentions[i_intention].initialValue == "0100"){
-				intentionalElement.status.push(false);				
-				intentionalElement.status.push(true);				
-				intentionalElement.status.push(false);				
-				intentionalElement.status.push(false);				
-			}
-			
-			//PS
-			if(data_intentions[i_intention].initialValue == "0010"){
-				intentionalElement.status.push(false);				
-				intentionalElement.status.push(false);				
-				intentionalElement.status.push(true);				
-				intentionalElement.status.push(false);				
-			}
-			
-			//FS
-			if(data_intentions[i_intention].initialValue == "0011"){
-				intentionalElement.status.push(false);				
-				intentionalElement.status.push(false);				
-				intentionalElement.status.push(true);				
-				intentionalElement.status.push(true);				
-			}
+			intentionalElement.status.push(data_intentions[i_intention].initialValue);
 			
 			stateModel.intentionElements.push(intentionalElement);
 		}
@@ -299,7 +268,7 @@ function getFrontendModel(isSinglePath = true){
 			data_links,
 			data_dynamics,
 			data_constraints,
-			currentAnalysis
+			allStatesModel
 		)
 	
 	return frontendModel;	

@@ -1,4 +1,4 @@
-package simulation;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,7 +47,7 @@ import simulation_objects.ModelSpec;
 import simulation_objects.UDFunction;
 import simulation_objects.UDFunctionCSP;
 
-public class TroposCSPAlgorithm {
+public class TroposCSPAlgorithm2 {
 
 	private Store store;									// CSP Store
 	private SatTranslation sat;								// Enables a SAT solver to be incorporated into CSP
@@ -81,7 +81,7 @@ public class TroposCSPAlgorithm {
      */
     
 	//Do not call this one directly. 
-	public TroposCSPAlgorithm(ModelSpec spec) {
+	public TroposCSPAlgorithm2(ModelSpec spec) {
 		// Initialise Store
 		this.store = new Store();
 		this.sat = new SatTranslation(this.store); 
