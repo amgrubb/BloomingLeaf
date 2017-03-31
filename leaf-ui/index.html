@@ -91,6 +91,11 @@
         <div id="slider"></div>
         <span id="sliderValue"></span>
 
+		<input id="finalAssigneEpoch" type="hidden"/>
+		<input id="finalValueTimePoints" type="hidden"/>
+		<input id="elementList" type="hidden"/>
+		
+
         <script type="text/javascript">
             SVGElement.prototype.getTransformToElement = SVGElement.prototype.getTransformToElement || function(toElement) {
             return toElement.getScreenCTM().inverse().multiply(this.getScreenCTM());

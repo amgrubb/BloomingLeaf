@@ -349,7 +349,10 @@ analysisFunctions.clearQueryObject = function(){
 }
 
 function loadAnalysis(analysisResults){
-	currentAnalysis = new analysisObject.initFromBackEnd(analysisResults)
+	currentAnalysis = new analysisObject.initFromBackEnd(analysisResults);
+	$("#finalAssigneEpoch").val(analysisResults.finalAssignedEpoch);
+	$("#finalValueTimePoints").val(analysisResults.finalValueTimePoints);
+	$("#elementList").val(analysisResults.elementList);
 	updateSlider(currentAnalysis, false);
 }
 

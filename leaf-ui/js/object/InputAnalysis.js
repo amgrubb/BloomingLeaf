@@ -5,10 +5,10 @@ function AnalysisObject(){
 	this.numRelTime;
 	this.absTimePts;
 	this.currentState = 0;
-	//this.absVal;
 	this.solveSinglePath;
 	this.getNextState;
-
+	this.initialAssignedEpoch = 0;
+	this.initialValueTimePoints = 0;
 }
 
 function AO_getValues(analysisInterface){
@@ -25,6 +25,11 @@ function AO_btnSolveSinglePath(analysisInterface){
 }
 
 function AO_btnGetNextState(analysisInterface){
+
+	analysisInterface.initialAssignedEpoch = $('#finalAssigneEpoch').val();
+	analysisInterface.initialValueTimePoints = $('#finalValueTimePoints').val();
+	analysisInterface.elementList = $('#elementList').val();
+
 	analysisInterface.getNextState = true;
 	analysisInterface.solveSinglePath = false;
 }

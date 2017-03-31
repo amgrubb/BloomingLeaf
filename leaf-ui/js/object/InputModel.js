@@ -129,11 +129,7 @@ function getFrontendModel(isSinglePath = true){
 
 	  	var v = elements[e].attr(".satvalue/value")
 
-	  	// treat satvalue as unknown if it is not yet defined
-	  	if((!v) || (v == "unknown"))
-			v = "unknown";
-
-		var io_intention = new IOIntention(actorid, elementID, type_e, satValueDict[v], elements[e].attr(".name/text").replace(/\n/g, " "));
+		var io_intention = new IOIntention(actorid, elementID, type_e, v, elements[e].attr(".name/text").replace(/\n/g, " "));
 			
 		data_intentions.push(io_intention);
 	}
