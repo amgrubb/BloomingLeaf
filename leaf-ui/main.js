@@ -13,6 +13,7 @@ var constrainsInspector = new ConstraintsInspector();
 var analysisInspector = new AnalysisInspector();
 var currentHalo;
 var currentAnalysis;
+var elementList;
 
 // Analysis variables
 var historyObject = new historyObject();
@@ -352,7 +353,7 @@ function loadAnalysis(analysisResults){
 	currentAnalysis = new analysisObject.initFromBackEnd(analysisResults);
 	$("#finalAssigneEpoch").val(analysisResults.finalAssignedEpoch);
 	$("#finalValueTimePoints").val(analysisResults.finalValueTimePoints);
-	$("#elementList").val(analysisResults.elementList);
+	elementList = analysisResults.elementList;
 	updateSlider(currentAnalysis, false);
 }
 

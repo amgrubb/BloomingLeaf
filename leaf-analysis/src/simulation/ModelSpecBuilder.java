@@ -1,6 +1,7 @@
 package simulation;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import interface_objects.IOIntention;
 import interface_objects.IOStateModel;
@@ -28,11 +29,7 @@ public class ModelSpecBuilder {
 		ModelSpec modelSpec = new ModelSpec();
 
 		try{
-			//ANALYSIS 
-			if(analysis.getAbsVal()!=null){
-				//TODO: ???
-			}
-			
+			//ANALYSIS 			
 			//Conflict level
 			if(analysis.getConflictLevel()!=null){
 				modelSpec.setConflictAvoidLevel(analysis.getConflictLevel().charAt(0));
@@ -74,6 +71,31 @@ public class ModelSpecBuilder {
 				modelSpec.setSolveNextState(Boolean.parseBoolean(analysis.getGetNextState()));
 			}
 	
+			if(analysis.getCurrentState()!=null){
+				String[] absoluteTime = analysis.getCurrentState().split("|");
+				int currentState = Integer.parseInt(absoluteTime[0]);
+				
+				String[] initialAssignedEpoch = analysis.getInitialAssignedEpoch().split(",");
+				HashMap<String, Integer> initialAssignedEpochMap = new HashMap<>();
+				for(int i = 0; i < currentState; i++){
+					String[] assignedEpoch = initialAssignedEpoch[i].split("_");
+					String key = assignedEpoch[0].toString();
+					Integer value = Integer.parseInt(assignedEpoch[1]);
+					initialAssignedEpochMap.put(key, value);
+				}
+				modelSpec.setInitialAssignedEpochs(initialAssignedEpochMap);
+				
+				String[] initialValueTimePoints = analysis.getInitialValueTimePoints().split(",");
+				int[] initialValueTimePointsArray = new int[currentState];
+				for(int i = 0; i < currentState; i++){
+					initialValueTimePointsArray[i] = Integer.parseInt(initialValueTimePoints[i]);
+				}
+				modelSpec.setInitialValueTimePoints(initialValueTimePointsArray);
+
+			}
+			
+				
+			
 			//-----------------------------------------------------------------------------------
 			//MODEL
 			

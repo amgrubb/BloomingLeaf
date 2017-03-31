@@ -1,14 +1,18 @@
 package interface_objects;
 
+import java.util.List;
+
 public class InputAnalysis {
-	String maxAbsTime;
-	String conflictLevel;
-	String numRelTime;
-	String absTimePts;
-	String absVal;
-	String solveSinglePath;
-	String getNextState;
-	String currentState;
+	private String maxAbsTime;
+	private String conflictLevel;
+	private String numRelTime;
+	private String absTimePts;
+	private String solveSinglePath;
+	private String getNextState;
+	private String currentState;
+	private String initialAssignedEpoch;
+	private String initialValueTimePoints;
+	private List<IOStateModel> elementList;
 	
 	public String getCurrentState() {
 		return currentState;
@@ -50,14 +54,6 @@ public class InputAnalysis {
 		this.absTimePts = absTimePts;
 	}
 	
-	public String getAbsVal() {
-		return absVal;
-	}
-	
-	public void setAbsVal(String absVal) {
-		this.absVal = absVal;
-	}
-	
 	public String getSolveSinglePath() {
 		return solveSinglePath;
 	}
@@ -72,6 +68,30 @@ public class InputAnalysis {
 	
 	public void setGetNextState(String getNextState) {
 		this.getNextState = getNextState;
+	}
+
+	public String getInitialAssignedEpoch() {
+		return initialAssignedEpoch;
+	}
+
+	public void setInitialAssignedEpoch(String initialAssignedEpoch) {
+		this.initialAssignedEpoch = initialAssignedEpoch;
+	}
+
+	public String getInitialValueTimePoints() {
+		return initialValueTimePoints;
+	}
+
+	public void setInitialValueTimePoints(String initialValueTimePoints) {
+		this.initialValueTimePoints = initialValueTimePoints;
+	}
+
+	public List<IOStateModel> getElementList() {
+		return elementList;
+	}
+
+	public void setElementList(List<IOStateModel> elementList) {
+		this.elementList = elementList;
 	}
 	
 }

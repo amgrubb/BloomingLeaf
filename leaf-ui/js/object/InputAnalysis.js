@@ -7,8 +7,9 @@ function AnalysisObject(){
 	this.currentState = 0;
 	this.solveSinglePath;
 	this.getNextState;
-	this.initialAssignedEpoch = 0;
-	this.initialValueTimePoints = 0;
+	this.initialAssignedEpoch;
+	this.initialValueTimePoints;
+	this.elementList;
 }
 
 function AO_getValues(analysisInterface){
@@ -28,7 +29,7 @@ function AO_btnGetNextState(analysisInterface){
 
 	analysisInterface.initialAssignedEpoch = $('#finalAssigneEpoch').val();
 	analysisInterface.initialValueTimePoints = $('#finalValueTimePoints').val();
-	analysisInterface.elementList = $('#elementList').val();
+	analysisInterface.elementList = elementList;
 
 	analysisInterface.getNextState = true;
 	analysisInterface.solveSinglePath = false;
