@@ -19,6 +19,8 @@ import interface_objects.InputObject;
  *
  */
 public class ModelSpecBuilder {
+	
+	
 	public static ModelSpec buildModelSpec(InputObject frontendObject){
 		
 		//Frontend model and analysis information
@@ -71,7 +73,7 @@ public class ModelSpecBuilder {
 				modelSpec.setSolveNextState(Boolean.parseBoolean(analysis.getGetNextState()));
 			}
 	
-			if(analysis.getCurrentState()!=null){
+			if(!analysis.getCurrentState().equals("0")){
 				String[] absoluteTime = analysis.getCurrentState().split("|");
 				int currentState = Integer.parseInt(absoluteTime[0]);
 				

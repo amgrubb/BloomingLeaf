@@ -7,7 +7,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 
-import org.jacop.constraints.*;
+import org.jacop.constraints.Alldifferent;
+import org.jacop.constraints.And;
+import org.jacop.constraints.AndBool;
+import org.jacop.constraints.Constraint;
+import org.jacop.constraints.IfThen;
+import org.jacop.constraints.IfThenElse;
+import org.jacop.constraints.Not;
+import org.jacop.constraints.Or;
+import org.jacop.constraints.OrBool;
+import org.jacop.constraints.PrimitiveConstraint;
+import org.jacop.constraints.XeqC;
+import org.jacop.constraints.XeqY;
+import org.jacop.constraints.XgtC;
+import org.jacop.constraints.XgtY;
+import org.jacop.constraints.XltY;
+import org.jacop.constraints.XlteqY;
+import org.jacop.constraints.XplusCeqZ;
 import org.jacop.core.BooleanVar;
 import org.jacop.core.IntVar;
 import org.jacop.core.Store;
@@ -15,7 +31,6 @@ import org.jacop.satwrapper.SatTranslation;
 import org.jacop.search.DepthFirstSearch;
 import org.jacop.search.IndomainSimpleRandom;
 import org.jacop.search.MostConstrainedDynamic;
-import org.jacop.search.PrintOutListener;
 import org.jacop.search.Search;
 import org.jacop.search.SelectChoicePoint;
 import org.jacop.search.SimpleSelect;
@@ -25,7 +40,7 @@ public class TroposCSPAlgorithm {
 	private SatTranslation sat;								// Enables a SAT solver to be incorporated into CSP
     private List<Constraint> constraints;
 	
-	private ModelSpec spec;									// Holds the model information.
+	ModelSpec spec;									// Holds the model information.
 	private int numIntentions;								// Number of intentions in the model.
 	private IntentionalElement[] intentions;				// array of intention elements in the model
     

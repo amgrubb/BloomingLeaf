@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Map;
 
 import org.jacop.constraints.Alldifferent;
 import org.jacop.constraints.And;
@@ -35,9 +34,6 @@ import org.jacop.search.MostConstrainedDynamic;
 import org.jacop.search.Search;
 import org.jacop.search.SelectChoicePoint;
 import org.jacop.search.SimpleSelect;
-
-import interface_objects.OutputElement;
-import interface_objects.OutputModel;
 
 public class TroposCSPAlgorithm2 {
 
@@ -1838,58 +1834,6 @@ public class TroposCSPAlgorithm2 {
 				System.out.println("\t" + element.getName() + "\t" + element.getDynamicType().toString());
 			}  
     	}
-	}
-
-
-	public OutputModel getOutputModel() {
-		OutputModel output = new OutputModel();
-		int[] timeOrder = this.createTimePointOrder();
-		
-		// Print out timepoint data.
-    	for (int i = 0; i < timeOrder.length; i++){
-    		output.getTimePoints().add(this.timePoints[timeOrder[i]].id + "-" + this.timePoints[timeOrder[i]].value());
-   		}
-		
-    	// Print out times.
-    	for (int i = 0; i < timeOrder.length; i++){
-    		output.getTimes().add(i + "|" + this.timePoints[timeOrder[i]].value());
-   		}
-    	
-    	// Print out Values.
-    	int i = -1;
-    	for (IntentionalElement element : this.spec.getIntElements()){
-    		i++;
-    		OutputElement outputElement = new OutputElement();
-    		
-    		outputElement.setId(element.getId());
-    		for (int t = 0; t < this.values[i].length; t++){
-    			StringBuilder value = new StringBuilder();
-    			for (int v = 0; v < this.values[i][t].length; v++){
-        			value.append(this.values[i][t][v].value());
-        		}
-        			outputElement.getValueList().add(value.toString());
-    		}
-    		output.getElementList().add(outputElement);
-    	} 
-    	
-    	// Print out intention epoch values.
-   		for (int a = 0; a < this.epochs.length; a++){
-   			output.getEpochPoints().add(this.epochs[a].id + "-" + this.epochs[a].value());
-   		}
-
-   		//Get final assigned epoch
-		for (Map.Entry<String,Integer> entry : getSpec().getFinalAssignedEpochs().entrySet()) {
-		  String key = entry.getKey();
-		  Integer value = entry.getValue();
-		  output.getFinalAssignedEpoch().add(key+"_"+value);
-		}
-
-		for(int a = 0; a < getSpec().getFinalValueTimePoints().length; a++){
-			output.getFinalValueTimePoints().add(Integer.toString(getSpec().getFinalValueTimePoints()[a]));	   			
-		}
-
-		return output;
-
 	}
 
 }

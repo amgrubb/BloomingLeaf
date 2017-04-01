@@ -37,7 +37,7 @@ public class SolveModel {
 			ModelSpec modelSpec = convertModelFromFile(filePath+fileName);
 			//Analyze the model
 			
-			TroposCSPAlgorithm2 solver = new TroposCSPAlgorithm2(modelSpec);
+			TroposCSPAlgorithm solver = new TroposCSPAlgorithm(modelSpec);
 			solver.solveModel();
 			
 			createOutputFile(solver, "output");
@@ -54,14 +54,14 @@ public class SolveModel {
 	 * @param filePath
 	 * Name of the file to be read by CGI to be sent to frontend
 	 */
-	private static void createOutputFile(TroposCSPAlgorithm2 solver, String fileName) {
+	private static void createOutputFile(TroposCSPAlgorithm solver, String fileName) {
 		//Need to create the file and folder if it doesn't exist
 		String outputFile = "/home/marcel/UofT/" + fileName + ".out";
 		//String outputFile = "/u/marcel/public_html/leaf/cgi-bin/temp/" + fileName + ".out";
 	
 		//Gson gson = new Gson();		
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		OutputModel outputModel = solver.getOutputModel();
+		OutputModel outputModel = solver.spec.getOutputModel();
 		
 		try {
 			FileWriter file;

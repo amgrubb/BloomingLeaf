@@ -45,12 +45,12 @@ function analysisObject () {
 analysisObject.initFromBackEnd = function(analysisResults){
 	this.elements = [];
 	this.numOfElements = Number(analysisResults.elementList.length);
-	this.timeScale = Number(analysisResults.times.length) - 1;
+	this.timeScale = Number(analysisResults.finalValueTimePoints.length) - 1;
 	this.relativeTime = [];
 	
-	for(var i = 0; i < analysisResults.timePoints.length; i++){
-		var aux = analysisResults.times[i];
-		this.relativeTime.push(aux[2]);
+	for(var i = 0; i < analysisResults.finalValueTimePoints.length; i++){
+		var aux = analysisResults.finalValueTimePoints[i];
+		this.relativeTime.push(aux);
 	}
 	
 	for (var i = 0; i < this.numOfElements ; i++){
