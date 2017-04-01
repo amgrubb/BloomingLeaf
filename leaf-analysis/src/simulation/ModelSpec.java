@@ -6,6 +6,10 @@ package simulation;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import interface_objects.OutputElement;
+import interface_objects.OutputModel;
 
 
 /**
@@ -267,5 +271,43 @@ public class ModelSpec {
 		
 	}
 
+	public OutputModel getOutputModel() {
+		OutputModel output = new OutputModel();
+		   	
+    	// Print out Values.
+    	int i = -1;
+    	for (IntentionalElement element : getIntElements()){
+    		i++;
+    		OutputElement outputElement = new OutputElement();
+    		
+    		outputElement.setId(element.getId());
+    		for (int t = 0; t < getFinalValues()[i].length; t++){
+    			StringBuilder value = new StringBuilder();
+    			for (int v = 0; v < getFinalValues()[i][t].length; v++){
+        			if(getFinalValues()[i][t][v]){
+        				value.append("1");
+        			}else{
+        				value.append("0");
+        			}
+        		}
+        			outputElement.getValueList().add(value.toString());
+    		}
+    		output.getElementList().add(outputElement);
+    	} 
+    	
+   		//Get final assigned epoch
+		for (Map.Entry<String,Integer> entry : getFinalAssignedEpochs().entrySet()) {
+		  String key = entry.getKey();
+		  Integer value = entry.getValue();
+		  output.getFinalAssignedEpoch().add(key+"_"+value);
+		}
 
+		for(int a = 0; a < getFinalValueTimePoints().length; a++){
+			output.getFinalValueTimePoints().add(Integer.toString(getFinalValueTimePoints()[a]));	   			
+		}
+
+		return output;
+
+	}
+	
 }

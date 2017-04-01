@@ -61,7 +61,7 @@ public class SolveModel {
 	
 		//Gson gson = new Gson();		
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		OutputModel outputModel = solver.getOutputModel();
+		OutputModel outputModel = solver.spec.getOutputModel();
 		
 		try {
 			FileWriter file;

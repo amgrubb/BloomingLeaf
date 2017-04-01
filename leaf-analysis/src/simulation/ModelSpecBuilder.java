@@ -19,6 +19,8 @@ import interface_objects.InputObject;
  *
  */
 public class ModelSpecBuilder {
+	
+	
 	public static ModelSpec buildModelSpec(InputObject frontendObject){
 		
 		//Frontend model and analysis information
