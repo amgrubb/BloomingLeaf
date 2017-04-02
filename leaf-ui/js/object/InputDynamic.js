@@ -1,4 +1,4 @@
-function IODynamic(intentionID, dynamicType, markedValue, line = null){
+function InputDynamic(intentionID, dynamicType, markedValue, line = null){
 	
 	this.intentionID = intentionID;
 	this.dynamicType = dynamicType;

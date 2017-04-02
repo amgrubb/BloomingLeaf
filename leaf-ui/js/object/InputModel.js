@@ -71,7 +71,7 @@ function getFrontendModel(isSinglePath = true){
 		actorId = "a" + actorId;
 		actors[a].prop("elementid", actorId);
 
-		var io_Actor = new IOActor(actorId, actors[a].attr(".name/text"), (actors[a].prop("actortype") || "A"));
+		var io_Actor = new InputActor(actorId, actors[a].attr(".name/text"), (actors[a].prop("actortype") || "A"));
 			
 		data_actors.push(io_Actor);
 	}
@@ -84,7 +84,8 @@ function getFrontendModel(isSinglePath = true){
 		"satisfied": "1100",
 		"partiallysatisfied": "0100",
 		"partiallydenied": "0010",
-		"denied": "0011"
+		"denied": "0011",
+		"none": "0000"
 	}
 
 	//INTENTIONAL ELEMENTS
@@ -128,8 +129,11 @@ function getFrontendModel(isSinglePath = true){
 			type_e = "I";
 
 	  	var v = elements[e].attr(".satvalue/value")
-
-		var io_intention = new IOIntention(actorid, elementID, type_e, v, elements[e].attr(".name/text").replace(/\n/g, " "));
+	  	if($.isNumeric(v)){
+			var io_intention = new InputIntention(actorid, elementID, type_e, v, elements[e].attr(".name/text").replace(/\n/g, " "));	  		
+	  	}else{
+			var io_intention = new InputIntention(actorid, elementID, type_e, satValueDict[v], elements[e].attr(".name/text").replace(/\n/g, " "));
+	  	}
 			
 		data_intentions.push(io_intention);
 	}
@@ -151,9 +155,9 @@ function getFrontendModel(isSinglePath = true){
 		
 		if (relationship.indexOf("|") > -1){
 			evolvRelationships = relationship.replace(/\s/g, '').split("|");
-			io_link = new IOLink(evolvRelationships[0], source, target, evolvRelationships[1]);
+			io_link = new InputLink(evolvRelationships[0], source, target, evolvRelationships[1]);
 		}else{
-			io_link = new IOLink(relationship, source, target);
+			io_link = new InputLink(relationship, source, target);
 		}		
 		
 		data_links.push(io_link);
@@ -175,11 +179,11 @@ function getFrontendModel(isSinglePath = true){
 	    
 	    var io_dynamic;
 	    if  (f == ""){		    	
-    		io_dynamic = new IODynamic(elementID, "NT", initValue);
+    		io_dynamic = new InputDynamic(elementID, "NT", initValue);
 	    }else if(f == " "){
-    		io_dynamic = new IODynamic(elementID, "NT", initValue);	    	
+    		io_dynamic = new InputDynamic(elementID, "NT", initValue);	    	
 	    }else if (f != "UD"){
-    		io_dynamic = new IODynamic(elementID, f, initValue);
+    		io_dynamic = new InputDynamic(elementID, f, initValue);
     		// user defined constraints
 	    }else{
 	    	var line = "";
@@ -209,7 +213,7 @@ function getFrontendModel(isSinglePath = true){
 			}else{
 				line += "\tN";
 			}
-			io_dynamic = new IODynamic(elementID, f, initValue, line);	
+			io_dynamic = new InputDynamic(elementID, f, initValue, line);	
 	    }
 	    
 	    data_dynamics.push(io_dynamic);
@@ -227,7 +231,7 @@ function getFrontendModel(isSinglePath = true){
 		var sourceVar = c.attr('.constraintvar/src');
 		var targetVar = c.attr('.constraintvar/tar');
 
-		var io_constraint = new IOConstraint(
+		var io_constraint = new InputConstraint(
 				type, 
 				source, 
 				sourceVar, 
@@ -251,8 +255,7 @@ function getFrontendModel(isSinglePath = true){
 		for(var i_intention = 0; i_intention < data_intentions.length; i_intention++){
 			var intentionalElement = new IntentionElement();
 			intentionalElement.id = data_intentions[i_intention].nodeID;
-			intentionalElement.status.push(data_intentions[i_intention].initialValue);
-			
+			intentionalElement.status.push(data_intentions[i_intention].initialValue);								
 			stateModel.intentionElements.push(intentionalElement);
 		}
 		allStatesModel.push(stateModel);
