@@ -259,7 +259,7 @@ public class ModelSpec {
 	}
 
 	public boolean isSolveAllSolutions() {
-	    return this.solveSinglePath;
+	    return !this.solveSinglePath;
 	}
 
 	public void setSolveAllSolutions(boolean b) {

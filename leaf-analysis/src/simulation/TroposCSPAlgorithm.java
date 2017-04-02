@@ -31,6 +31,7 @@ import org.jacop.satwrapper.SatTranslation;
 import org.jacop.search.DepthFirstSearch;
 import org.jacop.search.IndomainSimpleRandom;
 import org.jacop.search.MostConstrainedDynamic;
+import org.jacop.search.PrintOutListener;
 import org.jacop.search.Search;
 import org.jacop.search.SelectChoicePoint;
 import org.jacop.search.SimpleSelect;
@@ -126,6 +127,8 @@ public class TroposCSPAlgorithm {
     				this.epochCollection, this.spec.getInitialValueTimePoints()[lengthOfInitial - 1], lengthOfInitial - 1);
     	else
     		initializePathDynamicFunctions();
+    	
+    	System.out.println("\nModel Constructed");
 	}	
 	
 
@@ -1412,9 +1415,9 @@ public class TroposCSPAlgorithm {
         label.setPrintInfo(false); 							// Set to false if you don't want the CSP to print the solution as you go.
         
         // Test and Add Constraints
-//        System.out.println("Constraints List:");
+        System.out.println("Constraints List:");
         for (int i = 0; i < constraints.size(); i++) {
-//        	System.out.println(constraints.get(i).toString());
+        	System.out.println(constraints.get(i).toString());
             store.impose(constraints.get(i));
             if(!store.consistency()) {
             	System.out.println("Constraint: " + constraints.get(i).toString());
@@ -1425,10 +1428,11 @@ public class TroposCSPAlgorithm {
 
         SelectChoicePoint <IntVar> select = new SimpleSelect<IntVar>(varList, new MostConstrainedDynamic<IntVar>(), new IndomainSimpleRandom<IntVar>());//new MostConstrainedStatic<IntVar>(), new IndomainSimpleRandom<IntVar>()); 
         
-//        label.setSolutionListener(new PrintOutListener<IntVar>()); 
+        label.setSolutionListener(new PrintOutListener<IntVar>()); 
 
         if (allSolutions){
-	        label.getSolutionListener().searchAll(true); 					
+	        label.getSolutionListener().searchAll(true);
+	        System.out.println("GET ALL SOLUTIONS");
 		}else{
 	        label.getSolutionListener().searchAll(false); 		
 		}
