@@ -28,7 +28,7 @@ public class SolveModel {
 	public static void main(String[] args) {
 
 		//This is the default filePath to be executed if no file is pass through parameters
-		String filePath = "stored-models/";
+		String filePath = "/home/marcel/UofT/";
 		//String filePath = "/u/marcel/public_html/leaf/cgi-bin/temp/";			
 		String fileName = "default.json";
 				
@@ -56,7 +56,7 @@ public class SolveModel {
 	 */
 	private static void createOutputFile(TroposCSPAlgorithm solver, String fileName) {
 		//Need to create the file and folder if it doesn't exist
-		String outputFile = "stored-models/" + fileName + ".out";
+		String outputFile = "/home/marcel/UofT/" + fileName + ".out";
 		//String outputFile = "/u/marcel/public_html/leaf/cgi-bin/temp/" + fileName + ".out";
 	
 		//Gson gson = new Gson();		
