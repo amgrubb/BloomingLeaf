@@ -241,7 +241,7 @@ body {
 
 #init-sat-value:disabled {
   background-color: rgba(20, 85, 9, 1);
-  color: grey;
+  color: white;
 }
 
 .user-defined-select, .repeat-select, .relationship-select{
