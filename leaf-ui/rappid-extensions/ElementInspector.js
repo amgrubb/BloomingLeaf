@@ -70,11 +70,11 @@ var ElementInspector = Backbone.View.extend({
                 '<option value=D> Decrease </option>',
               '</select>',
               '<select class="user-sat-value user-defined-select">',
-                '<option value=satisfied> Satisfied (FS, T) </option>',
+                '<option value=satisfied selected> Satisfied (FS, T) </option>',
                 '<option value=partiallysatisfied> Partially Satisfied (PS, T) </option>',
-                '<option value=unknown selected> Unknown </option>',
                 '<option value=partiallydenied> Partially Denied (T, PD)</option>',
                 '<option value=denied> Denied (T, FD)</option>',
+                '<option value=unknown> Unknown </option>',
               '</select>',
             '</div>',
           '</div>',
@@ -147,7 +147,7 @@ var ElementInspector = Backbone.View.extend({
 
     // Genernate all available selection options based on selected function type
     this.chartHTML = {};
-    this.chartHTML.all = '<option value=satisfied> Satisfied (FS, T) </option><option value=partiallysatisfied> Partially Satisfied (PS, T) </option><option value=unknown selected> Unknown </option><option value=partiallydenied> Partially Denied (T, PD)</option><option value=denied> Denied (T, FD)</option>';
+    this.chartHTML.all = '<option value=satisfied selected> Satisfied (FS, T) </option><option value=partiallysatisfied> Partially Satisfied (PS, T) </option><option value=partiallydenied> Partially Denied (T, PD)</option><option value=denied> Denied (T, FD)</option><option value=unknown> Unknown </option>';
     this.chartHTML.noRandom = '<option value=satisfied> Satisfied (FS, T) </option><option value=partiallysatisfied> Partially Satisfied (PS, T) </option><option value=-1> Partially Denied (T, PD) </option><option value=denied> Denied (T, FD) </option>';
     this.chartHTML.positiveOnly = '<option value=satisfied> Satisfied (FS, T) </option><option value=partiallysatisfied> Partially Satisfied (PS, T) </option>';
     this.chartHTML.negativeOnly = '<option value=denied> Denied (T, FD) </option><option value=partiallydenied> Partially Denied (T, PD) </option>';
