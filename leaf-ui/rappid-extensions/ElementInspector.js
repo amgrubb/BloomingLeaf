@@ -270,6 +270,7 @@ var ElementInspector = Backbone.View.extend({
     }
     else if(initValue == "unknown"){
       this.$('.function-type').val("C");
+      functionType = "C";
       $('.function-type').prop('disabled', 'disabled');
       this.$('#function-div').show("fast");
     }
