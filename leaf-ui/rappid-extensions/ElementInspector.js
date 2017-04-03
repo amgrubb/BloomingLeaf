@@ -446,6 +446,16 @@ var ElementInspector = Backbone.View.extend({
     if(this.constraintsObject.chart != null)
       this.constraintsObject.chart.destroy();
 
+    // If unknown is selected
+    if($(".user-sat-value").last().val() == 'unknown'){
+      $(".user-function-type").last().prop('disabled', 'disabled');
+      $(".user-function-type").last().css("background-color","grey");
+    }
+    else {
+      $(".user-function-type").last().prop('disabled', ''); 
+      $(".user-function-type").last().css("background-color",'');
+    }
+
     // save values in user defined functions
     this.constraintsObject.userFunctions[index] = func;
     this.constraintsObject.userValues[index] = $(".user-sat-value").last().val();
