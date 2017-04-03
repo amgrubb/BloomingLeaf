@@ -70,11 +70,11 @@ var ElementInspector = Backbone.View.extend({
                 '<option value=D> Decrease </option>',
               '</select>',
               '<select class="user-sat-value user-defined-select">',
-                '<option value=satisfied> Satisfied </option>',
-                '<option value=partiallysatisfied> Partially Satisfied </option>',
-                '<option value=unknown selected> Random/Stochastic </option>',
-                '<option value=partiallydenied> Partially Denied </option>',
-                '<option value=denied> Denied </option>',
+                '<option value=satisfied> Satisfied (FS, T) </option>',
+                '<option value=partiallysatisfied> Partially Satisfied (PS, T) </option>',
+                '<option value=unknown selected> Unknown </option>',
+                '<option value=partiallydenied> Partially Denied (T, PD)</option>',
+                '<option value=denied> Denied (T, FD)</option>',
               '</select>',
             '</div>',
           '</div>',
@@ -129,7 +129,6 @@ var ElementInspector = Backbone.View.extend({
   render: function(cellView) {
     this._cellView = cellView;
     var cell = this._cellView.model;
-
     if (cell instanceof joint.shapes.basic.Actor){
       this.$el.html(_.template(this.actor_template)());
       this.$('.cell-attrs-text').val(cell.attr(".name/text") || '');
@@ -148,10 +147,10 @@ var ElementInspector = Backbone.View.extend({
 
     // Genernate all available selection options based on selected function type
     this.chartHTML = {};
-    this.chartHTML.all = '<option value=satisfied> Satisfied </option><option value=partiallysatisfied> Partially Satisfied </option><option value=unknown selected> Random/Stochastic </option><option value=partiallydenied> Partially Denied </option><option value=denied> Denied </option>';
-    this.chartHTML.noRandom = '<option value=satisfied> Satisfied </option><option value=partiallysatisfied> Partially Satisfied </option><option value=-1> Partially Denied </option><option value=denied> Denied </option>';
-    this.chartHTML.positiveOnly = '<option value=satisfied> Satisfied </option><option value=partiallysatisfied> Partially Satisfied </option>';
-    this.chartHTML.negativeOnly = '<option value=denied> Denied </option><option value=partiallydenied> Partially Denied </option>';
+    this.chartHTML.all = '<option value=satisfied> Satisfied (FS, T) </option><option value=partiallysatisfied> Partially Satisfied (PS, T) </option><option value=unknown selected> Unknown </option><option value=partiallydenied> Partially Denied (T, PD)</option><option value=denied> Denied (T, FD)</option>';
+    this.chartHTML.noRandom = '<option value=satisfied> Satisfied (FS, T) </option><option value=partiallysatisfied> Partially Satisfied (PS, T) </option><option value=-1> Partially Denied (T, PD) </option><option value=denied> Denied (T, FD) </option>';
+    this.chartHTML.positiveOnly = '<option value=satisfied> Satisfied (FS, T) </option><option value=partiallysatisfied> Partially Satisfied (PS, T) </option>';
+    this.chartHTML.negativeOnly = '<option value=denied> Denied (T, FD) </option><option value=partiallydenied> Partially Denied (T, PD) </option>';
 
     //save html template to dynamically render more
     this.userConstraintsHTML = $("#new-user-constraints").last().clone();
@@ -159,7 +158,7 @@ var ElementInspector = Backbone.View.extend({
     // Load initial value
     this.$('.cell-attrs-text').val(cell.attr(".name/text") || '');
     this.$('#init-sat-value').val(cell.attr(".satvalue/value") || 'none');
-    if (!cell.attr(".satvalue/value")){
+    if (!cell.attr(".satvalue/value") && cell.attr(".funcvalue/text") != "NB"){
       cell.attr(".satvalue/value", 'none');
       cell.attr(".funcvalue/text", ' ');
     }
@@ -250,13 +249,13 @@ var ElementInspector = Backbone.View.extend({
     var cell = this._cellView.model;
     var functionType = this.$('.function-type').val();
     var initValue = this.$('#init-sat-value').val();
-    
     // Disable init value menu if functype is NB
     if (cell.attr('.funcvalue/text') == "NB"){
       $('#init-sat-value').prop('disabled', 'disabled');
     }
     else {
-      $('#init-sat-value').prop('disabled', false); 
+      // $('#init-sat-value').prop('disabled', false); 
+      // console.log('F');
     }
 
 
@@ -333,7 +332,6 @@ var ElementInspector = Backbone.View.extend({
         }
       }
     }
-
     this.updateGraph(null);
   },
 
@@ -699,7 +697,6 @@ var ElementInspector = Backbone.View.extend({
     cell.attr(".satvalue/value", this.$('#init-sat-value').val());
     // If funcvalue == NB, do not update anything to the cell
     if(cell.attr(".funcvalue/text") == 'NB'){
-
     }
     else if (funcType != 'none'){
       cell.attr(".funcvalue/text", funcType);

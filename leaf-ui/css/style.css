@@ -243,6 +243,10 @@ body {
   background-color: rgba(20, 85, 9, 1);
   color: white;
 }
+.function-type:disabled {
+  background-color: rgba(20, 85, 9, 1);
+  color: white; 
+}
 
 .user-defined-select, .repeat-select, .relationship-select{
   width: 104px;
