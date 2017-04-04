@@ -136,6 +136,7 @@ var constraintsObject = function(){
 			pointHighlightFill: "#fff",
 			pointHighlightStroke: "rgba(220,220,220,1)",
 			data: [0, 0],
+			lineDash: [20,30]
 		},
 		{
 			label: "Source",

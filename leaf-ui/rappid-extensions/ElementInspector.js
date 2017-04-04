@@ -358,7 +358,9 @@ var ElementInspector = Backbone.View.extend({
     if(text == "R"){
       this.constraintsObject.chartData.labels = ["0", "Infinity"];
       this.constraintsObject.chartData.datasets[0].data = [initVal, 0];
+      this.constraintsObject.chartData.datasets[0].strokeColor = "rgba(255,0,0,1)";
       this.constraintsObject.chartData.datasets[1].data = [null, null];
+      this.constraintsObject.chartData.datasets[1].strokeColor = "rgba(255,0,0,1)";
       $('#init-sat-value').prop('disabled', '');
       $('#init-sat-value').css("background-color","");
       
@@ -379,6 +381,7 @@ var ElementInspector = Backbone.View.extend({
     }else if(text == "RC"){
       this.constraintsObject.chartData.labels = ["0", "A", "Infinity"];
       this.constraintsObject.chartData.datasets[0].data = [0, 0, null];
+      this.constraintsObject.chartData.datasets[0].strokeColor = "rgba(255,0,0,1)";
       this.constraintsObject.chartData.datasets[1].data = [null, val, val];
       this.$('#init-sat-value').val("unknown");
       $('#init-sat-value').prop('disabled', 'disabled');
@@ -388,6 +391,7 @@ var ElementInspector = Backbone.View.extend({
       this.constraintsObject.chartData.labels = ["0", "A", "Infinity"];
       this.constraintsObject.chartData.datasets[0].data = [initVal, initVal, null];
       this.constraintsObject.chartData.datasets[1].data = [null, 0, 0];
+      this.constraintsObject.chartData.datasets[1].strokeColor = "rgba(255,0,0,1)";
       $('#init-sat-value').prop('disabled', '');
       $('#init-sat-value').css("background-color","");
 
@@ -506,7 +510,6 @@ var ElementInspector = Backbone.View.extend({
         data.datasets[data.datasets.length - 1].data[i + 1] = satvalues[this.constraintsObject.userValues[i]];
       }
     }
-
     // data.datasets[0].data = data.datasets[0].data.concat(this.constraintsObject.userValues);
     this.constraintsObject.chart = new Chart(context).Line(data, this.chartObject.chartOptions);
     this.updateCell(null);
