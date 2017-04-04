@@ -149,17 +149,18 @@ var constraintsObject = function(){
 		labels: ["0", "Infinity"],
 		datasets: [{
 			label: "Source",
-			fillColor: "rgba(220,220,220,0.2)",
+			fillColor: "rgba(220,220,220,0)",
 			strokeColor: "rgba(220,220,220,1)",
 			pointColor: "rgba(220,220,220,1)",
 			pointStrokeColor: "#fff",
 			pointHighlightFill: "#fff",
 			pointHighlightStroke: "rgba(220,220,220,1)",
-			data: [0, 0]
+			data: [0, 0],
+			lineDash: [20,30]
 		},
 		{
 			label: "Source",
-			fillColor: "rgba(220,220,220,0.2)",
+			fillColor: "rgba(220,220,220,0)",
 			strokeColor: "rgba(220,220,220,1)",
 			pointColor: "rgba(220,220,220,1)",
 			pointStrokeColor: "#fff",
@@ -178,7 +179,7 @@ var chartObject = function(){
 		labels: ["0", "A"],
 		datasets: [{
 			label: "Source",
-			fillColor: "rgba(220,220,220,0.2)",
+			fillColor: "rgba(220,220,220,0)",
 			strokeColor: "rgba(220,220,220,1)",
 			pointColor: "rgba(220,220,220,1)",
 			pointStrokeColor: "#fff",
@@ -192,7 +193,7 @@ var chartObject = function(){
 		labels: ["0", "A"],
 		datasets: [{
 	        label: "",
-	        fillColor: "rgba(255, 110, 80, 0.4)",
+	        fillColor: "rgba(255, 110, 80, 0)",
 	        strokeColor: "rgba(255, 110, 80, 1)",
 	        pointColor: "rgba(255, 110, 80, 1)",
 	        pointStrokeColor: "rgba(183, 79, 58, 1)",
@@ -206,7 +207,7 @@ var chartObject = function(){
 		labels: ["0", "A"],
 		datasets: [{
             label: "Target",
-            fillColor: "rgba(151,187,205,0.2)",
+            fillColor: "rgba(151,187,205,0)",
             strokeColor: "rgba(151,187,205,1)",
             pointColor: "rgba(151,187,205,1)",
             pointStrokeColor: "#fff",
@@ -228,7 +229,7 @@ var chartObject = function(){
 		pointHitDetectionRadius : 5,
 		tooltipTemplate: "",
 		multiTooltipTemplate: "",
-		scaleLabel: "<%if (value == 2)%><%= 'S' %><%if (value == 1)%><%= 'PS' %><%if (value == 0)%><%= 'R/S' %><%if (value == -1)%><%= 'PD' %><%if (value == -2)%><%= 'D' %>",
+		scaleLabel: "<%if (value == 2)%><%= '(FS, T)' %><%if (value == 1)%><%= '(PS, T)' %><%if (value == 0)%><%= '(T, T)' %><%if (value == -1)%><%= '(T, PD)' %><%if (value == -2)%><%= '(T, FD)' %>",
 		
 		// The following two lings controls effects of hovering over an element on chart
 		// tooltipTemplate: "<%if (value == 2)%><%= 'Satisfied' %><%if (value == 1)%><%= 'Partially Satisfied' %><%if (value == 0)%><%= 'Random' %><%if (value == -1)%><%= 'Partially Denied' %><%if (value == -2)%><%= 'Denied' %>",
@@ -248,6 +249,6 @@ var chartObject = function(){
 		pointHitDetectionRadius : 5,
 		tooltipTemplate: "<%if (value == 2)%><%= 'Satisfied' %><%if (value == 1)%><%= 'Partially Satisfied' %><%if (value == 0)%><%= 'Random' %><%if (value == -1)%><%= 'Partially Denied' %><%if (value == -2)%><%= 'Denied' %>",
 		multiTooltipTemplate: "<%= datasetLabel %> - <%if (value == 2)%><%= 'Satisfied' %><%if (value == 1)%><%= 'Partially Satisfied' %><%if (value == 0)%><%= 'Random' %><%if (value == -1)%><%= 'Partially Denied' %><%if (value == -2)%><%= 'Denied' %>",		
-		scaleLabel: "<%if (value == 2)%><%= 'S' %><%if (value == 1)%><%= 'PS' %><%if (value == 0)%><%= 'R/S' %><%if (value == -1)%><%= 'PD' %><%if (value == -2)%><%= 'D' %>",		
+		scaleLabel: "<%if (value == 2)%><%= '(FS, T)' %><%if (value == 1)%><%= '(PS, T)' %><%if (value == 0)%><%= '(T, T)' %><%if (value == -1)%><%= '(T, PD)' %><%if (value == -2)%><%= '(T, FD)' %>",		
 	};
 }

@@ -70,11 +70,11 @@ var ElementInspector = Backbone.View.extend({
                 '<option value=D> Decrease </option>',
               '</select>',
               '<select class="user-sat-value user-defined-select">',
-                '<option value=satisfied> Satisfied </option>',
-                '<option value=partiallysatisfied> Partially Satisfied </option>',
-                '<option value=unknown selected> Random/Stochastic </option>',
-                '<option value=partiallydenied> Partially Denied </option>',
-                '<option value=denied> Denied </option>',
+                '<option value=satisfied selected> Satisfied (FS, T) </option>',
+                '<option value=partiallysatisfied> Partially Satisfied (PS, T) </option>',
+                '<option value=partiallydenied> Partially Denied (T, PD)</option>',
+                '<option value=denied> Denied (T, FD)</option>',
+                '<option value=unknown> Unknown </option>',
               '</select>',
             '</div>',
           '</div>',
@@ -129,7 +129,6 @@ var ElementInspector = Backbone.View.extend({
   render: function(cellView) {
     this._cellView = cellView;
     var cell = this._cellView.model;
-
     if (cell instanceof joint.shapes.basic.Actor){
       this.$el.html(_.template(this.actor_template)());
       this.$('.cell-attrs-text').val(cell.attr(".name/text") || '');
@@ -148,10 +147,10 @@ var ElementInspector = Backbone.View.extend({
 
     // Genernate all available selection options based on selected function type
     this.chartHTML = {};
-    this.chartHTML.all = '<option value=satisfied> Satisfied </option><option value=partiallysatisfied> Partially Satisfied </option><option value=unknown selected> Random/Stochastic </option><option value=partiallydenied> Partially Denied </option><option value=denied> Denied </option>';
-    this.chartHTML.noRandom = '<option value=satisfied> Satisfied </option><option value=partiallysatisfied> Partially Satisfied </option><option value=-1> Partially Denied </option><option value=denied> Denied </option>';
-    this.chartHTML.positiveOnly = '<option value=satisfied> Satisfied </option><option value=partiallysatisfied> Partially Satisfied </option>';
-    this.chartHTML.negativeOnly = '<option value=denied> Denied </option><option value=partiallydenied> Partially Denied </option>';
+    this.chartHTML.all = '<option value=satisfied selected> Satisfied (FS, T) </option><option value=partiallysatisfied> Partially Satisfied (PS, T) </option><option value=partiallydenied> Partially Denied (T, PD)</option><option value=denied> Denied (T, FD)</option><option value=unknown> Unknown </option>';
+    this.chartHTML.noRandom = '<option value=satisfied> Satisfied (FS, T) </option><option value=partiallysatisfied> Partially Satisfied (PS, T) </option><option value=-1> Partially Denied (T, PD) </option><option value=denied> Denied (T, FD) </option>';
+    this.chartHTML.positiveOnly = '<option value=satisfied> Satisfied (FS, T) </option><option value=partiallysatisfied> Partially Satisfied (PS, T) </option>';
+    this.chartHTML.negativeOnly = '<option value=denied> Denied (T, FD) </option><option value=partiallydenied> Partially Denied (T, PD) </option>';
 
     //save html template to dynamically render more
     this.userConstraintsHTML = $("#new-user-constraints").last().clone();
@@ -159,7 +158,7 @@ var ElementInspector = Backbone.View.extend({
     // Load initial value
     this.$('.cell-attrs-text').val(cell.attr(".name/text") || '');
     this.$('#init-sat-value').val(cell.attr(".satvalue/value") || 'none');
-    if (!cell.attr(".satvalue/value")){
+    if (!cell.attr(".satvalue/value") && cell.attr(".funcvalue/text") != "NB"){
       cell.attr(".satvalue/value", 'none');
       cell.attr(".funcvalue/text", ' ');
     }
@@ -250,13 +249,13 @@ var ElementInspector = Backbone.View.extend({
     var cell = this._cellView.model;
     var functionType = this.$('.function-type').val();
     var initValue = this.$('#init-sat-value').val();
-    
     // Disable init value menu if functype is NB
     if (cell.attr('.funcvalue/text') == "NB"){
       $('#init-sat-value').prop('disabled', 'disabled');
     }
     else {
-      $('#init-sat-value').prop('disabled', false); 
+      // $('#init-sat-value').prop('disabled', false); 
+      // console.log('F');
     }
 
 
@@ -270,6 +269,7 @@ var ElementInspector = Backbone.View.extend({
     }
     else if(initValue == "unknown"){
       this.$('.function-type').val("C");
+      functionType = "C";
       $('.function-type').prop('disabled', 'disabled');
       this.$('#function-div').show("fast");
     }
@@ -332,7 +332,6 @@ var ElementInspector = Backbone.View.extend({
         }
       }
     }
-
     this.updateGraph(null);
   },
 
@@ -359,7 +358,9 @@ var ElementInspector = Backbone.View.extend({
     if(text == "R"){
       this.constraintsObject.chartData.labels = ["0", "Infinity"];
       this.constraintsObject.chartData.datasets[0].data = [initVal, 0];
+      this.constraintsObject.chartData.datasets[0].strokeColor = "rgba(255,0,0,1)";
       this.constraintsObject.chartData.datasets[1].data = [null, null];
+      this.constraintsObject.chartData.datasets[1].strokeColor = "rgba(255,0,0,1)";
       $('#init-sat-value').prop('disabled', '');
       $('#init-sat-value').css("background-color","");
       
@@ -380,6 +381,7 @@ var ElementInspector = Backbone.View.extend({
     }else if(text == "RC"){
       this.constraintsObject.chartData.labels = ["0", "A", "Infinity"];
       this.constraintsObject.chartData.datasets[0].data = [0, 0, null];
+      this.constraintsObject.chartData.datasets[0].strokeColor = "rgba(255,0,0,1)";
       this.constraintsObject.chartData.datasets[1].data = [null, val, val];
       this.$('#init-sat-value').val("unknown");
       $('#init-sat-value').prop('disabled', 'disabled');
@@ -389,6 +391,7 @@ var ElementInspector = Backbone.View.extend({
       this.constraintsObject.chartData.labels = ["0", "A", "Infinity"];
       this.constraintsObject.chartData.datasets[0].data = [initVal, initVal, null];
       this.constraintsObject.chartData.datasets[1].data = [null, 0, 0];
+      this.constraintsObject.chartData.datasets[1].strokeColor = "rgba(255,0,0,1)";
       $('#init-sat-value').prop('disabled', '');
       $('#init-sat-value').css("background-color","");
 
@@ -447,6 +450,16 @@ var ElementInspector = Backbone.View.extend({
     if(this.constraintsObject.chart != null)
       this.constraintsObject.chart.destroy();
 
+    // If unknown is selected
+    if($(".user-sat-value").last().val() == 'unknown'){
+      $(".user-function-type").last().prop('disabled', 'disabled');
+      $(".user-function-type").last().css("background-color","grey");
+    }
+    else {
+      $(".user-function-type").last().prop('disabled', ''); 
+      $(".user-function-type").last().css("background-color",'');
+    }
+
     // save values in user defined functions
     this.constraintsObject.userFunctions[index] = func;
     this.constraintsObject.userValues[index] = $(".user-sat-value").last().val();
@@ -497,7 +510,6 @@ var ElementInspector = Backbone.View.extend({
         data.datasets[data.datasets.length - 1].data[i + 1] = satvalues[this.constraintsObject.userValues[i]];
       }
     }
-
     // data.datasets[0].data = data.datasets[0].data.concat(this.constraintsObject.userValues);
     this.constraintsObject.chart = new Chart(context).Line(data, this.chartObject.chartOptions);
     this.updateCell(null);
@@ -698,7 +710,6 @@ var ElementInspector = Backbone.View.extend({
     cell.attr(".satvalue/value", this.$('#init-sat-value').val());
     // If funcvalue == NB, do not update anything to the cell
     if(cell.attr(".funcvalue/text") == 'NB'){
-
     }
     else if (funcType != 'none'){
       cell.attr(".funcvalue/text", funcType);
