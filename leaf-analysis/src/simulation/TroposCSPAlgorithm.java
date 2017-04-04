@@ -97,11 +97,11 @@ public class TroposCSPAlgorithm {
 		// Add constraints between Intention EBs.
     	calculateSampleSizeAndCreateEBsAndTimePoints(this.spec.getAbsoluteTimePoints(), 
     			this.spec.getRelativeTimePoints(), this.spec.getInitialValueTimePoints(), 
-    			this.spec.getInitialAssignedEpochs(), this.spec.isSolveSingleState());
+    			this.spec.getInitialAssignedEpochs(), this.spec.isSolveNextState());
     	
     	int lengthOfInitial = this.spec.getInitialValueTimePoints().length;
     	// Initialise Values Array
-    	if(this.spec.isSolveSingleState())
+    	if(this.spec.isSolveNextState())
     		this.values = new BooleanVar[this.numIntentions][lengthOfInitial + 1][4];	// 4 Predicates Values 0-FD, 1-PD, 2-PS, 3-FS;
     	else
     		this.values = new BooleanVar[this.numIntentions][this.numTimePoints][4];	// 4 Predicates Values 0-FD, 1-PD, 2-PS, 3-FS
@@ -120,7 +120,7 @@ public class TroposCSPAlgorithm {
 
     	System.out.println("\nMethod: initialize dynmaics");
     	// Create constraints for Dynamic Elements.
-    	if(this.spec.isSolveSingleState())
+    	if(this.spec.isSolveNextState())
     		//initializeStateDynamicFunctions();
     		genericInitialNextStateDynamics(this.constraints, this.intentions, this.values, 
     				this.epochCollection, this.spec.getInitialValueTimePoints()[lengthOfInitial - 1], lengthOfInitial - 1);
@@ -1438,7 +1438,7 @@ public class TroposCSPAlgorithm {
 	
 	// Methods for initial search.
 	private IntVar[] createVarList(){
-		if (this.spec.isSolveSingleState()){
+		if (this.spec.isSolveNextState()){
 			// TODO: Test - Solve a single state.
 			// TODO: Add next state to the list.
 			int initial = this.spec.getInitialValueTimePoints().length - 1;
@@ -1480,7 +1480,7 @@ public class TroposCSPAlgorithm {
 		}
 	}
 	private int[] createTimePointOrder() {
-		if (this.spec.isSolveSingleState()){
+		if (this.spec.isSolveNextState()){
 			//TODO: Actually make correct.
 			// Any changes here will affect the print/save All Solutions functions.
 			int[] indexOrder = new int[this.values[0].length];
@@ -1580,12 +1580,12 @@ public class TroposCSPAlgorithm {
 	public boolean solveModel(){
 		Search<IntVar> label = new DepthFirstSearch<IntVar>();
 
-		if(!genericFindSolution(this.spec.isSolveAllSolutions(), this.spec.isSolveSingleState(), this.store, label, this.constraints, this.createVarList())){
+		if(!genericFindSolution(!this.spec.isSolveSingleSolutions(), this.spec.isSolveNextState(), this.store, label, this.constraints, this.createVarList())){
 			System.out.println("Found Solution = False");
 			return false;
 		} else {
 			System.out.println("Found Solution = True");
-			if (this.spec.isSolveAllSolutions()){
+			if (!this.spec.isSolveSingleSolutions()){
 				this.saveAllSolution(label);				
 			}else{
 				int[] timeOrder = this.createTimePointOrder();
@@ -1596,7 +1596,7 @@ public class TroposCSPAlgorithm {
 		}
 	}
 	private void saveAllSolution(Search<IntVar> label) {
-		if (this.spec.isSolveSingleState()){
+		if (this.spec.isSolveNextState()){
 			//TODO: Fix with proper code.
 //			int[] finalValueTimePoints = new int[indexOrder.length];
 //	    	for (int i = 0; i < indexOrder.length; i++)
@@ -1736,8 +1736,8 @@ public class TroposCSPAlgorithm {
 			filename = FILENAME;
 			model = new ModelSpec(filename);
 			if (model != null){
-				model.setSolveAllSolutions(true);		// 
-				model.setSolveSingleState(true);		// false -> solve path
+				model.setSolveSinglePath(true); 
+				model.setSolveNextState(true);
 
 				TroposCSPAlgorithm algo = new TroposCSPAlgorithm(model);
 				if (algo.solveModel()){
@@ -1767,13 +1767,13 @@ public class TroposCSPAlgorithm {
 							model.setFinalAssignedEpochs(null);
 
 							// New conditions:
-							model.setSolveAllSolutions(false);
-							model.setSolveSingleState(true);
+							model.setSolveSinglePath(false);
+							model.setSolveNextState(true);
 
 							// Get a new rest of the simulation.
 							TroposCSPAlgorithm algo2 = new TroposCSPAlgorithm(model);
 							Search<IntVar> label2 = new DepthFirstSearch<IntVar>();
-							if(!genericFindSolution(model.isSolveAllSolutions(), model.isSolveSingleState(), algo2.store, label2, algo2.constraints, algo2.createVarList())){
+							if(!genericFindSolution(model.isSolveSingleSolutions(), model.isSolveNextState(), algo2.store, label2, algo2.constraints, algo2.createVarList())){
 								System.out.println("Found Solution = False");
 								return;
 							} else {

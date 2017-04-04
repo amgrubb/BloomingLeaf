@@ -1,4 +1,4 @@
-function IOIntention(nodeActorID, nodeID, nodeType, initialValue, nodeName){
+function InputIntention(nodeActorID, nodeID, nodeType, initialValue, nodeName){
 	this.nodeActorID = nodeActorID;
 	this.nodeID = nodeID ;
 	this.nodeType = nodeType;

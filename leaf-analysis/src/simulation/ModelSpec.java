@@ -46,16 +46,8 @@ public class ModelSpec {
     private boolean solveNextState = false;
 	private boolean[][][][] allSolutionsValues;
 
-	public boolean isSolveSinglePath() {
-		return solveSinglePath;
-	}
-
 	public void setSolveSinglePath(boolean solveSinglePath) {
 		this.solveSinglePath = solveSinglePath;
-	}
-
-	public boolean isSolveNextState() {
-		return solveNextState;
 	}
 
 	public void setSolveNextState(boolean solveNextState) {
@@ -254,21 +246,12 @@ public class ModelSpec {
 		this.allSolutionsValues = finalValues2;
 	}
 
-	public boolean isSolveSingleState() {
+	public boolean isSolveNextState() {
 	    return this.solveNextState;
 	}
 
-	public boolean isSolveAllSolutions() {
+	public boolean isSolveSingleSolutions() {
 	    return this.solveSinglePath;
-	}
-
-	public void setSolveAllSolutions(boolean b) {
-		this.solveSinglePath = b;		
-	}
-
-	public void setSolveSingleState(boolean b) {
-		this.solveNextState = b;
-		
 	}
 
 	public OutputModel getOutputModel() {
