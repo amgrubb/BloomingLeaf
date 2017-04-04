@@ -208,7 +208,7 @@ var chartObject = function(){
 		pointHitDetectionRadius : 5,
 		tooltipTemplate: "",
 		multiTooltipTemplate: "",
-		scaleLabel: "<%if (value == 2)%><%= 'S' %><%if (value == 1)%><%= 'PS' %><%if (value == 0)%><%= 'R/S' %><%if (value == -1)%><%= 'PD' %><%if (value == -2)%><%= 'D' %>",
+		scaleLabel: "<%if (value == 2)%><%= '(FS, T)' %><%if (value == 1)%><%= '(PS, T)' %><%if (value == 0)%><%= '(T, T)' %><%if (value == -1)%><%= '(T, PD)' %><%if (value == -2)%><%= '(T, FD)' %>",
 		
 		// The following two lings controls effects of hovering over an element on chart
 		// tooltipTemplate: "<%if (value == 2)%><%= 'Satisfied' %><%if (value == 1)%><%= 'Partially Satisfied' %><%if (value == 0)%><%= 'Random' %><%if (value == -1)%><%= 'Partially Denied' %><%if (value == -2)%><%= 'Denied' %>",
@@ -228,6 +228,6 @@ var chartObject = function(){
 		pointHitDetectionRadius : 5,
 		tooltipTemplate: "<%if (value == 2)%><%= 'Satisfied' %><%if (value == 1)%><%= 'Partially Satisfied' %><%if (value == 0)%><%= 'Random' %><%if (value == -1)%><%= 'Partially Denied' %><%if (value == -2)%><%= 'Denied' %>",
 		multiTooltipTemplate: "<%= datasetLabel %> - <%if (value == 2)%><%= 'Satisfied' %><%if (value == 1)%><%= 'Partially Satisfied' %><%if (value == 0)%><%= 'Random' %><%if (value == -1)%><%= 'Partially Denied' %><%if (value == -2)%><%= 'Denied' %>",		
-		scaleLabel: "<%if (value == 2)%><%= 'S' %><%if (value == 1)%><%= 'PS' %><%if (value == 0)%><%= 'R/S' %><%if (value == -1)%><%= 'PD' %><%if (value == -2)%><%= 'D' %>",		
+		scaleLabel: "<%if (value == 2)%><%= '(FS, T)' %><%if (value == 1)%><%= '(PS, T)' %><%if (value == 0)%><%= '(T, T)' %><%if (value == -1)%><%= '(T, PD)' %><%if (value == -2)%><%= '(T, FD)' %>",		
 	};
 }
