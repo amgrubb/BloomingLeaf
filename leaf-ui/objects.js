@@ -129,17 +129,17 @@ var constraintsObject = function(){
 		labels: ["0", "Infinity"],
 		datasets: [{
 			label: "Source",
-			fillColor: "rgba(220,220,220,0.2)",
+			fillColor: "rgba(220,220,220,0)",
 			strokeColor: "rgba(220,220,220,1)",
 			pointColor: "rgba(220,220,220,1)",
 			pointStrokeColor: "#fff",
 			pointHighlightFill: "#fff",
 			pointHighlightStroke: "rgba(220,220,220,1)",
-			data: [0, 0]
+			data: [0, 0],
 		},
 		{
 			label: "Source",
-			fillColor: "rgba(220,220,220,0.2)",
+			fillColor: "rgba(220,220,220,0)",
 			strokeColor: "rgba(220,220,220,1)",
 			pointColor: "rgba(220,220,220,1)",
 			pointStrokeColor: "#fff",
@@ -158,7 +158,7 @@ var chartObject = function(){
 		labels: ["0", "A"],
 		datasets: [{
 			label: "Source",
-			fillColor: "rgba(220,220,220,0.2)",
+			fillColor: "rgba(220,220,220,0)",
 			strokeColor: "rgba(220,220,220,1)",
 			pointColor: "rgba(220,220,220,1)",
 			pointStrokeColor: "#fff",
@@ -172,7 +172,7 @@ var chartObject = function(){
 		labels: ["0", "A"],
 		datasets: [{
 	        label: "",
-	        fillColor: "rgba(255, 110, 80, 0.4)",
+	        fillColor: "rgba(255, 110, 80, 0)",
 	        strokeColor: "rgba(255, 110, 80, 1)",
 	        pointColor: "rgba(255, 110, 80, 1)",
 	        pointStrokeColor: "rgba(183, 79, 58, 1)",
@@ -186,7 +186,7 @@ var chartObject = function(){
 		labels: ["0", "A"],
 		datasets: [{
             label: "Target",
-            fillColor: "rgba(151,187,205,0.2)",
+            fillColor: "rgba(151,187,205,0)",
             strokeColor: "rgba(151,187,205,1)",
             pointColor: "rgba(151,187,205,1)",
             pointStrokeColor: "#fff",
