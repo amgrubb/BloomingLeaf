@@ -121,7 +121,21 @@
 		<script>
 		console.log(JSON.stringify(window.opener.global_analysisResult));
 		window.onload = load_analysis_viewew();
+		var graphObject = new graphObject();
 		function load_analysis_viewew(){
+			//SELECT ALL ELEMENTS
+			var all_elements = graph.getElements();
+
+			//Filter out Actors
+			var elements = [];
+			for (var e = 0; e < all_elements.length; e++){
+				if (!(all_elements[e] instanceof joint.shapes.basic.Actor))
+					elements.push(all_elements[e]);
+			}
+
+			//save elements in global variable for slider
+			graphObject.allElements = elements;
+			
 			loadAnalysis(window.opener.global_analysisResult);
 		};
 		</script>
