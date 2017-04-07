@@ -61,6 +61,27 @@ analysisObject.initFromBackEnd = function(analysisResults){
 	}
 	return this;
 }
+
+
+analysisObject.nextStates = function(analysisResults){
+	this.elements = [];
+	this.numOfElements = Number(analysisResults.elementList.length);
+	this.timeScale = Number(analysisResults.elementList[0].valueList.length) - 1;
+	this.relativeTime = [];
+	
+	for(var i = 0; i < this.timeScale; i++){
+		this.relativeTime.push(i);
+	}
+	
+	for (var i = 0; i < this.numOfElements ; i++){
+		//strips first element since it is already shown on graph
+		var results = analysisResults.elementList[i].valueList;
+		results.pop(0);
+		this.elements.push(results)
+	}
+	return this;
+}
+
 //analysisObject.initFromBackEnd = function(analysisResults, analysisType){
 //	this.type = analysisType;
 //	this.elements = [];

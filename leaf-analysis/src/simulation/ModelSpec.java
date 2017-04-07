@@ -44,7 +44,7 @@ public class ModelSpec {
     private HashMap<String, Integer> finalAssignedEpochs = null;
     private boolean solveSinglePath = false;
     private boolean solveNextState = false;
-	private boolean[][][][] allSolutionsValues;
+	private boolean[][][][] allSolutionsValues; //[number of states][number of elements][initial/final][states]
 
 	public void setSolveSinglePath(boolean solveSinglePath) {
 		this.solveSinglePath = solveSinglePath;
@@ -257,38 +257,70 @@ public class ModelSpec {
 	public OutputModel getOutputModel() {
 		OutputModel output = new OutputModel();
 		   	
-    	// Print out Values.
-    	int i = -1;
-    	for (IntentionalElement element : getIntElements()){
-    		i++;
-    		OutputElement outputElement = new OutputElement();
-    		
-    		outputElement.setId(element.getId());
-    		for (int t = 0; t < getFinalValues()[i].length; t++){
-    			StringBuilder value = new StringBuilder();
-    			for (int v = 0; v < getFinalValues()[i][t].length; v++){
-        			if(getFinalValues()[i][t][v]){
-        				value.append("1");
-        			}else{
-        				value.append("0");
-        			}
-        		}
-        			outputElement.getValueList().add(value.toString());
-    		}
-    		output.getElementList().add(outputElement);
-    	} 
-    	
-   		//Get final assigned epoch
-		for (Map.Entry<String,Integer> entry : getFinalAssignedEpochs().entrySet()) {
-		  String key = entry.getKey();
-		  Integer value = entry.getValue();
-		  output.getFinalAssignedEpoch().add(key+"_"+value);
-		}
+		//Get all solution Values
+		if(this.isSolveNextState()){
+			ArrayList<OutputElement> intElements = new ArrayList<>();
+			
+			for (IntentionalElement element : getIntElements()){
+				OutputElement outputElement = new OutputElement();
+	    		outputElement.setId(element.getId());
+	    		intElements.add(outputElement);
+			}
+			
+			 //[number of states][number of elements][initial/final][states]
+			int numberNextStates = getAllSolutionsValues().length;
+			
+			for(int i = 0; i < numberNextStates; i++){
+				int numberElements = getAllSolutionsValues()[i].length;
+				for(int a = 0; a < numberElements; a++){
+					StringBuilder value = new StringBuilder();
+					for (int v = 0; v < 4; v++){
+	        			if(getAllSolutionsValues()[i][a][1][v]){
+	        				value.append("1");
+	        			}else{
+	        				value.append("0");
+	        			}
+	        		}
+					intElements.get(a).getValueList().add(value.toString());
+				}
+			}
+			
+			output.setElementList(intElements);
+				
+		}else{
+	    	int i = -1;
+	    	for (IntentionalElement element : getIntElements()){
+	    		i++;
+	    		OutputElement outputElement = new OutputElement();
+	    		
+	    		outputElement.setId(element.getId());
+	    		for (int t = 0; t < getFinalValues()[i].length; t++){
+	    			StringBuilder value = new StringBuilder();
+	    			for (int v = 0; v < getFinalValues()[i][t].length; v++){
+	        			if(getFinalValues()[i][t][v]){
+	        				value.append("1");
+	        			}else{
+	        				value.append("0");
+	        			}
+	        		}
+	        			outputElement.getValueList().add(value.toString());
+	    		}
+	    		output.getElementList().add(outputElement);
+	    	} 
+	    	
+	   		//Get final assigned epoch
+			for (Map.Entry<String,Integer> entry : getFinalAssignedEpochs().entrySet()) {
+			  String key = entry.getKey();
+			  Integer value = entry.getValue();
+			  output.getFinalAssignedEpoch().add(key+"_"+value);
+			}
 
-		for(int a = 0; a < getFinalValueTimePoints().length; a++){
-			output.getFinalValueTimePoints().add(Integer.toString(getFinalValueTimePoints()[a]));	   			
+			for(int a = 0; a < getFinalValueTimePoints().length; a++){
+				output.getFinalValueTimePoints().add(Integer.toString(getFinalValueTimePoints()[a]));	   			
+			}			
 		}
-
+		
+		
 		return output;
 
 	}

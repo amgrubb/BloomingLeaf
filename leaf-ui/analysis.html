@@ -136,7 +136,13 @@
 			//save elements in global variable for slider
 			graphObject.allElements = elements;
 			
-			loadAnalysis(window.opener.global_analysisResult);
+			loadNextStates(window.opener.global_analysisResult);
+			
+			function loadNextStates(analysisResults){
+				currentAnalysis = new analysisObject.nextStates(analysisResults);
+				updateSlider(currentAnalysis, false);
+			}
+			
 		};
 		</script>
 		
