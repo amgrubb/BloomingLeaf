@@ -32,6 +32,33 @@ var satvalues = {satisfied: 2, partiallysatisfied: 1, partiallydenied: -1, denie
 // ----------------------------------------------------------------- //
 // Page setup
 
+//Setup LinkInspector
+$('.inspector').append(linkInspector.el);
+$('.inspector').append(constrainsInspector.el);
+
+//Interface set up for modelling mode on startup
+$('#dropdown-model').css("display","none");
+$('#history').css("display","none");
+
+//Initialize Slider setup
+sliderObject.sliderElement = document.getElementById('slider');
+sliderObject.sliderValueElement = document.getElementById('sliderValue');
+
+$('#slider').width($('#paper').width() * 0.8);
+$('#slider').css("margin-top", $(window).height() * 0.9);
+
+//Adjust slider value position based on stencil width and paper width
+var sliderValuePosition = 200 + $('#paper').width() * 0.1;
+$('#sliderValue').css("top", '20px');
+$('#sliderValue').css("left", sliderValuePosition.toString() + 'px');
+$('#sliderValue').css("position", "relative");
+
+$(window).resize(function() {
+	$('#slider').css("margin-top", $(this).height() * 0.9);
+	$('#slider').width($('#paper').width() * 0.8);
+});
+
+
 // Mode used specify layout and functionality of toolbars
 mode = "Modelling";		// 'Analysis' or 'Modelling'
 linkMode = "Relationships";	// 'Relationships' or 'Constraints'
@@ -64,6 +91,24 @@ $('#paper').append(paperScroller.render().el);
 paperScroller.center();
 
 
+//If a cookie exists, process it as a previously created graph and load it.
+if (document.cookie){
+	var cookies = document.cookie.split(";");
+	var prevgraph = "";
+
+	//Loop through the cookies to find the one representing the graph, if it exists
+	for (var i = 0; i < cookies.length; i++){
+		if (cookies[i].indexOf("graph=") >= 0){
+			prevgraph = cookies[i].substr(6);
+			break;
+		}
+	}
+
+	if (prevgraph){
+		graph.fromJSON(JSON.parse(prevgraph));
+	}
+}
+
 // Create and populate stencil.
 stencil = new joint.ui.Stencil({
 	graph: graph,
@@ -82,49 +127,7 @@ var act = new joint.shapes.basic.Actor({ position: {x: 40, y: 400} });
 
 stencil.load([goal, task, sgoal, res, act]);
 
-//Setup LinkInspector
-$('.inspector').append(linkInspector.el);
-$('.inspector').append(constrainsInspector.el);
 
-//Interface set up for modelling mode on startup
-$('#dropdown-model').css("display","none");
-$('#history').css("display","none");
-
-//Initialize Slider setup
-sliderObject.sliderElement = document.getElementById('slider');
-sliderObject.sliderValueElement = document.getElementById('sliderValue');
-
-$('#slider').width($('#paper').width() * 0.8);
-$('#slider').css("margin-top", $(window).height() * 0.9);
-
-// Adjust slider value position based on stencil width and paper width
-var sliderValuePosition = 200 + $('#paper').width() * 0.1;
-$('#sliderValue').css("top", '20px');
-$('#sliderValue').css("left", sliderValuePosition.toString() + 'px');
-$('#sliderValue').css("position", "relative");
-
-$(window).resize(function() {
-	$('#slider').css("margin-top", $(this).height() * 0.9);
-	$('#slider').width($('#paper').width() * 0.8);
-});
-
-//If a cookie exists, process it as a previously created graph and load it.
-if (document.cookie){
-	var cookies = document.cookie.split(";");
-	var prevgraph = "";
-
-	//Loop through the cookies to find the one representing the graph, if it exists
-	for (var i = 0; i < cookies.length; i++){
-		if (cookies[i].indexOf("graph=") >= 0){
-			prevgraph = cookies[i].substr(6);
-			break;
-		}
-	}
-
-	if (prevgraph){
-		graph.fromJSON(JSON.parse(prevgraph));
-	}
-}
 
 
 
@@ -524,12 +527,13 @@ function updateValues(c, v, m){
 		//var satvalues = ["denied", "partiallydenied", "partiallysatisfied", "satisfied", "unknown", "none"];
 		cell = graphObject.allElements[c];
 		value = v;
-		cell.attr(".satvalue/value", v);
+		cell.attributes.attrs[".satvalue"].value = v;
+		//cell.attr(".satvalue/value", v);
 
 	//Update node based on values saved from graph prior to analysis
 	}else if (m == "toInitModel"){
 		cell = graphObject.allElements[c];
-		value = v.attributes.attrs.satvalue.value;
+		value = cell.attributes.attrs[".satvalue"].value;
 	}
 
 	//Update images for properties
