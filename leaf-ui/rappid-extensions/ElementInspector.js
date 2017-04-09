@@ -122,7 +122,7 @@ var ElementInspector = Backbone.View.extend({
 
     'click #constraint-add': 'addConstraint',
     'click #constraint-repeat': 'repeatConstraintControl',
-    'click #constraint-restart': 'restartConstraint',
+    'click #constraint-restart': 'restaConstraint',
   },
 
     //Initializing Element Inspector using the template.
@@ -256,6 +256,7 @@ var ElementInspector = Backbone.View.extend({
     // All functions that have satisfaction value
     var funct_with_sat_value = ["I", "D", "RC", "MP", "MN", "UD"];
 
+    console.log('UpdateHTML: ' + initValue + ' ' + functionType);
 
     // Disable init value menu if functype is NB
     if (cell.attr('.funcvalue/text') == "NB"){
@@ -286,29 +287,45 @@ var ElementInspector = Backbone.View.extend({
   // Check validity of initValue/functionType pair
   // If not legal, change the initValue or functionType accordingly
   validityCheck: function(event){
+    var cell = this._cellView.model;
+    var functionType = this.$('.function-type').val();
+    var initValue = this.$('#init-sat-value').val();
     // Check what triggered the validty check
     // Either init value changed, func type changed or simply an element gets clicked
     initValueChanged = false;
     funcTypeChanged = false;
     // If an element gets clicked, don't bother checking
     if (event == null){
-      console.log('1');
       return;
     }
     else {
-      console.log(event.target.className);
       if (event.target.id == 'init-sat-value'){
-        console.log('2');
         initValueChanged = true;
       }
       else if (event.target.className == 'function-type'){
-        console.log('3');
         funcTypeChanged = true;
       }
     }
-    $.getJSON("./rappid-extensions/validPair.json", function(json){
-      console.log(json);
+    // Perform check
+    $.getJSON("./rappid-extensions/validPair.json", function(validPair){
+      // If not UD, just do a regular check
+      if (functionType != "UD"){
+        // If not valid, 2 possible actions: 
+        // change to default init value if functTypeChanged
+        // change to none function if initValueChanged
+        if ($.inArray(initValue, validPair[functionType]['validInitValue']) == -1){
+          console.log('Invalid: ' + initValueChanged + ' ' + funcTypeChanged);
+          if (initValueChanged){$('.function-type').val('none');}
+          if (funcTypeChanged){$('#init-sat-value').val(validPair[functionType]['defaultValue']);}
+
+        }
+      }
+      // If it is UD
+      else {
+
+      }
     });
+    return;
   },
 
 
@@ -426,7 +443,6 @@ var ElementInspector = Backbone.View.extend({
       this.constraintsObject.chartData.datasets[0].data = [0, 0, null];
       this.constraintsObject.chartData.datasets[0].strokeColor = "rgba(255,0,0,1)";
       this.constraintsObject.chartData.datasets[1].data = [null, val, val];
-      this.$('#init-sat-value').val("unknown");
 
     }else if(text == "CR"){
       this.constraintsObject.chartData.labels = ["0", "A", "Infinity"];
@@ -438,25 +454,23 @@ var ElementInspector = Backbone.View.extend({
       this.constraintsObject.chartData.labels = ["0", "A", "Infinity"];
       this.constraintsObject.chartData.datasets[0].data = [2, 2, null];
       this.constraintsObject.chartData.datasets[1].data = [null, -2, -2];
-      this.$('#init-sat-value').val("satisfied");  
 
     }else if(text == "DS"){
       this.constraintsObject.chartData.labels = ["0", "A", "Infinity"];
       this.constraintsObject.chartData.datasets[0].data = [-2, -2, null];
       this.constraintsObject.chartData.datasets[1].data = [null, 2, 2];
-      this.$('#init-sat-value').val("denied");
 
     }else if(text == "MP"){
       this.constraintsObject.chartData.labels = ["0", "A", "Infinity"];
       this.constraintsObject.chartData.datasets[0].data = [-2, val, val];
       this.constraintsObject.chartData.datasets[1].data = [];
-      this.$('#init-sat-value').val("denied");
+
 
     }else if(text == "MN"){
       this.constraintsObject.chartData.labels = ["0", "A", "Infinity"];
       this.constraintsObject.chartData.datasets[0].data = [2, val, val];
       this.constraintsObject.chartData.datasets[1].data = [];
-      this.$('#init-sat-value').val("satisfied");
+      
 
     // render preview for user defined function types
     }else if(text == "UD"){
@@ -818,3 +832,5 @@ var ElementInspector = Backbone.View.extend({
     }
   }
 );
+
+
