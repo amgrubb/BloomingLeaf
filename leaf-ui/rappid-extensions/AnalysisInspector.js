@@ -100,7 +100,7 @@ var AnalysisInspector = Backbone.View.extend({
 		// These functions are used to communicate between analysisInspector and Main.js
 		this._analysisFunctions = analysisFunctions;
 		this.$el.html(_.template(this.template)());
-		$('head').append('<script src="./js-objects/analysis.js"></script>');
+		$('head').append('<script src="./scripts/js-objects/analysis.js"></script>');
 
 		this.$("#query-cell1").hide();
 		this.$("#query-cell2").hide();

@@ -27,7 +27,6 @@ var satvalues = {satisfied: 2, partiallysatisfied: 1, partiallydenied: -1, denie
 
 //var functions = {A: 'AI', O: 'OI', N: 'NT', M: 'MP', R: 'R', S: 'SP', MN: 'MN', SN: 'SN', U: 'UD'};
 
-
 // ----------------------------------------------------------------- //
 // Page setup
 

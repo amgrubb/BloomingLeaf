@@ -33,7 +33,7 @@ var ElementInspector = Backbone.View.extend({
         '<option value=satisfied> Satisfied (FS, T)</option>',
         '<option value=partiallysatisfied> Partially Satisfied (PS, T) </option>',
         '<option value=denied> Denied (T, FD)</option>',
-        '<option value=partiallydenied> Partially Denied (T, FD)</option>',
+        '<option value=partiallydenied> Partially Denied (T, PD)</option>',
         '<option value=unknown> Unknown </option>',
 			'</select>',
       '<br>',
@@ -247,11 +247,15 @@ var ElementInspector = Backbone.View.extend({
 
   // update satisfaction value and buttons selection based on function type selection
   updateHTML: function(event){
+    // Check if selected initValue/functionType pair is illegal
+    this.validityCheck(event);
+
     var cell = this._cellView.model;
     var functionType = this.$('.function-type').val();
     var initValue = this.$('#init-sat-value').val();
     // All functions that have satisfaction value
     var funct_with_sat_value = ["I", "D", "RC", "MP", "MN", "UD"];
+
 
     // Disable init value menu if functype is NB
     if (cell.attr('.funcvalue/text') == "NB"){
@@ -278,6 +282,35 @@ var ElementInspector = Backbone.View.extend({
     this.updateGraph(null);
 
   },
+
+  // Check validity of initValue/functionType pair
+  // If not legal, change the initValue or functionType accordingly
+  validityCheck: function(event){
+    // Check what triggered the validty check
+    // Either init value changed, func type changed or simply an element gets clicked
+    initValueChanged = false;
+    funcTypeChanged = false;
+    // If an element gets clicked, don't bother checking
+    if (event == null){
+      console.log('1');
+      return;
+    }
+    else {
+      console.log(event.target.className);
+      if (event.target.id == 'init-sat-value'){
+        console.log('2');
+        initValueChanged = true;
+      }
+      else if (event.target.className == 'function-type'){
+        console.log('3');
+        funcTypeChanged = true;
+      }
+    }
+    $.getJSON("./rappid-extensions/validPair.json", function(json){
+      console.log(json);
+    });
+  },
+
 
   // This is only called if the node has funct_with_sat_value
   // Display func-sat-value menu and display options based on the fucntion
