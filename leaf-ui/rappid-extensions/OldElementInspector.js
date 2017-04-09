@@ -124,8 +124,8 @@ var ElementInspector = Backbone.View.extend({
     'click #constraint-repeat': 'repeatConstraintControl',
     'click #constraint-restart': 'restartConstraint',
   },
-
-    //Initializing Element Inspector using the template.
+  
+  //Initializing Element Inspector using the template.
   render: function(cellView) {
     this._cellView = cellView;
     var cell = this._cellView.model;
@@ -189,7 +189,6 @@ var ElementInspector = Backbone.View.extend({
     }
   },
 
-
   // Rendering inspector panel from previously specified user-defined functions
   renderUserDefined: function(cell){
     this.$('.function-sat-value').hide();
@@ -233,8 +232,8 @@ var ElementInspector = Backbone.View.extend({
   // update cell name
   nameAction: function(event){
     //Prevent the ENTER key from being recorded when naming nodes.
-    if (event.which === ENTER_KEY){
-      event.preventDefault();
+		if (event.which === ENTER_KEY){
+			event.preventDefault();
     }
 
     var cell = this._cellView.model;
@@ -250,112 +249,97 @@ var ElementInspector = Backbone.View.extend({
     var cell = this._cellView.model;
     var functionType = this.$('.function-type').val();
     var initValue = this.$('#init-sat-value').val();
-    // All functions that have satisfaction value
-    var funct_with_sat_value = ["I", "D", "RC", "MP", "MN", "UD"];
-
     // Disable init value menu if functype is NB
     if (cell.attr('.funcvalue/text') == "NB"){
       $('#init-sat-value').prop('disabled', 'disabled');
     }
+    else {
+      // $('#init-sat-value').prop('disabled', false); 
+      // console.log('F');
+    }
 
-    // If UD function, show UD. Show function-sat-value for certain functions.
-    // Else, hide user constraint
-    if (functionType == "UD"){
+
+
+    // display based on inital value
+    if((initValue == "none") || (initValue == "conflict")){
+      this.$('#function-div').hide();
+      $('.function-type').prop('disabled', false);
+      this.updateCell(null);
+      return
+    }
+    else if(initValue == "unknown"){
+      this.$('.function-type').val("C");
+      functionType = "C";
+      $('.function-type').prop('disabled', 'disabled');
+      this.$('#function-div').show("fast");
+    }
+    else{
+      $('.function-type').prop('disabled', false);
+      this.$('#function-div').show("fast");
+    }
+
+    // display based on function type
+    if ((functionType == "R") || (functionType == "C") || (functionType == "SD") || (functionType == "DS") || (functionType == "CR") || (functionType == "none")){
+      this.$('.function-sat-value').hide();
+      this.$('#user-constraints').hide();
+    }else if (functionType == "UD"){
       this.$('.function-sat-value').hide();
       this.$('#user-constraints').show("fast");
-      this.loadUDFunction(null);
-    }
-    else if ($.inArray(functionType, funct_with_sat_value) > -1){
-      this.showFunctionSatValue(null);
+    }else{
+      this.$('.function-sat-value').show("fast");
       this.$('#user-constraints').hide();
-      $('#init-sat-value').prop('disabled', '');
     }
-    else {
-      this.$('.function-sat-value').hide();
-      this.$('#user-constraints').hide();      
-      $('#init-sat-value').prop('disabled', '');
-    }
-    this.updateGraph(null);
 
-  },
+    // load available satisfaction values based on function selection
+    if(functionType == "RC"){
+      this.$('.function-sat-value').html(this.chartHTML.noRandom);
+    }else if((functionType == "I") || (functionType == "MP")){
+      this.$('.function-sat-value').html(this.chartHTML.positiveOnly);
+    }else if((functionType == "D") || (functionType == "MN")){
+      this.$('.function-sat-value').html(this.chartHTML.negativeOnly);
+    }else if(functionType == "UD"){
 
-  // This is only called if the node has funct_with_sat_value
-  // Display func-sat-value menu and display options based on the fucntion
-  showFunctionSatValue: function(event){
-    var cell = this._cellView.model;
-    var functionType = this.$('.function-type').val();
-    this.$('.function-sat-value').show("fast");
-    switch (functionType) {
-      case "RC":
-        this.$('.function-sat-value').html(this.chartHTML.noRandom);
-        break;
+      var func = $(".user-function-type").last().val();
+      var index = this.constraintsObject.currentUserIndex;
 
-      case "I":
-      case "MP":
-        this.$('.function-sat-value').html(this.chartHTML.positiveOnly);
-        break;
+      // Free value selection if it was blocked
+      if ($('.user-sat-value').last().prop( "disabled")){
+        $('.user-sat-value').last().prop('disabled', '');
+        $('.user-sat-value').last().css("background-color","");
+      }
 
-      case "D":
-      case "MN":
-        this.$('.function-sat-value').html(this.chartHTML.negativeOnly);
-        break;
-
-      default:
-        break;
-    }
-    return;
-  },
-
-  // This function can only be called by updateHTML only when node is UD
-  loadUDFunction: function(event){
-    var func = $(".user-function-type").last().val();
-    var index = this.constraintsObject.currentUserIndex;
-
-    // Free value selection if it was blocked
-    if ($('.user-sat-value').last().prop( "disabled")){
-      $('.user-sat-value').last().prop('disabled', '');
-      $('.user-sat-value').last().css("background-color","");
-    } 
-    // load available satisfaction values for user defined constraint type
-    switch (func){
-      case "I":
+      // load available satisfaction values for user defined constraint type
+      if(func == "I"){
         $(".user-sat-value").last().html(this.chartHTML.positiveOnly);
         $(".user-sat-value").last().val("satisfied");
-        break;
-
-      case "D":
+      }else if(func == "D"){
         $(".user-sat-value").last().html(this.chartHTML.negativeOnly);
         $(".user-sat-value").last().val("denied");
-        break;
-
-      case "R":
+      }else if(func == "R"){
         $(".user-sat-value").last().html(this.chartHTML.all);
+
         $(".user-sat-value").last().val("unknown")
         $(".user-sat-value").last().prop('disabled', 'disabled');
-        $(".user-sat-value").last().css("background-color","grey");        
-        break;
-
-      case "C":
+        $(".user-sat-value").last().css("background-color","grey");
+      }else if(func == "C"){
         $(".user-sat-value").last().html(this.chartHTML.all);
+
         // Restrict input if it is the first constraint
         if (index == 0){
           $(".user-sat-value").last().val(this.$('#init-sat-value').val())
           $(".user-sat-value").last().prop('disabled', 'disabled');
           $(".user-sat-value").last().css("background-color","grey");
         }
-        break;
-
-      default:
-        break;        
+      }
     }
-    return;
+    this.updateGraph(null);
   },
+
   // update chart based on function type selection
   updateGraph: function(event){
     var text = this.$('.function-type').val();
     var initVal = satvalues[this.$('#init-sat-value').val()];
     var val = satvalues[this.$('.function-sat-value').val()];
-
     // Rerender chart canvas
     var data = this.constraintsObject.chartData;
     var context = $("#chart").get(0).getContext("2d");
@@ -377,16 +361,22 @@ var ElementInspector = Backbone.View.extend({
       this.constraintsObject.chartData.datasets[0].strokeColor = "rgba(255,0,0,1)";
       this.constraintsObject.chartData.datasets[1].data = [null, null];
       this.constraintsObject.chartData.datasets[1].strokeColor = "rgba(255,0,0,1)";
+      $('#init-sat-value').prop('disabled', '');
+      $('#init-sat-value').css("background-color","");
       
     }else if(text == "C"){
       this.constraintsObject.chartData.labels = ["0", "Infinity"];
       this.constraintsObject.chartData.datasets[0].data = [initVal, initVal];
       this.constraintsObject.chartData.datasets[1].data = [null, null];
+      $('#init-sat-value').prop('disabled', '');
+      $('#init-sat-value').css("background-color","");
 
     }else if((text == "I") || (text == "D")){
       this.constraintsObject.chartData.labels = ["0", "Infinity"];
       this.constraintsObject.chartData.datasets[0].data = [initVal, val];
       this.constraintsObject.chartData.datasets[1].data = [null, null];
+      $('#init-sat-value').prop('disabled', '');
+      $('#init-sat-value').css("background-color","");
 
     }else if(text == "RC"){
       this.constraintsObject.chartData.labels = ["0", "A", "Infinity"];
@@ -394,36 +384,48 @@ var ElementInspector = Backbone.View.extend({
       this.constraintsObject.chartData.datasets[0].strokeColor = "rgba(255,0,0,1)";
       this.constraintsObject.chartData.datasets[1].data = [null, val, val];
       this.$('#init-sat-value').val("unknown");
+      $('#init-sat-value').prop('disabled', 'disabled');
+      $('#init-sat-value').css("background-color","grey");
 
     }else if(text == "CR"){
       this.constraintsObject.chartData.labels = ["0", "A", "Infinity"];
       this.constraintsObject.chartData.datasets[0].data = [initVal, initVal, null];
       this.constraintsObject.chartData.datasets[1].data = [null, 0, 0];
       this.constraintsObject.chartData.datasets[1].strokeColor = "rgba(255,0,0,1)";
+      $('#init-sat-value').prop('disabled', '');
+      $('#init-sat-value').css("background-color","");
 
     }else if(text == "SD"){
       this.constraintsObject.chartData.labels = ["0", "A", "Infinity"];
       this.constraintsObject.chartData.datasets[0].data = [2, 2, null];
       this.constraintsObject.chartData.datasets[1].data = [null, -2, -2];
       this.$('#init-sat-value').val("satisfied");  
+      $('#init-sat-value').prop('disabled', 'disabled');
+      $('#init-sat-value').css("background-color","grey");
 
     }else if(text == "DS"){
       this.constraintsObject.chartData.labels = ["0", "A", "Infinity"];
       this.constraintsObject.chartData.datasets[0].data = [-2, -2, null];
       this.constraintsObject.chartData.datasets[1].data = [null, 2, 2];
       this.$('#init-sat-value').val("denied");
+      $('#init-sat-value').prop('disabled', 'disabled');
+      $('#init-sat-value').css("background-color","grey");
 
     }else if(text == "MP"){
       this.constraintsObject.chartData.labels = ["0", "A", "Infinity"];
       this.constraintsObject.chartData.datasets[0].data = [-2, val, val];
       this.constraintsObject.chartData.datasets[1].data = [];
       this.$('#init-sat-value').val("denied");
+      $('#init-sat-value').prop('disabled', 'disabled');
+      $('#init-sat-value').css("background-color","grey");
 
     }else if(text == "MN"){
       this.constraintsObject.chartData.labels = ["0", "A", "Infinity"];
       this.constraintsObject.chartData.datasets[0].data = [2, val, val];
       this.constraintsObject.chartData.datasets[1].data = [];
       this.$('#init-sat-value').val("satisfied");
+      $('#init-sat-value').prop('disabled', 'disabled');
+      $('#init-sat-value').css("background-color","grey");
 
     // render preview for user defined function types
     }else if(text == "UD"){
@@ -431,8 +433,10 @@ var ElementInspector = Backbone.View.extend({
       return
     // If text = none, no chart
     }else{
+      console.log('ayy its me');
       $('#chart').hide();
     }
+
 
     this.constraintsObject.chart = new Chart(context).Line(data, this.chartObject.chartOptions);
     this.updateCell(null);
@@ -673,115 +677,123 @@ var ElementInspector = Backbone.View.extend({
     this.updateHTML(null);
   },
 
-    //Make corresponding changes in the inspector to the actual element in the chart
-    updateCell: function(event) {
-      var cell = this._cellView.model;
-      // Cease operation if selected is Actor
-      if (cell instanceof joint.shapes.basic.Actor){ 
-        cell.prop("actortype", this.$('.actor-type').val());
-        if (cell.prop("actortype") == 'G'){
-          cell.attr({ '.line':
-                {'ref': '.label',
-                     'ref-x': 0,
-                     'ref-y': 0.08,
-                     'd': 'M 5 10 L 55 10',
-                     'stroke-width': 1,
-                     'stroke': 'black'}});
-        }else if (cell.prop("actortype") == 'R'){
-          cell.attr({ '.line':
-                {'ref': '.label',
-                     'ref-x': 0,
-                     'ref-y': 0.6,
-                     'd': 'M 5 10 Q 30 20 55 10 Q 30 20 5 10' ,
-                     'stroke-width': 1,
-                     'stroke': 'black'}});
-        }else {
-          cell.attr({'.line': {'stroke-width': 0}});
-        }
-        return;
-      }
+  //Make corresponding changes in the inspector to the actual element in the chart
+  updateCell: function(event) {
+		var cell = this._cellView.model;
+    // Cease operation if selected is Actor
+  	if (cell instanceof joint.shapes.basic.Actor){ 
+    	cell.prop("actortype", this.$('.actor-type').val());
+    	if (cell.prop("actortype") == 'G'){
+    		cell.attr({ '.line':
+    					{'ref': '.label',
+            			 'ref-x': 0,
+            			 'ref-y': 0.08,
+            			 'd': 'M 5 10 L 55 10',
+            			 'stroke-width': 1,
+            			 'stroke': 'black'}});
+    	}else if (cell.prop("actortype") == 'R'){
+    		cell.attr({ '.line':
+    					{'ref': '.label',
+            			 'ref-x': 0,
+            			 'ref-y': 0.6,
+            			 'd': 'M 5 10 Q 30 20 55 10 Q 30 20 5 10' ,
+            			 'stroke-width': 1,
+            			 'stroke': 'black'}});
+    	}else {
+    		cell.attr({'.line': {'stroke-width': 0}});
+    	}
+    	return;
+  	}
 
-      // save cell data
-      var funcType = this.$('.function-type').val();
-      cell.attr(".satvalue/value", this.$('#init-sat-value').val());
-      // If funcvalue == NB, do not update anything to the cell
-      if(cell.attr(".funcvalue/text") == 'NB'){
-      }
-      else if (funcType != 'none'){
-        cell.attr(".funcvalue/text", funcType);
-      }
-
-      else {
-        cell.attr(".funcvalue/text", ""); 
-      }
-      cell.attr(".constraints/lastval", this.$('.function-type').val());
-
-
-      if (funcType == "UD"){
-
-        // for some reason directly calling .attr does not update
-        cell.attr(".constraints/function", null);
-        cell.attr(".constraints/lastval", null);
-        cell.attr(".constraints/beginLetter", null);
-        cell.attr(".constraints/endLetter", null);
-
-        cell.attr(".constraints/function", this.constraintsObject.userFunctions);
-        cell.attr(".constraints/lastval", this.constraintsObject.userValues);
-        cell.attr(".constraints/beginLetter", this.constraintsObject.beginLetter);
-        cell.attr(".constraints/endLetter", this.constraintsObject.endLetter);
-
-        // update repeat values
-        if (this.repeatOptionsDisplay){
-          cell.attr(".constraints/beginRepeat", this.constraintsObject.repeatBegin);
-          cell.attr(".constraints/endRepeat", this.constraintsObject.repeatEnd);
-        }else{
-          cell.attr(".constraints/beginRepeat", null);
-          cell.attr(".constraints/endRepeat", null);  
-        }
-
-      }else if (funcType == "R"){
-        cell.attr(".constraints/lastval", "unknown");
-      }else if ((funcType == "C") || (funcType == "CR")){
-        cell.attr(".constraints/lastval", this.$('#init-sat-value').val());
-      }else if (funcType == "SD"){
-        cell.attr(".constraints/lastval", "denied");
-      }else if (funcType == "DS"){
-        cell.attr(".constraints/lastval", "satisfied");
-      }else {
-        cell.attr(".constraints/function", this.$('.function-type').val());
-        cell.attr(".constraints/lastval", this.$('.function-sat-value').val());
-      }
-
-      //Update node display based on function and values
-      var value = this.$('#init-sat-value').val();
-
-      if (value == "none"){ 
-        cell.attr(".satvalue/text", "");
-        // If functype is NB, dont clear it
-        if(cell.attr(".funcvalue/text") != 'NB'){
-          cell.attr(".funcvalue/text", " ");
-        }
-
-      }
-
-      // Navie: Changed satvalue from path to text
-      if (value == "satisfied"){
-        cell.attr(".satvalue/text", "(FS, T)");
-      }else if(value == "partiallysatisfied") {
-        cell.attr(".satvalue/text", "(PS, T)");
-      }else if (value == "denied"){
-        cell.attr(".satvalue/text", "(T, FD)");
-      }else if (value == "partiallydenied") {
-        cell.attr(".satvalue/text", "(T, PD)");
-      }else if (value == "unknown") {
-            cell.attr(".satvalue/text", "?");
-      }else {
-        // cell.removeAttr(".satvalue/text");
-      }
-    },
-    
-    clear: function(){
-      this.$el.html('');
+    // save cell data
+    var funcType = this.$('.function-type').val();
+    cell.attr(".satvalue/value", this.$('#init-sat-value').val());
+    // If funcvalue == NB, do not update anything to the cell
+    if(cell.attr(".funcvalue/text") == 'NB'){
     }
+    else if (funcType != 'none'){
+      cell.attr(".funcvalue/text", funcType);
+    }
+
+    else {
+      cell.attr(".funcvalue/text", ""); 
+    }
+    cell.attr(".constraints/lastval", this.$('.function-type').val());
+
+
+    if (funcType == "UD"){
+
+      // for some reason directly calling .attr does not update
+      cell.attr(".constraints/function", null);
+      cell.attr(".constraints/lastval", null);
+      cell.attr(".constraints/beginLetter", null);
+      cell.attr(".constraints/endLetter", null);
+
+      cell.attr(".constraints/function", this.constraintsObject.userFunctions);
+      cell.attr(".constraints/lastval", this.constraintsObject.userValues);
+      cell.attr(".constraints/beginLetter", this.constraintsObject.beginLetter);
+      cell.attr(".constraints/endLetter", this.constraintsObject.endLetter);
+
+      // update repeat values
+      if (this.repeatOptionsDisplay){
+        cell.attr(".constraints/beginRepeat", this.constraintsObject.repeatBegin);
+        cell.attr(".constraints/endRepeat", this.constraintsObject.repeatEnd);
+      }else{
+        cell.attr(".constraints/beginRepeat", null);
+        cell.attr(".constraints/endRepeat", null);  
+      }
+
+    }else if (funcType == "R"){
+      cell.attr(".constraints/lastval", "unknown");
+    }else if ((funcType == "C") || (funcType == "CR")){
+      cell.attr(".constraints/lastval", this.$('#init-sat-value').val());
+    }else if (funcType == "SD"){
+      cell.attr(".constraints/lastval", "denied");
+    }else if (funcType == "DS"){
+      cell.attr(".constraints/lastval", "satisfied");
+    }else {
+      cell.attr(".constraints/function", this.$('.function-type').val());
+      cell.attr(".constraints/lastval", this.$('.function-sat-value').val());
+    }
+
+    //Update node display based on function and values
+    var value = this.$('#init-sat-value').val();
+
+    if (value == "none"){ 
+      cell.attr(".satvalue/text", "");
+      // If functype is NB, dont clear it
+      if(cell.attr(".funcvalue/text") != 'NB'){
+        cell.attr(".funcvalue/text", " ");
+      }
+
+    }
+
+    // Navie: Changed satvalue from path to text
+    if (value == "satisfied"){
+      // cell.attr({ '.satvalue': {'d': 'M 0 10 L 5 20 L 20 0 L 5 20 L 0 10', 'stroke': '#00FF00', 'stroke-width':4}});      
+      cell.attr(".satvalue/text", "(FS, T)");
+    }else if(value == "partiallysatisfied") {
+      // cell.attr({ '.satvalue': {'d': 'M 0 8 L 5 18 L 20 0 L 5 18 L 0 8 M 17 30 L 17 15 C 17 15 30 17 18 23', 'stroke': '#00FF00', 'stroke-width':3, 'fill': 'transparent'}});
+      cell.attr(".satvalue/text", "(PS, T)");
+    }else if (value == "denied"){
+      // cell.attr({ '.satvalue': {'d': 'M 0 20 L 20 0 M 10 10 L 0 0 L 20 20', 'stroke': '#FF0000', 'stroke-width': 4}});
+      cell.attr(".satvalue/text", "(T, FD)");
+    }else if (value == "partiallydenied") {
+      // cell.attr({ '.satvalue': {'d': 'M 0 15 L 15 0 M 15 15 L 0 0 M 17 30 L 17 15 C 17 15 30 17 18 23', 'stroke': '#FF0000', 'stroke-width': 3, 'fill': 'transparent'}});
+      cell.attr(".satvalue/text", "(T, PD)");
+    }else if (value == "unknown") {
+      // cell.attr({ '.satvalue': {'d': 'M15.255,0c5.424,0,10.764,2.498,10.764,8.473c0,5.51-6.314,7.629-7.67,9.62c-1.018,1.481-0.678,3.562-3.475,3.562\
+          // c-1.822,0-2.712-1.482-2.712-2.838c0-5.046,7.414-6.188,7.414-10.343c0-2.287-1.522-3.643-4.066-3.643\
+          // c-5.424,0-3.306,5.592-7.414,5.592c-1.483,0-2.756-0.89-2.756-2.584C5.339,3.683,10.084,0,15.255,0z M15.044,24.406\
+          // c1.904,0,3.475,1.566,3.475,3.476c0,1.91-1.568,3.476-3.475,3.476c-1.907,0-3.476-1.564-3.476-3.476\
+          // C11.568,25.973,13.137,24.406,15.044,24.406z', 'stroke': '#222222', 'stroke-width': 1}});
+          cell.attr(".satvalue/text", "?");
+    }else {
+      // cell.removeAttr(".satvalue/text");
+    }
+  },
+  
+  clear: function(){
+    this.$el.html('');
   }
-);
+});
