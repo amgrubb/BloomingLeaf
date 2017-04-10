@@ -135,7 +135,7 @@ var constraintsObject = function(){
 			pointBorderColor: "#fff",
 			lineTension: 0,
 			data: [0, 0],
-			lineDash: [20,30]
+			// borderDash: [5,5]
 		},
 		{
 			label: "Source",
@@ -145,7 +145,44 @@ var constraintsObject = function(){
 			pointBorderColor: "#fff",
 			lineTension: 0,
 			data: []
-		}]
+		},
+		{
+			label: "Source",
+			fill: false,
+			borderColor: "rgba(220,220,220,1)",
+			pointBackgroundColor: "rgba(220,220,220,1)",
+			pointBorderColor: "#fff",
+			lineTension: 0,
+			data: []
+		},
+		{
+			label: "Source",
+			fill: false,
+			borderColor: "rgba(220,220,220,1)",
+			pointBackgroundColor: "rgba(220,220,220,1)",
+			pointBorderColor: "#fff",
+			lineTension: 0,
+			data: []
+		},
+		{
+			label: "Source",
+			fill: false,
+			borderColor: "rgba(220,220,220,1)",
+			pointBackgroundColor: "rgba(220,220,220,1)",
+			pointBorderColor: "#fff",
+			lineTension: 0,
+			data: []
+		},
+		{
+			label: "Source",
+			fill: false,
+			borderColor: "rgba(220,220,220,1)",
+			pointBackgroundColor: "rgba(220,220,220,1)",
+			pointBorderColor: "#fff",
+			lineTension: 0,
+			data: []
+		}
+		]
 	};
 }
 
@@ -199,7 +236,6 @@ var chartObject = function(){
     // within constraint chart options
 	this.chartOptions = {
 		animationSteps: 15,
-		bezierCurve: false,
 		scaleOverride : true,
 		scaleSteps : 4,
 		scaleStepWidth : 1,

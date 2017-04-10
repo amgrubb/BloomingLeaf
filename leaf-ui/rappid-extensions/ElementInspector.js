@@ -148,7 +148,7 @@ var ElementInspector = Backbone.View.extend({
     // Genernate all available selection options based on selected function type
     this.chartHTML = {};
     this.chartHTML.all = '<option value=satisfied selected> Satisfied (FS, T) </option><option value=partiallysatisfied> Partially Satisfied (PS, T) </option><option value=partiallydenied> Partially Denied (T, PD)</option><option value=denied> Denied (T, FD)</option><option value=unknown> Unknown </option>';
-    this.chartHTML.noRandom = '<option value=satisfied> Satisfied (FS, T) </option><option value=partiallysatisfied> Partially Satisfied (PS, T) </option><option value=-1> Partially Denied (T, PD) </option><option value=denied> Denied (T, FD) </option>';
+    this.chartHTML.noRandom = '<option value=satisfied> Satisfied (FS, T) </option><option value=partiallysatisfied> Partially Satisfied (PS, T) </option><option value=partiallydenied> Partially Denied (T, PD) </option><option value=denied> Denied (T, FD) </option>';
     this.chartHTML.positiveOnly = '<option value=satisfied> Satisfied (FS, T) </option><option value=partiallysatisfied> Partially Satisfied (PS, T) </option>';
     this.chartHTML.negativeOnly = '<option value=denied> Denied (T, FD) </option><option value=partiallydenied> Partially Denied (T, PD) </option>';
 
@@ -417,6 +417,13 @@ var ElementInspector = Backbone.View.extend({
     // Show the chart if previously hidden
     $('#chart').show();
 
+    // Reset the dataset 2,3,4 and make everything solid line
+    for (var i = 0; i < this.constraintsObject.chartData.datasets.length; i++){
+      this.constraintsObject.chartData.datasets[i].borderDash = [];  
+      this.constraintsObject.chartData.datasets[i].data = [];  
+    }
+
+
     if(this.constraintsObject.chart != null)
       this.constraintsObject.chart.destroy();
 
@@ -428,32 +435,54 @@ var ElementInspector = Backbone.View.extend({
     // change chart based on function type
     if(text == "R"){
       this.constraintsObject.chartData.labels = ["0", "Infinity"];
-      this.constraintsObject.chartData.datasets[0].data = [initVal, 0];
-      this.constraintsObject.chartData.datasets[0].strokeColor = "rgba(255,0,0,1)";
-      this.constraintsObject.chartData.datasets[1].data = [null, null];
-      this.constraintsObject.chartData.datasets[1].strokeColor = "rgba(255,0,0,1)";
+      this.constraintsObject.chartData.datasets[0].data = [0, 0];
+      this.constraintsObject.chartData.datasets[0].borderDash = [5, 5];
+      this.constraintsObject.chartData.datasets[1].data = [1, 1];
+      this.constraintsObject.chartData.datasets[1].borderDash = [5, 5];
+      this.constraintsObject.chartData.datasets[2].data = [2, 2];
+      this.constraintsObject.chartData.datasets[2].borderDash = [5, 5];
+      this.constraintsObject.chartData.datasets[3].data = [-1, -1];
+      this.constraintsObject.chartData.datasets[3].borderDash = [5, 5];
+      this.constraintsObject.chartData.datasets[4].data = [-2, -2];
+      this.constraintsObject.chartData.datasets[4].borderDash = [5, 5];
+
       
     }else if(text == "C"){
       this.constraintsObject.chartData.labels = ["0", "Infinity"];
       this.constraintsObject.chartData.datasets[0].data = [initVal, initVal];
-      this.constraintsObject.chartData.datasets[1].data = [null, null];
 
     }else if((text == "I") || (text == "D")){
       this.constraintsObject.chartData.labels = ["0", "Infinity"];
       this.constraintsObject.chartData.datasets[0].data = [initVal, val];
-      this.constraintsObject.chartData.datasets[1].data = [null, null];
 
     }else if(text == "RC"){
       this.constraintsObject.chartData.labels = ["0", "A", "Infinity"];
-      this.constraintsObject.chartData.datasets[0].data = [0, 0, null];
-      this.constraintsObject.chartData.datasets[0].strokeColor = "rgba(255,0,0,1)";
-      this.constraintsObject.chartData.datasets[1].data = [null, val, val];
+      this.constraintsObject.chartData.datasets[0].data = [0, 0];
+      this.constraintsObject.chartData.datasets[1].data = [1, 1];
+      this.constraintsObject.chartData.datasets[2].data = [2, 2];
+      this.constraintsObject.chartData.datasets[3].data = [-1, -1];
+      this.constraintsObject.chartData.datasets[4].data = [-2, -2];
+      this.constraintsObject.chartData.datasets[0].borderDash = [5, 5];
+      this.constraintsObject.chartData.datasets[1].borderDash = [5, 5];
+      this.constraintsObject.chartData.datasets[2].borderDash = [5, 5];
+      this.constraintsObject.chartData.datasets[3].borderDash = [5, 5];
+      this.constraintsObject.chartData.datasets[4].borderDash = [5, 5];
+
+      this.constraintsObject.chartData.datasets[5].data = [null, val, val];
 
     }else if(text == "CR"){
       this.constraintsObject.chartData.labels = ["0", "A", "Infinity"];
       this.constraintsObject.chartData.datasets[0].data = [initVal, initVal, null];
       this.constraintsObject.chartData.datasets[1].data = [null, 0, 0];
-      this.constraintsObject.chartData.datasets[1].strokeColor = "rgba(255,0,0,1)";
+      this.constraintsObject.chartData.datasets[2].data = [null, 1, 1];
+      this.constraintsObject.chartData.datasets[3].data = [null, 2, 2];
+      this.constraintsObject.chartData.datasets[4].data = [null, -1, -1];
+      this.constraintsObject.chartData.datasets[5].data = [null, -2, -2];
+      this.constraintsObject.chartData.datasets[1].borderDash = [5, 5];
+      this.constraintsObject.chartData.datasets[2].borderDash = [5, 5];
+      this.constraintsObject.chartData.datasets[3].borderDash = [5, 5];
+      this.constraintsObject.chartData.datasets[4].borderDash = [5, 5];
+      this.constraintsObject.chartData.datasets[5].borderDash = [5, 5];
 
     }else if(text == "SD"){
       this.constraintsObject.chartData.labels = ["0", "A", "Infinity"];
@@ -468,14 +497,12 @@ var ElementInspector = Backbone.View.extend({
     }else if(text == "MP"){
       this.constraintsObject.chartData.labels = ["0", "A", "Infinity"];
       this.constraintsObject.chartData.datasets[0].data = [-2, val, val];
-      this.constraintsObject.chartData.datasets[1].data = [];
+
 
 
     }else if(text == "MN"){
       this.constraintsObject.chartData.labels = ["0", "A", "Infinity"];
       this.constraintsObject.chartData.datasets[0].data = [2, val, val];
-      this.constraintsObject.chartData.datasets[1].data = [];
-      
 
     // render preview for user defined function types
     }else if(text == "UD"){
@@ -568,7 +595,7 @@ var ElementInspector = Backbone.View.extend({
       data: data,
       options: this.chartObject.chartOptions
     });
-    
+
     this.updateCell(null);
   },
 
