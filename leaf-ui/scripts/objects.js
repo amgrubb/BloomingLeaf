@@ -38,23 +38,64 @@ function analysisObject () {
     this.elements;
     this.numOfElements;
     this.timeScale;
+    this.relativeTime;
 }
 
 // Parse results from backend
-analysisObject.initFromBackEnd = function(analysisResults, analysisType){
-	this.type = analysisType;
+analysisObject.initFromBackEnd = function(analysisResults){
 	this.elements = [];
-	this.numOfElements = Number(analysisResults[0]);
-	this.timeScale = Number(analysisResults[1]) - 1;
+	this.numOfElements = Number(analysisResults.elementList.length);
+	this.timeScale = Number(analysisResults.finalValueTimePoints.length) - 1;
+	this.relativeTime = [];
 	
-	for (var i = 2; i < this.numOfElements + 2; i++){
+	for(var i = 0; i < analysisResults.finalValueTimePoints.length; i++){
+		var aux = analysisResults.finalValueTimePoints[i];
+		this.relativeTime.push(aux);
+	}
+	
+	for (var i = 0; i < this.numOfElements ; i++){
 		//strips first element since it is already shown on graph
-		var results = analysisResults[i].split('\t');
-		results.pop(0)
+		var results = analysisResults.elementList[i].valueList;
+		results.pop(0);
 		this.elements.push(results)
 	}
 	return this;
 }
+
+
+analysisObject.nextStates = function(analysisResults){
+	this.elements = [];
+	this.numOfElements = Number(analysisResults.elementList.length);
+	this.timeScale = Number(analysisResults.elementList[0].valueList.length) - 1;
+	this.relativeTime = [];
+	
+	for(var i = 0; i < this.timeScale; i++){
+		this.relativeTime.push(i);
+	}
+	
+	for (var i = 0; i < this.numOfElements ; i++){
+		//strips first element since it is already shown on graph
+		var results = analysisResults.elementList[i].valueList;
+		results.pop(0);
+		this.elements.push(results)
+	}
+	return this;
+}
+
+//analysisObject.initFromBackEnd = function(analysisResults, analysisType){
+//	this.type = analysisType;
+//	this.elements = [];
+//	this.numOfElements = Number(analysisResults[0]);
+//	this.timeScale = Number(analysisResults[1]) - 1;
+//	
+//	for (var i = 2; i < this.numOfElements + 2; i++){
+//		//strips first element since it is already shown on graph
+//		var results = analysisResults[i].split('\t');
+//		results.pop(0)
+//		this.elements.push(results)
+//	}
+//	return this;
+//}
 
 // Load results from a file
 // This is done through loading analysis on the analysis inspector
