@@ -414,8 +414,8 @@ var ElementInspector = Backbone.View.extend({
     // Rerender chart canvas
     var data = this.constraintsObject.chartData;
     var context = $("#chart").get(0).getContext("2d");
-    // Show the chart if previously hidden
-    $('#chart').show();
+    // // Show the chart if previously hidden
+    // $('#chart').show();
 
     // Reset the dataset 2,3,4 and make everything solid line
     for (var i = 0; i < this.constraintsObject.chartData.datasets.length; i++){
@@ -510,7 +510,7 @@ var ElementInspector = Backbone.View.extend({
       return
     // If text = none, no chart
     }else{
-      $('#chart').hide();
+      // $('#chart').hide();
     }
 
     this.constraintsObject.chart = new Chart(context, {
