@@ -122,7 +122,7 @@ var ElementInspector = Backbone.View.extend({
 
     'click #constraint-add': 'addConstraint',
     'click #constraint-repeat': 'repeatConstraintControl',
-    'click #constraint-restart': 'restaConstraint',
+    'click #constraint-restart': 'restartConstraint',
   },
 
     //Initializing Element Inspector using the template.
@@ -320,9 +320,14 @@ var ElementInspector = Backbone.View.extend({
 
         }
       }
-      // If it is UD
+      // TODO: This may not be necessary. It is using the old code for now
+      // Only need this when we have new chart code
+      // If it is UD, just check the last row of the UD functions
       else {
-
+        var userSatValue = $(".user-sat-value").last().val();
+        var userFunctionType = $(".user-function-type").last().val();
+        console.log(userSatValue);
+        console.log(userFunctionType);
       }
     });
     return;
@@ -481,7 +486,11 @@ var ElementInspector = Backbone.View.extend({
       $('#chart').hide();
     }
 
-    this.constraintsObject.chart = new Chart(context).Line(data, this.chartObject.chartOptions);
+    this.constraintsObject.chart = new Chart(context, {
+      type: 'line',
+      data: data,
+      options: this.chartObject.chartOptions
+    });
     this.updateCell(null);
   },
 
@@ -554,7 +563,12 @@ var ElementInspector = Backbone.View.extend({
       }
     }
     // data.datasets[0].data = data.datasets[0].data.concat(this.constraintsObject.userValues);
-    this.constraintsObject.chart = new Chart(context).Line(data, this.chartObject.chartOptions);
+    this.constraintsObject.chart = new Chart(context, {
+      type: 'line',
+      data: data,
+      options: this.chartObject.chartOptions
+    });
+    
     this.updateCell(null);
   },
 

@@ -129,23 +129,21 @@ var constraintsObject = function(){
 		labels: ["0", "Infinity"],
 		datasets: [{
 			label: "Source",
-			fillColor: "rgba(220,220,220,0)",
-			strokeColor: "rgba(220,220,220,1)",
-			pointColor: "rgba(220,220,220,1)",
-			pointStrokeColor: "#fff",
-			pointHighlightFill: "#fff",
-			pointHighlightStroke: "rgba(220,220,220,1)",
+			fill: false,
+			borderColor: "rgba(220,220,220,1)",
+			pointBackgroundColor: "rgba(220,220,220,1)",
+			pointBorderColor: "#fff",
+			lineTension: 0,
 			data: [0, 0],
 			lineDash: [20,30]
 		},
 		{
 			label: "Source",
-			fillColor: "rgba(220,220,220,0)",
-			strokeColor: "rgba(220,220,220,1)",
-			pointColor: "rgba(220,220,220,1)",
-			pointStrokeColor: "#fff",
-			pointHighlightFill: "#fff",
-			pointHighlightStroke: "rgba(220,220,220,1)",
+			fill: false,
+			borderColor: "rgba(220,220,220,1)",
+			pointBackgroundColor: "rgba(220,220,220,1)",
+			pointBorderColor: "#fff",
+			lineTension: 0,
 			data: []
 		}]
 	};
@@ -159,8 +157,9 @@ var chartObject = function(){
 		labels: ["0", "A"],
 		datasets: [{
 			label: "Source",
-			fillColor: "rgba(220,220,220,0)",
-			strokeColor: "rgba(220,220,220,1)",
+			fill: false,
+			fillColor: "rgba(25,25,25,0)",
+			strokeColor: "rgba(25,25,25,1)",
 			pointColor: "rgba(220,220,220,1)",
 			pointStrokeColor: "#fff",
 			pointHighlightFill: "#fff",
@@ -209,7 +208,32 @@ var chartObject = function(){
 		pointHitDetectionRadius : 5,
 		tooltipTemplate: "",
 		multiTooltipTemplate: "",
-		scaleLabel: "<%if (value == 2)%><%= '(FS, T)' %><%if (value == 1)%><%= '(PS, T)' %><%if (value == 0)%><%= '(T, T)' %><%if (value == -1)%><%= '(T, PD)' %><%if (value == -2)%><%= '(T, FD)' %>",
+		// scaleLabel: "<%if (value == 2)%><%= '(FS, T)' %><%if (value == 1)%><%= '(PS, T)' %><%if (value == 0)%><%= '(T, T)' %><%if (value == -1)%><%= '(T, PD)' %><%if (value == -2)%><%= '(T, FD)' %>",
+
+		scales: {
+			yAxes: [{
+				ticks: {
+					min: -2.1,
+					max: 2.1,
+					callback: function(value, index, values){
+						if (value == 2){return '(FS, T)'};
+						if (value == 1){return '(PS, T)'};
+						if (value == 0){return '(T, T)'};
+						if (value == -1){return '(T, PD)'};
+						if (value == -2){return '(T, FD)'};
+					}
+				}
+			}]
+		},
+		legend: {
+			display: false
+		},
+
+		tooltips: {
+			enabled: false,
+		}
+
+
 		
 		// The following two lings controls effects of hovering over an element on chart
 		// tooltipTemplate: "<%if (value == 2)%><%= 'Satisfied' %><%if (value == 1)%><%= 'Partially Satisfied' %><%if (value == 0)%><%= 'Random' %><%if (value == -1)%><%= 'Partially Denied' %><%if (value == -2)%><%= 'Denied' %>",
