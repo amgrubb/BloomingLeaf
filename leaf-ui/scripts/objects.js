@@ -195,12 +195,10 @@ var chartObject = function(){
 		datasets: [{
 			label: "Source",
 			fill: false,
-			fillColor: "rgba(25,25,25,0)",
-			strokeColor: "rgba(25,25,25,1)",
-			pointColor: "rgba(220,220,220,1)",
-			pointStrokeColor: "#fff",
-			pointHighlightFill: "#fff",
-			pointHighlightStroke: "rgba(220,220,220,1)",
+			borderColor: "rgba(220,220,220,1)",
+			pointBackgroundColor: "rgba(220,220,220,1)",
+			pointBorderColor: "#fff",
+			lineTension: 0,
 			data: []
 		}]
 	};
@@ -208,29 +206,27 @@ var chartObject = function(){
 	this.secondaryChart = {
 		labels: ["0", "A"],
 		datasets: [{
-	        label: "",
-	        fillColor: "rgba(255, 110, 80, 0)",
-	        strokeColor: "rgba(255, 110, 80, 1)",
-	        pointColor: "rgba(255, 110, 80, 1)",
-	        pointStrokeColor: "rgba(183, 79, 58, 1)",
-	        pointHighlightFill: "rgba(183, 79, 58, 1)",
-	        pointHighlightStroke: "rgba(255, 110, 80, 1)",
-	        data: []
+			label: "Source",
+			fill: false,
+			borderColor: "rgba(220,220,220,1)",
+			pointBackgroundColor: "rgba(220,220,220,1)",
+			pointBorderColor: "#fff",
+			lineTension: 0,
+			data: []
 		}]
 	};
 
 	this.teriaryChart = {
 		labels: ["0", "A"],
 		datasets: [{
-            label: "Target",
-            fillColor: "rgba(151,187,205,0)",
-            strokeColor: "rgba(151,187,205,1)",
-            pointColor: "rgba(151,187,205,1)",
-            pointStrokeColor: "#fff",
-            pointHighlightFill: "#fff",
-            pointHighlightStroke: "rgba(151,187,205,1)",
-            data: []
-        }]
+			label: "Source",
+			fill: false,
+			borderColor: "rgba(220,220,220,1)",
+			pointBackgroundColor: "rgba(220,220,220,1)",
+			pointBorderColor: "#fff",
+			lineTension: 0,
+			data: []
+		}]
 	};
 
     // within constraint chart options

@@ -435,16 +435,8 @@ var ElementInspector = Backbone.View.extend({
     // change chart based on function type
     if(text == "R"){
       this.constraintsObject.chartData.labels = ["0", "Infinity"];
-      this.constraintsObject.chartData.datasets[0].data = [0, 0];
+      this.constraintsObject.chartData.datasets[0].data = [initVal, initVal];
       this.constraintsObject.chartData.datasets[0].borderDash = [5, 5];
-      this.constraintsObject.chartData.datasets[1].data = [1, 1];
-      this.constraintsObject.chartData.datasets[1].borderDash = [5, 5];
-      this.constraintsObject.chartData.datasets[2].data = [2, 2];
-      this.constraintsObject.chartData.datasets[2].borderDash = [5, 5];
-      this.constraintsObject.chartData.datasets[3].data = [-1, -1];
-      this.constraintsObject.chartData.datasets[3].borderDash = [5, 5];
-      this.constraintsObject.chartData.datasets[4].data = [-2, -2];
-      this.constraintsObject.chartData.datasets[4].borderDash = [5, 5];
 
       
     }else if(text == "C"){
@@ -457,32 +449,15 @@ var ElementInspector = Backbone.View.extend({
 
     }else if(text == "RC"){
       this.constraintsObject.chartData.labels = ["0", "A", "Infinity"];
-      this.constraintsObject.chartData.datasets[0].data = [0, 0];
-      this.constraintsObject.chartData.datasets[1].data = [1, 1];
-      this.constraintsObject.chartData.datasets[2].data = [2, 2];
-      this.constraintsObject.chartData.datasets[3].data = [-1, -1];
-      this.constraintsObject.chartData.datasets[4].data = [-2, -2];
+      this.constraintsObject.chartData.datasets[0].data = [initVal, initVal];
       this.constraintsObject.chartData.datasets[0].borderDash = [5, 5];
-      this.constraintsObject.chartData.datasets[1].borderDash = [5, 5];
-      this.constraintsObject.chartData.datasets[2].borderDash = [5, 5];
-      this.constraintsObject.chartData.datasets[3].borderDash = [5, 5];
-      this.constraintsObject.chartData.datasets[4].borderDash = [5, 5];
-
-      this.constraintsObject.chartData.datasets[5].data = [null, val, val];
+      this.constraintsObject.chartData.datasets[1].data = [null, val, val];
 
     }else if(text == "CR"){
       this.constraintsObject.chartData.labels = ["0", "A", "Infinity"];
       this.constraintsObject.chartData.datasets[0].data = [initVal, initVal, null];
-      this.constraintsObject.chartData.datasets[1].data = [null, 0, 0];
-      this.constraintsObject.chartData.datasets[2].data = [null, 1, 1];
-      this.constraintsObject.chartData.datasets[3].data = [null, 2, 2];
-      this.constraintsObject.chartData.datasets[4].data = [null, -1, -1];
-      this.constraintsObject.chartData.datasets[5].data = [null, -2, -2];
+      this.constraintsObject.chartData.datasets[1].data = [null, initVal, initVal];
       this.constraintsObject.chartData.datasets[1].borderDash = [5, 5];
-      this.constraintsObject.chartData.datasets[2].borderDash = [5, 5];
-      this.constraintsObject.chartData.datasets[3].borderDash = [5, 5];
-      this.constraintsObject.chartData.datasets[4].borderDash = [5, 5];
-      this.constraintsObject.chartData.datasets[5].borderDash = [5, 5];
 
     }else if(text == "SD"){
       this.constraintsObject.chartData.labels = ["0", "A", "Infinity"];
