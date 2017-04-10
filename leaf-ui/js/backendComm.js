@@ -327,8 +327,8 @@ function getFileResults(isGetNextSteps){
 		url: pathToCGI,
 		type: "get",
 		success: function(response){
-			analysisResults = response;
-			if (isNaN(parseInt(analysisResults[0]))){
+			analysisResults = JSON.parse(response.data);
+			if (analysisResults == ""){
 				alert("Sorry Dave, We could not process your model")
 				return
 			}

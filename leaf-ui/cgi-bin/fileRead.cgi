@@ -6,10 +6,15 @@ cgitb.enable()
 
 def executeCGI():
    
+   	result = {};
+   	result['success'] = True
+   	result['message'] = "This is a response from server"
+   	result['data'] = ""
+   	
 	processedFilePath = 'temp/output.out'
 
 	with open(processedFilePath) as data:
-		result = data.readlines()
+		result['data'] = data.read()
 
 	#Send data back to frontend
 	sendToFrontEnd(result)

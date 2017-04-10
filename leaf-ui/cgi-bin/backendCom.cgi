@@ -17,9 +17,6 @@ def executeCGI():
 	filePath = 'temp/default.json'
 	jsonToFile(myjson, filePath)
 
-	#call JAVA app        
-    #os.system("/u/marcel/java/jre1.8.0_66/bin/java -jar /u/marcel/bin/marcel.jar")    
-    
  	print 'Content-Type: application/json\n\n'
 	print json.dumps(result)
 	
