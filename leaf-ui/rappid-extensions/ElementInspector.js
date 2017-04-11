@@ -1,7 +1,54 @@
 //Class for the element properties tab that appears when an element is clicked 
 var ENTER_KEY = 13;
 var alphaOnly = /[A-Z]/;
+// All valid initvalue/function combination
+var validPair = {
+  "none": {
+    "validInitValue": ["none", "satisfied", "partiallysatisfied", "denied", "partiallydenied"],
+    "defaultValue": ["none"]
+  },
+  "C":{
+    "validInitValue": ["none", "satisfied", "partiallysatisfied", "denied", "partiallydenied", "unknown"],
+    "defaultValue": ["none"]  
+  },
+  "R":{
+    "validInitValue": ["none", "satisfied", "partiallysatisfied", "denied", "partiallydenied"],
+    "defaultValue": ["none"]  
+  },
+  "I": {
+    "validInitValue": ["none", "satisfied", "partiallysatisfied", "denied", "partiallydenied"],
+    "defaultValue": ["denied"]
+  },
+  "D": {
+    "validInitValue": ["none", "satisfied", "partiallysatisfied", "denied", "partiallydenied"],
+    "defaultValue": ["satisfied"]
+  },
+  "RC": {
+    "validInitValue": ["none", "satisfied", "partiallysatisfied", "denied", "partiallydenied"],
+    "defaultValue": ["none"]
+  },
+  "CR": {
+    "validInitValue": ["none", "satisfied", "partiallysatisfied", "denied", "partiallydenied"],
+    "defaultValue": ["none"]
+  },
+  "MP": {
+    "validInitValue": ["none", "satisfied", "partiallysatisfied", "denied", "partiallydenied"],
+    "defaultValue": ["denied"]
+  },
+  "MN": {
+    "validInitValue": ["none", "satisfied", "partiallysatisfied", "denied", "partiallydenied"],
+    "defaultValue": ["satisfied"]
+  },
+  "SD": {
+    "validInitValue": ["satisfied"],
+    "defaultValue": ["satisfied"]
+  },
+  "DS": {
+    "validInitValue": ["denied"],
+    "defaultValue": ["denied"]
+  }
 
+};
 /*
 
 Note:
@@ -250,7 +297,6 @@ var ElementInspector = Backbone.View.extend({
   updateHTML: function(event){
     // Check if selected initValue/functionType pair is illegal
     this.validityCheck(event);
-
     var cell = this._cellView.model;
     var functionType = this.$('.function-type').val();
     var initValue = this.$('#init-sat-value').val();
@@ -308,29 +354,24 @@ var ElementInspector = Backbone.View.extend({
       }
     }
     // Perform check
-    $.getJSON("./rappid-extensions/validPair.json", function(validPair){
-      // If not UD, just do a regular check
-      if (functionType != "UD"){
-        // If not valid, 2 possible actions: 
-        // change to default init value if functTypeChanged
-        // change to none function if initValueChanged
-        if ($.inArray(initValue, validPair[functionType]['validInitValue']) == -1){
-          console.log('Invalid: ' + initValueChanged + ' ' + funcTypeChanged);
-          if (initValueChanged){$('.function-type').val('none');}
-          if (funcTypeChanged){$('#init-sat-value').val(validPair[functionType]['defaultValue']);}
+    // If not UD, just do a regular check
+    if (functionType != "UD"){
+      // If not valid, 2 possible actions: 
+      // change to default init value if functTypeChanged
+      // change to none function if initValueChanged
+      if ($.inArray(initValue, validPair[functionType]['validInitValue']) == -1){
+        if (initValueChanged){$('.function-type').val('none');}
+        if (funcTypeChanged){$('#init-sat-value').val(validPair[functionType]['defaultValue']);}
 
-        }
       }
-      // TODO: This may not be necessary. It is using the old code for now
-      // Only need this when we have new chart code
-      // If it is UD, just check the last row of the UD functions
-      else {
-        var userSatValue = $(".user-sat-value").last().val();
-        var userFunctionType = $(".user-function-type").last().val();
-        console.log(userSatValue);
-        console.log(userFunctionType);
-      }
-    });
+    }
+    // TODO: This may not be necessary. It is using the old code for now
+    // Only need this when we have new chart code
+    // If it is UD, just check the last row of the UD functions
+    else {
+      var userSatValue = $(".user-sat-value").last().val();
+      var userFunctionType = $(".user-function-type").last().val();
+    }
     return;
   },
 
