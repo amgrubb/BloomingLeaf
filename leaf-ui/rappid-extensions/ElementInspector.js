@@ -323,7 +323,7 @@ var ElementInspector = Backbone.View.extend({
       $('#init-sat-value').prop('disabled', '');
     }
     else {
-      this.$('.function-sat-value').hide();
+      this.$('.function-sat-value').hide();s
       this.$('#user-constraints').hide();      
       $('#init-sat-value').prop('disabled', '');
     }
@@ -549,13 +549,13 @@ var ElementInspector = Backbone.View.extend({
 
     }else if(text == "MP"){
       this.constraintsObject.chartData.labels = ["0", "A", "Infinity"];
-      this.constraintsObject.chartData.datasets[0].data = [-2, val, val];
+      this.constraintsObject.chartData.datasets[0].data = [initVal, val, val];
 
 
 
     }else if(text == "MN"){
       this.constraintsObject.chartData.labels = ["0", "A", "Infinity"];
-      this.constraintsObject.chartData.datasets[0].data = [2, val, val];
+      this.constraintsObject.chartData.datasets[0].data = [initVal, val, val];
 
     // render preview for user defined function types
     }else if(text == "UD"){
