@@ -323,7 +323,7 @@ var ElementInspector = Backbone.View.extend({
       $('#init-sat-value').prop('disabled', '');
     }
     else {
-      this.$('.function-sat-value').hide();s
+      this.$('.function-sat-value').hide();
       this.$('#user-constraints').hide();      
       $('#init-sat-value').prop('disabled', '');
     }
@@ -360,7 +360,8 @@ var ElementInspector = Backbone.View.extend({
       // change to default init value if functTypeChanged
       // change to none function if initValueChanged
       if ($.inArray(initValue, validPair[functionType]['validInitValue']) == -1){
-        if (initValueChanged){$('.function-type').val('none');}
+        if (initValueChanged && initValue != "unknown"){$('.function-type').val('none');}
+        if (initValueChanged && initValue == "unknown"){$('.function-type').val('C');}
         if (funcTypeChanged){$('#init-sat-value').val(validPair[functionType]['defaultValue']);}
 
       }
@@ -564,18 +565,8 @@ var ElementInspector = Backbone.View.extend({
     // If text = none, just place a dot
     }else{
       this.constraintsObject.chartData.labels = ["0", "Infinity"];
-      // If not unknown, just display one dot
-      if (initVal != satvalues["unknown"]){
-        this.constraintsObject.chartData.datasets[0].data = [initVal];
-      }
-      // If it is, display 5 dots
-      else {
-        this.constraintsObject.chartData.datasets[0].data = [0];
-        this.constraintsObject.chartData.datasets[1].data = [1];
-        this.constraintsObject.chartData.datasets[2].data = [2];
-        this.constraintsObject.chartData.datasets[3].data = [-1];
-        this.constraintsObject.chartData.datasets[4].data = [-2];
-      }
+      // display one dot
+      this.constraintsObject.chartData.datasets[0].data = [initVal];
     }
 
     this.constraintsObject.chart = new Chart(context, {
