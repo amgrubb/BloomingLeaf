@@ -2,7 +2,6 @@
 document = window.opener.document;
 graph = window.opener.graph;
 console.log(JSON.stringify(window.opener.global_analysisResult));
-graphObject = window.opener.graphObject;
 var analysisResult = window.opener.global_analysisResult;
 
 // Create a paper and wrap it in a PaperScroller.
@@ -64,6 +63,62 @@ function renderNavigationSidebar(currentPage){
 	currentPageIn.value = currentPage.toString();
 	
 	updatePagination(currentPage);
+	updateNodesValues(currentPage);
+
+}
+
+function updateNodesValues(currentPage){
+
+	var all_elements = graph.getElements();
+
+	//Filter out Actors
+	var elements = [];
+	for (var e = 0; e < all_elements.length; e++){
+		if (!(all_elements[e] instanceof joint.shapes.basic.Actor))
+			elements.push(all_elements[e]);
+	}
+	
+	var cell;
+	var value;
+	for(var i = 0; i < elements.length; i++){
+		cell = elements[i];
+		value = analysisResult.elementList[i].valueList[currentPage];
+		cell.attributes.attrs[".satvalue"].value = value;
+		
+		//Change backend value to user friendly view
+		if ((value == "1000") || (value == "1100")) {
+		  cell.attr(".satvalue/text", "(FS, T)");
+		  cell.attr({text:{fill:'black'}});
+		}else if(value == "0100") {
+		  cell.attr(".satvalue/text", "(PS, T)");
+		  cell.attr({text:{fill:'black'}});
+		}else if ((value == "0001") || (value == "0011")){
+		  cell.attr(".satvalue/text", "(T, FD)");
+		  cell.attr({text:{fill:'black'}});
+		}else if (value == "0010") {
+		  cell.attr(".satvalue/text", "(T, PD)");
+		  cell.attr({text:{fill:'black'}});
+		}else if (value == "0110") {
+		  cell.attr(".satvalue/text", "(PS, PD)");
+		  cell.attr({text:{fill:'red'}});
+		}else if ((value == "0111") || (value == "0101")){
+		  cell.attr(".satvalue/text", "(PS, FD)");
+		  cell.attr({text:{fill:'red'}});
+		}else if ((value == "1110") || (value == "1010")){
+		  cell.attr(".satvalue/text", "(FS, PD)");
+		  cell.attr({text:{fill:'red'}});
+		}else if ((value == "1111") || (value == "1001") || (value == "1101") || (value == "1011") ){
+		  cell.attr(".satvalue/text", "(FS, FD)"); 
+		  cell.attr({text:{fill:'red'}});
+		}else if (value == "0000") {
+	      cell.attr(".satvalue/text", "(T,T)");
+	      cell.attr({text:{fill:'black'}});
+		}else {
+		  cell.removeAttr(".satvalue/d");
+		}
+	}
+	
+	
 
 }
 
@@ -150,8 +205,3 @@ function goToState(){
 		}
 	}
 }
-
-window.onload = load_analysis_viewew();
-
-function load_analysis_viewew(){
-};
