@@ -172,36 +172,30 @@ var constraintsObject = function(){
 			label: "Source",
 			fill: false,
 			borderColor: "rgba(220,220,220,1)",
-			pointBackgroundColor: "rgba(220,220,220,1)",
-			pointBorderColor: "#fff",
+			pointBackgroundColor: ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"],
+			pointRadius: 4,
+			pointBorderColor: ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"],
 			lineTension: 0,
-			data: [0, 0],
-			// borderDash: [5,5]
+			data: [0, 0]
+
 		},
 		{
 			label: "Source",
 			fill: false,
 			borderColor: "rgba(220,220,220,1)",
-			pointBackgroundColor: "rgba(220,220,220,1)",
-			pointBorderColor: "#fff",
+			pointBackgroundColor: ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"],
+			pointRadius: 4,
+			pointBorderColor: ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"],
 			lineTension: 0,
-			data: []
+			data: [0, 0]
 		},
 		{
 			label: "Source",
 			fill: false,
 			borderColor: "rgba(220,220,220,1)",
-			pointBackgroundColor: "rgba(220,220,220,1)",
-			pointBorderColor: "#fff",
-			lineTension: 0,
-			data: []
-		},
-		{
-			label: "Source",
-			fill: false,
-			borderColor: "rgba(220,220,220,1)",
-			pointBackgroundColor: "rgba(220,220,220,1)",
-			pointBorderColor: "#fff",
+			pointBackgroundColor: ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"],
+			pointRadius: 4,
+			pointBorderColor: ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"],
 			lineTension: 0,
 			data: []
 		},
@@ -209,8 +203,9 @@ var constraintsObject = function(){
 			label: "Source",
 			fill: false,
 			borderColor: "rgba(220,220,220,1)",
-			pointBackgroundColor: "rgba(220,220,220,1)",
-			pointBorderColor: "#fff",
+			pointBackgroundColor: ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"],
+			pointRadius: 4,
+			pointBorderColor: ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"],
 			lineTension: 0,
 			data: []
 		},
@@ -218,8 +213,19 @@ var constraintsObject = function(){
 			label: "Source",
 			fill: false,
 			borderColor: "rgba(220,220,220,1)",
-			pointBackgroundColor: "rgba(220,220,220,1)",
-			pointBorderColor: "#fff",
+			pointBackgroundColor: ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"],
+			pointRadius: 4,
+			pointBorderColor: ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"],
+			lineTension: 0,
+			data: []
+		},
+		{
+			label: "Source",
+			fill: false,
+			borderColor: "rgba(220,220,220,1)",
+			pointBackgroundColor: ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"],
+			pointRadius: 4,
+			pointBorderColor: ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"],
 			lineTension: 0,
 			data: []
 		}

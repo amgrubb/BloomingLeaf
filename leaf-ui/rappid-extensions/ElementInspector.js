@@ -1,7 +1,54 @@
 //Class for the element properties tab that appears when an element is clicked 
 var ENTER_KEY = 13;
 var alphaOnly = /[A-Z]/;
+// All valid initvalue/function combination
+var validPair = {
+  "none": {
+    "validInitValue": ["none", "satisfied", "partiallysatisfied", "denied", "partiallydenied"],
+    "defaultValue": ["none"]
+  },
+  "C":{
+    "validInitValue": ["none", "satisfied", "partiallysatisfied", "denied", "partiallydenied", "unknown"],
+    "defaultValue": ["none"]  
+  },
+  "R":{
+    "validInitValue": ["none", "satisfied", "partiallysatisfied", "denied", "partiallydenied"],
+    "defaultValue": ["none"]  
+  },
+  "I": {
+    "validInitValue": ["none", "satisfied", "partiallysatisfied", "denied", "partiallydenied"],
+    "defaultValue": ["denied"]
+  },
+  "D": {
+    "validInitValue": ["none", "satisfied", "partiallysatisfied", "denied", "partiallydenied"],
+    "defaultValue": ["satisfied"]
+  },
+  "RC": {
+    "validInitValue": ["none", "satisfied", "partiallysatisfied", "denied", "partiallydenied"],
+    "defaultValue": ["none"]
+  },
+  "CR": {
+    "validInitValue": ["none", "satisfied", "partiallysatisfied", "denied", "partiallydenied"],
+    "defaultValue": ["none"]
+  },
+  "MP": {
+    "validInitValue": ["none", "satisfied", "partiallysatisfied", "denied", "partiallydenied"],
+    "defaultValue": ["denied"]
+  },
+  "MN": {
+    "validInitValue": ["none", "satisfied", "partiallysatisfied", "denied", "partiallydenied"],
+    "defaultValue": ["satisfied"]
+  },
+  "SD": {
+    "validInitValue": ["satisfied"],
+    "defaultValue": ["satisfied"]
+  },
+  "DS": {
+    "validInitValue": ["denied"],
+    "defaultValue": ["denied"]
+  }
 
+};
 /*
 
 Note:
@@ -70,6 +117,7 @@ var ElementInspector = Backbone.View.extend({
                 '<option value=D> Decrease </option>',
               '</select>',
               '<select class="user-sat-value user-defined-select">',
+                '<option value=satisfied selected> None (T, T) </option>',
                 '<option value=satisfied selected> Satisfied (FS, T) </option>',
                 '<option value=partiallysatisfied> Partially Satisfied (PS, T) </option>',
                 '<option value=partiallydenied> Partially Denied (T, PD)</option>',
@@ -249,7 +297,6 @@ var ElementInspector = Backbone.View.extend({
   updateHTML: function(event){
     // Check if selected initValue/functionType pair is illegal
     this.validityCheck(event);
-
     var cell = this._cellView.model;
     var functionType = this.$('.function-type').val();
     var initValue = this.$('#init-sat-value').val();
@@ -307,29 +354,25 @@ var ElementInspector = Backbone.View.extend({
       }
     }
     // Perform check
-    $.getJSON("./rappid-extensions/validPair.json", function(validPair){
-      // If not UD, just do a regular check
-      if (functionType != "UD"){
-        // If not valid, 2 possible actions: 
-        // change to default init value if functTypeChanged
-        // change to none function if initValueChanged
-        if ($.inArray(initValue, validPair[functionType]['validInitValue']) == -1){
-          console.log('Invalid: ' + initValueChanged + ' ' + funcTypeChanged);
-          if (initValueChanged){$('.function-type').val('none');}
-          if (funcTypeChanged){$('#init-sat-value').val(validPair[functionType]['defaultValue']);}
+    // If not UD, just do a regular check
+    if (functionType != "UD"){
+      // If not valid, 2 possible actions: 
+      // change to default init value if functTypeChanged
+      // change to none function if initValueChanged
+      if ($.inArray(initValue, validPair[functionType]['validInitValue']) == -1){
+        if (initValueChanged && initValue != "unknown"){$('.function-type').val('none');}
+        if (initValueChanged && initValue == "unknown"){$('.function-type').val('C');}
+        if (funcTypeChanged){$('#init-sat-value').val(validPair[functionType]['defaultValue']);}
 
-        }
       }
-      // TODO: This may not be necessary. It is using the old code for now
-      // Only need this when we have new chart code
-      // If it is UD, just check the last row of the UD functions
-      else {
-        var userSatValue = $(".user-sat-value").last().val();
-        var userFunctionType = $(".user-function-type").last().val();
-        console.log(userSatValue);
-        console.log(userFunctionType);
-      }
-    });
+    }
+    // TODO: This may not be necessary. It is using the old code for now
+    // Only need this when we have new chart code
+    // If it is UD, just check the last row of the UD functions
+    else {
+      var userSatValue = $(".user-sat-value").last().val();
+      var userFunctionType = $(".user-function-type").last().val();
+    }
     return;
   },
 
@@ -421,6 +464,8 @@ var ElementInspector = Backbone.View.extend({
     for (var i = 0; i < this.constraintsObject.chartData.datasets.length; i++){
       this.constraintsObject.chartData.datasets[i].borderDash = [];  
       this.constraintsObject.chartData.datasets[i].data = [];  
+      this.constraintsObject.chartData.datasets[i].pointBackgroundColor = ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"];  
+      this.constraintsObject.chartData.datasets[i].pointBorderColor = ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"];  
     }
 
 
@@ -437,11 +482,41 @@ var ElementInspector = Backbone.View.extend({
       this.constraintsObject.chartData.labels = ["0", "Infinity"];
       this.constraintsObject.chartData.datasets[0].data = [initVal, initVal];
       this.constraintsObject.chartData.datasets[0].borderDash = [5, 5];
+      this.constraintsObject.chartData.datasets[0].pointBackgroundColor[1] = "rgba(220,220,220,0)";
+      this.constraintsObject.chartData.datasets[0].pointBorderColor[1] = "rgba(220,220,220,0)";
+
+
 
       
     }else if(text == "C"){
       this.constraintsObject.chartData.labels = ["0", "Infinity"];
-      this.constraintsObject.chartData.datasets[0].data = [initVal, initVal];
+      // If not unknown, just display one line
+      if (initVal != satvalues["unknown"]){
+        this.constraintsObject.chartData.datasets[0].data = [initVal, initVal];
+      }
+      // If it is, then display 5 dotted lines
+      else {
+        this.constraintsObject.chartData.datasets[0].data = [0, 0];
+        this.constraintsObject.chartData.datasets[1].data = [1, 1];
+        this.constraintsObject.chartData.datasets[2].data = [2, 2];
+        this.constraintsObject.chartData.datasets[3].data = [-1, -1];
+        this.constraintsObject.chartData.datasets[4].data = [-2, -2];
+        this.constraintsObject.chartData.datasets[0].borderDash = [5, 5];
+        this.constraintsObject.chartData.datasets[1].borderDash = [5, 5];
+        this.constraintsObject.chartData.datasets[2].borderDash = [5, 5];
+        this.constraintsObject.chartData.datasets[3].borderDash = [5, 5];
+        this.constraintsObject.chartData.datasets[4].borderDash = [5, 5];
+        this.constraintsObject.chartData.datasets[0].pointBackgroundColor[1] = "rgba(220,220,220,0)";
+        this.constraintsObject.chartData.datasets[1].pointBackgroundColor[1] = "rgba(220,220,220,0)";
+        this.constraintsObject.chartData.datasets[2].pointBackgroundColor[1] = "rgba(220,220,220,0)";
+        this.constraintsObject.chartData.datasets[3].pointBackgroundColor[1] = "rgba(220,220,220,0)";
+        this.constraintsObject.chartData.datasets[4].pointBackgroundColor[1] = "rgba(220,220,220,0)";
+        this.constraintsObject.chartData.datasets[0].pointBorderColor[1] = "rgba(220,220,220,0)";
+        this.constraintsObject.chartData.datasets[1].pointBorderColor[1] = "rgba(220,220,220,0)";
+        this.constraintsObject.chartData.datasets[2].pointBorderColor[1] = "rgba(220,220,220,0)";
+        this.constraintsObject.chartData.datasets[3].pointBorderColor[1] = "rgba(220,220,220,0)";
+        this.constraintsObject.chartData.datasets[4].pointBorderColor[1] = "rgba(220,220,220,0)";
+      }
 
     }else if((text == "I") || (text == "D")){
       this.constraintsObject.chartData.labels = ["0", "Infinity"];
@@ -451,6 +526,8 @@ var ElementInspector = Backbone.View.extend({
       this.constraintsObject.chartData.labels = ["0", "A", "Infinity"];
       this.constraintsObject.chartData.datasets[0].data = [initVal, initVal];
       this.constraintsObject.chartData.datasets[0].borderDash = [5, 5];
+      this.constraintsObject.chartData.datasets[0].pointBackgroundColor[1] = "rgba(220,220,220,0)";
+      this.constraintsObject.chartData.datasets[0].pointBorderColor[1] = "rgba(220,220,220,0)";
       this.constraintsObject.chartData.datasets[1].data = [null, val, val];
 
     }else if(text == "CR"){
@@ -458,6 +535,8 @@ var ElementInspector = Backbone.View.extend({
       this.constraintsObject.chartData.datasets[0].data = [initVal, initVal, null];
       this.constraintsObject.chartData.datasets[1].data = [null, initVal, initVal];
       this.constraintsObject.chartData.datasets[1].borderDash = [5, 5];
+      this.constraintsObject.chartData.datasets[1].pointBackgroundColor[2] = "rgba(220,220,220,0)";
+      this.constraintsObject.chartData.datasets[1].pointBorderColor[2] = "rgba(220,220,220,0)";
 
     }else if(text == "SD"){
       this.constraintsObject.chartData.labels = ["0", "A", "Infinity"];
@@ -471,21 +550,23 @@ var ElementInspector = Backbone.View.extend({
 
     }else if(text == "MP"){
       this.constraintsObject.chartData.labels = ["0", "A", "Infinity"];
-      this.constraintsObject.chartData.datasets[0].data = [-2, val, val];
+      this.constraintsObject.chartData.datasets[0].data = [initVal, val, val];
 
 
 
     }else if(text == "MN"){
       this.constraintsObject.chartData.labels = ["0", "A", "Infinity"];
-      this.constraintsObject.chartData.datasets[0].data = [2, val, val];
+      this.constraintsObject.chartData.datasets[0].data = [initVal, val, val];
 
     // render preview for user defined function types
     }else if(text == "UD"){
       this.updateGraphUserDefined(null);
       return
-    // If text = none, no chart
+    // If text = none, just place a dot
     }else{
-      // $('#chart').hide();
+      this.constraintsObject.chartData.labels = ["0", "Infinity"];
+      // display one dot
+      this.constraintsObject.chartData.datasets[0].data = [initVal];
     }
 
     this.constraintsObject.chart = new Chart(context, {
@@ -506,8 +587,8 @@ var ElementInspector = Backbone.View.extend({
 
     // If unknown is selected
     if($(".user-sat-value").last().val() == 'unknown'){
-      $(".user-function-type").last().prop('disabled', 'disabled');
-      $(".user-function-type").last().css("background-color","grey");
+      $(".user-sat-value").last().prop('disabled', 'disabled');
+      $(".user-sat-value").last().css("background-color","grey");
     }
     else {
       $(".user-function-type").last().prop('disabled', ''); 
@@ -574,6 +655,14 @@ var ElementInspector = Backbone.View.extend({
     this.updateCell(null);
   },
 
+  // Takes one function/sat value pair in UD
+  // i: To indication this is the i-th function/sat-value of the UD
+  // userValue: The sat value of the function
+  // userFunctionType: Function type of the function
+  // p: The value of where the previous function ended (Optional)
+  updateGraphUserDefinedHelper: function(i, userValue, userFunctionType, p){
+
+  },
 
   // add new constraint in used defined function
   addConstraint: function(e, mode){
