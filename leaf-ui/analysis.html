@@ -14,17 +14,35 @@
         <link rel="stylesheet" type="text/css" href="./rappid/dist/rappid.min.css" />
         <link rel="stylesheet" type="text/css" href="./plugins/slider/nouislider.min.css">
 
-        <link rel="stylesheet" type="text/css" href="./css/style.css" />
-        <link rel="stylesheet" type="text/css" href="./css/analysis_style.css" />
+        <link rel="stylesheet" type="text/css" href="./css/analysis_html.css" />
+
+		<style>
+		.pagination a {
+		    color: white;
+		    float: left;
+		    padding: 8px 16px;
+		    text-decoration: none;
+		    transition: background-color .3s;
+		}
+		
+		.pagination a.active {
+		    background-color: #4CAF50;
+		    color: white;
+		}
+		
+		.pagination a:hover:not(.active) {background-color: #ddd;}
+		</style>
 
     </head>
     <body>
         <p id="name">BloomingLeaf</p>
         <div class="toolbar">
+            <div id="model-toolbar">
+                <button id="btn-save" class="btn">Save</button>
+            </div>
+
             <button id="btn-zoom-in" class="btn">Zoom In</button>
             <button id="btn-zoom-out" class="btn">Zoom Out</button>
-            <button id="btn-svg" class="btn">Open as SVG</button>
-            <input type="file" id="loader" style="display:none">
 
             <button id="btn-save-leaf" class="btn"> Export .leaf </button>
 
@@ -45,24 +63,28 @@
                 Legend</a>
               </div>
             </div>
+            
         </div>
 
+        <div id="navigation" class="left-panel" style="background-color: #333;">
+        <br>
+        <label>Number of states</label>
+        <label id=num_states_lbl></label>
+        <label>Navigate</label>
+        	<input id="currentPage" type="hidden" value="">
+      		<div style="display: inline-block;">
+	      		<input id="requiredState" type="text" placeholder="Digit desired page" style="width: 180px; padding: 3px;"/>
+	      		<button onclick="goToState()" style="float:right; padding: 2px;">Go</button>
+			</div>
+				
+	        <div id="pagination" class="pagination">
+				
+			</div>
+          
+        </div>
 
         <div id="paper">
         </div>
-        <div class="inspector">
-            <div id="layout"></div>
-        </div>
-
-        <span id="modeText">Next Steps</span>
-
-        <div id="slider"></div>
-        <span id="sliderValue"></span>
-
-		<input id="finalAssigneEpoch" type="hidden"/>
-		<input id="finalValueTimePoints" type="hidden"/>
-		<input id="elementList" type="hidden"/>
-		
 
         <script type="text/javascript">
             SVGElement.prototype.getTransformToElement = SVGElement.prototype.getTransformToElement || function(toElement) {
@@ -86,9 +108,9 @@
 
         <script src="./plugins/keyboard/keyboard.js"></script>
         <script src="./plugins/slider/nouislider.min.js"></script>
-        <script src="./plugins/chart/Chart.min.js"></script>
+        <script src="./plugins/chart/Chart.bundle.min.js"></script>
 
-        <script src="./objects.js"></script>
+        <script src="./scripts/objects.js"></script>
 
         <script src="./rappid-extensions/ElementInspector.js"></script>
         <script src="./rappid-extensions/LinkInspector.js"></script>
@@ -96,69 +118,7 @@
         <script src="./rappid-extensions/AnalysisInspector.js"></script>
         <script src="./rappid-extensions/joint.extensions.js"></script>
 
-        <script src="./main.js"></script>
-        
-		<script src="./js/backendComm.js"></script>
-		<script src="./js/analysisComm.js"></script>
-		
-		<!-- OBJECTS to be sent to backend communication -->
-		<script src="./js/object/InputAnalysis.js"></script>
-		<script src="./js/object/InputModel.js"></script>
-		
-		<script src="./js/object/InputActor.js"></script>
-		<script src="./js/object/InputConstraint.js"></script>
-		<script src="./js/object/InputDynamic.js"></script>
-		<script src="./js/object/InputIntention.js"></script>
-		<script src="./js/object/InputLink.js"></script>
-		
-		<!-- Objects used in both ways communication -->
-		<script src="./js/object/IOIntention.js"></script>
-		<script src="./js/object/IOStatesModel.js"></script>
-		
-		<!-- Objects received from backend  -->
-		<script src="./js/object/OutputModel.js"></script>
-		
-		<script>
-		console.log(JSON.stringify(window.opener.global_analysisResult));
-		window.onload = load_analysis_viewew();
-		var graphObject = new graphObject();
-		function load_analysis_viewew(){
-			//SELECT ALL ELEMENTS
-			var all_elements = graph.getElements();
-
-			//Filter out Actors
-			var elements = [];
-			for (var e = 0; e < all_elements.length; e++){
-				if (!(all_elements[e] instanceof joint.shapes.basic.Actor))
-					elements.push(all_elements[e]);
-			}
-
-			//save elements in global variable for slider
-			graphObject.allElements = elements;
+        <script src="./scripts/analysis.js"></script>
 			
-			loadNextStates(window.opener.global_analysisResult);
-			
-			function loadNextStates(analysisResults){
-				currentAnalysis = new analysisObject.nextStates(analysisResults);
-				updateSlider(currentAnalysis, false);
-			}
-			
-		};
-		</script>
-		
-        <div class = "attribution">
-            <img src=http://upload.wikimedia.org/wikipedia/en/0/04/Utoronto_coa.svg style="width:25%;height:25%;float:left">
-            <br>
-            Copyright 2015-2017.<br>University of Toronto<br>
-            Department of Computer Science. <br>
-            All rights reserved.<br>
-            <br>
-            Powered by: <br>
-            <br>
-            <img src="./jointjs.png" style="width:25%;height:25%;float:left">
-            Copyright 2014-2017.<br>client IO. All rights reserved.<br>
-    		JointJS: an HTML 5 diagramming component.<br>
-    		<a href=http://jointjs.com target="_blank">http://jointjs.com</a>
-        </div>
     </body>
 </html>

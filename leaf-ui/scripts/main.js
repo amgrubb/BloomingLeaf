@@ -393,9 +393,14 @@ function loadAnalysis(analysisResults){
 // Slider creation and update
 function updateSlider(currentAnalysis, pastAnalysisStep){
 	var analysisMarkers;
-
+	
+	if(!sliderObject.sliderElement){
+		sliderObject.sliderElement = document.getElementById('slider');
+		sliderObject.sliderValueElement = document.getElementById('sliderValue');
+	}
+		
 	// First create slider
-	if(!sliderObject.sliderElement.noUiSlider){
+	if(!sliderObject.sliderElement.hasOwnProperty('noUiSlider')){
 		var currentValueLimit = 0;
 		var sliderMax = currentAnalysis.timeScale;
 
