@@ -1,64 +1,74 @@
 //Get necessary variables from the main page
-document = window.opener.document;
-graph = window.opener.graph;
+var document = window.opener.document;
+var graph = window.opener.graph;
 console.log(JSON.stringify(window.opener.global_analysisResult));
-var analysisResult = window.opener.global_analysisResult;
+var paper;
+var paperScroller;
+var originalResults = window.opener.global_analysisResult;
+var analysisResult;
+var elements = [];
 
-// Create a paper and wrap it in a PaperScroller.
-paper = new joint.dia.Paper({
-    width: 1200,
-    height: 600,
-    gridSize: 10,
-    perpendicularLinks: false,
-    model: graph,
-    defaultLink: new joint.dia.Link({
-		'attrs': {
-			'.connection': {stroke: '#000000'},
-			'.marker-source': {'d': '0'},
-			'.marker-target': {stroke: '#000000', "d": 'M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5'}
-			},
-		'labels': [{position: 0.5, attrs: {text: {text: "and"}}}]
-	})
-});
+window.onload = function(){
+	paper = new joint.dia.Paper({
+	    width: 1200,
+	    height: 600,
+	    gridSize: 10,
+	    perpendicularLinks: false,
+	    model: graph,
+	    defaultLink: new joint.dia.Link({
+			'attrs': {
+				'.connection': {stroke: '#000000'},
+				'.marker-source': {'d': '0'},
+				'.marker-target': {stroke: '#000000', "d": 'M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5'}
+				},
+			'labels': [{position: 0.5, attrs: {text: {text: "and"}}}]
+		})
+	});
 
-var paperScroller = new joint.ui.PaperScroller({
-	autoResizePaper: true,
-	paper: paper
-});
+	var paperScroller = new joint.ui.PaperScroller({
+		autoResizePaper: true,
+		paper: paper
+	});
 
-$('#paper').append(paperScroller.render().el);
-paperScroller.center();
+	$('#paper').append(paperScroller.render().el);
+	paperScroller.center();
 
-//Load graph by the cookie
-if (document.cookie){
-	var cookies = document.cookie.split(";");
-	var prevgraph = "";
+	//Load graph by the cookie
+	if (document.cookie){
+		var cookies = document.cookie.split(";");
+		var prevgraph = "";
 
-	//Loop through the cookies to find the one representing the graph, if it exists
-	for (var i = 0; i < cookies.length; i++){
-		if (cookies[i].indexOf("graph=") >= 0){
-			prevgraph = cookies[i].substr(6);
-			break;
+		//Loop through the cookies to find the one representing the graph, if it exists
+		for (var i = 0; i < cookies.length; i++){
+			if (cookies[i].indexOf("graph=") >= 0){
+				prevgraph = cookies[i].substr(6);
+				break;
+			}
+		}
+
+		if (prevgraph){
+			graph.fromJSON(JSON.parse(prevgraph));
 		}
 	}
-
-	if (prevgraph){
-		graph.fromJSON(JSON.parse(prevgraph));
+	
+	//Filter out Actors
+	for (var e = 0; e < graph.getElements().length; e++){
+		if (!(graph.getElements()[e] instanceof joint.shapes.basic.Actor))
+			elements.push(graph.getElements()[e]);
 	}
+
+	if(!analysisResult)
+		analysisResult = originalResults;
+
+	renderNavigationSidebar();	
 }
 
-renderNavigationSidebar();
-
-function renderNavigationSidebar(currentPage){
+function renderNavigationSidebar(currentPage = 0){
 	clear_pagination_values();
 	
 	var currentPageIn = document.getElementById("currentPage");
 	var num_states_lbl = document.getElementById("num_states_lbl");
 	num_states_lbl.innerHTML += analysisResult.elementList[0].valueList.length;
-	
-	if(!currentPage){
-		currentPage = 0;
-	}
 	
 	currentPageIn.value = currentPage.toString();
 	
@@ -68,16 +78,6 @@ function renderNavigationSidebar(currentPage){
 }
 
 function updateNodesValues(currentPage){
-
-	var all_elements = graph.getElements();
-
-	//Filter out Actors
-	var elements = [];
-	for (var e = 0; e < all_elements.length; e++){
-		if (!(all_elements[e] instanceof joint.shapes.basic.Actor))
-			elements.push(all_elements[e]);
-	}
-	
 	var cell;
 	var value;
 	for(var i = 0; i < elements.length; i++){
@@ -118,8 +118,6 @@ function updateNodesValues(currentPage){
 		}
 	}
 	
-	
-
 }
 
 function updatePagination(currentPage){
@@ -205,3 +203,66 @@ function goToState(){
 		}
 	}
 }
+
+
+var tempResults;
+
+function add_filter(){
+	tempResults = $.extend(true,{}, originalResults);
+
+	for(var i_element = 0; i_element < document.getElementsByClassName("filter_checkbox").length; i_element++){
+		checkbox = document.getElementsByClassName("filter_checkbox")[i_element]
+
+		if((checkbox.id == "conflictFl") && (checkbox.checked)){
+			for(var i_states = 0 ; i_states < tempResults.elementList[0].valueList.length; i_states++){
+				var remove = false;
+				for(var i = 0; i < elements.length; i++){
+					value = tempResults.elementList[i].valueList[i_states];
+					if (	(value == "0110") || 
+							(value == "0111") || 
+							(value == "0101") || 
+							(value == "1110") || 
+							(value == "1010") ||
+							(value == "1111") || 
+							(value == "1001") || 
+							(value == "1101") || 
+							(value == "1011") ){
+						remove = true;
+						break;
+					}
+				}
+				if(remove){
+					for(var i = 0; i < elements.length; i++){
+						tempResults.elementList[i].valueList.splice(i_states,1);
+					}
+					i_states--;
+				}
+			}
+		}
+		
+		if((checkbox.id == "ttFl") && (checkbox.checked)){
+			for(var i_states = 0 ; i_states < tempResults.elementList[0].valueList.length; i_states++){
+				var remove = false;
+				for(var i = 0; i < elements.length; i++){
+					value = tempResults.elementList[i].valueList[i_states];
+					if (value == "0000"){
+						remove = true;
+						break;
+					}
+				}
+				if(remove){
+					for(var i = 0; i < elements.length; i++){
+						tempResults.elementList[i].valueList.splice(i_states,1);
+					}
+					i_states--;
+				}
+			}
+		}
+
+	}
+
+	this.analysisResult = tempResults;
+
+	renderNavigationSidebar();
+}
+
