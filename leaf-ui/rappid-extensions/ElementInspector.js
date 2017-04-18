@@ -195,10 +195,35 @@ var ElementInspector = Backbone.View.extend({
 
     // Genernate all available selection options based on selected function type
     this.chartHTML = {};
-    this.chartHTML.all = '<option value=none selected> None (T, T) </option><option value=satisfied> Satisfied (FS, T) </option><option value=partiallysatisfied> Partially Satisfied (PS, T) </option><option value=partiallydenied> Partially Denied (T, PD)</option><option value=denied> Denied (T, FD)</option><option value=unknown> Unknown </option>';
-    this.chartHTML.noRandom = '<option value=satisfied> Satisfied (FS, T) </option><option value=partiallysatisfied> Partially Satisfied (PS, T) </option><option value=partiallydenied> Partially Denied (T, PD) </option><option value=denied> Denied (T, FD) </option>';
-    this.chartHTML.positiveOnly = '<option value=satisfied> Satisfied (FS, T) </option><option value=partiallysatisfied> Partially Satisfied (PS, T) </option>';
-    this.chartHTML.negativeOnly = '<option value=denied> Denied (T, FD) </option><option value=partiallydenied> Partially Denied (T, PD) </option>';
+    none = '<option value=none selected> None (T, T) </option>';
+    satisfied = '<option value=satisfied> Satisfied (FS, T) </option>';
+    partiallysatisfied = '<option value=partiallysatisfied> Partially Satisfied (PS, T) </option>';
+    partiallydenied = '<option value=partiallydenied> Partially Denied (T, PD) </option>';
+    denied = '<option value=denied> Denied (T, FD) </option>';
+    unknown = '<option value=unknown> Unknown </option>';
+    this.chartHTML.all = none + satisfied + partiallysatisfied + partiallydenied + denied + unknown;
+    this.chartHTML.noRandom = satisfied + partiallysatisfied + partiallydenied + denied;
+    // This is a function that will list all satvalues that are greater than currentVal
+    this.chartHTML.positiveOnly = function(currentVal){
+      currentVal = satvalues[currentVal];
+      result = '';
+      for (var i = currentVal; i <= satvalues['satisfied']; i++){
+        // Find text by value eg. given i = -1, we want to find partiallydenied as satvalues[partiallydenied] = -1
+        var text = Object.keys(satvalues).find(key => satvalues[key] === i);
+        result += eval(text);
+      }
+      return result;
+    }
+    this.chartHTML.negativeOnly = function(currentVal){
+      currentVal = satvalues[currentVal];
+      result = '';
+      for (var i = currentVal; i >= satvalues['denied']; i--){
+        // Find text by value eg. given i = -1, we want to find partiallydenied as satvalues[partiallydenied] = -1
+        var text = Object.keys(satvalues).find(key => satvalues[key] === i);
+        result += eval(text);
+      }
+      return result; 
+    }
 
     //save html template to dynamically render more
     this.userConstraintsHTML = $("#new-user-constraints").last().clone();
@@ -303,8 +328,6 @@ var ElementInspector = Backbone.View.extend({
     // All functions that have satisfaction value
     var funct_with_sat_value = ["I", "D", "RC", "MP", "MN", "UD"];
 
-    console.log('UpdateHTML: ' + initValue + ' ' + functionType);
-
     // Disable init value menu if functype is NB
     if (cell.attr('.funcvalue/text') == "NB"){
       $('#init-sat-value').prop('disabled', 'disabled');
@@ -382,6 +405,7 @@ var ElementInspector = Backbone.View.extend({
   showFunctionSatValue: function(event){
     var cell = this._cellView.model;
     var functionType = this.$('.function-type').val();
+    var initValue = this.$('#init-sat-value').val();
     this.$('.function-sat-value').show("fast");
     switch (functionType) {
       case "RC":
@@ -390,12 +414,12 @@ var ElementInspector = Backbone.View.extend({
 
       case "I":
       case "MP":
-        this.$('.function-sat-value').html(this.chartHTML.positiveOnly);
+        this.$('.function-sat-value').html(this.chartHTML.positiveOnly(initValue));
         break;
 
       case "D":
       case "MN":
-        this.$('.function-sat-value').html(this.chartHTML.negativeOnly);
+        this.$('.function-sat-value').html(this.chartHTML.negativeOnly(initValue));
         break;
 
       default:
@@ -417,12 +441,13 @@ var ElementInspector = Backbone.View.extend({
     // load available satisfaction values for user defined constraint type
     switch (func){
       case "I":
-        $(".user-sat-value").last().html(this.chartHTML.positiveOnly);
+        // May get last value of the graph in the future
+        $(".user-sat-value").last().html(this.chartHTML.positiveOnly('partiallysatisfied'));
         $(".user-sat-value").last().val("satisfied");
         break;
 
       case "D":
-        $(".user-sat-value").last().html(this.chartHTML.negativeOnly);
+        $(".user-sat-value").last().html(this.chartHTML.negativeOnly('partiallydenied'));
         $(".user-sat-value").last().val("denied");
         break;
 
@@ -497,26 +522,14 @@ var ElementInspector = Backbone.View.extend({
       }
       // If it is, then display 5 dotted lines
       else {
-        this.constraintsObject.chartData.datasets[0].data = [0, 0];
-        this.constraintsObject.chartData.datasets[1].data = [1, 1];
-        this.constraintsObject.chartData.datasets[2].data = [2, 2];
-        this.constraintsObject.chartData.datasets[3].data = [-1, -1];
-        this.constraintsObject.chartData.datasets[4].data = [-2, -2];
-        this.constraintsObject.chartData.datasets[0].borderDash = [5, 5];
-        this.constraintsObject.chartData.datasets[1].borderDash = [5, 5];
-        this.constraintsObject.chartData.datasets[2].borderDash = [5, 5];
-        this.constraintsObject.chartData.datasets[3].borderDash = [5, 5];
-        this.constraintsObject.chartData.datasets[4].borderDash = [5, 5];
-        this.constraintsObject.chartData.datasets[0].pointBackgroundColor[1] = "rgba(220,220,220,0)";
-        this.constraintsObject.chartData.datasets[1].pointBackgroundColor[1] = "rgba(220,220,220,0)";
-        this.constraintsObject.chartData.datasets[2].pointBackgroundColor[1] = "rgba(220,220,220,0)";
-        this.constraintsObject.chartData.datasets[3].pointBackgroundColor[1] = "rgba(220,220,220,0)";
-        this.constraintsObject.chartData.datasets[4].pointBackgroundColor[1] = "rgba(220,220,220,0)";
-        this.constraintsObject.chartData.datasets[0].pointBorderColor[1] = "rgba(220,220,220,0)";
-        this.constraintsObject.chartData.datasets[1].pointBorderColor[1] = "rgba(220,220,220,0)";
-        this.constraintsObject.chartData.datasets[2].pointBorderColor[1] = "rgba(220,220,220,0)";
-        this.constraintsObject.chartData.datasets[3].pointBorderColor[1] = "rgba(220,220,220,0)";
-        this.constraintsObject.chartData.datasets[4].pointBorderColor[1] = "rgba(220,220,220,0)";
+        value_to_add = -2;
+        for (var i = 0; i < 5; i++){
+          this.constraintsObject.chartData.datasets[i].data = [value_to_add, value_to_add];
+          this.constraintsObject.chartData.datasets[i].borderDash = [5, 5];
+          this.constraintsObject.chartData.datasets[i].pointBackgroundColor[1] = "rgba(220,220,220,0)";
+          this.constraintsObject.chartData.datasets[i].pointBorderColor[1] = "rgba(220,220,220,0)";
+          value_to_add ++;
+        }
       }
 
     }else if((text == "I") || (text == "D")){
@@ -641,6 +654,7 @@ var ElementInspector = Backbone.View.extend({
       previousDataset = data.datasets[previousDatasetIndex];
       currentDataset = data.datasets[currentDatasetIndex];
       currentFunc = this.constraintsObject.userFunctions[i];
+      previousFunc = this.constraintsObject.userFunctions[i - 1];
       currentVal = this.constraintsObject.userValues[i];
       currentVal = currentVal == "unknown" ? 0 : satvalues[currentVal];
       // First we need to find out how many nulls do we need
@@ -653,7 +667,14 @@ var ElementInspector = Backbone.View.extend({
 
       // Add datapoint to dataset according to which function
       if (currentFunc == 'I' || currentFunc == 'D'){
-        if (currentDatasetIndex != 0){
+        // If previous function is stochastic, set the starting point to be either FD or FS
+        if (previousFunc == 'R' && currentFunc == 'I'){
+          firstVal = satvalues['denied'];
+        }
+        else if (previousFunc == 'R' && currentFunc == 'D'){
+          firstVal = satvalues['satisfied'];
+        }
+        else if (currentDatasetIndex != 0){
           // Use the last value of the previous dataset as the current dataset's first value
           firstVal = previousDataset.data[previousDataset.data.length - 1];
         }
@@ -670,7 +691,7 @@ var ElementInspector = Backbone.View.extend({
       else if (currentFunc == 'R'){
         // Then we need 4 datasets in addition to the currentDataset
         // And we add datapoints into each dataset starting from FD
-        var value_to_add = [-2, -1, 1, 2, 0];
+        var value_to_add = -2;
         for (var k = currentDatasetIndex; k < currentDatasetIndex + 5; k ++){
           // Make sure we have enough dataset availabe. If not add some
           if (k >= data.datasets.length){
@@ -684,7 +705,7 @@ var ElementInspector = Backbone.View.extend({
             });
           }
           currentSubset = data.datasets[k];
-          currentSubset.data = numNulls.concat([value_to_add[k - currentDatasetIndex], value_to_add[k - currentDatasetIndex]]);
+          currentSubset.data = numNulls.concat([value_to_add, value_to_add]);
 
           // Update the style
           currentSubset.borderDash = [5, 5]
@@ -693,6 +714,7 @@ var ElementInspector = Backbone.View.extend({
           if (this.inRepeatRange(repeat, repeatBegin, repeatEnd, currentSubset.data)){
             currentSubset.borderColor = "rgba(255, 110, 80, 1)";
           }
+          value_to_add ++;
         }
 
       }
@@ -707,7 +729,6 @@ var ElementInspector = Backbone.View.extend({
           currentDataset.pointBorderColor.push("rgba(220,220,220,1)");
         }
         // If previous function is stochastic, the first point should have be transparent
-        previousFunc = this.constraintsObject.userFunctions[i - 1];
         if (previousFunc == 'R'){
           currentDataset.pointBackgroundColor = currentDataset.pointBackgroundColor.concat(["rgba(220,220,220,0)", "rgba(220,220,220,1)"])
           currentDataset.pointBorderColor = currentDataset.pointBorderColor.concat(["rgba(220,220,220,0)", "rgba(220,220,220,1)"])
