@@ -466,6 +466,7 @@ var ElementInspector = Backbone.View.extend({
       this.constraintsObject.chartData.datasets[i].data = [];  
       this.constraintsObject.chartData.datasets[i].pointBackgroundColor = ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"];  
       this.constraintsObject.chartData.datasets[i].pointBorderColor = ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"];  
+      this.constraintsObject.chartData.datasets[i].borderColor = "rgba(220,220,220,1)";
     }
 
 
@@ -617,7 +618,8 @@ var ElementInspector = Backbone.View.extend({
     // Reset the dataset 
     for (var i = 0; i < data.datasets.length; i++){
       data.datasets[i].borderDash = [];  
-      data.datasets[i].data = [];  
+      data.datasets[i].data = [];
+      data.datasets[i].borderColor = "rgba(220,220,220,1)";
     }
 
     // Add datapoints to graph for each userfunction/uservalue pair
@@ -688,7 +690,9 @@ var ElementInspector = Backbone.View.extend({
           currentSubset.borderDash = [5, 5]
           currentSubset.pointBackgroundColor = numNulls.concat(["rgba(220,220,220,1)", "rgba(220,220,220,0)"]);
           currentSubset.pointBorderColor = numNulls.concat(["rgba(220,220,220,1)", "rgba(220,220,220,0)"]);
-
+          if (this.inRepeatRange(repeat, repeatBegin, repeatEnd, currentSubset.data)){
+            currentSubset.borderColor = "rgba(255, 110, 80, 1)";
+          }
         }
 
       }
@@ -713,7 +717,11 @@ var ElementInspector = Backbone.View.extend({
           currentDataset.pointBackgroundColor = currentDataset.pointBackgroundColor.concat(["rgba(220,220,220,1)", "rgba(220,220,220,1)"])
           currentDataset.pointBorderColor = currentDataset.pointBorderColor.concat(["rgba(220,220,220,1)", "rgba(220,220,220,1)"])
         }
-        console.log(currentDataset.pointBackgroundColor);
+
+        // If currentDataset is in repeat range, set red
+        if (this.inRepeatRange(repeat, repeatBegin, repeatEnd, currentDataset.data)){
+          currentDataset.borderColor = "rgba(255, 110, 80, 1)";
+        }
         previousDatasetIndex ++;
         currentDatasetIndex ++;  
       }
@@ -735,6 +743,27 @@ var ElementInspector = Backbone.View.extend({
     this.updateCell(null);
   },
 
+  // Given a data, check if it is in repeat range
+  // Return boolean
+  inRepeatRange: function(repeat, repeatBegin, repeatEnd, data){
+    // If the repeat mode isnt on, return false
+    if (!repeat || repeatBegin === undefined || repeatBegin === null || repeatEnd === undefined || repeatEnd === null){
+      return false;
+    }
+    else {
+      // Convert letter to index
+      var repeatBegin = repeatBegin == '0'? 0 : repeatBegin.charCodeAt(0) - 65 + 1;
+      var repeatEnd = repeatEnd.charCodeAt(0) - 65 + 1;
+      // Find the index of start point and end point of data
+      var dataBegin = data.length - 2;
+      var dataEnd = data.length - 1;
+      if (dataBegin >= repeatBegin && dataEnd <= repeatEnd){
+        return true;
+      }
+    }
+
+    return false;
+  },
 
   // add new constraint in used defined function
   addConstraint: function(e, mode){
