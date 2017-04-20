@@ -657,6 +657,8 @@ var ElementInspector = Backbone.View.extend({
       previousFunc = this.constraintsObject.userFunctions[i - 1];
       currentVal = this.constraintsObject.userValues[i];
       currentVal = currentVal == "unknown" ? 0 : satvalues[currentVal];
+      previousVal = this.constraintsObject.userValues[i - 1];
+
       // First we need to find out how many nulls do we need
       var numNulls = []
       if (currentDatasetIndex != 0){
@@ -668,10 +670,10 @@ var ElementInspector = Backbone.View.extend({
       // Add datapoint to dataset according to which function
       if (currentFunc == 'I' || currentFunc == 'D'){
         // If previous function is stochastic, set the starting point to be either FD or FS
-        if (previousFunc == 'R' && currentFunc == 'I'){
+        if ((previousFunc == 'R' || (previousFunc == 'C' && previousVal == 'unknown')) && currentFunc == 'I'){
           firstVal = satvalues['denied'];
         }
-        else if (previousFunc == 'R' && currentFunc == 'D'){
+        else if ((previousFunc == 'R' || (previousFunc == 'C' && previousVal == 'unknown')) && currentFunc == 'D'){
           firstVal = satvalues['satisfied'];
         }
         else if (currentDatasetIndex != 0){
@@ -685,61 +687,56 @@ var ElementInspector = Backbone.View.extend({
   
       }
       else if (currentFunc == 'C'){
-        currentDataset.data = numNulls.concat([currentVal, currentVal]);
+        if (this.constraintsObject.userValues[i] != 'unknown'){
+          currentDataset.data = numNulls.concat([currentVal, currentVal]);
+        }
+        // If it is unknown
+        else {
+          // Then we need 4 datasets in addition to the currentDataset
+          // And we add datapoints into each dataset starting from FD
+          var value_to_add = -2;
+          for (var k = currentDatasetIndex; k < currentDatasetIndex + 5; k ++){
+            // Make sure we have enough dataset availabe. If not add some
+            if (k >= data.datasets.length){
+              data.datasets.push({
+                label: "Source",
+                fill: false,
+                borderColor: "rgba(220,220,220,1)",
+                pointRadius: 4,
+                lineTension: 0,
+                data: []
+              });
+            }
+            currentSubset = data.datasets[k];
+            currentSubset.data = numNulls.concat([value_to_add, value_to_add]);
+
+            // Update the style
+            currentSubset.borderDash = [5, 5]
+            currentSubset.pointBackgroundColor = numNulls.concat(["rgba(220,220,220,1)", "rgba(220,220,220,0)"]);
+            currentSubset.pointBorderColor = numNulls.concat(["rgba(220,220,220,1)", "rgba(220,220,220,0)"]);
+            if (this.inRepeatRange(repeat, repeatBegin, repeatEnd, currentSubset.data)){
+              currentSubset.borderColor = "rgba(255, 110, 80, 1)";
+            }
+            value_to_add ++;
+          }
+        }
 
       }
       else if (currentFunc == 'R'){
-        // Then we need 4 datasets in addition to the currentDataset
-        // And we add datapoints into each dataset starting from FD
-        var value_to_add = -2;
-        for (var k = currentDatasetIndex; k < currentDatasetIndex + 5; k ++){
-          // Make sure we have enough dataset availabe. If not add some
-          if (k >= data.datasets.length){
-            data.datasets.push({
-              label: "Source",
-              fill: false,
-              borderColor: "rgba(220,220,220,1)",
-              pointRadius: 4,
-              lineTension: 0,
-              data: []
-            });
-          }
-          currentSubset = data.datasets[k];
-          currentSubset.data = numNulls.concat([value_to_add, value_to_add]);
-
-          // Update the style
-          currentSubset.borderDash = [5, 5]
-          currentSubset.pointBackgroundColor = numNulls.concat(["rgba(220,220,220,1)", "rgba(220,220,220,0)"]);
-          currentSubset.pointBorderColor = numNulls.concat(["rgba(220,220,220,1)", "rgba(220,220,220,0)"]);
-          if (this.inRepeatRange(repeat, repeatBegin, repeatEnd, currentSubset.data)){
-            currentSubset.borderColor = "rgba(255, 110, 80, 1)";
-          }
-          value_to_add ++;
-        }
-
+         currentDataset.data = numNulls.concat([currentVal, currentVal]);
       }
 
 
-      // Update the style of current dataset
-      if (currentFunc != "R"){
-        currentDataset.pointBackgroundColor = [];
-        currentDataset.pointBorderColor = [];
-        for (var k = 0; k < currentDataset.data.length - 2; k++){
-          currentDataset.pointBackgroundColor.push("rgba(220,220,220,1)");
-          currentDataset.pointBorderColor.push("rgba(220,220,220,1)");
-        }
-        // If previous function is stochastic, the first point should have be transparent
-        if (previousFunc == 'R'){
-          currentDataset.pointBackgroundColor = currentDataset.pointBackgroundColor.concat(["rgba(220,220,220,0)", "rgba(220,220,220,1)"])
-          currentDataset.pointBorderColor = currentDataset.pointBorderColor.concat(["rgba(220,220,220,0)", "rgba(220,220,220,1)"])
-        }
-        // Else fill both points with solid
-        else {
-          currentDataset.pointBackgroundColor = currentDataset.pointBackgroundColor.concat(["rgba(220,220,220,1)", "rgba(220,220,220,1)"])
-          currentDataset.pointBorderColor = currentDataset.pointBorderColor.concat(["rgba(220,220,220,1)", "rgba(220,220,220,1)"])
-        }
-
-        // If currentDataset is in repeat range, set red
+      // Update the style of current dataset and advance indices
+      // I, D and non unknown C function share the same style
+      if (currentFunc == 'C' && this.constraintsObject.userValues[i] == 'unknown'){
+        previousDatasetIndex += 5;
+        currentDatasetIndex += 5;
+      }
+      else if (currentFunc == 'R'){
+        currentDataset.borderDash = [5, 5]
+        currentDataset.pointBackgroundColor = numNulls.concat(["rgba(220,220,220,1)", "rgba(220,220,220,0)"]);
+        currentDataset.pointBorderColor = numNulls.concat(["rgba(220,220,220,1)", "rgba(220,220,220,0)"]);
         if (this.inRepeatRange(repeat, repeatBegin, repeatEnd, currentDataset.data)){
           currentDataset.borderColor = "rgba(255, 110, 80, 1)";
         }
@@ -747,8 +744,23 @@ var ElementInspector = Backbone.View.extend({
         currentDatasetIndex ++;  
       }
       else {
-        previousDatasetIndex += 5;
-        currentDatasetIndex += 5;   
+        // If previous function is stochastic, or constant unknown, hide the first dot
+        if (previousFunc == 'R' || (previousFunc == 'C' && previousVal == 'unknown')){
+          currentDataset.pointBackgroundColor = numNulls.concat(["rgba(220,220,220,0)", "rgba(220,220,220,1)"])
+          currentDataset.pointBorderColor = numNulls.concat(["rgba(220,220,220,0)", "rgba(220,220,220,1)"]);
+        }
+        // Else, both points should be solid
+        else {
+          currentDataset.pointBackgroundColor = numNulls.concat(["rgba(220,220,220,1)", "rgba(220,220,220,1)"])
+          currentDataset.pointBorderColor = numNulls.concat(["rgba(220,220,220,1)", "rgba(220,220,220,1)"]);
+        }
+        // If currentDataset is in repeat range, set red
+        if (this.inRepeatRange(repeat, repeatBegin, repeatEnd, currentDataset.data)){
+          currentDataset.borderColor = "rgba(255, 110, 80, 1)";
+        }
+        previousDatasetIndex ++;
+        currentDatasetIndex ++;  
+
       }
 
     }
