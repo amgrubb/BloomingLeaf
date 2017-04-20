@@ -656,7 +656,7 @@ var ElementInspector = Backbone.View.extend({
       currentFunc = this.constraintsObject.userFunctions[i];
       previousFunc = this.constraintsObject.userFunctions[i - 1];
       currentVal = this.constraintsObject.userValues[i];
-      currentVal = currentVal == "unknown" ? 0 : satvalues[currentVal];
+      currentNumVal = currentVal == "unknown" ? 0 : satvalues[currentVal];
       previousVal = this.constraintsObject.userValues[i - 1];
 
       // First we need to find out how many nulls do we need
@@ -683,12 +683,12 @@ var ElementInspector = Backbone.View.extend({
         else {
           firstVal = satvalues[this.$('#init-sat-value').val()];
         }
-        currentDataset.data = numNulls.concat([firstVal, currentVal]);
+        currentDataset.data = numNulls.concat([firstVal, currentNumVal]);
   
       }
       else if (currentFunc == 'C'){
         if (this.constraintsObject.userValues[i] != 'unknown'){
-          currentDataset.data = numNulls.concat([currentVal, currentVal]);
+          currentDataset.data = numNulls.concat([currentNumVal, currentNumVal]);
         }
         // If it is unknown
         else {
@@ -723,7 +723,7 @@ var ElementInspector = Backbone.View.extend({
 
       }
       else if (currentFunc == 'R'){
-         currentDataset.data = numNulls.concat([currentVal, currentVal]);
+         currentDataset.data = numNulls.concat([currentNumVal, currentNumVal]);
       }
 
 
