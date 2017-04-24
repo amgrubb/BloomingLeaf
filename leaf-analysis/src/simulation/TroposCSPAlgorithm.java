@@ -57,7 +57,7 @@ public class TroposCSPAlgorithm {
     private IntVar[] unsolvedTimePoints;
     private IntVar[] nextTimePoint;							// Holds the list of next possible time points. ******* Used for finding state.
     
-    private final boolean DEBUG = true;								// Whether to print debug statements.
+    private final static boolean DEBUG = true;								// Whether to print debug statements.
     /* New in ModelSpec
      *     	private int relativeTimePoints = 4;
     		private int[] absoluteTimePoints = new int[] {5, 10, 15, 20};
@@ -109,19 +109,23 @@ public class TroposCSPAlgorithm {
     	else
     		this.values = new BooleanVar[this.numIntentions][this.numTimePoints][4];	// 4 Predicates Values 0-FD, 1-PD, 2-PS, 3-FS
 
-    	System.out.println("\nMethod: initializeBooleanVarForValues();");
+    	if (DEBUG)
+    		System.out.println("\nMethod: initializeBooleanVarForValues();");
     	// Initialise values and add F->P invariant.
     	initializeBooleanVarForValues();
 
-    	System.out.println("\nMethod: initializeConflictPrevention();");
+    	if (DEBUG)
+    		System.out.println("\nMethod: initializeConflictPrevention();");
     	// Prevent Conflict
    		initializeConflictPrevention();
 
-   		System.out.println("\nMethod: genericAddLinkConstraints(this.sat, this.constraints, this.intentions, this.values);");
+   		if (DEBUG)
+   			System.out.println("\nMethod: genericAddLinkConstraints(this.sat, this.constraints, this.intentions, this.values);");
 		// Add constraints for the links and structure of the graph.
     	genericAddLinkConstraints(this.sat, this.constraints, this.intentions, this.values);
 
-    	System.out.println("\nMethod: initialize dynmaics");
+    	if (DEBUG)
+    		System.out.println("\nMethod: initialize dynmaics");
     	// Create constraints for Dynamic Elements.
     	if(this.spec.isSolveNextState())
     		//initializeStateDynamicFunctions();
@@ -132,24 +136,24 @@ public class TroposCSPAlgorithm {
 	}	
 	
 
-
-
-
-	// Methods to create initial constraint model.
 	/**
-	 * @param absoluteTimePoint
-	 * @param numStochasticTimePoints
-	 * @param initialValueTimePoints
-	 * @param assignedEpochs
-	 * @param singleState
+	 *	Calculates the number of time points.
+	 *	- Created EBs for all time points.
+	 *	- Creates constraints between EBs. 
+	 * @param absoluteTimePoint			integer array of time points with absolute values
+	 * @param numStochasticTimePoints	number of random time points to evaluate the model over
+	 * @param initialValueTimePoints	any initial time values for the path
+	 * @param assignedEpochs			any epochs assigned in a previous solution to the model
+	 * @param singleState				whether we will solve for a single state or solve the whole path
 	 */
 	private void calculateSampleSizeAndCreateEBsAndTimePoints(int[] absoluteTimePoint, int numStochasticTimePoints, 
 			int[] initialValueTimePoints, HashMap<String, Integer> assignedEpochs, boolean singleState) {
-		
+
 		List<IntVar> assignedEBs = new ArrayList<IntVar>();	//Holds the EB that have been assigned to an element in the absolute collection.
 		
     	// Step 0: Create IntVars for absoluteTimePoints.
-    	HashMap<Integer, IntVar> absoluteCollection = new HashMap<Integer, IntVar>();
+		// The absoluteCollection is added to assignedEB at a later step.
+    	HashMap<Integer, IntVar> absoluteCollection = new HashMap<Integer, IntVar>();	// Time -> EB.
     	int absoluteCounter;
     	if (absoluteTimePoint == null)
     		absoluteCounter = 1;
@@ -159,6 +163,7 @@ public class TroposCSPAlgorithm {
     		}
     		absoluteCounter = absoluteTimePoint.length + 1;	//To add Zero.
     	}
+    	
 		// Step 1: Collect and create all the Epoch IntVars.
 		this.numEpochs = 0;
     	for (int i = 0; i < this.intentions.length; i++){
@@ -339,12 +344,13 @@ public class TroposCSPAlgorithm {
     	}
     	
     	// Step 4A: Make list of previous names.
-    	// Double check the number of values added.
     	int countTotalPreviousT = 0;
     	String[] exisitingNamedTimePoints = new String[initialValueTimePoints.length];
     	int maxPreviousTime = initialValueTimePoints[initialValueTimePoints.length - 1];
-    	if (initialValueTimePoints.length == 1)
+    	// Creates EB for Time Point 0.
+    	if (initialValueTimePoints.length == 1)		
     		exisitingNamedTimePoints[0] = "TA0";
+    	// Creates EB from initialAssignedEpoch HashMap of times.
     	else if (initialValueTimePoints.length > 1){
     		for (HashMap.Entry<String, Integer> entry : assignedEpochs.entrySet()) {
     		    String key = entry.getKey();
@@ -363,19 +369,22 @@ public class TroposCSPAlgorithm {
     		}
     	}else
     		System.err.println("Invalid Input for initialValueTimePoints and initialValues.");
-    	
-    	// Print Info to Check Calculations
-    	System.out.print("Previous Times are: ");
-    	for(int e = 0; e < exisitingNamedTimePoints.length; e++)
-    		System.out.print(exisitingNamedTimePoints[e] + "\t");
-    	System.out.println(" Max Previous is: " + maxPreviousTime);	
-    	
+
+    	if (DEBUG){
+    		// Print Info to Check Calculations
+    		System.out.print("Previous Times are: ");
+    		for(int e = 0; e < exisitingNamedTimePoints.length; e++)
+    			System.out.print(exisitingNamedTimePoints[e] + "\t");
+    		System.out.println("\n Max Previous is: " + maxPreviousTime);	
+    	}
     	// Step 4B: Create List of Time Points
     	this.numTimePoints = 1 + absoluteCollection.size() + EBTimePoint.size() + numStochasticTimePoints;
-    	
+
     	if(countTotalPreviousT != this.numTimePoints && countTotalPreviousT > 0)
     		System.err.println("Error: Previous and Current Time Points do no match.");
-    	System.out.println("Previous Time Points: " + countTotalPreviousT + "  New Time Points: " + this.numTimePoints);
+    	
+    	if (DEBUG)
+    		System.out.println("Previous Time Points: " + countTotalPreviousT + "  New Time Points: " + this.numTimePoints);
     	
     	/////// Create Time Points
     	this.timePoints = new IntVar[this.numTimePoints];
@@ -451,27 +460,29 @@ public class TroposCSPAlgorithm {
     	}
     	this.constraints.add(new Alldifferent(this.timePoints));
     	
-    	System.out.print("Unsolved Time Points: ");
-    	for (int i = 0; i < this.unsolvedTimePoints.length; i ++){
-    		System.out.print(this.unsolvedTimePoints[i] + "  ");
-    	}
-    	System.out.println();
-    	
+
     	this.nextTimePoint = new IntVar[nextTimePoint.size()];
     	for (int i = 0; i < this.nextTimePoint.length; i ++)
     		this.nextTimePoint[i] = nextTimePoint.get(i);
-    	
-    	System.out.print("Next Time Points: ");
-    	for (int i = 0; i < this.nextTimePoint.length; i ++){
-    		System.out.print(this.nextTimePoint[i] + "  ");
+
+    	if(DEBUG){
+    		System.out.print("Unsolved Time Points: ");
+    		for (int i = 0; i < this.unsolvedTimePoints.length; i ++){
+    			System.out.print(this.unsolvedTimePoints[i] + "  ");
+    		}
+    		System.out.println();
+
+    		System.out.print("Next Time Points: ");
+    		for (int i = 0; i < this.nextTimePoint.length; i ++){
+    			System.out.print(this.nextTimePoint[i] + "  ");
+    		}
+    		System.out.println();
     	}
-    	System.out.println();
-    	
    
     }
 	
 	/**
-	 * 
+	 * TODO: Check this function...
 	 */
 	private void initializeBooleanVarForValues() {	//Full Model
 		boolean[][][] initialValues = this.spec.getInitialValues();		
@@ -1489,9 +1500,11 @@ public class TroposCSPAlgorithm {
         label.setPrintInfo(false); 							// Set to false if you don't want the CSP to print the solution as you go.
         
         // Test and Add Constraints
-//        System.out.println("Constraints List:");
+        if(DEBUG)
+        	System.out.println("Constraints List:");
         for (int i = 0; i < constraints.size(); i++) {
-//        	System.out.println(constraints.get(i).toString());
+            if(DEBUG)
+            	System.out.println(constraints.get(i).toString());
             store.impose(constraints.get(i));
             if(!store.consistency()) {
             	System.out.println("Constraint: " + constraints.get(i).toString());
@@ -1676,7 +1689,8 @@ public class TroposCSPAlgorithm {
 			System.out.println("Found Solution = False");
 			return false;
 		} else {
-			System.out.println("Found Solution = True");
+	    	if (DEBUG)
+	    		System.out.println("Found Solution = True");
 			if (!this.spec.isSolveSingleSolutions()){
 				this.saveAllSolution(label);				
 			}else{
@@ -1700,20 +1714,23 @@ public class TroposCSPAlgorithm {
 
 			int totalSolution = label.getSolutionListener().solutionsNo();
 
-			System.out.println("Saving all states");
-			System.out.println("\nThere are " + totalSolution + " possible next states.");
-
-			System.out.println("\n Solution: ");
-			for (int s = 1; s <= totalSolution; s++){
-				for (int v = 0; v < label.getSolution(s).length; v++)
-					System.out.print(label.getSolution(s)[v]);
-				System.out.println();
+			if(DEBUG){
+				System.out.println("Saving all states");
+				System.out.println("\nThere are " + totalSolution + " possible next states.");
+				System.out.println("\n Solution: ");
+				for (int s = 1; s <= totalSolution; s++){
+					for (int v = 0; v < label.getSolution(s).length; v++)
+						System.out.print(label.getSolution(s)[v]);
+					System.out.println();
+				}
+				System.out.println("\n Finished Printing Solutions");
 			}
 
 			// int solNum = 1;	/// NOTE: Solution number starts at 1 not 0!!!
 			boolean[][][][] finalValues = new boolean[totalSolution][this.intentions.length][this.values[0].length][4];
 			for (int s = 1; s <= totalSolution; s++){
 				int solIndex = 0;
+				System.out.println(s);
 				for (int i = 0; i < this.intentions.length; i++)
 					for (int t = 0; t < this.values[0].length; t++)
 						for (int v = 0; v < 4; v++){
@@ -1725,12 +1742,10 @@ public class TroposCSPAlgorithm {
 								System.err.println("Error: " + label.getSolution(s)[v] + " has non-binary value.");
 							solIndex++;
 						}
-
 			}
 			this.spec.setFinalAllSolutionsValues(finalValues);
 		}else{
-			// Path
-			// TODO
+			// TODO: How do we save all the solutions when solving the whole path.
 		}
 	}
 	
