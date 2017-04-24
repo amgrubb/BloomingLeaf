@@ -24,12 +24,12 @@ public class UDFunctionCSP {
 
 		/**
 		 * Constructs the UD function by:
-		 * 	- 
+		 * 	- Reading the function data.
+		 *  - Unrolling any loops.
+		 *  - Creating epochs for repeating parts.
 		 * @param inputLine	the line containing the UD function information
 		 */
 		public UDFunctionCSP(String inputLine) {
-			
-			// Step 1: Read Data
 			String[] values = inputLine.split("\\t");
 
 			// values[0-2] are "D", intentionID, and "UD".
@@ -74,8 +74,6 @@ public class UDFunctionCSP {
 					for (int i = 0; i < this.absoluteEpochLengths.length; i++)
 						this.absoluteEpochLengths[i] = Integer.parseInt(values[count + 4 + i]);
 				}
-
-
 				
 				this.functions =  new String[totalNumSegment];
 				this.dynamicValues = new int[totalNumSegment];
@@ -105,7 +103,6 @@ public class UDFunctionCSP {
 				}
 			} else
 				System.err.println("UD Reading Erorr");
-			printUDFunction();
 		}
 				
 		// Getter Methods
