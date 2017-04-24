@@ -218,16 +218,6 @@ var constraintsObject = function(){
 			pointBorderColor: ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"],
 			lineTension: 0,
 			data: []
-		},
-		{
-			label: "Source",
-			fill: false,
-			borderColor: "rgba(220,220,220,1)",
-			pointBackgroundColor: ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"],
-			pointRadius: 4,
-			pointBorderColor: ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"],
-			lineTension: 0,
-			data: []
 		}
 		]
 	};

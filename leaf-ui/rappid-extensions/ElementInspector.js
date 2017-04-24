@@ -117,8 +117,8 @@ var ElementInspector = Backbone.View.extend({
                 '<option value=D> Decrease </option>',
               '</select>',
               '<select class="user-sat-value user-defined-select">',
-                '<option value=satisfied selected> None (T, T) </option>',
-                '<option value=satisfied selected> Satisfied (FS, T) </option>',
+                '<option value=none selected> None (T, T) </option>',
+                '<option value=satisfied> Satisfied (FS, T) </option>',
                 '<option value=partiallysatisfied> Partially Satisfied (PS, T) </option>',
                 '<option value=partiallydenied> Partially Denied (T, PD)</option>',
                 '<option value=denied> Denied (T, FD)</option>',
@@ -195,10 +195,35 @@ var ElementInspector = Backbone.View.extend({
 
     // Genernate all available selection options based on selected function type
     this.chartHTML = {};
-    this.chartHTML.all = '<option value=satisfied selected> Satisfied (FS, T) </option><option value=partiallysatisfied> Partially Satisfied (PS, T) </option><option value=partiallydenied> Partially Denied (T, PD)</option><option value=denied> Denied (T, FD)</option><option value=unknown> Unknown </option>';
-    this.chartHTML.noRandom = '<option value=satisfied> Satisfied (FS, T) </option><option value=partiallysatisfied> Partially Satisfied (PS, T) </option><option value=partiallydenied> Partially Denied (T, PD) </option><option value=denied> Denied (T, FD) </option>';
-    this.chartHTML.positiveOnly = '<option value=satisfied> Satisfied (FS, T) </option><option value=partiallysatisfied> Partially Satisfied (PS, T) </option>';
-    this.chartHTML.negativeOnly = '<option value=denied> Denied (T, FD) </option><option value=partiallydenied> Partially Denied (T, PD) </option>';
+    none = '<option value=none selected> None (T, T) </option>';
+    satisfied = '<option value=satisfied> Satisfied (FS, T) </option>';
+    partiallysatisfied = '<option value=partiallysatisfied> Partially Satisfied (PS, T) </option>';
+    partiallydenied = '<option value=partiallydenied> Partially Denied (T, PD) </option>';
+    denied = '<option value=denied> Denied (T, FD) </option>';
+    unknown = '<option value=unknown> Unknown </option>';
+    this.chartHTML.all = none + satisfied + partiallysatisfied + partiallydenied + denied + unknown;
+    this.chartHTML.noRandom = satisfied + partiallysatisfied + partiallydenied + denied;
+    // This is a function that will list all satvalues that are greater than currentVal
+    this.chartHTML.positiveOnly = function(currentVal){
+      currentVal = satvalues[currentVal];
+      result = '';
+      for (var i = currentVal; i <= satvalues['satisfied']; i++){
+        // Find text by value eg. given i = -1, we want to find partiallydenied as satvalues[partiallydenied] = -1
+        var text = Object.keys(satvalues).find(key => satvalues[key] === i);
+        result += eval(text);
+      }
+      return result;
+    }
+    this.chartHTML.negativeOnly = function(currentVal){
+      currentVal = satvalues[currentVal];
+      result = '';
+      for (var i = currentVal; i >= satvalues['denied']; i--){
+        // Find text by value eg. given i = -1, we want to find partiallydenied as satvalues[partiallydenied] = -1
+        var text = Object.keys(satvalues).find(key => satvalues[key] === i);
+        result += eval(text);
+      }
+      return result; 
+    }
 
     //save html template to dynamically render more
     this.userConstraintsHTML = $("#new-user-constraints").last().clone();
@@ -303,8 +328,6 @@ var ElementInspector = Backbone.View.extend({
     // All functions that have satisfaction value
     var funct_with_sat_value = ["I", "D", "RC", "MP", "MN", "UD"];
 
-    console.log('UpdateHTML: ' + initValue + ' ' + functionType);
-
     // Disable init value menu if functype is NB
     if (cell.attr('.funcvalue/text') == "NB"){
       $('#init-sat-value').prop('disabled', 'disabled');
@@ -382,6 +405,7 @@ var ElementInspector = Backbone.View.extend({
   showFunctionSatValue: function(event){
     var cell = this._cellView.model;
     var functionType = this.$('.function-type').val();
+    var initValue = this.$('#init-sat-value').val();
     this.$('.function-sat-value').show("fast");
     switch (functionType) {
       case "RC":
@@ -390,12 +414,12 @@ var ElementInspector = Backbone.View.extend({
 
       case "I":
       case "MP":
-        this.$('.function-sat-value').html(this.chartHTML.positiveOnly);
+        this.$('.function-sat-value').html(this.chartHTML.positiveOnly(initValue));
         break;
 
       case "D":
       case "MN":
-        this.$('.function-sat-value').html(this.chartHTML.negativeOnly);
+        this.$('.function-sat-value').html(this.chartHTML.negativeOnly(initValue));
         break;
 
       default:
@@ -417,12 +441,13 @@ var ElementInspector = Backbone.View.extend({
     // load available satisfaction values for user defined constraint type
     switch (func){
       case "I":
-        $(".user-sat-value").last().html(this.chartHTML.positiveOnly);
+        // May get last value of the graph in the future
+        $(".user-sat-value").last().html(this.chartHTML.positiveOnly('partiallysatisfied'));
         $(".user-sat-value").last().val("satisfied");
         break;
 
       case "D":
-        $(".user-sat-value").last().html(this.chartHTML.negativeOnly);
+        $(".user-sat-value").last().html(this.chartHTML.negativeOnly('partiallydenied'));
         $(".user-sat-value").last().val("denied");
         break;
 
@@ -466,6 +491,7 @@ var ElementInspector = Backbone.View.extend({
       this.constraintsObject.chartData.datasets[i].data = [];  
       this.constraintsObject.chartData.datasets[i].pointBackgroundColor = ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"];  
       this.constraintsObject.chartData.datasets[i].pointBorderColor = ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"];  
+      this.constraintsObject.chartData.datasets[i].borderColor = "rgba(220,220,220,1)";
     }
 
 
@@ -496,26 +522,14 @@ var ElementInspector = Backbone.View.extend({
       }
       // If it is, then display 5 dotted lines
       else {
-        this.constraintsObject.chartData.datasets[0].data = [0, 0];
-        this.constraintsObject.chartData.datasets[1].data = [1, 1];
-        this.constraintsObject.chartData.datasets[2].data = [2, 2];
-        this.constraintsObject.chartData.datasets[3].data = [-1, -1];
-        this.constraintsObject.chartData.datasets[4].data = [-2, -2];
-        this.constraintsObject.chartData.datasets[0].borderDash = [5, 5];
-        this.constraintsObject.chartData.datasets[1].borderDash = [5, 5];
-        this.constraintsObject.chartData.datasets[2].borderDash = [5, 5];
-        this.constraintsObject.chartData.datasets[3].borderDash = [5, 5];
-        this.constraintsObject.chartData.datasets[4].borderDash = [5, 5];
-        this.constraintsObject.chartData.datasets[0].pointBackgroundColor[1] = "rgba(220,220,220,0)";
-        this.constraintsObject.chartData.datasets[1].pointBackgroundColor[1] = "rgba(220,220,220,0)";
-        this.constraintsObject.chartData.datasets[2].pointBackgroundColor[1] = "rgba(220,220,220,0)";
-        this.constraintsObject.chartData.datasets[3].pointBackgroundColor[1] = "rgba(220,220,220,0)";
-        this.constraintsObject.chartData.datasets[4].pointBackgroundColor[1] = "rgba(220,220,220,0)";
-        this.constraintsObject.chartData.datasets[0].pointBorderColor[1] = "rgba(220,220,220,0)";
-        this.constraintsObject.chartData.datasets[1].pointBorderColor[1] = "rgba(220,220,220,0)";
-        this.constraintsObject.chartData.datasets[2].pointBorderColor[1] = "rgba(220,220,220,0)";
-        this.constraintsObject.chartData.datasets[3].pointBorderColor[1] = "rgba(220,220,220,0)";
-        this.constraintsObject.chartData.datasets[4].pointBorderColor[1] = "rgba(220,220,220,0)";
+        value_to_add = -2;
+        for (var i = 0; i < 5; i++){
+          this.constraintsObject.chartData.datasets[i].data = [value_to_add, value_to_add];
+          this.constraintsObject.chartData.datasets[i].borderDash = [5, 5];
+          this.constraintsObject.chartData.datasets[i].pointBackgroundColor[1] = "rgba(220,220,220,0)";
+          this.constraintsObject.chartData.datasets[i].pointBorderColor[1] = "rgba(220,220,220,0)";
+          value_to_add ++;
+        }
       }
 
     }else if((text == "I") || (text == "D")){
@@ -600,7 +614,8 @@ var ElementInspector = Backbone.View.extend({
     this.constraintsObject.userValues[index] = $(".user-sat-value").last().val();
 
     // Clone chart template
-    var data = jQuery.extend(true, {}, this.chartObject.primaryChart);
+    // var data = jQuery.extend(true, {}, this.chartObject.primaryChart);
+    var data = this.constraintsObject.chartData;
     var datasetsTemplatePrimary = jQuery.extend(true, {}, data.datasets[0]);
     var datasetsTemplateSecondary = jQuery.extend(true, {}, this.chartObject.secondaryChart.datasets[0]);
 
@@ -613,38 +628,144 @@ var ElementInspector = Backbone.View.extend({
     var repeatBegin = this.constraintsObject.repeatBegin;
     var repeatEnd = this.constraintsObject.repeatEnd;
 
-    // Since ChartJS does not allow multiple points on the same Y-axis we must duplicate the date sets
-    // whenever there is a disconnect. This occurs when Constant is selected.
-    data.datasets[0].data = [satvalues[this.$('#init-sat-value').val()]];
-    for (var i = 0; i < data.labels.length - 1; i++){
+    // Reset the dataset 
+    for (var i = 0; i < data.datasets.length; i++){
+      data.datasets[i].borderDash = [];  
+      data.datasets[i].data = [];
+      data.datasets[i].borderColor = "rgba(220,220,220,1)";
+    }
 
-      // setting up empty data set
-      datasetsTemplatePrimary.data.push(null);
-      if (repeat)
-        datasetsTemplateSecondary.data.push(null);
+    // Add datapoints to graph for each userfunction/uservalue pair
+    previousDatasetIndex = -1;
+    currentDatasetIndex = 0;
 
-      for (var j = 0; j < data.datasets.length; j++){
-        data.datasets[j].data.push(null);
+    for (var i = 0; i < this.constraintsObject.userFunctions.length; i++){
+      if (currentDatasetIndex >= data.datasets.length){
+        data.datasets.push({
+          label: "Source",
+          fill: false,
+          borderColor: "rgba(220,220,220,1)",
+          pointRadius: 4,
+          lineTension: 0,
+          data: []
+        });
       }
 
-      // switch to the empty data set if necessary
-      var f = this.constraintsObject.userFunctions[i];
-      if ((f == "C") || (data.labels[i] == repeatBegin) || (data.labels[i] == repeatEnd)){
+      previousDataset = data.datasets[previousDatasetIndex];
+      currentDataset = data.datasets[currentDatasetIndex];
+      currentFunc = this.constraintsObject.userFunctions[i];
+      previousFunc = this.constraintsObject.userFunctions[i - 1];
+      currentVal = this.constraintsObject.userValues[i];
+      currentNumVal = currentVal == "unknown" ? 0 : satvalues[currentVal];
+      previousVal = this.constraintsObject.userValues[i - 1];
 
-        // Switch color schemes during the repeated range
-        if (repeat && (data.labels[i] >= repeatBegin) && (data.labels[i] < repeatEnd)){
-          var newSet = jQuery.extend(true, {}, datasetsTemplateSecondary);
-        }else{
-          var newSet = jQuery.extend(true, {}, datasetsTemplatePrimary);
+      // First we need to find out how many nulls do we need
+      var numNulls = []
+      if (currentDatasetIndex != 0){
+        for (var j = 0; j < previousDataset.data.length - 1; j++){
+          numNulls.push(null);
+        } 
+      }
+
+      // Add datapoint to dataset according to which function
+      if (currentFunc == 'I' || currentFunc == 'D'){
+        // If previous function is stochastic, set the starting point to be either FD or FS
+        if ((previousFunc == 'R' || (previousFunc == 'C' && previousVal == 'unknown')) && currentFunc == 'I'){
+          firstVal = satvalues['denied'];
+        }
+        else if ((previousFunc == 'R' || (previousFunc == 'C' && previousVal == 'unknown')) && currentFunc == 'D'){
+          firstVal = satvalues['satisfied'];
+        }
+        else if (currentDatasetIndex != 0){
+          // Use the last value of the previous dataset as the current dataset's first value
+          firstVal = previousDataset.data[previousDataset.data.length - 1];
+        }
+        else {
+          firstVal = satvalues[this.$('#init-sat-value').val()];
+        }
+        currentDataset.data = numNulls.concat([firstVal, currentNumVal]);
+  
+      }
+      else if (currentFunc == 'C'){
+        if (this.constraintsObject.userValues[i] != 'unknown'){
+          currentDataset.data = numNulls.concat([currentNumVal, currentNumVal]);
+        }
+        // If it is unknown
+        else {
+          // Then we need 4 datasets in addition to the currentDataset
+          // And we add datapoints into each dataset starting from FD
+          var value_to_add = -2;
+          for (var k = currentDatasetIndex; k < currentDatasetIndex + 5; k ++){
+            // Make sure we have enough dataset availabe. If not add some
+            if (k >= data.datasets.length){
+              data.datasets.push({
+                label: "Source",
+                fill: false,
+                borderColor: "rgba(220,220,220,1)",
+                pointRadius: 4,
+                lineTension: 0,
+                data: []
+              });
+            }
+            currentSubset = data.datasets[k];
+            currentSubset.data = numNulls.concat([value_to_add, value_to_add]);
+
+            // Update the style
+            currentSubset.borderDash = [5, 5]
+            currentSubset.pointBackgroundColor = numNulls.concat(["rgba(220,220,220,1)", "rgba(220,220,220,0)"]);
+            currentSubset.pointBorderColor = numNulls.concat(["rgba(220,220,220,1)", "rgba(220,220,220,0)"]);
+            if (this.inRepeatRange(repeat, repeatBegin, repeatEnd, currentSubset.data)){
+              currentSubset.borderColor = "rgba(255, 110, 80, 1)";
+            }
+            value_to_add ++;
+          }
         }
 
-        data.datasets.push(newSet);
-        data.datasets[data.datasets.length - 1].data[i] = satvalues[this.constraintsObject.userValues[i]];
-        data.datasets[data.datasets.length - 1].data[i + 1] = satvalues[this.constraintsObject.userValues[i]];
-      }else{
-        data.datasets[data.datasets.length - 1].data[i + 1] = satvalues[this.constraintsObject.userValues[i]];
       }
+      else if (currentFunc == 'R'){
+         currentDataset.data = numNulls.concat([currentNumVal, currentNumVal]);
+      }
+
+
+      // Update the style of current dataset and advance indices
+      // I, D and non unknown C function share the same style
+      if (currentFunc == 'C' && this.constraintsObject.userValues[i] == 'unknown'){
+        previousDatasetIndex += 5;
+        currentDatasetIndex += 5;
+      }
+      else if (currentFunc == 'R'){
+        currentDataset.borderDash = [5, 5]
+        currentDataset.pointBackgroundColor = numNulls.concat(["rgba(220,220,220,1)", "rgba(220,220,220,0)"]);
+        currentDataset.pointBorderColor = numNulls.concat(["rgba(220,220,220,1)", "rgba(220,220,220,0)"]);
+        if (this.inRepeatRange(repeat, repeatBegin, repeatEnd, currentDataset.data)){
+          currentDataset.borderColor = "rgba(255, 110, 80, 1)";
+        }
+        previousDatasetIndex ++;
+        currentDatasetIndex ++;  
+      }
+      else {
+        // If previous function is stochastic, or constant unknown, hide the first dot
+        if (previousFunc == 'R' || (previousFunc == 'C' && previousVal == 'unknown')){
+          currentDataset.pointBackgroundColor = numNulls.concat(["rgba(220,220,220,0)", "rgba(220,220,220,1)"])
+          currentDataset.pointBorderColor = numNulls.concat(["rgba(220,220,220,0)", "rgba(220,220,220,1)"]);
+        }
+        // Else, both points should be solid
+        else {
+          currentDataset.pointBackgroundColor = numNulls.concat(["rgba(220,220,220,1)", "rgba(220,220,220,1)"])
+          currentDataset.pointBorderColor = numNulls.concat(["rgba(220,220,220,1)", "rgba(220,220,220,1)"]);
+        }
+        // If currentDataset is in repeat range, set red
+        if (this.inRepeatRange(repeat, repeatBegin, repeatEnd, currentDataset.data)){
+          currentDataset.borderColor = "rgba(255, 110, 80, 1)";
+        }
+        previousDatasetIndex ++;
+        currentDatasetIndex ++;  
+
+      }
+
     }
+
+
     // data.datasets[0].data = data.datasets[0].data.concat(this.constraintsObject.userValues);
     this.constraintsObject.chart = new Chart(context, {
       type: 'line',
@@ -655,13 +776,26 @@ var ElementInspector = Backbone.View.extend({
     this.updateCell(null);
   },
 
-  // Takes one function/sat value pair in UD
-  // i: To indication this is the i-th function/sat-value of the UD
-  // userValue: The sat value of the function
-  // userFunctionType: Function type of the function
-  // p: The value of where the previous function ended (Optional)
-  updateGraphUserDefinedHelper: function(i, userValue, userFunctionType, p){
+  // Given a data, check if it is in repeat range
+  // Return boolean
+  inRepeatRange: function(repeat, repeatBegin, repeatEnd, data){
+    // If the repeat mode isnt on, return false
+    if (!repeat || repeatBegin === undefined || repeatBegin === null || repeatEnd === undefined || repeatEnd === null){
+      return false;
+    }
+    else {
+      // Convert letter to index
+      var repeatBegin = repeatBegin == '0'? 0 : repeatBegin.charCodeAt(0) - 65 + 1;
+      var repeatEnd = repeatEnd.charCodeAt(0) - 65 + 1;
+      // Find the index of start point and end point of data
+      var dataBegin = data.length - 2;
+      var dataEnd = data.length - 1;
+      if (dataBegin >= repeatBegin && dataEnd <= repeatEnd){
+        return true;
+      }
+    }
 
+    return false;
   },
 
   // add new constraint in used defined function
@@ -825,117 +959,117 @@ var ElementInspector = Backbone.View.extend({
     this.updateHTML(null);
   },
 
-    //Make corresponding changes in the inspector to the actual element in the chart
-    updateCell: function(event) {
-      var cell = this._cellView.model;
-      // Cease operation if selected is Actor
-      if (cell instanceof joint.shapes.basic.Actor){ 
-        cell.prop("actortype", this.$('.actor-type').val());
-        if (cell.prop("actortype") == 'G'){
-          cell.attr({ '.line':
-                {'ref': '.label',
-                     'ref-x': 0,
-                     'ref-y': 0.08,
-                     'd': 'M 5 10 L 55 10',
-                     'stroke-width': 1,
-                     'stroke': 'black'}});
-        }else if (cell.prop("actortype") == 'R'){
-          cell.attr({ '.line':
-                {'ref': '.label',
-                     'ref-x': 0,
-                     'ref-y': 0.6,
-                     'd': 'M 5 10 Q 30 20 55 10 Q 30 20 5 10' ,
-                     'stroke-width': 1,
-                     'stroke': 'black'}});
-        }else {
-          cell.attr({'.line': {'stroke-width': 0}});
-        }
-        return;
-      }
-
-      // save cell data
-      var funcType = this.$('.function-type').val();
-      cell.attr(".satvalue/value", this.$('#init-sat-value').val());
-      // If funcvalue == NB, do not update anything to the cell
-      if(cell.attr(".funcvalue/text") == 'NB'){
-      }
-      else if (funcType != 'none'){
-        cell.attr(".funcvalue/text", funcType);
-      }
-
-      else {
-        cell.attr(".funcvalue/text", ""); 
-      }
-      cell.attr(".constraints/lastval", this.$('.function-type').val());
-
-
-      if (funcType == "UD"){
-
-        // for some reason directly calling .attr does not update
-        cell.attr(".constraints/function", null);
-        cell.attr(".constraints/lastval", null);
-        cell.attr(".constraints/beginLetter", null);
-        cell.attr(".constraints/endLetter", null);
-
-        cell.attr(".constraints/function", this.constraintsObject.userFunctions);
-        cell.attr(".constraints/lastval", this.constraintsObject.userValues);
-        cell.attr(".constraints/beginLetter", this.constraintsObject.beginLetter);
-        cell.attr(".constraints/endLetter", this.constraintsObject.endLetter);
-
-        // update repeat values
-        if (this.repeatOptionsDisplay){
-          cell.attr(".constraints/beginRepeat", this.constraintsObject.repeatBegin);
-          cell.attr(".constraints/endRepeat", this.constraintsObject.repeatEnd);
-        }else{
-          cell.attr(".constraints/beginRepeat", null);
-          cell.attr(".constraints/endRepeat", null);  
-        }
-
-      }else if (funcType == "R"){
-        cell.attr(".constraints/lastval", "unknown");
-      }else if ((funcType == "C") || (funcType == "CR")){
-        cell.attr(".constraints/lastval", this.$('#init-sat-value').val());
-      }else if (funcType == "SD"){
-        cell.attr(".constraints/lastval", "denied");
-      }else if (funcType == "DS"){
-        cell.attr(".constraints/lastval", "satisfied");
+  //Make corresponding changes in the inspector to the actual element in the chart
+  updateCell: function(event) {
+    var cell = this._cellView.model;
+    // Cease operation if selected is Actor
+    if (cell instanceof joint.shapes.basic.Actor){ 
+      cell.prop("actortype", this.$('.actor-type').val());
+      if (cell.prop("actortype") == 'G'){
+        cell.attr({ '.line':
+              {'ref': '.label',
+                   'ref-x': 0,
+                   'ref-y': 0.08,
+                   'd': 'M 5 10 L 55 10',
+                   'stroke-width': 1,
+                   'stroke': 'black'}});
+      }else if (cell.prop("actortype") == 'R'){
+        cell.attr({ '.line':
+              {'ref': '.label',
+                   'ref-x': 0,
+                   'ref-y': 0.6,
+                   'd': 'M 5 10 Q 30 20 55 10 Q 30 20 5 10' ,
+                   'stroke-width': 1,
+                   'stroke': 'black'}});
       }else {
-        cell.attr(".constraints/function", this.$('.function-type').val());
-        cell.attr(".constraints/lastval", this.$('.function-sat-value').val());
+        cell.attr({'.line': {'stroke-width': 0}});
       }
-
-      //Update node display based on function and values
-      var value = this.$('#init-sat-value').val();
-
-      if (value == "none"){ 
-        cell.attr(".satvalue/text", "");
-        // If functype is NB, dont clear it
-        if(cell.attr(".funcvalue/text") != 'NB'){
-          cell.attr(".funcvalue/text", " ");
-        }
-
-      }
-
-      // Navie: Changed satvalue from path to text
-      if (value == "satisfied"){
-        cell.attr(".satvalue/text", "(FS, T)");
-      }else if(value == "partiallysatisfied") {
-        cell.attr(".satvalue/text", "(PS, T)");
-      }else if (value == "denied"){
-        cell.attr(".satvalue/text", "(T, FD)");
-      }else if (value == "partiallydenied") {
-        cell.attr(".satvalue/text", "(T, PD)");
-      }else if (value == "unknown") {
-            cell.attr(".satvalue/text", "?");
-      }else {
-        // cell.removeAttr(".satvalue/text");
-      }
-    },
-    
-    clear: function(){
-      this.$el.html('');
+      return;
     }
+
+    // save cell data
+    var funcType = this.$('.function-type').val();
+    cell.attr(".satvalue/value", this.$('#init-sat-value').val());
+    // If funcvalue == NB, do not update anything to the cell
+    if(cell.attr(".funcvalue/text") == 'NB'){
+    }
+    else if (funcType != 'none'){
+      cell.attr(".funcvalue/text", funcType);
+    }
+
+    else {
+      cell.attr(".funcvalue/text", ""); 
+    }
+    cell.attr(".constraints/lastval", this.$('.function-type').val());
+
+
+    if (funcType == "UD"){
+
+      // for some reason directly calling .attr does not update
+      cell.attr(".constraints/function", null);
+      cell.attr(".constraints/lastval", null);
+      cell.attr(".constraints/beginLetter", null);
+      cell.attr(".constraints/endLetter", null);
+
+      cell.attr(".constraints/function", this.constraintsObject.userFunctions);
+      cell.attr(".constraints/lastval", this.constraintsObject.userValues);
+      cell.attr(".constraints/beginLetter", this.constraintsObject.beginLetter);
+      cell.attr(".constraints/endLetter", this.constraintsObject.endLetter);
+
+      // update repeat values
+      if (this.repeatOptionsDisplay){
+        cell.attr(".constraints/beginRepeat", this.constraintsObject.repeatBegin);
+        cell.attr(".constraints/endRepeat", this.constraintsObject.repeatEnd);
+      }else{
+        cell.attr(".constraints/beginRepeat", null);
+        cell.attr(".constraints/endRepeat", null);  
+      }
+
+    }else if (funcType == "R"){
+      cell.attr(".constraints/lastval", "unknown");
+    }else if ((funcType == "C") || (funcType == "CR")){
+      cell.attr(".constraints/lastval", this.$('#init-sat-value').val());
+    }else if (funcType == "SD"){
+      cell.attr(".constraints/lastval", "denied");
+    }else if (funcType == "DS"){
+      cell.attr(".constraints/lastval", "satisfied");
+    }else {
+      cell.attr(".constraints/function", this.$('.function-type').val());
+      cell.attr(".constraints/lastval", this.$('.function-sat-value').val());
+    }
+
+    //Update node display based on function and values
+    var value = this.$('#init-sat-value').val();
+
+    if (value == "none"){ 
+      cell.attr(".satvalue/text", "");
+      // If functype is NB, dont clear it
+      if(cell.attr(".funcvalue/text") != 'NB'){
+        cell.attr(".funcvalue/text", " ");
+      }
+
+    }
+
+    // Navie: Changed satvalue from path to text
+    if (value == "satisfied"){
+      cell.attr(".satvalue/text", "(FS, T)");
+    }else if(value == "partiallysatisfied") {
+      cell.attr(".satvalue/text", "(PS, T)");
+    }else if (value == "denied"){
+      cell.attr(".satvalue/text", "(T, FD)");
+    }else if (value == "partiallydenied") {
+      cell.attr(".satvalue/text", "(T, PD)");
+    }else if (value == "unknown") {
+          cell.attr(".satvalue/text", "?");
+    }else {
+      // cell.removeAttr(".satvalue/text");
+    }
+  },
+    
+  clear: function(){
+    this.$el.html('');
   }
+}
 );
 
 
