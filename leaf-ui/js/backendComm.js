@@ -2,7 +2,7 @@
 var global_analysisResult = {};
 
 function backendComm(js_object){
-	console.log(JSON.stringify(js_object));
+	//console.log(JSON.stringify(js_object));
 	
 	//Add object here to test
 	var singlePath = {

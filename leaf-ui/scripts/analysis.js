@@ -1,10 +1,10 @@
 //Get necessary variables from the main page
-var document = window.opener.document;
-var graph = window.opener.graph;
+var document = jQuery.extend({}, window.opener.document);
+var graph = jQuery.extend({}, window.opener.graph);
 console.log(JSON.stringify(window.opener.global_analysisResult));
 var paper;
 var paperScroller;
-var originalResults = window.opener.global_analysisResult;
+var originalResults = jQuery.extend({}, window.opener.global_analysisResult);
 var analysisResult;
 var elements = [];
 
