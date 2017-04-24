@@ -270,8 +270,10 @@ var LinkInspector = Backbone.View.extend({
       if (link.prop("link-type") == 'NBT' || link.prop("link-type") == 'NBD'){
         source.attr(".funcvalue/text", "NB");
         source.attr(".satvalue/text", "");
+        source.attr(".satvalue/value", "");
         target.attr(".funcvalue/text", "NB");
         target.attr(".satvalue/text", "");
+        target.attr(".satvalue/value", "");
       }
       // Else, set funcvalue to none
       else {

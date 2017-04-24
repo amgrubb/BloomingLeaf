@@ -9,8 +9,7 @@ var AnalysisInspector = Backbone.View.extend({
 		'<br>',
 		'<label class="sub-label">Conflict Prevention Level</label>',
 		'<select id="conflict-level" class="sub-label">',
-			'<option value=default disabled selected> List Conflict</option>',
-	        '<option value=S> Strong</option>',
+			'<option value=S selected> Strong</option>',
 	        '<option value=M> Medium</option>',
 	        '<option value=W> Weak</option>',
 	        '<option value=N> None</option>',
@@ -84,7 +83,7 @@ var AnalysisInspector = Backbone.View.extend({
 		// These functions are used to communicate between analysisInspector and Main.js
 		this._analysisFunctions = analysisFunctions;
 		this.$el.html(_.template(this.template)());
-		$('head').append('<script src="./js-objects/analysis.js"></script>');
+		$('head').append('<script src="./scripts/js-objects/analysis.js"></script>');
 
 		this.$("#query-cell1").hide();
 		this.$("#query-cell2").hide();
