@@ -231,7 +231,6 @@ public class ModelSpec {
 	}
 
 	public ModelSpec(String filename) {
-		// TODO Auto-generated constructor stub
 	}
 
 	public boolean[][][][] getAllSolutionsValues() {

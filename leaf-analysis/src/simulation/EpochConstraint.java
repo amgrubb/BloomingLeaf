@@ -12,7 +12,6 @@ public class EpochConstraint {
 	
 	
 	public EpochConstraint(String constraintType, IntentionalElement src, IntentionalElement dest, String constraintSrcEB, String constraintDestEB) {
-		// TODO Auto-generated constructor stub
 		this.src = src;
 		this.dest = dest;
 		this.type = constraintType;
