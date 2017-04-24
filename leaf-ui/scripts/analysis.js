@@ -1,6 +1,7 @@
 //Get necessary variables from the main page
 var document = jQuery.extend({}, window.opener.document);
-var graph = jQuery.extend({}, window.opener.graph);
+//var graph = jQuery.extend({}, window.opener.graph);
+var graph = new joint.dia.Graph();
 console.log(JSON.stringify(window.opener.global_analysisResult));
 var paper;
 var paperScroller;
@@ -68,7 +69,7 @@ function renderNavigationSidebar(currentPage = 0){
 	
 	var currentPageIn = document.getElementById("currentPage");
 	var num_states_lbl = document.getElementById("num_states_lbl");
-	num_states_lbl.innerHTML += analysisResult.elementList[0].valueList.length;
+	num_states_lbl.innerHTML += (analysisResult.elementList[0].valueList.length - 1);
 	
 	currentPageIn.value = currentPage.toString();
 	
@@ -203,7 +204,6 @@ function goToState(){
 		}
 	}
 }
-
 
 var tempResults;
 
