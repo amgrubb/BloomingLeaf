@@ -79,6 +79,7 @@ public class ModelSpecBuilder {
 				
 				String[] initialAssignedEpoch = analysis.getInitialAssignedEpoch().split(",");
 				HashMap<String, Integer> initialAssignedEpochMap = new HashMap<>();
+				//Send the hole hashmap
 				for(int i = 0; i < initialAssignedEpoch.length; i++){
 					String[] assignedEpoch = initialAssignedEpoch[i].split("_");
 					String key = assignedEpoch[0].toString();
