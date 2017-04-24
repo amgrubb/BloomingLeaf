@@ -79,7 +79,7 @@ public class ModelSpecBuilder {
 				
 				String[] initialAssignedEpoch = analysis.getInitialAssignedEpoch().split(",");
 				HashMap<String, Integer> initialAssignedEpochMap = new HashMap<>();
-				for(int i = 0; i < currentState; i++){
+				for(int i = 0; i < initialAssignedEpoch.length; i++){
 					String[] assignedEpoch = initialAssignedEpoch[i].split("_");
 					String key = assignedEpoch[0].toString();
 					Integer value = Integer.parseInt(assignedEpoch[1]);
@@ -88,8 +88,8 @@ public class ModelSpecBuilder {
 				modelSpec.setInitialAssignedEpochs(initialAssignedEpochMap);
 				
 				String[] initialValueTimePoints = analysis.getInitialValueTimePoints().split(",");
-				int[] initialValueTimePointsArray = new int[currentState];
-				for(int i = 0; i < currentState; i++){
+				int[] initialValueTimePointsArray = new int[currentState+1];
+				for(int i = 0; i < currentState+1; i++){
 					initialValueTimePointsArray[i] = Integer.parseInt(initialValueTimePoints[i]);
 				}
 				modelSpec.setInitialValueTimePoints(initialValueTimePointsArray);
