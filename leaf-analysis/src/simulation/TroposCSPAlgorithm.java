@@ -56,9 +56,8 @@ public class TroposCSPAlgorithm {
     private IntVar infinity;								// (maxTime + 1) Infinity used for intention functions, not a solved point.
     private IntVar[] unsolvedTimePoints;
     private IntVar[] nextTimePoint;							// Holds the list of next possible time points. ******* Used for finding state.
-//    private HashMap<IntVar, IntVar[]> unsolvedTimePointToEpochCollection; // Used for finding a single state. 
-//    														// Mapping between timePoints -> epochs;
     
+    private final boolean DEBUG = true;								// Whether to print debug statements.
     /* New in ModelSpec
      *     	private int relativeTimePoints = 4;
     		private int[] absoluteTimePoints = new int[] {5, 10, 15, 20};
@@ -71,13 +70,17 @@ public class TroposCSPAlgorithm {
 
      */
     
-	//Do not call this one directly. 
+	/**
+	 * Constructor: Creates the CSP problem from the ModelSpec.
+	 * @param spec	input model
+	 */
 	public TroposCSPAlgorithm(ModelSpec spec) {
 		// Initialise Store
 		this.store = new Store();
 		this.sat = new SatTranslation(this.store); 
 		this.sat.impose();	
-		this.sat.debug = true;			// This prints that SAT commands.
+		if (DEBUG)
+			this.sat.debug = true;			// This prints that SAT commands.
         this.constraints = new ArrayList<Constraint>();
 		this.zero = new IntVar(this.store, "Zero", 0, 0);
 		
@@ -133,6 +136,13 @@ public class TroposCSPAlgorithm {
 
 
 	// Methods to create initial constraint model.
+	/**
+	 * @param absoluteTimePoint
+	 * @param numStochasticTimePoints
+	 * @param initialValueTimePoints
+	 * @param assignedEpochs
+	 * @param singleState
+	 */
 	private void calculateSampleSizeAndCreateEBsAndTimePoints(int[] absoluteTimePoint, int numStochasticTimePoints, 
 			int[] initialValueTimePoints, HashMap<String, Integer> assignedEpochs, boolean singleState) {
 		
@@ -460,6 +470,9 @@ public class TroposCSPAlgorithm {
    
     }
 	
+	/**
+	 * 
+	 */
 	private void initializeBooleanVarForValues() {	//Full Model
 		boolean[][][] initialValues = this.spec.getInitialValues();		
     	for (int i = 0; i < this.intentions.length; i++){
@@ -481,10 +494,17 @@ public class TroposCSPAlgorithm {
     		}  
     	}
 	}
+	/**
+	 * @param b
+	 * @return
+	 */
 	private int boolToInt(boolean b) {
 	    return b ? 1 : 0;
 	}
 	
+	/**
+	 * 
+	 */
 	private void initializeConflictPrevention(){	//Full Model
 		char level = this.spec.getConflictAvoidLevel();
 		if (level == 'N' || level == 'n')
@@ -500,6 +520,9 @@ public class TroposCSPAlgorithm {
 	}
 	
 
+	/**
+	 * 
+	 */
 	private void initializePathDynamicFunctions() {		//Full Model
     	for (int i = 0; i < this.intentions.length; i++){
     		IntentionalElement element = this.intentions[i];
@@ -712,195 +735,215 @@ public class TroposCSPAlgorithm {
 					continue;
 				}
 				//TODO: Fix UD function for Increase and Decreasing with MAX/MIN values.
-        		UDFunction funcUD = element.getIntUDFunct();
-        		if (!funcUD.isHasRepeat()){
-        			//function does not repeat.
-        			int numSegments = funcUD.getNumSegment();		//Segments not EBs
-        			//IntVar[] epochs
-        			String[] segmentDynamic = funcUD.getEpochBasicFunction();
-        			int[] segmentDynamicValue = funcUD.getEpochMarkedValues();
-        			IntVar segmentStart = null;
-        			IntVar segmentEnd = null;
-        			for (int nS = 0; nS < numSegments; nS ++){
-        				if (nS == 0){
-          					segmentStart = this.zero;
-          					segmentEnd = epochs[0];
-        				} else if (nS == numSegments - 1) {
-          					segmentStart = epochs[nS - 1];
-          					segmentEnd = this.infinity;
-        				} else {
-          					segmentStart = epochs[nS - 1];
-          					segmentEnd = epochs[nS];
-        				}
-        				if (segmentDynamic[nS].equals(IntentionalElementDynamicType.CONST.getCode())){
-        					if (segmentDynamicValue[nS] == 5){
-        						// Get the value index for the start of the segment.
-        						int startIndex = -1;
-        						if (segmentStart == this.zero)
-        							startIndex = 0;
-        						else{
-        							IntVar startTime = epochToTimePoint.get(segmentStart);
-        							while((startTime != null) && (startTime.id.charAt(0) != 'T')){
-        								startTime = epochToTimePoint.get(startTime);
-        							}
-        							if (startTime == null){
-        								System.err.println("UD Function not correct " + element.getId() + " has missing EB.");
-        								continue;
-        							}
-        							for (int p = 0; p < timePoints.length; p++){
-        								if (timePoints[p] == startTime){
-        									startIndex = p;
-        									break;
-        								}
-        							}
-        							if (startIndex == -1){
-        								System.err.println("UD Function not correct " + element.getId() + " has missing EB.");
-        								continue;
-        							}
-        						}
-        						// If the value falls within the segment index assign it to the first value in the segment, creating a constant function of unknown value.
-        						for (int t = 0; t < this.values[i].length; t++){
-        							PrimitiveConstraint[] tempConstant = {
-        									new XeqY(this.values[i][t][3], this.values[i][startIndex][3]), 
-        									new XeqY(this.values[i][t][2], this.values[i][startIndex][2]),	
-        									new XeqY(this.values[i][t][1], this.values[i][startIndex][1]),
-        									new XeqY(this.values[i][t][0], this.values[i][startIndex][0])};
-        							constraints.add(new IfThen(
-        									new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t])),
-        									new And(tempConstant)));        		
-        						}
-        					}else{
-        						for (int t = 0; t < this.values[i].length; t++){
-        							PrimitiveConstraint[] tempConstant = genericCreateConstantCondition(segmentDynamicValue[nS], this.values[i][t]);
-        							if (tempConstant == null){
-        								System.err.println("UD Dynamic Value for intention " + element.getId() + " has Unknown/None/Conflict value.");
-        								break;
-        							}
-        							constraints.add(new IfThen(
-        									new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t])),
-        									new And(tempConstant)));
-        						}
-        					}
-        				} else if (segmentDynamic[nS].equals(IntentionalElementDynamicType.INC.getCode())){	
-        	      			for (int t = 0; t < this.values[i].length; t++)
-        	      				for (int s = 0; s < this.values[i].length; s++){
-        	      					if (t==s)
-        	            				continue;
-        	                		PrimitiveConstraint[] tFS = genericCreateConstantCondition(3, this.values[i][t]);
-        	                		PrimitiveConstraint[] tPS = genericCreateConstantCondition(2, this.values[i][t]);
-        	                		PrimitiveConstraint[] tPD = genericCreateConstantCondition(1, this.values[i][t]);
-        	                		PrimitiveConstraint[] tFD = genericCreateConstantCondition(0, this.values[i][t]);
-        	                		PrimitiveConstraint[] sFS = genericCreateConstantCondition(3, this.values[i][s]);
-        	                		PrimitiveConstraint[] sPS = genericCreateConstantCondition(2, this.values[i][s]);
-        	                		PrimitiveConstraint[] sPD = genericCreateConstantCondition(1, this.values[i][s]);
-        	                		PrimitiveConstraint[] sFD = genericCreateConstantCondition(0, this.values[i][s]);
-        	                		constraints.add(new IfThen(new And(
-        	                				new And(new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t])),
-        	                						new And(new XlteqY(segmentStart, this.timePoints[s]), new XgtY(segmentEnd, this.timePoints[s]))),
-        	                				new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tFS))),
-        	                				new And(sFS)));
-        	                		constraints.add(new IfThen(new And(
-        	                				new And(new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t])),
-        	                						new And(new XlteqY(segmentStart, this.timePoints[s]), new XgtY(segmentEnd, this.timePoints[s]))),
-        	                				new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tPS))),
-        	            					new Or(new And(sFS), new And(sPS))));
-        	                		constraints.add(new IfThen(new And(
-        	                				new And(new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t])),
-        	                						new And(new XlteqY(segmentStart, this.timePoints[s]), new XgtY(segmentEnd, this.timePoints[s]))),
-        	                				new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tPD))),
-        	            					new Or(new And(sFS), new Or(new And(sPS), new And(sPD)))));
-        	                		constraints.add(new IfThen(new And(
-        	                				new And(new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t])),
-        	                						new And(new XlteqY(segmentStart, this.timePoints[s]), new XgtY(segmentEnd, this.timePoints[s]))),
-        	                				new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tFD))),
-        	            					new Or(new Or(new And(sFS), new And(sPS)), new Or(new And(sPD), new And(sFD)))));
-        	            		}
-        	      			// If previous segement was constant carry value forward for first value.
-        	      			if ((nS != 0) && (segmentDynamic[nS - 1].equals(IntentionalElementDynamicType.CONST.getCode()))){
-            	      			for (int t = 0; t < this.values[i].length; t++){
-            	      				PrimitiveConstraint[] tempConstant = genericCreateConstantCondition(segmentDynamicValue[nS - 1], this.values[i][t]);
-            	      				if (tempConstant == null){
-            	      					System.err.println("ns - 1 for UD Dynamic Value for intention " + element.getId() + " has Unknown/None/Conflict value.");
-            	      					break;
-            	      				}
-            	            		constraints.add(new IfThen(
-            	            				new XeqY(segmentStart, this.timePoints[t]),
-            	            				new And(tempConstant)));
-            	            	}
-        	      			}
-        				} else if (segmentDynamic[nS].equals(IntentionalElementDynamicType.DEC.getCode())){
-        	      			for (int t = 0; t < this.values[i].length; t++)
-        	      				for (int s = 0; s < this.values[i].length; s++){
-        	            			if (t==s)
-        	            				continue;
-        	                		PrimitiveConstraint[] tFS = genericCreateConstantCondition(3, this.values[i][t]);
-        	                		PrimitiveConstraint[] tPS = genericCreateConstantCondition(2, this.values[i][t]);
-        	                		PrimitiveConstraint[] tPD = genericCreateConstantCondition(1, this.values[i][t]);
-        	                		PrimitiveConstraint[] tFD = genericCreateConstantCondition(0, this.values[i][t]);
-        	                		PrimitiveConstraint[] sFS = genericCreateConstantCondition(3, this.values[i][s]);
-        	                		PrimitiveConstraint[] sPS = genericCreateConstantCondition(2, this.values[i][s]);
-        	                		PrimitiveConstraint[] sPD = genericCreateConstantCondition(1, this.values[i][s]);
-        	                		PrimitiveConstraint[] sFD = genericCreateConstantCondition(0, this.values[i][s]);
-        	                		// Allow any next value.
-        	                		constraints.add(new IfThen(new And(
-        	                				new And(new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t])),
-        	                						new And(new XlteqY(segmentStart, this.timePoints[s]), new XgtY(segmentEnd, this.timePoints[s]))),
-        	                				new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tFS))),
-        	                				new Or(new Or(new And(sFS), new And(sPS)), new Or(new And(sPD), new And(sFD)))));
-        	                		constraints.add(new IfThen(new And(
-        	                				new And(new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t])),
-        	                						new And(new XlteqY(segmentStart, this.timePoints[s]), new XgtY(segmentEnd, this.timePoints[s]))),
-        	                				new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tPS))),
-        	            					new Or(new And(sFD), new Or(new And(sPS), new And(sPD)))));
-        	                		constraints.add(new IfThen(new And(
-        	                				new And(new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t])),
-        	                						new And(new XlteqY(segmentStart, this.timePoints[s]), new XgtY(segmentEnd, this.timePoints[s]))),
-        	                				new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tPD))),
-        	            					new Or(new And(sFD), new And(sPD))));
-        	                		constraints.add(new IfThen(new And(
-        	                				new And(new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t])),
-        	                						new And(new XlteqY(segmentStart, this.timePoints[s]), new XgtY(segmentEnd, this.timePoints[s]))),
-        	                				new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tFD))),
-        	            					new And(sFD)));
-        	            		}
-        	      			// If previous segement was constant carry value forward for first value.
-        	      			if ((nS != 0) && (segmentDynamic[nS - 1].equals(IntentionalElementDynamicType.CONST.getCode()))){
-            	      			for (int t = 0; t < this.values[i].length; t++){
-            	      				PrimitiveConstraint[] tempConstant = genericCreateConstantCondition(segmentDynamicValue[nS - 1], this.values[i][t]);
-            	      				if (tempConstant == null){
-            	      					System.err.println("ns - 1 for UD Dynamic Value for intention " + element.getId() + " has Unknown/None/Conflict value.");
-            	      					break;
-            	      				}
-            	            		constraints.add(new IfThen(
-            	            				new XeqY(segmentStart, this.timePoints[t]),
-            	            				new And(tempConstant)));
-            	            	}
-        	      			}        				
-        				}
-        				
-        			}
-        		}else{
-        			// TODO: Deal with repeating Functions.
-        		}
+//        		UDFunctionCSP funcUD = element.getCspUDFunct();
+//        		if (!funcUD.isHasRepeat()){
+//        			//function does not repeat.
+//        			int numSegments = funcUD.getNumSegment();		//Segments not EBs
+//        			//IntVar[] epochs
+//        			String[] segmentDynamic = funcUD.getEpochBasicFunction();
+//        			int[] segmentDynamicValue = funcUD.getEpochMarkedValues();
+//        			IntVar segmentStart = null;
+//        			IntVar segmentEnd = null;
+//        			for (int nS = 0; nS < numSegments; nS ++){
+//        				if (nS == 0){
+//          					segmentStart = this.zero;
+//          					segmentEnd = epochs[0];
+//        				} else if (nS == numSegments - 1) {
+//          					segmentStart = epochs[nS - 1];
+//          					segmentEnd = this.infinity;
+//        				} else {
+//          					segmentStart = epochs[nS - 1];
+//          					segmentEnd = epochs[nS];
+//        				}
+//        				if (segmentDynamic[nS].equals(IntentionalElementDynamicType.CONST.getCode())){
+//        					if (segmentDynamicValue[nS] == 5){
+//        						// Get the value index for the start of the segment.
+//        						int startIndex = -1;
+//        						if (segmentStart == this.zero)
+//        							startIndex = 0;
+//        						else{
+//        							IntVar startTime = epochToTimePoint.get(segmentStart);
+//        							while((startTime != null) && (startTime.id.charAt(0) != 'T')){
+//        								startTime = epochToTimePoint.get(startTime);
+//        							}
+//        							if (startTime == null){
+//        								System.err.println("UD Function not correct " + element.getId() + " has missing EB.");
+//        								continue;
+//        							}
+//        							for (int p = 0; p < timePoints.length; p++){
+//        								if (timePoints[p] == startTime){
+//        									startIndex = p;
+//        									break;
+//        								}
+//        							}
+//        							if (startIndex == -1){
+//        								System.err.println("UD Function not correct " + element.getId() + " has missing EB.");
+//        								continue;
+//        							}
+//        						}
+//        						// If the value falls within the segment index assign it to the first value in the segment, creating a constant function of unknown value.
+//        						for (int t = 0; t < this.values[i].length; t++){
+//        							PrimitiveConstraint[] tempConstant = {
+//        									new XeqY(this.values[i][t][3], this.values[i][startIndex][3]), 
+//        									new XeqY(this.values[i][t][2], this.values[i][startIndex][2]),	
+//        									new XeqY(this.values[i][t][1], this.values[i][startIndex][1]),
+//        									new XeqY(this.values[i][t][0], this.values[i][startIndex][0])};
+//        							constraints.add(new IfThen(
+//        									new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t])),
+//        									new And(tempConstant)));        		
+//        						}
+//        					}else{
+//        						for (int t = 0; t < this.values[i].length; t++){
+//        							PrimitiveConstraint[] tempConstant = genericCreateConstantCondition(segmentDynamicValue[nS], this.values[i][t]);
+//        							if (tempConstant == null){
+//        								System.err.println("UD Dynamic Value for intention " + element.getId() + " has Unknown/None/Conflict value.");
+//        								break;
+//        							}
+//        							constraints.add(new IfThen(
+//        									new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t])),
+//        									new And(tempConstant)));
+//        						}
+//        					}
+//        				} else if (segmentDynamic[nS].equals(IntentionalElementDynamicType.INC.getCode())){	
+//        	      			for (int t = 0; t < this.values[i].length; t++)
+//        	      				for (int s = 0; s < this.values[i].length; s++){
+//        	      					if (t==s)
+//        	            				continue;
+//        	                		PrimitiveConstraint[] tFS = genericCreateConstantCondition(3, this.values[i][t]);
+//        	                		PrimitiveConstraint[] tPS = genericCreateConstantCondition(2, this.values[i][t]);
+//        	                		PrimitiveConstraint[] tPD = genericCreateConstantCondition(1, this.values[i][t]);
+//        	                		PrimitiveConstraint[] tFD = genericCreateConstantCondition(0, this.values[i][t]);
+//        	                		PrimitiveConstraint[] sFS = genericCreateConstantCondition(3, this.values[i][s]);
+//        	                		PrimitiveConstraint[] sPS = genericCreateConstantCondition(2, this.values[i][s]);
+//        	                		PrimitiveConstraint[] sPD = genericCreateConstantCondition(1, this.values[i][s]);
+//        	                		PrimitiveConstraint[] sFD = genericCreateConstantCondition(0, this.values[i][s]);
+//        	                		constraints.add(new IfThen(new And(
+//        	                				new And(new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t])),
+//        	                						new And(new XlteqY(segmentStart, this.timePoints[s]), new XgtY(segmentEnd, this.timePoints[s]))),
+//        	                				new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tFS))),
+//        	                				new And(sFS)));
+//        	                		constraints.add(new IfThen(new And(
+//        	                				new And(new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t])),
+//        	                						new And(new XlteqY(segmentStart, this.timePoints[s]), new XgtY(segmentEnd, this.timePoints[s]))),
+//        	                				new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tPS))),
+//        	            					new Or(new And(sFS), new And(sPS))));
+//        	                		constraints.add(new IfThen(new And(
+//        	                				new And(new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t])),
+//        	                						new And(new XlteqY(segmentStart, this.timePoints[s]), new XgtY(segmentEnd, this.timePoints[s]))),
+//        	                				new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tPD))),
+//        	            					new Or(new And(sFS), new Or(new And(sPS), new And(sPD)))));
+//        	                		constraints.add(new IfThen(new And(
+//        	                				new And(new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t])),
+//        	                						new And(new XlteqY(segmentStart, this.timePoints[s]), new XgtY(segmentEnd, this.timePoints[s]))),
+//        	                				new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tFD))),
+//        	            					new Or(new Or(new And(sFS), new And(sPS)), new Or(new And(sPD), new And(sFD)))));
+//        	            		}
+//        	      			// If previous segement was constant carry value forward for first value.
+//        	      			if ((nS != 0) && (segmentDynamic[nS - 1].equals(IntentionalElementDynamicType.CONST.getCode()))){
+//            	      			for (int t = 0; t < this.values[i].length; t++){
+//            	      				PrimitiveConstraint[] tempConstant = genericCreateConstantCondition(segmentDynamicValue[nS - 1], this.values[i][t]);
+//            	      				if (tempConstant == null){
+//            	      					System.err.println("ns - 1 for UD Dynamic Value for intention " + element.getId() + " has Unknown/None/Conflict value.");
+//            	      					break;
+//            	      				}
+//            	            		constraints.add(new IfThen(
+//            	            				new XeqY(segmentStart, this.timePoints[t]),
+//            	            				new And(tempConstant)));
+//            	            	}
+//        	      			}
+//        				} else if (segmentDynamic[nS].equals(IntentionalElementDynamicType.DEC.getCode())){
+//        	      			for (int t = 0; t < this.values[i].length; t++)
+//        	      				for (int s = 0; s < this.values[i].length; s++){
+//        	            			if (t==s)
+//        	            				continue;
+//        	                		PrimitiveConstraint[] tFS = genericCreateConstantCondition(3, this.values[i][t]);
+//        	                		PrimitiveConstraint[] tPS = genericCreateConstantCondition(2, this.values[i][t]);
+//        	                		PrimitiveConstraint[] tPD = genericCreateConstantCondition(1, this.values[i][t]);
+//        	                		PrimitiveConstraint[] tFD = genericCreateConstantCondition(0, this.values[i][t]);
+//        	                		PrimitiveConstraint[] sFS = genericCreateConstantCondition(3, this.values[i][s]);
+//        	                		PrimitiveConstraint[] sPS = genericCreateConstantCondition(2, this.values[i][s]);
+//        	                		PrimitiveConstraint[] sPD = genericCreateConstantCondition(1, this.values[i][s]);
+//        	                		PrimitiveConstraint[] sFD = genericCreateConstantCondition(0, this.values[i][s]);
+//        	                		// Allow any next value.
+//        	                		constraints.add(new IfThen(new And(
+//        	                				new And(new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t])),
+//        	                						new And(new XlteqY(segmentStart, this.timePoints[s]), new XgtY(segmentEnd, this.timePoints[s]))),
+//        	                				new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tFS))),
+//        	                				new Or(new Or(new And(sFS), new And(sPS)), new Or(new And(sPD), new And(sFD)))));
+//        	                		constraints.add(new IfThen(new And(
+//        	                				new And(new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t])),
+//        	                						new And(new XlteqY(segmentStart, this.timePoints[s]), new XgtY(segmentEnd, this.timePoints[s]))),
+//        	                				new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tPS))),
+//        	            					new Or(new And(sFD), new Or(new And(sPS), new And(sPD)))));
+//        	                		constraints.add(new IfThen(new And(
+//        	                				new And(new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t])),
+//        	                						new And(new XlteqY(segmentStart, this.timePoints[s]), new XgtY(segmentEnd, this.timePoints[s]))),
+//        	                				new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tPD))),
+//        	            					new Or(new And(sFD), new And(sPD))));
+//        	                		constraints.add(new IfThen(new And(
+//        	                				new And(new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t])),
+//        	                						new And(new XlteqY(segmentStart, this.timePoints[s]), new XgtY(segmentEnd, this.timePoints[s]))),
+//        	                				new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tFD))),
+//        	            					new And(sFD)));
+//        	            		}
+//        	      			// If previous segement was constant carry value forward for first value.
+//        	      			if ((nS != 0) && (segmentDynamic[nS - 1].equals(IntentionalElementDynamicType.CONST.getCode()))){
+//            	      			for (int t = 0; t < this.values[i].length; t++){
+//            	      				PrimitiveConstraint[] tempConstant = genericCreateConstantCondition(segmentDynamicValue[nS - 1], this.values[i][t]);
+//            	      				if (tempConstant == null){
+//            	      					System.err.println("ns - 1 for UD Dynamic Value for intention " + element.getId() + " has Unknown/None/Conflict value.");
+//            	      					break;
+//            	      				}
+//            	            		constraints.add(new IfThen(
+//            	            				new XeqY(segmentStart, this.timePoints[t]),
+//            	            				new And(tempConstant)));
+//            	            	}
+//        	      			}        				
+//        				}
+//        				
+//        			}
+//        		}else{
+//        			// TODO: Deal with repeating Functions.
+//        		}
         	}
     	}
 	}
 	
 	// Generic Functions
+	/**
+	 * @param satTrans
+	 * @param val
+	 * @param zero
+	 */
 	private static void genericStrongConflictPrevention(SatTranslation satTrans, BooleanVar[] val, IntVar zero){
 		BooleanVar[] sConflict = {val[0], val[3]};
 		satTrans.generate_and(sConflict, zero);	        					
 	}
+	/**
+	 * @param satTrans
+	 * @param val
+	 * @param zero
+	 */
 	private static void genericMediumConflictPrevention(SatTranslation satTrans, BooleanVar[] val, IntVar zero){
 		BooleanVar[] mConflict1 = {val[0], val[2]};
 		BooleanVar[] mConflict2 = {val[1], val[3]};
 		satTrans.generate_and(mConflict1, zero);	
 		satTrans.generate_and(mConflict2, zero);	
 	}
+	/**
+	 * @param satTrans
+	 * @param val
+	 * @param zero
+	 */
 	private static void genericWeakConflictPrevention(SatTranslation satTrans, BooleanVar[] val, IntVar zero){
 		BooleanVar[] wConflict = {val[1], val[2]};
 		satTrans.generate_and(wConflict, zero);	        					
 	}
+	/**
+	 * @param evaluation
+	 * @param val
+	 * @return
+	 */
 	private static PrimitiveConstraint[] genericCreateConstantCondition(int evaluation, BooleanVar[] val){
 		switch (evaluation) {
 		case 0:	
@@ -918,6 +961,11 @@ public class TroposCSPAlgorithm {
 		}
 		return null;
 	}
+	/**
+	 * @param constraintList
+	 * @param initialEvaluation
+	 * @param val
+	 */
 	private static void genericAddAssignmentConstraint(List<Constraint> constraintList, int initialEvaluation, BooleanVar[] val){
 		switch (initialEvaluation) {
 			case 0:	
@@ -950,6 +998,12 @@ public class TroposCSPAlgorithm {
 				break;
 		}
 	}
+	/**
+	 * @param satTrans
+	 * @param constraints
+	 * @param intentionsList
+	 * @param val
+	 */
 	private static void genericAddLinkConstraints(SatTranslation satTrans, List<Constraint> constraints, IntentionalElement[] intentionsList, BooleanVar[][][] val){
     	for (int e = 0; e < intentionsList.length; e++){
     		IntentionalElement element = intentionsList[e];
@@ -1208,6 +1262,12 @@ public class TroposCSPAlgorithm {
     		}
 		}
 	}
+	/**
+	 * @param store
+	 * @param satTrans
+	 * @param val
+	 * @param nodeName
+	 */
 	private static void genericInitialNodeValues(Store store, SatTranslation satTrans, BooleanVar[] val, String nodeName){
 		// Initialise BooleanVar
 		val[0] = new BooleanVar(store, "N" + nodeName + "_FD");
@@ -1220,6 +1280,14 @@ public class TroposCSPAlgorithm {
 		satTrans.generate_implication(val[0], val[1]);	
 		
 	}
+	/**
+	 * @param constraintList
+	 * @param elementList
+	 * @param val
+	 * @param epochCollection
+	 * @param currentAbsoluteTime
+	 * @param initialIndex
+	 */
 	private static void genericInitialNextStateDynamics(List<Constraint> constraintList, 
 			IntentionalElement[] elementList, BooleanVar[][][] val, 
 			HashMap<IntentionalElement, IntVar[]>  epochCollection, int currentAbsoluteTime,
@@ -1345,68 +1413,77 @@ public class TroposCSPAlgorithm {
 					System.err.println("UD functions must have at least one EB. Fix " + element.getId());
 					continue;
 				}	
-				UDFunction funcUD = element.getIntUDFunct();
-				if (!funcUD.isHasRepeat()){
-					//function does not repeat.
-					String[] segmentDynamic = funcUD.getEpochBasicFunction();
-					//int numSegments = funcUD.getNumSegment();		//Segments not EBs
-					//int[] segmentDynamicValue = funcUD.getEpochMarkedValues();
-					int nS = 0;
-					for (int w = epochs.length - 1; w > 0; w--)
-						if(epochs[w].value() <= currentAbsoluteTime){
-							nS = w + 1;
-							break;
-						}
-					if (segmentDynamic[nS].equals(IntentionalElementDynamicType.CONST.getCode())){
-						PrimitiveConstraint[] tempConstant = {	//Possible Helper
-								new XeqY(val[i][nextIndex][3], val[i][initialIndex][3]), 
-								new XeqY(val[i][nextIndex][2], val[i][initialIndex][2]),	
-								new XeqY(val[i][nextIndex][1], val[i][initialIndex][1]),
-								new XeqY(val[i][nextIndex][0], val[i][initialIndex][0])};
-						constraintList.add(new And(tempConstant)); 
-					} else if (segmentDynamic[nS].equals(IntentionalElementDynamicType.INC.getCode())){	
-						PrimitiveConstraint[] tFS = genericCreateConstantCondition(3, val[i][initialIndex]);
-						PrimitiveConstraint[] tPS = genericCreateConstantCondition(2, val[i][initialIndex]);
-						PrimitiveConstraint[] tPD = genericCreateConstantCondition(1, val[i][initialIndex]);
-						PrimitiveConstraint[] tFD = genericCreateConstantCondition(0, val[i][initialIndex]);
-						PrimitiveConstraint[] sFS = genericCreateConstantCondition(3, val[i][nextIndex]);
-						PrimitiveConstraint[] sPS = genericCreateConstantCondition(2, val[i][nextIndex]);
-						PrimitiveConstraint[] sPD = genericCreateConstantCondition(1, val[i][nextIndex]);
-						PrimitiveConstraint[] sFD = genericCreateConstantCondition(0, val[i][nextIndex]);
-						constraintList.add(new IfThen(new And(tFS),
-								new And(sFS)));
-						constraintList.add(new IfThen(new And(tPS),
-								new Or(new And(sFS), new And(sPS))));
-						constraintList.add(new IfThen(new And(tPD),
-								new Or(new And(sFS), new Or(new And(sPS), new And(sPD)))));
-						constraintList.add(new IfThen(new And(tFD),
-								new Or(new Or(new And(sFS), new And(sPS)), new Or(new And(sPD), new And(sFD)))));
-					} else if (segmentDynamic[nS].equals(IntentionalElementDynamicType.DEC.getCode())){
-						PrimitiveConstraint[] tFS = genericCreateConstantCondition(3, val[i][initialIndex]);
-						PrimitiveConstraint[] tPS = genericCreateConstantCondition(2, val[i][initialIndex]);
-						PrimitiveConstraint[] tPD = genericCreateConstantCondition(1, val[i][initialIndex]);
-						PrimitiveConstraint[] tFD = genericCreateConstantCondition(0, val[i][initialIndex]);
-						PrimitiveConstraint[] sFS = genericCreateConstantCondition(3, val[i][nextIndex]);
-						PrimitiveConstraint[] sPS = genericCreateConstantCondition(2, val[i][nextIndex]);
-						PrimitiveConstraint[] sPD = genericCreateConstantCondition(1, val[i][nextIndex]);
-						PrimitiveConstraint[] sFD = genericCreateConstantCondition(0, val[i][nextIndex]);
-						constraintList.add(new IfThen(new And(tFS),
-								new Or(new Or(new And(sFS), new And(sPS)), new Or(new And(sPD), new And(sFD)))));
-						constraintList.add(new IfThen(new And(tPS),
-								new Or(new And(sFD), new Or(new And(sPS), new And(sPD)))));
-						constraintList.add(new IfThen(new And(tPD),
-								new Or(new And(sFD), new And(sPD))));
-						constraintList.add(new IfThen(new And(tFD),
-								new And(sFD)));
-					}else{
-						// TODO: Deal with repeating Functions.
-					}
-				}
+//				UDFunctionCSP funcUD = element.getCspUDFunct();
+//				if (!funcUD.isHasRepeat()){
+//					//function does not repeat.
+//					String[] segmentDynamic = funcUD.getEpochBasicFunction();
+//					//int numSegments = funcUD.getNumSegment();		//Segments not EBs
+//					//int[] segmentDynamicValue = funcUD.getEpochMarkedValues();
+//					int nS = 0;
+//					for (int w = epochs.length - 1; w > 0; w--)
+//						if(epochs[w].value() <= currentAbsoluteTime){
+//							nS = w + 1;
+//							break;
+//						}
+//					if (segmentDynamic[nS].equals(IntentionalElementDynamicType.CONST.getCode())){
+//						PrimitiveConstraint[] tempConstant = {	//Possible Helper
+//								new XeqY(val[i][nextIndex][3], val[i][initialIndex][3]), 
+//								new XeqY(val[i][nextIndex][2], val[i][initialIndex][2]),	
+//								new XeqY(val[i][nextIndex][1], val[i][initialIndex][1]),
+//								new XeqY(val[i][nextIndex][0], val[i][initialIndex][0])};
+//						constraintList.add(new And(tempConstant)); 
+//					} else if (segmentDynamic[nS].equals(IntentionalElementDynamicType.INC.getCode())){	
+//						PrimitiveConstraint[] tFS = genericCreateConstantCondition(3, val[i][initialIndex]);
+//						PrimitiveConstraint[] tPS = genericCreateConstantCondition(2, val[i][initialIndex]);
+//						PrimitiveConstraint[] tPD = genericCreateConstantCondition(1, val[i][initialIndex]);
+//						PrimitiveConstraint[] tFD = genericCreateConstantCondition(0, val[i][initialIndex]);
+//						PrimitiveConstraint[] sFS = genericCreateConstantCondition(3, val[i][nextIndex]);
+//						PrimitiveConstraint[] sPS = genericCreateConstantCondition(2, val[i][nextIndex]);
+//						PrimitiveConstraint[] sPD = genericCreateConstantCondition(1, val[i][nextIndex]);
+//						PrimitiveConstraint[] sFD = genericCreateConstantCondition(0, val[i][nextIndex]);
+//						constraintList.add(new IfThen(new And(tFS),
+//								new And(sFS)));
+//						constraintList.add(new IfThen(new And(tPS),
+//								new Or(new And(sFS), new And(sPS))));
+//						constraintList.add(new IfThen(new And(tPD),
+//								new Or(new And(sFS), new Or(new And(sPS), new And(sPD)))));
+//						constraintList.add(new IfThen(new And(tFD),
+//								new Or(new Or(new And(sFS), new And(sPS)), new Or(new And(sPD), new And(sFD)))));
+//					} else if (segmentDynamic[nS].equals(IntentionalElementDynamicType.DEC.getCode())){
+//						PrimitiveConstraint[] tFS = genericCreateConstantCondition(3, val[i][initialIndex]);
+//						PrimitiveConstraint[] tPS = genericCreateConstantCondition(2, val[i][initialIndex]);
+//						PrimitiveConstraint[] tPD = genericCreateConstantCondition(1, val[i][initialIndex]);
+//						PrimitiveConstraint[] tFD = genericCreateConstantCondition(0, val[i][initialIndex]);
+//						PrimitiveConstraint[] sFS = genericCreateConstantCondition(3, val[i][nextIndex]);
+//						PrimitiveConstraint[] sPS = genericCreateConstantCondition(2, val[i][nextIndex]);
+//						PrimitiveConstraint[] sPD = genericCreateConstantCondition(1, val[i][nextIndex]);
+//						PrimitiveConstraint[] sFD = genericCreateConstantCondition(0, val[i][nextIndex]);
+//						constraintList.add(new IfThen(new And(tFS),
+//								new Or(new Or(new And(sFS), new And(sPS)), new Or(new And(sPD), new And(sFD)))));
+//						constraintList.add(new IfThen(new And(tPS),
+//								new Or(new And(sFD), new Or(new And(sPS), new And(sPD)))));
+//						constraintList.add(new IfThen(new And(tPD),
+//								new Or(new And(sFD), new And(sPD))));
+//						constraintList.add(new IfThen(new And(tFD),
+//								new And(sFD)));
+//					}else{
+//						// TODO: Deal with repeating Functions.
+//					}
+//				}
 			}
 		}
 	
 	}
 	
+	/**
+	 * @param allSolutions
+	 * @param singleState
+	 * @param store
+	 * @param label
+	 * @param constraints
+	 * @param varList
+	 * @return
+	 */
 	private static boolean genericFindSolution(boolean allSolutions, boolean singleState, Store store, Search<IntVar> label, List<Constraint> constraints, IntVar[] varList) {
 		label.getSolutionListener().recordSolutions(true);	// Record steps in search.
         label.setPrintInfo(false); 							// Set to false if you don't want the CSP to print the solution as you go.
@@ -1437,6 +1514,9 @@ public class TroposCSPAlgorithm {
 	}
 	
 	// Methods for initial search.
+	/**
+	 * @return
+	 */
 	private IntVar[] createVarList(){
 		if (this.spec.isSolveNextState()){
 			// TODO: Test - Solve a single state.
@@ -1479,6 +1559,9 @@ public class TroposCSPAlgorithm {
 			return fullList;
 		}
 	}
+	/**
+	 * @return
+	 */
 	private int[] createTimePointOrder() {
 		if (this.spec.isSolveNextState()){
 			//TODO: Actually make correct.
@@ -1519,6 +1602,9 @@ public class TroposCSPAlgorithm {
 			return indexOrder;
 		}
 	}
+	/**
+	 * @param indexOrder
+	 */
 	private void printSingleSolution(int[] indexOrder) {
 		// Print out timepoint data.
     	for (int i = 0; i < indexOrder.length; i++){
@@ -1551,6 +1637,9 @@ public class TroposCSPAlgorithm {
     		System.out.print(this.epochs[i].id + "-" + this.epochs[i].value() + "\t");
    		}   		
 	}	
+	/**
+	 * @param indexOrder
+	 */
 	private void saveSingleSolution(int[] indexOrder) {	
 		int[] finalValueTimePoints = new int[indexOrder.length];
     	for (int i = 0; i < indexOrder.length; i++)
@@ -1577,6 +1666,9 @@ public class TroposCSPAlgorithm {
     	this.spec.setFinalAssignedEpochs(finalAssignedEpochs);
 	}
 	
+	/**
+	 * @return
+	 */
 	public boolean solveModel(){
 		Search<IntVar> label = new DepthFirstSearch<IntVar>();
 
@@ -1595,6 +1687,9 @@ public class TroposCSPAlgorithm {
 			return true;
 		}
 	}
+	/**
+	 * @param label
+	 */
 	private void saveAllSolution(Search<IntVar> label) {
 		if (this.spec.isSolveNextState()){
 			//TODO: Fix with proper code.
@@ -1640,6 +1735,10 @@ public class TroposCSPAlgorithm {
 	}
 	
 	
+	/**
+	 * @param stateNum
+	 * @param timeOrder
+	 */
 	@SuppressWarnings("unused")
 	private void exploreState(int stateNum, int[] timeOrder){
 		int nodeIndex = timeOrder[stateNum];
@@ -1724,10 +1823,12 @@ public class TroposCSPAlgorithm {
     	}
 	}
 	
-	
-	private static final String FILENAME = "stored-models/single-node"; //stored-models/testEB-Values"; //stored-models/simple-AND"; //models/UD-fuc-repeat.leaf"; //city-tropos-2.leaf"; //backward-test-helps.leaf"; //city-tropos-2.leaf";	 //sebastiani-fig1.leaf"; 
-	
+	/**
+	 * main used for testing
+	 * @param args	command line argument with name of input file.
+	 */
 	public static void main(String[] args) {
+		String FILENAME = "stored-models/single-node"; //stored-models/testEB-Values"; //stored-models/simple-AND"; //models/UD-fuc-repeat.leaf"; //city-tropos-2.leaf"; //backward-test-helps.leaf"; //city-tropos-2.leaf";	 //sebastiani-fig1.leaf";
 		try {
 			// Version 2
 			String filename = "";

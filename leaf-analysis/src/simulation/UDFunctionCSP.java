@@ -22,6 +22,11 @@ public class UDFunctionCSP {
 		// 	D	0000	UD	4	0	A	C	2	A	B	C	3	B	C	C	0	C	1	C	1	R	A	C	2
 		// 	D	0000	UD	4	0	A	C	2	A	B	C	3	B	C	C	0	C	1	C	1	R	A	C	2	5	5	
 
+		/**
+		 * Constructs the UD function by:
+		 * 	- 
+		 * @param inputLine	the line containing the UD function information
+		 */
 		public UDFunctionCSP(String inputLine) {
 			
 			// Step 1: Read Data
