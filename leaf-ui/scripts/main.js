@@ -24,10 +24,9 @@ var loader;
 var reader;
 
 //Properties for both core and simulator.
-var satvalues = {satisfied: 2, partiallysatisfied: 1, partiallydenied: -1, denied: -2, unknown: 0, conflict: 3, none: 4};
+var satvalues = {satisfied: 2, partiallysatisfied: 1, partiallydenied: -1, denied: -2, unknown: 4, conflict: 3, none: 0};
 
 //var functions = {A: 'AI', O: 'OI', N: 'NT', M: 'MP', R: 'R', S: 'SP', MN: 'MN', SN: 'SN', U: 'UD'};
-
 
 // ----------------------------------------------------------------- //
 // Page setup
@@ -394,9 +393,14 @@ function loadAnalysis(analysisResults){
 // Slider creation and update
 function updateSlider(currentAnalysis, pastAnalysisStep){
 	var analysisMarkers;
-
+	
+	if(!sliderObject.sliderElement){
+		sliderObject.sliderElement = document.getElementById('slider');
+		sliderObject.sliderValueElement = document.getElementById('sliderValue');
+	}
+		
 	// First create slider
-	if(!sliderObject.sliderElement.noUiSlider){
+	if(!sliderObject.sliderElement.hasOwnProperty('noUiSlider')){
 		var currentValueLimit = 0;
 		var sliderMax = currentAnalysis.timeScale;
 
@@ -524,12 +528,13 @@ function updateValues(c, v, m){
 		//var satvalues = ["denied", "partiallydenied", "partiallysatisfied", "satisfied", "unknown", "none"];
 		cell = graphObject.allElements[c];
 		value = v;
-		cell.attr(".satvalue/value", v);
+		cell.attributes.attrs[".satvalue"].value = v;
+		//cell.attr(".satvalue/value", v);
 
 	//Update node based on values saved from graph prior to analysis
 	}else if (m == "toInitModel"){
 		cell = graphObject.allElements[c];
-		value = v.attributes.attrs.satvalue.value;
+		value = cell.attributes.attrs[".satvalue"].value;
 	}
 
 	//Update images for properties
@@ -1345,5 +1350,3 @@ window.onclick = function(event) {
         modal.style.display = "none";
     }
 }
-
-
