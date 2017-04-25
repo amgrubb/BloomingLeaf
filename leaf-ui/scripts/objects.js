@@ -55,7 +55,7 @@ analysisObject.initFromBackEnd = function(analysisResults){
 	
 	for (var i = 0; i < this.numOfElements ; i++){
 		//strips first element since it is already shown on graph
-		var results = analysisResults.elementList[i].valueList;
+		var results = analysisResults.elementList[i].status;
 		results.pop(0);
 		this.elements.push(results)
 	}
@@ -66,7 +66,7 @@ analysisObject.initFromBackEnd = function(analysisResults){
 analysisObject.nextStates = function(analysisResults){
 	this.elements = [];
 	this.numOfElements = Number(analysisResults.elementList.length);
-	this.timeScale = Number(analysisResults.elementList[0].valueList.length) - 1;
+	this.timeScale = Number(analysisResults.elementList[0].status.length) - 1;
 	this.relativeTime = [];
 	
 	for(var i = 0; i < this.timeScale; i++){
@@ -75,7 +75,7 @@ analysisObject.nextStates = function(analysisResults){
 	
 	for (var i = 0; i < this.numOfElements ; i++){
 		//strips first element since it is already shown on graph
-		var results = analysisResults.elementList[i].valueList;
+		var results = analysisResults.elementList[i].status;
 		results.pop(0);
 		this.elements.push(results)
 	}

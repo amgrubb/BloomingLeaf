@@ -2,6 +2,7 @@ package simulation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import interface_objects.IOIntention;
 import interface_objects.IOStateModel;
@@ -95,9 +96,33 @@ public class ModelSpecBuilder {
 				}
 				modelSpec.setInitialValueTimePoints(initialValueTimePointsArray);
 
-			}
-			
+				//Getting initial Values of all selected states
+				List<IOIntention> elementList = analysis.getElementList();
 				
+				boolean[][][] initialValues = new boolean[elementList.size()][currentState+1][4];
+				
+				for(int i_state = 0; i_state <= currentState; i_state++){
+					for(IOIntention intElement : elementList){
+						String[] values = intElement.getStatus();
+						if(values[0]!=null){
+							for(int i = 0; i < 4; i++){
+								if(values[0].charAt(i)=='1'){
+									initialValues[Integer.parseInt(intElement.getId())][i_state][i] = true;
+								}else{
+									initialValues[Integer.parseInt(intElement.getId())][i_state][i] = false;
+								}						
+							}						
+						}else{
+							initialValues[Integer.parseInt(intElement.getId())][i_state][0] = false;
+							initialValues[Integer.parseInt(intElement.getId())][i_state][1] = false;
+							initialValues[Integer.parseInt(intElement.getId())][i_state][2] = false;
+							initialValues[Integer.parseInt(intElement.getId())][i_state][3] = false;						
+						}
+					}
+				}
+
+				modelSpec.setInitialValues(initialValues);
+			}
 			
 			//-----------------------------------------------------------------------------------
 			//MODEL
@@ -199,35 +224,37 @@ public class ModelSpecBuilder {
 				}
 			}
 			
-			//Getting initial Values
-			ArrayList<IOStateModel> stateModels = (ArrayList<IOStateModel>) frontendModel.getAllStatesModel();
-			
-			boolean[][][] initialValues = new boolean[stateModels.get(0).getIntentionElements().size()][stateModels.size()][4];
-			
-			int num_time = -1;
-			for(IOStateModel stateModel : stateModels){
-				num_time++;
-				for(IOIntention intElement : stateModel.getIntentionElements()){
-					String[] values = intElement.getStatus();
-					if(values[0]!=null){
-						for(int i = 0; i < 4; i++){
-							if(values[0].charAt(i)=='1'){
-								initialValues[Integer.parseInt(intElement.getId())][num_time][i] = true;
-							}else{
-								initialValues[Integer.parseInt(intElement.getId())][num_time][i] = false;
+			if(modelSpec.isSolveSingleSolutions()){
+				//Getting initial Values
+				ArrayList<IOStateModel> stateModels = (ArrayList<IOStateModel>) frontendModel.getAllStatesModel();
+				
+				boolean[][][] initialValues = new boolean[stateModels.get(0).getIntentionElements().size()][stateModels.size()][4];
+				
+				int num_time = -1;
+				for(IOStateModel stateModel : stateModels){
+					num_time++;
+					for(IOIntention intElement : stateModel.getIntentionElements()){
+						String[] values = intElement.getStatus();
+						if(values[0]!=null){
+							for(int i = 0; i < 4; i++){
+								if(values[0].charAt(i)=='1'){
+									initialValues[Integer.parseInt(intElement.getId())][num_time][i] = true;
+								}else{
+									initialValues[Integer.parseInt(intElement.getId())][num_time][i] = false;
+								}						
 							}						
-						}						
-					}else{
-						initialValues[Integer.parseInt(intElement.getId())][num_time][0] = false;
-						initialValues[Integer.parseInt(intElement.getId())][num_time][1] = false;
-						initialValues[Integer.parseInt(intElement.getId())][num_time][2] = false;
-						initialValues[Integer.parseInt(intElement.getId())][num_time][3] = false;						
-					}
+						}else{
+							initialValues[Integer.parseInt(intElement.getId())][num_time][0] = false;
+							initialValues[Integer.parseInt(intElement.getId())][num_time][1] = false;
+							initialValues[Integer.parseInt(intElement.getId())][num_time][2] = false;
+							initialValues[Integer.parseInt(intElement.getId())][num_time][3] = false;						
+						}
 
+					}
 				}
+				
+				modelSpec.setInitialValues(initialValues);				
 			}
-			
-			modelSpec.setInitialValues(initialValues);
 			
 		}catch (Exception e) {
 			throw new RuntimeException(e.getMessage()); 

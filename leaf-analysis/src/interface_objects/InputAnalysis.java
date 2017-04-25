@@ -12,7 +12,7 @@ public class InputAnalysis {
 	private String currentState;
 	private String initialAssignedEpoch;
 	private String initialValueTimePoints;
-	private List<IOStateModel> elementList;
+	private List<IOIntention> elementList;
 	
 	public String getCurrentState() {
 		return currentState;
@@ -86,11 +86,11 @@ public class InputAnalysis {
 		this.initialValueTimePoints = initialValueTimePoints;
 	}
 
-	public List<IOStateModel> getElementList() {
+	public List<IOIntention> getElementList() {
 		return elementList;
 	}
 
-	public void setElementList(List<IOStateModel> elementList) {
+	public void setElementList(List<IOIntention> elementList) {
 		this.elementList = elementList;
 	}
 	

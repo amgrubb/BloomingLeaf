@@ -1705,7 +1705,7 @@ public class TroposCSPAlgorithm {
 
 			// int solNum = 1;	/// NOTE: Solution number starts at 1 not 0!!!
 			boolean[][][][] finalValues = new boolean[totalSolution][this.intentions.length][this.values[0].length][4];
-			for (int s = 1; s <= totalSolution; s++){
+			for (int s = 1; s < totalSolution; s++){
 				int solIndex = 0;
 				System.out.println(s);
 				for (int i = 0; i < this.intentions.length; i++)

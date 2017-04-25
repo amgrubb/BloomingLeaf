@@ -6,7 +6,7 @@ import java.util.List;
 public class OutputElement {
 
 	private String id;
-	private List<String> valueList = new ArrayList<>();
+	private List<String> status = new ArrayList<>();
 	
 	public String getId() {
 		return id;
@@ -16,16 +16,12 @@ public class OutputElement {
 		this.id = string;
 	}
 
-	public List<String> getValueList() {
-		return valueList;
+	public List<String> getStatus() {
+		return status;
 	}
 
-	public void setValueList(List<String> valueList) {
-		this.valueList = valueList;
-	}
-
-	public List<String> getValuesList() {
-		return this.valueList;
+	public void setStatus(List<String> valueList) {
+		this.status = valueList;
 	}
 
 }

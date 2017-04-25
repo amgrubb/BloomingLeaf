@@ -264,7 +264,7 @@ public class ModelSpec {
         				value.append("0");
         			}
         		}
-        			outputElement.getValueList().add(value.toString());
+        			outputElement.getStatus().add(value.toString());
     		}
     		output.getElementList().add(outputElement);
     	} 
