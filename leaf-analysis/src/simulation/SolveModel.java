@@ -1,5 +1,6 @@
 package simulation;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.PrintWriter;
@@ -55,19 +56,20 @@ public class SolveModel {
 	 * Name of the file to be read by CGI to be sent to frontend
 	 */
 	private static void createOutputFile(TroposCSPAlgorithm solver, String fileName) {
-		//Need to create the file and folder if it doesn't exist
-	
 		//Gson gson = new Gson();		
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		OutputModel outputModel = solver.getSpec().getOutputModel();
 		
 		try {
-			FileWriter file;
-			file = new FileWriter(fileName);
+			File file;
+			file = new File(fileName);
+			if (!file.exists()) {
+				file.createNewFile();
+			}
 			PrintWriter printFile = new PrintWriter(file);
 			//printFile.printf(sb.toString());
 			printFile.printf(gson.toJson(outputModel));
-			file.close();
+			printFile.close();
 		} catch (Exception e) {
 			throw new RuntimeException("Error in createOutputFile: " + e.getMessage());
 		}
