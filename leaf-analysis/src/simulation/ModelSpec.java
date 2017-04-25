@@ -20,10 +20,10 @@ public class ModelSpec {
 	
 	private List<IntentionalElement> intElements = new ArrayList<IntentionalElement>();
 	private List<Actor> actors = new ArrayList<Actor>();
+	private List<NotBothLink> notBothLink = new ArrayList<NotBothLink>();
 	private List<EvolutionLink> evolutionLink = new ArrayList<EvolutionLink>(); 
 	private List<Contribution> contribution = new ArrayList<Contribution>();
 	private List<Decomposition> decomposition = new ArrayList<Decomposition>();
-	private List<Dependency> dependency = new ArrayList<Dependency>();
 	private List<EpochConstraint> constraintsBetweenEpochs = new ArrayList<EpochConstraint>();
 	private int maxTime = 5;
 	private int numActors = 0;
@@ -170,14 +170,6 @@ public class ModelSpec {
 		this.decomposition = decomposition;
 	}
 
-	public List<Dependency> getDependency() {
-		return dependency;
-	}
-
-	public void setDependency(List<Dependency> dependency) {
-		this.dependency = dependency;
-	}
-
 	public int getNumActors() {
 		return numActors;
 	}
@@ -293,6 +285,14 @@ public class ModelSpec {
 
 		return output;
 
+	}
+
+	public List<NotBothLink> getNotBothLink() {
+		return notBothLink;
+	}
+
+	public void setNotBothLink(List<NotBothLink> notBothLink) {
+		this.notBothLink = notBothLink;
 	}
 	
 }

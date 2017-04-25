@@ -12,8 +12,7 @@ public class IntentionalElement extends LinkableElement {
 	Actor actor = null;
 	IntentionalElementType type = IntentionalElementType.GOAL;
 	public IntentionalElementDynamicType dynamicType = IntentionalElementDynamicType.NT;
-	boolean userDefinedDynamicType = false;
-	UDFunction intUDFunct = null;	
+	boolean userDefinedDynamicType = false;	
 	UDFunctionCSP cspUDFunct = null;
 	boolean[] dynamicFunctionMarkedValue;
 	
@@ -45,10 +44,6 @@ public class IntentionalElement extends LinkableElement {
 		this.userDefinedDynamicType = userDefinedDynamicType;
 	}
 
-	public void setIntUDFunct(UDFunction intUDFunct) {
-		this.intUDFunct = intUDFunct;
-	}
-
 	public void setCspUDFunct(UDFunctionCSP cspUDFunct) {
 		this.cspUDFunct = cspUDFunct;
 	}
@@ -56,11 +51,7 @@ public class IntentionalElement extends LinkableElement {
 	public boolean isUserDefinedDynamicType() {
 		return userDefinedDynamicType;
 	}
-	
-	public UDFunction getIntUDFunct() {
-		return intUDFunct;
-	}
-	
+		
 	public UDFunctionCSP getCspUDFunct() {
 		return cspUDFunct;
 	}
@@ -68,7 +59,6 @@ public class IntentionalElement extends LinkableElement {
 	public void setUserDefinedDynamicType(String inputLine, int maxEpoch) {
 		this.userDefinedDynamicType = true;
 		this.dynamicType = IntentionalElementDynamicType.UD;
-		this.intUDFunct = new UDFunction(inputLine, maxEpoch);
 		this.cspUDFunct = new UDFunctionCSP(inputLine);
 	}
 	

@@ -8,23 +8,30 @@ public class UDFunctionCSP {
 		int mapStart;
 		int mapEnd;
 		
-		//	D	0010	UD	4	0	A	C	1	A	B	C	2	B	C	I	3	C	1	C	5	N
-		//	D	0011	UD	5	0	A	I	3	A	B	C	5	B	C	D	0	C	D	R	5	D	1	C	5	R	A	D
-		//	D	0025	UD	5	0	A	C	5	A	B	I	3	B	C	D	0	C	D	R	5	D	1	C	5	R	A	D
-		//	D	0029	UD	5	0	A	C	0	A	B	C	5	B	C	C	1	C	D	R	5	D	1	C	5	N
-		//	D	ElemID	UD 	#parts | (begin | End | FuncType | SatValue)* | 'N'
-		//	D	ElemID	UD 	#parts | (begin | End | FuncType | SatValue)* | 'R' | repeatBegin | repeatEnd
-		//  With Absolute Time and Tropos
-		// 		need to add the abilities numRepeat, intervalSet
-		//	D	ElemID	UD 	#parts | (begin | End | FuncType | SatValue)* | 'R' | repeatBegin | repeatEnd | numRepeats
-		//	D	ElemID	UD 	#parts | (begin | End | FuncType | SatValue)* | 'R' | repeatBegin | repeatEnd | numRepeats | lengthOfSegment*
-		// 	D	0000	UD	4	0	A	C	2	A	B	C	3	B	C	C	0	C	1	C	1	R	A	C
-		// 	D	0000	UD	4	0	A	C	2	A	B	C	3	B	C	C	0	C	1	C	1	R	A	C	2
-		// 	D	0000	UD	4	0	A	C	2	A	B	C	3	B	C	C	0	C	1	C	1	R	A	C	2	5	5	
 
+		/**
+		 * Constructs the UD function by:
+		 * 	- Reading the function data.
+		 *  - Unrolling any loops.
+		 *  - Creating epochs for repeating parts.
+		 *  - 25/04/17 Note: The current implementation takes absolute values for each part of the repeating segment. The formalism says that it only takes
+		 *  			a single value for lengthOfSegment.
+		 * @param inputLine	the line containing the UD function information
+		 * 			Sample inputLine Format
+		 *  D	ElemID	UD 	#parts | (begin | End | FuncType | SatValue)* | 'N'
+		 *  D	ElemID	UD 	#parts | (begin | End | FuncType | SatValue)* | 'R' | repeatBegin | repeatEnd
+		 *  D	ElemID	UD 	#parts | (begin | End | FuncType | SatValue)* | 'R' | repeatBegin | repeatEnd | numRepeats
+		 *  D	ElemID	UD 	#parts | (begin | End | FuncType | SatValue)* | 'R' | repeatBegin | repeatEnd | numRepeats | lengthOfSegment*
+		 *  		Sample inputLine Examples
+		 *  D	0010	UD	4	0	A	C	1	A	B	C	2	B	C	I	3	C	1	C	5	N
+		 *  D	0011	UD	5	0	A	I	3	A	B	C	5	B	C	D	0	C	D	R	5	D	1	C	5	R	A	D
+		 *  D	0025	UD	5	0	A	C	5	A	B	I	3	B	C	D	0	C	D	R	5	D	1	C	5	R	A	D
+		 *  D	0029	UD	5	0	A	C	0	A	B	C	5	B	C	C	1	C	D	R	5	D	1	C	5	N
+		 *  D	0000	UD	4	0	A	C	2	A	B	C	3	B	C	C	0	C	1	C	1	R	A	C
+		 *  D	0000	UD	4	0	A	C	2	A	B	C	3	B	C	C	0	C	1	C	1	R	A	C	2
+		 *  D	0000	UD	4	0	A	C	2	A	B	C	3	B	C	C	0	C	1	C	1	R	A	C	2	5	5	
+		 */
 		public UDFunctionCSP(String inputLine) {
-			
-			// Step 1: Read Data
 			String[] values = inputLine.split("\\t");
 
 			// values[0-2] are "D", intentionID, and "UD".
@@ -69,8 +76,6 @@ public class UDFunctionCSP {
 					for (int i = 0; i < this.absoluteEpochLengths.length; i++)
 						this.absoluteEpochLengths[i] = Integer.parseInt(values[count + 4 + i]);
 				}
-
-
 				
 				this.functions =  new String[totalNumSegment];
 				this.dynamicValues = new int[totalNumSegment];
@@ -100,7 +105,6 @@ public class UDFunctionCSP {
 				}
 			} else
 				System.err.println("UD Reading Erorr");
-			printUDFunction();
 		}
 				
 		// Getter Methods
@@ -155,7 +159,7 @@ public class UDFunctionCSP {
 			//	D	0029	UD	5	0	A	C	0	A	B	C	5	B	C	C	1	C	D	R	5	D	1	C	5	N
 			//D	0000	UD	4	0	A	C	2	A	B	C	3	B	C	C	0	C	1	C	1	R	A	C";
 			// 	D	0000	UD	4	0	A	C	2	A	B	C	3	B	C	C	0	C	1	C	1	R	A	C	2
-			String test = "D	0000	UD	4	0	A	C	2	A	B	C	3	B	C	C	0	C	1	C	1	R	B	1	2	5	5";	
+			String test = "D	0000	UD	4	0	A	C	2	A	B	C	3	B	C	C	0	C	1	C	1	R	0	B	2	5	5";	
 			UDFunctionCSP func = new UDFunctionCSP(test);
 			func.printUDFunction();
 		}

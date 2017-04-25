@@ -6,6 +6,7 @@ leaf-ui/rappid/*
 
 leaf-ui/cgi-bin/temp/*.out
 leaf-ui/cgi-bin/temp/output.*
+leaf-analysis/doc/*
 
 *.class
 

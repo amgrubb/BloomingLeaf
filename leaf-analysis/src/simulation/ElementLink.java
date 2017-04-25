@@ -11,7 +11,6 @@ public class ElementLink {
 	LinkableElement src = null;
 	LinkableElement dest = null;
 	String type = "link";
-	boolean activeLink = true;
 	
 	public String getType() {
 		return type;
@@ -25,7 +24,6 @@ public class ElementLink {
 		dest = d;
 		s.addLinksAsSrc(this);
 		d.addLinksAsDest(this);
-		activeLink = true;
 	}
 
 	/**
@@ -55,10 +53,5 @@ public class ElementLink {
 	public void setDest(LinkableElement dest) {
 		this.dest = dest;
 	}
-
-	public boolean isActiveLink() {
-		return activeLink;
-	}
-	
 
 }
