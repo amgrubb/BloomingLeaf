@@ -47,9 +47,6 @@ public class EvolutionLink extends ElementLink {
         	preLink = new Decomposition(s, d, DecompositionType.getByCode(preType));
         else if (ContributionType.getByCode(preType) != null)
         	preLink = new Contribution(src, dest, ContributionType.getByCode(preType));
-        else if (preType.equals("DEP") || preType.equalsIgnoreCase("DEPENDS"))
-        	preLink = new Dependency(dest, src);
-
 		
 		if (postType.equals("NA"))
         	postLink = null;
@@ -57,23 +54,15 @@ public class EvolutionLink extends ElementLink {
         	postLink = new Decomposition(s, d, DecompositionType.getByCode(postType));
         else if (ContributionType.getByCode(postType) != null)
         	postLink = new Contribution(src, dest, ContributionType.getByCode(postType));
-        else if (postType.equals("DEP") || postType.equalsIgnoreCase("DEPENDS"))
-        	postLink = new Dependency(dest, src);
 		
 		if (((preLink instanceof Contribution) || (postLink instanceof Contribution)) &&
-			((preLink instanceof Decomposition) || (postLink instanceof Decomposition) ||
-			 (preLink instanceof Dependency) || (postLink instanceof Dependency)))
-			System.err.println("Contribution Links cannot be paired with Dependency/Decomposition");
+			((preLink instanceof Decomposition) || (postLink instanceof Decomposition)))
+			System.err.println("Contribution Links cannot be paired with Decomposition");
 		
 		if (((preLink instanceof Decomposition) || (postLink instanceof Decomposition)) &&
-			((preLink instanceof Contribution) || (postLink instanceof Contribution) ||
-			 (preLink instanceof Dependency) || (postLink instanceof Dependency)))
-			System.err.println("Decomposition Links cannot be paired with Dependency/Contribution");
+			((preLink instanceof Contribution) || (postLink instanceof Contribution)))
+			System.err.println("Decomposition Links cannot be paired with Contribution");
 
-		if (((preLink instanceof Dependency) || (postLink instanceof Dependency)) &&
-			((preLink instanceof Decomposition) || (postLink instanceof Decomposition) ||
-			 (preLink instanceof Contribution) || (postLink instanceof Contribution)))
-			System.err.println("Dependency Links cannot be paired with Contribution/Decomposition");
 		
 		if (postLink != null)
 			postLink.activeLink = false;

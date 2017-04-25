@@ -166,8 +166,6 @@ public class ModelSpecBuilder {
 			        	modelSpec.getDecomposition().add(new Decomposition(src, dest, DecompositionType.getByCode(dataLink.getLinkType())));
 			        else if (ContributionType.getByCode(dataLink.getLinkType()) != null)
 			        	modelSpec.getContribution().add(new Contribution(src, dest, ContributionType.getByCode(dataLink.getLinkType())));
-			        else if (dataLink.getLinkType().equals("DEP") || dataLink.getLinkType().equalsIgnoreCase("DEPENDS"))
-			        	modelSpec.getDependency().add(new Dependency(dest, src));		//TODO: Figure out if these should be flipped.
 				}
 			}
 	

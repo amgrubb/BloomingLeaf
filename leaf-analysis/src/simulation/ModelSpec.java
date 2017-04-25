@@ -24,7 +24,6 @@ public class ModelSpec {
 	private List<EvolutionLink> evolutionLink = new ArrayList<EvolutionLink>(); 
 	private List<Contribution> contribution = new ArrayList<Contribution>();
 	private List<Decomposition> decomposition = new ArrayList<Decomposition>();
-	private List<Dependency> dependency = new ArrayList<Dependency>();
 	private List<EpochConstraint> constraintsBetweenEpochs = new ArrayList<EpochConstraint>();
 	private int maxTime = 5;
 	private int numActors = 0;
@@ -169,14 +168,6 @@ public class ModelSpec {
 
 	public void setDecomposition(List<Decomposition> decomposition) {
 		this.decomposition = decomposition;
-	}
-
-	public List<Dependency> getDependency() {
-		return dependency;
-	}
-
-	public void setDependency(List<Dependency> dependency) {
-		this.dependency = dependency;
 	}
 
 	public int getNumActors() {

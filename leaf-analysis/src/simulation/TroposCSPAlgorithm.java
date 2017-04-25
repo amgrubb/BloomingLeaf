@@ -1031,8 +1031,7 @@ public class TroposCSPAlgorithm {
        		//  Divides links into ArrayLists of their types.
     		//  Collect elements by type of links into different collections(And, Or, Dependency, Contribution).
     		List<IntentionalElement> andDecompositionElements = new ArrayList<IntentionalElement>(); 
-    		List<IntentionalElement> orDecompositionElements = new ArrayList<IntentionalElement>(); 
-    		List<IntentionalElement> dependencyElements = new ArrayList<IntentionalElement>(); 
+    		List<IntentionalElement> orDecompositionElements = new ArrayList<IntentionalElement>();  
     		List<IntentionalElement> contributionElements = new ArrayList<IntentionalElement>();  
     		List<ContributionType> contributionTypes = new ArrayList<ContributionType>();
     		for (ListIterator<ElementLink> linksIteratorDest = element.getLinksDest().listIterator(); linksIteratorDest.hasNext();){   //Return the list of elementlink
@@ -1044,13 +1043,6 @@ public class TroposCSPAlgorithm {
     					} else {
     						orDecompositionElements.add((IntentionalElement) link.getSrc());
     					}
-    				} else if (link instanceof Dependency) {		
-    					if(link.getSrc() instanceof IntentionalElement)
-    						dependencyElements.add((IntentionalElement) link.getSrc()); 
-    					else if (link.getSrc() instanceof Actor)
-    						System.out.println("Actor Link found and ignored.");
-    					else
-    						System.err.println("Error: Unknown element found.");
     				} else if (link instanceof Contribution) {
     					contributionElements.add((IntentionalElement) link.getSrc());
     					contributionTypes.add(((Contribution) link).getContribution());
@@ -1145,19 +1137,7 @@ public class TroposCSPAlgorithm {
     				}
     			}
     		}
-    		if (dependencyElements.size() != 0) { 
-    			int numLinks = dependencyElements.size();
-    			for (int t = 0; t < val[targetID].length; t++){
-    				for (int i = 0; i < numLinks; i++) {
-    					int sourceID = dependencyElements.get(i).getIdNum();
-    					satTrans.generate_implication(val[sourceID][t][3], val[targetID][t][3]);
-    					satTrans.generate_implication(val[sourceID][t][2], val[targetID][t][2]);
-    					satTrans.generate_implication(val[sourceID][t][1], val[targetID][t][1]);
-    					satTrans.generate_implication(val[sourceID][t][0], val[targetID][t][0]);
-    				}
-    			}
-    		}
-    		
+ 		
     		
     		
     		/*********************************************************************************************
@@ -1165,8 +1145,7 @@ public class TroposCSPAlgorithm {
     		 *********************************************************************************************/
     		// Already collected values...
 //    		List<IntentionalElement> andDecompositionElements = new ArrayList<IntentionalElement>(); 
-//    		List<IntentionalElement> orDecompositionElements = new ArrayList<IntentionalElement>(); 
-//    		List<IntentionalElement> dependencyElements = new ArrayList<IntentionalElement>(); 
+//    		List<IntentionalElement> orDecompositionElements = new ArrayList<IntentionalElement>();  
 //    		List<IntentionalElement> contributionElements = new ArrayList<IntentionalElement>();  
 //    		List<ContributionType> contributionTypes = new ArrayList<ContributionType>();
     		    		
@@ -1256,17 +1235,7 @@ public class TroposCSPAlgorithm {
     				}
 
     			}
-    			if (dependencyElements.size() != 0) { 
-    				int numLinks = dependencyElements.size();
-    				for (int i = 0; i < numLinks; i++) {
-    					int sourceID = dependencyElements.get(i).getIdNum();
-	    				FSConstaints.add(new XeqC(val[sourceID][t][3], 1));
-	    				PSConstaints.add(new XeqC(val[sourceID][t][2], 1));
-	    				PDConstaints.add(new XeqC(val[sourceID][t][1], 1));
-	    				FDConstaints.add(new XeqC(val[sourceID][t][0], 1));
-    				}
 
-    			}
     			if (FSConstaints.size() > 0)
     				constraints.add(new IfThen(new XeqC(val[targetID][t][3], 1), new Or(FSConstaints)));
     			if (PSConstaints.size() > 0)
