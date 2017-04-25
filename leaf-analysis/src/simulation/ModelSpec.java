@@ -20,6 +20,7 @@ public class ModelSpec {
 	
 	private List<IntentionalElement> intElements = new ArrayList<IntentionalElement>();
 	private List<Actor> actors = new ArrayList<Actor>();
+	private List<NotBothLink> notBothLink = new ArrayList<NotBothLink>();
 	private List<EvolutionLink> evolutionLink = new ArrayList<EvolutionLink>(); 
 	private List<Contribution> contribution = new ArrayList<Contribution>();
 	private List<Decomposition> decomposition = new ArrayList<Decomposition>();
@@ -290,6 +291,14 @@ public class ModelSpec {
 
 		return output;
 
+	}
+
+	public List<NotBothLink> getNotBothLink() {
+		return notBothLink;
+	}
+
+	public void setNotBothLink(List<NotBothLink> notBothLink) {
+		this.notBothLink = notBothLink;
 	}
 	
 }

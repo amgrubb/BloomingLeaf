@@ -8,24 +8,23 @@ package simulation;
  *
  */
 public enum IntentionalElementDynamicType {
-	NT (0, "NT", "No Time") {
-	}, RND (3, "R", "Stochastic") {
-	}, CONST (0, "C", "Constant") {
-	}, INC (0, "I", "Increasing") {  
-	}, DEC (0, "D", "Decreasing") {  
-	}, DS (0, "DS", "Denied-Satisfied") {
-	}, SD (0, "SD", "Satisfied-Denied") {
-	}, RC (0, "RC", "Random-Constant") {
-	}, CR (0, "CR", "Constant-Random") {
-	}, MONP (2, "MP", "Monotonic Positive") {
-	}, MONN (2, "MN", "Monotonic Negative") {
-	}, UD (2, "UD", "User-Defined") {
+	NT ("NT", "No Time") {
+	}, RND ("R", "Stochastic") {
+	}, CONST ("C", "Constant") {
+	}, INC ("I", "Increasing") {  
+	}, DEC ("D", "Decreasing") {  
+	}, DS ("DS", "Denied-Satisfied") {
+	}, SD ("SD", "Satisfied-Denied") {
+	}, RC ("RC", "Random-Constant") {
+	}, CR ("CR", "Constant-Random") {
+	}, MONP ("MP", "Monotonic Positive") {
+	}, MONN ("MN", "Monotonic Negative") {
+	}, UD ("UD", "User-Defined") {
+	}, NB ("NB", "Not-Both") {	
 	};
-	@SuppressWarnings("unused")
-	private int value;
 	private String code;
 	private String name;
-	private static final IntentionalElementDynamicType[] VALUES_ARRAY = new IntentionalElementDynamicType[] {NT, RND, CONST, INC, DEC, SD, DS, RC, CR, MONP, MONN, UD};
+	private static final IntentionalElementDynamicType[] VALUES_ARRAY = new IntentionalElementDynamicType[] {NT, RND, CONST, INC, DEC, SD, DS, RC, CR, MONP, MONN, UD, NB};
 	public String toString() {
 		return name;
 	}
@@ -48,8 +47,7 @@ public enum IntentionalElementDynamicType {
 		return name;
 	}
 
-	private IntentionalElementDynamicType(int value, String code, String name){
-		this.value = value;
+	private IntentionalElementDynamicType(String code, String name){
 		this.code = code;
 		this.name = name;
 	}
