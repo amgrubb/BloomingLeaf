@@ -39,13 +39,11 @@ public class TroposCSPAlgorithm {
 	private Store store;									// CSP Store
 	private SatTranslation sat;								// Enables a SAT solver to be incorporated into CSP
     private List<Constraint> constraints;
-	
-	ModelSpec spec;											// Holds the model information.
+	private ModelSpec spec;											// Holds the model information.
 	private int numIntentions;								// Number of intentions in the model.
 	private IntentionalElement[] intentions;				// array of intention elements in the model
-    
     private int maxTime;									// maxTime entered by the user
-    private int numTimePoints;								// ??
+    private int numTimePoints;								// Total number of time points in the path.
     private IntVar[] timePoints;							// Holds the list of time points to be solved. Names at T<A,R,E><Index>
     private IntVar[] epochs;								// Array of EB to be solved.
     private HashMap<IntentionalElement, IntVar[]> functionEBCollection;	
@@ -1893,7 +1891,14 @@ public class TroposCSPAlgorithm {
 			}  
     	}
 	}
-	
+	/**
+	 * Returns the Model associated with this solver instance.
+	 * @return	ModelSpec associated with this solver instance.
+	 */
+	public ModelSpec getSpec() {
+		return spec;
+	}
+
 	/**
 	 * main used for testing
 	 * @param args	command line argument with name of input file.
