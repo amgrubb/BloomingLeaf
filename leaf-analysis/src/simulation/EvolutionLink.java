@@ -1,45 +1,15 @@
 package simulation;
 
-import java.util.Random;
-
 public class EvolutionLink extends ElementLink {
 	private ElementLink preLink;
 	private ElementLink postLink;
-	private static Random rand = new Random();
-	int EB;
-	
-	public ElementLink getPreLink() {
-		return preLink;
-	}
-	public ElementLink getPostLink() {
-		return postLink;
-	}
-	
-	public void activateCurrentLink(int time) {
-		if (preLink != null)
-			if (time < EB)
-				preLink.activeLink = true;
-			else
-				preLink.activeLink = false;			
-		if (postLink != null)
-			if (time < EB)
-				postLink.activeLink = false;
-			else
-				postLink.activeLink = true;			
+	int absTime; 					//Optional absolute time of transition.
 
+	public EvolutionLink(LinkableElement s, LinkableElement d, String preType, String postType) {
+		this(s, d, preType, postType, -1);
 	}
-	public void deactivateLinks(){
-		if (preLink != null)
-				preLink.activeLink = false;			
-		if (postLink != null)
-				postLink.activeLink = false;	
-	}
-
-
-	public EvolutionLink(LinkableElement s, LinkableElement d, String preType, String postType, int maxEB) {
+	public EvolutionLink(LinkableElement s, LinkableElement d, String preType, String postType, int absoluteTime) {
 		super(s, d);
-		this.activeLink = false;
-		EB = rand.nextInt(maxEB) + 1;
 		
 		if (preType.equals("NA"))
         	preLink = null;
@@ -62,21 +32,14 @@ public class EvolutionLink extends ElementLink {
 		if (((preLink instanceof Decomposition) || (postLink instanceof Decomposition)) &&
 			((preLink instanceof Contribution) || (postLink instanceof Contribution)))
 			System.err.println("Decomposition Links cannot be paired with Contribution");
-
-		
-		if (postLink != null)
-			postLink.activeLink = false;
 	}
-
-	
-	
-	/*
-	public ContributionType getContribution() {
-		return contribution;
+	public ElementLink getPreLink() {
+		return preLink;
 	}
-	public void setContribution(ContributionType contribution) {
-		this.contribution = contribution;
+	public ElementLink getPostLink() {
+		return postLink;
 	}
- */
-	
+	public int getAbsTime() {
+		return absTime;
+	}
 }

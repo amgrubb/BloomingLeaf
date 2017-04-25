@@ -5,7 +5,6 @@ package simulation;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
 
 /**
  * @author A.M.Grubb
@@ -63,49 +62,6 @@ public abstract class LinkableElement{
 	 */
 	public void setLinksSrc(List<ElementLink> linksSrc) {
 		this.linksSrc = linksSrc;
-	}
-
-	public boolean isActiveRoot() { //getLinksSrcSize() == 0
-		if (linksSrc.size() == 0)
-			return true;
-		else {
-			for(ListIterator<ElementLink> li = linksSrc.listIterator(); li.hasNext(); ){
-				ElementLink link = li.next();
-				if (link.isActiveLink())
-					return false;
-			}
-		}
-		return true; //linksSrc.size() == 0;
-	}
-	public boolean isActiveLeaf() { //getLinksDestSize() == 0 
-		if (linksDest.size() == 0)
-			return true;
-		else {
-			for(ListIterator<ElementLink> li = linksDest.listIterator(); li.hasNext(); ){
-				ElementLink link = li.next();
-				if (link.isActiveLink())
-					return false;
-			}
-		}
-		return true; //linksDest.size() == 0;
-	}
-	public int getActiveLinksSrcSize() {
-		int count = 0;
-		for(ListIterator<ElementLink> li = linksSrc.listIterator(); li.hasNext(); ){
-			ElementLink link = li.next();
-			if (link.isActiveLink())
-				count ++;
-		}
-		return count;
-	}
-	public int getActiveLinksDestSize() {
-		int count = 0;
-		for(ListIterator<ElementLink> li = linksDest.listIterator(); li.hasNext(); ){
-			ElementLink link = li.next();
-			if (link.isActiveLink())
-				count ++;
-		}
-		return count;
 	}
 
 	public List<ElementLink> getLinksSrc() {

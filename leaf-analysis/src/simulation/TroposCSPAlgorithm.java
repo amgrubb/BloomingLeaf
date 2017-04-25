@@ -1036,7 +1036,7 @@ public class TroposCSPAlgorithm {
     		List<ContributionType> contributionTypes = new ArrayList<ContributionType>();
     		for (ListIterator<ElementLink> linksIteratorDest = element.getLinksDest().listIterator(); linksIteratorDest.hasNext();){   //Return the list of elementlink
     			ElementLink link = (ElementLink) linksIteratorDest.next();
-    			if (link.isActiveLink()){
+    			//if (link.isActiveLink()){		\\TODO: Deal with evolving relationships.
     				if (link instanceof Decomposition){
     					if (((Decomposition)link).getDecomposition() ==  DecompositionType.AND){//element.getDecompositionType() == DecompositionType.AND){
     						andDecompositionElements.add((IntentionalElement) link.getSrc());
@@ -1047,7 +1047,7 @@ public class TroposCSPAlgorithm {
     					contributionElements.add((IntentionalElement) link.getSrc());
     					contributionTypes.add(((Contribution) link).getContribution());
     				}	
-    			}
+    			//}
     		}
 
     		/*********************************************************************************************

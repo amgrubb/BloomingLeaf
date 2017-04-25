@@ -1,8 +1,8 @@
 package simulation;
 
 public class EpochConstraint {
-	public IntentionalElement src;
-	public IntentionalElement dest;
+	IntentionalElement src;
+	IntentionalElement dest;
 	String type;
 	boolean srcUD = false;
 	boolean destUD = false;
