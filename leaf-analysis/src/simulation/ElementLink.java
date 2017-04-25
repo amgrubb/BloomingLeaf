@@ -8,35 +8,34 @@ package simulation;
  *
  */
 public class ElementLink {
-	LinkableElement src = null;
+	LinkableElement[] src = null;
 	LinkableElement dest = null;
-	String type = "link";
-	
-	public String getType() {
-		return type;
-	}
 
 	/**
 	 * 
 	 */
-	public ElementLink(LinkableElement s, LinkableElement d) {
+	public ElementLink(LinkableElement[] s, LinkableElement d) {
 		src = s;
 		dest = d;
-		s.addLinksAsSrc(this);
+		for(int i = 0; i < s.length; i++)
+			s[i].addLinksAsSrc(this);
 		d.addLinksAsDest(this);
 	}
 
 	/**
 	 * @return the src
 	 */
-	public LinkableElement getSrc() {
+	public LinkableElement[] getSrc() {
 		return src;
 	}
-
+	public LinkableElement getZeroSrc() {
+		return src[0];
+	}
+	
 	/**
 	 * @param src the src to set
 	 */
-	public void setSrc(LinkableElement src) {
+	public void setSrc(LinkableElement[] src) {
 		this.src = src;
 	}
 

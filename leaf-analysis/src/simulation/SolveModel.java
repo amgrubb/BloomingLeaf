@@ -2,7 +2,6 @@ package simulation;
 
 import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.PrintWriter;
 
 import com.google.gson.Gson;
