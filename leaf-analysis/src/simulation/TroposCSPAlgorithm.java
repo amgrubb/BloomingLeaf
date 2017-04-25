@@ -40,16 +40,20 @@ public class TroposCSPAlgorithm {
 	private SatTranslation sat;								// Enables a SAT solver to be incorporated into CSP
     private List<Constraint> constraints;
 	
-	ModelSpec spec;									// Holds the model information.
+	ModelSpec spec;											// Holds the model information.
 	private int numIntentions;								// Number of intentions in the model.
 	private IntentionalElement[] intentions;				// array of intention elements in the model
     
     private int maxTime;									// maxTime entered by the user
     private int numTimePoints;								// ??
-    private int numEpochs = 0;								// ??
     private IntVar[] timePoints;							// Holds the list of time points to be solved. Names at T<A,R,E><Index>
-    private IntVar[] epochs;								// ??
-    private HashMap<IntentionalElement, IntVar[]> epochCollection;	// 
+    private IntVar[] epochs;								// Array of EB to be solved.
+    private HashMap<IntentionalElement, IntVar[]> functionEBCollection;	
+    														// Holds the EBs that are associated with a dynamic function for an intention.
+    private HashMap<EvolutionLink, IntVar> relationshipEBCollection;	
+															// Holds the EBs that are associated with a dynamic relationship.
+    private HashMap<NotBothLink, IntVar> notBothEBCollection;	
+															// Holds the EBs that are associated with a Not Both Link and dynamic relationship.    
     private HashMap<IntVar, IntVar> epochToTimePoint;				// Mapping between assignedEBs and other constrained values. Used in initializeDynamicFunctions for unknown constants UD functions.
     private BooleanVar[][][] values;						// ** Holds the evaluations for each [this.numIntentions][this.numTimePoints][FS/PS/PD/FD Predicates]
     private IntVar zero;									// (0) Initial Values time point.
@@ -93,7 +97,9 @@ public class TroposCSPAlgorithm {
 			this.intentions[i] = elementList.get(i);
     	this.maxTime = spec.getMaxTime();
 		this.infinity = new IntVar(this.store, "Infinity", this.maxTime + 1, this.maxTime + 1);
-    	this.epochCollection = new HashMap<IntentionalElement, IntVar[]>();
+    	this.functionEBCollection = new HashMap<IntentionalElement, IntVar[]>();
+    	this.relationshipEBCollection = new HashMap<EvolutionLink, IntVar>();
+    	this.notBothEBCollection = new HashMap<NotBothLink, IntVar>();
     	this.epochToTimePoint = new HashMap<IntVar, IntVar>(); 
     	
     	if (this.spec.getInitialValueTimePoints().length != this.spec.getInitialValues()[0].length)
@@ -135,10 +141,11 @@ public class TroposCSPAlgorithm {
     		System.out.println("\nMethod: initialize dynmaics");
     	
     	// Create constraints for Dynamic Elements.
+    	// TODO: Update with Evolving Relationship and NotBoth Collections.
     	if(this.spec.isSolveNextState())
     		//initializeStateDynamicFunctions();
     		genericInitialNextStateDynamics(this.constraints, this.intentions, this.values, 
-    				this.epochCollection, this.spec.getInitialValueTimePoints()[lengthOfInitial - 1], lengthOfInitial - 1);
+    				this.functionEBCollection, this.spec.getInitialValueTimePoints()[lengthOfInitial - 1], lengthOfInitial - 1);
     	else
     		initializePathDynamicFunctions();
 	}	
@@ -157,7 +164,8 @@ public class TroposCSPAlgorithm {
 	private void calculateSampleSizeAndCreateEBsAndTimePoints(int[] absoluteTimePoint, int numStochasticTimePoints, 
 			int[] initialValueTimePoints, HashMap<String, Integer> assignedEpochs, boolean singleState) {
 
-		List<IntVar> assignedEBs = new ArrayList<IntVar>();	//Holds the EB that have been assigned to an element in the absolute collection.
+		int numEpochs = 0;
+	    List<IntVar> assignedEBs = new ArrayList<IntVar>();	//Holds the EB that have been assigned to an element in the absolute collection.
 															//Holds EBs with associated absolute time.
 		
     	// Step 0: Create IntVars for absoluteTimePoints.
@@ -173,9 +181,10 @@ public class TroposCSPAlgorithm {
     		absoluteCounter = absoluteTimePoint.length + 1;	//To add Zero.
     	}
     	
-		// Step 1: Collect and create all the EB associated with dynamic functions.
+		// Step 1A: Collect and create all the EB associated with dynamic functions.
+    	// Count the number of EBs for numEpochs.
     	//	Add all EBs to this.epochCollection
-		this.numEpochs = 0;
+		numEpochs = 0;
     	for (int i = 0; i < this.intentions.length; i++){
     		IntentionalElement element = this.intentions[i];
     		  		
@@ -186,19 +195,19 @@ public class TroposCSPAlgorithm {
         	else if ((element.dynamicType == IntentionalElementDynamicType.SD) || (element.dynamicType == IntentionalElementDynamicType.DS) ||
         			(element.dynamicType == IntentionalElementDynamicType.CR) || (element.dynamicType == IntentionalElementDynamicType.RC) ||
         			(element.dynamicType == IntentionalElementDynamicType.MONP) || (element.dynamicType == IntentionalElementDynamicType.MONN)) {
-        		this.numEpochs ++;
+        		numEpochs ++;
         		IntVar newEpoch = new IntVar(store, "E" + element.getId(), 1, maxTime);	
-        		this.epochCollection.put(element, new IntVar[]{newEpoch});	
+        		this.functionEBCollection.put(element, new IntVar[]{newEpoch});	
         	} else if (element.dynamicType == IntentionalElementDynamicType.UD){
         		// Create EBs for UD function and add them to this.epochCollection.
         		// Also, add constraint that each EB_i < EB_i+1
         		UDFunctionCSP funcUD = element.getCspUDFunct();
         		char[] charEB = funcUD.getElementEBs();
         		IntVar[] epochsUD = new IntVar[charEB.length - 1];
-        		this.numEpochs += epochsUD.length;
+        		numEpochs += epochsUD.length;
         		for (int u = 0; u < epochsUD.length; u++)
         			epochsUD[u] = new IntVar(store, "E" + element.getId() + "_" + charEB[u+1], 1, maxTime);
-        		this.epochCollection.put(element, epochsUD);
+        		this.functionEBCollection.put(element, epochsUD);
         		for (int u = 1; u < epochsUD.length; u++)
         			constraints.add(new XltY(epochsUD[u-1], epochsUD[u]));       			
 
@@ -221,7 +230,11 @@ public class TroposCSPAlgorithm {
         		System.err.println("TroposCSPAlgorithm: Dynamic type not found for " + element.name);
     	}
     	
-    	// Step 2: Create constraints between epochs.
+    	// Step 1B: Count the number of EBs for numEpochs associated with EvolvingLinks and NotBothLinks.
+    	numEpochs += this.spec.getEvolutionLink().size();
+    	numEpochs += this.spec.getNotBothLink().size();
+    	
+    	// Step 2A: Create constraints between epochs.
     	List<EpochConstraint> eConstraints = this.spec.getConstraintsBetweenEpochs();
     	
     	// (i) Get Absolute Assignments
@@ -236,7 +249,7 @@ public class TroposCSPAlgorithm {
     			int etmpTime = etmp.getAbsoluteTime();
     			IntVar absTemp = absoluteCollection.get(new Integer(etmpTime));
     			if (absTemp == null){
-    				absTemp = new IntVar(store, "TA" + absoluteCounter, etmpTime, etmpTime);
+    				absTemp = new IntVar(store, "TAE" + absoluteCounter, etmpTime, etmpTime);
     				absoluteCollection.put(new Integer(etmpTime), absTemp);
     				absoluteCounter++;
     			}
@@ -293,14 +306,14 @@ public class TroposCSPAlgorithm {
 			}
     	}
     	
-    	// Step 3: Create time points for unassigned EBs.
+    	// Step 2B: Create time points for unassigned EBs.
     	// (i) Iterate over hash map and check if EB assigned.
-    	List<IntVar> EBTimePoint = new ArrayList<IntVar>();			//Holds the time points for unassgned EBs.
-    	this.epochs = new IntVar[this.numEpochs]; 
+    	List<IntVar> EBTimePoint = new ArrayList<IntVar>();			//Holds the time points for unassgned EBs for functions and relationships (used in step 3 & 4)
+    	this.epochs = new IntVar[numEpochs]; 
     	int addEBCount = 0;
     	for (int i = 0; i < this.intentions.length; i++){
     		IntentionalElement element = this.intentions[i];
-    		IntVar[] elementEBs = epochCollection.get(element);
+    		IntVar[] elementEBs = functionEBCollection.get(element);
     		if (elementEBs == null)
     			continue;
     		else 
@@ -318,6 +331,72 @@ public class TroposCSPAlgorithm {
     			}
     	}
     	
+    	
+    	// Step 3: Add time points for Evolving Links and NotBoth Relationships.
+    	// (i) Evolving Links    	
+    	List<EvolutionLink> eLinks = this.spec.getEvolutionLink();
+    	int lCount = 0; 
+    	for(ListIterator<EvolutionLink> ec = eLinks.listIterator(); ec.hasNext(); ){
+    		EvolutionLink etmp = ec.next();
+    		IntVar newEpoch = new IntVar(store, "L" + lCount, 1, maxTime);
+    		lCount ++;
+    		this.epochs[addEBCount] = newEpoch;
+    		addEBCount++;
+    		this.relationshipEBCollection.put(etmp, newEpoch);
+    		IntVar newTimePoint;
+    		int etmpTime = etmp.getAbsTime();
+    		if (etmpTime > 0){
+    			// Absolute Time Assignment Exists.
+    			if (etmpTime > this.maxTime)
+    				System.err.println("Absolute time selected for EBs cannot be greater than maxTime.");
+    			
+    			newTimePoint = absoluteCollection.get(new Integer(etmpTime));
+    			if (newTimePoint == null){
+    				newTimePoint = new IntVar(store, "TAL" + absoluteCounter, etmpTime, etmpTime);
+    				absoluteCollection.put(new Integer(etmpTime), newTimePoint);
+    				absoluteCounter++;
+    			}
+    		}else{
+    			// NO Absolute Time Listed.
+    			newTimePoint = new IntVar(store, "TL" + absoluteCounter, 1, maxTime);
+				EBTimePoint.add(newTimePoint);
+				absoluteCounter++;
+    		}
+    		constraints.add(new XeqY(newEpoch, newTimePoint));
+    	}
+    	
+    	// (ii) Not Both Relationships
+    	List<NotBothLink> eNotBoth = this.spec.getNotBothLink();
+    	for(ListIterator<NotBothLink> ec = eNotBoth.listIterator(); ec.hasNext(); ){
+    		NotBothLink etmp = ec.next();
+    		IntVar newEpoch = new IntVar(store, "L" + lCount, 1, maxTime);
+    		lCount ++;
+    		this.epochs[addEBCount] = newEpoch;
+    		addEBCount++;
+    		this.notBothEBCollection.put(etmp, newEpoch);
+    		IntVar newTimePoint;
+    		int etmpTime = etmp.getAbsTime();
+    		if (etmpTime > 0){
+    			// Absolute Time Assignment Exists.
+    			if (etmpTime > this.maxTime)
+    				System.err.println("Absolute time selected for EBs cannot be greater than maxTime.");
+    			
+    			newTimePoint = absoluteCollection.get(new Integer(etmpTime));
+    			if (newTimePoint == null){
+    				newTimePoint = new IntVar(store, "TA" + absoluteCounter, etmpTime, etmpTime);
+    				absoluteCollection.put(new Integer(etmpTime), newTimePoint);
+    				absoluteCounter++;
+    			}
+    			//assignedEBs.add(newEpoch);  
+    		}else{
+    			// NO Absolute Time Listed.
+    			newTimePoint = new IntVar(store, "TL" + absoluteCounter, 1, maxTime);
+				EBTimePoint.add(newTimePoint);
+				absoluteCounter++;
+    		}
+    		constraints.add(new XeqY(newEpoch, newTimePoint));
+    	}
+    	    	
     	// Step 4A: Make list of previous names.
     	int countTotalPreviousT = 0;
     	String[] exisitingNamedTimePoints = new String[initialValueTimePoints.length];
@@ -465,7 +544,7 @@ public class TroposCSPAlgorithm {
 	 * @return	The IntVar associated with the EB or null.
 	 */
 	private IntVar getEBFromEpochCollection(IntentionalElement element, String charEB){
-		IntVar[] srcArray = this.epochCollection.get(element);
+		IntVar[] srcArray = this.functionEBCollection.get(element);
 		
 		if (srcArray.length == 1) 
 			return srcArray[0];
@@ -541,7 +620,7 @@ public class TroposCSPAlgorithm {
         	if ((tempType == IntentionalElementDynamicType.NT) || (element.dynamicType == IntentionalElementDynamicType.RND))
         		continue;
  
-    		IntVar[] epochs = this.epochCollection.get(element);
+    		IntVar[] epochs = this.functionEBCollection.get(element);
     		//TODO: Fix this throughout algorithm.
     		int initialEvaluation;
     		boolean[] initialIntentionValues = this.spec.getInitialValues()[i][0];
@@ -1757,7 +1836,7 @@ public class TroposCSPAlgorithm {
 		}
 		genericAddLinkConstraints(satExplore, constraintsExplore, this.intentions, valuesExplore);
 		genericInitialNextStateDynamics(constraintsExplore, this.intentions, valuesExplore, 
-				this.epochCollection, currentTime, 0);
+				this.functionEBCollection, currentTime, 0);
 
 		storeExplore.print();
 
