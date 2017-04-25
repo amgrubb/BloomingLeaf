@@ -1796,8 +1796,8 @@ public class TroposCSPAlgorithm {
 								finalValues[s-1][i][t][v] = false;
 							else
 								System.err.println("Error: " + label.getSolution(s)[v] + " has non-binary value.");
-							solIndex++;
 						}
+					solIndex++;
 			}
 			this.spec.setFinalAllSolutionsValues(finalValues);
 		}else{
