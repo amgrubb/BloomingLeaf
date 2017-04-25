@@ -11,6 +11,10 @@ function backendComm(js_object){
 				      "id": "0000",
 				      "valueList": [
 				        "1100",
+				        "0111",
+				        "0010",
+				        "0000",
+				        "0110",
 				        "1100",
 				        "1110"
 				      ]
@@ -19,28 +23,49 @@ function backendComm(js_object){
 				      "id": "0001",
 				      "valueList": [
 				        "0011",
-				        "1110",
-				        "1110"
+				        "0011",
+				        "0010",
+				        "0010",
+				        "0111",
+				        "0000",
+				        "0110"
 				      ]
 				    },
 				    {
 				      "id": "0002",
 				      "valueList": [
 				        "1100",
+				        "0111",
+				        "0011",
+				        "0000",
+				        "0110",
 				        "1100",
-				        "0011"
+				        "1110"
 				      ]
 				    }
 				  ],
 				  "finalAssignedEpoch": [
 				    "TA0_0",
-				    "TR1_2",
-				    "TR2_15"
+				    "TA2_4",
+				    "TR3_10",
+				    "TA1_2",
+				    "TR5_26",
+				    "TR4_1",
+				    "TR6_65"
 				  ],
 				  "finalValueTimePoints": [
 				    "0",
+				    "1",
 				    "2",
-				    "15"
+				    "4",
+				    "10",
+				    "26",
+				    "65"
+				  ],
+				  "relativeTimePoints": 4,
+				  "absoluteTimePoints": [
+				    2,
+				    4
 				  ]
 				};
 	var getNextStates = {
