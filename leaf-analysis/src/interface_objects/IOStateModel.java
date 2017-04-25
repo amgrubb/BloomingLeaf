@@ -1,5 +1,6 @@
 package interface_objects;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -8,7 +9,7 @@ import java.util.List;
  *
  */
 public class IOStateModel {
-	List<IOIntention> intentionElements;
+	List<IOIntention> intentionElements = new ArrayList<>();
 	
 	public List<IOIntention> getIntentionElements() {
 		return intentionElements;

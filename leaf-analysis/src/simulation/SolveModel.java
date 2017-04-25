@@ -59,8 +59,8 @@ public class SolveModel {
 		String outputFile = "/home/marcel/UofT/" + fileName + ".out";
 		//String outputFile = "/u/marcel/public_html/leaf/cgi-bin/temp/" + fileName + ".out";
 	
-		//Gson gson = new Gson();		
-		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		Gson gson = new Gson();		
+		//Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		OutputModel outputModel = solver.spec.getOutputModel();
 		
 		try {

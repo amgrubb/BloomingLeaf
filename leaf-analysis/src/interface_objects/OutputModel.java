@@ -6,6 +6,7 @@ import java.util.List;
 public class OutputModel {
 
 	private List<OutputElement> elementList = new ArrayList<>();
+	private List<IOStateModel> allSolution = new ArrayList<>();
 	private List<String> finalAssignedEpoch = new ArrayList<>();
 	private List<String> finalValueTimePoints = new ArrayList<>();	
 	private int relativeTimePoints;
@@ -49,6 +50,14 @@ public class OutputModel {
 
 	public void setAbsoluteTimePoints(int[] absoluteTimePoints) {
 		this.absoluteTimePoints = absoluteTimePoints;
+	}
+
+	public List<IOStateModel> getAllSolution() {
+		return allSolution;
+	}
+
+	public void setAllSolution(List<IOStateModel> allSolution) {
+		this.allSolution = allSolution;
 	}
 	
 }
