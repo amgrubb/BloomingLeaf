@@ -352,6 +352,9 @@ function loadAnalysis(analysisResults){
 	currentAnalysis = new analysisObject.initFromBackEnd(analysisResults);
 	$("#finalAssigneEpoch").val(analysisResults.finalAssignedEpoch);
 	$("#finalValueTimePoints").val(analysisResults.finalValueTimePoints);
+	$('#num-rel-time').val(analysisResults.relativeTimePoints);
+	$('#abs-time-pts').val(analysisResults.absoluteTimePoints);
+	
 	elementList = analysisResults.elementList;
 	updateSlider(currentAnalysis, false);
 }

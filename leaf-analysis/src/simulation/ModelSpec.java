@@ -287,6 +287,9 @@ public class ModelSpec {
 		for(int a = 0; a < getFinalValueTimePoints().length; a++){
 			output.getFinalValueTimePoints().add(Integer.toString(getFinalValueTimePoints()[a]));	   			
 		}
+		
+		output.setRelativeTimePoints(getRelativeTimePoints());
+		output.setAbsoluteTimePoints(getAbsoluteTimePoints());
 
 		return output;
 

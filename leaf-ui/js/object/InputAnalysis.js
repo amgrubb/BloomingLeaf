@@ -29,6 +29,10 @@ function AO_btnGetNextState(analysisInterface){
 
 	analysisInterface.initialAssignedEpoch = $('#finalAssigneEpoch').val();
 	analysisInterface.initialValueTimePoints = $('#finalValueTimePoints').val();
+	analysisInterface.numRelTime = $('#num-rel-time').val();
+	analysisInterface.absTimePts = $('#abs-time-pts').val();
+	$("#absoluteTimePoints").val(analysisResults.absoluteTimePoints);
+	
 	analysisInterface.elementList = elementList;
 
 	analysisInterface.getNextState = true;
