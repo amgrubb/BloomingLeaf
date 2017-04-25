@@ -95,6 +95,9 @@ public class TroposCSPAlgorithm {
 		this.infinity = new IntVar(this.store, "Infinity", this.maxTime + 1, this.maxTime + 1);
     	this.epochCollection = new HashMap<IntentionalElement, IntVar[]>();
     	this.epochToTimePoint = new HashMap<IntVar, IntVar>(); 
+    	
+    	if (this.spec.getInitialValueTimePoints().length != this.spec.getInitialValues()[0].length)
+    		System.err.println("Error: The length of initialValueTimePoints and initialValues[0] do not match.");
 
 		// Determine the number of observation steps.
 		// Add constraints between Intention EBs.
@@ -102,8 +105,8 @@ public class TroposCSPAlgorithm {
     			this.spec.getRelativeTimePoints(), this.spec.getInitialValueTimePoints(), 
     			this.spec.getInitialAssignedEpochs(), this.spec.isSolveNextState());
     	
+    	// Initialise Values Array.
     	int lengthOfInitial = this.spec.getInitialValueTimePoints().length;
-    	// Initialise Values Array
     	if(this.spec.isSolveNextState())
     		this.values = new BooleanVar[this.numIntentions][lengthOfInitial + 1][4];	// 4 Predicates Values 0-FD, 1-PD, 2-PS, 3-FS;
     	else
@@ -111,21 +114,26 @@ public class TroposCSPAlgorithm {
 
     	if (DEBUG)
     		System.out.println("\nMethod: initializeBooleanVarForValues();");
-    	// Initialise values and add F->P invariant.
+    	
+    	// Initialise values.
+    	// Add F->P invariant.
     	initializeBooleanVarForValues();
 
     	if (DEBUG)
     		System.out.println("\nMethod: initializeConflictPrevention();");
+    	
     	// Prevent Conflict
    		initializeConflictPrevention();
 
    		if (DEBUG)
    			System.out.println("\nMethod: genericAddLinkConstraints(this.sat, this.constraints, this.intentions, this.values);");
-		// Add constraints for the links and structure of the graph.
+		
+   		// Add constraints for the links and structure of the graph.
     	genericAddLinkConstraints(this.sat, this.constraints, this.intentions, this.values);
 
     	if (DEBUG)
     		System.out.println("\nMethod: initialize dynmaics");
+    	
     	// Create constraints for Dynamic Elements.
     	if(this.spec.isSolveNextState())
     		//initializeStateDynamicFunctions();
@@ -150,6 +158,7 @@ public class TroposCSPAlgorithm {
 			int[] initialValueTimePoints, HashMap<String, Integer> assignedEpochs, boolean singleState) {
 
 		List<IntVar> assignedEBs = new ArrayList<IntVar>();	//Holds the EB that have been assigned to an element in the absolute collection.
+															//Holds EBs with associated absolute time.
 		
     	// Step 0: Create IntVars for absoluteTimePoints.
 		// The absoluteCollection is added to assignedEB at a later step.
@@ -164,7 +173,8 @@ public class TroposCSPAlgorithm {
     		absoluteCounter = absoluteTimePoint.length + 1;	//To add Zero.
     	}
     	
-		// Step 1: Collect and create all the Epoch IntVars.
+		// Step 1: Collect and create all the EB associated with dynamic functions.
+    	//	Add all EBs to this.epochCollection
 		this.numEpochs = 0;
     	for (int i = 0; i < this.intentions.length; i++){
     		IntentionalElement element = this.intentions[i];
@@ -178,8 +188,10 @@ public class TroposCSPAlgorithm {
         			(element.dynamicType == IntentionalElementDynamicType.MONP) || (element.dynamicType == IntentionalElementDynamicType.MONN)) {
         		this.numEpochs ++;
         		IntVar newEpoch = new IntVar(store, "E" + element.getId(), 1, maxTime);	
-        		this.epochCollection.put(element, new IntVar[]{newEpoch});
+        		this.epochCollection.put(element, new IntVar[]{newEpoch});	
         	} else if (element.dynamicType == IntentionalElementDynamicType.UD){
+        		// Create EBs for UD function and add them to this.epochCollection.
+        		// Also, add constraint that each EB_i < EB_i+1
         		UDFunctionCSP funcUD = element.getCspUDFunct();
         		char[] charEB = funcUD.getElementEBs();
         		IntVar[] epochsUD = new IntVar[charEB.length - 1];
@@ -190,6 +202,7 @@ public class TroposCSPAlgorithm {
         		for (int u = 1; u < epochsUD.length; u++)
         			constraints.add(new XltY(epochsUD[u-1], epochsUD[u]));       			
 
+        		// Add the constraints between repeating segments parts of the epoch.
         		int[] absoluteDifferences = funcUD.absoluteEpochLengths; 	
         		if (absoluteDifferences != null){
         			int count = 0;
@@ -216,19 +229,14 @@ public class TroposCSPAlgorithm {
     		EpochConstraint etmp = ec.next();
     		String eCont = etmp.getType();
     		if (eCont.equals("A")) {	//Absolute Time Point
-    			IntVar[] srcArray = this.epochCollection.get(etmp.src);
-    			IntVar src;
-    			int etmpTime = etmp.getAbsoluteTime();
-    			if (srcArray.length == 1)		//Could be helper function. 
-    				src = srcArray[0];
-    			else{
-    				int val = (int)etmp.getSrcEB().charAt(0);	//Only considers A, B, C.. values. //Cannot have constraints within repeating portion.
-   					src = srcArray[val - 65];
-    			}
+    			IntVar src = getEBFromEpochCollection(etmp.src, etmp.getSrcEB());
+    			if (src == null)
+    				System.err.println("Error: Null found in " + etmp.toString());
     			//Check if absolute value already exists.
+    			int etmpTime = etmp.getAbsoluteTime();
     			IntVar absTemp = absoluteCollection.get(new Integer(etmpTime));
     			if (absTemp == null){
-    				absTemp = new IntVar(store, "TA" + absoluteCounter, etmpTime, etmpTime);	//FIGURE OUT THIS LINE
+    				absTemp = new IntVar(store, "TA" + absoluteCounter, etmpTime, etmpTime);
     				absoluteCollection.put(new Integer(etmpTime), absTemp);
     				absoluteCounter++;
     			}
@@ -243,24 +251,8 @@ public class TroposCSPAlgorithm {
     		EpochConstraint etmp = ec.next();
     		String eCont = etmp.getType();
     		if (eCont.equals("=")){
-    			IntVar[] srcArray = this.epochCollection.get(etmp.src);
-    			IntVar[] destArray = this.epochCollection.get(etmp.dest);
-    			IntVar src;
-    			IntVar dest;
-    			if (srcArray.length == 1)		//Could be helper function.
-    				src = srcArray[0];
-    			else{
-    				// TODO: Deal with Repeating UD Functions.
-    				int val = (int)etmp.getSrcEB().charAt(0);	//Only considers A, B, C.. values.
-    				src = srcArray[val - 65];
-    			}
-    			if (destArray.length == 1)		//Could be helper function.
-    				dest = destArray[0];
-    			else{
-    				// TODO: Deal with Repeating UD Functions.
-    				int val = (int)etmp.getDestEB().charAt(0);	//Only considers A, B, C.. values.
-    				dest = destArray[val - 65];
-    			}
+    			IntVar src = getEBFromEpochCollection(etmp.src, etmp.getSrcEB());
+    			IntVar dest = getEBFromEpochCollection(etmp.dest, etmp.getDestEB());
 
     			if ((src != null) && (dest != null)){
     				if (assignedEBs.contains(src) && assignedEBs.contains(dest))
@@ -282,7 +274,7 @@ public class TroposCSPAlgorithm {
         				epochToTimePoint.put(src, dest);
     				}	
     			} else
-    				System.err.println("NULL FOUND....");
+    				System.err.println("Error: Null found in " + etmp.toString());
     		}
        	}
     	
@@ -291,36 +283,19 @@ public class TroposCSPAlgorithm {
     		EpochConstraint etmp = ec.next();
     		String eCont = etmp.getType();
 			if (eCont.equals("<")){
-    			IntVar[] srcArray = this.epochCollection.get(etmp.src);
-    			IntVar[] destArray = this.epochCollection.get(etmp.dest);
-    			IntVar src;
-    			IntVar dest;
-    			if (srcArray.length == 1)		//Could be helper function.
-    				src = srcArray[0];
-    			else{
-    				// TODO: Deal with Repeating UD Functions.
-    				int val = (int)etmp.getSrcEB().charAt(0);	//Only considers A, B, C.. values.
-   					src = srcArray[val - 65];
-    			}
-    			if (destArray.length == 1)		//Could be helper function.
-    				dest = destArray[0];
-    			else{
-    				// TODO: Deal with Repeating UD Functions.
-    				int val = (int)etmp.getDestEB().charAt(0);	//Only considers A, B, C.. values.
-   					dest = destArray[val - 65];
-    			}
-
+    			IntVar src = getEBFromEpochCollection(etmp.src, etmp.getSrcEB());
+    			IntVar dest = getEBFromEpochCollection(etmp.dest, etmp.getDestEB());
+    			
     			if ((src != null) && (dest != null)){
     					constraints.add(new XltY(src, dest));
     			} else
-    				System.err.println("NULL FOUND....");
+    				System.err.println("Error: Null found in " + etmp.toString());
 			}
     	}
     	
     	// Step 3: Create time points for unassigned EBs.
     	// (i) Iterate over hash map and check if EB assigned.
-    	// (i) TODO assign EB to epochs[]
-    	List<IntVar> EBTimePoint = new ArrayList<IntVar>();	//Holds the time points for unassgned EBs.
+    	List<IntVar> EBTimePoint = new ArrayList<IntVar>();			//Holds the time points for unassgned EBs.
     	this.epochs = new IntVar[this.numEpochs]; 
     	int addEBCount = 0;
     	for (int i = 0; i < this.intentions.length; i++){
@@ -369,14 +344,14 @@ public class TroposCSPAlgorithm {
     		}
     	}else
     		System.err.println("Invalid Input for initialValueTimePoints and initialValues.");
-
+    	
     	if (DEBUG){
-    		// Print Info to Check Calculations
     		System.out.print("Previous Times are: ");
     		for(int e = 0; e < exisitingNamedTimePoints.length; e++)
     			System.out.print(exisitingNamedTimePoints[e] + "\t");
     		System.out.println("\n Max Previous is: " + maxPreviousTime);	
     	}
+    	
     	// Step 4B: Create List of Time Points
     	this.numTimePoints = 1 + absoluteCollection.size() + EBTimePoint.size() + numStochasticTimePoints;
 
@@ -386,8 +361,9 @@ public class TroposCSPAlgorithm {
     	if (DEBUG)
     		System.out.println("Previous Time Points: " + countTotalPreviousT + "  New Time Points: " + this.numTimePoints);
     	
-    	/////// Create Time Points
+    	// Create Time Points
     	this.timePoints = new IntVar[this.numTimePoints];
+
     	// Add Zero
     	this.timePoints[0] = new IntVar(store, exisitingNamedTimePoints[0], 0, 0); 
     	
@@ -482,9 +458,29 @@ public class TroposCSPAlgorithm {
     }
 	
 	/**
-	 * TODO: Check this function...
+	 * Helper function used by calculateSampleSizeAndCreateEBsAndTimePoints to get an EB IntVar from this.epochCollection.
+	 * Note: Only considers A, B, C values, repeating EB values a, b, c should not be in constraints.
+	 * @param element	The element you want to get from the epochCollection. 
+	 * @param charEB	The letter associated with the EB.
+	 * @return	The IntVar associated with the EB or null.
 	 */
-	private void initializeBooleanVarForValues() {	//Full Model
+	private IntVar getEBFromEpochCollection(IntentionalElement element, String charEB){
+		IntVar[] srcArray = this.epochCollection.get(element);
+		
+		if (srcArray.length == 1) 
+			return srcArray[0];
+		else{
+			int val = (int)charEB.charAt(0);	
+			return srcArray[val - 65];
+		}
+	}
+	
+	/**
+	 * Initialises the initialValues given. Adds the FS -> PS invariant.
+	 * 		this.values = new BooleanVar[this.numIntentions][this.spec.getInitialValueTimePoints().length + 1][4];	// For Next State
+	 * 		this.values = new BooleanVar[this.numIntentions][this.numTimePoints][4];								// For Path
+	 */
+	private void initializeBooleanVarForValues() {	
 		boolean[][][] initialValues = this.spec.getInitialValues();		
     	for (int i = 0; i < this.intentions.length; i++){
     		IntentionalElement element = this.intentions[i];
@@ -492,7 +488,9 @@ public class TroposCSPAlgorithm {
     			System.err.println("Intention ID does not match orderied ID in TroposCSP");
 
     		for (int t = 0; t < this.values[i].length; t++){
+    			// Creates IntVars and adds the FS -> PS invariant.
     			genericInitialNodeValues(this.store, this.sat, this.values[i][t], element.getId() + "_" + t);
+    			
     			// Initial initialValues.
     			if ((t == 0) && (!initialValues[i][t][0] && !initialValues[i][t][1] && !initialValues[i][t][2] && !initialValues[i][t][3]))
     				continue;
@@ -505,16 +503,18 @@ public class TroposCSPAlgorithm {
     		}  
     	}
 	}
+	
 	/**
-	 * @param b
-	 * @return
+	 * Helper Function: Converts a boolean to an int. 
+	 * @param b	boolean value.
+	 * @return	int value of b.
 	 */
 	private int boolToInt(boolean b) {
 	    return b ? 1 : 0;
 	}
 	
 	/**
-	 * 
+	 *  Helper function to call one of the generic conflict preventions levels.
 	 */
 	private void initializeConflictPrevention(){	//Full Model
 		char level = this.spec.getConflictAvoidLevel();
@@ -922,18 +922,20 @@ public class TroposCSPAlgorithm {
 	
 	// Generic Functions
 	/**
-	 * @param satTrans
-	 * @param val
-	 * @param zero
+	 * Prevents Strong Conflicts from occurring.
+	 * @param satTrans	SAT Translator for CSP
+	 * @param val		time point to assign conflict prevention to
+	 * @param zero		zero IntVar
 	 */
 	private static void genericStrongConflictPrevention(SatTranslation satTrans, BooleanVar[] val, IntVar zero){
 		BooleanVar[] sConflict = {val[0], val[3]};
 		satTrans.generate_and(sConflict, zero);	        					
 	}
 	/**
-	 * @param satTrans
-	 * @param val
-	 * @param zero
+	 * Prevents Medium Conflicts from occurring.
+	 * @param satTrans	SAT Translator for CSP
+	 * @param val		time point to assign conflict prevention to
+	 * @param zero		zero IntVar
 	 */
 	private static void genericMediumConflictPrevention(SatTranslation satTrans, BooleanVar[] val, IntVar zero){
 		BooleanVar[] mConflict1 = {val[0], val[2]};
@@ -942,14 +944,16 @@ public class TroposCSPAlgorithm {
 		satTrans.generate_and(mConflict2, zero);	
 	}
 	/**
-	 * @param satTrans
-	 * @param val
-	 * @param zero
+	 * Prevents Weak Conflicts from occurring.
+	 * @param satTrans	SAT Translator for CSP
+	 * @param val		time point to assign conflict prevention to
+	 * @param zero		zero IntVar
 	 */
 	private static void genericWeakConflictPrevention(SatTranslation satTrans, BooleanVar[] val, IntVar zero){
 		BooleanVar[] wConflict = {val[1], val[2]};
 		satTrans.generate_and(wConflict, zero);	        					
 	}
+	
 	/**
 	 * @param evaluation
 	 * @param val
@@ -1010,6 +1014,7 @@ public class TroposCSPAlgorithm {
 		}
 	}
 	/**
+	 * Add the constraints accorss 
 	 * @param satTrans
 	 * @param constraints
 	 * @param intentionsList
@@ -1274,10 +1279,12 @@ public class TroposCSPAlgorithm {
 		}
 	}
 	/**
-	 * @param store
-	 * @param satTrans
-	 * @param val
-	 * @param nodeName
+	 * Creates BooleanVars for each intention/time-point combo.
+	 * Adds the FS -> PS invariant.
+	 * @param store		The CSP store.		
+	 * @param satTrans	SAT Translator for CSP store.
+	 * @param val		intention/time-point combo array
+	 * @param nodeName	intention/time-point combo name
 	 */
 	private static void genericInitialNodeValues(Store store, SatTranslation satTrans, BooleanVar[] val, String nodeName){
 		// Initialise BooleanVar
@@ -1291,6 +1298,7 @@ public class TroposCSPAlgorithm {
 		satTrans.generate_implication(val[0], val[1]);	
 		
 	}
+	
 	/**
 	 * @param constraintList
 	 * @param elementList
