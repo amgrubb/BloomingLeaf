@@ -1178,7 +1178,6 @@ public class TroposCSPAlgorithm {
     					sourceValue[1][s] = this.values[decompositionElements[s].getIdNum()][t][1];
     					sourceValue[0][s] = this.values[decompositionElements[s].getIdNum()][t][0];
     				}
-    				//Forward Rules (implies backwards rules as well.)
     				if (decompositionLink.getDecomposition() == DecompositionType.AND){	//And Rules
     					constraints.add(new AndBool(sourceValue[3], this.values[targetID][t][3]));
     					constraints.add(new AndBool(sourceValue[2], this.values[targetID][t][2]));
@@ -1215,7 +1214,7 @@ public class TroposCSPAlgorithm {
 							   								  new OrBool(sourceValue[2], this.values[targetID][t][2])), 
     												 new And(new AndBool(sourceValue[1], this.values[targetID][t][1]), 
     											 		     new AndBool(sourceValue[0], this.values[targetID][t][0])));
-    				// Cases Dependend on pre/post.
+    				// Cases Depend on pre/post.
     				if (pre == DecompositionType.AND && post == DecompositionType.OR)
     					constraints.add(new IfThenElse(new XgtY(dempEB, this.timePoints[t]), andC, orC));
     				else if (pre == DecompositionType.OR && post == DecompositionType.AND)
@@ -1280,8 +1279,8 @@ public class TroposCSPAlgorithm {
 */
     				}
     			}
-    		} else 
-    		if (contributionElements.size() != 0) {	
+    		}
+    		if (eContributionLinks.size() != 0) {	
     			// (b) Evolving Contributions
     			int numLinks = eContributionLinks.size();
     			for (int i = 0; i < numLinks; i++) {
@@ -1311,93 +1310,193 @@ public class TroposCSPAlgorithm {
     		/*********************************************************************************************
     		 * Backward Analysis
     		 *********************************************************************************************/
-    		// Already collected values...
-//    		List<IntentionalElement> andDecompositionElements = new ArrayList<IntentionalElement>(); 
-//    		List<IntentionalElement> orDecompositionElements = new ArrayList<IntentionalElement>();  
+//    		Decomposition decompositionLink = null;  
+//    		EvolvingDecomposition eDecompositionLink = null;
+//    		List<EvolvingContribution> eContributionLinks = new ArrayList<EvolvingContribution>();
 //    		List<IntentionalElement> contributionElements = new ArrayList<IntentionalElement>();  
 //    		List<ContributionType> contributionTypes = new ArrayList<ContributionType>();
-/*    		    		
+    		    		
     		// Iterate over each time step.
     		for (int t = 0; t < this.values[targetID].length; t++){
     			ArrayList<PrimitiveConstraint> FSConstaints = new ArrayList<PrimitiveConstraint>();
     			ArrayList<PrimitiveConstraint> PSConstaints = new ArrayList<PrimitiveConstraint>();
     			ArrayList<PrimitiveConstraint> PDConstaints = new ArrayList<PrimitiveConstraint>();
     			ArrayList<PrimitiveConstraint> FDConstaints = new ArrayList<PrimitiveConstraint>();
+
+    			if (decompositionLink != null){
+    				IntentionalElement[] decompositionElements = (IntentionalElement[])decompositionLink.getSrc();
+    				int numLinks = decompositionElements.length;
+    				PrimitiveConstraint[][] sourceValue = new PrimitiveConstraint[4][numLinks];
+    				for (int s = 0; s < numLinks; s++){
+    					sourceValue[3][s] = new XeqC(this.values[decompositionElements[s].getIdNum()][t][3], 1);
+    					sourceValue[2][s] = new XeqC(this.values[decompositionElements[s].getIdNum()][t][2], 1);
+    					sourceValue[1][s] = new XeqC(this.values[decompositionElements[s].getIdNum()][t][1], 1);
+    					sourceValue[0][s] = new XeqC(this.values[decompositionElements[s].getIdNum()][t][0], 1);
+    				}
+    				if (decompositionLink.getDecomposition() == DecompositionType.AND){	//And Rules
+        				FSConstaints.add(new And(sourceValue[3]));
+        				PSConstaints.add(new And(sourceValue[2]));
+        				PDConstaints.add(new Or(sourceValue[1]));
+        				FDConstaints.add(new Or(sourceValue[0]));
+    				}else{  // Or Rules
+        				FSConstaints.add(new Or(sourceValue[3]));
+        				PSConstaints.add(new Or(sourceValue[2]));
+        				PDConstaints.add(new And(sourceValue[1]));
+        				FDConstaints.add(new And(sourceValue[0]));
+    				}
+    			}else if (eDecompositionLink != null){
+    				// Evolving Decomposition
+    				IntentionalElement[] decompositionElements = (IntentionalElement[])eDecompositionLink.getSrc();
+    				int numLinks = decompositionElements.length;
+    				DecompositionType pre = eDecompositionLink.getPreDecomposition();
+    				DecompositionType post = eDecompositionLink.getPostDecomposition();
+    				IntVar dempEB = this.decompEBCollection.get(eDecompositionLink);
+    				PrimitiveConstraint[][] sourceValue = new PrimitiveConstraint[4][numLinks];
+    				for (int s = 0; s < numLinks; s++){
+    					sourceValue[3][s] = new XeqC(this.values[decompositionElements[s].getIdNum()][t][3], 1);
+    					sourceValue[2][s] = new XeqC(this.values[decompositionElements[s].getIdNum()][t][2], 1);
+    					sourceValue[1][s] = new XeqC(this.values[decompositionElements[s].getIdNum()][t][1], 1);
+    					sourceValue[0][s] = new XeqC(this.values[decompositionElements[s].getIdNum()][t][0], 1);
+    				}
+    				if (pre == DecompositionType.AND && post == DecompositionType.OR){
+    					//constraints.add(new IfThenElse(new XgtY(dempEB, this.timePoints[t]), andC, orC));
+    					FSConstaints.add(new IfThenElse(new XgtY(dempEB, this.timePoints[t]), new And(sourceValue[3]), new Or(sourceValue[3])));
+        				PSConstaints.add(new IfThenElse(new XgtY(dempEB, this.timePoints[t]), new And(sourceValue[2]), new Or(sourceValue[2])));
+        				PDConstaints.add(new IfThenElse(new XgtY(dempEB, this.timePoints[t]), new Or(sourceValue[1]), new And(sourceValue[1])));
+        				FDConstaints.add(new IfThenElse(new XgtY(dempEB, this.timePoints[t]), new Or(sourceValue[0]), new And(sourceValue[0])));
+    				} else if (pre == DecompositionType.OR && post == DecompositionType.AND){
+    					//constraints.add(new IfThenElse(new XgtY(dempEB, this.timePoints[t]), orC, andC));
+    					FSConstaints.add(new IfThenElse(new XgtY(dempEB, this.timePoints[t]), new Or(sourceValue[3]), new And(sourceValue[3])));
+        				PSConstaints.add(new IfThenElse(new XgtY(dempEB, this.timePoints[t]), new Or(sourceValue[2]), new And(sourceValue[2])));
+        				PDConstaints.add(new IfThenElse(new XgtY(dempEB, this.timePoints[t]), new And(sourceValue[1]), new Or(sourceValue[1])));
+        				FDConstaints.add(new IfThenElse(new XgtY(dempEB, this.timePoints[t]), new And(sourceValue[0]), new Or(sourceValue[0])));
+    				} else if (pre == DecompositionType.AND && post == null){
+    					//constraints.add(new IfThen(new XgtY(dempEB, this.timePoints[t]), andC));
+    					FSConstaints.add(new IfThen(new XgtY(dempEB, this.timePoints[t]), new And(sourceValue[3])));
+        				PSConstaints.add(new IfThen(new XgtY(dempEB, this.timePoints[t]), new And(sourceValue[2])));
+        				PDConstaints.add(new IfThen(new XgtY(dempEB, this.timePoints[t]), new Or(sourceValue[1])));
+        				FDConstaints.add(new IfThen(new XgtY(dempEB, this.timePoints[t]), new Or(sourceValue[0])));
+    				} else if (pre == DecompositionType.OR && post == null){
+    					//constraints.add(new IfThen(new XgtY(dempEB, this.timePoints[t]), orC));
+    					FSConstaints.add(new IfThen(new XgtY(dempEB, this.timePoints[t]), new Or(sourceValue[3])));
+        				PSConstaints.add(new IfThen(new XgtY(dempEB, this.timePoints[t]), new Or(sourceValue[2])));
+        				PDConstaints.add(new IfThen(new XgtY(dempEB, this.timePoints[t]), new And(sourceValue[1])));
+        				FDConstaints.add(new IfThen(new XgtY(dempEB, this.timePoints[t]), new And(sourceValue[0])));    					
+    				} else if (pre == null && post == DecompositionType.AND){
+    					//constraints.add(new IfThen(new XlteqY(dempEB, this.timePoints[t]), andC));
+    					FSConstaints.add(new IfThen(new XlteqY(dempEB, this.timePoints[t]), new And(sourceValue[3])));
+        				PSConstaints.add(new IfThen(new XlteqY(dempEB, this.timePoints[t]), new And(sourceValue[2])));
+        				PDConstaints.add(new IfThen(new XlteqY(dempEB, this.timePoints[t]), new Or(sourceValue[1])));
+        				FDConstaints.add(new IfThen(new XlteqY(dempEB, this.timePoints[t]), new Or(sourceValue[0])));
+    				}else if (pre == null && post == DecompositionType.OR){
+    					//constraints.add(new IfThen(new XlteqY(dempEB, this.timePoints[t]), orC));
+    					FSConstaints.add(new IfThen(new XlteqY(dempEB, this.timePoints[t]), new Or(sourceValue[3])));
+        				PSConstaints.add(new IfThen(new XlteqY(dempEB, this.timePoints[t]), new Or(sourceValue[2])));
+        				PDConstaints.add(new IfThen(new XlteqY(dempEB, this.timePoints[t]), new And(sourceValue[1])));
+        				FDConstaints.add(new IfThen(new XlteqY(dempEB, this.timePoints[t]), new And(sourceValue[0])));
+    				}
+    			}
     			
-    			// Construct lists of AND elements and OR elements.
-    			if (andDecompositionElements.size() != 0){   			
-    				PrimitiveConstraint[][] sourceANDValue = new PrimitiveConstraint[4][andDecompositionElements.size()];
-    				for (int s = 0; s < andDecompositionElements.size(); s++){
-    					sourceANDValue[3][s] = new XeqC(this.values[andDecompositionElements.get(s).getIdNum()][t][3], 1);
-    					sourceANDValue[2][s] = new XeqC(this.values[andDecompositionElements.get(s).getIdNum()][t][2], 1);
-    					sourceANDValue[1][s] = new XeqC(this.values[andDecompositionElements.get(s).getIdNum()][t][1], 1);
-    					sourceANDValue[0][s] = new XeqC(this.values[andDecompositionElements.get(s).getIdNum()][t][0], 1);
-    				}
-    				FSConstaints.add(new And(sourceANDValue[3]));
-    				PSConstaints.add(new And(sourceANDValue[2]));
-    				PDConstaints.add(new Or(sourceANDValue[1]));
-    				FDConstaints.add(new Or(sourceANDValue[0]));
-    			}
-    			if (orDecompositionElements.size() != 0){   			
-    				PrimitiveConstraint[][] sourceORValue = new PrimitiveConstraint[4][orDecompositionElements.size()];
-    				for (int s = 0; s < orDecompositionElements.size(); s++){
-    					sourceORValue[3][s] = new XeqC(this.values[orDecompositionElements.get(s).getIdNum()][t][3], 1);
-    					sourceORValue[2][s] = new XeqC(this.values[orDecompositionElements.get(s).getIdNum()][t][2], 1);
-    					sourceORValue[1][s] = new XeqC(this.values[orDecompositionElements.get(s).getIdNum()][t][1], 1);
-    					sourceORValue[0][s] = new XeqC(this.values[orDecompositionElements.get(s).getIdNum()][t][0], 1);
-    				}
-    				FSConstaints.add(new Or(sourceORValue[3]));
-    				PSConstaints.add(new Or(sourceORValue[2]));
-    				PDConstaints.add(new And(sourceORValue[1]));
-    				FDConstaints.add(new And(sourceORValue[0]));
-    			}
     			if (contributionElements.size() != 0) { 
     				int numLinks = contributionElements.size();	
     				for (int i = 0; i < numLinks; i++) {
     					int sourceID = contributionElements.get(i).getIdNum();
-    					if (contributionTypes.get(i) == ContributionType.PP){ 					//++ 
-    	    				FSConstaints.add(new XeqC(this.values[sourceID][t][3], 1));
-    	    				PSConstaints.add(new XeqC(this.values[sourceID][t][2], 1));
-    	    				PDConstaints.add(new XeqC(this.values[sourceID][t][1], 1));
-    	    				FDConstaints.add(new XeqC(this.values[sourceID][t][0], 1));
-    					}else if (contributionTypes.get(i) == ContributionType.P){				//+
-    	    				PSConstaints.add(new XeqC(this.values[sourceID][t][2], 1));
-    	    				PDConstaints.add(new XeqC(this.values[sourceID][t][1], 1));
-    					}else if (contributionTypes.get(i) == ContributionType.M){				//-
-    	    				PSConstaints.add(new XeqC(this.values[sourceID][t][1], 1));
-    	    				PDConstaints.add(new XeqC(this.values[sourceID][t][2], 1));
-    					}else if (contributionTypes.get(i) == ContributionType.MM){				//--
-    	    				FSConstaints.add(new XeqC(this.values[sourceID][t][0], 1));
-    	    				PSConstaints.add(new XeqC(this.values[sourceID][t][1], 1));
-    	    				PDConstaints.add(new XeqC(this.values[sourceID][t][2], 1));
-    	    				FDConstaints.add(new XeqC(this.values[sourceID][t][3], 1));
-    					}else if (contributionTypes.get(i) == ContributionType.SPP){ 			//++S 
-    	    				FSConstaints.add(new XeqC(this.values[sourceID][t][3], 1));
-    	    				PSConstaints.add(new XeqC(this.values[sourceID][t][2], 1));
-    					}else if (contributionTypes.get(i) == ContributionType.SP){			//+S
-    	    				PSConstaints.add(new XeqC(this.values[sourceID][t][2], 1));
-    					}else if (contributionTypes.get(i) == ContributionType.SM){			//-S
-    	    				PDConstaints.add(new XeqC(this.values[sourceID][t][2], 1));
-    					}else if (contributionTypes.get(i) == ContributionType.SMM){			//--S
-    	    				PDConstaints.add(new XeqC(this.values[sourceID][t][2], 1));
-    	    				FDConstaints.add(new XeqC(this.values[sourceID][t][3], 1));
-    					}else if (contributionTypes.get(i) == ContributionType.DPP){ 			//++D 
-    	    				PDConstaints.add(new XeqC(this.values[sourceID][t][1], 1));
-    	    				FDConstaints.add(new XeqC(this.values[sourceID][t][0], 1));
-    					}else if (contributionTypes.get(i) == ContributionType.DP){			//+D
-    	    				PDConstaints.add(new XeqC(this.values[sourceID][t][1], 1));
-    					}else if (contributionTypes.get(i) == ContributionType.DM){			//-D
-    	    				PSConstaints.add(new XeqC(this.values[sourceID][t][1], 1));
-    					}else if (contributionTypes.get(i) == ContributionType.DMM){			//--D
-    	    				FSConstaints.add(new XeqC(this.values[sourceID][t][0], 1));
-    	    				PSConstaints.add(new XeqC(this.values[sourceID][t][1], 1));
-    					}else
-    						System.out.println("ERROR: No rule for " + contributionTypes.get(i).toString() + " link type.");
-
+    					PrimitiveConstraint[] newConts = createBackwardContributionConstraint(contributionTypes.get(i), this.values[sourceID][t]);
+    					if (newConts[3] != null)
+    						FSConstaints.add(newConts[3]);
+    					if (newConts[2] != null)
+    						PSConstaints.add(newConts[2]);
+    					if (newConts[1] != null)
+    						PDConstaints.add(newConts[1]);
+    					if (newConts[0] != null)
+    						FDConstaints.add(newConts[0]); 
+    					// OLD Code
+//    					if (contributionTypes.get(i) == ContributionType.PP){ 					//++ 
+//    	    				FSConstaints.add(new XeqC(this.values[sourceID][t][3], 1));
+//    	    				PSConstaints.add(new XeqC(this.values[sourceID][t][2], 1));
+//    	    				PDConstaints.add(new XeqC(this.values[sourceID][t][1], 1));
+//    	    				FDConstaints.add(new XeqC(this.values[sourceID][t][0], 1));
+//    					}else if (contributionTypes.get(i) == ContributionType.P){				//+
+//    	    				PSConstaints.add(new XeqC(this.values[sourceID][t][2], 1));
+//    	    				PDConstaints.add(new XeqC(this.values[sourceID][t][1], 1));
+//    					}else if (contributionTypes.get(i) == ContributionType.M){				//-
+//    	    				PSConstaints.add(new XeqC(this.values[sourceID][t][1], 1));
+//    	    				PDConstaints.add(new XeqC(this.values[sourceID][t][2], 1));
+//    					}else if (contributionTypes.get(i) == ContributionType.MM){				//--
+//    	    				FSConstaints.add(new XeqC(this.values[sourceID][t][0], 1));
+//    	    				PSConstaints.add(new XeqC(this.values[sourceID][t][1], 1));
+//    	    				PDConstaints.add(new XeqC(this.values[sourceID][t][2], 1));
+//    	    				FDConstaints.add(new XeqC(this.values[sourceID][t][3], 1));
+//    					}else if (contributionTypes.get(i) == ContributionType.SPP){ 			//++S 
+//    	    				FSConstaints.add(new XeqC(this.values[sourceID][t][3], 1));
+//    	    				PSConstaints.add(new XeqC(this.values[sourceID][t][2], 1));
+//    					}else if (contributionTypes.get(i) == ContributionType.SP){			//+S
+//    	    				PSConstaints.add(new XeqC(this.values[sourceID][t][2], 1));
+//    					}else if (contributionTypes.get(i) == ContributionType.SM){			//-S
+//    	    				PDConstaints.add(new XeqC(this.values[sourceID][t][2], 1));
+//    					}else if (contributionTypes.get(i) == ContributionType.SMM){			//--S
+//    	    				PDConstaints.add(new XeqC(this.values[sourceID][t][2], 1));
+//    	    				FDConstaints.add(new XeqC(this.values[sourceID][t][3], 1));
+//    					}else if (contributionTypes.get(i) == ContributionType.DPP){ 			//++D 
+//    	    				PDConstaints.add(new XeqC(this.values[sourceID][t][1], 1));
+//    	    				FDConstaints.add(new XeqC(this.values[sourceID][t][0], 1));
+//    					}else if (contributionTypes.get(i) == ContributionType.DP){			//+D
+//    	    				PDConstaints.add(new XeqC(this.values[sourceID][t][1], 1));
+//    					}else if (contributionTypes.get(i) == ContributionType.DM){			//-D
+//    	    				PSConstaints.add(new XeqC(this.values[sourceID][t][1], 1));
+//    					}else if (contributionTypes.get(i) == ContributionType.DMM){			//--D
+//    	    				FSConstaints.add(new XeqC(this.values[sourceID][t][0], 1));
+//    	    				PSConstaints.add(new XeqC(this.values[sourceID][t][1], 1));
+//    					}else
+//    						System.out.println("ERROR: No rule for " + contributionTypes.get(i).toString() + " link type.");
     				}
 
     			}
-
+    			if (eContributionLinks.size() != 0) {	
+    				// (b) Evolving Contributions
+    				int numLinks = eContributionLinks.size();
+    				for (int i = 0; i < numLinks; i++) {
+    					EvolvingContribution eLink = eContributionLinks.get(i);
+    					int sourceID = ((IntentionalElement)eLink.getZeroSrc()).getIdNum();
+    					ContributionType pre = eLink.getPreContribution();
+    					ContributionType post = eLink.getPostContribution();
+    					IntVar contEB = this.contribEBCollection.get(eLink);
+    					PrimitiveConstraint[] preConstraint = null;
+    					if(pre != null)
+    						preConstraint = createBackwardContributionConstraint(pre, this.values[sourceID][t]);
+    					PrimitiveConstraint[] postConstraint = null;
+    					if(post != null)
+    						postConstraint = createBackwardContributionConstraint(pre, this.values[sourceID][t]);
+   
+    					// Note: I implemented this as a two if statements rather than three if->else if. The case of a pre and a post link might now work 
+    					//		as two separate constraints. This depends on how the "IfThen" are treated in the "Or(FSConstaints)" below.
+    					//		If no information is propagated for these links they might need to be written as Not(A) or (B). or all combinations in the IfThen. 
+    						//if((pre != null) && (post != null)){
+    						//constraints.add(new IfThenElse(new XgtY(contEB, this.timePoints[t]), preConstraint, postConstraint));
+    					if (pre != null){
+    						//constraints.add(new IfThen(new XgtY(contEB, this.timePoints[t]), preConstraint));
+        					if (preConstraint[3] != null)
+        						FSConstaints.add(new IfThen(new XgtY(contEB, this.timePoints[t]), preConstraint[3]));
+        					if (preConstraint[2] != null)
+        						PSConstaints.add(new IfThen(new XgtY(contEB, this.timePoints[t]), preConstraint[2]));
+        					if (preConstraint[1] != null)
+        						PDConstaints.add(new IfThen(new XgtY(contEB, this.timePoints[t]), preConstraint[1]));
+        					if (preConstraint[0] != null)
+        						FDConstaints.add(new IfThen(new XgtY(contEB, this.timePoints[t]), preConstraint[0]));
+    					}
+    					if (post != null){	
+    						//constraints.add(new IfThen(new XlteqY(contEB, this.timePoints[t]), postConstraint));
+        					if (postConstraint[3] != null)
+        						FSConstaints.add(new IfThen(new XlteqY(contEB, this.timePoints[t]), postConstraint[3]));
+        					if (postConstraint[2] != null)
+        						PSConstaints.add(new IfThen(new XlteqY(contEB, this.timePoints[t]), postConstraint[2]));
+        					if (postConstraint[1] != null)
+        						PDConstaints.add(new IfThen(new XlteqY(contEB, this.timePoints[t]), postConstraint[1]));
+        					if (postConstraint[0] != null)
+        						FDConstaints.add(new IfThen(new XlteqY(contEB, this.timePoints[t]), postConstraint[0]));
+    					}
+    				}   			
+        		}
     			if (FSConstaints.size() > 0)
     				constraints.add(new IfThen(new XeqC(this.values[targetID][t][3], 1), new Or(FSConstaints)));
     			if (PSConstaints.size() > 0)
@@ -1406,8 +1505,7 @@ public class TroposCSPAlgorithm {
     				constraints.add(new IfThen(new XeqC(this.values[targetID][t][1], 1), new Or(PDConstaints)));
     			if (FDConstaints.size() > 0)
     				constraints.add(new IfThen(new XeqC(this.values[targetID][t][0], 1), new Or(FDConstaints)));
-    		}
-    		*/
+    		} 
 		}
 	}
 	
@@ -1475,6 +1573,53 @@ public class TroposCSPAlgorithm {
 		return result;
 	}
 	
+	
+	
+	private PrimitiveConstraint[] createBackwardContributionConstraint(ContributionType cType, BooleanVar[] src){
+		PrimitiveConstraint[] result = new PrimitiveConstraint[4];
+		for (int i = 0; i < 4; i++)
+			result[i] = null;
+		
+		if (cType == ContributionType.PP){ 					//++ 
+			result[3] = new XeqC(src[3], 1);
+			result[2] = new XeqC(src[2], 1);
+			result[1] = new XeqC(src[1], 1);
+			result[0] = new XeqC(src[0], 1);
+		}else if (cType == ContributionType.P){				//+
+			result[2] = new XeqC(src[2], 1);
+			result[1] = new XeqC(src[1], 1);
+		}else if (cType == ContributionType.M){				//-
+			result[2] = new XeqC(src[1], 1);
+			result[1] = new XeqC(src[2], 1);
+		}else if (cType == ContributionType.MM){				//--
+			result[3] = new XeqC(src[0], 1);
+			result[2] = new XeqC(src[1], 1);
+			result[1] = new XeqC(src[2], 1);
+			result[0] = new XeqC(src[3], 1);
+		}else if (cType == ContributionType.SPP){ 			//++S 
+			result[3] = new XeqC(src[3], 1);
+			result[2] = new XeqC(src[2], 1);
+		}else if (cType == ContributionType.SP){			//+S
+			result[2] = new XeqC(src[2], 1);
+		}else if (cType == ContributionType.SM){			//-S
+			result[1] = new XeqC(src[2], 1);
+		}else if (cType == ContributionType.SMM){			//--S
+			result[1] = new XeqC(src[2], 1);
+			result[0] = new XeqC(src[3], 1);
+		}else if (cType == ContributionType.DPP){ 			//++D 
+			result[1] = new XeqC(src[1], 1);
+			result[0] = new XeqC(src[0], 1);
+		}else if (cType == ContributionType.DP){			//+D
+			result[1] = new XeqC(src[1], 1);
+		}else if (cType == ContributionType.DM){			//-D
+			result[2] = new XeqC(src[1], 1);
+		}else if (cType == ContributionType.DMM){			//--D
+			result[3] = new XeqC(src[0], 1);
+			result[2] = new XeqC(src[1], 1);
+		}else
+			System.out.println("ERROR: No rule for " + cType.toString() + " link type.");		
+		return result;
+	}
 	
 	
 	/**
