@@ -135,7 +135,7 @@ public class TroposCSPAlgorithm {
    			System.out.println("\nMethod: genericAddLinkConstraints(this.sat, this.constraints, this.intentions, this.values);");
 		
    		// Add constraints for the links and structure of the graph.
-   		addLinkConstraints();
+   		initializeLinkConstraints();
 
     	if (DEBUG)
     		System.out.println("\nMethod: initialize dynmaics");
@@ -598,7 +598,7 @@ public class TroposCSPAlgorithm {
     			genericInitialNodeValues(this.store, this.sat, this.values[i][t], element.getId() + "_" + t);
     			
     			// Initial initialValues.
-    			if ((t == 0) && (!initialValues[i][t][0] && !initialValues[i][t][1] && !initialValues[i][t][2] && !initialValues[i][t][3]))
+    			if ((t == 0) && (this.values[i].length == 1) && (!initialValues[i][t][0] && !initialValues[i][t][1] && !initialValues[i][t][2] && !initialValues[i][t][3]))
     				continue;
     			else if (t < initialValues[i].length){
     				this.constraints.add(new XeqC(this.values[i][t][0], boolToInt(initialValues[i][t][0])));
@@ -615,7 +615,7 @@ public class TroposCSPAlgorithm {
 	 * @param b	boolean value.
 	 * @return	int value of b.
 	 */
-	private int boolToInt(boolean b) {
+	private static int boolToInt(boolean b) {
 	    return b ? 1 : 0;
 	}
 	
@@ -638,56 +638,31 @@ public class TroposCSPAlgorithm {
 	
 
 	/**
-	 * 
+	 *  Creates the dynamic function constraints for the full path.
+	 *  NotBoth constraints created at the end of the function.
 	 */
-	private void initializePathDynamicFunctions() {		//Full Model and Full Path
-		// START HERE
-    	// TODO: Update with NotBoth Collections.
-		
+	private void initializePathDynamicFunctions() {		//Full Model and Full Path, over all time points.
+		boolean[] boolFD = new boolean[] {true, true, false, false};
+		boolean[] boolFS = new boolean[] {false, false, true, true};
     	for (int i = 0; i < this.intentions.length; i++){
     		IntentionalElement element = this.intentions[i];
     		IntentionalElementDynamicType tempType = element.dynamicType;
-        	if ((tempType == IntentionalElementDynamicType.NT) || (element.dynamicType == IntentionalElementDynamicType.RND))
+        	if ((tempType == IntentionalElementDynamicType.NT) || (element.dynamicType == IntentionalElementDynamicType.RND) || 
+        		(tempType == IntentionalElementDynamicType.NB))
         		continue;
  
     		IntVar[] epochs = this.functionEBCollection.get(element);
-    		//TODO: Fix this throughout algorithm.
-    		int initialEvaluation;
-    		boolean[] initialIntentionValues = this.spec.getInitialValues()[i][0];
-    		if (initialIntentionValues[0] && initialIntentionValues[1] && !initialIntentionValues[2] && !initialIntentionValues[3])
-    			initialEvaluation =  0;
-    		else if (!initialIntentionValues[0] && initialIntentionValues[1] && !initialIntentionValues[2] && !initialIntentionValues[3])
-    			initialEvaluation =  1; 
-    		else if (!initialIntentionValues[0] && !initialIntentionValues[1] && initialIntentionValues[2] && !initialIntentionValues[3])
-    			initialEvaluation =  2; 
-    		else if (!initialIntentionValues[0] && !initialIntentionValues[1] && initialIntentionValues[2] && initialIntentionValues[3])
-    			initialEvaluation =  3; 
-    		else 
-    			initialEvaluation =  5; 
-
-    		int dynamicValue = element.oldGetDynamicFunctionMarkedValue();;
-
+    		//boolean[] initVal = this.spec.getInitialValues()[i][0];
+    		boolean[] dynFVal = element.getDynamicFunctionMarkedValue();    		
+    		
     		if (tempType == IntentionalElementDynamicType.CONST){
-    			if (initialEvaluation == 5){
-    				for (int t = 1; t < this.values[i].length; t++){
-    					PrimitiveConstraint[] tempConstant = {
-    							new XeqY(this.values[i][t][3], this.values[i][0][3]), 
-    							new XeqY(this.values[i][t][2], this.values[i][0][2]),	
-    							new XeqY(this.values[i][t][1], this.values[i][0][1]),
-    							new XeqY(this.values[i][t][0], this.values[i][0][0])};
-    					constraints.add(new And(tempConstant)); 
-    				}
-    			}else	// Has value between 0-3
-    				for (int t = 0; t < this.values[i].length; t++)
-    					genericAddAssignmentConstraint(this.constraints, initialEvaluation, this.values[i][t]);
+    			for (int t = 1; t < this.values[i].length; t++){
+    				constraints.add(new And(createXeqY(this.values[i][t], this.values[i][0])));
+    			}
     		} else if ((tempType == IntentionalElementDynamicType.INC) || (tempType == IntentionalElementDynamicType.MONP)){
     			if (tempType == IntentionalElementDynamicType.MONP){
     				for (int t = 0; t < this.values[i].length; t++){
-    					PrimitiveConstraint[] tempDynValue = genericCreateConstantCondition(dynamicValue, this.values[i][t]);
-    					if (tempDynValue == null){
-    						System.err.println("MONP Dynamic Value for intention " + element.getId() + " has Unknown/None/Conflict value.");
-            				break;
-            			}
+    					PrimitiveConstraint[] tempDynValue = createXeqC(this.values[i][t], dynFVal);
                 		constraints.add(new IfThen(new XlteqY(epochs[0], this.timePoints[t]), 
                 				new And(tempDynValue)));
             		}
@@ -704,28 +679,23 @@ public class TroposCSPAlgorithm {
                 		PrimitiveConstraint[] sPS = genericCreateConstantCondition(2, this.values[i][s]);
                 		PrimitiveConstraint[] sPD = genericCreateConstantCondition(1, this.values[i][s]);
                 		PrimitiveConstraint[] sFD = genericCreateConstantCondition(0, this.values[i][s]);
-                		// Allow any next value.
-            			// The dynamic function value is known at when creating solver equations.
-                		switch (dynamicValue) {
-            			case 0:	
+                		
+                		if (dynFVal[0] && dynFVal[1] && !dynFVal[2] && !dynFVal[3]) {				//case 0:	
                 			constraints.add(new IfThen(new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tFD)),
                 					new And(sFD)));
-            				break;
-            			case 1:
+                		} else if (!dynFVal[0] && dynFVal[1] && !dynFVal[2] && !dynFVal[3]) {		//case 1:
                 			constraints.add(new IfThen(new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tPD)),
                 					new And(sPD)));
                 			constraints.add(new IfThen(new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tFD)),
                 					new Or(new And(sPD), new And(sFD))));
-                			break;
-            			case 2:
+                		} else if (!dynFVal[0] && !dynFVal[1] && dynFVal[2] && !dynFVal[3]) {		//case 2:
                 			constraints.add(new IfThen(new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tPS)),
                 					new And(sPS)));
                 			constraints.add(new IfThen(new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tPD)),
                 					new Or(new And(sPS), new And(sPD))));
                 			constraints.add(new IfThen(new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tFD)),
                 					new Or(new And(sPS), new Or(new And(sPD), new And(sFD)))));
-                			break;
-            			case 3:
+                		} else if (!dynFVal[0] && !dynFVal[1] && dynFVal[2] && dynFVal[3]) {		//case 3:
                 			constraints.add(new IfThen(new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tFS)),
                 					new And(sFS)));
                 			constraints.add(new IfThen(new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tPS)),
@@ -734,27 +704,13 @@ public class TroposCSPAlgorithm {
                 					new Or(new And(sFS), new Or(new And(sPS), new And(sPD)))));
                 			constraints.add(new IfThen(new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tFD)),
                 					new Or(new Or(new And(sFS), new And(sPS)), new Or(new And(sPD), new And(sFD)))));
-                			break;
-                		default:
+                		} else
                 			System.err.println("INC Dynamic Value for intention " + element.getId() + " has Unknown/None/Conflict value.");
-                			constraints.add(new IfThen(new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tFS)),
-                					new And(sFS)));
-                			constraints.add(new IfThen(new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tPS)),
-                					new Or(new And(sFS), new And(sPS))));
-                			constraints.add(new IfThen(new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tPD)),
-                					new Or(new And(sFS), new Or(new And(sPS), new And(sPD)))));
-                			constraints.add(new IfThen(new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tFD)),
-                					new Or(new Or(new And(sFS), new And(sPS)), new Or(new And(sPD), new And(sFD)))));
-                		}
             		}
         	} else if ((tempType == IntentionalElementDynamicType.DEC) || (tempType == IntentionalElementDynamicType.MONN)){
         		if (tempType == IntentionalElementDynamicType.MONN){
             		for (int t = 0; t < this.values[i].length; t++){
-            			PrimitiveConstraint[] tempDynValue = genericCreateConstantCondition(dynamicValue, this.values[i][t]);
-            			if (tempDynValue == null){
-            				System.err.println("MONP Dynamic Value for intention " + element.getId() + " has Unknown/None/Conflict value.");
-            				break;
-            			}
+    					PrimitiveConstraint[] tempDynValue = createXeqC(this.values[i][t], dynFVal);
                 		constraints.add(new IfThen(new XlteqY(epochs[0], this.timePoints[t]), 
                 				new And(tempDynValue)));
             		}
@@ -771,27 +727,23 @@ public class TroposCSPAlgorithm {
                 		PrimitiveConstraint[] sPS = genericCreateConstantCondition(2, this.values[i][s]);
                 		PrimitiveConstraint[] sPD = genericCreateConstantCondition(1, this.values[i][s]);
                 		PrimitiveConstraint[] sFD = genericCreateConstantCondition(0, this.values[i][s]);
-                		// Allow any next value.
-            			// The dynamic function value is known at when creating solver equations.
-                		switch (dynamicValue) {
-            			case 3:
+
+            			if (!dynFVal[0] && !dynFVal[1] && dynFVal[2] && dynFVal[3]) {		//case 3:
                     		constraints.add(new IfThen(new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tFS)),
                     				new And(sFS)));
-                    		break;
-            			case 2: 
+            			} else if (!dynFVal[0] && !dynFVal[1] && dynFVal[2] && !dynFVal[3]) {		//case 2:
                     		constraints.add(new IfThen(new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tFS)),
                     				new Or(new And(sFS), new And(sPS))));
                 			constraints.add(new IfThen(new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tPS)),
-                					new And(sPS)));            
-                			break;
-            			case 1:
+                					new And(sPS)));  
+            			} else if (!dynFVal[0] && dynFVal[1] && !dynFVal[2] && !dynFVal[3]) {		//case 1:
                     		constraints.add(new IfThen(new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tFS)),
                     				new Or(new And(sFS), new Or(new And(sPS), new And(sPD)))));
                 			constraints.add(new IfThen(new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tPS)),
                 					new Or(new And(sPS), new And(sPD))));
                 			constraints.add(new IfThen(new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tPD)),
-                					new And(sPD)));            				
-            			case 0:
+                					new And(sPD))); 
+            			} else if (dynFVal[0] && dynFVal[1] && !dynFVal[2] && !dynFVal[3]) {				//case 0:
                     		constraints.add(new IfThen(new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tFS)),
                     				new Or(new Or(new And(sFS), new And(sPS)), new Or(new And(sPD), new And(sFD)))));
                 			constraints.add(new IfThen(new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tPS)),
@@ -800,54 +752,32 @@ public class TroposCSPAlgorithm {
                 					new Or(new And(sFD), new And(sPD))));
                 			constraints.add(new IfThen(new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tFD)),
                 					new And(sFD)));
-            				break;
-                		default:
-                			System.err.println("INC Dynamic Value for intention " + element.getId() + " has Unknown/None/Conflict value.");
-                    		constraints.add(new IfThen(new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tFS)),
-                    				new Or(new Or(new And(sFS), new And(sPS)), new Or(new And(sPD), new And(sFD)))));
-                			constraints.add(new IfThen(new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tPS)),
-                					new Or(new And(sFD), new Or(new And(sPS), new And(sPD)))));
-                			constraints.add(new IfThen(new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tPD)),
-                					new Or(new And(sFD), new And(sPD))));
-                			constraints.add(new IfThen(new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tFD)),
-                					new And(sFD)));
-                		}
+            			} else
+            				System.err.println("INC Dynamic Value for intention " + element.getId() + " has Unknown/None/Conflict value.");
             		}
         	} else if (tempType == IntentionalElementDynamicType.SD){
       			for (int t = 0; t < this.values[i].length; t++){
-      				PrimitiveConstraint[] tempFS = genericCreateConstantCondition(3, this.values[i][t]);
-      				PrimitiveConstraint[] tempFD = genericCreateConstantCondition(0, this.values[i][t]);
             		constraints.add(new IfThenElse(new XgtY(epochs[0], this.timePoints[t]), 
-            				new And(tempFS),
-            				new And(tempFD)));
+            				new And(createXeqC(this.values[i][t], boolFS)),
+            				new And(createXeqC(this.values[i][t], boolFD))));
             	}
         	} else if (tempType == IntentionalElementDynamicType.DS){
       			for (int t = 0; t < this.values[i].length; t++){
-      				PrimitiveConstraint[] tempFS = genericCreateConstantCondition(3, this.values[i][t]);
-      				PrimitiveConstraint[] tempFD = genericCreateConstantCondition(0, this.values[i][t]);
             		constraints.add(new IfThenElse(new XgtY(epochs[0], this.timePoints[t]), 
-            				new And(tempFD),
-            				new And(tempFS)));
+            				new And(createXeqC(this.values[i][t], boolFD)),
+            				new And(createXeqC(this.values[i][t], boolFS))));
             	}    		
         	} else if (tempType == IntentionalElementDynamicType.RC){
-      			for (int t = 0; t < this.values[i].length; t++){	// TODO This could be a helper function reused with MONP and MONN and UD
-      				PrimitiveConstraint[] tempConstant = genericCreateConstantCondition(dynamicValue, this.values[i][t]);
-      				if (tempConstant == null){
-      					System.err.println("RC Dynamic Value for intention " + element.getId() + " has Unknown/None/Conflict value.");
-      					break;
-      				}
+      			for (int t = 0; t < this.values[i].length; t++){
+					PrimitiveConstraint[] tempDynValue = createXeqC(this.values[i][t], dynFVal);
             		constraints.add(new IfThen(new XlteqY(epochs[0], this.timePoints[t]), 
-            				new And(tempConstant)));
+            				new And(tempDynValue)));
             	}    		
         	} else if (tempType == IntentionalElementDynamicType.CR){
       			for (int t = 0; t < this.values[i].length; t++){
-      				PrimitiveConstraint[] tempConstant = genericCreateConstantCondition(initialEvaluation, this.values[i][t]);
-      				if (tempConstant == null){
-      					System.err.println("CR Initial Value for intention " + element.getId() + " has Unknown/None/Conflict value.");
-      					break;
-      				}
-      				constraints.add(new IfThen(new XgtY(epochs[0], this.timePoints[t]), 
-            				new And(tempConstant)));
+					PrimitiveConstraint[] tempDynValue = createXeqC(this.values[i][t], dynFVal);
+            		constraints.add(new IfThen(new XgtY(epochs[0], this.timePoints[t]), 
+            				new And(tempDynValue)));
             	}    	
         	} else if (tempType == IntentionalElementDynamicType.UD){
 				if (epochs == null){	// Assume at least one EB.
@@ -1027,7 +957,27 @@ public class TroposCSPAlgorithm {
 //        		}
         	}
     	}
+    	// TODO: Update with NotBoth Collections.
+    	
+    	
+     	
 	}
+	
+	private static PrimitiveConstraint[] createXeqY(BooleanVar[] val1, BooleanVar[] val2){
+		return new PrimitiveConstraint[]{
+				new XeqY(val1[3], val2[3]),
+				new XeqY(val1[2], val2[2]),
+				new XeqY(val1[1], val2[1]),
+				new XeqY(val1[0], val2[0])};
+	}	
+	private static PrimitiveConstraint[] createXeqC(BooleanVar[] val1, boolean[] val2){
+		return new PrimitiveConstraint[]{
+				new XeqC(val1[3], boolToInt(val2[3])),
+				new XeqC(val1[2], boolToInt(val2[2])),
+				new XeqC(val1[1], boolToInt(val2[1])),
+				new XeqC(val1[0], boolToInt(val2[0]))};
+	}	
+	
 	
 	// Generic Functions
 	/**
@@ -1085,51 +1035,15 @@ public class TroposCSPAlgorithm {
 		}
 		return null;
 	}
-	/**
-	 * Add a constraint that a timepoint/intention be set to a value.
-	 * @param constraintList	the constraint list
-	 * @param initialEvaluation	value that val should be set to
-	 * @param val				array of four booleans that represent one goal at a time
-	 */
-	private static void genericAddAssignmentConstraint(List<Constraint> constraintList, int initialEvaluation, BooleanVar[] val){
-		switch (initialEvaluation) {
-			case 0:	
-				constraintList.add(new XeqC(val[3], 0));
-				constraintList.add(new XeqC(val[2], 0));
-				constraintList.add(new XeqC(val[1], 1));
-				constraintList.add(new XeqC(val[0], 1));
-				break;
-			case 1:	
-				constraintList.add(new XeqC(val[3], 0));
-				constraintList.add(new XeqC(val[2], 0));
-				constraintList.add(new XeqC(val[1], 1));
-				constraintList.add(new XeqC(val[0], 0));
-				break;
-			case 2:	
-				constraintList.add(new XeqC(val[3], 0));
-				constraintList.add(new XeqC(val[2], 1));
-				constraintList.add(new XeqC(val[1], 0));
-				constraintList.add(new XeqC(val[0], 0));
-				break;
-			case 3:	
-				constraintList.add(new XeqC(val[3], 1));
-				constraintList.add(new XeqC(val[2], 1));
-				constraintList.add(new XeqC(val[1], 0));
-				constraintList.add(new XeqC(val[0], 0));
-				break;
-			case 4: case 5: case 6: //Not assigning initial evaluation labels for these values.
-				break;
-			default: 
-				break;
-		}
-	}
+	
+
 	
 	/**
 	 * Add the constraints across the links in the model.
 	 * Includes forward and backwards analysis rules.
 	 * Considers single and evolving intentions. 
 	 */
-	private void addLinkConstraints() {
+	private void initializeLinkConstraints() {
     	// Repeat process for each intention.
 		for (int e = 0; e < this.intentions.length; e++){
     		IntentionalElement element = this.intentions[e];
@@ -2292,4 +2206,38 @@ public class TroposCSPAlgorithm {
 				System.err.println("Stack trace: ");
 				e.printStackTrace(System.err);
 		}
-	}*/
+	}
+	
+//	private static void genericAddAssignmentConstraint(List<Constraint> constraintList, int initialEvaluation, BooleanVar[] val){
+//		switch (initialEvaluation) {
+//			case 0:	
+//				constraintList.add(new XeqC(val[3], 0));
+//				constraintList.add(new XeqC(val[2], 0));
+//				constraintList.add(new XeqC(val[1], 1));
+//				constraintList.add(new XeqC(val[0], 1));
+//				break;
+//			case 1:	
+//				constraintList.add(new XeqC(val[3], 0));
+//				constraintList.add(new XeqC(val[2], 0));
+//				constraintList.add(new XeqC(val[1], 1));
+//				constraintList.add(new XeqC(val[0], 0));
+//				break;
+//			case 2:	
+//				constraintList.add(new XeqC(val[3], 0));
+//				constraintList.add(new XeqC(val[2], 1));
+//				constraintList.add(new XeqC(val[1], 0));
+//				constraintList.add(new XeqC(val[0], 0));
+//				break;
+//			case 3:	
+//				constraintList.add(new XeqC(val[3], 1));
+//				constraintList.add(new XeqC(val[2], 1));
+//				constraintList.add(new XeqC(val[1], 0));
+//				constraintList.add(new XeqC(val[0], 0));
+//				break;
+//			case 4: case 5: case 6: //Not assigning initial evaluation labels for these values.
+//				break;
+//			default: 
+//				break;
+//		}
+//	}
+	*/
