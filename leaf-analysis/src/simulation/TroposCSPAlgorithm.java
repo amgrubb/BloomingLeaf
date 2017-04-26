@@ -1,7 +1,7 @@
 package simulation;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+//import java.io.BufferedReader;
+//import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -135,16 +135,13 @@ public class TroposCSPAlgorithm {
    			System.out.println("\nMethod: genericAddLinkConstraints(this.sat, this.constraints, this.intentions, this.values);");
 		
    		// Add constraints for the links and structure of the graph.
-    	//genericAddLinkConstraints(this.sat, this.constraints, this.spec, this.intentions, this.values);
    		addLinkConstraints();
 
     	if (DEBUG)
     		System.out.println("\nMethod: initialize dynmaics");
     	
     	// Create constraints for Dynamic Elements.
-    	// TODO: Update with Evolving Relationship and NotBoth Collections.
     	if(this.spec.isSolveNextState())
-    		//initializeStateDynamicFunctions();
     		genericInitialNextStateDynamics(this.constraints, this.intentions, this.values, 
     				this.functionEBCollection, this.spec.getInitialValueTimePoints()[lengthOfInitial - 1], lengthOfInitial - 1);
     	else
@@ -643,7 +640,10 @@ public class TroposCSPAlgorithm {
 	/**
 	 * 
 	 */
-	private void initializePathDynamicFunctions() {		//Full Model
+	private void initializePathDynamicFunctions() {		//Full Model and Full Path
+		// START HERE
+    	// TODO: Update with NotBoth Collections.
+		
     	for (int i = 0; i < this.intentions.length; i++){
     		IntentionalElement element = this.intentions[i];
     		IntentionalElementDynamicType tempType = element.dynamicType;
@@ -1655,6 +1655,9 @@ public class TroposCSPAlgorithm {
 			IntentionalElement[] elementList, BooleanVar[][][] val, 
 			HashMap<IntentionalElement, IntVar[]>  epochCollection, int currentAbsoluteTime,
 			int initialIndex){ // Assume only two time steps.
+    	// TODO: Update with NotBoth Collections.
+		// TODO: Fix UD Functions.
+		
 		// Assume only two time points, current with set values, and next state.
 		// TODO: Should be more generic other than times zero and one.
 		int nextIndex = initialIndex + 1;
@@ -2101,8 +2104,18 @@ public class TroposCSPAlgorithm {
 		}
 	}
 	
+	/**
+	 * Returns the Model associated with this solver instance.
+	 * @return	ModelSpec associated with this solver instance.
+	 */
+	public ModelSpec getSpec() {
+		return spec;
+	}
 	
-/*	private void exploreState(int stateNum, int[] timeOrder){
+}	
+	
+/****************** END OF CLASS ***********************************	
+	private void exploreState(int stateNum, int[] timeOrder){
 		int nodeIndex = timeOrder[stateNum];
 		Store storeExplore = new Store(); 
 		SatTranslation satExplore = new SatTranslation(storeExplore); 
@@ -2120,7 +2133,7 @@ public class TroposCSPAlgorithm {
 			genericInitialNodeValues(storeExplore, satExplore, valuesExplore[i][0], element.getId() + "_0");
 			genericInitialNodeValues(storeExplore, satExplore, valuesExplore[i][1], element.getId() + "_1");
 
-			genericWeakConflictPrevention(satExplore, valuesExplore[i][1], zero);		// TODO: Select Appropriate conflict level.
+			genericWeakConflictPrevention(satExplore, valuesExplore[i][1], zero);
 			for (int j = 0; j < 4; j ++)
 				constraintsExplore.add(new XeqC(valuesExplore[i][0][j], this.values[i][nodeIndex][j].value()));
 			
@@ -2183,22 +2196,9 @@ public class TroposCSPAlgorithm {
 				System.out.println("\t" + element.name + "\t" + element.dynamicType.toString());
 			}  
     	}
-	}*/
-	
-	
-	/**
-	 * Returns the Model associated with this solver instance.
-	 * @return	ModelSpec associated with this solver instance.
-	 */
-	public ModelSpec getSpec() {
-		return spec;
 	}
-
-	/**
-	 * main used for testing
-	 * @param args	command line argument with name of input file.
-	 */
-	public static void main(String[] args) {
+    
+    public static void main(String[] args) {
 		String FILENAME = "stored-models/single-node"; //stored-models/testEB-Values"; //stored-models/simple-AND"; //models/UD-fuc-repeat.leaf"; //city-tropos-2.leaf"; //backward-test-helps.leaf"; //city-tropos-2.leaf";	 //sebastiani-fig1.leaf";
 		try {
 			// Version 2
@@ -2292,5 +2292,4 @@ public class TroposCSPAlgorithm {
 				System.err.println("Stack trace: ");
 				e.printStackTrace(System.err);
 		}
-	}
-}
+	}*/
