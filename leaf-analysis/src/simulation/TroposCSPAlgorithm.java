@@ -55,7 +55,6 @@ public class TroposCSPAlgorithm {
     private HashMap<IntVar, IntVar> epochToTimePoint;				// Mapping between assignedEBs and other constrained values. Used in initializeDynamicFunctions for unknown constants UD functions.
     private BooleanVar[][][] values;						// ** Holds the evaluations for each [this.numIntentions][this.numTimePoints][FS/PS/PD/FD Predicates]
     private IntVar zero;									// (0) Initial Values time point.
-    @SuppressWarnings("unused")
 	private IntVar infinity;								// (maxTime + 1) Infinity used for intention functions, not a solved point.
     private IntVar[] unsolvedTimePoints;
     private IntVar[] nextTimePoint;							// Holds the list of next possible time points. ******* Used for finding state.
@@ -646,6 +645,7 @@ public class TroposCSPAlgorithm {
 		boolean[] boolPD = new boolean[] {false, true, false, false};
 		boolean[] boolPS = new boolean[] {false, false, true, false};
 		boolean[] boolFS = new boolean[] {false, false, true, true};
+		boolean[] boolTT = new boolean[] {false, false, false, false};
     	for (int i = 0; i < this.intentions.length; i++){
     		IntentionalElement element = this.intentions[i];
     		IntentionalElementDynamicType tempType = element.dynamicType;
@@ -654,7 +654,6 @@ public class TroposCSPAlgorithm {
         		continue;
  
     		IntVar[] epochs = this.functionEBCollection.get(element);
-    		//boolean[] initVal = this.spec.getInitialValues()[i][0];
     		boolean[] dynFVal = element.getDynamicFunctionMarkedValue();    		
     		
     		if (tempType == IntentionalElementDynamicType.CONST){
@@ -791,14 +790,6 @@ public class TroposCSPAlgorithm {
 				}
         		
 				UDFunctionCSP funcUD = element.getCspUDFunct();
-//				String[] functions;
-//				int[] dynamicValues;
-//				char[] elementEBs;
-//				public int[] absoluteEpochLengths = null;
-//				int mapStart;
-//				int mapEnd;
-
-				//IntVar[] epochs
 				String[] segmentDynamic = funcUD.getFunctions();
 				boolean[][] segmentDynamicValue = funcUD.getDynamicValues();
 				int numSegments = segmentDynamic.length;		//Segments not EBs
@@ -1036,8 +1027,26 @@ public class TroposCSPAlgorithm {
 				}
         	}
     	}
-    	// TODO: Update with NotBoth Collections.
-    	
+    	// Not Both Dynamic Functions.
+    	List<NotBothLink> notBothLinkList = this.spec.getNotBothLink();	
+    	for(ListIterator<NotBothLink> ec = notBothLinkList.listIterator(); ec.hasNext(); ){		
+    		NotBothLink link = ec.next();
+            IntVar epoch = this.notBothEBCollection.get(link);
+            int ele1 = link.getElement1().getIdNum();
+            int ele2 = link.getElement2().getIdNum();
+            for (int t = 0; t < this.values[ele1].length; t++){
+            	if(link.isFinalDenied())
+            		constraints.add(new IfThenElse(new XgtY(epoch, this.timePoints[t]), 
+            				new And(new And(createXeqC(this.values[ele1][t], boolTT)), new And(createXeqC(this.values[ele2][t], boolTT))),
+            				new Or(new And(new And(createXeqC(this.values[ele1][t], boolFS)), new And(createXeqC(this.values[ele2][t], boolFD))),
+            					   new And(new And(createXeqC(this.values[ele1][t], boolFD)), new And(createXeqC(this.values[ele2][t], boolFS))))));
+            	else
+            		constraints.add(new IfThenElse(new XgtY(epoch, this.timePoints[t]), 
+            				new And(new And(createXeqC(this.values[ele1][t], boolTT)), new And(createXeqC(this.values[ele2][t], boolTT))),
+            				new Or(new And(new And(createXeqC(this.values[ele1][t], boolFS)), new And(createXeqC(this.values[ele2][t], boolTT))),
+            					   new And(new And(createXeqC(this.values[ele1][t], boolTT)), new And(createXeqC(this.values[ele2][t], boolFS))))));            		
+            }
+    	}
     	
      	
 	}
