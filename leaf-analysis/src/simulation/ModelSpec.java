@@ -21,9 +21,10 @@ public class ModelSpec {
 	private List<IntentionalElement> intElements = new ArrayList<IntentionalElement>();
 	private List<Actor> actors = new ArrayList<Actor>();
 	private List<NotBothLink> notBothLink = new ArrayList<NotBothLink>();
-	private List<EvolutionLink> evolutionLink = new ArrayList<EvolutionLink>(); 
 	private List<Contribution> contribution = new ArrayList<Contribution>();
 	private List<Decomposition> decomposition = new ArrayList<Decomposition>();
+	private List<EvolvingContribution> evolvingContribution = new ArrayList<EvolvingContribution>();
+	private List<EvolvingDecomposition> evolvingDecomposition = new ArrayList<EvolvingDecomposition>();
 	private List<EpochConstraint> constraintsBetweenEpochs = new ArrayList<EpochConstraint>();
 	private int maxTime = 5;
 	private int numActors = 0;
@@ -114,10 +115,6 @@ public class ModelSpec {
 		return initialValues;
 	}
 
-	public List<EvolutionLink> getEvolutionLink() {
-		return evolutionLink;
-	}
-
 	public List<IntentionalElement> getIntElements() {
 		return intElements;
 	}
@@ -188,10 +185,6 @@ public class ModelSpec {
 
 	public void setIntElements(List<IntentionalElement> intElements) {
 		this.intElements = intElements;
-	}
-
-	public void setEvolutionLink(List<EvolutionLink> evolutionLink) {
-		this.evolutionLink = evolutionLink;
 	}
 
 	public void setConstraintsBetweenEpochs(List<EpochConstraint> constraintsBetweenEpochs) {
@@ -294,5 +287,22 @@ public class ModelSpec {
 	public void setNotBothLink(List<NotBothLink> notBothLink) {
 		this.notBothLink = notBothLink;
 	}
+
+	public List<EvolvingContribution> getEvolvingContribution() {
+		return evolvingContribution;
+	}
+
+	public void setEvolvingContribution(List<EvolvingContribution> evolvingContribution) {
+		this.evolvingContribution = evolvingContribution;
+	}
+
+	public List<EvolvingDecomposition> getEvolvingDecomposition() {
+		return evolvingDecomposition;
+	}
+
+	public void setEvolvingDecomposition(List<EvolvingDecomposition> evolvingDecomposition) {
+		this.evolvingDecomposition = evolvingDecomposition;
+	}
+	
 	
 }
