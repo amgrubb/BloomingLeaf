@@ -79,7 +79,7 @@ public class IntentionalElement extends LinkableElement {
 		else
 			return dynamicFunctionMarkedValue;
 	}
-	
+	// TODO: Remove this function.
 	public int oldGetDynamicFunctionMarkedValue() {
 			if (userDefinedDynamicType)
 				return -1;
