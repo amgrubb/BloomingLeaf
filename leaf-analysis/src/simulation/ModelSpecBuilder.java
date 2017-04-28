@@ -178,19 +178,29 @@ public class ModelSpecBuilder {
 			//Getting links
 			if(!frontendModel.getLinks().isEmpty()){
 				for(InputLink dataLink : frontendModel.getLinks()){
-					LinkableElement src = null;
+		        	int i = 0;
+		        	
+					for(IntentionalElement tmp : modelSpec.getIntElements()){
+			        	if(dataLink.getLinkSrcID().equals(tmp.getId())){
+			        		 i++;			        		
+			        	}
+			        }
+
+					LinkableElement[] src = new IntentionalElement[i];
 					LinkableElement dest = null;
 			        for(IntentionalElement tmp : modelSpec.getIntElements()){
-			        	if(dataLink.getLinkSrcID().equals(tmp.getId()))
-			        		 src = tmp;
+			        	int a = 0;
+			        	if(dataLink.getLinkSrcID().equals(tmp.getId())){
+			        		 src[a] = tmp;
+			        		 a++;			        		
+			        	}
 					    if(dataLink.getLinkDestID().equals(tmp.getId()))
 					         dest = tmp;				 
 			        }
-			        
 			        if (DecompositionType.getByCode(dataLink.getLinkType()) != null)
-			        	modelSpec.getDecomposition().add(new Decomposition(src, dest, DecompositionType.getByCode(dataLink.getLinkType())));
+			          	modelSpec.getDecomposition().add(new Decomposition(src, dest, DecompositionType.getByCode(dataLink.getLinkType())));			        	
 			        else if (ContributionType.getByCode(dataLink.getLinkType()) != null)
-			        	modelSpec.getContribution().add(new Contribution(src, dest, ContributionType.getByCode(dataLink.getLinkType())));
+			        	modelSpec.getContribution().add(new Contribution(src[0], dest, ContributionType.getByCode(dataLink.getLinkType())));
 				}
 			}
 	

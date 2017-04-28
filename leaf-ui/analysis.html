@@ -87,7 +87,10 @@
 
         <div id="paper">
         </div>
-
+        
+        <div id="slider"></div>
+        <span id="sliderValue"></span>
+        
         <script type="text/javascript">
             SVGElement.prototype.getTransformToElement = SVGElement.prototype.getTransformToElement || function(toElement) {
             return toElement.getScreenCTM().inverse().multiply(this.getScreenCTM());

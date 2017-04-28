@@ -1,7 +1,7 @@
 package simulation;
 
+import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.PrintWriter;
 
 import com.google.gson.Gson;
@@ -23,24 +23,25 @@ public class SolveModel {
 	 * This method is responsible to execute all steps to generate the analysis file.
 	 * @param args
 	 * As parameters it receives the name of the file to be created.
-	 * TODO: create a parameter to decide if it will execute a new analysis or use an existent one.
+	 * Note: create a parameter to decide if it will execute a new analysis or use an existent one.
+	 * 		Alicia->Marcel: What does this note mean?
 	 */
 	public static void main(String[] args) {
 
 		//This is the default filePath to be executed if no file is pass through parameters
-		String filePath = "/home/marcel/UofT/";
-		//String filePath = "/u/marcel/public_html/leaf/cgi-bin/temp/";			
-		String fileName = "default.json";
+		String filePath = "stored-models/";			
+		String inputFile = "default.json";
+		String outputFile = "output.out";
 				
 		try {
 			//creating the backend model to be analysed
-			ModelSpec modelSpec = convertModelFromFile(filePath+fileName);
+			ModelSpec modelSpec = convertModelFromFile(filePath + inputFile);
 			//Analyze the model
 			
 			TroposCSPAlgorithm solver = new TroposCSPAlgorithm(modelSpec);
 			solver.solveModel();
 			
-			createOutputFile(solver, "output");
+			createOutputFile(solver, filePath + outputFile);
 	
 		} catch (Exception e) {
 			throw new RuntimeException(e.getMessage());
@@ -54,22 +55,21 @@ public class SolveModel {
 	 * @param filePath
 	 * Name of the file to be read by CGI to be sent to frontend
 	 */
-	private static void createOutputFile(TroposCSPAlgorithm solver, String fileName) {
-		//Need to create the file and folder if it doesn't exist
-		String outputFile = "/home/marcel/UofT/" + fileName + ".out";
-		//String outputFile = "/u/marcel/public_html/leaf/cgi-bin/temp/" + fileName + ".out";
-	
+	private static void createOutputFile(TroposCSPAlgorithm solver, String filePath) {
 		Gson gson = new Gson();		
 		//Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		OutputModel outputModel = solver.spec.getOutputModel();
+		OutputModel outputModel = solver.getSpec().getOutputModel();
 		
 		try {
-			FileWriter file;
-			file = new FileWriter(outputFile);
+			File file;
+			file = new File(filePath);
+			if (!file.exists()) {
+				file.createNewFile();
+			}
 			PrintWriter printFile = new PrintWriter(file);
 			//printFile.printf(sb.toString());
 			printFile.printf(gson.toJson(outputModel));
-			file.close();
+			printFile.close();
 		} catch (Exception e) {
 			throw new RuntimeException("Error in createOutputFile: " + e.getMessage());
 		}

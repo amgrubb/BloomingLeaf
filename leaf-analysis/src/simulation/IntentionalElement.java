@@ -73,32 +73,13 @@ public class IntentionalElement extends LinkableElement {
 			System.out.println("Error Assigning User-Defined: unknown epoch boundary value.");
 	}
 	
-	public void oldSetDynamicFunctionMarkedValue(int dynamicFunctionMarkedValue) {
-		switch (dynamicFunctionMarkedValue) {
-		case 0:	
-			this.dynamicFunctionMarkedValue = new boolean[] {true, true, false, false};
-			break;
-		case 1:	
-			this.dynamicFunctionMarkedValue = new boolean[] {false, true, false, false};
-			break;
-		case 2:	
-			this.dynamicFunctionMarkedValue = new boolean[] {false, false, true, false};
-			break;
-		case 3:	
-			this.dynamicFunctionMarkedValue = new boolean[] {false, false, true, true};
-			break;
-		default:
-			this.dynamicFunctionMarkedValue = new boolean[] {false, false, false, false};
-		}
-	}
-	
 	public boolean[] getDynamicFunctionMarkedValue() {
 		if (userDefinedDynamicType)
 			return null;
 		else
 			return dynamicFunctionMarkedValue;
 	}
-	
+	// TODO: Remove this function.
 	public int oldGetDynamicFunctionMarkedValue() {
 			if (userDefinedDynamicType)
 				return -1;
