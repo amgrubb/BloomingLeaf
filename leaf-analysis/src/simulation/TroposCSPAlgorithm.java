@@ -1,7 +1,7 @@
 package simulation;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+//import java.io.BufferedReader;
+//import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -55,7 +55,6 @@ public class TroposCSPAlgorithm {
     private HashMap<IntVar, IntVar> epochToTimePoint;				// Mapping between assignedEBs and other constrained values. Used in initializeDynamicFunctions for unknown constants UD functions.
     private BooleanVar[][][] values;						// ** Holds the evaluations for each [this.numIntentions][this.numTimePoints][FS/PS/PD/FD Predicates]
     private IntVar zero;									// (0) Initial Values time point.
-    @SuppressWarnings("unused")
 	private IntVar infinity;								// (maxTime + 1) Infinity used for intention functions, not a solved point.
     private IntVar[] unsolvedTimePoints;
     private IntVar[] nextTimePoint;							// Holds the list of next possible time points. ******* Used for finding state.
@@ -135,16 +134,13 @@ public class TroposCSPAlgorithm {
    			System.out.println("\nMethod: genericAddLinkConstraints(this.sat, this.constraints, this.intentions, this.values);");
 		
    		// Add constraints for the links and structure of the graph.
-    	//genericAddLinkConstraints(this.sat, this.constraints, this.spec, this.intentions, this.values);
-   		addLinkConstraints();
+   		initializeLinkConstraints();
 
     	if (DEBUG)
     		System.out.println("\nMethod: initialize dynmaics");
     	
     	// Create constraints for Dynamic Elements.
-    	// TODO: Update with Evolving Relationship and NotBoth Collections.
     	if(this.spec.isSolveNextState())
-    		//initializeStateDynamicFunctions();
     		genericInitialNextStateDynamics(this.constraints, this.intentions, this.values, 
     				this.functionEBCollection, this.spec.getInitialValueTimePoints()[lengthOfInitial - 1], lengthOfInitial - 1);
     	else
@@ -601,7 +597,7 @@ public class TroposCSPAlgorithm {
     			genericInitialNodeValues(this.store, this.sat, this.values[i][t], element.getId() + "_" + t);
     			
     			// Initial initialValues.
-    			if ((t == 0) && (!initialValues[i][t][0] && !initialValues[i][t][1] && !initialValues[i][t][2] && !initialValues[i][t][3]))
+    			if ((t == 0) && (this.values[i].length == 1) && (!initialValues[i][t][0] && !initialValues[i][t][1] && !initialValues[i][t][2] && !initialValues[i][t][3]))
     				continue;
     			else if (t < initialValues[i].length){
     				this.constraints.add(new XeqC(this.values[i][t][0], boolToInt(initialValues[i][t][0])));
@@ -618,7 +614,7 @@ public class TroposCSPAlgorithm {
 	 * @param b	boolean value.
 	 * @return	int value of b.
 	 */
-	private int boolToInt(boolean b) {
+	private static int boolToInt(boolean b) {
 	    return b ? 1 : 0;
 	}
 	
@@ -641,53 +637,33 @@ public class TroposCSPAlgorithm {
 	
 
 	/**
-	 * 
+	 *  Creates the dynamic function constraints for the full path.
+	 *  NotBoth constraints created at the end of the function.
 	 */
-	private void initializePathDynamicFunctions() {		//Full Model
+	private void initializePathDynamicFunctions() {		//Full Model and Full Path, over all time points.
+		boolean[] boolFD = new boolean[] {true, true, false, false};
+		boolean[] boolPD = new boolean[] {false, true, false, false};
+		boolean[] boolPS = new boolean[] {false, false, true, false};
+		boolean[] boolFS = new boolean[] {false, false, true, true};
+		boolean[] boolTT = new boolean[] {false, false, false, false};
     	for (int i = 0; i < this.intentions.length; i++){
     		IntentionalElement element = this.intentions[i];
     		IntentionalElementDynamicType tempType = element.dynamicType;
-        	if ((tempType == IntentionalElementDynamicType.NT) || (element.dynamicType == IntentionalElementDynamicType.RND))
+        	if ((tempType == IntentionalElementDynamicType.NT) || (element.dynamicType == IntentionalElementDynamicType.RND) || 
+        		(tempType == IntentionalElementDynamicType.NB))
         		continue;
  
     		IntVar[] epochs = this.functionEBCollection.get(element);
-    		//TODO: Fix this throughout algorithm.
-    		int initialEvaluation;
-    		boolean[] initialIntentionValues = this.spec.getInitialValues()[i][0];
-    		if (initialIntentionValues[0] && initialIntentionValues[1] && !initialIntentionValues[2] && !initialIntentionValues[3])
-    			initialEvaluation =  0;
-    		else if (!initialIntentionValues[0] && initialIntentionValues[1] && !initialIntentionValues[2] && !initialIntentionValues[3])
-    			initialEvaluation =  1; 
-    		else if (!initialIntentionValues[0] && !initialIntentionValues[1] && initialIntentionValues[2] && !initialIntentionValues[3])
-    			initialEvaluation =  2; 
-    		else if (!initialIntentionValues[0] && !initialIntentionValues[1] && initialIntentionValues[2] && initialIntentionValues[3])
-    			initialEvaluation =  3; 
-    		else 
-    			initialEvaluation =  5; 
-
-    		int dynamicValue = element.oldGetDynamicFunctionMarkedValue();;
-
+    		boolean[] dynFVal = element.getDynamicFunctionMarkedValue();    		
+    		
     		if (tempType == IntentionalElementDynamicType.CONST){
-    			if (initialEvaluation == 5){
-    				for (int t = 1; t < this.values[i].length; t++){
-    					PrimitiveConstraint[] tempConstant = {
-    							new XeqY(this.values[i][t][3], this.values[i][0][3]), 
-    							new XeqY(this.values[i][t][2], this.values[i][0][2]),	
-    							new XeqY(this.values[i][t][1], this.values[i][0][1]),
-    							new XeqY(this.values[i][t][0], this.values[i][0][0])};
-    					constraints.add(new And(tempConstant)); 
-    				}
-    			}else	// Has value between 0-3
-    				for (int t = 0; t < this.values[i].length; t++)
-    					genericAddAssignmentConstraint(this.constraints, initialEvaluation, this.values[i][t]);
+    			for (int t = 1; t < this.values[i].length; t++){
+    				constraints.add(new And(createXeqY(this.values[i][t], this.values[i][0])));
+    			}
     		} else if ((tempType == IntentionalElementDynamicType.INC) || (tempType == IntentionalElementDynamicType.MONP)){
     			if (tempType == IntentionalElementDynamicType.MONP){
     				for (int t = 0; t < this.values[i].length; t++){
-    					PrimitiveConstraint[] tempDynValue = genericCreateConstantCondition(dynamicValue, this.values[i][t]);
-    					if (tempDynValue == null){
-    						System.err.println("MONP Dynamic Value for intention " + element.getId() + " has Unknown/None/Conflict value.");
-            				break;
-            			}
+    					PrimitiveConstraint[] tempDynValue = createXeqC(this.values[i][t], dynFVal);
                 		constraints.add(new IfThen(new XlteqY(epochs[0], this.timePoints[t]), 
                 				new And(tempDynValue)));
             		}
@@ -696,36 +672,31 @@ public class TroposCSPAlgorithm {
       				for (int s = 0; s < this.values[i].length; s++){
       					if (t==s)
             				continue;
-                		PrimitiveConstraint[] tFS = genericCreateConstantCondition(3, this.values[i][t]);
-                		PrimitiveConstraint[] tPS = genericCreateConstantCondition(2, this.values[i][t]);
-                		PrimitiveConstraint[] tPD = genericCreateConstantCondition(1, this.values[i][t]);
-                		PrimitiveConstraint[] tFD = genericCreateConstantCondition(0, this.values[i][t]);
-                		PrimitiveConstraint[] sFS = genericCreateConstantCondition(3, this.values[i][s]);
-                		PrimitiveConstraint[] sPS = genericCreateConstantCondition(2, this.values[i][s]);
-                		PrimitiveConstraint[] sPD = genericCreateConstantCondition(1, this.values[i][s]);
-                		PrimitiveConstraint[] sFD = genericCreateConstantCondition(0, this.values[i][s]);
-                		// Allow any next value.
-            			// The dynamic function value is known at when creating solver equations.
-                		switch (dynamicValue) {
-            			case 0:	
+                		PrimitiveConstraint[] tFS = createXeqC(this.values[i][t], boolFS);
+                		PrimitiveConstraint[] tPS = createXeqC(this.values[i][t], boolPS);
+                		PrimitiveConstraint[] tPD = createXeqC(this.values[i][t], boolPD);
+                		PrimitiveConstraint[] tFD = createXeqC(this.values[i][t], boolFD);
+                		PrimitiveConstraint[] sFS = createXeqC(this.values[i][s], boolFS);
+                		PrimitiveConstraint[] sPS = createXeqC(this.values[i][s], boolPS);
+                		PrimitiveConstraint[] sPD = createXeqC(this.values[i][s], boolPD);
+                		PrimitiveConstraint[] sFD = createXeqC(this.values[i][s], boolFD);
+                		
+                		if (dynFVal[0] && dynFVal[1] && !dynFVal[2] && !dynFVal[3]) {				//case 0:	
                 			constraints.add(new IfThen(new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tFD)),
                 					new And(sFD)));
-            				break;
-            			case 1:
+                		} else if (!dynFVal[0] && dynFVal[1] && !dynFVal[2] && !dynFVal[3]) {		//case 1:
                 			constraints.add(new IfThen(new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tPD)),
                 					new And(sPD)));
                 			constraints.add(new IfThen(new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tFD)),
                 					new Or(new And(sPD), new And(sFD))));
-                			break;
-            			case 2:
+                		} else if (!dynFVal[0] && !dynFVal[1] && dynFVal[2] && !dynFVal[3]) {		//case 2:
                 			constraints.add(new IfThen(new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tPS)),
                 					new And(sPS)));
                 			constraints.add(new IfThen(new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tPD)),
                 					new Or(new And(sPS), new And(sPD))));
                 			constraints.add(new IfThen(new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tFD)),
                 					new Or(new And(sPS), new Or(new And(sPD), new And(sFD)))));
-                			break;
-            			case 3:
+                		} else if (!dynFVal[0] && !dynFVal[1] && dynFVal[2] && dynFVal[3]) {		//case 3:
                 			constraints.add(new IfThen(new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tFS)),
                 					new And(sFS)));
                 			constraints.add(new IfThen(new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tPS)),
@@ -734,27 +705,13 @@ public class TroposCSPAlgorithm {
                 					new Or(new And(sFS), new Or(new And(sPS), new And(sPD)))));
                 			constraints.add(new IfThen(new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tFD)),
                 					new Or(new Or(new And(sFS), new And(sPS)), new Or(new And(sPD), new And(sFD)))));
-                			break;
-                		default:
+                		} else
                 			System.err.println("INC Dynamic Value for intention " + element.getId() + " has Unknown/None/Conflict value.");
-                			constraints.add(new IfThen(new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tFS)),
-                					new And(sFS)));
-                			constraints.add(new IfThen(new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tPS)),
-                					new Or(new And(sFS), new And(sPS))));
-                			constraints.add(new IfThen(new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tPD)),
-                					new Or(new And(sFS), new Or(new And(sPS), new And(sPD)))));
-                			constraints.add(new IfThen(new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tFD)),
-                					new Or(new Or(new And(sFS), new And(sPS)), new Or(new And(sPD), new And(sFD)))));
-                		}
             		}
         	} else if ((tempType == IntentionalElementDynamicType.DEC) || (tempType == IntentionalElementDynamicType.MONN)){
         		if (tempType == IntentionalElementDynamicType.MONN){
             		for (int t = 0; t < this.values[i].length; t++){
-            			PrimitiveConstraint[] tempDynValue = genericCreateConstantCondition(dynamicValue, this.values[i][t]);
-            			if (tempDynValue == null){
-            				System.err.println("MONP Dynamic Value for intention " + element.getId() + " has Unknown/None/Conflict value.");
-            				break;
-            			}
+    					PrimitiveConstraint[] tempDynValue = createXeqC(this.values[i][t], dynFVal);
                 		constraints.add(new IfThen(new XlteqY(epochs[0], this.timePoints[t]), 
                 				new And(tempDynValue)));
             		}
@@ -763,35 +720,32 @@ public class TroposCSPAlgorithm {
       				for (int s = 0; s < this.values[i].length; s++){
             			if (t==s)
             				continue;
-                		PrimitiveConstraint[] tFS = genericCreateConstantCondition(3, this.values[i][t]);
-                		PrimitiveConstraint[] tPS = genericCreateConstantCondition(2, this.values[i][t]);
-                		PrimitiveConstraint[] tPD = genericCreateConstantCondition(1, this.values[i][t]);
-                		PrimitiveConstraint[] tFD = genericCreateConstantCondition(0, this.values[i][t]);
-                		PrimitiveConstraint[] sFS = genericCreateConstantCondition(3, this.values[i][s]);
-                		PrimitiveConstraint[] sPS = genericCreateConstantCondition(2, this.values[i][s]);
-                		PrimitiveConstraint[] sPD = genericCreateConstantCondition(1, this.values[i][s]);
-                		PrimitiveConstraint[] sFD = genericCreateConstantCondition(0, this.values[i][s]);
-                		// Allow any next value.
-            			// The dynamic function value is known at when creating solver equations.
-                		switch (dynamicValue) {
-            			case 3:
+            			
+                		PrimitiveConstraint[] tFS = createXeqC(this.values[i][t], boolFS);
+                		PrimitiveConstraint[] tPS = createXeqC(this.values[i][t], boolPS);
+                		PrimitiveConstraint[] tPD = createXeqC(this.values[i][t], boolPD);
+                		PrimitiveConstraint[] tFD = createXeqC(this.values[i][t], boolFD);
+                		PrimitiveConstraint[] sFS = createXeqC(this.values[i][s], boolFS);
+                		PrimitiveConstraint[] sPS = createXeqC(this.values[i][s], boolPS);
+                		PrimitiveConstraint[] sPD = createXeqC(this.values[i][s], boolPD);
+                		PrimitiveConstraint[] sFD = createXeqC(this.values[i][s], boolFD);
+
+            			if (!dynFVal[0] && !dynFVal[1] && dynFVal[2] && dynFVal[3]) {		//case 3:
                     		constraints.add(new IfThen(new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tFS)),
                     				new And(sFS)));
-                    		break;
-            			case 2: 
+            			} else if (!dynFVal[0] && !dynFVal[1] && dynFVal[2] && !dynFVal[3]) {		//case 2:
                     		constraints.add(new IfThen(new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tFS)),
                     				new Or(new And(sFS), new And(sPS))));
                 			constraints.add(new IfThen(new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tPS)),
-                					new And(sPS)));            
-                			break;
-            			case 1:
+                					new And(sPS)));  
+            			} else if (!dynFVal[0] && dynFVal[1] && !dynFVal[2] && !dynFVal[3]) {		//case 1:
                     		constraints.add(new IfThen(new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tFS)),
                     				new Or(new And(sFS), new Or(new And(sPS), new And(sPD)))));
                 			constraints.add(new IfThen(new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tPS)),
                 					new Or(new And(sPS), new And(sPD))));
                 			constraints.add(new IfThen(new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tPD)),
-                					new And(sPD)));            				
-            			case 0:
+                					new And(sPD))); 
+            			} else if (dynFVal[0] && dynFVal[1] && !dynFVal[2] && !dynFVal[3]) {				//case 0:
                     		constraints.add(new IfThen(new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tFS)),
                     				new Or(new Or(new And(sFS), new And(sPS)), new Or(new And(sPD), new And(sFD)))));
                 			constraints.add(new IfThen(new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tPS)),
@@ -800,234 +754,318 @@ public class TroposCSPAlgorithm {
                 					new Or(new And(sFD), new And(sPD))));
                 			constraints.add(new IfThen(new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tFD)),
                 					new And(sFD)));
-            				break;
-                		default:
-                			System.err.println("INC Dynamic Value for intention " + element.getId() + " has Unknown/None/Conflict value.");
-                    		constraints.add(new IfThen(new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tFS)),
-                    				new Or(new Or(new And(sFS), new And(sPS)), new Or(new And(sPD), new And(sFD)))));
-                			constraints.add(new IfThen(new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tPS)),
-                					new Or(new And(sFD), new Or(new And(sPS), new And(sPD)))));
-                			constraints.add(new IfThen(new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tPD)),
-                					new Or(new And(sFD), new And(sPD))));
-                			constraints.add(new IfThen(new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tFD)),
-                					new And(sFD)));
-                		}
+            			} else
+            				System.err.println("DEC Dynamic Value for intention " + element.getId() + " has Unknown/None/Conflict value.");
             		}
         	} else if (tempType == IntentionalElementDynamicType.SD){
       			for (int t = 0; t < this.values[i].length; t++){
-      				PrimitiveConstraint[] tempFS = genericCreateConstantCondition(3, this.values[i][t]);
-      				PrimitiveConstraint[] tempFD = genericCreateConstantCondition(0, this.values[i][t]);
             		constraints.add(new IfThenElse(new XgtY(epochs[0], this.timePoints[t]), 
-            				new And(tempFS),
-            				new And(tempFD)));
+            				new And(createXeqC(this.values[i][t], boolFS)),
+            				new And(createXeqC(this.values[i][t], boolFD))));
             	}
         	} else if (tempType == IntentionalElementDynamicType.DS){
       			for (int t = 0; t < this.values[i].length; t++){
-      				PrimitiveConstraint[] tempFS = genericCreateConstantCondition(3, this.values[i][t]);
-      				PrimitiveConstraint[] tempFD = genericCreateConstantCondition(0, this.values[i][t]);
             		constraints.add(new IfThenElse(new XgtY(epochs[0], this.timePoints[t]), 
-            				new And(tempFD),
-            				new And(tempFS)));
+            				new And(createXeqC(this.values[i][t], boolFD)),
+            				new And(createXeqC(this.values[i][t], boolFS))));
             	}    		
         	} else if (tempType == IntentionalElementDynamicType.RC){
-      			for (int t = 0; t < this.values[i].length; t++){	// TODO This could be a helper function reused with MONP and MONN and UD
-      				PrimitiveConstraint[] tempConstant = genericCreateConstantCondition(dynamicValue, this.values[i][t]);
-      				if (tempConstant == null){
-      					System.err.println("RC Dynamic Value for intention " + element.getId() + " has Unknown/None/Conflict value.");
-      					break;
-      				}
+      			for (int t = 0; t < this.values[i].length; t++){
+					PrimitiveConstraint[] tempDynValue = createXeqC(this.values[i][t], dynFVal);
             		constraints.add(new IfThen(new XlteqY(epochs[0], this.timePoints[t]), 
-            				new And(tempConstant)));
+            				new And(tempDynValue)));
             	}    		
         	} else if (tempType == IntentionalElementDynamicType.CR){
       			for (int t = 0; t < this.values[i].length; t++){
-      				PrimitiveConstraint[] tempConstant = genericCreateConstantCondition(initialEvaluation, this.values[i][t]);
-      				if (tempConstant == null){
-      					System.err.println("CR Initial Value for intention " + element.getId() + " has Unknown/None/Conflict value.");
-      					break;
-      				}
-      				constraints.add(new IfThen(new XgtY(epochs[0], this.timePoints[t]), 
-            				new And(tempConstant)));
+					PrimitiveConstraint[] tempDynValue = createXeqC(this.values[i][t], dynFVal);
+            		constraints.add(new IfThen(new XgtY(epochs[0], this.timePoints[t]), 
+            				new And(tempDynValue)));
             	}    	
+      		/************ UD Functions *******************/	
         	} else if (tempType == IntentionalElementDynamicType.UD){
-				if (epochs == null){	// Assume at least one EB.
-					System.err.println("UD functions must have at least one EB. Fix " + element.getId());
+        		// Repeat has been unrolled.
+        		if (epochs == null){	// Assume at least one EB.
+					System.err.println("UD functions must have at least one EB. Fix node: " + element.getId());
 					continue;
 				}
-				//TODO: Fix UD function for Increase and Decreasing with MAX/MIN values.
-//        		UDFunctionCSP funcUD = element.getCspUDFunct();
-//        		if (!funcUD.isHasRepeat()){
-//        			//function does not repeat.
-//        			int numSegments = funcUD.getNumSegment();		//Segments not EBs
-//        			//IntVar[] epochs
-//        			String[] segmentDynamic = funcUD.getEpochBasicFunction();
-//        			int[] segmentDynamicValue = funcUD.getEpochMarkedValues();
-//        			IntVar segmentStart = null;
-//        			IntVar segmentEnd = null;
-//        			for (int nS = 0; nS < numSegments; nS ++){
-//        				if (nS == 0){
-//          					segmentStart = this.zero;
-//          					segmentEnd = epochs[0];
-//        				} else if (nS == numSegments - 1) {
-//          					segmentStart = epochs[nS - 1];
-//          					segmentEnd = this.infinity;
-//        				} else {
-//          					segmentStart = epochs[nS - 1];
-//          					segmentEnd = epochs[nS];
-//        				}
-//        				if (segmentDynamic[nS].equals(IntentionalElementDynamicType.CONST.getCode())){
-//        					if (segmentDynamicValue[nS] == 5){
-//        						// Get the value index for the start of the segment.
-//        						int startIndex = -1;
-//        						if (segmentStart == this.zero)
-//        							startIndex = 0;
-//        						else{
-//        							IntVar startTime = epochToTimePoint.get(segmentStart);
-//        							while((startTime != null) && (startTime.id.charAt(0) != 'T')){
-//        								startTime = epochToTimePoint.get(startTime);
-//        							}
-//        							if (startTime == null){
-//        								System.err.println("UD Function not correct " + element.getId() + " has missing EB.");
-//        								continue;
-//        							}
-//        							for (int p = 0; p < timePoints.length; p++){
-//        								if (timePoints[p] == startTime){
-//        									startIndex = p;
-//        									break;
-//        								}
-//        							}
-//        							if (startIndex == -1){
-//        								System.err.println("UD Function not correct " + element.getId() + " has missing EB.");
-//        								continue;
-//        							}
-//        						}
-//        						// If the value falls within the segment index assign it to the first value in the segment, creating a constant function of unknown value.
-//        						for (int t = 0; t < this.values[i].length; t++){
-//        							PrimitiveConstraint[] tempConstant = {
-//        									new XeqY(this.values[i][t][3], this.values[i][startIndex][3]), 
-//        									new XeqY(this.values[i][t][2], this.values[i][startIndex][2]),	
-//        									new XeqY(this.values[i][t][1], this.values[i][startIndex][1]),
-//        									new XeqY(this.values[i][t][0], this.values[i][startIndex][0])};
-//        							constraints.add(new IfThen(
-//        									new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t])),
-//        									new And(tempConstant)));        		
-//        						}
-//        					}else{
-//        						for (int t = 0; t < this.values[i].length; t++){
-//        							PrimitiveConstraint[] tempConstant = genericCreateConstantCondition(segmentDynamicValue[nS], this.values[i][t]);
-//        							if (tempConstant == null){
-//        								System.err.println("UD Dynamic Value for intention " + element.getId() + " has Unknown/None/Conflict value.");
-//        								break;
-//        							}
-//        							constraints.add(new IfThen(
-//        									new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t])),
-//        									new And(tempConstant)));
-//        						}
-//        					}
-//        				} else if (segmentDynamic[nS].equals(IntentionalElementDynamicType.INC.getCode())){	
-//        	      			for (int t = 0; t < this.values[i].length; t++)
-//        	      				for (int s = 0; s < this.values[i].length; s++){
-//        	      					if (t==s)
-//        	            				continue;
-//        	                		PrimitiveConstraint[] tFS = genericCreateConstantCondition(3, this.values[i][t]);
-//        	                		PrimitiveConstraint[] tPS = genericCreateConstantCondition(2, this.values[i][t]);
-//        	                		PrimitiveConstraint[] tPD = genericCreateConstantCondition(1, this.values[i][t]);
-//        	                		PrimitiveConstraint[] tFD = genericCreateConstantCondition(0, this.values[i][t]);
-//        	                		PrimitiveConstraint[] sFS = genericCreateConstantCondition(3, this.values[i][s]);
-//        	                		PrimitiveConstraint[] sPS = genericCreateConstantCondition(2, this.values[i][s]);
-//        	                		PrimitiveConstraint[] sPD = genericCreateConstantCondition(1, this.values[i][s]);
-//        	                		PrimitiveConstraint[] sFD = genericCreateConstantCondition(0, this.values[i][s]);
-//        	                		constraints.add(new IfThen(new And(
-//        	                				new And(new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t])),
-//        	                						new And(new XlteqY(segmentStart, this.timePoints[s]), new XgtY(segmentEnd, this.timePoints[s]))),
-//        	                				new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tFS))),
-//        	                				new And(sFS)));
-//        	                		constraints.add(new IfThen(new And(
-//        	                				new And(new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t])),
-//        	                						new And(new XlteqY(segmentStart, this.timePoints[s]), new XgtY(segmentEnd, this.timePoints[s]))),
-//        	                				new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tPS))),
-//        	            					new Or(new And(sFS), new And(sPS))));
-//        	                		constraints.add(new IfThen(new And(
-//        	                				new And(new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t])),
-//        	                						new And(new XlteqY(segmentStart, this.timePoints[s]), new XgtY(segmentEnd, this.timePoints[s]))),
-//        	                				new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tPD))),
-//        	            					new Or(new And(sFS), new Or(new And(sPS), new And(sPD)))));
-//        	                		constraints.add(new IfThen(new And(
-//        	                				new And(new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t])),
-//        	                						new And(new XlteqY(segmentStart, this.timePoints[s]), new XgtY(segmentEnd, this.timePoints[s]))),
-//        	                				new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tFD))),
-//        	            					new Or(new Or(new And(sFS), new And(sPS)), new Or(new And(sPD), new And(sFD)))));
-//        	            		}
-//        	      			// If previous segement was constant carry value forward for first value.
-//        	      			if ((nS != 0) && (segmentDynamic[nS - 1].equals(IntentionalElementDynamicType.CONST.getCode()))){
-//            	      			for (int t = 0; t < this.values[i].length; t++){
-//            	      				PrimitiveConstraint[] tempConstant = genericCreateConstantCondition(segmentDynamicValue[nS - 1], this.values[i][t]);
-//            	      				if (tempConstant == null){
-//            	      					System.err.println("ns - 1 for UD Dynamic Value for intention " + element.getId() + " has Unknown/None/Conflict value.");
-//            	      					break;
-//            	      				}
-//            	            		constraints.add(new IfThen(
-//            	            				new XeqY(segmentStart, this.timePoints[t]),
-//            	            				new And(tempConstant)));
-//            	            	}
-//        	      			}
-//        				} else if (segmentDynamic[nS].equals(IntentionalElementDynamicType.DEC.getCode())){
-//        	      			for (int t = 0; t < this.values[i].length; t++)
-//        	      				for (int s = 0; s < this.values[i].length; s++){
-//        	            			if (t==s)
-//        	            				continue;
-//        	                		PrimitiveConstraint[] tFS = genericCreateConstantCondition(3, this.values[i][t]);
-//        	                		PrimitiveConstraint[] tPS = genericCreateConstantCondition(2, this.values[i][t]);
-//        	                		PrimitiveConstraint[] tPD = genericCreateConstantCondition(1, this.values[i][t]);
-//        	                		PrimitiveConstraint[] tFD = genericCreateConstantCondition(0, this.values[i][t]);
-//        	                		PrimitiveConstraint[] sFS = genericCreateConstantCondition(3, this.values[i][s]);
-//        	                		PrimitiveConstraint[] sPS = genericCreateConstantCondition(2, this.values[i][s]);
-//        	                		PrimitiveConstraint[] sPD = genericCreateConstantCondition(1, this.values[i][s]);
-//        	                		PrimitiveConstraint[] sFD = genericCreateConstantCondition(0, this.values[i][s]);
-//        	                		// Allow any next value.
-//        	                		constraints.add(new IfThen(new And(
-//        	                				new And(new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t])),
-//        	                						new And(new XlteqY(segmentStart, this.timePoints[s]), new XgtY(segmentEnd, this.timePoints[s]))),
-//        	                				new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tFS))),
-//        	                				new Or(new Or(new And(sFS), new And(sPS)), new Or(new And(sPD), new And(sFD)))));
-//        	                		constraints.add(new IfThen(new And(
-//        	                				new And(new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t])),
-//        	                						new And(new XlteqY(segmentStart, this.timePoints[s]), new XgtY(segmentEnd, this.timePoints[s]))),
-//        	                				new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tPS))),
-//        	            					new Or(new And(sFD), new Or(new And(sPS), new And(sPD)))));
-//        	                		constraints.add(new IfThen(new And(
-//        	                				new And(new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t])),
-//        	                						new And(new XlteqY(segmentStart, this.timePoints[s]), new XgtY(segmentEnd, this.timePoints[s]))),
-//        	                				new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tPD))),
-//        	            					new Or(new And(sFD), new And(sPD))));
-//        	                		constraints.add(new IfThen(new And(
-//        	                				new And(new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t])),
-//        	                						new And(new XlteqY(segmentStart, this.timePoints[s]), new XgtY(segmentEnd, this.timePoints[s]))),
-//        	                				new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tFD))),
-//        	            					new And(sFD)));
-//        	            		}
-//        	      			// If previous segement was constant carry value forward for first value.
-//        	      			if ((nS != 0) && (segmentDynamic[nS - 1].equals(IntentionalElementDynamicType.CONST.getCode()))){
-//            	      			for (int t = 0; t < this.values[i].length; t++){
-//            	      				PrimitiveConstraint[] tempConstant = genericCreateConstantCondition(segmentDynamicValue[nS - 1], this.values[i][t]);
-//            	      				if (tempConstant == null){
-//            	      					System.err.println("ns - 1 for UD Dynamic Value for intention " + element.getId() + " has Unknown/None/Conflict value.");
-//            	      					break;
-//            	      				}
-//            	            		constraints.add(new IfThen(
-//            	            				new XeqY(segmentStart, this.timePoints[t]),
-//            	            				new And(tempConstant)));
-//            	            	}
-//        	      			}        				
-//        				}
-//        				
-//        			}
-//        		}else{
-//        			// TODO: Deal with repeating Functions.
-//        		}
+        		
+				UDFunctionCSP funcUD = element.getCspUDFunct();
+				String[] segmentDynamic = funcUD.getFunctions();
+				boolean[][] segmentDynamicValue = funcUD.getDynamicValues();
+				int numSegments = segmentDynamic.length;		//Segments not EBs
+				IntVar segmentStart = null;
+				IntVar segmentEnd = null;
+				for (int nS = 0; nS < numSegments; nS ++){
+					if (nS == 0){
+						segmentStart = this.timePoints[0];//this.zero;
+						segmentEnd = epochs[0];
+					} else if (nS == numSegments - 1) {
+						segmentStart = epochs[nS - 1];
+						segmentEnd = this.infinity;
+					} else {
+						segmentStart = epochs[nS - 1];
+						segmentEnd = epochs[nS];
+					}
+					if (segmentDynamic[nS].equals(IntentionalElementDynamicType.CONST.getCode())){
+						// Case: Constant - Unknown
+						if (!segmentDynamicValue[nS][0] && !segmentDynamicValue[nS][1] && !segmentDynamicValue[nS][2] && !segmentDynamicValue[nS][3]){
+							// For Constant-Unknown, we First find the timePoint index of the start of the segment.
+							int startIndex = -1;
+							if (nS == 0)
+								startIndex = 0;
+							else{
+								IntVar startTime = epochToTimePoint.get(segmentStart);
+								while((startTime != null) && (startTime.id.charAt(0) != 'T')){
+									startTime = epochToTimePoint.get(startTime);
+								}
+								if (startTime == null){
+									System.err.println("UD Function not correct " + element.getId() + " has missing EB.");
+									continue;
+								}
+								for (int p = 0; p < timePoints.length; p++){
+									if (timePoints[p] == startTime){
+										startIndex = p;
+										break;
+									}
+								}
+								if (startIndex == -1){
+									System.err.println("UD Function not correct " + element.getId() + " has missing EB.");
+									continue;
+								}
+							}
+							for (int t = 0; t < this.values[i].length; t++){
+								PrimitiveConstraint[] tempConstant = createXeqY(this.values[i][t], this.values[i][startIndex]);
+								constraints.add(new IfThen(
+										new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t])),
+										new And(tempConstant)));
+							}
+						}else{
+							// Case: Constant FS, PS, PD, FD.
+							for (int t = 0; t < this.values[i].length; t++){
+								PrimitiveConstraint[] tempConstant = createXeqC(this.values[i][t], segmentDynamicValue[nS]);
+								constraints.add(new IfThen(
+										new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t])),
+										new And(tempConstant)));
+							}
+						}
+	
+					} else if (segmentDynamic[nS].equals(IntentionalElementDynamicType.INC.getCode())){	
+						// INCREASING
+		      			for (int t = 0; t < this.values[i].length; t++)
+		      				for (int s = 0; s < this.values[i].length; s++){
+		            			if (t==s)
+		            				continue;
+
+		            			PrimitiveConstraint[] tFS = createXeqC(this.values[i][t], boolFS);
+		                		PrimitiveConstraint[] tPS = createXeqC(this.values[i][t], boolPS);
+		                		PrimitiveConstraint[] tPD = createXeqC(this.values[i][t], boolPD);
+		                		PrimitiveConstraint[] tFD = createXeqC(this.values[i][t], boolFD);
+		                		PrimitiveConstraint[] sFS = createXeqC(this.values[i][s], boolFS);
+		                		PrimitiveConstraint[] sPS = createXeqC(this.values[i][s], boolPS);
+		                		PrimitiveConstraint[] sPD = createXeqC(this.values[i][s], boolPD);
+		                		PrimitiveConstraint[] sFD = createXeqC(this.values[i][s], boolFD);
+		                		
+		                		if (segmentDynamicValue[nS][0] && segmentDynamicValue[nS][1] && !segmentDynamicValue[nS][2] && !segmentDynamicValue[nS][3]) {				//case 0:	
+		                			constraints.add(new IfThen(new And(
+		                					new And(new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t])),
+		                							new And(new XlteqY(segmentStart, this.timePoints[s]), new XgtY(segmentEnd, this.timePoints[s]))),
+		                					new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tFD))),
+		                					new And(sFD)));
+		                		} else if (!segmentDynamicValue[nS][0] && segmentDynamicValue[nS][1] && !segmentDynamicValue[nS][2] && !segmentDynamicValue[nS][3]) {		//case 1:
+		                			constraints.add(new IfThen(new And(
+		                					new And(new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t])),
+		                							new And(new XlteqY(segmentStart, this.timePoints[s]), new XgtY(segmentEnd, this.timePoints[s]))),
+		                					new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tPD))),
+		                					new And(sPD)));
+		                			constraints.add(new IfThen(new And(
+		                					new And(new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t])),
+		                							new And(new XlteqY(segmentStart, this.timePoints[s]), new XgtY(segmentEnd, this.timePoints[s]))),
+		                					new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tFD))),
+		                					new Or(new And(sPD), new And(sFD))));		                			
+		                		} else if (!segmentDynamicValue[nS][0] && !segmentDynamicValue[nS][1] && segmentDynamicValue[nS][2] && !segmentDynamicValue[nS][3]) {		//case 2:
+		                			constraints.add(new IfThen(new And(
+		                					new And(new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t])),
+		                							new And(new XlteqY(segmentStart, this.timePoints[s]), new XgtY(segmentEnd, this.timePoints[s]))),
+		                					new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tPS))),
+		                					new And(sPS)));
+		                			constraints.add(new IfThen(new And(
+		                					new And(new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t])),
+		                							new And(new XlteqY(segmentStart, this.timePoints[s]), new XgtY(segmentEnd, this.timePoints[s]))),
+		                					new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tPD))),
+		                					new Or(new And(sPS), new And(sPD))));
+		                			constraints.add(new IfThen(new And(
+		                					new And(new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t])),
+		                							new And(new XlteqY(segmentStart, this.timePoints[s]), new XgtY(segmentEnd, this.timePoints[s]))),
+		                					new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tFD))),
+		                					new Or(new And(sPS), new Or(new And(sPD), new And(sFD)))));
+		                		} else if (!segmentDynamicValue[nS][0] && !segmentDynamicValue[nS][1] && segmentDynamicValue[nS][2] && segmentDynamicValue[nS][3]) {		//case 3:
+		                			constraints.add(new IfThen(new And(
+		                					new And(new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t])),
+		                							new And(new XlteqY(segmentStart, this.timePoints[s]), new XgtY(segmentEnd, this.timePoints[s]))),
+		                					new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tFS))),
+		                					new And(sFS)));
+		                			constraints.add(new IfThen(new And(
+		                					new And(new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t])),
+		                							new And(new XlteqY(segmentStart, this.timePoints[s]), new XgtY(segmentEnd, this.timePoints[s]))),
+		                					new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tPS))),
+		                					new Or(new And(sFS), new And(sPS))));
+		                			constraints.add(new IfThen(new And(
+		                					new And(new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t])),
+		                							new And(new XlteqY(segmentStart, this.timePoints[s]), new XgtY(segmentEnd, this.timePoints[s]))),
+		                					new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tPD))),
+		                					new Or(new And(sFS), new Or(new And(sPS), new And(sPD)))));
+		                			constraints.add(new IfThen(new And(
+		                					new And(new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t])),
+		                							new And(new XlteqY(segmentStart, this.timePoints[s]), new XgtY(segmentEnd, this.timePoints[s]))),
+		                					new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tFD))),
+		                					new Or(new Or(new And(sFS), new And(sPS)), new Or(new And(sPD), new And(sFD)))));
+		                		} else
+		                			System.err.println("INC Dynamic Value for intention " + element.getId() + " has Unknown/None/Conflict value.");
+		      				}
+//						// If previous segement was constant carry value forward for first value.
+//						if ((nS != 0) && (segmentDynamic[nS - 1].equals(IntentionalElementDynamicType.CONST.getCode()))){
+//							for (int t = 0; t < this.values[i].length; t++){
+//								PrimitiveConstraint[] tempConstant = genericCreateConstantCondition(segmentDynamicValue[nS - 1], this.values[i][t]);
+//								if (tempConstant == null){
+//									System.err.println("ns - 1 for UD Dynamic Value for intention " + element.getId() + " has Unknown/None/Conflict value.");
+//									break;
+//								}
+//								constraints.add(new IfThen(
+//										new XeqY(segmentStart, this.timePoints[t]),
+//										new And(tempConstant)));
+//							}
+//						}
+					} else if (segmentDynamic[nS].equals(IntentionalElementDynamicType.DEC.getCode())){
+		      			//DECREASING
+						for (int t = 0; t < this.values[i].length; t++)
+		      				for (int s = 0; s < this.values[i].length; s++){
+		            			if (t==s)
+		            				continue;
+
+		            			PrimitiveConstraint[] tFS = createXeqC(this.values[i][t], boolFS);
+		                		PrimitiveConstraint[] tPS = createXeqC(this.values[i][t], boolPS);
+		                		PrimitiveConstraint[] tPD = createXeqC(this.values[i][t], boolPD);
+		                		PrimitiveConstraint[] tFD = createXeqC(this.values[i][t], boolFD);
+		                		PrimitiveConstraint[] sFS = createXeqC(this.values[i][s], boolFS);
+		                		PrimitiveConstraint[] sPS = createXeqC(this.values[i][s], boolPS);
+		                		PrimitiveConstraint[] sPD = createXeqC(this.values[i][s], boolPD);
+		                		PrimitiveConstraint[] sFD = createXeqC(this.values[i][s], boolFD);
+		                		
+		                		if (segmentDynamicValue[nS][0] && segmentDynamicValue[nS][1] && !segmentDynamicValue[nS][2] && !segmentDynamicValue[nS][3]) {				//case 0:	
+									constraints.add(new IfThen(new And(
+											new And(new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t])),
+													new And(new XlteqY(segmentStart, this.timePoints[s]), new XgtY(segmentEnd, this.timePoints[s]))),
+											new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tFS))),
+											new Or(new Or(new And(sFS), new And(sPS)), new Or(new And(sPD), new And(sFD)))));
+									constraints.add(new IfThen(new And(
+											new And(new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t])),
+													new And(new XlteqY(segmentStart, this.timePoints[s]), new XgtY(segmentEnd, this.timePoints[s]))),
+											new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tPS))),
+											new Or(new And(sFD), new Or(new And(sPS), new And(sPD)))));
+									constraints.add(new IfThen(new And(
+											new And(new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t])),
+													new And(new XlteqY(segmentStart, this.timePoints[s]), new XgtY(segmentEnd, this.timePoints[s]))),
+											new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tPD))),
+											new Or(new And(sFD), new And(sPD))));
+									constraints.add(new IfThen(new And(
+											new And(new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t])),
+													new And(new XlteqY(segmentStart, this.timePoints[s]), new XgtY(segmentEnd, this.timePoints[s]))),
+											new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tFD))),
+											new And(sFD)));
+								} else if (!segmentDynamicValue[nS][0] && segmentDynamicValue[nS][1] && !segmentDynamicValue[nS][2] && !segmentDynamicValue[nS][3]) {		//case 1:
+									constraints.add(new IfThen(new And(
+											new And(new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t])),
+													new And(new XlteqY(segmentStart, this.timePoints[s]), new XgtY(segmentEnd, this.timePoints[s]))),
+											new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tFS))),
+											new Or(new And(sPD), new Or(new And(sPS), new And(sFS)))));
+									constraints.add(new IfThen(new And(
+											new And(new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t])),
+													new And(new XlteqY(segmentStart, this.timePoints[s]), new XgtY(segmentEnd, this.timePoints[s]))),
+											new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tPS))),
+											new Or(new And(sPD), new And(sPS))));
+									constraints.add(new IfThen(new And(
+											new And(new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t])),
+													new And(new XlteqY(segmentStart, this.timePoints[s]), new XgtY(segmentEnd, this.timePoints[s]))),
+											new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tPD))),
+											new And(sPD)));
+		                		} else if (!segmentDynamicValue[nS][0] && !segmentDynamicValue[nS][1] && segmentDynamicValue[nS][2] && !segmentDynamicValue[nS][3]) {		//case 2:
+									constraints.add(new IfThen(new And(
+											new And(new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t])),
+													new And(new XlteqY(segmentStart, this.timePoints[s]), new XgtY(segmentEnd, this.timePoints[s]))),
+											new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tFS))),
+											new Or(new And(sPS), new And(sFS))));
+									constraints.add(new IfThen(new And(
+											new And(new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t])),
+													new And(new XlteqY(segmentStart, this.timePoints[s]), new XgtY(segmentEnd, this.timePoints[s]))),
+											new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tPS))),
+											new And(sPS)));	                			
+		                		} else if (!segmentDynamicValue[nS][0] && !segmentDynamicValue[nS][1] && segmentDynamicValue[nS][2] && segmentDynamicValue[nS][3]) {		//case 3:
+									constraints.add(new IfThen(new And(
+											new And(new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t])),
+													new And(new XlteqY(segmentStart, this.timePoints[s]), new XgtY(segmentEnd, this.timePoints[s]))),
+											new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tFS))),
+											new And(sFS)));
+		                		} else
+		                			System.err.println("DEC Dynamic Value for intention " + element.getId() + " has Unknown/None/Conflict value.");
+		      				}
+						
+//						// If previous segement was constant carry value forward for first value.
+//						if ((nS != 0) && (segmentDynamic[nS - 1].equals(IntentionalElementDynamicType.CONST.getCode()))){
+//							for (int t = 0; t < this.values[i].length; t++){
+//								PrimitiveConstraint[] tempConstant = genericCreateConstantCondition(segmentDynamicValue[nS - 1], this.values[i][t]);
+//								if (tempConstant == null){
+//									System.err.println("ns - 1 for UD Dynamic Value for intention " + element.getId() + " has Unknown/None/Conflict value.");
+//									break;
+//								}
+//								constraints.add(new IfThen(
+//										new XeqY(segmentStart, this.timePoints[t]),
+//										new And(tempConstant)));
+//							}
+//						}        				
+					}
+
+				}
         	}
     	}
+    	// Not Both Dynamic Functions.
+    	List<NotBothLink> notBothLinkList = this.spec.getNotBothLink();	
+    	for(ListIterator<NotBothLink> ec = notBothLinkList.listIterator(); ec.hasNext(); ){		
+    		NotBothLink link = ec.next();
+            IntVar epoch = this.notBothEBCollection.get(link);
+            int ele1 = link.getElement1().getIdNum();
+            int ele2 = link.getElement2().getIdNum();
+            for (int t = 0; t < this.values[ele1].length; t++){
+            	if(link.isFinalDenied())
+            		constraints.add(new IfThenElse(new XgtY(epoch, this.timePoints[t]), 
+            				new And(new And(createXeqC(this.values[ele1][t], boolTT)), new And(createXeqC(this.values[ele2][t], boolTT))),
+            				new Or(new And(new And(createXeqC(this.values[ele1][t], boolFS)), new And(createXeqC(this.values[ele2][t], boolFD))),
+            					   new And(new And(createXeqC(this.values[ele1][t], boolFD)), new And(createXeqC(this.values[ele2][t], boolFS))))));
+            	else
+            		constraints.add(new IfThenElse(new XgtY(epoch, this.timePoints[t]), 
+            				new And(new And(createXeqC(this.values[ele1][t], boolTT)), new And(createXeqC(this.values[ele2][t], boolTT))),
+            				new Or(new And(new And(createXeqC(this.values[ele1][t], boolFS)), new And(createXeqC(this.values[ele2][t], boolTT))),
+            					   new And(new And(createXeqC(this.values[ele1][t], boolTT)), new And(createXeqC(this.values[ele2][t], boolFS))))));            		
+            }
+    	}
+    	
+     	
 	}
+	
+	private static PrimitiveConstraint[] createXeqY(BooleanVar[] val1, BooleanVar[] val2){
+		return new PrimitiveConstraint[]{
+				new XeqY(val1[3], val2[3]),
+				new XeqY(val1[2], val2[2]),
+				new XeqY(val1[1], val2[1]),
+				new XeqY(val1[0], val2[0])};
+	}	
+	private static PrimitiveConstraint[] createXeqC(BooleanVar[] val1, boolean[] val2){
+		return new PrimitiveConstraint[]{
+				new XeqC(val1[3], boolToInt(val2[3])),
+				new XeqC(val1[2], boolToInt(val2[2])),
+				new XeqC(val1[1], boolToInt(val2[1])),
+				new XeqC(val1[0], boolToInt(val2[0]))};
+	}	
+	
 	
 	// Generic Functions
 	/**
@@ -1085,51 +1123,15 @@ public class TroposCSPAlgorithm {
 		}
 		return null;
 	}
-	/**
-	 * Add a constraint that a timepoint/intention be set to a value.
-	 * @param constraintList	the constraint list
-	 * @param initialEvaluation	value that val should be set to
-	 * @param val				array of four booleans that represent one goal at a time
-	 */
-	private static void genericAddAssignmentConstraint(List<Constraint> constraintList, int initialEvaluation, BooleanVar[] val){
-		switch (initialEvaluation) {
-			case 0:	
-				constraintList.add(new XeqC(val[3], 0));
-				constraintList.add(new XeqC(val[2], 0));
-				constraintList.add(new XeqC(val[1], 1));
-				constraintList.add(new XeqC(val[0], 1));
-				break;
-			case 1:	
-				constraintList.add(new XeqC(val[3], 0));
-				constraintList.add(new XeqC(val[2], 0));
-				constraintList.add(new XeqC(val[1], 1));
-				constraintList.add(new XeqC(val[0], 0));
-				break;
-			case 2:	
-				constraintList.add(new XeqC(val[3], 0));
-				constraintList.add(new XeqC(val[2], 1));
-				constraintList.add(new XeqC(val[1], 0));
-				constraintList.add(new XeqC(val[0], 0));
-				break;
-			case 3:	
-				constraintList.add(new XeqC(val[3], 1));
-				constraintList.add(new XeqC(val[2], 1));
-				constraintList.add(new XeqC(val[1], 0));
-				constraintList.add(new XeqC(val[0], 0));
-				break;
-			case 4: case 5: case 6: //Not assigning initial evaluation labels for these values.
-				break;
-			default: 
-				break;
-		}
-	}
+	
+
 	
 	/**
 	 * Add the constraints across the links in the model.
 	 * Includes forward and backwards analysis rules.
 	 * Considers single and evolving intentions. 
 	 */
-	private void addLinkConstraints() {
+	private void initializeLinkConstraints() {
     	// Repeat process for each intention.
 		for (int e = 0; e < this.intentions.length; e++){
     		IntentionalElement element = this.intentions[e];
@@ -1178,7 +1180,6 @@ public class TroposCSPAlgorithm {
     					sourceValue[1][s] = this.values[decompositionElements[s].getIdNum()][t][1];
     					sourceValue[0][s] = this.values[decompositionElements[s].getIdNum()][t][0];
     				}
-    				//Forward Rules (implies backwards rules as well.)
     				if (decompositionLink.getDecomposition() == DecompositionType.AND){	//And Rules
     					constraints.add(new AndBool(sourceValue[3], this.values[targetID][t][3]));
     					constraints.add(new AndBool(sourceValue[2], this.values[targetID][t][2]));
@@ -1196,7 +1197,7 @@ public class TroposCSPAlgorithm {
     			IntentionalElement[] decompositionElements = (IntentionalElement[])eDecompositionLink.getSrc();
     			int numLinks = decompositionElements.length;
     			DecompositionType pre = eDecompositionLink.getPreDecomposition();
-    			DecompositionType post = eDecompositionLink.getPreDecomposition();
+    			DecompositionType post = eDecompositionLink.getPostDecomposition();
     			IntVar dempEB = this.decompEBCollection.get(eDecompositionLink);
     			for (int t = 0; t < this.values[targetID].length; t++){
     				BooleanVar[][] sourceValue = new BooleanVar[4][numLinks];
@@ -1215,7 +1216,7 @@ public class TroposCSPAlgorithm {
 							   								  new OrBool(sourceValue[2], this.values[targetID][t][2])), 
     												 new And(new AndBool(sourceValue[1], this.values[targetID][t][1]), 
     											 		     new AndBool(sourceValue[0], this.values[targetID][t][0])));
-    				// Cases Dependend on pre/post.
+    				// Cases Depend on pre/post.
     				if (pre == DecompositionType.AND && post == DecompositionType.OR)
     					constraints.add(new IfThenElse(new XgtY(dempEB, this.timePoints[t]), andC, orC));
     				else if (pre == DecompositionType.OR && post == DecompositionType.AND)
@@ -1237,6 +1238,8 @@ public class TroposCSPAlgorithm {
     			for (int t = 0; t < this.values[targetID].length; t++){
     				for (int i = 0; i < numLinks; i++) {
     					int sourceID = contributionElements.get(i).getIdNum();
+    					constraints.add(createForwardContributionConstraint(contributionTypes.get(i), this.values[sourceID][t], this.values[targetID][t]));
+/*						// Old Code before helper function.
     					if (contributionTypes.get(i) == ContributionType.PP){ 					//++ 
     						this.sat.generate_implication(this.values[sourceID][t][3], this.values[targetID][t][3]);
     						this.sat.generate_implication(this.values[sourceID][t][2], this.values[targetID][t][2]);
@@ -1275,104 +1278,227 @@ public class TroposCSPAlgorithm {
     						this.sat.generate_implication(this.values[sourceID][t][0], this.values[targetID][t][3]);
     					}else
     						System.out.println("ERROR: No rule for " + contributionTypes.get(i).toString() + " link type.");
+*/
     				}
     			}
     		}
-    		// (b) Evolving Contributions
-    		//TODO!!!
- 		
+    		if (eContributionLinks.size() != 0) {	
+    			// (b) Evolving Contributions
+    			int numLinks = eContributionLinks.size();
+    			for (int i = 0; i < numLinks; i++) {
+    				EvolvingContribution eLink = eContributionLinks.get(i);
+    				int sourceID = ((IntentionalElement)eLink.getZeroSrc()).getIdNum();
+    				ContributionType pre = eLink.getPreContribution();
+    				ContributionType post = eLink.getPostContribution();
+    				IntVar contEB = this.contribEBCollection.get(eLink);
+    	   			for (int t = 0; t < this.values[targetID].length; t++){
+    	   				PrimitiveConstraint preConstraint = null;
+    	   				if(pre != null)
+    	   					preConstraint = createForwardContributionConstraint(pre, this.values[sourceID][t], this.values[targetID][t]);
+    	   				PrimitiveConstraint postConstraint = null;
+    	   				if(post != null)
+    	   					postConstraint = createForwardContributionConstraint(post, this.values[sourceID][t], this.values[targetID][t]);
+    	   				if((pre != null) && (post != null))
+    	   					constraints.add(new IfThenElse(new XgtY(contEB, this.timePoints[t]), preConstraint, postConstraint));
+    	   				else if (pre != null)
+    	   					constraints.add(new IfThen(new XgtY(contEB, this.timePoints[t]), preConstraint));
+    	   				else if (post != null)	
+    	   					constraints.add(new IfThen(new XlteqY(contEB, this.timePoints[t]), postConstraint));
+    	   			}
+    			}   			
+    		}
     		
     		
     		/*********************************************************************************************
     		 * Backward Analysis
     		 *********************************************************************************************/
-    		// Already collected values...
-//    		List<IntentionalElement> andDecompositionElements = new ArrayList<IntentionalElement>(); 
-//    		List<IntentionalElement> orDecompositionElements = new ArrayList<IntentionalElement>();  
+//    		Decomposition decompositionLink = null;  
+//    		EvolvingDecomposition eDecompositionLink = null;
+//    		List<EvolvingContribution> eContributionLinks = new ArrayList<EvolvingContribution>();
 //    		List<IntentionalElement> contributionElements = new ArrayList<IntentionalElement>();  
 //    		List<ContributionType> contributionTypes = new ArrayList<ContributionType>();
-/*    		    		
+    		    		
     		// Iterate over each time step.
     		for (int t = 0; t < this.values[targetID].length; t++){
     			ArrayList<PrimitiveConstraint> FSConstaints = new ArrayList<PrimitiveConstraint>();
     			ArrayList<PrimitiveConstraint> PSConstaints = new ArrayList<PrimitiveConstraint>();
     			ArrayList<PrimitiveConstraint> PDConstaints = new ArrayList<PrimitiveConstraint>();
     			ArrayList<PrimitiveConstraint> FDConstaints = new ArrayList<PrimitiveConstraint>();
+
+    			if (decompositionLink != null){
+    				IntentionalElement[] decompositionElements = (IntentionalElement[])decompositionLink.getSrc();
+    				int numLinks = decompositionElements.length;
+    				PrimitiveConstraint[][] sourceValue = new PrimitiveConstraint[4][numLinks];
+    				for (int s = 0; s < numLinks; s++){
+    					sourceValue[3][s] = new XeqC(this.values[decompositionElements[s].getIdNum()][t][3], 1);
+    					sourceValue[2][s] = new XeqC(this.values[decompositionElements[s].getIdNum()][t][2], 1);
+    					sourceValue[1][s] = new XeqC(this.values[decompositionElements[s].getIdNum()][t][1], 1);
+    					sourceValue[0][s] = new XeqC(this.values[decompositionElements[s].getIdNum()][t][0], 1);
+    				}
+    				if (decompositionLink.getDecomposition() == DecompositionType.AND){	//And Rules
+        				FSConstaints.add(new And(sourceValue[3]));
+        				PSConstaints.add(new And(sourceValue[2]));
+        				PDConstaints.add(new Or(sourceValue[1]));
+        				FDConstaints.add(new Or(sourceValue[0]));
+    				}else{  // Or Rules
+        				FSConstaints.add(new Or(sourceValue[3]));
+        				PSConstaints.add(new Or(sourceValue[2]));
+        				PDConstaints.add(new And(sourceValue[1]));
+        				FDConstaints.add(new And(sourceValue[0]));
+    				}
+    			}else if (eDecompositionLink != null){
+    				// Evolving Decomposition
+    				IntentionalElement[] decompositionElements = (IntentionalElement[])eDecompositionLink.getSrc();
+    				int numLinks = decompositionElements.length;
+    				DecompositionType pre = eDecompositionLink.getPreDecomposition();
+    				DecompositionType post = eDecompositionLink.getPostDecomposition();
+    				IntVar dempEB = this.decompEBCollection.get(eDecompositionLink);
+    				PrimitiveConstraint[][] sourceValue = new PrimitiveConstraint[4][numLinks];
+    				for (int s = 0; s < numLinks; s++){
+    					sourceValue[3][s] = new XeqC(this.values[decompositionElements[s].getIdNum()][t][3], 1);
+    					sourceValue[2][s] = new XeqC(this.values[decompositionElements[s].getIdNum()][t][2], 1);
+    					sourceValue[1][s] = new XeqC(this.values[decompositionElements[s].getIdNum()][t][1], 1);
+    					sourceValue[0][s] = new XeqC(this.values[decompositionElements[s].getIdNum()][t][0], 1);
+    				}
+    				if (pre == DecompositionType.AND && post == DecompositionType.OR){
+    					//constraints.add(new IfThenElse(new XgtY(dempEB, this.timePoints[t]), andC, orC));
+    					FSConstaints.add(new IfThenElse(new XgtY(dempEB, this.timePoints[t]), new And(sourceValue[3]), new Or(sourceValue[3])));
+        				PSConstaints.add(new IfThenElse(new XgtY(dempEB, this.timePoints[t]), new And(sourceValue[2]), new Or(sourceValue[2])));
+        				PDConstaints.add(new IfThenElse(new XgtY(dempEB, this.timePoints[t]), new Or(sourceValue[1]), new And(sourceValue[1])));
+        				FDConstaints.add(new IfThenElse(new XgtY(dempEB, this.timePoints[t]), new Or(sourceValue[0]), new And(sourceValue[0])));
+    				} else if (pre == DecompositionType.OR && post == DecompositionType.AND){
+    					//constraints.add(new IfThenElse(new XgtY(dempEB, this.timePoints[t]), orC, andC));
+    					FSConstaints.add(new IfThenElse(new XgtY(dempEB, this.timePoints[t]), new Or(sourceValue[3]), new And(sourceValue[3])));
+        				PSConstaints.add(new IfThenElse(new XgtY(dempEB, this.timePoints[t]), new Or(sourceValue[2]), new And(sourceValue[2])));
+        				PDConstaints.add(new IfThenElse(new XgtY(dempEB, this.timePoints[t]), new And(sourceValue[1]), new Or(sourceValue[1])));
+        				FDConstaints.add(new IfThenElse(new XgtY(dempEB, this.timePoints[t]), new And(sourceValue[0]), new Or(sourceValue[0])));
+    				} else if (pre == DecompositionType.AND && post == null){
+    					//constraints.add(new IfThen(new XgtY(dempEB, this.timePoints[t]), andC));
+    					FSConstaints.add(new IfThen(new XgtY(dempEB, this.timePoints[t]), new And(sourceValue[3])));
+        				PSConstaints.add(new IfThen(new XgtY(dempEB, this.timePoints[t]), new And(sourceValue[2])));
+        				PDConstaints.add(new IfThen(new XgtY(dempEB, this.timePoints[t]), new Or(sourceValue[1])));
+        				FDConstaints.add(new IfThen(new XgtY(dempEB, this.timePoints[t]), new Or(sourceValue[0])));
+    				} else if (pre == DecompositionType.OR && post == null){
+    					//constraints.add(new IfThen(new XgtY(dempEB, this.timePoints[t]), orC));
+    					FSConstaints.add(new IfThen(new XgtY(dempEB, this.timePoints[t]), new Or(sourceValue[3])));
+        				PSConstaints.add(new IfThen(new XgtY(dempEB, this.timePoints[t]), new Or(sourceValue[2])));
+        				PDConstaints.add(new IfThen(new XgtY(dempEB, this.timePoints[t]), new And(sourceValue[1])));
+        				FDConstaints.add(new IfThen(new XgtY(dempEB, this.timePoints[t]), new And(sourceValue[0])));    					
+    				} else if (pre == null && post == DecompositionType.AND){
+    					//constraints.add(new IfThen(new XlteqY(dempEB, this.timePoints[t]), andC));
+    					FSConstaints.add(new IfThen(new XlteqY(dempEB, this.timePoints[t]), new And(sourceValue[3])));
+        				PSConstaints.add(new IfThen(new XlteqY(dempEB, this.timePoints[t]), new And(sourceValue[2])));
+        				PDConstaints.add(new IfThen(new XlteqY(dempEB, this.timePoints[t]), new Or(sourceValue[1])));
+        				FDConstaints.add(new IfThen(new XlteqY(dempEB, this.timePoints[t]), new Or(sourceValue[0])));
+    				}else if (pre == null && post == DecompositionType.OR){
+    					//constraints.add(new IfThen(new XlteqY(dempEB, this.timePoints[t]), orC));
+    					FSConstaints.add(new IfThen(new XlteqY(dempEB, this.timePoints[t]), new Or(sourceValue[3])));
+        				PSConstaints.add(new IfThen(new XlteqY(dempEB, this.timePoints[t]), new Or(sourceValue[2])));
+        				PDConstaints.add(new IfThen(new XlteqY(dempEB, this.timePoints[t]), new And(sourceValue[1])));
+        				FDConstaints.add(new IfThen(new XlteqY(dempEB, this.timePoints[t]), new And(sourceValue[0])));
+    				}
+    			}
     			
-    			// Construct lists of AND elements and OR elements.
-    			if (andDecompositionElements.size() != 0){   			
-    				PrimitiveConstraint[][] sourceANDValue = new PrimitiveConstraint[4][andDecompositionElements.size()];
-    				for (int s = 0; s < andDecompositionElements.size(); s++){
-    					sourceANDValue[3][s] = new XeqC(this.values[andDecompositionElements.get(s).getIdNum()][t][3], 1);
-    					sourceANDValue[2][s] = new XeqC(this.values[andDecompositionElements.get(s).getIdNum()][t][2], 1);
-    					sourceANDValue[1][s] = new XeqC(this.values[andDecompositionElements.get(s).getIdNum()][t][1], 1);
-    					sourceANDValue[0][s] = new XeqC(this.values[andDecompositionElements.get(s).getIdNum()][t][0], 1);
-    				}
-    				FSConstaints.add(new And(sourceANDValue[3]));
-    				PSConstaints.add(new And(sourceANDValue[2]));
-    				PDConstaints.add(new Or(sourceANDValue[1]));
-    				FDConstaints.add(new Or(sourceANDValue[0]));
-    			}
-    			if (orDecompositionElements.size() != 0){   			
-    				PrimitiveConstraint[][] sourceORValue = new PrimitiveConstraint[4][orDecompositionElements.size()];
-    				for (int s = 0; s < orDecompositionElements.size(); s++){
-    					sourceORValue[3][s] = new XeqC(this.values[orDecompositionElements.get(s).getIdNum()][t][3], 1);
-    					sourceORValue[2][s] = new XeqC(this.values[orDecompositionElements.get(s).getIdNum()][t][2], 1);
-    					sourceORValue[1][s] = new XeqC(this.values[orDecompositionElements.get(s).getIdNum()][t][1], 1);
-    					sourceORValue[0][s] = new XeqC(this.values[orDecompositionElements.get(s).getIdNum()][t][0], 1);
-    				}
-    				FSConstaints.add(new Or(sourceORValue[3]));
-    				PSConstaints.add(new Or(sourceORValue[2]));
-    				PDConstaints.add(new And(sourceORValue[1]));
-    				FDConstaints.add(new And(sourceORValue[0]));
-    			}
     			if (contributionElements.size() != 0) { 
     				int numLinks = contributionElements.size();	
     				for (int i = 0; i < numLinks; i++) {
     					int sourceID = contributionElements.get(i).getIdNum();
-    					if (contributionTypes.get(i) == ContributionType.PP){ 					//++ 
-    	    				FSConstaints.add(new XeqC(this.values[sourceID][t][3], 1));
-    	    				PSConstaints.add(new XeqC(this.values[sourceID][t][2], 1));
-    	    				PDConstaints.add(new XeqC(this.values[sourceID][t][1], 1));
-    	    				FDConstaints.add(new XeqC(this.values[sourceID][t][0], 1));
-    					}else if (contributionTypes.get(i) == ContributionType.P){				//+
-    	    				PSConstaints.add(new XeqC(this.values[sourceID][t][2], 1));
-    	    				PDConstaints.add(new XeqC(this.values[sourceID][t][1], 1));
-    					}else if (contributionTypes.get(i) == ContributionType.M){				//-
-    	    				PSConstaints.add(new XeqC(this.values[sourceID][t][1], 1));
-    	    				PDConstaints.add(new XeqC(this.values[sourceID][t][2], 1));
-    					}else if (contributionTypes.get(i) == ContributionType.MM){				//--
-    	    				FSConstaints.add(new XeqC(this.values[sourceID][t][0], 1));
-    	    				PSConstaints.add(new XeqC(this.values[sourceID][t][1], 1));
-    	    				PDConstaints.add(new XeqC(this.values[sourceID][t][2], 1));
-    	    				FDConstaints.add(new XeqC(this.values[sourceID][t][3], 1));
-    					}else if (contributionTypes.get(i) == ContributionType.SPP){ 			//++S 
-    	    				FSConstaints.add(new XeqC(this.values[sourceID][t][3], 1));
-    	    				PSConstaints.add(new XeqC(this.values[sourceID][t][2], 1));
-    					}else if (contributionTypes.get(i) == ContributionType.SP){			//+S
-    	    				PSConstaints.add(new XeqC(this.values[sourceID][t][2], 1));
-    					}else if (contributionTypes.get(i) == ContributionType.SM){			//-S
-    	    				PDConstaints.add(new XeqC(this.values[sourceID][t][2], 1));
-    					}else if (contributionTypes.get(i) == ContributionType.SMM){			//--S
-    	    				PDConstaints.add(new XeqC(this.values[sourceID][t][2], 1));
-    	    				FDConstaints.add(new XeqC(this.values[sourceID][t][3], 1));
-    					}else if (contributionTypes.get(i) == ContributionType.DPP){ 			//++D 
-    	    				PDConstaints.add(new XeqC(this.values[sourceID][t][1], 1));
-    	    				FDConstaints.add(new XeqC(this.values[sourceID][t][0], 1));
-    					}else if (contributionTypes.get(i) == ContributionType.DP){			//+D
-    	    				PDConstaints.add(new XeqC(this.values[sourceID][t][1], 1));
-    					}else if (contributionTypes.get(i) == ContributionType.DM){			//-D
-    	    				PSConstaints.add(new XeqC(this.values[sourceID][t][1], 1));
-    					}else if (contributionTypes.get(i) == ContributionType.DMM){			//--D
-    	    				FSConstaints.add(new XeqC(this.values[sourceID][t][0], 1));
-    	    				PSConstaints.add(new XeqC(this.values[sourceID][t][1], 1));
-    					}else
-    						System.out.println("ERROR: No rule for " + contributionTypes.get(i).toString() + " link type.");
-
+    					PrimitiveConstraint[] newConts = createBackwardContributionConstraint(contributionTypes.get(i), this.values[sourceID][t]);
+    					if (newConts[3] != null)
+    						FSConstaints.add(newConts[3]);
+    					if (newConts[2] != null)
+    						PSConstaints.add(newConts[2]);
+    					if (newConts[1] != null)
+    						PDConstaints.add(newConts[1]);
+    					if (newConts[0] != null)
+    						FDConstaints.add(newConts[0]); 
+    					// OLD Code
+//    					if (contributionTypes.get(i) == ContributionType.PP){ 					//++ 
+//    	    				FSConstaints.add(new XeqC(this.values[sourceID][t][3], 1));
+//    	    				PSConstaints.add(new XeqC(this.values[sourceID][t][2], 1));
+//    	    				PDConstaints.add(new XeqC(this.values[sourceID][t][1], 1));
+//    	    				FDConstaints.add(new XeqC(this.values[sourceID][t][0], 1));
+//    					}else if (contributionTypes.get(i) == ContributionType.P){				//+
+//    	    				PSConstaints.add(new XeqC(this.values[sourceID][t][2], 1));
+//    	    				PDConstaints.add(new XeqC(this.values[sourceID][t][1], 1));
+//    					}else if (contributionTypes.get(i) == ContributionType.M){				//-
+//    	    				PSConstaints.add(new XeqC(this.values[sourceID][t][1], 1));
+//    	    				PDConstaints.add(new XeqC(this.values[sourceID][t][2], 1));
+//    					}else if (contributionTypes.get(i) == ContributionType.MM){				//--
+//    	    				FSConstaints.add(new XeqC(this.values[sourceID][t][0], 1));
+//    	    				PSConstaints.add(new XeqC(this.values[sourceID][t][1], 1));
+//    	    				PDConstaints.add(new XeqC(this.values[sourceID][t][2], 1));
+//    	    				FDConstaints.add(new XeqC(this.values[sourceID][t][3], 1));
+//    					}else if (contributionTypes.get(i) == ContributionType.SPP){ 			//++S 
+//    	    				FSConstaints.add(new XeqC(this.values[sourceID][t][3], 1));
+//    	    				PSConstaints.add(new XeqC(this.values[sourceID][t][2], 1));
+//    					}else if (contributionTypes.get(i) == ContributionType.SP){			//+S
+//    	    				PSConstaints.add(new XeqC(this.values[sourceID][t][2], 1));
+//    					}else if (contributionTypes.get(i) == ContributionType.SM){			//-S
+//    	    				PDConstaints.add(new XeqC(this.values[sourceID][t][2], 1));
+//    					}else if (contributionTypes.get(i) == ContributionType.SMM){			//--S
+//    	    				PDConstaints.add(new XeqC(this.values[sourceID][t][2], 1));
+//    	    				FDConstaints.add(new XeqC(this.values[sourceID][t][3], 1));
+//    					}else if (contributionTypes.get(i) == ContributionType.DPP){ 			//++D 
+//    	    				PDConstaints.add(new XeqC(this.values[sourceID][t][1], 1));
+//    	    				FDConstaints.add(new XeqC(this.values[sourceID][t][0], 1));
+//    					}else if (contributionTypes.get(i) == ContributionType.DP){			//+D
+//    	    				PDConstaints.add(new XeqC(this.values[sourceID][t][1], 1));
+//    					}else if (contributionTypes.get(i) == ContributionType.DM){			//-D
+//    	    				PSConstaints.add(new XeqC(this.values[sourceID][t][1], 1));
+//    					}else if (contributionTypes.get(i) == ContributionType.DMM){			//--D
+//    	    				FSConstaints.add(new XeqC(this.values[sourceID][t][0], 1));
+//    	    				PSConstaints.add(new XeqC(this.values[sourceID][t][1], 1));
+//    					}else
+//    						System.out.println("ERROR: No rule for " + contributionTypes.get(i).toString() + " link type.");
     				}
 
     			}
-
+    			if (eContributionLinks.size() != 0) {	
+    				// (b) Evolving Contributions
+    				int numLinks = eContributionLinks.size();
+    				for (int i = 0; i < numLinks; i++) {
+    					EvolvingContribution eLink = eContributionLinks.get(i);
+    					int sourceID = ((IntentionalElement)eLink.getZeroSrc()).getIdNum();
+    					ContributionType pre = eLink.getPreContribution();
+    					ContributionType post = eLink.getPostContribution();
+    					IntVar contEB = this.contribEBCollection.get(eLink);
+    					PrimitiveConstraint[] preConstraint = null;
+    					if(pre != null)
+    						preConstraint = createBackwardContributionConstraint(pre, this.values[sourceID][t]);
+    					PrimitiveConstraint[] postConstraint = null;
+    					if(post != null)
+    						postConstraint = createBackwardContributionConstraint(pre, this.values[sourceID][t]);
+   
+    					// Note: I implemented this as a two if statements rather than three if->else if. The case of a pre and a post link might now work 
+    					//		as two separate constraints. This depends on how the "IfThen" are treated in the "Or(FSConstaints)" below.
+    					//		If no information is propagated for these links they might need to be written as Not(A) or (B). or all combinations in the IfThen. 
+    						//if((pre != null) && (post != null)){
+    						//constraints.add(new IfThenElse(new XgtY(contEB, this.timePoints[t]), preConstraint, postConstraint));
+    					if (pre != null){
+    						//constraints.add(new IfThen(new XgtY(contEB, this.timePoints[t]), preConstraint));
+        					if (preConstraint[3] != null)
+        						FSConstaints.add(new IfThen(new XgtY(contEB, this.timePoints[t]), preConstraint[3]));
+        					if (preConstraint[2] != null)
+        						PSConstaints.add(new IfThen(new XgtY(contEB, this.timePoints[t]), preConstraint[2]));
+        					if (preConstraint[1] != null)
+        						PDConstaints.add(new IfThen(new XgtY(contEB, this.timePoints[t]), preConstraint[1]));
+        					if (preConstraint[0] != null)
+        						FDConstaints.add(new IfThen(new XgtY(contEB, this.timePoints[t]), preConstraint[0]));
+    					}
+    					if (post != null){	
+    						//constraints.add(new IfThen(new XlteqY(contEB, this.timePoints[t]), postConstraint));
+        					if (postConstraint[3] != null)
+        						FSConstaints.add(new IfThen(new XlteqY(contEB, this.timePoints[t]), postConstraint[3]));
+        					if (postConstraint[2] != null)
+        						PSConstaints.add(new IfThen(new XlteqY(contEB, this.timePoints[t]), postConstraint[2]));
+        					if (postConstraint[1] != null)
+        						PDConstaints.add(new IfThen(new XlteqY(contEB, this.timePoints[t]), postConstraint[1]));
+        					if (postConstraint[0] != null)
+        						FDConstaints.add(new IfThen(new XlteqY(contEB, this.timePoints[t]), postConstraint[0]));
+    					}
+    				}   			
+        		}
     			if (FSConstaints.size() > 0)
     				constraints.add(new IfThen(new XeqC(this.values[targetID][t][3], 1), new Or(FSConstaints)));
     			if (PSConstaints.size() > 0)
@@ -1381,10 +1507,123 @@ public class TroposCSPAlgorithm {
     				constraints.add(new IfThen(new XeqC(this.values[targetID][t][1], 1), new Or(PDConstaints)));
     			if (FDConstaints.size() > 0)
     				constraints.add(new IfThen(new XeqC(this.values[targetID][t][0], 1), new Or(FDConstaints)));
-    		}
-    		*/
+    		} 
 		}
 	}
+	
+	/**
+	 * Helper Method to create constraints for contribution links.
+	 * @param cType	ContributionType of the link
+	 * @param src	Source time-point
+	 * @param tgt	Target time-point
+	 * @return		The resulting constraint.
+	 */
+	private PrimitiveConstraint createForwardContributionConstraint(ContributionType cType, BooleanVar[] src, BooleanVar[] tgt){
+		PrimitiveConstraint result = null;
+		if (cType == ContributionType.PP){ 					//++ 
+//			this.sat.generate_implication(src[3], tgt[3]);
+//			this.sat.generate_implication(src[2], tgt[2]);
+//			this.sat.generate_implication(src[1], tgt[1]);
+//			this.sat.generate_implication(src[0], tgt[0]);
+			result = new And(new And(new Or(new XeqC(src[3], 0), new XeqC(src[3], 1)), new Or(new XeqC(src[2], 0), new XeqC(src[2], 1))), 
+					         new And(new Or(new XeqC(src[1], 0), new XeqC(src[1], 1)), new Or(new XeqC(src[0], 0), new XeqC(src[0], 1))));
+		}else if (cType == ContributionType.P){				//+
+//			this.sat.generate_implication(src[2], tgt[2]);
+//			this.sat.generate_implication(src[1], tgt[1]);
+			result = new And(new Or(new XeqC(src[2], 0), new XeqC(src[2], 1)), new Or(new XeqC(src[1], 0), new XeqC(src[1], 1)));
+		}else if (cType == ContributionType.M){				//-
+//			this.sat.generate_implication(src[2], tgt[1]);
+//			this.sat.generate_implication(src[1], tgt[2]);
+			result = new And(new Or(new XeqC(src[2], 0), new XeqC(src[1], 1)), new Or(new XeqC(src[1], 0), new XeqC(src[2], 1)));
+		}else if (cType == ContributionType.MM){				//--
+//			this.sat.generate_implication(src[3], tgt[0]);	
+//			this.sat.generate_implication(src[2], tgt[1]);
+//			this.sat.generate_implication(src[1], tgt[2]);
+//			this.sat.generate_implication(src[0], tgt[3]);
+			result = new And(new And(new Or(new XeqC(src[3], 0), new XeqC(src[0], 1)), new Or(new XeqC(src[2], 0), new XeqC(src[1], 1))), 
+			                 new And(new Or(new XeqC(src[1], 0), new XeqC(src[2], 1)), new Or(new XeqC(src[0], 0), new XeqC(src[3], 1))));
+		}else if (cType == ContributionType.SPP){ 			//++S 
+//			this.sat.generate_implication(src[3], tgt[3]);
+//			this.sat.generate_implication(src[2], tgt[2]);
+			result = new And(new Or(new XeqC(src[3], 0), new XeqC(src[3], 1)), new Or(new XeqC(src[2], 0), new XeqC(src[2], 1)));
+		}else if (cType == ContributionType.SP){			//+S
+//			this.sat.generate_implication(src[2], tgt[2]);
+			result = new Or(new XeqC(src[2], 0), new XeqC(src[2], 1));
+		}else if (cType == ContributionType.SM){			//-S
+//			this.sat.generate_implication(src[2], tgt[1]);
+			result = new Or(new XeqC(src[2], 0), new XeqC(src[1], 1));
+		}else if (cType == ContributionType.SMM){			//--S
+//			this.sat.generate_implication(src[3], tgt[0]);	
+//			this.sat.generate_implication(src[2], tgt[1]);
+			result = new And(new Or(new XeqC(src[3], 0), new XeqC(src[0], 1)), new Or(new XeqC(src[2], 0), new XeqC(src[1], 1)));
+		}else if (cType == ContributionType.DPP){ 			//++D 
+//			this.sat.generate_implication(src[1], tgt[1]);
+//			this.sat.generate_implication(src[0], tgt[0]);
+			result = new And(new Or(new XeqC(src[1], 0), new XeqC(src[1], 1)), new Or(new XeqC(src[0], 0), new XeqC(src[0], 1)));
+		}else if (cType == ContributionType.DP){			//+D
+//			this.sat.generate_implication(src[1], tgt[1]);
+			result = new Or(new XeqC(src[1], 0), new XeqC(src[1], 1));
+		}else if (cType == ContributionType.DM){			//-D
+//			this.sat.generate_implication(src[1], tgt[2]);
+			result = new Or(new XeqC(src[1], 0), new XeqC(src[2], 1));
+		}else if (cType == ContributionType.DMM){			//--D
+//			this.sat.generate_implication(src[1], tgt[2]);
+//			this.sat.generate_implication(src[0], tgt[3]);
+			result = new And(new Or(new XeqC(src[1], 0), new XeqC(src[2], 1)), new Or(new XeqC(src[0], 0), new XeqC(src[3], 1)));
+		}else
+			System.out.println("ERROR: No rule for " + cType.toString() + " link type.");	
+		return result;
+	}
+	
+	
+	
+	private PrimitiveConstraint[] createBackwardContributionConstraint(ContributionType cType, BooleanVar[] src){
+		PrimitiveConstraint[] result = new PrimitiveConstraint[4];
+		for (int i = 0; i < 4; i++)
+			result[i] = null;
+		
+		if (cType == ContributionType.PP){ 					//++ 
+			result[3] = new XeqC(src[3], 1);
+			result[2] = new XeqC(src[2], 1);
+			result[1] = new XeqC(src[1], 1);
+			result[0] = new XeqC(src[0], 1);
+		}else if (cType == ContributionType.P){				//+
+			result[2] = new XeqC(src[2], 1);
+			result[1] = new XeqC(src[1], 1);
+		}else if (cType == ContributionType.M){				//-
+			result[2] = new XeqC(src[1], 1);
+			result[1] = new XeqC(src[2], 1);
+		}else if (cType == ContributionType.MM){				//--
+			result[3] = new XeqC(src[0], 1);
+			result[2] = new XeqC(src[1], 1);
+			result[1] = new XeqC(src[2], 1);
+			result[0] = new XeqC(src[3], 1);
+		}else if (cType == ContributionType.SPP){ 			//++S 
+			result[3] = new XeqC(src[3], 1);
+			result[2] = new XeqC(src[2], 1);
+		}else if (cType == ContributionType.SP){			//+S
+			result[2] = new XeqC(src[2], 1);
+		}else if (cType == ContributionType.SM){			//-S
+			result[1] = new XeqC(src[2], 1);
+		}else if (cType == ContributionType.SMM){			//--S
+			result[1] = new XeqC(src[2], 1);
+			result[0] = new XeqC(src[3], 1);
+		}else if (cType == ContributionType.DPP){ 			//++D 
+			result[1] = new XeqC(src[1], 1);
+			result[0] = new XeqC(src[0], 1);
+		}else if (cType == ContributionType.DP){			//+D
+			result[1] = new XeqC(src[1], 1);
+		}else if (cType == ContributionType.DM){			//-D
+			result[2] = new XeqC(src[1], 1);
+		}else if (cType == ContributionType.DMM){			//--D
+			result[3] = new XeqC(src[0], 1);
+			result[2] = new XeqC(src[1], 1);
+		}else
+			System.out.println("ERROR: No rule for " + cType.toString() + " link type.");		
+		return result;
+	}
+	
+	
 	/**
 	 * Creates BooleanVars for each intention/time-point combo.
 	 * Adds the FS -> PS invariant.
@@ -1418,6 +1657,9 @@ public class TroposCSPAlgorithm {
 			IntentionalElement[] elementList, BooleanVar[][][] val, 
 			HashMap<IntentionalElement, IntVar[]>  epochCollection, int currentAbsoluteTime,
 			int initialIndex){ // Assume only two time steps.
+    	// TODO: Update with NotBoth Collections.
+		// TODO: Fix UD Functions.
+		
 		// Assume only two time points, current with set values, and next state.
 		// TODO: Should be more generic other than times zero and one.
 		int nextIndex = initialIndex + 1;
@@ -1864,8 +2106,18 @@ public class TroposCSPAlgorithm {
 		}
 	}
 	
+	/**
+	 * Returns the Model associated with this solver instance.
+	 * @return	ModelSpec associated with this solver instance.
+	 */
+	public ModelSpec getSpec() {
+		return spec;
+	}
 	
-/*	private void exploreState(int stateNum, int[] timeOrder){
+}	
+	
+/****************** END OF CLASS ***********************************	
+	private void exploreState(int stateNum, int[] timeOrder){
 		int nodeIndex = timeOrder[stateNum];
 		Store storeExplore = new Store(); 
 		SatTranslation satExplore = new SatTranslation(storeExplore); 
@@ -1883,7 +2135,7 @@ public class TroposCSPAlgorithm {
 			genericInitialNodeValues(storeExplore, satExplore, valuesExplore[i][0], element.getId() + "_0");
 			genericInitialNodeValues(storeExplore, satExplore, valuesExplore[i][1], element.getId() + "_1");
 
-			genericWeakConflictPrevention(satExplore, valuesExplore[i][1], zero);		// TODO: Select Appropriate conflict level.
+			genericWeakConflictPrevention(satExplore, valuesExplore[i][1], zero);
 			for (int j = 0; j < 4; j ++)
 				constraintsExplore.add(new XeqC(valuesExplore[i][0][j], this.values[i][nodeIndex][j].value()));
 			
@@ -1946,22 +2198,9 @@ public class TroposCSPAlgorithm {
 				System.out.println("\t" + element.name + "\t" + element.dynamicType.toString());
 			}  
     	}
-	}*/
-	
-	
-	/**
-	 * Returns the Model associated with this solver instance.
-	 * @return	ModelSpec associated with this solver instance.
-	 */
-	public ModelSpec getSpec() {
-		return spec;
 	}
-
-	/**
-	 * main used for testing
-	 * @param args	command line argument with name of input file.
-	 */
-	public static void main(String[] args) {
+    
+    public static void main(String[] args) {
 		String FILENAME = "stored-models/single-node"; //stored-models/testEB-Values"; //stored-models/simple-AND"; //models/UD-fuc-repeat.leaf"; //city-tropos-2.leaf"; //backward-test-helps.leaf"; //city-tropos-2.leaf";	 //sebastiani-fig1.leaf";
 		try {
 			// Version 2
@@ -2056,4 +2295,37 @@ public class TroposCSPAlgorithm {
 				e.printStackTrace(System.err);
 		}
 	}
-}
+	
+//	private static void genericAddAssignmentConstraint(List<Constraint> constraintList, int initialEvaluation, BooleanVar[] val){
+//		switch (initialEvaluation) {
+//			case 0:	
+//				constraintList.add(new XeqC(val[3], 0));
+//				constraintList.add(new XeqC(val[2], 0));
+//				constraintList.add(new XeqC(val[1], 1));
+//				constraintList.add(new XeqC(val[0], 1));
+//				break;
+//			case 1:	
+//				constraintList.add(new XeqC(val[3], 0));
+//				constraintList.add(new XeqC(val[2], 0));
+//				constraintList.add(new XeqC(val[1], 1));
+//				constraintList.add(new XeqC(val[0], 0));
+//				break;
+//			case 2:	
+//				constraintList.add(new XeqC(val[3], 0));
+//				constraintList.add(new XeqC(val[2], 1));
+//				constraintList.add(new XeqC(val[1], 0));
+//				constraintList.add(new XeqC(val[0], 0));
+//				break;
+//			case 3:	
+//				constraintList.add(new XeqC(val[3], 1));
+//				constraintList.add(new XeqC(val[2], 1));
+//				constraintList.add(new XeqC(val[1], 0));
+//				constraintList.add(new XeqC(val[0], 0));
+//				break;
+//			case 4: case 5: case 6: //Not assigning initial evaluation labels for these values.
+//				break;
+//			default: 
+//				break;
+//		}
+//	}
+	*/

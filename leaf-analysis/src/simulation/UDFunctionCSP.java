@@ -2,7 +2,7 @@ package simulation;
 
 public class UDFunctionCSP {
 		String[] functions;
-		int[] dynamicValues;
+		boolean[][] dynamicValues;
 		char[] elementEBs;
 		public int[] absoluteEpochLengths = null;
 		int mapStart;
@@ -23,13 +23,6 @@ public class UDFunctionCSP {
 		 *  D	ElemID	UD 	#parts | (begin | End | FuncType | SatValue)* | 'R' | repeatBegin | repeatEnd | numRepeats
 		 *  D	ElemID	UD 	#parts | (begin | End | FuncType | SatValue)* | 'R' | repeatBegin | repeatEnd | numRepeats | lengthOfSegment*
 		 *  		Sample inputLine Examples
-		 *  D	0010	UD	4	0	A	C	1	A	B	C	2	B	C	I	3	C	1	C	5	N
-		 *  D	0011	UD	5	0	A	I	3	A	B	C	5	B	C	D	0	C	D	R	5	D	1	C	5	R	A	D
-		 *  D	0025	UD	5	0	A	C	5	A	B	I	3	B	C	D	0	C	D	R	5	D	1	C	5	R	A	D
-		 *  D	0029	UD	5	0	A	C	0	A	B	C	5	B	C	C	1	C	D	R	5	D	1	C	5	N
-		 *  D	0000	UD	4	0	A	C	2	A	B	C	3	B	C	C	0	C	1	C	1	R	A	C
-		 *  D	0000	UD	4	0	A	C	2	A	B	C	3	B	C	C	0	C	1	C	1	R	A	C	2
-		 *  D	0000	UD	4	0	A	C	2	A	B	C	3	B	C	C	0	C	1	C	1	R	A	C	2	5	5	
 		 */
 		public UDFunctionCSP(String inputLine) {
 			String[] values = inputLine.split("\\t");
@@ -38,14 +31,15 @@ public class UDFunctionCSP {
 			int numSegment = Integer.parseInt(values[3]);
 			
 			String[] readFunctions = new String[numSegment];
-			int[] readValues = new int[numSegment];
+			boolean[][] readValues = new boolean[numSegment][4];
 			char[]	readEB = new char[numSegment]; // EB indicates the beginning of the interval.
 			
 			int count = 4;
 			for (int i = 0; i < numSegment; i++){
 				readEB[i] = values[count].charAt(0);
 				readFunctions[i] = values[count + 2];
-				readValues[i] = Integer.parseInt(values[count + 3]);
+				for (int z = 0; z < 4; z++)
+					readValues[i][z] = (values[count + 3].charAt(z) == '1');
 				count += 4;
 			}
 			
@@ -78,29 +72,32 @@ public class UDFunctionCSP {
 				}
 				
 				this.functions =  new String[totalNumSegment];
-				this.dynamicValues = new int[totalNumSegment];
-				this.elementEBs =  new char[totalNumSegment];
+				this.dynamicValues = new boolean[totalNumSegment][4];
+				this.elementEBs =  new char[totalNumSegment - 1];
 				char newEB = 'a';
 				for (int i = 0; i < totalNumSegment; i++){
 					if (i <  mapStart){
 						this.functions[i] = readFunctions[i];
 						this.dynamicValues[i] = readValues[i];
-						this.elementEBs[i] = readEB[i];
+						if (i != 0)
+							this.elementEBs[i-1] = readEB[i];
 					}else if (i >= mapEnd){
 						this.functions[i] = readFunctions[i - (totalNumSegment - numSegment)];
 						this.dynamicValues[i] = readValues[i - (totalNumSegment - numSegment)];
-						this.elementEBs[i] = readEB[i - (totalNumSegment - numSegment)];						
+						if (i != 0)
+							this.elementEBs[i-1] = readEB[i - (totalNumSegment - numSegment)];						
 					}else {
 						int step = ((i - mapStart) % lengthRepeat) + mapStart;
 						this.functions[i] = readFunctions[step];
 						this.dynamicValues[i] = readValues[step];
-						if (i == mapStart)
-							this.elementEBs[i] = readEB[i];
-						else {
-							this.elementEBs[i] = newEB;
-							newEB++;
+						if (i != 0){
+							if (i == mapStart)
+								this.elementEBs[i-1] = readEB[i];
+							else {
+								this.elementEBs[i-1] = newEB;
+								newEB++;
+							}
 						}
-						
 					}	
 				}
 			} else
@@ -111,7 +108,7 @@ public class UDFunctionCSP {
 		public String[] getFunctions() {
 			return functions;
 		}
-		public int[] getDynamicValues() {
+		public boolean[][] getDynamicValues() {
 			return dynamicValues;
 		}
 		public char[] getElementEBs() {
@@ -149,17 +146,20 @@ public class UDFunctionCSP {
 		
 		// Testing Methods
 		public void printUDFunction(){
-			for (int i = 0; i < functions.length; i++)
-				System.out.println(functions[i] + "\t" + dynamicValues[i] + "\t" + elementEBs[i]);
+			System.out.println("Function: " + functions.length + "\nDynamic Values: " + dynamicValues.length + "\nEBs: " + elementEBs.length);
+			System.out.println(functions[0] + "\t" + dynamicValues[0][0] + "|" + dynamicValues[0][1] + "|" + dynamicValues[0][2] + "|" + dynamicValues[0][3]);
+			for (int i = 1; i < functions.length; i++)
+				System.out.println(functions[i] + "\t" + dynamicValues[i][0] + "|" + dynamicValues[i][1] + "|" + dynamicValues[i][2] + "|" + dynamicValues[i][3] + "\t" + elementEBs[i-1]);
 		}
 		public static void main(String[] args) {
+			///// OLD VERSION
 			//String test = "D	0010	UD	4	0	A	C	1	A	B	C	2	B	C	I	3	C	1	C	5	N";
 			//	D	0011	UD	5	0	A	I	3	A	B	C	5	B	C	D	0	C	D	R	5	D	1	C	5	R	A	D
 			//	D	0025	UD	5	0	A	C	5	A	B	I	3	B	C	D	0	C	D	R	5	D	1	C	5	R	A	D
 			//	D	0029	UD	5	0	A	C	0	A	B	C	5	B	C	C	1	C	D	R	5	D	1	C	5	N
 			//D	0000	UD	4	0	A	C	2	A	B	C	3	B	C	C	0	C	1	C	1	R	A	C";
 			// 	D	0000	UD	4	0	A	C	2	A	B	C	3	B	C	C	0	C	1	C	1	R	A	C	2
-			String test = "D	0000	UD	4	0	A	C	2	A	B	C	3	B	C	C	0	C	1	C	1	R	0	B	2	5	5";	
+			String test = "D	0000	UD	4	0	A	C	0010	A	B	C	0011	B	C	C	0000	C	1	C	0100	R	0	B	2	5	5";	
 			UDFunctionCSP func = new UDFunctionCSP(test);
 			func.printUDFunction();
 		}
