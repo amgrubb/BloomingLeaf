@@ -187,7 +187,6 @@ function getFrontendModel(isSinglePath = true){
     		// user defined constraints
 	    }else{
 	    	var line = "";
-	    	
     		var begin = elements[e].attr(".constraints/beginLetter");
 			var end = elements[e].attr(".constraints/endLetter");
 			var rBegin = elements[e].attr(".constraints/beginRepeat");
@@ -196,9 +195,9 @@ function getFrontendModel(isSinglePath = true){
 
 			for (var l = 0; l < funcTypeVal.length; l++){
 				if(l == funcTypeVal.length - 1){
-					line += "\t" + begin[l] + "\t1\t" + funcType[l] + "\t" + initValue;
+					line += "\t" + begin[l] + "\t1\t" + funcType[l] + "\t" + String(initValue);
 				}else{
-					line += "\t" + begin[l] + "\t" + end[l] + "\t" + funcType[l] + "\t" + initValue;
+					line += "\t" + begin[l] + "\t" + end[l] + "\t" + funcType[l] + "\t" + String(initValue);
 				}
 			}
 
