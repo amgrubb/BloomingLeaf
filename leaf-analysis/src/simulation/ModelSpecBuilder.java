@@ -204,6 +204,7 @@ public class ModelSpecBuilder {
 				}
 			}
 	
+			
 			//Getting constraints
 			if(!frontendModel.getConstraints().isEmpty()){
 				for(InputConstraint dataConstraint : frontendModel.getConstraints()){
