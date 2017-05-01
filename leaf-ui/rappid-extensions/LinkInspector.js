@@ -65,7 +65,8 @@ var LinkInspector = Backbone.View.extend({
     this.relationTextA = ["And-Decomposition", "Or-Decomposition"];
     this.relationTextB = ["++", "--", "+", "-", "+S", "++S", "-S", "--S", "+D", "++D", "-D", "--D"];
     this.relationValA = ["and", "or"];
-    this.relationValB = ["PP", "NN", "P", "N", "PS", "PPS", "NS", "NNS", "PD", "PPD", "ND", "NND"];
+    this.relationValB = ["++", "--", "+", "-", "+S", "++S", "-S", "--S", "+D", "++D", "-D", "--D"];
+                      //["PP", "NN", "P", "N", "PS", "PPS", "NS", "NNS", "PD", "PPD", "ND", "NND"];
 
     // select template
     if (cell.prop("linktype")){
@@ -88,7 +89,7 @@ var LinkInspector = Backbone.View.extend({
       // evolving relation
       }else{
         this.evolvingRelations = true;
-        
+
         $(".link-type").hide();
         this.appendSelectValues($('#link-type-begin'), "All");
         $('#link-type-begin').val(val[0]);
@@ -145,12 +146,12 @@ var LinkInspector = Backbone.View.extend({
   updateEvolvingRelations: function(e, intialize){
     var target;
     var value;
-    
+
     // used to render from initialization
     if (intialize){
       target = "link-type-begin";
       value = $('#link-type-begin').val();
-    
+
     // used to render from click
     }else{
       target = e.target.id;
@@ -167,7 +168,7 @@ var LinkInspector = Backbone.View.extend({
       $("#repeat-error").css("color", "");
       $("#repeat-error").show("fast");
 
-      if (value == "NA"){
+      if (value == "no"){
         this.appendSelectValues($("#link-type-end"), "All");
       }else if(this.relationValA.indexOf(value) != -1){
         this.appendSelectValues($("#link-type-end"), "A");
@@ -192,7 +193,7 @@ var LinkInspector = Backbone.View.extend({
       select.html('<option class="select-placeholder" selected disabled value="">End</option>');
     }
 
-    select.append($('<option></option>').val("NA").html("No Relationship"));
+    select.append($('<option></option>').val("no").html("No Relationship"));
     if(type == "All"){
       for (var i = 0; i < this.relationTextA.length; i++)
         select.append($('<option></option>').val(this.relationValA[i]).html(this.relationTextA[i]));
@@ -200,7 +201,7 @@ var LinkInspector = Backbone.View.extend({
         select.append($('<option></option>').val(this.relationValB[i]).html(this.relationTextB[i]));
 
     }else if (type == "A"){
-      select.val("NA");
+      select.val("no");
       $("#repeat-error").text("Saved!");
       $("#repeat-error").css("color", "lightgreen");
       $("#link-type-end").prop('disabled', '');
@@ -237,7 +238,7 @@ var LinkInspector = Backbone.View.extend({
       });
       link.label(0 ,{position: 0.5, attrs: {text: {text: begin + " | " + end}}});
       source.attr(".funcvalue/text", "");
-      target.attr(".funcvalue/text", ""); 
+      target.attr(".funcvalue/text", "");
 
     // Save based on normal relations
     }else{
@@ -278,7 +279,7 @@ var LinkInspector = Backbone.View.extend({
       // Else, set funcvalue to none
       else {
        source.attr(".funcvalue/text", "");
-       target.attr(".funcvalue/text", ""); 
+       target.attr(".funcvalue/text", "");
       }
     }
   },
