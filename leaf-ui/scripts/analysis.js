@@ -8,7 +8,6 @@ var originalResults = jQuery.extend({}, window.opener.global_analysisResult);
 var analysisResult;
 var elements = [];
 
-window.onload = function(){
 	paper = new joint.dia.Paper({
 	    width: 1200,
 	    height: 600,
@@ -59,30 +58,35 @@ window.onload = function(){
 
 	if(!analysisResult)
 		analysisResult = originalResults;
-
+	
+window.onload = function(){
 	renderNavigationSidebar();	
 }
 
 function renderNavigationSidebar(currentPage = 0){
 	clear_pagination_values();
-	
+		
 	var currentPageIn = document.getElementById("currentPage");
 	var num_states_lbl = document.getElementById("num_states_lbl");
-	num_states_lbl.innerHTML += (analysisResult.elementList[0].valueList.length - 1);
+//	num_states_lbl.innerHTML += (analysisResult.elementList[0].valueList.length - 1);
+	num_states_lbl.innerHTML += (analysisResult.allSolution.length - 1);
 	
 	currentPageIn.value = currentPage.toString();
 	
 	updatePagination(currentPage);
-	updateNodesValues(currentPage);
-
+	//updateNodesValues(currentPage);
+	updateSliderValues(currentPage);
 }
 
-function updateNodesValues(currentPage){
+function updateNodesValues(currentPage, step = 0){
+	if(currentPage == "")
+		currentPage = 0;
+	
 	var cell;
 	var value;
 	for(var i = 0; i < elements.length; i++){
 		cell = elements[i];
-		value = analysisResult.elementList[i].valueList[currentPage];
+		value = analysisResult.allSolution[currentPage].intentionElements[i].status[step];
 		cell.attributes.attrs[".satvalue"].value = value;
 		
 		//Change backend value to user friendly view
@@ -122,7 +126,7 @@ function updateNodesValues(currentPage){
 
 function updatePagination(currentPage){
 	var pagination = document.getElementById("pagination");
-	var nextSteps_array_size = analysisResult.elementList[0].valueList.length - 1;
+	var nextSteps_array_size = analysisResult.allSolution.length - 1;
 	if(nextSteps_array_size > 6){
 		renderPreviousBtn(pagination, currentPage);
 		if(currentPage - 3 < 0){
@@ -162,7 +166,7 @@ function renderPreviousBtn(pagination, currentPage){
 
 function renderForwardBtn(pagination, currentPage){
 	var value;
-	var nextSteps_array_size = analysisResult.elementList[0].valueList.length - 1;
+	var nextSteps_array_size = analysisResult.allSolution.length - 1;
 
 	if(currentPage == nextSteps_array_size-1){
 		value = currentPage;
@@ -193,7 +197,7 @@ function clear_pagination_values(){
 
 function goToState(){ 
 	var requiredState = parseInt(document.getElementById("requiredState").value);
-	var nextSteps_array_size = analysisResult.elementList[0].valueList.length - 1;
+	var nextSteps_array_size = analysisResult.allSolution.length - 1;
 
 	if((requiredState != "NaN") && (requiredState > 0)){
 		if(requiredState > nextSteps_array_size){
@@ -261,7 +265,66 @@ function add_filter(){
 	}
 
 	this.analysisResult = tempResults;
-
+	
 	renderNavigationSidebar();
 }
 
+var stepSlider = document.getElementById('slider');
+
+function creatingSlider(currentPage = 0){
+	//Creating Slider
+	$('#slider').width($('#paper').width() * 0.8);
+	$('#slider').css("margin-top", $(window).height() * 0.9);
+
+	// Adjust slider value position based on stencil width and paper width
+	var sliderValuePosition = 300 + $('#paper').width() * 0.1;
+	$('#sliderValue').css("top", '20px');
+	$('#sliderValue').css("left", sliderValuePosition.toString() + 'px');
+	$('#sliderValue').css("position", "relative");
+
+	$(window).resize(function() {
+		$('#slider').css("margin-top", $(this).height() * 0.9);
+		$('#slider').width($('#paper').width() * 0.8);
+	});
+
+	if(analysisResult.allSolution[currentPage])
+		var sliderMax = analysisResult.allSolution[currentPage].intentionElements[0].status.length;
+	else
+		var sliderMax = 1;
+	
+	noUiSlider.create(stepSlider, {
+		start: 0,
+		step: 1,
+		behaviour: 'tap',
+		connect: 'lower',
+		direction: 'ltr',
+		range: {
+			'min': 0,
+			'max': sliderMax
+		}
+	});
+};
+
+creatingSlider(currentPage);
+
+function updateSliderValues(currentPage = 0){
+	var sliderMax = analysisResult.allSolution[currentPage].intentionElements[0].status.length;
+	stepSlider.noUiSlider.updateOptions({
+		start: 0,
+		step: 1,
+		behaviour: 'tap',
+		connect: 'lower',
+		direction: 'ltr',
+		range: {
+			'min': 0,
+			'max': sliderMax
+		}
+	});
+}
+
+slider.noUiSlider.on('update', function( values, handle ) {
+	updateSliderValue = document.getElementById('sliderValue');
+	updateSliderValue.innerHTML = parseInt(values[handle]);
+	var currentPageIn = document.getElementById("currentPage");
+	updateNodesValues(currentPageIn.value, parseInt(values[handle]));
+});

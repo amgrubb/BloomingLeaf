@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import interface_objects.IOIntention;
+import interface_objects.IOStateModel;
 import interface_objects.OutputElement;
 import interface_objects.OutputModel;
 
@@ -241,36 +243,69 @@ public class ModelSpec {
 	public OutputModel getOutputModel() {
 		OutputModel output = new OutputModel();
 		   	
-    	// Print out Values.
-    	int i = -1;
-    	for (IntentionalElement element : getIntElements()){
-    		i++;
-    		OutputElement outputElement = new OutputElement();
-    		
-    		outputElement.setId(element.getId());
-    		for (int t = 0; t < getFinalValues()[i].length; t++){
-    			StringBuilder value = new StringBuilder();
-    			for (int v = 0; v < getFinalValues()[i][t].length; v++){
-        			if(getFinalValues()[i][t][v]){
-        				value.append("1");
-        			}else{
-        				value.append("0");
-        			}
-        		}
-        			outputElement.getStatus().add(value.toString());
-    		}
-    		output.getElementList().add(outputElement);
-    	} 
-    	
-   		//Get final assigned epoch
-		for (Map.Entry<String,Integer> entry : getFinalAssignedEpochs().entrySet()) {
-		  String key = entry.getKey();
-		  Integer value = entry.getValue();
-		  output.getFinalAssignedEpoch().add(key+"_"+value);
+    	// Print out Single Path Solotions.
+		if(getFinalValues() != null){
+	    	int i = -1;
+	    	for (IntentionalElement element : getIntElements()){
+	    		i++;
+	    		OutputElement outputElement = new OutputElement();
+	    		
+	    		outputElement.setId(element.getId());
+	    		for (int t = 0; t < getFinalValues()[i].length; t++){
+	    			StringBuilder value = new StringBuilder();
+	    			for (int v = 0; v < getFinalValues()[i][t].length; v++){
+	        			if(getFinalValues()[i][t][v]){
+	        				value.append("1");
+	        			}else{
+	        				value.append("0");
+	        			}
+	        		}
+	        			outputElement.getStatus().add(value.toString());
+	    		}
+	    		output.getElementList().add(outputElement);
+	    	} 			
 		}
 
-		for(int a = 0; a < getFinalValueTimePoints().length; a++){
-			output.getFinalValueTimePoints().add(Integer.toString(getFinalValueTimePoints()[a]));	   			
+		//Print out All Next States
+		if(getAllSolutionsValues() != null){
+			for(int i_states = 0; i_states < getAllSolutionsValues().length; i_states++){
+				IOStateModel statesModel = new IOStateModel();
+				for(int i_elements = 0; i_elements < getAllSolutionsValues()[i_states].length; i_elements++){
+					IOIntention ioIntention = new IOIntention();
+					String[] values = new String[getAllSolutionsValues()[i_states][i_elements].length];
+					for(int i_steps = 0; i_steps < getAllSolutionsValues()[i_states][i_elements].length; i_steps++){
+						StringBuilder value = new StringBuilder();
+						for (int v = 0; v < getAllSolutionsValues()[i_states][i_elements][i_steps].length; v++){
+		        			if(getAllSolutionsValues()[i_states][i_elements][i_steps][v]){
+		        				value.append("1");
+		        			}else{
+		        				value.append("0");
+		        			}
+		        		}
+						values[i_steps] = value.toString();						
+					}
+					ioIntention.setId(Integer.toString(i_elements));
+        			ioIntention.setStatus(values);
+    				statesModel.getIntentionElements().add(ioIntention);
+				}
+				output.getAllSolution().add(statesModel);
+			}
+		}
+		
+    	
+   		//Get final assigned epoch
+		if(getFinalAssignedEpochs() != null){
+			for (Map.Entry<String,Integer> entry : getFinalAssignedEpochs().entrySet()) {
+				String key = entry.getKey();
+				Integer value = entry.getValue();
+				output.getFinalAssignedEpoch().add(key+"_"+value);
+			}
+		}
+
+		if(getFinalValueTimePoints() != null){
+			for(int a = 0; a < getFinalValueTimePoints().length; a++){
+				output.getFinalValueTimePoints().add(Integer.toString(getFinalValueTimePoints()[a]));	   			
+			}	
 		}
 		
 		output.setRelativeTimePoints(getRelativeTimePoints());

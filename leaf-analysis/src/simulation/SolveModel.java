@@ -30,17 +30,18 @@ public class SolveModel {
 
 		//This is the default filePath to be executed if no file is pass through parameters
 		String filePath = "stored-models/";			
-		String fileName = "default.json";
+		String inputFile = "default.json";
+		String outputFile = "output.out";
 				
 		try {
 			//creating the backend model to be analysed
-			ModelSpec modelSpec = convertModelFromFile(filePath+fileName);
+			ModelSpec modelSpec = convertModelFromFile(filePath + inputFile);
 			//Analyze the model
 			
 			TroposCSPAlgorithm solver = new TroposCSPAlgorithm(modelSpec);
 			solver.solveModel();
 			
-			createOutputFile(solver, filePath + fileName + ".out");
+			createOutputFile(solver, filePath + outputFile);
 	
 		} catch (Exception e) {
 			throw new RuntimeException(e.getMessage());
@@ -54,14 +55,14 @@ public class SolveModel {
 	 * @param filePath
 	 * Name of the file to be read by CGI to be sent to frontend
 	 */
-	private static void createOutputFile(TroposCSPAlgorithm solver, String fileName) {
-		//Gson gson = new Gson();		
-		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+	private static void createOutputFile(TroposCSPAlgorithm solver, String filePath) {
+		Gson gson = new Gson();		
+		//Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		OutputModel outputModel = solver.getSpec().getOutputModel();
 		
 		try {
 			File file;
-			file = new File(fileName);
+			file = new File(filePath);
 			if (!file.exists()) {
 				file.createNewFile();
 			}

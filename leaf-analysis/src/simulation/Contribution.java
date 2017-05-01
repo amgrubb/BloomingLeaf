@@ -9,10 +9,8 @@ public class Contribution extends ElementLink {
 	public void setContribution(ContributionType contribution) {
 		this.contribution = contribution;
 	}
-	private Contribution(LinkableElement s, LinkableElement d, ContributionType cT) {
+	public Contribution(LinkableElement s, LinkableElement d, ContributionType cT) {
 		super(new LinkableElement[]{s}, d);
 		this.contribution = cT;
 	}
-	
-
 }
