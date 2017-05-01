@@ -1045,7 +1045,8 @@ var ElementInspector = Backbone.View.extend({
       cell.attr(".satvalue/text", "");
       // If functype is NB, dont clear it
       if(cell.attr(".funcvalue/text") != 'NB'){
-        cell.attr(".funcvalue/text", " ");
+        //cell.attr(".funcvalue/text", " ");
+    	cell.attr(".satvalue/text", " ");
       }
 
     }
