@@ -1771,28 +1771,33 @@ public class TroposCSPAlgorithm {
 				initializeStateUDHelper(i, dynamic, dynamicValue, epochCondition, initialIndex);
 			}
 		}
-	
-		//TODO:  START HERE
+
     	// Not Both Dynamic Functions.
-//    	List<NotBothLink> notBothLinkList = this.spec.getNotBothLink();	
-//    	for(ListIterator<NotBothLink> ec = notBothLinkList.listIterator(); ec.hasNext(); ){		
-//    		NotBothLink link = ec.next();
-//            IntVar epoch = this.notBothEBCollection.get(link);
-//            int ele1 = link.getElement1().getIdNum();
-//            int ele2 = link.getElement2().getIdNum();
-//            for (int t = 0; t < this.values[ele1].length; t++){
-//            	if(link.isFinalDenied())
-//            		constraints.add(new IfThenElse(new XgtY(epoch, this.timePoints[t]), 
-//            				new And(new And(createXeqC(this.values[ele1][t], boolTT)), new And(createXeqC(this.values[ele2][t], boolTT))),
-//            				new Or(new And(new And(createXeqC(this.values[ele1][t], boolFS)), new And(createXeqC(this.values[ele2][t], boolFD))),
-//            					   new And(new And(createXeqC(this.values[ele1][t], boolFD)), new And(createXeqC(this.values[ele2][t], boolFS))))));
-//            	else
-//            		constraints.add(new IfThenElse(new XgtY(epoch, this.timePoints[t]), 
-//            				new And(new And(createXeqC(this.values[ele1][t], boolTT)), new And(createXeqC(this.values[ele2][t], boolTT))),
-//            				new Or(new And(new And(createXeqC(this.values[ele1][t], boolFS)), new And(createXeqC(this.values[ele2][t], boolTT))),
-//            					   new And(new And(createXeqC(this.values[ele1][t], boolTT)), new And(createXeqC(this.values[ele2][t], boolFS))))));            		
-//            }
-//    	}
+    	List<NotBothLink> notBothLinkList = this.spec.getNotBothLink();	
+    	for(ListIterator<NotBothLink> ec = notBothLinkList.listIterator(); ec.hasNext(); ){		
+    		NotBothLink link = ec.next();
+            IntVar epoch = this.notBothEBCollection.get(link);
+            int ele1 = link.getElement1().getIdNum();
+            int ele2 = link.getElement2().getIdNum();            
+			if(epoch.value() <= currentAbsoluteTime)
+				if(link.isFinalDenied())
+					constraints.add(new Or(new And(new And(createXeqC(this.values[ele1][nextIndex], boolFS)), new And(createXeqC(this.values[ele2][nextIndex], boolFD))),
+     					   new And(new And(createXeqC(this.values[ele1][nextIndex], boolFD)), new And(createXeqC(this.values[ele2][nextIndex], boolFS)))));
+				else
+					constraints.add(new Or(new And(new And(createXeqC(this.values[ele1][nextIndex], boolFS)), new And(createXeqC(this.values[ele2][nextIndex], boolTT))),
+	     					   new And(new And(createXeqC(this.values[ele1][nextIndex], boolTT)), new And(createXeqC(this.values[ele2][nextIndex], boolFS)))));
+			else
+            	if(link.isFinalDenied())
+            		constraints.add(new IfThenElse(new XgtY(epoch, this.timePoints[nextIndex]), 
+            				new And(new And(createXeqC(this.values[ele1][nextIndex], boolTT)), new And(createXeqC(this.values[ele2][nextIndex], boolTT))),
+            				new Or(new And(new And(createXeqC(this.values[ele1][nextIndex], boolFS)), new And(createXeqC(this.values[ele2][nextIndex], boolFD))),
+            					   new And(new And(createXeqC(this.values[ele1][nextIndex], boolFD)), new And(createXeqC(this.values[ele2][nextIndex], boolFS))))));
+            	else
+            		constraints.add(new IfThenElse(new XgtY(epoch, this.timePoints[nextIndex]), 
+            				new And(new And(createXeqC(this.values[ele1][nextIndex], boolTT)), new And(createXeqC(this.values[ele2][nextIndex], boolTT))),
+            				new Or(new And(new And(createXeqC(this.values[ele1][nextIndex], boolFS)), new And(createXeqC(this.values[ele2][nextIndex], boolTT))),
+            					   new And(new And(createXeqC(this.values[ele1][nextIndex], boolTT)), new And(createXeqC(this.values[ele2][nextIndex], boolFS))))));            		
+    	}
 	}
 	
 	private void initializeStateUDHelper(int i, String dynamic, boolean[] dynFVal, PrimitiveConstraint epochCondition, int initialIndex){
