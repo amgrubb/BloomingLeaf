@@ -2208,14 +2208,12 @@ public class TroposCSPAlgorithm {
 
 			// int solNum = 1;	/// NOTE: Solution number starts at 1 not 0!!!
 			boolean[][][][] finalValues = new boolean[totalSolution][this.intentions.length][this.values[0].length][4];
-
 			for (int s = 1; s <= totalSolution; s++){
 				//TODO: Include the output of this.minTimePoint @ solIndex = 0.
 				int solIndex = 1;
 				System.out.println(s);
 				for (int i = 0; i < this.intentions.length; i++)
-				{
-					for (int t = 0; t < this.values[0].length; t++){
+					for (int t = 0; t < this.values[0].length; t++)
 						for (int v = 0; v < 4; v++){
 							if(label.getSolution(s)[solIndex].toString().equals("1"))
 								finalValues[s-1][i][t][v] = true;
@@ -2223,11 +2221,8 @@ public class TroposCSPAlgorithm {
 								finalValues[s-1][i][t][v] = false;
 							else
 								System.err.println("Error: " + label.getSolution(s)[v] + " has non-binary value.");
-							
 							solIndex++;
 						}
-					}
-				}
 			}
 			this.spec.setFinalAllSolutionsValues(finalValues);
 		}else{
