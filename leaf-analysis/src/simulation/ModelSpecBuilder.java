@@ -159,6 +159,7 @@ public class ModelSpecBuilder {
 				for(InputDynamic dataDynamic : frontendModel.getDynamics()){
 					String intentionID = dataDynamic.getIntentionID();
 					String dynamicType = dataDynamic.getDynamicType();
+					//TODO: Why is markedValue not used?
 //					String markedValue = dataDynamic.getMarkedValue();
 					String line = dataDynamic.getLine();
 					

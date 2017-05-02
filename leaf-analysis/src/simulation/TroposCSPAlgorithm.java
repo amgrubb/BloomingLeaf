@@ -164,7 +164,7 @@ public class TroposCSPAlgorithm {
 	private void initializeNextTimeConstraints() {
 		nextTimePoint = new IntVar(this.store, "Next_Time", 0, nextTimePoints.length - 1);
 		minTimePoint = new IntVar(this.store, "Min_Time", 0, this.maxTime);
-		this.constraints.add(new Min(this.nextTimePoints, minTimePoint));
+		this.constraints.add(new Min(nextTimePoints, minTimePoint));
 		for (int i = 0; i < nextTimePoints.length; i++){
 			this.constraints.add(new IfThen(new XeqC(this.nextTimePoint, i), new XeqY(this.nextTimePoints[i], minTimePoint)));
 		}
