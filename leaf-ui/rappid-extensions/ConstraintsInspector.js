@@ -12,9 +12,7 @@ var ConstraintsInspector = Backbone.View.extend({
       '<select class="relationship-type function-type">',
         '<option class="select-placeholder" selected disabled value=none> Relationship </option>',
         '<option value=eq> = </option>',
-        '<option value=ne> <> </option>',
         '<option value=lt> < </option>',
-        '<option value=le> <= </option>',
       '</select>',
       '<select id="relationship-src" class="relationship-select">',
         '<option class="select-placeholder" selected disabled value="">Source</option>',
@@ -71,18 +69,17 @@ var ConstraintsInspector = Backbone.View.extend({
     var tRepeatB = cell.getTargetElement().attr(".constraints/beginRepeat");
     var sRepeatE = cell.getSourceElement().attr(".constraints/endRepeat");
     var tRepeatE = cell.getTargetElement().attr(".constraints/endRepeat");
-
-    var noTimeVariabled = ["R", "C", "I", "D"];
+    var noTimeVariabled = ["R", "C", "I", "D", "NB"];
 
     // source or target node have no time function
-    if ((sInitVal == "none") || (sInitVal == "conflict") || (tInitVal == "none") ||(tInitVal == "conflict")){
+    if ((sInitVal == "none") || (tInitVal == "none")){
       $("#repeat-error").text("Values are not initialized");
       $("#repeat-error").show("fast");
       this.$('#intension-div').hide();
       this.$('.function-type').val('');
 
     // source or target node time function can not be mode
-    }else if ((noTimeVariabled.indexOf(sFunc) != -1) || (noTimeVariabled.indexOf(tFunc) != -1)){
+    }else if ((noTimeVariabled.indexOf(sFunc) != -1) || (noTimeVariabled.indexOf(tFunc) != -1) || !sFunc || !tFunc){
       $("#repeat-error").text("The constraint type can not be modelled");
       $("#repeat-error").show("fast");
       this.$('#intension-div').hide();

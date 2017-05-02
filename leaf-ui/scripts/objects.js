@@ -38,23 +38,64 @@ function analysisObject () {
     this.elements;
     this.numOfElements;
     this.timeScale;
+    this.relativeTime;
 }
 
 // Parse results from backend
-analysisObject.initFromBackEnd = function(analysisResults, analysisType){
-	this.type = analysisType;
+analysisObject.initFromBackEnd = function(analysisResults){
 	this.elements = [];
-	this.numOfElements = Number(analysisResults[0]);
-	this.timeScale = Number(analysisResults[1]) - 1;
+	this.numOfElements = Number(analysisResults.elementList.length);
+	this.timeScale = Number(analysisResults.finalValueTimePoints.length) - 1;
+	this.relativeTime = [];
 	
-	for (var i = 2; i < this.numOfElements + 2; i++){
+	for(var i = 0; i < analysisResults.finalValueTimePoints.length; i++){
+		var aux = analysisResults.finalValueTimePoints[i];
+		this.relativeTime.push(aux);
+	}
+	
+	for (var i = 0; i < this.numOfElements ; i++){
 		//strips first element since it is already shown on graph
-		var results = analysisResults[i].split('\t');
-		results.pop(0)
+		var results = analysisResults.elementList[i].status;
+		results.pop(0);
 		this.elements.push(results)
 	}
 	return this;
 }
+
+
+analysisObject.nextStates = function(analysisResults){
+	this.elements = [];
+	this.numOfElements = Number(analysisResults.elementList.length);
+	this.timeScale = Number(analysisResults.elementList[0].status.length) - 1;
+	this.relativeTime = [];
+	
+	for(var i = 0; i < this.timeScale; i++){
+		this.relativeTime.push(i);
+	}
+	
+	for (var i = 0; i < this.numOfElements ; i++){
+		//strips first element since it is already shown on graph
+		var results = analysisResults.elementList[i].status;
+		results.pop(0);
+		this.elements.push(results)
+	}
+	return this;
+}
+
+//analysisObject.initFromBackEnd = function(analysisResults, analysisType){
+//	this.type = analysisType;
+//	this.elements = [];
+//	this.numOfElements = Number(analysisResults[0]);
+//	this.timeScale = Number(analysisResults[1]) - 1;
+//	
+//	for (var i = 2; i < this.numOfElements + 2; i++){
+//		//strips first element since it is already shown on graph
+//		var results = analysisResults[i].split('\t');
+//		results.pop(0)
+//		this.elements.push(results)
+//	}
+//	return this;
+//}
 
 // Load results from a file
 // This is done through loading analysis on the analysis inspector
@@ -129,24 +170,56 @@ var constraintsObject = function(){
 		labels: ["0", "Infinity"],
 		datasets: [{
 			label: "Source",
-			fillColor: "rgba(220,220,220,0.2)",
-			strokeColor: "rgba(220,220,220,1)",
-			pointColor: "rgba(220,220,220,1)",
-			pointStrokeColor: "#fff",
-			pointHighlightFill: "#fff",
-			pointHighlightStroke: "rgba(220,220,220,1)",
+			fill: false,
+			borderColor: "rgba(220,220,220,1)",
+			pointBackgroundColor: ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"],
+			pointRadius: 4,
+			pointBorderColor: ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"],
+			lineTension: 0,
+			data: [0, 0]
+
+		},
+		{
+			label: "Source",
+			fill: false,
+			borderColor: "rgba(220,220,220,1)",
+			pointBackgroundColor: ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"],
+			pointRadius: 4,
+			pointBorderColor: ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"],
+			lineTension: 0,
 			data: [0, 0]
 		},
 		{
 			label: "Source",
-			fillColor: "rgba(220,220,220,0.2)",
-			strokeColor: "rgba(220,220,220,1)",
-			pointColor: "rgba(220,220,220,1)",
-			pointStrokeColor: "#fff",
-			pointHighlightFill: "#fff",
-			pointHighlightStroke: "rgba(220,220,220,1)",
+			fill: false,
+			borderColor: "rgba(220,220,220,1)",
+			pointBackgroundColor: ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"],
+			pointRadius: 4,
+			pointBorderColor: ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"],
+			lineTension: 0,
 			data: []
-		}]
+		},
+		{
+			label: "Source",
+			fill: false,
+			borderColor: "rgba(220,220,220,1)",
+			pointBackgroundColor: ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"],
+			pointRadius: 4,
+			pointBorderColor: ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"],
+			lineTension: 0,
+			data: []
+		},
+		{
+			label: "Source",
+			fill: false,
+			borderColor: "rgba(220,220,220,1)",
+			pointBackgroundColor: ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"],
+			pointRadius: 4,
+			pointBorderColor: ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"],
+			lineTension: 0,
+			data: []
+		}
+		]
 	};
 }
 
@@ -158,12 +231,11 @@ var chartObject = function(){
 		labels: ["0", "A"],
 		datasets: [{
 			label: "Source",
-			fillColor: "rgba(220,220,220,0.2)",
-			strokeColor: "rgba(220,220,220,1)",
-			pointColor: "rgba(220,220,220,1)",
-			pointStrokeColor: "#fff",
-			pointHighlightFill: "#fff",
-			pointHighlightStroke: "rgba(220,220,220,1)",
+			fill: false,
+			borderColor: "rgba(220,220,220,1)",
+			pointBackgroundColor: "rgba(220,220,220,1)",
+			pointBorderColor: "#fff",
+			lineTension: 0,
 			data: []
 		}]
 	};
@@ -171,35 +243,32 @@ var chartObject = function(){
 	this.secondaryChart = {
 		labels: ["0", "A"],
 		datasets: [{
-	        label: "",
-	        fillColor: "rgba(255, 110, 80, 0.4)",
-	        strokeColor: "rgba(255, 110, 80, 1)",
-	        pointColor: "rgba(255, 110, 80, 1)",
-	        pointStrokeColor: "rgba(183, 79, 58, 1)",
-	        pointHighlightFill: "rgba(183, 79, 58, 1)",
-	        pointHighlightStroke: "rgba(255, 110, 80, 1)",
-	        data: []
+			label: "Source",
+			fill: false,
+			borderColor: "rgba(220,220,220,1)",
+			pointBackgroundColor: "rgba(220,220,220,1)",
+			pointBorderColor: "#fff",
+			lineTension: 0,
+			data: []
 		}]
 	};
 
 	this.teriaryChart = {
 		labels: ["0", "A"],
 		datasets: [{
-            label: "Target",
-            fillColor: "rgba(151,187,205,0.2)",
-            strokeColor: "rgba(151,187,205,1)",
-            pointColor: "rgba(151,187,205,1)",
-            pointStrokeColor: "#fff",
-            pointHighlightFill: "#fff",
-            pointHighlightStroke: "rgba(151,187,205,1)",
-            data: []
-        }]
+			label: "Source",
+			fill: false,
+			borderColor: "rgba(220,220,220,1)",
+			pointBackgroundColor: "rgba(220,220,220,1)",
+			pointBorderColor: "#fff",
+			lineTension: 0,
+			data: []
+		}]
 	};
 
     // within constraint chart options
 	this.chartOptions = {
 		animationSteps: 15,
-		bezierCurve: false,
 		scaleOverride : true,
 		scaleSteps : 4,
 		scaleStepWidth : 1,
@@ -208,7 +277,32 @@ var chartObject = function(){
 		pointHitDetectionRadius : 5,
 		tooltipTemplate: "",
 		multiTooltipTemplate: "",
-		scaleLabel: "<%if (value == 2)%><%= 'S' %><%if (value == 1)%><%= 'PS' %><%if (value == 0)%><%= 'R/S' %><%if (value == -1)%><%= 'PD' %><%if (value == -2)%><%= 'D' %>",
+		// scaleLabel: "<%if (value == 2)%><%= '(FS, T)' %><%if (value == 1)%><%= '(PS, T)' %><%if (value == 0)%><%= '(T, T)' %><%if (value == -1)%><%= '(T, PD)' %><%if (value == -2)%><%= '(T, FD)' %>",
+
+		scales: {
+			yAxes: [{
+				ticks: {
+					min: -2.1,
+					max: 2.1,
+					callback: function(value, index, values){
+						if (value == 2){return '(FS, T)'};
+						if (value == 1){return '(PS, T)'};
+						if (value == 0){return '(T, T)'};
+						if (value == -1){return '(T, PD)'};
+						if (value == -2){return '(T, FD)'};
+					}
+				}
+			}]
+		},
+		legend: {
+			display: false
+		},
+
+		tooltips: {
+			enabled: false,
+		}
+
+
 		
 		// The following two lings controls effects of hovering over an element on chart
 		// tooltipTemplate: "<%if (value == 2)%><%= 'Satisfied' %><%if (value == 1)%><%= 'Partially Satisfied' %><%if (value == 0)%><%= 'Random' %><%if (value == -1)%><%= 'Partially Denied' %><%if (value == -2)%><%= 'Denied' %>",
@@ -228,6 +322,6 @@ var chartObject = function(){
 		pointHitDetectionRadius : 5,
 		tooltipTemplate: "<%if (value == 2)%><%= 'Satisfied' %><%if (value == 1)%><%= 'Partially Satisfied' %><%if (value == 0)%><%= 'Random' %><%if (value == -1)%><%= 'Partially Denied' %><%if (value == -2)%><%= 'Denied' %>",
 		multiTooltipTemplate: "<%= datasetLabel %> - <%if (value == 2)%><%= 'Satisfied' %><%if (value == 1)%><%= 'Partially Satisfied' %><%if (value == 0)%><%= 'Random' %><%if (value == -1)%><%= 'Partially Denied' %><%if (value == -2)%><%= 'Denied' %>",		
-		scaleLabel: "<%if (value == 2)%><%= 'S' %><%if (value == 1)%><%= 'PS' %><%if (value == 0)%><%= 'R/S' %><%if (value == -1)%><%= 'PD' %><%if (value == -2)%><%= 'D' %>",		
+		scaleLabel: "<%if (value == 2)%><%= '(FS, T)' %><%if (value == 1)%><%= '(PS, T)' %><%if (value == 0)%><%= '(T, T)' %><%if (value == -1)%><%= '(T, PD)' %><%if (value == -2)%><%= '(T, FD)' %>",		
 	};
 }

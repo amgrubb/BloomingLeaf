@@ -13,6 +13,7 @@ var constrainsInspector = new ConstraintsInspector();
 var analysisInspector = new AnalysisInspector();
 var currentHalo;
 var currentAnalysis;
+var elementList;
 
 // Analysis variables
 var historyObject = new historyObject();
@@ -23,10 +24,9 @@ var loader;
 var reader;
 
 //Properties for both core and simulator.
-var satvalues = {satisfied: 2, partiallysatisfied: 1, partiallydenied: -1, denied: -2, unknown: 0, conflict: 3, none: 4};
+var satvalues = {satisfied: 2, partiallysatisfied: 1, partiallydenied: -1, denied: -2, unknown: 4, conflict: 3, none: 0};
 
 //var functions = {A: 'AI', O: 'OI', N: 'NT', M: 'MP', R: 'R', S: 'SP', MN: 'MN', SN: 'SN', U: 'UD'};
-
 
 // ----------------------------------------------------------------- //
 // Page setup
@@ -48,7 +48,7 @@ paper = new joint.dia.Paper({
 		'attrs': {
 			'.connection': {stroke: '#000000'},
 			'.marker-source': {'d': '0'},
-			'.marker-target': {stroke: '#000000', 'stroke-width': 1, "d": 'M 10 0 L 10 10 M 10 5 L 0 5' }
+			'.marker-target': {stroke: '#000000', "d": 'M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5'}
 			},
 		'labels': [{position: 0.5, attrs: {text: {text: "and"}}}]
 	})
@@ -124,6 +124,7 @@ if (document.cookie){
 		graph.fromJSON(JSON.parse(prevgraph));
 	}
 }
+
 
 
 // ----------------------------------------------------------------- //
@@ -347,35 +348,47 @@ analysisFunctions.clearQueryObject = function(){
 	queryObject.clearCells();
 }
 
-function loadAnalysis(analysisResults, analysisType, queryNum){
-	var type;
-	if (analysisType == "2"){
-		type = "Forward";
-  }else if (analysisType == "3"){
-		type = "Backward";
-	}else if (analysisType == "6"){
-		type = "Leaf Sim";
-	}else if (analysisType == "7"){
-		type = "Stochastic";
-	}else if (analysisType == "11"){
-		type = "CSP";
-  }else if (analysisType == "12"){
-		type = "CSP History";
-	}else if (analysisType == null){
-		type = "Unknown";
-	}
-
-	if(queryNum == 1){
-		type += " A<B";
-	}else if (queryNum == 2){
-		type += " B<A";
-	}else if (queryNum == 3){
-		type += " A=B";
-	}
-
-	currentAnalysis = new analysisObject.initFromBackEnd(analysisResults, type)
+function loadAnalysis(analysisResults){
+	currentAnalysis = new analysisObject.initFromBackEnd(analysisResults);
+	$("#finalAssigneEpoch").val(analysisResults.finalAssignedEpoch);
+	$("#finalValueTimePoints").val(analysisResults.finalValueTimePoints);
+	$('#num-rel-time').val(analysisResults.relativeTimePoints);
+	var absTimePoints = analysisResults.absoluteTimePoints.toString();
+	$('#abs-time-pts').val(absTimePoints.replace(",", " "));
+	
+	elementList = analysisResults.elementList;
 	updateSlider(currentAnalysis, false);
 }
+
+//function loadAnalysis(analysisResults, analysisType, queryNum){
+//	var type;
+//	if (analysisType == "2"){
+//		type = "Forward";
+//  }else if (analysisType == "3"){
+//		type = "Backward";
+//	}else if (analysisType == "6"){
+//		type = "Leaf Sim";
+//	}else if (analysisType == "7"){
+//		type = "Stochastic";
+//	}else if (analysisType == "11"){
+//		type = "CSP";
+//  }else if (analysisType == "12"){
+//		type = "CSP History";
+//	}else if (analysisType == null){
+//		type = "Unknown";
+//	}
+//
+//	if(queryNum == 1){
+//		type += " A<B";
+//	}else if (queryNum == 2){
+//		type += " B<A";
+//	}else if (queryNum == 3){
+//		type += " A=B";
+//	}
+//
+//	currentAnalysis = new analysisObject.initFromBackEnd(analysisResults, type)
+//	updateSlider(currentAnalysis, false);
+//}
 
 
 // ----------------------------------------------------------------- //
@@ -384,9 +397,14 @@ function loadAnalysis(analysisResults, analysisType, queryNum){
 // Slider creation and update
 function updateSlider(currentAnalysis, pastAnalysisStep){
 	var analysisMarkers;
-
+	
+	if(!sliderObject.sliderElement){
+		sliderObject.sliderElement = document.getElementById('slider');
+		sliderObject.sliderValueElement = document.getElementById('sliderValue');
+	}
+		
 	// First create slider
-	if(!sliderObject.sliderElement.noUiSlider){
+	if(!sliderObject.sliderElement.hasOwnProperty('noUiSlider')){
 		var currentValueLimit = 0;
 		var sliderMax = currentAnalysis.timeScale;
 
@@ -469,7 +487,7 @@ function updateSlider(currentAnalysis, pastAnalysisStep){
 		if(values[handle] < currentValueLimit){
 			sliderObject.sliderElement.noUiSlider.set(currentValueLimit);
 		}else{
-			updateSliderValues(values[handle], currentValueLimit);
+			updateSliderValues(values[handle], currentValueLimit, currentAnalysis);
 		}
 	});
 }
@@ -493,14 +511,14 @@ function adjustSlider(maxValue){
 
 }
 
-function updateSliderValues(valueString, currentValueLimit){
+function updateSliderValues(valueString, currentValueLimit, currentAnalysis){
 	var sliderValue = parseInt(valueString);
 	var value = sliderValue - currentValueLimit;
 	$('#sliderValue').text(value);
-	sliderObject.sliderValueElement.innerHTML = value;
+	sliderObject.sliderValueElement.innerHTML = value + "|" + currentAnalysis.relativeTime[value];
 
 	for (var i = 0; i < currentAnalysis.numOfElements; i++){
-		updateValues(i, parseInt(currentAnalysis.elements[i][value]), "renderAnalysis");
+		updateValues(i, currentAnalysis.elements[i][value], "renderAnalysis");
 	}
 }
 
@@ -511,44 +529,75 @@ function updateValues(c, v, m){
 
 	//Update node based on values from cgi file
 	if (m == "renderAnalysis"){
-		var satvalues = ["denied", "partiallydenied", "partiallysatisfied", "satisfied", "conflict", "unknown", "none"];
+		//var satvalues = ["denied", "partiallydenied", "partiallysatisfied", "satisfied", "unknown", "none"];
 		cell = graphObject.allElements[c];
-		value = satvalues[v];
-		cell.attr(".satvalue/value", value);
+		value = v;
+		cell.attributes.attrs[".satvalue"].value = v;
+		//cell.attr(".satvalue/value", v);
 
 	//Update node based on values saved from graph prior to analysis
 	}else if (m == "toInitModel"){
 		cell = graphObject.allElements[c];
-		value = v.attributes.attrs.satvalue.value;
+		value = cell.attributes.attrs[".satvalue"].value;
 	}
 
 	//Update images for properties
 	// Navie: Changed satvalue from path to text
-	if (value == "satisfied"){
-		// cell.attr({ '.satvalue': {'d': 'M 0 10 L 5 20 L 20 0 L 5 20 L 0 10', 'stroke': '#00FF00', 'stroke-width':4}});
-		cell.attr(".satvalue/text", "S");
-	}else if(value == "partiallysatisfied") {
-		// cell.attr({ '.satvalue': {'d': 'M 0 8 L 5 18 L 20 0 L 5 18 L 0 8 M 17 30 L 17 15 C 17 15 30 17 18 23', 'stroke': '#00FF00', 'stroke-width':4, 'fill': 'transparent'}});
-		cell.attr(".satvalue/text", "PS");
-	}else if (value == "denied"){
-		// cell.attr({ '.satvalue': {'d': 'M 0 20 L 20 0 M 10 10 L 0 0 L 20 20', 'stroke': '#FF0000', 'stroke-width': 4}});
-		cell.attr(".satvalue/text", "D");
-	}else if (value == "partiallydenied") {
-		// cell.attr({ '.satvalue': {'d': 'M 0 15 L 15 0 M 15 15 L 0 0 M 17 30 L 17 15 C 17 15 30 17 18 23', 'stroke': '#FF0000', 'stroke-width': 4, 'fill': 'transparent'}});
-		cell.attr(".satvalue/text", "PD");
-	}else if (value == "conflict") {
-		// cell.attr({ '.satvalue': {'d': 'M 0 0 L 20 8 M 20 7 L 5 15 M 5 14 L 25 23', 'stroke': '#222222', 'stroke-width': 4}});
-		cell.attr(".satvalue/text", "?");
-	}else if (value == "unknown") {
-		// cell.attr({ '.satvalue': {'d': 'M15.255,0c5.424,0,10.764,2.498,10.764,8.473c0,5.51-6.314,7.629-7.67,9.62c-1.018,1.481-0.678,3.562-3.475,3.562\
-		    // c-1.822,0-2.712-1.482-2.712-2.838c0-5.046,7.414-6.188,7.414-10.343c0-2.287-1.522-3.643-4.066-3.643\
-		    // c-5.424,0-3.306,5.592-7.414,5.592c-1.483,0-2.756-0.89-2.756-2.584C5.339,3.683,10.084,0,15.255,0z M15.044,24.406\
-		    // c1.904,0,3.475,1.566,3.475,3.476c0,1.91-1.568,3.476-3.475,3.476c-1.907,0-3.476-1.564-3.476-3.476\
-		    // C11.568,25.973,13.137,24.406,15.044,24.406z', 'stroke': '#222222', 'stroke-width': 10}});
-		    cell.attr(".satvalue/text", "?");
+	if ((value == "1000") || (value == "1100")) {
+	  cell.attr(".satvalue/text", "(FS, T)");
+	  cell.attr({text:{fill:'black'}});
+	}else if(value == "0100") {
+	  cell.attr(".satvalue/text", "(PS, T)");
+	  cell.attr({text:{fill:'black'}});
+	}else if ((value == "0001") || (value == "0011")){
+	  cell.attr(".satvalue/text", "(T, FD)");
+	  cell.attr({text:{fill:'black'}});
+	}else if (value == "0010") {
+	  cell.attr(".satvalue/text", "(T, PD)");
+	  cell.attr({text:{fill:'black'}});
+	}else if (value == "0110") {
+		  cell.attr(".satvalue/text", "(PS, PD)");
+		  cell.attr({text:{fill:'red'}});
+	}else if ((value == "0111") || (value == "0101")){
+		  cell.attr(".satvalue/text", "(PS, FD)");
+		  cell.attr({text:{fill:'red'}});
+	}else if ((value == "1110") || (value == "1010")){
+		  cell.attr(".satvalue/text", "(FS, PD)");
+		  cell.attr({text:{fill:'red'}});
+	}else if ((value == "1111") || (value == "1001") || (value == "1101") || (value == "1011") ){
+		  cell.attr(".satvalue/text", "(FS, FD)"); 
+		  cell.attr({text:{fill:'red'}});
+	}else if (value == "0000") {
+	      cell.attr(".satvalue/text", "(T,T)");
+	      cell.attr({text:{fill:'black'}});
 	}else {
-		cell.removeAttr(".satvalue/d");
+	  cell.removeAttr(".satvalue/d");
 	}
+	
+//	//Update images for properties
+//	// Navie: Changed satvalue from path to text
+//	if (value == "satisfied"){
+//	  // cell.attr({ '.satvalue': {'d': 'M 0 10 L 5 20 L 20 0 L 5 20 L 0 10', 'stroke': '#00FF00', 'stroke-width':4}});      
+//	  cell.attr(".satvalue/text", "(FS, T)");
+//	}else if(value == "partiallysatisfied") {
+//	  // cell.attr({ '.satvalue': {'d': 'M 0 8 L 5 18 L 20 0 L 5 18 L 0 8 M 17 30 L 17 15 C 17 15 30 17 18 23', 'stroke': '#00FF00', 'stroke-width':3, 'fill': 'transparent'}});
+//	  cell.attr(".satvalue/text", "(PS, T)");
+//	}else if (value == "denied"){
+//	  // cell.attr({ '.satvalue': {'d': 'M 0 20 L 20 0 M 10 10 L 0 0 L 20 20', 'stroke': '#FF0000', 'stroke-width': 4}});
+//	  cell.attr(".satvalue/text", "(T, FD)");
+//	}else if (value == "partiallydenied") {
+//	  // cell.attr({ '.satvalue': {'d': 'M 0 15 L 15 0 M 15 15 L 0 0 M 17 30 L 17 15 C 17 15 30 17 18 23', 'stroke': '#FF0000', 'stroke-width': 3, 'fill': 'transparent'}});
+//	  cell.attr(".satvalue/text", "(T, PD)");
+//	}else if (value == "unknown") {
+//	  // cell.attr({ '.satvalue': {'d': 'M15.255,0c5.424,0,10.764,2.498,10.764,8.473c0,5.51-6.314,7.629-7.67,9.62c-1.018,1.481-0.678,3.562-3.475,3.562\
+//	      // c-1.822,0-2.712-1.482-2.712-2.838c0-5.046,7.414-6.188,7.414-10.343c0-2.287-1.522-3.643-4.066-3.643\
+//	      // c-5.424,0-3.306,5.592-7.414,5.592c-1.483,0-2.756-0.89-2.756-2.584C5.339,3.683,10.084,0,15.255,0z M15.044,24.406\
+//	      // c1.904,0,3.475,1.566,3.475,3.476c0,1.91-1.568,3.476-3.475,3.476c-1.907,0-3.476-1.564-3.476-3.476\
+//	      // C11.568,25.973,13.137,24.406,15.044,24.406z', 'stroke': '#222222', 'stroke-width': 1}});
+//	      cell.attr(".satvalue/text", "?");
+//	}else {
+//	  cell.removeAttr(".satvalue/d");
+//	}
 }
 
 // ----------------------------------------------------------------- //
@@ -1034,6 +1083,17 @@ function toBackEnd(simulationType, stepVal, epochVal, queryValA, queryValB){
 }
 
 function postData(simulationType, leafLines, queryLines, cspHistoryLines, queryNum){
+	console.log("simulationType");
+	console.log(simulationType);
+	console.log("leafLines");
+	console.log(leafLines);
+	console.log("queryLines");
+	console.log(queryLines);
+	console.log("cspHistoryLines");
+	console.log(cspHistoryLines);
+	console.log("queryNum");
+	console.log(queryNum);
+
 	var data = {};
 	if(queryNum == -1){
 		data.toUpload = leafLines + cspHistoryLines;
@@ -1043,7 +1103,8 @@ function postData(simulationType, leafLines, queryLines, cspHistoryLines, queryN
 		data.simgraph = JSON.stringify(graph.toJSON());
 		queryNum++;
   }
-
+  console.log('data');
+  console.log(data);
 	//Send data to backend for analysis
 	$.post("./cgi-bin/handleupload2.cgi", data, function(results, status){
 		if(status == "success"){
@@ -1281,4 +1342,15 @@ function generateLeafFile(){
 
 	console.log(datastring);
 	return datastring
+}
+
+// ----------------------------------------------------------------- //
+// General javascript for user interaction
+
+// When the user clicks anywhere outside of the a pop up, close it
+window.onclick = function(event) {
+	var modal = document.getElementById('myModal');
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
 }

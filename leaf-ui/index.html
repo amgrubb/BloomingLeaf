@@ -15,6 +15,7 @@
         <link rel="stylesheet" type="text/css" href="./plugins/slider/nouislider.min.css">
 
         <link rel="stylesheet" type="text/css" href="./css/style.css" />
+        <link rel="stylesheet" type="text/css" href="./css/analysis_style.css" />
 
     </head>
     <body>
@@ -42,6 +43,7 @@
             <input type="file" id="loader" style="display:none">
 
             <button id="btn-save-leaf" class="btn"> Export .leaf </button>
+<!--             <button id="btn-view-assignment" class="btn"> Export .leaf </button> -->
 
             <div class="dropdown">
               <div class="btn">Font Size</div>
@@ -66,7 +68,6 @@
                 <button id="modeling-btn" class="red-btn btn">Model</button>
                 <div class="dropdown-toolbar">
                     <a id="model-cur-btn">From Current State</a>
-                    <a id="model-init-btn">From Initial State</a>
                 </div>
             </div>
 
@@ -88,6 +89,11 @@
 
         <div id="slider"></div>
         <span id="sliderValue"></span>
+
+		<input id="finalAssigneEpoch" type="hidden"/>
+		<input id="finalValueTimePoints" type="hidden"/>
+		<input id="elementList" type="hidden"/>
+		
 
         <script type="text/javascript">
             SVGElement.prototype.getTransformToElement = SVGElement.prototype.getTransformToElement || function(toElement) {
@@ -111,9 +117,10 @@
 
         <script src="./plugins/keyboard/keyboard.js"></script>
         <script src="./plugins/slider/nouislider.min.js"></script>
-        <script src="./plugins/chart/Chart.min.js"></script>
+        <!-- <script src="./plugins/chart/Chart.min.js"></script> -->
+        <script src="./plugins/chart/Chart.bundle.min.js"></script>
 
-        <script src="./objects.js"></script>
+        <script src="./scripts/objects.js"></script>
 
         <script src="./rappid-extensions/ElementInspector.js"></script>
         <script src="./rappid-extensions/LinkInspector.js"></script>
@@ -121,19 +128,36 @@
         <script src="./rappid-extensions/AnalysisInspector.js"></script>
         <script src="./rappid-extensions/joint.extensions.js"></script>
 
-        <script src="./main.js"></script>
-
+        <script src="./scripts/main.js"></script>
+        
+		<script src="./js/backendComm.js"></script>
+		<script src="./js/analysisComm.js"></script>
+		
+		<!-- OBJECTS to be sent to backend communication -->
+		<script src="./js/object/InputAnalysis.js"></script>
+		<script src="./js/object/InputModel.js"></script>
+		<!-- Model elements -->
+		<script src="./js/object/InputActor.js"></script>
+		<script src="./js/object/InputConstraint.js"></script>
+		<script src="./js/object/InputDynamic.js"></script>
+		<script src="./js/object/InputIntention.js"></script>
+		<script src="./js/object/InputLink.js"></script>
+		
+		<!-- Objects used in both ways communication -->
+		<script src="./js/object/IOIntention.js"></script>
+		<script src="./js/object/IOStatesModel.js"></script>
+		
         <div class = "attribution">
             <img src=http://upload.wikimedia.org/wikipedia/en/0/04/Utoronto_coa.svg style="width:25%;height:25%;float:left">
             <br>
-            Copyright 2015-2016.<br>University of Toronto<br>
+            Copyright 2015-2017.<br>University of Toronto<br>
             Department of Computer Science. <br>
             All rights reserved.<br>
             <br>
             Powered by: <br>
             <br>
-            <img src=http://jointjs.com/images/logo-transparent.png style="width:25%;height:25%;float:left">
-            Copyright 2014-2016.<br>client IO. All rights reserved.<br>
+            <img src="./jointjs.png" style="width:25%;height:25%;float:left">
+            Copyright 2014-2017.<br>client IO. All rights reserved.<br>
     		JointJS: an HTML 5 diagramming component.<br>
     		<a href=http://jointjs.com target="_blank">http://jointjs.com</a>
         </div>

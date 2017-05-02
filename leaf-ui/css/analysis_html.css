@@ -52,7 +52,7 @@ body {
    position: absolute;
    top: 40px;
    left: 201px;
-   right: 201px;
+   right: 10px;
    bottom: 0;
    overflow: hidden;
    background-color: hsla(220,11%,97%,.95);

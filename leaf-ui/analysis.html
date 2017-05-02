@@ -1,0 +1,129 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf8"/>
+
+        <title>Modelling Tool Prototype</title>
+
+        <link rel="stylesheet" type="text/css" href="./rappid/dist/joint.ui.stencil.css" />
+        <link rel="stylesheet" type="text/css" href="./rappid/dist/joint.ui.halo.css" />
+        <link rel="stylesheet" type="text/css" href="./rappid/dist/joint.ui.selectionView.css" />
+        <link rel="stylesheet" type="text/css" href="./rappid/dist/joint.ui.paperScroller.css" />
+
+        <link rel="stylesheet" type="text/css" href="./rappid/dist/rappid.min.css" />
+        <link rel="stylesheet" type="text/css" href="./plugins/slider/nouislider.min.css">
+
+        <link rel="stylesheet" type="text/css" href="./css/analysis_html.css" />
+
+		<style>
+		.pagination a {
+		    color: white;
+		    float: left;
+		    padding: 8px 16px;
+		    text-decoration: none;
+		    transition: background-color .3s;
+		}
+		
+		.pagination a.active {
+		    background-color: #4CAF50;
+		    color: white;
+		}
+		
+		.pagination a:hover:not(.active) {background-color: #ddd;}
+		</style>
+
+    </head>
+    <body>
+        <p id="name">BloomingLeaf</p>
+        <div class="toolbar">
+            <div id="model-toolbar">
+                <button id="btn-save" class="btn">Save</button>
+            </div>
+
+            <button id="btn-zoom-in" class="btn">Zoom In</button>
+            <button id="btn-zoom-out" class="btn">Zoom Out</button>
+
+            <button id="btn-save-leaf" class="btn"> Export .leaf </button>
+
+            <div class="dropdown">
+              <div class="btn">Font Size</div>
+              <div class="dropdown-toolbar">
+                <a id="btn-fnt">Default</a>
+                <a id="btn-fnt-up">Increase</a>
+                <a id="btn-fnt-down">Decrease</a>
+              </div>
+            </div>
+
+            <div class="dropdown">
+              <div class="btn">Help</div>
+              <div class="dropdown-toolbar">
+                <a onclick="window.open('documentation.pdf'); return false;">Documentation</a>
+                <a onclick="window.open('legend.html', 'newwindow', 'width=300, height=250'); return false;">
+                Legend</a>
+              </div>
+            </div>
+            
+        </div>
+
+        <div id="navigation" class="left-panel" style="background-color: #333;">
+        <br>
+        <label>Number of states</label>
+        <label id=num_states_lbl></label>
+        <label>Navigate</label>
+        	<input id="currentPage" type="hidden" value="">
+      		<div style="display: inline-block;">
+	      		<input id="requiredState" type="text" placeholder="Digit desired page" style="width: 180px; padding: 3px;"/>
+	      		<button onclick="goToState()" style="float:right; padding: 2px;">Go</button>
+			</div>
+				
+	        <div id="pagination" class="pagination" style="display:inline-block;">
+				
+			</div>
+        <label>Filters</label>
+        	   <input id="conflictFl" class="filter_checkbox" type="checkbox" onclick="add_filter()"><font color="white"> Remove conflicts</font><br>
+        	   <input id="ttFl" class="filter_checkbox" type="checkbox" onclick="add_filter()"><font color="white"> Remove (T,T)</font><br>
+        </div>
+
+        <div id="paper">
+        </div>
+        
+        <div id="slider"></div>
+        <span id="sliderValue"></span>
+        
+        <script type="text/javascript">
+            SVGElement.prototype.getTransformToElement = SVGElement.prototype.getTransformToElement || function(toElement) {
+            return toElement.getScreenCTM().inverse().multiply(this.getScreenCTM());
+        };
+        </script>
+
+        <script src="./rappid/lib/jquery/jquery.min.js"></script>
+        <script src="./rappid/lib/lodash/lodash.min.js"></script>
+        <script src="./rappid/lib/backbone/backbone-min.js"></script>
+
+        <script src="./rappid/dist/rappid.min.js"></script>
+
+        <script src="./rappid/dist/joint.ui.halo.js"></script>
+        <script src="./rappid/dist/joint.ui.clipboard.js"></script>
+        <script src="./rappid/dist/joint.ui.stencil.js"></script>
+        <script src="./rappid/dist/joint.ui.paperScroller.js"></script>
+        <script src="./rappid/dist/joint.ui.selectionView.js"></script>
+        <script src="./rappid/dist/joint.format.svg.js"></script>
+        <script src="./rappid/dist/joint.dia.command.js"></script>
+
+        <script src="./plugins/keyboard/keyboard.js"></script>
+        <script src="./plugins/slider/nouislider.min.js"></script>
+        <script src="./plugins/chart/Chart.bundle.min.js"></script>
+
+        <script src="./scripts/objects.js"></script>
+
+        <script src="./rappid-extensions/ElementInspector.js"></script>
+        <script src="./rappid-extensions/LinkInspector.js"></script>
+        <script src="./rappid-extensions/ConstraintsInspector.js"></script>
+        <script src="./rappid-extensions/AnalysisInspector.js"></script>
+        <script src="./rappid-extensions/joint.extensions.js"></script>
+
+        <script src="./scripts/analysis.js"></script>
+			
+    </body>
+</html>

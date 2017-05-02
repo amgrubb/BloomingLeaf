@@ -4,6 +4,10 @@ leaf-ui/rappid/*/*
 leaf-ui/rappid/*
 !leaf-ui/rappid/README-MISSING-RAPPID.md
 
+leaf-ui/cgi-bin/temp/*.out
+leaf-ui/cgi-bin/temp/output.*
+leaf-analysis/doc/*
+
 *.class
 
 # Mobile Tools for Java (J2ME)

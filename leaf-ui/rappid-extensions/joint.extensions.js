@@ -27,7 +27,9 @@ joint.shapes.basic.Intention = joint.shapes.basic.Generic.extend({
             // Navie: Changed the initial value of satvalue
             ".satvalue": {
               	'stroke': '#000000', 
-            	'stroke-width': 1,
+            	'stroke-width': 0.5,
+                'font-size': 12,
+                'text-anchor': 'middle',
             	'value': 'none'
             },
             ".funcvalue": {
@@ -60,7 +62,7 @@ joint.shapes.basic.Goal = joint.shapes.basic.Intention.extend({
                 fill: '#FFCC66',
             },
             ".satvalue": {
-            	'ref-x': '0.8',
+            	'ref-x': '0.75',
             	'ref-y': '0.75'
             },
             ".name": {
@@ -71,7 +73,7 @@ joint.shapes.basic.Goal = joint.shapes.basic.Intention.extend({
 });
 
 joint.shapes.basic.Task = joint.shapes.basic.Intention.extend({
-    markup: '<g class="rotatable"><g class="scalable"><path class="outer"/></g><path class="satvalue"/><text class="funcvalue"/><text class="name"/></g>',
+    markup: '<g class="rotatable"><g class="scalable"><path class="outer"/></g><text class="satvalue"/><text class="funcvalue"/><text class="name"/></g>',
     defaults: joint.util.deepSupplement({
         type: "basic.Task",
         attrs: {
@@ -84,7 +86,7 @@ joint.shapes.basic.Task = joint.shapes.basic.Intention.extend({
             },
             ".satvalue": {
             	'ref-y': '0.75',
-            	'ref-x': '0.75'
+            	'ref-x': '0.8',
             },
             ".funcvalue": {
             	'ref-y': '0.75',
@@ -98,7 +100,7 @@ joint.shapes.basic.Task = joint.shapes.basic.Intention.extend({
 });
 
 joint.shapes.basic.Softgoal = joint.shapes.basic.Intention.extend({
-    markup: '<g class="rotatable"><g class="scalable"><path class="outer"/></g><path class="satvalue"/><text class="funcvalue"/><text class="name"/></g>',
+    markup: '<g class="rotatable"><g class="scalable"><path class="outer"/></g><text class="satvalue"/><text class="funcvalue"/><text class="name"/></g>',
     defaults: joint.util.deepSupplement({
         type: "basic.Softgoal",
         attrs: {
@@ -108,8 +110,8 @@ joint.shapes.basic.Softgoal = joint.shapes.basic.Intention.extend({
                 fill: '#FF984F',
             },
             ".satvalue": {
-            	'ref-y': '0.7',
-            	'ref-x': '0.75'
+            	'ref-y': '0.75',
+            	'ref-x': '0.76'
             },
             ".funcvalue": {
             	'ref-y': '0.75',
@@ -131,7 +133,7 @@ joint.shapes.basic.Resource = joint.shapes.basic.Intention.extend({
                 fill: '#92C2FE',
             },
             ".satvalue": {
-            	transform: "translate(80, 40)",
+            	transform: "translate(80, 45)",
             },
             ".name": {
             	'text': 'Resource',
