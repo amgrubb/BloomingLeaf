@@ -158,6 +158,7 @@ public class TroposCSPAlgorithm {
     				this.functionEBCollection, this.spec.getInitialValueTimePoints()[lengthOfInitial - 1], lengthOfInitial - 1, this.minTimePoint);
     	else
     		initializePathDynamicFunctions();
+    	System.out.println("\nEnd of Init Procedure");
 	}	
 	
 
@@ -620,7 +621,7 @@ public class TroposCSPAlgorithm {
     			initializeNodeVariables(this.store, this.sat, this.values[i][t], element.getId() + "_" + t);
     			
     			// Initial initialValues.
-    			if ((t == 0) && (this.values[i].length == 1) && (!initialValues[i][t][0] && !initialValues[i][t][1] && !initialValues[i][t][2] && !initialValues[i][t][3]))
+    			if ((t == 0) && (initialValues[i].length == 1) && (!initialValues[i][t][0] && !initialValues[i][t][1] && !initialValues[i][t][2] && !initialValues[i][t][3]))
     				continue;
     			else if (t < initialValues[i].length){
     				this.constraints.add(new XeqC(this.values[i][t][0], boolToInt(initialValues[i][t][0])));
@@ -1235,7 +1236,7 @@ public class TroposCSPAlgorithm {
     			int numLinks = contributionElements.size();	
     			for (int t = 0; t < this.values[targetID].length; t++){
     				for (int i = 0; i < numLinks; i++) {
-    					int sourceID = contributionElements.get(i).getIdNum();
+    					int sourceID = contributionElements.get(i).getIdNum();    					
     					constraints.add(createForwardContributionConstraint(contributionTypes.get(i), this.values[sourceID][t], this.values[targetID][t]));
 /*						// Old Code before helper function.
     					if (contributionTypes.get(i) == ContributionType.PP){ 					//++ 
@@ -1523,53 +1524,55 @@ public class TroposCSPAlgorithm {
 //			this.sat.generate_implication(src[2], tgt[2]);
 //			this.sat.generate_implication(src[1], tgt[1]);
 //			this.sat.generate_implication(src[0], tgt[0]);
-			result = new And(new And(new Or(new XeqC(src[3], 0), new XeqC(src[3], 1)), new Or(new XeqC(src[2], 0), new XeqC(src[2], 1))), 
-					         new And(new Or(new XeqC(src[1], 0), new XeqC(src[1], 1)), new Or(new XeqC(src[0], 0), new XeqC(src[0], 1))));
+			result = new And(new And(new Or(new XeqC(src[3], 0), new XeqC(tgt[3], 1)), new Or(new XeqC(src[2], 0), new XeqC(tgt[2], 1))), 
+					         new And(new Or(new XeqC(src[1], 0), new XeqC(tgt[1], 1)), new Or(new XeqC(src[0], 0), new XeqC(tgt[0], 1))));
 		}else if (cType == ContributionType.P){				//+
 //			this.sat.generate_implication(src[2], tgt[2]);
 //			this.sat.generate_implication(src[1], tgt[1]);
-			result = new And(new Or(new XeqC(src[2], 0), new XeqC(src[2], 1)), new Or(new XeqC(src[1], 0), new XeqC(src[1], 1)));
+			result = new And(new Or(new XeqC(src[2], 0), new XeqC(tgt[2], 1)), new Or(new XeqC(src[1], 0), new XeqC(tgt[1], 1)));
 		}else if (cType == ContributionType.M){				//-
 //			this.sat.generate_implication(src[2], tgt[1]);
 //			this.sat.generate_implication(src[1], tgt[2]);
-			result = new And(new Or(new XeqC(src[2], 0), new XeqC(src[1], 1)), new Or(new XeqC(src[1], 0), new XeqC(src[2], 1)));
+			result = new And(new Or(new XeqC(src[2], 0), new XeqC(tgt[1], 1)), new Or(new XeqC(src[1], 0), new XeqC(tgt[2], 1)));
 		}else if (cType == ContributionType.MM){				//--
 //			this.sat.generate_implication(src[3], tgt[0]);	
 //			this.sat.generate_implication(src[2], tgt[1]);
 //			this.sat.generate_implication(src[1], tgt[2]);
 //			this.sat.generate_implication(src[0], tgt[3]);
-			result = new And(new And(new Or(new XeqC(src[3], 0), new XeqC(src[0], 1)), new Or(new XeqC(src[2], 0), new XeqC(src[1], 1))), 
-			                 new And(new Or(new XeqC(src[1], 0), new XeqC(src[2], 1)), new Or(new XeqC(src[0], 0), new XeqC(src[3], 1))));
+			result = new And(new And(new Or(new XeqC(src[3], 0), new XeqC(tgt[0], 1)), new Or(new XeqC(src[2], 0), new XeqC(tgt[1], 1))), 
+			                 new And(new Or(new XeqC(src[1], 0), new XeqC(tgt[2], 1)), new Or(new XeqC(src[0], 0), new XeqC(tgt[3], 1))));
 		}else if (cType == ContributionType.SPP){ 			//++S 
 //			this.sat.generate_implication(src[3], tgt[3]);
 //			this.sat.generate_implication(src[2], tgt[2]);
-			result = new And(new Or(new XeqC(src[3], 0), new XeqC(src[3], 1)), new Or(new XeqC(src[2], 0), new XeqC(src[2], 1)));
+			result = new And(new Or(new XeqC(src[3], 0), new XeqC(tgt[3], 1)), new Or(new XeqC(src[2], 0), new XeqC(tgt[2], 1)));
 		}else if (cType == ContributionType.SP){			//+S
 //			this.sat.generate_implication(src[2], tgt[2]);
-			result = new Or(new XeqC(src[2], 0), new XeqC(src[2], 1));
+			result = new Or(new XeqC(src[2], 0), new XeqC(tgt[2], 1));
 		}else if (cType == ContributionType.SM){			//-S
 //			this.sat.generate_implication(src[2], tgt[1]);
-			result = new Or(new XeqC(src[2], 0), new XeqC(src[1], 1));
+			result = new Or(new XeqC(src[2], 0), new XeqC(tgt[1], 1));
 		}else if (cType == ContributionType.SMM){			//--S
 //			this.sat.generate_implication(src[3], tgt[0]);	
 //			this.sat.generate_implication(src[2], tgt[1]);
-			result = new And(new Or(new XeqC(src[3], 0), new XeqC(src[0], 1)), new Or(new XeqC(src[2], 0), new XeqC(src[1], 1)));
+			result = new And(new Or(new XeqC(src[3], 0), new XeqC(tgt[0], 1)), new Or(new XeqC(src[2], 0), new XeqC(tgt[1], 1)));
 		}else if (cType == ContributionType.DPP){ 			//++D 
 //			this.sat.generate_implication(src[1], tgt[1]);
 //			this.sat.generate_implication(src[0], tgt[0]);
-			result = new And(new Or(new XeqC(src[1], 0), new XeqC(src[1], 1)), new Or(new XeqC(src[0], 0), new XeqC(src[0], 1)));
+			result = new And(new Or(new XeqC(src[1], 0), new XeqC(tgt[1], 1)), new Or(new XeqC(src[0], 0), new XeqC(tgt[0], 1)));
 		}else if (cType == ContributionType.DP){			//+D
 //			this.sat.generate_implication(src[1], tgt[1]);
-			result = new Or(new XeqC(src[1], 0), new XeqC(src[1], 1));
+			result = new Or(new XeqC(src[1], 0), new XeqC(tgt[1], 1));
 		}else if (cType == ContributionType.DM){			//-D
 //			this.sat.generate_implication(src[1], tgt[2]);
-			result = new Or(new XeqC(src[1], 0), new XeqC(src[2], 1));
+			result = new Or(new XeqC(src[1], 0), new XeqC(tgt[2], 1));
 		}else if (cType == ContributionType.DMM){			//--D
 //			this.sat.generate_implication(src[1], tgt[2]);
 //			this.sat.generate_implication(src[0], tgt[3]);
-			result = new And(new Or(new XeqC(src[1], 0), new XeqC(src[2], 1)), new Or(new XeqC(src[0], 0), new XeqC(src[3], 1)));
+			result = new And(new Or(new XeqC(src[1], 0), new XeqC(tgt[2], 1)), new Or(new XeqC(src[0], 0), new XeqC(tgt[3], 1)));
 		}else
 			System.out.println("ERROR: No rule for " + cType.toString() + " link type.");	
+		if (DEBUG)
+			System.out.println("Link: " + result.toString());
 		return result;
 	}
 	
