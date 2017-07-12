@@ -190,7 +190,7 @@ public class ModelSpecBuilder {
 			if(!frontendModel.getLinks().isEmpty()){
 				ArrayList<InputLink> allInputLinks = (ArrayList<InputLink>)frontendModel.getLinks();
 				
-				ArrayList<InputLink> decompositionLinks = new ArrayList<>();	// Temporary Place Holder to Collect Decomposition Links.
+				ArrayList<InputLink> allDecompositionLinks = new ArrayList<InputLink>();	// Temporary Place Holder to Collect Decomposition Links.
 				List<NotBothLink> notBothLink = new ArrayList<NotBothLink>();
 				List<Contribution> contribution = new ArrayList<Contribution>();
 				List<EvolvingContribution> evolvingContribution = new ArrayList<EvolvingContribution>();				
@@ -218,7 +218,7 @@ public class ModelSpecBuilder {
 		    				contribution.add(new Contribution(intentElementSrc, intentElementDest, ContributionType.getByCode(linkType)));
 		    				break;
 		    			case "AND": case "OR":
-		    				decompositionLinks.add(link);
+		    				allDecompositionLinks.add(link);
 		    				break;
 		    			default:
 		    				throw new IllegalArgumentException("Invalid relationship type: " + linkType);
@@ -243,7 +243,7 @@ public class ModelSpecBuilder {
 			    			}		    				
 		    				break;
 		    			case "AND": case "OR":
-		    				decompositionLinks.add(link);
+		    				allDecompositionLinks.add(link);
 		    				break;
 		    			case "NO":
 			    			switch (postType) {
@@ -253,7 +253,7 @@ public class ModelSpecBuilder {
 			    				evolvingContribution.add(new EvolvingContribution(intentElementSrc, intentElementDest, null, ContributionType.getByCode(postType)));
 			    				break;
 			    			case "AND": case "OR":
-			    				decompositionLinks.add(link);
+			    				allDecompositionLinks.add(link);
 			    				break;
 			    			default:
 			    				throw new IllegalArgumentException("Invalid relationship type: " + linkType);
@@ -269,51 +269,87 @@ public class ModelSpecBuilder {
 				modelSpec.setEvolvingContribution(evolvingContribution);
 				
 				// Converting Decomposition Links into singular decomposition links.
-				//List<Decomposition> decomposition = new ArrayList<Decomposition>();
-				//List<EvolvingDecomposition> evolvingDecomposition = new ArrayList<EvolvingDecomposition>();
+				List<Decomposition> decomposition = new ArrayList<Decomposition>();
+				List<EvolvingDecomposition> evolvingDecomposition = new ArrayList<EvolvingDecomposition>();
 
-		
-				
-				List<Decomposition> allDecomposition = new ArrayList<>();
-				while(allInputLinks.size()>0){
-					String linkDestId = allInputLinks.get(0).getLinkDestID();
-					ArrayList<InputLink> elementsToBeRemoved = new ArrayList<>();
-					ArrayList<IntentionalElement> intentElementSrc = new ArrayList<>();
-					IntentionalElement intentElementDest = getIntentionalElementById(linkDestId, modelSpec.getIntElements());
-					
-					//TODO: Fix evolving links.
-					//{"linkType":"AND","linkSrcID":"0000","linkDestID":"0002","postType":null},{"linkType":"NO","linkSrcID":"0001","linkDestID":"0002","postType":"AND"}
-					
-					DecompositionType decompType = DecompositionType.AND;
-					if(allInputLinks.get(0).getLinkType().equals(DecompositionType.AND)){
-						decompType = DecompositionType.AND;
-					}else if(allInputLinks.get(0).getLinkType().equals(DecompositionType.OR)){
-						decompType = DecompositionType.OR;
-					}else
-						System.err.println("Other Link Type found.");
-					
-
+				//List<Decomposition> allDecomposition = new ArrayList<>();
+				while(allDecompositionLinks.size() > 0){
+					String destID = allInputLinks.get(0).getLinkDestID();
+					IntentionalElement intentElementDest = getIntentionalElementById(destID, modelSpec.getIntElements());
+					ArrayList<InputLink> curDestLinks = new ArrayList<InputLink>();					
+					boolean evolve = false;
+					boolean andLink = false;
+					boolean orLink = false;
+					boolean andPost = false;
+					boolean orPost = false;
 					for(InputLink inputLink : allInputLinks){
-						if(linkDestId.equals(inputLink.getLinkDestID())){
-							intentElementSrc.add(getIntentionalElementById(inputLink.getLinkSrcID(), modelSpec.getIntElements()));
-							elementsToBeRemoved.add(inputLink);
+						if(destID.equals(inputLink.getLinkDestID())){							
+							curDestLinks.add(inputLink);
+							if(inputLink.getPostType() != null){
+								evolve = true;
+								if(inputLink.getPostType().equals("AND"))
+									andPost = true;
+								if(inputLink.getPostType().equals("OR"))
+									orPost = true;
+								
+							}
+							if(inputLink.getLinkType().equals("AND"))
+								andLink = true;
+							if(inputLink.getLinkType().equals("OR"))
+								orLink = true;
 						}
 					}
+					if(andLink && orLink)
+						throw new IllegalArgumentException("Invalid decomposition relationship type.");
 					
-					LinkableElement[] linkElementsArray = new LinkableElement[intentElementSrc.size()];
-					for(int i = 0; i < intentElementSrc.size(); i++){
-						linkElementsArray[i] = intentElementSrc.get(i);
+					LinkableElement[] linkElementsSrc = new LinkableElement[curDestLinks.size()];
+					for(int i = 0; i < curDestLinks.size(); i ++){
+						InputLink link = curDestLinks.get(i);
+						linkElementsSrc[i] = getIntentionalElementById(link.getLinkSrcID(), modelSpec.getIntElements());
 					}
-					
-					Decomposition decomposition1 = new Decomposition(linkElementsArray, intentElementDest, decompType);
-					allDecomposition.add(decomposition1);
-					
-					for(InputLink inputLink : elementsToBeRemoved){
-						allInputLinks.remove(inputLink);
+
+					if(!evolve){
+						DecompositionType dType = null;
+						if(andLink)
+							dType = DecompositionType.AND;
+						if(orLink)
+							dType = DecompositionType.OR;
+						decomposition.add(new Decomposition(linkElementsSrc, intentElementDest, dType));
 					}
-				}
+					else{
+						if(andPost && orPost)
+							throw new IllegalArgumentException("Invalid evolving decomposition relationship type.");
+
+						DecompositionType pre = null;
+						DecompositionType post = null;
+						if(andLink)
+							pre = DecompositionType.AND;
+						if(orLink)
+							post = DecompositionType.OR;
+						if(andPost)
+							pre = DecompositionType.AND;
+						if(orPost)
+							post = DecompositionType.OR;
+						evolvingDecomposition.add(new EvolvingDecomposition(linkElementsSrc, intentElementDest, pre, post));
+						for(InputLink iLink : curDestLinks){
+							if(pre != null && !iLink.getLinkType().equals(pre.getCode()))
+								throw new IllegalArgumentException("Relationships for ID: " + destID + " must be all the same types.");
+							if(post != null && !iLink.getPostType().equals(post.getCode()))
+								throw new IllegalArgumentException("Relationships for ID: " + destID + " must be all the same types.");
+							if(pre == null && !iLink.getLinkType().equals("NO"))
+								throw new IllegalArgumentException("Relationships for ID: " + destID + " must be all the same types.");
+							if(post == null && !iLink.getPostType().equals("NO"))
+								throw new IllegalArgumentException("Relationships for ID: " + destID + " must be all the same types.");
+						}
+						
+					}
+					for(InputLink inputLink : curDestLinks){
+						allDecompositionLinks.remove(inputLink);
+					}
 				
-				modelSpec.setDecomposition(allDecomposition);				
+				}
+				modelSpec.setDecomposition(decomposition);
+				modelSpec.setEvolvingDecomposition(evolvingDecomposition);
 			}
 			
 			//Getting constraints
