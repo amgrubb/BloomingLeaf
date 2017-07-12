@@ -163,10 +163,20 @@ public class ModelSpecBuilder {
 				for(InputDynamic dataDynamic : frontendModel.getDynamics()){
 					String intentionID = dataDynamic.getIntentionID();
 					String dynamicType = dataDynamic.getDynamicType();
+					
 					//TODO: Why is markedValue not used?
-//					String markedValue = dataDynamic.getMarkedValue();
-					// Should be this one: boolean[] dynamicFunctionMarkedValue = 
-							
+					// String markedValue = dataDynamic.getMarkedValue();
+					// Should be this one: 
+					boolean[] dynamicFunctionMarkedValue = new boolean[4];
+					char[] values = dataDynamic.getMarkedValue().toCharArray();
+						for(int i = 0; i < 4; i++){
+							if(values[i]=='1'){
+								dynamicFunctionMarkedValue[i] = true;
+							}else{
+								dynamicFunctionMarkedValue[i] = false;
+							}						
+						}						
+
 					String line = dataDynamic.getLine();
 					
 					for(IntentionalElement it : modelSpec.getIntElements()){
@@ -174,9 +184,9 @@ public class ModelSpecBuilder {
 			        		it.setDynamicType(IntentionalElementDynamicType.getByCode(dataDynamic.getDynamicType()));
 			        		if (dynamicType.equals("UD"))
 			        			it.setUserDefinedDynamicType(line, Integer.parseInt(analysis.getMaxAbsTime()));				        			
-//			        		else if (result.length > 3){
-//								it.setDynamicFunctionMarkedValue(Integer.parseInt(markedValue));
-//							}  
+			        		else 
+								it.setDynamicFunctionMarkedValue(dynamicFunctionMarkedValue);
+							
 			        	}
 			        }				
 				}

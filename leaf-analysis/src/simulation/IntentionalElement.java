@@ -14,7 +14,7 @@ public class IntentionalElement extends LinkableElement {
 	public IntentionalElementDynamicType dynamicType = IntentionalElementDynamicType.NT;
 	boolean userDefinedDynamicType = false;	
 	UDFunctionCSP cspUDFunct = null;
-	boolean[] dynamicFunctionMarkedValue = {false, false, true, true}; //TODO: Remove default value.
+	boolean[] dynamicFunctionMarkedValue; 
 	
 	public int getIdNum() {
 		return Integer.parseInt(id);
