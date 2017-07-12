@@ -62,7 +62,7 @@ public class TroposCSPAlgorithm {
     private IntVar nextTimePoint;							// Holds the single int value that will map to a value of nextTimePoints, to be solve by the solve if next state is used.
     private IntVar minTimePoint;									// Is assigned the minimum time of nextTimePoints.
     
-    private final static boolean DEBUG = true;								// Whether to print debug statements.
+    private final static boolean DEBUG = false;								// Whether to print debug statements.
     /* New in ModelSpec
      *     	private int relativeTimePoints = 4;
     		private int[] absoluteTimePoints = new int[] {5, 10, 15, 20};
@@ -158,7 +158,9 @@ public class TroposCSPAlgorithm {
     				this.functionEBCollection, this.spec.getInitialValueTimePoints()[lengthOfInitial - 1], lengthOfInitial - 1, this.minTimePoint);
     	else
     		initializePathDynamicFunctions();
-    	System.out.println("\nEnd of Init Procedure");
+    	
+    	if (DEBUG)
+    		System.out.println("\nEnd of Init Procedure");
 	}	
 	
 
@@ -1173,15 +1175,15 @@ public class TroposCSPAlgorithm {
     		// Step 1: Decomposition
     		// (a) Decomposition without Evolution
     		if (decompositionLink != null){
-    			IntentionalElement[] decompositionElements = (IntentionalElement[])decompositionLink.getSrc();
-    			int numLinks = decompositionElements.length;
-    			for (int t = 0; t < this.values[targetID].length; t++){
+    			LinkableElement[] linkEle = decompositionLink.getSrc();
+    			int numLinks = linkEle.length;
+       			for (int t = 0; t < this.values[targetID].length; t++){
     				BooleanVar[][] sourceValue = new BooleanVar[4][numLinks];
     				for (int s = 0; s < numLinks; s++){
-    					sourceValue[3][s] = this.values[decompositionElements[s].getIdNum()][t][3];
-    					sourceValue[2][s] = this.values[decompositionElements[s].getIdNum()][t][2];
-    					sourceValue[1][s] = this.values[decompositionElements[s].getIdNum()][t][1];
-    					sourceValue[0][s] = this.values[decompositionElements[s].getIdNum()][t][0];
+    					sourceValue[3][s] = this.values[linkEle[s].getIdNum()][t][3];
+    					sourceValue[2][s] = this.values[linkEle[s].getIdNum()][t][2];
+    					sourceValue[1][s] = this.values[linkEle[s].getIdNum()][t][1];
+    					sourceValue[0][s] = this.values[linkEle[s].getIdNum()][t][0];
     				}
     				if (decompositionLink.getDecomposition() == DecompositionType.AND){	//And Rules
     					constraints.add(new AndBool(sourceValue[3], this.values[targetID][t][3]));
@@ -1197,18 +1199,18 @@ public class TroposCSPAlgorithm {
     			}
     		// (b) Evolving Decomposition
     		}else if (eDecompositionLink != null){
-    			IntentionalElement[] decompositionElements = (IntentionalElement[])eDecompositionLink.getSrc();
-    			int numLinks = decompositionElements.length;
+    			LinkableElement[] linkEle = eDecompositionLink.getSrc();
+    			int numLinks = linkEle.length;
     			DecompositionType pre = eDecompositionLink.getPreDecomposition();
     			DecompositionType post = eDecompositionLink.getPostDecomposition();
     			IntVar dempEB = this.decompEBCollection.get(eDecompositionLink);
     			for (int t = 0; t < this.values[targetID].length; t++){
     				BooleanVar[][] sourceValue = new BooleanVar[4][numLinks];
     				for (int s = 0; s < numLinks; s++){
-    					sourceValue[3][s] = this.values[decompositionElements[s].getIdNum()][t][3];
-    					sourceValue[2][s] = this.values[decompositionElements[s].getIdNum()][t][2];
-    					sourceValue[1][s] = this.values[decompositionElements[s].getIdNum()][t][1];
-    					sourceValue[0][s] = this.values[decompositionElements[s].getIdNum()][t][0];
+    					sourceValue[3][s] = this.values[linkEle[s].getIdNum()][t][3];
+    					sourceValue[2][s] = this.values[linkEle[s].getIdNum()][t][2];
+    					sourceValue[1][s] = this.values[linkEle[s].getIdNum()][t][1];
+    					sourceValue[0][s] = this.values[linkEle[s].getIdNum()][t][0];
     				}
           			
     				PrimitiveConstraint andC = new And(new And(new AndBool(sourceValue[3], this.values[targetID][t][3]), 
@@ -1329,14 +1331,14 @@ public class TroposCSPAlgorithm {
     			ArrayList<PrimitiveConstraint> FDConstaints = new ArrayList<PrimitiveConstraint>();
 
     			if (decompositionLink != null){
-    				IntentionalElement[] decompositionElements = (IntentionalElement[])decompositionLink.getSrc();
-    				int numLinks = decompositionElements.length;
+        			LinkableElement[] linkEle = decompositionLink.getSrc();
+        			int numLinks = linkEle.length;
     				PrimitiveConstraint[][] sourceValue = new PrimitiveConstraint[4][numLinks];
     				for (int s = 0; s < numLinks; s++){
-    					sourceValue[3][s] = new XeqC(this.values[decompositionElements[s].getIdNum()][t][3], 1);
-    					sourceValue[2][s] = new XeqC(this.values[decompositionElements[s].getIdNum()][t][2], 1);
-    					sourceValue[1][s] = new XeqC(this.values[decompositionElements[s].getIdNum()][t][1], 1);
-    					sourceValue[0][s] = new XeqC(this.values[decompositionElements[s].getIdNum()][t][0], 1);
+    					sourceValue[3][s] = new XeqC(this.values[linkEle[s].getIdNum()][t][3], 1);
+    					sourceValue[2][s] = new XeqC(this.values[linkEle[s].getIdNum()][t][2], 1);
+    					sourceValue[1][s] = new XeqC(this.values[linkEle[s].getIdNum()][t][1], 1);
+    					sourceValue[0][s] = new XeqC(this.values[linkEle[s].getIdNum()][t][0], 1);
     				}
     				if (decompositionLink.getDecomposition() == DecompositionType.AND){	//And Rules
         				FSConstaints.add(new And(sourceValue[3]));
@@ -1351,17 +1353,17 @@ public class TroposCSPAlgorithm {
     				}
     			}else if (eDecompositionLink != null){
     				// Evolving Decomposition
-    				IntentionalElement[] decompositionElements = (IntentionalElement[])eDecompositionLink.getSrc();
-    				int numLinks = decompositionElements.length;
+        			LinkableElement[] linkEle = eDecompositionLink.getSrc();
+        			int numLinks = linkEle.length;
     				DecompositionType pre = eDecompositionLink.getPreDecomposition();
     				DecompositionType post = eDecompositionLink.getPostDecomposition();
     				IntVar dempEB = this.decompEBCollection.get(eDecompositionLink);
     				PrimitiveConstraint[][] sourceValue = new PrimitiveConstraint[4][numLinks];
     				for (int s = 0; s < numLinks; s++){
-    					sourceValue[3][s] = new XeqC(this.values[decompositionElements[s].getIdNum()][t][3], 1);
-    					sourceValue[2][s] = new XeqC(this.values[decompositionElements[s].getIdNum()][t][2], 1);
-    					sourceValue[1][s] = new XeqC(this.values[decompositionElements[s].getIdNum()][t][1], 1);
-    					sourceValue[0][s] = new XeqC(this.values[decompositionElements[s].getIdNum()][t][0], 1);
+    					sourceValue[3][s] = new XeqC(this.values[linkEle[s].getIdNum()][t][3], 1);
+    					sourceValue[2][s] = new XeqC(this.values[linkEle[s].getIdNum()][t][2], 1);
+    					sourceValue[1][s] = new XeqC(this.values[linkEle[s].getIdNum()][t][1], 1);
+    					sourceValue[0][s] = new XeqC(this.values[linkEle[s].getIdNum()][t][0], 1);
     				}
     				if (pre == DecompositionType.AND && post == DecompositionType.OR){
     					//constraints.add(new IfThenElse(new XgtY(dempEB, this.timePoints[t]), andC, orC));
@@ -2187,7 +2189,8 @@ public class TroposCSPAlgorithm {
 				this.saveAllSolution(label);				
 			}else{
 				int[] timeOrder = this.createTimePointOrder();
-				this.printSingleSolution(timeOrder);
+				if (DEBUG)
+					this.printSingleSolution(timeOrder);
 				this.saveSingleSolution(timeOrder);
 			}
 			return true;

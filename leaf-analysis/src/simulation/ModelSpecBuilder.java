@@ -3,11 +3,6 @@ package simulation;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import org.jacop.constraints.In;
-
-import com.sun.jndi.url.dns.dnsURLContext;
-
 import interface_objects.IOIntention;
 import interface_objects.IOStateModel;
 import interface_objects.InputActor;
@@ -163,10 +158,17 @@ public class ModelSpecBuilder {
 				for(InputDynamic dataDynamic : frontendModel.getDynamics()){
 					String intentionID = dataDynamic.getIntentionID();
 					String dynamicType = dataDynamic.getDynamicType();
-					//TODO: Why is markedValue not used?
-//					String markedValue = dataDynamic.getMarkedValue();
-					// Should be this one: boolean[] dynamicFunctionMarkedValue = 
-							
+
+					boolean[] dynamicFunctionMarkedValue = new boolean[4];
+					char[] values = dataDynamic.getMarkedValue().toCharArray();
+						for(int i = 0; i < 4; i++){
+							if(values[i]=='1'){
+								dynamicFunctionMarkedValue[i] = true;
+							}else{
+								dynamicFunctionMarkedValue[i] = false;
+							}						
+						}						
+
 					String line = dataDynamic.getLine();
 					
 					for(IntentionalElement it : modelSpec.getIntElements()){
@@ -174,9 +176,9 @@ public class ModelSpecBuilder {
 			        		it.setDynamicType(IntentionalElementDynamicType.getByCode(dataDynamic.getDynamicType()));
 			        		if (dynamicType.equals("UD"))
 			        			it.setUserDefinedDynamicType(line, Integer.parseInt(analysis.getMaxAbsTime()));				        			
-//			        		else if (result.length > 3){
-//								it.setDynamicFunctionMarkedValue(Integer.parseInt(markedValue));
-//							}  
+			        		else 
+								it.setDynamicFunctionMarkedValue(dynamicFunctionMarkedValue);
+							
 			        	}
 			        }				
 				}
@@ -191,13 +193,19 @@ public class ModelSpecBuilder {
 					ArrayList<InputLink> elementsToBeRemoved = new ArrayList<>();
 					ArrayList<IntentionalElement> intentElementSrc = new ArrayList<>();
 					IntentionalElement intentElementDest = getIntentionalElementById(linkDestId, modelSpec.getIntElements());
-					DecompositionType decompType = DecompositionType.AND;
 					
+					//TODO: Fix evolving links.
+					//{"linkType":"AND","linkSrcID":"0000","linkDestID":"0002","postType":null},{"linkType":"NO","linkSrcID":"0001","linkDestID":"0002","postType":"AND"}
+					
+					DecompositionType decompType = DecompositionType.AND;
 					if(allInputLinks.get(0).getLinkType().equals(DecompositionType.AND)){
 						decompType = DecompositionType.AND;
 					}else if(allInputLinks.get(0).getLinkType().equals(DecompositionType.OR)){
 						decompType = DecompositionType.OR;
-					}
+					}else
+						System.err.println("Other Link Type found.");
+					//TODO: Add Contribution Links and Evolving Links.
+					
 
 					for(InputLink inputLink : allInputLinks){
 						if(linkDestId.equals(inputLink.getLinkDestID())){

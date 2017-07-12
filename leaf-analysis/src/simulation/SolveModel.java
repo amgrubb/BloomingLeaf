@@ -5,7 +5,6 @@ import java.io.FileReader;
 import java.io.PrintWriter;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import interface_objects.InputObject;
 import interface_objects.OutputModel;
@@ -29,8 +28,8 @@ public class SolveModel {
 	public static void main(String[] args) {
 
 		//This is the default filePath to be executed if no file is pass through parameters
-		String filePath = "stored-models/";			
-		String inputFile = "input3.json";
+		String filePath = "temp/"; //"stored-models/";			
+		String inputFile = "default.json";
 		String outputFile = "output.out";
 				
 		try {

@@ -92,22 +92,24 @@ var AnalysisInspector = Backbone.View.extend({
 		this.$('#btn-csp-history').css("background","gray");
 		this.$('#btn-csp-history').css("box-shadow","none");
 	},
+	// Function called by Solve Single Button. Gets data for backend.
 	solveSinglePath: function(){
 		var analysis = new AnalysisObject();
 		var js_object = {};
 		AO_btnSolveSinglePath(analysis);
 		js_object.analysis = AO_getValues(analysis);
 		js_object.model = getFrontendModel(true);
-		
+
 		if(js_object.model == null){
 			return null;
 		}
-			
+
 		console.log(JSON.stringify(js_object));
 		//Send data to backend
 		backendComm(js_object);
-		
+
 	},
+	// Function called by get Next States Button. Gets data for backend.
 	getNextStates: function(){
 		var analysis = new AnalysisObject();
 		var js_object = {};
@@ -115,12 +117,12 @@ var AnalysisInspector = Backbone.View.extend({
 		analysis.currentState = $('#sliderValue').text();
 		js_object.analysis = AO_getValues(analysis);
 		js_object.model = getFrontendModel(false);
-		
-		
+
+
 		if(js_object.model == null){
 			return null;
 		}
-		
+
 		console.log(JSON.stringify(js_object));
 		//Send data to backend
 		backendComm(js_object);
@@ -235,8 +237,8 @@ var AnalysisInspector = Backbone.View.extend({
 				}
 				assigned_time = cell.attr('.assigned_time')[0];
 
-				$('#node-list').append('<tr><td>' + 'A' + '</td><td>' + func + '</td><td>' + name + 
-					'</td><td><input type="text" name="sth" value="' + assigned_time + '"></td>' + btn_html + 
+				$('#node-list').append('<tr><td>' + 'A' + '</td><td>' + func + '</td><td>' + name +
+					'</td><td><input type="text" name="sth" value="' + assigned_time + '"></td>' + btn_html +
 					'<input type="hidden" name="id" value="' + cell.id + '"> </td> </tr>');
 
 			}
@@ -266,8 +268,8 @@ var AnalysisInspector = Backbone.View.extend({
 					k ++;
 				}
 				for (var j = 0; j < fun_len; j++){
-					$('#node-list').append('<tr><td>' + current_something + '</td><td>' + func + '</td><td>' + name + 
-						'</td><td><input type="text" name="sth" value=' +assigned_time[j] + '></td>' + btn_html + 
+					$('#node-list').append('<tr><td>' + current_something + '</td><td>' + func + '</td><td>' + name +
+						'</td><td><input type="text" name="sth" value=' +assigned_time[j] + '></td>' + btn_html +
 						'<input type="hidden" name="id" value="' + cell.id + '_' + j + '"> </td> </tr>');
 					current_something = String.fromCharCode(current_something.charCodeAt(0) + 1);
 				}
@@ -298,13 +300,13 @@ var AnalysisInspector = Backbone.View.extend({
 				}
 				if (link_type == 'NBD' || link_type == 'NBT' || link_type.indexOf('|') > -1){
 					$('#link-list').append('<tr><td>' + link_type + '</td><td>' + source_name + '</td><td>' + target_name +
-						'</td><td><input type="text" name="sth" value=' +assigned_time[0] + '></td>' + btn_html + 
+						'</td><td><input type="text" name="sth" value=' +assigned_time[0] + '></td>' + btn_html +
 						'<input type="hidden" name="id" value="' + link.id + '"> </td> </tr>'+ '</tr>');
 				}
 				console.log(link.id);
 			}
 
-		}		
+		}
 
 
 	},
@@ -360,7 +362,7 @@ var AnalysisInspector = Backbone.View.extend({
 				}
 
 			}
-			
+
 			link.attr('.assigned_time')[0] = new_time;
 
 
@@ -378,9 +380,9 @@ var AnalysisInspector = Backbone.View.extend({
 		var js_object = {};
 		js_object.analysis = AO_getValues(analysis);
 		js_object.model = getFrontendModel();
-		
+
 		backendComm(js_object);
-		
+
 /*		var max_abs_time = $('#max-abs-time').val();
 		var conflict_level = $('#conflict-level').val();
 		var num_rel_time = $('#num-rel-time').val();
@@ -407,7 +409,7 @@ var AnalysisInspector = Backbone.View.extend({
 		var source_node = link.get("source");
 		var target_node = link.get("target");*/
 
-		
+
 		/*console.log(max_abs_time);
 		console.log(conflict_level);
 		console.log(num_rel_time);

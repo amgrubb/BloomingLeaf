@@ -62,17 +62,17 @@ function getFrontendModel(isSinglePath = true){
 	graphObject.elementsBeforeAnalysis = elements;
 
 	var data_actors = [];
-	
+
 	//ACTORS
 	for (var a = 0; a < actors.length; a++){
 		var actorId = a.toString();
-		
+
 		while (actorId.length < 3){ actorId = "0" + actorId;}
 		actorId = "a" + actorId;
 		actors[a].prop("elementid", actorId);
 
 		var io_Actor = new InputActor(actorId, actors[a].attr(".name/text"), (actors[a].prop("actortype") || "A"));
-			
+
 		data_actors.push(io_Actor);
 	}
 
@@ -81,10 +81,10 @@ function getFrontendModel(isSinglePath = true){
 	// conversion between values used in Element Inspector with values used in backend
 	var satValueDict = {
 		"unknown": "0000",
-		"satisfied": "1100",
-		"partiallysatisfied": "0100",
-		"partiallydenied": "0010",
-		"denied": "0011",
+		"satisfied": "0011",
+		"partiallysatisfied": "0010",
+		"partiallydenied": "0100",
+		"denied": "1100",
 		"none": "0000"
 	}
 
@@ -98,14 +98,13 @@ function getFrontendModel(isSinglePath = true){
 				(initValue == "(PS, FD)") ||
 				(initValue == "(FS, PD)") ||
 				(initValue == "(FS, FD)") ){
-			
-				alert("The initial values must not be conflictant");
+						alert("The initial values must not be conflictant");
 				return null;
 			}
-		}		
+		}
 	}
-	
-	
+
+
 	for (var e = 0; e < elements.length; e++){
 		var elementID = e.toString();
 		while (elementID.length < 4){ elementID = "0" + elementID;}
@@ -115,7 +114,7 @@ function getFrontendModel(isSinglePath = true){
 		if (elements[e].get("parent")){
 			actorid = (graph.getCell(elements[e].get("parent")).prop("elementid") || "-");
 		}
-		
+
 	  var type_e;
 		if (elements[e] instanceof joint.shapes.basic.Goal)
 			type_e = "G";
@@ -130,11 +129,11 @@ function getFrontendModel(isSinglePath = true){
 
 	  	var v = elements[e].attr(".satvalue/value")
 	  	if($.isNumeric(v)){
-			var io_intention = new InputIntention(actorid, elementID, type_e, v, elements[e].attr(".name/text").replace(/\n/g, " "));	  		
+			var io_intention = new InputIntention(actorid, elementID, type_e, v, elements[e].attr(".name/text").replace(/\n/g, " "));
 	  	}else{
 			var io_intention = new InputIntention(actorid, elementID, type_e, satValueDict[v], elements[e].attr(".name/text").replace(/\n/g, " "));
 	  	}
-			
+
 		data_intentions.push(io_intention);
 	}
 
@@ -152,20 +151,20 @@ function getFrontendModel(isSinglePath = true){
 			target = graph.getCell(current.get("target").id).prop("elementid");
 
 		var io_link;
-		
+
 		if (relationship.indexOf("|") > -1){
 			evolvRelationships = relationship.replace(/\s/g, '').split("|");
 			io_link = new InputLink(evolvRelationships[0], source, target, evolvRelationships[1]);
 		}else{
 			io_link = new InputLink(relationship, source, target);
-		}		
-		
+		}
+
 		data_links.push(io_link);
 	}
 
 	//DYNAMICS
 	var data_dynamics = [];
-	
+
 	for (var e = 0; e < elements.length; e++){
 	    var elementID = elements[e].prop("elementid");
 
@@ -174,16 +173,19 @@ function getFrontendModel(isSinglePath = true){
 	    var funcTypeVal = elements[e].attr(".constraints/lastval");
 	    var initValue = elements[e].attributes.attrs[".satvalue"].value;
 	    if (isNaN(parseInt(initValue))){
-			initValue = satValueDict[initValue];
-		}
-	    
+			initValue = satValueDict[initValue];		 
+			}
+			if (isNaN(parseInt(funcTypeVal))){
+			funcTypeVal = satValueDict[funcTypeVal];
+			}
+
 	    var io_dynamic;
-	    if  (f == ""){		    	
+	    if  (f == ""){
     		io_dynamic = new InputDynamic(elementID, "NT", initValue);
 	    }else if(f == " "){
-    		io_dynamic = new InputDynamic(elementID, "NT", initValue);	    	
+    		io_dynamic = new InputDynamic(elementID, "NT", initValue);
 	    }else if (f != "UD"){
-    		io_dynamic = new InputDynamic(elementID, f, initValue);
+    		io_dynamic = new InputDynamic(elementID, f, funcTypeVal);		//Passing Dynamic Values
     		// user defined constraints
 	    }else{
 	    	var line = "";
@@ -212,16 +214,16 @@ function getFrontendModel(isSinglePath = true){
 			}else{
 				line += "\tN";
 			}
-			io_dynamic = new InputDynamic(elementID, f, initValue, line);	
+			io_dynamic = new InputDynamic(elementID, f, initValue, line);
 	    }
-	    
+
 	    data_dynamics.push(io_dynamic);
-	   
+
 	}
 
 	//CONSTRAINTS
 	var data_constraints = [];
-	
+
 	for (var e = 0; e < savedConstraints.length; e++){
 		var c = savedConstraints[e];
 		var type = c.attributes.labels[0].attrs.text.text.replace(/\s/g, '');
@@ -231,30 +233,30 @@ function getFrontendModel(isSinglePath = true){
 		var targetVar = c.attr('.constraintvar/tar');
 
 		var io_constraint = new InputConstraint(
-				type, 
-				source, 
-				sourceVar, 
-				null, 
-				target, 
+				type,
+				source,
+				sourceVar,
+				null,
+				target,
 				targetVar);
-		
+
 		data_constraints.push(io_constraint);
 	}
-	
+
 	//INITIAL VALUES
 	// [time][intentions][value]
-	var time = 1; 
+	var time = 1;
 
 	var allStatesModel = [];
-	
+
 	for(var i_time = 0; i_time < time; i_time++){
 		var stateModel = new StatesModel();
 		stateModel.time = i_time;
-		
+
 		for(var i_intention = 0; i_intention < data_intentions.length; i_intention++){
 			var intentionalElement = new IntentionElement();
 			intentionalElement.id = data_intentions[i_intention].nodeID;
-			intentionalElement.status.push(data_intentions[i_intention].initialValue);								
+			intentionalElement.status.push(data_intentions[i_intention].initialValue);
 			stateModel.intentionElements.push(intentionalElement);
 		}
 		allStatesModel.push(stateModel);
@@ -268,6 +270,6 @@ function getFrontendModel(isSinglePath = true){
 			data_constraints,
 			allStatesModel
 		)
-	
-	return frontendModel;	
+
+	return frontendModel;
 }

@@ -355,9 +355,9 @@ function loadAnalysis(analysisResults){
 	$('#num-rel-time').val(analysisResults.relativeTimePoints);
 	if(analysisResults.absoluteTimePoints){
 		var absTimePoints = analysisResults.absoluteTimePoints.toString();
-		$('#abs-time-pts').val(absTimePoints.replace(",", " "));		
+		$('#abs-time-pts').val(absTimePoints.replace(",", " "));
 	}
-	
+
 	elementList = analysisResults.elementList;
 	updateSlider(currentAnalysis, false);
 }
@@ -399,12 +399,12 @@ function loadAnalysis(analysisResults){
 // Slider creation and update
 function updateSlider(currentAnalysis, pastAnalysisStep){
 	var analysisMarkers;
-	
+
 	if(!sliderObject.sliderElement){
 		sliderObject.sliderElement = document.getElementById('slider');
 		sliderObject.sliderValueElement = document.getElementById('sliderValue');
 	}
-		
+
 	// First create slider
 	if(!sliderObject.sliderElement.hasOwnProperty('noUiSlider')){
 		var currentValueLimit = 0;
@@ -482,7 +482,7 @@ function updateSlider(currentAnalysis, pastAnalysisStep){
 		}
 		});
 	}
-	
+
 
 	sliderObject.sliderElement.noUiSlider.on('update', function( values, handle ) {
 		//Set slidable range based on previous analysis
@@ -545,29 +545,29 @@ function updateValues(c, v, m){
 
 	//Update images for properties
 	// Navie: Changed satvalue from path to text
-	if ((value == "1000") || (value == "1100")) {
+	if ((value == "0001") || (value == "0011")) {
 	  cell.attr(".satvalue/text", "(FS, T)");
 	  cell.attr({text:{fill:'black'}});
-	}else if(value == "0100") {
+	}else if(value == "0010") {
 	  cell.attr(".satvalue/text", "(PS, T)");
 	  cell.attr({text:{fill:'black'}});
-	}else if ((value == "0001") || (value == "0011")){
+	}else if ((value == "1000") || (value == "1100")){
 	  cell.attr(".satvalue/text", "(T, FD)");
 	  cell.attr({text:{fill:'black'}});
-	}else if (value == "0010") {
+	}else if (value == "0100") {
 	  cell.attr(".satvalue/text", "(T, PD)");
 	  cell.attr({text:{fill:'black'}});
 	}else if (value == "0110") {
 		  cell.attr(".satvalue/text", "(PS, PD)");
 		  cell.attr({text:{fill:'red'}});
-	}else if ((value == "0111") || (value == "0101")){
+	}else if ((value == "1110") || (value == "1010")){
 		  cell.attr(".satvalue/text", "(PS, FD)");
 		  cell.attr({text:{fill:'red'}});
-	}else if ((value == "1110") || (value == "1010")){
+	}else if ((value == "0111") || (value == "0101")){
 		  cell.attr(".satvalue/text", "(FS, PD)");
 		  cell.attr({text:{fill:'red'}});
 	}else if ((value == "1111") || (value == "1001") || (value == "1101") || (value == "1011") ){
-		  cell.attr(".satvalue/text", "(FS, FD)"); 
+		  cell.attr(".satvalue/text", "(FS, FD)");
 		  cell.attr({text:{fill:'red'}});
 	}else if (value == "0000") {
 	      cell.attr(".satvalue/text", "(T,T)");
@@ -575,11 +575,11 @@ function updateValues(c, v, m){
 	}else {
 	  cell.removeAttr(".satvalue/d");
 	}
-	
+
 //	//Update images for properties
 //	// Navie: Changed satvalue from path to text
 //	if (value == "satisfied"){
-//	  // cell.attr({ '.satvalue': {'d': 'M 0 10 L 5 20 L 20 0 L 5 20 L 0 10', 'stroke': '#00FF00', 'stroke-width':4}});      
+//	  // cell.attr({ '.satvalue': {'d': 'M 0 10 L 5 20 L 20 0 L 5 20 L 0 10', 'stroke': '#00FF00', 'stroke-width':4}});
 //	  cell.attr(".satvalue/text", "(FS, T)");
 //	}else if(value == "partiallysatisfied") {
 //	  // cell.attr({ '.satvalue': {'d': 'M 0 8 L 5 18 L 20 0 L 5 18 L 0 8 M 17 30 L 17 15 C 17 15 30 17 18 23', 'stroke': '#00FF00', 'stroke-width':3, 'fill': 'transparent'}});
