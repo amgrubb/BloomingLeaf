@@ -3,6 +3,8 @@ package simulation;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ListIterator;
+
 import interface_objects.IOIntention;
 import interface_objects.IOStateModel;
 import interface_objects.InputActor;
@@ -186,7 +188,92 @@ public class ModelSpecBuilder {
 			
 			//Getting links
 			if(!frontendModel.getLinks().isEmpty()){
-				ArrayList<InputLink> allInputLinks = (ArrayList<InputLink>) frontendModel.getLinks();
+				ArrayList<InputLink> allInputLinks = (ArrayList<InputLink>)frontendModel.getLinks();
+				
+				ArrayList<InputLink> decompositionLinks = new ArrayList<>();	// Temporary Place Holder to Collect Decomposition Links.
+				List<NotBothLink> notBothLink = new ArrayList<NotBothLink>();
+				List<Contribution> contribution = new ArrayList<Contribution>();
+				List<EvolvingContribution> evolvingContribution = new ArrayList<EvolvingContribution>();				
+		    	
+				for(ListIterator<InputLink> lk = allInputLinks.listIterator(); lk.hasNext(); ){		
+		    		InputLink link = lk.next();
+		    		String linkType = link.getLinkType();
+		    		String linkSrcID = link.getLinkSrcID();
+		    		String linkDestID = link.getLinkDestID();
+		    		String postType = link.getPostType();
+		    		IntentionalElement intentElementSrc = getIntentionalElementById(linkSrcID, modelSpec.getIntElements());
+		    		IntentionalElement intentElementDest = getIntentionalElementById(linkDestID, modelSpec.getIntElements());
+		    		if (postType == null){
+		    			// Not Evolving Link
+		    			switch (linkType) {
+		    			case "NBT":
+		    				notBothLink.add(new NotBothLink(intentElementSrc, intentElementDest, false));
+		    				break;
+		    			case "NBD":
+		    				notBothLink.add(new NotBothLink(intentElementSrc, intentElementDest, true));
+		    				break;
+		    			case "++":  case "+":  case "-":  case "--":
+		    			case "++S": case "+S": case "-S": case "--S":
+		    			case "++D": case "+D": case "-D": case "--D":
+		    				contribution.add(new Contribution(intentElementSrc, intentElementDest, ContributionType.getByCode(linkType)));
+		    				break;
+		    			case "AND": case "OR":
+		    				decompositionLinks.add(link);
+		    				break;
+		    			default:
+		    				throw new IllegalArgumentException("Invalid relationship type: " + linkType);
+		    			}
+		    		}else{
+		    			// Evolving Link
+		    			switch (linkType) {
+		    			case "++":  case "+":  case "-":  case "--":
+		    			case "++S": case "+S": case "-S": case "--S":
+		    			case "++D": case "+D": case "-D": case "--D":
+			    			switch (postType) {
+			    			case "NO":
+			    				evolvingContribution.add(new EvolvingContribution(intentElementSrc, intentElementDest, ContributionType.getByCode(linkType), null));
+			    				break;
+			    			case "++":  case "+":  case "-":  case "--":
+			    			case "++S": case "+S": case "-S": case "--S":
+			    			case "++D": case "+D": case "-D": case "--D":
+			    				evolvingContribution.add(new EvolvingContribution(intentElementSrc, intentElementDest, ContributionType.getByCode(linkType), ContributionType.getByCode(postType)));
+			    				break;
+			    			default:
+			    				throw new IllegalArgumentException("Invalid relationship type: " + linkType);
+			    			}		    				
+		    				break;
+		    			case "AND": case "OR":
+		    				decompositionLinks.add(link);
+		    				break;
+		    			case "NO":
+			    			switch (postType) {
+			    			case "++":  case "+":  case "-":  case "--":
+			    			case "++S": case "+S": case "-S": case "--S":
+			    			case "++D": case "+D": case "-D": case "--D":
+			    				evolvingContribution.add(new EvolvingContribution(intentElementSrc, intentElementDest, null, ContributionType.getByCode(postType)));
+			    				break;
+			    			case "AND": case "OR":
+			    				decompositionLinks.add(link);
+			    				break;
+			    			default:
+			    				throw new IllegalArgumentException("Invalid relationship type: " + linkType);
+			    			}		    				
+		    			default:
+		    				throw new IllegalArgumentException("Invalid relationship type: " + linkType);
+		    			}
+		    		}
+				}
+				
+				modelSpec.setContribution(contribution);
+				modelSpec.setNotBothLink(notBothLink);
+				modelSpec.setEvolvingContribution(evolvingContribution);
+				
+				// Converting Decomposition Links into singular decomposition links.
+				//List<Decomposition> decomposition = new ArrayList<Decomposition>();
+				//List<EvolvingDecomposition> evolvingDecomposition = new ArrayList<EvolvingDecomposition>();
+
+		
+				
 				List<Decomposition> allDecomposition = new ArrayList<>();
 				while(allInputLinks.size()>0){
 					String linkDestId = allInputLinks.get(0).getLinkDestID();
@@ -204,7 +291,6 @@ public class ModelSpecBuilder {
 						decompType = DecompositionType.OR;
 					}else
 						System.err.println("Other Link Type found.");
-					//TODO: Add Contribution Links and Evolving Links.
 					
 
 					for(InputLink inputLink : allInputLinks){
@@ -219,8 +305,8 @@ public class ModelSpecBuilder {
 						linkElementsArray[i] = intentElementSrc.get(i);
 					}
 					
-					Decomposition decomposition = new Decomposition(linkElementsArray, intentElementDest, decompType);
-					allDecomposition.add(decomposition);
+					Decomposition decomposition1 = new Decomposition(linkElementsArray, intentElementDest, decompType);
+					allDecomposition.add(decomposition1);
 					
 					for(InputLink inputLink : elementsToBeRemoved){
 						allInputLinks.remove(inputLink);
