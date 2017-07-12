@@ -15,7 +15,10 @@ public abstract class LinkableElement{
     public String id = "NO-ID";
     List<ElementLink> linksSrc = new ArrayList<ElementLink>();
     List<ElementLink> linksDest = new ArrayList<ElementLink>();
-
+	
+	public int getIdNum() {
+		return Integer.parseInt(id);
+	}
 
 	public LinkableElement(String nodeID, String nodeName) {
 		id = nodeID;

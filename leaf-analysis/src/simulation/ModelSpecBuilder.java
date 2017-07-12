@@ -163,10 +163,7 @@ public class ModelSpecBuilder {
 				for(InputDynamic dataDynamic : frontendModel.getDynamics()){
 					String intentionID = dataDynamic.getIntentionID();
 					String dynamicType = dataDynamic.getDynamicType();
-					
-					//TODO: Why is markedValue not used?
-					// String markedValue = dataDynamic.getMarkedValue();
-					// Should be this one: 
+
 					boolean[] dynamicFunctionMarkedValue = new boolean[4];
 					char[] values = dataDynamic.getMarkedValue().toCharArray();
 						for(int i = 0; i < 4; i++){
@@ -201,13 +198,19 @@ public class ModelSpecBuilder {
 					ArrayList<InputLink> elementsToBeRemoved = new ArrayList<>();
 					ArrayList<IntentionalElement> intentElementSrc = new ArrayList<>();
 					IntentionalElement intentElementDest = getIntentionalElementById(linkDestId, modelSpec.getIntElements());
-					DecompositionType decompType = DecompositionType.AND;
 					
+					//TODO: Fix evolving links.
+					//{"linkType":"AND","linkSrcID":"0000","linkDestID":"0002","postType":null},{"linkType":"NO","linkSrcID":"0001","linkDestID":"0002","postType":"AND"}
+					
+					DecompositionType decompType = DecompositionType.AND;
 					if(allInputLinks.get(0).getLinkType().equals(DecompositionType.AND)){
 						decompType = DecompositionType.AND;
 					}else if(allInputLinks.get(0).getLinkType().equals(DecompositionType.OR)){
 						decompType = DecompositionType.OR;
-					}
+					}else
+						System.err.println("Other Link Type found.");
+					//TODO: Add Contribution Links and Evolving Links.
+					
 
 					for(InputLink inputLink : allInputLinks){
 						if(linkDestId.equals(inputLink.getLinkDestID())){

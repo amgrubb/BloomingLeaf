@@ -15,10 +15,6 @@ public class IntentionalElement extends LinkableElement {
 	boolean userDefinedDynamicType = false;	
 	UDFunctionCSP cspUDFunct = null;
 	boolean[] dynamicFunctionMarkedValue; 
-	
-	public int getIdNum() {
-		return Integer.parseInt(id);
-	}
 
 	public Actor getActor() {
 		return actor;
