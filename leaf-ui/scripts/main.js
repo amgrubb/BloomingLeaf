@@ -353,8 +353,10 @@ function loadAnalysis(analysisResults){
 	$("#finalAssigneEpoch").val(analysisResults.finalAssignedEpoch);
 	$("#finalValueTimePoints").val(analysisResults.finalValueTimePoints);
 	$('#num-rel-time').val(analysisResults.relativeTimePoints);
-	var absTimePoints = analysisResults.absoluteTimePoints.toString();
-	$('#abs-time-pts').val(absTimePoints.replace(",", " "));
+	if(analysisResults.absoluteTimePoints){
+		var absTimePoints = analysisResults.absoluteTimePoints.toString();
+		$('#abs-time-pts').val(absTimePoints.replace(",", " "));		
+	}
 	
 	elementList = analysisResults.elementList;
 	updateSlider(currentAnalysis, false);
