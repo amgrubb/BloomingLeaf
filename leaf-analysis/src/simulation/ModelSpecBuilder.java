@@ -3,11 +3,6 @@ package simulation;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import org.jacop.constraints.In;
-
-import com.sun.jndi.url.dns.dnsURLContext;
-
 import interface_objects.IOIntention;
 import interface_objects.IOStateModel;
 import interface_objects.InputActor;

@@ -62,7 +62,7 @@ public class TroposCSPAlgorithm {
     private IntVar nextTimePoint;							// Holds the single int value that will map to a value of nextTimePoints, to be solve by the solve if next state is used.
     private IntVar minTimePoint;									// Is assigned the minimum time of nextTimePoints.
     
-    private final static boolean DEBUG = true;								// Whether to print debug statements.
+    private final static boolean DEBUG = false;								// Whether to print debug statements.
     /* New in ModelSpec
      *     	private int relativeTimePoints = 4;
     		private int[] absoluteTimePoints = new int[] {5, 10, 15, 20};
@@ -158,7 +158,9 @@ public class TroposCSPAlgorithm {
     				this.functionEBCollection, this.spec.getInitialValueTimePoints()[lengthOfInitial - 1], lengthOfInitial - 1, this.minTimePoint);
     	else
     		initializePathDynamicFunctions();
-    	System.out.println("\nEnd of Init Procedure");
+    	
+    	if (DEBUG)
+    		System.out.println("\nEnd of Init Procedure");
 	}	
 	
 
@@ -2187,7 +2189,8 @@ public class TroposCSPAlgorithm {
 				this.saveAllSolution(label);				
 			}else{
 				int[] timeOrder = this.createTimePointOrder();
-				this.printSingleSolution(timeOrder);
+				if (DEBUG)
+					this.printSingleSolution(timeOrder);
 				this.saveSingleSolution(timeOrder);
 			}
 			return true;
