@@ -1,4 +1,4 @@
-//Class for the element properties tab that appears when an element is clicked 
+//Class for the element properties tab that appears when an element is clicked
 var ENTER_KEY = 13;
 var alphaOnly = /[A-Z]/;
 // All valid initvalue/function combination
@@ -9,11 +9,11 @@ var validPair = {
   },
   "C":{
     "validInitValue": ["none", "satisfied", "partiallysatisfied", "denied", "partiallydenied", "unknown"],
-    "defaultValue": ["none"]  
+    "defaultValue": ["none"]
   },
   "R":{
     "validInitValue": ["none", "satisfied", "partiallysatisfied", "denied", "partiallydenied"],
-    "defaultValue": ["none"]  
+    "defaultValue": ["none"]
   },
   "I": {
     "validInitValue": ["none", "satisfied", "partiallysatisfied", "denied", "partiallydenied"],
@@ -55,20 +55,20 @@ Note:
 The relationships between functions are extremely complex in this file.
 
 Updating variables and render preexisting values often uses the same functions.
-Functions like updateGraph, and updateCell are always called whenever changes are made 
-on the inspector panel. 
+Functions like updateGraph, and updateCell are always called whenever changes are made
+on the inspector panel.
 
-This approach is necessary because Chart.js is built on top HTML5 Canvas. The entire 
-canvas needs to be redrawn every time a variable is changed.  
+This approach is necessary because Chart.js is built on top HTML5 Canvas. The entire
+canvas needs to be redrawn every time a variable is changed.
 
 When evaluating the functions calls of a particular action, use a top-down approach in
-file naviagation. That is, the first function called is always near the top. The last 
+file naviagation. That is, the first function called is always near the top. The last
 function called, will always be near the bottom.
 */
 
 
 var ElementInspector = Backbone.View.extend({
-	
+
   className: 'element-inspector',
 
   template: [
@@ -100,7 +100,7 @@ var ElementInspector = Backbone.View.extend({
           '<option value=DS> Denied Satisfied </option>',
           '<option value=UD> User Defined </option>',
         '</select>',
-        '<select class="function-sat-value">',
+        '<select id="markedValue" class="function-sat-value">',
           '<option value=satisfied> Satisfied </option>',
           '<option value=partiallysatisfied> Partially Satisfied </option>',
           '<option value=unknown selected> Random/Stochastic </option>',
@@ -145,7 +145,7 @@ var ElementInspector = Backbone.View.extend({
       '<canvas id="chart" width="240" height="240"></canvas>',
 
   ].join(''),
-  
+
   actor_template: [
     '<label>Actor name</label>',
     '<textarea class="cell-attrs-text" maxlength=100></textarea>',
@@ -188,7 +188,7 @@ var ElementInspector = Backbone.View.extend({
     cell.on('remove', function() {
         this.$el.html('');
     }, this);
-    
+
     // Global variables
     this.chartObject = new chartObject();
     this.constraintsObject = new constraintsObject();
@@ -222,7 +222,7 @@ var ElementInspector = Backbone.View.extend({
         var text = Object.keys(satvalues).find(key => satvalues[key] === i);
         result += eval(text);
       }
-      return result; 
+      return result;
     }
 
     //save html template to dynamically render more
@@ -347,7 +347,7 @@ var ElementInspector = Backbone.View.extend({
     }
     else {
       this.$('.function-sat-value').hide();
-      this.$('#user-constraints').hide();      
+      this.$('#user-constraints').hide();
       $('#init-sat-value').prop('disabled', '');
     }
     this.updateGraph(null);
@@ -379,7 +379,7 @@ var ElementInspector = Backbone.View.extend({
     // Perform check
     // If not UD, just do a regular check
     if (functionType != "UD"){
-      // If not valid, 2 possible actions: 
+      // If not valid, 2 possible actions:
       // change to default init value if functTypeChanged
       // change to none function if initValueChanged
       if ($.inArray(initValue, validPair[functionType]['validInitValue']) == -1){
@@ -437,7 +437,7 @@ var ElementInspector = Backbone.View.extend({
     if ($('.user-sat-value').last().prop( "disabled")){
       $('.user-sat-value').last().prop('disabled', '');
       $('.user-sat-value').last().css("background-color","");
-    } 
+    }
     // load available satisfaction values for user defined constraint type
     switch (func){
       case "I":
@@ -455,7 +455,7 @@ var ElementInspector = Backbone.View.extend({
         $(".user-sat-value").last().html(this.chartHTML.all);
         $(".user-sat-value").last().val("unknown")
         $(".user-sat-value").last().prop('disabled', 'disabled');
-        $(".user-sat-value").last().css("background-color","grey");        
+        $(".user-sat-value").last().css("background-color","grey");
         break;
 
       case "C":
@@ -469,7 +469,7 @@ var ElementInspector = Backbone.View.extend({
         break;
 
       default:
-        break;        
+        break;
     }
     return;
   },
@@ -478,6 +478,7 @@ var ElementInspector = Backbone.View.extend({
     var text = this.$('.function-type').val();
     var initVal = satvalues[this.$('#init-sat-value').val()];
     var val = satvalues[this.$('.function-sat-value').val()];
+    /// this.$('.markedValue') = val;
 
     // Rerender chart canvas
     var data = this.constraintsObject.chartData;
@@ -487,10 +488,10 @@ var ElementInspector = Backbone.View.extend({
 
     // Reset the dataset 2,3,4 and make everything solid line
     for (var i = 0; i < this.constraintsObject.chartData.datasets.length; i++){
-      this.constraintsObject.chartData.datasets[i].borderDash = [];  
-      this.constraintsObject.chartData.datasets[i].data = [];  
-      this.constraintsObject.chartData.datasets[i].pointBackgroundColor = ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"];  
-      this.constraintsObject.chartData.datasets[i].pointBorderColor = ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"];  
+      this.constraintsObject.chartData.datasets[i].borderDash = [];
+      this.constraintsObject.chartData.datasets[i].data = [];
+      this.constraintsObject.chartData.datasets[i].pointBackgroundColor = ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"];
+      this.constraintsObject.chartData.datasets[i].pointBorderColor = ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"];
       this.constraintsObject.chartData.datasets[i].borderColor = "rgba(220,220,220,1)";
     }
 
@@ -502,7 +503,7 @@ var ElementInspector = Backbone.View.extend({
     if ((text!= "UD") && (this.constraintsObject.currentUserIndex > 0))
       this.restartConstraint(null);
 
-    
+
     // change chart based on function type
     if(text == "R"){
       this.constraintsObject.chartData.labels = ["0", "Infinity"];
@@ -513,7 +514,7 @@ var ElementInspector = Backbone.View.extend({
 
 
 
-      
+
     }else if(text == "C"){
       this.constraintsObject.chartData.labels = ["0", "Infinity"];
       // If not unknown, just display one line
@@ -605,7 +606,7 @@ var ElementInspector = Backbone.View.extend({
       $(".user-sat-value").last().css("background-color","grey");
     }
     else {
-      $(".user-function-type").last().prop('disabled', ''); 
+      $(".user-function-type").last().prop('disabled', '');
       $(".user-function-type").last().css("background-color",'');
     }
 
@@ -628,9 +629,9 @@ var ElementInspector = Backbone.View.extend({
     var repeatBegin = this.constraintsObject.repeatBegin;
     var repeatEnd = this.constraintsObject.repeatEnd;
 
-    // Reset the dataset 
+    // Reset the dataset
     for (var i = 0; i < data.datasets.length; i++){
-      data.datasets[i].borderDash = [];  
+      data.datasets[i].borderDash = [];
       data.datasets[i].data = [];
       data.datasets[i].borderColor = "rgba(220,220,220,1)";
     }
@@ -664,7 +665,7 @@ var ElementInspector = Backbone.View.extend({
       if (currentDatasetIndex != 0){
         for (var j = 0; j < previousDataset.data.length - 1; j++){
           numNulls.push(null);
-        } 
+        }
       }
 
       // Add datapoint to dataset according to which function
@@ -684,7 +685,7 @@ var ElementInspector = Backbone.View.extend({
           firstVal = satvalues[this.$('#init-sat-value').val()];
         }
         currentDataset.data = numNulls.concat([firstVal, currentNumVal]);
-  
+
       }
       else if (currentFunc == 'C'){
         if (this.constraintsObject.userValues[i] != 'unknown'){
@@ -741,7 +742,7 @@ var ElementInspector = Backbone.View.extend({
           currentDataset.borderColor = "rgba(255, 110, 80, 1)";
         }
         previousDatasetIndex ++;
-        currentDatasetIndex ++;  
+        currentDatasetIndex ++;
       }
       else {
         // If previous function is stochastic, or constant unknown, hide the first dot
@@ -759,7 +760,7 @@ var ElementInspector = Backbone.View.extend({
           currentDataset.borderColor = "rgba(255, 110, 80, 1)";
         }
         previousDatasetIndex ++;
-        currentDatasetIndex ++;  
+        currentDatasetIndex ++;
 
       }
 
@@ -826,7 +827,7 @@ var ElementInspector = Backbone.View.extend({
       var prevLetter = this.constraintsObject.endLetter[this.constraintsObject.currentUserIndex - 1];
       this.constraintsObject.beginLetter.push(prevLetter);
       this.constraintsObject.endLetter.push(String.fromCharCode(prevLetter.charCodeAt(0) + 1));
-      
+
       if (this.repeatOptionsDisplay){
         this.repeatConstraint("Update");
         this.constraintsObject.repeatBegin = null;
@@ -854,7 +855,7 @@ var ElementInspector = Backbone.View.extend({
   selectRepeatValues: function(e){
     var begin = $("#repeat-begin").val();
     var end = $("#repeat-end").val();
-  
+
     var nextChar = String.fromCharCode(begin.charCodeAt(0) + 1);
 
     if (begin >= end){
@@ -952,7 +953,7 @@ var ElementInspector = Backbone.View.extend({
     var html = this.userConstraintsHTML.clone();
     this.$('#all-user-constraints').html('');
     html.appendTo(this.$('#all-user-constraints'));
-    
+
     if (this.repeatOptionsDisplay)
       this.repeatConstraint("TurnOff");
 
@@ -963,7 +964,7 @@ var ElementInspector = Backbone.View.extend({
   updateCell: function(event) {
     var cell = this._cellView.model;
     // Cease operation if selected is Actor
-    if (cell instanceof joint.shapes.basic.Actor){ 
+    if (cell instanceof joint.shapes.basic.Actor){
       cell.prop("actortype", this.$('.actor-type').val());
       if (cell.prop("actortype") == 'G'){
         cell.attr({ '.line':
@@ -998,7 +999,7 @@ var ElementInspector = Backbone.View.extend({
     }
 
     else {
-      cell.attr(".funcvalue/text", ""); 
+      cell.attr(".funcvalue/text", "");
     }
     cell.attr(".constraints/lastval", this.$('.function-type').val());
 
@@ -1022,7 +1023,7 @@ var ElementInspector = Backbone.View.extend({
         cell.attr(".constraints/endRepeat", this.constraintsObject.repeatEnd);
       }else{
         cell.attr(".constraints/beginRepeat", null);
-        cell.attr(".constraints/endRepeat", null);  
+        cell.attr(".constraints/endRepeat", null);
       }
 
     }else if (funcType == "R"){
@@ -1041,7 +1042,7 @@ var ElementInspector = Backbone.View.extend({
     //Update node display based on function and values
     var value = this.$('#init-sat-value').val();
 
-    if (value == "none"){ 
+    if (value == "none"){
       cell.attr(".satvalue/text", "");
       // If functype is NB, dont clear it
       if(cell.attr(".funcvalue/text") != 'NB'){
@@ -1066,11 +1067,9 @@ var ElementInspector = Backbone.View.extend({
       // cell.removeAttr(".satvalue/text");
     }
   },
-    
+
   clear: function(){
     this.$el.html('');
   }
 }
 );
-
-

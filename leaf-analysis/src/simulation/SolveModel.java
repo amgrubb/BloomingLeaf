@@ -5,7 +5,6 @@ import java.io.FileReader;
 import java.io.PrintWriter;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import interface_objects.InputObject;
 import interface_objects.OutputModel;
@@ -29,18 +28,17 @@ public class SolveModel {
 	public static void main(String[] args) {
 
 		//This is the default filePath to be executed if no file is pass through parameters
-		String filePath = "stored-models/";			
+		String filePath = "temp/"; //"stored-models/";			
 		String inputFile = "default.json";
 		String outputFile = "output.out";
 				
 		try {
 			//creating the backend model to be analysed
 			ModelSpec modelSpec = convertModelFromFile(filePath + inputFile);
-			//Analyze the model
-			
+
+			//Analyse the model
 			TroposCSPAlgorithm solver = new TroposCSPAlgorithm(modelSpec);
 			solver.solveModel();
-			
 			createOutputFile(solver, filePath + outputFile);
 	
 		} catch (Exception e) {

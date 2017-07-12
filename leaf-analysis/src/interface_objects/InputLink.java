@@ -4,7 +4,7 @@ public class InputLink{
 	private String linkType;
 	private String linkSrcID;
 	private String linkDestID;
-	String postType;
+	private String postType;
 	
 	public String getLinkSrcID() {
 		return linkSrcID;
@@ -29,5 +29,14 @@ public class InputLink{
 	public void setLinkType(String linkType) {
 		this.linkType = linkType;
 	}
+
+	public String getPostType() {
+		return postType;
+	}
+
+	public void setPostType(String postType) {
+		this.postType = postType;
+	}
+	
 	
 }

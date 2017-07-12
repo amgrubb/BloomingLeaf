@@ -5,7 +5,7 @@ import cgi, cgitb
 cgitb.enable()
 
 def executeCGI():
-   
+
 	processedFilePath = 'temp/output.out'
 
 	with open(processedFilePath) as data:
@@ -26,4 +26,3 @@ def sendToFrontEnd(result):
 	return
 
 executeCGI()
-
