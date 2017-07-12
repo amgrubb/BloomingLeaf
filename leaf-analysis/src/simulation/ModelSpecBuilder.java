@@ -161,6 +161,8 @@ public class ModelSpecBuilder {
 					String dynamicType = dataDynamic.getDynamicType();
 					//TODO: Why is markedValue not used?
 //					String markedValue = dataDynamic.getMarkedValue();
+					// Should be this one: boolean[] dynamicFunctionMarkedValue = 
+							
 					String line = dataDynamic.getLine();
 					
 					for(IntentionalElement it : modelSpec.getIntElements()){

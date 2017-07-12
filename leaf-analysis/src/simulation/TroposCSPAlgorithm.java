@@ -672,6 +672,8 @@ public class TroposCSPAlgorithm {
 		boolean[] boolTT = new boolean[] {false, false, false, false};
     	for (int i = 0; i < this.intentions.length; i++){
     		IntentionalElement element = this.intentions[i];
+    		if (DEBUG)
+    			System.out.println("Dyn #" + element.id);
     		IntentionalElementDynamicType tempType = element.dynamicType;
         	if ((tempType == IntentionalElementDynamicType.NT) || (element.dynamicType == IntentionalElementDynamicType.RND) || 
         		(tempType == IntentionalElementDynamicType.NB))
@@ -705,6 +707,8 @@ public class TroposCSPAlgorithm {
                 		PrimitiveConstraint[] sPD = createXeqC(this.values[i][s], boolPD);
                 		PrimitiveConstraint[] sFD = createXeqC(this.values[i][s], boolFD);
                 		
+                		if (DEBUG)
+                			System.out.println("\tt = " + t + " s = " + s);
                 		if (dynFVal[0] && dynFVal[1] && !dynFVal[2] && !dynFVal[3]) {				//case 0:	
                 			constraints.add(new IfThen(new And(new XltY(this.timePoints[t], this.timePoints[s]), new And(tFD)),
                 					new And(sFD)));
