@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.jacop.constraints.In;
+
+import com.sun.jndi.url.dns.dnsURLContext;
+
 import interface_objects.IOIntention;
 import interface_objects.IOStateModel;
 import interface_objects.InputActor;
@@ -159,7 +163,10 @@ public class ModelSpecBuilder {
 				for(InputDynamic dataDynamic : frontendModel.getDynamics()){
 					String intentionID = dataDynamic.getIntentionID();
 					String dynamicType = dataDynamic.getDynamicType();
+					//TODO: Why is markedValue not used?
 //					String markedValue = dataDynamic.getMarkedValue();
+					// Should be this one: boolean[] dynamicFunctionMarkedValue = 
+							
 					String line = dataDynamic.getLine();
 					
 					for(IntentionalElement it : modelSpec.getIntElements()){
@@ -177,33 +184,43 @@ public class ModelSpecBuilder {
 			
 			//Getting links
 			if(!frontendModel.getLinks().isEmpty()){
-				for(InputLink dataLink : frontendModel.getLinks()){
-		        	int i = 0;
-		        	
-					for(IntentionalElement tmp : modelSpec.getIntElements()){
-			        	if(dataLink.getLinkSrcID().equals(tmp.getId())){
-			        		 i++;			        		
-			        	}
-			        }
+				ArrayList<InputLink> allInputLinks = (ArrayList<InputLink>) frontendModel.getLinks();
+				List<Decomposition> allDecomposition = new ArrayList<>();
+				while(allInputLinks.size()>0){
+					String linkDestId = allInputLinks.get(0).getLinkDestID();
+					ArrayList<InputLink> elementsToBeRemoved = new ArrayList<>();
+					ArrayList<IntentionalElement> intentElementSrc = new ArrayList<>();
+					IntentionalElement intentElementDest = getIntentionalElementById(linkDestId, modelSpec.getIntElements());
+					DecompositionType decompType = DecompositionType.AND;
+					
+					if(allInputLinks.get(0).getLinkType().equals(DecompositionType.AND)){
+						decompType = DecompositionType.AND;
+					}else if(allInputLinks.get(0).getLinkType().equals(DecompositionType.OR)){
+						decompType = DecompositionType.OR;
+					}
 
-					LinkableElement[] src = new IntentionalElement[i];
-					LinkableElement dest = null;
-			        for(IntentionalElement tmp : modelSpec.getIntElements()){
-			        	int a = 0;
-			        	if(dataLink.getLinkSrcID().equals(tmp.getId())){
-			        		 src[a] = tmp;
-			        		 a++;			        		
-			        	}
-					    if(dataLink.getLinkDestID().equals(tmp.getId()))
-					         dest = tmp;				 
-			        }
-			        if (DecompositionType.getByCode(dataLink.getLinkType()) != null)
-			          	modelSpec.getDecomposition().add(new Decomposition(src, dest, DecompositionType.getByCode(dataLink.getLinkType())));			        	
-			        else if (ContributionType.getByCode(dataLink.getLinkType()) != null)
-			        	modelSpec.getContribution().add(new Contribution(src[0], dest, ContributionType.getByCode(dataLink.getLinkType())));
+					for(InputLink inputLink : allInputLinks){
+						if(linkDestId.equals(inputLink.getLinkDestID())){
+							intentElementSrc.add(getIntentionalElementById(inputLink.getLinkSrcID(), modelSpec.getIntElements()));
+							elementsToBeRemoved.add(inputLink);
+						}
+					}
+					
+					LinkableElement[] linkElementsArray = new LinkableElement[intentElementSrc.size()];
+					for(int i = 0; i < intentElementSrc.size(); i++){
+						linkElementsArray[i] = intentElementSrc.get(i);
+					}
+					
+					Decomposition decomposition = new Decomposition(linkElementsArray, intentElementDest, decompType);
+					allDecomposition.add(decomposition);
+					
+					for(InputLink inputLink : elementsToBeRemoved){
+						allInputLinks.remove(inputLink);
+					}
 				}
+				
+				modelSpec.setDecomposition(allDecomposition);				
 			}
-	
 			
 			//Getting constraints
 			if(!frontendModel.getConstraints().isEmpty()){
@@ -273,5 +290,22 @@ public class ModelSpecBuilder {
 		
 		return modelSpec;
 
+	}
+
+	/**
+	 * Return the first IntentionalElement by its ID
+	 * @param elementId
+	 * The id of the required element
+	 * @param list
+	 * The model specification containing a list of all intentional elements
+	 * @return
+	 * returns the intentional element if exist or null
+	 */
+	private static IntentionalElement getIntentionalElementById(String elementId, List<IntentionalElement> list) {
+		for(IntentionalElement iElement : list){
+			if(iElement.getId().equals(elementId))
+				return iElement;
+		}
+		return null;
 	}
 }

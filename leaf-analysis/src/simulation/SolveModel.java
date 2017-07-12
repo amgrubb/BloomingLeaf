@@ -30,17 +30,16 @@ public class SolveModel {
 
 		//This is the default filePath to be executed if no file is pass through parameters
 		String filePath = "stored-models/";			
-		String inputFile = "default.json";
+		String inputFile = "input3.json";
 		String outputFile = "output.out";
 				
 		try {
 			//creating the backend model to be analysed
 			ModelSpec modelSpec = convertModelFromFile(filePath + inputFile);
-			//Analyze the model
-			
+
+			//Analyse the model
 			TroposCSPAlgorithm solver = new TroposCSPAlgorithm(modelSpec);
 			solver.solveModel();
-			
 			createOutputFile(solver, filePath + outputFile);
 	
 		} catch (Exception e) {
