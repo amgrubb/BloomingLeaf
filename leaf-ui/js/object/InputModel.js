@@ -1,4 +1,4 @@
-//Object related to backend object interface_object.FrontendModel
+//This is the object that contains all model information to be sent to backend
 function FrontendModel(
 		actors,
 		intentions,
@@ -15,8 +15,34 @@ function FrontendModel(
 	this.allStatesModel = allStatesModel;
 }
 
-//Get only model information (nodes and links)
+//This method is responsible to get all data from the UI and add in to a object to be sent to backend
 function getFrontendModel(isSinglePath = true){
+	
+	//VERIFY IF THE MODEL IS CORRECT FOR ANALYSIS
+	//In SINGLE PATH analysis, the initial values must not be conflictant
+	if(isSinglePath)
+		checkConflictValues();
+	//Removing invalid links
+	
+	
+	//GETTING DATA FROM UI
+
+	/** ACTORS
+	 * Calls InputActors.getActorsList(); 
+	 * returns InputActor[] actors;
+	 */
+	var actors = getActorsList();
+
+	/** INTENTIONAL ELEMENTS
+	 * Calls InputIntentions.getIntentionsList();
+	 * returns InputIntention[] intentions
+	 */	
+	var intentions = getIntentitonalElements();
+
+	/**
+	 * LINKS
+	 */
+	
 	//Step 0: Get elements from graph.
 	var all_elements = graph.getElements();
 	var savedLinks = [];
@@ -44,37 +70,18 @@ function getFrontendModel(isSinglePath = true){
 	        else{link.remove();}
 	    });
 	}
-
+	
 	//Step 1: Filter out Actors
 	var elements = [];
-	var actors = [];
 	for (var e1 = 0; e1 < all_elements.length; e1++){
 		if (!(all_elements[e1] instanceof joint.shapes.basic.Actor)){
 			elements.push(all_elements[e1]);
 		}
-		else{
-			actors.push(all_elements[e1]);
-		}
 	}
 
-	//save elements in global variable for slider, used for toBackEnd funciton only
+	//save elements in global variable for slider, used for toBackEnd function only
 	graphObject.allElements = elements;
 	graphObject.elementsBeforeAnalysis = elements;
-
-	var data_actors = [];
-
-	//ACTORS
-	for (var a = 0; a < actors.length; a++){
-		var actorId = a.toString();
-
-		while (actorId.length < 3){ actorId = "0" + actorId;}
-		actorId = "a" + actorId;
-		actors[a].prop("elementid", actorId);
-
-		var io_Actor = new InputActor(actorId, actors[a].attr(".name/text"), (actors[a].prop("actortype") || "A"));
-
-		data_actors.push(io_Actor);
-	}
 
 	// Step 2: Print each element in the model
 
@@ -86,55 +93,6 @@ function getFrontendModel(isSinglePath = true){
 		"partiallydenied": "0100",
 		"denied": "1100",
 		"none": "0000"
-	}
-
-	//INTENTIONAL ELEMENTS
-	var data_intentions = [];
-	//Verify if has conflicts
-	if(isSinglePath){
-		for (var e = 0; e < elements.length; e++){
-			var initValue = elements[e].attributes.attrs[".satvalue"].text;
-			if ((initValue == "(PS, PD)") ||
-				(initValue == "(PS, FD)") ||
-				(initValue == "(FS, PD)") ||
-				(initValue == "(FS, FD)") ){
-						alert("The initial values must not be conflictant");
-				return null;
-			}
-		}
-	}
-
-
-	for (var e = 0; e < elements.length; e++){
-		var elementID = e.toString();
-		while (elementID.length < 4){ elementID = "0" + elementID;}
-		elements[e].prop("elementid", elementID);
-
-		var actorid = '-';
-		if (elements[e].get("parent")){
-			actorid = (graph.getCell(elements[e].get("parent")).prop("elementid") || "-");
-		}
-
-	  var type_e;
-		if (elements[e] instanceof joint.shapes.basic.Goal)
-			type_e = "G";
-		else if (elements[e] instanceof joint.shapes.basic.Task)
-			type_e = "T";
-		else if (elements[e] instanceof joint.shapes.basic.Softgoal)
-			type_e = "S";
-		else if (elements[e] instanceof joint.shapes.basic.Resource)
-			type_e = "R";
-		else
-			type_e = "I";
-
-	  	var v = elements[e].attr(".satvalue/value")
-	  	if($.isNumeric(v)){
-			var io_intention = new InputIntention(actorid, elementID, type_e, v, elements[e].attr(".name/text").replace(/\n/g, " "));
-	  	}else{
-			var io_intention = new InputIntention(actorid, elementID, type_e, satValueDict[v], elements[e].attr(".name/text").replace(/\n/g, " "));
-	  	}
-
-		data_intentions.push(io_intention);
 	}
 
 	//LINKS
@@ -253,18 +211,18 @@ function getFrontendModel(isSinglePath = true){
 		var stateModel = new StatesModel();
 		stateModel.time = i_time;
 
-		for(var i_intention = 0; i_intention < data_intentions.length; i_intention++){
+		for(var i_intention = 0; i_intention < intentions.length; i_intention++){
 			var intentionalElement = new IntentionElement();
-			intentionalElement.id = data_intentions[i_intention].nodeID;
-			intentionalElement.status.push(data_intentions[i_intention].initialValue);
+			intentionalElement.id = intentions[i_intention].nodeID;
+			intentionalElement.status.push(intentions[i_intention].initialValue);
 			stateModel.intentionElements.push(intentionalElement);
 		}
 		allStatesModel.push(stateModel);
 	}
 
 	var frontendModel = new FrontendModel(
-			data_actors,
-			data_intentions,
+			actors,
+			intentions,
 			data_links,
 			data_dynamics,
 			data_constraints,
@@ -273,3 +231,23 @@ function getFrontendModel(isSinglePath = true){
 
 	return frontendModel;
 }
+
+
+function checkConflictValues(){
+	for (var i = 0; i < graph.getElements().length; i++){
+		if (!(graph.getElements()[i] instanceof joint.shapes.basic.Actor)){
+			var initValue = graph.getElements()[i].attributes.attrs[".satvalue"].text;
+			if ((initValue == "(PS, PD)") ||
+				(initValue == "(PS, FD)") ||
+				(initValue == "(FS, PD)") ||
+				(initValue == "(FS, FD)") ){
+					alert("The initial values must not be conflictant");
+				return null;
+			}
+		}
+	}
+}
+
+
+
+
