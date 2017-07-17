@@ -23,8 +23,19 @@ var queryObject = new queryObject();
 var loader;
 var reader;
 
+
 //Properties for both core and simulator.
+//TODO: merge this two arrays in order to make use the same name for all
 var satvalues = {satisfied: 2, partiallysatisfied: 1, partiallydenied: -1, denied: -2, unknown: 4, conflict: 3, none: 0};
+
+var satValueDict = {
+	"unknown": "0000",
+	"satisfied": "0011",
+	"partiallysatisfied": "0010",
+	"partiallydenied": "0100",
+	"denied": "1100",
+	"none": "0000"
+}
 
 //var functions = {A: 'AI', O: 'OI', N: 'NT', M: 'MP', R: 'R', S: 'SP', MN: 'MN', SN: 'SN', U: 'UD'};
 
@@ -787,11 +798,6 @@ paper.on("link:options", function(evt, cell){
 		constrainsInspector.render(cell);
 	}
 });
-
-//When a cell is clicked, create the Halo
-function isLinkInvalid(link){
-	return (!link.prop('source/id') || !link.prop('target/id'));
-}
 
 //Single click on cell
 paper.on('cell:pointerup', function(cellView, evt) {

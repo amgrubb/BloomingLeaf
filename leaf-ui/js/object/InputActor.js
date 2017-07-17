@@ -4,7 +4,7 @@ function InputActor(nodeId, nodeName, nodeType){
 	this.nodeType = nodeType;
 }
 
-function getActorsList(){
+function getActors(){
 	var elements = graph.getElements();
 	
 	//Help variable to count the length of actors
