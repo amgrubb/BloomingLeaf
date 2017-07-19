@@ -10,7 +10,6 @@ import java.util.ListIterator;
 import org.jacop.constraints.Alldifferent;
 import org.jacop.constraints.And;
 import org.jacop.constraints.AndBool;
-import org.jacop.constraints.AndBoolSimple;
 import org.jacop.constraints.AndBoolVector;
 import org.jacop.constraints.Constraint;
 import org.jacop.constraints.IfThen;
@@ -1292,46 +1291,6 @@ public class TroposCSPAlgorithm {
     				for (int i = 0; i < numLinks; i++) {
     					int sourceID = contributionElements.get(i).getIdNum();    					
     					constraints.add(createForwardContributionConstraint(contributionTypes.get(i), this.values[sourceID][t], this.values[targetID][t]));
-/*						// Old Code before helper function.
-    					if (contributionTypes.get(i) == ContributionType.PP){ 					//++ 
-    						this.sat.generate_implication(this.values[sourceID][t][3], this.values[targetID][t][3]);
-    						this.sat.generate_implication(this.values[sourceID][t][2], this.values[targetID][t][2]);
-    						this.sat.generate_implication(this.values[sourceID][t][1], this.values[targetID][t][1]);
-    						this.sat.generate_implication(this.values[sourceID][t][0], this.values[targetID][t][0]);
-    					}else if (contributionTypes.get(i) == ContributionType.P){				//+
-    						this.sat.generate_implication(this.values[sourceID][t][2], this.values[targetID][t][2]);
-    						this.sat.generate_implication(this.values[sourceID][t][1], this.values[targetID][t][1]);
-    					}else if (contributionTypes.get(i) == ContributionType.M){				//-
-    						this.sat.generate_implication(this.values[sourceID][t][2], this.values[targetID][t][1]);
-    						this.sat.generate_implication(this.values[sourceID][t][1], this.values[targetID][t][2]);
-    					}else if (contributionTypes.get(i) == ContributionType.MM){				//--
-    						this.sat.generate_implication(this.values[sourceID][t][3], this.values[targetID][t][0]);	
-    						this.sat.generate_implication(this.values[sourceID][t][2], this.values[targetID][t][1]);
-    						this.sat.generate_implication(this.values[sourceID][t][1], this.values[targetID][t][2]);
-    						this.sat.generate_implication(this.values[sourceID][t][0], this.values[targetID][t][3]);
-    					}else if (contributionTypes.get(i) == ContributionType.SPP){ 			//++S 
-    						this.sat.generate_implication(this.values[sourceID][t][3], this.values[targetID][t][3]);
-    						this.sat.generate_implication(this.values[sourceID][t][2], this.values[targetID][t][2]);
-    					}else if (contributionTypes.get(i) == ContributionType.SP){			//+S
-    						this.sat.generate_implication(this.values[sourceID][t][2], this.values[targetID][t][2]);
-    					}else if (contributionTypes.get(i) == ContributionType.SM){			//-S
-    						this.sat.generate_implication(this.values[sourceID][t][2], this.values[targetID][t][1]);
-    					}else if (contributionTypes.get(i) == ContributionType.SMM){			//--S
-    						this.sat.generate_implication(this.values[sourceID][t][3], this.values[targetID][t][0]);	
-    						this.sat.generate_implication(this.values[sourceID][t][2], this.values[targetID][t][1]);
-    					}else if (contributionTypes.get(i) == ContributionType.DPP){ 			//++D 
-    						this.sat.generate_implication(this.values[sourceID][t][1], this.values[targetID][t][1]);
-    						this.sat.generate_implication(this.values[sourceID][t][0], this.values[targetID][t][0]);
-    					}else if (contributionTypes.get(i) == ContributionType.DP){			//+D
-    						this.sat.generate_implication(this.values[sourceID][t][1], this.values[targetID][t][1]);
-    					}else if (contributionTypes.get(i) == ContributionType.DM){			//-D
-    						this.sat.generate_implication(this.values[sourceID][t][1], this.values[targetID][t][2]);
-    					}else if (contributionTypes.get(i) == ContributionType.DMM){			//--D
-    						this.sat.generate_implication(this.values[sourceID][t][1], this.values[targetID][t][2]);
-    						this.sat.generate_implication(this.values[sourceID][t][0], this.values[targetID][t][3]);
-    					}else
-    						System.out.println("ERROR: No rule for " + contributionTypes.get(i).toString() + " link type.");
-*/
     				}
     			}
     		}
@@ -1365,12 +1324,6 @@ public class TroposCSPAlgorithm {
     		/*********************************************************************************************
     		 * Backward Analysis
     		 *********************************************************************************************/
-//    		Decomposition decompositionLink = null;  
-//    		EvolvingDecomposition eDecompositionLink = null;
-//    		List<EvolvingContribution> eContributionLinks = new ArrayList<EvolvingContribution>();
-//    		List<IntentionalElement> contributionElements = new ArrayList<IntentionalElement>();  
-//    		List<ContributionType> contributionTypes = new ArrayList<ContributionType>();
-    		    		
     		// Iterate over each time step.
     		for (int t = 0; t < this.values[targetID].length; t++){
     			ArrayList<PrimitiveConstraint> FSConstaints = new ArrayList<PrimitiveConstraint>();
@@ -1465,45 +1418,6 @@ public class TroposCSPAlgorithm {
     						PDConstaints.add(newConts[1]);
     					if (newConts[0] != null)
     						FDConstaints.add(newConts[0]); 
-    					// OLD Code
-//    					if (contributionTypes.get(i) == ContributionType.PP){ 					//++ 
-//    	    				FSConstaints.add(new XeqC(this.values[sourceID][t][3], 1));
-//    	    				PSConstaints.add(new XeqC(this.values[sourceID][t][2], 1));
-//    	    				PDConstaints.add(new XeqC(this.values[sourceID][t][1], 1));
-//    	    				FDConstaints.add(new XeqC(this.values[sourceID][t][0], 1));
-//    					}else if (contributionTypes.get(i) == ContributionType.P){				//+
-//    	    				PSConstaints.add(new XeqC(this.values[sourceID][t][2], 1));
-//    	    				PDConstaints.add(new XeqC(this.values[sourceID][t][1], 1));
-//    					}else if (contributionTypes.get(i) == ContributionType.M){				//-
-//    	    				PSConstaints.add(new XeqC(this.values[sourceID][t][1], 1));
-//    	    				PDConstaints.add(new XeqC(this.values[sourceID][t][2], 1));
-//    					}else if (contributionTypes.get(i) == ContributionType.MM){				//--
-//    	    				FSConstaints.add(new XeqC(this.values[sourceID][t][0], 1));
-//    	    				PSConstaints.add(new XeqC(this.values[sourceID][t][1], 1));
-//    	    				PDConstaints.add(new XeqC(this.values[sourceID][t][2], 1));
-//    	    				FDConstaints.add(new XeqC(this.values[sourceID][t][3], 1));
-//    					}else if (contributionTypes.get(i) == ContributionType.SPP){ 			//++S 
-//    	    				FSConstaints.add(new XeqC(this.values[sourceID][t][3], 1));
-//    	    				PSConstaints.add(new XeqC(this.values[sourceID][t][2], 1));
-//    					}else if (contributionTypes.get(i) == ContributionType.SP){			//+S
-//    	    				PSConstaints.add(new XeqC(this.values[sourceID][t][2], 1));
-//    					}else if (contributionTypes.get(i) == ContributionType.SM){			//-S
-//    	    				PDConstaints.add(new XeqC(this.values[sourceID][t][2], 1));
-//    					}else if (contributionTypes.get(i) == ContributionType.SMM){			//--S
-//    	    				PDConstaints.add(new XeqC(this.values[sourceID][t][2], 1));
-//    	    				FDConstaints.add(new XeqC(this.values[sourceID][t][3], 1));
-//    					}else if (contributionTypes.get(i) == ContributionType.DPP){ 			//++D 
-//    	    				PDConstaints.add(new XeqC(this.values[sourceID][t][1], 1));
-//    	    				FDConstaints.add(new XeqC(this.values[sourceID][t][0], 1));
-//    					}else if (contributionTypes.get(i) == ContributionType.DP){			//+D
-//    	    				PDConstaints.add(new XeqC(this.values[sourceID][t][1], 1));
-//    					}else if (contributionTypes.get(i) == ContributionType.DM){			//-D
-//    	    				PSConstaints.add(new XeqC(this.values[sourceID][t][1], 1));
-//    					}else if (contributionTypes.get(i) == ContributionType.DMM){			//--D
-//    	    				FSConstaints.add(new XeqC(this.values[sourceID][t][0], 1));
-//    	    				PSConstaints.add(new XeqC(this.values[sourceID][t][1], 1));
-//    					}else
-//    						System.out.println("ERROR: No rule for " + contributionTypes.get(i).toString() + " link type.");
     				}
 
     			}
@@ -1574,54 +1488,30 @@ public class TroposCSPAlgorithm {
 	private PrimitiveConstraint createForwardContributionConstraint(ContributionType cType, BooleanVar[] src, BooleanVar[] tgt){
 		PrimitiveConstraint result = null;
 		if (cType == ContributionType.PP){ 					//++ 
-//			this.sat.generate_implication(src[3], tgt[3]);
-//			this.sat.generate_implication(src[2], tgt[2]);
-//			this.sat.generate_implication(src[1], tgt[1]);
-//			this.sat.generate_implication(src[0], tgt[0]);
 			result = new And(new And(new Or(new XeqC(src[3], 0), new XeqC(tgt[3], 1)), new Or(new XeqC(src[2], 0), new XeqC(tgt[2], 1))), 
 					         new And(new Or(new XeqC(src[1], 0), new XeqC(tgt[1], 1)), new Or(new XeqC(src[0], 0), new XeqC(tgt[0], 1))));
 		}else if (cType == ContributionType.P){				//+
-//			this.sat.generate_implication(src[2], tgt[2]);
-//			this.sat.generate_implication(src[1], tgt[1]);
 			result = new And(new Or(new XeqC(src[2], 0), new XeqC(tgt[2], 1)), new Or(new XeqC(src[1], 0), new XeqC(tgt[1], 1)));
 		}else if (cType == ContributionType.M){				//-
-//			this.sat.generate_implication(src[2], tgt[1]);
-//			this.sat.generate_implication(src[1], tgt[2]);
 			result = new And(new Or(new XeqC(src[2], 0), new XeqC(tgt[1], 1)), new Or(new XeqC(src[1], 0), new XeqC(tgt[2], 1)));
 		}else if (cType == ContributionType.MM){				//--
-//			this.sat.generate_implication(src[3], tgt[0]);	
-//			this.sat.generate_implication(src[2], tgt[1]);
-//			this.sat.generate_implication(src[1], tgt[2]);
-//			this.sat.generate_implication(src[0], tgt[3]);
 			result = new And(new And(new Or(new XeqC(src[3], 0), new XeqC(tgt[0], 1)), new Or(new XeqC(src[2], 0), new XeqC(tgt[1], 1))), 
 			                 new And(new Or(new XeqC(src[1], 0), new XeqC(tgt[2], 1)), new Or(new XeqC(src[0], 0), new XeqC(tgt[3], 1))));
 		}else if (cType == ContributionType.SPP){ 			//++S 
-//			this.sat.generate_implication(src[3], tgt[3]);
-//			this.sat.generate_implication(src[2], tgt[2]);
 			result = new And(new Or(new XeqC(src[3], 0), new XeqC(tgt[3], 1)), new Or(new XeqC(src[2], 0), new XeqC(tgt[2], 1)));
 		}else if (cType == ContributionType.SP){			//+S
-//			this.sat.generate_implication(src[2], tgt[2]);
 			result = new Or(new XeqC(src[2], 0), new XeqC(tgt[2], 1));
 		}else if (cType == ContributionType.SM){			//-S
-//			this.sat.generate_implication(src[2], tgt[1]);
 			result = new Or(new XeqC(src[2], 0), new XeqC(tgt[1], 1));
 		}else if (cType == ContributionType.SMM){			//--S
-//			this.sat.generate_implication(src[3], tgt[0]);	
-//			this.sat.generate_implication(src[2], tgt[1]);
 			result = new And(new Or(new XeqC(src[3], 0), new XeqC(tgt[0], 1)), new Or(new XeqC(src[2], 0), new XeqC(tgt[1], 1)));
 		}else if (cType == ContributionType.DPP){ 			//++D 
-//			this.sat.generate_implication(src[1], tgt[1]);
-//			this.sat.generate_implication(src[0], tgt[0]);
 			result = new And(new Or(new XeqC(src[1], 0), new XeqC(tgt[1], 1)), new Or(new XeqC(src[0], 0), new XeqC(tgt[0], 1)));
 		}else if (cType == ContributionType.DP){			//+D
-//			this.sat.generate_implication(src[1], tgt[1]);
 			result = new Or(new XeqC(src[1], 0), new XeqC(tgt[1], 1));
 		}else if (cType == ContributionType.DM){			//-D
-//			this.sat.generate_implication(src[1], tgt[2]);
 			result = new Or(new XeqC(src[1], 0), new XeqC(tgt[2], 1));
 		}else if (cType == ContributionType.DMM){			//--D
-//			this.sat.generate_implication(src[1], tgt[2]);
-//			this.sat.generate_implication(src[0], tgt[3]);
 			result = new And(new Or(new XeqC(src[1], 0), new XeqC(tgt[2], 1)), new Or(new XeqC(src[0], 0), new XeqC(tgt[3], 1)));
 		}else
 			System.out.println("ERROR: No rule for " + cType.toString() + " link type.");	
