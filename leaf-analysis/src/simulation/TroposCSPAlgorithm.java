@@ -1353,7 +1353,7 @@ public class TroposCSPAlgorithm {
         				FDConstaints.add(new And(sourceValue[0]));
     				}
     			}else if (eDecompositionLink != null){
- /*   				// Evolving Decomposition
+    				// Evolving Decomposition
         			LinkableElement[] linkEle = eDecompositionLink.getSrc();
         			int numLinks = linkEle.length;
     				DecompositionType pre = eDecompositionLink.getPreDecomposition();
@@ -1403,7 +1403,7 @@ public class TroposCSPAlgorithm {
         				PDConstaints.add(new IfThen(new XlteqY(dempEB, this.timePoints[t]), new And(sourceValue[1])));
         				FDConstaints.add(new IfThen(new XlteqY(dempEB, this.timePoints[t]), new And(sourceValue[0])));
     				}
-  */  			}
+    			}
     			
     			if (contributionElements.size() != 0) { 
     				int numLinks = contributionElements.size();	
@@ -1437,13 +1437,10 @@ public class TroposCSPAlgorithm {
     					if(post != null)
     						postConstraint = createBackwardContributionConstraint(pre, this.values[sourceID][t]);
    
-    					// Note: I implemented this as a two if statements rather than three if->else if. The case of a pre and a post link might now work 
+    					// Note: I implemented this as a two if statements rather than and if->else if. The case of a pre and a post link might now work 
     					//		as two separate constraints. This depends on how the "IfThen" are treated in the "Or(FSConstaints)" below.
     					//		If no information is propagated for these links they might need to be written as Not(A) or (B). or all combinations in the IfThen. 
-    						//if((pre != null) && (post != null)){
-    						//constraints.add(new IfThenElse(new XgtY(contEB, this.timePoints[t]), preConstraint, postConstraint));
     					if (pre != null){
-    						//constraints.add(new IfThen(new XgtY(contEB, this.timePoints[t]), preConstraint));
         					if (preConstraint[3] != null)
         						FSConstaints.add(new IfThen(new XgtY(contEB, this.timePoints[t]), preConstraint[3]));
         					if (preConstraint[2] != null)
@@ -1454,7 +1451,6 @@ public class TroposCSPAlgorithm {
         						FDConstaints.add(new IfThen(new XgtY(contEB, this.timePoints[t]), preConstraint[0]));
     					}
     					if (post != null){	
-    						//constraints.add(new IfThen(new XlteqY(contEB, this.timePoints[t]), postConstraint));
         					if (postConstraint[3] != null)
         						FSConstaints.add(new IfThen(new XlteqY(contEB, this.timePoints[t]), postConstraint[3]));
         					if (postConstraint[2] != null)
