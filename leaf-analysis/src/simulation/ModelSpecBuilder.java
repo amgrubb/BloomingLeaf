@@ -221,7 +221,7 @@ public class ModelSpecBuilder {
 		    				allDecompositionLinks.add(link);
 		    				break;
 		    			default:
-		    				throw new IllegalArgumentException("Invalid relationship type: " + linkType);
+		    				throw new IllegalArgumentException("(Simple) Invalid relationship type: " + linkType);
 		    			}
 		    		}else{
 		    			// Evolving Link
@@ -239,7 +239,7 @@ public class ModelSpecBuilder {
 			    				evolvingContribution.add(new EvolvingContribution(intentElementSrc, intentElementDest, ContributionType.getByCode(linkType), ContributionType.getByCode(postType)));
 			    				break;
 			    			default:
-			    				throw new IllegalArgumentException("Invalid relationship type: " + linkType);
+			    				throw new IllegalArgumentException("Invalid relationship type (type 1): " + linkType);
 			    			}		    				
 		    				break;
 		    			case "AND": case "OR":
@@ -256,10 +256,11 @@ public class ModelSpecBuilder {
 			    				allDecompositionLinks.add(link);
 			    				break;
 			    			default:
-			    				throw new IllegalArgumentException("Invalid relationship type: " + linkType);
-			    			}		    				
+			    				throw new IllegalArgumentException("Invalid relationship type (type 2): " + linkType);
+			    			}
+			    			break;
 		    			default:
-		    				throw new IllegalArgumentException("Invalid relationship type: " + linkType);
+		    				throw new IllegalArgumentException("Invalid relationship type (type 3): " + linkType);
 		    			}
 		    		}
 				}
