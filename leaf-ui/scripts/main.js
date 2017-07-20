@@ -807,7 +807,9 @@ paper.on('cell:pointerup', function(cellView, evt) {
 	// Link
 	if (cellView.model instanceof joint.dia.Link){
 		var link = cellView.model;
-		var sourceCell = link.getSourceElement().attributes.type;
+		
+		if(link.getSourceElement()!=null)
+			var sourceCell = link.getSourceElement().attributes.type;
 
 		// Check if link is valid or not
 		if (link.getTargetElement()){

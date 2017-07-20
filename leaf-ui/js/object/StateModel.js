@@ -24,4 +24,6 @@ function getStateModel(){
 		}
 		values.push(stateModel);
 	}
+	
+	return values;
 }

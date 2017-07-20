@@ -8,6 +8,19 @@ function backendComm(js_object){
 	//backend script called
 	var pathToCGI = "./cgi-bin/backendCom.cgi";
 
+	/**
+	 * COMMENT THE CODE BELLOW TO EXECUTE ON SERVER
+	 */
+/*
+	analysisResults = {};
+	loadAnalysis(analysisResults);
+	var currentValueLimit = parseInt(sliderObject.sliderElement.noUiSlider.get());
+	var sliderMax = currentValueLimit + currentAnalysis.timeScale;
+	sliderObject.sliderElement.noUiSlider.set(sliderMax);
+*/
+	/**
+	 * UNCOMMENT THE CODE BELLOW TO EXECUTE ON SERVER
+	 */
 	$.ajax({
 		url: pathToCGI,
 		type: "post",
