@@ -94,7 +94,7 @@ var AnalysisInspector = Backbone.View.extend({
 	},
 	// Function called by Solve Single Button. Gets data for backend.
 	solveSinglePath: function(){
-		var analysis = new AnalysisObject();
+		var analysis = new InputAnalysis();
 		var js_object = {};
 		AO_btnSolveSinglePath(analysis);
 		js_object.analysis = AO_getValues(analysis);
@@ -112,7 +112,7 @@ var AnalysisInspector = Backbone.View.extend({
 	},
 	// Function called by get Next States Button. Gets data for backend.
 	getNextStates: function(){
-		var analysis = new AnalysisObject();
+		var analysis = new InputAnalysis();
 		var js_object = {};
 		AO_btnGetNextState(analysis);
 		analysis.currentState = $('#sliderValue').text();
