@@ -216,7 +216,6 @@ var AnalysisInspector = Backbone.View.extend({
 		// Clear all previous table entries
 		$(".abs-table").find("tr:gt(0)").remove();
 
-
 		var btn_html = '<td><button class="unassign-btn" > Unassign </button></td>';
 		modal.style.display = "block";
 		// Get a list of nodes
@@ -230,7 +229,7 @@ var AnalysisInspector = Backbone.View.extend({
 			var func = cell.attr('.funcvalue').text;
 			var name = cell.attr('.name').text;
 			var assigned_time = cell.attr('.assigned_time');
-			if(func != 'UD' && func != 'D' && func != 'I' && func != 'C' && func != 'R'){
+			if(func != 'UD' && func != 'D' && func != 'I' && func != 'C' && func != 'R' && func != ""){
 				// If no assigned_time in the node, save 'None' into the node
 				if (!assigned_time){
 					cell.attr('.assigned_time', {0: 'None'});
