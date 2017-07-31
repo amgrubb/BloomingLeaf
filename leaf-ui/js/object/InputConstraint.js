@@ -11,26 +11,27 @@ function getConstraints(){
 	var constraints = [];
 	
 	var links = graphObject.intensionConstraints;
-	
-	for (var i = 0; i < links.length; i++){
-		var c = links[i];
-		var type = c.attributes.labels[0].attrs.text.text.replace(/\s/g, '');
-		var source = c.getSourceElement().attributes.elementid;
-		var target = c.getTargetElement().attributes.elementid;
-		var sourceVar = c.attr('.constraintvar/src');
-		var targetVar = c.attr('.constraintvar/tar');
+	if(links != null){
+		for (var i = 0; i < links.length; i++){
+			var c = links[i];
+			var type = c.attributes.labels[0].attrs.text.text.replace(/\s/g, '');
+			var source = c.getSourceElement().attributes.elementid;
+			var target = c.getTargetElement().attributes.elementid;
+			var sourceVar = c.attr('.constraintvar/src');
+			var targetVar = c.attr('.constraintvar/tar');
 
-		var constraint = new InputConstraint(
-				type,
-				source,
-				sourceVar,
-				null,
-				target,
-				targetVar);
+			var constraint = new InputConstraint(
+					type,
+					source,
+					sourceVar,
+					null,
+					target,
+					targetVar);
 
-		constraints.push(constraint);
-	};
-	
+			constraints.push(constraint);
+		};
+	}
+
 	return constraints;
 	
 }

@@ -5,6 +5,7 @@ function FrontendModel(
 		links,
 		dynamics,
 		constraints,
+		evolvings,
 		allStatesModel
 	){
 	this.actors = actors;// = [];
@@ -12,6 +13,7 @@ function FrontendModel(
 	this.links = links;// = [];
 	this.dynamics = dynamics;// = [];
 	this.constraints = constraints;// = [];
+	this.evolvings = evolvings;
 	this.allStatesModel = allStatesModel;
 }
 
@@ -54,10 +56,17 @@ function getFrontendModel(isSinglePath = true){
 	
 	/**
 	 * CONSTRAINT
-	 * Calls InputConstraint
-	 * return InputConstraint[] constraints
+	 * calls InputConstraint
+	 * returns InputConstraint[] constraints
 	 */
 	var constraints = getConstraints();
+	
+	/**
+	 * EVOLVINGS
+	 * calls InputEvolvings
+	 * returns InputEvolving[] evolvings
+	 */
+	var evolvings = getEvolvings();
 	
 	/**
 	 * ASSIGNED VALUES - all satisfaction values for all nodes per time
@@ -72,6 +81,7 @@ function getFrontendModel(isSinglePath = true){
 			links,
 			dynamics,
 			constraints,
+			evolvings,
 			values
 		)
 
