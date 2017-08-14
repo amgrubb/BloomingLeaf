@@ -11,9 +11,9 @@ public class NotBothLink {
 	}
 	public NotBothLink(IntentionalElement element1, IntentionalElement element2, boolean finalValueDenied, int absoluteTime){
 		if (element1.getDynamicType() != IntentionalElementDynamicType.NB)
-			System.err.println("Error: NotBothLink has intention with incorrect type.");
+			System.err.println("Error: NotBothLink of " + element1.id + " and " + element2.id + " has intention with incorrect type (element 1).");
 		if (element2.getDynamicType() != IntentionalElementDynamicType.NB)
-			System.err.println("Error: NotBothLink has intention with incorrect type.");
+			System.err.println("Error: NotBothLink of " + element1.id + " and " + element2.id + " has intention with incorrect type (element 2).");
 		this.element1 = element1;
 		this.element2 = element2;
 		this.absTime = absoluteTime;

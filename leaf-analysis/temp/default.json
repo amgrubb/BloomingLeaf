@@ -1,1 +1,1716 @@
-{"analysis":{"currentState":0,"solveSinglePath":true,"getNextState":false,"maxAbsTime":"100","conflictLevel":"S","numRelTime":"5","absTimePts":""},"model":{"actors":[],"intentions":[{"nodeActorID":"-","nodeID":"0000","nodeType":"G","initialValue":"0000","nodeName":"Goal_0"}],"links":[],"dynamics":[{"intentionID":"0000","dynamicType":"NT","markedValue":"0000","line":null}],"constraints":[],"allStatesModel":[{"intentionElements":[{"status":["0000"],"id":"0000"}],"time":0}]}}
+{
+  "analysis": {
+    "currentState": 0,
+    "solveSinglePath": true,
+    "getNextState": false,
+    "maxAbsTime": "100",
+    "conflictLevel": "S",
+    "numRelTime": "1",
+    "absTimePts": ""
+  },
+  "model": {
+    "actors": [
+      
+    ],
+    "intentions": [
+      {
+        "nodeActorID": "-",
+        "nodeID": "0000",
+        "nodeType": "G",
+        "initialValue": "1100",
+        "nodeName": "Grow City"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0001",
+        "nodeType": "R",
+        "initialValue": "0000",
+        "nodeName": "Positive Birth Rate"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0002",
+        "nodeType": "T",
+        "initialValue": "0000",
+        "nodeName": "Expand Suburbs Vacant Land Use "
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0003",
+        "nodeType": "T",
+        "initialValue": "0000",
+        "nodeName": "Build Rapid Transit"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0004",
+        "nodeType": "T",
+        "initialValue": "0000",
+        "nodeName": "Clear Slums Downtown"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0005",
+        "nodeType": "T",
+        "initialValue": "0000",
+        "nodeName": "Improve Amenities"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0006",
+        "nodeType": "G",
+        "initialValue": "1100",
+        "nodeName": "Increase City Services"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0007",
+        "nodeType": "G",
+        "initialValue": "0000",
+        "nodeName": "Extend City Government Control"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0008",
+        "nodeType": "G",
+        "initialValue": "0000",
+        "nodeName": "Have a Unified Arterial Road System"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0009",
+        "nodeType": "T",
+        "initialValue": "0000",
+        "nodeName": "Build Other Highways"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0010",
+        "nodeType": "G",
+        "initialValue": "0000",
+        "nodeName": "Have Spadina  Expressway"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0011",
+        "nodeType": "T",
+        "initialValue": "0011",
+        "nodeName": "Complete Initial Downtown Widening"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0012",
+        "nodeType": "T",
+        "initialValue": "0000",
+        "nodeName": "Plan Project"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0013",
+        "nodeType": "T",
+        "initialValue": "0000",
+        "nodeName": "Get Spadina  Funding"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0014",
+        "nodeType": "T",
+        "initialValue": "0000",
+        "nodeName": "Build Road"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0015",
+        "nodeType": "S",
+        "initialValue": "0000",
+        "nodeName": "Cooperation between  Governments"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0016",
+        "nodeType": "G",
+        "initialValue": "0000",
+        "nodeName": "Have Physical  Connection between  York and downtown"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0017",
+        "nodeType": "T",
+        "initialValue": "0000",
+        "nodeName": "Get Funding  From York"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0018",
+        "nodeType": "T",
+        "initialValue": "0000",
+        "nodeName": "Get Funding  From Toronto"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0019",
+        "nodeType": "T",
+        "initialValue": "0000",
+        "nodeName": "York County Approves Funding"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0020",
+        "nodeType": "T",
+        "initialValue": "0011",
+        "nodeName": "City Approves Funding"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0021",
+        "nodeType": "R",
+        "initialValue": "0000",
+        "nodeName": "TYPlanningBoard 3"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0022",
+        "nodeType": "G",
+        "initialValue": "0000",
+        "nodeName": "1948"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0023",
+        "nodeType": "T",
+        "initialValue": "0000",
+        "nodeName": "Build Road  Network"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0024",
+        "nodeType": "T",
+        "initialValue": "0000",
+        "nodeName": "Build Individual  Roads"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0025",
+        "nodeType": "T",
+        "initialValue": "0011",
+        "nodeName": "Approve Network"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0026",
+        "nodeType": "T",
+        "initialValue": "0000",
+        "nodeName": "Get Network  Funding"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0027",
+        "nodeType": "T",
+        "initialValue": "0011",
+        "nodeName": "Plan Network"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0028",
+        "nodeType": "T",
+        "initialValue": "0000",
+        "nodeName": "Build Network"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0029",
+        "nodeType": "T",
+        "initialValue": "0000",
+        "nodeName": "Build Design A"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0030",
+        "nodeType": "T",
+        "initialValue": "0000",
+        "nodeName": "Seg_A"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0031",
+        "nodeType": "T",
+        "initialValue": "0000",
+        "nodeName": "Seg_B"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0032",
+        "nodeType": "T",
+        "initialValue": "0000",
+        "nodeName": "Build Design B"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0033",
+        "nodeType": "T",
+        "nodeName": "Design A"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0034",
+        "nodeType": "T",
+        "nodeName": "Design B"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0035",
+        "nodeType": "T",
+        "initialValue": "0000",
+        "nodeName": "Water Sewage"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0036",
+        "nodeType": "T",
+        "nodeName": "With Province"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0037",
+        "nodeType": "T",
+        "nodeName": "Without Province"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0038",
+        "nodeType": "T",
+        "initialValue": "0000",
+        "nodeName": "Public Consultations"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0039",
+        "nodeType": "T",
+        "initialValue": "1100",
+        "nodeName": "Get Funding From Province"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0040",
+        "nodeType": "G",
+        "initialValue": "0000",
+        "nodeName": "Increase Employment"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0041",
+        "nodeType": "G",
+        "initialValue": "0000",
+        "nodeName": "Be World Class City"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0042",
+        "nodeType": "G",
+        "initialValue": "0000",
+        "nodeName": "Attract Employers"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0043",
+        "nodeType": "G",
+        "initialValue": "0000",
+        "nodeName": "Increase City  Immigration"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0044",
+        "nodeType": "G",
+        "initialValue": "1100",
+        "nodeName": "Amalgamate  Toronto and York"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0045",
+        "nodeType": "T",
+        "initialValue": "0000",
+        "nodeName": "Approve Funding"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0046",
+        "nodeType": "S",
+        "initialValue": "0000",
+        "nodeName": "Demonstrate Usage and Project Sucess"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0047",
+        "nodeType": "T",
+        "initialValue": "1100",
+        "nodeName": "Gardiner Waterfront Highway"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0048",
+        "nodeType": "T",
+        "initialValue": "1100",
+        "nodeName": "Cross Town"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0049",
+        "nodeType": "T",
+        "initialValue": "1100",
+        "nodeName": "DVP"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0050",
+        "nodeType": "T",
+        "initialValue": "0000",
+        "nodeName": "Expropriate Land"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0051",
+        "nodeType": "T",
+        "initialValue": "0000",
+        "nodeName": "Expropriate All Land Segments"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0052",
+        "nodeType": "T",
+        "initialValue": "0000",
+        "nodeName": "Expropriate Land as Required"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0053",
+        "nodeType": "R",
+        "initialValue": "0000",
+        "nodeName": "Funding "
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0054",
+        "nodeType": "T",
+        "initialValue": "1100",
+        "nodeName": "Build Rapid Transit Copy Province Opinion"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0055",
+        "nodeType": "R",
+        "initialValue": "0000",
+        "nodeName": "No Provincial  Funding"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0056",
+        "nodeType": "R",
+        "initialValue": "0000",
+        "nodeName": "Problems Expropriating Land"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0057",
+        "nodeType": "R",
+        "initialValue": "0000",
+        "nodeName": "Lack of cooperation  between counties"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0058",
+        "nodeType": "R",
+        "initialValue": "0000",
+        "nodeName": "Citizens NIMBYism"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0059",
+        "nodeType": "R",
+        "initialValue": "0000",
+        "nodeName": "Rapid Transit  Coordination"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0060",
+        "nodeType": "R",
+        "initialValue": "0000",
+        "nodeName": "Are cars good"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0061",
+        "nodeType": "S",
+        "initialValue": "0000",
+        "nodeName": "Vision for Downtown"
+      }
+    ],
+    "links": [
+      {
+        "linkType": "AND",
+        "linkSrcID": "0017",
+        "linkDestID": "0037",
+        "postType": null
+      },
+      {
+        "linkType": "AND",
+        "linkSrcID": "0018",
+        "linkDestID": "0037",
+        "postType": null
+      },
+      {
+        "linkType": "++",
+        "linkSrcID": "0019",
+        "linkDestID": "0017",
+        "postType": null
+      },
+      {
+        "linkType": "++",
+        "linkSrcID": "0020",
+        "linkDestID": "0018",
+        "postType": null
+      },
+      {
+        "linkType": "++D",
+        "linkSrcID": "0013",
+        "linkDestID": "0014",
+        "postType": null
+      },
+      {
+        "linkType": "AND",
+        "linkSrcID": "0011",
+        "linkDestID": "0010",
+        "postType": null
+      },
+      {
+        "linkType": "AND",
+        "linkSrcID": "0012",
+        "linkDestID": "0010",
+        "postType": null
+      },
+      {
+        "linkType": "AND",
+        "linkSrcID": "0013",
+        "linkDestID": "0010",
+        "postType": null
+      },
+      {
+        "linkType": "AND",
+        "linkSrcID": "0014",
+        "linkDestID": "0010",
+        "postType": null
+      },
+      {
+        "linkType": "AND",
+        "linkSrcID": "0010",
+        "linkDestID": "0024",
+        "postType": null
+      },
+      {
+        "linkType": "AND",
+        "linkSrcID": "0009",
+        "linkDestID": "0024",
+        "postType": null
+      },
+      {
+        "linkType": "+",
+        "linkSrcID": "0010",
+        "linkDestID": "0015",
+        "postType": null
+      },
+      {
+        "linkType": "++",
+        "linkSrcID": "0010",
+        "linkDestID": "0016",
+        "postType": null
+      },
+      {
+        "linkType": "+",
+        "linkSrcID": "0002",
+        "linkDestID": "0000",
+        "postType": null
+      },
+      {
+        "linkType": "+",
+        "linkSrcID": "0001",
+        "linkDestID": "0000",
+        "postType": null
+      },
+      {
+        "linkType": "+",
+        "linkSrcID": "0007",
+        "linkDestID": "0006",
+        "postType": null
+      },
+      {
+        "linkType": "AND",
+        "linkSrcID": "0005",
+        "linkDestID": "0006",
+        "postType": null
+      },
+      {
+        "linkType": "AND",
+        "linkSrcID": "0004",
+        "linkDestID": "0006",
+        "postType": null
+      },
+      {
+        "linkType": "+",
+        "linkSrcID": "0003",
+        "linkDestID": "0016",
+        "postType": null
+      },
+      {
+        "linkType": "+",
+        "linkSrcID": "0016",
+        "linkDestID": "0000",
+        "postType": null
+      },
+      {
+        "linkType": "OR",
+        "linkSrcID": "0023",
+        "linkDestID": "0008",
+        "postType": null
+      },
+      {
+        "linkType": "OR",
+        "linkSrcID": "0024",
+        "linkDestID": "0008",
+        "postType": null
+      },
+      {
+        "linkType": "AND",
+        "linkSrcID": "0027",
+        "linkDestID": "0023",
+        "postType": null
+      },
+      {
+        "linkType": "AND",
+        "linkSrcID": "0025",
+        "linkDestID": "0023",
+        "postType": null
+      },
+      {
+        "linkType": "AND",
+        "linkSrcID": "0026",
+        "linkDestID": "0023",
+        "postType": null
+      },
+      {
+        "linkType": "AND",
+        "linkSrcID": "0028",
+        "linkDestID": "0023",
+        "postType": null
+      },
+      {
+        "linkType": "++D",
+        "linkSrcID": "0026",
+        "linkDestID": "0028",
+        "postType": null
+      },
+      {
+        "linkType": "++D",
+        "linkSrcID": "0025",
+        "linkDestID": "0028",
+        "postType": null
+      },
+      {
+        "linkType": "++D",
+        "linkSrcID": "0027",
+        "linkDestID": "0028",
+        "postType": null
+      },
+      {
+        "linkType": "OR",
+        "linkSrcID": "0029",
+        "linkDestID": "0014",
+        "postType": null
+      },
+      {
+        "linkType": "AND",
+        "linkSrcID": "0030",
+        "linkDestID": "0029",
+        "postType": null
+      },
+      {
+        "linkType": "AND",
+        "linkSrcID": "0031",
+        "linkDestID": "0029",
+        "postType": null
+      },
+      {
+        "linkType": "++D",
+        "linkSrcID": "0018",
+        "linkDestID": "0030",
+        "postType": null
+      },
+      {
+        "linkType": "++D",
+        "linkSrcID": "0017",
+        "linkDestID": "0031",
+        "postType": null
+      },
+      {
+        "linkType": "OR",
+        "linkSrcID": "0032",
+        "linkDestID": "0014",
+        "postType": null
+      },
+      {
+        "linkType": "OR",
+        "linkSrcID": "0033",
+        "linkDestID": "0012",
+        "postType": null
+      },
+      {
+        "linkType": "OR",
+        "linkSrcID": "0034",
+        "linkDestID": "0012",
+        "postType": null
+      },
+      {
+        "linkType": "NBT",
+        "linkSrcID": "0033",
+        "linkDestID": "0034",
+        "postType": null
+      },
+      {
+        "linkType": "AND",
+        "linkSrcID": "0035",
+        "linkDestID": "0005",
+        "postType": null
+      },
+      {
+        "linkType": "OR",
+        "linkSrcID": "0037",
+        "linkDestID": "0013",
+        "postType": null
+      },
+      {
+        "linkType": "OR",
+        "linkSrcID": "0036",
+        "linkDestID": "0013",
+        "postType": null
+      },
+      {
+        "linkType": "NBT",
+        "linkSrcID": "0036",
+        "linkDestID": "0037",
+        "postType": null
+      },
+      {
+        "linkType": "+",
+        "linkSrcID": "0038",
+        "linkDestID": "0036",
+        "postType": null
+      },
+      {
+        "linkType": "AND",
+        "linkSrcID": "0018",
+        "linkDestID": "0036",
+        "postType": null
+      },
+      {
+        "linkType": "AND",
+        "linkSrcID": "0017",
+        "linkDestID": "0036",
+        "postType": null
+      },
+      {
+        "linkType": "AND",
+        "linkSrcID": "0039",
+        "linkDestID": "0036",
+        "postType": null
+      },
+      {
+        "linkType": "++S",
+        "linkSrcID": "0008",
+        "linkDestID": "0016",
+        "postType": null
+      },
+      {
+        "linkType": "+",
+        "linkSrcID": "0040",
+        "linkDestID": "0000",
+        "postType": null
+      },
+      {
+        "linkType": "++S",
+        "linkSrcID": "0014",
+        "linkDestID": "0040",
+        "postType": "NO"
+      },
+      {
+        "linkType": "+",
+        "linkSrcID": "0010",
+        "linkDestID": "0040",
+        "postType": null
+      },
+      {
+        "linkType": "+",
+        "linkSrcID": "0008",
+        "linkDestID": "0041",
+        "postType": null
+      },
+      {
+        "linkType": "+",
+        "linkSrcID": "0040",
+        "linkDestID": "0041",
+        "postType": null
+      },
+      {
+        "linkType": "++",
+        "linkSrcID": "0041",
+        "linkDestID": "0043",
+        "postType": null
+      },
+      {
+        "linkType": "+",
+        "linkSrcID": "0041",
+        "linkDestID": "0042",
+        "postType": null
+      },
+      {
+        "linkType": "+",
+        "linkSrcID": "0005",
+        "linkDestID": "0041",
+        "postType": null
+      },
+      {
+        "linkType": "+",
+        "linkSrcID": "0043",
+        "linkDestID": "0000",
+        "postType": null
+      },
+      {
+        "linkType": "+",
+        "linkSrcID": "0042",
+        "linkDestID": "0043",
+        "postType": null
+      },
+      {
+        "linkType": "+",
+        "linkSrcID": "0044",
+        "linkDestID": "0041",
+        "postType": null
+      },
+      {
+        "linkType": "++",
+        "linkSrcID": "0044",
+        "linkDestID": "0045",
+        "postType": null
+      },
+      {
+        "linkType": "NO",
+        "linkSrcID": "0045",
+        "linkDestID": "0013",
+        "postType": "OR"
+      },
+      {
+        "linkType": "++",
+        "linkSrcID": "0028",
+        "linkDestID": "0046",
+        "postType": null
+      },
+      {
+        "linkType": "+",
+        "linkSrcID": "0014",
+        "linkDestID": "0046",
+        "postType": null
+      },
+      {
+        "linkType": "AND",
+        "linkSrcID": "0048",
+        "linkDestID": "0009",
+        "postType": null
+      },
+      {
+        "linkType": "AND",
+        "linkSrcID": "0049",
+        "linkDestID": "0009",
+        "postType": null
+      },
+      {
+        "linkType": "AND",
+        "linkSrcID": "0047",
+        "linkDestID": "0009",
+        "postType": null
+      },
+      {
+        "linkType": "+",
+        "linkSrcID": "0048",
+        "linkDestID": "0046",
+        "postType": null
+      },
+      {
+        "linkType": "+",
+        "linkSrcID": "0047",
+        "linkDestID": "0046",
+        "postType": null
+      },
+      {
+        "linkType": "+",
+        "linkSrcID": "0049",
+        "linkDestID": "0046",
+        "postType": null
+      },
+      {
+        "linkType": "+",
+        "linkSrcID": "0046",
+        "linkDestID": "0026",
+        "postType": null
+      },
+      {
+        "linkType": "+",
+        "linkSrcID": "0046",
+        "linkDestID": "0019",
+        "postType": null
+      },
+      {
+        "linkType": "+",
+        "linkSrcID": "0046",
+        "linkDestID": "0020",
+        "postType": null
+      },
+      {
+        "linkType": "+",
+        "linkSrcID": "0046",
+        "linkDestID": "0039",
+        "postType": null
+      },
+      {
+        "linkType": "+",
+        "linkSrcID": "0046",
+        "linkDestID": "0045",
+        "postType": null
+      },
+      {
+        "linkType": "+",
+        "linkSrcID": "0046",
+        "linkDestID": "0038",
+        "postType": null
+      },
+      {
+        "linkType": "++",
+        "linkSrcID": "0044",
+        "linkDestID": "0007",
+        "postType": null
+      },
+      {
+        "linkType": "+",
+        "linkSrcID": "0015",
+        "linkDestID": "0007",
+        "postType": null
+      },
+      {
+        "linkType": "+",
+        "linkSrcID": "0038",
+        "linkDestID": "0019",
+        "postType": null
+      },
+      {
+        "linkType": "AND",
+        "linkSrcID": "0050",
+        "linkDestID": "0010",
+        "postType": null
+      },
+      {
+        "linkType": "OR",
+        "linkSrcID": "0051",
+        "linkDestID": "0050",
+        "postType": null
+      },
+      {
+        "linkType": "OR",
+        "linkSrcID": "0052",
+        "linkDestID": "0050",
+        "postType": null
+      },
+      {
+        "linkType": "NBT",
+        "linkSrcID": "0052",
+        "linkDestID": "0051",
+        "postType": null
+      },
+      {
+        "linkType": "NBT",
+        "linkSrcID": "0029",
+        "linkDestID": "0032",
+        "postType": null
+      },
+      {
+        "linkType": "++D",
+        "linkSrcID": "0034",
+        "linkDestID": "0032",
+        "postType": null
+      },
+      {
+        "linkType": "++D",
+        "linkSrcID": "0033",
+        "linkDestID": "0029",
+        "postType": null
+      },
+      {
+        "linkType": "AND",
+        "linkSrcID": "0054",
+        "linkDestID": "0036",
+        "postType": null
+      }
+    ],
+    "dynamics": [
+      {
+        "intentionID": "0000",
+        "dynamicType": "RC",
+        "markedValue": "0010",
+        "line": null
+      },
+      {
+        "intentionID": "0001",
+        "dynamicType": "NT",
+        "markedValue": "0000",
+        "line": null
+      },
+      {
+        "intentionID": "0002",
+        "dynamicType": "NT",
+        "markedValue": "0000",
+        "line": null
+      },
+      {
+        "intentionID": "0003",
+        "dynamicType": "NT",
+        "markedValue": "0000",
+        "line": null
+      },
+      {
+        "intentionID": "0004",
+        "dynamicType": "NT",
+        "markedValue": "0000",
+        "line": null
+      },
+      {
+        "intentionID": "0005",
+        "dynamicType": "NT",
+        "markedValue": "0000",
+        "line": null
+      },
+      {
+        "intentionID": "0006",
+        "dynamicType": "RC",
+        "markedValue": "0011",
+        "line": null
+      },
+      {
+        "intentionID": "0007",
+        "dynamicType": "NT",
+        "markedValue": "0000",
+        "line": null
+      },
+      {
+        "intentionID": "0008",
+        "dynamicType": "NT",
+        "markedValue": "0000",
+        "line": null
+      },
+      {
+        "intentionID": "0009",
+        "dynamicType": "NT",
+        "markedValue": "0000",
+        "line": null
+      },
+      {
+        "intentionID": "0010",
+        "dynamicType": "NT",
+        "markedValue": "0000",
+        "line": null
+      },
+      {
+        "intentionID": "0011",
+        "dynamicType": "C",
+        "markedValue": "0011",
+        "line": null
+      },
+      {
+        "intentionID": "0012",
+        "dynamicType": "NT",
+        "markedValue": "0000",
+        "line": null
+      },
+      {
+        "intentionID": "0013",
+        "dynamicType": "NT",
+        "markedValue": "0000",
+        "line": null
+      },
+      {
+        "intentionID": "0014",
+        "dynamicType": "NT",
+        "markedValue": "0000",
+        "line": null
+      },
+      {
+        "intentionID": "0015",
+        "dynamicType": "NT",
+        "markedValue": "0000",
+        "line": null
+      },
+      {
+        "intentionID": "0016",
+        "dynamicType": "NT",
+        "markedValue": "0000",
+        "line": null
+      },
+      {
+        "intentionID": "0017",
+        "dynamicType": "NT",
+        "markedValue": "0000",
+        "line": null
+      },
+      {
+        "intentionID": "0018",
+        "dynamicType": "NT",
+        "markedValue": "0000",
+        "line": null
+      },
+      {
+        "intentionID": "0019",
+        "dynamicType": "NT",
+        "markedValue": "0000",
+        "line": null
+      },
+      {
+        "intentionID": "0020",
+        "dynamicType": "C",
+        "markedValue": "0011",
+        "line": null
+      },
+      {
+        "intentionID": "0021",
+        "dynamicType": "NT",
+        "markedValue": "0000",
+        "line": null
+      },
+      {
+        "intentionID": "0022",
+        "dynamicType": "C",
+        "markedValue": "0000",
+        "line": null
+      },
+      {
+        "intentionID": "0023",
+        "dynamicType": "NT",
+        "markedValue": "0000",
+        "line": null
+      },
+      {
+        "intentionID": "0024",
+        "dynamicType": "NT",
+        "markedValue": "0000",
+        "line": null
+      },
+      {
+        "intentionID": "0025",
+        "dynamicType": "C",
+        "markedValue": "0011",
+        "line": null
+      },
+      {
+        "intentionID": "0026",
+        "dynamicType": "NT",
+        "markedValue": "0000",
+        "line": null
+      },
+      {
+        "intentionID": "0027",
+        "dynamicType": "C",
+        "markedValue": "0011",
+        "line": null
+      },
+      {
+        "intentionID": "0028",
+        "dynamicType": "NT",
+        "markedValue": "0000",
+        "line": null
+      },
+      {
+        "intentionID": "0029",
+        "dynamicType": "NB",
+		"markedValue": "0000",
+        "line": null
+      },
+      {
+        "intentionID": "0030",
+        "dynamicType": "NT",
+        "markedValue": "0000",
+        "line": null
+      },
+      {
+        "intentionID": "0031",
+        "dynamicType": "NT",
+        "markedValue": "0000",
+        "line": null
+      },
+      {
+        "intentionID": "0032",
+        "dynamicType": "NB",
+		"markedValue": "0000",
+        "line": null
+      },
+      {
+        "intentionID": "0033",
+        "dynamicType": "NB",
+        "markedValue": "0000",
+        "line": null
+      },
+      {
+        "intentionID": "0034",
+        "dynamicType": "NB",
+        "markedValue": "0000",
+        "line": null
+      },
+      {
+        "intentionID": "0035",
+        "dynamicType": "NT",
+        "markedValue": "0000",
+        "line": null
+      },
+      {
+        "intentionID": "0036",
+        "dynamicType": "NB",
+        "markedValue": "0000",
+        "line": null
+      },
+      {
+        "intentionID": "0037",
+        "dynamicType": "NB",
+        "markedValue": "0000",
+        "line": null
+      },
+      {
+        "intentionID": "0038",
+        "dynamicType": "NT",
+        "markedValue": "0000",
+        "line": null
+      },
+      {
+        "intentionID": "0039",
+        "dynamicType": "C",
+        "markedValue": "1100",
+        "line": null
+      },
+      {
+        "intentionID": "0040",
+        "dynamicType": "NT",
+        "markedValue": "0000",
+        "line": null
+      },
+      {
+        "intentionID": "0041",
+        "dynamicType": "NT",
+        "markedValue": "0000",
+        "line": null
+      },
+      {
+        "intentionID": "0042",
+        "dynamicType": "NT",
+        "markedValue": "0000",
+        "line": null
+      },
+      {
+        "intentionID": "0043",
+        "dynamicType": "NT",
+        "markedValue": "0000",
+        "line": null
+      },
+      {
+        "intentionID": "0044",
+        "dynamicType": "C",
+        "markedValue": "1100",
+        "line": null
+      },
+      {
+        "intentionID": "0045",
+        "dynamicType": "NT",
+        "markedValue": "0000",
+        "line": null
+      },
+      {
+        "intentionID": "0046",
+        "dynamicType": "NT",
+        "markedValue": "0000",
+        "line": null
+      },
+      {
+        "intentionID": "0047",
+        "dynamicType": "DS",
+        "markedValue": "0011",
+        "line": null
+      },
+      {
+        "intentionID": "0048",
+        "dynamicType": "DS",
+        "markedValue": "0011",
+        "line": null
+      },
+      {
+        "intentionID": "0049",
+        "dynamicType": "DS",
+        "markedValue": "0011",
+        "line": null
+      },
+      {
+        "intentionID": "0050",
+        "dynamicType": "NT",
+        "markedValue": "0000",
+        "line": null
+      },
+      {
+        "intentionID": "0051",
+        "dynamicType": "NB",
+        "markedValue": "0000",
+        "line": null
+      },
+      {
+        "intentionID": "0052",
+        "dynamicType": "NB",
+        "markedValue": "0000",
+        "line": null
+      },
+      {
+        "intentionID": "0053",
+        "dynamicType": "NT",
+        "markedValue": "0000",
+        "line": null
+      },
+      {
+        "intentionID": "0054",
+        "dynamicType": "C",
+        "markedValue": "1100",
+        "line": null
+      },
+      {
+        "intentionID": "0055",
+        "dynamicType": "NT",
+        "markedValue": "0000",
+        "line": null
+      },
+      {
+        "intentionID": "0056",
+        "dynamicType": "NT",
+        "markedValue": "0000",
+        "line": null
+      },
+      {
+        "intentionID": "0057",
+        "dynamicType": "NT",
+        "markedValue": "0000",
+        "line": null
+      },
+      {
+        "intentionID": "0058",
+        "dynamicType": "NT",
+        "markedValue": "0000",
+        "line": null
+      },
+      {
+        "intentionID": "0059",
+        "dynamicType": "NT",
+        "markedValue": "0000",
+        "line": null
+      },
+      {
+        "intentionID": "0060",
+        "dynamicType": "NT",
+        "markedValue": "0000",
+        "line": null
+      },
+      {
+        "intentionID": "0061",
+        "dynamicType": "NT",
+        "markedValue": "0000",
+        "line": null
+      }
+    ],
+    "constraints": [
+      
+    ],
+    "allStatesModel": [
+      {
+        "intentionElements": [
+          {
+            "status": [
+              "1100"
+            ],
+            "id": "0000"
+          },
+          {
+            "status": [
+              "0000"
+            ],
+            "id": "0001"
+          },
+          {
+            "status": [
+              "0000"
+            ],
+            "id": "0002"
+          },
+          {
+            "status": [
+              "0000"
+            ],
+            "id": "0003"
+          },
+          {
+            "status": [
+              "0000"
+            ],
+            "id": "0004"
+          },
+          {
+            "status": [
+              "0000"
+            ],
+            "id": "0005"
+          },
+          {
+            "status": [
+              "1100"
+            ],
+            "id": "0006"
+          },
+          {
+            "status": [
+              "0000"
+            ],
+            "id": "0007"
+          },
+          {
+            "status": [
+              "0000"
+            ],
+            "id": "0008"
+          },
+          {
+            "status": [
+              "0000"
+            ],
+            "id": "0009"
+          },
+          {
+            "status": [
+              "0000"
+            ],
+            "id": "0010"
+          },
+          {
+            "status": [
+              "0011"
+            ],
+            "id": "0011"
+          },
+          {
+            "status": [
+              "0000"
+            ],
+            "id": "0012"
+          },
+          {
+            "status": [
+              "0000"
+            ],
+            "id": "0013"
+          },
+          {
+            "status": [
+              "0000"
+            ],
+            "id": "0014"
+          },
+          {
+            "status": [
+              "0000"
+            ],
+            "id": "0015"
+          },
+          {
+            "status": [
+              "0000"
+            ],
+            "id": "0016"
+          },
+          {
+            "status": [
+              "0000"
+            ],
+            "id": "0017"
+          },
+          {
+            "status": [
+              "0000"
+            ],
+            "id": "0018"
+          },
+          {
+            "status": [
+              "0000"
+            ],
+            "id": "0019"
+          },
+          {
+            "status": [
+              "0011"
+            ],
+            "id": "0020"
+          },
+          {
+            "status": [
+              "0000"
+            ],
+            "id": "0021"
+          },
+          {
+            "status": [
+              "0000"
+            ],
+            "id": "0022"
+          },
+          {
+            "status": [
+              "0000"
+            ],
+            "id": "0023"
+          },
+          {
+            "status": [
+              "0000"
+            ],
+            "id": "0024"
+          },
+          {
+            "status": [
+              "0011"
+            ],
+            "id": "0025"
+          },
+          {
+            "status": [
+              "0000"
+            ],
+            "id": "0026"
+          },
+          {
+            "status": [
+              "0011"
+            ],
+            "id": "0027"
+          },
+          {
+            "status": [
+              "0000"
+            ],
+            "id": "0028"
+          },
+          {
+            "status": [
+              null
+            ],
+            "id": "0029"
+          },
+          {
+            "status": [
+              "0000"
+            ],
+            "id": "0030"
+          },
+          {
+            "status": [
+              "0000"
+            ],
+            "id": "0031"
+          },
+          {
+            "status": [
+              null
+            ],
+            "id": "0032"
+          },
+          {
+            "status": [
+              null
+            ],
+            "id": "0033"
+          },
+          {
+            "status": [
+              null
+            ],
+            "id": "0034"
+          },
+          {
+            "status": [
+              "0000"
+            ],
+            "id": "0035"
+          },
+          {
+            "status": [
+              null
+            ],
+            "id": "0036"
+          },
+          {
+            "status": [
+              null
+            ],
+            "id": "0037"
+          },
+          {
+            "status": [
+              "0000"
+            ],
+            "id": "0038"
+          },
+          {
+            "status": [
+              "1100"
+            ],
+            "id": "0039"
+          },
+          {
+            "status": [
+              "0000"
+            ],
+            "id": "0040"
+          },
+          {
+            "status": [
+              "0000"
+            ],
+            "id": "0041"
+          },
+          {
+            "status": [
+              "0000"
+            ],
+            "id": "0042"
+          },
+          {
+            "status": [
+              "0000"
+            ],
+            "id": "0043"
+          },
+          {
+            "status": [
+              "1100"
+            ],
+            "id": "0044"
+          },
+          {
+            "status": [
+              "0000"
+            ],
+            "id": "0045"
+          },
+          {
+            "status": [
+              "0000"
+            ],
+            "id": "0046"
+          },
+          {
+            "status": [
+              "1100"
+            ],
+            "id": "0047"
+          },
+          {
+            "status": [
+              "1100"
+            ],
+            "id": "0048"
+          },
+          {
+            "status": [
+              "1100"
+            ],
+            "id": "0049"
+          },
+          {
+            "status": [
+              "0000"
+            ],
+            "id": "0050"
+          },
+          {
+            "status": [
+              "0000"
+            ],
+            "id": "0051"
+          },
+          {
+            "status": [
+              "0000"
+            ],
+            "id": "0052"
+          },
+          {
+            "status": [
+              "0000"
+            ],
+            "id": "0053"
+          },
+          {
+            "status": [
+              "1100"
+            ],
+            "id": "0054"
+          },
+          {
+            "status": [
+              "0000"
+            ],
+            "id": "0055"
+          },
+          {
+            "status": [
+              "0000"
+            ],
+            "id": "0056"
+          },
+          {
+            "status": [
+              "0000"
+            ],
+            "id": "0057"
+          },
+          {
+            "status": [
+              "0000"
+            ],
+            "id": "0058"
+          },
+          {
+            "status": [
+              "0000"
+            ],
+            "id": "0059"
+          },
+          {
+            "status": [
+              "0000"
+            ],
+            "id": "0060"
+          },
+          {
+            "status": [
+              "0000"
+            ],
+            "id": "0061"
+          }
+        ],
+        "time": 0
+      }
+    ]
+  }
+}
