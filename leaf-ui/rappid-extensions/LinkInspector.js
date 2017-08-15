@@ -317,8 +317,36 @@ var LinkInspector = Backbone.View.extend({
       }
       // Else, set funcvalue to none
       else {
-       source.attr(".funcvalue/text", "");
-       target.attr(".funcvalue/text", "");
+    	  //verify if source or target have any other link NBD or NBT
+    	  var sourceNBLink = function(){
+    		  var localLinks = graph.getLinks();
+    		  for(var i = 0; i < localLinks.length; i++){
+    			  if ((localLinks[i]!=link) && (localLinks[i].prop("link-type") == 'NBT' || localLinks[i].prop("link-type") == 'NBD')){
+        			  if(localLinks[i].getSourceElement() == source || localLinks[i].getSourceElement() == target){
+        				 return true; 
+        			  }  				  
+    			  }
+    		  }
+    		  return false;
+    	  }
+    	  
+    	  //verify if source or target have any other link NBD or NBT
+    	  var targetNBLink = function(){
+    		  var localLinks = graph.getLinks();
+    		  for(var i = 0; i < localLinks.length; i++){
+    			  if ((localLinks[i]!=link) && (localLinks[i].prop("link-type") == 'NBT' || localLinks[i].prop("link-type") == 'NBD')){
+        			  if(localLinks[i].getTargetElement() == target || localLinks[i].getTargetElement() == source){
+        				 return true; 
+        			  }  				  
+    			  }
+    		  }
+    		  return false;
+    	  }
+    	  
+    	  if(!sourceNBLink() && !targetNBLink()){
+    		  source.attr(".funcvalue/text", "");
+	          target.attr(".funcvalue/text", "");    		  
+    	  }
       }
     }
   },
