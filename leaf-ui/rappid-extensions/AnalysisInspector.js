@@ -21,6 +21,8 @@ var AnalysisInspector = Backbone.View.extend({
 		'<label class="sub-label">Absolute Time Points</label>',
 		'<input id="abs-time-pts" class="sub-label" type="text"/>',
 		'<br>',
+		'<font size="2">(e.g. 5 8 22)</font>',
+		'<br>',
 		'<hr>',
 		'<button id="btn-view-assignment" class="analysis-btns inspector-btn sub-label green-btn">View List of Assignments</button>',
 		// This is the modal box of assignments
