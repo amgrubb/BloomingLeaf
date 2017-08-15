@@ -39,6 +39,41 @@ var LinkInspector = Backbone.View.extend({
     '<br>'
   ].join(''),
 
+  evolving_template : [
+	  '<label id="title">Evolving Relationship</label>',
+	    '<br>',
+	    '<select class="link-type">',
+	      '<option value=and>And-Decomposition</option>',
+	      '<option value=or>Or-Decomposition (Means-end)</option>',
+	      '<option value=PP>++</option>',
+	      '<option value=NN>--</option>',
+	      '<option value=P>+</option>',
+	      '<option value=N>-</option>',
+	      '<option value=PS>+S</option>',
+	      '<option value=PPS>++S</option>',
+	      '<option value=NS>-S</option>',
+	      '<option value=NNS>--S</option>',
+	      '<option value=PD>+D</option>',
+	      '<option value=PPD>++D</option>',
+	      '<option value=ND>-D</option>',
+	      '<option value=NND>--D</option>',
+	      '<option value=NBT>Noth Both (None)</option>',
+	      '<option value=NBD>Not Both (Denied)</option>',
+
+	    '</select>',
+	    '<div id="link-div">',
+	      '<h5 id="repeat-error" class="inspector-error"></h5>',
+	      '<select id="link-type-begin" class="repeat-select">',
+	        '<option class="select-placeholder" selected disabled value="">Begin</option>',
+	      '</select>',
+	      '<select id="link-type-end" class="repeat-select">',
+	        '<option class="select-placeholder" selected disabled value="">End</option>',
+	      '</select>',
+	      '<button id="switch-link-type" class="inspector-btn small-btn blue-btn">Constant Relationships</button>',
+	    '</div>',
+	    '<br>'
+  ].join(''),
+  
   actortemplate: [
       '<label> Link Type </label> <br>',
       '<select class="link-type">',
@@ -71,7 +106,12 @@ var LinkInspector = Backbone.View.extend({
     if (cell.prop("linktype")){
       this.$el.html(_.template(this.actortemplate)());
     }else{
-      this.$el.html(_.template(this.template)());
+    	var val = cell.prop("link-type").split("|");
+    	if(val.length > 1){
+    	      this.$el.html(_.template(this.evolving_template)());
+    	}else{
+    	      this.$el.html(_.template(this.template)());    		
+    	}
     }
 
     // already intialized previously
