@@ -34,9 +34,8 @@ var AnalysisInspector = Backbone.View.extend({
 		      '<p>Nodes</p>',
 		      	'<table id="node-list" class="abs-table">',
 		      	  '<tr>',
-		      	    '<th>Epoch Boundary</th>',
+		      	    '<th>Epoch Boundary Name</th>',
 		      	    '<th>Function</th>',
-		      	    '<th>Node name</th>',
 		      	    '<th>Assigned Time</th>',
 		      	    '<th>Action</th>',
 		      	  '</tr>',
@@ -237,8 +236,8 @@ var AnalysisInspector = Backbone.View.extend({
 				}
 				assigned_time = cell.attr('.assigned_time')[0];
 
-				$('#node-list').append('<tr><td>' + 'A' + '</td><td>' + func + '</td><td>' + name +
-					'</td><td><input type="text" name="sth" value="' + assigned_time + '"></td>' + btn_html +
+				$('#node-list').append('<tr><td>' + name + ': A' + '</td><td>' + func + '</td>' +
+					'<td><input type="text" name="sth" value="' + assigned_time + '"></td>' + btn_html +
 					'<input type="hidden" name="id" value="' + cell.id + '"> </td> </tr>');
 
 			}
@@ -268,8 +267,8 @@ var AnalysisInspector = Backbone.View.extend({
 					k ++;
 				}
 				for (var j = 0; j < fun_len; j++){
-					$('#node-list').append('<tr><td>' + current_something + '</td><td>' + func + '</td><td>' + name +
-						'</td><td><input type="text" name="sth" value=' +assigned_time[j] + '></td>' + btn_html +
+					$('#node-list').append('<tr><td>' + name +': '+ current_something + '</td><td>' + func + '</td>'  +
+						'<td><input type="text" name="sth" value=' +assigned_time[j] + '></td>' + btn_html +
 						'<input type="hidden" name="id" value="' + cell.id + '_' + j + '"> </td> </tr>');
 					current_something = String.fromCharCode(current_something.charCodeAt(0) + 1);
 				}
