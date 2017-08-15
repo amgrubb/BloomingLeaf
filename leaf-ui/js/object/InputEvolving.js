@@ -33,7 +33,6 @@ function getEvolvings(){
 				var absoluteTime = link.attr('.assigned_time')[0];
 			}
 			
-			
 			//TODO: preCondition values and posCondition values?
 			var preCond = "UNK";
 			var posCond = "UNK";

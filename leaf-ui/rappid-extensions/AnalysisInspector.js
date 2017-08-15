@@ -105,7 +105,7 @@ var AnalysisInspector = Backbone.View.extend({
 			return null;
 		}
 
-		console.log(JSON.stringify(js_object));
+		//console.log(JSON.stringify(js_object));
 		//Send data to backend
 		backendComm(js_object);
 

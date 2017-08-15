@@ -63,7 +63,7 @@ function getIntentitonalElements(){
 					"none": "0000"
 				}
 
-		  	var currentValue = graph.getElements()[i].attr(".satvalue/value");
+		  	var currentValue = (graph.getElements()[i].attr(".satvalue/value")||"none");
 		  	//Making currentValue to numeric values like 0000, 0001, 0011...
 		  	if(!$.isNumeric(currentValue))
 		  		currentValue = satValueDict[currentValue];

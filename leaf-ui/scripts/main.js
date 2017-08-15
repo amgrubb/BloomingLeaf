@@ -47,6 +47,7 @@ mode = "Modelling";		// 'Analysis' or 'Modelling'
 linkMode = "Relationships";	// 'Relationships' or 'Constraints'
 
 graph = new joint.dia.Graph();
+var commandManager = new joint.dia.CommandManager({ graph: graph });
 
 // Create a paper and wrap it in a PaperScroller.
 paper = new joint.dia.Paper({
@@ -932,8 +933,6 @@ KeyboardJS.on('backspace', function(){
 });
 // ----------------------------------------------------------------- //
 // Toolbar
-
-var commandManager = new joint.dia.CommandManager({ graph: graph });
 
 $('#btn-undo').on('click', _.bind(commandManager.undo, commandManager));
 $('#btn-redo').on('click', _.bind(commandManager.redo, commandManager));

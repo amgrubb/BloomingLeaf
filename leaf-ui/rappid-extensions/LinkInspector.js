@@ -51,7 +51,6 @@ var LinkInspector = Backbone.View.extend({
     'change .link-type': 'updateCell',
     'change #link-type-begin': 'updateEvolvingRelations',
     'change #link-type-end': 'updateEvolvingRelations',
-
     'click #switch-link-type': 'switchMode',
   },
 

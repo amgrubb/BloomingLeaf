@@ -36,7 +36,10 @@ function getDynamics(){
 		}
 
 	    var io_dynamic;
-	    if  (f == ""){
+	    if(f=="NB"){
+	    	io_dynamic = new InputDynamic(elementID, "NB", initValue);
+	    }
+	    else if (f == ""){
     		io_dynamic = new InputDynamic(elementID, "NT", initValue);
 	    }else if(f == " "){
     		io_dynamic = new InputDynamic(elementID, "NT", initValue);
