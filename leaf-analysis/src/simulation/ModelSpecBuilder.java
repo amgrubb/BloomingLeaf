@@ -188,6 +188,8 @@ public class ModelSpecBuilder {
 			}
 			if(DEBUG)
 				System.out.println("Done Elements");
+			
+			
 			//Getting links
 			if(!frontendModel.getLinks().isEmpty()){
 				ArrayList<InputLink> allInputLinks = (ArrayList<InputLink>)frontendModel.getLinks();
@@ -275,9 +277,8 @@ public class ModelSpecBuilder {
 				List<Decomposition> decomposition = new ArrayList<Decomposition>();
 				List<EvolvingDecomposition> evolvingDecomposition = new ArrayList<EvolvingDecomposition>();
 
-				//List<Decomposition> allDecomposition = new ArrayList<>();
 				while(allDecompositionLinks.size() > 0){
-					String destID = allInputLinks.get(0).getLinkDestID();
+					String destID = allDecompositionLinks.get(0).getLinkDestID();
 					IntentionalElement intentElementDest = getIntentionalElementById(destID, modelSpec.getIntElements());
 					ArrayList<InputLink> curDestLinks = new ArrayList<InputLink>();					
 					boolean evolve = false;
@@ -285,7 +286,7 @@ public class ModelSpecBuilder {
 					boolean orLink = false;
 					boolean andPost = false;
 					boolean orPost = false;
-					for(InputLink inputLink : allInputLinks){
+					for(InputLink inputLink : allDecompositionLinks){
 						if(destID.equals(inputLink.getLinkDestID())){							
 							curDestLinks.add(inputLink);
 							if(inputLink.getPostType() != null){
@@ -328,18 +329,20 @@ public class ModelSpecBuilder {
 						if(andLink)
 							pre = DecompositionType.AND;
 						if(orLink)
-							post = DecompositionType.OR;
+							pre = DecompositionType.OR;
 						if(andPost)
-							pre = DecompositionType.AND;
+							post = DecompositionType.AND;
 						if(orPost)
 							post = DecompositionType.OR;
 						evolvingDecomposition.add(new EvolvingDecomposition(linkElementsSrc, intentElementDest, pre, post));
 						for(InputLink iLink : curDestLinks){
 							if(pre != null && !iLink.getLinkType().equals(pre.getCode()))
 								throw new IllegalArgumentException("Relationships for ID: " + destID + " must be all the same types.");
-							if(post != null && !iLink.getPostType().equals(post.getCode()))
-								throw new IllegalArgumentException("Relationships for ID: " + destID + " must be all the same types.");
 							if(pre == null && !iLink.getLinkType().equals("NO"))
+								throw new IllegalArgumentException("Relationships for ID: " + destID + " must be all the same types.");
+							if(iLink.getPostType() == null)
+								throw new IllegalArgumentException("Relationships for ID: " + destID + " must be all the same types.");
+							if(post != null && !iLink.getPostType().equals(post.getCode()))
 								throw new IllegalArgumentException("Relationships for ID: " + destID + " must be all the same types.");
 							if(post == null && !iLink.getPostType().equals("NO"))
 								throw new IllegalArgumentException("Relationships for ID: " + destID + " must be all the same types.");
