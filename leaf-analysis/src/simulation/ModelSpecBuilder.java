@@ -21,7 +21,7 @@ import interface_objects.InputObject;
  *
  */
 public class ModelSpecBuilder {
-	
+    private final static boolean DEBUG = true;	
 	
 	public static ModelSpec buildModelSpec(InputObject frontendObject){
 		
@@ -160,7 +160,8 @@ public class ModelSpecBuilder {
 				for(InputDynamic dataDynamic : frontendModel.getDynamics()){
 					String intentionID = dataDynamic.getIntentionID();
 					String dynamicType = dataDynamic.getDynamicType();
-
+					if(DEBUG)
+						System.out.println(intentionID);
 					boolean[] dynamicFunctionMarkedValue = new boolean[4];
 					char[] values = dataDynamic.getMarkedValue().toCharArray();
 						for(int i = 0; i < 4; i++){
@@ -185,7 +186,8 @@ public class ModelSpecBuilder {
 			        }				
 				}
 			}
-			
+			if(DEBUG)
+				System.out.println("Done Elements");
 			//Getting links
 			if(!frontendModel.getLinks().isEmpty()){
 				ArrayList<InputLink> allInputLinks = (ArrayList<InputLink>)frontendModel.getLinks();
@@ -221,7 +223,7 @@ public class ModelSpecBuilder {
 		    				allDecompositionLinks.add(link);
 		    				break;
 		    			default:
-		    				throw new IllegalArgumentException("Invalid relationship type: " + linkType);
+		    				throw new IllegalArgumentException("(Simple) Invalid relationship type: " + linkType);
 		    			}
 		    		}else{
 		    			// Evolving Link
@@ -239,7 +241,7 @@ public class ModelSpecBuilder {
 			    				evolvingContribution.add(new EvolvingContribution(intentElementSrc, intentElementDest, ContributionType.getByCode(linkType), ContributionType.getByCode(postType)));
 			    				break;
 			    			default:
-			    				throw new IllegalArgumentException("Invalid relationship type: " + linkType);
+			    				throw new IllegalArgumentException("Invalid relationship type (type 1): " + linkType);
 			    			}		    				
 		    				break;
 		    			case "AND": case "OR":
@@ -256,10 +258,11 @@ public class ModelSpecBuilder {
 			    				allDecompositionLinks.add(link);
 			    				break;
 			    			default:
-			    				throw new IllegalArgumentException("Invalid relationship type: " + linkType);
-			    			}		    				
+			    				throw new IllegalArgumentException("Invalid relationship type (type 2): " + linkType);
+			    			}
+			    			break;
 		    			default:
-		    				throw new IllegalArgumentException("Invalid relationship type: " + linkType);
+		    				throw new IllegalArgumentException("Invalid relationship type (type 3): " + linkType);
 		    			}
 		    		}
 				}
@@ -351,7 +354,9 @@ public class ModelSpecBuilder {
 				modelSpec.setDecomposition(decomposition);
 				modelSpec.setEvolvingDecomposition(evolvingDecomposition);
 			}
-			
+			if(DEBUG)
+				System.out.println("Done Links");
+				
 			//Getting constraints
 			if(!frontendModel.getConstraints().isEmpty()){
 				for(InputConstraint dataConstraint : frontendModel.getConstraints()){
@@ -381,6 +386,8 @@ public class ModelSpecBuilder {
 					}				
 				}
 			}
+			if(DEBUG)
+				System.out.println("Done Constraints");
 			
 			if(modelSpec.isSolveSingleSolutions()){
 				//Getting initial Values
@@ -413,7 +420,8 @@ public class ModelSpecBuilder {
 				
 				modelSpec.setInitialValues(initialValues);				
 			}
-			
+			if(DEBUG)
+				System.out.println("Building Model");
 		}catch (Exception e) {
 			throw new RuntimeException(e.getMessage()); 
 		}

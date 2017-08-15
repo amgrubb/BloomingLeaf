@@ -28,14 +28,15 @@ public class SolveModel {
 	public static void main(String[] args) {
 
 		//This is the default filePath to be executed if no file is pass through parameters
-		String filePath = "temp/"; //"stored-models/";			
+		String filePath = "temp/"; 			
 		String inputFile = "default.json";
 		String outputFile = "output.out";
 				
 		try {
 			//creating the backend model to be analysed
 			ModelSpec modelSpec = convertModelFromFile(filePath + inputFile);
-
+			
+			System.out.println("Model Spec Created");
 			//Analyse the model
 			TroposCSPAlgorithm solver = new TroposCSPAlgorithm(modelSpec);
 			solver.solveModel();

@@ -10,12 +10,14 @@ import java.util.ListIterator;
 import org.jacop.constraints.Alldifferent;
 import org.jacop.constraints.And;
 import org.jacop.constraints.AndBool;
+import org.jacop.constraints.AndBoolVector;
 import org.jacop.constraints.Constraint;
 import org.jacop.constraints.IfThen;
 import org.jacop.constraints.IfThenElse;
 import org.jacop.constraints.Min;
 import org.jacop.constraints.Or;
 import org.jacop.constraints.OrBool;
+import org.jacop.constraints.OrBoolVector;
 import org.jacop.constraints.PrimitiveConstraint;
 import org.jacop.constraints.XeqC;
 import org.jacop.constraints.XeqY;
@@ -62,7 +64,7 @@ public class TroposCSPAlgorithm {
     private IntVar nextTimePoint;							// Holds the single int value that will map to a value of nextTimePoints, to be solve by the solve if next state is used.
     private IntVar minTimePoint;									// Is assigned the minimum time of nextTimePoints.
     
-    private final static boolean DEBUG = false;								// Whether to print debug statements.
+    private final static boolean DEBUG = true;								// Whether to print debug statements.
     /* New in ModelSpec
      *     	private int relativeTimePoints = 4;
     		private int[] absoluteTimePoints = new int[] {5, 10, 15, 20};
@@ -80,6 +82,29 @@ public class TroposCSPAlgorithm {
 	 * @param spec	input model
 	 */
 	public TroposCSPAlgorithm(ModelSpec spec) {
+/*		
+		store = new Store();
+
+		IntVar L0 = new IntVar(store, "L0", 1, 100);
+		IntVar TA0 = new IntVar(store, "TA0", 0, 0);
+		
+		IntVar[] links = new IntVar[3];
+		links[0] = new IntVar(store, "N0001_0_FS", 0, 0);
+		links[1] = new IntVar(store, "N0002_0_FS", 0, 1);
+		links[2] = new IntVar(store, "N0001_0_FS", 0, 1);
+		
+		IntVar N0000_0_FS = new IntVar(store, "N0000_0_FS", 0, 0);
+
+		store.impose(new IfThen(
+		            new XgtY(L0, TA0), 
+		            new AndBool(links, N0000_0_FS)));
+
+		boolean result = store.consistency();
+
+		System.out.println("result = " + result);
+		System.out.println(store);
+*/		
+		
 		// Initialise Store
 		this.store = new Store();
 		this.sat = new SatTranslation(this.store); 
@@ -1211,31 +1236,53 @@ public class TroposCSPAlgorithm {
     					sourceValue[2][s] = this.values[linkEle[s].getIdNum()][t][2];
     					sourceValue[1][s] = this.values[linkEle[s].getIdNum()][t][1];
     					sourceValue[0][s] = this.values[linkEle[s].getIdNum()][t][0];
-    				}
-          			
-    				PrimitiveConstraint andC = new And(new And(new AndBool(sourceValue[3], this.values[targetID][t][3]), 
-    														   new AndBool(sourceValue[2], this.values[targetID][t][2])), 
-    												    new And(new OrBool(sourceValue[1], this.values[targetID][t][1]), 
-    												    		new OrBool(sourceValue[0], this.values[targetID][t][0])));
-    				PrimitiveConstraint orC = new And(new And(new OrBool(sourceValue[3], this.values[targetID][t][3]), 
-							   								  new OrBool(sourceValue[2], this.values[targetID][t][2])), 
-    												 new And(new AndBool(sourceValue[1], this.values[targetID][t][1]), 
-    											 		     new AndBool(sourceValue[0], this.values[targetID][t][0])));
-    				// Cases Depend on pre/post.
-    				if (pre == DecompositionType.AND && post == DecompositionType.OR)
-    					constraints.add(new IfThenElse(new XgtY(dempEB, this.timePoints[t]), andC, orC));
-    				else if (pre == DecompositionType.OR && post == DecompositionType.AND)
-    					constraints.add(new IfThenElse(new XgtY(dempEB, this.timePoints[t]), orC, andC));
-    				else if (pre == DecompositionType.AND && post == null)
-    					constraints.add(new IfThen(new XgtY(dempEB, this.timePoints[t]), andC));
-    				else if (pre == DecompositionType.OR && post == null)
-    					constraints.add(new IfThen(new XgtY(dempEB, this.timePoints[t]), orC));
-    				else if (pre == null && post == DecompositionType.AND)
-    					constraints.add(new IfThen(new XlteqY(dempEB, this.timePoints[t]), andC));
-    				else if (pre == null && post == DecompositionType.OR)
-    					constraints.add(new IfThen(new XlteqY(dempEB, this.timePoints[t]), orC));
-    			}	    	
+    				}          			    			
+
+    				PrimitiveConstraint and3 = new AndBoolVector(sourceValue[3], this.values[targetID][t][3]);
+    				PrimitiveConstraint and2 = new AndBoolVector(sourceValue[2], this.values[targetID][t][2]);
+    				PrimitiveConstraint and1 = new OrBoolVector(sourceValue[1], this.values[targetID][t][1]);
+    				PrimitiveConstraint and0 = new OrBoolVector(sourceValue[0], this.values[targetID][t][0]);
+    				PrimitiveConstraint or3 = new OrBoolVector(sourceValue[3], this.values[targetID][t][3]);
+    				PrimitiveConstraint or2 = new OrBoolVector(sourceValue[2], this.values[targetID][t][2]);
+    				PrimitiveConstraint or1 = new AndBoolVector(sourceValue[1], this.values[targetID][t][1]);
+    				PrimitiveConstraint or0 = new AndBoolVector(sourceValue[0], this.values[targetID][t][0]);
+
+
+    				if (pre == DecompositionType.AND && post == DecompositionType.OR){
+    					constraints.add(new IfThenElse(new XgtY(dempEB, this.timePoints[t]), and3, or3));
+    					constraints.add(new IfThenElse(new XgtY(dempEB, this.timePoints[t]), and2, or2));
+    					constraints.add(new IfThenElse(new XgtY(dempEB, this.timePoints[t]), and1, or1));
+    					constraints.add(new IfThenElse(new XgtY(dempEB, this.timePoints[t]), and0, or0));
+    				} else if (pre == DecompositionType.OR && post == DecompositionType.AND){
+    					constraints.add(new IfThenElse(new XgtY(dempEB, this.timePoints[t]), or3, and3));
+    					constraints.add(new IfThenElse(new XgtY(dempEB, this.timePoints[t]), or2, and2));
+    					constraints.add(new IfThenElse(new XgtY(dempEB, this.timePoints[t]), or1, and1));
+    					constraints.add(new IfThenElse(new XgtY(dempEB, this.timePoints[t]), or0, and0));
+    				} else if (pre == DecompositionType.AND && post == null){
+    					constraints.add(new IfThen(new XgtY(dempEB, this.timePoints[t]), and3));
+    					constraints.add(new IfThen(new XgtY(dempEB, this.timePoints[t]), and2));
+    					constraints.add(new IfThen(new XgtY(dempEB, this.timePoints[t]), and1));
+    					constraints.add(new IfThen(new XgtY(dempEB, this.timePoints[t]), and0));
+    				} else if (pre == DecompositionType.OR && post == null){
+    					constraints.add(new IfThen(new XgtY(dempEB, this.timePoints[t]), or3));
+    					constraints.add(new IfThen(new XgtY(dempEB, this.timePoints[t]), or2));
+    					constraints.add(new IfThen(new XgtY(dempEB, this.timePoints[t]), or1));
+    					constraints.add(new IfThen(new XgtY(dempEB, this.timePoints[t]), or0));
+    				} else if (pre == null && post == DecompositionType.AND){
+    					constraints.add(new IfThen(new XlteqY(dempEB, this.timePoints[t]), and3));
+    					constraints.add(new IfThen(new XlteqY(dempEB, this.timePoints[t]), and2));
+    					constraints.add(new IfThen(new XlteqY(dempEB, this.timePoints[t]), and1));
+    					constraints.add(new IfThen(new XlteqY(dempEB, this.timePoints[t]), and0));
+    				} else if (pre == null && post == DecompositionType.OR){
+    					constraints.add(new IfThen(new XlteqY(dempEB, this.timePoints[t]), or3));
+    					constraints.add(new IfThen(new XlteqY(dempEB, this.timePoints[t]), or2));
+    					constraints.add(new IfThen(new XlteqY(dempEB, this.timePoints[t]), or1));
+    					constraints.add(new IfThen(new XlteqY(dempEB, this.timePoints[t]), or0));
+    				}	    	
+    			}
     		}
+
+
     		// Step 2: Contribution 
     		// (a) Contribution without Evolution
     		if (contributionElements.size() != 0) { 
@@ -1244,46 +1291,6 @@ public class TroposCSPAlgorithm {
     				for (int i = 0; i < numLinks; i++) {
     					int sourceID = contributionElements.get(i).getIdNum();    					
     					constraints.add(createForwardContributionConstraint(contributionTypes.get(i), this.values[sourceID][t], this.values[targetID][t]));
-/*						// Old Code before helper function.
-    					if (contributionTypes.get(i) == ContributionType.PP){ 					//++ 
-    						this.sat.generate_implication(this.values[sourceID][t][3], this.values[targetID][t][3]);
-    						this.sat.generate_implication(this.values[sourceID][t][2], this.values[targetID][t][2]);
-    						this.sat.generate_implication(this.values[sourceID][t][1], this.values[targetID][t][1]);
-    						this.sat.generate_implication(this.values[sourceID][t][0], this.values[targetID][t][0]);
-    					}else if (contributionTypes.get(i) == ContributionType.P){				//+
-    						this.sat.generate_implication(this.values[sourceID][t][2], this.values[targetID][t][2]);
-    						this.sat.generate_implication(this.values[sourceID][t][1], this.values[targetID][t][1]);
-    					}else if (contributionTypes.get(i) == ContributionType.M){				//-
-    						this.sat.generate_implication(this.values[sourceID][t][2], this.values[targetID][t][1]);
-    						this.sat.generate_implication(this.values[sourceID][t][1], this.values[targetID][t][2]);
-    					}else if (contributionTypes.get(i) == ContributionType.MM){				//--
-    						this.sat.generate_implication(this.values[sourceID][t][3], this.values[targetID][t][0]);	
-    						this.sat.generate_implication(this.values[sourceID][t][2], this.values[targetID][t][1]);
-    						this.sat.generate_implication(this.values[sourceID][t][1], this.values[targetID][t][2]);
-    						this.sat.generate_implication(this.values[sourceID][t][0], this.values[targetID][t][3]);
-    					}else if (contributionTypes.get(i) == ContributionType.SPP){ 			//++S 
-    						this.sat.generate_implication(this.values[sourceID][t][3], this.values[targetID][t][3]);
-    						this.sat.generate_implication(this.values[sourceID][t][2], this.values[targetID][t][2]);
-    					}else if (contributionTypes.get(i) == ContributionType.SP){			//+S
-    						this.sat.generate_implication(this.values[sourceID][t][2], this.values[targetID][t][2]);
-    					}else if (contributionTypes.get(i) == ContributionType.SM){			//-S
-    						this.sat.generate_implication(this.values[sourceID][t][2], this.values[targetID][t][1]);
-    					}else if (contributionTypes.get(i) == ContributionType.SMM){			//--S
-    						this.sat.generate_implication(this.values[sourceID][t][3], this.values[targetID][t][0]);	
-    						this.sat.generate_implication(this.values[sourceID][t][2], this.values[targetID][t][1]);
-    					}else if (contributionTypes.get(i) == ContributionType.DPP){ 			//++D 
-    						this.sat.generate_implication(this.values[sourceID][t][1], this.values[targetID][t][1]);
-    						this.sat.generate_implication(this.values[sourceID][t][0], this.values[targetID][t][0]);
-    					}else if (contributionTypes.get(i) == ContributionType.DP){			//+D
-    						this.sat.generate_implication(this.values[sourceID][t][1], this.values[targetID][t][1]);
-    					}else if (contributionTypes.get(i) == ContributionType.DM){			//-D
-    						this.sat.generate_implication(this.values[sourceID][t][1], this.values[targetID][t][2]);
-    					}else if (contributionTypes.get(i) == ContributionType.DMM){			//--D
-    						this.sat.generate_implication(this.values[sourceID][t][1], this.values[targetID][t][2]);
-    						this.sat.generate_implication(this.values[sourceID][t][0], this.values[targetID][t][3]);
-    					}else
-    						System.out.println("ERROR: No rule for " + contributionTypes.get(i).toString() + " link type.");
-*/
     				}
     			}
     		}
@@ -1317,12 +1324,6 @@ public class TroposCSPAlgorithm {
     		/*********************************************************************************************
     		 * Backward Analysis
     		 *********************************************************************************************/
-//    		Decomposition decompositionLink = null;  
-//    		EvolvingDecomposition eDecompositionLink = null;
-//    		List<EvolvingContribution> eContributionLinks = new ArrayList<EvolvingContribution>();
-//    		List<IntentionalElement> contributionElements = new ArrayList<IntentionalElement>();  
-//    		List<ContributionType> contributionTypes = new ArrayList<ContributionType>();
-    		    		
     		// Iterate over each time step.
     		for (int t = 0; t < this.values[targetID].length; t++){
     			ArrayList<PrimitiveConstraint> FSConstaints = new ArrayList<PrimitiveConstraint>();
@@ -1417,45 +1418,6 @@ public class TroposCSPAlgorithm {
     						PDConstaints.add(newConts[1]);
     					if (newConts[0] != null)
     						FDConstaints.add(newConts[0]); 
-    					// OLD Code
-//    					if (contributionTypes.get(i) == ContributionType.PP){ 					//++ 
-//    	    				FSConstaints.add(new XeqC(this.values[sourceID][t][3], 1));
-//    	    				PSConstaints.add(new XeqC(this.values[sourceID][t][2], 1));
-//    	    				PDConstaints.add(new XeqC(this.values[sourceID][t][1], 1));
-//    	    				FDConstaints.add(new XeqC(this.values[sourceID][t][0], 1));
-//    					}else if (contributionTypes.get(i) == ContributionType.P){				//+
-//    	    				PSConstaints.add(new XeqC(this.values[sourceID][t][2], 1));
-//    	    				PDConstaints.add(new XeqC(this.values[sourceID][t][1], 1));
-//    					}else if (contributionTypes.get(i) == ContributionType.M){				//-
-//    	    				PSConstaints.add(new XeqC(this.values[sourceID][t][1], 1));
-//    	    				PDConstaints.add(new XeqC(this.values[sourceID][t][2], 1));
-//    					}else if (contributionTypes.get(i) == ContributionType.MM){				//--
-//    	    				FSConstaints.add(new XeqC(this.values[sourceID][t][0], 1));
-//    	    				PSConstaints.add(new XeqC(this.values[sourceID][t][1], 1));
-//    	    				PDConstaints.add(new XeqC(this.values[sourceID][t][2], 1));
-//    	    				FDConstaints.add(new XeqC(this.values[sourceID][t][3], 1));
-//    					}else if (contributionTypes.get(i) == ContributionType.SPP){ 			//++S 
-//    	    				FSConstaints.add(new XeqC(this.values[sourceID][t][3], 1));
-//    	    				PSConstaints.add(new XeqC(this.values[sourceID][t][2], 1));
-//    					}else if (contributionTypes.get(i) == ContributionType.SP){			//+S
-//    	    				PSConstaints.add(new XeqC(this.values[sourceID][t][2], 1));
-//    					}else if (contributionTypes.get(i) == ContributionType.SM){			//-S
-//    	    				PDConstaints.add(new XeqC(this.values[sourceID][t][2], 1));
-//    					}else if (contributionTypes.get(i) == ContributionType.SMM){			//--S
-//    	    				PDConstaints.add(new XeqC(this.values[sourceID][t][2], 1));
-//    	    				FDConstaints.add(new XeqC(this.values[sourceID][t][3], 1));
-//    					}else if (contributionTypes.get(i) == ContributionType.DPP){ 			//++D 
-//    	    				PDConstaints.add(new XeqC(this.values[sourceID][t][1], 1));
-//    	    				FDConstaints.add(new XeqC(this.values[sourceID][t][0], 1));
-//    					}else if (contributionTypes.get(i) == ContributionType.DP){			//+D
-//    	    				PDConstaints.add(new XeqC(this.values[sourceID][t][1], 1));
-//    					}else if (contributionTypes.get(i) == ContributionType.DM){			//-D
-//    	    				PSConstaints.add(new XeqC(this.values[sourceID][t][1], 1));
-//    					}else if (contributionTypes.get(i) == ContributionType.DMM){			//--D
-//    	    				FSConstaints.add(new XeqC(this.values[sourceID][t][0], 1));
-//    	    				PSConstaints.add(new XeqC(this.values[sourceID][t][1], 1));
-//    					}else
-//    						System.out.println("ERROR: No rule for " + contributionTypes.get(i).toString() + " link type.");
     				}
 
     			}
@@ -1475,13 +1437,10 @@ public class TroposCSPAlgorithm {
     					if(post != null)
     						postConstraint = createBackwardContributionConstraint(pre, this.values[sourceID][t]);
    
-    					// Note: I implemented this as a two if statements rather than three if->else if. The case of a pre and a post link might now work 
+    					// Note: I implemented this as a two if statements rather than and if->else if. The case of a pre and a post link might now work 
     					//		as two separate constraints. This depends on how the "IfThen" are treated in the "Or(FSConstaints)" below.
     					//		If no information is propagated for these links they might need to be written as Not(A) or (B). or all combinations in the IfThen. 
-    						//if((pre != null) && (post != null)){
-    						//constraints.add(new IfThenElse(new XgtY(contEB, this.timePoints[t]), preConstraint, postConstraint));
     					if (pre != null){
-    						//constraints.add(new IfThen(new XgtY(contEB, this.timePoints[t]), preConstraint));
         					if (preConstraint[3] != null)
         						FSConstaints.add(new IfThen(new XgtY(contEB, this.timePoints[t]), preConstraint[3]));
         					if (preConstraint[2] != null)
@@ -1492,7 +1451,6 @@ public class TroposCSPAlgorithm {
         						FDConstaints.add(new IfThen(new XgtY(contEB, this.timePoints[t]), preConstraint[0]));
     					}
     					if (post != null){	
-    						//constraints.add(new IfThen(new XlteqY(contEB, this.timePoints[t]), postConstraint));
         					if (postConstraint[3] != null)
         						FSConstaints.add(new IfThen(new XlteqY(contEB, this.timePoints[t]), postConstraint[3]));
         					if (postConstraint[2] != null)
@@ -1526,54 +1484,30 @@ public class TroposCSPAlgorithm {
 	private PrimitiveConstraint createForwardContributionConstraint(ContributionType cType, BooleanVar[] src, BooleanVar[] tgt){
 		PrimitiveConstraint result = null;
 		if (cType == ContributionType.PP){ 					//++ 
-//			this.sat.generate_implication(src[3], tgt[3]);
-//			this.sat.generate_implication(src[2], tgt[2]);
-//			this.sat.generate_implication(src[1], tgt[1]);
-//			this.sat.generate_implication(src[0], tgt[0]);
 			result = new And(new And(new Or(new XeqC(src[3], 0), new XeqC(tgt[3], 1)), new Or(new XeqC(src[2], 0), new XeqC(tgt[2], 1))), 
 					         new And(new Or(new XeqC(src[1], 0), new XeqC(tgt[1], 1)), new Or(new XeqC(src[0], 0), new XeqC(tgt[0], 1))));
 		}else if (cType == ContributionType.P){				//+
-//			this.sat.generate_implication(src[2], tgt[2]);
-//			this.sat.generate_implication(src[1], tgt[1]);
 			result = new And(new Or(new XeqC(src[2], 0), new XeqC(tgt[2], 1)), new Or(new XeqC(src[1], 0), new XeqC(tgt[1], 1)));
 		}else if (cType == ContributionType.M){				//-
-//			this.sat.generate_implication(src[2], tgt[1]);
-//			this.sat.generate_implication(src[1], tgt[2]);
 			result = new And(new Or(new XeqC(src[2], 0), new XeqC(tgt[1], 1)), new Or(new XeqC(src[1], 0), new XeqC(tgt[2], 1)));
 		}else if (cType == ContributionType.MM){				//--
-//			this.sat.generate_implication(src[3], tgt[0]);	
-//			this.sat.generate_implication(src[2], tgt[1]);
-//			this.sat.generate_implication(src[1], tgt[2]);
-//			this.sat.generate_implication(src[0], tgt[3]);
 			result = new And(new And(new Or(new XeqC(src[3], 0), new XeqC(tgt[0], 1)), new Or(new XeqC(src[2], 0), new XeqC(tgt[1], 1))), 
 			                 new And(new Or(new XeqC(src[1], 0), new XeqC(tgt[2], 1)), new Or(new XeqC(src[0], 0), new XeqC(tgt[3], 1))));
 		}else if (cType == ContributionType.SPP){ 			//++S 
-//			this.sat.generate_implication(src[3], tgt[3]);
-//			this.sat.generate_implication(src[2], tgt[2]);
 			result = new And(new Or(new XeqC(src[3], 0), new XeqC(tgt[3], 1)), new Or(new XeqC(src[2], 0), new XeqC(tgt[2], 1)));
 		}else if (cType == ContributionType.SP){			//+S
-//			this.sat.generate_implication(src[2], tgt[2]);
 			result = new Or(new XeqC(src[2], 0), new XeqC(tgt[2], 1));
 		}else if (cType == ContributionType.SM){			//-S
-//			this.sat.generate_implication(src[2], tgt[1]);
 			result = new Or(new XeqC(src[2], 0), new XeqC(tgt[1], 1));
 		}else if (cType == ContributionType.SMM){			//--S
-//			this.sat.generate_implication(src[3], tgt[0]);	
-//			this.sat.generate_implication(src[2], tgt[1]);
 			result = new And(new Or(new XeqC(src[3], 0), new XeqC(tgt[0], 1)), new Or(new XeqC(src[2], 0), new XeqC(tgt[1], 1)));
 		}else if (cType == ContributionType.DPP){ 			//++D 
-//			this.sat.generate_implication(src[1], tgt[1]);
-//			this.sat.generate_implication(src[0], tgt[0]);
 			result = new And(new Or(new XeqC(src[1], 0), new XeqC(tgt[1], 1)), new Or(new XeqC(src[0], 0), new XeqC(tgt[0], 1)));
 		}else if (cType == ContributionType.DP){			//+D
-//			this.sat.generate_implication(src[1], tgt[1]);
 			result = new Or(new XeqC(src[1], 0), new XeqC(tgt[1], 1));
 		}else if (cType == ContributionType.DM){			//-D
-//			this.sat.generate_implication(src[1], tgt[2]);
 			result = new Or(new XeqC(src[1], 0), new XeqC(tgt[2], 1));
 		}else if (cType == ContributionType.DMM){			//--D
-//			this.sat.generate_implication(src[1], tgt[2]);
-//			this.sat.generate_implication(src[0], tgt[3]);
 			result = new And(new Or(new XeqC(src[1], 0), new XeqC(tgt[2], 1)), new Or(new XeqC(src[0], 0), new XeqC(tgt[3], 1)));
 		}else
 			System.out.println("ERROR: No rule for " + cType.toString() + " link type.");	
@@ -2000,7 +1934,7 @@ public class TroposCSPAlgorithm {
             	System.out.println(constraints.get(i).toString());
             store.impose(constraints.get(i));
             if(!store.consistency()) {
-            	System.out.println("Constraint: " + constraints.get(i).toString());
+            	//System.out.println("Constraint: " + constraints.get(i).toString());
                 System.out.println("have conflicting constraints, not solvable");            
                 return false;
             }
