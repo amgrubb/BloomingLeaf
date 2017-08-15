@@ -106,7 +106,7 @@ var LinkInspector = Backbone.View.extend({
     if (cell.prop("linktype")){
       this.$el.html(_.template(this.actortemplate)());
     }else{
-    	var val = cell.prop("link-type").split("|");
+    	var val = type.split("|");
     	if(val.length > 1){
     	      this.$el.html(_.template(this.evolving_template)());
     	}else{
