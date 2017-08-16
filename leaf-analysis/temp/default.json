@@ -800,10 +800,10 @@
         "postType": null
       },
       {
-        "linkType": "NO",
+        "linkType": "OR",
         "linkSrcID": "0045",
         "linkDestID": "0013",
-        "postType": "OR"
+        "postType": null
       },
       {
         "linkType": "++",
