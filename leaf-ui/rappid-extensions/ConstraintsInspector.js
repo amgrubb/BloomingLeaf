@@ -33,7 +33,6 @@ var ConstraintsInspector = Backbone.View.extend({
   events: {
     'change .relationship-type': 'updateCell',
     'change .relationship-select': 'updateCell',
-
     'click input.delayedprop': 'checkboxHandler'
   },
 

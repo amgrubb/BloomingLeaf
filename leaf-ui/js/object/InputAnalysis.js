@@ -1,4 +1,4 @@
-function AnalysisObject(){
+function InputAnalysis(){
 	
 	this.maxAbsTime;
 	this.conflictLevel;
