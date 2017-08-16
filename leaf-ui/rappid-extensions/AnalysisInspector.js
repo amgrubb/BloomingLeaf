@@ -21,6 +21,8 @@ var AnalysisInspector = Backbone.View.extend({
 		'<label class="sub-label">Absolute Time Points</label>',
 		'<input id="abs-time-pts" class="sub-label" type="text"/>',
 		'<br>',
+		'<font size="2">(e.g. 5 8 22)</font>',
+		'<br>',
 		'<hr>',
 		'<button id="btn-view-assignment" class="analysis-btns inspector-btn sub-label green-btn">View List of Assignments</button>',
 		// This is the modal box of assignments
@@ -34,9 +36,8 @@ var AnalysisInspector = Backbone.View.extend({
 		      '<p>Nodes</p>',
 		      	'<table id="node-list" class="abs-table">',
 		      	  '<tr>',
-		      	    '<th>Epoch Boundary</th>',
+		      	    '<th>Epoch Boundary Name</th>',
 		      	    '<th>Function</th>',
-		      	    '<th>Node name</th>',
 		      	    '<th>Assigned Time</th>',
 		      	    '<th>Action</th>',
 		      	  '</tr>',
@@ -94,31 +95,32 @@ var AnalysisInspector = Backbone.View.extend({
 	},
 	// Function called by Solve Single Button. Gets data for backend.
 	solveSinglePath: function(){
-		var analysis = new AnalysisObject();
+		var analysis = new InputAnalysis();
 		var js_object = {};
 		AO_btnSolveSinglePath(analysis);
 		js_object.analysis = AO_getValues(analysis);
 		js_object.model = getFrontendModel(true);
-
+		saveElementsInGlobalVariable();
+		
 		if(js_object.model == null){
 			return null;
 		}
 
-		console.log(JSON.stringify(js_object));
+		//console.log(JSON.stringify(js_object));
 		//Send data to backend
 		backendComm(js_object);
 
 	},
 	// Function called by get Next States Button. Gets data for backend.
 	getNextStates: function(){
-		var analysis = new AnalysisObject();
+		var analysis = new InputAnalysis();
 		var js_object = {};
 		AO_btnGetNextState(analysis);
 		analysis.currentState = $('#sliderValue').text();
 		js_object.analysis = AO_getValues(analysis);
 		js_object.model = getFrontendModel(false);
-
-
+		saveElementsInGlobalVariable();
+		
 		if(js_object.model == null){
 			return null;
 		}
@@ -215,7 +217,6 @@ var AnalysisInspector = Backbone.View.extend({
 		// Clear all previous table entries
 		$(".abs-table").find("tr:gt(0)").remove();
 
-
 		var btn_html = '<td><button class="unassign-btn" > Unassign </button></td>';
 		modal.style.display = "block";
 		// Get a list of nodes
@@ -229,7 +230,7 @@ var AnalysisInspector = Backbone.View.extend({
 			var func = cell.attr('.funcvalue').text;
 			var name = cell.attr('.name').text;
 			var assigned_time = cell.attr('.assigned_time');
-			if(func != 'UD' && func != 'D' && func != 'I' && func != 'C' && func != 'R'){
+			if(func != 'UD' && func != 'D' && func != 'I' && func != 'C' && func != 'R' && func != ""){
 				// If no assigned_time in the node, save 'None' into the node
 				if (!assigned_time){
 					cell.attr('.assigned_time', {0: 'None'});
@@ -237,8 +238,8 @@ var AnalysisInspector = Backbone.View.extend({
 				}
 				assigned_time = cell.attr('.assigned_time')[0];
 
-				$('#node-list').append('<tr><td>' + 'A' + '</td><td>' + func + '</td><td>' + name +
-					'</td><td><input type="text" name="sth" value="' + assigned_time + '"></td>' + btn_html +
+				$('#node-list').append('<tr><td>' + name + ': A' + '</td><td>' + func + '</td>' +
+					'<td><input type="text" name="sth" value="' + assigned_time + '"></td>' + btn_html +
 					'<input type="hidden" name="id" value="' + cell.id + '"> </td> </tr>');
 
 			}
@@ -268,8 +269,8 @@ var AnalysisInspector = Backbone.View.extend({
 					k ++;
 				}
 				for (var j = 0; j < fun_len; j++){
-					$('#node-list').append('<tr><td>' + current_something + '</td><td>' + func + '</td><td>' + name +
-						'</td><td><input type="text" name="sth" value=' +assigned_time[j] + '></td>' + btn_html +
+					$('#node-list').append('<tr><td>' + name +': '+ current_something + '</td><td>' + func + '</td>'  +
+						'<td><input type="text" name="sth" value=' +assigned_time[j] + '></td>' + btn_html +
 						'<input type="hidden" name="id" value="' + cell.id + '_' + j + '"> </td> </tr>');
 					current_something = String.fromCharCode(current_something.charCodeAt(0) + 1);
 				}
@@ -307,8 +308,6 @@ var AnalysisInspector = Backbone.View.extend({
 			}
 
 		}
-
-
 	},
 	// Dismiss modal box
 	dismissModalBox: function(e){
@@ -344,8 +343,6 @@ var AnalysisInspector = Backbone.View.extend({
 				var cell = graph.getCell(id);
 				cell.attr('.assigned_time')[index] = new_time;
 			}
-
-
 		});
 
 		$.each($('#link-list').find("tr input[type=text]"), function(){
@@ -360,65 +357,28 @@ var AnalysisInspector = Backbone.View.extend({
 					var link = links[i];
 					break;
 				}
-
 			}
 
 			link.attr('.assigned_time')[0] = new_time;
-
-
 
 		});
 		// After that dismiss the box
 		var modal = document.getElementById('myModal');
 		modal.style.display = "none";
 
-	},
-
-	/******************** Call backend *******************/
-	solvePath: function(e){
-		var analysis = new AnalysisObject();
-		var js_object = {};
-		js_object.analysis = AO_getValues(analysis);
-		js_object.model = getFrontendModel();
-
-		backendComm(js_object);
-
-/*		var max_abs_time = $('#max-abs-time').val();
-		var conflict_level = $('#conflict-level').val();
-		var num_rel_time = $('#num-rel-time').val();
-		var abs_time_pts = $('#abs-time-pts').val();
-		// A list of nodes
-		var elements = graph.getElements();
-		// A list of links
-		var links = graph.getLinks();
-
-		// Example to get fields in nodes:
-		var cell = elements[0];
-		var type = cell.attributes.type;
-		var sat_value = cell.attr(".satvalue/value");
-		// This return empty string if user set dynamic to no function
-		var func_type = cell.attr('.funcvalue/text');
-		var name = cell.attr('.name/text');
-		// This will return undefined if user hasnt assigned a time
-		var assigned_time = cell.attr('.assigned_time');
-
-		// Example to get fields in links:
-		var link = links[0];
-		// Note this will get undefined by default. Has to manually change type through link inspector
-		var link_type = link.prop('link-type');
-		var source_node = link.get("source");
-		var target_node = link.get("target");*/
-
-
-		/*console.log(max_abs_time);
-		console.log(conflict_level);
-		console.log(num_rel_time);
-		console.log(abs_time_pts);
-		console.log(type);
-		console.log(sat_value);
-		console.log(func_type);
-		console.log(name);
-		console.log(assigned_time);*/
-
 	}
 });
+
+function saveElementsInGlobalVariable(){
+	var elements = [];
+	for (var i = 0; i < graph.getElements().length; i++){
+		if (!(graph.getElements()[i] instanceof joint.shapes.basic.Actor)){
+			elements.push(graph.getElements()[i]);
+		}
+	}
+	graphObject.allElements = elements;
+	graphObject.elementsBeforeAnalysis = elements;
+}
+
+
+

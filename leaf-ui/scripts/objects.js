@@ -56,7 +56,7 @@ analysisObject.initFromBackEnd = function(analysisResults){
 	for (var i = 0; i < this.numOfElements ; i++){
 		//strips first element since it is already shown on graph
 		var results = analysisResults.elementList[i].status;
-		results.pop(0);
+		//results.pop(0);
 		this.elements.push(results)
 	}
 	return this;

@@ -23,8 +23,19 @@ var queryObject = new queryObject();
 var loader;
 var reader;
 
+
 //Properties for both core and simulator.
+//TODO: merge this two arrays in order to make use the same name for all
 var satvalues = {satisfied: 2, partiallysatisfied: 1, partiallydenied: -1, denied: -2, unknown: 4, conflict: 3, none: 0};
+
+var satValueDict = {
+	"unknown": "0000",
+	"satisfied": "0011",
+	"partiallysatisfied": "0010",
+	"partiallydenied": "0100",
+	"denied": "1100",
+	"none": "0000"
+}
 
 //var functions = {A: 'AI', O: 'OI', N: 'NT', M: 'MP', R: 'R', S: 'SP', MN: 'MN', SN: 'SN', U: 'UD'};
 
@@ -36,6 +47,7 @@ mode = "Modelling";		// 'Analysis' or 'Modelling'
 linkMode = "Relationships";	// 'Relationships' or 'Constraints'
 
 graph = new joint.dia.Graph();
+var commandManager = new joint.dia.CommandManager({ graph: graph });
 
 // Create a paper and wrap it in a PaperScroller.
 paper = new joint.dia.Paper({
@@ -788,11 +800,6 @@ paper.on("link:options", function(evt, cell){
 	}
 });
 
-//When a cell is clicked, create the Halo
-function isLinkInvalid(link){
-	return (!link.prop('source/id') || !link.prop('target/id'));
-}
-
 //Single click on cell
 paper.on('cell:pointerup', function(cellView, evt) {
 	if(mode == "Analysis")
@@ -801,7 +808,9 @@ paper.on('cell:pointerup', function(cellView, evt) {
 	// Link
 	if (cellView.model instanceof joint.dia.Link){
 		var link = cellView.model;
-		var sourceCell = link.getSourceElement().attributes.type;
+		
+		if(link.getSourceElement()!=null)
+			var sourceCell = link.getSourceElement().attributes.type;
 
 		// Check if link is valid or not
 		if (link.getTargetElement()){
@@ -924,8 +933,6 @@ KeyboardJS.on('backspace', function(){
 });
 // ----------------------------------------------------------------- //
 // Toolbar
-
-var commandManager = new joint.dia.CommandManager({ graph: graph });
 
 $('#btn-undo').on('click', _.bind(commandManager.undo, commandManager));
 $('#btn-redo').on('click', _.bind(commandManager.redo, commandManager));
