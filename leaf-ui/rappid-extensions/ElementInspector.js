@@ -326,7 +326,8 @@ var ElementInspector = Backbone.View.extend({
     var functionType = this.$('.function-type').val();
     var initValue = this.$('#init-sat-value').val();
     // All functions that have satisfaction value
-    var funct_with_sat_value = ["I", "D", "RC", "MP", "MN", "UD"];
+    var funct_with_sat_value = ["RC", "MP", "MN", "UD"];
+    //var funct_with_sat_value = ["I", "D", "RC", "MP", "MN", "UD"];
 
     // Disable init value menu if functype is NB
     if (cell.attr('.funcvalue/text') == "NB"){
@@ -339,11 +340,25 @@ var ElementInspector = Backbone.View.extend({
       this.$('.function-sat-value').hide();
       this.$('#user-constraints').show("fast");
       this.loadUDFunction(null);
+    }else if(functionType == "I"){
+        cell.attr(".constraints/lastval", "satisfied");
+        this.$('.function-sat-value').hide();
+        this.$('#user-constraints').hide();
+    }else if(functionType == "D"){
+        cell.attr(".constraints/lastval", "denied");
+        this.$('.function-sat-value').hide();
+        this.$('#user-constraints').hide();
     }
     else if ($.inArray(functionType, funct_with_sat_value) > -1){
       this.showFunctionSatValue(null);
       this.$('#user-constraints').hide();
       $('#init-sat-value').prop('disabled', '');
+      var satVal = cell.attr(".constraints/lastval");
+      if(satVal){
+          $('.function-sat-value').val(satVal);    	  
+      }else{
+    	  $('.function-sat-value').val("none");    	  
+      }
     }
     else {
       this.$('.function-sat-value').hide();
@@ -475,9 +490,14 @@ var ElementInspector = Backbone.View.extend({
   },
   // update chart based on function type selection
   updateGraph: function(event){
+    var cell = this._cellView.model;
     var text = this.$('.function-type').val();
     var initVal = satvalues[this.$('#init-sat-value').val()];
     var val = satvalues[this.$('.function-sat-value').val()];
+    
+    //Save maked-value
+    cell.attr(".constraints/makedvalue", val);
+
     /// this.$('.markedValue') = val;
 
     // Rerender chart canvas
@@ -512,9 +532,6 @@ var ElementInspector = Backbone.View.extend({
       this.constraintsObject.chartData.datasets[0].pointBackgroundColor[1] = "rgba(220,220,220,0)";
       this.constraintsObject.chartData.datasets[0].pointBorderColor[1] = "rgba(220,220,220,0)";
 
-
-
-
     }else if(text == "C"){
       this.constraintsObject.chartData.labels = ["0", "Infinity"];
       // If not unknown, just display one line
@@ -535,8 +552,12 @@ var ElementInspector = Backbone.View.extend({
 
     }else if((text == "I") || (text == "D")){
       this.constraintsObject.chartData.labels = ["0", "Infinity"];
-      this.constraintsObject.chartData.datasets[0].data = [initVal, val];
-
+//      this.constraintsObject.chartData.datasets[0].data = [initVal, val];
+      if((text == "I"))
+    	  this.constraintsObject.chartData.datasets[0].data = [initVal, satvalues["satisfied"]];
+      if((text == "D"))
+    	  this.constraintsObject.chartData.datasets[0].data = [initVal, satvalues["denied"]];      
+      
     }else if(text == "RC"){
       this.constraintsObject.chartData.labels = ["0", "A", "Infinity"];
       this.constraintsObject.chartData.datasets[0].data = [initVal, initVal];
@@ -1001,7 +1022,7 @@ var ElementInspector = Backbone.View.extend({
     else {
       cell.attr(".funcvalue/text", "");
     }
-    cell.attr(".constraints/lastval", this.$('.function-type').val());
+    cell.attr(".constraints/lastval", this.$('.user-function-type').val());
 
 
     if (funcType == "UD"){
