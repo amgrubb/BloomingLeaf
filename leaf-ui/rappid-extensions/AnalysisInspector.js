@@ -19,9 +19,8 @@ var AnalysisInspector = Backbone.View.extend({
 		'<input id="num-rel-time" class="sub-label" type="number" min="0" max="20" step="1" value="0"/>',
 		'<br>',
 		'<label class="sub-label">Absolute Time Points</label>',
-		'<input id="abs-time-pts" class="sub-label" type="text"/>',
-		'<br>',
 		'<font size="2">(e.g. 5 8 22)</font>',
+		'<input id="abs-time-pts" class="sub-label" type="text"/>',
 		'<br>',
 		'<hr>',
 		'<button id="btn-view-assignment" class="analysis-btns inspector-btn sub-label green-btn">View List of Assignments</button>',
@@ -230,7 +229,7 @@ var AnalysisInspector = Backbone.View.extend({
 			var func = cell.attr('.funcvalue').text;
 			var name = cell.attr('.name').text;
 			var assigned_time = cell.attr('.assigned_time');
-			if(func != 'UD' && func != 'D' && func != 'I' && func != 'C' && func != 'R' && func != ""){
+			if(func != 'UD' && func != 'D' && func != 'I' && func != 'C' && func != 'R' && func != "" && func != 'NB'){
 				// If no assigned_time in the node, save 'None' into the node
 				if (!assigned_time){
 					cell.attr('.assigned_time', {0: 'None'});
