@@ -29,6 +29,7 @@ import org.jacop.constraints.XplusCeqZ;
 import org.jacop.core.BooleanVar;
 import org.jacop.core.IntVar;
 import org.jacop.core.Store;
+import org.jacop.core.Var;
 import org.jacop.satwrapper.SatTranslation;
 import org.jacop.search.DepthFirstSearch;
 import org.jacop.search.IndomainSimpleRandom;
@@ -1934,6 +1935,11 @@ public class TroposCSPAlgorithm {
             	System.out.println(constraints.get(i).toString());
             store.impose(constraints.get(i));
             if(!store.consistency()) {
+            	Constraint errorConst = constraints.get(i);
+            	ArrayList<Var> errorVarList = errorConst.arguments();
+            	for (Var temp : errorVarList) {
+        			System.out.println(temp.id + "::" + temp.dom().toString());
+        		}
             	//System.out.println("Constraint: " + constraints.get(i).toString());
                 System.out.println("have conflicting constraints, not solvable");            
                 return false;
