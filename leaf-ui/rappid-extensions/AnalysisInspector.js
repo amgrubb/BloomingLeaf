@@ -229,7 +229,7 @@ var AnalysisInspector = Backbone.View.extend({
 			var func = cell.attr('.funcvalue').text;
 			var name = cell.attr('.name').text;
 			var assigned_time = cell.attr('.assigned_time');
-			if(func != 'UD' && func != 'D' && func != 'I' && func != 'C' && func != 'R' && func != ""){
+			if(func != 'UD' && func != 'D' && func != 'I' && func != 'C' && func != 'R' && func != "" && func != 'NB'){
 				// If no assigned_time in the node, save 'None' into the node
 				if (!assigned_time){
 					cell.attr('.assigned_time', {0: 'None'});
