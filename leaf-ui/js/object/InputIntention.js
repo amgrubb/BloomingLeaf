@@ -10,15 +10,15 @@ function getIntentitonalElements(){
 	
 	var intentions = [];
 	var intentionsCount = 0;
-	for (var i = 0; i < graph.getElements().length; i++){		
-		if (!(graph.getElements()[i] instanceof joint.shapes.basic.Actor)){
+	for (var i = 0; i < App.graph.getElements().length; i++){		
+		if (!(App.graph.getElements()[i] instanceof joint.shapes.basic.Actor)){
 			
 			/**
 			 * NODE ACTOR ID
 			 */
 			var actorid = '-';
-			if (graph.getElements()[i].get("parent")){
-				actorid = (graph.getCell(graph.getElements()[i].get("parent")).prop("elementid") || "-");
+			if (App.graph.getElements()[i].get("parent")){
+				actorid = (App.graph.getCell(App.graph.getElements()[i].get("parent")).prop("elementid") || "-");
 			}
 			
 			/**
@@ -30,20 +30,20 @@ function getIntentitonalElements(){
 				elementID = "0" + elementID;
 				}
 			//Adding the new id to the UI graph element
-			graph.getElements()[i].prop("elementid", elementID);
+			App.graph.getElements()[i].prop("elementid", elementID);
 			
 			
 			/**
 			 * NODE TYPE
 			 */
 			var elementType;
-			if (graph.getElements()[i] instanceof joint.shapes.basic.Goal)
+			if (App.graph.getElements()[i] instanceof joint.shapes.basic.Goal)
 				elementType = "G";
-			else if (graph.getElements()[i] instanceof joint.shapes.basic.Task)
+			else if (App.graph.getElements()[i] instanceof joint.shapes.basic.Task)
 				elementType = "T";
-			else if (graph.getElements()[i] instanceof joint.shapes.basic.Softgoal)
+			else if (App.graph.getElements()[i] instanceof joint.shapes.basic.Softgoal)
 				elementType = "S";
-			else if (graph.getElements()[i] instanceof joint.shapes.basic.Resource)
+			else if (App.graph.getElements()[i] instanceof joint.shapes.basic.Resource)
 				elementType = "R";
 			else
 				elementType = "I";
@@ -63,7 +63,7 @@ function getIntentitonalElements(){
 					"none": "0000"
 				}
 
-		  	var currentValue = (graph.getElements()[i].attr(".satvalue/value")||"none");
+		  	var currentValue = (App.graph.getElements()[i].attr(".satvalue/value")||"none");
 		  	//Making currentValue to numeric values like 0000, 0001, 0011...
 		  	if(!$.isNumeric(currentValue))
 		  		currentValue = satValueDict[currentValue];
@@ -72,7 +72,7 @@ function getIntentitonalElements(){
 		  	 * NODE NAME
 		  	 */
 		  	//Getting intentional element name
-			var intentionalElementName = graph.getElements()[i].attr(".name/text").replace(/\n/g, " ");
+			var intentionalElementName = App.graph.getElements()[i].attr(".name/text").replace(/\n/g, " ");
 			
 			/**
 			 * CREATING OBJECT

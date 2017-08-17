@@ -90,9 +90,9 @@ function getFrontendModel(isSinglePath = true){
 
 
 function checkConflictValues(){
-	for (var i = 0; i < graph.getElements().length; i++){
-		if (!(graph.getElements()[i] instanceof joint.shapes.basic.Actor)){
-			var initValue = graph.getElements()[i].attributes.attrs[".satvalue"].text;
+	for (var i = 0; i < App.graph.getElements().length; i++){
+		if (!(App.graph.getElements()[i] instanceof joint.shapes.basic.Actor)){
+			var initValue = App.graph.getElements()[i].attributes.attrs[".satvalue"].text;
 			if ((initValue == "(PS, PD)") ||
 				(initValue == "(PS, FD)") ||
 				(initValue == "(FS, PD)") ||

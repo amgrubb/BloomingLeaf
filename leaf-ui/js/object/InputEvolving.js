@@ -8,7 +8,7 @@ function InputEvolving(source, destination, preCond, posCond, absoluteTime, isDe
 }
 
 function getEvolvings(){
-	var links = graph.getLinks();
+	var links = App.graph.getLinks();
 	
 	var evolvings = [];
 	
@@ -20,11 +20,11 @@ function getEvolvings(){
 			var source = null;
 			var destination = null;
 			if (link.get("source").id){
-				var elementSrc = graph.getCell(link.get("source").id);
+				var elementSrc = App.graph.getCell(link.get("source").id);
 				source = elementSrc.attributes.elementid;
 			}
 			if (link.get("target").id){
-				var elementTgt = graph.getCell(link.get("target").id);
+				var elementTgt = App.graph.getCell(link.get("target").id);
 				destination = elementTgt.attributes.elementid;
 			}
 			

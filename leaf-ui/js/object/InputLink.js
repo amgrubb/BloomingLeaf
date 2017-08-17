@@ -11,22 +11,22 @@ function getLinks(){
 	var links = [];
 
 	//Verifying if links are valid
-	graph.getLinks().forEach(function(link){
+	App.graph.getLinks().forEach(function(link){
 	    if(isLinkInvalid(link)) 
 	    		link.remove();
     });
 	
-	for (var i = 0; i < graph.getLinks().length; i++){
+	for (var i = 0; i < App.graph.getLinks().length; i++){
 		
-		var current = graph.getLinks()[i];
+		var current = App.graph.getLinks()[i];
 		var linkType = current.label(0).attrs.text.text.toUpperCase()
 		var source = "-";
 		var target = "-";
 
 		if (current.get("source").id)
-			source = graph.getCell(current.get("source").id).prop("elementid");
+			source = App.graph.getCell(current.get("source").id).prop("elementid");
 		if (current.get("target").id)
-			target = graph.getCell(current.get("target").id).prop("elementid");
+			target = App.graph.getCell(current.get("target").id).prop("elementid");
 
 		var link;
 
