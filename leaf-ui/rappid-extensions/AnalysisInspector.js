@@ -375,8 +375,8 @@ function saveElementsInGlobalVariable(){
 			elements.push(graph.getElements()[i]);
 		}
 	}
-	graphObject.allElements = elements;
-	graphObject.elementsBeforeAnalysis = elements;
+	graph.allElements = elements;
+	graph.elementsBeforeAnalysis = elements;
 }
 
 

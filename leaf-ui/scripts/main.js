@@ -4,9 +4,6 @@ var paper;
 var stencil;
 var mode;
 
-// Mode specific variables
-var graphObject = new graphObject();		// Stores all variables between modes
-
 var linkInspector = new LinkInspector();
 var elementInspector = new ElementInspector();
 var constrainsInspector = new ConstraintsInspector();
@@ -47,6 +44,14 @@ mode = "Modelling";		// 'Analysis' or 'Modelling'
 linkMode = "Relationships";	// 'Relationships' or 'Constraints'
 
 graph = new joint.dia.Graph();
+
+graph.links = [];
+graph.intensionConstraints = [];
+graph.linksNum;
+graph.constraintsNum;
+graph.allElements = [];
+graph.elementsBeforeAnalysis = [];
+
 var commandManager = new joint.dia.CommandManager({ graph: graph });
 
 // Create a paper and wrap it in a PaperScroller.
@@ -152,7 +157,7 @@ function setLinks(mode){
 		linkMode = "Constraints";
 		$('#symbolic-btn').html("Model Relationships");
 
-		var restoredLinks = graphObject.intensionConstraints;
+		var restoredLinks = graph.intensionConstraints;
 		paper.options.defaultLink.attributes.labels[0].attrs.text.text = " constraint ";
 		paper.options.defaultLink.attr(".marker-target/d", 'M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5');
 
@@ -160,7 +165,7 @@ function setLinks(mode){
 		linkMode = "Relationships";
 		$('#symbolic-btn').html("Model Constraints");
 
-		var restoredLinks = graphObject.links;
+		var restoredLinks = graph.links;
 		paper.options.defaultLink.attributes.labels[0].attrs.text.text = "and";
 		paper.options.defaultLink.attr(".marker-target/d", 'M 10 0 L 10 10 M 10 5 L 0 5');
 
@@ -179,24 +184,24 @@ function saveLinks(mode){
 	// Hide all relationships that are not suppose to be dispalyed
 	if(mode == "Relationships"){
 		var links = graph.getLinks();
-		graphObject.links = [];
+		graph.links = [];
 		links.forEach(function(link){
 			if(!isLinkInvalid(link)){
 				if(!link.attr('./display')){
 					link.attr('./display', 'none');
-					graphObject.links.push(link);
+					graph.links.push(link);
 				}
 			}else{link.remove();}
 		});
 	}else if (mode == "Constraints"){
 		var links = graph.getLinks();
-		graphObject.intensionConstraints = [];
+		graph.intensionConstraints = [];
 		links.forEach(function(link){
 			var linkStatus = link.attributes.labels[0].attrs.text.text.replace(/\s/g, '');
 			if(!isLinkInvalid(link) && (linkStatus != "constraint") && (linkStatus != "error")){
 				if(!link.attr('./display')){
 					link.attr('./display', 'none');
-					graphObject.intensionConstraints.push(link);
+					graph.intensionConstraints.push(link);
 				}
 			}else{link.remove();}
 		});
@@ -253,18 +258,18 @@ $('#model-init-btn').on('click', function(){
 function switchToModellingMode(useInitState){
 	//Reset to initial graph prior to analysis
 	if(useInitState){
-		for (var i = 0; i < graphObject.elementsBeforeAnalysis.length; i++){
-			var value = graphObject.elementsBeforeAnalysis[i]
+		for (var i = 0; i < graph.elementsBeforeAnalysis.length; i++){
+			var value = graph.elementsBeforeAnalysis[i]
 			updateValues(i, value, "toInitModel");
 		}
 	}
 	// }else{
-	// 	for (var i = 0; i < graphObject.elementsBeforeAnalysis.length; i++){
-	// 		var value = graphObject.elementsBeforeAnalysis[i]
+	// 	for (var i = 0; i < graph.elementsBeforeAnalysis.length; i++){
+	// 		var value = graph.elementsBeforeAnalysis[i]
 	// 	}
 	// }
 
-	graphObject.elementsBeforeAnalysis = [];
+	graph.elementsBeforeAnalysis = [];
 
 	analysisInspector.clear();
 	$('#stencil').css("display","");
@@ -283,7 +288,7 @@ function switchToModellingMode(useInitState){
 	$('.link-tools .tool-remove').css("display","");
 	$('.link-tools .tool-options').css("display","");
 
-	graphObject.allElements = null;
+	graph.allElements = null;
 
 	// Clear previous slider setup
 	clearHistoryLog();
@@ -322,7 +327,7 @@ analysisFunctions.loadAnalysisFile = function(){
 	}
 
 	//save elements in global variable for slider
-	graphObject.allElements = elements;
+	graph.allElements = elements;
 	$('#loader').click();
 }
 
@@ -336,7 +341,7 @@ analysisFunctions.concatenateSlider = function(){
 		}
 	}
 	var newElements = [];
-	for (i = 0; i < graphObject.allElements.length; i++){
+	for (i = 0; i < graph.allElements.length; i++){
 		var elementResults = [];
 		for (j = 0; j < historyObject.allHistory.length; j++){
 			var analysisObj = historyObject.allHistory[j].analysis;
@@ -348,7 +353,7 @@ analysisFunctions.concatenateSlider = function(){
 
 	clearHistoryLog();
 
-	currentAnalysis = new analysisObject.initFromMain(newElements, graphObject.allElements.length, newTime);
+	currentAnalysis = new analysisObject.initFromMain(newElements, graph.allElements.length, newTime);
 	updateSlider(currentAnalysis, false);
 }
 
@@ -544,14 +549,14 @@ function updateValues(c, v, m){
 	//Update node based on values from cgi file
 	if (m == "renderAnalysis"){
 		//var satvalues = ["denied", "partiallydenied", "partiallysatisfied", "satisfied", "unknown", "none"];
-		cell = graphObject.allElements[c];
+		cell = graph.allElements[c];
 		value = v;
 		cell.attributes.attrs[".satvalue"].value = v;
 		//cell.attr(".satvalue/value", v);
 
 	//Update node based on values saved from graph prior to analysis
 	}else if (m == "toInitModel"){
-		cell = graphObject.allElements[c];
+		cell = graph.allElements[c];
 		value = cell.attributes.attrs[".satvalue"].value;
 	}
 
@@ -1041,13 +1046,13 @@ reader.onload = function(){
 
 			// Load different links and intension constraints
 			var allLinks = graph.getLinks();
-			graphObject.links = [];
-			graphObject.intensionConstraints = [];
+			graph.links = [];
+			graph.intensionConstraints = [];
 			allLinks.forEach(function(link){
 				if(link.attr('./display') == "none"){
-					graphObject.intensionConstraints.push(link);
+					graph.intensionConstraints.push(link);
 				}else{
-					graphObject.links.push(link);
+					graph.links.push(link);
 				}
 			});
 		}else{
@@ -1169,7 +1174,7 @@ function generateLeafFile(){
 	var savedConstraints = [];
 
 	if (linkMode == "Relationships"){
-		savedConstraints = graphObject.intensionConstraints;
+		savedConstraints = graph.intensionConstraints;
 		var links = graph.getLinks();
 	    links.forEach(function(link){
 	        if(!isLinkInvalid(link)){
@@ -1179,7 +1184,7 @@ function generateLeafFile(){
 	        else{link.remove();}
 	    });
 	}else if (linkMode == "Constraints"){
-		savedLinks = graphObject.links;
+		savedLinks = graph.links;
 		var betweenIntensionConstraints = graph.getLinks();
 	    betweenIntensionConstraints.forEach(function(link){
 			var linkStatus = link.attributes.labels[0].attrs.text.text.replace(/\s/g, '');
@@ -1204,8 +1209,8 @@ function generateLeafFile(){
 	}
 
 	//save elements in global variable for slider, used for toBackEnd funciton only
-	graphObject.allElements = elements;
-	graphObject.elementsBeforeAnalysis = elements;
+	graph.allElements = elements;
+	graph.elementsBeforeAnalysis = elements;
 
 	var datastring = actors.length + "\n";
 	//print each actor in the model
