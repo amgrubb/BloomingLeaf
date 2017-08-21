@@ -5,7 +5,7 @@ function backendComm(js_object){
 	//Set this variable to true if executing on localhost
 	var localhost = true;
 	
-	if(local){
+	if(localhost){
 		//Show in console just to see what is going to backend
 		console.log(JSON.stringify(js_object));
 		analysisResults = {
