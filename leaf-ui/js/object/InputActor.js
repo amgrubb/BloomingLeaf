@@ -5,7 +5,7 @@ function InputActor(nodeId, nodeName, nodeType){
 }
 
 function getActors(){
-	var elements = App.graph.getElements();
+	var elements = graph.getElements();
 	
 	//Help variable to count the length of actors
 	var actorCounter = 0;

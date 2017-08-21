@@ -13,9 +13,9 @@ function getDynamics(){
 	
 	var elements = [];
 	
-	for (var i = 0; i < App.graph.getElements().length; i++){
-		if (!(App.graph.getElements()[i] instanceof joint.shapes.basic.Actor)){
-			elements.push(App.graph.getElements()[i]);
+	for (var i = 0; i < graph.getElements().length; i++){
+		if (!(graph.getElements()[i] instanceof joint.shapes.basic.Actor)){
+			elements.push(graph.getElements()[i]);
 		}
 	}
 

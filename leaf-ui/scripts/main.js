@@ -1,8 +1,6 @@
-//Creating the name space for the application
-var App = {};
 
 // Global variables
-App.graph;
+var graph;
 var paper;
 var stencil;
 var mode;
@@ -50,16 +48,16 @@ var satValueDict = {
 mode = "Modelling";		// 'Analysis' or 'Modelling'
 linkMode = "Relationships";	// 'Relationships' or 'Constraints'
 
-App.graph = new joint.dia.Graph();
+graph = new joint.dia.Graph();
 
-App.graph.links = [];
-App.graph.intensionConstraints = [];
-App.graph.linksNum;
-App.graph.constraintsNum;
-App.graph.allElements = [];
-App.graph.elementsBeforeAnalysis = [];
+graph.links = [];
+graph.intensionConstraints = [];
+graph.linksNum;
+graph.constraintsNum;
+graph.allElements = [];
+graph.elementsBeforeAnalysis = [];
 
-var commandManager = new joint.dia.CommandManager({ graph: App.graph });
+var commandManager = new joint.dia.CommandManager({ graph: graph });
 
 // Create a paper and wrap it in a PaperScroller.
 paper = new joint.dia.Paper({
@@ -67,7 +65,7 @@ paper = new joint.dia.Paper({
     height: 1000,
     gridSize: 10,
     perpendicularLinks: false,
-    model: App.graph,
+    model: graph,
     defaultLink: new joint.dia.Link({
 		'attrs': {
 			'.connection': {stroke: '#000000'},
@@ -89,7 +87,7 @@ paperScroller.center();
 
 // Create and populate stencil.
 stencil = new joint.ui.Stencil({
-	graph: App.graph,
+	graph: graph,
 	paper: paper,
 	width: 200,
 	height: 600
@@ -145,7 +143,7 @@ if (document.cookie){
 	}
 
 	if (prevgraph){
-		App.graph.fromJSON(JSON.parse(prevgraph));
+		graph.fromJSON(JSON.parse(prevgraph));
 	}
 }
 
@@ -164,7 +162,7 @@ function setLinks(mode){
 		linkMode = "Constraints";
 		$('#symbolic-btn').html("Model Relationships");
 
-		var restoredLinks = App.graph.intensionConstraints;
+		var restoredLinks = graph.intensionConstraints;
 		paper.options.defaultLink.attributes.labels[0].attrs.text.text = " constraint ";
 		paper.options.defaultLink.attr(".marker-target/d", 'M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5');
 
@@ -172,7 +170,7 @@ function setLinks(mode){
 		linkMode = "Relationships";
 		$('#symbolic-btn').html("Model Constraints");
 
-		var restoredLinks = App.graph.links;
+		var restoredLinks = graph.links;
 		paper.options.defaultLink.attributes.labels[0].attrs.text.text = "and";
 		paper.options.defaultLink.attr(".marker-target/d", 'M 10 0 L 10 10 M 10 5 L 0 5');
 
@@ -190,25 +188,25 @@ function setLinks(mode){
 function saveLinks(mode){
 	// Hide all relationships that are not suppose to be dispalyed
 	if(mode == "Relationships"){
-		var links = App.graph.getLinks();
-		App.graph.links = [];
+		var links = graph.getLinks();
+		graph.links = [];
 		links.forEach(function(link){
 			if(!isLinkInvalid(link)){
 				if(!link.attr('./display')){
 					link.attr('./display', 'none');
-					App.graph.links.push(link);
+					graph.links.push(link);
 				}
 			}else{link.remove();}
 		});
 	}else if (mode == "Constraints"){
-		var links = App.graph.getLinks();
-		App.graph.intensionConstraints = [];
+		var links = graph.getLinks();
+		graph.intensionConstraints = [];
 		links.forEach(function(link){
 			var linkStatus = link.attributes.labels[0].attrs.text.text.replace(/\s/g, '');
 			if(!isLinkInvalid(link) && (linkStatus != "constraint") && (linkStatus != "error")){
 				if(!link.attr('./display')){
 					link.attr('./display', 'none');
-					App.graph.intensionConstraints.push(link);
+					graph.intensionConstraints.push(link);
 				}
 			}else{link.remove();}
 		});
@@ -265,8 +263,8 @@ $('#model-init-btn').on('click', function(){
 function switchToModellingMode(useInitState){
 	//Reset to initial graph prior to analysis
 	if(useInitState){
-		for (var i = 0; i < App.graph.elementsBeforeAnalysis.length; i++){
-			var value = App.graph.elementsBeforeAnalysis[i]
+		for (var i = 0; i < graph.elementsBeforeAnalysis.length; i++){
+			var value = graph.elementsBeforeAnalysis[i]
 			updateValues(i, value, "toInitModel");
 		}
 	}
@@ -276,7 +274,7 @@ function switchToModellingMode(useInitState){
 	// 	}
 	// }
 
-	App.graph.elementsBeforeAnalysis = [];
+	graph.elementsBeforeAnalysis = [];
 
 	analysisInspector.clear();
 	$('#stencil').css("display","");
@@ -295,7 +293,7 @@ function switchToModellingMode(useInitState){
 	$('.link-tools .tool-remove').css("display","");
 	$('.link-tools .tool-options').css("display","");
 
-	App.graph.allElements = null;
+	graph.allElements = null;
 
 	// Clear previous slider setup
 	clearHistoryLog();
@@ -324,7 +322,7 @@ analysisFunctions.conductAnalysis = function(type, stepVal, epochVal, queryValA,
 }
 
 analysisFunctions.loadAnalysisFile = function(){
-	var all_elements = App.graph.getElements();
+	var all_elements = graph.getElements();
 
 	//Filter out Actors
 	var elements = [];
@@ -334,7 +332,7 @@ analysisFunctions.loadAnalysisFile = function(){
 	}
 
 	//save elements in global variable for slider
-	App.graph.allElements = elements;
+	graph.allElements = elements;
 	$('#loader').click();
 }
 
@@ -348,7 +346,7 @@ analysisFunctions.concatenateSlider = function(){
 		}
 	}
 	var newElements = [];
-	for (i = 0; i < App.graph.allElements.length; i++){
+	for (i = 0; i < graph.allElements.length; i++){
 		var elementResults = [];
 		for (j = 0; j < historyObject.allHistory.length; j++){
 			var analysisObj = historyObject.allHistory[j].analysis;
@@ -360,7 +358,7 @@ analysisFunctions.concatenateSlider = function(){
 
 	clearHistoryLog();
 
-	currentAnalysis = new analysisObject.initFromMain(newElements, App.graph.allElements.length, newTime);
+	currentAnalysis = new analysisObject.initFromMain(newElements, graph.allElements.length, newTime);
 	updateSlider(currentAnalysis, false);
 }
 
@@ -556,14 +554,14 @@ function updateValues(c, v, m){
 	//Update node based on values from cgi file
 	if (m == "renderAnalysis"){
 		//var satvalues = ["denied", "partiallydenied", "partiallysatisfied", "satisfied", "unknown", "none"];
-		cell = App.graph.allElements[c];
+		cell = graph.allElements[c];
 		value = v;
 		cell.attributes.attrs[".satvalue"].value = v;
 		//cell.attr(".satvalue/value", v);
 
 	//Update node based on values saved from graph prior to analysis
 	}else if (m == "toInitModel"){
-		cell = App.graph.allElements[c];
+		cell = graph.allElements[c];
 		value = cell.attributes.attrs[".satvalue"].value;
 	}
 
@@ -696,9 +694,9 @@ var min_font = 6;
 var current_font = 10;
 
 //Whenever an element is added to the graph
-App.graph.on("add", function(cell){
+graph.on("add", function(cell){
 	if (cell instanceof joint.dia.Link){
-		if (App.graph.getCell(cell.get("source").id) instanceof joint.shapes.basic.Actor){
+		if (graph.getCell(cell.get("source").id) instanceof joint.shapes.basic.Actor){
 
 			cell.attr({
 				'.connection': {stroke: '#000000', 'stroke-dasharray': '0 0'},
@@ -734,8 +732,8 @@ App.graph.on("add", function(cell){
 });
 
 //Auto-save the cookie whenever the graph is changed.
-App.graph.on("change", function(){
-	var graphtext = JSON.stringify(App.graph.toJSON());
+graph.on("change", function(){
+	var graphtext = JSON.stringify(graph.toJSON());
 	document.cookie = "graph=" + graphtext;
 });
 
@@ -743,7 +741,7 @@ var selection = new Backbone.Collection();
 
 var selectionView = new joint.ui.SelectionView({
 	paper: paper,
-	graph: App.graph,
+	graph: graph,
 	model: selection
 });
 
@@ -774,13 +772,13 @@ paper.on('cell:pointerdown', function(cellView, evt, x, y){
 
 	//Unembed cell so you can move it out of actor
 	if (cell.get('parent') && !(cell instanceof joint.dia.Link)) {
-		App.graph.getCell(cell.get('parent')).unembed(cell);
+		graph.getCell(cell.get('parent')).unembed(cell);
 	}
 });
 
 // Unhighlight everything when blank is being clicked
 paper.on('blank:pointerclick', function(){
-	var elements = App.graph.getElements();
+	var elements = graph.getElements();
 	for (var i = 0; i < elements.length; i++){
 		var cellView  = elements[i].findView(paper);
 		cellView.unhighlight();
@@ -844,7 +842,7 @@ paper.on('cell:pointerup', function(cellView, evt) {
 		selection.add(cellView.model);
 		var cell = cellView.model;
 		// Unhighlight everything
-		var elements = App.graph.getElements();
+		var elements = graph.getElements();
 		for (var i = 0; i < elements.length; i++){
 			var cellview  = elements[i].findView(paper);
 			cellview.unhighlight();
@@ -853,7 +851,7 @@ paper.on('cell:pointerup', function(cellView, evt) {
 		cellView.highlight();
 
 		currentHalo = new joint.ui.Halo({
-			graph: App.graph,
+			graph: graph,
 			paper: paper,
 			cellView: cellView,
 			type: 'toolbar'
@@ -885,7 +883,7 @@ paper.on('cell:pointerup', function(cellView, evt) {
 });
 
 
-App.graph.on('change:size', function(cell, size){
+graph.on('change:size', function(cell, size){
 	cell.attr(".label/cx", 0.25 * size.width);
 
 	//Calculate point on actor boundary for label (to always remain on boundary)
@@ -904,14 +902,14 @@ App.graph.on('change:size', function(cell, size){
 var clipboard = new joint.ui.Clipboard();
 KeyboardJS.on('ctrl + c', function() {
 	// Copy all selected elements and their associatedf links.
-	clipboard.copyElements(selection, App.graph, { translate: { dx: 20, dy: 20 }, useLocalStorage: true });
+	clipboard.copyElements(selection, graph, { translate: { dx: 20, dy: 20 }, useLocalStorage: true });
 });
 KeyboardJS.on('ctrl + v', function() {
-	clipboard.pasteCells(App.graph);
+	clipboard.pasteCells(graph);
 
 	selectionView.cancelSelection();
 
-	clipboard.pasteCells(App.graph, { link: { z: -1 }, useLocalStorage: true });
+	clipboard.pasteCells(graph, { link: { z: -1 }, useLocalStorage: true });
 
 	// Make sure pasted elements get selected immediately. This makes the UX better as
 	// the user can immediately manipulate the pasted elements.
@@ -921,7 +919,7 @@ KeyboardJS.on('ctrl + v', function() {
 		// Push to the selection not to the model from the clipboard but put the model into the graph.
 		// Note that they are different models. There is no views associated with the models
 		// in clipboard.
-		selection.add(App.graph.get('cells').get(cell.id));
+		selection.add(graph.get('cells').get(cell.id));
 	});
 
 	selection.each(function(cell) {
@@ -949,13 +947,13 @@ KeyboardJS.on('backspace', function(){
 $('#btn-undo').on('click', _.bind(commandManager.undo, commandManager));
 $('#btn-redo').on('click', _.bind(commandManager.redo, commandManager));
 $('#btn-clear-all').on('click', function(){
-	App.graph.clear();
+	graph.clear();
 	//Delete cookie by setting expiry to past date
 	document.cookie='graph={}; expires=Thu, 18 Dec 2013 12:00:00 UTC';
 });
 
 $('#btn-clear-elabel').on('click', function(){
-	var elements = App.graph.getElements();
+	var elements = graph.getElements();
 	for (var i = 0; i < elements.length; i++){
 		elements[i].removeAttr(".satvalue/d");
 		elements[i].attr(".constraints/lastval", "none");
@@ -969,7 +967,7 @@ $('#btn-clear-elabel').on('click', function(){
 
 });
 $('#btn-clear-flabel').on('click', function(){
-	var elements = App.graph.getElements();
+	var elements = graph.getElements();
 	for (var i = 0; i < elements.length; i++){
 		if (elements[i].attr(".constraints/lastval") != "none"){
 			elements[i].attr(".funcvalue/text", "C");
@@ -995,7 +993,7 @@ $('#btn-save').on('click', function() {
 	var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
 	if (name){
 		var fileName = name + ".json";
-		download(fileName, JSON.stringify(App.graph.toJSON()));
+		download(fileName, JSON.stringify(graph.toJSON()));
 	}
 });
 
@@ -1008,7 +1006,7 @@ $('#btn-load').on('click', function(){
 
 //Universally increase or decrease font size
 $('#btn-fnt-up').on('click', function(){
-	var elements = App.graph.getElements();
+	var elements = graph.getElements();
 	for (var i = 0; i < elements.length; i++){
 		if (elements[i].attr(".name/font-size") < max_font){
 			elements[i].attr(".name/font-size", elements[i].attr(".name/font-size") + 1);
@@ -1017,7 +1015,7 @@ $('#btn-fnt-up').on('click', function(){
 });
 
 $('#btn-fnt-down').on('click', function(){
-	var elements = App.graph.getElements();
+	var elements = graph.getElements();
 	for (var i = 0; i < elements.length; i++){
 		if (elements[i].attr(".name/font-size") > min_font){
 			elements[i].attr(".name/font-size", elements[i].attr(".name/font-size") - 1);
@@ -1027,7 +1025,7 @@ $('#btn-fnt-down').on('click', function(){
 
 //Default font size
 $('#btn-fnt').on('click', function(){
-	var elements = App.graph.getElements();
+	var elements = graph.getElements();
 	for (var i = 0; i < elements.length; i++){
 		elements[i].attr(".name/font-size", 10);
 	}
@@ -1037,29 +1035,29 @@ $('#btn-fnt').on('click', function(){
 $('#btn-save-leaf').on('click', saveLeaf);
 
 //Simulator
-App.loader = document.getElementById("loader");
-App.reader = new FileReader();
+loader = document.getElementById("loader");
+reader = new FileReader();
 
 //Whenever the input is changed, read the file.
-App.loader.onchange = function(){
-	App.reader.readAsText(loader.files.item(0));
+loader.onchange = function(){
+	reader.readAsText(loader.files.item(0));
 };
 
 //When read is performed, if successful, load that file.
-App.reader.onload = function(){
+reader.onload = function(){
 	if (reader.result){
 		if (mode == "Modelling"){
-			App.graph.fromJSON(JSON.parse(reader.result));
+			graph.fromJSON(JSON.parse(reader.result));
 
 			// Load different links and intension constraints
-			var allLinks = App.graph.getLinks();
-			App.graph.links = [];
-			App.graph.intensionConstraints = [];
+			var allLinks = graph.getLinks();
+			graph.links = [];
+			graph.intensionConstraints = [];
 			allLinks.forEach(function(link){
 				if(link.attr('./display') == "none"){
-					App.graph.intensionConstraints.push(link);
+					graph.intensionConstraints.push(link);
 				}else{
-					App.graph.links.push(link);
+					graph.links.push(link);
 				}
 			});
 		}else{
@@ -1118,10 +1116,10 @@ function postData(simulationType, leafLines, queryLines, cspHistoryLines, queryN
 	var data = {};
 	if(queryNum == -1){
 		data.toUpload = leafLines + cspHistoryLines;
-		data.simgraph = JSON.stringify(App.graph.toJSON());
+		data.simgraph = JSON.stringify(graph.toJSON());
   }else{
 		data.toUpload = leafLines + queryLines[queryNum] + cspHistoryLines;
-		data.simgraph = JSON.stringify(App.graph.toJSON());
+		data.simgraph = JSON.stringify(graph.toJSON());
 		queryNum++;
   }
   console.log('data');
@@ -1176,13 +1174,13 @@ function download(filename, text) {
 function generateLeafFile(){
 
 	//Step 0: Get elements from graph.
-	var all_elements = App.graph.getElements();
+	var all_elements = graph.getElements();
 	var savedLinks = [];
 	var savedConstraints = [];
 
 	if (linkMode == "Relationships"){
-		savedConstraints = App.graph.intensionConstraints;
-		var links = App.graph.getLinks();
+		savedConstraints = graph.intensionConstraints;
+		var links = graph.getLinks();
 	    links.forEach(function(link){
 	        if(!isLinkInvalid(link)){
 				if (link.attr('./display') != "none")
@@ -1191,8 +1189,8 @@ function generateLeafFile(){
 	        else{link.remove();}
 	    });
 	}else if (linkMode == "Constraints"){
-		savedLinks = App.graph.links;
-		var betweenIntensionConstraints = App.graph.getLinks();
+		savedLinks = graph.links;
+		var betweenIntensionConstraints = graph.getLinks();
 	    betweenIntensionConstraints.forEach(function(link){
 			var linkStatus = link.attributes.labels[0].attrs.text.text.replace(/\s/g, '');
 	        if(!isLinkInvalid(link) && (linkStatus != "constraint") && (linkStatus != "error")){
@@ -1216,8 +1214,8 @@ function generateLeafFile(){
 	}
 
 	//save elements in global variable for slider, used for toBackEnd funciton only
-	App.graph.allElements = elements;
-	App.graph.elementsBeforeAnalysis = elements;
+	graph.allElements = elements;
+	graph.elementsBeforeAnalysis = elements;
 
 	var datastring = actors.length + "\n";
 	//print each actor in the model
@@ -1253,7 +1251,7 @@ function generateLeafFile(){
 
 		var actorid = '-';
 		if (elements[e].get("parent")){
-			actorid = (App.graph.getCell(elements[e].get("parent")).prop("elementid") || "-");
+			actorid = (graph.getCell(elements[e].get("parent")).prop("elementid") || "-");
 		}
 		console.log(actorid);
 
@@ -1291,9 +1289,9 @@ function generateLeafFile(){
 		var target = "-";
 
 		if (current.get("source").id)
-			source = App.graph.getCell(current.get("source").id).prop("elementid");
+			source = graph.getCell(current.get("source").id).prop("elementid");
 		if (current.get("target").id)
-			target = App.graph.getCell(current.get("target").id).prop("elementid");
+			target = graph.getCell(current.get("target").id).prop("elementid");
 
 		if (relationship.indexOf("|") > -1){
 			evolvRelationships = relationship.replace(/\s/g, '').split("|");

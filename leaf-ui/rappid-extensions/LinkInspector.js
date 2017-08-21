@@ -332,7 +332,7 @@ var LinkInspector = Backbone.View.extend({
     	  
     	  //verify if source or target have any other link NBD or NBT
     	  var targetNBLink = function(){
-    		  var localLinks = App.graph.getLinks();
+    		  var localLinks = graph.getLinks();
     		  for(var i = 0; i < localLinks.length; i++){
     			  if ((localLinks[i]!=link) && (localLinks[i].prop("link-type") == 'NBT' || localLinks[i].prop("link-type") == 'NBD')){
         			  if(localLinks[i].getTargetElement() == target || localLinks[i].getTargetElement() == source){

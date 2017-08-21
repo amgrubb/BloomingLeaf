@@ -220,8 +220,8 @@ var AnalysisInspector = Backbone.View.extend({
 		modal.style.display = "block";
 		// Get a list of nodes
 		// Populate non UD element only
-		var elements = App.graph.getElements();
-		var links = App.graph.getLinks();
+		var elements = graph.getElements();
+		var links = graph.getLinks();
 
 		for (var i = 0; i < elements.length; i ++){
 			var cellView = elements[i].findView(paper);
@@ -283,10 +283,10 @@ var AnalysisInspector = Backbone.View.extend({
 			var source = null;
 			var target = null;
 			if (link.get("source").id){
-				source = App.graph.getCell(link.get("source").id);
+				source = graph.getCell(link.get("source").id);
 			}
 			if (link.get("target").id){
-				target = App.graph.getCell(link.get("target").id);
+				target = graph.getCell(link.get("target").id);
 			}
 			if (source && target){
 				var source_name = source.attr('.name').text;
@@ -332,14 +332,14 @@ var AnalysisInspector = Backbone.View.extend({
 			var id = row.find('input[type=hidden]').val();
 			// If func is not UD, just find the cell and update it
 			if (func_value != 'UD'){
-				var cell = App.graph.getCell(id);
+				var cell = graph.getCell(id);
 				cell.attr('.assigned_time')[0] = new_time;
 			}
 			// If func is UD, extract the index i from id, and update i-th assigned time of the node
 			else {
 				var index = id[id.length - 1];
 				id = id.substring(0, id.length - 2);
-				var cell = App.graph.getCell(id);
+				var cell = graph.getCell(id);
 				cell.attr('.assigned_time')[index] = new_time;
 			}
 		});
@@ -350,7 +350,7 @@ var AnalysisInspector = Backbone.View.extend({
 			var func_value = row.find('td:nth-child(2)').html();
 			var id = row.find('input[type=hidden]').val();
 
-			var links = App.graph.getLinks();
+			var links = graph.getLinks();
 			for (var i = 0; i < links.length; i ++){
 				if (links[i].id == id) {
 					var link = links[i];
@@ -370,13 +370,13 @@ var AnalysisInspector = Backbone.View.extend({
 
 function saveElementsInGlobalVariable(){
 	var elements = [];
-	for (var i = 0; i < App.graph.getElements().length; i++){
-		if (!(App.graph.getElements()[i] instanceof joint.shapes.basic.Actor)){
-			elements.push(App.graph.getElements()[i]);
+	for (var i = 0; i < graph.getElements().length; i++){
+		if (!(graph.getElements()[i] instanceof joint.shapes.basic.Actor)){
+			elements.push(graph.getElements()[i]);
 		}
 	}
-	App.graph.allElements = elements;
-	App.graph.elementsBeforeAnalysis = elements;
+	graph.allElements = elements;
+	graph.elementsBeforeAnalysis = elements;
 }
 
 
