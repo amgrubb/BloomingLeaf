@@ -90,30 +90,7 @@ public class TroposCSPAlgorithm {
 	 * Constructor: Creates the CSP problem from the ModelSpec.
 	 * @param spec	input model
 	 */
-	public TroposCSPAlgorithm(ModelSpec spec) {
-/*		
-		store = new Store();
-
-		IntVar L0 = new IntVar(store, "L0", 1, 100);
-		IntVar TA0 = new IntVar(store, "TA0", 0, 0);
-		
-		IntVar[] links = new IntVar[3];
-		links[0] = new IntVar(store, "N0001_0_FS", 0, 0);
-		links[1] = new IntVar(store, "N0002_0_FS", 0, 1);
-		links[2] = new IntVar(store, "N0001_0_FS", 0, 1);
-		
-		IntVar N0000_0_FS = new IntVar(store, "N0000_0_FS", 0, 0);
-
-		store.impose(new IfThen(
-		            new XgtY(L0, TA0), 
-		            new AndBool(links, N0000_0_FS)));
-
-		boolean result = store.consistency();
-
-		System.out.println("result = " + result);
-		System.out.println(store);
-*/		
-		
+	public TroposCSPAlgorithm(ModelSpec spec) {		
 		// Initialise Store
 		this.store = new Store();
 		this.sat = new SatTranslation(this.store); 
