@@ -723,7 +723,7 @@ public class TroposCSPAlgorithm {
     					if (t==s)
     						continue;
     					PrimitiveConstraint timeCondition = new XltY(this.timePoints[t], this.timePoints[s]);
-    					initializePathIncreaseHelper(i, t, s, timeCondition);
+    					initializePathIncreaseHelper(i, t, s, timeCondition, false);
     				}
     				if (tempType == IntentionalElementDynamicType.MONP){
     					PrimitiveConstraint[] tempDynValue = createXeqC(this.values[i][t], dynFVal);
@@ -737,7 +737,7 @@ public class TroposCSPAlgorithm {
         				if (t==s)
         					continue;
     					PrimitiveConstraint timeCondition = new XltY(this.timePoints[t], this.timePoints[s]);
-        				initializePathDecreaseHelper(i, t, s, timeCondition);
+        				initializePathDecreaseHelper(i, t, s, timeCondition, false);
         			}
         			if (tempType == IntentionalElementDynamicType.MONN){
         				PrimitiveConstraint[] tempDynValue = createXeqC(this.values[i][t], dynFVal);
@@ -846,7 +846,7 @@ public class TroposCSPAlgorithm {
 		                		PrimitiveConstraint timeCondition = new And(new XltY(this.timePoints[t], this.timePoints[s]),
 	                					new And(new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t])),
 	                							new And(new XlteqY(segmentStart, this.timePoints[s]), new XgtY(segmentEnd, this.timePoints[s]))));
-		    					initializePathIncreaseHelper(i, t, s, timeCondition);
+		    					initializePathIncreaseHelper(i, t, s, timeCondition, false);
 		    				}
 	                		PrimitiveConstraint timeCondition = new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t]));
 		    				initializePathIncreaseMaxValueHelper(i, t, dynFVal, timeCondition);
@@ -860,7 +860,7 @@ public class TroposCSPAlgorithm {
 		                		PrimitiveConstraint timeCondition = new And(new XltY(this.timePoints[t], this.timePoints[s]),
 	                					new And(new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t])),
 	                							new And(new XlteqY(segmentStart, this.timePoints[s]), new XgtY(segmentEnd, this.timePoints[s]))));
-		        				initializePathDecreaseHelper(i, t, s, timeCondition);
+		        				initializePathDecreaseHelper(i, t, s, timeCondition, false);
 		        			}
 	                		PrimitiveConstraint timeCondition = new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t]));
 	        				initializePathDecreaseMaxValueHelper(i, t, dynFVal, timeCondition);
@@ -891,7 +891,8 @@ public class TroposCSPAlgorithm {
     	}
 	}
 	
-	private void initializePathIncreaseHelper(int i, int t, int s, PrimitiveConstraint timeCondition){
+	private void initializePathIncreaseHelper(int i, int t, int s, PrimitiveConstraint timeCondition, boolean stateUDFunction){
+		// stateUDFunction : Only set to true when calling from a UD function where we get next state.
 		// Add just increasing constraints.
 
 		PrimitiveConstraint[] tFS = createXeqC(this.values[i][t], boolFS);
@@ -910,19 +911,34 @@ public class TroposCSPAlgorithm {
 		PrimitiveConstraint[] sFSFD = createXeqC(this.values[i][s], boolFSFD);
 		PrimitiveConstraint[] sPSPD = createXeqC(this.values[i][s], boolPSPD);
 		PrimitiveConstraint[] sFD = createXeqC(this.values[i][s], boolFD);
-				
-		constraints.add(new IfThen(new And(timeCondition, new And(tFS)),
-				new And(sFS)));
-		constraints.add(new IfThen(new And(timeCondition, new Or(new And(tPS), new And(tFSPD))),
-				new Or(new And(sFS), new Or(new And(sPS), new And(sFSPD)))));
-		constraints.add(new IfThen(new And(timeCondition, new Or(new And(tTT), new Or(new And(tFSFD), new And(tPSPD)))),
-				new Or(
-					new Or(new And(sFS), new And(sPS)), 
+
+		if(!stateUDFunction){
+			constraints.add(new IfThen(new And(timeCondition, new And(tFS)),
+					new And(sFS)));
+			constraints.add(new IfThen(new And(timeCondition, new Or(new And(tPS), new And(tFSPD))),
+					new Or(new And(sFS), new Or(new And(sPS), new And(sFSPD)))));
+			constraints.add(new IfThen(new And(timeCondition, new Or(new And(tTT), new Or(new And(tFSFD), new And(tPSPD)))),
 					new Or(
-						new Or(new And(sFSPD), new And(sTT)), 
-						new Or(new And(sFSFD), new And(sPSPD))))));
-		constraints.add(new IfThen(new And(timeCondition, new Or(new And(tPD), new And(tPSFD))),
-				new Not(new And(sFD))));
+							new Or(new And(sFS), new And(sPS)), 
+							new Or(
+									new Or(new And(sFSPD), new And(sTT)), 
+									new Or(new And(sFSFD), new And(sPSPD))))));
+			constraints.add(new IfThen(new And(timeCondition, new Or(new And(tPD), new And(tPSFD))),
+					new Not(new And(sFD))));
+		} else {
+			constraints.add(new IfThen(timeCondition, new IfThen(new And(tFS),
+					new And(sFS))));
+			constraints.add(new IfThen(timeCondition, new IfThen(new Or(new And(tPS), new And(tFSPD)),
+					new Or(new And(sFS), new Or(new And(sPS), new And(sFSPD))))));
+			constraints.add(new IfThen(timeCondition, new IfThen(new Or(new And(tTT), new Or(new And(tFSFD), new And(tPSPD))),
+					new Or(
+							new Or(new And(sFS), new And(sPS)), 
+							new Or(
+									new Or(new And(sFSPD), new And(sTT)), 
+									new Or(new And(sFSFD), new And(sPSPD)))))));
+			constraints.add(new IfThen(timeCondition, new IfThen(new Or(new And(tPD), new And(tPSFD)),
+					new Not(new And(sFD)))));
+		}
 	}
 	
 	private void initializePathIncreaseMaxValueHelper(int i, int t, boolean[] dynFVal, PrimitiveConstraint timeCondition){
@@ -969,7 +985,7 @@ public class TroposCSPAlgorithm {
 	
 
 	
-	private void initializePathDecreaseHelper(int i, int t, int s, PrimitiveConstraint timeCondition){
+	private void initializePathDecreaseHelper(int i, int t, int s, PrimitiveConstraint timeCondition, boolean stateUDFunction){
 		// Add just decreasing constraints.
 
 		PrimitiveConstraint[] tPS = createXeqC(this.values[i][t], boolPS);
@@ -988,19 +1004,34 @@ public class TroposCSPAlgorithm {
 		PrimitiveConstraint[] sPD = createXeqC(this.values[i][s], boolPD);
 		PrimitiveConstraint[] sPSFD = createXeqC(this.values[i][s], boolPSFD);
 		PrimitiveConstraint[] sFD = createXeqC(this.values[i][s], boolFD);
-				
-		constraints.add(new IfThen(new And(timeCondition, new Or(new And(tPS), new And(tFSPD))),
-				new Not(new And(sFS))));
-		constraints.add(new IfThen(new And(timeCondition, new Or(new And(tTT), new Or(new And(tFSFD), new And(tPSPD)))),
-				new Or(
-					new Or(new And(sFD), new And(sPD)), 
+			
+		if(!stateUDFunction){
+			constraints.add(new IfThen(new And(timeCondition, new Or(new And(tPS), new And(tFSPD))),
+					new Not(new And(sFS))));
+			constraints.add(new IfThen(new And(timeCondition, new Or(new And(tTT), new Or(new And(tFSFD), new And(tPSPD)))),
 					new Or(
-						new Or(new And(sPSFD), new And(sTT)), 
-						new Or(new And(sFSFD), new And(sPSPD))))));
-		constraints.add(new IfThen(new And(timeCondition, new Or(new And(tPD), new And(tPSFD))),
-				new Or(new And(sFD), new Or(new And(sPD), new And(sPSFD)))));
-		constraints.add(new IfThen(new And(timeCondition, new And(tFD)),
-				new And(sFD)));
+							new Or(new And(sFD), new And(sPD)), 
+							new Or(
+									new Or(new And(sPSFD), new And(sTT)), 
+									new Or(new And(sFSFD), new And(sPSPD))))));
+			constraints.add(new IfThen(new And(timeCondition, new Or(new And(tPD), new And(tPSFD))),
+					new Or(new And(sFD), new Or(new And(sPD), new And(sPSFD)))));
+			constraints.add(new IfThen(new And(timeCondition, new And(tFD)),
+					new And(sFD)));
+		} else {
+			constraints.add(new IfThen(timeCondition, new IfThen(new Or(new And(tPS), new And(tFSPD)),
+					new Not(new And(sFS)))));
+			constraints.add(new IfThen(timeCondition, new IfThen(new Or(new And(tTT), new Or(new And(tFSFD), new And(tPSPD))),
+					new Or(
+							new Or(new And(sFD), new And(sPD)), 
+							new Or(
+									new Or(new And(sPSFD), new And(sTT)), 
+									new Or(new And(sFSFD), new And(sPSPD)))))));
+			constraints.add(new IfThen(timeCondition, new IfThen(new Or(new And(tPD), new And(tPSFD)),
+					new Or(new And(sFD), new Or(new And(sPD), new And(sPSFD))))));
+			constraints.add(new IfThen(timeCondition, new IfThen(new And(tFD),
+					new And(sFD))));
+		}
 	}
 
 	private void initializePathDecreaseMaxValueHelper(int i, int t, boolean[] dynFVal, PrimitiveConstraint timeCondition){
@@ -1558,7 +1589,7 @@ public class TroposCSPAlgorithm {
 				constraints.add(new And(tempConstant)); 
 			}else if ((tempType == IntentionalElementDynamicType.INC) || (tempType == IntentionalElementDynamicType.MONP)){
 				PrimitiveConstraint timeCondition = new XeqC(this.zero, 0);
-				initializePathIncreaseHelper(i, initialIndex, initialIndex+1, timeCondition);
+				initializePathIncreaseHelper(i, initialIndex, initialIndex+1, timeCondition, false);
 				if (tempType == IntentionalElementDynamicType.MONP){
 					if(epochs[0].value() <= currentAbsoluteTime){
 						PrimitiveConstraint[] tempConstant = createXeqY(this.values[i][nextIndex], this.values[i][initialIndex]);
@@ -1575,7 +1606,7 @@ public class TroposCSPAlgorithm {
 				
 			} else if ((tempType == IntentionalElementDynamicType.DEC) || (tempType == IntentionalElementDynamicType.MONN)){
 				PrimitiveConstraint timeCondition = new XeqC(this.zero, 0);
-				initializePathDecreaseHelper(i, initialIndex, initialIndex+1, timeCondition);
+				initializePathDecreaseHelper(i, initialIndex, initialIndex+1, timeCondition, false);
 				if (tempType == IntentionalElementDynamicType.MONN){
 					if(epochs[0].value() <= currentAbsoluteTime){
 						PrimitiveConstraint[] tempConstant = createXeqY(this.values[i][nextIndex], this.values[i][initialIndex]);
@@ -1694,75 +1725,79 @@ public class TroposCSPAlgorithm {
 			constraints.add(new IfThen(epochCondition, 
 					new And(createXeqY(this.values[i][nextIndex], this.values[i][initialIndex]))));
 		} else if (dynamic.equals(IntentionalElementDynamicType.INC.getCode())){
-			PrimitiveConstraint[] tFS = createXeqC(this.values[i][initialIndex], boolFS);
-			PrimitiveConstraint[] tPS = createXeqC(this.values[i][initialIndex], boolPS);
-			PrimitiveConstraint[] tPD = createXeqC(this.values[i][initialIndex], boolPD);
-			PrimitiveConstraint[] tFD = createXeqC(this.values[i][initialIndex], boolFD);
-			PrimitiveConstraint[] sFS = createXeqC(this.values[i][nextIndex], boolFS);
-			PrimitiveConstraint[] sPS = createXeqC(this.values[i][nextIndex], boolPS);
-			PrimitiveConstraint[] sPD = createXeqC(this.values[i][nextIndex], boolPD);
-			PrimitiveConstraint[] sFD = createXeqC(this.values[i][nextIndex], boolFD);
-			if (dynFVal[0] && dynFVal[1] && !dynFVal[2] && !dynFVal[3]) {				//case 0:	
-				constraints.add(new IfThen(epochCondition, new IfThen(new And(tFD),
-						new And(sFD))));
-			} else if (!dynFVal[0] && dynFVal[1] && !dynFVal[2] && !dynFVal[3]) {		//case 1:
-				constraints.add(new IfThen(epochCondition, new IfThen(new And(tPD),
-						new And(sPD))));
-				constraints.add(new IfThen(epochCondition, new IfThen(new And(tFD),
-						new Or(new And(sPD), new And(sFD)))));
-			} else if (!dynFVal[0] && !dynFVal[1] && dynFVal[2] && !dynFVal[3]) {		//case 2:
-				constraints.add(new IfThen(epochCondition, new IfThen(new And(tPS),
-						new And(sPS))));
-				constraints.add(new IfThen(epochCondition, new IfThen(new And(tPD),
-						new Or(new And(sPS), new And(sPD)))));
-				constraints.add(new IfThen(epochCondition, new IfThen(new And(tFD),
-						new Or(new And(sPS), new Or(new And(sPD), new And(sFD))))));
-			} else if (!dynFVal[0] && !dynFVal[1] && dynFVal[2] && dynFVal[3]) {		//case 3:
-				constraints.add(new IfThen(epochCondition, new IfThen(new And(tFS),
-						new And(sFS))));
-				constraints.add(new IfThen(epochCondition, new IfThen(new And(tPS),
-						new Or(new And(sFS), new And(sPS)))));
-				constraints.add(new IfThen(epochCondition, new IfThen(new And(tPD),
-						new Or(new And(sFS), new Or(new And(sPS), new And(sPD))))));
-				constraints.add(new IfThen(epochCondition, new IfThen(new And(tFD),
-						new Or(new Or(new And(sFS), new And(sPS)), new Or(new And(sPD), new And(sFD))))));
-			} else
-				System.err.println("INC Dynamic Value has Unknown/None/Conflict value.");
+			initializePathIncreaseHelper(i, initialIndex, initialIndex+1, epochCondition, true);
+			initializePathIncreaseMaxValueHelper(i, initialIndex+1, dynFVal, epochCondition);		
+//			PrimitiveConstraint[] tFS = createXeqC(this.values[i][initialIndex], boolFS);
+//			PrimitiveConstraint[] tPS = createXeqC(this.values[i][initialIndex], boolPS);
+//			PrimitiveConstraint[] tPD = createXeqC(this.values[i][initialIndex], boolPD);
+//			PrimitiveConstraint[] tFD = createXeqC(this.values[i][initialIndex], boolFD);
+//			PrimitiveConstraint[] sFS = createXeqC(this.values[i][nextIndex], boolFS);
+//			PrimitiveConstraint[] sPS = createXeqC(this.values[i][nextIndex], boolPS);
+//			PrimitiveConstraint[] sPD = createXeqC(this.values[i][nextIndex], boolPD);
+//			PrimitiveConstraint[] sFD = createXeqC(this.values[i][nextIndex], boolFD);
+//			if (dynFVal[0] && dynFVal[1] && !dynFVal[2] && !dynFVal[3]) {				//case 0:	
+//				constraints.add(new IfThen(epochCondition, new IfThen(new And(tFD),
+//						new And(sFD))));
+//			} else if (!dynFVal[0] && dynFVal[1] && !dynFVal[2] && !dynFVal[3]) {		//case 1:
+//				constraints.add(new IfThen(epochCondition, new IfThen(new And(tPD),
+//						new And(sPD))));
+//				constraints.add(new IfThen(epochCondition, new IfThen(new And(tFD),
+//						new Or(new And(sPD), new And(sFD)))));
+//			} else if (!dynFVal[0] && !dynFVal[1] && dynFVal[2] && !dynFVal[3]) {		//case 2:
+//				constraints.add(new IfThen(epochCondition, new IfThen(new And(tPS),
+//						new And(sPS))));
+//				constraints.add(new IfThen(epochCondition, new IfThen(new And(tPD),
+//						new Or(new And(sPS), new And(sPD)))));
+//				constraints.add(new IfThen(epochCondition, new IfThen(new And(tFD),
+//						new Or(new And(sPS), new Or(new And(sPD), new And(sFD))))));
+//			} else if (!dynFVal[0] && !dynFVal[1] && dynFVal[2] && dynFVal[3]) {		//case 3:
+//				constraints.add(new IfThen(epochCondition, new IfThen(new And(tFS),
+//						new And(sFS))));
+//				constraints.add(new IfThen(epochCondition, new IfThen(new And(tPS),
+//						new Or(new And(sFS), new And(sPS)))));
+//				constraints.add(new IfThen(epochCondition, new IfThen(new And(tPD),
+//						new Or(new And(sFS), new Or(new And(sPS), new And(sPD))))));
+//				constraints.add(new IfThen(epochCondition, new IfThen(new And(tFD),
+//						new Or(new Or(new And(sFS), new And(sPS)), new Or(new And(sPD), new And(sFD))))));
+//			} else
+//				System.err.println("INC Dynamic Value has Unknown/None/Conflict value.");
 		} else if (dynamic.equals(IntentionalElementDynamicType.DEC.getCode())){
-			PrimitiveConstraint[] tFS = createXeqC(this.values[i][initialIndex], boolFS);
-			PrimitiveConstraint[] tPS = createXeqC(this.values[i][initialIndex], boolPS);
-			PrimitiveConstraint[] tPD = createXeqC(this.values[i][initialIndex], boolPD);
-			PrimitiveConstraint[] tFD = createXeqC(this.values[i][initialIndex], boolFD);
-			PrimitiveConstraint[] sFS = createXeqC(this.values[i][nextIndex], boolFS);
-			PrimitiveConstraint[] sPS = createXeqC(this.values[i][nextIndex], boolPS);
-			PrimitiveConstraint[] sPD = createXeqC(this.values[i][nextIndex], boolPD);
-			PrimitiveConstraint[] sFD = createXeqC(this.values[i][nextIndex], boolFD);
-			if (dynFVal[0] && dynFVal[1] && !dynFVal[2] && !dynFVal[3]) {				//case 0:	
-				constraints.add(new IfThen(epochCondition, new IfThen(new And(tFS),
-						new Or(new Or(new And(sFS), new And(sPS)), new Or(new And(sPD), new And(sFD))))));
-				constraints.add(new IfThen(epochCondition, new IfThen(new And(tPS),
-						new Or(new And(sFD), new Or(new And(sPS), new And(sPD))))));
-				constraints.add(new IfThen(epochCondition, new IfThen(new And(tPD),
-						new Or(new And(sFD), new And(sPD)))));
-				constraints.add(new IfThen(epochCondition, new IfThen(new And(tFD),
-						new And(sFD))));
-			} else if (!dynFVal[0] && dynFVal[1] && !dynFVal[2] && !dynFVal[3]) {		//case 1:
-				constraints.add(new IfThen(epochCondition, new IfThen(new And(tFS),
-						new Or(new And(sPD), new Or(new And(sPS), new And(sFS))))));
-				constraints.add(new IfThen(epochCondition, new IfThen(new And(tPS),
-						new Or(new And(sPS), new And(sPD)))));
-				constraints.add(new IfThen(epochCondition, new IfThen(new And(tPD),
-						new And(sPD))));
-			} else if (!dynFVal[0] && !dynFVal[1] && dynFVal[2] && !dynFVal[3]) {		//case 2:
-				constraints.add(new IfThen(epochCondition, new IfThen(new And(tFS),
-						new Or(new And(sPS), new And(sFS)))));
-				constraints.add(new IfThen(epochCondition, new IfThen(new And(tPS),
-						new And(sPS))));
-			} else if (!dynFVal[0] && !dynFVal[1] && dynFVal[2] && dynFVal[3]) {		//case 3:
-				constraints.add(new IfThen(epochCondition, new IfThen(new And(tFS),
-						new And(sFS))));
-			} else
-				System.err.println("DEC Dynamic Value has Unknown/None/Conflict value.");
+			initializePathDecreaseHelper(i, initialIndex, initialIndex+1, epochCondition, true);
+			initializePathDecreaseMaxValueHelper(i, initialIndex+1, dynFVal, epochCondition);
+//			PrimitiveConstraint[] tFS = createXeqC(this.values[i][initialIndex], boolFS);
+//			PrimitiveConstraint[] tPS = createXeqC(this.values[i][initialIndex], boolPS);
+//			PrimitiveConstraint[] tPD = createXeqC(this.values[i][initialIndex], boolPD);
+//			PrimitiveConstraint[] tFD = createXeqC(this.values[i][initialIndex], boolFD);
+//			PrimitiveConstraint[] sFS = createXeqC(this.values[i][nextIndex], boolFS);
+//			PrimitiveConstraint[] sPS = createXeqC(this.values[i][nextIndex], boolPS);
+//			PrimitiveConstraint[] sPD = createXeqC(this.values[i][nextIndex], boolPD);
+//			PrimitiveConstraint[] sFD = createXeqC(this.values[i][nextIndex], boolFD);
+//			if (dynFVal[0] && dynFVal[1] && !dynFVal[2] && !dynFVal[3]) {				//case 0:	
+//				constraints.add(new IfThen(epochCondition, new IfThen(new And(tFS),
+//						new Or(new Or(new And(sFS), new And(sPS)), new Or(new And(sPD), new And(sFD))))));
+//				constraints.add(new IfThen(epochCondition, new IfThen(new And(tPS),
+//						new Or(new And(sFD), new Or(new And(sPS), new And(sPD))))));
+//				constraints.add(new IfThen(epochCondition, new IfThen(new And(tPD),
+//						new Or(new And(sFD), new And(sPD)))));
+//				constraints.add(new IfThen(epochCondition, new IfThen(new And(tFD),
+//						new And(sFD))));
+//			} else if (!dynFVal[0] && dynFVal[1] && !dynFVal[2] && !dynFVal[3]) {		//case 1:
+//				constraints.add(new IfThen(epochCondition, new IfThen(new And(tFS),
+//						new Or(new And(sPD), new Or(new And(sPS), new And(sFS))))));
+//				constraints.add(new IfThen(epochCondition, new IfThen(new And(tPS),
+//						new Or(new And(sPS), new And(sPD)))));
+//				constraints.add(new IfThen(epochCondition, new IfThen(new And(tPD),
+//						new And(sPD))));
+//			} else if (!dynFVal[0] && !dynFVal[1] && dynFVal[2] && !dynFVal[3]) {		//case 2:
+//				constraints.add(new IfThen(epochCondition, new IfThen(new And(tFS),
+//						new Or(new And(sPS), new And(sFS)))));
+//				constraints.add(new IfThen(epochCondition, new IfThen(new And(tPS),
+//						new And(sPS))));
+//			} else if (!dynFVal[0] && !dynFVal[1] && dynFVal[2] && dynFVal[3]) {		//case 3:
+//				constraints.add(new IfThen(epochCondition, new IfThen(new And(tFS),
+//						new And(sFS))));
+//			} else
+//				System.err.println("DEC Dynamic Value has Unknown/None/Conflict value.");
 		}
 	}
 	
