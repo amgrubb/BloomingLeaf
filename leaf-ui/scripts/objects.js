@@ -1,14 +1,3 @@
-// Used to track all elements on the graph
-// mainly used for analysis and loading
-var graphObject = function(){
-	this.links = [];
-	this.intensionConstraints = [];
-	this.linksNum;
-	this.constraintsNum;
-	this.allElements = [];
-	this.elementsBeforeAnalysis = [];
-}
-
 // Used to manipulate slider during analysis
 var sliderObject = function(){
 	this.sliderElement;
