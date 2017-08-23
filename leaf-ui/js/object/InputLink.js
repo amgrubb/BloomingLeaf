@@ -30,20 +30,25 @@ function getLinks(){
 
 		var link;
 
-		if (linkType.indexOf("|") > -1){
-			evolvRelationships = linkType.replace(/\s/g, '').split("|");
-			link = new InputLink(evolvRelationships[0], source, target, evolvRelationships[1]);
-		}else if(linkType == "NBT"){
-			markedValue = "0000";
-			link = new InputLink(linkType, source, target, null, markedValue);			
-		}else if(linkType == "NBD"){
-			markedValue = "1100";
-			link = new InputLink(linkType, source, target, null, markedValue);			
-		}else{
-			link = new InputLink(linkType, source, target);
+		//Remove constraints links
+		if(!(linkType.indexOf("=") > -1 || linkType.indexOf("<") > -1)){
+			//Adding links links
+			if (linkType.indexOf("|") > -1){
+				evolvRelationships = linkType.replace(/\s/g, '').split("|");
+				link = new InputLink(evolvRelationships[0], source, target, evolvRelationships[1]);
+			}else if(linkType == "NBT"){
+				markedValue = "0000";
+				link = new InputLink(linkType, source, target, null, markedValue);			
+			}else if(linkType == "NBD"){
+				markedValue = "1100";
+				link = new InputLink(linkType, source, target, null, markedValue);			
+			}else{
+				link = new InputLink(linkType, source, target);
+			}
+
+			links.push(link);
 		}
 
-		links.push(link);
 	}
 	
 	return links;

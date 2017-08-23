@@ -115,7 +115,6 @@ var AnalysisInspector = Backbone.View.extend({
 		var analysis = new InputAnalysis();
 		var js_object = {};
 		AO_btnGetNextState(analysis);
-		analysis.currentState = $('#sliderValue').text();
 		js_object.analysis = AO_getValues(analysis);
 		js_object.model = getFrontendModel(false);
 		saveElementsInGlobalVariable();
