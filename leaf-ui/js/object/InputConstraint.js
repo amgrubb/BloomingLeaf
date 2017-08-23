@@ -10,7 +10,7 @@ function InputConstraint(constraintType, constraintSrcID, constraintSrcEB, absol
 function getConstraints(){
 	var constraints = [];
 	
-	var links = graphObject.intensionConstraints;
+	var links = graph.intensionConstraints;
 	if(links != null){
 		for (var i = 0; i < links.length; i++){
 			var c = links[i];
