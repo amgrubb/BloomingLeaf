@@ -36,7 +36,6 @@ public class SolveModel {
 			//creating the backend model to be analysed
 			ModelSpec modelSpec = convertModelFromFile(filePath + inputFile);
 			
-			System.out.println("Model Spec Created");
 			//Analyse the model
 			TroposCSPAlgorithm solver = new TroposCSPAlgorithm(modelSpec);
 			solver.solveModel();
