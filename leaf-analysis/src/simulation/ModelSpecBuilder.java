@@ -76,9 +76,11 @@ public class ModelSpecBuilder {
 			}
 	
 			if(!analysis.getCurrentState().equals("0")){
+				// Deals with all possible next states.
 				String[] absoluteTime = analysis.getCurrentState().split("|");
 				int currentState = Integer.parseInt(absoluteTime[0]);
 				
+				// Creates initial Assigned Epoch Map.
 				String[] initialAssignedEpoch = analysis.getInitialAssignedEpoch().split(",");
 				HashMap<String, Integer> initialAssignedEpochMap = new HashMap<>();
 				//Send the hole hashmap
@@ -90,6 +92,8 @@ public class ModelSpecBuilder {
 				}
 				modelSpec.setInitialAssignedEpochs(initialAssignedEpochMap);
 				
+				// Creates array of size currentState + 1.
+				// TODO: Should this be currentState + 2???
 				String[] initialValueTimePoints = analysis.getInitialValueTimePoints().split(",");
 				int[] initialValueTimePointsArray = new int[currentState+1];
 				for(int i = 0; i < currentState+1; i++){
@@ -114,6 +118,7 @@ public class ModelSpecBuilder {
 								}						
 							}						
 						}else{
+							System.err.println("Invalid initial value in ModelSpecBuilder.");
 							initialValues[Integer.parseInt(intElement.getId())][i_state][0] = false;
 							initialValues[Integer.parseInt(intElement.getId())][i_state][1] = false;
 							initialValues[Integer.parseInt(intElement.getId())][i_state][2] = false;
@@ -137,6 +142,8 @@ public class ModelSpecBuilder {
 					modelSpec.getActors().add(new Actor(dataActor.getNodeId(), dataActor.getNodeName(), dataActor.getNodeType()));
 				}
 			}
+			if(DEBUG)
+				System.out.println("read actors");
 			
 			//Getting intentional elements
 			if(!frontendModel.getIntentions().isEmpty()){
@@ -154,7 +161,9 @@ public class ModelSpecBuilder {
 					modelSpec.getIntElements().add(element);
 				}
 			}
-	
+			if(DEBUG)
+				System.out.println("read elements");
+			
 			//Adding all dynamics to each intentional elements
 			if(!frontendModel.getDynamics().isEmpty()){
 				for(InputDynamic dataDynamic : frontendModel.getDynamics()){
@@ -391,7 +400,7 @@ public class ModelSpecBuilder {
 			}
 			if(DEBUG)
 				System.out.println("Done Constraints");
-			
+      
 			//Getting initial Values
 			if(!analysis.getElementList().isEmpty()) {
 				List<IOIntention> elementList = analysis.getElementList();
