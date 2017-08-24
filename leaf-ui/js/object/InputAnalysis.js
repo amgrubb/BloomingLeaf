@@ -1,18 +1,20 @@
 function InputAnalysis(){
 	
-	this.maxAbsTime;
-	this.conflictLevel;
-	this.numRelTime;
-	this.absTimePts;
+	this.maxAbsTime = null;
+	this.conflictLevel = null;
+	this.numRelTime = null;
+	this.absTimePts = null;
 	this.currentState = "0";
-	this.solveSinglePath;
-	this.getNextState;
+	//this.solveSinglePath = null;
+	//this.getNextState = null;
 	this.initialAssignedEpoch = "0";
 	this.initialValueTimePoints = "0";
-	this.elementList;
+	this.elementList = null;
+	this.action = null;
 }
 
-function AO_getValues(analysisInterface){
+function getAnalysisValues(analysisInterface){
+	//Data required for 1. Simulate Single Path 
 	analysisInterface.maxAbsTime = $('#max-abs-time').val();
 	analysisInterface.conflictLevel = $('#conflict-level').val();
 	analysisInterface.numRelTime = $('#num-rel-time').val();
@@ -20,15 +22,8 @@ function AO_getValues(analysisInterface){
 		analysisInterface.absTimePts = $('#abs-time-pts').val();		
 	}
 	analysisInterface.elementList = getElementList();
-	return analysisInterface;
-}
-
-function AO_btnSolveSinglePath(analysisInterface){
-	analysisInterface.solveSinglePath = true;
-	analysisInterface.getNextState = false;
-}
-
-function AO_btnGetNextState(analysisInterface){
+	
+	//Data required for 2. Explore Possible Next States
 	if($('#finalAssigneEpoch').val()){
 		analysisInterface.initialAssignedEpoch = $('#finalAssigneEpoch').val();		
 	}
@@ -36,11 +31,11 @@ function AO_btnGetNextState(analysisInterface){
 		analysisInterface.initialValueTimePoints = $('#finalValueTimePoints').val();		
 	}
 	if($('#sliderValue').text()){
-		analysis.currentState = $('#sliderValue').text();		
+		analysisInterface.currentState = $('#sliderValue').text();		
 	}
 	analysisInterface.numRelTime = $('#num-rel-time').val();
-	analysisInterface.getNextState = true;
-	analysisInterface.solveSinglePath = false;
+
+	return analysisInterface;
 }
 
 function getElementList(){
