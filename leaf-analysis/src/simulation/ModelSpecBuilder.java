@@ -400,38 +400,29 @@ public class ModelSpecBuilder {
 			}
 			if(DEBUG)
 				System.out.println("Done Constraints");
-			
-			if(modelSpec.isSolveSingleSolutions()){		//TODO: Merge with all paths...only one set of initial models required.
-				//Getting initial Values
-				ArrayList<IOStateModel> stateModels = (ArrayList<IOStateModel>) frontendModel.getAllStatesModel();
-				
-				boolean[][][] initialValues = new boolean[stateModels.get(0).getIntentionElements().size()][stateModels.size()][4];
-				
-				int num_time = -1;
-				for(IOStateModel stateModel : stateModels){
-					num_time++;
-					for(IOIntention intElement : stateModel.getIntentionElements()){
-						String[] values = intElement.getStatus();
-						if(values[0]!=null){
-							for(int i = 0; i < 4; i++){
-								if(values[0].charAt(i)=='1'){
-									initialValues[Integer.parseInt(intElement.getId())][num_time][i] = true;
-								}else{
-									initialValues[Integer.parseInt(intElement.getId())][num_time][i] = false;
-								}						
-							}						
-						}else{
-							initialValues[Integer.parseInt(intElement.getId())][num_time][0] = false;
-							initialValues[Integer.parseInt(intElement.getId())][num_time][1] = false;
-							initialValues[Integer.parseInt(intElement.getId())][num_time][2] = false;
-							initialValues[Integer.parseInt(intElement.getId())][num_time][3] = false;						
-						}
+      
+			//Getting initial Values
+			if(!analysis.getElementList().isEmpty()) {
+				List<IOIntention> elementList = analysis.getElementList();
+				boolean[][][] initialValues = new boolean[elementList.size()][elementList.get(0).getStatus().length][4];
 
+				for(IOIntention intElement : elementList){
+					int num_time = 0;
+					for(String value : intElement.getStatus()) {
+						for(int i = 0; i < 4; i++){
+							if(value.charAt(i)=='1'){
+								initialValues[Integer.parseInt(intElement.getId())][num_time][i] = true;
+							}else{
+								initialValues[Integer.parseInt(intElement.getId())][num_time][i] = false;
+							}						
+						}
+						num_time++;
 					}
 				}
-				
-				modelSpec.setInitialValues(initialValues);				
+				modelSpec.setInitialValues(initialValues);
 			}
+								
+
 			if(DEBUG)
 				System.out.println("Building Model");
 		}catch (Exception e) {

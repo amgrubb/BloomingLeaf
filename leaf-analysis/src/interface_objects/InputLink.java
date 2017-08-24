@@ -5,6 +5,7 @@ public class InputLink{
 	private String linkSrcID;
 	private String linkDestID;
 	private String postType;
+	private String markedValue;
 	
 	public String getLinkSrcID() {
 		return linkSrcID;
@@ -37,6 +38,13 @@ public class InputLink{
 	public void setPostType(String postType) {
 		this.postType = postType;
 	}
-	
+
+	public String getMarkedValue() {
+		return markedValue;
+	}
+
+	public void setMarkedValue(String markedValue) {
+		this.markedValue = markedValue;
+	}
 	
 }

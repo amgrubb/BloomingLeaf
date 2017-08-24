@@ -4,17 +4,13 @@ function FrontendModel(
 		intentions,
 		links,
 		dynamics,
-		constraints,
-		evolvings,
-		allStatesModel
+		constraints
 	){
 	this.actors = actors;// = [];
 	this.intentions = intentions;// = [];
 	this.links = links;// = [];
 	this.dynamics = dynamics;// = [];
 	this.constraints = constraints;// = [];
-	this.evolvings = evolvings;
-	this.allStatesModel = allStatesModel;
 }
 
 //This method is responsible to get all data from the UI and add in to a object to be sent to backend
@@ -61,29 +57,13 @@ function getFrontendModel(isSinglePath = true){
 	 */
 	var constraints = getConstraints();
 	
-	/**
-	 * EVOLVINGS
-	 * calls InputEvolvings
-	 * returns InputEvolving[] evolvings
-	 */
-	var evolvings = getEvolvings();
-	
-	/**
-	 * ASSIGNED VALUES - all satisfaction values for all nodes per time
-	 * Calls StateModel.getStateModel()
-	 * return StateModel[] statesModel
-	 */
-	var values = getStateModel();
-	
 	var frontendModel = new FrontendModel(
 			actors,
 			intentions,
 			links,
 			dynamics,
-			constraints,
-			evolvings,
-			values
-		)
+			constraints
+			)
 
 	return frontendModel;
 }
