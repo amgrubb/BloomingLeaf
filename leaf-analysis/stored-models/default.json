@@ -1,1 +1,192 @@
-{"analysis":{"currentState":"0","initialAssignedEpoch":"0","initialValueTimePoints":"0","solveSinglePath":true,"getNextState":false,"maxAbsTime":"100","conflictLevel":"S","numRelTime":"5","elementList":[{"id":"0000","status":["0000"]},{"id":"0001","status":["0000"]}]},"model":{"actors":[],"intentions":[{"nodeActorID":"-","nodeID":"0000","nodeType":"G"},{"nodeActorID":"-","nodeID":"0001","nodeType":"G"}],"links":[{"linkType":"OR","linkSrcID":"0001","linkDestID":"0000","postType":null,"markedValue":null}],"dynamics":[{"intentionID":"0000","dynamicType":"NT","markedValue":"0000","line":null},{"intentionID":"0001","dynamicType":"NT","markedValue":"0000","line":null}],"constraints":[]}}
+
+
+{
+  "analysis": {
+    "currentState": "0",
+    "initialAssignedEpoch": "0",
+    "initialValueTimePoints": "0",
+    "solveSinglePath": true,
+    "getNextState": false,
+    "maxAbsTime": "100",
+    "conflictLevel": "S",
+    "numRelTime": "5",
+    "absTimePts": "1 3",
+    "elementList": [
+      {
+        "id": "0000",
+        "status": [
+          "0000"
+        ]
+      },
+      {
+        "id": "0001",
+        "status": [
+          "0000"
+        ]
+      },
+      {
+        "id": "0002",
+        "status": [
+          "0000"
+        ]
+      },
+      {
+        "id": "0003",
+        "status": [
+          "0000"
+        ]
+      },
+      {
+        "id": "0004",
+        "status": [
+          "0000"
+        ]
+      },
+      {
+        "id": "0005",
+        "status": [
+          "0011"
+        ]
+      },
+      {
+        "id": "0006",
+        "status": [
+          "0100"
+        ]
+      }
+    ]
+  },
+  "model": {
+    "actors": [
+      {
+        "nodeId": "a000",
+        "nodeName": "Actor_2",
+        "nodeType": "A"
+      }
+    ],
+    "intentions": [
+      {
+        "nodeActorID": "a000",
+        "nodeID": "0000",
+        "nodeType": "G",
+        "nodeName": "Goal_0"
+      },
+      {
+        "nodeActorID": "a000",
+        "nodeID": "0001",
+        "nodeType": "G",
+        "nodeName": "Goal_1"
+      },
+      {
+        "nodeActorID": "a000",
+        "nodeID": "0002",
+        "nodeType": "T",
+        "nodeName": "Task_3"
+      },
+      {
+        "nodeActorID": "a000",
+        "nodeID": "0003",
+        "nodeType": "S",
+        "nodeName": "Soft Goal_4"
+      },
+      {
+        "nodeActorID": "a000",
+        "nodeID": "0004",
+        "nodeType": "G",
+        "nodeName": "Goal_9"
+      },
+      {
+        "nodeActorID": "a000",
+        "nodeID": "0005",
+        "nodeType": "G",
+        "nodeName": "Goal_8_3"
+      }
+    ],
+    "links": [
+      {
+        "linkType": "+S",
+        "linkSrcID": "0001",
+        "linkDestID": "0003",
+        "postType": null,
+        "markedValue": null
+      },
+      {
+        "linkType": "AND",
+        "linkSrcID": "0001",
+        "linkDestID": "0000",
+        "postType": null,
+        "markedValue": null
+      },
+      {
+        "linkType": "AND",
+        "linkSrcID": "0002",
+        "linkDestID": "0000",
+        "postType": null,
+        "markedValue": null
+      },
+      {
+        "linkType": "OR",
+        "linkSrcID": "0004",
+        "linkDestID": "0002",
+        "postType": null,
+        "markedValue": null
+      },
+      {
+        "linkType": "OR",
+        "linkSrcID": "0005",
+        "linkDestID": "0002",
+        "postType": null,
+        "markedValue": null
+      }
+    ],
+    "dynamics": [
+      {
+        "intentionID": "0000",
+        "dynamicType": "NT",
+        "markedValue": "0000",
+        "line": null
+      },
+      {
+        "intentionID": "0001",
+        "dynamicType": "NT",
+        "markedValue": "0000",
+        "line": null
+      },
+      {
+        "intentionID": "0002",
+        "dynamicType": "NT",
+        "markedValue": "0000",
+        "line": null
+      },
+      {
+        "intentionID": "0003",
+        "dynamicType": "NT",
+        "markedValue": "0000",
+        "line": null
+      },
+      {
+        "intentionID": "0004",
+        "dynamicType": "MN",
+        "markedValue": "0000",
+        "line": null
+      },
+      {
+        "intentionID": "0005",
+        "dynamicType": "MP",
+        "markedValue": "0000",
+        "line": null
+      }
+    ],
+    "constraints": [
+      {
+        "constraintType": "=",
+        "constraintSrcID": "0005",
+        "constraintSrcEB": "A",
+        "absoluteValue": null,
+        "constraintDestID": "0004",
+        "constraintDestEB": "A"
+      }
+    ]
+  }
+}
+

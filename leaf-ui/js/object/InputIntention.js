@@ -1,4 +1,4 @@
-function InputIntention(nodeActorID, nodeID, nodeType, initialValue, nodeName){
+function InputIntention(nodeActorID, nodeID, nodeType, nodeName){
 	this.nodeActorID = nodeActorID;
 	this.nodeID = nodeID ;
 	this.nodeType = nodeType;

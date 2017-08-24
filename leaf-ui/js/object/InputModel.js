@@ -4,15 +4,13 @@ function FrontendModel(
 		intentions,
 		links,
 		dynamics,
-		constraints,
-		allStatesModel
+		constraints
 	){
 	this.actors = actors;// = [];
 	this.intentions = intentions;// = [];
 	this.links = links;// = [];
 	this.dynamics = dynamics;// = [];
 	this.constraints = constraints;// = [];
-	this.allStatesModel = allStatesModel;
 }
 
 //This method is responsible to get all data from the UI and add in to a object to be sent to backend

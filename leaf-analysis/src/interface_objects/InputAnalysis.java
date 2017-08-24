@@ -2,16 +2,23 @@ package interface_objects;
 
 import java.util.List;
 
+/**
+ * Class responsible to receive data to execute the analysis
+ * IMPORTANT:The attributes in this class must be correlated (same name and type) with the JSON attributes.
+ * @author marcel
+ * @email marcel.serikawa@gmail.com
+ */
 public class InputAnalysis {
+	private String currentState;
+	private String initialAssignedEpoch;
+	private String initialValueTimePoints;
+	//TODO: merge this to variable into one "typeOfAnalysis"
+	private String solveSinglePath;
+	private String getNextState;
 	private String maxAbsTime;
 	private String conflictLevel;
 	private String numRelTime;
 	private String absTimePts;
-	private String solveSinglePath;
-	private String getNextState;
-	private String currentState;
-	private String initialAssignedEpoch;
-	private String initialValueTimePoints;
 	private List<IOIntention> elementList;
 	
 	public String getCurrentState() {
