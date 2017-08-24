@@ -115,6 +115,14 @@ public class TroposCSPAlgorithm {
     	this.notBothEBCollection = new HashMap<NotBothLink, IntVar>();
     	this.epochToTimePoint = new HashMap<IntVar, IntVar>(); 
     	
+    	/* Usage: 
+    	 * 		For "singlePath" from timepoint zero.
+    	 * 			Length of initialValueTimePoints: 1
+		 *			Length of initialValues()[0]: 1
+    	 */
+		if (DEBUG)
+			System.out.println("Length of initialValueTimePoints: " + this.spec.getInitialValueTimePoints().length + 
+					"\nLength of initialValues()[0]: " + this.spec.getInitialValues()[0].length);
     	if (this.spec.getInitialValueTimePoints().length != this.spec.getInitialValues()[0].length)
     		System.err.println("Error: The length of initialValueTimePoints and initialValues[0] do not match.");
 
@@ -1725,7 +1733,7 @@ public class TroposCSPAlgorithm {
         	System.out.println("Constraints List:");
         for (int i = 0; i < constraints.size(); i++) {
             if(DEBUG)
-            	//System.out.println(constraints.get(i).toString());
+            	System.out.println(constraints.get(i).toString());
             store.impose(constraints.get(i));
             if(!store.consistency()) {
             	Constraint errorConst = constraints.get(i);
