@@ -2,15 +2,24 @@ package interface_objects;
 
 
 /**
- * This class is responsible to get all required input for the analysis.
- * The model elements in the model attribute. Class related: InputModel.
- * The analysis information in the analysis attribute.Class related: InputAnalysis.
+ * This class is responsible to receive the frontend JSON, so it doesn't have any behavior (POJO).
+ * It is split in two attributes, the data required for the type of analysis and the graph model.
+ * IMPORTANT: The attributes in this class must be correlated (same name and type) with the JSON attributes.
  * @author marcel
- *
+ * @email marcel.serikawa@gmail.com
  */
 public class InputObject {
-	InputModel model = new InputModel();
+	
 	InputAnalysis analysis = new InputAnalysis();
+	InputModel model = new InputModel();
+	
+	public InputAnalysis getAnalysis() {
+		return analysis;
+	}
+	
+	public void setAnalysis(InputAnalysis analysis) {
+		this.analysis = analysis;
+	}
 	
 	public InputModel getModel() {
 		return model;
@@ -20,12 +29,4 @@ public class InputObject {
 		this.model = model;
 	}
 	
-	public InputAnalysis getAnalysis() {
-		return analysis;
-	}
-	
-	public void setAnalysis(InputAnalysis analysis) {
-		this.analysis = analysis;
-	}
-
 }

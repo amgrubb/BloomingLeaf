@@ -3,10 +3,10 @@ package interface_objects;
 import java.util.List;
 
 /**
- * Class that represents the model got from the frontend.
- * This class must be processed to the backend model for the analysis.
+ * This class is responsible to receive the frontend JSON model.
+ * IMPORTANT: The attributes in this class must be correlated (same name and type) with the JSON attributes.
  * @author marcel
- *
+ * @email marcel.serikawa@gmail.com
  */
 public class InputModel {
 	private List<InputActor> actors;
@@ -14,7 +14,6 @@ public class InputModel {
 	private List<InputLink> links;
 	private List<InputDynamic> dynamics;
 	private List<InputConstraint> constraints;
-    private List<IOStateModel> allStatesModel;
 	
 	public List<InputActor> getActors() {
 		return actors;
@@ -47,21 +46,14 @@ public class InputModel {
 	public void setDynamics(List<InputDynamic> dynamics) {
 		this.dynamics = dynamics;
 	}
-	
+
 	public List<InputConstraint> getConstraints() {
 		return constraints;
 	}
-	
+
 	public void setConstraints(List<InputConstraint> constraints) {
 		this.constraints = constraints;
 	}
-
-	public List<IOStateModel> getAllStatesModel() {
-		return allStatesModel;
-	}
-
-	public void setAllStatesModel(List<IOStateModel> allStatesModel) {
-		this.allStatesModel = allStatesModel;
-	}
 	
+		
 }
