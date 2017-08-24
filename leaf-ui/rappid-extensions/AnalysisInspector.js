@@ -99,13 +99,13 @@ var AnalysisInspector = Backbone.View.extend({
 		//Prepare and send data to backend
 		this.sendToBackend(analysis);
 	},
-	sendtoBackend: function(analysis){
+	sendToBackend: function(analysis){
 		var js_object = {};
 		js_object.analysis = getAnalysisValues(analysis);
 		//Get the Graph Model
 		js_object.model = getFrontendModel(false);
 		
-		saveElementsInGlobalVariable();
+		this.saveElementsInGlobalVariable();
 		
 		if(js_object.model == null){
 			return null;
@@ -274,19 +274,16 @@ var AnalysisInspector = Backbone.View.extend({
 		var modal = document.getElementById('myModal');
 		modal.style.display = "none";
 
-	}
-});
-
-function saveElementsInGlobalVariable(){
-	var elements = [];
-	for (var i = 0; i < graph.getElements().length; i++){
-		if (!(graph.getElements()[i] instanceof joint.shapes.basic.Actor)){
-			elements.push(graph.getElements()[i]);
+	},
+	saveElementsInGlobalVariable: function(){
+		var elements = [];
+		for (var i = 0; i < graph.getElements().length; i++){
+			if (!(graph.getElements()[i] instanceof joint.shapes.basic.Actor)){
+				elements.push(graph.getElements()[i]);
+			}
 		}
+		graph.allElements = elements;
+		graph.elementsBeforeAnalysis = elements;
 	}
-	graph.allElements = elements;
-	graph.elementsBeforeAnalysis = elements;
-}
 
-
-
+});

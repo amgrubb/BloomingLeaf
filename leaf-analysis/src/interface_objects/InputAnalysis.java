@@ -9,18 +9,24 @@ import java.util.List;
  * @email marcel.serikawa@gmail.com
  */
 public class InputAnalysis {
+	private String action;
 	private String currentState;
 	private String initialAssignedEpoch;
 	private String initialValueTimePoints;
-	//TODO: merge this to variable into one "typeOfAnalysis"
-	private String solveSinglePath;
-	private String getNextState;
 	private String maxAbsTime;
 	private String conflictLevel;
 	private String numRelTime;
 	private String absTimePts;
 	private List<IOIntention> elementList;
 	
+	public String getAction() {
+		return action;
+	}
+
+	public void setAction(String action) {
+		this.action = action;
+	}
+
 	public String getCurrentState() {
 		return currentState;
 	}
@@ -59,22 +65,6 @@ public class InputAnalysis {
 	
 	public void setAbsTimePts(String absTimePts) {
 		this.absTimePts = absTimePts;
-	}
-	
-	public String getSolveSinglePath() {
-		return solveSinglePath;
-	}
-	
-	public void setSolveSinglePath(String solveSinglePath) {
-		this.solveSinglePath = solveSinglePath;
-	}
-	
-	public String getGetNextState() {
-		return getNextState;
-	}
-	
-	public void setGetNextState(String getNextState) {
-		this.getNextState = getNextState;
 	}
 
 	public String getInitialAssignedEpoch() {

@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.ListIterator;
 
 import interface_objects.IOIntention;
-import interface_objects.IOStateModel;
 import interface_objects.InputActor;
 import interface_objects.InputAnalysis;
 import interface_objects.InputConstraint;
@@ -34,6 +33,17 @@ public class ModelSpecBuilder {
 
 		try{
 			//ANALYSIS 			
+			//Type of analysis
+			switch (analysis.getAction()) {
+			case "solveSinglePath":
+				modelSpec.setSolveSinglePath(true);
+				break;
+
+			case "allNextStates":
+				modelSpec.setSolveNextState(true);
+				break;
+			}
+
 			//Conflict level
 			if(analysis.getConflictLevel()!=null){
 				modelSpec.setConflictAvoidLevel(analysis.getConflictLevel().charAt(0));
@@ -65,16 +75,6 @@ public class ModelSpecBuilder {
 				modelSpec.setRelativeTimePoints(Integer.parseInt(analysis.getNumRelTime()));
 			}
 			
-			//Type of analysis - Solve Single Path
-			if(analysis.getSolveSinglePath()!=null){
-				modelSpec.setSolveSinglePath(Boolean.parseBoolean(analysis.getSolveSinglePath()));
-			}
-			
-			//Type of analysis - all possible next State
-			if(analysis.getGetNextState()!=null){
-				modelSpec.setSolveNextState(Boolean.parseBoolean(analysis.getGetNextState()));
-			}
-	
 			if(!analysis.getCurrentState().equals("0")){
 				// Deals with all possible next states.
 				String[] absoluteTime = analysis.getCurrentState().split("|");

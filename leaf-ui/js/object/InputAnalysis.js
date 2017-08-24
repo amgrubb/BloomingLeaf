@@ -1,16 +1,13 @@
 function InputAnalysis(){
-	
+	this.action = null;
 	this.maxAbsTime = null;
 	this.conflictLevel = null;
 	this.numRelTime = null;
 	this.absTimePts = null;
 	this.currentState = "0";
-	//this.solveSinglePath = null;
-	//this.getNextState = null;
 	this.initialAssignedEpoch = "0";
 	this.initialValueTimePoints = "0";
 	this.elementList = null;
-	this.action = null;
 }
 
 function getAnalysisValues(analysisInterface){
