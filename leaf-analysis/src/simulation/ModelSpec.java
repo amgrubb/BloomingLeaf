@@ -28,26 +28,29 @@ public class ModelSpec {
 	private List<EvolvingContribution> evolvingContribution = new ArrayList<EvolvingContribution>();
 	private List<EvolvingDecomposition> evolvingDecomposition = new ArrayList<EvolvingDecomposition>();
 	private List<EpochConstraint> constraintsBetweenEpochs = new ArrayList<EpochConstraint>();
-	private int maxTime = 5;
+    private boolean solveSinglePath = false;
+    private boolean solveNextState = false;
+    private char conflictAvoidLevel = 'N'; 			// Should have the value S/M/W/N for Strong, Medium, Weak, None.
+    private int maxTime = 5;
 	private int numActors = 0;
 	private int numIntentions = 0;
 	private String inputFilename = "";
     private int[][][] history;
     private int relativeTimePoints = 0;
     private int[] absoluteTimePoints = null;
+    
     private boolean[][][] initialValues;	// Holds the initial values whether they are single or multiple.
     											//[this.numIntentions][this.numTimePoints][FD - index 0 / PD - index 1 / PS - index 2 / FS - index 3]
 												// Note if model only has initial values then it will be [numintentions][1][4].
     private int[] initialValueTimePoints = new int[] {0};		// Hold the assigned times for each of the initial Values. Should be same length of second paramater of initialValues; 
     private HashMap<String, Integer> initialAssignedEpochs; //Hash map to hold the epochs with assigned values.
-    private char conflictAvoidLevel = 'N'; 			// Should have the value S/M/W/N for Strong, Medium, Weak, None.
-    
-    private boolean[][][] finalValues = null;
+
+
     private int[] finalValueTimePoints = null;
     private HashMap<String, Integer> finalAssignedEpochs = null;
-    private boolean solveSinglePath = false;
-    private boolean solveNextState = false;
-	private boolean[][][][] allSolutionsValues;
+    // One of these will be filled.
+    private boolean[][][] finalValues = null;	 // For single Solution    
+    private boolean[][][][] allSolutionsValues;	 // For all solutions.
 
 	public void setSolveSinglePath(boolean solveSinglePath) {
 		this.solveSinglePath = solveSinglePath;
