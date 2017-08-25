@@ -35,7 +35,7 @@ public class ModelSpecBuilder {
 			//ANALYSIS 			
 			//Type of analysis
 			switch (analysis.getAction()) {
-			case "solveSinglePath":
+			case "singlePath":
 				modelSpec.setSolveSinglePath(true);
 				break;
 
