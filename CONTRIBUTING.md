@@ -70,7 +70,7 @@ After pull requests are approved you will need to update your local copy of `dev
 
 You may also need to merge it into other ongoing feature branches.
 `git checkout feature-otherWork`
-`git pull origin develop` (or possibly `git merge —no-ff develop`)
+`git merge —no-ff develop`
 
 After your pull request has been approved you can delete your local copy of feature-myfeature. Project admins will delete the origin version of feature-myfeature upon approving the corresponding pull request.
 `git branch -d feature-myfeature`
