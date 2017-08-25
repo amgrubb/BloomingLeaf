@@ -60,7 +60,7 @@ Go to the [BloomingLeaf gitHub website](https://github.com/amgrubb/BloomingLeaf)
 `compare: feature-myfeature`
 Include links to the issue you were working on.
 
-Note: After you have created a pull request you should not continue committing to your feature branch, because if you push them to origin then they will be added to the previous pull request.
+Note: After you have created a pull request you should not continue committing to your feature branch, because if you perform another push to origin (`git push origin HEAD`) on your feature branch then the new commits will be added to the previous pull request.
 
 ### Update local develop.
 After pull requests are approved you will need to update your local copy of `develop`.
