@@ -28,9 +28,9 @@ public class ModelSpec {
 	private List<EvolvingContribution> evolvingContribution = new ArrayList<EvolvingContribution>();
 	private List<EvolvingDecomposition> evolvingDecomposition = new ArrayList<EvolvingDecomposition>();
 	private List<EpochConstraint> constraintsBetweenEpochs = new ArrayList<EpochConstraint>();
-    private boolean solveSinglePath = false;
-    private boolean solveNextState = false;
-    private char conflictAvoidLevel = 'N'; 			// Should have the value S/M/W/N for Strong, Medium, Weak, None.
+	
+	private String analysisType = null;
+	private char conflictAvoidLevel = 'N'; 			// Should have the value S/M/W/N for Strong, Medium, Weak, None.
     private int maxTime = 5;
 	private int numActors = 0;
 	private int numIntentions = 0;
@@ -51,14 +51,6 @@ public class ModelSpec {
     // One of these will be filled.
     private boolean[][][] finalValues = null;	 // For single Solution    
     private boolean[][][][] allSolutionsValues;	 // For all solutions.
-
-	public void setSolveSinglePath(boolean solveSinglePath) {
-		this.solveSinglePath = solveSinglePath;
-	}
-
-	public void setSolveNextState(boolean solveNextState) {
-		this.solveNextState = solveNextState;
-	}
 
 	public boolean[][][] getFinalValues() {
 		return finalValues;
@@ -235,14 +227,6 @@ public class ModelSpec {
 		this.allSolutionsValues = finalValues2;
 	}
 
-	public boolean isSolveNextState() {
-	    return this.solveNextState;
-	}
-
-	public boolean isSolveSingleSolutions() {
-	    return this.solveSinglePath;
-	}
-
 	public OutputModel getOutputModel() {
 		OutputModel output = new OutputModel();
 		   	
@@ -340,6 +324,14 @@ public class ModelSpec {
 
 	public void setEvolvingDecomposition(List<EvolvingDecomposition> evolvingDecomposition) {
 		this.evolvingDecomposition = evolvingDecomposition;
+	}
+
+	public String getAnalysisType() {
+		return analysisType;
+	}
+
+	public void setAnalysisType(String analysisType) {
+		this.analysisType = analysisType;
 	}
 	
 	

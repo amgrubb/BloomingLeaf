@@ -28,7 +28,7 @@ public class SolveModel {
 	public static void main(String[] args) {
 
 		//This is the default filePath to be executed if no file is pass through parameters
-		String filePath = "stored-models/"; 			
+		String filePath = "temp/"; 			
 		String inputFile = "default.json";
 		String outputFile = "output.out";
 				
