@@ -70,4 +70,7 @@ You may also need to merge it into other ongoing feature branches.
 `git checkout feature-otherWork`
 `git merge —no-ff develop`
 
+After your pull request has been approved you can delete your local copy of feature-myfeature. Project admins will delete the origin version of feature-myfeature upon approving the corresponding pull request.
+`git branch -d feature-myfeature`
+
 Thanks again for your contributions to BloomingLeaf.
