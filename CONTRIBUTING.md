@@ -38,6 +38,7 @@ Again before working on an update, make sure their is an appropriate entry on th
 
 ### Create a new feature branch.
 When starting work on a new feature, branch off from the develop branch and give your feature branch a descriptive name.
+`git checkout develop`             (To make sure you have `develop` locally.)
 `git checkout -b feature-myfeature develop`
 
 ### Make the appropriate code updates and commit local changes.
@@ -64,11 +65,12 @@ Note: After you have created a pull request you should not continue committing t
 
 ### Update local develop.
 After pull requests are approved you will need to update your local copy of `develop`.
+`git checkout develop`
 `git pull origin develop`
 
 You may also need to merge it into other ongoing feature branches.
 `git checkout feature-otherWork`
-`git merge —no-ff develop`
+`git pull origin develop` (or possibly `git merge —no-ff develop`)
 
 After your pull request has been approved you can delete your local copy of feature-myfeature. Project admins will delete the origin version of feature-myfeature upon approving the corresponding pull request.
 `git branch -d feature-myfeature`
