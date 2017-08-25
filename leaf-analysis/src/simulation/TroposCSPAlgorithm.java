@@ -115,6 +115,14 @@ public class TroposCSPAlgorithm {
     	this.notBothEBCollection = new HashMap<NotBothLink, IntVar>();
     	this.epochToTimePoint = new HashMap<IntVar, IntVar>(); 
     	
+    	/* Usage: 
+    	 * 		For "singlePath" from timepoint zero.
+    	 * 			Length of initialValueTimePoints: 1
+		 *			Length of initialValues()[0]: 1
+    	 */
+		if (DEBUG)
+			System.out.println("Length of initialValueTimePoints: " + this.spec.getInitialValueTimePoints().length + 
+					"\nLength of initialValues()[0]: " + this.spec.getInitialValues()[0].length);
     	if (this.spec.getInitialValueTimePoints().length != this.spec.getInitialValues()[0].length)
     		System.err.println("Error: The length of initialValueTimePoints and initialValues[0] do not match.");
 
@@ -633,7 +641,7 @@ public class TroposCSPAlgorithm {
     			// Creates IntVars and adds the FS -> PS invariant.
     			initializeNodeVariables(this.store, this.sat, this.values[i][t], element.getId() + "_" + t);
     			
-    			// Initial initialValues.
+    			// Initial initialValues.   TODO: Add additional conditions for when values should be set.
     			if ((t == 0) && (initialValues[i].length == 1) && (!initialValues[i][t][0] && !initialValues[i][t][1] && !initialValues[i][t][2] && !initialValues[i][t][3]))
     				continue;
     			else if (t < initialValues[i].length){
@@ -1716,7 +1724,7 @@ public class TroposCSPAlgorithm {
 	 * @param varList
 	 * @return
 	 */
-	private static boolean findSolution(boolean allSolutions, boolean singleState, Store store, Search<IntVar> label, List<Constraint> constraints, IntVar[] varList) {
+	private static boolean findSolution(boolean allSolutions, Store store, Search<IntVar> label, List<Constraint> constraints, IntVar[] varList) {
 		label.getSolutionListener().recordSolutions(true);	// Record steps in search.
         label.setPrintInfo(false); 							// Set to false if you don't want the CSP to print the solution as you go.
         
@@ -1725,7 +1733,7 @@ public class TroposCSPAlgorithm {
         	System.out.println("Constraints List:");
         for (int i = 0; i < constraints.size(); i++) {
             if(DEBUG)
-            	//System.out.println(constraints.get(i).toString());
+            	System.out.println(constraints.get(i).toString());
             store.impose(constraints.get(i));
             if(!store.consistency()) {
             	Constraint errorConst = constraints.get(i);
@@ -1759,11 +1767,13 @@ public class TroposCSPAlgorithm {
 	 */
 	private IntVar[] createVarList(){
 		if (this.spec.isSolveNextState()){
+			// Solve only the next state.
 			int initial = this.spec.getInitialValueTimePoints().length - 1;
-			IntVar[] fullList = new IntVar[(this.numIntentions * 8) + 1];
+			//IntVar[] fullList = new IntVar[(this.numIntentions * 8) + 1];
+			IntVar[] fullList = new IntVar[(this.numIntentions * 8)];
 			int fullListIndex = 0;
-			fullList[fullListIndex] = this.minTimePoint;		// Should this be this.minTimePoint or this.nextTimePoint?
-			fullListIndex++;
+			//fullList[fullListIndex] = this.minTimePoint;		// TODO: Should this be this.minTimePoint or this.nextTimePoint?
+			//fullListIndex++;
 			for (int i = 0; i < this.values.length; i++)
 					for (int v = 0; v < this.values[i][0].length; v++){
 						fullList[fullListIndex] = this.values[i][initial][v];
@@ -1776,7 +1786,7 @@ public class TroposCSPAlgorithm {
 				}			
 			return fullList;
 		}else{
-			// Solve the whole path.
+			// Add full path to variables.
 			int fullListSize = (this.numIntentions * this.numTimePoints * 4) + this.timePoints.length + this.epochs.length; 
 			IntVar[] fullList = new IntVar[fullListSize];
 			int fullListIndex = 0;
@@ -1805,22 +1815,25 @@ public class TroposCSPAlgorithm {
 		if (this.spec.isSolveNextState()){
 			//TODO: Actually make correct.
 			// Any changes here will affect the print/save All Solutions functions.
-			int[] indexOrder = new int[this.values[0].length];
-			int biggestMin = -1;
-			for (int i = 0; i < indexOrder.length; i++){
-				int minVal = this.maxTime + 1;
-				int curMin = -1;
-				for (int j = 0; j < this.timePoints.length; j++){
-					int temp = this.timePoints[j].value();
-					if ((temp < minVal) && (temp > biggestMin)){
-						curMin = j;
-						minVal = temp;
-					}
-				}
-				biggestMin = minVal;
-				indexOrder[i] = curMin;
-			}
-			return indexOrder;
+			
+			//TODO: What does this actually do?
+//			int[] indexOrder = new int[this.values[0].length];
+//			int biggestMin = -1;
+//			for (int i = 0; i < indexOrder.length; i++){
+//				int minVal = this.maxTime + 1;
+//				int curMin = -1;
+//				for (int j = 0; j < this.timePoints.length; j++){
+//					int temp = this.timePoints[j].value();
+//					if ((temp < minVal) && (temp > biggestMin)){
+//						curMin = j;
+//						minVal = temp;
+//					}
+//				}
+//				biggestMin = minVal;
+//				indexOrder[i] = curMin;
+//			}
+//			return indexOrder;
+			return null;
 		}else{
 			//Sort Time Points.	 - Full Solution.
 			int[] indexOrder = new int[this.timePoints.length];
@@ -1912,7 +1925,7 @@ public class TroposCSPAlgorithm {
 	public boolean solveModel(){
 		Search<IntVar> label = new DepthFirstSearch<IntVar>();
 
-		if(!findSolution(!this.spec.isSolveSingleSolutions(), this.spec.isSolveNextState(), this.store, label, this.constraints, this.createVarList())){
+		if(!findSolution(!this.spec.isSolveSingleSolutions(), this.store, label, this.constraints, this.createVarList())){
 			System.out.println("Found Solution = False");
 			return false;
 		} else {
@@ -1958,8 +1971,9 @@ public class TroposCSPAlgorithm {
 			boolean[][][][] finalValues = new boolean[totalSolution][this.intentions.length][this.values[0].length][4];
 			for (int s = 1; s <= totalSolution; s++){
 				//TODO: Include the output of this.minTimePoint @ solIndex = 0.
-				int solIndex = 1;
-				System.out.println(s);
+				//System.out.println(label.getSolution(s)[0].toString());
+				//int solIndex = 1;
+				int solIndex = 0;
 				for (int i = 0; i < this.intentions.length; i++)
 					for (int t = 0; t < this.values[0].length; t++)
 						for (int v = 0; v < 4; v++){
@@ -1973,8 +1987,9 @@ public class TroposCSPAlgorithm {
 						}
 			}
 			this.spec.setFinalAllSolutionsValues(finalValues);
+			//TODO: Need a post-hoc way to figure out which time points apply to which solutions.
 		}else{
-			// TODO: How do we save all the solutions when solving the whole path.
+			// TODO: How do we save all the solutions when solving the whole path?
 		}
 	}
 	
