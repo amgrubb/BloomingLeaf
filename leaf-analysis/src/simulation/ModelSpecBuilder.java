@@ -34,15 +34,7 @@ public class ModelSpecBuilder {
 		try{
 			//ANALYSIS 			
 			//Type of analysis
-			switch (analysis.getAction()) {
-			case "solveSinglePath":
-				modelSpec.setSolveSinglePath(true);
-				break;
-
-			case "allNextStates":
-				modelSpec.setSolveNextState(true);
-				break;
-			}
+			modelSpec.setAnalysisType(analysis.getAction());
 
 			//Conflict level
 			if(analysis.getConflictLevel()!=null){

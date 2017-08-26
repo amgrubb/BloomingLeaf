@@ -85,7 +85,7 @@ var AnalysisInspector = Backbone.View.extend({
 		//Get the AnalysisInspector view information
 		var analysis = new InputAnalysis();
 		//Set the type of analysis
-		analysis.action = "solveSinglePath";
+		analysis.action = "singlePath";
 		//Prepare and send data to backend
 		this.sendToBackend(analysis);
 	},
@@ -104,9 +104,9 @@ var AnalysisInspector = Backbone.View.extend({
 		js_object.analysis = getAnalysisValues(analysis);
 		//Get the Graph Model
 		js_object.model = getFrontendModel(false);
-		
+
 		this.saveElementsInGlobalVariable();
-		
+
 		if(js_object.model == null){
 			return null;
 		}
