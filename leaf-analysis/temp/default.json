@@ -1,12 +1,33 @@
 {
   "analysis": {
-    "currentState": 0,
-    "solveSinglePath": true,
-    "getNextState": false,
+    "action": "singlePath",
     "maxAbsTime": "100",
     "conflictLevel": "S",
-    "numRelTime": "1",
-    "absTimePts": ""
+    "numRelTime": "4",
+    "absTimePts": null,
+    "currentState": "0",
+    "initialAssignedEpoch": "0",
+    "initialValueTimePoints": "0",
+    "elementList": [
+      {
+        "id": "0000",
+        "status": [
+          "0000"
+        ]
+      },
+      {
+        "id": "0001",
+        "status": [
+          "0000"
+        ]
+      },
+      {
+        "id": "0002",
+        "status": [
+          "0000"
+        ]
+      }
+    ]
   },
   "model": {
     "actors": [
@@ -17,438 +38,59 @@
         "nodeActorID": "-",
         "nodeID": "0000",
         "nodeType": "G",
-        "initialValue": "0000",
         "nodeName": "Goal_0"
       },
       {
         "nodeActorID": "-",
         "nodeID": "0001",
         "nodeType": "G",
-        "initialValue": "0000",
         "nodeName": "Goal_1"
       },
       {
         "nodeActorID": "-",
         "nodeID": "0002",
         "nodeType": "G",
-        "initialValue": "1100",
         "nodeName": "Goal_2"
-      },
-      {
-        "nodeActorID": "-",
-        "nodeID": "0003",
-        "nodeType": "G",
-        "initialValue": "0000",
-        "nodeName": "Goal_4"
-      },
-      {
-        "nodeActorID": "-",
-        "nodeID": "0004",
-        "nodeType": "G",
-        "initialValue": "0011",
-        "nodeName": "Goal_5"
-      },
-      {
-        "nodeActorID": "-",
-        "nodeID": "0005",
-        "nodeType": "G",
-        "initialValue": "0100",
-        "nodeName": "Goal_6"
-      },
-      {
-        "nodeActorID": "-",
-        "nodeID": "0006",
-        "nodeType": "G",
-        "initialValue": "0011",
-        "nodeName": "Goal_7"
-      },
-      {
-        "nodeActorID": "-",
-        "nodeID": "0007",
-        "nodeType": "G",
-        "initialValue": "0000",
-        "nodeName": "Goal_8"
-      },
-      {
-        "nodeActorID": "-",
-        "nodeID": "0008",
-        "nodeType": "G",
-        "initialValue": "0000",
-        "nodeName": "Goal_9"
-      },
-      {
-        "nodeActorID": "-",
-        "nodeID": "0009",
-        "nodeType": "G",
-        "initialValue": "0011",
-        "nodeName": "Goal_10"
-      },
-      {
-        "nodeActorID": "-",
-        "nodeID": "0010",
-        "nodeType": "G",
-        "initialValue": "0010",
-        "nodeName": "Goal_11"
-      },
-      {
-        "nodeActorID": "-",
-        "nodeID": "0011",
-        "nodeType": "G",
-        "initialValue": "0100",
-        "nodeName": "Goal_12"
-      },
-      {
-        "nodeActorID": "-",
-        "nodeID": "0012",
-        "nodeType": "T",
-        "initialValue": "0000",
-        "nodeName": "Task_13"
-      },
-      {
-        "nodeActorID": "-",
-        "nodeID": "0013",
-        "nodeType": "T",
-        "initialValue": "0100",
-        "nodeName": "Task_14"
-      },
-      {
-        "nodeActorID": "-",
-        "nodeID": "0014",
-        "nodeType": "T",
-        "initialValue": "0011",
-        "nodeName": "Task_16"
-      },
-      {
-        "nodeActorID": "-",
-        "nodeID": "0015",
-        "nodeType": "T",
-        "initialValue": "0100",
-        "nodeName": "Task_17"
-      },
-      {
-        "nodeActorID": "-",
-        "nodeID": "0016",
-        "nodeType": "T",
-        "initialValue": "1100",
-        "nodeName": "Task_18"
-      },
-      {
-        "nodeActorID": "-",
-        "nodeID": "0017",
-        "nodeType": "T",
-        "initialValue": "0100",
-        "nodeName": "Task_19"
-      },
-      {
-        "nodeActorID": "-",
-        "nodeID": "0018",
-        "nodeType": "T",
-        "initialValue": "0011",
-        "nodeName": "Task_20"
-      },
-      {
-        "nodeActorID": "-",
-        "nodeID": "0019",
-        "nodeType": "T",
-        "initialValue": "0010",
-        "nodeName": "Task_21"
-      },
-      {
-        "nodeActorID": "-",
-        "nodeID": "0020",
-        "nodeType": "T",
-        "initialValue": "0011",
-        "nodeName": "Task_22"
-      },
-      {
-        "nodeActorID": "-",
-        "nodeID": "0021",
-        "nodeType": "T",
-        "initialValue": "1100",
-        "nodeName": "Task_23"
       }
     ],
     "links": [
-      
+      {
+        "linkType": "AND",
+        "linkSrcID": "0001",
+        "linkDestID": "0000",
+        "postType": null,
+        "markedValue": null
+      },
+      {
+        "linkType": "AND",
+        "linkSrcID": "0002",
+        "linkDestID": "0000",
+        "postType": null,
+        "markedValue": null
+      }
     ],
     "dynamics": [
       {
         "intentionID": "0000",
-        "dynamicType": "C",
+        "dynamicType": "NT",
         "markedValue": "0000",
         "line": null
       },
       {
         "intentionID": "0001",
-        "dynamicType": "R",
+        "dynamicType": "NT",
         "markedValue": "0000",
         "line": null
       },
       {
         "intentionID": "0002",
-        "dynamicType": "I",
-        "markedValue": "0000",
-        "line": null
-      },
-      {
-        "intentionID": "0003",
-        "dynamicType": "I",
-        "markedValue": "0000",
-        "line": null
-      },
-      {
-        "intentionID": "0004",
-        "dynamicType": "C",
-        "markedValue": "0011",
-        "line": null
-      },
-      {
-        "intentionID": "0005",
-        "dynamicType": "C",
-        "markedValue": "0100",
-        "line": null
-      },
-      {
-        "intentionID": "0006",
-        "dynamicType": "NT",
-        "markedValue": "0011",
-        "line": null
-      },
-      {
-        "intentionID": "0007",
         "dynamicType": "NT",
         "markedValue": "0000",
-        "line": null
-      },
-      {
-        "intentionID": "0008",
-        "dynamicType": "D",
-        "markedValue": "0000",
-        "line": null
-      },
-      {
-        "intentionID": "0009",
-        "dynamicType": "D",
-        "markedValue": "0000",
-        "line": null
-      },
-      {
-        "intentionID": "0010",
-        "dynamicType": "I",
-        "markedValue": "0000",
-        "line": null
-      },
-      {
-        "intentionID": "0011",
-        "dynamicType": "D",
-        "markedValue": "0000",
-        "line": null
-      },
-      {
-        "intentionID": "0012",
-        "dynamicType": "RC",
-        "markedValue": "1100",
-        "line": null
-      },
-      {
-        "intentionID": "0013",
-        "dynamicType": "RC",
-        "markedValue": "0011",
-        "line": null
-      },
-      {
-        "intentionID": "0014",
-        "dynamicType": "CR",
-        "markedValue": "0011",
-        "line": null
-      },
-      {
-        "intentionID": "0015",
-        "dynamicType": "CR",
-        "markedValue": "0100",
-        "line": null
-      },
-      {
-        "intentionID": "0016",
-        "dynamicType": "MP",
-        "markedValue": "0011",
-        "line": null
-      },
-      {
-        "intentionID": "0017",
-        "dynamicType": "MP",
-        "markedValue": "0010",
-        "line": null
-      },
-      {
-        "intentionID": "0018",
-        "dynamicType": "MN",
-        "markedValue": "1100",
-        "line": null
-      },
-      {
-        "intentionID": "0019",
-        "dynamicType": "MN",
-        "markedValue": "0100",
-        "line": null
-      },
-      {
-        "intentionID": "0020",
-        "dynamicType": "SD",
-        "markedValue": "1100",
-        "line": null
-      },
-      {
-        "intentionID": "0021",
-        "dynamicType": "DS",
-        "markedValue": "0011",
         "line": null
       }
     ],
     "constraints": [
       
-    ],
-    "evolvings": [
-      
-    ],
-    "allStatesModel": [
-      {
-        "intentionElements": [
-          {
-            "status": [
-              "0000"
-            ],
-            "id": "0000"
-          },
-          {
-            "status": [
-              "0000"
-            ],
-            "id": "0001"
-          },
-          {
-            "status": [
-              "1100"
-            ],
-            "id": "0002"
-          },
-          {
-            "status": [
-              "0000"
-            ],
-            "id": "0003"
-          },
-          {
-            "status": [
-              "0011"
-            ],
-            "id": "0004"
-          },
-          {
-            "status": [
-              "0100"
-            ],
-            "id": "0005"
-          },
-          {
-            "status": [
-              "0011"
-            ],
-            "id": "0006"
-          },
-          {
-            "status": [
-              "0000"
-            ],
-            "id": "0007"
-          },
-          {
-            "status": [
-              "0000"
-            ],
-            "id": "0008"
-          },
-          {
-            "status": [
-              "0011"
-            ],
-            "id": "0009"
-          },
-          {
-            "status": [
-              "0010"
-            ],
-            "id": "0010"
-          },
-          {
-            "status": [
-              "0100"
-            ],
-            "id": "0011"
-          },
-          {
-            "status": [
-              "0000"
-            ],
-            "id": "0012"
-          },
-          {
-            "status": [
-              "0100"
-            ],
-            "id": "0013"
-          },
-          {
-            "status": [
-              "0011"
-            ],
-            "id": "0014"
-          },
-          {
-            "status": [
-              "0100"
-            ],
-            "id": "0015"
-          },
-          {
-            "status": [
-              "1100"
-            ],
-            "id": "0016"
-          },
-          {
-            "status": [
-              "0100"
-            ],
-            "id": "0017"
-          },
-          {
-            "status": [
-              "0011"
-            ],
-            "id": "0018"
-          },
-          {
-            "status": [
-              "0010"
-            ],
-            "id": "0019"
-          },
-          {
-            "status": [
-              "0011"
-            ],
-            "id": "0020"
-          },
-          {
-            "status": [
-              "1100"
-            ],
-            "id": "0021"
-          }
-        ],
-        "time": 0
-      }
     ]
   }
 }

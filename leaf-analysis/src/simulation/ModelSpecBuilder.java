@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.ListIterator;
 
 import interface_objects.IOIntention;
-import interface_objects.IOStateModel;
 import interface_objects.InputActor;
 import interface_objects.InputAnalysis;
 import interface_objects.InputConstraint;
@@ -21,7 +20,7 @@ import interface_objects.InputObject;
  *
  */
 public class ModelSpecBuilder {
-    private final static boolean DEBUG = true;	
+    private final static boolean DEBUG = false;	
 	
 	public static ModelSpec buildModelSpec(InputObject frontendObject){
 		
@@ -34,6 +33,9 @@ public class ModelSpecBuilder {
 
 		try{
 			//ANALYSIS 			
+			//Type of analysis
+			modelSpec.setAnalysisType(analysis.getAction());
+
 			//Conflict level
 			if(analysis.getConflictLevel()!=null){
 				modelSpec.setConflictAvoidLevel(analysis.getConflictLevel().charAt(0));
@@ -65,20 +67,12 @@ public class ModelSpecBuilder {
 				modelSpec.setRelativeTimePoints(Integer.parseInt(analysis.getNumRelTime()));
 			}
 			
-			//Type of analysis - Solve Single Path
-			if(analysis.getSolveSinglePath()!=null){
-				modelSpec.setSolveSinglePath(Boolean.parseBoolean(analysis.getSolveSinglePath()));
-			}
-			
-			//Type of analysis - all possible next State
-			if(analysis.getGetNextState()!=null){
-				modelSpec.setSolveNextState(Boolean.parseBoolean(analysis.getGetNextState()));
-			}
-	
 			if(!analysis.getCurrentState().equals("0")){
+				// Deals with all possible next states.
 				String[] absoluteTime = analysis.getCurrentState().split("|");
 				int currentState = Integer.parseInt(absoluteTime[0]);
 				
+				// Creates initial Assigned Epoch Map.
 				String[] initialAssignedEpoch = analysis.getInitialAssignedEpoch().split(",");
 				HashMap<String, Integer> initialAssignedEpochMap = new HashMap<>();
 				//Send the hole hashmap
@@ -90,6 +84,8 @@ public class ModelSpecBuilder {
 				}
 				modelSpec.setInitialAssignedEpochs(initialAssignedEpochMap);
 				
+				// Creates array of size currentState + 1.
+				// TODO: Should this be currentState + 2???
 				String[] initialValueTimePoints = analysis.getInitialValueTimePoints().split(",");
 				int[] initialValueTimePointsArray = new int[currentState+1];
 				for(int i = 0; i < currentState+1; i++){
@@ -114,6 +110,7 @@ public class ModelSpecBuilder {
 								}						
 							}						
 						}else{
+							System.err.println("Invalid initial value in ModelSpecBuilder.");
 							initialValues[Integer.parseInt(intElement.getId())][i_state][0] = false;
 							initialValues[Integer.parseInt(intElement.getId())][i_state][1] = false;
 							initialValues[Integer.parseInt(intElement.getId())][i_state][2] = false;
@@ -137,6 +134,8 @@ public class ModelSpecBuilder {
 					modelSpec.getActors().add(new Actor(dataActor.getNodeId(), dataActor.getNodeName(), dataActor.getNodeType()));
 				}
 			}
+			if(DEBUG)
+				System.out.println("read actors");
 			
 			//Getting intentional elements
 			if(!frontendModel.getIntentions().isEmpty()){
@@ -154,7 +153,9 @@ public class ModelSpecBuilder {
 					modelSpec.getIntElements().add(element);
 				}
 			}
-	
+			if(DEBUG)
+				System.out.println("read elements");
+			
 			//Adding all dynamics to each intentional elements
 			if(!frontendModel.getDynamics().isEmpty()){
 				for(InputDynamic dataDynamic : frontendModel.getDynamics()){
@@ -391,38 +392,29 @@ public class ModelSpecBuilder {
 			}
 			if(DEBUG)
 				System.out.println("Done Constraints");
-			
-			if(modelSpec.isSolveSingleSolutions()){
-				//Getting initial Values
-				ArrayList<IOStateModel> stateModels = (ArrayList<IOStateModel>) frontendModel.getAllStatesModel();
-				
-				boolean[][][] initialValues = new boolean[stateModels.get(0).getIntentionElements().size()][stateModels.size()][4];
-				
-				int num_time = -1;
-				for(IOStateModel stateModel : stateModels){
-					num_time++;
-					for(IOIntention intElement : stateModel.getIntentionElements()){
-						String[] values = intElement.getStatus();
-						if(values[0]!=null){
-							for(int i = 0; i < 4; i++){
-								if(values[0].charAt(i)=='1'){
-									initialValues[Integer.parseInt(intElement.getId())][num_time][i] = true;
-								}else{
-									initialValues[Integer.parseInt(intElement.getId())][num_time][i] = false;
-								}						
-							}						
-						}else{
-							initialValues[Integer.parseInt(intElement.getId())][num_time][0] = false;
-							initialValues[Integer.parseInt(intElement.getId())][num_time][1] = false;
-							initialValues[Integer.parseInt(intElement.getId())][num_time][2] = false;
-							initialValues[Integer.parseInt(intElement.getId())][num_time][3] = false;						
-						}
+      
+			//Getting initial Values
+			if(!analysis.getElementList().isEmpty()) {
+				List<IOIntention> elementList = analysis.getElementList();
+				boolean[][][] initialValues = new boolean[elementList.size()][elementList.get(0).getStatus().length][4];
 
+				for(IOIntention intElement : elementList){
+					int num_time = 0;
+					for(String value : intElement.getStatus()) {
+						for(int i = 0; i < 4; i++){
+							if(value.charAt(i)=='1'){
+								initialValues[Integer.parseInt(intElement.getId())][num_time][i] = true;
+							}else{
+								initialValues[Integer.parseInt(intElement.getId())][num_time][i] = false;
+							}						
+						}
+						num_time++;
 					}
 				}
-				
-				modelSpec.setInitialValues(initialValues);				
+				modelSpec.setInitialValues(initialValues);
 			}
+								
+
 			if(DEBUG)
 				System.out.println("Building Model");
 		}catch (Exception e) {
