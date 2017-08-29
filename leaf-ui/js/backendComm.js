@@ -3,18 +3,18 @@ var global_analysisResult = {};
 
 function backendComm(js_object){
 	//Set this variable to true if executing on localhost
-	var localhost = true;
-	
+	var localhost = false;
+
 	if(localhost){
 		//Show in console just to see what is going to backend
 		console.log(JSON.stringify(js_object));
 		analysisResults = {};
-		
+
 		loadAnalysis(analysisResults);
 		var currentValueLimit = parseInt(sliderObject.sliderElement.noUiSlider.get());
 		var sliderMax = currentValueLimit + currentAnalysis.timeScale;
 		sliderObject.sliderElement.noUiSlider.set(sliderMax);
-	
+
 	}else{
 		//backend script called
 		var pathToCGI = "./cgi-bin/backendCom.cgi";
@@ -35,7 +35,7 @@ function backendComm(js_object){
 			msg = "Ops! Something went wrong.";
 			alert(msg);
 		});
-		
+
 	}
 
 }

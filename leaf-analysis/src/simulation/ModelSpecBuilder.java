@@ -20,7 +20,7 @@ import interface_objects.InputObject;
  *
  */
 public class ModelSpecBuilder {
-    private final static boolean DEBUG = true;	
+    private final static boolean DEBUG = false;	
 	
 	public static ModelSpec buildModelSpec(InputObject frontendObject){
 		
