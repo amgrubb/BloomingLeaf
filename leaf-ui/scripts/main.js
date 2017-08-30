@@ -1,3 +1,5 @@
+//Flag to turn on console log notification
+var develop = false;
 
 // Global variables
 var graph;
@@ -1359,7 +1361,7 @@ function generateLeafFile(){
 		datastring += ("C\t" + type + "\t" + source + "\t" + sourceVar + "\t" + target + "\t" + targetVar + "\n");
 	}
 
-	console.log(datastring);
+	//console.log(datastring);
 	return datastring
 }
 
