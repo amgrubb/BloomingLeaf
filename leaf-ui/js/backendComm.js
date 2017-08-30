@@ -40,7 +40,7 @@ function backendComm(js_object){
 			msg = "Ops! Something went wrong.";
 			alert(msg);
 		});
-		
+
 	}
 
 }
