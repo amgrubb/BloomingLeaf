@@ -96,8 +96,9 @@ var AnalysisInspector = Backbone.View.extend({
 		var analysis = new InputAnalysis();
 		//Set the type of analysis
 		analysis.action = "allNextStates";
-		//Prepare and send data to backend
+		//Prepare and send data to backend	
 		this.sendToBackend(analysis);
+		
 	},
 	sendToBackend: function(analysis){
 		var js_object = {};
@@ -110,6 +111,14 @@ var AnalysisInspector = Backbone.View.extend({
 		if(js_object.model == null){
 			return null;
 		}
+		
+		if(develop){
+			var myjson = JSON.stringify(js_object, null, 2);
+		  	var x = window.open();
+			x.document.open();
+			x.document.write('<html><body><pre>' + myjson + '</pre></body></html>');
+			x.document.close();	
+		}	
 
 		//Send data to backend
 		backendComm(js_object);
@@ -151,7 +160,7 @@ var AnalysisInspector = Backbone.View.extend({
 					'<input type="hidden" name="id" value="' + cell.id + '"> </td> </tr>');
 
 			}
-			console.log(cell);
+			//console.log(cell);
 		}
 		// Populate UD element
 		for (var i = 0; i < elements.length; i ++){
