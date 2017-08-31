@@ -833,7 +833,12 @@ paper.on('cell:pointerup', function(cellView, evt) {
 				((sourceCell != "basic.Actor") && (targetCell == "basic.Actor"))){
 				link.label(0 ,{position: 0.5, attrs: {text: {text: 'error'}}});
 			}else if ((sourceCell == "basic.Actor") && (targetCell == "basic.Actor")){
-				link.label(0 ,{position: 0.5, attrs: {text: {text: 'is-a'}}});
+				if(!link.prop("link-type")){					
+					link.label(0 ,{position: 0.5, attrs: {text: {text: 'is-a'}}});
+					link.prop("link-type", "is-a");
+				}else{
+					link.label(0 ,{position: 0.5, attrs: {text: {text: link.prop("link-type")}}});
+				}
 			}
 		}
 		return
