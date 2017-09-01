@@ -2,286 +2,115 @@
 
 var LinkInspector = Backbone.View.extend({
 
-  className: 'link-inspector',
+  className: 'link-inspec',
 
   template: [
     '<label id="title">Constant Relationship</label>',
     '<br>',
-    '<select class="link-type">',
-      '<option value=and>And-Decomposition</option>',
-      '<option value=or>Or-Decomposition (Means-end)</option>',
-      '<option value=PP>++</option>',
-      '<option value=NN>--</option>',
-      '<option value=P>+</option>',
-      '<option value=N>-</option>',
-      '<option value=PS>+S</option>',
-      '<option value=PPS>++S</option>',
-      '<option value=NS>-S</option>',
-      '<option value=NNS>--S</option>',
-      '<option value=PD>+D</option>',
-      '<option value=PPD>++D</option>',
-      '<option value=ND>-D</option>',
-      '<option value=NND>--D</option>',
-      '<option value=NBT>Noth Both (None)</option>',
-      '<option value=NBD>Not Both (Denied)</option>',
-
+    '<select id="constant-links" class="link-type">',
     '</select>',
-    '<div id="link-div">',
-      '<h5 id="repeat-error" class="inspector-error"></h5>',
-      '<select id="link-type-begin" class="repeat-select">',
-        '<option class="select-placeholder" selected disabled value="">Begin</option>',
-      '</select>',
-      '<select id="link-type-end" class="repeat-select">',
-        '<option class="select-placeholder" selected disabled value="">End</option>',
-      '</select>',
+    '<h5 id="repeat-error" class="inspector-error"></h5>',
       '<button id="switch-link-type" class="inspector-btn small-btn blue-btn">Evolving Relationships</button>',
-    '</div>',
     '<br>'
   ].join(''),
 
-  evolving_template : [
-	  '<label id="title">Evolving Relationship</label>',
+  evolvingtemplate : [
+	  	'<label id="title">Evolving Relationship</label>',
 	    '<br>',
-	    '<select class="link-type">',
-	      '<option value=and>And-Decomposition</option>',
-	      '<option value=or>Or-Decomposition (Means-end)</option>',
-	      '<option value=PP>++</option>',
-	      '<option value=NN>--</option>',
-	      '<option value=P>+</option>',
-	      '<option value=N>-</option>',
-	      '<option value=PS>+S</option>',
-	      '<option value=PPS>++S</option>',
-	      '<option value=NS>-S</option>',
-	      '<option value=NNS>--S</option>',
-	      '<option value=PD>+D</option>',
-	      '<option value=PPD>++D</option>',
-	      '<option value=ND>-D</option>',
-	      '<option value=NND>--D</option>',
-	      '<option value=NBT>Noth Both (None)</option>',
-	      '<option value=NBD>Not Both (Denied)</option>',
-
-	    '</select>',
-	    '<div id="link-div">',
-	      '<h5 id="repeat-error" class="inspector-error"></h5>',
-	      '<select id="link-type-begin" class="repeat-select">',
-	        '<option class="select-placeholder" selected disabled value="">Begin</option>',
-	      '</select>',
-	      '<select id="link-type-end" class="repeat-select">',
-	        '<option class="select-placeholder" selected disabled value="">End</option>',
-	      '</select>',
-	      '<button id="switch-link-type" class="inspector-btn small-btn blue-btn">Constant Relationships</button>',
-	    '</div>',
+	    '<h5 id="repeat-error" class="inspector-error"></h5>',
+		  '<select id="link-type-begin" class="repeat-select">',
+		  '</select>',
+		  '<select id="link-type-end" class="repeat-select">',
+		  '</select>',
+		  '<button id="switch-link-type" class="inspector-btn small-btn blue-btn">Constant Relationships</button>',
 	    '<br>'
   ].join(''),
   
   actortemplate: [
       '<label> Link Type </label> <br>',
-      '<select class="link-type">',
+      '<select id="actor-link" class="link-type">',
         '<option value="is-a">is-a</option>',
         '<option value="plays">plays</option>',
         '<option value="is-part-of">is-part-of</option>',
       '</select><br>'].join(''),
 
   events: {
-    'change .link-type': 'updateCell',
-    'change #link-type-begin': 'updateEvolvingRelations',
-    'change #link-type-end': 'updateEvolvingRelations',
-    'click #switch-link-type': 'switchMode',
+	    'click #switch-link-type': 'switchMode',
+	    'change #constant-links': 'updateConstantRelationship',
+	    'change #actor-link': 'updateActorLink', 
+	    'change #link-type-begin': 'updateBeginEvolRelations',
+	    'change #link-type-end': 'updateEndEvolRelations',
   },
-
-
   //Method to create the Link Inspector using the template.
   render: function(cellView) {
     this._cellView = cellView;
     var cell = this._cellView.model;
-    var type = cellView.model.attributes.labels[0].attrs.text.text
-
-    this.relationTextA = ["And-Decomposition", "Or-Decomposition"];
-    this.relationTextB = ["++", "--", "+", "-", "+S", "++S", "-S", "--S", "+D", "++D", "-D", "--D"];
-    this.relationValA = ["and", "or"];
-    this.relationValB = ["++", "--", "+", "-", "+S", "++S", "-S", "--S", "+D", "++D", "-D", "--D"];
-                      //["PP", "NN", "P", "N", "PS", "PPS", "NS", "NNS", "PD", "PPD", "ND", "NND"];
-
-    // select template
-    if (cell.prop("linktype")){
-      this.$el.html(_.template(this.actortemplate)());
+    var type = cellView.model.attributes.labels[0].attrs.text.text;
+    var values = type.split("|");
+    
+    //Selecting which template to render ACTOR-LINK or INTENTIONS-LINK
+    if(cell.prop("linktype")){
+    	this.$el.html(_.template(this.actortemplate)());
+    	$('#actor-link').val(cell.prop("link-type"));
     }else{
-    	var val = type.split("|");
-    	if(val.length > 1){
-    	      this.$el.html(_.template(this.evolving_template)());
+    	if((values.length > 1)){
+    		this.$el.html(_.template(this.evolvingtemplate)());
+    	    if(values.length > 1){
+    	    	this.appendSelectValues($('#link-type-begin'), "All");
+    	    	$('#link-type-begin').val(values[0].trim()).change();
+    	    	this.updateBeginEvolRelations;
+    	    	$('#link-type-end').val(values[1].trim());
+    	    }else{
+    	  	    $("#link-type-end").prop('disabled', 'disabled');
+    	  	    $("#link-type-end").css("background-color","grey");
+    		    this.appendSelectValues($('#link-type-begin'), "All");
+    	    }
+    	    $this.evolvingRelations = true;
     	}else{
-    	      this.$el.html(_.template(this.template)());    		
+    		this.$el.html(_.template(this.template)());
+  	      	this.appendSelectValues($('#constant-links'), "Const");
+			$('#constant-links').val(values[0]);
+			this.evolvingRelations = false;
     	}
-    }
-
-    // already intialized previously
-    if (cell.prop("link-type")){
-      var val = cell.prop("link-type").split("|");
-
-      // normal relation
-      if (val.length == 1){
-        this.$('.link-type').val(val[0]);
-        this.$('#link-type-begin').hide();
-        this.$('#link-type-end').hide();
-        this.evolvingRelations = false;
-
-      // evolving relation
-      }else{
-        this.evolvingRelations = true;
-
-        $(".link-type").hide();
-        this.appendSelectValues($('#link-type-begin'), "All");
-        $('#link-type-begin').val(val[0]);
-        this.updateEvolvingRelations(null, true);
-        $('#link-type-end').val(val[1]);
-
-        $("#repeat-error").text("");
-      }
-    // unitialzed relations
-    }else{
-      this.$('#link-type-begin').hide();
-      this.$('#link-type-end').hide();
-      this.evolvingRelations = false;
-    }
-
+	}
     cell.on('remove', function() {
       this.$el.html('');
     }, this);
 
   },
-
+  //EVENTS FUNCTIONS
   // Switch between evolving and constant relationships
   switchMode: function(){
-    // Turn on
-    if (!this.evolvingRelations){
-      $(".link-type").hide();
-      $('#link-type-begin').show("fast");
-      $('#link-type-end').show("fast");
-
-      $("#link-type-end").prop('disabled', 'disabled');
-      $("#link-type-end").css("background-color","grey");
-
-      $("#title").text("Evolving Relationship");
-      $("#switch-link-type").text("Constant Relationship");
-
-
-      this.appendSelectValues($('#link-type-begin'), "All");
-
-    // Turn off
-    }else{
-      $('.link-type').show("fast");
-      $('#link-type-begin').hide();
-      $('#link-type-end').hide();
-      $("#repeat-error").hide();
-
-      $("#title").text("Constant Relationship");
-      $("#switch-link-type").text("Evolving Relationship");
-    }
-
-    this.evolvingRelations = !this.evolvingRelations;
+	  var cell = this._cellView.model;
+	  var type = cell.attributes.labels[0].attrs.text.text;
+	  var values = type.split("|");
+	  this.evolvingRelations = !this.evolvingRelations;
+	  if(this.evolvingRelations){
+		  this.$el.html(_.template(this.evolvingtemplate)());
+		  if(values.length > 1){
+  	    	this.appendSelectValues($('#link-type-begin'), "All");
+  	    	$('#link-type-begin').val(values[0].trim()).change();
+  	    	this.updateBeginEvolRelations;
+  	    	$('#link-type-end').val(values[1].trim());
+  	    }else{
+  	  	    $("#link-type-end").prop('disabled', 'disabled');
+  	  	    $("#link-type-end").css("background-color","grey");
+  		    this.appendSelectValues($('#link-type-begin'), "All");
+  	    }
+	  }else{
+  		this.$el.html(_.template(this.template)());
+      	this.appendSelectValues($('#constant-links'), "Const");
+		$('#constant-links').val(values[0].trim());
+		this.evolvingRelations = false;
+	  }
   },
-
-  // Generates the drop values based on connected intentions
-  updateEvolvingRelations: function(e, intialize){
-    var target;
-    var value;
-
-    // used to render from initialization
-    if (intialize){
-      target = "link-type-begin";
-      value = $('#link-type-begin').val();
-
-    // used to render from click
-    }else{
-      target = e.target.id;
-      value = e.target.value;
-    }
-
-    // update selects for link-type-end
-    if (target == "link-type-begin"){
-
-      $("#link-type-end").prop('disabled', '');
-      $("#link-type-end").css("background-color","");
-
-      $("#repeat-error").text("Please select End Relationship");
-      $("#repeat-error").css("color", "");
-      $("#repeat-error").show("fast");
-
-      if (value == "no"){
-        this.appendSelectValues($("#link-type-end"), "All");
-      }else if(this.relationValA.indexOf(value) != -1){
-        this.appendSelectValues($("#link-type-end"), "A");
-      }else if(this.relationValB.indexOf(value) != -1){
-        this.appendSelectValues($("#link-type-end"), "B");
-      }
-
-    // save value
-    }else if(target == "link-type-end"){
-      $("#repeat-error").text("Saved!");
-      $("#repeat-error").css("color", "lightgreen");
-
-      this.updateCell();
-    }
-  },
-
-  // Restrict select options based on selection made in link-type begin
-  appendSelectValues: function(select, type){
-    if (select.attr("id") == "link-type-begin"){
-      select.html('<option class="select-placeholder" selected disabled value="">Begin</option>');
-    }else if (select.attr("id") == "link-type-end"){
-      select.html('<option class="select-placeholder" selected disabled value="">End</option>');
-    }
-
-    select.append($('<option></option>').val("no").html("No Relationship"));
-    if(type == "All"){
-      for (var i = 0; i < this.relationTextA.length; i++)
-        select.append($('<option></option>').val(this.relationValA[i]).html(this.relationTextA[i]));
-      for (var i = 0; i < this.relationTextB.length; i++)
-        select.append($('<option></option>').val(this.relationValB[i]).html(this.relationTextB[i]));
-
-    }else if (type == "A"){
-      select.val("no");
-      $("#repeat-error").text("Saved!");
-      $("#repeat-error").css("color", "lightgreen");
-      $("#link-type-end").prop('disabled', '');
-      $("#link-type-end").css("background-color","");
-      this.updateCell();
-
-    }else if (type == "B"){
-      for (var i = 0; i < this.relationTextB.length; i++)
-        select.append($('<option></option>').val(this.relationValB[i]).html(this.relationTextB[i]));
-    }
-
-    // Remove duplicate options
-    if (select.attr("id") == "link-type-end"){
-      var dupVal = this.$('#link-type-begin').val();
-      $("select#link-type-end option").filter("[value='" + dupVal + "']").remove();
-    }
-  },
-
-  //Whenever something is changed in the inspector, make the corresponding change to the link in the model.
-  updateCell: function() {
+  
+  updateConstantRelationship: function(){
     var link = this._cellView.model;
     var source = link.getSourceElement();
-    var target = link.getTargetElement();
-    // Save based on evolving relations
-    if(this.evolvingRelations){
-      var begin = $("#link-type-begin").val();
-      var end = $("#link-type-end").val();
-
-      this._cellView.model.prop("link-type", begin + "|" + end);
-      link.attr({
-        '.connection': {stroke: '#000000', 'stroke-dasharray': '0 0'},
-        '.marker-source': {'d': '0'},
-        '.marker-target': {stroke: '#000000', "d": 'M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5'}
-      });
-      link.label(0 ,{position: 0.5, attrs: {text: {text: begin + " | " + end}}});
-      source.attr(".funcvalue/text", "");
-      target.attr(".funcvalue/text", "");
-
-    // Save based on normal relations
-    }else{
-      link.prop("link-type", this.$('.link-type').val());
+	var target = link.getTargetElement();
+	    
+      link.prop("link-type", $('.link-type').val());
       if (link.prop("link-type") == 'and' || link.prop("link-type") == 'or'){
         link.attr({
           '.connection': {stroke: '#000000', 'stroke-dasharray': '0 0'},
@@ -303,10 +132,10 @@ var LinkInspector = Backbone.View.extend({
           '.marker-source': {'d': '0'},
           '.marker-target': {stroke: '#000000', "d": 'M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5'}
         });
-        console.log(this.$('.link-type'));
-        link.label(0 ,{position: 0.5, attrs: {text: {text: this.$('.link-type option:selected').text()}}});
+        link.label(0 ,{position: 0.5, attrs: {text: {text: $('.link-type option:selected').text()}}});
       }
-      // If link-type = NBD or NBT, set  NB to both nodes
+      
+      //Adding or removing tags from node depending on type of link
       if (link.prop("link-type") == 'NBT' || link.prop("link-type") == 'NBD'){
         source.attr(".funcvalue/text", "NB");
         source.attr(".satvalue/text", "");
@@ -314,15 +143,14 @@ var LinkInspector = Backbone.View.extend({
         target.attr(".funcvalue/text", "NB");
         target.attr(".satvalue/text", "");
         target.attr(".satvalue/value", "");
-      }
-      // Else, set funcvalue to none
-      else {
-    	  //verify if source or target have any other link NBD or NBT
+      } else {
+    	  
+    	  //verify if node have any other link NBD or NBT
     	  var sourceNBLink = function(){
     		  var localLinks = graph.getLinks();
     		  for(var i = 0; i < localLinks.length; i++){
     			  if ((localLinks[i]!=link) && (localLinks[i].prop("link-type") == 'NBT' || localLinks[i].prop("link-type") == 'NBD')){
-        			  if(localLinks[i].getSourceElement() == source || localLinks[i].getSourceElement() == target){
+        			  if(localLinks[i].getSourceElement() == source || localLinks[i].getTargetElement() == source){
         				 return true; 
         			  }  				  
     			  }
@@ -330,12 +158,12 @@ var LinkInspector = Backbone.View.extend({
     		  return false;
     	  }
     	  
-    	  //verify if source or target have any other link NBD or NBT
+    	  //verify if target have any other link NBD or NBT
     	  var targetNBLink = function(){
     		  var localLinks = graph.getLinks();
     		  for(var i = 0; i < localLinks.length; i++){
     			  if ((localLinks[i]!=link) && (localLinks[i].prop("link-type") == 'NBT' || localLinks[i].prop("link-type") == 'NBD')){
-        			  if(localLinks[i].getTargetElement() == target || localLinks[i].getTargetElement() == source){
+        			  if(localLinks[i].getTargetElement() == target || localLinks[i].getSourceElement() == target){
         				 return true; 
         			  }  				  
     			  }
@@ -343,25 +171,161 @@ var LinkInspector = Backbone.View.extend({
     		  return false;
     	  }
     	  
-    	  if(!sourceNBLink() && !targetNBLink()){
+    	  //Verify if it is possible to remove the NB tag from source and target
+    	  if(!sourceNBLink()){
     		  source.attr(".funcvalue/text", "");
+    	  }
+    	  if(!targetNBLink()){
 	          target.attr(".funcvalue/text", "");    		  
     	  }
       }
+	  
+  },
+  updateActorLink: function(){
+	  var link = this._cellView.model;
+	  var source = link.getSourceElement();
+	  var target = link.getTargetElement();
+	  link.prop("link-type", $("#actor-link").val());
+	  link.label(0 ,{position: 0.5, attrs: {text: {text: link.prop("link-type")}}});
+  },
+  // Generates the select values based on begin value
+  updateBeginEvolRelations: function(){
+      $("#repeat-error").text("");
+	  var begin = $("#link-type-begin").val();
+	  //Enable the end select
+	  if (begin == "no"){
+        this.appendSelectValues($("#link-type-end"), "All");
+        $("#link-type-end").prop('disabled', true);
+        $("#link-type-end").css("background-color","gray");
+        $("#repeat-error").text("");
+      }else if(begin == "and" || begin == "or"){
+        this.appendSelectValues($("#link-type-end"), "A");
+        $("#link-type-end").prop('disabled', true);
+        $("#link-type-end").css("background-color","");
+        //Saving this option
+        var begin = $("#link-type-begin").val();
+        var end = $("#link-type-end").val("no");
+        
+        var link = this._cellView.model;
+        link.prop("link-type", begin + "|" + end);
+        link.attr({
+  		  '.connection': {stroke: '#000000', 'stroke-dasharray': '0 0'},
+  		  '.marker-source': {'d': '0'},
+  		  '.marker-target': {stroke: '#000000', "d": 'M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5'}
+  		});
+  		link.label(0 ,{position: 0.5, attrs: {text: {text: begin + " | " + end}}});
+  		
+  		$("#repeat-error").text("Saved!");
+  		$("#repeat-error").css("color", "lightgreen");
+  		
+      }else{
+        this.appendSelectValues($("#link-type-end"), "B");
+        $("#link-type-end").prop('disabled', '');
+        $("#link-type-end").css("background-color","");
+      }
+	  
+	  
+  },
+  updateEndEvolRelations: function(){
+	  
+      var link = this._cellView.model;
+      
+      // Save based on evolving relations
+      var begin = $("#link-type-begin").val();
+      var end = $("#link-type-end").val();
+	
+		this._cellView.model.prop("link-type", begin + "|" + end);
+		link.attr({
+		  '.connection': {stroke: '#000000', 'stroke-dasharray': '0 0'},
+		  '.marker-source': {'d': '0'},
+		  '.marker-target': {stroke: '#000000', "d": 'M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5'}
+		});
+		link.label(0 ,{position: 0.5, attrs: {text: {text: begin + " | " + end}}});
+		
+		$("#repeat-error").text("Saved!");
+		$("#repeat-error").css("color", "lightgreen");
+	          
+  },
+  // Restrict select options based on selection made in link-type begin
+  appendSelectValues: function(select, type){
+
+      var relationA = {
+              "and": "And-Decomposition",
+              "or": "Or-Decomposition"
+          };
+      var relationB = {
+    		  "++": "++",
+    		  "--": "--",
+    		  "+": "+",
+    		  "-": "-",
+    		  "+S": "+S",
+    		  "++S": "++S",
+    		  "-S": "-S",
+    		  "--S": "--S",
+    		  "+D": "+D",
+    		  "++D": "++D",
+    		  "-D": "-D",
+    		  "--D": "--D"
+      	};
+      var relationConst = {
+    		  "NBT": "Noth Both (None)",
+    		  "NBD": "Not Both (Denied)"
+      };
+        
+    if (select.attr("id") == "link-type-begin"){
+      select.html('<option class="select-placeholder" selected disabled value="">Begin</option>');
+    }else if (select.attr("id") == "link-type-end"){
+      select.html('<option class="select-placeholder" selected disabled value="">End</option>');
+    }
+
+    select.append($('<option></option>').val("no").html("No Relationship"));
+  
+    if(type == "Const"){
+    	$.each(relationA, function (value, key) {
+            select.append($("<option></option>")
+               .attr("value", value).text(key));
+        });
+    	$.each(relationB, function (value, key) {
+            select.append($("<option></option>")
+               .attr("value", value).text(key));
+        });
+    	$.each(relationConst, function (value, key) {
+            select.append($("<option></option>")
+               .attr("value", value).text(key));
+        });
+    }
+    else if(type == "All"){
+    	$.each(relationA, function (value, key) {
+            select.append($("<option></option>")
+               .attr("value", value).text(key));
+        });
+    	$.each(relationB, function (value, key) {
+            select.append($("<option></option>")
+               .attr("value", value).text(key));
+        });
+    }else if (type == "A"){
+      select.val("no");
+      $("#repeat-error").text("Saved!");
+      $("#repeat-error").css("color", "lightgreen");
+      $("#link-type-end").prop('disabled', '');
+      $("#link-type-end").css("background-color","");
+
+    }else if (type == "B"){
+    	$.each(relationB, function (value, key) {
+            select.append($("<option></option>")
+               .attr("value", value).text(key));
+        });
+    }
+
+    // Remove duplicate options
+    if (select.attr("id") == "link-type-end"){
+      var dupVal = $('#link-type-begin').val();
+      $("select#link-type-end option").filter("[value='" + dupVal + "']").remove();
     }
   },
-
-  //Displays the additional options when delayed propagation is checked.
-  checkboxHandler: function(e){
-    if (e.currentTarget.checked){
-      document.getElementById("hidden").removeAttribute("style");
-    }
-    else{
-      document.getElementById("hidden").setAttribute("style", "display:none");
-    }
-  },
-
+ 
   clear: function(){
     this.$el.html('');
   }
+  
 });
