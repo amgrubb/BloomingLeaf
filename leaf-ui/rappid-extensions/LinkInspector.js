@@ -268,8 +268,8 @@ var LinkInspector = Backbone.View.extend({
     		  "--D": "--D"
       	};
       var relationConst = {
-    		  "Noth Both (None)": "NBT",
-    		  "Not Both (Denied)": "NBD"
+    		  "NBT": "Noth Both (None)",
+    		  "NBD": "Not Both (Denied)"
       };
         
     if (select.attr("id") == "link-type-begin"){
@@ -327,4 +327,5 @@ var LinkInspector = Backbone.View.extend({
   clear: function(){
     this.$el.html('');
   }
+  
 });
