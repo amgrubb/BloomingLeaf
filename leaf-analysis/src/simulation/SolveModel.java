@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.PrintWriter;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import interface_objects.InputObject;
 import interface_objects.OutputModel;
@@ -54,8 +55,8 @@ public class SolveModel {
 	 * Name of the file to be read by CGI to be sent to frontend
 	 */
 	private static void createOutputFile(TroposCSPAlgorithm solver, String filePath) {
-		Gson gson = new Gson();		
-		//Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		//Gson gson = new Gson();		
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		OutputModel outputModel = solver.getSpec().getOutputModel();
 		
 		try {

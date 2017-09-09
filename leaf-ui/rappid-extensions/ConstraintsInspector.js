@@ -2,7 +2,7 @@
 
 var ConstraintsInspector = Backbone.View.extend({
 
-  className: 'link-inspector',
+  className: 'constraint-inspector',
 
   template: [
     '<label>Intension Relationship</label>',
