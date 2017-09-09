@@ -216,6 +216,7 @@ var ElementInspector = Backbone.View.extend({
         var text = satvalues[i];
         result += eval(text);
       }
+      console.trace();
       return result;
     }
     this.chartHTML.negativeOnly = function(currentVal){
@@ -227,6 +228,7 @@ var ElementInspector = Backbone.View.extend({
     	  var text = satvalues[i];
     	  result += eval(text);
       }
+      console.trace();
       return result;
     }
 
@@ -265,7 +267,7 @@ var ElementInspector = Backbone.View.extend({
       this.$('.function-type').val(functionType);
       this.renderUserDefined(cell);
     }
-    
+
   },
 
 
@@ -323,7 +325,7 @@ var ElementInspector = Backbone.View.extend({
     text = text.replace(/[^\w\n]/g, ' ');
     cell.attr({ '.name': { text: text } });
   },
-  
+
   functionType: function(){
 	  //Clear marked Values
 	  var cell = this._cellView.model;
@@ -454,7 +456,7 @@ var ElementInspector = Backbone.View.extend({
     }
     return;
   },
-  
+
   //Save the marked Value in the cell
   markedValue: function(){
 	  var cell = this._cellView.model;
@@ -476,12 +478,14 @@ var ElementInspector = Backbone.View.extend({
     // load available satisfaction values for user defined constraint type
     switch (func){
       case "I":
+        console.trace();
         // May get last value of the graph in the future
         $(".user-sat-value").last().html(this.chartHTML.positiveOnly('partiallysatisfied'));
         $(".user-sat-value").last().val("satisfied");
         break;
 
       case "D":
+        console.trace();
         $(".user-sat-value").last().html(this.chartHTML.negativeOnly('partiallydenied'));
         $(".user-sat-value").last().val("denied");
         break;
@@ -515,11 +519,11 @@ var ElementInspector = Backbone.View.extend({
     var initVal = satvalues[this.$('#init-sat-value').val()];
     var val;
     if(cell.attributes.attrs['.constraints']){
-        val = cell.attributes.attrs['.constraints'].markedvalue;    	
+        val = cell.attributes.attrs['.constraints'].markedvalue;
     }else{
     	val = this.$('#markedValue').val();
     }
-  
+
     /// this.$('.markedValue') = val;
 
     // Rerender chart canvas
