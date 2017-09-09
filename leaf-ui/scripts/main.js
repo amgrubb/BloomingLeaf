@@ -1,3 +1,5 @@
+//Flag to turn on console log notification
+var develop = false;
 
 // Global variables
 var graph;
@@ -26,7 +28,7 @@ var reader;
 //Properties for both core and simulator.
 //TODO: merge this two arrays in order to make use the same name for all
 var satvalues = {
-		"satisfied": "2", "partiallysatisfied": "1", "partiallydenied": "-1", "denied": "-2", "unknown": "4", "conflict": "3", "none": "0",
+		"satisfied": 2, "partiallysatisfied": 1, "partiallydenied": -1, "denied": -2, "unknown": 4, "conflict":3, "none": 0,
 		"2": "satisfied", "1": "partiallysatisfied", "-1": "partiallydenied", "-2": "denied", "4": "unknown", "3": "conflict", "0": "none"
 		};
 
@@ -818,7 +820,7 @@ paper.on('cell:pointerup', function(cellView, evt) {
 	// Link
 	if (cellView.model instanceof joint.dia.Link){
 		var link = cellView.model;
-		
+
 		if(link.getSourceElement()!=null)
 			var sourceCell = link.getSourceElement().attributes.type;
 
@@ -831,7 +833,12 @@ paper.on('cell:pointerup', function(cellView, evt) {
 				((sourceCell != "basic.Actor") && (targetCell == "basic.Actor"))){
 				link.label(0 ,{position: 0.5, attrs: {text: {text: 'error'}}});
 			}else if ((sourceCell == "basic.Actor") && (targetCell == "basic.Actor")){
-				link.label(0 ,{position: 0.5, attrs: {text: {text: 'is-a'}}});
+				if(!link.prop("link-type")){
+					link.label(0 ,{position: 0.5, attrs: {text: {text: 'is-a'}}});
+					link.prop("link-type", "is-a");
+				}else{
+					link.label(0 ,{position: 0.5, attrs: {text: {text: link.prop("link-type")}}});
+				}
 			}
 		}
 		return
@@ -893,6 +900,62 @@ graph.on('change:size', function(cell, size){
 
 	cell.attr(".label/cy", y_cord);
 });
+
+
+//Removing a link
+this.graph.on('remove', function(cell, collection, opt) {
+   if (cell.isLink()) {
+	   //Verify if is a Not both type. If it is remove labels from source and target node
+	   var link = cell;
+	   var source = link.prop("source");
+	   var target = link.prop("target");
+
+	   for(var i = 0; i < graph.getElements().length; i++ ){
+		   if(graph.getElements()[i].prop("id") == source["id"]){
+			   source = graph.getElements()[i];
+		   }
+		   if(graph.getElements()[i].prop("id") == target["id"]){
+			   target = graph.getElements()[i];
+		   }
+	   }
+
+	   //verify if node have any other link NBD or NBT
+ 	  var sourceNBLink = function(){
+ 		  var localLinks = graph.getLinks();
+ 		  for(var i = 0; i < localLinks.length; i++){
+ 			  if ((localLinks[i]!=link) && (localLinks[i].prop("link-type") == 'NBT' || localLinks[i].prop("link-type") == 'NBD')){
+     			  if(localLinks[i].getSourceElement().prop("id") == source["id"] || localLinks[i].getTargetElement().prop("id") == source["id"]){
+     				 return true;
+     			  }
+ 			  }
+ 		  }
+ 		  return false;
+ 	  }
+
+ 	  //verify if target have any other link NBD or NBT
+ 	  var targetNBLink = function(){
+ 		  var localLinks = graph.getLinks();
+ 		  for(var i = 0; i < localLinks.length; i++){
+ 			  if ((localLinks[i]!=link) && (localLinks[i].prop("link-type") == 'NBT' || localLinks[i].prop("link-type") == 'NBD')){
+     			  if(localLinks[i].getTargetElement().prop("id") == target["id"] || localLinks[i].getSourceElement().prop("id") == target["id"]){
+     				 return true;
+     			  }
+ 			  }
+ 		  }
+ 		  return false;
+ 	  }
+
+ 	  //Verify if it is possible to remove the NB tag from source and target
+ 	  if(!sourceNBLink()){
+ 		  source.attr(".funcvalue/text", "");
+ 	  }
+ 	  if(!targetNBLink()){
+	          target.attr(".funcvalue/text", "");
+ 	  }
+
+   }
+});
+
 
 
 // ----------------------------------------------------------------- //
@@ -1359,7 +1422,7 @@ function generateLeafFile(){
 		datastring += ("C\t" + type + "\t" + source + "\t" + sourceVar + "\t" + target + "\t" + targetVar + "\n");
 	}
 
-	console.log(datastring);
+	//console.log(datastring);
 	return datastring
 }
 

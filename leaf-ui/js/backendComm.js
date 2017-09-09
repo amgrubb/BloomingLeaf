@@ -2,19 +2,21 @@
 var global_analysisResult = {};
 
 function backendComm(js_object){
-	//Set this variable to true if executing on localhost
-	var localhost = false;
-
-	if(localhost){
-		//Show in console just to see what is going to backend
-		console.log(JSON.stringify(js_object));
-		analysisResults = {};
-
-		loadAnalysis(analysisResults);
-		var currentValueLimit = parseInt(sliderObject.sliderElement.noUiSlider.get());
-		var sliderMax = currentValueLimit + currentAnalysis.timeScale;
-		sliderObject.sliderElement.noUiSlider.set(sliderMax);
-
+	if(develop){
+		//This var is created to add the JSON produced in backend for executing local testing.
+		var analysisResults = {};
+	    	if(js_object.analysis.action == "allNextStates"){
+			//Testing Explore Possible Next States
+			global_analysisResult = analysisResults;
+			open_analysis_viewer();
+		}else{
+			//Testing Simulate Single Path
+			console.log(JSON.stringify(js_object));
+			loadAnalysis(analysisResults);
+			var currentValueLimit = parseInt(sliderObject.sliderElement.noUiSlider.get());
+			var sliderMax = currentValueLimit + currentAnalysis.timeScale;
+			sliderObject.sliderElement.noUiSlider.set(sliderMax);	
+		}
 	}else{
 		//backend script called
 		var pathToCGI = "./cgi-bin/backendCom.cgi";
@@ -28,8 +30,11 @@ function backendComm(js_object){
 			contentType: "json",
 			data:JSON.stringify(js_object),
 			success: function(response){
-				executeJava(js_object.analysis.getNextState);
-				console.log(response);
+				if(js_object.analysis.action=="allNextStates"){
+					executeJava(true);					
+				}else{
+					executeJava(false);
+				}
 			}
 		})	.fail(function(){
 			msg = "Ops! Something went wrong.";
@@ -57,7 +62,6 @@ function executeJava(isGetNextSteps){
 
 
 function getFileResults(isGetNextSteps){
-	//backend script called
 	var pathToCGI = "./cgi-bin/fileRead.cgi";
 
 	//Executing action to send backend
@@ -67,10 +71,9 @@ function getFileResults(isGetNextSteps){
 		success: function(response){
 			analysisResults = JSON.parse(response);
 			if (analysisResults == ""){
-				alert("Ops! We couldn't read output.out file.")
+				alert("Error while reading the resonse file from server. This can be due an error in executing java application.")
 				return
 			}
-
 			if(isGetNextSteps){
 				global_analysisResult = analysisResults;
 				open_analysis_viewer();
@@ -80,13 +83,13 @@ function getFileResults(isGetNextSteps){
 				var sliderMax = currentValueLimit + currentAnalysis.timeScale;
 				sliderObject.sliderElement.noUiSlider.set(sliderMax);
 			}
-		console.log(JSON.stringify(response));
+
 		}
 	})
 	.fail(function(){
-		msg = "Ops! Something went wrong getting file.";
+		msg = "Error while executing CGI file: fileRead. Please contact the system Admin.";
 		alert(msg);
-	});
+	});		
 }
 
 
