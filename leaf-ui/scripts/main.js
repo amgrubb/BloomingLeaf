@@ -29,7 +29,7 @@ var reader;
 //TODO: merge this two arrays in order to make use the same name for all
 var satvalues = {
 		"satisfied": 2, "partiallysatisfied": 1, "partiallydenied": -1, "denied": -2, "unknown": 4, "conflict":3, "none": 0,
-		2: "satisfied", 1: "partiallysatisfied", "-1": "partiallydenied", "-2": "denied", "4": "unknown", "3": "conflict", "0": "none"
+		"2": "satisfied", "1": "partiallysatisfied", "-1": "partiallydenied", "-2": "denied", "4": "unknown", "3": "conflict", "0": "none"
 		};
 
 var satValueDict = {
