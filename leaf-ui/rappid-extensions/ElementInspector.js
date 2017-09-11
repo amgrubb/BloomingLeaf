@@ -265,7 +265,7 @@ var ElementInspector = Backbone.View.extend({
       this.$('.function-type').val(functionType);
       this.renderUserDefined(cell);
     }
-    
+
   },
 
 
@@ -323,7 +323,7 @@ var ElementInspector = Backbone.View.extend({
     text = text.replace(/[^\w\n]/g, ' ');
     cell.attr({ '.name': { text: text } });
   },
-  
+
   functionType: function(){
 	  //Clear marked Values
 	  var cell = this._cellView.model;
@@ -454,7 +454,7 @@ var ElementInspector = Backbone.View.extend({
     }
     return;
   },
-  
+
   //Save the marked Value in the cell
   markedValue: function(){
 	  var cell = this._cellView.model;
@@ -515,11 +515,11 @@ var ElementInspector = Backbone.View.extend({
     var initVal = satvalues[this.$('#init-sat-value').val()];
     var val;
     if(cell.attributes.attrs['.constraints']){
-        val = cell.attributes.attrs['.constraints'].markedvalue;    	
+        val = cell.attributes.attrs['.constraints'].markedvalue;
     }else{
     	val = this.$('#markedValue').val();
     }
-  
+
     /// this.$('.markedValue') = val;
 
     // Rerender chart canvas
