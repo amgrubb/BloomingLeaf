@@ -262,6 +262,15 @@ $('#model-init-btn').on('click', function(){
 	switchToModellingMode(true);
 });
 
+//Cycle button onclick
+$('#cycledetect-btn').on('click', function(e){
+	//alert("cycle button clicked");
+	e.preventDefault();
+  new $.Zebra_Dialog('No cycle in the graph.',{
+		type:'confirmation'
+	});
+})
+
 function switchToModellingMode(useInitState){
 	//Reset to initial graph prior to analysis
 	if(useInitState){
@@ -304,6 +313,8 @@ function switchToModellingMode(useInitState){
 
 	mode = "Modelling";
 }
+
+
 
 // ----------------------------------------------------------------- //
 // Communication between server and front end
@@ -715,7 +726,7 @@ graph.on("add", function(cell){
 			}
 		}
 	}	//Don't do anything for links
-
+	console.log(graph.getElements());
 	//Give element a unique default
 	cell.attr(".name/text", cell.attr(".name/text") + "_" + element_counter);
 	element_counter++;

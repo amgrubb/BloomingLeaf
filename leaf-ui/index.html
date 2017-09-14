@@ -17,6 +17,9 @@
         <link rel="stylesheet" type="text/css" href="./css/style.css" />
         <link rel="stylesheet" type="text/css" href="./css/analysis_style.css" />
 
+        <!--zebra css -->
+        <link rel="stylesheet" type="text/css" href="./node_modules/zebra_dialog/dist/css/default/zebra_dialog.min.css" />
+
     </head>
     <body>
         <p id="name">BloomingLeaf</p>
@@ -73,6 +76,8 @@
 
             <button id="symbolic-btn" class="blue-btn btn">Model Constraints</button>
             <button id="analysis-btn" class="green-btn btn">Analysis</button>
+            <button id="cycledetect-btn" class="pink-btn btn">Cycle Checker</button>
+
 
         </div>
 
@@ -130,6 +135,9 @@
 
         <script src="./scripts/main.js"></script>
 
+        <!--Zebrajs -->
+        <script src="./node_modules/zebra_dialog/dist/zebra_dialog.min.js"></script>
+
 		<script src="./js/backendComm.js"></script>
 
 		<!-- OBJECTS to be sent to backend communication -->
@@ -141,7 +149,7 @@
 		<script src="./js/object/InputDynamic.js"></script>
 		<script src="./js/object/InputIntention.js"></script>
 		<script src="./js/object/InputLink.js"></script>
-		
+
         <div class = "attribution">
             <img src=http://upload.wikimedia.org/wikipedia/en/0/04/Utoronto_coa.svg style="width:25%;height:25%;float:left">
             <br>
