@@ -265,7 +265,35 @@ $('#model-init-btn').on('click', function(){
 //Cycle button onclick
 $('#cycledetect-btn').on('click', function(e){
 	//alert("cycle button clicked");
-	swal("No cycle in the graph", "", "success");
+	var analysis = new InputAnalysis();
+	var links = new InputLink();
+	var js_object = {};
+	var js_links = {};
+	js_object.analysis = getAnalysisValues(analysis);
+	jslinks = getLinks();
+
+	console.log(js_object);
+
+	console.log(js_object.analysis.elementList);
+	console.log(jslinks);
+
+
+	var src1 = jslinks[0].linkSrcID;
+	console.log(jslinks.length);
+	if(jslinks.length == 2){
+		var src2 = jslinks[1].linkSrcID;
+		var dest2 = jslinks[1].linkDestID;
+	}
+	var dest1 = jslinks[0].linkDestID;
+	console.log(src1 + " " + src2);
+	console.log(dest1 + " " + dest2);
+	if(src1 == dest2 && src2 == dest1){
+		swal("Cycle in the graph", "", "error");
+
+	}
+	else{
+		swal("No cycle in the graph", "", "success");
+	}
 	/*e.preventDefault();
   new $.Zebra_Dialog('No cycle in the graph.',{
 		type:'confirmation'
