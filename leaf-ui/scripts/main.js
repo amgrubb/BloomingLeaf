@@ -265,10 +265,11 @@ $('#model-init-btn').on('click', function(){
 //Cycle button onclick
 $('#cycledetect-btn').on('click', function(e){
 	//alert("cycle button clicked");
-	e.preventDefault();
+	swal("No cycle in the graph", "", "success");
+	/*e.preventDefault();
   new $.Zebra_Dialog('No cycle in the graph.',{
 		type:'confirmation'
-	});
+	});*/
 })
 
 function switchToModellingMode(useInitState){
