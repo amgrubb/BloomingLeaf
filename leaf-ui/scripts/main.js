@@ -271,6 +271,7 @@ $('#cycledetect-btn').on('click', function(e){
 	var js_links = {};
 	js_object.analysis = getAnalysisValues(analysis);
 	jslinks = getLinks();
+	console.log(jslinks);
 	if(jslinks.length == 0){
 		swal("No cycle in the graph", "", "success");
 	}
@@ -284,6 +285,8 @@ $('#cycledetect-btn').on('click', function(e){
 			swal("Cycle in the graph", "", "error");
 		}
 	}
+	js_object = null;
+	jslinks = null;
 })
 
 //Cycle-deteciton algorithm
@@ -302,24 +305,32 @@ function cycleCheck(links, verticies){
 			graphs[src] = [element.linkDestID];
 		}
 	})
+	//Iterate over all verticies to initialize visited stack and recursive stack to false
 	verticies.forEach(function(vertex){
 		visited[vertex.id] = false;
 		recursiveStack[vertex.id] = false;
 	})
-	verticies.forEach(function(vertex){
-		if (visited[vertex.id] == false) {
-			if (isCycle(vertex.id,visited,recursiveStack, graphs) == true){
-				cycle = true;
-			}
-		}
-	})
+	console.log(verticies.length + " graph length "  + Object.keys(graphs).length);
+	if(verticies.length > Object.keys(graphs).length){
+		console.log("less than");
+		return cycle;
+	}
+	else{
+		verticies.forEach(function(vertex){
+				if (visited[vertex.id] == false) {
+					if (isCycle(vertex.id,visited,recursiveStack, graphs) == true){
+						cycle = true;
+					}
+				}
+		})
+	}
 	return cycle;
 }
 //DepthFirstSearch
 function isCycle(v, visited, recursiveStack, graphs){
 	visited[v] = true;
 	recursiveStack[v] = true;
-	sourceNodes = Object.keys(graphs);
+	console.log("v : " + v + " visited : " + visited + " recursiveStack : "  + recursiveStack + " graphs  : "  + graphs );
 	if(graphs[v] == null){
 		return false;
 	}
