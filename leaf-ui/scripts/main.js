@@ -310,9 +310,13 @@ function cycleCheck(links, verticies){
 		visited[vertex.id] = false;
 		recursiveStack[vertex.id] = false;
 	})
-	console.log(verticies.length + " graph length "  + Object.keys(graphs).length);
-	if(verticies.length > Object.keys(graphs).length){
-		console.log("less than");
+	var numVertices = verticies.length;
+	var numEdges = 0;
+	for(var i in graphs){
+		numEdges += graphs[i].length;
+	}
+	//If number of edges less than number of vertices, then there is no cycle
+	if(numEdges < numVertices){
 		return cycle;
 	}
 	else{
@@ -330,8 +334,8 @@ function cycleCheck(links, verticies){
 function isCycle(v, visited, recursiveStack, graphs){
 	visited[v] = true;
 	recursiveStack[v] = true;
-	console.log("v : " + v + " visited : " + visited + " recursiveStack : "  + recursiveStack + " graphs  : "  + graphs );
 	if(graphs[v] == null){
+		recursiveStack[v] = false;
 		return false;
 	}
 	else{
@@ -345,8 +349,8 @@ function isCycle(v, visited, recursiveStack, graphs){
 				return true;
 			}
 		}
-		recursiveStack[v] = false;
 	}
+	recursiveStack[v] = false;
 	return false;
 }
 
