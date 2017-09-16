@@ -271,34 +271,42 @@ $('#cycledetect-btn').on('click', function(e){
 	var js_links = {};
 	js_object.analysis = getAnalysisValues(analysis);
 	jslinks = getLinks();
-
-	console.log(js_object);
-
-	console.log(js_object.analysis.elementList);
-	console.log(jslinks);
-
-
-	var src1 = jslinks[0].linkSrcID;
-	console.log(jslinks.length);
-	if(jslinks.length == 2){
-		var src2 = jslinks[1].linkSrcID;
-		var dest2 = jslinks[1].linkDestID;
-	}
-	var dest1 = jslinks[0].linkDestID;
-	console.log(src1 + " " + src2);
-	console.log(dest1 + " " + dest2);
-	if(src1 == dest2 && src2 == dest1){
-		swal("Cycle in the graph", "", "error");
-
-	}
-	else{
+	if(jslinks.length == 0){
 		swal("No cycle in the graph", "", "success");
 	}
+	else{
+		console.log(js_object);
+
+		console.log(js_object.analysis.elementList);
+		console.log(jslinks);
+		/*
+		var src1 = jslinks[0].linkSrcID;
+		var dest1 = jslinks[0].linkDestID;
+		if(jslinks.length == 2){
+			var src2 = jslinks[1].linkSrcID;
+			var dest2 = jslinks[1].linkDestID;
+		}
+		console.log(src1 + " " + src2);
+		console.log(dest1 + " " + dest2);
+		if(src1 == dest2 && src2 == dest1){
+			swal("Cycle in the graph", "", "error");
+
+		}
+		else{
+			swal("No cycle in the graph", "", "success");
+		}*/
+	}
+	cycleCheck("Hello");
 	/*e.preventDefault();
   new $.Zebra_Dialog('No cycle in the graph.',{
 		type:'confirmation'
 	});*/
 })
+
+//Cycle-deteciton algorithm
+function cycleCheck(objArr){
+	console.log(objArr);
+}
 
 function switchToModellingMode(useInitState){
 	//Reset to initial graph prior to analysis
