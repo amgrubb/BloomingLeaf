@@ -23,6 +23,7 @@ var queryObject = new queryObject();
 
 var loader;
 var reader;
+var recursiveStack = {};
 
 
 //Properties for both core and simulator.
@@ -278,13 +279,52 @@ $('#cycledetect-btn').on('click', function(e){
 	else{
 		var verticies = js_object.analysis.elementList;
 		var links = jslinks;
+		//If there is no cycle, leave the color the way it was
 		if (cycleCheck(links, verticies) == false){
 			swal("No cycle in the graph", "", "success");
+			var elements = graph.getElements();
+			for (var i = 0; i < elements.length; i++){
+				var cellView  = elements[i].findView(paper);
+				if(cellView.model.attributes.type == "basic.Task"){
+					cellView.model.attr({'.outer': {'fill': '#92E3B1'}});
+				}
+				if(cellView.model.attributes.type == "basic.Goal"){
+					cellView.model.attr({'.outer': {'fill': '#FFCC66'}});
+				}
+				if(cellView.model.attributes.type == "basic.Resource"){
+					cellView.model.attr({'.outer': {'fill': '#92C2FE'}});
+				}
+				if(cellView.model.attributes.type == "basic.Softgoal"){
+					cellView.model.attr({'.outer': {'fill': '#FF984F'}});
+				}
+			}
 		}
 		else{
 			swal("Cycle in the graph", "", "error");
+			var elements = graph.getElements();
+			for (var i = 0; i < elements.length; i++){
+				var cellView  = elements[i].findView(paper);
+				if (recursiveStack[cellView.model.attributes.elementid] == true){
+					cellView.model.attr({'.outer': {'fill': 'red'}});
+				}
+				else{
+					if(cellView.model.attributes.type == "basic.Task"){
+						cellView.model.attr({'.outer': {'fill': '#92E3B1'}});
+					}
+					if(cellView.model.attributes.type == "basic.Goal"){
+						cellView.model.attr({'.outer': {'fill': '#FFCC66'}});
+					}
+					if(cellView.model.attributes.type == "basic.Resource"){
+						cellView.model.attr({'.outer': {'fill': '#92C2FE'}});
+					}
+					if(cellView.model.attributes.type == "basic.Softgoal"){
+						cellView.model.attr({'.outer': {'fill': '#FF984F'}});
+					}				}
+			}
 		}
 	}
+	var elements = graph.getElements();
+
 	js_object = null;
 	jslinks = null;
 })
@@ -293,7 +333,6 @@ $('#cycledetect-btn').on('click', function(e){
 function cycleCheck(links, verticies){
 	var graphs = {};
 	var visited = {};
-	var recursiveStack = {};
 	var cycle = false;
 	//Iterate over links to create map between src node and dest node of each link
 	links.forEach(function(element){
@@ -809,7 +848,6 @@ graph.on("add", function(cell){
 			}
 		}
 	}	//Don't do anything for links
-	console.log(graph.getElements());
 	//Give element a unique default
 	cell.attr(".name/text", cell.attr(".name/text") + "_" + element_counter);
 	element_counter++;
