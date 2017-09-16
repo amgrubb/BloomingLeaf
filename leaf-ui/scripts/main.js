@@ -275,37 +275,68 @@ $('#cycledetect-btn').on('click', function(e){
 		swal("No cycle in the graph", "", "success");
 	}
 	else{
-		console.log(js_object);
-
-		console.log(js_object.analysis.elementList);
-		console.log(jslinks);
-		/*
-		var src1 = jslinks[0].linkSrcID;
-		var dest1 = jslinks[0].linkDestID;
-		if(jslinks.length == 2){
-			var src2 = jslinks[1].linkSrcID;
-			var dest2 = jslinks[1].linkDestID;
-		}
-		console.log(src1 + " " + src2);
-		console.log(dest1 + " " + dest2);
-		if(src1 == dest2 && src2 == dest1){
-			swal("Cycle in the graph", "", "error");
-
+		var verticies = js_object.analysis.elementList;
+		var links = jslinks;
+		if (cycleCheck(links, verticies) == false){
+			swal("No cycle in the graph", "", "success");
 		}
 		else{
-			swal("No cycle in the graph", "", "success");
-		}*/
+			swal("Cycle in the graph", "", "error");
+		}
 	}
-	cycleCheck("Hello");
-	/*e.preventDefault();
-  new $.Zebra_Dialog('No cycle in the graph.',{
-		type:'confirmation'
-	});*/
 })
 
 //Cycle-deteciton algorithm
-function cycleCheck(objArr){
-	console.log(objArr);
+function cycleCheck(links, verticies){
+	var graphs = {};
+	var visited = {};
+	var recursiveStack = {};
+	var cycle = false;
+	//Iterate over links to create map between src node and dest node of each link
+	links.forEach(function(element){
+		var src = element.linkSrcID;
+		if(src in graphs){
+			graphs[src].push(element.linkDestID);
+		}
+		else{
+			graphs[src] = [element.linkDestID];
+		}
+	})
+	verticies.forEach(function(vertex){
+		visited[vertex.id] = false;
+		recursiveStack[vertex.id] = false;
+	})
+	verticies.forEach(function(vertex){
+		if (visited[vertex.id] == false) {
+			if (isCycle(vertex.id,visited,recursiveStack, graphs) == true){
+				cycle = true;
+			}
+		}
+	})
+	return cycle;
+}
+//DepthFirstSearch
+function isCycle(v, visited, recursiveStack, graphs){
+	visited[v] = true;
+	recursiveStack[v] = true;
+	sourceNodes = Object.keys(graphs);
+	if(graphs[v] == null){
+		return false;
+	}
+	else{
+		for(var i = 0; i < graphs[v].length; i++){
+			if (visited[graphs[v][i]] == false){
+				if (isCycle(graphs[v][i], visited, recursiveStack, graphs) == true){
+					return true;
+				}
+			}
+			else if (recursiveStack[graphs[v][i]] == true){
+				return true;
+			}
+		}
+		recursiveStack[v] = false;
+	}
+	return false;
 }
 
 function switchToModellingMode(useInitState){
