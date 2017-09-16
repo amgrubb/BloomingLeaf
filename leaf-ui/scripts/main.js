@@ -272,7 +272,6 @@ $('#cycledetect-btn').on('click', function(e){
 	var js_links = {};
 	js_object.analysis = getAnalysisValues(analysis);
 	jslinks = getLinks();
-	console.log(jslinks);
 	if(jslinks.length == 0){
 		swal("No cycle in the graph", "", "success");
 	}
@@ -349,24 +348,14 @@ function cycleCheck(links, verticies){
 		visited[vertex.id] = false;
 		recursiveStack[vertex.id] = false;
 	})
-	var numVertices = verticies.length;
-	var numEdges = 0;
-	for(var i in graphs){
-		numEdges += graphs[i].length;
-	}
-	//If number of edges less than number of vertices, then there is no cycle
-	if(numEdges < numVertices){
-		return cycle;
-	}
-	else{
-		verticies.forEach(function(vertex){
-				if (visited[vertex.id] == false) {
-					if (isCycle(vertex.id,visited,recursiveStack, graphs) == true){
-						cycle = true;
-					}
+
+	verticies.forEach(function(vertex){
+			if (visited[vertex.id] == false) {
+				if (isCycle(vertex.id,visited,recursiveStack, graphs) == true){
+					cycle = true;
 				}
-		})
-	}
+			}
+	})
 	return cycle;
 }
 //DepthFirstSearch
