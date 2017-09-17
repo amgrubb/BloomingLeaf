@@ -24,8 +24,6 @@ var queryObject = new queryObject();
 var loader;
 var reader;
 var recursiveStack = {};
-
-
 //Properties for both core and simulator.
 //TODO: merge this two arrays in order to make use the same name for all
 var satvalues = {
@@ -318,7 +316,8 @@ $('#cycledetect-btn').on('click', function(e){
 					}
 					if(cellView.model.attributes.type == "basic.Softgoal"){
 						cellView.model.attr({'.outer': {'fill': '#FF984F'}});
-					}				}
+					}
+				}
 			}
 		}
 	}
@@ -356,6 +355,7 @@ function cycleCheck(links, verticies){
 				}
 			}
 	})
+	cycleClear = cycle;
 	return cycle;
 }
 //DepthFirstSearch
@@ -1158,6 +1158,31 @@ $('#btn-clear-flabel').on('click', function(){
 		}
 	}
 });
+// This is an option under clear button to clear red-highlight from
+// cycle detection function
+$('#btn-clear-cycle').on('click',function(){
+	var cycleElements = graph.getElements();
+	console.log(cycleElements);
+
+	var elements = graph.getElements();
+	for (var i = 0; i < elements.length; i++){
+			var cellView  = elements[i].findView(paper);
+
+			if(cellView.model.attributes.type == "basic.Task"){
+				cellView.model.attr({'.outer': {'fill': '#92E3B1'}});
+			}
+			if(cellView.model.attributes.type == "basic.Goal"){
+				cellView.model.attr({'.outer': {'fill': '#FFCC66'}});
+			}
+			if(cellView.model.attributes.type == "basic.Resource"){
+				cellView.model.attr({'.outer': {'fill': '#92C2FE'}});
+			}
+			if(cellView.model.attributes.type == "basic.Softgoal"){
+				cellView.model.attr({'.outer': {'fill': '#FF984F'}});
+			}
+	}
+});
+
 $('#btn-svg').on('click', function() {
 	paper.openAsSVG();
 });
