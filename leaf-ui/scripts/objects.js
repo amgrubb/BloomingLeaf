@@ -21,7 +21,7 @@ var logObject = function(analysis, sliderBegin){
 	this.analysisLength;
 }
 
-// Used to save analysis results 
+// Used to save analysis results
 function analysisObject () {
     this.type;
     this.elements;
@@ -36,12 +36,12 @@ analysisObject.initFromBackEnd = function(analysisResults){
 	this.numOfElements = Number(analysisResults.elementList.length);
 	this.timeScale = Number(analysisResults.finalValueTimePoints.length) - 1;
 	this.relativeTime = [];
-	
+
 	for(var i = 0; i < analysisResults.finalValueTimePoints.length; i++){
 		var aux = analysisResults.finalValueTimePoints[i];
 		this.relativeTime.push(aux);
 	}
-	
+
 	for (var i = 0; i < this.numOfElements ; i++){
 		//strips first element since it is already shown on graph
 		var results = analysisResults.elementList[i].status;
@@ -57,11 +57,11 @@ analysisObject.nextStates = function(analysisResults){
 	this.numOfElements = Number(analysisResults.elementList.length);
 	this.timeScale = Number(analysisResults.elementList[0].status.length) - 1;
 	this.relativeTime = [];
-	
+
 	for(var i = 0; i < this.timeScale; i++){
 		this.relativeTime.push(i);
 	}
-	
+
 	for (var i = 0; i < this.numOfElements ; i++){
 		//strips first element since it is already shown on graph
 		var results = analysisResults.elementList[i].status;
@@ -76,7 +76,7 @@ analysisObject.nextStates = function(analysisResults){
 //	this.elements = [];
 //	this.numOfElements = Number(analysisResults[0]);
 //	this.timeScale = Number(analysisResults[1]) - 1;
-//	
+//
 //	for (var i = 2; i < this.numOfElements + 2; i++){
 //		//strips first element since it is already shown on graph
 //		var results = analysisResults[i].split('\t');
@@ -292,10 +292,10 @@ var chartObject = function(){
 		}
 
 
-		
+
 		// The following two lings controls effects of hovering over an element on chart
 		// tooltipTemplate: "<%if (value == 2)%><%= 'Satisfied' %><%if (value == 1)%><%= 'Partially Satisfied' %><%if (value == 0)%><%= 'Random' %><%if (value == -1)%><%= 'Partially Denied' %><%if (value == -2)%><%= 'Denied' %>",
-		// multiTooltipTemplate: "<%if (value == 2)%><%= 'Satisfied' %><%if (value == 1)%><%= 'Partially Satisfied' %><%if (value == 0)%><%= 'Random' %><%if (value == -1)%><%= 'Partially Denied' %><%if (value == -2)%><%= 'Denied' %>",		
+		// multiTooltipTemplate: "<%if (value == 2)%><%= 'Satisfied' %><%if (value == 1)%><%= 'Partially Satisfied' %><%if (value == 0)%><%= 'Random' %><%if (value == -1)%><%= 'Partially Denied' %><%if (value == -2)%><%= 'Denied' %>",
 	};
 
 
@@ -310,7 +310,7 @@ var chartObject = function(){
 		scaleFontSize: 10,
 		pointHitDetectionRadius : 5,
 		tooltipTemplate: "<%if (value == 2)%><%= 'Satisfied' %><%if (value == 1)%><%= 'Partially Satisfied' %><%if (value == 0)%><%= 'Random' %><%if (value == -1)%><%= 'Partially Denied' %><%if (value == -2)%><%= 'Denied' %>",
-		multiTooltipTemplate: "<%= datasetLabel %> - <%if (value == 2)%><%= 'Satisfied' %><%if (value == 1)%><%= 'Partially Satisfied' %><%if (value == 0)%><%= 'Random' %><%if (value == -1)%><%= 'Partially Denied' %><%if (value == -2)%><%= 'Denied' %>",		
-		scaleLabel: "<%if (value == 2)%><%= '(FS, T)' %><%if (value == 1)%><%= '(PS, T)' %><%if (value == 0)%><%= '(T, T)' %><%if (value == -1)%><%= '(T, PD)' %><%if (value == -2)%><%= '(T, FD)' %>",		
+		multiTooltipTemplate: "<%= datasetLabel %> - <%if (value == 2)%><%= 'Satisfied' %><%if (value == 1)%><%= 'Partially Satisfied' %><%if (value == 0)%><%= 'Random' %><%if (value == -1)%><%= 'Partially Denied' %><%if (value == -2)%><%= 'Denied' %>",
+		scaleLabel: "<%if (value == 2)%><%= '(FS, T)' %><%if (value == 1)%><%= '(PS, T)' %><%if (value == 0)%><%= '(T, T)' %><%if (value == -1)%><%= '(T, PD)' %><%if (value == -2)%><%= '(T, FD)' %>",
 	};
 }

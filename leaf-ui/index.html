@@ -31,6 +31,7 @@
                     <a id="btn-clear-all">Full Model</a>
                     <a id="btn-clear-elabel">Evaluation Labels</a>
                     <a id="btn-clear-flabel">Dynamic Function Labels</a>
+                    <a id="btn-clear-cycle">Cycle Highlighting</a>
                   </div>
                 </div>
                 <button id="btn-save" class="btn">Save</button>
@@ -73,6 +74,7 @@
 
             <button id="symbolic-btn" class="blue-btn btn">Model Constraints</button>
             <button id="analysis-btn" class="green-btn btn">Analysis</button>
+            <button id="cycledetect-btn" class="pink-btn btn">Detect Cycles</button>
 
         </div>
 
@@ -130,6 +132,10 @@
 
         <script src="./scripts/main.js"></script>
 
+        <!--SweetAlertJS is used for easy way to customize dialog or alert message
+       -->
+        <script src="./plugins/sweetalert/sweetalert.min.js"></script>
+
 		<script src="./js/backendComm.js"></script>
 
 		<!-- OBJECTS to be sent to backend communication -->
@@ -141,7 +147,7 @@
 		<script src="./js/object/InputDynamic.js"></script>
 		<script src="./js/object/InputIntention.js"></script>
 		<script src="./js/object/InputLink.js"></script>
-		
+
         <div class = "attribution">
             <img src=http://upload.wikimedia.org/wikipedia/en/0/04/Utoronto_coa.svg style="width:25%;height:25%;float:left">
             <br>
