@@ -328,6 +328,8 @@ $('#cycledetect-btn').on('click', function(e){
 })
 
 //Cycle-deteciton algorithm
+// The algorithm is referenced from Detect Cycle in a Directed Graph algorithm
+// discussed at : http://www.geeksforgeeks.org/detect-cycle-in-a-graph/
 function cycleCheck(links, verticies){
 	var graphs = {};
 	var visited = {};

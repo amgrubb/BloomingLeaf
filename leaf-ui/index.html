@@ -17,9 +17,6 @@
         <link rel="stylesheet" type="text/css" href="./css/style.css" />
         <link rel="stylesheet" type="text/css" href="./css/analysis_style.css" />
 
-        <!--zebra css -->
-        <link rel="stylesheet" type="text/css" href="./node_modules/zebra_dialog/dist/css/default/zebra_dialog.min.css" />
-
     </head>
     <body>
         <p id="name">BloomingLeaf</p>
@@ -34,7 +31,7 @@
                     <a id="btn-clear-all">Full Model</a>
                     <a id="btn-clear-elabel">Evaluation Labels</a>
                     <a id="btn-clear-flabel">Dynamic Function Labels</a>
-                    <a id="btn-clear-cycle">All cycle highlight</a>
+                    <a id="btn-clear-cycle">Detect Cycles</a>
                   </div>
                 </div>
                 <button id="btn-save" class="btn">Save</button>
@@ -136,9 +133,9 @@
 
         <script src="./scripts/main.js"></script>
 
-        <!--Zebrajs -->
-        <script src="./node_modules/zebra_dialog/dist/zebra_dialog.min.js"></script>
-        <script src="./node_modules/sweetalert/dist/sweetalert.min.js"></script>
+        <!--SweetAlertJS is used for easy way to customize dialog or alert message
+       -->
+        <script src="./plugins/sweetalert/sweetalert.min.js"></script>
 
 		<script src="./js/backendComm.js"></script>
 
