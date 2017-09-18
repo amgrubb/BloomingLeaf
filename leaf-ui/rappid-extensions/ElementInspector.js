@@ -320,7 +320,7 @@ var ElementInspector = Backbone.View.extend({
     var text = this.$('.cell-attrs-text').val()
     // Do not allow special characters in names, replace them with spaces.
 
-    text = text.replace(/[^\w\n]/g, ' ');
+    text = text.replace(/[^\w\n-]/g, ' ');
     cell.attr({ '.name': { text: text } });
   },
 
