@@ -687,15 +687,34 @@ public class TroposCSPAlgorithm {
     			// Creates IntVars and adds the FS -> PS invariant.
     			initializeNodeVariables(this.store, this.sat, this.values[i][t], element.getId() + "_" + t);
     			
-    			// Initial initialValues.   TODO: Add additional conditions for when values should be set.
-    			if ((t == 0) && (initialValues[i].length == 1) && (!initialValues[i][t][0] && !initialValues[i][t][1] && !initialValues[i][t][2] && !initialValues[i][t][3]))
-    				continue;
-    			else if (t < initialValues[i].length){
-    				this.constraints.add(new XeqC(this.values[i][t][0], boolToInt(initialValues[i][t][0])));
-    				this.constraints.add(new XeqC(this.values[i][t][1], boolToInt(initialValues[i][t][1])));
-    				this.constraints.add(new XeqC(this.values[i][t][2], boolToInt(initialValues[i][t][2])));
-    				this.constraints.add(new XeqC(this.values[i][t][3], boolToInt(initialValues[i][t][3])));
-    			}
+    			if (problemType == SearchType.PATH){
+        			// Initial initialValues.   
+        			if ((t == 0) && (initialValues[i].length == 1) && 
+        					(!initialValues[i][t][0] && !initialValues[i][t][1] && !initialValues[i][t][2] && !initialValues[i][t][3]))
+        				continue;
+        			else if (t < initialValues[i].length){
+        				this.constraints.add(new XeqC(this.values[i][t][0], boolToInt(initialValues[i][t][0])));
+        				this.constraints.add(new XeqC(this.values[i][t][1], boolToInt(initialValues[i][t][1])));
+        				this.constraints.add(new XeqC(this.values[i][t][2], boolToInt(initialValues[i][t][2])));
+        				this.constraints.add(new XeqC(this.values[i][t][3], boolToInt(initialValues[i][t][3])));
+        			}
+        		} else if (problemType == SearchType.NEXT_STATE){
+        			if (t < initialValues[i].length){
+        				this.constraints.add(new XeqC(this.values[i][t][0], boolToInt(initialValues[i][t][0])));
+        				this.constraints.add(new XeqC(this.values[i][t][1], boolToInt(initialValues[i][t][1])));
+        				this.constraints.add(new XeqC(this.values[i][t][2], boolToInt(initialValues[i][t][2])));
+        				this.constraints.add(new XeqC(this.values[i][t][3], boolToInt(initialValues[i][t][3])));
+        			}        		 	
+        		} else if (problemType == SearchType.CURRENT_STATE){
+        			if ((initialValues[i].length == 1) && 
+        				!(!initialValues[i][t][0] && !initialValues[i][t][1] && !initialValues[i][t][2] && !initialValues[i][t][3])){
+        				this.constraints.add(new XeqC(this.values[i][t][0], boolToInt(initialValues[i][t][0])));
+        				this.constraints.add(new XeqC(this.values[i][t][1], boolToInt(initialValues[i][t][1])));
+        				this.constraints.add(new XeqC(this.values[i][t][2], boolToInt(initialValues[i][t][2])));
+        				this.constraints.add(new XeqC(this.values[i][t][3], boolToInt(initialValues[i][t][3])));
+        			}
+						
+        		}
     		}  
     	}
 	}
@@ -1770,34 +1789,6 @@ public class TroposCSPAlgorithm {
 	 */
 	public boolean solveModel(){
 		Search<IntVar> label = new DepthFirstSearch<IntVar>();
-
-		if(!findSolution(this.store, label, this.constraints, this.createVarList())){
-			System.out.println("Found Solution = False");
-			return false;
-		} else {
-	    	if (DEBUG)
-	    		System.out.println("Found Solution = True");
-			if (this.searchAll){
-				this.saveAllSolution(label);				
-			}else{
-				int[] timeOrder = this.createTimePointOrder();
-				if (DEBUG)
-					this.printSingleSolution(timeOrder);
-				this.saveSingleSolution(timeOrder);
-			}
-			return true;
-		}
-	}
-	/**
-	 * @param allSolutions
-	 * @param singleState
-	 * @param store
-	 * @param label
-	 * @param constraints
-	 * @param varList
-	 * @return
-	 */
-	private boolean findSolution(Store store, Search<IntVar> label, List<Constraint> constraints, IntVar[] varList) {
 		label.getSolutionListener().recordSolutions(true);	// Record steps in search.
         label.setPrintInfo(false); 							// Set to false if you don't want the CSP to print the solution as you go.
         
@@ -1820,10 +1811,27 @@ public class TroposCSPAlgorithm {
             }
         }
         
+        // Create Var List
+		IntVar[] varList = this.createVarList();
+		
+        // Create selection and find solution.
         SelectChoicePoint <IntVar> select = new SimpleSelect<IntVar>(varList, new MostConstrainedDynamic<IntVar>(), new IndomainSimpleRandom<IntVar>());//new MostConstrainedStatic<IntVar>(), new IndomainSimpleRandom<IntVar>()); 
         //label.setSolutionListener(new PrintOutListener<IntVar>());         
         label.getSolutionListener().searchAll(this.searchAll);        
-        return label.labeling(store, select);
+        boolean solutionFound = label.labeling(store, select);
+        
+        // Return Solution
+        if(!solutionFound){
+			System.out.println("Found Solution = False");
+			return false;
+		} else {
+	    	if (DEBUG) System.out.println("Found Solution = True");
+			if (this.searchAll)
+				this.saveAllSolution(label);				
+			else
+				this.saveSingleSolution(label);
+			return true;
+		}
 	}
 	
 	// Methods for initial search.
@@ -1885,11 +1893,88 @@ public class TroposCSPAlgorithm {
 		}else
 			return null;
 	}
+	
+	private void saveSingleSolution(Search<IntVar> label) {
+		if (problemType == SearchType.PATH){
+			int[] timeOrder = this.createTimePointOrder();
+			if (DEBUG)
+				this.printSinglePathSolution(timeOrder);
+			this.saveSinglePathSolution(timeOrder);
+		}else if (problemType == SearchType.NEXT_STATE)	//TODO Implement Save/Print Single Next_State
+    		System.err.println("ERROR: Save/Print Single Next_State not implemented.");
+    	else if (problemType == SearchType.CURRENT_STATE) //TODO Implement Save/Print Single Current_State
+    		System.err.println("ERROR: Save/Print Single Current_State not implemented.");
+	}
+	
+	/**
+	 * @param label
+	 */
+	private void saveAllSolution(Search<IntVar> label) {
+		if (problemType == SearchType.PATH) //TODO Implement Save/Print All Paths
+    		System.err.println("ERROR: Save/Print All Paths not implemented.");
+        else if ((problemType == SearchType.NEXT_STATE) || (problemType == SearchType.CURRENT_STATE)){
+			//TODO: Need a post-hoc way to figure out which time points apply to which solutions.
+//			int[] finalValueTimePoints = new int[indexOrder.length];
+//	    	for (int i = 0; i < indexOrder.length; i++)
+//	    		finalValueTimePoints[i] = this.timePoints[indexOrder[i]].value();
+//	   		this.spec.setFinalValueTimePoints(finalValueTimePoints);
+
+			int totalSolution = label.getSolutionListener().solutionsNo();
+
+			//Get last time point starting index.
+			int startIndex = label.getSolution(1).length - (this.intentions.length * 4);
+			
+			if(DEBUG){
+				System.out.println("Saving all states");
+				System.out.println("\nThere are " + totalSolution + " possible next states.");
+				System.out.println("\n Solution: ");
+				for (int s = 1; s <= totalSolution; s++){	/// NOTE: Solution number starts at 1 not 0!!!
+					for (int v = 0; v < label.getSolution(s).length; v++)
+						System.out.print(label.getSolution(s)[v]);
+					System.out.println();
+				}
+				System.out.println("\n Finished Printing Solutions");
+				System.out.println("\n Starting index to save is: " + startIndex);
+			}
+			
+			boolean[][][][] finalValues = new boolean[totalSolution][this.intentions.length][1][4];
+			for (int s = 1; s <= totalSolution; s++){	/// NOTE: Solution number starts at 1 not 0!!!
+				//TODO: Include the output of this.minTimePoint @ solIndex = 0.
+				//System.out.println(label.getSolution(s)[0].toString());
+				//int solIndex = 1;
+				
+				int solIndex = startIndex;
+				for (int i = 0; i < this.intentions.length; i++)
+					//for (int t = 0; t < 2; t++)
+						for (int v = 0; v < 4; v++){
+							if(label.getSolution(s)[solIndex].toString().equals("1"))
+								finalValues[s-1][i][0][v] = true;
+							else if(label.getSolution(s)[solIndex].toString().equals("0"))
+								finalValues[s-1][i][0][v] = false;
+							else
+								System.err.println("Error: " + label.getSolution(s)[v] + " has non-binary value.");
+							solIndex++;
+						}
+
+			}
+			this.spec.setFinalAllSolutionsValues(finalValues);
+
+			if(DEBUG)
+				System.out.println("\n Finished Saving Solutions"); 
+        }else if (problemType == SearchType.CURRENT_STATE){
+        	// TODO: How do we save all the solutions when solving the current state?
+        }
+	}
+
+	
+	
+	
+	
+	// Methods for returning single path data.
 	/**
 	 * @return
 	 */
-	private int[] createTimePointOrder() {
-		if(this.searchPath){			
+	private int[] createTimePointOrder() {		
 			//Sort Time Points.	 - Full Solution.
 			int[] indexOrder = new int[this.timePoints.length];
 			int biggestMin = -1;
@@ -1907,35 +1992,11 @@ public class TroposCSPAlgorithm {
 				indexOrder[i] = curMin;
 			}
 			return indexOrder;
-		}else{
-			//TODO: Actually make correct.
-			// Any changes here will affect the print/save All Solutions functions.
-
-			//TODO: What does this actually do?
-			//				int[] indexOrder = new int[this.values[0].length];
-			//				int biggestMin = -1;
-			//				for (int i = 0; i < indexOrder.length; i++){
-			//					int minVal = this.maxTime + 1;
-			//					int curMin = -1;
-			//					for (int j = 0; j < this.timePoints.length; j++){
-			//						int temp = this.timePoints[j].value();
-			//						if ((temp < minVal) && (temp > biggestMin)){
-			//							curMin = j;
-			//							minVal = temp;
-			//						}
-			//					}
-			//					biggestMin = minVal;
-			//					indexOrder[i] = curMin;
-			//				}
-			//				return indexOrder;
-			return null;
-		}
 	}
 	/**
 	 * @param indexOrder
 	 */
-	private void printSingleSolution(int[] indexOrder) {
-		//TODO: Deal with state? Print fullList[fullListIndex] = this.minTimePoint;?
+	private void printSinglePathSolution(int[] indexOrder) {
 		// Print out timepoint data.
     	for (int i = 0; i < indexOrder.length; i++){
     		System.out.print(this.timePoints[indexOrder[i]].id + "-" + this.timePoints[indexOrder[i]].value() + "\t");
@@ -1970,7 +2031,7 @@ public class TroposCSPAlgorithm {
 	/**
 	 * @param indexOrder
 	 */
-	private void saveSingleSolution(int[] indexOrder) {	
+	private void saveSinglePathSolution(int[] indexOrder) {	
 		int[] finalValueTimePoints = new int[indexOrder.length];
     	for (int i = 0; i < indexOrder.length; i++)
     		finalValueTimePoints[i] = this.timePoints[indexOrder[i]].value();
@@ -1996,60 +2057,7 @@ public class TroposCSPAlgorithm {
     	this.spec.setFinalAssignedEpochs(finalAssignedEpochs);
 	}
 
-	/**
-	 * @param label
-	 */
-	private void saveAllSolution(Search<IntVar> label) {
-        if(this.searchPath){
-			// TODO: How do we save all the solutions when solving the whole path?
-        }else{
-			//TODO: Fix with proper code.
-//			int[] finalValueTimePoints = new int[indexOrder.length];
-//	    	for (int i = 0; i < indexOrder.length; i++)
-//	    		finalValueTimePoints[i] = this.timePoints[indexOrder[i]].value();
-//	   		this.spec.setFinalValueTimePoints(finalValueTimePoints);
-
-			int totalSolution = label.getSolutionListener().solutionsNo();
-
-			if(DEBUG){
-				System.out.println("Saving all states");
-				System.out.println("\nThere are " + totalSolution + " possible next states.");
-				System.out.println("\n Solution: ");
-				for (int s = 1; s <= totalSolution; s++){
-					for (int v = 0; v < label.getSolution(s).length; v++)
-						System.out.print(label.getSolution(s)[v]);
-					System.out.println();
-				}
-				System.out.println("\n Finished Printing Solutions");
-			}
-			// int solNum = 1;	/// NOTE: Solution number starts at 1 not 0!!!
-			//boolean[][][][] finalValues = new boolean[totalSolution][this.intentions.length][this.values[0].length][4];
-			boolean[][][][] finalValues = new boolean[totalSolution][this.intentions.length][2][4];
-			for (int s = 1; s <= totalSolution; s++){
-				//TODO: Include the output of this.minTimePoint @ solIndex = 0.
-				//System.out.println(label.getSolution(s)[0].toString());
-				//int solIndex = 1;
-				int solIndex = 0;
-				for (int i = 0; i < this.intentions.length; i++)
-					//for (int t = 0; t < this.values[0].length; t++){
-					for (int t = 0; t < 2; t++)
-						for (int v = 0; v < 4; v++){
-							if(label.getSolution(s)[solIndex].toString().equals("1"))
-								finalValues[s-1][i][t][v] = true;
-							else if(label.getSolution(s)[solIndex].toString().equals("0"))
-								finalValues[s-1][i][t][v] = false;
-							else
-								System.err.println("Error: " + label.getSolution(s)[v] + " has non-binary value.");
-							solIndex++;
-						}
-
-			}
-			this.spec.setFinalAllSolutionsValues(finalValues);
-			//TODO: Need a post-hoc way to figure out which time points apply to which solutions.
-			if(DEBUG)
-				System.out.println("\n Finished Saving Solutions"); 
-        }
-	}
+	
 
 	/**
 	 * Returns the Model associated with this solver instance.
