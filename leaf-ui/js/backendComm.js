@@ -5,9 +5,9 @@ function backendComm(js_object){
 	if(develop){
 		//This var is created to add the JSON produced in backend for executing local testing.
 		var analysisResults = {};
-	    	if(js_object.analysis.action == "allNextStates"){
+		global_analysisResult = analysisResults;
+    	if(js_object.analysis.action == "allNextStates"){
 			//Testing Explore Possible Next States
-			global_analysisResult = analysisResults;
 			open_analysis_viewer();
 		}else{
 			//Testing Simulate Single Path
@@ -70,12 +70,12 @@ function getFileResults(isGetNextSteps){
 		type: "get",
 		success: function(response){
 			analysisResults = JSON.parse(response);
+			global_analysisResult = analysisResults;
 			if (analysisResults == ""){
 				alert("Error while reading the resonse file from server. This can be due an error in executing java application.")
 				return
 			}
 			if(isGetNextSteps){
-				global_analysisResult = analysisResults;
 				open_analysis_viewer();
 			}else{
 				loadAnalysis(analysisResults);
