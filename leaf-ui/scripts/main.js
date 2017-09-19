@@ -221,6 +221,7 @@ function saveLinks(mode){
 //Switch to analysis mode
 $('#analysis-btn').on('click', function(){
 
+	console.log(linkMode);
 	if (linkMode == "Constraints")
 		$('#symbolic-btn').trigger( "click" );
 
@@ -236,6 +237,7 @@ $('#analysis-btn').on('click', function(){
 
 	$('#analysis-btn').css("display","none");
 	$('#symbolic-btn').css("display","none");
+	$('#cycledetect-btn').css("display","none");
 	$('#dropdown-model').css("display","");
 
 	$('#model-toolbar').css("display","none");
@@ -406,6 +408,7 @@ function switchToModellingMode(useInitState){
 
 	$('#analysis-btn').css("display","");
 	$('#symbolic-btn').css("display","");
+	$('#cycledetect-btn').css("display","");
 	$('#dropdown-model').css("display","none");
 
 	$('#model-toolbar').css("display","");
