@@ -32,7 +32,7 @@ var AnalysisInspector = Backbone.View.extend({
 		      '<h2>Absolute and Relative Assignments</h2>',
 		    '</div>',
 		    '<div class="modal-body">',
-		      '<p>Nodes</p>',
+		      '<p>Absolute Intention Assignments</p>',
 		      	'<table id="node-list" class="abs-table">',
 		      	  '<tr>',
 		      	    '<th>Epoch Boundary Name</th>',
@@ -41,7 +41,16 @@ var AnalysisInspector = Backbone.View.extend({
 		      	    '<th>Action</th>',
 		      	  '</tr>',
 		      	'</table>',
-		      '<p>Relationships</p>',
+					'<p>Relative Intention Assignments</p>',
+						'<table id=rel-intention-assignents class=rel-intent-table>',
+						 '<tr>',
+						 	'<th>Epoch Boundary Name 1</th>',
+							'<th>Relationship</th>',
+							'<th>Epcoch Boundary Name 2</th>',
+						 '</tr>',
+						 '</table>',
+
+		      '<p>Absolute Relationship Assignment</p>',
 		      	'<table id="link-list" class="abs-table">',
 		      	  '<tr>',
 		      	    '<th>Link Type</th>',
@@ -149,9 +158,9 @@ var AnalysisInspector = Backbone.View.extend({
 			var name = cell.attr('.name').text;
 			var assigned_time = cell.attr('.assigned_time');
 			if(func != 'UD' && func != 'D' && func != 'I' && func != 'C' && func != 'R' && func != "" && func != 'NB'){
-				// If no assigned_time in the node, save 'None' into the node
+				// If no assigned_time in the node, make the default value blank
 				if (!assigned_time){
-					cell.attr('.assigned_time', {0: 'None'});
+					cell.attr('.assigned_time', {0: ''});
 
 				}
 				assigned_time = cell.attr('.assigned_time')[0];
@@ -174,9 +183,9 @@ var AnalysisInspector = Backbone.View.extend({
 			if(func == 'UD'){
 				var fun_len = cell.attr('.constraints').function.length - 1;
 				var current_something = 'A';
-				// If no assigned_time in the node, save 'None' into the node
+				// If no assigned_time in the node, save blank into the node
 				if (!assigned_time){
-					cell.attr('.assigned_time', {0: 'None'});
+					cell.attr('.assigned_time', {0: ''});
 					assigned_time = cell.attr('.assigned_time');
 				}
 				// If the length of assigned_time does not equal to the fun_len, add none until they are equal
