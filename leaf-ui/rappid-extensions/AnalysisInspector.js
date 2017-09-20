@@ -29,7 +29,7 @@ var AnalysisInspector = Backbone.View.extend({
 		  '<div class="modal-content">',
 		    '<div class="modal-header">',
 		      '<span class="close">&times;</span>',
-		      '<h2>Absolute Values</h2>',
+		      '<h2>Absolute and Relative Assignments</h2>',
 		    '</div>',
 		    '<div class="modal-body">',
 		      '<p>Nodes</p>',
