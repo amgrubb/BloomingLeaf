@@ -22,17 +22,11 @@ function getAnalysisValues(analysisInterface){
 	
 	//Data required for 2. Explore Possible Next States
 	//Erase old initialAssignedEpoch data
-	if(analysisInterface.initialAssignedEpoch.length > 0){
-		analysisInterface.initialAssignedEpoch = "";
-	}
 	if($('#finalAssigneEpoch').val()){
 		analysisInterface.initialAssignedEpoch = $('#finalAssigneEpoch').val();		
 	}
 	
 	//Erase old initialAssignedEpoch data
-	if(analysisInterface.initialValueTimePoints.length > 0){
-		analysisInterface.initialValueTimePoints = "";
-	}
 	if($('#finalValueTimePoints').val()){
 		analysisInterface.initialValueTimePoints = $('#finalValueTimePoints').val();		
 	}

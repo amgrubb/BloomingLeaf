@@ -261,6 +261,8 @@ $('#model-cur-btn').on('click', function(){
 
 $('#model-init-btn').on('click', function(){
 	switchToModellingMode(true);
+	$('#finalAssigneEpoch').val("");
+	$('#finalValueTimePoints').val("");
 });
 
 //Cycle button onclick
