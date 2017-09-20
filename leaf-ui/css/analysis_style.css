@@ -30,7 +30,7 @@
 
 /* Add Animation */
 @-webkit-keyframes animatetop {
-    from {top:-300px; opacity:0} 
+    from {top:-300px; opacity:0}
     to {top:0; opacity:1}
 }
 
@@ -78,7 +78,7 @@
 
 .abs-table td, .abs-table th {
     border: 1px solid #dddddd;
-    text-align: left;
+    text-align: center;
     padding: 8px;
 }
 
@@ -87,6 +87,30 @@
 }
 
 .abs-table tr td input {
+    width: 4em;
+    font-size: 100%;
+    color: black;
+}
+
+/**/
+.rel-intent-table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 90%;
+    margin: auto;
+}
+
+.rel-intent-table td, .rel-intent-table th {
+    border: 1px solid #dddddd;
+    text-align: center;
+    padding: 8px;
+}
+
+.rel-intent-table tr:nth-child(even) {
+    background-color: #dddddd;
+}
+
+.rel-intent-table tr td input {
     width: 4em;
     font-size: 100%;
     color: black;

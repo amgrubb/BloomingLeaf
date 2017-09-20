@@ -42,7 +42,7 @@ var AnalysisInspector = Backbone.View.extend({
 		      	  '</tr>',
 		      	'</table>',
 					'<p>Relative Intention Assignments</p>',
-						'<table id=rel-intention-assignents class=rel-intent-table>',
+						'<table id=rel-intention-assignents class="rel-intent-table">',
 						 '<tr>',
 						 	'<th>Epoch Boundary Name 1</th>',
 							'<th>Relationship</th>',
