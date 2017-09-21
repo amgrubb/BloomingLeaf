@@ -19,13 +19,14 @@
     margin: auto;
     padding: 0;
     border: 1px solid #888;
-    width: 80%;
+    width: 70%;
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
     -webkit-animation-name: animatetop;
     -webkit-animation-duration: 0.4s;
     animation-name: animatetop;
     animation-duration: 0.4s;
     color: black;
+    border-radius: 20px;
 }
 
 /* Add Animation */
@@ -59,6 +60,7 @@
     background: #1E866A;
     /*background-color: #5cb85c;*/
     color: white;
+    border-top-radius: 40px;
 }
 
 .modal-body {padding: 2px 16px;}
@@ -72,13 +74,14 @@
 .abs-table {
     font-family: arial, sans-serif;
     border-collapse: collapse;
-    width: 90%;
+    width: 100%;
     margin: auto;
 }
 
 .abs-table td, .abs-table th {
-    border: 1px solid #dddddd;
-    text-align: center;
+    border-top: 1px solid #dddddd;
+    border-bottom: 1px solid #dddddd;
+    text-align: left;
     padding: 8px;
 }
 
@@ -96,13 +99,14 @@
 .rel-intent-table {
     font-family: arial, sans-serif;
     border-collapse: collapse;
-    width: 90%;
+    width: 100%;
     margin: auto;
 }
 
 .rel-intent-table td, .rel-intent-table th {
-    border: 1px solid #dddddd;
-    text-align: center;
+    border-top: 1px solid #dddddd;
+    border-bottom: 1px solid #dddddd;
+    text-align: left;
     padding: 8px;
 }
 
@@ -117,5 +121,5 @@
 }
 
 #link-list {
-    width: 70%;
+    width: 100%%;
 }
