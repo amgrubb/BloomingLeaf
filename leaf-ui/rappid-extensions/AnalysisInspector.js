@@ -2,13 +2,14 @@ var AnalysisInspector = Backbone.View.extend({
 
 	className: 'analysis-inspector',
 	template: [
-		'<label>Analysis</label>',
+		'<h2 style="text-align:center; width:100%;margin-top:6px;margin-bottom:0px">Analysis</h2>',
+		'<hr>',
 		'<h3> Simulation Start: 0 </h3>',
 		'<label class="sub-label">Max Absolute Time</label>',
 		'<input id="max-abs-time" class="sub-label" type="number" min="1" step="1" value="100"/>',
 		'<br>',
 		'<label class="sub-label">Conflict Prevention Level</label>',
-		'<select id="conflict-level" class="sub-label">',
+		'<select id="conflict-level" class="sub-label" style="height:30px;">',
 			'<option value=S selected> Strong</option>',
 	        '<option value=M> Medium</option>',
 	        '<option value=W> Weak</option>',
@@ -32,7 +33,7 @@ var AnalysisInspector = Backbone.View.extend({
 		      '<h2>Absolute and Relative Assignments</h2>',
 		    '</div>',
 		    '<div class="modal-body">',
-		      '<p style="text-align:left">Absolute Intention Assignments</p>',
+		      '<h3 style="text-align:left">Absolute Intention Assignments</h3>',
 		      	'<table id="node-list" class="abs-table">',
 		      	  '<tr>',
 		      	    '<th>Epoch Boundary Name</th>',
@@ -41,7 +42,7 @@ var AnalysisInspector = Backbone.View.extend({
 		      	    '<th>Action</th>',
 		      	  '</tr>',
 		      	'</table>',
-				'<p style="text-align:left">Absolute Relationship Assignment</p>',
+				'<h3 style="text-align:left">Absolute Relationship Assignment</h3>',
 					'<table id="link-list" class="abs-table">',
 						'<tr>',
 							'<th>Link Type</th>',
@@ -51,7 +52,7 @@ var AnalysisInspector = Backbone.View.extend({
 							'<th>Action</th>',
 						'</tr>',
 					'</table>',
-					'<p style="text-align:left">Relative Intention Assignments</p>',
+					'<h3 style="text-align:left">Relative Intention Assignments</h3>',
 						'<table id=rel-intention-assignents class="rel-intent-table">',
 						 '<tr>',
 						 	'<th>Epoch Boundary Name 1</th>',
@@ -190,7 +191,7 @@ var AnalysisInspector = Backbone.View.extend({
 				// If the length of assigned_time does not equal to the fun_len, add none until they are equal
 				var k = 0;
 				while (Object.keys(assigned_time).length < fun_len){
-					cell.attr('.assigned_time')[k] = 'None';
+					cell.attr('.assigned_time')[k] = '';
 					assigned_time = cell.attr('.assigned_time');
 					k ++;
 				}
@@ -222,7 +223,7 @@ var AnalysisInspector = Backbone.View.extend({
 				var link_type = link.get('labels')[0].attrs.text.text;
 				// If no assigned_time in the link, save 'None' into the link
 				if (!assigned_time){
-					link.attr('.assigned_time', {0: 'None'});
+					link.attr('.assigned_time', {0: ''});
 					assigned_time = link.attr('.assigned_time');
 				}
 				if (link_type == 'NBD' || link_type == 'NBT' || link_type.indexOf('|') > -1){
@@ -247,7 +248,7 @@ var AnalysisInspector = Backbone.View.extend({
 		var button = e.target;
 		var row = $(button).closest('tr');
 		var assigned_time = row.find('input[type=text]');
-		$(assigned_time).val('None');
+		$(assigned_time).val('');
 	},
 	// Update all nodes with the updated assigned time
 	// TODO: Check if the times users put in are valid
