@@ -69,7 +69,7 @@ function getFileResults(isGetNextSteps){
 		url: pathToCGI,
 		type: "get",
 		success: function(response){
-			analysisResults = JSON.parse(response);
+			analysisResults = JSON.parse(response['data']);
 			global_analysisResult = analysisResults;
 			if (analysisResults == ""){
 				alert("Error while reading the resonse file from server. This can be due an error in executing java application.")
