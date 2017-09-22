@@ -257,10 +257,6 @@ $('#analysis-btn').on('click', function(){
 //Switch to modeling mode
 $('#model-cur-btn').on('click', function(){
 	switchToModellingMode(false);
-});
-
-$('#model-init-btn').on('click', function(){
-	switchToModellingMode(true);
 	//Cleaning the previous analysis data for new execution
 	savedAnalysisData.finalAssigneEpoch="";
 	savedAnalysisData.finalValueTimePoints="";
