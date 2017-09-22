@@ -261,8 +261,9 @@ $('#model-cur-btn').on('click', function(){
 
 $('#model-init-btn').on('click', function(){
 	switchToModellingMode(true);
-	$('#finalAssigneEpoch').val("");
-	$('#finalValueTimePoints').val("");
+	//Cleaning the previous analysis data for new execution
+	savedAnalysisData.finalAssigneEpoch="";
+	savedAnalysisData.finalValueTimePoints="";
 });
 
 //Cycle button onclick
@@ -503,8 +504,8 @@ analysisFunctions.clearQueryObject = function(){
 
 function loadAnalysis(analysisResults){
 	currentAnalysis = new analysisObject.initFromBackEnd(analysisResults);
-	$("#finalAssigneEpoch").val(analysisResults.finalAssignedEpoch);
-	$("#finalValueTimePoints").val(analysisResults.finalValueTimePoints);
+	savedAnalysisData.finalAssigneEpoch = analysisResults.finalAssignedEpoch;
+	savedAnalysisData.finalValueTimePoints = analysisResults.finalValueTimePoints;
 	$('#num-rel-time').val(analysisResults.relativeTimePoints);
 	if(analysisResults.absoluteTimePoints){
 		var absTimePoints = analysisResults.absoluteTimePoints.toString();

@@ -21,12 +21,12 @@ function getAnalysisValues(analysisInterface){
 	analysisInterface.elementList = getElementList();
 	
 	//Data required for 2. Explore Possible Next States
-	if($('#finalAssigneEpoch').val()){
-		analysisInterface.initialAssignedEpoch = $('#finalAssigneEpoch').val();		
+	if(savedAnalysisData.finalAssigneEpoch){
+		analysisInterface.initialAssignedEpoch = savedAnalysisData.finalAssigneEpoch;		
 	}
 	
-	if($('#finalValueTimePoints').val()){
-		analysisInterface.initialValueTimePoints = $('#finalValueTimePoints').val();		
+	if(savedAnalysisData.finalValueTimePoints){
+		analysisInterface.initialValueTimePoints = savedAnalysisData.finalValueTimePoints;		
 	}
 	
 	if($('#sliderValue').text()){
