@@ -21,12 +21,10 @@ function getAnalysisValues(analysisInterface){
 	analysisInterface.elementList = getElementList();
 	
 	//Data required for 2. Explore Possible Next States
-	//Erase old initialAssignedEpoch data
 	if($('#finalAssigneEpoch').val()){
 		analysisInterface.initialAssignedEpoch = $('#finalAssigneEpoch').val();		
 	}
 	
-	//Erase old initialAssignedEpoch data
 	if($('#finalValueTimePoints').val()){
 		analysisInterface.initialValueTimePoints = $('#finalValueTimePoints').val();		
 	}
