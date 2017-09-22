@@ -379,7 +379,7 @@ function loadAnalysis(analysisResults){
 	$('#num-rel-time').val(analysisResults.relativeTimePoints);
 	if(analysisResults.absoluteTimePoints){
 		var absTimePoints = analysisResults.absoluteTimePoints.toString();
-		$('#abs-time-pts').val(absTimePoints.replaceAll(",", " "));
+		$('#abs-time-pts').val(absTimePoints.replace(/,/g, " "));
 	}
 
 	elementList = analysisResults.elementList;
