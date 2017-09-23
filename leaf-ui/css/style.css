@@ -118,7 +118,7 @@ body {
 
 .left-panel label {
   display: block;
-  text-align: center;  
+  text-align: center;
   font-size: 12px;
   line-height: 18px;
   height: 18px;
@@ -166,7 +166,7 @@ body {
 
 .inspector label {
   margin: 14px 0 8px 0;
-  font-size: 1.25em; 
+  font-size: 1.25em;
 }
 
 .sub-label{
@@ -245,7 +245,7 @@ body {
 }
 .function-type:disabled {
   background-color: rgba(20, 85, 9, 1);
-  color: white; 
+  color: white;
 }
 
 .user-defined-select, .repeat-select, .relationship-select{
@@ -444,6 +444,16 @@ select > .select-placeholder {
 
 #analysis-btn {
   background: #27ae60;
+  color: white;
+  min-width: 80px;
+}
+#analysis-btn {
+  background: #27ae60;
+  color: white;
+  min-width: 80px;
+}
+#cycledetect-btn{
+  background: #ff1493;
   color: white;
   min-width: 80px;
 }

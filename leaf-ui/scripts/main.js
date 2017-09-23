@@ -23,8 +23,7 @@ var queryObject = new queryObject();
 
 var loader;
 var reader;
-
-
+var recursiveStack = {};
 //Properties for both core and simulator.
 //TODO: merge this two arrays in order to make use the same name for all
 var satvalues = {
@@ -222,6 +221,7 @@ function saveLinks(mode){
 //Switch to analysis mode
 $('#analysis-btn').on('click', function(){
 
+	console.log(linkMode);
 	if (linkMode == "Constraints")
 		$('#symbolic-btn').trigger( "click" );
 
@@ -237,6 +237,7 @@ $('#analysis-btn').on('click', function(){
 
 	$('#analysis-btn').css("display","none");
 	$('#symbolic-btn').css("display","none");
+	$('#cycledetect-btn').css("display","none");
 	$('#dropdown-model').css("display","");
 
 	$('#model-toolbar').css("display","none");
@@ -256,11 +257,133 @@ $('#analysis-btn').on('click', function(){
 //Switch to modeling mode
 $('#model-cur-btn').on('click', function(){
 	switchToModellingMode(false);
+	//Cleaning the previous analysis data for new execution
+	savedAnalysisData.finalAssigneEpoch="";
+	savedAnalysisData.finalValueTimePoints="";
 });
 
-$('#model-init-btn').on('click', function(){
-	switchToModellingMode(true);
-});
+//Cycle button onclick
+$('#cycledetect-btn').on('click', function(e){
+	//alert("cycle button clicked");
+	var analysis = new InputAnalysis();
+	var links = new InputLink();
+	var js_object = {};
+	var js_links = {};
+	js_object.analysis = getAnalysisValues(analysis);
+	jslinks = getLinks();
+	if(jslinks.length == 0){
+		swal("No cycle in the graph", "", "success");
+	}
+	else{
+		var verticies = js_object.analysis.elementList;
+		var links = jslinks;
+		//If there is no cycle, leave the color the way it was
+		if (cycleCheck(links, verticies) == false){
+			swal("No cycle in the graph", "", "success");
+			var elements = graph.getElements();
+			for (var i = 0; i < elements.length; i++){
+				var cellView  = elements[i].findView(paper);
+				if(cellView.model.attributes.type == "basic.Task"){
+					cellView.model.attr({'.outer': {'fill': '#92E3B1'}});
+				}
+				if(cellView.model.attributes.type == "basic.Goal"){
+					cellView.model.attr({'.outer': {'fill': '#FFCC66'}});
+				}
+				if(cellView.model.attributes.type == "basic.Resource"){
+					cellView.model.attr({'.outer': {'fill': '#92C2FE'}});
+				}
+				if(cellView.model.attributes.type == "basic.Softgoal"){
+					cellView.model.attr({'.outer': {'fill': '#FF984F'}});
+				}
+			}
+		}
+		else{
+			swal("Cycle in the graph", "", "error");
+			var elements = graph.getElements();
+			for (var i = 0; i < elements.length; i++){
+				var cellView  = elements[i].findView(paper);
+				if (recursiveStack[cellView.model.attributes.elementid] == true){
+					cellView.model.attr({'.outer': {'fill': 'red'}});
+				}
+				else{
+					if(cellView.model.attributes.type == "basic.Task"){
+						cellView.model.attr({'.outer': {'fill': '#92E3B1'}});
+					}
+					if(cellView.model.attributes.type == "basic.Goal"){
+						cellView.model.attr({'.outer': {'fill': '#FFCC66'}});
+					}
+					if(cellView.model.attributes.type == "basic.Resource"){
+						cellView.model.attr({'.outer': {'fill': '#92C2FE'}});
+					}
+					if(cellView.model.attributes.type == "basic.Softgoal"){
+						cellView.model.attr({'.outer': {'fill': '#FF984F'}});
+					}
+				}
+			}
+		}
+	}
+	var elements = graph.getElements();
+
+	js_object = null;
+	jslinks = null;
+})
+
+//Cycle-deteciton algorithm
+// The algorithm is referenced from Detect Cycle in a Directed Graph algorithm
+// discussed at : http://www.geeksforgeeks.org/detect-cycle-in-a-graph/
+function cycleCheck(links, verticies){
+	var graphs = {};
+	var visited = {};
+	var cycle = false;
+	//Iterate over links to create map between src node and dest node of each link
+	links.forEach(function(element){
+		var src = element.linkSrcID;
+		if(src in graphs){
+			graphs[src].push(element.linkDestID);
+		}
+		else{
+			graphs[src] = [element.linkDestID];
+		}
+	})
+	//Iterate over all verticies to initialize visited stack and recursive stack to false
+	verticies.forEach(function(vertex){
+		visited[vertex.id] = false;
+		recursiveStack[vertex.id] = false;
+	})
+
+	verticies.forEach(function(vertex){
+			if (visited[vertex.id] == false) {
+				if (isCycle(vertex.id,visited,recursiveStack, graphs) == true){
+					cycle = true;
+				}
+			}
+	})
+	cycleClear = cycle;
+	return cycle;
+}
+//DepthFirstSearch
+function isCycle(v, visited, recursiveStack, graphs){
+	visited[v] = true;
+	recursiveStack[v] = true;
+	if(graphs[v] == null){
+		recursiveStack[v] = false;
+		return false;
+	}
+	else{
+		for(var i = 0; i < graphs[v].length; i++){
+			if (visited[graphs[v][i]] == false){
+				if (isCycle(graphs[v][i], visited, recursiveStack, graphs) == true){
+					return true;
+				}
+			}
+			else if (recursiveStack[graphs[v][i]] == true){
+				return true;
+			}
+		}
+	}
+	recursiveStack[v] = false;
+	return false;
+}
 
 function switchToModellingMode(useInitState){
 	//Reset to initial graph prior to analysis
@@ -284,6 +407,7 @@ function switchToModellingMode(useInitState){
 
 	$('#analysis-btn').css("display","");
 	$('#symbolic-btn').css("display","");
+	$('#cycledetect-btn').css("display","");
 	$('#dropdown-model').css("display","none");
 
 	$('#model-toolbar').css("display","");
@@ -304,6 +428,8 @@ function switchToModellingMode(useInitState){
 
 	mode = "Modelling";
 }
+
+
 
 // ----------------------------------------------------------------- //
 // Communication between server and front end
@@ -374,12 +500,12 @@ analysisFunctions.clearQueryObject = function(){
 
 function loadAnalysis(analysisResults){
 	currentAnalysis = new analysisObject.initFromBackEnd(analysisResults);
-	$("#finalAssigneEpoch").val(analysisResults.finalAssignedEpoch);
-	$("#finalValueTimePoints").val(analysisResults.finalValueTimePoints);
+	savedAnalysisData.finalAssigneEpoch = analysisResults.finalAssignedEpoch;
+	savedAnalysisData.finalValueTimePoints = analysisResults.finalValueTimePoints;
 	$('#num-rel-time').val(analysisResults.relativeTimePoints);
 	if(analysisResults.absoluteTimePoints){
 		var absTimePoints = analysisResults.absoluteTimePoints.toString();
-		$('#abs-time-pts').val(absTimePoints.replace(",", " "));
+		$('#abs-time-pts').val(absTimePoints.replace(/,/g, " "));
 	}
 
 	elementList = analysisResults.elementList;
@@ -715,7 +841,6 @@ graph.on("add", function(cell){
 			}
 		}
 	}	//Don't do anything for links
-
 	//Give element a unique default
 	cell.attr(".name/text", cell.attr(".name/text") + "_" + element_counter);
 	element_counter++;
@@ -1086,6 +1211,31 @@ $('#btn-clear-flabel').on('click', function(){
 		}
 	}
 });
+// This is an option under clear button to clear red-highlight from
+// cycle detection function
+$('#btn-clear-cycle').on('click',function(){
+	var cycleElements = graph.getElements();
+	console.log(cycleElements);
+
+	var elements = graph.getElements();
+	for (var i = 0; i < elements.length; i++){
+			var cellView  = elements[i].findView(paper);
+
+			if(cellView.model.attributes.type == "basic.Task"){
+				cellView.model.attr({'.outer': {'fill': '#92E3B1'}});
+			}
+			if(cellView.model.attributes.type == "basic.Goal"){
+				cellView.model.attr({'.outer': {'fill': '#FFCC66'}});
+			}
+			if(cellView.model.attributes.type == "basic.Resource"){
+				cellView.model.attr({'.outer': {'fill': '#92C2FE'}});
+			}
+			if(cellView.model.attributes.type == "basic.Softgoal"){
+				cellView.model.attr({'.outer': {'fill': '#FF984F'}});
+			}
+	}
+});
+
 $('#btn-svg').on('click', function() {
 	paper.openAsSVG();
 });

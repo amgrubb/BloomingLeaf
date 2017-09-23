@@ -1,6 +1,6 @@
-/* *** Code Inconsistent with Rappid Distribution *** 
+/* *** Code Inconsistent with Rappid Distribution ***
  * J.Fear - Aug. 2015
- * The following functions differs from the Rappid release. These functions did not exist in the Rappid Library. 
+ * The following functions differs from the Rappid release. These functions did not exist in the Rappid Library.
  * 		joint.shapes.basic.Intention: Is the superclass for all added nodes (goals, subgoals, tasks, resources).
  * 		joint.shapes.basic.Goal: Goal node.
  * 		joint.shapes.basic.Task: Task node.
@@ -9,7 +9,7 @@
  * 		joint.dia.Actorlink: Link between actors.
  * 		joint.shapes.basic.Actor: Actor node.
  *
- */ 
+ */
 joint.shapes.basic.Intention = joint.shapes.basic.Generic.extend({
     // Changed satvalue to text
 	markup: '<g class="rotatable"><g class="scalable"><rect class="outer"/></g><text class="satvalue"/><text class="funcvalue"/><text class="name"/></g>',
@@ -26,7 +26,7 @@ joint.shapes.basic.Intention = joint.shapes.basic.Generic.extend({
             },
             // Navie: Changed the initial value of satvalue
             ".satvalue": {
-              	'stroke': '#000000', 
+              	'stroke': '#000000',
             	'stroke-width': 0.5,
                 'font-size': 12,
                 'text-anchor': 'middle',
@@ -78,11 +78,11 @@ joint.shapes.basic.Task = joint.shapes.basic.Intention.extend({
         type: "basic.Task",
         attrs: {
             ".outer": {
-            	
-            	d: 'M 0 30 L 20 0 L 80 0 L 100 30 L 80 60 L 20 60 z', 
+
+            	d: 'M 0 30 L 20 0 L 80 0 L 100 30 L 80 60 L 20 60 z',
             	fill: '#92E3B1',
             	stroke: 'black',
-            	'stroke-width': 1 
+            	'stroke-width': 1
             },
             ".satvalue": {
             	'ref-y': '0.75',
@@ -172,7 +172,7 @@ joint.shapes.basic.Actor = joint.shapes.basic.Generic.extend({
             	stroke: '#000000',
             	'stroke-dasharray': '5 2'
             },
-        
+
             ".name": {
             	'text': 'Actor',
             	'fill': 'black',
