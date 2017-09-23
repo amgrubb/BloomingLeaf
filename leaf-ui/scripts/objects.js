@@ -314,3 +314,8 @@ var chartObject = function(){
 		scaleLabel: "<%if (value == 2)%><%= '(FS, T)' %><%if (value == 1)%><%= '(PS, T)' %><%if (value == 0)%><%= '(T, T)' %><%if (value == -1)%><%= '(T, PD)' %><%if (value == -2)%><%= '(T, FD)' %>",
 	};
 }
+
+//This object will be created to save necessary data for following analysis
+var savedAnalysisData = {};
+
+

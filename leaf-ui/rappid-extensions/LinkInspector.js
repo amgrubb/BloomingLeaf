@@ -195,12 +195,12 @@ var LinkInspector = Backbone.View.extend({
 	  //Enable the end select
 	  if (begin == "no"){
         this.appendSelectValues($("#link-type-end"), "All");
-        $("#link-type-end").prop('disabled', true);
+        $("#link-type-end").prop('disabled', false);
         $("#link-type-end").css("background-color","gray");
         $("#repeat-error").text("");
       }else if(begin == "and" || begin == "or"){
         this.appendSelectValues($("#link-type-end"), "A");
-        $("#link-type-end").prop('disabled', true);
+        $("#link-type-end").prop('disabled', false);
         $("#link-type-end").css("background-color","");
         //Saving this option
         var begin = $("#link-type-begin").val();
