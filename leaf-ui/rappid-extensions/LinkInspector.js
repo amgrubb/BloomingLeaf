@@ -25,7 +25,7 @@ var LinkInspector = Backbone.View.extend({
 		  '<button id="switch-link-type" class="inspector-btn small-btn blue-btn">Constant Relationships</button>',
 	    '<br>'
   ].join(''),
-  
+
   actortemplate: [
       '<label> Link Type </label> <br>',
       '<select id="actor-link" class="link-type">',
@@ -37,7 +37,7 @@ var LinkInspector = Backbone.View.extend({
   events: {
 	    'click #switch-link-type': 'switchMode',
 	    'change #constant-links': 'updateConstantRelationship',
-	    'change #actor-link': 'updateActorLink', 
+	    'change #actor-link': 'updateActorLink',
 	    'change #link-type-begin': 'updateBeginEvolRelations',
 	    'change #link-type-end': 'updateEndEvolRelations',
   },
@@ -47,7 +47,7 @@ var LinkInspector = Backbone.View.extend({
     var cell = this._cellView.model;
     var type = cellView.model.attributes.labels[0].attrs.text.text;
     var values = type.split("|");
-    
+
     //Selecting which template to render ACTOR-LINK or INTENTIONS-LINK
     if(cell.prop("linktype")){
     	this.$el.html(_.template(this.actortemplate)());
@@ -104,12 +104,12 @@ var LinkInspector = Backbone.View.extend({
 		this.evolvingRelations = false;
 	  }
   },
-  
+
   updateConstantRelationship: function(){
     var link = this._cellView.model;
     var source = link.getSourceElement();
 	var target = link.getTargetElement();
-	    
+
       link.prop("link-type", $('.link-type').val());
       if (link.prop("link-type") == 'and' || link.prop("link-type") == 'or'){
         link.attr({
@@ -134,7 +134,7 @@ var LinkInspector = Backbone.View.extend({
         });
         link.label(0 ,{position: 0.5, attrs: {text: {text: $('.link-type option:selected').text()}}});
       }
-      
+
       //Adding or removing tags from node depending on type of link
       if (link.prop("link-type") == 'NBT' || link.prop("link-type") == 'NBD'){
         source.attr(".funcvalue/text", "NB");
@@ -144,42 +144,42 @@ var LinkInspector = Backbone.View.extend({
         target.attr(".satvalue/text", "");
         target.attr(".satvalue/value", "");
       } else {
-    	  
+
     	  //verify if node have any other link NBD or NBT
     	  var sourceNBLink = function(){
     		  var localLinks = graph.getLinks();
     		  for(var i = 0; i < localLinks.length; i++){
     			  if ((localLinks[i]!=link) && (localLinks[i].prop("link-type") == 'NBT' || localLinks[i].prop("link-type") == 'NBD')){
         			  if(localLinks[i].getSourceElement() == source || localLinks[i].getTargetElement() == source){
-        				 return true; 
-        			  }  				  
+        				 return true;
+        			  }
     			  }
     		  }
     		  return false;
     	  }
-    	  
+
     	  //verify if target have any other link NBD or NBT
     	  var targetNBLink = function(){
     		  var localLinks = graph.getLinks();
     		  for(var i = 0; i < localLinks.length; i++){
     			  if ((localLinks[i]!=link) && (localLinks[i].prop("link-type") == 'NBT' || localLinks[i].prop("link-type") == 'NBD')){
         			  if(localLinks[i].getTargetElement() == target || localLinks[i].getSourceElement() == target){
-        				 return true; 
-        			  }  				  
+        				 return true;
+        			  }
     			  }
     		  }
     		  return false;
     	  }
-    	  
+
     	  //Verify if it is possible to remove the NB tag from source and target
     	  if(!sourceNBLink()){
     		  source.attr(".funcvalue/text", "");
     	  }
     	  if(!targetNBLink()){
-	          target.attr(".funcvalue/text", "");    		  
+	          target.attr(".funcvalue/text", "");
     	  }
       }
-	  
+
   },
   updateActorLink: function(){
 	  var link = this._cellView.model;
@@ -204,8 +204,8 @@ var LinkInspector = Backbone.View.extend({
         $("#link-type-end").css("background-color","");
         //Saving this option
         var begin = $("#link-type-begin").val();
-        var end = $("#link-type-end").val("no");
-        
+        var end = $("#link-type-end").val();
+
         var link = this._cellView.model;
         link.prop("link-type", begin + "|" + end);
         link.attr({
@@ -214,26 +214,26 @@ var LinkInspector = Backbone.View.extend({
   		  '.marker-target': {stroke: '#000000', "d": 'M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5'}
   		});
   		link.label(0 ,{position: 0.5, attrs: {text: {text: begin + " | " + end}}});
-  		
+
   		$("#repeat-error").text("Saved!");
   		$("#repeat-error").css("color", "lightgreen");
-  		
+
       }else{
         this.appendSelectValues($("#link-type-end"), "B");
         $("#link-type-end").prop('disabled', '');
         $("#link-type-end").css("background-color","");
       }
-	  
-	  
+
+
   },
   updateEndEvolRelations: function(){
-	  
+
       var link = this._cellView.model;
-      
+
       // Save based on evolving relations
       var begin = $("#link-type-begin").val();
       var end = $("#link-type-end").val();
-	
+
 		this._cellView.model.prop("link-type", begin + "|" + end);
 		link.attr({
 		  '.connection': {stroke: '#000000', 'stroke-dasharray': '0 0'},
@@ -241,10 +241,10 @@ var LinkInspector = Backbone.View.extend({
 		  '.marker-target': {stroke: '#000000', "d": 'M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5'}
 		});
 		link.label(0 ,{position: 0.5, attrs: {text: {text: begin + " | " + end}}});
-		
+
 		$("#repeat-error").text("Saved!");
 		$("#repeat-error").css("color", "lightgreen");
-	          
+
   },
   // Restrict select options based on selection made in link-type begin
   appendSelectValues: function(select, type){
@@ -271,7 +271,7 @@ var LinkInspector = Backbone.View.extend({
     		  "NBT": "Noth Both (None)",
     		  "NBD": "Not Both (Denied)"
       };
-        
+
     if (select.attr("id") == "link-type-begin"){
       select.html('<option class="select-placeholder" selected disabled value="">Begin</option>');
     }else if (select.attr("id") == "link-type-end"){
@@ -279,7 +279,7 @@ var LinkInspector = Backbone.View.extend({
     }
 
     select.append($('<option></option>').val("no").html("No Relationship"));
-  
+
     if(type == "Const"){
     	$.each(relationA, function (value, key) {
             select.append($("<option></option>")
@@ -323,9 +323,9 @@ var LinkInspector = Backbone.View.extend({
       $("select#link-type-end option").filter("[value='" + dupVal + "']").remove();
     }
   },
- 
+
   clear: function(){
     this.$el.html('');
   }
-  
+
 });
