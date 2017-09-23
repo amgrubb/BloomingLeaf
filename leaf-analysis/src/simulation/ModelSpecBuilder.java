@@ -33,9 +33,13 @@ public class ModelSpecBuilder {
 
 		try{
 			//ANALYSIS 			
+			
 			//Type of analysis
-			modelSpec.setAnalysisType(analysis.getAction());
-
+			if(analysis.getAction().equals("allNextStates") && analysis.getCurrentState().equals("0"))
+				modelSpec.setAnalysisType("allCurrentState");	//Convert to next analysis type.
+			else
+				modelSpec.setAnalysisType(analysis.getAction());
+			
 			//Conflict level
 			if(analysis.getConflictLevel()!=null){
 				modelSpec.setConflictAvoidLevel(analysis.getConflictLevel().charAt(0));
