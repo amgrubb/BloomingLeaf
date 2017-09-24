@@ -256,7 +256,7 @@ var AnalysisInspector = Backbone.View.extend({
 	dismissModalBox: function(e){
 		var modal = document.getElementById('myModal');
 		modal.style.display = "none";
-
+		epochLists = [];
 	},
 
 	// Trigger when unassign button is pressed. Change the assigned time of the node/link in the same row to none
