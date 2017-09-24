@@ -1,3 +1,5 @@
+var epochLists = [];
+var num = 0;
 var AnalysisInspector = Backbone.View.extend({
 
 	className: 'analysis-inspector',
@@ -54,14 +56,22 @@ var AnalysisInspector = Backbone.View.extend({
 							'</tr>',
 						'</table>',
 					'</div>',
-					'<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Relative Intention Assignments</h3>',
-						'<table id=rel-intention-assignents class="rel-intent-table">',
-						 '<tr>',
-						 	'<th>Epoch Boundary Name 1</th>',
-							'<th>Relationship</th>',
-							'<th>Epcoch Boundary Name 2</th>',
-						 '</tr>',
-						 '</table>',
+					'<div class=relIntetion>',
+						'<div class=headings>',
+							'<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Relative Intention Assignments',
+								'<div class="addIntetion" style="display:inline">',
+										'<i class="fa fa-plus" id="addIntent" style="font-size:30px; float:right; margin-right:20px;"></i>',
+								'<div>',
+							'</h3>',
+						'</div>',
+								'<table id="rel-intention-assignents" class="rel-intent-table">',
+								 '<tr>',
+								 	'<th>Epoch Boundary Name 1</th>',
+									'<th>Relationship</th>',
+									'<th>Epcoch Boundary Name 2</th>',
+								 '</tr>',
+								 '</table>',
+					'</div>',
 		    '</div>',
 		    '<div class="modal-footer">',
 		    	'<button id="btn-save-assignment" class="analysis-btns inspector-btn sub-label green-btn" style="border-radius:40px;">Save</button>',
@@ -82,6 +92,7 @@ var AnalysisInspector = Backbone.View.extend({
 		'click #btn-save-assignment': 'saveAssignment',
 		'click #btn-single-path': 'singlePath',
 		'click #btn-all-next-state': 'getAllNextStates',
+		'click .addIntetion' : 'addnewIntention',
 	},
 
 	render: function(analysisFunctions) {
@@ -166,7 +177,7 @@ var AnalysisInspector = Backbone.View.extend({
 
 				}
 				assigned_time = cell.attr('.assigned_time')[0];
-
+				epochLists.push(name + ': A');
 				$('#node-list').append('<tr><td>' + name + ': A' + '</td><td>' + func + '</td>' +
 					'<td><input type="text" name="sth" value="' + assigned_time + '"></td>' + btn_html +
 					'<input type="hidden" name="id" value="' + cell.id + '"> </td> </tr>');
@@ -181,7 +192,6 @@ var AnalysisInspector = Backbone.View.extend({
 			var func = cell.attr('.funcvalue').text;
 			var name = cell.attr('.name').text;
 			var assigned_time = cell.attr('.assigned_time');
-
 			if(func == 'UD'){
 				var fun_len = cell.attr('.constraints').function.length - 1;
 				var current_something = 'A';
@@ -198,6 +208,7 @@ var AnalysisInspector = Backbone.View.extend({
 					k ++;
 				}
 				for (var j = 0; j < fun_len; j++){
+					epochLists.push(name + ': ' + current_something);
 					$('#node-list').append('<tr><td>' + name +': '+ current_something + '</td><td>' + func + '</td>'  +
 						'<td><input type="text" name="sth" value=' +assigned_time[j] + '></td>' + btn_html +
 						'<input type="hidden" name="id" value="' + cell.id + '_' + j + '"> </td> </tr>');
@@ -237,6 +248,8 @@ var AnalysisInspector = Backbone.View.extend({
 			}
 
 		}
+		num+=1;
+
 	},
 	// Dismiss modal box
 	dismissModalBox: function(e){
@@ -305,6 +318,32 @@ var AnalysisInspector = Backbone.View.extend({
 		}
 		graph.allElements = elements;
 		graph.elementsBeforeAnalysis = elements;
-	}
+	},
+	addnewIntention: function(){
+		console.log("button clicked for add");
+		var elements = graph.getElements();
+		console.log(elements);
+		console.log(epochLists);
+
+		var epoch1 = '<select class="epochLists"><option value="">';
+		for(var i = 0; i < epochLists.length; i++){
+			var newEpoch = '<option>' + epochLists[i] + '</option>';
+			epoch1 += newEpoch
+		}
+		epoch1 += '</select>';
+		var epoch2 = '<select class="epochLists"><option value="">';
+		for(var i = 0; i < epochLists.length; i++){
+			var newEpoch = '<option>' + epochLists[i] + '</option>';
+			epoch2 += newEpoch
+		}
+		epoch2 += '</select>';
+
+		var relationship = '<select id="relationshipList"><option value="">'+
+		'</option><option value="equal">=</option><option value="lessThan"><</option></select>'
+
+		$('#rel-intention-assignents').append('<tr><td>' + epoch1 + '</td><td>' + relationship +
+		 '</td><td>'+ epoch2 +'</td></tr>');
+		 epochLists = [];
+	},
 
 });
