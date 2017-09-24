@@ -75,7 +75,8 @@
     font-family: arial, sans-serif;
     border-collapse: collapse;
     width: 100%;
-    margin: auto;
+    /*margin: auto;*/
+    margin-bottom : 35px;
 }
 
 .abs-table td, .abs-table th {
