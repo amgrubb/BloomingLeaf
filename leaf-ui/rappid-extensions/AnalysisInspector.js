@@ -69,6 +69,7 @@ var AnalysisInspector = Backbone.View.extend({
 								 	'<th>Epoch Boundary Name 1</th>',
 									'<th>Relationship</th>',
 									'<th>Epcoch Boundary Name 2</th>',
+									'<th></th>',
 								 '</tr>',
 								 '</table>',
 					'</div>',
@@ -307,6 +308,7 @@ var AnalysisInspector = Backbone.View.extend({
 		// After that dismiss the box
 		var modal = document.getElementById('myModal');
 		modal.style.display = "none";
+		epochLists = [];
 
 	},
 	saveElementsInGlobalVariable: function(){
@@ -342,8 +344,9 @@ var AnalysisInspector = Backbone.View.extend({
 		'</option><option value="equal">=</option><option value="lessThan"><</option></select></div>'
 
 		$('#rel-intention-assignents').append('<tr><td>' + epoch1 + '</td><td>' + relationship +
-		 '</td><td>'+ epoch2 +'</td></tr>');
-		 epochLists = [];
+		 '</td><td>'+ epoch2 +'</td><td><i class="fa fa-trash-o fa-2x" id="removeIntention" aria-hidden="true" onClick="$(this).closest(\'tr\').remove();"></i></td></tr>');
+
+
 	},
 
 });

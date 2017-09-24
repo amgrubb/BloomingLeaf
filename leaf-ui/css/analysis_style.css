@@ -206,3 +206,6 @@ display: none;
   -ms-word-break: normal;
   word-break: normal;
 }
+#removeIntention{
+  cursor: pointer;
+}
