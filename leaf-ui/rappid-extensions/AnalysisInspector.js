@@ -325,21 +325,21 @@ var AnalysisInspector = Backbone.View.extend({
 		console.log(elements);
 		console.log(epochLists);
 
-		var epoch1 = '<select class="epochLists"><option value="">';
+		var epoch1 = '<div class="epochLists" id="epoch1List"><select><option selected>...</option>';
 		for(var i = 0; i < epochLists.length; i++){
 			var newEpoch = '<option>' + epochLists[i] + '</option>';
 			epoch1 += newEpoch
 		}
-		epoch1 += '</select>';
-		var epoch2 = '<select class="epochLists"><option value="">';
+		epoch1 += '</select></div>';
+		var epoch2 =  '<div class="epochLists" id="epoch2List"><select><option selected>...</option>';
 		for(var i = 0; i < epochLists.length; i++){
 			var newEpoch = '<option>' + epochLists[i] + '</option>';
 			epoch2 += newEpoch
 		}
-		epoch2 += '</select>';
+		epoch2 += '</select></div>';
 
-		var relationship = '<select id="relationshipList"><option value="">'+
-		'</option><option value="equal">=</option><option value="lessThan"><</option></select>'
+		var relationship = '<div class="epochLists" id="relationshipLists"><select><option selected>...'+
+		'</option><option value="equal">=</option><option value="lessThan"><</option></select></div>'
 
 		$('#rel-intention-assignents').append('<tr><td>' + epoch1 + '</td><td>' + relationship +
 		 '</td><td>'+ epoch2 +'</td></tr>');
