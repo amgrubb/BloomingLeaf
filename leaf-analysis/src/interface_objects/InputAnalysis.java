@@ -11,8 +11,8 @@ import java.util.List;
 public class InputAnalysis {
 	private String action;
 	private String currentState;
-	private String initialAssignedEpoch;
-	private String initialValueTimePoints;
+	private String[] initialAssignedEpoch;
+	private String[] initialValueTimePoints;
 	private String maxAbsTime;
 	private String conflictLevel;
 	private String numRelTime;
@@ -67,19 +67,19 @@ public class InputAnalysis {
 		this.absTimePts = absTimePts;
 	}
 
-	public String getInitialAssignedEpoch() {
+	public String[] getInitialAssignedEpoch() {
 		return initialAssignedEpoch;
 	}
 
-	public void setInitialAssignedEpoch(String initialAssignedEpoch) {
+	public void setInitialAssignedEpoch(String[] initialAssignedEpoch) {
 		this.initialAssignedEpoch = initialAssignedEpoch;
 	}
 
-	public String getInitialValueTimePoints() {
+	public String[] getInitialValueTimePoints() {
 		return initialValueTimePoints;
 	}
 
-	public void setInitialValueTimePoints(String initialValueTimePoints) {
+	public void setInitialValueTimePoints(String[] initialValueTimePoints) {
 		this.initialValueTimePoints = initialValueTimePoints;
 	}
 

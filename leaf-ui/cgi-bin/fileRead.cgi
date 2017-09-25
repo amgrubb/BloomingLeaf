@@ -5,11 +5,15 @@ import cgi, cgitb
 cgitb.enable()
 
 def executeCGI():
+	result = {}
+	result['success'] = True
+	result['message'] = "Executing fileRead.cgi def executeCGI to get the result."
+	result['date'] = ""
 
 	processedFilePath = 'temp/output.out'
 
 	with open(processedFilePath) as data:
-		result = data.readlines()
+		result['data'] = data.read()
 
 	#Send data back to frontend
 	sendToFrontEnd(result)

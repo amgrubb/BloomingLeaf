@@ -1,14 +1,17 @@
+var epochLists = [];
+var num = 0;
 var AnalysisInspector = Backbone.View.extend({
 
 	className: 'analysis-inspector',
 	template: [
-		'<label>Analysis</label>',
+		'<h2 style="text-align:center; width:100%;margin-top:6px;margin-bottom:0px">Analysis</h2>',
+		'<hr>',
 		'<h3> Simulation Start: 0 </h3>',
 		'<label class="sub-label">Max Absolute Time</label>',
 		'<input id="max-abs-time" class="sub-label" type="number" min="1" step="1" value="100"/>',
 		'<br>',
 		'<label class="sub-label">Conflict Prevention Level</label>',
-		'<select id="conflict-level" class="sub-label">',
+		'<select id="conflict-level" class="sub-label" style="height:30px;">',
 			'<option value=S selected> Strong</option>',
 	        '<option value=M> Medium</option>',
 	        '<option value=W> Weak</option>',
@@ -29,10 +32,10 @@ var AnalysisInspector = Backbone.View.extend({
 		  '<div class="modal-content">',
 		    '<div class="modal-header">',
 		      '<span class="close">&times;</span>',
-		      '<h2>Absolute Values</h2>',
+		      '<h2>Absolute and Relative Assignments</h2>',
 		    '</div>',
 		    '<div class="modal-body">',
-		      '<p>Nodes</p>',
+		      '<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Absolute Intention Assignments</h3>',
 		      	'<table id="node-list" class="abs-table">',
 		      	  '<tr>',
 		      	    '<th>Epoch Boundary Name</th>',
@@ -41,19 +44,38 @@ var AnalysisInspector = Backbone.View.extend({
 		      	    '<th>Action</th>',
 		      	  '</tr>',
 		      	'</table>',
-		      '<p>Relationships</p>',
-		      	'<table id="link-list" class="abs-table">',
-		      	  '<tr>',
-		      	    '<th>Link Type</th>',
-		      	    '<th>Source Node name</th>',
-		      	    '<th>Dest Node name</th>',
-		      	    '<th>Assigned Time</th>',
-		      	    '<th>Action</th>',
-		      	  '</tr>',
-		      	'</table>',
+				'<div class=absRelationship>',
+					'<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Absolute Relationship Assignment</h3>',
+						'<table id="link-list" class="abs-table">',
+							'<tr>',
+								'<th>Link Type</th>',
+								'<th>Source Node name</th>',
+								'<th>Dest Node name</th>',
+								'<th>Assigned Time</th>',
+								'<th>Action</th>',
+							'</tr>',
+						'</table>',
+					'</div>',
+					'<div class=relIntetion>',
+						'<div class=headings>',
+							'<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Relative Intention Assignments',
+								'<div class="addIntetion" style="display:inline">',
+										'<i class="fa fa-plus" id="addIntent" style="font-size:30px; float:right; margin-right:20px;"></i>',
+								'<div>',
+							'</h3>',
+						'</div>',
+								'<table id="rel-intention-assignents" class="rel-intent-table">',
+								 '<tr>',
+								 	'<th>Epoch Boundary Name 1</th>',
+									'<th>Relationship</th>',
+									'<th>Epcoch Boundary Name 2</th>',
+									'<th></th>',
+								 '</tr>',
+								 '</table>',
+					'</div>',
 		    '</div>',
 		    '<div class="modal-footer">',
-		    	'<button id="btn-save-assignment" class="analysis-btns inspector-btn sub-label green-btn">Save Assignments</button>',
+		    	'<button id="btn-save-assignment" class="analysis-btns inspector-btn sub-label green-btn" style="border-radius:40px;">Save</button>',
 		    '</div>',
 		  '</div>',
 
@@ -71,6 +93,7 @@ var AnalysisInspector = Backbone.View.extend({
 		'click #btn-save-assignment': 'saveAssignment',
 		'click #btn-single-path': 'singlePath',
 		'click #btn-all-next-state': 'getAllNextStates',
+		'click .addIntetion' : 'addnewIntention',
 	},
 
 	render: function(analysisFunctions) {
@@ -149,13 +172,13 @@ var AnalysisInspector = Backbone.View.extend({
 			var name = cell.attr('.name').text;
 			var assigned_time = cell.attr('.assigned_time');
 			if(func != 'UD' && func != 'D' && func != 'I' && func != 'C' && func != 'R' && func != "" && func != 'NB'){
-				// If no assigned_time in the node, save 'None' into the node
+				// If no assigned_time in the node, make the default value blank
 				if (!assigned_time){
-					cell.attr('.assigned_time', {0: 'None'});
+					cell.attr('.assigned_time', {0: ''});
 
 				}
 				assigned_time = cell.attr('.assigned_time')[0];
-
+				epochLists.push(name + ': A');
 				$('#node-list').append('<tr><td>' + name + ': A' + '</td><td>' + func + '</td>' +
 					'<td><input type="text" name="sth" value="' + assigned_time + '"></td>' + btn_html +
 					'<input type="hidden" name="id" value="' + cell.id + '"> </td> </tr>');
@@ -170,23 +193,23 @@ var AnalysisInspector = Backbone.View.extend({
 			var func = cell.attr('.funcvalue').text;
 			var name = cell.attr('.name').text;
 			var assigned_time = cell.attr('.assigned_time');
-
 			if(func == 'UD'){
 				var fun_len = cell.attr('.constraints').function.length - 1;
 				var current_something = 'A';
-				// If no assigned_time in the node, save 'None' into the node
+				// If no assigned_time in the node, save blank into the node
 				if (!assigned_time){
-					cell.attr('.assigned_time', {0: 'None'});
+					cell.attr('.assigned_time', {0: ''});
 					assigned_time = cell.attr('.assigned_time');
 				}
 				// If the length of assigned_time does not equal to the fun_len, add none until they are equal
 				var k = 0;
 				while (Object.keys(assigned_time).length < fun_len){
-					cell.attr('.assigned_time')[k] = 'None';
+					cell.attr('.assigned_time')[k] = '';
 					assigned_time = cell.attr('.assigned_time');
 					k ++;
 				}
 				for (var j = 0; j < fun_len; j++){
+					epochLists.push(name + ': ' + current_something);
 					$('#node-list').append('<tr><td>' + name +': '+ current_something + '</td><td>' + func + '</td>'  +
 						'<td><input type="text" name="sth" value=' +assigned_time[j] + '></td>' + btn_html +
 						'<input type="hidden" name="id" value="' + cell.id + '_' + j + '"> </td> </tr>');
@@ -214,7 +237,7 @@ var AnalysisInspector = Backbone.View.extend({
 				var link_type = link.get('labels')[0].attrs.text.text;
 				// If no assigned_time in the link, save 'None' into the link
 				if (!assigned_time){
-					link.attr('.assigned_time', {0: 'None'});
+					link.attr('.assigned_time', {0: ''});
 					assigned_time = link.attr('.assigned_time');
 				}
 				if (link_type == 'NBD' || link_type == 'NBT' || link_type.indexOf('|') > -1){
@@ -226,12 +249,14 @@ var AnalysisInspector = Backbone.View.extend({
 			}
 
 		}
+		num+=1;
+
 	},
 	// Dismiss modal box
 	dismissModalBox: function(e){
 		var modal = document.getElementById('myModal');
 		modal.style.display = "none";
-
+		epochLists = [];
 	},
 
 	// Trigger when unassign button is pressed. Change the assigned time of the node/link in the same row to none
@@ -239,7 +264,7 @@ var AnalysisInspector = Backbone.View.extend({
 		var button = e.target;
 		var row = $(button).closest('tr');
 		var assigned_time = row.find('input[type=text]');
-		$(assigned_time).val('None');
+		$(assigned_time).val('');
 	},
 	// Update all nodes with the updated assigned time
 	// TODO: Check if the times users put in are valid
@@ -283,6 +308,7 @@ var AnalysisInspector = Backbone.View.extend({
 		// After that dismiss the box
 		var modal = document.getElementById('myModal');
 		modal.style.display = "none";
+		epochLists = [];
 
 	},
 	saveElementsInGlobalVariable: function(){
@@ -294,6 +320,33 @@ var AnalysisInspector = Backbone.View.extend({
 		}
 		graph.allElements = elements;
 		graph.elementsBeforeAnalysis = elements;
-	}
+	},
+	addnewIntention: function(){
+		console.log("button clicked for add");
+		var elements = graph.getElements();
+		console.log(elements);
+		console.log(epochLists);
+
+		var epoch1 = '<div class="epochLists" id="epoch1List"><select><option selected>...</option>';
+		for(var i = 0; i < epochLists.length; i++){
+			var newEpoch = '<option>' + epochLists[i] + '</option>';
+			epoch1 += newEpoch
+		}
+		epoch1 += '</select></div>';
+		var epoch2 =  '<div class="epochLists" id="epoch2List"><select><option selected>...</option>';
+		for(var i = 0; i < epochLists.length; i++){
+			var newEpoch = '<option>' + epochLists[i] + '</option>';
+			epoch2 += newEpoch
+		}
+		epoch2 += '</select></div>';
+
+		var relationship = '<div class="epochLists" id="relationshipLists"><select><option selected>...'+
+		'</option><option value="equal">=</option><option value="lessThan"><</option></select></div>'
+
+		$('#rel-intention-assignents').append('<tr><td>' + epoch1 + '</td><td>' + relationship +
+		 '</td><td>'+ epoch2 +'</td><td><i class="fa fa-trash-o fa-2x" id="removeIntention" aria-hidden="true" onClick="$(this).closest(\'tr\').remove();"></i></td></tr>');
+
+
+	},
 
 });
