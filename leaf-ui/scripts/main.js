@@ -1088,47 +1088,96 @@ this.graph.on('remove', function(cell, collection, opt) {
 
 
 var clipboard = new joint.ui.Clipboard();
-KeyboardJS.on('ctrl + c', function() {
-	// Copy all selected elements and their associatedf links.
-	clipboard.copyElements(selection, graph, { translate: { dx: 20, dy: 20 }, useLocalStorage: true });
-});
-KeyboardJS.on('ctrl + v', function() {
-	clipboard.pasteCells(graph);
+//Check if the browser is on Mac
+var macOS = navigator.platform.match(/(Mac|iPhone|iPod|iPad)/i)?true:false;
+if(macOS){
+	console.log("On mac");
+	KeyboardJS.on('command + c, ctrl + c', function() {
+		// Copy all selected elements and their associatedf links.
+		clipboard.copyElements(selection, graph, { translate: { dx: 20, dy: 20 }, useLocalStorage: true });
+	});
+	KeyboardJS.on('command + v, ctrl + v', function() {
+		clipboard.pasteCells(graph);
 
-	selectionView.cancelSelection();
+		selectionView.cancelSelection();
 
-	clipboard.pasteCells(graph, { link: { z: -1 }, useLocalStorage: true });
+		clipboard.pasteCells(graph, { link: { z: -1 }, useLocalStorage: true });
 
-	// Make sure pasted elements get selected immediately. This makes the UX better as
-	// the user can immediately manipulate the pasted elements.
-	clipboard.each(function(cell) {
-		if (cell.get('type') === 'link') return;
+		// Make sure pasted elements get selected immediately. This makes the UX better as
+		// the user can immediately manipulate the pasted elements.
+		clipboard.each(function(cell) {
+			if (cell.get('type') === 'link') return;
 
-		// Push to the selection not to the model from the clipboard but put the model into the graph.
-		// Note that they are different models. There is no views associated with the models
-		// in clipboard.
-		selection.add(graph.get('cells').get(cell.id));
+			// Push to the selection not to the model from the clipboard but put the model into the graph.
+			// Note that they are different models. There is no views associated with the models
+			// in clipboard.
+			selection.add(graph.get('cells').get(cell.id));
+		});
+
+		selection.each(function(cell) {
+		selectionView.createSelectionBox(paper.findViewByModel(cell));
+		});
 	});
 
-	selection.each(function(cell) {
-	selectionView.createSelectionBox(paper.findViewByModel(cell));
+	//Delete selected nodes when the delete key is pressed.
+
+	KeyboardJS.on('del', function(){
+	// 	while (selection.length > 0){
+	// 		selection.pop();
+	// //		console.log(paper.findViewByModel(current));
+	// //		selectionView.destroySelectionBox(paper.findViewByModel(current));
+	// //		current.remove();
+	// 	}
 	});
-});
+	// Override browser's default action when backspace is pressed
+	KeyboardJS.on('backspace', function(){
 
-//Delete selected nodes when the delete key is pressed.
+	});
+}
+else{
+	KeyboardJS.on('ctrl + c', function() {
+		// Copy all selected elements and their associatedf links.
+		clipboard.copyElements(selection, graph, { translate: { dx: 20, dy: 20 }, useLocalStorage: true });
+	});
+	KeyboardJS.on('ctrl + v', function() {
+		clipboard.pasteCells(graph);
 
-KeyboardJS.on('del', function(){
-// 	while (selection.length > 0){
-// 		selection.pop();
-// //		console.log(paper.findViewByModel(current));
-// //		selectionView.destroySelectionBox(paper.findViewByModel(current));
-// //		current.remove();
-// 	}
-});
-// Override browser's default action when backspace is pressed
-KeyboardJS.on('backspace', function(){
+		selectionView.cancelSelection();
 
-});
+		clipboard.pasteCells(graph, { link: { z: -1 }, useLocalStorage: true });
+
+		// Make sure pasted elements get selected immediately. This makes the UX better as
+		// the user can immediately manipulate the pasted elements.
+		clipboard.each(function(cell) {
+			if (cell.get('type') === 'link') return;
+
+			// Push to the selection not to the model from the clipboard but put the model into the graph.
+			// Note that they are different models. There is no views associated with the models
+			// in clipboard.
+			selection.add(graph.get('cells').get(cell.id));
+		});
+
+		selection.each(function(cell) {
+		selectionView.createSelectionBox(paper.findViewByModel(cell));
+		});
+	});
+
+	//Delete selected nodes when the delete key is pressed.
+
+	KeyboardJS.on('del', function(){
+	// 	while (selection.length > 0){
+	// 		selection.pop();
+	// //		console.log(paper.findViewByModel(current));
+	// //		selectionView.destroySelectionBox(paper.findViewByModel(current));
+	// //		current.remove();
+	// 	}
+	});
+	// Override browser's default action when backspace is pressed
+	KeyboardJS.on('backspace', function(){
+
+	});
+}
+
 // ----------------------------------------------------------------- //
 // Toolbar
 
