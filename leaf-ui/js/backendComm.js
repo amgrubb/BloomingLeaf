@@ -15,9 +15,14 @@ function backendComm(js_object){
 			loadAnalysis(analysisResults);
 			var currentValueLimit = parseInt(sliderObject.sliderElement.noUiSlider.get());
 			var sliderMax = currentValueLimit + currentAnalysis.timeScale;
-			sliderObject.sliderElement.noUiSlider.set(sliderMax);	
+			sliderObject.sliderElement.noUiSlider.set(sliderMax);
 		}
 	}else{
+		/**
+			* Print the input to the console.
+			*/
+			console.log(JSON.stringify(js_object));
+
 		//backend script called
 		var pathToCGI = "./cgi-bin/backendCom.cgi";
 		/**
@@ -31,7 +36,7 @@ function backendComm(js_object){
 			data:JSON.stringify(js_object),
 			success: function(response){
 				if(js_object.analysis.action=="allNextStates"){
-					executeJava(true);					
+					executeJava(true);
 				}else{
 					executeJava(false);
 				}
@@ -70,6 +75,12 @@ function getFileResults(isGetNextSteps){
 		type: "get",
 		success: function(response){
 			analysisResults = JSON.parse(response['data']);
+
+			/**
+				* Print the response data to the console.
+			*/
+				console.log(JSON.stringify(JSON.parse(response['data'])));
+
 			global_analysisResult = analysisResults;
 			if (analysisResults == ""){
 				alert("Error while reading the resonse file from server. This can be due an error in executing java application.")
@@ -89,7 +100,7 @@ function getFileResults(isGetNextSteps){
 	.fail(function(){
 		msg = "Error while executing CGI file: fileRead. Please contact the system Admin.";
 		alert(msg);
-	});		
+	});
 }
 
 

@@ -77,7 +77,7 @@ public class ModelSpecBuilder {
 				int currentState = Integer.parseInt(absoluteTime[0]);
 				
 				// Creates initial Assigned Epoch Map.
-				String[] initialAssignedEpoch = analysis.getInitialAssignedEpoch().split(",");
+				String[] initialAssignedEpoch = analysis.getInitialAssignedEpoch();
 				HashMap<String, Integer> initialAssignedEpochMap = new HashMap<>();
 				//Send the hole hashmap
 				for(int i = 0; i < initialAssignedEpoch.length; i++){
@@ -90,7 +90,7 @@ public class ModelSpecBuilder {
 				
 				// Creates array of size currentState + 1.
 				// TODO: Should this be currentState + 2???
-				String[] initialValueTimePoints = analysis.getInitialValueTimePoints().split(",");
+				String[] initialValueTimePoints = analysis.getInitialValueTimePoints();
 				int[] initialValueTimePointsArray = new int[currentState+1];
 				for(int i = 0; i < currentState+1; i++){
 					initialValueTimePointsArray[i] = Integer.parseInt(initialValueTimePoints[i]);
