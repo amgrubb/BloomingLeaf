@@ -1582,7 +1582,11 @@ function generateLeafFile(){
 // When the user clicks anywhere outside of the a pop up, close it
 window.onclick = function(event) {
 	var modal = document.getElementById('myModal');
-    if (event.target == modal) {
-        modal.style.display = "none";
-    }
+	var intermT = document.getElementById('intermediateTable');
+  if (event.target == modal) {
+  	modal.style.display = "none";
+  }
+	if(event.target == intermT){
+		intermT.style.display = "none";
+	}
 }

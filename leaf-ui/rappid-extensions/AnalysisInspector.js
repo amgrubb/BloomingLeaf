@@ -27,6 +27,8 @@ var AnalysisInspector = Backbone.View.extend({
 		'<br>',
 		'<hr>',
 		'<button id="btn-view-assignment" class="analysis-btns inspector-btn sub-label green-btn">View List of Assignments</button>',
+		'<button id="btn-view-intermediate" class="analysis-btns inspector-btn sub-label green-btn">View Intermediate Values</button>',
+
 		// This is the modal box of assignments
 		'<div id="myModal" class="modal">',
 		  '<div class="modal-content">',
@@ -80,6 +82,14 @@ var AnalysisInspector = Backbone.View.extend({
 		  '</div>',
 
 		'</div>',
+		'<div id="intermediateTable" class="intermT">',
+			'<div class="intermContent">',
+				'<div class="intermHeader">',
+					'<span class="closeIntermT">&times;</span>',
+					'<h2>Intermediate Values Table</h2>',
+				'</div>',
+			'</div>',
+		'</div>',
 		'<br>',
 		'<hr>',
 		'<button id="btn-single-path" class="analysis-btns inspector-btn sub-label green-btn">1. Simulate Single Path</button>',
@@ -88,7 +98,9 @@ var AnalysisInspector = Backbone.View.extend({
 
 	events: {
 		'click #btn-view-assignment': 'loadModalBox',
+		'click #btn-view-intermediate': 'loadIntermediateValues',
 		'click .close': 'dismissModalBox',
+		'click .closeIntermT':'dismissIntermTable',
 		'click .unassign-btn': 'unassignValue',
 		'click #btn-save-assignment': 'saveAssignment',
 		'click #btn-single-path': 'singlePath',
@@ -252,11 +264,19 @@ var AnalysisInspector = Backbone.View.extend({
 		num+=1;
 
 	},
+	loadIntermediateValues: function(e){
+		var intermTable = document.getElementById('intermediateTable');
+		intermTable.style.display = "block";
+	},
 	// Dismiss modal box
 	dismissModalBox: function(e){
 		var modal = document.getElementById('myModal');
 		modal.style.display = "none";
 		epochLists = [];
+	},
+	dismissIntermTable: function(e){
+		var intermT = document.getElementById('intermediateTable');
+		intermT.style.display = "none";
 	},
 
 	// Trigger when unassign button is pressed. Change the assigned time of the node/link in the same row to none
