@@ -1,5 +1,5 @@
 //Flag to turn on console log notification
-var develop = false;
+var develop = true;
 
 // Global variables
 var graph;
