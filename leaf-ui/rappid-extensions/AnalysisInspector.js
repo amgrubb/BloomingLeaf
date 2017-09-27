@@ -46,17 +46,17 @@ var AnalysisInspector = Backbone.View.extend({
 		      	    '<th>Action</th>',
 		      	  '</tr>',
 		      	'</table>',
-				'<div class=absRelationship>',
-					'<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Absolute Relationship Assignment</h3>',
-						'<table id="link-list" class="abs-table">',
-							'<tr>',
-								'<th>Link Type</th>',
-								'<th>Source Node name</th>',
-								'<th>Dest Node name</th>',
-								'<th>Assigned Time</th>',
-								'<th>Action</th>',
-							'</tr>',
-						'</table>',
+					'<div class=absRelationship>',
+						'<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Absolute Relationship Assignment</h3>',
+							'<table id="link-list" class="abs-table">',
+								'<tr>',
+									'<th>Link Type</th>',
+									'<th>Source Node name</th>',
+									'<th>Dest Node name</th>',
+									'<th>Assigned Time</th>',
+									'<th>Action</th>',
+								'</tr>',
+							'</table>',
 					'</div>',
 					'<div class=relIntetion>',
 						'<div class=headings>',
@@ -74,7 +74,7 @@ var AnalysisInspector = Backbone.View.extend({
 									'<th></th>',
 								 '</tr>',
 								 '</table>',
-					'</div>',
+						'</div>',
 		    '</div>',
 		    '<div class="modal-footer">',
 		    	'<button id="btn-save-assignment" class="analysis-btns inspector-btn sub-label green-btn" style="border-radius:40px;">Save</button>',
@@ -87,6 +87,18 @@ var AnalysisInspector = Backbone.View.extend({
 				'<div class="intermHeader">',
 					'<span class="closeIntermT">&times;</span>',
 					'<h2>Intermediate Values Table</h2>',
+				'</div>',
+				'<div class="intermBody">',
+					'<table id="interm-list" class="interm-table">',
+						'<tr>',
+							'<th>   		 </th>',
+							'<th>  Initial Value  </th>',
+						'</tr>',
+						'<tr>',
+							'<th>	Intention  </th>',
+							'<th>0</th>',
+						'</tr>',
+				'</table>',
 				'</div>',
 			'</div>',
 		'</div>',
@@ -264,9 +276,35 @@ var AnalysisInspector = Backbone.View.extend({
 		num+=1;
 
 	},
+	/*load valus for intermediate table dialog*/
 	loadIntermediateValues: function(e){
-		var intermTable = document.getElementById('intermediateTable');
-		intermTable.style.display = "block";
+		var intermTDialog = document.getElementById('intermediateTable');
+		intermTDialog.style.display = "block";
+		var elements = graph.getElements();
+		var absTimeValues = document.getElementById('abs-time-pts').value.split(" ");
+		var intermTable = document.querySelector('.interm-table');
+		var trs = intermTable.querySelector('tr');
+		/*trs.insertCell(-1);
+		console.log(trs);
+		console.log(absTimeValues);
+		$('#interm-list tr').append('<th>test</th>');*/
+		for (var i = 0; i < elements.length; i ++){
+			var cellView = elements[i].findView(paper);
+			console.log(elements[i]);
+			var cell = cellView.model;
+			var initvalue = cell.attr('.satvalue').text;
+			var name = cell.attr('.name').text;
+
+			//Check if initial value is empty, if so, add (T,T) as a value
+			if  (initvalue.trim() == ""){
+				$('#interm-list').append('<tr><td>' + name + '</td><td>(T,T)</td></tr>');
+			}
+			else{
+				$('#interm-list').append('<tr><td>' + name + '</td><td>' + initvalue +'</td></tr>');
+			}
+		}
+		console.log(intermTable[0]);
+
 	},
 	// Dismiss modal box
 	dismissModalBox: function(e){
@@ -277,6 +315,7 @@ var AnalysisInspector = Backbone.View.extend({
 	dismissIntermTable: function(e){
 		var intermT = document.getElementById('intermediateTable');
 		intermT.style.display = "none";
+		$('#interm-list').find("tr:gt(0)").remove();
 	},
 
 	// Trigger when unassign button is pressed. Change the assigned time of the node/link in the same row to none
