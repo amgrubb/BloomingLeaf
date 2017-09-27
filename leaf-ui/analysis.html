@@ -12,7 +12,6 @@
         <link rel="stylesheet" type="text/css" href="./rappid/dist/joint.ui.paperScroller.css" />
 
         <link rel="stylesheet" type="text/css" href="./rappid/dist/rappid.min.css" />
-        <link rel="stylesheet" type="text/css" href="./plugins/slider/nouislider.min.css">
 
         <link rel="stylesheet" type="text/css" href="./css/analysis_html.css" />
 
@@ -87,10 +86,11 @@
 
         <div id="paper">
         </div>
-        
+
+<!--        
         <div id="slider"></div>
         <span id="sliderValue"></span>
-        
+-->
         <script type="text/javascript">
             SVGElement.prototype.getTransformToElement = SVGElement.prototype.getTransformToElement || function(toElement) {
             return toElement.getScreenCTM().inverse().multiply(this.getScreenCTM());
@@ -112,7 +112,6 @@
         <script src="./rappid/dist/joint.dia.command.js"></script>
 
         <script src="./plugins/keyboard/keyboard.js"></script>
-        <script src="./plugins/slider/nouislider.min.js"></script>
         <script src="./plugins/chart/Chart.bundle.min.js"></script>
 
         <script src="./scripts/objects.js"></script>
