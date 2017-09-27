@@ -233,7 +233,7 @@ public class TroposCSPAlgorithm {
 	private void initializeNextTimeConstraints() {
 		nextTimePoint = new IntVar(this.store, "Next_Time", 0, nextTimePoints.length - 1);
 		minTimePoint = new IntVar(this.store, "Min_Time", 0, this.maxTime);
-		this.constraints.add(new Min(nextTimePoints, minTimePoint));
+		this.constraints.add(new Min(nextTimePoints, minTimePoint));		//Should this be nextTimePoint or nextTimePoints??
 		for (int i = 0; i < nextTimePoints.length; i++){
 			this.constraints.add(new IfThen(new XeqC(this.nextTimePoint, i), new XeqY(this.nextTimePoints[i], minTimePoint)));
 		}
@@ -515,47 +515,57 @@ public class TroposCSPAlgorithm {
     	}
     	    	
     	// Step 4A: Make list of previous names.
-    	int countTotalPreviousT = 0;
+    	int countTotalPreviousT = 0;	// Count the number of previous assignedEpochs that are Time Points.
+    	int countTotalPreviousE = 0;
     	String[] exisitingNamedTimePoints = new String[initialValueTimePoints.length];
+    	int[] exisitingNamedTimes = new int[initialValueTimePoints.length];
     	int maxPreviousTime = initialValueTimePoints[initialValueTimePoints.length - 1];
     	// Creates EB for Time Point 0.
-    	if (initialValueTimePoints.length == 1)		
+    	if (initialValueTimePoints.length == 1){		
     		exisitingNamedTimePoints[0] = "TA0";
+    		exisitingNamedTimes[0] = 0;
     	// Creates EB from initialAssignedEpoch HashMap of times.
-    	else if (initialValueTimePoints.length > 1){
+		}else if (initialValueTimePoints.length > 1){
     		for (HashMap.Entry<String, Integer> entry : assignedEpochs.entrySet()) {
     		    String key = entry.getKey();
     		    Integer value = entry.getValue();
     		    if (key.charAt(0) == 'T'){
-    		    	countTotalPreviousT++;
+    		    	countTotalPreviousT++;		
     		    	if (value <= maxPreviousTime){
     		    		// Add to exisitingNamedTimePoints.
     		    		for(int e = 0; e < exisitingNamedTimePoints.length; e++)
     		    			if (value == initialValueTimePoints[e]){
     		    				exisitingNamedTimePoints[e] = key;
+    		    				exisitingNamedTimes[e] = value;
     		    				break;
     		    			}
     		    	}
+    		    }else if (key.charAt(0) == 'E'){
+    		    	countTotalPreviousE++;
     		    }
     		}
     	}else
     		System.err.println("Invalid Input for initialValueTimePoints and initialValues.");
     	
     	if (DEBUG){
-    		System.out.print("Previous Times are: ");
+    		System.out.print("Previous Times are: \t");
     		for(int e = 0; e < exisitingNamedTimePoints.length; e++)
-    			System.out.print(exisitingNamedTimePoints[e] + "\t");
+    			System.out.print(exisitingNamedTimePoints[e] + ":" + exisitingNamedTimes[e] + "\t");
     		System.out.println("\n Max Previous is: " + maxPreviousTime);	
     	}
     	
     	// Step 4B: Create List of Time Points
     	this.numTimePoints = 1 + absoluteCollection.size() + EBTimePoint.size() + numStochasticTimePoints;
 
+    	if (DEBUG){
+    		System.out.println("Previous Time Points: " + countTotalPreviousT + "  New Time Points: " + this.numTimePoints);
+    		System.out.println("Previous Epoch Number: " + countTotalPreviousE + " New Epoch Number: " + this.epochs.length);
+    	}
+
     	if(countTotalPreviousT != this.numTimePoints && countTotalPreviousT > 0)
     		System.err.println("Error: Previous and Current Time Points do no match.");
-    	
-    	if (DEBUG)
-    		System.out.println("Previous Time Points: " + countTotalPreviousT + "  New Time Points: " + this.numTimePoints);
+    	if(countTotalPreviousE != this.epochs.length && countTotalPreviousE > 0)
+    		System.err.println("Error: Previous and Current Epoch Number do no match.");
     	
     	// Create Time Points
     	this.timePoints = new IntVar[this.numTimePoints];
@@ -563,7 +573,7 @@ public class TroposCSPAlgorithm {
     	// Add Zero
     	this.timePoints[0] = new IntVar(store, exisitingNamedTimePoints[0], 0, 0); 
     	
-    	// Add previousCollection
+    	// Add previousCollection from initial Value Time Points
     	for(int e = 1; e < exisitingNamedTimePoints.length; e++){
     		// Absolute Value -> already has an assignment. 
     		if (exisitingNamedTimePoints[e].charAt(1) == 'A'){
@@ -574,7 +584,7 @@ public class TroposCSPAlgorithm {
     	    		if (value.id.equals(exisitingNamedTimePoints[e])){
     	    			this.timePoints[e] = value;
     	    			EBTimePoint.remove(value);
-    	    			constraints.add(new XeqC(value, initialValueTimePoints[e]));
+    	    			this.timePoints[e].setDomain(initialValueTimePoints[e], initialValueTimePoints[e]);
     	    			break;
     	    		}
     	    // Relative Values -> remove 1 from count and assign value.
@@ -584,8 +594,7 @@ public class TroposCSPAlgorithm {
     			numStochasticTimePoints--;
     		}
     		
-    	}
-    	  	
+    	}  	
     	int tCount = exisitingNamedTimePoints.length;
     	
     	this.unsolvedTimePoints = new IntVar[this.numTimePoints - tCount];
@@ -606,7 +615,9 @@ public class TroposCSPAlgorithm {
     		    	maxKey = key;
 		    }
 		}
-		nextTimePoint.add(absoluteCollection.get(maxKey));
+		if(absoluteCollection != null && absoluteCollection.size() > 0){
+			nextTimePoint.add(absoluteCollection.get(maxKey));		
+		}
 		
     	// Add EBs
     	for (IntVar value : EBTimePoint){
