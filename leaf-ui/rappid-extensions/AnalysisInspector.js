@@ -303,31 +303,62 @@ var AnalysisInspector = Backbone.View.extend({
 				thint.innerHTML = absTimeValues[i];
 				rows.appendChild(th);
 				intentRows.appendChild(thint);
-
 			}
 		}
-		console.log(header.querySelector('tr').length);
+		else{
+			absTimeValues = [];
+		}
 		/*trs.insertCell(-1);
 		console.log(trs);
 		console.log(absTimeValues);
 		$('#interm-list tr').append('<th>test</th>');*/
-		for (var i = 0; i < elements.length; i ++){
+		var sat_values = '<select><option selected>...</option>';
+		var sat_valueLists = ['None (T, T)', 'Satisfied (FS, T)','Partially Satisfied (PS, T)',
+		'Denied (T, FD)', 'Partially Denied (T, PD)']
+		for(var i = 0; i < sat_valueLists.length; i++){
+			var value = '<option>' + sat_valueLists[i] + '</option>';
+			sat_values += value
+		}
+		sat_values += '</select>';
+		console.log(elements.length);
+		for (var i = 0; i < elements.length; i++){
 			var cellView = elements[i].findView(paper);
-			console.log(elements[i]);
+			//console.log(elements[i]);
 			var cell = cellView.model;
 			var initvalue = cell.attr('.satvalue').text;
 			var name = cell.attr('.name').text;
-
+			//console.log("initial value : " + initvalue);
 			//Check if initial value is empty, if so, add (T,T) as a value
-			if  (initvalue.trim() == ""){
-				$('#interm-list').append('<tr><td>' + name + '</td><td>(T,T)</td></tr>');
+			if(absTimeValues.length == 0){
+				if  (initvalue.trim() == ""){
+					$('#interm-list').append('<tr><td>' + name + '</td><td>(T,T)</td></tr>');
+				}
+				else{
+					$('#interm-list').append('<tr><td>' + name + '</td><td>' + initvalue +'</td></tr>');
+				}
 			}
 			else{
-				$('#interm-list').append('<tr><td>' + name + '</td><td>' + initvalue +'</td></tr>');
+				if  (initvalue.trim() == ""){
+					//$('#interm-list').append('<tr><td>' + name + '</td><td>(T,T)</td></tr>');
+					var appendList = '<tr><td>' + name + '</td><td>(T,T)</td>';
+					for(var j = 0; j < absTimeValues.length; j++){
+						appendList += '<td>' + sat_values + '</td>';
+					}
+					appendList += '</tr>';
+					$('#interm-list').append(appendList);
+				}
+				else{
+					console.log(absTimeValues.length);
+					var appendList = '<tr><td>' + name + '</td><td>'+ initvalue +'</td>';
+					var test ='';
+					for(var j = 0; j < absTimeValues.length; j++){
+						appendList += '<td>' + sat_values + '</td>';
+					}
+					appendList += '</tr>';
+					$('#interm-list').append(appendList);
+				}
 			}
 		}
-		console.log(intermTable[0]);
-
 	},
 	// Dismiss modal box
 	dismissModalBox: function(e){
@@ -338,10 +369,10 @@ var AnalysisInspector = Backbone.View.extend({
 	dismissIntermTable: function(e){
 		var intermT = document.getElementById('intermediateTable');
 		intermT.style.display = "none";
-		console.log($('#header').find("th"));
+		$('#interm-list').find("tr:gt(1)").remove();
 		$('#header').find("th:gt(1)").remove();
 		$('#intentionRows').find("th:gt(1)").remove();
-		$('.interm-table').find("tr:gt(1)").remove();
+		//$('.interm-table').find("tr:gt(0)").remove();
 	},
 
 	// Trigger when unassign button is pressed. Change the assigned time of the node/link in the same row to none

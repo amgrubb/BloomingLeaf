@@ -28,6 +28,27 @@
     color: black;
     border-radius: 20px;
 }
+/***/
+#interm-list select{
+  /*Don't really need this just for demo styling*/
+  max-width: 180px
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  /* Add some styling */
+  display: block;
+  height: 30px;
+  float: right;
+  font-size: 16px;
+  line-height: 1.75;
+  color: #333;
+  background-color: #ffffff;
+  background-image: none;
+  border: 1px solid #cccccc;
+  -ms-word-break: normal;
+  word-break: normal;
+}
+
 /*Hide the intermTable dialog by default*/
 .intermT {
     display: none;  /*Hidden by default */
@@ -155,6 +176,12 @@
 }
 
 /*Interm table design*/
+.intermBody{
+  overflow-x: scroll;
+  overflow-y: scroll;
+
+}
+
 .interm-table {
     font-family: arial, sans-serif;
     border-collapse: collapse;
