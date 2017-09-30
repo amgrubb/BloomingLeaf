@@ -301,3 +301,7 @@ display: none;
 #removeIntention{
   cursor: pointer;
 }
+
+#abs-time-pts{
+  margin-bottom:5px;
+}

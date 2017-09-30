@@ -47,7 +47,7 @@ var satValueDict = {
 
 // Mode used specify layout and functionality of toolbars
 mode = "Modelling";		// 'Analysis' or 'Modelling'
-linkMode = "Relationships";	// 'Relationships' or 'Constraints'
+linkMode = "View";	// 'Relationships' or 'Constraints'
 
 graph = new joint.dia.Graph();
 
@@ -271,12 +271,16 @@ $('#cycledetect-btn').on('click', function(e){
 	var js_links = {};
 	js_object.analysis = getAnalysisValues(analysis);
 	jslinks = getLinks();
+
 	if(jslinks.length == 0){
 		swal("No cycle in the graph", "", "success");
 	}
 	else{
 		var verticies = js_object.analysis.elementList;
 		var links = jslinks;
+		console.log(verticies)
+		console.log(graph.getElements());
+		console.log(links);
 		//If there is no cycle, leave the color the way it was
 		if (cycleCheck(links, verticies) == false){
 			swal("No cycle in the graph", "", "success");
