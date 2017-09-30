@@ -90,11 +90,11 @@ var AnalysisInspector = Backbone.View.extend({
 				'</div>',
 				'<div class="intermBody">',
 					'<table id="interm-list" class="interm-table">',
-						'<tr>',
+						'<thead id = "header">',
 							'<th>   		 </th>',
 							'<th>  Initial Value  </th>',
-						'</tr>',
-						'<tr>',
+						'</thead>',
+						'<tr id="intentionRows">',
 							'<th>	Intention  </th>',
 							'<th>0</th>',
 						'</tr>',
@@ -281,9 +281,32 @@ var AnalysisInspector = Backbone.View.extend({
 		var intermTDialog = document.getElementById('intermediateTable');
 		intermTDialog.style.display = "block";
 		var elements = graph.getElements();
-		var absTimeValues = document.getElementById('abs-time-pts').value.split(" ");
 		var intermTable = document.querySelector('.interm-table');
-		var trs = intermTable.querySelector('tr');
+		var absValues = document.getElementById('abs-time-pts').value;
+		var absTimeValues;
+		if(absValues != ""){
+			absTimeValues = document.getElementById('abs-time-pts').value.split(" ")
+			.map(function(i){
+				if(i!=""){
+					return parseInt(i, 10);
+				}
+			});
+			absTimeValues.sort(function(a, b){return a-b});
+			var headers = document.getElementById('header');
+			var rows = headers.querySelector('tr');
+			var intentRows = document.getElementById('intentionRows')
+			for(var i = 0; i < absTimeValues.length; i++){
+				console.log(i);
+				var th = document.createElement('th');
+				var thint = document.createElement('th');
+				th.innerHTML = 'Absolute';
+				thint.innerHTML = absTimeValues[i];
+				rows.appendChild(th);
+				intentRows.appendChild(thint);
+
+			}
+		}
+		console.log(header.querySelector('tr').length);
 		/*trs.insertCell(-1);
 		console.log(trs);
 		console.log(absTimeValues);
@@ -315,7 +338,10 @@ var AnalysisInspector = Backbone.View.extend({
 	dismissIntermTable: function(e){
 		var intermT = document.getElementById('intermediateTable');
 		intermT.style.display = "none";
-		$('#interm-list').find("tr:gt(0)").remove();
+		console.log($('#header').find("th"));
+		$('#header').find("th:gt(1)").remove();
+		$('#intentionRows').find("th:gt(1)").remove();
+		$('.interm-table').find("tr:gt(1)").remove();
 	},
 
 	// Trigger when unassign button is pressed. Change the assigned time of the node/link in the same row to none
