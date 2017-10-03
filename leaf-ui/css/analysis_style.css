@@ -249,7 +249,22 @@
     font-size: 100%;
     color: black;
 }
-
+.borderdraw2 {
+  border-style:solid;
+ height:0;
+ line-height:0;
+ width:0;
+ z-index:1;
+}
+.intentionPlace{
+  z-index:9999;position:absolute;top:136px;
+}
+.timePlace{
+     z-index:9999;position:absolute;left:283px;
+}
+.diag { position: relative; width: 50px; height: 38px; }
+.outerdivslant { position: relative; top: -7px; left: -8px; width: 100%; border-color: transparent transparent transparent #dddddd; border-width: 53px 0px 0px 362px;}
+.innerdivslant {position: relative; top: -59px; left: -10px; border-color: transparent transparent transparent #fff; border-width: 52px 0px 0px 360px;}
 #link-list {
     width: 100%%;
 }
