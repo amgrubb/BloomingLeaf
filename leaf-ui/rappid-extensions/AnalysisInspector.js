@@ -1,5 +1,6 @@
 var epochLists = [];
 var num = 0;
+var time_values = {};
 var AnalysisInspector = Backbone.View.extend({
 
 	className: 'analysis-inspector',
@@ -63,9 +64,10 @@ var AnalysisInspector = Backbone.View.extend({
 							'<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Relative Intention Assignments',
 								'<div class="addIntetion" style="display:inline">',
 										'<i class="fa fa-plus" id="addIntent" style="font-size:30px; float:right; margin-right:20px;"></i>',
-								'<div>',
+								'</div>',
 							'</h3>',
 						'</div>',
+						'<div>',
 								'<table id="rel-intention-assignents" class="rel-intent-table">',
 								 '<tr>',
 								 	'<th>Epoch Boundary Name 1</th>',
@@ -76,11 +78,11 @@ var AnalysisInspector = Backbone.View.extend({
 								 '</table>',
 						'</div>',
 		    '</div>',
-		    '<div class="modal-footer">',
-		    	'<button id="btn-save-assignment" class="analysis-btns inspector-btn sub-label green-btn" style="border-radius:40px;">Save</button>',
-		    '</div>',
 		  '</div>',
-
+			'<div class="modal-footer" style="margin-top: 10px;">',
+				'<button id="btn-save-assignment" class="analysis-btns inspector-btn sub-label green-btn" style="border-radius:40px;">Save</button>',
+			'</div>',
+		'</div>',
 		'</div>',
 		'<div id="intermediateTable" class="intermT">',
 			'<div class="intermContent">',
@@ -100,8 +102,10 @@ var AnalysisInspector = Backbone.View.extend({
 						'</tr>',
 				'</table>',
 				'</div>',
+		    '<div class="intermTfooter">',
+		    	'<button id="btn-save-intermT" class="analysis-btns inspector-btn sub-label green-btn" style="border-radius:40px;">Save</button>',
+		    '</div>',
 			'</div>',
-		'</div>',
 		'<br>',
 		'<hr>',
 		'<button id="btn-single-path" class="analysis-btns inspector-btn sub-label green-btn">1. Simulate Single Path</button>',
@@ -118,6 +122,7 @@ var AnalysisInspector = Backbone.View.extend({
 		'click #btn-single-path': 'singlePath',
 		'click #btn-all-next-state': 'getAllNextStates',
 		'click .addIntetion' : 'addnewIntention',
+		'click #btn-save-intermT' : 'saveIntermTable',
 	},
 
 	render: function(analysisFunctions) {
@@ -394,6 +399,17 @@ var AnalysisInspector = Backbone.View.extend({
 			if (func_value != 'UD'){
 				var cell = graph.getCell(id);
 				cell.attr('.assigned_time')[0] = new_time;
+				if(new_time.trim() != ""){
+					if(!(new_time in time_values) ){
+						time_values[new_time] = [];
+						time_values[new_time].push('Absolute Intentions')
+					}
+					else if(!(time_values[new_time].includes('Absolute Intentions'))){
+						time_values[new_time].push('Absolute Intentions');
+					}
+				}
+				console.log(new_time=="");
+
 			}
 			// If func is UD, extract the index i from id, and update i-th assigned time of the node
 			else {
@@ -401,6 +417,17 @@ var AnalysisInspector = Backbone.View.extend({
 				id = id.substring(0, id.length - 2);
 				var cell = graph.getCell(id);
 				cell.attr('.assigned_time')[index] = new_time;
+				console.log(new_time=="");
+				if(new_time.trim() != ""){
+					if(!(new_time in time_values) ){
+						time_values[new_time] = [];
+						time_values[new_time].push('Absolute Intentions')
+					}
+					else if(!(time_values[new_time].includes('Absolute Intentions'))){
+						time_values[new_time].push('Absolute Intentions');
+					}
+				}
+
 			}
 		});
 
@@ -417,6 +444,15 @@ var AnalysisInspector = Backbone.View.extend({
 					break;
 				}
 			}
+			if(new_time.trim() != ""){
+				if(!(new_time in time_values) ){
+					time_values[new_time] = [];
+					time_values[new_time].push('Absolute Relationship')
+				}
+				else if(!(time_values[new_time].includes('Absolute Relationship'))){
+					time_values[new_time].push('Absolute Relationship');
+				}
+			}
 
 			link.attr('.assigned_time')[0] = new_time;
 
@@ -425,7 +461,11 @@ var AnalysisInspector = Backbone.View.extend({
 		var modal = document.getElementById('myModal');
 		modal.style.display = "none";
 		epochLists = [];
+		console.log(time_values);
 
+	},
+	saveIntermTable: function(){
+		this.dismissIntermTable();
 	},
 	saveElementsInGlobalVariable: function(){
 		var elements = [];
