@@ -91,32 +91,26 @@ var AnalysisInspector = Backbone.View.extend({
 					'<h2>Intermediate Values Table</h2>',
 				'</div>',
 				'<div class="intermBody">',
-					'<table id="interm-list" class="interm-table">',
-						'<thead id = "header">',
-							'<th>   		 </th>',
-							'<th>  Initial Value  </th>',
-						'</thead>',
-						'<tr id="intentionRows">',
+						'<table id="interm-list" class="interm-table">',
+							'<thead id = "header">',
+								'<th style="width:110px">   		 </th>',
+								'<th>  Initial Value  </th>',
+							'</thead>',
+							'<tr id="intentionRows">',
 							'<th>',
-								'<div class="intentionPlace">Intention</div>',
-								'<div class="timePlace">Timeline</div>',
-								'<div style="z-index:-1;">',
-									'<div class="diag">',
-										 '<div class="outerdivslant borderdraw2">',
-										 '</div>',
-
-										 '<div class = "innerdivslant borderdraw2">',
-										 '</div>',
+									'<div class="divisionLine"></div>',
+									'<div class="intentionPlace"><b>Intention</b></div>',
+									'<div class="timePlace"><b>Timeline</b></div>',
+									'<div class="outerdivslant borderdraw2">',
 									'</div>',
-								'</div>',
-							'</th>',
-							'<th>0</th>',
-						'</tr>',
-				'</table>',
+									'<div class = "innerdivslant borderdraw2">',
+									'</div>',
+								'</th>',
+								'<th>0</th>',
+							'</tr>',
+					'</table>',
+					'<button id="btn-save-intermT" class="analysis-btns inspector-btn sub-label green-btn" style="border-radius:40px;">Save</button>',
 				'</div>',
-		    '<div class="intermTfooter">',
-		    	'<button id="btn-save-intermT" class="analysis-btns inspector-btn sub-label green-btn" style="border-radius:40px;">Save</button>',
-		    '</div>',
 			'</div>',
 		'</div>',
 		'<br>',
@@ -296,6 +290,9 @@ var AnalysisInspector = Backbone.View.extend({
 	},
 	/*load valus for intermediate table dialog*/
 	loadIntermediateValues: function(e){
+		$('#interm-list').find("tr:gt(1)").remove();
+		$('#header').find("th:gt(1)").remove();
+		$('#intentionRows').find("th:gt(1)").remove();
 		var intermTDialog = document.getElementById('intermediateTable');
 		intermTDialog.style.display = "block";
 		var elements = graph.getElements();
@@ -387,9 +384,6 @@ var AnalysisInspector = Backbone.View.extend({
 	dismissIntermTable: function(e){
 		var intermT = document.getElementById('intermediateTable');
 		intermT.style.display = "none";
-		$('#interm-list').find("tr:gt(1)").remove();
-		$('#header').find("th:gt(1)").remove();
-		$('#intentionRows').find("th:gt(1)").remove();
 		//$('.interm-table').find("tr:gt(0)").remove();
 	},
 
