@@ -312,17 +312,35 @@ var AnalysisInspector = Backbone.View.extend({
 			var intentRows = document.getElementById('intentionRows')
 			for(var i = 0; i < absTimeValues.length; i++){
 				console.log(i);
-				var th = document.createElement('th');
-				var thint = document.createElement('th');
-				th.innerHTML = 'Absolute';
-				thint.innerHTML = absTimeValues[i];
-				rows.appendChild(th);
-				intentRows.appendChild(thint);
+
+				if(!(absTimeValues[i] in time_values)){
+					time_values[absTimeValues[i]] = [];
+					time_values[absTimeValues[i]].push("Absolute");
+				}
+				else if(!(time_values[absTimeValues[i]].includes('Absolute'))){
+					time_values[absTimeValues[i]].push('Absolute');
+				}
+					//console.log(time_values)
+
 			}
 		}
 		else{
 			absTimeValues = [];
 		}
+		Object.keys(time_values).forEach(function(key){
+			console.log(time_values[key]);
+			var th = document.createElement('th');
+			var thint = document.createElement('th');
+
+			if (time_values[key].length == 1){
+				th.innerHTML = time_values[key][0];
+				thint.innerHTML = key;
+				rows.appendChild(th);
+				intentRows.appendChild(thint);
+			}
+		})
+
+		//console.log(time_values);
 		/*trs.insertCell(-1);
 		console.log(trs);
 		console.log(absTimeValues);
@@ -344,7 +362,7 @@ var AnalysisInspector = Backbone.View.extend({
 			var name = cell.attr('.name').text;
 			//console.log("initial value : " + initvalue);
 			//Check if initial value is empty, if so, add (T,T) as a value
-			if(absTimeValues.length == 0){
+			if(time_values.length == 0){
 				if  (initvalue.trim() == ""){
 					$('#interm-list').append('<tr><td>' + name + '</td><td>(T,T)</td></tr>');
 				}
@@ -356,17 +374,17 @@ var AnalysisInspector = Backbone.View.extend({
 				if  (initvalue.trim() == ""){
 					//$('#interm-list').append('<tr><td>' + name + '</td><td>(T,T)</td></tr>');
 					var appendList = '<tr><td>' + name + '</td><td>(T,T)</td>';
-					for(var j = 0; j < absTimeValues.length; j++){
+					for(var j = 0; j < Object.keys(time_values).length; j++){
 						appendList += '<td>' + sat_values + '</td>';
 					}
 					appendList += '</tr>';
 					$('#interm-list').append(appendList);
 				}
 				else{
-					console.log(absTimeValues.length);
+					console.log(Object.keys(time_values).length);
 					var appendList = '<tr><td>' + name + '</td><td>'+ initvalue +'</td>';
 					var test ='';
-					for(var j = 0; j < absTimeValues.length; j++){
+					for(var j = 0; j < Object.keys(time_values).length; j++){
 						appendList += '<td>' + sat_values + '</td>';
 					}
 					appendList += '</tr>';
@@ -468,7 +486,7 @@ var AnalysisInspector = Backbone.View.extend({
 		var modal = document.getElementById('myModal');
 		modal.style.display = "none";
 		epochLists = [];
-		console.log(time_values);
+		//console.log(time_values);
 
 	},
 	saveIntermTable: function(){
