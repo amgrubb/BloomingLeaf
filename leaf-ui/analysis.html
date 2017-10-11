@@ -73,16 +73,25 @@
         	<input id="currentPage" type="hidden" value="">
       		<div style="display: inline-block;">
 	      		<input id="requiredState" type="text" placeholder="Digit desired page" style="width: 180px; padding: 3px;"/>
-	      		<button onclick="goToState()" style="float:right; padding: 2px;">Go</button>
+	      		<button class="inspector-btn" onclick="goToState()">Go</button>
 			</div>
-				
+        <br>
 	        <div id="pagination" class="pagination" style="display:inline-block;">
 				
 			</div>
+			
+        <br>			
         <label>Filters</label>
         	   <input id="conflictFl" class="filter_checkbox" type="checkbox" onclick="add_filter()"><font color="white"> Remove conflicts</font><br>
         	   <input id="ttFl" class="filter_checkbox" type="checkbox" onclick="add_filter()"><font color="white"> Remove (T,T)</font><br>
+        <br>
+        <label>Actions</label>
+        	      		<button class="inspector-btn" onclick="save_current_state()">Save</button>
+        	      		<button class="inspector-btn" onclick="generate_next_states()">Explore Next States</button>
+        	      		<button class="inspector-btn" onclick="window.close();">Close</button>
         </div>
+
+        
 
         <div id="paper">
         </div>
