@@ -1586,3 +1586,11 @@ window.onclick = function(event) {
         modal.style.display = "none";
     }
 }
+
+//Get state from popup analysis and save in the current state
+function get_popup_currentValue(popupState){
+	console.log("Child current state:" + JSON.stringify(popupState));
+	console.log("Parent current analysis:" + JSON.stringify(global_originalAnalysis));
+	console.log("Parent current analysis:" + JSON.stringify(exploreAnalysisCurrentState));
+	
+}

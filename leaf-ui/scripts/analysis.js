@@ -1,12 +1,12 @@
 //Get necessary variables from the main page
 var document = jQuery.extend({}, window.opener.document);
 var graph = new joint.dia.Graph();
-console.log(JSON.stringify(window.opener.global_analysisResult));
 var paper;
 var paperScroller;
 var originalResults = jQuery.extend({}, window.opener.global_analysisResult);
 var analysisResult;
 var elements = [];
+var currentState;
 
 	paper = new joint.dia.Paper({
 	    width: 1200,
@@ -80,7 +80,10 @@ function renderNavigationSidebar(currentPage = 0){
 function updateNodesValues(currentPage, step = 0){
 	if(currentPage == "")
 		currentPage = 0;
-	
+
+	//Set the currentState variable so it can be sent back to the original path
+	currentState = analysisResult.allSolution[currentPage];
+
 	var cell;
 	var value;
 	for(var i = 0; i < elements.length; i++){
@@ -267,3 +270,17 @@ function add_filter(){
 	
 	renderNavigationSidebar();
 }
+
+//This function should get the current state in the screen and save in the original path
+function save_current_state(){
+	window.opener.get_popup_currentValue(currentState);
+}
+
+//This function should get the current state and generate a new window with the next possible states
+function generate_next_states(){
+	
+}
+
+
+
+

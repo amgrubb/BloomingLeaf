@@ -1,4 +1,5 @@
-
+var global_originalAnalysis = {};
+var exploreAnalysisCurrentState = 0;
 var global_analysisResult = {};
 
 function backendComm(js_object){
@@ -22,7 +23,7 @@ function backendComm(js_object){
 			* Print the input to the console.
 			*/
 			console.log(JSON.stringify(js_object));
-
+			global_analysisResult.currentState = js_object.analysis.currentState;
 		//backend script called
 		var pathToCGI = "./cgi-bin/backendCom.cgi";
 		/**
@@ -36,8 +37,10 @@ function backendComm(js_object){
 			data:JSON.stringify(js_object),
 			success: function(response){
 				if(js_object.analysis.action=="allNextStates"){
+					exploreAnalysisCurrentState = js_object.analysis.currentState.split("|")[0];
 					executeJava(true);
 				}else{
+					global_originalAnalysis = js_object;
 					executeJava(false);
 				}
 			}
