@@ -29,6 +29,8 @@ function getDynamics(){
 	    
 	    if (isNaN(parseInt(initValue))){
 			initValue = satValueDict[initValue];		 
+		}else{
+			initValue = "0000";
 		}
 		
 
