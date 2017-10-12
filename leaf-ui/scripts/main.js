@@ -47,7 +47,7 @@ var satValueDict = {
 
 // Mode used specify layout and functionality of toolbars
 mode = "Modelling";		// 'Analysis' or 'Modelling'
-linkMode = "Relationships";	// 'Relationships' or 'Constraints'
+linkMode = "View";	// 'Relationships' or 'Constraints'
 
 graph = new joint.dia.Graph();
 
@@ -159,17 +159,17 @@ $('#symbolic-btn').on('click', function(){
 
 // Set links or constraints
 function setLinks(mode){
-	if(mode == "Relationships"){
+	if(mode == "View"){
 		linkMode = "Constraints";
-		$('#symbolic-btn').html("Model Relationships");
+		$('#symbolic-btn').html("Model View");
 
 		var restoredLinks = graph.intensionConstraints;
 		paper.options.defaultLink.attributes.labels[0].attrs.text.text = " constraint ";
 		paper.options.defaultLink.attr(".marker-target/d", 'M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5');
 
 	}else if (mode == "Constraints"){
-		linkMode = "Relationships";
-		$('#symbolic-btn').html("Model Constraints");
+		linkMode = "View";
+		$('#symbolic-btn').html("Model View");
 
 		var restoredLinks = graph.links;
 		paper.options.defaultLink.attributes.labels[0].attrs.text.text = "and";
@@ -188,7 +188,7 @@ function setLinks(mode){
 // Save links or constraints
 function saveLinks(mode){
 	// Hide all relationships that are not suppose to be dispalyed
-	if(mode == "Relationships"){
+	if(mode == "View"){
 		var links = graph.getLinks();
 		graph.links = [];
 		links.forEach(function(link){
@@ -271,12 +271,16 @@ $('#cycledetect-btn').on('click', function(e){
 	var js_links = {};
 	js_object.analysis = getAnalysisValues(analysis);
 	jslinks = getLinks();
+
 	if(jslinks.length == 0){
 		swal("No cycle in the graph", "", "success");
 	}
 	else{
 		var verticies = js_object.analysis.elementList;
 		var links = jslinks;
+		console.log(verticies)
+		console.log(graph.getElements());
+		console.log(links);
 		//If there is no cycle, leave the color the way it was
 		if (cycleCheck(links, verticies) == false){
 			swal("No cycle in the graph", "", "success");
@@ -834,7 +838,7 @@ graph.on("add", function(cell){
 			cell.prop("linktype", "actorlink");
 
 			// Unable to model constraints for actors
-			if(linkMode == "Relationships"){
+			if(linkMode == "View"){
 				cell.label(0, {attrs: {text: {text: "is-a"}}});
 			}else if(linkMode == "Constraints"){
 				cell.label(0, {attrs: {text: {text: "error"}}});
@@ -930,7 +934,7 @@ paper.on("link:options", function(evt, cell){
 	linkInspector.clear();
 	constrainsInspector.clear();
 	elementInspector.clear();
-	if (linkMode == "Relationships"){
+	if (linkMode == "View"){
 		linkInspector.render(cell);
 	}else if (linkMode == "Constraints"){
 		constrainsInspector.render(cell);
@@ -1391,7 +1395,7 @@ function generateLeafFile(){
 	var savedLinks = [];
 	var savedConstraints = [];
 
-	if (linkMode == "Relationships"){
+	if (linkMode == "View"){
 		savedConstraints = graph.intensionConstraints;
 		var links = graph.getLinks();
 	    links.forEach(function(link){
@@ -1582,7 +1586,11 @@ function generateLeafFile(){
 // When the user clicks anywhere outside of the a pop up, close it
 window.onclick = function(event) {
 	var modal = document.getElementById('myModal');
-    if (event.target == modal) {
-        modal.style.display = "none";
-    }
+	var intermT = document.getElementById('intermediateTable');
+  if (event.target == modal) {
+  	modal.style.display = "none";
+  }
+	if(event.target == intermT){
+		intermT.style.display = "none";
+	}
 }

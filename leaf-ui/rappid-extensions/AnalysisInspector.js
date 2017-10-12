@@ -1,5 +1,6 @@
 var epochLists = [];
 var num = 0;
+var time_values = {};
 var AnalysisInspector = Backbone.View.extend({
 
 	className: 'analysis-inspector',
@@ -27,6 +28,8 @@ var AnalysisInspector = Backbone.View.extend({
 		'<br>',
 		'<hr>',
 		'<button id="btn-view-assignment" class="analysis-btns inspector-btn sub-label green-btn">View List of Assignments</button>',
+		'<button id="btn-view-intermediate" class="analysis-btns inspector-btn sub-label green-btn">View Intermediate Values</button>',
+
 		// This is the modal box of assignments
 		'<div id="myModal" class="modal">',
 		  '<div class="modal-content">',
@@ -44,26 +47,27 @@ var AnalysisInspector = Backbone.View.extend({
 		      	    '<th>Action</th>',
 		      	  '</tr>',
 		      	'</table>',
-				'<div class=absRelationship>',
-					'<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Absolute Relationship Assignment</h3>',
-						'<table id="link-list" class="abs-table">',
-							'<tr>',
-								'<th>Link Type</th>',
-								'<th>Source Node name</th>',
-								'<th>Dest Node name</th>',
-								'<th>Assigned Time</th>',
-								'<th>Action</th>',
-							'</tr>',
-						'</table>',
+					'<div class=absRelationship>',
+						'<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Absolute Relationship Assignment</h3>',
+							'<table id="link-list" class="abs-table">',
+								'<tr>',
+									'<th>Link Type</th>',
+									'<th>Source Node name</th>',
+									'<th>Dest Node name</th>',
+									'<th>Assigned Time</th>',
+									'<th>Action</th>',
+								'</tr>',
+							'</table>',
 					'</div>',
 					'<div class=relIntetion>',
 						'<div class=headings>',
 							'<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Relative Intention Assignments',
 								'<div class="addIntetion" style="display:inline">',
 										'<i class="fa fa-plus" id="addIntent" style="font-size:30px; float:right; margin-right:20px;"></i>',
-								'<div>',
+								'</div>',
 							'</h3>',
 						'</div>',
+						'<div>',
 								'<table id="rel-intention-assignents" class="rel-intent-table">',
 								 '<tr>',
 								 	'<th>Epoch Boundary Name 1</th>',
@@ -72,13 +76,42 @@ var AnalysisInspector = Backbone.View.extend({
 									'<th></th>',
 								 '</tr>',
 								 '</table>',
-					'</div>',
-		    '</div>',
-		    '<div class="modal-footer">',
-		    	'<button id="btn-save-assignment" class="analysis-btns inspector-btn sub-label green-btn" style="border-radius:40px;">Save</button>',
+						'</div>',
 		    '</div>',
 		  '</div>',
-
+			'<div class="modal-footer" style="margin-top: 10px;">',
+				'<button id="btn-save-assignment" class="analysis-btns inspector-btn sub-label green-btn" style="border-radius:40px;">Save</button>',
+			'</div>',
+		'</div>',
+		'</div>',
+		'<div id="intermediateTable" class="intermT">',
+			'<div class="intermContent">',
+				'<div class="intermHeader">',
+					'<span class="closeIntermT">&times;</span>',
+					'<h2>Intermediate Values Table</h2>',
+				'</div>',
+				'<div class="intermBody">',
+						'<table id="interm-list" class="interm-table">',
+							'<thead id = "header">',
+								'<th style="width:110px">   		 </th>',
+								'<th>  Initial Value  </th>',
+							'</thead>',
+							'<tr id="intentionRows">',
+							'<th>',
+									'<div class="divisionLine"></div>',
+									'<div class="intentionPlace"><b>Intention</b></div>',
+									'<div class="timePlace"><b>Timeline</b></div>',
+									'<div class="outerdivslant borderdraw2">',
+									'</div>',
+									'<div class = "innerdivslant borderdraw2">',
+									'</div>',
+								'</th>',
+								'<th>0</th>',
+							'</tr>',
+					'</table>',
+					'<button id="btn-save-intermT" class="analysis-btns inspector-btn sub-label green-btn" style="border-radius:40px;">Save</button>',
+				'</div>',
+			'</div>',
 		'</div>',
 		'<br>',
 		'<hr>',
@@ -88,12 +121,15 @@ var AnalysisInspector = Backbone.View.extend({
 
 	events: {
 		'click #btn-view-assignment': 'loadModalBox',
+		'click #btn-view-intermediate': 'loadIntermediateValues',
 		'click .close': 'dismissModalBox',
+		'click .closeIntermT':'dismissIntermTable',
 		'click .unassign-btn': 'unassignValue',
 		'click #btn-save-assignment': 'saveAssignment',
 		'click #btn-single-path': 'singlePath',
 		'click #btn-all-next-state': 'getAllNextStates',
 		'click .addIntetion' : 'addnewIntention',
+		'click #btn-save-intermT' : 'saveIntermTable',
 	},
 
 	render: function(analysisFunctions) {
@@ -252,11 +288,121 @@ var AnalysisInspector = Backbone.View.extend({
 		num+=1;
 
 	},
+	/*load valus for intermediate table dialog*/
+	loadIntermediateValues: function(e){
+		$('#interm-list').find("tr:gt(1)").remove();
+		$('#header').find("th:gt(1)").remove();
+		$('#intentionRows').find("th:gt(1)").remove();
+		var intermTDialog = document.getElementById('intermediateTable');
+		intermTDialog.style.display = "block";
+		var elements = graph.getElements();
+		var intermTable = document.querySelector('.interm-table');
+		var absValues = document.getElementById('abs-time-pts').value;
+		var absTimeValues;
+		if(absValues != ""){
+			absTimeValues = document.getElementById('abs-time-pts').value.split(" ")
+			.map(function(i){
+				if(i!=""){
+					return parseInt(i, 10);
+				}
+			});
+			absTimeValues.sort(function(a, b){return a-b});
+			var headers = document.getElementById('header');
+			var rows = headers.querySelector('tr');
+			var intentRows = document.getElementById('intentionRows')
+			for(var i = 0; i < absTimeValues.length; i++){
+				console.log(i);
+
+				if(!(absTimeValues[i] in time_values)){
+					time_values[absTimeValues[i]] = [];
+					time_values[absTimeValues[i]].push("Absolute");
+				}
+				else if(!(time_values[absTimeValues[i]].includes('Absolute'))){
+					time_values[absTimeValues[i]].push('Absolute');
+				}
+					//console.log(time_values)
+
+			}
+		}
+		else{
+			absTimeValues = [];
+		}
+		Object.keys(time_values).forEach(function(key){
+			console.log(time_values[key]);
+			var th = document.createElement('th');
+			var thint = document.createElement('th');
+
+			if (time_values[key].length == 1){
+				th.innerHTML = time_values[key][0];
+				thint.innerHTML = key;
+				rows.appendChild(th);
+				intentRows.appendChild(thint);
+			}
+		})
+
+		//console.log(time_values);
+		/*trs.insertCell(-1);
+		console.log(trs);
+		console.log(absTimeValues);
+		$('#interm-list tr').append('<th>test</th>');*/
+		var sat_values = '<select><option selected>...</option>';
+		var sat_valueLists = ['None (T, T)', 'Satisfied (FS, T)','Partially Satisfied (PS, T)',
+		'Denied (T, FD)', 'Partially Denied (T, PD)']
+		for(var i = 0; i < sat_valueLists.length; i++){
+			var value = '<option>' + sat_valueLists[i] + '</option>';
+			sat_values += value
+		}
+		sat_values += '</select>';
+		console.log(elements.length);
+		for (var i = 0; i < elements.length; i++){
+			var cellView = elements[i].findView(paper);
+			//console.log(elements[i]);
+			var cell = cellView.model;
+			var initvalue = cell.attr('.satvalue').text;
+			var name = cell.attr('.name').text;
+			//console.log("initial value : " + initvalue);
+			//Check if initial value is empty, if so, add (T,T) as a value
+			if(time_values.length == 0){
+				if  (initvalue.trim() == ""){
+					$('#interm-list').append('<tr><td>' + name + '</td><td>(T,T)</td></tr>');
+				}
+				else{
+					$('#interm-list').append('<tr><td>' + name + '</td><td>' + initvalue +'</td></tr>');
+				}
+			}
+			else{
+				if  (initvalue.trim() == ""){
+					//$('#interm-list').append('<tr><td>' + name + '</td><td>(T,T)</td></tr>');
+					var appendList = '<tr><td>' + name + '</td><td>(T,T)</td>';
+					for(var j = 0; j < Object.keys(time_values).length; j++){
+						appendList += '<td>' + sat_values + '</td>';
+					}
+					appendList += '</tr>';
+					$('#interm-list').append(appendList);
+				}
+				else{
+					console.log(Object.keys(time_values).length);
+					var appendList = '<tr><td>' + name + '</td><td>'+ initvalue +'</td>';
+					var test ='';
+					for(var j = 0; j < Object.keys(time_values).length; j++){
+						appendList += '<td>' + sat_values + '</td>';
+					}
+					appendList += '</tr>';
+					$('#interm-list').append(appendList);
+				}
+			}
+		}
+	},
 	// Dismiss modal box
 	dismissModalBox: function(e){
 		var modal = document.getElementById('myModal');
 		modal.style.display = "none";
 		epochLists = [];
+	},
+	dismissIntermTable: function(e){
+		var intermT = document.getElementById('intermediateTable');
+		intermT.style.display = "none";
+		//$('.interm-table').find("tr:gt(0)").remove();
 	},
 
 	// Trigger when unassign button is pressed. Change the assigned time of the node/link in the same row to none
@@ -278,6 +424,17 @@ var AnalysisInspector = Backbone.View.extend({
 			if (func_value != 'UD'){
 				var cell = graph.getCell(id);
 				cell.attr('.assigned_time')[0] = new_time;
+				if(new_time.trim() != ""){
+					if(!(new_time in time_values) ){
+						time_values[new_time] = [];
+						time_values[new_time].push('Absolute Intentions')
+					}
+					else if(!(time_values[new_time].includes('Absolute Intentions'))){
+						time_values[new_time].push('Absolute Intentions');
+					}
+				}
+				console.log(new_time=="");
+
 			}
 			// If func is UD, extract the index i from id, and update i-th assigned time of the node
 			else {
@@ -285,6 +442,17 @@ var AnalysisInspector = Backbone.View.extend({
 				id = id.substring(0, id.length - 2);
 				var cell = graph.getCell(id);
 				cell.attr('.assigned_time')[index] = new_time;
+				console.log(new_time=="");
+				if(new_time.trim() != ""){
+					if(!(new_time in time_values) ){
+						time_values[new_time] = [];
+						time_values[new_time].push('Absolute Intentions')
+					}
+					else if(!(time_values[new_time].includes('Absolute Intentions'))){
+						time_values[new_time].push('Absolute Intentions');
+					}
+				}
+
 			}
 		});
 
@@ -301,6 +469,15 @@ var AnalysisInspector = Backbone.View.extend({
 					break;
 				}
 			}
+			if(new_time.trim() != ""){
+				if(!(new_time in time_values) ){
+					time_values[new_time] = [];
+					time_values[new_time].push('Absolute Relationship')
+				}
+				else if(!(time_values[new_time].includes('Absolute Relationship'))){
+					time_values[new_time].push('Absolute Relationship');
+				}
+			}
 
 			link.attr('.assigned_time')[0] = new_time;
 
@@ -309,7 +486,11 @@ var AnalysisInspector = Backbone.View.extend({
 		var modal = document.getElementById('myModal');
 		modal.style.display = "none";
 		epochLists = [];
+		//console.log(time_values);
 
+	},
+	saveIntermTable: function(){
+		this.dismissIntermTable();
 	},
 	saveElementsInGlobalVariable: function(){
 		var elements = [];
