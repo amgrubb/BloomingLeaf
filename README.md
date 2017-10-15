@@ -23,7 +23,11 @@ Tool                  | Description
 --------------------- | -----------
 [JointJS (Rappid)]               | JavaScript Diagramming Library
 [JaCoP]              | Java Constraint Programming (JaCoP) solver
+[SweetAlert]        | Javascript Library for Popup customization
+[ChartJS]           | Javascript Library for creating charts
 
 [JointJS (Rappid)]: https://github.com/clientIO/joint
 [JaCoP]: https://github.com/radsz/jacop
+[SweetAlert] : https://sweetalert.js.org/
+[ChartJS]    : http://www.chartjs.org/
 
