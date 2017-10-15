@@ -2,14 +2,14 @@ function InputConstraint(constraintType, constraintSrcID, constraintSrcEB, absol
 	this.constraintType = constraintType;  	// "<" "=" "A"
 	this.constraintSrcID = constraintSrcID;
 	this.constraintSrcEB = constraintSrcEB;		// "REL" for relationships
-	this.absoluteValue = absoluteValue;			// If "A" integer value
+	this.absoluteValue = absoluteValue;			// If "A" integer value else -1
 	this.constraintDestID = constraintDestID;
 	this.constraintDestEB = constraintDestEB;		// "REL" for relationships
 }
 
 function getConstraints(){
 	var constraints = [];
-	
+
 	var links = graph.intensionConstraints;
 	if(links != null){
 		for (var i = 0; i < links.length; i++){
@@ -24,7 +24,7 @@ function getConstraints(){
 					type,
 					source,
 					sourceVar,
-					null,
+					null,		//TODO: The integer value of the absolute value of intenetion constraints must be added.
 					target,
 					targetVar);
 
@@ -33,5 +33,5 @@ function getConstraints(){
 	}
 
 	return constraints;
-	
+
 }
