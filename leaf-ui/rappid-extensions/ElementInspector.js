@@ -346,7 +346,7 @@ var ElementInspector = Backbone.View.extend({
     else if ($.inArray(functionType, funct_with_sat_value) > -1){
 	 //Clear marked Values
 	  var cell = this._cellView.model;
-	  cell.attr(".constraints/markedvalue", "0");
+	  delete cell.attr(".constraints/markedvalue");
 	  
   	  this.showFunctionSatValue(null);
       this.$('#user-constraints').hide();
@@ -508,15 +508,11 @@ var ElementInspector = Backbone.View.extend({
     var cell = this._cellView.model;
     var text = this.$('.function-type').val();
     var initVal = satvalues[this.$('#init-sat-value').val()];
-    var val;
+    var val = satvalues[this.$('#markedValue').val()];
+    
     if(cell.attributes.attrs['.constraints']){
-        val = cell.attributes.attrs['.constraints'].markedvalue;
-    }else{
-    	val = this.$('#markedValue').val();
+        cell.attributes.attrs['.constraints'].markedvalue = val;
     }
-
-    /// this.$('.markedValue') = val;
-
     // Rerender chart canvas
     var data = this.constraintsObject.chartData;
     var context = $("#chart").get(0).getContext("2d");
