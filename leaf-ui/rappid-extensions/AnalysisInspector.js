@@ -20,7 +20,7 @@ var AnalysisInspector = Backbone.View.extend({
 		'</select>',
 		'<br>',
 		'<label class="sub-label">Num Relative Time Points</label>',
-		'<input id="num-rel-time" class="sub-label" type="number" min="0" max="20" step="1" value="0"/>',
+		'<input id="num-rel-time" class="sub-label" type="number" min="0" max="20" step="1" value="1"/>',
 		'<br>',
 		'<label class="sub-label">Absolute Time Points</label>',
 		'<font size="2">(e.g. 5 8 22)</font>',
