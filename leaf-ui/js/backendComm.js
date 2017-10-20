@@ -75,26 +75,29 @@ function getFileResults(isGetNextSteps){
 		type: "get",
 		success: function(response){
 			analysisResults = JSON.parse(response['data']);
-
-			/**
-				* Print the response data to the console.
-			*/
-				console.log(JSON.stringify(JSON.parse(response['data'])));
-
-			global_analysisResult = analysisResults;
-			if (analysisResults == ""){
-				alert("Error while reading the resonse file from server. This can be due an error in executing java application.")
-				return
-			}
-			if(isGetNextSteps){
-				open_analysis_viewer();
+			var errorMsg = JSON.parse(response['errorMessage']);
+			if(!errorMsg){
+				alert(errorMsg);
 			}else{
-				loadAnalysis(analysisResults);
-				var currentValueLimit = parseInt(sliderObject.sliderElement.noUiSlider.get());
-				var sliderMax = currentValueLimit + currentAnalysis.timeScale;
-				sliderObject.sliderElement.noUiSlider.set(sliderMax);
-			}
+				/**
+					* Print the response data to the console.
+				*/
+					console.log(JSON.stringify(JSON.parse(response['data'])));
 
+				global_analysisResult = analysisResults;
+				if (analysisResults == ""){
+					alert("Error while reading the resonse file from server. This can be due an error in executing java application.")
+					return
+				}
+				if(isGetNextSteps){
+					open_analysis_viewer();
+				}else{
+					loadAnalysis(analysisResults);
+					var currentValueLimit = parseInt(sliderObject.sliderElement.noUiSlider.get());
+					var sliderMax = currentValueLimit + currentAnalysis.timeScale;
+					sliderObject.sliderElement.noUiSlider.set(sliderMax);
+				}
+			}
 		}
 	})
 	.fail(function(){

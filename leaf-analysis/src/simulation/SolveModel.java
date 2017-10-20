@@ -42,8 +42,21 @@ public class SolveModel {
 			solver.solveModel();
 			createOutputFile(solver, filePath + outputFile);
 	
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			throw new RuntimeException(e.getMessage());
+		} catch (Exception e) {
+			try {
+				File file;
+				file = new File(filePath + outputFile);
+				if (!file.exists()) {
+					file.createNewFile();
+				}
+				PrintWriter printFile = new PrintWriter(file);
+				printFile.printf("{ \"errorMessage\" : \"" + e.getMessage() + "\" }");
+				printFile.close();
+			} catch (Exception f) {
+				throw new RuntimeException("Error in createOutputFile: " + f.getMessage());
+			}
 		} 
 	}
 

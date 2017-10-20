@@ -96,7 +96,9 @@ public class TroposCSPAlgorithm {
 	 * Constructor: Creates the CSP problem from the ModelSpec.
 	 * @param spec	input model
 	 */
-	public TroposCSPAlgorithm(ModelSpec spec) {
+	public TroposCSPAlgorithm(ModelSpec spec) throws Exception {
+		//if (DEBUG)
+		//	throw new Exception("singleNextStates requested: testing of this scenario required");
     	if (DEBUG)
 			System.out.println("Starting: TroposCSPAlgorithm");
 		// Initialise Store
@@ -152,7 +154,8 @@ public class TroposCSPAlgorithm {
     		searchAll = false;
     		problemType = SearchType.NEXT_STATE;
     		System.err.println("singleNextStates requested: testing of this scenario required");
-    		break;
+    		throw new Exception("singleNextStates requested: testing of this scenario required");
+    		//break;
     	case "allCurrentState":
     		searchAll = true;
     		problemType = SearchType.CURRENT_STATE;
