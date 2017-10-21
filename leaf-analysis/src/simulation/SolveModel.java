@@ -21,10 +21,7 @@ public class SolveModel {
 
 	/**
 	 * This method is responsible to execute all steps to generate the analysis file.
-	 * @param args
-	 * As parameters it receives the name of the file to be created.
-	 * Note: create a parameter to decide if it will execute a new analysis or use an existent one.
-	 * 		Alicia->Marcel: What does this note mean?
+	 * @param args Default command line arguments.
 	 */
 	public static void main(String[] args) {
 
@@ -43,6 +40,20 @@ public class SolveModel {
 			createOutputFile(solver, filePath + outputFile);
 	
 		} catch (RuntimeException e) {
+			try {
+				File file;
+				file = new File(filePath + outputFile);
+				if (!file.exists()) {
+					file.createNewFile();
+				}
+				PrintWriter printFile = new PrintWriter(file);
+				printFile.printf("{ \"errorMessage\" : \"RuntimeException: ");
+				e.printStackTrace(printFile);
+				printFile.printf("\" }");
+				printFile.close();
+			} catch (Exception f) {
+				throw new RuntimeException("Error while writing ErrorMessage: " + f.getMessage());
+			}
 			throw new RuntimeException(e.getMessage());
 		} catch (Exception e) {
 			try {
@@ -52,10 +63,12 @@ public class SolveModel {
 					file.createNewFile();
 				}
 				PrintWriter printFile = new PrintWriter(file);
-				printFile.printf("{ \"errorMessage\" : \"" + e.getMessage() + "\" }");
+				printFile.printf("{ \"errorMessage\" : \"Exception: ");
+				e.printStackTrace(printFile);
+				printFile.printf("\" }");
 				printFile.close();
 			} catch (Exception f) {
-				throw new RuntimeException("Error in createOutputFile: " + f.getMessage());
+				throw new RuntimeException("Error while writing ErrorMessage: " + f.getMessage());
 			}
 		} 
 	}
