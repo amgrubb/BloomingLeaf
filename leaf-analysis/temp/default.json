@@ -3,11 +3,15 @@
     "action": "singlePath",
     "maxAbsTime": "100",
     "conflictLevel": "S",
-    "numRelTime": "4",
-    "absTimePts": null,
+    "numRelTime": "3",
+    "absTimePts": "1 2",
     "currentState": "0",
-    "initialAssignedEpoch": "0",
-    "initialValueTimePoints": "0",
+    "initialAssignedEpoch": [
+      "0"
+    ],
+    "initialValueTimePoints": [
+      "0"
+    ],
     "elementList": [
       {
         "id": "0000",
@@ -18,13 +22,13 @@
       {
         "id": "0001",
         "status": [
-          "0000"
+          "1100"
         ]
       },
       {
         "id": "0002",
         "status": [
-          "0000"
+          "0011"
         ]
       }
     ]
@@ -43,26 +47,26 @@
       {
         "nodeActorID": "-",
         "nodeID": "0001",
-        "nodeType": "G",
-        "nodeName": "Goal_1"
+        "nodeType": "T",
+        "nodeName": "Task_1"
       },
       {
         "nodeActorID": "-",
         "nodeID": "0002",
-        "nodeType": "G",
-        "nodeName": "Goal_2"
+        "nodeType": "T",
+        "nodeName": "Task_3"
       }
     ],
     "links": [
       {
-        "linkType": "AND",
+        "linkType": "++",
         "linkSrcID": "0001",
         "linkDestID": "0000",
         "postType": null,
         "markedValue": null
       },
       {
-        "linkType": "AND",
+        "linkType": "++",
         "linkSrcID": "0002",
         "linkDestID": "0000",
         "postType": null,
@@ -78,14 +82,14 @@
       },
       {
         "intentionID": "0001",
-        "dynamicType": "NT",
-        "markedValue": "0000",
+        "dynamicType": "C",
+        "markedValue": "1100",
         "line": null
       },
       {
         "intentionID": "0002",
-        "dynamicType": "NT",
-        "markedValue": "0000",
+        "dynamicType": "C",
+        "markedValue": "0011",
         "line": null
       }
     ],

@@ -219,7 +219,7 @@ public class TroposCSPAlgorithm {
 				this.functionEBCollection, this.spec.getInitialValueTimePoints()[lengthOfInitial - 1], lengthOfInitial - 1, this.minTimePoint);
 
 		}else if (problemType == SearchType.CURRENT_STATE)
-    		System.out.println("\n ERROR/TODO What happens with the timepoint in current state?");
+			throw new RuntimeException("\n ERROR/TODO What happens with the timepoint in current state?");
     		    	
     	if (DEBUG)
     		System.out.println("\nEnd of Init Procedure");
@@ -627,7 +627,7 @@ public class TroposCSPAlgorithm {
     	// Add relative.
     	for (int i = 0; i < numStochasticTimePoints; i++){
     		if (tCount == this.timePoints.length)
-    			System.out.println("ERROR");
+    			throw new RuntimeException("ERROR: Relative time points could not be added.");
     		IntVar value = new IntVar(store, "TR" + absoluteCounter, maxPreviousTime + 1, maxTime);
 			this.timePoints[tCount] = value;
 			this.unsolvedTimePoints[uCount] = value;
@@ -1535,7 +1535,7 @@ public class TroposCSPAlgorithm {
 		}else if (cType == ContributionType.DMM){			//--D
 			result = new And(new Or(new XeqC(src[1], 0), new XeqC(tgt[2], 1)), new Or(new XeqC(src[0], 0), new XeqC(tgt[3], 1)));
 		}else
-			System.out.println("ERROR: No rule for " + cType.toString() + " link type.");	
+			throw new RuntimeException("ERROR: No rule for " + cType.toString() + " link type.");	
 		if (DEBUG)
 			System.out.println("Link: " + result.toString());
 		return result;
@@ -1585,7 +1585,7 @@ public class TroposCSPAlgorithm {
 			result[3] = new XeqC(src[0], 1);
 			result[2] = new XeqC(src[1], 1);
 		}else
-			System.out.println("ERROR: No rule for " + cType.toString() + " link type.");		
+			throw new RuntimeException("ERROR: No rule for " + cType.toString() + " link type.");		
 		return result;
 	}
 	
@@ -1805,12 +1805,14 @@ public class TroposCSPAlgorithm {
             if(!store.consistency()) {
             	Constraint errorConst = constraints.get(i);
             	ArrayList<Var> errorVarList = errorConst.arguments();
-            	for (Var temp : errorVarList) {
-        			System.out.println(temp.id + "::" + temp.dom().toString());
-        		}
-            	System.out.println("Constraint: " + constraints.get(i).toString());
-                System.out.println("have conflicting constraints, not solvable");            
-                return false;
+            	if(DEBUG){
+            		for (Var temp : errorVarList) {
+            			System.out.println(temp.id + "::" + temp.dom().toString());
+            		}
+            		System.out.println("Constraint: " + constraints.get(i).toString());
+            		System.out.println("have conflicting constraints, not solvable");
+            	}
+            	throw new RuntimeException("ERROR: Model not solvable because of conflicting constraints.\n Constraint: " + constraints.get(i).toString());
             }
         }
         
@@ -1825,8 +1827,8 @@ public class TroposCSPAlgorithm {
         
         // Return Solution
         if(!solutionFound){
-			System.out.println("Found Solution = False");
-			return false;
+        	if (DEBUG) System.out.println("Found Solution = False");
+        	throw new RuntimeException("There is no solution to this model. The solver may have reached a timeout.");
 		} else {
 	    	if (DEBUG) System.out.println("Found Solution = True");
 			if (this.searchAll)
