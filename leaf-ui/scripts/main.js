@@ -1035,12 +1035,12 @@ graph.on('change:size', function(cell, size){
 this.graph.on('remove', function(cell, collection, opt) {
    if (cell.isLink()) {
 	   if(cell.prop("link-type") == 'NBT' || cell.prop("link-type") == 'NBD'){
-		
+
 		   //Verify if is a Not both type. If it is remove labels from source and target node
 		   var link = cell;
 		   var source = link.prop("source");
 		   var target = link.prop("target");
-	
+
 		   for(var i = 0; i < graph.getElements().length; i++ ){
 			   if(graph.getElements()[i].prop("id") == source["id"]){
 				   source = graph.getElements()[i];
@@ -1049,7 +1049,7 @@ this.graph.on('remove', function(cell, collection, opt) {
 				   target = graph.getElements()[i];
 			   }
 		   }
-	
+
 		   //verify if node have any other link NBD or NBT
 	 	  var sourceNBLink = function(){
 	 		  var localLinks = graph.getLinks();
@@ -1062,7 +1062,7 @@ this.graph.on('remove', function(cell, collection, opt) {
 	 		  }
 	 		  return false;
 	 	  }
-	
+
 	 	  //verify if target have any other link NBD or NBT
 	 	  var targetNBLink = function(){
 	 		  var localLinks = graph.getLinks();
@@ -1075,7 +1075,7 @@ this.graph.on('remove', function(cell, collection, opt) {
 	 		  }
 	 		  return false;
 	 	  }
-	
+
 	 	  //Verify if it is possible to remove the NB tag from source and target
 	 	  if(!sourceNBLink()){
 	 		  source.attr(".funcvalue/text", "");
@@ -1083,7 +1083,7 @@ this.graph.on('remove', function(cell, collection, opt) {
 	 	  if(!targetNBLink()){
 		          target.attr(".funcvalue/text", "");
 	 	  }
- 	   
+
 	  }
    }
 });
@@ -1582,6 +1582,9 @@ function generateLeafFile(){
 	//console.log(datastring);
 	return datastring
 }
+exports.mul = function(i, j) {
+ return i * j;
+};
 
 // ----------------------------------------------------------------- //
 // General javascript for user interaction

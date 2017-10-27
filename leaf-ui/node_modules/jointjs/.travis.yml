@@ -1,0 +1,13 @@
+language: node_js
+node_js:
+  - "6"
+  - "4"
+
+before_install:
+  - npm install -g grunt-cli
+  - npm install -g bower
+
+install: npm install
+
+before_script:
+  - grunt install
