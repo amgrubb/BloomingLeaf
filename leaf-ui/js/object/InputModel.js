@@ -15,17 +15,18 @@ function FrontendModel(
 
 //This method is responsible to get all data from the UI and add in to a object to be sent to backend
 function getFrontendModel(isSinglePath = true){
-	
+
 	//VERIFY IF THE MODEL IS CORRECT FOR ANALYSIS
 	//In SINGLE PATH analysis, the initial values must not be conflictant
+	console.log("Inside Input Model : "  + isSinglePath)
 	if(isSinglePath)
 		checkConflictValues();
-	
-	
+
+
 	//GETTING DATA FROM UI
 
 	/** ACTORS
-	 * Calls InputActors.getActorsList(); 
+	 * Calls InputActors.getActorsList();
 	 * returns InputActor[] actors;
 	 */
 	var actors = getActors();
@@ -33,7 +34,7 @@ function getFrontendModel(isSinglePath = true){
 	/** INTENTIONAL ELEMENTS
 	 * Calls InputIntentions.getIntentionsList();
 	 * returns InputIntention[] intentions
-	 */	
+	 */
 	var intentions = getIntentitonalElements();
 
 	/**
@@ -49,14 +50,14 @@ function getFrontendModel(isSinglePath = true){
 	 * returns InputDynamic[] dynamics
 	 */
 	var dynamics = getDynamics();
-	
+
 	/**
 	 * CONSTRAINT
 	 * calls InputConstraint
 	 * returns InputConstraint[] constraints
 	 */
 	var constraints = getConstraints();
-	
+
 	var frontendModel = new FrontendModel(
 			actors,
 			intentions,

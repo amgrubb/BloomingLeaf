@@ -57,6 +57,8 @@ graph.linksNum;
 graph.constraintsNum;
 graph.allElements = [];
 graph.elementsBeforeAnalysis = [];
+graph.constraintValues = [];//store all the graph constraint values to be used
+														// by InputConstraint
 
 var commandManager = new joint.dia.CommandManager({ graph: graph });
 
@@ -152,12 +154,17 @@ if (document.cookie){
 
 // ----------------------------------------------------------------- //
 // Modelling link control
+/*
 $('#symbolic-btn').on('click', function(){
 	saveLinks(linkMode);
 	setLinks(linkMode);
-});
+});*/
 
 // Set links or constraints
+//Setlinks and savelinks may not needed.
+function testMe(){
+	console.log("tested me");
+}
 function setLinks(mode){
 	if(mode == "View"){
 		linkMode = "Constraints";
@@ -181,13 +188,18 @@ function setLinks(mode){
 
 	// render preexisting links in new mode
 	for (var l = 0; l < restoredLinks.length; l++){
+		alert("never gets called")
 		restoredLinks[l].attr('./display', '');
 	}
 }
-
+function testMain(){
+	alert("called in test main");
+}
 // Save links or constraints
 function saveLinks(mode){
+	console.log("called in saved links");
 	// Hide all relationships that are not suppose to be dispalyed
+
 	if(mode == "View"){
 		var links = graph.getLinks();
 		graph.links = [];
@@ -200,15 +212,21 @@ function saveLinks(mode){
 			}else{link.remove();}
 		});
 	}else if (mode == "Constraints"){
+		console.log("called in saved links constraints");
 		var links = graph.getLinks();
 		graph.intensionConstraints = [];
 		links.forEach(function(link){
 			var linkStatus = link.attributes.labels[0].attrs.text.text.replace(/\s/g, '');
+
 			if(!isLinkInvalid(link) && (linkStatus != "constraint") && (linkStatus != "error")){
-				if(!link.attr('./display')){
-					link.attr('./display', 'none');
-					graph.intensionConstraints.push(link);
-				}
+				console.log(linkStatus);
+				console.log(isLinkInvalid(link));
+				console.log(link.attr('./display'));
+				//if(!link.attr('./display')){
+				//	link.attr('./display', 'none');
+				console.log(link);
+				graph.intensionConstraints.push(link);
+				//}
 			}else{link.remove();}
 		});
 	}
@@ -222,8 +240,12 @@ function saveLinks(mode){
 $('#analysis-btn').on('click', function(){
 
 	console.log(linkMode);
-	if (linkMode == "Constraints")
-		$('#symbolic-btn').trigger( "click" );
+	/* Comment these for now.
+	if (linkMode == "View")
+		//$('#symbolic-btn').trigger( "click" );
+		//setLinks(linkMode);
+		testMe();*/
+		//saveLinks(linkMode);
 
 	//Adjust left and right panels
 	elementInspector.clear();
@@ -391,6 +413,7 @@ function isCycle(v, visited, recursiveStack, graphs){
 
 function switchToModellingMode(useInitState){
 	//Reset to initial graph prior to analysis
+
 	if(useInitState){
 		for (var i = 0; i < graph.elementsBeforeAnalysis.length; i++){
 			var value = graph.elementsBeforeAnalysis[i]

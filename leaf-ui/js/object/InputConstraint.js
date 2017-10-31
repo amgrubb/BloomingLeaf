@@ -9,25 +9,30 @@ function InputConstraint(constraintType, constraintSrcID, constraintSrcEB, absol
 
 function getConstraints(){
 	var constraints = [];
-
-	var links = graph.intensionConstraints;
+	console.log(graph.constraintValues);
+	console.log(graph.getLinks());
+	console.log(graph.getElements());
+	var links = graph.constraintValues;//graph.intensionConstraints;
+	console.log(graph.constraintValues.length);
 	if(links != null){
 		for (var i = 0; i < links.length; i++){
+			console.log(links[i]);
 			var c = links[i];
-			var type = c.attributes.labels[0].attrs.text.text.replace(/\s/g, '');
-			var source = c.getSourceElement().attributes.elementid;
-			var target = c.getTargetElement().attributes.elementid;
-			var sourceVar = c.attr('.constraintvar/src');
-			var targetVar = c.attr('.constraintvar/tar');
-
+			var type = c.constraintType;
+			var source = c.constraintSrcID;
+			var target = c.constraintDestID;
+			var absoluteValue = parseInt(c.absoluteValue);
+			var sourceVar = c.constraintSrcEB;
+			var targetVar = c.constraintDestEB;
+			console.log(typeof parseInt(absoluteValue));
 			var constraint = new InputConstraint(
 					type,
 					source,
 					sourceVar,
-					null,		//TODO: The integer value of the absolute value of intenetion constraints must be added.
+					absoluteValue,		//TODO: The integer value of the absolute value of intenetion constraints must be added.
 					target,
 					targetVar);
-
+			console.log(constraint);
 			constraints.push(constraint);
 		};
 	}

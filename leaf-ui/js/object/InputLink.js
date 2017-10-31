@@ -22,7 +22,7 @@ function getLinks(){
 		var linkType = current.label(0).attrs.text.text.toUpperCase()
 		var source = "-";
 		var target = "-";
-		var absValue = -1;		//TODO: Actually get the ABS value, if it exists.
+		var absValue = parseInt(graph.getLinks()[i].attr('.assigned_time')[0]);		//TODO: Actually get the ABS value, if it exists.
 
 		if (current.get("source").id)
 			source = graph.getCell(current.get("source").id).prop("elementid");
