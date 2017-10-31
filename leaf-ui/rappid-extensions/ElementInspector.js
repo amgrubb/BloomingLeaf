@@ -233,14 +233,14 @@ var ElementInspector = Backbone.View.extend({
     // Load initial value
     this.$('.cell-attrs-text').val(cell.attr(".name/text") || '');
     var valueSatDict = {
-        "unknown": "0000",
-        "none": "0000",
-        "satisfied": "0011", 
-        "partiallysatisfied": "0010",
-        "partiallydenied": "0100", 
-        "denied": "1100"
+        "0000":"unknown",
+        "0000":"none",
+        "0011":"satisfied", 
+        "0010":"partiallysatisfied",
+        "0100":"partiallydenied", 
+        "1100":"denied"
     }
-    this.$('#init-sat-value').val(cell.attr(".satvalue/value")).change();
+    this.$('#init-sat-value').val(valueSatDict[cell.attr(".satvalue/value")]).change();
     //this.$('#init-sat-value').val(valueSatDict[cell.attr(".satvalue/value")]).change();
 
     // Turn off repeating by default
@@ -1028,7 +1028,7 @@ var ElementInspector = Backbone.View.extend({
 
     // save cell data
     var funcType = this.$('.function-type').val();
-    cell.attr(".satvalue/value", this.$('#init-sat-value').val());
+    cell.attr(".satvalue/value", satValueDict[this.$('#init-sat-value').val()]);
     // If funcvalue == NB, do not update anything to the cell
     if(cell.attr(".funcvalue/text") == 'NB'){
     }
