@@ -142,7 +142,7 @@ if (document.cookie){
 			break;
 		}
 	}
-
+	console.log(graph.fromJSON(JSON.parse(prevgraph)));
 	if (prevgraph){
 		graph.fromJSON(JSON.parse(prevgraph));
 	}
@@ -220,10 +220,11 @@ function saveLinks(mode){
 
 //Switch to analysis mode
 $('#analysis-btn').on('click', function(){
-
+	syntaxCheck();
 	console.log(linkMode);
+	/*
 	if (linkMode == "Constraints")
-		$('#symbolic-btn').trigger( "click" );
+		$('#symbolic-btn').trigger( "click" );*/
 
 	//Adjust left and right panels
 	elementInspector.clear();
@@ -331,6 +332,35 @@ $('#cycledetect-btn').on('click', function(e){
 	js_object = null;
 	jslinks = null;
 })
+
+function syntaxCheck(){
+	var destSourceMapper = {};
+	var analysis = new InputAnalysis();
+	var links = new InputLink();
+	var js_object = {};
+	var js_links = {};
+	js_object.analysis = getAnalysisValues(analysis);
+	jslinks = getLinks();
+	jslinks.forEach(function(link){
+		console.log(link.linkDestID);
+		console.log(link);
+		if(!(link.linkDestID in destSourceMapper)){
+			destSourceMapper[link.linkDestID] = {};
+			var constraint = link.linkType + link.postType;
+			destSourceMapper[link.linkDestID]["source"] = [link.linkSrcID];
+			destSourceMapper[link.linkDestID]["constraint"] = [link.constraint];
+
+		}
+		else{
+			var constraint = link.linkType + link.postType;
+			destSourceMapper[link.linkDestID]["source"].push(link.linkSrcID);
+			destSourceMapper[link.linkDestID]["constraint"].push(constraint);
+		}
+	})
+	console.log(destSourceMapper);
+	console.log(js_object.analysis);
+	console.log(jslinks);
+}
 
 //Cycle-deteciton algorithm
 // The algorithm is referenced from Detect Cycle in a Directed Graph algorithm
@@ -1035,12 +1065,12 @@ graph.on('change:size', function(cell, size){
 this.graph.on('remove', function(cell, collection, opt) {
    if (cell.isLink()) {
 	   if(cell.prop("link-type") == 'NBT' || cell.prop("link-type") == 'NBD'){
-		
+
 		   //Verify if is a Not both type. If it is remove labels from source and target node
 		   var link = cell;
 		   var source = link.prop("source");
 		   var target = link.prop("target");
-	
+
 		   for(var i = 0; i < graph.getElements().length; i++ ){
 			   if(graph.getElements()[i].prop("id") == source["id"]){
 				   source = graph.getElements()[i];
@@ -1049,7 +1079,7 @@ this.graph.on('remove', function(cell, collection, opt) {
 				   target = graph.getElements()[i];
 			   }
 		   }
-	
+
 		   //verify if node have any other link NBD or NBT
 	 	  var sourceNBLink = function(){
 	 		  var localLinks = graph.getLinks();
@@ -1062,7 +1092,7 @@ this.graph.on('remove', function(cell, collection, opt) {
 	 		  }
 	 		  return false;
 	 	  }
-	
+
 	 	  //verify if target have any other link NBD or NBT
 	 	  var targetNBLink = function(){
 	 		  var localLinks = graph.getLinks();
@@ -1075,7 +1105,7 @@ this.graph.on('remove', function(cell, collection, opt) {
 	 		  }
 	 		  return false;
 	 	  }
-	
+
 	 	  //Verify if it is possible to remove the NB tag from source and target
 	 	  if(!sourceNBLink()){
 	 		  source.attr(".funcvalue/text", "");
@@ -1083,7 +1113,7 @@ this.graph.on('remove', function(cell, collection, opt) {
 	 	  if(!targetNBLink()){
 		          target.attr(".funcvalue/text", "");
 	 	  }
- 	   
+
 	  }
    }
 });

@@ -1,6 +1,9 @@
 var epochLists = [];
 var num = 0;
 var time_values = {};
+var goal_id_mapper = {};
+var constraintID = 0;
+var rx = /Goal_\d+/g; // MATCH goal name Goal_x
 var AnalysisInspector = Backbone.View.extend({
 
 	className: 'analysis-inspector',
@@ -20,7 +23,7 @@ var AnalysisInspector = Backbone.View.extend({
 		'</select>',
 		'<br>',
 		'<label class="sub-label">Num Relative Time Points</label>',
-		'<input id="num-rel-time" class="sub-label" type="number" min="0" max="20" step="1" value="1"/>',
+		'<input id="num-rel-time" class="sub-label" type="number" min="0" max="20" step="1" value="0"/>',
 		'<br>',
 		'<label class="sub-label">Absolute Time Points</label>',
 		'<font size="2">(e.g. 5 8 22)</font>',
@@ -180,7 +183,6 @@ var AnalysisInspector = Backbone.View.extend({
 		}
 
 		//Send data to backend
-		console.log(js_object);
 		backendComm(js_object);
 	},
 	clear: function(e){
@@ -190,6 +192,7 @@ var AnalysisInspector = Backbone.View.extend({
 
 	// Display modal box that has a list of absolute values
 	loadModalBox: function(e){
+		graph.constraintValues = [];
 		var modal = document.getElementById('myModal');
 		// Clear all previous table entries
 		$(".abs-table").find("tr:gt(0)").remove();
@@ -206,7 +209,9 @@ var AnalysisInspector = Backbone.View.extend({
 			var cell = cellView.model;
 			var func = cell.attr('.funcvalue').text;
 			var name = cell.attr('.name').text;
+			goal_id_mapper[name] = cell.attributes.elementid;
 			var assigned_time = cell.attr('.assigned_time');
+			var constraintObj
 			if(func != 'UD' && func != 'D' && func != 'I' && func != 'C' && func != 'R' && func != "" && func != 'NB'){
 				// If no assigned_time in the node, make the default value blank
 				if (!assigned_time){
@@ -214,7 +219,10 @@ var AnalysisInspector = Backbone.View.extend({
 
 				}
 				assigned_time = cell.attr('.assigned_time')[0];
+				var epochObj = {};
+				epochObj[constraintType] = 'A';
 				epochLists.push(name + ': A');
+
 				$('#node-list').append('<tr><td>' + name + ': A' + '</td><td>' + func + '</td>' +
 					'<td><input type="text" name="sth" value="' + assigned_time + '"></td>' + btn_html +
 					'<input type="hidden" name="id" value="' + cell.id + '"> </td> </tr>');
@@ -245,6 +253,7 @@ var AnalysisInspector = Backbone.View.extend({
 					k ++;
 				}
 				for (var j = 0; j < fun_len; j++){
+
 					epochLists.push(name + ': ' + current_something);
 					$('#node-list').append('<tr><td>' + name +': '+ current_something + '</td><td>' + func + '</td>'  +
 						'<td><input type="text" name="sth" value=' +assigned_time[j] + '></td>' + btn_html +
@@ -253,6 +262,7 @@ var AnalysisInspector = Backbone.View.extend({
 				}
 
 			}
+
 		}
 
 		// Get a list of links
@@ -281,11 +291,11 @@ var AnalysisInspector = Backbone.View.extend({
 						'</td><td><input type="text" name="sth" value=' +assigned_time[0] + '></td>' + btn_html +
 						'<input type="hidden" name="id" value="' + link.id + '"> </td> </tr>'+ '</tr>');
 				}
-				console.log(link.id);
 			}
 
 		}
 		num+=1;
+
 
 	},
 	/*load valus for intermediate table dialog*/
@@ -311,7 +321,6 @@ var AnalysisInspector = Backbone.View.extend({
 			var rows = headers.querySelector('tr');
 			var intentRows = document.getElementById('intentionRows')
 			for(var i = 0; i < absTimeValues.length; i++){
-				console.log(i);
 
 				if(!(absTimeValues[i] in time_values)){
 					time_values[absTimeValues[i]] = [];
@@ -328,7 +337,6 @@ var AnalysisInspector = Backbone.View.extend({
 			absTimeValues = [];
 		}
 		Object.keys(time_values).forEach(function(key){
-			console.log(time_values[key]);
 			var th = document.createElement('th');
 			var thint = document.createElement('th');
 
@@ -353,7 +361,6 @@ var AnalysisInspector = Backbone.View.extend({
 			sat_values += value
 		}
 		sat_values += '</select>';
-		console.log(elements.length);
 		for (var i = 0; i < elements.length; i++){
 			var cellView = elements[i].findView(paper);
 			//console.log(elements[i]);
@@ -397,7 +404,11 @@ var AnalysisInspector = Backbone.View.extend({
 	dismissModalBox: function(e){
 		var modal = document.getElementById('myModal');
 		modal.style.display = "none";
+		console.log(epochLists);
+		console.log(graph.constraintValues);
 		epochLists = [];
+		console.log(goal_id_mapper);
+
 	},
 	dismissIntermTable: function(e){
 		var intermT = document.getElementById('intermediateTable');
@@ -412,9 +423,55 @@ var AnalysisInspector = Backbone.View.extend({
 		var assigned_time = row.find('input[type=text]');
 		$(assigned_time).val('');
 	},
+	saveRelativeValues: function(){
+		var epoch1Lists = $('#rel-intention-assignents tr #epoch1List select');
+		var relationshipLists = $('#rel-intention-assignents tr #relationshipLists select');
+		var epoch2Lists = $('#rel-intention-assignents tr #epoch2List select');
+		for(var i = 0; i < epoch1Lists.length; i++){
+			if(epoch1Lists[i].value != null && epoch2Lists[i].value != null){
+				alert("Epochs not null");
+				var extractGoal1 = epoch1Lists[i].value.match(rx);
+				var extractGoal2 = epoch2Lists[i].value.match(rx);
+				var constraintSrcID = goal_id_mapper[extractGoal1];
+				var constraintDestID = goal_id_mapper[extractGoal2];
+				var type = relationshipLists[i].value;
+				if(type == 'eq'){
+					type = '=';
+				}
+				else if (type=='lt') {
+					type = '<';
+				}
+				if(graph.constraintValues.length == 0){
+					graph.constraintValues[0] = {};
+					graph.constraintValues[0]["constraintType"] = type;
+					graph.constraintValues[0]["constraintSrcID"] = constraintSrcID;
+					graph.constraintValues[0]["constraintSrcEB"] = "REL";
+					graph.constraintValues[0]["absoluteValue"] = -1;
+					graph.constraintValues[0]["constraintDestID"] = constraintDestID;
+					graph.constraintValues[0]["constraintDestEB"] = "REL";
+				}
+				else{
+					newConstarint = {};
+					newConstarint['constraintType'] = type;
+					newConstarint['constraintSrcID'] = constraintSrcID;
+					newConstarint['constraintSrcEB'] = "REL";
+					newConstarint['constraintDestID'] = constraintDestID;
+					newConstarint['constraintDestEB'] = "REL";
+					newConstarint['absoluteValue'] = -1;
+					graph.constraintValues.push(newConstarint);
+				}
+		}
+
+			console.log(graph.constraintValues);
+		}
+
+	},
 	// Update all nodes with the updated assigned time
 	// TODO: Check if the times users put in are valid
 	saveAssignment: function(e){
+		console.log(graph.constraintValues);
+
+		this.saveRelativeValues();
 		$.each($('#node-list').find("tr input[type=text]"), function(){
 			var new_time = $(this).val();
 			var row = $(this).closest('tr');
@@ -442,7 +499,7 @@ var AnalysisInspector = Backbone.View.extend({
 				id = id.substring(0, id.length - 2);
 				var cell = graph.getCell(id);
 				cell.attr('.assigned_time')[index] = new_time;
-				console.log(new_time=="");
+				console.log(new_time);
 				if(new_time.trim() != ""){
 					if(!(new_time in time_values) ){
 						time_values[new_time] = [];
@@ -450,6 +507,24 @@ var AnalysisInspector = Backbone.View.extend({
 					}
 					else if(!(time_values[new_time].includes('Absolute Intentions'))){
 						time_values[new_time].push('Absolute Intentions');
+					}
+				}
+				console.log(cell);
+				if(graph.constraintValues.length == 0 && (new_time != null && new_time.length > 0)){
+					graph.constraintValues[0] = {};
+					graph.constraintValues[0]['constraintType'] = "A";
+					graph.constraintValues[0]['constraintSrcID'] = cell.attributes.elementid;
+					console.log(cell.attributes.elementid);
+					graph.constraintValues[0]['absoluteValue'] = new_time;
+				}
+				else{
+					if(new_time != null && new_time.length > 0 ){
+						newConstarint = {};
+						newConstarint['constraintType'] = "A";
+						newConstarint['constraintSrcID'] = cell.attributes.elementid;
+						newConstarint['absoluteValue'] = new_time;
+						console.log(cell.attributes.elementid);
+						graph.constraintValues.push(newConstarint);
 					}
 				}
 
@@ -485,6 +560,8 @@ var AnalysisInspector = Backbone.View.extend({
 		// After that dismiss the box
 		var modal = document.getElementById('myModal');
 		modal.style.display = "none";
+		$("#epoch1List select").val();
+		console.log(graph.constraintValues);
 		epochLists = [];
 		//console.log(time_values);
 
@@ -503,10 +580,7 @@ var AnalysisInspector = Backbone.View.extend({
 		graph.elementsBeforeAnalysis = elements;
 	},
 	addnewIntention: function(){
-		console.log("button clicked for add");
 		var elements = graph.getElements();
-		console.log(elements);
-		console.log(epochLists);
 
 		var epoch1 = '<div class="epochLists" id="epoch1List"><select><option selected>...</option>';
 		for(var i = 0; i < epochLists.length; i++){
@@ -522,7 +596,7 @@ var AnalysisInspector = Backbone.View.extend({
 		epoch2 += '</select></div>';
 
 		var relationship = '<div class="epochLists" id="relationshipLists"><select><option selected>...'+
-		'</option><option value="equal">=</option><option value="lessThan"><</option></select></div>'
+		'</option><option value="eq">=</option><option value="lt"><</option></select></div>'
 
 		$('#rel-intention-assignents').append('<tr><td>' + epoch1 + '</td><td>' + relationship +
 		 '</td><td>'+ epoch2 +'</td><td><i class="fa fa-trash-o fa-2x" id="removeIntention" aria-hidden="true" onClick="$(this).closest(\'tr\').remove();"></i></td></tr>');
