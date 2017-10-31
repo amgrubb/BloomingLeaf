@@ -1,27 +1,28 @@
-function InputLink(linkType, linkSrcID, linkDestID, postType = null, markedValue = null){
+function InputLink(linkType, linkSrcID, linkDestID, postType = null, absVal = -1){
 	this.linkType = linkType;
 	this.linkSrcID = linkSrcID;
 	this.linkDestID = linkDestID;
 	this.postType = postType;
-	this.markedValue = markedValue;
+	this.absoluteValue = absVal;
 }
 
 function getLinks(){
-	
+
 	var links = [];
 
 	//Verifying if links are valid
 	graph.getLinks().forEach(function(link){
-	    if(isLinkInvalid(link)) 
+	    if(isLinkInvalid(link))
 	    		link.remove();
     });
-	
+
 	for (var i = 0; i < graph.getLinks().length; i++){
-		
+
 		var current = graph.getLinks()[i];
 		var linkType = current.label(0).attrs.text.text.toUpperCase()
 		var source = "-";
 		var target = "-";
+		var absValue = parseInt(graph.getLinks()[i].attr('.assigned_time')[0]);		//TODO: Actually get the ABS value, if it exists.
 
 		if (current.get("source").id)
 			source = graph.getCell(current.get("source").id).prop("elementid");
@@ -34,14 +35,13 @@ function getLinks(){
 		if(!(linkType.indexOf("=") > -1 || linkType.indexOf("<") > -1)){
 			//Adding links links
 			if (linkType.indexOf("|") > -1){
+
 				evolvRelationships = linkType.replace(/\s/g, '').split("|");
-				link = new InputLink(evolvRelationships[0], source, target, evolvRelationships[1]);
+				link = new InputLink(evolvRelationships[0], source, target, evolvRelationships[1], absValue);
 			}else if(linkType == "NBT"){
-				markedValue = "0000";
-				link = new InputLink(linkType, source, target, null, markedValue);			
+				link = new InputLink(linkType, source, target, null, absValue);
 			}else if(linkType == "NBD"){
-				markedValue = "1100";
-				link = new InputLink(linkType, source, target, null, markedValue);			
+				link = new InputLink(linkType, source, target, null, absValue);
 			}else{
 				link = new InputLink(linkType, source, target);
 			}
@@ -50,9 +50,9 @@ function getLinks(){
 		}
 
 	}
-	
+
 	return links;
-	
+
 }
 
 function isLinkInvalid(link){

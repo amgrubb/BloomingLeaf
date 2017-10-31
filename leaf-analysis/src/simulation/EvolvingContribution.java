@@ -6,9 +6,6 @@ public class EvolvingContribution extends ElementLink {
 	private ContributionType postContribution = null;
 	int absTime; 					//Optional absolute time of transition.
 
-	public EvolvingContribution(LinkableElement s, LinkableElement d, ContributionType r1, ContributionType r2) {
-		this(s, d, r1, r2, -1);
-	}
 	public EvolvingContribution(LinkableElement s, LinkableElement d, ContributionType r1, ContributionType r2, int absoluteTime) {
 		super(new LinkableElement[]{s}, d);
 		this.preContribution = r1;

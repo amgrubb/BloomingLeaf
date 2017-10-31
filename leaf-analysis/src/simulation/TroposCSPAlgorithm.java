@@ -910,7 +910,7 @@ public class TroposCSPAlgorithm {
 		    					initializePathIncreaseHelper(i, t, s, timeCondition, false);
 		    				}
 	                		PrimitiveConstraint timeCondition = new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t]));
-		    				initializePathIncreaseMaxValueHelper(i, t, dynFVal, timeCondition);
+		    				initializePathIncreaseMaxValueHelper(i, t, segmentDynamicValue[nS], timeCondition);
 		    			}
 					} else if (segmentDynamic[nS].equals(IntentionalElementDynamicType.DEC.getCode())){
 						//DECREASING
@@ -924,7 +924,7 @@ public class TroposCSPAlgorithm {
 		        				initializePathDecreaseHelper(i, t, s, timeCondition, false);
 		        			}
 	                		PrimitiveConstraint timeCondition = new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t]));
-	        				initializePathDecreaseMaxValueHelper(i, t, dynFVal, timeCondition);
+	        				initializePathDecreaseMaxValueHelper(i, t, segmentDynamicValue[nS], timeCondition);
 		        		}
 					}
 				}
