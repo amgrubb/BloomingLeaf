@@ -241,6 +241,7 @@ var AnalysisInspector = Backbone.View.extend({
 			var assigned_time = cell.attr('.assigned_time');
 			console.log(name);
 			if(func == 'UD'){
+				console.log(cell.attr('.constraints'));
 				var fun_len = cell.attr('.constraints').function.length - 1;
 				var current_something = 'A';
 				// If no assigned_time in the node, save blank into the node
@@ -433,41 +434,44 @@ var AnalysisInspector = Backbone.View.extend({
 		$(assigned_time).val('');
 	},
 	saveRelativeValues: function(){
-		if($('#epoch1List select').val() != null && $('#epoch2List select').val() != null){
-			alert("Epochs not null");
-			var extractGoal1 = $('#epoch1List select').val().match(rx);
-			console.log($('#epoch2List select').val());
-			var extractGoal2 = $('#epoch2List select').val().match(rx);
-			console.log(extractGoal2);
-			var constraintSrcID = goal_id_mapper[extractGoal1];
-			var constraintDestID = goal_id_mapper[extractGoal2];
-			var type = $('#relationshipLists select').val();
-			console.log(type);
-			if(type == 'eq'){
-				type = '=';
-			}
-			else if (type=='lt') {
-				type = '<';
-			}
-			if(graph.constraintValues.length == 0){
-				graph.constraintValues[0] = {};
-				graph.constraintValues[0]["constraintType"] = type;
-				graph.constraintValues[0]["constraintSrcID"] = constraintSrcID;
-				graph.constraintValues[0]["constraintSrcEB"] = "REL";
-				graph.constraintValues[0]["absoluteValue"] = -1;
-				graph.constraintValues[0]["constraintDestID"] = constraintDestID;
-				graph.constraintValues[0]["constraintDestEB"] = "REL";
-			}
-			else{
-				newConstarint = {};
-				newConstarint['constraintType'] = type;
-				newConstarint['constraintSrcID'] = constraintSrcID;
-				newConstarint['constraintSrcEB'] = "REL";
-				newConstarint['constraintDestID'] = constraintDestID;
-				newConstarint['constraintDestEB'] = "REL";
-				newConstarint['absoluteValue'] = -1;
-				graph.constraintValues.push(newConstarint);
-			}
+		var epoch1Lists = $('#rel-intention-assignents tr #epoch1List select');
+		var relationshipLists = $('#rel-intention-assignents tr #relationshipLists select');
+		var epoch2Lists = $('#rel-intention-assignents tr #epoch2List select');
+		for(var i = 0; i < epoch1Lists.length; i++){
+			if(epoch1Lists[i].value != null && epoch2Lists[i].value != null){
+				alert("Epochs not null");
+				var extractGoal1 = epoch1Lists[i].value.match(rx);
+				var extractGoal2 = epoch2Lists[i].value.match(rx);
+				var constraintSrcID = goal_id_mapper[extractGoal1];
+				var constraintDestID = goal_id_mapper[extractGoal2];
+				var type = relationshipLists[i].value;
+				if(type == 'eq'){
+					type = '=';
+				}
+				else if (type=='lt') {
+					type = '<';
+				}
+				if(graph.constraintValues.length == 0){
+					graph.constraintValues[0] = {};
+					graph.constraintValues[0]["constraintType"] = type;
+					graph.constraintValues[0]["constraintSrcID"] = constraintSrcID;
+					graph.constraintValues[0]["constraintSrcEB"] = "REL";
+					graph.constraintValues[0]["absoluteValue"] = -1;
+					graph.constraintValues[0]["constraintDestID"] = constraintDestID;
+					graph.constraintValues[0]["constraintDestEB"] = "REL";
+				}
+				else{
+					newConstarint = {};
+					newConstarint['constraintType'] = type;
+					newConstarint['constraintSrcID'] = constraintSrcID;
+					newConstarint['constraintSrcEB'] = "REL";
+					newConstarint['constraintDestID'] = constraintDestID;
+					newConstarint['constraintDestEB'] = "REL";
+					newConstarint['absoluteValue'] = -1;
+					graph.constraintValues.push(newConstarint);
+				}
+		}
+
 			console.log(graph.constraintValues);
 		}
 
