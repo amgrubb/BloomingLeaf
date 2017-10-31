@@ -572,7 +572,7 @@ var AnalysisInspector = Backbone.View.extend({
 		modal.style.display = "none";
 		$("#epoch1List select").val();
 		console.log(graph.constraintValues);
-		epochLists = [];
+		//epochLists = [];
 		//console.log(time_values);
 
 	},
