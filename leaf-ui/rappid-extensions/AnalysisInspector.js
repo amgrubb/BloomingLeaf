@@ -440,7 +440,6 @@ var AnalysisInspector = Backbone.View.extend({
 		var epoch2Lists = $('#rel-intention-assignents tr #epoch2List select');
 		for(var i = 0; i < epoch1Lists.length; i++){
 			if(epoch1Lists[i].value != null && epoch2Lists[i].value != null){
-				alert("Epochs not null");
 				var extractGoal1 = epoch1Lists[i].value.match(rx);
 				var extractGoal2 = epoch2Lists[i].value.match(rx);
 				var constraintSrcID = goal_id_mapper[extractGoal1];
