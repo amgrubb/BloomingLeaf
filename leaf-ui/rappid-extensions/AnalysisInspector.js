@@ -4,6 +4,7 @@ var time_values = {};
 var goal_id_mapper = {};
 var constraintID = 0;
 var rx = /Goal_\d+/g; // MATCH goal name Goal_x
+var extractEB = /[A-Z]+$/;
 var AnalysisInspector = Backbone.View.extend({
 
 	className: 'analysis-inspector',
@@ -455,19 +456,21 @@ var AnalysisInspector = Backbone.View.extend({
 					graph.constraintValues[0] = {};
 					graph.constraintValues[0]["constraintType"] = type;
 					graph.constraintValues[0]["constraintSrcID"] = constraintSrcID;
-					graph.constraintValues[0]["constraintSrcEB"] = "REL";
+					graph.constraintValues[0]["constraintSrcEB"] = epoch1Lists[i].value.match(extractEB)[0];
 					graph.constraintValues[0]["absoluteValue"] = -1;
 					graph.constraintValues[0]["constraintDestID"] = constraintDestID;
-					graph.constraintValues[0]["constraintDestEB"] = "REL";
+					graph.constraintValues[0]["constraintDestEB"] = epoch2Lists[i].value.match(extractEB)[0];
+					console.log(epoch1Lists[i].value.match(extractEB)[0]);
 				}
 				else{
 					newConstarint = {};
 					newConstarint['constraintType'] = type;
 					newConstarint['constraintSrcID'] = constraintSrcID;
-					newConstarint['constraintSrcEB'] = "REL";
+					newConstarint['constraintSrcEB'] = epoch1Lists[i].value.match(extractEB)[0];
 					newConstarint['constraintDestID'] = constraintDestID;
-					newConstarint['constraintDestEB'] = "REL";
+					newConstarint['constraintDestEB'] = epoch2Lists[i].value.match(extractEB)[0];
 					newConstarint['absoluteValue'] = -1;
+					console.log(epoch1Lists[i].value.match(extractEB)[0]);
 					graph.constraintValues.push(newConstarint);
 				}
 		}
@@ -485,6 +488,7 @@ var AnalysisInspector = Backbone.View.extend({
 		$.each($('#node-list').find("tr input[type=text]"), function(){
 			var new_time = $(this).val();
 			var row = $(this).closest('tr');
+			var srcEB = row.find('td').html();
 			var func_value = row.find('td:nth-child(2)').html();
 			var id = row.find('input[type=hidden]').val();
 			// If func is not UD, just find the cell and update it
@@ -508,6 +512,7 @@ var AnalysisInspector = Backbone.View.extend({
 				var index = id[id.length - 1];
 				id = id.substring(0, id.length - 2);
 				var cell = graph.getCell(id);
+				console.log(cell);
 				cell.attr('.assigned_time')[index] = new_time;
 				console.log(new_time);
 				if(new_time.trim() != ""){
@@ -522,17 +527,24 @@ var AnalysisInspector = Backbone.View.extend({
 				console.log(cell);
 				if(graph.constraintValues.length == 0 && (new_time != null && new_time.length > 0)){
 					graph.constraintValues[0] = {};
-					graph.constraintValues[0]['constraintType'] = "A";
+					graph.constraintValues[0]['constraintType'] = "A"; // A for absolute
 					graph.constraintValues[0]['constraintSrcID'] = cell.attributes.elementid;
+					graph.constraintValues[0]['constraintSrcEB'] = srcEB.match(extractEB)[0];
+
 					console.log(cell.attributes.elementid);
 					graph.constraintValues[0]['absoluteValue'] = new_time;
+					graph.constraintValues[0]['constraintDestID'] = null;
+					graph.constraintValues[0]['constraintDestEB'] = null;
 				}
 				else{
 					if(new_time != null && new_time.length > 0 ){
 						newConstarint = {};
 						newConstarint['constraintType'] = "A";
 						newConstarint['constraintSrcID'] = cell.attributes.elementid;
+						newConstarint['constraintSrcEB'] = srcEB.match(extractEB)[0];
 						newConstarint['absoluteValue'] = new_time;
+						newConstarint['constraintDestID'] = null;
+						newConstarint['constraintDestEB'] = null;
 						console.log(cell.attributes.elementid);
 						graph.constraintValues.push(newConstarint);
 					}
