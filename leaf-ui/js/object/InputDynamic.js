@@ -27,10 +27,10 @@ function getDynamics(){
 	    var funcTypeVal = elements[e].attr(".constraints/lastval");
 	    var initValue = elements[e].attributes.attrs[".satvalue"].value;
 	    
-	    if (isNaN(parseInt(initValue))){
-			initValue = satValueDict[initValue];		 
+	    if (initValue=="none"){
+	    	initValue = "0000";
 		}else{
-			initValue = "0000";
+	    	initValue = satValueDict[initValue];			
 		}
 		
 
