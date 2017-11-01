@@ -2,51 +2,30 @@
 var global_analysisResult = {};
 
 function backendComm(js_object){
-	if(develop){
-		//This var is created to add the JSON produced in backend for executing local testing.
-		var analysisResults = {};
-		global_analysisResult = analysisResults;
-    	if(js_object.analysis.action == "allNextStates"){
-			//Testing Explore Possible Next States
-			open_analysis_viewer();
-		}else{
-			//Testing Simulate Single Path
-			console.log(JSON.stringify(js_object));
-			loadAnalysis(analysisResults);
-			var currentValueLimit = parseInt(sliderObject.sliderElement.noUiSlider.get());
-			var sliderMax = currentValueLimit + currentAnalysis.timeScale;
-			sliderObject.sliderElement.noUiSlider.set(sliderMax);
-		}
-	}else{
-		/**
-			* Print the input to the console.
-			*/
-			console.log(JSON.stringify(js_object));
+	/**
+	* Print the input to the console.
+	*/
+	console.log(JSON.stringify(js_object));
 
-		//backend script called
-		var pathToCGI = "./cgi-bin/backendCom.cgi";
-		/**
-		 * UNCOMMENT THE CODE BELLOW TO EXECUTE ON SERVER
-		 */
+	//backend script called
+	var pathToCGI = "./cgi-bin/backendCom.cgi";
 
-	 	$.ajax({
-			url: pathToCGI,
-			type: "post",
-			contentType: "json",
-			data:JSON.stringify(js_object),
-			success: function(response){
-				if(js_object.analysis.action=="allNextStates"){
-					executeJava(true);
-				}else{
-					executeJava(false);
-				}
+ 	$.ajax({
+		url: pathToCGI,
+		type: "post",
+		contentType: "json",
+		data:JSON.stringify(js_object),
+		success: function(response){
+			if(js_object.analysis.action=="allNextStates"){
+				executeJava(true);
+			}else{
+				executeJava(false);
 			}
-		})	.fail(function(){
-			msg = "Ops! Something went wrong.";
-			alert(msg);
-		});
-
-	}
+		}
+	})	.fail(function(){
+		msg = "Ops! Something went wrong.";
+		alert(msg);
+	});
 
 }
 
@@ -75,8 +54,8 @@ function getFileResults(isGetNextSteps){
 		type: "get",
 		success: function(response){
 			analysisResults = JSON.parse(response['data']);
-			var errorMsg = JSON.parse(response['errorMessage']);
-			if(!errorMsg){
+			var errorMsg = analysisResult.errorMessage;
+			if(errorMsg){
 				alert(errorMsg);
 			}else{
 				/**
