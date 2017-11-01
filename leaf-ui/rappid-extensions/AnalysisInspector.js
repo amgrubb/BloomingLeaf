@@ -167,7 +167,11 @@ var AnalysisInspector = Backbone.View.extend({
 		var js_object = {};
 		js_object.analysis = getAnalysisValues(analysis);
 		//Get the Graph Model
-		js_object.model = getFrontendModel(false);
+		if(analysis.action == "singlePath"){
+			js_object.model = getFrontendModel(true);
+		}else{
+			js_object.model = getFrontendModel(false);			
+		}
 
 		this.saveElementsInGlobalVariable();
 
