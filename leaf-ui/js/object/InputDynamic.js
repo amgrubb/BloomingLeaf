@@ -30,9 +30,14 @@ function getDynamics(){
 	    if (initValue=="none"){
 	    	initValue = "0000";
 		}else{
-	    	initValue = satValueDict[initValue];			
+			if (initValue.length > 4){
+				initValue = satValueDict[initValue];		 
+			}else{
+		    	initValue = initValue;				
+			}
 		}
 		
+	    
 
 	    var io_dynamic;
 	    if(f == "NB" ){
