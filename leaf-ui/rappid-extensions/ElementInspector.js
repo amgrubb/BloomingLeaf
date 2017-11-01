@@ -161,11 +161,8 @@ var ElementInspector = Backbone.View.extend({
     'keyup .cell-attrs-text': 'nameAction',
     'change #init-sat-value':'updateHTML',
 
-    'change .function-type':'functionType',
-    //'change .function-type':'updateHTML',
-    'change #markedValue':'markedValue',
-
-    //'change .function-sat-value':'updateGraph',
+    'change .function-type':'updateHTML',
+    'change .function-sat-value':'updateGraph',
 
     'change .user-function-type':'updateHTML',
     'change .user-sat-value':'updateGraphUserDefined',
@@ -324,13 +321,6 @@ var ElementInspector = Backbone.View.extend({
     cell.attr({ '.name': { text: text } });
   },
 
-  functionType: function(){
-	  //Clear marked Values
-	  var cell = this._cellView.model;
-	  cell.attr(".constraints/markedvalue", "0");
-	  this.updateHTML(null);
-  },
-
   // update satisfaction value and buttons selection based on function type selection
   updateHTML: function(event){
     // Check if selected initValue/functionType pair is illegal
@@ -354,7 +344,11 @@ var ElementInspector = Backbone.View.extend({
       this.loadUDFunction(null);
     }
     else if ($.inArray(functionType, funct_with_sat_value) > -1){
-      this.showFunctionSatValue(null);
+	 //Clear marked Values
+	  var cell = this._cellView.model;
+	  delete cell.attr(".constraints/markedvalue");
+	  
+  	  this.showFunctionSatValue(null);
       this.$('#user-constraints').hide();
       $('#init-sat-value').prop('disabled', '');
     }
@@ -396,9 +390,10 @@ var ElementInspector = Backbone.View.extend({
       // change to default init value if functTypeChanged
       // change to none function if initValueChanged
       if ($.inArray(initValue, validPair[functionType]['validInitValue']) == -1){
-        if (initValueChanged && initValue != "unknown"){$('.function-type').val('none');}
-        if (initValueChanged && initValue == "unknown"){$('.function-type').val('C');}
-        if (funcTypeChanged){$('#init-sat-value').val(validPair[functionType]['defaultValue']);}
+        if (initValueChanged && initValue != "unknown"){this.$('.function-type').val('none');}
+        if (initValueChanged && initValue == "unknown"){this.$('.function-type').val('C');}
+        var newValue = validPair[functionType]['defaultValue'];
+        if (funcTypeChanged){this.$('#init-sat-value').val(validPair[functionType]['defaultValue']);}
 
       }
     }
@@ -513,15 +508,11 @@ var ElementInspector = Backbone.View.extend({
     var cell = this._cellView.model;
     var text = this.$('.function-type').val();
     var initVal = satvalues[this.$('#init-sat-value').val()];
-    var val;
+    var val = satvalues[this.$('#markedValue').val()];
+    
     if(cell.attributes.attrs['.constraints']){
-        val = cell.attributes.attrs['.constraints'].markedvalue;
-    }else{
-    	val = this.$('#markedValue').val();
+        cell.attributes.attrs['.constraints'].markedvalue = val;
     }
-
-    /// this.$('.markedValue') = val;
-
     // Rerender chart canvas
     var data = this.constraintsObject.chartData;
     var context = $("#chart").get(0).getContext("2d");
@@ -1088,6 +1079,14 @@ var ElementInspector = Backbone.View.extend({
       }
 
     }
+    
+    var val;
+    if(this.$('#markedValue').val()){
+    	val = satvalues[this.$('#markedValue').val()];
+    }else{
+    	val = "0000";
+    }
+    cell.attr(".constraints/markedvalue", val);
 
     // Navie: Changed satvalue from path to text
     if (value == "satisfied"){

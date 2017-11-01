@@ -29,14 +29,13 @@ function getDynamics(){
 	    
 	    if (isNaN(parseInt(initValue))){
 			initValue = satValueDict[initValue];		 
+		}else{
+			initValue = "0000";
 		}
 		
-	    if (isNaN(parseInt(funcTypeVal))){
-			funcTypeVal = satValueDict[funcTypeVal];
-		}
 
 	    var io_dynamic;
-	    if(f=="NB"){
+	    if(f == "NB" ){
 	    	io_dynamic = new InputDynamic(elementID, "NB", initValue);
 	    }
 	    else if (f == ""){
@@ -44,6 +43,9 @@ function getDynamics(){
 	    }else if(f == " "){
     		io_dynamic = new InputDynamic(elementID, "NT", initValue);
 	    }else if (f != "UD"){
+		if (isNaN(parseInt(funcTypeVal))){
+		    funcTypeVal = satValueDict[funcTypeVal];
+		}
     		io_dynamic = new InputDynamic(elementID, f, funcTypeVal);		//Passing Dynamic Values
     		// user defined constraints
 	    }else{
@@ -56,9 +58,9 @@ function getDynamics(){
 
 			for (var l = 0; l < funcTypeVal.length; l++){
 				if(l == funcTypeVal.length - 1){
-					line += "\t" + begin[l] + "\t1\t" + funcType[l] + "\t" + String(initValue);
+					line += "\t" + begin[l] + "\t1\t" + funcType[l] + "\t" + satValueDict[funcTypeVal[l]];
 				}else{
-					line += "\t" + begin[l] + "\t" + end[l] + "\t" + funcType[l] + "\t" + String(initValue);
+					line += "\t" + begin[l] + "\t" + end[l] + "\t" + funcType[l] + "\t" + satValueDict[funcTypeVal[l]];
 				}
 			}
 

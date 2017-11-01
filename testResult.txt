@@ -1,0 +1,130 @@
+{
+  "analysis": {
+    "action": "singlePath",
+    "maxAbsTime": "100",
+    "conflictLevel": "S",
+    "numRelTime": "0",
+    "absTimePts": null,
+    "currentState": "0",
+    "initialAssignedEpoch": [
+      "0"
+    ],
+    "initialValueTimePoints": [
+      "0"
+    ],
+    "elementList": [
+      {
+        "id": "0000",
+        "status": [
+          "0011"
+        ]
+      },
+      {
+        "id": "0001",
+        "status": [
+          "0010"
+        ]
+      },
+      {
+        "id": "0002",
+        "status": [
+          "0100"
+        ]
+      }
+    ]
+  },
+  "model": {
+    "actors": [
+
+    ],
+    "intentions": [
+      {
+        "nodeActorID": "-",
+        "nodeID": "0000",
+        "nodeType": "G",
+        "nodeName": "Goal_0"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0001",
+        "nodeType": "G",
+        "nodeName": "Goal_1"
+      },
+      {
+        "nodeActorID": "-",
+        "nodeID": "0002",
+        "nodeType": "G",
+        "nodeName": "Goal_3"
+      }
+    ],
+    "links": [
+      {
+        "linkType": "++",
+        "linkSrcID": "0000",
+        "linkDestID": "0001",
+        "postType": "--",
+        "absoluteValue": 1
+      },
+      {
+        "linkType": "+S",
+        "linkSrcID": "0000",
+        "linkDestID": "0002",
+        "postType": "+",
+        "absoluteValue": 9
+      }
+    ],
+    "dynamics": [
+      {
+        "intentionID": "0000",
+        "dynamicType": "UD",
+        "markedValue": "0011",
+        "line": "D\t0000\tUD\t2\t0\tA\tC\t0011\tA\t1\tC\t0000\tN"
+      },
+      {
+        "intentionID": "0001",
+        "dynamicType": "UD",
+        "markedValue": "0010",
+        "line": "D\t0001\tUD\t2\t0\tA\tD\t1100\tA\t1\tC\t0000\tN"
+      },
+      {
+        "intentionID": "0002",
+        "dynamicType": "UD",
+        "markedValue": "0100",
+        "line": "D\t0002\tUD\t2\t0\tA\tC\t0100\tA\t1\tC\t0000\tN"
+      }
+    ],
+    "constraints": [
+      {
+        "constraintType": "<",
+        "constraintSrcID": "0000",
+        "constraintSrcEB": "REL",
+        "absoluteValue": -1,
+        "constraintDestID": "0001",
+        "constraintDestEB": "REL"
+      },
+      {
+        "constraintType": "<",
+        "constraintSrcID": "0001",
+        "constraintSrcEB": "REL",
+        "absoluteValue": -1,
+        "constraintDestID": "0002",
+        "constraintDestEB": "REL"
+      },
+      {
+        "constraintType": "A",
+        "constraintSrcID": "0000",
+        "absoluteValue": 1
+      },
+      {
+        "constraintType": "A",
+        "constraintSrcID": "0001",
+        "absoluteValue": 2
+      },
+      {
+        "constraintType": "A",
+        "constraintSrcID": "0002",
+        "absoluteValue": 3
+      }
+    ]
+  }
+}

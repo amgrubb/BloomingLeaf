@@ -7,7 +7,7 @@
     top: 0;
     width: 100%; /* Full width */
     height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
+    overflow: scroll; /* Enable scroll if needed */
     background-color: rgb(0,0,0); /* Fallback color */
     background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
@@ -28,7 +28,66 @@
     color: black;
     border-radius: 20px;
 }
+/***/
+#interm-list select{
+  /*Don't really need this just for demo styling*/
+  max-width: 180px
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  /* Add some styling */
+  display: block;
+  height: 30px;
+  float: right;
+  font-size: 16px;
+  line-height: 1.75;
+  color: #333;
+  background-color: #ffffff;
+  background-image: none;
+  border: 1px solid #cccccc;
+  -ms-word-break: normal;
+  word-break: normal;
+}
 
+/*Hide the intermTable dialog by default*/
+.intermT {
+    display: none;  /*Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: scroll; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/*Intermediate Values Content*/
+.intermContent{
+  position: relative;
+  background-color: #fefefe;
+  margin: auto;
+  padding: 0;
+  border: 1px solid #888;
+  width: 70%;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+  -webkit-animation-name: animatetop;
+  -webkit-animation-duration: 0.4s;
+  animation-name: animatetop;
+  animation-duration: 0.4s;
+  color: black;
+  border-radius: 20px;
+}
+
+.intermHeader {
+    padding: 2px 16px;
+    background: #1E85F7;
+    /*background-color: #5cb85c;*/
+    color: white;
+    border-top-radius: 40px;
+}
 /* Add Animation */
 @-webkit-keyframes animatetop {
     from {top:-300px; opacity:0}
@@ -55,6 +114,21 @@
     cursor: pointer;
 }
 
+/* The Close Intermtable Button */
+.closeIntermT {
+    color: white;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.closeIntermT:hover,
+.closeIntermT:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
 .modal-header {
     padding: 2px 16px;
     background: #1E85F7;
@@ -70,6 +144,12 @@
     /*background-color: #5cb85c;*/
     color: white;
 }
+.intermTfooter{
+  padding: 2px 16px;
+  /*background-color: #5cb85c;*/
+  color: white;
+}
+
 
 .abs-table {
     font-family: arial, sans-serif;
@@ -101,6 +181,44 @@
     padding: 12px 5px;
 }
 
+/*Interm table design*/
+.intermBody{
+  /*verflow-x: scroll;*/
+  overflow: auto;
+  border-radius: 20px;
+}
+
+
+.interm-table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    /*margin: auto;*/
+    margin-bottom : 35px;
+    table-layout: inherit;
+
+}
+
+.interm-table td, .interm-table th {
+    border-top: 1px solid #dddddd;
+    border-right: 1px solid #dddddd;
+    border-bottom: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+    height: 30px;
+}
+
+
+.interm-table tr td input {
+    font-size: 100%;
+    color: black;
+    border: none;
+    box-sizing: border-box;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    padding: 12px 5px;
+}
+
 /**/
 .rel-intent-table {
     font-family: arial, sans-serif;
@@ -119,13 +237,24 @@
 .rel-intent-table tr:nth-child(even) {
     background-color: #dddddd;
 }
-
+.intermBody tr:nth-child(even) {
+    background-color: #dddddd;
+}
 .rel-intent-table tr td input {
     width: 4em;
     font-size: 100%;
     color: black;
 }
 
+.intentionPlace{
+  z-index:9999;position:relative;top:23px;
+}
+.timePlace{
+     z-index:9999;position:relative;top:-20px;left:112px;
+}
+.diag { position: relative; width: 50px; height: 5px; }
+/*.outerdivslant { position: relative; top: -44px; left: -8px; width: 100%; border-color: transparent transparent transparent #dddddd; border-width: 57px 0px 0px 203px;}
+.innerdivslant {position: relative; top: -100px; left: -10px; border-color: transparent transparent transparent #fff; border-width: 56px 0px 0px 200px;}*/
 #link-list {
     width: 100%%;
 }
@@ -194,7 +323,7 @@ display: none;
 
   display: block;
   width: 100%;
-  max-width: 320px;
+  max-width: 180px;
   height: 30px;
   float: right;
   padding: 0px 24px;
@@ -209,4 +338,26 @@ display: none;
 }
 #removeIntention{
   cursor: pointer;
+}
+
+#abs-time-pts{
+  margin-bottom:5px;
+}
+#header th{
+  min-width: 200px;
+  height: 30px;
+  text-align: center;
+}
+#intentionRows th:nth-child(n + 2){
+  text-align: center;
+}
+.divisionLine{
+  position: relative;
+  z-index: 1;
+  left: -12px;
+  width: 199px;
+  top: 19px;
+  height: 1px;
+  background-color: #dddddd;
+  transform: rotate(15deg);
 }
