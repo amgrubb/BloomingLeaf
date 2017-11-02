@@ -1,30 +1,46 @@
 {
   "analysis": {
-    "action": "singlePath",
+    "action": "allNextStates",
     "maxAbsTime": "100",
     "conflictLevel": "S",
-    "numRelTime": "4",
-    "absTimePts": null,
-    "currentState": "0",
-    "initialAssignedEpoch": "0",
-    "initialValueTimePoints": "0",
+    "numRelTime": "5",
+    "absTimePts": "6",
+    "currentState": "3|79",
+    "initialAssignedEpoch": [
+      "TA0_0",
+      "TR3_81",
+      "TA1_6",
+      "TR2_79",
+      "TR5_83",
+      "TR4_50",
+      "TR6_95"
+    ],
+    "initialValueTimePoints": [
+      "0",
+      "6",
+      "50",
+      "79",
+      "81",
+      "83",
+      "95"
+    ],
     "elementList": [
       {
-        "id": "0000",
+        "id": "0001",
         "status": [
-          "0000"
+          "1110",
+          "0100",
+          "0100",
+          "0011"
         ]
       },
       {
         "id": "0001",
         "status": [
-          "0000"
-        ]
-      },
-      {
-        "id": "0002",
-        "status": [
-          "0000"
+          "1110",
+          "0100",
+          "0100",
+          "0011"
         ]
       }
     ]
@@ -45,12 +61,6 @@
         "nodeID": "0001",
         "nodeType": "G",
         "nodeName": "Goal_1"
-      },
-      {
-        "nodeActorID": "-",
-        "nodeID": "0002",
-        "nodeType": "G",
-        "nodeName": "Goal_2"
       }
     ],
     "links": [
@@ -59,33 +69,20 @@
         "linkSrcID": "0001",
         "linkDestID": "0000",
         "postType": null,
-        "markedValue": null
-      },
-      {
-        "linkType": "AND",
-        "linkSrcID": "0002",
-        "linkDestID": "0000",
-        "postType": null,
-        "markedValue": null
+        "absoluteValue": -1
       }
     ],
     "dynamics": [
       {
         "intentionID": "0000",
         "dynamicType": "NT",
-        "markedValue": "0000",
+        "markedValue": "0011",
         "line": null
       },
       {
         "intentionID": "0001",
         "dynamicType": "NT",
-        "markedValue": "0000",
-        "line": null
-      },
-      {
-        "intentionID": "0002",
-        "dynamicType": "NT",
-        "markedValue": "0000",
+        "markedValue": "0011",
         "line": null
       }
     ],
