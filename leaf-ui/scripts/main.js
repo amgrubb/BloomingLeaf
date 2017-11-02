@@ -280,6 +280,7 @@ $('#analysis-btn').on('click', function(){
 $('#model-cur-btn').on('click', function(){
 	switchToModellingMode(false);
 	//Cleaning the previous analysis data for new execution
+	global_analysisResult.elementList = "";
 	savedAnalysisData.finalAssigneEpoch="";
 	savedAnalysisData.finalValueTimePoints="";
 });
