@@ -57,6 +57,8 @@ graph.linksNum;
 graph.constraintsNum;
 graph.allElements = [];
 graph.elementsBeforeAnalysis = [];
+graph.constraintValues = [];//store all the graph constraint values to be used
+														// by InputConstraint
 
 var commandManager = new joint.dia.CommandManager({ graph: graph });
 
@@ -152,12 +154,17 @@ if (document.cookie){
 
 // ----------------------------------------------------------------- //
 // Modelling link control
+/*
 $('#symbolic-btn').on('click', function(){
 	saveLinks(linkMode);
 	setLinks(linkMode);
-});
+});*/
 
 // Set links or constraints
+//Setlinks and savelinks may not needed.
+function testMe(){
+	console.log("tested me");
+}
 function setLinks(mode){
 	if(mode == "View"){
 		linkMode = "Constraints";
@@ -181,13 +188,18 @@ function setLinks(mode){
 
 	// render preexisting links in new mode
 	for (var l = 0; l < restoredLinks.length; l++){
+		alert("never gets called")
 		restoredLinks[l].attr('./display', '');
 	}
 }
-
+function testMain(){
+	alert("called in test main");
+}
 // Save links or constraints
 function saveLinks(mode){
+	console.log("called in saved links");
 	// Hide all relationships that are not suppose to be dispalyed
+
 	if(mode == "View"){
 		var links = graph.getLinks();
 		graph.links = [];
@@ -200,15 +212,21 @@ function saveLinks(mode){
 			}else{link.remove();}
 		});
 	}else if (mode == "Constraints"){
+		console.log("called in saved links constraints");
 		var links = graph.getLinks();
 		graph.intensionConstraints = [];
 		links.forEach(function(link){
 			var linkStatus = link.attributes.labels[0].attrs.text.text.replace(/\s/g, '');
+
 			if(!isLinkInvalid(link) && (linkStatus != "constraint") && (linkStatus != "error")){
-				if(!link.attr('./display')){
-					link.attr('./display', 'none');
-					graph.intensionConstraints.push(link);
-				}
+				console.log(linkStatus);
+				console.log(isLinkInvalid(link));
+				console.log(link.attr('./display'));
+				//if(!link.attr('./display')){
+				//	link.attr('./display', 'none');
+				console.log(link);
+				graph.intensionConstraints.push(link);
+				//}
 			}else{link.remove();}
 		});
 	}
@@ -222,8 +240,12 @@ function saveLinks(mode){
 $('#analysis-btn').on('click', function(){
 
 	console.log(linkMode);
-	if (linkMode == "Constraints")
-		$('#symbolic-btn').trigger( "click" );
+	/* Comment these for now.
+	if (linkMode == "View")
+		//$('#symbolic-btn').trigger( "click" );
+		//setLinks(linkMode);
+		testMe();*/
+		//saveLinks(linkMode);
 
 	//Adjust left and right panels
 	elementInspector.clear();
@@ -391,6 +413,7 @@ function isCycle(v, visited, recursiveStack, graphs){
 
 function switchToModellingMode(useInitState){
 	//Reset to initial graph prior to analysis
+
 	if(useInitState){
 		for (var i = 0; i < graph.elementsBeforeAnalysis.length; i++){
 			var value = graph.elementsBeforeAnalysis[i]
@@ -1034,54 +1057,57 @@ graph.on('change:size', function(cell, size){
 //Removing a link
 this.graph.on('remove', function(cell, collection, opt) {
    if (cell.isLink()) {
-	   //Verify if is a Not both type. If it is remove labels from source and target node
-	   var link = cell;
-	   var source = link.prop("source");
-	   var target = link.prop("target");
-
-	   for(var i = 0; i < graph.getElements().length; i++ ){
-		   if(graph.getElements()[i].prop("id") == source["id"]){
-			   source = graph.getElements()[i];
+	   if(cell.prop("link-type") == 'NBT' || cell.prop("link-type") == 'NBD'){
+		
+		   //Verify if is a Not both type. If it is remove labels from source and target node
+		   var link = cell;
+		   var source = link.prop("source");
+		   var target = link.prop("target");
+	
+		   for(var i = 0; i < graph.getElements().length; i++ ){
+			   if(graph.getElements()[i].prop("id") == source["id"]){
+				   source = graph.getElements()[i];
+			   }
+			   if(graph.getElements()[i].prop("id") == target["id"]){
+				   target = graph.getElements()[i];
+			   }
 		   }
-		   if(graph.getElements()[i].prop("id") == target["id"]){
-			   target = graph.getElements()[i];
-		   }
-	   }
-
-	   //verify if node have any other link NBD or NBT
- 	  var sourceNBLink = function(){
- 		  var localLinks = graph.getLinks();
- 		  for(var i = 0; i < localLinks.length; i++){
- 			  if ((localLinks[i]!=link) && (localLinks[i].prop("link-type") == 'NBT' || localLinks[i].prop("link-type") == 'NBD')){
-     			  if(localLinks[i].getSourceElement().prop("id") == source["id"] || localLinks[i].getTargetElement().prop("id") == source["id"]){
-     				 return true;
-     			  }
- 			  }
- 		  }
- 		  return false;
- 	  }
-
- 	  //verify if target have any other link NBD or NBT
- 	  var targetNBLink = function(){
- 		  var localLinks = graph.getLinks();
- 		  for(var i = 0; i < localLinks.length; i++){
- 			  if ((localLinks[i]!=link) && (localLinks[i].prop("link-type") == 'NBT' || localLinks[i].prop("link-type") == 'NBD')){
-     			  if(localLinks[i].getTargetElement().prop("id") == target["id"] || localLinks[i].getSourceElement().prop("id") == target["id"]){
-     				 return true;
-     			  }
- 			  }
- 		  }
- 		  return false;
- 	  }
-
- 	  //Verify if it is possible to remove the NB tag from source and target
- 	  if(!sourceNBLink()){
- 		  source.attr(".funcvalue/text", "");
- 	  }
- 	  if(!targetNBLink()){
-	          target.attr(".funcvalue/text", "");
- 	  }
-
+	
+		   //verify if node have any other link NBD or NBT
+	 	  var sourceNBLink = function(){
+	 		  var localLinks = graph.getLinks();
+	 		  for(var i = 0; i < localLinks.length; i++){
+	 			  if ((localLinks[i]!=link) && (localLinks[i].prop("link-type") == 'NBT' || localLinks[i].prop("link-type") == 'NBD')){
+	     			  if(localLinks[i].getSourceElement().prop("id") == source["id"] || localLinks[i].getTargetElement().prop("id") == source["id"]){
+	     				 return true;
+	     			  }
+	 			  }
+	 		  }
+	 		  return false;
+	 	  }
+	
+	 	  //verify if target have any other link NBD or NBT
+	 	  var targetNBLink = function(){
+	 		  var localLinks = graph.getLinks();
+	 		  for(var i = 0; i < localLinks.length; i++){
+	 			  if ((localLinks[i]!=link) && (localLinks[i].prop("link-type") == 'NBT' || localLinks[i].prop("link-type") == 'NBD')){
+	     			  if(localLinks[i].getTargetElement().prop("id") == target["id"] || localLinks[i].getSourceElement().prop("id") == target["id"]){
+	     				 return true;
+	     			  }
+	 			  }
+	 		  }
+	 		  return false;
+	 	  }
+	
+	 	  //Verify if it is possible to remove the NB tag from source and target
+	 	  if(!sourceNBLink()){
+	 		  source.attr(".funcvalue/text", "");
+	 	  }
+	 	  if(!targetNBLink()){
+		          target.attr(".funcvalue/text", "");
+	 	  }
+ 	   
+	  }
    }
 });
 

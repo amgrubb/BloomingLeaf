@@ -6,9 +6,6 @@ public class EvolvingDecomposition extends ElementLink {
 	private DecompositionType postDecomposition = null;
 	int absTime; 					//Optional absolute time of transition.
 
-	public EvolvingDecomposition(LinkableElement[] s, LinkableElement d, DecompositionType r1, DecompositionType r2) {
-		this(s, d, r1, r2, -1);
-	}
 	public EvolvingDecomposition(LinkableElement[] s, LinkableElement d, DecompositionType r1, DecompositionType r2, int absoluteTime) {
 		super(s, d);
 		this.preDecomposition = r1;

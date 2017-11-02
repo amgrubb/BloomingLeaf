@@ -144,9 +144,8 @@ var LinkInspector = Backbone.View.extend({
         target.attr(".satvalue/text", "");
         target.attr(".satvalue/value", "");
       } else {
-
-    	  //verify if node have any other link NBD or NBT
-    	  var sourceNBLink = function(){
+    	  //verify if node has any other link NBD or NBT
+    	  var sourceHasNBLink = function(){
     		  var localLinks = graph.getLinks();
     		  for(var i = 0; i < localLinks.length; i++){
     			  if ((localLinks[i]!=link) && (localLinks[i].prop("link-type") == 'NBT' || localLinks[i].prop("link-type") == 'NBD')){
@@ -158,8 +157,8 @@ var LinkInspector = Backbone.View.extend({
     		  return false;
     	  }
 
-    	  //verify if target have any other link NBD or NBT
-    	  var targetNBLink = function(){
+    	  //verify if target has any other link NBD or NBT
+    	  var targetHasNBLink = function(){
     		  var localLinks = graph.getLinks();
     		  for(var i = 0; i < localLinks.length; i++){
     			  if ((localLinks[i]!=link) && (localLinks[i].prop("link-type") == 'NBT' || localLinks[i].prop("link-type") == 'NBD')){
@@ -171,13 +170,22 @@ var LinkInspector = Backbone.View.extend({
     		  return false;
     	  }
 
-    	  //Verify if it is possible to remove the NB tag from source and target
-    	  if(!sourceNBLink()){
-    		  //source.attr(".funcvalue/text", "");
+    	  //Verify if the node has the NB tag
+    	  var hasNBtag = function(node){
+    		  if(node.prop(".funcvalue/text")=="NB"){
+    			  return true;
+    		  }
+			  return false;
     	  }
-    	  if(!targetNBLink()){
+    	      	  
+    	  //Verify if it is possible to remove the NB tag from source and target
+    	  if(!sourceHasNBLink() && hasNBtag(source)){
+    		  source.attr(".funcvalue/text", "");
+    	  }
+    	  if(!targetHasNBLink() && hasNBtag(target)){
 	          target.attr(".funcvalue/text", "");
     	  }
+
       }
 
   },
