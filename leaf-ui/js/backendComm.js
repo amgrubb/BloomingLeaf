@@ -16,11 +16,13 @@ function backendComm(js_object){
 		contentType: "json",
 		data:JSON.stringify(js_object),
 		success: function(response){
-			if(js_object.analysis.action=="allNextStates"){
-				executeJava(true);
-			}else{
-				executeJava(false);
-			}
+			setTimeout(function(){
+				if(js_object.analysis.action=="allNextStates"){
+					executeJava(true);
+				}else{
+					executeJava(false);
+				}
+		    }, 500);  
 		}
 	})	.fail(function(){
 		msg = "Ops! Something went wrong.";
@@ -35,7 +37,9 @@ function executeJava(isGetNextSteps){
 		url: pathToCGI,
 		type: "get",
 		success: function(response){
-			getFileResults(isGetNextSteps);
+		    setTimeout(function(){
+				getFileResults(isGetNextSteps);
+		    }, 500);  
 		}
 	})
 	.fail(function(){
@@ -54,7 +58,7 @@ function getFileResults(isGetNextSteps){
 		type: "get",
 		success: function(response){
 			analysisResults = JSON.parse(response['data']);
-			var errorMsg = analysisResult.errorMessage;
+			var errorMsg = analysisResults.errorMessage;
 			if(errorMsg){
 				alert(errorMsg);
 			}else{
