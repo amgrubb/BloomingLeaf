@@ -40,6 +40,7 @@ public class SolveModel {
 			createOutputFile(solver, filePath + outputFile);
 	
 		} catch (RuntimeException e) {
+			System.out.println("Aqui está entrando...");
 			try {
 				File file;
 				file = new File(filePath + outputFile);
@@ -54,7 +55,7 @@ public class SolveModel {
 			} catch (Exception f) {
 				throw new RuntimeException("Error while writing ErrorMessage: " + f.getMessage());
 			}
-			throw new RuntimeException(e.getMessage());
+//			throw new RuntimeException(e.getMessage());
 		} catch (Exception e) {
 			try {
 				File file;
