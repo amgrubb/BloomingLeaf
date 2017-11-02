@@ -5,7 +5,7 @@ public class InputLink{
 	private String linkSrcID;
 	private String linkDestID;
 	private String postType;
-	private String markedValue;
+	private int absoluteValue = -1;
 	
 	public String getLinkSrcID() {
 		return linkSrcID;
@@ -39,12 +39,13 @@ public class InputLink{
 		this.postType = postType;
 	}
 
-	public String getMarkedValue() {
-		return markedValue;
+	public int getAbsoluteValue() {
+		return absoluteValue;
 	}
 
-	public void setMarkedValue(String markedValue) {
-		this.markedValue = markedValue;
+	public void setAbsoluteValue(int absoluteValue) {
+		this.absoluteValue = absoluteValue;
 	}
+
 	
 }

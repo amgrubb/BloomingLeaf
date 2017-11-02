@@ -4,9 +4,10 @@ public class InputConstraint{
 	private String constraintType;
 	private String constraintSrcID;
 	private String constraintSrcEB;
-	private String absoluteValue;
+	private int absoluteValue = -1;
 	private String constraintDestID;
 	private String constraintDestEB;
+	
 	public String getConstraintType() {
 		return constraintType;
 	}
@@ -25,10 +26,10 @@ public class InputConstraint{
 	public void setConstraintSrcEB(String constraintSrcEB) {
 		this.constraintSrcEB = constraintSrcEB;
 	}
-	public String getAbsoluteValue() {
+	public int getAbsoluteValue() {
 		return absoluteValue;
 	}
-	public void setAbsoluteValue(String absoluteValue) {
+	public void setAbsoluteValue(int absoluteValue) {
 		this.absoluteValue = absoluteValue;
 	}
 	public String getConstraintDestID() {
