@@ -24,7 +24,6 @@ public class SolveModel {
 	 * @param args Default command line arguments.
 	 */
 	public static void main(String[] args) {
-
 		//This is the default filePath to be executed if no file is pass through parameters
 		String filePath = "temp/"; 			
 		String inputFile = "default.json";
@@ -40,7 +39,6 @@ public class SolveModel {
 			createOutputFile(solver, filePath + outputFile);
 	
 		} catch (RuntimeException e) {
-			System.out.println("Aqui está entrando...");
 			try {
 				File file;
 				file = new File(filePath + outputFile);
@@ -48,9 +46,9 @@ public class SolveModel {
 					file.createNewFile();
 				}
 				PrintWriter printFile = new PrintWriter(file);
-				printFile.printf("{ \"errorMessage\" : \"RuntimeException: ");
-				e.printStackTrace(printFile);
-				printFile.printf("\" }");
+				String message = "{ \"errorMessage\" : \"RuntimeException: " + e.getMessage() + "\" }";
+				message = message.replaceAll("\\r\\n|\\r|\\n", " ");
+				printFile.printf(message);
 				printFile.close();
 			} catch (Exception f) {
 				throw new RuntimeException("Error while writing ErrorMessage: " + f.getMessage());
@@ -64,9 +62,9 @@ public class SolveModel {
 					file.createNewFile();
 				}
 				PrintWriter printFile = new PrintWriter(file);
-				printFile.printf("{ \"errorMessage\" : \"Exception: ");
-				e.printStackTrace(printFile);
-				printFile.printf("\" }");
+				String message = "{ \"errorMessage\" : \"Exception: " + e.getMessage() + "\" }";
+				message = message.replaceAll("\\r\\n|\\r|\\n", " ");
+				printFile.printf(message);
 				printFile.close();
 			} catch (Exception f) {
 				throw new RuntimeException("Error while writing ErrorMessage: " + f.getMessage());
