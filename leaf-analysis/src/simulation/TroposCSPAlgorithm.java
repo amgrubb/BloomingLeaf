@@ -599,9 +599,9 @@ public class TroposCSPAlgorithm {
     	
     	this.unsolvedTimePoints = new IntVar[this.numTimePoints - tCount];
     	int uCount = 0;
-    	List<IntVar> nextTimePoint = new ArrayList<IntVar>();
+    	List<IntVar> nextTimePointList = new ArrayList<IntVar>();
     	
-    	Integer maxKey = this.maxTime + 1;
+    	Integer minUnsolvedABSTime = this.maxTime + 1;
     	// Add absoluteCollection   
 		for (HashMap.Entry<Integer, IntVar> entry : absoluteCollection.entrySet()) {
 		    Integer key = entry.getKey();
@@ -611,12 +611,12 @@ public class TroposCSPAlgorithm {
     			this.unsolvedTimePoints[uCount] = value;
     			tCount++;
     			uCount++;
-    		    if(key < maxKey)
-    		    	maxKey = key;
+    		    if(key < minUnsolvedABSTime)
+    		    	minUnsolvedABSTime = key;
 		    }
 		}
-		if(absoluteCollection != null && absoluteCollection.size() > 0){
-			nextTimePoint.add(absoluteCollection.get(maxKey));		
+		if(absoluteCollection != null && uCount > 0){
+			nextTimePointList.add(absoluteCollection.get(minUnsolvedABSTime));		
 		}
 		
     	// Add EBs
@@ -626,7 +626,7 @@ public class TroposCSPAlgorithm {
 			tCount++;
 			uCount++;
     		constraints.add(new XgtC(value, maxPreviousTime));
-    		nextTimePoint.add(value);
+    		nextTimePointList.add(value);
     	}
     	// Add relative.
     	for (int i = 0; i < numStochasticTimePoints; i++){
@@ -639,14 +639,14 @@ public class TroposCSPAlgorithm {
 			uCount++;
     		absoluteCounter++;
     		if (i == 0)
-    			nextTimePoint.add(value);
+    			nextTimePointList.add(value);
     	}
     	this.constraints.add(new Alldifferent(this.timePoints));
     	
 
-    	this.nextTimePoints = new IntVar[nextTimePoint.size()];
+    	this.nextTimePoints = new IntVar[nextTimePointList.size()];
     	for (int i = 0; i < this.nextTimePoints.length; i ++)
-    		this.nextTimePoints[i] = nextTimePoint.get(i);
+    		this.nextTimePoints[i] = nextTimePointList.get(i);
 
     	if(DEBUG){
     		System.out.print("Unsolved Time Points: ");
