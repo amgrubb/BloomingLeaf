@@ -280,6 +280,7 @@ $('#analysis-btn').on('click', function(){
 $('#model-cur-btn').on('click', function(){
 	switchToModellingMode(false);
 	//Cleaning the previous analysis data for new execution
+	global_analysisResult.elementList = "";
 	savedAnalysisData.finalAssigneEpoch="";
 	savedAnalysisData.finalValueTimePoints="";
 });
@@ -711,8 +712,7 @@ function updateValues(c, v, m){
 		//var satvalues = ["denied", "partiallydenied", "partiallysatisfied", "satisfied", "unknown", "none"];
 		cell = graph.allElements[c];
 		value = v;
-		cell.attributes.attrs[".satvalue"].value = v;
-		//cell.attr(".satvalue/value", v);
+		cell.attr(".satvalue/value", v);
 
 	//Update node based on values saved from graph prior to analysis
 	}else if (m == "toInitModel"){
