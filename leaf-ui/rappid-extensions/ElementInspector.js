@@ -139,7 +139,9 @@ var ElementInspector = Backbone.View.extend({
           '<input style="float:right;"class="repeat-select2" id="repeat-end2" type="number" value="2">',
           '<label style="float:left; font-size:0.8em;" id="repeat-begin3" class="repeat-select3">Absolute Length</label>',
           '<input style="float:right;"class="repeat-select3" id="repeat-end3" type="number" value="0">',
-
+          '<div class="note" style="text-align:left;">',
+          '<p id="noteRepeat" style="color:red; font-size:0.75em;"> Note : Leave absolute value 0 for no absolute length </p>',
+          '</div>',
           '<button id="constraint-add" class="inspector-btn small-btn green-btn">Add</button>',
           '<button id="constraint-repeat" class="inspector-btn small-btn blue-btn">Set Repeats</button>',
           '<button id="constraint-restart" class="inspector-btn small-btn red-btn">Clear</button>',
@@ -954,6 +956,7 @@ var ElementInspector = Backbone.View.extend({
       $("#repeat-end2").show("fast");
       $("#repeat-begin3").show("fast");
       $("#repeat-end3").show("fast");
+      $("#noteRepeat").show("fast");
       $("#constraint-repeat").text("Clear Repeats");
       this.repeatOptionsDisplay = true;
 
@@ -967,6 +970,7 @@ var ElementInspector = Backbone.View.extend({
       $("#repeat-end2").hide();
       $("#repeat-begin3").hide();
       $("#repeat-end3").hide();
+      $("#noteRepeat").hide();
       this.repeatOptionsDisplay = false;
 
     // update all repeat related display and values
@@ -1001,7 +1005,6 @@ var ElementInspector = Backbone.View.extend({
           var endVal = this.constraintsObject.endLetter[i + 1];
           console.log(beginVal)
           console.log(endVal)
-          console.log(this.constraintsObject.repeat_count);
           $("#repeat-begin").append(
             $('<option></option>').val(beginVal).html(beginVal)
           );
@@ -1009,6 +1012,8 @@ var ElementInspector = Backbone.View.extend({
             $('<option></option>').val(endVal).html(endVal)
           );
         }
+        var repeatCounter = this.constraintsObject.repeat_count;
+        var absLength = this.constraintsObject.absoluteLength;
         $("repeat-end2").val(this.constraintsObject.repeat_count);
         $("repeat-end3").val(this.constraintsObject.absoluteLength);
       }
@@ -1103,9 +1108,14 @@ var ElementInspector = Backbone.View.extend({
       if (this.repeatOptionsDisplay){
         cell.attr(".constraints/beginRepeat", this.constraintsObject.repeatBegin);
         cell.attr(".constraints/endRepeat", this.constraintsObject.repeatEnd);
+        cell.attr(".constraints/repeatCount", this.constraintsObject.repeat_count);
+        cell.attr(".constraints/absoluteLen", this.constraintsObject.absoluteLength);
       }else{
         cell.attr(".constraints/beginRepeat", null);
         cell.attr(".constraints/endRepeat", null);
+        cell.attr(".constraints/repeatCount", null);
+        cell.attr(".constraints/absoluteLen", null);
+
       }
 
     }else if (funcType == "R"){
