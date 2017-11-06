@@ -167,6 +167,7 @@ body {
   font-size: 1.25em;
 }
 
+
 .sub-label{
   font-size: 1em !important;
 }
@@ -216,7 +217,7 @@ body {
   margin-bottom: 28px;
 }
 
-#function-div, #intension-div, #link-div, #query-div{
+#function-div, #intension-div, #link-div, #query-div,#valuesDiv{
   width: 215px;
   text-align: center;
   margin: auto;
@@ -230,7 +231,7 @@ body {
   border-color: rgba(31, 121, 101, 1);
 
   color: white;
-  font-size: 0.8em;
+  font-size: 0.7em;
   font-weight: 200;
   width: 200px;
   margin: auto;
@@ -245,8 +246,17 @@ body {
   background-color: rgba(20, 85, 9, 1);
   color: white;
 }
-
-.user-defined-select, .repeat-select, .relationship-select{
+#repeat-begin2,#repeat-begin3{
+  margin: 10px 0 8px 0;
+  text-align: left;
+}
+#repeat-end2, #repeat-end3{
+  width: 101px;
+  margin-top: 4px;
+  margin-bottom: 8px;
+  border-radius: 5px;
+}
+.user-defined-select, .repeat-select, .repeat-select2, .relationship-select{
   width: 104px;
   margin-bottom: 8px;
 }
@@ -257,6 +267,8 @@ body {
 
 .user-defined-select:nth-child(1),
 .repeat-select:nth-of-type(1),
+.repeat-select2:nth-of-type(3),
+.repeat-select3:nth-of-type(5),
 #relationship-src{
   float: left;
   clear: left;
@@ -264,6 +276,8 @@ body {
 
 .user-defined-select:nth-child(2),
 .repeat-select:nth-of-type(2),
+.repeat-select2:nth-of-type(4),
+.repeat-select3:nth-of-type(6),
 #relationship-tar{
   float: right;
 }
@@ -363,7 +377,7 @@ select > .select-placeholder {
   width: 160px;
   height: 25px;
   border-radius: 5px;
-  font-size: 0.8em;
+  font-size: 0.6em;
   margin-top: 12px;
 }
 
