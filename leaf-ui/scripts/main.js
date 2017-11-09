@@ -24,6 +24,7 @@ var queryObject = new queryObject();
 var loader;
 var reader;
 var recursiveStack = {};
+var constraintHolder = {};
 //Properties for both core and simulator.
 //TODO: merge this two arrays in order to make use the same name for all
 var satvalues = {
@@ -339,27 +340,55 @@ function syntaxCheck(){
 	var links = new InputLink();
 	var js_object = {};
 	var js_links = {};
-	js_object.analysis = getAnalysisValues(analysis);
 	jslinks = getLinks();
 	jslinks.forEach(function(link){
-		console.log(link.linkDestID);
-		console.log(link);
 		if(!(link.linkDestID in destSourceMapper)){
 			destSourceMapper[link.linkDestID] = {};
-			var constraint = link.linkType + link.postType;
-			destSourceMapper[link.linkDestID]["source"] = [link.linkSrcID];
-			destSourceMapper[link.linkDestID]["constraint"] = [link.constraint];
-
+			var constraint;
+			if (link.postType != null){
+				constraint = link.linkType+"|"+link.postType;
+			}
+			else{
+				constraint = link.linkType;
+			}
+			console.log(link.linkSrcID)
+			destSourceMapper[link.linkDestID]["source"] = [];
+			destSourceMapper[link.linkDestID]["source"].push(link.linkSrcID);
+			destSourceMapper[link.linkDestID]["constraint"] = [];
+			destSourceMapper[link.linkDestID]["constraint"].push(constraint);
+			if(!(constraint in constraintHolder)){
+				constraintHolder[constraint] = 1
+			}
+			else{
+				constraintHolder[constraint]++;
+			}
 		}
 		else{
-			var constraint = link.linkType + link.postType;
+			var constraint;
+			if (link.postType != null){
+				constraint = link.linkType+"|"+link.postType;
+			}
+			else{
+				constraint = link.linkType;
+			}
+			console.log(link.linkSrcID)
+			console.log(constraint)
 			destSourceMapper[link.linkDestID]["source"].push(link.linkSrcID);
 			destSourceMapper[link.linkDestID]["constraint"].push(constraint);
+			if(!(constraint in constraintHolder)){
+				constraintHolder[constraint] = 1
+			}
+			else{
+				constraintHolder[constraint]++;
+			}
 		}
 	})
+	if (Object.keys(constraintHolder).length > 1){
+		swal("Invalid link combinations", "", "error");
+	}
 	console.log(destSourceMapper);
-	console.log(js_object.analysis);
 	console.log(jslinks);
+	console.log(Object.keys(constraintHolder));
 }
 
 //Cycle-deteciton algorithm
