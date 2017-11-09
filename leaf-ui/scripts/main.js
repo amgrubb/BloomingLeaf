@@ -356,12 +356,6 @@ function syntaxCheck(){
 			destSourceMapper[link.linkDestID]["source"].push(link.linkSrcID);
 			destSourceMapper[link.linkDestID]["constraint"] = [];
 			destSourceMapper[link.linkDestID]["constraint"].push(constraint);
-			if(!(constraint in constraintHolder)){
-				constraintHolder[constraint] = 1
-			}
-			else{
-				constraintHolder[constraint]++;
-			}
 		}
 		else{
 			var constraint;
@@ -375,20 +369,19 @@ function syntaxCheck(){
 			console.log(constraint)
 			destSourceMapper[link.linkDestID]["source"].push(link.linkSrcID);
 			destSourceMapper[link.linkDestID]["constraint"].push(constraint);
-			if(!(constraint in constraintHolder)){
-				constraintHolder[constraint] = 1
-			}
-			else{
-				constraintHolder[constraint]++;
-			}
 		}
 	})
-	if (Object.keys(constraintHolder).length > 1){
-		swal("Invalid link combinations", "", "error");
+	for(var key in destSourceMapper){
+		console.log(destSourceMapper[key]);
+		var no_duplicates = destSourceMapper[key]["constraint"].every(function(v, i, a) {
+   // first item: nothing to compare with (and, single element arrays should return true)
+   // otherwise:  compare current value to previous value
+   	return i === 0 || v === a[i - 1];
+		})
+		if (no_duplicates == false){
+			swal("Invalid link combinations", "", "warning");
+		}
 	}
-	console.log(destSourceMapper);
-	console.log(jslinks);
-	console.log(Object.keys(constraintHolder));
 }
 
 //Cycle-deteciton algorithm
