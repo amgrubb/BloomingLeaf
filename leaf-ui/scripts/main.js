@@ -58,6 +58,9 @@ graph.linksNum;
 graph.constraintsNum;
 graph.allElements = [];
 graph.elementsBeforeAnalysis = [];
+graph.constraintValues = [];//store all the graph constraint values to be used		 +var linkNum = 0;
+														// by InputConstraint
+
 var linkNum = 0;
 var commandManager = new joint.dia.CommandManager({ graph: graph });
 
@@ -271,6 +274,7 @@ $('#analysis-btn').on('click', function(){
 $('#model-cur-btn').on('click', function(){
 	switchToModellingMode(false);
 	//Cleaning the previous analysis data for new execution
+	global_analysisResult.elementList = "";
 	savedAnalysisData.finalAssigneEpoch="";
 	savedAnalysisData.finalValueTimePoints="";
 });
@@ -354,7 +358,8 @@ function syntaxCheck(){
 	var links = new InputLink();
 	var js_object = {};
 	var js_links = {};
-	jslinks = getLinks();
+	console.log(getLinks());
+	var jslinks = getLinks();
 	var elements = graph.getLinks();
 	for(var j = 0; j < jslinks.length; j++){
 		var cellView  = elements[j].findView(paper);
