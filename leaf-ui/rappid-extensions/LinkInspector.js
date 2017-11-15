@@ -112,26 +112,26 @@ var LinkInspector = Backbone.View.extend({
 
       link.prop("link-type", $('.link-type').val());
       if (link.prop("link-type") == 'and' || link.prop("link-type") == 'or'){
-        link.attr({
+        /*link.attr({
           '.connection': {stroke: '#000000', 'stroke-dasharray': '0 0'},
           '.marker-source': {'d': '0'},
           '.marker-target': {stroke: '#000000', "d": 'M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5'}
-        });
+        });*/
         link.label(0 ,{position: 0.5, attrs: {text: {text: link.prop("link-type")}}});
 
       }else if(link.prop("link-type") == 'NBT' || link.prop("link-type") == 'NBD'){
-        link.attr({
+        /*link.attr({
           '.connection': {stroke: '#000000', 'stroke-dasharray': '0 0'},
           '.marker-source': {'d': '0'},
           '.marker-target': {stroke: '#000000', "d": '0'}
-        });
+        });*/
         link.label(0 ,{position: 0.5, attrs: {text: {text: link.prop("link-type")}}});
       }else{
-        link.attr({
+        /*link.attr({
           '.connection': {stroke: '#000000', 'stroke-dasharray': '0 0'},
           '.marker-source': {'d': '0'},
           '.marker-target': {stroke: '#000000', "d": 'M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5'}
-        });
+        });*/
         link.label(0 ,{position: 0.5, attrs: {text: {text: $('.link-type option:selected').text()}}});
       }
 
