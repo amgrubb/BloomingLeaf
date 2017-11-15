@@ -24,6 +24,7 @@ var queryObject = new queryObject();
 var loader;
 var reader;
 var recursiveStack = {};
+var constraintHolder = {};
 //Properties for both core and simulator.
 //TODO: merge this two arrays in order to make use the same name for all
 var satvalues = {
@@ -57,9 +58,7 @@ graph.linksNum;
 graph.constraintsNum;
 graph.allElements = [];
 graph.elementsBeforeAnalysis = [];
-graph.constraintValues = [];//store all the graph constraint values to be used
-														// by InputConstraint
-
+var linkNum = 0;
 var commandManager = new joint.dia.CommandManager({ graph: graph });
 
 // Create a paper and wrap it in a PaperScroller.
@@ -78,6 +77,7 @@ paper = new joint.dia.Paper({
 		'labels': [{position: 0.5, attrs: {text: {text: "and"}}}]
 	})
 });
+console.log(linkNum);
 
 var paperScroller = new joint.ui.PaperScroller({
 	autoResizePaper: true,
@@ -144,7 +144,7 @@ if (document.cookie){
 			break;
 		}
 	}
-
+	console.log(graph.fromJSON(JSON.parse(prevgraph)));
 	if (prevgraph){
 		graph.fromJSON(JSON.parse(prevgraph));
 	}
@@ -154,17 +154,22 @@ if (document.cookie){
 
 // ----------------------------------------------------------------- //
 // Modelling link control
-/*
 $('#symbolic-btn').on('click', function(){
 	saveLinks(linkMode);
 	setLinks(linkMode);
-});*/
-
-// Set links or constraints
-//Setlinks and savelinks may not needed.
-function testMe(){
-	console.log("tested me");
+});
+function getNodeName(id){
+	var listNodes = graph.getElements();
+	for(var i = 0; i < listNodes.length; i++){
+		var cellView  = listNodes[i].findView(paper);
+		if(id == cellView.model.attributes.elementid){
+			var nodeName = cellView.model.attr(".name");
+			console.log(nodeName.text);
+			return nodeName.text;
+		}
+	}
 }
+// Set links or constraints
 function setLinks(mode){
 	if(mode == "View"){
 		linkMode = "Constraints";
@@ -188,18 +193,13 @@ function setLinks(mode){
 
 	// render preexisting links in new mode
 	for (var l = 0; l < restoredLinks.length; l++){
-		alert("never gets called")
 		restoredLinks[l].attr('./display', '');
 	}
 }
-function testMain(){
-	alert("called in test main");
-}
+
 // Save links or constraints
 function saveLinks(mode){
-	console.log("called in saved links");
 	// Hide all relationships that are not suppose to be dispalyed
-
 	if(mode == "View"){
 		var links = graph.getLinks();
 		graph.links = [];
@@ -212,21 +212,15 @@ function saveLinks(mode){
 			}else{link.remove();}
 		});
 	}else if (mode == "Constraints"){
-		console.log("called in saved links constraints");
 		var links = graph.getLinks();
 		graph.intensionConstraints = [];
 		links.forEach(function(link){
 			var linkStatus = link.attributes.labels[0].attrs.text.text.replace(/\s/g, '');
-
 			if(!isLinkInvalid(link) && (linkStatus != "constraint") && (linkStatus != "error")){
-				console.log(linkStatus);
-				console.log(isLinkInvalid(link));
-				console.log(link.attr('./display'));
-				//if(!link.attr('./display')){
-				//	link.attr('./display', 'none');
-				console.log(link);
-				graph.intensionConstraints.push(link);
-				//}
+				if(!link.attr('./display')){
+					link.attr('./display', 'none');
+					graph.intensionConstraints.push(link);
+				}
 			}else{link.remove();}
 		});
 	}
@@ -238,14 +232,11 @@ function saveLinks(mode){
 
 //Switch to analysis mode
 $('#analysis-btn').on('click', function(){
-
+	syntaxCheck();
 	console.log(linkMode);
-	/* Comment these for now.
-	if (linkMode == "View")
-		//$('#symbolic-btn').trigger( "click" );
-		//setLinks(linkMode);
-		testMe();*/
-		//saveLinks(linkMode);
+	/*
+	if (linkMode == "Constraints")
+		$('#symbolic-btn').trigger( "click" );*/
 
 	//Adjust left and right panels
 	elementInspector.clear();
@@ -280,7 +271,6 @@ $('#analysis-btn').on('click', function(){
 $('#model-cur-btn').on('click', function(){
 	switchToModellingMode(false);
 	//Cleaning the previous analysis data for new execution
-	global_analysisResult.elementList = "";
 	savedAnalysisData.finalAssigneEpoch="";
 	savedAnalysisData.finalValueTimePoints="";
 });
@@ -310,6 +300,9 @@ $('#cycledetect-btn').on('click', function(e){
 			var elements = graph.getElements();
 			for (var i = 0; i < elements.length; i++){
 				var cellView  = elements[i].findView(paper);
+				if(cellView.model.attributes.type == "link"){
+					console.log(cellView.model.attr);
+				}
 				if(cellView.model.attributes.type == "basic.Task"){
 					cellView.model.attr({'.outer': {'fill': '#92E3B1'}});
 				}
@@ -354,6 +347,112 @@ $('#cycledetect-btn').on('click', function(e){
 	js_object = null;
 	jslinks = null;
 })
+
+function syntaxCheck(){
+	var destSourceMapper = {};
+	var analysis = new InputAnalysis();
+	var links = new InputLink();
+	var js_object = {};
+	var js_links = {};
+	jslinks = getLinks();
+	var elements = graph.getLinks();
+	for(var j = 0; j < jslinks.length; j++){
+		var cellView  = elements[j].findView(paper);
+		if(!(jslinks[j].linkDestID in destSourceMapper)){
+			destSourceMapper[jslinks[j].linkDestID] = {};
+			var constraint;
+			if (jslinks[j].postType != null){
+				constraint = jslinks[j].linkType+"|"+jslinks[j].postType;
+			}
+			else{
+				constraint = jslinks[j].linkType;
+			}
+			destSourceMapper[jslinks[j].linkDestID]["source"] = [];
+			destSourceMapper[jslinks[j].linkDestID]["source"].push(jslinks[j].linkSrcID);
+			destSourceMapper[jslinks[j].linkDestID]["constraint"] = [];
+			destSourceMapper[jslinks[j].linkDestID]["constraint"].push(constraint);
+			destSourceMapper[jslinks[j].linkDestID]["findview"] = [];
+			destSourceMapper[jslinks[j].linkDestID]["findview"].push(cellView);
+		}
+		else{
+			var constraint;
+			if (jslinks[j].postType != null){
+				constraint = jslinks[j].linkType+"|"+jslinks[j].postType;
+			}
+			else{
+				constraint = jslinks[j].linkType;
+			}
+			destSourceMapper[jslinks[j].linkDestID]["source"].push(jslinks[j].linkSrcID);
+			destSourceMapper[jslinks[j].linkDestID]["constraint"].push(constraint);
+			destSourceMapper[jslinks[j].linkDestID]["findview"].push(cellView);
+		}
+	}
+	var error = false;
+	var errorText = "<p style='text-align:left'>";
+	var j = 1;
+	for(var key in destSourceMapper){
+		var duplicates = (function(){
+			var x = destSourceMapper[key]["constraint"][0];
+			for(var i=1;i<destSourceMapper[key]["constraint"].length;i++){
+    		if(x!=destSourceMapper[key]["constraint"][i]){return true}
+    	}
+			return false;
+		})();
+		if(duplicates == true){
+			error = true;
+			errorText += "<b style='color:black'> Suggestion : </b>" +  j + ". ";
+			var subErrorText = "Have all links from "
+			destSourceMapper[key]["source"].forEach(function(element){
+				errorText += "<b style='color:blue'>" + this.getNodeName(element) + ", </b>"
+				subErrorText += this.getNodeName(element) + ", "
+			})
+			subErrorText += " to " + this.getNodeName(key)
+			destSourceMapper[key]["constraint"].forEach(function(element){
+				subErrorText += " all <b style='color: black' >"+ element + "</b> constraint links or "
+			})
+			subErrorText = subErrorText.substring(0,subErrorText.lastIndexOf(" or ")) + ".";
+			var destName = this.getNodeName(key);
+			errorText += " to <b>" + destName + "</b><br> " + subErrorText +"<br><br>";
+			destSourceMapper[key]["findview"].forEach(function(element){
+				element.model.attr({'.connection': {'stroke': 'red'}});
+				element.model.attr({'.marker-target': {'stroke': 'red'}});
+				element.model.attr({'.connection': {'stroke-width': '3'}});
+				element.model.attr({'.marker-target': {'stroke-width': '3'}});
+
+			})
+		}
+		else{
+			destSourceMapper[key]["findview"].forEach(function(element){
+				element.model.attr({'.connection': {'stroke': '#000000'}});
+				element.model.attr({'.marker-target': {'stroke': '#000000'}});
+				element.model.attr({'.connection': {'stroke-width': '1'}});
+				element.model.attr({'.marker-target': {'stroke-width': '1'}});
+			})
+		}
+		j+=1;
+	}
+	errorText += "</p>"
+	if(error==true){
+		//errorText = errorText.substring(0,errorText.lastIndexOf(" and ")) + '.';
+		swal({
+			title:"We found invalid links combinations ",
+			type: "warning",
+			html: errorText,
+			showCloseButton: true,
+ 			showCancelButton: true,
+			confirmButtonText: "Ok",
+			cancelButtonText: "Go back to Model View",
+			cancelButtonClass: "backModel"
+		}).then(function() {
+
+			}, function(dismiss) {
+			  // dismiss can be 'overlay', 'cancel', 'close', 'esc', 'timer'
+			  if (dismiss === 'cancel') {
+			    $("#model-cur-btn").trigger("click");
+			  }
+		})
+	}
+}
 
 //Cycle-deteciton algorithm
 // The algorithm is referenced from Detect Cycle in a Directed Graph algorithm
@@ -414,7 +513,6 @@ function isCycle(v, visited, recursiveStack, graphs){
 
 function switchToModellingMode(useInitState){
 	//Reset to initial graph prior to analysis
-
 	if(useInitState){
 		for (var i = 0; i < graph.elementsBeforeAnalysis.length; i++){
 			var value = graph.elementsBeforeAnalysis[i]
@@ -712,7 +810,8 @@ function updateValues(c, v, m){
 		//var satvalues = ["denied", "partiallydenied", "partiallysatisfied", "satisfied", "unknown", "none"];
 		cell = graph.allElements[c];
 		value = v;
-		cell.attr(".satvalue/value", v);
+		cell.attributes.attrs[".satvalue"].value = v;
+		//cell.attr(".satvalue/value", v);
 
 	//Update node based on values saved from graph prior to analysis
 	}else if (m == "toInitModel"){
@@ -1058,12 +1157,12 @@ graph.on('change:size', function(cell, size){
 this.graph.on('remove', function(cell, collection, opt) {
    if (cell.isLink()) {
 	   if(cell.prop("link-type") == 'NBT' || cell.prop("link-type") == 'NBD'){
-		
+
 		   //Verify if is a Not both type. If it is remove labels from source and target node
 		   var link = cell;
 		   var source = link.prop("source");
 		   var target = link.prop("target");
-	
+
 		   for(var i = 0; i < graph.getElements().length; i++ ){
 			   if(graph.getElements()[i].prop("id") == source["id"]){
 				   source = graph.getElements()[i];
@@ -1072,7 +1171,7 @@ this.graph.on('remove', function(cell, collection, opt) {
 				   target = graph.getElements()[i];
 			   }
 		   }
-	
+
 		   //verify if node have any other link NBD or NBT
 	 	  var sourceNBLink = function(){
 	 		  var localLinks = graph.getLinks();
@@ -1085,7 +1184,7 @@ this.graph.on('remove', function(cell, collection, opt) {
 	 		  }
 	 		  return false;
 	 	  }
-	
+
 	 	  //verify if target have any other link NBD or NBT
 	 	  var targetNBLink = function(){
 	 		  var localLinks = graph.getLinks();
@@ -1098,7 +1197,7 @@ this.graph.on('remove', function(cell, collection, opt) {
 	 		  }
 	 		  return false;
 	 	  }
-	
+
 	 	  //Verify if it is possible to remove the NB tag from source and target
 	 	  if(!sourceNBLink()){
 	 		  source.attr(".funcvalue/text", "");
@@ -1106,7 +1205,7 @@ this.graph.on('remove', function(cell, collection, opt) {
 	 	  if(!targetNBLink()){
 		          target.attr(".funcvalue/text", "");
 	 	  }
- 	   
+
 	  }
    }
 });
@@ -1201,7 +1300,6 @@ $('#btn-clear-cycle').on('click',function(){
 	var elements = graph.getElements();
 	for (var i = 0; i < elements.length; i++){
 			var cellView  = elements[i].findView(paper);
-
 			if(cellView.model.attributes.type == "basic.Task"){
 				cellView.model.attr({'.outer': {'fill': '#92E3B1'}});
 			}
