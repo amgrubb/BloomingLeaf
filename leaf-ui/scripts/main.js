@@ -58,7 +58,7 @@ graph.linksNum;
 graph.constraintsNum;
 graph.allElements = [];
 graph.elementsBeforeAnalysis = [];
-
+var linkNum = 0;
 var commandManager = new joint.dia.CommandManager({ graph: graph });
 
 // Create a paper and wrap it in a PaperScroller.
@@ -77,6 +77,7 @@ paper = new joint.dia.Paper({
 		'labels': [{position: 0.5, attrs: {text: {text: "and"}}}]
 	})
 });
+console.log(linkNum);
 
 var paperScroller = new joint.ui.PaperScroller({
 	autoResizePaper: true,
@@ -157,7 +158,17 @@ $('#symbolic-btn').on('click', function(){
 	saveLinks(linkMode);
 	setLinks(linkMode);
 });
-
+function getNodeName(id){
+	var listNodes = graph.getElements();
+	for(var i = 0; i < listNodes.length; i++){
+		var cellView  = listNodes[i].findView(paper);
+		if(id == cellView.model.attributes.elementid){
+			var nodeName = cellView.model.attr(".name");
+			console.log(nodeName.text);
+			return nodeName.text;
+		}
+	}
+}
 // Set links or constraints
 function setLinks(mode){
 	if(mode == "View"){
@@ -289,6 +300,9 @@ $('#cycledetect-btn').on('click', function(e){
 			var elements = graph.getElements();
 			for (var i = 0; i < elements.length; i++){
 				var cellView  = elements[i].findView(paper);
+				if(cellView.model.attributes.type == "link"){
+					console.log(cellView.model.attr);
+				}
 				if(cellView.model.attributes.type == "basic.Task"){
 					cellView.model.attr({'.outer': {'fill': '#92E3B1'}});
 				}
@@ -341,46 +355,102 @@ function syntaxCheck(){
 	var js_object = {};
 	var js_links = {};
 	jslinks = getLinks();
-	jslinks.forEach(function(link){
-		if(!(link.linkDestID in destSourceMapper)){
-			destSourceMapper[link.linkDestID] = {};
+	var elements = graph.getLinks();
+	for(var j = 0; j < jslinks.length; j++){
+		var cellView  = elements[j].findView(paper);
+		if(!(jslinks[j].linkDestID in destSourceMapper)){
+			destSourceMapper[jslinks[j].linkDestID] = {};
 			var constraint;
-			if (link.postType != null){
-				constraint = link.linkType+"|"+link.postType;
+			if (jslinks[j].postType != null){
+				constraint = jslinks[j].linkType+"|"+jslinks[j].postType;
 			}
 			else{
-				constraint = link.linkType;
+				constraint = jslinks[j].linkType;
 			}
-			console.log(link.linkSrcID)
-			destSourceMapper[link.linkDestID]["source"] = [];
-			destSourceMapper[link.linkDestID]["source"].push(link.linkSrcID);
-			destSourceMapper[link.linkDestID]["constraint"] = [];
-			destSourceMapper[link.linkDestID]["constraint"].push(constraint);
+			destSourceMapper[jslinks[j].linkDestID]["source"] = [];
+			destSourceMapper[jslinks[j].linkDestID]["source"].push(jslinks[j].linkSrcID);
+			destSourceMapper[jslinks[j].linkDestID]["constraint"] = [];
+			destSourceMapper[jslinks[j].linkDestID]["constraint"].push(constraint);
+			destSourceMapper[jslinks[j].linkDestID]["findview"] = [];
+			destSourceMapper[jslinks[j].linkDestID]["findview"].push(cellView);
 		}
 		else{
 			var constraint;
-			if (link.postType != null){
-				constraint = link.linkType+"|"+link.postType;
+			if (jslinks[j].postType != null){
+				constraint = jslinks[j].linkType+"|"+jslinks[j].postType;
 			}
 			else{
-				constraint = link.linkType;
+				constraint = jslinks[j].linkType;
 			}
-			console.log(link.linkSrcID)
-			console.log(constraint)
-			destSourceMapper[link.linkDestID]["source"].push(link.linkSrcID);
-			destSourceMapper[link.linkDestID]["constraint"].push(constraint);
+			destSourceMapper[jslinks[j].linkDestID]["source"].push(jslinks[j].linkSrcID);
+			destSourceMapper[jslinks[j].linkDestID]["constraint"].push(constraint);
+			destSourceMapper[jslinks[j].linkDestID]["findview"].push(cellView);
 		}
-	})
+	}
+	var error = false;
+	var errorText = "<p style='text-align:left'>";
+	var j = 1;
 	for(var key in destSourceMapper){
-		console.log(destSourceMapper[key]);
-		var no_duplicates = destSourceMapper[key]["constraint"].every(function(v, i, a) {
-   // first item: nothing to compare with (and, single element arrays should return true)
-   // otherwise:  compare current value to previous value
-   	return i === 0 || v === a[i - 1];
-		})
-		if (no_duplicates == false){
-			swal("Invalid link combinations", "", "warning");
+		var duplicates = (function(){
+			var x = destSourceMapper[key]["constraint"][0];
+			for(var i=1;i<destSourceMapper[key]["constraint"].length;i++){
+    		if(x!=destSourceMapper[key]["constraint"][i]){return true}
+    	}
+			return false;
+		})();
+		if(duplicates == true){
+			error = true;
+			errorText += "<b style='color:black'> Suggestion : </b>" +  j + ". ";
+			var subErrorText = "Have all links from "
+			destSourceMapper[key]["source"].forEach(function(element){
+				errorText += "<b style='color:blue'>" + this.getNodeName(element) + ", </b>"
+				subErrorText += this.getNodeName(element) + ", "
+			})
+			subErrorText += " to " + this.getNodeName(key)
+			destSourceMapper[key]["constraint"].forEach(function(element){
+				subErrorText += " all <b style='color: black' >"+ element + "</b> constraint links or "
+			})
+			subErrorText = subErrorText.substring(0,subErrorText.lastIndexOf(" or ")) + ".";
+			var destName = this.getNodeName(key);
+			errorText += " to <b>" + destName + "</b><br> " + subErrorText +"<br><br>";
+			destSourceMapper[key]["findview"].forEach(function(element){
+				element.model.attr({'.connection': {'stroke': 'red'}});
+				element.model.attr({'.marker-target': {'stroke': 'red'}});
+				element.model.attr({'.connection': {'stroke-width': '3'}});
+				element.model.attr({'.marker-target': {'stroke-width': '3'}});
+
+			})
 		}
+		else{
+			destSourceMapper[key]["findview"].forEach(function(element){
+				element.model.attr({'.connection': {'stroke': '#000000'}});
+				element.model.attr({'.marker-target': {'stroke': '#000000'}});
+				element.model.attr({'.connection': {'stroke-width': '1'}});
+				element.model.attr({'.marker-target': {'stroke-width': '1'}});
+			})
+		}
+		j+=1;
+	}
+	errorText += "</p>"
+	if(error==true){
+		//errorText = errorText.substring(0,errorText.lastIndexOf(" and ")) + '.';
+		swal({
+			title:"We found invalid links combinations ",
+			type: "warning",
+			html: errorText,
+			showCloseButton: true,
+ 			showCancelButton: true,
+			confirmButtonText: "Ok",
+			cancelButtonText: "Go back to Model View",
+			cancelButtonClass: "backModel"
+		}).then(function() {
+
+			}, function(dismiss) {
+			  // dismiss can be 'overlay', 'cancel', 'close', 'esc', 'timer'
+			  if (dismiss === 'cancel') {
+			    $("#model-cur-btn").trigger("click");
+			  }
+		})
 	}
 }
 
@@ -1230,7 +1300,6 @@ $('#btn-clear-cycle').on('click',function(){
 	var elements = graph.getElements();
 	for (var i = 0; i < elements.length; i++){
 			var cellView  = elements[i].findView(paper);
-
 			if(cellView.model.attributes.type == "basic.Task"){
 				cellView.model.attr({'.outer': {'fill': '#92E3B1'}});
 			}
