@@ -395,11 +395,14 @@ function syntaxCheck(){
 	var error = false;
 	var errorText = "<p style='text-align:left'>";
 	var j = 1;
+	var contributionPattern = /[+]{1,}|[-]{1,}/g;
 	for(var key in destSourceMapper){
 		var duplicates = (function(){
 			var x = destSourceMapper[key]["constraint"][0];
 			for(var i=1;i<destSourceMapper[key]["constraint"].length;i++){
-    		if(x!=destSourceMapper[key]["constraint"][i]){return true}
+    		if(x!=destSourceMapper[key]["constraint"][i] && destSourceMapper[key]["constraint"][i].match(contributionPattern) == null){
+					return true
+				}
     	}
 			return false;
 		})();
