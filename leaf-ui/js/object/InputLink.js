@@ -9,7 +9,7 @@ function InputLink(linkType, linkSrcID, linkDestID, postType = null, absVal = -1
 function getLinks(){
 
 	var links = [];
-
+	getIntentitonalElements();
 	//Verifying if links are valid
 	graph.getLinks().forEach(function(link){
 	    if(isLinkInvalid(link))

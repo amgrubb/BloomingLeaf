@@ -167,7 +167,6 @@ function getNodeName(id){
 		var cellView  = listNodes[i].findView(paper);
 		if(id == cellView.model.attributes.elementid){
 			var nodeName = cellView.model.attr(".name");
-			console.log(nodeName.text);
 			return nodeName.text;
 		}
 	}
@@ -236,7 +235,6 @@ function saveLinks(mode){
 //Switch to analysis mode
 $('#analysis-btn').on('click', function(){
 	syntaxCheck();
-	console.log(linkMode);
 	/*
 	if (linkMode == "Constraints")
 		$('#symbolic-btn').trigger( "click" );*/
@@ -354,11 +352,9 @@ $('#cycledetect-btn').on('click', function(e){
 
 function syntaxCheck(){
 	var destSourceMapper = {};
-	var analysis = new InputAnalysis();
-	var links = new InputLink();
 	var js_object = {};
 	var js_links = {};
-	console.log(getLinks());
+	//console.log(getLinks());
 	var jslinks = getLinks();
 	var elements = graph.getLinks();
 	for(var j = 0; j < jslinks.length; j++){
@@ -416,7 +412,9 @@ function syntaxCheck(){
 			})
 			subErrorText += " to " + this.getNodeName(key)
 			destSourceMapper[key]["constraint"].forEach(function(element){
-				subErrorText += " all <b style='color: black' >"+ element + "</b> constraint links or "
+				if(!(subErrorText.includes(element))){
+					subErrorText += " all <b style='color: black' >"+ element + "</b> constraint links or "
+				}
 			})
 			subErrorText = subErrorText.substring(0,subErrorText.lastIndexOf(" or ")) + ".";
 			var destName = this.getNodeName(key);
