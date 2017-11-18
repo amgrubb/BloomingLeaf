@@ -140,7 +140,7 @@ var ElementInspector = Backbone.View.extend({
           '<label style="float:left; font-size:0.8em;" id="repeat-begin3" class="repeat-select3">Absolute Length</label>',
           '<input style="float:right;"class="repeat-select3" id="repeat-end3" type="number" value="0">',
           '<div class="note" style="text-align:left;">',
-          '<p id="noteRepeat" style="color:red; font-size:0.75em;"> Note : Leave absolute value 0 for no absolute length </p>',
+          '<p id="noteRepeat" style="color:red; font-size:0.7em;">Note: Leave \"Absolute Length\" as 0 for unknown length. </p>',
           '</div>',
           '<button id="constraint-add" class="inspector-btn small-btn green-btn">Add</button>',
           '<button id="constraint-repeat" class="inspector-btn small-btn blue-btn">Set Repeats</button>',
