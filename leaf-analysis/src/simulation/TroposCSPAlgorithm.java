@@ -237,6 +237,18 @@ public class TroposCSPAlgorithm {
 		List<UserEvaluation> userEvaluations = this.spec.getUserEvaluations();
 		for (UserEvaluation eval : userEvaluations){
 			System.out.println("Eval exists for goal " + eval.getGoal().id + " at time " + eval.getAbsTime());
+			// A: Get Intention ID.
+			int goalIndex = -1;
+			for(int i=0; i < intentions.length; i++){
+				if(eval.goal.equals(intentions[i])){
+					goalIndex = i;
+					break;
+				}
+			}
+			System.out.println(goalIndex);
+			//IntVar[] timePoints;
+			//if((goalIndex != -1) AND (eval.getAbsTime() == 0))
+			//private BooleanVar[][][] values;
 		}
 	}
 
