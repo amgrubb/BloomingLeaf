@@ -224,11 +224,21 @@ public class TroposCSPAlgorithm {
 
 		}else if (problemType == SearchType.CURRENT_STATE)
     		System.out.println("\n ERROR/TODO What happens with the timepoint in current state?");
-    		    	
+    	
+        //TODO: Add User Evaluations.
+        if (DEBUG)
+    		System.out.println("\nMethod: initialize User Evaluations");
+        initializeUserEvaluations();
+        
     	if (DEBUG)
     		System.out.println("\nEnd of Init Procedure");
 	}	
-	
+	private void initializeUserEvaluations() {
+		List<UserEvaluation> userEvaluations = this.spec.getUserEvaluations();
+		for (UserEvaluation eval : userEvaluations){
+			System.out.println("Eval exists for goal " + eval.getGoal().id + " at time " + eval.getAbsTime());
+		}
+	}
 
 	private void initializeNextTimeConstraints() {
 		nextTimePoint = new IntVar(this.store, "Next_Time", 0, nextTimePoints.length - 1);

@@ -10,6 +10,7 @@ import interface_objects.InputActor;
 import interface_objects.InputAnalysis;
 import interface_objects.InputConstraint;
 import interface_objects.InputDynamic;
+import interface_objects.InputEvaluation;
 import interface_objects.InputIntention;
 import interface_objects.InputLink;
 import interface_objects.InputModel;
@@ -417,7 +418,41 @@ public class ModelSpecBuilder {
 				}
 				modelSpec.setInitialValues(initialValues);
 			}
-								
+				
+			if(DEBUG)
+				System.out.println("Done Initial Values");
+			
+			//Getting User Evaluations
+			if(!frontendModel.getUserEvaluations().isEmpty()){
+				// iterate over user evaluations. 
+				for(InputEvaluation dataEvaluation : frontendModel.getUserEvaluations()){
+					String goal = dataEvaluation.getGoal();
+					int absTime = Integer.parseInt(dataEvaluation.getAbsTime());
+					String evaluationValue = dataEvaluation.getEvaluationValue();
+					
+					IntentionalElement src = null;
+					for(IntentionalElement tmp : modelSpec.getIntElements()){
+						if(goal.equals(tmp.getId()))
+							src = tmp;
+					}
+					
+					boolean[] values = new boolean[4];
+					for(int i = 0; i < 4; i++){
+						if(evaluationValue.charAt(i)=='1'){
+							values[i] = true;
+						}else{
+							values[i] = false;
+						}						
+					}
+					modelSpec.getUserEvaluations().add(new UserEvaluation(src, absTime, values));
+				}
+			}
+
+			
+			
+			if(DEBUG)
+				System.out.println("Done User Evaluations");
+			
 
 			if(DEBUG)
 				System.out.println("Building Model");
