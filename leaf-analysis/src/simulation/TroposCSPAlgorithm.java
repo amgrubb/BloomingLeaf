@@ -96,7 +96,7 @@ public class TroposCSPAlgorithm {
 	 * Constructor: Creates the CSP problem from the ModelSpec.
 	 * @param spec	input model
 	 */
-	public TroposCSPAlgorithm(ModelSpec spec) {
+	public TroposCSPAlgorithm(ModelSpec spec) throws Exception {
     	if (DEBUG)
 			System.out.println("Starting: TroposCSPAlgorithm");
 		// Initialise Store
@@ -140,8 +140,7 @@ public class TroposCSPAlgorithm {
     	case "allPath":
     		searchAll = true;
     		problemType = SearchType.PATH;
-    		System.err.println("allPath requested: testing of this scenario required");
-    		break;
+    		throw new Exception("Backend Incomplete: User requested \'allPath\', but this scenario has not been implemented. ");
     	case "allNextStates":
     		searchAll = true;
     		problemType = SearchType.NEXT_STATE;
@@ -151,27 +150,24 @@ public class TroposCSPAlgorithm {
     	case "singleNextStates":
     		searchAll = false;
     		problemType = SearchType.NEXT_STATE;
-    		System.err.println("singleNextStates requested: testing of this scenario required");
-    		break;
+    		throw new Exception("Backend Incomplete: User requested \'singleNextStates\', but this scenario has not been implemented. ");
     	case "allCurrentState":
     		searchAll = true;
     		problemType = SearchType.CURRENT_STATE;
-    		System.err.println("allCurrentState requested: testing of this scenario required");
-    		break;
+    		throw new Exception("Backend Incomplete: User requested \'allCurrentState\', but this scenario has not been implemented. ");
     	case "singleCurrentState":
     		searchAll = false;
     		problemType = SearchType.CURRENT_STATE;
-    		System.err.println("singleCurrentState requested: testing of this scenario required");
-    		break;
+    		throw new Exception("Backend Incomplete: User requested \'singleCurrentState\', but this scenario has not been implemented. ");
     	default:
-    		System.err.println("ERROR: Invalid scenario request.");
+    		throw new Exception("User Error: User requested \'" + spec.getAnalysisType() + "\', no such scenario exists. ");
     	}
 
     	if (DEBUG)
 			System.out.println("Length of initialValueTimePoints: " + this.spec.getInitialValueTimePoints().length + 
 					"\nLength of initialValues()[0]: " + this.spec.getInitialValues()[0].length);
     	if (this.spec.getInitialValueTimePoints().length != this.spec.getInitialValues()[0].length)
-    		System.err.println("Error: The length of initialValueTimePoints and initialValues[0] do not match.");
+    		throw new Exception("Input Error: The length of initialValueTimePoints and initialValues[0] do not match.");
 
 		// Determine the number of observation steps.
 		// Add constraints between Intention EBs.
@@ -223,8 +219,9 @@ public class TroposCSPAlgorithm {
 				this.functionEBCollection, this.spec.getInitialValueTimePoints()[lengthOfInitial - 1], lengthOfInitial - 1, this.minTimePoint);
 
 		}else if (problemType == SearchType.CURRENT_STATE)
-    		System.out.println("\n ERROR/TODO What happens with the timepoint in current state?");
-    	
+			throw new RuntimeException("\n ERROR/TODO What happens with the timepoint in current state?");
+        
+
         //TODO: Add User Evaluations.
         if (DEBUG)
     		System.out.println("\nMethod: initialize User Evaluations");
@@ -337,7 +334,7 @@ public class TroposCSPAlgorithm {
         		}
         		
         	} else
-        		System.err.println("TroposCSPAlgorithm: Dynamic type not found for " + element.name);
+        		throw new RuntimeException("TroposCSPAlgorithm: Dynamic type not found for " + element.name);
     	}
     	
     	// Step 1B: Count the number of EBs for numEpochs associated with EvolvingLinks and NotBothLinks.
@@ -355,7 +352,7 @@ public class TroposCSPAlgorithm {
     		if (eCont.equals("A")) {	//Absolute Time Point
     			IntVar src = getEBFromEpochCollection(etmp.src, etmp.getSrcEB());
     			if (src == null)
-    				System.err.println("Error: Null found in " + etmp.toString());
+    				throw new RuntimeException("Error: Null found in " + etmp.toString());
     			//Check if absolute value already exists.
     			int etmpTime = etmp.getAbsoluteTime();
     			IntVar absTemp = absoluteCollection.get(new Integer(etmpTime));
@@ -380,7 +377,7 @@ public class TroposCSPAlgorithm {
 
     			if ((src != null) && (dest != null)){
     				if (assignedEBs.contains(src) && assignedEBs.contains(dest))
-    					System.err.println("Cannot have two absolute EBs assigned to each other.");
+    					throw new RuntimeException("Cannot have two absolute EBs assigned to each other.");
     				else if (assignedEBs.contains(src)){
     					//Add dest to assigned EB
     					assignedEBs.add(dest); 
@@ -398,7 +395,7 @@ public class TroposCSPAlgorithm {
         				epochToTimePoint.put(src, dest);
     				}	
     			} else
-    				System.err.println("Error: Null found in " + etmp.toString());
+    				throw new RuntimeException("Error: Null found in " + etmp.toString());
     		}
        	}
     	
@@ -413,7 +410,7 @@ public class TroposCSPAlgorithm {
     			if ((src != null) && (dest != null)){
     					constraints.add(new XltY(src, dest));
     			} else
-    				System.err.println("Error: Null found in " + etmp.toString());
+    				throw new RuntimeException("Error: Null found in " + etmp.toString());
 			}
     	}
     	
@@ -459,7 +456,7 @@ public class TroposCSPAlgorithm {
     		if (etmpTime > 0){
     			// Absolute Time Assignment Exists.
     			if (etmpTime > this.maxTime)
-    				System.err.println("Absolute time selected for EBs cannot be greater than maxTime.");
+    				throw new RuntimeException("Absolute time selected for EBs cannot be greater than maxTime.");
     			
     			newTimePoint = absoluteCollection.get(new Integer(etmpTime));
     			if (newTimePoint == null){
@@ -488,7 +485,7 @@ public class TroposCSPAlgorithm {
     		if (etmpTime > 0){
     			// Absolute Time Assignment Exists.
     			if (etmpTime > this.maxTime)
-    				System.err.println("Absolute time selected for EBs cannot be greater than maxTime.");
+    				throw new RuntimeException("Absolute time selected for EBs cannot be greater than maxTime.");
     			
     			newTimePoint = absoluteCollection.get(new Integer(etmpTime));
     			if (newTimePoint == null){
@@ -518,7 +515,7 @@ public class TroposCSPAlgorithm {
     		if (etmpTime > 0){
     			// Absolute Time Assignment Exists.
     			if (etmpTime > this.maxTime)
-    				System.err.println("Absolute time selected for EBs cannot be greater than maxTime.");
+    				throw new RuntimeException("Absolute time selected for EBs cannot be greater than maxTime.");
     			
     			newTimePoint = absoluteCollection.get(new Integer(etmpTime));
     			if (newTimePoint == null){
@@ -567,7 +564,7 @@ public class TroposCSPAlgorithm {
     		    }
     		}
     	}else
-    		System.err.println("Invalid Input for initialValueTimePoints and initialValues.");
+    		throw new RuntimeException("Invalid Input for initialValueTimePoints and initialValues.");
     	
     	if (DEBUG){
     		System.out.print("Previous Times are: \t");
@@ -585,9 +582,9 @@ public class TroposCSPAlgorithm {
     	}
 
     	if(countTotalPreviousT != this.numTimePoints && countTotalPreviousT > 0)
-    		System.err.println("Error: Previous and Current Time Points do no match.");
+    		throw new RuntimeException("Error: Previous and Current Time Points do no match.");
     	if(countTotalPreviousE != this.epochs.length && countTotalPreviousE > 0)
-    		System.err.println("Error: Previous and Current Epoch Number do no match.");
+    		throw new RuntimeException("Error: Previous and Current Epoch Number do no match.");
     	
     	// Create Time Points
     	this.timePoints = new IntVar[this.numTimePoints];
@@ -653,7 +650,7 @@ public class TroposCSPAlgorithm {
     	// Add relative.
     	for (int i = 0; i < numStochasticTimePoints; i++){
     		if (tCount == this.timePoints.length)
-    			System.out.println("ERROR");
+    			throw new RuntimeException("ERROR: Relative time points could not be added.");
     		IntVar value = new IntVar(store, "TR" + absoluteCounter, maxPreviousTime + 1, maxTime);
 			this.timePoints[tCount] = value;
 			this.unsolvedTimePoints[uCount] = value;
@@ -714,7 +711,7 @@ public class TroposCSPAlgorithm {
     	for (int i = 0; i < this.intentions.length; i++){
     		IntentionalElement element = this.intentions[i];
     		if(element.getIdNum() != i)
-    			System.err.println("Intention ID does not match orderied ID in TroposCSP");
+    			throw new RuntimeException("Intention ID does not match orderied ID in TroposCSP");
 
     		for (int t = 0; t < this.values[i].length; t++){
     			// Creates IntVars and adds the FS -> PS invariant.
@@ -856,8 +853,7 @@ public class TroposCSPAlgorithm {
         	} else if (tempType == IntentionalElementDynamicType.UD){
         		// Repeat has been unrolled.
         		if (epochs == null){	// Assume at least one EB.
-					System.err.println("UD functions must have at least one EB. Fix node: " + element.getId());
-					continue;
+					throw new RuntimeException("UD functions must have at least one EB. Fix node: " + element.getId());
 				}
         		
 				UDFunctionCSP funcUD = element.getCspUDFunct();
@@ -890,8 +886,7 @@ public class TroposCSPAlgorithm {
 									startTime = epochToTimePoint.get(startTime);
 								}
 								if (startTime == null){
-									System.err.println("UD Function not correct " + element.getId() + " has missing EB.");
-									continue;
+									throw new RuntimeException("UD Function not correct " + element.getId() + " has missing EB.");
 								}
 								for (int p = 0; p < timePoints.length; p++){
 									if (timePoints[p] == startTime){
@@ -900,8 +895,7 @@ public class TroposCSPAlgorithm {
 									}
 								}
 								if (startIndex == -1){
-									System.err.println("UD Function not correct " + element.getId() + " has missing EB.");
-									continue;
+									throw new RuntimeException("UD Function not correct " + element.getId() + " has missing EB.");
 								}
 							}
 							for (int t = 0; t < this.values[i].length; t++){
@@ -932,7 +926,7 @@ public class TroposCSPAlgorithm {
 		    					initializePathIncreaseHelper(i, t, s, timeCondition, false);
 		    				}
 	                		PrimitiveConstraint timeCondition = new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t]));
-		    				initializePathIncreaseMaxValueHelper(i, t, dynFVal, timeCondition);
+		    				initializePathIncreaseMaxValueHelper(i, t, segmentDynamicValue[nS], timeCondition);
 		    			}
 					} else if (segmentDynamic[nS].equals(IntentionalElementDynamicType.DEC.getCode())){
 						//DECREASING
@@ -946,7 +940,7 @@ public class TroposCSPAlgorithm {
 		        				initializePathDecreaseHelper(i, t, s, timeCondition, false);
 		        			}
 	                		PrimitiveConstraint timeCondition = new And(new XlteqY(segmentStart, this.timePoints[t]), new XgtY(segmentEnd, this.timePoints[t]));
-	        				initializePathDecreaseMaxValueHelper(i, t, dynFVal, timeCondition);
+	        				initializePathDecreaseMaxValueHelper(i, t, segmentDynamicValue[nS], timeCondition);
 		        		}
 					}
 				}
@@ -1048,7 +1042,7 @@ public class TroposCSPAlgorithm {
 			} else if (!dynFVal[0] && !dynFVal[1] && dynFVal[2] && dynFVal[3]) {		//Case <FS,T>
 				; //No constraints to be added.
 			} else
-				System.err.println("INC Dynamic Value for intention " + i + " Conflict value.");
+				throw new RuntimeException("INC Dynamic Value for intention " + i + " Conflict value.");
 		}else{
 			if (dynFVal[0] && dynFVal[1] && !dynFVal[2] && !dynFVal[3]) {				//Case <T,FD>	
 				constraints.add(new And(tFD));
@@ -1062,7 +1056,7 @@ public class TroposCSPAlgorithm {
 			} else if (!dynFVal[0] && !dynFVal[1] && dynFVal[2] && dynFVal[3]) {		//Case <FS,T>
 				; //No constraints to be added.
 			} else
-				System.err.println("INC Dynamic Value for intention " + i + " Conflict value.");
+				throw new RuntimeException("INC Dynamic Value for intention " + i + " Conflict value.");
 		}
 	}
 	
@@ -1141,7 +1135,7 @@ public class TroposCSPAlgorithm {
 			} else if (!dynFVal[0] && !dynFVal[1] && dynFVal[2] && dynFVal[3]) {		//Case <FS,T>
 				constraints.add(new IfThen(timeCondition, new And(tFS)));
 			} else
-				System.err.println("INC Dynamic Value for intention " + i + " Conflict value.");
+				throw new RuntimeException("INC Dynamic Value for intention " + i + " Conflict value.");
 		}else{
 			if (dynFVal[0] && dynFVal[1] && !dynFVal[2] && !dynFVal[3]) {				//Case <T,FD>	
 				; //No constraints to be added.
@@ -1155,7 +1149,7 @@ public class TroposCSPAlgorithm {
 			} else if (!dynFVal[0] && !dynFVal[1] && dynFVal[2] && dynFVal[3]) {		//Case <FS,T>
 				constraints.add(new And(tFS));
 			} else
-				System.err.println("INC Dynamic Value for intention " + i + " Conflict value.");
+				throw new RuntimeException("INC Dynamic Value for intention " + i + " Conflict value.");
 		}
 	}
 	
@@ -1234,11 +1228,11 @@ public class TroposCSPAlgorithm {
     			ElementLink link = (ElementLink) linksIteratorDest.next();
     				if (link instanceof Decomposition){
     					if ((decompositionLink != null)||(eDecompositionLink != null))
-    						System.err.println("Error: Node ID: " + element.getId() + " has more than one decomposition link as it's destination.");    						
+    						throw new RuntimeException("Error: Node ID: " + element.getId() + " has more than one decomposition link as it's destination.");    						
     					decompositionLink = (Decomposition) link;	
     				} else if (link instanceof EvolvingDecomposition) {
     					if ((decompositionLink != null)||(eDecompositionLink != null))
-    						System.err.println("Error: Node ID: " + element.getId() + " has more than one decomposition link as it's destination.");
+    						throw new RuntimeException("Error: Node ID: " + element.getId() + " has more than one decomposition link as it's destination.");
     					eDecompositionLink = (EvolvingDecomposition) link;	    					
     				} else if (link instanceof Contribution) {
     					contributionElements.add((IntentionalElement) link.getZeroSrc());
@@ -1564,7 +1558,7 @@ public class TroposCSPAlgorithm {
 		}else if (cType == ContributionType.DMM){			//--D
 			result = new And(new Or(new XeqC(src[1], 0), new XeqC(tgt[2], 1)), new Or(new XeqC(src[0], 0), new XeqC(tgt[3], 1)));
 		}else
-			System.out.println("ERROR: No rule for " + cType.toString() + " link type.");	
+			throw new RuntimeException("ERROR: No rule for " + cType.toString() + " link type.");	
 		if (DEBUG)
 			System.out.println("Link: " + result.toString());
 		return result;
@@ -1614,7 +1608,7 @@ public class TroposCSPAlgorithm {
 			result[3] = new XeqC(src[0], 1);
 			result[2] = new XeqC(src[1], 1);
 		}else
-			System.out.println("ERROR: No rule for " + cType.toString() + " link type.");		
+			throw new RuntimeException("ERROR: No rule for " + cType.toString() + " link type.");		
 		return result;
 	}
 	
@@ -1734,8 +1728,7 @@ public class TroposCSPAlgorithm {
 			} else if (tempType == IntentionalElementDynamicType.UD){
 				// Repeat has been unrolled.
 				if (epochs == null){	// Assume at least one EB.
-					System.err.println("UD functions must have at least one EB. Fix " + element.getId());
-					continue;
+					throw new RuntimeException("UD functions must have at least one EB. Fix " + element.getId());
 				}	
 				// Find which epoch the part falls into.
 				UDFunctionCSP funcUD = element.getCspUDFunct();
@@ -1835,12 +1828,14 @@ public class TroposCSPAlgorithm {
             if(!store.consistency()) {
             	Constraint errorConst = constraints.get(i);
             	ArrayList<Var> errorVarList = errorConst.arguments();
-            	for (Var temp : errorVarList) {
-        			System.out.println(temp.id + "::" + temp.dom().toString());
-        		}
-            	System.out.println("Constraint: " + constraints.get(i).toString());
-                System.out.println("have conflicting constraints, not solvable");            
-                return false;
+            	if(DEBUG){
+            		for (Var temp : errorVarList) {
+            			System.out.println(temp.id + "::" + temp.dom().toString());
+            		}
+            		System.out.println("Constraint: " + constraints.get(i).toString());
+            		System.out.println("have conflicting constraints, not solvable");
+            	}
+            	throw new RuntimeException("ERROR: Model not solvable because of conflicting constraints.\n Constraint: " + constraints.get(i).toString());
             }
         }
         
@@ -1855,8 +1850,8 @@ public class TroposCSPAlgorithm {
         
         // Return Solution
         if(!solutionFound){
-			System.out.println("Found Solution = False");
-			return false;
+        	if (DEBUG) System.out.println("Found Solution = False");
+        	throw new RuntimeException("There is no solution to this model. The solver may have reached a timeout.");
 		} else {
 	    	if (DEBUG) System.out.println("Found Solution = True");
 			if (this.searchAll)
@@ -1934,9 +1929,9 @@ public class TroposCSPAlgorithm {
 				this.printSinglePathSolution(timeOrder);
 			this.saveSinglePathSolution(timeOrder);
 		}else if (problemType == SearchType.NEXT_STATE)	//TODO Implement Save/Print Single Next_State
-    		System.err.println("ERROR: Save/Print Single Next_State not implemented.");
+    		throw new RuntimeException("ERROR: Save/Print Single Next_State not implemented.");
     	else if (problemType == SearchType.CURRENT_STATE) //TODO Implement Save/Print Single Current_State
-    		System.err.println("ERROR: Save/Print Single Current_State not implemented.");
+    		throw new RuntimeException("ERROR: Save/Print Single Current_State not implemented.");
 	}
 	
 	/**
@@ -1944,7 +1939,7 @@ public class TroposCSPAlgorithm {
 	 */
 	private void saveAllSolution(Search<IntVar> label) {
 		if (problemType == SearchType.PATH) //TODO Implement Save/Print All Paths
-    		System.err.println("ERROR: Save/Print All Paths not implemented.");
+    		throw new RuntimeException("ERROR: Save/Print All Paths not implemented.");
         else if ((problemType == SearchType.NEXT_STATE) || (problemType == SearchType.CURRENT_STATE)){
 			//TODO: Need a post-hoc way to figure out which time points apply to which solutions.
 //			int[] finalValueTimePoints = new int[indexOrder.length];
@@ -1985,7 +1980,7 @@ public class TroposCSPAlgorithm {
 							else if(label.getSolution(s)[solIndex].toString().equals("0"))
 								finalValues[s-1][i][0][v] = false;
 							else
-								System.err.println("Error: " + label.getSolution(s)[v] + " has non-binary value.");
+								throw new RuntimeException("Error: " + label.getSolution(s)[v] + " has non-binary value.");
 							solIndex++;
 						}
 
@@ -1996,6 +1991,7 @@ public class TroposCSPAlgorithm {
 				System.out.println("\n Finished Saving Solutions"); 
         }else if (problemType == SearchType.CURRENT_STATE){
         	// TODO: How do we save all the solutions when solving the current state?
+        	throw new RuntimeException("Incomplete Implementation: We need to save all the solutions when solving the current state?");
         }
 	}
 

@@ -112,26 +112,26 @@ var LinkInspector = Backbone.View.extend({
 
       link.prop("link-type", $('.link-type').val());
       if (link.prop("link-type") == 'and' || link.prop("link-type") == 'or'){
-        link.attr({
+        /*link.attr({
           '.connection': {stroke: '#000000', 'stroke-dasharray': '0 0'},
           '.marker-source': {'d': '0'},
           '.marker-target': {stroke: '#000000', "d": 'M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5'}
-        });
+        });*/
         link.label(0 ,{position: 0.5, attrs: {text: {text: link.prop("link-type")}}});
 
       }else if(link.prop("link-type") == 'NBT' || link.prop("link-type") == 'NBD'){
-        link.attr({
+        /*8link.attr({
           '.connection': {stroke: '#000000', 'stroke-dasharray': '0 0'},
           '.marker-source': {'d': '0'},
           '.marker-target': {stroke: '#000000', "d": '0'}
-        });
+        });*/
         link.label(0 ,{position: 0.5, attrs: {text: {text: link.prop("link-type")}}});
       }else{
-        link.attr({
+        /*link.attr({
           '.connection': {stroke: '#000000', 'stroke-dasharray': '0 0'},
           '.marker-source': {'d': '0'},
           '.marker-target': {stroke: '#000000', "d": 'M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5'}
-        });
+        });*/
         link.label(0 ,{position: 0.5, attrs: {text: {text: $('.link-type option:selected').text()}}});
       }
 
@@ -144,9 +144,8 @@ var LinkInspector = Backbone.View.extend({
         target.attr(".satvalue/text", "");
         target.attr(".satvalue/value", "");
       } else {
-
-    	  //verify if node have any other link NBD or NBT
-    	  var sourceNBLink = function(){
+    	  //verify if node has any other link NBD or NBT
+    	  var sourceHasNBLink = function(){
     		  var localLinks = graph.getLinks();
     		  for(var i = 0; i < localLinks.length; i++){
     			  if ((localLinks[i]!=link) && (localLinks[i].prop("link-type") == 'NBT' || localLinks[i].prop("link-type") == 'NBD')){
@@ -158,8 +157,8 @@ var LinkInspector = Backbone.View.extend({
     		  return false;
     	  }
 
-    	  //verify if target have any other link NBD or NBT
-    	  var targetNBLink = function(){
+    	  //verify if target has any other link NBD or NBT
+    	  var targetHasNBLink = function(){
     		  var localLinks = graph.getLinks();
     		  for(var i = 0; i < localLinks.length; i++){
     			  if ((localLinks[i]!=link) && (localLinks[i].prop("link-type") == 'NBT' || localLinks[i].prop("link-type") == 'NBD')){
@@ -171,13 +170,22 @@ var LinkInspector = Backbone.View.extend({
     		  return false;
     	  }
 
+    	  //Verify if the node has the NB tag
+    	  var hasNBtag = function(node){
+    		  if(node.prop(".funcvalue/text")=="NB"){
+    			  return true;
+    		  }
+			  return false;
+    	  }
+
     	  //Verify if it is possible to remove the NB tag from source and target
-    	  if(!sourceNBLink()){
+    	  if(!sourceHasNBLink() && hasNBtag(source)){
     		  source.attr(".funcvalue/text", "");
     	  }
-    	  if(!targetNBLink()){
+    	  if(!targetHasNBLink() && hasNBtag(target)){
 	          target.attr(".funcvalue/text", "");
     	  }
+
       }
 
   },

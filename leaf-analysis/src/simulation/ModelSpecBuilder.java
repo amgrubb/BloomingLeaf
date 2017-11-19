@@ -211,6 +211,7 @@ public class ModelSpecBuilder {
 		    		String linkSrcID = link.getLinkSrcID();
 		    		String linkDestID = link.getLinkDestID();
 		    		String postType = link.getPostType();
+		    		int absTime = link.getAbsoluteValue();
 		    		IntentionalElement intentElementSrc = getIntentionalElementById(linkSrcID, modelSpec.getIntElements());
 		    		IntentionalElement intentElementDest = getIntentionalElementById(linkDestID, modelSpec.getIntElements());
 		    		if (postType == null){
@@ -241,12 +242,12 @@ public class ModelSpecBuilder {
 		    			case "++D": case "+D": case "-D": case "--D":
 			    			switch (postType) {
 			    			case "NO":
-			    				evolvingContribution.add(new EvolvingContribution(intentElementSrc, intentElementDest, ContributionType.getByCode(linkType), null));
+			    				evolvingContribution.add(new EvolvingContribution(intentElementSrc, intentElementDest, ContributionType.getByCode(linkType), null, absTime));
 			    				break;
 			    			case "++":  case "+":  case "-":  case "--":
 			    			case "++S": case "+S": case "-S": case "--S":
 			    			case "++D": case "+D": case "-D": case "--D":
-			    				evolvingContribution.add(new EvolvingContribution(intentElementSrc, intentElementDest, ContributionType.getByCode(linkType), ContributionType.getByCode(postType)));
+			    				evolvingContribution.add(new EvolvingContribution(intentElementSrc, intentElementDest, ContributionType.getByCode(linkType), ContributionType.getByCode(postType), absTime));
 			    				break;
 			    			default:
 			    				throw new IllegalArgumentException("Invalid relationship type (type 1): " + linkType);
@@ -260,7 +261,7 @@ public class ModelSpecBuilder {
 			    			case "++":  case "+":  case "-":  case "--":
 			    			case "++S": case "+S": case "-S": case "--S":
 			    			case "++D": case "+D": case "-D": case "--D":
-			    				evolvingContribution.add(new EvolvingContribution(intentElementSrc, intentElementDest, null, ContributionType.getByCode(postType)));
+			    				evolvingContribution.add(new EvolvingContribution(intentElementSrc, intentElementDest, null, ContributionType.getByCode(postType), absTime));
 			    				break;
 			    			case "AND": case "OR":
 			    				allDecompositionLinks.add(link);
@@ -285,6 +286,7 @@ public class ModelSpecBuilder {
 
 				while(allDecompositionLinks.size() > 0){
 					String destID = allDecompositionLinks.get(0).getLinkDestID();
+					int absTime = allDecompositionLinks.get(0).getAbsoluteValue();
 					IntentionalElement intentElementDest = getIntentionalElementById(destID, modelSpec.getIntElements());
 					ArrayList<InputLink> curDestLinks = new ArrayList<InputLink>();					
 					boolean evolve = false;
@@ -340,7 +342,7 @@ public class ModelSpecBuilder {
 							post = DecompositionType.AND;
 						if(orPost)
 							post = DecompositionType.OR;
-						evolvingDecomposition.add(new EvolvingDecomposition(linkElementsSrc, intentElementDest, pre, post));
+						evolvingDecomposition.add(new EvolvingDecomposition(linkElementsSrc, intentElementDest, pre, post, absTime));
 						for(InputLink iLink : curDestLinks){
 							if(pre != null && !iLink.getLinkType().equals(pre.getCode()))
 								throw new IllegalArgumentException("Relationships for ID: " + destID + " must be all the same types.");
@@ -373,13 +375,13 @@ public class ModelSpecBuilder {
 					String constraintSrcID = dataConstraint.getConstraintSrcID();
 					String constraintSrcEB = dataConstraint.getConstraintSrcEB();
 					if (constraintType.equals("A")){
-						String absoluteValue = dataConstraint.getAbsoluteValue();
+						int absoluteValue = dataConstraint.getAbsoluteValue();
 						IntentionalElement src = null;
 						for(IntentionalElement tmp : modelSpec.getIntElements()){
 							if(constraintSrcID.equals(tmp.getId()))
 								src = tmp;
 						}
-						modelSpec.getConstraintsBetweenEpochs().add(new EpochConstraint(constraintType, src, constraintSrcEB, absoluteValue));
+						modelSpec.getConstraintsBetweenEpochs().add(new EpochConstraint(src, constraintSrcEB, absoluteValue));
 					}else{
 						String constraintDestID = dataConstraint.getConstraintDestID();
 						String constraintDestEB = dataConstraint.getConstraintDestEB();
