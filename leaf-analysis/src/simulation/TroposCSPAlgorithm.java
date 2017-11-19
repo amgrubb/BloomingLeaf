@@ -230,22 +230,39 @@ public class TroposCSPAlgorithm {
     	if (DEBUG)
     		System.out.println("\nEnd of Init Procedure");
 	}	
+	
 	private void initializeUserEvaluations() {
+		// Adds the user evaluations from the Intermediate Values Table.
 		List<UserEvaluation> userEvaluations = this.spec.getUserEvaluations();
 		for (UserEvaluation eval : userEvaluations){
-			System.out.println("Eval exists for goal " + eval.getGoal().id + " at time " + eval.getAbsTime());
-			// A: Get Intention ID.
+			if (DEBUG)
+				System.out.println("Eval exists for goal " + eval.getGoal().id + " at time " + eval.getAbsTime());
+
+			// A: Get index of the Intention.
 			int goalIndex = -1;
-			for(int i=0; i < intentions.length; i++){
+			for(int i=0; i < intentions.length; i++)
 				if(eval.goal.equals(intentions[i])){
 					goalIndex = i;
 					break;
 				}
-			}
-			System.out.println(goalIndex);
-			//IntVar[] timePoints;
-			//if((goalIndex != -1) AND (eval.getAbsTime() == 0))
-			//private BooleanVar[][][] values;
+			
+			// B: Get index of the timepoint.
+			int timeIndex = -1;
+			for (int i=0; i < timePoints.length; i++)
+				if (eval.getAbsTime() == timePoints[i].value()){
+					timeIndex = i;
+					break;
+				}
+		
+			// C: Add constraint.
+			boolean[] userValue = eval.getEvaluationValue();
+			if((goalIndex != -1) && (timeIndex != -1)){
+				this.constraints.add(new XeqC(this.values[goalIndex][timeIndex][0], boolToInt(userValue[0])));
+				this.constraints.add(new XeqC(this.values[goalIndex][timeIndex][1], boolToInt(userValue[1])));
+				this.constraints.add(new XeqC(this.values[goalIndex][timeIndex][2], boolToInt(userValue[2])));
+				this.constraints.add(new XeqC(this.values[goalIndex][timeIndex][3], boolToInt(userValue[3])));
+			}else
+				throw new RuntimeException("\n ERROR: User evaluations were not able to be added.");
 		}
 	}
 
