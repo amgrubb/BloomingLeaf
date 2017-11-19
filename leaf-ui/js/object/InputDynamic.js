@@ -1,5 +1,5 @@
 function InputDynamic(intentionID, dynamicType, markedValue, line = null){
-	
+
 	this.intentionID = intentionID;
 	this.dynamicType = dynamicType;
 	this.markedValue = markedValue;
@@ -10,9 +10,9 @@ function InputDynamic(intentionID, dynamicType, markedValue, line = null){
 
 function getDynamics(){
 	var dynamics = [];
-	
+
 	var elements = [];
-	
+
 	for (var i = 0; i < graph.getElements().length; i++){
 		if (!(graph.getElements()[i] instanceof joint.shapes.basic.Actor)){
 			elements.push(graph.getElements()[i]);
@@ -26,13 +26,13 @@ function getDynamics(){
 	    var funcType = elements[e].attr(".constraints/function");
 	    var funcTypeVal = elements[e].attr(".constraints/lastval");
 	    var initValue = elements[e].attributes.attrs[".satvalue"].value;
-	    
+
 	    if (isNaN(parseInt(initValue))){
-			initValue = satValueDict[initValue];		 
+			initValue = satValueDict[initValue];
 		}else{
 			initValue = "0000";
 		}
-		
+
 
 	    var io_dynamic;
 	    if(f == "NB" ){
@@ -63,7 +63,7 @@ function getDynamics(){
 					line += "\t" + begin[l] + "\t" + end[l] + "\t" + funcType[l] + "\t" + satValueDict[funcTypeVal[l]];
 				}
 			}
-
+			console.log(elements[e].attr(".constraints/beginRepeat"));
 			// repeating
 			if (elements[e].attr(".constraints/beginRepeat") && elements[e].attr(".constraints/endRepeat")){
 				// to infinity
@@ -72,6 +72,10 @@ function getDynamics(){
 				}else{
 					line += "\tR\t" + rBegin + "\t" + rEnd;
 				}
+				// TODO Add the repeat count value and the absolute length value here
+				console.log(typeof $("#repeat-end2").val());
+				line += "\t" + $("#repeat-end2").val() + "\t" + $("#repeat-end3").val();
+				console.log(line);
 			}else{
 				line += "\tN";
 			}
