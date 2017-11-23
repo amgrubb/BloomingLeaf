@@ -1,10 +1,15 @@
 var epochLists = [];
+var testL=[];
 var num = 0;
 var time_values = {};
 var goal_id_mapper = {};
 var constraintID = 0;
 var rx = /Goal_\d+/g; // MATCH goal name Goal_x
 var extractEB = /[A-Z]+$/;
+var saveIntermValues = {};
+var gloablI = 0;
+var absoluteTimeValues;
+var saveIVT = {};
 var AnalysisInspector = Backbone.View.extend({
 
 	className: 'analysis-inspector',
@@ -308,6 +313,8 @@ var AnalysisInspector = Backbone.View.extend({
 	},
 	/*load valus for intermediate table dialog*/
 	loadIntermediateValues: function(e){
+		console.log(saveIntermValues);
+		console.log(testL);
 		$('#interm-list').find("tr:gt(1)").remove();
 		$('#header').find("th:gt(1)").remove();
 		$('#intentionRows').find("th:gt(1)").remove();
@@ -330,7 +337,6 @@ var AnalysisInspector = Backbone.View.extend({
 			var intentRows = document.getElementById('intentionRows')
 			for(var i = 0; i < absTimeValues.length; i++){
 				console.log(i);
-
 				if(!(absTimeValues[i] in time_values)){
 					time_values[absTimeValues[i]] = [];
 					time_values[absTimeValues[i]].push("Absolute");
@@ -338,13 +344,12 @@ var AnalysisInspector = Backbone.View.extend({
 				else if(!(time_values[absTimeValues[i]].includes('Absolute'))){
 					time_values[absTimeValues[i]].push('Absolute');
 				}
-					//console.log(time_values)
-
 			}
 		}
 		else{
 			absTimeValues = [];
 		}
+		absoluteTimeValues = absTimeValues;
 		Object.keys(time_values).forEach(function(key){
 			console.log(time_values[key]);
 			var th = document.createElement('th');
@@ -363,11 +368,13 @@ var AnalysisInspector = Backbone.View.extend({
 		console.log(trs);
 		console.log(absTimeValues);
 		$('#interm-list tr').append('<th>test</th>');*/
-		var sat_values = '<select><option selected>...</option>';
-		var sat_valueLists = ['None (T, T)', 'Satisfied (FS, T)','Partially Satisfied (PS, T)',
-		'Denied (T, FD)', 'Partially Denied (T, PD)']
+		var sat_values = '<select id="evalID"><option value="empty;" selected> </option>';
+		var sat_valueLists = ['None (T, T) ', 'Satisfied (FS, T) ','Partially Satisfied (PS, T) ',
+		'Denied (T, FD) ', 'Partially Denied (T, PD)']
+		var eval_list = ['(T, T);', '(FS, T);','(PS, T);',
+		'(T, FD);', '(T, PD);']
 		for(var i = 0; i < sat_valueLists.length; i++){
-			var value = '<option>' + sat_valueLists[i] + '</option>';
+			var value = '<option value="' + eval_list[i] + '">'+ sat_valueLists[i] + '</option>';
 			sat_values += value
 		}
 		sat_values += '</select>';
@@ -376,8 +383,12 @@ var AnalysisInspector = Backbone.View.extend({
 			var cellView = elements[i].findView(paper);
 			//console.log(elements[i]);
 			var cell = cellView.model;
+
 			var initvalue = cell.attr('.satvalue').text;
 			var name = cell.attr('.name').text;
+			//saveIntermValues[cell.attributes.elementid] = [];
+
+			//saveIntermValues[i] = [];
 			//console.log("initial value : " + initvalue);
 			//Check if initial value is empty, if so, add (T,T) as a value
 			if(time_values.length == 0){
@@ -424,6 +435,7 @@ var AnalysisInspector = Backbone.View.extend({
 	dismissIntermTable: function(e){
 		var intermT = document.getElementById('intermediateTable');
 		intermT.style.display = "none";
+		console.log(saveIntermValues);
 		//$('.interm-table').find("tr:gt(0)").remove();
 	},
 
@@ -587,8 +599,55 @@ var AnalysisInspector = Backbone.View.extend({
 		//console.log(time_values);
 
 	},
+	returnElementIds: function(){
+		var elements = graph.getElements();
+		var elementLst = [];
+		for (var i = 0; i < elements.length; i++){
+			var cellView = elements[i].findView(paper);
+			var cell = cellView.model;
+			elementLst.push(cell.attributes.elementid);
+		}
+		return elementLst;
+	},
 	saveIntermTable: function(){
+		saveIVT = getUserEvaluations();
+		/*console.log(saveIntermValues);
+		console.log(absoluteTimeValues);
+		var elementList = this.returnElementIds();
+		var i;
+		for (i = 0; i < elementList.length; i++) {
+    	saveIVT[elementList[i]] = {};
+			saveIVT[elementList[i]]["absTimePoints"] = absoluteTimeValues;
+		}
+		var rows = $('#interm-list > tbody > tr');
+		var assignedTime = $('#intentionRows > th');
+		var elements = graph.getElements();
+		if(assignedTime.length > 2){
+			var selected_eval = [];
+			$("select#evalID option:selected" ).each(function(){
+				if($( this ).val().replace(";","") == "empty"){
+					selected_eval.push(null);
+				}
+				else{
+					selected_eval.push($( this ).val().replace(";",""));
+				}
+			});
+			var subLen = selected_eval.length/elementList.length;
+			console.log(subLen);
+			var sub = subLen;
+			var kj = 0;
+			var kk = 1;
+			for (var key = 0; key < Object.keys(saveIVT).length; key++){
+				console.log(selected_eval.slice(kj,sub));
+				saveIVT[Object.keys(saveIVT)[key]]["evalList"] = selected_eval.slice(kj,sub);
+				kj = sub;
+				sub=sub*(kk+1);
+			}
+		}*/
 		this.dismissIntermTable();
+	},
+	returnInputEval: function(){
+		return saveIVT;
 	},
 	saveElementsInGlobalVariable: function(){
 		var elements = [];

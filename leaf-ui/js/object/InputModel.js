@@ -67,7 +67,7 @@ function getFrontendModel(isSinglePath = true){
 			intentions,
 			links,
 			dynamics,
-			constraints
+			constraints,
 			userEvaluations
 			)
 
