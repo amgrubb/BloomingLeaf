@@ -64,11 +64,17 @@ public class UDFunctionCSP {
 					mapEnd = totalNumSegment;
 				else 
 					mapEnd += (totalNumSegment - numSegment);
-				
+								
 				if (values.length > count + 4){
-					this.absoluteEpochLengths = new int[lengthRepeat];
-					for (int i = 0; i < this.absoluteEpochLengths.length; i++)
-						this.absoluteEpochLengths[i] = Integer.parseInt(values[count + 4 + i]);
+					int newLength = Integer.parseInt(values[count + 4]);
+					if (newLength > 0){
+						this.absoluteEpochLengths = new int[lengthRepeat];
+						for (int i = 0; i < this.absoluteEpochLengths.length; i++){
+							// Originally we had different repeat lengths for each segment. Now we have a single repeating length for all segments.
+							//this.absoluteEpochLengths[i] = Integer.parseInt(values[count + 4 + i]);
+							this.absoluteEpochLengths[i] = newLength;
+						}
+					}
 				}
 				
 				this.functions =  new String[totalNumSegment];
@@ -150,6 +156,10 @@ public class UDFunctionCSP {
 			System.out.println(functions[0] + "\t" + dynamicValues[0][0] + "|" + dynamicValues[0][1] + "|" + dynamicValues[0][2] + "|" + dynamicValues[0][3]);
 			for (int i = 1; i < functions.length; i++)
 				System.out.println(functions[i] + "\t" + dynamicValues[i][0] + "|" + dynamicValues[i][1] + "|" + dynamicValues[i][2] + "|" + dynamicValues[i][3] + "\t" + elementEBs[i-1]);
+			System.out.print("absoluteEpochLengths:\t");
+			for (int j = 0; j < absoluteEpochLengths.length; j++)
+				System.out.print(absoluteEpochLengths[j] + "\t");
+			System.out.println();			
 		}
 		public static void main(String[] args) {
 			///// OLD VERSION
@@ -159,7 +169,7 @@ public class UDFunctionCSP {
 			//	D	0029	UD	5	0	A	C	0	A	B	C	5	B	C	C	1	C	D	R	5	D	1	C	5	N
 			//D	0000	UD	4	0	A	C	2	A	B	C	3	B	C	C	0	C	1	C	1	R	A	C";
 			// 	D	0000	UD	4	0	A	C	2	A	B	C	3	B	C	C	0	C	1	C	1	R	A	C	2
-			String test = "D	0000	UD	4	0	A	C	0010	A	B	C	0011	B	C	C	0000	C	1	C	0100	R	0	B	2	5	5";	
+			String test = "D	0000	UD	4	0	A	C	0010	A	B	C	0011	B	C	C	0000	C	1	C	0100	R	0	B	4	7";	
 			UDFunctionCSP func = new UDFunctionCSP(test);
 			func.printUDFunction();
 		}

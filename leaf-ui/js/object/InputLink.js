@@ -9,7 +9,7 @@ function InputLink(linkType, linkSrcID, linkDestID, postType = null, absVal = -1
 function getLinks(){
 
 	var links = [];
-
+	getIntentitonalElements();
 	//Verifying if links are valid
 	graph.getLinks().forEach(function(link){
 	    if(isLinkInvalid(link))
@@ -22,8 +22,10 @@ function getLinks(){
 		var linkType = current.label(0).attrs.text.text.toUpperCase()
 		var source = "-";
 		var target = "-";
-		var absValue = parseInt(graph.getLinks()[i].attr('.assigned_time')[0]);		//TODO: Actually get the ABS value, if it exists.
-
+		var absValue = 0;
+		if(graph.getLinks()[i].attr('.assigned_time') != undefined){
+			absValue = parseInt(graph.getLinks()[i].attr('.assigned_time')[0]);
+		}
 		if (current.get("source").id)
 			source = graph.getCell(current.get("source").id).prop("elementid");
 		if (current.get("target").id)
