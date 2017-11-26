@@ -1,7 +1,6 @@
 var epochLists = [];
 var testL=[];
 var num = 0;
-var time_values = {};
 var goal_id_mapper = {};
 var constraintID = 0;
 var rx = /Goal_\d+/g; // MATCH goal name Goal_x
@@ -9,7 +8,7 @@ var extractEB = /[A-Z]+$/;
 var saveIntermValues = {};
 var gloablI = 0;
 var absoluteTimeValues;
-var saveIVT = {};
+var saveIVT;
 var AnalysisInspector = Backbone.View.extend({
 
 	className: 'analysis-inspector',
@@ -313,8 +312,8 @@ var AnalysisInspector = Backbone.View.extend({
 	},
 	/*load valus for intermediate table dialog*/
 	loadIntermediateValues: function(e){
-		console.log(saveIntermValues);
-		console.log(testL);
+		console.log(saveIVT);
+		var time_values = {};
 		$('#interm-list').find("tr:gt(1)").remove();
 		$('#header').find("th:gt(1)").remove();
 		$('#intentionRows').find("th:gt(1)").remove();
@@ -323,6 +322,7 @@ var AnalysisInspector = Backbone.View.extend({
 		var elements = graph.getElements();
 		var intermTable = document.querySelector('.interm-table');
 		var absValues = document.getElementById('abs-time-pts').value;
+		console.log(absValues);
 		var absTimeValues;
 		if(absValues != ""){
 			absTimeValues = document.getElementById('abs-time-pts').value.split(" ")
@@ -369,10 +369,9 @@ var AnalysisInspector = Backbone.View.extend({
 		console.log(absTimeValues);
 		$('#interm-list tr').append('<th>test</th>');*/
 		var sat_values = '<select id="evalID"><option value="empty;" selected> </option>';
-		var sat_valueLists = ['None (T, T) ', 'Satisfied (FS, T) ','Partially Satisfied (PS, T) ',
-		'Denied (T, FD) ', 'Partially Denied (T, PD)']
-		var eval_list = ['(T, T);', '(FS, T);','(PS, T);',
-		'(T, FD);', '(T, PD);']
+		var sat_valueLists = ['Unknown','None (T, T) ', 'Satisfied (FS, T) ','Partially Satisfied (PS, T) ',
+		'Denied (T, FD) ', 'Partially Denied (T, PD)'];
+		var eval_list = ['unknown', 'none','satisfied','partiallysatisfied', 'denied','partiallydenied'];
 		for(var i = 0; i < sat_valueLists.length; i++){
 			var value = '<option value="' + eval_list[i] + '">'+ sat_valueLists[i] + '</option>';
 			sat_values += value
@@ -401,10 +400,18 @@ var AnalysisInspector = Backbone.View.extend({
 			}
 			else{
 				if  (initvalue.trim() == ""){
+					console.log(Object.keys(time_values).length);
 					//$('#interm-list').append('<tr><td>' + name + '</td><td>(T,T)</td></tr>');
 					var appendList = '<tr><td>' + name + '</td><td>(T,T)</td>';
-					for(var j = 0; j < Object.keys(time_values).length; j++){
-						appendList += '<td>' + sat_values + '</td>';
+					if(saveIVT == null){
+						for(var j = 0; j < Object.keys(time_values).length; j++){
+							appendList += '<td>' + sat_values + '</td>';
+						}
+					}
+					else if(saveIVT.length>0){
+						for(var j = 0; j < Object.keys(time_values).length; j++){
+							appendList += '<td>' + $("#evalID").val('(FS, T)') + '</td>';
+						}
 					}
 					appendList += '</tr>';
 					$('#interm-list').append(appendList);
@@ -611,6 +618,7 @@ var AnalysisInspector = Backbone.View.extend({
 	},
 	saveIntermTable: function(){
 		saveIVT = getUserEvaluations();
+		console.log(saveIVT);
 		/*console.log(saveIntermValues);
 		console.log(absoluteTimeValues);
 		var elementList = this.returnElementIds();
