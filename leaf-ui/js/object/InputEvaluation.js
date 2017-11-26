@@ -51,11 +51,13 @@ function getUserEvaluations(){
 		for(var i = 0; i < saveIVT[k]["absTimePoints"].length; i++){
 			var absTime = saveIVT[k]["absTimePoints"][i];
 			var evaluationValue = saveIVT[k]["evalList"][i];
-			var evaluation = new InputEvaluation(
-					goal,
-					absTime,
-					evaluationValue);
-			evaluations.push(evaluation);
+			if (evaluationValue != null){
+				var evaluation = new InputEvaluation(
+						goal,
+						absTime,
+						evaluationValue);
+				evaluations.push(evaluation);
+			}
 		}
 	}
 	return evaluations;
