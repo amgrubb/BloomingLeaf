@@ -28,6 +28,7 @@ public class ModelSpec {
 	private List<EvolvingContribution> evolvingContribution = new ArrayList<EvolvingContribution>();
 	private List<EvolvingDecomposition> evolvingDecomposition = new ArrayList<EvolvingDecomposition>();
 	private List<EpochConstraint> constraintsBetweenEpochs = new ArrayList<EpochConstraint>();
+	private List<UserEvaluation> userEvaluations = new ArrayList<UserEvaluation>(); 
 	
 	private String analysisType = null;
 	private char conflictAvoidLevel = 'N'; 			// Should have the value S/M/W/N for Strong, Medium, Weak, None.
@@ -51,6 +52,12 @@ public class ModelSpec {
     // One of these will be filled.
     private boolean[][][] finalValues = null;	 // For single Solution    
     private boolean[][][][] allSolutionsValues;	 // For all solutions.
+
+    
+    
+	public List<UserEvaluation> getUserEvaluations() {
+		return userEvaluations;
+	}
 
 	public boolean[][][] getFinalValues() {
 		return finalValues;
