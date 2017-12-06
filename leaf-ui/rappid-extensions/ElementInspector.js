@@ -163,7 +163,7 @@ var ElementInspector = Backbone.View.extend({
 
   events: {
     'keyup .cell-attrs-text': 'nameAction',
-    'change #init-sat-value':'updateInitSatVal',
+    'change #init-sat-value':'updateHTML',
 
     'change .function-type':'updateHTML',
     'change .function-sat-value':'updateGraph',
@@ -238,16 +238,11 @@ var ElementInspector = Backbone.View.extend({
 
     // Load initial value
     this.$('.cell-attrs-text').val(cell.attr(".name/text") || '');
-    var valueSatDict = {
-        "0000":"unknown",
-        "0000":"none",
-        "0011":"satisfied", 
-        "0010":"partiallysatisfied",
-        "0100":"partiallydenied", 
-        "1100":"denied"
+    this.$('#init-sat-value').val(cell.attr(".satvalue/value") || 'none');
+    if (!cell.attr(".satvalue/value") && cell.attr(".funcvalue/text") != "NB"){
+      cell.attr(".satvalue/value", 'none');
+      cell.attr(".funcvalue/text", ' ');
     }
-    this.$('#init-sat-value').val(valueSatDict[cell.attr(".satvalue/value")]).change();
-    //this.$('#init-sat-value').val(valueSatDict[cell.attr(".satvalue/value")]).change();
 
     // Turn off repeating by default
     this.repeatOptionsDisplay = false;
@@ -264,14 +259,16 @@ var ElementInspector = Backbone.View.extend({
       this.updateHTML(null);
 
     }
+
     else if(functionType != "UD"){
       this.$('.function-type').val(functionType);
       this.updateHTML(null);
     // loading user defined constraint
-    }else{ 
+    }else{
       this.$('.function-type').val(functionType);
       this.renderUserDefined(cell);
     }
+
   },
 
 
@@ -281,11 +278,7 @@ var ElementInspector = Backbone.View.extend({
     this.constraintsObject.userFunctions = cell.attr(".constraints/function");
     this.constraintsObject.userValues = cell.attr(".constraints/lastval");
     // Load HTML
-    var index; 
-    index = cell.attr(".constraints/lastval").length - 1;
-    if (cell.attr(".constraints/lastval") == "unknown"){
-        index = 0;
-    }
+    var index = cell.attr(".constraints/lastval").length - 1;
     if (index == 0){
       $(".user-sat-value").last().val(this.constraintsObject.userValues[index]);
       $(".user-function-type").last().val(this.constraintsObject.userFunctions[index]);
@@ -347,14 +340,6 @@ var ElementInspector = Backbone.View.extend({
     cell.attr({ '.name': { text: text } });
   },
 
-  updateInitSatVal: function(event){
-    this.validityCheck(event);
-    var cell = this._cellView.model;
-    var initValue = this.$('#init-sat-value').val();
-    if (cell.attr('.funcvalue/text') == "NB"){
-      $('#init-sat-value').prop('disabled', 'disabled');
-    }
-  }, 
   // update satisfaction value and buttons selection based on function type selection
   updateHTML: function(event){
     // Check if selected initValue/functionType pair is illegal
@@ -424,9 +409,7 @@ var ElementInspector = Backbone.View.extend({
       // change to default init value if functTypeChanged
       // change to none function if initValueChanged
       if ($.inArray(initValue, validPair[functionType]['validInitValue']) == -1){
-        if (initValueChanged && initValue != "unknown")
-          {this.$('.function-type').val('none');
-        }
+        if (initValueChanged && initValue != "unknown"){this.$('.function-type').val('none');}
         if (initValueChanged && initValue == "unknown"){this.$('.function-type').val('C');}
         var newValue = validPair[functionType]['defaultValue'];
         if (funcTypeChanged){this.$('#init-sat-value').val(validPair[functionType]['defaultValue']);}
@@ -1087,15 +1070,16 @@ var ElementInspector = Backbone.View.extend({
 
     // save cell data
     var funcType = this.$('.function-type').val();
-    cell.attr(".satvalue/value", satValueDict[this.$('#init-sat-value').val()]);
+    cell.attr(".satvalue/value", this.$('#init-sat-value').val());
     // If funcvalue == NB, do not update anything to the cell
     if(cell.attr(".funcvalue/text") == 'NB'){
     }
     else if (funcType != 'none'){
       cell.attr(".funcvalue/text", funcType);
     }
+
     else {
-      //cell.attr(".funcvalue/text", "");
+      cell.attr(".funcvalue/text", "");
     }
     cell.attr(".constraints/lastval", this.$('.user-function-type').val());
 
