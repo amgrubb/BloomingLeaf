@@ -1582,9 +1582,6 @@ function generateLeafFile(){
 	//console.log(datastring);
 	return datastring
 }
-exports.mul = function(i, j) {
- return i * j;
-};
 
 // ----------------------------------------------------------------- //
 // General javascript for user interaction
