@@ -816,7 +816,9 @@ function updateValues(c, v, m){
 		//var satvalues = ["denied", "partiallydenied", "partiallysatisfied", "satisfied", "unknown", "none"];
 		cell = graph.allElements[c];
 		value = v;
+		// Potential fix to Issue #97 was to revove the next line. (Jan 2018)
 		//cell.attributes.attrs[".satvalue"].value = v;
+		// The following line was here originally commented out.
 		//cell.attr(".satvalue/value", v);
 
 	//Update node based on values saved from graph prior to analysis
