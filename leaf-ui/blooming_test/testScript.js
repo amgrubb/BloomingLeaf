@@ -11,6 +11,8 @@ graph.constraintsNum;
 graph.allElements = [];
 graph.elementsBeforeAnalysis = [];
 var graphList = [];
+
+// Load cycle_loop1.json file
 var source = (function() {
   var sourceData;
 
@@ -18,7 +20,7 @@ var source = (function() {
     if(sourceData){
       done(sourceData);
     } else {
-      $.getJSON("./test/cycle_loop1.json", function(data) {
+      $.getJSON("./blooming_test/cycle_loop1.json", function(data) {
         sourceData = data;
         done(data);
       });
@@ -28,6 +30,8 @@ var source = (function() {
     getData: getData
   };
 })();
+
+// Load cycle_loop2.json file
 var source2 = (function() {
   var sourceData;
 
@@ -35,7 +39,7 @@ var source2 = (function() {
     if(sourceData){
       done(sourceData);
     } else {
-      $.getJSON("./test/cycle_loop2.json", function(data) {
+      $.getJSON("./blooming_test/cycle_loop2.json", function(data) {
         sourceData = data;
         done(data);
       });
