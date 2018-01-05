@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>BloomingLeaf Tests</title>
+    <link rel="stylesheet" href="node_modules/mocha/mocha.css">
+  </head>
+  <body>
+    <div id="mocha"></div>
+    <script type="text/javascript">
+        SVGElement.prototype.getTransformToElement = SVGElement.prototype.getTransformToElement || function(toElement) {
+        return toElement.getScreenCTM().inverse().multiply(this.getScreenCTM());
+    };
+    </script>
+
+    <script src="./rappid/lib/jquery/jquery.min.js"></script>
+    <script src="./rappid/lib/lodash/lodash.min.js"></script>
+    <script src="./rappid/lib/backbone/backbone-min.js"></script>
+
+    <script src="./rappid/dist/rappid.min.js"></script>
+
+    <script src="./rappid/dist/joint.ui.halo.js"></script>
+    <script src="./rappid/dist/joint.ui.clipboard.js"></script>
+    <script src="./rappid/dist/joint.ui.stencil.js"></script>
+    <script src="./rappid/dist/joint.ui.paperScroller.js"></script>
+    <script src="./rappid/dist/joint.ui.selectionView.js"></script>
+    <script src="./rappid/dist/joint.format.svg.js"></script>
+    <script src="./rappid/dist/joint.dia.command.js"></script>
+
+    <script src="./plugins/keyboard/keyboard.js"></script>
+    <script src="./plugins/slider/nouislider.min.js"></script>
+    <!-- <script src="./plugins/chart/Chart.min.js"></script> -->
+    <script src="./plugins/chart/Chart.bundle.min.js"></script>
+
+    <script src="./scripts/objects.js"></script>
+
+    <script src="./rappid-extensions/ElementInspector.js"></script>
+    <script src="./rappid-extensions/LinkInspector.js"></script>
+    <script src="./rappid-extensions/ConstraintsInspector.js"></script>
+    <script src="./rappid-extensions/AnalysisInspector.js"></script>
+    <script src="./rappid-extensions/joint.extensions.js"></script>
+
+    <script src="./scripts/main.js"></script>
+
+    <!--SweetAlertJS is used for easy way to customize dialog or alert message
+   -->
+    <script src="./plugins/sweetalert/sweetalert.min.js"></script>
+
+    <script src="./js/backendComm.js"></script>
+
+    <!-- OBJECTS to be sent to backend communication -->
+    <script src="./js/object/InputAnalysis.js"></script>
+    <script src="./js/object/InputModel.js"></script>
+    <!-- Model elements -->
+    <script src="./js/object/InputActor.js"></script>
+    <script src="./js/object/InputConstraint.js"></script>
+    <script src="./js/object/InputDynamic.js"></script>
+    <script src="./js/object/InputIntention.js"></script>
+    <script src="./js/object/InputLink.js"></script>
+    <script src="node_modules/mocha/mocha.js"></script>
+    <script src="node_modules/chai/chai.js"></script>
+    <script>mocha.setup('bdd')</script>
+    <script>
+    </script>
+    <!-- load code you want to test here -->
+
+    <!-- load your test files here -->
+      <!--<span class="readBytesButtons">
+      <button data-startbyte="0" data-endbyte="4">1-5</button>
+      <button data-startbyte="5" data-endbyte="14">6-15</button>
+      <button data-startbyte="6" data-endbyte="7">7-8</button>
+      <button>entire file</button>
+    </span>
+    <div id="byte_range"></div>
+    <div id="byte_content"></div>-->
+    <script src="./blooming_test/testScript.js">
+
+    </script>
+    <script>
+      mocha.run();
+    </script>
+    </body>
+</html>
