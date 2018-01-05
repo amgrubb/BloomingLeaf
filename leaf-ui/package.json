@@ -2,7 +2,7 @@
   "name": "leaf-ui",
   "version": "1.0.0",
   "description": "",
-  "main": "./test/testInput.js",
+  "main": "./blooming_test/testInput.js",
   "directories": {
     "test": "test"
   },
