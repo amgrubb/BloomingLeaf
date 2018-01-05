@@ -204,6 +204,7 @@ var source_syntax5 =  (function() {
   };
 })();
 
+//syntax check with ++ links and one and link
 var source_syntax6a =  (function() {
   var sourceData;
   function getData(done) {
@@ -222,6 +223,7 @@ var source_syntax6a =  (function() {
   };
 })();
 
+//syntax check with ++ links and one or link
 var source_syntax6b =  (function() {
   var sourceData;
   function getData(done) {
@@ -258,6 +260,7 @@ var source_syntax7 =  (function() {
   };
 })();
 
+//syntax check with -- links and one and link
 var source_syntax8a =  (function() {
   var sourceData;
   function getData(done) {
@@ -276,6 +279,7 @@ var source_syntax8a =  (function() {
   };
 })();
 
+//syntax check with -- links and one or link
 var source_syntax8b =  (function() {
   var sourceData;
   function getData(done) {
