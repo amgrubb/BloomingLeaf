@@ -235,6 +235,7 @@ function saveLinks(mode){
 //Switch to analysis mode
 $('#analysis-btn').on('click', function(){
 	syntaxCheck();
+	console.log(returned_syntaxCheck());
 	/*
 	if (linkMode == "Constraints")
 		$('#symbolic-btn').trigger( "click" );*/
@@ -349,7 +350,61 @@ $('#cycledetect-btn').on('click', function(e){
 	js_object = null;
 	jslinks = null;
 })
-
+var dups_analysis;
+function returned_syntaxCheck(){
+	var destSourceMapper = {};
+	var js_object = {};
+	var js_links = {};
+	//console.log(getLinks());
+	var jslinks = getLinks();
+	var elements = graph.getLinks();
+	for(var j = 0; j < jslinks.length; j++){
+		var cellView  = elements[j].findView(paper);
+		if(!(jslinks[j].linkDestID in destSourceMapper)){
+			destSourceMapper[jslinks[j].linkDestID] = {};
+			var constraint;
+			if (jslinks[j].postType != null){
+				constraint = jslinks[j].linkType+"|"+jslinks[j].postType;
+			}
+			else{
+				constraint = jslinks[j].linkType;
+			}
+			destSourceMapper[jslinks[j].linkDestID]["source"] = [];
+			destSourceMapper[jslinks[j].linkDestID]["source"].push(jslinks[j].linkSrcID);
+			destSourceMapper[jslinks[j].linkDestID]["constraint"] = [];
+			destSourceMapper[jslinks[j].linkDestID]["constraint"].push(constraint);
+			destSourceMapper[jslinks[j].linkDestID]["findview"] = [];
+			destSourceMapper[jslinks[j].linkDestID]["findview"].push(cellView);
+		}
+		else{
+			var constraint;
+			if (jslinks[j].postType != null){
+				constraint = jslinks[j].linkType+"|"+jslinks[j].postType;
+			}
+			else{
+				constraint = jslinks[j].linkType;
+			}
+			destSourceMapper[jslinks[j].linkDestID]["source"].push(jslinks[j].linkSrcID);
+			destSourceMapper[jslinks[j].linkDestID]["constraint"].push(constraint);
+			destSourceMapper[jslinks[j].linkDestID]["findview"].push(cellView);
+		}
+	}
+	var error = false;
+	var contributionPattern = /[+]{1,}|[-]{1,}/g;
+	for(var key in destSourceMapper){
+		var duplicates = (function(){
+			var x = destSourceMapper[key]["constraint"][0];
+			for(var i=1;i<destSourceMapper[key]["constraint"].length;i++){
+				if(x!=destSourceMapper[key]["constraint"][i] && destSourceMapper[key]["constraint"][i].match(contributionPattern) == null){
+					return true
+				}
+			}
+			return false;
+		})();
+		dups_analysis = duplicates;
+	}
+	return dups_analysis;
+}
 function syntaxCheck(){
 	var destSourceMapper = {};
 	var js_object = {};
@@ -402,6 +457,7 @@ function syntaxCheck(){
     	}
 			return false;
 		})();
+		dups_analysis = duplicates;
 		if(duplicates == true){
 			error = true;
 			errorText += "<b style='color:black'> Suggestion : </b>" +  j + ". ";
