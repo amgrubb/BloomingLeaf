@@ -1,3 +1,5 @@
+//Flag to turn on console log notification
+var develop = false;
 
 // Global variables
 var graph;
@@ -21,12 +23,12 @@ var queryObject = new queryObject();
 
 var loader;
 var reader;
-
-
+var recursiveStack = {};
+var constraintHolder = {};
 //Properties for both core and simulator.
 //TODO: merge this two arrays in order to make use the same name for all
 var satvalues = {
-		"satisfied": "2", "partiallysatisfied": "1", "partiallydenied": "-1", "denied": "-2", "unknown": "4", "conflict": "3", "none": "0",
+		"satisfied": 2, "partiallysatisfied": 1, "partiallydenied": -1, "denied": -2, "unknown": 4, "conflict":3, "none": 0,
 		"2": "satisfied", "1": "partiallysatisfied", "-1": "partiallydenied", "-2": "denied", "4": "unknown", "3": "conflict", "0": "none"
 		};
 
@@ -46,7 +48,7 @@ var satValueDict = {
 
 // Mode used specify layout and functionality of toolbars
 mode = "Modelling";		// 'Analysis' or 'Modelling'
-linkMode = "Relationships";	// 'Relationships' or 'Constraints'
+linkMode = "View";	// 'Relationships' or 'Constraints'
 
 graph = new joint.dia.Graph();
 
@@ -56,7 +58,10 @@ graph.linksNum;
 graph.constraintsNum;
 graph.allElements = [];
 graph.elementsBeforeAnalysis = [];
+graph.constraintValues = [];//store all the graph constraint values to be used		 +var linkNum = 0;
+														// by InputConstraint
 
+var linkNum = 0;
 var commandManager = new joint.dia.CommandManager({ graph: graph });
 
 // Create a paper and wrap it in a PaperScroller.
@@ -75,6 +80,7 @@ paper = new joint.dia.Paper({
 		'labels': [{position: 0.5, attrs: {text: {text: "and"}}}]
 	})
 });
+console.log(linkNum);
 
 var paperScroller = new joint.ui.PaperScroller({
 	autoResizePaper: true,
@@ -141,7 +147,7 @@ if (document.cookie){
 			break;
 		}
 	}
-
+	console.log(graph.fromJSON(JSON.parse(prevgraph)));
 	if (prevgraph){
 		graph.fromJSON(JSON.parse(prevgraph));
 	}
@@ -155,20 +161,29 @@ $('#symbolic-btn').on('click', function(){
 	saveLinks(linkMode);
 	setLinks(linkMode);
 });
-
+function getNodeName(id){
+	var listNodes = graph.getElements();
+	for(var i = 0; i < listNodes.length; i++){
+		var cellView  = listNodes[i].findView(paper);
+		if(id == cellView.model.attributes.elementid){
+			var nodeName = cellView.model.attr(".name");
+			return nodeName.text;
+		}
+	}
+}
 // Set links or constraints
 function setLinks(mode){
-	if(mode == "Relationships"){
+	if(mode == "View"){
 		linkMode = "Constraints";
-		$('#symbolic-btn').html("Model Relationships");
+		$('#symbolic-btn').html("Model View");
 
 		var restoredLinks = graph.intensionConstraints;
 		paper.options.defaultLink.attributes.labels[0].attrs.text.text = " constraint ";
 		paper.options.defaultLink.attr(".marker-target/d", 'M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5');
 
 	}else if (mode == "Constraints"){
-		linkMode = "Relationships";
-		$('#symbolic-btn').html("Model Constraints");
+		linkMode = "View";
+		$('#symbolic-btn').html("Model View");
 
 		var restoredLinks = graph.links;
 		paper.options.defaultLink.attributes.labels[0].attrs.text.text = "and";
@@ -187,7 +202,7 @@ function setLinks(mode){
 // Save links or constraints
 function saveLinks(mode){
 	// Hide all relationships that are not suppose to be dispalyed
-	if(mode == "Relationships"){
+	if(mode == "View"){
 		var links = graph.getLinks();
 		graph.links = [];
 		links.forEach(function(link){
@@ -219,9 +234,11 @@ function saveLinks(mode){
 
 //Switch to analysis mode
 $('#analysis-btn').on('click', function(){
-
+	syntaxCheck();
+	console.log(returned_syntaxCheck());
+	/*
 	if (linkMode == "Constraints")
-		$('#symbolic-btn').trigger( "click" );
+		$('#symbolic-btn').trigger( "click" );*/
 
 	//Adjust left and right panels
 	elementInspector.clear();
@@ -235,6 +252,7 @@ $('#analysis-btn').on('click', function(){
 
 	$('#analysis-btn').css("display","none");
 	$('#symbolic-btn').css("display","none");
+	$('#cycledetect-btn').css("display","none");
 	$('#dropdown-model').css("display","");
 
 	$('#model-toolbar').css("display","none");
@@ -254,11 +272,306 @@ $('#analysis-btn').on('click', function(){
 //Switch to modeling mode
 $('#model-cur-btn').on('click', function(){
 	switchToModellingMode(false);
+	//Cleaning the previous analysis data for new execution
+	global_analysisResult.elementList = "";
+	savedAnalysisData.finalAssigneEpoch="";
+	savedAnalysisData.finalValueTimePoints="";
 });
 
-$('#model-init-btn').on('click', function(){
-	switchToModellingMode(true);
-});
+//Cycle button onclick
+$('#cycledetect-btn').on('click', function(e){
+	//alert("cycle button clicked");
+	var analysis = new InputAnalysis();
+	var links = new InputLink();
+	var js_object = {};
+	var js_links = {};
+	js_object.analysis = getAnalysisValues(analysis);
+	jslinks = getLinks();
+
+	if(jslinks.length == 0){
+		swal("No cycle in the graph", "", "success");
+	}
+	else{
+		var verticies = js_object.analysis.elementList;
+		var links = jslinks;
+		console.log(verticies)
+		console.log(graph.getElements());
+		console.log(links);
+		//If there is no cycle, leave the color the way it was
+		if (cycleCheck(links, verticies) == false){
+			swal("No cycle in the graph", "", "success");
+			var elements = graph.getElements();
+			for (var i = 0; i < elements.length; i++){
+				var cellView  = elements[i].findView(paper);
+				if(cellView.model.attributes.type == "link"){
+					console.log(cellView.model.attr);
+				}
+				if(cellView.model.attributes.type == "basic.Task"){
+					cellView.model.attr({'.outer': {'fill': '#92E3B1'}});
+				}
+				if(cellView.model.attributes.type == "basic.Goal"){
+					cellView.model.attr({'.outer': {'fill': '#FFCC66'}});
+				}
+				if(cellView.model.attributes.type == "basic.Resource"){
+					cellView.model.attr({'.outer': {'fill': '#92C2FE'}});
+				}
+				if(cellView.model.attributes.type == "basic.Softgoal"){
+					cellView.model.attr({'.outer': {'fill': '#FF984F'}});
+				}
+			}
+		}
+		else{
+			swal("Cycle in the graph", "", "error");
+			var elements = graph.getElements();
+			for (var i = 0; i < elements.length; i++){
+				var cellView  = elements[i].findView(paper);
+				if (recursiveStack[cellView.model.attributes.elementid] == true){
+					cellView.model.attr({'.outer': {'fill': 'red'}});
+				}
+				else{
+					if(cellView.model.attributes.type == "basic.Task"){
+						cellView.model.attr({'.outer': {'fill': '#92E3B1'}});
+					}
+					if(cellView.model.attributes.type == "basic.Goal"){
+						cellView.model.attr({'.outer': {'fill': '#FFCC66'}});
+					}
+					if(cellView.model.attributes.type == "basic.Resource"){
+						cellView.model.attr({'.outer': {'fill': '#92C2FE'}});
+					}
+					if(cellView.model.attributes.type == "basic.Softgoal"){
+						cellView.model.attr({'.outer': {'fill': '#FF984F'}});
+					}
+				}
+			}
+		}
+	}
+	var elements = graph.getElements();
+
+	js_object = null;
+	jslinks = null;
+})
+var dups_analysis;
+function returned_syntaxCheck(){
+	var destSourceMapper = {};
+	var js_object = {};
+	var js_links = {};
+	//console.log(getLinks());
+	var jslinks = getLinks();
+	var elements = graph.getLinks();
+	for(var j = 0; j < jslinks.length; j++){
+		var cellView  = elements[j].findView(paper);
+		if(!(jslinks[j].linkDestID in destSourceMapper)){
+			destSourceMapper[jslinks[j].linkDestID] = {};
+			var constraint;
+			if (jslinks[j].postType != null){
+				constraint = jslinks[j].linkType+"|"+jslinks[j].postType;
+			}
+			else{
+				constraint = jslinks[j].linkType;
+			}
+			destSourceMapper[jslinks[j].linkDestID]["source"] = [];
+			destSourceMapper[jslinks[j].linkDestID]["source"].push(jslinks[j].linkSrcID);
+			destSourceMapper[jslinks[j].linkDestID]["constraint"] = [];
+			destSourceMapper[jslinks[j].linkDestID]["constraint"].push(constraint);
+			destSourceMapper[jslinks[j].linkDestID]["findview"] = [];
+			destSourceMapper[jslinks[j].linkDestID]["findview"].push(cellView);
+		}
+		else{
+			var constraint;
+			if (jslinks[j].postType != null){
+				constraint = jslinks[j].linkType+"|"+jslinks[j].postType;
+			}
+			else{
+				constraint = jslinks[j].linkType;
+			}
+			destSourceMapper[jslinks[j].linkDestID]["source"].push(jslinks[j].linkSrcID);
+			destSourceMapper[jslinks[j].linkDestID]["constraint"].push(constraint);
+			destSourceMapper[jslinks[j].linkDestID]["findview"].push(cellView);
+		}
+	}
+	var error = false;
+	var contributionPattern = /[+]{1,}|[-]{1,}/g;
+	for(var key in destSourceMapper){
+		var duplicates = (function(){
+			var x = destSourceMapper[key]["constraint"][0];
+			for(var i=1;i<destSourceMapper[key]["constraint"].length;i++){
+				if(x!=destSourceMapper[key]["constraint"][i] && destSourceMapper[key]["constraint"][i].match(contributionPattern) == null){
+					return true
+				}
+			}
+			return false;
+		})();
+		dups_analysis = duplicates;
+	}
+	return dups_analysis;
+}
+function syntaxCheck(){
+	var destSourceMapper = {};
+	var js_object = {};
+	var js_links = {};
+	//console.log(getLinks());
+	var jslinks = getLinks();
+	var elements = graph.getLinks();
+	for(var j = 0; j < jslinks.length; j++){
+		var cellView  = elements[j].findView(paper);
+		if(!(jslinks[j].linkDestID in destSourceMapper)){
+			destSourceMapper[jslinks[j].linkDestID] = {};
+			var constraint;
+			if (jslinks[j].postType != null){
+				constraint = jslinks[j].linkType+"|"+jslinks[j].postType;
+			}
+			else{
+				constraint = jslinks[j].linkType;
+			}
+			destSourceMapper[jslinks[j].linkDestID]["source"] = [];
+			destSourceMapper[jslinks[j].linkDestID]["source"].push(jslinks[j].linkSrcID);
+			destSourceMapper[jslinks[j].linkDestID]["constraint"] = [];
+			destSourceMapper[jslinks[j].linkDestID]["constraint"].push(constraint);
+			destSourceMapper[jslinks[j].linkDestID]["findview"] = [];
+			destSourceMapper[jslinks[j].linkDestID]["findview"].push(cellView);
+		}
+		else{
+			var constraint;
+			if (jslinks[j].postType != null){
+				constraint = jslinks[j].linkType+"|"+jslinks[j].postType;
+			}
+			else{
+				constraint = jslinks[j].linkType;
+			}
+			destSourceMapper[jslinks[j].linkDestID]["source"].push(jslinks[j].linkSrcID);
+			destSourceMapper[jslinks[j].linkDestID]["constraint"].push(constraint);
+			destSourceMapper[jslinks[j].linkDestID]["findview"].push(cellView);
+		}
+	}
+	var error = false;
+	var errorText = "<p style='text-align:left'>";
+	var j = 1;
+	var contributionPattern = /[+]{1,}|[-]{1,}/g;
+	for(var key in destSourceMapper){
+		var duplicates = (function(){
+			var x = destSourceMapper[key]["constraint"][0];
+			for(var i=1;i<destSourceMapper[key]["constraint"].length;i++){
+    		if(x!=destSourceMapper[key]["constraint"][i] && destSourceMapper[key]["constraint"][i].match(contributionPattern) == null){
+					return true
+				}
+    	}
+			return false;
+		})();
+		dups_analysis = duplicates;
+		if(duplicates == true){
+			error = true;
+			errorText += "<b style='color:black'> Suggestion : </b>" +  j + ". ";
+			var subErrorText = "Have all links from "
+			destSourceMapper[key]["source"].forEach(function(element){
+				errorText += "<b style='color:blue'>" + this.getNodeName(element) + ", </b>"
+				subErrorText += this.getNodeName(element) + ", "
+			})
+			subErrorText += " to " + this.getNodeName(key)
+			destSourceMapper[key]["constraint"].forEach(function(element){
+				if(!(subErrorText.includes(element))){
+					subErrorText += " all <b style='color: black' >"+ element + "</b> constraint links or "
+				}
+			})
+			subErrorText = subErrorText.substring(0,subErrorText.lastIndexOf(" or ")) + ".";
+			var destName = this.getNodeName(key);
+			errorText += " to <b>" + destName + "</b><br> " + subErrorText +"<br><br>";
+			destSourceMapper[key]["findview"].forEach(function(element){
+				element.model.attr({'.connection': {'stroke': 'red'}});
+				element.model.attr({'.marker-target': {'stroke': 'red'}});
+				element.model.attr({'.connection': {'stroke-width': '3'}});
+				element.model.attr({'.marker-target': {'stroke-width': '3'}});
+
+			})
+		}
+		else{
+			destSourceMapper[key]["findview"].forEach(function(element){
+				element.model.attr({'.connection': {'stroke': '#000000'}});
+				element.model.attr({'.marker-target': {'stroke': '#000000'}});
+				element.model.attr({'.connection': {'stroke-width': '1'}});
+				element.model.attr({'.marker-target': {'stroke-width': '1'}});
+			})
+		}
+		j+=1;
+	}
+	errorText += "</p>"
+	if(error==true){
+		//errorText = errorText.substring(0,errorText.lastIndexOf(" and ")) + '.';
+		swal({
+			title:"We found invalid links combinations ",
+			type: "warning",
+			html: errorText,
+			showCloseButton: true,
+ 			showCancelButton: true,
+			confirmButtonText: "Ok",
+			cancelButtonText: "Go back to Model View",
+			cancelButtonClass: "backModel"
+		}).then(function() {
+
+			}, function(dismiss) {
+			  // dismiss can be 'overlay', 'cancel', 'close', 'esc', 'timer'
+			  if (dismiss === 'cancel') {
+			    $("#model-cur-btn").trigger("click");
+			  }
+		})
+	}
+}
+
+//Cycle-deteciton algorithm
+// The algorithm is referenced from Detect Cycle in a Directed Graph algorithm
+// discussed at : http://www.geeksforgeeks.org/detect-cycle-in-a-graph/
+function cycleCheck(links, verticies){
+	var graphs = {};
+	var visited = {};
+	var cycle = false;
+	//Iterate over links to create map between src node and dest node of each link
+	links.forEach(function(element){
+		var src = element.linkSrcID;
+		if(src in graphs){
+			graphs[src].push(element.linkDestID);
+		}
+		else{
+			graphs[src] = [element.linkDestID];
+		}
+	})
+	//Iterate over all verticies to initialize visited stack and recursive stack to false
+	verticies.forEach(function(vertex){
+		visited[vertex.id] = false;
+		recursiveStack[vertex.id] = false;
+	})
+
+	verticies.forEach(function(vertex){
+			if (visited[vertex.id] == false) {
+				if (isCycle(vertex.id,visited,recursiveStack, graphs) == true){
+					cycle = true;
+				}
+			}
+	})
+	cycleClear = cycle;
+	return cycle;
+}
+//DepthFirstSearch
+function isCycle(v, visited, recursiveStack, graphs){
+	visited[v] = true;
+	recursiveStack[v] = true;
+	if(graphs[v] == null){
+		recursiveStack[v] = false;
+		return false;
+	}
+	else{
+		for(var i = 0; i < graphs[v].length; i++){
+			if (visited[graphs[v][i]] == false){
+				if (isCycle(graphs[v][i], visited, recursiveStack, graphs) == true){
+					return true;
+				}
+			}
+			else if (recursiveStack[graphs[v][i]] == true){
+				return true;
+			}
+		}
+	}
+	recursiveStack[v] = false;
+	return false;
+}
 
 function switchToModellingMode(useInitState){
 	//Reset to initial graph prior to analysis
@@ -282,6 +595,7 @@ function switchToModellingMode(useInitState){
 
 	$('#analysis-btn').css("display","");
 	$('#symbolic-btn').css("display","");
+	$('#cycledetect-btn').css("display","");
 	$('#dropdown-model').css("display","none");
 
 	$('#model-toolbar').css("display","");
@@ -302,6 +616,8 @@ function switchToModellingMode(useInitState){
 
 	mode = "Modelling";
 }
+
+
 
 // ----------------------------------------------------------------- //
 // Communication between server and front end
@@ -372,12 +688,12 @@ analysisFunctions.clearQueryObject = function(){
 
 function loadAnalysis(analysisResults){
 	currentAnalysis = new analysisObject.initFromBackEnd(analysisResults);
-	$("#finalAssigneEpoch").val(analysisResults.finalAssignedEpoch);
-	$("#finalValueTimePoints").val(analysisResults.finalValueTimePoints);
+	savedAnalysisData.finalAssigneEpoch = analysisResults.finalAssignedEpoch;
+	savedAnalysisData.finalValueTimePoints = analysisResults.finalValueTimePoints;
 	$('#num-rel-time').val(analysisResults.relativeTimePoints);
 	if(analysisResults.absoluteTimePoints){
 		var absTimePoints = analysisResults.absoluteTimePoints.toString();
-		$('#abs-time-pts').val(absTimePoints.replace(",", " "));
+		$('#abs-time-pts').val(absTimePoints.replace(/,/g, " "));
 	}
 
 	elementList = analysisResults.elementList;
@@ -556,7 +872,9 @@ function updateValues(c, v, m){
 		//var satvalues = ["denied", "partiallydenied", "partiallysatisfied", "satisfied", "unknown", "none"];
 		cell = graph.allElements[c];
 		value = v;
-		cell.attributes.attrs[".satvalue"].value = v;
+		// Potential fix to Issue #97 was to revove the next line. (Jan 2018)
+		//cell.attributes.attrs[".satvalue"].value = v;
+		// The following line was here originally commented out.
 		//cell.attr(".satvalue/value", v);
 
 	//Update node based on values saved from graph prior to analysis
@@ -706,14 +1024,13 @@ graph.on("add", function(cell){
 			cell.prop("linktype", "actorlink");
 
 			// Unable to model constraints for actors
-			if(linkMode == "Relationships"){
+			if(linkMode == "View"){
 				cell.label(0, {attrs: {text: {text: "is-a"}}});
 			}else if(linkMode == "Constraints"){
 				cell.label(0, {attrs: {text: {text: "error"}}});
 			}
 		}
 	}	//Don't do anything for links
-
 	//Give element a unique default
 	cell.attr(".name/text", cell.attr(".name/text") + "_" + element_counter);
 	element_counter++;
@@ -803,7 +1120,7 @@ paper.on("link:options", function(evt, cell){
 	linkInspector.clear();
 	constrainsInspector.clear();
 	elementInspector.clear();
-	if (linkMode == "Relationships"){
+	if (linkMode == "View"){
 		linkInspector.render(cell);
 	}else if (linkMode == "Constraints"){
 		constrainsInspector.render(cell);
@@ -818,7 +1135,7 @@ paper.on('cell:pointerup', function(cellView, evt) {
 	// Link
 	if (cellView.model instanceof joint.dia.Link){
 		var link = cellView.model;
-		
+
 		if(link.getSourceElement()!=null)
 			var sourceCell = link.getSourceElement().attributes.type;
 
@@ -831,7 +1148,12 @@ paper.on('cell:pointerup', function(cellView, evt) {
 				((sourceCell != "basic.Actor") && (targetCell == "basic.Actor"))){
 				link.label(0 ,{position: 0.5, attrs: {text: {text: 'error'}}});
 			}else if ((sourceCell == "basic.Actor") && (targetCell == "basic.Actor")){
-				link.label(0 ,{position: 0.5, attrs: {text: {text: 'is-a'}}});
+				if(!link.prop("link-type")){
+					link.label(0 ,{position: 0.5, attrs: {text: {text: 'is-a'}}});
+					link.prop("link-type", "is-a");
+				}else{
+					link.label(0 ,{position: 0.5, attrs: {text: {text: link.prop("link-type")}}});
+				}
 			}
 		}
 		return
@@ -895,52 +1217,160 @@ graph.on('change:size', function(cell, size){
 });
 
 
+//Removing a link
+this.graph.on('remove', function(cell, collection, opt) {
+   if (cell.isLink()) {
+	   if(cell.prop("link-type") == 'NBT' || cell.prop("link-type") == 'NBD'){
+
+		   //Verify if is a Not both type. If it is remove labels from source and target node
+		   var link = cell;
+		   var source = link.prop("source");
+		   var target = link.prop("target");
+
+		   for(var i = 0; i < graph.getElements().length; i++ ){
+			   if(graph.getElements()[i].prop("id") == source["id"]){
+				   source = graph.getElements()[i];
+			   }
+			   if(graph.getElements()[i].prop("id") == target["id"]){
+				   target = graph.getElements()[i];
+			   }
+		   }
+
+		   //verify if node have any other link NBD or NBT
+	 	  var sourceNBLink = function(){
+	 		  var localLinks = graph.getLinks();
+	 		  for(var i = 0; i < localLinks.length; i++){
+	 			  if ((localLinks[i]!=link) && (localLinks[i].prop("link-type") == 'NBT' || localLinks[i].prop("link-type") == 'NBD')){
+	     			  if(localLinks[i].getSourceElement().prop("id") == source["id"] || localLinks[i].getTargetElement().prop("id") == source["id"]){
+	     				 return true;
+	     			  }
+	 			  }
+	 		  }
+	 		  return false;
+	 	  }
+
+	 	  //verify if target have any other link NBD or NBT
+	 	  var targetNBLink = function(){
+	 		  var localLinks = graph.getLinks();
+	 		  for(var i = 0; i < localLinks.length; i++){
+	 			  if ((localLinks[i]!=link) && (localLinks[i].prop("link-type") == 'NBT' || localLinks[i].prop("link-type") == 'NBD')){
+	     			  if(localLinks[i].getTargetElement().prop("id") == target["id"] || localLinks[i].getSourceElement().prop("id") == target["id"]){
+	     				 return true;
+	     			  }
+	 			  }
+	 		  }
+	 		  return false;
+	 	  }
+
+	 	  //Verify if it is possible to remove the NB tag from source and target
+	 	  if(!sourceNBLink()){
+	 		  source.attr(".funcvalue/text", "");
+	 	  }
+	 	  if(!targetNBLink()){
+		          target.attr(".funcvalue/text", "");
+	 	  }
+
+	  }
+   }
+});
+
+
+
 // ----------------------------------------------------------------- //
 // Keyboard shortcuts
 
 
 var clipboard = new joint.ui.Clipboard();
-KeyboardJS.on('ctrl + c', function() {
-	// Copy all selected elements and their associatedf links.
-	clipboard.copyElements(selection, graph, { translate: { dx: 20, dy: 20 }, useLocalStorage: true });
-});
-KeyboardJS.on('ctrl + v', function() {
-	clipboard.pasteCells(graph);
+//Check if the browser is on Mac
+var macOS = navigator.platform.match(/(Mac|iPhone|iPod|iPad)/i)?true:false;
+if(macOS){
+	console.log("On mac");
+	KeyboardJS.on('command + c, ctrl + c', function() {
+		// Copy all selected elements and their associatedf links.
+		clipboard.copyElements(selection, graph, { translate: { dx: 20, dy: 20 }, useLocalStorage: true });
+	});
+	KeyboardJS.on('command + v, ctrl + v', function() {
+		clipboard.pasteCells(graph);
 
-	selectionView.cancelSelection();
+		selectionView.cancelSelection();
 
-	clipboard.pasteCells(graph, { link: { z: -1 }, useLocalStorage: true });
+		clipboard.pasteCells(graph, { link: { z: -1 }, useLocalStorage: true });
 
-	// Make sure pasted elements get selected immediately. This makes the UX better as
-	// the user can immediately manipulate the pasted elements.
-	clipboard.each(function(cell) {
-		if (cell.get('type') === 'link') return;
+		// Make sure pasted elements get selected immediately. This makes the UX better as
+		// the user can immediately manipulate the pasted elements.
+		clipboard.each(function(cell) {
+			if (cell.get('type') === 'link') return;
 
-		// Push to the selection not to the model from the clipboard but put the model into the graph.
-		// Note that they are different models. There is no views associated with the models
-		// in clipboard.
-		selection.add(graph.get('cells').get(cell.id));
+			// Push to the selection not to the model from the clipboard but put the model into the graph.
+			// Note that they are different models. There is no views associated with the models
+			// in clipboard.
+			selection.add(graph.get('cells').get(cell.id));
+		});
+
+		selection.each(function(cell) {
+		selectionView.createSelectionBox(paper.findViewByModel(cell));
+		});
 	});
 
-	selection.each(function(cell) {
-	selectionView.createSelectionBox(paper.findViewByModel(cell));
+	//Delete selected nodes when the delete key is pressed.
+
+	KeyboardJS.on('del', function(){
+	// 	while (selection.length > 0){
+	// 		selection.pop();
+	// //		console.log(paper.findViewByModel(current));
+	// //		selectionView.destroySelectionBox(paper.findViewByModel(current));
+	// //		current.remove();
+	// 	}
 	});
-});
+	// Override browser's default action when backspace is pressed
+	KeyboardJS.on('backspace', function(){
 
-//Delete selected nodes when the delete key is pressed.
+	});
+}
+else{
+	KeyboardJS.on('ctrl + c', function() {
+		// Copy all selected elements and their associatedf links.
+		clipboard.copyElements(selection, graph, { translate: { dx: 20, dy: 20 }, useLocalStorage: true });
+	});
+	KeyboardJS.on('ctrl + v', function() {
+		clipboard.pasteCells(graph);
 
-KeyboardJS.on('del', function(){
-// 	while (selection.length > 0){
-// 		selection.pop();
-// //		console.log(paper.findViewByModel(current));
-// //		selectionView.destroySelectionBox(paper.findViewByModel(current));
-// //		current.remove();
-// 	}
-});
-// Override browser's default action when backspace is pressed
-KeyboardJS.on('backspace', function(){
+		selectionView.cancelSelection();
 
-});
+		clipboard.pasteCells(graph, { link: { z: -1 }, useLocalStorage: true });
+
+		// Make sure pasted elements get selected immediately. This makes the UX better as
+		// the user can immediately manipulate the pasted elements.
+		clipboard.each(function(cell) {
+			if (cell.get('type') === 'link') return;
+
+			// Push to the selection not to the model from the clipboard but put the model into the graph.
+			// Note that they are different models. There is no views associated with the models
+			// in clipboard.
+			selection.add(graph.get('cells').get(cell.id));
+		});
+
+		selection.each(function(cell) {
+		selectionView.createSelectionBox(paper.findViewByModel(cell));
+		});
+	});
+
+	//Delete selected nodes when the delete key is pressed.
+
+	KeyboardJS.on('del', function(){
+	// 	while (selection.length > 0){
+	// 		selection.pop();
+	// //		console.log(paper.findViewByModel(current));
+	// //		selectionView.destroySelectionBox(paper.findViewByModel(current));
+	// //		current.remove();
+	// 	}
+	});
+	// Override browser's default action when backspace is pressed
+	KeyboardJS.on('backspace', function(){
+
+	});
+}
+
 // ----------------------------------------------------------------- //
 // Toolbar
 
@@ -974,6 +1404,30 @@ $('#btn-clear-flabel').on('click', function(){
 		}
 	}
 });
+// This is an option under clear button to clear red-highlight from
+// cycle detection function
+$('#btn-clear-cycle').on('click',function(){
+	var cycleElements = graph.getElements();
+	console.log(cycleElements);
+
+	var elements = graph.getElements();
+	for (var i = 0; i < elements.length; i++){
+			var cellView  = elements[i].findView(paper);
+			if(cellView.model.attributes.type == "basic.Task"){
+				cellView.model.attr({'.outer': {'fill': '#92E3B1'}});
+			}
+			if(cellView.model.attributes.type == "basic.Goal"){
+				cellView.model.attr({'.outer': {'fill': '#FFCC66'}});
+			}
+			if(cellView.model.attributes.type == "basic.Resource"){
+				cellView.model.attr({'.outer': {'fill': '#92C2FE'}});
+			}
+			if(cellView.model.attributes.type == "basic.Softgoal"){
+				cellView.model.attr({'.outer': {'fill': '#FF984F'}});
+			}
+	}
+});
+
 $('#btn-svg').on('click', function() {
 	paper.openAsSVG();
 });
@@ -1178,7 +1632,7 @@ function generateLeafFile(){
 	var savedLinks = [];
 	var savedConstraints = [];
 
-	if (linkMode == "Relationships"){
+	if (linkMode == "View"){
 		savedConstraints = graph.intensionConstraints;
 		var links = graph.getLinks();
 	    links.forEach(function(link){
@@ -1359,7 +1813,7 @@ function generateLeafFile(){
 		datastring += ("C\t" + type + "\t" + source + "\t" + sourceVar + "\t" + target + "\t" + targetVar + "\n");
 	}
 
-	console.log(datastring);
+	//console.log(datastring);
 	return datastring
 }
 
@@ -1369,7 +1823,11 @@ function generateLeafFile(){
 // When the user clicks anywhere outside of the a pop up, close it
 window.onclick = function(event) {
 	var modal = document.getElementById('myModal');
-    if (event.target == modal) {
-        modal.style.display = "none";
-    }
+	var intermT = document.getElementById('intermediateTable');
+  if (event.target == modal) {
+  	modal.style.display = "none";
+  }
+	if(event.target == intermT){
+		intermT.style.display = "none";
+	}
 }

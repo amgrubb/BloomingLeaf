@@ -20,7 +20,9 @@ body {
 .header {
    padding: 0px;
 }
-
+#swal2-content b{
+  color: red;
+}
 #name {
   position: absolute;
   top: 0px;
@@ -118,7 +120,7 @@ body {
 
 .left-panel label {
   display: block;
-  text-align: center;  
+  text-align: center;
   font-size: 12px;
   line-height: 18px;
   height: 18px;
@@ -142,22 +144,20 @@ body {
 .inspector {
   left: auto;
   top: 40px;
-  width: 240px;
-  padding: 10px;
-
+  width: 260px;
+  /*padding: 10px;*/
   background-color: #333;
   color: #bcbcbc;
-  text-shadow: 0 -1px 0 #000;
   text-align: center;
 }
 
 .inspector input,
 .inspector textarea {
-   text-shadow: 0 -1px 0 #000;
-   color: #ddd;
+   color: black;
+   text-shadow: none;
    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.1),0px 0 0 1px rgba(255,255,255,0.1);
    border: 1px solid black;
-   background: transparent;
+   background: white;
    height: 20px;
    line-height: 20px;
    resize: none;
@@ -166,8 +166,9 @@ body {
 
 .inspector label {
   margin: 14px 0 8px 0;
-  font-size: 1.25em; 
+  font-size: 1.25em;
 }
+
 
 .sub-label{
   font-size: 1em !important;
@@ -218,7 +219,7 @@ body {
   margin-bottom: 28px;
 }
 
-#function-div, #intension-div, #link-div, #query-div{
+#function-div, #intension-div, #link-div, #query-div,#valuesDiv{
   width: 215px;
   text-align: center;
   margin: auto;
@@ -228,13 +229,13 @@ body {
 .function-sat-value, .user-defined-select, .repeat-select,
 .relationship-select, .link-type, #conflict-level, #abs-vals,
 #assigned-vals{
-  background-color: rgba(31, 150, 125, 1);
+  background-color: #1E85F7;
   border-color: rgba(31, 121, 101, 1);
 
   color: white;
-  font-size: 0.8em;
+  font-size: 0.7em;
   font-weight: 200;
-  width: 215px;
+  width: 200px;
   margin: auto;
   border: 0;
 }
@@ -245,10 +246,19 @@ body {
 }
 .function-type:disabled {
   background-color: rgba(20, 85, 9, 1);
-  color: white; 
+  color: white;
 }
-
-.user-defined-select, .repeat-select, .relationship-select{
+#repeat-begin2,#repeat-begin3{
+  margin: 10px 0 8px 0;
+  text-align: left;
+}
+#repeat-end2, #repeat-end3{
+  width: 101px;
+  margin-top: 4px;
+  margin-bottom: 8px;
+  border-radius: 5px;
+}
+.user-defined-select, .repeat-select, .repeat-select2, .relationship-select{
   width: 104px;
   margin-bottom: 8px;
 }
@@ -259,6 +269,8 @@ body {
 
 .user-defined-select:nth-child(1),
 .repeat-select:nth-of-type(1),
+.repeat-select2:nth-of-type(3),
+.repeat-select3:nth-of-type(5),
 #relationship-src{
   float: left;
   clear: left;
@@ -266,6 +278,8 @@ body {
 
 .user-defined-select:nth-child(2),
 .repeat-select:nth-of-type(2),
+.repeat-select2:nth-of-type(4),
+.repeat-select3:nth-of-type(6),
 #relationship-tar{
   float: right;
 }
@@ -314,11 +328,12 @@ select > .select-placeholder {
   padding: 0;
   color: white;
   text-align: center;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
   border: 0;
   cursor: pointer;
+  border-radius: 6px;
 
-  margin-top: 16px;
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
 
 .inspector-btn:active {
@@ -345,9 +360,7 @@ select > .select-placeholder {
 
 .green-btn{
   /*background: #27ae60;*/
-  background: #1E866A;
-  -webkit-box-shadow: inset 0 -2px #219d55;
-  box-shadow: inset 0 -2px #219d55;
+  background: #1E85F7;
 }
 
 .blue-btn{
@@ -366,7 +379,7 @@ select > .select-placeholder {
   width: 160px;
   height: 25px;
   border-radius: 5px;
-  font-size: 0.8em;
+  font-size: 0.6em;
   margin-top: 12px;
 }
 
@@ -430,7 +443,8 @@ select > .select-placeholder {
 }
 
 .toolbar .btn:hover {
-    background-color: #111;
+    background-color: #DCDCDC;
+    color:black;
 }
 
 #symbolic-btn {
@@ -444,6 +458,12 @@ select > .select-placeholder {
 
 #analysis-btn {
   background: #27ae60;
+  color: white;
+  border-radius: inherit;
+  min-width: 80px;
+}
+#cycledetect-btn{
+  background: #ff1493;
   color: white;
   min-width: 80px;
 }

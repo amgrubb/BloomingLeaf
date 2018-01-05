@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.PrintWriter;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import interface_objects.InputObject;
 import interface_objects.OutputModel;
@@ -20,13 +21,9 @@ public class SolveModel {
 
 	/**
 	 * This method is responsible to execute all steps to generate the analysis file.
-	 * @param args
-	 * As parameters it receives the name of the file to be created.
-	 * Note: create a parameter to decide if it will execute a new analysis or use an existent one.
-	 * 		Alicia->Marcel: What does this note mean?
+	 * @param args Default command line arguments.
 	 */
 	public static void main(String[] args) {
-
 		//This is the default filePath to be executed if no file is pass through parameters
 		String filePath = "temp/"; 			
 		String inputFile = "default.json";
@@ -41,8 +38,37 @@ public class SolveModel {
 			solver.solveModel();
 			createOutputFile(solver, filePath + outputFile);
 	
+		} catch (RuntimeException e) {
+			try {
+				File file;
+				file = new File(filePath + outputFile);
+				if (!file.exists()) {
+					file.createNewFile();
+				}
+				PrintWriter printFile = new PrintWriter(file);
+				String message = "{ \"errorMessage\" : \"RuntimeException: " + e.getMessage() + "\" }";
+				message = message.replaceAll("\\r\\n|\\r|\\n", " ");
+				printFile.printf(message);
+				printFile.close();
+			} catch (Exception f) {
+				throw new RuntimeException("Error while writing ErrorMessage: " + f.getMessage());
+			}
+//			throw new RuntimeException(e.getMessage());
 		} catch (Exception e) {
-			throw new RuntimeException(e.getMessage());
+			try {
+				File file;
+				file = new File(filePath + outputFile);
+				if (!file.exists()) {
+					file.createNewFile();
+				}
+				PrintWriter printFile = new PrintWriter(file);
+				String message = "{ \"errorMessage\" : \"Exception: " + e.getMessage() + "\" }";
+				message = message.replaceAll("\\r\\n|\\r|\\n", " ");
+				printFile.printf(message);
+				printFile.close();
+			} catch (Exception f) {
+				throw new RuntimeException("Error while writing ErrorMessage: " + f.getMessage());
+			}
 		} 
 	}
 
@@ -54,8 +80,8 @@ public class SolveModel {
 	 * Name of the file to be read by CGI to be sent to frontend
 	 */
 	private static void createOutputFile(TroposCSPAlgorithm solver, String filePath) {
-		Gson gson = new Gson();		
-		//Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		//Gson gson = new Gson();		
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		OutputModel outputModel = solver.getSpec().getOutputModel();
 		
 		try {

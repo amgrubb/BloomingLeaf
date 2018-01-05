@@ -2,41 +2,32 @@
 var global_analysisResult = {};
 
 function backendComm(js_object){
-	//Set this variable to true if executing on localhost
-	var localhost = false;
+	/**
+	* Print the input to the console.
+	*/
+	console.log(JSON.stringify(js_object));
 
-	if(localhost){
-		//Show in console just to see what is going to backend
-		console.log(JSON.stringify(js_object));
-		analysisResults = {};
+	//backend script called
+	var pathToCGI = "./cgi-bin/backendCom.cgi";
 
-		loadAnalysis(analysisResults);
-		var currentValueLimit = parseInt(sliderObject.sliderElement.noUiSlider.get());
-		var sliderMax = currentValueLimit + currentAnalysis.timeScale;
-		sliderObject.sliderElement.noUiSlider.set(sliderMax);
-
-	}else{
-		//backend script called
-		var pathToCGI = "./cgi-bin/backendCom.cgi";
-		/**
-		 * UNCOMMENT THE CODE BELLOW TO EXECUTE ON SERVER
-		 */
-
-	 	$.ajax({
-			url: pathToCGI,
-			type: "post",
-			contentType: "json",
-			data:JSON.stringify(js_object),
-			success: function(response){
-				executeJava(js_object.analysis.getNextState);
-				console.log(response);
-			}
-		})	.fail(function(){
-			msg = "Ops! Something went wrong.";
-			alert(msg);
-		});
-
-	}
+ 	$.ajax({
+		url: pathToCGI,
+		type: "post",
+		contentType: "json",
+		data:JSON.stringify(js_object),
+		success: function(response){
+			setTimeout(function(){
+				if(js_object.analysis.action=="allNextStates"){
+					executeJava(true);
+				}else{
+					executeJava(false);
+				}
+		    }, 500);  
+		}
+	})	.fail(function(){
+		msg = "Ops! Something went wrong.";
+		alert(msg);
+	});
 
 }
 
@@ -46,7 +37,9 @@ function executeJava(isGetNextSteps){
 		url: pathToCGI,
 		type: "get",
 		success: function(response){
-			getFileResults(isGetNextSteps);
+		    setTimeout(function(){
+				getFileResults(isGetNextSteps);
+		    }, 500);  
 		}
 	})
 	.fail(function(){
@@ -57,7 +50,6 @@ function executeJava(isGetNextSteps){
 
 
 function getFileResults(isGetNextSteps){
-	//backend script called
 	var pathToCGI = "./cgi-bin/fileRead.cgi";
 
 	//Executing action to send backend
@@ -65,26 +57,34 @@ function getFileResults(isGetNextSteps){
 		url: pathToCGI,
 		type: "get",
 		success: function(response){
-			analysisResults = JSON.parse(response);
-			if (analysisResults == ""){
-				alert("Ops! We couldn't read output.out file.")
-				return
-			}
-
-			if(isGetNextSteps){
-				global_analysisResult = analysisResults;
-				open_analysis_viewer();
+			analysisResults = JSON.parse(response['data']);
+			var errorMsg = analysisResults.errorMessage;
+			if(errorMsg){
+				alert(errorMsg);
 			}else{
-				loadAnalysis(analysisResults);
-				var currentValueLimit = parseInt(sliderObject.sliderElement.noUiSlider.get());
-				var sliderMax = currentValueLimit + currentAnalysis.timeScale;
-				sliderObject.sliderElement.noUiSlider.set(sliderMax);
+				/**
+					* Print the response data to the console.
+				*/
+					console.log(JSON.stringify(JSON.parse(response['data'])));
+
+				global_analysisResult = analysisResults;
+				if (analysisResults == ""){
+					alert("Error while reading the resonse file from server. This can be due an error in executing java application.")
+					return
+				}
+				if(isGetNextSteps){
+					open_analysis_viewer();
+				}else{
+					loadAnalysis(analysisResults);
+					var currentValueLimit = parseInt(sliderObject.sliderElement.noUiSlider.get());
+					var sliderMax = currentValueLimit + currentAnalysis.timeScale;
+					sliderObject.sliderElement.noUiSlider.set(sliderMax);
+				}
 			}
-		console.log(JSON.stringify(response));
 		}
 	})
 	.fail(function(){
-		msg = "Ops! Something went wrong getting file.";
+		msg = "Error while executing CGI file: fileRead. Please contact the system Admin.";
 		alert(msg);
 	});
 }

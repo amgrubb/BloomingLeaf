@@ -65,17 +65,16 @@ window.onload = function(){
 
 function renderNavigationSidebar(currentPage = 0){
 	clear_pagination_values();
-		
+	
 	var currentPageIn = document.getElementById("currentPage");
 	var num_states_lbl = document.getElementById("num_states_lbl");
-//	num_states_lbl.innerHTML += (analysisResult.elementList[0].valueList.length - 1);
-	num_states_lbl.innerHTML += (analysisResult.allSolution.length - 1);
+	num_states_lbl.innerHTML += (analysisResult.allSolution.length);
 	
 	currentPageIn.value = currentPage.toString();
 	
 	updatePagination(currentPage);
-	//updateNodesValues(currentPage);
-	updateSliderValues(currentPage);
+	updateNodesValues(currentPage);
+	//updateSliderValues(currentPage);
 }
 
 function updateNodesValues(currentPage, step = 0){
@@ -90,25 +89,25 @@ function updateNodesValues(currentPage, step = 0){
 		cell.attributes.attrs[".satvalue"].value = value;
 		
 		//Change backend value to user friendly view
-		if ((value == "1000") || (value == "1100")) {
+		if ((value == "0001") || (value == "0011")) {
 		  cell.attr(".satvalue/text", "(FS, T)");
 		  cell.attr({text:{fill:'black'}});
-		}else if(value == "0100") {
+		}else if(value == "0010") {
 		  cell.attr(".satvalue/text", "(PS, T)");
 		  cell.attr({text:{fill:'black'}});
-		}else if ((value == "0001") || (value == "0011")){
+		}else if ((value == "1000") || (value == "1100")){
 		  cell.attr(".satvalue/text", "(T, FD)");
 		  cell.attr({text:{fill:'black'}});
-		}else if (value == "0010") {
+		}else if (value == "0100") {
 		  cell.attr(".satvalue/text", "(T, PD)");
 		  cell.attr({text:{fill:'black'}});
 		}else if (value == "0110") {
 		  cell.attr(".satvalue/text", "(PS, PD)");
 		  cell.attr({text:{fill:'red'}});
-		}else if ((value == "0111") || (value == "0101")){
+		}else if ((value == "1110") || (value == "1010")){
 		  cell.attr(".satvalue/text", "(PS, FD)");
 		  cell.attr({text:{fill:'red'}});
-		}else if ((value == "1110") || (value == "1010")){
+		}else if ((value == "0111") || (value == "0101")){
 		  cell.attr(".satvalue/text", "(FS, PD)");
 		  cell.attr({text:{fill:'red'}});
 		}else if ((value == "1111") || (value == "1001") || (value == "1101") || (value == "1011") ){
@@ -126,7 +125,7 @@ function updateNodesValues(currentPage, step = 0){
 
 function updatePagination(currentPage){
 	var pagination = document.getElementById("pagination");
-	var nextSteps_array_size = analysisResult.allSolution.length - 1;
+	var nextSteps_array_size = analysisResult.allSolution.length;
 	if(nextSteps_array_size > 6){
 		renderPreviousBtn(pagination, currentPage);
 		if(currentPage - 3 < 0){
@@ -166,7 +165,7 @@ function renderPreviousBtn(pagination, currentPage){
 
 function renderForwardBtn(pagination, currentPage){
 	var value;
-	var nextSteps_array_size = analysisResult.allSolution.length - 1;
+	var nextSteps_array_size = analysisResult.allSolution.length;
 
 	if(currentPage == nextSteps_array_size-1){
 		value = currentPage;
@@ -197,7 +196,7 @@ function clear_pagination_values(){
 
 function goToState(){ 
 	var requiredState = parseInt(document.getElementById("requiredState").value);
-	var nextSteps_array_size = analysisResult.allSolution.length - 1;
+	var nextSteps_array_size = analysisResult.allSolution.length;
 
 	if((requiredState != "NaN") && (requiredState > 0)){
 		if(requiredState > nextSteps_array_size){
@@ -217,10 +216,10 @@ function add_filter(){
 		checkbox = document.getElementsByClassName("filter_checkbox")[i_element]
 
 		if((checkbox.id == "conflictFl") && (checkbox.checked)){
-			for(var i_states = 0 ; i_states < tempResults.elementList[0].valueList.length; i_states++){
+			for(var i_sol = 0 ; i_sol < tempResults.allSolution.length; i_sol++){
 				var remove = false;
 				for(var i = 0; i < elements.length; i++){
-					value = tempResults.elementList[i].valueList[i_states];
+					value = tempResults.allSolution[i_sol].intentionElements[i].status[0];
 					if (	(value == "0110") || 
 							(value == "0111") || 
 							(value == "0101") || 
@@ -268,63 +267,3 @@ function add_filter(){
 	
 	renderNavigationSidebar();
 }
-
-var stepSlider = document.getElementById('slider');
-
-function creatingSlider(currentPage = 0){
-	//Creating Slider
-	$('#slider').width($('#paper').width() * 0.8);
-	$('#slider').css("margin-top", $(window).height() * 0.9);
-
-	// Adjust slider value position based on stencil width and paper width
-	var sliderValuePosition = 300 + $('#paper').width() * 0.1;
-	$('#sliderValue').css("top", '20px');
-	$('#sliderValue').css("left", sliderValuePosition.toString() + 'px');
-	$('#sliderValue').css("position", "relative");
-
-	$(window).resize(function() {
-		$('#slider').css("margin-top", $(this).height() * 0.9);
-		$('#slider').width($('#paper').width() * 0.8);
-	});
-
-	if(analysisResult.allSolution[currentPage])
-		var sliderMax = analysisResult.allSolution[currentPage].intentionElements[0].status.length;
-	else
-		var sliderMax = 1;
-	
-	noUiSlider.create(stepSlider, {
-		start: 0,
-		step: 1,
-		behaviour: 'tap',
-		connect: 'lower',
-		direction: 'ltr',
-		range: {
-			'min': 0,
-			'max': sliderMax
-		}
-	});
-};
-
-creatingSlider(currentPage);
-
-function updateSliderValues(currentPage = 0){
-	var sliderMax = analysisResult.allSolution[currentPage].intentionElements[0].status.length;
-	stepSlider.noUiSlider.updateOptions({
-		start: 0,
-		step: 1,
-		behaviour: 'tap',
-		connect: 'lower',
-		direction: 'ltr',
-		range: {
-			'min': 0,
-			'max': sliderMax
-		}
-	});
-}
-
-slider.noUiSlider.on('update', function( values, handle ) {
-	updateSliderValue = document.getElementById('sliderValue');
-	updateSliderValue.innerHTML = parseInt(values[handle]);
-	var currentPageIn = document.getElementById("currentPage");
-	updateNodesValues(currentPageIn.value, parseInt(values[handle]));
-});
