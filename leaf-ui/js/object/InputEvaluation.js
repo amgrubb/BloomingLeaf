@@ -48,16 +48,19 @@ function getUserEvaluations(){
 	}
 	for(var k in saveIVT){
 		var goal = k;
-		for(var i = 0; i < saveIVT[k]["absTimePoints"].length; i++){
-			var absTime = saveIVT[k]["absTimePoints"][i];
-			var evaluationValue = satValueDict[saveIVT[k]["evalList"][i]];
-			console.log(typeof evaluationValue);
-			if(evaluationValue){
-				var evaluation = new InputEvaluation(
-						goal,
-						absTime,
-						evaluationValue);
-				evaluations.push(evaluation);
+		console.log(saveIVT[k]["absTimePoints"]);
+		if(saveIVT[k]["absTimePoints"]){
+			for(var i = 0; i < saveIVT[k]["absTimePoints"].length; i++){
+				var absTime = saveIVT[k]["absTimePoints"][i];
+				var evaluationValue = satValueDict[saveIVT[k]["evalList"][i]];
+				console.log(typeof evaluationValue);
+				if(evaluationValue){
+					var evaluation = new InputEvaluation(
+							goal,
+							absTime,
+							evaluationValue);
+					evaluations.push(evaluation);
+				}
 			}
 		}
 	}

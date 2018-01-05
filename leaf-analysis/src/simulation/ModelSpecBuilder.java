@@ -425,7 +425,7 @@ public class ModelSpecBuilder {
 				System.out.println("Done Initial Values");
 			
 			//Getting User Evaluations
-			if(!frontendModel.getUserEvaluations().isEmpty()){
+			if(frontendModel.getUserEvaluations() != null && !frontendModel.getUserEvaluations().isEmpty()){
 				// iterate over user evaluations. 
 				for(InputEvaluation dataEvaluation : frontendModel.getUserEvaluations()){
 					String goal = dataEvaluation.getGoal();

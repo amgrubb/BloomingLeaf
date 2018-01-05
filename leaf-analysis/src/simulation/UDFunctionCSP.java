@@ -30,6 +30,9 @@ public class UDFunctionCSP {
 			// values[0-2] are "D", intentionID, and "UD".
 			int numSegment = Integer.parseInt(values[3]);
 			
+			if(numSegment < 2)
+				throw new RuntimeException("Error: UD Function for IntentionID " + values[1] + " must have at least two segments.");
+			
 			String[] readFunctions = new String[numSegment];
 			boolean[][] readValues = new boolean[numSegment][4];
 			char[]	readEB = new char[numSegment]; // EB indicates the beginning of the interval.
@@ -107,7 +110,7 @@ public class UDFunctionCSP {
 					}	
 				}
 			} else
-				System.err.println("UD Reading Erorr");
+				throw new RuntimeException("UD Reading Erorr");
 		}
 				
 		// Getter Methods
