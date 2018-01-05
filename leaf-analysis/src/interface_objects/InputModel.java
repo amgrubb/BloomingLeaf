@@ -14,7 +14,18 @@ public class InputModel {
 	private List<InputLink> links;
 	private List<InputDynamic> dynamics;
 	private List<InputConstraint> constraints;
+	private List<InputEvaluation> userEvaluations;
 	
+	
+	
+	public List<InputEvaluation> getUserEvaluations() {
+		return userEvaluations;
+	}
+
+	public void setUserEvaluations(List<InputEvaluation> userEvaluations) {
+		this.userEvaluations = userEvaluations;
+	}
+
 	public List<InputActor> getActors() {
 		return actors;
 	}

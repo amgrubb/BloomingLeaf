@@ -24,6 +24,7 @@ var queryObject = new queryObject();
 var loader;
 var reader;
 var recursiveStack = {};
+var constraintHolder = {};
 //Properties for both core and simulator.
 //TODO: merge this two arrays in order to make use the same name for all
 var satvalues = {
@@ -57,7 +58,10 @@ graph.linksNum;
 graph.constraintsNum;
 graph.allElements = [];
 graph.elementsBeforeAnalysis = [];
+graph.constraintValues = [];//store all the graph constraint values to be used		 +var linkNum = 0;
+														// by InputConstraint
 
+var linkNum = 0;
 var commandManager = new joint.dia.CommandManager({ graph: graph });
 
 // Create a paper and wrap it in a PaperScroller.
@@ -76,6 +80,7 @@ paper = new joint.dia.Paper({
 		'labels': [{position: 0.5, attrs: {text: {text: "and"}}}]
 	})
 });
+console.log(linkNum);
 
 var paperScroller = new joint.ui.PaperScroller({
 	autoResizePaper: true,
@@ -142,7 +147,7 @@ if (document.cookie){
 			break;
 		}
 	}
-
+	console.log(graph.fromJSON(JSON.parse(prevgraph)));
 	if (prevgraph){
 		graph.fromJSON(JSON.parse(prevgraph));
 	}
@@ -156,7 +161,16 @@ $('#symbolic-btn').on('click', function(){
 	saveLinks(linkMode);
 	setLinks(linkMode);
 });
-
+function getNodeName(id){
+	var listNodes = graph.getElements();
+	for(var i = 0; i < listNodes.length; i++){
+		var cellView  = listNodes[i].findView(paper);
+		if(id == cellView.model.attributes.elementid){
+			var nodeName = cellView.model.attr(".name");
+			return nodeName.text;
+		}
+	}
+}
 // Set links or constraints
 function setLinks(mode){
 	if(mode == "View"){
@@ -220,10 +234,10 @@ function saveLinks(mode){
 
 //Switch to analysis mode
 $('#analysis-btn').on('click', function(){
-
-	console.log(linkMode);
+	syntaxCheck();
+	/*
 	if (linkMode == "Constraints")
-		$('#symbolic-btn').trigger( "click" );
+		$('#symbolic-btn').trigger( "click" );*/
 
 	//Adjust left and right panels
 	elementInspector.clear();
@@ -258,6 +272,7 @@ $('#analysis-btn').on('click', function(){
 $('#model-cur-btn').on('click', function(){
 	switchToModellingMode(false);
 	//Cleaning the previous analysis data for new execution
+	global_analysisResult.elementList = "";
 	savedAnalysisData.finalAssigneEpoch="";
 	savedAnalysisData.finalValueTimePoints="";
 });
@@ -287,6 +302,9 @@ $('#cycledetect-btn').on('click', function(e){
 			var elements = graph.getElements();
 			for (var i = 0; i < elements.length; i++){
 				var cellView  = elements[i].findView(paper);
+				if(cellView.model.attributes.type == "link"){
+					console.log(cellView.model.attr);
+				}
 				if(cellView.model.attributes.type == "basic.Task"){
 					cellView.model.attr({'.outer': {'fill': '#92E3B1'}});
 				}
@@ -331,6 +349,116 @@ $('#cycledetect-btn').on('click', function(e){
 	js_object = null;
 	jslinks = null;
 })
+
+function syntaxCheck(){
+	var destSourceMapper = {};
+	var js_object = {};
+	var js_links = {};
+	//console.log(getLinks());
+	var jslinks = getLinks();
+	var elements = graph.getLinks();
+	for(var j = 0; j < jslinks.length; j++){
+		var cellView  = elements[j].findView(paper);
+		if(!(jslinks[j].linkDestID in destSourceMapper)){
+			destSourceMapper[jslinks[j].linkDestID] = {};
+			var constraint;
+			if (jslinks[j].postType != null){
+				constraint = jslinks[j].linkType+"|"+jslinks[j].postType;
+			}
+			else{
+				constraint = jslinks[j].linkType;
+			}
+			destSourceMapper[jslinks[j].linkDestID]["source"] = [];
+			destSourceMapper[jslinks[j].linkDestID]["source"].push(jslinks[j].linkSrcID);
+			destSourceMapper[jslinks[j].linkDestID]["constraint"] = [];
+			destSourceMapper[jslinks[j].linkDestID]["constraint"].push(constraint);
+			destSourceMapper[jslinks[j].linkDestID]["findview"] = [];
+			destSourceMapper[jslinks[j].linkDestID]["findview"].push(cellView);
+		}
+		else{
+			var constraint;
+			if (jslinks[j].postType != null){
+				constraint = jslinks[j].linkType+"|"+jslinks[j].postType;
+			}
+			else{
+				constraint = jslinks[j].linkType;
+			}
+			destSourceMapper[jslinks[j].linkDestID]["source"].push(jslinks[j].linkSrcID);
+			destSourceMapper[jslinks[j].linkDestID]["constraint"].push(constraint);
+			destSourceMapper[jslinks[j].linkDestID]["findview"].push(cellView);
+		}
+	}
+	var error = false;
+	var errorText = "<p style='text-align:left'>";
+	var j = 1;
+	var contributionPattern = /[+]{1,}|[-]{1,}/g;
+	for(var key in destSourceMapper){
+		var duplicates = (function(){
+			var x = destSourceMapper[key]["constraint"][0];
+			for(var i=1;i<destSourceMapper[key]["constraint"].length;i++){
+    		if(x!=destSourceMapper[key]["constraint"][i] && destSourceMapper[key]["constraint"][i].match(contributionPattern) == null){
+					return true
+				}
+    	}
+			return false;
+		})();
+		if(duplicates == true){
+			error = true;
+			errorText += "<b style='color:black'> Suggestion : </b>" +  j + ". ";
+			var subErrorText = "Have all links from "
+			destSourceMapper[key]["source"].forEach(function(element){
+				errorText += "<b style='color:blue'>" + this.getNodeName(element) + ", </b>"
+				subErrorText += this.getNodeName(element) + ", "
+			})
+			subErrorText += " to " + this.getNodeName(key)
+			destSourceMapper[key]["constraint"].forEach(function(element){
+				if(!(subErrorText.includes(element))){
+					subErrorText += " all <b style='color: black' >"+ element + "</b> constraint links or "
+				}
+			})
+			subErrorText = subErrorText.substring(0,subErrorText.lastIndexOf(" or ")) + ".";
+			var destName = this.getNodeName(key);
+			errorText += " to <b>" + destName + "</b><br> " + subErrorText +"<br><br>";
+			destSourceMapper[key]["findview"].forEach(function(element){
+				element.model.attr({'.connection': {'stroke': 'red'}});
+				element.model.attr({'.marker-target': {'stroke': 'red'}});
+				element.model.attr({'.connection': {'stroke-width': '3'}});
+				element.model.attr({'.marker-target': {'stroke-width': '3'}});
+
+			})
+		}
+		else{
+			destSourceMapper[key]["findview"].forEach(function(element){
+				element.model.attr({'.connection': {'stroke': '#000000'}});
+				element.model.attr({'.marker-target': {'stroke': '#000000'}});
+				element.model.attr({'.connection': {'stroke-width': '1'}});
+				element.model.attr({'.marker-target': {'stroke-width': '1'}});
+			})
+		}
+		j+=1;
+	}
+	errorText += "</p>"
+	if(error==true){
+		//errorText = errorText.substring(0,errorText.lastIndexOf(" and ")) + '.';
+		swal({
+			title:"We found invalid links combinations ",
+			type: "warning",
+			html: errorText,
+			showCloseButton: true,
+ 			showCancelButton: true,
+			confirmButtonText: "Ok",
+			cancelButtonText: "Go back to Model View",
+			cancelButtonClass: "backModel"
+		}).then(function() {
+
+			}, function(dismiss) {
+			  // dismiss can be 'overlay', 'cancel', 'close', 'esc', 'timer'
+			  if (dismiss === 'cancel') {
+			    $("#model-cur-btn").trigger("click");
+			  }
+		})
+	}
+}
 
 //Cycle-deteciton algorithm
 // The algorithm is referenced from Detect Cycle in a Directed Graph algorithm
@@ -688,7 +816,9 @@ function updateValues(c, v, m){
 		//var satvalues = ["denied", "partiallydenied", "partiallysatisfied", "satisfied", "unknown", "none"];
 		cell = graph.allElements[c];
 		value = v;
-		cell.attributes.attrs[".satvalue"].value = v;
+		// Potential fix to Issue #97 was to revove the next line. (Jan 2018)
+		//cell.attributes.attrs[".satvalue"].value = v;
+		// The following line was here originally commented out.
 		//cell.attr(".satvalue/value", v);
 
 	//Update node based on values saved from graph prior to analysis
@@ -1095,47 +1225,96 @@ this.graph.on('remove', function(cell, collection, opt) {
 
 
 var clipboard = new joint.ui.Clipboard();
-KeyboardJS.on('ctrl + c', function() {
-	// Copy all selected elements and their associatedf links.
-	clipboard.copyElements(selection, graph, { translate: { dx: 20, dy: 20 }, useLocalStorage: true });
-});
-KeyboardJS.on('ctrl + v', function() {
-	clipboard.pasteCells(graph);
+//Check if the browser is on Mac
+var macOS = navigator.platform.match(/(Mac|iPhone|iPod|iPad)/i)?true:false;
+if(macOS){
+	console.log("On mac");
+	KeyboardJS.on('command + c, ctrl + c', function() {
+		// Copy all selected elements and their associatedf links.
+		clipboard.copyElements(selection, graph, { translate: { dx: 20, dy: 20 }, useLocalStorage: true });
+	});
+	KeyboardJS.on('command + v, ctrl + v', function() {
+		clipboard.pasteCells(graph);
 
-	selectionView.cancelSelection();
+		selectionView.cancelSelection();
 
-	clipboard.pasteCells(graph, { link: { z: -1 }, useLocalStorage: true });
+		clipboard.pasteCells(graph, { link: { z: -1 }, useLocalStorage: true });
 
-	// Make sure pasted elements get selected immediately. This makes the UX better as
-	// the user can immediately manipulate the pasted elements.
-	clipboard.each(function(cell) {
-		if (cell.get('type') === 'link') return;
+		// Make sure pasted elements get selected immediately. This makes the UX better as
+		// the user can immediately manipulate the pasted elements.
+		clipboard.each(function(cell) {
+			if (cell.get('type') === 'link') return;
 
-		// Push to the selection not to the model from the clipboard but put the model into the graph.
-		// Note that they are different models. There is no views associated with the models
-		// in clipboard.
-		selection.add(graph.get('cells').get(cell.id));
+			// Push to the selection not to the model from the clipboard but put the model into the graph.
+			// Note that they are different models. There is no views associated with the models
+			// in clipboard.
+			selection.add(graph.get('cells').get(cell.id));
+		});
+
+		selection.each(function(cell) {
+		selectionView.createSelectionBox(paper.findViewByModel(cell));
+		});
 	});
 
-	selection.each(function(cell) {
-	selectionView.createSelectionBox(paper.findViewByModel(cell));
+	//Delete selected nodes when the delete key is pressed.
+
+	KeyboardJS.on('del', function(){
+	// 	while (selection.length > 0){
+	// 		selection.pop();
+	// //		console.log(paper.findViewByModel(current));
+	// //		selectionView.destroySelectionBox(paper.findViewByModel(current));
+	// //		current.remove();
+	// 	}
 	});
-});
+	// Override browser's default action when backspace is pressed
+	KeyboardJS.on('backspace', function(){
 
-//Delete selected nodes when the delete key is pressed.
+	});
+}
+else{
+	KeyboardJS.on('ctrl + c', function() {
+		// Copy all selected elements and their associatedf links.
+		clipboard.copyElements(selection, graph, { translate: { dx: 20, dy: 20 }, useLocalStorage: true });
+	});
+	KeyboardJS.on('ctrl + v', function() {
+		clipboard.pasteCells(graph);
 
-KeyboardJS.on('del', function(){
-// 	while (selection.length > 0){
-// 		selection.pop();
-// //		console.log(paper.findViewByModel(current));
-// //		selectionView.destroySelectionBox(paper.findViewByModel(current));
-// //		current.remove();
-// 	}
-});
-// Override browser's default action when backspace is pressed
-KeyboardJS.on('backspace', function(){
+		selectionView.cancelSelection();
 
-});
+		clipboard.pasteCells(graph, { link: { z: -1 }, useLocalStorage: true });
+
+		// Make sure pasted elements get selected immediately. This makes the UX better as
+		// the user can immediately manipulate the pasted elements.
+		clipboard.each(function(cell) {
+			if (cell.get('type') === 'link') return;
+
+			// Push to the selection not to the model from the clipboard but put the model into the graph.
+			// Note that they are different models. There is no views associated with the models
+			// in clipboard.
+			selection.add(graph.get('cells').get(cell.id));
+		});
+
+		selection.each(function(cell) {
+		selectionView.createSelectionBox(paper.findViewByModel(cell));
+		});
+	});
+
+	//Delete selected nodes when the delete key is pressed.
+
+	KeyboardJS.on('del', function(){
+	// 	while (selection.length > 0){
+	// 		selection.pop();
+	// //		console.log(paper.findViewByModel(current));
+	// //		selectionView.destroySelectionBox(paper.findViewByModel(current));
+	// //		current.remove();
+	// 	}
+	});
+	// Override browser's default action when backspace is pressed
+	KeyboardJS.on('backspace', function(){
+
+	});
+}
+
 // ----------------------------------------------------------------- //
 // Toolbar
 
@@ -1178,7 +1357,6 @@ $('#btn-clear-cycle').on('click',function(){
 	var elements = graph.getElements();
 	for (var i = 0; i < elements.length; i++){
 			var cellView  = elements[i].findView(paper);
-
 			if(cellView.model.attributes.type == "basic.Task"){
 				cellView.model.attr({'.outer': {'fill': '#92E3B1'}});
 			}

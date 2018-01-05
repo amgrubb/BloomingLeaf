@@ -10,7 +10,7 @@ public class EpochConstraint {
 	String destEB;
 	int absoluteTime;
 	
-	
+	// Used for Relative Intention Constraints
 	public EpochConstraint(String constraintType, IntentionalElement src, IntentionalElement dest, String constraintSrcEB, String constraintDestEB) {
 		this.src = src;
 		this.dest = dest;
@@ -24,16 +24,17 @@ public class EpochConstraint {
 		this.absoluteTime = 0;
 	}
 	
-	public EpochConstraint(String constraintType, IntentionalElement src, String constraintSrcEB, String absoluteValue) {
+	// Used only for Absolute Intention Constraints
+	public EpochConstraint(IntentionalElement src, String constraintSrcEB, int absoluteValue) {
 		this.src = src;
 		this.dest = src;
-		this.type = constraintType;
+		this.type = "A";
 		this.srcEB = constraintSrcEB;
 		this.destEB = constraintSrcEB;
 		if (src.isUserDefinedDynamicType())
 			srcUD = true;
 		destUD = false;
-		this.absoluteTime = Integer.parseInt(absoluteValue);
+		this.absoluteTime = absoluteValue;
 	}
 
 	public int getAbsoluteTime() {
