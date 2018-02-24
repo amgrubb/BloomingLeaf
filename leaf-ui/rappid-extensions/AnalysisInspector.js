@@ -210,8 +210,9 @@ var AnalysisInspector = Backbone.View.extend({
 		// Populate non UD element only
 		var elements = graph.getElements();
 		var links = graph.getLinks();
-		console.log(elements);
-		console.log(links);
+		//console.log(elements);
+		//console.log(links);
+		var outputList = "\n";
 		for (var i = 0; i < elements.length; i ++){
 			var cellView = elements[i].findView(paper);
 			var cell = cellView.model;
@@ -228,11 +229,13 @@ var AnalysisInspector = Backbone.View.extend({
 
 					}
 					assigned_time = cell.attr('.assigned_time')[0];
-					console.log("Assigned time "   + assigned_time);
+					//console.log("Assigned time "   + assigned_time);
 					var epochObj = {};
 					epochObj["constraintType"] = 'A';
 					epochLists.push(name + ': A');
-					console.log(epochObj)
+					//console.log(epochObj)
+					outputList += name.replace(/(\r\n|\n|\r)/gm," ");
+					outputList += ': A' + '\t' + func + "\n";
 					$('#node-list').append('<tr><td>' + name + ': A' + '</td><td>' + func + '</td>' +
 						'<td><input type="text" name="sth" value="' + assigned_time + '"></td>' + btn_html +
 						'<input type="hidden" name="id" value="' + cell.id + '"> </td> </tr>');
@@ -241,6 +244,7 @@ var AnalysisInspector = Backbone.View.extend({
 			}
 			//console.log(cell);
 		}
+		//console.log(outputList)
 		// Populate UD element
 		for (var i = 0; i < elements.length; i ++){
 			var cellView = elements[i].findView(paper);
@@ -249,9 +253,9 @@ var AnalysisInspector = Backbone.View.extend({
 				var func = cell.attr('.funcvalue').text;
 				var name = cell.attr('.name').text;
 				var assigned_time = cell.attr('.assigned_time');
-				console.log(name);
+				//console.log(name);
 				if(func == 'UD'){
-					console.log(cell.attr('.constraints'));
+					//console.log(cell.attr('.constraints'));
 					var fun_len = cell.attr('.constraints').function.length - 1;
 					var current_something = 'A';
 					// If no assigned_time in the node, save blank into the node
@@ -267,9 +271,11 @@ var AnalysisInspector = Backbone.View.extend({
 						k ++;
 					}
 					for (var j = 0; j < fun_len; j++){
-						console.log("Assigned time "   + assigned_time[j]);
+						//console.log("Assigned time "   + assigned_time[j]);
 
 						epochLists.push(name + ': ' + current_something);
+						outputList += name.replace(/(\r\n|\n|\r)/gm," ");
+						outputList += ': ' + current_something + '\t' + func + "\n";
 						$('#node-list').append('<tr><td>' + name +': '+ current_something + '</td><td>' + func + '</td>'  +
 							'<td><input type="text" name="sth" value=' +assigned_time[j] + '></td>' + btn_html +
 							'<input type="hidden" name="id" value="' + cell.id + '_' + j + '"> </td> </tr>');
@@ -305,14 +311,14 @@ var AnalysisInspector = Backbone.View.extend({
 					$('#link-list').append('<tr><td>' + link_type + '</td><td>' + source_name + '</td><td>' + target_name +
 						'</td><td><input type="text" name="sth" value=' +assigned_time[0] + '></td>' + btn_html +
 						'<input type="hidden" name="id" value="' + link.id + '"> </td> </tr>'+ '</tr>');
-						console.log(assigned_time);
+						//console.log(assigned_time);
 				}
-				console.log(link.id);
+				//console.log(link.id);
 			}
 
 		}
 		num+=1;
-
+		console.log(outputList)
 
 	},
 	/*load valus for intermediate table dialog*/
@@ -509,13 +515,14 @@ var AnalysisInspector = Backbone.View.extend({
 		console.log(graph.constraintValues);
 
 		this.saveRelativeValues();
+		var time_values = {};
 		$.each($('#node-list').find("tr input[type=text]"), function(){
 			var new_time = $(this).val();
 			var row = $(this).closest('tr');
 			var srcEB = row.find('td').html();
 			var func_value = row.find('td:nth-child(2)').html();
 			var id = row.find('input[type=hidden]').val();
-			var time_values = {};
+
 			// If func is not UD, just find the cell and update it
 			if (func_value != 'UD'){
 				var cell = graph.getCell(id);
