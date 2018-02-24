@@ -86,10 +86,10 @@ var AnalysisInspector = Backbone.View.extend({
 								 '</table>',
 						'</div>',
 		    '</div>',
-		  '</div>',
 			'<div class="modal-footer" style="margin-top: 10px;">',
 				'<button id="btn-save-assignment" class="analysis-btns inspector-btn sub-label green-btn" style="border-radius:40px;">Save</button>',
 			'</div>',
+		'</div>',
 		'</div>',
 		'</div>',
 		'<div id="intermediateTable" class="intermT">',
@@ -210,31 +210,34 @@ var AnalysisInspector = Backbone.View.extend({
 		// Populate non UD element only
 		var elements = graph.getElements();
 		var links = graph.getLinks();
-
+		console.log(elements);
+		console.log(links);
 		for (var i = 0; i < elements.length; i ++){
 			var cellView = elements[i].findView(paper);
 			var cell = cellView.model;
-			var func = cell.attr('.funcvalue').text;
-			var name = cell.attr('.name').text;
-			goal_id_mapper[name] = cell.attributes.elementid;
-			var assigned_time = cell.attr('.assigned_time');
-			var constraintObj
-			if(func != 'UD' && func != 'D' && func != 'I' && func != 'C' && func != 'R' && func != "" && func != 'NB'){
-				// If no assigned_time in the node, make the default value blank
-				if (!assigned_time){
-					cell.attr('.assigned_time', {0: ''});
+			if(cell.attributes.type !== "basic.Actor"){
+				var func = cell.attr('.funcvalue').text;
+				var name = cell.attr('.name').text;
+				goal_id_mapper[name] = cell.attributes.elementid;
+				var assigned_time = cell.attr('.assigned_time');
+				var constraintObj
+				if(func != 'UD' && func != 'D' && func != 'I' && func != 'C' && func != 'R' && func != "" && func != 'NB'){
+					// If no assigned_time in the node, make the default value blank
+					if (!assigned_time){
+						cell.attr('.assigned_time', {0: ''});
+
+					}
+					assigned_time = cell.attr('.assigned_time')[0];
+					console.log("Assigned time "   + assigned_time);
+					var epochObj = {};
+					epochObj["constraintType"] = 'A';
+					epochLists.push(name + ': A');
+					console.log(epochObj)
+					$('#node-list').append('<tr><td>' + name + ': A' + '</td><td>' + func + '</td>' +
+						'<td><input type="text" name="sth" value="' + assigned_time + '"></td>' + btn_html +
+						'<input type="hidden" name="id" value="' + cell.id + '"> </td> </tr>');
 
 				}
-				assigned_time = cell.attr('.assigned_time')[0];
-				console.log("Assigned time "   + assigned_time);
-				var epochObj = {};
-				epochObj[constraintType] = 'A';
-				epochLists.push(name + ': A');
-
-				$('#node-list').append('<tr><td>' + name + ': A' + '</td><td>' + func + '</td>' +
-					'<td><input type="text" name="sth" value="' + assigned_time + '"></td>' + btn_html +
-					'<input type="hidden" name="id" value="' + cell.id + '"> </td> </tr>');
-
 			}
 			//console.log(cell);
 		}
@@ -242,38 +245,39 @@ var AnalysisInspector = Backbone.View.extend({
 		for (var i = 0; i < elements.length; i ++){
 			var cellView = elements[i].findView(paper);
 			var cell = cellView.model;
-			var func = cell.attr('.funcvalue').text;
-			var name = cell.attr('.name').text;
-			var assigned_time = cell.attr('.assigned_time');
-			console.log(name);
-			if(func == 'UD'){
-				console.log(cell.attr('.constraints'));
-				var fun_len = cell.attr('.constraints').function.length - 1;
-				var current_something = 'A';
-				// If no assigned_time in the node, save blank into the node
-				if (!assigned_time){
-					cell.attr('.assigned_time', {0: ''});
-					assigned_time = cell.attr('.assigned_time');
-				}
-				// If the length of assigned_time does not equal to the fun_len, add none until they are equal
-				var k = 0;
-				while (Object.keys(assigned_time).length < fun_len){
-					cell.attr('.assigned_time')[k] = '';
-					assigned_time = cell.attr('.assigned_time');
-					k ++;
-				}
-				for (var j = 0; j < fun_len; j++){
-					console.log("Assigned time "   + assigned_time[j]);
+			if(cell.attributes.type !== "basic.Actor"){
+				var func = cell.attr('.funcvalue').text;
+				var name = cell.attr('.name').text;
+				var assigned_time = cell.attr('.assigned_time');
+				console.log(name);
+				if(func == 'UD'){
+					console.log(cell.attr('.constraints'));
+					var fun_len = cell.attr('.constraints').function.length - 1;
+					var current_something = 'A';
+					// If no assigned_time in the node, save blank into the node
+					if (!assigned_time){
+						cell.attr('.assigned_time', {0: ''});
+						assigned_time = cell.attr('.assigned_time');
+					}
+					// If the length of assigned_time does not equal to the fun_len, add none until they are equal
+					var k = 0;
+					while (Object.keys(assigned_time).length < fun_len){
+						cell.attr('.assigned_time')[k] = '';
+						assigned_time = cell.attr('.assigned_time');
+						k ++;
+					}
+					for (var j = 0; j < fun_len; j++){
+						console.log("Assigned time "   + assigned_time[j]);
 
-					epochLists.push(name + ': ' + current_something);
-					$('#node-list').append('<tr><td>' + name +': '+ current_something + '</td><td>' + func + '</td>'  +
-						'<td><input type="text" name="sth" value=' +assigned_time[j] + '></td>' + btn_html +
-						'<input type="hidden" name="id" value="' + cell.id + '_' + j + '"> </td> </tr>');
-					current_something = String.fromCharCode(current_something.charCodeAt(0) + 1);
-				}
+						epochLists.push(name + ': ' + current_something);
+						$('#node-list').append('<tr><td>' + name +': '+ current_something + '</td><td>' + func + '</td>'  +
+							'<td><input type="text" name="sth" value=' +assigned_time[j] + '></td>' + btn_html +
+							'<input type="hidden" name="id" value="' + cell.id + '_' + j + '"> </td> </tr>');
+						current_something = String.fromCharCode(current_something.charCodeAt(0) + 1);
+					}
 
+				}
 			}
-
 		}
 
 		// Get a list of links
@@ -383,49 +387,50 @@ var AnalysisInspector = Backbone.View.extend({
 			var cellView = elements[i].findView(paper);
 			//console.log(elements[i]);
 			var cell = cellView.model;
+			if(cell.attributes.type !== "basic.Actor"){
+				var initvalue = cell.attr('.satvalue').text;
+				var name = cell.attr('.name').text;
+				//saveIntermValues[cell.attributes.elementid] = [];
 
-			var initvalue = cell.attr('.satvalue').text;
-			var name = cell.attr('.name').text;
-			//saveIntermValues[cell.attributes.elementid] = [];
-
-			//saveIntermValues[i] = [];
-			//console.log("initial value : " + initvalue);
-			//Check if initial value is empty, if so, add (T,T) as a value
-			if(time_values.length == 0){
-				if  (initvalue.trim() == ""){
-					$('#interm-list').append('<tr><td>' + name + '</td><td>(T,T)</td></tr>');
+				//saveIntermValues[i] = [];
+				//console.log("initial value : " + initvalue);
+				//Check if initial value is empty, if so, add (T,T) as a value
+				if(time_values.length == 0){
+					if  (initvalue.trim() == ""){
+						$('#interm-list').append('<tr><td>' + name + '</td><td>(T,T)</td></tr>');
+					}
+					else{
+						$('#interm-list').append('<tr><td>' + name + '</td><td>' + initvalue +'</td></tr>');
+					}
 				}
 				else{
-					$('#interm-list').append('<tr><td>' + name + '</td><td>' + initvalue +'</td></tr>');
-				}
-			}
-			else{
-				if  (initvalue.trim() == ""){
-					console.log(Object.keys(time_values).length);
-					//$('#interm-list').append('<tr><td>' + name + '</td><td>(T,T)</td></tr>');
-					var appendList = '<tr><td>' + name + '</td><td>(T,T)</td>';
-					if(saveIVT == null){
+					if  (initvalue.trim() == ""){
+						console.log(Object.keys(time_values).length);
+						//$('#interm-list').append('<tr><td>' + name + '</td><td>(T,T)</td></tr>');
+						var appendList = '<tr><td>' + name + '</td><td>(T,T)</td>';
+						if(saveIVT == null){
+							for(var j = 0; j < Object.keys(time_values).length; j++){
+								appendList += '<td>' + sat_values + '</td>';
+							}
+						}
+						else if(saveIVT.length>0){
+							for(var j = 0; j < Object.keys(time_values).length; j++){
+								appendList += '<td>' + $("#evalID").val('(FS, T)') + '</td>';
+							}
+						}
+						appendList += '</tr>';
+						$('#interm-list').append(appendList);
+					}
+					else{
+						console.log(Object.keys(time_values).length);
+						var appendList = '<tr><td>' + name + '</td><td>'+ initvalue +'</td>';
+						var test ='';
 						for(var j = 0; j < Object.keys(time_values).length; j++){
 							appendList += '<td>' + sat_values + '</td>';
 						}
+						appendList += '</tr>';
+						$('#interm-list').append(appendList);
 					}
-					else if(saveIVT.length>0){
-						for(var j = 0; j < Object.keys(time_values).length; j++){
-							appendList += '<td>' + $("#evalID").val('(FS, T)') + '</td>';
-						}
-					}
-					appendList += '</tr>';
-					$('#interm-list').append(appendList);
-				}
-				else{
-					console.log(Object.keys(time_values).length);
-					var appendList = '<tr><td>' + name + '</td><td>'+ initvalue +'</td>';
-					var test ='';
-					for(var j = 0; j < Object.keys(time_values).length; j++){
-						appendList += '<td>' + sat_values + '</td>';
-					}
-					appendList += '</tr>';
-					$('#interm-list').append(appendList);
 				}
 			}
 		}
@@ -510,6 +515,7 @@ var AnalysisInspector = Backbone.View.extend({
 			var srcEB = row.find('td').html();
 			var func_value = row.find('td:nth-child(2)').html();
 			var id = row.find('input[type=hidden]').val();
+			var time_values = {};
 			// If func is not UD, just find the cell and update it
 			if (func_value != 'UD'){
 				var cell = graph.getCell(id);
