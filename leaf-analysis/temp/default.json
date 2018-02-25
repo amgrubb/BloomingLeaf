@@ -142,7 +142,7 @@
       {
         "id": "0021",
         "status": [
-          "1100"
+          "0000"
         ]
       },
       {
@@ -2621,7 +2621,7 @@
         "linkSrcID": "0119",
         "linkDestID": "0123",
         "postType": "++",
-        "absoluteValue": 46
+        "absoluteValue": 47
       },
       {
         "linkType": "--S",
@@ -2886,8 +2886,8 @@
       },
       {
         "intentionID": "0021",
-        "dynamicType": "DS",
-        "markedValue": "0011",
+        "dynamicType": "NT",
+        "markedValue": "0000",
         "line": null
       },
       {
@@ -3551,14 +3551,6 @@
         "constraintSrcID": "0006",
         "constraintSrcEB": "A",
         "absoluteValue": 37,
-        "constraintDestID": null,
-        "constraintDestEB": null
-      },
-      {
-        "constraintType": "A",
-        "constraintSrcID": "0021",
-        "constraintSrcEB": "A",
-        "absoluteValue": 15,
         "constraintDestID": null,
         "constraintDestEB": null
       },
