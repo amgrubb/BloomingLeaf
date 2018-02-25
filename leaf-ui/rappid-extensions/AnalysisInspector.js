@@ -473,11 +473,14 @@ var AnalysisInspector = Backbone.View.extend({
 		var epoch2Lists = $('#rel-intention-assignents tr #epoch2List select');
 		for(var i = 0; i < epoch1Lists.length; i++){
 			if(epoch1Lists[i].value != null && epoch2Lists[i].value != null){
-				var extractGoal1 = epoch1Lists[i].value;
-				var extractGoal2 = epoch2Lists[i].value;
+				var extractGoal1full = epoch1Lists[i].value;
+				var extractGoal2full = epoch2Lists[i].value;
+				var extractGoal1 = extractGoal1full.substring(0, extractGoal1full.length - 3);
+				var extractGoal2 = extractGoal2full.substring(0, extractGoal2full.length - 3);
 				var constraintSrcID = goal_id_mapper[extractGoal1];
 				var constraintDestID = goal_id_mapper[extractGoal2];
 				var type = relationshipLists[i].value;
+				debugger
 				if(type == 'eq'){
 					type = '=';
 				}
