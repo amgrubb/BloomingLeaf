@@ -448,7 +448,7 @@ var AnalysisInspector = Backbone.View.extend({
 		console.log(epochLists);
 		console.log(graph.constraintValues);
 		epochLists = [];
-		console.log(goal_id_mapper);
+		//console.log(goal_id_mapper);
 
 	},
 	dismissIntermTable: function(e){
@@ -617,7 +617,7 @@ var AnalysisInspector = Backbone.View.extend({
 		modal.style.display = "none";
 		$("#epoch1List select").val();
 		console.log(graph.constraintValues);
-		//epochLists = [];
+		epochLists = [];
 		//console.log(time_values);
 
 	},
