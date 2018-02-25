@@ -27,7 +27,7 @@ function getDynamics(){
 	    var funcTypeVal = elements[e].attr(".constraints/lastval");
 	    var initValue = elements[e].attributes.attrs[".satvalue"].value;
 
-	    if (isNaN(parseInt(initValue))){
+	  if (isNaN(parseInt(initValue))){
 			initValue = satValueDict[initValue];
 		}else{
 			initValue = "0000";
@@ -36,9 +36,8 @@ function getDynamics(){
 
 	    var io_dynamic;
 	    if(f == "NB" ){
-	    	io_dynamic = new InputDynamic(elementID, "NB", initValue);
-	    }
-	    else if (f == ""){
+	    	io_dynamic = new InputDynamic(elementID, "NB", "0000");
+	    }else if (f == ""){
     		io_dynamic = new InputDynamic(elementID, "NT", initValue);
 	    }else if(f == " "){
     		io_dynamic = new InputDynamic(elementID, "NT", initValue);
