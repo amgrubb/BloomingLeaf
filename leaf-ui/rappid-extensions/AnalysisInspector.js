@@ -556,6 +556,7 @@ var AnalysisInspector = Backbone.View.extend({
 						time_values[new_time].push('Absolute Intentions');
 					}
 				}
+			}
 				console.log(cell);
 				if(graph.constraintValues.length == 0 && (new_time != null && new_time.length > 0)){
 					graph.constraintValues[0] = {};
@@ -582,7 +583,7 @@ var AnalysisInspector = Backbone.View.extend({
 					}
 				}
 
-			}
+
 		});
 
 		$.each($('#link-list').find("tr input[type=text]"), function(){
