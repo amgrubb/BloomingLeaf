@@ -314,7 +314,7 @@ public class TroposCSPAlgorithm {
     		  		
         	if ((element.dynamicType == IntentionalElementDynamicType.NT) || (element.dynamicType == IntentionalElementDynamicType.CONST) ||
         			(element.dynamicType == IntentionalElementDynamicType.INC) || (element.dynamicType == IntentionalElementDynamicType.DEC) ||
-        			(element.dynamicType == IntentionalElementDynamicType.RND))	// Dynamic function contains no EB.
+        			(element.dynamicType == IntentionalElementDynamicType.RND) || (element.dynamicType == IntentionalElementDynamicType.NB))	// Dynamic function contains no EB.
         		continue;
         	else if ((element.dynamicType == IntentionalElementDynamicType.SD) || (element.dynamicType == IntentionalElementDynamicType.DS) ||
         			(element.dynamicType == IntentionalElementDynamicType.CR) || (element.dynamicType == IntentionalElementDynamicType.RC) ||
