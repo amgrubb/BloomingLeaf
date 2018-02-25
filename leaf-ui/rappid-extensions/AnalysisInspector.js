@@ -218,7 +218,8 @@ var AnalysisInspector = Backbone.View.extend({
 			var cell = cellView.model;
 			if(cell.attributes.type !== "basic.Actor"){
 				var func = cell.attr('.funcvalue').text;
-				var name = cell.attr('.name').text;
+				// strips all return and newline characters; ensures no double-white space; strips leading/trailing whitespace
+				var name = cell.attr('.name').text.replace(/(\n+|\r+|\s\s+)/gm," ").replace(/(^\s|\s$)/gm,'');
 				goal_id_mapper[name] = cell.attributes.elementid;
 				var assigned_time = cell.attr('.assigned_time');
 				var constraintObj
@@ -472,8 +473,8 @@ var AnalysisInspector = Backbone.View.extend({
 		var epoch2Lists = $('#rel-intention-assignents tr #epoch2List select');
 		for(var i = 0; i < epoch1Lists.length; i++){
 			if(epoch1Lists[i].value != null && epoch2Lists[i].value != null){
-				var extractGoal1 = epoch1Lists[i].value.match(rx);
-				var extractGoal2 = epoch2Lists[i].value.match(rx);
+				var extractGoal1 = epoch1Lists[i].value;
+				var extractGoal2 = epoch2Lists[i].value;
 				var constraintSrcID = goal_id_mapper[extractGoal1];
 				var constraintDestID = goal_id_mapper[extractGoal2];
 				var type = relationshipLists[i].value;
