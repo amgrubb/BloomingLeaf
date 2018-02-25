@@ -232,6 +232,7 @@ var AnalysisInspector = Backbone.View.extend({
 					//console.log("Assigned time "   + assigned_time);
 					var epochObj = {};
 					epochObj["constraintType"] = 'A';
+					//TODO: Figure out how to only add these values if they don't exist.
 					epochLists.push(name + ': A');
 					//console.log(epochObj)
 					outputList += name.replace(/(\r\n|\n|\r)/gm," ");
@@ -617,7 +618,7 @@ var AnalysisInspector = Backbone.View.extend({
 		modal.style.display = "none";
 		$("#epoch1List select").val();
 		console.log(graph.constraintValues);
-		epochLists = [];
+		//epochLists = [];		//This needs to exist for the output file to be generated.
 		//console.log(time_values);
 
 	},
