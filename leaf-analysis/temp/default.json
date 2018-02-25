@@ -1,9 +1,9 @@
 {
   "analysis": {
     "action": "singlePath",
-    "maxAbsTime": "100",
+    "maxAbsTime": "84",
     "conflictLevel": "S",
-    "numRelTime": "1",
+    "numRelTime": "5",
     "absTimePts": null,
     "currentState": "0",
     "initialAssignedEpoch": [
@@ -1237,7 +1237,7 @@
         "nodeActorID": "a003",
         "nodeID": "0063",
         "nodeType": "T",
-        "nodeName": "Approve Planning Board Funding"
+        "nodeName": "Approve Planning Board Funding T"
       },
       {
         "nodeActorID": "a003",
@@ -1333,7 +1333,7 @@
         "nodeActorID": "a008",
         "nodeID": "0079",
         "nodeType": "T",
-        "nodeName": "Approve Planning Board Funding"
+        "nodeName": "Approve Planning Board Funding Y"
       },
       {
         "nodeActorID": "a002",
@@ -2755,6 +2755,13 @@
         "linkDestID": "0097",
         "postType": null,
         "absoluteValue": -1
+      },
+      {
+        "linkType": "NBD",
+        "linkSrcID": "0047",
+        "linkDestID": "0046",
+        "postType": null,
+        "absoluteValue": 39
       }
     ],
     "dynamics": [
@@ -3036,13 +3043,13 @@
       },
       {
         "intentionID": "0046",
-        "dynamicType": "NT",
+        "dynamicType": "NB",
         "markedValue": "0000",
         "line": null
       },
       {
         "intentionID": "0047",
-        "dynamicType": "NT",
+        "dynamicType": "NB",
         "markedValue": "0000",
         "line": null
       },
