@@ -199,6 +199,7 @@ var AnalysisInspector = Backbone.View.extend({
 
 	// Display modal box that has a list of absolute values
 	loadModalBox: function(e){
+		epochLists = [];
 		graph.constraintValues = [];
 		var modal = document.getElementById('myModal');
 		// Clear all previous table entries
@@ -449,7 +450,6 @@ var AnalysisInspector = Backbone.View.extend({
 		modal.style.display = "none";
 		console.log(epochLists);
 		console.log(graph.constraintValues);
-		epochLists = [];
 		//console.log(goal_id_mapper);
 
 	},
@@ -619,7 +619,6 @@ var AnalysisInspector = Backbone.View.extend({
 		modal.style.display = "none";
 		$("#epoch1List select").val();
 		console.log(graph.constraintValues);
-		//epochLists = [];		//This needs to exist for the output file to be generated.
 		//console.log(time_values);
 
 	},
