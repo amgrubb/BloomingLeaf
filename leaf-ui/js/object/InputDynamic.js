@@ -63,7 +63,7 @@ function getDynamics(){
 					line += "\t" + begin[l] + "\t" + end[l] + "\t" + funcType[l] + "\t" + satValueDict[funcTypeVal[l]];
 				}
 			}
-			console.log(elements[e].attr(".constraints/beginRepeat"));
+			//console.log(elements[e].attr(".constraints/beginRepeat"));
 			// repeating
 			if (elements[e].attr(".constraints/beginRepeat") && elements[e].attr(".constraints/endRepeat")){
 				// to infinity
@@ -73,9 +73,9 @@ function getDynamics(){
 					line += "\tR\t" + rBegin + "\t" + rEnd;
 				}
 				// TODO Add the repeat count value and the absolute length value here
-				console.log(typeof $("#repeat-end2").val());
+				//console.log(typeof $("#repeat-end2").val());
 				line += "\t" + $("#repeat-end2").val() + "\t" + $("#repeat-end3").val();
-				console.log(line);
+				//console.log(line);
 			}else{
 				line += "\tN";
 			}
