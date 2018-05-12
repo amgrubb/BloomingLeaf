@@ -314,7 +314,7 @@ public class TroposCSPAlgorithm {
     		  		
         	if ((element.dynamicType == IntentionalElementDynamicType.NT) || (element.dynamicType == IntentionalElementDynamicType.CONST) ||
         			(element.dynamicType == IntentionalElementDynamicType.INC) || (element.dynamicType == IntentionalElementDynamicType.DEC) ||
-        			(element.dynamicType == IntentionalElementDynamicType.RND))	// Dynamic function contains no EB.
+        			(element.dynamicType == IntentionalElementDynamicType.RND) || (element.dynamicType == IntentionalElementDynamicType.NB))	// Dynamic function contains no EB.
         		continue;
         	else if ((element.dynamicType == IntentionalElementDynamicType.SD) || (element.dynamicType == IntentionalElementDynamicType.DS) ||
         			(element.dynamicType == IntentionalElementDynamicType.CR) || (element.dynamicType == IntentionalElementDynamicType.RC) ||
@@ -1500,7 +1500,7 @@ public class TroposCSPAlgorithm {
     						preConstraint = createBackwardContributionConstraint(pre, this.values[sourceID][t]);
     					PrimitiveConstraint[] postConstraint = null;
     					if(post != null)
-    						postConstraint = createBackwardContributionConstraint(pre, this.values[sourceID][t]);
+    						postConstraint = createBackwardContributionConstraint(post, this.values[sourceID][t]);
    
     					// Note: I implemented this as a two if statements rather than and if->else if. The case of a pre and a post link might now work 
     					//		as two separate constraints. This depends on how the "IfThen" are treated in the "Or(FSConstaints)" below.

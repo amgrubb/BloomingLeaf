@@ -20,7 +20,7 @@ function getFrontendModel(isSinglePath = true){
 
 	//VERIFY IF THE MODEL IS CORRECT FOR ANALYSIS
 	//In SINGLE PATH analysis, the initial values must not be conflictant
-	console.log("Inside Input Model : "  + isSinglePath)
+	//console.log("Inside Input Model : "  + isSinglePath)
 	if(isSinglePath)
 		checkConflictValues();
 
