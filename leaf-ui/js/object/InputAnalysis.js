@@ -51,27 +51,30 @@ function getElementList(){
 
 	if(!global_analysisResult.elementList){
 		for(var i = 0; i < this.graph.getElements().length; i++){
-			var element= {};
+			// Remove Actors from list.
+			if (!(this.graph.getElements()[i] instanceof joint.shapes.basic.Actor)){
+				var element= {};
 
-			var currentValue = (this.graph.getElements()[i].attr(".satvalue/value")||"none");
-			//Making currentValue to numeric values like 0000, 0001, 0011...
-			if(!$.isNumeric(currentValue))
-				currentValue = satValueDict[currentValue];
+				var currentValue = (this.graph.getElements()[i].attr(".satvalue/value")||"none");
+				//Making currentValue to numeric values like 0000, 0001, 0011...
+				if(!$.isNumeric(currentValue))
+					currentValue = satValueDict[currentValue];
 
-			//Making that the elementId has 4 digits
-			var elementID = intentionsCount.toString();
-			while (elementID.length < 4){
-				elementID = "0" + elementID;
-				}
-			//Adding the new id to the UI graph element
-			this.graph.getElements()[i].prop("elementid", elementID);
+				//Making that the elementId has 4 digits
+				var elementID = intentionsCount.toString();
+				while (elementID.length < 4){
+					elementID = "0" + elementID;
+					}
+				//Adding the new id to the UI graph element
+				this.graph.getElements()[i].prop("elementid", elementID);
 
-			element.id = elementID;
-			element.status = [];
-			element.status.push(currentValue);
+				element.id = elementID;
+				element.status = [];
+				element.status.push(currentValue);
 
-			intentionsCount++;
-			elementList.push(element);
+				intentionsCount++;
+				elementList.push(element);
+			}
 		}
 		return elementList;
 	}else{

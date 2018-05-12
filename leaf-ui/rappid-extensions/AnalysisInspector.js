@@ -86,10 +86,10 @@ var AnalysisInspector = Backbone.View.extend({
 								 '</table>',
 						'</div>',
 		    '</div>',
-		  '</div>',
 			'<div class="modal-footer" style="margin-top: 10px;">',
 				'<button id="btn-save-assignment" class="analysis-btns inspector-btn sub-label green-btn" style="border-radius:40px;">Save</button>',
 			'</div>',
+		'</div>',
 		'</div>',
 		'</div>',
 		'<div id="intermediateTable" class="intermT">',
@@ -189,7 +189,7 @@ var AnalysisInspector = Backbone.View.extend({
 		}
 
 		//Send data to backend
-		console.log(js_object);
+		//console.log(js_object);
 		backendComm(js_object);
 	},
 	clear: function(e){
@@ -199,6 +199,7 @@ var AnalysisInspector = Backbone.View.extend({
 
 	// Display modal box that has a list of absolute values
 	loadModalBox: function(e){
+		epochLists = [];
 		graph.constraintValues = [];
 		var modal = document.getElementById('myModal');
 		// Clear all previous table entries
@@ -210,70 +211,82 @@ var AnalysisInspector = Backbone.View.extend({
 		// Populate non UD element only
 		var elements = graph.getElements();
 		var links = graph.getLinks();
-
+		//console.log(elements);
+		//console.log(links);
+		var outputList = "\n";
 		for (var i = 0; i < elements.length; i ++){
 			var cellView = elements[i].findView(paper);
 			var cell = cellView.model;
-			var func = cell.attr('.funcvalue').text;
-			var name = cell.attr('.name').text;
-			goal_id_mapper[name] = cell.attributes.elementid;
-			var assigned_time = cell.attr('.assigned_time');
-			var constraintObj
-			if(func != 'UD' && func != 'D' && func != 'I' && func != 'C' && func != 'R' && func != "" && func != 'NB'){
-				// If no assigned_time in the node, make the default value blank
-				if (!assigned_time){
-					cell.attr('.assigned_time', {0: ''});
+			if(cell.attributes.type !== "basic.Actor"){
+				var func = cell.attr('.funcvalue').text;
+				// strips all return and newline characters; ensures no double-white space; strips leading/trailing whitespace
+				var name = cell.attr('.name').text.replace(/(\n+|\r+|\s\s+)/gm," ").replace(/(^\s|\s$)/gm,'');
+				goal_id_mapper[name] = cell.attributes.elementid;
+				var assigned_time = cell.attr('.assigned_time');
+				var constraintObj
+				if(func != 'UD' && func != 'D' && func != 'I' && func != 'C' && func != 'R' && func != "" && func != 'NB'){
+					// If no assigned_time in the node, make the default value blank
+					if (!assigned_time){
+						cell.attr('.assigned_time', {0: ''});
+
+					}
+					assigned_time = cell.attr('.assigned_time')[0];
+					//console.log("Assigned time "   + assigned_time);
+					var epochObj = {};
+					epochObj["constraintType"] = 'A';
+					//TODO: Figure out how to only add these values if they don't exist.
+					epochLists.push(name + ': A');
+					//console.log(epochObj)
+					outputList += name.replace(/(\r\n|\n|\r)/gm," ");
+					outputList += ': A' + '\t' + func + "\n";
+					$('#node-list').append('<tr><td>' + name + ': A' + '</td><td>' + func + '</td>' +
+						'<td><input type="text" name="sth" value="' + assigned_time + '"></td>' + btn_html +
+						'<input type="hidden" name="id" value="' + cell.id + '"> </td> </tr>');
 
 				}
-				assigned_time = cell.attr('.assigned_time')[0];
-				console.log("Assigned time "   + assigned_time);
-				var epochObj = {};
-				epochObj[constraintType] = 'A';
-				epochLists.push(name + ': A');
-
-				$('#node-list').append('<tr><td>' + name + ': A' + '</td><td>' + func + '</td>' +
-					'<td><input type="text" name="sth" value="' + assigned_time + '"></td>' + btn_html +
-					'<input type="hidden" name="id" value="' + cell.id + '"> </td> </tr>');
-
 			}
 			//console.log(cell);
 		}
+		//console.log(outputList)
 		// Populate UD element
 		for (var i = 0; i < elements.length; i ++){
 			var cellView = elements[i].findView(paper);
 			var cell = cellView.model;
-			var func = cell.attr('.funcvalue').text;
-			var name = cell.attr('.name').text;
-			var assigned_time = cell.attr('.assigned_time');
-			console.log(name);
-			if(func == 'UD'){
-				console.log(cell.attr('.constraints'));
-				var fun_len = cell.attr('.constraints').function.length - 1;
-				var current_something = 'A';
-				// If no assigned_time in the node, save blank into the node
-				if (!assigned_time){
-					cell.attr('.assigned_time', {0: ''});
-					assigned_time = cell.attr('.assigned_time');
-				}
-				// If the length of assigned_time does not equal to the fun_len, add none until they are equal
-				var k = 0;
-				while (Object.keys(assigned_time).length < fun_len){
-					cell.attr('.assigned_time')[k] = '';
-					assigned_time = cell.attr('.assigned_time');
-					k ++;
-				}
-				for (var j = 0; j < fun_len; j++){
-					console.log("Assigned time "   + assigned_time[j]);
+			if(cell.attributes.type !== "basic.Actor"){
+				var func = cell.attr('.funcvalue').text;
+				var name = cell.attr('.name').text;
+				var assigned_time = cell.attr('.assigned_time');
+				//console.log(name);
+				if(func == 'UD'){
+					//console.log(cell.attr('.constraints'));
+					var fun_len = cell.attr('.constraints').function.length - 1;
+					var current_something = 'A';
+					// If no assigned_time in the node, save blank into the node
+					if (!assigned_time){
+						cell.attr('.assigned_time', {0: ''});
+						assigned_time = cell.attr('.assigned_time');
+					}
+					// If the length of assigned_time does not equal to the fun_len, add none until they are equal
+					var k = 0;
+					while (Object.keys(assigned_time).length < fun_len){
+						cell.attr('.assigned_time')[k] = '';
+						assigned_time = cell.attr('.assigned_time');
+						k ++;
+					}
+					for (var j = 0; j < fun_len; j++){
+						//console.log("Assigned time "   + assigned_time[j]);
 
-					epochLists.push(name + ': ' + current_something);
-					$('#node-list').append('<tr><td>' + name +': '+ current_something + '</td><td>' + func + '</td>'  +
-						'<td><input type="text" name="sth" value=' +assigned_time[j] + '></td>' + btn_html +
-						'<input type="hidden" name="id" value="' + cell.id + '_' + j + '"> </td> </tr>');
-					current_something = String.fromCharCode(current_something.charCodeAt(0) + 1);
-				}
+						epochLists.push(name + ': ' + current_something);
+						outputList += name.replace(/(\r\n|\n|\r)/gm," ");
+						outputList += ': ' + current_something + '\t' + func + "\n";
+						$('#node-list').append('<tr><td>' + name +': '+ current_something + '</td><td>' + func + '</td>'  +
+							'<td><input type="text" name="sth" value=' +assigned_time[j] + '></td>' + btn_html +
+							'<input type="hidden" name="id" value="' + cell.id + '_' + j + '"> </td> </tr>');
+						current_something = String.fromCharCode(current_something.charCodeAt(0) + 1);
+					}
 
+				}
 			}
-
 		}
 
 		// Get a list of links
@@ -301,19 +314,19 @@ var AnalysisInspector = Backbone.View.extend({
 					$('#link-list').append('<tr><td>' + link_type + '</td><td>' + source_name + '</td><td>' + target_name +
 						'</td><td><input type="text" name="sth" value=' +assigned_time[0] + '></td>' + btn_html +
 						'<input type="hidden" name="id" value="' + link.id + '"> </td> </tr>'+ '</tr>');
-						console.log(assigned_time);
+						//console.log(assigned_time);
 				}
-				console.log(link.id);
+				//console.log(link.id);
 			}
 
 		}
 		num+=1;
-
+		//console.log(outputList)
 
 	},
 	/*load valus for intermediate table dialog*/
 	loadIntermediateValues: function(e){
-		console.log(saveIVT);
+		//console.log(saveIVT);
 		var time_values = {};
 		$('#interm-list').find("tr:gt(1)").remove();
 		$('#header').find("th:gt(1)").remove();
@@ -323,7 +336,7 @@ var AnalysisInspector = Backbone.View.extend({
 		var elements = graph.getElements();
 		var intermTable = document.querySelector('.interm-table');
 		var absValues = document.getElementById('abs-time-pts').value;
-		console.log(absValues);
+		//console.log(absValues);
 		var absTimeValues;
 		if(absValues != ""){
 			absTimeValues = document.getElementById('abs-time-pts').value.split(" ")
@@ -337,7 +350,7 @@ var AnalysisInspector = Backbone.View.extend({
 			var rows = headers.querySelector('tr');
 			var intentRows = document.getElementById('intentionRows')
 			for(var i = 0; i < absTimeValues.length; i++){
-				console.log(i);
+				//console.log(i);
 				if(!(absTimeValues[i] in time_values)){
 					time_values[absTimeValues[i]] = [];
 					time_values[absTimeValues[i]].push("Absolute");
@@ -352,7 +365,7 @@ var AnalysisInspector = Backbone.View.extend({
 		}
 		absoluteTimeValues = absTimeValues;
 		Object.keys(time_values).forEach(function(key){
-			console.log(time_values[key]);
+			//console.log(time_values[key]);
 			var th = document.createElement('th');
 			var thint = document.createElement('th');
 
@@ -366,8 +379,8 @@ var AnalysisInspector = Backbone.View.extend({
 
 		//console.log(time_values);
 		/*trs.insertCell(-1);
-		console.log(trs);
-		console.log(absTimeValues);
+		//console.log(trs);
+		//console.log(absTimeValues);
 		$('#interm-list tr').append('<th>test</th>');*/
 		var sat_values = '<select id="evalID"><option value="empty;" selected> </option>';
 		var sat_valueLists = ['Unknown','None (T, T) ', 'Satisfied (FS, T) ','Partially Satisfied (PS, T) ',
@@ -378,54 +391,55 @@ var AnalysisInspector = Backbone.View.extend({
 			sat_values += value
 		}
 		sat_values += '</select>';
-		console.log(elements.length);
+		//console.log(elements.length);
 		for (var i = 0; i < elements.length; i++){
 			var cellView = elements[i].findView(paper);
 			//console.log(elements[i]);
 			var cell = cellView.model;
+			if(cell.attributes.type !== "basic.Actor"){
+				var initvalue = cell.attr('.satvalue').text;
+				var name = cell.attr('.name').text;
+				//saveIntermValues[cell.attributes.elementid] = [];
 
-			var initvalue = cell.attr('.satvalue').text;
-			var name = cell.attr('.name').text;
-			//saveIntermValues[cell.attributes.elementid] = [];
-
-			//saveIntermValues[i] = [];
-			//console.log("initial value : " + initvalue);
-			//Check if initial value is empty, if so, add (T,T) as a value
-			if(time_values.length == 0){
-				if  (initvalue.trim() == ""){
-					$('#interm-list').append('<tr><td>' + name + '</td><td>(T,T)</td></tr>');
+				//saveIntermValues[i] = [];
+				//console.log("initial value : " + initvalue);
+				//Check if initial value is empty, if so, add (T,T) as a value
+				if(time_values.length == 0){
+					if  (initvalue.trim() == ""){
+						$('#interm-list').append('<tr><td>' + name + '</td><td>(T,T)</td></tr>');
+					}
+					else{
+						$('#interm-list').append('<tr><td>' + name + '</td><td>' + initvalue +'</td></tr>');
+					}
 				}
 				else{
-					$('#interm-list').append('<tr><td>' + name + '</td><td>' + initvalue +'</td></tr>');
-				}
-			}
-			else{
-				if  (initvalue.trim() == ""){
-					console.log(Object.keys(time_values).length);
-					//$('#interm-list').append('<tr><td>' + name + '</td><td>(T,T)</td></tr>');
-					var appendList = '<tr><td>' + name + '</td><td>(T,T)</td>';
-					if(saveIVT == null){
+					if  (initvalue.trim() == ""){
+						//console.log(Object.keys(time_values).length);
+						//$('#interm-list').append('<tr><td>' + name + '</td><td>(T,T)</td></tr>');
+						var appendList = '<tr><td>' + name + '</td><td>(T,T)</td>';
+						if(saveIVT == null){
+							for(var j = 0; j < Object.keys(time_values).length; j++){
+								appendList += '<td>' + sat_values + '</td>';
+							}
+						}
+						else if(saveIVT.length>0){
+							for(var j = 0; j < Object.keys(time_values).length; j++){
+								appendList += '<td>' + $("#evalID").val('(FS, T)') + '</td>';
+							}
+						}
+						appendList += '</tr>';
+						$('#interm-list').append(appendList);
+					}
+					else{
+						//console.log(Object.keys(time_values).length);
+						var appendList = '<tr><td>' + name + '</td><td>'+ initvalue +'</td>';
+						var test ='';
 						for(var j = 0; j < Object.keys(time_values).length; j++){
 							appendList += '<td>' + sat_values + '</td>';
 						}
+						appendList += '</tr>';
+						$('#interm-list').append(appendList);
 					}
-					else if(saveIVT.length>0){
-						for(var j = 0; j < Object.keys(time_values).length; j++){
-							appendList += '<td>' + $("#evalID").val('(FS, T)') + '</td>';
-						}
-					}
-					appendList += '</tr>';
-					$('#interm-list').append(appendList);
-				}
-				else{
-					console.log(Object.keys(time_values).length);
-					var appendList = '<tr><td>' + name + '</td><td>'+ initvalue +'</td>';
-					var test ='';
-					for(var j = 0; j < Object.keys(time_values).length; j++){
-						appendList += '<td>' + sat_values + '</td>';
-					}
-					appendList += '</tr>';
-					$('#interm-list').append(appendList);
 				}
 			}
 		}
@@ -434,16 +448,15 @@ var AnalysisInspector = Backbone.View.extend({
 	dismissModalBox: function(e){
 		var modal = document.getElementById('myModal');
 		modal.style.display = "none";
-		console.log(epochLists);
-		console.log(graph.constraintValues);
-		epochLists = [];
-		console.log(goal_id_mapper);
+		//console.log(epochLists);
+		//console.log(graph.constraintValues);
+		//console.log(goal_id_mapper);
 
 	},
 	dismissIntermTable: function(e){
 		var intermT = document.getElementById('intermediateTable');
 		intermT.style.display = "none";
-		console.log(saveIntermValues);
+		//console.log(saveIntermValues);
 		//$('.interm-table').find("tr:gt(0)").remove();
 	},
 
@@ -460,11 +473,14 @@ var AnalysisInspector = Backbone.View.extend({
 		var epoch2Lists = $('#rel-intention-assignents tr #epoch2List select');
 		for(var i = 0; i < epoch1Lists.length; i++){
 			if(epoch1Lists[i].value != null && epoch2Lists[i].value != null){
-				var extractGoal1 = epoch1Lists[i].value.match(rx);
-				var extractGoal2 = epoch2Lists[i].value.match(rx);
+				var extractGoal1full = epoch1Lists[i].value;
+				var extractGoal2full = epoch2Lists[i].value;
+				var extractGoal1 = extractGoal1full.substring(0, extractGoal1full.length - 3);
+				var extractGoal2 = extractGoal2full.substring(0, extractGoal2full.length - 3);
 				var constraintSrcID = goal_id_mapper[extractGoal1];
 				var constraintDestID = goal_id_mapper[extractGoal2];
 				var type = relationshipLists[i].value;
+				debugger
 				if(type == 'eq'){
 					type = '=';
 				}
@@ -479,7 +495,7 @@ var AnalysisInspector = Backbone.View.extend({
 					graph.constraintValues[0]["absoluteValue"] = -1;
 					graph.constraintValues[0]["constraintDestID"] = constraintDestID;
 					graph.constraintValues[0]["constraintDestEB"] = epoch2Lists[i].value.match(extractEB)[0];
-					console.log(epoch1Lists[i].value.match(extractEB)[0]);
+					//console.log(epoch1Lists[i].value.match(extractEB)[0]);
 				}
 				else{
 					newConstarint = {};
@@ -489,27 +505,29 @@ var AnalysisInspector = Backbone.View.extend({
 					newConstarint['constraintDestID'] = constraintDestID;
 					newConstarint['constraintDestEB'] = epoch2Lists[i].value.match(extractEB)[0];
 					newConstarint['absoluteValue'] = -1;
-					console.log(epoch1Lists[i].value.match(extractEB)[0]);
+					//console.log(epoch1Lists[i].value.match(extractEB)[0]);
 					graph.constraintValues.push(newConstarint);
 				}
 		}
 
-			console.log(graph.constraintValues);
+			//console.log(graph.constraintValues);
 		}
 
 	},
 	// Update all nodes with the updated assigned time
 	// TODO: Check if the times users put in are valid
 	saveAssignment: function(e){
-		console.log(graph.constraintValues);
+		//console.log(graph.constraintValues);
 
 		this.saveRelativeValues();
+		var time_values = {};
 		$.each($('#node-list').find("tr input[type=text]"), function(){
 			var new_time = $(this).val();
 			var row = $(this).closest('tr');
 			var srcEB = row.find('td').html();
 			var func_value = row.find('td:nth-child(2)').html();
 			var id = row.find('input[type=hidden]').val();
+
 			// If func is not UD, just find the cell and update it
 			if (func_value != 'UD'){
 				var cell = graph.getCell(id);
@@ -523,7 +541,7 @@ var AnalysisInspector = Backbone.View.extend({
 						time_values[new_time].push('Absolute Intentions');
 					}
 				}
-				console.log(new_time=="");
+				//console.log(new_time=="");
 
 			}
 			// If func is UD, extract the index i from id, and update i-th assigned time of the node
@@ -531,9 +549,9 @@ var AnalysisInspector = Backbone.View.extend({
 				var index = id[id.length - 1];
 				id = id.substring(0, id.length - 2);
 				var cell = graph.getCell(id);
-				console.log(cell);
+				//console.log(cell);
 				cell.attr('.assigned_time')[index] = new_time;
-				console.log(new_time);
+				//console.log(new_time);
 				if(new_time.trim() != ""){
 					if(!(new_time in time_values) ){
 						time_values[new_time] = [];
@@ -543,14 +561,15 @@ var AnalysisInspector = Backbone.View.extend({
 						time_values[new_time].push('Absolute Intentions');
 					}
 				}
-				console.log(cell);
+			}
+				//console.log(cell);
 				if(graph.constraintValues.length == 0 && (new_time != null && new_time.length > 0)){
 					graph.constraintValues[0] = {};
 					graph.constraintValues[0]['constraintType'] = "A"; // A for absolute
 					graph.constraintValues[0]['constraintSrcID'] = cell.attributes.elementid;
 					graph.constraintValues[0]['constraintSrcEB'] = srcEB.match(extractEB)[0];
 
-					console.log(cell.attributes.elementid);
+					//console.log(cell.attributes.elementid);
 					graph.constraintValues[0]['absoluteValue'] = new_time;
 					graph.constraintValues[0]['constraintDestID'] = null;
 					graph.constraintValues[0]['constraintDestEB'] = null;
@@ -564,12 +583,12 @@ var AnalysisInspector = Backbone.View.extend({
 						newConstarint['absoluteValue'] = new_time;
 						newConstarint['constraintDestID'] = null;
 						newConstarint['constraintDestEB'] = null;
-						console.log(cell.attributes.elementid);
+						//console.log(cell.attributes.elementid);
 						graph.constraintValues.push(newConstarint);
 					}
 				}
 
-			}
+
 		});
 
 		$.each($('#link-list').find("tr input[type=text]"), function(){
@@ -602,8 +621,7 @@ var AnalysisInspector = Backbone.View.extend({
 		var modal = document.getElementById('myModal');
 		modal.style.display = "none";
 		$("#epoch1List select").val();
-		console.log(graph.constraintValues);
-		//epochLists = [];
+		//console.log(graph.constraintValues);
 		//console.log(time_values);
 
 	},
@@ -619,7 +637,7 @@ var AnalysisInspector = Backbone.View.extend({
 	},
 	saveIntermTable: function(){
 		saveIVT = getUserEvaluations();
-		console.log(saveIVT);
+		//console.log(saveIVT);
 		/*console.log(saveIntermValues);
 		console.log(absoluteTimeValues);
 		var elementList = this.returnElementIds();
@@ -669,10 +687,10 @@ var AnalysisInspector = Backbone.View.extend({
 		graph.elementsBeforeAnalysis = elements;
 	},
 	addnewIntention: function(){
-		console.log("button clicked for add");
+		//console.log("button clicked for add");
 		var elements = graph.getElements();
-		console.log(elements);
-		console.log(epochLists);
+		//console.log(elements);
+		//console.log(epochLists);
 
 		var epoch1 = '<div class="epochLists" id="epoch1List"><select><option selected>...</option>';
 		for(var i = 0; i < epochLists.length; i++){

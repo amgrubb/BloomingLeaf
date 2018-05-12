@@ -168,7 +168,7 @@ joint.shapes.basic.Actor = joint.shapes.basic.Generic.extend({
             	r: 60,
             	cx: 60,
             	cy: 60,
-            	fill: '#CCFFCC',
+            	fill: '#EBFFEA', //'#CCFFCC',
             	stroke: '#000000',
             	'stroke-dasharray': '5 2'
             },

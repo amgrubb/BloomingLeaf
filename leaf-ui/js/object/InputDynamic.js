@@ -27,7 +27,7 @@ function getDynamics(){
 	    var funcTypeVal = elements[e].attr(".constraints/lastval");
 	    var initValue = elements[e].attributes.attrs[".satvalue"].value;
 
-	    if (isNaN(parseInt(initValue))){
+	  if (isNaN(parseInt(initValue))){
 			initValue = satValueDict[initValue];
 		}else{
 			initValue = "0000";
@@ -36,9 +36,8 @@ function getDynamics(){
 
 	    var io_dynamic;
 	    if(f == "NB" ){
-	    	io_dynamic = new InputDynamic(elementID, "NB", initValue);
-	    }
-	    else if (f == ""){
+	    	io_dynamic = new InputDynamic(elementID, "NB", "0000");
+	    }else if (f == ""){
     		io_dynamic = new InputDynamic(elementID, "NT", initValue);
 	    }else if(f == " "){
     		io_dynamic = new InputDynamic(elementID, "NT", initValue);
@@ -63,7 +62,7 @@ function getDynamics(){
 					line += "\t" + begin[l] + "\t" + end[l] + "\t" + funcType[l] + "\t" + satValueDict[funcTypeVal[l]];
 				}
 			}
-			console.log(elements[e].attr(".constraints/beginRepeat"));
+			//console.log(elements[e].attr(".constraints/beginRepeat"));
 			// repeating
 			if (elements[e].attr(".constraints/beginRepeat") && elements[e].attr(".constraints/endRepeat")){
 				// to infinity
@@ -73,9 +72,9 @@ function getDynamics(){
 					line += "\tR\t" + rBegin + "\t" + rEnd;
 				}
 				// TODO Add the repeat count value and the absolute length value here
-				console.log(typeof $("#repeat-end2").val());
+				//console.log(typeof $("#repeat-end2").val());
 				line += "\t" + $("#repeat-end2").val() + "\t" + $("#repeat-end3").val();
-				console.log(line);
+				//console.log(line);
 			}else{
 				line += "\tN";
 			}
