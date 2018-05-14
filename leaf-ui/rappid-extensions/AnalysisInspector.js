@@ -123,9 +123,9 @@ var AnalysisInspector = Backbone.View.extend({
 		'</div>',
 		'<br>',
 		'<hr>',
-		'<button id="btn-single-path" class="analysis-btns inspector-btn sub-label green-btn">Simulate Single Path</button>'
+		'<button id="btn-single-path" class="analysis-btns inspector-btn sub-label green-btn">Simulate Single Path</button>',
 		//'<button id="btn-single-path" class="analysis-btns inspector-btn sub-label green-btn">1. Simulate Single Path</button>',
-		//'<button id="btn-all-next-state" class="analysis-btns inspector-btn sub-label green-btn">2. Explore Possible Next States</button>'
+		'<button id="btn-all-next-state" class="analysis-btns inspector-btn sub-label ice-btn">Explore Possible Next States</button>'
 	].join(''),
 
 	events: {
