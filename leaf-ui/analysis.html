@@ -4,7 +4,7 @@
     <head>
         <meta charset="utf8"/>
 
-        <title>Modelling Tool Prototype</title>
+        <title>Modeling Tool Prototype</title>
 
         <link rel="stylesheet" type="text/css" href="./rappid/dist/joint.ui.stencil.css" />
         <link rel="stylesheet" type="text/css" href="./rappid/dist/joint.ui.halo.css" />
@@ -23,12 +23,12 @@
 		    text-decoration: none;
 		    transition: background-color .3s;
 		}
-		
+
 		.pagination a.active {
 		    background-color: #4CAF50;
 		    color: white;
 		}
-		
+
 		.pagination a:hover:not(.active) {background-color: #ddd;}
 		</style>
 
@@ -62,7 +62,7 @@
                 Legend</a>
               </div>
             </div>
-            
+
         </div>
 
         <div id="navigation" class="left-panel" style="background-color: #333;">
@@ -75,9 +75,9 @@
 	      		<input id="requiredState" type="text" placeholder="Digit desired page" style="width: 180px; padding: 3px;"/>
 	      		<button onclick="goToState()" style="float:right; padding: 2px;">Go</button>
 			</div>
-				
+
 	        <div id="pagination" class="pagination" style="display:inline-block;">
-				
+
 			</div>
         <label>Filters</label>
         	   <input id="conflictFl" class="filter_checkbox" type="checkbox" onclick="add_filter()"><font color="white"> Remove conflicts</font><br>
@@ -87,7 +87,7 @@
         <div id="paper">
         </div>
 
-<!--        
+<!--
         <div id="slider"></div>
         <span id="sliderValue"></span>
 -->
@@ -123,6 +123,6 @@
         <script src="./rappid-extensions/joint.extensions.js"></script>
 
         <script src="./scripts/analysis.js"></script>
-			
+
     </body>
 </html>
