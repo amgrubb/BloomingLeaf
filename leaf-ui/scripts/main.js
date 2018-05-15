@@ -508,13 +508,13 @@ function syntaxCheck(){
 	if(error==true){
 		//errorText = errorText.substring(0,errorText.lastIndexOf(" and ")) + '.';
 		swal({
-			title:"We found invalid links combinations ",
+			title:"Invalid link combinations ",
 			type: "warning",
 			html: errorText,
 			showCloseButton: true,
  			showCancelButton: true,
-			confirmButtonText: "Ok",
-			cancelButtonText: "Go back to Model View",
+			confirmButtonText: "Proceed and Ignore",
+			cancelButtonText: "Go back",
 			cancelButtonClass: "backModel"
 		}).then(function() {
 
