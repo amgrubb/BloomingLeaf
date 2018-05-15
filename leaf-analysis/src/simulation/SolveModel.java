@@ -35,7 +35,10 @@ public class SolveModel {
 			
 			//Analyse the model
 			TroposCSPAlgorithm solver = new TroposCSPAlgorithm(modelSpec);
+			//long startTime = System.currentTimeMillis();                            //Scaleability Testing
 			solver.solveModel();
+            //long endTime = System.currentTimeMillis();                              //Scalability Testing
+            //System.out.print("Time:" + (endTime - startTime));					  //Scalability Testing
 			createOutputFile(solver, filePath + outputFile);
 	
 		} catch (RuntimeException e) {
