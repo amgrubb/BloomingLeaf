@@ -457,42 +457,53 @@ function syntaxCheck(){
     	}
 			return false;
 		})();
+
 		dups_analysis = duplicates;
 		if(duplicates == true){
 			error = true;
-			errorText += "<b style='color:black'> Suggestion : </b>" +  j + ". ";
-			var subErrorText = "Have all links from "
-			destSourceMapper[key]["source"].forEach(function(element){
-				errorText += "<b style='color:blue'>" + this.getNodeName(element) + ", </b>"
-				subErrorText += this.getNodeName(element) + ", "
-			})
-			subErrorText += " to " + this.getNodeName(key)
-			destSourceMapper[key]["constraint"].forEach(function(element){
-				if(!(subErrorText.includes(element))){
-					subErrorText += " all <b style='color: black' >"+ element + "</b> constraint links or "
-				}
-			})
-			subErrorText = subErrorText.substring(0,subErrorText.lastIndexOf(" or ")) + ".";
-			var destName = this.getNodeName(key);
-			errorText += " to <b>" + destName + "</b><br> " + subErrorText +"<br><br>";
-			destSourceMapper[key]["findview"].forEach(function(element){
-				element.model.attr({'.connection': {'stroke': 'red'}});
-				element.model.attr({'.marker-target': {'stroke': 'red'}});
-				element.model.attr({'.connection': {'stroke-width': '3'}});
-				element.model.attr({'.marker-target': {'stroke-width': '3'}});
+            errorText += "<b style='color:black'> Issue : </b>";
+            let sourceList = destSourceMapper[key]["source"];
+            var subErrorText = "<b style='color:black'> Suggestion : </b> Either have all constraint links from ";
+            sourceList.slice(0, sourceList.length -1).forEach(function(element){
+                errorText += "<b style='color:blue'>" + this.getNodeName(element) + ", " + "</b>";
+                subErrorText += this.getNodeName(element) + ", ";
+            });
+            errorText = errorText.substring(0, errorText.lastIndexOf(",")) + "</b>";
+            errorText += " and " + "<b style='color:blue'>" + this.getNodeName(sourceList[sourceList.length - 1]) + "</b>";
 
-			})
-		}
-		else{
-			destSourceMapper[key]["findview"].forEach(function(element){
-				element.model.attr({'.connection': {'stroke': '#000000'}});
-				element.model.attr({'.marker-target': {'stroke': '#000000'}});
-				element.model.attr({'.connection': {'stroke-width': '1'}});
-				element.model.attr({'.marker-target': {'stroke-width': '1'}});
-			})
-		}
-		j+=1;
-	}
+
+            subErrorText = subErrorText.substring(0, subErrorText.lastIndexOf(",")) + " ";
+            subErrorText += " and " + this.getNodeName(sourceList[sourceList.length - 1]);
+            subErrorText += " to " + this.getNodeName(key);
+            // TODO: Code could be cleaned by copying substring of errorText to subErrorText
+            // subErrorText += errorText.substring(errorText.indexOf(":") + 1, errorText.length);
+
+            destSourceMapper[key]["constraint"].forEach(function(element){
+                if(!(subErrorText.includes(element))){
+                    subErrorText += " as <b style='color: black' >"+ element + "</b> or ";
+                }
+            })
+            subErrorText = subErrorText.substring(0,subErrorText.lastIndexOf(" or ")) + ".";
+            var destName = this.getNodeName(key);
+            errorText += " to <b>" + destName + "</b><br> " + subErrorText +"<br><br>";
+            destSourceMapper[key]["findview"].forEach(function(element){
+                element.model.attr({'.connection': {'stroke': 'red'}});
+                element.model.attr({'.marker-target': {'stroke': 'red'}});
+                element.model.attr({'.connection': {'stroke-width': '3'}});
+                element.model.attr({'.marker-target': {'stroke-width': '3'}});
+
+            })
+        }
+        else{
+            destSourceMapper[key]["findview"].forEach(function(element){
+                element.model.attr({'.connection': {'stroke': '#000000'}});
+                element.model.attr({'.marker-target': {'stroke': '#000000'}});
+                element.model.attr({'.connection': {'stroke-width': '1'}});
+                element.model.attr({'.marker-target': {'stroke-width': '1'}});
+            })
+        }
+        j+=1;
+    }
 	errorText += "</p>"
 	if(error==true){
 		//errorText = errorText.substring(0,errorText.lastIndexOf(" and ")) + '.';
