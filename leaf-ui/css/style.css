@@ -358,9 +358,12 @@ select > .select-placeholder {
   margin: 16px 0;
 }
 
-.green-btn{
+.green-btn{ /*This button is actually blue.*/
   /*background: #27ae60;*/
   background: #1E85F7;
+}
+.ice-btn{
+  background: #00FFFF;
 }
 
 .blue-btn{
