@@ -410,7 +410,7 @@ function syntaxCheck(){
         let errorString = "<p style='text-align:left'>";
         let suggestionString = "<b style='color:black'> Suggestion: </b>Either have all links from ";
         let lengthSource = sourceList.length;
-        errorString += "<br> <b style='color:black'> Source nodes: </b>";
+        errorString += "<b style='color:black'> Source nodes: </b>";
 
         //Loop through all elements in sourceList excluding the last element
         // and concatenate the sourceNodes to errorString and suggestionString
@@ -427,10 +427,10 @@ function syntaxCheck(){
         //Remove the last comma
         errorString = errorString.substring(0, errorString.lastIndexOf(",")) + " and ";
         // errorString += "<b style='color:blue'>" + this.getNodeName(sourceList[lengthSource - 1]) + "</b>" + "\n";
-        errorString += this.getNodeName(sourceList[lengthSource - 1]) + "</br>";
+        errorString += this.getNodeName(sourceList[lengthSource - 1]) + "<br>";
         //Destination substring
-        errorString += "<br> <b style='color:black'> Destination node: </b>";
-        errorString += destName + "</br>";
+        errorString += "<b style='color:black'> Destination node: </b>";
+        errorString += destName + "<br>";
         // errorString += "<b style='color:red'>" + destName + "</b>" + "\n";
 
         suggestionString += destName;
@@ -444,8 +444,7 @@ function syntaxCheck(){
         // Remove the last or
         suggestionString = suggestionString.substring(0, suggestionString.lastIndexOf(" or")) + ".";
 
-        errorString += "<br>";
-        errorString += suggestionString + "</br></p>";
+        errorString += suggestionString + "<br></p>";
         return errorString;
     }
     var destSourceMapper = {};
@@ -476,7 +475,7 @@ function syntaxCheck(){
         destSourceMapper[jslinks[j].linkDestID]["findview"].push(cellView);
     }
     var error = false;
-    let errorText;
+    let errorText = "";
     var contributionPattern = /[+]{1,}|[-]{1,}/g;
     for(var key in destSourceMapper){
 
@@ -507,7 +506,7 @@ function syntaxCheck(){
             let sourceList = destSourceMapper[key]["source"];
             let constraintList = destSourceMapper[key]["constraint"];
             //TODO: The function below returns a function not found error
-            errorText = _generateSyntaxMessage(sourceList, destName, constraintList);
+            errorText += _generateSyntaxMessage(sourceList, destName, constraintList);
 
             destSourceMapper[key]["findview"].forEach(function(element){
                 element.model.attr({'.connection': {'stroke': 'red'}});
