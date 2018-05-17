@@ -486,7 +486,7 @@ function syntaxCheck(){
 
             // find first n-ary goal relationship (ie, AND, OR, NO)
             var naryIndex = 0;
-            while (constraints[naryIndex].match(contributionPattern) != null) {
+            while (naryIndex < constraints.length && constraints[naryIndex].match(contributionPattern) != null) {
                 naryIndex++;
             }
 
