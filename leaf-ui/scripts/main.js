@@ -449,57 +449,58 @@ function syntaxCheck(){
         return errorString;
     }
     var destSourceMapper = {};
-    var js_object = {};
     var js_links = {};
     //console.log(getLinks());
     var jslinks = getLinks();
     var elements = graph.getLinks();
+
     for(var j = 0; j < jslinks.length; j++){
         var cellView  = elements[j].findView(paper);
+
         if(!(jslinks[j].linkDestID in destSourceMapper)){
+            // create empty object and arrays
             destSourceMapper[jslinks[j].linkDestID] = {};
-            var constraint;
-            if (jslinks[j].postType != null){
-                constraint = jslinks[j].linkType+"|"+jslinks[j].postType;
-            }
-            else{
-                constraint = jslinks[j].linkType;
-            }
             destSourceMapper[jslinks[j].linkDestID]["source"] = [];
-            destSourceMapper[jslinks[j].linkDestID]["source"].push(jslinks[j].linkSrcID);
             destSourceMapper[jslinks[j].linkDestID]["constraint"] = [];
-            destSourceMapper[jslinks[j].linkDestID]["constraint"].push(constraint);
             destSourceMapper[jslinks[j].linkDestID]["findview"] = [];
-            destSourceMapper[jslinks[j].linkDestID]["findview"].push(cellView);
         }
-        else{
-            var constraint;
-            if (jslinks[j].postType != null){
-                constraint = jslinks[j].linkType+"|"+jslinks[j].postType;
-            }
-            else{
-                constraint = jslinks[j].linkType;
-            }
-            destSourceMapper[jslinks[j].linkDestID]["source"].push(jslinks[j].linkSrcID);
-            destSourceMapper[jslinks[j].linkDestID]["constraint"].push(constraint);
-            destSourceMapper[jslinks[j].linkDestID]["findview"].push(cellView);
+
+        var constraint;
+        if (jslinks[j].postType != null){
+            constraint = jslinks[j].linkType+"|"+jslinks[j].postType;
+        }else{
+            constraint = jslinks[j].linkType;
         }
+        destSourceMapper[jslinks[j].linkDestID]["source"].push(jslinks[j].linkSrcID);
+        destSourceMapper[jslinks[j].linkDestID]["constraint"].push(constraint);
+        destSourceMapper[jslinks[j].linkDestID]["findview"].push(cellView);
     }
     var error = false;
-    var errorText = "<p style='text-align:left'>";
+    let errorText;
     var contributionPattern = /[+]{1,}|[-]{1,}/g;
     for(var key in destSourceMapper){
+
         var duplicates = (function(){
-            var x = destSourceMapper[key]["constraint"][0];
-            for(var i=1;i<destSourceMapper[key]["constraint"].length;i++){
-                if(x!=destSourceMapper[key]["constraint"][i] && destSourceMapper[key]["constraint"][i].match(contributionPattern) == null){
-                    return true
+            // this function determines if there is a syntax error
+
+            var constraints = destSourceMapper[key]["constraint"];
+
+            // find first n-ary goal relationship (ie, AND, OR, NO)
+            var naryIndex = 0;
+            while (constraints[naryIndex].match(contributionPattern) != null) {
+                naryIndex++;
+            }
+
+            for(var i = naryIndex + 1; i < constraints.length; i++){
+                if(constraints[naryIndex] != constraints[i] && constraints[i].match(contributionPattern) == null){
+                    return true;
                 }
             }
             return false;
         })();
 
-        dups_analysis = duplicates;
+
+           dups_analysis = duplicates;
         if(duplicates == true){
             error = true;
             let destName = this.getNodeName(key);
@@ -507,31 +508,7 @@ function syntaxCheck(){
             let constraintList = destSourceMapper[key]["constraint"];
             //TODO: The function below returns a function not found error
             errorText = _generateSyntaxMessage(sourceList, destName, constraintList);
-            // errorText += "<b style='color:black'> Issue : </b>";
-            // let sourceList = destSourceMapper[key]["source"];
-            // var subErrorText = "<b style='color:black'> Suggestion : </b> Either have all constraint links from ";
-            // sourceList.slice(0, sourceList.length -1).forEach(function(element){
-            //     errorText += "<b style='color:blue'>" + this.getNodeName(element) + ", " + "</b>";
-            //     subErrorText += this.getNodeName(element) + ", ";
-            // });
-            // errorText = errorText.substring(0, errorText.lastIndexOf(",")) + "</b>";
-            // errorText += " and " + "<b style='color:blue'>" + this.getNodeName(sourceList[sourceList.length - 1]) + "</b>";
-            //
-            //
-            // subErrorText = subErrorText.substring(0, subErrorText.lastIndexOf(",")) + " ";
-            // subErrorText += " and " + this.getNodeName(sourceList[sourceList.length - 1]);
-            // subErrorText += " to " + this.getNodeName(key);
-            // // TODO: Code could be cleaned by copying substring of errorText to subErrorText
-            // // subErrorText += errorText.substring(errorText.indexOf(":") + 1, errorText.length);
-            //
-            // destSourceMapper[key]["constraint"].forEach(function(element){
-            //     if(!(subErrorText.includes(element))){
-            //         subErrorText += " as <b style='color: black' >"+ element + "</b> or ";
-            //     }
-            // });
-            // subErrorText = subErrorText.substring(0,subErrorText.lastIndexOf(" or ")) + ".";
-            // var destName = this.getNodeName(key);
-            // errorText += " to <b>" + destName + "</b><br> " + subErrorText +"<br><br>";
+
             destSourceMapper[key]["findview"].forEach(function(element){
                 element.model.attr({'.connection': {'stroke': 'red'}});
                 element.model.attr({'.marker-target': {'stroke': 'red'}});
@@ -549,9 +526,7 @@ function syntaxCheck(){
             })
         }
     }
-    // errorText += "</p>"
     if(error==true){
-        //errorText = errorText.substring(0,errorText.lastIndexOf(" and ")) + '.';
         swal({
             title:"We found invalid links combinations ",
             type: "warning",
