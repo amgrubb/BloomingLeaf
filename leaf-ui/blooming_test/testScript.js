@@ -126,10 +126,20 @@ describe('Syntax check for valid combinations', function() {
 
     it('Syntax check with a single AND link added first, and then a single ++ link added second',
     function(done) {
-        $.getJSON('./blooming_test/syntaxCheck9.json', function(data)) {
+        $.getJSON('./blooming_test/syntaxCheck9.json', function(data) {
             graph.fromJSON(data);
-            var
-        }
+            expect(returned_syntaxCheck()).to.be.false;
+            done();
+        });
+    });
+
+    it('Syntax check with a single ++ link added first, and then a single AND link added second',
+    function(done) {
+        $.getJSON('./blooming_test/syntaxCheck10.json', function(data) {
+            graph.fromJSON(data);
+            expect(returned_syntaxCheck()).to.be.false;
+            done();
+        });
     });
 });
 
