@@ -235,7 +235,7 @@ function saveLinks(mode){
 //Switch to analysis mode
 $('#analysis-btn').on('click', function(){
 	syntaxCheck();
-	console.log(returned_syntaxCheck());
+	console.log(returnedSyntaxCheck());
 	/*
 	if (linkMode == "Constraints")
 		$('#symbolic-btn').trigger( "click" );*/
@@ -349,13 +349,11 @@ $('#cycledetect-btn').on('click', function(e){
 
 	js_object = null;
 	jslinks = null;
-})
+});
 var dups_analysis;
-function returned_syntaxCheck(){
+//TODO: REMOVE THE FUNTION BELOW. IT IS NOT CORRECT AND NOT VERY USEFUL.
+function returnedSyntaxCheck(){
 	var destSourceMapper = {};
-	var js_object = {};
-	var js_links = {};
-	//console.log(getLinks());
 	var jslinks = getLinks();
 	var elements = graph.getLinks();
 	for(var j = 0; j < jslinks.length; j++){
@@ -401,60 +399,19 @@ function returned_syntaxCheck(){
 			}
 			return false;
 		})();
+		//TODO: THIS ALWAYS CHANGES
 		dups_analysis = duplicates;
 	}
+	//TODO: THIS WILL RETURN WHETHER THERE IS A DUPLICATE FOR THE 'LAST' KEY.
 	return dups_analysis;
 }
-function syntaxCheck(){
-    function _generateSyntaxMessage(sourceList, destName, constraintList){
-        let errorString = "<p style='text-align:left'>";
-        let suggestionString = "<b style='color:black'> Suggestion: </b>Either have all links from ";
-        let lengthSource = sourceList.length;
-        errorString += "<b style='color:black'> Source nodes: </b>";
 
-        //Loop through all elements in sourceList excluding the last element
-        // and concatenate the sourceNodes to errorString and suggestionString
-        sourceList.slice(0, lengthSource - 1).forEach(function (element) {
-            // errorString += "<b style='color:blue'>" + this.getNodeName(element) + "</b>" + ", ";
-            errorString += this.getNodeName(element) + ", ";
-            suggestionString += this.getNodeName(element) + ", ";
-        });
-
-        //Get the last element of sourceList and concatenate it with suggestion String and errorString
-        suggestionString = suggestionString.substring(0, suggestionString.lastIndexOf(",")) + " and ";
-        suggestionString += this.getNodeName(sourceList[lengthSource - 1]) + " to ";
-
-        //Remove the last comma
-        errorString = errorString.substring(0, errorString.lastIndexOf(",")) + " and ";
-        // errorString += "<b style='color:blue'>" + this.getNodeName(sourceList[lengthSource - 1]) + "</b>" + "\n";
-        errorString += this.getNodeName(sourceList[lengthSource - 1]) + "<br>";
-        //Destination substring
-        errorString += "<b style='color:black'> Destination node: </b>";
-        errorString += destName + "<br>";
-        // errorString += "<b style='color:red'>" + destName + "</b>" + "\n";
-
-        suggestionString += destName;
-
-        // Loop through the constraints and concatenate suggestionString to display the constrain links
-        constraintList.forEach(function (element) {
-            if(!(suggestionString.includes(element))){
-                suggestionString += " as <b style='color: black' >"+ element + "</b> or ";
-            }
-        });
-        // Remove the last or
-        suggestionString = suggestionString.substring(0, suggestionString.lastIndexOf(" or")) + ".";
-
-        errorString += suggestionString + "<br></p>";
-        return errorString;
-    }
-    var destSourceMapper = {};
-    var js_links = {};
-    //console.log(getLinks());
-    var jslinks = getLinks();
-    var elements = graph.getLinks();
-
+function initializeDestSourceMapper(elements, jslinks){
+    let destSourceMapper = {};
+    let cellView;
+    let constraint;
     for(var j = 0; j < jslinks.length; j++){
-        var cellView  = elements[j].findView(paper);
+        cellView  = elements[j].findView(paper);
 
         if(!(jslinks[j].linkDestID in destSourceMapper)){
             // create empty object and arrays
@@ -464,7 +421,6 @@ function syntaxCheck(){
             destSourceMapper[jslinks[j].linkDestID]["findview"] = [];
         }
 
-        var constraint;
         if (jslinks[j].postType != null){
             constraint = jslinks[j].linkType+"|"+jslinks[j].postType;
         }else{
@@ -474,11 +430,66 @@ function syntaxCheck(){
         destSourceMapper[jslinks[j].linkDestID]["constraint"].push(constraint);
         destSourceMapper[jslinks[j].linkDestID]["findview"].push(cellView);
     }
+    return destSourceMapper;
+}
+function _generateSyntaxMessage(sourceList, destName, constraintList){
+    let errorString = "<p style='text-align:left'>";
+    let suggestionString = "<b style='color:black'> Suggestion: </b>Either have all links from ";
+    let lengthSource = sourceList.length;
+    errorString += "<b style='color:black'> Source nodes: </b>";
+
+    //Loop through all elements in sourceList excluding the last element
+    // and concatenate the sourceNodes to errorString and suggestionString
+    sourceList.slice(0, lengthSource - 1).forEach(function (element) {
+        // errorString += "<b style='color:blue'>" + this.getNodeName(element) + "</b>" + ", ";
+        errorString += this.getNodeName(element) + ", ";
+        suggestionString += this.getNodeName(element) + ", ";
+    });
+
+    //Get the last element of sourceList and concatenate it with suggestion String and errorString
+    suggestionString = suggestionString.substring(0, suggestionString.lastIndexOf(",")) + " and ";
+    suggestionString += this.getNodeName(sourceList[lengthSource - 1]) + " to ";
+
+    //Remove the last comma
+    errorString = errorString.substring(0, errorString.lastIndexOf(",")) + " and ";
+    // errorString += "<b style='color:blue'>" + this.getNodeName(sourceList[lengthSource - 1]) + "</b>" + "\n";
+    errorString += this.getNodeName(sourceList[lengthSource - 1]) + "<br>";
+    //Destination substring
+    errorString += "<b style='color:black'> Destination node: </b>";
+    errorString += destName + "<br>";
+    // errorString += "<b style='color:red'>" + destName + "</b>" + "\n";
+
+    suggestionString += destName;
+
+    // Loop through the constraints and concatenate suggestionString to display the constrain links
+    constraintList.forEach(function (element) {
+        if(!(suggestionString.includes(element))){
+            suggestionString += " as <b style='color: black' >"+ element + "</b> or ";
+        }
+    });
+    // Remove the last or
+    suggestionString = suggestionString.substring(0, suggestionString.lastIndexOf(" or")) + ".";
+
+    errorString += suggestionString + "<br></p>";
+    return errorString;
+}
+
+function syntaxCheck(){
+    // console.log(getLinks());
+
+    // Get all input links
+    var jslinks = getLinks();
+    //Get all the elements that are linked
+    var elements = graph.getLinks();
+
+    //Create an object that represents the constraint links and its sources and destination
+    let destSourceMapper = this.initializeDestSourceMapper(elements, jslinks);
     var error = false;
     let errorText = "";
-    var contributionPattern = /[+]{1,}|[-]{1,}/g;
+    var contributionPattern = /[+]+|[-]+/g;
     for(var key in destSourceMapper){
 
+        // Duplicates is a bool that is true iff there is a syntax error
         var duplicates = (function(){
             // this function determines if there is a syntax error
 
@@ -497,17 +508,20 @@ function syntaxCheck(){
             }
             return false;
         })();
-
-
-           dups_analysis = duplicates;
-        if(duplicates == true){
+        // If there is a syntax error.
+        if(duplicates){
             error = true;
+            // Get the name of the destination node
             let destName = this.getNodeName(key);
+            // Get all the sources that are linked to the destination node
             let sourceList = destSourceMapper[key]["source"];
+            // Get all the constraint links that are linked to the destination node.
             let constraintList = destSourceMapper[key]["constraint"];
             //TODO: The function below returns a function not found error
+            // Generate the error message
             errorText += _generateSyntaxMessage(sourceList, destName, constraintList);
 
+            // Highlight the "Syntax Error" Links to red
             destSourceMapper[key]["findview"].forEach(function(element){
                 element.model.attr({'.connection': {'stroke': 'red'}});
                 element.model.attr({'.marker-target': {'stroke': 'red'}});

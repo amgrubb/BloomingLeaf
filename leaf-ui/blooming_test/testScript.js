@@ -438,7 +438,7 @@ describe('Cycle Check 1', function() {
          console.log(getLinks());
          var testLink = getLinks();
          var testNodes = getElementList();
-         var SyntaxCheck1 = returned_syntaxCheck();
+         var SyntaxCheck1 = returnedSyntaxCheck();
          console.log("does it reach here?")
          console.log(SyntaxCheck1);
          expect(SyntaxCheck1).to.equal(false);
@@ -459,7 +459,7 @@ describe('Cycle Check 1', function() {
          console.log(getLinks());
          var testLink = getLinks();
          var testNodes = getElementList();
-         var SyntaxCheck1 = returned_syntaxCheck();
+         var SyntaxCheck1 = returnedSyntaxCheck();
          console.log("does it reach here?")
          console.log(SyntaxCheck1);
          expect(SyntaxCheck1).to.equal(false);
@@ -480,7 +480,7 @@ describe('Cycle Check 1', function() {
          console.log(getLinks());
          var testLink = getLinks();
          var testNodes = getElementList();
-         var SyntaxCheck1 = returned_syntaxCheck();
+         var SyntaxCheck1 = returnedSyntaxCheck();
          console.log("does it reach here?")
          console.log(SyntaxCheck1);
          expect(SyntaxCheck1).to.equal(false);
@@ -501,7 +501,7 @@ describe('Cycle Check 1', function() {
          console.log(getLinks());
          var testLink = getLinks();
          var testNodes = getElementList();
-         var SyntaxCheck1 = returned_syntaxCheck();
+         var SyntaxCheck1 = returnedSyntaxCheck();
          console.log("does it reach here?")
          console.log(SyntaxCheck1);
          expect(SyntaxCheck1).to.equal(false);
@@ -526,7 +526,7 @@ describe('SyntaxCheck for invalid combinations', function() {
        console.log(getLinks());
        var testLink = getLinks();
        var testNodes = getElementList();
-       var SyntaxCheck1 = returned_syntaxCheck();
+       var SyntaxCheck1 = returnedSyntaxCheck();
        console.log("does it reach here?")
        console.log(SyntaxCheck1);
        expect(SyntaxCheck1).to.equal(true);
@@ -547,7 +547,7 @@ describe('SyntaxCheck for invalid combinations', function() {
        console.log(getLinks());
        var testLink = getLinks();
        var testNodes = getElementList();
-       var SyntaxCheck1 = returned_syntaxCheck();
+       var SyntaxCheck1 = returnedSyntaxCheck();
        console.log("does it reach here?")
        console.log(SyntaxCheck1);
        expect(SyntaxCheck1).to.equal(true);
@@ -569,7 +569,7 @@ describe('SyntaxCheck for invalid combinations', function() {
        console.log(getLinks());
        var testLink = getLinks();
        var testNodes = getElementList();
-       var SyntaxCheck1 = returned_syntaxCheck();
+       var SyntaxCheck1 = returnedSyntaxCheck();
        console.log("does it reach here?")
        console.log(SyntaxCheck1);
        expect(SyntaxCheck1).to.equal(true);
@@ -591,7 +591,7 @@ describe('SyntaxCheck for invalid combinations', function() {
        console.log(getLinks());
        var testLink = getLinks();
        var testNodes = getElementList();
-       var SyntaxCheck1 = returned_syntaxCheck();
+       var SyntaxCheck1 = returnedSyntaxCheck();
        console.log("does it reach here?")
        console.log(SyntaxCheck1);
        expect(SyntaxCheck1).to.equal(true);
@@ -612,7 +612,7 @@ describe('SyntaxCheck for invalid combinations', function() {
        console.log(getLinks());
        var testLink = getLinks();
        var testNodes = getElementList();
-       var SyntaxCheck1 = returned_syntaxCheck();
+       var SyntaxCheck1 = returnedSyntaxCheck();
        console.log("does it reach here?")
        console.log(SyntaxCheck1);
        expect(SyntaxCheck1).to.equal(true);
@@ -634,7 +634,7 @@ describe('SyntaxCheck for invalid combinations', function() {
        console.log(getLinks());
        var testLink = getLinks();
        var testNodes = getElementList();
-       var SyntaxCheck1 = returned_syntaxCheck();
+       var SyntaxCheck1 = returnedSyntaxCheck();
        console.log("does it reach here?")
        console.log(SyntaxCheck1);
        expect(SyntaxCheck1).to.equal(true);
