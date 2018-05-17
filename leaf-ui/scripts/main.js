@@ -406,86 +406,132 @@ function returned_syntaxCheck(){
 	return dups_analysis;
 }
 function syntaxCheck(){
-	var destSourceMapper = {};
-	var js_object = {};
-	var js_links = {};
-	//console.log(getLinks());
-	var jslinks = getLinks();
-	var elements = graph.getLinks();
-	for(var j = 0; j < jslinks.length; j++){
-		var cellView  = elements[j].findView(paper);
-		if(!(jslinks[j].linkDestID in destSourceMapper)){
-			destSourceMapper[jslinks[j].linkDestID] = {};
-			var constraint;
-			if (jslinks[j].postType != null){
-				constraint = jslinks[j].linkType+"|"+jslinks[j].postType;
-			}
-			else{
-				constraint = jslinks[j].linkType;
-			}
-			destSourceMapper[jslinks[j].linkDestID]["source"] = [];
-			destSourceMapper[jslinks[j].linkDestID]["source"].push(jslinks[j].linkSrcID);
-			destSourceMapper[jslinks[j].linkDestID]["constraint"] = [];
-			destSourceMapper[jslinks[j].linkDestID]["constraint"].push(constraint);
-			destSourceMapper[jslinks[j].linkDestID]["findview"] = [];
-			destSourceMapper[jslinks[j].linkDestID]["findview"].push(cellView);
-		}
-		else{
-			var constraint;
-			if (jslinks[j].postType != null){
-				constraint = jslinks[j].linkType+"|"+jslinks[j].postType;
-			}
-			else{
-				constraint = jslinks[j].linkType;
-			}
-			destSourceMapper[jslinks[j].linkDestID]["source"].push(jslinks[j].linkSrcID);
-			destSourceMapper[jslinks[j].linkDestID]["constraint"].push(constraint);
-			destSourceMapper[jslinks[j].linkDestID]["findview"].push(cellView);
-		}
-	}
-	var error = false;
-	var errorText = "<p style='text-align:left'>";
-	var j = 1;
-	var contributionPattern = /[+]{1,}|[-]{1,}/g;
-	for(var key in destSourceMapper){
-		var duplicates = (function(){
-			var x = destSourceMapper[key]["constraint"][0];
-			for(var i=1;i<destSourceMapper[key]["constraint"].length;i++){
-    		if(x!=destSourceMapper[key]["constraint"][i] && destSourceMapper[key]["constraint"][i].match(contributionPattern) == null){
-					return true
-				}
-    	}
-			return false;
-		})();
+    function _generateSyntaxMessage(sourceList, destName, constraintList){
+        let errorString = "<p style='text-align:left'>";
+        let suggestionString = "<b style='color:black'> Suggestion: </b>Either have all links from ";
+        let lengthSource = sourceList.length;
+        errorString += "<br> <b style='color:black'> Source nodes: </b>";
 
-		dups_analysis = duplicates;
-		if(duplicates == true){
-			error = true;
-            errorText += "<b style='color:black'> Issue : </b>";
-            let sourceList = destSourceMapper[key]["source"];
-            var subErrorText = "<b style='color:black'> Suggestion : </b> Either have all constraint links from ";
-            sourceList.slice(0, sourceList.length -1).forEach(function(element){
-                errorText += "<b style='color:blue'>" + this.getNodeName(element) + ", " + "</b>";
-                subErrorText += this.getNodeName(element) + ", ";
-            });
-            errorText = errorText.substring(0, errorText.lastIndexOf(",")) + "</b>";
-            errorText += " and " + "<b style='color:blue'>" + this.getNodeName(sourceList[sourceList.length - 1]) + "</b>";
+        //Loop through all elements in sourceList excluding the last element
+        // and concatenate the sourceNodes to errorString and suggestionString
+        sourceList.slice(0, lengthSource - 1).forEach(function (element) {
+            // errorString += "<b style='color:blue'>" + this.getNodeName(element) + "</b>" + ", ";
+            errorString += this.getNodeName(element) + ", ";
+            suggestionString += this.getNodeName(element) + ", ";
+        });
 
+        //Get the last element of sourceList and concatenate it with suggestion String and errorString
+        suggestionString = suggestionString.substring(0, suggestionString.lastIndexOf(",")) + " and ";
+        suggestionString += this.getNodeName(sourceList[lengthSource - 1]) + " to ";
 
-            subErrorText = subErrorText.substring(0, subErrorText.lastIndexOf(",")) + " ";
-            subErrorText += " and " + this.getNodeName(sourceList[sourceList.length - 1]);
-            subErrorText += " to " + this.getNodeName(key);
-            // TODO: Code could be cleaned by copying substring of errorText to subErrorText
-            // subErrorText += errorText.substring(errorText.indexOf(":") + 1, errorText.length);
+        //Remove the last comma
+        errorString = errorString.substring(0, errorString.lastIndexOf(",")) + " and ";
+        // errorString += "<b style='color:blue'>" + this.getNodeName(sourceList[lengthSource - 1]) + "</b>" + "\n";
+        errorString += this.getNodeName(sourceList[lengthSource - 1]) + "</br>";
+        //Destination substring
+        errorString += "<br> <b style='color:black'> Destination node: </b>";
+        errorString += destName + "</br>";
+        // errorString += "<b style='color:red'>" + destName + "</b>" + "\n";
 
-            destSourceMapper[key]["constraint"].forEach(function(element){
-                if(!(subErrorText.includes(element))){
-                    subErrorText += " as <b style='color: black' >"+ element + "</b> or ";
+        suggestionString += destName;
+
+        // Loop through the constraints and concatenate suggestionString to display the constrain links
+        constraintList.forEach(function (element) {
+            if(!(suggestionString.includes(element))){
+                suggestionString += " as <b style='color: black' >"+ element + "</b> or ";
+            }
+        });
+        // Remove the last or
+        suggestionString = suggestionString.substring(0, suggestionString.lastIndexOf(" or")) + ".";
+
+        errorString += "<br>";
+        errorString += suggestionString + "</br></p>";
+        return errorString;
+    }
+    var destSourceMapper = {};
+    var js_object = {};
+    var js_links = {};
+    //console.log(getLinks());
+    var jslinks = getLinks();
+    var elements = graph.getLinks();
+    for(var j = 0; j < jslinks.length; j++){
+        var cellView  = elements[j].findView(paper);
+        if(!(jslinks[j].linkDestID in destSourceMapper)){
+            destSourceMapper[jslinks[j].linkDestID] = {};
+            var constraint;
+            if (jslinks[j].postType != null){
+                constraint = jslinks[j].linkType+"|"+jslinks[j].postType;
+            }
+            else{
+                constraint = jslinks[j].linkType;
+            }
+            destSourceMapper[jslinks[j].linkDestID]["source"] = [];
+            destSourceMapper[jslinks[j].linkDestID]["source"].push(jslinks[j].linkSrcID);
+            destSourceMapper[jslinks[j].linkDestID]["constraint"] = [];
+            destSourceMapper[jslinks[j].linkDestID]["constraint"].push(constraint);
+            destSourceMapper[jslinks[j].linkDestID]["findview"] = [];
+            destSourceMapper[jslinks[j].linkDestID]["findview"].push(cellView);
+        }
+        else{
+            var constraint;
+            if (jslinks[j].postType != null){
+                constraint = jslinks[j].linkType+"|"+jslinks[j].postType;
+            }
+            else{
+                constraint = jslinks[j].linkType;
+            }
+            destSourceMapper[jslinks[j].linkDestID]["source"].push(jslinks[j].linkSrcID);
+            destSourceMapper[jslinks[j].linkDestID]["constraint"].push(constraint);
+            destSourceMapper[jslinks[j].linkDestID]["findview"].push(cellView);
+        }
+    }
+    var error = false;
+    var errorText = "<p style='text-align:left'>";
+    var contributionPattern = /[+]{1,}|[-]{1,}/g;
+    for(var key in destSourceMapper){
+        var duplicates = (function(){
+            var x = destSourceMapper[key]["constraint"][0];
+            for(var i=1;i<destSourceMapper[key]["constraint"].length;i++){
+                if(x!=destSourceMapper[key]["constraint"][i] && destSourceMapper[key]["constraint"][i].match(contributionPattern) == null){
+                    return true
                 }
-            })
-            subErrorText = subErrorText.substring(0,subErrorText.lastIndexOf(" or ")) + ".";
-            var destName = this.getNodeName(key);
-            errorText += " to <b>" + destName + "</b><br> " + subErrorText +"<br><br>";
+            }
+            return false;
+        })();
+
+        dups_analysis = duplicates;
+        if(duplicates == true){
+            error = true;
+            let destName = this.getNodeName(key);
+            let sourceList = destSourceMapper[key]["source"];
+            let constraintList = destSourceMapper[key]["constraint"];
+            //TODO: The function below returns a function not found error
+            errorText = _generateSyntaxMessage(sourceList, destName, constraintList);
+            // errorText += "<b style='color:black'> Issue : </b>";
+            // let sourceList = destSourceMapper[key]["source"];
+            // var subErrorText = "<b style='color:black'> Suggestion : </b> Either have all constraint links from ";
+            // sourceList.slice(0, sourceList.length -1).forEach(function(element){
+            //     errorText += "<b style='color:blue'>" + this.getNodeName(element) + ", " + "</b>";
+            //     subErrorText += this.getNodeName(element) + ", ";
+            // });
+            // errorText = errorText.substring(0, errorText.lastIndexOf(",")) + "</b>";
+            // errorText += " and " + "<b style='color:blue'>" + this.getNodeName(sourceList[sourceList.length - 1]) + "</b>";
+            //
+            //
+            // subErrorText = subErrorText.substring(0, subErrorText.lastIndexOf(",")) + " ";
+            // subErrorText += " and " + this.getNodeName(sourceList[sourceList.length - 1]);
+            // subErrorText += " to " + this.getNodeName(key);
+            // // TODO: Code could be cleaned by copying substring of errorText to subErrorText
+            // // subErrorText += errorText.substring(errorText.indexOf(":") + 1, errorText.length);
+            //
+            // destSourceMapper[key]["constraint"].forEach(function(element){
+            //     if(!(subErrorText.includes(element))){
+            //         subErrorText += " as <b style='color: black' >"+ element + "</b> or ";
+            //     }
+            // });
+            // subErrorText = subErrorText.substring(0,subErrorText.lastIndexOf(" or ")) + ".";
+            // var destName = this.getNodeName(key);
+            // errorText += " to <b>" + destName + "</b><br> " + subErrorText +"<br><br>";
             destSourceMapper[key]["findview"].forEach(function(element){
                 element.model.attr({'.connection': {'stroke': 'red'}});
                 element.model.attr({'.marker-target': {'stroke': 'red'}});
@@ -502,29 +548,28 @@ function syntaxCheck(){
                 element.model.attr({'.marker-target': {'stroke-width': '1'}});
             })
         }
-        j+=1;
     }
-	errorText += "</p>"
-	if(error==true){
-		//errorText = errorText.substring(0,errorText.lastIndexOf(" and ")) + '.';
-		swal({
-			title:"Invalid link combinations ",
-			type: "warning",
-			html: errorText,
-			showCloseButton: true,
- 			showCancelButton: true,
-			confirmButtonText: "Proceed and Ignore",
-			cancelButtonText: "Go back",
-			cancelButtonClass: "backModel"
-		}).then(function() {
+    // errorText += "</p>"
+    if(error==true){
+        //errorText = errorText.substring(0,errorText.lastIndexOf(" and ")) + '.';
+        swal({
+            title:"We found invalid links combinations ",
+            type: "warning",
+            html: errorText,
+            showCloseButton: true,
+            showCancelButton: true,
+            confirmButtonText: "Ok",
+            cancelButtonText: "Go back to Model View",
+            cancelButtonClass: "backModel"
+        }).then(function() {
 
-			}, function(dismiss) {
-			  // dismiss can be 'overlay', 'cancel', 'close', 'esc', 'timer'
-			  if (dismiss === 'cancel') {
-			    $("#model-cur-btn").trigger("click");
-			  }
-		})
-	}
+        }, function(dismiss) {
+            // dismiss can be 'overlay', 'cancel', 'close', 'esc', 'timer'
+            if (dismiss === 'cancel') {
+                $("#model-cur-btn").trigger("click");
+            }
+        })
+    }
 }
 
 //Cycle-deteciton algorithm
