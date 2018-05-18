@@ -432,7 +432,7 @@ function initializeDestSourceMapper(elements, jslinks){
     }
     return destSourceMapper;
 }
-function _generateSyntaxMessage(sourceList, destName, constraintList){
+function generateSyntaxMessage(sourceList, destName, constraintList){
     let errorString = "<p style='text-align:left'>";
     let suggestionString = "<b style='color:black'> Suggestion: </b>Either have all links from ";
     let lengthSource = sourceList.length;
@@ -442,18 +442,18 @@ function _generateSyntaxMessage(sourceList, destName, constraintList){
     // and concatenate the sourceNodes to errorString and suggestionString
     sourceList.slice(0, lengthSource - 1).forEach(function (element) {
         // errorString += "<b style='color:blue'>" + this.getNodeName(element) + "</b>" + ", ";
-        errorString += this.getNodeName(element) + ", ";
-        suggestionString += this.getNodeName(element) + ", ";
+        errorString += getNodeName(element) + ", ";
+        suggestionString += getNodeName(element) + ", ";
     });
 
     //Get the last element of sourceList and concatenate it with suggestion String and errorString
     suggestionString = suggestionString.substring(0, suggestionString.lastIndexOf(",")) + " and ";
-    suggestionString += this.getNodeName(sourceList[lengthSource - 1]) + " to ";
+    suggestionString += getNodeName(sourceList[lengthSource - 1]) + " to ";
 
     //Remove the last comma
     errorString = errorString.substring(0, errorString.lastIndexOf(",")) + " and ";
     // errorString += "<b style='color:blue'>" + this.getNodeName(sourceList[lengthSource - 1]) + "</b>" + "\n";
-    errorString += this.getNodeName(sourceList[lengthSource - 1]) + "<br>";
+    errorString += getNodeName(sourceList[lengthSource - 1]) + "<br>";
     //Destination substring
     errorString += "<b style='color:black'> Destination node: </b>";
     errorString += destName + "<br>";
@@ -464,7 +464,7 @@ function _generateSyntaxMessage(sourceList, destName, constraintList){
     // Loop through the constraints and concatenate suggestionString to display the constrain links
     constraintList.forEach(function (element) {
         if(!(suggestionString.includes(element))){
-            suggestionString += " as <b style='color: black' >"+ element + "</b> or ";
+            suggestionString += " as "+ element + " or ";
         }
     });
     // Remove the last or
@@ -506,7 +506,7 @@ function syntaxCheck(){
     var elements = graph.getLinks();
 
     //Create an object that represents the constraint links and its sources and destination
-    let destSourceMapper = this.initializeDestSourceMapper(elements, jslinks);
+    let destSourceMapper = initializeDestSourceMapper(elements, jslinks);
     var error = false;
     let errorText = "";
     for(var destId in destSourceMapper){
@@ -515,14 +515,14 @@ function syntaxCheck(){
         if(syntaxErrorExists(destSourceMapper, destId)){
             error = true;
             // Get the name of the destination node
-            let destName = this.getNodeName(destId);
+            let destName = getNodeName(destId);
             // Get all the sources that are linked to the destination node
             let sourceList = destSourceMapper[destId]["source"];
             // Get all the constraint links that are linked to the destination node.
             let constraintList = destSourceMapper[destId]["constraint"];
-            //TODO: The function below returns a function not found error
+
             // Generate the error message
-            errorText += _generateSyntaxMessage(sourceList, destName, constraintList);
+            errorText += generateSyntaxMessage(sourceList, destName, constraintList);
 
             // Highlight the "Syntax Error" Links to red
             destSourceMapper[destId]["findview"].forEach(function(element){
