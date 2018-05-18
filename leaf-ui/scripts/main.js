@@ -474,6 +474,29 @@ function _generateSyntaxMessage(sourceList, destName, constraintList){
     return errorString;
 }
 
+function syntaxErrorExists(destSourceMapper, destId) {
+
+	// this pattern matches for 1 or more "+" sign
+	// or
+	// this pattern matches for 1 or more "-" sign
+	var pattern = /[+]+|[-]+/g;
+
+	var constraints = destSourceMapper[destId]["constraint"];
+
+	// find first n-ary goal relationship (ie, AND, OR, NO)
+	var naryIndex = 0;
+	while (naryIndex < constraints.length && constraints[naryIndex].match(pattern) != null) {
+		naryIndex++;
+	}
+
+	for(var i = naryIndex + 1; i < constraints.length; i++){
+		if(constraints[naryIndex] != constraints[i] && constraints[i].match(pattern) == null){
+			return true;
+		}
+	}
+	return false;
+}
+
 function syntaxCheck(){
     // console.log(getLinks());
 
@@ -486,43 +509,23 @@ function syntaxCheck(){
     let destSourceMapper = this.initializeDestSourceMapper(elements, jslinks);
     var error = false;
     let errorText = "";
-    var contributionPattern = /[+]+|[-]+/g;
-    for(var key in destSourceMapper){
+    for(var destId in destSourceMapper){
 
-        // Duplicates is a bool that is true iff there is a syntax error
-        var duplicates = (function(){
-            // this function determines if there is a syntax error
-
-            var constraints = destSourceMapper[key]["constraint"];
-
-            // find first n-ary goal relationship (ie, AND, OR, NO)
-            var naryIndex = 0;
-            while (naryIndex < constraints.length && constraints[naryIndex].match(contributionPattern) != null) {
-                naryIndex++;
-            }
-
-            for(var i = naryIndex + 1; i < constraints.length; i++){
-                if(constraints[naryIndex] != constraints[i] && constraints[i].match(contributionPattern) == null){
-                    return true;
-                }
-            }
-            return false;
-        })();
         // If there is a syntax error.
-        if(duplicates){
+        if(syntaxErrorExists(destSourceMapper, destId)){
             error = true;
             // Get the name of the destination node
-            let destName = this.getNodeName(key);
+            let destName = this.getNodeName(destId);
             // Get all the sources that are linked to the destination node
-            let sourceList = destSourceMapper[key]["source"];
+            let sourceList = destSourceMapper[destId]["source"];
             // Get all the constraint links that are linked to the destination node.
-            let constraintList = destSourceMapper[key]["constraint"];
+            let constraintList = destSourceMapper[destId]["constraint"];
             //TODO: The function below returns a function not found error
             // Generate the error message
             errorText += _generateSyntaxMessage(sourceList, destName, constraintList);
 
             // Highlight the "Syntax Error" Links to red
-            destSourceMapper[key]["findview"].forEach(function(element){
+            destSourceMapper[destId]["findview"].forEach(function(element){
                 element.model.attr({'.connection': {'stroke': 'red'}});
                 element.model.attr({'.marker-target': {'stroke': 'red'}});
                 element.model.attr({'.connection': {'stroke-width': '3'}});
@@ -531,7 +534,7 @@ function syntaxCheck(){
             })
         }
         else{
-            destSourceMapper[key]["findview"].forEach(function(element){
+            destSourceMapper[destId]["findview"].forEach(function(element){
                 element.model.attr({'.connection': {'stroke': '#000000'}});
                 element.model.attr({'.marker-target': {'stroke': '#000000'}});
                 element.model.attr({'.connection': {'stroke-width': '1'}});
@@ -539,7 +542,7 @@ function syntaxCheck(){
             })
         }
     }
-    if(error==true){
+    if(error){
         swal({
             title:"We found invalid links combinations ",
             type: "warning",
