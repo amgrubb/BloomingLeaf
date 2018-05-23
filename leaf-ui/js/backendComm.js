@@ -1,10 +1,11 @@
+
 var global_analysisResult = {};
 
-function backendComm(js_object){
+function backendComm(jsObject){
 	/**
 	* Print the input to the console.
 	*/
-	console.log(JSON.stringify(js_object));
+	console.log(JSON.stringify(jsObject));
 
 	//backend script called
 	var pathToCGI = "./cgi-bin/backendCom.cgi";
@@ -13,13 +14,13 @@ function backendComm(js_object){
 		url: pathToCGI,
 		type: "post",
 		contentType: "json",
-		data:JSON.stringify(js_object),
+		data:JSON.stringify(jsObject),
 		success: function(response){
 			setTimeout(function(){
-				if(js_object.analysis.action=="allNextStates"){
-					executeJava(true);
+				if(jsObject.analysis.action=="allNextStates"){
+					executeJava(true, jsObject);
 				}else{
-					executeJava(false);
+					executeJava(false, jsObject);
 				}
 		    }, 500);  
 		}
@@ -30,14 +31,14 @@ function backendComm(js_object){
 
 }
 
-function executeJava(isGetNextSteps){
+function executeJava(isGetNextSteps, jsObject){
 	var pathToCGI = "./cgi-bin/executeJava.cgi";
 	$.ajax({
 		url: pathToCGI,
 		type: "get",
 		success: function(response){
 		    setTimeout(function(){
-				getFileResults(isGetNextSteps);
+				getFileResults(isGetNextSteps, jsObject);
 		    }, 500);  
 		}
 	})
@@ -48,7 +49,7 @@ function executeJava(isGetNextSteps){
 }
 
 
-function getFileResults(isGetNextSteps){
+function getFileResults(isGetNextSteps, jsObject){
 	var pathToCGI = "./cgi-bin/fileRead.cgi";
 
 	//Executing action to send backend
@@ -57,9 +58,11 @@ function getFileResults(isGetNextSteps){
 		type: "get",
 		success: function(response){
 			analysisResults = JSON.parse(response['data']);
-			var errorMsg = analysisResults.errorMessage;
-			if(errorMsg){
-				alert(errorMsg);
+			
+			if(constraintErrorExists(analysisResults)){
+				console.log(analysisResults.errorMessage);
+				var msg = getErrorMessage(analysisResults.errorMessage, jsObject);	
+				alert(msg);
 			}else{
 				/**
 					* Print the response data to the console.
@@ -89,6 +92,7 @@ function getFileResults(isGetNextSteps){
 }
 
 
+
 function open_analysis_viewer(){
 	var urlBase = document.URL.substring(0, document.URL.lastIndexOf('/')+1);
 	var url = urlBase+"analysis.html";
@@ -99,4 +103,48 @@ function open_analysis_viewer(){
 	    alert('You must allow popups for this map to work.');
 	}
 
+}
+
+function constraintErrorExists(analysisResults) {
+	return analysisResults.errorMessage;
+}
+
+function getErrorMessage(backendErrorMsg, jsObject) {
+	
+	var ids = getIDs(backendErrorMsg);
+	var names = [];
+	for (var i = 0; i < ids.length; i++) {
+		 names.push(getNameFromID(ids[i], jsObject));
+	}
+
+	var s = '';
+	for (var i = 0; i < ids.length; i++) {
+		s += 'ID: ' + ids[i] + 'NAME: ' + names[i] + '.\n'; 
+	}
+	return s;
+}
+
+function getIDs(backendErrorMsg) {
+	// this regex matches for an N, followed by 4 digits
+	var pattern = /N\d{4}/g;
+	var arr = backendErrorMsg.match(pattern);
+
+	// remove the preceding N's to get each id
+	for (var i = 0; i < arr.length; i++) {
+		arr[i] = arr[i].substring(1);
+	}
+
+	return arr;
+}
+
+function getNameFromID(id, jsObject) {
+
+    // iterate through intentions/nodes
+    var intentObjArr = jsObject.model.intentions;
+
+    for (var i = 0; i < intentObjArr.length; i++) {
+        if (id == intentObjArr[i].nodeID) {
+            return intentObjArr[i].nodeName;
+        }
+    }
 }
