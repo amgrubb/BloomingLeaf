@@ -6,6 +6,20 @@ beforeEach(function() {
     graph = new joint.dia.Graph();
 });
 
+/*
+ * Returns true iff graph has a syntax error
+ */
+function syntaxCheckResult() {
+    var result = false;
+    var inputLinks = getLinks();
+    var jointLinks = graph.getLinks();
+    let destSourceMapper = initializeDestSourceMapper(jointLinks, inputLinks);
+    for(var destId in destSourceMapper){
+        result = syntaxErrorExists(destSourceMapper, destId) ? true : result;
+    }
+    return result;
+}
+
 describe('Detect cycle', function() {
 
     it('Detect cycle with a single graph', function(done) {
@@ -83,8 +97,8 @@ describe('Syntax check for valid combinations', function() {
     it('Syntax check with all AND constraint links', function(done) {
         $.getJSON('./blooming_test/syntaxCheck1.json', function(data) {
             graph.fromJSON(data);
-            var checkResult = returned_syntaxCheck();
-            expect(checkResult).to.be.false;
+            var result = syntaxCheckResult();
+            expect(result).to.be.false;
             done();
        });
    });
@@ -92,8 +106,8 @@ describe('Syntax check for valid combinations', function() {
     it('Syntax check with all OR constraint links', function(done) {
         $.getJSON('./blooming_test/syntaxCheck3.json', function(data) {
             graph.fromJSON(data);
-            var checkResult = returned_syntaxCheck();
-            expect(checkResult).to.be.false;
+            var result = syntaxCheckResult();
+            expect(result).to.be.false;
             done();
         });
     });
@@ -101,8 +115,8 @@ describe('Syntax check for valid combinations', function() {
     it('Syntax check with all ++ constraint links', function(done) {
         $.getJSON('./blooming_test/syntaxCheck5.json', function(data) {
             graph.fromJSON(data);
-            var checkResult = returned_syntaxCheck();
-            expect(checkResult).to.be.false;
+            var result = syntaxCheckResult();
+            expect(result).to.be.false;
             done();
        });
     });
@@ -110,8 +124,8 @@ describe('Syntax check for valid combinations', function() {
     it('Syntax check with all -- constraint links', function(done) {
         $.getJSON('./blooming_test/syntaxCheck7.json', function(data) {
             graph.fromJSON(data);
-            var checkResult = returned_syntaxCheck();
-            expect(checkResult).to.be.false;
+            var result = syntaxCheckResult();
+            expect(result).to.be.false;
             done();
         });
     });
@@ -120,8 +134,8 @@ describe('Syntax check for valid combinations', function() {
     function(done) {
         $.getJSON('./blooming_test/syntaxCheck9.json', function(data) {
             graph.fromJSON(data);
-            var checkResult = returned_syntaxCheck();
-            expect(checkResult).to.be.false;
+            var result = syntaxCheckResult();
+            expect(result).to.be.false;
             done();
         });
     });
@@ -130,8 +144,44 @@ describe('Syntax check for valid combinations', function() {
     function(done) {
         $.getJSON('./blooming_test/syntaxCheck10.json', function(data) {
             graph.fromJSON(data);
-            var checkResult = returned_syntaxCheck();
-            expect(checkResult).to.be.false;
+            var result = syntaxCheckResult();
+            expect(result).to.be.false;
+            done();
+        });
+    });
+
+    it('Syntax check with two ++ constraint links and a single AND link', function(done) {
+        $.getJSON('./blooming_test/syntaxCheck6a.json', function(data) {
+            graph.fromJSON(data);
+            var result = syntaxCheckResult();
+            expect(result).to.be.false;
+            done();
+        });
+    });
+
+    it('Syntax check with two ++ constraint links and a single OR link', function(done) {
+        $.getJSON('./blooming_test/syntaxCheck6b.json', function(data) {
+            graph.fromJSON(data);
+            var result = syntaxCheckResult();
+            expect(result).to.be.false;
+            done();
+        });
+    });
+
+    it('Syntax check with two -- constraint links and a single AND link', function(done) {
+        $.getJSON('./blooming_test/syntaxCheck8a.json', function(data) {
+            graph.fromJSON(data);
+            var result = syntaxCheckResult();
+            expect(result).to.be.false;
+            done();
+        });
+    });
+
+    it('Syntax check with two -- constraint links and a single OR link', function(done) {
+        $.getJSON('./blooming_test/syntaxCheck8b.json', function(data) {
+            graph.fromJSON(data);
+            var result = syntaxCheckResult();
+            expect(result).to.be.false;
             done();
         });
     });
@@ -140,10 +190,10 @@ describe('Syntax check for valid combinations', function() {
 describe('Syntax check for invalid combinations', function() {
 
     it('Syntax check with two AND constraint links and a single OR link', function(done) {
-        $.getJSON('./blooming_test/syntaxCheck2.json', function(data) {
+            $.getJSON('./blooming_test/syntaxCheck2.json', function(data) {
             graph.fromJSON(data);
-            var checkResult = returned_syntaxCheck();
-            expect(checkResult).to.be.true;
+            var result = syntaxCheckResult();
+            expect(result).to.be.true;
             done();
         });
     });
@@ -151,59 +201,10 @@ describe('Syntax check for invalid combinations', function() {
     it('Syntax check with two OR constraint links and a single AND link', function(done) {
         $.getJSON('./blooming_test/syntaxCheck4.json', function(data) {
             graph.fromJSON(data);
-            var checkResult = returned_syntaxCheck();
-            expect(checkResult).to.be.true;
+            var result = syntaxCheckResult();
+            expect(result).to.be.true;
             done();
         });
     });
 
-    it('Syntax Check with two ++ constraint links and a single AND link', function(done) {
-        $.getJSON('./blooming_test/syntaxCheck6a.json', function(data) {
-            graph.fromJSON(data);
-            var checkResult = returned_syntaxCheck();
-            expect(checkResult).to.be.true;
-            done();
-        });
-    });
-
-    it('Syntax check with two ++ constraint links and a single OR link', function(done) {
-        $.getJSON('./blooming_test/syntaxCheck6b.json', function(data) {
-            graph.fromJSON(data);
-            var checkResult = returned_syntaxCheck();
-            expect(checkResult).to.be.true;
-            done();
-        });
-    });
-
-    it('Syntax Check with two -- constraint links and a single AND link', function(done) {
-        $.getJSON('./blooming_test/syntaxCheck8a.json', function(data) {
-            graph.fromJSON(data);
-            var checkResult = returned_syntaxCheck();
-            expect(checkResult).to.be.true;
-            done();
-        });
-    });
-
-    it('Syntax check with two -- constraint links and a single OR link', function(done) {
-        $.getJSON('./blooming_test/syntaxCheck8b.json', function(data) {
-            graph.fromJSON(data);
-            var checkResult = returned_syntaxCheck();
-            expect(checkResult).to.be.true;
-            done();
-        });
-    });
 });
-/*
-describe('Read file', function() {
-
-  describe('Cycle check', function() {
-    console.log(graph.getElements());
-  })
-  it('should start empty', function() {
-    //var testJson = new File(");
-
-  });
-  after(function() {});
-
-
-});*/
