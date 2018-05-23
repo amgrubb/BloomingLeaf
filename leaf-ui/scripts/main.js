@@ -235,6 +235,10 @@ function saveLinks(mode){
 //Switch to analysis mode
 $('#analysis-btn').on('click', function(){
 	syntaxCheck();
+<<<<<<< HEAD
+=======
+
+>>>>>>> 5e2bcd3... Delete dups_analysis variable, delete returnedSyntaxCheck call
 	/*
 	if (linkMode == "Constraints")
 		$('#symbolic-btn').trigger( "click" );*/
@@ -348,8 +352,8 @@ $('#cycledetect-btn').on('click', function(e){
 
 	js_object = null;
 	jslinks = null;
+
 });
-var dups_analysis;
 
 /*
  * Initializes and returns a 'DestSourceMapper' object which contains
