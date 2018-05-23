@@ -437,18 +437,18 @@ function initializeDestSourceMapper(jointLinks, inputlinks){
     let destSourceMapper = {};
     let cellView;
     let constraint;
-    for(var j = 0; j < jslinks.length; j++){
+    for(var j = 0; j < inputlinks.length; j++){
         cellView  = jointLinks[j].findView(paper);
 
-        if(!(jslinks[j].linkDestID in destSourceMapper)){
+        if(!(inputlinks[j].linkDestID in destSourceMapper)){
             // create empty object and arrays
-            destSourceMapper[jslinks[j].linkDestID] = {};
-            destSourceMapper[jslinks[j].linkDestID]["source"] = [];
-            destSourceMapper[jslinks[j].linkDestID]["constraint"] = [];
-            destSourceMapper[jslinks[j].linkDestID]["findview"] = [];
+            destSourceMapper[inputlinks[j].linkDestID] = {};
+            destSourceMapper[inputlinks[j].linkDestID]["source"] = [];
+            destSourceMapper[inputlinks[j].linkDestID]["constraint"] = [];
+            destSourceMapper[inputlinks[j].linkDestID]["findview"] = [];
         }
 
-        if (jslinks[j].postType != null){
+        if (inputlinks[j].postType != null){
             constraint = inputlinks[j].linkType+"|"+inputlinks[j].postType;
         }else{
             constraint = inputlinks[j].linkType;
