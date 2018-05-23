@@ -1,4 +1,3 @@
-
 var global_analysisResult = {};
 
 function backendComm(js_object){
