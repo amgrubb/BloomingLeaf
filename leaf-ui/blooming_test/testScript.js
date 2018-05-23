@@ -225,4 +225,5 @@ describe('Syntax check for invalid combinations', function() {
         });
     });
 
+
 });
