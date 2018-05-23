@@ -350,60 +350,6 @@ $('#cycledetect-btn').on('click', function(e){
 	jslinks = null;
 });
 var dups_analysis;
-//TODO: REMOVE THE FUNTION BELOW. IT IS NOT CORRECT AND NOT VERY USEFUL.
-function returnedSyntaxCheck(){
-	var destSourceMapper = {};
-	var jslinks = getLinks();
-	var elements = graph.getLinks();
-	for(var j = 0; j < jslinks.length; j++){
-		var cellView  = elements[j].findView(paper);
-		if(!(jslinks[j].linkDestID in destSourceMapper)){
-			destSourceMapper[jslinks[j].linkDestID] = {};
-			var constraint;
-			if (jslinks[j].postType != null){
-				constraint = jslinks[j].linkType+"|"+jslinks[j].postType;
-			}
-			else{
-				constraint = jslinks[j].linkType;
-			}
-			destSourceMapper[jslinks[j].linkDestID]["source"] = [];
-			destSourceMapper[jslinks[j].linkDestID]["source"].push(jslinks[j].linkSrcID);
-			destSourceMapper[jslinks[j].linkDestID]["constraint"] = [];
-			destSourceMapper[jslinks[j].linkDestID]["constraint"].push(constraint);
-			destSourceMapper[jslinks[j].linkDestID]["findview"] = [];
-			destSourceMapper[jslinks[j].linkDestID]["findview"].push(cellView);
-		}
-		else{
-			var constraint;
-			if (jslinks[j].postType != null){
-				constraint = jslinks[j].linkType+"|"+jslinks[j].postType;
-			}
-			else{
-				constraint = jslinks[j].linkType;
-			}
-			destSourceMapper[jslinks[j].linkDestID]["source"].push(jslinks[j].linkSrcID);
-			destSourceMapper[jslinks[j].linkDestID]["constraint"].push(constraint);
-			destSourceMapper[jslinks[j].linkDestID]["findview"].push(cellView);
-		}
-	}
-	var error = false;
-	var contributionPattern = /[+]{1,}|[-]{1,}/g;
-	for(var key in destSourceMapper){
-		var duplicates = (function(){
-			var x = destSourceMapper[key]["constraint"][0];
-			for(var i=1;i<destSourceMapper[key]["constraint"].length;i++){
-				if(x!=destSourceMapper[key]["constraint"][i] && destSourceMapper[key]["constraint"][i].match(contributionPattern) == null){
-					return true
-				}
-			}
-			return false;
-		})();
-		//TODO: THIS ALWAYS CHANGES
-		dups_analysis = duplicates;
-	}
-	//TODO: THIS WILL RETURN WHETHER THERE IS A DUPLICATE FOR THE 'LAST' KEY.
-	return dups_analysis;
-}
 
 /*
  * Initializes and returns a 'DestSourceMapper' object which contains
