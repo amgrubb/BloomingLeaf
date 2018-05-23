@@ -235,7 +235,7 @@ function saveLinks(mode){
 //Switch to analysis mode
 $('#analysis-btn').on('click', function(){
 	syntaxCheck();
-	console.log(returned_syntaxCheck());
+
 	/*
 	if (linkMode == "Constraints")
 		$('#symbolic-btn').trigger( "click" );*/
@@ -350,170 +350,222 @@ $('#cycledetect-btn').on('click', function(e){
 	js_object = null;
 	jslinks = null;
 })
-var dups_analysis;
-function returned_syntaxCheck(){
-	var destSourceMapper = {};
-	var js_object = {};
-	var js_links = {};
-	//console.log(getLinks());
-	var jslinks = getLinks();
-	var elements = graph.getLinks();
-	for(var j = 0; j < jslinks.length; j++){
-		var cellView  = elements[j].findView(paper);
-		if(!(jslinks[j].linkDestID in destSourceMapper)){
-			destSourceMapper[jslinks[j].linkDestID] = {};
-			var constraint;
-			if (jslinks[j].postType != null){
-				constraint = jslinks[j].linkType+"|"+jslinks[j].postType;
-			}
-			else{
-				constraint = jslinks[j].linkType;
-			}
-			destSourceMapper[jslinks[j].linkDestID]["source"] = [];
-			destSourceMapper[jslinks[j].linkDestID]["source"].push(jslinks[j].linkSrcID);
-			destSourceMapper[jslinks[j].linkDestID]["constraint"] = [];
-			destSourceMapper[jslinks[j].linkDestID]["constraint"].push(constraint);
-			destSourceMapper[jslinks[j].linkDestID]["findview"] = [];
-			destSourceMapper[jslinks[j].linkDestID]["findview"].push(cellView);
-		}
-		else{
-			var constraint;
-			if (jslinks[j].postType != null){
-				constraint = jslinks[j].linkType+"|"+jslinks[j].postType;
-			}
-			else{
-				constraint = jslinks[j].linkType;
-			}
-			destSourceMapper[jslinks[j].linkDestID]["source"].push(jslinks[j].linkSrcID);
-			destSourceMapper[jslinks[j].linkDestID]["constraint"].push(constraint);
-			destSourceMapper[jslinks[j].linkDestID]["findview"].push(cellView);
-		}
-	}
-	var error = false;
-	var contributionPattern = /[+]{1,}|[-]{1,}/g;
-	for(var key in destSourceMapper){
-		var duplicates = (function(){
-			var x = destSourceMapper[key]["constraint"][0];
-			for(var i=1;i<destSourceMapper[key]["constraint"].length;i++){
-				if(x!=destSourceMapper[key]["constraint"][i] && destSourceMapper[key]["constraint"][i].match(contributionPattern) == null){
-					return true
-				}
-			}
-			return false;
-		})();
-		dups_analysis = duplicates;
-	}
-	return dups_analysis;
+
+/*
+ * Initializes and returns a 'DestSourceMapper' object which contains
+ * information about links by indicating the source nodes to destination nodes
+ *
+ * @param {Array of joint.dia.Link} jointLinks
+ * @param {Array of InputLink} inputlinks
+ * @returns {Object}
+ *
+ * Example object:
+ *
+ * {linkDestID : {source: [],
+ *		          constraint: [],
+ *		          findView: []
+ * }
+ *
+ * linkDestID: id of a destination node for links
+ * source: id of the source of the link
+ * contraint: contraint types
+ * findView: cellView of the link
+ * 
+ * Interpretation:
+ * If dest = 0, source[i] = 1, constraint[i] = AND,
+ * this means that the i'th link is an AND constraint
+ * link from node 1 to node 0
+ * 
+ */
+function initializeDestSourceMapper(jointLinks, inputlinks){
+	console.log('elements ', jointLinks);
+	console.log('jslinks', inputlinks);
+    let destSourceMapper = {};
+    let cellView;
+    let constraint;
+    for(var j = 0; j < inputlinks.length; j++){
+        cellView  = jointLinks[j].findView(paper);
+
+        if(!(inputlinks[j].linkDestID in destSourceMapper)){
+            // create empty object and arrays
+            destSourceMapper[inputlinks[j].linkDestID] = {};
+            destSourceMapper[inputlinks[j].linkDestID]["source"] = [];
+            destSourceMapper[inputlinks[j].linkDestID]["constraint"] = [];
+            destSourceMapper[inputlinks[j].linkDestID]["findview"] = [];
+        }
+
+        if (inputlinks[j].postType != null){
+            constraint = inputlinks[j].linkType+"|"+inputlinks[j].postType;
+        }else{
+            constraint = inputlinks[j].linkType;
+        }
+        destSourceMapper[inputlinks[j].linkDestID]["source"].push(inputlinks[j].linkSrcID);
+        destSourceMapper[inputlinks[j].linkDestID]["constraint"].push(constraint);
+        destSourceMapper[inputlinks[j].linkDestID]["findview"].push(cellView);
+    }
+    console.log('destSourceMapper ', destSourceMapper);
+    return destSourceMapper;
 }
+
+/*
+ * Returns a syntax error message.
+ *
+ * Prerequisite: There are links from each node with ids in sourceList
+ * to the node with id destId, and there exists a syntax error for these links. 
+ *
+ * @param {Array of String} sourceList
+ *   array of source ids
+ * @param {String} destId
+ *   destination id
+ * @param {Array of Strings} constraintList
+ * @returns {String}
+ */
+function generateSyntaxMessage(sourceList, destId, constraintList){
+    let errorString = "<p style='text-align:left'>";
+    let suggestionString = "<b style='color:black'> Suggestion: </b>Either have all links from ";
+    let lengthSource = sourceList.length;
+    let destName = getNodeName(destId);
+    errorString += "<b style='color:black'> Source nodes: </b>";
+
+    // Loop through all elements in sourceList excluding the last element
+    // and concatenate the sourceNodes to errorString and suggestionString
+    sourceList.slice(0, lengthSource - 1).forEach(function (element) {
+        // errorString += "<b style='color:blue'>" + this.getNodeName(element) + "</b>" + ", ";
+        errorString += getNodeName(element) + ", ";
+        suggestionString += getNodeName(element) + ", ";
+    });
+
+    //Get the last element of sourceList and concatenate it with suggestion String and errorString
+    suggestionString = suggestionString.substring(0, suggestionString.lastIndexOf(",")) + " and ";
+    suggestionString += getNodeName(sourceList[lengthSource - 1]) + " to ";
+
+    //Remove the last comma
+    errorString = errorString.substring(0, errorString.lastIndexOf(",")) + " and ";
+    // errorString += "<b style='color:blue'>" + this.getNodeName(sourceList[lengthSource - 1]) + "</b>" + "\n";
+    errorString += getNodeName(sourceList[lengthSource - 1]) + "<br>";
+    //Destination substring
+    errorString += "<b style='color:black'> Destination node: </b>";
+    errorString += destName + "<br>";
+    // errorString += "<b style='color:red'>" + destName + "</b>" + "\n";
+
+    suggestionString += destName;
+
+    // Loop through the constraints and concatenate suggestionString to display the constrain links
+    constraintList.forEach(function (element) {
+        if(!(suggestionString.includes(element))){
+            suggestionString += " as "+ element + " or ";
+        }
+    });
+    // Remove the last or
+    suggestionString = suggestionString.substring(0, suggestionString.lastIndexOf(" or")) + ".";
+
+    errorString += suggestionString + "<br></p>";
+    return errorString;
+}
+
+/*
+ * Returns true iff the node with id destId is a destination
+ * for links where these links have an invalid combination 
+ * of constraints. For example, if a node with id destId 
+ * is a destination for an AND link and an OR link, this function
+ * returns true since that is a syntax error.
+ *
+ * @param {Object} destSourceMapper
+ * @param {destId} ID of a destination node to check syntax errors for
+ * @returns {boolean} 
+ */
+function syntaxErrorExists(destSourceMapper, destId) {
+
+	// this pattern matches for 1 or more "+" sign
+	// or
+	// this pattern matches for 1 or more "-" sign
+	var pattern = /[+]+|[-]+/g;
+
+	var constraints = destSourceMapper[destId]["constraint"];
+
+	// find first n-ary goal relationship (ie, AND, OR, NO)
+	var naryIndex = 0;
+	while (naryIndex < constraints.length && constraints[naryIndex].match(pattern) != null) {
+		naryIndex++;
+	}
+
+	for(var i = naryIndex + 1; i < constraints.length; i++){
+		if(constraints[naryIndex] != constraints[i] && constraints[i].match(pattern) == null){
+			return true;
+		}
+	}
+	return false;
+}
+
+/*
+ * Performs a syntax check on the current model, by checking if each destination
+ * nodes with links, have valid constraints.
+ * If a syntax error exists, an error popup message appears for the user.
+ */
 function syntaxCheck(){
-	var destSourceMapper = {};
-	var js_object = {};
-	var js_links = {};
-	//console.log(getLinks());
-	var jslinks = getLinks();
-	var elements = graph.getLinks();
-	for(var j = 0; j < jslinks.length; j++){
-		var cellView  = elements[j].findView(paper);
-		if(!(jslinks[j].linkDestID in destSourceMapper)){
-			destSourceMapper[jslinks[j].linkDestID] = {};
-			var constraint;
-			if (jslinks[j].postType != null){
-				constraint = jslinks[j].linkType+"|"+jslinks[j].postType;
-			}
-			else{
-				constraint = jslinks[j].linkType;
-			}
-			destSourceMapper[jslinks[j].linkDestID]["source"] = [];
-			destSourceMapper[jslinks[j].linkDestID]["source"].push(jslinks[j].linkSrcID);
-			destSourceMapper[jslinks[j].linkDestID]["constraint"] = [];
-			destSourceMapper[jslinks[j].linkDestID]["constraint"].push(constraint);
-			destSourceMapper[jslinks[j].linkDestID]["findview"] = [];
-			destSourceMapper[jslinks[j].linkDestID]["findview"].push(cellView);
-		}
-		else{
-			var constraint;
-			if (jslinks[j].postType != null){
-				constraint = jslinks[j].linkType+"|"+jslinks[j].postType;
-			}
-			else{
-				constraint = jslinks[j].linkType;
-			}
-			destSourceMapper[jslinks[j].linkDestID]["source"].push(jslinks[j].linkSrcID);
-			destSourceMapper[jslinks[j].linkDestID]["constraint"].push(constraint);
-			destSourceMapper[jslinks[j].linkDestID]["findview"].push(cellView);
-		}
-	}
-	var error = false;
-	var errorText = "<p style='text-align:left'>";
-	var j = 1;
-	var contributionPattern = /[+]{1,}|[-]{1,}/g;
-	for(var key in destSourceMapper){
-		var duplicates = (function(){
-			var x = destSourceMapper[key]["constraint"][0];
-			for(var i=1;i<destSourceMapper[key]["constraint"].length;i++){
-    		if(x!=destSourceMapper[key]["constraint"][i] && destSourceMapper[key]["constraint"][i].match(contributionPattern) == null){
-					return true
-				}
-    	}
-			return false;
-		})();
-		dups_analysis = duplicates;
-		if(duplicates == true){
-			error = true;
-			errorText += "<b style='color:black'> Suggestion : </b>" +  j + ". ";
-			var subErrorText = "Have all links from "
-			destSourceMapper[key]["source"].forEach(function(element){
-				errorText += "<b style='color:blue'>" + this.getNodeName(element) + ", </b>"
-				subErrorText += this.getNodeName(element) + ", "
-			})
-			subErrorText += " to " + this.getNodeName(key)
-			destSourceMapper[key]["constraint"].forEach(function(element){
-				if(!(subErrorText.includes(element))){
-					subErrorText += " all <b style='color: black' >"+ element + "</b> constraint links or "
-				}
-			})
-			subErrorText = subErrorText.substring(0,subErrorText.lastIndexOf(" or ")) + ".";
-			var destName = this.getNodeName(key);
-			errorText += " to <b>" + destName + "</b><br> " + subErrorText +"<br><br>";
-			destSourceMapper[key]["findview"].forEach(function(element){
-				element.model.attr({'.connection': {'stroke': 'red'}});
-				element.model.attr({'.marker-target': {'stroke': 'red'}});
-				element.model.attr({'.connection': {'stroke-width': '3'}});
-				element.model.attr({'.marker-target': {'stroke-width': '3'}});
 
-			})
-		}
-		else{
-			destSourceMapper[key]["findview"].forEach(function(element){
-				element.model.attr({'.connection': {'stroke': '#000000'}});
-				element.model.attr({'.marker-target': {'stroke': '#000000'}});
-				element.model.attr({'.connection': {'stroke-width': '1'}});
-				element.model.attr({'.marker-target': {'stroke-width': '1'}});
-			})
-		}
-		j+=1;
-	}
-	errorText += "</p>"
-	if(error==true){
-		//errorText = errorText.substring(0,errorText.lastIndexOf(" and ")) + '.';
-		swal({
-			title:"We found invalid links combinations ",
-			type: "warning",
-			html: errorText,
-			showCloseButton: true,
- 			showCancelButton: true,
-			confirmButtonText: "Ok",
-			cancelButtonText: "Go back to Model View",
-			cancelButtonClass: "backModel"
-		}).then(function() {
+    // Get all links in the form of an InputLink
+    var inputLinks = getLinks();
 
-			}, function(dismiss) {
-			  // dismiss can be 'overlay', 'cancel', 'close', 'esc', 'timer'
-			  if (dismiss === 'cancel') {
-			    $("#model-cur-btn").trigger("click");
-			  }
-		})
-	}
+    // Get all links in the form of a joint.dia.Link
+    var jointLinks = graph.getLinks();
+
+    //Create an object that represents the constraint links and its sources and destination
+    let destSourceMapper = initializeDestSourceMapper(jointLinks, inputLinks);
+    var error = false;
+    let errorText = "";
+    for(var destId in destSourceMapper){
+
+        // If there is a syntax error.
+        if(syntaxErrorExists(destSourceMapper, destId)){
+            error = true;
+            // Get the name of the destination node
+            let destName = getNodeName(destId);
+            // Get all the sources that are linked to the destination node
+            let sourceList = destSourceMapper[destId]["source"];
+            // Get all the constraint links that are linked to the destination node.
+            let constraintList = destSourceMapper[destId]["constraint"];
+
+            // Generate the error message
+            errorText += generateSyntaxMessage(sourceList, destId, constraintList);
+
+            // Highlight the "Syntax Error" Links to red
+            destSourceMapper[destId]["findview"].forEach(function(element){
+                element.model.attr({'.connection': {'stroke': 'red'}});
+                element.model.attr({'.marker-target': {'stroke': 'red'}});
+                element.model.attr({'.connection': {'stroke-width': '3'}});
+                element.model.attr({'.marker-target': {'stroke-width': '3'}});
+
+            })
+        }
+        else{
+            destSourceMapper[destId]["findview"].forEach(function(element){
+                element.model.attr({'.connection': {'stroke': '#000000'}});
+                element.model.attr({'.marker-target': {'stroke': '#000000'}});
+                element.model.attr({'.connection': {'stroke-width': '1'}});
+                element.model.attr({'.marker-target': {'stroke-width': '1'}});
+            })
+        }
+    }
+    if(error){
+        swal({
+            title:"We found invalid links combinations ",
+            type: "warning",
+            html: errorText,
+            showCloseButton: true,
+            showCancelButton: true,
+            confirmButtonText: "Ok",
+            cancelButtonText: "Go back to Model View",
+            cancelButtonClass: "backModel"
+        }).then(function() {
+
+        }, function(dismiss) {
+            // dismiss can be 'overlay', 'cancel', 'close', 'esc', 'timer'
+            if (dismiss === 'cancel') {
+                $("#model-cur-btn").trigger("click");
+            }
+        })
+    }
 }
 
 //Cycle-deteciton algorithm
