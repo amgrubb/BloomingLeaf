@@ -235,7 +235,6 @@ function saveLinks(mode){
 //Switch to analysis mode
 $('#analysis-btn').on('click', function(){
 	syntaxCheck();
-	console.log(returnedSyntaxCheck());
 	/*
 	if (linkMode == "Constraints")
 		$('#symbolic-btn').trigger( "click" );*/
@@ -406,12 +405,40 @@ function returnedSyntaxCheck(){
 	return dups_analysis;
 }
 
-function initializeDestSourceMapper(elements, jslinks){
+/*
+ * Initializes and returns a 'DestSourceMapper' object which contains
+ * information about links by indicating the source nodes to destination nodes
+ *
+ * @param {Array of joint.dia.Link} jointLinks
+ * @param {Array of InputLink} inputlinks
+ * @returns {Object}
+ *
+ * Example object:
+ *
+ * {linkDestID : {source: [],
+ *		          constraint: [],
+ *		          findView: []
+ * }
+ *
+ * linkDestID: id of a destination node for links
+ * source: id of the source of the link
+ * contraint: contraint types
+ * findView: cellView of the link
+ * 
+ * Interpretation:
+ * If dest = 0, source[i] = 1, constraint[i] = AND,
+ * this means that the i'th link is an AND constraint
+ * link from node 1 to node 0
+ * 
+ */
+function initializeDestSourceMapper(jointLinks, inputlinks){
+	console.log('elements ', jointLinks);
+	console.log('jslinks', inputlinks);
     let destSourceMapper = {};
     let cellView;
     let constraint;
     for(var j = 0; j < jslinks.length; j++){
-        cellView  = elements[j].findView(paper);
+        cellView  = jointLinks[j].findView(paper);
 
         if(!(jslinks[j].linkDestID in destSourceMapper)){
             // create empty object and arrays
@@ -422,23 +449,39 @@ function initializeDestSourceMapper(elements, jslinks){
         }
 
         if (jslinks[j].postType != null){
-            constraint = jslinks[j].linkType+"|"+jslinks[j].postType;
+            constraint = inputlinks[j].linkType+"|"+inputlinks[j].postType;
         }else{
-            constraint = jslinks[j].linkType;
+            constraint = inputlinks[j].linkType;
         }
-        destSourceMapper[jslinks[j].linkDestID]["source"].push(jslinks[j].linkSrcID);
-        destSourceMapper[jslinks[j].linkDestID]["constraint"].push(constraint);
-        destSourceMapper[jslinks[j].linkDestID]["findview"].push(cellView);
+        destSourceMapper[inputlinks[j].linkDestID]["source"].push(inputlinks[j].linkSrcID);
+        destSourceMapper[inputlinks[j].linkDestID]["constraint"].push(constraint);
+        destSourceMapper[inputlinks[j].linkDestID]["findview"].push(cellView);
     }
+    console.log('destSourceMapper ', destSourceMapper);
     return destSourceMapper;
 }
-function generateSyntaxMessage(sourceList, destName, constraintList){
+
+/*
+ * Returns a syntax error message.
+ *
+ * Prerequisite: There are links from each node with ids in sourceList
+ * to the node with id destId, and there exists a syntax error for these links. 
+ *
+ * @param {Array of String} sourceList
+ *   array of source ids
+ * @param {String} destId
+ *   destination id
+ * @param {Array of Strings} constraintList
+ * @returns {String}
+ */
+function generateSyntaxMessage(sourceList, destId, constraintList){
     let errorString = "<p style='text-align:left'>";
     let suggestionString = "<b style='color:black'> Suggestion: </b>Either have all links from ";
     let lengthSource = sourceList.length;
+    let destName = getNodeName(destId);
     errorString += "<b style='color:black'> Source nodes: </b>";
 
-    //Loop through all elements in sourceList excluding the last element
+    // Loop through all elements in sourceList excluding the last element
     // and concatenate the sourceNodes to errorString and suggestionString
     sourceList.slice(0, lengthSource - 1).forEach(function (element) {
         // errorString += "<b style='color:blue'>" + this.getNodeName(element) + "</b>" + ", ";
@@ -474,6 +517,17 @@ function generateSyntaxMessage(sourceList, destName, constraintList){
     return errorString;
 }
 
+/*
+ * Returns true iff the node with id destId is a destination
+ * for links where these links have an invalid combination 
+ * of constraints. For example, if a node with id destId 
+ * is a destination for an AND link and an OR link, this function
+ * returns true since that is a syntax error.
+ *
+ * @param {Object} destSourceMapper
+ * @param {destId} ID of a destination node to check syntax errors for
+ * @returns {boolean} 
+ */
 function syntaxErrorExists(destSourceMapper, destId) {
 
 	// this pattern matches for 1 or more "+" sign
@@ -497,16 +551,21 @@ function syntaxErrorExists(destSourceMapper, destId) {
 	return false;
 }
 
+/*
+ * Performs a syntax check on the current model, by checking if each destination
+ * nodes with links, have valid constraints.
+ * If a syntax error exists, an error popup message appears for the user.
+ */
 function syntaxCheck(){
-    // console.log(getLinks());
 
-    // Get all input links
-    var jslinks = getLinks();
-    //Get all the elements that are linked
-    var elements = graph.getLinks();
+    // Get all links in the form of an InputLink
+    var inputLinks = getLinks();
+
+    // Get all links in the form of a joint.dia.Link
+    var jointLinks = graph.getLinks();
 
     //Create an object that represents the constraint links and its sources and destination
-    let destSourceMapper = initializeDestSourceMapper(elements, jslinks);
+    let destSourceMapper = initializeDestSourceMapper(jointLinks, inputLinks);
     var error = false;
     let errorText = "";
     for(var destId in destSourceMapper){
@@ -522,7 +581,7 @@ function syntaxCheck(){
             let constraintList = destSourceMapper[destId]["constraint"];
 
             // Generate the error message
-            errorText += generateSyntaxMessage(sourceList, destName, constraintList);
+            errorText += generateSyntaxMessage(sourceList, destId, constraintList);
 
             // Highlight the "Syntax Error" Links to red
             destSourceMapper[destId]["findview"].forEach(function(element){
