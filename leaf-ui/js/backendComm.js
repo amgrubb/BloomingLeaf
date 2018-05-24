@@ -59,11 +59,10 @@ function getFileResults(isGetNextSteps, jsObject){
 		success: function(response){
 			analysisResults = JSON.parse(response['data']);
 			
-			if(constraintErrorExists(analysisResults)){
-				console.log('backend error message: ' + analysisResults.errorMessage);
+			if (constraintErrorExists(analysisResults)) {
 				var msg = getErrorMessage(analysisResults.errorMessage, jsObject);	
 				alert(msg);
-			}else{
+			} else {
 				/**
 					* Print the response data to the console.
 				*/
