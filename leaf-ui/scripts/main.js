@@ -533,7 +533,6 @@ function getNaryRelationships(destSourceMapper, destId) {
  */
 function changeLinkColour(linkViewArray, colour, strokeWidth) {
 	for (var i = 0; i < linkViewArray.length; i++) {
-		console.log('in the loop');
 		linkViewArray[i].model.attr({'.connection': {'stroke': colour}});
         linkViewArray[i].model.attr({'.marker-target': {'stroke': colour}});
         linkViewArray[i].model.attr({'.connection': {'stroke-width': strokeWidth}});
