@@ -60,7 +60,7 @@ function getFileResults(isGetNextSteps, jsObject){
 			analysisResults = JSON.parse(response['data']);
 			
 			if(constraintErrorExists(analysisResults)){
-				console.log(analysisResults.errorMessage);
+				console.log('backend error message: ' + analysisResults.errorMessage);
 				var msg = getErrorMessage(analysisResults.errorMessage, jsObject);	
 				alert(msg);
 			}else{
@@ -102,28 +102,58 @@ function open_analysis_viewer(){
 	if (!w) {
 	    alert('You must allow popups for this map to work.');
 	}
-
 }
 
+/*
+ * Returns true iff analysisResults indicates that there is
+ * an error message.
+ *
+ * @param {Object} analysisResults
+ *   results from backend java code
+ * @returns {boolean}
+ */
 function constraintErrorExists(analysisResults) {
-	return analysisResults.errorMessage;
+	return analysisResults.errorMessage != null;
 }
 
+/*
+ * Returns a user-readable error message, containing
+ * user-defined node names instead of node ids.
+ *
+ * Example message:
+ * The model is not solvable because of conflicting constraints 
+ * involving nodes: mouse, keyboard, and pizza.
+ *
+ * @param {String} backendErrorMsg
+ *   error message from backend
+ * @param {Object} jsObject
+ *   object containing information that maps node ids with node names
+ * @returns {boolean}
+ */
 function getErrorMessage(backendErrorMsg, jsObject) {
-	
+		
 	var ids = getIDs(backendErrorMsg);
 	var names = [];
 	for (var i = 0; i < ids.length; i++) {
 		 names.push(getNameFromID(ids[i], jsObject));
 	}
 
-	var s = '';
-	for (var i = 0; i < ids.length; i++) {
-		s += 'ID: ' + ids[i] + 'NAME: ' + names[i] + '.\n'; 
+	var s = 'The model is not solvable because of conflicting constraints  involving nodes: ';
+	for (var i = 0; i < names.length - 1; i++) {
+		s += names[i] + ', ';
 	}
+	s += 'and ' + names[names.length - 1] + '.';
 	return s;
 }
 
+/*
+ * Returns an array of all node ids that are mentioned in 
+ * the backendErrorMsg, in the order they appear.
+ *
+ * @param {String} backendErrorMsg
+ *   error message from backend
+ * @returns {Array of String}
+ */
 function getIDs(backendErrorMsg) {
 	// this regex matches for an N, followed by 4 digits
 	var pattern = /N\d{4}/g;
@@ -137,6 +167,15 @@ function getIDs(backendErrorMsg) {
 	return arr;
 }
 
+/*
+ * Returns the node name of a node with id id.
+ *
+ * @param {String} id
+ *   id of the node of interest
+ * @param {Object} jsObject
+ *   object containing information that maps node ids with node names
+ * @returns {String} 
+ */
 function getNameFromID(id, jsObject) {
 
     // iterate through intentions/nodes
