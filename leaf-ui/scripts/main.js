@@ -478,7 +478,6 @@ function syntaxErrorExists(naryRelationships) {
 	if (naryRelationships.length < 2) {
 		return false;
 	}
-	console.log('what');
 	for (var i = 1; i < naryRelationships.length; i++) {
 		if (naryRelationships[0].constraint != naryRelationships[i].constraint) {
 			return true;
