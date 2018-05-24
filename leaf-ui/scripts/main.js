@@ -235,10 +235,6 @@ function saveLinks(mode){
 //Switch to analysis mode
 $('#analysis-btn').on('click', function(){
 	syntaxCheck();
-<<<<<<< HEAD
-=======
-
->>>>>>> 5e2bcd3... Delete dups_analysis variable, delete returnedSyntaxCheck call
 	/*
 	if (linkMode == "Constraints")
 		$('#symbolic-btn').trigger( "click" );*/
