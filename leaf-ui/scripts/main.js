@@ -235,7 +235,6 @@ function saveLinks(mode){
 //Switch to analysis mode
 $('#analysis-btn').on('click', function(){
 	syntaxCheck();
-
 	/*
 	if (linkMode == "Constraints")
 		$('#symbolic-btn').trigger( "click" );*/
@@ -349,7 +348,8 @@ $('#cycledetect-btn').on('click', function(e){
 
 	js_object = null;
 	jslinks = null;
-})
+
+});
 
 /*
  * Initializes and returns a 'DestSourceMapper' object which contains
@@ -478,7 +478,6 @@ function syntaxErrorExists(naryRelationships) {
 	if (naryRelationships.length < 2) {
 		return false;
 	}
-	console.log('what');
 	for (var i = 1; i < naryRelationships.length; i++) {
 		if (naryRelationships[0].constraint != naryRelationships[i].constraint) {
 			return true;
@@ -534,7 +533,6 @@ function getNaryRelationships(destSourceMapper, destId) {
  */
 function changeLinkColour(linkViewArray, colour, strokeWidth) {
 	for (var i = 0; i < linkViewArray.length; i++) {
-		console.log('in the loop');
 		linkViewArray[i].model.attr({'.connection': {'stroke': colour}});
         linkViewArray[i].model.attr({'.marker-target': {'stroke': colour}});
         linkViewArray[i].model.attr({'.connection': {'stroke-width': strokeWidth}});
