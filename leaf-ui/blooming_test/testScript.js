@@ -15,7 +15,8 @@ function syntaxCheckResult() {
     var jointLinks = graph.getLinks();
     let destSourceMapper = initializeDestSourceMapper(jointLinks, inputLinks);
     for(var destId in destSourceMapper){
-        result = syntaxCheck(destSourceMapper, destId) ? true : result;
+        var naryRelationships = getNaryRelationships(destSourceMapper, destId);
+        result = syntaxErrorExists(naryRelationships) ? true : result;
     }
     return result;
 }
