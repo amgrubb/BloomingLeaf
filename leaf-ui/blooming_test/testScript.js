@@ -207,7 +207,7 @@ describe('Syntax check for invalid combinations', function() {
             done();
         });
     });
-    
+
     it('Syntax check with one OR constraint links and a single NO RELATIONSHIP link', function(done) {
         $.getJSON('./blooming_test/syntaxCheck11.json', function(data) {
             graph.fromJSON(data);
