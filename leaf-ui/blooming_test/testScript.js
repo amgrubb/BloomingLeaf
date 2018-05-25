@@ -15,7 +15,8 @@ function syntaxCheckResult() {
     var jointLinks = graph.getLinks();
     let destSourceMapper = initializeDestSourceMapper(jointLinks, inputLinks);
     for(var destId in destSourceMapper){
-        result = syntaxCheck(destSourceMapper, destId) ? true : result;
+        var naryRelationships = getNaryRelationships(destSourceMapper, destId);
+        result = syntaxErrorExists(naryRelationships) ? true : result;
     }
     return result;
 }
@@ -206,8 +207,8 @@ describe('Syntax check for invalid combinations', function() {
             done();
         });
     });
-	
-	it('Syntax check with one OR constraint links and a single NO RELATIONSHIP link', function(done) {
+
+    it('Syntax check with one OR constraint links and a single NO RELATIONSHIP link', function(done) {
         $.getJSON('./blooming_test/syntaxCheck11.json', function(data) {
             graph.fromJSON(data);
             var result = syntaxCheckResult();
@@ -215,8 +216,8 @@ describe('Syntax check for invalid combinations', function() {
             done();
         });
     });
-	
-	it('Syntax check with one AND constraint links and a single NO RELATIONSHIP link', function(done) {
+    
+    it('Syntax check with one AND constraint links and a single NO RELATIONSHIP link', function(done) {
         $.getJSON('./blooming_test/syntaxCheck12.json', function(data) {
             graph.fromJSON(data);
             var result = syntaxCheckResult();

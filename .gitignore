@@ -9,6 +9,7 @@ leaf-ui/cgi-bin/temp/output.*
 leaf-analysis/doc/*
 
 *.class
+*.idea
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
