@@ -18,9 +18,9 @@ function backendComm(jsObject){
 		success: function(response){
 			setTimeout(function(){
 				if(jsObject.analysis.action=="allNextStates"){
-					executeJava(true, jsObject);
+					executeJava(true);
 				}else{
-					executeJava(false, jsObject);
+					executeJava(false);
 				}
 		    }, 500);  
 		}
@@ -31,14 +31,14 @@ function backendComm(jsObject){
 
 }
 
-function executeJava(isGetNextSteps, jsObject){
+function executeJava(isGetNextSteps){
 	var pathToCGI = "./cgi-bin/executeJava.cgi";
 	$.ajax({
 		url: pathToCGI,
 		type: "get",
 		success: function(response){
 		    setTimeout(function(){
-				getFileResults(isGetNextSteps, jsObject);
+				getFileResults(isGetNextSteps);
 		    }, 500);  
 		}
 	})
@@ -49,7 +49,7 @@ function executeJava(isGetNextSteps, jsObject){
 }
 
 
-function getFileResults(isGetNextSteps, jsObject){
+function getFileResults(isGetNextSteps){
 	var pathToCGI = "./cgi-bin/fileRead.cgi";
 
 	//Executing action to send backend
@@ -60,7 +60,7 @@ function getFileResults(isGetNextSteps, jsObject){
 			analysisResults = JSON.parse(response['data']);
 			
 			if (constraintErrorExists(analysisResults)) {
-				var msg = getErrorMessage(analysisResults.errorMessage, jsObject);	
+				var msg = getErrorMessage(analysisResults.errorMessage);	
 				alert(msg);
 			} else {
 				/**
@@ -125,16 +125,14 @@ function constraintErrorExists(analysisResults) {
  *
  * @param {String} backendErrorMsg
  *   error message from backend
- * @param {Object} jsObject
- *   object containing information that maps node ids with node names
  * @returns {boolean}
  */
-function getErrorMessage(backendErrorMsg, jsObject) {
+function getErrorMessage(backendErrorMsg) {
 		
 	var ids = getIDs(backendErrorMsg);
 	var names = [];
 	for (var i = 0; i < ids.length; i++) {
-		 names.push(getNameFromID(ids[i], jsObject));
+		 names.push(getNodeName(ids[i]));
 	}
 
 	var s = 'The model is not solvable because of conflicting constraints  involving nodes: ';
@@ -164,25 +162,4 @@ function getIDs(backendErrorMsg) {
 	}
 
 	return arr;
-}
-
-/*
- * Returns the node name of a node with id id.
- *
- * @param {String} id
- *   id of the node of interest
- * @param {Object} jsObject
- *   object containing information that maps node ids with node names
- * @returns {String} 
- */
-function getNameFromID(id, jsObject) {
-
-    // iterate through intentions/nodes
-    var intentObjArr = jsObject.model.intentions;
-
-    for (var i = 0; i < intentObjArr.length; i++) {
-        if (id == intentObjArr[i].nodeID) {
-            return intentObjArr[i].nodeName;
-        }
-    }
 }
