@@ -235,7 +235,6 @@ function saveLinks(mode){
 //Switch to analysis mode
 $('#analysis-btn').on('click', function(){
 	syntaxCheck();
-	console.log(returned_syntaxCheck());
 	/*
 	if (linkMode == "Constraints")
 		$('#symbolic-btn').trigger( "click" );*/
@@ -349,171 +348,268 @@ $('#cycledetect-btn').on('click', function(e){
 
 	js_object = null;
 	jslinks = null;
-})
-var dups_analysis;
-function returned_syntaxCheck(){
-	var destSourceMapper = {};
-	var js_object = {};
-	var js_links = {};
-	//console.log(getLinks());
-	var jslinks = getLinks();
-	var elements = graph.getLinks();
-	for(var j = 0; j < jslinks.length; j++){
-		var cellView  = elements[j].findView(paper);
-		if(!(jslinks[j].linkDestID in destSourceMapper)){
-			destSourceMapper[jslinks[j].linkDestID] = {};
-			var constraint;
-			if (jslinks[j].postType != null){
-				constraint = jslinks[j].linkType+"|"+jslinks[j].postType;
-			}
-			else{
-				constraint = jslinks[j].linkType;
-			}
-			destSourceMapper[jslinks[j].linkDestID]["source"] = [];
-			destSourceMapper[jslinks[j].linkDestID]["source"].push(jslinks[j].linkSrcID);
-			destSourceMapper[jslinks[j].linkDestID]["constraint"] = [];
-			destSourceMapper[jslinks[j].linkDestID]["constraint"].push(constraint);
-			destSourceMapper[jslinks[j].linkDestID]["findview"] = [];
-			destSourceMapper[jslinks[j].linkDestID]["findview"].push(cellView);
-		}
-		else{
-			var constraint;
-			if (jslinks[j].postType != null){
-				constraint = jslinks[j].linkType+"|"+jslinks[j].postType;
-			}
-			else{
-				constraint = jslinks[j].linkType;
-			}
-			destSourceMapper[jslinks[j].linkDestID]["source"].push(jslinks[j].linkSrcID);
-			destSourceMapper[jslinks[j].linkDestID]["constraint"].push(constraint);
-			destSourceMapper[jslinks[j].linkDestID]["findview"].push(cellView);
-		}
-	}
-	var error = false;
-	var contributionPattern = /[+]{1,}|[-]{1,}/g;
-	for(var key in destSourceMapper){
-		var duplicates = (function(){
-			var x = destSourceMapper[key]["constraint"][0];
-			for(var i=1;i<destSourceMapper[key]["constraint"].length;i++){
-				if(x!=destSourceMapper[key]["constraint"][i] && destSourceMapper[key]["constraint"][i].match(contributionPattern) == null){
-					return true
-				}
-			}
-			return false;
-		})();
-		dups_analysis = duplicates;
-	}
-	return dups_analysis;
+
+});
+
+/*
+ * Initializes and returns a 'DestSourceMapper' object which contains
+ * information about links by indicating the source nodes to destination nodes
+ *
+ * @param {Array of joint.dia.Link} jointLinks
+ * @param {Array of InputLink} inputlinks
+ * @returns {Object}
+ *
+ * Example object:
+ *
+ * {linkDestID : {source: [],
+ *		          constraint: [],
+ *		          linkView: []
+ *				 }
+ * }
+ *
+ * linkDestID: id of a destination node for links
+ * source: id of the source of the link
+ * contraint: contraint types
+ * linkView: linkView of the link
+ * 
+ * Interpretation:
+ * If dest = 0, source[i] = 1, constraint[i] = AND,
+ * this means that the i'th link is an AND constraint
+ * link from node 1 to node 0
+ * 
+ */
+function initializeDestSourceMapper(jointLinks, inputlinks){
+	console.log('elements ', jointLinks);
+	console.log('jslinks', inputlinks);
+    let destSourceMapper = {};
+    let linkView;
+    let constraint;
+    for(var j = 0; j < inputlinks.length; j++){
+        linkView  = jointLinks[j].findView(paper);
+
+        if(!(inputlinks[j].linkDestID in destSourceMapper)){
+            // create empty object and arrays
+            destSourceMapper[inputlinks[j].linkDestID] = {};
+            destSourceMapper[inputlinks[j].linkDestID]["source"] = [];
+            destSourceMapper[inputlinks[j].linkDestID]["constraint"] = [];
+            destSourceMapper[inputlinks[j].linkDestID]["findview"] = [];
+        }
+
+        if (inputlinks[j].postType != null){
+            constraint = inputlinks[j].linkType+"|"+inputlinks[j].postType;
+        }else{
+            constraint = inputlinks[j].linkType;
+        }
+        destSourceMapper[inputlinks[j].linkDestID]["source"].push(inputlinks[j].linkSrcID);
+        destSourceMapper[inputlinks[j].linkDestID]["constraint"].push(constraint);
+        destSourceMapper[inputlinks[j].linkDestID]["findview"].push(linkView);
+    }
+    console.log('destSourceMapper ', destSourceMapper);
+    return destSourceMapper;
 }
-function syntaxCheck(){
-	var destSourceMapper = {};
-	var js_object = {};
-	var js_links = {};
-	//console.log(getLinks());
-	var jslinks = getLinks();
-	var elements = graph.getLinks();
-	for(var j = 0; j < jslinks.length; j++){
-		var cellView  = elements[j].findView(paper);
-		if(!(jslinks[j].linkDestID in destSourceMapper)){
-			destSourceMapper[jslinks[j].linkDestID] = {};
-			var constraint;
-			if (jslinks[j].postType != null){
-				constraint = jslinks[j].linkType+"|"+jslinks[j].postType;
-			}
-			else{
-				constraint = jslinks[j].linkType;
-			}
-			destSourceMapper[jslinks[j].linkDestID]["source"] = [];
-			destSourceMapper[jslinks[j].linkDestID]["source"].push(jslinks[j].linkSrcID);
-			destSourceMapper[jslinks[j].linkDestID]["constraint"] = [];
-			destSourceMapper[jslinks[j].linkDestID]["constraint"].push(constraint);
-			destSourceMapper[jslinks[j].linkDestID]["findview"] = [];
-			destSourceMapper[jslinks[j].linkDestID]["findview"].push(cellView);
-		}
-		else{
-			var constraint;
-			if (jslinks[j].postType != null){
-				constraint = jslinks[j].linkType+"|"+jslinks[j].postType;
-			}
-			else{
-				constraint = jslinks[j].linkType;
-			}
-			destSourceMapper[jslinks[j].linkDestID]["source"].push(jslinks[j].linkSrcID);
-			destSourceMapper[jslinks[j].linkDestID]["constraint"].push(constraint);
-			destSourceMapper[jslinks[j].linkDestID]["findview"].push(cellView);
+
+/*
+ * Returns a syntax error message.
+ *
+ * Prerequisite: There are links from each node with ids in sourceList
+ * to the node with id destId, and there exists a syntax error for these links. 
+ *
+ * @param {Array of Object} naryRelationships
+ *   array containing the objects that represent
+ *   source nodes that participate in an n-ary relationship
+ * @param {String} destId
+ *   destination id
+ * @returns {String}
+ */
+function generateSyntaxMessage(naryRelationships, destId){
+
+	let sourceNodeText = '';
+	let suggestionText = 'Have all n-ary links from ';
+	var constraintsText = '';
+	var constraintArr = [];
+
+	// determine which n-ary relationships are present
+	for (var i = 0; i < naryRelationships.length; i++) {
+		if (!constraintArr.includes(naryRelationships[i].constraint)) {
+			constraintArr.push(naryRelationships[i].constraint);
 		}
 	}
-	var error = false;
-	var errorText = "<p style='text-align:left'>";
-	var j = 1;
-	var contributionPattern = /[+]{1,}|[-]{1,}/g;
-	for(var key in destSourceMapper){
-		var duplicates = (function(){
-			var x = destSourceMapper[key]["constraint"][0];
-			for(var i=1;i<destSourceMapper[key]["constraint"].length;i++){
-    		if(x!=destSourceMapper[key]["constraint"][i] && destSourceMapper[key]["constraint"][i].match(contributionPattern) == null){
-					return true
-				}
+
+	// create a string for the n-ary relationships
+	for (var i = 0; i < constraintArr.length - 1; i++) {
+		constraintsText += constraintArr[i] + ' or ';
+	}
+	constraintsText += constraintArr[constraintArr.length - 1];
+
+	// create a string for the source nodes
+    for (var i = 0; i < naryRelationships.length - 1; i++) {
+    	sourceNodeText += getNodeName(naryRelationships[i].source);
+    	if (i != naryRelationships.length -2) {
+    		sourceNodeText += ', ';
+    	} else {
+    		sourceNodeText += ' ';
     	}
-			return false;
-		})();
-		dups_analysis = duplicates;
-		if(duplicates == true){
-			error = true;
-			errorText += "<b style='color:black'> Suggestion : </b>" +  j + ". ";
-			var subErrorText = "Have all links from "
-			destSourceMapper[key]["source"].forEach(function(element){
-				errorText += "<b style='color:blue'>" + this.getNodeName(element) + ", </b>"
-				subErrorText += this.getNodeName(element) + ", "
-			})
-			subErrorText += " to " + this.getNodeName(key)
-			destSourceMapper[key]["constraint"].forEach(function(element){
-				if(!(subErrorText.includes(element))){
-					subErrorText += " all <b style='color: black' >"+ element + "</b> constraint links or "
-				}
-			})
-			subErrorText = subErrorText.substring(0,subErrorText.lastIndexOf(" or ")) + ".";
-			var destName = this.getNodeName(key);
-			errorText += " to <b>" + destName + "</b><br> " + subErrorText +"<br><br>";
-			destSourceMapper[key]["findview"].forEach(function(element){
-				element.model.attr({'.connection': {'stroke': 'red'}});
-				element.model.attr({'.marker-target': {'stroke': 'red'}});
-				element.model.attr({'.connection': {'stroke-width': '3'}});
-				element.model.attr({'.marker-target': {'stroke-width': '3'}});
+    }
 
-			})
-		}
-		else{
-			destSourceMapper[key]["findview"].forEach(function(element){
-				element.model.attr({'.connection': {'stroke': '#000000'}});
-				element.model.attr({'.marker-target': {'stroke': '#000000'}});
-				element.model.attr({'.connection': {'stroke-width': '1'}});
-				element.model.attr({'.marker-target': {'stroke-width': '1'}});
-			})
-		}
-		j+=1;
-	}
-	errorText += "</p>"
-	if(error==true){
-		//errorText = errorText.substring(0,errorText.lastIndexOf(" and ")) + '.';
-		swal({
-			title:"We found invalid links combinations ",
-			type: "warning",
-			html: errorText,
-			showCloseButton: true,
- 			showCancelButton: true,
-			confirmButtonText: "Ok",
-			cancelButtonText: "Go back to Model View",
-			cancelButtonClass: "backModel"
-		}).then(function() {
+    sourceNodeText += 'and ' + getNodeName(naryRelationships[naryRelationships.length - 1].source);
+    suggestionText += sourceNodeText + ' to ' + getNodeName(destId) + ' as ' + constraintsText + '.';
 
-			}, function(dismiss) {
-			  // dismiss can be 'overlay', 'cancel', 'close', 'esc', 'timer'
-			  if (dismiss === 'cancel') {
-			    $("#model-cur-btn").trigger("click");
-			  }
-		})
+    // as an example, suggestionText should now look something like:
+    // "Have all n-ary links from Task_1, Task_2 and Task_3 to Goal_0 as AND or NO RELATIONSHIP or OR.""
+    var s = '<p style="text-align:left"><b style="color:black"> Source nodes: </b>' + sourceNodeText + '<br>' +
+    	'<b style="color:black"> Destination node: </b>' + getNodeName(destId) + 
+    	'<br><b style="color:black"> Suggestion: </b>' + suggestionText + '<br></p>';
+
+    return s;
+}
+
+/*
+ * Returns true iff any two n-ary constraints in 
+ * naryRelationships are different
+ *
+ * @param {Object} naryRelationships
+ *   an array containing the objects that represent
+ *   source nodes that participate in an n-ary relationship,
+ *   (ie, AND, OR, NO RELATIONSHIP)
+ * @returns {boolean} 
+ */
+function syntaxErrorExists(naryRelationships) {
+
+	if (naryRelationships.length < 2) {
+		return false;
 	}
+	for (var i = 1; i < naryRelationships.length; i++) {
+		if (naryRelationships[0].constraint != naryRelationships[i].constraint) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+/*
+ * Return an array containing the objects that represent
+ * source nodes that participate in an n-ary relationship,
+ * (ie, AND, OR, NO RELATIONSHIP), with the node with id destId
+ *
+ * Example return object:
+ * [
+ *     {source: 1, constraint: 'AND', findview: Object},
+ *     {source: 2, constraint: 'OR', findview: Object}
+ * ]
+ *
+ * @param {Object} destSourceMapper
+ * @param {String} destId
+ * @returns {Array of Object}
+ */
+function getNaryRelationships(destSourceMapper, destId) {
+	var result = [];
+
+	var constraints = destSourceMapper[destId].constraint;
+	for (var i = 0; i < constraints.length; i++) {
+		if (constraints[i] == 'AND' || 
+			constraints[i] == 'OR' || 
+			constraints[i] == 'NO RELATIONSHIP') {
+			console.log('destSourceMapper[destId]', destSourceMapper[destId]);
+			var obj = {
+				source: destSourceMapper[destId].source[i],
+				constraint: constraints[i],
+				findview: destSourceMapper[destId].findview[i]
+			};
+			result.push(obj);
+		}
+	}
+
+	return result;
+}
+
+/*
+ * Changes the colour and stroke-width of all linkViews in 
+ * linkViewArray
+ *
+ * @param {Array of joint.dia.LinkView} linkViewArray
+ * @param {String} colour
+ * @param {Number} strokeWidth
+ */
+function changeLinkColour(linkViewArray, colour, strokeWidth) {
+	for (var i = 0; i < linkViewArray.length; i++) {
+		linkViewArray[i].model.attr({'.connection': {'stroke': colour}});
+        linkViewArray[i].model.attr({'.marker-target': {'stroke': colour}});
+        linkViewArray[i].model.attr({'.connection': {'stroke-width': strokeWidth}});
+        linkViewArray[i].model.attr({'.marker-target': {'stroke-width': strokeWidth}});
+	}
+}
+
+/*
+ * Displays error popup with title and message
+ *
+ * @param {String} title
+ * @param {String} message
+ */
+function displayErrorPopup(title, message) {
+	swal({
+        	title: title,
+            type: "warning",
+            html: message,
+            showCloseButton: true,
+            showCancelButton: true,
+            confirmButtonText: "Ok",
+            cancelButtonText: "Go back to Model View",
+            cancelButtonClass: "backModel"
+        }).then(function() {
+
+        }, function(dismiss) {
+            if (dismiss === 'cancel') {
+                $("#model-cur-btn").trigger("click");
+            }
+    });
+}
+
+/*
+ * Performs a syntax check on the current model, by checking if each destination
+ * nodes with links, have valid constraints.
+ * Returns true and displays an error popup iff a syntax error exists
+ *
+ * @returns {boolean}
+ */
+function syntaxCheck() {
+
+    // Get all links in the form of an InputLink
+    var inputLinks = getLinks();
+
+    // Get all links in the form of a joint.dia.Link
+    var jointLinks = graph.getLinks();
+
+    //Create an object that represents the constraint links and its sources and destination
+    let destSourceMapper = initializeDestSourceMapper(jointLinks, inputLinks);
+    let errorText = '';
+
+    for (var destId in destSourceMapper){
+
+    	var naryRelationships = getNaryRelationships(destSourceMapper, destId);
+
+        // If there is a syntax error.
+        if (syntaxErrorExists(naryRelationships)){
+
+            errorText += generateSyntaxMessage(naryRelationships, destId);
+
+            var linkViews = [];
+            for (var i = 0; i < naryRelationships.length; i++) {
+            	linkViews.push(naryRelationships[i].findview);
+            }
+
+            changeLinkColour(linkViews, 'red', 3);
+
+        } else {
+        	changeLinkColour(destSourceMapper[destId]['findview'], 'black', 1);
+        }
+    }
+
+    if (errorText) {
+    	displayErrorPopup('We found invalid link combinations', errorText);
+    	return true;
+    }
+    return false;
 }
 
 //Cycle-deteciton algorithm
