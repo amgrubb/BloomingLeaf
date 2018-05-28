@@ -147,10 +147,16 @@ if (document.cookie){
 			break;
 		}
 	}
-	console.log(graph.fromJSON(JSON.parse(prevgraph)));
+
 	if (prevgraph){
-		graph.fromJSON(JSON.parse(prevgraph));
+		try {
+			graph.fromJSON(JSON.parse(prevgraph));
+		} catch (e) {
+			// this should never happen, but just in case
+			alert('Previously stored cookies contains invalid JSON data. Please clear your cookies.');
+		}
 	}
+
 }
 
 
