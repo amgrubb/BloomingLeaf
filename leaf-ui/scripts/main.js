@@ -142,8 +142,8 @@ if (document.cookie){
 
 	//Loop through the cookies to find the one representing the graph, if it exists
 	for (var i = 0; i < cookies.length; i++){
-		if (cookies[i].indexOf("graph=") >= 0){
-			prevgraph = cookies[i].substr(6);
+		if (cookies[i].indexOf("graph=") !== -1){ // If substring exists
+			prevgraph = cookies[i].substr(cookies[i].indexOf("graph=" + 6)); // Get the substring after graph=
 			break;
 		}
 	}
