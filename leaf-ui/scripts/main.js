@@ -142,15 +142,21 @@ if (document.cookie){
 
 	//Loop through the cookies to find the one representing the graph, if it exists
 	for (var i = 0; i < cookies.length; i++){
-		if (cookies[i].indexOf("graph=") >= 0){
-			prevgraph = cookies[i].substr(6);
+		if (cookies[i].indexOf("graph=") !== -1){ // If substring exists
+			prevgraph = cookies[i].substr(cookies[i].indexOf("graph=" + 6)); // Get the substring after graph=
 			break;
 		}
 	}
-	console.log(graph.fromJSON(JSON.parse(prevgraph)));
+
 	if (prevgraph){
-		graph.fromJSON(JSON.parse(prevgraph));
+		try {
+			graph.fromJSON(JSON.parse(prevgraph));
+		} catch (e) {
+			// this should never happen, but just in case
+			alert('Previously stored cookies contains invalid JSON data. Please clear your cookies.');
+		}
 	}
+
 }
 
 
