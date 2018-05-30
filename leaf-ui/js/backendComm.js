@@ -131,16 +131,80 @@ function getErrorMessage(backendErrorMsg) {
 		
 	var ids = getIDs(backendErrorMsg);
 	var names = [];
+	var actorNames = [];
 	for (var i = 0; i < ids.length; i++) {
-		 names.push(getNodeName(ids[i]));
+		names.push(getNodeName(ids[i]));
+		actorNames.push(getParentActorNameById(ids[i]));
+	}
+	console.log('graph elements looksl iks his: ', graph.getElements());
+	
+	var s = 'The model is not solvable because of conflicting constraints involving nodes: ';
+	var numOfNames = names.length;
+	
+	for (var i = 0; i < numOfNames - 1; i++) {
+		s += names[i] + ' (' + actorNames[i] + ')';
+		if (i < numOfNames - 2) {
+			s += ', ';
+		} else {
+			s += ' ';
+		}
 	}
 
-	var s = 'The model is not solvable because of conflicting constraints  involving nodes: ';
-	for (var i = 0; i < names.length - 1; i++) {
-		s += names[i] + ', ';
-	}
-	s += 'and ' + names[names.length - 1] + '.';
+	s += 'and ' + names[numOfNames - 1] + ' (' + actorNames[numOfNames - 1] + ').';
 	return s;
+}
+
+/*
+ * Returns the actor name for an actor
+ * that embeds an element with element id id.
+ * If element with element id id is not embedded within an actor
+ * returns 'no actor'.
+ * 
+ * @param {String} id
+ *   element id for the element of interest
+ * @returns {String}
+ */
+function getParentActorNameById(id) {
+	var actor = getParentActor(getElementById(id));
+	if (actor) {
+		return actor.attributes.attrs['.name'].text;
+	}
+	return 'no actor';	
+}
+
+/*
+ * Returns the actor which embeds the element of interest.
+ * Returns null if there is no actor that embeds the element. 
+ * (If an actor embeds an element, the actor is the element's parent)
+ *
+ * @param {dia.Element} element
+ * @returns {dia.Element | null} 
+ */
+function getParentActor(element) {
+	// get call the ancestors for the element
+	var ancestors = element.getAncestors();
+	if (ancestors.length == 0) {
+		return null;
+	}
+	// if there is an ancestor, there would only be one 
+	return ancestors[0];
+}
+
+/*
+ * Returns the element with element id id.
+ * Returns null if no element with that element id exists.
+ * 
+ * @param {String} id
+ *   element id of the element of interest
+ * @returns {dia.Element | null}
+ */
+function getElementById(id) {
+	var elements = graph.getElements();
+	for (var i = 0; i < elements.length; i++) {
+		if (id == elements[i].attributes.elementid) {
+			return elements[i];
+		}
+	}
 }
 
 /*
