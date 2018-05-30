@@ -136,9 +136,8 @@ function getErrorMessage(backendErrorMsg) {
 		names.push(getNodeName(ids[i]));
 		actorNames.push(getParentActorNameById(ids[i]));
 	}
-	console.log('graph elements looksl iks his: ', graph.getElements());
 	
-	var s = 'The model is not solvable because of conflicting constraints involving nodes: ';
+	var s = 'The model is not solvable because of conflicting constraints involving nodes (with associated actors): ';
 	var numOfNames = names.length;
 	
 	for (var i = 0; i < numOfNames - 1; i++) {
@@ -151,6 +150,7 @@ function getErrorMessage(backendErrorMsg) {
 	}
 
 	s += 'and ' + names[numOfNames - 1] + ' (' + actorNames[numOfNames - 1] + ').';
+	s += '\n\nOriginal Error: ' + backendErrorMsg;
 	return s;
 }
 
