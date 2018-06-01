@@ -1,7 +1,6 @@
 //Get necessary variables from the main page
 var document = jQuery.extend({}, window.opener.document);
 var graph = new joint.dia.Graph();
-console.log(JSON.stringify(window.opener.global_analysisResult));
 var paper;
 var paperScroller;
 var originalResults = jQuery.extend({}, window.opener.global_analysisResult);

@@ -39,7 +39,6 @@ var ConstraintsInspector = Backbone.View.extend({
 
   //Method to create the Link Inspector using the template.
   render: function(cellView) {
-    console.log(cellView);
     this._cellView = cellView;
     var cell = this._cellView.model;
     var type = cellView.model.attributes.labels[0].attrs.text.text

@@ -190,7 +190,6 @@ var ElementInspector = Backbone.View.extend({
     }else{
       this.$el.html(_.template(this.template)());
     }
-    console.log(cell.attr(".constraints"));
     cell.on('remove', function() {
         this.$el.html('');
     }, this);
@@ -299,10 +298,6 @@ var ElementInspector = Backbone.View.extend({
     var repeatEnd = cell.attr(".constraints/endRepeat");
     var repeatCount = cell.attr(".constraints/repeatCount");
     var absLen = cell.attr(".constraints/absoluteLen");
-    console.log(repeatBegin);
-    console.log(repeatEnd);
-
-    console.log(repeatCount);
 
     if (repeatBegin && repeatEnd){
       this.repeatOptionsDisplay = true;
@@ -929,13 +924,11 @@ var ElementInspector = Backbone.View.extend({
   },
   selectNumRepeatValues: function(e){
     var repeatVals = $("#repeat-end2").val();
-    console.log(repeatVals);
     this.constraintsObject.repeat_count = repeatVals;
     this.updateGraphUserDefined(null);
   },
   selectAbsoluteLength: function(e){
     var absLength = $("#repeat-end3").val();
-    console.log(absLength);
     this.constraintsObject.absoluteLength = absLength;
     this.updateGraphUserDefined(null);
   },
@@ -997,12 +990,9 @@ var ElementInspector = Backbone.View.extend({
         }
 
         // Set select options
-        console.log(this.constraintsObject);
         for (var i = 0; i < this.constraintsObject.currentUserIndex; i++){
           var beginVal = this.constraintsObject.beginLetter[i];
           var endVal = this.constraintsObject.endLetter[i + 1];
-          console.log(beginVal)
-          console.log(endVal)
           $("#repeat-begin").append(
             $('<option></option>').val(beginVal).html(beginVal)
           );
