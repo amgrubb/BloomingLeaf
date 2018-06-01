@@ -1471,10 +1471,6 @@ $('#btn-zoom-out').on('click', function() {
 });
 
 $('#btn-save').on('click', function() {
-	// Always initalize files on modelling links for code simplicity
-	if (linkMode == "Constraints")
-		$('#symbolic-btn').trigger( "click" );
-
 	var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
 	if (name){
 		var fileName = name + ".json";
@@ -1484,8 +1480,6 @@ $('#btn-save').on('click', function() {
 
 //Workaround for load, activates a hidden input element
 $('#btn-load').on('click', function(){
-	if (linkMode == "Constraints")
-		$('#symbolic-btn').trigger( "click" );
 	$('#loader').click();
 });
 
