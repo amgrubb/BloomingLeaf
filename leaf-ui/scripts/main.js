@@ -175,7 +175,7 @@ $('#analysis-btn').on('click', function(){
 	elementInspector.clear();
 	linkInspector.clear();
 	constrainsInspector.clear();
-	analysisInspector.render(analysisFunctions);
+	analysisInspector.render();
 
 	$('.inspector').append(analysisInspector.el);
 	$('#stencil').css("display","none");
@@ -393,6 +393,17 @@ function generateSyntaxMessage(naryRelationships, destId){
     	'<br><b style="color:black"> Suggestion: </b>' + suggestionText + '<br></p>';
 
     return s;
+}
+
+function getNodeName(id){
+    var listNodes = graph.getElements();
+    for(var i = 0; i < listNodes.length; i++){
+        var cellView  = listNodes[i].findView(paper);
+        if(id == cellView.model.attributes.elementid){
+            var nodeName = cellView.model.attr(".name");
+            return nodeName.text;
+        }
+    }
 }
 
 /*
@@ -648,71 +659,6 @@ function switchToModellingMode(useInitState){
 
 // ----------------------------------------------------------------- //
 // Communication between server and front end
-
-var analysisFunctions = {};
-analysisFunctions.conductAnalysis = function(type, stepVal, epochVal, queryValA, queryValB){
-	if(type == "btn-forward-analysis"){
-		toBackEnd("2", stepVal, epochVal, queryValA, queryValB);
-	}else if(type == "btn-rnd-sim"){
-		toBackEnd("7", stepVal, epochVal, queryValA, queryValB);
-	}else if(type == "btn-simulate"){
-		toBackEnd("6", stepVal, epochVal, queryValA, queryValB);
-	}else if(type == "btn-csp"){
-		toBackEnd("11", stepVal, epochVal, queryValA, queryValB);
-	}else if(type == "btn-csp-history"){
-		toBackEnd("12", stepVal, epochVal, queryValA, queryValB);
-	}
-}
-
-analysisFunctions.loadAnalysisFile = function(){
-	var all_elements = graph.getElements();
-
-	//Filter out Actors
-	var elements = [];
-	for (var e = 0; e < all_elements.length; e++){
-		if (!(all_elements[e] instanceof joint.shapes.basic.Actor))
-			elements.push(all_elements[e]);
-	}
-
-	//save elements in global variable for slider
-	graph.allElements = elements;
-	$('#loader').click();
-}
-
-analysisFunctions.concatenateSlider = function(){
-	var newTime = 0;
-	for (i = 0; i < historyObject.allHistory.length; i++){
-		if (historyObject.allHistory[i].analysisLength){
-			newTime = newTime + historyObject.allHistory[i].analysisLength;
-		}else{
-			newTime = newTime + historyObject.allHistory[i].analysis.timeScale
-		}
-	}
-	var newElements = [];
-	for (i = 0; i < graph.allElements.length; i++){
-		var elementResults = [];
-		for (j = 0; j < historyObject.allHistory.length; j++){
-			var analysisObj = historyObject.allHistory[j].analysis;
-			var subResults = analysisObj.elements[i].slice(0, historyObject.allHistory[j].analysisLength);
-			elementResults = elementResults.concat(subResults);
-		}
-		newElements.push(elementResults);
-	}
-
-	clearHistoryLog();
-
-	currentAnalysis = new analysisObject.initFromMain(newElements, graph.allElements.length, newTime);
-	updateSlider(currentAnalysis, false);
-}
-
-analysisFunctions.loadQueryObject = function(){
-	return [queryObject.cellA, queryObject.cellB]
-}
-
-analysisFunctions.clearQueryObject = function(){
-	queryObject.clearCells();
-}
-
 function loadAnalysis(analysisResults){
 	currentAnalysis = new analysisObject.initFromBackEnd(analysisResults);
 	savedAnalysisData.finalAssigneEpoch = analysisResults.finalAssignedEpoch;
@@ -861,20 +807,15 @@ function updateSliderValues(valueString, currentValueLimit, currentAnalysis){
 	}
 }
 
-//Update the satisfaction value of a particular node in the graph
+// Update the satisfaction value of a particular node in the graph
 function updateValues(c, v, m){
 	var cell;
 	var value;
 
-	//Update node based on values from cgi file
+	// Update node based on values from cgi file
 	if (m == "renderAnalysis"){
-		//var satvalues = ["denied", "partiallydenied", "partiallysatisfied", "satisfied", "unknown", "none"];
 		cell = graph.allElements[c];
 		value = v;
-		// Potential fix to Issue #97 was to revove the next line. (Jan 2018)
-		//cell.attributes.attrs[".satvalue"].value = v;
-		// The following line was here originally commented out.
-		//cell.attr(".satvalue/value", v);
 
 	//Update node based on values saved from graph prior to analysis
 	}else if (m == "toInitModel"){
@@ -882,8 +823,7 @@ function updateValues(c, v, m){
 		value = cell.attributes.attrs[".satvalue"].value;
 	}
 
-	//Update images for properties
-	// Navie: Changed satvalue from path to text
+	// Update images for properties
 	if ((value == "0001") || (value == "0011")) {
 	  cell.attr(".satvalue/text", "(FS, T)");
 	  cell.attr({text:{fill:'black'}});
@@ -915,35 +855,10 @@ function updateValues(c, v, m){
 	  cell.removeAttr(".satvalue/d");
 	}
 
-//	//Update images for properties
-//	// Navie: Changed satvalue from path to text
-//	if (value == "satisfied"){
-//	  // cell.attr({ '.satvalue': {'d': 'M 0 10 L 5 20 L 20 0 L 5 20 L 0 10', 'stroke': '#00FF00', 'stroke-width':4}});
-//	  cell.attr(".satvalue/text", "(FS, T)");
-//	}else if(value == "partiallysatisfied") {
-//	  // cell.attr({ '.satvalue': {'d': 'M 0 8 L 5 18 L 20 0 L 5 18 L 0 8 M 17 30 L 17 15 C 17 15 30 17 18 23', 'stroke': '#00FF00', 'stroke-width':3, 'fill': 'transparent'}});
-//	  cell.attr(".satvalue/text", "(PS, T)");
-//	}else if (value == "denied"){
-//	  // cell.attr({ '.satvalue': {'d': 'M 0 20 L 20 0 M 10 10 L 0 0 L 20 20', 'stroke': '#FF0000', 'stroke-width': 4}});
-//	  cell.attr(".satvalue/text", "(T, FD)");
-//	}else if (value == "partiallydenied") {
-//	  // cell.attr({ '.satvalue': {'d': 'M 0 15 L 15 0 M 15 15 L 0 0 M 17 30 L 17 15 C 17 15 30 17 18 23', 'stroke': '#FF0000', 'stroke-width': 3, 'fill': 'transparent'}});
-//	  cell.attr(".satvalue/text", "(T, PD)");
-//	}else if (value == "unknown") {
-//	  // cell.attr({ '.satvalue': {'d': 'M15.255,0c5.424,0,10.764,2.498,10.764,8.473c0,5.51-6.314,7.629-7.67,9.62c-1.018,1.481-0.678,3.562-3.475,3.562\
-//	      // c-1.822,0-2.712-1.482-2.712-2.838c0-5.046,7.414-6.188,7.414-10.343c0-2.287-1.522-3.643-4.066-3.643\
-//	      // c-5.424,0-3.306,5.592-7.414,5.592c-1.483,0-2.756-0.89-2.756-2.584C5.339,3.683,10.084,0,15.255,0z M15.044,24.406\
-//	      // c1.904,0,3.475,1.566,3.475,3.476c0,1.91-1.568,3.476-3.475,3.476c-1.907,0-3.476-1.564-3.476-3.476\
-//	      // C11.568,25.973,13.137,24.406,15.044,24.406z', 'stroke': '#222222', 'stroke-width': 1}});
-//	      cell.attr(".satvalue/text", "?");
-//	}else {
-//	  cell.removeAttr(".satvalue/d");
-//	}
 }
 
 // ----------------------------------------------------------------- //
 // History log
-
 $('#history').on("click", ".log-elements", function(e){
 	var txt = $(e.target).text();
 	var step = parseInt(txt.split(":")[0].split(" ")[1] - 1);
@@ -1403,13 +1318,17 @@ $('#btn-svg').on('click', function() {
 	paper.openAsSVG();
 });
 
+// Zoom in
 $('#btn-zoom-in').on('click', function() {
 	paperScroller.zoom(0.2, { max: 3 });
 });
+
+// Zoom out
 $('#btn-zoom-out').on('click', function() {
 	paperScroller.zoom(-0.2, { min: 0.2 });
 });
 
+// Save the current graph to json file
 $('#btn-save').on('click', function() {
 	var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
 	if (name){
@@ -1418,7 +1337,7 @@ $('#btn-save').on('click', function() {
 	}
 });
 
-//Workaround for load, activates a hidden input element
+// Workaround for load, activates a hidden input element
 $('#btn-load').on('click', function(){
 	$('#loader').click();
 });
@@ -1452,16 +1371,16 @@ $('#btn-fnt').on('click', function(){
 });
 
 
-//Simulator
+// Simulator
 loader = document.getElementById("loader");
 reader = new FileReader();
 
-//Whenever the input is changed, read the file.
+// Whenever the input is changed, read the file.
 loader.onchange = function(){
 	reader.readAsText(loader.files.item(0));
 };
 
-//When read is performed, if successful, load that file.
+// When read is performed, if successful, load that file.
 reader.onload = function(){
 	if (reader.result){
 		if (mode == "Modelling"){
@@ -1480,14 +1399,15 @@ reader.onload = function(){
 			});
 		}else{
 			analysisResults = reader.result.split("\n");
-			loadAnalysis(analysisResults, null, -1);
+			//loadAnalysis(analysisResults, null, -1);
+			loadAnalysis(analysisResults);
 		}
 	}
 };
 
 
 
-//Helper function to download saved graph in JSON format
+// Helper function to download saved graph in JSON format
 function download(filename, text) {
 	var dl = document.createElement('a');
 	dl.setAttribute('href', 'data:application/force-download;charset=utf-8,' + encodeURIComponent(text));
