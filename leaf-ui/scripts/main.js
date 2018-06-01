@@ -717,10 +717,10 @@ function updateSlider(currentAnalysis, pastAnalysisStep){
 		analysisMarkers = sliderObject.pastAnalysisValues;
 	}
 	adjustSlider(sliderMax);
-	createSlider(sliderMax);
+	createSlider(sliderMax, analysisMarkers);
 }
 	
-function createSlider(sliderMax){
+function createSlider(sliderMax, analysisMarkers){
 	if (sliderMax < 25){
 		var density = 100/sliderMax;
 	}
