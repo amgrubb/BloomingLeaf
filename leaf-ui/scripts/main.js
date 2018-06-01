@@ -717,43 +717,34 @@ function updateSlider(currentAnalysis, pastAnalysisStep){
 		analysisMarkers = sliderObject.pastAnalysisValues;
 	}
 	adjustSlider(sliderMax);
+	createSlider(sliderMax)
+	return sliderMax;
+}
+	
+function createSlider(sliderMax){
 	if (sliderMax < 25){
-		noUiSlider.create(sliderObject.sliderElement, {
-		start: 0,
-		step: 1,
-		behaviour: 'tap',
-		connect: 'lower',
-		direction: 'ltr',
-		range: {
-			'min': 0,
-			'max': sliderMax
-		},
-		pips: {
-			mode: 'values',
-			values: analysisMarkers,
-			density: 100/sliderMax
-		}
-		});
+		var density = 100/sliderMax;
 	}
 	else {
-		noUiSlider.create(sliderObject.sliderElement, {
-		start: 0,
-		step: 1,
-		behaviour: 'tap',
-		connect: 'lower',
-		direction: 'ltr',
-		range: {
-			'min': 0,
-			'max': sliderMax
-		},
-		pips: {
-			mode: 'values',
-			values: analysisMarkers,
-			density: 4
-		}
-		});
+		var density = 4;
 	}
-
+	
+	noUiSlider.create(sliderObject.sliderElement, {
+	start: 0,
+	step: 1,
+	behaviour: 'tap',
+	connect: 'lower',
+	direction: 'ltr',
+	range: {
+		'min': 0,
+		'max': sliderMax
+	},
+	pips: {
+		mode: 'values',
+		values: analysisMarkers,
+		density: density
+	}
+	});
 
 	sliderObject.sliderElement.noUiSlider.on('update', function( values, handle ) {
 		//Set slidable range based on previous analysis
@@ -764,6 +755,7 @@ function updateSlider(currentAnalysis, pastAnalysisStep){
 		}
 	});
 }
+
 // Adjust slider's width based on the maxvalue of the slider
 function adjustSlider(maxValue){
 	// Min width of slider is 15% of paper's width
