@@ -1109,6 +1109,8 @@ var current_font = 10;
 
 //Whenever an element is added to the graph
 graph.on("add", function(cell){
+    var timestamp = new Date().toUTCString();
+    console.log(cell);
 	if (cell instanceof joint.dia.Link){
 		if (graph.getCell(cell.get("source").id) instanceof joint.shapes.basic.Actor){
 
@@ -1125,7 +1127,8 @@ graph.on("add", function(cell){
 			}else if(linkMode == "Constraints"){
 				cell.label(0, {attrs: {text: {text: "error"}}});
 			}
-		}
+
+        }
 	}	//Don't do anything for links
 	//Give element a unique default
 	cell.attr(".name/text", cell.attr(".name/text") + "_" + element_counter);
@@ -1139,16 +1142,240 @@ graph.on("add", function(cell){
 	//Send actors to background so elements are placed on top
 	if (cell instanceof joint.shapes.basic.Actor){
 		cell.toBack();
-	}
+        accessDatabase("insert into actors(id,name,action,timestamp) values " +
+			"(\'"+ cell.id +"\',\'"+ cell.attr(".name/text") +"\', \'CREATE\',\'"+
+			timestamp + "\') ON DUPLICATE KEY UPDATE timestamp=\'"+timestamp + "\'",1);
+    }
 
 	paper.trigger("cell:pointerup", cell.findView(paper));
 });
+
+
+
+
+function accessDatabase(sql_query, type) {
+	var queryString = "query=" +  encodeURIComponent(sql_query) + "&type=" + type;
+	console.log(queryString);
+	$.ajax({
+		type: "POST",
+		url: "./scripts/ajaxjs.php",
+		data: queryString,
+		cache: false,
+		success: function(html) {
+			console.log(html);
+
+			},
+	});
+
+
+}
+
+// Generates file needed for backend analysis
+function updateDataBase(graph){
+
+	var timestamp = new Date().toUTCString();
+
+    //Step 0: Get elements from graph.
+    var all_elements = graph.getElements();
+    var savedLinks = [];
+    var savedConstraints = [];
+
+    if (linkMode == "View"){
+        savedConstraints = graph.intensionConstraints;
+        var links = graph.getLinks();
+        links.forEach(function(link){
+            if(!isLinkInvalid(link)){
+                if (link.attr('./display') != "none")
+                    savedLinks.push(link);
+            }
+            else{link.remove();}
+        });
+    }else if (linkMode == "Constraints"){
+        savedLinks = graph.links;
+        var betweenIntensionConstraints = graph.getLinks();
+        betweenIntensionConstraints.forEach(function(link){
+            var linkStatus = link.attributes.labels[0].attrs.text.text.replace(/\s/g, '');
+            if(!isLinkInvalid(link) && (linkStatus != "constraint") && (linkStatus != "error")){
+                if (link.attr('./display') != "none")
+                    savedConstraints.push(link);
+            }
+            else{link.remove();}
+        });
+    }
+
+    //Step 1: Filter out Actors
+    var elements = [];
+    var actors = [];
+    for (var e1 = 0; e1 < all_elements.length; e1++){
+        if (!(all_elements[e1] instanceof joint.shapes.basic.Actor)){
+            elements.push(all_elements[e1]);
+        }
+        else{
+            actors.push(all_elements[e1]);
+        }
+    }
+
+    //save elements in global variable for slider, used for toBackEnd funciton only
+    graph.allElements = elements;
+    graph.elementsBeforeAnalysis = elements;
+
+    var datastring = actors.length + "\n";
+    //print each actor in the model
+    for (var a = 0; a < actors.length; a++){
+        var actorId = a.toString();
+        while (actorId.length < 3){ actorId = "0" + actorId;}
+        actorId = "a" + actorId;
+        actors[a].prop("elementid", actorId);
+		accessDatabase("insert into actors(id,name,action,timestamp) values " +
+			"(\'"+ actors[a].id +"\',\'"+ actors[a].attr(".name/text") +"\', \'EDIT\',\'"+
+			timestamp + "\') ON DUPLICATE KEY UPDATE timestamp=\'"+timestamp + "\'",1);
+    }
+
+
+    // Step 2: Print each element in the model
+/*
+    // conversion between values used in Element Inspector with values used in backend
+    var satValueDict = {
+        "unknown": 5,
+        "satisfied": 3,
+        "partiallysatisfied": 2,
+        "partiallydenied": 1,
+        "denied": 0,
+        "conflict": 4,
+        "none": 6
+    }
+    datastring += elements.length + "\n";
+    for (var e = 0; e < elements.length; e++){
+        //var id = e.toString();
+        //while (id.length < 4){ id = "0" + id;}
+        //elements[e].prop("elementid", id);
+        var elementID = e.toString();
+        while (elementID.length < 4){ elementID = "0" + elementID;}
+        elements[e].prop("elementid", elementID);
+
+        var actorid = '-';
+        if (elements[e].get("parent")){
+            actorid = (graph.getCell(elements[e].get("parent")).prop("elementid") || "-");
+        }
+        console.log(actorid);
+
+        // Print NT in "core" of tool where time does not exist.
+        //datastring += ("I\t" + actorid + "\t" + elementID + "\t" + (functions[elements[e].attr(".funcvalue/text")] || "NT") + "\t");
+
+        datastring += ("I\t" + actorid + "\t" + elementID + "\t");
+        if (elements[e] instanceof joint.shapes.basic.Goal)
+            datastring += "G\t";
+        else if (elements[e] instanceof joint.shapes.basic.Task)
+            datastring += "T\t";
+        else if (elements[e] instanceof joint.shapes.basic.Softgoal)
+            datastring += "S\t";
+        else if (elements[e] instanceof joint.shapes.basic.Resource)
+            datastring += "R\t";
+        else
+            datastring += "I\t";
+
+        var v = elements[e].attr(".satvalue/value")
+
+        // treat satvalue as unknown if it is not yet defined
+        if((!v) || (v == "none"))
+            v = "none";
+
+        datastring += satValueDict[v];
+        datastring += "\t" + elements[e].attr(".name/text").replace(/\n/g, " ") + "\n";
+    }
+
+
+    //Step 3: Print each link in the model
+    for (var l = 0; l < savedLinks.length; l++){
+        var current = savedLinks[l];
+        var relationship = current.label(0).attrs.text.text.toUpperCase()
+        var source = "-";
+        var target = "-";
+
+        if (current.get("source").id)
+            source = graph.getCell(current.get("source").id).prop("elementid");
+        if (current.get("target").id)
+            target = graph.getCell(current.get("target").id).prop("elementid");
+
+        if (relationship.indexOf("|") > -1){
+            evolvRelationships = relationship.replace(/\s/g, '').split("|");
+            datastring += 'L\t' + evolvRelationships[0] + '\t' + source + '\t' + target + '\t' + evolvRelationships[1] + "\n";
+        }else{
+            datastring += 'L\t' + relationship + '\t' + source + '\t' + target + "\n";
+        }
+    }
+
+    //Step 4: Print the dynamics of the intentions.
+    for (var e = 0; e < elements.length; e++){
+        var elementID = e.toString();
+        while (elementID.length < 4){ elementID = "0" + elementID;}
+        elements[e].prop("elementid", elementID);
+
+        //datastring += ("I\t" + actorid + "\t" + elementID + "\t" + (functions[elements[e].attr(".funcvalue/text")] || "NT") + "\t");
+        var f = elements[e].attr(".funcvalue/text");
+        var funcType = elements[e].attr(".constraints/function");
+        var funcTypeVal = elements[e].attr(".constraints/lastval");
+        if  (f == " "){
+            datastring += ("D\t" + elementID + "\tNT\n");
+        }else if (f != "UD"){
+            datastring += ("D\t" + elementID + "\t" + f + "\t" + satValueDict[funcTypeVal] + "\n");
+
+            // user defined constraints
+        }else{
+            var begin = elements[e].attr(".constraints/beginLetter");
+            var end = elements[e].attr(".constraints/endLetter");
+            var rBegin = elements[e].attr(".constraints/beginRepeat");
+            var rEnd = elements[e].attr(".constraints/endRepeat");
+            datastring += "D\t" + elementID + "\t" + f + "\t" + String(funcTypeVal.length);
+
+            for (var l = 0; l < funcTypeVal.length; l++){
+                if(l == funcTypeVal.length - 1){
+                    datastring += "\t" + begin[l] + "\t1\t" + funcType[l] + "\t" + satValueDict[funcTypeVal[l]];
+                }else{
+                    datastring += "\t" + begin[l] + "\t" + end[l] + "\t" + funcType[l] + "\t" + satValueDict[funcTypeVal[l]];
+                }
+            }
+
+            // repeating
+            if (elements[e].attr(".constraints/beginRepeat") && elements[e].attr(".constraints/endRepeat")){
+                // to infinity
+                if (rEnd == end[end.length - 1]){
+                    datastring += "\tR\t" + rBegin + "\t1";
+                }else{
+                    datastring += "\tR\t" + rBegin + "\t" + rEnd;
+                }
+            }else{
+                datastring += "\tN";
+            }
+            datastring += "\n";
+        }
+    }
+
+    //Step 5: Print constraints between intensions.
+    for (var e = 0; e < savedConstraints.length; e++){
+        var c = savedConstraints[e];
+        var type = c.attributes.labels[0].attrs.text.text.replace(/\s/g, '');
+        var source = c.getSourceElement().attributes.elementid;
+        var target = c.getTargetElement().attributes.elementid;
+        var sourceVar = c.attr('.constraintvar/src');
+        var targetVar = c.attr('.constraintvar/tar');
+
+        datastring += ("C\t" + type + "\t" + source + "\t" + sourceVar + "\t" + target + "\t" + targetVar + "\n");
+    }
+
+    //console.log(datastring);
+    return datastring*/
+}
 
 //Auto-save the cookie whenever the graph is changed.
 graph.on("change", function(){
 	var graphtext = JSON.stringify(graph.toJSON());
 	document.cookie = "graph=" + graphtext;
+    updateDataBase(graph);
 });
+
+
+
 
 var selection = new Backbone.Collection();
 
@@ -1302,6 +1529,7 @@ paper.on('cell:pointerup', function(cellView, evt) {
 
 
 graph.on('change:size', function(cell, size){
+	console.log(cell);
 	cell.attr(".label/cx", 0.25 * size.width);
 
 	//Calculate point on actor boundary for label (to always remain on boundary)
@@ -1315,6 +1543,13 @@ graph.on('change:size', function(cell, size){
 
 //Removing a link
 this.graph.on('remove', function(cell, collection, opt) {
+	console.log(cell);
+    var timestamp = new Date().toUTCString();
+    if (cell instanceof joint.shapes.basic.Actor){
+        accessDatabase("insert into actors(id,name,action,timestamp) values " + "(\'"+
+			cell.id +"\',\'"+ cell.attr(".name/text") +"\', \'REMOVE\',\'"+
+			timestamp + "\') ON DUPLICATE KEY UPDATE timestamp=\'"+timestamp + "\'",1);
+    }
    if (cell.isLink()) {
 	   if(cell.prop("link-type") == 'NBT' || cell.prop("link-type") == 'NBD'){
 
@@ -1699,6 +1934,7 @@ function postData(simulationType, leafLines, queryLines, cspHistoryLines, queryN
 //Save in a .leaf format
 function saveLeaf(){
 	var datastring = generateLeafFile();
+	console.log("generate leaf file");
 	var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.leaf will be added as the file extension.", "<file name>");
 	if (name){
 		var fileName = name + ".leaf";
@@ -1722,7 +1958,7 @@ function download(filename, text) {
 
 // Generates file needed for backend analysis
 function generateLeafFile(){
-
+	console.log("inside generateLeafFile");
 	//Step 0: Get elements from graph.
 	var all_elements = graph.getElements();
 	var savedLinks = [];
@@ -1774,6 +2010,8 @@ function generateLeafFile(){
 		while (actorId.length < 3){ actorId = "0" + actorId;}
 		actorId = "a" + actorId;
 		actors[a].prop("elementid", actorId);
+		console.log("parsing actors:");
+		console.log(actors[a].id);
 		datastring += ("A\t" + actorId + "\t" + actors[a].attr(".name/text") + "\t" + (actors[a].prop("actortype") || "A") + "\n");
 	}
 
@@ -1800,9 +2038,14 @@ function generateLeafFile(){
 		elements[e].prop("elementid", elementID);
 
 		var actorid = '-';
-		if (elements[e].get("parent")){
+        console.log("parsing elements:");
+
+        if (elements[e].get("parent")){
 			actorid = (graph.getCell(elements[e].get("parent")).prop("elementid") || "-");
-		}
+			console.log("parent id");
+            console.log(elements[e].get("parent").id);
+        }
+		console.log(elements[e].id);
 		console.log(actorid);
 
 	// Print NT in "core" of tool where time does not exist.
@@ -1837,7 +2080,8 @@ function generateLeafFile(){
 		var relationship = current.label(0).attrs.text.text.toUpperCase()
 		var source = "-";
 		var target = "-";
-
+		console.log("parsing links:");
+		console.log(current.id);
 		if (current.get("source").id)
 			source = graph.getCell(current.get("source").id).prop("elementid");
 		if (current.get("target").id)
@@ -1855,6 +2099,8 @@ function generateLeafFile(){
 	for (var e = 0; e < elements.length; e++){
 	    var elementID = e.toString();
 	    while (elementID.length < 4){ elementID = "0" + elementID;}
+	    console.log("parsing dynamics:");
+	    console.log(elements[e].id);
 	    elements[e].prop("elementid", elementID);
 
 	    //datastring += ("I\t" + actorid + "\t" + elementID + "\t" + (functions[elements[e].attr(".funcvalue/text")] || "NT") + "\t");
