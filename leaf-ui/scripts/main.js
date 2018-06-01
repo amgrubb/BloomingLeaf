@@ -1340,20 +1340,6 @@ else{
 		});
 	});
 
-	//Delete selected nodes when the delete key is pressed.
-
-	KeyboardJS.on('del', function(){
-	// 	while (selection.length > 0){
-	// 		selection.pop();
-	// //		console.log(paper.findViewByModel(current));
-	// //		selectionView.destroySelectionBox(paper.findViewByModel(current));
-	// //		current.remove();
-	// 	}
-	});
-	// Override browser's default action when backspace is pressed
-	KeyboardJS.on('backspace', function(){
-
-	});
 }
 
 // ----------------------------------------------------------------- //
