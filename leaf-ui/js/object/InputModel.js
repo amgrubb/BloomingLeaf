@@ -18,11 +18,11 @@ function FrontendModel(
 //This method is responsible to get all data from the UI and add in to a object to be sent to backend
 function getFrontendModel(isSinglePath = true){
 
-	//VERIFY IF THE MODEL IS CORRECT FOR ANALYSIS
-	//In SINGLE PATH analysis, the initial values must not be conflictant
-	//console.log("Inside Input Model : "  + isSinglePath)
-	if(isSinglePath)
+	// Verfy if the model is correct for analysis
+	// In SINGLE PATH analysis, the initial values must not be conflictant
+	if(isSinglePath){
 		checkConflictValues();
+	}
 
 
 	//GETTING DATA FROM UI

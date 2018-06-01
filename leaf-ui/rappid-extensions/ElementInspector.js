@@ -179,7 +179,7 @@ var ElementInspector = Backbone.View.extend({
     'click #constraint-restart': 'restartConstraint',
   },
 
-    //Initializing Element Inspector using the template.
+  // Initializing Element Inspector using the template.
   render: function(cellView) {
     this._cellView = cellView;
     var cell = this._cellView.model;

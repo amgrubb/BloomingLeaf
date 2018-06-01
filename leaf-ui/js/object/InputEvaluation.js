@@ -40,7 +40,6 @@ function getUserEvaluations(){
 		var kj = 0;
 		var kk = 1;
 		for (var key = 0; key < Object.keys(saveIVT).length; key++){
-			console.log(selected_eval);
 			saveIVT[Object.keys(saveIVT)[key]]["evalList"] = selected_eval.slice(kj,sub);
 			kj = sub;
 			sub=sub*(kk+1);
@@ -48,12 +47,10 @@ function getUserEvaluations(){
 	}
 	for(var k in saveIVT){
 		var goal = k;
-		console.log(saveIVT[k]["absTimePoints"]);
 		if(saveIVT[k]["absTimePoints"]){
 			for(var i = 0; i < saveIVT[k]["absTimePoints"].length; i++){
 				var absTime = saveIVT[k]["absTimePoints"][i];
 				var evaluationValue = satValueDict[saveIVT[k]["evalList"][i]];
-				console.log(typeof evaluationValue);
 				if(evaluationValue){
 					var evaluation = new InputEvaluation(
 							goal,

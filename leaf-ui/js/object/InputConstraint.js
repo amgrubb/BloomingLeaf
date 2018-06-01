@@ -9,14 +9,9 @@ function InputConstraint(constraintType, constraintSrcID, constraintSrcEB, absol
 
 function getConstraints(){
 	var constraints = [];
-	//console.log(graph.constraintValues);
-	//console.log(graph.getLinks());
-	//console.log(graph.getElements());
 	var links = graph.constraintValues;//graph.intensionConstraints;
-	//console.log(graph.constraintValues.length);
 	if(links != null){
 		for (var i = 0; i < links.length; i++){
-			//console.log(links[i]);
 			var c = links[i];
 			var type = c.constraintType;
 			var source = c.constraintSrcID;
@@ -24,7 +19,6 @@ function getConstraints(){
 			var absoluteValue = parseInt(c.absoluteValue);
 			var sourceVar = c.constraintSrcEB;
 			var targetVar = c.constraintDestEB;
-			//console.log(typeof parseInt(absoluteValue));
 			var constraint = new InputConstraint(
 					type,
 					source,
@@ -32,7 +26,6 @@ function getConstraints(){
 					absoluteValue,		//TODO: The integer value of the absolute value of intenetion constraints must be added.
 					target,
 					targetVar);
-			//console.log(constraint);
 			constraints.push(constraint);
 		};
 	}
