@@ -161,78 +161,7 @@ if (document.cookie){
 
 
 
-// ----------------------------------------------------------------- //
-// Modelling link control
-$('#symbolic-btn').on('click', function(){
-	saveLinks(linkMode);
-	setLinks(linkMode);
-});
-function getNodeName(id){
-	var listNodes = graph.getElements();
-	for(var i = 0; i < listNodes.length; i++){
-		var cellView  = listNodes[i].findView(paper);
-		if(id == cellView.model.attributes.elementid){
-			var nodeName = cellView.model.attr(".name");
-			return nodeName.text;
-		}
-	}
-}
-// Set links or constraints
-function setLinks(mode){
-	if(mode == "View"){
-		linkMode = "Constraints";
-		$('#symbolic-btn').html("Model View");
 
-		var restoredLinks = graph.intensionConstraints;
-		paper.options.defaultLink.attributes.labels[0].attrs.text.text = " constraint ";
-		paper.options.defaultLink.attr(".marker-target/d", 'M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5');
-
-	}else if (mode == "Constraints"){
-		linkMode = "View";
-		$('#symbolic-btn').html("Model View");
-
-		var restoredLinks = graph.links;
-		paper.options.defaultLink.attributes.labels[0].attrs.text.text = "and";
-		paper.options.defaultLink.attr(".marker-target/d", 'M 10 0 L 10 10 M 10 5 L 0 5');
-
-	}
-
-	$('#modeText').text("Modelling " + linkMode);
-
-	// render preexisting links in new mode
-	for (var l = 0; l < restoredLinks.length; l++){
-		restoredLinks[l].attr('./display', '');
-	}
-}
-
-// Save links or constraints
-function saveLinks(mode){
-	// Hide all relationships that are not suppose to be dispalyed
-	if(mode == "View"){
-		var links = graph.getLinks();
-		graph.links = [];
-		links.forEach(function(link){
-			if(!isLinkInvalid(link)){
-				if(!link.attr('./display')){
-					link.attr('./display', 'none');
-					graph.links.push(link);
-				}
-			}else{link.remove();}
-		});
-	}else if (mode == "Constraints"){
-		var links = graph.getLinks();
-		graph.intensionConstraints = [];
-		links.forEach(function(link){
-			var linkStatus = link.attributes.labels[0].attrs.text.text.replace(/\s/g, '');
-			if(!isLinkInvalid(link) && (linkStatus != "constraint") && (linkStatus != "error")){
-				if(!link.attr('./display')){
-					link.attr('./display', 'none');
-					graph.intensionConstraints.push(link);
-				}
-			}else{link.remove();}
-		});
-	}
-}
 
 
 // ----------------------------------------------------------------- //
