@@ -141,9 +141,8 @@ var AnalysisInspector = Backbone.View.extend({
 		'click #btn-save-intermT' : 'saveIntermTable',
 	},
 
-	render: function(analysisFunctions) {
+	render: function() {
 		// These functions are used to communicate between analysisInspector and Main.js
-		this._analysisFunctions = analysisFunctions;
 		this.$el.html(_.template(this.template)());
 		$('head').append('<script src="./scripts/js-objects/analysis.js"></script>');
 	},
