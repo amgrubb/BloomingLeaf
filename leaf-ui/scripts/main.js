@@ -1137,6 +1137,7 @@ graph.on("add", function(cell){
 	//Add Functions and sat values to added types
 	if (cell instanceof joint.shapes.basic.Intention){
 		cell.attr('.funcvalue/text', ' ');
+
 	}
 
 	//Send actors to background so elements are placed on top
@@ -1188,7 +1189,8 @@ function updateDataBase(graph){
                 if (link.attr('./display') != "none")
                     savedLinks.push(link);
             }
-            else{link.remove();}
+            //else{link.remove();}
+
         });
     }else if (linkMode == "Constraints"){
         savedLinks = graph.links;
@@ -1199,9 +1201,10 @@ function updateDataBase(graph){
                 if (link.attr('./display') != "none")
                     savedConstraints.push(link);
             }
-            else{link.remove();}
+            //else{link.remove();}
         });
     }
+    console.log(savedLinks.length);
 
     //Step 1: Filter out Actors
     var elements = [];
@@ -1282,7 +1285,7 @@ function updateDataBase(graph){
 
         datastring += satValueDict[v];
         datastring += "\t" + elements[e].attr(".name/text").replace(/\n/g, " ") + "\n";
-    }
+    }*/
 
 
     //Step 3: Print each link in the model
@@ -1299,13 +1302,27 @@ function updateDataBase(graph){
 
         if (relationship.indexOf("|") > -1){
             evolvRelationships = relationship.replace(/\s/g, '').split("|");
-            datastring += 'L\t' + evolvRelationships[0] + '\t' + source + '\t' + target + '\t' + evolvRelationships[1] + "\n";
+            //datastring += 'L\t' + evolvRelationships[0] + '\t' + source + '\t' + target + '\t' + evolvRelationships[1] + "\n";
+        //CREATE TABLE links(id varchar(255) NOT NULL,
+			// type varchar(255) NOT NULL,source_id varchar(255) NOT NULL,
+			// target_id varchar(255) NOT NULL,
+			// evolvRelationships varchar(255),
+			// action varchar(255) NOT NULL,timestamp varchar(255) NOT NULL,
+			// PRIMARY KEY (id,type,source_id,target_id,action));
+
+            accessDatabase("insert into links(type,source_id,target_id,evolvRelationships,action,timestamp) values " +
+                "(\'"+ current.id +"\',\'"+ evolvRelationships[0] + "\',\'" + current.get("source").id + "\',\'" + current.get("target").id + "\',\'" +  evolvRelationships[1] + "\', \'EDIT\',\'"+
+                timestamp + "\') ON DUPLICATE KEY UPDATE timestamp=\'"+timestamp + "\'",1);
+
         }else{
-            datastring += 'L\t' + relationship + '\t' + source + '\t' + target + "\n";
+            //datastring += 'L\t' + relationship + '\t' + source + '\t' + target + "\n";
+            accessDatabase("insert into links(id,type,source_id,target_id,action,timestamp) values " +
+                "(\'"+ current.id +"\',\'"+ relationship + "\',\'" + current.get("source").id + "\',\'" + current.get("target").id  + "\', \'EDIT\',\'"+
+                timestamp + "\') ON DUPLICATE KEY UPDATE timestamp=\'"+timestamp + "\'",1);
         }
     }
 
-    //Step 4: Print the dynamics of the intentions.
+  /*  //Step 4: Print the dynamics of the intentions.
     for (var e = 0; e < elements.length; e++){
         var elementID = e.toString();
         while (elementID.length < 4){ elementID = "0" + elementID;}
