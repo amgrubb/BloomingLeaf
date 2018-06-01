@@ -170,9 +170,6 @@ if (document.cookie){
 //Switch to analysis mode
 $('#analysis-btn').on('click', function(){
 	syntaxCheck();
-	/*
-	if (linkMode == "Constraints")
-		$('#symbolic-btn').trigger( "click" );*/
 
 	//Adjust left and right panels
 	elementInspector.clear();
@@ -631,7 +628,6 @@ function switchToModellingMode(useInitState){
 
 	$('#model-toolbar').css("display","");
 
-	$('#modeText').text("Modelling " + linkMode);
 	$('#sliderValue').text("");
 
 	// reinstantiate link settings
@@ -1048,18 +1044,12 @@ graph.on("add", function(cell){
 		if (graph.getCell(cell.get("source").id) instanceof joint.shapes.basic.Actor){
 
 			cell.attr({
-				'.connection': {stroke: '#000000', 'stroke-dasharray': '0 0'},
-				'.marker-source': {'d': '0'},
-				'.marker-target': {stroke: '#000000', "d": 'M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5'}
+				'.connection': {stroke: '#000000', 'stroke-dasharray': '5 5'},
+				//'.marker-source': {'d': '0'},
+				'.marker-target': {stroke: '#500000', "d": 'M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5'}
 			});
 			cell.prop("linktype", "actorlink");
 
-			// Unable to model constraints for actors
-			if(linkMode == "View"){
-				cell.label(0, {attrs: {text: {text: "is-a"}}});
-			}else if(linkMode == "Constraints"){
-				cell.label(0, {attrs: {text: {text: "error"}}});
-			}
 		}
 	}	//Don't do anything for links
 	//Give element a unique default
