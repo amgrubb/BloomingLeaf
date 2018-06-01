@@ -1,4 +1,5 @@
 //Flag to turn on console log notification
+// TODO: delete this?
 var develop = false;
 
 // Global variables
@@ -58,10 +59,8 @@ graph.linksNum;
 graph.constraintsNum;
 graph.allElements = [];
 graph.elementsBeforeAnalysis = [];
-graph.constraintValues = [];//store all the graph constraint values to be used		 +var linkNum = 0;
-														// by InputConstraint
+graph.constraintValues = [];//store all the graph constraint values to be used
 
-var linkNum = 0;
 var commandManager = new joint.dia.CommandManager({ graph: graph });
 
 // Create a paper and wrap it in a PaperScroller.
@@ -80,7 +79,6 @@ paper = new joint.dia.Paper({
 		'labels': [{position: 0.5, attrs: {text: {text: "and"}}}]
 	})
 });
-console.log(linkNum);
 
 var paperScroller = new joint.ui.PaperScroller({
 	autoResizePaper: true,
@@ -225,18 +223,12 @@ $('#cycledetect-btn').on('click', function(e){
 	else{
 		var verticies = js_object.analysis.elementList;
 		var links = jslinks;
-		console.log(verticies)
-		console.log(graph.getElements());
-		console.log(links);
 		//If there is no cycle, leave the color the way it was
 		if (cycleCheck(links, verticies) == false){
 			swal("No cycle in the graph", "", "success");
 			var elements = graph.getElements();
 			for (var i = 0; i < elements.length; i++){
 				var cellView  = elements[i].findView(paper);
-				if(cellView.model.attributes.type == "link"){
-					console.log(cellView.model.attr);
-				}
 				if(cellView.model.attributes.type == "basic.Task"){
 					cellView.model.attr({'.outer': {'fill': '#92E3B1'}});
 				}
@@ -311,8 +303,6 @@ $('#cycledetect-btn').on('click', function(e){
  * 
  */
 function initializeDestSourceMapper(jointLinks, inputlinks){
-	console.log('elements ', jointLinks);
-	console.log('jslinks', inputlinks);
     let destSourceMapper = {};
     let linkView;
     let constraint;
@@ -336,7 +326,6 @@ function initializeDestSourceMapper(jointLinks, inputlinks){
         destSourceMapper[inputlinks[j].linkDestID]["constraint"].push(constraint);
         destSourceMapper[inputlinks[j].linkDestID]["findview"].push(linkView);
     }
-    console.log('destSourceMapper ', destSourceMapper);
     return destSourceMapper;
 }
 
@@ -453,7 +442,6 @@ function getNaryRelationships(destSourceMapper, destId) {
 		if (constraints[i] == 'AND' || 
 			constraints[i] == 'OR' || 
 			constraints[i] == 'NO RELATIONSHIP') {
-			console.log('destSourceMapper[destId]', destSourceMapper[destId]);
 			var obj = {
 				source: destSourceMapper[destId].source[i],
 				constraint: constraints[i],
@@ -1184,7 +1172,6 @@ var clipboard = new joint.ui.Clipboard();
 //Check if the browser is on Mac
 var macOS = navigator.platform.match(/(Mac|iPhone|iPod|iPad)/i)?true:false;
 if(macOS){
-	console.log("On mac");
 	KeyboardJS.on('command + c, ctrl + c', function() {
 		// Copy all selected elements and their associatedf links.
 		clipboard.copyElements(selection, graph, { translate: { dx: 20, dy: 20 }, useLocalStorage: true });
@@ -1212,20 +1199,6 @@ if(macOS){
 		});
 	});
 
-	//Delete selected nodes when the delete key is pressed.
-
-	KeyboardJS.on('del', function(){
-	// 	while (selection.length > 0){
-	// 		selection.pop();
-	// //		console.log(paper.findViewByModel(current));
-	// //		selectionView.destroySelectionBox(paper.findViewByModel(current));
-	// //		current.remove();
-	// 	}
-	});
-	// Override browser's default action when backspace is pressed
-	KeyboardJS.on('backspace', function(){
-
-	});
 }
 else{
 	KeyboardJS.on('ctrl + c', function() {
@@ -1294,7 +1267,6 @@ $('#btn-clear-flabel').on('click', function(){
 // cycle detection function
 $('#btn-clear-cycle').on('click',function(){
 	var cycleElements = graph.getElements();
-	console.log(cycleElements);
 
 	var elements = graph.getElements();
 	for (var i = 0; i < elements.length; i++){
