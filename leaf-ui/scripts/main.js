@@ -717,8 +717,7 @@ function updateSlider(currentAnalysis, pastAnalysisStep){
 		analysisMarkers = sliderObject.pastAnalysisValues;
 	}
 	adjustSlider(sliderMax);
-	createSlider(sliderMax)
-	return sliderMax;
+	createSlider(sliderMax);
 }
 	
 function createSlider(sliderMax){
