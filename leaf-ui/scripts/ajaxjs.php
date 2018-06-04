@@ -12,7 +12,6 @@ if ($conn->connect_error) {
 $query = $_POST['query'];
 $type = $_POST['type'];
 $db = mysqli_select_db($conn, "my_db"); // Selecting Database
-echo $query;
 
 if (!mysqli_query($conn,$query))
   {

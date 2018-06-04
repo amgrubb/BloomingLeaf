@@ -1255,7 +1255,6 @@ function updateDataBase(graph){
             //else{link.remove();}
         });
     }
-    console.log(savedLinks.length);
 
     //Step 1: Filter out Actors
     var elements = [];
@@ -1296,13 +1295,10 @@ function updateDataBase(graph){
     for (var e = 0; e < elements.length; e++){
 
         var actorid = '-';
-        console.log(elements[e].get("parent"));
 
         if (elements[e].get("parent")){
             actorid = elements[e].get("parent");
         }
-        console.log(elements[e]);
-        console.log(actorid);
 
         var type;
         if (elements[e] instanceof joint.shapes.basic.Goal)
@@ -1349,16 +1345,25 @@ function updateDataBase(graph){
    //Step 4: Print the dynamics of the intentions.
     for (var e = 0; e < elements.length; e++){
         var elementID = e.toString();
-        while (elementID.length < 4){ elementID = "0" + elementID;}
-        elements[e].prop("elementid", elementID);
 
         var f = elements[e].attr(".funcvalue/text");
+        console.log(f);
+        var init_value = elements[e].attr(".constraints/markedvalue");
+        console.log(init_value);
         var funcType = elements[e].attr(".constraints/function");
+        console.log(funcType);
         var funcTypeVal = elements[e].attr(".constraints/lastval");
-        if  (f == " "){
-            datastring += ("D\t" + elementID + "\tNT\n");
+        console.log(funcTypeVal);
+        var sat_value = "";
+        var function_string = "";
+        if (( typeof init_value !== 'undefined' ) && ( typeof sat_value !== 'undefined' )){
+        if  (f == " " || f == ""){
+            //datastring += ("D\t" + elementID + "\tNT\n");
+            f = "NT";
+            sat_value = satValueDict[funcTypeVal];
         }else if (f != "UD"){
-            datastring += ("D\t" + elementID + "\t" + f + "\t" + satValueDict[funcTypeVal] + "\n");
+            //datastring += ("D\t" + elementID + "\t" + f + "\t" + satValueDict[funcTypeVal] + "\n");
+            sat_value = satValueDict[funcTypeVal];
 
             // user defined constraints
         }else{
@@ -1366,13 +1371,12 @@ function updateDataBase(graph){
             var end = elements[e].attr(".constraints/endLetter");
             var rBegin = elements[e].attr(".constraints/beginRepeat");
             var rEnd = elements[e].attr(".constraints/endRepeat");
-            datastring += "D\t" + elementID + "\t" + f + "\t" + String(funcTypeVal.length);
-
+            sat_value = String(funcTypeVal.length);
             for (var l = 0; l < funcTypeVal.length; l++){
                 if(l == funcTypeVal.length - 1){
-                    datastring += "\t" + begin[l] + "\t1\t" + funcType[l] + "\t" + satValueDict[funcTypeVal[l]];
+                    function_string += "\t" + begin[l] + "\t1\t" + funcType[l] + "\t" + satValueDict[funcTypeVal[l]];
                 }else{
-                    datastring += "\t" + begin[l] + "\t" + end[l] + "\t" + funcType[l] + "\t" + satValueDict[funcTypeVal[l]];
+                    function_string += "\t" + begin[l] + "\t" + end[l] + "\t" + funcType[l] + "\t" + satValueDict[funcTypeVal[l]];
                 }
             }
 
@@ -1380,14 +1384,19 @@ function updateDataBase(graph){
             if (elements[e].attr(".constraints/beginRepeat") && elements[e].attr(".constraints/endRepeat")){
                 // to infinity
                 if (rEnd == end[end.length - 1]){
-                    datastring += "\tR\t" + rBegin + "\t1";
+                    function_string += "\tR\t" + rBegin + "\t1";
                 }else{
-                    datastring += "\tR\t" + rBegin + "\t" + rEnd;
+                    function_string += "\tR\t" + rBegin + "\t" + rEnd;
                 }
             }else{
-                datastring += "\tN";
+                function_string += "\tN";
             }
-            datastring += "\n";
+
+        }
+
+        	accessDatabase("insert into dynamics(intention_id,function_type,init_value,sat_value,function_string,action,timestamp) values " +
+            "(\'"+ elements[e].id +"\',\'"+ f + "\',\'" + init_value + "\',\'" + sat_value + "\',\'" + function_string  + "\', \'EDIT\',\'"+
+            timestamp + "\') ON DUPLICATE KEY UPDATE timestamp=\'"+timestamp + "\'",1);
         }
     }
 
@@ -1602,8 +1611,6 @@ this.graph.on('remove', function(cell, collection, opt) {
         }
 
         var actorid = '-';
-        console.log(cell);
-        console.log(cell.get("parent"));
 
         if (cell.get("parent")){
             //actorid = (graph.getCell(elements[e].get("parent")).prop("elementid") || "-");
@@ -1631,6 +1638,55 @@ this.graph.on('remove', function(cell, collection, opt) {
 
         accessDatabase("insert into intentions(id, actor_id,type,satValue,text,action,timestamp) values " +
             "(\'"+ cell.id +"\',\'"+ actorid + "\',\'" + type + "\',\'" + satValueDict[v] + "\',\'" +  cell.attr(".name/text").replace(/\n/g, " ") + "\', \'REMOVE\',\'"+
+            timestamp + "\') ON DUPLICATE KEY UPDATE timestamp=\'"+timestamp + "\'",1);
+
+        // remove the dynamics for this intention
+
+        var f = cell.attr(".funcvalue/text");
+        console.log(f);
+		var init_value = cell.attr(".constraints/markedvalue");
+        console.log(init_value);
+        var funcType = cell.attr(".constraints/function");
+        console.log(funcType);
+        var funcTypeVal = cell.attr(".constraints/lastval");
+        console.log(funcTypeVal);
+        var sat_value = 5;
+        var function_string = "";
+        if  (f == " "){
+            f = "NT";
+        }else if (f != "UD"){
+            sat_value = satValueDict[funcTypeVal];
+
+            // user defined constraints
+        }else{
+            var begin = cell.attr(".constraints/beginLetter");
+            var end = cell.attr(".constraints/endLetter");
+            var rBegin = cell.attr(".constraints/beginRepeat");
+            var rEnd = cell.attr(".constraints/endRepeat");
+            sat_value = String(funcTypeVal.length);
+            for (var l = 0; l < funcTypeVal.length; l++){
+                if(l == funcTypeVal.length - 1){
+                    function_string += "\t" + begin[l] + "\t1\t" + funcType[l] + "\t" + satValueDict[funcTypeVal[l]];
+                }else{
+                    function_string += "\t" + begin[l] + "\t" + end[l] + "\t" + funcType[l] + "\t" + satValueDict[funcTypeVal[l]];
+                }
+            }
+
+            // repeating
+            if (elements[e].attr(".constraints/beginRepeat") && elements[e].attr(".constraints/endRepeat")){
+                // to infinity
+                if (rEnd == end[end.length - 1]){
+                    function_string += "\tR\t" + rBegin + "\t1";
+                }else{
+                    function_string += "\tR\t" + rBegin + "\t" + rEnd;
+                }
+            }else{
+                function_string += "\tN";
+            }
+
+        }
+        accessDatabase("insert into dynamics(intention_id,function_type,init_value,sat_value,function_string,action,timestamp) values " +
+            "(\'"+ cell.id +"\',\'"+ f + "\',\'" + init_value + "\',\'" + sat_value + "\',\'" + function_string  + "\', \'REMOVE\',\'"+
             timestamp + "\') ON DUPLICATE KEY UPDATE timestamp=\'"+timestamp + "\'",1);
 
     }
@@ -2034,7 +2090,6 @@ function postData(simulationType, leafLines, queryLines, cspHistoryLines, queryN
 //Save in a .leaf format
 function saveLeaf(){
 	var datastring = generateLeafFile();
-	console.log("generate leaf file");
 	var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.leaf will be added as the file extension.", "<file name>");
 	if (name){
 		var fileName = name + ".leaf";
@@ -2058,7 +2113,6 @@ function download(filename, text) {
 
 // Generates file needed for backend analysis
 function generateLeafFile(){
-	console.log("inside generateLeafFile");
 	//Step 0: Get elements from graph.
 	var all_elements = graph.getElements();
 	var savedLinks = [];
@@ -2110,8 +2164,6 @@ function generateLeafFile(){
 		while (actorId.length < 3){ actorId = "0" + actorId;}
 		actorId = "a" + actorId;
 		actors[a].prop("elementid", actorId);
-		console.log("parsing actors:");
-		console.log(actors[a].id);
 		datastring += ("A\t" + actorId + "\t" + actors[a].attr(".name/text") + "\t" + (actors[a].prop("actortype") || "A") + "\n");
 	}
 
@@ -2138,14 +2190,10 @@ function generateLeafFile(){
 		elements[e].prop("elementid", elementID);
 
 		var actorid = '-';
-        console.log("parsing elements:");
 
         if (elements[e].get("parent")){
 			actorid = (graph.getCell(elements[e].get("parent")).prop("elementid") || "-");
-			console.log("parent id");
-            console.log(elements[e].get("parent").id);
         }
-		console.log(elements[e].id);
 		console.log(actorid);
 
 	// Print NT in "core" of tool where time does not exist.
@@ -2180,8 +2228,6 @@ function generateLeafFile(){
 		var relationship = current.label(0).attrs.text.text.toUpperCase()
 		var source = "-";
 		var target = "-";
-		console.log("parsing links:");
-		console.log(current.id);
 		if (current.get("source").id)
 			source = graph.getCell(current.get("source").id).prop("elementid");
 		if (current.get("target").id)
@@ -2199,8 +2245,6 @@ function generateLeafFile(){
 	for (var e = 0; e < elements.length; e++){
 	    var elementID = e.toString();
 	    while (elementID.length < 4){ elementID = "0" + elementID;}
-	    console.log("parsing dynamics:");
-	    console.log(elements[e].id);
 	    elements[e].prop("elementid", elementID);
 
 	    //datastring += ("I\t" + actorid + "\t" + elementID + "\t" + (functions[elements[e].attr(".funcvalue/text")] || "NT") + "\t");
