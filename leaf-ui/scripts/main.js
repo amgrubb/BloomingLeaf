@@ -1401,7 +1401,7 @@ function updateDataBase(graph){
     }
 
     //Step 5: Print constraints between intensions.
-    /*for (var e = 0; e < savedConstraints.length; e++){
+    for (var e = 0; e < savedConstraints.length; e++){
         var c = savedConstraints[e];
         var type = c.attributes.labels[0].attrs.text.text.replace(/\s/g, '');
         var source = c.getSourceElement().attributes.elementid;
@@ -1409,8 +1409,10 @@ function updateDataBase(graph){
         var sourceVar = c.attr('.constraintvar/src');
         var targetVar = c.attr('.constraintvar/tar');
 
-        datastring += ("C\t" + type + "\t" + source + "\t" + sourceVar + "\t" + target + "\t" + targetVar + "\n");
-    }*/
+        accessDatabase("insert into constraints(type,source,sourceVar,target,targetVar,action,timestamp) values " +
+            "(\'"+ type +"\',\'"+ source + "\',\'" + sourceVar + "\',\'" + target + "\',\'" + targetVar  + "\', \'EDIT\',\'"+
+            timestamp + "\') ON DUPLICATE KEY UPDATE timestamp=\'"+timestamp + "\'",1);
+    }
 
 }
 
