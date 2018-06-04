@@ -1,6 +1,7 @@
 //Flag to turn on console log notification
 var develop = false;
-
+var session_id = Date.now();
+console.log(session_id);
 // Global variables
 var graph;
 var paper;
@@ -1214,8 +1215,8 @@ function updateDataBase(graph){
 
     //print each actor in the model
     for (var a = 0; a < actors.length; a++){
-		accessDatabase("insert ignore into actors(id,name,action,timestamp) values " +
-			"(\'"+ actors[a].id +"\',\'"+ actors[a].attr(".name/text") +"\', \'EDIT\',\'"+
+		accessDatabase("insert ignore into actors(session_id,id,name,action,timestamp) values " +
+			"(\'"+ session_id +"\',\'"+actors[a].id +"\',\'"+ actors[a].attr(".name/text") +"\', \'EDIT\',\'"+
 			timestamp + "\')",1);
         accessDatabase("UPDATE actors SET action=\'CREATE\' WHERE id=" + "\'" + actors[a].id + "\' ORDER BY timestamp ASC LIMIT 1",1);
     }
@@ -1259,8 +1260,8 @@ function updateDataBase(graph){
         if((!v) || (v == "none"))
             v = "none";
 
-        accessDatabase("insert ignore into intentions(id, actor_id,type,satValue,text,action,timestamp) values " +
-            "(\'"+ elements[e].id +"\',\'"+ actorid + "\',\'" + type + "\',\'" + satValueDict[v] + "\',\'" +  elements[e].attr(".name/text").replace(/\n/g, " ") + "\', \'EDIT\',\'"+
+        accessDatabase("insert ignore into intentions(session_id, id, actor_id,type,satValue,text,action,timestamp) values " +
+            "(\'"+ session_id +"\',\'"+elements[e].id +"\',\'"+ actorid + "\',\'" + type + "\',\'" + satValueDict[v] + "\',\'" +  elements[e].attr(".name/text").replace(/\n/g, " ") + "\', \'EDIT\',\'"+
             timestamp + "\')",1);
         accessDatabase("UPDATE intentions SET action=\'CREATE\' WHERE id=" + "\'" + elements[e].id + "\' ORDER BY timestamp ASC LIMIT 1",1);
 
@@ -1274,13 +1275,13 @@ function updateDataBase(graph){
 
         if (relationship.indexOf("|") > -1){
             evolvRelationships = relationship.replace(/\s/g, '').split("|");
-            accessDatabase("insert ignore into links(id, type,source_id,target_id,evolvRelationships,action,timestamp) values " +
-                "(\'"+ current.id +"\',\'"+ evolvRelationships[0] + "\',\'" + current.get("source").id + "\',\'" + current.get("target").id + "\',\'" +  evolvRelationships[1] + "\', \'EDIT\',\'"+
+            accessDatabase("insert ignore into links(session_id, id, type,source_id,target_id,evolvRelationships,action,timestamp) values " +
+                "(\'"+ session_id +"\',\'"+current.id +"\',\'"+ evolvRelationships[0] + "\',\'" + current.get("source").id + "\',\'" + current.get("target").id + "\',\'" +  evolvRelationships[1] + "\', \'EDIT\',\'"+
                 timestamp + "\') ",1);
 
         }else{
-            accessDatabase("insert ignore into links(id,type,source_id,target_id,action,timestamp) values " +
-                "(\'"+ current.id +"\',\'"+ relationship + "\',\'" + current.get("source").id + "\',\'" + current.get("target").id  + "\', \'EDIT\',\'"+
+            accessDatabase("insert ignore into links(session_id,id,type,source_id,target_id,action,timestamp) values " +
+                "(\'"+ session_id +"\',\'"+current.id +"\',\'"+ relationship + "\',\'" + current.get("source").id + "\',\'" + current.get("target").id  + "\', \'EDIT\',\'"+
                 timestamp + "\')",1);
         }
         accessDatabase("UPDATE links SET action=\'CREATE\' WHERE id=" + "\'" + current.id + "\' ORDER BY timestamp ASC LIMIT 1",1);
@@ -1339,8 +1340,8 @@ function updateDataBase(graph){
 
         }
 
-        	accessDatabase("insert ignore into dynamics(intention_id,function_type,init_value,sat_value,function_string,action,timestamp) values " +
-            "(\'"+ elements[e].id +"\',\'"+ f + "\',\'" + init_value + "\',\'" + sat_value + "\',\'" + function_string  + "\', \'EDIT\',\'"+
+        	accessDatabase("insert ignore into dynamics(session_id,intention_id,function_type,init_value,sat_value,function_string,action,timestamp) values " +
+            "(\'"+ session_id +"\',\'"+elements[e].id +"\',\'"+ f + "\',\'" + init_value + "\',\'" + sat_value + "\',\'" + function_string  + "\', \'EDIT\',\'"+
             timestamp + "\') ",1);
             accessDatabase("UPDATE dynamics SET action=\'CREATE\' WHERE intention_id=" + "\'" + elements[e].id + "\' ORDER BY timestamp ASC LIMIT 1",1);
 
@@ -1356,9 +1357,9 @@ function updateDataBase(graph){
         var sourceVar = c.attr('.constraintvar/src');
         var targetVar = c.attr('.constraintvar/tar');
 
-        accessDatabase("insert into constraints(type,source,sourceVar,target,targetVar,action,timestamp) values " +
-            "(\'"+ type +"\',\'"+ source + "\',\'" + sourceVar + "\',\'" + target + "\',\'" + targetVar  + "\', \'EDIT\',\'"+
-            timestamp + "\') ON DUPLICATE KEY UPDATE timestamp=\'"+timestamp + "\'",1);
+        accessDatabase("insert ignore into constraints(session_id,type,source,sourceVar,target,targetVar,action,timestamp) values " +
+            "(\'"+ session_id +"\',\'"+type +"\',\'"+ source + "\',\'" + sourceVar + "\',\'" + target + "\',\'" + targetVar  + "\', \'EDIT\',\'"+
+            timestamp + "\') ",1);
         accessDatabase("UPDATE dynamics SET action=\'CREATE\' WHERE intention_id=" + "\'" + elements[e].id + "\' AND source=\'"+source +"\'AND target=\'" + target +"\' ORDER BY timestamp ASC LIMIT 1",1);
     }
 
@@ -1543,8 +1544,8 @@ this.graph.on('remove', function(cell, collection, opt) {
 	console.log(cell);
     var timestamp = new Date().toUTCString();
     if (cell instanceof joint.shapes.basic.Actor){
-        accessDatabase("insert ignore into actors(id,name,action,timestamp) values " + "(\'"+
-			cell.id +"\',\'-\', \'REMOVE\',\'"+
+        accessDatabase("insert ignore into actors(session_id,id,name,action,timestamp) values " + "(\'"+
+            session_id +"\',\'"+ cell.id +"\',\'-\', \'REMOVE\',\'"+
 			timestamp + "\')",1);
     }
     if (cell instanceof joint.shapes.basic.Intention){
@@ -1586,8 +1587,8 @@ this.graph.on('remove', function(cell, collection, opt) {
         if((!v) || (v == "none"))
             v = "none";
 
-        accessDatabase("insert ignore into intentions(id, actor_id,type,satValue,text,action,timestamp) values " +
-            "(\'"+ cell.id +"\',\'-\',\'" + type + "\',\'-\',\'-\', \'REMOVE\',\'"+
+        accessDatabase("insert ignore into intentions(session_id, id, actor_id,type,satValue,text,action,timestamp) values " +
+            "(\'"+ session_id +"\',\'"+ cell.id +"\',\'-\',\'" + type + "\',\'-\',\'-\', \'REMOVE\',\'"+
             timestamp + "\')",1);
 
         // remove the dynamics for this intention
@@ -1635,8 +1636,8 @@ this.graph.on('remove', function(cell, collection, opt) {
             }
 
         }
-        accessDatabase("insert ignore into dynamics(intention_id,function_type,init_value,sat_value,function_string,action,timestamp) values " +
-            "(\'"+ cell.id +"\',\'-\',\'-\',\'-\',\'-\', \'REMOVE\',\'"+
+        accessDatabase("insert ignore into dynamics(session_id, intention_id,function_type,init_value,sat_value,function_string,action,timestamp) values " +
+            "(\'"+ session_id +"\',\'"+ cell.id +"\',\'-\',\'-\',\'-\',\'-\', \'REMOVE\',\'"+
             timestamp + "\') ",1);
 
     }
@@ -1647,13 +1648,13 @@ this.graph.on('remove', function(cell, collection, opt) {
 
        if (relationship.indexOf("|") > -1){
            evolvRelationships = relationship.replace(/\s/g, '').split("|");
-           accessDatabase("insert ignore into links(id, type,source_id,target_id,evolvRelationships,action,timestamp) values " +
-               "(\'"+ cell.id +"\',\'-\',\'-\',\'-\',\'-\', \'REMOVE\',\'"+
+           accessDatabase("insert ignore into links(session_id, id, type,source_id,target_id,evolvRelationships,action,timestamp) values " +
+               "(\'"+ session_id +"\',\'"+ cell.id +"\',\'-\',\'-\',\'-\',\'-\', \'REMOVE\',\'"+
                timestamp + "\') ",1);
 
        }else{
-           accessDatabase("insert ignore into links(id,type,source_id,target_id,action,timestamp) values " +
-               "(\'"+ cell.id +"\',\'-\',\'-\',\'-\', \'REMOVE\',\'"+ timestamp + "\')",1);
+           accessDatabase("insert ignore into links(session_id, id,type,source_id,target_id,action,timestamp) values " +
+               "(\'"+ session_id +"\',\'"+ cell.id +"\',\'-\',\'-\',\'-\', \'REMOVE\',\'"+ timestamp + "\')",1);
        }
     	} else if (linkMode == "Constraints"){
             var type = cell.attributes.labels[0].attrs.text.text.replace(/\s/g, '');
@@ -1662,8 +1663,8 @@ this.graph.on('remove', function(cell, collection, opt) {
             var sourceVar = cell.attr('.constraintvar/src');
             var targetVar = cell.attr('.constraintvar/tar');
 
-            accessDatabase("insert ignore into constraints(type,source,sourceVar,target,targetVar,action,timestamp) values " +
-                "(\'"+ type +"\',\'"+ source + "\',\'-\',\'" + target + "\',\'-\', \'REMOVE\',\'"+
+            accessDatabase("insert ignore into constraints(session_id, type,source,sourceVar,target,targetVar,action,timestamp) values " +
+                "(\'"+ session_id +"\',\'"+ type +"\',\'"+ source + "\',\'-\',\'" + target + "\',\'-\', \'REMOVE\',\'"+
                 timestamp + "\')",1);
 
 		}
