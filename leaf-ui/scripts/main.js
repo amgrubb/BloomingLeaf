@@ -1128,19 +1128,6 @@ graph.on("add", function(cell){
 				cell.label(0, {attrs: {text: {text: "error"}}});
 			}
         }
-        /*var relationship = cell.label(0).attrs.text.text.toUpperCase();
-
-        if (relationship.indexOf("|") > -1){
-            evolvRelationships = relationship.replace(/\s/g, '').split("|");
-            accessDatabase("insert into links(id, type,source_id,target_id,evolvRelationships,action,timestamp) values " +
-                "(\'"+ cell.id +"\',\'"+ evolvRelationships[0] + "\',\'" + cell.get("source").id + "\',\'" + cell.get("target").id + "\',\'" +  evolvRelationships[1] + "\', \'CREATE\',\'"+
-                timestamp + "\') ON DUPLICATE KEY UPDATE timestamp=\'"+timestamp + "\'",1);
-
-        }else{
-            accessDatabase("insert into links(id,type,source_id,target_id,action,timestamp) values " +
-                "(\'"+ cell.id +"\',\'"+ relationship + "\',\'" + cell.get("source").id + "\',\'" + cell.get("target").id  + "\', \'CREATE\',\'"+
-                timestamp + "\') ON DUPLICATE KEY UPDATE timestamp=\'"+timestamp + "\'",1);
-        }*/
 
     }	//Don't do anything for links
 	//Give element a unique default
@@ -1150,54 +1137,11 @@ graph.on("add", function(cell){
 	//Add Functions and sat values to added types
 	if (cell instanceof joint.shapes.basic.Intention){
 		cell.attr('.funcvalue/text', ' ');
-
-        /*var satValueDict = {
-            "unknown": 5,
-            "satisfied": 3,
-            "partiallysatisfied": 2,
-            "partiallydenied": 1,
-            "denied": 0,
-            "conflict": 4,
-            "none": 6
-        }
-
-        var actorid = '-';
-        console.log(cell.get("parent"));
-        if (cell.get("parent")){
-            actorid = cel.get("parent");
-        }
-        console.log(actorid);
-
-        var type;
-        if (cell instanceof joint.shapes.basic.Goal)
-            type = "G";
-        else if (cell instanceof joint.shapes.basic.Task)
-            type = "T";
-        else if (cell instanceof joint.shapes.basic.Softgoal)
-            type = "S";
-        else if (cell instanceof joint.shapes.basic.Resource)
-            type = "R";
-        else
-            type = "I";
-
-        var v = cell.attr(".satvalue/value")
-
-        // treat satvalue as unknown if it is not yet defined
-        if((!v) || (v == "none"))
-            v = "none";
-
-        accessDatabase("insert into intentions(id, actor_id,type,satValue,text,action,timestamp) values " +
-            "(\'"+ cell.id +"\',\'"+ actorid + "\',\'" + type + "\',\'" + satValueDict[v] + "\',\'" +  cell.attr(".name/text").replace(/\n/g, " ") + "\', \'CREATE\',\'"+
-            timestamp + "\') ON DUPLICATE KEY UPDATE timestamp=\'"+timestamp + "\'",1);*/
-
 	}
 
 	//Send actors to background so elements are placed on top
 	if (cell instanceof joint.shapes.basic.Actor){
 		cell.toBack();
-        /*accessDatabase("insert into actors(id,name,action,timestamp) values " +
-			"(\'"+ cell.id +"\',\'"+ cell.attr(".name/text") +"\', \'CREATE\',\'"+
-			timestamp + "\') ON DUPLICATE KEY UPDATE timestamp=\'"+timestamp + "\'",1);*/
     }
 
 	paper.trigger("cell:pointerup", cell.findView(paper));
@@ -1214,7 +1158,7 @@ function accessDatabase(sql_query, type) {
 		data: queryString,
 		cache: false,
 		success: function(html) {
-			//console.log(html);
+			console.log(html);
 
 			},
 	});
@@ -1236,11 +1180,8 @@ function updateDataBase(graph){
         savedConstraints = graph.intensionConstraints;
         var links = graph.getLinks();
         links.forEach(function(link){
-            if(!isLinkInvalid(link)){
                 if (link.attr('./display') != "none")
                     savedLinks.push(link);
-            }
-            //else{link.remove();}
 
         });
     }else if (linkMode == "Constraints"){
@@ -1248,11 +1189,10 @@ function updateDataBase(graph){
         var betweenIntensionConstraints = graph.getLinks();
         betweenIntensionConstraints.forEach(function(link){
             var linkStatus = link.attributes.labels[0].attrs.text.text.replace(/\s/g, '');
-            if(!isLinkInvalid(link) && (linkStatus != "constraint") && (linkStatus != "error")){
+            if((linkStatus != "constraint") && (linkStatus != "error")){
                 if (link.attr('./display') != "none")
                     savedConstraints.push(link);
             }
-            //else{link.remove();}
         });
     }
 
@@ -1274,15 +1214,10 @@ function updateDataBase(graph){
 
     //print each actor in the model
     for (var a = 0; a < actors.length; a++){
-		accessDatabase("insert into actors(id,name,action,timestamp) values " +
+		accessDatabase("insert ignore into actors(id,name,action,timestamp) values " +
 			"(\'"+ actors[a].id +"\',\'"+ actors[a].attr(".name/text") +"\', \'EDIT\',\'"+
-			timestamp + "\') ON DUPLICATE KEY UPDATE timestamp=\'"+timestamp + "\'",1);
+			timestamp + "\')",1);
         accessDatabase("UPDATE actors SET action=\'CREATE\' WHERE id=" + "\'" + actors[a].id + "\' ORDER BY timestamp ASC LIMIT 1",1);
-		// UPDATE actors
-        // SET action="CREATE"
-        // WHERE id=actors[a].id
-        // ORDER BY timestamp ASC
-        // LIMIT 1
     }
 
 
@@ -1324,9 +1259,9 @@ function updateDataBase(graph){
         if((!v) || (v == "none"))
             v = "none";
 
-        accessDatabase("insert into intentions(id, actor_id,type,satValue,text,action,timestamp) values " +
+        accessDatabase("insert ignore into intentions(id, actor_id,type,satValue,text,action,timestamp) values " +
             "(\'"+ elements[e].id +"\',\'"+ actorid + "\',\'" + type + "\',\'" + satValueDict[v] + "\',\'" +  elements[e].attr(".name/text").replace(/\n/g, " ") + "\', \'EDIT\',\'"+
-            timestamp + "\') ON DUPLICATE KEY UPDATE timestamp=\'"+timestamp + "\'",1);
+            timestamp + "\')",1);
         accessDatabase("UPDATE intentions SET action=\'CREATE\' WHERE id=" + "\'" + elements[e].id + "\' ORDER BY timestamp ASC LIMIT 1",1);
 
     }
@@ -1339,14 +1274,14 @@ function updateDataBase(graph){
 
         if (relationship.indexOf("|") > -1){
             evolvRelationships = relationship.replace(/\s/g, '').split("|");
-            accessDatabase("insert into links(id, type,source_id,target_id,evolvRelationships,action,timestamp) values " +
+            accessDatabase("insert ignore into links(id, type,source_id,target_id,evolvRelationships,action,timestamp) values " +
                 "(\'"+ current.id +"\',\'"+ evolvRelationships[0] + "\',\'" + current.get("source").id + "\',\'" + current.get("target").id + "\',\'" +  evolvRelationships[1] + "\', \'EDIT\',\'"+
-                timestamp + "\') ON DUPLICATE KEY UPDATE timestamp=\'"+timestamp + "\'",1);
+                timestamp + "\') ",1);
 
         }else{
-            accessDatabase("insert into links(id,type,source_id,target_id,action,timestamp) values " +
+            accessDatabase("insert ignore into links(id,type,source_id,target_id,action,timestamp) values " +
                 "(\'"+ current.id +"\',\'"+ relationship + "\',\'" + current.get("source").id + "\',\'" + current.get("target").id  + "\', \'EDIT\',\'"+
-                timestamp + "\') ON DUPLICATE KEY UPDATE timestamp=\'"+timestamp + "\'",1);
+                timestamp + "\')",1);
         }
         accessDatabase("UPDATE links SET action=\'CREATE\' WHERE id=" + "\'" + current.id + "\' ORDER BY timestamp ASC LIMIT 1",1);
 
@@ -1404,10 +1339,10 @@ function updateDataBase(graph){
 
         }
 
-        	accessDatabase("insert into dynamics(intention_id,function_type,init_value,sat_value,function_string,action,timestamp) values " +
+        	accessDatabase("insert ignore into dynamics(intention_id,function_type,init_value,sat_value,function_string,action,timestamp) values " +
             "(\'"+ elements[e].id +"\',\'"+ f + "\',\'" + init_value + "\',\'" + sat_value + "\',\'" + function_string  + "\', \'EDIT\',\'"+
-            timestamp + "\') ON DUPLICATE KEY UPDATE timestamp=\'"+timestamp + "\'",1);
-            accessDatabase("UPDATE dynamics SET action=\'CREATE\' WHERE id=" + "\'" + elements[e].id + "\' ORDER BY timestamp ASC LIMIT 1",1);
+            timestamp + "\') ",1);
+            accessDatabase("UPDATE dynamics SET action=\'CREATE\' WHERE intention_id=" + "\'" + elements[e].id + "\' ORDER BY timestamp ASC LIMIT 1",1);
 
         }
     }
@@ -1424,6 +1359,7 @@ function updateDataBase(graph){
         accessDatabase("insert into constraints(type,source,sourceVar,target,targetVar,action,timestamp) values " +
             "(\'"+ type +"\',\'"+ source + "\',\'" + sourceVar + "\',\'" + target + "\',\'" + targetVar  + "\', \'EDIT\',\'"+
             timestamp + "\') ON DUPLICATE KEY UPDATE timestamp=\'"+timestamp + "\'",1);
+        accessDatabase("UPDATE dynamics SET action=\'CREATE\' WHERE intention_id=" + "\'" + elements[e].id + "\' AND source=\'"+source +"\'AND target=\'" + target +"\' ORDER BY timestamp ASC LIMIT 1",1);
     }
 
 }
@@ -1607,9 +1543,9 @@ this.graph.on('remove', function(cell, collection, opt) {
 	console.log(cell);
     var timestamp = new Date().toUTCString();
     if (cell instanceof joint.shapes.basic.Actor){
-        accessDatabase("insert into actors(id,name,action,timestamp) values " + "(\'"+
-			cell.id +"\',\'"+ cell.attr(".name/text") +"\', \'REMOVE\',\'"+
-			timestamp + "\') ON DUPLICATE KEY UPDATE timestamp=\'"+timestamp + "\'",1);
+        accessDatabase("insert ignore into actors(id,name,action,timestamp) values " + "(\'"+
+			cell.id +"\',\'-\', \'REMOVE\',\'"+
+			timestamp + "\')",1);
     }
     if (cell instanceof joint.shapes.basic.Intention){
         cell.attr('.funcvalue/text', ' ');
@@ -1650,9 +1586,9 @@ this.graph.on('remove', function(cell, collection, opt) {
         if((!v) || (v == "none"))
             v = "none";
 
-        accessDatabase("insert into intentions(id, actor_id,type,satValue,text,action,timestamp) values " +
-            "(\'"+ cell.id +"\',\'"+ actorid + "\',\'" + type + "\',\'" + satValueDict[v] + "\',\'" +  cell.attr(".name/text").replace(/\n/g, " ") + "\', \'REMOVE\',\'"+
-            timestamp + "\') ON DUPLICATE KEY UPDATE timestamp=\'"+timestamp + "\'",1);
+        accessDatabase("insert ignore into intentions(id, actor_id,type,satValue,text,action,timestamp) values " +
+            "(\'"+ cell.id +"\',\'-\',\'" + type + "\',\'-\',\'-\', \'REMOVE\',\'"+
+            timestamp + "\')",1);
 
         // remove the dynamics for this intention
 
@@ -1699,9 +1635,9 @@ this.graph.on('remove', function(cell, collection, opt) {
             }
 
         }
-        accessDatabase("insert into dynamics(intention_id,function_type,init_value,sat_value,function_string,action,timestamp) values " +
-            "(\'"+ cell.id +"\',\'"+ f + "\',\'" + init_value + "\',\'" + sat_value + "\',\'" + function_string  + "\', \'REMOVE\',\'"+
-            timestamp + "\') ON DUPLICATE KEY UPDATE timestamp=\'"+timestamp + "\'",1);
+        accessDatabase("insert ignore into dynamics(intention_id,function_type,init_value,sat_value,function_string,action,timestamp) values " +
+            "(\'"+ cell.id +"\',\'-\',\'-\',\'-\',\'-\', \'REMOVE\',\'"+
+            timestamp + "\') ",1);
 
     }
 
@@ -1711,15 +1647,13 @@ this.graph.on('remove', function(cell, collection, opt) {
 
        if (relationship.indexOf("|") > -1){
            evolvRelationships = relationship.replace(/\s/g, '').split("|");
-           accessDatabase("insert into links(id, type,source_id,target_id,evolvRelationships,action,timestamp) values " +
-               "(\'"+ cell.id +"\',\'"+ evolvRelationships[0] + "\',\'" + cell.get("source").id + "\',\'" + cell.get("target").id
-			   + "\',\'" + evolvRelationships[1] + "\', \'REMOVE\',\'"+
-               timestamp + "\') ON DUPLICATE KEY UPDATE timestamp=\'"+timestamp + "\'",1);
+           accessDatabase("insert ignore into links(id, type,source_id,target_id,evolvRelationships,action,timestamp) values " +
+               "(\'"+ cell.id +"\',\'-\',\'-\',\'-\',\'-\', \'REMOVE\',\'"+
+               timestamp + "\') ",1);
 
        }else{
-           accessDatabase("insert into links(id,type,source_id,target_id,action,timestamp) values " +
-               "(\'"+ cell.id +"\',\'"+ relationship + "\',\'" + cell.get("source").id + "\',\'" + cell.get("target").id
-			   + "\', \'REMOVE\',\'"+ timestamp + "\') ON DUPLICATE KEY UPDATE timestamp=\'"+timestamp + "\'",1);
+           accessDatabase("insert ignore into links(id,type,source_id,target_id,action,timestamp) values " +
+               "(\'"+ cell.id +"\',\'-\',\'-\',\'-\', \'REMOVE\',\'"+ timestamp + "\')",1);
        }
     	} else if (linkMode == "Constraints"){
             var type = cell.attributes.labels[0].attrs.text.text.replace(/\s/g, '');
@@ -1728,9 +1662,9 @@ this.graph.on('remove', function(cell, collection, opt) {
             var sourceVar = cell.attr('.constraintvar/src');
             var targetVar = cell.attr('.constraintvar/tar');
 
-            accessDatabase("insert into constraints(type,source,sourceVar,target,targetVar,action,timestamp) values " +
-                "(\'"+ type +"\',\'"+ source + "\',\'" + sourceVar + "\',\'" + target + "\',\'" + targetVar  + "\', \'REMOVE\',\'"+
-                timestamp + "\') ON DUPLICATE KEY UPDATE timestamp=\'"+timestamp + "\'",1);
+            accessDatabase("insert ignore into constraints(type,source,sourceVar,target,targetVar,action,timestamp) values " +
+                "(\'"+ type +"\',\'"+ source + "\',\'-\',\'" + target + "\',\'-\', \'REMOVE\',\'"+
+                timestamp + "\')",1);
 
 		}
 
