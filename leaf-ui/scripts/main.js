@@ -1128,7 +1128,7 @@ graph.on("add", function(cell){
 				cell.label(0, {attrs: {text: {text: "error"}}});
 			}
         }
-        var relationship = cell.label(0).attrs.text.text.toUpperCase();
+        /*var relationship = cell.label(0).attrs.text.text.toUpperCase();
 
         if (relationship.indexOf("|") > -1){
             evolvRelationships = relationship.replace(/\s/g, '').split("|");
@@ -1140,7 +1140,7 @@ graph.on("add", function(cell){
             accessDatabase("insert into links(id,type,source_id,target_id,action,timestamp) values " +
                 "(\'"+ cell.id +"\',\'"+ relationship + "\',\'" + cell.get("source").id + "\',\'" + cell.get("target").id  + "\', \'CREATE\',\'"+
                 timestamp + "\') ON DUPLICATE KEY UPDATE timestamp=\'"+timestamp + "\'",1);
-        }
+        }*/
 
     }	//Don't do anything for links
 	//Give element a unique default
@@ -1151,7 +1151,7 @@ graph.on("add", function(cell){
 	if (cell instanceof joint.shapes.basic.Intention){
 		cell.attr('.funcvalue/text', ' ');
 
-        var satValueDict = {
+        /*var satValueDict = {
             "unknown": 5,
             "satisfied": 3,
             "partiallysatisfied": 2,
@@ -1188,16 +1188,16 @@ graph.on("add", function(cell){
 
         accessDatabase("insert into intentions(id, actor_id,type,satValue,text,action,timestamp) values " +
             "(\'"+ cell.id +"\',\'"+ actorid + "\',\'" + type + "\',\'" + satValueDict[v] + "\',\'" +  cell.attr(".name/text").replace(/\n/g, " ") + "\', \'CREATE\',\'"+
-            timestamp + "\') ON DUPLICATE KEY UPDATE timestamp=\'"+timestamp + "\'",1);
+            timestamp + "\') ON DUPLICATE KEY UPDATE timestamp=\'"+timestamp + "\'",1);*/
 
 	}
 
 	//Send actors to background so elements are placed on top
 	if (cell instanceof joint.shapes.basic.Actor){
 		cell.toBack();
-        accessDatabase("insert into actors(id,name,action,timestamp) values " +
+        /*accessDatabase("insert into actors(id,name,action,timestamp) values " +
 			"(\'"+ cell.id +"\',\'"+ cell.attr(".name/text") +"\', \'CREATE\',\'"+
-			timestamp + "\') ON DUPLICATE KEY UPDATE timestamp=\'"+timestamp + "\'",1);
+			timestamp + "\') ON DUPLICATE KEY UPDATE timestamp=\'"+timestamp + "\'",1);*/
     }
 
 	paper.trigger("cell:pointerup", cell.findView(paper));
@@ -1277,6 +1277,12 @@ function updateDataBase(graph){
 		accessDatabase("insert into actors(id,name,action,timestamp) values " +
 			"(\'"+ actors[a].id +"\',\'"+ actors[a].attr(".name/text") +"\', \'EDIT\',\'"+
 			timestamp + "\') ON DUPLICATE KEY UPDATE timestamp=\'"+timestamp + "\'",1);
+        accessDatabase("UPDATE actors SET action=\'CREATE\' WHERE id=" + "\'" + actors[a].id + "\' ORDER BY timestamp ASC LIMIT 1",1);
+		// UPDATE actors
+        // SET action="CREATE"
+        // WHERE id=actors[a].id
+        // ORDER BY timestamp ASC
+        // LIMIT 1
     }
 
 
@@ -1321,6 +1327,8 @@ function updateDataBase(graph){
         accessDatabase("insert into intentions(id, actor_id,type,satValue,text,action,timestamp) values " +
             "(\'"+ elements[e].id +"\',\'"+ actorid + "\',\'" + type + "\',\'" + satValueDict[v] + "\',\'" +  elements[e].attr(".name/text").replace(/\n/g, " ") + "\', \'EDIT\',\'"+
             timestamp + "\') ON DUPLICATE KEY UPDATE timestamp=\'"+timestamp + "\'",1);
+        accessDatabase("UPDATE intentions SET action=\'CREATE\' WHERE id=" + "\'" + elements[e].id + "\' ORDER BY timestamp ASC LIMIT 1",1);
+
     }
 
 
@@ -1340,6 +1348,8 @@ function updateDataBase(graph){
                 "(\'"+ current.id +"\',\'"+ relationship + "\',\'" + current.get("source").id + "\',\'" + current.get("target").id  + "\', \'EDIT\',\'"+
                 timestamp + "\') ON DUPLICATE KEY UPDATE timestamp=\'"+timestamp + "\'",1);
         }
+        accessDatabase("UPDATE links SET action=\'CREATE\' WHERE id=" + "\'" + current.id + "\' ORDER BY timestamp ASC LIMIT 1",1);
+
     }
 
    //Step 4: Print the dynamics of the intentions.
@@ -1397,6 +1407,8 @@ function updateDataBase(graph){
         	accessDatabase("insert into dynamics(intention_id,function_type,init_value,sat_value,function_string,action,timestamp) values " +
             "(\'"+ elements[e].id +"\',\'"+ f + "\',\'" + init_value + "\',\'" + sat_value + "\',\'" + function_string  + "\', \'EDIT\',\'"+
             timestamp + "\') ON DUPLICATE KEY UPDATE timestamp=\'"+timestamp + "\'",1);
+            accessDatabase("UPDATE dynamics SET action=\'CREATE\' WHERE id=" + "\'" + elements[e].id + "\' ORDER BY timestamp ASC LIMIT 1",1);
+
         }
     }
 
@@ -1404,8 +1416,8 @@ function updateDataBase(graph){
     for (var e = 0; e < savedConstraints.length; e++){
         var c = savedConstraints[e];
         var type = c.attributes.labels[0].attrs.text.text.replace(/\s/g, '');
-        var source = c.getSourceElement().attributes.elementid;
-        var target = c.getTargetElement().attributes.elementid;
+        var source = c.getSourceElement().id;
+        var target = c.getTargetElement().id;
         var sourceVar = c.attr('.constraintvar/src');
         var targetVar = c.attr('.constraintvar/tar');
 
@@ -1694,6 +1706,7 @@ this.graph.on('remove', function(cell, collection, opt) {
     }
 
    if (cell.isLink()) {
+    	if (linkMode == "View"){
        var relationship = cell.label(0).attrs.text.text.toUpperCase()
 
        if (relationship.indexOf("|") > -1){
@@ -1708,6 +1721,18 @@ this.graph.on('remove', function(cell, collection, opt) {
                "(\'"+ cell.id +"\',\'"+ relationship + "\',\'" + cell.get("source").id + "\',\'" + cell.get("target").id
 			   + "\', \'REMOVE\',\'"+ timestamp + "\') ON DUPLICATE KEY UPDATE timestamp=\'"+timestamp + "\'",1);
        }
+    	} else if (linkMode == "Constraints"){
+            var type = cell.attributes.labels[0].attrs.text.text.replace(/\s/g, '');
+            var source = cell.getSourceElement().id;
+            var target = cell.getTargetElement().id;
+            var sourceVar = cell.attr('.constraintvar/src');
+            var targetVar = cell.attr('.constraintvar/tar');
+
+            accessDatabase("insert into constraints(type,source,sourceVar,target,targetVar,action,timestamp) values " +
+                "(\'"+ type +"\',\'"+ source + "\',\'" + sourceVar + "\',\'" + target + "\',\'" + targetVar  + "\', \'REMOVE\',\'"+
+                timestamp + "\') ON DUPLICATE KEY UPDATE timestamp=\'"+timestamp + "\'",1);
+
+		}
 
 	   if(cell.prop("link-type") == 'NBT' || cell.prop("link-type") == 'NBD'){
 
