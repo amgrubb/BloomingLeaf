@@ -1148,8 +1148,19 @@ graph.on("add", function(cell){
 	paper.trigger("cell:pointerup", cell.findView(paper));
 });
 
-
-
+// used when reading form the database is needed
+function accessDatabaseWithCallback(sql_query_1, type, callbackfunc){
+    var queryString = "query=" +  encodeURIComponent(sql_query_1) + "&type=" + type;
+    $.ajax({
+        type: "POST",
+        url: "./scripts/ajaxjs.php",
+        data: queryString,
+        cache: false,
+        success: function(html) {
+            callbackfunc(html);
+        },
+    });
+}
 
 function accessDatabase(sql_query, type) {
 	var queryString = "query=" +  encodeURIComponent(sql_query) + "&type=" + type;
@@ -1215,10 +1226,44 @@ function updateDataBase(graph){
 
     //print each actor in the model
     for (var a = 0; a < actors.length; a++){
-		accessDatabase("insert ignore into actors(session_id,id,name,action,timestamp) values " +
+        accessDatabaseWithCallback("select * from actors where id=\'"+actors[a].id + "\' and name=\'"+actors[a].attr(".name/text") + "\' and action='EDIT' order by timestamp DESC limit 1", 0, function(output){
+        	console.log(output);
+        	var myRegexp = /\((.*)%(.*)\)/g;
+        	var match = myRegexp.exec(output);
+        	var latest_timestamp_with_same_value = match[2];
+        	console.log(latest_timestamp_with_same_value);
+			if (latest_timestamp_with_same_value !== "0"){ // found
+
+                if (/^(.*);/g.test(latest_timestamp_with_same_value)){
+                	console.log("found 1+ timestamps");
+                    var myRegexp2 = /^(.*);/g;
+                    var match2 = myRegexp2.exec(myRegexp2);
+                    console.log(match2);
+                    if (timestamp !== match2[1]){ // same value tuples is appended the second time
+                        var concat_timestamp  = timestamp + ";"+latest_timestamp_with_same_value;
+                        console.log(timestamp);
+                        	accessDatabase("update actors set timestamp=\'"+concat_timestamp +"\' where timestamp=\'" +
+                            latest_timestamp_with_same_value + "\' and action='EDIT'",1);
+
+                    	}
+
+				} else {
+                	console.log("found one timestamp only");
+                    if (timestamp !== latest_timestamp_with_same_value){ // same value tuples is appended the second time
+                        var concat_timestamp  = timestamp + ";"+latest_timestamp_with_same_value;
+                        console.log(timestamp);
+
+                        accessDatabase("update actors set timestamp=\'"+concat_timestamp +"\' where timestamp=\'" +
+                            latest_timestamp_with_same_value + "\' and action='EDIT'",1);
+                    }
+				}
+
+			}
+        });
+        accessDatabase("insert ignore into actors(session_id,id,name,action,timestamp) values " +
 			"(\'"+ session_id +"\',\'"+actors[a].id +"\',\'"+ actors[a].attr(".name/text") +"\', \'EDIT\',\'"+
 			timestamp + "\')",1);
-        accessDatabase("UPDATE actors SET action=\'CREATE\' WHERE id=" + "\'" + actors[a].id + "\' ORDER BY timestamp ASC LIMIT 1",1);
+        accessDatabase("UPDATE ignore actors SET action=\'CREATE\' WHERE id=" + "\'" + actors[a].id + "\' ORDER BY timestamp ASC LIMIT 1",1);
     }
 
 
@@ -1290,25 +1335,18 @@ function updateDataBase(graph){
 
    //Step 4: Print the dynamics of the intentions.
     for (var e = 0; e < elements.length; e++){
-        var elementID = e.toString();
 
         var f = elements[e].attr(".funcvalue/text");
-        console.log(f);
         var init_value = elements[e].attr(".constraints/markedvalue");
-        console.log(init_value);
         var funcType = elements[e].attr(".constraints/function");
-        console.log(funcType);
         var funcTypeVal = elements[e].attr(".constraints/lastval");
-        console.log(funcTypeVal);
         var sat_value = "";
         var function_string = "";
         if (( typeof init_value !== 'undefined' ) && ( typeof sat_value !== 'undefined' )){
         if  (f == " " || f == ""){
-            //datastring += ("D\t" + elementID + "\tNT\n");
             f = "NT";
             sat_value = satValueDict[funcTypeVal];
         }else if (f != "UD"){
-            //datastring += ("D\t" + elementID + "\t" + f + "\t" + satValueDict[funcTypeVal] + "\n");
             sat_value = satValueDict[funcTypeVal];
 
             // user defined constraints
@@ -1561,14 +1599,6 @@ this.graph.on('remove', function(cell, collection, opt) {
             "none": 6
         }
 
-        var actorid = '-';
-
-        if (cell.get("parent")){
-            //actorid = (graph.getCell(elements[e].get("parent")).prop("elementid") || "-");
-            actorid = cell.get("parent");
-        }
-        console.log(actorid);
-
         var type;
         if (cell instanceof joint.shapes.basic.Goal)
             type = "G";
@@ -1581,61 +1611,12 @@ this.graph.on('remove', function(cell, collection, opt) {
         else
             type = "I";
 
-        var v = cell.attr(".satvalue/value")
-
-        // treat satvalue as unknown if it is not yet defined
-        if((!v) || (v == "none"))
-            v = "none";
-
         accessDatabase("insert ignore into intentions(session_id, id, actor_id,type,satValue,text,action,timestamp) values " +
             "(\'"+ session_id +"\',\'"+ cell.id +"\',\'-\',\'" + type + "\',\'-\',\'-\', \'REMOVE\',\'"+
             timestamp + "\')",1);
 
         // remove the dynamics for this intention
 
-        var f = cell.attr(".funcvalue/text");
-        console.log(f);
-		var init_value = cell.attr(".constraints/markedvalue");
-        console.log(init_value);
-        var funcType = cell.attr(".constraints/function");
-        console.log(funcType);
-        var funcTypeVal = cell.attr(".constraints/lastval");
-        console.log(funcTypeVal);
-        var sat_value = 5;
-        var function_string = "";
-        if  (f == " "){
-            f = "NT";
-        }else if (f != "UD"){
-            sat_value = satValueDict[funcTypeVal];
-
-            // user defined constraints
-        }else{
-            var begin = cell.attr(".constraints/beginLetter");
-            var end = cell.attr(".constraints/endLetter");
-            var rBegin = cell.attr(".constraints/beginRepeat");
-            var rEnd = cell.attr(".constraints/endRepeat");
-            sat_value = String(funcTypeVal.length);
-            for (var l = 0; l < funcTypeVal.length; l++){
-                if(l == funcTypeVal.length - 1){
-                    function_string += "\t" + begin[l] + "\t1\t" + funcType[l] + "\t" + satValueDict[funcTypeVal[l]];
-                }else{
-                    function_string += "\t" + begin[l] + "\t" + end[l] + "\t" + funcType[l] + "\t" + satValueDict[funcTypeVal[l]];
-                }
-            }
-
-            // repeating
-            if (elements[e].attr(".constraints/beginRepeat") && elements[e].attr(".constraints/endRepeat")){
-                // to infinity
-                if (rEnd == end[end.length - 1]){
-                    function_string += "\tR\t" + rBegin + "\t1";
-                }else{
-                    function_string += "\tR\t" + rBegin + "\t" + rEnd;
-                }
-            }else{
-                function_string += "\tN";
-            }
-
-        }
         accessDatabase("insert ignore into dynamics(session_id, intention_id,function_type,init_value,sat_value,function_string,action,timestamp) values " +
             "(\'"+ session_id +"\',\'"+ cell.id +"\',\'-\',\'-\',\'-\',\'-\', \'REMOVE\',\'"+
             timestamp + "\') ",1);
@@ -1660,8 +1641,6 @@ this.graph.on('remove', function(cell, collection, opt) {
             var type = cell.attributes.labels[0].attrs.text.text.replace(/\s/g, '');
             var source = cell.getSourceElement().id;
             var target = cell.getTargetElement().id;
-            var sourceVar = cell.attr('.constraintvar/src');
-            var targetVar = cell.attr('.constraintvar/tar');
 
             accessDatabase("insert ignore into constraints(session_id, type,source,sourceVar,target,targetVar,action,timestamp) values " +
                 "(\'"+ session_id +"\',\'"+ type +"\',\'"+ source + "\',\'-\',\'" + target + "\',\'-\', \'REMOVE\',\'"+

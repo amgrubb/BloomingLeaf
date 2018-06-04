@@ -27,19 +27,20 @@ switch ($type) {
             echo 0;
         }
         break;
-    case "0":
-        $result = $conn->query($query);
-        $result = mysqli_query($conn, $query); //Insert Query
-        if (!$result){
+    case "0": // reading from the database
+        $result_1 = $conn->query($query);
+
+        if (!$result_1){
              echo("Error description: " . mysqli_error($conn));
         } else {
-        if ($result->num_rows > 0) {
-            while($row = $result->fetch_assoc()) {
-                 echo 1; // found
+            if ($result_1->num_rows > 0){
+                $ts_row = $result_1->fetch_assoc();
+                echo "(" . $ts_row['action'] . "%". $ts_row['timestamp'].")";
+            } else{
+                echo "(0%0)";
             }
-        } else {
-             echo 0; // not found
-        }
+
+
         }
 
         break;
