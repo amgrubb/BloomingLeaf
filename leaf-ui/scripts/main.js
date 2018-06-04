@@ -1127,9 +1127,22 @@ graph.on("add", function(cell){
 			}else if(linkMode == "Constraints"){
 				cell.label(0, {attrs: {text: {text: "error"}}});
 			}
-
         }
-	}	//Don't do anything for links
+        var relationship = cell.label(0).attrs.text.text.toUpperCase();
+
+        if (relationship.indexOf("|") > -1){
+            evolvRelationships = relationship.replace(/\s/g, '').split("|");
+            accessDatabase("insert into links(id, type,source_id,target_id,evolvRelationships,action,timestamp) values " +
+                "(\'"+ cell.id +"\',\'"+ evolvRelationships[0] + "\',\'" + cell.get("source").id + "\',\'" + cell.get("target").id + "\',\'" +  evolvRelationships[1] + "\', \'CREATE\',\'"+
+                timestamp + "\') ON DUPLICATE KEY UPDATE timestamp=\'"+timestamp + "\'",1);
+
+        }else{
+            accessDatabase("insert into links(id,type,source_id,target_id,action,timestamp) values " +
+                "(\'"+ cell.id +"\',\'"+ relationship + "\',\'" + cell.get("source").id + "\',\'" + cell.get("target").id  + "\', \'CREATE\',\'"+
+                timestamp + "\') ON DUPLICATE KEY UPDATE timestamp=\'"+timestamp + "\'",1);
+        }
+
+    }	//Don't do anything for links
 	//Give element a unique default
 	cell.attr(".name/text", cell.attr(".name/text") + "_" + element_counter);
 	element_counter++;
@@ -1137,6 +1150,45 @@ graph.on("add", function(cell){
 	//Add Functions and sat values to added types
 	if (cell instanceof joint.shapes.basic.Intention){
 		cell.attr('.funcvalue/text', ' ');
+
+        var satValueDict = {
+            "unknown": 5,
+            "satisfied": 3,
+            "partiallysatisfied": 2,
+            "partiallydenied": 1,
+            "denied": 0,
+            "conflict": 4,
+            "none": 6
+        }
+
+        var actorid = '-';
+        console.log(cell.get("parent"));
+        if (cell.get("parent")){
+            actorid = cel.get("parent");
+        }
+        console.log(actorid);
+
+        var type;
+        if (cell instanceof joint.shapes.basic.Goal)
+            type = "G";
+        else if (cell instanceof joint.shapes.basic.Task)
+            type = "T";
+        else if (cell instanceof joint.shapes.basic.Softgoal)
+            type = "S";
+        else if (cell instanceof joint.shapes.basic.Resource)
+            type = "R";
+        else
+            type = "I";
+
+        var v = cell.attr(".satvalue/value")
+
+        // treat satvalue as unknown if it is not yet defined
+        if((!v) || (v == "none"))
+            v = "none";
+
+        accessDatabase("insert into intentions(id, actor_id,type,satValue,text,action,timestamp) values " +
+            "(\'"+ cell.id +"\',\'"+ actorid + "\',\'" + type + "\',\'" + satValueDict[v] + "\',\'" +  cell.attr(".name/text").replace(/\n/g, " ") + "\', \'CREATE\',\'"+
+            timestamp + "\') ON DUPLICATE KEY UPDATE timestamp=\'"+timestamp + "\'",1);
 
 	}
 
@@ -1156,14 +1208,13 @@ graph.on("add", function(cell){
 
 function accessDatabase(sql_query, type) {
 	var queryString = "query=" +  encodeURIComponent(sql_query) + "&type=" + type;
-	console.log(queryString);
 	$.ajax({
 		type: "POST",
 		url: "./scripts/ajaxjs.php",
 		data: queryString,
 		cache: false,
 		success: function(html) {
-			console.log(html);
+			//console.log(html);
 
 			},
 	});
@@ -1222,13 +1273,8 @@ function updateDataBase(graph){
     graph.allElements = elements;
     graph.elementsBeforeAnalysis = elements;
 
-    var datastring = actors.length + "\n";
     //print each actor in the model
     for (var a = 0; a < actors.length; a++){
-        var actorId = a.toString();
-        while (actorId.length < 3){ actorId = "0" + actorId;}
-        actorId = "a" + actorId;
-        actors[a].prop("elementid", actorId);
 		accessDatabase("insert into actors(id,name,action,timestamp) values " +
 			"(\'"+ actors[a].id +"\',\'"+ actors[a].attr(".name/text") +"\', \'EDIT\',\'"+
 			timestamp + "\') ON DUPLICATE KEY UPDATE timestamp=\'"+timestamp + "\'",1);
@@ -1236,7 +1282,7 @@ function updateDataBase(graph){
 
 
     // Step 2: Print each element in the model
-/*
+
     // conversion between values used in Element Inspector with values used in backend
     var satValueDict = {
         "unknown": 5,
@@ -1247,35 +1293,28 @@ function updateDataBase(graph){
         "conflict": 4,
         "none": 6
     }
-    datastring += elements.length + "\n";
     for (var e = 0; e < elements.length; e++){
-        //var id = e.toString();
-        //while (id.length < 4){ id = "0" + id;}
-        //elements[e].prop("elementid", id);
-        var elementID = e.toString();
-        while (elementID.length < 4){ elementID = "0" + elementID;}
-        elements[e].prop("elementid", elementID);
 
         var actorid = '-';
+        console.log(elements[e].get("parent"));
+
         if (elements[e].get("parent")){
-            actorid = (graph.getCell(elements[e].get("parent")).prop("elementid") || "-");
+            actorid = elements[e].get("parent");
         }
+        console.log(elements[e]);
         console.log(actorid);
 
-        // Print NT in "core" of tool where time does not exist.
-        //datastring += ("I\t" + actorid + "\t" + elementID + "\t" + (functions[elements[e].attr(".funcvalue/text")] || "NT") + "\t");
-
-        datastring += ("I\t" + actorid + "\t" + elementID + "\t");
+        var type;
         if (elements[e] instanceof joint.shapes.basic.Goal)
-            datastring += "G\t";
+            type = "G";
         else if (elements[e] instanceof joint.shapes.basic.Task)
-            datastring += "T\t";
+            type = "T";
         else if (elements[e] instanceof joint.shapes.basic.Softgoal)
-            datastring += "S\t";
+            type = "S";
         else if (elements[e] instanceof joint.shapes.basic.Resource)
-            datastring += "R\t";
+            type = "R";
         else
-            datastring += "I\t";
+            type = "I";
 
         var v = elements[e].attr(".satvalue/value")
 
@@ -1283,52 +1322,36 @@ function updateDataBase(graph){
         if((!v) || (v == "none"))
             v = "none";
 
-        datastring += satValueDict[v];
-        datastring += "\t" + elements[e].attr(".name/text").replace(/\n/g, " ") + "\n";
-    }*/
+        accessDatabase("insert into intentions(id, actor_id,type,satValue,text,action,timestamp) values " +
+            "(\'"+ elements[e].id +"\',\'"+ actorid + "\',\'" + type + "\',\'" + satValueDict[v] + "\',\'" +  elements[e].attr(".name/text").replace(/\n/g, " ") + "\', \'EDIT\',\'"+
+            timestamp + "\') ON DUPLICATE KEY UPDATE timestamp=\'"+timestamp + "\'",1);
+    }
 
 
     //Step 3: Print each link in the model
     for (var l = 0; l < savedLinks.length; l++){
         var current = savedLinks[l];
-        var relationship = current.label(0).attrs.text.text.toUpperCase()
-        var source = "-";
-        var target = "-";
-
-        if (current.get("source").id)
-            source = graph.getCell(current.get("source").id).prop("elementid");
-        if (current.get("target").id)
-            target = graph.getCell(current.get("target").id).prop("elementid");
+        var relationship = current.label(0).attrs.text.text.toUpperCase();
 
         if (relationship.indexOf("|") > -1){
             evolvRelationships = relationship.replace(/\s/g, '').split("|");
-            //datastring += 'L\t' + evolvRelationships[0] + '\t' + source + '\t' + target + '\t' + evolvRelationships[1] + "\n";
-        //CREATE TABLE links(id varchar(255) NOT NULL,
-			// type varchar(255) NOT NULL,source_id varchar(255) NOT NULL,
-			// target_id varchar(255) NOT NULL,
-			// evolvRelationships varchar(255),
-			// action varchar(255) NOT NULL,timestamp varchar(255) NOT NULL,
-			// PRIMARY KEY (id,type,source_id,target_id,action));
-
-            accessDatabase("insert into links(type,source_id,target_id,evolvRelationships,action,timestamp) values " +
+            accessDatabase("insert into links(id, type,source_id,target_id,evolvRelationships,action,timestamp) values " +
                 "(\'"+ current.id +"\',\'"+ evolvRelationships[0] + "\',\'" + current.get("source").id + "\',\'" + current.get("target").id + "\',\'" +  evolvRelationships[1] + "\', \'EDIT\',\'"+
                 timestamp + "\') ON DUPLICATE KEY UPDATE timestamp=\'"+timestamp + "\'",1);
 
         }else{
-            //datastring += 'L\t' + relationship + '\t' + source + '\t' + target + "\n";
             accessDatabase("insert into links(id,type,source_id,target_id,action,timestamp) values " +
                 "(\'"+ current.id +"\',\'"+ relationship + "\',\'" + current.get("source").id + "\',\'" + current.get("target").id  + "\', \'EDIT\',\'"+
                 timestamp + "\') ON DUPLICATE KEY UPDATE timestamp=\'"+timestamp + "\'",1);
         }
     }
 
-  /*  //Step 4: Print the dynamics of the intentions.
+   //Step 4: Print the dynamics of the intentions.
     for (var e = 0; e < elements.length; e++){
         var elementID = e.toString();
         while (elementID.length < 4){ elementID = "0" + elementID;}
         elements[e].prop("elementid", elementID);
 
-        //datastring += ("I\t" + actorid + "\t" + elementID + "\t" + (functions[elements[e].attr(".funcvalue/text")] || "NT") + "\t");
         var f = elements[e].attr(".funcvalue/text");
         var funcType = elements[e].attr(".constraints/function");
         var funcTypeVal = elements[e].attr(".constraints/lastval");
@@ -1369,7 +1392,7 @@ function updateDataBase(graph){
     }
 
     //Step 5: Print constraints between intensions.
-    for (var e = 0; e < savedConstraints.length; e++){
+    /*for (var e = 0; e < savedConstraints.length; e++){
         var c = savedConstraints[e];
         var type = c.attributes.labels[0].attrs.text.text.replace(/\s/g, '');
         var source = c.getSourceElement().attributes.elementid;
@@ -1378,10 +1401,8 @@ function updateDataBase(graph){
         var targetVar = c.attr('.constraintvar/tar');
 
         datastring += ("C\t" + type + "\t" + source + "\t" + sourceVar + "\t" + target + "\t" + targetVar + "\n");
-    }
+    }*/
 
-    //console.log(datastring);
-    return datastring*/
 }
 
 //Auto-save the cookie whenever the graph is changed.
@@ -1567,7 +1588,69 @@ this.graph.on('remove', function(cell, collection, opt) {
 			cell.id +"\',\'"+ cell.attr(".name/text") +"\', \'REMOVE\',\'"+
 			timestamp + "\') ON DUPLICATE KEY UPDATE timestamp=\'"+timestamp + "\'",1);
     }
+    if (cell instanceof joint.shapes.basic.Intention){
+        cell.attr('.funcvalue/text', ' ');
+
+        var satValueDict = {
+            "unknown": 5,
+            "satisfied": 3,
+            "partiallysatisfied": 2,
+            "partiallydenied": 1,
+            "denied": 0,
+            "conflict": 4,
+            "none": 6
+        }
+
+        var actorid = '-';
+        console.log(cell);
+        console.log(cell.get("parent"));
+
+        if (cell.get("parent")){
+            //actorid = (graph.getCell(elements[e].get("parent")).prop("elementid") || "-");
+            actorid = cell.get("parent");
+        }
+        console.log(actorid);
+
+        var type;
+        if (cell instanceof joint.shapes.basic.Goal)
+            type = "G";
+        else if (cell instanceof joint.shapes.basic.Task)
+            type = "T";
+        else if (cell instanceof joint.shapes.basic.Softgoal)
+            type = "S";
+        else if (cell instanceof joint.shapes.basic.Resource)
+            type = "R";
+        else
+            type = "I";
+
+        var v = cell.attr(".satvalue/value")
+
+        // treat satvalue as unknown if it is not yet defined
+        if((!v) || (v == "none"))
+            v = "none";
+
+        accessDatabase("insert into intentions(id, actor_id,type,satValue,text,action,timestamp) values " +
+            "(\'"+ cell.id +"\',\'"+ actorid + "\',\'" + type + "\',\'" + satValueDict[v] + "\',\'" +  cell.attr(".name/text").replace(/\n/g, " ") + "\', \'REMOVE\',\'"+
+            timestamp + "\') ON DUPLICATE KEY UPDATE timestamp=\'"+timestamp + "\'",1);
+
+    }
+
    if (cell.isLink()) {
+       var relationship = cell.label(0).attrs.text.text.toUpperCase()
+
+       if (relationship.indexOf("|") > -1){
+           evolvRelationships = relationship.replace(/\s/g, '').split("|");
+           accessDatabase("insert into links(id, type,source_id,target_id,evolvRelationships,action,timestamp) values " +
+               "(\'"+ cell.id +"\',\'"+ evolvRelationships[0] + "\',\'" + cell.get("source").id + "\',\'" + cell.get("target").id
+			   + "\',\'" + evolvRelationships[1] + "\', \'REMOVE\',\'"+
+               timestamp + "\') ON DUPLICATE KEY UPDATE timestamp=\'"+timestamp + "\'",1);
+
+       }else{
+           accessDatabase("insert into links(id,type,source_id,target_id,action,timestamp) values " +
+               "(\'"+ cell.id +"\',\'"+ relationship + "\',\'" + cell.get("source").id + "\',\'" + cell.get("target").id
+			   + "\', \'REMOVE\',\'"+ timestamp + "\') ON DUPLICATE KEY UPDATE timestamp=\'"+timestamp + "\'",1);
+       }
+
 	   if(cell.prop("link-type") == 'NBT' || cell.prop("link-type") == 'NBD'){
 
 		   //Verify if is a Not both type. If it is remove labels from source and target node
