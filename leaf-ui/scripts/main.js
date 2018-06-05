@@ -1149,15 +1149,15 @@ graph.on("add", function(cell){
 });
 
 // used when reading form the database is needed
-function accessDatabaseWithCallback(sql_query_1, type, callbackfunc){
-    var queryString = "query=" +  encodeURIComponent(sql_query_1) + "&type=" + type;
+function accessDatabaseWithRead(insert_query, read_query, type){
+    var queryString = "insert_query=" +  encodeURIComponent(insert_query) + "&type=" + type + "&read_query=" +  encodeURIComponent(read_query);
     $.ajax({
         type: "POST",
         url: "./scripts/ajaxjs.php",
         data: queryString,
         cache: false,
         success: function(html) {
-            callbackfunc(html);
+            console.log(html);
         },
     });
 }
@@ -1226,43 +1226,13 @@ function updateDataBase(graph){
 
     //print each actor in the model
     for (var a = 0; a < actors.length; a++){
-        accessDatabaseWithCallback("select * from actors where id=\'"+actors[a].id + "\' and name=\'"+actors[a].attr(".name/text") + "\' and action='EDIT' order by timestamp DESC limit 1", 0, function(output){
-        	console.log(output);
-        	var myRegexp = /\((.*)%(.*)\)/g;
-        	var match = myRegexp.exec(output);
-        	var latest_timestamp_with_same_value = match[2];
-        	console.log(latest_timestamp_with_same_value);
-			if (latest_timestamp_with_same_value !== "0"){ // found
-
-                if (/^(.*);/g.test(latest_timestamp_with_same_value)){
-                	console.log("found 1+ timestamps");
-                    var myRegexp2 = /^(.*);/g;
-                    var match2 = myRegexp2.exec(myRegexp2);
-                    console.log(match2);
-                    if (timestamp !== match2[1]){ // same value tuples is appended the second time
-                        var concat_timestamp  = timestamp + ";"+latest_timestamp_with_same_value;
-                        console.log(timestamp);
-                        	accessDatabase("update actors set timestamp=\'"+concat_timestamp +"\' where timestamp=\'" +
-                            latest_timestamp_with_same_value + "\' and action='EDIT'",1);
-
-                    	}
-
-				} else {
-                	console.log("found one timestamp only");
-                    if (timestamp !== latest_timestamp_with_same_value){ // same value tuples is appended the second time
-                        var concat_timestamp  = timestamp + ";"+latest_timestamp_with_same_value;
-                        console.log(timestamp);
-
-                        accessDatabase("update actors set timestamp=\'"+concat_timestamp +"\' where timestamp=\'" +
-                            latest_timestamp_with_same_value + "\' and action='EDIT'",1);
-                    }
-				}
-
-			}
-        });
-        accessDatabase("insert ignore into actors(session_id,id,name,action,timestamp) values " +
-			"(\'"+ session_id +"\',\'"+actors[a].id +"\',\'"+ actors[a].attr(".name/text") +"\', \'EDIT\',\'"+
-			timestamp + "\')",1);
+        var insert_query = "insert ignore into actors(session_id,id,name,action,timestamp) values " +
+            "(\'"+ session_id +"\',\'"+actors[a].id +"\',\'"+ actors[a].attr(".name/text") +"\', \'EDIT\',\'"+
+            timestamp + "\')";
+        var read_query = "select * from (select * from actors where id=\'" + actors[a].id +
+			"\' order by timestamp DESC limit 1) as temp where name=\'" +
+			actors[a].attr(".name/text") + "\'";
+        accessDatabaseWithRead(insert_query, read_query, 0);
         accessDatabase("UPDATE ignore actors SET action=\'CREATE\' WHERE id=" + "\'" + actors[a].id + "\' ORDER BY timestamp ASC LIMIT 1",1);
     }
 
