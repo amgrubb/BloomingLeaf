@@ -76,10 +76,7 @@ function getFileResults(isGetNextSteps){
 				if(isGetNextSteps){
 					open_analysis_viewer();
 				}else{
-					loadAnalysis(analysisResults);
-					var currentValueLimit = parseInt(sliderObject.sliderElement.noUiSlider.get());
-					var sliderMax = currentValueLimit + currentAnalysis.timeScale;
-					sliderObject.sliderElement.noUiSlider.set(sliderMax);
+					displayAnalysis(analysisResults);
 				}
 			}
 		}

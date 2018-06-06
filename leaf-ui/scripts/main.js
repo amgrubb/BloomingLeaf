@@ -26,6 +26,9 @@ var loader;
 var reader;
 var recursiveStack = {};
 var constraintHolder = {};
+//This object will be created to save necessary data for following analysis
+var savedAnalysisData = {};
+
 //Properties for both core and simulator.
 //TODO: merge this two arrays in order to make use the same name for all
 var satvalues = {
@@ -647,18 +650,29 @@ function switchToModellingMode(useInitState){
 
 // ----------------------------------------------------------------- //
 // Communication between server and front end
-function loadAnalysis(analysisResults){
-	currentAnalysis = new analysisObject.initFromBackEnd(analysisResults);
+
+
+function displayAnalysis(analysisResults){
+
+	var currentAnalysis = new analysisObject.initFromBackEnd(analysisResults);
+
+	// save data for get possible next states
 	savedAnalysisData.finalAssigneEpoch = analysisResults.finalAssignedEpoch;
 	savedAnalysisData.finalValueTimePoints = analysisResults.finalValueTimePoints;
+
+
 	$('#num-rel-time').val(analysisResults.relativeTimePoints);
 	if(analysisResults.absoluteTimePoints){
 		var absTimePoints = analysisResults.absoluteTimePoints.toString();
 		$('#abs-time-pts').val(absTimePoints.replace(/,/g, " "));
 	}
 
+	var currentValueLimit = parseInt(sliderObject.sliderElement.noUiSlider.get());
+	var sliderMax = currentValueLimit + currentAnalysis.timeScale;
+	sliderObject.sliderElement.noUiSlider.set(sliderMax);
+
 	elementList = analysisResults.elementList;
-	updateSlider(currentAnalysis, false);
+	createSlider(currentAnalysis);
 }
 
 
@@ -668,60 +682,15 @@ function loadAnalysis(analysisResults){
 // Slider control
 
 // Slider creation and update
-function updateSlider(currentAnalysis, pastAnalysisStep){
-	var analysisMarkers;
+function createSlider(currentAnalysis) {
 
-	if(!sliderObject.sliderElement){
-		sliderObject.sliderElement = document.getElementById('slider');
-		sliderObject.sliderValueElement = document.getElementById('sliderValue');
-	}
+	var currentValueLimit = 0;
+	var sliderMax = currentAnalysis.timeScale;
 
-	// First create slider
-	if(!sliderObject.sliderElement.hasOwnProperty('noUiSlider')){
-		var currentValueLimit = 0;
-		var sliderMax = currentAnalysis.timeScale;
-
-		updateHistory(currentAnalysis, currentValueLimit);
-		analysisMarkers = sliderObject.pastAnalysisValues;
-
-	// Clicking on element on history log
-	}else if(typeof(pastAnalysisStep) == "number"){
-		if (pastAnalysisStep == 0){
-			var currentValueLimit = 0;
-			var sliderMax = currentAnalysis.timeScale;
-			analysisMarkers = [];
-		}else{
-			var currentValueLimit = historyObject.allHistory[pastAnalysisStep - 1].sliderEnd;
-			var sliderMax = currentValueLimit + currentAnalysis.timeScale;
-			analysisMarkers = sliderObject.pastAnalysisValues.slice(0, pastAnalysisStep);
-		}
-
-		sliderObject.sliderElement.noUiSlider.destroy();
-
-	// Appending new analysis
-	}else{
-		var currentValueLimit = parseInt(sliderObject.sliderElement.noUiSlider.get());
-		var sliderMax = currentValueLimit + currentAnalysis.timeScale;
-
-		sliderObject.sliderElement.noUiSlider.destroy();
-
-		//append to past analysis values only if value change
-		var pastLength = sliderObject.pastAnalysisValues.length;
-		if ((sliderObject.pastAnalysisValues[pastLength - 1] != currentValueLimit) && (currentValueLimit != 0)){
-			sliderObject.pastAnalysisValues.push(currentValueLimit);
-			updateHistory(currentAnalysis, currentValueLimit);
-		}else{
-			updateHistoryName(currentAnalysis);
-		}
-
-		analysisMarkers = sliderObject.pastAnalysisValues;
-	}
-	adjustSlider(sliderMax);
-	createSlider(sliderMax, analysisMarkers);
-}
+	updateHistory(currentAnalysis, currentValueLimit);
 	
-function createSlider(sliderMax, analysisMarkers){
-	if (sliderMax < 25){
+
+	if (sliderMax < 25) {
 		var density = 100/sliderMax;
 	}
 	else {
@@ -753,10 +722,63 @@ function createSlider(sliderMax, analysisMarkers){
 			updateSliderValues(values[handle], currentValueLimit, currentAnalysis);
 		}
 	});
+
+	adjustSliderWidth(sliderMax);
 }
 
+
+
+
+	// First create slider
+	if(!sliderObject.sliderElement.hasOwnProperty('noUiSlider')){
+		
+
+	// Clicking on element on history log
+	}else if(typeof(pastAnalysisStep) == "number"){
+		
+
+
+		if (pastAnalysisStep == 0){
+			var currentValueLimit = 0;
+			var sliderMax = currentAnalysis.timeScale;
+			analysisMarkers = [];
+		}else{
+			var currentValueLimit = historyObject.allHistory[pastAnalysisStep - 1].sliderEnd;
+			var sliderMax = currentValueLimit + currentAnalysis.timeScale;
+			analysisMarkers = sliderObject.pastAnalysisValues.slice(0, pastAnalysisStep);
+		}
+
+		sliderObject.sliderElement.noUiSlider.destroy();
+
+
+
+
+
+	// Appending new analysis
+	}else{
+		var currentValueLimit = parseInt(sliderObject.sliderElement.noUiSlider.get());
+		var sliderMax = currentValueLimit + currentAnalysis.timeScale;
+
+		sliderObject.sliderElement.noUiSlider.destroy();
+
+		//append to past analysis values only if value change
+		var pastLength = sliderObject.pastAnalysisValues.length;
+		if ((sliderObject.pastAnalysisValues[pastLength - 1] != currentValueLimit) && (currentValueLimit != 0)){
+			sliderObject.pastAnalysisValues.push(currentValueLimit);
+			updateHistory(currentAnalysis, currentValueLimit);
+		}else{
+			updateHistoryName(currentAnalysis);
+		}
+
+		analysisMarkers = sliderObject.pastAnalysisValues;
+	}
+	adjustSlider(sliderMax);
+	createSlider(sliderMax, analysisMarkers);
+}
+
+
 // Adjust slider's width based on the maxvalue of the slider
-function adjustSlider(maxValue){
+function adjustSliderWidth(maxValue){
 	// Min width of slider is 15% of paper's width
 	var min = $('#paper').width() * 0.1;
 	// Max width of slider is 90% of paper's width
@@ -842,7 +864,8 @@ $('#history').on("click", ".log-elements", function(e){
 	var txt = $(e.target).text();
 	var step = parseInt(txt.split(":")[0].split(" ")[1] - 1);
 	var log = historyObject.allHistory[step];
-	currentAnalysis = log.analysis;
+	var currentAnalysis = log.analysis;
+
 	updateSlider(log.analysis, step);
 
 	$(".log-elements:nth-of-type(" + historyObject.currentStep.toString() +")").css("background-color", "");
@@ -1345,8 +1368,9 @@ loader.onchange = function(){
 
 // When read is performed, if successful, load that file.
 reader.onload = function(){
-	if (reader.result){
-		if (mode == "Modelling"){
+
+	if (reader.result) {
+		if (mode == "Modelling") {
 			graph.fromJSON(JSON.parse(reader.result));
 
 			// Load different links and intension constraints
@@ -1354,16 +1378,12 @@ reader.onload = function(){
 			graph.links = [];
 			graph.intensionConstraints = [];
 			allLinks.forEach(function(link){
-				if(link.attr('./display') == "none"){
+				if (link.attr('./display') == "none") {
 					graph.intensionConstraints.push(link);
-				}else{
+				} else {
 					graph.links.push(link);
 				}
 			});
-		}else{
-			analysisResults = reader.result.split("\n");
-			//loadAnalysis(analysisResults, null, -1);
-			loadAnalysis(analysisResults);
 		}
 	}
 };
