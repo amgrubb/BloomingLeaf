@@ -660,19 +660,16 @@ function displayAnalysis(analysisResults){
 	savedAnalysisData.finalAssigneEpoch = analysisResults.finalAssignedEpoch;
 	savedAnalysisData.finalValueTimePoints = analysisResults.finalValueTimePoints;
 
-
-	$('#num-rel-time').val(analysisResults.relativeTimePoints);
-	if(analysisResults.absoluteTimePoints){
-		var absTimePoints = analysisResults.absoluteTimePoints.toString();
-		$('#abs-time-pts').val(absTimePoints.replace(/,/g, " "));
-	}
-
-	var currentValueLimit = parseInt(sliderObject.sliderElement.noUiSlider.get());
+	var currentValueLimit = 0;
 	var sliderMax = currentValueLimit + currentAnalysis.timeScale;
 	sliderObject.sliderElement.noUiSlider.set(sliderMax);
 
-	elementList = analysisResults.elementList;
-	createSlider(currentAnalysis);
+	// this might be unnecessary 
+	// elementList = analysisResults.elementList;
+
+	updateHistory(currentAnalysis, currentValueLimit);
+
+	createSlider(currentAnalysis, currentValueLimit);
 }
 
 
@@ -681,37 +678,27 @@ function displayAnalysis(analysisResults){
 // ----------------------------------------------------------------- //
 // Slider control
 
-// Slider creation and update
-function createSlider(currentAnalysis) {
 
-	var currentValueLimit = 0;
+function createSlider(currentAnalysis, currentValueLimit) {
+
 	var sliderMax = currentAnalysis.timeScale;
-
-	updateHistory(currentAnalysis, currentValueLimit);
-	
-
-	if (sliderMax < 25) {
-		var density = 100/sliderMax;
-	}
-	else {
-		var density = 4;
-	}
+	var density = (sliderMax < 25) ? (100/sliderMax) : 4;
 	
 	noUiSlider.create(sliderObject.sliderElement, {
-	start: 0,
-	step: 1,
-	behaviour: 'tap',
-	connect: 'lower',
-	direction: 'ltr',
-	range: {
-		'min': 0,
-		'max': sliderMax
-	},
-	pips: {
-		mode: 'values',
-		values: analysisMarkers,
-		density: density
-	}
+		start: 0,
+		step: 1,
+		behaviour: 'tap',
+		connect: 'lower',
+		direction: 'ltr',
+		range: {
+			'min': 0,
+			'max': sliderMax
+		},
+		pips: {
+			mode: 'values',
+			values: [],
+			density: density
+		}
 	});
 
 	sliderObject.sliderElement.noUiSlider.on('update', function( values, handle ) {
@@ -729,52 +716,24 @@ function createSlider(currentAnalysis) {
 
 
 
-	// First create slider
-	if(!sliderObject.sliderElement.hasOwnProperty('noUiSlider')){
-		
+function switchHistory(currentAnalysis, historyIndex) {
 
-	// Clicking on element on history log
-	}else if(typeof(pastAnalysisStep) == "number"){
-		
+	var currentValueLimit;
+	var sliderMax;
 
+	if (historyIndex == 0) {
+		currentValueLimit = 0;
+		sliderMax = currentAnalysis.timeScale;
 
-		if (pastAnalysisStep == 0){
-			var currentValueLimit = 0;
-			var sliderMax = currentAnalysis.timeScale;
-			analysisMarkers = [];
-		}else{
-			var currentValueLimit = historyObject.allHistory[pastAnalysisStep - 1].sliderEnd;
-			var sliderMax = currentValueLimit + currentAnalysis.timeScale;
-			analysisMarkers = sliderObject.pastAnalysisValues.slice(0, pastAnalysisStep);
-		}
-
-		sliderObject.sliderElement.noUiSlider.destroy();
-
-
-
-
-
-	// Appending new analysis
-	}else{
-		var currentValueLimit = parseInt(sliderObject.sliderElement.noUiSlider.get());
-		var sliderMax = currentValueLimit + currentAnalysis.timeScale;
-
-		sliderObject.sliderElement.noUiSlider.destroy();
-
-		//append to past analysis values only if value change
-		var pastLength = sliderObject.pastAnalysisValues.length;
-		if ((sliderObject.pastAnalysisValues[pastLength - 1] != currentValueLimit) && (currentValueLimit != 0)){
-			sliderObject.pastAnalysisValues.push(currentValueLimit);
-			updateHistory(currentAnalysis, currentValueLimit);
-		}else{
-			updateHistoryName(currentAnalysis);
-		}
-
-		analysisMarkers = sliderObject.pastAnalysisValues;
+	} else {
+		currentValueLimit = historyObject.allHistory[historyIndex - 1].sliderEnd;
+		sliderMax = currentValueLimit + currentAnalysis.timeScale;
 	}
-	adjustSlider(sliderMax);
-	createSlider(sliderMax, analysisMarkers);
+
+	sliderObject.sliderElement.noUiSlider.destroy();
+	createSlider(currentAnalysis, currentAnalysis);
 }
+
 
 
 // Adjust slider's width based on the maxvalue of the slider
@@ -866,7 +825,7 @@ $('#history').on("click", ".log-elements", function(e){
 	var log = historyObject.allHistory[step];
 	var currentAnalysis = log.analysis;
 
-	updateSlider(log.analysis, step);
+	switchHistory(currentAnalysis, step);
 
 	$(".log-elements:nth-of-type(" + historyObject.currentStep.toString() +")").css("background-color", "");
 	$(e.target).css("background-color", "#E8E8E8");
@@ -1384,6 +1343,9 @@ reader.onload = function(){
 					graph.links.push(link);
 				}
 			});
+		} else {
+			analysisResults = reader.result.split("\n");
+			loadAnalysis(analysisResults);
 		}
 	}
 };
