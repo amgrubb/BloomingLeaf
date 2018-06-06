@@ -661,15 +661,13 @@ function displayAnalysis(analysisResults){
 	savedAnalysisData.finalValueTimePoints = analysisResults.finalValueTimePoints;
 
 	var currentValueLimit = 0;
-	var sliderMax = currentValueLimit + currentAnalysis.timeScale;
-	sliderObject.sliderElement.noUiSlider.set(sliderMax);
 
 	// this might be unnecessary 
 	// elementList = analysisResults.elementList;
 
 	updateHistory(currentAnalysis, currentValueLimit);
 
-	createSlider(currentAnalysis, currentValueLimit);
+	createSlider(currentAnalysis, currentValueLimit, false);
 }
 
 
@@ -679,7 +677,7 @@ function displayAnalysis(analysisResults){
 // Slider control
 
 
-function createSlider(currentAnalysis, currentValueLimit) {
+function createSlider(currentAnalysis, currentValueLimit, isSwitch) {
 
 	var sliderMax = currentAnalysis.timeScale;
 	var density = (sliderMax < 25) ? (100/sliderMax) : 4;
@@ -700,6 +698,8 @@ function createSlider(currentAnalysis, currentValueLimit) {
 			density: density
 		}
 	});
+
+	sliderObject.sliderElement.noUiSlider.set(isSwitch ? 0 : sliderMax);
 
 	sliderObject.sliderElement.noUiSlider.on('update', function( values, handle ) {
 		//Set slidable range based on previous analysis
@@ -729,7 +729,7 @@ function switchHistory(currentAnalysis, historyIndex) {
 	}
 
 	sliderObject.sliderElement.noUiSlider.destroy();
-	createSlider(currentAnalysis, currentAnalysis);
+	createSlider(currentAnalysis, currentValueLimit, true);
 }
 
 
