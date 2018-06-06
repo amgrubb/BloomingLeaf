@@ -32,9 +32,9 @@ var savedAnalysisData = {};
 //Properties for both core and simulator.
 //TODO: merge this two arrays in order to make use the same name for all
 var satvalues = {
-		"satisfied": 2, "partiallysatisfied": 1, "partiallydenied": -1, "denied": -2, "unknown": 4, "conflict":3, "none": 0,
-		"2": "satisfied", "1": "partiallysatisfied", "-1": "partiallydenied", "-2": "denied", "4": "unknown", "3": "conflict", "0": "none"
-		};
+	"satisfied": 2, "partiallysatisfied": 1, "partiallydenied": -1, "denied": -2, "unknown": 4, "conflict":3, "none": 0,
+	"2": "satisfied", "1": "partiallysatisfied", "-1": "partiallydenied", "-2": "denied", "4": "unknown", "3": "conflict", "0": "none"
+};
 
 var satValueDict = {
 	"unknown": "0000",
@@ -608,7 +608,7 @@ function switchToModellingMode(useInitState){
 	if(useInitState){
 		for (var i = 0; i < graph.elementsBeforeAnalysis.length; i++){
 			var value = graph.elementsBeforeAnalysis[i]
-			updateValues(i, value, "toInitModel");
+			updateNodeValues(i, value, "toInitModel");
 		}
 	}
 	// }else{
@@ -725,7 +725,8 @@ function createSlider(currentAnalysis, currentValueLimit, isSwitch) {
 		if(values[handle] < currentValueLimit){
 			sliderObject.sliderElement.noUiSlider.set(currentValueLimit);
 		}else{
-			updateSliderValues(values[handle], currentValueLimit, currentAnalysis);
+			updateSliderValues(parseInt(values[handle]), currentValueLimit, currentAnalysis);
+
 		}
 	});
 
@@ -786,30 +787,49 @@ function adjustSliderWidth(maxValue){
 
 }
 
-function updateSliderValues(valueString, currentValueLimit, currentAnalysis){
-	var sliderValue = parseInt(valueString);
+/**
+ * Updates the slider values at the bottom left hand side of the paper,
+ * to represent the current slider's position.
+ *
+ * @param {Number} sliderValue
+ *   Current value of the slider
+ * @param {Number} currentValueLimit
+ * @param {Object} currentAnalysis
+ *   Contains data about the analysis that the back end performed
+ */
+function updateSliderValues(sliderValue, currentValueLimit, currentAnalysis){
+
 	var value = sliderValue - currentValueLimit;
 	$('#sliderValue').text(value);
 	sliderObject.sliderValueElement.innerHTML = value + "|" + currentAnalysis.relativeTime[value];
 
 	for (var i = 0; i < currentAnalysis.numOfElements; i++){
-		updateValues(i, currentAnalysis.elements[i][value], "renderAnalysis");
+		updateNodeValues(i, currentAnalysis.elements[i][value], "renderAnalysis");
 	}
 }
 
-// Update the satisfaction value of a particular node in the graph
-function updateValues(c, v, m){
-	var cell;
+
+/**
+ * Updates the satisfaction value of a particular node in the graph.
+ *
+ * @param {Number} elementIndex
+ *   The index of the node of interest in the array graph.getElements
+ * @param {String} satValue
+ *   Satisfaction value in string form. ie: '0011' for satisfied
+ * @param {String} mode
+ *   Determines how to updates node values.
+ *   mode is either 'renderAnalysis' or 'toInitModel'
+ */
+function updateNodeValues(elementIndex, satValue, mode) {
+	var cell = graph.allElements[elementIndex];
 	var value;
 
 	// Update node based on values from cgi file
-	if (m == "renderAnalysis"){
-		cell = graph.allElements[c];
-		value = v;
+	if (m == "renderAnalysis") {
+		value = satValue;
 
 	//Update node based on values saved from graph prior to analysis
-	}else if (m == "toInitModel"){
-		cell = graph.allElements[c];
+	} else if (m == "toInitModel") {
 		value = cell.attributes.attrs[".satvalue"].value;
 	}
 
@@ -817,31 +837,31 @@ function updateValues(c, v, m){
 	if ((value == "0001") || (value == "0011")) {
 	  cell.attr(".satvalue/text", "(FS, T)");
 	  cell.attr({text:{fill:'black'}});
-	}else if(value == "0010") {
+	} else if(value == "0010") {
 	  cell.attr(".satvalue/text", "(PS, T)");
 	  cell.attr({text:{fill:'black'}});
-	}else if ((value == "1000") || (value == "1100")){
+	} else if ((value == "1000") || (value == "1100")) {
 	  cell.attr(".satvalue/text", "(T, FD)");
 	  cell.attr({text:{fill:'black'}});
-	}else if (value == "0100") {
+	} else if (value == "0100") {
 	  cell.attr(".satvalue/text", "(T, PD)");
 	  cell.attr({text:{fill:'black'}});
-	}else if (value == "0110") {
+	} else if (value == "0110") {
 		  cell.attr(".satvalue/text", "(PS, PD)");
 		  cell.attr({text:{fill:'red'}});
-	}else if ((value == "1110") || (value == "1010")){
+	} else if ((value == "1110") || (value == "1010")) {
 		  cell.attr(".satvalue/text", "(PS, FD)");
 		  cell.attr({text:{fill:'red'}});
-	}else if ((value == "0111") || (value == "0101")){
+	} else if ((value == "0111") || (value == "0101")) {
 		  cell.attr(".satvalue/text", "(FS, PD)");
 		  cell.attr({text:{fill:'red'}});
-	}else if ((value == "1111") || (value == "1001") || (value == "1101") || (value == "1011") ){
+	} else if ((value == "1111") || (value == "1001") || (value == "1101") || (value == "1011") ) {
 		  cell.attr(".satvalue/text", "(FS, FD)");
 		  cell.attr({text:{fill:'red'}});
-	}else if (value == "0000") {
+	} else if (value == "0000") {
 	      cell.attr(".satvalue/text", "(T,T)");
 	      cell.attr({text:{fill:'black'}});
-	}else {
+	} else {
 	  cell.removeAttr(".satvalue/d");
 	}
 
