@@ -714,8 +714,6 @@ function createSlider(currentAnalysis, currentValueLimit) {
 }
 
 
-
-
 function switchHistory(currentAnalysis, historyIndex) {
 
 	var currentValueLimit;
@@ -1343,9 +1341,6 @@ reader.onload = function(){
 					graph.links.push(link);
 				}
 			});
-		} else {
-			analysisResults = reader.result.split("\n");
-			loadAnalysis(analysisResults);
 		}
 	}
 };
