@@ -278,7 +278,7 @@ $('#cycledetect-btn').on('click', function(e){
 
 });
 
-/*
+/**
  * Initializes and returns a 'DestSourceMapper' object which contains
  * information about links by indicating the source nodes to destination nodes
  *
@@ -332,7 +332,7 @@ function initializeDestSourceMapper(jointLinks, inputlinks){
     return destSourceMapper;
 }
 
-/*
+/**
  * Returns a syntax error message.
  *
  * Prerequisite: There are links from each node with ids in sourceList
@@ -398,7 +398,7 @@ function getNodeName(id){
     }
 }
 
-/*
+/**
  * Returns true iff any two n-ary constraints in 
  * naryRelationships are different
  *
@@ -422,7 +422,7 @@ function syntaxErrorExists(naryRelationships) {
 	return false;
 }
 
-/*
+/**
  * Return an array containing the objects that represent
  * source nodes that participate in an n-ary relationship,
  * (ie, AND, OR, NO RELATIONSHIP), with the node with id destId
@@ -457,7 +457,7 @@ function getNaryRelationships(destSourceMapper, destId) {
 	return result;
 }
 
-/*
+/**
  * Changes the colour and stroke-width of all linkViews in 
  * linkViewArray
  *
@@ -474,7 +474,7 @@ function changeLinkColour(linkViewArray, colour, strokeWidth) {
 	}
 }
 
-/*
+/**
  * Displays error popup with title and message
  *
  * @param {String} title
@@ -499,7 +499,7 @@ function displayErrorPopup(title, message) {
     });
 }
 
-/*
+/**
  * Performs a syntax check on the current model, by checking if each destination
  * nodes with links, have valid constraints.
  * Returns true and displays an error popup iff a syntax error exists
@@ -546,7 +546,7 @@ function syntaxCheck() {
     return false;
 }
 
-//Cycle-deteciton algorithm
+// Cycle-deteciton algorithm
 // The algorithm is referenced from Detect Cycle in a Directed Graph algorithm
 // discussed at : http://www.geeksforgeeks.org/detect-cycle-in-a-graph/
 function cycleCheck(links, verticies){
@@ -651,9 +651,16 @@ function switchToModellingMode(useInitState){
 // ----------------------------------------------------------------- //
 // Communication between server and front end
 
-
+/**
+ * Displays the analysis to the web app, by displaying the slider and the 
+ * history log
+ *
+ * @param {Object} analysisResults
+ *   Object which contains data gotten from back end 
+ */
 function displayAnalysis(analysisResults){
 
+	// change the format of the analysis result from the back end
 	var currentAnalysis = new analysisObject.initFromBackEnd(analysisResults);
 
 	// save data for get possible next states
@@ -665,6 +672,7 @@ function displayAnalysis(analysisResults){
 	// this might be unnecessary 
 	// elementList = analysisResults.elementList;
 
+	// update history log
 	updateHistory(currentAnalysis, currentValueLimit);
 
 	createSlider(currentAnalysis, currentValueLimit, false);
@@ -676,11 +684,20 @@ function displayAnalysis(analysisResults){
 // ----------------------------------------------------------------- //
 // Slider control
 
-
+/**
+ * Creates a slider and displays it in the web app
+ *
+ * @param {Object} currentAnalysis
+ *   Contains data about the analysis that the back end performed
+ * @param {number} currentValueLimit
+ * @param {Boolean} isSwitch
+ *   True if the slider is being created when we are switching analysis's
+ *   with the history log, false otherwise
+ */
 function createSlider(currentAnalysis, currentValueLimit, isSwitch) {
 
 	var sliderMax = currentAnalysis.timeScale;
-	var density = (sliderMax < 25) ? (100/sliderMax) : 4;
+	var density = (sliderMax < 25) ? (100 / sliderMax) : 4;
 	
 	noUiSlider.create(sliderObject.sliderElement, {
 		start: 0,
@@ -699,9 +716,11 @@ function createSlider(currentAnalysis, currentValueLimit, isSwitch) {
 		}
 	});
 
+	// set initial value of the slider
 	sliderObject.sliderElement.noUiSlider.set(isSwitch ? 0 : sliderMax);
 
 	sliderObject.sliderElement.noUiSlider.on('update', function( values, handle ) {
+		
 		//Set slidable range based on previous analysis
 		if(values[handle] < currentValueLimit){
 			sliderObject.sliderElement.noUiSlider.set(currentValueLimit);
@@ -713,7 +732,16 @@ function createSlider(currentAnalysis, currentValueLimit, isSwitch) {
 	adjustSliderWidth(sliderMax);
 }
 
-
+/*
+ * Creates and displays new slider after the user clicks a different
+ * analysis from the history log. This function is called when 
+ * the user clicks a different analysis from the history log.
+ * @param {Object} currentAnalysis
+ *   Contains data about the analysis that the back end performed
+ * @param {Number} historyIndex
+ *   A valid index for the array historyObject.allHistory, indicating 
+ *   which analysis/history log that the user clicked on
+ */
 function switchHistory(currentAnalysis, historyIndex) {
 
 	var currentValueLimit;
@@ -733,8 +761,12 @@ function switchHistory(currentAnalysis, historyIndex) {
 }
 
 
-
-// Adjust slider's width based on the maxvalue of the slider
+/**
+ * Adjusts the width of the slider depending on the width of the paper
+ *
+ * @param {Number} maxValue
+ *   The maximum value for the current slider
+ */
 function adjustSliderWidth(maxValue){
 	// Min width of slider is 15% of paper's width
 	var min = $('#paper').width() * 0.1;
@@ -831,24 +863,40 @@ $('#history').on("click", ".log-elements", function(e){
 	historyObject.currentStep = step + 1;
 });
 
+
+/**
+ * Clears the history log on the web application, and clears 
+ * historyObject to its inital state
+ */
 function clearHistoryLog(){
+
 	$('.log-elements').remove();
-	if(sliderObject.sliderElement.noUiSlider)
+
+	if (sliderObject.sliderElement.noUiSlider) {
 		sliderObject.sliderElement.noUiSlider.destroy();
+	}
 
 	sliderObject.pastAnalysisValues = [];
 
-	historyObject.allHistory = []
+	historyObject.allHistory = [];
 	historyObject.currentStep = null;
 	historyObject.nextStep = 1;
 }
 
-// update history log and save file data
+/**
+ * Updates history log in order to display the new analysis,
+ * and updates the historyObject to store information about 
+ * the new analysis.
+ *
+ * @param {Object} currentAnalysis
+ *   Contains data about the analysis that the back end performed
+ * @param {Number} currentValueLimit
+ */
 function updateHistory(currentAnalysis, currentValueLimit){
 	var logMessage = "Step " + historyObject.nextStep.toString() + ": " + currentAnalysis.type;
 	logMessage = logMessage.replace("<", "&lt");
 
-	if($(".log-elements")){
+	if ($(".log-elements")) {
 		$(".log-elements").last().css("background-color", "");
 	}
 
@@ -857,9 +905,9 @@ function updateHistory(currentAnalysis, currentValueLimit){
 	historyObject.currentStep = historyObject.nextStep;
 	historyObject.nextStep++;
 
-	if(historyObject.allHistory.length == 0){
+	if (historyObject.allHistory.length == 0) {
 		var log = new logObject(currentAnalysis, 0);
-	}else{
+	} else {
 		var l = historyObject.allHistory.length - 1;
 		historyObject.allHistory[l].sliderEnd = currentValueLimit;
 		historyObject.allHistory[l].analysisLength = currentValueLimit - historyObject.allHistory[l].sliderBegin;
