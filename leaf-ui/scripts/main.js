@@ -231,9 +231,8 @@ $('#cycledetect-btn').on('click', function(e){
 });
 function cycleCheckForLinks(analysis, jslinks){
 	var verticies = analysis.elementList;
-	var links = jslinks;
 		//If there is no cycle, leave the color the way it was
-		if (cycleCheck(links, verticies) == false){
+		if (cycleCheck(jslinks, verticies) == false){
 			swal("No cycle in the graph", "", "success");
 			var elements = graph.getElements();
 			for (var i = 0; i < elements.length; i++){
