@@ -480,7 +480,7 @@ function changeLinkColour(linkViewArray, colour, strokeWidth) {
  * @param {String} title
  * @param {String} message
  */
-function displayErrorPopup(title, message) {
+function alertSyntaxError(title, message) {
 	swal({
         	title: title,
             type: "warning",
@@ -540,7 +540,7 @@ function syntaxCheck() {
     }
 
     if (errorText) {
-    	displayErrorPopup('We found invalid link combinations', errorText);
+    	alertSyntaxError('We found invalid link combinations', errorText);
     	return true;
     }
     return false;
