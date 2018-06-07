@@ -227,10 +227,6 @@ $('#cycledetect-btn').on('click', function(e){
 		cycleCheckForLinks(js_object.analysis, jslinks);
 		
 	}
-	var elements = graph.getElements();
-
-	js_object = null;
-	jslinks = null;
 
 });
 function cycleCheckForLinks(analysis, jslinks){
