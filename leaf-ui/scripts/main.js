@@ -1276,9 +1276,7 @@ function accessDatabase(sql_query, type) {
 }
 
 // Generates file needed for backend analysis
-function updateDataBase(graph){
-
-	var timestamp = new Date().toUTCString();
+function updateDataBase(graph, timestamp){
 
     //Step 0: Get elements from graph.
     var all_elements = graph.getElements();
@@ -1505,7 +1503,13 @@ function updateDataBase(graph){
 graph.on("change", function(){
 	var graphtext = JSON.stringify(graph.toJSON());
 	document.cookie = "graph=" + graphtext;
-	if (Tracking){updateDataBase(graph);}
+	if (Tracking){
+        var timestamp = new Date().toUTCString();
+		updateDataBase(graph, timestamp);
+        accessDatabase("insert ignore into graphs(session_id,content,timestamp) values " +
+            "(\'"+ session_id +"\',\'"+graphtext +"\',\'"+ timestamp + "\') ",1);
+
+    }
 });
 
 
