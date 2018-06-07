@@ -212,31 +212,31 @@ $('#model-cur-btn').on('click', function(){
 
 //Cycle button onclick
 $('#cycledetect-btn').on('click', function(e){
-	//alert("cycle button clicked");
 	var analysis = new InputAnalysis();
 	var js_object = {};
-	var jslinks;
+	var jsLinks;
 	js_object.analysis = getAnalysisValues(analysis);
-	jslinks = getLinks();
+	jsLinks = getLinks();
 
-	if(jslinks.length == 0){
+	if(jsLinks.length == 0){
 		swal("No cycle in the graph", "", "success");
 	}
 	else{
-		cycleCheckForLinks(js_object.analysis, jslinks);
+		cycleCheckForLinks(js_object.analysis, jsLinks);
 		
 	}
 
 });
-function cycleCheckForLinks(analysis, jslinks){
+function cycleCheckForLinks(analysis, jsLinks){
 	var vertices = analysis.elementList;
 	var elements;
+	var cellView;
 		//If there is no cycle, leave the color the way it was
-		if (cycleCheck(jslinks, vertices) == false){
+		if (!cycleCheck(jsLinks, vertices) == false){
 			swal("No cycle in the graph", "", "success");
 			elements = graph.getElements();
 			for (var i = 0; i < elements.length; i++){
-				var cellView  = elements[i].findView(paper);
+				cellView  = elements[i].findView(paper);
 				if(cellView.model.attributes.type == "basic.Task"){
 					cellView.model.attr({'.outer': {'fill': '#92E3B1'}});
 				}
@@ -255,7 +255,7 @@ function cycleCheckForLinks(analysis, jslinks){
 			swal("Cycle in the graph", "", "error");
 			elements = graph.getElements();
 			for (var i = 0; i < elements.length; i++){
-				var cellView  = elements[i].findView(paper);
+				cellView  = elements[i].findView(paper);
 				if (recursiveStack[cellView.model.attributes.elementid] == true){
 					cellView.model.attr({'.outer': {'fill': 'red'}});
 				}
