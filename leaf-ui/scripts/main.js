@@ -200,6 +200,7 @@ $('#analysis-btn').on('click', function(){
 
 	mode = "Analysis";
 	
+	// Check for cycles
 	var analysis = new InputAnalysis();
 	var js_object = {};
 	var jsLinks;
@@ -217,20 +218,6 @@ $('#model-cur-btn').on('click', function(){
 	savedAnalysisData.finalValueTimePoints="";
 });
 
-
-/**
- * Check whether there are any cycles in the current model.
- * Display an alert on the result.
- */
-$('#cycledetect-btn').on('click', function(e){
-	var analysis = new InputAnalysis();
-	var js_object = {};
-	var jsLinks;
-	js_object.analysis = getAnalysisValues(analysis);
-	jsLinks = getLinks();
-	cycleCheckForLinks(js_object.analysis, jsLinks);
-
-});
 
 /**
  * Alert the user and display whether there are any cycles in the model.
