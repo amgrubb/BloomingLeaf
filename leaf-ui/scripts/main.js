@@ -1419,9 +1419,8 @@ function updateDataBase(graph){
         var init_value = elements[e].attr(".constraints/markedvalue");
         var funcType = elements[e].attr(".constraints/function");
         var funcTypeVal = elements[e].attr(".constraints/lastval");
-        var sat_value = "";
+        var sat_value;
         var function_string;
-        if (( typeof init_value !== 'undefined' ) && ( typeof sat_value !== 'undefined' )){
         if  (f == " " || f == ""){
             f = "NT";
             sat_value = satValueDict[funcTypeVal];
@@ -1457,9 +1456,10 @@ function updateDataBase(graph){
             }
 
         }
-
+        if (( typeof init_value !== 'undefined' ) && ( typeof sat_value !== 'undefined' )){
             var insert_query;
             var read_query;
+            console.log(sat_value);
             if (typeof(function_string) !== 'undefined'){
                 insert_query = "insert ignore into dynamics(session_id,intention_id,function_type,init_value,sat_value,function_string,action,timestamp) values " +
                     "(\'"+ session_id +"\',\'"+elements[e].id +"\',\'"+ f + "\',\'" + init_value + "\',\'" + sat_value + "\',\'" + function_string  + "\', \'EDIT\',\'"+
