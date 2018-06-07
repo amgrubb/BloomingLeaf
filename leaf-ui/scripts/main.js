@@ -168,7 +168,9 @@ if (document.cookie){
 // ----------------------------------------------------------------- //
 // Analysis and modelling mode control
 
-//Switch to analysis mode
+/**
+ * Switch to Analysis view iff there are no cycles and no syntaxErrors.
+ */
 $('#analysis-btn').on('click', function(){
     var analysis = new InputAnalysis();
     var js_object = {};
@@ -178,7 +180,9 @@ $('#analysis-btn').on('click', function(){
 
     js_object.analysis = getAnalysisValues(analysis);
     jsLinks = getLinks();
+    // Check if there are any cycles
     cycle = cycleCheck(jsLinks, analysis.elementList);
+    //If there are no cycles then switch view to Analysis
     if(!cycle){
         //Adjust left and right panels
         elementInspector.clear();
@@ -208,10 +212,8 @@ $('#analysis-btn').on('click', function(){
 
         mode = "Analysis";
     }
+    //If there are cycles, then display error message. Otherwise, remove any "red" elements.
     cycleCheckForLinks(cycle);
-
-	
-	// Check for cycles
 
 });
 
@@ -1031,81 +1033,94 @@ paper.on("link:options", function(evt, cell){
 
 });
 
+function basicActorLink(link){
+    if (link.getSourceElement() != null) {
+        var sourceCell = link.getSourceElement().attributes.type;
+
+    }
+    // Check if link is valid or not
+    if (link.getTargetElement()) {
+        var targetCell = link.getTargetElement().attributes.type;
+
+        // Links of actors must be paired with other actors
+        if (((sourceCell == "basic.Actor") && (targetCell != "basic.Actor")) ||
+            ((sourceCell != "basic.Actor") && (targetCell == "basic.Actor"))) {
+            link.label(0, {position: 0.5, attrs: {text: {text: 'error'}}});
+        } else if ((sourceCell == "basic.Actor") && (targetCell == "basic.Actor")) {
+            if (!link.prop("link-type")) {
+                link.label(0 ,{position: 0.5, attrs: {text: {text: 'is-a'}}});
+                link.prop("link-type", "is-a");
+            } else {
+                link.label(0, {position: 0.5, attrs: {text: {text: link.prop("link-type")}}});
+            }
+        }
+    }
+}
+
+function createHalo(cellView){
+	var halo = new joint.ui.Halo({
+        graph: graph,
+        paper: paper,
+        cellView: cellView,
+        type: 'toolbar'
+    });
+
+    halo.removeHandle('unlink');
+    halo.removeHandle('clone');
+    halo.removeHandle('fork');
+    halo.removeHandle('rotate');
+    halo.render();
+    return halo;
+}
+
+function removeHighlight(elements){
+	var cell;
+    // Unhighlight everything
+    for (var i = 0; i < elements.length; i++) {
+        cell = elements[i].findView(paper);
+        cell.unhighlight();
+    }
+}
 //Single click on cell
 paper.on('cell:pointerup', function(cellView, evt) {
-	if(mode == "Analysis")
-		return
+	if(mode == "Modelling") {
+		// Link
+        if (cellView.model instanceof joint.dia.Link) {
+            var link = cellView.model;
+            basicActorLink(link);
+            // element is selected
+        } else {
+        	// I don't k
+            selection.reset();
+            selection.add(cellView.model);
+            var cell = cellView.model;
+            var elements = graph.getElements();
+            // remove highlight of other elements
+            removeHighlight(elements);
 
-	// Link
-	if (cellView.model instanceof joint.dia.Link){
-		var link = cellView.model;
+            // Highlight when cell is clicked
+            cellView.highlight();
 
-		if(link.getSourceElement()!=null)
-			var sourceCell = link.getSourceElement().attributes.type;
+            currentHalo = createHalo(cellView);
 
-		// Check if link is valid or not
-		if (link.getTargetElement()){
-			var targetCell = link.getTargetElement().attributes.type;
+            //Embed an element into an actor boundary, if necessary
+            if (!(cellView.model instanceof joint.shapes.basic.Actor)) {
+                var ActorsBelow = paper.findViewsFromPoint(cell.getBBox().center());
 
-			// Links of actors must be paired with other actors
-			if (((sourceCell == "basic.Actor") && (targetCell != "basic.Actor")) ||
-				((sourceCell != "basic.Actor") && (targetCell == "basic.Actor"))){
-				link.label(0 ,{position: 0.5, attrs: {text: {text: 'error'}}});
-			}else if ((sourceCell == "basic.Actor") && (targetCell == "basic.Actor")){
-				if(!link.prop("link-type")){
-					link.label(0 ,{position: 0.5, attrs: {text: {text: 'is-a'}}});
-					link.prop("link-type", "is-a");
-				}else{
-					link.label(0 ,{position: 0.5, attrs: {text: {text: link.prop("link-type")}}});
-				}
-			}
-		}
-		return
+                if (ActorsBelow.length) {
+                    for (var a = 0; a < ActorsBelow.length; a++) {
+                        if (ActorsBelow[a].model instanceof joint.shapes.basic.Actor) {
+                            ActorsBelow[a].model.embed(cell);
+                        }
+                    }
+                }
+            }
 
-	// element is selected
-	}else{
-		selection.reset();
-		selection.add(cellView.model);
-		var cell = cellView.model;
-		// Unhighlight everything
-		var elements = graph.getElements();
-		for (var i = 0; i < elements.length; i++){
-			var cellview  = elements[i].findView(paper);
-			cellview.unhighlight();
-		}
-		// Highlight when cell is clicked
-		cellView.highlight();
-
-		currentHalo = new joint.ui.Halo({
-			graph: graph,
-			paper: paper,
-			cellView: cellView,
-			type: 'toolbar'
-		});
-
-		currentHalo.removeHandle('unlink');
-		currentHalo.removeHandle('clone');
-		currentHalo.removeHandle('fork');
-		currentHalo.removeHandle('rotate');
-		currentHalo.render();
-
-		//Embed an element into an actor boundary, if necessary
-		if (!(cellView.model instanceof joint.shapes.basic.Actor)){
-			var ActorsBelow = paper.findViewsFromPoint(cell.getBBox().center());
-
-			if (ActorsBelow.length){
-				for (var a = 0; a < ActorsBelow.length; a++){
-					if (ActorsBelow[a].model instanceof joint.shapes.basic.Actor){
-						ActorsBelow[a].model.embed(cell);
-					}
-				}
-			}
-		}
-
-		linkInspector.clear();
-		constrainsInspector.clear();
-		elementInspector.render(cellView);
-	}
+            linkInspector.clear();
+            constrainsInspector.clear();
+            elementInspector.render(cellView);
+        }
+    }
 });
 
 
