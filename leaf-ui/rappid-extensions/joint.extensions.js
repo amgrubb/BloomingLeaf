@@ -69,7 +69,10 @@ joint.shapes.basic.Goal = joint.shapes.basic.Intention.extend({
             	'text': 'Goal',
             }
         }
-    }, joint.shapes.basic.Intention.prototype.defaults)
+    }, joint.shapes.basic.Intention.prototype.defaults),
+    changeToOriginalColour: function() {
+        this.attr({'.outer': {'fill': '#FFCC66'}});
+    }
 });
 
 joint.shapes.basic.Task = joint.shapes.basic.Intention.extend({
@@ -96,7 +99,10 @@ joint.shapes.basic.Task = joint.shapes.basic.Intention.extend({
             	'text': 'Task',
             }
         }
-    }, joint.shapes.basic.Intention.prototype.defaults)
+    }, joint.shapes.basic.Intention.prototype.defaults),
+    changeToOriginalColour: function() {
+        this.attr({'.outer': {'fill': '#92E3B1'}});
+    }
 });
 
 joint.shapes.basic.Softgoal = joint.shapes.basic.Intention.extend({
@@ -121,7 +127,10 @@ joint.shapes.basic.Softgoal = joint.shapes.basic.Intention.extend({
             	'text': 'Soft Goal',
             }
         }
-    }, joint.shapes.basic.Intention.prototype.defaults)
+    }, joint.shapes.basic.Intention.prototype.defaults),
+    changeToOriginalColour: function() {
+        this.attr({'.outer': {'fill': '#FF984F'}});
+    }
 });
 
 joint.shapes.basic.Resource = joint.shapes.basic.Intention.extend({
@@ -139,7 +148,10 @@ joint.shapes.basic.Resource = joint.shapes.basic.Intention.extend({
             	'text': 'Resource',
             }
         }
-	}, joint.shapes.basic.Intention.prototype.defaults)
+	}, joint.shapes.basic.Intention.prototype.defaults),
+    changeToOriginalColour: function() {
+        this.attr({'.outer': {'fill': '#92C2FE'}});
+    }
 });
 
 joint.dia.Actorlink = joint.dia.Link.extend({
