@@ -214,9 +214,8 @@ $('#model-cur-btn').on('click', function(){
 $('#cycledetect-btn').on('click', function(e){
 	//alert("cycle button clicked");
 	var analysis = new InputAnalysis();
-	var links = new InputLink();
 	var js_object = {};
-	var js_links = {};
+	var jslinks;
 	js_object.analysis = getAnalysisValues(analysis);
 	jslinks = getLinks();
 
@@ -230,11 +229,12 @@ $('#cycledetect-btn').on('click', function(e){
 
 });
 function cycleCheckForLinks(analysis, jslinks){
-	var verticies = analysis.elementList;
+	var vertices = analysis.elementList;
+	var elements;
 		//If there is no cycle, leave the color the way it was
-		if (cycleCheck(jslinks, verticies) == false){
+		if (cycleCheck(jslinks, vertices) == false){
 			swal("No cycle in the graph", "", "success");
-			var elements = graph.getElements();
+			elements = graph.getElements();
 			for (var i = 0; i < elements.length; i++){
 				var cellView  = elements[i].findView(paper);
 				if(cellView.model.attributes.type == "basic.Task"){
@@ -253,7 +253,7 @@ function cycleCheckForLinks(analysis, jslinks){
 		}
 		else{
 			swal("Cycle in the graph", "", "error");
-			var elements = graph.getElements();
+			elements = graph.getElements();
 			for (var i = 0; i < elements.length; i++){
 				var cellView  = elements[i].findView(paper);
 				if (recursiveStack[cellView.model.attributes.elementid] == true){
