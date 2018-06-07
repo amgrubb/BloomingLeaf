@@ -228,7 +228,8 @@ $('#model-cur-btn').on('click', function(){
 
 
 /**
- * Alert the user and display whether there are any cycles in the model.
+ * Alert the user if there are any cycles and mark the elements in the cycle as red
+ * If there are no cycles then remove the red elements if there are any
  *
  * @param {Boolean} cycle: The constraint links in the current model.
  */
@@ -1033,6 +1034,14 @@ paper.on("link:options", function(evt, cell){
 
 });
 
+/**
+ * Check the relationship in the link. If the relationship is between
+ * an Actor and anything other than an Actor then display the label as
+ * "error". Otherwise, display it as "is-a" and prop "is-a" in the link-type
+ * dropdown menu.
+ *
+ * @param {joint.dia.Link} link
+ */
 function basicActorLink(link){
     if (link.getSourceElement() != null) {
         var sourceCell = link.getSourceElement().attributes.type;
@@ -1057,6 +1066,12 @@ function basicActorLink(link){
     }
 }
 
+/**
+ * Create a halo around the element that was just created
+ *
+ * @param {joint.shapes} cellView
+ * @returns {joint.ui.Halo} halo
+ */
 function createHalo(cellView){
 	var halo = new joint.ui.Halo({
         graph: graph,
@@ -1073,6 +1088,11 @@ function createHalo(cellView){
     return halo;
 }
 
+/**
+ * Remove the highlight around all elements
+ *
+ * @param  {Array.<joint.dia.shapes>} elements
+ */
 function removeHighlight(elements){
 	var cell;
     // Unhighlight everything
@@ -1082,6 +1102,10 @@ function removeHighlight(elements){
     }
 }
 //Single click on cell
+/**
+ * Function for single click on cell
+ * TODO: Update this documentation
+ */
 paper.on('cell:pointerup', function(cellView, evt) {
 	if(mode == "Modelling") {
 		// Link
@@ -1090,7 +1114,7 @@ paper.on('cell:pointerup', function(cellView, evt) {
             basicActorLink(link);
             // element is selected
         } else {
-        	// I don't k
+        	// I don't know what this does yet
             selection.reset();
             selection.add(cellView.model);
             var cell = cellView.model;
