@@ -1489,10 +1489,14 @@ function updateDataBase(graph){
         var sourceVar = c.attr('.constraintvar/src');
         var targetVar = c.attr('.constraintvar/tar');
 
-        accessDatabase("insert ignore into constraints(session_id,type,source,sourceVar,target,targetVar,action,timestamp) values " +
+        var insert_query = "insert ignore into constraints(session_id,type,source,sourceVar,target,targetVar,action,timestamp) values " +
             "(\'"+ session_id +"\',\'"+type +"\',\'"+ source + "\',\'" + sourceVar + "\',\'" + target + "\',\'" + targetVar  + "\', \'EDIT\',\'"+
-            timestamp + "\') ",1);
-        accessDatabase("UPDATE dynamics SET action=\'CREATE\' WHERE intention_id=" + "\'" + elements[e].id + "\' AND source=\'"+source +"\'AND target=\'" + target +"\' ORDER BY timestamp ASC LIMIT 1",1);
+            timestamp + "\') ";
+        var read_query = "select * from (select * from constraints where session_id=\'" + session_id + "\' and source=\'" + source+ "\' and target=\'" + target +"\' order by timestamp DESC limit 1) as temp where sourceVar=\'"
+            + sourceVar + "\' and targetVar=\'" + targetVar + "\'";
+        accessDatabaseWithRead(insert_query, read_query, 0);
+
+        accessDatabase("UPDATE constraints SET action=\'CREATE\' WHERE session_id=\'" + session_id + "\' and source=\'" + source+ "\' and target=\'" + target +"\'  ORDER BY timestamp ASC LIMIT 1",1);
     }
 
 }
