@@ -217,14 +217,7 @@ $('#cycledetect-btn').on('click', function(e){
 	var jsLinks;
 	js_object.analysis = getAnalysisValues(analysis);
 	jsLinks = getLinks();
-
-	if(jsLinks.length == 0){
-		swal("No cycle in the graph", "", "success");
-	}
-	else{
-		cycleCheckForLinks(js_object.analysis, jsLinks);
-		
-	}
+	cycleCheckForLinks(js_object.analysis, jsLinks);
 
 });
 function cycleCheckForLinks(analysis, jsLinks){
@@ -232,7 +225,7 @@ function cycleCheckForLinks(analysis, jsLinks){
 	var elements;
 	var cellView;
 		//If there is no cycle, leave the color the way it was
-		if (!cycleCheck(jsLinks, vertices) == false){
+		if (!cycleCheck(jsLinks, vertices)){
 			swal("No cycle in the graph", "", "success");
 			elements = graph.getElements();
 			for (var i = 0; i < elements.length; i++){
@@ -575,7 +568,6 @@ function cycleCheck(links, verticies){
 				}
 			}
 	})
-	cycleClear = cycle;
 	return cycle;
 }
 //DepthFirstSearch
