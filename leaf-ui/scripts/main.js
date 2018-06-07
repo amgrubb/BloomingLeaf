@@ -240,18 +240,7 @@ function cycleCheckForLinks(analysis, jsLinks){
 			elements = graph.getElements();
 			for (var i = 0; i < elements.length; i++){
 				cellView  = elements[i].findView(paper);
-				if(cellView.model.attributes.type == "basic.Task"){
-					cellView.model.attr({'.outer': {'fill': '#92E3B1'}});
-				}
-				if(cellView.model.attributes.type == "basic.Goal"){
-					cellView.model.attr({'.outer': {'fill': '#FFCC66'}});
-				}
-				if(cellView.model.attributes.type == "basic.Resource"){
-					cellView.model.attr({'.outer': {'fill': '#92C2FE'}});
-				}
-				if(cellView.model.attributes.type == "basic.Softgoal"){
-					cellView.model.attr({'.outer': {'fill': '#FF984F'}});
-				}
+				cellView.model.changeToOriginalColour();
 			}
 		}
 		else{
@@ -263,18 +252,7 @@ function cycleCheckForLinks(analysis, jsLinks){
 					cellView.model.attr({'.outer': {'fill': 'red'}});
 				}
 				else{
-					if(cellView.model.attributes.type == "basic.Task"){
-						cellView.model.attr({'.outer': {'fill': '#92E3B1'}});
-					}
-					if(cellView.model.attributes.type == "basic.Goal"){
-						cellView.model.attr({'.outer': {'fill': '#FFCC66'}});
-					}
-					if(cellView.model.attributes.type == "basic.Resource"){
-						cellView.model.attr({'.outer': {'fill': '#92C2FE'}});
-					}
-					if(cellView.model.attributes.type == "basic.Softgoal"){
-						cellView.model.attr({'.outer': {'fill': '#FF984F'}});
-					}
+					cellView.model.changeToOriginalColour();
 				}
 			}
 		}
