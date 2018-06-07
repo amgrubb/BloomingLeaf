@@ -199,6 +199,13 @@ $('#analysis-btn').on('click', function(){
 		currentHalo.remove();
 
 	mode = "Analysis";
+	
+	var analysis = new InputAnalysis();
+	var js_object = {};
+	var jsLinks;
+	js_object.analysis = getAnalysisValues(analysis);
+	jsLinks = getLinks();
+	cycleCheckForLinks(js_object.analysis, jsLinks);
 });
 
 //Switch to modeling mode
@@ -211,15 +218,15 @@ $('#model-cur-btn').on('click', function(){
 });
 
 //Cycle button onclick
-$('#cycledetect-btn').on('click', function(e){
-	var analysis = new InputAnalysis();
-	var js_object = {};
-	var jsLinks;
-	js_object.analysis = getAnalysisValues(analysis);
-	jsLinks = getLinks();
-	cycleCheckForLinks(js_object.analysis, jsLinks);
+//$('#cycledetect-btn').on('click', function(e){
+	//var analysis = new InputAnalysis();
+	//var js_object = {};
+	//var jsLinks;
+	//js_object.analysis = getAnalysisValues(analysis);
+	//jsLinks = getLinks();
+	//cycleCheckForLinks(js_object.analysis, jsLinks);
 
-});
+//});
 function cycleCheckForLinks(analysis, jsLinks){
 	var vertices = analysis.elementList;
 	var elements;
