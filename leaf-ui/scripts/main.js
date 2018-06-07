@@ -848,20 +848,20 @@ function updateNodeValues(elementIndex, satValue, mode) {
 	  cell.attr(".satvalue/text", "(T, PD)");
 	  cell.attr({text:{fill:'black'}});
 	} else if (value == "0110") {
-		  cell.attr(".satvalue/text", "(PS, PD)");
-		  cell.attr({text:{fill:'red'}});
+	  cell.attr(".satvalue/text", "(PS, PD)");
+	  cell.attr({text:{fill:'red'}});
 	} else if ((value == "1110") || (value == "1010")) {
-		  cell.attr(".satvalue/text", "(PS, FD)");
-		  cell.attr({text:{fill:'red'}});
+	  cell.attr(".satvalue/text", "(PS, FD)");
+	  cell.attr({text:{fill:'red'}});
 	} else if ((value == "0111") || (value == "0101")) {
-		  cell.attr(".satvalue/text", "(FS, PD)");
-		  cell.attr({text:{fill:'red'}});
+	  cell.attr(".satvalue/text", "(FS, PD)");
+	  cell.attr({text:{fill:'red'}});
 	} else if ((value == "1111") || (value == "1001") || (value == "1101") || (value == "1011") ) {
-		  cell.attr(".satvalue/text", "(FS, FD)");
-		  cell.attr({text:{fill:'red'}});
+	  cell.attr(".satvalue/text", "(FS, FD)");
+	  cell.attr({text:{fill:'red'}});
 	} else if (value == "0000") {
-	      cell.attr(".satvalue/text", "(T,T)");
-	      cell.attr({text:{fill:'black'}});
+	  cell.attr(".satvalue/text", "(T,T)");
+	  cell.attr({text:{fill:'black'}});
 	} else {
 	  cell.removeAttr(".satvalue/d");
 	}
