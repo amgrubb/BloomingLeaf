@@ -170,43 +170,49 @@ if (document.cookie){
 
 //Switch to analysis mode
 $('#analysis-btn').on('click', function(){
+    var analysis = new InputAnalysis();
+    var js_object = {};
+    var jsLinks;
+    var cycle;
 	syntaxCheck();
 
-	//Adjust left and right panels
-	elementInspector.clear();
-	linkInspector.clear();
-	constrainsInspector.clear();
-	analysisInspector.render();
+    js_object.analysis = getAnalysisValues(analysis);
+    jsLinks = getLinks();
+    cycle = cycleCheck(jsLinks, analysis.elementList);
+    if(!cycle){
+        //Adjust left and right panels
+        elementInspector.clear();
+        linkInspector.clear();
+        constrainsInspector.clear();
+        analysisInspector.render();
 
-	$('.inspector').append(analysisInspector.el);
-	$('#stencil').css("display","none");
-	$('#history').css("display","");
+        $('.inspector').append(analysisInspector.el);
+        $('#stencil').css("display","none");
+        $('#history').css("display","");
 
-	$('#analysis-btn').css("display","none");
-	$('#symbolic-btn').css("display","none");
-	$('#cycledetect-btn').css("display","none");
-	$('#dropdown-model').css("display","");
+        $('#analysis-btn').css("display","none");
+        $('#symbolic-btn').css("display","none");
+        $('#cycledetect-btn').css("display","none");
+        $('#dropdown-model').css("display","");
 
-	$('#model-toolbar').css("display","none");
+        $('#model-toolbar').css("display","none");
 
-	$('#modeText').text("Analysis");
+        $('#modeText').text("Analysis");
 
-	// disable link settings
-	$('.link-tools .tool-remove').css("display","none");
-	$('.link-tools .tool-options').css("display","none");
+        // disable link settings
+        $('.link-tools .tool-remove').css("display","none");
+        $('.link-tools .tool-options').css("display","none");
 
-	if(currentHalo)
-		currentHalo.remove();
+        if(currentHalo)
+            currentHalo.remove();
 
-	mode = "Analysis";
+        mode = "Analysis";
+    }
+    cycleCheckForLinks(cycle);
+
 	
 	// Check for cycles
-	var analysis = new InputAnalysis();
-	var js_object = {};
-	var jsLinks;
-	js_object.analysis = getAnalysisValues(analysis);
-	jsLinks = getLinks();
-	cycleCheckForLinks(js_object.analysis, jsLinks);
+
 });
 
 //Switch to modeling mode
@@ -222,16 +228,13 @@ $('#model-cur-btn').on('click', function(){
 /**
  * Alert the user and display whether there are any cycles in the model.
  *
- * @param {Object} analysis: Analysis values associated with the elements.
- * @param {Array} jsLinks: The constraint links in the current model.
+ * @param {Boolean} cycle: The constraint links in the current model.
  */
-function cycleCheckForLinks(analysis, jsLinks){
-	var vertices = analysis.elementList;
+function cycleCheckForLinks(cycle){
 	var elements;
 	var cellView;
 		//If there is no cycle, leave the color the way it was
-		if (!cycleCheck(jsLinks, vertices)){
-			swal("No cycle in the graph", "", "success");
+		if (!cycle){
 			elements = graph.getElements();
 			for (var i = 0; i < elements.length; i++){
 				cellView  = elements[i].findView(paper);
