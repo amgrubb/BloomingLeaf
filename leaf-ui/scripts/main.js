@@ -217,16 +217,27 @@ $('#model-cur-btn').on('click', function(){
 	savedAnalysisData.finalValueTimePoints="";
 });
 
-//Cycle button onclick
-//$('#cycledetect-btn').on('click', function(e){
-	//var analysis = new InputAnalysis();
-	//var js_object = {};
-	//var jsLinks;
-	//js_object.analysis = getAnalysisValues(analysis);
-	//jsLinks = getLinks();
-	//cycleCheckForLinks(js_object.analysis, jsLinks);
 
-//});
+/**
+ * Check whether there are any cycles in the current model.
+ * Display an alert on the result.
+ */
+$('#cycledetect-btn').on('click', function(e){
+	var analysis = new InputAnalysis();
+	var js_object = {};
+	var jsLinks;
+	js_object.analysis = getAnalysisValues(analysis);
+	jsLinks = getLinks();
+	cycleCheckForLinks(js_object.analysis, jsLinks);
+
+});
+
+/**
+ * Alert the user and display whether there are any cycles in the model.
+ *
+ * @param {Object} analysis: Analysis values associated with the elements.
+ * @param {Array} jsLinks: The constraint links in the current model.
+ */
 function cycleCheckForLinks(analysis, jsLinks){
 	var vertices = analysis.elementList;
 	var elements;
