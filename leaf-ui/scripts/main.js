@@ -212,31 +212,24 @@ $('#model-cur-btn').on('click', function(){
 
 //Cycle button onclick
 $('#cycledetect-btn').on('click', function(e){
-	//alert("cycle button clicked");
 	var analysis = new InputAnalysis();
-	var links = new InputLink();
 	var js_object = {};
-	var js_links = {};
+	var jsLinks;
 	js_object.analysis = getAnalysisValues(analysis);
-	jslinks = getLinks();
-
-	if(jslinks.length == 0){
-		swal("No cycle in the graph", "", "success");
-	}
-	else{
-		cycleCheckForLinks(js_object.analysis, jslinks);
-		
-	}
+	jsLinks = getLinks();
+	cycleCheckForLinks(js_object.analysis, jsLinks);
 
 });
-function cycleCheckForLinks(analysis, jslinks){
-	var verticies = analysis.elementList;
+function cycleCheckForLinks(analysis, jsLinks){
+	var vertices = analysis.elementList;
+	var elements;
+	var cellView;
 		//If there is no cycle, leave the color the way it was
-		if (cycleCheck(jslinks, verticies) == false){
+		if (!cycleCheck(jsLinks, vertices)){
 			swal("No cycle in the graph", "", "success");
-			var elements = graph.getElements();
+			elements = graph.getElements();
 			for (var i = 0; i < elements.length; i++){
-				var cellView  = elements[i].findView(paper);
+				cellView  = elements[i].findView(paper);
 				if(cellView.model.attributes.type == "basic.Task"){
 					cellView.model.attr({'.outer': {'fill': '#92E3B1'}});
 				}
@@ -253,9 +246,9 @@ function cycleCheckForLinks(analysis, jslinks){
 		}
 		else{
 			swal("Cycle in the graph", "", "error");
-			var elements = graph.getElements();
+			elements = graph.getElements();
 			for (var i = 0; i < elements.length; i++){
-				var cellView  = elements[i].findView(paper);
+				cellView  = elements[i].findView(paper);
 				if (recursiveStack[cellView.model.attributes.elementid] == true){
 					cellView.model.attr({'.outer': {'fill': 'red'}});
 				}
@@ -575,7 +568,6 @@ function cycleCheck(links, verticies){
 				}
 			}
 	})
-	cycleClear = cycle;
 	return cycle;
 }
 //DepthFirstSearch
@@ -846,20 +838,20 @@ function updateNodeValues(elementIndex, satValue, mode) {
 	  cell.attr(".satvalue/text", "(T, PD)");
 	  cell.attr({text:{fill:'black'}});
 	} else if (value == "0110") {
-		  cell.attr(".satvalue/text", "(PS, PD)");
-		  cell.attr({text:{fill:'red'}});
+	  cell.attr(".satvalue/text", "(PS, PD)");
+	  cell.attr({text:{fill:'red'}});
 	} else if ((value == "1110") || (value == "1010")) {
-		  cell.attr(".satvalue/text", "(PS, FD)");
-		  cell.attr({text:{fill:'red'}});
+	  cell.attr(".satvalue/text", "(PS, FD)");
+	  cell.attr({text:{fill:'red'}});
 	} else if ((value == "0111") || (value == "0101")) {
-		  cell.attr(".satvalue/text", "(FS, PD)");
-		  cell.attr({text:{fill:'red'}});
+	  cell.attr(".satvalue/text", "(FS, PD)");
+	  cell.attr({text:{fill:'red'}});
 	} else if ((value == "1111") || (value == "1001") || (value == "1101") || (value == "1011") ) {
-		  cell.attr(".satvalue/text", "(FS, FD)");
-		  cell.attr({text:{fill:'red'}});
+	  cell.attr(".satvalue/text", "(FS, FD)");
+	  cell.attr({text:{fill:'red'}});
 	} else if (value == "0000") {
-	      cell.attr(".satvalue/text", "(T,T)");
-	      cell.attr({text:{fill:'black'}});
+	  cell.attr(".satvalue/text", "(T,T)");
+	  cell.attr({text:{fill:'black'}});
 	} else {
 	  cell.removeAttr(".satvalue/d");
 	}
