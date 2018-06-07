@@ -224,8 +224,18 @@ $('#cycledetect-btn').on('click', function(e){
 		swal("No cycle in the graph", "", "success");
 	}
 	else{
-		var verticies = js_object.analysis.elementList;
-		var links = jslinks;
+		cycleCheckForLinks(js_object.analysis, jslinks);
+		
+	}
+	var elements = graph.getElements();
+
+	js_object = null;
+	jslinks = null;
+
+});
+function cycleCheckForLinks(analysis, jslinks){
+	var verticies = analysis.elementList;
+	var links = jslinks;
 		//If there is no cycle, leave the color the way it was
 		if (cycleCheck(links, verticies) == false){
 			swal("No cycle in the graph", "", "success");
@@ -270,14 +280,8 @@ $('#cycledetect-btn').on('click', function(e){
 				}
 			}
 		}
-	}
-	var elements = graph.getElements();
-
-	js_object = null;
-	jslinks = null;
-
-});
-
+	
+}
 /**
  * Initializes and returns a 'DestSourceMapper' object which contains
  * information about links by indicating the source nodes to destination nodes
