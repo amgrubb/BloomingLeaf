@@ -885,6 +885,7 @@ function clearHistoryLog(){
 	historyObject.nextStep = 1;
 }
 
+
 /**
  * Updates history log in order to display the new analysis,
  * and updates the historyObject to store information about 
@@ -919,6 +920,7 @@ function updateHistory(currentAnalysis, currentValueLimit){
 	historyObject.allHistory.push(log);
 }
 
+
 function updateHistoryName(currentAnalysis){
 	var name = $(".log-elements").last().html().split(": ");
 	var newName = name[0] + " " + currentAnalysis.type;
@@ -926,15 +928,16 @@ function updateHistoryName(currentAnalysis){
 }
 
 
-// ----------------------------------------------------------------- //
-// Rappid setup
-
+/**
+ * Rappid setup
+ * 
+ */
 var element_counter = 0;
 var max_font = 20;
 var min_font = 6;
 var current_font = 10;
 
-//Whenever an element is added to the graph
+// Whenever an element is added to the graph
 graph.on("add", function(cell){
 	if (cell instanceof joint.dia.Link){
 		if (graph.getCell(cell.get("source").id) instanceof joint.shapes.basic.Actor){
@@ -942,17 +945,17 @@ graph.on("add", function(cell){
 		cell.label(0,{attrs:{text:{text:"is-a"}}});
 
 		}
-	}	//Don't do anything for links
-	//Give element a unique default
+	} // Don't do anything for links
+	// Give element a unique default
 	cell.attr(".name/text", cell.attr(".name/text") + "_" + element_counter);
 	element_counter++;
 
-	//Add Functions and sat values to added types
+	// Add Functions and sat values to added types
 	if (cell instanceof joint.shapes.basic.Intention){
 		cell.attr('.funcvalue/text', ' ');
 	}
 
-	//Send actors to background so elements are placed on top
+	// Send actors to background so elements are placed on top
 	if (cell instanceof joint.shapes.basic.Actor){
 		cell.toBack();
 	}
@@ -960,7 +963,7 @@ graph.on("add", function(cell){
 	paper.trigger("cell:pointerup", cell.findView(paper));
 });
 
-//Auto-save the cookie whenever the graph is changed.
+// Auto-save the cookie whenever the graph is changed.
 graph.on("change", function(){
 	var graphtext = JSON.stringify(graph.toJSON());
 	document.cookie = "graph=" + graphtext;
