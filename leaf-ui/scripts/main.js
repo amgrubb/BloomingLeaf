@@ -167,10 +167,11 @@ if (document.cookie) {
 $('#analysis-btn').on('click', function() {
     var analysis = new InputAnalysis();
     var jsLinks;
-    var cycle = cycleCheck(jsLinks, analysis.elementList);
+    var cycle;
 	syntaxCheck();
 
    	jsLinks = getLinks();
+   	cycle = cycleCheck(jsLinks, analysis.elementList);	
 
     // If there are no cycles then switch view to Analysis
     if(!cycle){
@@ -524,10 +525,16 @@ function syntaxCheck() {
     return false;
 }
 
-// Cycle-deteciton algorithm
-// The algorithm is referenced from Detect Cycle in a Directed Graph algorithm
-// discussed at : http://www.geeksforgeeks.org/detect-cycle-in-a-graph/
-function cycleCheck(links, verticies) {
+/**
+ * Returns true iff there is a cycle in the graph represented by
+ * links and vertices. 
+ * Reference: http://www.geeksforgeeks.org/detect-cycle-in-a-graph/
+ *
+ * @param {} links
+ * @param {} vertices
+ * @returns {Boolean}
+ */
+function cycleCheck(links, vertices) {
 	var graphs = {};
 	var visited = {};
 	var cycle = false;
@@ -541,13 +548,13 @@ function cycleCheck(links, verticies) {
 			graphs[src] = [element.linkDestID];
 		}
 	})
-	//Iterate over all verticies to initialize visited stack and recursive stack to false
-	verticies.forEach(function(vertex){
+	//Iterate over all vertices to initialize visited stack and recursive stack to false
+	vertices.forEach(function(vertex){
 		visited[vertex.id] = false;
 		recursiveStack[vertex.id] = false;
 	})
 
-	verticies.forEach(function(vertex){
+	vertices.forEach(function(vertex){
 			if (visited[vertex.id] == false) {
 				if (isCycle(vertex.id,visited,recursiveStack, graphs) == true){
 					cycle = true;
