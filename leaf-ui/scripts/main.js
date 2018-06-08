@@ -1201,7 +1201,7 @@ graph.on('remove', function(cell, collection, opt) {
 function checkForMultipleNB(node) {
 	var num = 0;
 	var localLinks = graph.getLinks();
-	console.log('LENGTH: ', localLinks.length);
+
 	for (var i = 0; i < localLinks.length; i++){
         if (localLinks[i].prop("link-type") == 'NBT' || localLinks[i].prop("link-type") == 'NBD'){
             if (localLinks[i].getSourceElement().prop("id") == node["id"] || localLinks[i].getTargetElement().prop("id") == node["id"]){
@@ -1209,7 +1209,7 @@ function checkForMultipleNB(node) {
             }
         }
 	}
-    console.log('num: ', num);
+
 	return num >= 1;
 }
 
