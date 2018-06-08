@@ -1113,39 +1113,43 @@ paper.on('cell:pointerup', function(cellView, evt) {
             var link = cellView.model;
             basicActorLink(link);
             // element is selected
-        } else {
-        	// I don't know what this does yet
-            selection.reset();
-            selection.add(cellView.model);
-            var cell = cellView.model;
-            var elements = graph.getElements();
-            // remove highlight of other elements
-            removeHighlight(elements);
-
-            // Highlight when cell is clicked
-            cellView.highlight();
-
-            currentHalo = createHalo(cellView);
-
-            //Embed an element into an actor boundary, if necessary
-            if (!(cellView.model instanceof joint.shapes.basic.Actor)) {
-                var ActorsBelow = paper.findViewsFromPoint(cell.getBBox().center());
-
-                if (ActorsBelow.length) {
-                    for (var a = 0; a < ActorsBelow.length; a++) {
-                        if (ActorsBelow[a].model instanceof joint.shapes.basic.Actor) {
-                            ActorsBelow[a].model.embed(cell);
-                        }
-                    }
-                }
-            }
-
-            linkInspector.clear();
-            constrainsInspector.clear();
-            elementInspector.render(cellView);
+			return
         }
+		selection.reset();
+		selection.add(cellView.model);
+		var cell = cellView.model;
+		var elements = graph.getElements();
+		// remove highlight of other elements
+		removeHighlight(elements);
+
+		// Highlight when cell is clicked
+		cellView.highlight();
+
+		currentHalo = createHalo(cellView);
+
+		embedBasicActor(cellView, cell);
     }
 });
+
+function embedBasicActor(cellView, cell){
+	//Embed an element into an actor boundary, if necessary
+	if (!(cellView.model instanceof joint.shapes.basic.Actor)) {
+		var ActorsBelow = paper.findViewsFromPoint(cell.getBBox().center());
+
+		if (ActorsBelow.length) {
+			for (var a = 0; a < ActorsBelow.length; a++) {
+				if (ActorsBelow[a].model instanceof joint.shapes.basic.Actor) {
+					ActorsBelow[a].model.embed(cell);
+				}
+			}
+		}
+	}
+
+	linkInspector.clear();
+	constrainsInspector.clear();
+	elementInspector.render(cellView);
+	
+}
 
 
 graph.on('change:size', function(cell, size){
