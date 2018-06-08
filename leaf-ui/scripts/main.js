@@ -1,4 +1,4 @@
-//Flag to turn on console log notification
+// Flag to turn on console log notification
 // TODO: delete this?
 var develop = false;
 
@@ -26,11 +26,11 @@ var loader;
 var reader;
 var recursiveStack = {};
 var constraintHolder = {};
-//This object will be created to save necessary data for following analysis
+// This object will be created to save necessary data for following analysis
 var savedAnalysisData = {};
 
-//Properties for both core and simulator.
-//TODO: merge this two arrays in order to make use the same name for all
+// Properties for both core and simulator.
+// TODO: merge this two arrays in order to make use the same name for all
 var satvalues = {
 	"satisfied": 2, "partiallysatisfied": 1, "partiallydenied": -1, "denied": -2, "unknown": 4, "conflict":3, "none": 0,
 	"2": "satisfied", "1": "partiallysatisfied", "-1": "partiallydenied", "-2": "denied", "4": "unknown", "3": "conflict", "0": "none"
@@ -45,9 +45,10 @@ var satValueDict = {
 	"none": "0000"
 }
 
-// ----------------------------------------------------------------- //
-// Page setup
 
+/**
+ * Page Setup
+ */
 // Mode used specify layout and functionality of toolbars
 mode = "Modelling";		// 'Analysis' or 'Modelling'
 linkMode = "View";	// 'Relationships' or 'Constraints'
@@ -108,15 +109,15 @@ var act = new joint.shapes.basic.Actor({ position: {x: 40, y: 400} });
 
 stencil.load([goal, task, sgoal, res, act]);
 
-//Setup LinkInspector
+// Setup LinkInspector
 $('.inspector').append(linkInspector.el);
 $('.inspector').append(constrainsInspector.el);
 
-//Interface set up for modelling mode on startup
+// Interface set up for modelling mode on startup
 $('#dropdown-model').css("display","none");
 $('#history').css("display","none");
 
-//Initialize Slider setup
+// Initialize Slider setup
 sliderObject.sliderElement = document.getElementById('slider');
 sliderObject.sliderValueElement = document.getElementById('sliderValue');
 
@@ -142,7 +143,7 @@ if (document.cookie){
 	var cookies = document.cookie.split(";");
 	var prevgraph = "";
 
-	//Loop through the cookies to find the one representing the graph, if it exists
+	// Loop through the cookies to find the one representing the graph, if it exists
 	for (var i = 0; i < cookies.length; i++){
 		if (cookies[i].indexOf("graph=") !== -1){ // If substring exists
 			prevgraph = cookies[i].substr(cookies[i].indexOf("graph=") + 6); // Get the substring after graph=
@@ -154,7 +155,7 @@ if (document.cookie){
 		try {
 			graph.fromJSON(JSON.parse(prevgraph));
 		} catch (e) {
-			// this should never happen, but just in case
+			// This should never happen, but just in case
 			alert('Previously stored cookies contains invalid JSON data. Please clear your cookies.');
 		}
 	}
@@ -229,7 +230,7 @@ $('#model-cur-btn').on('click', function(){
 function cycleCheckForLinks(cycle) {
 	var elements;
 	var cellView;
-		//If there is no cycle, leave the color the way it was
+		// If there is no cycle, leave the color the way it was
 		if (!cycle) {
 			elements = graph.getElements();
 			for (var i = 0; i < elements.length; i++) {
@@ -287,7 +288,7 @@ function initializeDestSourceMapper(jointLinks, inputlinks) {
         linkView  = jointLinks[j].findView(paper);
 
         if(!(inputlinks[j].linkDestID in destSourceMapper)) {
-            // create empty object and arrays
+            // Create empty object and arrays
             destSourceMapper[inputlinks[j].linkDestID] = {};
             destSourceMapper[inputlinks[j].linkDestID]["source"] = [];
             destSourceMapper[inputlinks[j].linkDestID]["constraint"] = [];
@@ -326,20 +327,20 @@ function generateSyntaxMessage(naryRelationships, destId){
 	var constraintsText = '';
 	var constraintArr = [];
 
-	// determine which n-ary relationships are present
+	// Determine which n-ary relationships are present
 	for (var i = 0; i < naryRelationships.length; i++) {
 		if (!constraintArr.includes(naryRelationships[i].constraint)) {
 			constraintArr.push(naryRelationships[i].constraint);
 		}
 	}
 
-	// create a string for the n-ary relationships
+	// Create a string for the n-ary relationships
 	for (var i = 0; i < constraintArr.length - 1; i++) {
 		constraintsText += constraintArr[i] + ' or ';
 	}
 	constraintsText += constraintArr[constraintArr.length - 1];
 
-	// create a string for the source nodes
+	// Create a string for the source nodes
     for (var i = 0; i < naryRelationships.length - 1; i++) {
     	sourceNodeText += getNodeName(naryRelationships[i].source);
     	if (i != naryRelationships.length -2) {
@@ -352,7 +353,7 @@ function generateSyntaxMessage(naryRelationships, destId){
     sourceNodeText += 'and ' + getNodeName(naryRelationships[naryRelationships.length - 1].source);
     suggestionText += sourceNodeText + ' to ' + getNodeName(destId) + ' as ' + constraintsText + '.';
 
-    // as an example, suggestionText should now look something like:
+    // As an example, suggestionText should now look something like:
     // "Have all n-ary links from Task_1, Task_2 and Task_3 to Goal_0 as AND or NO RELATIONSHIP or OR.""
     var s = '<p style="text-align:left"><b style="color:black"> Source nodes: </b>' + sourceNodeText + '<br>' +
     	'<b style="color:black"> Destination node: </b>' + getNodeName(destId) + 
@@ -494,7 +495,7 @@ function syntaxCheck() {
     // Get all links in the form of a joint.dia.Link
     var jointLinks = graph.getLinks();
 
-    //Create an object that represents the constraint links and its sources and destination
+    // Create an object that represents the constraint links and its sources and destination
     let destSourceMapper = initializeDestSourceMapper(jointLinks, inputLinks);
     let errorText = '';
 
@@ -539,7 +540,7 @@ function cycleCheck(links, vertices) {
 	var graphs = {};
 	var visited = {};
 	var cycle = false;
-	//Iterate over links to create map between src node and dest node of each link
+	// Iterate over links to create map between src node and dest node of each link
 	links.forEach(function(element){
 		var src = element.linkSrcID;
 		if(src in graphs){
@@ -549,7 +550,7 @@ function cycleCheck(links, vertices) {
 			graphs[src] = [element.linkDestID];
 		}
 	})
-	//Iterate over all vertices to initialize visited stack and recursive stack to false
+	// Iterate over all vertices to initialize visited stack and recursive stack to false
 	vertices.forEach(function(vertex){
 		visited[vertex.id] = false;
 		recursiveStack[vertex.id] = false;
@@ -596,7 +597,7 @@ function isCycle(v, visited, recursiveStack, graphs){
  *
  */
 function switchToModellingMode(){
-	//Reset to initial graph prior to analysis
+	// Reset to initial graph prior to analysis
 	for (var i = 0; i < graph.elementsBeforeAnalysis.length; i++){
 		var value = graph.elementsBeforeAnalysis[i]
 		updateNodeValues(i, value, "toInitModel");
@@ -617,7 +618,7 @@ function switchToModellingMode(){
 
 	$('#sliderValue').text("");
 
-	// reinstantiate link settings
+	// Reinstantiate link settings
 	$('.link-tools .tool-remove').css("display","");
 	$('.link-tools .tool-options').css("display","");
 
@@ -633,9 +634,6 @@ function switchToModellingMode(){
 
 
 
-// ----------------------------------------------------------------- //
-// Communication between server and front end
-
 /**
  * Displays the analysis to the web app, by displaying the slider and the 
  * history log
@@ -645,27 +643,24 @@ function switchToModellingMode(){
  */
 function displayAnalysis(analysisResults){
 
-	// change the format of the analysis result from the back end
+	// Change the format of the analysis result from the back end
 	var currentAnalysis = new analysisObject.initFromBackEnd(analysisResults);
 
-	// save data for get possible next states
+	// Save data for get possible next states
 	savedAnalysisData.finalAssigneEpoch = analysisResults.finalAssignedEpoch;
 	savedAnalysisData.finalValueTimePoints = analysisResults.finalValueTimePoints;
 
 	var currentValueLimit = 0;
 
-	// this might be unnecessary 
-	// elementList = analysisResults.elementList;
+	// This might be unnecessary 
+	// ElementList = analysisResults.elementList;
 
-	// update history log
+	// Update history log
 	updateHistory(currentAnalysis, currentValueLimit);
 
 	createSlider(currentAnalysis, currentValueLimit, false);
 }
 
-
-// ----------------------------------------------------------------- //
-// Slider control
 
 /**
  * Creates a slider and displays it in the web app
@@ -699,12 +694,12 @@ function createSlider(currentAnalysis, currentValueLimit, isSwitch) {
 		}
 	});
 
-	// set initial value of the slider
+	// Set initial value of the slider
 	sliderObject.sliderElement.noUiSlider.set(isSwitch ? 0 : sliderMax);
 
 	sliderObject.sliderElement.noUiSlider.on('update', function( values, handle ) {
 		
-		//Set slidable range based on previous analysis
+		// Set slidable range based on previous analysis
 		if(values[handle] < currentValueLimit){
 			sliderObject.sliderElement.noUiSlider.set(currentValueLimit);
 		}else{
@@ -812,7 +807,7 @@ function updateNodeValues(elementIndex, satValue, mode) {
 	if (mode == "renderAnalysis") {
 		value = satValue;
 
-	//Update node based on values saved from graph prior to analysis
+	// Update node based on values saved from graph prior to analysis
 	} else if (mode == "toInitModel") {
 		value = satValueDict[cell.attributes.attrs[".satvalue"].value];
 	}
@@ -851,8 +846,11 @@ function updateNodeValues(elementIndex, satValue, mode) {
 
 }
 
-// ----------------------------------------------------------------- //
-// History log
+
+/**
+ * Display history log
+ *
+ */
 $('#history').on("click", ".log-elements", function(e){
 	var txt = $(e.target).text();
 	var step = parseInt(txt.split(":")[0].split(" ")[1] - 1);
