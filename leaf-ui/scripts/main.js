@@ -134,7 +134,10 @@ $(window).resize(function() {
 	$('#slider').width($('#paper').width() * 0.8);
 });
 
-//If a cookie exists, process it as a previously created graph and load it.
+
+/**
+ * If a cookie exists, process it as a previously created graph and load it.
+ */
 if (document.cookie){
 	var cookies = document.cookie.split(";");
 	var prevgraph = "";
@@ -157,10 +160,6 @@ if (document.cookie){
 	}
 
 }
-
-
-
-
 
 
 // ----------------------------------------------------------------- //
@@ -584,6 +583,13 @@ function isCycle(v, visited, recursiveStack, graphs){
 	return false;
 }
 
+
+/**
+ * Switch back to Modelling Mode from Analysis Mode
+ * Reset the Nodes' satValues to the values prior to analysis
+ * Display the modeling mode page
+ *
+ */
 function switchToModellingMode(){
 	//Reset to initial graph prior to analysis
 	for (var i = 0; i < graph.elementsBeforeAnalysis.length; i++){
@@ -653,8 +659,6 @@ function displayAnalysis(analysisResults){
 }
 
 
-
-
 // ----------------------------------------------------------------- //
 // Slider control
 
@@ -711,6 +715,7 @@ function createSlider(currentAnalysis, currentValueLimit, isSwitch) {
  * Creates and displays new slider after the user clicks a different
  * analysis from the history log. This function is called when 
  * the user clicks a different analysis from the history log.
+ *
  * @param {Object} currentAnalysis
  *   Contains data about the analysis that the back end performed
  * @param {Number} historyIndex
