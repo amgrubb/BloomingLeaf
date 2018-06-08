@@ -64,18 +64,13 @@ function showAlert(title, msg, width, promptMsgType, type, arrow) {
     return dialog;
 }
 
-showAlert('Tracking Cookie Notice',
-    '<p>To better understand how people use Creative Leaf, ' +
+showAlert('Tracking Notice',
+    '<p>To better understand how people use Blooming Leaf, ' +
     'we would like to track <em>anonymous</em> use of the tool. ' +
-    'We only track the creation and modification of models and creative activites used,' +
-    ' and <em>only</em> when you save a copy of your model to ' +
-    'download.</p><p>We <em>do not</em> store any information ' +
+    'We only track the creation and modification of models.</p><p>We <em>do not</em> store any information ' +
     'that can identify you personally.</p><p>Please ' +
     'state your preference below on whether you would ' +
-    'like to allow us to do this. Your preference will ' +
-    'be stored in a browser cookie and we won\'t ask again' +
-    ' once you have stated your preference' +
-    '.</p><p><button type="button" class="creative-button"' +
+    'like to allow us to do this. </p><p><button type="button" class="creative-button"' +
     ' id="tracking-consent">I consent to anonymous ' +
     'tracking</button><button type="button" ' +
     'class="creative-button" id="tracking-decline">I do ' +
