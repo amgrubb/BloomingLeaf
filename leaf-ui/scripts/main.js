@@ -45,8 +45,6 @@ var satValueDict = {
 	"none": "0000"
 }
 
-//var functions = {A: 'AI', O: 'OI', N: 'NT', M: 'MP', R: 'R', S: 'SP', MN: 'MN', SN: 'SN', U: 'UD'};
-
 // ----------------------------------------------------------------- //
 // Page setup
 
@@ -173,17 +171,13 @@ if (document.cookie){
  */
 $('#analysis-btn').on('click', function(){
     var analysis = new InputAnalysis();
-    var js_object = {};
     var jsLinks;
-    var cycle;
 	syntaxCheck();
 
-    js_object.analysis = getAnalysisValues(analysis);
-    jsLinks = getLinks();
-    // Check if there are any cycles
-    cycle = cycleCheck(jsLinks, analysis.elementList);
+   	jsLinks = getLinks();
+
     // If there are no cycles then switch view to Analysis
-    if(!cycle){
+    if(!cycleCheck(jsLinks, analysis.elementList)){
         // Adjust left and right panels
         elementInspector.clear();
         linkInspector.clear();
@@ -191,25 +185,26 @@ $('#analysis-btn').on('click', function(){
         analysisInspector.render();
 
         $('.inspector').append(analysisInspector.el);
-        $('#stencil').css("display","none");
-        $('#history').css("display","");
+        $('#stencil').css("display", "none");
+        $('#history').css("display", "");
 
-        $('#analysis-btn').css("display","none");
-        $('#symbolic-btn').css("display","none");
-        $('#cycledetect-btn').css("display","none");
-        $('#dropdown-model').css("display","");
+        $('#analysis-btn').css("display", "none");
+        $('#symbolic-btn').css("display", "none");
+        $('#cycledetect-btn').css("display", "none");
+        $('#dropdown-model').css("display", "");
 
-        $('#model-toolbar').css("display","none");
+        $('#model-toolbar').css("display", "none");
 
         $('#modeText').text("Analysis");
 
         // Disable link settings
-        $('.link-tools .tool-remove').css("display","none");
-        $('.link-tools .tool-options').css("display","none");
+        $('.link-tools .tool-remove').css("display", "none");
+        $('.link-tools .tool-options').css("display", "none");
 
-        if(currentHalo)
-            currentHalo.remove();
-
+        if (currentHalo) {
+        	currentHalo.remove();
+        }
+            
         mode = "Analysis";
     }
     // If there are cycles, then display error message. Otherwise, remove any "red" elements.
@@ -219,7 +214,7 @@ $('#analysis-btn').on('click', function(){
 
 // Switch to modeling mode
 $('#model-cur-btn').on('click', function(){
-	switchToModellingMode(false);
+	switchToModellingMode();
 	// Cleaning the previous analysis data for new execution
 	global_analysisResult.elementList = "";
 	savedAnalysisData.finalAssigneEpoch="";
@@ -368,6 +363,12 @@ function generateSyntaxMessage(naryRelationships, destId){
     return s;
 }
 
+/**
+ * Returns the node name for the given element id
+ *
+ * @param {String} id
+ * @Returns {String}
+ */
 function getNodeName(id){
     var listNodes = graph.getElements();
     for(var i = 0; i < listNodes.length; i++){
