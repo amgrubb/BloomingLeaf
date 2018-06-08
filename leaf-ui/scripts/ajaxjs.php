@@ -30,10 +30,6 @@ switch ($type) {
         break;
     case "0": // reading from the database before executing insert
         $result_1 = $conn->query($query2);
-        echo "query2:\n";
-        echo $query2;
-        echo "query:\n";
-        echo $query;
 
         if (!$result_1){
              echo("Error description: " . mysqli_error($conn));
@@ -41,8 +37,6 @@ switch ($type) {
             if ($result_1->num_rows > 0){
                 // do nothing
                 echo "do nothing";
-                //$ts_row = $result_1->fetch_assoc();
-                //echo "(" . $ts_row['action'] . "%". $ts_row['timestamp'].")";
             } else{
                 $result = mysqli_query($conn, $query);
                 if (!$result){

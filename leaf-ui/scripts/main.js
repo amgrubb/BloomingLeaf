@@ -1249,7 +1249,7 @@ function accessDatabaseWithRead(insert_query, read_query, type){
         data: queryString,
         cache: false,
         success: function(html) {
-            console.log(html);
+            //console.log(html);
         },
     });
 }
@@ -1262,7 +1262,7 @@ function accessDatabase(sql_query, type) {
 		data: queryString,
 		cache: false,
 		success: function(html) {
-			console.log(html);
+			//console.log(html);
 
 			},
 	});
@@ -1452,7 +1452,6 @@ function updateDataBase(graph, timestamp){
         if (( typeof init_value !== 'undefined' ) && ( typeof sat_value !== 'undefined' )){
             var insert_query;
             var read_query;
-            console.log(sat_value);
             if (typeof(function_string) !== 'undefined'){
                 insert_query = "insert ignore into dynamics(session_id,intention_id,function_type,init_value,sat_value,function_string,action,timestamp) values " +
                     "(\'"+ session_id +"\',\'"+elements[e].id +"\',\'"+ f + "\',\'" + init_value + "\',\'" + sat_value + "\',\'" + function_string  + "\', \'EDIT\',\'"+
