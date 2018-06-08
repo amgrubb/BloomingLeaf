@@ -10,7 +10,7 @@ var mode;
 
 var linkInspector = new LinkInspector();
 var elementInspector = new ElementInspector();
-var constrainsInspector = new ConstraintsInspector();
+var constraintsInspector = new ConstraintsInspector();
 var analysisInspector = new AnalysisInspector();
 
 var currentHalo;
@@ -111,7 +111,7 @@ stencil.load([goal, task, sgoal, res, act]);
 
 // Setup LinkInspector
 $('.inspector').append(linkInspector.el);
-$('.inspector').append(constrainsInspector.el);
+$('.inspector').append(constraintsInspector.el);
 
 // Interface set up for modelling mode on startup
 $('#dropdown-model').css("display","none");
@@ -1054,7 +1054,7 @@ paper.on("link:options", function(evt, cell){
 		return
 
 	linkInspector.clear();
-	constrainsInspector.clear();
+	constraintsInspector.clear();
 	elementInspector.clear();
 	linkInspector.render(cell);
 
@@ -1176,7 +1176,7 @@ function embedBasicActor(cellView, cell){
 	}
 
 	linkInspector.clear();
-	constrainsInspector.clear();
+	constraintsInspector.clear();
 	elementInspector.render(cellView);
 	
 }
