@@ -1164,62 +1164,54 @@ graph.on('change:size', function(cell, size){
 });
 
 
-//Removing a link
-this.graph.on('remove', function(cell, collection, opt) {
-   if (cell.isLink()) {
-	   if(cell.prop("link-type") == 'NBT' || cell.prop("link-type") == 'NBD'){
+graph.on('remove', function(cell, collection, opt) {
+	if (cell.isLink() && (cell.prop("link-type") == 'NBT' || cell.prop("link-type") == 'NBD')) {
 
-		   //Verify if is a Not both type. If it is remove labels from source and target node
-		   var link = cell;
-		   var source = link.prop("source");
-		   var target = link.prop("target");
+		// verify if is a Not both type. If it is remove labels from source and target node
+		var link = cell;
+		var source = link.prop("source");
+		var target = link.prop("target");
 
-		   for(var i = 0; i < graph.getElements().length; i++ ){
-			   if(graph.getElements()[i].prop("id") == source["id"]){
-				   source = graph.getElements()[i];
-			   }
-			   if(graph.getElements()[i].prop("id") == target["id"]){
-				   target = graph.getElements()[i];
-			   }
-		   }
+	    for (var i = 0; i < graph.getElements().length; i++ ) {
+			if (graph.getElements()[i].prop("id") == source["id"]) {
+				source = graph.getElements()[i];
+		   	}
+		  	if (graph.getElements()[i].prop("id") == target["id"]) {
+			   target = graph.getElements()[i];
+		   	}
+	   	}
 
-		   //verify if node have any other link NBD or NBT
-	 	  var sourceNBLink = function(){
-	 		  var localLinks = graph.getLinks();
-	 		  for(var i = 0; i < localLinks.length; i++){
-	 			  if ((localLinks[i]!=link) && (localLinks[i].prop("link-type") == 'NBT' || localLinks[i].prop("link-type") == 'NBD')){
-	     			  if(localLinks[i].getSourceElement().prop("id") == source["id"] || localLinks[i].getTargetElement().prop("id") == source["id"]){
-	     				 return true;
-	     			  }
-	 			  }
-	 		  }
-	 		  return false;
-	 	  }
-
-	 	  //verify if target have any other link NBD or NBT
-	 	  var targetNBLink = function(){
-	 		  var localLinks = graph.getLinks();
-	 		  for(var i = 0; i < localLinks.length; i++){
-	 			  if ((localLinks[i]!=link) && (localLinks[i].prop("link-type") == 'NBT' || localLinks[i].prop("link-type") == 'NBD')){
-	     			  if(localLinks[i].getTargetElement().prop("id") == target["id"] || localLinks[i].getSourceElement().prop("id") == target["id"]){
-	     				 return true;
-	     			  }
-	 			  }
-	 		  }
-	 		  return false;
-	 	  }
-
-	 	  //Verify if it is possible to remove the NB tag from source and target
-	 	  if(!sourceNBLink()){
-	 		  source.attr(".funcvalue/text", "");
-	 	  }
-	 	  if(!targetNBLink()){
-		          target.attr(".funcvalue/text", "");
-	 	  }
-
-	  }
-   }
+		//Verify if it is possible to remove the NB tag from source and target
+		if (!checkForMultipleNB(source)) {
+			source.attr(".funcvalue/text", "");
+		}
+		if (!checkForMultipleNB(target)) {
+			target.attr(".funcvalue/text", "");
+		}
+	}
 });
+
+
+/**
+ * Returns true iff node has 1 or more NBT or NBD relationship
+ *
+ * @param {joint.dia.element} node
+ * @returns {Boolean}
+ */
+function checkForMultipleNB(node) {
+	var num = 0;
+	var localLinks = graph.getLinks();
+	console.log('LENGTH: ', localLinks.length);
+	for (var i = 0; i < localLinks.length; i++){
+        if (localLinks[i].prop("link-type") == 'NBT' || localLinks[i].prop("link-type") == 'NBD'){
+            if (localLinks[i].getSourceElement().prop("id") == node["id"] || localLinks[i].getTargetElement().prop("id") == node["id"]){
+                num += 1;            
+            }
+        }
+	}
+    console.log('num: ', num);
+	return num >= 1;
+}
 
 
 
