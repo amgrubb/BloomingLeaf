@@ -243,7 +243,7 @@ function cycleCheckForLinks(cycle) {
 			elements = graph.getElements();
 			for (var i = 0; i < elements.length; i++) {
 				cellView  = elements[i].findView(paper);
-				if (recursiveStack[cellView.model.attributes.elementid] == true) {
+				if (recursiveStack[cellView.model.attributes.elementid]) {
 					cellView.model.attr({'.outer': {'fill': 'red'}});
 				}
 				else {
@@ -532,8 +532,8 @@ function syntaxCheck() {
  * links and vertices. 
  * Reference: http://www.geeksforgeeks.org/detect-cycle-in-a-graph/
  *
- * @param {} links
- * @param {} vertices
+ * @param {Object} links
+ * @param {Object} vertices
  * @returns {Boolean}
  */
 function cycleCheck(links, vertices) {
@@ -557,35 +557,46 @@ function cycleCheck(links, vertices) {
 	})
 
 	vertices.forEach(function(vertex){
-			if (visited[vertex.id] == false) {
-				if (isCycle(vertex.id,visited,recursiveStack, graphs) == true){
+			if (!visited[vertex.id]) {
+				if (isCycle(vertex.id, visited, graphs)){
 					cycle = true;
 				}
 			}
 	})
 	return cycle;
 }
-//DepthFirstSearch
-function isCycle(v, visited, recursiveStack, graphs){
-	visited[v] = true;
-	recursiveStack[v] = true;
-	if(graphs[v] == null){
-		recursiveStack[v] = false;
+
+/**
+ * Returns true if cycle is detected with DFS.
+ * This function is not to be called on its own.
+ * This function should be called as a helper function for
+ * cycleCheck(). 
+ *
+ * @param {String} vertexId
+ * @param {Object} visited
+ * @param {Object} graphs
+ * @returns {Boolean}
+ */
+function isCycle(vertexId, visited, graphs){
+	visited[vertexId] = true;
+	recursiveStack[vertexId] = true;
+	if (graphs[vertexId] == null) {
+		recursiveStack[vertexId] = false;
 		return false;
 	}
-	else{
-		for(var i = 0; i < graphs[v].length; i++){
-			if (visited[graphs[v][i]] == false){
-				if (isCycle(graphs[v][i], visited, recursiveStack, graphs) == true){
+	else {
+		for(var i = 0; i < graphs[vertexId].length; i++) {
+			if (!visited[graphs[vertexId][i]]) {
+				if (isCycle(graphs[vertexId][i], visited, graphs)) {
 					return true;
 				}
 			}
-			else if (recursiveStack[graphs[v][i]] == true){
+			else if (recursiveStack[graphs[vertexId][i]]){
 				return true;
 			}
 		}
 	}
-	recursiveStack[v] = false;
+	recursiveStack[vertexId] = false;
 	return false;
 }
 
