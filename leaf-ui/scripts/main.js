@@ -1013,7 +1013,7 @@ paper.on('cell:pointerdown', function(cellView, evt, x, y){
 		cell.reparent();
 	}
 
-	//Unembed cell so you can move it out of actor
+	// Unembed cell so you can move it out of actor
 	if (cell.get('parent') && !(cell instanceof joint.dia.Link)) {
 		graph.getCell(cell.get('parent')).unembed(cell);
 	}
@@ -1035,10 +1035,9 @@ paper.el.oncontextmenu = function(evt) { evt.preventDefault(); };
 
 
 // A simple element editor.
-// --------------------------------------
 $('.inspector').append(elementInspector.el);
 
-//Link equivalent of the element editor
+// Link equivalent of the element editor
 paper.on("link:options", function(evt, cell){
 	if(mode == "Analysis")
 		return
@@ -1117,10 +1116,10 @@ function removeHighlight(elements){
         cell.unhighlight();
     }
 }
-//Single click on cell
+
 /**
  * Function for single click on cell
- * TODO: Update this documentation
+ * 
  */
 paper.on('cell:pointerup', function(cellView, evt) {
 	if(mode == "Modelling") {
@@ -1128,14 +1127,14 @@ paper.on('cell:pointerup', function(cellView, evt) {
         if (cellView.model instanceof joint.dia.Link) {
             var link = cellView.model;
             basicActorLink(link);
-            // element is selected
+            // Element is selected
 			return
         }
 		selection.reset();
 		selection.add(cellView.model);
 		var cell = cellView.model;
 		var elements = graph.getElements();
-		// remove highlight of other elements
+		// Remove highlight of other elements
 		removeHighlight(elements);
 
 		// Highlight when cell is clicked
@@ -1147,8 +1146,12 @@ paper.on('cell:pointerup', function(cellView, evt) {
     }
 });
 
+/**
+ * Embed an element into an actor boundary
+ * 
+ */
 function embedBasicActor(cellView, cell){
-	//Embed an element into an actor boundary, if necessary
+	// Embed an element into an actor boundary, if necessary
 	if (!(cellView.model instanceof joint.shapes.basic.Actor)) {
 		var ActorsBelow = paper.findViewsFromPoint(cell.getBBox().center());
 
@@ -1171,7 +1174,7 @@ function embedBasicActor(cellView, cell){
 graph.on('change:size', function(cell, size){
 	cell.attr(".label/cx", 0.25 * size.width);
 
-	//Calculate point on actor boundary for label (to always remain on boundary)
+	// Calculate point on actor boundary for label (to always remain on boundary)
 	var b = size.height;
 	var c = -(size.height/2 + (size.height/2) * (size.height/2) * (1 - (-0.75 * size.width/2) * (-0.75 * size.width/2)  / ((size.width/2) * (size.width/2)) ));
 	var y_cord = (-b + Math.sqrt(b*b - 4*c)) / 2;
@@ -1183,7 +1186,7 @@ graph.on('change:size', function(cell, size){
 graph.on('remove', function(cell, collection, opt) {
 	if (cell.isLink() && (cell.prop("link-type") == 'NBT' || cell.prop("link-type") == 'NBD')) {
 
-		// verify if is a Not both type. If it is remove labels from source and target node
+		// Verify if is a Not both type. If it is remove labels from source and target node
 		var link = cell;
 		var source = link.prop("source");
 		var target = link.prop("target");
@@ -1197,7 +1200,7 @@ graph.on('remove', function(cell, collection, opt) {
 		   	}
 	   	}
 
-		//Verify if it is possible to remove the NB tag from source and target
+		// Verify if it is possible to remove the NB tag from source and target
 		if (!checkForMultipleNB(source)) {
 			source.attr(".funcvalue/text", "");
 		}
@@ -1235,7 +1238,7 @@ function checkForMultipleNB(node) {
  *  
  */
 var clipboard = new joint.ui.Clipboard();
-//Check if the browser is on Mac
+// Check if the browser is on Mac
 var macOS = navigator.platform.match(/(Mac|iPhone|iPod|iPad)/i)?true:false;
 if(macOS){
 	KeyboardJS.on('command + c, ctrl + c', function() {
@@ -1305,7 +1308,7 @@ $('#btn-undo').on('click', _.bind(commandManager.undo, commandManager));
 $('#btn-redo').on('click', _.bind(commandManager.redo, commandManager));
 $('#btn-clear-all').on('click', function(){
 	graph.clear();
-	//Delete cookie by setting expiry to past date
+	// Delete cookie by setting expiry to past date
 	document.cookie='graph={}; expires=Thu, 18 Dec 2013 12:00:00 UTC';
 });
 
