@@ -167,49 +167,60 @@ if (document.cookie){
  * Switch to Analysis view iff there are no cycles and no syntaxErrors.
  */
 $('#analysis-btn').on('click', function() {
-    var analysis = new InputAnalysis();
     var jsLinks;
     var cycle;
-	syntaxCheck();
-
    	jsLinks = getLinks();
-   	cycle = cycleCheck(jsLinks, analysis.elementList);	
+   	cycle = cycleCheck(jsLinks, getElementList());
+	
+	syntaxCheck();
 
     // If there are no cycles then switch view to Analysis
     if(!cycle){
-        // Adjust left and right panels
-        elementInspector.clear();
-        linkInspector.clear();
-        constrainsInspector.clear();
-        analysisInspector.render();
+        
+		switchToAnalysisMode(); 
 
-        $('.inspector').append(analysisInspector.el);
-        $('#stencil').css("display", "none");
-        $('#history').css("display", "");
-
-        $('#analysis-btn').css("display", "none");
-        $('#symbolic-btn').css("display", "none");
-        $('#cycledetect-btn').css("display", "none");
-        $('#dropdown-model').css("display", "");
-
-        $('#model-toolbar').css("display", "none");
-
-        $('#modeText').text("Analysis");
-
-        // Disable link settings
-        $('.link-tools .tool-remove').css("display", "none");
-        $('.link-tools .tool-options').css("display", "none");
-
-        if (currentHalo) {
-        	currentHalo.remove();
-        }
-            
-        mode = "Analysis";
+        
     }
     // If there are cycles, then display error message. Otherwise, remove any "red" elements.
     cycleCheckForLinks(cycle);
 
 });
+
+
+/**
+ *  Helper function for switching to Analysis view.
+ */
+function switchToAnalysisMode(){
+	// Adjust left and right panels
+	elementInspector.clear();
+	linkInspector.clear();
+	constrainsInspector.clear();
+	analysisInspector.render();
+
+	$('.inspector').append(analysisInspector.el);
+	$('#stencil').css("display", "none");
+	$('#history').css("display", "");
+
+	$('#analysis-btn').css("display", "none");
+	$('#symbolic-btn').css("display", "none");
+	$('#cycledetect-btn').css("display", "none");
+	$('#dropdown-model').css("display", "");
+
+	$('#model-toolbar').css("display", "none");
+
+	$('#modeText').text("Analysis");
+
+	// Disable link settings
+	$('.link-tools .tool-remove').css("display", "none");
+	$('.link-tools .tool-options').css("display", "none");
+
+	if (currentHalo) {
+		currentHalo.remove();
+	}
+	
+	mode = "Analysis";
+
+}
 
 // Switch to modeling mode
 $('#model-cur-btn').on('click', function(){
