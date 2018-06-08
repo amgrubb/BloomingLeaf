@@ -179,14 +179,6 @@ var AnalysisInspector = Backbone.View.extend({
 			return null;
 		}
 
-		if(develop){
-			var myjson = JSON.stringify(js_object, null, 2);
-		  	var x = window.open();
-			x.document.open();
-			x.document.write('<html><body><pre>' + myjson + '</pre></body></html>');
-			x.document.close();
-		}
-
 		//Send data to backend
 		backendComm(js_object);
 	},

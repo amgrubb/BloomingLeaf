@@ -1,7 +1,3 @@
-// Flag to turn on console log notification
-// TODO: delete this?
-var develop = false;
-
 // Global variables
 var graph;
 var paper;
