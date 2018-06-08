@@ -143,10 +143,11 @@ var LinkInspector = Backbone.View.extend({
         target.attr(".funcvalue/text", "NB");
         target.attr(".satvalue/text", "");
         target.attr(".satvalue/value", "");
+	
       } else {
     	  //verify if node has any other link NBD or NBT
     	  var sourceHasNBLink = function(){
-    		  var localLinks = graph.getLinks();
+    	  var localLinks = graph.getLinks();
     		  for(var i = 0; i < localLinks.length; i++){
     			  if ((localLinks[i]!=link) && (localLinks[i].prop("link-type") == 'NBT' || localLinks[i].prop("link-type") == 'NBD')){
         			  if(localLinks[i].getSourceElement() == source || localLinks[i].getTargetElement() == source){
@@ -276,7 +277,7 @@ var LinkInspector = Backbone.View.extend({
     		  "--D": "--D"
       	};
       var relationConst = {
-    		  "NBT": "Noth Both (None)",
+    		  "NBT": "Not Both (None)",
     		  "NBD": "Not Both (Denied)"
       };
 
