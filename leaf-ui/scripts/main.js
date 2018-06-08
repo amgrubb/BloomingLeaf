@@ -583,19 +583,12 @@ function isCycle(v, visited, recursiveStack, graphs){
 	return false;
 }
 
-function switchToModellingMode(useInitState){
+function switchToModellingMode(){
 	//Reset to initial graph prior to analysis
-	if(useInitState){
-		for (var i = 0; i < graph.elementsBeforeAnalysis.length; i++){
-			var value = graph.elementsBeforeAnalysis[i]
-			updateNodeValues(i, value, "toInitModel");
-		}
+	for (var i = 0; i < graph.elementsBeforeAnalysis.length; i++){
+		var value = graph.elementsBeforeAnalysis[i]
+		updateNodeValues(i, value, "toInitModel");
 	}
-	// }else{
-	// 	for (var i = 0; i < graph.elementsBeforeAnalysis.length; i++){
-	// 		var value = graph.elementsBeforeAnalysis[i]
-	// 	}
-	// }
 
 	graph.elementsBeforeAnalysis = [];
 
@@ -805,12 +798,12 @@ function updateNodeValues(elementIndex, satValue, mode) {
 	var value;
 
 	// Update node based on values from cgi file
-	if (m == "renderAnalysis") {
+	if (mode == "renderAnalysis") {
 		value = satValue;
 
 	//Update node based on values saved from graph prior to analysis
-	} else if (m == "toInitModel") {
-		value = cell.attributes.attrs[".satvalue"].value;
+	} else if (mode == "toInitModel") {
+		value = satValueDict[cell.attributes.attrs[".satvalue"].value];
 	}
 
 	// Update images for properties
@@ -1396,6 +1389,10 @@ $('#btn-fnt').on('click', function(){
 
 
 
+/**
+ * Read and load a saved JSON file
+ *
+ */
 // Simulator
 loader = document.getElementById("loader");
 reader = new FileReader();
@@ -1429,7 +1426,6 @@ reader.onload = function(){
 
 
 
-// 
 /**
  * Helper function to download saved graph in JSON format
  *
