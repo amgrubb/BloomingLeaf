@@ -182,9 +182,9 @@ $('#analysis-btn').on('click', function(){
     jsLinks = getLinks();
     // Check if there are any cycles
     cycle = cycleCheck(jsLinks, analysis.elementList);
-    //If there are no cycles then switch view to Analysis
+    // If there are no cycles then switch view to Analysis
     if(!cycle){
-        //Adjust left and right panels
+        // Adjust left and right panels
         elementInspector.clear();
         linkInspector.clear();
         constrainsInspector.clear();
@@ -203,7 +203,7 @@ $('#analysis-btn').on('click', function(){
 
         $('#modeText').text("Analysis");
 
-        // disable link settings
+        // Disable link settings
         $('.link-tools .tool-remove').css("display","none");
         $('.link-tools .tool-options').css("display","none");
 
@@ -212,15 +212,15 @@ $('#analysis-btn').on('click', function(){
 
         mode = "Analysis";
     }
-    //If there are cycles, then display error message. Otherwise, remove any "red" elements.
+    // If there are cycles, then display error message. Otherwise, remove any "red" elements.
     cycleCheckForLinks(cycle);
 
 });
 
-//Switch to modeling mode
+// Switch to modeling mode
 $('#model-cur-btn').on('click', function(){
 	switchToModellingMode(false);
-	//Cleaning the previous analysis data for new execution
+	// Cleaning the previous analysis data for new execution
 	global_analysisResult.elementList = "";
 	savedAnalysisData.finalAssigneEpoch="";
 	savedAnalysisData.finalValueTimePoints="";
@@ -1214,11 +1214,10 @@ function checkForMultipleNB(node) {
 }
 
 
-
-// ----------------------------------------------------------------- //
-// Keyboard shortcuts
-
-
+/**
+ * Set up Ctrl+c and Ctrl+v shortcut for macOS
+ *  
+ */
 var clipboard = new joint.ui.Clipboard();
 //Check if the browser is on Mac
 var macOS = navigator.platform.match(/(Mac|iPhone|iPod|iPad)/i)?true:false;
@@ -1281,9 +1280,11 @@ else{
 
 }
 
-// ----------------------------------------------------------------- //
-// Toolbar
 
+/**
+ * Set up tool bar functions
+ *  
+ */
 $('#btn-undo').on('click', _.bind(commandManager.undo, commandManager));
 $('#btn-redo').on('click', _.bind(commandManager.redo, commandManager));
 $('#btn-clear-all').on('click', function(){
@@ -1394,6 +1395,7 @@ $('#btn-fnt').on('click', function(){
 });
 
 
+
 // Simulator
 loader = document.getElementById("loader");
 reader = new FileReader();
@@ -1427,7 +1429,11 @@ reader.onload = function(){
 
 
 
-// Helper function to download saved graph in JSON format
+// 
+/**
+ * Helper function to download saved graph in JSON format
+ *
+ */
 function download(filename, text) {
 	var dl = document.createElement('a');
 	dl.setAttribute('href', 'data:application/force-download;charset=utf-8,' + encodeURIComponent(text));
@@ -1441,11 +1447,11 @@ function download(filename, text) {
 }
 
 
-
-// ----------------------------------------------------------------- //
-// General javascript for user interaction
-
-// When the user clicks anywhere outside of the a pop up, close it
+/**
+ * General javascript for user interaction
+ * When the user clicks anywhere outside of the a pop up, close it
+ *
+ */
 window.onclick = function(event) {
 	var modal = document.getElementById('myModal');
 	var intermT = document.getElementById('intermediateTable');
