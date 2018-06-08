@@ -135,7 +135,7 @@ $(window).resize(function() {
 });
 
 //If a cookie exists, process it as a previously created graph and load it.
-if (document.cookie){
+if (document.cookie) {
 	var cookies = document.cookie.split(";");
 	var prevgraph = "";
 
@@ -158,26 +158,22 @@ if (document.cookie){
 
 }
 
-
-
-
-
-
 // ----------------------------------------------------------------- //
 // Analysis and modelling mode control
 
 /**
  * Switch to Analysis view iff there are no cycles and no syntaxErrors.
  */
-$('#analysis-btn').on('click', function(){
+$('#analysis-btn').on('click', function() {
     var analysis = new InputAnalysis();
     var jsLinks;
+    var cycle = cycleCheck(jsLinks, analysis.elementList);
 	syntaxCheck();
 
    	jsLinks = getLinks();
 
     // If there are no cycles then switch view to Analysis
-    if(!cycleCheck(jsLinks, analysis.elementList)){
+    if(!cycle){
         // Adjust left and right panels
         elementInspector.clear();
         linkInspector.clear();
@@ -228,26 +224,26 @@ $('#model-cur-btn').on('click', function(){
  *
  * @param {Boolean} cycle: The constraint links in the current model.
  */
-function cycleCheckForLinks(cycle){
+function cycleCheckForLinks(cycle) {
 	var elements;
 	var cellView;
 		//If there is no cycle, leave the color the way it was
-		if (!cycle){
+		if (!cycle) {
 			elements = graph.getElements();
-			for (var i = 0; i < elements.length; i++){
+			for (var i = 0; i < elements.length; i++) {
 				cellView  = elements[i].findView(paper);
 				cellView.model.changeToOriginalColour();
 			}
 		}
-		else{
+		else {
 			swal("Cycle in the graph", "", "error");
 			elements = graph.getElements();
-			for (var i = 0; i < elements.length; i++){
+			for (var i = 0; i < elements.length; i++) {
 				cellView  = elements[i].findView(paper);
-				if (recursiveStack[cellView.model.attributes.elementid] == true){
+				if (recursiveStack[cellView.model.attributes.elementid] == true) {
 					cellView.model.attr({'.outer': {'fill': 'red'}});
 				}
-				else{
+				else {
 					cellView.model.changeToOriginalColour();
 				}
 			}
@@ -281,14 +277,14 @@ function cycleCheckForLinks(cycle){
  * link from node 1 to node 0
  * 
  */
-function initializeDestSourceMapper(jointLinks, inputlinks){
+function initializeDestSourceMapper(jointLinks, inputlinks) {
     let destSourceMapper = {};
     let linkView;
     let constraint;
-    for(var j = 0; j < inputlinks.length; j++){
+    for(var j = 0; j < inputlinks.length; j++) {
         linkView  = jointLinks[j].findView(paper);
 
-        if(!(inputlinks[j].linkDestID in destSourceMapper)){
+        if(!(inputlinks[j].linkDestID in destSourceMapper)) {
             // create empty object and arrays
             destSourceMapper[inputlinks[j].linkDestID] = {};
             destSourceMapper[inputlinks[j].linkDestID]["source"] = [];
@@ -296,9 +292,9 @@ function initializeDestSourceMapper(jointLinks, inputlinks){
             destSourceMapper[inputlinks[j].linkDestID]["findview"] = [];
         }
 
-        if (inputlinks[j].postType != null){
+        if (inputlinks[j].postType != null) {
             constraint = inputlinks[j].linkType+"|"+inputlinks[j].postType;
-        }else{
+        }else {
             constraint = inputlinks[j].linkType;
         }
         destSourceMapper[inputlinks[j].linkDestID]["source"].push(inputlinks[j].linkSrcID);
@@ -531,7 +527,7 @@ function syntaxCheck() {
 // Cycle-deteciton algorithm
 // The algorithm is referenced from Detect Cycle in a Directed Graph algorithm
 // discussed at : http://www.geeksforgeeks.org/detect-cycle-in-a-graph/
-function cycleCheck(links, verticies){
+function cycleCheck(links, verticies) {
 	var graphs = {};
 	var visited = {};
 	var cycle = false;
