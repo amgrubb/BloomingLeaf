@@ -19,15 +19,17 @@ function displayAnalysis(analysisResults){
 	savedAnalysisData.finalAssigneEpoch = analysisResults.finalAssignedEpoch;
 	savedAnalysisData.finalValueTimePoints = analysisResults.finalValueTimePoints;
 
-	var currentValueLimit = 0;
+	if (sliderObject.sliderElement.hasOwnProperty('noUiSlider')) {
+		sliderObject.sliderElement.noUiSlider.destroy();
+	}
 
 	// This might be unnecessary 
 	// ElementList = analysisResults.elementList;
 
 	// Update history log
-	updateHistory(currentAnalysis, currentValueLimit);
+	updateHistory(currentAnalysis);
 
-	createSlider(currentAnalysis, currentValueLimit, false);
+	createSlider(currentAnalysis, false);
 }
 
 /**
@@ -40,7 +42,7 @@ function displayAnalysis(analysisResults){
  *   True if the slider is being created when we are switching analysis's
  *   with the history log, false otherwise
  */
-function createSlider(currentAnalysis, currentValueLimit, isSwitch) {
+function createSlider(currentAnalysis, isSwitch) {
 
 	var sliderMax = currentAnalysis.timeScale;
 	var density = (sliderMax < 25) ? (100 / sliderMax) : 4;
@@ -66,14 +68,7 @@ function createSlider(currentAnalysis, currentValueLimit, isSwitch) {
 	sliderObject.sliderElement.noUiSlider.set(isSwitch ? 0 : sliderMax);
 
 	sliderObject.sliderElement.noUiSlider.on('update', function( values, handle ) {
-		
-		// Set slidable range based on previous analysis
-		if(values[handle] < currentValueLimit){
-			sliderObject.sliderElement.noUiSlider.set(currentValueLimit);
-		}else{
-			updateSliderValues(parseInt(values[handle]), currentValueLimit, currentAnalysis);
-
-		}
+		updateSliderValues(parseInt(values[handle]), currentAnalysis);
 	});
 
 	adjustSliderWidth(sliderMax);
@@ -92,20 +87,10 @@ function createSlider(currentAnalysis, currentValueLimit, isSwitch) {
  */
 function switchHistory(currentAnalysis, historyIndex) {
 
-	var currentValueLimit;
-	var sliderMax;
-
-	if (historyIndex == 0) {
-		currentValueLimit = 0;
-		sliderMax = currentAnalysis.timeScale;
-
-	} else {
-		currentValueLimit = historyObject.allHistory[historyIndex - 1].sliderEnd;
-		sliderMax = currentValueLimit + currentAnalysis.timeScale;
-	}
+	var sliderMax = currentAnalysis.timeScale;
 
 	sliderObject.sliderElement.noUiSlider.destroy();
-	createSlider(currentAnalysis, currentValueLimit, true);
+	createSlider(currentAnalysis, true);
 }
 
 
@@ -144,13 +129,13 @@ function adjustSliderWidth(maxValue){
  * @param {Object} currentAnalysis
  *   Contains data about the analysis that the back end performed
  */
-function updateSliderValues(sliderValue, currentValueLimit, currentAnalysis){
+function updateSliderValues(sliderValue, currentAnalysis){
 
-	var value = sliderValue - currentValueLimit;
+	var value = sliderValue;
 	$('#sliderValue').text(value);
 	sliderObject.sliderValueElement.innerHTML = value + "|" + currentAnalysis.relativeTime[value];
 
-	for (var i = 0; i < currentAnalysis.numOfElements; i++){
+	for (var i = 0; i < currentAnalysis.numOfElements; i++) {
 		updateNodeValues(i, currentAnalysis.elements[i][value], "renderAnalysis");
 	}
 }
@@ -221,16 +206,16 @@ function updateNodeValues(elementIndex, satValue, mode) {
  */
 $('#history').on("click", ".log-elements", function(e){
 	var txt = $(e.target).text();
-	var step = parseInt(txt.split(":")[0].split(" ")[1] - 1);
-	var log = historyObject.allHistory[step];
+	var step = parseInt(txt.split(":")[0].split(" ")[1]);
+	var log = historyObject.allHistory[step - 1];
 	var currentAnalysis = log.analysis;
 
-	switchHistory(currentAnalysis, step);
+	switchHistory(currentAnalysis, step - 1);
 
 	$(".log-elements:nth-of-type(" + historyObject.currentStep.toString() +")").css("background-color", "");
 	$(e.target).css("background-color", "#E8E8E8");
 
-	historyObject.currentStep = step + 1;
+	historyObject.currentStep = step;
 });
 
 
@@ -263,7 +248,7 @@ function clearHistoryLog(){
  *   Contains data about the analysis that the back end performed
  * @param {Number} currentValueLimit
  */
-function updateHistory(currentAnalysis, currentValueLimit){
+function updateHistory(currentAnalysis){
 	var logMessage = "Step " + historyObject.nextStep.toString() + ": " + currentAnalysis.type;
 	logMessage = logMessage.replace("<", "&lt");
 
@@ -280,9 +265,9 @@ function updateHistory(currentAnalysis, currentValueLimit){
 		var log = new logObject(currentAnalysis, 0);
 	} else {
 		var l = historyObject.allHistory.length - 1;
-		historyObject.allHistory[l].sliderEnd = currentValueLimit;
-		historyObject.allHistory[l].analysisLength = currentValueLimit - historyObject.allHistory[l].sliderBegin;
-		var log = new logObject(currentAnalysis, currentValueLimit);
+		// historyObject.allHistory[l].sliderEnd = currentValueLimit;
+		// historyObject.allHistory[l].analysisLength = currentValueLimit - historyObject.allHistory[l].sliderBegin;
+		var log = new logObject(currentAnalysis, 0);
 	}
 
 	historyObject.allHistory.push(log);
