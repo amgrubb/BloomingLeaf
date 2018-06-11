@@ -1,3 +1,8 @@
+/*
+This file contains all the functions associated with detecting cycles and syntax
+errors. It also contains the functions that display the error.
+ */
+
 /**
  * This file contains functions related to the syntax checking and 
  * cycle detection for the web

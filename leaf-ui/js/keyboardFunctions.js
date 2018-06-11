@@ -34,6 +34,7 @@ if(macOS) {
 	});
 
 } else {
+
 	KeyboardJS.on('ctrl + c', function() {
 		// Copy all selected elements and their associatedf links.
 		clipboard.copyElements(selection, graph, { translate: { dx: 20, dy: 20 }, useLocalStorage: true });
