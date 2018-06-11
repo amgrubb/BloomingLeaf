@@ -14,6 +14,7 @@ function displayAnalysis(analysisResults){
 
 	// Change the format of the analysis result from the back end
 	var currentAnalysis = new analysisObject.initFromBackEnd(analysisResults);
+	currentAnalysis.type = "Single Path";
 
 	// Save data for get possible next states
 	savedAnalysisData.finalAssigneEpoch = analysisResults.finalAssignedEpoch;
