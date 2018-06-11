@@ -1,4 +1,9 @@
 /**
+ * This file contains functions that help display the analysis
+ * that the web application would receive from the back end.
+ */
+
+/**
  * Displays the analysis to the web app, by displaying the slider and the 
  * history log
  *

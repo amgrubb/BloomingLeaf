@@ -4,6 +4,12 @@ errors. It also contains the functions that display the error.
  */
 
 /**
+ * This file contains functions related to the syntax checking and 
+ * cycle detection for the web
+ */
+
+
+/**
  * Alert the user if there are any cycles and mark the elements in the cycle as red
  * If there are no cycles then remove the red elements if there are any
  *
