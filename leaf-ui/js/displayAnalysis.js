@@ -20,6 +20,7 @@ function displayAnalysis(analysisResults){
 	savedAnalysisData.finalAssigneEpoch = analysisResults.finalAssignedEpoch;
 	savedAnalysisData.finalValueTimePoints = analysisResults.finalValueTimePoints;
 
+	// Check if slider has already been initialized
 	if (sliderObject.sliderElement.hasOwnProperty('noUiSlider')) {
 		sliderObject.sliderElement.noUiSlider.destroy();
 	}
