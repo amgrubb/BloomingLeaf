@@ -1,3 +1,7 @@
+/*
+This file contains all the jQuery functions that are associated with buttons and elements.
+It also contains the setup for Rappid elements.
+ */
 
 /**
  * Switch to Analysis view iff there are no cycles and no syntaxErrors.
