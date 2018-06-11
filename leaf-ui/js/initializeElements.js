@@ -81,6 +81,10 @@ var paperScroller = new joint.ui.PaperScroller({
 $('#paper').append(paperScroller.render().el);
 paperScroller.center();
 
+// Disable context menu inside the paper.
+//TODO: Not sure what this does.
+paper.el.oncontextmenu = function(evt) { evt.preventDefault(); };
+
 
 // Create and populate stencil.
 stencil = new joint.ui.Stencil({
@@ -89,6 +93,9 @@ stencil = new joint.ui.Stencil({
 	width: 200,
 	height: 600
 });
+
+// A simple element editor.
+$('.inspector').append(elementInspector.el);
 
 $('#stencil').append(stencil.render().el);
 

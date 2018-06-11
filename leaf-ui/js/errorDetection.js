@@ -1,3 +1,8 @@
+/*
+This file contains all the functions associated with detecting cycles and syntax
+errors. It also contains the functions that display the error.
+ */
+
 /**
  * Alert the user if there are any cycles and mark the elements in the cycle as red
  * If there are no cycles then remove the red elements if there are any
