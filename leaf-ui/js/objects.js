@@ -18,11 +18,6 @@ var logObject = function(analysis){
 	this.analysis = analysis;
 };
 
-var satObject = function(constraint, color) {
-	this.constraint = constraint;
-	this.color = color;
-};
-
 // Used to save analysis results
 function analysisObject () {
     this.type;
