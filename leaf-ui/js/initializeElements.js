@@ -43,7 +43,8 @@ var satValueDict = {
 	"denied": "1100",
 	"none": "0000"
 };
-
+// Satisfaction text values corresponding to the binary representation.
+// This is used in updateNodeValues in displayAnalysis
 var satisfacationValuesDict = {
 	"0000": {
 		satValue: "(T, T)",
@@ -78,23 +79,10 @@ var satisfacationValuesDict = {
         color: "red"
     },
 	"1111": {
-		satValue: "(FS, FS",
+		satValue: "(FS, FD)",
 		color: "red"
 	}
 };
-
-var satisfactionValues = {
-	"0000": new satObject("(T, T)", "black"),
-	"0010": new satObject("(PS, T)", "black"),
-	"0011": new satObject("(FS, T)", "black"),
-	"0100": new satObject("(T, PD)", "black"),
-	"0110": new satObject("(PS, PD)", "red"),
-	"0111": new satObject("(FS, PD)", "red"),
-	"1100": new satObject("(T, FD)", "black"),
-	"1110": new satObject("(PS, FD)", "red"),
-	"1111": new satObject("(FS, FD)", "red")
-};
-
 
 // Mode is used specify layout
 mode = "Modelling";		// 'Analysis' or 'Modelling'
