@@ -14,12 +14,9 @@ var historyObject = function(){
 }
 
 // Individual logs on the history log
-var logObject = function(analysis, sliderBegin){
+var logObject = function(analysis){
 	this.analysis = analysis;
-	this.sliderBegin = sliderBegin;
-	this.sliderEnd;
-	this.analysisLength;
-}
+};
 
 // Used to save analysis results
 function analysisObject () {
