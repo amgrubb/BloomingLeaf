@@ -43,7 +43,59 @@ var satValueDict = {
 	"partiallydenied": "0100",
 	"denied": "1100",
 	"none": "0000"
-}
+};
+
+var satisfacationValuesDict = {
+	"0000": {
+		satValue: "(T, T)",
+		color: "black"
+	},
+	"0010": {
+		satValue: "(PS, T)",
+		color: "black"
+	},
+	"0011": {
+		satValue: "(FS, T)",
+		color: "black"
+	},
+	"0100": {
+		satValue: "(T, PD)",
+		color: "black"
+	},
+	"0110": {
+        satValue: "(PS, PD)",
+        color: "red"
+    },
+	"0111": {
+		satValue: "(FS, PD)",
+		color: "red"
+	},
+	"1100": {
+		satValue: "(T, FD)",
+		color: "black"
+	},
+	"1110": {
+        satValue: "(PS, FD)",
+        color: "red"
+    },
+	"1111": {
+		satValue: "(FS, FS",
+		color: "red"
+	}
+};
+
+var satisfactionValues = {
+	"0000": new satObject("(T, T)", "black"),
+	"0010": new satObject("(PS, T)", "black"),
+	"0011": new satObject("(FS, T)", "black"),
+	"0100": new satObject("(T, PD)", "black"),
+	"0110": new satObject("(PS, PD)", "red"),
+	"0111": new satObject("(FS, PD)", "red"),
+	"1100": new satObject("(T, FD)", "black"),
+	"1110": new satObject("(PS, FD)", "red"),
+	"1111": new satObject("(FS, FD)", "red")
+};
+
 
 // Mode is used specify layout
 mode = "Modelling";		// 'Analysis' or 'Modelling'
