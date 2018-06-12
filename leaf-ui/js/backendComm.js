@@ -59,7 +59,7 @@ function getFileResults(isGetNextSteps){
 		success: function(response){
 			analysisResults = JSON.parse(response['data']);
 			
-			if (constraintErrorExists(analysisResults)) {
+			if (errorExists(analysisResults)) {
 				var msg = getErrorMessage(analysisResults.errorMessage);	
 				alert(msg);
 			} else {
@@ -108,7 +108,7 @@ function open_analysis_viewer(){
  *   results from backend java code
  * @returns {boolean}
  */
-function constraintErrorExists(analysisResults) {
+function errorExists(analysisResults) {
 	return analysisResults.errorMessage != null;
 }
 
@@ -125,7 +125,12 @@ function constraintErrorExists(analysisResults) {
  * @returns {boolean}
  */
 function getErrorMessage(backendErrorMsg) {
-		
+	
+	// If node ids does not exist, just return the original error message for now
+	if (!nodeIDsExists(backendErrorMsg)) {
+		return backendErrorMsg;
+	}
+
 	var ids = getIDs(backendErrorMsg);
 	var names = [];
 	var actorNames = [];
@@ -202,6 +207,17 @@ function getElementById(id) {
 			return elements[i];
 		}
 	}
+}
+
+/**
+ * Returns true iff node ids exists in msg
+ *
+ * @param {String} msg
+ * @returns {Boolean}
+ */
+function nodeIDsExists(msg) {
+	var pattern = /N\d{4}/g;
+	return backendErrorMsg.match(pattern) != null;
 }
 
 /*
