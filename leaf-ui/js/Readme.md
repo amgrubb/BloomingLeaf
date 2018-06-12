@@ -3,7 +3,7 @@
 ## initializeElements
 This file contains code that initialize and set up the necessary rappid, jointjs and noUISlider elements.
 
-## DisplayAnalysis.js
+## displayAnalysis.js
 This file contains function that displays the analysis that the web application from the backed 
 ### Main functions in this file:
 1) displayAnalysis
@@ -24,7 +24,7 @@ This file contains functions that are associated with keyboard shortcuts.
 ### Main functions in this file:
 1) ctrl-c, ctrl-v
 
-## LoadSaveFunctions.js
+## loadSaveFunctions.js
 This file contains code associated with loading and saving a current model as a JSON file
 ### Main functions in this file:
 1) download
