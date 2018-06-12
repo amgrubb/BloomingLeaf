@@ -377,33 +377,28 @@ var ElementInspector = Backbone.View.extend({
 
   // Check validity of initValue/functionType pair
   // If not legal, change the initValue or functionType accordingly
-  validityCheck: function(event){
+  validityCheck: function(event) {
     var cell = this._cellView.model;
     var functionType = this.$('.function-type').val();
     var initValue = this.$('#init-sat-value').val();
-    // Check what triggered the validty check
-    // Either init value changed, func type changed or simply an element gets clicked
-    initValueChanged = false;
-    funcTypeChanged = false;
+
     // If an element gets clicked, don't bother checking
-    if (event == null){
+    if (event == null) {
       return;
     }
-    else {
-      if (event.target.id == 'init-sat-value'){
-        initValueChanged = true;
-      }
-      else if (event.target.className == 'function-type'){
-        funcTypeChanged = true;
-      }
-    }
+
+    // Check what triggered the validty check
+    // Either init value changed, func type changed or simply an element gets clicked
+    var initValueChanged = event.target.id == 'init-sat-value';
+    var funcTypeChanged = event.target.className == 'function-type';
+
     // Perform check
     // If not UD, just do a regular check
-    if (functionType != "UD"){
+    if (functionType != "UD") {
       // If not valid, 2 possible actions:
       // change to default init value if functTypeChanged
       // change to none function if initValueChanged
-      if ($.inArray(initValue, validPair[functionType]['validInitValue']) == -1){
+      if ($.inArray(initValue, validPair[functionType]['validInitValue']) == -1) {
         if (initValueChanged && initValue != "unknown"){this.$('.function-type').val('none');}
         if (initValueChanged && initValue == "unknown"){this.$('.function-type').val('C');}
         var newValue = validPair[functionType]['defaultValue'];
