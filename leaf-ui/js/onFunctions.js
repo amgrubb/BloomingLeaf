@@ -4,7 +4,7 @@ It also contains the setup for Rappid elements.
  */
 
 /**
- * Switch to Analysis view iff there are no cycles and no syntaxErrors.
+ * Switches to Analysis view iff there are no cycles and no syntax errors.
  */
 $('#analysis-btn').on('click', function() {
     var jsLinks;
@@ -18,20 +18,22 @@ $('#analysis-btn').on('click', function() {
     if (!cycle) {
 		switchToAnalysisMode(); 
     }
+
     // If there are cycles, then display error message. Otherwise, remove any "red" elements.
     cycleCheckForLinks(cycle);
-
 });
 
 
 /**
- *  Helper function for switching to Analysis view.
+ * Helper function for switching to Analysis view.
  */
-function switchToAnalysisMode(){
-	// Adjust left and right panels
+function switchToAnalysisMode() {
+	
+	// Clear the right panel
 	elementInspector.clear();
 	linkInspector.clear();
 	constraintsInspector.clear();
+
 	analysisInspector.render();
 
 	$('.inspector').append(analysisInspector.el);
@@ -54,30 +56,27 @@ function switchToAnalysisMode(){
 	if (currentHalo) {
 		currentHalo.remove();
 	}
-	
 	mode = "Analysis";
-
 }
 
-// Switch to modeling mode
-$('#model-cur-btn').on('click', function(){
+// Switches to modeling mode
+$('#model-cur-btn').on('click', function() {
 	switchToModellingMode();
+
 	// Cleaning the previous analysis data for new execution
 	global_analysisResult.elementList = "";
 	savedAnalysisData.finalAssigneEpoch="";
 	savedAnalysisData.finalValueTimePoints="";
 });
 
-
 /**
- * Switch back to Modelling Mode from Analysis Mode
- * Reset the Nodes' satValues to the values prior to analysis
+ * Switches back to Modelling Mode from Analysis Mode
+ * and resets the Nodes' satValues to the values prior to analysis
  * Display the modeling mode page
- *
  */
-function switchToModellingMode(){
+function switchToModellingMode() {
 	// Reset to initial graph prior to analysis
-	for (var i = 0; i < graph.elementsBeforeAnalysis.length; i++){
+	for (var i = 0; i < graph.elementsBeforeAnalysis.length; i++) {
 		var value = graph.elementsBeforeAnalysis[i]
 		updateNodeValues(i, value, "toInitModel");
 	}
@@ -106,16 +105,11 @@ function switchToModellingMode(){
 	// Clear previous slider setup
 	clearHistoryLog();
 
-	queryObject.clearCells();
-
 	mode = "Modelling";
 }
 
-
-
 /**
- * Set up tool bar functions
- *  
+ * Set up tool bar button on click functions
  */
 $('#btn-undo').on('click', _.bind(commandManager.undo, commandManager));
 $('#btn-redo').on('click', _.bind(commandManager.redo, commandManager));
@@ -147,8 +141,11 @@ $('#btn-clear-flabel').on('click', function(){
 		}
 	}
 });
-// This is an option under clear button to clear red-highlight from
-// cycle detection function
+
+/**
+ * This is an option under clear button to clear red-highlight from
+ * cycle detection function
+ */
 $('#btn-clear-cycle').on('click',function(){
 	var cycleElements = graph.getElements();
 
@@ -170,6 +167,7 @@ $('#btn-clear-cycle').on('click',function(){
 	}
 });
 
+// Open as SVG
 $('#btn-svg').on('click', function() {
 	paper.openAsSVG();
 });
@@ -227,8 +225,7 @@ $('#btn-fnt').on('click', function(){
 });
 
 /**
- * Rappid setup
- * 
+ * Set up on events for Rappid/JointJS objets
  */
 var element_counter = 0;
 var max_font = 20;
@@ -275,13 +272,15 @@ var selectionView = new joint.ui.SelectionView({
 	model: selection
 });
 
-
-// Initiate selecting when the user grabs the blank area of the paper while the Shift key is pressed.
-// Otherwise, initiate paper pan.
+/**
+ * Initiate selecting when the user grabs the blank area of the paper while the Shift key is pressed.
+ * Otherwise, initiate paper pan.
+ */
 paper.on('blank:pointerdown', function(evt, x, y) {
     if (_.contains(KeyboardJS.activeKeys(), 'shift')) {
-    	if(mode == "Analysis")
-			return
+    	if(mode == "Analysis") {
+			return;
+    	}
 
         selectionView.startSelecting(evt, x, y);
     } else {
@@ -289,10 +288,13 @@ paper.on('blank:pointerdown', function(evt, x, y) {
     }
 });
 
-paper.on('cell:pointerdown', function(cellView, evt, x, y){
+/**
+ * 
+ */
+paper.on('cell:pointerdown', function(cellView, evt, x, y) {
+	
 	if(mode == "Analysis"){
-		queryObject.addCell(cellView);
-		return
+		return;
 	}
 
 	var cell = cellView.model;

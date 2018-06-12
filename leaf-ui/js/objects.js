@@ -99,49 +99,6 @@ analysisObject.initFromMain = function(elements, num, time){
     return this;
 }
 
-// Used for querying on analysis inspector
-var queryObject = function(){
-	this.cellA;
-	this.cellB;
-	this.queryColor = "#e74c3c";
-	this.intentionColor = {
-		"Goal": '#FFCC66',
-		"Task": '#92E3B1',
-		"Softgoal": '#FF984F',
-		"Resource": '#92C2FE'
-	};
-
-
-	this.addCell = function(cell){
-		if ((cell == this.cellA) || (cell == this.cellB))
-			return
-
-		if(this.cellA && !this.cellB){
-			this.cellB = this.cellA;
-		}else if (this.cellA && this.cellB){
-			var cellType = this.cellB.model.attributes.type.split(".")[1]
-			this.cellB.model.attr({'.outer': {'fill': this.intentionColor[cellType]}});
-			this.cellB = this.cellA;
-		}
-		this.cellA = cell;
-		cell.model.attr({'.outer': {'fill': this.queryColor}});
-	}
-
-	this.clearCells = function(){
-		if(this.cellA){
-			var cellType = this.cellA.model.attributes.type.split(".")[1]
-			this.cellA.model.attr({'.outer': {'fill': this.intentionColor[cellType]}});
-			this.cellA = null;
-		}
-		if(this.cellB){
-			var cellType = this.cellB.model.attributes.type.split(".")[1]
-			this.cellB.model.attr({'.outer': {'fill': this.intentionColor[cellType]}});
-			this.cellB = null;
-		}
-	}
-}
-
-
 // Within intension constraints template
 // used to model element functions in element inspector
 var constraintsObject = function(){
