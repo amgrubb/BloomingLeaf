@@ -76,8 +76,7 @@ function getElementList(){
 				elementList.push(element);
 			}
 		}
-		return elementList;
-	}else{
+	} else {
 		var element = {};
 		var index = $('#sliderValue').text().split('|');
 		var i_splice = parseInt(index[0])+1;
@@ -87,6 +86,7 @@ function getElementList(){
 				elementList.push(element);
 			}
 		);
-		return elementList;
 	}
+
+	return elementList;
 }
