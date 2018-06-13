@@ -9,28 +9,29 @@ This file contains code that initialize and set up the necessary rappid, jointjs
 ## displayAnalysis.js
 This file contains function that displays the analysis that the web application from the backed 
 ### Main functions in this file:
-displayAnalysis
-createSlider
-switchHistory
-updateHistory
+displayAnalysis\
+createSlider\
+switchHistory\
+updateHistory\
 updateNodeValues
 
 ## errorDetection.js
 This file contains functions related to syntax checking, cycle detection and displaying error messages
 ### Main functions in this file:
-cycleCheck
-syntaxCheck
+cycleCheck\
+syntaxCheck\
 generateSyntaxMessage
 
 ## keyboardFunctions.js
 This file contains functions that are associated with keyboard shortcuts.
 ### Main functions in this file:
-ctrl-c, ctrl-v
+ctrl-c\ 
+ctrl-v
 
 ## loadSaveFunctions.js
 This file contains code associated with loading and saving a current model as a JSON file
 ### Main functions in this file:
-download
+download\
 reader.onload functions
 
 ## onFunctions.js
