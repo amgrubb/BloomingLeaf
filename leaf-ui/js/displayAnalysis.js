@@ -167,38 +167,13 @@ function updateNodeValues(elementIndex, satValue, mode) {
 		value = satValueDict[cell.attributes.attrs[".satvalue"].value];
 	}
 
-	// Update images for properties
-	if ((value == "0001") || (value == "0011")) {
-	  cell.attr(".satvalue/text", "(FS, T)");
-	  cell.attr({text:{fill:'black'}});
-	} else if(value == "0010") {
-	  cell.attr(".satvalue/text", "(PS, T)");
-	  cell.attr({text:{fill:'black'}});
-	} else if ((value == "1000") || (value == "1100")) {
-	  cell.attr(".satvalue/text", "(T, FD)");
-	  cell.attr({text:{fill:'black'}});
-	} else if (value == "0100") {
-	  cell.attr(".satvalue/text", "(T, PD)");
-	  cell.attr({text:{fill:'black'}});
-	} else if (value == "0110") {
-	  cell.attr(".satvalue/text", "(PS, PD)");
-	  cell.attr({text:{fill:'red'}});
-	} else if ((value == "1110") || (value == "1010")) {
-	  cell.attr(".satvalue/text", "(PS, FD)");
-	  cell.attr({text:{fill:'red'}});
-	} else if ((value == "0111") || (value == "0101")) {
-	  cell.attr(".satvalue/text", "(FS, PD)");
-	  cell.attr({text:{fill:'red'}});
-	} else if ((value == "1111") || (value == "1001") || (value == "1101") || (value == "1011") ) {
-	  cell.attr(".satvalue/text", "(FS, FD)");
-	  cell.attr({text:{fill:'red'}});
-	} else if (value == "0000") {
-	  cell.attr(".satvalue/text", "(T,T)");
-	  cell.attr({text:{fill:'black'}});
-	} else {
-	  cell.removeAttr(".satvalue/d");
+	if (value in satisfacationValuesDict) {
+        cell.attr(".satvalue/text", satisfacationValuesDict[value].satValue);
+        cell.attr({text: {fill: satisfacationValuesDict[value].color}});
+    }
+    else {
+		cell.removeAttr(".satvalue/d");
 	}
-
 }
 
 
