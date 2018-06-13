@@ -25,8 +25,7 @@ generateSyntaxMessage
 ## keyboardFunctions.js
 This file contains functions that are associated with keyboard shortcuts.
 ### Main functions in this file:
-ctrl-c\ 
-ctrl-v
+ctrl-c <br >ctrl-v
 
 ## loadSaveFunctions.js
 This file contains code associated with loading and saving a current model as a JSON file
