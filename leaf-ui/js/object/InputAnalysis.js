@@ -77,10 +77,10 @@ function getElementList(){
 			}
 		}
 	} else {
-		var element = {};
 		var index = $('#sliderValue').text().split('|');
 		var i_splice = parseInt(index[0])+1;
-		global_analysisResult.elementList.forEach(function(currentEl){
+		global_analysisResult.elementList.forEach(function(currentEl) {
+				var element = {};
 				element.id = currentEl.id;
 				element.status = currentEl.status.slice(0, i_splice);
 				elementList.push(element);
