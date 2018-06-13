@@ -217,7 +217,7 @@ function getElementById(id) {
  */
 function nodeIDsExists(msg) {
 	var pattern = /N\d{4}/g;
-	return backendErrorMsg.match(pattern) != null;
+	return msg.match(pattern) != null;
 }
 
 /*
