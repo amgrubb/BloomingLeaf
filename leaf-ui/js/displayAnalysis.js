@@ -249,10 +249,3 @@ function updateHistory(currentAnalysis){
 
 	historyObject.allHistory.push(log);
 }
-
-
-function updateHistoryName(currentAnalysis){
-	var name = $(".log-elements").last().html().split(": ");
-	var newName = name[0] + " " + currentAnalysis.type;
-	$(".log-elements").last().html(newName);
-}
