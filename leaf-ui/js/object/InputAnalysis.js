@@ -37,6 +37,18 @@ function getAnalysisValues(analysisInterface){
 	return analysisInterface;
 }
 
+/**
+ * Returns an array of objects representing each element in the graph.
+ * Each object contains an id and a status array containing the 
+ * initial status of the element.
+ *
+ * Example:
+ * [{id: "0000", status: ["0000"]},
+ *  {id: "0001", status: ["0000"]}
+ * ]
+ *
+ * @returns {Array.<Object>}
+ */
 function getElementList() {
     var elementList = [];
     var intentionsCount = 0;
