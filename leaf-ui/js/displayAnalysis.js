@@ -87,9 +87,7 @@ function createSlider(currentAnalysis, isSwitch) {
  *   A valid index for the array historyObject.allHistory, indicating 
  *   which analysis/history log that the user clicked on
  */
-function switchHistory(currentAnalysis, historyIndex) {
-
-	var sliderMax = currentAnalysis.timeScale;
+function switchHistory(currentAnalysis) {
 
 	sliderObject.sliderElement.noUiSlider.destroy();
 	createSlider(currentAnalysis, true);
@@ -187,7 +185,7 @@ $('#history').on("click", ".log-elements", function(e){
 	var log = historyObject.allHistory[step - 1];
 	var currentAnalysis = log.analysis;
 
-	switchHistory(currentAnalysis, step - 1);
+	switchHistory(currentAnalysis);
 
 	$(".log-elements:nth-of-type(" + historyObject.currentStep.toString() +")").css("background-color", "");
 	$(e.target).css("background-color", "#E8E8E8");
