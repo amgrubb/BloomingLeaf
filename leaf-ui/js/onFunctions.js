@@ -64,7 +64,7 @@ $('#model-cur-btn').on('click', function() {
 	switchToModellingMode();
 
 	// Cleaning the previous analysis data for new execution
-	global_analysisResult.elementList = "";
+	globalAnalysisResult.elementList = "";
 	savedAnalysisData.finalAssigneEpoch="";
 	savedAnalysisData.finalValueTimePoints="";
 });

@@ -1,5 +1,5 @@
 
-var global_analysisResult = {};
+var globalAnalysisResult = {};
 
 function backendComm(jsObject){
 	/**
@@ -68,7 +68,7 @@ function getFileResults(isGetNextSteps){
 				*/
 					console.log(JSON.stringify(JSON.parse(response['data'])));
 
-				global_analysisResult = analysisResults;
+				globalAnalysisResult = analysisResults;
 				if (analysisResults == ""){
 					alert("Error while reading the resonse file from server. This can be due an error in executing java application.")
 					return

@@ -49,7 +49,7 @@ function getElementList(){
 			"none": "0000"
 		};
 
-	if(!global_analysisResult.elementList){
+	if(!globalAnalysisResult.elementList){
 		for(var i = 0; i < this.graph.getElements().length; i++){
 			// Remove Actors from list.
 			if (!(this.graph.getElements()[i] instanceof joint.shapes.basic.Actor)){
@@ -79,7 +79,7 @@ function getElementList(){
 	} else {
 		var index = $('#sliderValue').text().split('|');
 		var i_splice = parseInt(index[0])+1;
-		global_analysisResult.elementList.forEach(function(currentEl) {
+		globalAnalysisResult.elementList.forEach(function(currentEl) {
 				var element = {};
 				element.id = currentEl.id;
 				element.status = currentEl.status.slice(0, i_splice);
