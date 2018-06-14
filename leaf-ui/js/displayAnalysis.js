@@ -136,7 +136,7 @@ function updateSliderValues(sliderValue, currentAnalysis){
 	sliderObject.sliderValueElement.innerHTML = value + "|" + currentAnalysis.relativeTime[value];
 
 	for (var i = 0; i < currentAnalysis.numOfElements; i++) {
-		updateNodeValues(i, currentAnalysis.elements[i][value], "renderAnalysis");
+		updateNodeValues(i, currentAnalysis.elements[i].status[value], "renderAnalysis");
 	}
 }
 
