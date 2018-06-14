@@ -89,7 +89,9 @@ function getElementList() {
  * Otherwise, status will be an array from the beginning to the slider value.
  *
  * Example:
- * {
+ * [{id: "0000", status: ["0010", "1100", "1110"]},
+ *  {id: "0001", status: ["0011", "0110", "0111']}]
+ *
  * @returns {Array.<Object>}
  */
 function getElementsForAnalysis() {
