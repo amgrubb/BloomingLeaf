@@ -46,7 +46,7 @@ analysisObject.initFromBackEnd = function(analysisResults){
 		this.elements.push(results)
 	}
 	return this;
-}
+};
 
 
 analysisObject.nextStates = function(analysisResults){

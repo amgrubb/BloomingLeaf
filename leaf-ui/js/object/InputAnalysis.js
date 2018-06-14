@@ -18,7 +18,7 @@ function getAnalysisValues(analysisInterface){
 	if($('#abs-time-pts').val()){
 		analysisInterface.absTimePts = $('#abs-time-pts').val();
 	}
-	analysisInterface.elementList = getElementList();
+	analysisInterface.elementList = getElementsForAnalysis();
 
 	//Data required for 2. Explore Possible Next States
 	if(savedAnalysisData.finalAssigneEpoch){
@@ -37,52 +37,50 @@ function getAnalysisValues(analysisInterface){
 	return analysisInterface;
 }
 
-function getElementList(){
+function getElementList() {
+    var elementList = [];
+    var intentionsCount = 0;
+    for(var i = 0; i < this.graph.getElements().length; i++) {
+        // Remove Actors from list.
+        if (!(this.graph.getElements()[i] instanceof joint.shapes.basic.Actor)){
+            var element= {};
+
+            var currentValue = (this.graph.getElements()[i].attr(".satvalue/value")||"none");
+            //Making currentValue to numeric values like 0000, 0001, 0011...
+            if(!$.isNumeric(currentValue))
+                currentValue = satValueDict[currentValue];
+
+            //Making that the elementId has 4 digits
+            var elementID = intentionsCount.toString();
+            while (elementID.length < 4){
+                elementID = "0" + elementID;
+            }
+            //Adding the new id to the UI graph element
+            this.graph.getElements()[i].prop("elementid", elementID);
+
+            element.id = elementID;
+            element.status = [];
+            element.status.push(currentValue);
+
+            intentionsCount++;
+            elementList.push(element);
+        }
+    }
+    return elementList;
+}
+
+function getElementsForAnalysis() {
 	var elementList = [];
-	var intentionsCount = 0;
-	var satValueDict = {
-			"unknown": "0000",
-			"satisfied": "0011",
-			"partiallysatisfied": "0010",
-			"partiallydenied": "0100",
-			"denied": "1100",
-			"none": "0000"
-		};
-
-	if(!globalAnalysisResult.elementList){
-		for(var i = 0; i < this.graph.getElements().length; i++){
-			// Remove Actors from list.
-			if (!(this.graph.getElements()[i] instanceof joint.shapes.basic.Actor)){
-				var element= {};
-
-				var currentValue = (this.graph.getElements()[i].attr(".satvalue/value")||"none");
-				//Making currentValue to numeric values like 0000, 0001, 0011...
-				if(!$.isNumeric(currentValue))
-					currentValue = satValueDict[currentValue];
-
-				//Making that the elementId has 4 digits
-				var elementID = intentionsCount.toString();
-				while (elementID.length < 4){
-					elementID = "0" + elementID;
-					}
-				//Adding the new id to the UI graph element
-				this.graph.getElements()[i].prop("elementid", elementID);
-
-				element.id = elementID;
-				element.status = [];
-				element.status.push(currentValue);
-
-				intentionsCount++;
-				elementList.push(element);
-			}
-		}
+	var historyIndex = historyObject.currentStep - 1;
+	if(!historyObject.allHistory) {
+		elementList =  getElementList();
 	} else {
-		var index = $('#sliderValue').text().split('|');
-		var i_splice = parseInt(index[0])+1;
-		globalAnalysisResult.elementList.forEach(function(currentEl) {
+		var time = $('#sliderValue').text().split('|')[0];
+		var index = parseInt(time) + 1;
+		historyObject.allHistory[historyIndex].analysis.elements.forEach(function(currentElement) {
 				var element = {};
-				element.id = currentEl.id;
-				element.status = currentEl.status.slice(0, i_splice);
+				element.id = currentElement.id;
+				element.status = currentElement.status.slice(0, index);
 				elementList.push(element);
 			}
 		);

@@ -332,12 +332,12 @@ function cycleCheck(links, vertices) {
 		else{
 			graphs[src] = [element.linkDestID];
 		}
-	})
+	});
 	// Iterate over all vertices to initialize visited stack and recursive stack to false
 	vertices.forEach(function(vertex){
 		visited[vertex.id] = false;
 		recursiveStack[vertex.id] = false;
-	})
+	});
 
 	vertices.forEach(function(vertex){
 			if (!visited[vertex.id]) {
@@ -345,7 +345,7 @@ function cycleCheck(links, vertices) {
 					cycle = true;
 				}
 			}
-	})
+	});
 	return cycle;
 }
 
