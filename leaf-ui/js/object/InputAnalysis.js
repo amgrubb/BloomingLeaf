@@ -69,6 +69,17 @@ function getElementList() {
     return elementList;
 }
 
+/**
+ * Return an array of objects representing elements.
+ * Each element contains an id and an array of status.
+ * This array will be used for analysis in the backend.
+ * If it is the first analysis, status will be an array from the initial value.
+ * Otherwise, status will be an array from the beginning to the slider value.
+ *
+ * Example:
+ * {
+ * @returns {Array.<Object>}
+ */
 function getElementsForAnalysis() {
 	var elementList = [];
 	var historyIndex = historyObject.currentStep - 1;
