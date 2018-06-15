@@ -933,7 +933,7 @@ var ElementInspector = Backbone.View.extend({
     $("#repeat-begin").html('<option class="select-placeholder" selected disabled value="">Begin</option>');
     $("#repeat-end").html('<option class="select-placeholder" selected disabled value="">End</option>');
 
-    // turn on all repeat related display and values
+    // Turn on all repeat related display and values
     if (mode == "TurnOn"){
       $("#repeat-begin").show("fast");
       $("#repeat-end").show("fast");
@@ -945,7 +945,7 @@ var ElementInspector = Backbone.View.extend({
       $("#constraint-repeat").text("Clear Repeats");
       this.repeatOptionsDisplay = true;
 
-    // turn off all repeat related display and values
+    // Turn off all repeat related display and values
     }else if (mode == "TurnOff"){
       $("#repeat-begin").hide();
       $("#repeat-end").hide();
@@ -958,7 +958,7 @@ var ElementInspector = Backbone.View.extend({
       $("#noteRepeat").hide();
       this.repeatOptionsDisplay = false;
 
-    // update all repeat related display and values
+    // Update all repeat related display and values
     }else if (mode == "Update"){
 
       // Cannot repeat with only one constraint
@@ -1045,15 +1045,7 @@ var ElementInspector = Backbone.View.extend({
 
 
     if (funcType == "UD"){
-
-      // For some reason directly calling .attr does not update
-      cell.attr(".constraints/function", null);
-      cell.attr(".constraints/lastval", null);
-      cell.attr(".constraints/beginLetter", null);
-      cell.attr(".constraints/endLetter", null);
-      cell.attr(".constraints/repeat_count", null);
-
-      cell.attributes.attrs['.constraints'].function = this.constraintsObject.userFunctions;
+	  cell.attr(".constraints/function", this.constraintsObject.userFunctions);
       cell.attr(".constraints/lastval", this.constraintsObject.userValues);
       cell.attr(".constraints/beginLetter", this.constraintsObject.beginLetter);
       cell.attr(".constraints/endLetter", this.constraintsObject.endLetter);
@@ -1062,7 +1054,7 @@ var ElementInspector = Backbone.View.extend({
 
 
 
-      // update repeat values
+      // Update repeat values
       if (this.repeatOptionsDisplay){
         cell.attr(".constraints/beginRepeat", this.constraintsObject.repeatBegin);
         cell.attr(".constraints/endRepeat", this.constraintsObject.repeatEnd);
@@ -1075,7 +1067,7 @@ var ElementInspector = Backbone.View.extend({
         cell.attr(".constraints/absoluteLen", null);
 
       }
-
+    // Change the last value according to the function type
     }else if (funcType == "R"){
       cell.attr(".constraints/lastval", "unknown");
     }else if ((funcType == "C") || (funcType == "CR")){
@@ -1085,22 +1077,13 @@ var ElementInspector = Backbone.View.extend({
     }else if (funcType == "DS"){
       cell.attr(".constraints/lastval", "satisfied");
     }else {
-      cell.attr(".constraints/function", this.$('.function-type').val());
+      // cell.attr(".constraints/function", this.$('.function-type').val());
       cell.attr(".constraints/lastval", this.$('#markedValue').val());
     }
 
-    //Update node display based on function and values
+    // Update node display based on function and values
     var value = this.$('#init-sat-value').val();
-
-    if (value == "none"){
-      cell.attr(".satvalue/text", "");
-      // If functype is NB, dont clear it
-      if(cell.attr(".funcvalue/text") != 'NB'){
-        //cell.attr(".funcvalue/text", " ");
-    	cell.attr(".satvalue/text", " ");
-      }
-
-    }
+  
 
     var val;
     if(this.$('#markedValue').val()){
@@ -1121,9 +1104,14 @@ var ElementInspector = Backbone.View.extend({
       cell.attr(".satvalue/text", "(T, PD)");
     }else if (value == "unknown") {
           cell.attr(".satvalue/text", "?");
-    }else {
-      // cell.removeAttr(".satvalue/text");
+    }else{
+      cell.attr(".satvalue/text", "");
+      // If functype is NB, dont clear it
+      if(cell.attr(".funcvalue/text") != 'NB'){
+    	cell.attr(".satvalue/text", " ");
+      }
     }
+
   },
 
   clear: function(){
