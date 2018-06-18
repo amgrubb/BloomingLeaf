@@ -497,15 +497,6 @@ var ElementInspector = Backbone.View.extend({
         return;
     },
 
-    // Save the marked Value in the cell
-    markedValue: function(){
-        var cell = this._cellView.mo
-        del;
-        var val = satvalues[this.$('#markedValue').val()];
-        cell.attr(".constraints/markedvalue", val);
-        this.updateChart(null);
-    },
-
     /**
      * Adds appropriate satisfaction values option tags 
      * for .user-sat-value, which is the select tag used to 
