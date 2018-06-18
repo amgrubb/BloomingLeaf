@@ -1,7 +1,8 @@
 //Class for the element properties tab that appears when an element is clicked
 var ENTER_KEY = 13;
 var alphaOnly = /[A-Z]/;
-// All valid initvalue/function combination
+
+// All valid initial value and function combination
 var validPair = {
     "none": {
         "validInitValue": ["none", "satisfied", "partiallysatisfied", "denied", "partiallydenied"],
@@ -49,11 +50,9 @@ var validPair = {
     }
 
 };
+
 /*
-
 Note:
-The relationships between functions are extremely complex in this file.
-
 Updating variables and render preexisting values often uses the same functions.
 Functions like updateChart, and updateCell are always called whenever changes are made
 on the inspector panel.
@@ -180,58 +179,36 @@ var ElementInspector = Backbone.View.extend({
         'click #constraint-restart': 'restartConstraint',
     },
 
-    // Initializing Element Inspector using the template.
+    /**
+     * Initializes the element inspector using previously defined templates
+     */
     render: function(cellView) {
-    // Save the clicked node's cellView
+
+        // Save the clicked node's cell model
         this._cellView = cellView;
         var cell = this._cellView.model;
+
+        // If the clicked node is an actor, render the actor inspector
         if (cell instanceof joint.shapes.basic.Actor){
             this.$el.html(_.template(this.actor_template)());
             this.$('.cell-attrs-text').val(cell.attr(".name/text") || '');
-            return
-        }else{
-            this.$el.html(_.template(this.template)());
+            return;
         }
-    // Clear the element inspector html for deleted node
+        
+        this.$el.html(_.template(this.template)());
+
+        // TODO i dont think this belongs here
+        // When the clicked node is removed, remove the html for the element inspector
         cell.on('remove', function() {
                 this.$el.html('');
         }, this);
 
-        // Global variables
+        // Attributes
         this.chartObject = new chartObject();
         this.constraintsObject = new constraintsObject();
 
         // Genernate all available selection options based on selected function type
-        this.chartHTML = {};
-        var none = '<option value=none selected> None (T, T) </option>';
-        var satisfied = '<option value=satisfied> Satisfied (FS, T) </option>';
-        var partiallysatisfied = '<option value=partiallysatisfied> Partially Satisfied (PS, T) </option>';
-        var partiallydenied = '<option value=partiallydenied> Partially Denied (T, PD) </option>';
-        var denied = '<option value=denied> Denied (T, FD) </option>';
-        var unknown = '<option value=unknown> Unknown </option>';
-        this.chartHTML.all = none + satisfied + partiallysatisfied + partiallydenied + denied + unknown;
-        this.chartHTML.noRandom = satisfied + partiallysatisfied + partiallydenied + denied;
-        // This is a function that will list all satvalues that are greater than currentVal
-        this.chartHTML.positiveOnly = function(currentVal){
-            currentVal = satvalues[currentVal];
-            result = '';
-            for (var i = currentVal; i <= satvalues['satisfied']; i++){
-                // Find text by value eg. given i = -1, we want to find partiallydenied as satvalues[partiallydenied] = -1
-                var text = satvalues[i];
-                result += eval(text);
-            }
-            return result;
-        }
-        this.chartHTML.negativeOnly = function(currentVal){
-            currentVal = satvalues[currentVal];
-            result = '';
-            for (var i = currentVal; i >= satvalues['denied']; i--){
-                // Find text by value eg. given i = -1, we want to find partiallydenied as satvalues[partiallydenied] = -1
-                var text = satvalues[i];
-                result += eval(text);
-            }
-            return result;
-        }
+        this.satValueOptions = this.initializeSatValueOptions();
 
         // Save html template to dynamically render more
         this.userConstraintsHTML = $("#new-user-constraints").last().clone();
@@ -246,44 +223,91 @@ var ElementInspector = Backbone.View.extend({
 
         // Turn off repeating by default
         this.repeatOptionsDisplay = false;
-    // TO-DO
+        // TODO what does this do?
         this.repeatConstraint("TurnOff");
 
-        // Load initial value for function type
-        var functionType = cell.attr(".funcvalue/text");
-        if((functionType == '') || (functionType == " ") || (functionType == "NB")){
+        // Load initial value for function type in the html select element
+        var functionType = cell.attr('.funcvalue/text');
+        if ((functionType == '') || (functionType == ' ') || (functionType == 'NB')) {
             this.$('.function-type').val('none');
             this.updateHTML(null);
-        }
-        else if((functionType == "C")){
-            this.$('.function-type').val('C');
-            this.updateHTML(null);
-
-        }
-        else if(functionType != "UD"){
+        } else if (functionType != 'UD') {
             this.$('.function-type').val(functionType);
             this.updateHTML(null);
-        // loading user defined constraint
-        }else{
+        } else {
+            // loading user defined constraint
             this.$('.function-type').val(functionType);
             this.renderUserDefined(cell);
         }
 
+    },
+    
+    /**
+     * Returns an object used for providing option tags for valid satisfaction values for 
+     * functions.
+     *
+     * @returns {Object}
+     */
+    initializeSatValueOptions: function() {
+        var satValueOptions = {};
+
+        var none = '<option value=none selected> None (T, T) </option>';
+        var satisfied = '<option value=satisfied> Satisfied (FS, T) </option>';
+        var partiallysatisfied = '<option value=partiallysatisfied> Partially Satisfied (PS, T) </option>';
+        var partiallydenied = '<option value=partiallydenied> Partially Denied (T, PD) </option>';
+        var denied = '<option value=denied> Denied (T, FD) </option>';
+        var unknown = '<option value=unknown> Unknown </option>';
+        satValueOptions.all = none + satisfied + partiallysatisfied + partiallydenied + denied + unknown;
+        satValueOptions.noRandom = satisfied + partiallysatisfied + partiallydenied + denied;
+
+        /**TODO
+         * Returns 
+         */
+        satValueOptions.positiveOnly = function(currentVal){
+            currentVal = satvalues[currentVal];
+            result = '';
+            for (var i = currentVal; i <= satvalues['satisfied']; i++){
+                // Find text by value eg. given i = -1, we want to find partiallydenied as satvalues[partiallydenied] = -1
+                var text = satvalues[i];
+                result += eval(text);
+            }
+            return result;
+        };
+
+        /**TODO
+         * Returns
+         */
+        satValueOptions.negativeOnly = function(currentVal){
+            currentVal = satvalues[currentVal];
+            result = '';
+            for (var i = currentVal; i >= satvalues['denied']; i--){
+                // Find text by value eg. given i = -1, we want to find partiallydenied as satvalues[partiallydenied] = -1
+                var text = satvalues[i];
+                result += eval(text);
+            }
+            return result;
+        };
+
+        return satValueOptions;
     },
 
 
     // Rendering inspector panel from previously specified user-defined functions
     renderUserDefined: function(cell){
         this.$('#markedValue').hide();
+
+        // Get arrays representing the individual functions (C, R, I, D)
+        // and the corresponding satisfaction values
         this.constraintsObject.userFunctions = cell.attr(".constraints/function");
         this.constraintsObject.userValues = cell.attr(".constraints/lastval");
+
         // Load HTML
         var index = cell.attr(".constraints/lastval").length - 1;
-        if (index == 0){
+        if (index == 0) {
             $(".user-sat-value").last().val(this.constraintsObject.userValues[index]);
             $(".user-function-type").last().val(this.constraintsObject.userFunctions[index]);
-        }else{
-            for (var i = 0; i < index; i++){
+        } else {
+            for (var i = 0; i < index; i++) {
                 var prevLetter = this.constraintsObject.endLetter[this.constraintsObject.endLetter.length - 1];
                 this.constraintsObject.beginLetter.push(prevLetter);
                 this.constraintsObject.endLetter.push(String.fromCharCode(prevLetter.charCodeAt(0) + 1));
@@ -300,17 +324,19 @@ var ElementInspector = Backbone.View.extend({
         var repeatCount = cell.attr(".constraints/repeatCount");
         var absLen = cell.attr(".constraints/absoluteLen");
 
-        if (repeatBegin && repeatEnd){
+        if (repeatBegin && repeatEnd) {
             this.repeatOptionsDisplay = true;
             this.constraintsObject.repeatBegin = repeatBegin;
             this.constraintsObject.repeatEnd = repeatEnd;
-            if(repeatCount){
+            if (repeatCount) {
                 this.constraintsObject.repeat_count = repeatCount;
             }
-        // TO-DO: abs-lens cant be negtive
-            if(absLen){
+        
+            if (absLen) {
+                // TODO: abs-lens cant be negtive
                 this.constraintsObject.absoluteLength = absLen;
             }
+
             this.repeatConstraint("TurnOn");
             this.repeatConstraint("Update");
             $("#repeat-begin").val(repeatBegin);
@@ -322,10 +348,13 @@ var ElementInspector = Backbone.View.extend({
         this.updateChartUserDefined(null);
     },
 
-    // Update cell name
+    /**
+     * Updates the selected cell's name.
+     * This function is called on keyup for .cell-attrs-text 
+     */
     nameAction: function(event){
         // Prevent the ENTER key from being recorded when naming nodes.
-        if (event.which === ENTER_KEY){
+        if (event.which === ENTER_KEY) {
             event.preventDefault();
         }
 
@@ -338,47 +367,54 @@ var ElementInspector = Backbone.View.extend({
 
 
     // Update satisfaction value and buttons selection based on function type selection
-    updateHTML: function(event){
-        // Check if selected initValue/functionType pair is illegal
+    /**
+     * Updates the possible satisfaction values and buttons selections based on current
+     * function type.
+     *
+     * This function is called on change for #init-sat-value, .function-type, .user-function-type
+     */
+    updateHTML: function(event) {
+
+        // Check if selected init sat value and functionType pair is illegal
         this.validityCheck(event);
         var cell = this._cellView.model;
+
         var functionType = this.$('.function-type').val();
         var initValue = this.$('#init-sat-value').val();
-        // All functions that have satisfaction value
+
+        // All functions that have satisfaction valuen associated with it
         var funcWithSatValue = ["I", "D", "RC", "MP", "MN", "UD"];
 
         // Disable init value menu if functype is NB
-        if (cell.attr('.funcvalue/text') == "NB"){
+        if (cell.attr('.funcvalue/text') == "NB") {
             $('#init-sat-value').prop('disabled', "disabled");
         }
 
-        // If UD function, show UD. Show functionSatValue(marked value) for certain functions.
-        // Else, hide user constraint
-        if (functionType == "UD"){
+        if (functionType == 'UD') {
+            // User defined function
             this.$('#markedValue').hide();
             this.$('#user-constraints').show("fast");
-            this.loadUDFunction(null);
-        }
-        else if ($.inArray(functionType, funcWithSatValue) > -1){
-        // Clear marked Values
-        var cell = this._cellView.model;
-        delete cell.attr(".constraints/markedvalue");
-
-            this.showFunctionSatValue(null);
+            this.addUDFunctionValues(null);
+        } else if ($.inArray(functionType, funcWithSatValue) > -1) {
+            // Function with an associated satisfaction value
+            var cell = this._cellView.model;
+            delete cell.attr(".constraints/markedvalue");
+            this.displayFunctionSatValue(null);
             this.$('#user-constraints').hide();
-            $('#init-sat-value').prop('disabled', '');
-        }
-        else {
+            $('#init-sat-value').prop('disabled', false);
+        } else {
             this.$('#markedValue').hide();
             this.$('#user-constraints').hide();
-            $('#init-sat-value').prop('disabled', '');
+            $('#init-sat-value').prop('disabled', false);
         }
         this.updateChart(null);
-
     },
 
-    // Check validity of initValue/functionType pair
-    // If not legal, change the initValue or functionType accordingly
+    /**
+     * Checks the validity of the initial satisfaction value function type
+     * pair. If illegal, this function changes either the initial satisfaction
+     * value or the function type accordingly.
+     */
     validityCheck: function(event) {
         var cell = this._cellView.model;
         var functionType = this.$('.function-type').val();
@@ -418,17 +454,19 @@ var ElementInspector = Backbone.View.extend({
         return;
     },
 
-
-    // This is only called if the node has functWithSatValue
-    // Display funcSatValue menu and display options based on the fucntion and init value 
-    showFunctionSatValue: function(event){
+    /**
+     * Displays the select element (#function-type) for the function type for the current cell.
+     * If the function type has an associated satisfaction value, displays another
+     * select element (#markedValue) for the associated satisfaction value.
+     */
+    displayFunctionSatValue: function(event) {
         var cell = this._cellView.model;
         var functionType = this.$('.function-type').val();
         var initValue = this.$('#init-sat-value').val();
         this.$('#markedValue').show("fast");
         switch (functionType) {
             case "RC":
-                this.$('#markedValue').html(this.chartHTML.noRandom);
+                this.$('#markedValue').html(this.satValueOptions.noRandom);
                 var markedValue = cell.attributes.attrs['.constraints'].markedvalue;
                 if(markedValue){
                     value = satvalues[markedValue];
@@ -437,7 +475,7 @@ var ElementInspector = Backbone.View.extend({
                 break;
             case "I":
             case "MP":
-                this.$('#markedValue').html(this.chartHTML.positiveOnly(initValue));
+                this.$('#markedValue').html(this.satValueOptions.positiveOnly(initValue));
                 var markedValue = cell.attributes.attrs['.constraints'].markedvalue;
                 if(markedValue){
                     value = satvalues[markedValue];
@@ -446,15 +484,13 @@ var ElementInspector = Backbone.View.extend({
                 break;
             case "D":
             case "MN":
-                this.$('#markedValue').html(this.chartHTML.negativeOnly(initValue));
+                this.$('#markedValue').html(this.satValueOptions.negativeOnly(initValue));
                 var markedValue = cell.attributes.attrs['.constraints'].markedvalue;
                 if(markedValue){
                     value = satvalues[markedValue];
                     this.$('#markedValue').val(value);
                 }
-
                 break;
-
             default:
                 break;
         }
@@ -463,52 +499,57 @@ var ElementInspector = Backbone.View.extend({
 
     // Save the marked Value in the cell
     markedValue: function(){
-        var cell = this._cellView.model;
+        var cell = this._cellView.mo
+        del;
         var val = satvalues[this.$('#markedValue').val()];
         cell.attr(".constraints/markedvalue", val);
         this.updateChart(null);
     },
 
-    // This function can only be called by updateHTML only when node is UD
-    loadUDFunction: function(event){
+    /**
+     * Adds appropriate satisfaction values option tags 
+     * for .user-sat-value, which is the select tag used to 
+     * indicate satisfaction values when creating a user defined function.
+     */
+    addUDFunctionValues: function(event) {
         var func = $(".user-function-type").last().val();
         var index = this.constraintsObject.currentUserIndex;
 
-        // Free value selection if it was blocked
-        if ($('.user-sat-value').last().prop( "disabled")){
-            $('.user-sat-value').last().prop('disabled', '');
-            $('.user-sat-value').last().css("background-color","");
+        // If initially disabled, un-disable it for now
+        if ($('.user-sat-value').last().prop('disabled')) {
+            $('.user-sat-value').last().prop('disabled', false);
+            $('.user-sat-value').last().css('background-color','');
         }
+
         // Load available satisfaction values for user defined constraint type
-        switch (func){
+        switch (func) {
             case "I":
                 // May get last value of the graph in the future
-                $(".user-sat-value").last().html(this.chartHTML.positiveOnly('partiallysatisfied'));
+                $(".user-sat-value").last().html(this.satValueOptions.positiveOnly('partiallysatisfied'));
                 $(".user-sat-value").last().val("satisfied");
                 break;
 
             case "D":
-                $(".user-sat-value").last().html(this.chartHTML.negativeOnly('partiallydenied'));
+                $(".user-sat-value").last().html(this.satValueOptions.negativeOnly('partiallydenied'));
                 $(".user-sat-value").last().val("denied");
                 break;
 
             case "R":
-                $(".user-sat-value").last().html(this.chartHTML.all);
+                $(".user-sat-value").last().html(this.satValueOptions.all);
                 $(".user-sat-value").last().val("unknown")
-                $(".user-sat-value").last().prop('disabled', 'disabled');
-                $(".user-sat-value").last().css("background-color","grey");
+                $(".user-sat-value").last().prop('disabled', true);
+                $(".user-sat-value").last().css("background-color",'grey');
                 break;
 
             case "C":
-                $(".user-sat-value").last().html(this.chartHTML.all);
+                $(".user-sat-value").last().html(this.satValueOptions.all);
                 // Restrict input if it is the first constraint
-                if (index == 0){
+                if (index == 0) {
                     $(".user-sat-value").last().val(this.$('#init-sat-value').val())
-                    $(".user-sat-value").last().prop('disabled', 'disabled');
+                    $(".user-sat-value").last().prop('disabled', true);
                     $(".user-sat-value").last().css("background-color","grey");
                 }
                 break;
-
             default:
                 break;
         }
@@ -835,7 +876,7 @@ var ElementInspector = Backbone.View.extend({
         return false;
     },
 
-    // add new constraint in used defined function
+    // add new constraint in user defined function
     addConstraint: function(e, mode){
         // update html display for additional user inputs
         var html = this.userConstraintsHTML.clone();
@@ -1033,6 +1074,7 @@ var ElementInspector = Backbone.View.extend({
         cell.attr(".satvalue/value", this.$('#init-sat-value').val());
         // If funcvalue == NB, do not update anything to the cell
         if(cell.attr(".funcvalue/text") == 'NB'){
+
         }
         else if (funcType != 'none'){
             cell.attr(".funcvalue/text", funcType);
