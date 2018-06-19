@@ -138,7 +138,7 @@ var ElementInspector = Backbone.View.extend({
                     '<input style="float:right;"class="repeat-select2" id="repeat-end2" type="number" value="2">',
                     '<label style="float:left; font-size:0.8em;" id="repeat-begin3" class="repeat-select3">Absolute Length</label>',
                     '<input style="float:right;"class="repeat-select3" id="repeat-end3" type="number" value="0">',
-                    '<p id="noteRepeat" style="text-align:left; float:left; color:red; font-size:0.7em;">Note: Leave Absolute Length as 0 for unknown length.</p>',
+                    '<p id="noteRepeat" style="text-align:left; float:left; color:red; font-size:0.7em;">Note: Leave Absolute Length as 0 for unknown length. If Absolute Length is less than 0 or Repeat Count is less than 2, they will be set to 0 or 2 respectively.</p>',
             // change to blue or change color to green
                     '<button style="margin-top:10px;" id="constraint-add" class="inspector-btn small-btn green-btn">Add</button>',
                     '<button id="constraint-repeat" class="inspector-btn small-btn blue-btn">Set Repeats</button>',
@@ -545,7 +545,10 @@ var ElementInspector = Backbone.View.extend({
         }
         return;
     },
-    // Update chart based on function type selection
+    /**
+     * Updates the chart to represent data related to the the current function and 
+     * satisfaction value(s)
+     */
     updateChart: function(event) {
         var cell = this._cellView.model;
         var functionType = this.$('.function-type').val();
@@ -665,7 +668,10 @@ var ElementInspector = Backbone.View.extend({
         this.updateCell(null);
     },
 
-    // Update chart for user defined constraints
+    /**
+     * Updates the chart to represent data related to the the current user 
+     * defined function and satisfaction value(s)
+     */
     updateChartUserDefined: function(event) {
         var context = $("#chart").get(0).getContext("2d");
         var func = $(".user-function-type").last().val();
@@ -934,26 +940,32 @@ var ElementInspector = Backbone.View.extend({
         }
     },
 
-    // Begin and end range of repeated constraints must logically make sense
-    selectRepeatValues: function(e){
+    /**
+     * Handles the changes done for the select elements for the 
+     * repeat feature for user defined functions, by ensuring that
+     * the begin and end range of repeated constraints are valid.
+     * This function is called on change for .repeat-select 
+     * (the select elements for repeat begin and end)
+     */
+    selectRepeatValues: function(event){
         var begin = $("#repeat-begin").val();
         var end = $("#repeat-end").val();
 
         var nextChar = String.fromCharCode(begin.charCodeAt(0) + 1);
 
-        if (begin >= end){
+        if (begin >= end) {
             $("#repeat-error").text("Repeated range must be chronological");
             $("#repeat-error").show("fast");
             this.constraintsObject.repeatBegin = null;
             this.constraintsObject.repeatEnd = null;
 
-        }else if (nextChar == end){
+        } else if (nextChar == end) {
             $("#repeat-error").text("Repeated range must be at least two apart");
             $("#repeat-error").show("fast");
             this.constraintsObject.repeatBegin = null;
             this.constraintsObject.repeatEnd = null;
 
-        }else{
+        } else {
             $("#repeat-error").hide();
             this.constraintsObject.repeatBegin = begin;
             this.constraintsObject.repeatEnd = end;
@@ -961,13 +973,35 @@ var ElementInspector = Backbone.View.extend({
         this.updateChartUserDefined(null);
 
     },
-    selectNumRepeatValues: function(e){
+
+    /**
+     * Ensures that the number of repeat counts is a valid number,
+     * updates the constraintsObject with the new repeat count and
+     * updates the chart in case there are constraint lines that need 
+     * to be coloured red.
+     *
+     * This function is called on change for #repeat-end2.
+     */
+    selectNumRepeatValues: function(event){
         var repeatVals = $("#repeat-end2").val();
+        if (repeatVals < 2) {
+            $('#repeat-end2').val(2);
+        } 
         this.constraintsObject.repeat_count = repeatVals;
         this.updateChartUserDefined(null);
     },
-    selectAbsoluteLength: function(e){
+
+    /**
+     * Ensures that the absolute length is a non negative number and
+     * updates the constraintsObject to have the new absolute length.
+     *
+     * This function is called on change for #repeat-end3.
+     */
+    selectAbsoluteLength: function(event){
         var absLength = $("#repeat-end3").val();
+        if (absLength < 0) {
+            $('#repeat-end3').val(0);
+        }
         this.constraintsObject.absoluteLength = absLength;
         this.updateChartUserDefined(null);
     },
