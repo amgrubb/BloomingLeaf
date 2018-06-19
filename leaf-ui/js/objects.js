@@ -110,15 +110,15 @@ var constraintsObject = function(){
 
 	// used for normal functions
 	this.chartData = {
-		labels: ["0", "Infinity"],
+		labels: ["0", "Infinity"], // x-axis labels
 		datasets: [{
 			label: "Source",
-			fill: false,
+			fill: false, // no colouring underneath the line
 			borderColor: "rgba(220,220,220,1)",
 			pointBackgroundColor: ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"],
 			pointRadius: 4,
 			pointBorderColor: ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"],
-			lineTension: 0,
+			lineTension: 0, // set to 0 for straight lines
 			data: [0, 0]
 
 		},
