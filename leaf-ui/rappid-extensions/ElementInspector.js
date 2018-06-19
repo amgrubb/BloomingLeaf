@@ -842,25 +842,34 @@ var ElementInspector = Backbone.View.extend({
         this.updateCell(null);
     },
 
-    // Given a data, check if it is in repeat range
-    // Return boolean
-    inRepeatRange: function(repeat, repeatBegin, repeatEnd, data){
+    /**
+     * Returns true iff the data array contains points that are 
+     * within the repeat range which the user has set
+     *
+     * @param {Boolean} repeat 
+     *   true if the user has set repeats
+     * @param {String} repeatBegin
+     *   represents beginning index of the repeat range
+     * @param {String} repeatEnd
+     *   represents the end index of the repeat range
+     * @param {Array.<Number | null>} data
+     *   represents data points for the chart
+     */
+    inRepeatRange: function(repeat, repeatBegin, repeatEnd, data) {
         // If the repeat mode isnt on, return false
-        if (!repeat || repeatBegin === undefined || repeatBegin === null || repeatEnd === undefined || repeatEnd === null){
+        if (!repeat || repeatBegin === undefined || repeatBegin === null || repeatEnd === undefined || repeatEnd === null) {
             return false;
-        }
-        else {
+        } else {
             // Convert letter to index
             var repeatBegin = repeatBegin == '0'? 0 : repeatBegin.charCodeAt(0) - 65 + 1;
             var repeatEnd = repeatEnd.charCodeAt(0) - 65 + 1;
             // Find the index of start point and end point of data
             var dataBegin = data.length - 2;
             var dataEnd = data.length - 1;
-            if (dataBegin >= repeatBegin && dataEnd <= repeatEnd){
+            if (dataBegin >= repeatBegin && dataEnd <= repeatEnd) {
                 return true;
             }
         }
-
         return false;
     },
 
