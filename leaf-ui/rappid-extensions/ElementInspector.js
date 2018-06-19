@@ -138,7 +138,7 @@ var ElementInspector = Backbone.View.extend({
                     '<input style="float:right;"class="repeat-select2" id="repeat-end2" type="number" value="2">',
                     '<label style="float:left; font-size:0.8em;" id="repeat-begin3" class="repeat-select3">Absolute Length</label>',
                     '<input style="float:right;"class="repeat-select3" id="repeat-end3" type="number" value="0">',
-                    '<p id="noteRepeat" style="text-align:left; float:left; color:red; font-size:0.7em;">Note: Leave Absolute Length as 0 for unknown length. </p>',
+                    '<p id="noteRepeat" style="text-align:left; float:left; color:red; font-size:0.7em;">Note: Leave Absolute Length as 0 for unknown length.</p>',
             // change to blue or change color to green
                     '<button style="margin-top:10px;" id="constraint-add" class="inspector-btn small-btn green-btn">Add</button>',
                     '<button id="constraint-repeat" class="inspector-btn small-btn blue-btn">Set Repeats</button>',
@@ -335,7 +335,6 @@ var ElementInspector = Backbone.View.extend({
             }
         
             if (absLen) {
-                // TODO: abs-lens cant be negtive
                 this.constraintsObject.absoluteLength = absLen;
             }
 
