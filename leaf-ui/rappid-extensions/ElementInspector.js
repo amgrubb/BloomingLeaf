@@ -549,111 +549,113 @@ var ElementInspector = Backbone.View.extend({
     // Update chart based on function type selection
     updateChart: function(event) {
         var cell = this._cellView.model;
-        var text = this.$('.function-type').val();
+        var functionType = this.$('.function-type').val();
         var initVal = satvalues[this.$('#init-sat-value').val()];
-        var val = satvalues[this.$('#markedValue').val()];
+        var satVal = satvalues[this.$('#markedValue').val()];
 
-        if(cell.attributes.attrs['.constraints']){
-                cell.attributes.attrs['.constraints'].markedvalue = val;
+        if (cell.attributes.attrs['.constraints']) {
+            cell.attributes.attrs['.constraints'].markedvalue = satVal;
         }
         // Rerender chart canvas
         var data = this.constraintsObject.chartData;
+
+        // Get the chart canvas
         var context = $("#chart").get(0).getContext("2d");
 
 
-        // Reset the dataset 2,3,4 and make everything solid line
-        for (var i = 0; i < this.constraintsObject.chartData.datasets.length; i++) {
-            this.constraintsObject.chartData.datasets[i].borderDash = [];
-            this.constraintsObject.chartData.datasets[i].data = [];
-            this.constraintsObject.chartData.datasets[i].pointBackgroundColor = ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"];
-            this.constraintsObject.chartData.datasets[i].pointBorderColor = ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"];
-            this.constraintsObject.chartData.datasets[i].borderColor = "rgba(220,220,220,1)";
+        // Reset the datasets
+        for (var i = 0; i < data.datasets.length; i++) {
+            data.datasets[i].borderDash = [];
+            data.datasets[i].data = [];
+            data.datasets[i].pointBackgroundColor = ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"];
+            data.datasets[i].pointBorderColor = ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"];
+            data.datasets[i].borderColor = "rgba(220,220,220,1)";
         }
 
-
-        if(this.constraintsObject.chart != null) {
+        // Destroy the previous chart if exists
+        if (this.constraintsObject.chart != null) {
             this.constraintsObject.chart.destroy();
         }
 
-        // If there is preexisting user-defined functions, clear it
-        if ((text!= "UD") && (this.constraintsObject.currentUserIndex > 0)) {
+        // If there is a preexisting user-defined function, clear it
+        if ((functionType != "UD") && (this.constraintsObject.currentUserIndex > 0)) {
             this.restartConstraint(null);
+        }
+
+        // Render preview for user defined function types
+        if (functionType == "UD") {
+            this.updateChartUserDefined(null);
+            return;
         }
 
 
         // Change chart based on function type
-        if (text == "R") {
-            this.constraintsObject.chartData.labels = ["0", "Infinity"];
-            this.constraintsObject.chartData.datasets[0].data = [initVal, initVal];
-            this.constraintsObject.chartData.datasets[0].borderDash = [5, 5];
-            this.constraintsObject.chartData.datasets[0].pointBackgroundColor[1] = "rgba(220,220,220,0)";
-            this.constraintsObject.chartData.datasets[0].pointBorderColor[1] = "rgba(220,220,220,0)";
+        if (functionType == "R") {
+            data.labels = ["0", "Infinity"];
+            data.datasets[0].data = [initVal, initVal];
+            data.datasets[0].borderDash = [5, 5];
+            data.datasets[0].pointBackgroundColor[1] = "rgba(220,220,220,0)";
+            data.datasets[0].pointBorderColor[1] = "rgba(220,220,220,0)";
 
-        } else if (text == "C") {
-            this.constraintsObject.chartData.labels = ["0", "Infinity"];
+        } else if (functionType == "C") {
+            data.labels = ["0", "Infinity"];
             // If not unknown, just display one line
             if (initVal != satvalues["unknown"]) {
-                this.constraintsObject.chartData.datasets[0].data = [initVal, initVal];
-            }
-            // If it is, then display 5 dotted lines
-            else {
-                value_to_add = -2;
+                data.datasets[0].data = [initVal, initVal];
+            } else {
+                // If it is, then display 5 dotted lines
+                var value_to_add = -2;
                 for (var i = 0; i < 5; i++) {
-                    this.constraintsObject.chartData.datasets[i].data = [value_to_add, value_to_add];
-                    this.constraintsObject.chartData.datasets[i].borderDash = [5, 5];
-                    this.constraintsObject.chartData.datasets[i].pointBackgroundColor[1] = "rgba(220,220,220,0)";
-                    this.constraintsObject.chartData.datasets[i].pointBorderColor[1] = "rgba(220,220,220,0)";
+                    data.datasets[i].data = [value_to_add, value_to_add];
+                    data.datasets[i].borderDash = [5, 5];
+                    data.datasets[i].pointBackgroundColor[1] = "rgba(220,220,220,0)";
+                    data.datasets[i].pointBorderColor[1] = "rgba(220,220,220,0)";
                     value_to_add ++;
                 }
             }
 
-        } else if((text == "I") || (text == "D")) {
-            this.constraintsObject.chartData.labels = ["0", "Infinity"];
-            this.constraintsObject.chartData.datasets[0].data = [initVal, val];
+        } else if ((functionType == "I") || (functionType == "D")) {
+            data.labels = ["0", "Infinity"];
+            data.datasets[0].data = [initVal, satVal];
 
-        } else if(text == "RC") {
-            this.constraintsObject.chartData.labels = ["0", "A", "Infinity"];
-            this.constraintsObject.chartData.datasets[0].data = [initVal, initVal];
-            this.constraintsObject.chartData.datasets[0].borderDash = [5, 5];
-            this.constraintsObject.chartData.datasets[0].pointBackgroundColor[1] = "rgba(220,220,220,0)";
-            this.constraintsObject.chartData.datasets[0].pointBorderColor[1] = "rgba(220,220,220,0)";
-            this.constraintsObject.chartData.datasets[1].data = [null, val, val];
+        } else if (functionType == "RC") {
+            data.labels = ["0", "A", "Infinity"];
+            data.datasets[0].data = [initVal, initVal];
+            data.datasets[0].borderDash = [5, 5];
+            data.datasets[0].pointBackgroundColor[1] = "rgba(220,220,220,0)";
+            data.datasets[0].pointBorderColor[1] = "rgba(220,220,220,0)";
+            data.datasets[1].data = [null, satVal, satVal];
 
-        } else if(text == "CR") {
-            this.constraintsObject.chartData.labels = ["0", "A", "Infinity"];
-            this.constraintsObject.chartData.datasets[0].data = [initVal, initVal, null];
-            this.constraintsObject.chartData.datasets[1].data = [null, initVal, initVal];
-            this.constraintsObject.chartData.datasets[1].borderDash = [5, 5];
-            this.constraintsObject.chartData.datasets[1].pointBackgroundColor[2] = "rgba(220,220,220,0)";
-            this.constraintsObject.chartData.datasets[1].pointBorderColor[2] = "rgba(220,220,220,0)";
+        } else if (functionType == "CR") {
+            data.labels = ["0", "A", "Infinity"];
+            data.datasets[0].data = [initVal, initVal, null];
+            data.datasets[1].data = [null, initVal, initVal];
+            data.datasets[1].borderDash = [5, 5];
+            data.datasets[1].pointBackgroundColor[2] = "rgba(220,220,220,0)";
+            data.datasets[1].pointBorderColor[2] = "rgba(220,220,220,0)";
 
-        } else if(text == "SD") {
-            this.constraintsObject.chartData.labels = ["0", "A", "Infinity"];
-            this.constraintsObject.chartData.datasets[0].data = [2, 2, null];
-            this.constraintsObject.chartData.datasets[1].data = [null, -2, -2];
+        } else if (functionType == "SD") {
+            data.labels = ["0", "A", "Infinity"];
+            data.datasets[0].data = [2, 2, null];
+            data.datasets[1].data = [null, -2, -2];
 
-        } else if(text == "DS") {
-            this.constraintsObject.chartData.labels = ["0", "A", "Infinity"];
-            this.constraintsObject.chartData.datasets[0].data = [-2, -2, null];
-            this.constraintsObject.chartData.datasets[1].data = [null, 2, 2];
+        } else if (functionType == "DS") {
+            data.labels = ["0", "A", "Infinity"];
+            data.datasets[0].data = [-2, -2, null];
+            data.datasets[1].data = [null, 2, 2];
 
-        } else if(text == "MP") {
-            this.constraintsObject.chartData.labels = ["0", "A", "Infinity"];
-            this.constraintsObject.chartData.datasets[0].data = [initVal, val, val];
+        } else if (functionType == "MP") {
+            data.labels = ["0", "A", "Infinity"];
+            data.datasets[0].data = [initVal, satVal, satVal];
 
-        } else if(text == "MN") {
-            this.constraintsObject.chartData.labels = ["0", "A", "Infinity"];
-            this.constraintsObject.chartData.datasets[0].data = [initVal, val, val];
+        } else if (functionType == "MN") {
+            data.labels = ["0", "A", "Infinity"];
+            data.datasets[0].data = [initVal, satVal, satVal];
 
-        // Render preview for user defined function types
-        } else if(text == "UD") {
-            this.updateChartUserDefined(null);
-            return
-        // If text = none, just place a dot
         } else {
-            this.constraintsObject.chartData.labels = ["0", "Infinity"];
+            data.labels = ["0", "Infinity"];
             // Display one dot
-            this.constraintsObject.chartData.datasets[0].data = [initVal];
+            data.datasets[0].data = [initVal];
         }
 
         this.constraintsObject.chart = new Chart(context, {
@@ -665,15 +667,13 @@ var ElementInspector = Backbone.View.extend({
     },
 
     // Update chart for user defined constraints
-    updateChartUserDefined: function(cell) {
+    updateChartUserDefined: function(event) {
         var context = $("#chart").get(0).getContext("2d");
         var func = $(".user-function-type").last().val();
         var index = this.constraintsObject.currentUserIndex;
-        if (this.constraintsObject.chart != null) {
-            this.constraintsObject.chart.destroy();
-        }
 
         // If unknown is selected
+        // TODO this code doesnt belong here at all....
         if ($(".user-sat-value").last().val() == 'unknown') {
             $(".user-sat-value").last().prop('disabled', 'disabled');
             $(".user-sat-value").last().css("background-color","grey");
@@ -708,8 +708,8 @@ var ElementInspector = Backbone.View.extend({
         }
 
         // Add datapoints to graph for each userfunction/uservalue pair
-        previousDatasetIndex = -1;
-        currentDatasetIndex = 0;
+        var previousDatasetIndex = -1;
+        var currentDatasetIndex = 0;
 
         for (var i = 0; i < this.constraintsObject.userFunctions.length; i++) {
             if (currentDatasetIndex >= data.datasets.length) {
@@ -723,15 +723,16 @@ var ElementInspector = Backbone.View.extend({
                 });
             }
 
-            previousDataset = data.datasets[previousDatasetIndex];
-            currentDataset = data.datasets[currentDatasetIndex];
-            currentFunc = this.constraintsObject.userFunctions[i];
-            previousFunc = this.constraintsObject.userFunctions[i - 1];
-            currentVal = this.constraintsObject.userValues[i];
-            currentNumVal = currentVal == "unknown" ? 0 : satvalues[currentVal];
-            previousVal = this.constraintsObject.userValues[i - 1];
+            var previousDataset = data.datasets[previousDatasetIndex];
+            var currentDataset = data.datasets[currentDatasetIndex];
+            var currentFunc = this.constraintsObject.userFunctions[i];
+            var previousFunc = this.constraintsObject.userFunctions[i - 1];
+            var currentVal = this.constraintsObject.userValues[i]; // satisfaction value associated with current function type
+            var currentNumVal = currentVal == "unknown" ? 0 : satvalues[currentVal];
+            var previousVal = this.constraintsObject.userValues[i - 1];
 
             // First we need to find out how many nulls do we need
+            // Nulls are needed to translate the line to the right
             var numNulls = []
             if (currentDatasetIndex != 0) {
                 for (var j = 0; j < previousDataset.data.length - 1; j++) {
@@ -756,7 +757,7 @@ var ElementInspector = Backbone.View.extend({
                 currentDataset.data = numNulls.concat([firstVal, currentNumVal]);
 
             } else if (currentFunc == 'C') {
-                if (this.constraintsObject.userValues[i] != 'unknown') {
+                if (currentVal != 'unknown') {
                     currentDataset.data = numNulls.concat([currentNumVal, currentNumVal]);
                 } else {
                     // it is unknown
@@ -804,14 +805,14 @@ var ElementInspector = Backbone.View.extend({
                 currentDataset.borderDash = [5, 5]
                 currentDataset.pointBackgroundColor = numNulls.concat(["rgba(220,220,220,1)", "rgba(220,220,220,0)"]);
                 currentDataset.pointBorderColor = numNulls.concat(["rgba(220,220,220,1)", "rgba(220,220,220,0)"]);
-                if (this.inRepeatRange(repeat, repeatBegin, repeatEnd, currentDataset.data)){
+                if (this.inRepeatRange(repeat, repeatBegin, repeatEnd, currentDataset.data)) {
                     currentDataset.borderColor = "rgba(255, 110, 80, 1)";
                 }
                 previousDatasetIndex ++;
                 currentDatasetIndex ++;
             } else {
                 // If previous function is stochastic, or constant unknown, hide the first dot
-                if (previousFunc == 'R' || (previousFunc == 'C' && previousVal == 'unknown')){
+                if (previousFunc == 'R' || (previousFunc == 'C' && previousVal == 'unknown')) {
                     currentDataset.pointBackgroundColor = numNulls.concat(["rgba(220,220,220,0)", "rgba(220,220,220,1)"])
                     currentDataset.pointBorderColor = numNulls.concat(["rgba(220,220,220,0)", "rgba(220,220,220,1)"]);
                 }
@@ -1164,8 +1165,8 @@ var ElementInspector = Backbone.View.extend({
     setUserDefinedCellFunctionData: function() {
         var cell = this._cellView.model;
 
-        cell.attr(".constraints/function", this.constraintsObject.userFunctions);
-        cell.attr(".constraints/lastval", this.constraintsObject.userValues);
+        cell.attributes.attrs['.constraints'].function = this.constraintsObject.userFunctions;
+        cell.attributes.attrs['.constraints'].lastval = this.constraintsObject.userValues;
         cell.attr(".constraints/beginLetter", this.constraintsObject.beginLetter);
         cell.attr(".constraints/endLetter", this.constraintsObject.endLetter);
         cell.attr(".constraints/repeatCount", this.constraintsObject.repeat_count);
