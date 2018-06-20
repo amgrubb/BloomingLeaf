@@ -634,9 +634,6 @@ var AnalysisInspector = Backbone.View.extend({
 
 		this.dismissIntermTable();
 	},
-	returnInputEval: function(){
-		return saveIVT;
-	},
 	saveElementsInGlobalVariable: function(){
 		var elements = [];
 		for (var i = 0; i < graph.getElements().length; i++){
