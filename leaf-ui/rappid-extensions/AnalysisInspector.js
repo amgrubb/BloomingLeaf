@@ -339,7 +339,7 @@ var AnalysisInspector = Backbone.View.extend({
 	},
 	/*load valus for intermediate table dialog*/
 	/**
-	 * Displays the intermediate values table modal for the user.
+	 * Displays the intermediate values table modal for the user
 	 *
 	 * This function is called on click for #btn-view-intermediate
 	 */
@@ -354,7 +354,7 @@ var AnalysisInspector = Backbone.View.extend({
 		var intermTable = document.querySelector('.interm-table');
 		var absValues = document.getElementById('abs-time-pts').value;
 		var absTimeValues;
-		if(absValues != "") {
+		if(absValues != ""){
 			absTimeValues = document.getElementById('abs-time-pts').value.split(" ")
 			.map(function(i){
 				if(i!=""){
