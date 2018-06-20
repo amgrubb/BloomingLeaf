@@ -13,6 +13,8 @@ function returnElementIds(){
 	}
 	return elementLst;
 }
+
+// This function is used to get values from the intermediate values table for the analysisInspector
 function getUserEvaluations(){
 	var evaluations = [];
 	var elementList = returnElementIds();
