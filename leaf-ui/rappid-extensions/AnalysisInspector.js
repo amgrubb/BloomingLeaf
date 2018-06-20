@@ -1,7 +1,6 @@
 var epochLists = [];
-var testL=[];
 var num = 0;
-var goal_id_mapper = {};
+var goalIdMapper = {};
 var constraintID = 0;
 var rx = /Goal_\d+/g; // MATCH goal name Goal_x
 var extractEB = /[A-Z]+$/;
@@ -146,8 +145,14 @@ var AnalysisInspector = Backbone.View.extend({
 		this.$el.html(_.template(this.template)());
 		$('head').append('<script src="./scripts/js-objects/analysis.js"></script>');
 	},
-	// Function called by Simulate Single Path.
-	singlePath: function(){
+
+	/**
+	 * Retrieves information about the current model and sends to the backend
+	 * to do single path analysis.
+	 *
+	 * This function is called on click for #btn-single-path
+	 */
+	singlePath: function() {
 		//Create the object and fill the JSON file to be sent to backend.
 		//Get the AnalysisInspector view information
 		var analysis = new InputAnalysis();
@@ -156,8 +161,14 @@ var AnalysisInspector = Backbone.View.extend({
 		//Prepare and send data to backend
 		this.sendToBackend(analysis);
 	},
-	// Function called by get All Next States.
-	getAllNextStates: function(){
+
+	/**
+	 * Retrieves information about the current model and sends to the backend
+	 * to get all next possible states.
+	 *
+	 * This function is called on click for #btn-all-next-state
+	 */
+	getAllNextStates: function() {
 		//Create the object and fill the JSON file to be sent to backend.
 		//Get the AnalysisInspector view information
 		var analysis = new InputAnalysis();
@@ -167,6 +178,14 @@ var AnalysisInspector = Backbone.View.extend({
 		this.sendToBackend(analysis);
 
 	},
+
+	/**
+	 * Creates an object to send to the backend and calls
+	 * a backendComm() to send to backend
+	 *  
+	 * @param {Object} analysis
+	 *   InputAnalysis() object
+	 */
 	sendToBackend: function(analysis){
 		var js_object = {};
 		js_object.analysis = getAnalysisValues(analysis);
@@ -182,21 +201,34 @@ var AnalysisInspector = Backbone.View.extend({
 		//Send data to backend
 		backendComm(js_object);
 	},
+
+	/**
+	 * Removes all html for this inspector
+	 */
 	clear: function(e){
 		this.$el.html('');
 	},
 	/********************** Modal box related ****************************/
 
-	// Display modal box that has a list of absolute values
-	loadModalBox: function(e){
+	/**
+     * Displays the absolute and relative assignments modal for the user.
+     *
+     * This function is called on click for #btn-view-assignment.
+	 */
+	loadModalBox: function(event) {
 		epochLists = [];
 		graph.constraintValues = [];
 		var modal = document.getElementById('myModal');
+
 		// Clear all previous table entries
 		$(".abs-table").find("tr:gt(0)").remove();
 
 		var btn_html = '<td><button class="unassign-btn" > Unassign </button></td>';
+		
+		// Display the modal by setting it to block display
 		modal.style.display = "block";
+
+
 		// Get a list of nodes
 		// Populate non UD element only
 		var elements = graph.getElements();
@@ -205,22 +237,24 @@ var AnalysisInspector = Backbone.View.extend({
 		for (var i = 0; i < elements.length; i ++){
 			var cellView = elements[i].findView(paper);
 			var cell = cellView.model;
-			if(cell.attributes.type !== "basic.Actor"){
+			if (cell.attributes.type !== "basic.Actor") {
+
 				var func = cell.attr('.funcvalue').text;
+
 				// strips all return and newline characters; ensures no double-white space; strips leading/trailing whitespace
 				var name = cell.attr('.name').text.replace(/(\n+|\r+|\s\s+)/gm," ").replace(/(^\s|\s$)/gm,'');
-				goal_id_mapper[name] = cell.attributes.elementid;
-				var assigned_time = cell.attr('.assigned_time');
-				var constraintObj
-				if(func != 'UD' && func != 'D' && func != 'I' && func != 'C' && func != 'R' && func != "" && func != 'NB'){
-					// If no assigned_time in the node, make the default value blank
-					if (!assigned_time){
-						cell.attr('.assigned_time', {0: ''});
 
+				goalIdMapper[name] = cell.attributes.elementid;
+				var assigned_time = cell.attr('.assigned_time');
+
+				if (func != 'UD' && func != 'D' && func != 'I' && func != 'C' && func != 'R' && func != "" && func != 'NB') {
+					// If no assigned_time in the node, make the default value blank
+					if (!assigned_time) {
+						cell.attr('.assigned_time', {0: ''});
 					}
+
 					assigned_time = cell.attr('.assigned_time')[0];
-					var epochObj = {};
-					epochObj["constraintType"] = 'A';
+
 					//TODO: Figure out how to only add these values if they don't exist.
 					epochLists.push(name + ': A');
 					outputList += name.replace(/(\r\n|\n|\r)/gm," ");
@@ -228,7 +262,6 @@ var AnalysisInspector = Backbone.View.extend({
 					$('#node-list').append('<tr><td>' + name + ': A' + '</td><td>' + func + '</td>' +
 						'<td><input type="text" name="sth" value="' + assigned_time + '"></td>' + btn_html +
 						'<input type="hidden" name="id" value="' + cell.id + '"> </td> </tr>');
-
 				}
 			}
 		}
@@ -237,9 +270,11 @@ var AnalysisInspector = Backbone.View.extend({
 			var cellView = elements[i].findView(paper);
 			var cell = cellView.model;
 			if(cell.attributes.type !== "basic.Actor"){
+
 				var func = cell.attr('.funcvalue').text;
 				var name = cell.attr('.name').text;
 				var assigned_time = cell.attr('.assigned_time');
+
 				if(func == 'UD'){
 					var fun_len = cell.attr('.constraints').function.length - 1;
 					var current_something = 'A';
@@ -303,6 +338,11 @@ var AnalysisInspector = Backbone.View.extend({
 
 	},
 	/*load valus for intermediate table dialog*/
+	/**
+	 * Displays the intermediate values table modal for the user.
+	 *
+	 * This function is called on click for #btn-view-intermediate
+	 */
 	loadIntermediateValues: function(e){
 		var time_values = {};
 		$('#interm-list').find("tr:gt(1)").remove();
@@ -314,7 +354,7 @@ var AnalysisInspector = Backbone.View.extend({
 		var intermTable = document.querySelector('.interm-table');
 		var absValues = document.getElementById('abs-time-pts').value;
 		var absTimeValues;
-		if(absValues != ""){
+		if(absValues != "") {
 			absTimeValues = document.getElementById('abs-time-pts').value.split(" ")
 			.map(function(i){
 				if(i!=""){
@@ -434,8 +474,8 @@ var AnalysisInspector = Backbone.View.extend({
 				var extractGoal2full = epoch2Lists[i].value;
 				var extractGoal1 = extractGoal1full.substring(0, extractGoal1full.length - 3);
 				var extractGoal2 = extractGoal2full.substring(0, extractGoal2full.length - 3);
-				var constraintSrcID = goal_id_mapper[extractGoal1];
-				var constraintDestID = goal_id_mapper[extractGoal2];
+				var constraintSrcID = goalIdMapper[extractGoal1];
+				var constraintDestID = goalIdMapper[extractGoal2];
 				var type = relationshipLists[i].value;
 				debugger
 				if(type == 'eq'){
