@@ -66,10 +66,10 @@ var AnalysisInspector = Backbone.View.extend({
 								'</tr>',
 							'</table>',
 					'</div>',
-					'<div class=relIntetion>',
+					'<div class=relIntention>',
 						'<div class=headings>',
 							'<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Relative Intention Assignments',
-								'<div class="addIntetion" style="display:inline">',
+								'<div class="addIntention" style="display:inline">',
 										'<i class="fa fa-plus" id="addIntent" style="font-size:30px; float:right; margin-right:20px;"></i>',
 								'</div>',
 							'</h3>',
@@ -136,7 +136,7 @@ var AnalysisInspector = Backbone.View.extend({
 		'click #btn-save-assignment': 'saveAssignment',
 		'click #btn-single-path': 'singlePath',
 		'click #btn-all-next-state': 'getAllNextStates',
-		'click .addIntetion' : 'addnewIntention',
+		'click .addIntention' : 'addnewIntention',
 		'click #btn-save-intermT' : 'saveIntermTable',
 	},
 
@@ -454,6 +454,10 @@ var AnalysisInspector = Backbone.View.extend({
 		var assigned_time = row.find('input[type=text]');
 		$(assigned_time).val('');
 	},
+
+	/**
+	 * Saves the relative intention assignments into the graph object
+	 */
 	saveRelativeValues: function(){
 		var epoch1Lists = $('#rel-intention-assignents tr #epoch1List select');
 		var relationshipLists = $('#rel-intention-assignents tr #relationshipLists select');
@@ -499,8 +503,11 @@ var AnalysisInspector = Backbone.View.extend({
 		}
 
 	},
-	// Update all nodes with the updated assigned time
+
 	// TODO: Check if the times users put in are valid
+	/**
+	 * Saves absolute intention and relationship assignments to the graph object
+	 */
 	saveAssignment: function(e){
 
 		this.saveRelativeValues();
@@ -543,6 +550,8 @@ var AnalysisInspector = Backbone.View.extend({
 					}
 				}
 			}
+
+				// Save
 				if(graph.constraintValues.length == 0 && (new_time != null && new_time.length > 0)){
 					graph.constraintValues[0] = {};
 					graph.constraintValues[0]['constraintType'] = "A"; // A for absolute
@@ -602,6 +611,10 @@ var AnalysisInspector = Backbone.View.extend({
 
 
 	},
+
+	/**
+	 * Used in InputEvaluation
+	 */
 	returnElementIds: function(){
 		var elements = graph.getElements();
 		var elementLst = [];
@@ -612,6 +625,10 @@ var AnalysisInspector = Backbone.View.extend({
 		}
 		return elementLst;
 	},
+
+	/**
+	 * 
+	 */
 	saveIntermTable: function(){
 		saveIVT = getUserEvaluations();
 
@@ -630,6 +647,9 @@ var AnalysisInspector = Backbone.View.extend({
 		graph.allElements = elements;
 		graph.elementsBeforeAnalysis = elements;
 	},
+	/**
+	 * This function is called on click .addIntention (the plus icon)
+	 */
 	addnewIntention: function(){
 		var elements = graph.getElements();
 
