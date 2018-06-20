@@ -693,8 +693,6 @@ var ElementInspector = Backbone.View.extend({
 
         // Clone chart template
         var data = this.constraintsObject.chartData;
-        var datasetsTemplatePrimary = jQuery.extend(true, {}, data.datasets[0]);
-        var datasetsTemplateSecondary = jQuery.extend(true, {}, this.chartObject.secondaryChart.datasets[0]);
 
         // Setting up the labels
         data.labels = this.constraintsObject.beginLetter.slice(0);

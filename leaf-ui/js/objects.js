@@ -168,46 +168,7 @@ var constraintsObject = function(){
 
 
 // Used for chart.js setup
-var chartObject = function(){
-	// the following three charts enables different colors for repeating values in user defined functions
-	this.primaryChart = {
-		labels: ["0", "A"],
-		datasets: [{
-			label: "Source",
-			fill: false,
-			borderColor: "rgba(220,220,220,1)",
-			pointBackgroundColor: "rgba(220,220,220,1)",
-			pointBorderColor: "#fff",
-			lineTension: 0,
-			data: []
-		}]
-	};
-
-	this.secondaryChart = {
-		labels: ["0", "A"],
-		datasets: [{
-			label: "Source",
-			fill: false,
-			borderColor: "rgba(220,220,220,1)",
-			pointBackgroundColor: "rgba(220,220,220,1)",
-			pointBorderColor: "#fff",
-			lineTension: 0,
-			data: []
-		}]
-	};
-
-	this.teriaryChart = {
-		labels: ["0", "A"],
-		datasets: [{
-			label: "Source",
-			fill: false,
-			borderColor: "rgba(220,220,220,1)",
-			pointBackgroundColor: "rgba(220,220,220,1)",
-			pointBorderColor: "#fff",
-			lineTension: 0,
-			data: []
-		}]
-	};
+var chartObject = function() {
 
     // within constraint chart options
 	this.chartOptions = {
@@ -244,27 +205,5 @@ var chartObject = function(){
 		tooltips: {
 			enabled: false,
 		}
-
-
-
-		// The following two lings controls effects of hovering over an element on chart
-		// tooltipTemplate: "<%if (value == 2)%><%= 'Satisfied' %><%if (value == 1)%><%= 'Partially Satisfied' %><%if (value == 0)%><%= 'Random' %><%if (value == -1)%><%= 'Partially Denied' %><%if (value == -2)%><%= 'Denied' %>",
-		// multiTooltipTemplate: "<%if (value == 2)%><%= 'Satisfied' %><%if (value == 1)%><%= 'Partially Satisfied' %><%if (value == 0)%><%= 'Random' %><%if (value == -1)%><%= 'Partially Denied' %><%if (value == -2)%><%= 'Denied' %>",
-	};
-
-
-	// intension constraint chart options
-	this.chartTwoIntensions = {
-		animationSteps: 15,
-		bezierCurve: false,
-		scaleOverride : true,
-		scaleSteps : 4,
-		scaleStepWidth : 1,
-		scaleStartValue : -2,
-		scaleFontSize: 10,
-		pointHitDetectionRadius : 5,
-		tooltipTemplate: "<%if (value == 2)%><%= 'Satisfied' %><%if (value == 1)%><%= 'Partially Satisfied' %><%if (value == 0)%><%= 'Random' %><%if (value == -1)%><%= 'Partially Denied' %><%if (value == -2)%><%= 'Denied' %>",
-		multiTooltipTemplate: "<%= datasetLabel %> - <%if (value == 2)%><%= 'Satisfied' %><%if (value == 1)%><%= 'Partially Satisfied' %><%if (value == 0)%><%= 'Random' %><%if (value == -1)%><%= 'Partially Denied' %><%if (value == -2)%><%= 'Denied' %>",
-		scaleLabel: "<%if (value == 2)%><%= '(FS, T)' %><%if (value == 1)%><%= '(PS, T)' %><%if (value == 0)%><%= '(T, T)' %><%if (value == -1)%><%= '(T, PD)' %><%if (value == -2)%><%= '(T, FD)' %>",
 	};
 }
