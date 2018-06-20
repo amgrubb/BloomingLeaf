@@ -263,19 +263,7 @@ var AnalysisInspector = Backbone.View.extend({
 						'<td><input type="text" name="sth" value="' + assigned_time + '"></td>' + btn_html +
 						'<input type="hidden" name="id" value="' + cell.id + '"> </td> </tr>');
 				}
-			}
-		}
-		// Populate UD element
-		for (var i = 0; i < elements.length; i ++){
-			var cellView = elements[i].findView(paper);
-			var cell = cellView.model;
-			if(cell.attributes.type !== "basic.Actor"){
-
-				var func = cell.attr('.funcvalue').text;
-				var name = cell.attr('.name').text;
-				var assigned_time = cell.attr('.assigned_time');
-
-				if(func == 'UD'){
+				else if(func == 'UD'){
 					var fun_len = cell.attr('.constraints').function.length - 1;
 					var current_something = 'A';
 					// If no assigned_time in the node, save blank into the node
@@ -304,6 +292,7 @@ var AnalysisInspector = Backbone.View.extend({
 				}
 			}
 		}
+
 
 		// Get a list of links
 		for (var i = 0; i < links.length; i ++){
