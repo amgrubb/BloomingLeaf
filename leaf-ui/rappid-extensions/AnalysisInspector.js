@@ -355,12 +355,14 @@ var AnalysisInspector = Backbone.View.extend({
 		var absValues = document.getElementById('abs-time-pts').value;
 		var absTimeValues;
 		if(absValues != ""){
-			absTimeValues = document.getElementById('abs-time-pts').value.split(" ")
+			absTimeValues = absValues.split(" ")
 			.map(function(i){
+				// Parse absValues into numbers
 				if(i!=""){
 					return parseInt(i, 10);
 				}
 			});
+			// Sort absTimeValues into acending order
 			absTimeValues.sort(function(a, b){return a-b});
 			var headers = document.getElementById('header');
 			var rows = headers.querySelector('tr');
@@ -369,9 +371,6 @@ var AnalysisInspector = Backbone.View.extend({
 				if(!(absTimeValues[i] in time_values)){
 					time_values[absTimeValues[i]] = [];
 					time_values[absTimeValues[i]].push("Absolute");
-				}
-				else if(!(time_values[absTimeValues[i]].includes('Absolute'))){
-					time_values[absTimeValues[i]].push('Absolute');
 				}
 			}
 		}
@@ -382,7 +381,7 @@ var AnalysisInspector = Backbone.View.extend({
 		Object.keys(time_values).forEach(function(key){
 			var th = document.createElement('th');
 			var thint = document.createElement('th');
-
+            // Displaying each absolute time value into the table 
 			if (time_values[key].length == 1){
 				th.innerHTML = time_values[key][0];
 				thint.innerHTML = key;
@@ -391,7 +390,7 @@ var AnalysisInspector = Backbone.View.extend({
 			}
 		})
 
-
+        // Make option select tags
 		var sat_values = '<select id="evalID"><option value="empty;" selected> </option>';
 		var sat_valueLists = ['Unknown','None (T, T) ', 'Satisfied (FS, T) ','Partially Satisfied (PS, T) ',
 		'Denied (T, FD) ', 'Partially Denied (T, PD)'];
@@ -406,9 +405,9 @@ var AnalysisInspector = Backbone.View.extend({
 			var cell = cellView.model;
 			if(cell.attributes.type !== "basic.Actor"){
 				var initvalue = cell.attr('.satvalue').text;
-				var name = cell.attr('.name').text;
+				var name = cell.attr('.name').text.replace(/(\n+|\r+|\s\s+)/gm," ").replace(/(^\s|\s$)/gm,'');
 
-				//Check if initial value is empty, if so, add (T,T) as a value
+				// Check if initial value is empty, if so, add (T,T) as a value
 				if(time_values.length == 0){
 					if  (initvalue.trim() == ""){
 						$('#interm-list').append('<tr><td>' + name + '</td><td>(T,T)</td></tr>');
@@ -418,6 +417,7 @@ var AnalysisInspector = Backbone.View.extend({
 					}
 				}
 				else{
+					// If no previously saved table, display options for each time value
 					if  (initvalue.trim() == ""){
 						var appendList = '<tr><td>' + name + '</td><td>(T,T)</td>';
 						if(saveIVT == null){
@@ -434,6 +434,7 @@ var AnalysisInspector = Backbone.View.extend({
 						$('#interm-list').append(appendList);
 					}
 					else{
+						// Display previously saved table
 						var appendList = '<tr><td>' + name + '</td><td>'+ initvalue +'</td>';
 						var test ='';
 						for(var j = 0; j < Object.keys(time_values).length; j++){
