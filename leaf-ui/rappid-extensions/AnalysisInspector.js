@@ -408,7 +408,7 @@ var AnalysisInspector = Backbone.View.extend({
 				var name = cell.attr('.name').text.replace(/(\n+|\r+|\s\s+)/gm," ").replace(/(^\s|\s$)/gm,'');
 
 				// Check if initial value is empty, if so, add (T,T) as a value
-				if(time_values.length == 0){
+				if($.isEmptyObject(time_values)){
 					if  (initvalue.trim() == ""){
 						$('#interm-list').append('<tr><td>' + name + '</td><td>(T,T)</td></tr>');
 					}
