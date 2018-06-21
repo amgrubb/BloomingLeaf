@@ -97,7 +97,7 @@ analysisObject.initFromMain = function(elements, num, time){
 // Within intension constraints template
 // used to model element functions in element inspector
 var constraintsObject = function(){
-	this.chart;
+	
 
 	//for user defined constraints
 	this.currentUserIndex = 0;
@@ -107,6 +107,13 @@ var constraintsObject = function(){
 	this.endLetter = ["A"];
 	this.repeatBegin = null;
 	this.repeatEnd = null;
+}
+
+
+// Used for chart.js setup
+var chartObject = function() {
+
+	this.chart;
 
 	// used for normal functions
 	this.chartData = {
@@ -164,11 +171,6 @@ var constraintsObject = function(){
 		}
 		]
 	};
-}
-
-
-// Used for chart.js setup
-var chartObject = function() {
 
     // within constraint chart options
 	this.chartOptions = {

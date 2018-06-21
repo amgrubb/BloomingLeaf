@@ -568,7 +568,7 @@ var ElementInspector = Backbone.View.extend({
         }
 
         // Rerender chart canvas
-        var data = this.constraintsObject.chartData;
+        var data = this.chartObject.chartData;
 
         // Get the chart canvas
         var context = $("#chart").get(0).getContext("2d");
@@ -577,13 +577,13 @@ var ElementInspector = Backbone.View.extend({
         this.resetChartDatasets(data.datasets);
 
         // Destroy the previous chart if exists
-        if (this.constraintsObject.chart != null) {
-            this.constraintsObject.chart.destroy();
+        if (this.chartObject.chart != null) {
+            this.chartObject.chart.destroy();
         }
 
         // If there is a preexisting user-defined function, clear it
         if ((functionType != "UD") && (this.constraintsObject.currentUserIndex > 0)) {
-            this.restartConstraint(null);
+            this.removeUserConstraints(null);
         }
 
         // Render preview for user defined function types
@@ -663,7 +663,7 @@ var ElementInspector = Backbone.View.extend({
         }
 
         // Display the chart
-        this.constraintsObject.chart = new Chart(context, {
+        this.chartObject.chart = new Chart(context, {
             type: 'line',
             data: data,
             options: this.chartObject.chartOptions
@@ -695,7 +695,7 @@ var ElementInspector = Backbone.View.extend({
         this.constraintsObject.userValues[index] = $(".user-sat-value").last().val();
 
         // Clone chart template
-        var data = this.constraintsObject.chartData;
+        var data = this.chartObject.chartData;
 
         // Setting up the labels
         data.labels = this.constraintsObject.beginLetter.slice(0);
@@ -835,7 +835,7 @@ var ElementInspector = Backbone.View.extend({
         }
 
 
-        this.constraintsObject.chart = new Chart(context, {
+        this.chartObject.chart = new Chart(context, {
             type: 'line',
             data: data,
             options: this.chartObject.chartOptions
@@ -1090,7 +1090,7 @@ var ElementInspector = Backbone.View.extend({
      * Removes all user constraints for user defined functions
      * This function is called on click for #constraint-restart (red Clear button).
      */
-    restartConstraint: function(e){
+    removeUserConstraints: function(e){
         $('#init-sat-value').prop('disabled', '');
         $('#init-sat-value').css("background-color","");
 
