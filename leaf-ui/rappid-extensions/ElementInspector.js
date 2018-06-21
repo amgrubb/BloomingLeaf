@@ -443,14 +443,6 @@ var ElementInspector = Backbone.View.extend({
 
             }
         }
-        // TODO: This may not be necessary. It is using the old code for now
-        // Only need this when we have new chart code
-        // If it is UD, just check the last row of the UD functions
-        else {
-            var userSatValue = $(".user-sat-value").last().val();
-            var userFunctionType = $(".user-function-type").last().val();
-        }
-        return;
     },
 
     /**
