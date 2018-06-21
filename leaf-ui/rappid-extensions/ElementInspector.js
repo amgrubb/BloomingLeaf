@@ -537,6 +537,18 @@ var ElementInspector = Backbone.View.extend({
         }
         return;
     },
+
+    resetChartDatasets: function(datasets) {
+
+        for (var i = 0; i < datasets.length; i++) {
+            data.datasets[i].borderDash = [];
+            data.datasets[i].data = [];
+            data.datasets[i].pointBackgroundColor = ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"];
+            data.datasets[i].pointBorderColor = ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"];
+            data.datasets[i].borderColor = "rgba(220,220,220,1)";
+        }
+    },
+
     /**
      * Updates the chart to represent data related to the the current function and 
      * satisfaction value(s)
@@ -550,21 +562,15 @@ var ElementInspector = Backbone.View.extend({
         if (cell.attributes.attrs['.constraints']) {
             cell.attributes.attrs['.constraints'].markedvalue = satVal;
         }
+
         // Rerender chart canvas
         var data = this.constraintsObject.chartData;
 
         // Get the chart canvas
         var context = $("#chart").get(0).getContext("2d");
 
-
-        // Reset the datasets
-        for (var i = 0; i < data.datasets.length; i++) {
-            data.datasets[i].borderDash = [];
-            data.datasets[i].data = [];
-            data.datasets[i].pointBackgroundColor = ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"];
-            data.datasets[i].pointBorderColor = ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"];
-            data.datasets[i].borderColor = "rgba(220,220,220,1)";
-        }
+        // Reset datasets
+        this.resetChartDatasets(data.datasets);
 
         // Destroy the previous chart if exists
         if (this.constraintsObject.chart != null) {
@@ -583,7 +589,7 @@ var ElementInspector = Backbone.View.extend({
         }
 
 
-        // Change chart based on function type
+        // Change chart dataset(s), depending on the function type
         if (functionType == "R") {
             data.labels = ["0", "Infinity"];
             data.datasets[0].data = [initVal, initVal];
@@ -652,11 +658,13 @@ var ElementInspector = Backbone.View.extend({
             data.datasets[0].data = [initVal];
         }
 
+        // Display the chart
         this.constraintsObject.chart = new Chart(context, {
             type: 'line',
             data: data,
             options: this.chartObject.chartOptions
         });
+
         this.updateCell(null);
     },
 
@@ -670,7 +678,6 @@ var ElementInspector = Backbone.View.extend({
         var index = this.constraintsObject.currentUserIndex;
 
         // If unknown is selected
-        // TODO this code doesnt belong here at all....
         if ($(".user-sat-value").last().val() == 'unknown') {
             $(".user-sat-value").last().prop('disabled', 'disabled');
             $(".user-sat-value").last().css("background-color","grey");
@@ -695,12 +702,8 @@ var ElementInspector = Backbone.View.extend({
         var repeatBegin = this.constraintsObject.repeatBegin;
         var repeatEnd = this.constraintsObject.repeatEnd;
 
-        // Reset the dataset
-        for (var i = 0; i < data.datasets.length; i++) {
-            data.datasets[i].borderDash = [];
-            data.datasets[i].data = [];
-            data.datasets[i].borderColor = "rgba(220,220,220,1)";
-        }
+        // Reset chart datasets
+        this.resetChartDatasets(data.datasets);
 
         // Add datapoints to graph for each userfunction/uservalue pair
         var previousDatasetIndex = -1;
