@@ -538,14 +538,18 @@ var ElementInspector = Backbone.View.extend({
         return;
     },
 
+    /**
+     * Modifies the passed in datasets with their default values
+     * @param {Array.<Object>}
+     */
     resetChartDatasets: function(datasets) {
 
         for (var i = 0; i < datasets.length; i++) {
-            data.datasets[i].borderDash = [];
-            data.datasets[i].data = [];
-            data.datasets[i].pointBackgroundColor = ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"];
-            data.datasets[i].pointBorderColor = ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"];
-            data.datasets[i].borderColor = "rgba(220,220,220,1)";
+            datasets[i].borderDash = [];
+            datasets[i].data = [];
+            datasets[i].pointBackgroundColor = ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"];
+            datasets[i].pointBorderColor = ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"];
+            datasets[i].borderColor = "rgba(220,220,220,1)";
         }
     },
 
