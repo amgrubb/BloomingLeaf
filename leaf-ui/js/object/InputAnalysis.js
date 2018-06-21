@@ -21,8 +21,8 @@ function getAnalysisValues(analysisInterface){
 	analysisInterface.elementList = getElementsForAnalysis();
 
 	//Data required for 2. Explore Possible Next States
-	if(savedAnalysisData.finalAssigneEpoch){
-		analysisInterface.initialAssignedEpoch = savedAnalysisData.finalAssigneEpoch;
+	if(savedAnalysisData.finalAssignedEpoch){
+		analysisInterface.initialAssignedEpoch = savedAnalysisData.finalAssignedEpoch;
 	}
 
 	if(savedAnalysisData.finalValueTimePoints){

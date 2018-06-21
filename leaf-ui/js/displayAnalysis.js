@@ -17,7 +17,7 @@ function displayAnalysis(analysisResults){
 	currentAnalysis.type = "Single Path";
 
 	// Save data for get possible next states
-	savedAnalysisData.finalAssigneEpoch = analysisResults.finalAssignedEpoch;
+	savedAnalysisData.finalAssignedEpoch = analysisResults.finalAssignedEpoch;
 	savedAnalysisData.finalValueTimePoints = analysisResults.finalValueTimePoints;
 
 	// Check if slider has already been initialized
