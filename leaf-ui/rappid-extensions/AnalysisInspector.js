@@ -1,11 +1,9 @@
 var epochLists = [];
-var num = 0;
-var goalIdMapper = {};
+var nameIdMapper = {};
 var constraintID = 0;
 var rx = /Goal_\d+/g; // MATCH goal name Goal_x
 var extractEB = /[A-Z]+$/;
 var saveIntermValues = {};
-var gloablI = 0;
 var absoluteTimeValues;
 var saveIVT;
 var AnalysisInspector = Backbone.View.extend({
@@ -187,19 +185,19 @@ var AnalysisInspector = Backbone.View.extend({
 	 *   InputAnalysis() object
 	 */
 	sendToBackend: function(analysis){
-		var js_object = {};
-		js_object.analysis = getAnalysisValues(analysis);
+		var jsObject = {};
+		jsObject.analysis = getAnalysisValues(analysis);
 		//Get the Graph Model
-		js_object.model = getFrontendModel(false);
+		jsObject.model = getFrontendModel(false);
 
 		this.saveElementsInGlobalVariable();
 
-		if(js_object.model == null){
+		if(jsObject.model == null) {
 			return null;
 		}
 
 		//Send data to backend
-		backendComm(js_object);
+		backendComm(jsObject);
 	},
 
 	/**
@@ -222,19 +220,68 @@ var AnalysisInspector = Backbone.View.extend({
 
 		// Clear all previous table entries
 		$(".abs-table").find("tr:gt(0)").remove();
-
-		var btn_html = '<td><button class="unassign-btn" > Unassign </button></td>';
 		
 		// Display the modal by setting it to block display
 		modal.style.display = "block";
 
 
-		// Get a list of nodes
-		// Populate non UD element only
-		var elements = graph.getElements();
+		this.displayAbsoluteIntentionAssignments();
+		this.displayAbsoluteRelationshipAssignments();
+
+	},
+
+	/**
+	 * Displays the links for the Absolute Relationship Assignments for
+	 * the Absolute and Relative Assignments modal
+	 */
+	displayAbsoluteRelationshipAssignments: function(e) {
+		var btn_html = '<td><button class="unassign-btn" > Unassign </button></td>';
+		// Get a list of links
 		var links = graph.getLinks();
+
+		for (var i = 0; i < links.length; i ++) {
+			var link = links[i];
+			var source = null;
+			var target = null;
+			if (link.get("source").id) {
+				source = graph.getCell(link.get("source").id);
+			}
+			if (link.get("target").id) {
+				target = graph.getCell(link.get("target").id);
+			}
+			if (source && target) {
+				var source_name = source.attr('.name').text;
+				var target_name = target.attr('.name').text;
+				var assigned_time = link.attr('.assigned_time');
+				var link_type = link.get('labels')[0].attrs.text.text;
+				// If no assigned_time in the link, save 'None' into the link
+				if (!assigned_time) {
+					link.attr('.assigned_time', {0: ''});
+					assigned_time = link.attr('.assigned_time');
+				}
+				if (link_type == 'NBD' || link_type == 'NBT' || link_type.indexOf('|') > -1) {
+					$('#link-list').append('<tr><td>' + link_type + '</td><td>' + source_name + '</td><td>' + target_name +
+						'</td><td><input type="text" name="sth" value=' +assigned_time[0] + '></td>' + btn_html +
+						'<input type="hidden" name="id" value="' + link.id + '"> </td> </tr>'+ '</tr>');
+				}
+			}
+
+		}
+	},
+
+
+	/**
+	 * Displays the nodes for the Absolute Intention Assignments for 
+	 * the Absolute and Relative Assignments modal
+	 */
+	displayAbsoluteIntentionAssignments: function(e) {
+
+		var btn_html = '<td><button class="unassign-btn" > Unassign </button></td>';
+
+		// Get a list of nodes
+		var elements = graph.getElements();
 		var outputList = "\n";
-		for (var i = 0; i < elements.length; i ++){
+		for (var i = 0; i < elements.length; i ++) {
 			var cellView = elements[i].findView(paper);
 			var cell = cellView.model;
 			if (cell.attributes.type !== "basic.Actor") {
@@ -244,7 +291,7 @@ var AnalysisInspector = Backbone.View.extend({
 				// strips all return and newline characters; ensures no double-white space; strips leading/trailing whitespace
 				var name = cell.attr('.name').text.replace(/(\n+|\r+|\s\s+)/gm," ").replace(/(^\s|\s$)/gm,'');
 
-				goalIdMapper[name] = cell.attributes.elementid;
+				nameIdMapper[name] = cell.attributes.elementid;
 				var assigned_time = cell.attr('.assigned_time');
 
 				if (func != 'UD' && func != 'D' && func != 'I' && func != 'C' && func != 'R' && func != "" && func != 'NB') {
@@ -262,78 +309,75 @@ var AnalysisInspector = Backbone.View.extend({
 					$('#node-list').append('<tr><td>' + name + ': A' + '</td><td>' + func + '</td>' +
 						'<td><input type="text" name="sth" value="' + assigned_time + '"></td>' + btn_html +
 						'<input type="hidden" name="id" value="' + cell.id + '"> </td> </tr>');
-				}
-				else if(func == 'UD'){
-					var fun_len = cell.attr('.constraints').function.length - 1;
-					var current_something = 'A';
+
+				} else if (func == 'UD') {
+					// the number of function transitions, is the number of functions minus one
+					var funcTransitions = cell.attr('.constraints').function.length - 1;
+
+					var currChar = 'A';
 					// If no assigned_time in the node, save blank into the node
-					if (!assigned_time){
+					if (!assigned_time) {
 						cell.attr('.assigned_time', {0: ''});
 						assigned_time = cell.attr('.assigned_time');
 					}
-					// If the length of assigned_time does not equal to the fun_len, add none until they are equal
+
+					// If the length of assigned_time does not equal to the funcTransitions, add none until they are equal
 					var k = 0;
-					while (Object.keys(assigned_time).length < fun_len){
+					while (Object.keys(assigned_time).length < funcTransitions) {
 						cell.attr('.assigned_time')[k] = '';
 						assigned_time = cell.attr('.assigned_time');
-						k ++;
+						k++;
 					}
-					for (var j = 0; j < fun_len; j++){
 
-						epochLists.push(name + ': ' + current_something);
+					// Append to HTML
+					for (var j = 0; j < funcTransitions; j++) {
+						epochLists.push(name + ': ' + currChar);
 						outputList += name.replace(/(\r\n|\n|\r)/gm," ");
-						outputList += ': ' + current_something + '\t' + func + "\n";
-						$('#node-list').append('<tr><td>' + name +': '+ current_something + '</td><td>' + func + '</td>'  +
+						outputList += ': ' + currChar + '\t' + func + "\n";
+						$('#node-list').append('<tr><td>' + name +': '+ currChar + '</td><td>' + func + '</td>'  +
 							'<td><input type="text" name="sth" value=' +assigned_time[j] + '></td>' + btn_html +
 							'<input type="hidden" name="id" value="' + cell.id + '_' + j + '"> </td> </tr>');
-						current_something = String.fromCharCode(current_something.charCodeAt(0) + 1);
+						currChar = String.fromCharCode(currChar.charCodeAt(0) + 1);
 					}
 
 				}
 			}
 		}
-
-
-		// Get a list of links
-		for (var i = 0; i < links.length; i ++){
-			var link = links[i];
-			var source = null;
-			var target = null;
-			if (link.get("source").id){
-				source = graph.getCell(link.get("source").id);
-			}
-			if (link.get("target").id){
-				target = graph.getCell(link.get("target").id);
-			}
-			if (source && target){
-				var source_name = source.attr('.name').text;
-				var target_name = target.attr('.name').text;
-				var assigned_time = link.attr('.assigned_time');
-				var link_type = link.get('labels')[0].attrs.text.text;
-				// If no assigned_time in the link, save 'None' into the link
-				if (!assigned_time){
-					link.attr('.assigned_time', {0: ''});
-					assigned_time = link.attr('.assigned_time');
-				}
-				if (link_type == 'NBD' || link_type == 'NBT' || link_type.indexOf('|') > -1){
-					$('#link-list').append('<tr><td>' + link_type + '</td><td>' + source_name + '</td><td>' + target_name +
-						'</td><td><input type="text" name="sth" value=' +assigned_time[0] + '></td>' + btn_html +
-						'<input type="hidden" name="id" value="' + link.id + '"> </td> </tr>'+ '</tr>');
-				}
-			}
-
-		}
-		num+=1;
-
 	},
-	/*load valus for intermediate table dialog*/
+
 	/**
-	 * Displays the intermediate values table modal for the user
+	 * Returns an array of numbers containing numbers that the 
+	 * user has inputed in the Absolute Time Points input box.
+	 * @returns {Array.<Number>}
+	 */
+	getAbsoluteTimePoints() {
+		var absValues = document.getElementById('abs-time-pts').value;
+		var absTimeValues;
+
+		if (absValues != '') {
+			absTimeValues = absValues.split(' ');
+			absTimeValues.map(function(i) {
+				if (i != '') {
+					return parseInt(i, 10);
+				}
+			});
+
+			//Sort into ascending order
+			absTimeValues.sort(function(a, b){return a - b});
+		} else {
+			absTimeValues = [];
+		}
+
+		return absTimeValues
+	},
+
+	/**
+	 * Displays the Intermediate Values modal for the user
 	 *
 	 * This function is called on click for #btn-view-intermediate
 	 */
-	loadIntermediateValues: function(e){
-		var time_values = {};
+	loadIntermediateValues: function(e) {
+		var timeValues = {};
 		$('#interm-list').find("tr:gt(1)").remove();
 		$('#header').find("th:gt(1)").remove();
 		$('#intentionRows').find("th:gt(1)").remove();
@@ -341,38 +385,27 @@ var AnalysisInspector = Backbone.View.extend({
 		intermTDialog.style.display = "block";
 		var elements = graph.getElements();
 		var intermTable = document.querySelector('.interm-table');
-		var absValues = document.getElementById('abs-time-pts').value;
-		var absTimeValues;
-		if(absValues != ""){
-			absTimeValues = absValues.split(" ")
-			.map(function(i){
-				// Parse absValues into numbers
-				if(i!=""){
-					return parseInt(i, 10);
-				}
-			});
-			// Sort absTimeValues into acending order
-			absTimeValues.sort(function(a, b){return a-b});
-			var headers = document.getElementById('header');
-			var rows = headers.querySelector('tr');
-			var intentRows = document.getElementById('intentionRows')
-			for(var i = 0; i < absTimeValues.length; i++){
-				if(!(absTimeValues[i] in time_values)){
-					time_values[absTimeValues[i]] = [];
-					time_values[absTimeValues[i]].push("Absolute");
-				}
+
+		var absTimeValues = this.getAbsoluteTimePoints();
+
+		var headers = document.getElementById('header');
+		var rows = headers.querySelector('tr');
+		var intentRows = document.getElementById('intentionRows');
+		for (var i = 0; i < absTimeValues.length; i++) {
+			if (!(absTimeValues[i] in timeValues)) {
+				timeValues[absTimeValues[i]] = [];
+				timeValues[absTimeValues[i]].push("Absolute");
 			}
 		}
-		else{
-			absTimeValues = [];
-		}
+
 		absoluteTimeValues = absTimeValues;
-		Object.keys(time_values).forEach(function(key){
+
+		Object.keys(timeValues).forEach(function(key) {
 			var th = document.createElement('th');
 			var thint = document.createElement('th');
             // Displaying each absolute time value into the table 
-			if (time_values[key].length == 1){
-				th.innerHTML = time_values[key][0];
+			if (timeValues[key].length == 1) {
+				th.innerHTML = timeValues[key][0];
 				thint.innerHTML = key;
 				rows.appendChild(th);
 				intentRows.appendChild(thint);
@@ -384,49 +417,45 @@ var AnalysisInspector = Backbone.View.extend({
 		var sat_valueLists = ['Unknown','None (T, T) ', 'Satisfied (FS, T) ','Partially Satisfied (PS, T) ',
 		'Denied (T, FD) ', 'Partially Denied (T, PD)'];
 		var eval_list = ['unknown', 'none','satisfied','partiallysatisfied', 'denied','partiallydenied'];
-		for(var i = 0; i < sat_valueLists.length; i++){
+		for (var i = 0; i < sat_valueLists.length; i++) {
 			var value = '<option value="' + eval_list[i] + '">'+ sat_valueLists[i] + '</option>';
 			sat_values += value
 		}
 		sat_values += '</select>';
-		for (var i = 0; i < elements.length; i++){
+		for (var i = 0; i < elements.length; i++) {
 			var cellView = elements[i].findView(paper);
 			var cell = cellView.model;
-			if(cell.attributes.type !== "basic.Actor"){
+			if (cell.attributes.type !== "basic.Actor") {
 				var initvalue = cell.attr('.satvalue').text;
 				var name = cell.attr('.name').text.replace(/(\n+|\r+|\s\s+)/gm," ").replace(/(^\s|\s$)/gm,'');
 
 				// Check if initial value is empty, if so, add (T,T) as a value
-				if($.isEmptyObject(time_values)){
-					if  (initvalue.trim() == ""){
+				if ($.isEmptyObject(timeValues)) {
+					if  (initvalue.trim() == "") {
 						$('#interm-list').append('<tr><td>' + name + '</td><td>(T,T)</td></tr>');
-					}
-					else{
+					} else {
 						$('#interm-list').append('<tr><td>' + name + '</td><td>' + initvalue +'</td></tr>');
 					}
-				}
-				else{
+				} else {
 					// If no previously saved table, display options for each time value
-					if  (initvalue.trim() == ""){
+					if  (initvalue.trim() == "") {
 						var appendList = '<tr><td>' + name + '</td><td>(T,T)</td>';
-						if(saveIVT == null){
-							for(var j = 0; j < Object.keys(time_values).length; j++){
+						if (saveIVT == null) {
+							for (var j = 0; j < Object.keys(timeValues).length; j++) {
 								appendList += '<td>' + sat_values + '</td>';
 							}
-						}
-						else if(saveIVT.length>0){
-							for(var j = 0; j < Object.keys(time_values).length; j++){
+						} else if (saveIVT.length > 0) {
+							for (var j = 0; j < Object.keys(timeValues).length; j++) {
 								appendList += '<td>' + $("#evalID").val('(FS, T)') + '</td>';
 							}
 						}
 						appendList += '</tr>';
 						$('#interm-list').append(appendList);
-					}
-					else{
+					} else {
 						// Display previously saved table
 						var appendList = '<tr><td>' + name + '</td><td>'+ initvalue +'</td>';
 						var test ='';
-						for(var j = 0; j < Object.keys(time_values).length; j++){
+						for (var j = 0; j < Object.keys(timeValues).length; j++) {
 							appendList += '<td>' + sat_values + '</td>';
 						}
 						appendList += '</tr>';
@@ -456,9 +485,10 @@ var AnalysisInspector = Backbone.View.extend({
 	},
 
 	/**
-	 * Saves the relative intention assignments into the graph object
+	 * Saves the Relative Intention Assignments from the 
+	 * Absolute and Relative Assignments into the graph object
 	 */
-	saveRelativeValues: function(){
+	saveRelativeIntentionAssignments: function() {
 		var epoch1Lists = $('#rel-intention-assignents tr #epoch1List select');
 		var relationshipLists = $('#rel-intention-assignents tr #relationshipLists select');
 		var epoch2Lists = $('#rel-intention-assignents tr #epoch2List select');
@@ -468,50 +498,35 @@ var AnalysisInspector = Backbone.View.extend({
 				var extractGoal2full = epoch2Lists[i].value;
 				var extractGoal1 = extractGoal1full.substring(0, extractGoal1full.length - 3);
 				var extractGoal2 = extractGoal2full.substring(0, extractGoal2full.length - 3);
-				var constraintSrcID = goalIdMapper[extractGoal1];
-				var constraintDestID = goalIdMapper[extractGoal2];
+				var constraintSrcID = nameIdMapper[extractGoal1];
+				var constraintDestID = nameIdMapper[extractGoal2];
 				var type = relationshipLists[i].value;
 				debugger
-				if(type == 'eq'){
+				if (type == 'eq') {
 					type = '=';
-				}
-				else if (type=='lt') {
+				} else if (type=='lt') {
 					type = '<';
 				}
-				if(graph.constraintValues.length == 0){
-					graph.constraintValues[0] = {};
-					graph.constraintValues[0]["constraintType"] = type;
-					graph.constraintValues[0]["constraintSrcID"] = constraintSrcID;
-					graph.constraintValues[0]["constraintSrcEB"] = epoch1Lists[i].value.match(extractEB)[0];
-					graph.constraintValues[0]["absoluteValue"] = -1;
-					graph.constraintValues[0]["constraintDestID"] = constraintDestID;
-					graph.constraintValues[0]["constraintDestEB"] = epoch2Lists[i].value.match(extractEB)[0];
-				}
-				else{
-					newConstarint = {};
-					newConstarint['constraintType'] = type;
-					newConstarint['constraintSrcID'] = constraintSrcID;
-					newConstarint['constraintSrcEB'] = epoch1Lists[i].value.match(extractEB)[0];
-					newConstarint['constraintDestID'] = constraintDestID;
-					newConstarint['constraintDestEB'] = epoch2Lists[i].value.match(extractEB)[0];
-					newConstarint['absoluteValue'] = -1;
-					graph.constraintValues.push(newConstarint);
-				}
-		}
 
-
+				newConstarint = {};
+				newConstarint['constraintType'] = type;
+				newConstarint['constraintSrcID'] = constraintSrcID;
+				newConstarint['constraintSrcEB'] = epoch1Lists[i].value.match(extractEB)[0];
+				newConstarint['constraintDestID'] = constraintDestID;
+				newConstarint['constraintDestEB'] = epoch2Lists[i].value.match(extractEB)[0];
+				newConstarint['absoluteValue'] = -1;
+				graph.constraintValues.push(newConstarint);
+			}
 		}
 
 	},
 
-	// TODO: Check if the times users put in are valid
 	/**
-	 * Saves absolute intention and relationship assignments to the graph object
+	 * Saves the Absolute Intention Assignments from the 
+	 * Absolute and Relative Assignments to the graph object
 	 */
-	saveAssignment: function(e){
-
-		this.saveRelativeValues();
-		var time_values = {};
+	saveAbsoluteIntentionAssignments() {
+		// Save absolute intention assignments
 		$.each($('#node-list').find("tr input[type=text]"), function(){
 			var new_time = $(this).val();
 			var row = $(this).closest('tr');
@@ -519,97 +534,75 @@ var AnalysisInspector = Backbone.View.extend({
 			var func_value = row.find('td:nth-child(2)').html();
 			var id = row.find('input[type=hidden]').val();
 
-			// If func is not UD, just find the cell and update it
-			if (func_value != 'UD'){
+			if (func_value != 'UD') {
+				// If func is not UD, just find the cell and update it
 				var cell = graph.getCell(id);
 				cell.attr('.assigned_time')[0] = new_time;
-				if(new_time.trim() != ""){
-					if(!(new_time in time_values) ){
-						time_values[new_time] = [];
-						time_values[new_time].push('Absolute Intentions')
-					}
-					else if(!(time_values[new_time].includes('Absolute Intentions'))){
-						time_values[new_time].push('Absolute Intentions');
-					}
-				}
-
-			}
-			// If func is UD, extract the index i from id, and update i-th assigned time of the node
-			else {
+			} else {
+				// If func is UD, extract the index i from id, and update i-th assigned time of the node
 				var index = id[id.length - 1];
 				id = id.substring(0, id.length - 2);
 				var cell = graph.getCell(id);
 				cell.attr('.assigned_time')[index] = new_time;
-				if(new_time.trim() != ""){
-					if(!(new_time in time_values) ){
-						time_values[new_time] = [];
-						time_values[new_time].push('Absolute Intentions')
-					}
-					else if(!(time_values[new_time].includes('Absolute Intentions'))){
-						time_values[new_time].push('Absolute Intentions');
-					}
-				}
 			}
 
-				// Save
-				if(graph.constraintValues.length == 0 && (new_time != null && new_time.length > 0)){
-					graph.constraintValues[0] = {};
-					graph.constraintValues[0]['constraintType'] = "A"; // A for absolute
-					graph.constraintValues[0]['constraintSrcID'] = cell.attributes.elementid;
-					graph.constraintValues[0]['constraintSrcEB'] = srcEB.match(extractEB)[0];
-
-					graph.constraintValues[0]['absoluteValue'] = new_time;
-					graph.constraintValues[0]['constraintDestID'] = null;
-					graph.constraintValues[0]['constraintDestEB'] = null;
-				}
-				else{
-					if(new_time != null && new_time.length > 0 ){
-						newConstarint = {};
-						newConstarint['constraintType'] = "A";
-						newConstarint['constraintSrcID'] = cell.attributes.elementid;
-						newConstarint['constraintSrcEB'] = srcEB.match(extractEB)[0];
-						newConstarint['absoluteValue'] = new_time;
-						newConstarint['constraintDestID'] = null;
-						newConstarint['constraintDestEB'] = null;
-						graph.constraintValues.push(newConstarint);
-					}
-				}
-
-
+			// Save
+			if (new_time != null && new_time.length > 0) {
+				newConstarint = {};
+				newConstarint['constraintType'] = "A"; // A for absolute
+				newConstarint['constraintSrcID'] = cell.attributes.elementid;
+				newConstarint['constraintSrcEB'] = srcEB.match(extractEB)[0];
+				newConstarint['absoluteValue'] = new_time;
+				newConstarint['constraintDestID'] = null;
+				newConstarint['constraintDestEB'] = null;
+				graph.constraintValues.push(newConstarint);
+			}
 		});
+	},
 
-		$.each($('#link-list').find("tr input[type=text]"), function(){
+	/**
+	 * Saves the Absolute Relationship Assignments from the 
+	 * Absolute and Relative Assignments into the graph object
+	 */
+	saveAbsoluteRelationshipAssignments() {
+		// Save absolute relationship assignment
+		$.each($('#link-list').find("tr input[type=text]"), function() {
 			var new_time = $(this).val();
 			var row = $(this).closest('tr');
 			var func_value = row.find('td:nth-child(2)').html();
 			var id = row.find('input[type=hidden]').val();
 
+			// Find the link with the ID
 			var links = graph.getLinks();
-			for (var i = 0; i < links.length; i ++){
+
+			for (var i = 0; i < links.length; i ++) {
 				if (links[i].id == id) {
 					var link = links[i];
 					break;
-				}
-			}
-			if(new_time.trim() != ""){
-				if(!(new_time in time_values) ){
-					time_values[new_time] = [];
-					time_values[new_time].push('Absolute Relationship')
-				}
-				else if(!(time_values[new_time].includes('Absolute Relationship'))){
-					time_values[new_time].push('Absolute Relationship');
 				}
 			}
 
 			link.attr('.assigned_time')[0] = new_time;
 
 		});
-		// After that dismiss the box
+	},
+
+	// TODO: Check if the times users put in are valid
+	/**
+	 * Saves absolute intention and relationship assignments to the graph object
+	 *
+	 * This function is called on click for #btn-save-assignment
+	 */
+	saveAssignment: function(e){
+
+		this.saveRelativeIntentionAssignments();
+		this.saveAbsoluteIntentionAssignments();
+		this.saveAbsoluteRelationshipAssignments();
+
+		// Dismiss the modal
 		var modal = document.getElementById('myModal');
 		modal.style.display = "none";
 		$("#epoch1List select").val();
-
-
 	},
 
 	/**
