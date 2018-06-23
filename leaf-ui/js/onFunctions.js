@@ -495,7 +495,6 @@ graph.on('remove', function(cell, collection, opt) {
 function clearInspector() {
 	elementInspector.clear();
 	linkInspector.clear();
-	constraintsInspector.clear();
 	analysisInspector.clear();
 }
 

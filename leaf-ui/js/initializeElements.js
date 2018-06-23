@@ -10,7 +10,6 @@ var mode;
 
 var linkInspector = new LinkInspector();
 var elementInspector = new ElementInspector();
-var constraintsInspector = new ConstraintsInspector();
 var analysisInspector = new AnalysisInspector();
 
 var currentHalo;
@@ -153,7 +152,6 @@ stencil.load([goal, task, sgoal, res, act]);
 
 // Setup LinkInspector
 $('.inspector').append(linkInspector.el);
-$('.inspector').append(constraintsInspector.el);
 
 // Interface set up for modelling mode on startup
 $('#dropdown-model').css("display","none");
