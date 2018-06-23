@@ -59,17 +59,11 @@ var LinkInspector = Backbone.View.extend({
             if ((values.length > 1)) {
                 this.evolvingRelations = true;
                 this.$el.html(_.template(this.evolvingtemplate)());
+                this.setSelectValues('#link-type-begin', 'Evolving');
+                $('#link-type-begin').val(values[0].trim()).change();
+                this.updateBeginEvolRelations;
+                $('#link-type-end').val(values[1].trim());
 
-                if (values.length > 1) {
-                    this.setSelectValues('#link-type-begin', 'Evolving');
-                    $('#link-type-begin').val(values[0].trim()).change();
-                    this.updateBeginEvolRelations;
-                    $('#link-type-end').val(values[1].trim());
-                } else {
-                    $("#link-type-end").prop('disabled', true);
-                    $("#link-type-end").css('background-color', 'grey');
-                    this.setSelectValues('#link-type-begin', 'Evolving');
-                }
             // Else, display the constant relationship template
             } else {
                 this.$el.html(_.template(this.template)());
