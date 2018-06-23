@@ -49,30 +49,31 @@ var LinkInspector = Backbone.View.extend({
         var type = cellView.model.attributes.labels[0].attrs.text.text;
         var values = type.split("|");
 
-        //Selecting which template to render ACTOR-LINK or INTENTIONS-LINK
+        // Selecting which template to render ACTOR-LINK or INTENTIONS-LINK
         if (cell.prop("linktype")) {
             this.$el.html(_.template(this.actortemplate)());
             $('#actor-link').val(cell.prop("link-type"));
         } else {
-
+            // If there is more than one value for a link, it must be an 
+            // evolving relationship. Display the evolving relationship template
             if ((values.length > 1)) {
                 this.evolvingRelations = true;
                 this.$el.html(_.template(this.evolvingtemplate)());
 
                 if (values.length > 1) {
-                    this.appendSelectValues($('#link-type-begin'), "All");
+                    this.setSelectValues('#link-type-begin', 'Evolving');
                     $('#link-type-begin').val(values[0].trim()).change();
                     this.updateBeginEvolRelations;
                     $('#link-type-end').val(values[1].trim());
                 } else {
-                    $("#link-type-end").prop('disabled', 'disabled');
-                    $("#link-type-end").css("background-color","grey");
-                    this.appendSelectValues($('#link-type-begin'), "All");
+                    $("#link-type-end").prop('disabled', true);
+                    $("#link-type-end").css('background-color', 'grey');
+                    this.setSelectValues('#link-type-begin', 'Evolving');
                 }
-                    
+            // Else, display the constant relationship template
             } else {
                 this.$el.html(_.template(this.template)());
-                this.appendSelectValues($('#constant-links'), "Const");
+                this.setSelectValues('#constant-links', 'Constant');
                 $('#constant-links').val(values[0]);
                 this.evolvingRelations = false;
             }
@@ -84,12 +85,12 @@ var LinkInspector = Backbone.View.extend({
 
     },
 
-/**
- * Switches from Constant Relationship to Evoloving Relationship
- * and vice-versa.
- *
- * This function is called on click for #switch-link-type
- */
+    /**
+     * Switches from Constant Relationship to Evoloving Relationship
+     * and vice-versa.
+     *
+     * This function is called on click for #switch-link-type
+     */
     switchMode: function() {
         var cell = this._cellView.model;
         var type = cell.attributes.labels[0].attrs.text.text;
@@ -102,18 +103,18 @@ var LinkInspector = Backbone.View.extend({
         if (this.evolvingRelations) {
             this.$el.html(_.template(this.evolvingtemplate)());
             if(values.length > 1) {
-                this.appendSelectValues($('#link-type-begin'), "All");
+                this.setSelectValues('#link-type-begin', 'Evolving');
                 $('#link-type-begin').val(values[0].trim()).change();
                 this.updateBeginEvolRelations();
                 $('#link-type-end').val(values[1].trim());
             } else {
                 $("#link-type-end").prop('disabled', 'disabled');
                 $("#link-type-end").css("background-color","grey");
-                this.appendSelectValues($('#link-type-begin'), "All");
+                this.setSelectValues('#link-type-begin', 'Evolving');
             }
         } else {
             this.$el.html(_.template(this.template)());
-            this.appendSelectValues($('#constant-links'), "Const");
+            this.setSelectValues('#constant-links', 'Constant');
             $('#constant-links').val(values[0].trim());
             this.evolvingRelations = false;
         }
@@ -217,12 +218,12 @@ var LinkInspector = Backbone.View.extend({
         var begin = $("#link-type-begin").val();
         //Enable the end select
         if (begin == "no") {
-            this.appendSelectValues($("#link-type-end"), "All");
+            this.setSelectValues('#link-type-end', 'Evolving');
             $("#link-type-end").prop('disabled', false);
             $("#link-type-end").css("background-color","gray");
             $("#repeat-error").text("");
         }else if(begin == "and" || begin == "or") {
-            this.appendSelectValues($("#link-type-end"), "A");
+            this.setSelectValues('#link-type-end', 'A');
             $("#link-type-end").prop('disabled', false);
             $("#link-type-end").css("background-color","");
             //Saving this option
@@ -242,11 +243,15 @@ var LinkInspector = Backbone.View.extend({
             $("#repeat-error").css("color", "lightgreen");
 
         } else {
-            this.appendSelectValues($("#link-type-end"), "B");
+            this.setSelectValues('#link-type-end', "B");
             $("#link-type-end").prop('disabled', '');
             $("#link-type-end").css("background-color","");
         }
     },
+
+    /**
+     * This function is called on change for #link-type-end
+     */
     updateEndEvolRelations: function() {
 
         var link = this._cellView.model;
@@ -268,7 +273,9 @@ var LinkInspector = Backbone.View.extend({
 
     },
     // Restrict select options based on selection made in link-type begin
-    appendSelectValues: function(select, type){
+    setSelectValues: function(selector, type){
+
+        var element = $(selector);
 
         var relationA = {"and": "And-Decomposition",
                          "or": "Or-Decomposition"};
@@ -293,46 +300,49 @@ var LinkInspector = Backbone.View.extend({
                 "NBD": "Not Both (Denied)"
         };
 
-        if (select.attr("id") == "link-type-begin") {
-            select.html('<option class="select-placeholder" selected disabled value="">Begin</option>');
-        } else if (select.attr("id") == "link-type-end") {
-            select.html('<option class="select-placeholder" selected disabled value="">End</option>');
+        // set initial placeholder values
+
+        if (selector ==  '#link-type-begin') {
+            element.html('<option class="select-placeholder" selected disabled value="">Begin</option>');
+        } else if (selector == '#link-type-end') {
+            element.html('<option class="select-placeholder" selected disabled value="">End</option>');
         }
 
-        select.append($('<option></option>').val("no").html("No Relationship"));
+        element.append($('<option></option>').val("no").html("No Relationship"));
 
-        if (type == "Const") {
+        // the select options for Constant Relationship
+        if (type == 'Constant') {
             $.each(relationA, function (value, key) {
-                    select.append($("<option></option>").attr("value", value).text(key));
+                element.append($("<option></option>").attr('value', value).text(key));
             });
 
             $.each(relationB, function (value, key) {
-                    select.append($("<option></option>").attr("value", value).text(key));
+                    element.append($("<option></option>").attr("value", value).text(key));
             });
             $.each(relationConst, function (value, key) {
-                select.append($("<option></option>").attr("value", value).text(key));
+                element.append($("<option></option>").attr("value", value).text(key));
             });
-        } else if(type == "All") {
+        } else if(type == 'Evolving') {
             $.each(relationA, function (value, key) {
-                select.append($("<option></option>").attr("value", value).text(key));
+                element.append($("<option></option>").attr("value", value).text(key));
             });
             $.each(relationB, function (value, key) {
-                select.append($("<option></option>").attr("value", value).text(key));
+                element.append($("<option></option>").attr("value", value).text(key));
             });
         } else if (type == "A") {
-            select.val("no");
+            element.val("no");
             $("#repeat-error").text("Saved!");
             $("#repeat-error").css("color", "lightgreen");
             $("#link-type-end").prop('disabled', '');
             $("#link-type-end").css("background-color","");
         } else if (type == "B") {
             $.each(relationB, function (value, key) {
-                select.append($("<option></option>").attr("value", value).text(key));
+                element.append($("<option></option>").attr("value", value).text(key));
             });
         }
 
         // Remove duplicate options
-        if (select.attr("id") == "link-type-end") {
+        if (selector == "link-type-end") {
             var dupVal = $('#link-type-begin').val();
             $("select#link-type-end option").filter("[value='" + dupVal + "']").remove();
         }
