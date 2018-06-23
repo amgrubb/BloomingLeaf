@@ -235,7 +235,7 @@ var AnalysisInspector = Backbone.View.extend({
 	 * the Absolute and Relative Assignments modal
 	 */
 	displayAbsoluteRelationshipAssignments: function(e) {
-		var btn_html = '<td><button class="unassign-btn" > Unassign </button></td>';
+		var btnHtml = '<td><button class="unassign-btn" > Unassign </button></td>';
 		// Get a list of links
 		var links = graph.getLinks();
 
@@ -250,18 +250,18 @@ var AnalysisInspector = Backbone.View.extend({
 				target = graph.getCell(link.get("target").id);
 			}
 			if (source && target) {
-				var source_name = source.attr('.name').text;
-				var target_name = target.attr('.name').text;
-				var assigned_time = link.attr('.assigned_time');
-				var link_type = link.get('labels')[0].attrs.text.text;
-				// If no assigned_time in the link, save 'None' into the link
-				if (!assigned_time) {
+				var sourceName = source.attr('.name').text;
+				var targetName = target.attr('.name').text;
+				var assignedTime = link.attr('.assigned_time');
+				var linkType = link.get('labels')[0].attrs.text.text;
+				// If no assignedTime in the link, save 'None' into the link
+				if (!assignedTime) {
 					link.attr('.assigned_time', {0: ''});
-					assigned_time = link.attr('.assigned_time');
+					assignedTime = link.attr('.assigned_time');
 				}
-				if (link_type == 'NBD' || link_type == 'NBT' || link_type.indexOf('|') > -1) {
-					$('#link-list').append('<tr><td>' + link_type + '</td><td>' + source_name + '</td><td>' + target_name +
-						'</td><td><input type="text" name="sth" value=' +assigned_time[0] + '></td>' + btn_html +
+				if (linkType == 'NBD' || linkType == 'NBT' || linkType.indexOf('|') > -1) {
+					$('#link-list').append('<tr><td>' + linkType + '</td><td>' + sourceName + '</td><td>' + targetName +
+						'</td><td><input type="text" name="sth" value=' + assignedTime[0] + '></td>' + btnHtml +
 						'<input type="hidden" name="id" value="' + link.id + '"> </td> </tr>'+ '</tr>');
 				}
 			}
@@ -276,7 +276,7 @@ var AnalysisInspector = Backbone.View.extend({
 	 */
 	displayAbsoluteIntentionAssignments: function(e) {
 
-		var btn_html = '<td><button class="unassign-btn" > Unassign </button></td>';
+		var btnHtml = '<td><button class="unassign-btn" > Unassign </button></td>';
 
 		// Get a list of nodes
 		var elements = graph.getElements();
@@ -292,22 +292,22 @@ var AnalysisInspector = Backbone.View.extend({
 				var name = cell.attr('.name').text.replace(/(\n+|\r+|\s\s+)/gm," ").replace(/(^\s|\s$)/gm,'');
 
 				nameIdMapper[name] = cell.attributes.elementid;
-				var assigned_time = cell.attr('.assigned_time');
+				var assignedTime = cell.attr('.assigned_time');
 
 				if (func != 'UD' && func != 'D' && func != 'I' && func != 'C' && func != 'R' && func != "" && func != 'NB') {
-					// If no assigned_time in the node, make the default value blank
-					if (!assigned_time) {
+					// If no assignedTime in the node, make the default value blank
+					if (!assignedTime) {
 						cell.attr('.assigned_time', {0: ''});
 					}
 
-					assigned_time = cell.attr('.assigned_time')[0];
+					assignedTime = cell.attr('.assigned_time')[0];
 
 					//TODO: Figure out how to only add these values if they don't exist.
 					epochLists.push(name + ': A');
 					outputList += name.replace(/(\r\n|\n|\r)/gm," ");
 					outputList += ': A' + '\t' + func + "\n";
 					$('#node-list').append('<tr><td>' + name + ': A' + '</td><td>' + func + '</td>' +
-						'<td><input type="text" name="sth" value="' + assigned_time + '"></td>' + btn_html +
+						'<td><input type="text" name="sth" value="' + assignedTime + '"></td>' + btnHtml +
 						'<input type="hidden" name="id" value="' + cell.id + '"> </td> </tr>');
 
 				} else if (func == 'UD') {
@@ -315,17 +315,17 @@ var AnalysisInspector = Backbone.View.extend({
 					var funcTransitions = cell.attr('.constraints').function.length - 1;
 
 					var currChar = 'A';
-					// If no assigned_time in the node, save blank into the node
-					if (!assigned_time) {
+					// If no assignedTime in the node, save blank into the node
+					if (!assignedTime) {
 						cell.attr('.assigned_time', {0: ''});
-						assigned_time = cell.attr('.assigned_time');
+						assignedTime = cell.attr('.assigned_time');
 					}
 
-					// If the length of assigned_time does not equal to the funcTransitions, add none until they are equal
+					// If the length of assignedTime does not equal to the funcTransitions, add none until they are equal
 					var k = 0;
-					while (Object.keys(assigned_time).length < funcTransitions) {
+					while (Object.keys(assignedTime).length < funcTransitions) {
 						cell.attr('.assigned_time')[k] = '';
-						assigned_time = cell.attr('.assigned_time');
+						assignedTime = cell.attr('.assigned_time');
 						k++;
 					}
 
@@ -335,7 +335,7 @@ var AnalysisInspector = Backbone.View.extend({
 						outputList += name.replace(/(\r\n|\n|\r)/gm," ");
 						outputList += ': ' + currChar + '\t' + func + "\n";
 						$('#node-list').append('<tr><td>' + name +': '+ currChar + '</td><td>' + func + '</td>'  +
-							'<td><input type="text" name="sth" value=' +assigned_time[j] + '></td>' + btn_html +
+							'<td><input type="text" name="sth" value=' + assignedTime[j] + '></td>' + btnHtml +
 							'<input type="hidden" name="id" value="' + cell.id + '_' + j + '"> </td> </tr>');
 						currChar = String.fromCharCode(currChar.charCodeAt(0) + 1);
 					}
@@ -413,15 +413,15 @@ var AnalysisInspector = Backbone.View.extend({
 		})
 
         // Make option select tags
-		var sat_values = '<select id="evalID"><option value="empty;" selected> </option>';
-		var sat_valueLists = ['Unknown','None (T, T) ', 'Satisfied (FS, T) ','Partially Satisfied (PS, T) ',
+		var satValues = '<select id="evalID"><option value="empty;" selected> </option>';
+		var satValueLists = ['Unknown','None (T, T) ', 'Satisfied (FS, T) ','Partially Satisfied (PS, T) ',
 		'Denied (T, FD) ', 'Partially Denied (T, PD)'];
-		var eval_list = ['unknown', 'none','satisfied','partiallysatisfied', 'denied','partiallydenied'];
-		for (var i = 0; i < sat_valueLists.length; i++) {
-			var value = '<option value="' + eval_list[i] + '">'+ sat_valueLists[i] + '</option>';
-			sat_values += value
+		var evalList = ['unknown', 'none','satisfied','partiallysatisfied', 'denied','partiallydenied'];
+		for (var i = 0; i < satValueLists.length; i++) {
+			var value = '<option value="' + evalList[i] + '">'+ satValueLists[i] + '</option>';
+			satValues += value
 		}
-		sat_values += '</select>';
+		satValues += '</select>';
 		for (var i = 0; i < elements.length; i++) {
 			var cellView = elements[i].findView(paper);
 			var cell = cellView.model;
@@ -442,7 +442,7 @@ var AnalysisInspector = Backbone.View.extend({
 						var appendList = '<tr><td>' + name + '</td><td>(T,T)</td>';
 						if (saveIVT == null) {
 							for (var j = 0; j < Object.keys(timeValues).length; j++) {
-								appendList += '<td>' + sat_values + '</td>';
+								appendList += '<td>' + satValues + '</td>';
 							}
 						} else if (saveIVT.length > 0) {
 							for (var j = 0; j < Object.keys(timeValues).length; j++) {
@@ -456,7 +456,7 @@ var AnalysisInspector = Backbone.View.extend({
 						var appendList = '<tr><td>' + name + '</td><td>'+ initvalue +'</td>';
 						var test ='';
 						for (var j = 0; j < Object.keys(timeValues).length; j++) {
-							appendList += '<td>' + sat_values + '</td>';
+							appendList += '<td>' + satValues + '</td>';
 						}
 						appendList += '</tr>';
 						$('#interm-list').append(appendList);
@@ -480,8 +480,8 @@ var AnalysisInspector = Backbone.View.extend({
 	unassignValue: function(e){
 		var button = e.target;
 		var row = $(button).closest('tr');
-		var assigned_time = row.find('input[type=text]');
-		$(assigned_time).val('');
+		var assignedTime = row.find('input[type=text]');
+		$(assignedTime).val('');
 	},
 
 	/**
@@ -528,31 +528,31 @@ var AnalysisInspector = Backbone.View.extend({
 	saveAbsoluteIntentionAssignments() {
 		// Save absolute intention assignments
 		$.each($('#node-list').find("tr input[type=text]"), function(){
-			var new_time = $(this).val();
+			var newTime = $(this).val();
 			var row = $(this).closest('tr');
 			var srcEB = row.find('td').html();
-			var func_value = row.find('td:nth-child(2)').html();
+			var funcValue = row.find('td:nth-child(2)').html();
 			var id = row.find('input[type=hidden]').val();
 
-			if (func_value != 'UD') {
+			if (funcValue != 'UD') {
 				// If func is not UD, just find the cell and update it
 				var cell = graph.getCell(id);
-				cell.attr('.assigned_time')[0] = new_time;
+				cell.attr('.assigned_time')[0] = newTime;
 			} else {
 				// If func is UD, extract the index i from id, and update i-th assigned time of the node
 				var index = id[id.length - 1];
 				id = id.substring(0, id.length - 2);
 				var cell = graph.getCell(id);
-				cell.attr('.assigned_time')[index] = new_time;
+				cell.attr('.assigned_time')[index] = newTime;
 			}
 
 			// Save
-			if (new_time != null && new_time.length > 0) {
+			if (newTime != null && newTime.length > 0) {
 				newConstarint = {};
 				newConstarint['constraintType'] = "A"; // A for absolute
 				newConstarint['constraintSrcID'] = cell.attributes.elementid;
 				newConstarint['constraintSrcEB'] = srcEB.match(extractEB)[0];
-				newConstarint['absoluteValue'] = new_time;
+				newConstarint['absoluteValue'] = newTime;
 				newConstarint['constraintDestID'] = null;
 				newConstarint['constraintDestEB'] = null;
 				graph.constraintValues.push(newConstarint);
@@ -567,9 +567,9 @@ var AnalysisInspector = Backbone.View.extend({
 	saveAbsoluteRelationshipAssignments() {
 		// Save absolute relationship assignment
 		$.each($('#link-list').find("tr input[type=text]"), function() {
-			var new_time = $(this).val();
+			var newTime = $(this).val();
 			var row = $(this).closest('tr');
-			var func_value = row.find('td:nth-child(2)').html();
+			var funcValue = row.find('td:nth-child(2)').html();
 			var id = row.find('input[type=hidden]').val();
 
 			// Find the link with the ID
@@ -582,7 +582,7 @@ var AnalysisInspector = Backbone.View.extend({
 				}
 			}
 
-			link.attr('.assigned_time')[0] = new_time;
+			link.attr('.assigned_time')[0] = newTime;
 
 		});
 	},
