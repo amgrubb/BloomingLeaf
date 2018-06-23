@@ -50,7 +50,7 @@ var LinkInspector = Backbone.View.extend({
         var values = type.split("|");
 
         // Selecting which template to render ACTOR-LINK or INTENTIONS-LINK
-        if (cell.prop("linktype")) {
+        if (cell.prop('linktype')) {
             this.$el.html(_.template(this.actortemplate)());
             $('#actor-link').val(cell.prop("link-type"));
         } else {
@@ -102,8 +102,8 @@ var LinkInspector = Backbone.View.extend({
                 this.updateBeginEvolRelations();
                 $('#link-type-end').val(values[1].trim());
             } else {
-                $("#link-type-end").prop('disabled', 'disabled');
-                $("#link-type-end").css("background-color","grey");
+                $("#link-type-end").prop('disabled', true);
+                $("#link-type-end").css("background-color", "grey");
                 this.setSelectValues('#link-type-begin', 'Evolving');
             }
         } else {
@@ -266,7 +266,18 @@ var LinkInspector = Backbone.View.extend({
         $("#repeat-error").css("color", "lightgreen");
 
     },
-    // Restrict select options based on selection made in link-type begin
+
+    /**
+     * Set initial values for the select tags and populate the select
+     * tags with their default options, depending on their type.
+     *
+     * @param {String} selector
+     *   CSS selector for the select tag of interest
+     * @param {String} type
+     *   typestring indicating which options to append to the select tag
+     *
+     * Valid types: 'Constant', 'Evolving', 'A', 'B'
+     */
     setSelectValues: function(selector, type){
 
         var element = $(selector);
