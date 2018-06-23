@@ -60,16 +60,16 @@ var LinkInspector = Backbone.View.extend({
                 this.evolvingRelations = true;
                 this.$el.html(_.template(this.evolvingtemplate)());
                 this.setSelectValues('#link-type-begin', 'Evolving');
-                $('#link-type-begin').val(values[0].trim()).change();
+                $('#link-type-begin').val(values[0]).change();
                 this.updateBeginEvolRelations;
-                $('#link-type-end').val(values[1].trim());
+                $('#link-type-end').val(values[1]);
 
             // Else, display the constant relationship template
             } else {
+                this.evolvingRelations = false;
                 this.$el.html(_.template(this.template)());
                 this.setSelectValues('#constant-links', 'Constant');
                 $('#constant-links').val(values[0]);
-                this.evolvingRelations = false;
             }
         }
 
@@ -114,37 +114,29 @@ var LinkInspector = Backbone.View.extend({
         }
     },
 
+    /**
+     * Saves the new constant relationship value to the link model.
+     * This function is called on change for #constant-links.
+     */
     updateConstantRelationship: function() {
         var link = this._cellView.model;
         var source = link.getSourceElement();
         var target = link.getTargetElement();
 
-        link.prop("link-type", $('.link-type').val());
-        if (link.prop("link-type") == 'and' || link.prop("link-type") == 'or'){
-            /*link.attr({
-                '.connection': {stroke: '#000000', 'stroke-dasharray': '0 0'},
-                '.marker-source': {'d': '0'},
-                '.marker-target': {stroke: '#000000', "d": 'M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5'}
-            });*/
-            link.label(0 ,{position: 0.5, attrs: {text: {text: link.prop("link-type")}}});
+        var relationshipVal = $('.link-type option:selected').val();
+        var relationshipText = $('.link-type option:selected').text();
 
-        }else if(link.prop("link-type") == 'NBT' || link.prop("link-type") == 'NBD'){
-            /*8link.attr({
-                '.connection': {stroke: '#000000', 'stroke-dasharray': '0 0'},
-                '.marker-source': {'d': '0'},
-                '.marker-target': {stroke: '#000000', "d": '0'}
-            });*/
-            link.label(0 ,{position: 0.5, attrs: {text: {text: link.prop("link-type")}}});
-        }else{
-            /*link.attr({
-                '.connection': {stroke: '#000000', 'stroke-dasharray': '0 0'},
-                '.marker-source': {'d': '0'},
-                '.marker-target': {stroke: '#000000', "d": 'M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5'}
-            });*/
+        // store the new value into the link
+        link.prop("link-type", relationshipVal);
+
+        // store the new text into the link
+        if (link.prop("link-type") == 'NBT' || link.prop("link-type") == 'NBD') {
+            link.label(0 ,{position: 0.5, attrs: {text: {text: relationshipVal}}});
+        } else {
             link.label(0 ,{position: 0.5, attrs: {text: {text: $('.link-type option:selected').text()}}});
         }
 
-        //Adding or removing tags from node depending on type of link
+        // Adding or removing tags from node depending on type of link
         if (link.prop("link-type") == 'NBT' || link.prop("link-type") == 'NBD'){
             source.attr(".funcvalue/text", "NB");
             source.attr(".satvalue/text", "");
@@ -154,50 +146,47 @@ var LinkInspector = Backbone.View.extend({
             target.attr(".satvalue/value", "");
 
         } else {
-            //verify if node has any other link NBD or NBT
-            var sourceHasNBLink = function(){
-            var localLinks = graph.getLinks();
-                for(var i = 0; i < localLinks.length; i++){
-                    if ((localLinks[i]!=link) && (localLinks[i].prop("link-type") == 'NBT' || localLinks[i].prop("link-type") == 'NBD')){
-                            if(localLinks[i].getSourceElement() == source || localLinks[i].getTargetElement() == source){
-                             return true;
-                            }
-                    }
-                }
-                return false;
-            }
-
-            //verify if target has any other link NBD or NBT
-            var targetHasNBLink = function(){
-                var localLinks = graph.getLinks();
-                for(var i = 0; i < localLinks.length; i++){
-                    if ((localLinks[i]!=link) && (localLinks[i].prop("link-type") == 'NBT' || localLinks[i].prop("link-type") == 'NBD')){
-                            if(localLinks[i].getTargetElement() == target || localLinks[i].getSourceElement() == target){
-                             return true;
-                            }
-                    }
-                }
-                return false;
-            }
-
-            //Verify if the node has the NB tag
-            var hasNBtag = function(node){
-                if(node.prop(".funcvalue/text")=="NB"){
-                    return true;
-                }
-            return false;
-            }
-
             //Verify if it is possible to remove the NB tag from source and target
-            if(!sourceHasNBLink() && hasNBtag(source)){
+            if (!this.hasNBLink(source, link) && this.hasNBTag(source)){
                 source.attr(".funcvalue/text", "");
             }
-            if(!targetHasNBLink() && hasNBtag(target)){
-                    target.attr(".funcvalue/text", "");
+            if (!this.hasNBLink(target, link) && this.hasNBTag(target)){
+                target.attr(".funcvalue/text", "");
             }
-
         }
 
+    },
+
+    /**
+     * Returns true iff the node is a source or target to an NBT or NBD
+     * link, other than the link provided as a parameter.
+     *
+     * @param {joint.dia.Element} node
+     *   node of interest
+     * @param {joint.dia.Link} link
+     *   link to 'ignore', when searching for a NBT or NBD
+     *   link connected to node
+     */
+    hasNBLink: function(node, link) {
+        var localLinks = graph.getLinks();
+        for(var i = 0; i < localLinks.length; i++) {
+            if ((localLinks[i]!=link) && (localLinks[i].prop("link-type") == 'NBT' || localLinks[i].prop("link-type") == 'NBD')){
+                if(localLinks[i].getTargetElement() == node || localLinks[i].getSourceElement() == node){
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    },
+
+    /**
+     * Returns true iff the node has NB as its function value
+     *
+     * @param {joint.dia.Element} node
+     */
+    hasNBTag: function(node) {
+        return node.prop('.funcvalue/text') == 'NB';
     },
     updateActorLink: function() {
         var link = this._cellView.model;
