@@ -30,9 +30,7 @@ $('#analysis-btn').on('click', function() {
 function switchToAnalysisMode() {
 	
 	// Clear the right panel
-	elementInspector.clear();
-	linkInspector.clear();
-	constraintsInspector.clear();
+	clearInspector();
 
 	analysisInspector.render();
 
@@ -75,6 +73,9 @@ $('#model-cur-btn').on('click', function() {
  * Display the modeling mode page
  */
 function switchToModellingMode() {
+
+	clearInspector();
+
 	// Reset to initial graph prior to analysis
 	for (var i = 0; i < graph.elementsBeforeAnalysis.length; i++) {
 		var value = graph.elementsBeforeAnalysis[i]
@@ -83,7 +84,6 @@ function switchToModellingMode() {
 
 	graph.elementsBeforeAnalysis = [];
 
-	analysisInspector.clear();
 	$('#stencil').css("display","");
 	$('#history').css("display","none");
 
@@ -319,12 +319,11 @@ paper.on('blank:pointerclick', function(){
 
 // Link equivalent of the element editor
 paper.on("link:options", function(evt, cell){
-	if(mode == "Analysis")
-		return
+	if(mode == "Analysis") {
+		return;
+	}
 
-	linkInspector.clear();
-	constraintsInspector.clear();
-	elementInspector.clear();
+	clearInspector();
 	linkInspector.render(cell);
 
 });
@@ -412,7 +411,7 @@ paper.on('cell:pointerup', function(cellView, evt) {
         }
 		selection.reset();
 		selection.add(cellView.model);
-		var cell = cellView.model;
+
 		var elements = graph.getElements();
 		// Remove highlight of other elements
 		removeHighlight(elements);
@@ -422,7 +421,10 @@ paper.on('cell:pointerup', function(cellView, evt) {
 
 		currentHalo = createHalo(cellView);
 
-		embedBasicActor(cellView, cell);
+		embedBasicActor(cellView);
+
+		clearInspector();
+		elementInspector.render(cellView);
     }
 });
 
@@ -430,24 +432,20 @@ paper.on('cell:pointerup', function(cellView, evt) {
  * Embed an element into an actor boundary
  * 
  */
-function embedBasicActor(cellView, cell){
+function embedBasicActor(cellView){
 	// Embed an element into an actor boundary, if necessary
 	if (!(cellView.model instanceof joint.shapes.basic.Actor)) {
-		var ActorsBelow = paper.findViewsFromPoint(cell.getBBox().center());
+		var ActorsBelow = paper.findViewsFromPoint(cellView.model.getBBox().center());
 
 		if (ActorsBelow.length) {
 			for (var a = 0; a < ActorsBelow.length; a++) {
 				if (ActorsBelow[a].model instanceof joint.shapes.basic.Actor) {
-					ActorsBelow[a].model.embed(cell);
+					ActorsBelow[a].model.embed(cellView.model);
 				}
 			}
 		}
 	}
 
-	linkInspector.clear();
-	constraintsInspector.clear();
-	elementInspector.render(cellView);
-	
 }
 
 
@@ -489,6 +487,17 @@ graph.on('remove', function(cell, collection, opt) {
 		}
 	}
 });
+
+
+/**
+ * Clear the .inspector div
+ */
+function clearInspector() {
+	elementInspector.clear();
+	linkInspector.clear();
+	constraintsInspector.clear();
+	analysisInspector.clear();
+}
 
 
 /**
