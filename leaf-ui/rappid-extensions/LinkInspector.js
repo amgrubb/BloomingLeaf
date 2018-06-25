@@ -8,6 +8,23 @@ var LinkInspector = Backbone.View.extend({
         '<label id="title">Constant Relationship</label>',
         '<br>',
         '<select id="constant-links" class="link-type">',
+            '<option value=“no”>No Relationship</option>',
+            '<option value=“and”>And-Decomposition</option>',
+            '<option value=“or”>Or-Decomposition</option>',
+            '<option value=“++“>++</option>',
+            '<option value=“--“>--</option>',
+            '<option value=“+”>+</option>',
+            '<option value=“-”>-</option>',
+            '<option value=“+S”>+S</option>',
+            '<option value=“++S”>++S</option>',
+            '<option value=“-S”>-S</option>',
+            '<option value=“--S”>--S</option>',
+            '<option value=“+D”>+D</option>',
+            '<option value=“++D”>++D</option>',
+            '<option value=“-D”>-D</option>',
+            '<option value=“--D”>--D</option>',
+            '<option value=“NBT”>Not Both (None)</option>',
+            '<option value=“NBD”>Not Both (Denied)</option>',
         '</select>',
         '<h5 id="repeat-error" class="inspector-error"></h5>',
             '<button id="switch-link-type" class="inspector-btn small-btn blue-btn">Evolving Relationships</button>',
@@ -61,14 +78,14 @@ var LinkInspector = Backbone.View.extend({
                 this.$el.html(_.template(this.evolvingtemplate)());
                 this.setSelectValues('#link-type-begin', 'Evolving');
                 $('#link-type-begin').val(values[0]).change();
-                this.updateBeginEvolRelations;
+                this.updateBeginEvolRelations();
                 $('#link-type-end').val(values[1]);
 
             // Else, display the constant relationship template
             } else {
                 this.evolvingRelations = false;
                 this.$el.html(_.template(this.template)());
-                this.setSelectValues('#constant-links', 'Constant');
+                // this.setSelectValues('#constant-links', 'Constant');
                 $('#constant-links').val(values[0]);
             }
         }
@@ -80,7 +97,7 @@ var LinkInspector = Backbone.View.extend({
     },
 
     /**
-     * Switches from Constant Relationship to Evoloving Relationship
+     * Switches from Constant Relationship to Evolving Relationship
      * and vice-versa.
      *
      * This function is called on click for #switch-link-type
