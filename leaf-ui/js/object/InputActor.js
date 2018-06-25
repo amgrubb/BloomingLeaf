@@ -1,3 +1,6 @@
+/**
+ * This class contains information about an actor in the graph
+ */
 class InputActor {
 	constructor(nodeId, nodeName, nodeType) {
 		this.nodeId = nodeId;
@@ -8,6 +11,8 @@ class InputActor {
 
 /**
  * Returns an array of InputActors
+ *
+ * @returns {Array.<InputActor>}
  */
 function getActors(){
 

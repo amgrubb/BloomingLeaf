@@ -1,20 +1,22 @@
-// function InputIntention(nodeActorID, nodeID, nodeType, nodeName){
-// 	this.nodeActorID = nodeActorID;
-// 	this.nodeID = nodeID ;
-// 	this.nodeType = nodeType;
-// 	this.nodeName = nodeName;
-// }
-
+/**
+ * This class contains information about an intention
+ */
 class InputIntention {
 	constructor(nodeActorID, nodeID, nodeType, nodeName) {
-		this.nodeActorID = nodeActorID;
+		this.nodeActorID = nodeActorID; // parent actor id
 		this.nodeID = nodeID ;
 		this.nodeType = nodeType;
 		this.nodeName = nodeName;
 	}
 }
 
-function getIntentitonalElements(){
+/**
+ * Returns an array containing InputIntentions representing all 
+ * intentions currently on the graph
+ *
+ * @returns {Array.<InputIntention>}
+ */
+function getIntentitonalElements() {
 	
 	var intentions = [];
 	var intentionsCount = 0;

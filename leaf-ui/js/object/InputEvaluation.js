@@ -1,3 +1,7 @@
+/**
+ * This class contains information about the values
+ * in the intermediate values table in the analysisInspector
+ */
 class InputEvaluation {
 	constructor(goal, absTime, evaluationValue) {
 		this.goal = goal;
@@ -6,6 +10,11 @@ class InputEvaluation {
 	}
 }
 
+/**
+ * Returns an array of all current element's ids
+ *
+ * @returns {Array.<String>}
+ */
 function returnElementIds(){
 	var elements = graph.getElements();
 	var elementLst = [];
@@ -17,7 +26,13 @@ function returnElementIds(){
 	return elementLst;
 }
 
-// This function is used to get values from the intermediate values table for the analysisInspector
+
+/**
+ * Returns an array of InputEvaluations, each containing information
+ * about user evaluations stored in the intermediate values table
+ *
+ * @returns {Array.<InputEvaluation>}
+ */
 function getUserEvaluations(){
 	var evaluations = [];
 	var elementList = returnElementIds();

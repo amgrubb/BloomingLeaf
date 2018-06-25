@@ -1,3 +1,6 @@
+/**
+ * This class contains time-related information for the analysis
+ */
 class InputAnalysis {
 	constructor(action) {
 		this.action = action; //'singlePath' or 'allNextStates'

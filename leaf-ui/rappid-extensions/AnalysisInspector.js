@@ -502,7 +502,7 @@ var AnalysisInspector = Backbone.View.extend({
 				var constraintSrcID = nameIdMapper[extractGoal1];
 				var constraintDestID = nameIdMapper[extractGoal2];
 				var type = relationshipLists[i].value;
-				debugger
+
 				if (type == 'eq') {
 					type = '=';
 				} else if (type=='lt') {

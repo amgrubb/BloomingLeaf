@@ -1,3 +1,8 @@
+/**
+ * This class contains information about Intention constraints
+ * from the analysisInspector
+ * (both absolute and relative intention constraints)
+ */
 class InputConstraint {
 	constructor(constraintType, constraintSrcID, constraintSrcEB, absoluteValue, constraintDestID, constraintDestEB) {
 		this.constraintType = constraintType;  	// "<" "=" "A"
@@ -9,6 +14,13 @@ class InputConstraint {
 	}
 }
 
+/**
+ * Returns an array of InputConstraints, each containing information
+ * about an Absolute Intention constraint or a Relative Intention constraint. 
+ * for the graph. 
+ * 
+ * @returns {Array.<InputConstraints>}
+ */
 function getConstraints(){
 	var constraints = [];
 	var links = graph.constraintValues;//graph.intensionConstraints;

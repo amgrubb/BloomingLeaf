@@ -1,3 +1,6 @@
+/**
+ * This class contains information about functions for intentions
+ */
 class InputDynamic {
 	constructor(intentionID, dynamicType, markedValue, line = null) {
 		this.intentionID = intentionID;
