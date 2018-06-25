@@ -47,12 +47,12 @@ function getDynamics() {
 	    } else if(f == " ") {
     		ioDynamic = new InputDynamic(elementID, "NT", initValue);
 	    } else if (f != "UD") {
-		if (isNaN(parseInt(funcTypeVal))) {
-		    funcTypeVal = satValueDict[funcTypeVal];
-		}
+			if (isNaN(parseInt(funcTypeVal))) {
+		    	funcTypeVal = satValueDict[funcTypeVal];
+			}
 			ioDynamic = new InputDynamic(elementID, f, funcTypeVal);		//Passing Dynamic Values
-    		// user defined constraints
 	    } else {
+	    	// user defined constraints
 	    	var line = "";
     		var begin = elements[e].attr(".constraints/beginLetter");
 			var end = elements[e].attr(".constraints/endLetter");
@@ -86,5 +86,4 @@ function getDynamics() {
 
 	}
 	return dynamics;
-
 }

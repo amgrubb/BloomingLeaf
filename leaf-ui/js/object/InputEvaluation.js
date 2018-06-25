@@ -1,9 +1,3 @@
-// function InputEvaluation(goal, absTime, evaluationValue) {
-// 	this.goal = goal;
-// 	this.absTime = absTime;
-// 	this.evaluationValue = evaluationValue;
-// }
-
 class InputEvaluation {
 	constructor(goal, absTime, evaluationValue) {
 		this.goal = goal;
