@@ -607,20 +607,6 @@ var AnalysisInspector = Backbone.View.extend({
 	},
 
 	/**
-	 * Used in InputEvaluation
-	 */
-	returnElementIds: function(){
-		var elements = graph.getElements();
-		var elementLst = [];
-		for (var i = 0; i < elements.length; i++){
-			var cellView = elements[i].findView(paper);
-			var cell = cellView.model;
-			elementLst.push(cell.attributes.elementid);
-		}
-		return elementLst;
-	},
-
-	/**
 	 * 
 	 */
 	saveIntermTable: function(){
