@@ -153,9 +153,8 @@ var AnalysisInspector = Backbone.View.extend({
 	singlePath: function() {
 		//Create the object and fill the JSON file to be sent to backend.
 		//Get the AnalysisInspector view information
-		var analysis = new InputAnalysis();
-		//Set the type of analysis
-		analysis.action = "singlePath";
+		var analysis = new InputAnalysis("singlePath");
+
 		//Prepare and send data to backend
 		this.sendToBackend(analysis);
 	},
@@ -169,9 +168,8 @@ var AnalysisInspector = Backbone.View.extend({
 	getAllNextStates: function() {
 		//Create the object and fill the JSON file to be sent to backend.
 		//Get the AnalysisInspector view information
-		var analysis = new InputAnalysis();
-		//Set the type of analysis
-		analysis.action = "allNextStates";
+		var analysis = new InputAnalysis("allNextStates");
+
 		//Prepare and send data to backend
 		this.sendToBackend(analysis);
 
@@ -185,12 +183,15 @@ var AnalysisInspector = Backbone.View.extend({
 	 *   InputAnalysis() object
 	 */
 	sendToBackend: function(analysis){
+
+		// Object to be sent to the backend
 		var jsObject = {};
-		jsObject.analysis = getAnalysisValues(analysis);
+		jsObject.analysis = analysis;
+
 		//Get the Graph Model
 		jsObject.model = getFrontendModel(false);
 
-		this.saveElementsInGlobalVariable();
+		this.saveElementsInGraphVariable();
 
 		if(jsObject.model == null) {
 			return null;
@@ -627,7 +628,11 @@ var AnalysisInspector = Backbone.View.extend({
 
 		this.dismissIntermTable();
 	},
-	saveElementsInGlobalVariable: function(){
+
+	/**
+	 * Save elements in the respective graph attributes
+	 */
+	saveElementsInGraphVariable: function(){
 		var elements = [];
 		for (var i = 0; i < graph.getElements().length; i++){
 			if (!(graph.getElements()[i] instanceof joint.shapes.basic.Actor)){

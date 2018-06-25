@@ -1,9 +1,19 @@
-function InputLink(linkType, linkSrcID, linkDestID, postType = null, absVal = -1){
-	this.linkType = linkType;
-	this.linkSrcID = linkSrcID;
-	this.linkDestID = linkDestID;
-	this.postType = postType;
-	this.absoluteValue = absVal;
+// function InputLink(linkType, linkSrcID, linkDestID, postType = null, absVal = -1){
+// 	this.linkType = linkType;
+// 	this.linkSrcID = linkSrcID;
+// 	this.linkDestID = linkDestID;
+// 	this.postType = postType;
+// 	this.absoluteValue = absVal;
+// }
+
+class InputLink {
+	constructor(linkType, linkSrcID, linkDestID, postType = null, absVal = -1) {
+		this.linkType = linkType;
+		this.linkSrcID = linkSrcID;
+		this.linkDestID = linkDestID;
+		this.postType = postType;
+		this.absoluteValue = absVal;
+	}
 }
 
 function getLinks(){

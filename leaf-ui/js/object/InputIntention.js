@@ -1,8 +1,17 @@
-function InputIntention(nodeActorID, nodeID, nodeType, nodeName){
-	this.nodeActorID = nodeActorID;
-	this.nodeID = nodeID ;
-	this.nodeType = nodeType;
-	this.nodeName = nodeName;
+// function InputIntention(nodeActorID, nodeID, nodeType, nodeName){
+// 	this.nodeActorID = nodeActorID;
+// 	this.nodeID = nodeID ;
+// 	this.nodeType = nodeType;
+// 	this.nodeName = nodeName;
+// }
+
+class InputIntention {
+	constructor(nodeActorID, nodeID, nodeType, nodeName) {
+		this.nodeActorID = nodeActorID;
+		this.nodeID = nodeID ;
+		this.nodeType = nodeType;
+		this.nodeName = nodeName;
+	}
 }
 
 function getIntentitonalElements(){

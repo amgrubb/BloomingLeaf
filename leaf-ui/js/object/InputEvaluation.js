@@ -1,8 +1,17 @@
-function InputEvaluation(goal, absTime, evaluationValue) {
-	this.goal = goal;
-	this.absTime = absTime;
-	this.evaluationValue = evaluationValue;
+// function InputEvaluation(goal, absTime, evaluationValue) {
+// 	this.goal = goal;
+// 	this.absTime = absTime;
+// 	this.evaluationValue = evaluationValue;
+// }
+
+class InputEvaluation {
+	constructor(goal, absTime, evaluationValue) {
+		this.goal = goal;
+		this.absTime = absTime;
+		this.evaluationValue = evaluationValue;
+	}
 }
+
 function returnElementIds(){
 	var elements = graph.getElements();
 	var elementLst = [];

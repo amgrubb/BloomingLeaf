@@ -1,16 +1,26 @@
-function InputAnalysis(){
-	this.action = null;
-	this.maxAbsTime = null;
-	this.conflictLevel = null;
-	this.numRelTime = null;
-	this.absTimePts = null;
-	this.currentState = "0";
-	this.initialAssignedEpoch = ["0"];
-	this.initialValueTimePoints = ["0"];
-	this.elementList = null;
+class InputAnalysis {
+	constructor(action) {
+		this.action = action; //'singlePath' or 'allNextStates'
+		this.maxAbsTime = null;
+		this.conflictLevel = null;
+		this.numRelTime = null;
+		this.absTimePts = null;
+		this.currentState = '0';
+		this.initialAssignedEpoch = ['0'];
+		this.initialValueTimePoints = ['0'];
+		this.elementList = null;
+
+		// set attributes
+		getAnalysisValues(this);
+	}
 }
 
-function getAnalysisValues(analysisInterface){
+/**
+ * Modify analysisInterface by setting its attributes
+ *
+ * @param {InputAnalysis} analysisInterface
+ */
+function getAnalysisValues(analysisInterface) {
 	//Data required for 1. Simulate Single Path
 	analysisInterface.maxAbsTime = $('#max-abs-time').val();
 	analysisInterface.conflictLevel = $('#conflict-level').val();

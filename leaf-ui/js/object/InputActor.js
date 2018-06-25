@@ -1,10 +1,16 @@
-function InputActor(nodeId, nodeName, nodeType){
-	this.nodeId = nodeId;
-	this.nodeName = nodeName;
-	this.nodeType = nodeType;
+class InputActor {
+	constructor(nodeId, nodeName, nodeType) {
+		this.nodeId = nodeId;
+		this.nodeName = nodeName;
+		this.nodeType = nodeType;
+	}
 }
 
+/**
+ * Returns an array of InputActors
+ */
 function getActors(){
+
 	var elements = graph.getElements();
 	
 	//Help variable to count the length of actors
@@ -13,14 +19,16 @@ function getActors(){
 	var actorsList = [];
 	
 	//Select only actors elements
-	for (var i = 0; i < elements.length; i++){
-		if ((elements[i] instanceof joint.shapes.basic.Actor)){
+	for (var i = 0; i < elements.length; i++) {
+		if ((elements[i] instanceof joint.shapes.basic.Actor)) {
 			var actorId = actorCounter.toString();
 			//Making that the id has 4 digits
-			while (actorId.length < 3){ 
+			while (actorId.length < 3) { 
 				actorId = "0" + actorId;
-				}
+			}
+
 			actorId = "a" + actorId;
+
 			//Adding the new id to the UI graph element
 			elements[i].prop("elementid", actorId);
 			

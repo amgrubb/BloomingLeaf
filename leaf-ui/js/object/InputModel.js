@@ -1,18 +1,29 @@
 //This is the object that contains all model information to be sent to backend
-function FrontendModel(
-		actors,
-		intentions,
-		links,
-		dynamics,
-		constraints,
-		userEvaluations
-	){
-	this.actors = actors;// = [];
-	this.intentions = intentions;// = [];
-	this.links = links;// = [];
-	this.dynamics = dynamics;// = [];
-	this.constraints = constraints;// = [];
-	this.userEvaluations = userEvaluations;
+// function FrontendModel(
+// 		actors,
+// 		intentions,
+// 		links,
+// 		dynamics,
+// 		constraints,
+// 		userEvaluations
+// 	){
+// 	this.actors = actors;// = [];
+// 	this.intentions = intentions;// = [];
+// 	this.links = links;// = [];
+// 	this.dynamics = dynamics;// = [];
+// 	this.constraints = constraints;// = [];
+// 	this.userEvaluations = userEvaluations;
+// }
+
+class FrontendModel {
+	constructor(actors, intentions, links, dynamics, constraints, userEvaluations) {
+		this.actors = actors;
+		this.intentions = intentions;
+		this.links = links;
+		this.dynamics = dynamics;
+		this.constraints = constraints;
+		this.userEvaluations = userEvaluations;
+	}
 }
 
 //This method is responsible to get all data from the UI and add in to a object to be sent to backend
