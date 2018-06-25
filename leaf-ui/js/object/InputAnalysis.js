@@ -1,50 +1,16 @@
 class InputAnalysis {
 	constructor(action) {
 		this.action = action; //'singlePath' or 'allNextStates'
-		this.maxAbsTime = null;
-		this.conflictLevel = null;
-		this.numRelTime = null;
-		this.absTimePts = null;
-		this.currentState = '0';
-		this.initialAssignedEpoch = ['0'];
-		this.initialValueTimePoints = ['0'];
-		this.elementList = null;
-
-		// set attributes
-		getAnalysisValues(this);
+		this.maxAbsTime = $('#max-abs-time').val();
+		this.conflictLevel = $('#conflict-level').val();
+		this.absTimePts = $('#abs-time-pts').val();
+		this.currentState = $('#sliderValue').text();
+		this.initialAssignedEpoch = savedAnalysisData.finalAssignedEpoch ? savedAnalysisData.finalAssignedEpoch : ['0'];
+		this.initialValueTimePoints = savedAnalysisData.finalValueTimePoints ? savedAnalysisData.finalValueTimePoints:
+			['0'];
+		this.elementList = getElementsForAnalysis();
+        this.numRelTime = $('#num-rel-time').val();
 	}
-}
-
-/**
- * Modify analysisInterface by setting its attributes
- *
- * @param {InputAnalysis} analysisInterface
- */
-function getAnalysisValues(analysisInterface) {
-	//Data required for 1. Simulate Single Path
-	analysisInterface.maxAbsTime = $('#max-abs-time').val();
-	analysisInterface.conflictLevel = $('#conflict-level').val();
-	analysisInterface.numRelTime = $('#num-rel-time').val();
-	if($('#abs-time-pts').val()){
-		analysisInterface.absTimePts = $('#abs-time-pts').val();
-	}
-	analysisInterface.elementList = getElementsForAnalysis();
-
-	//Data required for 2. Explore Possible Next States
-	if(savedAnalysisData.finalAssignedEpoch){
-		analysisInterface.initialAssignedEpoch = savedAnalysisData.finalAssignedEpoch;
-	}
-
-	if(savedAnalysisData.finalValueTimePoints){
-		analysisInterface.initialValueTimePoints = savedAnalysisData.finalValueTimePoints;
-	}
-
-	if($('#sliderValue').text()){
-		analysisInterface.currentState = $('#sliderValue').text();
-	}
-	analysisInterface.numRelTime = $('#num-rel-time').val();
-
-	return analysisInterface;
 }
 
 /**
