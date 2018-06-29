@@ -8,23 +8,23 @@ var LinkInspector = Backbone.View.extend({
         '<label id="title">Constant Relationship</label>',
         '<br>',
         '<select id="constant-links" class="link-type">',
-            '<option value=“no”>No Relationship</option>',
-            '<option value=“and”>And-Decomposition</option>',
-            '<option value=“or”>Or-Decomposition</option>',
-            '<option value=“++“>++</option>',
-            '<option value=“--“>--</option>',
-            '<option value=“+”>+</option>',
-            '<option value=“-”>-</option>',
-            '<option value=“+S”>+S</option>',
-            '<option value=“++S”>++S</option>',
-            '<option value=“-S”>-S</option>',
-            '<option value=“--S”>--S</option>',
-            '<option value=“+D”>+D</option>',
-            '<option value=“++D”>++D</option>',
-            '<option value=“-D”>-D</option>',
-            '<option value=“--D”>--D</option>',
-            '<option value=“NBT”>Not Both (None)</option>',
-            '<option value=“NBD”>Not Both (Denied)</option>',
+            '<option value="no">No Relationship</option>',
+            '<option value="and">And-Decomposition</option>',
+            '<option value="or">Or-Decomposition</option>',
+            '<option value="++">++</option>',
+            '<option value="--">--</option>',
+            '<option value="+">+</option>',
+            '<option value="-">-</option>',
+            '<option value="+S">+S</option>',
+            '<option value="++S">++S</option>',
+            '<option value="-S">-S</option>',
+            '<option value="--S">--S</option>',
+            '<option value="+D">+D</option>',
+            '<option value="++D">++D</option>',
+            '<option value="-D">-D</option>',
+            '<option value="--D">--D</option>',
+            '<option value="NBT">Not Both (None)</option>',
+            '<option value="NBD">Not Both (Denied)</option>',
         '</select>',
         '<h5 id="repeat-error" class="inspector-error"></h5>',
             '<button id="switch-link-type" class="inspector-btn small-btn blue-btn">Evolving Relationships</button>',
@@ -154,7 +154,7 @@ var LinkInspector = Backbone.View.extend({
         }
 
         // Adding or removing tags from node depending on type of link
-        if (link.prop("link-type") == 'NBT' || link.prop("link-type") == 'NBD'){
+        if (link.prop("link-type") == 'NBT' || link.prop("link-type") == 'NBD' || link.prop("link-type") == 'and' link.prop("link-type") == 'or') {
             source.attr(".funcvalue/text", "NB");
             source.attr(".satvalue/text", "");
             source.attr(".satvalue/value", "");
