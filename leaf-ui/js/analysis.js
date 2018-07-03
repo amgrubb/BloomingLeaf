@@ -530,7 +530,7 @@ function add_filter(){
                             (value == "1001") ||
                             (value == "1101") ||
                             (value == "1011"))){
-                            actors[tempResults.allSolution[solution_index].intentionElements[element_index].actorId] ++;
+                            actors[tempResults.allSolution[solution_index].intentionElements[element_index].actorId] =1;
                         }
                     }
                     var int_sat = Object.values(actors).reduce((a, b) => a + b);
@@ -575,9 +575,11 @@ function add_filter(){
                             (value == "1001") ||
                             (value == "1101") ||
                             (value == "1011"))){
-                            actors[tempResults.allSolution[solution_index].intentionElements[element_index].actorId] ++;
+                            actors[tempResults.allSolution[solution_index].intentionElements[element_index].actorId] =1;
                         }
                     }
+                    console.log(actors);
+                    console.log(Object.values(actors).reduce((a, b) => a + b));
                     var int_sat = Object.values(actors).reduce((a, b) => a + b);
                     if (most_actor < int_sat){
                         most_actor = int_sat;
@@ -598,7 +600,19 @@ function add_filter(){
                 }
                 break;
             case "mostConstraintSatisfaction":
-                
+                var domains = {};
+                for (var solution_index = 0; solution_index < tempResults.allSolution.length; solution_index++) {
+                    for (var element_index = 0; element_index < tempResults.allSolution[solution_index].intentionElements.length; element_index++) {
+                        if (! domains[tempResults.allSolution[solution_index].intentionElements[element_index].id]){
+                            domains[tempResults.allSolution[solution_index].intentionElements[element_index].id] = [tempResults.allSolution[solution_index].intentionElements[element_index].status[0]];
+                        } else {
+                            if (domains[tempResults.allSolution[solution_index].intentionElements[element_index].id].indexOf(tempResults.allSolution[solution_index].intentionElements[element_index].status[0]) == -1){
+                                domains[tempResults.allSolution[solution_index].intentionElements[element_index].id].push(tempResults.allSolution[solution_index].intentionElements[element_index].status[0])
+                            }
+                        }
+                    }
+                }
+                console.log(domains);
                 break;
             default:
                 console.log("default");
