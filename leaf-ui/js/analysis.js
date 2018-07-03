@@ -5,7 +5,7 @@ analysis.analysisResult;
 analysis.elements = [];
 analysis.currentState;
 var tempResults;
-
+var filterOrderQueue = [];
 //This merge the attributes of old page and new page
 analysis.page = jQuery.extend({}, window.opener.document);
 
@@ -14,6 +14,7 @@ window.onload = function(){
     init();
     renderNavigationSidebar();
     tempResults = $.extend(true,{}, analysis.parentResults);
+
 }
 
 function init(){
@@ -229,202 +230,380 @@ function goToState(){
 
 
 function add_filter(){
-    if (document.getElementsByClassName("filter_checkbox").length == 0){
-        tempResults = $.extend(true,{}, analysis.parentResults);
+    console.log("clicked");
+    tempResults = $.extend(true,{}, analysis.parentResults);
+    var checkboxes = document.getElementsByClassName("filter_checkbox");
+    for (var i_element = 0; i_element < checkboxes.length; i_element++){
+        var checkbox = checkboxes[i_element];
+        // check if something is just checked
+        if (checkbox.checked){
+            if (filterOrderQueue.indexOf(checkbox.id) == -1){
+                filterOrderQueue.push(checkbox.id);
+            }
+        }
+        // check if something is just unchecked
+        else{
+            if (filterOrderQueue.indexOf(checkbox.id) != -1){
+                filterOrderQueue.splice(filterOrderQueue.indexOf(checkbox.id), 1);
+            }
+        }
     }
+    console.log(filterOrderQueue);
 
-    for(var i_element = 0; i_element < document.getElementsByClassName("filter_checkbox").length; i_element++){
-        checkbox = document.getElementsByClassName("filter_checkbox")[i_element]
+    for(var i_element = 0; i_element <  filterOrderQueue.length; i_element++){
+        switch(filterOrderQueue[i_element]){
+            case "conflictFl":
+                console.log("conflictFl");
+                console.log(tempResults.allSolution.length);
+                var index_to_rm = [];
+                for (var solution_index=0; solution_index < tempResults.allSolution.length; solution_index++) {
+                    for (var element_index=0; element_index < tempResults.allSolution[solution_index].intentionElements.length; element_index++){
+                        var value = tempResults.allSolution[solution_index].intentionElements[element_index].status[0];
+                        if (	(value == "0110") ||
+                            (value == "0111") ||
+                            (value == "0101") ||
+                            (value == "1110") ||
+                            (value == "1010") ||
+                            (value == "1111") ||
+                            (value == "1001") ||
+                            (value == "1101") ||
+                            (value == "1011") ){
+                            index_to_rm.push(solution_index);
+                            break;
+                        }
+                    }
+                }
+                for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
+                    tempResults.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
+                }
+                break;
+            case "ttFl":
+                console.log("ttFl");
+                console.log(tempResults.allSolution.length);
 
-        if((checkbox.id == "conflictFl") && (checkbox.checked)){
-            var index_to_rm = [];
-            for (var solution_index=0; solution_index < tempResults.allSolution.length; solution_index++) {
-                for (var element_index=0; element_index < tempResults.allSolution[solution_index].intentionElements.length; element_index++){
-                    var value = tempResults.allSolution[solution_index].intentionElements[element_index].status[0];
-                    if (	(value == "0110") ||
-                        (value == "0111") ||
-                        (value == "0101") ||
-                        (value == "1110") ||
-                        (value == "1010") ||
-                        (value == "1111") ||
-                        (value == "1001") ||
-                        (value == "1101") ||
-                        (value == "1011") ){
+                var index_to_rm = [];
+                for (var solution_index=0; solution_index < tempResults.allSolution.length; solution_index++) {
+                    for (var element_index=0; element_index < tempResults.allSolution[solution_index].intentionElements.length; element_index++){
+                        var value = tempResults.allSolution[solution_index].intentionElements[element_index].status[0];
+                        if (	value == "0000"){
+                            index_to_rm.push(solution_index);
+                            break;
+                        }
+                    }
+                }
+                for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
+                    tempResults.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
+                }
+                break;
+            case "leastTasksSatisfied":
+                console.log("leastTasksSatisfied");
+                console.log(tempResults.allSolution.length);
+
+                var index_to_keep = [];
+                var index_to_rm = [];
+
+                var least_t_s = tempResults.allSolution.length;
+                for (var solution_index=0; solution_index < tempResults.allSolution.length; solution_index++) {
+                    var num_t_s = 0;
+                    for (var element_index=0; element_index < tempResults.allSolution[solution_index].intentionElements.length; element_index++){
+                        //
+                        if (tempResults.allSolution[solution_index].intentionElements[element_index].type === "TASK"){
+                            var value = tempResults.allSolution[solution_index].intentionElements[element_index].status[0];
+                            if ((value == "0010" || value == "0011")){
+                                num_t_s ++;
+                            }
+                        }
+                    }
+                    if (least_t_s > num_t_s){
+                        least_t_s = num_t_s;
+                        index_to_rm = index_to_rm.concat(index_to_keep);
+                        index_to_keep = [];
+                    }
+                    if (num_t_s == least_t_s){
+                        index_to_keep.push(solution_index);
+                    }
+                    if (num_t_s > least_t_s){
                         index_to_rm.push(solution_index);
-                        break;
                     }
                 }
-            }
-            for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
-                tempResults.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
-            }
-        }
+                index_to_rm.sort(function(a, b){return a-b});
+                for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
+                    tempResults.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
+                }
+                break;
+            case "mostTasksSatisfied":
+                console.log("mostTasksSatisfied");
+                console.log(tempResults.allSolution.length);
 
-        if((checkbox.id == "ttFl") && (checkbox.checked)){
-            var index_to_rm = [];
-            for (var solution_index=0; solution_index < tempResults.allSolution.length; solution_index++) {
-                for (var element_index=0; element_index < tempResults.allSolution[solution_index].intentionElements.length; element_index++){
-                    var value = tempResults.allSolution[solution_index].intentionElements[element_index].status[0];
-                    if (	value == "0000"){
+                var index_to_keep = [];
+                var index_to_rm = [];
+
+                var most_t_s = 0;
+                for (var solution_index=0; solution_index < tempResults.allSolution.length; solution_index++) {
+                    var num_t_s = 0;
+                    for (var element_index=0; element_index < tempResults.allSolution[solution_index].intentionElements.length; element_index++){
+                        //
+                        if (tempResults.allSolution[solution_index].intentionElements[element_index].type === "TASK"){
+                            var value = tempResults.allSolution[solution_index].intentionElements[element_index].status[0];
+                            if ((value == "0010" || value == "0011")){
+                                num_t_s ++;
+                            }
+                        }
+                    }
+                    if (most_t_s < num_t_s){
+                        most_t_s = num_t_s;
+                        index_to_rm = index_to_rm.concat(index_to_keep);
+                        index_to_keep = [];
+                    }
+                    if (num_t_s == most_t_s){
+                        index_to_keep.push(solution_index);
+                    }
+                    if (num_t_s < most_t_s){
                         index_to_rm.push(solution_index);
-                        break;
                     }
                 }
-            }
-            for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
-                tempResults.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
-            }
-        }
+                index_to_rm.sort(function(a, b){return a-b});
+                for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
+                    tempResults.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
+                }
+                break;
+            case "leastResource":
+                console.log("leastResource");
+                console.log(tempResults.allSolution.length);
 
+                var index_to_keep = [];
+                var index_to_rm = [];
 
-        if ((checkbox.id == "leastTasksSatisfied") && (checkbox.checked)){
-            var index_to_keep = [];
-            var index_to_rm = [];
-
-            var least_t_s = tempResults.allSolution.length;
-            for (var solution_index=0; solution_index < tempResults.allSolution.length; solution_index++) {
-                var num_t_s = 0;
-                for (var element_index=0; element_index < tempResults.allSolution[solution_index].intentionElements.length; element_index++){
-                    //
-                    if (tempResults.allSolution[solution_index].intentionElements[element_index].type === "TASK"){
-                        var value = tempResults.allSolution[solution_index].intentionElements[element_index].status[0];
-                        if ((value == "0010" || value == "0011")){
-                            num_t_s ++;
+                var least_r_s = tempResults.allSolution.length;
+                for (var solution_index=0; solution_index < tempResults.allSolution.length; solution_index++) {
+                    var num_r_s = 0;
+                    for (var element_index=0; element_index < tempResults.allSolution[solution_index].intentionElements.length; element_index++){
+                        if (tempResults.allSolution[solution_index].intentionElements[element_index].type === "RESOURCE"){
+                            var value = tempResults.allSolution[solution_index].intentionElements[element_index].status[0];
+                            if ((value == "0010" || value == "0011")){
+                                num_r_s ++;
+                            }
                         }
                     }
+                    if (least_r_s > num_r_s){
+                        least_r_s = num_r_s;
+                        index_to_rm = index_to_rm.concat(index_to_keep);
+                        index_to_keep = [];
+                    }
+                    if (num_r_s == least_r_s){
+                        index_to_keep.push(solution_index);
+                    }
+                    if (num_r_s > least_r_s){
+                        index_to_rm.push(solution_index);
+                    }
                 }
-                if (least_t_s > num_t_s){
-                    least_t_s = num_t_s;
-                    index_to_rm = index_to_rm.concat(index_to_keep);
-                    index_to_keep = [];
+                index_to_rm.sort(function(a, b){return a-b});
+                for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
+                    tempResults.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
                 }
-                if (num_t_s == least_t_s){
-                    index_to_keep.push(solution_index);
-                }
-                if (num_t_s > least_t_s){
-                    index_to_rm.push(solution_index);
-                }
-            }
-            index_to_rm.sort(function(a, b){return a-b});
-            for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
-                tempResults.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
-            }
-        }
+                break;
+            case "mostResource":
+                console.log("mostResource");
+                console.log(tempResults.allSolution.length);
 
-        if ((checkbox.id == "leastResource") && (checkbox.checked)){
-            var index_to_keep = [];
-            var index_to_rm = [];
+                var index_to_keep = [];
+                var index_to_rm = [];
 
-            var least_r_s = tempResults.allSolution.length;
-            for (var solution_index=0; solution_index < tempResults.allSolution.length; solution_index++) {
-                var num_r_s = 0;
-                for (var element_index=0; element_index < tempResults.allSolution[solution_index].intentionElements.length; element_index++){
-                    if (tempResults.allSolution[solution_index].intentionElements[element_index].type === "RESOURCE"){
-                        var value = tempResults.allSolution[solution_index].intentionElements[element_index].status[0];
-                        if ((value == "0010" || value == "0011")){
-                            num_r_s ++;
+                var most_r_s = 0;
+                for (var solution_index=0; solution_index < tempResults.allSolution.length; solution_index++) {
+                    var num_r_s = 0;
+                    for (var element_index=0; element_index < tempResults.allSolution[solution_index].intentionElements.length; element_index++){
+                        if (tempResults.allSolution[solution_index].intentionElements[element_index].type === "RESOURCE"){
+                            var value = tempResults.allSolution[solution_index].intentionElements[element_index].status[0];
+                            if ((value == "0010" || value == "0011")){
+                                num_r_s ++;
+                            }
                         }
                     }
+                    if (most_r_s < num_r_s){
+                        most_r_s = num_r_s;
+                        index_to_rm = index_to_rm.concat(index_to_keep);
+                        index_to_keep = [];
+                    }
+                    if (num_r_s == most_r_s){
+                        index_to_keep.push(solution_index);
+                    }
+                    if (num_r_s < most_r_s){
+                        index_to_rm.push(solution_index);
+                    }
                 }
-                if (least_r_s > num_r_s){
-                    least_r_s = num_r_s;
-                    index_to_rm = index_to_rm.concat(index_to_keep);
-                    index_to_keep = [];
+                index_to_rm.sort(function(a, b){return a-b});
+                for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
+                    tempResults.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
                 }
-                if (num_r_s == least_r_s){
-                    index_to_keep.push(solution_index);
-                }
-                if (num_r_s > least_r_s){
-                    index_to_rm.push(solution_index);
-                }
-            }
-            index_to_rm.sort(function(a, b){return a-b});
-            for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
-                tempResults.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
-            }
-        }
+                break;
+            case "leastGoalSatisfied":
+                console.log("leastGoalSatisfied");
+                console.log(tempResults.allSolution.length);
 
-        if ((checkbox.id == "mostGoalSatisfied") && (checkbox.checked)){
-            var index_to_keep = [];
-            var index_to_rm = [];
+                var index_to_keep = [];
+                var index_to_rm = [];
 
-            var most_goal_s = 0;
-            for (var solution_index=0; solution_index < tempResults.allSolution.length; solution_index++) {
-                var num_g_s = 0;
-                for (var element_index=0; element_index < tempResults.allSolution[solution_index].intentionElements.length; element_index++){
-                    if (tempResults.allSolution[solution_index].intentionElements[element_index].type === "GOAL"){
-                        var value = tempResults.allSolution[solution_index].intentionElements[element_index].status[0];
-                        if ((value == "0010" || value == "0011")){
-                            num_g_s ++;
+                var least_goal_s = tempResults.allSolution.length;
+                for (var solution_index=0; solution_index < tempResults.allSolution.length; solution_index++) {
+                    var num_g_s = 0;
+                    for (var element_index=0; element_index < tempResults.allSolution[solution_index].intentionElements.length; element_index++){
+                        if (tempResults.allSolution[solution_index].intentionElements[element_index].type === "GOAL"){
+                            var value = tempResults.allSolution[solution_index].intentionElements[element_index].status[0];
+                            if ((value == "0010" || value == "0011")){
+                                num_g_s ++;
+                            }
                         }
                     }
-                }
-                if (most_goal_s < num_g_s){
-                    most_goal_s = num_g_s;
-                    index_to_rm = index_to_rm.concat(index_to_keep);
-                    index_to_keep = [];
-                }
-                if (num_g_s == most_goal_s){
-                    index_to_keep.push(solution_index);
-                }
-                if (num_g_s < most_goal_s){
-                    index_to_rm.push(solution_index);
-                }
-            }
-            index_to_rm.sort(function(a, b){return a-b});
-            for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
-                tempResults.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
-            }
-        }
-
-        if ((checkbox.id == "LeastActor") && (checkbox.checked)) {
-            var least_actor = tempResults.allSolution.length;
-            var index_to_keep = [];
-            var index_to_rm = [];
-            for (var solution_index = 0; solution_index < tempResults.allSolution.length; solution_index++) {
-                var actors = {};
-                for (var element_index = 0; element_index < tempResults.allSolution[solution_index].intentionElements.length; element_index++) {
-                    if (! actors[tempResults.allSolution[solution_index].intentionElements[element_index].actorId]){
-                        actors[tempResults.allSolution[solution_index].intentionElements[element_index].actorId] = 0;
+                    if (least_goal_s > num_g_s){
+                        least_goal_s = num_g_s;
+                        index_to_rm = index_to_rm.concat(index_to_keep);
+                        index_to_keep = [];
                     }
-                    var value = tempResults.allSolution[solution_index].intentionElements[element_index].status[0];
-                    console.log(value);
-                    if ((value == "0010" || value == "0011" || (value == "0110") ||
-                        (value == "0111") ||
-                        (value == "0101") ||
-                        (value == "1110") ||
-                        (value == "1010") ||
-                        (value == "1111") ||
-                        (value == "1001") ||
-                        (value == "1101") ||
-                        (value == "1011"))){
-                        console.log("satisfied/conflict");
-                        actors[tempResults.allSolution[solution_index].intentionElements[element_index].actorId] ++;
+                    if (num_g_s == least_goal_s){
+                        index_to_keep.push(solution_index);
+                    }
+                    if (num_g_s > least_goal_s){
+                        index_to_rm.push(solution_index);
                     }
                 }
-                var int_sat = Object.values(actors).reduce((a, b) => a + b);
-                if (least_actor > int_sat){
-                    least_actor = int_sat;
-                    index_to_rm = index_to_rm.concat(index_to_keep);
-                    index_to_keep = [];
+                index_to_rm.sort(function(a, b){return a-b});
+                for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
+                    tempResults.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
                 }
-                if (int_sat == least_actor){
-                    index_to_keep.push(solution_index);
-                }
-                if (int_sat > least_actor){
-                    index_to_rm.push(solution_index);
-                }
+                break;
+            case "mostGoalSatisfied":
+                console.log("mostGoalSatisfied");
+                console.log(tempResults.allSolution.length);
 
-            }
-            index_to_rm.sort(function(a, b){return a-b});
-            console.log(index_to_rm);
-            for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
-                console.log("removing");
-                console.log(tempResults.allSolution[index_to_rm[to_rm]-to_rm]);
-                tempResults.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
-            }
+                var index_to_keep = [];
+                var index_to_rm = [];
+
+                var most_goal_s = 0;
+                for (var solution_index=0; solution_index < tempResults.allSolution.length; solution_index++) {
+                    var num_g_s = 0;
+                    for (var element_index=0; element_index < tempResults.allSolution[solution_index].intentionElements.length; element_index++){
+                        if (tempResults.allSolution[solution_index].intentionElements[element_index].type === "GOAL"){
+                            var value = tempResults.allSolution[solution_index].intentionElements[element_index].status[0];
+                            if ((value == "0010" || value == "0011")){
+                                num_g_s ++;
+                            }
+                        }
+                    }
+                    if (most_goal_s < num_g_s){
+                        most_goal_s = num_g_s;
+                        index_to_rm = index_to_rm.concat(index_to_keep);
+                        index_to_keep = [];
+                    }
+                    if (num_g_s == most_goal_s){
+                        index_to_keep.push(solution_index);
+                    }
+                    if (num_g_s < most_goal_s){
+                        index_to_rm.push(solution_index);
+                    }
+                }
+                index_to_rm.sort(function(a, b){return a-b});
+                for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
+                    tempResults.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
+                }
+                break;
+            case "LeastActor":
+                console.log("LeastActor");
+                console.log(tempResults.allSolution.length);
+
+                var least_actor = tempResults.allSolution.length;
+                var index_to_keep = [];
+                var index_to_rm = [];
+                for (var solution_index = 0; solution_index < tempResults.allSolution.length; solution_index++) {
+                    var actors = {};
+                    for (var element_index = 0; element_index < tempResults.allSolution[solution_index].intentionElements.length; element_index++) {
+                        if (! actors[tempResults.allSolution[solution_index].intentionElements[element_index].actorId]){
+                            actors[tempResults.allSolution[solution_index].intentionElements[element_index].actorId] = 0;
+                        }
+                        var value = tempResults.allSolution[solution_index].intentionElements[element_index].status[0];
+                        if ((value == "0010" || value == "0011" || (value == "0110") ||
+                            (value == "0111") ||
+                            (value == "0101") ||
+                            (value == "1110") ||
+                            (value == "1010") ||
+                            (value == "1111") ||
+                            (value == "1001") ||
+                            (value == "1101") ||
+                            (value == "1011"))){
+                            actors[tempResults.allSolution[solution_index].intentionElements[element_index].actorId] ++;
+                        }
+                    }
+                    var int_sat = Object.values(actors).reduce((a, b) => a + b);
+                    if (least_actor > int_sat){
+                        least_actor = int_sat;
+                        index_to_rm = index_to_rm.concat(index_to_keep);
+                        index_to_keep = [];
+                    }
+                    if (int_sat == least_actor){
+                        index_to_keep.push(solution_index);
+                    }
+                    if (int_sat > least_actor){
+                        index_to_rm.push(solution_index);
+                    }
+
+                }
+                index_to_rm.sort(function(a, b){return a-b});
+                for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
+                    tempResults.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
+                }
+                break;
+            case "mostActor":
+                console.log("mostActor");
+                console.log(tempResults.allSolution.length);
+
+                var most_actor = 0;
+                var index_to_keep = [];
+                var index_to_rm = [];
+                for (var solution_index = 0; solution_index < tempResults.allSolution.length; solution_index++) {
+                    var actors = {};
+                    for (var element_index = 0; element_index < tempResults.allSolution[solution_index].intentionElements.length; element_index++) {
+                        if (! actors[tempResults.allSolution[solution_index].intentionElements[element_index].actorId]){
+                            actors[tempResults.allSolution[solution_index].intentionElements[element_index].actorId] = 0;
+                        }
+                        var value = tempResults.allSolution[solution_index].intentionElements[element_index].status[0];
+                        if ((value == "0010" || value == "0011" || (value == "0110") ||
+                            (value == "0111") ||
+                            (value == "0101") ||
+                            (value == "1110") ||
+                            (value == "1010") ||
+                            (value == "1111") ||
+                            (value == "1001") ||
+                            (value == "1101") ||
+                            (value == "1011"))){
+                            actors[tempResults.allSolution[solution_index].intentionElements[element_index].actorId] ++;
+                        }
+                    }
+                    var int_sat = Object.values(actors).reduce((a, b) => a + b);
+                    if (most_actor < int_sat){
+                        most_actor = int_sat;
+                        index_to_rm = index_to_rm.concat(index_to_keep);
+                        index_to_keep = [];
+                    }
+                    if (int_sat == most_actor){
+                        index_to_keep.push(solution_index);
+                    }
+                    if (int_sat < most_actor){
+                        index_to_rm.push(solution_index);
+                    }
+
+                }
+                index_to_rm.sort(function(a, b){return a-b});
+                for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
+                    tempResults.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
+                }
+                break;
+            case "mostConstraintSatisfaction":
+                
+                break;
+            default:
+                console.log("default");
+                break;
         }
-
     }
 
     analysis.analysisResult = tempResults;
@@ -442,7 +621,3 @@ function save_current_state(){
     modal.content.append("<p>" + JSON.stringify(analysis.storage, null, "\t") + "<\p>");
 }
 
-//This function should get the current state and generate a new window with the next possible states
-function generate_next_states(){
-
-}
