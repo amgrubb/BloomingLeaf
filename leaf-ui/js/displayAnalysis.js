@@ -3,6 +3,7 @@
  * that the web application would receive from the back end.
  */
 
+
 /**
  * Displays the analysis to the web app, by displaying the slider and the 
  * history log
@@ -13,7 +14,7 @@
 function displayAnalysis(analysisResults){
 
 	// Change the format of the analysis result from the back end
-	var currentAnalysis = new analysisObject.initFromBackEnd(analysisResults);
+	currentAnalysis = new analysisObject.initFromBackEnd(analysisResults);
 	currentAnalysis.type = "Single Path";
 
 	// Save data for get possible next states

@@ -8,7 +8,7 @@ package simulation;
  *
  */
 public enum IntentionalElementType {
-	SOFTGOAL (0, "S", "Softgoal"), GOAL (1, "G", "Goal"), TASK (2, "T", "Task"), RESSOURCE (3, "R", "Ressource");
+	SOFTGOAL (0, "S", "Softgoal"), GOAL (1, "G", "Goal"), TASK (2, "T", "Task"), RESOURCE (3, "R", "Resource");
 	private int value;
 	private String name;
 	private String literal;
@@ -30,7 +30,7 @@ public enum IntentionalElementType {
 			SOFTGOAL,
 			GOAL,
 			TASK,
-			RESSOURCE,
+			RESOURCE,
 		};
 
     public static IntentionalElementType getByLiteral(String literal) {
@@ -78,7 +78,7 @@ public enum IntentionalElementType {
 			case 0: return SOFTGOAL;
 			case 1: return GOAL;
 			case 2: return TASK;
-			case 3: return RESSOURCE;
+			case 3: return RESOURCE;
 		}
 		return null;
 	}

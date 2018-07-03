@@ -459,6 +459,7 @@ public class ModelSpecBuilder {
 			if(DEBUG)
 				System.out.println("Building Model");
 		}catch (Exception e) {
+			System.out.println("Building Model Exception");
 			throw new RuntimeException(e.getMessage()); 
 		}
 		
