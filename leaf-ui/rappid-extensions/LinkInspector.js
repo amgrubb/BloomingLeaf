@@ -154,7 +154,7 @@ var LinkInspector = Backbone.View.extend({
         }
 
         // Adding or removing tags from node depending on type of link
-        if (link.prop("link-type") == 'NBT' || link.prop("link-type") == 'NBD' || link.prop("link-type") == 'and' link.prop("link-type") == 'or') {
+        if (link.prop("link-type") == 'NBT' || link.prop("link-type") == 'NBD' || link.prop("link-type") == 'and' || link.prop("link-type") == 'or') {
             source.attr(".funcvalue/text", "NB");
             source.attr(".satvalue/text", "");
             source.attr(".satvalue/value", "");
