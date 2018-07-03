@@ -4,6 +4,7 @@ var analysis = {};
 analysis.analysisResult;
 analysis.elements = [];
 analysis.currentState;
+var tempResults;
 
 //This merge the attributes of old page and new page
 analysis.page = jQuery.extend({}, window.opener.document);
@@ -12,6 +13,7 @@ analysis.page = jQuery.extend({}, window.opener.document);
 window.onload = function(){
     init();
     renderNavigationSidebar();
+    tempResults = $.extend(true,{}, analysis.parentResults);
 }
 
 function init(){
@@ -225,10 +227,11 @@ function goToState(){
     }
 }
 
-var tempResults;
 
 function add_filter(){
-    tempResults = $.extend(true,{}, analysis.parentResults);
+    if (document.getElementsByClassName("filter_checkbox").length == 0){
+        tempResults = $.extend(true,{}, analysis.parentResults);
+    }
 
     for(var i_element = 0; i_element < document.getElementsByClassName("filter_checkbox").length; i_element++){
         checkbox = document.getElementsByClassName("filter_checkbox")[i_element]
@@ -385,7 +388,17 @@ function add_filter(){
                         actors[tempResults.allSolution[solution_index].intentionElements[element_index].actorId] = 0;
                     }
                     var value = tempResults.allSolution[solution_index].intentionElements[element_index].status[0];
-                    if ((value !== "0100" || value !== "1000")){
+                    console.log(value);
+                    if ((value == "0010" || value == "0011" || (value == "0110") ||
+                        (value == "0111") ||
+                        (value == "0101") ||
+                        (value == "1110") ||
+                        (value == "1010") ||
+                        (value == "1111") ||
+                        (value == "1001") ||
+                        (value == "1101") ||
+                        (value == "1011"))){
+                        console.log("satisfied/conflict");
                         actors[tempResults.allSolution[solution_index].intentionElements[element_index].actorId] ++;
                     }
                 }
@@ -401,10 +414,14 @@ function add_filter(){
                 if (int_sat > least_actor){
                     index_to_rm.push(solution_index);
                 }
-                index_to_rm.sort(function(a, b){return a-b});
-                for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
-                    tempResults.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
-                }
+
+            }
+            index_to_rm.sort(function(a, b){return a-b});
+            console.log(index_to_rm);
+            for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
+                console.log("removing");
+                console.log(tempResults.allSolution[index_to_rm[to_rm]-to_rm]);
+                tempResults.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
             }
         }
 
