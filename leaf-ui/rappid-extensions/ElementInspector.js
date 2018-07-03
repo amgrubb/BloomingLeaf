@@ -65,7 +65,6 @@ file naviagation. That is, the first function called is always near the top. The
 function called, will always be near the bottom.
 */
 
-
 var ElementInspector = Backbone.View.extend({
 
     className: 'element-inspector',
@@ -75,11 +74,11 @@ var ElementInspector = Backbone.View.extend({
             '<textarea class="cell-attrs-text"></textarea>',
             '<label>Initial Satisfaction Value</label>',
             '<select id="init-sat-value">',
-                '<option value=none> None (T, T)</option>',
-                '<option value=satisfied> Satisfied (FS, T)</option>',
-                '<option value=partiallysatisfied> Partially Satisfied (PS, T) </option>',
-                '<option value=denied> Denied (T, FD)</option>',
-                '<option value=partiallydenied> Partially Denied (T, PD)</option>',
+                '<option value=none> None (⊥, ⊥)</option>',
+				'<option value=satisfied> Satisfied (FS, ⊥)</option>',
+                '<option value=partiallysatisfied> Partially Satisfied (PS, ⊥) </option>',
+                '<option value=denied> Denied (⊥, FD)</option>',
+                '<option value=partiallydenied> Partially Denied (⊥, PD)</option>',
                 '<option value=unknown> Unknown </option>',
             '</select>',
             '<br>',
@@ -1180,13 +1179,13 @@ var ElementInspector = Backbone.View.extend({
 
         // Set satvalue/text
         if (initValue == "satisfied") {
-            cell.attr(".satvalue/text", "(FS, T)");
+            cell.attr(".satvalue/text", "(FS, ⊥)");
         } else if (initValue == "partiallysatisfied") {
-            cell.attr(".satvalue/text", "(PS, T)");
+            cell.attr(".satvalue/text", "(PS, ⊥)");
         } else if (initValue == "denied") {
-            cell.attr(".satvalue/text", "(T, FD)");
+            cell.attr(".satvalue/text", "(⊥, FD)");
         } else if (initValue == "partiallydenied") {
-            cell.attr(".satvalue/text", "(T, PD)");
+            cell.attr(".satvalue/text", "(⊥, PD)");
         } else if (initValue == "unknown") {
             cell.attr(".satvalue/text", "?");
         } else {
