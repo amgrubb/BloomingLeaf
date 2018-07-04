@@ -249,11 +249,11 @@ graph.on("add", function(cell){
 
 	// create intention object
 	var type = cellView.model.attributes.type;
-	var intention = new InputIntention('-', type, name);
+	var intention = new UserIntention('-', type, name);
 	model.intentions.push(intention);
 
 	// create intention evaluation object
-	var intentionEval = new IntentionEvaluation(intetnion.nodeID, '0', '(no value)');
+	var intentionEval = new IntentionEvaluation(intention.nodeID, '0', '(no value)');
 	analysisRequest.userAssignmentsList.push(intentionEval);
 
 	// Add Functions and sat values to added types

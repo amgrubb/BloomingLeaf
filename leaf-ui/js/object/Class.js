@@ -3,7 +3,7 @@ class Model {
     /**
      * Attributes: 
      * {Array.<Actor>} actors
-     * {Array.<InputIntention>} intentions
+     * {Array.<UserIntention>} intentions
      * {Array.<Link>} links
      * {Array.<Constraint>} constraints
      * {String} maxAbsTime
@@ -78,7 +78,7 @@ class Link {
 }
 
 
-class InputIntention {
+class UserIntention {
 
 	/**
 	 * @param {String} nodeActorID
@@ -113,8 +113,8 @@ class InputIntention {
 	 * @returns {String}
 	 */
 	createID() {
-		var id = InputIntention.numOfInstances.toString();
-		InputIntention.numOfInstances += 1;
+		var id = UserIntention.numOfInstances.toString();
+		UserIntention.numOfInstances += 1;
 		while (id.length < 4){
                 id = '0' + id;
         }
@@ -128,7 +128,7 @@ class InputIntention {
 		this.dynamicFunction = dynamicFunction;
 	}
 }
-InputIntention.numOfInstances = 0; // static variable to keep track of number of instances
+UserIntention.numOfInstances = 0; // static variable to keep track of number of instances
 
 class EvolvingFunction {
 
