@@ -118,7 +118,7 @@ body {
 
 .left-panel label {
   display: block;
-  text-align: center;  
+  text-align: center;
   font-size: 12px;
   line-height: 18px;
   height: 18px;
@@ -166,7 +166,7 @@ body {
 
 .inspector label {
   margin: 14px 0 8px 0;
-  font-size: 1.25em; 
+  font-size: 1.25em;
 }
 
 .sub-label{
@@ -245,7 +245,7 @@ body {
 }
 .function-type:disabled {
   background-color: rgba(20, 85, 9, 1);
-  color: white; 
+  color: white;
 }
 
 .user-defined-select, .repeat-select, .relationship-select{
@@ -305,20 +305,29 @@ select > .select-placeholder {
 .link-tools .tool-options{
    display: block;
 }
-
+.inspector-btn-small {
+    position: relative;
+    vertical-align: top;
+    width: 30px;
+    height: 23px;
+    padding: 0;
+    color: black;
+    text-align: center;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+    border: 0;
+    cursor: pointer;
+}
 .inspector-btn {
   position: relative;
   vertical-align: top;
   width: 200px;
   height: 40px;
   padding: 0;
-  color: white;
+  color: black;
   text-align: center;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
   border: 0;
   cursor: pointer;
-
-  margin-top: 16px;
 }
 
 .inspector-btn:active {

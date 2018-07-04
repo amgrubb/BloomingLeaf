@@ -612,7 +612,33 @@ function add_filter(){
                         }
                     }
                 }
-                console.log(domains);
+                var length_domain= {};
+                var least_domain = 9;
+                var int_with_smallest_domain = [];
+                Object.keys(domains).forEach(function(key) {
+                    length_domain[key] = domains[key].length;
+                    if (length_domain[key] < least_domain){
+                        least_domain = length_domain[key];
+                        int_with_smallest_domain = [];
+                    }
+                    if (length_domain[key] == least_domain){
+                        int_with_smallest_domain.push(key);
+                    }
+                });
+                var index_to_rm = [];
+                for (var solution_index = 0; solution_index < tempResults.allSolution.length; solution_index++) {
+                    for (var element_index = 0; element_index < tempResults.allSolution[solution_index].intentionElements.length; element_index++) {
+                        if (int_with_smallest_domain.indexOf(tempResults.allSolution[solution_index].intentionElements[element_index].id) != -1){
+                            if (tempResults.allSolution[solution_index].intentionElements[element_index].status[0] !== "0011"){
+                                index_to_rm.push(solution_index);
+                                break;
+                            }
+                        }
+                    }
+                }
+                for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
+                    tempResults.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
+                }
                 break;
             default:
                 console.log("default");
@@ -635,3 +661,7 @@ function save_current_state(){
     modal.content.append("<p>" + JSON.stringify(analysis.storage, null, "\t") + "<\p>");
 }
 
+//This function should get the current state and generate a new window with the next possible states
+function generate_next_states(){
+
+}
