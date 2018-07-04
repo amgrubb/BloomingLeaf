@@ -241,9 +241,20 @@ graph.on("add", function(cell){
 
 		}
 	} // Don't do anything for links
+
 	// Give element a unique default
-	cell.attr(".name/text", cell.attr(".name/text") + "_" + element_counter);
+	var name = cell.attr(".name/text") + "_" + element_counter
+	cell.attr(".name/text", name);
 	element_counter++;
+
+	// create intention object
+	var type = cellView.model.attributes.type;
+	var intention = new InputIntention('-', type, name);
+	model.intentions.push(intention);
+
+	// create intention evaluation object
+	var intentionEval = new IntentionEvaluation(intetnion.nodeID, '0', '(no value)');
+	analysisRequest.userAssignmentsList.push(intentionEval);
 
 	// Add Functions and sat values to added types
 	if (cell instanceof joint.shapes.basic.Intention){
@@ -407,12 +418,15 @@ paper.on('cell:pointerup', function(cellView, evt) {
             var link = cellView.model;
             basicActorLink(link);
             // Element is selected
-			return
+			return;
         }
+
+
 		selection.reset();
 		selection.add(cellView.model);
 
 		var elements = graph.getElements();
+
 		// Remove highlight of other elements
 		removeHighlight(elements);
 

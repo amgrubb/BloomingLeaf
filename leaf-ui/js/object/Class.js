@@ -1,18 +1,18 @@
 class Model {
 
     /**
-     *
-     * @param {Array.<Actor>} actors
-     * @param {Array.<InputIntention>} intentions
-     * @param {Array.<Link>} links
-     * @param {Array.<Constraint>} constraints
-     * @param {String} maxAbsTime
+     * Attributes: 
+     * {Array.<Actor>} actors
+     * {Array.<InputIntention>} intentions
+     * {Array.<Link>} links
+     * {Array.<Constraint>} constraints
+     * {String} maxAbsTime
      */
-    constructor(actors, intentions, links, constraints, maxAbsTime) {
-        this.actors = actors;
-        this.intentions = intentions;
-        this.links = links;
-        this.maxAbsTime = maxAbsTime;
+    constructor() {
+        this.actors = []; 
+        this.intentions = [];
+        this.links = [];
+        this.maxAbsTime;
     }
 }
 
@@ -77,27 +77,60 @@ class Link {
     }
 }
 
+
 class InputIntention {
 
 	/**
 	 * @param {String} nodeActorID
-	 * @param {String} nodeID
+	 *   The ID of the actor that this intention is embedded in
+	 *   ex: 'a0000' (actor ID), '-' (if there is no actor) 
 	 * @param {String} nodeType
+	 *   Type of the intention. 
+	 *   Will be one of these four: 'basic.Goal', 'basic.Task', 'basic.Softgoal', 'basic.Resource'
 	 * @param {String} nodeName
-	 * @param {EvolvingFunction} dynamicFunction
 	 */
-	constructor(nodeActorID, nodeID, nodeType, nodeName, dynamicFunction) {
+	constructor(nodeActorID, nodeType, nodeName) {
 		this.nodeActorID = nodeActorID;
-		this.nodeID = nodeID;
-		this.nodeType = nodeType;
+		this.nodeID = createID();
+		this.nodeType = getShortenedNodeType(nodeType);
 		this.nodeName = nodeName;
-		this.dynamicFunction = dynamicFunction;
+		this.dynamicFunction = null;
 	}
 
+	/**
+	 * Returns a shortened version of type
+	 *
+	 * @param {String} type
+	 * @returns {String}
+	 */
+	getShortenedNodeType(type) {
+		return type[6];
+	}
+
+	/**
+	 * Creates and returns a 4 digit ID for this node
+	 * 
+	 * @returns {String}
+	 */
+	createID() {
+		var id = InputIntention.numOfInstances.toString();
+		InputIntention.numOfInstances += 1;
+		while (id.length < 4){
+                id = '0' + id;
+        }
+        return id;
+	}
+
+	/**
+	 * Sets the function for this Intention
+	 */
+	setFunction(dynamicFunction) {
+		this.dynamicFunction = dynamicFunction;
+	}
 }
+InputIntention.numOfInstances = 0; // static variable to keep track of number of instances
 
 class EvolvingFunction {
-
 
     /**
      * @param {String} intentionID
@@ -189,16 +222,16 @@ class AnalysisRequest {
      * @param {String} numRelTime
      * @param {String} absTimePts
      * @param {String} currentState
-     * @param {Array.<IntentionEvaluation>} userAssignment
+     * @param {Array.<IntentionEvaluation>} userAssignmentsList
      * @param {AnalysisResult} previousAnalysis
      */
-	constructor(action, conflictLevel, numRelTime, absTimePts, currentState, userAssignment, previousAnalysis) {
-		this.action = action;
-		this.conflictLevel = conflictLevel;
-		this.numRelTime = numRelTime;
-		this.absTimePts = absTimePts;
-		this.currentState = currentState;
-		this.userAssignment = userAssignment;
-		this.previousAnalysis = previousAnalysis;
+	constructor() {
+		this.action = null;
+		this.conflictLevel = null;
+		this.numRelTime = null;
+		this.absTimePts = null;
+		this.currentState = null;
+		this.userAssignmentsList = [];
+		this.previousAnalysis = null;
 	}
 }

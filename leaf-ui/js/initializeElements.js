@@ -8,6 +8,9 @@ var paper;
 var stencil;
 var mode;
 
+var model = new Model();
+var analysisRequest = new AnalysisRequest();
+
 var linkInspector = new LinkInspector();
 var elementInspector = new ElementInspector();
 var analysisInspector = new AnalysisInspector();
