@@ -91,8 +91,8 @@ class UserIntention {
 	 */
 	constructor(nodeActorID, nodeType, nodeName) {
 		this.nodeActorID = nodeActorID;
-		this.nodeID = createID();
-		this.nodeType = getShortenedNodeType(nodeType);
+		this.nodeID = this.createID();
+		this.nodeType = this.getShortenedNodeType(nodeType);
 		this.nodeName = nodeName;
 		this.dynamicFunction = null;
 	}

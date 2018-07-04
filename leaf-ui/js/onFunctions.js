@@ -248,7 +248,7 @@ graph.on("add", function(cell){
 	element_counter++;
 
 	// create intention object
-	var type = cellView.model.attributes.type;
+	var type = cell.attributes.type;
 	var intention = new UserIntention('-', type, name);
 	model.intentions.push(intention);
 
