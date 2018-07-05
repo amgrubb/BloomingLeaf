@@ -252,6 +252,8 @@ graph.on("add", function(cell){
 	var intention = new UserIntention('-', type, name);
 	model.intentions.push(intention);
 
+	cell.attributes.nodeID = intention.nodeID;
+
 	// create intention evaluation object
 	var intentionEval = new IntentionEvaluation(intention.nodeID, '0', '(no value)');
 	analysisRequest.userAssignmentsList.push(intentionEval);
@@ -475,7 +477,7 @@ graph.on('change:size', function(cell, size){
 });
 
 
-graph.on('remove', function(cell, collection, opt) {
+graph.on('remove', function(cell) {
 	if (cell.isLink() && (cell.prop("link-type") == 'NBT' || cell.prop("link-type") == 'NBD')) {
 
 		// Verify if is a Not both type. If it is remove labels from source and target node
@@ -499,6 +501,11 @@ graph.on('remove', function(cell, collection, opt) {
 		if (!checkForMultipleNB(target)) {
 			target.attr(".funcvalue/text", "");
 		}
+	}
+	else {
+		var nodeID = cell.attributes.nodeID;
+		model.removeIntention(nodeID);
+		analysisRequest.removeIntention(nodeID);
 	}
 });
 
