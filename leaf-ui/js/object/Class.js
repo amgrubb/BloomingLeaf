@@ -14,6 +14,21 @@ class Model {
         this.links = [];
         this.maxAbsTime;
     }
+
+    /**
+     * Remove the intention with node ID nodeID
+     * from the intentions array
+     *
+     * @param {String} nodeID
+     */
+    removeIntention(nodeID) {
+    	for (var i = 0; i < intentions.length; i++) {
+    		if (intentions[i].nodeID = nodeID) {
+    			intentions.splice(i, 1);
+    			return;
+    		}
+    	}
+    }
 }
 
 class Actor {
@@ -233,5 +248,24 @@ class AnalysisRequest {
 		this.currentState = null;
 		this.userAssignmentsList = [];
 		this.previousAnalysis = null;
+	}
+
+	/**
+	 * Removes all IntentionEvaluation objects in
+	 * userAssignmentsList, with an intentionID equal to 
+	 * nodeID
+	 *
+	 * @param {String}
+	 */
+	removeIntention(nodeID) {
+		var i = 0;
+
+		while (i < userAssignmentsList.length) {
+			if (userAssignmentsList[i].intentionID == nodeID) {
+				userAssignmentsList.splice(i, 1);
+			} else {
+				i++;
+			}
+		}
 	}
 }
