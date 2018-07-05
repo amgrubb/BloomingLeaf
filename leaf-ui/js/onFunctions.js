@@ -224,6 +224,51 @@ $('#btn-fnt').on('click', function(){
 	}
 });
 
+function createLink(cell) {
+	var link = new Link(cell.attributes.labels[0].attrs.text.text, cell.getSourceElement().attributes.nodeID,  "0");
+	cell.attributes.linkID = link.linkID;
+    cell.on("change:target", function () {
+    	var target = cell.getTargetElement();
+        if (target!== null) {
+			link.linkDestID = target.attributes.nodeID;
+
+        }
+    });
+    cell.on("change:source", function () {
+		var source = cell.getSourceElement();
+		if (source !== null) {
+			link.linkSrcID = source.attributes.nodeID;
+		}
+    });
+    cell.on("remove", function () {
+		model.removeLink(link.linkID);
+    });
+    model.links.push(link);
+}
+
+
+function createIntention(cell) {
+
+    var name = cell.attr(".name/text") + "_" + element_counter;
+    cell.attr(".name/text", name);
+    element_counter++;
+
+    // create intention object
+    var type = cell.attributes.type;
+    var intention = new UserIntention('-', type, name);
+    model.intentions.push(intention);
+
+    // create intention evaluation object
+    var intentionEval = new IntentionEvaluation(intention.nodeID, '0', '(no value)');
+    analysisRequest.userAssignmentsList.push(intentionEval);
+
+    cell.attributes.nodeID = intention.nodeID;
+    cell.on("remove", function () {
+        model.removeIntention(intention.nodeID);
+        analysisRequest.removeIntention(intentionEval.intentionID);
+    });
+
+}
 /**
  * Set up on events for Rappid/JointJS objets
  */
@@ -235,28 +280,16 @@ var current_font = 10;
 // Whenever an element is added to the graph
 graph.on("add", function(cell){
 	if (cell instanceof joint.dia.Link){
-		if (graph.getCell(cell.get("source").id) instanceof joint.shapes.basic.Actor){
-			cell.prop("linktype", "actorlink");
-		cell.label(0,{attrs:{text:{text:"is-a"}}});
-
+        if (graph.getCell(cell.get("source").id) instanceof joint.shapes.basic.Actor){
+            cell.prop("linktype", "actorlink");
+            cell.label(0,{attrs:{text:{text:"is-a"}}});
 		}
-	} // Don't do anything for links
+
+        createLink(cell);
+    } // Don't do anything for links
 
 	// Give element a unique default
-	var name = cell.attr(".name/text") + "_" + element_counter
-	cell.attr(".name/text", name);
-	element_counter++;
-
-	// create intention object
-	var type = cell.attributes.type;
-	var intention = new UserIntention('-', type, name);
-	model.intentions.push(intention);
-
-	cell.attributes.nodeID = intention.nodeID;
-
-	// create intention evaluation object
-	var intentionEval = new IntentionEvaluation(intention.nodeID, '0', '(no value)');
-	analysisRequest.userAssignmentsList.push(intentionEval);
+	createIntention(cell);
 
 	// Add Functions and sat values to added types
 	if (cell instanceof joint.shapes.basic.Intention){
@@ -501,11 +534,6 @@ graph.on('remove', function(cell) {
 		if (!checkForMultipleNB(target)) {
 			target.attr(".funcvalue/text", "");
 		}
-	}
-	else {
-		var nodeID = cell.attributes.nodeID;
-		model.removeIntention(nodeID);
-		analysisRequest.removeIntention(nodeID);
 	}
 });
 

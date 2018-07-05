@@ -22,13 +22,30 @@ class Model {
      * @param {String} nodeID
      */
     removeIntention(nodeID) {
-    	for (var i = 0; i < intentions.length; i++) {
-    		if (intentions[i].nodeID = nodeID) {
-    			intentions.splice(i, 1);
+    	for (var i = 0; i < this.intentions.length; i++) {
+    		if (this.intentions[i].nodeID = nodeID) {
+    			this.intentions.splice(i, 1);
     			return;
     		}
     	}
     }
+    /**
+     * Remove the intention with link ID linkID
+     * from the intentions array
+     *
+     * @param {String} linkID
+     */
+
+    removeLink(linkID) {
+        for (var i = 0; i < this.links.length; i++) {
+            if (this.links[i].linkID = linkID) {
+                this.links.splice(i, 1);
+                return;
+            }
+        }
+    }
+
+
 }
 
 class Actor {
@@ -69,6 +86,7 @@ class AnalysisResult {
         this.assignedEpoch = assignedEpoch;
         this.timePointPath = timePointPath;
         this.timePointPathSize = timePointPathSize;
+        this.values = values;
 	}
 }
 
@@ -84,14 +102,29 @@ class Link {
 	 * @param {String} absoluteValue
 	 *   TODO ex. -1, 0,...,n
 	 */
-    constructor(linkType, linkSrcID, linkDestID, absoluteValue) {
+    constructor(linkType, linkSrcID, absoluteValue) {
+    	this.linkID = this.createID();
     	this.linkType = linkType;
     	this.linkSrcID = linkSrcID;
-    	this.linkDestID = linkDestID;
+    	this.linkDestID = null;
     	this.absoluteValue = absoluteValue;
     }
-}
 
+    /**
+     * Creates and returns a 4 digit ID for this node
+     *
+     * @returns {String}
+     */
+    createID() {
+        var id = Link.numOfCreatedInstances.toString();
+        Link.numOfCreatedInstances += 1;
+        while (id.length < 4){
+            id = '0' + id;
+        }
+        return id;
+    }
+}
+Link.numOfCreatedInstances = 0;
 
 class UserIntention {
 
@@ -128,8 +161,8 @@ class UserIntention {
 	 * @returns {String}
 	 */
 	createID() {
-		var id = UserIntention.numOfInstances.toString();
-		UserIntention.numOfInstances += 1;
+		var id = UserIntention.numOfCreatedInstances.toString();
+		UserIntention.numOfCreatedInstances += 1;
 		while (id.length < 4){
                 id = '0' + id;
         }
@@ -143,7 +176,7 @@ class UserIntention {
 		this.dynamicFunction = dynamicFunction;
 	}
 }
-UserIntention.numOfInstances = 0; // static variable to keep track of number of instances
+UserIntention.numOfCreatedInstances = 0; // static variable to keep track of number of instances
 
 class EvolvingFunction {
 
@@ -260,9 +293,9 @@ class AnalysisRequest {
 	removeIntention(nodeID) {
 		var i = 0;
 
-		while (i < userAssignmentsList.length) {
-			if (userAssignmentsList[i].intentionID == nodeID) {
-				userAssignmentsList.splice(i, 1);
+		while (i < this.userAssignmentsList.length) {
+			if (this.userAssignmentsList[i].intentionID == nodeID) {
+				this.userAssignmentsList.splice(i, 1);
 			} else {
 				i++;
 			}
