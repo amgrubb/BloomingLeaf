@@ -149,22 +149,11 @@ var ElementInspector = Backbone.View.extend({
 
     ].join(''),
 
-    actor_template: [
-        '<label>Actor name</label>',
-        '<textarea class="cell-attrs-text" maxlength=100></textarea>',
-        '<label> Actor type </label>',
-        '<select class="actor-type">',
-            '<option value=A> Actor </option>',
-            '<option value=G> Agent </option>',
-            '<option value=R> Role </option>',
-        '</select>'
-    ].join(''),
-
     events: {
-        'change #init-sat-value':'updateHTML',
+        'change #init-sat-value':'initSatValueChanged',
 
-        'change .function-type':'updateHTML',
-        'change .function-sat-value':'updateChart',
+        'change .function-type':'funcTypeChanged',
+        'change .function-sat-value':'funcSatValChanged',
 
         'change .user-function-type':'updateHTML',
         'change .user-sat-value':'updateChartUserDefined',
@@ -183,19 +172,6 @@ var ElementInspector = Backbone.View.extend({
     render: function(cell) {
 
         this.cell = cell; // Save the clicked node's backbone model
-
-        // If the clicked node is an actor, render the actor inspector
-        if (this.cell instanceof joint.shapes.basic.Actor) {
-
-            // Save the Actor object from the global model variable to 
-            // this.element
-            this.element = model.getActorByID(this.cell.attributes.nodeID);
-
-
-            this.$el.html(_.template(this.actor_template)());
-            this.$('.cell-attrs-text').val(this.element.nodeID);
-            return;
-        }
 
         // Save the UserIntention object from the global model variable to 
         // this.element
@@ -351,10 +327,45 @@ var ElementInspector = Backbone.View.extend({
     },
 
     /**
+     * Saves the initial satisfaction value into the IntentionEvaluation
+     * corresponding to this intention.
+     * 
+     * This function is called on change for #init-sat-value,
+     */
+    initSatValueChanged: function(event) {
+        var initValue = this.$('#init-sat-value').val();
+        intentionEval = analysisRequest.getIntentionEvaluationByID(this.element.nodeID, '0');
+        intentionEval.evaluationValue = satValueDict[initValue];
+        this.updateHTML(event);
+    },
+
+    /**
+     * Clears all FuncSegments for this intention's UserIntention object's
+     * EvolvingFunction and adds new FuncSegments according to the current
+     * function type.
+     *
+     * This function is called on change for .function-type.
+     */
+    funcTypeChanged: function(event) {
+        var funcType = this.$('.function-type').val();
+        this.element.setEvolvingFunction(funcType);
+        this.updateHTML(event);
+    },
+
+    /**
+     *
+     */
+    funcSatValChanged: function(event) {
+        var satValue = satValueDict[this.$('#markedValue').val()]; // 4 digit representation
+
+        this.updateChart(event);
+    },
+
+    /**
      * Updates the possible satisfaction values and buttons selections based on current
      * function type.
      *
-     * This function is called on change for #init-sat-value, .function-type, .user-function-type
+     * This function is called on change for .user-function-type
      */
     updateHTML: function(event) {
 
@@ -369,7 +380,7 @@ var ElementInspector = Backbone.View.extend({
 
         // Disable init value menu if functype is NB
         if (this.cell.attr('.funcvalue/text') == "NB") {
-            $('#init-sat-value').prop('disabled', "disabled");
+            $('#init-sat-value').prop('disabled', true);
         }
 
         if (functionType == 'UD') {
@@ -377,17 +388,20 @@ var ElementInspector = Backbone.View.extend({
             this.$('#markedValue').hide();
             this.$('#user-constraints').show("fast");
             this.addUDFunctionValues(null);
-        } else if ($.inArray(functionType, funcWithSatValue) > -1) {
-            // Function with an associated satisfaction value
-            delete this.cell.attr(".constraints/markedvalue");
-            this.displayFunctionSatValue(null);
-            this.$('#user-constraints').hide();
-            $('#init-sat-value').prop('disabled', false);
         } else {
-            this.$('#markedValue').hide();
             this.$('#user-constraints').hide();
             $('#init-sat-value').prop('disabled', false);
+
+            if ($.inArray(functionType, funcWithSatValue) > -1) {
+                // Function with an associated satisfaction value
+                delete this.cell.attr(".constraints/markedvalue");
+                this.displayFunctionSatValue(null);
+            } else {
+                // Function without an associated satisfaction value
+                this.$('#markedValue').hide();
+            }
         }
+
         this.updateChart(null);
     },
 

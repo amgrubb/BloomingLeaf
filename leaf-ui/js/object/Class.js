@@ -203,58 +203,6 @@ class Link {
 }
 Link.numOfCreatedInstances = 0;
 
-class UserIntention {
-
-	/**
-	 * @param {String} nodeActorID
-	 *   The ID of the actor that this intention is embedded in
-	 *   ex: 'a0000' (actor ID), '-' (if there is no actor) 
-	 * @param {String} nodeType
-	 *   Type of the intention. 
-	 *   Will be one of these four: 'basic.Goal', 'basic.Task', 'basic.Softgoal', 'basic.Resource'
-	 * @param {String} nodeName
-	 */
-	constructor(nodeActorID, nodeType, nodeName) {
-		this.nodeActorID = nodeActorID;
-		this.nodeID = this.createID();
-		this.nodeType = this.getShortenedNodeType(nodeType);
-		this.nodeName = nodeName;
-		this.dynamicFunction = null;
-	}
-
-	/**
-	 * Returns a shortened version of type
-	 *
-	 * @param {String} type
-	 * @returns {String}
-	 */
-	getShortenedNodeType(type) {
-		return type[6];
-	}
-
-	/**
-	 * Creates and returns a 4 digit ID for this node
-	 * 
-	 * @returns {String}
-	 */
-	createID() {
-		var id = UserIntention.numOfCreatedInstances.toString();
-		UserIntention.numOfCreatedInstances += 1;
-		while (id.length < 4){
-                id = '0' + id;
-        }
-        return id;
-	}
-
-	/**
-	 * Sets the function for this Intention
-	 */
-	setFunction(dynamicFunction) {
-		this.dynamicFunction = dynamicFunction;
-	}
-}
-UserIntention.numOfCreatedInstances = 0; // static variable to keep track of number of instances
-
 class EvolvingFunction {
 
     /**
@@ -262,15 +210,14 @@ class EvolvingFunction {
      * @param {String} stringDynVis
      * @param {Array.<FuncSegment|RepFuncSegment>} functionSegList
      */
-	constructor(intentionID, stringDynVis, functionSegList) {
+	constructor(intentionID) {
 		this.intentionID = intentionID;
-		this.stringDynVis = stringDynVis;
-		this.functionSegList = functionSegList;
+		this.stringDynVis = null;
+		this.functionSegList = [];
 	}
 }
 
 class FuncSegment {
-
 
     /**
 	 *
@@ -279,7 +226,7 @@ class FuncSegment {
      * @param {String} funcStart
      * @param {String} funcStop
      */
-	constructor(funcType , funcX, funcStart, funcStop) {
+	constructor(funcType, funcX, funcStart, funcStop) {
 		this.funcType = funcType;
 		this.funcX = funcX;
         this.funcStart = funcStart;
@@ -293,7 +240,7 @@ class RepFuncSegment {
 	 *
      * @param {Array.<FuncSegment>} functionSegList
      * @param {Number} repNum
-     * @param {Number}absTime
+     * @param {Number} absTime
      */
 	constructor(functionSegList, repNum, absTime) {
 		this.functionSegList = functionSegList;
@@ -338,6 +285,103 @@ class IntentionEvaluation {
 	}
 }
 
+class UserIntention {
+
+    /**
+     * @param {String} nodeActorID
+     *   The ID of the actor that this intention is embedded in
+     *   ex: 'a0000' (actor ID), '-' (if there is no actor) 
+     * @param {String} nodeType
+     *   Type of the intention. 
+     *   Will be one of these four: 'basic.Goal', 'basic.Task', 'basic.Softgoal', 'basic.Resource'
+     * @param {String} nodeName
+     */
+    constructor(nodeActorID, nodeType, nodeName) {
+        this.nodeActorID = nodeActorID;
+        this.nodeID = this.createID();
+        this.nodeType = this.getShortenedNodeType(nodeType);
+        this.nodeName = nodeName;
+        this.dynamicFunction = new EvolvingFunction(this.nodeID);
+    }
+
+    /**
+     * Returns a shortened version of type
+     *
+     * @param {String} type
+     * @returns {String}
+     */
+    getShortenedNodeType(type) {
+        return type[6];
+    }
+
+    /**
+     * Creates and returns a 4 digit ID for this node
+     * 
+     * @returns {String}
+     */
+    createID() {
+        var id = UserIntention.numOfCreatedInstances.toString();
+        UserIntention.numOfCreatedInstances += 1;
+        while (id.length < 4){
+                id = '0' + id;
+        }
+        return id;
+    }
+
+    /**
+     * Clears all FuncSegments for this UserIntention's
+     * EvolvingFunction and adds new FuncSegments according to the current
+     * function type.
+     */
+    setEvolvingFunction(funcType) {
+        this.dynamicFunction.stringDynVis = funcType;
+        this.dynamicFunction.functionSegList = [];
+        var initValue = analysisRequest.getIntentionEvaluationByID(this.nodeID, '0').evaluationValue;
+
+        if (funcType == 'C' || funcType == 'R' || funcType == 'I' || funcType == 'D' || funcType == 'UD') {
+            if (funcType == 'C') {
+                var seg = new FuncSegment(funcType, initValue, '0', 'Infinity');
+            } else if (funcType == 'R') {
+                // the marked value for a Stochastic function is always 0000
+                var seg = new FuncSegment(funcType, '0000', '0', 'Infinity');
+            } else if (funcType == 'I' || funcType == 'D') {
+                var seg = new FuncSegment(funcType, null, '0', 'Infinity'); 
+            } else if (funcType == 'UD') {
+                var seg = new FuncSegment('C', initValue, '0', 'A'); 
+            }
+            this.dynamicFunction.functionSegList.push(seg);
+        } else if (funcType == 'RC' || funcType == 'CR' || funcType == 'MP' || funcType == 'MN' || funcType == 'SD' || funcType == 'DS') {
+            if (funcType == 'RC') {
+                // Stochastic and Constant
+                var seg1 = new FuncSegment('R', '0000', '0', 'A');
+                var seg2 = new FuncSegment('C', null, 'A', 'Infinity');
+            } else if (funcType == 'CR') {
+                // Constant and Stochastic
+                var seg1 = new FuncSegment('C', initValue, '0', 'A');
+                var seg2 = new FuncSegment('R', '0000', 'A', 'Infinity');
+            } else if (funcType == 'MP') {
+                // Increase and Constant
+                var seg1 = new FuncSegment('I', null, '0', 'A');
+                var seg2 = new FuncSegment('C', null, 'A', 'Infinity');
+            } else if (funcType == 'MN') {
+                // Decrease and Constant
+                var seg1 = new FuncSegment('D', null, '0', 'A');
+                var seg2 = new FuncSegment('C', null, 'A', 'Infinity');
+            } else if (funcType == 'SD') {
+                // Constant and Constant
+                var seg1 = new FuncSegment('C', '0011', '0', 'A');
+                var seg2 = new FuncSegment('C', '1100', 'A', 'Infinity');
+            } else if (funcType == 'DS') {
+                // Constant and Constant
+                var seg1 = new FuncSegment('C', '1100', '0', 'A');
+                var seg2 = new FuncSegment('C', '0011', 'A', 'Infinity');
+            }
+            this.dynamicFunction.functionSegList.push(seg1, seg2);
+        }
+    }
+}
+UserIntention.numOfCreatedInstances = 0; // static variable to keep track of number of instances
+
 class AnalysisRequest {
 
     /**
@@ -358,8 +402,29 @@ class AnalysisRequest {
 		this.currentState = null;
 		this.userAssignmentsList = [];
 		this.previousAnalysis = null;
-	}
+    }
 
+    /**
+     * Returns the IntentionEvaluation object
+     * with node id nodeID with absolute time point
+     * absTime. If the desired IntentionEvaluation does
+     * not exist, returns null.
+     *
+     * @param {String} nodeID
+     *  ID of the intention
+     * @param {String} absTime
+     *  The desired absolute time
+     * @returns {IntentionEvaluation | null}
+     */
+    getIntentionEvaluationByID(nodeID, absTime) {
+        for (var i = 0; i < this.userAssignmentsList.length; i++) {
+            if (this.userAssignmentsList[i].intentionID == nodeID &&
+                this.userAssignmentsList[i].absTime == absTime) {
+                return this.userAssignmentsList[i];
+            } 
+        }
+    }
+	
 	/**
 	 * Removes all IntentionEvaluation objects in
 	 * userAssignmentsList, with an intentionID equal to 
