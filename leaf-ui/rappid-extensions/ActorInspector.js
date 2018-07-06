@@ -58,7 +58,7 @@ var ActorInspector = Backbone.View.extend({
                 event.preventDefault();
             }
 
-            var text = this.$('.cell-attrs-text').val()
+            var text = this.$('.cell-attrs-text').val();
             // Do not allow special characters in names, replace them with spaces.
             text = text.replace(/[^\w\n-]/g, ' ');
             this.cell.attr({ '.name': { text: text } });
