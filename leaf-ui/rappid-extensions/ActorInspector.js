@@ -42,16 +42,16 @@ var ActorInspector = Backbone.View.extend({
             this.cell = cell;
 
             // Save actor here
-            this.element = model.getActorByID(cell.attributes.nodeID);
+            this.actor = model.getActorByID(cell.attributes.nodeID);
 
             // If the clicked node is an actor, render the actor inspector
             this.$el.html(_.template(this.template)());
-            this.$('.cell-attrs-text').val(this.element.nodeName);
+            this.$('.cell-attrs-text').val(this.actor.nodeName);
         },
 
 
         /**
-         * Updates the selected cell's name.
+         * Updates the selected actor's name.
          * This function is called on keyup for .cell-attrs-text
          */
         nameAction: function(event) {
@@ -65,7 +65,7 @@ var ActorInspector = Backbone.View.extend({
             text = text.replace(/[^\w\n-]/g, ' ');
 
             this.cell.attr({ '.name': { text: text } });
-            this.element.nodeName = text;
+            this.actor.nodeName = text;
 
         },
       clear: function(){
