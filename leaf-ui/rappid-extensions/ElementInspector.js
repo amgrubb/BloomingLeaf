@@ -174,9 +174,9 @@ var ElementInspector = Backbone.View.extend({
         this.cell = cell; // Save the clicked node's backbone model
 
         // Save the UserIntention object from the global model variable to 
-        // this.element
-        this.element = model.getUserIntentionByID(this.cell.attributes.nodeID);
-        
+        // this.intention
+        this.intention = model.getUserIntentionByID(this.cell.attributes.nodeID);
+
         this.$el.html(_.template(this.template)());
 
         // Attributes
@@ -190,7 +190,7 @@ var ElementInspector = Backbone.View.extend({
         this.userConstraintsHTML = $("#new-user-constraints").last().clone();
 
         // Load initial value and node name
-        this.$('.cell-attrs-text').val(this.element.nodeName);
+        this.$('.cell-attrs-text').val(this.intention.nodeName);
         this.$('#init-sat-value').val(cell.attr(".satvalue/value") || 'none');
 
         if (!cell.attr(".satvalue/value") && cell.attr(".funcvalue/text") != "NB"){
@@ -218,9 +218,9 @@ var ElementInspector = Backbone.View.extend({
         }
 
     },
-    
+
     /**
-     * Returns an object used for providing option tags for valid satisfaction values for 
+     * Returns an object used for providing option tags for valid satisfaction values for
      * functions.
      *
      * @returns {Object}
@@ -238,7 +238,7 @@ var ElementInspector = Backbone.View.extend({
         satValueOptions.noRandom = satisfied + partiallysatisfied + partiallydenied + denied;
 
         /**TODO
-         * Returns 
+         * Returns
          */
         satValueOptions.positiveOnly = function(currentVal){
             currentVal = satvalues[currentVal];
@@ -310,7 +310,7 @@ var ElementInspector = Backbone.View.extend({
             if (repeatCount) {
                 this.constraintsObject.repeat_count = repeatCount;
             }
-        
+
             if (absLen) {
                 this.constraintsObject.absoluteLength = absLen;
             }
@@ -329,12 +329,12 @@ var ElementInspector = Backbone.View.extend({
     /**
      * Saves the initial satisfaction value into the IntentionEvaluation
      * corresponding to this intention.
-     * 
+     *
      * This function is called on change for #init-sat-value,
      */
     initSatValueChanged: function(event) {
         var initValue = this.$('#init-sat-value').val();
-        intentionEval = analysisRequest.getIntentionEvaluationByID(this.element.nodeID, '0');
+        intentionEval = analysisRequest.getIntentionEvaluationByID(this.intention.nodeID, '0');
         intentionEval.evaluationValue = satValueDict[initValue];
         this.updateHTML(event);
     },
@@ -348,15 +348,16 @@ var ElementInspector = Backbone.View.extend({
      */
     funcTypeChanged: function(event) {
         var funcType = this.$('.function-type').val();
-        this.element.setEvolvingFunction(funcType);
+        this.intention.setEvolvingFunction(funcType);
         this.updateHTML(event);
     },
 
     /**
-     *
+     * //TODO: Sets the marked value
      */
     funcSatValChanged: function(event) {
         var satValue = satValueDict[this.$('#markedValue').val()]; // 4 digit representation
+        this.intention.setMarkedValueToFunction(satValue);
 
         this.updateChart(event);
     },
