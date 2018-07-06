@@ -126,7 +126,7 @@ $('#btn-clear-elabel').on('click', function(){
 		elements[i].attr(".constraints/lastval", "none");
 		elements[i].attr(".funcvalue/text", " ");
 		var cellView  = elements[i].findView(paper);
-		elementInspector.render(cellView);
+		elementInspector.render(cellView.model);
 		elementInspector.$('#init-sat-value').val("none");
 		elementInspector.updateHTML(null);
 
@@ -280,6 +280,8 @@ function createIntention(cell) {
     // when the intention is removed, remove the intention from the global
     // model variable as well
     cell.on("remove", function () {
+
+    	clearInspector();
 
     	var userIntention = model.getUserIntentionByID(cell.attributes.nodeID);
 
@@ -519,7 +521,7 @@ paper.on('cell:pointerup', function(cellView, evt) {
 
 		clearInspector();
 
-		elementInspector.render(cellView);
+		elementInspector.render(cellView.model);
     }
 });
 

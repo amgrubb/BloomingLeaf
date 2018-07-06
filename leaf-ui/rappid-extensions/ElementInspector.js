@@ -181,26 +181,28 @@ var ElementInspector = Backbone.View.extend({
     /**
      * Initializes the element inspector using previously defined templates
      */
-    render: function(cellView) {
+    render: function(cell) {
 
-        // Save the clicked node's cell model
-        this._cellView = cellView;
-        var cell = this._cellView.model;
+        this.cell = cell; // Save the clicked node's backbone model
 
         // If the clicked node is an actor, render the actor inspector
-        if (cell instanceof joint.shapes.basic.Actor){
+        if (this.cell instanceof joint.shapes.basic.Actor) {
+
+            // Save the Actor object from the global model variable to 
+            // this.element
+            this.element = model.getActorByID(this.cell.attributes.nodeID);
+
+
             this.$el.html(_.template(this.actor_template)());
-            this.$('.cell-attrs-text').val(cell.attr(".name/text") || '');
+            this.$('.cell-attrs-text').val(this.element.nodeID);
             return;
         }
+
+        // Save the UserIntention object from the global model variable to 
+        // this.element
+        this.element = model.getUserIntentionByID(this.cell.attributes.nodeID);
         
         this.$el.html(_.template(this.template)());
-
-        // TODO i dont think this belongs here
-        // When the clicked node is removed, remove the html for the element inspector
-        cell.on('remove', function() {
-                this.$el.html('');
-        }, this);
 
         // Attributes
         this.chartObject = new chartObject();
@@ -213,8 +215,9 @@ var ElementInspector = Backbone.View.extend({
         this.userConstraintsHTML = $("#new-user-constraints").last().clone();
 
         // Load initial value and node name
-        this.$('.cell-attrs-text').val(cell.attr(".name/text") || '');
+        this.$('.cell-attrs-text').val(this.element.nodeName);
         this.$('#init-sat-value').val(cell.attr(".satvalue/value") || 'none');
+
         if (!cell.attr(".satvalue/value") && cell.attr(".funcvalue/text") != "NB"){
             cell.attr(".satvalue/value", 'none');
             cell.attr(".funcvalue/text", ' ');
@@ -375,7 +378,6 @@ var ElementInspector = Backbone.View.extend({
 
         // Check if selected init sat value and functionType pair is illegal
         this.validityCheck(event);
-        var cell = this._cellView.model;
 
         var functionType = this.$('.function-type').val();
         var initValue = this.$('#init-sat-value').val();
@@ -384,7 +386,7 @@ var ElementInspector = Backbone.View.extend({
         var funcWithSatValue = ["I", "D", "RC", "MP", "MN", "UD"];
 
         // Disable init value menu if functype is NB
-        if (cell.attr('.funcvalue/text') == "NB") {
+        if (this.cell.attr('.funcvalue/text') == "NB") {
             $('#init-sat-value').prop('disabled', "disabled");
         }
 
@@ -395,8 +397,7 @@ var ElementInspector = Backbone.View.extend({
             this.addUDFunctionValues(null);
         } else if ($.inArray(functionType, funcWithSatValue) > -1) {
             // Function with an associated satisfaction value
-            var cell = this._cellView.model;
-            delete cell.attr(".constraints/markedvalue");
+            delete this.cell.attr(".constraints/markedvalue");
             this.displayFunctionSatValue(null);
             this.$('#user-constraints').hide();
             $('#init-sat-value').prop('disabled', false);
@@ -414,7 +415,6 @@ var ElementInspector = Backbone.View.extend({
      * value or the function type accordingly.
      */
     validityCheck: function(event) {
-        var cell = this._cellView.model;
         var functionType = this.$('.function-type').val();
         var initValue = this.$('#init-sat-value').val();
 
@@ -450,14 +450,13 @@ var ElementInspector = Backbone.View.extend({
      * select element (#markedValue) for the associated satisfaction value.
      */
     displayFunctionSatValue: function(event) {
-        var cell = this._cellView.model;
         var functionType = this.$('.function-type').val();
         var initValue = this.$('#init-sat-value').val();
         this.$('#markedValue').show("fast");
         switch (functionType) {
             case "RC":
                 this.$('#markedValue').html(this.satValueOptions.noRandom);
-                var markedValue = cell.attributes.attrs['.constraints'].markedvalue;
+                var markedValue = this.cell.attributes.attrs['.constraints'].markedvalue;
                 if(markedValue){
                     value = satvalues[markedValue];
                     this.$('#markedValue').val(value);
@@ -466,8 +465,8 @@ var ElementInspector = Backbone.View.extend({
             case "I":
             case "MP":
                 this.$('#markedValue').html(this.satValueOptions.positiveOnly(initValue));
-                var markedValue = cell.attributes.attrs['.constraints'].markedvalue;
-                if(markedValue){
+                var markedValue = this.cell.attributes.attrs['.constraints'].markedvalue;
+                if(markedValue) {
                     value = satvalues[markedValue];
                     this.$('#markedValue').val(value);
                 }
@@ -475,7 +474,7 @@ var ElementInspector = Backbone.View.extend({
             case "D":
             case "MN":
                 this.$('#markedValue').html(this.satValueOptions.negativeOnly(initValue));
-                var markedValue = cell.attributes.attrs['.constraints'].markedvalue;
+                var markedValue = this.cell.attributes.attrs['.constraints'].markedvalue;
                 if(markedValue){
                     value = satvalues[markedValue];
                     this.$('#markedValue').val(value);
@@ -557,13 +556,12 @@ var ElementInspector = Backbone.View.extend({
      * satisfaction value(s)
      */
     updateChart: function(event) {
-        var cell = this._cellView.model;
         var functionType = this.$('.function-type').val();
         var initVal = satvalues[this.$('#init-sat-value').val()];
         var satVal = satvalues[this.$('#markedValue').val()];
 
-        if (cell.attributes.attrs['.constraints']) {
-            cell.attributes.attrs['.constraints'].markedvalue = satVal;
+        if (this.cell.attributes.attrs['.constraints']) {
+            this.cell.attributes.attrs['.constraints'].markedvalue = satVal;
         }
 
         // Rerender chart canvas
@@ -1130,14 +1128,12 @@ var ElementInspector = Backbone.View.extend({
      */
     setCellFunctionData: function() {
 
-        var cell = this._cellView.model;
-
         var funcType = this.$('.function-type').val();
 
-        if (funcType != 'none' && cell.attr(".funcvalue/text") != 'NB') {
-            cell.attr(".funcvalue/text", funcType);
+        if (funcType != 'none' && this.cell.attr(".funcvalue/text") != 'NB') {
+            this.cell.attr(".funcvalue/text", funcType);
         } else {
-            cell.attr(".funcvalue/text", '');
+            this.cell.attr(".funcvalue/text", '');
         }
 
         // Update constraint attributes for the cell
@@ -1145,16 +1141,16 @@ var ElementInspector = Backbone.View.extend({
             this.setUserDefinedCellFunctionData();
         // Change the last value according to the function type
         } else if (funcType == "R") {
-            cell.attr(".constraints/lastval", "unknown");
+            this.cell.attr(".constraints/lastval", "unknown");
         } else if ((funcType == "C") || (funcType == "CR")) {
-            cell.attr(".constraints/lastval", this.$('#init-sat-value').val());
+            this.cell.attr(".constraints/lastval", this.$('#init-sat-value').val());
         } else if (funcType == "SD") {
-            cell.attr(".constraints/lastval", "denied");
+            this.cell.attr(".constraints/lastval", "denied");
         } else if (funcType == "DS") {
-            cell.attr(".constraints/lastval", "satisfied");
+            this.cell.attr(".constraints/lastval", "satisfied");
         } else {
-            cell.attr(".constraints/function", this.$('.function-type').val());
-            cell.attr(".constraints/lastval", this.$('#markedValue').val());
+            this.cell.attr(".constraints/function", this.$('.function-type').val());
+            this.cell.attr(".constraints/lastval", this.$('#markedValue').val());
         }
     },
 
@@ -1163,36 +1159,35 @@ var ElementInspector = Backbone.View.extend({
      */
     setCellSatData: function() {
 
-        var cell = this._cellView.model;
-
         var markedValue;
-        if(this.$('#markedValue').val()){
+        if (this.$('#markedValue').val()) {
             markedValue = satvalues[this.$('#markedValue').val()];
-        }else{
+        } else {
             markedValue = "0000";
         }
-        cell.attr(".constraints/markedvalue", markedValue);
+
+        this.cell.attr(".constraints/markedvalue", markedValue);
 
         // Set initial satisfaction value
         var initValue = this.$('#init-sat-value').val();
-        cell.attr(".satvalue/value", initValue);
+        this.cell.attr(".satvalue/value", initValue);
 
         // Set satvalue/text
         if (initValue == "satisfied") {
-            cell.attr(".satvalue/text", "(FS, ⊥)");
+            this.cell.attr(".satvalue/text", "(FS, ⊥)");
         } else if (initValue == "partiallysatisfied") {
-            cell.attr(".satvalue/text", "(PS, ⊥)");
+            this.cell.attr(".satvalue/text", "(PS, ⊥)");
         } else if (initValue == "denied") {
-            cell.attr(".satvalue/text", "(⊥, FD)");
+            this.cell.attr(".satvalue/text", "(⊥, FD)");
         } else if (initValue == "partiallydenied") {
-            cell.attr(".satvalue/text", "(⊥, PD)");
+            this.cell.attr(".satvalue/text", "(⊥, PD)");
         } else if (initValue == "unknown") {
-            cell.attr(".satvalue/text", "?");
+            this.cell.attr(".satvalue/text", "?");
         } else {
-            cell.attr(".satvalue/text", '');
+            this.cell.attr(".satvalue/text", '');
             // If functype is NB, dont clear it
-            if ( cell.attr(".funcvalue/text") != 'NB') {
-                cell.attr(".satvalue/text", ' ');
+            if (this.cell.attr(".funcvalue/text") != 'NB') {
+                this.cell.attr(".satvalue/text", ' ');
             }
         }
     },
@@ -1201,26 +1196,25 @@ var ElementInspector = Backbone.View.extend({
      * Sets the user defined function data onto the cell's attributes
      */
     setUserDefinedCellFunctionData: function() {
-        var cell = this._cellView.model;
 
-        cell.attributes.attrs['.constraints'].function = this.constraintsObject.userFunctions;
-        cell.attributes.attrs['.constraints'].lastval = this.constraintsObject.userValues;
-        cell.attr(".constraints/beginLetter", this.constraintsObject.beginLetter);
-        cell.attr(".constraints/endLetter", this.constraintsObject.endLetter);
-        cell.attr(".constraints/repeatCount", this.constraintsObject.repeat_count);
-        cell.attr(".constraints/absoluteLen", this.constraintsObject.absoluteLength);
+        this.cell.attributes.attrs['.constraints'].function = this.constraintsObject.userFunctions;
+        this.cell.attributes.attrs['.constraints'].lastval = this.constraintsObject.userValues;
+        this.cell.attr(".constraints/beginLetter", this.constraintsObject.beginLetter);
+        this.cell.attr(".constraints/endLetter", this.constraintsObject.endLetter);
+        this.cell.attr(".constraints/repeatCount", this.constraintsObject.repeat_count);
+        this.cell.attr(".constraints/absoluteLen", this.constraintsObject.absoluteLength);
 
         // Update repeat values
         if (this.repeatOptionsDisplay) {
-            cell.attr(".constraints/beginRepeat", this.constraintsObject.repeatBegin);
-            cell.attr(".constraints/endRepeat", this.constraintsObject.repeatEnd);
-            cell.attr(".constraints/repeatCount", this.constraintsObject.repeat_count);
-            cell.attr(".constraints/absoluteLen", this.constraintsObject.absoluteLength);
+            this.cell.attr(".constraints/beginRepeat", this.constraintsObject.repeatBegin);
+            this.cell.attr(".constraints/endRepeat", this.constraintsObject.repeatEnd);
+            this.cell.attr(".constraints/repeatCount", this.constraintsObject.repeat_count);
+            this.cell.attr(".constraints/absoluteLen", this.constraintsObject.absoluteLength);
         } else {
-            cell.attr(".constraints/beginRepeat", null);
-            cell.attr(".constraints/endRepeat", null);
-            cell.attr(".constraints/repeatCount", null);
-            cell.attr(".constraints/absoluteLen", null);
+            this.cell.attr(".constraints/beginRepeat", null);
+            this.cell.attr(".constraints/endRepeat", null);
+            this.cell.attr(".constraints/repeatCount", null);
+            this.cell.attr(".constraints/absoluteLen", null);
         }
     },
     clear: function(){
