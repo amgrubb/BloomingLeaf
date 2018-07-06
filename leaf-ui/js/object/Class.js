@@ -379,6 +379,23 @@ class UserIntention {
             this.dynamicFunction.functionSegList.push(seg1, seg2);
         }
     }
+
+    /**
+     * Sets the marked value for the FuncSegments in the
+     * EvolvingFunction for this UserIntention
+     *
+     * This function will only be called for I, D, RC, MP, MN functions
+     */
+    setMarkedValueToFunction(satValue) {
+        var funcType = this.dynamicFunction.stringDynVis;
+
+        var len = this.dynamicFunction.functionSegList.length;
+        this.dynamicFunction.functionSegList[len - 1].funcX = satValue;
+
+        if (funcType == 'MP' || funcType == 'MN') {
+            this.dynamicFunction.functionSegList[0].funcX = satValue;
+        }
+    }
 }
 UserIntention.numOfCreatedInstances = 0; // static variable to keep track of number of instances
 
