@@ -224,14 +224,19 @@ $('#btn-fnt').on('click', function(){
 	}
 });
 
+/**
+ * Creates an instance of a Link object and saves it in the global model
+ * variable
+ *
+ * @param {joint.dia.Cell} cell
+ */
 function createLink(cell) {
 	var link = new Link(cell.attributes.labels[0].attrs.text.text, cell.getSourceElement().attributes.nodeID,  "0");
 	cell.attributes.linkID = link.linkID;
     cell.on("change:target", function () {
     	var target = cell.getTargetElement();
-        if (target!== null) {
+        if (target !== null) {
 			link.linkDestID = target.attributes.nodeID;
-
         }
     });
     cell.on("change:source", function () {
@@ -240,13 +245,21 @@ function createLink(cell) {
 			link.linkSrcID = source.attributes.nodeID;
 		}
     });
+
+    // when the link is removed, remove the link from the global model
+    // variable as well
     cell.on("remove", function () {
 		model.removeLink(link.linkID);
     });
     model.links.push(link);
 }
 
-
+/**
+ * Creates an instance of a UserIntention object and saves it in the
+ * global model variable
+ *
+ * @param {joint.dia.Cell} cell
+ */
 function createIntention(cell) {
 
     var name = cell.attr(".name/text") + "_" + element_counter;
@@ -263,12 +276,49 @@ function createIntention(cell) {
     analysisRequest.userAssignmentsList.push(intentionEval);
 
     cell.attributes.nodeID = intention.nodeID;
+
+    // when the intention is removed, remove the intention from the global
+    // model variable as well
     cell.on("remove", function () {
-        model.removeIntention(intention.nodeID);
-        analysisRequest.removeIntention(intentionEval.intentionID);
+
+    	var userIntention = model.getUserIntentionByID(cell.attributes.nodeID);
+
+    	// remove this intention from the model
+        model.removeIntention(userIntention.nodeID);
+
+        // remove all intention evaluations associated with this intention
+        analysisRequest.removeIntention(userIntention.intentionID);
+
+        // if this intention has an actor, remove this intention's ID
+        // from the actor
+        if (userIntention.nodeActorID !== '-') {
+        	var actor = model.getActorByID(userIntention.nodeActorID);
+        	actor.removeIntentionID(userIntention.nodeID);
+        }
+
     });
 
 }
+
+/**
+ * Creates an instance of an Actor object and saves it in the
+ * global model variable
+ * 
+ * @param {joint.dia.Cell} cell
+ */
+function createActor(cell) {
+	var name = cell.attr('.name/text');
+	var actor = new Actor(name);
+	cell.attributes.nodeID = actor.nodeID;
+	model.actors.push(actor);
+
+	// when the actor is removed, remove the actor from the
+	// global modekl variable as well
+	cell.on('remove', function() {
+		model.removeActor(actor.nodeID);
+	});
+}
+
 /**
  * Set up on events for Rappid/JointJS objets
  */
@@ -278,26 +328,21 @@ var min_font = 6;
 var current_font = 10;
 
 // Whenever an element is added to the graph
-graph.on("add", function(cell){
+graph.on("add", function(cell) {
+
 	if (cell instanceof joint.dia.Link){
         if (graph.getCell(cell.get("source").id) instanceof joint.shapes.basic.Actor){
             cell.prop("linktype", "actorlink");
             cell.label(0,{attrs:{text:{text:"is-a"}}});
 		}
-
         createLink(cell);
-    } // Don't do anything for links
-
-	// Give element a unique default
-	createIntention(cell);
-
-	// Add Functions and sat values to added types
-	if (cell instanceof joint.shapes.basic.Intention){
+    } else if (cell instanceof joint.shapes.basic.Intention){
+		createIntention(cell);
 		cell.attr('.funcvalue/text', ' ');
-	}
+	} else if (cell instanceof joint.shapes.basic.Actor) {
+		createActor(cell);
 
-	// Send actors to background so elements are placed on top
-	if (cell instanceof joint.shapes.basic.Actor){
+		// Send actors to background so elements are placed on top
 		cell.toBack();
 	}
 
@@ -470,26 +515,32 @@ paper.on('cell:pointerup', function(cellView, evt) {
 
 		currentHalo = createHalo(cellView);
 
-		embedBasicActor(cellView);
+		embedBasicActor(cellView.model);
 
 		clearInspector();
+
 		elementInspector.render(cellView);
     }
 });
 
 /**
- * Embed an element into an actor boundary
- * 
+ * Embeds an element into an actor boundary
+ *
+ * @param {joint.dia.cell} cell
  */
-function embedBasicActor(cellView){
-	// Embed an element into an actor boundary, if necessary
-	if (!(cellView.model instanceof joint.shapes.basic.Actor)) {
-		var ActorsBelow = paper.findViewsFromPoint(cellView.model.getBBox().center());
+function embedBasicActor(cell) {
+	if (!(cell instanceof joint.shapes.basic.Actor)) {
+		var ActorsBelow = paper.findViewsFromPoint(cell.getBBox().center());
 
 		if (ActorsBelow.length) {
-			for (var a = 0; a < ActorsBelow.length; a++) {
-				if (ActorsBelow[a].model instanceof joint.shapes.basic.Actor) {
-					ActorsBelow[a].model.embed(cellView.model);
+			for (var i = 0; i < ActorsBelow.length; i++) {
+				var actorCell = ActorsBelow[i].model;
+				if (actorCell instanceof joint.shapes.basic.Actor) {
+					actorCell.embed(cell);
+					var nodeID = cell.attributes.nodeID;
+					var actorID = actorCell.attributes.nodeID
+					model.getUserIntentionByID(nodeID).nodeActorID = actorID;
+					model.getActorByID(actorID).intentionIDs.push(nodeID);
 				}
 			}
 		}

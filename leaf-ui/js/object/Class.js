@@ -16,6 +16,35 @@ class Model {
     }
 
     /**
+     * Returns the UserIntention with node ID
+     * nodeID
+     *
+     * @param {String} nodeID
+     * @returns {UserIntention}
+     */
+    getUserIntentionByID(nodeID) {
+    	for (var i = 0; i < this.intentions.length; i++) {
+    		if (this.intentions[i].nodeID == nodeID) {
+    			return this.intentions[i];
+    		}
+    	}
+    }
+
+    /**
+     * Returns the Actor with nodeID nodeID
+     *
+     * @param {String} nodeID
+     * @returns {Actor}
+     */
+    getActorByID(nodeID) {
+    	for (var i = 0; i < this.actors.length; i++) {
+    		if (this.actors[i].nodeID == nodeID) {
+    			return this.actors[i];
+    		}
+    	}
+    }
+
+    /**
      * Remove the intention with node ID nodeID
      * from the intentions array
      *
@@ -29,18 +58,35 @@ class Model {
     		}
     	}
     }
+
     /**
      * Remove the intention with link ID linkID
-     * from the intentions array
+     * from the links array
      *
      * @param {String} linkID
      */
-
     removeLink(linkID) {
         for (var i = 0; i < this.links.length; i++) {
             if (this.links[i].linkID = linkID) {
                 this.links.splice(i, 1);
                 return;
+            }
+        }
+    }
+
+	/**
+     * Remove the Actor with node ID nodeID
+     * from the actors array and update all intentions
+     * that was embedded within the embedded actor
+     *
+     * @param {String} nodeID
+     */
+    removeActor(nodeID) {
+
+    	for (var i = 0; i < this.actors.length; i++) {
+            if (this.actors[i].nodeID = nodeID) {
+                this.actors.splice(i, 1);
+      			break;
             }
         }
     }
@@ -52,19 +98,50 @@ class Actor {
 
 	/**
 	 * @param {String} nodeID
-	 *   ID of this node. ex: ('a0000')
+	 *   ID of this node. ex: ('a000')
 	 * @param {String} nodeName
 	 *   Name of this node. ex: ('Actor_0')
-	 * @param {Array.<String>} intentions
+	 * @param {Array.<String>} intentionsIDs
 	 *   Array of intention IDs, for the intentions
 	 *   embedded inside this actor
 	 */
-	constructor(nodeID, nodeName, intentions) {
-		this.nodeID = nodeID;
+	constructor(nodeName) {
+		this.nodeID = this.createID();
 		this.nodeName = nodeName;
-		this.intentions = intentions;
+		this.intentionIDs = [];
 	}
+
+	/**
+     * Creates and returns a 4 digit ID for this Actor
+     *
+     * @returns {String}
+     */
+    createID() {
+        var id = Actor.numOfCreatedInstances.toString();
+        Actor.numOfCreatedInstances += 1;
+        while (id.length < 3){
+            id = '0' + id;
+        }
+        return 'a' + id;
+    }
+
+    /**
+     * Removes intention ID nodeID from the
+     * intentionIDs array
+     *
+     * @param{String} nodeID
+     */
+    removeIntentionID(nodeID) {
+    	for (var i = 0; i < this.intentionIDs.length; i++) {
+    		if (this.intentionIDs[i] == nodeID) {
+    			this.intentionIDs.splice(i, 1);
+    			return ;
+    		}
+    	}
+    }
 }
+Actor.numOfCreatedInstances = 0;
+
 
 class AnalysisResult {
 
@@ -111,7 +188,7 @@ class Link {
     }
 
     /**
-     * Creates and returns a 4 digit ID for this node
+     * Creates and returns a 4 digit ID for this link
      *
      * @returns {String}
      */
