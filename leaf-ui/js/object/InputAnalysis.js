@@ -76,7 +76,9 @@ function getElementList() {
 function getElementsForAnalysis() {
 	var elementList = [];
 	var historyIndex = historyObject.currentStep - 1;
-	if(!historyObject.allHistory.length) {
+	if (!historyObject.allHistory){
+        elementList =  getElementList();
+	} else if(!historyObject.allHistory.length) {
 		elementList =  getElementList();
 	} else {
 		var time = $('#sliderValue').text().split('|')[0];

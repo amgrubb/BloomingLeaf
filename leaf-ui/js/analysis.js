@@ -6,14 +6,28 @@ analysis.elements = [];
 analysis.currentState;
 var tempResults;
 var filterOrderQueue = [];
-//This merge the attributes of old page and new page
-analysis.page = jQuery.extend({}, window.opener.document);
+var savedAnalysisData = {};
+var global_analysisResult;
+
+var graph;
+
+var satValueDict = {
+    "unknown": "0000",
+    "satisfied": "0011",
+    "partiallysatisfied": "0010",
+    "partiallydenied": "0100",
+    "denied": "1100",
+    "none": "0000"
+};
+
+
 
 //Executing scripts only when page is fully loaded
 window.onload = function(){
+    //This merge the attributes of old page and new page
+    analysis.page = jQuery.extend({}, window.opener.document);
     init();
     renderNavigationSidebar();
-    tempResults = $.extend(true,{}, analysis.parentResults);
 
 }
 
@@ -24,8 +38,9 @@ function init(){
     analysis.paperScroller;
 
     //Objects from parent page
-    analysis.parentResults = jQuery.extend({}, window.opener.global_analysisResult);
+    //analysis.parentResults = jQuery.extend({}, window.opener.global_analysisResult);
 
+    global_analysisResult = jQuery.extend({}, window.opener.global_analysisResult);
 
 
     analysis.paper = new joint.dia.Paper({
@@ -77,8 +92,11 @@ function init(){
     }
 
     if(!analysis.analysisResult){
-        analysis.analysisResult = analysis.parentResults;
+        analysis.analysisResult = global_analysisResult;
     }
+    savedAnalysisData = jQuery.extend({}, window.opener.savedAnalysisData);
+    graph =  jQuery.extend({}, window.opener.graph);
+    tempResults = $.extend(true,{}, global_analysisResult);
 }
 
 function renderNavigationSidebar(currentPage = 0){
@@ -86,6 +104,14 @@ function renderNavigationSidebar(currentPage = 0){
 
     var currentPageIn = document.getElementById("currentPage");
     var num_states_lbl = document.getElementById("num_states_lbl");
+
+
+        //analysis.parentResults = jQuery.extend({}, window.opener.global_analysisResult);
+
+    //if(!analysis.analysisResult){
+     //   analysis.analysisResult = analysis.parentResults;
+    //}
+
     num_states_lbl.innerHTML += (analysis.analysisResult.allSolution.length);
 
     currentPageIn.value = currentPage.toString();
@@ -231,7 +257,7 @@ function goToState(){
 
 function add_filter(){
     console.log("clicked");
-    tempResults = $.extend(true,{}, analysis.parentResults);
+    tempResults = $.extend(true,{}, global_analysisResult);
     var checkboxes = document.getElementsByClassName("filter_checkbox");
     for (var i_element = 0; i_element < checkboxes.length; i_element++){
         var checkbox = checkboxes[i_element];
@@ -653,15 +679,55 @@ function add_filter(){
 
 //This function should get the current state in the screen and save in the original path
 function save_current_state(){
-    var modal = document.getElementById("modal_save_next_state");
+    /*var modal = document.getElementById("modal_save_next_state");
     modal.style.visibility = (modal.style.visibility == "visible") ? "hidden" : "visible";
 
     modal.content = document.getElementById("modal-content");
     analysis.storage = jQuery.extend({}, window.opener.storage);
-    modal.content.append("<p>" + JSON.stringify(analysis.storage, null, "\t") + "<\p>");
+    modal.content.append("<p>" + JSON.stringify(analysis.storage, null, "\t") + "<\p>");*/
+    console.log(savedAnalysisData.singlePathAnalysis);
 }
+
 
 //This function should get the current state and generate a new window with the next possible states
 function generate_next_states(){
+
+    // Object to be sent to the backend
+    var jsObject = {};
+    var index_of_selected_state = parseInt(document.getElementById("currentPage").value);
+
+    // update InputAnalysis with the current selected state
+    for (var element_index = 0; element_index < tempResults.allSolution[index_of_selected_state].intentionElements.length; element_index++){
+        savedAnalysisData.allNextStatesAnalysis.elementList[element_index].status.push(tempResults.allSolution[index_of_selected_state].intentionElements[element_index].status[0]);
+    }
+
+    //update currentSate in InputAnalysis
+    var i = savedAnalysisData.allNextStatesAnalysis.currentState.indexOf('|', 0);
+    var current = parseInt(savedAnalysisData.allNextStatesAnalysis.currentState.substring(0, i));
+    current ++;
+    savedAnalysisData.allNextStatesAnalysis.currentState = current + "|" + savedAnalysisData.allNextStatesAnalysis.initialValueTimePoints[current];
+
+    jsObject.analysis = savedAnalysisData.allNextStatesAnalysis;
+    console.log(jsObject.analysis);
+
+    //Get the Graph Model
+    jsObject.model = getFrontendModel(false);
+
+    //this.saveElementsInGraphVariable();
+    var elements = [];
+    for (var i = 0; i < graph.getElements().length; i++){
+        if (!(graph.getElements()[i] instanceof joint.shapes.basic.Actor)){
+            elements.push(graph.getElements()[i]);
+        }
+    }
+    graph.allElements = elements;
+    graph.elementsBeforeAnalysis = elements;
+
+    if(jsObject.model == null) {
+        return null;
+    }
+
+    //Send data to backend
+    backendComm(jsObject);
 
 }

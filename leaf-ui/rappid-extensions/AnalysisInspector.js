@@ -153,10 +153,10 @@ var AnalysisInspector = Backbone.View.extend({
 	singlePath: function() {
 		//Create the object and fill the JSON file to be sent to backend.
 		//Get the AnalysisInspector view information
-		var analysis = new InputAnalysis("singlePath");
+        savedAnalysisData.singlePathAnalysis = new InputAnalysis("singlePath");
 
 		//Prepare and send data to backend
-		this.sendToBackend(analysis);
+		this.sendToBackend(savedAnalysisData.singlePathAnalysis);
 	},
 
 	/**
@@ -168,10 +168,10 @@ var AnalysisInspector = Backbone.View.extend({
 	getAllNextStates: function() {
 		//Create the object and fill the JSON file to be sent to backend.
 		//Get the AnalysisInspector view information
-		var analysis = new InputAnalysis("allNextStates");
+        savedAnalysisData.allNextStatesAnalysis = new InputAnalysis("allNextStates");
 
 		//Prepare and send data to backend
-		this.sendToBackend(analysis);
+		this.sendToBackend(savedAnalysisData.allNextStatesAnalysis);
 
 	},
 

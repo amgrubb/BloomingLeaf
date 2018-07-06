@@ -19,9 +19,10 @@ function returnElementIds(){
 	var elements = graph.getElements();
 	var elementLst = [];
 	for (var i = 0; i < elements.length; i++){
-		var cellView = elements[i].findView(paper);
-		var cell = cellView.model;
-		elementLst.push(cell.attributes.elementid);
+		//var cellView = elements[i].findView(paper);
+		//var cell = cellView.model;
+
+		elementLst.push(elements[i].attributes.elementid);
 	}
 	return elementLst;
 }

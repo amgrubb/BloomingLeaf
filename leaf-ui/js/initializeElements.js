@@ -2,7 +2,6 @@
  * This file contains code that will initialize and setup
  * the necessary Rappid, JointJS and noUiSlider elements.
  */
-
 var graph;
 var paper;
 var stencil;

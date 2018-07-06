@@ -112,8 +112,7 @@ function getFileResults(isGetNextSteps){
 function open_analysis_viewer(){
     var urlBase = document.URL.substring(0, document.URL.lastIndexOf('/')+1);
     var url = urlBase+"analysis.html";
-
-    var w = window.open(url, "Analysis View", "status=0,title=0,height=600,width=1200,scrollbars=1");
+    var w = window.open(url, Date.now(), "status=0,title=0,height=600,width=1200,scrollbars=1");
 
     if (!w) {
         alert('You must allow popups for this map to work.');
