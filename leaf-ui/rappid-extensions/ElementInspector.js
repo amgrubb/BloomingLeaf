@@ -161,7 +161,6 @@ var ElementInspector = Backbone.View.extend({
     ].join(''),
 
     events: {
-        'keyup .cell-attrs-text': 'nameAction',
         'change #init-sat-value':'updateHTML',
 
         'change .function-type':'updateHTML',
@@ -349,23 +348,6 @@ var ElementInspector = Backbone.View.extend({
         }
 
         this.updateChartUserDefined(null);
-    },
-
-    /**
-     * Updates the selected cell's name.
-     * This function is called on keyup for .cell-attrs-text 
-     */
-    nameAction: function(event) {
-        // Prevent the ENTER key from being recorded when naming nodes.
-        if (event.which === ENTER_KEY) {
-            event.preventDefault();
-        }
-
-        var cell = this._cellView.model;
-        var text = this.$('.cell-attrs-text').val()
-        // Do not allow special characters in names, replace them with spaces.
-        text = text.replace(/[^\w\n-]/g, ' ');
-        cell.attr({ '.name': { text: text } });
     },
 
     /**

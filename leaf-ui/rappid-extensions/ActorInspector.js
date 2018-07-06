@@ -37,14 +37,16 @@ var ActorInspector = Backbone.View.extend({
         /**
          * Initializes the element inspector using previously defined templates
          */
-        render: function(cellView) {
+        render: function(cell) {
 
-            this.cell = cellView.model;
-            // Save the clicked node's cell model
+            this.cell = cell;
+
+            // Save actor here
+            this.element = model.getActorByID(cell.attributes.nodeID);
 
             // If the clicked node is an actor, render the actor inspector
-                this.$el.html(_.template(this.template)());
-                this.$('.cell-attrs-text').val(this.cell.attr(".name/text") || '');
+            this.$el.html(_.template(this.template)());
+            this.$('.cell-attrs-text').val(this.element.nodeName);
         },
 
 
@@ -61,7 +63,10 @@ var ActorInspector = Backbone.View.extend({
             var text = this.$('.cell-attrs-text').val();
             // Do not allow special characters in names, replace them with spaces.
             text = text.replace(/[^\w\n-]/g, ' ');
+
             this.cell.attr({ '.name': { text: text } });
+            this.element.nodeName = text;
+
         },
       clear: function(){
             this.$el.html('');

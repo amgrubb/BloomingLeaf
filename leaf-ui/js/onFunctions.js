@@ -500,10 +500,7 @@ paper.on('cell:pointerup', function(cellView, evt) {
             var link = cellView.model;
             basicActorLink(link);
             // Element is selected
-        }
-        else {
-            actorInspector.render(cellView);
-
+        } else {
 
             selection.reset();
             selection.add(cellView.model);
@@ -523,10 +520,9 @@ paper.on('cell:pointerup', function(cellView, evt) {
             clearInspector();
 
             if (cellView.model instanceof joint.shapes.basic.Actor) {
-            	actorInspector.render(cellView);
-			}
-			else{
-                elementInspector.render(cellView);
+            	actorInspector.render(cellView.model);
+			} else {
+                elementInspector.render(cellView.model);
 			}
 
         }
@@ -559,7 +555,7 @@ function embedBasicActor(cell) {
 }
 
 
-graph.on('change:size', function(cell, size){
+graph.on('change:size', function(cell, size) {
 	cell.attr(".label/cx", 0.25 * size.width);
 
 	// Calculate point on actor boundary for label (to always remain on boundary)
