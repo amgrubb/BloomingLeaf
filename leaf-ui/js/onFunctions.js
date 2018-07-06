@@ -493,33 +493,41 @@ function removeHighlight(elements){
  */
 paper.on('cell:pointerup', function(cellView, evt) {
 	if(mode == "Modelling") {
-		// Link
+        // Link
         if (cellView.model instanceof joint.dia.Link) {
             var link = cellView.model;
             basicActorLink(link);
             // Element is selected
-			return;
         }
+        else {
+            actorInspector.render(cellView);
 
 
-		selection.reset();
-		selection.add(cellView.model);
+            selection.reset();
+            selection.add(cellView.model);
 
-		var elements = graph.getElements();
+            var elements = graph.getElements();
 
-		// Remove highlight of other elements
-		removeHighlight(elements);
+            // Remove highlight of other elements
+            removeHighlight(elements);
 
-		// Highlight when cell is clicked
-		cellView.highlight();
+            // Highlight when cell is clicked
+            cellView.highlight();
 
-		currentHalo = createHalo(cellView);
+            currentHalo = createHalo(cellView);
 
-		embedBasicActor(cellView.model);
+            embedBasicActor(cellView.model);
 
-		clearInspector();
+            clearInspector();
 
-		elementInspector.render(cellView);
+            if (cellView.model instanceof joint.shapes.basic.Actor) {
+            	actorInspector.render(cellView);
+			}
+			else{
+                elementInspector.render(cellView);
+			}
+
+        }
     }
 });
 
@@ -596,6 +604,7 @@ function clearInspector() {
 	elementInspector.clear();
 	linkInspector.clear();
 	analysisInspector.clear();
+	actorInspector.clear();
 }
 
 

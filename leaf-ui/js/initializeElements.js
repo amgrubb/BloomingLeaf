@@ -14,6 +14,7 @@ var analysisRequest = new AnalysisRequest();
 var linkInspector = new LinkInspector();
 var elementInspector = new ElementInspector();
 var analysisInspector = new AnalysisInspector();
+var actorInspector =  new ActorInspector();
 
 var currentHalo;
 var currentAnalysis;
@@ -142,6 +143,7 @@ stencil = new joint.ui.Stencil({
 
 // A simple element editor.
 $('.inspector').append(elementInspector.el);
+$('.inspector').append(actorInspector.el);
 
 $('#stencil').append(stencil.render().el);
 
