@@ -262,9 +262,8 @@ function createLink(cell) {
  */
 function createIntention(cell) {
 
-    var name = cell.attr(".name/text") + "_" + element_counter;
+    var name = cell.attr(".name/text") + "_" + UserIntention.numOfCreatedInstances;
     cell.attr(".name/text", name);
-    element_counter++;
 
     // create intention object
     var type = cell.attributes.type;
@@ -309,8 +308,9 @@ function createIntention(cell) {
  * @param {joint.dia.Cell} cell
  */
 function createActor(cell) {
-	var name = cell.attr('.name/text');
+	var name = cell.attr('.name/text') + "_" + Actor.numOfCreatedInstances;
 	var actor = new Actor(name);
+    cell.attr(".name/text", name);
 	cell.attributes.nodeID = actor.nodeID;
 	model.actors.push(actor);
 
@@ -495,33 +495,41 @@ function removeHighlight(elements){
  */
 paper.on('cell:pointerup', function(cellView, evt) {
 	if(mode == "Modelling") {
-		// Link
+        // Link
         if (cellView.model instanceof joint.dia.Link) {
             var link = cellView.model;
             basicActorLink(link);
             // Element is selected
-			return;
         }
+        else {
+            actorInspector.render(cellView);
 
 
-		selection.reset();
-		selection.add(cellView.model);
+            selection.reset();
+            selection.add(cellView.model);
 
-		var elements = graph.getElements();
+            var elements = graph.getElements();
 
-		// Remove highlight of other elements
-		removeHighlight(elements);
+            // Remove highlight of other elements
+            removeHighlight(elements);
 
-		// Highlight when cell is clicked
-		cellView.highlight();
+            // Highlight when cell is clicked
+            cellView.highlight();
 
-		currentHalo = createHalo(cellView);
+            currentHalo = createHalo(cellView);
 
-		embedBasicActor(cellView.model);
+            embedBasicActor(cellView.model);
 
-		clearInspector();
+            clearInspector();
 
-		elementInspector.render(cellView.model);
+            if (cellView.model instanceof joint.shapes.basic.Actor) {
+            	actorInspector.render(cellView);
+			}
+			else{
+                elementInspector.render(cellView);
+			}
+
+        }
     }
 });
 
@@ -598,6 +606,7 @@ function clearInspector() {
 	elementInspector.clear();
 	linkInspector.clear();
 	analysisInspector.clear();
+	actorInspector.clear();
 }
 
 
