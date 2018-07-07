@@ -52,7 +52,7 @@ class Model {
      */
     removeIntention(nodeID) {
     	for (var i = 0; i < this.intentions.length; i++) {
-    		if (this.intentions[i].nodeID = nodeID) {
+    		if (this.intentions[i].nodeID == nodeID) {
     			this.intentions.splice(i, 1);
     			return;
     		}
@@ -67,7 +67,7 @@ class Model {
      */
     removeLink(linkID) {
         for (var i = 0; i < this.links.length; i++) {
-            if (this.links[i].linkID = linkID) {
+            if (this.links[i].linkID == linkID) {
                 this.links.splice(i, 1);
                 return;
             }
@@ -84,7 +84,7 @@ class Model {
     removeActor(nodeID) {
 
     	for (var i = 0; i < this.actors.length; i++) {
-            if (this.actors[i].nodeID = nodeID) {
+            if (this.actors[i].nodeID == nodeID) {
                 this.actors.splice(i, 1);
       			break;
             }
