@@ -215,6 +215,31 @@ class EvolvingFunction {
 		this.stringDynVis = null;
 		this.functionSegList = [];
 	}
+
+    /**
+     * Returns the 4 digit representation for this 
+     * EvolvingFunction's ith function segment
+     *
+     * @param {Number} i
+     * @returns {String}
+     */
+    getMarkedVal(i) {
+        return functionSegList[i].funcX;
+    }
+
+    /**
+     * Returns the funcStop value for the last
+     * function segment for this EvolvingFunction
+     * Returns null if functionSegList is empty
+     *
+     * returns {String | null}
+     */
+    getLastStopValue() {
+        len = this.functionSegList.length
+        if (len > 0) {
+            return this.functionSegList[len - 1].funcStop;
+        }
+    }
 }
 
 class FuncSegment {
@@ -315,6 +340,27 @@ class UserIntention {
     }
 
     /**
+     * Changes the initial satisfaction value for this UserIntention
+     * to initValue
+     *
+     * @param {String} initValue
+     */
+    changeInitialSatValue(initValue) {
+        var intentionEval = analysisRequest.getIntentionEvaluationByID(this.nodeID, '0');
+        intentionEval.evaluationValue = initValue;
+
+        // if there is only one function segment, and its constant, then we need to
+        // change the function segment's marked value
+
+        var funcSegList = this.dynamicFunction.functionSegList;
+        
+        if (this.dynamicFunction.stringDynVis == 'C' ||
+            (this.dynamicFunction.stringDynVis == 'UD' && funcSegList[0].funcType == 'C')) {
+            funcSegList[0].funcX = initValue;
+        }
+    }
+ 
+    /**
      * Creates and returns a 4 digit ID for this node
      * 
      * @returns {String}
@@ -326,6 +372,27 @@ class UserIntention {
                 id = '0' + id;
         }
         return id;
+    }
+
+    /**
+     * Returns the 4 digit representation for this 
+     * UserIntention's initial satisfaction value
+     *
+     * @returns {String}
+     */
+    getInitialSatValue() {
+        var intentionEval = analysisRequest.getIntentionEvaluationByID(this.nodeID, '0');
+        return intentionEval.evaluationValue;
+    }
+
+    /**
+     * Returns the number of function segments for this
+     * UserIntention
+     *
+     * @returns {Number}
+     */
+    getNumOfFuncSegements() {
+        return this.dynamicFunction.functionSegList.length;
     }
 
     /**
@@ -394,6 +461,33 @@ class UserIntention {
 
         if (funcType == 'MP' || funcType == 'MN') {
             this.dynamicFunction.functionSegList[0].funcX = satValue;
+        }
+    }
+
+    /**
+     * Sets the function type and marked value for the
+     * last FuncSegment for this UserIntention's EvolvingFunction
+     *
+     * @param {String} funcValue
+     */
+    setUserDefinedSegment(funcValue) {
+        var funcSegLen = this.getNumOfFuncSegements();
+        var funcSeg = this.dynamicFunction.functionSegList[funcSegLen - 1];
+        funcSeg.funcType = funcValue;
+        if (funcValue == 'C') {
+            if (funcSegLen == 1) {
+                funcSeg.funcX = this.getInitialSatValue();
+            } else {
+                funcSeg.funcX = this.dynamicFunction.getMarkedVal(funcSegLen - 2).funcX;
+            }
+            
+        } else if (funcValue == 'R') {
+            // the marked value for a Stochastic function is always 0000
+            funcSeg.funcX = '0000';
+        } else if (funcValue == 'I' || funcValue == 'D') {
+            funcSeg.funcX = '0011';
+        } else if (funcValue == 'D') {
+            funcSeg.funcX ='1100';
         }
     }
 }

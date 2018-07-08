@@ -156,8 +156,8 @@ var ElementInspector = Backbone.View.extend({
         'change .function-type':'funcTypeChanged',
         'change .function-sat-value':'funcSatValChanged',
 
-        'change .user-function-type':'updateHTML',
-        'change .user-sat-value':'updateChartUserDefined',
+        'change .user-function-type':'userFuncTypeChanged',
+        'change .user-sat-value':'userSatValChanged',
         'change .repeat-select':'selectRepeatValues',
         'change .repeat-select2':'selectNumRepeatValues',
         'change .repeat-select3':'selectAbsoluteLength',
@@ -166,7 +166,7 @@ var ElementInspector = Backbone.View.extend({
         'click #constraint-repeat': 'repeatConstraintControl',
         'click #constraint-restart': 'restartConstraint',
     },
-
+ 
     /**
      * Initializes the element inspector using previously defined templates
      */
@@ -335,8 +335,7 @@ var ElementInspector = Backbone.View.extend({
      */
     initSatValueChanged: function(event) {
         var initValue = this.$('#init-sat-value').val();
-        intentionEval = analysisRequest.getIntentionEvaluationByID(this.intention.nodeID, '0');
-        intentionEval.evaluationValue = satValueDict[initValue];
+        this.intention.changeInitialSatValue(satValueDict[initValue]);
         this.updateHTML(event);
     },
 
@@ -351,6 +350,21 @@ var ElementInspector = Backbone.View.extend({
         var funcType = this.$('.function-type').val();
         this.intention.setEvolvingFunction(funcType);
         this.updateHTML(event);
+    },
+
+    /**
+     * Updates the FuncSegment for this intention's UserIntention object's
+     * with the correct marked value and function type
+     * This function is called on change for .user-function-type
+     */
+    userFuncTypeChanged: function(event) {
+        var funcType = this.$('.user-function-type').val();
+        this.intention.setUserDefinedSegment(funcType);
+        this.updateHTML(event);
+    },
+
+    userSatValChanged: function(event) {
+        this.updateChartUserDefined(event);
     },
 
     /**
@@ -493,7 +507,7 @@ var ElementInspector = Backbone.View.extend({
         var func = $(".user-function-type").last().val();
         var index = this.constraintsObject.currentUserIndex;
 
-        // If initially disabled, un-disable it for now
+        // If initially disabled, enable it for now
         if ($('.user-sat-value').last().prop('disabled')) {
             $('.user-sat-value').last().prop('disabled', false);
             $('.user-sat-value').last().css('background-color','');
@@ -505,6 +519,7 @@ var ElementInspector = Backbone.View.extend({
                 // May get last value of the graph in the future
                 $(".user-sat-value").last().html(this.satValueOptions.positiveOnly('partiallysatisfied'));
                 $(".user-sat-value").last().val("satisfied");
+
                 break;
 
             case "D":
