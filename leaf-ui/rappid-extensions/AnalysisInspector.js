@@ -240,31 +240,54 @@ var AnalysisInspector = Backbone.View.extend({
 		// Get a list of links
 		var links = graph.getLinks();
 
-		for (var i = 0; i < links.length; i ++) {
-			var link = links[i];
-			var source = null;
-			var target = null;
-			if (link.get("source").id) {
-				source = graph.getCell(link.get("source").id);
+		// for (var i = 0; i < links.length; i ++) {
+		// 	var link = links[i];
+		// 	var source = null;
+		// 	var target = null;
+		// 	if (link.get("source").id) {
+		// 		source = graph.getCell(link.get("source").id);
+		// 	}
+		// 	if (link.get("target").id) {
+		// 		target = graph.getCell(link.get("target").id);
+		// 	}
+		// 	if (source && target) {
+		// 		var sourceName = source.attr('.name').text;
+		// 		var targetName = target.attr('.name').text;
+		// 		var assignedTime = link.attr('.assigned_time');
+		// 		var linkType = link.get('labels')[0].attrs.text.text;
+		// 		// If no assignedTime in the link, save 'None' into the link
+		// 		if (!assignedTime) {
+		// 			link.attr('.assigned_time', {0: ''});
+		// 			assignedTime = link.attr('.assigned_time');
+		// 		}
+		// 		if (linkType == 'NBD' || linkType == 'NBT' || linkType.indexOf('|') > -1) {
+		// 			$('#link-list').append('<tr><td>' + linkType + '</td><td>' + sourceName + '</td><td>' + targetName +
+		// 				'</td><td><input type="text" name="sth" value=' + assignedTime[0] + '></td>' + btnHtml +
+		// 				'<input type="hidden" name="id" value="' + link.id + '"> </td> </tr>'+ '</tr>');
+		// 		}
+		// 	}
+
+		// }
+		// TODO, make sure this works
+		for (var i = 0; i < model.links.length; i++) {
+			var link = model.links[i];
+			var sourceID = link.linkSrcID;
+			var destID = link.linkDestID;
+
+			// If this link does not have a source and a target
+			if (sourceID == null || destID == null) {
+				continue;
 			}
-			if (link.get("target").id) {
-				target = graph.getCell(link.get("target").id);
-			}
-			if (source && target) {
-				var sourceName = source.attr('.name').text;
-				var targetName = target.attr('.name').text;
-				var assignedTime = link.attr('.assigned_time');
-				var linkType = link.get('labels')[0].attrs.text.text;
-				// If no assignedTime in the link, save 'None' into the link
-				if (!assignedTime) {
-					link.attr('.assigned_time', {0: ''});
-					assignedTime = link.attr('.assigned_time');
-				}
-				if (linkType == 'NBD' || linkType == 'NBT' || linkType.indexOf('|') > -1) {
-					$('#link-list').append('<tr><td>' + linkType + '</td><td>' + sourceName + '</td><td>' + targetName +
-						'</td><td><input type="text" name="sth" value=' + assignedTime[0] + '></td>' + btnHtml +
-						'<input type="hidden" name="id" value="' + link.id + '"> </td> </tr>'+ '</tr>');
-				}
+
+			var sourceName = model.getUserIntentionByID(sourceID);
+			var destName = model.getUserIntentionByID(destID);
+			var linkAbsTime = link.absoluteValue;
+
+			if (link.linkType == 'NBD' || link.linkType == 'NBT' || link.isEvolvingRelationship) {
+
+				$('#link-list').append('<tr><td>' + link.linkType + '</td><td>' + sourceName + '</td><td>' + targetName +
+					'</td><td><input type="text" name="sth" value=' + assignedTime[0] + '></td>' + btnHtml +
+					'<input type="hidden" name="id" value="' + link.id + '"> </td> </tr>'+ '</tr>');
 			}
 
 		}

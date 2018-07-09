@@ -373,12 +373,17 @@ var ElementInspector = Backbone.View.extend({
      * This function is called on change for .user-function-type
      */
     userFuncTypeChanged: function(event) {
-        var funcType = this.$('.user-function-type').val();
+        var funcType = this.$('.user-function-type').last().val();
         this.intention.setUserDefinedSegment(funcType);
         this.updateHTML(event);
     },
 
+    /**
+     * This function is called on change for .user-sat-value
+     */
     userSatValChanged: function(event) {
+        var satVal = satValueDict[this.$('.user-sat-value').last().val()];
+        this.intention.updateLastFuncSegSatVal(satVal);
         this.updateChartUserDefined(event);
     },
 

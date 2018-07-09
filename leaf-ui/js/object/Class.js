@@ -249,7 +249,7 @@ class EvolvingFunction {
      * @returns {String}
      */
     getMarkedVal(i) {
-        return functionSegList[i].funcX;
+        return this.functionSegList[i].funcX;
     }
 
     /**
@@ -470,9 +470,18 @@ class UserIntention {
             }
             this.dynamicFunction.functionSegList.push(seg1, seg2);
         }
-
-
     }
+
+    /**
+     * Adds a new FuncSeg to the end of this Intention's EvolvingFunction's
+     * function list. This function should only be used to add new function
+     * segments for user defined functions
+     *
+     * @param {String} funcType
+     *   ex: 'C'
+     * @param {String} satValue
+     *   ex: '0000'
+     */
     addUserDefinedSeg(funcType, satValue){
 
         var len = this.dynamicFunction.functionSegList.length;
@@ -523,6 +532,31 @@ class UserIntention {
             funcSeg.funcX = '0011';
         } else if (funcValue == 'D') {
             funcSeg.funcX ='1100';
+        }
+    }
+
+    /**
+     * Sets the satisfaction value for the last function segment 
+     * in this Intention's evolving function, to satVal
+     *
+     * @param {String} satVal
+     *   ex: '0000'
+     */
+    updateLastFuncSegSatVal(satVal) {
+        var funcSegList = this.dynamicFunction.functionSegList; 
+        var funcSegLen = this.dynamicFunction.functionSegList.length;
+
+        var lastObj = funcSegList[funcSegLen - 1];
+
+        if (lastObj instanceof FuncSegment) {
+            lastObj.funcX = satVal;
+
+        } else {
+            // the last segment is inside of the repeat range and is
+            // stored inside of the RepFuncSegment object
+            var repSegList = lastObj.functionSegList;
+            var repSegLen = repSegList.length;
+            repSegList[repSegLen - 1].funcX = satVal;
         }
     }
 }
