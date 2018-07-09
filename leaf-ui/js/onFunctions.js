@@ -249,6 +249,7 @@ function createLink(cell) {
     // when the link is removed, remove the link from the global model
     // variable as well
     cell.on("remove", function () {
+    	clearInspector();
 		model.removeLink(link.linkID);
     });
     model.links.push(link);
@@ -288,7 +289,7 @@ function createIntention(cell) {
         model.removeIntention(userIntention.nodeID);
 
         // remove all intention evaluations associated with this intention
-        analysisRequest.removeIntention(userIntention.nodeID);
+        analysisRequest.removeIntention(userIntention.intentionID);
 
         // if this intention has an actor, remove this intention's ID
         // from the actor
@@ -417,7 +418,7 @@ paper.on("link:options", function(evt, cell){
 	}
 
 	clearInspector();
-	linkInspector.render(cell);
+	linkInspector.render(cell.model);
 
 });
 

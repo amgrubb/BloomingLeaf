@@ -45,6 +45,21 @@ class Model {
     }
 
     /**
+     * Returns the Links with linkID linkID
+     *
+     * @param {String} linkID
+     * @returns {Link}
+     */
+    getLinkByID(linkID) {
+        for (var i = 0; i < this.links.length; i++) {
+            if (this.links[i].linkID == linkID) {
+                return this.links[i];
+            }
+        }
+    }
+
+
+    /**
      * Remove the intention with node ID nodeID
      * from the intentions array
      *
@@ -182,6 +197,7 @@ class Link {
     constructor(linkType, linkSrcID, absoluteValue) {
     	this.linkID = this.createID();
     	this.linkType = linkType;
+        this.postType = null;
     	this.linkSrcID = linkSrcID;
     	this.linkDestID = null;
     	this.absoluteValue = absoluteValue;
@@ -199,6 +215,15 @@ class Link {
             id = '0' + id;
         }
         return id;
+    }
+
+    /**
+     * Returns true iff this Link object represents
+     * an evolving relationship
+     * @returns {Boolean}
+     */
+    isEvolvingRelationship() {
+        return this.postType != null;
     }
 }
 Link.numOfCreatedInstances = 0;
