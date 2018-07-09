@@ -437,9 +437,9 @@ class UserIntention {
                 // the marked value for a Stochastic function is always 0000
                 var seg = new FuncSegment(funcType, '0000', '0', 'Infinity');
             } else if (funcType == 'I' || funcType == 'D') {
-                var seg = new FuncSegment(funcType, null, '0', 'Infinity'); 
+                var seg = new FuncSegment(funcType, null, '0', 'Infinity');
             } else if (funcType == 'UD') {
-                var seg = new FuncSegment('C', initValue, '0', 'A'); 
+                var seg = new FuncSegment('C', initValue, '0', 'A');
             }
             this.dynamicFunction.functionSegList.push(seg);
         } else if (funcType == 'RC' || funcType == 'CR' || funcType == 'MP' || funcType == 'MN' || funcType == 'SD' || funcType == 'DS') {
@@ -470,8 +470,18 @@ class UserIntention {
             }
             this.dynamicFunction.functionSegList.push(seg1, seg2);
         }
-    }
 
+
+    }
+    addUserDefinedSeg(funcType, satValue){
+
+        var len = this.dynamicFunction.functionSegList.length;
+        var start = this.dynamicFunction.functionSegList[len - 1].funcStop;
+        var code = start.charCodeAt(0) + 1;
+        var stop = String.fromCharCode(code);
+        this.dynamicFunction.functionSegList.push(new FuncSegment(funcType, satValue, start, stop));
+
+    }
     /**
      * Sets the marked value for the FuncSegments in the
      * EvolvingFunction for this UserIntention
@@ -505,7 +515,7 @@ class UserIntention {
             } else {
                 funcSeg.funcX = this.dynamicFunction.getMarkedVal(funcSegLen - 2).funcX;
             }
-            
+
         } else if (funcValue == 'R') {
             // the marked value for a Stochastic function is always 0000
             funcSeg.funcX = '0000';

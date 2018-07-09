@@ -911,18 +911,20 @@ var ElementInspector = Backbone.View.extend({
         var html = this.userConstraintsHTML.clone();
         var i = this.constraintsObject.currentUserIndex;
 
+        this.intention.addUserDefinedSeg("C", "0000");
         // load user defined constraints from previously stored data
+
         if (event == null) {
             $(".user-sat-value").last().val(this.constraintsObject.userValues[i]);
             $(".user-function-type").last().val(this.constraintsObject.userFunctions[i]);
-        }
 
+        }
         $(".user-sat-value").last().prop('disabled', true);
         $(".user-sat-value").last().css("background-color",'grey');
         $(".user-function-type").last().prop('disabled', true);
         $(".user-function-type").last().css("background-color", 'grey');
-        html.appendTo(this.$('#all-user-constraints'));
 
+        html.appendTo(this.$('#all-user-constraints'));
         this.constraintsObject.currentUserIndex += 1;
 
         // generate graph only if constraints are manually added
