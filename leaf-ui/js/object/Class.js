@@ -191,7 +191,7 @@ class Link {
 	 *   ID for the source of the link. ex: '0000'
 	 * @param {String} linkDestID
 	 *   ID for the destination of the link. ex: '0001'
-	 * @param {String} absoluteValue
+	 * @param {Number} absoluteValue
 	 *   TODO ex. -1, 0,...,n
 	 */
     constructor(linkType, linkSrcID, absoluteValue) {

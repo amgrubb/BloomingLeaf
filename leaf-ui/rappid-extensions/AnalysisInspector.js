@@ -126,7 +126,7 @@ var AnalysisInspector = Backbone.View.extend({
 	].join(''),
 
 	events: {
-		'click #btn-view-assignment': 'loadModalBox',
+		'click #btn-view-assignment': 'loadListOfAssignments',
 		'click #btn-view-intermediate': 'loadIntermediateValues',
 		'click .close': 'dismissModalBox',
 		'click .closeIntermT':'dismissIntermTable',
@@ -214,7 +214,7 @@ var AnalysisInspector = Backbone.View.extend({
      *
      * This function is called on click for #btn-view-assignment.
 	 */
-	loadModalBox: function(event) {
+	loadListOfAssignments: function(event) {
 		epochLists = [];
 		graph.constraintValues = [];
 		var modal = document.getElementById('myModal');

@@ -231,17 +231,21 @@ $('#btn-fnt').on('click', function(){
  * @param {joint.dia.Cell} cell
  */
 function createLink(cell) {
-	var link = new Link(cell.attributes.labels[0].attrs.text.text, cell.getSourceElement().attributes.nodeID,  "0");
+	var link = new Link(cell.attributes.labels[0].attrs.text.text, cell.getSourceElement().attributes.nodeID,  -1);
 	cell.attributes.linkID = link.linkID;
     cell.on("change:target", function () {
     	var target = cell.getTargetElement();
-        if (target !== null) {
-			link.linkDestID = target.attributes.nodeID;
-        }
+    	if (target === null) {
+    		link.linkDestID = null;
+    	} else {
+    		link.linkDestID = target.attributes.nodeID;
+    	}
     });
     cell.on("change:source", function () {
 		var source = cell.getSourceElement();
-		if (source !== null) {
+		if (source === null) {
+			link.linkSrcID = null;
+		} else {
 			link.linkSrcID = source.attributes.nodeID;
 		}
     });
