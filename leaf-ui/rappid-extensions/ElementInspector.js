@@ -165,6 +165,7 @@ var ElementInspector = Backbone.View.extend({
         'click #constraint-add': 'addConstraint',
         'click #constraint-repeat': 'repeatConstraintControl',
         'click #constraint-restart': 'restartConstraint',
+        'keyup .cell-attrs-text': 'nameAction'
     },
  
     /**
@@ -218,6 +219,20 @@ var ElementInspector = Backbone.View.extend({
             this.renderUserDefined(cell);
         }
 
+    },
+
+
+    nameAction: function(event) {
+      if (event.which === ENTER_KEY) {
+          event.preventDefault();
+      }
+
+      var text = this.$('.cell-attrs-text').val();
+
+      text = text.replace(/[^\w\n-]/g, ' ');
+
+      this.cell.attr({'.name': {text: text} });
+      this.intention.nodeName = text;
     },
 
     /**
