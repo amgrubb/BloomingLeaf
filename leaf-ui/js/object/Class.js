@@ -265,6 +265,94 @@ class EvolvingFunction {
             return this.functionSegList[len - 1].funcStop;
         }
     }
+
+    /**
+     * Creates a new RepFuncSegment object containing function 
+     * segments in the relative time interval [time1, time2], and add it to this
+     * EvolvingFunction's functionSegList, in place of the function
+     * segements in the time interval [time1, time2]
+     *
+     * @param {String} time1
+     *   first relative time point
+     * @param {String} time2
+     *   second relative time point
+     */
+    setRepeatingFunction(time1, time2) {
+
+        this.unwrapRepFuncSegments();
+
+        // find the index of the FuncSegment with start time time 1
+        var startIndex = 0;
+        while (this.functionSegList[startIndex].funcStart !== time1) {
+            startIndex++;
+        }
+
+        var repFuncSegments = [];
+
+        // push and remove, until we see a segment with our desired FuncEnd time
+        while (this.functionSegList[startIndex].funcStop !== time2) {
+            repFuncSegments.push(this.functionSegList[startIndex]);
+            this.functionSegList.splice(startIndex, 1);
+        }
+
+        // push and remove the last segment
+        repFuncSegments.push(this.functionSegList[startIndex]);
+        this.functionSegList.splice(startIndex, 1);
+
+
+        // create and add a new RepFuncSegment
+        var repFuncSegment = new RepFuncSegment(repFuncSegments);
+        this.functionSegList.splice(startIndex, 0, repFuncSegment);
+    }
+
+    /**
+     * Returns the FuncSegment in this EvolvingFunction's
+     * functionSegList, with the relative start time time
+     *
+     * @param {String} time
+     * @returns {FuncSegment}
+     */
+    findSegmentByStartTime(time) {
+        for (var i = 0; i < this.functionSegList; i++) {
+            if (this.functionSegList[i].funcStart === time) {
+                return this.functionSegList[i];
+            }
+        }
+    }
+
+    /**
+     * If a RepFuncSegment exists in this EvolvingFunction's
+     * functionSegList, retrieve the FuncSegments in the RepFuncSegment,
+     * remove the RepFuncSEgment and add the retrieved FuncSegments back
+     * into their correct positions in functionSegList
+     *
+     * Id a RepFuncSegment does not exist in functionSegList, this function
+     * does nothing
+     */
+    unwrapRepFuncSegments() {
+
+        // Find the index where the RepFuncSegment is located
+        var repIndex = 0;
+        while (repIndex < this.functionSegList.length && (!(this.functionSegList[repIndex] instanceof RepFuncSegment))) {
+            repIndex++;
+        }
+
+        // RepFuncSegment did not exist in functionSegList
+        if (repIndex >= this.functionSegList.length) {
+            return;
+        }
+
+        var repFuncSegment = this.functionSegList[repIndex];
+        // remove RepFuncSegment object from array
+        this.functionSegList.splice(repIndex, 1);
+
+        // add the FuncSegments back into the array
+        var j = repIndex;
+        for (var i = 0; i < repFuncSegment.functionSegList.length; i++) {
+            this.functionSegList.splice(j, 0, repFuncSegment.functionSegList[i]);
+            j++;
+        }
+    }
 }
 
 class FuncSegment {
@@ -292,10 +380,10 @@ class RepFuncSegment {
      * @param {Number} repNum
      * @param {Number} absTime
      */
-	constructor(functionSegList, repNum, absTime) {
+	constructor(functionSegList) {
 		this.functionSegList = functionSegList;
-		this.repNum = repNum;
-		this.absTime = absTime;
+		this.repNum = 2;
+		this.absTime = 0;
 	}
 }
 

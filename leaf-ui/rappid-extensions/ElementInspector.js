@@ -980,6 +980,10 @@ var ElementInspector = Backbone.View.extend({
         var begin = $("#repeat-begin").val();
         var end = $("#repeat-end").val();
 
+        if (begin === null || end === null) {
+            return;
+        }
+
         var nextChar = String.fromCharCode(begin.charCodeAt(0) + 1);
 
         if (begin >= end) {
@@ -995,7 +999,9 @@ var ElementInspector = Backbone.View.extend({
             this.constraintsObject.repeatEnd = null;
 
         } else {
+
             $("#repeat-error").hide();
+            this.intention.dynamicFunction.setRepeatingFunction(begin, end);
             this.constraintsObject.repeatBegin = begin;
             this.constraintsObject.repeatEnd = end;
         }
