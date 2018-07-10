@@ -912,7 +912,7 @@ var ElementInspector = Backbone.View.extend({
      * constraints from previously stored.
      */
     addConstraint: function(event) {
-        
+
         // update html display for additional user inputs
         var html = this.userConstraintsHTML.clone();
         var i = this.constraintsObject.currentUserIndex;
@@ -960,7 +960,7 @@ var ElementInspector = Backbone.View.extend({
             this.setRepeatConstraintMode("Update");
         }else if (this.repeatOptionsDisplay){
             this.setRepeatConstraintMode("TurnOff");
-
+            this.intention.dynamicFunction.removeRepFuncSegments();
             this.constraintsObject.repeatBegin = null;
             this.constraintsObject.repeatEnd = null;
             this.constraintsObject.repeat_count = null;
@@ -1018,11 +1018,12 @@ var ElementInspector = Backbone.View.extend({
      * This function is called on change for #repeat-end2.
      */
     selectNumRepeatValues: function(event){
-        var repeatVals = $("#repeat-end2").val();
-        if (repeatVals < 2) {
+        var repVal = $("#repeat-end2").val();
+        if (repVal < 2) {
             $('#repeat-end2').val(2);
         } 
-        this.constraintsObject.repeat_count = repeatVals;
+        this.intention.dynamicFunction.setRepNum(repVal);
+        this.constraintsObject.repeat_count = repVal;
         this.updateChartUserDefined(null);
     },
 
@@ -1037,6 +1038,7 @@ var ElementInspector = Backbone.View.extend({
         if (absLength < 0) {
             $('#repeat-end3').val(0);
         }
+        this.intention.dynamicFunction.setAbsoluteTime(absLength);
         this.constraintsObject.absoluteLength = absLength;
         this.updateChartUserDefined(null);
     },

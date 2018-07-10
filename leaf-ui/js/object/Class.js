@@ -279,7 +279,7 @@ class EvolvingFunction {
      */
     setRepeatingFunction(time1, time2) {
 
-        this.unwrapRepFuncSegments();
+        this.removeRepFuncSegments();
 
         // find the index of the FuncSegment with start time time 1
         var startIndex = 0;
@@ -329,16 +329,10 @@ class EvolvingFunction {
      * Id a RepFuncSegment does not exist in functionSegList, this function
      * does nothing
      */
-    unwrapRepFuncSegments() {
+    removeRepFuncSegments() {
 
-        // Find the index where the RepFuncSegment is located
-        var repIndex = 0;
-        while (repIndex < this.functionSegList.length && (!(this.functionSegList[repIndex] instanceof RepFuncSegment))) {
-            repIndex++;
-        }
-
-        // RepFuncSegment did not exist in functionSegList
-        if (repIndex >= this.functionSegList.length) {
+        var repIndex = this.getRepFuncSegmentIndex();
+        if (repIndex === -1) {
             return;
         }
 
@@ -352,6 +346,67 @@ class EvolvingFunction {
             this.functionSegList.splice(j, 0, repFuncSegment.functionSegList[i]);
             j++;
         }
+    }
+
+    /**
+     * Sets the repNum for the RepFuncSegment inside of this
+     * EvolvingFunction's functionSegList, to count
+     *
+     * If there is no RepFuncSegment object in functionSegList
+     * this function does nothing
+     *
+     * @param {Number} count
+     */
+    setRepNum(num) {
+        var repIndex = this.getRepFuncSegmentIndex();
+        if (repIndex === -1) {
+            return;
+        }
+        this.functionSegList[repIndex].repNum = num;
+    }
+
+
+    /**
+     * Sets the absTime for the RepFuncSegment inside of this
+     * EvolvingFunction's functionSegList, to time
+     *
+     * If there is no RepFuncSegment object in functionSegList
+     * this function does nothing
+     *
+     * @param {Number} time
+     */
+    setAbsoluteTime(time) {
+        var repIndex = this.getRepFuncSegmentIndex();
+        if (repIndex === -1) {
+            return;
+        }
+        this.functionSegList[repIndex].absTime = time;
+    }
+
+
+
+    /**
+     * Returns the index of the RepFuncSegment object
+     * in this EvolvingFunction's functionSegList
+     *
+     * Returns -1 if there is no RepFunccSegment object
+     * in functionSegList
+     *
+     * @returns {Number}
+     */
+    getRepFuncSegmentIndex() {
+        // Find the index where the RepFuncSegment is located
+        var repIndex = 0;
+        while (repIndex < this.functionSegList.length && (!(this.functionSegList[repIndex] instanceof RepFuncSegment))) {
+            repIndex++;
+        }
+
+        // RepFuncSegment did not exist in functionSegList
+        if (repIndex >= this.functionSegList.length) {
+            return - 1;
+        }
+
+        return repIndex;
     }
 }
 
@@ -382,8 +437,8 @@ class RepFuncSegment {
      */
 	constructor(functionSegList) {
 		this.functionSegList = functionSegList;
-		this.repNum = 2;
-		this.absTime = 0;
+		this.repNum = $("#repeat-end2").val();
+		this.absTime = $("#repeat-end3").val();
 	}
 }
 
