@@ -220,6 +220,35 @@ var ElementInspector = Backbone.View.extend({
 
     },
 
+    /**
+     * Checks the initial satisfaction value for a (no value).
+     * If the initial satisfaction value is (no value), then set the
+     * availible function options to be No Function, Stochastic and UserDefined
+     * If not, set the function options so that all options are availible
+     */
+    checkInitialSatValue() {
+        if (this.intention.getInitialSatValue() == '(no value)') {
+            // remove current options, add 3 options
+            this.$('.function-type').empty();
+            this.$('.function-type').append('<option value=none> No Function </option>');
+            this.$('.function-type').append('<option value=R> Stochastic </option>');
+            this.$('.function-type').append('<option value=UD> User Defined </option>');
+        } else {
+            this.$('.function-type').empty();
+            this.$('.function-type').append('<option value=none> No Function </option>');
+            this.$('.function-type').append('<option value=C> Constant </option>');
+            this.$('.function-type').append('<option value=R> Stochastic </option>');
+            this.$('.function-type').append('<option value=I> Increase </option>');
+            this.$('.function-type').append('<option value=D> Decrease </option>');
+            this.$('.function-type').append('<option value=RC> Stochastic-Constant </option>');
+            this.$('.function-type').append('<option value=CR> Constant-Stochastic </option>');
+            this.$('.function-type').append('<option value=MP> Montonic Positive </option>');
+            this.$('.function-type').append('<option value=MN> Montonic Negative </option>');
+            this.$('.function-type').append('<option value=SD> Satisfied Denied </option>');
+            this.$('.function-type').append('<option value=DS> Denied Satisfied </option>');
+            this.$('.function-type').append('<option value=UD> User Defined </option>');
+        }
+    },
 
     nameAction: function(event) {
       if (event.which === ENTER_KEY) {
@@ -350,6 +379,7 @@ var ElementInspector = Backbone.View.extend({
     initSatValueChanged: function(event) {
         var initValue = this.$('#init-sat-value').val();
         this.intention.changeInitialSatValue(satValueDict[initValue]);
+
         this.updateHTML(event);
     },
 
@@ -406,6 +436,8 @@ var ElementInspector = Backbone.View.extend({
 
         // Check if selected init sat value and functionType pair is illegal
         this.validityCheck(event);
+
+        this.checkInitialSatValue();
 
         var functionType = this.$('.function-type').val();
         var initValue = this.$('#init-sat-value').val();
