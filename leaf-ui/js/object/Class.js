@@ -509,7 +509,8 @@ class UserIntention {
 
     /**
      * Changes the initial satisfaction value for this UserIntention
-     * to initValue
+     * to initValue and clears the this UserIntention's EvolvingFunction's
+     * functionSegmentList
      *
      * @param {String} initValue
      */
@@ -526,6 +527,8 @@ class UserIntention {
             (this.dynamicFunction.stringDynVis == 'UD' && funcSegList[0].funcType == 'C')) {
             funcSegList[0].funcX = initValue;
         }
+
+        this.dynamicFunction.functionSegList = [];
     }
  
     /**

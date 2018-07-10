@@ -5,7 +5,7 @@ var alphaOnly = /[A-Z]/;
 // All valid initial value and function combination
 var validPair = {
     "none": {
-        "validInitValue": ["none", "satisfied", "partiallysatisfied", "denied", "partiallydenied"],
+        "validInitValue": ["none", "satisfied", "partiallysatisfied", "denied", "partiallydenied", "(no value)"],
         "defaultValue": ["none"]
     },
     "C":{
@@ -13,7 +13,7 @@ var validPair = {
         "defaultValue": ["none"]
     },
     "R":{
-        "validInitValue": ["none", "satisfied", "partiallysatisfied", "denied", "partiallydenied"],
+        "validInitValue": ["none", "satisfied", "partiallysatisfied", "denied", "partiallydenied", "(no value)"],
         "defaultValue": ["none"]
     },
     "I": {
@@ -193,6 +193,7 @@ var ElementInspector = Backbone.View.extend({
         // Load initial value and node name
         this.$('.cell-attrs-text').val(this.intention.nodeName);
         this.$('#init-sat-value').val(satisfactionValuesDict[this.intention.getInitialSatValue()].name);
+        this.checkInitialSatValue();
 
         if (!cell.attr(".satvalue/value") && cell.attr(".funcvalue/text") != "NB"){
             cell.attr(".satvalue/value", 'none');
@@ -379,7 +380,7 @@ var ElementInspector = Backbone.View.extend({
     initSatValueChanged: function(event) {
         var initValue = this.$('#init-sat-value').val();
         this.intention.changeInitialSatValue(satValueDict[initValue]);
-
+        this.checkInitialSatValue();
         this.updateHTML(event);
     },
 
@@ -436,8 +437,6 @@ var ElementInspector = Backbone.View.extend({
 
         // Check if selected init sat value and functionType pair is illegal
         this.validityCheck(event);
-
-        this.checkInitialSatValue();
 
         var functionType = this.$('.function-type').val();
         var initValue = this.$('#init-sat-value').val();
