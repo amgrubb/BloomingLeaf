@@ -240,35 +240,6 @@ var AnalysisInspector = Backbone.View.extend({
 		// Get a list of links
 		var links = graph.getLinks();
 
-		// for (var i = 0; i < links.length; i ++) {
-		// 	var link = links[i];
-		// 	var source = null;
-		// 	var target = null;
-		// 	if (link.get("source").id) {
-		// 		source = graph.getCell(link.get("source").id);
-		// 	}
-		// 	if (link.get("target").id) {
-		// 		target = graph.getCell(link.get("target").id);
-		// 	}
-		// 	if (source && target) {
-		// 		var sourceName = source.attr('.name').text;
-		// 		var targetName = target.attr('.name').text;
-		// 		var assignedTime = link.attr('.assigned_time');
-		// 		var linkType = link.get('labels')[0].attrs.text.text;
-		// 		// If no assignedTime in the link, save 'None' into the link
-		// 		if (!assignedTime) {
-		// 			link.attr('.assigned_time', {0: ''});
-		// 			assignedTime = link.attr('.assigned_time');
-		// 		}
-		// 		if (linkType == 'NBD' || linkType == 'NBT' || linkType.indexOf('|') > -1) {
-		// 			$('#link-list').append('<tr><td>' + linkType + '</td><td>' + sourceName + '</td><td>' + targetName +
-		// 				'</td><td><input type="text" name="sth" value=' + assignedTime[0] + '></td>' + btnHtml +
-		// 				'<input type="hidden" name="id" value="' + link.id + '"> </td> </tr>'+ '</tr>');
-		// 		}
-		// 	}
-
-		// }
-		// TODO, make sure this works
 		for (var i = 0; i < model.links.length; i++) {
 			var link = model.links[i];
 			var sourceID = link.linkSrcID;
@@ -283,13 +254,13 @@ var AnalysisInspector = Backbone.View.extend({
 			var targetName = model.getUserIntentionByID(targetID).nodeName;
 			
 
-			if (link.linkType == 'NBD' || link.linkType == 'NBT' || link.isEvolvingRelationship) {
+			if (link.linkType == 'NBD' || link.linkType == 'NBT' || link.isEvolvingRelationship()) {
 				var linkAbsTime = link.absoluteValue;
 				var defaultValue = linkAbsTime == -1 ? '' : linkAbsTime;
 
-				$('#link-list').append('<tr><td>' + link.linkType + '</td><td>' + sourceName + '</td><td>' + targetName +
-					'</td><td><input type="text" name="sth" value=' + defaultValue + '></td>' + btnHtml +
-					'<input type="hidden" name="id" value="' + link.id + '"> </td> </tr>'+ '</tr>');
+				$('#link-list').append('<tr linkID = ' + link.linkID + '><td>' + link.linkType + '</td><td>' + sourceName + '</td><td>' + targetName +
+					'</td><td><input type="number" name="sth" value=' + defaultValue + '></td>' + btnHtml +
+					'</tr>');
 			}
 
 		}
@@ -506,8 +477,12 @@ var AnalysisInspector = Backbone.View.extend({
 	unassignValue: function(e){
 		var button = e.target;
 		var row = $(button).closest('tr');
-		var assignedTime = row.find('input[type=text]');
+		var assignedTime = row.find('input[type=number]');
 		$(assignedTime).val('');
+
+		var linkID = row.attr('linkID');
+		var link = model.getLinkByID(linkID);
+		link.absoluteValue = -1;
 	},
 
 	/**
@@ -592,23 +567,13 @@ var AnalysisInspector = Backbone.View.extend({
 	 */
 	saveAbsoluteRelationshipAssignments() {
 		// Save absolute relationship assignment
-		$.each($('#link-list').find("tr input[type=text]"), function() {
-			var newTime = $(this).val();
+		$.each($('#link-list').find("tr input[type=number]"), function() {
+			var newTime = parseInt($(this).val());
 			var row = $(this).closest('tr');
-			var funcValue = row.find('td:nth-child(2)').html();
-			var id = row.find('input[type=hidden]').val();
+			var linkID = row.attr('linkID');
 
-			// Find the link with the ID
-			var links = graph.getLinks();
-
-			for (var i = 0; i < links.length; i ++) {
-				if (links[i].id == id) {
-					var link = links[i];
-					break;
-				}
-			}
-
-			link.attr('.assigned_time')[0] = newTime;
+			var link = model.getLinkByID(linkID);
+			link.absoluteValue = newTime;
 
 		});
 	},
