@@ -293,7 +293,7 @@ function createIntention(cell) {
         model.removeIntention(userIntention.nodeID);
 
         // remove all intention evaluations associated with this intention
-        analysisRequest.removeIntention(userIntention.intentionID);
+        analysisRequest.removeIntention(userIntention.nodeID);
 
         // if this intention has an actor, remove this intention's ID
         // from the actor
