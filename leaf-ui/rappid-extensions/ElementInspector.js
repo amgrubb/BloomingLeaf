@@ -912,18 +912,18 @@ var ElementInspector = Backbone.View.extend({
      * constraints from previously stored.
      */
     addConstraint: function(event) {
+        
         // update html display for additional user inputs
         var html = this.userConstraintsHTML.clone();
         var i = this.constraintsObject.currentUserIndex;
 
-        this.intention.addUserDefinedSeg("C", "0000");
-        // load user defined constraints from previously stored data
-
         if (event == null) {
             $(".user-sat-value").last().val(this.constraintsObject.userValues[i]);
             $(".user-function-type").last().val(this.constraintsObject.userFunctions[i]);
-
+        } else {
+            this.intention.addUserDefinedSeg("C", "0000");
         }
+
         $(".user-sat-value").last().prop('disabled', true);
         $(".user-sat-value").last().css("background-color",'grey');
         $(".user-function-type").last().prop('disabled', true);
