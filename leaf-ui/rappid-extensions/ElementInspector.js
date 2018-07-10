@@ -74,13 +74,12 @@ var ElementInspector = Backbone.View.extend({
             '<textarea class="cell-attrs-text"></textarea>',
             '<label>Initial Satisfaction Value</label>',
             '<select id="init-sat-value">',
-                '<option value=(no value)> (no value) </option>',
+                '<option value="(no value)"> (no value) </option>',
                 '<option value=none> None (⊥, ⊥)</option>',
 				'<option value=satisfied> Satisfied (FS, ⊥)</option>',
                 '<option value=partiallysatisfied> Partially Satisfied (PS, ⊥) </option>',
                 '<option value=denied> Denied (⊥, FD)</option>',
                 '<option value=partiallydenied> Partially Denied (⊥, PD)</option>',
-                '<option value=unknown> Unknown </option>',
             '</select>',
             '<br>',
             '<div id="function-div">',
@@ -193,7 +192,7 @@ var ElementInspector = Backbone.View.extend({
 
         // Load initial value and node name
         this.$('.cell-attrs-text').val(this.intention.nodeName);
-        this.$('#init-sat-value').val(cell.attr(".satvalue/value") || 'none');
+        this.$('#init-sat-value').val(satisfactionValuesDict[this.intention.getInitialSatValue()].name);
 
         if (!cell.attr(".satvalue/value") && cell.attr(".funcvalue/text") != "NB"){
             cell.attr(".satvalue/value", 'none');

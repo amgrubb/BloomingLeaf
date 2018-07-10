@@ -165,9 +165,9 @@ function updateNodeValues(elementIndex, satValue, mode) {
 		value = satValueDict[cell.attributes.attrs[".satvalue"].value];
 	}
 
-	if (value in satisfacationValuesDict) {
-        cell.attr(".satvalue/text", satisfacationValuesDict[value].satValue);
-        cell.attr({text: {fill: satisfacationValuesDict[value].color}});
+	if (value in satisfactionValuesDict) {
+        cell.attr(".satvalue/text", satisfactionValuesDict[value].satValue);
+        cell.attr({text: {fill: satisfactionValuesDict[value].color}});
     }
     else {
 		cell.removeAttr(".satvalue/d");

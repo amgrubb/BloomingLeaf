@@ -272,21 +272,23 @@ var AnalysisInspector = Backbone.View.extend({
 		for (var i = 0; i < model.links.length; i++) {
 			var link = model.links[i];
 			var sourceID = link.linkSrcID;
-			var destID = link.linkDestID;
+			var targetID = link.linkDestID;
 
 			// If this link does not have a source and a target
-			if (sourceID == null || destID == null) {
+			if (sourceID == null || targetID == null) {
 				continue;
 			}
 
-			var sourceName = model.getUserIntentionByID(sourceID);
-			var destName = model.getUserIntentionByID(destID);
-			var linkAbsTime = link.absoluteValue;
+			var sourceName = model.getUserIntentionByID(sourceID).nodeName;
+			var targetName = model.getUserIntentionByID(targetID).nodeName;
+			
 
 			if (link.linkType == 'NBD' || link.linkType == 'NBT' || link.isEvolvingRelationship) {
+				var linkAbsTime = link.absoluteValue;
+				var defaultValue = linkAbsTime == -1 ? '' : linkAbsTime;
 
 				$('#link-list').append('<tr><td>' + link.linkType + '</td><td>' + sourceName + '</td><td>' + targetName +
-					'</td><td><input type="text" name="sth" value=' + assignedTime[0] + '></td>' + btnHtml +
+					'</td><td><input type="text" name="sth" value=' + defaultValue + '></td>' + btnHtml +
 					'<input type="hidden" name="id" value="' + link.id + '"> </td> </tr>'+ '</tr>');
 			}
 

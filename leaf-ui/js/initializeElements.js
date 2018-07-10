@@ -39,51 +39,72 @@ var satvalues = {
 };
 
 var satValueDict = {
-	"unknown": "0000",
 	"satisfied": "0011",
 	"partiallysatisfied": "0010",
 	"partiallydenied": "0100",
 	"denied": "1100",
-	"none": "0000"
+	"none": "0000",
+	"(no value)": "(no value)"
 };
 // Satisfaction text values corresponding to the binary representation.
 // This is used in updateNodeValues in displayAnalysis
-var satisfacationValuesDict = {
+var satisfactionValuesDict = {
 	"0000": {
+	    name: "none",
 		satValue: "(T, T)",
-		color: "black"
+		color: "black",
+		markedVal: 0
 	},
 	"0010": {
+	    name: "partiallysatisfied",
 		satValue: "(PS, T)",
-		color: "black"
+		color: "black",
+		markedVal: 1
 	},
 	"0011": {
+	    name: "satisfied",
 		satValue: "(FS, T)",
-		color: "black"
+		color: "black",
+		markedVal: 2
 	},
 	"0100": {
+	    name: "partiallydenied",
 		satValue: "(T, PD)",
-		color: "black"
+		color: "black",
+		markedVal: -1
 	},
 	"0110": {
+	    name: "conflict",
         satValue: "(PS, PD)",
-        color: "red"
+        color: "red",
+		markedVal: 3
     },
 	"0111": {
+        name: "conflict",
 		satValue: "(FS, PD)",
-		color: "red"
+		color: "red",
+		markedVal: 3
 	},
 	"1100": {
+	    name: "denied",
 		satValue: "(T, FD)",
-		color: "black"
+		color: "black",
+		markedVal: -2
 	},
 	"1110": {
+        name: "conflict",
         satValue: "(PS, FD)",
-        color: "red"
+        color: "red",
+		markedVal: 3
     },
 	"1111": {
+        name: "conflict",
 		satValue: "(FS, FD)",
-		color: "red"
+		color: "red",
+		markedVal: 3
+	},
+	"(no value)": {
+		name: "(no value)"
 	}
 };
 

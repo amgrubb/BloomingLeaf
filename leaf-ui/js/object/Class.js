@@ -658,20 +658,14 @@ class UserIntention {
      * @param {String} funcValue
      */
     setUserDefinedSegment(funcValue) {
-        var funcSegLen = this.getNumOfFuncSegements();
         var funcSeg = this.dynamicFunction.functionSegList[funcSegLen - 1];
         funcSeg.funcType = funcValue;
         if (funcValue == 'C') {
-            if (funcSegLen == 1) {
-                funcSeg.funcX = this.getInitialSatValue();
-            } else {
-                funcSeg.funcX = this.dynamicFunction.getMarkedVal(funcSegLen - 2).funcX;
-            }
-
+            funcSeg.funcX == '0000';
         } else if (funcValue == 'R') {
             // the marked value for a Stochastic function is always 0000
             funcSeg.funcX = '0000';
-        } else if (funcValue == 'I' || funcValue == 'D') {
+        } else if (funcValue == 'I') {
             funcSeg.funcX = '0011';
         } else if (funcValue == 'D') {
             funcSeg.funcX ='1100';
