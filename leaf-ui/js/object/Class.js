@@ -440,6 +440,46 @@ class EvolvingFunction {
 
         return repIndex;
     }
+
+    /**
+     * Returns an array containing FuncSegment objects, for the
+     * purpose of easy iteration. This function is useful when
+     * the functionSegList contains both FuncSegments and 
+     * repFuncSegments.
+     *
+     * For example, if functionSegList contains a FuncSegment 
+     * and a repFuncSegment containing three FuncSegments inside of it,
+     * this function returns an array of size 4, containing all the 
+     * function segments in chronological order.
+     *
+     * Every FuncSegment in the returned array will be a deep copy of the 
+     * origin FuncSegments.
+     *
+     * Each FuncSegment in the returned array will have a inRepeat attribute
+     * which evaluates to true iff the FuncSegment was part of a 
+     * repFunctionSegment
+     *
+     * @returns {Array.<FuncSegment>}
+     */
+    getFuncSegmentIterable() {
+        var res = [];
+        for (var i = 0; i < this.functionSegList.length; i++) {
+            var obj = this.functionSegList[i];
+            if (obj instanceof FuncSegment) {
+                var clone = Object.assign(new FuncSegment, obj); // deep copy
+                clone.isRepeat = false;
+                res.push(obj);
+            } else {
+                var segList = obj.functionSegList;
+                for (var j = 0; j < segList.length; j++) {
+                    var clone = Object.assign(new FuncSegment, segList[j]);
+                    clone.isRepeat = true;
+                    res.push(obj);
+                }
+            }
+        }
+        return res;
+    }
 }
 
 class FuncSegment {
@@ -595,7 +635,7 @@ class UserIntention {
      * @returns {Number}
      */
     getNumOfFuncSegements() {
-        return this.dynamicFunction.functionSegList.length;
+        return this.dynamicFunction.getFuncSegmentIterable().length;
     }
 
     /**
