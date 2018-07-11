@@ -952,7 +952,6 @@ var ElementInspector = Backbone.View.extend({
             $(".user-function-type").last().val(this.constraintsObject.userFunctions[i]);
         } else {
             this.intention.addUserDefinedSeg("C", "0000");
-            console.log('pizza');
         }
 
         $(".user-sat-value").last().prop('disabled', true);

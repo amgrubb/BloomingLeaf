@@ -130,7 +130,8 @@ var AnalysisInspector = Backbone.View.extend({
 		'click #btn-view-intermediate': 'loadIntermediateValues',
 		'click .close': 'dismissModalBox',
 		'click .closeIntermT':'dismissIntermTable',
-		'click .unassign-btn': 'unassignValue',
+		'click .unassign-abs-intent-btn': 'unassignAbsIntentValue',
+		'click .unassign-abs-rel-btn': 'unassignAbsRelValue',
 		'click #btn-save-assignment': 'saveAssignment',
 		'click #btn-single-path': 'singlePath',
 		'click #btn-all-next-state': 'getAllNextStates',
@@ -236,7 +237,7 @@ var AnalysisInspector = Backbone.View.extend({
 	 * the Absolute and Relative Assignments modal
 	 */
 	displayAbsoluteRelationshipAssignments: function(e) {
-		var btnHtml = '<td><button class="unassign-btn" > Unassign </button></td>';
+		var btnHtml = '<td><button class="unassign-abs-rel-btn" > Unassign </button></td>';
 		// Get a list of links
 		var links = graph.getLinks();
 
@@ -273,73 +274,43 @@ var AnalysisInspector = Backbone.View.extend({
 	 */
 	displayAbsoluteIntentionAssignments: function(e) {
 
-		var btnHtml = '<td><button class="unassign-btn" > Unassign </button></td>';
+		var btnHtml = '<td><button class="unassign-abs-intent-btn" > Unassign </button></td>';
 
-		// Get a list of nodes
-		var elements = graph.getElements();
-		var outputList = "\n";
-		for (var i = 0; i < elements.length; i ++) {
-			var cellView = elements[i].findView(paper);
-			var cell = cellView.model;
-			if (cell.attributes.type !== "basic.Actor") {
+		for (var i = 0; i < model.intentions.length; i++) {
+			var intention = model.intentions[i];
+			var funcType = intention.dynamicFunction.stringDynVis;
+			var intentionName = intention.nodeName;
 
-				var func = cell.attr('.funcvalue').text;
+			// nameIdMapper[name] = intention.nodeID;
+			if (funcType == 'RC' || funcType == 'CR' || funcType == 'MP' || 
+				funcType == 'MN' || funcType == 'SD' || funcType =='DS') {
 
-				// strips all return and newline characters; ensures no double-white space; strips leading/trailing whitespace
-				var name = cell.attr('.name').text.replace(/(\n+|\r+|\s\s+)/gm," ").replace(/(^\s|\s$)/gm,'');
+				
+				var absTime = intention.getAbsConstTime('A');
+				// default value to display.
+				// -1 means abs time does not exist. So display empty string instead.
+				var defaultVal = absTime === -1 ? '' : absTime;
 
-				nameIdMapper[name] = cell.attributes.elementid;
-				var assignedTime = cell.attr('.assigned_time');
+				$('#node-list').append('<tr nodeID = '+intention.nodeID+' srcEB = A><td>' + intentionName + ': A' + '</td><td>' + funcType + '</td>' +
+					'<td><input type="number" name="sth" value="' + defaultVal + '"></td>' + btnHtml + '</tr>');
+			} else if (funcType == 'UD') {
 
-				if (func != 'UD' && func != 'D' && func != 'I' && func != 'C' && func != 'R' && func != "" && func != 'NB') {
-					// If no assignedTime in the node, make the default value blank
-					if (!assignedTime) {
-						cell.attr('.assigned_time', {0: ''});
-					}
+				// the number of function transitions, is the number of functions minus one
+				var funcTransitions = intention.dynamicFunction.functionSegList.length - 1;
+				var currBound = 'A';
+				for (var j = 0; j < funcTransitions; j++) {
 
-					assignedTime = cell.attr('.assigned_time')[0];
+					// default value to display
+					var absTime = intention.getAbsConstTime(currBound);
+					var defaultVal = absTime === -1 ? '' : absTime;
 
-					//TODO: Figure out how to only add these values if they don't exist.
-					epochLists.push(name + ': A');
-					outputList += name.replace(/(\r\n|\n|\r)/gm," ");
-					outputList += ': A' + '\t' + func + "\n";
-					$('#node-list').append('<tr><td>' + name + ': A' + '</td><td>' + func + '</td>' +
-						'<td><input type="text" name="sth" value="' + assignedTime + '"></td>' + btnHtml +
-						'<input type="hidden" name="id" value="' + cell.id + '"> </td> </tr>');
-
-				} else if (func == 'UD') {
-					// the number of function transitions, is the number of functions minus one
-					var funcTransitions = cell.attr('.constraints').function.length - 1;
-
-					var currChar = 'A';
-					// If no assignedTime in the node, save blank into the node
-					if (!assignedTime) {
-						cell.attr('.assigned_time', {0: ''});
-						assignedTime = cell.attr('.assigned_time');
-					}
-
-					// If the length of assignedTime does not equal to the funcTransitions, add none until they are equal
-					var k = 0;
-					while (Object.keys(assignedTime).length < funcTransitions) {
-						cell.attr('.assigned_time')[k] = '';
-						assignedTime = cell.attr('.assigned_time');
-						k++;
-					}
-
-					// Append to HTML
-					for (var j = 0; j < funcTransitions; j++) {
-						epochLists.push(name + ': ' + currChar);
-						outputList += name.replace(/(\r\n|\n|\r)/gm," ");
-						outputList += ': ' + currChar + '\t' + func + "\n";
-						$('#node-list').append('<tr><td>' + name +': '+ currChar + '</td><td>' + func + '</td>'  +
-							'<td><input type="text" name="sth" value=' + assignedTime[j] + '></td>' + btnHtml +
-							'<input type="hidden" name="id" value="' + cell.id + '_' + j + '"> </td> </tr>');
-						currChar = String.fromCharCode(currChar.charCodeAt(0) + 1);
-					}
-
+					$('#node-list').append('<tr nodeID = ' + intention.nodeID + ' srcEB = ' + currBound + '><td>' + intentionName +': '+ currBound + '</td><td>' + funcType + '</td>' +
+						'<td><input type="number" name="sth" value=' + defaultVal + '></td>' + btnHtml + '</tr>');
+					currBound = String.fromCharCode(currBound.charCodeAt(0) + 1);
 				}
 			}
 		}
+
 	},
 
 	/**
@@ -474,7 +445,7 @@ var AnalysisInspector = Backbone.View.extend({
 	},
 
 	// Trigger when unassign button is pressed. Change the assigned time of the node/link in the same row to none
-	unassignValue: function(e){
+	unassignAbsRelValue: function(e){
 		var button = e.target;
 		var row = $(button).closest('tr');
 		var assignedTime = row.find('input[type=number]');
@@ -483,6 +454,18 @@ var AnalysisInspector = Backbone.View.extend({
 		var linkID = row.attr('linkID');
 		var link = model.getLinkByID(linkID);
 		link.absoluteValue = -1;
+	},
+
+	unassignAbsIntentValue: function(e) {
+		var button = e.target;
+		var row = $(button).closest('tr');
+		var assignedTime = row.find('input[type=number]');
+		$(assignedTime).val('');
+
+		var nodeID = row.attr('nodeID');
+		var srcEB = row.attr('srcEB');
+		var constraint = model.getAbsConstBySrcID(nodeID, srcEB);
+		constraint.absoluteValue = -1;
 	},
 
 	/**
@@ -528,36 +511,18 @@ var AnalysisInspector = Backbone.View.extend({
 	 */
 	saveAbsoluteIntentionAssignments() {
 		// Save absolute intention assignments
-		$.each($('#node-list').find("tr input[type=text]"), function(){
-			var newTime = $(this).val();
+		$.each($('#node-list').find("tr input[type=number]"), function(){
+			var newTime = parseInt($(this).val()); // ex 15
+			if (isNaN(newTime)) {
+				return;
+			}
 			var row = $(this).closest('tr');
-			var srcEB = row.find('td').html();
-			var funcValue = row.find('td:nth-child(2)').html();
-			var id = row.find('input[type=hidden]').val();
+			var srcEB = row.attr('srcEB'); // ex. 'A'
+			var funcValue = row.find('td:nth-child(2)').html(); // ex. 'MP'
+			var nodeID = row.attr('nodeID'); // ex. '0000'
 
-			if (funcValue != 'UD') {
-				// If func is not UD, just find the cell and update it
-				var cell = graph.getCell(id);
-				cell.attr('.assigned_time')[0] = newTime;
-			} else {
-				// If func is UD, extract the index i from id, and update i-th assigned time of the node
-				var index = id[id.length - 1];
-				id = id.substring(0, id.length - 2);
-				var cell = graph.getCell(id);
-				cell.attr('.assigned_time')[index] = newTime;
-			}
+			model.setAbsConstBySrcID(nodeID, srcEB, newTime);
 
-			// Save
-			if (newTime != null && newTime.length > 0) {
-				newConstarint = {};
-				newConstarint['constraintType'] = "A"; // A for absolute
-				newConstarint['constraintSrcID'] = cell.attributes.elementid;
-				newConstarint['constraintSrcEB'] = srcEB.match(extractEB)[0];
-				newConstarint['absoluteValue'] = newTime;
-				newConstarint['constraintDestID'] = null;
-				newConstarint['constraintDestEB'] = null;
-				graph.constraintValues.push(newConstarint);
-			}
 		});
 	},
 
@@ -569,9 +534,11 @@ var AnalysisInspector = Backbone.View.extend({
 		// Save absolute relationship assignment
 		$.each($('#link-list').find("tr input[type=number]"), function() {
 			var newTime = parseInt($(this).val());
+			if (isNaN(newTime)) {
+				return;
+			}
 			var row = $(this).closest('tr');
 			var linkID = row.attr('linkID');
-
 			var link = model.getLinkByID(linkID);
 			link.absoluteValue = newTime;
 

@@ -60,6 +60,38 @@ class Model {
     }
 
     /**
+     * Returns the absolute Constraint object with 
+     * constraintSrcID srcID and source epoch boundary
+     * srcEB
+     *
+     * @param {String} srcID
+     * @param {String} source
+     * @returns {Number}
+     */
+    getAbsConstBySrcID(srcID, srcEB) {
+        for (var i = 0; i < this.constraints.length; i++) {
+            if (this.constraints[i].constraintType === 'A' && 
+                this.constraints[i].constraintSrcID === srcID &&
+                this.constraints[i].constraintSrcEB === srcEB) {
+                return this.constraints[i];
+            }
+        }
+    }
+
+    /**
+     * Sets the absolute value for the absolute Constraint object
+     * with constraintSrcID srcID 
+     *
+     * @param {String} srcID
+     * @param {String} srcEB
+     * @param {Number} absVal
+     */
+    setAbsConstBySrcID(srcID, srcEB, absVal) {
+        var constraint = this.getAbsConstBySrcID(srcID, srcEB);
+        constraint.absoluteValue = absVal;
+    }
+
+    /**
      * Remove the intention with node ID nodeID
      * from the intentions array
      *
@@ -576,7 +608,7 @@ class UserIntention {
         this.dynamicFunction.functionSegList = [];
 
         // Since function changed, remove all current absolute constraints related to this intention
-        this.removeAbsoluteConstraint();
+        this.removeAbsCosnt();
 
         // Add new absolute constraints if required
         this.addAbsConst(funcType);
@@ -643,11 +675,23 @@ class UserIntention {
         }
     }
 
+
+    /**
+     * Returns the absolute time for this UserIntention's absolute constraint at
+     * the starting epoch boundary start
+     *
+     * @param {String} source
+     *  ex. 'A'
+     */
+    getAbsConstTime(source) {
+        return model.getAbsConstBySrcID(this.nodeID, source).absoluteValue;
+    }
+
     /**
      * Removes the absolute Constraint object(s) for this UserIntention from 
      * the global model variable, if such absolute Constraint object(s) exists
      */
-    removeAbsoluteConstraint() {
+    removeAbsCosnt() {
         var i = 0;
         while (i < model.constraints.length) {
             var constraint = model.constraints[i];
