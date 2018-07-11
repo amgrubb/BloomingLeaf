@@ -163,7 +163,7 @@ var ElementInspector = Backbone.View.extend({
 
         'click #constraint-add': 'addConstraint',
         'click #constraint-repeat': 'repeatConstraintControl',
-        'click #constraint-restart': 'restartConstraint',
+        'click #constraint-restart': 'removeUserConstraints',
         'keyup .cell-attrs-text': 'nameAction'
     },
  
@@ -393,6 +393,7 @@ var ElementInspector = Backbone.View.extend({
      */
     funcTypeChanged: function(event) {
         var funcType = this.$('.function-type').val();
+        console.log(funcType);
         this.intention.setEvolvingFunction(funcType);
         this.updateHTML(event);
     },
@@ -467,7 +468,6 @@ var ElementInspector = Backbone.View.extend({
                 this.$('#markedValue').hide();
             }
         }
-
         this.updateChart(null);
     },
 
@@ -1179,7 +1179,7 @@ var ElementInspector = Backbone.View.extend({
             this.setRepeatConstraintMode("TurnOff");
         }
 
-        this.updateHTML(null);
+        this.funcTypeChanged(null);
     },
 
     /**
