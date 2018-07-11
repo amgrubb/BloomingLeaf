@@ -579,7 +579,7 @@ class UserIntention {
         this.removeAbsoluteConstraint();
 
         // Add new absolute constraints if required
-        this.addAbsoluteConstraint(funcType);
+        this.addAbsConst(funcType);
 
         var initValue = analysisRequest.getIntentionEvaluationByID(this.nodeID, '0').evaluationValue;
 
@@ -636,7 +636,7 @@ class UserIntention {
      * @param {String} funcType
      *   ex: 'RC'
      */
-    addAbsoluteConstraint(funcType) {
+    addAbsConst(funcType) {
         if (funcType == 'RC' || funcType == 'CR' || funcType == 'MP' ||
             funcType == 'MN' || funcType == 'SD' || funcType == 'DS') {
             model.constraints.push(new Constraint('A', this.nodeID, 'A', null, null));
@@ -661,7 +661,12 @@ class UserIntention {
 
     /**
      * Adds a new FuncSeg to the end of this Intention's EvolvingFunction's
-     * function list. This function should only be used to add new function
+     * function list.
+
+     * Also adds a corresponding Constraint object reprenting an absolute constraint
+     * into the global model variable.
+     *
+     *This function should only be used to add new function
      * segments for user defined functions
      *
      * @param {String} funcType
@@ -676,6 +681,7 @@ class UserIntention {
         var code = start.charCodeAt(0) + 1;
         var stop = String.fromCharCode(code);
         this.dynamicFunction.functionSegList.push(new FuncSegment(funcType, satValue, start, stop));
+        model.constraints.push(new Constraint('A', this.nodeID, start, null, null));
 
     }
     /**
