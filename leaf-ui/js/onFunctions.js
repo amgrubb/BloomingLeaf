@@ -590,10 +590,10 @@ graph.on('remove', function(cell) {
 	   	}
 
 		// Verify if it is possible to remove the NB tag from source and target
-		if (!checkForMultipleNB(source)) {
+		if (source !== null && !checkForMultipleNB(source)) {
 			source.attr(".funcvalue/text", "");
 		}
-		if (!checkForMultipleNB(target)) {
+		if (target !== null && !checkForMultipleNB(target)) {
 			target.attr(".funcvalue/text", "");
 		}
 	}

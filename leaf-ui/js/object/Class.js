@@ -12,6 +12,7 @@ class Model {
         this.actors = []; 
         this.intentions = [];
         this.links = [];
+        this.constraints = [];
         this.maxAbsTime;
     }
 
@@ -57,7 +58,6 @@ class Model {
             }
         }
     }
-
 
     /**
      * Remove the intention with node ID nodeID
@@ -453,13 +453,13 @@ class Constraint {
      * @param {String} constraintDestEB
      * @param {Number} absoluteValue
      */
-	constructor(constraintType, constraintSrcID, constraintSrcEB, constraintDestID, constraintDestEB, absoluteValue) {
+	constructor(constraintType, constraintSrcID, constraintSrcEB, constraintDestID, constraintDestEB) {
 		this.constraintType = constraintType;
         this.constraintSrcID = constraintSrcID;
         this.constraintSrcEB = constraintSrcEB;
         this.constraintDestID = constraintDestID;
         this.constraintDestEB = constraintDestEB;
-        this.absoluteValue = absoluteValue;
+        this.absoluteValue = -1;
 	}
 }
 
@@ -574,6 +574,13 @@ class UserIntention {
     setEvolvingFunction(funcType) {
         this.dynamicFunction.stringDynVis = funcType;
         this.dynamicFunction.functionSegList = [];
+
+        // Since function changed, remove all current absolute constraints related to this intention
+        this.removeAbsoluteConstraint();
+
+        // Add new absolute constraints if required
+        this.addAbsoluteConstraint(funcType);
+
         var initValue = analysisRequest.getIntentionEvaluationByID(this.nodeID, '0').evaluationValue;
 
         if (funcType == 'C' || funcType == 'R' || funcType == 'I' || funcType == 'D' || funcType == 'UD') {
@@ -615,6 +622,40 @@ class UserIntention {
                 var seg2 = new FuncSegment('C', '0011', 'A', 'Infinity');
             }
             this.dynamicFunction.functionSegList.push(seg1, seg2);
+        }
+    }
+
+    /**
+     * Adds a new Constraint object int the global model variable, 
+     * representing an absolute constraint, if requried.
+     *
+     * If funcType is RC, CR, MP, MN, SD, DS  a Constraint object
+     * representin an absolute constraint will be added. If not, this
+     * function does not do anything
+     *
+     * @param {String} funcType
+     *   ex: 'RC'
+     */
+    addAbsoluteConstraint(funcType) {
+        if (funcType == 'RC' || funcType == 'CR' || funcType == 'MP' ||
+            funcType == 'MN' || funcType == 'SD' || funcType == 'DS') {
+            model.constraints.push(new Constraint('A', this.nodeID, 'A', null, null));
+        }
+    }
+
+    /**
+     * Removes the absolute Constraint object(s) for this UserIntention from 
+     * the global model variable, if such absolute Constraint object(s) exists
+     */
+    removeAbsoluteConstraint() {
+        var i = 0;
+        while (i < model.constraints.length) {
+            var constraint = model.constraints[i];
+            if (constraint.constraintType == 'A' && constraint.constraintSrcID === this.nodeID) {
+                model.constraints.splice(i, 1);
+            } else {
+                i++;
+            }
         }
     }
 
@@ -661,6 +702,7 @@ class UserIntention {
      * @param {String} funcValue
      */
     setUserDefinedSegment(funcValue) {
+        var funcSegLen = this.dynamicFunction.functionSegList.length;
         var funcSeg = this.dynamicFunction.functionSegList[funcSegLen - 1];
         funcSeg.funcType = funcValue;
         if (funcValue == 'C') {
