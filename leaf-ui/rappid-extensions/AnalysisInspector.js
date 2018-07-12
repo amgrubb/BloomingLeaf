@@ -137,6 +137,10 @@ var AnalysisInspector = Backbone.View.extend({
 		'click #btn-all-next-state': 'getAllNextStates',
 		'click .addIntention' : 'addnewIntention',
 		'click #btn-save-intermT' : 'saveIntermTable',
+		'change #num-rel-time' : 'addRelTime',
+		'change #conflict-level': 'changeConflictLevel',
+		'change #abs-time-pts': 'changeAbsTimePts',
+		'change #max-abs-time': 'changeMaxAbsTime'
 	},
 
 	render: function() {
@@ -173,14 +177,13 @@ var AnalysisInspector = Backbone.View.extend({
 
 		//Prepare and send data to backend
 		this.sendToBackend(analysis);
-
 	},
 
 	/**
 	 * Creates an object to send to the backend and calls
 	 * a backendComm() to send to backend
 	 *  
-	 * @param {Object} analysis
+	 * @param {Object} analysisz
 	 *   InputAnalysis() object
 	 */
 	sendToBackend: function(analysis){
@@ -265,6 +268,43 @@ var AnalysisInspector = Backbone.View.extend({
 			}
 
 		}
+	},
+
+	addRelTime: function(event) {
+
+		var numRel = $('#num-rel-time');
+		if (numRel.val() !== ""){
+            analysisRequest.numRelTime = numRel.val()
+        }
+        else {
+			numRel.val(analysisRequest.numRelTime);
+		}
+	},
+
+	changeConflictLevel: function(event) {
+		analysisRequest.conflictLevel = $('#conflict-level').val()[0];
+	},
+
+	changeAbsTimePts: function(event) {
+ 	    var regex = new RegExp("^(([0-9])+\\s+)*[0-9]*$");
+
+        var absTime = $('#abs-time-pts');
+		if (regex.test(absTime.val())){
+			analysisRequest.absTimePts = absTime.val().trim();
+		}
+		else {
+			absTime.val(analysisRequest.absTimePts);
+		}
+	},
+
+    changeMaxAbsTime : function(event) {
+        var maxTime = $('#max-abs-time');
+        if (maxTime.val() !== ""){
+            model.maxAbsTime = maxTime.val()
+        }
+        else {
+            maxTime.val(model.maxAbsTime);
+        }
 	},
 
 
