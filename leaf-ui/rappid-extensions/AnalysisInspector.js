@@ -585,24 +585,35 @@ var AnalysisInspector = Backbone.View.extend({
 		graph.allElements = elements;
 		graph.elementsBeforeAnalysis = elements;
 	},
+	
 	/**
 	 * This function is called on click .addIntention (the plus icon)
 	 */
 	addnewIntention: function(){
-		var elements = graph.getElements();
+
+		var intentions = model.intentions;
+		var epochList = [];
+		for (var i = 0; i < intentions.length; i++) {
+
+			// if number of function segments >= 2, we have at least one transition
+			if (intentions[i].getNumOfFuncSegements() >= 2) {
+				var funcSegments = intentions[i].dynamicFunction.getFuncSegmentIterable();
+				for (var j = 0; j < funcSegments.length - 1; j++) {
+					epochList.push(intentions[i].nodeName + ': ' + funcSegments[j].funcStop);
+				}
+			}
+		}
 
 
 		var epoch1 = '<div class="epochLists" id="epoch1List"><select><option selected>...</option>';
-		for(var i = 0; i < epochLists.length; i++){
-			var newEpoch = '<option>' + epochLists[i] + '</option>';
-			epoch1 += newEpoch
-		}
-		epoch1 += '</select></div>';
 		var epoch2 =  '<div class="epochLists" id="epoch2List"><select><option selected>...</option>';
-		for(var i = 0; i < epochLists.length; i++){
-			var newEpoch = '<option>' + epochLists[i] + '</option>';
-			epoch2 += newEpoch
+		for(var i = 0; i < epochList.length; i++){
+			var newEpoch = '<option>' + epochList[i] + '</option>';
+			epoch1 += newEpoch
+			epoch2 += newEpoch;
 		}
+
+		epoch1 += '</select></div>';
 		epoch2 += '</select></div>';
 
 		var relationship = '<div class="epochLists" id="relationshipLists"><select><option selected>...'+
