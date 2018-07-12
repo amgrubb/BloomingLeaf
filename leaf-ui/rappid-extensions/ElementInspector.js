@@ -206,7 +206,7 @@ var ElementInspector = Backbone.View.extend({
         this.setRepeatConstraintMode("TurnOff");
 
         // Load initial value for function type in the html select element
-        var functionType = cell.attr('.funcvalue/text');
+        var functionType = this.intention.dynamicFunction.stringDynVis;
         if ((functionType == '') || (functionType == ' ') || (functionType == 'NB')) {
             this.$('.function-type').val('none');
             this.updateHTML(null);
@@ -320,52 +320,44 @@ var ElementInspector = Backbone.View.extend({
     renderUserDefined: function(cell){
         this.$('#markedValue').hide();
 
-        // Get arrays representing the individual functions (C, R, I, D)
-        // and the corresponding satisfaction values
-        this.constraintsObject.userFunctions = cell.attr(".constraints/function");
-        this.constraintsObject.userValues = cell.attr(".constraints/lastval");
-
         // Load the user defined constraints
-        var index = cell.attr(".constraints/lastval").length - 1;
-        if (index == 0) {
-            $(".user-sat-value").last().val(this.constraintsObject.userValues[index]);
-            $(".user-function-type").last().val(this.constraintsObject.userFunctions[index]);
-        } else {
-            for (var i = 0; i < index; i++) {
-                var prevLetter = this.constraintsObject.endLetter[this.constraintsObject.endLetter.length - 1];
-                this.constraintsObject.beginLetter.push(prevLetter);
-                this.constraintsObject.endLetter.push(String.fromCharCode(prevLetter.charCodeAt(0) + 1));
+        var len = this.intention.getNumOfFuncSegements();
+        var funcSegments = this.intention.dynamicFunction.getFuncSegmentIterable();
 
-                this.addConstraint(null);
+
+        for (var i = 0; i < len; i++) {
+
+            // set the intial values
+            $(".user-sat-value").last().val(satisfactionValuesDict[funcSegments[i].funcX].name);
+            $(".user-function-type").last().val(funcSegments[i].funcType);
+
+            if (i !== len - 1) {
+                // if it is not the last function segment, clone the select tags,
+                // and grey out the current select tags
+                var html = this.userConstraintsHTML.clone();
+                $(".user-sat-value").last().prop('disabled', true);
+                $(".user-sat-value").last().css("background-color",'grey');
+                $(".user-function-type").last().prop('disabled', true);
+                $(".user-function-type").last().css("background-color", 'grey');
+                html.appendTo(this.$('#all-user-constraints'));
             }
-            $(".user-sat-value").last().val(this.constraintsObject.userValues[i]);
-            $(".user-function-type").last().val(this.constraintsObject.userFunctions[i]);
         }
 
-        // Render repeat if set repeat button is clicked
-        var repeatBegin = cell.attr(".constraints/beginRepeat");
-        var repeatEnd = cell.attr(".constraints/endRepeat");
-        var repeatCount = cell.attr(".constraints/repeatCount");
-        var absLen = cell.attr(".constraints/absoluteLen");
+        if (this.intention.dynamicFunction.hasRepeat()) {
+            var repBegin = this.intention.dynamicFunction.getStartRepeatEpoch();
+            var repEnd = this.intention.dynamicFunction.getEndRepeatEpoch();
+            var repNum = this.intention.dynamicFunction.getRepeatRepNum();
+            var absTime = this.intention.dynamicFunction.getRepeatAbsTime();
 
-        if (repeatBegin && repeatEnd) {
             this.repeatOptionsDisplay = true;
-            this.constraintsObject.repeatBegin = repeatBegin;
-            this.constraintsObject.repeatEnd = repeatEnd;
-            if (repeatCount) {
-                this.constraintsObject.repeat_count = repeatCount;
-            }
-
-            if (absLen) {
-                this.constraintsObject.absoluteLength = absLen;
-            }
 
             this.setRepeatConstraintMode("TurnOn");
             this.setRepeatConstraintMode("Update");
-            $("#repeat-begin").val(repeatBegin);
-            $("#repeat-end").val(repeatEnd);
-            $("#repeat-end2").val(repeatCount);
-            $("#repeat-end3").val(absLen);
+
+            $("#repeat-begin").val(repBegin);
+            $("#repeat-end").val(repEnd);
+            $("#repeat-end2").val(repNum);
+            $("#repeat-end3").val(absTime);
         }
 
         this.updateChartUserDefined(null);
@@ -381,6 +373,7 @@ var ElementInspector = Backbone.View.extend({
         var initValue = this.$('#init-sat-value').val();
         this.intention.changeInitialSatValue(satValueDict[initValue]);
         this.checkInitialSatValue();
+        this.updateCell(null);
         this.updateHTML(event);
     },
 
@@ -394,6 +387,7 @@ var ElementInspector = Backbone.View.extend({
     funcTypeChanged: function(event) {
         var funcType = this.$('.function-type').val();
         this.intention.setEvolvingFunction(funcType);
+        this.updateCell(null);
         this.updateHTML(event);
     },
 
@@ -513,21 +507,19 @@ var ElementInspector = Backbone.View.extend({
     displayFunctionSatValue: function(event) {
         var functionType = this.$('.function-type').val();
         var initValue = this.$('#init-sat-value').val();
+        var markedValue = this.intention.dynamicFunction.getMarkedVal(0);
         this.$('#markedValue').show("fast");
         switch (functionType) {
             case "RC":
                 this.$('#markedValue').html(this.satValueOptions.noRandom);
-                var markedValue = this.cell.attributes.attrs['.constraints'].markedvalue;
-                if(markedValue){
-                    value = satvalues[markedValue];
+                if (markedValue) {
                     this.$('#markedValue').val(value);
                 }
                 break;
             case "I":
             case "MP":
                 this.$('#markedValue').html(this.satValueOptions.positiveOnly(initValue));
-                var markedValue = this.cell.attributes.attrs['.constraints'].markedvalue;
-                if(markedValue) {
+                if (markedValue) {
                     value = satvalues[markedValue];
                     this.$('#markedValue').val(value);
                 }
@@ -535,8 +527,7 @@ var ElementInspector = Backbone.View.extend({
             case "D":
             case "MN":
                 this.$('#markedValue').html(this.satValueOptions.negativeOnly(initValue));
-                var markedValue = this.cell.attributes.attrs['.constraints'].markedvalue;
-                if(markedValue){
+                if (markedValue) {
                     value = satvalues[markedValue];
                     this.$('#markedValue').val(value);
                 }
@@ -568,7 +559,6 @@ var ElementInspector = Backbone.View.extend({
                 // May get last value of the graph in the future
                 $(".user-sat-value").last().html(this.satValueOptions.positiveOnly('partiallysatisfied'));
                 $(".user-sat-value").last().val("satisfied");
-
                 break;
 
             case "D":
@@ -669,8 +659,6 @@ var ElementInspector = Backbone.View.extend({
         }
 
         this.chart.display(context);
-
-        this.updateCell(null);
     },
 
     getUDChartLabel: function(num) {
@@ -738,37 +726,6 @@ var ElementInspector = Backbone.View.extend({
     },
 
     /**
-     * Returns true iff the data array contains points that are 
-     * within the repeat range which the user has set
-     *
-     * @param {Boolean} repeat 
-     *   true if the user has set repeats
-     * @param {String} repeatBegin
-     *   represents beginning index of the repeat range
-     * @param {String} repeatEnd
-     *   represents the end index of the repeat range
-     * @param {Array.<Number | null>} data
-     *   represents data points for the chart
-     */
-    inRepeatRange: function(repeat, repeatBegin, repeatEnd, data) {
-        // If the repeat mode isnt on, return false
-        if (!repeat || repeatBegin === undefined || repeatBegin === null || repeatEnd === undefined || repeatEnd === null) {
-            return false;
-        } else {
-            // Convert letter to index
-            var repeatBegin = repeatBegin == '0'? 0 : repeatBegin.charCodeAt(0) - 65 + 1;
-            var repeatEnd = repeatEnd.charCodeAt(0) - 65 + 1;
-            // Find the index of start point and end point of data
-            var dataBegin = data.length - 2;
-            var dataEnd = data.length - 1;
-            if (dataBegin >= repeatBegin && dataEnd <= repeatEnd) {
-                return true;
-            }
-        }
-        return false;
-    },
-
-    /**
      * Adds new constraint for the user defined function.
      * This function is called on click for #constraint-add.
      * This function is also called when loading user defined 
@@ -778,37 +735,23 @@ var ElementInspector = Backbone.View.extend({
 
         // update html display for additional user inputs
         var html = this.userConstraintsHTML.clone();
-        var i = this.constraintsObject.currentUserIndex;
 
-        if (event == null) {
-            $(".user-sat-value").last().val(this.constraintsObject.userValues[i]);
-            $(".user-function-type").last().val(this.constraintsObject.userFunctions[i]);
-        } else {
-            this.intention.addUserDefinedSeg("C", "0000");
-        }
-
+        this.intention.addUserDefinedSeg("C", "0000");
+        
         $(".user-sat-value").last().prop('disabled', true);
         $(".user-sat-value").last().css("background-color",'grey');
         $(".user-function-type").last().prop('disabled', true);
         $(".user-function-type").last().css("background-color", 'grey');
 
         html.appendTo(this.$('#all-user-constraints'));
-        this.constraintsObject.currentUserIndex += 1;
 
-        // generate graph only if constraints are manually added
-        if (event && event.target.id == 'constraint-add') {
-            var prevLetter = this.constraintsObject.endLetter[this.constraintsObject.currentUserIndex - 1];
-            this.constraintsObject.beginLetter.push(prevLetter);
-            this.constraintsObject.endLetter.push(String.fromCharCode(prevLetter.charCodeAt(0) + 1));
 
-            if (this.repeatOptionsDisplay) {
-                this.setRepeatConstraintMode("Update");
-                this.constraintsObject.repeatBegin = null;
-                this.constraintsObject.repeatEnd = null;
-            }
-
-            this.updateChartUserDefined(null);
+        if (this.repeatOptionsDisplay) {
+            this.setRepeatConstraintMode("Update");
         }
+
+        this.updateChartUserDefined(null);
+
     },
 
     
@@ -821,13 +764,9 @@ var ElementInspector = Backbone.View.extend({
         if (!this.repeatOptionsDisplay){
             this.setRepeatConstraintMode("TurnOn");
             this.setRepeatConstraintMode("Update");
-        }else if (this.repeatOptionsDisplay){
+        } else if (this.repeatOptionsDisplay){
             this.setRepeatConstraintMode("TurnOff");
             this.intention.dynamicFunction.removeRepFuncSegments();
-            this.constraintsObject.repeatBegin = null;
-            this.constraintsObject.repeatEnd = null;
-            this.constraintsObject.repeat_count = null;
-            this.constraintsObject.absoluteLength = null;
             this.updateChartUserDefined(null);
         }
     },
@@ -948,10 +887,10 @@ var ElementInspector = Backbone.View.extend({
         } else if (mode == "Update") {
 
             // Cannot repeat with only one constraint
-            if (this.constraintsObject.currentUserIndex == 0) {
+            var numSegments = this.intention.getNumOfFuncSegements().length;
+            if (numSegments < 2) {
 
                 $("#repeat-error").text("More constraints are needed");
-
                 $("#repeat-error").show("fast");
                 $("#repeat-begin").prop('disabled', 'disabled');
                 $("#repeat-begin").css("background-color","grey");
@@ -969,10 +908,13 @@ var ElementInspector = Backbone.View.extend({
                     $("#repeat-end").css("background-color","");
                 }
 
+                var funcSegments = this.intention.dynamicFunction.getFuncSegmentIterable();
+
                 // Set select options
-                for (var i = 0; i < this.constraintsObject.currentUserIndex; i++) {
-                    var beginVal = this.constraintsObject.beginLetter[i];
-                    var endVal = this.constraintsObject.endLetter[i + 1];
+                for (var i = 0; i < funcSegments.length - 1; i++) {
+                    var beginVal = funcSegments[i].funcStart;
+                    var endVal = funcSegments[i + 1].funcStop;
+
                     $("#repeat-begin").append(
                         $('<option></option>').val(beginVal).html(beginVal)
                     );
@@ -980,10 +922,10 @@ var ElementInspector = Backbone.View.extend({
                         $('<option></option>').val(endVal).html(endVal)
                     );
                 }
-                var repeatCounter = this.constraintsObject.repeat_count;
-                var absLength = this.constraintsObject.absoluteLength;
-                $("repeat-end2").val(this.constraintsObject.repeat_count);
-                $("repeat-end3").val(this.constraintsObject.absoluteLength);
+                var repNum = this.intention.dynamicFunction.getRepeatRepNum();
+                var absTime = this.intention.dynamicFunction.getRepeatAbsTime;
+                $("repeat-end2").val(repNum);
+                $("repeat-end3").val(absTime);
             }
         }
     },
@@ -1021,108 +963,13 @@ var ElementInspector = Backbone.View.extend({
      * and updateChartUserDefined. 
      */
     updateCell: function(event) {
-        
-        // Set data related to functions
-        this.setCellFunctionData();
+        var funcType = this.intention.dynamicFunction.stringDynVis;
+        var initSatVal = this.intention.getInitialSatValue();
 
-        // Set data related to satisfaction values
-        this.setCellSatData();
+        this.cell.attr(".funcvalue/text", funcType);
+        this.cell.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
     },
 
-    /**
-     * Sets the function data on the inspector to the cell's attributes.
-     */
-    setCellFunctionData: function() {
-
-        var funcType = this.$('.function-type').val();
-
-        if (funcType != 'none' && this.cell.attr(".funcvalue/text") != 'NB') {
-            this.cell.attr(".funcvalue/text", funcType);
-        } else {
-            this.cell.attr(".funcvalue/text", '');
-        }
-
-        // Update constraint attributes for the cell
-        if (funcType == 'UD') {
-            this.setUserDefinedCellFunctionData();
-        // Change the last value according to the function type
-        } else if (funcType == "R") {
-            this.cell.attr(".constraints/lastval", "unknown");
-        } else if ((funcType == "C") || (funcType == "CR")) {
-            this.cell.attr(".constraints/lastval", this.$('#init-sat-value').val());
-        } else if (funcType == "SD") {
-            this.cell.attr(".constraints/lastval", "denied");
-        } else if (funcType == "DS") {
-            this.cell.attr(".constraints/lastval", "satisfied");
-        } else {
-            this.cell.attr(".constraints/function", this.$('.function-type').val());
-            this.cell.attr(".constraints/lastval", this.$('#markedValue').val());
-        }
-    },
-
-    /**
-     * Sets the satisfaction values on the inspector to the cell's attributes
-     */
-    setCellSatData: function() {
-
-        var markedValue;
-        if (this.$('#markedValue').val()) {
-            markedValue = satvalues[this.$('#markedValue').val()];
-        } else {
-            markedValue = "0000";
-        }
-
-        this.cell.attr(".constraints/markedvalue", markedValue);
-
-        // Set initial satisfaction value
-        var initValue = this.$('#init-sat-value').val();
-        this.cell.attr(".satvalue/value", initValue);
-
-        // Set satvalue/text
-        if (initValue == "satisfied") {
-            this.cell.attr(".satvalue/text", "(FS, ⊥)");
-        } else if (initValue == "partiallysatisfied") {
-            this.cell.attr(".satvalue/text", "(PS, ⊥)");
-        } else if (initValue == "denied") {
-            this.cell.attr(".satvalue/text", "(⊥, FD)");
-        } else if (initValue == "partiallydenied") {
-            this.cell.attr(".satvalue/text", "(⊥, PD)");
-        } else if (initValue == "unknown") {
-            this.cell.attr(".satvalue/text", "?");
-        } else {
-            this.cell.attr(".satvalue/text", '');
-            // If functype is NB, dont clear it
-            if (this.cell.attr(".funcvalue/text") != 'NB') {
-                this.cell.attr(".satvalue/text", ' ');
-            }
-        }
-    },
-
-    /**
-     * Sets the user defined function data onto the cell's attributes
-     */
-    setUserDefinedCellFunctionData: function() {
-
-        this.cell.attributes.attrs['.constraints'].function = this.constraintsObject.userFunctions;
-        this.cell.attributes.attrs['.constraints'].lastval = this.constraintsObject.userValues;
-        this.cell.attr(".constraints/beginLetter", this.constraintsObject.beginLetter);
-        this.cell.attr(".constraints/endLetter", this.constraintsObject.endLetter);
-        this.cell.attr(".constraints/repeatCount", this.constraintsObject.repeat_count);
-        this.cell.attr(".constraints/absoluteLen", this.constraintsObject.absoluteLength);
-
-        // Update repeat values
-        if (this.repeatOptionsDisplay) {
-            this.cell.attr(".constraints/beginRepeat", this.constraintsObject.repeatBegin);
-            this.cell.attr(".constraints/endRepeat", this.constraintsObject.repeatEnd);
-            this.cell.attr(".constraints/repeatCount", this.constraintsObject.repeat_count);
-            this.cell.attr(".constraints/absoluteLen", this.constraintsObject.absoluteLength);
-        } else {
-            this.cell.attr(".constraints/beginRepeat", null);
-            this.cell.attr(".constraints/endRepeat", null);
-            this.cell.attr(".constraints/repeatCount", null);
-            this.cell.attr(".constraints/absoluteLen", null);
-        }
-    },
     clear: function(){
         this.$el.html('');
     }

@@ -51,25 +51,25 @@ var satValueDict = {
 var satisfactionValuesDict = {
 	"0000": {
 	    name: "none",
-		satValue: "(T, T)",
+		satValue: "(⊥, ⊥)",
 		color: "black",
 		chartVal: 0
 	},
 	"0010": {
 	    name: "partiallysatisfied",
-		satValue: "(PS, T)",
+		satValue: "(PS, ⊥)",
 		color: "black",
 		chartVal: 1
 	},
 	"0011": {
 	    name: "satisfied",
-		satValue: "(FS, T)",
+		satValue: "(FS, ⊥)",
 		color: "black",
 		chartVal: 2
 	},
 	"0100": {
 	    name: "partiallydenied",
-		satValue: "(T, PD)",
+		satValue: "(⊥, PD)",
 		color: "black",
 		chartVal: -1
 	},
@@ -87,7 +87,7 @@ var satisfactionValuesDict = {
 	},
 	"1100": {
 	    name: "denied",
-		satValue: "(T, FD)",
+		satValue: "(⊥, FD)",
 		color: "black",
 		chartVal: -2
 	},
@@ -105,6 +105,7 @@ var satisfactionValuesDict = {
 	},
 	"(no value)": {
 		name: "(no value)",
+		satValue: '',
 		chartVal: 0
 	}
 };

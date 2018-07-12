@@ -480,6 +480,88 @@ class EvolvingFunction {
         }
         return res;
     }
+
+    /**
+     * Returns true iff this EvolvingFunction contains
+     * a repeating segment (ie, contains a RepFuncSegment)
+     *
+     * @returns {Boolean}
+     */
+    hasRepeat() {
+        for (var i = 0; i < this.functionSegList.length; i++) {
+            if (this.functionSegList[i] instanceof RepFuncSegment) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns the epoch boundary where the repeat segment
+     * starts
+     *
+     * Precondition: This EvolvingFunction must contain a RepFuncSegment
+     *
+     * @returns {String}
+     *   ex: 'A'
+     */
+    getStartRepeatEpoch() {
+        for (var i = 0; i < this.functionSegList.length; i++) {
+            if (this.functionSegList[i] instanceof RepFuncSegment) {
+                return this.functionSegList[i].functionSegList[0].funcStart;
+            }
+        }
+    }
+
+    /**
+     * Returns the epoch boundary where the repeat segment
+     * ends
+     *
+     * Precondition: This EvolvingFunction must contain a RepFuncSegment
+     *
+     * @returns {String}
+     *   ex: 'C'
+     */
+    getEndRepeatEpoch() {
+        for (var i = 0; i < this.functionSegList.length; i++) {
+            if (this.functionSegList[i] instanceof RepFuncSegment) {
+                var len = this.functionSegList[i].functionSegList.modellength;
+                return this.functionSegList[i].functionSegList[len - 1].funcEnd;
+            }
+        }
+    }
+
+    /**
+     * Returns the repNum attribute for this EvolvingFunction's 
+     * RepFuncSegment
+     *
+     * Precondition: This EvolvingFunction must contain a RepFuncSegment
+     *
+     * @returns {Number}
+     */
+    getRepeatRepNum() {
+        for (var i = 0; i < this.functionSegList.length; i++) {
+            if (this.functionSegList[i] instanceof RepFuncSegment) {
+                return this.functionSegList[i].repNum;
+            }
+        }
+    }
+
+    /**
+     * Returns the absTime attribute for this EvolvingFunction's 
+     * RepFuncSegment
+     *
+     * Precondition: This EvolvingFunction must contain a RepFuncSegment
+     *
+     * @returns {Number}
+     */
+    getRepeatAbsTime() {
+        for (var i = 0; i < this.functionSegList.length; i++) {
+            if (this.functionSegList[i] instanceof RepFuncSegment) {
+                return this.functionSegList[i].absTime;
+            }
+        }
+    }
 }
 
 class FuncSegment {
@@ -595,11 +677,11 @@ class UserIntention {
 
         var funcSegList = this.dynamicFunction.functionSegList;
         
-        if (this.dynamicFunction.stringDynVis == 'C' ||
-            (this.dynamicFunction.stringDynVis == 'UD' && funcSegList[0].funcType == 'C')) {
-            funcSegList[0].funcX = initValue;
-        }
-
+        // if (this.dynamicFunction.stringDynVis == 'C' ||
+        //     (this.dynamicFunction.stringDynVis == 'UD' && funcSegList[0].funcType == 'C')) {
+        //     funcSegList[0].funcX = initValue;
+        // }
+        this.dynamicFunction.stringDynVis = null;
         this.dynamicFunction.functionSegList = [];
     }
  
