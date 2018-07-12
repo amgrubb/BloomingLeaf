@@ -13,7 +13,7 @@ class Model {
         this.intentions = [];
         this.links = [];
         this.constraints = [];
-        this.maxAbsTime;
+        this.maxAbsTime = "100";
     }
 
     /**
@@ -930,9 +930,9 @@ class AnalysisRequest {
      */
 	constructor() {
 		this.action = null;
-		this.conflictLevel = null;
-		this.numRelTime = null;
-		this.absTimePts = null;
+		this.conflictLevel = "S";
+		this.numRelTime = "1";
+		this.absTimePts = "";
 		this.currentState = null;
 		this.userAssignmentsList = [];
 		this.previousAnalysis = null;
