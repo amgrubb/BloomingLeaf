@@ -110,102 +110,77 @@ var constraintsObject = function(){
 }
 
 
-// Used for chart.js setup
-var chartObject = function() {
+class ChartObj {
 
-	this.chart;
+	constructor() {
+		
+		this.labels;
+		this.dataSets = [];
+		this.options = {
+			// animation: false,
+			scaleOverride : true,
+			scaleSteps : 4,
+			scaleStepWidth : 1,
+			scaleStartValue : -2,
+			scaleFontSize: 10,
+			pointHitDetectionRadius : 5,
+			tooltipTemplate: "",
+			multiTooltipTemplate: "",
+			scales: {
+				yAxes: [{
+					ticks: {
+						min: -2.1,
+						max: 2.1,
+						callback: function(value, index, values) {
+							if (value == 2){return '(FS, T)'};
+							if (value == 1){return '(PS, T)'};
+							if (value == 0){return '(T, T)'};
+							if (value == -1){return '(T, PD)'};
+							if (value == -2){return '(T, FD)'};
+						}
+					}
+				}]
+			},
+			legend: {
+				display: false
+			},
 
-	// used for normal functions
-	this.chartData = {
-		labels: ["0", "Infinity"], // x-axis labels
-		datasets: [{
+			tooltips: {
+				enabled: false,
+			}
+		};
+	}
+
+	reset() {
+		this.labels = null;
+		this.dataSets = [];
+	}
+
+	addDataSet(xValue, yValues, dashed, coloured = false) {
+		var data = Array(xValue).fill(null).concat(yValues);
+		var dataSet = {
 			label: "Source",
 			fill: false, // no colouring underneath the line
-			borderColor: "rgba(220,220,220,1)",
-			pointBackgroundColor: ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"],
+			borderColor: coloured ? "rgba(255, 110, 80, 1)" : "rgba(220,220,220,1)",
+			borderDash: dashed ? [5, 5] : null,
+			pointBackgroundColor: coloured ? "rgba(255, 110, 80, 1)" : "rgba(220,220,220,1)",
 			pointRadius: 4,
-			pointBorderColor: ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"],
+			pointBorderColor: "rgba(220,220,220,1)",
 			lineTension: 0, // set to 0 for straight lines
-			data: [0, 0]
+			data: data
+		};
 
-		},
-		{
-			label: "Source",
-			fill: false,
-			borderColor: "rgba(220,220,220,1)",
-			pointBackgroundColor: ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"],
-			pointRadius: 4,
-			pointBorderColor: ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"],
-			lineTension: 0,
-			data: [0, 0]
-		},
-		{
-			label: "Source",
-			fill: false,
-			borderColor: "rgba(220,220,220,1)",
-			pointBackgroundColor: ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"],
-			pointRadius: 4,
-			pointBorderColor: ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"],
-			lineTension: 0,
-			data: []
-		},
-		{
-			label: "Source",
-			fill: false,
-			borderColor: "rgba(220,220,220,1)",
-			pointBackgroundColor: ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"],
-			pointRadius: 4,
-			pointBorderColor: ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"],
-			lineTension: 0,
-			data: []
-		},
-		{
-			label: "Source",
-			fill: false,
-			borderColor: "rgba(220,220,220,1)",
-			pointBackgroundColor: ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"],
-			pointRadius: 4,
-			pointBorderColor: ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"],
-			lineTension: 0,
-			data: []
-		}
-		]
-	};
+		this.dataSets.push(dataSet);
+	}
 
-    // within constraint chart options
-	this.chartOptions = {
-		animationSteps: 15,
-		scaleOverride : true,
-		scaleSteps : 4,
-		scaleStepWidth : 1,
-		scaleStartValue : -2,
-		scaleFontSize: 10,
-		pointHitDetectionRadius : 5,
-		tooltipTemplate: "",
-		multiTooltipTemplate: "",
-		// scaleLabel: "<%if (value == 2)%><%= '(FS, T)' %><%if (value == 1)%><%= '(PS, T)' %><%if (value == 0)%><%= '(T, T)' %><%if (value == -1)%><%= '(T, PD)' %><%if (value == -2)%><%= '(T, FD)' %>",
-
-		scales: {
-			yAxes: [{
-				ticks: {
-					min: -2.1,
-					max: 2.1,
-					callback: function(value, index, values){
-						if (value == 2){return '(FS, T)'};
-						if (value == 1){return '(PS, T)'};
-						if (value == 0){return '(T, T)'};
-						if (value == -1){return '(T, PD)'};
-						if (value == -2){return '(T, FD)'};
-					}
-				}
-			}]
-		},
-		legend: {
-			display: false
-		},
-
-		tooltips: {
-			enabled: false,
-		}
-	};
+	display(context) {
+		this.chartObj = new Chart(context, {
+			type: 'line',
+			data: {
+				labels: this.labels,
+				datasets: this.dataSets
+			},
+			options: this.options
+		});
+	}
 }

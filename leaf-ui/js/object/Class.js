@@ -474,7 +474,7 @@ class EvolvingFunction {
                 for (var j = 0; j < segList.length; j++) {
                     var clone = Object.assign(new FuncSegment, segList[j]);
                     clone.isRepeat = true;
-                    res.push(obj);
+                    res.push(clone);
                 }
             }
         }

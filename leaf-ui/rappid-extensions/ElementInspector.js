@@ -181,7 +181,7 @@ var ElementInspector = Backbone.View.extend({
         this.$el.html(_.template(this.template)());
 
         // Attributes
-        this.chartObject = new chartObject();
+        this.chart = new ChartObj();
         this.constraintsObject = new constraintsObject();
 
         // Genernate all available selection options based on selected function type
@@ -393,7 +393,6 @@ var ElementInspector = Backbone.View.extend({
      */
     funcTypeChanged: function(event) {
         var funcType = this.$('.function-type').val();
-        console.log(funcType);
         this.intention.setEvolvingFunction(funcType);
         this.updateHTML(event);
     },
@@ -419,7 +418,7 @@ var ElementInspector = Backbone.View.extend({
     },
 
     /**
-     * //TODO: Sets the marked value
+     * Sets the marked value
      */
     funcSatValChanged: function(event) {
         var satValue = satValueDict[this.$('#markedValue').val()]; // 4 digit representation
@@ -619,117 +618,69 @@ var ElementInspector = Backbone.View.extend({
      * satisfaction value(s)
      */
     updateChart: function(event) {
-        var functionType = this.$('.function-type').val();
-        var initVal = satvalues[this.$('#init-sat-value').val()];
+        var funcType = this.intention.dynamicFunction.stringDynVis;
+        var initVal = satisfactionValuesDict[this.intention.getInitialSatValue()].chartVal;
         var satVal = satvalues[this.$('#markedValue').val()];
-
-        if (this.cell.attributes.attrs['.constraints']) {
-            this.cell.attributes.attrs['.constraints'].markedvalue = satVal;
-        }
-
-        // Rerender chart canvas
-        var data = this.chartObject.chartData;
-
+        this.chart.reset();
         // Get the chart canvas
         var context = $("#chart").get(0).getContext("2d");
 
-        // Reset datasets
-        this.resetChartDatasets(data.datasets);
-
-        // Destroy the previous chart if exists
-        if (this.chartObject.chart != null) {
-            this.chartObject.chart.destroy();
-        }
-
-        // If there is a preexisting user-defined function, clear it
-        if ((functionType != "UD") && (this.constraintsObject.currentUserIndex > 0)) {
-            this.removeUserConstraints(null);
-        }
-
         // Render preview for user defined function types
-        if (functionType == "UD") {
+        if (funcType == "UD") {
             this.updateChartUserDefined(null);
             return;
         }
 
 
         // Change chart dataset(s), depending on the function type
-        if (functionType == "R") {
-            data.labels = ["0", "Infinity"];
-            data.datasets[0].data = [initVal, initVal];
-            data.datasets[0].borderDash = [5, 5];
-            data.datasets[0].pointBackgroundColor[1] = "rgba(220,220,220,0)";
-            data.datasets[0].pointBorderColor[1] = "rgba(220,220,220,0)";
+        var threeLabelFunc = ['RC', 'CR', 'SD', 'DS', 'MP', 'MN'];
 
-        } else if (functionType == "C") {
-            data.labels = ["0", "Infinity"];
-            // If not unknown, just display one line
-            if (initVal != satvalues["unknown"]) {
-                data.datasets[0].data = [initVal, initVal];
-            } else {
-                // If it is, then display 5 dotted lines
-                var value_to_add = -2;
-                for (var i = 0; i < 5; i++) {
-                    data.datasets[i].data = [value_to_add, value_to_add];
-                    data.datasets[i].borderDash = [5, 5];
-                    data.datasets[i].pointBackgroundColor[1] = "rgba(220,220,220,0)";
-                    data.datasets[i].pointBorderColor[1] = "rgba(220,220,220,0)";
-                    value_to_add ++;
-                }
+        if (threeLabelFunc.includes(funcType)) {
+            this.chart.labels = ['0', 'A', 'Infinity'];
+
+            if (funcType === 'RC') {
+                this.chart.addDataSet(0, [initVal, initVal], true);
+                this.chart.addDataSet(1, [initVal, satVal], false);
+            } else if (funcType === 'CR') {
+                this.chart.addDataSet(0, [initVal, initVal], false);
+                this.chart.addDataSet(1, [initVal, initVal], true);
+            } else if (funcType === 'SD') {
+                this.chart.addDataSet(0, [2, 2], false);
+                this.chart.addDataSet(1, [-2, -2], false);
+            } else if (funcType === 'DS') {
+                this.chart.addDataSet(0, [-2, -2], false);
+                this.chart.addDataSet(1, [2, 2], false);
+            } else if (funcType === 'MP' || funcType === 'MN') {
+                this.chart.addDataSet(0, [initVal, satVal, satVal]);
             }
-
-        } else if ((functionType == "I") || (functionType == "D")) {
-            data.labels = ["0", "Infinity"];
-            data.datasets[0].data = [initVal, satVal];
-
-        } else if (functionType == "RC") {
-            data.labels = ["0", "A", "Infinity"];
-            data.datasets[0].data = [initVal, initVal];
-            data.datasets[0].borderDash = [5, 5];
-            data.datasets[0].pointBackgroundColor[1] = "rgba(220,220,220,0)";
-            data.datasets[0].pointBorderColor[1] = "rgba(220,220,220,0)";
-            data.datasets[1].data = [null, satVal, satVal];
-
-        } else if (functionType == "CR") {
-            data.labels = ["0", "A", "Infinity"];
-            data.datasets[0].data = [initVal, initVal, null];
-            data.datasets[1].data = [null, initVal, initVal];
-            data.datasets[1].borderDash = [5, 5];
-            data.datasets[1].pointBackgroundColor[2] = "rgba(220,220,220,0)";
-            data.datasets[1].pointBorderColor[2] = "rgba(220,220,220,0)";
-
-        } else if (functionType == "SD") {
-            data.labels = ["0", "A", "Infinity"];
-            data.datasets[0].data = [2, 2, null];
-            data.datasets[1].data = [null, -2, -2];
-
-        } else if (functionType == "DS") {
-            data.labels = ["0", "A", "Infinity"];
-            data.datasets[0].data = [-2, -2, null];
-            data.datasets[1].data = [null, 2, 2];
-
-        } else if (functionType == "MP") {
-            data.labels = ["0", "A", "Infinity"];
-            data.datasets[0].data = [initVal, satVal, satVal];
-
-        } else if (functionType == "MN") {
-            data.labels = ["0", "A", "Infinity"];
-            data.datasets[0].data = [initVal, satVal, satVal];
-
         } else {
-            data.labels = ["0", "Infinity"];
-            // Display one dot
-            data.datasets[0].data = [initVal];
+            this.chart.labels = ['0', 'Infinity'];
+
+            if (funcType === 'C') {
+                this.chart.addDataSet(0, [initVal, initVal], false);
+            } else if (funcType === 'R') {
+                this.chart.addDataSet(0, [initVal, initVal], true);
+            } else if (funcType === 'I' || funcType === 'D') {
+                this.chart.addDataSet(0, [initVal, satVal], false);
+            } else {
+                // display a dot
+                this.chart.addDataSet(0, [initVal], false); 
+            }
         }
 
-        // Display the chart
-        this.chartObject.chart = new Chart(context, {
-            type: 'line',
-            data: data,
-            options: this.chartObject.chartOptions
-        });
+        this.chart.display(context);
 
         this.updateCell(null);
+    },
+
+    getUDChartLabel: function(num) {
+        var res = ['0'];
+        var curr = 'A'
+        for (var i = 0; i < num; i++) {
+            res.push(curr);
+            curr = String.fromCharCode(curr.charCodeAt(0) + 1);
+        }
+        return res;
     },
 
     /**
@@ -738,170 +689,52 @@ var ElementInspector = Backbone.View.extend({
      */
     updateChartUserDefined: function(event) {
         var context = $("#chart").get(0).getContext("2d");
-        var func = $(".user-function-type").last().val();
-        var index = this.constraintsObject.currentUserIndex;
-
-        // If unknown is selected
-        if ($(".user-sat-value").last().val() == 'unknown') {
-            $(".user-sat-value").last().prop('disabled', 'disabled');
-            $(".user-sat-value").last().css("background-color","grey");
-        } else {
-            $(".user-function-type").last().prop('disabled', '');
-            $(".user-function-type").last().css("background-color",'');
-        }
-
-        // Save values in user defined functions
-        this.constraintsObject.userFunctions[index] = func;
-        this.constraintsObject.userValues[index] = $(".user-sat-value").last().val();
-
-        // Clone chart template
-        var data = this.chartObject.chartData;
-
-        // Setting up the labels
-        data.labels = this.constraintsObject.beginLetter.slice(0);
-        data.labels.push(this.constraintsObject.endLetter[this.constraintsObject.endLetter.length - 1]);
-
-        // Setting repeating variables
-        var repeat = this.repeatOptionsDisplay;
-        var repeatBegin = this.constraintsObject.repeatBegin;
-        var repeatEnd = this.constraintsObject.repeatEnd;
+        var numFuncSegments = this.intention.getNumOfFuncSegements();
 
         // Reset chart datasets
-        this.resetChartDatasets(data.datasets);
+        this.chart.reset();
+
+        // Setting up the labels
+        this.chart.labels = this.getUDChartLabel(numFuncSegments);
+
+        
+
+        // Get init sat value
+        var initSatVal = satisfactionValuesDict[this.intention.getInitialSatValue()].chartVal;
 
         // Add datapoints to graph for each userfunction/uservalue pair
-        var previousDatasetIndex = -1;
-        var currentDatasetIndex = 0;
+        var funcSegments = this.intention.dynamicFunction.getFuncSegmentIterable();
 
-        for (var i = 0; i < this.constraintsObject.userFunctions.length; i++) {
-            if (currentDatasetIndex >= data.datasets.length) {
-                data.datasets.push({
-                    label: "Source",
-                    fill: false,
-                    borderColor: "rgba(220,220,220,1)",
-                    pointRadius: 4,
-                    lineTension: 0,
-                    data: []
-                });
-            }
-
-            var previousDataset = data.datasets[previousDatasetIndex];
-            var currentDataset = data.datasets[currentDatasetIndex];
-            var currentFunc = this.constraintsObject.userFunctions[i];
-            var previousFunc = this.constraintsObject.userFunctions[i - 1];
-            var currentVal = this.constraintsObject.userValues[i]; // satisfaction value associated with current function type
-            var currentNumVal = currentVal == "unknown" ? 0 : satvalues[currentVal];
-            var previousVal = this.constraintsObject.userValues[i - 1];
-
-            // First we need to find out how many nulls do we need
-            // Nulls are needed to translate the line to the right
-            var numNulls = []
-            if (currentDatasetIndex != 0) {
-                for (var j = 0; j < previousDataset.data.length - 1; j++) {
-                    numNulls.push(null);
-                }
-            }
-
-            // Add datapoint to dataset according to which function
-            if (currentFunc == 'I' || currentFunc == 'D') {
-                // If previous function is stochastic, set the starting point to be either FD or FS
-                if ((previousFunc == 'R' || (previousFunc == 'C' && previousVal == 'unknown')) && currentFunc == 'I') {
-                    firstVal = satvalues['denied'];
-                } else if ((previousFunc == 'R' || (previousFunc == 'C' && previousVal == 'unknown')) && currentFunc == 'D') {
-                    firstVal = satvalues['satisfied'];
-                } else if (currentDatasetIndex != 0){
-                    // Use the last value of the previous dataset as the current dataset's first value
-                    firstVal = previousDataset.data[previousDataset.data.length - 1];
+        for (var i = 0; i < funcSegments.length; i++) {
+            var currFunc = funcSegments[i].funcType;
+            var coloured = funcSegments[i].isRepeat;
+            var data1; // first data point for this segment
+            var data2 = satisfactionValuesDict[funcSegments[i].funcX].chartVal;
+            if (i === 0) {
+                if (currFunc !== 'R') {
+                    data1 = initSatVal;
                 } else {
-                    firstVal = satvalues[this.$('#init-sat-value').val()];
+                    data1 = 0;
                 }
-
-                currentDataset.data = numNulls.concat([firstVal, currentNumVal]);
-
-            } else if (currentFunc == 'C') {
-                if (currentVal != 'unknown') {
-                    currentDataset.data = numNulls.concat([currentNumVal, currentNumVal]);
-                } else {
-                    // it is unknown
-
-                    // Then we need 4 datasets in addition to the currentDataset
-                    // And we add datapoints into each dataset starting from FD
-                    var value_to_add = -2;
-                    for (var k = currentDatasetIndex; k < currentDatasetIndex + 5; k ++) {
-                        // Make sure we have enough dataset availabe. If not add some
-                        if (k >= data.datasets.length) {
-                            data.datasets.push({
-                                label: "Source",
-                                fill: false,
-                                borderColor: "rgba(220,220,220,1)",
-                                pointRadius: 4,
-                                lineTension: 0,
-                                data: []
-                            });
-                        }
-                        currentSubset = data.datasets[k];
-                        currentSubset.data = numNulls.concat([value_to_add, value_to_add]);
-
-                        // Update the style
-                        currentSubset.borderDash = [5, 5]
-                        currentSubset.pointBackgroundColor = numNulls.concat(["rgba(220,220,220,1)", "rgba(220,220,220,0)"]);
-                        currentSubset.pointBorderColor = numNulls.concat(["rgba(220,220,220,1)", "rgba(220,220,220,0)"]);
-                        if (this.inRepeatRange(repeat, repeatBegin, repeatEnd, currentSubset.data)) {
-                            currentSubset.borderColor = "rgba(255, 110, 80, 1)";
-                        }
-                        value_to_add ++;
-                    }
-                }
-
-            } else if (currentFunc == 'R') {
-                 currentDataset.data = numNulls.concat([currentNumVal, currentNumVal]);
-            }
-
-
-            // Update the style of current dataset and advance indices
-            // I, D and non unknown C function share the same style
-            if (currentFunc == 'C' && this.constraintsObject.userValues[i] == 'unknown') {
-                previousDatasetIndex += 5;
-                currentDatasetIndex += 5;
-            } else if (currentFunc == 'R') {
-                currentDataset.borderDash = [5, 5]
-                currentDataset.pointBackgroundColor = numNulls.concat(["rgba(220,220,220,1)", "rgba(220,220,220,0)"]);
-                currentDataset.pointBorderColor = numNulls.concat(["rgba(220,220,220,1)", "rgba(220,220,220,0)"]);
-                if (this.inRepeatRange(repeat, repeatBegin, repeatEnd, currentDataset.data)) {
-                    currentDataset.borderColor = "rgba(255, 110, 80, 1)";
-                }
-                previousDatasetIndex ++;
-                currentDatasetIndex ++;
             } else {
-                // If previous function is stochastic, or constant unknown, hide the first dot
-                if (previousFunc == 'R' || (previousFunc == 'C' && previousVal == 'unknown')) {
-                    currentDataset.pointBackgroundColor = numNulls.concat(["rgba(220,220,220,0)", "rgba(220,220,220,1)"])
-                    currentDataset.pointBorderColor = numNulls.concat(["rgba(220,220,220,0)", "rgba(220,220,220,1)"]);
+                // If previous function is stochastic, set the starting point to be either FD or FS
+                var prevFunc = funcSegments[i - 1].funcType;
+                var prefVal = funcSegments[i - 1].funcX;
+                if (prevFunc === 'R' && currFunc === 'I') {
+                    data1 = -2;
+                } else if (prevFunc === 'R' && currFunc === 'D') {
+                    data1 = 2;
+                } else if (currFunc === 'C'){
+                    data1 = data2;
+                } else {
+                    // set to previous function's marked value
+                    data1 = satisfactionValuesDict[prefVal].chartVal;
                 }
-                // Else, both points should be solid
-                else {
-                    currentDataset.pointBackgroundColor = numNulls.concat(["rgba(220,220,220,1)", "rgba(220,220,220,1)"])
-                    currentDataset.pointBorderColor = numNulls.concat(["rgba(220,220,220,1)", "rgba(220,220,220,1)"]);
-                }
-                // If currentDataset is in repeat range, set red
-                if (this.inRepeatRange(repeat, repeatBegin, repeatEnd, currentDataset.data)){
-                    currentDataset.borderColor = "rgba(255, 110, 80, 1)";
-                }
-                previousDatasetIndex ++;
-                currentDatasetIndex ++;
-
             }
-
+            this.chart.addDataSet(i, [data1, data2], currFunc === 'R', coloured);
         }
 
-
-        this.chartObject.chart = new Chart(context, {
-            type: 'line',
-            data: data,
-            options: this.chartObject.chartOptions
-        });
-
-        this.updateCell(null);
+        this.chart.display(context);
     },
 
     /**
