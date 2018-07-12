@@ -135,7 +135,7 @@ var AnalysisInspector = Backbone.View.extend({
 		'click #btn-save-assignment': 'saveAssignment',
 		'click #btn-single-path': 'singlePath',
 		'click #btn-all-next-state': 'getAllNextStates',
-		'click .addIntention' : 'addnewIntention',
+		'click .addIntention' : 'addRelAssignmentRow',
 		'click #btn-save-intermT' : 'saveIntermTable',
 		'change #num-rel-time' : 'addRelTime',
 		'change #conflict-level': 'changeConflictLevel',
@@ -144,9 +144,13 @@ var AnalysisInspector = Backbone.View.extend({
 	},
 
 	render: function() {
+
 		// These functions are used to communicate between analysisInspector and Main.js
 		this.$el.html(_.template(this.template)());
 		$('head').append('<script src="./scripts/js-objects/analysis.js"></script>');
+
+
+		this.setDeleteRelAssignmentListener();
 	},
 
 	/**
@@ -513,35 +517,24 @@ var AnalysisInspector = Backbone.View.extend({
 	 * Absolute and Relative Assignments into the graph object
 	 */
 	saveRelativeIntentionAssignments: function() {
-		var epoch1Lists = $('#rel-intention-assignents tr #epoch1List select');
-		var relationshipLists = $('#rel-intention-assignents tr #relationshipLists select');
-		var epoch2Lists = $('#rel-intention-assignents tr #epoch2List select');
-		for(var i = 0; i < epoch1Lists.length; i++){
-			if(epoch1Lists[i].value != null && epoch2Lists[i].value != null){
-				var extractGoal1full = epoch1Lists[i].value;
-				var extractGoal2full = epoch2Lists[i].value;
-				var extractGoal1 = extractGoal1full.substring(0, extractGoal1full.length - 3);
-				var extractGoal2 = extractGoal2full.substring(0, extractGoal2full.length - 3);
-				var constraintSrcID = nameIdMapper[extractGoal1];
-				var constraintDestID = nameIdMapper[extractGoal2];
-				var type = relationshipLists[i].value;
+		$('.rel-intent-table tr').each(function () {
+	        var nodeID1 = $(this).find('#epoch1List select option:checked').attr('nodeID');
+        	var epoch1 = $(this).find('#epoch1List select option:checked').attr('epoch');
+        	var type = $(this).find('#relationshipLists select option:checked').text();
+	    	var nodeID2 = $(this).find('#epoch2List select option:checked').attr('nodeID');
+	    	var epoch2 = $(this).find('#epoch2List select option:checked').attr('epoch');
 
-				if (type == 'eq') {
-					type = '=';
-				} else if (type=='lt') {
-					type = '<';
-				}
+	    	if (!nodeID1 || !epoch1 || !type || !nodeID2 || !epoch2) {
+	    		return;
+	    	}
 
-				newConstarint = {};
-				newConstarint['constraintType'] = type;
-				newConstarint['constraintSrcID'] = constraintSrcID;
-				newConstarint['constraintSrcEB'] = epoch1Lists[i].value.match(extractEB)[0];
-				newConstarint['constraintDestID'] = constraintDestID;
-				newConstarint['constraintDestEB'] = epoch2Lists[i].value.match(extractEB)[0];
-				newConstarint['absoluteValue'] = -1;
-				graph.constraintValues.push(newConstarint);
-			}
-		}
+	    	// create constraints object
+	    	var constraint = new Constraint(type, nodeID1, epoch1, nodeID2, epoch2);
+
+	    	if (!model.existsConstraint(constraint)) {
+	    		model.constraints.push(new Constraint(type, nodeID1, epoch1, nodeID2, epoch2));
+	    	}
+	    });
 
 	},
 
@@ -626,43 +619,58 @@ var AnalysisInspector = Backbone.View.extend({
 		graph.elementsBeforeAnalysis = elements;
 	},
 	
+	
 	/**
 	 * This function is called on click .addIntention (the plus icon)
 	 */
-	addnewIntention: function(){
+	addRelAssignmentRow: function() {
 
 		var intentions = model.intentions;
-		var epochList = [];
+		var epochHtml1 = '<div class="epochLists" id="epoch1List"><select><option selected>...</option>';
+		var epochHtml2 =  '<div class="epochLists" id="epoch2List"><select><option selected>...</option>';
 		for (var i = 0; i < intentions.length; i++) {
 
 			// if number of function segments >= 2, we have at least one transition
 			if (intentions[i].getNumOfFuncSegements() >= 2) {
 				var funcSegments = intentions[i].dynamicFunction.getFuncSegmentIterable();
 				for (var j = 0; j < funcSegments.length - 1; j++) {
-					epochList.push(intentions[i].nodeName + ': ' + funcSegments[j].funcStop);
+					var epoch = funcSegments[j].funcStop;
+					var newEpochHtml = '<option nodeID=' + intentions[i].nodeID + ' epoch=' + epoch + '>' + intentions[i].nodeName + ': ' + epoch + '</option>';
+					epochHtml1 += newEpochHtml;
+					epochHtml2 += newEpochHtml;
 				}
 			}
 		}
 
+		epochHtml1 += '</select></div>';
+		epochHtml2 += '</select></div>';
 
-		var epoch1 = '<div class="epochLists" id="epoch1List"><select><option selected>...</option>';
-		var epoch2 =  '<div class="epochLists" id="epoch2List"><select><option selected>...</option>';
-		for(var i = 0; i < epochList.length; i++){
-			var newEpoch = '<option>' + epochList[i] + '</option>';
-			epoch1 += newEpoch
-			epoch2 += newEpoch;
-		}
-
-		epoch1 += '</select></div>';
-		epoch2 += '</select></div>';
 
 		var relationship = '<div class="epochLists" id="relationshipLists"><select><option selected>...'+
 		'</option><option value="eq">=</option><option value="lt"><</option></select></div>'
 
-		$('#rel-intention-assignents').append('<tr><td>' + epoch1 + '</td><td>' + relationship +
-		 '</td><td>'+ epoch2 +'</td><td><i class="fa fa-trash-o fa-2x" id="removeIntention" aria-hidden="true" onClick="$(this).closest(\'tr\').remove();"></i></td></tr>');
-
-
+		$('#rel-intention-assignents').append('<tr><td>' + epochHtml1 + '</td><td>' + relationship +
+		 '</td><td>'+ epochHtml2 +'</td><td><i class="fa fa-trash-o fa-2x" id="removeIntention" aria-hidden="true"></i></td></tr>');
+		// $("#removeIntention").prop('onclick', function() {
+		// 	console.log('hello');
+		// });
 	},
+
+	setDeleteRelAssignmentListener: function() {
+
+		$(document.body).on('click', '#removeIntention', function(){
+			var row = $(this).parent().parent();
+			var nodeID1 = row.find('#epoch1List select option:checked').attr('nodeID');
+			var epoch1 = row.find('#epoch1List select option:checked').attr('epoch');
+        	var type = row.find('#relationshipLists select option:checked').text();
+	    	var nodeID2 = row.find('#epoch2List select option:checked').attr('nodeID');
+	    	var epoch2 = row.find('#epoch2List select option:checked').attr('epoch');
+	    	var constraint = new Constraint(type, nodeID1, epoch1, nodeID2, epoch2);
+
+			model.removeConstraint(constraint);
+			row.remove();
+		});
+	}
+	
 
 });

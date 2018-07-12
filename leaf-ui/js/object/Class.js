@@ -92,6 +92,22 @@ class Model {
     }
 
     /**
+     * Remove the Constraint constraint from 
+     * the constraints array
+     *
+     * @param {Constraint} constraint
+     */
+    removeConstraint(constraint) {
+        for (var i = 0; i < this.constraints.length; i++) {
+            var c = this.constraints[i];
+            if (JSON.stringify(c) === JSON.stringify(constraint)) {
+                this.constraints.splice(i, 1);
+                return;
+            }
+        }
+    }
+
+    /**
      * Remove the intention with node ID nodeID
      * from the intentions array
      *
@@ -136,6 +152,24 @@ class Model {
       			break;
             }
         }
+    }
+
+    /**
+     * Returns true iff constraint already exists in 
+     * this.constraints
+     *
+     * @param {Constraint} constraint
+     * @returns {Boolean}
+     */
+    existsConstraint(constraint) {
+        for (var i = 0; i < this.constraints.length; i++) {
+            var c = this.constraints[i];
+
+            if (JSON.stringify(c) === JSON.stringify(constraint)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 
