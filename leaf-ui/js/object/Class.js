@@ -240,11 +240,11 @@ class AnalysisResult {
      *   ex: {'0000': {'0': '0000', '7': 'DNE'}}
      *   (for nodeID 0000, time point 0, its satisfaction value is none)
 	 */
-	constructor(assignedEpoch, timePointPath, timePointPathSize, values) {
-        this.assignedEpoch = assignedEpoch;
-        this.timePointPath = timePointPath;
-        this.timePointPathSize = timePointPathSize;
-        this.values = values;
+	constructor() {
+        this.assignedEpoch;
+        this.timePointPath ;
+        this.timePointPathSize;
+        this.values;
 	}
 }
 
@@ -992,6 +992,22 @@ class AnalysisRequest {
             } 
         }
     }
+
+    /**
+     * Deletes all IntentionEvaluations in this.userAssignmentsList
+     * with the exception of the initial IntentionEvaluations
+     */
+    clearIntentionEvaluations() {
+        var i = 0;
+        while (i < this.userAssignmentsList.length) {
+            if (this.userAssignmentsList[i].absTime !== '0') {
+                this.userAssignmentsList.splice(i, 1);
+            } else {
+                i++;
+            }
+        }
+    }
+
 	
 	/**
 	 * Removes all IntentionEvaluation objects in

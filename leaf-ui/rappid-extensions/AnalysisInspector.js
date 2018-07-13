@@ -298,6 +298,7 @@ var AnalysisInspector = Backbone.View.extend({
 		if (regex.test(absTime.val())){
 			analysisRequest.absTimePts = absTime.val().trim();
 			analysisRequest.absTimePtsArr = this.getAbsoluteTimePoints();
+			analysisRequest.clearIntentionEvaluations();
 		}
 		else {
 			absTime.val(analysisRequest.absTimePts);

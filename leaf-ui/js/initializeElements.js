@@ -10,6 +10,7 @@ var mode;
 
 var model = new Model();
 var analysisRequest = new AnalysisRequest();
+var analysisResult = new AnalysisResult();
 
 var linkInspector = new LinkInspector();
 var elementInspector = new ElementInspector();

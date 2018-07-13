@@ -57,9 +57,9 @@ function getFileResults(isGetNextSteps){
 		url: pathToCGI,
 		type: "get",
 		success: function(response){
-			analysisResults = JSON.parse(response['data']);
+			results = JSON.parse(response['data']);
 			
-			if (errorExists(analysisResults)) {
+			if (errorExists(results)) {
 				var msg = getErrorMessage(analysisResults.errorMessage);	
 				alert(msg);
 			} else {
@@ -68,15 +68,25 @@ function getFileResults(isGetNextSteps){
 				*/
 					console.log(JSON.stringify(JSON.parse(response['data'])));
 
-				globalAnalysisResult = analysisResults;
-				if (analysisResults == ""){
+				globalAnalysisResult = results;
+
+				if (results == ""){
 					alert("Error while reading the resonse file from server. This can be due an error in executing java application.")
 					return
 				}
+
+
+				analysisResult.assignedEpoch = results.assignedEpoch;
+		        analysisResult.timePointPath = results.timePointPath;
+		        analysisResult.timePointPathSize = results.timePointPathSize;
+		        analysisResult.values = results.values;
+
+		        analysisRequest.previousAnalysis = analysisResult;
+
 				if(isGetNextSteps){
 					open_analysis_viewer();
 				}else{
-					displayAnalysis(analysisResults);
+					displayAnalysis(results);
 				}
 			}
 		}
