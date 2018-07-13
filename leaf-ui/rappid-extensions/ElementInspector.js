@@ -454,7 +454,6 @@ var ElementInspector = Backbone.View.extend({
 
             if ($.inArray(functionType, funcWithSatValue) > -1) {
                 // Function with an associated satisfaction value
-                delete this.cell.attr(".constraints/markedvalue");
                 this.displayFunctionSatValue(null);
             } else {
                 // Function without an associated satisfaction value
@@ -509,32 +508,19 @@ var ElementInspector = Backbone.View.extend({
         var initValue = this.$('#init-sat-value').val();
         var markedValue = this.intention.dynamicFunction.getMarkedVal(0);
         this.$('#markedValue').show("fast");
-        switch (functionType) {
-            case "RC":
-                this.$('#markedValue').html(this.satValueOptions.noRandom);
-                if (markedValue) {
-                    this.$('#markedValue').val(value);
-                }
-                break;
-            case "I":
-            case "MP":
-                this.$('#markedValue').html(this.satValueOptions.positiveOnly(initValue));
-                if (markedValue) {
-                    value = satvalues[markedValue];
-                    this.$('#markedValue').val(value);
-                }
-                break;
-            case "D":
-            case "MN":
-                this.$('#markedValue').html(this.satValueOptions.negativeOnly(initValue));
-                if (markedValue) {
-                    value = satvalues[markedValue];
-                    this.$('#markedValue').val(value);
-                }
-                break;
-            default:
-                break;
+        if (functionType == 'RC') {
+            this.$('#markedValue').html(this.satValueOptions.noRandom);
+        } else if (functionType == 'I' || functionType == 'MP') {
+            this.$('#markedValue').html(this.satValueOptions.positiveOnly(initValue));
+        } else if (functionType == 'D' || functionType == 'MN') {
+            this.$('#markedValue').html(this.satValueOptions.negativeOnly(initValue));
         }
+
+        if (markedValue) {
+            var value = satisfactionValuesDict[markedValue].name;
+            this.$('#markedValue').val(value);
+        }
+
         return;
     },
 
