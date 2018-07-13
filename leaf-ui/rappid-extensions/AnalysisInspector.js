@@ -98,8 +98,10 @@ var AnalysisInspector = Backbone.View.extend({
 				'<div class="intermBody">',
 						'<table id="interm-list" class="interm-table">',
 							'<thead id = "header">',
-								'<th style="width:110px">   		 </th>',
-								'<th>  Initial Value  </th>',
+								'<tr id="header-row">',
+									'<th style="width:110px"></th>',
+									'<th>  Initial Value  </th>',
+								'</tr>',
 							'</thead>',
 							'<tr id="intentionRows">',
 							'<th>',
@@ -295,6 +297,7 @@ var AnalysisInspector = Backbone.View.extend({
         var absTime = $('#abs-time-pts');
 		if (regex.test(absTime.val())){
 			analysisRequest.absTimePts = absTime.val().trim();
+			analysisRequest.absTimePtsArr = this.getAbsoluteTimePoints();
 		}
 		else {
 			absTime.val(analysisRequest.absTimePts);
@@ -393,87 +396,49 @@ var AnalysisInspector = Backbone.View.extend({
 		$('#interm-list').find("tr:gt(1)").remove();
 		$('#header').find("th:gt(1)").remove();
 		$('#intentionRows').find("th:gt(1)").remove();
+
 		var intermTDialog = document.getElementById('intermediateTable');
 		intermTDialog.style.display = "block";
 		var elements = graph.getElements();
 		var intermTable = document.querySelector('.interm-table');
 
-		var absTimeValues = this.getAbsoluteTimePoints();
+		var absTimeValues = analysisRequest.absTimePtsArr;
 
-		var headers = document.getElementById('header');
-		var rows = headers.querySelector('tr');
-		var intentRows = document.getElementById('intentionRows');
 		for (var i = 0; i < absTimeValues.length; i++) {
-			if (!(absTimeValues[i] in timeValues)) {
-				timeValues[absTimeValues[i]] = [];
-				timeValues[absTimeValues[i]].push("Absolute");
-			}
+			$('#header-row').append('<th>Absolute</th>');
+			$('#intentionRows').append('<th>' + absTimeValues[i] + '</th>');
 		}
+		
+		var options = `<option value="empty"> </option>
+						<option value="(no value)">(no value)</option>
+						<option value="0000">None (⊥, ⊥) </option>
+						<option value="0011">Satisfied (FS, ⊥) </option>
+						<option value="0010">Partially Satisfied (PS, ⊥) </option>
+						<option value="1100">Denied (⊥, FD) </option>
+						<option value="0100">Partially Denied (⊥, PD)</option>`;
 
-		absoluteTimeValues = absTimeValues;
+		for (var i = 0; i < model.intentions.length; i++) {
+			var intention = model.intentions[i];
+			var initValue = intention.getInitialSatValue(); // ex, '0000'
+			var name = intention.nodeName;
 
-		Object.keys(timeValues).forEach(function(key) {
-			var th = document.createElement('th');
-			var thint = document.createElement('th');
-            // Displaying each absolute time value into the table 
-			if (timeValues[key].length == 1) {
-				th.innerHTML = timeValues[key][0];
-				thint.innerHTML = key;
-				rows.appendChild(th);
-				intentRows.appendChild(thint);
-			}
-		})
+			// If user put no absolute time points
+			if ($.isEmptyObject(absTimeValues)) {
+				$('#interm-list').append('<tr><td>' + name + '</td><td>' + satisfactionValuesDict[initValue].satValue + '</td></tr>');
+			} else {
 
-        // Make option select tags
-		var satValues = '<select id="evalID"><option value="empty;" selected> </option>';
-		var satValueLists = ['Unknown','None (T, T) ', 'Satisfied (FS, T) ','Partially Satisfied (PS, T) ',
-		'Denied (T, FD) ', 'Partially Denied (T, PD)'];
-		var evalList = ['unknown', 'none','satisfied','partiallysatisfied', 'denied','partiallydenied'];
-		for (var i = 0; i < satValueLists.length; i++) {
-			var value = '<option value="' + evalList[i] + '">'+ satValueLists[i] + '</option>';
-			satValues += value
-		}
-		satValues += '</select>';
-		for (var i = 0; i < elements.length; i++) {
-			var cellView = elements[i].findView(paper);
-			var cell = cellView.model;
-			if (cell.attributes.type !== "basic.Actor") {
-				var initvalue = cell.attr('.satvalue').text;
-				var name = cell.attr('.name').text.replace(/(\n+|\r+|\s\s+)/gm," ").replace(/(^\s|\s$)/gm,'');
+				// TODO, display previously saved options
+				var appendList = '<tr class="intention-row"><td>' + name + '</td><td>'+satisfactionValuesDict[initValue].satValue+'</td>';
 
-				// Check if initial value is empty, if so, add (T,T) as a value
-				if ($.isEmptyObject(timeValues)) {
-					if  (initvalue.trim() == "") {
-						$('#interm-list').append('<tr><td>' + name + '</td><td>(T,T)</td></tr>');
-					} else {
-						$('#interm-list').append('<tr><td>' + name + '</td><td>' + initvalue +'</td></tr>');
-					}
-				} else {
-					// If no previously saved table, display options for each time value
-					if  (initvalue.trim() == "") {
-						var appendList = '<tr><td>' + name + '</td><td>(T,T)</td>';
-						if (saveIVT == null) {
-							for (var j = 0; j < Object.keys(timeValues).length; j++) {
-								appendList += '<td>' + satValues + '</td>';
-							}
-						} else if (saveIVT.length > 0) {
-							for (var j = 0; j < Object.keys(timeValues).length; j++) {
-								appendList += '<td>' + $("#evalID").val('(FS, T)') + '</td>';
-							}
-						}
-						appendList += '</tr>';
-						$('#interm-list').append(appendList);
-					} else {
-						// Display previously saved table
-						var appendList = '<tr><td>' + name + '</td><td>'+ initvalue +'</td>';
-						var test ='';
-						for (var j = 0; j < Object.keys(timeValues).length; j++) {
-							appendList += '<td>' + satValues + '</td>';
-						}
-						appendList += '</tr>';
-						$('#interm-list').append(appendList);
-					}
+				for (j = 0; j < absTimeValues.length; j++) {
+
+					// Add select tags for each absolute time point
+					var selectTag = '<select id="evalID" nodeID = ' + intention.nodeID + ' absTime = '+ absTimeValues[j] +'>' + options + '</select>'
+					appendList += '<td>' + selectTag + '</td>';
 				}
+				appendList += '</tr>';
+				$('#interm-list').append(appendList);
+
 			}
 		}
 	},
@@ -597,10 +562,27 @@ var AnalysisInspector = Backbone.View.extend({
 	},
 
 	/**
-	 * 
+	 * Save the intermediate table values into analysisRequest
 	 */
 	saveIntermTable: function(){
-		saveIVT = getUserEvaluations();
+		
+		// for each row of the table
+		$('.intention-row').each(function () {
+			// for each column of the current row
+			$(this).find('select').each(function () {
+				var nodeID = $(this).attr('nodeID');
+				var absTime = $(this).attr('absTime');
+				var evalLabel = $(this).find(":selected").val();
+
+				if (evalLabel === 'empty') {
+					return;
+				}
+
+				analysisRequest.userAssignmentsList.push(new IntentionEvaluation(nodeID, absTime, evalLabel));
+
+			});
+		});
+
 
 		this.dismissIntermTable();
 	},

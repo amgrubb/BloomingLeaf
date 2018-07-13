@@ -105,7 +105,7 @@ var satisfactionValuesDict = {
 	},
 	"(no value)": {
 		name: "(no value)",
-		satValue: '',
+		satValue: '(no value)',
 		chartVal: 0
 	}
 };
