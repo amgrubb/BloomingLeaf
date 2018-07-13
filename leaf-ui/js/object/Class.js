@@ -967,6 +967,7 @@ class AnalysisRequest {
 		this.conflictLevel = "S";
 		this.numRelTime = "1";
 		this.absTimePts = "";
+		this.absTimePtsArr = [];
 		this.currentState = null;
 		this.userAssignmentsList = [];
 		this.previousAnalysis = null;
@@ -992,6 +993,33 @@ class AnalysisRequest {
             } 
         }
     }
+	
+	
+	/**
+     * Deletes all the absTimePts that are not in the intersection 
+     * of the old and new absTimePits in this.userAssignmentsList
+     */
+	changeTimePoints(newTimePts){
+		 var intersection = this.absTimePtsArr.filter(x => newTimePts.includes(x));
+		 if (intersection.length == 0){
+			 this.clearIntentionEvaluations();
+			 this.absTimePtsArr = newTimePts;
+			 return
+		 }
+		 var i = 0;
+		 while (i < this.userAssignmentsList.length){
+			 if (!intersection.includes(this.userAssignmentsList[i].absTime) && this.userAssignmentsList[i].absTime != 0){
+				 this.userAssignmentsList.splice(i, 1);
+			 }
+			 else{
+				 i++;
+			 }
+		 }
+		 
+		 this.absTimePtsArr = newTimePts;
+
+		
+	}
 
     /**
      * Deletes all IntentionEvaluations in this.userAssignmentsList

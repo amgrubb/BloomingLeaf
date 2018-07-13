@@ -297,12 +297,12 @@ var AnalysisInspector = Backbone.View.extend({
         var absTime = $('#abs-time-pts');
 		if (regex.test(absTime.val())){
 			analysisRequest.absTimePts = absTime.val().trim();
-			analysisRequest.absTimePtsArr = this.getAbsoluteTimePoints();
-			analysisRequest.clearIntentionEvaluations();
+			analysisRequest.changeTimePoints(this.getAbsoluteTimePoints());
 		}
 		else {
 			absTime.val(analysisRequest.absTimePts);
 		}
+		
 	},
 
     changeMaxAbsTime : function(event) {
@@ -393,15 +393,12 @@ var AnalysisInspector = Backbone.View.extend({
 	 * This function is called on click for #btn-view-intermediate
 	 */
 	loadIntermediateValues: function(e) {
-		var timeValues = {};
 		$('#interm-list').find("tr:gt(1)").remove();
 		$('#header').find("th:gt(1)").remove();
 		$('#intentionRows').find("th:gt(1)").remove();
 
 		var intermTDialog = document.getElementById('intermediateTable');
 		intermTDialog.style.display = "block";
-		var elements = graph.getElements();
-		var intermTable = document.querySelector('.interm-table');
 
 		var absTimeValues = analysisRequest.absTimePtsArr;
 
