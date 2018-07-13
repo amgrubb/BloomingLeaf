@@ -157,6 +157,15 @@ var LinkInspector = Backbone.View.extend({
             target.attr(".satvalue/text", "");
             target.attr(".satvalue/value", "");
 
+            var sourceIntention = model.getUserIntentionByID(source.attributes.nodeID).dynamicFunction;
+            var targetIntention = model.getUserIntentionByID(target.attributes.nodeID).dynamicFunction;
+
+            sourceIntention.stringDynVis = 'NB';
+            sourceIntention.functionSegList = [];
+
+            targetIntention.stringDynVis = 'NB';
+            targetIntention.functionSegList = [];
+            
         } else {
             //Verify if it is possible to remove the NB tag from source and target
             if (!this.hasNBLink(source, this.cell) && this.hasNBTag(source)){
