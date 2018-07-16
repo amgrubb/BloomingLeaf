@@ -1,7 +1,7 @@
 class Model {
 
     /**
-     * Attributes: 
+     * Attributes:
      * {Array.<Actor>} actors
      * {Array.<UserIntention>} intentions
      * {Array.<Link>} links
@@ -9,7 +9,7 @@ class Model {
      * {String} maxAbsTime
      */
     constructor() {
-        this.actors = []; 
+        this.actors = [];
         this.intentions = [];
         this.links = [];
         this.constraints = [];
@@ -60,7 +60,7 @@ class Model {
     }
 
     /**
-     * Returns the absolute Constraint object with 
+     * Returns the absolute Constraint object with
      * constraintSrcID srcID and source epoch boundary
      * srcEB
      *
@@ -70,7 +70,7 @@ class Model {
      */
     getAbsConstBySrcID(srcID, srcEB) {
         for (var i = 0; i < this.constraints.length; i++) {
-            if (this.constraints[i].constraintType === 'A' && 
+            if (this.constraints[i].constraintType === 'A' &&
                 this.constraints[i].constraintSrcID === srcID &&
                 this.constraints[i].constraintSrcEB === srcEB) {
                 return this.constraints[i];
@@ -80,7 +80,7 @@ class Model {
 
     /**
      * Sets the absolute value for the absolute Constraint object
-     * with constraintSrcID srcID 
+     * with constraintSrcID srcID
      *
      * @param {String} srcID
      * @param {String} srcEB
@@ -92,7 +92,7 @@ class Model {
     }
 
     /**
-     * Remove the Constraint constraint from 
+     * Remove the Constraint constraint from
      * the constraints array
      *
      * @param {Constraint} constraint
@@ -155,7 +155,7 @@ class Model {
     }
 
     /**
-     * Returns true iff constraint already exists in 
+     * Returns true iff constraint already exists in
      * this.constraints
      *
      * @param {Constraint} constraint
@@ -308,7 +308,7 @@ class EvolvingFunction {
 	}
 
     /**
-     * Returns the 4 digit representation for this 
+     * Returns the 4 digit representation for this
      * EvolvingFunction's ith function segment
      *
      * @param {Number} i
@@ -333,7 +333,7 @@ class EvolvingFunction {
     }
 
     /**
-     * Creates a new RepFuncSegment object containing function 
+     * Creates a new RepFuncSegment object containing function
      * segments in the relative time interval [time1, time2], and add it to this
      * EvolvingFunction's functionSegList, in place of the function
      * segements in the time interval [time1, time2]
@@ -478,19 +478,19 @@ class EvolvingFunction {
     /**
      * Returns an array containing FuncSegment objects, for the
      * purpose of easy iteration. This function is useful when
-     * the functionSegList contains both FuncSegments and 
+     * the functionSegList contains both FuncSegments and
      * repFuncSegments.
      *
-     * For example, if functionSegList contains a FuncSegment 
+     * For example, if functionSegList contains a FuncSegment
      * and a repFuncSegment containing three FuncSegments inside of it,
-     * this function returns an array of size 4, containing all the 
+     * this function returns an array of size 4, containing all the
      * function segments in chronological order.
      *
-     * Every FuncSegment in the returned array will be a deep copy of the 
+     * Every FuncSegment in the returned array will be a deep copy of the
      * origin FuncSegments.
      *
      * Each FuncSegment in the returned array will have a inRepeat attribute
-     * which evaluates to true iff the FuncSegment was part of a 
+     * which evaluates to true iff the FuncSegment was part of a
      * repFunctionSegment
      *
      * @returns {Array.<FuncSegment>}
@@ -566,7 +566,7 @@ class EvolvingFunction {
     }
 
     /**
-     * Returns the repNum attribute for this EvolvingFunction's 
+     * Returns the repNum attribute for this EvolvingFunction's
      * RepFuncSegment
      *
      * Precondition: This EvolvingFunction must contain a RepFuncSegment
@@ -582,7 +582,7 @@ class EvolvingFunction {
     }
 
     /**
-     * Returns the absTime attribute for this EvolvingFunction's 
+     * Returns the absTime attribute for this EvolvingFunction's
      * RepFuncSegment
      *
      * Precondition: This EvolvingFunction must contain a RepFuncSegment
@@ -671,9 +671,9 @@ class UserIntention {
     /**
      * @param {String} nodeActorID
      *   The ID of the actor that this intention is embedded in
-     *   ex: 'a0000' (actor ID), '-' (if there is no actor) 
+     *   ex: 'a0000' (actor ID), '-' (if there is no actor)
      * @param {String} nodeType
-     *   Type of the intention. 
+     *   Type of the intention.
      *   Will be one of these four: 'basic.Goal', 'basic.Task', 'basic.Softgoal', 'basic.Resource'
      * @param {String} nodeName
      */
@@ -710,7 +710,7 @@ class UserIntention {
         // change the function segment's marked value
 
         var funcSegList = this.dynamicFunction.functionSegList;
-        
+
         // if (this.dynamicFunction.stringDynVis == 'C' ||
         //     (this.dynamicFunction.stringDynVis == 'UD' && funcSegList[0].funcType == 'C')) {
         //     funcSegList[0].funcX = initValue;
@@ -718,10 +718,10 @@ class UserIntention {
         this.dynamicFunction.stringDynVis = null;
         this.dynamicFunction.functionSegList = [];
     }
- 
+
     /**
      * Creates and returns a 4 digit ID for this node
-     * 
+     *
      * @returns {String}
      */
     createID() {
@@ -734,7 +734,7 @@ class UserIntention {
     }
 
     /**
-     * Returns the 4 digit representation for this 
+     * Returns the 4 digit representation for this
      * UserIntention's initial satisfaction value
      *
      * @returns {String}
@@ -814,7 +814,7 @@ class UserIntention {
     }
 
     /**
-     * Adds a new Constraint object int the global model variable, 
+     * Adds a new Constraint object int the global model variable,
      * representing an absolute constraint, if requried.
      *
      * If funcType is RC, CR, MP, MN, SD, DS  a Constraint object
@@ -844,7 +844,7 @@ class UserIntention {
     }
 
     /**
-     * Removes the absolute Constraint object(s) for this UserIntention from 
+     * Removes the absolute Constraint object(s) for this UserIntention from
      * the global model variable, if such absolute Constraint object(s) exists
      */
     removeAbsCosnt() {
@@ -924,14 +924,14 @@ class UserIntention {
     }
 
     /**
-     * Sets the satisfaction value for the last function segment 
+     * Sets the satisfaction value for the last function segment
      * in this Intention's evolving function, to satVal
      *
      * @param {String} satVal
      *   ex: '0000'
      */
     updateLastFuncSegSatVal(satVal) {
-        var funcSegList = this.dynamicFunction.functionSegList; 
+        var funcSegList = this.dynamicFunction.functionSegList;
         var funcSegLen = this.dynamicFunction.functionSegList.length;
 
         var lastObj = funcSegList[funcSegLen - 1];
@@ -968,7 +968,7 @@ class AnalysisRequest {
 		this.numRelTime = "1";
 		this.absTimePts = "";
 		this.absTimePtsArr = [];
-		this.currentState = null;
+		this.currentState = "0";
 		this.userAssignmentsList = [];
 		this.previousAnalysis = null;
     }
@@ -990,13 +990,13 @@ class AnalysisRequest {
             if (this.userAssignmentsList[i].intentionID == nodeID &&
                 this.userAssignmentsList[i].absTime == absTime) {
                 return this.userAssignmentsList[i];
-            } 
+            }
         }
     }
-	
-	
+
+
 	/**
-     * Deletes all the absTimePts that are not in the intersection 
+     * Deletes all the absTimePts that are not in the intersection
      * of the old and new absTimePits in this.userAssignmentsList
      */
 	changeTimePoints(newTimePts){
@@ -1015,10 +1015,10 @@ class AnalysisRequest {
 				 i++;
 			 }
 		 }
-		 
+
 		 this.absTimePtsArr = newTimePts;
 
-		
+
 	}
 
     /**
@@ -1036,10 +1036,10 @@ class AnalysisRequest {
         }
     }
 
-	
+
 	/**
 	 * Removes all IntentionEvaluation objects in
-	 * userAssignmentsList, with an intentionID equal to 
+	 * userAssignmentsList, with an intentionID equal to
 	 * nodeID
 	 *
 	 * @param {String}
