@@ -76,10 +76,10 @@ var ElementInspector = Backbone.View.extend({
             '<select id="init-sat-value">',
                 '<option value="(no value)"> (no value) </option>',
                 '<option value=none> None (⊥, ⊥)</option>',
-				'<option value=satisfied> Satisfied (FS, ⊥)</option>',
-                '<option value=partiallysatisfied> Partially Satisfied (PS, ⊥) </option>',
-                '<option value=denied> Denied (⊥, FD)</option>',
-                '<option value=partiallydenied> Partially Denied (⊥, PD)</option>',
+				'<option value=satisfied> Satisfied (F, ⊥)</option>',
+                '<option value=partiallysatisfied> Partially Satisfied (P, ⊥) </option>',
+                '<option value=denied> Denied (⊥, F)</option>',
+                '<option value=partiallydenied> Partially Denied (⊥, P)</option>',
             '</select>',
             '<br>',
             '<div id="function-div">',
@@ -115,11 +115,11 @@ var ElementInspector = Backbone.View.extend({
                                 '<option value=D> Decrease </option>',
                             '</select>',
                             '<select class="user-sat-value user-defined-select">',
-                                '<option value=none selected> None (T, T) </option>',
-                                '<option value=satisfied> Satisfied (FS, T) </option>',
-                                '<option value=partiallysatisfied> Partially Satisfied (PS, T) </option>',
-                                '<option value=partiallydenied> Partially Denied (T, PD)</option>',
-                                '<option value=denied> Denied (T, FD)</option>',
+                                '<option value=none selected> None (⊥, ⊥) </option>',
+                                '<option value=satisfied> Satisfied (F, ⊥) </option>',
+                                '<option value=partiallysatisfied> Partially Satisfied (P, ⊥) </option>',
+                                '<option value=partiallydenied> Partially Denied (⊥, P)</option>',
+                                '<option value=denied> Denied (⊥, F)</option>',
                                 '<option value=unknown> Unknown </option>',
                             '</select>',
                         '</div>',
@@ -166,7 +166,7 @@ var ElementInspector = Backbone.View.extend({
         'click #constraint-restart': 'removeUserConstraints',
         'keyup .cell-attrs-text': 'nameAction'
     },
- 
+
     /**
      * Initializes the element inspector using previously defined templates
      */
@@ -174,7 +174,7 @@ var ElementInspector = Backbone.View.extend({
 
         this.cell = cell; // Save the clicked node's backbone model
 
-        // Save the UserIntention object from the global model variable to 
+        // Save the UserIntention object from the global model variable to
         // this.intention
         this.intention = model.getUserIntentionByID(this.cell.attributes.nodeID);
 
@@ -273,11 +273,11 @@ var ElementInspector = Backbone.View.extend({
     initializeSatValueOptions: function() {
         var satValueOptions = {};
 
-        var none = '<option value=none selected> None (T, T) </option>';
-        var satisfied = '<option value=satisfied> Satisfied (FS, T) </option>';
-        var partiallysatisfied = '<option value=partiallysatisfied> Partially Satisfied (PS, T) </option>';
-        var partiallydenied = '<option value=partiallydenied> Partially Denied (T, PD) </option>';
-        var denied = '<option value=denied> Denied (T, FD) </option>';
+        var none = '<option value=none selected> None (⊥, ⊥) </option>';
+        var satisfied = '<option value=satisfied> Satisfied (F, ⊥) </option>';
+        var partiallysatisfied = '<option value=partiallysatisfied> Partially Satisfied (P, ⊥) </option>';
+        var partiallydenied = '<option value=partiallydenied> Partially Denied (⊥, P) </option>';
+        var denied = '<option value=denied> Denied (⊥, F) </option>';
         var unknown = '<option value=unknown> Unknown </option>';
         satValueOptions.all = none + satisfied + partiallysatisfied + partiallydenied + denied + unknown;
         satValueOptions.noRandom = satisfied + partiallysatisfied + partiallydenied + denied;
@@ -525,8 +525,8 @@ var ElementInspector = Backbone.View.extend({
     },
 
     /**
-     * Adds appropriate satisfaction values option tags 
-     * for .user-sat-value, which is the select tag used to 
+     * Adds appropriate satisfaction values option tags
+     * for .user-sat-value, which is the select tag used to
      * indicate satisfaction values when creating a user defined function.
      */
     addUDFunctionValues: function(event) {
@@ -590,7 +590,7 @@ var ElementInspector = Backbone.View.extend({
     },
 
     /**
-     * Updates the chart to represent data related to the the current function and 
+     * Updates the chart to represent data related to the the current function and
      * satisfaction value(s)
      */
     updateChart: function(event) {
@@ -640,7 +640,7 @@ var ElementInspector = Backbone.View.extend({
                 this.chart.addDataSet(0, [initVal, satVal], false);
             } else {
                 // display a dot
-                this.chart.addDataSet(0, [initVal], false); 
+                this.chart.addDataSet(0, [initVal], false);
             }
         }
 
@@ -658,7 +658,7 @@ var ElementInspector = Backbone.View.extend({
     },
 
     /**
-     * Updates the chart to represent data related to the the current user 
+     * Updates the chart to represent data related to the the current user
      * defined function and satisfaction value(s)
      */
     updateChartUserDefined: function(event) {
@@ -671,7 +671,7 @@ var ElementInspector = Backbone.View.extend({
         // Setting up the labels
         this.chart.labels = this.getUDChartLabel(numFuncSegments);
 
-        
+
 
         // Get init sat value
         var initSatVal = satisfactionValuesDict[this.intention.getInitialSatValue()].chartVal;
@@ -714,7 +714,7 @@ var ElementInspector = Backbone.View.extend({
     /**
      * Adds new constraint for the user defined function.
      * This function is called on click for #constraint-add.
-     * This function is also called when loading user defined 
+     * This function is also called when loading user defined
      * constraints from previously stored.
      */
     addConstraint: function(event) {
@@ -723,7 +723,7 @@ var ElementInspector = Backbone.View.extend({
         var html = this.userConstraintsHTML.clone();
 
         this.intention.addUserDefinedSeg("C", "0000");
-        
+
         $(".user-sat-value").last().prop('disabled', true);
         $(".user-sat-value").last().css("background-color",'grey');
         $(".user-function-type").last().prop('disabled', true);
@@ -740,9 +740,9 @@ var ElementInspector = Backbone.View.extend({
 
     },
 
-    
+
     /**
-     * Toggles the display for the user defined function's 
+     * Toggles the display for the user defined function's
      * repeat feature.
      * This function is called on click for #constraint-repeat.
      */
@@ -758,10 +758,10 @@ var ElementInspector = Backbone.View.extend({
     },
 
     /**
-     * Handles the changes done for the select elements for the 
+     * Handles the changes done for the select elements for the
      * repeat feature for user defined functions, by ensuring that
      * the begin and end range of repeated constraints are valid.
-     * This function is called on change for .repeat-select 
+     * This function is called on change for .repeat-select
      * (the select elements for repeat begin and end)
      */
     selectRepeatValues: function(event){
@@ -800,7 +800,7 @@ var ElementInspector = Backbone.View.extend({
     /**
      * Ensures that the number of repeat counts is a valid number,
      * updates the constraintsObject with the new repeat count and
-     * updates the chart in case there are constraint lines that need 
+     * updates the chart in case there are constraint lines that need
      * to be coloured red.
      *
      * This function is called on change for #repeat-end2.
@@ -809,7 +809,7 @@ var ElementInspector = Backbone.View.extend({
         var repVal = $("#repeat-end2").val();
         if (repVal < 2) {
             $('#repeat-end2').val(2);
-        } 
+        }
         this.intention.dynamicFunction.setRepNum(repVal);
         this.constraintsObject.repeat_count = repVal;
         this.updateChartUserDefined(null);
@@ -835,7 +835,7 @@ var ElementInspector = Backbone.View.extend({
      * Sets the mode for the user defined function's repeat feature.
      * Depending on the mode, this function controls the display
      * for repeat related elements and values.
-     * 
+     *
      * @param {String} mode
      */
     setRepeatConstraintMode: function(mode) {
@@ -944,9 +944,9 @@ var ElementInspector = Backbone.View.extend({
     },
 
     /**
-     * Makes corresponding changes for the cell attributes, according to the values in the 
+     * Makes corresponding changes for the cell attributes, according to the values in the
      * inspector. This function is always called alongside with updateChart
-     * and updateChartUserDefined. 
+     * and updateChartUserDefined.
      */
     updateCell: function(event) {
         var funcType = this.intention.dynamicFunction.stringDynVis;

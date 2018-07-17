@@ -58,49 +58,49 @@ var satisfactionValuesDict = {
 	},
 	"0010": {
 	    name: "partiallysatisfied",
-		satValue: "(PS, ⊥)",
+		satValue: "(P, ⊥)",
 		color: "black",
 		chartVal: 1
 	},
 	"0011": {
 	    name: "satisfied",
-		satValue: "(FS, ⊥)",
+		satValue: "(F, ⊥)",
 		color: "black",
 		chartVal: 2
 	},
 	"0100": {
 	    name: "partiallydenied",
-		satValue: "(⊥, PD)",
+		satValue: "(⊥, P)",
 		color: "black",
 		chartVal: -1
 	},
 	"0110": {
 	    name: "conflict",
-        satValue: "(PS, PD)",
+        satValue: "(P, P)",
         color: "red",
 		chartVal: 3
     },
 	"0111": {
         name: "conflict",
-		satValue: "(FS, PD)",
+		satValue: "(F, P)",
 		color: "red",
 		chartVal: 3
 	},
 	"1100": {
 	    name: "denied",
-		satValue: "(⊥, FD)",
+		satValue: "(⊥, F)",
 		color: "black",
 		chartVal: -2
 	},
 	"1110": {
         name: "conflict",
-        satValue: "(PS, FD)",
+        satValue: "(P, F)",
         color: "red",
 		chartVal: 3
     },
 	"1111": {
         name: "conflict",
-		satValue: "(FS, FD)",
+		satValue: "(F, F)",
 		color: "red",
 		chartVal: 3
 	},

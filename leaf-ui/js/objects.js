@@ -132,11 +132,11 @@ class ChartObj {
 						min: -2.1,
 						max: 2.1,
 						callback: function(value, index, values) {
-							if (value == 2){return '(FS, T)'};
-							if (value == 1){return '(PS, T)'};
-							if (value == 0){return '(T, T)'};
-							if (value == -1){return '(T, PD)'};
-							if (value == -2){return '(T, FD)'};
+							if (value == 2){return '(F, ⊥)'};
+							if (value == 1){return '(P, ⊥)'};
+							if (value == 0){return '(⊥, ⊥)'};
+							if (value == -1){return '(⊥, P)'};
+							if (value == -2){return '(⊥, F)'};
 						}
 					}
 				}]
