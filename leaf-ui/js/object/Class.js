@@ -804,10 +804,12 @@ class UserIntention {
                 // Constant and Constant
                 var seg1 = new FuncSegment('C', '0011', '0', 'A');
                 var seg2 = new FuncSegment('C', '1100', 'A', 'Infinity');
+                analysisRequest.getIntentionEvaluationByID(this.nodeID, "0").evaluationValue = '0011';
             } else if (funcType == 'DS') {
                 // Constant and Constant
                 var seg1 = new FuncSegment('C', '1100', '0', 'A');
                 var seg2 = new FuncSegment('C', '0011', 'A', 'Infinity');
+                analysisRequest.getIntentionEvaluationByID(this.nodeID, "0").evaluationValue = '1100';
             }
             this.dynamicFunction.functionSegList.push(seg1, seg2);
         }
