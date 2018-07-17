@@ -412,10 +412,10 @@ var AnalysisInspector = Backbone.View.extend({
 		var options = `<option value="empty"> </option>
 						<option value="(no value)">(no value)</option>
 						<option value="0000">None (⊥, ⊥) </option>
-						<option value="0011">Satisfied (FS, ⊥) </option>
-						<option value="0010">Partially Satisfied (PS, ⊥) </option>
-						<option value="1100">Denied (⊥, FD) </option>
-						<option value="0100">Partially Denied (⊥, PD)</option>`;
+						<option value="0011">Satisfied (F, ⊥) </option>
+						<option value="0010">Partially Satisfied (P, ⊥) </option>
+						<option value="1100">Denied (⊥, F) </option>
+						<option value="0100">Partially Denied (⊥, P)</option>`;
 
 		for (var i = 0; i < model.intentions.length; i++) {
 			var intention = model.intentions[i];
