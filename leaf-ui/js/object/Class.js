@@ -309,13 +309,26 @@ class EvolvingFunction {
 
     /**
      * Returns the 4 digit representation for this
-     * EvolvingFunction's ith function segment
+     * EvolvingFunction's ith function segment's 
+     * satisfaction value
      *
      * @param {Number} i
      * @returns {String}
      */
     getMarkedVal(i) {
         return this.functionSegList[i].funcX;
+    }
+
+    /**
+     * Returns the 4 digit representation for this
+     * EvolvingFunction's last function segment's
+     * satisfaction value
+     */
+    getLastMarkedVal() {
+        var len = this.functionSegList.length;
+        if (len > 0) {
+            return this.functionSegList[len - 1].funcX;
+        }
     }
 
     /**

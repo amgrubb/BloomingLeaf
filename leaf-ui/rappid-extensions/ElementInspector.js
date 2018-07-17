@@ -288,7 +288,7 @@ var ElementInspector = Backbone.View.extend({
         satValueOptions.positiveOnly = function(currentVal){
             currentVal = satvalues[currentVal];
             result = '';
-            for (var i = satvalues['satisfied'] ; i >= currentVal - 1 ; i--){
+            for (var i = satvalues['satisfied'] ; i >= currentVal + 1 ; i--){
                 // Find text by value eg. given i = -1, we want to find partiallydenied as satvalues[partiallydenied] = -1
                 var text = satvalues[i];
                 result += eval(text);
@@ -506,7 +506,7 @@ var ElementInspector = Backbone.View.extend({
     displayFunctionSatValue: function(event) {
         var functionType = this.$('.function-type').val();
         var initValue = this.$('#init-sat-value').val();
-        var markedValue = this.intention.dynamicFunction.getMarkedVal(0);
+        var markedValue = this.intention.dynamicFunction.getLastMarkedVal();
         this.$('#markedValue').show("fast");
         if (functionType == 'RC') {
             this.$('#markedValue').html(this.satValueOptions.noRandom);
@@ -616,7 +616,7 @@ var ElementInspector = Backbone.View.extend({
 
             if (funcType === 'RC') {
                 this.chart.addDataSet(0, [initVal, initVal], true);
-                this.chart.addDataSet(1, [initVal, satVal], false);
+                this.chart.addDataSet(1, [satVal, satVal], false);
             } else if (funcType === 'CR') {
                 this.chart.addDataSet(0, [initVal, initVal], false);
                 this.chart.addDataSet(1, [initVal, initVal], true);
