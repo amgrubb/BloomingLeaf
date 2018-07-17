@@ -288,7 +288,7 @@ var ElementInspector = Backbone.View.extend({
         satValueOptions.positiveOnly = function(currentVal){
             currentVal = satvalues[currentVal];
             result = '';
-            for (var i = currentVal; i <= satvalues['satisfied']; i++){
+            for (var i = satvalues['satisfied'] ; i >= currentVal - 1 ; i--){
                 // Find text by value eg. given i = -1, we want to find partiallydenied as satvalues[partiallydenied] = -1
                 var text = satvalues[i];
                 result += eval(text);
@@ -302,7 +302,7 @@ var ElementInspector = Backbone.View.extend({
         satValueOptions.negativeOnly = function(currentVal){
             currentVal = satvalues[currentVal];
             result = '';
-            for (var i = currentVal; i >= satvalues['denied']; i--){
+            for (var i = currentVal - 1; i >= satvalues['denied']; i--){
                 // Find text by value eg. given i = -1, we want to find partiallydenied as satvalues[partiallydenied] = -1
                 var text = satvalues[i];
                 result += eval(text);
@@ -452,7 +452,7 @@ var ElementInspector = Backbone.View.extend({
             this.$('#user-constraints').hide();
             $('#init-sat-value').prop('disabled', false);
 
-            if ($.inArray(functionType, funcWithSatValue) > -1) {
+            if (funcWithSatValue.includes(functionType)) {
                 // Function with an associated satisfaction value
                 this.displayFunctionSatValue(null);
             } else {
