@@ -165,6 +165,7 @@ var AnalysisInspector = Backbone.View.extend({
 		//Create the object and fill the JSON file to be sent to backend.
 		//Get the AnalysisInspector view information
 		var analysis = new InputAnalysis("singlePath");
+		analysisRequest.action = "singlePath";
 
 		//Prepare and send data to backend
 		this.sendToBackend(analysis);
@@ -180,6 +181,7 @@ var AnalysisInspector = Backbone.View.extend({
 		//Create the object and fill the JSON file to be sent to backend.
 		//Get the AnalysisInspector view information
 		var analysis = new InputAnalysis("allNextStates");
+		analysisRequest.action = "getAllNextStates";
 
 		//Prepare and send data to backend
 		this.sendToBackend(analysis);
