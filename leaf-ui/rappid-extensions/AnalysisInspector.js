@@ -188,8 +188,8 @@ var AnalysisInspector = Backbone.View.extend({
 	/**
 	 * Creates an object to send to the backend and calls
 	 * a backendComm() to send to backend
-	 *  
-	 * @param {Object} analysisz
+	 *
+	 * @param {Object} analysis
 	 *   InputAnalysis() object
 	 */
 	sendToBackend: function(analysis){
@@ -231,7 +231,7 @@ var AnalysisInspector = Backbone.View.extend({
 
 		// Clear all previous table entries
 		$(".abs-table").find("tr:gt(0)").remove();
-		
+
 		// Display the modal by setting it to block display
 		modal.style.display = "block";
 
@@ -262,7 +262,7 @@ var AnalysisInspector = Backbone.View.extend({
 
 			var sourceName = model.getUserIntentionByID(sourceID).nodeName;
 			var targetName = model.getUserIntentionByID(targetID).nodeName;
-			
+
 
 			if (link.linkType == 'NBD' || link.linkType == 'NBT' || link.isEvolvingRelationship()) {
 				var linkAbsTime = link.absoluteValue;
@@ -302,7 +302,7 @@ var AnalysisInspector = Backbone.View.extend({
 		else {
 			absTime.val(analysisRequest.absTimePts);
 		}
-		
+
 	},
 
     changeMaxAbsTime : function(event) {
@@ -317,7 +317,7 @@ var AnalysisInspector = Backbone.View.extend({
 
 
 	/**
-	 * Displays the nodes for the Absolute Intention Assignments for 
+	 * Displays the nodes for the Absolute Intention Assignments for
 	 * the Absolute and Relative Assignments modal
 	 */
 	displayAbsoluteIntentionAssignments: function(e) {
@@ -330,10 +330,10 @@ var AnalysisInspector = Backbone.View.extend({
 			var intentionName = intention.nodeName;
 
 			// nameIdMapper[name] = intention.nodeID;
-			if (funcType == 'RC' || funcType == 'CR' || funcType == 'MP' || 
+			if (funcType == 'RC' || funcType == 'CR' || funcType == 'MP' ||
 				funcType == 'MN' || funcType == 'SD' || funcType =='DS') {
 
-				
+
 				var absTime = intention.getAbsConstTime('A');
 				// default value to display.
 				// -1 means abs time does not exist. So display empty string instead.
@@ -362,7 +362,7 @@ var AnalysisInspector = Backbone.View.extend({
 	},
 
 	/**
-	 * Returns an array of numbers containing numbers that the 
+	 * Returns an array of numbers containing numbers that the
 	 * user has inputed in the Absolute Time Points input box.
 	 * @returns {Array.<Number>}
 	 */
@@ -406,7 +406,7 @@ var AnalysisInspector = Backbone.View.extend({
 			$('#header-row').append('<th>Absolute</th>');
 			$('#intentionRows').append('<th>' + absTimeValues[i] + '</th>');
 		}
-		
+
 		var options = `<option value="empty"> </option>
 						<option value="(no value)">(no value)</option>
 						<option value="0000">None (⊥, ⊥) </option>
@@ -476,7 +476,7 @@ var AnalysisInspector = Backbone.View.extend({
 	},
 
 	/**
-	 * Saves the Relative Intention Assignments from the 
+	 * Saves the Relative Intention Assignments from the
 	 * Absolute and Relative Assignments into the graph object
 	 */
 	saveRelativeIntentionAssignments: function() {
@@ -502,7 +502,7 @@ var AnalysisInspector = Backbone.View.extend({
 	},
 
 	/**
-	 * Saves the Absolute Intention Assignments from the 
+	 * Saves the Absolute Intention Assignments from the
 	 * Absolute and Relative Assignments to the graph object
 	 */
 	saveAbsoluteIntentionAssignments() {
@@ -523,7 +523,7 @@ var AnalysisInspector = Backbone.View.extend({
 	},
 
 	/**
-	 * Saves the Absolute Relationship Assignments from the 
+	 * Saves the Absolute Relationship Assignments from the
 	 * Absolute and Relative Assignments into the graph object
 	 */
 	saveAbsoluteRelationshipAssignments() {
@@ -563,7 +563,7 @@ var AnalysisInspector = Backbone.View.extend({
 	 * Save the intermediate table values into analysisRequest
 	 */
 	saveIntermTable: function(){
-		
+
 		// for each row of the table
 		$('.intention-row').each(function () {
 			// for each column of the current row
@@ -598,8 +598,8 @@ var AnalysisInspector = Backbone.View.extend({
 		graph.allElements = elements;
 		graph.elementsBeforeAnalysis = elements;
 	},
-	
-	
+
+
 	/**
 	 * This function is called on click .addIntention (the plus icon)
 	 */
@@ -651,6 +651,6 @@ var AnalysisInspector = Backbone.View.extend({
 			row.remove();
 		});
 	}
-	
+
 
 });
