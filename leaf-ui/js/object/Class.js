@@ -303,7 +303,7 @@ class EvolvingFunction {
      */
 	constructor(intentionID) {
 		this.intentionID = intentionID;
-		this.stringDynVis = null;
+		this.stringDynVis = 'NF';
 		this.functionSegList = [];
 	}
 

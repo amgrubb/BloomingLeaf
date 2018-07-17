@@ -85,7 +85,7 @@ var ElementInspector = Backbone.View.extend({
             '<div id="function-div">',
                 '<label>Function Type</label>',
                 '<select class="function-type">',
-                    '<option value=none> No Function </option>',
+                    '<option value=NF> No Function </option>',
                     '<option value=C> Constant </option>',
                     '<option value=R> Stochastic </option>',
                     '<option value=I> Increase </option>',
@@ -182,7 +182,6 @@ var ElementInspector = Backbone.View.extend({
 
         // Attributes
         this.chart = new ChartObj();
-        this.constraintsObject = new constraintsObject();
 
         // Genernate all available selection options based on selected function type
         this.satValueOptions = this.initializeSatValueOptions();
@@ -218,6 +217,8 @@ var ElementInspector = Backbone.View.extend({
             this.$('.function-type').val(functionType);
             this.renderUserDefined(cell);
         }
+
+        this.updateCell();
 
     },
 
@@ -373,7 +374,7 @@ var ElementInspector = Backbone.View.extend({
         var initValue = this.$('#init-sat-value').val();
         this.intention.changeInitialSatValue(satValueDict[initValue]);
         this.checkInitialSatValue();
-        this.updateCell(null);
+        // this.updateCell(null);
         this.updateHTML(event);
     },
 
@@ -387,7 +388,7 @@ var ElementInspector = Backbone.View.extend({
     funcTypeChanged: function(event) {
         var funcType = this.$('.function-type').val();
         this.intention.setEvolvingFunction(funcType);
-        this.updateCell(null);
+        // this.updateCell(null);
         this.updateHTML(event);
     },
 
@@ -531,7 +532,6 @@ var ElementInspector = Backbone.View.extend({
      */
     addUDFunctionValues: function(event) {
         var func = $(".user-function-type").last().val();
-        var index = this.constraintsObject.currentUserIndex;
 
         // If initially disabled, enable it for now
         if ($('.user-sat-value').last().prop('disabled')) {
@@ -562,11 +562,6 @@ var ElementInspector = Backbone.View.extend({
             case "C":
                 $(".user-sat-value").last().html(this.satValueOptions.all);
                 // Restrict input if it is the first constraint
-                if (index == 0) {
-                    $(".user-sat-value").last().val(this.$('#init-sat-value').val())
-                    $(".user-sat-value").last().prop('disabled', true);
-                    $(".user-sat-value").last().css("background-color","grey");
-                }
                 break;
             default:
                 break;
@@ -777,21 +772,15 @@ var ElementInspector = Backbone.View.extend({
         if (begin >= end) {
             $("#repeat-error").text("Repeated range must be chronological");
             $("#repeat-error").show("fast");
-            this.constraintsObject.repeatBegin = null;
-            this.constraintsObject.repeatEnd = null;
 
         } else if (nextChar == end) {
             $("#repeat-error").text("Repeated range must be at least two apart");
             $("#repeat-error").show("fast");
-            this.constraintsObject.repeatBegin = null;
-            this.constraintsObject.repeatEnd = null;
 
         } else {
 
             $("#repeat-error").hide();
             this.intention.dynamicFunction.setRepeatingFunction(begin, end);
-            this.constraintsObject.repeatBegin = begin;
-            this.constraintsObject.repeatEnd = end;
         }
         this.updateChartUserDefined(null);
 
@@ -811,7 +800,6 @@ var ElementInspector = Backbone.View.extend({
             $('#repeat-end2').val(2);
         }
         this.intention.dynamicFunction.setRepNum(repVal);
-        this.constraintsObject.repeat_count = repVal;
         this.updateChartUserDefined(null);
     },
 
@@ -827,7 +815,6 @@ var ElementInspector = Backbone.View.extend({
             $('#repeat-end3').val(0);
         }
         this.intention.dynamicFunction.setAbsoluteTime(absLength);
-        this.constraintsObject.absoluteLength = absLength;
         this.updateChartUserDefined(null);
     },
 
@@ -925,13 +912,6 @@ var ElementInspector = Backbone.View.extend({
         $('#init-sat-value').prop('disabled', '');
         $('#init-sat-value').css("background-color","");
 
-        this.constraintsObject.repeat_count = $("repeat-end2").val();
-        this.constraintsObject.absoluteLength = $("repeat-end3").val();
-        this.constraintsObject.beginLetter = ["0"];
-        this.constraintsObject.endLetter = ["A"];
-        this.constraintsObject.currentUserIndex = 0;
-        this.constraintsObject.userFunctions = ["C"];
-        this.constraintsObject.userValues = [$('#init-sat-value').val()];
         var html = this.userConstraintsHTML.clone();
         this.$('#all-user-constraints').html('');
         html.appendTo(this.$('#all-user-constraints'));
