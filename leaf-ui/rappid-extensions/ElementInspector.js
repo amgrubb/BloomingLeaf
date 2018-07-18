@@ -4,7 +4,7 @@ var alphaOnly = /[A-Z]/;
 
 // All valid initial value and function combination
 var validPair = {
-    "none": {
+    "NF": {
         "validInitValue": ["none", "satisfied", "partiallysatisfied", "denied", "partiallydenied", "(no value)"],
         "defaultValue": ["none"]
     },
@@ -206,16 +206,11 @@ var ElementInspector = Backbone.View.extend({
 
         // Load initial value for function type in the html select element
         var functionType = this.intention.dynamicFunction.stringDynVis;
-        if ((functionType == '') || (functionType == ' ') || (functionType == 'NB')) {
-            this.$('.function-type').val('none');
-            this.updateHTML(null);
-        } else if (functionType != 'UD') {
-            this.$('.function-type').val(functionType);
-            this.updateHTML(null);
+
+        if (functionType == 'UD') {
+            this.renderUserDefined();
         } else {
-            // loading user defined constraint
-            this.$('.function-type').val(functionType);
-            this.renderUserDefined(cell);
+            this.updateHTML(null);
         }
 
         this.updateCell();
@@ -232,12 +227,12 @@ var ElementInspector = Backbone.View.extend({
         if (this.intention.getInitialSatValue() == '(no value)') {
             // remove current options, add 3 options
             this.$('.function-type').empty();
-            this.$('.function-type').append('<option value=none> No Function </option>');
+            this.$('.function-type').append('<option value=NF> No Function </option>');
             this.$('.function-type').append('<option value=R> Stochastic </option>');
             this.$('.function-type').append('<option value=UD> User Defined </option>');
         } else {
             this.$('.function-type').empty();
-            this.$('.function-type').append('<option value=none> No Function </option>');
+            this.$('.function-type').append('<option value=NF> No Function </option>');
             this.$('.function-type').append('<option value=C> Constant </option>');
             this.$('.function-type').append('<option value=R> Stochastic </option>');
             this.$('.function-type').append('<option value=I> Increase </option>');
@@ -374,7 +369,7 @@ var ElementInspector = Backbone.View.extend({
         var initValue = this.$('#init-sat-value').val();
         this.intention.changeInitialSatValue(satValueDict[initValue]);
         this.checkInitialSatValue();
-        // this.updateCell(null);
+        this.updateCell(null);
         this.updateHTML(event);
     },
 
@@ -388,7 +383,7 @@ var ElementInspector = Backbone.View.extend({
     funcTypeChanged: function(event) {
         var funcType = this.$('.function-type').val();
         this.intention.setEvolvingFunction(funcType);
-        // this.updateCell(null);
+        this.updateCell(null);
         this.updateHTML(event);
     },
 
@@ -433,23 +428,27 @@ var ElementInspector = Backbone.View.extend({
         // Check if selected init sat value and functionType pair is illegal
         this.validityCheck(event);
 
-        var functionType = this.$('.function-type').val();
-        var initValue = this.$('#init-sat-value').val();
+        var functionType = this.intention.dynamicFunction.stringDynVis;
 
         // All functions that have satisfaction valuen associated with it
         var funcWithSatValue = ["I", "D", "RC", "MP", "MN", "UD"];
 
         // Disable init value menu if functype is NB
-        if (this.cell.attr('.funcvalue/text') == "NB") {
+        if (functionType == 'NB') {
             $('#init-sat-value').prop('disabled', true);
         }
 
-        if (functionType == 'UD') {
+        // Load initial value for function type in the html select element
+        if ((functionType == '') || (functionType == ' ') || (functionType == 'NB')) {
+            this.$('.function-type').val('NF');
+        } else if (functionType == 'UD') {
             // User defined function
+            this.$('.function-type').val(functionType);
             this.$('#markedValue').hide();
             this.$('#user-constraints').show("fast");
             this.addUDFunctionValues(null);
         } else {
+            this.$('.function-type').val(functionType);
             this.$('#user-constraints').hide();
             $('#init-sat-value').prop('disabled', false);
 

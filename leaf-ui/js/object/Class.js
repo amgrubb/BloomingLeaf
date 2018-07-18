@@ -728,7 +728,7 @@ class UserIntention {
         //     (this.dynamicFunction.stringDynVis == 'UD' && funcSegList[0].funcType == 'C')) {
         //     funcSegList[0].funcX = initValue;
         // }
-        this.dynamicFunction.stringDynVis = null;
+        this.dynamicFunction.stringDynVis = 'NF';
         this.dynamicFunction.functionSegList = [];
     }
 
