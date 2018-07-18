@@ -109,17 +109,34 @@ class Model {
 
     /**
      * Remove the intention with node ID nodeID
-     * from the intentions array
+     * from the intentions array and remove all constraints
+     * associated with that node
      *
      * @param {String} nodeID
      */
     removeIntention(nodeID) {
+
+        // remove the intention from the intentions array
     	for (var i = 0; i < this.intentions.length; i++) {
     		if (this.intentions[i].nodeID == nodeID) {
     			this.intentions.splice(i, 1);
-    			return;
+    			break;
     		}
     	}
+
+        // remove all constraints associated with the intention
+        var i = 0;
+        while (i < this.constraints.length) {
+            if (this.constraints[i].constraintSrcID === nodeID ||
+                this.constraints[i].constraintDestID === nodeID) {
+                this.constraints.splice(i, 1);
+            } else {
+                i++;
+            }
+        }
+
+
+
     }
 
     /**
