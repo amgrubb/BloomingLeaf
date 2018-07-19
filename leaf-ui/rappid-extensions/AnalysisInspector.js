@@ -420,7 +420,6 @@ var AnalysisInspector = Backbone.View.extend({
 		for (var i = 0; i < model.intentions.length; i++) {
 			var intention = model.intentions[i];
 			var initValue = intention.getInitialSatValue(); // ex, '0000'
-			var name = intention.nodeName;
 
 			// If user put no absolute time points
 			if ($.isEmptyObject(absTimeValues)) {
@@ -428,16 +427,41 @@ var AnalysisInspector = Backbone.View.extend({
 			} else {
 
 				// TODO, display previously saved options
-				var appendList = '<tr class="intention-row"><td>' + name + '</td><td>'+satisfactionValuesDict[initValue].satValue+'</td>';
+				var row = $('<tr></tr>');
+				row.addClass('intention-row');
+				var name = $('<td></td>');
+				var sat = $('<td></td>');
+
+				name.text(intention.nodeName);
+				sat.text('Denied');
+				row.append(name);
+				row.append(satisfactionValuesDict[initValue].satValue);
+
+				// var appendList = '<tr class="intention-row"><td>' + name + '</td><td>'+satisfactionValuesDict[initValue].satValue+'</td>';
 
 				for (j = 0; j < absTimeValues.length; j++) {
 
 					// Add select tags for each absolute time point
-					var selectTag = '<select id="evalID" nodeID = ' + intention.nodeID + ' absTime = '+ absTimeValues[j] +'>' + options + '</select>'
-					appendList += '<td>' + selectTag + '</td>';
+					var selectTd = $('<td></td>');
+					var selectElement = $('<select></select>');
+					selectElement.attr('nodeID', intention.nodeID);
+					selectElement.attr('absTime', absTimeValues[j]);
+					selectElement.append(options);
+
+					var intEval = analysisRequest.getIntentionEvaluationByID(intention.nodeID, absTimeValues[j]);
+
+					if (intEval != null) {
+						selectElement.val(intEval.evaluationValue);
+					}
+					
+					selectTd.append(selectElement);
+					row.append(selectTd);
+
+
+					// var selectTag = '<select id="evalID" nodeID = ' + intention.nodeID + ' absTime = '+ absTimeValues[j] +'>' + options + '</select>'
+					// appendList += '<td>' + selectTag + '</td>';
 				}
-				appendList += '</tr>';
-				$('#interm-list').append(appendList);
+				$('#interm-list').append(row);
 
 			}
 		}
@@ -497,7 +521,7 @@ var AnalysisInspector = Backbone.View.extend({
 	    	var constraint = new Constraint(type, nodeID1, epoch1, nodeID2, epoch2);
 
 	    	if (!model.existsConstraint(constraint)) {
-	    		model.constraints.push(new Constraint(type, nodeID1, epoch1, nodeID2, epoch2));
+	    		model.saveRelIntAssignment(type, nodeID1, epoch1, nodeID2, epoch2);
 	    	}
 	    });
 
@@ -539,7 +563,6 @@ var AnalysisInspector = Backbone.View.extend({
 			var linkID = row.attr('linkID');
 			var link = model.getLinkByID(linkID);
 			link.absoluteValue = newTime;
-
 		});
 	},
 
@@ -564,7 +587,11 @@ var AnalysisInspector = Backbone.View.extend({
 	/**
 	 * Save the intermediate table values into analysisRequest
 	 */
-	saveIntermTable: function(){
+	saveIntermTable: function() {
+
+		// Clear all intention evaluations with the exception
+		// of the evaluations on the initial time point
+		analysisRequest.clearIntentionEvaluations();
 
 		// for each row of the table
 		$('.intention-row').each(function () {

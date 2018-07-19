@@ -92,6 +92,29 @@ class Model {
     }
 
     /**
+     * 
+     */
+    saveRelIntAssignment(type, id1, epoch1, id2, epoch2) {
+        var constraint = null;
+        for (var i = 0; i < this.constraints.length; i++) {
+            var currConst = this.constraints[i];
+            if (currConst.constraintSrcID === id1 && 
+                currConst.constraintDestID === id2 &&
+                currConst.constraintSrcEB === epoch1 &&
+                currConst.constraintDestEB === epoch2) {
+                constraint = currConst;
+                break;
+            }
+        }
+
+        if (constraint != null) {
+            constraint.constraintType = type;
+        } else {
+            this.constraints.push(new Constraint(type, id1, epoch1, id2, epoch2));
+        }
+    }
+
+    /**
      * Remove the Constraint constraint from
      * the constraints array
      *
