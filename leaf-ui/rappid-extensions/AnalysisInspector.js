@@ -294,7 +294,7 @@ var AnalysisInspector = Backbone.View.extend({
 	},
 
 	changeAbsTimePts: function(event) {
- 	    var regex = new RegExp("^(([0-9])+\\s+)*[0-9]*$");
+ 	    var regex = new RegExp("^(([1-9]0*)+\\s+)*([1-9]+0*)*$");
 
         var absTime = $('#abs-time-pts');
 		if (regex.test(absTime.val())){
