@@ -698,6 +698,8 @@ var ElementInspector = Backbone.View.extend({
                     data1 = -2;
                 } else if (prevFunc === 'R' && currFunc === 'D') {
                     data1 = 2;
+                } else if (currFunc == 'R') {
+                    data1 = 0;
                 } else if (currFunc === 'C'){
                     data1 = data2;
                 } else {
