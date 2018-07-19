@@ -423,7 +423,7 @@ var AnalysisInspector = Backbone.View.extend({
 
 			// If user put no absolute time points
 			if ($.isEmptyObject(absTimeValues)) {
-				$('#interm-list').append('<tr><td>' + name + '</td><td>' + satisfactionValuesDict[initValue].satValue + '</td></tr>');
+				$('#interm-list').append('<tr><td>' + intention.nodeName + '</td><td>' + satisfactionValuesDict[initValue].satValue + '</td></tr>');
 			} else {
 
 				// TODO, display previously saved options
