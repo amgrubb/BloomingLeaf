@@ -92,7 +92,8 @@ class Model {
     }
 
     /**
-     * 
+     * Saves the relative intention assignment provided by 
+     * the parameters, into this object's constraints array
      */
     saveRelIntAssignment(type, id1, epoch1, id2, epoch2) {
         var constraint = null;

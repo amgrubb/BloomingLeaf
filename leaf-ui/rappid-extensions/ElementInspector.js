@@ -9,7 +9,7 @@ var validPair = {
         "defaultValue": ["none"]
     },
     "C":{
-        "validInitValue": ["none", "satisfied", "partiallysatisfied", "denied", "partiallydenied", "unknown"],
+        "validInitValue": ["none", "satisfied", "partiallysatisfied", "denied", "partiallydenied", "(no value)"],
         "defaultValue": ["none"]
     },
     "R":{
@@ -101,7 +101,6 @@ var ElementInspector = Backbone.View.extend({
                 '<select id="markedValue" class="function-sat-value">',
                     '<option value=satisfied> Satisfied </option>',
                     '<option value=partiallysatisfied> Partially Satisfied </option>',
-                    '<option value=unknown selected> Random/Stochastic </option>',
                     '<option value=partiallydenied> Partially Denied </option>',
                     '<option value=denied> Denied </option>',
                 '</select>',
@@ -120,7 +119,7 @@ var ElementInspector = Backbone.View.extend({
                                 '<option value=partiallysatisfied> Partially Satisfied (P, ⊥) </option>',
                                 '<option value=partiallydenied> Partially Denied (⊥, P)</option>',
                                 '<option value=denied> Denied (⊥, F)</option>',
-                                '<option value=unknown> Unknown </option>',
+                                '<option value="(no value)"> (no value) </option>',
                             '</select>',
                         '</div>',
                     '</div>',
@@ -274,7 +273,7 @@ var ElementInspector = Backbone.View.extend({
         var partiallysatisfied = '<option value=partiallysatisfied> Partially Satisfied (P, ⊥) </option>';
         var partiallydenied = '<option value=partiallydenied> Partially Denied (⊥, P) </option>';
         var denied = '<option value=denied> Denied (⊥, F) </option>';
-        var unknown = '<option value=unknown> Unknown </option>';
+        var unknown = '<option value="(no value)"> (no value) </option>';
         satValueOptions.all = none + satisfied + partiallysatisfied + partiallydenied + denied + unknown;
         satValueOptions.noRandom = satisfied + partiallysatisfied + partiallydenied + denied;
 
@@ -489,8 +488,8 @@ var ElementInspector = Backbone.View.extend({
             // change to default init value if functTypeChanged
             // change to none function if initValueChanged
             if ($.inArray(initValue, validPair[functionType]['validInitValue']) == -1) {
-                if (initValueChanged && initValue != "unknown"){this.$('.function-type').val('none');}
-                if (initValueChanged && initValue == "unknown"){this.$('.function-type').val('C');}
+                if (initValueChanged && initValue != "(no value)"){this.$('.function-type').val('none');}
+                if (initValueChanged && initValue == "(no value)"){this.$('.function-type').val('C');}
                 var newValue = validPair[functionType]['defaultValue'];
                 if (funcTypeChanged){this.$('#init-sat-value').val(newValue);}
 
@@ -553,7 +552,7 @@ var ElementInspector = Backbone.View.extend({
 
             case "R":
                 $(".user-sat-value").last().html(this.satValueOptions.all);
-                $(".user-sat-value").last().val("unknown")
+                $(".user-sat-value").last().val("(no value)")
                 $(".user-sat-value").last().prop('disabled', true);
                 $(".user-sat-value").last().css("background-color",'grey');
                 break;
@@ -561,6 +560,12 @@ var ElementInspector = Backbone.View.extend({
             case "C":
                 $(".user-sat-value").last().html(this.satValueOptions.all);
                 // Restrict input if it is the first constraint
+                if (this.intention.dynamicFunction.getFuncSegmentIterable().length == 1) {
+                    $(".user-sat-value").last().val(this.$('#init-sat-value').val())
+                    $(".user-sat-value").last().prop('disabled', true);
+                    $(".user-sat-value").last().css("background-color","grey");
+                }
+
                 break;
             default:
                 break;
@@ -675,9 +680,10 @@ var ElementInspector = Backbone.View.extend({
 
         for (var i = 0; i < funcSegments.length; i++) {
             var currFunc = funcSegments[i].funcType;
+            var currVal = funcSegments[i].funcX;
             var coloured = funcSegments[i].isRepeat;
             var data1; // first data point for this segment
-            var data2 = satisfactionValuesDict[funcSegments[i].funcX].chartVal;
+            var data2 = satisfactionValuesDict[currVal].chartVal;
             if (i === 0) {
                 if (currFunc !== 'R') {
                     data1 = initSatVal;
@@ -687,7 +693,7 @@ var ElementInspector = Backbone.View.extend({
             } else {
                 // If previous function is stochastic, set the starting point to be either FD or FS
                 var prevFunc = funcSegments[i - 1].funcType;
-                var prefVal = funcSegments[i - 1].funcX;
+                var prevVal = funcSegments[i - 1].funcX;
                 if (prevFunc === 'R' && currFunc === 'I') {
                     data1 = -2;
                 } else if (prevFunc === 'R' && currFunc === 'D') {
@@ -696,10 +702,10 @@ var ElementInspector = Backbone.View.extend({
                     data1 = data2;
                 } else {
                     // set to previous function's marked value
-                    data1 = satisfactionValuesDict[prefVal].chartVal;
+                    data1 = satisfactionValuesDict[prevVal].chartVal;
                 }
             }
-            this.chart.addDataSet(i, [data1, data2], currFunc === 'R', coloured);
+            this.chart.addDataSet(i, [data1, data2], currFunc === 'R' || currVal === '(no value)', coloured);
         }
 
         this.chart.display(context);
