@@ -23,7 +23,7 @@ var LinkInspector = Backbone.View.extend({
             '<option value="++D">++D</option>',
             '<option value="-D">-D</option>',
             '<option value="--D">--D</option>',
-            '<option value="NBT">Not Both (None)</option>',
+            '<option value="NBN">Not Both (None)</option>',
             '<option value="NBD">Not Both (Denied)</option>',
         '</select>',
         '<h5 id="repeat-error" class="inspector-error"></h5>',
@@ -138,7 +138,7 @@ var LinkInspector = Backbone.View.extend({
         this.cell.prop("link-type", relationshipVal);
 
         // store the new text into the link
-        if (['NBT', 'NBD', 'and', 'or'].includes(this.cell.prop('link-type'))) {
+        if (['NBN', 'NBD', 'and', 'or'].includes(this.cell.prop('link-type'))) {
             this.cell.label(0 ,{position: 0.5, attrs: {text: {text: relationshipVal}}});
         } else {
             this.cell.label(0 ,{position: 0.5, attrs: {text: {text: relationshipText}}});
@@ -149,7 +149,7 @@ var LinkInspector = Backbone.View.extend({
         this.link.postType = null;
 
         // Adding or removing tags from node depending on type of link
-        if (this.cell.prop("link-type") == 'NBT' || this.cell.prop("link-type") == 'NBD') {
+        if (this.cell.prop("link-type") == 'NBN' || this.cell.prop("link-type") == 'NBD') {
             source.attr(".funcvalue/text", "NB");
             source.attr(".satvalue/text", "");
             source.attr(".satvalue/value", "");
@@ -179,19 +179,19 @@ var LinkInspector = Backbone.View.extend({
     },
 
     /**
-     * Returns true iff the node is a source or target to an NBT or NBD
+     * Returns true iff the node is a source or target to an NBN or NBD
      * link, other than the link provided as a parameter.
      *
      * @param {joint.dia.Element} node
      *   node of interest
      * @param {joint.dia.Link} link
-     *   link to 'ignore', when searching for a NBT or NBD
+     *   link to 'ignore', when searching for a NBN or NBD
      *   link connected to node
      */
     hasNBLink: function(node, link) {
         var localLinks = graph.getLinks();
         for(var i = 0; i < localLinks.length; i++) {
-            if ((localLinks[i]!=link) && (localLinks[i].prop("link-type") == 'NBT' || localLinks[i].prop("link-type") == 'NBD')){
+            if ((localLinks[i]!=link) && (localLinks[i].prop("link-type") == 'NBN' || localLinks[i].prop("link-type") == 'NBD')){
                 if(localLinks[i].getTargetElement() == node || localLinks[i].getSourceElement() == node){
                     return true;
                 }
@@ -316,7 +316,7 @@ var LinkInspector = Backbone.View.extend({
         };
 
         var relationConst = {
-                "NBT": "Not Both (None)",
+                "NBN": "Not Both (None)",
                 "NBD": "Not Both (Denied)"
         };
 
