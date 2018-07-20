@@ -183,7 +183,6 @@ stencil.load([goal, task, sgoal, res, act]);
 $('.inspector').append(linkInspector.el);
 
 // Interface set up for modelling mode on startup
-$('#dropdown-model').css("display","none");
 $('#history').css("display","none");
 
 // Initialize Slider setup
