@@ -22,7 +22,7 @@ function backendComm(jsObject){
 				}else{
 					executeJava(false);
 				}
-		    }, 500);  
+		    }, 500);
 		}
 	})	.fail(function(){
 		msg = "Ops! Something went wrong.";
@@ -39,7 +39,7 @@ function executeJava(isGetNextSteps){
 		success: function(response){
 		    setTimeout(function(){
 				getFileResults(isGetNextSteps);
-		    }, 500);  
+		    }, 500);
 		}
 	})
 	.fail(function(){
@@ -58,9 +58,9 @@ function getFileResults(isGetNextSteps){
 		type: "get",
 		success: function(response){
 			results = JSON.parse(response['data']);
-			
+
 			if (errorExists(results)) {
-				var msg = getErrorMessage(analysisResults.errorMessage);	
+				var msg = getErrorMessage(results.errorMessage);
 				alert(msg);
 			} else {
 				/**
@@ -127,7 +127,7 @@ function errorExists(analysisResults) {
  * user-defined node names instead of node ids.
  *
  * Example message:
- * The model is not solvable because of conflicting constraints 
+ * The model is not solvable because of conflicting constraints
  * involving nodes: mouse, keyboard, and pizza.
  *
  * @param {String} backendErrorMsg
@@ -135,7 +135,7 @@ function errorExists(analysisResults) {
  * @returns {boolean}
  */
 function getErrorMessage(backendErrorMsg) {
-	
+
 	// If node ids does not exist, just return the original error message for now
 	if (!nodeIDsExists(backendErrorMsg)) {
 		return backendErrorMsg;
@@ -148,10 +148,10 @@ function getErrorMessage(backendErrorMsg) {
 		names.push(getNodeName(ids[i]));
 		actorNames.push(getParentActorNameById(ids[i]));
 	}
-	
+
 	var s = 'The model is not solvable because of conflicting constraints involving nodes (with associated actors): ';
 	var numOfNames = names.length;
-	
+
 	for (var i = 0; i < numOfNames - 1; i++) {
 		s += names[i] + ' (' + actorNames[i] + ')';
 		if (i < numOfNames - 2) {
@@ -171,7 +171,7 @@ function getErrorMessage(backendErrorMsg) {
  * that embeds an element with element id id.
  * If element with element id id is not embedded within an actor
  * returns 'no actor'.
- * 
+ *
  * @param {String} id
  *   element id for the element of interest
  * @returns {String}
@@ -181,16 +181,16 @@ function getParentActorNameById(id) {
 	if (actor) {
 		return actor.attributes.attrs['.name'].text;
 	}
-	return 'no actor';	
+	return 'no actor';
 }
 
 /*
  * Returns the actor which embeds the element of interest.
- * Returns null if there is no actor that embeds the element. 
+ * Returns null if there is no actor that embeds the element.
  * (If an actor embeds an element, the actor is the element's parent)
  *
  * @param {dia.Element} element
- * @returns {dia.Element | null} 
+ * @returns {dia.Element | null}
  */
 function getParentActor(element) {
 	// get call the ancestors for the element
@@ -198,14 +198,14 @@ function getParentActor(element) {
 	if (ancestors.length == 0) {
 		return null;
 	}
-	// if there is an ancestor, there would only be one 
+	// if there is an ancestor, there would only be one
 	return ancestors[0];
 }
 
 /*
  * Returns the element with element id id.
  * Returns null if no element with that element id exists.
- * 
+ *
  * @param {String} id
  *   element id of the element of interest
  * @returns {dia.Element | null}
@@ -231,7 +231,7 @@ function nodeIDsExists(msg) {
 }
 
 /*
- * Returns an array of all node ids that are mentioned in 
+ * Returns an array of all node ids that are mentioned in
  * the backendErrorMsg, in the order they appear.
  *
  * @param {String} backendErrorMsg
