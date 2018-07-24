@@ -4,9 +4,9 @@ public class InputConstraint{
 	private String constraintType;
 	private String constraintSrcID;
 	private String constraintSrcEB;
-	private int absoluteValue = -1;
 	private String constraintDestID;
 	private String constraintDestEB;
+	private int absoluteValue;
 	
 	public String getConstraintType() {
 		return constraintType;

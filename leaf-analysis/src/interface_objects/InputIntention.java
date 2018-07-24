@@ -5,6 +5,7 @@ public class InputIntention{
 	private String nodeID;
 	private String nodeType;
 	private String nodeName;
+	private EvolvingFunction dynamicFunction;
 	
 	public String getNodeActorID() {
 		return nodeActorID;

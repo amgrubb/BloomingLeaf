@@ -1,5 +1,6 @@
 package interface_objects;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -10,13 +11,15 @@ import java.util.List;
  */
 public class InputAnalysis {
 	private String action;
-	private String currentState;
-	private String[] initialAssignedEpoch;
-	private String[] initialValueTimePoints;
-	private String maxAbsTime;
 	private String conflictLevel;
 	private String numRelTime;
 	private String absTimePts;
+	private ArrayList<String> absTimePtsArr;
+	private String currentState;
+	private IntentionEvaluation[] userAssignmentsList;
+	private AnalysisResult previousAnalysis;
+
+
 	private List<IOIntention> elementList;
 	
 	public String getAction() {
@@ -33,14 +36,6 @@ public class InputAnalysis {
 
 	public void setCurrentState(String currentState) {
 		this.currentState = currentState;
-	}
-
-	public String getMaxAbsTime() {
-		return maxAbsTime;
-	}
-	
-	public void setMaxAbsTime(String maxAbsTime) {
-		this.maxAbsTime = maxAbsTime;
 	}
 	
 	public String getConflictLevel() {
@@ -67,21 +62,6 @@ public class InputAnalysis {
 		this.absTimePts = absTimePts;
 	}
 
-	public String[] getInitialAssignedEpoch() {
-		return initialAssignedEpoch;
-	}
-
-	public void setInitialAssignedEpoch(String[] initialAssignedEpoch) {
-		this.initialAssignedEpoch = initialAssignedEpoch;
-	}
-
-	public String[] getInitialValueTimePoints() {
-		return initialValueTimePoints;
-	}
-
-	public void setInitialValueTimePoints(String[] initialValueTimePoints) {
-		this.initialValueTimePoints = initialValueTimePoints;
-	}
 
 	public List<IOIntention> getElementList() {
 		return elementList;
@@ -89,6 +69,10 @@ public class InputAnalysis {
 
 	public void setElementList(List<IOIntention> elementList) {
 		this.elementList = elementList;
+	}
+
+	public IntentionEvaluation[] getUserAssignmentsList() {
+		return this.userAssignmentsList;
 	}
 	
 }
