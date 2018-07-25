@@ -38,4 +38,8 @@ public class InputIntention{
 	public void setNodeType(String nodeType) {
 		this.nodeType = nodeType;
 	}
+
+	public EvolvingFunction getDynamicFunction() {
+		return this.dynamicFunction;
+	}
 }

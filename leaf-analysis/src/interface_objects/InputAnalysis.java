@@ -19,8 +19,6 @@ public class InputAnalysis {
 	private IntentionEvaluation[] userAssignmentsList;
 	private AnalysisResult previousAnalysis;
 
-
-	private List<IOIntention> elementList;
 	
 	public String getAction() {
 		return action;
@@ -62,17 +60,40 @@ public class InputAnalysis {
 		this.absTimePts = absTimePts;
 	}
 
-
-	public List<IOIntention> getElementList() {
-		return elementList;
-	}
-
-	public void setElementList(List<IOIntention> elementList) {
-		this.elementList = elementList;
-	}
-
 	public IntentionEvaluation[] getUserAssignmentsList() {
 		return this.userAssignmentsList;
+	}
+
+	public int[] getAbsTimePtsArr() {
+		int[] arr = new int[this.absTimePtsArr.size()];
+		for (int i = 0; i < this.absTimePtsArr.size(); i++) {
+			arr[i] = Integer.parseInt(this.absTimePtsArr.get(i));
+		}
+		return arr;
+	}
+
+	public ArrayList<IntentionEvaluation> getInitialIntentionEvaluations() {
+		ArrayList<IntentionEvaluation> res = new ArrayList<IntentionEvaluation>();
+		for (IntentionEvaluation curr: userAssignmentsList) {
+			if (curr.getAbsTime().equals("0")) {
+				res.add(curr);
+			}
+		}
+		return res;
+	}
+
+	public ArrayList<IntentionEvaluation> getNonInitialIntentionEvaluations() {
+		ArrayList<IntentionEvaluation> res = new ArrayList<IntentionEvaluation>();
+		for (IntentionEvaluation curr: userAssignmentsList) {
+			if (!curr.getAbsTime().equals("0")) {
+				res.add(curr);
+			}
+		}
+		return res;
+	}
+
+	public AnalysisResult getPreviousAnalysis() {
+		return this.previousAnalysis;
 	}
 	
 }

@@ -1,6 +1,7 @@
 package interface_objects;
 
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by davidkwon on 2018-07-23.
@@ -10,7 +11,7 @@ public class AnalysisResult {
     private String[] assignedEpoch;
     private String[] timePointPath;
     private int timePointPathSize;
-    private HashMap<String, HashMap<String, String>> values;
+    private List<IOIntention> values;
 
     public String[] getAssignedEpoch() {
         return assignedEpoch;
@@ -24,7 +25,7 @@ public class AnalysisResult {
         return timePointPathSize;
     }
 
-    public HashMap<String, HashMap<String, String>> getValues() {
+    public List<IOIntention> getValues() {
         return values;
     }
 

@@ -8,4 +8,20 @@ public class FuncSegment implements FuncWrapper {
     private String funcX;
     private String funcStart;
     private String funcStop;
+
+    public String getFuncType() {
+        return funcType;
+    }
+
+    public String getFuncX() {
+        return funcX;
+    }
+
+    public String getFuncStart() {
+        return funcStart;
+    }
+
+    public String getFuncStop() {
+        return funcStop;
+    }
 }

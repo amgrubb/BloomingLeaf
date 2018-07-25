@@ -13,7 +13,7 @@ public class InputModel {
 	private List<InputIntention> intentions;
 	private List<InputLink> links;
 	private List<InputConstraint> constraints;
-	private int maxAbsTime;
+	private String maxAbsTime;
 
 	public List<InputActor> getActors() {
 		return actors;
@@ -47,7 +47,7 @@ public class InputModel {
 		this.constraints = constraints;
 	}
 
-	public int getMaxAbsTime() {
+	public String getMaxAbsTime() {
 		return this.maxAbsTime;
 	}
 	
