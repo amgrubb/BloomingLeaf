@@ -122,6 +122,7 @@ public class ModelSpecBuilder {
 						initialValues[Integer.parseInt(curr.getIntentionID())][0][i] = (evalValue.charAt(i) == '1');
 					}
 				}
+				modelSpec.setInitialValues(initialValues);
 			}
 			if (DEBUG) System.out.println("Handled Previous Result");
 

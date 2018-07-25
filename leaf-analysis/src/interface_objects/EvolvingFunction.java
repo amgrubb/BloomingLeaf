@@ -34,7 +34,8 @@ public class EvolvingFunction {
         if (stringDynVis.equals("CR")) {
             return ((FuncSegment)functionSegList.get(0)).getFuncX();
         }
-        return ((FuncSegment)functionSegList.get(1)).getFuncX();
+        int len = functionSegList.size();
+        return ((FuncSegment)functionSegList.get(len - 1)).getFuncX();
     }
 
 
