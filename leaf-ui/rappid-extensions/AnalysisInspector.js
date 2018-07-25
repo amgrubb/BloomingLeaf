@@ -164,11 +164,10 @@ var AnalysisInspector = Backbone.View.extend({
 	singlePath: function() {
 		//Create the object and fill the JSON file to be sent to backend.
 		//Get the AnalysisInspector view information
-		var analysis = new InputAnalysis("singlePath");
 		analysisRequest.action = "singlePath";
 
 		//Prepare and send data to backend
-		this.sendToBackend(analysis);
+		this.sendToBackend();
 	},
 
 	/**
@@ -180,11 +179,10 @@ var AnalysisInspector = Backbone.View.extend({
 	getAllNextStates: function() {
 		//Create the object and fill the JSON file to be sent to backend.
 		//Get the AnalysisInspector view information
-		var analysis = new InputAnalysis("allNextStates");
 		analysisRequest.action = "getAllNextStates";
 
 		//Prepare and send data to backend
-		this.sendToBackend(analysis);
+		this.sendToBackend();
 	},
 
 	/**
@@ -194,21 +192,15 @@ var AnalysisInspector = Backbone.View.extend({
 	 * @param {Object} analysis
 	 *   InputAnalysis() object
 	 */
-	sendToBackend: function(analysis){
+	sendToBackend: function(){
 
 		// Object to be sent to the backend
 		var jsObject = {};
-		jsObject.analysis = analysis;
+		jsObject.analysisRequest = analysisRequest;
 
 		//Get the Graph Model
-		jsObject.model = getFrontendModel(false);
-
-		this.saveElementsInGraphVariable();
-
-		if(jsObject.model == null) {
-			return null;
-		}
-
+		jsObject.model = model;
+		console.log(jsObject);
 		//Send data to backend
 		backendComm(jsObject);
 	},
@@ -613,21 +605,6 @@ var AnalysisInspector = Backbone.View.extend({
 
 		this.dismissIntermTable();
 	},
-
-	/**
-	 * Save elements in the respective graph attributes
-	 */
-	saveElementsInGraphVariable: function(){
-		var elements = [];
-		for (var i = 0; i < graph.getElements().length; i++){
-			if (!(graph.getElements()[i] instanceof joint.shapes.basic.Actor)){
-				elements.push(graph.getElements()[i]);
-			}
-		}
-		graph.allElements = elements;
-		graph.elementsBeforeAnalysis = elements;
-	},
-
 
 	/**
 	 * This function is called on click .addIntention (the plus icon)
