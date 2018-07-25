@@ -314,6 +314,7 @@ var ElementInspector = Backbone.View.extend({
      */
     renderUserDefined: function(cell){
         this.$('#markedValue').hide();
+        $(".function-type").val('UD');
 
         // Load the user defined constraints
         var len = this.intention.getNumOfFuncSegements();

@@ -613,8 +613,8 @@ class EvolvingFunction {
     getEndRepeatEpoch() {
         for (var i = 0; i < this.functionSegList.length; i++) {
             if (this.functionSegList[i] instanceof RepFuncSegment) {
-                var len = this.functionSegList[i].functionSegList.modellength;
-                return this.functionSegList[i].functionSegList[len - 1].funcEnd;
+                var len = this.functionSegList[i].functionSegList.length;
+                return this.functionSegList[i].functionSegList[len - 1].funcStop;
             }
         }
     }
