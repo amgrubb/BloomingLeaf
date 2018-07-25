@@ -74,14 +74,31 @@ var LinkInspector = Backbone.View.extend({
                 this.evolvingRelations = true;
                 this.$el.html(_.template(this.evolvingtemplate)());
                 this.setSelectValues('#link-type-begin', 'Evolving');
-                $('#link-type-begin').val(this.link.linkType).change();
+
+                if (['AND', 'OR', 'NO'].includes(this.link.linkType)) {
+                    $('#link-type-begin').val(this.link.linkType.toLowerCase()).change();
+                } else {
+                    $('#link-type-begin').val(this.link.linkType).change();
+                }
+                
                 this.updateBeginEvolRelations();
-                $('#link-type-end').val(this.link.postType);
+
+                if (['AND', 'OR', 'NO'].includes(this.link.linkType)) {
+                    $('#link-type-end').val(this.link.postType.toLowerCase());
+                } else {
+                    $('#link-type-end').val(this.link.postType);
+                }
+                
 
             } else {
                 this.evolvingRelations = false;
                 this.$el.html(_.template(this.template)());
-                $('#constant-links').val(this.link.linkType);
+                if (['AND', 'OR', 'NO'].includes(this.link.linkType)) {
+                    $('#constant-links').val(this.link.linkType.toLowerCase());
+                } else {
+                    $('#constant-links').val(this.link.linkType);
+                }
+                
             }
         }
 
@@ -145,7 +162,7 @@ var LinkInspector = Backbone.View.extend({
         }
 
         // 
-        this.link.linkType = relationshipVal;
+        this.link.linkType = relationshipVal.toUpperCase();
         this.link.postType = null;
 
         // Adding or removing tags from node depending on type of link
@@ -243,8 +260,8 @@ var LinkInspector = Backbone.View.extend({
             this.cell.label(0 ,{position: 0.5, attrs: {text: {text: begin + " | " + end}}});
             
             // save into link object
-            this.link.linkType = begin;
-            this.link.postType = 'no';
+            this.link.linkType = begin.toUpperCase();
+            this.link.postType = 'NO';
 
             $("#repeat-error").text("Saved!");
             $("#repeat-error").css("color", "lightgreen");
