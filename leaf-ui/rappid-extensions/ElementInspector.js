@@ -713,13 +713,21 @@ var ElementInspector = Backbone.View.extend({
 
         // update html display for additional user inputs
         var html = this.userConstraintsHTML.clone();
-
         this.intention.addUserDefinedSeg("C", "0000");
 
         $(".user-sat-value").last().prop('disabled', true);
         $(".user-sat-value").last().css("background-color",'grey');
         $(".user-function-type").last().prop('disabled', true);
         $(".user-function-type").last().css("background-color", 'grey');
+
+        // If the initial value is (no value), limit the function options
+        // to be either Constant or Stochastic
+        if (this.intention.getInitialSatValue() == '(no value)') {
+            var selectEl = html.children(":first");
+            selectEl.find('option').remove();
+            selectEl.append('<option value=C> Constant </option>');
+            selectEl.append('<option value=R> Stochastic</option>');
+        }
 
         html.appendTo(this.$('#all-user-constraints'));
 
