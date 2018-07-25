@@ -3,7 +3,7 @@ class Model {
     /**
      * Attributes:
      * {Array.<Actor>} actors
-     * {Array.<UserIntention>} intentions
+     * {Array.<Intention>} intentions
      * {Array.<Link>} links
      * {Array.<Constraint>} constraints
      * {String} maxAbsTime
@@ -17,13 +17,13 @@ class Model {
     }
 
     /**
-     * Returns the UserIntention with node ID
+     * Returns the Intention with node ID
      * nodeID
      *
      * @param {String} nodeID
-     * @returns {UserIntention}
+     * @returns {Intention}
      */
-    getUserIntentionByID(nodeID) {
+    getIntentionByID(nodeID) {
     	for (var i = 0; i < this.intentions.length; i++) {
     		if (this.intentions[i].nodeID == nodeID) {
     			return this.intentions[i];
@@ -720,7 +720,7 @@ class IntentionEvaluation {
 	}
 }
 
-class UserIntention {
+class Intention {
 
     /**
      * @param {String} nodeActorID
@@ -750,8 +750,8 @@ class UserIntention {
     }
 
     /**
-     * Changes the initial satisfaction value for this UserIntention
-     * to initValue and clears the this UserIntention's EvolvingFunction's
+     * Changes the initial satisfaction value for this Intention
+     * to initValue and clears the this Intention's EvolvingFunction's
      * functionSegmentList
      *
      * @param {String} initValue
@@ -779,8 +779,8 @@ class UserIntention {
      * @returns {String}
      */
     createID() {
-        var id = UserIntention.numOfCreatedInstances.toString();
-        UserIntention.numOfCreatedInstances += 1;
+        var id = Intention.numOfCreatedInstances.toString();
+        Intention.numOfCreatedInstances += 1;
         while (id.length < 4){
                 id = '0' + id;
         }
@@ -789,7 +789,7 @@ class UserIntention {
 
     /**
      * Returns the 4 digit representation for this
-     * UserIntention's initial satisfaction value
+     * Intention's initial satisfaction value
      *
      * @returns {String}
      */
@@ -800,7 +800,7 @@ class UserIntention {
 
     /**
      * Returns the number of function segments for this
-     * UserIntention
+     * Intention
      *
      * @returns {Number}
      */
@@ -809,7 +809,7 @@ class UserIntention {
     }
 
     /**
-     * Clears all FuncSegments for this UserIntention's
+     * Clears all FuncSegments for this Intention's
      * EvolvingFunction and adds new FuncSegments according to the current
      * function type.
      */
@@ -889,7 +889,7 @@ class UserIntention {
 
 
     /**
-     * Returns the absolute time for this UserIntention's absolute constraint at
+     * Returns the absolute time for this Intention's absolute constraint at
      * the starting epoch boundary start
      *
      * @param {String} source
@@ -900,7 +900,7 @@ class UserIntention {
     }
 
     /**
-     * Removes the absolute Constraint object(s) for this UserIntention from
+     * Removes the absolute Constraint object(s) for this Intention from
      * the global model variable, if such absolute Constraint object(s) exists
      */
     removeAbsCosnt() {
@@ -942,7 +942,7 @@ class UserIntention {
     }
     /**
      * Sets the marked value for the FuncSegments in the
-     * EvolvingFunction for this UserIntention
+     * EvolvingFunction for this Intention
      *
      * This function will only be called for I, D, RC, MP, MN functions
      */
@@ -959,7 +959,7 @@ class UserIntention {
 
     /**
      * Sets the function type and marked value for the
-     * last FuncSegment for this UserIntention's EvolvingFunction
+     * last FuncSegment for this Intention's EvolvingFunction
      *
      * @param {String} funcValue
      */
@@ -1004,7 +1004,7 @@ class UserIntention {
         }
     }
 }
-UserIntention.numOfCreatedInstances = 0; // static variable to keep track of number of instances
+Intention.numOfCreatedInstances = 0; // static variable to keep track of number of instances
 
 class AnalysisRequest {
 

@@ -157,8 +157,8 @@ var LinkInspector = Backbone.View.extend({
             target.attr(".satvalue/text", "");
             target.attr(".satvalue/value", "");
 
-            var sourceIntention = model.getUserIntentionByID(source.attributes.nodeID).dynamicFunction;
-            var targetIntention = model.getUserIntentionByID(target.attributes.nodeID).dynamicFunction;
+            var sourceIntention = model.getIntentionByID(source.attributes.nodeID).dynamicFunction;
+            var targetIntention = model.getIntentionByID(target.attributes.nodeID).dynamicFunction;
 
             sourceIntention.stringDynVis = 'NB';
             sourceIntention.functionSegList = [];

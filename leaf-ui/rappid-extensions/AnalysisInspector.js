@@ -254,8 +254,8 @@ var AnalysisInspector = Backbone.View.extend({
 				continue;
 			}
 
-			var sourceName = model.getUserIntentionByID(sourceID).nodeName;
-			var targetName = model.getUserIntentionByID(targetID).nodeName;
+			var sourceName = model.getIntentionByID(sourceID).nodeName;
+			var targetName = model.getIntentionByID(targetID).nodeName;
 
 
 			if (link.linkType == 'NBD' || link.linkType == 'NBT' || link.isEvolvingRelationship()) {

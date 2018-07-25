@@ -260,19 +260,19 @@ function createLink(cell) {
 }
 
 /**
- * Creates an instance of a UserIntention object and saves it in the
+ * Creates an instance of a Intention object and saves it in the
  * global model variable
  *
  * @param {joint.dia.Cell} cell
  */
 function createIntention(cell) {
 
-    var name = cell.attr(".name/text") + "_" + UserIntention.numOfCreatedInstances;
+    var name = cell.attr(".name/text") + "_" + Intention.numOfCreatedInstances;
     cell.attr(".name/text", name);
 
     // create intention object
     var type = cell.attributes.type;
-    var intention = new UserIntention('-', type, name);
+    var intention = new Intention('-', type, name);
     model.intentions.push(intention);
 
     // create intention evaluation object
@@ -287,7 +287,7 @@ function createIntention(cell) {
 
     	clearInspector();
 
-    	var userIntention = model.getUserIntentionByID(cell.attributes.nodeID);
+    	var userIntention = model.getIntentionByID(cell.attributes.nodeID);
 
     	// remove this intention from the model
         model.removeIntention(userIntention.nodeID);
@@ -551,7 +551,7 @@ function embedBasicActor(cell) {
 					actorCell.embed(cell);
 					var nodeID = cell.attributes.nodeID;
 					var actorID = actorCell.attributes.nodeID
-					model.getUserIntentionByID(nodeID).nodeActorID = actorID;
+					model.getIntentionByID(nodeID).nodeActorID = actorID;
 					model.getActorByID(actorID).intentionIDs.push(nodeID);
 				}
 			}

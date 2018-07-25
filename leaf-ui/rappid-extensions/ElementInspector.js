@@ -173,9 +173,9 @@ var ElementInspector = Backbone.View.extend({
 
         this.cell = cell; // Save the clicked node's backbone model
 
-        // Save the UserIntention object from the global model variable to
+        // Save the Intention object from the global model variable to
         // this.intention
-        this.intention = model.getUserIntentionByID(this.cell.attributes.nodeID);
+        this.intention = model.getIntentionByID(this.cell.attributes.nodeID);
 
         this.$el.html(_.template(this.template)());
 
@@ -373,7 +373,7 @@ var ElementInspector = Backbone.View.extend({
     },
 
     /**
-     * Clears all FuncSegments for this intention's UserIntention object's
+     * Clears all FuncSegments for this intention's Intention object's
      * EvolvingFunction and adds new FuncSegments according to the current
      * function type.
      *
@@ -387,7 +387,7 @@ var ElementInspector = Backbone.View.extend({
     },
 
     /**
-     * Updates the FuncSegment for this intention's UserIntention object's
+     * Updates the FuncSegment for this intention's Intention object's
      * with the correct marked value and function type
      * This function is called on change for .user-function-type
      */
