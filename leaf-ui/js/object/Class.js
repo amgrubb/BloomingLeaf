@@ -344,7 +344,7 @@ class EvolvingFunction {
      */
 	constructor(intentionID) {
 		this.intentionID = intentionID;
-		this.stringDynVis = 'NF';
+		this.stringDynVis = 'NT';
 		this.functionSegList = [];
 	}
 
@@ -781,7 +781,7 @@ class Intention {
         //     (this.dynamicFunction.stringDynVis == 'UD' && funcSegList[0].funcType == 'C')) {
         //     funcSegList[0].funcX = initValue;
         // }
-        this.dynamicFunction.stringDynVis = 'NF';
+        this.dynamicFunction.stringDynVis = 'NT';
         this.dynamicFunction.functionSegList = [];
     }
 

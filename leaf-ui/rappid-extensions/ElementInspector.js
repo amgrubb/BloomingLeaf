@@ -4,7 +4,7 @@ var alphaOnly = /[A-Z]/;
 
 // All valid initial value and function combination
 var validPair = {
-    "NF": {
+    "NT": {
         "validInitValue": ["none", "satisfied", "partiallysatisfied", "denied", "partiallydenied", "(no value)"],
         "defaultValue": ["none"]
     },
@@ -85,7 +85,7 @@ var ElementInspector = Backbone.View.extend({
             '<div id="function-div">',
                 '<label>Function Type</label>',
                 '<select class="function-type">',
-                    '<option value=NF> No Function </option>',
+                    '<option value=NT> No Function </option>',
                     '<option value=C> Constant </option>',
                     '<option value=R> Stochastic </option>',
                     '<option value=I> Increase </option>',
@@ -226,12 +226,12 @@ var ElementInspector = Backbone.View.extend({
         if (this.intention.getInitialSatValue() == '(no value)') {
             // remove current options, add 3 options
             this.$('.function-type').empty();
-            this.$('.function-type').append('<option value=NF> No Function </option>');
+            this.$('.function-type').append('<option value=NT> No Function </option>');
             this.$('.function-type').append('<option value=R> Stochastic </option>');
             this.$('.function-type').append('<option value=UD> User Defined </option>');
         } else {
             this.$('.function-type').empty();
-            this.$('.function-type').append('<option value=NF> No Function </option>');
+            this.$('.function-type').append('<option value=NT> No Function </option>');
             this.$('.function-type').append('<option value=C> Constant </option>');
             this.$('.function-type').append('<option value=R> Stochastic </option>');
             this.$('.function-type').append('<option value=I> Increase </option>');
@@ -440,7 +440,7 @@ var ElementInspector = Backbone.View.extend({
 
         // Load initial value for function type in the html select element
         if ((functionType == '') || (functionType == ' ') || (functionType == 'NB')) {
-            this.$('.function-type').val('NF');
+            this.$('.function-type').val('NT');
         } else if (functionType == 'UD') {
             // User defined function
             this.$('.function-type').val(functionType);
@@ -929,7 +929,12 @@ var ElementInspector = Backbone.View.extend({
         var funcType = this.intention.dynamicFunction.stringDynVis;
         var initSatVal = this.intention.getInitialSatValue();
 
-        this.cell.attr(".funcvalue/text", funcType);
+        if (funcType == 'NT') {
+            this.cell.attr(".funcvalue/text", '');
+        } else {
+            this.cell.attr(".funcvalue/text", funcType);
+        }
+        
         this.cell.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
     },
 
