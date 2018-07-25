@@ -537,41 +537,30 @@ var ElementInspector = Backbone.View.extend({
             $('.user-sat-value').last().prop('disabled', false);
             $('.user-sat-value').last().css('background-color','');
         }
-
-        // Load available satisfaction values for user defined constraint type
-        switch (func) {
-            case "I":
-                // May get last value of the graph in the future
-                $(".user-sat-value").last().html(this.satValueOptions.positiveOnly('partiallysatisfied'));
+        
+        if (func == 'I' || func == 'D') {
+            var prevVal = satisfactionValuesDict[this.intention.dynamicFunction.getSecondLastMarkedVal()].name;
+            if (func == 'I') {
+                $(".user-sat-value").last().html(this.satValueOptions.positiveOnly(prevVal));
                 $(".user-sat-value").last().val("satisfied");
-                break;
-
-            case "D":
-                $(".user-sat-value").last().html(this.satValueOptions.negativeOnly('partiallydenied'));
+            } else {
+                $(".user-sat-value").last().html(this.satValueOptions.negativeOnly(prevVal));
                 $(".user-sat-value").last().val("denied");
-                break;
-
-            case "R":
-                $(".user-sat-value").last().html(this.satValueOptions.all);
-                $(".user-sat-value").last().val("(no value)")
+            }
+        } else if (func == 'R') {
+            $(".user-sat-value").last().html(this.satValueOptions.all);
+            $(".user-sat-value").last().val("(no value)")
+            $(".user-sat-value").last().prop('disabled', true);
+            $(".user-sat-value").last().css("background-color",'grey');
+        } else if (func == 'C') {
+            $(".user-sat-value").last().html(this.satValueOptions.all);
+            // Restrict input if it is the first constraint
+            if (this.intention.dynamicFunction.getFuncSegmentIterable().length == 1) {
+                $(".user-sat-value").last().val(this.$('#init-sat-value').val())
                 $(".user-sat-value").last().prop('disabled', true);
-                $(".user-sat-value").last().css("background-color",'grey');
-                break;
-
-            case "C":
-                $(".user-sat-value").last().html(this.satValueOptions.all);
-                // Restrict input if it is the first constraint
-                if (this.intention.dynamicFunction.getFuncSegmentIterable().length == 1) {
-                    $(".user-sat-value").last().val(this.$('#init-sat-value').val())
-                    $(".user-sat-value").last().prop('disabled', true);
-                    $(".user-sat-value").last().css("background-color","grey");
-                }
-
-                break;
-            default:
-                break;
+                $(".user-sat-value").last().css("background-color","grey");
+            }
         }
-        return;
     },
 
     /**

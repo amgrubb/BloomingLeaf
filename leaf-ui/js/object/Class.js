@@ -373,6 +373,18 @@ class EvolvingFunction {
     }
 
     /**
+     * Returns the 4 digit representation for this
+     * EvolvingFunction's second last function segment's
+     * satisfaction value
+     */
+    getSecondLastMarkedVal() {
+        var len = this.functionSegList.length;
+        if (len > 1) {
+            return this.functionSegList[len - 2].funcX;
+        }
+    }
+
+    /**
      * Returns the funcStop value for the last
      * function segment for this EvolvingFunction
      * Returns null if functionSegList is empty
