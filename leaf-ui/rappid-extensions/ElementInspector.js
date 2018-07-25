@@ -360,7 +360,7 @@ var ElementInspector = Backbone.View.extend({
     },
 
     /**
-     * Saves the initial satisfaction value into the IntentionEvaluation
+     * Saves the initial satisfaction value into the UserEvaluation
      * corresponding to this intention.
      *
      * This function is called on change for #init-sat-value,

@@ -440,7 +440,7 @@ var AnalysisInspector = Backbone.View.extend({
 					selectElement.attr('absTime', absTimeValues[j]);
 					selectElement.append(options);
 
-					var intEval = analysisRequest.getIntentionEvaluationByID(intention.nodeID, absTimeValues[j]);
+					var intEval = analysisRequest.getUserEvaluationByID(intention.nodeID, absTimeValues[j]);
 
 					if (intEval != null) {
 						selectElement.val(intEval.evaluationValue);
@@ -583,7 +583,7 @@ var AnalysisInspector = Backbone.View.extend({
 
 		// Clear all intention evaluations with the exception
 		// of the evaluations on the initial time point
-		analysisRequest.clearIntentionEvaluations();
+		analysisRequest.clearUserEvaluations();
 
 		// for each row of the table
 		$('.intention-row').each(function () {
@@ -597,7 +597,7 @@ var AnalysisInspector = Backbone.View.extend({
 					return;
 				}
 
-				analysisRequest.userAssignmentsList.push(new IntentionEvaluation(nodeID, absTime, evalLabel));
+				analysisRequest.userAssignmentsList.push(new UserEvaluation(nodeID, absTime, evalLabel));
 
 			});
 		});

@@ -276,7 +276,7 @@ function createIntention(cell) {
     model.intentions.push(intention);
 
     // create intention evaluation object
-    var intentionEval = new IntentionEvaluation(intention.nodeID, '0', '(no value)');
+    var intentionEval = new UserEvaluation(intention.nodeID, '0', '(no value)');
     analysisRequest.userAssignmentsList.push(intentionEval);
 
     cell.attributes.nodeID = intention.nodeID;

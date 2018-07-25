@@ -717,7 +717,7 @@ class Constraint {
 	}
 }
 
-class IntentionEvaluation {
+class UserEvaluation {
 
     /**
 	 *
@@ -769,7 +769,7 @@ class Intention {
      * @param {String} initValue
      */
     changeInitialSatValue(initValue) {
-        var intentionEval = analysisRequest.getIntentionEvaluationByID(this.nodeID, '0');
+        var intentionEval = analysisRequest.getUserEvaluationByID(this.nodeID, '0');
         intentionEval.evaluationValue = initValue;
 
         // if there is only one function segment, and its constant, then we need to
@@ -806,7 +806,7 @@ class Intention {
      * @returns {String}
      */
     getInitialSatValue() {
-        var intentionEval = analysisRequest.getIntentionEvaluationByID(this.nodeID, '0');
+        var intentionEval = analysisRequest.getUserEvaluationByID(this.nodeID, '0');
         return intentionEval.evaluationValue;
     }
 
@@ -835,7 +835,7 @@ class Intention {
         // Add new absolute constraints if required
         this.addAbsConst(funcType);
 
-        var initValue = analysisRequest.getIntentionEvaluationByID(this.nodeID, '0').evaluationValue;
+        var initValue = analysisRequest.getUserEvaluationByID(this.nodeID, '0').evaluationValue;
 
         if (funcType == 'C' || funcType == 'R' || funcType == 'I' || funcType == 'D' || funcType == 'UD') {
             if (funcType == 'C') {
@@ -870,12 +870,12 @@ class Intention {
                 // Constant and Constant
                 var seg1 = new FuncSegment('C', '0011', '0', 'A');
                 var seg2 = new FuncSegment('C', '1100', 'A', 'Infinity');
-                analysisRequest.getIntentionEvaluationByID(this.nodeID, "0").evaluationValue = '0011';
+                analysisRequest.getUserEvaluationByID(this.nodeID, "0").evaluationValue = '0011';
             } else if (funcType == 'DS') {
                 // Constant and Constant
                 var seg1 = new FuncSegment('C', '1100', '0', 'A');
                 var seg2 = new FuncSegment('C', '0011', 'A', 'Infinity');
-                analysisRequest.getIntentionEvaluationByID(this.nodeID, "0").evaluationValue = '1100';
+                analysisRequest.getUserEvaluationByID(this.nodeID, "0").evaluationValue = '1100';
             }
             this.dynamicFunction.functionSegList.push(seg1, seg2);
         }
@@ -1027,7 +1027,7 @@ class AnalysisRequest {
      * @param {String} numRelTime
      * @param {String} absTimePts
      * @param {String} currentState
-     * @param {Array.<IntentionEvaluation>} userAssignmentsList
+     * @param {Array.<UserEvaluation>} userAssignmentsList
      * @param {AnalysisResult} previousAnalysis
      */
 	constructor() {
@@ -1042,18 +1042,18 @@ class AnalysisRequest {
     }
 
     /**
-     * Returns the IntentionEvaluation object
+     * Returns the UserEvaluation object
      * with node id nodeID with absolute time point
-     * absTime. If the desired IntentionEvaluation does
+     * absTime. If the desired UserEvaluation does
      * not exist, returns null.
      *
      * @param {String} nodeID
      *  ID of the intention
      * @param {String} absTime
      *  The desired absolute time
-     * @returns {IntentionEvaluation | null}
+     * @returns {UserEvaluation | null}
      */
-    getIntentionEvaluationByID(nodeID, absTime) {
+    getUserEvaluationByID(nodeID, absTime) {
         for (var i = 0; i < this.userAssignmentsList.length; i++) {
             if (this.userAssignmentsList[i].intentionID == nodeID &&
                 this.userAssignmentsList[i].absTime == absTime) {
@@ -1070,7 +1070,7 @@ class AnalysisRequest {
 	changeTimePoints(newTimePts){
 		 var intersection = this.absTimePtsArr.filter(x => newTimePts.includes(x));
 		 if (intersection.length == 0){
-			 this.clearIntentionEvaluations();
+			 this.clearUserEvaluations();
 			 this.absTimePtsArr = newTimePts;
 			 return
 		 }
@@ -1090,10 +1090,10 @@ class AnalysisRequest {
 	}
 
     /**
-     * Deletes all IntentionEvaluations in this.userAssignmentsList
-     * with the exception of the initial IntentionEvaluations
+     * Deletes all UserEvaluations in this.userAssignmentsList
+     * with the exception of the initial UserEvaluations
      */
-    clearIntentionEvaluations() {
+    clearUserEvaluations() {
         var i = 0;
         while (i < this.userAssignmentsList.length) {
             if (this.userAssignmentsList[i].absTime !== '0') {
@@ -1106,7 +1106,7 @@ class AnalysisRequest {
 
 
 	/**
-	 * Removes all IntentionEvaluation objects in
+	 * Removes all UserEvaluation objects in
 	 * userAssignmentsList, with an intentionID equal to
 	 * nodeID
 	 *
