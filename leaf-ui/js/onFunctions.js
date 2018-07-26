@@ -11,12 +11,12 @@ $('#analysis-btn').on('click', function() {
     var cycle;
    	jsLinks = getLinks();
    	cycle = cycleCheck(jsLinks, getElementList());
-	
+
 	syntaxCheck();
 
     // If there are no cycles then switch view to Analysis
     if (!cycle) {
-		switchToAnalysisMode(); 
+		switchToAnalysisMode();
     }
 
     // If there are cycles, then display error message. Otherwise, remove any "red" elements.
@@ -28,7 +28,7 @@ $('#analysis-btn').on('click', function() {
  * Helper function for switching to Analysis view.
  */
 function switchToAnalysisMode() {
-	
+
 	// Clear the right panel
 	clearInspector();
 
@@ -310,7 +310,7 @@ function createIntention(cell) {
 /**
  * Creates an instance of an Actor object and saves it in the
  * global model variable
- * 
+ *
  * @param {joint.dia.Cell} cell
  */
 function createActor(cell) {
@@ -388,10 +388,10 @@ paper.on('blank:pointerdown', function(evt, x, y) {
 });
 
 /**
- * 
+ *
  */
 paper.on('cell:pointerdown', function(cellView, evt, x, y) {
-	
+
 	if(mode == "Analysis"){
 		return;
 	}
@@ -404,6 +404,11 @@ paper.on('cell:pointerdown', function(cellView, evt, x, y) {
 	// Unembed cell so you can move it out of actor
 	if (cell.get('parent') && !(cell instanceof joint.dia.Link)) {
 		graph.getCell(cell.get('parent')).unembed(cell);
+    var intention = model.getIntentionByID(cell.attributes.nodeID);
+    var actor = model.getActorByID(intention.nodeActorID);
+    intention.nodeActorID = "-";
+    var index = actor.intentionIDs.indexOf(intention.nodeID);
+    actor.intentionIDs.splice(index, 1);
 	}
 });
 
@@ -497,7 +502,7 @@ function removeHighlight(elements){
 
 /**
  * Function for single click on cell
- * 
+ *
  */
 paper.on('cell:pointerup', function(cellView, evt) {
 	if(mode == "Modelling") {
@@ -623,13 +628,12 @@ function checkForMultipleNB(node) {
 	var localLinks = graph.getLinks();
 
 	for (var i = 0; i < localLinks.length; i++){
-        if (localLinks[i].prop("link-type") == 'NBT' || localLinks[i].prop("link-type") == 'NBD'){
+        if (localLinks[i].prop("lin k-type") == 'NBT' || localLinks[i].prop("link-type") == 'NBD'){
             if (localLinks[i].getSourceElement().prop("id") == node["id"] || localLinks[i].getTargetElement().prop("id") == node["id"]){
-                num += 1;            
+                num += 1;
             }
         }
 	}
 
 	return num >= 1;
 }
-
