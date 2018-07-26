@@ -12,19 +12,8 @@ public class InputModel {
 	private List<InputActor> actors;
 	private List<InputIntention> intentions;
 	private List<InputLink> links;
-	private List<InputDynamic> dynamics;
 	private List<InputConstraint> constraints;
-	private List<InputEvaluation> userEvaluations;
-	
-	
-	
-	public List<InputEvaluation> getUserEvaluations() {
-		return userEvaluations;
-	}
-
-	public void setUserEvaluations(List<InputEvaluation> userEvaluations) {
-		this.userEvaluations = userEvaluations;
-	}
+	private String maxAbsTime;
 
 	public List<InputActor> getActors() {
 		return actors;
@@ -49,14 +38,6 @@ public class InputModel {
 	public void setLinks(List<InputLink> links) {
 		this.links = links;
 	}
-	
-	public List<InputDynamic> getDynamics() {
-		return dynamics;
-	}
-	
-	public void setDynamics(List<InputDynamic> dynamics) {
-		this.dynamics = dynamics;
-	}
 
 	public List<InputConstraint> getConstraints() {
 		return constraints;
@@ -64,6 +45,10 @@ public class InputModel {
 
 	public void setConstraints(List<InputConstraint> constraints) {
 		this.constraints = constraints;
+	}
+
+	public String getMaxAbsTime() {
+		return this.maxAbsTime;
 	}
 	
 		

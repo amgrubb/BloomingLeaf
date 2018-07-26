@@ -7,6 +7,8 @@ import java.io.PrintWriter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import interface_objects.FuncWrapper;
+import interface_objects.FuncWrapperDeserializer;
 import interface_objects.InputObject;
 import interface_objects.OutputModel;
 
@@ -77,7 +79,7 @@ public class SolveModel {
 
 	/**
 	 * This method converts the Output object with the analyzed data into a json object file to be sent to frontend.
-	 * @param TroposCSPAlgorithm
+	 * @param solver
 	 * The solver object that contains all necessary data.
 	 * @param filePath
 	 * Name of the file to be read by CGI to be sent to frontend
@@ -111,12 +113,17 @@ public class SolveModel {
 	 * ModelSpecPojo backend model
 	 */
 	private static ModelSpec convertModelFromFile(String filePath) {
-		try{
-		Gson gson = new Gson();		
-		InputObject frontendObject = gson.fromJson(new FileReader(filePath), InputObject.class);
-		ModelSpec modelSpec =  ModelSpecBuilder.buildModelSpec(frontendObject);
-		return modelSpec;
-		}catch(Exception e){
+
+		GsonBuilder builder = new GsonBuilder();
+		builder.registerTypeAdapter(FuncWrapper.class, new FuncWrapperDeserializer());
+
+		try {
+			Gson gson = builder.create();
+
+			InputObject frontendObject = gson.fromJson(new FileReader(filePath), InputObject.class);
+			ModelSpec modelSpec =  ModelSpecBuilder.buildModelSpec(frontendObject);
+			return modelSpec;
+		} catch(Exception e) {
 			throw new RuntimeException("Error in convertModelFromFile() method: /n" + e.getMessage());
 		}
 	}

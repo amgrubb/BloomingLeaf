@@ -3,6 +3,8 @@
  */
 package simulation;
 
+import interface_objects.InputIntention;
+
 /**
  * @author A.M.Grubb
  *
@@ -52,10 +54,10 @@ public class IntentionalElement extends LinkableElement {
 		return cspUDFunct;
 	}
 
-	public void setUserDefinedDynamicType(String inputLine, int maxEpoch) {
+	public void setUserDefinedDynamicType(InputIntention intention) {
 		this.userDefinedDynamicType = true;
 		this.dynamicType = IntentionalElementDynamicType.UD;
-		this.cspUDFunct = new UDFunctionCSP(inputLine);
+		this.cspUDFunct = new UDFunctionCSP(intention);
 	}
 	
 	public void setDynamicType(IntentionalElementDynamicType dynamicType) {

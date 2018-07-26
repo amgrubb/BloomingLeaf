@@ -1,5 +1,6 @@
 package interface_objects;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -10,14 +11,14 @@ import java.util.List;
  */
 public class InputAnalysis {
 	private String action;
-	private String currentState;
-	private String[] initialAssignedEpoch;
-	private String[] initialValueTimePoints;
-	private String maxAbsTime;
 	private String conflictLevel;
 	private String numRelTime;
 	private String absTimePts;
-	private List<IOIntention> elementList;
+	private ArrayList<String> absTimePtsArr;
+	private String currentState;
+	private IntentionEvaluation[] userAssignmentsList;
+	private AnalysisResult previousAnalysis;
+
 	
 	public String getAction() {
 		return action;
@@ -33,14 +34,6 @@ public class InputAnalysis {
 
 	public void setCurrentState(String currentState) {
 		this.currentState = currentState;
-	}
-
-	public String getMaxAbsTime() {
-		return maxAbsTime;
-	}
-	
-	public void setMaxAbsTime(String maxAbsTime) {
-		this.maxAbsTime = maxAbsTime;
 	}
 	
 	public String getConflictLevel() {
@@ -67,28 +60,40 @@ public class InputAnalysis {
 		this.absTimePts = absTimePts;
 	}
 
-	public String[] getInitialAssignedEpoch() {
-		return initialAssignedEpoch;
+	public IntentionEvaluation[] getUserAssignmentsList() {
+		return this.userAssignmentsList;
 	}
 
-	public void setInitialAssignedEpoch(String[] initialAssignedEpoch) {
-		this.initialAssignedEpoch = initialAssignedEpoch;
+	public int[] getAbsTimePtsArr() {
+		int[] arr = new int[this.absTimePtsArr.size()];
+		for (int i = 0; i < this.absTimePtsArr.size(); i++) {
+			arr[i] = Integer.parseInt(this.absTimePtsArr.get(i));
+		}
+		return arr;
 	}
 
-	public String[] getInitialValueTimePoints() {
-		return initialValueTimePoints;
+	public ArrayList<IntentionEvaluation> getInitialIntentionEvaluations() {
+		ArrayList<IntentionEvaluation> res = new ArrayList<IntentionEvaluation>();
+		for (IntentionEvaluation curr: userAssignmentsList) {
+			if (curr.getAbsTime().equals("0")) {
+				res.add(curr);
+			}
+		}
+		return res;
 	}
 
-	public void setInitialValueTimePoints(String[] initialValueTimePoints) {
-		this.initialValueTimePoints = initialValueTimePoints;
+	public ArrayList<IntentionEvaluation> getNonInitialIntentionEvaluations() {
+		ArrayList<IntentionEvaluation> res = new ArrayList<IntentionEvaluation>();
+		for (IntentionEvaluation curr: userAssignmentsList) {
+			if (!curr.getAbsTime().equals("0")) {
+				res.add(curr);
+			}
+		}
+		return res;
 	}
 
-	public List<IOIntention> getElementList() {
-		return elementList;
-	}
-
-	public void setElementList(List<IOIntention> elementList) {
-		this.elementList = elementList;
+	public AnalysisResult getPreviousAnalysis() {
+		return this.previousAnalysis;
 	}
 	
 }

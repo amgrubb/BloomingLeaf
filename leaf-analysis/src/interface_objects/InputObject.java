@@ -10,15 +10,15 @@ package interface_objects;
  */
 public class InputObject {
 	
-	InputAnalysis analysis = new InputAnalysis();
+	InputAnalysis analysisRequest = new InputAnalysis();
 	InputModel model = new InputModel();
 	
 	public InputAnalysis getAnalysis() {
-		return analysis;
+		return analysisRequest;
 	}
 	
 	public void setAnalysis(InputAnalysis analysis) {
-		this.analysis = analysis;
+		this.analysisRequest = analysis;
 	}
 	
 	public InputModel getModel() {

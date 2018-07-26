@@ -7,10 +7,9 @@ public class OutputModel {
 
 	private List<OutputElement> elementList = new ArrayList<>();
 	private List<IOStateModel> allSolution = new ArrayList<>();
-	private List<String> finalAssignedEpoch = new ArrayList<>();
-	private List<String> finalValueTimePoints = new ArrayList<>();	
-	private int relativeTimePoints;
-    private int[] absoluteTimePoints;
+	private List<String> assignedEpoch = new ArrayList<>();
+	private List<String> timePointPath = new ArrayList<>();
+	private int timePointPathSize;
 	
 	public void setElementList(List<OutputElement> elementList) {
 		this.elementList = elementList;
@@ -20,37 +19,22 @@ public class OutputModel {
 		return this.elementList;
 	}
 
-	public List<String> getFinalAssignedEpoch() {
-		return finalAssignedEpoch;
+	public List<String> getAssignedEpoch() {
+		return assignedEpoch;
 	}
 
-	public void setFinalAssignedEpoch(List<String> finalAssignedEpoch) {
-		this.finalAssignedEpoch = finalAssignedEpoch;
+	public void setAssignedEpoch(List<String> assignedEpoch) {
+		this.assignedEpoch = assignedEpoch;
 	}
 
-	public List<String> getFinalValueTimePoints() {
-		return finalValueTimePoints;
+	public List<String> getTimePointPath() {
+		return timePointPath;
 	}
 
-	public void setFinalValueTimePoints(List<String> finalValueTimePoints) {
-		this.finalValueTimePoints = finalValueTimePoints;
+	public void setTimePointPath(List<String> timePointPath) {
+		this.timePointPath = timePointPath;
 	}
 
-	public int getRelativeTimePoints() {
-		return relativeTimePoints;
-	}
-
-	public void setRelativeTimePoints(int relativeTimePoints) {
-		this.relativeTimePoints = relativeTimePoints;
-	}
-
-	public int[] getAbsoluteTimePoints() {
-		return absoluteTimePoints;
-	}
-
-	public void setAbsoluteTimePoints(int[] absoluteTimePoints) {
-		this.absoluteTimePoints = absoluteTimePoints;
-	}
 
 	public List<IOStateModel> getAllSolution() {
 		return allSolution;

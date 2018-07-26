@@ -1962,7 +1962,7 @@ public class TroposCSPAlgorithm {
 //			int[] finalValueTimePoints = new int[indexOrder.length];
 //	    	for (int i = 0; i < indexOrder.length; i++)
 //	    		finalValueTimePoints[i] = this.timePoints[indexOrder[i]].value();
-//	   		this.spec.setFinalValueTimePoints(finalValueTimePoints);
+//	   		this.spec.setTimePointPath(finalValueTimePoints);
 
 			int totalSolution = label.getSolutionListener().solutionsNo();
 
