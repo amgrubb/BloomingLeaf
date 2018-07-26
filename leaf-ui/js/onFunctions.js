@@ -406,11 +406,7 @@ paper.on('cell:pointerdown', function(cellView, evt, x, y) {
 		graph.getCell(cell.get('parent')).unembed(cell);
     var intention = model.getIntentionByID(cell.attributes.nodeID);
     var actor = model.getActorByID(intention.nodeActorID);
-<<<<<<< HEAD
     intention.nodeActorID = "-";
-=======
-    intention.nodeActorID = "";
->>>>>>> e113a09ac1b89443950e19571d3f93fdbaa70554
     var index = actor.intentionIDs.indexOf(intention.nodeID);
     actor.intentionIDs.splice(index, 1);
 	}
