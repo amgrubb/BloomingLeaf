@@ -86,44 +86,22 @@ public class ModelSpecBuilder {
 				}
 				modelSpec.setInitialValueTimePoints(initialValueTimePointsArray);
 
-				//Getting initial Values of all selected states
-				List<IOIntention> elementList = prevResult.getValues();
-
-				boolean[][][] initialValues = new boolean[elementList.size()][currentState+1][4];
-
-				for(int i_state = 0; i_state <= currentState; i_state++){
-
-					for(IOIntention intElement : elementList){
-						String[] values = intElement.getStatus();
-						// TODO check if values[0] was intended here
-						if(values[0]!=null){
-							for(int i = 0; i < 4; i++){
-								initialValues[Integer.parseInt(intElement.getId())][i_state][i] = values[0].charAt(i)=='1';
-							}
-						}else{
-							System.err.println("Invalid initial value in ModelSpecBuilder.");
-							initialValues[Integer.parseInt(intElement.getId())][i_state][0] = false;
-							initialValues[Integer.parseInt(intElement.getId())][i_state][1] = false;
-							initialValues[Integer.parseInt(intElement.getId())][i_state][2] = false;
-							initialValues[Integer.parseInt(intElement.getId())][i_state][3] = false;
-						}
-					}
-				}
-
-				modelSpec.setInitialValues(initialValues);
-			} else {
-				// If this was the first analysis
-				ArrayList<IntentionEvaluation> initUserAssign = analysis.getInitialIntentionEvaluations();
-				boolean[][][] initialValues = new boolean[initUserAssign.size()][1][4];
-				for (IntentionEvaluation curr: initUserAssign) {
-
-					String evalValue = curr.getEvaluationValue();
-					for (int i = 0; i < 4; i++) {
-						initialValues[Integer.parseInt(curr.getIntentionID())][0][i] = (evalValue.charAt(i) == '1');
-					}
-				}
-				modelSpec.setInitialValues(initialValues);
 			}
+			// Set initial satisfaction values
+			// If this was the first analysis
+			ArrayList<IntentionEvaluation> initUserAssign = analysis.getInitialIntentionEvaluations();
+			boolean[][][] initialValues = new boolean[initUserAssign.size()][1][4];
+			for (IntentionEvaluation curr: initUserAssign) {
+
+				String evalValue = curr.getEvaluationValue();
+
+				// The line below is an example of issue #156
+				// If intitialValues.length is 1 and Integer.parseInt(curr.getIntentionID()) is 3, this raises an error
+				initialValues[Integer.parseInt(curr.getIntentionID())][0] = getEvaluationArray(evalValue);
+
+			}
+			modelSpec.setInitialValues(initialValues);
+
 			if (DEBUG) System.out.println("Handled Previous Result");
 
 
@@ -162,13 +140,11 @@ public class ModelSpecBuilder {
 					if (dynamicType.equals("UD")) {
 						element.setUserDefinedDynamicType(intention);
 					} else {
-						boolean[] dynamicFuncMarkedVal = new boolean[4];
-						char[] values = dynamic.getMarkedValue().toCharArray();
 
-						for (int i = 0; i < 4; i++) {
-							dynamicFuncMarkedVal[i] = (values[i] == '1');
-						}
+						boolean[] dynamicFuncMarkedVal;
 
+						String evalValue = dynamic.getMarkedValue();
+						dynamicFuncMarkedVal = getEvaluationArray(evalValue);
 						element.setDynamicFunctionMarkedValue(dynamicFuncMarkedVal);
 					}
 
@@ -398,11 +374,7 @@ public class ModelSpecBuilder {
 							src = tmp;
 					}
 
-					boolean[] values = new boolean[4];
-
-					for (int i = 0; i < 4; i++) {
-						values[i] = (evalValue.charAt(i) == '1');
-					}
+					boolean[] values = getEvaluationArray(evalValue);
 
 					modelSpec.getUserEvaluations().add(new UserEvaluation(src, absTime, values));
 				}
@@ -410,13 +382,38 @@ public class ModelSpecBuilder {
 			}
 			if (DEBUG) System.out.println("Read User Evaluations");
 
-
-
 		} catch (Exception e) {
 			throw new RuntimeException(e.getMessage());
 		}
 
 		return modelSpec;
+
+	}
+
+	/**
+	 * Returns the evaluation array which is an array of length 4 which represents
+	 * the evalValue
+	 * @param evalValue
+	 * evalValue of interest
+	 * @return
+	 * returns the evaluation array
+	 */
+	public static boolean[] getEvaluationArray(String evalValue) {
+		// This function was created as a temporary fix to issue #155
+		// The evalValue variable is an evaluation label for an intention.
+		// If the evaluation label is not a 4 digit binary string, for now, this will be
+		// considered to be equivalent to the evaluation label: "0000".
+		// ie, evaluation array will be an array of length 4, containing all false values.
+
+		if (evalValue.matches("[01]+") && evalValue.length() == 4) {
+			boolean[] res = new boolean[4];
+			for (int i = 0; i < 4; i++) {
+				res[i] = (evalValue.charAt(i) == '1');
+			}
+			return res;
+		} else {
+			return new boolean[] {false, false, false, false};
+		}
 
 	}
 

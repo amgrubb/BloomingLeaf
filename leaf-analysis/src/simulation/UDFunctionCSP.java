@@ -54,7 +54,7 @@ public class UDFunctionCSP {
 
 				for (int j = 0; j < 4; j++) {
 					String value = seg.getFuncX();
-					dynamicValues[i][j] = (value.charAt(j) == '1');
+					dynamicValues[i] = ModelSpecBuilder.getEvaluationArray(value);
 				}
 
 			}
