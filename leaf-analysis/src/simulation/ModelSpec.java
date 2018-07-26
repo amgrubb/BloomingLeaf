@@ -292,18 +292,16 @@ public class ModelSpec {
 			for (Map.Entry<String,Integer> entry : getFinalAssignedEpochs().entrySet()) {
 				String key = entry.getKey();
 				Integer value = entry.getValue();
-				output.getFinalAssignedEpoch().add(key+"_"+value);
+				output.getAssignedEpoch().add(key+"_"+value);
 			}
 		}
 
 		if(getFinalValueTimePoints() != null){
 			for(int a = 0; a < getFinalValueTimePoints().length; a++){
-				output.getFinalValueTimePoints().add(Integer.toString(getFinalValueTimePoints()[a]));	   			
+				output.getTimePointPath().add(Integer.toString(getFinalValueTimePoints()[a]));
 			}	
 		}
-		
-		output.setRelativeTimePoints(getRelativeTimePoints());
-		output.setAbsoluteTimePoints(getAbsoluteTimePoints());
+
 
 		return output;
 

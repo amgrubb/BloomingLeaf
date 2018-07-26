@@ -4,7 +4,7 @@ var alphaOnly = /[A-Z]/;
 
 // All valid initial value and function combination
 var validPair = {
-    "NF": {
+    "NT": {
         "validInitValue": ["none", "satisfied", "partiallysatisfied", "denied", "partiallydenied", "(no value)"],
         "defaultValue": ["none"]
     },
@@ -85,7 +85,7 @@ var ElementInspector = Backbone.View.extend({
             '<div id="function-div">',
                 '<label>Function Type</label>',
                 '<select class="function-type">',
-                    '<option value=NF> No Function </option>',
+                    '<option value=NT> No Function </option>',
                     '<option value=C> Constant </option>',
                     '<option value=R> Stochastic </option>',
                     '<option value=I> Increase </option>',
@@ -173,9 +173,9 @@ var ElementInspector = Backbone.View.extend({
 
         this.cell = cell; // Save the clicked node's backbone model
 
-        // Save the UserIntention object from the global model variable to
+        // Save the Intention object from the global model variable to
         // this.intention
-        this.intention = model.getUserIntentionByID(this.cell.attributes.nodeID);
+        this.intention = model.getIntentionByID(this.cell.attributes.nodeID);
 
         this.$el.html(_.template(this.template)());
 
@@ -226,12 +226,12 @@ var ElementInspector = Backbone.View.extend({
         if (this.intention.getInitialSatValue() == '(no value)') {
             // remove current options, add 3 options
             this.$('.function-type').empty();
-            this.$('.function-type').append('<option value=NF> No Function </option>');
+            this.$('.function-type').append('<option value=NT> No Function </option>');
             this.$('.function-type').append('<option value=R> Stochastic </option>');
             this.$('.function-type').append('<option value=UD> User Defined </option>');
         } else {
             this.$('.function-type').empty();
-            this.$('.function-type').append('<option value=NF> No Function </option>');
+            this.$('.function-type').append('<option value=NT> No Function </option>');
             this.$('.function-type').append('<option value=C> Constant </option>');
             this.$('.function-type').append('<option value=R> Stochastic </option>');
             this.$('.function-type').append('<option value=I> Increase </option>');
@@ -314,6 +314,7 @@ var ElementInspector = Backbone.View.extend({
      */
     renderUserDefined: function(cell){
         this.$('#markedValue').hide();
+        $(".function-type").val('UD');
 
         // Load the user defined constraints
         var len = this.intention.getNumOfFuncSegements();
@@ -359,7 +360,7 @@ var ElementInspector = Backbone.View.extend({
     },
 
     /**
-     * Saves the initial satisfaction value into the IntentionEvaluation
+     * Saves the initial satisfaction value into the UserEvaluation
      * corresponding to this intention.
      *
      * This function is called on change for #init-sat-value,
@@ -373,7 +374,7 @@ var ElementInspector = Backbone.View.extend({
     },
 
     /**
-     * Clears all FuncSegments for this intention's UserIntention object's
+     * Clears all FuncSegments for this intention's Intention object's
      * EvolvingFunction and adds new FuncSegments according to the current
      * function type.
      *
@@ -387,7 +388,7 @@ var ElementInspector = Backbone.View.extend({
     },
 
     /**
-     * Updates the FuncSegment for this intention's UserIntention object's
+     * Updates the FuncSegment for this intention's Intention object's
      * with the correct marked value and function type
      * This function is called on change for .user-function-type
      */
@@ -439,7 +440,7 @@ var ElementInspector = Backbone.View.extend({
 
         // Load initial value for function type in the html select element
         if ((functionType == '') || (functionType == ' ') || (functionType == 'NB')) {
-            this.$('.function-type').val('NF');
+            this.$('.function-type').val('NT');
         } else if (functionType == 'UD') {
             // User defined function
             this.$('.function-type').val(functionType);
@@ -536,41 +537,30 @@ var ElementInspector = Backbone.View.extend({
             $('.user-sat-value').last().prop('disabled', false);
             $('.user-sat-value').last().css('background-color','');
         }
-
-        // Load available satisfaction values for user defined constraint type
-        switch (func) {
-            case "I":
-                // May get last value of the graph in the future
-                $(".user-sat-value").last().html(this.satValueOptions.positiveOnly('partiallysatisfied'));
+        
+        if (func == 'I' || func == 'D') {
+            var prevVal = satisfactionValuesDict[this.intention.dynamicFunction.getSecondLastMarkedVal()].name;
+            if (func == 'I') {
+                $(".user-sat-value").last().html(this.satValueOptions.positiveOnly(prevVal));
                 $(".user-sat-value").last().val("satisfied");
-                break;
-
-            case "D":
-                $(".user-sat-value").last().html(this.satValueOptions.negativeOnly('partiallydenied'));
+            } else {
+                $(".user-sat-value").last().html(this.satValueOptions.negativeOnly(prevVal));
                 $(".user-sat-value").last().val("denied");
-                break;
-
-            case "R":
-                $(".user-sat-value").last().html(this.satValueOptions.all);
-                $(".user-sat-value").last().val("(no value)")
+            }
+        } else if (func == 'R') {
+            $(".user-sat-value").last().html(this.satValueOptions.all);
+            $(".user-sat-value").last().val("(no value)")
+            $(".user-sat-value").last().prop('disabled', true);
+            $(".user-sat-value").last().css("background-color",'grey');
+        } else if (func == 'C') {
+            $(".user-sat-value").last().html(this.satValueOptions.all);
+            // Restrict input if it is the first constraint
+            if (this.intention.dynamicFunction.getFuncSegmentIterable().length == 1) {
+                $(".user-sat-value").last().val(this.$('#init-sat-value').val())
                 $(".user-sat-value").last().prop('disabled', true);
-                $(".user-sat-value").last().css("background-color",'grey');
-                break;
-
-            case "C":
-                $(".user-sat-value").last().html(this.satValueOptions.all);
-                // Restrict input if it is the first constraint
-                if (this.intention.dynamicFunction.getFuncSegmentIterable().length == 1) {
-                    $(".user-sat-value").last().val(this.$('#init-sat-value').val())
-                    $(".user-sat-value").last().prop('disabled', true);
-                    $(".user-sat-value").last().css("background-color","grey");
-                }
-
-                break;
-            default:
-                break;
+                $(".user-sat-value").last().css("background-color","grey");
+            }
         }
-        return;
     },
 
     /**
@@ -723,13 +713,21 @@ var ElementInspector = Backbone.View.extend({
 
         // update html display for additional user inputs
         var html = this.userConstraintsHTML.clone();
-
         this.intention.addUserDefinedSeg("C", "0000");
 
         $(".user-sat-value").last().prop('disabled', true);
         $(".user-sat-value").last().css("background-color",'grey');
         $(".user-function-type").last().prop('disabled', true);
         $(".user-function-type").last().css("background-color", 'grey');
+
+        // If the initial value is (no value), limit the function options
+        // to be either Constant or Stochastic
+        if (this.intention.getInitialSatValue() == '(no value)') {
+            var selectEl = html.children(":first");
+            selectEl.find('option').remove();
+            selectEl.append('<option value=C> Constant </option>');
+            selectEl.append('<option value=R> Stochastic</option>');
+        }
 
         html.appendTo(this.$('#all-user-constraints'));
 
@@ -939,7 +937,12 @@ var ElementInspector = Backbone.View.extend({
         var funcType = this.intention.dynamicFunction.stringDynVis;
         var initSatVal = this.intention.getInitialSatValue();
 
-        this.cell.attr(".funcvalue/text", funcType);
+        if (funcType == 'NT') {
+            this.cell.attr(".funcvalue/text", '');
+        } else {
+            this.cell.attr(".funcvalue/text", funcType);
+        }
+        
         this.cell.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
     },
 

@@ -363,7 +363,9 @@ public class ModelSpecBuilder {
 							if(constraintSrcID.equals(tmp.getId()))
 								src = tmp;
 						}
-						modelSpec.getConstraintsBetweenEpochs().add(new EpochConstraint(src, constraintSrcEB, absoluteValue));
+						if (absoluteValue >= 0) {
+							modelSpec.getConstraintsBetweenEpochs().add(new EpochConstraint(src, constraintSrcEB, absoluteValue));
+						}
 					}else{
 						String constraintDestID = dataConstraint.getConstraintDestID();
 						String constraintDestEB = dataConstraint.getConstraintDestEB();

@@ -3,7 +3,7 @@ class Model {
     /**
      * Attributes:
      * {Array.<Actor>} actors
-     * {Array.<UserIntention>} intentions
+     * {Array.<Intention>} intentions
      * {Array.<Link>} links
      * {Array.<Constraint>} constraints
      * {String} maxAbsTime
@@ -17,13 +17,13 @@ class Model {
     }
 
     /**
-     * Returns the UserIntention with node ID
+     * Returns the Intention with node ID
      * nodeID
      *
      * @param {String} nodeID
-     * @returns {UserIntention}
+     * @returns {Intention}
      */
-    getUserIntentionByID(nodeID) {
+    getIntentionByID(nodeID) {
     	for (var i = 0; i < this.intentions.length; i++) {
     		if (this.intentions[i].nodeID == nodeID) {
     			return this.intentions[i];
@@ -344,7 +344,7 @@ class EvolvingFunction {
      */
 	constructor(intentionID) {
 		this.intentionID = intentionID;
-		this.stringDynVis = 'NF';
+		this.stringDynVis = 'NT';
 		this.functionSegList = [];
 	}
 
@@ -369,6 +369,18 @@ class EvolvingFunction {
         var len = this.functionSegList.length;
         if (len > 0) {
             return this.functionSegList[len - 1].funcX;
+        }
+    }
+
+    /**
+     * Returns the 4 digit representation for this
+     * EvolvingFunction's second last function segment's
+     * satisfaction value
+     */
+    getSecondLastMarkedVal() {
+        var len = this.functionSegList.length;
+        if (len > 1) {
+            return this.functionSegList[len - 2].funcX;
         }
     }
 
@@ -613,8 +625,8 @@ class EvolvingFunction {
     getEndRepeatEpoch() {
         for (var i = 0; i < this.functionSegList.length; i++) {
             if (this.functionSegList[i] instanceof RepFuncSegment) {
-                var len = this.functionSegList[i].functionSegList.modellength;
-                return this.functionSegList[i].functionSegList[len - 1].funcEnd;
+                var len = this.functionSegList[i].functionSegList.length;
+                return this.functionSegList[i].functionSegList[len - 1].funcStop;
             }
         }
     }
@@ -705,7 +717,7 @@ class Constraint {
 	}
 }
 
-class IntentionEvaluation {
+class UserEvaluation {
 
     /**
 	 *
@@ -720,7 +732,7 @@ class IntentionEvaluation {
 	}
 }
 
-class UserIntention {
+class Intention {
 
     /**
      * @param {String} nodeActorID
@@ -750,14 +762,14 @@ class UserIntention {
     }
 
     /**
-     * Changes the initial satisfaction value for this UserIntention
-     * to initValue and clears the this UserIntention's EvolvingFunction's
+     * Changes the initial satisfaction value for this Intention
+     * to initValue and clears the this Intention's EvolvingFunction's
      * functionSegmentList
      *
      * @param {String} initValue
      */
     changeInitialSatValue(initValue) {
-        var intentionEval = analysisRequest.getIntentionEvaluationByID(this.nodeID, '0');
+        var intentionEval = analysisRequest.getUserEvaluationByID(this.nodeID, '0');
         intentionEval.evaluationValue = initValue;
 
         // if there is only one function segment, and its constant, then we need to
@@ -769,7 +781,7 @@ class UserIntention {
         //     (this.dynamicFunction.stringDynVis == 'UD' && funcSegList[0].funcType == 'C')) {
         //     funcSegList[0].funcX = initValue;
         // }
-        this.dynamicFunction.stringDynVis = 'NF';
+        this.dynamicFunction.stringDynVis = 'NT';
         this.dynamicFunction.functionSegList = [];
     }
 
@@ -779,8 +791,8 @@ class UserIntention {
      * @returns {String}
      */
     createID() {
-        var id = UserIntention.numOfCreatedInstances.toString();
-        UserIntention.numOfCreatedInstances += 1;
+        var id = Intention.numOfCreatedInstances.toString();
+        Intention.numOfCreatedInstances += 1;
         while (id.length < 4){
                 id = '0' + id;
         }
@@ -789,18 +801,18 @@ class UserIntention {
 
     /**
      * Returns the 4 digit representation for this
-     * UserIntention's initial satisfaction value
+     * Intention's initial satisfaction value
      *
      * @returns {String}
      */
     getInitialSatValue() {
-        var intentionEval = analysisRequest.getIntentionEvaluationByID(this.nodeID, '0');
+        var intentionEval = analysisRequest.getUserEvaluationByID(this.nodeID, '0');
         return intentionEval.evaluationValue;
     }
 
     /**
      * Returns the number of function segments for this
-     * UserIntention
+     * Intention
      *
      * @returns {Number}
      */
@@ -809,7 +821,7 @@ class UserIntention {
     }
 
     /**
-     * Clears all FuncSegments for this UserIntention's
+     * Clears all FuncSegments for this Intention's
      * EvolvingFunction and adds new FuncSegments according to the current
      * function type.
      */
@@ -823,7 +835,7 @@ class UserIntention {
         // Add new absolute constraints if required
         this.addAbsConst(funcType);
 
-        var initValue = analysisRequest.getIntentionEvaluationByID(this.nodeID, '0').evaluationValue;
+        var initValue = analysisRequest.getUserEvaluationByID(this.nodeID, '0').evaluationValue;
 
         if (funcType == 'C' || funcType == 'R' || funcType == 'I' || funcType == 'D' || funcType == 'UD') {
             if (funcType == 'C') {
@@ -858,12 +870,12 @@ class UserIntention {
                 // Constant and Constant
                 var seg1 = new FuncSegment('C', '0011', '0', 'A');
                 var seg2 = new FuncSegment('C', '1100', 'A', 'Infinity');
-                analysisRequest.getIntentionEvaluationByID(this.nodeID, "0").evaluationValue = '0011';
+                analysisRequest.getUserEvaluationByID(this.nodeID, "0").evaluationValue = '0011';
             } else if (funcType == 'DS') {
                 // Constant and Constant
                 var seg1 = new FuncSegment('C', '1100', '0', 'A');
                 var seg2 = new FuncSegment('C', '0011', 'A', 'Infinity');
-                analysisRequest.getIntentionEvaluationByID(this.nodeID, "0").evaluationValue = '1100';
+                analysisRequest.getUserEvaluationByID(this.nodeID, "0").evaluationValue = '1100';
             }
             this.dynamicFunction.functionSegList.push(seg1, seg2);
         }
@@ -889,7 +901,7 @@ class UserIntention {
 
 
     /**
-     * Returns the absolute time for this UserIntention's absolute constraint at
+     * Returns the absolute time for this Intention's absolute constraint at
      * the starting epoch boundary start
      *
      * @param {String} source
@@ -900,7 +912,7 @@ class UserIntention {
     }
 
     /**
-     * Removes the absolute Constraint object(s) for this UserIntention from
+     * Removes the absolute Constraint object(s) for this Intention from
      * the global model variable, if such absolute Constraint object(s) exists
      */
     removeAbsCosnt() {
@@ -942,7 +954,7 @@ class UserIntention {
     }
     /**
      * Sets the marked value for the FuncSegments in the
-     * EvolvingFunction for this UserIntention
+     * EvolvingFunction for this Intention
      *
      * This function will only be called for I, D, RC, MP, MN functions
      */
@@ -959,7 +971,7 @@ class UserIntention {
 
     /**
      * Sets the function type and marked value for the
-     * last FuncSegment for this UserIntention's EvolvingFunction
+     * last FuncSegment for this Intention's EvolvingFunction
      *
      * @param {String} funcValue
      */
@@ -1004,7 +1016,7 @@ class UserIntention {
         }
     }
 }
-UserIntention.numOfCreatedInstances = 0; // static variable to keep track of number of instances
+Intention.numOfCreatedInstances = 0; // static variable to keep track of number of instances
 
 class AnalysisRequest {
 
@@ -1015,7 +1027,7 @@ class AnalysisRequest {
      * @param {String} numRelTime
      * @param {String} absTimePts
      * @param {String} currentState
-     * @param {Array.<IntentionEvaluation>} userAssignmentsList
+     * @param {Array.<UserEvaluation>} userAssignmentsList
      * @param {AnalysisResult} previousAnalysis
      */
 	constructor() {
@@ -1030,18 +1042,18 @@ class AnalysisRequest {
     }
 
     /**
-     * Returns the IntentionEvaluation object
+     * Returns the UserEvaluation object
      * with node id nodeID with absolute time point
-     * absTime. If the desired IntentionEvaluation does
+     * absTime. If the desired UserEvaluation does
      * not exist, returns null.
      *
      * @param {String} nodeID
      *  ID of the intention
      * @param {String} absTime
      *  The desired absolute time
-     * @returns {IntentionEvaluation | null}
+     * @returns {UserEvaluation | null}
      */
-    getIntentionEvaluationByID(nodeID, absTime) {
+    getUserEvaluationByID(nodeID, absTime) {
         for (var i = 0; i < this.userAssignmentsList.length; i++) {
             if (this.userAssignmentsList[i].intentionID == nodeID &&
                 this.userAssignmentsList[i].absTime == absTime) {
@@ -1058,7 +1070,7 @@ class AnalysisRequest {
 	changeTimePoints(newTimePts){
 		 var intersection = this.absTimePtsArr.filter(x => newTimePts.includes(x));
 		 if (intersection.length == 0){
-			 this.clearIntentionEvaluations();
+			 this.clearUserEvaluations();
 			 this.absTimePtsArr = newTimePts;
 			 return
 		 }
@@ -1078,10 +1090,10 @@ class AnalysisRequest {
 	}
 
     /**
-     * Deletes all IntentionEvaluations in this.userAssignmentsList
-     * with the exception of the initial IntentionEvaluations
+     * Deletes all UserEvaluations in this.userAssignmentsList
+     * with the exception of the initial UserEvaluations
      */
-    clearIntentionEvaluations() {
+    clearUserEvaluations() {
         var i = 0;
         while (i < this.userAssignmentsList.length) {
             if (this.userAssignmentsList[i].absTime !== '0') {
@@ -1094,7 +1106,7 @@ class AnalysisRequest {
 
 
 	/**
-	 * Removes all IntentionEvaluation objects in
+	 * Removes all UserEvaluation objects in
 	 * userAssignmentsList, with an intentionID equal to
 	 * nodeID
 	 *

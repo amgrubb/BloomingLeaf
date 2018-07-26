@@ -45,7 +45,7 @@ public class UDFunctionCSP {
 			boolean[][] dynamicValues = new boolean[numSegment][4];
 			char[] elementEBs = new char[numSegment];
 
-			ArrayList<FuncSegment> segList = (ArrayList<FuncSegment>)(Object)dynamic.getFunctionSegList();
+			ArrayList<FuncSegment> segList = dynamic.getUnwrappedSegList();
 
 			for (int i = 0; i < segList.size(); i++) {
 				FuncSegment seg = segList.get(i);
@@ -89,31 +89,23 @@ public class UDFunctionCSP {
 
 				this.functions =  new String[totalNumSegment];
 				this.dynamicValues = new boolean[totalNumSegment][4];
-				this.elementEBs =  new char[totalNumSegment - 1];
+				this.elementEBs =  new char[totalNumSegment];
 				char newEB = 'a';
-				for (int i = 0; i < totalNumSegment; i++) {
-					if (i <  mapStart) {
+				for (int i = 0; i < totalNumSegment; i++){
+					if (i <  mapStart){
 						this.functions[i] = functions[i];
 						this.dynamicValues[i] = dynamicValues[i];
-						if (i != 0)
-							this.elementEBs[i-1] = elementEBs[i];
+						this.elementEBs[i] = elementEBs[i];
 					}else if (i >= mapEnd){
 						this.functions[i] = functions[i - (totalNumSegment - numSegment)];
 						this.dynamicValues[i] = dynamicValues[i - (totalNumSegment - numSegment)];
-						if (i != 0)
-							this.elementEBs[i-1] = elementEBs[i - (totalNumSegment - numSegment)];
+						this.elementEBs[i] = elementEBs[i - (totalNumSegment - numSegment)];
 					}else {
 						int step = ((i - mapStart) % lengthRepeat) + mapStart;
 						this.functions[i] = functions[step];
 						this.dynamicValues[i] = dynamicValues[step];
-						if (i != 0){
-							if (i == mapStart)
-								this.elementEBs[i-1] = elementEBs[i];
-							else {
-								this.elementEBs[i-1] = newEB;
-								newEB++;
-							}
-						}
+						this.elementEBs[i] = newEB;
+						newEB++;
 					}
 				}
 			} else {
