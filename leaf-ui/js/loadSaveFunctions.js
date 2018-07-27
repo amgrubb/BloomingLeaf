@@ -16,19 +16,20 @@ reader.onload = function() {
 
 	if (reader.result) {
 		if (mode == "Modelling") {
-			graph.fromJSON(JSON.parse(reader.result));
-
-			// Load different links and intension constraints
-			var allLinks = graph.getLinks();
-			graph.links = [];
-			graph.intensionConstraints = [];
-			allLinks.forEach(function(link) {
-				if (link.attr('./display') == "none") {
-					graph.intensionConstraints.push(link);
-				} else {
-					graph.links.push(link);
-				}
-			});
+			var obj = JSON.parse(reader.result);
+ 			var cells = obj.cells;
+ 			// Actors
+			for (var i = 0; i < cells.length; i++) {
+				if (cells[i].type == 'basic.Actor') {
+					var actorName = cells[i].attrs['.name'].text;
+					var newActor = new Actor(actorName);
+					cells[i]["nodeID"]  = newActor.nodeID;
+					model.actors.push(newActor);
+   
+		}
+			}
+			
+			graph.fromJSON(obj);
 		}
 	}
 };
