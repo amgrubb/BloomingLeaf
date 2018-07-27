@@ -27,13 +27,13 @@ reader.onload = function() {
 					model.actors.push(newActor);
 				}
                 if (cells[i].type == 'link') {
+					var Type = cells[i].labels[0].attrs.text.text.toUpperCase();
 					// set link type and post type
 					if (!cells[i]["link-type"]){
-						var linkType = cells[i].labels[0].attrs.text.text.toUpperCase();
+						var linkType = Type;
 						var evolvRelationships = null;
 					}
 					else {
-						var Type = cells[i]["link-type"].toUpperCase();
 						var linkType = Type.replace(/\s/g, '').split("|")[0];
 						var evolvRelationships = Type.replace(/\s/g, '').split("|")[1];
 					}
