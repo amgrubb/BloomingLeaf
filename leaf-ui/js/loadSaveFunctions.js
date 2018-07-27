@@ -44,7 +44,7 @@ reader.onload = function() {
 						absoluteValue = 0;
 					}
 					else{
-						absoluteValue = abosulte["0"];
+						absoluteValue = absolute["0"];
 					}
 
 					var sourceID = cells[i].source.id;
