@@ -21,7 +21,7 @@ import interface_objects.InputObject;
  *
  */
 public class ModelSpecBuilder {
-    private final static boolean DEBUG = false;	
+    private final static boolean DEBUG = true;	
 	
 	public static ModelSpec buildModelSpec(InputObject frontendObject){
 		
@@ -71,16 +71,17 @@ public class ModelSpecBuilder {
 			if(analysis.getNumRelTime()!=null){
 				modelSpec.setRelativeTimePoints(Integer.parseInt(analysis.getNumRelTime()));
 			}
-			
-			if(!analysis.getCurrentState().equals("0")){
-				// Deals with all possible next states.
+			// ############### !analysis.getCurrentState().equals("0")
+			//if(!analysis.getCurrentState().equals("0") && analysis.getAction().equals("allNextStates")){
+			// for possible next states or half path
+			if (true){	// Deals with all possible next states.
 				String[] absoluteTime = analysis.getCurrentState().split("|");
 				int currentState = Integer.parseInt(absoluteTime[0]);
 				
 				// Creates initial Assigned Epoch Map.
 				String[] initialAssignedEpoch = analysis.getInitialAssignedEpoch();
 				HashMap<String, Integer> initialAssignedEpochMap = new HashMap<>();
-				//Send the hole hashmap
+				//Send the whole hashmap
 				for(int i = 0; i < initialAssignedEpoch.length; i++){
 					String[] assignedEpoch = initialAssignedEpoch[i].split("_");
 					String key = assignedEpoch[0].toString();
@@ -93,8 +94,10 @@ public class ModelSpecBuilder {
 				// TODO: Should this be currentState + 2???
 				String[] initialValueTimePoints = analysis.getInitialValueTimePoints();
 				int[] initialValueTimePointsArray = new int[currentState+1];
+				System.out.println("initial value time points in model spec builder");
 				for(int i = 0; i < currentState+1; i++){
 					initialValueTimePointsArray[i] = Integer.parseInt(initialValueTimePoints[i]);
+					System.out.println(initialValueTimePointsArray[i]);
 				}
 				modelSpec.setInitialValueTimePoints(initialValueTimePointsArray);
 

@@ -679,12 +679,142 @@ function add_filter(){
 
 //This function should get the current state in the screen and save in the original path
 function save_current_state(){
-    /*var modal = document.getElementById("modal_save_next_state");
-    modal.style.visibility = (modal.style.visibility == "visible") ? "hidden" : "visible";
 
-    modal.content = document.getElementById("modal-content");
-    analysis.storage = jQuery.extend({}, window.opener.storage);
-    modal.content.append("<p>" + JSON.stringify(analysis.storage, null, "\t") + "<\p>");*/
+    var jsObject = {};
+
+    //Get the Graph Model
+    jsObject.model = getFrontendModel(false);
+
+    //this.saveElementsInGraphVariable();
+    var elements = [];
+    for (var i = 0; i < graph.getElements().length; i++){
+        if (!(graph.getElements()[i] instanceof joint.shapes.basic.Actor)){
+            elements.push(graph.getElements()[i]);
+        }
+    }
+    graph.allElements = elements;
+    graph.elementsBeforeAnalysis = elements;
+
+    if(jsObject.model == null) {
+        return null;
+    }
+
+    // updating input analysis
+    var index_of_selected_state = parseInt(document.getElementById("currentPage").value);
+
+
+    // getting current state
+    var i = savedAnalysisData.allNextStatesAnalysis.currentState.indexOf('|', 0);
+    var current = parseInt(savedAnalysisData.allNextStatesAnalysis.currentState.substring(0, i));
+
+
+    // add the previous solution path to the element lists
+    for (var element_index = 0; element_index < savedAnalysisData.singlePathSolution.elementList.length; element_index++){
+        savedAnalysisData.singlePathAnalysis.elementList[element_index].status = [];
+        for (var state_index = 0; state_index < current; state_index++){
+            savedAnalysisData.singlePathAnalysis.elementList[element_index].status.push(savedAnalysisData.singlePathSolution.elementList[element_index].status[state_index]);
+        }
+    }
+
+
+    for (var element_index = 0; element_index < tempResults.allSolution[index_of_selected_state].intentionElements.length; element_index++){
+        savedAnalysisData.singlePathAnalysis.elementList[element_index].status[current] = tempResults.allSolution[index_of_selected_state].intentionElements[element_index].status[0];
+    }
+
+
+    var nextTimePoint = savedAnalysisData.allNextStatesAnalysis.initialValueTimePoints[current+1];
+
+    // update initialValueTimePoints from next states analysis
+    // all the time points from initial to and including current
+    savedAnalysisData.singlePathAnalysis.initialValueTimePoints = savedAnalysisData.allNextStatesAnalysis.initialValueTimePoints.slice(0,current);
+
+    // TODO : need to make sure it works with absolute time points as well
+    // current only works with relative time points
+
+    // update initialAssignedEpoch
+    var assignedRelTP = 1;
+    var prev_assigned_epochs = [];
+    for (var i = 0; i < savedAnalysisData.allNextStatesAnalysis.initialAssignedEpoch.length; i++){
+        var regex = /.*_(.*)/g;
+        var match = regex.exec(savedAnalysisData.allNextStatesAnalysis.initialAssignedEpoch[i]);
+        if (savedAnalysisData.singlePathAnalysis.initialValueTimePoints.indexOf(match[1]) > -1){
+            // change the index of the relative points so they make sense?
+            if (savedAnalysisData.allNextStatesAnalysis.initialAssignedEpoch[i].indexOf("R") > -1){
+                console.log("relative time point");
+                prev_assigned_epochs.push("TR" + assignedRelTP + "_" + match[1]);
+                assignedRelTP ++;
+            } else{
+                prev_assigned_epochs.push(savedAnalysisData.allNextStatesAnalysis.initialAssignedEpoch[i]);
+            }
+        }
+    }
+    savedAnalysisData.singlePathAnalysis.initialAssignedEpoch = prev_assigned_epochs;
+
+    // if (max - next time point < #time points left){  time points left -> epochs left  + absolute time points left
+    //       next time point = rand(cur time point, max - # time point left);
+    // }
+
+    savedAnalysisData.singlePathAnalysis.initialValueTimePoints.push(nextTimePoint);
+
+
+    // determine the type of the current time point
+    // relative for now
+
+    // get the list of all epochs
+    var allEpochs = {}; // intention id : list of epoch names
+    for (var i = 0; i < jsObject.model.dynamics.length; i ++){
+        if (!allEpochs[jsObject.model.dynamics[i].intentionID]){
+            allEpochs[jsObject.model.dynamics[i].intentionID] = [];
+        }
+        if (jsObject.model.dynamics[i].dynamicType === "NT" ||
+            jsObject.model.dynamics[i].dynamicType === "C" ||
+            jsObject.model.dynamics[i].dynamicType === "I" ||
+            jsObject.model.dynamics[i].dynamicType === "D" ||
+            jsObject.model.dynamics[i].dynamicType === "R" ||
+            jsObject.model.dynamics[i].dynamicType === "NB" ){
+            continue;
+        }
+        else if (jsObject.model.dynamics[i].dynamicType === "SD" ||
+            jsObject.model.dynamics[i].dynamicType === "DS" ||
+            jsObject.model.dynamics[i].dynamicType === "CR" ||
+            jsObject.model.dynamics[i].dynamicType === "RC" ||
+            jsObject.model.dynamics[i].dynamicType === "MP" ||
+            jsObject.model.dynamics[i].dynamicType === "MN" ){
+            allEpochs[jsObject.model.dynamics[i].intentionID].push("E" + jsObject.model.dynamics[i].intentionID);
+        }
+        else if (jsObject.model.dynamics[i].dynamicType === "UD"){
+            // TODO : after merge with refactoring -> problem with model spec building with user defined functions
+        }
+    }
+    console.log(allEpochs);
+
+    // need to know if an epoch happens on a absolute time point
+
+    // collect possible current epoch (name)
+    var potentialEpoch = [];
+    if (potentialEpoch.length == 0){
+        // if no epoch possible, make it a relative time point
+        // unless it's absolute
+        savedAnalysisData.singlePathAnalysis.initialAssignedEpoch.push("TR" + current + "_" + savedAnalysisData.singlePathAnalysis.initialValueTimePoints[current]);
+    } else {
+        // make a random choice
+
+    }
+
+
+
+
+    // update numRelTime [MAYBE]
+    //savedAnalysisData.singlePathAnalysis.numRelTime -= assignedRelTP;
+
+    jsObject.analysis = savedAnalysisData.singlePathAnalysis;
+    console.log(jsObject.analysis);
+
+    savedAnalysisData.singlePathAnalysis.currentState = current + "|" + savedAnalysisData.singlePathAnalysis.initialValueTimePoints[current];
+
+
+    //Send data to backend
+    //window.opener.backendComm(jsObject);
     console.log(savedAnalysisData.singlePathAnalysis);
 }
 
@@ -696,19 +826,20 @@ function generate_next_states(){
     var jsObject = {};
     var index_of_selected_state = parseInt(document.getElementById("currentPage").value);
 
+    var newInputAnalysis = _.clone(savedAnalysisData.allNextStatesAnalysis);
+    console.log(savedAnalysisData.allNextStatesAnalysis);
     // update InputAnalysis with the current selected state
     for (var element_index = 0; element_index < tempResults.allSolution[index_of_selected_state].intentionElements.length; element_index++){
-        savedAnalysisData.allNextStatesAnalysis.elementList[element_index].status.push(tempResults.allSolution[index_of_selected_state].intentionElements[element_index].status[0]);
+        newInputAnalysis.elementList[element_index].status.push(tempResults.allSolution[index_of_selected_state].intentionElements[element_index].status[0]);
     }
 
-    //update currentSate in InputAnalysis
-    var i = savedAnalysisData.allNextStatesAnalysis.currentState.indexOf('|', 0);
-    var current = parseInt(savedAnalysisData.allNextStatesAnalysis.currentState.substring(0, i));
+    var i = newInputAnalysis.currentState.indexOf('|', 0);
+    var current = parseInt(newInputAnalysis.currentState.substring(0, i));
     current ++;
-    savedAnalysisData.allNextStatesAnalysis.currentState = current + "|" + savedAnalysisData.allNextStatesAnalysis.initialValueTimePoints[current];
 
-    jsObject.analysis = savedAnalysisData.allNextStatesAnalysis;
-    console.log(jsObject.analysis);
+    //update currentSate in InputAnalysis
+    newInputAnalysis.currentState = current + "|" + newInputAnalysis.initialValueTimePoints[current];
+    jsObject.analysis = newInputAnalysis;
 
     //Get the Graph Model
     jsObject.model = getFrontendModel(false);

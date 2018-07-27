@@ -20,6 +20,7 @@ function displayAnalysis(analysisResults){
 	// Save data for get possible next states
 	savedAnalysisData.finalAssignedEpoch = analysisResults.finalAssignedEpoch;
 	savedAnalysisData.finalValueTimePoints = analysisResults.finalValueTimePoints;
+	savedAnalysisData.singlePathSolution = analysisResults;
 
 	// Check if slider has already been initialized
 	if (sliderObject.sliderElement.hasOwnProperty('noUiSlider')) {
