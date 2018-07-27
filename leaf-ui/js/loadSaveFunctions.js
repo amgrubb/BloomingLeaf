@@ -31,7 +31,14 @@ reader.onload = function() {
 					var linkType = Type.replace(/\s/g, '').split("|")[0];
 					var evolvRelationships = Type.replace(/\s/g, '').split("|")[1];
 					
-					var absoluteValue = cells[i].attrs[".assigned_time"]["0"]
+					var absolute = cells[i].attrs[".assigned_time"];
+					if (!absolute){
+						absoluteValue = 0;
+					}
+					else{
+						absoluteValue = abosulte["0"];
+					}
+
 					var sourceID = cells[i].source.id;
 					var targetID = cells[i].target.id;
 					
