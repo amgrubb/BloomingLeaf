@@ -27,10 +27,18 @@ reader.onload = function() {
 					model.actors.push(newActor);
 				}
                 if (cells[i].type == 'link') {
-					var Type = cells[i]["link-type"].toUpperCase();
-					var linkType = Type.replace(/\s/g, '').split("|")[0];
-					var evolvRelationships = Type.replace(/\s/g, '').split("|")[1];
+					// set link type and post type
+					if (!cells[i]["link-type"]){
+						var linkType = cells[i].labels[0].attrs.text.text.toUpperCase();
+						var evolvRelationships = null;
+					}
+					else {
+						var Type = cells[i]["link-type"].toUpperCase();
+						var linkType = Type.replace(/\s/g, '').split("|")[0];
+						var evolvRelationships = Type.replace(/\s/g, '').split("|")[1];
+					}
 					
+					// set absolute value
 					var absolute = cells[i].attrs[".assigned_time"];
 					if (!absolute){
 						absoluteValue = 0;
