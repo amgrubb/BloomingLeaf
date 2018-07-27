@@ -25,10 +25,37 @@ reader.onload = function() {
 					var newActor = new Actor(actorName);
 					cells[i]["nodeID"]  = newActor.nodeID;
 					model.actors.push(newActor);
-   
 				}
-			}
+                if (cells[i].type == 'link') {
+					var Type = cells[i]["link-type"].toUpperCase();
+					var linkType = Type.replace(/\s/g, '').split("|")[0];
+					var evolvRelationships = Type.replace(/\s/g, '').split("|")[1];
+					
+					var absolute = cells[i].attrs[".assigned_time"];
+					if (!absolute){
+						absoluteValue = 0;
+					}
+					else{
+						absoluteValue = abosulte["0"];
+					}
 
+					var sourceID = cells[i].source.id;
+					var targetID = cells[i].target.id;
+					
+					var source = getNodeID(sourceID, cells);
+					var target = getNodeID(targetID, cells);
+					
+					// add absoluteValue and postType
+				    var newLink = new Link(linkType,source,absoluteValue);
+					newLink.linkDestID = target;
+					newLink.postType = evolvRelationships;
+			
+					// add linkID
+					cells[i]["linkID"]  = newLink.linkID;
+					model.links.push(newLink);
+				}
+					
+			}
 
 			// Intention
 			for (var i = 0; i < cells.length; i++) {
@@ -158,13 +185,18 @@ reader.onload = function() {
 				    }
 			        model.intentions.push(intention);
 			    } 
+
+		
+	
 			}
 
 			
 			graph.fromJSON(obj);
+			
+
 		}
 	}
-};
+}
 
 function getActorID(parentID, cells) {
 	for (var i = 0; i < cells.length; i++) {
@@ -176,6 +208,15 @@ function getActorID(parentID, cells) {
 	return '-';
 }
 
+function getNodeID(nodeID, cells) {
+    for (var i = 0; i < cells.length; i++) {
+        if (cells[i].id == nodeID) {
+            return cells[i].nodeID;
+        }
+    }
+
+    return "-";
+}
 
 
 /**
