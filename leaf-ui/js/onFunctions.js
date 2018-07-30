@@ -188,10 +188,10 @@ $('#btn-save').on('click', function() {
 	if (name){
 		var fileName = name + ".json";
 		var obj = {};
-		obj.graph = JSON.stringify(graph.toJSON());
+		obj.graph = graph.toJSON();
 		obj.model = model;
 		obj.analysisRequest = analysisRequest;
-		download(fileName, obj);
+		download(fileName, JSON.stringify(obj));
 	}
 });
 
