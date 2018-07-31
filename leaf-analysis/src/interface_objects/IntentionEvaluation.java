@@ -21,4 +21,17 @@ public class IntentionEvaluation {
         return evaluationValue;
     }
 
+	public void setIntentionID(String intentionID) {
+		this.intentionID = intentionID;
+	}
+
+	public void setAbsTime(String absTime) {
+		this.absTime = absTime;
+	}
+
+	public void setEvaluationValue(String evaluationValue) {
+		this.evaluationValue = evaluationValue;
+	}
+    
+
 }

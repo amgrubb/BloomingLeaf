@@ -66,6 +66,7 @@ public class ModelSpecBuilder {
 			if (DEBUG) System.out.println("Read Relative Time");
 
 			AnalysisResult prevResult = analysis.getPreviousAnalysis();
+
 			if(prevResult != null) {
 				// If there was an analysis before the current analysis, do the following:
 
@@ -92,27 +93,56 @@ public class ModelSpecBuilder {
 				int[] initialValueTimePointsArray = new int[currentState+1];
 				for(int i = 0; i < currentState+1; i++){
 					initialValueTimePointsArray[i] = Integer.parseInt(initialValueTimePoints[i]);
-					System.out.println(initialValueTimePointsArray[i]);
 				}
 				modelSpec.setInitialValueTimePoints(initialValueTimePointsArray);
+				
+				// Set initial satisfaction values
+				// If this was the first analysis
+				ArrayList<IntentionEvaluation> initUserAssign;
+				if (currentState > 0){
+					initUserAssign = new ArrayList<IntentionEvaluation>();
+					List<OutputElement> elementlist = prevResult.getElementList();
+					for (OutputElement e: elementlist){
+						
+						for(int i = 0; i < currentState+1; i++){
+							IntentionEvaluation eval = new IntentionEvaluation();
+							eval.setIntentionID(e.getId());
+							eval.setAbsTime(initialValueTimePoints[i]);
+							eval.setEvaluationValue(e.getStatus().get(i));
+							initUserAssign.add(eval);
+						}
+					}					
+					
+				} else {
+					initUserAssign = analysis.getInitialIntentionEvaluations();	
+				}
+				boolean[][][] initialValues = new boolean[initUserAssign.size()][currentState+1][4];
+				for (IntentionEvaluation curr: initUserAssign) {
 
+					String evalValue = curr.getEvaluationValue();
+
+					// The line below is an example of issue #156
+					// If intitialValues.length is 1 and Integer.parseInt(curr.getIntentionID()) is 3, this raises an error
+					initialValues[Integer.parseInt(curr.getIntentionID())][0] = getEvaluationArray(evalValue);
+				}
+				modelSpec.setInitialValues(initialValues);
+				if (DEBUG) System.out.println("Handled Previous Result");
+
+			} else {
+				ArrayList<IntentionEvaluation> initUserAssign = analysis.getInitialIntentionEvaluations();
+				boolean[][][] initialValues = new boolean[initUserAssign.size()][1][4];
+				for (IntentionEvaluation curr: initUserAssign) {
+
+					String evalValue = curr.getEvaluationValue();
+
+					// The line below is an example of issue #156
+					// If intitialValues.length is 1 and Integer.parseInt(curr.getIntentionID()) is 3, this raises an error
+					initialValues[Integer.parseInt(curr.getIntentionID())][0] = getEvaluationArray(evalValue);
+				}
+				modelSpec.setInitialValues(initialValues);
+				if (DEBUG) System.out.println("Handled Previous Result");
 			}
-			// Set initial satisfaction values
-			// If this was the first analysis
-			ArrayList<IntentionEvaluation> initUserAssign = analysis.getInitialIntentionEvaluations();
-			boolean[][][] initialValues = new boolean[initUserAssign.size()][1][4];
-			for (IntentionEvaluation curr: initUserAssign) {
-
-				String evalValue = curr.getEvaluationValue();
-
-				// The line below is an example of issue #156
-				// If intitialValues.length is 1 and Integer.parseInt(curr.getIntentionID()) is 3, this raises an error
-				initialValues[Integer.parseInt(curr.getIntentionID())][0] = getEvaluationArray(evalValue);
-
-			}
-			modelSpec.setInitialValues(initialValues);
-
-			if (DEBUG) System.out.println("Handled Previous Result");
+			
 
 
 			//Getting Actors

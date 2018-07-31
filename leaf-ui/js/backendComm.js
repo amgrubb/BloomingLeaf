@@ -79,9 +79,11 @@ function getFileResults(isGetNextSteps){
 				analysisResult.assignedEpoch = results.assignedEpoch;
 		        analysisResult.timePointPath = results.timePointPath;
 		        analysisResult.timePointPathSize = results.timePointPathSize;
-		        analysisResult.values = results.values;
+		        analysisResult.elementList = results.elementList;
 
 		        analysisRequest.previousAnalysis = analysisResult;
+		        console.log("previousAnalysis");
+		        console.log(analysisRequest.previousAnalysis);
 
 				if(isGetNextSteps){
 					open_analysis_viewer();

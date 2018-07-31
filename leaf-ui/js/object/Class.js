@@ -285,7 +285,7 @@ class AnalysisResult {
         this.assignedEpoch;
         this.timePointPath ;
         this.timePointPathSize;
-        this.values;
+        this.elementList;
 	}
 }
 
