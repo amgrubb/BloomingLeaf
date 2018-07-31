@@ -7,7 +7,7 @@ analysis.currentState;
 var tempResults;
 var filterOrderQueue = [];
 var savedAnalysisData = {};
-var global_analysisResult;
+var globalAnalysisResult;
 
 var graph;
 
@@ -40,7 +40,7 @@ function init(){
     //Objects from parent page
     //analysis.parentResults = jQuery.extend({}, window.opener.global_analysisResult);
 
-    global_analysisResult = jQuery.extend({}, window.opener.global_analysisResult);
+    globalAnalysisResult = jQuery.extend({}, window.opener.globalAnalysisResult);
 
 
     analysis.paper = new joint.dia.Paper({
@@ -92,11 +92,11 @@ function init(){
     }
 
     if(!analysis.analysisResult){
-        analysis.analysisResult = global_analysisResult;
+        analysis.analysisResult = globalAnalysisResult;
     }
     savedAnalysisData = jQuery.extend({}, window.opener.savedAnalysisData);
     graph =  jQuery.extend({}, window.opener.graph);
-    tempResults = $.extend(true,{}, global_analysisResult);
+    tempResults = $.extend(true,{}, globalAnalysisResult);
 }
 
 function renderNavigationSidebar(currentPage = 0){
@@ -257,7 +257,7 @@ function goToState(){
 
 function add_filter(){
     console.log("clicked");
-    tempResults = $.extend(true,{}, global_analysisResult);
+    tempResults = $.extend(true,{}, globalAnalysisResult);
     var checkboxes = document.getElementsByClassName("filter_checkbox");
     for (var i_element = 0; i_element < checkboxes.length; i_element++){
         var checkbox = checkboxes[i_element];
