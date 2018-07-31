@@ -1,11 +1,12 @@
 package interface_objects;
 
 public class InputLink{
+	private String linkID;
 	private String linkType;
+	private String postType;
 	private String linkSrcID;
 	private String linkDestID;
-	private String postType;
-	private int absoluteValue = -1;
+	private int absoluteValue;
 	
 	public String getLinkSrcID() {
 		return linkSrcID;

@@ -364,7 +364,7 @@ public class TroposCSPAlgorithm {
     	
     	// Step 2A: Create constraints between epochs.
     	List<EpochConstraint> eConstraints = this.spec.getConstraintsBetweenEpochs();
-    	System.out.println(eConstraints.size());
+    	//System.out.println(eConstraints.size());
     	// (i) Get Absolute Assignments
     	for(ListIterator<EpochConstraint> ec = eConstraints.listIterator(); ec.hasNext(); ){		
     		EpochConstraint etmp = ec.next();
@@ -614,9 +614,9 @@ public class TroposCSPAlgorithm {
     	this.timePoints[0] = new IntVar(store, exisitingNamedTimePoints[0], 0, 0); 
     	
     	// Add previousCollection from initial Value Time Points
-    	System.out.println("exisitingNamedTimePoints.length: " + exisitingNamedTimePoints.length);
+    	//System.out.println("exisitingNamedTimePoints.length: " + exisitingNamedTimePoints.length);
     	for(int e = 1; e < exisitingNamedTimePoints.length; e++){
-    		System.out.println(exisitingNamedTimePoints[e]);
+    		//System.out.println(exisitingNamedTimePoints[e]);
     		// Absolute Value -> already has an assignment. 
     		if (exisitingNamedTimePoints[e].charAt(1) == 'A'){
     	    	this.timePoints[e] = absoluteCollection.get(initialValueTimePoints[e]);
@@ -631,7 +631,7 @@ public class TroposCSPAlgorithm {
     	    		}
     	    // Relative Values -> remove 1 from count and assign value.
     		} else if (exisitingNamedTimePoints[e].charAt(1) == 'R'){
-    			System.out.println("Found existing relative point: " + exisitingNamedTimePoints[e]);
+    			//System.out.println("Found existing relative point: " + exisitingNamedTimePoints[e]);
         		this.timePoints[e] = new IntVar(store, "TR" + absoluteCounter, initialValueTimePoints[e], initialValueTimePoints[e]);
         		absoluteCounter++;
     			numStochasticTimePoints--;
@@ -673,7 +673,7 @@ public class TroposCSPAlgorithm {
     	}
     	// Add relative.
     	for (int i = 0; i < numStochasticTimePoints; i++){
-    		System.out.println("adding relative points, tCount: " + tCount + " this.timePoints.length: " + this.timePoints.length);
+    		//System.out.println("adding relative points, tCount: " + tCount + " this.timePoints.length: " + this.timePoints.length);
     		if (tCount == this.timePoints.length)
     			throw new RuntimeException("ERROR: Relative time points could not be added.");
     		IntVar value = new IntVar(store, "TR" + absoluteCounter, maxPreviousTime + 1, maxTime);
@@ -1970,7 +1970,7 @@ public class TroposCSPAlgorithm {
 //			int[] finalValueTimePoints = new int[indexOrder.length];
 //	    	for (int i = 0; i < indexOrder.length; i++)
 //	    		finalValueTimePoints[i] = this.timePoints[indexOrder[i]].value();
-//	   		this.spec.setFinalValueTimePoints(finalValueTimePoints);
+//	   		this.spec.setTimePointPath(finalValueTimePoints);
 
 			int totalSolution = label.getSolutionListener().solutionsNo();
 

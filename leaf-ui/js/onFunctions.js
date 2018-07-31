@@ -11,12 +11,10 @@ $('#analysis-btn').on('click', function() {
     var cycle;
    	jsLinks = getLinks();
    	cycle = cycleCheck(jsLinks, getElementList());
-	
 	syntaxCheck();
-
     // If there are no cycles then switch view to Analysis
     if (!cycle) {
-		switchToAnalysisMode(); 
+		switchToAnalysisMode();
     }
 
     // If there are cycles, then display error message. Otherwise, remove any "red" elements.
@@ -28,12 +26,12 @@ $('#analysis-btn').on('click', function() {
  * Helper function for switching to Analysis view.
  */
 function switchToAnalysisMode() {
-	
+
 	// Clear the right panel
 	clearInspector();
-
+	console.log("after clearInspector");
 	analysisInspector.render();
-
+	console.log("after render");
 	$('.inspector').append(analysisInspector.el);
 	$('#stencil').css("display", "none");
 	$('#history').css("display", "");
@@ -126,7 +124,7 @@ $('#btn-clear-elabel').on('click', function(){
 		elements[i].attr(".constraints/lastval", "none");
 		elements[i].attr(".funcvalue/text", " ");
 		var cellView  = elements[i].findView(paper);
-		elementInspector.render(cellView);
+		elementInspector.render(cellView.model);
 		elementInspector.$('#init-sat-value').val("none");
 		elementInspector.updateHTML(null);
 
@@ -225,6 +223,109 @@ $('#btn-fnt').on('click', function(){
 });
 
 /**
+ * Creates an instance of a Link object and saves it in the global model
+ * variable
+ *
+ * @param {joint.dia.Cell} cell
+ */
+function createLink(cell) {
+	var link = new Link(cell.attributes.labels[0].attrs.text.text.toUpperCase(), cell.getSourceElement().attributes.nodeID,  -1);
+	cell.attributes.linkID = link.linkID;
+    cell.on("change:target", function () {
+    	var target = cell.getTargetElement();
+    	if (target === null) {
+    		link.linkDestID = null;
+    	} else {
+    		link.linkDestID = target.attributes.nodeID;
+    	}
+    });
+    cell.on("change:source", function () {
+		var source = cell.getSourceElement();
+		if (source === null) {
+			link.linkSrcID = null;
+		} else {
+			link.linkSrcID = source.attributes.nodeID;
+		}
+    });
+
+    // when the link is removed, remove the link from the global model
+    // variable as well
+    cell.on("remove", function () {
+    	clearInspector();
+		model.removeLink(link.linkID);
+    });
+    model.links.push(link);
+}
+
+/**
+ * Creates an instance of a Intention object and saves it in the
+ * global model variable
+ *
+ * @param {joint.dia.Cell} cell
+ */
+function createIntention(cell) {
+
+    var name = cell.attr(".name/text") + "_" + Intention.numOfCreatedInstances;
+    cell.attr(".name/text", name);
+
+    // create intention object
+    var type = cell.attributes.type;
+    var intention = new Intention('-', type, name);
+    model.intentions.push(intention);
+
+    // create intention evaluation object
+    var intentionEval = new UserEvaluation(intention.nodeID, '0', '(no value)');
+    analysisRequest.userAssignmentsList.push(intentionEval);
+
+    cell.attributes.nodeID = intention.nodeID;
+
+    // when the intention is removed, remove the intention from the global
+    // model variable as well
+    cell.on("remove", function () {
+
+    	clearInspector();
+
+    	var userIntention = model.getIntentionByID(cell.attributes.nodeID);
+
+    	// remove this intention from the model
+        model.removeIntention(userIntention.nodeID);
+
+        // remove all intention evaluations associated with this intention
+        analysisRequest.removeIntention(userIntention.nodeID);
+
+
+        // if this intention has an actor, remove this intention's ID
+        // from the actor
+        if (userIntention.nodeActorID !== '-') {
+        	var actor = model.getActorByID(userIntention.nodeActorID);
+        	actor.removeIntentionID(userIntention.nodeID);
+        }
+
+    });
+
+}
+
+/**
+ * Creates an instance of an Actor object and saves it in the
+ * global model variable
+ *
+ * @param {joint.dia.Cell} cell
+ */
+function createActor(cell) {
+	var name = cell.attr('.name/text') + "_" + Actor.numOfCreatedInstances;
+	var actor = new Actor(name);
+    cell.attr(".name/text", name);
+	cell.attributes.nodeID = actor.nodeID;
+	model.actors.push(actor);
+
+	// when the actor is removed, remove the actor from the
+	// global modekl variable as well
+	cell.on('remove', function() {
+		model.removeActor(actor.nodeID);
+	});
+}
+
+/**
  * Set up on events for Rappid/JointJS objets
  */
 var element_counter = 0;
@@ -233,25 +334,21 @@ var min_font = 6;
 var current_font = 10;
 
 // Whenever an element is added to the graph
-graph.on("add", function(cell){
+graph.on("add", function(cell) {
+
 	if (cell instanceof joint.dia.Link){
-		if (graph.getCell(cell.get("source").id) instanceof joint.shapes.basic.Actor){
-			cell.prop("linktype", "actorlink");
-		cell.label(0,{attrs:{text:{text:"is-a"}}});
-
+        if (graph.getCell(cell.get("source").id) instanceof joint.shapes.basic.Actor){
+            cell.prop("linktype", "actorlink");
+            cell.label(0,{attrs:{text:{text:"is-a"}}});
 		}
-	} // Don't do anything for links
-	// Give element a unique default
-	cell.attr(".name/text", cell.attr(".name/text") + "_" + element_counter);
-	element_counter++;
-
-	// Add Functions and sat values to added types
-	if (cell instanceof joint.shapes.basic.Intention){
+        createLink(cell);
+    } else if (cell instanceof joint.shapes.basic.Intention){
+		createIntention(cell);
 		cell.attr('.funcvalue/text', ' ');
-	}
+	} else if (cell instanceof joint.shapes.basic.Actor) {
+		createActor(cell);
 
-	// Send actors to background so elements are placed on top
-	if (cell instanceof joint.shapes.basic.Actor){
+		// Send actors to background so elements are placed on top
 		cell.toBack();
 	}
 
@@ -289,10 +386,10 @@ paper.on('blank:pointerdown', function(evt, x, y) {
 });
 
 /**
- * 
+ *
  */
 paper.on('cell:pointerdown', function(cellView, evt, x, y) {
-	
+
 	if(mode == "Analysis"){
 		return;
 	}
@@ -305,6 +402,11 @@ paper.on('cell:pointerdown', function(cellView, evt, x, y) {
 	// Unembed cell so you can move it out of actor
 	if (cell.get('parent') && !(cell instanceof joint.dia.Link)) {
 		graph.getCell(cell.get('parent')).unembed(cell);
+    var intention = model.getIntentionByID(cell.attributes.nodeID);
+    var actor = model.getActorByID(intention.nodeActorID);
+    intention.nodeActorID = "-";
+    var index = actor.intentionIDs.indexOf(intention.nodeID);
+    actor.intentionIDs.splice(index, 1);
 	}
 });
 
@@ -324,7 +426,7 @@ paper.on("link:options", function(evt, cell){
 	}
 
 	clearInspector();
-	linkInspector.render(cell);
+	linkInspector.render(cell.model);
 
 });
 
@@ -398,49 +500,62 @@ function removeHighlight(elements){
 
 /**
  * Function for single click on cell
- * 
+ *
  */
 paper.on('cell:pointerup', function(cellView, evt) {
 	if(mode == "Modelling") {
-		// Link
+        // Link
         if (cellView.model instanceof joint.dia.Link) {
             var link = cellView.model;
             basicActorLink(link);
             // Element is selected
-			return
+        } else {
+
+            selection.reset();
+            selection.add(cellView.model);
+
+            var elements = graph.getElements();
+
+            // Remove highlight of other elements
+            removeHighlight(elements);
+
+            // Highlight when cell is clicked
+            cellView.highlight();
+
+            currentHalo = createHalo(cellView);
+
+            embedBasicActor(cellView.model);
+
+            clearInspector();
+
+            if (cellView.model instanceof joint.shapes.basic.Actor) {
+            	actorInspector.render(cellView.model);
+			} else {
+                elementInspector.render(cellView.model);
+			}
+
         }
-		selection.reset();
-		selection.add(cellView.model);
-
-		var elements = graph.getElements();
-		// Remove highlight of other elements
-		removeHighlight(elements);
-
-		// Highlight when cell is clicked
-		cellView.highlight();
-
-		currentHalo = createHalo(cellView);
-
-		embedBasicActor(cellView);
-
-		clearInspector();
-		elementInspector.render(cellView);
     }
 });
 
 /**
- * Embed an element into an actor boundary
- * 
+ * Embeds an element into an actor boundary
+ *
+ * @param {joint.dia.cell} cell
  */
-function embedBasicActor(cellView){
-	// Embed an element into an actor boundary, if necessary
-	if (!(cellView.model instanceof joint.shapes.basic.Actor)) {
-		var ActorsBelow = paper.findViewsFromPoint(cellView.model.getBBox().center());
+function embedBasicActor(cell) {
+	if (!(cell instanceof joint.shapes.basic.Actor)) {
+		var ActorsBelow = paper.findViewsFromPoint(cell.getBBox().center());
 
 		if (ActorsBelow.length) {
-			for (var a = 0; a < ActorsBelow.length; a++) {
-				if (ActorsBelow[a].model instanceof joint.shapes.basic.Actor) {
-					ActorsBelow[a].model.embed(cellView.model);
+			for (var i = 0; i < ActorsBelow.length; i++) {
+				var actorCell = ActorsBelow[i].model;
+				if (actorCell instanceof joint.shapes.basic.Actor) {
+					actorCell.embed(cell);
+					var nodeID = cell.attributes.nodeID;
+					var actorID = actorCell.attributes.nodeID
+					model.getIntentionByID(nodeID).nodeActorID = actorID;
+					model.getActorByID(actorID).intentionIDs.push(nodeID);
 				}
 			}
 		}
@@ -449,7 +564,7 @@ function embedBasicActor(cellView){
 }
 
 
-graph.on('change:size', function(cell, size){
+graph.on('change:size', function(cell, size) {
 	cell.attr(".label/cx", 0.25 * size.width);
 
 	// Calculate point on actor boundary for label (to always remain on boundary)
@@ -461,7 +576,7 @@ graph.on('change:size', function(cell, size){
 });
 
 
-graph.on('remove', function(cell, collection, opt) {
+graph.on('remove', function(cell) {
 	if (cell.isLink() && (cell.prop("link-type") == 'NBT' || cell.prop("link-type") == 'NBD')) {
 
 		// Verify if is a Not both type. If it is remove labels from source and target node
@@ -479,10 +594,10 @@ graph.on('remove', function(cell, collection, opt) {
 	   	}
 
 		// Verify if it is possible to remove the NB tag from source and target
-		if (!checkForMultipleNB(source)) {
+		if (source !== null && !checkForMultipleNB(source)) {
 			source.attr(".funcvalue/text", "");
 		}
-		if (!checkForMultipleNB(target)) {
+		if (target !== null && !checkForMultipleNB(target)) {
 			target.attr(".funcvalue/text", "");
 		}
 	}
@@ -496,6 +611,7 @@ function clearInspector() {
 	elementInspector.clear();
 	linkInspector.clear();
 	analysisInspector.clear();
+	actorInspector.clear();
 }
 
 
@@ -510,13 +626,12 @@ function checkForMultipleNB(node) {
 	var localLinks = graph.getLinks();
 
 	for (var i = 0; i < localLinks.length; i++){
-        if (localLinks[i].prop("link-type") == 'NBT' || localLinks[i].prop("link-type") == 'NBD'){
+        if (localLinks[i].prop("lin k-type") == 'NBT' || localLinks[i].prop("link-type") == 'NBD'){
             if (localLinks[i].getSourceElement().prop("id") == node["id"] || localLinks[i].getTargetElement().prop("id") == node["id"]){
-                num += 1;            
+                num += 1;
             }
         }
 	}
 
 	return num >= 1;
 }
-

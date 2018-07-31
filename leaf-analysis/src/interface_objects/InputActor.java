@@ -1,17 +1,20 @@
 package interface_objects;
 
+import java.util.ArrayList;
+
 public class InputActor{
 	
-	private String nodeId;
+	private String nodeID;
 	private String nodeName;
 	private String nodeType;
+	private ArrayList<String> intentions;
 	
 	public String getNodeId() {
-		return nodeId;
+		return nodeID;
 	}
 	
 	public void setNodeId(String nodeId) {
-		this.nodeId = nodeId;
+		this.nodeID = nodeId;
 	}
 	
 	public String getNodeName() {
@@ -28,5 +31,9 @@ public class InputActor{
 	
 	public void setNodeType(String nodeType) {
 		this.nodeType = nodeType;
+	}
+
+	public ArrayList<String> getIntentions() {
+		return this.intentions;
 	}
 }

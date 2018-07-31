@@ -5,11 +5,11 @@
 
 
 /**
- * Displays the analysis to the web app, by displaying the slider and the 
+ * Displays the analysis to the web app, by displaying the slider and the
  * history log
  *
  * @param {Object} analysisResults
- *   Object which contains data gotten from back end 
+ *   Object which contains data gotten from back end
  */
 function displayAnalysis(analysisResults){
 
@@ -27,7 +27,7 @@ function displayAnalysis(analysisResults){
 		sliderObject.sliderElement.noUiSlider.destroy();
 	}
 
-	// This might be unnecessary 
+	// This might be unnecessary
 	// ElementList = analysisResults.elementList;
 
 	// Update history log
@@ -50,7 +50,7 @@ function createSlider(currentAnalysis, isSwitch) {
 
 	var sliderMax = currentAnalysis.timeScale;
 	var density = (sliderMax < 25) ? (100 / sliderMax) : 4;
-	
+
 	noUiSlider.create(sliderObject.sliderElement, {
 		start: 0,
 		step: 1,
@@ -80,13 +80,13 @@ function createSlider(currentAnalysis, isSwitch) {
 
 /*
  * Creates and displays new slider after the user clicks a different
- * analysis from the history log. This function is called when 
+ * analysis from the history log. This function is called when
  * the user clicks a different analysis from the history log.
  *
  * @param {Object} currentAnalysis
  *   Contains data about the analysis that the back end performed
  * @param {Number} historyIndex
- *   A valid index for the array historyObject.allHistory, indicating 
+ *   A valid index for the array historyObject.allHistory, indicating
  *   which analysis/history log that the user clicked on
  */
 function switchHistory(currentAnalysis) {
@@ -136,6 +136,8 @@ function updateSliderValues(sliderValue, currentAnalysis){
 	var value = sliderValue;
 	$('#sliderValue').text(value);
 	sliderObject.sliderValueElement.innerHTML = value + "|" + currentAnalysis.relativeTime[value];
+	// Update the analysisRequest current state.
+	analysisRequest.currentState = sliderObject.sliderValueElement.innerHTML;
 
 	for (var i = 0; i < currentAnalysis.numOfElements; i++) {
 		updateNodeValues(i, currentAnalysis.elements[i].status[value], "renderAnalysis");
@@ -167,9 +169,9 @@ function updateNodeValues(elementIndex, satValue, mode) {
 		value = satValueDict[cell.attributes.attrs[".satvalue"].value];
 	}
 
-	if (value in satisfacationValuesDict) {
-        cell.attr(".satvalue/text", satisfacationValuesDict[value].satValue);
-        cell.attr({text: {fill: satisfacationValuesDict[value].color}});
+	if (value in satisfactionValuesDict) {
+        cell.attr(".satvalue/text", satisfactionValuesDict[value].satValue);
+        cell.attr({text: {fill: satisfactionValuesDict[value].color}});
     }
     else {
 		cell.removeAttr(".satvalue/d");
@@ -197,7 +199,7 @@ $('#history').on("click", ".log-elements", function(e){
 
 
 /**
- * Clears the history log on the web application, and clears 
+ * Clears the history log on the web application, and clears
  * historyObject to its inital state
  */
 function clearHistoryLog(){
@@ -218,7 +220,7 @@ function clearHistoryLog(){
 
 /**
  * Updates history log in order to display the new analysis,
- * and updates the historyObject to store information about 
+ * and updates the historyObject to store information about
  * the new analysis.
  *
  * @param {Object} currentAnalysis

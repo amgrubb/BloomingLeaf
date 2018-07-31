@@ -7,9 +7,14 @@ var paper;
 var stencil;
 var mode;
 
+var model = new Model();
+var analysisRequest = new AnalysisRequest();
+var analysisResult = new AnalysisResult();
+
 var linkInspector = new LinkInspector();
 var elementInspector = new ElementInspector();
 var analysisInspector = new AnalysisInspector();
+var actorInspector =  new ActorInspector();
 
 var currentHalo;
 var currentAnalysis;
@@ -34,51 +39,74 @@ var satvalues = {
 };
 
 var satValueDict = {
-	"unknown": "0000",
 	"satisfied": "0011",
 	"partiallysatisfied": "0010",
 	"partiallydenied": "0100",
 	"denied": "1100",
-	"none": "0000"
+	"none": "0000",
+	"(no value)": "(no value)"
 };
 // Satisfaction text values corresponding to the binary representation.
 // This is used in updateNodeValues in displayAnalysis
-var satisfacationValuesDict = {
+var satisfactionValuesDict = {
 	"0000": {
-		satValue: "(T, T)",
-		color: "black"
+	    name: "none",
+		satValue: "(⊥, ⊥)",
+		color: "black",
+		chartVal: 0
 	},
 	"0010": {
-		satValue: "(PS, T)",
-		color: "black"
+	    name: "partiallysatisfied",
+		satValue: "(P, ⊥)",
+		color: "black",
+		chartVal: 1
 	},
 	"0011": {
-		satValue: "(FS, T)",
-		color: "black"
+	    name: "satisfied",
+		satValue: "(F, ⊥)",
+		color: "black",
+		chartVal: 2
 	},
 	"0100": {
-		satValue: "(T, PD)",
-		color: "black"
+	    name: "partiallydenied",
+		satValue: "(⊥, P)",
+		color: "black",
+		chartVal: -1
 	},
 	"0110": {
-        satValue: "(PS, PD)",
-        color: "red"
+	    name: "conflict",
+        satValue: "(P, P)",
+        color: "red",
+		chartVal: 3
     },
 	"0111": {
-		satValue: "(FS, PD)",
-		color: "red"
+        name: "conflict",
+		satValue: "(F, P)",
+		color: "red",
+		chartVal: 3
 	},
 	"1100": {
-		satValue: "(T, FD)",
-		color: "black"
+	    name: "denied",
+		satValue: "(⊥, F)",
+		color: "black",
+		chartVal: -2
 	},
 	"1110": {
-        satValue: "(PS, FD)",
-        color: "red"
+        name: "conflict",
+        satValue: "(P, F)",
+        color: "red",
+		chartVal: 3
     },
 	"1111": {
-		satValue: "(FS, FD)",
-		color: "red"
+        name: "conflict",
+		satValue: "(F, F)",
+		color: "red",
+		chartVal: 3
+	},
+	"(no value)": {
+		name: "(no value)",
+		satValue: '(no value)',
+		chartVal: 0
 	}
 };
 
@@ -138,6 +166,7 @@ stencil = new joint.ui.Stencil({
 
 // A simple element editor.
 $('.inspector').append(elementInspector.el);
+$('.inspector').append(actorInspector.el);
 
 $('#stencil').append(stencil.render().el);
 
@@ -153,7 +182,6 @@ stencil.load([goal, task, sgoal, res, act]);
 $('.inspector').append(linkInspector.el);
 
 // Interface set up for modelling mode on startup
-$('#dropdown-model').css("display","none");
 $('#history').css("display","none");
 
 // Initialize Slider setup

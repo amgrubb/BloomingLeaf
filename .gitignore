@@ -10,6 +10,7 @@ leaf-analysis/doc/*
 
 *.class
 *.idea
+*.iml
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
