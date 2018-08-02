@@ -7,9 +7,11 @@ analysis.currentState;
 var tempResults;
 var filterOrderQueue = [];
 var savedAnalysisData = {};
+var analysisRequest;
+var analysisResult;
 var globalAnalysisResult;
 
-var graph;
+var model;
 
 var satValueDict = {
     "unknown": "0000",
@@ -41,7 +43,8 @@ function init(){
     //analysis.parentResults = jQuery.extend({}, window.opener.global_analysisResult);
 
     globalAnalysisResult = jQuery.extend({}, window.opener.globalAnalysisResult);
-
+    analysisRequest = jQuery.extend({}, window.opener.analysisRequest);
+    analysisResult = jQuery.extend({}, window.opener.analysisResult);
 
     analysis.paper = new joint.dia.Paper({
         width: 1200,
@@ -92,11 +95,11 @@ function init(){
     }
 
     if(!analysis.analysisResult){
-        analysis.analysisResult = globalAnalysisResult;
+        analysis.analysisResult = globalAnalysisResult.allNextStatesResult;
     }
     savedAnalysisData = jQuery.extend({}, window.opener.savedAnalysisData);
-    graph =  jQuery.extend({}, window.opener.graph);
-    tempResults = $.extend(true,{}, globalAnalysisResult);
+    model =  jQuery.extend({}, window.opener.model);
+    tempResults = $.extend(true,{}, globalAnalysisResult.allNextStatesResult);
 }
 
 function renderNavigationSidebar(currentPage = 0){
@@ -137,31 +140,31 @@ function updateNodesValues(currentPage, step = 0){
 
         //Change backend value to user friendly view
         if ((value == "0001") || (value == "0011")) {
-            cell.attr(".satvalue/text", "(FS, T)");
+            cell.attr(".satvalue/text", "(F, ⊥)");
             cell.attr({text:{fill:'black'}});
         }else if(value == "0010") {
-            cell.attr(".satvalue/text", "(PS, T)");
+            cell.attr(".satvalue/text", "(P, ⊥)");
             cell.attr({text:{fill:'black'}});
         }else if ((value == "1000") || (value == "1100")){
-            cell.attr(".satvalue/text", "(T, FD)");
+            cell.attr(".satvalue/text", "(⊥, F)");
             cell.attr({text:{fill:'black'}});
         }else if (value == "0100") {
-            cell.attr(".satvalue/text", "(T, PD)");
+            cell.attr(".satvalue/text", "(⊥, P)");
             cell.attr({text:{fill:'black'}});
         }else if (value == "0110") {
-            cell.attr(".satvalue/text", "(PS, PD)");
+            cell.attr(".satvalue/text", "(P, P)");
             cell.attr({text:{fill:'red'}});
         }else if ((value == "1110") || (value == "1010")){
-            cell.attr(".satvalue/text", "(PS, FD)");
+            cell.attr(".satvalue/text", "(P, F)");
             cell.attr({text:{fill:'red'}});
         }else if ((value == "0111") || (value == "0101")){
-            cell.attr(".satvalue/text", "(FS, PD)");
+            cell.attr(".satvalue/text", "(F, P)");
             cell.attr({text:{fill:'red'}});
         }else if ((value == "1111") || (value == "1001") || (value == "1101") || (value == "1011") ){
-            cell.attr(".satvalue/text", "(FS, FD)");
+            cell.attr(".satvalue/text", "(F, F)");
             cell.attr({text:{fill:'red'}});
         }else if (value == "0000") {
-            cell.attr(".satvalue/text", "(T,T)");
+            cell.attr(".satvalue/text", "(⊥,⊥)");
             cell.attr({text:{fill:'black'}});
         }else {
             cell.removeAttr(".satvalue/d");
@@ -826,7 +829,42 @@ function generate_next_states(){
     var jsObject = {};
     var index_of_selected_state = parseInt(document.getElementById("currentPage").value);
 
-    var newInputAnalysis = _.clone(savedAnalysisData.allNextStatesAnalysis);
+    var newInputAnalysis = analysisRequest;
+    console.log(analysisRequest);
+
+    var i = newInputAnalysis.currentState.indexOf('|', 0);
+    var current = parseInt(newInputAnalysis.currentState.substring(0, i)); // current in the full path
+    current ++; // current for this selected state
+    console.log(current);
+    if (current == analysisRequest.previousAnalysis.timePointPath.length){
+        alert("no more next states available");
+    }
+
+    // update analysisRequest with the current select state
+    // use single path solution as previous solution
+
+    for (var element_index = 0; element_index < tempResults.allSolution[index_of_selected_state].intentionElements.length; element_index++){
+        newInputAnalysis.previousAnalysis.elementList[element_index].status[current] = tempResults.allSolution[index_of_selected_state].intentionElements[element_index].status[0];
+        //savedAnalysisData.singlePathSolution.elementList[element_index].status.push(tempResults.allSolution[index_of_selected_state].intentionElements[element_index].status[0]);
+
+    }
+
+    // reset previous solution
+   // newInputAnalysis.previousAnalysis = savedAnalysisData.singlePathSolution;
+
+    //console.log(newInputAnalysis);
+
+    //update current state
+    newInputAnalysis.currentState = current + "|" + newInputAnalysis.previousAnalysis.timePointPath[current];
+    jsObject.analysisRequest = newInputAnalysis;
+    console.log(newInputAnalysis);
+
+
+    jsObject.model = model;
+
+    backendComm(jsObject);
+
+    /*var newInputAnalysis = _.clone(savedAnalysisData.allNextStatesAnalysis);
     console.log(savedAnalysisData.allNextStatesAnalysis);
     // update InputAnalysis with the current selected state
     for (var element_index = 0; element_index < tempResults.allSolution[index_of_selected_state].intentionElements.length; element_index++){
@@ -859,6 +897,6 @@ function generate_next_states(){
     }
 
     //Send data to backend
-    backendComm(jsObject);
+    backendComm(jsObject); */
 
 }

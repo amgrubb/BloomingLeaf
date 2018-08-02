@@ -79,7 +79,7 @@ public class TroposCSPAlgorithm {
     private boolean[] boolFSPD = new boolean[] {false, true, true, true};
     private boolean[] boolPSFD = new boolean[] {true, true, true, false};
     
-    private final static boolean DEBUG = true;								// Whether to print debug statements.
+    private final static boolean DEBUG = false;								// Whether to print debug statements.
     /* New in ModelSpec
      *     	private int relativeTimePoints = 4;
     		private int[] absoluteTimePoints = new int[] {5, 10, 15, 20};
@@ -164,6 +164,8 @@ public class TroposCSPAlgorithm {
     		throw new Exception("User Error: User requested \'" + spec.getAnalysisType() + "\', no such scenario exists. ");
     	}
 
+    	//System.out.println(this.spec.getInitialValueTimePoints());
+    	//System.out.println(this.spec.getInitialValues());
     	if (DEBUG)
 			System.out.println("Length of initialValueTimePoints: " + this.spec.getInitialValueTimePoints().length + 
 					"\nLength of initialValues()[0]: " + this.spec.getInitialValues()[0].length);
@@ -806,10 +808,12 @@ public class TroposCSPAlgorithm {
 	 *  NotBoth constraints created at the end of the function.
 	 */
 	private void initializePathDynamicFunctions() {		//Full Model and Full Path, over all time points.
+		//System.out.println("initialize dynamic functions");
     	for (int i = 0; i < this.intentions.length; i++){
     		IntentionalElement element = this.intentions[i];
     		if (DEBUG)
     			System.out.println("Dyn #" + element.id);
+    		//System.out.println("Dyn #" + element.id);
     		IntentionalElementDynamicType tempType = element.dynamicType;
         	if ((tempType == IntentionalElementDynamicType.NT) || (element.dynamicType == IntentionalElementDynamicType.RND) || 
         		(tempType == IntentionalElementDynamicType.NB))

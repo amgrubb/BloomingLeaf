@@ -68,7 +68,7 @@ function getFileResults(isGetNextSteps){
 				*/
 					console.log(JSON.stringify(JSON.parse(response['data'])));
 
-				globalAnalysisResult = results;
+				//globalAnalysisResult = results;
 
 				if (results == ""){
 					alert("Error while reading the resonse file from server. This can be due an error in executing java application.")
@@ -76,18 +76,27 @@ function getFileResults(isGetNextSteps){
 				}
 
 
-				analysisResult.assignedEpoch = results.assignedEpoch;
-		        analysisResult.timePointPath = results.timePointPath;
-		        analysisResult.timePointPathSize = results.timePointPathSize;
-		        analysisResult.elementList = results.elementList;
 
-		        analysisRequest.previousAnalysis = analysisResult;
-		        console.log("previousAnalysis");
-		        console.log(analysisRequest.previousAnalysis);
+				/*if (analysisResult.elementList.length > 0){
+                    analysisRequest.previousAnalysis = analysisResult;
+                    console.log("previousAnalysis");
+                    console.log(analysisRequest.previousAnalysis);
+				}*/
 
+				// do not need to store the past result for all next states
 				if(isGetNextSteps){
+					globalAnalysisResult.allNextStatesResult = results;
 					open_analysis_viewer();
 				}else{
+                    globalAnalysisResult.singlePathResult = results;
+                    analysisResult.assignedEpoch = results.assignedEpoch;
+                    analysisResult.timePointPath = results.timePointPath;
+                    analysisResult.timePointPathSize = results.timePointPathSize;
+                    analysisResult.elementList = results.elementList;
+                    analysisResult.allSolution = results.allSolution;
+                    analysisRequest.previousAnalysis = analysisResult;
+                    console.log("previousAnalysis");
+                    console.log(analysisRequest.previousAnalysis);
 					displayAnalysis(results);
 				}
 			}

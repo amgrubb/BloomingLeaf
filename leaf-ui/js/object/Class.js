@@ -286,6 +286,7 @@ class AnalysisResult {
         this.timePointPath ;
         this.timePointPathSize;
         this.elementList;
+        this.allSolution;
 	}
 }
 
