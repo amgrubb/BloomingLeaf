@@ -10,6 +10,8 @@ var savedAnalysisData = {};
 var analysisRequest;
 var analysisResult;
 var globalAnalysisResult;
+var graph;
+var current;
 
 var model;
 
@@ -45,6 +47,9 @@ function init(){
     globalAnalysisResult = jQuery.extend({}, window.opener.globalAnalysisResult);
     analysisRequest = jQuery.extend({}, window.opener.analysisRequest);
     analysisResult = jQuery.extend({}, window.opener.analysisResult);
+    graph = jQuery.extend({}, window.opener.graph);
+    var i = analysisRequest.currentState.indexOf('|', 0);
+    current = parseInt(analysisRequest.currentState.substring(0, i));
 
     analysis.paper = new joint.dia.Paper({
         width: 1200,
@@ -686,9 +691,9 @@ function save_current_state(){
     var jsObject = {};
 
     //Get the Graph Model
-    jsObject.model = getFrontendModel(false);
+    jsObject.model = model;
 
-    //this.saveElementsInGraphVariable();
+    /*//this.saveElementsInGraphVariable();
     var elements = [];
     for (var i = 0; i < graph.getElements().length; i++){
         if (!(graph.getElements()[i] instanceof joint.shapes.basic.Actor)){
@@ -697,16 +702,33 @@ function save_current_state(){
     }
     graph.allElements = elements;
     graph.elementsBeforeAnalysis = elements;
-
+*/
     if(jsObject.model == null) {
         return null;
     }
 
+    // update analysis type
+    analysisRequest.action = "singlePath";
+
     // updating input analysis
     var index_of_selected_state = parseInt(document.getElementById("currentPage").value);
 
-
     // getting current state
+    var currentState = current + 1;
+    console.log(current);
+
+    // update current state in the element list
+    for (var element_index = 0; element_index < tempResults.allSolution[index_of_selected_state].intentionElements.length; element_index++){
+        analysisRequest.previousAnalysis.elementList[element_index].status[current] = tempResults.allSolution[index_of_selected_state].intentionElements[element_index].status[0];
+    }
+
+
+    // getting next time point
+    var nextTimePoint = analysisRequest.previousAnalysis.timePointPath[currentState];
+    console.log(nextTimePoint);
+
+
+    /*// getting current state
     var i = savedAnalysisData.allNextStatesAnalysis.currentState.indexOf('|', 0);
     var current = parseInt(savedAnalysisData.allNextStatesAnalysis.currentState.substring(0, i));
 
@@ -804,9 +826,6 @@ function save_current_state(){
 
     }
 
-
-
-
     // update numRelTime [MAYBE]
     //savedAnalysisData.singlePathAnalysis.numRelTime -= assignedRelTP;
 
@@ -818,7 +837,7 @@ function save_current_state(){
 
     //Send data to backend
     //window.opener.backendComm(jsObject);
-    console.log(savedAnalysisData.singlePathAnalysis);
+    console.log(savedAnalysisData.singlePathAnalysis);*/
 }
 
 
@@ -829,14 +848,14 @@ function generate_next_states(){
     var jsObject = {};
     var index_of_selected_state = parseInt(document.getElementById("currentPage").value);
 
-    var newInputAnalysis = analysisRequest;
+    analysisRequest.action = "allNextStates";
+    //var newInputAnalysis = analysisRequest;
     console.log(analysisRequest);
 
-    var i = newInputAnalysis.currentState.indexOf('|', 0);
-    var current = parseInt(newInputAnalysis.currentState.substring(0, i)); // current in the full path
-    current ++; // current for this selected state
-    console.log(current);
-    if (current == analysisRequest.previousAnalysis.timePointPath.length){
+    var currentState = current + 1; // current for this selected state
+    console.log(currentState);
+
+    if (currentState == analysisRequest.previousAnalysis.timePointPath.length){
         alert("no more next states available");
     }
 
@@ -844,59 +863,19 @@ function generate_next_states(){
     // use single path solution as previous solution
 
     for (var element_index = 0; element_index < tempResults.allSolution[index_of_selected_state].intentionElements.length; element_index++){
-        newInputAnalysis.previousAnalysis.elementList[element_index].status[current] = tempResults.allSolution[index_of_selected_state].intentionElements[element_index].status[0];
-        //savedAnalysisData.singlePathSolution.elementList[element_index].status.push(tempResults.allSolution[index_of_selected_state].intentionElements[element_index].status[0]);
-
+        analysisRequest.previousAnalysis.elementList[element_index].status[currentState] = tempResults.allSolution[index_of_selected_state].intentionElements[element_index].status[0];
     }
 
-    // reset previous solution
-   // newInputAnalysis.previousAnalysis = savedAnalysisData.singlePathSolution;
-
-    //console.log(newInputAnalysis);
 
     //update current state
-    newInputAnalysis.currentState = current + "|" + newInputAnalysis.previousAnalysis.timePointPath[current];
-    jsObject.analysisRequest = newInputAnalysis;
-    console.log(newInputAnalysis);
+    analysisRequest.currentState = currentState + "|" + analysisRequest.previousAnalysis.timePointPath[currentState];
+    jsObject.analysisRequest = analysisRequest;
+    console.log(analysisRequest);
 
 
     jsObject.model = model;
 
     backendComm(jsObject);
 
-    /*var newInputAnalysis = _.clone(savedAnalysisData.allNextStatesAnalysis);
-    console.log(savedAnalysisData.allNextStatesAnalysis);
-    // update InputAnalysis with the current selected state
-    for (var element_index = 0; element_index < tempResults.allSolution[index_of_selected_state].intentionElements.length; element_index++){
-        newInputAnalysis.elementList[element_index].status.push(tempResults.allSolution[index_of_selected_state].intentionElements[element_index].status[0]);
-    }
-
-    var i = newInputAnalysis.currentState.indexOf('|', 0);
-    var current = parseInt(newInputAnalysis.currentState.substring(0, i));
-    current ++;
-
-    //update currentSate in InputAnalysis
-    newInputAnalysis.currentState = current + "|" + newInputAnalysis.initialValueTimePoints[current];
-    jsObject.analysis = newInputAnalysis;
-
-    //Get the Graph Model
-    jsObject.model = getFrontendModel(false);
-
-    //this.saveElementsInGraphVariable();
-    var elements = [];
-    for (var i = 0; i < graph.getElements().length; i++){
-        if (!(graph.getElements()[i] instanceof joint.shapes.basic.Actor)){
-            elements.push(graph.getElements()[i]);
-        }
-    }
-    graph.allElements = elements;
-    graph.elementsBeforeAnalysis = elements;
-
-    if(jsObject.model == null) {
-        return null;
-    }
-
-    //Send data to backend
-    backendComm(jsObject); */
 
 }
