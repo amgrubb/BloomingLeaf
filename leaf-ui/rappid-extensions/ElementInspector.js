@@ -941,9 +941,14 @@ var ElementInspector = Backbone.View.extend({
             this.cell.attr(".funcvalue/text", '');
         } else {
             this.cell.attr(".funcvalue/text", funcType);
+        } 
+        
+        if (initSatVal == '(no value)') {
+            this.cell.attr('.satvalue/text', '');
+        } else {
+            this.cell.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
         }
         
-        this.cell.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
     },
 
     clear: function(){
