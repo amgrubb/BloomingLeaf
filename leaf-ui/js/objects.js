@@ -31,11 +31,11 @@ function analysisObject () {
 analysisObject.initFromBackEnd = function(analysisResults){
 	this.elements = [];
 	this.numOfElements = Number(analysisResults.elementList.length);
-	this.timeScale = Number(analysisResults.finalValueTimePoints.length) - 1;
+	this.timeScale = Number(analysisResults.timePointPath.length) - 1;
 	this.relativeTime = [];
 
-	for(var i = 0; i < analysisResults.finalValueTimePoints.length; i++){
-		var aux = analysisResults.finalValueTimePoints[i];
+	for(var i = 0; i < analysisResults.timePointPath.length; i++){
+		var aux = analysisResults.timePointPath[i];
 		this.relativeTime.push(aux);
 	}
 
