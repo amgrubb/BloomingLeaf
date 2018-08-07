@@ -850,7 +850,9 @@ function save_current_state(){
     var difference = parseInt(model.maxAbsTime) - parseInt(analysisRequest.previousAnalysis.timePointPath[currentState]);
     console.log("difference: " + difference);
     if (numTPLeft > difference){
-        var newRand = Math.floor(Math.random() * ( parseInt(model.maxAbsTime) - numTPLeft - parseInt(analysisRequest.previousAnalysis.timePointPath[current] + 1)) + parseInt(analysisRequest.previousAnalysis.timePointPath[current]);
+        var newRand = Math.floor(Math.random() *
+            ( parseInt(model.maxAbsTime) - numTPLeft - parseInt(analysisRequest.previousAnalysis.timePointPath[current] + 1))
+            + parseInt(analysisRequest.previousAnalysis.timePointPath[current]));
         console.log("newRand " + newRand);
     }
 
