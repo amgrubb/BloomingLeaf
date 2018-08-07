@@ -728,116 +728,140 @@ function save_current_state(){
     console.log(nextTimePoint);
 
 
-    /*// getting current state
-    var i = savedAnalysisData.allNextStatesAnalysis.currentState.indexOf('|', 0);
-    var current = parseInt(savedAnalysisData.allNextStatesAnalysis.currentState.substring(0, i));
+    // get the list of all epochs
+    var allEpochs = {}; // intention id : list of epoch names
+    var num_epochs = 0;
 
-
-    // add the previous solution path to the element lists
-    for (var element_index = 0; element_index < savedAnalysisData.singlePathSolution.elementList.length; element_index++){
-        savedAnalysisData.singlePathAnalysis.elementList[element_index].status = [];
-        for (var state_index = 0; state_index < current; state_index++){
-            savedAnalysisData.singlePathAnalysis.elementList[element_index].status.push(savedAnalysisData.singlePathSolution.elementList[element_index].status[state_index]);
+    for (var i = 0; i < model.intentions.length ; i++){
+        // more than one piece of functions involved
+        if (!allEpochs[model.intentions[i].nodeID]){
+            allEpochs[model.intentions[i].nodeID] = [];
         }
+
+        if (model.intentions[i].dynamicFunction.stringDynVis === "NT" ||
+            model.intentions[i].dynamicFunction.stringDynVis === "C" ||
+            model.intentions[i].dynamicFunction.stringDynVis === "I" ||
+            model.intentions[i].dynamicFunction.stringDynVis === "D" ||
+            model.intentions[i].dynamicFunction.stringDynVis === "R" ||
+            model.intentions[i].dynamicFunction.stringDynVis === "NB" ){
+            continue;
+        }
+        else if (model.intentions[i].dynamicFunction.stringDynVis === "SD" ||
+            model.intentions[i].dynamicFunction.stringDynVis === "DS" ||
+            model.intentions[i].dynamicFunction.stringDynVis === "CR" ||
+            model.intentions[i].dynamicFunction.stringDynVis === "RC" ||
+            model.intentions[i].dynamicFunction.stringDynVis === "MP" ||
+            model.intentions[i].dynamicFunction.stringDynVis === "MN" ){
+            allEpochs[model.intentions[i].nodeID].push("E" + model.intentions[i].nodeID);
+            if (analysisRequest.previousAnalysis.assignedEpoch[i].indexOf("E" + model.intentions[i].nodeID) > -1){
+                console.log("epoch has happened " +  "E" + model.intentions[i].nodeID);
+            }
+            num_epochs ++;
+        }
+        else if (jsObject.model.dynamics[i].dynamicType === "UD"){
+            // TODO : fix UD function analysis
+            for (var j = 0; j < model.intentions[i].dynamicFunction.functionSegList.length; j ++){
+                allEpochs[model.intentions[i].nodeID].push("E" + model.intentions[i].nodeID + "_" + model.intentions[i].dynamicFunction.functionSegList[i+1].funcType);
+                if (analysisRequest.previousAnalysis.assignedEpoch[i].indexOf("E" + model.intentions[i].nodeID + "_" + model.intentions[i].dynamicFunction.functionSegList[i+1].funcType) > -1){
+                    console.log("epoch has happened " +  "E" + model.intentions[i].nodeID + "_" + model.intentions[i].dynamicFunction.functionSegList[i+1].funcType);
+                }
+                num_epochs ++;
+            }
+        }
+
+    }
+
+    console.log(allEpochs);
+    console.log(num_epochs)
+    ;
+
+   /* // determine which epoch has happened
+    var epochHappened = [];
+    for (var i = 0; i < currentState; i++){
+        console.log("looping " + analysisRequest.previousAnalysis.assignedEpoch[i]);
+        if ((analysisRequest.previousAnalysis.assignedEpoch[i].indexOf("E") > -1) && (analysisRequest.previousAnalysis.assignedEpoch[i].indexOf("T") == -1)){
+            console.log("found function epoch");
+            epochHappened.push(analysisRequest.previousAnalysis.assignedEpoch[i]);
+        }
+    }*/
+
+    // determine the type of current time point
+    for (var i = 0; i < model.intentions.length ; i++){
+
     }
 
 
-    for (var element_index = 0; element_index < tempResults.allSolution[index_of_selected_state].intentionElements.length; element_index++){
-        savedAnalysisData.singlePathAnalysis.elementList[element_index].status[current] = tempResults.allSolution[index_of_selected_state].intentionElements[element_index].status[0];
-    }
+    // update current time point in the path
 
 
-    var nextTimePoint = savedAnalysisData.allNextStatesAnalysis.initialValueTimePoints[current+1];
 
-    // update initialValueTimePoints from next states analysis
-    // all the time points from initial to and including current
-    savedAnalysisData.singlePathAnalysis.initialValueTimePoints = savedAnalysisData.allNextStatesAnalysis.initialValueTimePoints.slice(0,current);
+    // count absolute time points that occurs
 
-    // TODO : need to make sure it works with absolute time points as well
-    // current only works with relative time points
+    var previousEpochs = [];
+    var previousAbs = 0;
+    var previousRel = 0;
+    var AbsIntersction = 0;
+    for (var i = 0; i < currentState; i ++){
+        for (var j = 0; j < analysisRequest.previousAnalysis.assignedEpoch.length; j ++){
+            var regex = /.*_(.*)/g;
+            var match = regex.exec(analysisRequest.previousAnalysis.assignedEpoch[j]);
+            if (match[1] === analysisRequest.previousAnalysis.timePointPath[i]){
+                if (analysisRequest.previousAnalysis.assignedEpoch[j].indexOf("T") > -1) {
+                    // check if it's an absolute time point
+                    if (analysisRequest.previousAnalysis.assignedEpoch[j].indexOf("A") > -1){
+                        previousAbs ++;
+                    } else {
+                        // not TA but happen to be on an abs time point
+                        if (analysisRequest.absTimePtsArr.indexOf(match[1]) > -1){
+                            AbsIntersction ++;
+                        }
 
-    // update initialAssignedEpoch
-    var assignedRelTP = 1;
-    var prev_assigned_epochs = [];
-    for (var i = 0; i < savedAnalysisData.allNextStatesAnalysis.initialAssignedEpoch.length; i++){
-        var regex = /.*_(.*)/g;
-        var match = regex.exec(savedAnalysisData.allNextStatesAnalysis.initialAssignedEpoch[i]);
-        if (savedAnalysisData.singlePathAnalysis.initialValueTimePoints.indexOf(match[1]) > -1){
-            // change the index of the relative points so they make sense?
-            if (savedAnalysisData.allNextStatesAnalysis.initialAssignedEpoch[i].indexOf("R") > -1){
-                console.log("relative time point");
-                prev_assigned_epochs.push("TR" + assignedRelTP + "_" + match[1]);
-                assignedRelTP ++;
-            } else{
-                prev_assigned_epochs.push(savedAnalysisData.allNextStatesAnalysis.initialAssignedEpoch[i]);
+                        // count previous relative points
+                        if (analysisRequest.previousAnalysis.assignedEpoch[j].indexOf("R") > -1){
+                            previousRel ++;
+                        }
+                    }
+                } else {
+                    if (analysisRequest.previousAnalysis.assignedEpoch[j].indexOf("E") > -1){
+                        console.log("found function epoch");
+                        var regex1 = /(.*)_.*/g;
+                        var match1 = regex1.exec(analysisRequest.previousAnalysis.assignedEpoch[j]);
+                        previousEpochs.push(match1[1]);
+                    }
+                }
             }
         }
     }
-    savedAnalysisData.singlePathAnalysis.initialAssignedEpoch = prev_assigned_epochs;
+    console.log("previousEpochs " + previousEpochs);
+    console.log("previousAbs " + previousAbs);
+    console.log("AbsIntersction " + AbsIntersction);
+    console.log("previousRel " + previousRel);
 
-    // if (max - next time point < #time points left){  time points left -> epochs left  + absolute time points left
-    //       next time point = rand(cur time point, max - # time point left);
-    // }
+    // update current
+    // number of time points left = num_all_epochs + num_relative + num_absolute+1 + intersection - prevE - prevA - prevR
+    // number of time points left >= max - cur time point
+    // if <, cur time point = rand(prev tp, max - tp left)
 
-    savedAnalysisData.singlePathAnalysis.initialValueTimePoints.push(nextTimePoint);
+    var numTPLeft = num_epochs + parseInt(analysisRequest.numRelTime) + analysisRequest.absTimePtsArr.length
+    + AbsIntersction - previousEpochs.length - previousAbs - previousRel;
 
+    console.log("numTPLeft " + numTPLeft);
 
-    // determine the type of the current time point
-    // relative for now
-
-    // get the list of all epochs
-    var allEpochs = {}; // intention id : list of epoch names
-    for (var i = 0; i < jsObject.model.dynamics.length; i ++){
-        if (!allEpochs[jsObject.model.dynamics[i].intentionID]){
-            allEpochs[jsObject.model.dynamics[i].intentionID] = [];
-        }
-        if (jsObject.model.dynamics[i].dynamicType === "NT" ||
-            jsObject.model.dynamics[i].dynamicType === "C" ||
-            jsObject.model.dynamics[i].dynamicType === "I" ||
-            jsObject.model.dynamics[i].dynamicType === "D" ||
-            jsObject.model.dynamics[i].dynamicType === "R" ||
-            jsObject.model.dynamics[i].dynamicType === "NB" ){
-            continue;
-        }
-        else if (jsObject.model.dynamics[i].dynamicType === "SD" ||
-            jsObject.model.dynamics[i].dynamicType === "DS" ||
-            jsObject.model.dynamics[i].dynamicType === "CR" ||
-            jsObject.model.dynamics[i].dynamicType === "RC" ||
-            jsObject.model.dynamics[i].dynamicType === "MP" ||
-            jsObject.model.dynamics[i].dynamicType === "MN" ){
-            allEpochs[jsObject.model.dynamics[i].intentionID].push("E" + jsObject.model.dynamics[i].intentionID);
-        }
-        else if (jsObject.model.dynamics[i].dynamicType === "UD"){
-            // TODO : after merge with refactoring -> problem with model spec building with user defined functions
-        }
-    }
-    console.log(allEpochs);
-
-    // need to know if an epoch happens on a absolute time point
-
-    // collect possible current epoch (name)
-    var potentialEpoch = [];
-    if (potentialEpoch.length == 0){
-        // if no epoch possible, make it a relative time point
-        // unless it's absolute
-        savedAnalysisData.singlePathAnalysis.initialAssignedEpoch.push("TR" + current + "_" + savedAnalysisData.singlePathAnalysis.initialValueTimePoints[current]);
-    } else {
-        // make a random choice
-
+    var difference = parseInt(model.maxAbsTime) - parseInt(analysisRequest.previousAnalysis.timePointPath[currentState]);
+    console.log("difference: " + difference);
+    if (numTPLeft > difference){
+        var newRand = Math.floor(Math.random() * ( parseInt(model.maxAbsTime) - numTPLeft - parseInt(analysisRequest.previousAnalysis.timePointPath[current] + 1)) + parseInt(analysisRequest.previousAnalysis.timePointPath[current]);
+        console.log("newRand " + newRand);
     }
 
-    // update numRelTime [MAYBE]
-    //savedAnalysisData.singlePathAnalysis.numRelTime -= assignedRelTP;
 
-    jsObject.analysis = savedAnalysisData.singlePathAnalysis;
-    console.log(jsObject.analysis);
-
-    savedAnalysisData.singlePathAnalysis.currentState = current + "|" + savedAnalysisData.singlePathAnalysis.initialValueTimePoints[current];
+    analysisRequest.currentState = currentState + "|" + analysisRequest.previousAnalysis.timePointPath[currentState];
+    jsObject.analysisRequest = analysisRequest;
+    console.log(jsObject);
 
 
-    //Send data to backend
-    //window.opener.backendComm(jsObject);
-    console.log(savedAnalysisData.singlePathAnalysis);*/
+   // window.opener.backendComm(jsObject);
+
 }
 
 

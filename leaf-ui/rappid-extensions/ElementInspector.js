@@ -521,6 +521,8 @@ var ElementInspector = Backbone.View.extend({
             this.$('#markedValue').val(value);
         }
 
+        this.$('#markedValue').change();
+
         return;
     },
 

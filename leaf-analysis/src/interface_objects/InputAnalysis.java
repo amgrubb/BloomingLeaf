@@ -68,7 +68,6 @@ public class InputAnalysis {
 		int[] arr = new int[this.absTimePtsArr.size()];
 		for (int i = 0; i < this.absTimePtsArr.size(); i++) {
 			arr[i] = Integer.parseInt(this.absTimePtsArr.get(i));
-			System.out.println(this.absTimePtsArr.get(i));
 		}
 		return arr;
 	}
