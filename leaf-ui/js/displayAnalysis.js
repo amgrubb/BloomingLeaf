@@ -162,7 +162,7 @@ function updateNodeValues(nodeID, satValue, mode) {
 	for (var i = 0; i < elements.length; i++) {
 		curr = elements[i].findView(paper).model;
 		if (curr.attributes.nodeID == nodeID) {
-			curr = cell;
+			cell = curr;
 			break;
 		}
 	}
