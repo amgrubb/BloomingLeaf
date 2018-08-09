@@ -134,7 +134,12 @@ function switchToModellingMode() {
 $('#btn-undo').on('click', _.bind(commandManager.undo, commandManager));
 $('#btn-redo').on('click', _.bind(commandManager.redo, commandManager));
 $('#btn-clear-all').on('click', function(){
+	
 	graph.clear();
+	Intention.numOfCreatedInstances = 0;
+	Actor.numOfCreatedInstances = 0;
+	Link.numOfCreatedInstances = 0;
+
 	// Delete cookie by setting expiry to past date
 	document.cookie='all={}; expires=Thu, 18 Dec 2013 12:00:00 UTC';
 });
