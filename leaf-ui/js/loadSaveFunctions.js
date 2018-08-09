@@ -206,17 +206,25 @@ reader.onload = function() {
 		
 		graph.fromJSON(result);
 	} else {
-        model = new Model();
+
+		loadFromObject(result);
+
         
-        model.actors = getActorsArr(result.model.actors);
-        model.intentions = getIntentionsArr(result.model.intentions);
-        model.links = getLinksArr(result.model.links);
-        model.constraints = getConstArr(result.model.constraints);
-        model.maxAbsTime = result.model.maxAbsTime;
         
-		analysisRequest = Object.assign(new AnalysisRequest, result.analysisRequest);
-		graph.fromJSON(result.graph);
+        
 	}
+}
+
+function loadFromObject(obj) {
+	model = new Model();
+	model.actors = getActorsArr(obj.model.actors);
+	model.intentions = getIntentionsArr(obj.model.intentions);
+	model.links = getLinksArr(obj.model.links);
+	model.constraints = getConstArr(obj.model.constraints);
+	model.maxAbsTime = obj.model.maxAbsTime;
+
+	analysisRequest = Object.assign(new AnalysisRequest, obj.analysisRequest);
+	graph.fromJSON(obj.graph);
 }
 
 function getConstArr(arr) {
@@ -321,6 +329,13 @@ function getNodeID(nodeID, cells) {
     return "-";
 }
 
+function getFullJson() {
+	var obj = {};
+	obj.graph = graph.toJSON();
+	obj.model = model;
+	obj.analysisRequest = analysisRequest;
+	return obj;
+}
 
 /**
  * Helper function to download saved graph in JSON format
@@ -343,4 +358,19 @@ function isIntention(cell) {
          cell.type == 'basic.Task' ||
          cell.type == 'basic.Softgoal' ||
          cell.type == 'basic.Resource';
+}
+
+/**
+ * If a cookie exists, process it as a previously created graph and load it.
+ */
+if (document.cookie && document.cookie.indexOf('all=') !== -1){
+
+	var obj = JSON.parse(document.cookie.substr(4));
+
+	try {
+		loadFromObject(obj);
+	} catch (e) {
+		// This should never happen, but just in case
+		alert('Previously stored cookies contains invalid JSON data. Please clear your cookies.');
+	}
 }

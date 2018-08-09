@@ -202,28 +202,3 @@ $(window).resize(function() {
 	$('#slider').css("margin-top", $(this).height() * 0.9);
 	$('#slider').width($('#paper').width() * 0.8);
 });
-
-/**
- * If a cookie exists, process it as a previously created graph and load it.
- */
-if (document.cookie){
-	var cookies = document.cookie.split(";");
-	var prevgraph = "";
-
-	// Loop through the cookies to find the one representing the graph, if it exists
-	for (var i = 0; i < cookies.length; i++){
-		if (cookies[i].indexOf("graph=") !== -1){ // If substring exists
-			prevgraph = cookies[i].substr(cookies[i].indexOf("graph=") + 6); // Get the substring after graph=
-			break;
-		}
-	}
-
-	if (prevgraph){
-		try {
-			graph.fromJSON(JSON.parse(prevgraph));
-		} catch (e) {
-			// This should never happen, but just in case
-			alert('Previously stored cookies contains invalid JSON data. Please clear your cookies.');
-		}
-	}
-}

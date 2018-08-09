@@ -17,7 +17,7 @@ function backendComm(jsObject){
 		data:JSON.stringify(jsObject),
 		success: function(response){
 			setTimeout(function(){
-				if(jsObject.analysis.action=="allNextStates"){
+				if(jsObject.analysisRequest.action=="allNextStates"){
 					executeJava(true);
 				}else{
 					executeJava(false);

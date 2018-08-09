@@ -74,6 +74,8 @@ $('#model-cur-btn').on('click', function() {
  */
 function switchToModellingMode() {
 
+	analysisRequest.previousAnalysis = null;
+
 	clearInspector();
 
 	// Reset to initial graph prior to analysis
@@ -116,7 +118,7 @@ $('#btn-redo').on('click', _.bind(commandManager.redo, commandManager));
 $('#btn-clear-all').on('click', function(){
 	graph.clear();
 	// Delete cookie by setting expiry to past date
-	document.cookie='graph={}; expires=Thu, 18 Dec 2013 12:00:00 UTC';
+	document.cookie='all={}; expires=Thu, 18 Dec 2013 12:00:00 UTC';
 });
 
 $('#btn-clear-elabel').on('click', function(){
@@ -187,10 +189,7 @@ $('#btn-save').on('click', function() {
 	var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
 	if (name){
 		var fileName = name + ".json";
-		var obj = {};
-		obj.graph = graph.toJSON();
-		obj.model = model;
-		obj.analysisRequest = analysisRequest;
+		var obj = getFullJson();
 		download(fileName, JSON.stringify(obj));
 	}
 });
@@ -276,7 +275,7 @@ function createIntention(cell) {
 
     // create intention object
     var type = cell.attributes.type;
-    var intention = new Intention('-', type, name);
+    var intention = new Intention('-', type[6], name);
     model.intentions.push(intention);
 
     // create intention evaluation object
@@ -363,8 +362,8 @@ graph.on("add", function(cell) {
 
 // Auto-save the cookie whenever the graph is changed.
 graph.on("change", function(){
-	var graphtext = JSON.stringify(graph.toJSON());
-	document.cookie = "graph=" + graphtext;
+	var graphtext = JSON.stringify(getFullJson());
+	document.cookie = "all=" + graphtext;
 });
 
 var selection = new Backbone.Collection();

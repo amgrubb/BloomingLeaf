@@ -740,25 +740,17 @@ class Intention {
      *   ex: 'a0000' (actor ID), '-' (if there is no actor)
      * @param {String} nodeType
      *   Type of the intention.
-     *   Will be one of these four: 'basic.Goal', 'basic.Task', 'basic.Softgoal', 'basic.Resource'
+     *   Will be one of these four: 'G', 'T', 'S', 'R'
+     *   which stands for Goal, Task, Soft Goal and Resource
+     *   respectively
      * @param {String} nodeName
      */
     constructor(nodeActorID, nodeType, nodeName) {
         this.nodeActorID = nodeActorID;
         this.nodeID = this.createID();
-        this.nodeType = this.getShortenedNodeType(nodeType);
+        this.nodeType = nodeType;
         this.nodeName = nodeName;
         this.dynamicFunction = new EvolvingFunction(this.nodeID);
-    }
-
-    /**
-     * Returns a shortened version of type
-     *
-     * @param {String} type
-     * @returns {String}
-     */
-    getShortenedNodeType(type) {
-        return type[6];
     }
 
     /**
