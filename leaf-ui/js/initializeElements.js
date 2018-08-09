@@ -202,3 +202,4 @@ $(window).resize(function() {
 	$('#slider').css("margin-top", $(this).height() * 0.9);
 	$('#slider').width($('#paper').width() * 0.8);
 });
+

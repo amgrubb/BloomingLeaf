@@ -1096,7 +1096,6 @@ class AnalysisRequest {
         }
     }
 
-
 	/**
 	 * Removes all UserEvaluation objects in
 	 * userAssignmentsList, with an intentionID equal to

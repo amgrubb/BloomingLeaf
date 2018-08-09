@@ -139,23 +139,21 @@ function updateSliderValues(sliderValue, currentAnalysis){
 
 	for (var i = 0; i < currentAnalysis.numOfElements; i++) {
 		var element = currentAnalysis.elements[i];
-		updateNodeValues(element.id, element.status[value], "renderAnalysis");
+		updateNodeValues(element.id, element.status[value]);
 	}
 }
 
 
 /**
  * Updates the satisfaction value of a particular node in the graph.
+ * Used to display analysis results on the nodes.
  *
  * @param {String} nodeID
  *   nodeID of the node of interest
  * @param {String} satValue
  *   Satisfaction value in string form. ie: '0011' for satisfied
- * @param {String} mode
- *   Determines how to updates node values.
- *   mode is either 'renderAnalysis' or 'toInitModel'
  */
-function updateNodeValues(nodeID, satValue, mode) {
+function updateNodeValues(nodeID, satValue) {
 	var elements = graph.getElements();
 	var curr;
 	var cell;
@@ -167,24 +165,10 @@ function updateNodeValues(nodeID, satValue, mode) {
 		}
 	}
 
-	var value;
-
-	// Update node based on values from cgi file
-	if (mode == "renderAnalysis") {
-		value = satValue;
-
-	// Update node based on values saved from graph prior to analysis
-	} else if (mode == "toInitModel") {
-		value = satValueDict[cell.attributes.attrs[".satvalue"].value];
-	}
-
-	if (value in satisfactionValuesDict) {
-        cell.attr(".satvalue/text", satisfactionValuesDict[value].satValue);
-        cell.attr({text: {fill: satisfactionValuesDict[value].color}});
+	if (satValue in satisfactionValuesDict) {
+        cell.attr(".satvalue/text", satisfactionValuesDict[satValue].satValue);
+        cell.attr({text: {fill: satisfactionValuesDict[satValue].color}});
     }
-    else {
-		cell.removeAttr(".satvalue/d");
-	}
 }
 
 

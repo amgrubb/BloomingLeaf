@@ -68,6 +68,27 @@ $('#model-cur-btn').on('click', function() {
 });
 
 /**
+ * Sets each node/cellview in the paper to its initial 
+ * satisfaction value and colours all text to black
+ */
+function revertNodeValuesToInitial() {
+	var elements = graph.getElements();
+	var curr;
+	for (var i = 0; i < elements.length; i++) {
+		var curr = elements[i].findView(paper).model;
+		var intention = model.getIntentionByID(curr.attributes.nodeID);
+
+		var initSatVal = intention.getInitialSatValue();
+		if (initSatVal === '(no value)') {
+			curr.attr('.satvalue/text', '');
+		} else {
+			curr.attr('.satvalue/text', intention.getInitialSatValue());
+		}
+		curr.attr({text: {fill: 'black'}});
+	}
+}
+
+/**
  * Switches back to Modelling Mode from Analysis Mode
  * and resets the Nodes' satValues to the values prior to analysis
  * Display the modeling mode page
@@ -79,10 +100,7 @@ function switchToModellingMode() {
 	clearInspector();
 
 	// Reset to initial graph prior to analysis
-	for (var i = 0; i < graph.elementsBeforeAnalysis.length; i++) {
-		var value = graph.elementsBeforeAnalysis[i]
-		updateNodeValues(i, value, "toInitModel");
-	}
+	revertNodeValuesToInitial();
 
 	graph.elementsBeforeAnalysis = [];
 
