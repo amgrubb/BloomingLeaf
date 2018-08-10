@@ -182,6 +182,9 @@ var AnalysisInspector = Backbone.View.extend({
         //Get the AnalysisInspector view information
         analysisRequest.action = "allNextStates";
 
+        // need to remove TPs after current point from previous solution
+
+
         //Prepare and send data to backend
         this.sendToBackend();
     },
