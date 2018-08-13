@@ -75,7 +75,15 @@ function revertNodeValuesToInitial() {
 	var elements = graph.getElements();
 	var curr;
 	for (var i = 0; i < elements.length; i++) {
-		var curr = elements[i].findView(paper).model;
+		curr = elements[i].findView(paper).model;
+
+		if (curr.attributes.type !== 'basic.Goal' &&
+			curr.attributes.type !== 'basic.Task' &&
+			curr.attributes.type !== 'basic.Softgoal' &&
+			curr.attributes.type !== 'basic.Resource') {
+			continue;
+		}
+		
 		var intention = model.getIntentionByID(curr.attributes.nodeID);
 
 		var initSatVal = intention.getInitialSatValue();
@@ -319,7 +327,7 @@ function createIntention(cell) {
     	if (userIntention == null) {
     		return;
     	}
-    	
+
     	// remove this intention from the model
         model.removeIntention(userIntention.nodeID);
 
