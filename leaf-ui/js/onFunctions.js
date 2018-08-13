@@ -316,6 +316,10 @@ function createIntention(cell) {
 
     	var userIntention = model.getIntentionByID(cell.attributes.nodeID);
 
+    	if (userIntention == null) {
+    		return;
+    	}
+    	
     	// remove this intention from the model
         model.removeIntention(userIntention.nodeID);
 
