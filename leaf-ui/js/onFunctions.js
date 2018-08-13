@@ -136,6 +136,7 @@ $('#btn-redo').on('click', _.bind(commandManager.redo, commandManager));
 $('#btn-clear-all').on('click', function(){
 	
 	graph.clear();
+	analysisRequest.previousAnalysis = null;
 	Intention.numOfCreatedInstances = 0;
 	Actor.numOfCreatedInstances = 0;
 	Link.numOfCreatedInstances = 0;
