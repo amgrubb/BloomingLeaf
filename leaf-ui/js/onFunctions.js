@@ -83,14 +83,14 @@ function revertNodeValuesToInitial() {
 			curr.attributes.type !== 'basic.Resource') {
 			continue;
 		}
-		
+
 		var intention = model.getIntentionByID(curr.attributes.nodeID);
 
 		var initSatVal = intention.getInitialSatValue();
 		if (initSatVal === '(no value)') {
 			curr.attr('.satvalue/text', '');
 		} else {
-			curr.attr('.satvalue/text', intention.getInitialSatValue());
+			curr.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
 		}
 		curr.attr({text: {fill: 'black'}});
 	}
