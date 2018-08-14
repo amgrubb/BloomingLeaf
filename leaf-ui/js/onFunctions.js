@@ -302,6 +302,7 @@ function createLink(cell) {
     // variable as well
     cell.on("remove", function () {
     	clearInspector();
+    	
     	var sourceID = cell.getSourceElement().attributes.nodeID;
         var targetID = cell.getTargetElement().attributes.nodeID;
 
@@ -309,9 +310,14 @@ function createLink(cell) {
         var source = model.getIntentionByID(sourceID);
         var target = model.getIntentionByID(targetID);
 
-        source.dynamicFunction.stringDynVis = 'NT';
-        target.dynamicFunction.stringDynVis = 'NT';
-
+        if (link.linkType === 'NBT' || link.linkType === 'NBD') {
+        	if (source) {
+        		source.dynamicFunction.stringDynVis = 'NT';
+        	}
+        	if (target) {
+        		target.dynamicFunction.stringDynVis = 'NT';
+        	}
+        }
 		model.removeLink(link.linkID);
     });
     model.links.push(link);
@@ -342,7 +348,6 @@ function createIntention(cell) {
     // when the intention is removed, remove the intention from the global
     // model variable as well
     cell.on("remove", function () {
-
     	clearInspector();
 
     	var userIntention = model.getIntentionByID(cell.attributes.nodeID);
