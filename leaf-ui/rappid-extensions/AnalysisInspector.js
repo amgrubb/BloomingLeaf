@@ -151,7 +151,14 @@ var AnalysisInspector = Backbone.View.extend({
 		this.$el.html(_.template(this.template)());
 		$('head').append('<script src="./scripts/js-objects/analysis.js"></script>');
 
+		// set default values for max abs time, conflict level, 
+		// relative time points and abs time points
+		$('#max-abs-time').val(model.maxAbsTime);
+		$('#conflict-level').val(analysisRequest.conflictLevel);
+		$('#num-rel-time').val(analysisRequest.numRelTime);
+		$('#abs-time-pts').val(analysisRequest.absTimePts);
 
+		// This is needed to allow the user to delete relative assignments
 		this.setDeleteRelAssignmentListener();
 	},
 

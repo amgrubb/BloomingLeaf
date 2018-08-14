@@ -158,6 +158,7 @@ $('#btn-clear-all').on('click', function(){
 	
 	graph.clear();
 	analysisRequest.previousAnalysis = null;
+	analysisRequest.currentState = '0';
 	Intention.numOfCreatedInstances = 0;
 	Actor.numOfCreatedInstances = 0;
 	Link.numOfCreatedInstances = 0;
