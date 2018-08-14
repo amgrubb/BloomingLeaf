@@ -139,8 +139,6 @@ function switchToModellingMode() {
 /**
  * Set up tool bar button on click functions
  */
-// $('#btn-undo').on('click', _.bind(commandManager.undo, commandManager));
-// $('#btn-redo').on('click', _.bind(commandManager.redo, commandManager));
 
 $('#btn-undo').on('click', function() {
 	if (commandManager.hasUndo()) {

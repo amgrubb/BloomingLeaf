@@ -14,17 +14,20 @@ loader.onchange = function() {
 // When read is performed, if successful, load that file.
 reader.onload = function() {
 
+	// If JSON is not recognized as a BloomingLeaf model, just return
 	if (!reader.result || mode != 'Modelling') {
 		return;
 	}
 
 	var result = JSON.parse(reader.result);
 
+	// If JSON is from the old version of BloomingLeaf
 	if (!result.graph) {
 		model = new Model();
 		analysisRequest = new AnalysisRequest();
 
 		var cells = result.cells;
+
 		// Actors
 		for (var i = 0; i < cells.length; i++) {
 			if (cells[i].type == 'basic.Actor') {
@@ -206,15 +209,18 @@ reader.onload = function() {
 		
 		graph.fromJSON(result);
 	} else {
-
+		// If the JSON is from the current version of BloomingLeaf
 		loadFromObject(result);
-
-        
-        
-        
 	}
 }
 
+/**
+ * Given an object obj containing a model, graph and analysisRequest, 
+ * updates the global variables: model, graph and analysisRequest
+ * to the objects from obj
+ *
+ * @param {Object} obj
+ */
 function loadFromObject(obj) {
 	model = new Model();
 	model.actors = getActorsArr(obj.model.actors);
@@ -227,6 +233,13 @@ function loadFromObject(obj) {
 	graph.fromJSON(obj.graph);
 }
 
+/**
+ * Returns an array of Constraint objects with information from 
+ * arr
+ *
+ * @param {Array.<Object>} arr
+ * @returns {Array.<Constraint>}
+ */
 function getConstArr(arr) {
 	var res = [];
 
@@ -238,6 +251,13 @@ function getConstArr(arr) {
 	return res;
 }
 
+/**
+ * Returns an array of Actor objects with information from 
+ * arr
+ *
+ * @param {Array.<Object>} arr
+ * @returns {Array.<Actor>}
+ */
 function getActorsArr(arr) {
     var res = [];
     var maxID = 0;
@@ -251,6 +271,13 @@ function getActorsArr(arr) {
     
 }
 
+/**
+ * Returns an array of Link objects with information from 
+ * arr
+ *
+ * @param {Array.<Object>} arr
+ * @returns {Array.<Link>}
+ */
 function getLinksArr(arr) {
 	var res = [];
 	var maxID = 0;
@@ -268,6 +295,13 @@ function getLinksArr(arr) {
 	return res;
 }
 
+/**
+ * Returns an array of Intention objects with information from 
+ * arr
+ *
+ * @param {Array.<Object>} arr
+ * @returns {Array.<Intention>}
+ */
 function getIntentionsArr(arr) {
     var res = [];
     var maxID = 0;
@@ -283,6 +317,13 @@ function getIntentionsArr(arr) {
     return res;
 }
 
+/**
+ * Given an object containing information about an EvolvingFunction,
+ * returns a corresponding EvolvingFunction object
+ *
+ * @param {Object} obj
+ * @returns {EvolvingFunction}
+ */
 function getEvolvingFunction(obj) {
 	var func = new EvolvingFunction(obj.intentionID);
 	func.stringDynVis = obj.stringDynVis;
@@ -290,6 +331,13 @@ function getEvolvingFunction(obj) {
 	return func;
 }
 
+/**
+ * Returns an array of FuncSegment or RepFuncSegment objects with 
+ * information from arr
+ *
+ * @param {Array.<Object>} arr
+ * @returns {Array.<FuncSegment|RepFuncSegment>}
+ */
 function getFuncSegList(arr) {
 	var res = [];
 	for (var i = 0; i < arr.length; i++) {
@@ -309,9 +357,19 @@ function getFuncSegList(arr) {
 	return res;
 }
 
-function getActorID(parentID, cells) {
+
+/**
+ * Returns an Actor nodeID for the Actor with Rappid ID rapID
+ * Returns '-' if does not exist 
+ *
+ * @param {String} rapID
+ *   This is a Rappid ID, which is 36 characters long
+ * @returns {String}
+ *   An actor nodeID of length 4, or '-' if does not exist
+ */
+function getActorID(rapID, cells) {
 	for (var i = 0; i < cells.length; i++) {
-		if (cells[i].id === parentID) {
+		if (cells[i].id === rapID) {
 			return cells[i].nodeID;
 		}
 	}
@@ -319,9 +377,18 @@ function getActorID(parentID, cells) {
 	return '-';
 }
 
-function getNodeID(nodeID, cells) {
+/**
+ * Returns a nodeID for the Intention with Rappid ID rapID
+ * Returns '-' if does not exist 
+ *
+ * @param {String} rapID
+ *   This is a Rappid ID, which is 36 characters long
+ * @returns {String}
+ *   A nodeID of length 4, or '-' if does not exist
+ */
+function getNodeID(rapID, cells) {
     for (var i = 0; i < cells.length; i++) {
-        if (cells[i].id == nodeID) {
+        if (cells[i].id == rapID) {
             return cells[i].nodeID;
         }
     }
@@ -329,6 +396,13 @@ function getNodeID(nodeID, cells) {
     return "-";
 }
 
+/**
+ * Returns an object that contains the current graph, model and analysisRequest.
+ * This return object is what the user would download when clicking the Save button
+ * in the top menu bar.
+ *
+ * @returns {Object}
+ */
 function getFullJson() {
 	var obj = {};
 	obj.graph = graph.toJSON();
@@ -339,7 +413,6 @@ function getFullJson() {
 
 /**
  * Helper function to download saved graph in JSON format
- *
  */
 function download(filename, text) {
 	var dl = document.createElement('a');
@@ -353,6 +426,9 @@ function download(filename, text) {
 	document.body.removeChild(dl);
 }
 
+/**
+ * Returns true iff cell represents an intention
+ */
 function isIntention(cell) {
   return cell.type == 'basic.Goal' ||
          cell.type == 'basic.Task' ||
