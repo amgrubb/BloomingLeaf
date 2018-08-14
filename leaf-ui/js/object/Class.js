@@ -363,7 +363,7 @@ class EvolvingFunction {
     /**
      * Returns the 4 digit representation for this
      * EvolvingFunction's last function segment's
-     * satisfaction value
+     * marked value value
      */
     getLastMarkedVal() {
         var len = this.functionSegList.length;
@@ -375,12 +375,16 @@ class EvolvingFunction {
     /**
      * Returns the 4 digit representation for this
      * EvolvingFunction's second last function segment's
-     * satisfaction value
+     * marked value value. If there is no second last function
+     * segment, this function returns the 4 digit representation of 
+     * the only ffunction segment's marked value
      */
     getSecondLastMarkedVal() {
         var len = this.functionSegList.length;
         if (len > 1) {
             return this.functionSegList[len - 2].funcX;
+        } else {
+            return this.getLastMarkedVal();
         }
     }
 
