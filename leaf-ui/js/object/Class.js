@@ -796,6 +796,46 @@ class Intention {
     }
 
     /**
+     * Sets newID as the new nodeID for this intention
+     */
+    setNewID(newID) {
+        var oldID = this.nodeID;
+        this.nodeID = newID;
+        this.dynamicFunction.intentionID = newID;
+
+        // UserAssignementsList
+        var userAssignList = analysisRequest.userAssignmentsList;
+        for (var i = 0; i < userAssignList.length; i++) {
+            if (userAssignList[i].intentionID === oldID) {
+                userAssignList[i].intentionID = newID;
+            }
+        }
+
+        // Links
+        var links = model.links;
+        for (var i = 0; i < links.length; i++) {
+            if (links[i].linkSrcID === oldID) {
+                links[i].linkSrcID = newID;
+            }
+            if (links[i].linkDestID === oldID) {
+                links[i].linkDestID = newID;
+            }
+        }
+        
+        // Constraints
+        var consts = model.constraints;
+        for (var i = 0; i < consts.length; i++) {
+            if (consts[i].constraintSrcID === oldID) {
+                consts[i].constraintSrcID = newID;
+            }
+            if (consts[i].constraintDestID === oldID) {
+                consts[i].constraintDestID = newID;
+            }
+        }
+
+    }
+
+    /**
      * Returns the 4 digit representation for this
      * Intention's initial satisfaction value
      *
