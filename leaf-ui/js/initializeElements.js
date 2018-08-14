@@ -33,12 +33,14 @@ var constraintHolder = {};
 var savedAnalysisData = {};
 
 // Properties for both core and simulator.
-// TODO: merge this two arrays in order to make use the same name for all
+
+// To delete
 var satvalues = {
 	"satisfied": 2, "partiallysatisfied": 1, "partiallydenied": -1, "denied": -2, "unknown": 4, "conflict":3, "none": 0,
 	"2": "satisfied", "1": "partiallysatisfied", "-1": "partiallydenied", "-2": "denied", "4": "unknown", "3": "conflict", "0": "none"
 };
 
+// To delete
 var satValueDict = {
 	"satisfied": "0011",
 	"partiallysatisfied": "0010",
@@ -46,6 +48,27 @@ var satValueDict = {
 	"denied": "1100",
 	"none": "0000",
 	"(no value)": "(no value)"
+};
+
+// maps value to display text
+var linkValText = {
+	'no': 'No Relationship',
+    'and': 'and',
+    'or': 'or',
+    '++': '++',
+    '--': '--',
+    '+': '+',
+    '-': '-',
+    '+S': '+S',
+    '++S': '++S',
+    '-S': '-S',
+    '--S': '--S',
+    '+D': '+D',
+    '++D': '++D',
+    '-D': '-D',
+    '--D': '--D',
+    'NBT': 'NBN',
+    'NBD': 'NBD'
 };
 // Satisfaction text values corresponding to the binary representation.
 // This is used in updateNodeValues in displayAnalysis
@@ -125,7 +148,7 @@ graph.allElements = [];
 graph.elementsBeforeAnalysis = [];
 graph.constraintValues = [];//store all the graph constraint values to be used
 
-var commandManager = new joint.dia.CommandManager({ graph: graph });
+
 
 // Create a paper and wrap it in a PaperScroller.
 paper = new joint.dia.Paper({
@@ -164,6 +187,8 @@ stencil = new joint.ui.Stencil({
 	width: 200,
 	height: 600
 });
+
+var commandManager = new joint.dia.CommandManager({ graph: graph });
 
 // A simple element editor.
 $('.inspector').append(elementInspector.el);

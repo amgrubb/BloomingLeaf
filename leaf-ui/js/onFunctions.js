@@ -139,8 +139,21 @@ function switchToModellingMode() {
 /**
  * Set up tool bar button on click functions
  */
-$('#btn-undo').on('click', _.bind(commandManager.undo, commandManager));
-$('#btn-redo').on('click', _.bind(commandManager.redo, commandManager));
+// $('#btn-undo').on('click', _.bind(commandManager.undo, commandManager));
+// $('#btn-redo').on('click', _.bind(commandManager.redo, commandManager));
+
+$('#btn-undo').on('click', function() {
+	if (commandManager.hasUndo()) {
+		commandManager.undo();
+	}
+});
+$('#btn-redo').on('click', function() {
+	if (commandManager.hasRedo()) {
+		commandManager.redo();
+	}
+});
+
+
 $('#btn-clear-all').on('click', function(){
 	
 	graph.clear();
@@ -289,6 +302,16 @@ function createLink(cell) {
     // variable as well
     cell.on("remove", function () {
     	clearInspector();
+    	var sourceID = cell.getSourceElement().attributes.nodeID;
+        var targetID = cell.getTargetElement().attributes.nodeID;
+
+        // remove the source and target's stringDynVis to no function (NT)
+        var source = model.getIntentionByID(sourceID);
+        var target = model.getIntentionByID(targetID);
+
+        source.dynamicFunction.stringDynVis = 'NT';
+        target.dynamicFunction.stringDynVis = 'NT';
+
 		model.removeLink(link.linkID);
     });
     model.links.push(link);

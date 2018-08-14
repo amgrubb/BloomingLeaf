@@ -433,24 +433,15 @@ var ElementInspector = Backbone.View.extend({
         // All functions that have satisfaction valuen associated with it
         var funcWithSatValue = ["I", "D", "RC", "MP", "MN", "UD"];
 
-        // Disable init value menu if functype is NB
-        if (functionType == 'NB') {
-            $('#init-sat-value').prop('disabled', true);
-        }
-
+        
         // Load initial value for function type in the html select element
-        if ((functionType == '') || (functionType == ' ') || (functionType == 'NB')) {
-            this.$('.function-type').val('NT');
-        } else if (functionType == 'UD') {
-            // User defined function
+
+        if (functionType == 'UD') {
             this.$('.function-type').val(functionType);
             this.$('#markedValue').hide();
             this.$('#user-constraints').show("fast");
             this.addUDFunctionValues(null);
         } else {
-            this.$('.function-type').val(functionType);
-            this.$('#user-constraints').hide();
-            $('#init-sat-value').prop('disabled', false);
 
             if (funcWithSatValue.includes(functionType)) {
                 // Function with an associated satisfaction value
@@ -459,7 +450,17 @@ var ElementInspector = Backbone.View.extend({
                 // Function without an associated satisfaction value
                 this.$('#markedValue').hide();
             }
+
+            if (functionType == 'NB') {
+                $('#init-sat-value').prop('disabled', true);
+                $('#init-sat-value').css('background-color','grey');
+            } else {
+                this.$('.function-type').val(functionType);
+                this.$('#user-constraints').hide();
+                this.$('#init-sat-value').prop('disabled', false);
+            }
         }
+
         this.updateChart(null);
     },
 
