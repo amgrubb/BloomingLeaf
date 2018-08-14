@@ -100,6 +100,32 @@ for (var i = 0; i < 4; i++)
 ### Documenting functions
 ##### When defining functions, documentation should be written in the following format.
 ```javascript
+// do this
 
+/**
+ * Returns the sum of a and b
+ *
+ * @param {Number} a
+ * @param {Number} b
+ * @returns {Numner}
+ */
+function sum(a, b) {
+    return a + b;
+}
 ```
+##### There should be a new line between the function description and the parameter description. If each parameter must be explained in more detail, please do the following.
 
+```javascript
+/**
+ * Returns the sum of a and b
+ *
+ * @param {Number} a
+ *   The first operand
+ * @param {Number} b
+ *   The second operand
+ * @returns {Numner}
+ */
+function sum(a, b) {
+    return a + b;
+}
+```
