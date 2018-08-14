@@ -65,34 +65,67 @@ if (1 === 5)
 
 ##### The ```else``` and ```else if``` keywords should be on the same line as the closing curly brace from the previous ```if``` or ```else if``` block.
 ```javascript
-    // do this
-    if (1 === 5) {
-        console.log('Hello');
-    } else {
-        console.log('Goodbye');
-    }
+// do this
+if (1 === 5) {
+    console.log('Hello');
+} else {
+    console.log('Goodbye');
+}
     
-    // not this
-    if (1 === 5) {
-        console.log('Hello');
-    }
-    else {
-        console.log('Goodbye');
-    }
+// not this
+if (1 === 5) {
+    console.log('Hello');
+}
+else {
+    console.log('Goodbye');
+}
 ```
 
 ### For loops
 ##### Curly braces are required even if the for loop body is only one line long.
 ```javascript
-    // do this
-    for (var i = 0; i < 4; i++) {
-        console.log('Hello');
-    }
+// do this
+for (var i = 0; i < 4; i++) {
+    console.log('Hello');
+}
     
-    // not this
-    for (var i = 0; i < 4; i++) console.log('Hello');
-    
-    // not this either
-    for (var i = 0; i < 4; i++)
-        console.log('Hello');
+// not this
+for (var i = 0; i < 4; i++) console.log('Hello');
+
+// not this either
+for (var i = 0; i < 4; i++)
+    console.log('Hello');
+```
+
+### Documenting functions
+##### When defining functions, documentation should be written in the following format.
+```javascript
+// do this
+
+/**
+ * Returns the sum of a and b
+ *
+ * @param {Number} a
+ * @param {Number} b
+ * @returns {Numner}
+ */
+function sum(a, b) {
+    return a + b;
+}
+```
+##### There should be a new line between the function description and the parameter description. If each parameter must be explained in more detail, please do the following.
+
+```javascript
+/**
+ * Returns the sum of a and b
+ *
+ * @param {Number} a
+ *   The first operand
+ * @param {Number} b
+ *   The second operand
+ * @returns {Numner}
+ */
+function sum(a, b) {
+    return a + b;
+}
 ```
