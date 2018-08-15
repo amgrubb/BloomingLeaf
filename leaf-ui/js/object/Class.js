@@ -364,7 +364,7 @@ class EvolvingFunction {
     /**
      * Returns the 4 digit representation for this
      * EvolvingFunction's last function segment's
-     * satisfaction value
+     * marked value value
      */
     getLastMarkedVal() {
         var len = this.functionSegList.length;
@@ -376,12 +376,16 @@ class EvolvingFunction {
     /**
      * Returns the 4 digit representation for this
      * EvolvingFunction's second last function segment's
-     * satisfaction value
+     * marked value value. If there is no second last function
+     * segment, this function returns the 4 digit representation of 
+     * the only ffunction segment's marked value
      */
     getSecondLastMarkedVal() {
         var len = this.functionSegList.length;
         if (len > 1) {
             return this.functionSegList[len - 2].funcX;
+        } else {
+            return this.getLastMarkedVal();
         }
     }
 
@@ -741,25 +745,17 @@ class Intention {
      *   ex: 'a0000' (actor ID), '-' (if there is no actor)
      * @param {String} nodeType
      *   Type of the intention.
-     *   Will be one of these four: 'basic.Goal', 'basic.Task', 'basic.Softgoal', 'basic.Resource'
+     *   Will be one of these four: 'G', 'T', 'S', 'R'
+     *   which stands for Goal, Task, Soft Goal and Resource
+     *   respectively
      * @param {String} nodeName
      */
     constructor(nodeActorID, nodeType, nodeName) {
         this.nodeActorID = nodeActorID;
         this.nodeID = this.createID();
-        this.nodeType = this.getShortenedNodeType(nodeType);
+        this.nodeType = nodeType;
         this.nodeName = nodeName;
         this.dynamicFunction = new EvolvingFunction(this.nodeID);
-    }
-
-    /**
-     * Returns a shortened version of type
-     *
-     * @param {String} type
-     * @returns {String}
-     */
-    getShortenedNodeType(type) {
-        return type[6];
     }
 
     /**
@@ -798,6 +794,46 @@ class Intention {
                 id = '0' + id;
         }
         return id;
+    }
+
+    /**
+     * Sets newID as the new nodeID for this intention
+     */
+    setNewID(newID) {
+        var oldID = this.nodeID;
+        this.nodeID = newID;
+        this.dynamicFunction.intentionID = newID;
+
+        // UserAssignementsList
+        var userAssignList = analysisRequest.userAssignmentsList;
+        for (var i = 0; i < userAssignList.length; i++) {
+            if (userAssignList[i].intentionID === oldID) {
+                userAssignList[i].intentionID = newID;
+            }
+        }
+
+        // Links
+        var links = model.links;
+        for (var i = 0; i < links.length; i++) {
+            if (links[i].linkSrcID === oldID) {
+                links[i].linkSrcID = newID;
+            }
+            if (links[i].linkDestID === oldID) {
+                links[i].linkDestID = newID;
+            }
+        }
+        
+        // Constraints
+        var consts = model.constraints;
+        for (var i = 0; i < consts.length; i++) {
+            if (consts[i].constraintSrcID === oldID) {
+                consts[i].constraintSrcID = newID;
+            }
+            if (consts[i].constraintDestID === oldID) {
+                consts[i].constraintDestID = newID;
+            }
+        }
+
     }
 
     /**
@@ -1111,7 +1147,6 @@ class AnalysisRequest {
             }
         }
     }
-
 
 	/**
 	 * Removes all UserEvaluation objects in

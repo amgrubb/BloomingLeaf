@@ -140,42 +140,37 @@ function updateSliderValues(sliderValue, currentAnalysis){
     // Update the analysisRequest current state.
     analysisRequest.currentState = sliderObject.sliderValueElement.innerHTML;
 
-    for (var i = 0; i < currentAnalysis.numOfElements; i++) {
-        updateNodeValues(i, currentAnalysis.elements[i].status[value], "renderAnalysis");
-    }
+	for (var i = 0; i < currentAnalysis.numOfElements; i++) {
+		var element = currentAnalysis.elements[i];
+		updateNodeValues(element.id, element.status[value]);
+	}
 }
 
 
 /**
  * Updates the satisfaction value of a particular node in the graph.
+ * Used to display analysis results on the nodes.
  *
- * @param {Number} elementIndex
- *   The index of the node of interest in the array graph.getElements
+ * @param {String} nodeID
+ *   nodeID of the node of interest
  * @param {String} satValue
  *   Satisfaction value in string form. ie: '0011' for satisfied
- * @param {String} mode
- *   Determines how to updates node values.
- *   mode is either 'renderAnalysis' or 'toInitModel'
  */
-function updateNodeValues(elementIndex, satValue, mode) {
-    var cell = graph.allElements[elementIndex];
-    var value;
+function updateNodeValues(nodeID, satValue) {
+	var elements = graph.getElements();
+	var curr;
+	var cell;
+	for (var i = 0; i < elements.length; i++) {
+		curr = elements[i].findView(paper).model;
+		if (curr.attributes.nodeID == nodeID) {
+			cell = curr;
+			break;
+		}
+	}
 
-    // Update node based on values from cgi file
-    if (mode == "renderAnalysis") {
-        value = satValue;
-
-        // Update node based on values saved from graph prior to analysis
-    } else if (mode == "toInitModel") {
-        value = satValueDict[cell.attributes.attrs[".satvalue"].value];
-    }
-
-    if (value in satisfactionValuesDict) {
-        cell.attr(".satvalue/text", satisfactionValuesDict[value].satValue);
-        cell.attr({text: {fill: satisfactionValuesDict[value].color}});
-    }
-    else {
-        cell.removeAttr(".satvalue/d");
+	if (satValue in satisfactionValuesDict) {
+        cell.attr(".satvalue/text", satisfactionValuesDict[satValue].satValue);
+        cell.attr({text: {fill: satisfactionValuesDict[satValue].color}});
     }
 }
 

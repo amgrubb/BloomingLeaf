@@ -7,251 +7,219 @@ var saveIntermValues = {};
 var absoluteTimeValues;
 var saveIVT;
 var AnalysisInspector = Backbone.View.extend({
+	className: 'analysis-inspector',
+	template: [
+		'<h2 style="text-align:center; width:100%;margin-top:6px;margin-bottom:0px">Analysis</h2>',
+		'<hr>',
+		'<h3> Simulation Start: 0 </h3>',
+		'<label class="sub-label">Max Absolute Time</label>',
+		'<input id="max-abs-time" class="sub-label" type="number" min="1" step="1" value="100"/>',
+		'<br>',
+		'<label class="sub-label">Conflict Prevention Level</label>',
+		'<select id="conflict-level" class="sub-label" style="height:30px;">',
+			'<option value=S selected> Strong</option>',
+	        '<option value=M> Medium</option>',
+	        '<option value=W> Weak</option>',
+	        '<option value=N> None</option>',
+		'</select>',
+		'<br>',
+		'<label class="sub-label">Num Relative Time Points</label>',
+		'<input id="num-rel-time" class="sub-label" type="number" min="0" max="20" step="1" value="1"/>',
+		'<br>',
+		'<label class="sub-label">Absolute Time Points</label>',
+		'<font size="2">(e.g. 5 8 22)</font>',
+		'<input id="abs-time-pts" class="sub-label" type="text"/>',
+		'<br>',
+		'<hr>',
+		'<button id="btn-view-assignment" class="analysis-btns inspector-btn sub-label green-btn">View List of Assignments</button>',
+		'<button id="btn-view-intermediate" class="analysis-btns inspector-btn sub-label green-btn">View Intermediate Values</button>',
 
-    className: 'analysis-inspector',
-    template: [
-        '<h2 style="text-align:center; width:100%;margin-top:6px;margin-bottom:0px">Analysis</h2>',
-        '<hr>',
-        '<h3> Simulation Start: 0 </h3>',
-        '<label class="sub-label">Max Absolute Time</label>',
-        '<input id="max-abs-time" class="sub-label" type="number" min="1" step="1" value="100"/>',
-        '<br>',
-        '<label class="sub-label">Conflict Prevention Level</label>',
-        '<select id="conflict-level" class="sub-label" style="height:30px;">',
-        '<option value=S selected> Strong</option>',
-        '<option value=M> Medium</option>',
-        '<option value=W> Weak</option>',
-        '<option value=N> None</option>',
-        '</select>',
-        '<br>',
-        '<label class="sub-label">Num Relative Time Points</label>',
-        '<input id="num-rel-time" class="sub-label" type="number" min="0" max="20" step="1" value="1"/>',
-        '<br>',
-        '<label class="sub-label">Absolute Time Points</label>',
-        '<font size="2">(e.g. 5 8 22)</font>',
-        '<input id="abs-time-pts" class="sub-label" type="text"/>',
-        '<br>',
-        '<hr>',
-        '<button id="btn-view-assignment" class="analysis-btns inspector-btn sub-label green-btn">View List of Assignments</button>',
-        '<button id="btn-view-intermediate" class="analysis-btns inspector-btn sub-label green-btn">View Intermediate Values</button>',
+		// This is the modal box of assignments
+		'<div id="myModal" class="modal">',
+		  '<div class="modal-content">',
+		    '<div class="modal-header">',
+		      '<span class="close">&times;</span>',
+		      '<h2>Absolute and Relative Assignments</h2>',
+		    '</div>',
+		    '<div class="modal-body">',
+		      '<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Absolute Intention Assignments</h3>',
+		      	'<table id="node-list" class="abs-table">',
+		      	  '<tr>',
+		      	    '<th>Epoch Boundary Name</th>',
+		      	    '<th>Function</th>',
+		      	    '<th>Assigned Time</th>',
+		      	    '<th>Action</th>',
+		      	  '</tr>',
+		      	'</table>',
+					'<div class=absRelationship>',
+						'<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Absolute Relationship Assignment</h3>',
+							'<table id="link-list" class="abs-table">',
+								'<tr>',
+									'<th>Link Type</th>',
+									'<th>Source Node name</th>',
+									'<th>Dest Node name</th>',
+									'<th>Assigned Time</th>',
+									'<th>Action</th>',
+								'</tr>',
+							'</table>',
+					'</div>',
+					'<div class=relIntention>',
+						'<div class=headings>',
+							'<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Relative Intention Assignments',
+								'<div class="addIntention" style="display:inline">',
+										'<i class="fa fa-plus" id="addIntent" style="font-size:30px; float:right; margin-right:20px;"></i>',
+								'</div>',
+							'</h3>',
+						'</div>',
+						'<div>',
+								'<table id="rel-intention-assignents" class="rel-intent-table">',
+								 '<tr>',
+								 	'<th>Epoch Boundary Name 1</th>',
+									'<th>Relationship</th>',
+									'<th>Epcoch Boundary Name 2</th>',
+									'<th></th>',
+								 '</tr>',
+								 '</table>',
+						'</div>',
+		    '</div>',
+			'<div class="modal-footer" style="margin-top: 10px;">',
+				'<button id="btn-save-assignment" class="analysis-btns inspector-btn sub-label green-btn" style="border-radius:40px;">Save</button>',
+			'</div>',
+		'</div>',
+		'</div>',
+		'</div>',
+		'<div id="intermediateTable" class="intermT">',
+			'<div class="intermContent">',
+				'<div class="intermHeader">',
+					'<span class="closeIntermT">&times;</span>',
+					'<h2>Intermediate Values Table</h2>',
+				'</div>',
+				'<div class="intermBody">',
+						'<table id="interm-list" class="interm-table">',
+							'<thead id = "header">',
+								'<tr id="header-row">',
+									'<th style="width:110px"></th>',
+									'<th>  Initial Value  </th>',
+								'</tr>',
+							'</thead>',
+							'<tr id="intentionRows">',
+							'<th>',
+									'<div class="divisionLine"></div>',
+									'<div class="intentionPlace"><b>Intention</b></div>',
+									'<div class="timePlace"><b>Timeline</b></div>',
+									'<div class="outerdivslant borderdraw2">',
+									'</div>',
+									'<div class = "innerdivslant borderdraw2">',
+									'</div>',
+								'</th>',
+								'<th>0</th>',
+							'</tr>',
+					'</table>',
+					'<button id="btn-save-intermT" class="analysis-btns inspector-btn sub-label green-btn" style="border-radius:40px;">Save</button>',
+				'</div>',
+			'</div>',
+		'</div>',
+		'<br>',
+		'<hr>',
+		'<button id="btn-single-path" class="analysis-btns inspector-btn sub-label green-btn">Simulate Single Path</button>',
+		//'<button id="btn-single-path" class="analysis-btns inspector-btn sub-label green-btn">1. Simulate Single Path</button>',
+		'<button id="btn-all-next-state" class="analysis-btns inspector-btn sub-label ice-btn">Explore Possible Next States</button>'
+	].join(''),
 
-        // This is the modal box of assignments
-        '<div id="myModal" class="modal">',
-        '<div class="modal-content">',
-        '<div class="modal-header">',
-        '<span class="close">&times;</span>',
-        '<h2>Absolute and Relative Assignments</h2>',
-        '</div>',
-        '<div class="modal-body">',
-        '<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Absolute Intention Assignments</h3>',
-        '<table id="node-list" class="abs-table">',
-        '<tr>',
-        '<th>Epoch Boundary Name</th>',
-        '<th>Function</th>',
-        '<th>Assigned Time</th>',
-        '<th>Action</th>',
-        '</tr>',
-        '</table>',
-        '<div class=absRelationship>',
-        '<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Absolute Relationship Assignment</h3>',
-        '<table id="link-list" class="abs-table">',
-        '<tr>',
-        '<th>Link Type</th>',
-        '<th>Source Node name</th>',
-        '<th>Dest Node name</th>',
-        '<th>Assigned Time</th>',
-        '<th>Action</th>',
-        '</tr>',
-        '</table>',
-        '</div>',
-        '<div class=relIntention>',
-        '<div class=headings>',
-        '<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Relative Intention Assignments',
-        '<div class="addIntention" style="display:inline">',
-        '<i class="fa fa-plus" id="addIntent" style="font-size:30px; float:right; margin-right:20px;"></i>',
-        '</div>',
-        '</h3>',
-        '</div>',
-        '<div>',
-        '<table id="rel-intention-assignents" class="rel-intent-table">',
-        '<tr>',
-        '<th>Epoch Boundary Name 1</th>',
-        '<th>Relationship</th>',
-        '<th>Epcoch Boundary Name 2</th>',
-        '<th></th>',
-        '</tr>',
-        '</table>',
-        '</div>',
-        '</div>',
-        '<div class="modal-footer" style="margin-top: 10px;">',
-        '<button id="btn-save-assignment" class="analysis-btns inspector-btn sub-label green-btn" style="border-radius:40px;">Save</button>',
-        '</div>',
-        '</div>',
-        '</div>',
-        '</div>',
-        '<div id="intermediateTable" class="intermT">',
-        '<div class="intermContent">',
-        '<div class="intermHeader">',
-        '<span class="closeIntermT">&times;</span>',
-        '<h2>Intermediate Values Table</h2>',
-        '</div>',
-        '<div class="intermBody">',
-        '<table id="interm-list" class="interm-table">',
-        '<thead id = "header">',
-        '<tr id="header-row">',
-        '<th style="width:110px"></th>',
-        '<th>  Initial Value  </th>',
-        '</tr>',
-        '</thead>',
-        '<tr id="intentionRows">',
-        '<th>',
-        '<div class="divisionLine"></div>',
-        '<div class="intentionPlace"><b>Intention</b></div>',
-        '<div class="timePlace"><b>Timeline</b></div>',
-        '<div class="outerdivslant borderdraw2">',
-        '</div>',
-        '<div class = "innerdivslant borderdraw2">',
-        '</div>',
-        '</th>',
-        '<th>0</th>',
-        '</tr>',
-        '</table>',
-        '<button id="btn-save-intermT" class="analysis-btns inspector-btn sub-label green-btn" style="border-radius:40px;">Save</button>',
-        '</div>',
-        '</div>',
-        '</div>',
-        '<br>',
-        '<hr>',
-        '<button id="btn-single-path" class="analysis-btns inspector-btn sub-label green-btn">Simulate Single Path</button>',
-        //'<button id="btn-single-path" class="analysis-btns inspector-btn sub-label green-btn">1. Simulate Single Path</button>',
-        '<button id="btn-all-next-state" class="analysis-btns inspector-btn sub-label ice-btn">Explore Possible Next States</button>'
-    ].join(''),
+	events: {
+		'click #btn-view-assignment': 'loadListOfAssignments',
+		'click #btn-view-intermediate': 'loadIntermediateValues',
+		'click .close': 'dismissModalBox',
+		'click .closeIntermT':'dismissIntermTable',
+		'click .unassign-abs-intent-btn': 'unassignAbsIntentValue',
+		'click .unassign-abs-rel-btn': 'unassignAbsRelValue',
+		'click #btn-save-assignment': 'saveAssignment',
+		'click #btn-single-path': 'singlePath',
+		'click #btn-all-next-state': 'getAllNextStates',
+		'click .addIntention' : 'addRelAssignmentRow',
+		'click #btn-save-intermT' : 'saveIntermTable',
+		'change #num-rel-time' : 'addRelTime',
+		'change #conflict-level': 'changeConflictLevel',
+		'change #abs-time-pts': 'changeAbsTimePts',
+		'change #max-abs-time': 'changeMaxAbsTime'
+	},
 
-    events: {
-        'click #btn-view-assignment': 'loadListOfAssignments',
-        'click #btn-view-intermediate': 'loadIntermediateValues',
-        'click .close': 'dismissModalBox',
-        'click .closeIntermT':'dismissIntermTable',
-        'click .unassign-abs-intent-btn': 'unassignAbsIntentValue',
-        'click .unassign-abs-rel-btn': 'unassignAbsRelValue',
-        'click #btn-save-assignment': 'saveAssignment',
-        'click #btn-single-path': 'singlePath',
-        'click #btn-all-next-state': 'getAllNextStates',
-        'click .addIntention' : 'addRelAssignmentRow',
-        'click #btn-save-intermT' : 'saveIntermTable',
-        'change #num-rel-time' : 'addRelTime',
-        'change #conflict-level': 'changeConflictLevel',
-        'change #abs-time-pts': 'changeAbsTimePts',
-        'change #max-abs-time': 'changeMaxAbsTime'
-    },
+	render: function() {
 
-    render: function() {
+		// These functions are used to communicate between analysisInspector and Main.js
+		this.$el.html(_.template(this.template)());
+		$('head').append('<script src="./scripts/js-objects/analysis.js"></script>');
 
-        // These functions are used to communicate between analysisInspector and Main.js
-        this.$el.html(_.template(this.template)());
-        $('head').append('<script src="./js/analysis.js"></script>');
+		// set default values for max abs time, conflict level, 
+		// relative time points and abs time points
+		$('#max-abs-time').val(model.maxAbsTime);
+		$('#conflict-level').val(analysisRequest.conflictLevel);
+		$('#num-rel-time').val(analysisRequest.numRelTime);
+		$('#abs-time-pts').val(analysisRequest.absTimePts);
 
+		// This is needed to allow the user to delete relative assignments
+		this.setDeleteRelAssignmentListener();
+	},
 
-        this.setDeleteRelAssignmentListener();
-    },
+	/**
+	 * Retrieves information about the current model and sends to the backend
+	 * to do single path analysis.
+	 *
+	 * This function is called on click for #btn-single-path
+	 */
+	singlePath: function() {
+		//Create the object and fill the JSON file to be sent to backend.
+		//Get the AnalysisInspector view information
+		analysisRequest.action = "singlePath";
 
-    /**
-     * Retrieves information about the current model and sends to the backend
-     * to do single path analysis.
-     *
-     * This function is called on click for #btn-single-path
-     */
-    singlePath: function() {
-        //Create the object and fill the JSON file to be sent to backend.
-        //Get the AnalysisInspector view information
-        analysisRequest.action = "singlePath";
-        analysisRequest.currentState = "0|0";
+		//Prepare and send data to backend
+		this.sendToBackend();
+	},
 
-        //Prepare and send data to backend
-        this.sendToBackend();
-    },
+	/**
+	 * Retrieves information about the current model and sends to the backend
+	 * to get all next possible states.
+	 *
+	 * This function is called on click for #btn-all-next-state
+	 */
+	getAllNextStates: function() {
+		//Create the object and fill the JSON file to be sent to backend.
+		//Get the AnalysisInspector view information
+		analysisRequest.action = "getAllNextStates";
 
-    /**
-     * Retrieves information about the current model and sends to the backend
-     * to get all next possible states.
-     *
-     * This function is called on click for #btn-all-next-state
-     */
-    getAllNextStates: function() {
-        //Create the object and fill the JSON file to be sent to backend.
-        //Get the AnalysisInspector view information
-        analysisRequest.action = "allNextStates";
+		//Prepare and send data to backend
+		this.sendToBackend();
+	},
 
-        // need to remove TPs after current point from previous solution?
-        // update the time point for potentialEpoch
-        var previousTP = [];
-        var i = analysisRequest.currentState.indexOf('|', 0);
-        var currentState = parseInt(analysisRequest.currentState.substring(0, i));
-        for (var i = 0; i < currentState + 1; i ++){
-            for (var j = 0; j < analysisRequest.previousAnalysis.assignedEpoch.length; j ++){
-                var regex = /(.*)_(.*)/g;
-                var match = regex.exec(analysisRequest.previousAnalysis.assignedEpoch[j]);
-                if (match[2] === analysisRequest.previousAnalysis.timePointPath[i]){
-                    previousTP.push(analysisRequest.previousAnalysis.assignedEpoch[j]);
-                    continue;
-                }
-            }
-        }
+	/**
+	 * Creates an object to send to the backend and calls
+	 * a backendComm() to send to backend
+	 *
+	 * @param {Object} analysis
+	 *   InputAnalysis() object
+	 */
+	sendToBackend: function(){
 
-        console.log(previousTP);
-        // update current time point in the path if necessary (if epoch)
-        // remove all the time points after
-        analysisRequest.previousAnalysis.assignedEpoch = previousTP;
-        analysisRequest.previousAnalysis.timePointPath = analysisRequest.previousAnalysis.timePointPath.slice(0, currentState+1);
+		// Object to be sent to the backend
+		var jsObject = {};
+		jsObject.analysisRequest = analysisRequest;
 
-        console.log(analysisRequest);
-        //Prepare and send data to backend
-        this.sendToBackend();
-    },
+		//Get the Graph Model
+		jsObject.model = model;
+		console.log(jsObject);
+		//Send data to backend
+		backendComm(jsObject);
+	},
 
-    /**
-     * Creates an object to send to the backend and calls
-     * a backendComm() to send to backend
-     *
-     * @param {Object} analysis
-     *   InputAnalysis() object
-     */
-    sendToBackend: function(){
+	/**
+	 * Removes all html for this inspector
+	 */
+	clear: function(e){
+		this.$el.html('');
+	},
+	/********************** Modal box related ****************************/
 
-        // Object to be sent to the backend
-        var jsObject = {};
-        jsObject.analysisRequest = analysisRequest;
-
-        //Get the Graph Model
-        jsObject.model = model;
-
-        this.saveElementsInGraphVariable();
-
-        console.log(jsObject);
-        //Send data to backend
-        backendComm(jsObject);
-    },
-
-    saveElementsInGraphVariable: function(){
-        var elements = [];
-        for (var i = 0; i < graph.getElements().length; i++){
-            if (!(graph.getElements()[i] instanceof joint.shapes.basic.Actor)){
-                elements.push(graph.getElements()[i]);
-            }
-        }
-        graph.allElements = elements;
-        graph.elementsBeforeAnalysis = elements;
-    },
-
-    /**
-     * Removes all html for this inspector
-     */
-    clear: function(e){
-        this.$el.html('');
-    },
-    /********************** Modal box related ****************************/
-
-    /**
+	/**
      * Displays the absolute and relative assignments modal for the user.
      *
      * This function is called on click for #btn-view-assignment.

@@ -1,20 +1,6 @@
 //Class for the element properties tab that appears when an element is clicked
 var ENTER_KEY = 13;
 
-/*
-Note:
-Updating variables and render preexisting values often uses the same functions.
-Functions like updateChart, and updateCell are always called whenever changes are made
-on the inspector panel.
-
-This approach is necessary because Chart.js is built on top HTML5 Canvas. The entire
-canvas needs to be redrawn every time a variable is changed.
-
-When evaluating the functions calls of a particular action, use a top-down approach in
-file naviagation. That is, the first function called is always near the top. The last
-function called, will always be near the bottom.
-*/
-
 var ActorInspector = Backbone.View.extend({
 
         className: 'element-inspector',

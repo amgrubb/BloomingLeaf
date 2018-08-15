@@ -21,11 +21,62 @@ $('#analysis-btn').on('click', function() {
     cycleCheckForLinks(cycle);
 });
 
+/**
+ * Reassigned IDs if required.
+ * If there are currently n intentions, and the nodeIDs of the intentions
+ * are not exactly between 0000 and n - 1 inclusive, this function reassigns IDs 
+ * so that the nodeIDs are all exactly between 0000 and n - 1 inclusive.
+ *
+ * For example: 
+ * There are 2 intentions. The first intention has nodeID 0000 and the
+ * second intention has nodeID 0002. This function will cause the 
+ * the first intention to keep nodeID 0000 and the 
+ * second intention to be assigned assigned nodeID 0001.
+ */
+function reassignIntentionIDs() {
+	var elements = graph.getElements();
+	var intentions = model.intentions;
+
+	var currID = 0;
+	var currIDStr;
+	for (var i = 0; i < intentions.length; i++) {
+		var intention = intentions[i];
+
+		if (parseInt(intention.nodeID) !== currID) {
+
+			// The current intention's ID must be reassigned
+		
+			// Find the intention's cell
+			var cell;
+			for (var j = 0; j < elements.length; j++) {
+				if (elements[i].attributes.nodeID === intention.nodeID) {
+					cell = elements[i];
+				}
+			}
+
+			currIDStr = currID.toString();
+
+			while (currIDStr.length < 4){
+	                currIDStr = '0' + currIDStr;
+	        }
+			cell.attributes.nodeID = currIDStr;
+			intention.setNewID(currIDStr);
+		}
+
+		currID += 1;
+	}
+
+	Intention.numOfCreatedInstances = currID;
+	Link.numOfCreatedInstances = currID;
+}
+
 
 /**
  * Helper function for switching to Analysis view.
  */
 function switchToAnalysisMode() {
+
+	reassignIntentionIDs();
 
 	// Clear the right panel
 	clearInspector();
@@ -66,19 +117,47 @@ $('#model-cur-btn').on('click', function() {
 });
 
 /**
+ * Sets each node/cellview in the paper to its initial 
+ * satisfaction value and colours all text to black
+ */
+function revertNodeValuesToInitial() {
+	var elements = graph.getElements();
+	var curr;
+	for (var i = 0; i < elements.length; i++) {
+		curr = elements[i].findView(paper).model;
+
+		if (curr.attributes.type !== 'basic.Goal' &&
+			curr.attributes.type !== 'basic.Task' &&
+			curr.attributes.type !== 'basic.Softgoal' &&
+			curr.attributes.type !== 'basic.Resource') {
+			continue;
+		}
+
+		var intention = model.getIntentionByID(curr.attributes.nodeID);
+
+		var initSatVal = intention.getInitialSatValue();
+		if (initSatVal === '(no value)') {
+			curr.attr('.satvalue/text', '');
+		} else {
+			curr.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
+		}
+		curr.attr({text: {fill: 'black'}});
+	}
+}
+
+/**
  * Switches back to Modelling Mode from Analysis Mode
  * and resets the Nodes' satValues to the values prior to analysis
  * Display the modeling mode page
  */
 function switchToModellingMode() {
 
+	analysisRequest.previousAnalysis = null;
+
 	clearInspector();
 
 	// Reset to initial graph prior to analysis
-	for (var i = 0; i < graph.elementsBeforeAnalysis.length; i++) {
-		var value = graph.elementsBeforeAnalysis[i]
-		updateNodeValues(i, value, "toInitModel");
-	}
+	revertNodeValuesToInitial();
 
 	graph.elementsBeforeAnalysis = [];
 
@@ -109,12 +188,30 @@ function switchToModellingMode() {
 /**
  * Set up tool bar button on click functions
  */
-$('#btn-undo').on('click', _.bind(commandManager.undo, commandManager));
-$('#btn-redo').on('click', _.bind(commandManager.redo, commandManager));
+
+$('#btn-undo').on('click', function() {
+	if (commandManager.hasUndo()) {
+		commandManager.undo();
+	}
+});
+$('#btn-redo').on('click', function() {
+	if (commandManager.hasRedo()) {
+		commandManager.redo();
+	}
+});
+
+
 $('#btn-clear-all').on('click', function(){
+	
 	graph.clear();
+	analysisRequest.previousAnalysis = null;
+	analysisRequest.currentState = '0';
+	Intention.numOfCreatedInstances = 0;
+	Actor.numOfCreatedInstances = 0;
+	Link.numOfCreatedInstances = 0;
+
 	// Delete cookie by setting expiry to past date
-	document.cookie='graph={}; expires=Thu, 18 Dec 2013 12:00:00 UTC';
+	document.cookie='all={}; expires=Thu, 18 Dec 2013 12:00:00 UTC';
 });
 
 $('#btn-clear-elabel').on('click', function(){
@@ -185,7 +282,8 @@ $('#btn-save').on('click', function() {
 	var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
 	if (name){
 		var fileName = name + ".json";
-		download(fileName, JSON.stringify(graph.toJSON()));
+		var obj = getFullJson();
+		download(fileName, JSON.stringify(obj));
 	}
 });
 
@@ -252,6 +350,22 @@ function createLink(cell) {
     // variable as well
     cell.on("remove", function () {
     	clearInspector();
+    	
+    	var sourceID = cell.getSourceElement().attributes.nodeID;
+        var targetID = cell.getTargetElement().attributes.nodeID;
+
+        // remove the source and target's stringDynVis to no function (NT)
+        var source = model.getIntentionByID(sourceID);
+        var target = model.getIntentionByID(targetID);
+
+        if (link.linkType === 'NBT' || link.linkType === 'NBD') {
+        	if (source) {
+        		source.dynamicFunction.stringDynVis = 'NT';
+        	}
+        	if (target) {
+        		target.dynamicFunction.stringDynVis = 'NT';
+        	}
+        }
 		model.removeLink(link.linkID);
     });
     model.links.push(link);
@@ -270,7 +384,7 @@ function createIntention(cell) {
 
     // create intention object
     var type = cell.attributes.type;
-    var intention = new Intention('-', type, name);
+    var intention = new Intention('-', type[6], name);
     model.intentions.push(intention);
 
     // create intention evaluation object
@@ -282,10 +396,13 @@ function createIntention(cell) {
     // when the intention is removed, remove the intention from the global
     // model variable as well
     cell.on("remove", function () {
-
     	clearInspector();
 
     	var userIntention = model.getIntentionByID(cell.attributes.nodeID);
+
+    	if (userIntention == null) {
+    		return;
+    	}
 
     	// remove this intention from the model
         model.removeIntention(userIntention.nodeID);
@@ -357,8 +474,8 @@ graph.on("add", function(cell) {
 
 // Auto-save the cookie whenever the graph is changed.
 graph.on("change", function(){
-	var graphtext = JSON.stringify(graph.toJSON());
-	document.cookie = "graph=" + graphtext;
+	var graphtext = JSON.stringify(getFullJson());
+	document.cookie = "all=" + graphtext;
 });
 
 var selection = new Backbone.Collection();
