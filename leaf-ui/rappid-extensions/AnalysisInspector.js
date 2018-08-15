@@ -182,9 +182,29 @@ var AnalysisInspector = Backbone.View.extend({
         //Get the AnalysisInspector view information
         analysisRequest.action = "allNextStates";
 
-        // need to remove TPs after current point from previous solution
+        // need to remove TPs after current point from previous solution?
+        // update the time point for potentialEpoch
+        var previousTP = [];
+        var i = analysisRequest.currentState.indexOf('|', 0);
+        var currentState = parseInt(analysisRequest.currentState.substring(0, i));
+        for (var i = 0; i < currentState + 1; i ++){
+            for (var j = 0; j < analysisRequest.previousAnalysis.assignedEpoch.length; j ++){
+                var regex = /(.*)_(.*)/g;
+                var match = regex.exec(analysisRequest.previousAnalysis.assignedEpoch[j]);
+                if (match[2] === analysisRequest.previousAnalysis.timePointPath[i]){
+                    previousTP.push(analysisRequest.previousAnalysis.assignedEpoch[j]);
+                    continue;
+                }
+            }
+        }
 
+        console.log(previousTP);
+        // update current time point in the path if necessary (if epoch)
+        // remove all the time points after
+        analysisRequest.previousAnalysis.assignedEpoch = previousTP;
+        analysisRequest.previousAnalysis.timePointPath = analysisRequest.previousAnalysis.timePointPath.slice(0, currentState+1);
 
+        console.log(analysisRequest);
         //Prepare and send data to backend
         this.sendToBackend();
     },

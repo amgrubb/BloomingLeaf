@@ -79,7 +79,7 @@ public class TroposCSPAlgorithm {
     private boolean[] boolFSPD = new boolean[] {false, true, true, true};
     private boolean[] boolPSFD = new boolean[] {true, true, true, false};
     
-    private final static boolean DEBUG = false;								// Whether to print debug statements.
+    private final static boolean DEBUG = true;								// Whether to print debug statements.
     /* New in ModelSpec
      *     	private int relativeTimePoints = 4;
     		private int[] absoluteTimePoints = new int[] {5, 10, 15, 20};
@@ -618,7 +618,7 @@ public class TroposCSPAlgorithm {
     	// Add previousCollection from initial Value Time Points
     	//System.out.println("exisitingNamedTimePoints.length: " + exisitingNamedTimePoints.length);
     	for(int e = 1; e < exisitingNamedTimePoints.length; e++){
-    		//System.out.println(exisitingNamedTimePoints[e]);
+    		System.out.println(exisitingNamedTimePoints[e]);
     		// Absolute Value -> already has an assignment. 
     		if (exisitingNamedTimePoints[e].charAt(1) == 'A'){
     	    	this.timePoints[e] = absoluteCollection.get(initialValueTimePoints[e]);
@@ -633,7 +633,7 @@ public class TroposCSPAlgorithm {
     	    		}
     	    // Relative Values -> remove 1 from count and assign value.
     		} else if (exisitingNamedTimePoints[e].charAt(1) == 'R'){
-    			//System.out.println("Found existing relative point: " + exisitingNamedTimePoints[e]);
+    			System.out.println("Found existing relative point: " + exisitingNamedTimePoints[e]);
         		this.timePoints[e] = new IntVar(store, "TR" + absoluteCounter, initialValueTimePoints[e], initialValueTimePoints[e]);
         		absoluteCounter++;
     			numStochasticTimePoints--;
