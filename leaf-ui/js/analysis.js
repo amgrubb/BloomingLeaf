@@ -6,10 +6,9 @@ analysis.elements = [];
 analysis.currentState;
 var tempResults;
 var filterOrderQueue = [];
-var savedAnalysisData = {};
 var analysisRequest;
 var analysisResult;
-var globalAnalysisResult;
+var savedAnalysisData;
 var graph;
 var current;
 
@@ -32,7 +31,6 @@ window.onload = function(){
     analysis.page = jQuery.extend({}, window.opener.document);
     init();
     renderNavigationSidebar();
-
 }
 
 function init(){
@@ -44,11 +42,10 @@ function init(){
     //Objects from parent page
     //analysis.parentResults = jQuery.extend({}, window.opener.global_analysisResult);
 
-    globalAnalysisResult = jQuery.extend({}, window.opener.globalAnalysisResult);
-    tempResults = globalAnalysisResult.allNextStatesResult;
-    console.log(tempResults);
-    analysisRequest =  _.clone(jQuery.extend({}, window.opener.analysisRequest));
-    analysisResult = _.clone(jQuery.extend({}, window.opener.analysisResult));
+    savedAnalysisData = jQuery.extend(true, {}, window.opener.savedAnalysisData);
+    //tempResults = jQuery.extend(true, {}, window.opener.savedAnalysisData.allNextStatesResult);
+    analysisRequest =  jQuery.extend(true, {}, window.opener.analysisRequest);
+    analysisResult = jQuery.extend(true, {}, window.opener.analysisResult);
     graph = jQuery.extend({}, window.opener.graph);
     var i = analysisRequest.currentState.indexOf('|', 0);
     current = parseInt(analysisRequest.currentState.substring(0, i));
@@ -79,10 +76,10 @@ function init(){
 
     //Load graph by the cookie
     if (analysis.page.cookie){
-        var cookies = analysis.page.cookie.split(";");
+        /*var cookies = analysis.page.cookie.split(";");
         var prevgraph = "";
 
-        //Loop through the cookies to find the one representing the graph, if it exists
+       //Loop through the cookies to find the one representing the graph, if it exists
         for (var i = 0; i < cookies.length; i++){
             if (cookies[i].indexOf("graph=") >= 0){
                 prevgraph = cookies[i].substr(6);
@@ -92,7 +89,9 @@ function init(){
 
         if (prevgraph){
             analysis.graph.fromJSON(JSON.parse(prevgraph));
-        }
+        }*/
+        var cookie_json = JSON.parse(analysis.page.cookie.substr(4));
+        analysis.graph.fromJSON(cookie_json.graph);
     }
 
     //Filter out Actors
@@ -102,9 +101,8 @@ function init(){
     }
 
     if(!analysis.analysisResult){
-        analysis.analysisResult = globalAnalysisResult.allNextStatesResult;
+        analysis.analysisResult = savedAnalysisData.allNextStatesResult;
     }
-    savedAnalysisData = jQuery.extend({}, window.opener.savedAnalysisData);
     model =  jQuery.extend({}, window.opener.model);
 }
 
@@ -266,7 +264,7 @@ function goToState(){
 
 function add_filter(){
     console.log("clicked");
-    tempResults = $.extend(true,{}, globalAnalysisResult);
+    tempResults = jQuery.extend(true, {}, window.opener.savedAnalysisData.allNextStatesResult);
     var checkboxes = document.getElementsByClassName("filter_checkbox");
     for (var i_element = 0; i_element < checkboxes.length; i_element++){
         var checkbox = checkboxes[i_element];

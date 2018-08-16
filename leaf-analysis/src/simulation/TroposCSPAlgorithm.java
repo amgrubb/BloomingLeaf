@@ -79,7 +79,7 @@ public class TroposCSPAlgorithm {
     private boolean[] boolFSPD = new boolean[] {false, true, true, true};
     private boolean[] boolPSFD = new boolean[] {true, true, true, false};
     
-    private final static boolean DEBUG = true;								// Whether to print debug statements.
+    private final static boolean DEBUG = false;								// Whether to print debug statements.
     /* New in ModelSpec
      *     	private int relativeTimePoints = 4;
     		private int[] absoluteTimePoints = new int[] {5, 10, 15, 20};
@@ -278,7 +278,7 @@ public class TroposCSPAlgorithm {
 		}
 	}
 	
-	/**
+	/** 
 	 *	Calculates the number of time points.
 	 *	- Created EBs for all time points.
 	 *	- Creates constraints between EBs. 
@@ -618,7 +618,6 @@ public class TroposCSPAlgorithm {
     	// Add previousCollection from initial Value Time Points
     	//System.out.println("exisitingNamedTimePoints.length: " + exisitingNamedTimePoints.length);
     	for(int e = 1; e < exisitingNamedTimePoints.length; e++){
-    		System.out.println(exisitingNamedTimePoints[e]);
     		// Absolute Value -> already has an assignment. 
     		if (exisitingNamedTimePoints[e].charAt(1) == 'A'){
     	    	this.timePoints[e] = absoluteCollection.get(initialValueTimePoints[e]);
@@ -633,7 +632,6 @@ public class TroposCSPAlgorithm {
     	    		}
     	    // Relative Values -> remove 1 from count and assign value.
     		} else if (exisitingNamedTimePoints[e].charAt(1) == 'R'){
-    			System.out.println("Found existing relative point: " + exisitingNamedTimePoints[e]);
         		this.timePoints[e] = new IntVar(store, "TR" + absoluteCounter, initialValueTimePoints[e], initialValueTimePoints[e]);
         		absoluteCounter++;
     			numStochasticTimePoints--;
@@ -808,12 +806,10 @@ public class TroposCSPAlgorithm {
 	 *  NotBoth constraints created at the end of the function.
 	 */
 	private void initializePathDynamicFunctions() {		//Full Model and Full Path, over all time points.
-		//System.out.println("initialize dynamic functions");
     	for (int i = 0; i < this.intentions.length; i++){
     		IntentionalElement element = this.intentions[i];
     		if (DEBUG)
     			System.out.println("Dyn #" + element.id);
-    		//System.out.println("Dyn #" + element.id);
     		IntentionalElementDynamicType tempType = element.dynamicType;
         	if ((tempType == IntentionalElementDynamicType.NT) || (element.dynamicType == IntentionalElementDynamicType.RND) || 
         		(tempType == IntentionalElementDynamicType.NB))
@@ -827,6 +823,8 @@ public class TroposCSPAlgorithm {
     				constraints.add(new And(createXeqY(this.values[i][t], this.values[i][0])));
     			}
     		} else if ((tempType == IntentionalElementDynamicType.INC) || (tempType == IntentionalElementDynamicType.MONP)){
+    			System.out.println("initializePathDynamicFunctions: increase");
+    			System.out.println("intention id i: " +i + " this.values[i].length: " + this.values[i].length);
     			for (int t = 0; t < this.values[i].length; t++){
     				for (int s = 0; s < this.values[i].length; s++){
     					if (t==s)
@@ -1697,7 +1695,7 @@ public class TroposCSPAlgorithm {
 				PrimitiveConstraint timeCondition = new XeqC(this.zero, 0);
 				initializePathIncreaseHelper(i, initialIndex, initialIndex+1, timeCondition, false);
 				if (tempType == IntentionalElementDynamicType.MONP){
-					if(epochs[0].value() <= currentAbsoluteTime){
+					if(this.spec.getInitialAssignedEpochs().get(epochs[0].id()) != null && epochs[0].value() <= currentAbsoluteTime){
 						PrimitiveConstraint[] tempConstant = createXeqY(this.values[i][nextIndex], this.values[i][initialIndex]);
 						constraints.add(new And(tempConstant));
 						continue;
@@ -1712,7 +1710,7 @@ public class TroposCSPAlgorithm {
 				PrimitiveConstraint timeCondition = new XeqC(this.zero, 0);
 				initializePathDecreaseHelper(i, initialIndex, initialIndex+1, timeCondition, false);
 				if (tempType == IntentionalElementDynamicType.MONN){
-					if(epochs[0].value() <= currentAbsoluteTime){
+					if(this.spec.getInitialAssignedEpochs().get(epochs[0].id()) != null && epochs[0].value() <= currentAbsoluteTime){
 						PrimitiveConstraint[] tempConstant = createXeqY(this.values[i][nextIndex], this.values[i][initialIndex]);
 						constraints.add(new And(tempConstant));
 						continue;
@@ -1724,7 +1722,7 @@ public class TroposCSPAlgorithm {
 				}else
 					initializePathDecreaseMaxValueHelper(i, initialIndex+1, dynFVal, null);
 			} else if (tempType == IntentionalElementDynamicType.SD){
-				if(epochs[0].value() <= currentAbsoluteTime)
+				if(this.spec.getInitialAssignedEpochs().get(epochs[0].id()) != null && epochs[0].value() <= currentAbsoluteTime )
 					constraints.add(new And(createXeqC(this.values[i][nextIndex], boolFD)));
 				else{
 					constraints.add(new IfThenElse(new XgtY(epochs[0], minTimePoint), 
@@ -1732,7 +1730,7 @@ public class TroposCSPAlgorithm {
 							new And(createXeqC(this.values[i][nextIndex], boolFD))));
 				}
 			} else if (tempType == IntentionalElementDynamicType.DS){
-				if(epochs[0].value() <= currentAbsoluteTime)
+				if(this.spec.getInitialAssignedEpochs().get(epochs[0].id()) != null && epochs[0].value() <= currentAbsoluteTime)
 					constraints.add(new And(createXeqC(this.values[i][nextIndex], boolFS)));
 				else{
 					constraints.add(new IfThenElse(new XgtY(epochs[0], minTimePoint), 
@@ -1740,14 +1738,14 @@ public class TroposCSPAlgorithm {
 							new And(createXeqC(this.values[i][nextIndex], boolFS))));
 				} 		
 			} else if (tempType == IntentionalElementDynamicType.RC){
-				if(epochs[0].value() <= currentAbsoluteTime)
+				if(this.spec.getInitialAssignedEpochs().get(epochs[0].id()) != null && epochs[0].value() <= currentAbsoluteTime)
 					constraints.add(new And(createXeqC(this.values[i][nextIndex], dynFVal)));
 				else{
 					constraints.add(new IfThen(new XlteqY(epochs[0], minTimePoint), 
 							new And(createXeqC(this.values[i][nextIndex], dynFVal))));
 				} 		
 			} else if (tempType == IntentionalElementDynamicType.CR){
-				if(epochs[0].value() <= currentAbsoluteTime)
+				if(this.spec.getInitialAssignedEpochs().get(epochs[0].id()) != null && epochs[0].value() <= currentAbsoluteTime)
 					continue;
 				else{
 					constraints.add(new IfThen(new XgtY(epochs[0], minTimePoint), 

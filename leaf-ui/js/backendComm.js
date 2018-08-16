@@ -1,5 +1,4 @@
 
-var globalAnalysisResult = {};
 
 function backendComm(jsObject){
 	/**
@@ -76,19 +75,13 @@ function getFileResults(isGetNextSteps){
 				}
 
 
-
-				/*if (analysisResult.elementList.length > 0){
-                    analysisRequest.previousAnalysis = analysisResult;
-                    console.log("previousAnalysis");
-                    console.log(analysisRequest.previousAnalysis);
-				}*/
-
 				// do not need to store the past result for all next states
 				if(isGetNextSteps){
-					globalAnalysisResult.allNextStatesResult = results;
+                    savedAnalysisData.allNextStatesResult = results;
+                    console.log("in backendcomm, saving all next state results");
 					open_analysis_viewer();
 				}else{
-                    globalAnalysisResult.singlePathResult = results;
+                    savedAnalysisData.singlePathResult = results;
                     analysisResult.assignedEpoch = results.assignedEpoch;
                     analysisResult.timePointPath = results.timePointPath;
                     analysisResult.timePointPathSize = results.timePointPathSize;
