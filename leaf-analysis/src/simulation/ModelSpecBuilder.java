@@ -63,9 +63,8 @@ public class ModelSpecBuilder {
 			AnalysisResult prevResult = analysis.getPreviousAnalysis();
 
 			if(prevResult != null) {
-				// If there was an analysis before the current analysis, do the following:
-				System.out.println("has prev result");
-				String[] absoluteTime = analysis.getCurrentState().split("|");
+				// If there was an analysis before the current analysis, do the following:				
+				String[] absoluteTime = analysis.getCurrentState().split("\\|");
 				int currentState = Integer.parseInt(absoluteTime[0]);
 				System.out.println("current state: " + currentState);
 				// Creates initial Assigned Epoch Map.

@@ -188,7 +188,7 @@ var AnalysisInspector = Backbone.View.extend({
 		//Create the object and fill the JSON file to be sent to backend.
 		//Get the AnalysisInspector view information
 		analysisRequest.action = "allNextStates";
-        analysisRequest.previousAnalysis = savedAnalysisData.singlePathResult;
+        analysisRequest.previousAnalysis = _.clone(savedAnalysisData.singlePathResult);
         // need to remove TPs after current point from previous solution?
         // update the time point for potentialEpoch
         var previousTP = [];

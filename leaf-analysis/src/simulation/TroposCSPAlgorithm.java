@@ -79,7 +79,7 @@ public class TroposCSPAlgorithm {
     private boolean[] boolFSPD = new boolean[] {false, true, true, true};
     private boolean[] boolPSFD = new boolean[] {true, true, true, false};
     
-    private final static boolean DEBUG = false;								// Whether to print debug statements.
+    private final static boolean DEBUG = true;								// Whether to print debug statements.
     /* New in ModelSpec
      *     	private int relativeTimePoints = 4;
     		private int[] absoluteTimePoints = new int[] {5, 10, 15, 20};
@@ -1847,10 +1847,10 @@ public class TroposCSPAlgorithm {
         
         // Test and Add Constraints
         if(DEBUG)
-        	System.out.println("Constraints List:");
+        	//System.out.println("Constraints List:");
         for (int i = 0; i < constraints.size(); i++) {
             if(DEBUG)
-            	System.out.println(constraints.get(i).toString());
+            	//System.out.println(constraints.get(i).toString());
             store.impose(constraints.get(i));
             if(!store.consistency()) {
             	Constraint errorConst = constraints.get(i);
