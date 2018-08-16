@@ -11,75 +11,24 @@ $('#analysis-btn').on('click', function() {
     var cycle;
    	jsLinks = getLinks();
    	cycle = cycleCheck(jsLinks, getElementList());
-
+	
 	syntaxCheck();
 
     // If there are no cycles then switch view to Analysis
     if (!cycle) {
-		switchToAnalysisMode();
+		switchToAnalysisMode(); 
     }
 
     // If there are cycles, then display error message. Otherwise, remove any "red" elements.
     cycleCheckForLinks(cycle);
 });
 
-/**
- * Reassigned IDs if required.
- * If there are currently n intentions, and the nodeIDs of the intentions
- * are not exactly between 0000 and n - 1 inclusive, this function reassigns IDs 
- * so that the nodeIDs are all exactly between 0000 and n - 1 inclusive.
- *
- * For example: 
- * There are 2 intentions. The first intention has nodeID 0000 and the
- * second intention has nodeID 0002. This function will cause the 
- * the first intention to keep nodeID 0000 and the 
- * second intention to be assigned assigned nodeID 0001.
- */
-function reassignIntentionIDs() {
-	var elements = graph.getElements();
-	var intentions = model.intentions;
-
-	var currID = 0;
-	var currIDStr;
-	for (var i = 0; i < intentions.length; i++) {
-		var intention = intentions[i];
-
-		if (parseInt(intention.nodeID) !== currID) {
-
-			// The current intention's ID must be reassigned
-		
-			// Find the intention's cell
-			var cell;
-			for (var j = 0; j < elements.length; j++) {
-				if (elements[i].attributes.nodeID === intention.nodeID) {
-					cell = elements[i];
-				}
-			}
-
-			currIDStr = currID.toString();
-
-			while (currIDStr.length < 4){
-	                currIDStr = '0' + currIDStr;
-	        }
-			cell.attributes.nodeID = currIDStr;
-			intention.setNewID(currIDStr);
-		}
-
-		currID += 1;
-	}
-
-	Intention.numOfCreatedInstances = currID;
-	Link.numOfCreatedInstances = currID;
-}
-
 
 /**
  * Helper function for switching to Analysis view.
  */
 function switchToAnalysisMode() {
-
-	reassignIntentionIDs();
-
+	
 	// Clear the right panel
 	clearInspector();
 
@@ -119,47 +68,19 @@ $('#model-cur-btn').on('click', function() {
 });
 
 /**
- * Sets each node/cellview in the paper to its initial 
- * satisfaction value and colours all text to black
- */
-function revertNodeValuesToInitial() {
-	var elements = graph.getElements();
-	var curr;
-	for (var i = 0; i < elements.length; i++) {
-		curr = elements[i].findView(paper).model;
-
-		if (curr.attributes.type !== 'basic.Goal' &&
-			curr.attributes.type !== 'basic.Task' &&
-			curr.attributes.type !== 'basic.Softgoal' &&
-			curr.attributes.type !== 'basic.Resource') {
-			continue;
-		}
-
-		var intention = model.getIntentionByID(curr.attributes.nodeID);
-
-		var initSatVal = intention.getInitialSatValue();
-		if (initSatVal === '(no value)') {
-			curr.attr('.satvalue/text', '');
-		} else {
-			curr.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
-		}
-		curr.attr({text: {fill: 'black'}});
-	}
-}
-
-/**
  * Switches back to Modelling Mode from Analysis Mode
  * and resets the Nodes' satValues to the values prior to analysis
  * Display the modeling mode page
  */
 function switchToModellingMode() {
 
-	analysisRequest.previousAnalysis = null;
-
 	clearInspector();
 
 	// Reset to initial graph prior to analysis
-	revertNodeValuesToInitial();
+	for (var i = 0; i < graph.elementsBeforeAnalysis.length; i++) {
+		var value = graph.elementsBeforeAnalysis[i]
+		updateNodeValues(i, value, "toInitModel");
+	}
 
 	graph.elementsBeforeAnalysis = [];
 
@@ -190,30 +111,12 @@ function switchToModellingMode() {
 /**
  * Set up tool bar button on click functions
  */
-
-$('#btn-undo').on('click', function() {
-	if (commandManager.hasUndo()) {
-		commandManager.undo();
-	}
-});
-$('#btn-redo').on('click', function() {
-	if (commandManager.hasRedo()) {
-		commandManager.redo();
-	}
-});
-
-
+$('#btn-undo').on('click', _.bind(commandManager.undo, commandManager));
+$('#btn-redo').on('click', _.bind(commandManager.redo, commandManager));
 $('#btn-clear-all').on('click', function(){
-	
 	graph.clear();
-	analysisRequest.previousAnalysis = null;
-	analysisRequest.currentState = '0';
-	Intention.numOfCreatedInstances = 0;
-	Actor.numOfCreatedInstances = 0;
-	Link.numOfCreatedInstances = 0;
-
 	// Delete cookie by setting expiry to past date
-	document.cookie='all={}; expires=Thu, 18 Dec 2013 12:00:00 UTC';
+	document.cookie='graph={}; expires=Thu, 18 Dec 2013 12:00:00 UTC';
 });
 
 $('#btn-clear-elabel').on('click', function(){
@@ -284,8 +187,7 @@ $('#btn-save').on('click', function() {
 	var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
 	if (name){
 		var fileName = name + ".json";
-		var obj = getFullJson();
-		download(fileName, JSON.stringify(obj));
+		download(fileName, JSON.stringify(graph.toJSON()));
 	}
 });
 
@@ -329,7 +231,7 @@ $('#btn-fnt').on('click', function(){
  * @param {joint.dia.Cell} cell
  */
 function createLink(cell) {
-	var link = new Link(cell.attributes.labels[0].attrs.text.text.toUpperCase(), cell.getSourceElement().attributes.nodeID,  -1);
+	var link = new Link(cell.attributes.labels[0].attrs.text.text, cell.getSourceElement().attributes.nodeID,  -1);
 	cell.attributes.linkID = link.linkID;
     cell.on("change:target", function () {
     	var target = cell.getTargetElement();
@@ -352,22 +254,6 @@ function createLink(cell) {
     // variable as well
     cell.on("remove", function () {
     	clearInspector();
-    	
-    	var sourceID = cell.getSourceElement().attributes.nodeID;
-        var targetID = cell.getTargetElement().attributes.nodeID;
-
-        // remove the source and target's stringDynVis to no function (NT)
-        var source = model.getIntentionByID(sourceID);
-        var target = model.getIntentionByID(targetID);
-
-        if (link.linkType === 'NBT' || link.linkType === 'NBD') {
-        	if (source) {
-        		source.dynamicFunction.stringDynVis = 'NT';
-        	}
-        	if (target) {
-        		target.dynamicFunction.stringDynVis = 'NT';
-        	}
-        }
 		model.removeLink(link.linkID);
     });
     model.links.push(link);
@@ -386,7 +272,7 @@ function createIntention(cell) {
 
     // create intention object
     var type = cell.attributes.type;
-    var intention = new Intention('-', type[6], name);
+    var intention = new Intention('-', type, name);
     model.intentions.push(intention);
 
     // create intention evaluation object
@@ -398,13 +284,10 @@ function createIntention(cell) {
     // when the intention is removed, remove the intention from the global
     // model variable as well
     cell.on("remove", function () {
+
     	clearInspector();
 
     	var userIntention = model.getIntentionByID(cell.attributes.nodeID);
-
-    	if (userIntention == null) {
-    		return;
-    	}
 
     	// remove this intention from the model
         model.removeIntention(userIntention.nodeID);
@@ -427,7 +310,7 @@ function createIntention(cell) {
 /**
  * Creates an instance of an Actor object and saves it in the
  * global model variable
- *
+ * 
  * @param {joint.dia.Cell} cell
  */
 function createActor(cell) {
@@ -476,8 +359,8 @@ graph.on("add", function(cell) {
 
 // Auto-save the cookie whenever the graph is changed.
 graph.on("change", function(){
-	var graphtext = JSON.stringify(getFullJson());
-	document.cookie = "all=" + graphtext;
+	var graphtext = JSON.stringify(graph.toJSON());
+	document.cookie = "graph=" + graphtext;
 });
 
 var selection = new Backbone.Collection();
@@ -493,22 +376,14 @@ var selectionView = new joint.ui.SelectionView({
  * Otherwise, initiate paper pan.
  */
 paper.on('blank:pointerdown', function(evt, x, y) {
-    if (_.contains(KeyboardJS.activeKeys(), 'shift')) {
-    	if(mode == "Analysis") {
-			return;
-    	}
-
-        selectionView.startSelecting(evt, x, y);
-    } else {
-        paperScroller.startPanning(evt, x, y);
-    }
+	paperScroller.startPanning(evt, x, y);
 });
 
 /**
- *
+ * 
  */
 paper.on('cell:pointerdown', function(cellView, evt, x, y) {
-
+	
 	if(mode == "Analysis"){
 		return;
 	}
@@ -521,21 +396,12 @@ paper.on('cell:pointerdown', function(cellView, evt, x, y) {
 	// Unembed cell so you can move it out of actor
 	if (cell.get('parent') && !(cell instanceof joint.dia.Link)) {
 		graph.getCell(cell.get('parent')).unembed(cell);
-    var intention = model.getIntentionByID(cell.attributes.nodeID);
-    var actor = model.getActorByID(intention.nodeActorID);
-    intention.nodeActorID = "-";
-    var index = actor.intentionIDs.indexOf(intention.nodeID);
-    actor.intentionIDs.splice(index, 1);
 	}
 });
 
 // Unhighlight everything when blank is being clicked
 paper.on('blank:pointerclick', function(){
-	var elements = graph.getElements();
-	for (var i = 0; i < elements.length; i++){
-		var cellView  = elements[i].findView(paper);
-		cellView.unhighlight();
-	}
+	removeHighlight();
 });
 
 // Link equivalent of the element editor
@@ -582,23 +448,80 @@ function basicActorLink(link){
 }
 
 /**
+ * Highlights the cellView red
+ *
+ * @param {cellView} cellView
+ */
+function highlight(cellView) {
+	cellView.highlight(null, {
+	    highlighter: {
+	        name: 'stroke',
+	        options: {
+	            padding: 10,
+	            rx: 5,
+	            ry: 5,
+	            attrs: {
+	                'stroke-width': 3,
+	                stroke: 'red'
+	            }
+	        }
+	    }
+	});
+}
+
+/**
+ * Highlights the cellView red
+ *
+ * @param {cellView} cellView
+ */
+function unhighlight(cellView) {
+	cellView.unhighlight(null, {
+	    highlighter: {
+	        name: 'stroke',
+	        options: {
+	            padding: 10,
+	            rx: 5,
+	            ry: 5,
+	            attrs: {
+	                'stroke-width': 3,
+	                stroke: 'red'
+	            }
+	        }
+	    }
+	});
+}
+
+
+/**
  * Create a halo around the element that was just created
  *
  * @param {joint.shapes} cellView
  * @returns {joint.ui.Halo} halo
  */
 function createHalo(cellView){
-	var halo = new joint.ui.Halo({
-        graph: graph,
-        paper: paper,
-        cellView: cellView,
-        type: 'toolbar'
+	// var halo = new joint.ui.Halo({
+ //        graph: graph,
+ //        paper: paper,
+ //        cellView: cellView,
+ //    });
+
+    var halo = new joint.ui.Halo({
+    	type: 'toolbar',
+    	boxContent: false,
+        cellView: cellView
     });
 
     halo.removeHandle('unlink');
     halo.removeHandle('clone');
     halo.removeHandle('fork');
     halo.removeHandle('rotate');
+
+
+    halo.on('action:resize:pointermove', function(cell) {
+    	unhighlight(cellView);
+    	highlight(cellView);
+    });
+
     halo.render();
     return halo;
 }
@@ -608,18 +531,19 @@ function createHalo(cellView){
  *
  * @param  {Array.<joint.dia.shapes>} elements
  */
-function removeHighlight(elements){
+function removeHighlight(){
 	var cell;
+	var elements = graph.getElements();
     // Unhighlight everything
     for (var i = 0; i < elements.length; i++) {
         cell = elements[i].findView(paper);
-        cell.unhighlight();
+        unhighlight(cell);
     }
 }
 
 /**
  * Function for single click on cell
- *
+ * 
  */
 paper.on('cell:pointerup', function(cellView, evt) {
 	if(mode == "Modelling") {
@@ -633,13 +557,11 @@ paper.on('cell:pointerup', function(cellView, evt) {
             selection.reset();
             selection.add(cellView.model);
 
-            var elements = graph.getElements();
-
             // Remove highlight of other elements
-            removeHighlight(elements);
+            removeHighlight();
 
             // Highlight when cell is clicked
-            cellView.highlight();
+            highlight(cellView);
 
             currentHalo = createHalo(cellView);
 
@@ -745,12 +667,13 @@ function checkForMultipleNB(node) {
 	var localLinks = graph.getLinks();
 
 	for (var i = 0; i < localLinks.length; i++){
-        if (localLinks[i].prop("lin k-type") == 'NBT' || localLinks[i].prop("link-type") == 'NBD'){
+        if (localLinks[i].prop("link-type") == 'NBT' || localLinks[i].prop("link-type") == 'NBD'){
             if (localLinks[i].getSourceElement().prop("id") == node["id"] || localLinks[i].getTargetElement().prop("id") == node["id"]){
-                num += 1;
+                num += 1;            
             }
         }
 	}
 
 	return num >= 1;
 }
+

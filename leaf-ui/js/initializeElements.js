@@ -184,6 +184,7 @@ paper.el.oncontextmenu = function(evt) { evt.preventDefault(); };
 stencil = new joint.ui.Stencil({
 	graph: graph,
 	paper: paper,
+	label: 'hello',
 	width: 200,
 	height: 600
 });
