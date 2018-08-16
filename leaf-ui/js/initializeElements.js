@@ -164,7 +164,21 @@ paper = new joint.dia.Paper({
 			'.marker-target': {stroke: '#000000', "d": 'M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5'}
 			},
 		'labels': [{position: 0.5, attrs: {text: {text: "and"}}}]
-	})
+	}),
+	highlighting: {
+        default: {
+        	name: 'stroke',
+	        options: {
+	            padding: 10,
+	            rx: 5,
+	            ry: 5,
+	            attrs: {
+	                'stroke-width': 3,
+	                stroke: 'red'
+	            }
+	        }
+        }
+    }
 });
 
 var paperScroller = new joint.ui.PaperScroller({

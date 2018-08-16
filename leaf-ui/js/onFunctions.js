@@ -31,6 +31,7 @@ function switchToAnalysisMode() {
 	
 	// Clear the right panel
 	clearInspector();
+	removeHighlight();
 
 	analysisInspector.render();
 
@@ -447,50 +448,6 @@ function basicActorLink(link){
     }
 }
 
-/**
- * Highlights the cellView red
- *
- * @param {cellView} cellView
- */
-function highlight(cellView) {
-	cellView.highlight(null, {
-	    highlighter: {
-	        name: 'stroke',
-	        options: {
-	            padding: 10,
-	            rx: 5,
-	            ry: 5,
-	            attrs: {
-	                'stroke-width': 3,
-	                stroke: 'red'
-	            }
-	        }
-	    }
-	});
-}
-
-/**
- * Highlights the cellView red
- *
- * @param {cellView} cellView
- */
-function unhighlight(cellView) {
-	cellView.unhighlight(null, {
-	    highlighter: {
-	        name: 'stroke',
-	        options: {
-	            padding: 10,
-	            rx: 5,
-	            ry: 5,
-	            attrs: {
-	                'stroke-width': 3,
-	                stroke: 'red'
-	            }
-	        }
-	    }
-	});
-}
-
 
 /**
  * Create a halo around the element that was just created
@@ -518,8 +475,8 @@ function createHalo(cellView){
 
 
     halo.on('action:resize:pointermove', function(cell) {
-    	unhighlight(cellView);
-    	highlight(cellView);
+    	cellView.unhighlight();
+		cellView.highlight();
     });
 
     halo.render();
@@ -537,7 +494,7 @@ function removeHighlight(){
     // Unhighlight everything
     for (var i = 0; i < elements.length; i++) {
         cell = elements[i].findView(paper);
-        unhighlight(cell);
+        cell.unhighlight();
     }
 }
 
@@ -561,7 +518,7 @@ paper.on('cell:pointerup', function(cellView, evt) {
             removeHighlight();
 
             // Highlight when cell is clicked
-            highlight(cellView);
+            cellView.highlight();
 
             currentHalo = createHalo(cellView);
 
