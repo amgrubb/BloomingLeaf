@@ -90,8 +90,19 @@ function init(){
         if (prevgraph){
             analysis.graph.fromJSON(JSON.parse(prevgraph));
         }*/
-        var cookie_json = JSON.parse(analysis.page.cookie.substr(4));
-        analysis.graph.fromJSON(cookie_json.graph);
+        var cookies = analysis.page.cookie.substr(4).split(";");
+        var prevgraph = "";
+        //Loop through the cookies to find the one representing the graph, if it exists
+        for (var i = 0; i < cookies.length; i++){
+            if (cookies[i].indexOf("graph") >= 0){
+                prevgraph = cookies[i];
+                break;
+            }
+        }
+        var graph_json = JSON.parse(prevgraph);
+        if (prevgraph){
+            analysis.graph.fromJSON(graph_json.graph);
+        }
     }
 
     //Filter out Actors
@@ -684,28 +695,7 @@ function add_filter(){
     renderNavigationSidebar();
 }
 
-//This function should get the current state in the screen and save in the original path
-function save_current_state(){
-
-    var jsObject = {};
-
-    //Get the Graph Model
-    jsObject.model = model;
-
-    /*//this.saveElementsInGraphVariable();
-    var elements = [];
-    for (var i = 0; i < graph.getElements().length; i++){
-        if (!(graph.getElements()[i] instanceof joint.shapes.basic.Actor)){
-            elements.push(graph.getElements()[i]);
-        }
-    }
-    graph.allElements = elements;
-    graph.elementsBeforeAnalysis = elements;
-*/
-    if(jsObject.model == null) {
-        return null;
-    }
-
+function updateAnalysisRequestWithCurrentState(){
     // update analysis type
     analysisRequest.action = "singlePath";
     analysisRequest.previousAnalysis = _.clone(savedAnalysisData.singlePathResult);
@@ -838,7 +828,7 @@ function save_current_state(){
             var startValue = model.intentions[i].dynamicFunction.functionSegList[0].funcX;
             var endValue = model.intentions[i].dynamicFunction.functionSegList[1].funcX;
             var previousStatus = analysisRequest.previousAnalysis.elementList[i].status[current];
-            var curStatus = tempResults.allSolution[index_of_selected_state].intentionElements[i].status[0];
+            var curStatus = savedAnalysisData.allNextStatesResult.allSolution[index_of_selected_state].intentionElements[i].status[0];
             if (previousStatus === startValue && curStatus === endValue){
                 potentialEpoch = "E" + model.intentions[i].nodeID;
             }
@@ -855,7 +845,7 @@ function save_current_state(){
             // check if current value is the final value
             // this goes into potential list
             var endValue = model.intentions[i].dynamicFunction.functionSegList[1].funcX;
-            var curStatus = tempResults.allSolution[index_of_selected_state].intentionElements[i].status[0];
+            var curStatus = savedAnalysisData.allNextStatesResult.allSolution[index_of_selected_state].intentionElements[i].status[0];
             if (curStatus === endValue){
                 potentialEpochs.push("E" + model.intentions[i].nodeID);
             }
@@ -868,9 +858,10 @@ function save_current_state(){
             if (previousEpochs.indexOf("E" + model.intentions[i].nodeID) > -1){
                 break;
             }
+            // TODO: add to potential epochs directly?
             // check if previous is constant value and current is not constant value
             var startValue = model.intentions[i].dynamicFunction.functionSegList[0].funcX;
-            var curStatus = tempResults.allSolution[index_of_selected_state].intentionElements[i].status[0];
+            var curStatus = savedAnalysisData.allNextStatesResult.allSolution[index_of_selected_state].intentionElements[i].status[0];
             if (curStatus !== startValue){
                 potentialEpoch = "E" + model.intentions[i].nodeID;
             }
@@ -894,12 +885,11 @@ function save_current_state(){
 
         }
 
-        // User Defined
+        // User Defined TODO: need to fix UD functions
         if (model.intentions[i].dynamicFunction.stringDynVis === "UD"){
 
         }
     }
-
 
     // update current
     // number of time points left = num_all_epochs + num_relative + num_absolute+1 + intersection - prevE - prevA - prevR
@@ -907,7 +897,7 @@ function save_current_state(){
     // if <, cur time point = rand(prev tp, max - tp left)
 
     var numTPLeft = num_epochs + parseInt(analysisRequest.numRelTime) + analysisRequest.absTimePtsArr.length
-    + AbsIntersction - previousEpochs.length - previousAbs - previousRel;
+        + AbsIntersction - previousEpochs.length - previousAbs - previousRel;
 
     console.log("numTPLeft " + numTPLeft);
 
@@ -923,7 +913,8 @@ function save_current_state(){
 
 
     // find TE and E0000 and update the TP
-    // if multiple potential and no definite, determine which one is selected as an epoch
+    // if multiple potential and no definite, determine which one is selected as an epoch TODO: need to test this
+
     if (potentialEpoch === "" && potentialEpochs.length > 0){
         var RandIndex = Math.floor(Math.random() *
             (potentialEpochs.length + 1));
@@ -932,7 +923,7 @@ function save_current_state(){
     if (potentialEpoch !== ""){
         // it is an epoch
         var TPforPotentialEpoch = "";
-        // update the time point for potentialEpoch
+        // update the time point for potentialEpoch E0000
         for (var i = 0; i < analysisRequest.previousAnalysis.assignedEpoch.length; i++){
             var regex = /(.*)_(.*)/g;
             var match = regex.exec(analysisRequest.previousAnalysis.assignedEpoch[i]);
@@ -943,7 +934,7 @@ function save_current_state(){
                 break;
             }
         }
-        // update the time point for the corresponding TE
+        // update the time point for the corresponding TE or TA
         for (var i = 0; i < analysisRequest.previousAnalysis.assignedEpoch.length; i++){
             var regex = /(.*)_(.*)/g;
             var match = regex.exec(analysisRequest.previousAnalysis.assignedEpoch[i]);
@@ -989,6 +980,21 @@ function save_current_state(){
     analysisRequest.previousAnalysis.timePointPath = analysisRequest.previousAnalysis.timePointPath.slice(0, currentState+1);
 
     analysisRequest.currentState = currentState + "|" + analysisRequest.previousAnalysis.timePointPath[currentState];
+}
+
+//This function should get the current state in the screen and save in the original path
+function save_current_state(){
+
+    var jsObject = {};
+
+    //Get the Graph Model
+    jsObject.model = model;
+
+    if(jsObject.model == null) {
+        return null;
+    }
+
+    updateAnalysisRequestWithCurrentState();
     jsObject.analysisRequest = analysisRequest;
     console.log(jsObject);
 
@@ -1001,45 +1007,21 @@ function save_current_state(){
 //This function should get the current state and generate a new window with the next possible states
 function generate_next_states(){
 
-    // make updating stuff a helper function and call backend comm?
-
     // Object to be sent to the backend
     var jsObject = {};
-    var index_of_selected_state = parseInt(document.getElementById("currentPage").value);
+    //Get the Graph Model
+    jsObject.model = model;
+
+    if(jsObject.model == null) {
+        return null;
+    }
+
+    updateAnalysisRequestWithCurrentState();
 
     analysisRequest.action = "allNextStates";
-    //var newInputAnalysis = analysisRequest;
-    console.log(analysisRequest);
-
-    var currentState = current + 1; // current for this selected state
-    console.log(currentState);
-
-    if (currentState == analysisRequest.previousAnalysis.timePointPath.length){
-        alert("no more next states available");
-    }
-
-    // update analysisRequest with the current select state
-    // use single path solution as previous solution
-
-    for (var element_index = 0; element_index < savedAnalysisData.allNextStatesResult.allSolution[index_of_selected_state].intentionElements.length; element_index++){
-        analysisRequest.previousAnalysis.elementList[element_index].status[currentState] = savedAnalysisData.allNextStatesResult.allSolution[index_of_selected_state].intentionElements[element_index].status[0];
-    }
-
-
-    //update current state
-    analysisRequest.currentState = currentState + "|" + analysisRequest.previousAnalysis.timePointPath[currentState];
-
-    // update current time point -  determine whether it's an epoch or not
-
-    // update current time point in the path if necessary (if epoch)
-    // remove all the time points after
-
 
     jsObject.analysisRequest = analysisRequest;
     console.log(analysisRequest);
-
-
-    jsObject.model = model;
 
     backendComm(jsObject);
 
