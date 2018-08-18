@@ -6,7 +6,7 @@ When the website is loaded up, one of the first files Javascript files that are 
 This file contains the class definitions for the Classes listed in [this]() UML diagram.
 Then all of the Javascript files in the ```rappid-extensions``` folder are loaded. These files contain definitions for Backbone views for the website's inspector (the panel on the right hand side). 
 Finally, the website loads six more Javascript files, containing code that handles interactions that are not related to the website's insepector. Previously these six files were part of a large ```main.js``` file, which does not exist anymore. The six Javascript files are loaded in the following order:
-![Loading diagram](./LoadingDiagram.png?raw=true "Title")
+![Loading diagram](./loading_diagram.png?raw=true "Title")
 
 There is a reason why these files are loaded in that pariculiar order. In general files that are loaded later, have some sort of dependecy to files loaded earlier. The purpose of these six files will now be explained in more detail.
 
