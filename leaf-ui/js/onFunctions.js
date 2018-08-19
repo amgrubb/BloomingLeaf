@@ -25,9 +25,54 @@ $('#analysis-btn').on('click', function() {
 
 
 /**
+ * Reassigned IDs if required.
+ * If there are currently n intentions, and the nodeIDs of the intentions
+ * are not exactly between 0000 and n - 1 inclusive, this function reassigns IDs 
+ * so that the nodeIDs are all exactly between 0000 and n - 1 inclusive.
+ *
+ * For example: 
+ * There are 2 intentions. The first intention has nodeID 0000 and the
+ * second intention has nodeID 0002. This function will cause the 
+ * the first intention to keep nodeID 0000 and the 
+ * second intention to be assigned assigned nodeID 0001.
+ */
+function reassignIntentionIDs() {
+	var elements = graph.getElements();
+	var intentions = model.intentions;
+ 	var currID = 0;
+	var currIDStr;
+	for (var i = 0; i < intentions.length; i++) {
+		var intention = intentions[i];
+ 		if (parseInt(intention.nodeID) !== currID) {
+ 			// The current intention's ID must be reassigned
+		
+			// Find the intention's cell
+			var cell;
+			for (var j = 0; j < elements.length; j++) {
+				if (elements[i].attributes.nodeID === intention.nodeID) {
+					cell = elements[i];
+				}
+			}
+ 			currIDStr = currID.toString();
+ 			while (currIDStr.length < 4){
+	                currIDStr = '0' + currIDStr;
+	        }
+			cell.attributes.nodeID = currIDStr;
+			intention.setNewID(currIDStr);
+		}
+ 		currID += 1;
+	}
+ 	Intention.numOfCreatedInstances = currID;
+	Link.numOfCreatedInstances = currID;
+}
+
+
+/**
  * Helper function for switching to Analysis view.
  */
 function switchToAnalysisMode() {
+
+	reassignIntentionIDs();
 	
 	// Clear the right panel
 	clearInspector();
