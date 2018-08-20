@@ -8,9 +8,9 @@ var LinkInspector = Backbone.View.extend({
         '<label id="title">Constant Relationship</label>',
         '<br>',
         '<select id="constant-links" class="link-type">',
-            '<option value="no">No Relationship</option>',
-            '<option value="and">And-Decomposition</option>',
-            '<option value="or">Or-Decomposition</option>',
+            '<option value="NO">No Relationship</option>',
+            '<option value="AND">And-Decomposition</option>',
+            '<option value="OR">Or-Decomposition</option>',
             '<option value="++">++</option>',
             '<option value="--">--</option>',
             '<option value="+">+</option>',
@@ -75,11 +75,9 @@ var LinkInspector = Backbone.View.extend({
                 this.$el.html(_.template(this.evolvingtemplate)());
                 this.setSelectValues('#link-type-begin', 'Evolving');
 
-                if (['AND', 'OR', 'NO'].includes(this.link.linkType)) {
-                    $('#link-type-begin').val(this.link.linkType.toLowerCase()).change();
-                } else {
-                    $('#link-type-begin').val(this.link.linkType).change();
-                }
+
+                $('#link-type-begin').val(this.link.linkType).change();
+
                 
                 this.updateBeginEvolRelations();
 
@@ -93,12 +91,7 @@ var LinkInspector = Backbone.View.extend({
             } else {
                 this.evolvingRelations = false;
                 this.$el.html(_.template(this.template)());
-                if (['AND', 'OR', 'NO'].includes(this.link.linkType)) {
-                    $('#constant-links').val(this.link.linkType.toLowerCase());
-                } else {
-                    $('#constant-links').val(this.link.linkType);
-                }
-                
+                $('#constant-links').val(this.link.linkType);            
             }
         }
 

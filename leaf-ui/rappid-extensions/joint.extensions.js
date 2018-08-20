@@ -82,7 +82,7 @@ joint.shapes.basic.Task = joint.shapes.basic.Intention.extend({
         attrs: {
             ".outer": {
 
-            	d: 'M 0 30 L 20 0 L 80 0 L 100 30 L 80 60 L 20 60 z',
+            	refD: 'M 0 30 L 20 0 L 80 0 L 100 30 L 80 60 L 20 60 z',
             	fill: '#92E3B1',
             	stroke: 'black',
             	'stroke-width': 1
@@ -111,7 +111,7 @@ joint.shapes.basic.Softgoal = joint.shapes.basic.Intention.extend({
         type: "basic.Softgoal",
         attrs: {
             ".outer": {
-            	d: 'M 0 30 Q 5 0 45 15 Q 55 18 65 15 Q 95 5 100 25 L 100 40 Q 100 60 80 60 L 75, 60 Q 66 59 55 56 Q 45 52 35 56 Q 25 57 15 58 L 10 58 Q 0 53 0 35 z',
+            	refD: 'M 0 30 Q 5 0 45 15 Q 55 18 65 15 Q 95 5 100 25 L 100 40 Q 100 60 80 60 L 75, 60 Q 66 59 55 56 Q 45 52 35 56 Q 25 57 15 58 L 10 58 Q 0 53 0 35 z',
                 stroke: 'black',
                 fill: '#FF984F',
             },

@@ -70,9 +70,9 @@ var ElementInspector = Backbone.View.extend({
     className: 'element-inspector',
 
     template: [
-            '<label>Node name</label>',
+            '<label>Node Name:</label>',
             '<textarea class="cell-attrs-text"></textarea>',
-            '<label>Initial Satisfaction Value</label>',
+            '<label>Initial Satisfaction Value:</label>',
             '<select id="init-sat-value">',
                 '<option value="(no value)"> (no value) </option>',
                 '<option value=none> None (⊥, ⊥)</option>',
@@ -83,7 +83,7 @@ var ElementInspector = Backbone.View.extend({
             '</select>',
             '<br>',
             '<div id="function-div">',
-                '<label>Function Type</label>',
+                '<label>Function Type:</label>',
                 '<select class="function-type">',
                     '<option value=NT> No Function </option>',
                     '<option value=C> Constant </option>',
@@ -132,9 +132,9 @@ var ElementInspector = Backbone.View.extend({
                     '<select id="repeat-end" class="repeat-select">',
                         '<option class="select-placeholder" selected disabled value="">End</option>',
                     '</select>',
-                    '<label style="float:left; font-size:0.8em;" id="repeat-begin2" class="repeat-select2">Repeat counts</label>',
+                    '<label style="float:left; font-size:0.8em;" id="repeat-begin2" class="repeat-select2">Repeat counts:</label>',
                     '<input style="float:right;"class="repeat-select2" id="repeat-end2" type="number" value="2">',
-                    '<label style="float:left; font-size:0.8em;" id="repeat-begin3" class="repeat-select3">Absolute Length</label>',
+                    '<label style="float:left; font-size:0.8em;" id="repeat-begin3" class="repeat-select3">Absolute Length:</label>',
                     '<input style="float:right;"class="repeat-select3" id="repeat-end3" type="number" value="0">',
                     '<p id="noteRepeat" style="text-align:left; float:left; color:red; font-size:0.7em;">Note: Leave Absolute Length as 0 for unknown length. If Absolute Length is less than 0 or Repeat Count is less than 2, they will be set to 0 or 2 respectively.</p>',
             // change to blue or change color to green
