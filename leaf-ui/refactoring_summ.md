@@ -3,7 +3,7 @@ Previously the BloomingLeaf front-end source code contained irrelavent functions
 
 # How it works
 When the website is loaded up, one of the first files Javascript files that are loaded is ```Class.js```.
-This file contains the class definitions for the Classes listed in [this]() UML diagram.
+This file contains the class definitions for the Classes listed in [this](https://www.draw.io/?libs=general;uml#G1pS5gNjCri6ZYw1XCdt2jeWxDdObwbniY) UML diagram.
 Then all of the Javascript files in the ```rappid-extensions``` folder are loaded. These files contain definitions for Backbone views for the website's inspector (the panel on the right hand side). 
 Finally, the website loads six more Javascript files, containing code that handles interactions that are not related to the website's insepector. Previously these six files were part of a large ```main.js``` file, which does not exist anymore. The six Javascript files are loaded in the following order:
 ![Loading diagram](./loading_diagram.png?raw=true "Title")
@@ -15,7 +15,7 @@ This file contains code that initializes and sets up the necessary Rappid, Joint
 
 Here is where we initialize variables for the  joint.Graph, joint.Paper, rappid.Stencil, Backbone views and custom shapes for the goals, tasks, soft-goals etc. In addition, Javascript objects that are used to map one string to another (ex. ```satValueDict``` and ```linkValText```) are initialized here as well.
 
-Most notably, two important global variables, ```model``` and ```analysisRequest``` are initialized here as well. ```model``` is a ```Model``` object and ```analysisRequest``` is an ```AnalysisRequest``` object (see UML).
+Most notably, two important global variables, ```model``` and ```analysisRequest``` are initialized here as well. ```model``` is a ```Model``` object and ```analysisRequest``` is an ```AnalysisRequest``` object ([see UML](https://www.draw.io/?libs=general;uml#G1pS5gNjCri6ZYw1XCdt2jeWxDdObwbniY)).
 
 ```model``` would contain up-to-date information about the current model displayed on the canvas. It is continually maintained so that it is up-to-date.
 
