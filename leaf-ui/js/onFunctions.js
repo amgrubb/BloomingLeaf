@@ -113,13 +113,43 @@ $('#model-cur-btn').on('click', function() {
 	savedAnalysisData.finalValueTimePoints="";
 });
 
+
+/**
+ * Sets each node/cellview in the paper to its initial 
+ * satisfaction value and colours all text to black
+ */
+function revertNodeValuesToInitial() {
+	var elements = graph.getElements();
+	var curr;
+	for (var i = 0; i < elements.length; i++) {
+		curr = elements[i].findView(paper).model;
+
+		if (curr.attributes.type !== 'basic.Goal' &&
+			curr.attributes.type !== 'basic.Task' &&
+			curr.attributes.type !== 'basic.Softgoal' &&
+			curr.attributes.type !== 'basic.Resource') {
+			continue;
+		}
+
+		var intention = model.getIntentionByID(curr.attributes.nodeID);
+
+		var initSatVal = intention.getInitialSatValue();
+		if (initSatVal === '(no value)') {
+			curr.attr('.satvalue/text', '');
+		} else {
+			curr.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
+		}
+		curr.attr({text: {fill: 'black'}});
+	}
+}
+
 /**
  * Switches back to Modelling Mode from Analysis Mode
  * and resets the Nodes' satValues to the values prior to analysis
  * Display the modeling mode page
  */
 function switchToModellingMode() {
-
+	analysisRequest.previousAnalysis = null;
 	clearInspector();
 
 	// Reset to initial graph prior to analysis
@@ -127,6 +157,9 @@ function switchToModellingMode() {
 		var value = graph.elementsBeforeAnalysis[i]
 		updateNodeValues(i, value, "toInitModel");
 	}
+
+	// Reset to initial graph prior to analysis
+	revertNodeValuesToInitial();
 
 	graph.elementsBeforeAnalysis = [];
 
@@ -233,7 +266,8 @@ $('#btn-save').on('click', function() {
 	var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
 	if (name){
 		var fileName = name + ".json";
-		download(fileName, JSON.stringify(graph.toJSON()));
+		var obj = getFullJson();
+		download(fileName, JSON.stringify(obj));
 	}
 });
 

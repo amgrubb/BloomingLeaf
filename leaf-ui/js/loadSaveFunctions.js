@@ -55,8 +55,8 @@ reader.onload = function() {
 		    	} 
 
 		        // create intention evaluation
-		        var initSat = cells[i].attrs['.satvalue'];
-		        initSat = initSat.text !== ' ' ?  satValueDict[initSat.value] : '0000';
+		        var initSat = cells[i].attrs['.satvalue'].text;
+		        initSat = (initSat !== ' ' && initSat !== '')  ?  satValueDict[initSat] : '0000';
 			    var intentionEval = new UserEvaluation(intention.nodeID, '0', initSat);
 			    analysisRequest.userAssignmentsList.push(intentionEval);
 		    
