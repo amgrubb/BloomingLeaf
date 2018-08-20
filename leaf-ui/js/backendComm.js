@@ -1,11 +1,11 @@
 
-var globalAnalysisResult = {};
 
 function backendComm(jsObject){
 	/**
 	* Print the input to the console.
 	*/
 	console.log(JSON.stringify(jsObject));
+	console.log(jsObject.analysisRequest.action);
 
 	//backend script called
 	var pathToCGI = "./cgi-bin/backendCom.cgi";
@@ -28,7 +28,6 @@ function backendComm(jsObject){
 		msg = "Ops! Something went wrong.";
 		alert(msg);
 	});
-
 }
 
 function executeJava(isGetNextSteps){
@@ -68,7 +67,7 @@ function getFileResults(isGetNextSteps){
 				*/
 					console.log(JSON.stringify(JSON.parse(response['data'])));
 
-				globalAnalysisResult = results;
+				//globalAnalysisResult = results;
 
 				if (results == ""){
 					alert("Error while reading the resonse file from server. This can be due an error in executing java application.")
@@ -76,16 +75,21 @@ function getFileResults(isGetNextSteps){
 				}
 
 
-				analysisResult.assignedEpoch = results.assignedEpoch;
-		        analysisResult.timePointPath = results.timePointPath;
-		        analysisResult.timePointPathSize = results.timePointPathSize;
-		        analysisResult.values = results.values;
-
-		        analysisRequest.previousAnalysis = analysisResult;
-
+				// do not need to store the past result for all next states
 				if(isGetNextSteps){
+                    savedAnalysisData.allNextStatesResult = results;
+                    console.log("in backendcomm, saving all next state results");
 					open_analysis_viewer();
 				}else{
+                    savedAnalysisData.singlePathResult = results;
+                    analysisResult.assignedEpoch = results.assignedEpoch;
+                    analysisResult.timePointPath = results.timePointPath;
+                    analysisResult.timePointPathSize = results.timePointPathSize;
+                    analysisResult.elementList = results.elementList;
+                    analysisResult.allSolution = results.allSolution;
+                    analysisRequest.previousAnalysis = analysisResult;
+                    console.log("previousAnalysis");
+                    console.log(analysisRequest.previousAnalysis);
 					displayAnalysis(results);
 				}
 			}
@@ -98,16 +102,15 @@ function getFileResults(isGetNextSteps){
 }
 
 
-
 function open_analysis_viewer(){
-	var urlBase = document.URL.substring(0, document.URL.lastIndexOf('/')+1);
-	var url = urlBase+"analysis.html";
+    var urlBase = document.URL.substring(0, document.URL.lastIndexOf('/')+1);
+    var url = urlBase+"analysis.html";
+    var w = window.open(url, Date.now(), "status=0,title=0,height=600,width=1200,scrollbars=1");
 
-	var w = window.open(url, "Analysis View", "status=0,title=0,height=600,width=1200,scrollbars=1");
+    if (!w) {
+        alert('You must allow popups for this map to work.');
+    }
 
-	if (!w) {
-	    alert('You must allow popups for this map to work.');
-	}
 }
 
 /*

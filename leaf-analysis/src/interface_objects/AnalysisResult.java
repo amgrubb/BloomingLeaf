@@ -11,7 +11,7 @@ public class AnalysisResult {
     private String[] assignedEpoch;
     private String[] timePointPath;
     private int timePointPathSize;
-    private List<IOIntention> values;
+    private List<OutputElement> elementList;
 
     public String[] getAssignedEpoch() {
         return assignedEpoch;
@@ -25,8 +25,8 @@ public class AnalysisResult {
         return timePointPathSize;
     }
 
-    public List<IOIntention> getValues() {
-        return values;
+    public List<OutputElement> getElementList() {
+        return elementList;
     }
 
 }

@@ -11,9 +11,8 @@ $('#analysis-btn').on('click', function() {
     var cycle;
    	jsLinks = getLinks();
    	cycle = cycleCheck(jsLinks, getElementList());
-	
-	syntaxCheck();
 
+	syntaxCheck();
     // If there are no cycles then switch view to Analysis
     if (!cycle) {
 		switchToAnalysisMode(); 
@@ -76,10 +75,11 @@ function switchToAnalysisMode() {
 	
 	// Clear the right panel
 	clearInspector();
+	
 	removeHighlight();
 
 	analysisInspector.render();
-
+	console.log("after render");
 	$('.inspector').append(analysisInspector.el);
 	$('#stencil').css("display", "none");
 	$('#history').css("display", "");
@@ -108,7 +108,7 @@ $('#model-cur-btn').on('click', function() {
 	switchToModellingMode();
 
 	// Cleaning the previous analysis data for new execution
-	globalAnalysisResult.elementList = "";
+	//globalAnalysisResult.elementList = "";
 	savedAnalysisData.finalAssignedEpoch="";
 	savedAnalysisData.finalValueTimePoints="";
 });

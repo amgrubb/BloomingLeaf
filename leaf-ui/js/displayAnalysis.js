@@ -12,26 +12,29 @@
  */
 function displayAnalysis(analysisResults){
 
-	// Change the format of the analysis result from the back end
-	var currentAnalysis = new analysisObject.initFromBackEnd(analysisResults);
-	currentAnalysis.type = "Single Path";
+    // Change the format of the analysis result from the back end
+    var currentAnalysis = new analysisObject.initFromBackEnd(analysisResults);
+    currentAnalysis.type = "Single Path";
 
-	// Save data for get possible next states
-	savedAnalysisData.finalAssignedEpoch = analysisResults.finalAssignedEpoch;
-	savedAnalysisData.finalValueTimePoints = analysisResults.finalValueTimePoints;
+    // Save data for get possible next states
+    savedAnalysisData.singlePathSolution.finalAssignedEpoch = analysisResults.finalAssignedEpoch;
+    savedAnalysisData.singlePathSolution.finalValueTimePoints = analysisResults.finalValueTimePoints;
+    savedAnalysisData.singlePathSolution.singlePathSolution = analysisResults;
+    console.log("savedAnalysisData");
+    console.log(savedAnalysisData.singlePathSolution);
 
-	// Check if slider has already been initialized
-	if (sliderObject.sliderElement.hasOwnProperty('noUiSlider')) {
-		sliderObject.sliderElement.noUiSlider.destroy();
-	}
+    // Check if slider has already been initialized
+    if (sliderObject.sliderElement.hasOwnProperty('noUiSlider')) {
+        sliderObject.sliderElement.noUiSlider.destroy();
+    }
 
-	// This might be unnecessary
-	// ElementList = analysisResults.elementList;
+    // This might be unnecessary
+    // ElementList = analysisResults.elementList;
 
-	// Update history log
-	updateHistory(currentAnalysis);
+    // Update history log
+    updateHistory(currentAnalysis);
 
-	createSlider(currentAnalysis, false);
+    createSlider(currentAnalysis, false);
 }
 
 /**
@@ -46,34 +49,34 @@ function displayAnalysis(analysisResults){
  */
 function createSlider(currentAnalysis, isSwitch) {
 
-	var sliderMax = currentAnalysis.timeScale;
-	var density = (sliderMax < 25) ? (100 / sliderMax) : 4;
+    var sliderMax = currentAnalysis.timeScale;
+    var density = (sliderMax < 25) ? (100 / sliderMax) : 4;
 
-	noUiSlider.create(sliderObject.sliderElement, {
-		start: 0,
-		step: 1,
-		behaviour: 'tap',
-		connect: 'lower',
-		direction: 'ltr',
-		range: {
-			'min': 0,
-			'max': sliderMax
-		},
-		pips: {
-			mode: 'values',
-			values: [],
-			density: density
-		}
-	});
+    noUiSlider.create(sliderObject.sliderElement, {
+        start: 0,
+        step: 1,
+        behaviour: 'tap',
+        connect: 'lower',
+        direction: 'ltr',
+        range: {
+            'min': 0,
+            'max': sliderMax
+        },
+        pips: {
+            mode: 'values',
+            values: [],
+            density: density
+        }
+    });
 
-	// Set initial value of the slider
-	sliderObject.sliderElement.noUiSlider.set(isSwitch ? 0 : sliderMax);
+    // Set initial value of the slider
+    sliderObject.sliderElement.noUiSlider.set(isSwitch ? 0 : sliderMax);
 
-	sliderObject.sliderElement.noUiSlider.on('update', function( values, handle ) {
-		updateSliderValues(parseInt(values[handle]), currentAnalysis);
-	});
+    sliderObject.sliderElement.noUiSlider.on('update', function( values, handle ) {
+        updateSliderValues(parseInt(values[handle]), currentAnalysis);
+    });
 
-	adjustSliderWidth(sliderMax);
+    adjustSliderWidth(sliderMax);
 }
 
 /*
@@ -89,8 +92,8 @@ function createSlider(currentAnalysis, isSwitch) {
  */
 function switchHistory(currentAnalysis) {
 
-	sliderObject.sliderElement.noUiSlider.destroy();
-	createSlider(currentAnalysis, true);
+    sliderObject.sliderElement.noUiSlider.destroy();
+    createSlider(currentAnalysis, true);
 }
 
 
@@ -101,20 +104,20 @@ function switchHistory(currentAnalysis) {
  *   The maximum value for the current slider
  */
 function adjustSliderWidth(maxValue){
-	// Min width of slider is 15% of paper's width
-	var min = $('#paper').width() * 0.1;
-	// Max width of slider is 90% of paper's width
-	var max = $('#paper').width() * 0.8;
-	// This is the width based on maxvalue
-	var new_width = $('#paper').width() * maxValue / 100;
-	// new_width is too small or too large, adjust
-	if (new_width < min){
-		new_width = min;
-	}
-	if (new_width > max){
-		new_width = max;
-	}
-	$('#slider').width(new_width);
+    // Min width of slider is 15% of paper's width
+    var min = $('#paper').width() * 0.1;
+    // Max width of slider is 90% of paper's width
+    var max = $('#paper').width() * 0.8;
+    // This is the width based on maxvalue
+    var new_width = $('#paper').width() * maxValue / 100;
+    // new_width is too small or too large, adjust
+    if (new_width < min){
+        new_width = min;
+    }
+    if (new_width > max){
+        new_width = max;
+    }
+    $('#slider').width(new_width);
 
 
 }
@@ -131,11 +134,11 @@ function adjustSliderWidth(maxValue){
  */
 function updateSliderValues(sliderValue, currentAnalysis){
 
-	var value = sliderValue;
-	$('#sliderValue').text(value);
-	sliderObject.sliderValueElement.innerHTML = value + "|" + currentAnalysis.relativeTime[value];
-	// Update the analysisRequest current state.
-	analysisRequest.currentState = sliderObject.sliderValueElement.innerHTML;
+    var value = sliderValue;
+    $('#sliderValue').text(value);
+    sliderObject.sliderValueElement.innerHTML = value + "|" + currentAnalysis.relativeTime[value];
+    // Update the analysisRequest current state.
+    analysisRequest.currentState = sliderObject.sliderValueElement.innerHTML;
 
 	for (var i = 0; i < currentAnalysis.numOfElements; i++) {
 		var element = currentAnalysis.elements[i];
@@ -177,17 +180,17 @@ function updateNodeValues(nodeID, satValue) {
  *
  */
 $('#history').on("click", ".log-elements", function(e){
-	var txt = $(e.target).text();
-	var step = parseInt(txt.split(":")[0].split(" ")[1]);
-	var log = historyObject.allHistory[step - 1];
-	var currentAnalysis = log.analysis;
+    var txt = $(e.target).text();
+    var step = parseInt(txt.split(":")[0].split(" ")[1]);
+    var log = historyObject.allHistory[step - 1];
+    var currentAnalysis = log.analysis;
 
-	switchHistory(currentAnalysis);
+    switchHistory(currentAnalysis);
 
-	$(".log-elements:nth-of-type(" + historyObject.currentStep.toString() +")").css("background-color", "");
-	$(e.target).css("background-color", "#E8E8E8");
+    $(".log-elements:nth-of-type(" + historyObject.currentStep.toString() +")").css("background-color", "");
+    $(e.target).css("background-color", "#E8E8E8");
 
-	historyObject.currentStep = step;
+    historyObject.currentStep = step;
 });
 
 
@@ -197,17 +200,17 @@ $('#history').on("click", ".log-elements", function(e){
  */
 function clearHistoryLog(){
 
-	$('.log-elements').remove();
+    $('.log-elements').remove();
 
-	if (sliderObject.sliderElement.noUiSlider) {
-		sliderObject.sliderElement.noUiSlider.destroy();
-	}
+    if (sliderObject.sliderElement.noUiSlider) {
+        sliderObject.sliderElement.noUiSlider.destroy();
+    }
 
-	sliderObject.pastAnalysisValues = [];
+    sliderObject.pastAnalysisValues = [];
 
-	historyObject.allHistory = [];
-	historyObject.currentStep = null;
-	historyObject.nextStep = 1;
+    historyObject.allHistory = [];
+    historyObject.currentStep = null;
+    historyObject.nextStep = 1;
 }
 
 
@@ -221,26 +224,26 @@ function clearHistoryLog(){
  * @param {Number} currentValueLimit
  */
 function updateHistory(currentAnalysis){
-	var logMessage = "Step " + historyObject.nextStep.toString() + ": " + currentAnalysis.type;
-	logMessage = logMessage.replace("<", "&lt");
+    var logMessage = "Step " + historyObject.nextStep.toString() + ": " + currentAnalysis.type;
+    logMessage = logMessage.replace("<", "&lt");
 
-	if ($(".log-elements")) {
-		$(".log-elements").last().css("background-color", "");
-	}
+    if ($(".log-elements")) {
+        $(".log-elements").last().css("background-color", "");
+    }
 
-	$("#history").append("<a class='log-elements' style='background-color:#E8E8E8''>" + logMessage + "</a>");
+    $("#history").append("<a class='log-elements' style='background-color:#E8E8E8''>" + logMessage + "</a>");
 
-	historyObject.currentStep = historyObject.nextStep;
-	historyObject.nextStep++;
+    historyObject.currentStep = historyObject.nextStep;
+    historyObject.nextStep++;
 
-	if (historyObject.allHistory.length == 0) {
-		var log = new logObject(currentAnalysis, 0);
-	} else {
-		var l = historyObject.allHistory.length - 1;
-		// historyObject.allHistory[l].sliderEnd = currentValueLimit;
-		// historyObject.allHistory[l].analysisLength = currentValueLimit - historyObject.allHistory[l].sliderBegin;
-		var log = new logObject(currentAnalysis, 0);
-	}
+    if (historyObject.allHistory.length == 0) {
+        var log = new logObject(currentAnalysis, 0);
+    } else {
+        var l = historyObject.allHistory.length - 1;
+        // historyObject.allHistory[l].sliderEnd = currentValueLimit;
+        // historyObject.allHistory[l].analysisLength = currentValueLimit - historyObject.allHistory[l].sliderBegin;
+        var log = new logObject(currentAnalysis, 0);
+    }
 
-	historyObject.allHistory.push(log);
+    historyObject.allHistory.push(log);
 }

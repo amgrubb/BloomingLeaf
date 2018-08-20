@@ -72,6 +72,7 @@ public class InputAnalysis {
 		return arr;
 	}
 
+	
 	public ArrayList<IntentionEvaluation> getInitialIntentionEvaluations() {
 		ArrayList<IntentionEvaluation> res = new ArrayList<IntentionEvaluation>();
 		for (IntentionEvaluation curr: userAssignmentsList) {
