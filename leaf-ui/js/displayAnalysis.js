@@ -17,9 +17,9 @@ function displayAnalysis(analysisResults){
     currentAnalysis.type = "Single Path";
 
     // Save data for get possible next states
-    savedAnalysisData.singlePathSolution.finalAssignedEpoch = analysisResults.finalAssignedEpoch;
-    savedAnalysisData.singlePathSolution.finalValueTimePoints = analysisResults.finalValueTimePoints;
-    savedAnalysisData.singlePathSolution.singlePathSolution = analysisResults;
+    savedAnalysisData.singlePathResult.assignedEpoch = analysisResults.assignedEpoch;
+    savedAnalysisData.singlePathResult.finalValueTimePoints = analysisResults.finalValueTimePoints;
+    savedAnalysisData.singlePathResult = analysisResults;
     console.log("savedAnalysisData");
     console.log(savedAnalysisData.singlePathSolution);
 

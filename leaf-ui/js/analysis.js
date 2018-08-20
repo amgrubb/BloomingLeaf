@@ -90,8 +90,8 @@ function init(){
         if (prevgraph){
             analysis.graph.fromJSON(JSON.parse(prevgraph));
         }*/
-        var cookies = analysis.page.cookie.substr(4).split(";");
-        var prevgraph = "";
+        var cookies = analysis.page.cookie.substr(6);
+        /*var prevgraph = "";
         //Loop through the cookies to find the one representing the graph, if it exists
         for (var i = 0; i < cookies.length; i++){
             if (cookies[i].indexOf("graph") >= 0){
@@ -102,7 +102,8 @@ function init(){
         var graph_json = JSON.parse(prevgraph);
         if (prevgraph){
             analysis.graph.fromJSON(graph_json.graph);
-        }
+        }*/
+        analysis.graph.fromJSON(JSON.parse(cookies));
     }
 
     //Filter out Actors
