@@ -277,7 +277,7 @@ $('#btn-fnt').on('click', function(){
  * @param {joint.dia.Cell} cell
  */
 function createLink(cell) {
-	var link = new Link(cell.attributes.labels[0].attrs.text.text, cell.getSourceElement().attributes.nodeID,  -1);
+	var link = new Link('AND', cell.getSourceElement().attributes.nodeID,  -1);
 	cell.attributes.linkID = link.linkID;
     cell.on("change:target", function () {
     	var target = cell.getTargetElement();
@@ -451,7 +451,7 @@ paper.on('blank:pointerclick', function(){
 });
 
 // Link equivalent of the element editor
-paper.on("link:options", function(evt, cell){
+paper.on("link:options", function(cell, evt){
 	if(mode == "Analysis") {
 		return;
 	}

@@ -52,9 +52,9 @@ var satValueDict = {
 
 // maps value to display text
 var linkValText = {
-	'no': 'No Relationship',
-    'and': 'and',
-    'or': 'or',
+	'NO': 'No Relationship',
+    'AND': 'and',
+    'OR': 'or',
     '++': '++',
     '--': '--',
     '+': '+',
