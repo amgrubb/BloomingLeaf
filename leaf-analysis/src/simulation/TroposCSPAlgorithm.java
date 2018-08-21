@@ -1856,10 +1856,10 @@ public class TroposCSPAlgorithm {
         
         // Test and Add Constraints
         if(DEBUG)
-        	//System.out.println("Constraints List:");
+        	System.out.println("Constraints List:");
         for (int i = 0; i < constraints.size(); i++) {
             if(DEBUG)
-            	//System.out.println(constraints.get(i).toString());
+            	System.out.println(constraints.get(i).toString());
             store.impose(constraints.get(i));
             if(!store.consistency()) {
             	Constraint errorConst = constraints.get(i);

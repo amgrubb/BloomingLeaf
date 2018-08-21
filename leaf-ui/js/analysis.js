@@ -90,12 +90,12 @@ function init(){
         if (prevgraph){
             analysis.graph.fromJSON(JSON.parse(prevgraph));
         }*/
-        var cookies = analysis.page.cookie.substr(6);
-        /*var prevgraph = "";
+        /*var cookies = analysis.page.cookie.split(";");
+        var prevgraph = "";
         //Loop through the cookies to find the one representing the graph, if it exists
         for (var i = 0; i < cookies.length; i++){
             if (cookies[i].indexOf("graph") >= 0){
-                prevgraph = cookies[i];
+                prevgraph = cookies[i].substr(6);
                 break;
             }
         }
@@ -103,7 +103,7 @@ function init(){
         if (prevgraph){
             analysis.graph.fromJSON(graph_json.graph);
         }*/
-        analysis.graph.fromJSON(JSON.parse(cookies));
+        analysis.graph.fromJSON(JSON.parse(analysis.page.cookie.substr(6)));
     }
 
     //Filter out Actors
