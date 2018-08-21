@@ -12,7 +12,7 @@ import interface_objects.*;
  *
  */
 public class ModelSpecBuilder {
-    private final static boolean DEBUG = true;	
+    private final static boolean DEBUG = false;	
 
 	
 	public static ModelSpec buildModelSpec(InputObject frontendObject){
@@ -66,7 +66,6 @@ public class ModelSpecBuilder {
 				// If there was an analysis before the current analysis, do the following:				
 				String[] absoluteTime = analysis.getCurrentState().split("\\|");
 				int currentState = Integer.parseInt(absoluteTime[0]);
-				System.out.println("current state: " + currentState);
 				// Creates initial Assigned Epoch Map.
 				String[] initialAssignedEpoch = prevResult.getAssignedEpoch();
 				HashMap<String, Integer> initialAssignedEpochMap = new HashMap<>();
@@ -74,9 +73,11 @@ public class ModelSpecBuilder {
 				for(int i = 0; i < initialAssignedEpoch.length; i++){
 					String[] assignedEpoch = initialAssignedEpoch[i].split("_");
 					String key = assignedEpoch[0].toString();
-					Integer value = Integer.parseInt(assignedEpoch[1]);
+					for (int j = 1; j < assignedEpoch.length-1 ; j ++){
+						key += "_" + assignedEpoch[j].toString();
+					}
+					Integer value = Integer.parseInt(assignedEpoch[assignedEpoch.length-1]);
 					initialAssignedEpochMap.put(key, value);
-					System.out.println("initialAssignedEpoch, key: " + key + ", value: " + value);
 				}
 				modelSpec.setInitialAssignedEpochs(initialAssignedEpochMap);
 
@@ -86,22 +87,18 @@ public class ModelSpecBuilder {
 				int[] initialValueTimePointsArray = new int[currentState+1];
 				for(int i = 0; i < currentState+1; i++){
 					initialValueTimePointsArray[i] = Integer.parseInt(initialValueTimePoints[i]);
-					System.out.println("parsing state #" + i + ", " + Integer.parseInt(initialValueTimePoints[i]));
 				}
 				modelSpec.setInitialValueTimePoints(initialValueTimePointsArray);
 				
 				// Set initial satisfaction values
 				// If previous analysis does not matter
 				
-				System.out.println("getting initial satisfaction values");
 				List<OutputElement> elementlist = prevResult.getElementList();
 				boolean[][][] initialValues = new boolean[elementlist.size()][currentState+1][4];
 				//System.out.println("parsing previous analysis result");
 				for (int i_state = 0; i_state <  currentState+1; i_state ++){
-					System.out.println("parsing state: " + i_state);
 					for (OutputElement e: elementlist){
 						String value = e.getStatus().get(i_state);
-						System.out.println("element: " + e.getId() + "  status: " + value);
 						if (value != null){
 							for (int i = 0; i < 4; i++){
 								if (value.charAt(i) == '1'){
@@ -173,13 +170,11 @@ public class ModelSpecBuilder {
 			
 			else {
 				// deal with no previous analysis but initial states
-				System.out.println("no previous analysis result");
 				ArrayList<IntentionEvaluation> initUserAssign = analysis.getInitialIntentionEvaluations();
 				boolean[][][] initialValues = new boolean[frontendModel.getIntentions().size()][1][4];
 				if (!(initUserAssign == null) && !(initUserAssign.size() == 0)){
 					for (IntentionEvaluation curr: initUserAssign){
 						String evalValue = curr.getEvaluationValue();
-						System.out.println("element: " +  curr.getIntentionID() + " status: " + curr.getEvaluationValue());
 						for (int i = 0; i < 4; i ++){
 							if (evalValue.charAt(i) == '1'){
 								initialValues[Integer.parseInt(curr.getIntentionID())][0][i] = true;
@@ -192,7 +187,6 @@ public class ModelSpecBuilder {
 					// initial states need initial time points -> 0|0   getInitialValueTimePoints()
 					int[] initialValueTimePointsArray = new int[1];
 					initialValueTimePointsArray[0] = 0;
-					System.out.println("setting initial time point 0");
 					modelSpec.setInitialValueTimePoints(initialValueTimePointsArray);
 				}
 				

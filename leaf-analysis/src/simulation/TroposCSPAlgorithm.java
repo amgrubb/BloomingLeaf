@@ -79,7 +79,7 @@ public class TroposCSPAlgorithm {
     private boolean[] boolFSPD = new boolean[] {false, true, true, true};
     private boolean[] boolPSFD = new boolean[] {true, true, true, false};
     
-    private final static boolean DEBUG = true;								// Whether to print debug statements.
+    private final static boolean DEBUG = false;								// Whether to print debug statements.
     /* New in ModelSpec
      *     	private int relativeTimePoints = 4;
     		private int[] absoluteTimePoints = new int[] {5, 10, 15, 20};
@@ -823,8 +823,6 @@ public class TroposCSPAlgorithm {
     				constraints.add(new And(createXeqY(this.values[i][t], this.values[i][0])));
     			}
     		} else if ((tempType == IntentionalElementDynamicType.INC) || (tempType == IntentionalElementDynamicType.MONP)){
-    			System.out.println("initializePathDynamicFunctions: increase");
-    			System.out.println("intention id i: " +i + " this.values[i].length: " + this.values[i].length);
     			for (int t = 0; t < this.values[i].length; t++){
     				for (int s = 0; s < this.values[i].length; s++){
     					if (t==s)
@@ -1753,6 +1751,7 @@ public class TroposCSPAlgorithm {
 				} 
 			/************ UD Functions *******************/	
 			} else if (tempType == IntentionalElementDynamicType.UD){
+				//System.out.println("user defined functions in initialize state dynamics");
 				// Repeat has been unrolled.
 				if (epochs == null){	// Assume at least one EB.
 					throw new RuntimeException("UD functions must have at least one EB. Fix " + element.getId());
@@ -1762,22 +1761,32 @@ public class TroposCSPAlgorithm {
 				String[] segmentDynamic = funcUD.getFunctions();
 				int numSegments = segmentDynamic.length;		//Segments not EBs
 				int nS = -1;
-				for (int e = 0; e < epochs.length; e ++)
-					if(currentAbsoluteTime < epochs[e].value()){
+				for (int e = 0; e < epochs.length; e ++){
+					//System.out.println("epoch id: " +epochs[e].id + " value: " + epochs[e].value());
+					if(this.spec.getInitialAssignedEpochs().get(epochs[0].id()) != null && currentAbsoluteTime < epochs[e].value()){
 						nS = e;
+						//System.out.println("found assigned epoch");
 						break;
 					}
+				}
+				//System.out.println("After the first loop");
 				int nextSegment = nS + 1;
-				IntVar nextEpoch = epochs[nS];
+				//System.out.println("nS: " + nS);
+				IntVar nextEpoch;
 				if (nS == -1){
+					//System.out.println("in ns == -1");
 					nS = numSegments - 1;
 					nextSegment = nS;
 					nextEpoch = this.infinity;
-				}	
+				}	else {
+					nextEpoch = epochs[nS];
+				}
+				//System.out.println("After the second loop, nS: " + nS + " length of segmentDynamics: " + segmentDynamic.length);
 				String dynamic = segmentDynamic[nS];
 				boolean[] dynamicValue = funcUD.getDynamicValues()[nS];
 				PrimitiveConstraint epochCondition = new XgtY(nextEpoch, minTimePoint);
 				initializeStateUDHelper(i, dynamic, dynamicValue, epochCondition, initialIndex);
+
 
 				// Add next segment conditions.
 				if (nextSegment == nS)
@@ -1789,7 +1798,7 @@ public class TroposCSPAlgorithm {
 			}
 		}
 
-    	// Not Both Dynamic Functions.
+    	// Not Both Dynamic Functions.       
     	List<NotBothLink> notBothLinkList = this.spec.getNotBothLink();	
     	for(ListIterator<NotBothLink> ec = notBothLinkList.listIterator(); ec.hasNext(); ){		
     		NotBothLink link = ec.next();
