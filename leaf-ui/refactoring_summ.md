@@ -1,5 +1,5 @@
 # BloomingLeaf Refactoring Changes
-Previously the BloomingLeaf front-end source code contained irrelavent functions, style inconsistencies and minimal documentation for existing functions. This document will outline the major refactoring changes that took place and will summarize how BloomingLeaf's front-end code works.
+From June 2018 to August 2018, a large part of the BloomingLeaf code has been redesigned in attempt to make it easier to understand. This document will outline the major refactoring changes that took place and will summarize how BloomingLeaf's front-end code works.
 
 # How it works
 When the website is loaded up, one of the first files Javascript files that are loaded is ```Class.js```.
@@ -8,7 +8,7 @@ Then all of the Javascript files in the ```rappid-extensions``` folder are loade
 Finally, the website loads six more Javascript files, containing code that handles interactions that are not related to the website's insepector. Previously these six files were part of a large ```main.js``` file, which does not exist anymore. The six Javascript files are loaded in the following order:
 ![Loading diagram](./loading_diagram.png?raw=true "Title")
 
-There is a reason why these files are loaded in that pariculiar order. In general files that are loaded later, have some sort of dependecy to files loaded earlier. The purpose of these six files will now be explained in more detail.
+There is a reason why these files are loaded in that pariculiar order. In general, files that are loaded later have some sort of dependecy to files loaded earlier. The purpose of these six files will now be explained in more detail.
 
 ### initializeElements.js
 This file contains code that initializes and sets up the necessary Rappid, JointJS and noUISlider elements.
