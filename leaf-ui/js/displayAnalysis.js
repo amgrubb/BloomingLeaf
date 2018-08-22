@@ -21,7 +21,6 @@ function displayAnalysis(analysisResults){
     savedAnalysisData.singlePathResult.finalValueTimePoints = analysisResults.finalValueTimePoints;
     savedAnalysisData.singlePathResult = analysisResults;
     console.log("savedAnalysisData");
-    console.log(savedAnalysisData.singlePathSolution);
 
     // Check if slider has already been initialized
     if (sliderObject.sliderElement.hasOwnProperty('noUiSlider')) {

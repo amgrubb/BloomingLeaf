@@ -192,7 +192,7 @@ var AnalysisInspector = Backbone.View.extend({
         var currentState = parseInt(analysisRequest.currentState.substring(0, i));
         for (var i = 0; i < currentState + 1; i ++){
             for (var j = 0; j < analysisRequest.previousAnalysis.assignedEpoch.length; j ++){
-                var regex = /(.*)_(.*)/g;
+                var regex = /(.*)_(.*)$/g;
                 var match = regex.exec(analysisRequest.previousAnalysis.assignedEpoch[j]);
                 if (match[2] === analysisRequest.previousAnalysis.timePointPath[i]){
                     previousTP.push(analysisRequest.previousAnalysis.assignedEpoch[j]);
