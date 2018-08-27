@@ -978,6 +978,7 @@ function updateAnalysisRequestWithCurrentState(){
     }
     if (definiteEpochs.length > 1){
         alert("more than one epoch in this state");
+        return;
     }
     if (definiteEpochs.length == 1){
         var potentialEpoch = definiteEpochs[0];
@@ -1011,8 +1012,9 @@ function updateAnalysisRequestWithCurrentState(){
 
         // decide which relative time points have not occurred yet
         var prevRelativePoints = [];
+        var REA_to_index = {};
         for (var i = 0; i < analysisRequest.previousAnalysis.assignedEpoch.length; i++){
-            var regex = /TR(.*)_.*/g;
+            var regex = /T[R,E,A](.*)_.*/g;
             var match = regex.exec(analysisRequest.previousAnalysis.assignedEpoch[i]);
             if (match !== null){
                 prevRelativePoints.push(parseInt(match[1]));
@@ -1022,7 +1024,7 @@ function updateAnalysisRequestWithCurrentState(){
 
         var newRel = 1;
         // pick one
-        for (var j = 1; j < parseInt(analysisRequest.numRelTime); j ++){
+        for (var j = 1; j <= parseInt(analysisRequest.numRelTime)+num_epochs+analysisRequest.absTimePtsArr.length; j ++){
             if (prevRelativePoints.indexOf(j) == -1){
                 newRel = j;
                 break;
