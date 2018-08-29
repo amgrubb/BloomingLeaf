@@ -79,7 +79,7 @@ public class TroposCSPAlgorithm {
     private boolean[] boolFSPD = new boolean[] {false, true, true, true};
     private boolean[] boolPSFD = new boolean[] {true, true, true, false};
     
-    private final static boolean DEBUG = false;								// Whether to print debug statements.
+    private final static boolean DEBUG = true;								// Whether to print debug statements.
     /* New in ModelSpec
      *     	private int relativeTimePoints = 4;
     		private int[] absoluteTimePoints = new int[] {5, 10, 15, 20};
@@ -1770,10 +1770,11 @@ public class TroposCSPAlgorithm {
 					throw new RuntimeException("UD functions must have at least one EB. Fix " + element.getId());
 				}	
 				// Find which epoch the part falls into.
+				
 				UDFunctionCSP funcUD = element.getCspUDFunct();
 				String[] segmentDynamic = funcUD.getFunctions();
 				int numSegments = segmentDynamic.length;		//Segments not EBs
-				int nS = 0;
+				int nS = -1;
 				for (int e = 0; e < epochs.length; e ++){
 					if(this.spec.getInitialAssignedEpochs().get(epochs[e].id()) != null && currentAbsoluteTime >= this.spec.getInitialAssignedEpochs().get(epochs[e].id())){
 						nS = e;
@@ -1786,12 +1787,13 @@ public class TroposCSPAlgorithm {
 				//System.out.println("nS: " + nS + " epochs.length: " + epochs.length + " numSegments: " + numSegments);
 				if (nS == epochs.length-1){
 					//System.out.println("at last epoch");
-					/*nS = numSegments - 1;
-					nextSegment = nS;*/
+					//nS = numSegments - 1;
+					//nextSegment = nS;
 					nextEpoch = this.infinity;
 				}	else {
 					//System.out.println("not last epoch");
 					nextEpoch = epochs[nS+1];
+					//System.out.println("nextEpoch: " + nextEpoch.id);
 				}
 				
 				String dynamic = segmentDynamic[nS+1];
@@ -1811,7 +1813,7 @@ public class TroposCSPAlgorithm {
 
 				dynamicValue = funcUD.getDynamicValues()[nextSegment];
 				epochCondition = new XlteqY(nextEpoch, minTimePoint);
-				initializeStateUDHelper(i, dynamic, dynamicValue, epochCondition, initialIndex);
+				initializeStateUDHelper(i, dynamic, dynamicValue, epochCondition, initialIndex); 
 			}
 		}
 

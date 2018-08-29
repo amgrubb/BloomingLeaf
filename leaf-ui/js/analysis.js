@@ -1008,31 +1008,40 @@ function updateAnalysisRequestWithCurrentState(){
             }
         }
     } else {
-        // it is a relative time point
+        // it is a relative/absolute time point
+        if (analysisRequest.absTimePtsArr.indexOf(nextTimePoint) != -1){
+            // it is an absolute time point
+            var newAbs = analysisRequest.absTimePtsArr.indexOf(nextTimePoint)+1;
 
-        // decide which relative time points have not occurred yet
-        var prevRelativePoints = [];
-        var REA_to_index = {};
-        for (var i = 0; i < analysisRequest.previousAnalysis.assignedEpoch.length; i++){
-            var regex = /T[R,E,A](.*)_.*/g;
-            var match = regex.exec(analysisRequest.previousAnalysis.assignedEpoch[i]);
-            if (match !== null){
-                prevRelativePoints.push(parseInt(match[1]));
+            //update time point path with TA?_tp
+            analysisRequest.previousAnalysis.assignedEpoch.push("TA" + newAbs + "_" + nextTimePoint);
+
+        } else {
+            // it is a relative time point
+            // decide which relative time points have not occurred yet
+            var prevRelativePoints = [];
+            for (var i = 0; i < analysisRequest.previousAnalysis.assignedEpoch.length; i++){
+                var regex = /TR(.*)_.*/g;
+                var match = regex.exec(analysisRequest.previousAnalysis.assignedEpoch[i]);
+                if (match !== null){
+                    prevRelativePoints.push(parseInt(match[1]));
+                }
             }
-        }
-        console.log(prevRelativePoints);
+            console.log(prevRelativePoints);
 
-        var newRel = 1;
-        // pick one
-        for (var j = 1; j <= parseInt(analysisRequest.numRelTime)+num_epochs+analysisRequest.absTimePtsArr.length; j ++){
-            if (prevRelativePoints.indexOf(j) == -1){
-                newRel = j;
-                break;
+            var newRel = 1;
+            // pick one
+            for (var j = num_epochs+analysisRequest.absTimePtsArr.length+1; j <= parseInt(analysisRequest.numRelTime)+num_epochs+analysisRequest.absTimePtsArr.length; j ++){
+                if (prevRelativePoints.indexOf(j) == -1){
+                    newRel = j;
+                    break;
+                }
             }
+
+            // update time point path with TR?_tp
+            analysisRequest.previousAnalysis.assignedEpoch.push("TR" + newRel + "_" + nextTimePoint);
         }
 
-        // update time point path with TR?_tp
-        analysisRequest.previousAnalysis.assignedEpoch.push("TR" + newRel + "_" + nextTimePoint);
     }
 
 

@@ -2,6 +2,103 @@
  * This file contains code that will initialize and setup
  * the necessary Rappid, JointJS and noUiSlider elements.
  */
+
+//Flag to turn on console log notification
+var develop = false;
+var session_id = Date.now();
+var Tracking = true;
+
+function guid() {
+    // local function to create alphanumeric strings
+    function s4() {
+        return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+    }
+    // return lots of alphanumeric strings as new GUID
+    return s4() + s4() + s4() + s4() + s4() + s4() + s4() + s4();
+}
+
+
+function checkForPromptType(promptType) {
+    var pt = this._promptTypes.get(promptType);
+    if(pt) {
+        return true;
+    }
+    return false;
+}
+
+function addPromptType(promptType) {
+    var pt = this._promptTypes.get(promptType);
+    // only add the activity if not already there
+    if(!pt) {
+        this._promptTypes.add({
+            id: promptType,
+            // add name to the list for easier debugging
+            name: CreativeLeaf.Helper.getKeyByValue(CreativeLeaf.PromptType, parseInt(promptType))
+        });
+    }
+}
+
+function showAlert(title, msg, width, promptMsgType, type, arrow) {
+    var dialog;
+    // store prompt type to avoid showing same message twice
+    //if(!this.checkForPromptType(promptMsgType)) {
+    //this.addPromptType(promptMsgType);
+    var divId = guid();
+    var alertType = 'alert';
+    if(type) {
+        alertType = type;
+    }
+    dialog = new joint.ui.Dialog(
+        {
+            type: alertType,
+            width: width,
+            title: title,
+            content: '<div class="creativity-dialog-wrapper" id="' + divId + '" data-prompttype="' + promptMsgType + '">' + msg + '</div>',
+            modal: false
+        });
+
+    dialog.open();
+
+    /*if(arrow) {
+        // track the arrow's source and target in the div
+        $('#' + divId).attr('data-arrow-source', divId);
+        $('#' + divId).attr('data-arrow-target', $(arrow.target).attr('id'));
+        CreativeLeaf.PromptManager.drawArrow(divId, $('#' + divId), arrow.target);
+    }*/
+    //}
+    return dialog;
+}
+
+showAlert('Tracking Notice',
+    '<p>To better understand how people use Blooming Leaf, ' +
+    'we would like to track <em>anonymous</em> use of the tool. ' +
+    'We only track the creation and modification of models.</p><p>We <em>do not</em> store any information ' +
+    'that can identify you personally.</p><p>Please ' +
+    'state your preference below on whether you would ' +
+    'like to allow us to do this. </p><p><button type="button" class="creative-button"' +
+    ' id="tracking-consent">I consent to anonymous ' +
+    'tracking</button><button type="button" ' +
+    'class="creative-button" id="tracking-decline">I do ' +
+    'not wish to be tracked</button></p>',
+    window.innerWidth * 0.3, 'alert', 'warning');
+
+$('#tracking-consent').click(function() {
+    Tracking = true;
+    console.log(Tracking);
+    var $div = $(this).closest('div.fg');
+    var $closeButton = $div.find('button.btn-close');
+    $closeButton.trigger('click');
+});
+
+$('#tracking-decline').click(function() {
+    Tracking = false;
+    console.log(Tracking);
+    var $div = $(this).closest('div.fg');
+    var $closeButton = $div.find('button.btn-close');
+    $closeButton.trigger('click');
+});
+
+
 var graph;
 var paper;
 var stencil;
