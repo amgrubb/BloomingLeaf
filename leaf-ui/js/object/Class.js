@@ -844,8 +844,13 @@ class Intention {
      */
     getInitialSatValue() {
         var intentionEval = analysisRequest.getUserEvaluationByID(this.nodeID, '0');
-        return intentionEval.evaluationValue;
+        if (typeof intentionEval !== 'undefined'){
+            return "(no value)";
+        } else {
+            return intentionEval.evaluationValue;
+        }
     }
+
 
     /**
      * Returns the number of function segments for this
