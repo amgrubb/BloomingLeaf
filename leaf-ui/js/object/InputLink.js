@@ -1,11 +1,21 @@
-function InputLink(linkType, linkSrcID, linkDestID, postType = null, absVal = -1){
-	this.linkType = linkType;
-	this.linkSrcID = linkSrcID;
-	this.linkDestID = linkDestID;
-	this.postType = postType;
-	this.absoluteValue = absVal;
+/**
+ * This class contains information about a link
+ */
+class InputLink {
+	constructor(linkType, linkSrcID, linkDestID, postType = null, absVal = -1) {
+		this.linkType = linkType;
+		this.linkSrcID = linkSrcID;
+		this.linkDestID = linkDestID;
+		this.postType = postType;
+		this.absoluteValue = absVal;
+	}
 }
 
+/**
+ * Returns an array of InputLinks, of all links in the graph
+ *
+ * @returns {Array.<InputLinks>}
+ */
 function getLinks(){
 
 	var links = [];
@@ -57,6 +67,12 @@ function getLinks(){
 
 }
 
+/**
+ * Returns true iff the link has a source and a target node
+ *
+ * @param {joint.dia.Link} link
+ * @param {Boolean}
+ */
 function isLinkInvalid(link){
 	return (!link.prop('source/id') || !link.prop('target/id'));
 }

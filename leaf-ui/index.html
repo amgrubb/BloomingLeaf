@@ -7,11 +7,11 @@
 
         <link rel="stylesheet" type="text/css" href="./rappid/dist/joint.ui.stencil.css" />
         <link rel="stylesheet" type="text/css" href="./rappid/dist/joint.ui.halo.css" />
-        <link rel="stylesheet" type="text/css" href="./rappid/dist/joint.ui.selectionView.css" />
+        <link rel="stylesheet" type="text/css" href="./rappid/dist/joint.ui.selection.css" />
         <link rel="stylesheet" type="text/css" href="./rappid/dist/joint.ui.paperScroller.css" />
 
         <link rel="stylesheet" type="text/css" href="./rappid/dist/rappid.min.css" />
-        <link rel="stylesheet" type="text/css" href="./plugins/slider/nouislider.min.css">
+        <link rel="stylesheet" type="text/css" href="./plugins/slider/nouislider.min.css" />
 
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
@@ -21,7 +21,7 @@
     </head>
     <body>
         <p id="name">BloomingLeaf</p>
-        <div class="toolbar">
+        <div class="toolbar-div">
             <div id="model-toolbar">
                 <button id="btn-undo" class="btn">Undo</button>
                 <button id="btn-redo" class="btn">Redo</button>
@@ -44,8 +44,6 @@
             <button id="btn-svg" class="btn">Open as SVG</button>
             <input type="file" id="loader" style="display:none">
 
-            <button id="btn-save-leaf" class="btn"> Export .leaf </button>
-<!--             <button id="btn-view-assignment" class="btn"> Export .leaf </button> -->
 
             <div class="dropdown">
               <div class="btn">Font Size</div>
@@ -66,7 +64,7 @@
             </div>
 
 
-            <div id="dropdown-model" class="dropdown">
+            <div id="dropdown-model" class="dropdown" style='display: none'>
                 <button id="modeling-btn" class="red-btn btn">Model</button>
                 <div class="dropdown-toolbar">
                     <a id="model-cur-btn">From Initial State</a>
@@ -77,7 +75,6 @@
 			The functionality for the Constraint view still exists in the code.
 		      <button id="symbolic-btn" class="blue-btn btn">Model Constraints</button>-->
             <button id="analysis-btn" class="green-btn btn" style="border-radius:none;">Analysis</button>
-            <button id="cycledetect-btn" class="pink-btn btn">Detect Cycles</button>
 
         </div>
 
@@ -104,9 +101,9 @@
         };
         </script>
 
-        <script src="./rappid/lib/jquery/jquery.min.js"></script>
-        <script src="./rappid/lib/lodash/lodash.min.js"></script>
-        <script src="./rappid/lib/backbone/backbone-min.js"></script>
+        <script src="./rappid/node_modules/jquery/dist/jquery.js"></script>
+        <script src="./rappid/node_modules/lodash/index.js"></script>
+        <script src="./rappid/node_modules/backbone/backbone.js"></script>
 
         <script src="./rappid/dist/rappid.min.js"></script>
 
@@ -114,7 +111,7 @@
         <script src="./rappid/dist/joint.ui.clipboard.js"></script>
         <script src="./rappid/dist/joint.ui.stencil.js"></script>
         <script src="./rappid/dist/joint.ui.paperScroller.js"></script>
-        <script src="./rappid/dist/joint.ui.selectionView.js"></script>
+        <script src="./rappid/dist/joint.ui.selection.js"></script>
         <script src="./rappid/dist/joint.format.svg.js"></script>
         <script src="./rappid/dist/joint.dia.command.js"></script>
 
@@ -123,15 +120,21 @@
         <!-- <script src="./plugins/chart/Chart.min.js"></script> -->
         <script src="./plugins/chart/Chart.bundle.min.js"></script>
 
-        <script src="./scripts/objects.js"></script>
+        <script src="./js/object/Class.js"></script>
+        <script src="./js/objects.js"></script>
 
         <script src="./rappid-extensions/ElementInspector.js"></script>
+        <script src="./rappid-extensions/ActorInspector.js"></script>
         <script src="./rappid-extensions/LinkInspector.js"></script>
-        <script src="./rappid-extensions/ConstraintsInspector.js"></script>
         <script src="./rappid-extensions/AnalysisInspector.js"></script>
         <script src="./rappid-extensions/joint.extensions.js"></script>
 
-        <script src="./scripts/main.js"></script>
+        <script src="./js/initializeElements.js"></script>
+        <script src="./js/displayAnalysis.js"></script>
+        <script src="./js/errorDetection.js"></script>
+        <script src="./js/keyboardFunctions.js"></script>
+        <script src="./js/loadSaveFunctions.js"></script>
+        <script src="./js/onFunctions.js"></script>
 
         <!--SweetAlertJS is used for easy way to customize dialog or alert message
        -->
@@ -141,7 +144,6 @@
 
 		<!-- OBJECTS to be sent to backend communication -->
 		<script src="./js/object/InputAnalysis.js"></script>
-		<script src="./js/object/InputModel.js"></script>
 		<!-- Model elements -->
 		<script src="./js/object/InputActor.js"></script>
 		<script src="./js/object/InputConstraint.js"></script>

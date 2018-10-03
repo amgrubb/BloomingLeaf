@@ -1,14 +1,22 @@
-function InputDynamic(intentionID, dynamicType, markedValue, line = null){
-
-	this.intentionID = intentionID;
-	this.dynamicType = dynamicType;
-	this.markedValue = markedValue;
-	//attribute for User defined contraints
-	this.line = line;
-
+/**
+ * This class contains information about functions for intentions
+ */
+class InputDynamic {
+	constructor(intentionID, dynamicType, markedValue, line = null) {
+		this.intentionID = intentionID;
+		this.dynamicType = dynamicType;
+		this.markedValue = markedValue;
+		//attribute for User defined contraints
+		this.line = line;
+	}
 }
 
-function getDynamics(){
+/**
+ * Returns an array of InputDynamics
+ *
+ * @returns {Array.<InputDynamic>}
+ */
+function getDynamics() {
 	var dynamics = [];
 
 	var elements = [];
@@ -19,7 +27,7 @@ function getDynamics(){
 		}
 	}
 
-	for (var e = 0; e < elements.length; e++){
+	for (var e = 0; e < elements.length; e++) {
 	    var elementID = elements[e].prop("elementid");
 
 	    var f = elements[e].attr(".funcvalue/text");
@@ -27,27 +35,27 @@ function getDynamics(){
 	    var funcTypeVal = elements[e].attr(".constraints/lastval");
 	    var initValue = elements[e].attributes.attrs[".satvalue"].value;
 
-	  if (isNaN(parseInt(initValue))){
+	  	if (isNaN(parseInt(initValue))) {
 			initValue = satValueDict[initValue];
-		}else{
+		} else {
 			initValue = "0000";
 		}
 
 
-	    var io_dynamic;
-	    if(f == "NB" ){
-	    	io_dynamic = new InputDynamic(elementID, "NB", "0000");
-	    }else if (f == ""){
-    		io_dynamic = new InputDynamic(elementID, "NT", initValue);
-	    }else if(f == " "){
-    		io_dynamic = new InputDynamic(elementID, "NT", initValue);
-	    }else if (f != "UD"){
-		if (isNaN(parseInt(funcTypeVal))){
-		    funcTypeVal = satValueDict[funcTypeVal];
-		}
-    		io_dynamic = new InputDynamic(elementID, f, funcTypeVal);		//Passing Dynamic Values
-    		// user defined constraints
-	    }else{
+	    var ioDynamic;
+	    if (f == "NB") {
+	    	ioDynamic = new InputDynamic(elementID, "NB", "0000");
+	    } else if (f == "") {
+    		ioDynamic = new InputDynamic(elementID, "NT", initValue);
+	    } else if(f == " ") {
+    		ioDynamic = new InputDynamic(elementID, "NT", initValue);
+	    } else if (f != "UD") {
+			if (isNaN(parseInt(funcTypeVal))) {
+		    	funcTypeVal = satValueDict[funcTypeVal];
+			}
+			ioDynamic = new InputDynamic(elementID, f, funcTypeVal);		//Passing Dynamic Values
+	    } else {
+	    	// user defined constraints
 	    	var line = "";
     		var begin = elements[e].attr(".constraints/beginLetter");
 			var end = elements[e].attr(".constraints/endLetter");
@@ -62,7 +70,6 @@ function getDynamics(){
 					line += "\t" + begin[l] + "\t" + end[l] + "\t" + funcType[l] + "\t" + satValueDict[funcTypeVal[l]];
 				}
 			}
-			//console.log(elements[e].attr(".constraints/beginRepeat"));
 			// repeating
 			if (elements[e].attr(".constraints/beginRepeat") && elements[e].attr(".constraints/endRepeat")){
 				// to infinity
@@ -71,19 +78,15 @@ function getDynamics(){
 				}else{
 					line += "\tR\t" + rBegin + "\t" + rEnd;
 				}
-				// TODO Add the repeat count value and the absolute length value here
-				//console.log(typeof $("#repeat-end2").val());
 				line += "\t" + $("#repeat-end2").val() + "\t" + $("#repeat-end3").val();
-				//console.log(line);
 			}else{
 				line += "\tN";
 			}
-			io_dynamic = new InputDynamic(elementID, f, initValue, line);
+			ioDynamic = new InputDynamic(elementID, f, initValue, line);
 	    }
 
-	    dynamics.push(io_dynamic);
+	    dynamics.push(ioDynamic);
 
 	}
 	return dynamics;
-
 }

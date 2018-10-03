@@ -236,7 +236,6 @@ public class ModelSpec {
 
 	public OutputModel getOutputModel() {
 		OutputModel output = new OutputModel();
-		   	
     	// Print out Single Path Solotions.
 		if(getFinalValues() != null){
 	    	int i = -1;
@@ -259,9 +258,9 @@ public class ModelSpec {
 	    		output.getElementList().add(outputElement);
 	    	} 			
 		}
-
 		//Print out All Next States
 		if(getAllSolutionsValues() != null){
+
 			for(int i_states = 0; i_states < getAllSolutionsValues().length; i_states++){
 				IOStateModel statesModel = new IOStateModel();
 				for(int i_elements = 0; i_elements < getAllSolutionsValues()[i_states].length; i_elements++){
@@ -276,10 +275,17 @@ public class ModelSpec {
 		        				value.append("0");
 		        			}
 		        		}
-						values[i_steps] = value.toString();						
-					}
+						values[i_steps] = value.toString();		
+
+					}						
 					ioIntention.setId(Integer.toString(i_elements));
         			ioIntention.setStatus(values);
+        			ioIntention.setType(getIntElements().get(i_elements).getType());
+        			if (getIntElements().get(i_elements).getActor() != null){
+            			ioIntention.setActorId(getIntElements().get(i_elements).getActor().getId());
+        			} else{
+        				ioIntention.setActorId("-");
+        			}
     				statesModel.getIntentionElements().add(ioIntention);
 				}
 				output.getAllSolution().add(statesModel);
@@ -292,18 +298,16 @@ public class ModelSpec {
 			for (Map.Entry<String,Integer> entry : getFinalAssignedEpochs().entrySet()) {
 				String key = entry.getKey();
 				Integer value = entry.getValue();
-				output.getFinalAssignedEpoch().add(key+"_"+value);
+				output.getAssignedEpoch().add(key+"_"+value);
 			}
 		}
 
 		if(getFinalValueTimePoints() != null){
 			for(int a = 0; a < getFinalValueTimePoints().length; a++){
-				output.getFinalValueTimePoints().add(Integer.toString(getFinalValueTimePoints()[a]));	   			
+				output.getTimePointPath().add(Integer.toString(getFinalValueTimePoints()[a]));
 			}	
 		}
-		
-		output.setRelativeTimePoints(getRelativeTimePoints());
-		output.setAbsoluteTimePoints(getAbsoluteTimePoints());
+
 
 		return output;
 

@@ -1,24 +1,19 @@
 var epochLists = [];
-var testL=[];
-var num = 0;
-var goal_id_mapper = {};
+var nameIdMapper = {};
 var constraintID = 0;
 var rx = /Goal_\d+/g; // MATCH goal name Goal_x
 var extractEB = /[A-Z]+$/;
 var saveIntermValues = {};
-var gloablI = 0;
 var absoluteTimeValues;
 var saveIVT;
 var AnalysisInspector = Backbone.View.extend({
-
 	className: 'analysis-inspector',
 	template: [
 		'<h2 style="text-align:center; width:100%;margin-top:6px;margin-bottom:0px">Analysis</h2>',
 		'<hr>',
 		'<h3> Simulation Start: 0 </h3>',
 		'<label class="sub-label">Max Absolute Time</label>',
-		'<input id="max-abs-time" class="sub-label" type="number" min="1" step="1" value="100"/>',
-		'<br>',
+		'<input id="max-abs-time" class="analysis-input" type="number" min="1" step="1" value="100"/>',
 		'<label class="sub-label">Conflict Prevention Level</label>',
 		'<select id="conflict-level" class="sub-label" style="height:30px;">',
 			'<option value=S selected> Strong</option>',
@@ -26,14 +21,11 @@ var AnalysisInspector = Backbone.View.extend({
 	        '<option value=W> Weak</option>',
 	        '<option value=N> None</option>',
 		'</select>',
-		'<br>',
 		'<label class="sub-label">Num Relative Time Points</label>',
-		'<input id="num-rel-time" class="sub-label" type="number" min="0" max="20" step="1" value="1"/>',
-		'<br>',
+		'<input id="num-rel-time" class="analysis-input" type="number" min="0" max="20" step="1" value="1"/>',
 		'<label class="sub-label">Absolute Time Points</label>',
 		'<font size="2">(e.g. 5 8 22)</font>',
-		'<input id="abs-time-pts" class="sub-label" type="text"/>',
-		'<br>',
+		'<input id="abs-time-pts" class="analysis-input" type="text"/>',
 		'<hr>',
 		'<button id="btn-view-assignment" class="analysis-btns inspector-btn sub-label green-btn">View List of Assignments</button>',
 		'<button id="btn-view-intermediate" class="analysis-btns inspector-btn sub-label green-btn">View Intermediate Values</button>',
@@ -67,10 +59,10 @@ var AnalysisInspector = Backbone.View.extend({
 								'</tr>',
 							'</table>',
 					'</div>',
-					'<div class=relIntetion>',
+					'<div class=relIntention>',
 						'<div class=headings>',
 							'<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Relative Intention Assignments',
-								'<div class="addIntetion" style="display:inline">',
+								'<div class="addIntention" style="display:inline">',
 										'<i class="fa fa-plus" id="addIntent" style="font-size:30px; float:right; margin-right:20px;"></i>',
 								'</div>',
 							'</h3>',
@@ -101,8 +93,10 @@ var AnalysisInspector = Backbone.View.extend({
 				'<div class="intermBody">',
 						'<table id="interm-list" class="interm-table">',
 							'<thead id = "header">',
-								'<th style="width:110px">   		 </th>',
-								'<th>  Initial Value  </th>',
+								'<tr id="header-row">',
+									'<th style="width:110px"></th>',
+									'<th>  Initial Value  </th>',
+								'</tr>',
 							'</thead>',
 							'<tr id="intentionRows">',
 							'<th>',
@@ -129,589 +123,568 @@ var AnalysisInspector = Backbone.View.extend({
 	].join(''),
 
 	events: {
-		'click #btn-view-assignment': 'loadModalBox',
+		'click #btn-view-assignment': 'loadListOfAssignments',
 		'click #btn-view-intermediate': 'loadIntermediateValues',
 		'click .close': 'dismissModalBox',
 		'click .closeIntermT':'dismissIntermTable',
-		'click .unassign-btn': 'unassignValue',
+		'click .unassign-abs-intent-btn': 'unassignAbsIntentValue',
+		'click .unassign-abs-rel-btn': 'unassignAbsRelValue',
 		'click #btn-save-assignment': 'saveAssignment',
 		'click #btn-single-path': 'singlePath',
 		'click #btn-all-next-state': 'getAllNextStates',
-		'click .addIntetion' : 'addnewIntention',
+		'click .addIntention' : 'addRelAssignmentRow',
 		'click #btn-save-intermT' : 'saveIntermTable',
+		'change #num-rel-time' : 'addRelTime',
+		'change #conflict-level': 'changeConflictLevel',
+		'change #abs-time-pts': 'changeAbsTimePts',
+		'change #max-abs-time': 'changeMaxAbsTime'
 	},
 
-	render: function(analysisFunctions) {
+	render: function() {
+
 		// These functions are used to communicate between analysisInspector and Main.js
-		this._analysisFunctions = analysisFunctions;
 		this.$el.html(_.template(this.template)());
-		$('head').append('<script src="./scripts/js-objects/analysis.js"></script>');
-	},
-	// Function called by Simulate Single Path.
-	singlePath: function(){
-		//Create the object and fill the JSON file to be sent to backend.
-		//Get the AnalysisInspector view information
-		var analysis = new InputAnalysis();
-		//Set the type of analysis
-		analysis.action = "singlePath";
-		//Prepare and send data to backend
-		this.sendToBackend(analysis);
-	},
-	// Function called by get All Next States.
-	getAllNextStates: function(){
-		//Create the object and fill the JSON file to be sent to backend.
-		//Get the AnalysisInspector view information
-		var analysis = new InputAnalysis();
-		//Set the type of analysis
-		analysis.action = "allNextStates";
-		//Prepare and send data to backend
-		this.sendToBackend(analysis);
+		$('head').append('<script src="./js/analysis.js"></script>');
 
+		// set default values for max abs time, conflict level, 
+		// relative time points and abs time points
+		$('#max-abs-time').val(model.maxAbsTime);
+		$('#conflict-level').val(analysisRequest.conflictLevel);
+		$('#num-rel-time').val(analysisRequest.numRelTime);
+		$('#abs-time-pts').val(analysisRequest.absTimePts);
+
+		// This is needed to allow the user to delete relative assignments
+		this.setDeleteRelAssignmentListener();
 	},
-	sendToBackend: function(analysis){
-		var js_object = {};
-		js_object.analysis = getAnalysisValues(analysis);
+
+	/**
+	 * Retrieves information about the current model and sends to the backend
+	 * to do single path analysis.
+	 *
+	 * This function is called on click for #btn-single-path
+	 */
+	singlePath: function() {
+		//Create the object and fill the JSON file to be sent to backend.
+		//Get the AnalysisInspector view information
+		analysisRequest.action = "singlePath";
+        analysisRequest.currentState = "0|0";
+        analysisRequest.previousAnalysis = savedAnalysisData.singlePathResult;
+
+		//Prepare and send data to backend
+		this.sendToBackend();
+	},
+
+	/**
+	 * Retrieves information about the current model and sends to the backend
+	 * to get all next possible states.
+	 *
+	 * This function is called on click for #btn-all-next-state
+	 */
+	getAllNextStates: function() {
+		//Create the object and fill the JSON file to be sent to backend.
+		//Get the AnalysisInspector view information
+		analysisRequest.action = "allNextStates";
+        analysisRequest.previousAnalysis = _.clone(savedAnalysisData.singlePathResult);
+        // need to remove TPs after current point from previous solution?
+        // update the time point for potentialEpoch
+        var previousTP = [];
+        var i = analysisRequest.currentState.indexOf('|', 0);
+        var currentState = parseInt(analysisRequest.currentState.substring(0, i));
+        for (var i = 0; i < currentState + 1; i ++){
+            for (var j = 0; j < analysisRequest.previousAnalysis.assignedEpoch.length; j ++){
+                var regex = /(.*)_(.*)$/g;
+                var match = regex.exec(analysisRequest.previousAnalysis.assignedEpoch[j]);
+                if (match[2] === analysisRequest.previousAnalysis.timePointPath[i]){
+                    previousTP.push(analysisRequest.previousAnalysis.assignedEpoch[j]);
+                    continue;
+                }
+            }
+        }
+
+        console.log(previousTP);
+        // update current time point in the path if necessary (if epoch)
+        // remove all the time points after
+        analysisRequest.previousAnalysis.assignedEpoch = previousTP;
+        analysisRequest.previousAnalysis.timePointPath = analysisRequest.previousAnalysis.timePointPath.slice(0, currentState+1);
+
+        console.log(analysisRequest);
+
+		//Prepare and send data to backend
+		this.sendToBackend();
+	},
+
+	/**
+	 * Creates an object to send to the backend and calls
+	 * a backendComm() to send to backend
+	 *
+	 * @param {Object} analysis
+	 *   InputAnalysis() object
+	 */
+	sendToBackend: function(){
+
+		// Object to be sent to the backend
+		var jsObject = {};
+		jsObject.analysisRequest = analysisRequest;
+
 		//Get the Graph Model
-		js_object.model = getFrontendModel(false);
-
-		this.saveElementsInGlobalVariable();
-
-		if(js_object.model == null){
-			return null;
-		}
-
-		if(develop){
-			var myjson = JSON.stringify(js_object, null, 2);
-		  	var x = window.open();
-			x.document.open();
-			x.document.write('<html><body><pre>' + myjson + '</pre></body></html>');
-			x.document.close();
-		}
-
+		jsObject.model = model;
+		console.log(jsObject);
 		//Send data to backend
-		//console.log(js_object);
-		backendComm(js_object);
+		backendComm(jsObject);
 	},
+
+	/**
+	 * Removes all html for this inspector
+	 */
 	clear: function(e){
 		this.$el.html('');
 	},
 	/********************** Modal box related ****************************/
 
-	// Display modal box that has a list of absolute values
-	loadModalBox: function(e){
-		epochLists = [];
-		graph.constraintValues = [];
-		var modal = document.getElementById('myModal');
-		// Clear all previous table entries
-		$(".abs-table").find("tr:gt(0)").remove();
+	/**
+     * Displays the absolute and relative assignments modal for the user.
+     *
+     * This function is called on click for #btn-view-assignment.
+     */
+    loadListOfAssignments: function(event) {
+        epochLists = [];
+        graph.constraintValues = [];
+        var modal = document.getElementById('myModal');
 
-		var btn_html = '<td><button class="unassign-btn" > Unassign </button></td>';
-		modal.style.display = "block";
-		// Get a list of nodes
-		// Populate non UD element only
-		var elements = graph.getElements();
-		var links = graph.getLinks();
-		//console.log(elements);
-		//console.log(links);
-		var outputList = "\n";
-		for (var i = 0; i < elements.length; i ++){
-			var cellView = elements[i].findView(paper);
-			var cell = cellView.model;
-			if(cell.attributes.type !== "basic.Actor"){
-				var func = cell.attr('.funcvalue').text;
-				// strips all return and newline characters; ensures no double-white space; strips leading/trailing whitespace
-				var name = cell.attr('.name').text.replace(/(\n+|\r+|\s\s+)/gm," ").replace(/(^\s|\s$)/gm,'');
-				goal_id_mapper[name] = cell.attributes.elementid;
-				var assigned_time = cell.attr('.assigned_time');
-				var constraintObj
-				if(func != 'UD' && func != 'D' && func != 'I' && func != 'C' && func != 'R' && func != "" && func != 'NB'){
-					// If no assigned_time in the node, make the default value blank
-					if (!assigned_time){
-						cell.attr('.assigned_time', {0: ''});
+        // Clear all previous table entries
+        $(".abs-table").find("tr:gt(0)").remove();
 
-					}
-					assigned_time = cell.attr('.assigned_time')[0];
-					//console.log("Assigned time "   + assigned_time);
-					var epochObj = {};
-					epochObj["constraintType"] = 'A';
-					//TODO: Figure out how to only add these values if they don't exist.
-					epochLists.push(name + ': A');
-					//console.log(epochObj)
-					outputList += name.replace(/(\r\n|\n|\r)/gm," ");
-					outputList += ': A' + '\t' + func + "\n";
-					$('#node-list').append('<tr><td>' + name + ': A' + '</td><td>' + func + '</td>' +
-						'<td><input type="text" name="sth" value="' + assigned_time + '"></td>' + btn_html +
-						'<input type="hidden" name="id" value="' + cell.id + '"> </td> </tr>');
-
-				}
-			}
-			//console.log(cell);
-		}
-		//console.log(outputList)
-		// Populate UD element
-		for (var i = 0; i < elements.length; i ++){
-			var cellView = elements[i].findView(paper);
-			var cell = cellView.model;
-			if(cell.attributes.type !== "basic.Actor"){
-				var func = cell.attr('.funcvalue').text;
-				var name = cell.attr('.name').text;
-				var assigned_time = cell.attr('.assigned_time');
-				//console.log(name);
-				if(func == 'UD'){
-					//console.log(cell.attr('.constraints'));
-					var fun_len = cell.attr('.constraints').function.length - 1;
-					var current_something = 'A';
-					// If no assigned_time in the node, save blank into the node
-					if (!assigned_time){
-						cell.attr('.assigned_time', {0: ''});
-						assigned_time = cell.attr('.assigned_time');
-					}
-					// If the length of assigned_time does not equal to the fun_len, add none until they are equal
-					var k = 0;
-					while (Object.keys(assigned_time).length < fun_len){
-						cell.attr('.assigned_time')[k] = '';
-						assigned_time = cell.attr('.assigned_time');
-						k ++;
-					}
-					for (var j = 0; j < fun_len; j++){
-						//console.log("Assigned time "   + assigned_time[j]);
-
-						epochLists.push(name + ': ' + current_something);
-						outputList += name.replace(/(\r\n|\n|\r)/gm," ");
-						outputList += ': ' + current_something + '\t' + func + "\n";
-						$('#node-list').append('<tr><td>' + name +': '+ current_something + '</td><td>' + func + '</td>'  +
-							'<td><input type="text" name="sth" value=' +assigned_time[j] + '></td>' + btn_html +
-							'<input type="hidden" name="id" value="' + cell.id + '_' + j + '"> </td> </tr>');
-						current_something = String.fromCharCode(current_something.charCodeAt(0) + 1);
-					}
-
-				}
-			}
-		}
-
-		// Get a list of links
-		for (var i = 0; i < links.length; i ++){
-			var link = links[i];
-			var source = null;
-			var target = null;
-			if (link.get("source").id){
-				source = graph.getCell(link.get("source").id);
-			}
-			if (link.get("target").id){
-				target = graph.getCell(link.get("target").id);
-			}
-			if (source && target){
-				var source_name = source.attr('.name').text;
-				var target_name = target.attr('.name').text;
-				var assigned_time = link.attr('.assigned_time');
-				var link_type = link.get('labels')[0].attrs.text.text;
-				// If no assigned_time in the link, save 'None' into the link
-				if (!assigned_time){
-					link.attr('.assigned_time', {0: ''});
-					assigned_time = link.attr('.assigned_time');
-				}
-				if (link_type == 'NBD' || link_type == 'NBT' || link_type.indexOf('|') > -1){
-					$('#link-list').append('<tr><td>' + link_type + '</td><td>' + source_name + '</td><td>' + target_name +
-						'</td><td><input type="text" name="sth" value=' +assigned_time[0] + '></td>' + btn_html +
-						'<input type="hidden" name="id" value="' + link.id + '"> </td> </tr>'+ '</tr>');
-						//console.log(assigned_time);
-				}
-				//console.log(link.id);
-			}
-
-		}
-		num+=1;
-		//console.log(outputList)
-
-	},
-	/*load valus for intermediate table dialog*/
-	loadIntermediateValues: function(e){
-		//console.log(saveIVT);
-		var time_values = {};
-		$('#interm-list').find("tr:gt(1)").remove();
-		$('#header').find("th:gt(1)").remove();
-		$('#intentionRows').find("th:gt(1)").remove();
-		var intermTDialog = document.getElementById('intermediateTable');
-		intermTDialog.style.display = "block";
-		var elements = graph.getElements();
-		var intermTable = document.querySelector('.interm-table');
-		var absValues = document.getElementById('abs-time-pts').value;
-		//console.log(absValues);
-		var absTimeValues;
-		if(absValues != ""){
-			absTimeValues = document.getElementById('abs-time-pts').value.split(" ")
-			.map(function(i){
-				if(i!=""){
-					return parseInt(i, 10);
-				}
-			});
-			absTimeValues.sort(function(a, b){return a-b});
-			var headers = document.getElementById('header');
-			var rows = headers.querySelector('tr');
-			var intentRows = document.getElementById('intentionRows')
-			for(var i = 0; i < absTimeValues.length; i++){
-				//console.log(i);
-				if(!(absTimeValues[i] in time_values)){
-					time_values[absTimeValues[i]] = [];
-					time_values[absTimeValues[i]].push("Absolute");
-				}
-				else if(!(time_values[absTimeValues[i]].includes('Absolute'))){
-					time_values[absTimeValues[i]].push('Absolute');
-				}
-			}
-		}
-		else{
-			absTimeValues = [];
-		}
-		absoluteTimeValues = absTimeValues;
-		Object.keys(time_values).forEach(function(key){
-			//console.log(time_values[key]);
-			var th = document.createElement('th');
-			var thint = document.createElement('th');
-
-			if (time_values[key].length == 1){
-				th.innerHTML = time_values[key][0];
-				thint.innerHTML = key;
-				rows.appendChild(th);
-				intentRows.appendChild(thint);
-			}
-		})
-
-		//console.log(time_values);
-		/*trs.insertCell(-1);
-		//console.log(trs);
-		//console.log(absTimeValues);
-		$('#interm-list tr').append('<th>test</th>');*/
-		var sat_values = '<select id="evalID"><option value="empty;" selected> </option>';
-		var sat_valueLists = ['Unknown','None (T, T) ', 'Satisfied (FS, T) ','Partially Satisfied (PS, T) ',
-		'Denied (T, FD) ', 'Partially Denied (T, PD)'];
-		var eval_list = ['unknown', 'none','satisfied','partiallysatisfied', 'denied','partiallydenied'];
-		for(var i = 0; i < sat_valueLists.length; i++){
-			var value = '<option value="' + eval_list[i] + '">'+ sat_valueLists[i] + '</option>';
-			sat_values += value
-		}
-		sat_values += '</select>';
-		//console.log(elements.length);
-		for (var i = 0; i < elements.length; i++){
-			var cellView = elements[i].findView(paper);
-			//console.log(elements[i]);
-			var cell = cellView.model;
-			if(cell.attributes.type !== "basic.Actor"){
-				var initvalue = cell.attr('.satvalue').text;
-				var name = cell.attr('.name').text;
-				//saveIntermValues[cell.attributes.elementid] = [];
-
-				//saveIntermValues[i] = [];
-				//console.log("initial value : " + initvalue);
-				//Check if initial value is empty, if so, add (T,T) as a value
-				if(time_values.length == 0){
-					if  (initvalue.trim() == ""){
-						$('#interm-list').append('<tr><td>' + name + '</td><td>(T,T)</td></tr>');
-					}
-					else{
-						$('#interm-list').append('<tr><td>' + name + '</td><td>' + initvalue +'</td></tr>');
-					}
-				}
-				else{
-					if  (initvalue.trim() == ""){
-						//console.log(Object.keys(time_values).length);
-						//$('#interm-list').append('<tr><td>' + name + '</td><td>(T,T)</td></tr>');
-						var appendList = '<tr><td>' + name + '</td><td>(T,T)</td>';
-						if(saveIVT == null){
-							for(var j = 0; j < Object.keys(time_values).length; j++){
-								appendList += '<td>' + sat_values + '</td>';
-							}
-						}
-						else if(saveIVT.length>0){
-							for(var j = 0; j < Object.keys(time_values).length; j++){
-								appendList += '<td>' + $("#evalID").val('(FS, T)') + '</td>';
-							}
-						}
-						appendList += '</tr>';
-						$('#interm-list').append(appendList);
-					}
-					else{
-						//console.log(Object.keys(time_values).length);
-						var appendList = '<tr><td>' + name + '</td><td>'+ initvalue +'</td>';
-						var test ='';
-						for(var j = 0; j < Object.keys(time_values).length; j++){
-							appendList += '<td>' + sat_values + '</td>';
-						}
-						appendList += '</tr>';
-						$('#interm-list').append(appendList);
-					}
-				}
-			}
-		}
-	},
-	// Dismiss modal box
-	dismissModalBox: function(e){
-		var modal = document.getElementById('myModal');
-		modal.style.display = "none";
-		//console.log(epochLists);
-		//console.log(graph.constraintValues);
-		//console.log(goal_id_mapper);
-
-	},
-	dismissIntermTable: function(e){
-		var intermT = document.getElementById('intermediateTable');
-		intermT.style.display = "none";
-		//console.log(saveIntermValues);
-		//$('.interm-table').find("tr:gt(0)").remove();
-	},
-
-	// Trigger when unassign button is pressed. Change the assigned time of the node/link in the same row to none
-	unassignValue: function(e){
-		var button = e.target;
-		var row = $(button).closest('tr');
-		var assigned_time = row.find('input[type=text]');
-		$(assigned_time).val('');
-	},
-	saveRelativeValues: function(){
-		var epoch1Lists = $('#rel-intention-assignents tr #epoch1List select');
-		var relationshipLists = $('#rel-intention-assignents tr #relationshipLists select');
-		var epoch2Lists = $('#rel-intention-assignents tr #epoch2List select');
-		for(var i = 0; i < epoch1Lists.length; i++){
-			if(epoch1Lists[i].value != null && epoch2Lists[i].value != null){
-				var extractGoal1full = epoch1Lists[i].value;
-				var extractGoal2full = epoch2Lists[i].value;
-				var extractGoal1 = extractGoal1full.substring(0, extractGoal1full.length - 3);
-				var extractGoal2 = extractGoal2full.substring(0, extractGoal2full.length - 3);
-				var constraintSrcID = goal_id_mapper[extractGoal1];
-				var constraintDestID = goal_id_mapper[extractGoal2];
-				var type = relationshipLists[i].value;
-				debugger
-				if(type == 'eq'){
-					type = '=';
-				}
-				else if (type=='lt') {
-					type = '<';
-				}
-				if(graph.constraintValues.length == 0){
-					graph.constraintValues[0] = {};
-					graph.constraintValues[0]["constraintType"] = type;
-					graph.constraintValues[0]["constraintSrcID"] = constraintSrcID;
-					graph.constraintValues[0]["constraintSrcEB"] = epoch1Lists[i].value.match(extractEB)[0];
-					graph.constraintValues[0]["absoluteValue"] = -1;
-					graph.constraintValues[0]["constraintDestID"] = constraintDestID;
-					graph.constraintValues[0]["constraintDestEB"] = epoch2Lists[i].value.match(extractEB)[0];
-					//console.log(epoch1Lists[i].value.match(extractEB)[0]);
-				}
-				else{
-					newConstarint = {};
-					newConstarint['constraintType'] = type;
-					newConstarint['constraintSrcID'] = constraintSrcID;
-					newConstarint['constraintSrcEB'] = epoch1Lists[i].value.match(extractEB)[0];
-					newConstarint['constraintDestID'] = constraintDestID;
-					newConstarint['constraintDestEB'] = epoch2Lists[i].value.match(extractEB)[0];
-					newConstarint['absoluteValue'] = -1;
-					//console.log(epoch1Lists[i].value.match(extractEB)[0]);
-					graph.constraintValues.push(newConstarint);
-				}
-		}
-
-			//console.log(graph.constraintValues);
-		}
-
-	},
-	// Update all nodes with the updated assigned time
-	// TODO: Check if the times users put in are valid
-	saveAssignment: function(e){
-		//console.log(graph.constraintValues);
-
-		this.saveRelativeValues();
-		var time_values = {};
-		$.each($('#node-list').find("tr input[type=text]"), function(){
-			var new_time = $(this).val();
-			var row = $(this).closest('tr');
-			var srcEB = row.find('td').html();
-			var func_value = row.find('td:nth-child(2)').html();
-			var id = row.find('input[type=hidden]').val();
-
-			// If func is not UD, just find the cell and update it
-			if (func_value != 'UD'){
-				var cell = graph.getCell(id);
-				cell.attr('.assigned_time')[0] = new_time;
-				if(new_time.trim() != ""){
-					if(!(new_time in time_values) ){
-						time_values[new_time] = [];
-						time_values[new_time].push('Absolute Intentions')
-					}
-					else if(!(time_values[new_time].includes('Absolute Intentions'))){
-						time_values[new_time].push('Absolute Intentions');
-					}
-				}
-				//console.log(new_time=="");
-
-			}
-			// If func is UD, extract the index i from id, and update i-th assigned time of the node
-			else {
-				var index = id[id.length - 1];
-				id = id.substring(0, id.length - 2);
-				var cell = graph.getCell(id);
-				//console.log(cell);
-				cell.attr('.assigned_time')[index] = new_time;
-				//console.log(new_time);
-				if(new_time.trim() != ""){
-					if(!(new_time in time_values) ){
-						time_values[new_time] = [];
-						time_values[new_time].push('Absolute Intentions')
-					}
-					else if(!(time_values[new_time].includes('Absolute Intentions'))){
-						time_values[new_time].push('Absolute Intentions');
-					}
-				}
-			}
-				//console.log(cell);
-				if(graph.constraintValues.length == 0 && (new_time != null && new_time.length > 0)){
-					graph.constraintValues[0] = {};
-					graph.constraintValues[0]['constraintType'] = "A"; // A for absolute
-					graph.constraintValues[0]['constraintSrcID'] = cell.attributes.elementid;
-					graph.constraintValues[0]['constraintSrcEB'] = srcEB.match(extractEB)[0];
-
-					//console.log(cell.attributes.elementid);
-					graph.constraintValues[0]['absoluteValue'] = new_time;
-					graph.constraintValues[0]['constraintDestID'] = null;
-					graph.constraintValues[0]['constraintDestEB'] = null;
-				}
-				else{
-					if(new_time != null && new_time.length > 0 ){
-						newConstarint = {};
-						newConstarint['constraintType'] = "A";
-						newConstarint['constraintSrcID'] = cell.attributes.elementid;
-						newConstarint['constraintSrcEB'] = srcEB.match(extractEB)[0];
-						newConstarint['absoluteValue'] = new_time;
-						newConstarint['constraintDestID'] = null;
-						newConstarint['constraintDestEB'] = null;
-						//console.log(cell.attributes.elementid);
-						graph.constraintValues.push(newConstarint);
-					}
-				}
+        // Display the modal by setting it to block display
+        modal.style.display = "block";
 
 
-		});
+        this.displayAbsoluteIntentionAssignments();
+        this.displayAbsoluteRelationshipAssignments();
 
-		$.each($('#link-list').find("tr input[type=text]"), function(){
-			var new_time = $(this).val();
-			var row = $(this).closest('tr');
-			var func_value = row.find('td:nth-child(2)').html();
-			var id = row.find('input[type=hidden]').val();
+    },
 
-			var links = graph.getLinks();
-			for (var i = 0; i < links.length; i ++){
-				if (links[i].id == id) {
-					var link = links[i];
-					break;
-				}
-			}
-			if(new_time.trim() != ""){
-				if(!(new_time in time_values) ){
-					time_values[new_time] = [];
-					time_values[new_time].push('Absolute Relationship')
-				}
-				else if(!(time_values[new_time].includes('Absolute Relationship'))){
-					time_values[new_time].push('Absolute Relationship');
-				}
-			}
+    /**
+     * Displays the links for the Absolute Relationship Assignments for
+     * the Absolute and Relative Assignments modal
+     */
+    displayAbsoluteRelationshipAssignments: function(e) {
+        var btnHtml = '<td><button class="unassign-abs-rel-btn" > Unassign </button></td>';
+        // Get a list of links
+        var links = graph.getLinks();
 
-			link.attr('.assigned_time')[0] = new_time;
+        for (var i = 0; i < model.links.length; i++) {
+            var link = model.links[i];
+            var sourceID = link.linkSrcID;
+            var targetID = link.linkDestID;
 
-		});
-		// After that dismiss the box
-		var modal = document.getElementById('myModal');
-		modal.style.display = "none";
-		$("#epoch1List select").val();
-		//console.log(graph.constraintValues);
-		//console.log(time_values);
+            // If this link does not have a source and a target
+            if (sourceID == null || targetID == null) {
+                continue;
+            }
 
-	},
-	returnElementIds: function(){
-		var elements = graph.getElements();
-		var elementLst = [];
-		for (var i = 0; i < elements.length; i++){
-			var cellView = elements[i].findView(paper);
-			var cell = cellView.model;
-			elementLst.push(cell.attributes.elementid);
-		}
-		return elementLst;
-	},
-	saveIntermTable: function(){
-		saveIVT = getUserEvaluations();
-		//console.log(saveIVT);
-		/*console.log(saveIntermValues);
-		console.log(absoluteTimeValues);
-		var elementList = this.returnElementIds();
-		var i;
-		for (i = 0; i < elementList.length; i++) {
-    	saveIVT[elementList[i]] = {};
-			saveIVT[elementList[i]]["absTimePoints"] = absoluteTimeValues;
-		}
-		var rows = $('#interm-list > tbody > tr');
-		var assignedTime = $('#intentionRows > th');
-		var elements = graph.getElements();
-		if(assignedTime.length > 2){
-			var selected_eval = [];
-			$("select#evalID option:selected" ).each(function(){
-				if($( this ).val().replace(";","") == "empty"){
-					selected_eval.push(null);
-				}
-				else{
-					selected_eval.push($( this ).val().replace(";",""));
-				}
-			});
-			var subLen = selected_eval.length/elementList.length;
-			console.log(subLen);
-			var sub = subLen;
-			var kj = 0;
-			var kk = 1;
-			for (var key = 0; key < Object.keys(saveIVT).length; key++){
-				console.log(selected_eval.slice(kj,sub));
-				saveIVT[Object.keys(saveIVT)[key]]["evalList"] = selected_eval.slice(kj,sub);
-				kj = sub;
-				sub=sub*(kk+1);
-			}
-		}*/
-		this.dismissIntermTable();
-	},
-	returnInputEval: function(){
-		return saveIVT;
-	},
-	saveElementsInGlobalVariable: function(){
-		var elements = [];
-		for (var i = 0; i < graph.getElements().length; i++){
-			if (!(graph.getElements()[i] instanceof joint.shapes.basic.Actor)){
-				elements.push(graph.getElements()[i]);
-			}
-		}
-		graph.allElements = elements;
-		graph.elementsBeforeAnalysis = elements;
-	},
-	addnewIntention: function(){
-		//console.log("button clicked for add");
-		var elements = graph.getElements();
-		//console.log(elements);
-		//console.log(epochLists);
-
-		var epoch1 = '<div class="epochLists" id="epoch1List"><select><option selected>...</option>';
-		for(var i = 0; i < epochLists.length; i++){
-			var newEpoch = '<option>' + epochLists[i] + '</option>';
-			epoch1 += newEpoch
-		}
-		epoch1 += '</select></div>';
-		var epoch2 =  '<div class="epochLists" id="epoch2List"><select><option selected>...</option>';
-		for(var i = 0; i < epochLists.length; i++){
-			var newEpoch = '<option>' + epochLists[i] + '</option>';
-			epoch2 += newEpoch
-		}
-		epoch2 += '</select></div>';
-
-		var relationship = '<div class="epochLists" id="relationshipLists"><select><option selected>...'+
-		'</option><option value="eq">=</option><option value="lt"><</option></select></div>'
-
-		$('#rel-intention-assignents').append('<tr><td>' + epoch1 + '</td><td>' + relationship +
-		 '</td><td>'+ epoch2 +'</td><td><i class="fa fa-trash-o fa-2x" id="removeIntention" aria-hidden="true" onClick="$(this).closest(\'tr\').remove();"></i></td></tr>');
+            var sourceName = model.getIntentionByID(sourceID).nodeName;
+            var targetName = model.getIntentionByID(targetID).nodeName;
 
 
-	},
+            if (link.linkType == 'NBD' || link.linkType == 'NBT' || link.isEvolvingRelationship()) {
+                var linkAbsTime = link.absoluteValue;
+                var defaultValue = linkAbsTime == -1 ? '' : linkAbsTime;
+
+                $('#link-list').append('<tr linkID = ' + link.linkID + '><td>' + link.linkType + '</td><td>' + sourceName + '</td><td>' + targetName +
+                    '</td><td><input type="number" name="sth" value=' + defaultValue + '></td>' + btnHtml +
+                    '</tr>');
+            }
+
+        }
+    },
+
+    addRelTime: function(event) {
+
+        var numRel = $('#num-rel-time');
+        if (numRel.val() !== ""){
+            analysisRequest.numRelTime = numRel.val()
+        }
+        else {
+            numRel.val(analysisRequest.numRelTime);
+        }
+    },
+
+    changeConflictLevel: function(event) {
+        analysisRequest.conflictLevel = $('#conflict-level').val()[0];
+    },
+
+    changeAbsTimePts: function(event) {
+        var regex = new RegExp("^(([1-9]0*)+\\s+)*([1-9]+0*)*$");
+
+        var absTime = $('#abs-time-pts');
+        if (regex.test(absTime.val())){
+            analysisRequest.absTimePts = absTime.val().trim();
+            analysisRequest.changeTimePoints(this.getAbsoluteTimePoints());
+        }
+        else {
+            absTime.val(analysisRequest.absTimePts);
+        }
+
+    },
+
+    changeMaxAbsTime : function(event) {
+        var maxTime = $('#max-abs-time');
+        if (maxTime.val() !== ""){
+            model.maxAbsTime = maxTime.val()
+        }
+        else {
+            maxTime.val(model.maxAbsTime);
+        }
+    },
+
+
+    /**
+     * Displays the nodes for the Absolute Intention Assignments for
+     * the Absolute and Relative Assignments modal
+     */
+    displayAbsoluteIntentionAssignments: function(e) {
+
+        var btnHtml = '<td><button class="unassign-abs-intent-btn" > Unassign </button></td>';
+
+        for (var i = 0; i < model.intentions.length; i++) {
+            var intention = model.intentions[i];
+            var funcType = intention.dynamicFunction.stringDynVis;
+            var intentionName = intention.nodeName;
+
+            // nameIdMapper[name] = intention.nodeID;
+            if (funcType == 'RC' || funcType == 'CR' || funcType == 'MP' ||
+                funcType == 'MN' || funcType == 'SD' || funcType =='DS') {
+
+
+                var absTime = intention.getAbsConstTime('A');
+                // default value to display.
+                // -1 means abs time does not exist. So display empty string instead.
+                var defaultVal = absTime === -1 ? '' : absTime;
+
+                $('#node-list').append('<tr nodeID = '+intention.nodeID+' srcEB = A><td>' + intentionName + ': A' + '</td><td>' + funcType + '</td>' +
+                    '<td><input type="number" name="sth" value="' + defaultVal + '"></td>' + btnHtml + '</tr>');
+            } else if (funcType == 'UD') {
+
+                // the number of function transitions, is the number of functions minus one
+                var funcTransitions = intention.dynamicFunction.functionSegList.length - 1;
+                var currBound = 'A';
+                for (var j = 0; j < funcTransitions; j++) {
+
+                    // default value to display
+                    var absTime = intention.getAbsConstTime(currBound);
+                    var defaultVal = absTime === -1 ? '' : absTime;
+
+                    $('#node-list').append('<tr nodeID = ' + intention.nodeID + ' srcEB = ' + currBound + '><td>' + intentionName +': '+ currBound + '</td><td>' + funcType + '</td>' +
+                        '<td><input type="number" name="sth" value=' + defaultVal + '></td>' + btnHtml + '</tr>');
+                    currBound = String.fromCharCode(currBound.charCodeAt(0) + 1);
+                }
+            }
+        }
+
+    },
+
+    /**
+     * Returns an array of numbers containing numbers that the
+     * user has inputed in the Absolute Time Points input box.
+     * @returns {Array.<Number>}
+     */
+    getAbsoluteTimePoints() {
+        var absValues = document.getElementById('abs-time-pts').value;
+        var absTimeValues;
+
+        if (absValues != '') {
+            absTimeValues = absValues.split(' ');
+            absTimeValues.map(function(i) {
+                if (i != '') {
+                    return parseInt(i, 10);
+                }
+            });
+
+            //Sort into ascending order
+            absTimeValues.sort(function(a, b){return a - b});
+        } else {
+            absTimeValues = [];
+        }
+
+        return absTimeValues
+    },
+
+    /**
+     * Displays the Intermediate Values modal for the user
+     *
+     * This function is called on click for #btn-view-intermediate
+     */
+    loadIntermediateValues: function(e) {
+        $('#interm-list').find("tr:gt(1)").remove();
+        $('#header').find("th:gt(1)").remove();
+        $('#intentionRows').find("th:gt(1)").remove();
+
+        var intermTDialog = document.getElementById('intermediateTable');
+        intermTDialog.style.display = "block";
+
+        var absTimeValues = analysisRequest.absTimePtsArr;
+
+        for (var i = 0; i < absTimeValues.length; i++) {
+            $('#header-row').append('<th>Absolute</th>');
+            $('#intentionRows').append('<th>' + absTimeValues[i] + '</th>');
+        }
+
+        var options = `<option value="empty"> </option>
+						<option value="(no value)">(no value)</option>
+						<option value="0000">None (⊥, ⊥) </option>
+						<option value="0011">Satisfied (F, ⊥) </option>
+						<option value="0010">Partially Satisfied (P, ⊥) </option>
+						<option value="1100">Denied (⊥, F) </option>
+						<option value="0100">Partially Denied (⊥, P)</option>`;
+
+        for (var i = 0; i < model.intentions.length; i++) {
+            var intention = model.intentions[i];
+            var initValue = intention.getInitialSatValue(); // ex, '0000'
+
+            // If user put no absolute time points
+            if ($.isEmptyObject(absTimeValues)) {
+                $('#interm-list').append('<tr><td>' + intention.nodeName + '</td><td>' + satisfactionValuesDict[initValue].satValue + '</td></tr>');
+            } else {
+
+                // TODO, display previously saved options
+                var row = $('<tr></tr>');
+                row.addClass('intention-row');
+                var name = $('<td></td>');
+                var sat = $('<td></td>');
+
+                name.text(intention.nodeName);
+                sat.text('Denied');
+                row.append(name);
+                row.append(satisfactionValuesDict[initValue].satValue);
+
+                // var appendList = '<tr class="intention-row"><td>' + name + '</td><td>'+satisfactionValuesDict[initValue].satValue+'</td>';
+
+                for (j = 0; j < absTimeValues.length; j++) {
+
+                    // Add select tags for each absolute time point
+                    var selectTd = $('<td></td>');
+                    var selectElement = $('<select></select>');
+                    selectElement.attr('nodeID', intention.nodeID);
+                    selectElement.attr('absTime', absTimeValues[j]);
+                    selectElement.append(options);
+
+                    var intEval = analysisRequest.getUserEvaluationByID(intention.nodeID, absTimeValues[j]);
+
+                    if (intEval != null) {
+                        selectElement.val(intEval.evaluationValue);
+                    }
+
+                    selectTd.append(selectElement);
+                    row.append(selectTd);
+
+
+                    // var selectTag = '<select id="evalID" nodeID = ' + intention.nodeID + ' absTime = '+ absTimeValues[j] +'>' + options + '</select>'
+                    // appendList += '<td>' + selectTag + '</td>';
+                }
+                $('#interm-list').append(row);
+
+            }
+        }
+    },
+    // Dismiss modal box
+    dismissModalBox: function(e){
+        var modal = document.getElementById('myModal');
+        modal.style.display = "none";
+
+    },
+    dismissIntermTable: function(e){
+        var intermT = document.getElementById('intermediateTable');
+        intermT.style.display = "none";
+    },
+
+    // Trigger when unassign button is pressed. Change the assigned time of the node/link in the same row to none
+    unassignAbsRelValue: function(e){
+        var button = e.target;
+        var row = $(button).closest('tr');
+        var assignedTime = row.find('input[type=number]');
+        $(assignedTime).val('');
+
+        var linkID = row.attr('linkID');
+        var link = model.getLinkByID(linkID);
+        link.absoluteValue = -1;
+    },
+
+    unassignAbsIntentValue: function(e) {
+        var button = e.target;
+        var row = $(button).closest('tr');
+        var assignedTime = row.find('input[type=number]');
+        $(assignedTime).val('');
+
+        var nodeID = row.attr('nodeID');
+        var srcEB = row.attr('srcEB');
+        var constraint = model.getAbsConstBySrcID(nodeID, srcEB);
+        constraint.absoluteValue = -1;
+    },
+
+    /**
+     * Saves the Relative Intention Assignments from the
+     * Absolute and Relative Assignments into the graph object
+     */
+    saveRelativeIntentionAssignments: function() {
+        $('.rel-intent-table tr').each(function () {
+            var nodeID1 = $(this).find('#epoch1List select option:checked').attr('nodeID');
+            var epoch1 = $(this).find('#epoch1List select option:checked').attr('epoch');
+            var type = $(this).find('#relationshipLists select option:checked').text();
+            var nodeID2 = $(this).find('#epoch2List select option:checked').attr('nodeID');
+            var epoch2 = $(this).find('#epoch2List select option:checked').attr('epoch');
+
+            if (!nodeID1 || !epoch1 || !type || !nodeID2 || !epoch2) {
+                return;
+            }
+
+            // create constraints object
+            var constraint = new Constraint(type, nodeID1, epoch1, nodeID2, epoch2);
+
+            if (!model.existsConstraint(constraint)) {
+                model.saveRelIntAssignment(type, nodeID1, epoch1, nodeID2, epoch2);
+            }
+        });
+
+    },
+
+    /**
+     * Saves the Absolute Intention Assignments from the
+     * Absolute and Relative Assignments to the graph object
+     */
+    saveAbsoluteIntentionAssignments() {
+        // Save absolute intention assignments
+        $.each($('#node-list').find("tr input[type=number]"), function(){
+            var newTime = parseInt($(this).val()); // ex 15
+            if (isNaN(newTime)) {
+                return;
+            }
+            var row = $(this).closest('tr');
+            var srcEB = row.attr('srcEB'); // ex. 'A'
+            var funcValue = row.find('td:nth-child(2)').html(); // ex. 'MP'
+            var nodeID = row.attr('nodeID'); // ex. '0000'
+
+            model.setAbsConstBySrcID(nodeID, srcEB, newTime);
+
+        });
+    },
+
+    /**
+     * Saves the Absolute Relationship Assignments from the
+     * Absolute and Relative Assignments into the graph object
+     */
+    saveAbsoluteRelationshipAssignments() {
+        // Save absolute relationship assignment
+        $.each($('#link-list').find("tr input[type=number]"), function() {
+            var newTime = parseInt($(this).val());
+            if (isNaN(newTime)) {
+                return;
+            }
+            var row = $(this).closest('tr');
+            var linkID = row.attr('linkID');
+            var link = model.getLinkByID(linkID);
+            link.absoluteValue = newTime;
+        });
+    },
+
+    // TODO: Check if the times users put in are valid
+    /**
+     * Saves absolute intention and relationship assignments to the graph object
+     *
+     * This function is called on click for #btn-save-assignment
+     */
+    saveAssignment: function(e){
+
+        this.saveRelativeIntentionAssignments();
+        this.saveAbsoluteIntentionAssignments();
+        this.saveAbsoluteRelationshipAssignments();
+
+        // Dismiss the modal
+        var modal = document.getElementById('myModal');
+        modal.style.display = "none";
+        $("#epoch1List select").val();
+    },
+
+    /**
+     * Save the intermediate table values into analysisRequest
+     */
+    saveIntermTable: function() {
+
+        // Clear all intention evaluations with the exception
+        // of the evaluations on the initial time point
+        analysisRequest.clearUserEvaluations();
+
+        // for each row of the table
+        $('.intention-row').each(function () {
+            // for each column of the current row
+            $(this).find('select').each(function () {
+                var nodeID = $(this).attr('nodeID');
+                var absTime = $(this).attr('absTime');
+                var evalLabel = $(this).find(":selected").val();
+
+                if (evalLabel === 'empty') {
+                    return;
+                }
+
+                analysisRequest.userAssignmentsList.push(new UserEvaluation(nodeID, absTime, evalLabel));
+
+            });
+        });
+
+
+        this.dismissIntermTable();
+    },
+
+    /**
+     * This function is called on click .addIntention (the plus icon)
+     */
+    addRelAssignmentRow: function() {
+
+        var intentions = model.intentions;
+        var epochHtml1 = '<div class="epochLists" id="epoch1List"><select><option selected>...</option>';
+        var epochHtml2 =  '<div class="epochLists" id="epoch2List"><select><option selected>...</option>';
+        for (var i = 0; i < intentions.length; i++) {
+
+            // if number of function segments >= 2, we have at least one transition
+            if (intentions[i].getNumOfFuncSegements() >= 2) {
+                var funcSegments = intentions[i].dynamicFunction.getFuncSegmentIterable();
+                for (var j = 0; j < funcSegments.length - 1; j++) {
+                    var epoch = funcSegments[j].funcStop;
+                    var newEpochHtml = '<option nodeID=' + intentions[i].nodeID + ' epoch=' + epoch + '>' + intentions[i].nodeName + ': ' + epoch + '</option>';
+                    epochHtml1 += newEpochHtml;
+                    epochHtml2 += newEpochHtml;
+                }
+            }
+        }
+
+        epochHtml1 += '</select></div>';
+        epochHtml2 += '</select></div>';
+
+
+        var relationship = '<div class="epochLists" id="relationshipLists"><select><option selected>...'+
+            '</option><option value="eq">=</option><option value="lt"><</option></select></div>'
+
+        $('#rel-intention-assignents').append('<tr><td>' + epochHtml1 + '</td><td>' + relationship +
+            '</td><td>'+ epochHtml2 +'</td><td><i class="fa fa-trash-o fa-2x" id="removeIntention" aria-hidden="true"></i></td></tr>');
+        // $("#removeIntention").prop('onclick', function() {
+        // 	console.log('hello');
+        // });
+    },
+
+    setDeleteRelAssignmentListener: function() {
+
+        $(document.body).on('click', '#removeIntention', function(){
+            var row = $(this).parent().parent();
+            var nodeID1 = row.find('#epoch1List select option:checked').attr('nodeID');
+            var epoch1 = row.find('#epoch1List select option:checked').attr('epoch');
+            var type = row.find('#relationshipLists select option:checked').text();
+            var nodeID2 = row.find('#epoch2List select option:checked').attr('nodeID');
+            var epoch2 = row.find('#epoch2List select option:checked').attr('epoch');
+            var constraint = new Constraint(type, nodeID1, epoch1, nodeID2, epoch2);
+
+            model.removeConstraint(constraint);
+            row.remove();
+        });
+    }
+
 
 });

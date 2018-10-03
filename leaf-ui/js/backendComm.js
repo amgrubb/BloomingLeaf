@@ -1,11 +1,11 @@
 
-var global_analysisResult = {};
 
 function backendComm(jsObject){
 	/**
 	* Print the input to the console.
 	*/
 	console.log(JSON.stringify(jsObject));
+	console.log(jsObject.analysisRequest.action);
 
 	//backend script called
 	var pathToCGI = "./cgi-bin/backendCom.cgi";
@@ -17,18 +17,17 @@ function backendComm(jsObject){
 		data:JSON.stringify(jsObject),
 		success: function(response){
 			setTimeout(function(){
-				if(jsObject.analysis.action=="allNextStates"){
+				if(jsObject.analysisRequest.action=="allNextStates"){
 					executeJava(true);
 				}else{
 					executeJava(false);
 				}
-		    }, 500);  
+		    }, 500);
 		}
 	})	.fail(function(){
 		msg = "Ops! Something went wrong.";
 		alert(msg);
 	});
-
 }
 
 function executeJava(isGetNextSteps){
@@ -39,7 +38,7 @@ function executeJava(isGetNextSteps){
 		success: function(response){
 		    setTimeout(function(){
 				getFileResults(isGetNextSteps);
-		    }, 500);  
+		    }, 500);
 		}
 	})
 	.fail(function(){
@@ -57,10 +56,10 @@ function getFileResults(isGetNextSteps){
 		url: pathToCGI,
 		type: "get",
 		success: function(response){
-			analysisResults = JSON.parse(response['data']);
-			
-			if (constraintErrorExists(analysisResults)) {
-				var msg = getErrorMessage(analysisResults.errorMessage);	
+			results = JSON.parse(response['data']);
+
+			if (errorExists(results)) {
+				var msg = getErrorMessage(results.errorMessage);
 				alert(msg);
 			} else {
 				/**
@@ -68,18 +67,30 @@ function getFileResults(isGetNextSteps){
 				*/
 					console.log(JSON.stringify(JSON.parse(response['data'])));
 
-				global_analysisResult = analysisResults;
-				if (analysisResults == ""){
+				//globalAnalysisResult = results;
+
+				if (results == ""){
 					alert("Error while reading the resonse file from server. This can be due an error in executing java application.")
 					return
 				}
+
+
+				// do not need to store the past result for all next states
 				if(isGetNextSteps){
+                    savedAnalysisData.allNextStatesResult = results;
+                    console.log("in backendcomm, saving all next state results");
 					open_analysis_viewer();
 				}else{
-					loadAnalysis(analysisResults);
-					var currentValueLimit = parseInt(sliderObject.sliderElement.noUiSlider.get());
-					var sliderMax = currentValueLimit + currentAnalysis.timeScale;
-					sliderObject.sliderElement.noUiSlider.set(sliderMax);
+                    savedAnalysisData.singlePathResult = results;
+                    analysisResult.assignedEpoch = results.assignedEpoch;
+                    analysisResult.timePointPath = results.timePointPath;
+                    analysisResult.timePointPathSize = results.timePointPathSize;
+                    analysisResult.elementList = results.elementList;
+                    analysisResult.allSolution = results.allSolution;
+                    analysisRequest.previousAnalysis = analysisResult;
+                    console.log("previousAnalysis");
+                    console.log(analysisRequest.previousAnalysis);
+					displayAnalysis(results);
 				}
 			}
 		}
@@ -91,16 +102,15 @@ function getFileResults(isGetNextSteps){
 }
 
 
-
 function open_analysis_viewer(){
-	var urlBase = document.URL.substring(0, document.URL.lastIndexOf('/')+1);
-	var url = urlBase+"analysis.html";
+    var urlBase = document.URL.substring(0, document.URL.lastIndexOf('/')+1);
+    var url = urlBase+"analysis.html";
+    var w = window.open(url, Date.now(), "status=0,title=0,height=600,width=1200,scrollbars=1");
 
-	var w = window.open(url, "Analysis View", "status=0,title=0,height=600,width=1200,scrollbars=1");
+    if (!w) {
+        alert('You must allow popups for this map to work.');
+    }
 
-	if (!w) {
-	    alert('You must allow popups for this map to work.');
-	}
 }
 
 /*
@@ -111,7 +121,7 @@ function open_analysis_viewer(){
  *   results from backend java code
  * @returns {boolean}
  */
-function constraintErrorExists(analysisResults) {
+function errorExists(analysisResults) {
 	return analysisResults.errorMessage != null;
 }
 
@@ -120,7 +130,7 @@ function constraintErrorExists(analysisResults) {
  * user-defined node names instead of node ids.
  *
  * Example message:
- * The model is not solvable because of conflicting constraints 
+ * The model is not solvable because of conflicting constraints
  * involving nodes: mouse, keyboard, and pizza.
  *
  * @param {String} backendErrorMsg
@@ -128,7 +138,12 @@ function constraintErrorExists(analysisResults) {
  * @returns {boolean}
  */
 function getErrorMessage(backendErrorMsg) {
-		
+
+	// If node ids does not exist, just return the original error message for now
+	if (!nodeIDsExists(backendErrorMsg)) {
+		return backendErrorMsg;
+	}
+
 	var ids = getIDs(backendErrorMsg);
 	var names = [];
 	var actorNames = [];
@@ -136,10 +151,10 @@ function getErrorMessage(backendErrorMsg) {
 		names.push(getNodeName(ids[i]));
 		actorNames.push(getParentActorNameById(ids[i]));
 	}
-	
+
 	var s = 'The model is not solvable because of conflicting constraints involving nodes (with associated actors): ';
 	var numOfNames = names.length;
-	
+
 	for (var i = 0; i < numOfNames - 1; i++) {
 		s += names[i] + ' (' + actorNames[i] + ')';
 		if (i < numOfNames - 2) {
@@ -159,7 +174,7 @@ function getErrorMessage(backendErrorMsg) {
  * that embeds an element with element id id.
  * If element with element id id is not embedded within an actor
  * returns 'no actor'.
- * 
+ *
  * @param {String} id
  *   element id for the element of interest
  * @returns {String}
@@ -169,16 +184,16 @@ function getParentActorNameById(id) {
 	if (actor) {
 		return actor.attributes.attrs['.name'].text;
 	}
-	return 'no actor';	
+	return 'no actor';
 }
 
 /*
  * Returns the actor which embeds the element of interest.
- * Returns null if there is no actor that embeds the element. 
+ * Returns null if there is no actor that embeds the element.
  * (If an actor embeds an element, the actor is the element's parent)
  *
  * @param {dia.Element} element
- * @returns {dia.Element | null} 
+ * @returns {dia.Element | null}
  */
 function getParentActor(element) {
 	// get call the ancestors for the element
@@ -186,14 +201,14 @@ function getParentActor(element) {
 	if (ancestors.length == 0) {
 		return null;
 	}
-	// if there is an ancestor, there would only be one 
+	// if there is an ancestor, there would only be one
 	return ancestors[0];
 }
 
 /*
  * Returns the element with element id id.
  * Returns null if no element with that element id exists.
- * 
+ *
  * @param {String} id
  *   element id of the element of interest
  * @returns {dia.Element | null}
@@ -201,14 +216,25 @@ function getParentActor(element) {
 function getElementById(id) {
 	var elements = graph.getElements();
 	for (var i = 0; i < elements.length; i++) {
-		if (id == elements[i].attributes.elementid) {
+		if (id == elements[i].attributes.nodeID) {
 			return elements[i];
 		}
 	}
 }
 
+/**
+ * Returns true iff node ids exists in msg
+ *
+ * @param {String} msg
+ * @returns {Boolean}
+ */
+function nodeIDsExists(msg) {
+	var pattern = /N\d{4}/g;
+	return msg.match(pattern) != null;
+}
+
 /*
- * Returns an array of all node ids that are mentioned in 
+ * Returns an array of all node ids that are mentioned in
  * the backendErrorMsg, in the order they appear.
  *
  * @param {String} backendErrorMsg

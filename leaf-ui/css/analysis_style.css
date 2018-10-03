@@ -30,23 +30,23 @@
 }
 /***/
 #interm-list select{
-  /*Don't really need this just for demo styling*/
-  max-width: 180px
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  /* Add some styling */
-  display: block;
-  height: 30px;
-  float: right;
-  font-size: 16px;
-  line-height: 1.75;
-  color: #333;
-  background-color: #ffffff;
-  background-image: none;
-  border: 1px solid #cccccc;
-  -ms-word-break: normal;
-  word-break: normal;
+    /*Don't really need this just for demo styling*/
+    max-width: 180px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    /* Add some styling */
+    display: block;
+    height: 30px;
+    float: right;
+    font-size: 16px;
+    line-height: 1.75;
+    color: #333;
+    background-color: #ffffff;
+    background-image: none;
+    border: 1px solid #cccccc;
+    -ms-word-break: normal;
+    word-break: normal;
 }
 
 /*Hide the intermTable dialog by default*/
@@ -66,19 +66,19 @@
 
 /*Intermediate Values Content*/
 .intermContent{
-  position: relative;
-  background-color: #fefefe;
-  margin: auto;
-  padding: 0;
-  border: 1px solid #888;
-  width: 70%;
-  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
-  -webkit-animation-name: animatetop;
-  -webkit-animation-duration: 0.4s;
-  animation-name: animatetop;
-  animation-duration: 0.4s;
-  color: black;
-  border-radius: 20px;
+    position: relative;
+    background-color: #fefefe;
+    margin: auto;
+    padding: 0;
+    border: 1px solid #888;
+    width: 70%;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+    -webkit-animation-name: animatetop;
+    -webkit-animation-duration: 0.4s;
+    animation-name: animatetop;
+    animation-duration: 0.4s;
+    color: black;
+    border-radius: 20px;
 }
 
 .intermHeader {
@@ -145,9 +145,9 @@
     color: white;
 }
 .intermTfooter{
-  padding: 2px 16px;
-  /*background-color: #5cb85c;*/
-  color: white;
+    padding: 2px 16px;
+    /*background-color: #5cb85c;*/
+    color: white;
 }
 
 
@@ -183,9 +183,9 @@
 
 /*Interm table design*/
 .intermBody{
-  /*verflow-x: scroll;*/
-  overflow: auto;
-  border-radius: 20px;
+    /*verflow-x: scroll;*/
+    overflow: auto;
+    border-radius: 20px;
 }
 
 
@@ -247,117 +247,117 @@
 }
 
 .intentionPlace{
-  z-index:9999;position:relative;top:23px;
+    z-index:9999;position:relative;top:23px;
 }
 .timePlace{
-     z-index:9999;position:relative;top:-20px;left:112px;
+    z-index:9999;position:relative;top:-20px;left:112px;
 }
 .diag { position: relative; width: 50px; height: 5px; }
 /*.outerdivslant { position: relative; top: -44px; left: -8px; width: 100%; border-color: transparent transparent transparent #dddddd; border-width: 57px 0px 0px 203px;}
 .innerdivslant {position: relative; top: -100px; left: -10px; border-color: transparent transparent transparent #fff; border-width: 56px 0px 0px 200px;}*/
 #link-list {
-    width: 100%%;
+    width: 100%;
 }
 #addIntent{
-  cursor:pointer
+    cursor:pointer
 }
 
 #relationshipList{
-  display: inline-block;
-  border: 2px solid #bbb;
-  padding: 4px 3px 3px 5px;
-  margin: 0;
-  font: inherit;
-  outline:none; /* remove focus ring from Webkit */
-  line-height: 1.2;
-  background: #f8f8f8;
-  width: 96px;
-  -webkit-appearance:none; /* remove the strong OSX influence from Webkit */
+    display: inline-block;
+    border: 2px solid #bbb;
+    padding: 4px 3px 3px 5px;
+    margin: 0;
+    font: inherit;
+    outline:none; /* remove focus ring from Webkit */
+    line-height: 1.2;
+    background: #f8f8f8;
+    width: 96px;
+    -webkit-appearance:none; /* remove the strong OSX influence from Webkit */
 
-  -webkit-border-radius: 6px;
-  -moz-border-radius: 6px;
-  border-radius: 6px;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
 }
 #relationshipList:focus{
-  -webkit-box-shadow: 0 0 3px 1px #c00;
-  -moz-box-shadow: 0 0 3px 1px #c00;
-  box-shadow: 0 0 3px 1px
+    -webkit-box-shadow: 0 0 3px 1px #c00;
+    -moz-box-shadow: 0 0 3px 1px #c00;
+    box-shadow: 0 0 3px 1px
 }
 .epochLists {
-  position: relative;
-  /*Don't really need this just for demo styling*/
-  float: left;
-  min-width: 200px;
+    position: relative;
+    /*Don't really need this just for demo styling*/
+    float: left;
+    min-width: 200px;
 }
 
 /* IE11 hide native button (thanks Matt!) */
 select::-ms-expand {
-display: none;
+    display: none;
 }
 
 .epochLists:after {
-  content: '<>';
-  font: 17px "Consolas", monospace;
-  color: #333;
-  -webkit-transform: rotate(90deg);
-  -moz-transform: rotate(90deg);
-  -ms-transform: rotate(90deg);
-  transform: rotate(90deg);
-  right: 11px;
-  /*Adjust for position however you want*/
+    content: '<>';
+    font: 17px "Consolas", monospace;
+    color: #333;
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    transform: rotate(90deg);
+    right: 11px;
+    /*Adjust for position however you want*/
 
-  top: 5px;
-  padding: 0 0 2px;
-  border-bottom: 1px solid #999;
-  /*left line */
+    top: 5px;
+    padding: 0 0 2px;
+    border-bottom: 1px solid #999;
+    /*left line */
 
-  position: absolute;
-  pointer-events: none;
+    position: absolute;
+    pointer-events: none;
 }
 
 .epochLists select {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  /* Add some styling */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    /* Add some styling */
 
-  display: block;
-  width: 100%;
-  max-width: 180px;
-  height: 30px;
-  float: right;
-  padding: 0px 24px;
-  font-size: 16px;
-  line-height: 1.75;
-  color: #333;
-  background-color: #ffffff;
-  background-image: none;
-  border: 1px solid #cccccc;
-  -ms-word-break: normal;
-  word-break: normal;
+    display: block;
+    width: 100%;
+    max-width: 180px;
+    height: 30px;
+    float: right;
+    padding: 0px 24px;
+    font-size: 16px;
+    line-height: 1.75;
+    color: #333;
+    background-color: #ffffff;
+    background-image: none;
+    border: 1px solid #cccccc;
+    -ms-word-break: normal;
+    word-break: normal;
 }
 #removeIntention{
-  cursor: pointer;
+    cursor: pointer;
 }
 
 #abs-time-pts{
-  margin-bottom:5px;
+    margin-bottom:5px;
 }
 #header th{
-  min-width: 200px;
-  height: 30px;
-  text-align: center;
+    min-width: 200px;
+    height: 30px;
+    text-align: center;
 }
 #intentionRows th:nth-child(n + 2){
-  text-align: center;
+    text-align: center;
 }
 .divisionLine{
-  position: relative;
-  z-index: 1;
-  left: -12px;
-  width: 199px;
-  top: 19px;
-  height: 1px;
-  background-color: #dddddd;
-  transform: rotate(15deg);
+    position: relative;
+    z-index: 1;
+    left: -12px;
+    width: 199px;
+    top: 19px;
+    height: 1px;
+    background-color: #dddddd;
+    transform: rotate(15deg);
 }
