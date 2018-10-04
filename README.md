@@ -21,7 +21,7 @@ Building on the shoulders of giants:
 
 Tool                  | Description
 --------------------- | -----------
-[JointJS (Rappid)]               | JavaScript Diagramming Library
+[JointJS (Rappid)]               | JavaScript Diagramming Library (v2.3.1)
 [JaCoP]              | Java Constraint Programming (JaCoP) solver
 [SweetAlert](https://sweetalert.js.org/)        | Javascript Library for Popup customization
 [ChartJS](http://www.chartjs.org/)           | Javascript Library for creating charts
