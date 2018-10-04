@@ -75,7 +75,7 @@ function init(){
     analysis.paperScroller.center();
 
     //Load graph by the cookie
-    if (analysis.page.cookie){
+    /*if (analysis.page.cookie){
         var cookies = analysis.page.cookie.split(";");
         var prevgraph = "";
         for (var i = 0; i < cookies.length; i++){
@@ -87,7 +87,8 @@ function init(){
         if (prevgraph){
             analysis.graph.fromJSON(JSON.parse(prevgraph));
         }
-    }
+    }*/
+    analysis.graph.fromJSON(JSON.parse(JSON.stringify(window.opener.graph.toJSON())));
 
     //Filter out Actors
     for (var e = 0; e < analysis.graph.getElements().length; e++){

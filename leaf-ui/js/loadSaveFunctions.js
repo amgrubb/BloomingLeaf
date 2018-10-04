@@ -212,6 +212,8 @@ reader.onload = function() {
 		// If the JSON is from the current version of BloomingLeaf
 		loadFromObject(result);
 	}
+    var graphtext = JSON.stringify(graph.toJSON());
+    document.cookie = "graph=" + graphtext;
 }
 
 /**

@@ -696,6 +696,7 @@ graph.on("change", function(){
 	var graphtext = JSON.stringify(graph.toJSON());
 	document.cookie = "graph=" + graphtext;
     if (Tracking){
+    	console.log("tracking");
         var timestamp = new Date().toUTCString();
         updateDataBase(graph, timestamp);
         accessDatabase("insert ignore into graphs(session_id,content,timestamp) values " +
