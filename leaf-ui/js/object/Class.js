@@ -88,7 +88,9 @@ class Model {
      */
     setAbsConstBySrcID(srcID, srcEB, absVal) {
         var constraint = this.getAbsConstBySrcID(srcID, srcEB);
-        constraint.absoluteValue = absVal;
+        if (constraint) {
+            constraint.absoluteValue = absVal;
+        }
     }
 
     /**
