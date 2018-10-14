@@ -168,7 +168,6 @@ var AnalysisInspector = Backbone.View.extend({
 		//Get the AnalysisInspector view information
 		analysisRequest.action = "singlePath";
         analysisRequest.currentState = "0|0";
-        analysisRequest.previousAnalysis = savedAnalysisData.singlePathResult;
 
 		//Prepare and send data to backend
 		this.sendToBackend();

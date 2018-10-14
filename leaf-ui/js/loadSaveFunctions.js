@@ -56,14 +56,13 @@ reader.onload = function() {
 
 		        // create intention evaluation
 		        var initSat = cells[i].attrs['.satvalue'].text;
-		        initSat = (initSat !== ' ' && initSat !== '')  ?  satValueDict[initSat] : '0000';
+		        initSat = (initSat !== ' ' && initSat !== '')  ?  oldSatValToBinary[initSat] : '0000';
 			    var intentionEval = new UserEvaluation(intention.nodeID, '0', initSat);
 			    analysisRequest.userAssignmentsList.push(intentionEval);
 		    
 		        // make the T upside down
 		        var satValText = cells[i].attrs['.satvalue'].text;
-		        satValText = satValText.replace(/T/g, '⊥');
-		        cells[i].attrs['.satvalue'].text = satValText;
+		        cells[i].attrs['.satvalue'].text = updateSatValueTextToNew(satValText);
 		    
 		        // create the evolving function
 		        if (cells[i].attrs['.funcvalue'] != null) {
@@ -161,11 +160,19 @@ reader.onload = function() {
 		        		var curr = 'A';
 
 		        		Object.keys(assignedTimes).forEach(function(key) {
-						if (assignedTimes[key]) {
-							model.setAbsConstBySrcID(intention.nodeID, curr, parseInt(assignedTimes[key]));
-							curr = String.fromCharCode(curr.charCodeAt(0) + 1);
-						}
-		              		});
+// <<<<<<< alicia-dev-oct
+// 						if (assignedTimes[key]) {
+// 							model.setAbsConstBySrcID(intention.nodeID, curr, parseInt(assignedTimes[key]));
+// 							curr = String.fromCharCode(curr.charCodeAt(0) + 1);
+// 						}
+// 		              		});
+// =======
+		              if (assignedTimes[key]) {
+			        			model.setAbsConstBySrcID(intention.nodeID, curr, parseInt(assignedTimes[key]));
+			        			curr = String.fromCharCode(curr.charCodeAt(0) + 1);
+		        			}
+		        		});
+// >>>>>>> develop
 		        	}
 			    }
 		        model.intentions.push(intention);
@@ -216,6 +223,33 @@ reader.onload = function() {
 	}
     var graphtext = JSON.stringify(graph.toJSON());
     document.cookie = "graph=" + graphtext;
+}
+
+/**
+ * Returns the new representation of satisfaction values
+ *
+ * Examples:
+ * (old -> new)
+ * '' -> (⊥, ⊥)
+ * (T, FD) -> (⊥, F)
+ * (PS, T) -> (P, ⊥)
+ *
+ * @param {String} oldText
+ *   old representation 
+ */
+function updateSatValueTextToNew(oldText) {
+
+	// If empty, return string representation for none
+	if (oldText == '' || oldText == ' ') {
+		return '(⊥, ⊥)'
+	}
+	
+	// Replace all T's with ⊥'s
+	oldText = oldText.replace(/T/g, '⊥');
+
+	// Remove all S's and D's
+	oldText = oldText.replace(/S|D/g, '');
+	return oldText;
 }
 
 /**

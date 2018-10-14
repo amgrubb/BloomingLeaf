@@ -131,13 +131,11 @@ var savedAnalysisData = {};
 
 // Properties for both core and simulator.
 
-// To delete
 var satvalues = {
 	"satisfied": 2, "partiallysatisfied": 1, "partiallydenied": -1, "denied": -2, "unknown": 4, "conflict":3, "none": 0,
 	"2": "satisfied", "1": "partiallysatisfied", "-1": "partiallydenied", "-2": "denied", "4": "unknown", "3": "conflict", "0": "none"
 };
 
-// To delete
 var satValueDict = {
 	"satisfied": "0011",
 	"partiallysatisfied": "0010",
@@ -230,6 +228,16 @@ var satisfactionValuesDict = {
 		chartVal: 0
 	}
 };
+
+// Required to convert old JSON models into 
+// new JSON models.
+// loadSaveFunctions.js needs this
+var oldSatValToBinary = {
+    '(FS, T)': '0011',
+    '(PS, T)': '0010',
+    '(T, FD)': '1100',
+    '(T, PD)': '0100'
+}
 
 // Mode is used specify layout
 mode = "Modelling";		// 'Analysis' or 'Modelling'
