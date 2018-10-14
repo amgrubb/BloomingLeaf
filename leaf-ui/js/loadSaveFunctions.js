@@ -160,19 +160,11 @@ reader.onload = function() {
 		        		var curr = 'A';
 
 		        		Object.keys(assignedTimes).forEach(function(key) {
-// <<<<<<< alicia-dev-oct
-// 						if (assignedTimes[key]) {
-// 							model.setAbsConstBySrcID(intention.nodeID, curr, parseInt(assignedTimes[key]));
-// 							curr = String.fromCharCode(curr.charCodeAt(0) + 1);
-// 						}
-// 		              		});
-// =======
-		              if (assignedTimes[key]) {
+		              	if (assignedTimes[key]) {
 			        			model.setAbsConstBySrcID(intention.nodeID, curr, parseInt(assignedTimes[key]));
 			        			curr = String.fromCharCode(curr.charCodeAt(0) + 1);
 		        			}
 		        		});
-// >>>>>>> develop
 		        	}
 			    }
 		        model.intentions.push(intention);
