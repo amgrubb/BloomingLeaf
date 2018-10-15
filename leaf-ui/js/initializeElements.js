@@ -8,6 +8,8 @@ var develop = false;
 var session_id = Date.now();
 var Tracking = true;
 
+
+
 function guid() {
     // local function to create alphanumeric strings
     function s4() {
