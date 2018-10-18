@@ -43,12 +43,12 @@ public class ScalabilityTesting {
 			String path = "scalability-tests/";
 			String fileName = "";	
 			
-			int[] numSimSteps = new int[]{5,10,25,50,75,100,150,200};
+			int[] numSimSteps = new int[]{5,10,25}; //,50,75,100,150,200};
 					//{5,10,25,50,75,100,150,200,300,400,500,600,700,800,900,1000};
-			String[] scalabilityFiles = new String[]{"REJ-ORTree-7.json"};//{"REJ-ORTree-25.json","REJ-ORTree-51.json","REJ-ORTree-75.json",
-//													"REJ-ORTree-101.json","REJ-ORTree-125.json","REJ-ORTree-151.json",
-//													"REJ-ORTree-175.json","REJ-ORTree-201.json"};//"WME.json"
-
+			String[] scalabilityFiles = new String[]{"REJ-ORTree-25.json","REJ-ORTree-51.json","REJ-ORTree-75.json",
+													"REJ-ORTree-101.json","REJ-ORTree-125.json","REJ-ORTree-151.json",
+													"REJ-ORTree-175.json","REJ-ORTree-201.json"};//"WME.json"
+//{"REJ-ORTree-7.json"};
 			for (int f = 0; f < scalabilityFiles.length; f++){
 				fileName = scalabilityFiles[f];
 				System.out.println("For Analysis Type:\t" + fileName);

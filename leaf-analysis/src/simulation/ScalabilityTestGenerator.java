@@ -40,7 +40,7 @@ public class ScalabilityTestGenerator {
 						break;
 						case 3: 
 							func[i] = "D";
-							funcSegList[i] = "{\"funcType\":\"I\",\"funcX\":\"1100\",\"funcStart\":\"0\",\"funcStop\":\"Infinity\"}";		
+							funcSegList[i] = "{\"funcType\":\"D\",\"funcX\":\"1100\",\"funcStart\":\"0\",\"funcStop\":\"Infinity\"}";		
 							initVal[i] = "0011";
 						break;
 						case 4: 
