@@ -10,7 +10,7 @@ public class ScalabilityTestGenerator {
 	//Generates a tree structure, for the BloomingLeaf tool.
 	public static void main(String[] args) {
 		try {
-			int[] modelSize = new int[]{25,51,75,101,125,151,175,201};
+			int[] modelSize = new int[]{7,25,51,75,101,125,151,175,201};
 
 			for (int a = 0; a < modelSize.length; a++){
 				int numIntentions = modelSize[a];
