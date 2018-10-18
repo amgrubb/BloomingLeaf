@@ -35,6 +35,7 @@ import org.jacop.search.MostConstrainedDynamic;
 import org.jacop.search.Search;
 import org.jacop.search.SelectChoicePoint;
 import org.jacop.search.SimpleSelect;
+import org.jacop.search.SimpleTimeOut;
 
 public class TroposCSPAlgorithm {
 	private Store store;									// CSP Store
@@ -1874,8 +1875,11 @@ public class TroposCSPAlgorithm {
         label.setPrintInfo(false); 							// Set to false if you don't want the CSP to print the solution as you go.
         
         // Sets the timeout for colony to ensure long processes do not kill the server.
-        //label.setTimeOut(1);
-        
+        SimpleTimeOut timeOutList = new SimpleTimeOut();
+        label.setTimeOutListener(timeOutList);
+        int timeOutValueInSeconds = 120;
+        label.setTimeOut(timeOutValueInSeconds);
+
         
         // Test and Add Constraints
         if(DEBUG)
@@ -1907,6 +1911,8 @@ public class TroposCSPAlgorithm {
         label.getSolutionListener().searchAll(this.searchAll);        
         boolean solutionFound = label.labeling(store, select);
         
+        if (timeOutList.timeOutOccurred)
+        	throw new RuntimeException("The solver timed out; thus, no solution was found. Current timeout is " + timeOutValueInSeconds + " seconds.");
         // Return Solution
         if(!solutionFound){
         	if (DEBUG) System.out.println("Found Solution = False");
