@@ -43,8 +43,10 @@ public class ScalabilityTesting {
 			String path = "scalability-tests/";
 			String fileName = "";
 
-			int[] numSimSteps = new int[]{15}; //{1,5,10,25,50,75,100,150,200,300,400,500,600,700,800,900,1000};
-			String[] scalabilityFiles = new String[]{"R4tree-OR-7.json"}; //"WME.json", 
+			int[] numSimSteps = new int[]{1,5,10,25,50,75,100,150,200,300,400,500,600,700,800,900,1000};
+			String[] scalabilityFiles = new String[]{"REJ-ORTree-25.json","REJ-ORTree-51.json","REJ-ORTree-75.json",
+													"REJ-ORTree-101.json","REJ-ORTree-125.json","REJ-ORTree-151.json",
+													"REJ-ORTree-175.json","REJ-ORTree-201.json"};//"WME.json"
 
 			for (int f = 0; f < scalabilityFiles.length; f++){
 				fileName = scalabilityFiles[f];
@@ -55,9 +57,8 @@ public class ScalabilityTesting {
 				for (int i = 0; i < numSimSteps.length; i++){
 					System.out.print(numSimSteps[i]);
 					for (int w = 0; w < numSamples; w++){
+						modelSpec.setRelativeTimePoints(numSimSteps[i]);
 						model = new TroposCSPAlgorithm(modelSpec);
-						//model.setMaxEpoch(numSimSteps[i]);		// Can I still change this with the Tropos Models?
-						//model.setMaxTime(numSimSteps[i]);					
 				        long startTime = System.currentTimeMillis();
 				        boolean foundSolution = model.solveModel();
 				        long endTime = System.currentTimeMillis();
