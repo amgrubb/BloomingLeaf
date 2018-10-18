@@ -43,19 +43,40 @@ public class ScalabilityTestGenerator {
 							funcSegList[i] = "{\"funcType\":\"I\",\"funcX\":\"1100\",\"funcStart\":\"0\",\"funcStop\":\"Infinity\"}";		
 							initVal[i] = "0011";
 						break;
-						case 4: //func = "SD\t0";
+						case 4: 
+							func[i] = "SD";
+							funcSegList[i] = "{\"funcType\":\"C\",\"funcX\":\"0011\",\"funcStart\":\"0\",\"funcStop\":\"A\"},{\"funcType\":\"C\",\"funcX\":\"1100\",\"funcStart\":\"A\",\"funcStop\":\"Infinity\"}";		
+							initVal[i] = "0011";
 						break;
-						case 5: //func = "DS\t0";
+						case 5: 
+							func[i] = "DS";
+							funcSegList[i] = "{\"funcType\":\"C\",\"funcX\":\"1100\",\"funcStart\":\"0\",\"funcStop\":\"A\"},{\"funcType\":\"C\",\"funcX\":\"0011\",\"funcStart\":\"A\",\"funcStop\":\"Infinity\"}";		
+							initVal[i] = "1100";
 						break;
-						case 6: //func = "RC\t3";
+						case 6: 
+							func[i] = "RC";
+							funcSegList[i] = "{\"funcType\":\"R\",\"funcX\":\"0000\",\"funcStart\":\"0\",\"funcStop\":\"A\"},{\"funcType\":\"C\",\"funcX\":\"0011\",\"funcStart\":\"A\",\"funcStop\":\"Infinity\"}";		
+							initVal[i] = "0000";
 						break;
-						case 7: //func = "CR\t3";
+						case 7: 
+							func[i] = "CR";
+							funcSegList[i] = "{\"funcType\":\"C\",\"funcX\":\"0011\",\"funcStart\":\"0\",\"funcStop\":\"A\"},{\"funcType\":\"R\",\"funcX\":\"0000\",\"funcStart\":\"A\",\"funcStop\":\"Infinity\"}";		
+							initVal[i] = "0011";
 						break;
-						case 8: //func = "MP\t3";
+						case 8: 
+							func[i] = "MP";
+							funcSegList[i] = "{\"funcType\":\"I\",\"funcX\":\"0011\",\"funcStart\":\"0\",\"funcStop\":\"A\"},{\"funcType\":\"C\",\"funcX\":\"0011\",\"funcStart\":\"A\",\"funcStop\":\"Infinity\"}";		
+							initVal[i] = "1100";
 						break;
-						case 9: //func = "MN\t0";
+						case 9: 
+							func[i] = "MN";
+							funcSegList[i] = "{\"funcType\":\"D\",\"funcX\":\"1100\",\"funcStart\":\"0\",\"funcStop\":\"A\"},{\"funcType\":\"C\",\"funcX\":\"1100\",\"funcStart\":\"A\",\"funcStop\":\"Infinity\"}";		
+							initVal[i] = "0011";
 						break;
-						default: //func = "R\t0";
+						default: 
+							func[i] = "R";
+							funcSegList[i] = "{\"funcType\":\"R\",\"funcX\":\"0000\",\"funcStart\":\"0\",\"funcStop\":\"Infinity\"}";		
+							initVal[i] = "1100";
 						}
 					}else{	// Default No Time Nodes
 						func[i] = "NT";
@@ -67,7 +88,7 @@ public class ScalabilityTestGenerator {
 
 				
 				// Create Files
-				String fileName = "ORTree-" + modelSize[a] + ".json";
+				String fileName = "REJ-ORTree-" + modelSize[a] + ".json";
 				System.out.print("\"" + fileName + "\",");
 				File file = new File("scalability-tests/" + fileName);
 				if (!file.exists()) {		// if file doesn't exists, then create it
@@ -80,17 +101,13 @@ public class ScalabilityTestGenerator {
 				bw.write("{\"analysisRequest\":{\"action\":\"singlePath\",\"conflictLevel\":\"N\",");
 				bw.write("\"numRelTime\":\"" + 1 + "\",");	//Number relative time points.
 				bw.write("\"absTimePts\":\"\",\"absTimePtsArr\":[],\"currentState\":\"0|0\",\"userAssignmentsList\":[");
-				
-				
 				for (int i = 0; i < numIntentions; i ++){
 					String id = "0000".substring((""+i).length()) + i;
 					bw.write("{\"intentionID\":\"" + id + "\",\"absTime\":\"0\",\"evaluationValue\":\"" + initVal[i] + "\"}");
 					if(i < numIntentions-1)
 						bw.write(",");
 					bw.write("\n");
-				}
-
-					
+				}				
 				bw.write(" ],\"previousAnalysis\":null},");
 				
 				//Add Model
@@ -100,13 +117,11 @@ public class ScalabilityTestGenerator {
 				//Add Intentions		
 				for (int i = 0; i < numIntentions; i ++){
 					String id = "0000".substring((""+i).length()) + i;
-					
-					
 					bw.write("{\"nodeActorID\":\"-\",\"nodeID\":\"" 
 							+ id + "\",\"nodeType\":\"basic.Goal\",\"nodeName\":\"Int" 
 							+ id + "\",\"dynamicFunction\":{\"intentionID\":\"" 
-							+ id + "\",\"stringDynVis\":\"" + func + "\",\"functionSegList\":["
-							+ funcSegList + "]}}");
+							+ id + "\",\"stringDynVis\":\"" + func[i] + "\",\"functionSegList\":["
+							+ funcSegList[i] + "]}}");
 					if(i < numIntentions-1)
 						bw.write(",");
 					bw.write("\n");
@@ -143,7 +158,7 @@ public class ScalabilityTestGenerator {
 				}		
 
 				//Finishing the File.
-				bw.write("],\"constraints\":[],\"maxAbsTime\":\"1000\"}}");
+				bw.write("],\"constraints\":[],\"maxAbsTime\":\"5000\"}}");
 				bw.close();
 			}
 		} catch (IOException e) {
