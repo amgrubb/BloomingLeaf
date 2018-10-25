@@ -32,6 +32,7 @@ import org.jacop.satwrapper.SatTranslation;
 import org.jacop.search.DepthFirstSearch;
 import org.jacop.search.IndomainSimpleRandom;
 import org.jacop.search.MostConstrainedDynamic;
+import org.jacop.search.PrintOutListener;
 import org.jacop.search.Search;
 import org.jacop.search.SelectChoicePoint;
 import org.jacop.search.SimpleSelect;
@@ -1901,7 +1902,9 @@ public class TroposCSPAlgorithm {
             	throw new RuntimeException("ERROR: Model not solvable because of conflicting constraints.\n Constraint: " + constraints.get(i).toString());
             }
         }
-        
+        if(DEBUG && store.consistency())
+        	System.out.println("Store is consistent.");
+        	
         // Create Var List
 		IntVar[] varList = this.createVarList();
 		
@@ -1916,7 +1919,7 @@ public class TroposCSPAlgorithm {
         // Return Solution
         if(!solutionFound){
         	if (DEBUG) System.out.println("Found Solution = False");
-        	throw new RuntimeException("There is no solution to this model. The solver may have reached a timeout.");
+        	throw new RuntimeException("There is no solution to this model."); // The solver may have reached a timeout.");
 		} else {
 	    	if (DEBUG) System.out.println("Found Solution = True");
 			if (this.searchAll)

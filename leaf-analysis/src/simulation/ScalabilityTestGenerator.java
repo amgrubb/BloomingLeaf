@@ -10,7 +10,7 @@ public class ScalabilityTestGenerator {
 	//Generates a tree structure, for the BloomingLeaf tool.
 	public static void main(String[] args) {
 		try {
-			int[] modelSize = new int[]{7,25,51,75,101,125,151,175,201};
+			int[] modelSize = new int[]{25,51,75,101,125,151,175,201};
 
 			for (int a = 0; a < modelSize.length; a++){
 				int numIntentions = modelSize[a];
@@ -19,7 +19,8 @@ public class ScalabilityTestGenerator {
 				String funcSegList[] = new String[numIntentions];
 				String initVal[] = new String[numIntentions];
 				for (int i = 0; i < numIntentions; i ++){
-					if (i%15==4){
+					//if (i%15==4){
+					if (i>numIntentions*2/3){
 						Random random = new Random();
 						int newRandom = random.nextInt(9);
 						switch (newRandom){ 
@@ -33,16 +34,16 @@ public class ScalabilityTestGenerator {
 							funcSegList[i] = "{\"funcType\":\"C\",\"funcX\":\"1100\",\"funcStart\":\"0\",\"funcStop\":\"Infinity\"}";		
 							initVal[i] = "1100";
 						break;
-						case 2: 
-							func[i] = "I";
-							funcSegList[i] = "{\"funcType\":\"I\",\"funcX\":\"0011\",\"funcStart\":\"0\",\"funcStop\":\"Infinity\"}";		
-							initVal[i] = "1100";
-						break;
-						case 3: 
-							func[i] = "D";
-							funcSegList[i] = "{\"funcType\":\"D\",\"funcX\":\"1100\",\"funcStart\":\"0\",\"funcStop\":\"Infinity\"}";		
-							initVal[i] = "0011";
-						break;
+//						case 2: 
+//							func[i] = "I";
+//							funcSegList[i] = "{\"funcType\":\"I\",\"funcX\":\"0011\",\"funcStart\":\"0\",\"funcStop\":\"Infinity\"}";		
+//							initVal[i] = "1100";
+//						break;
+//						case 3: 
+//							func[i] = "D";
+//							funcSegList[i] = "{\"funcType\":\"D\",\"funcX\":\"1100\",\"funcStart\":\"0\",\"funcStop\":\"Infinity\"}";		
+//							initVal[i] = "0011";
+//						break;
 						case 4: 
 							func[i] = "SD";
 							funcSegList[i] = "{\"funcType\":\"C\",\"funcX\":\"0011\",\"funcStart\":\"0\",\"funcStop\":\"A\"},{\"funcType\":\"C\",\"funcX\":\"1100\",\"funcStart\":\"A\",\"funcStop\":\"Infinity\"}";		
@@ -63,16 +64,16 @@ public class ScalabilityTestGenerator {
 							funcSegList[i] = "{\"funcType\":\"C\",\"funcX\":\"0011\",\"funcStart\":\"0\",\"funcStop\":\"A\"},{\"funcType\":\"R\",\"funcX\":\"0000\",\"funcStart\":\"A\",\"funcStop\":\"Infinity\"}";		
 							initVal[i] = "0011";
 						break;
-						case 8: 
-							func[i] = "MP";
-							funcSegList[i] = "{\"funcType\":\"I\",\"funcX\":\"0011\",\"funcStart\":\"0\",\"funcStop\":\"A\"},{\"funcType\":\"C\",\"funcX\":\"0011\",\"funcStart\":\"A\",\"funcStop\":\"Infinity\"}";		
-							initVal[i] = "1100";
-						break;
-						case 9: 
-							func[i] = "MN";
-							funcSegList[i] = "{\"funcType\":\"D\",\"funcX\":\"1100\",\"funcStart\":\"0\",\"funcStop\":\"A\"},{\"funcType\":\"C\",\"funcX\":\"1100\",\"funcStart\":\"A\",\"funcStop\":\"Infinity\"}";		
-							initVal[i] = "0011";
-						break;
+//						case 8: 
+//							func[i] = "MP";
+//							funcSegList[i] = "{\"funcType\":\"I\",\"funcX\":\"0011\",\"funcStart\":\"0\",\"funcStop\":\"A\"},{\"funcType\":\"C\",\"funcX\":\"0011\",\"funcStart\":\"A\",\"funcStop\":\"Infinity\"}";		
+//							initVal[i] = "1100";
+//						break;
+//						case 9: 
+//							func[i] = "MN";
+//							funcSegList[i] = "{\"funcType\":\"D\",\"funcX\":\"1100\",\"funcStart\":\"0\",\"funcStop\":\"A\"},{\"funcType\":\"C\",\"funcX\":\"1100\",\"funcStart\":\"A\",\"funcStop\":\"Infinity\"}";		
+//							initVal[i] = "0011";
+//						break;
 						default: 
 							func[i] = "R";
 							funcSegList[i] = "{\"funcType\":\"R\",\"funcX\":\"0000\",\"funcStart\":\"0\",\"funcStop\":\"Infinity\"}";		
