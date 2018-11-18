@@ -1,7 +1,7 @@
 /*
 This file contains all the jQuery functions that are associated with buttons and elements.
 It also contains the setup for Rappid elements.
- */
+*/
 
 /**
  * Switches to Analysis view iff there are no cycles and no syntax errors.
@@ -9,19 +9,27 @@ It also contains the setup for Rappid elements.
 $('#analysis-btn').on('click', function() {
     var jsLinks;
     var cycle;
-   	jsLinks = getLinks();
-   	cycle = cycleCheck(jsLinks, getElementList());
+    jsLinks = getLinks();
+    cycle = cycleCheck(jsLinks, getElementList());
 
-	syntaxCheck();
+    syntaxCheck();
     // If there are no cycles then switch view to Analysis
     if (!cycle) {
-		switchToAnalysisMode(); 
+        switchToAnalysisMode(); 
     }
 
     // If there are cycles, then display error message. Otherwise, remove any "red" elements.
     cycleCheckForLinks(cycle);
 });
 
+$('#load-sample').on('click', function() {
+
+    $.getJSON('http://www.cs.toronto.edu/~amgrubb/archive/REJ-Supplement/S1Frag.json', function(a){		
+        var response = JSON.stringify(a);
+        var blob = new Blob([response], {type : 'application/json'});
+        reader.readAsText(blob);  	
+    });
+});
 
 /**
  * Reassigned IDs if required.
