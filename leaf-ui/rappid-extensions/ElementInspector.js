@@ -275,7 +275,7 @@ var ElementInspector = Backbone.View.extend({
         var denied = '<option value=denied> Denied (⊥, F) </option>';
         var unknown = '<option value="(no value)"> (no value) </option>';
         satValueOptions.all = none + satisfied + partiallysatisfied + partiallydenied + denied + unknown;
-        satValueOptions.noRandom = satisfied + partiallysatisfied + partiallydenied + denied;
+        satValueOptions.noRandom = none + satisfied + partiallysatisfied + partiallydenied + denied;
 
         /**TODO
          * Returns
