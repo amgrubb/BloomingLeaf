@@ -275,7 +275,7 @@ var ElementInspector = Backbone.View.extend({
         var denied = '<option value=denied> Denied (⊥, F) </option>';
         var unknown = '<option value="(no value)"> (no value) </option>';
         satValueOptions.all = none + satisfied + partiallysatisfied + partiallydenied + denied + unknown;
-        satValueOptions.noRandom = none + satisfied + partiallysatisfied + partiallydenied + denied;
+        satValueOptions.noRandom = satisfied + partiallysatisfied + partiallydenied + denied;
 
         /**TODO
          * Returns
@@ -430,7 +430,7 @@ var ElementInspector = Backbone.View.extend({
 
         var functionType = this.intention.dynamicFunction.stringDynVis;
 
-        // All functions that have satisfaction valuen associated with it
+        // All functions that have satisfaction value associated with it
         var funcWithSatValue = ["I", "D", "RC", "MP", "MN", "UD"];
 
         
