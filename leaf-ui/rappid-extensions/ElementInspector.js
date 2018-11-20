@@ -99,10 +99,12 @@ var ElementInspector = Backbone.View.extend({
                     '<option value=UD> User Defined </option>',
                 '</select>',
                 '<select id="markedValue" class="function-sat-value">',
-                    '<option value=satisfied> Satisfied </option>',
-                    '<option value=partiallysatisfied> Partially Satisfied </option>',
-                    '<option value=partiallydenied> Partially Denied </option>',
-                    '<option value=denied> Denied </option>',
+                    '<option value="(no value)"> (no value) </option>',
+                    '<option value=none> None (⊥, ⊥)</option>',
+                    '<option value=satisfied> Satisfied (F, ⊥)</option>',
+                    '<option value=partiallysatisfied> Partially Satisfied (P, ⊥) </option>',
+                    '<option value=partiallydenied> Partially Denied (⊥, P)</option>',
+                    '<option value=denied> Denied (⊥, F)</option>',
                 '</select>',
                 '<div id="user-constraints">',
                     '<div id="all-user-constraints">',
@@ -288,7 +290,7 @@ var ElementInspector = Backbone.View.extend({
                 var text = satvalues[i];
                 result += eval(text);
             }
-            return none;
+            return result;
         };
 
         /**TODO
