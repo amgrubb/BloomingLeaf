@@ -288,7 +288,7 @@ var ElementInspector = Backbone.View.extend({
                 var text = satvalues[i];
                 result += eval(text);
             }
-            return result;
+            return none;
         };
 
         /**TODO
