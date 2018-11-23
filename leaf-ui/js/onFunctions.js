@@ -48,10 +48,11 @@ function reassignIntentionIDs() {
 			// Find the intention's cell
 			var cell;
 			for (var j = 0; j < elements.length; j++) {
-				if (elements[i].attributes.nodeID === intention.nodeID) {
-					cell = elements[i];
+				if (elements[j].attributes.nodeID === intention.nodeID) {
+					cell = elements[j];
 				}
-			}
+            }
+
  			currIDStr = currID.toString();
  			while (currIDStr.length < 4){
 	                currIDStr = '0' + currIDStr;
