@@ -24,10 +24,10 @@ $('#analysis-btn').on('click', function() {
 
 $('#load-sample').on('click', function() {
 
-    $.getJSON('http://www.cs.toronto.edu/~amgrubb/archive/REJ-Supplement/S1Frag.json', function(a){		
-        var response = JSON.stringify(a);
-        var blob = new Blob([response], {type : 'application/json'});
-        reader.readAsText(blob);  	
+    $.getJSON('http://www.cs.toronto.edu/~amgrubb/archive/REJ-Supplement/S1Frag.json', function(myData){		
+        var response = JSON.stringify(myData);
+        var newModel = new Blob([response], {type : 'application/json'});
+        reader.readAsText(newModel);  	
     });
 });
 
