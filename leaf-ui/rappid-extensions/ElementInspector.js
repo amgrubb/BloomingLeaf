@@ -212,6 +212,10 @@ var ElementInspector = Backbone.View.extend({
         } else {
             this.updateHTML(null);
         }
+        
+        if(functionType == 'I' || functionType == 'D' || functionType == 'MN' || functionType == 'MP'){
+            this.displayFunctionSatValue(null);
+        }
 
         this.updateCell();
 
