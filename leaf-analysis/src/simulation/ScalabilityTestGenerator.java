@@ -101,7 +101,7 @@ public class ScalabilityTestGenerator {
 				//Add analysisRequest
 				bw.write("{\"analysisRequest\":{\"action\":\"singlePath\",\"conflictLevel\":\"N\",");
 				bw.write("\"numRelTime\":\"" + 1 + "\",");	//Number relative time points.
-				bw.write("\"absTimePts\":\"\",\"absTimePtsArr\":[],\"currentState\":\"0|0\",\"userAssignmentsList\":[");
+				bw.write("\"absTimePts\":\"\",\"absTimePtsArr\":[],\"currentState\":\"0|0\",\"userAssignmentsList\":[\n");
 				for (int i = 0; i < numIntentions; i ++){
 					String id = "0000".substring((""+i).length()) + i;
 					bw.write("{\"intentionID\":\"" + id + "\",\"absTime\":\"0\",\"evaluationValue\":\"" + initVal[i] + "\"}");

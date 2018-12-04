@@ -1,4 +1,5 @@
-{"analysisRequest":{"action":"singlePath","conflictLevel":"N","numRelTime":"1","absTimePts":"","absTimePtsArr":[],"currentState":"0|0","userAssignmentsList":[{"intentionID":"0000","absTime":"0","evaluationValue":"(no value)"},
+{"analysisRequest":{"action":"singlePath","conflictLevel":"N","numRelTime":"1","absTimePts":"","absTimePtsArr":[],"currentState":"0|0","userAssignmentsList":[
+{"intentionID":"0000","absTime":"0","evaluationValue":"(no value)"},
 {"intentionID":"0001","absTime":"0","evaluationValue":"(no value)"},
 {"intentionID":"0002","absTime":"0","evaluationValue":"(no value)"},
 {"intentionID":"0003","absTime":"0","evaluationValue":"(no value)"},
