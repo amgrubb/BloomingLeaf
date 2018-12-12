@@ -184,18 +184,18 @@ reader.onload = function() {
 				} else {
 					var linkType = type.trim();
 					var postType = null;
-					var absolute = cells[i].attrs[".assigned_time"];
-					if (!absolute) {
-						absoluteValue = -1;
-					} else {
-						absoluteValue = absolute["0"];
-                        if (!absoluteValue) {
-                            absoluteValue = -1;
-                        }
-					}
-
-
-				}
+                }
+                var absolute = cells[i].attrs[".assigned_time"];
+                if (!absolute) {
+                    absoluteValue = -1;
+                } else {
+                    absoluteValue = absolute["0"];
+                    if (!absoluteValue) {
+                        absoluteValue = -1;
+                    } else {
+                        absoluteValue = parseInt(absoluteValue);
+                    }
+                }
 
 				var sourceID = cells[i].source.id;
 				var targetID = cells[i].target.id;
