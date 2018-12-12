@@ -186,9 +186,12 @@ reader.onload = function() {
 					var postType = null;
 					var absolute = cells[i].attrs[".assigned_time"];
 					if (!absolute) {
-						absoluteValue = 0;
+						absoluteValue = -1;
 					} else {
 						absoluteValue = absolute["0"];
+                        if (!absoluteValue) {
+                            absoluteValue = -1;
+                        }
 					}
 
 
