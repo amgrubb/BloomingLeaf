@@ -8,6 +8,8 @@ var develop = false;
 var session_id = Date.now();
 var Tracking = true;
 
+
+
 function guid() {
     // local function to create alphanumeric strings
     function s4() {
@@ -236,7 +238,15 @@ var oldSatValToBinary = {
     '(FS, T)': '0011',
     '(PS, T)': '0010',
     '(T, FD)': '1100',
-    '(T, PD)': '0100'
+    '(T, PD)': '0100',
+    'FD': '1100',
+    'FS': '0011',
+    '(P,F)': '1110',
+    '(F,P)': '0111',
+    '(F,F)': '1111',
+    '(P,P)': '0110',
+    'PS': '0010',
+    'PD': '0100'
 }
 
 // Mode is used specify layout
