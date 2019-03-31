@@ -198,5 +198,8 @@ joint.shapes.basic.Actor = joint.shapes.basic.Generic.extend({
             ".line": {
             }
         }
-    }, joint.dia.Element.prototype.defaults)
+    }, joint.dia.Element.prototype.defaults),
+    changeToOriginalColour: function() {
+        this.attr({'.outer': {'fill': '#EBFFEA'}});
+    }
 });
