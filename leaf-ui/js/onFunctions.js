@@ -341,10 +341,10 @@ function createLink(cell) {
 
     // when the link is removed, remove the link from the global model
     // variable as well
-    cell.on("remove", function () {
-    	clearInspector();
-		model.removeLink(link.linkID);
-    });
+  //   cell.on("remove", function () {
+  //   	clearInspector();
+		// model.removeLink(link.linkID);
+  //   });
     model.links.push(link);
 }
 
@@ -372,27 +372,27 @@ function createIntention(cell) {
 
     // when the intention is removed, remove the intention from the global
     // model variable as well
-    cell.on("remove", function () {
+    // cell.on("remove", function () {
 
-    	clearInspector();
+    // 	clearInspector();
 
-    	var userIntention = model.getIntentionByID(cell.attributes.nodeID);
+    // 	var userIntention = model.getIntentionByID(cell.attributes.nodeID);
 
-    	// remove this intention from the model
-        model.removeIntention(userIntention.nodeID);
+    // 	// remove this intention from the model
+    //     model.removeIntention(userIntention.nodeID);
 
-        // remove all intention evaluations associated with this intention
-        analysisRequest.removeIntention(userIntention.nodeID);
+    //     // remove all intention evaluations associated with this intention
+    //     analysisRequest.removeIntention(userIntention.nodeID);
 
 
-        // if this intention has an actor, remove this intention's ID
-        // from the actor
-        if (userIntention.nodeActorID !== '-') {
-        	var actor = model.getActorByID(userIntention.nodeActorID);
-        	actor.removeIntentionID(userIntention.nodeID);
-        }
+    //     // if this intention has an actor, remove this intention's ID
+    //     // from the actor
+    //     if (userIntention.nodeActorID !== '-') {
+    //     	var actor = model.getActorByID(userIntention.nodeActorID);
+    //     	actor.removeIntentionID(userIntention.nodeID);
+    //     }
 
-    });
+    // });
 
 }
 
@@ -411,9 +411,9 @@ function createActor(cell) {
 
 	// when the actor is removed, remove the actor from the
 	// global modekl variable as well
-	cell.on('remove', function() {
-		model.removeActor(actor.nodeID);
-	});
+	// cell.on('remove', function() {
+	// 	model.removeActor(actor.nodeID);
+	// });
 }
 
 /**
@@ -925,7 +925,35 @@ graph.on('change:size', function(cell, size) {
 
 
 graph.on('remove', function(cell) {
-	if (cell.isLink() && (cell.prop("link-type") == 'NBT' || cell.prop("link-type") == 'NBD')) {
+	if(cell.isLink() && !(cell.prop("link-type") == 'NBT' || cell.prop("link-type") == 'NBD')){
+        //To remove link
+        var link = cell;
+        clearInspector();
+        model.removeLink(link.linkID);
+    }
+
+    else if((!cell.isLink()) && (!(cell["attributes"]["type"]=="basic.Actor"))){
+        //To remove intentions
+        clearInspector();
+        var userIntention = model.getIntentionByID(cell.attributes.nodeID);
+        // remove this intention from the model
+        model.removeIntention(userIntention.nodeID);
+        // remove all intention evaluations associated with this intention
+        analysisRequest.removeIntention(userIntention.nodeID);
+        // if this intention has an actor, remove this intention's ID
+        // from the actor
+        if (userIntention.nodeActorID !== '-') {
+            var actor = model.getActorByID(userIntention.nodeActorID);
+            actor.removeIntentionID(userIntention.nodeID);
+        }
+    }
+    else if((!cell.isLink()) && (cell["attributes"]["type"]=="basic.Actor")){
+        //To remove actor
+        model.removeActor(cell['attributes']['nodeID']);
+
+    }
+
+	else if (cell.isLink() && (cell.prop("link-type") == 'NBT' || cell.prop("link-type") == 'NBD')) {
 
 		// Verify if is a Not both type. If it is remove labels from source and target node
 		var link = cell;
