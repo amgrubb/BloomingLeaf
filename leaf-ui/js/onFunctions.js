@@ -373,12 +373,17 @@ function createIntention(cell) {
     // when the intention is removed, remove the intention from the global
     // model variable as well
     cell.on("remove", function () {
+
     	clearInspector();
+
     	var userIntention = model.getIntentionByID(cell.attributes.nodeID);
+
     	// remove this intention from the model
         model.removeIntention(userIntention.nodeID);
+
         // remove all intention evaluations associated with this intention
         analysisRequest.removeIntention(userIntention.nodeID);
+
 
         // if this intention has an actor, remove this intention's ID
         // from the actor
@@ -700,7 +705,7 @@ graph.on("change", function(){
 	var graphtext = JSON.stringify(graph.toJSON());
 	document.cookie = "graph=" + graphtext;
     if (Tracking){
-    	console.log("User Tracking - Recorded");
+    	console.log("tracking");
         var timestamp = new Date().toUTCString();
         updateDataBase(graph, timestamp);
         accessDatabase("insert ignore into graphs(session_id,content,timestamp) values " +
@@ -920,61 +925,28 @@ graph.on('change:size', function(cell, size) {
 
 
 graph.on('remove', function(cell) {
-    //TODO: What I have changed
-    if(cell.isLink() && !(cell.prop("link-type") == 'NBT' || cell.prop("link-type") == 'NBD')){
-        //To remove link
-        var link = cell;
-        clearInspector();
-        model.removeLink(link.linkID);
-    }
+	if (cell.isLink() && (cell.prop("link-type") == 'NBT' || cell.prop("link-type") == 'NBD')) {
 
-    else if((!cell.isLink()) && (!(cell["attributes"]["type"]=="basic.Actor"))){
-        //To remove intentions
-        clearInspector();
-        var userIntention = model.getIntentionByID(cell.attributes.nodeID);
-        // remove this intention from the model
-        //model.removeIntention(userIntention.nodeID);
-        model.removedynamicFunction(userIntention.nodeID);
-        model.removeIntentionLinks(userIntention.nodeID);
-        // remove all intention evaluations associated with this intention
-        analysisRequest.removeIntention(userIntention.nodeID);
-        // if this intention has an actor, remove this intention's ID
-        // from the actor
-        if (userIntention.nodeActorID !== '-') {
-            var actor = model.getActorByID(userIntention.nodeActorID);
-            actor.removeIntentionID(userIntention.nodeID);
-        }
-    }
-    else if((!cell.isLink()) && (cell["attributes"]["type"]=="basic.Actor")){
-        //To remove actor
-        model.removeActor(cell['attributes']['nodeID']);
-
-    }
-
-    //TODO: What I have changed finished
-	else if (cell.isLink() && (cell.prop("link-type") == 'NBT' || cell.prop("link-type") == 'NBD')) {
 		// Verify if is a Not both type. If it is remove labels from source and target node
 		var link = cell;
 		var source = link.prop("source");
 		var target = link.prop("target");
-		var sourceId;
-		var targetId;
 
 	    for (var i = 0; i < graph.getElements().length; i++ ) {
 			if (graph.getElements()[i].prop("id") == source["id"]) {
-				 source = graph.getElements()[i];
+				source = graph.getElements()[i];
 		   	}
 		  	if (graph.getElements()[i].prop("id") == target["id"]) {
 			   target = graph.getElements()[i];
 		   	}
 	   	}
 
-		//Verify if it is possible to remove the NB tag from source and target
+		// Verify if it is possible to remove the NB tag from source and target
 		if (source !== null && !checkForMultipleNB(source)) {
-			source.attrs(".funcvalue/text", "");
+			source.attr(".funcvalue/text", "");
 		}
 		if (target !== null && !checkForMultipleNB(target)) {
-			target.attrs(".funcvalue/text", "");
+			target.attr(".funcvalue/text", "");
 		}
 	}
 });
@@ -1002,7 +974,7 @@ function checkForMultipleNB(node) {
 	var localLinks = graph.getLinks();
 
 	for (var i = 0; i < localLinks.length; i++){
-        if (localLinks[i].prop("link-type")   == 'NBT' || localLinks[i].prop("link-type") == 'NBD'){
+        if (localLinks[i].prop("link-type") == 'NBT' || localLinks[i].prop("link-type") == 'NBD'){
             if (localLinks[i].getSourceElement().prop("id") == node["id"] || localLinks[i].getTargetElement().prop("id") == node["id"]){
                 num += 1;            
             }

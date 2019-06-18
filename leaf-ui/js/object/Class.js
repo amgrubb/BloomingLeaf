@@ -24,11 +24,11 @@ class Model {
      * @returns {Intention}
      */
     getIntentionByID(nodeID) {
-        for (var i = 0; i < this.intentions.length; i++) {
-            if (this.intentions[i].nodeID == nodeID) {
-                return this.intentions[i];
-            }
-        }
+    	for (var i = 0; i < this.intentions.length; i++) {
+    		if (this.intentions[i].nodeID == nodeID) {
+    			return this.intentions[i];
+    		}
+    	}
     }
 
     /**
@@ -38,11 +38,11 @@ class Model {
      * @returns {Actor}
      */
     getActorByID(nodeID) {
-        for (var i = 0; i < this.actors.length; i++) {
-            if (this.actors[i].nodeID == nodeID) {
-                return this.actors[i];
-            }
-        }
+    	for (var i = 0; i < this.actors.length; i++) {
+    		if (this.actors[i].nodeID == nodeID) {
+    			return this.actors[i];
+    		}
+    	}
     }
 
     /**
@@ -143,12 +143,12 @@ class Model {
     removeIntention(nodeID) {
 
         // remove the intention from the intentions array
-        for (var i = 0; i < this.intentions.length; i++) {
-            if (this.intentions[i].nodeID == nodeID) {
-                this.intentions.splice(i, 1);
-                break;
-            }
-        }
+    	for (var i = 0; i < this.intentions.length; i++) {
+    		if (this.intentions[i].nodeID == nodeID) {
+    			this.intentions.splice(i, 1);
+    			break;
+    		}
+    	}
 
         // remove all constraints associated with the intention
         var i = 0;
@@ -159,36 +159,11 @@ class Model {
             } else {
                 i++;
             }
-
         }
 
 
 
-
     }
-
-    removedynamicFunction(nodeID){
-       for (var i = 0; i < this.intentions.length; i++) {
-           if (this.intentions[i].nodeID == nodeID) {
-               //if (this.intentions[i].dynamicFunction.stringDynVis !== "NT"){
-                   this.intentions[i].dynamicFunction.stringDynVis = "DT";
-                   this.intentions[i].dynamicFunction.functionSegList = [];
-               //}
-           }
-       }
-   }
-
-   removeIntentionLinks(nodeID){
-       for (var i = 0; i < this.links.length; i++) {
-           if (this.links[i].linkSrcID == nodeID || this.links[i].linkDestID == nodeID) {
-               this.links.splice(i, 1);
-
-               return;
-
-           }
-
-       }
-   }
 
     /**
      * Remove the intention with link ID linkID
@@ -198,8 +173,6 @@ class Model {
      */
     removeLink(linkID) {
         for (var i = 0; i < this.links.length; i++) {
-        }
-        for (var i = 0; i < this.links.length; i++) {
             if (this.links[i].linkID == linkID) {
                 this.links.splice(i, 1);
                 return;
@@ -207,7 +180,7 @@ class Model {
         }
     }
 
-    /**
+	/**
      * Remove the Actor with node ID nodeID
      * from the actors array and update all intentions
      * that was embedded within the embedded actor
@@ -215,10 +188,11 @@ class Model {
      * @param {String} nodeID
      */
     removeActor(nodeID) {
-        for (var i = 0; i < this.actors.length; i++) {
+
+    	for (var i = 0; i < this.actors.length; i++) {
             if (this.actors[i].nodeID == nodeID) {
                 this.actors.splice(i, 1);
-                break;
+      			break;
             }
         }
     }
@@ -246,22 +220,22 @@ class Model {
 
 class Actor {
 
-    /**
-     * @param {String} nodeID
-     *   ID of this node. ex: ('a000')
-     * @param {String} nodeName
-     *   Name of this node. ex: ('Actor_0')
-     * @param {Array.<String>} intentionsIDs
-     *   Array of intention IDs, for the intentions
-     *   embedded inside this actor
-     */
-    constructor(nodeName) {
-        this.nodeID = this.createID();
-        this.nodeName = nodeName;
-        this.intentionIDs = [];
-    }
+	/**
+	 * @param {String} nodeID
+	 *   ID of this node. ex: ('a000')
+	 * @param {String} nodeName
+	 *   Name of this node. ex: ('Actor_0')
+	 * @param {Array.<String>} intentionsIDs
+	 *   Array of intention IDs, for the intentions
+	 *   embedded inside this actor
+	 */
+	constructor(nodeName) {
+		this.nodeID = this.createID();
+		this.nodeName = nodeName;
+		this.intentionIDs = [];
+	}
 
-    /**
+	/**
      * Creates and returns a 4 digit ID for this Actor
      *
      * @returns {String}
@@ -282,20 +256,12 @@ class Actor {
      * @param{String} nodeID
      */
     removeIntentionID(nodeID) {
-        for (var i = 0; i < this.intentionIDs.length; i++) {
-            if (this.intentionIDs[i] == nodeID) {
-                this.intentionIDs.splice(i, 1);
-                return ;
-            }
-        }
-        while (i < this.userAssignmentsList.length) {
-            if (this.userAssignmentsList[i].intentionID == nodeID) {
-                this.userAssignmentsList.splice(i, 1);
-            } else {
-                i++;
-            }
-        }
-
+    	for (var i = 0; i < this.intentionIDs.length; i++) {
+    		if (this.intentionIDs[i] == nodeID) {
+    			this.intentionIDs.splice(i, 1);
+    			return ;
+    		}
+    	}
     }
 }
 Actor.numOfCreatedInstances = 0;
@@ -304,47 +270,47 @@ Actor.numOfCreatedInstances = 0;
 class AnalysisResult {
 
 
-    /**
-     * @param {Array.<String>} assignedEpoch
-     * @param {Array.<String>} timePointPath
+	/**
+	 * @param {Array.<String>} assignedEpoch
+	 * @param {Array.<String>} timePointPath
      *   Each element represents a time point in the analysis
      *   ex: ['0', '7']
-     * @param {Number} timePointPathSize
+	 * @param {Number} timePointPathSize
      *   Size of the time point path. ex: 2
-     * @param {Object} values
+	 * @param {Object} values
      *   Maps an intention ID and time point to a string which
      *   represents the evaluation for that intention
      *   ex: {'0000': {'0': '0000', '7': 'DNE'}}
      *   (for nodeID 0000, time point 0, its satisfaction value is none)
-     */
-    constructor() {
+	 */
+	constructor() {
         this.assignedEpoch;
         this.timePointPath ;
         this.timePointPathSize;
         this.elementList;
         this.allSolution;
-    }
+	}
 }
 
 class Link {
 
-    /**
-     * @param {String} linkType
-     *   Type of the link. ex: 'AND', 'OR', 'NO', etc.
-     * @param {String} linkSrcID
-     *   ID for the source of the link. ex: '0000'
-     * @param {String} linkDestID
-     *   ID for the destination of the link. ex: '0001'
-     * @param {Number} absoluteValue
-     *   TODO ex. -1, 0,...,n
-     */
+	/**
+	 * @param {String} linkType
+	 *   Type of the link. ex: 'AND', 'OR', 'NO', etc.
+	 * @param {String} linkSrcID
+	 *   ID for the source of the link. ex: '0000'
+	 * @param {String} linkDestID
+	 *   ID for the destination of the link. ex: '0001'
+	 * @param {Number} absoluteValue
+	 *   TODO ex. -1, 0,...,n
+	 */
     constructor(linkType, linkSrcID, absoluteValue) {
-        this.linkID = this.createID();
-        this.linkType = linkType;
+    	this.linkID = this.createID();
+    	this.linkType = linkType;
         this.postType = null;
-        this.linkSrcID = linkSrcID;
-        this.linkDestID = null;
-        this.absoluteValue = absoluteValue;
+    	this.linkSrcID = linkSrcID;
+    	this.linkDestID = null;
+    	this.absoluteValue = absoluteValue;
     }
 
     /**
@@ -379,11 +345,11 @@ class EvolvingFunction {
      * @param {String} stringDynVis
      * @param {Array.<FuncSegment|RepFuncSegment>} functionSegList
      */
-    constructor(intentionID) {
-        this.intentionID = intentionID;
-        this.stringDynVis = 'NT';
-        this.functionSegList = [];
-    }
+	constructor(intentionID) {
+		this.intentionID = intentionID;
+		this.stringDynVis = 'NT';
+		this.functionSegList = [];
+	}
 
     /**
      * Returns the 4 digit representation for this
@@ -708,39 +674,39 @@ class EvolvingFunction {
 class FuncSegment {
 
     /**
-     *
+	 *
      * @param {String} funcType
      * @param {String} funcX
      * @param {String} funcStart
      * @param {String} funcStop
      */
-    constructor(funcType, funcX, funcStart, funcStop) {
-        this.funcType = funcType;
-        this.funcX = funcX;
+	constructor(funcType, funcX, funcStart, funcStop) {
+		this.funcType = funcType;
+		this.funcX = funcX;
         this.funcStart = funcStart;
         this.funcStop = funcStop;
-    }
+	}
 }
 
 class RepFuncSegment {
 
     /**
-     *
+	 *
      * @param {Array.<FuncSegment>} functionSegList
      * @param {Number} repNum
      * @param {Number} absTime
      */
-    constructor(functionSegList) {
-        this.functionSegList = functionSegList;
-        this.repNum = $("#repeat-end2").val();
-        this.absTime = $("#repeat-end3").val();
-    }
+	constructor(functionSegList) {
+		this.functionSegList = functionSegList;
+		this.repNum = $("#repeat-end2").val();
+		this.absTime = $("#repeat-end3").val();
+	}
 }
 
 class Constraint {
 
     /**
-     *
+	 *
      * @param {String} constraintType
      * @param {String} constraintSrcID
      * @param {String} constraintSrcEB
@@ -748,29 +714,29 @@ class Constraint {
      * @param {String} constraintDestEB
      * @param {Number} absoluteValue
      */
-    constructor(constraintType, constraintSrcID, constraintSrcEB, constraintDestID, constraintDestEB) {
-        this.constraintType = constraintType;
+	constructor(constraintType, constraintSrcID, constraintSrcEB, constraintDestID, constraintDestEB) {
+		this.constraintType = constraintType;
         this.constraintSrcID = constraintSrcID;
         this.constraintSrcEB = constraintSrcEB;
         this.constraintDestID = constraintDestID;
         this.constraintDestEB = constraintDestEB;
         this.absoluteValue = -1;
-    }
+	}
 }
 
 class UserEvaluation {
 
     /**
-     *
+	 *
      * @param {String} intentionID
      * @param {String} absTime
      * @param {String} evaluationValue
      */
-    constructor(intentionID, absTime, evaluationValue) {
-        this.intentionID = intentionID;
-        this.absTime = absTime;
-        this.evaluationValue = evaluationValue;
-    }
+	constructor(intentionID, absTime, evaluationValue) {
+		this.intentionID = intentionID;
+		this.absTime = absTime;
+		this.evaluationValue = evaluationValue;
+	}
 }
 
 class Intention {
@@ -1099,7 +1065,7 @@ Intention.numOfCreatedInstances = 0; // static variable to keep track of number 
 class AnalysisRequest {
 
     /**
-     *
+	 *
      * @param {String} action
      * @param {String} conflictLevel
      * @param {String} numRelTime
@@ -1108,15 +1074,15 @@ class AnalysisRequest {
      * @param {Array.<UserEvaluation>} userAssignmentsList
      * @param {AnalysisResult} previousAnalysis
      */
-    constructor() {
-        this.action = null;
-        this.conflictLevel = "S";
-        this.numRelTime = "1";
-        this.absTimePts = "";
-        this.absTimePtsArr = [];
-        this.currentState = "0";
-        this.userAssignmentsList = [];
-        this.previousAnalysis = null;
+	constructor() {
+		this.action = null;
+		this.conflictLevel = "S";
+		this.numRelTime = "1";
+		this.absTimePts = "";
+		this.absTimePtsArr = [];
+		this.currentState = "0";
+		this.userAssignmentsList = [];
+		this.previousAnalysis = null;
     }
 
     /**
@@ -1141,38 +1107,38 @@ class AnalysisRequest {
     }
 
 
-    /**
+	/**
      * Deletes all the absTimePts that are not in the intersection
      * of the old and new absTimePits in this.userAssignmentsList
      */
-    changeTimePoints(newTimePts){
+	changeTimePoints(newTimePts){
         console.log("changeTimePoints in analysisRequest");
         console.log(newTimePts);
-         var intersection = this.absTimePtsArr.filter(x => newTimePts.includes(x));
-         if (intersection.length == 0){
-             this.clearUserEvaluations();
-             this.absTimePtsArr = newTimePts;
-             return
-         }
-         var i = 0;
-         console.log(this.userAssignmentsList);
-         while (i < this.userAssignmentsList.length){
-             if (!intersection.includes(this.userAssignmentsList[i].absTime) && this.userAssignmentsList[i].absTime != 0){
-                 this.userAssignmentsList.splice(i, 1);
-             }
-             else{
-                 i++;
-             }
-         }
+		 var intersection = this.absTimePtsArr.filter(x => newTimePts.includes(x));
+		 if (intersection.length == 0){
+			 this.clearUserEvaluations();
+			 this.absTimePtsArr = newTimePts;
+			 return
+		 }
+		 var i = 0;
+		 console.log(this.userAssignmentsList);
+		 while (i < this.userAssignmentsList.length){
+			 if (!intersection.includes(this.userAssignmentsList[i].absTime) && this.userAssignmentsList[i].absTime != 0){
+				 this.userAssignmentsList.splice(i, 1);
+			 }
+			 else{
+				 i++;
+			 }
+		 }
 
         console.log(this.userAssignmentsList);
 
-         this.absTimePtsArr = newTimePts;
+		 this.absTimePtsArr = newTimePts;
 
-         console.log(newTimePts);
+		 console.log(newTimePts);
 
 
-    }
+	}
 
     /**
      * Deletes all UserEvaluations in this.userAssignmentsList
@@ -1189,27 +1155,22 @@ class AnalysisRequest {
         }
     }
 
-    /**
-     * Removes all UserEvaluation objects in
-     * userAssignmentsList, with an intentionID equal to
-     * nodeID
-     *
-     * @param {String}
-     */
+	/**
+	 * Removes all UserEvaluation objects in
+	 * userAssignmentsList, with an intentionID equal to
+	 * nodeID
+	 *
+	 * @param {String}
+	 */
+	removeIntention(nodeID) {
+		var i = 0;
 
-
-    removeIntention(nodeID) {
-        var i = 0;
-
-        while (i < this.userAssignmentsList.length) {
-            if (this.userAssignmentsList[i].intentionID == nodeID) {
-                this.userAssignmentsList.splice(i, 1);
-            } else {
-                i++;
-            }
-        }
-    }
-
-
-
+		while (i < this.userAssignmentsList.length) {
+			if (this.userAssignmentsList[i].intentionID == nodeID) {
+				this.userAssignmentsList.splice(i, 1);
+			} else {
+				i++;
+			}
+		}
+	}
 }
