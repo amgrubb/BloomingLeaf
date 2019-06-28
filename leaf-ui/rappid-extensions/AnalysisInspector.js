@@ -146,7 +146,7 @@ var AnalysisInspector = Backbone.View.extend({
 		this.$el.html(_.template(this.template)());
 		$('head').append('<script src="./js/analysis.js"></script>');
 
-		// set default values for max abs time, conflict level, 
+		// set default values for max abs time, conflict level,
 		// relative time points and abs time points
 		$('#max-abs-time').val(model.maxAbsTime);
 		$('#conflict-level').val(analysisRequest.conflictLevel);
@@ -206,6 +206,10 @@ var AnalysisInspector = Backbone.View.extend({
         analysisRequest.previousAnalysis.assignedEpoch = previousTP;
         analysisRequest.previousAnalysis.timePointPath = analysisRequest.previousAnalysis.timePointPath.slice(0, currentState+1);
 
+
+
+
+
         console.log(analysisRequest);
 
 		//Prepare and send data to backend
@@ -229,7 +233,8 @@ var AnalysisInspector = Backbone.View.extend({
 		jsObject.model = model;
 		console.log(jsObject);
 		//Send data to backend
-		backendComm(jsObject);
+		var isNodeServer = true;
+		backendComm(isNodeServer,jsObject);;
 	},
 
 	/**
@@ -349,6 +354,7 @@ var AnalysisInspector = Backbone.View.extend({
             var intention = model.intentions[i];
             var funcType = intention.dynamicFunction.stringDynVis;
             var intentionName = intention.nodeName;
+            //console.log(intentionName);
 
             // nameIdMapper[name] = intention.nodeID;
             if (funcType == 'RC' || funcType == 'CR' || funcType == 'MP' ||
@@ -380,6 +386,7 @@ var AnalysisInspector = Backbone.View.extend({
             }
         }
 
+        //loadIntermediateValues();
     },
 
     /**
@@ -408,6 +415,8 @@ var AnalysisInspector = Backbone.View.extend({
         return absTimeValues
     },
 
+
+
     /**
      * Displays the Intermediate Values modal for the user
      *
@@ -422,68 +431,228 @@ var AnalysisInspector = Backbone.View.extend({
         intermTDialog.style.display = "block";
 
         var absTimeValues = analysisRequest.absTimePtsArr;
+        var constraints = model.constraints
+     	var TimeList = new Array();
+     	TimeList.push(0);
+     	for (var i = 0; i<constraints.length; i++ ){
+     		TimeList.push(constraints[i]);
+     	}
+     	console.log(TimeList);
+     	var defined = true;
+     	for (var i = 0; i<TimeList.length; i++ ){
+     		if (TimeList[i] === -1){
+     			defined = false;
+     		}
+     	}
 
-        for (var i = 0; i < absTimeValues.length; i++) {
-            $('#header-row').append('<th>Absolute</th>');
-            $('#intentionRows').append('<th>' + absTimeValues[i] + '</th>');
+        if (TimeList.length === 2 ){
+
+        	for ( var i = 0; i < constraints.length; i ++){
+        		var aTime = constraints[i].absoluteValue
+        		aTime = aTime.toString()
+        		if (!absTimeValues.includes(aTime) && aTime !== "-1"){
+        			absTimeValues.push(aTime);
+        		}
+
+        	}
         }
+        absTimeValues.sort()
+        console.log(absTimeValues)
 
-        var options = `<option value="empty"> </option>
-						<option value="(no value)">(no value)</option>
-						<option value="0000">None (⊥, ⊥) </option>
-						<option value="0011">Satisfied (F, ⊥) </option>
-						<option value="0010">Partially Satisfied (P, ⊥) </option>
-						<option value="1100">Denied (⊥, F) </option>
-						<option value="0100">Partially Denied (⊥, P)</option>`;
 
-        for (var i = 0; i < model.intentions.length; i++) {
-            var intention = model.intentions[i];
-            var initValue = intention.getInitialSatValue(); // ex, '0000'
 
-            // If user put no absolute time points
-            if ($.isEmptyObject(absTimeValues)) {
-                $('#interm-list').append('<tr><td>' + intention.nodeName + '</td><td>' + satisfactionValuesDict[initValue].satValue + '</td></tr>');
-            } else {
 
-                // TODO, display previously saved options
-                var row = $('<tr></tr>');
-                row.addClass('intention-row');
-                var name = $('<td></td>');
-                var sat = $('<td></td>');
+        if (constraints.length > 0 && constraints[0].absoluteValue !== -1 ){
 
-                name.text(intention.nodeName);
-                sat.text('Denied');
-                row.append(name);
-                row.append(satisfactionValuesDict[initValue].satValue);
 
-                // var appendList = '<tr class="intention-row"><td>' + name + '</td><td>'+satisfactionValuesDict[initValue].satValue+'</td>';
+        	for (var i = 0; i < absTimeValues.length; i++) {
+            	$('#header-row').append('<th>Absolute</th>');
+            	$('#intentionRows').append('<th>' + absTimeValues[i] + '</th>');
+        	}
 
-                for (j = 0; j < absTimeValues.length; j++) {
+        	var options = `<option value="empty"> </option>
+							<option value="(no value)">(no value)</option>
+							<option value="0000">None (⊥, ⊥) </option>
+							<option value="0011">Satisfied (F, ⊥) </option>
+							<option value="0010">Partially Satisfied (P, ⊥) </option>
+							<option value="1100">Denied (⊥, F) </option>
+							<option value="0100">Partially Denied (⊥, P)</option>`;
 
-                    // Add select tags for each absolute time point
-                    var selectTd = $('<td></td>');
-                    var selectElement = $('<select></select>');
-                    selectElement.attr('nodeID', intention.nodeID);
-                    selectElement.attr('absTime', absTimeValues[j]);
-                    selectElement.append(options);
+        	for (var i = 0; i < model.intentions.length; i++) {
+            	var intention = model.intentions[i];
+            	var initValue = intention.getInitialSatValue(); // ex, '0000'
 
-                    var intEval = analysisRequest.getUserEvaluationByID(intention.nodeID, absTimeValues[j]);
+            	// If user put no absolute time points
+            	/*if ($.isEmptyObject(absTimeValues)) {
+                	$('#interm-list').append('<tr><td>' + intention.nodeName + '</td><td>' + satisfactionValuesDict[initValue].satValue + '</td></tr>');
+                	 var func = intention.stringDynVis;
+                	 if (func === "MP"){
+                	 	console.log("if working");
+ 						$('#interm-list').append('<td>' +'(F, ⊥)' +'</td>')
 
-                    if (intEval != null) {
-                        selectElement.val(intEval.evaluationValue);
+                	 }*/
+            	//} else {
+
+                	// TODO, display previously saved options
+                	var row = $('<tr></tr>');
+                	row.addClass('intention-row');
+                	var name = $('<td></td>');
+                	var sat = $('<td></td>');
+
+                	name.text(intention.nodeName);
+                	sat.text('Denied');
+                	row.append(name);
+                	row.append(satisfactionValuesDict[initValue].satValue);
+                	// var appendList = '<tr class="intention-row"><td>' + name + '</td><td>'+satisfactionValuesDict[initValue].satValue+'</td>';
+
+                	for (j = 0; j < absTimeValues.length; j++) {
+
+                    	// Add select tags for each absolute time point
+                    	var selectTd = $('<td></td>');
+                    	var selectElement = $('<select></select>');
+                    	selectElement.attr('nodeID', intention.nodeID);
+                    	selectElement.attr('absTime', absTimeValues[j]);
+                    	var func = intention.dynamicFunction.stringDynVis;
+                    	var ti = constraints[0].absoluteValue;
+                    	var absVal = absTimeValues[j];
+            			if (func === "MP"){
+ 							if (absVal < ti) {
+ 								options = `<option value="(no value)">(no value)</option>`;
+ 							}
+ 							else{
+ 								if (intention.dynamicFunction.functionSegList[1].funcX  === '0010'){
+ 									options = `<option value="0010">Partially Satisfied (P, ⊥) </option>`;
+ 								}
+ 								else{
+ 									options = `<option value="0011">Satisfied (F, ⊥) </option>`;
+ 								}
+ 							}
+                	 	}
+                	 	else if (func === "MN"){
+ 							if (absVal < ti) {
+ 								options = `<option value="(no value)">(no value)</option>`;
+ 							}
+ 							else{
+ 								if (intention.dynamicFunction.functionSegList[1].funcX  === '0100'){
+ 									options = `<option value="0100">Partially Denied (⊥, P) </option>`;
+ 								}
+ 								else{
+ 									options = `<option value="1100">Denied (⊥, F) </option>`;
+ 								}
+ 							}
+                	 	}
+
+                	 	else if(func === "RC"){
+                        	if(absVal < ti){
+                        		options = `<option value="empty"> </option>
+                           			<option value="(no value)">(no value)</option>
+                           			<option value="0000">None (⊥, ⊥) </option>
+                           			<option value="0011">Satisfied (F, ⊥) </option>
+                           			<option value="0010">Partially Satisfied (P, ⊥) </option>
+                           			<option value="1100">Denied (⊥, F) </option>
+                           			<option value="0100">Partially Denied (⊥, P)</option>`;
+                       		}
+                       		else{
+								var funcX = intention.dynamicFunction.functionSegList[1].funcX;
+                           		switch(funcX){
+                               		case '0000':
+                                  	options = `<option value="0000">None (⊥, ⊥) </option>`;
+                                    break;
+                               		case '0011':
+                                   	options = `<option value="0011">Satisfied (F, ⊥) </option>`;
+                                    break;
+                               		case '0100':
+                                   	options = `<option value="0100">Partially Denied (⊥, P)</option>`;
+                                     break;
+                               		case '1100':
+                                   	options = `<option value="1100">Denied (⊥, F) </option>`;
+                                    break;
+                               		case '0010':
+                                    options = `<option value="0010">Partially Satisfied (P, ⊥) </option>`;
+                                    break;
+                           }
+                       }
+                     }
+
+                    else if(func === "CR"){
+                    	if(absVal < ti){
+                        var funcX = intention.dynamicFunction.functionSegList[1].funcX;
+                           		switch(funcX){
+                               		case '0000':
+                                  	options = `<option value="0000">None (⊥, ⊥) </option>`;
+                                    break;
+                               		case '0011':
+                                   	options = `<option value="0011">Satisfied (F, ⊥) </option>`;
+                                    break;
+                               		case '0100':
+                                   	options = `<option value="0100">Partially Denied (⊥, P)</option>`;
+                                     break;
+                               		case '1100':
+                                   	options = `<option value="1100">Denied (⊥, F) </option>`;
+                                    break;
+                               		case '0010':
+                                    options = `<option value="0010">Partially Satisfied (P, ⊥) </option>`;
+                                    break;
+                           }
+                        }
+                       else{
+                           options = `<option value="empty"> </option>
+                           <option value="(no value)">(no value)</option>
+                           <option value="0000">None (⊥, ⊥) </option>
+                           <option value="0011">Satisfied (F, ⊥) </option>
+                           <option value="0010">Partially Satisfied (P, ⊥) </option>
+                           <option value="1100">Denied (⊥, F) </option>
+                           <option value="0100">Partially Denied (⊥, P)</option>`;
+                       }
+                     }
+                    else if(func === "SD"){
+
+                    	if (absVal < ti) {
+                    		options = `<option value="0011">Satisfied (F, ⊥) </option>`
+                    	}
+                    	else{
+                    		options = `<option value="1100">Denied (⊥, F) </option>`
+                    	}
+
                     }
 
-                    selectTd.append(selectElement);
-                    row.append(selectTd);
+                    else if(func === "DS"){
+                    	if (absVal < ti) {
+                    		options = `<option value="1100">Denied (⊥, F) </option>`
+                    	}
+                    	else{
+                    		options =`<option value="0011">Satisfied (F, ⊥) </option>`
+                    	}
+                    }
 
 
-                    // var selectTag = '<select id="evalID" nodeID = ' + intention.nodeID + ' absTime = '+ absTimeValues[j] +'>' + options + '</select>'
-                    // appendList += '<td>' + selectTag + '</td>';
-                }
-                $('#interm-list').append(row);
+                    	selectElement.append(options);
 
-            }
-        }
+                    	var intEval = analysisRequest.getUserEvaluationByID(intention.nodeID, absTimeValues[j]);
+
+                    	if (intEval != null) {
+                        	selectElement.val(intEval.evaluationValue);
+                    	}
+
+                    	selectTd.append(selectElement);
+                    	row.append(selectTd);
+
+
+                    	// var selectTag = '<select id="evalID" nodeID = ' + intention.nodeID + ' absTime = '+ absTimeValues[j] +'>' + options + '</select>'
+                    	// appendList += '<td>' + selectTag + '</td>';
+                	}
+                	$('#interm-list').append(row);
+
+            	}
+        	}
+
+    	else{
+    		for (var i = 0; i < model.intentions.length; i++) {
+            	var intention = model.intentions[i];
+            	var initValue = intention.getInitialSatValue();
+    		$('#interm-list').append('<tr><td>' + intention.nodeName + '</td><td>' +satisfactionValuesDict[initValue].satValue + '</td></tr>');
+    		}
+    	}
     },
     // Dismiss modal box
     dismissModalBox: function(e){
@@ -625,6 +794,7 @@ var AnalysisInspector = Backbone.View.extend({
                 }
 
                 analysisRequest.userAssignmentsList.push(new UserEvaluation(nodeID, absTime, evalLabel));
+                console.log(analysisRequest.userAssignmentsList);
 
             });
         });
