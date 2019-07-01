@@ -7,6 +7,11 @@ function backendComm(jsObject){
 	console.log(JSON.stringify(jsObject));
 	console.log(jsObject.analysisRequest.action);
 
+	var isNode = true;
+    if(isNode){
+        nodeBackendCommFunc(jsObject);
+        return;
+    }
 	//backend script called
 	var pathToCGI = "./cgi-bin/backendCom.cgi";
 
