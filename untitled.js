@@ -312,4 +312,4 @@ convertToOptions: function(choiceList){
         theOptionString += curString;
     }
     return convertToOptions;
-}
+},
