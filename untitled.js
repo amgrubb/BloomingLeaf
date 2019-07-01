@@ -189,7 +189,45 @@ loadIntermediateValues: function(e) {
 			                }
 			        }
 
-            		else if (func = "UD"){}
+            		else if (func = "UD"){
+                  var time_list = []
+                  for ( var i = 0; i < constraints.length; i ++){
+                    if (constraints[i].constranintSrcID === intention.nodeID){
+                      time_list.push(constraints[i].absoluteValue);
+                    }
+                  }
+
+                  var assigned = true; 
+                  for (var i =0 ; i<time_list.length; i++){
+                    if (time_list[i] == -1){
+                      assigned = false;
+                      break
+                    }
+                  }
+
+                  if (assigned === true){
+                    var func_list = intention.dynamicFunction.functionSegList.;
+                    for (var i = 0 ; i < func_list.length; i++ )  {
+                      var funcType = func_list.funcType;
+                      var funcX = func_list.funcX;
+                      switch(funcType){
+                                case "I":
+                                  options = this.increasing(funcX);
+                                    break;
+                                case "D":
+                                  options = this.decreasing(funcX);
+                                  break;
+                                case "C":
+                                  options = this.constant(funcX);
+                                  break;
+                                case "R":
+                                  options = this.stochastic();
+                                  break;
+                              }
+                    }
+                  }
+                }
+
             	}
             	
         }			
