@@ -55,7 +55,20 @@ loadIntermediateValues: function(e) {
 
 
             		if (func === "I"|| func === "D"|| func === "C"|| func === "R"){
-
+                        switch(func){
+                            case "I":
+                                options = this.selfincreasing(initValue);
+                                break;
+                            case "D":
+                                options = this.decreasing(initValue);
+                                break;
+                            case "C":
+                                options = this.constant(initValue);
+                                break;
+                            case "R":
+                                options = this.stochastic();
+                                break;
+                            }
             		}
 
             		else if (func === "MP"|| func === "MN"|| func === "CR"|| func === "RC" || func === "SD" || func === "DS"){
@@ -194,4 +207,106 @@ loadIntermediateValues: function(e) {
         
 }
 
-        
+
+comparisonSwitch: function(valueToEncode){
+   var tempInput;
+   switch(valueToEncode){
+       case '0000':
+           tempInput = 0;
+           break;
+       case '0011':
+           tempInput = -2;
+           break;
+       case '0010':
+           tempInput = -1;
+           break;
+       case '0100':
+           tempInput = 1;
+           break;
+       case '1100':
+           tempInput = 2;
+           break;
+   }
+   return tempInput;
+},
+
+isIncreasing: function(inputValue, valueToCompare){
+   var tempInput = this.comparisonSwitch(inputValue);
+   var tempCompare = this.comparisonSwitch(valueToCompare);
+   if (tempInput < tempCompare){
+       return false;
+   }
+   else{
+       return true;
+   }
+},
+
+isDecreasing: function(inputValue, valueToCompare){
+   var tempInput = this.comparisonSwitch(inputValue);
+   var tempCompare = this.comparisonSwitch(valueToCompare);
+   if(tempInput <= tempCompare){
+       return true;
+   }
+   else{
+       return false;
+   }
+},
+
+increasing: function(initValue){
+    var valueForOptions = {};
+    for(var i = 0; i <possibleValueList.length();i++){
+        if(isIncreasing(possibleValueList[i],initialValue)){
+            valueForOptions.push(possibleValueList[i]);
+        }
+    }
+    return this.convertToOptions(valueForOptions);
+},
+
+decreasing: function(initValue){
+    var valueForOptions = {};
+    for(var i = 0; i <possibleValueList.length();i++){
+        if(isDecreasing(possibleValueList[i],initialValue)){
+            valueForOptions.push(possibleValueList[i]);
+        }
+    }
+    return this.convertToOptions(valueForOptions);
+},
+
+constant: function(initValue){
+    return this.convertToOptions({initValue});
+},
+
+stochastic: function(){
+    return this.convertToOptions(possibleValueList);
+},
+
+binaryToOption: function(binaryString){
+    var optionString = '';
+    switch(binaryString){
+        case "0000":
+            optionString = `<option value="0000">None (⊥, ⊥) </option>`;
+            break;
+        case "0011":
+            optionString = `<option value="0011">Satisfied (F, ⊥) </option>`;
+            break;
+        case "0010":
+            optionString = `<option value="0010">Partially Satisfied (P, ⊥) </option>`;
+            break;
+        case "0100":
+            optionString = `<option value="0100">Partially Denied (⊥, P)</option>`;
+            break;
+        case "1100":
+            optionString = `<option value="1100">Denied (⊥, F) </option>`;
+            break;
+    }
+    return optionString;
+},
+
+convertToOptions: function(choiceList){
+    var theOptionString = ``;
+    for(var i = 0; i < choiceList.length; i++){
+        var curString = this.binaryToOption(choiceList[i]);
+        theOptionString += curString;
+    }
+    return convertToOptions;
+}
