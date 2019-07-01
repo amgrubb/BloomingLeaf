@@ -84,28 +84,28 @@ loadIntermediateValues: function(e) {
 
             					if (func === "MP"){
  									if (absVal < ti) {
- 										options = `<option value="(no value)">(no value)</option>`;		
+ 										options = this.convertToOptions({'no value'});		
  									}
  									else{
  										if (intention.dynamicFunction.functionSegList[1].funcX  === '0010'){
- 											options = `<option value="0010">Partially Satisfied (P, ⊥) </option>`;	
+ 											options = this.convertToOptions({'0010'});	
  										}
  										else{
- 											options = `<option value="0011">Satisfied (F, ⊥) </option>`;	
+ 											options = this.convertToOptions({'0011'});	
  											}
  									}
                 	 			}
 
                 	 			else if (func === "MN"){
  									if (absVal < ti) {
- 										options = `<option value="(no value)">(no value)</option>`;		
+ 										options = this.convertToOptions({'no value'});		
  									}
  									else{
  										if (intention.dynamicFunction.functionSegList[1].funcX  === '0100'){
- 											options = `<option value="0100">Partially Denied (⊥, P) </option>`;	
+ 											options = this.convertToOptions({'0100'});	
  										}
  										else{
- 										options = `<option value="1100">Denied (⊥, F) </option>`;	
+ 										options = this.convertToOptions({'1100'});	
  										}
  									}
                 	 	
@@ -113,33 +113,28 @@ loadIntermediateValues: function(e) {
 
             					else if(func === "RC"){
                         			if(absVal < ti){
-                        				options = `<option value="empty"> </option>
-                           				<option value="(no value)">(no value)</option>
-                           				<option value="0000">None (⊥, ⊥) </option>
-                           				<option value="0011">Satisfied (F, ⊥) </option>
-                           				<option value="0010">Partially Satisfied (P, ⊥) </option>
-                           				<option value="1100">Denied (⊥, F) </option>
-                           				<option value="0100">Partially Denied (⊥, P)</option>`;
+                                        var possibleValueList = {'0000','0011','0010','1100','0100','empty','no value'};
+                        				options = this.convertToOptions(possibleValueList);
                        				}
 	                       			else{
 										var funcX = intention.dynamicFunction.functionSegList[1].funcX;
-	                           			switch(funcX){
-		                               		case '0000':
-		                                  	options = `<option value="0000">None (⊥, ⊥) </option>`;
-		                                    break;
-		                               		case '0011':
-		                                   	options = `<option value="0011">Satisfied (F, ⊥) </option>`;
-		                                    break;
-		                               		case '0100':
-		                                   	options = `<option value="0100">Partially Denied (⊥, P)</option>`;
-		                                     break;
-		                               		case '1100':
-		                                   	options = `<option value="1100">Denied (⊥, F) </option>`;
-		                                    break;
-		                               		case '0010':
-		                                    options = `<option value="0010">Partially Satisfied (P, ⊥) </option>`;
-		                                   	break;
-	                           			}
+                                        switch(funcX){
+                                            case '0000':
+                                            options = this.convertToOptions({'0000'});
+                                            break;
+                                            case '0011':
+                                            options = this.convertToOptions({'0011'});
+                                            break;
+                                            case '0100':
+                                            options = this.convertToOptions({'0100'});
+                                             break;
+                                            case '1100':
+                                            options = this.convertToOptions({'1100'});
+                                            break;
+                                            case '0010':
+                                            options = this.convertToOptions({'0010'});
+                                            break;
+                                        }
 	                       			}
                      			}
 
@@ -148,54 +143,49 @@ loadIntermediateValues: function(e) {
                         				var funcX = intention.dynamicFunction.functionSegList[1].funcX;
                            				switch(funcX){
 		                               		case '0000':
-		                                  	options = `<option value="0000">None (⊥, ⊥) </option>`;
+		                                  	options = this.convertToOptions({'0000'});
 		                                    break;
 		                               		case '0011':
-		                                   	options = `<option value="0011">Satisfied (F, ⊥) </option>`;
+		                                   	options = this.convertToOptions({'0011'});
 		                                    break;
 		                               		case '0100':
-		                                   	options = `<option value="0100">Partially Denied (⊥, P)</option>`;
+		                                   	options = this.convertToOptions({'0100'});
 		                                     break;
 		                               		case '1100':
-		                                   	options = `<option value="1100">Denied (⊥, F) </option>`;
+		                                   	options = this.convertToOptions({'1100'});
 		                                    break;
 		                               		case '0010':
-		                                    options = `<option value="0010">Partially Satisfied (P, ⊥) </option>`;
+		                                    options = this.convertToOptions({'0010'});
 		                                    break;
                            				}
                         			}
 			                       	else{
-			                           options = `<option value="empty"> </option>
-			                           <option value="(no value)">(no value)</option>
-			                           <option value="0000">None (⊥, ⊥) </option>
-			                           <option value="0011">Satisfied (F, ⊥) </option>
-			                           <option value="0010">Partially Satisfied (P, ⊥) </option>
-			                           <option value="1100">Denied (⊥, F) </option>
-			                           <option value="0100">Partially Denied (⊥, P)</option>`;
+                                       var possibleValueList = {'0000','0011','0010','1100','0100','empty','no value'};
+			                           options = this.convertToOptions(possibleValueList);
 			                       	}
                      			}
 
 			                    else if(func === "SD"){
 
 			                    	if (absVal < ti) {
-			                    		options = `<option value="0011">Satisfied (F, ⊥) </option>`	
+			                    		options = this.convertToOptions({'0011'});	
 			                    	}
 			                    	else{
-			                    		options = `<option value="1100">Denied (⊥, F) </option>`	
+			                    		options = this.convertToOptions({'1100'});
 			                    	}
 			                    	
 			                    }
 
 			                    else if(func === "DS"){
 			                    	if (absVal < ti) {
-			                    		options = `<option value="1100">Denied (⊥, F) </option>`		
+			                    		options = this.convertToOptions({"1100"});		
 			                    	}
 			                    	else{
-			                    		options =`<option value="0011">Satisfied (F, ⊥) </option>`	
+			                    		options = this.convertToOptions({'0011'});	
 			                    	}
 			                    }
 			                else{
-			                	options = `<option value="(no value)">---</option>`	
+			                	options = this.convertToOptions({'no value'});
 			                }
 			        }
 
@@ -279,7 +269,7 @@ constant: function(initValue){
 },
 
 stochastic: function(){
-    var possibleValueList = {'0000','0011','0010','1100','0100'};
+    var possibleValueList = {'0000','0011','0010','1100','0100', 'no value'};
     return this.convertToOptions(possibleValueList);
 },
 
@@ -301,6 +291,12 @@ binaryToOption: function(binaryString){
         case "1100":
             optionString = `<option value="1100">Denied (⊥, F) </option>`;
             break;
+        case 'empty':
+            optionString = `<option value="empty"> --- </option>`;
+            break;
+        case 'no value':
+            optionString = `<option value="(no value)">(no value)</option>`;
+            break; 
     }
     return optionString;
 },
