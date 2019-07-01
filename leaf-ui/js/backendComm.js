@@ -30,6 +30,72 @@ function backendComm(jsObject){
 	});
 }
 
+//TODO: node server stuff
+function nodeBackendCommFunc(jsObject){
+   console.log(JSON.stringify(jsObject));
+   var xhr = new XMLHttpRequest();
+   var isGetNextSteps ;
+   //TODO: might need to change here
+   var url = "http://localhost:8080/untitled.html";
+   xhr.open("POST", url, true);
+   xhr.setRequestHeader("Content-Type", "application/json");
+   var data = JSON.stringify(jsObject);
+   xhr.onreadystatechange = function() {
+       if (xhr.readyState == XMLHttpRequest.DONE) {
+           if(jsObject.analysisRequest.action=="allNextStates"){
+               isGetNextSteps = true;
+           }
+           else{
+               isGetNextSteps = false;
+            }
+            
+            var response = xhr.responseText;
+   			responseFunc(isGetNextSteps,response);
+
+       }
+   }
+   xhr.send(data);
+   // console.log(xhr.responseText);
+   // response=xhr.responseText;
+   // responseFunc(isGetNextSteps,response);
+}
+
+
+//deal with the response sent back by the server
+function responseFunc(isGetNextSteps, response){
+   var results = JSON.parse(response);
+   if (errorExists(results)) {
+        var msg = getErrorMessage(results.errorMessage);
+        alert(msg);
+    }
+   else {
+       if (results == ""){
+            alert("Error while reading the resonse file from server. This can be due an error in executing java application.");
+            return;
+        }
+       else {
+           if(isGetNextSteps){
+                   savedAnalysisData.allNextStatesResult = results;
+                   console.log("in backendcomm, saving all next state results");
+                    open_analysis_viewer();
+           }else {
+                console.log(JSON.stringify(results));
+                savedAnalysisData.singlePathResult = results;
+                analysisResult.assignedEpoch = results.assignedEpoch;
+                analysisResult.timePointPath = results.timePointPath;
+                analysisResult.timePointPathSize = results.timePointPathSize;
+                analysisResult.elementList = results.elementList;
+                analysisResult.allSolution = results.allSolution;
+                analysisRequest.previousAnalysis = analysisResult;
+                console.log("previousAnalysis");
+                console.log(analysisRequest.previousAnalysis);
+                displayAnalysis(results);
+            }
+        }
+    }
+}
+//TODO: end here
+
 function executeJava(isGetNextSteps){
 	var pathToCGI = "./cgi-bin/executeJava.cgi";
 	$.ajax({
