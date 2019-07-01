@@ -57,7 +57,7 @@ loadIntermediateValues: function(e) {
             		if (func === "I"|| func === "D"|| func === "C"|| func === "R"){
                         switch(func){
                             case "I":
-                                options = this.selfincreasing(initValue);
+                                options = this.increasing(initValue);
                                 break;
                             case "D":
                                 options = this.decreasing(initValue);
@@ -253,6 +253,7 @@ isDecreasing: function(inputValue, valueToCompare){
 },
 
 increasing: function(initValue){
+    var possibleValueList = {'0000','0011','0010','1100','0100'};
     var valueForOptions = {};
     for(var i = 0; i <possibleValueList.length();i++){
         if(isIncreasing(possibleValueList[i],initialValue)){
@@ -263,6 +264,7 @@ increasing: function(initValue){
 },
 
 decreasing: function(initValue){
+    var possibleValueList = {'0000','0011','0010','1100','0100'};
     var valueForOptions = {};
     for(var i = 0; i <possibleValueList.length();i++){
         if(isDecreasing(possibleValueList[i],initialValue)){
@@ -277,6 +279,7 @@ constant: function(initValue){
 },
 
 stochastic: function(){
+    var possibleValueList = {'0000','0011','0010','1100','0100'};
     return this.convertToOptions(possibleValueList);
 },
 
