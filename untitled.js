@@ -185,7 +185,7 @@ loadIntermediateValues: function(e) {
 			                    	}
 			                    }
 			                else{
-			                	options = this.convertToOptions({'no value'});
+			                	options = this.convertToOptions({'empty'});
 			                }
 			        }
 
@@ -226,7 +226,21 @@ loadIntermediateValues: function(e) {
                               }
                     }
                   }
+                  else{
+                    options = this.convertToOptions({'empty'});
+                  }
                 }
+
+                selectElement.append(options);
+
+                var intEval = analysisRequest.getUserEvaluationByID(intention.nodeID, absTimeValues[j]);
+
+                if (intEval != null) {
+                  selectElement.val(intEval.evaluationValue);
+                }
+
+                selectTd.append(selectElement);
+                row.append(selectTd);
 
             	}
             	
