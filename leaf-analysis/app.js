@@ -4,7 +4,7 @@
 
 // Name of .jar file for BloomingLeaf project must be Blooming.jar
 var userPath = "/Users/omema/git/BloomingLeaf"
-
+//var userPath = "/Users/<your user path here>/BloomingLeaf"
 var http = require('http'),
     url = require('url'),
     fileServer = require('./node/fileServer.js'),
