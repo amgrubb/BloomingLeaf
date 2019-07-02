@@ -475,10 +475,10 @@ var AnalysisInspector = Backbone.View.extend({
 			if (func === "I" || func === "D" || func === "C" || func === "R") {
 				switch (func) {
 					case "I":
-						options = this.increasing(initValue);
+						options = this.increasing(initValue,'noFinal');
 						break;
 					case "D":
-						options = this.decreasing(initValue);
+						options = this.decreasing(initValue,'noFinal');
 						break;
 					case "C":
 						options = this.constant(initValue);
@@ -603,15 +603,15 @@ var AnalysisInspector = Backbone.View.extend({
 
 					if (assigned === true) {
 						var func_list = intention.dynamicFunction.functionSegList;
-						for (var i = 0; i < func_list.length; i++) {
-							var funcType = func_list.funcType;
+						for (var i = 0; i < func_list[i].length; i++) {
+							var funcType = func_list[i].funcType;
 							var funcX = func_list.funcX;
 							switch (funcType) {
 								case "I":
-									options = this.increasing(funcX);
+									options = this.increasing(funcX,'noFinal');
 									break;
 								case "D":
-									options = this.decreasing(funcX);
+									options = this.decreasing(funcX,'noFinal');
 									break;
 								case "C":
 									options = this.constant(funcX);
@@ -708,29 +708,62 @@ var AnalysisInspector = Backbone.View.extend({
 	/**
 	*This function takes in an initial value and return a list of strings for options that contains values that are larger than the initial value
 	 */
-	increasing: function(initValue){
+	increasing: function(initValue,finalValue){
 		var possibleValueList = ['0000','0011','0010','1100','0100'];
 		var valueForOptions = [];
-		for(var i = 0; i <possibleValueList.length;i++){
-			if(this.isIncreasing(possibleValueList[i],initValue)){
-				valueForOptions.push(possibleValueList[i]);
+		if(finalValue === 'noFinal') {
+			for (var i = 0; i < possibleValueList.length; i++) {
+				if (this.isIncreasing(possibleValueList[i], initValue)) {
+					valueForOptions.push(possibleValueList[i]);
+				}
 			}
+			return this.convertToOptions(valueForOptions);
 		}
-		return this.convertToOptions(valueForOptions);
+		else{
+			var withFinal = [];
+			for (var i = 0; i < possibleValueList.length; i++) {
+				if (this.isIncreasing(possibleValueList[i], initValue)) {
+					valueForOptions.push(possibleValueList[i]);
+				}
+			}
+			for(var i=0;i<valueForOptions.length;i++){
+				if(this.isDecreasing(valueForOptions[i],finalValue)){
+					withFinal.push(valueForOptions[i]);
+				}
+			}
+			return this.convertToOptions(withFinal);
+		}
 	},
 
 	/**
 	*This function takes in an initial value and return a list of strings for options that contains values that are smaller than the initial value
 	 */
-	decreasing: function(initValue){
+	decreasing: function(initValue,finalValue){
 		var possibleValueList = ['0000','0011','0010','1100','0100'];
 		var valueForOptions = [];
-		for(var i = 0; i <possibleValueList.length;i++){
-			if(this.isDecreasing(possibleValueList[i],initValue)){
-				valueForOptions.push(possibleValueList[i]);
+		if(finalValue === 'noFinal') {
+			for (var i = 0; i < possibleValueList.length; i++) {
+				if (this.isDecreasing(possibleValueList[i], initValue)) {
+					valueForOptions.push(possibleValueList[i]);
+				}
 			}
+			return this.convertToOptions(valueForOptions);
 		}
-		return this.convertToOptions(valueForOptions);
+		else {
+			var withFinal = [];
+			for (var i = 0; i < possibleValueList.length; i++) {
+				if (this.isDecreasing(possibleValueList[i], initValue)) {
+					valueForOptions.push(possibleValueList[i]);
+				}
+			}
+			for(var i=0; i<valueForOptions.length;i++){
+				if(this.isIncreasing(valueForOptions[i],finalValue)){
+					withFinal.push(valueForOptions[i]);
+				}
+			}
+			return this.convertToOptions(withFinal);
+
+		}
 	},
 
 	/**
@@ -740,11 +773,21 @@ var AnalysisInspector = Backbone.View.extend({
 		return this.convertToOptions({initValue});
 	},
 
+
+	/**
+	 *
+	 * @returns {a list of strings for options that contains values that contains all possible values}
+	 */
 	stochastic: function(){
 		var possibleValueList = ['0000','0011','0010','1100','0100', 'no value'];
 		return this.convertToOptions(possibleValueList);
 	},
 
+	/**
+	 *
+	 * @param binaryString: This is the binary string stands for the value
+	 * @returns a string decode of that binary value
+	 */
 	binaryToOption: function(binaryString){
 		var optionString = '';
 		switch(binaryString){
@@ -773,6 +816,11 @@ var AnalysisInspector = Backbone.View.extend({
 		return optionString;
 	},
 
+	/**
+	 *
+	 * @param choiceList: this is a list of
+	 * @returns {string}
+	 */
 	convertToOptions: function(choiceList){
 		var theOptionString = ``;
 		for(var i = 0; i < choiceList.length; i++){
