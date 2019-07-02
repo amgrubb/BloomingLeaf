@@ -633,8 +633,8 @@ var AnalysisInspector = Backbone.View.extend({
 		if (intEval != null) {
 			selectElement.val(intEval.evaluationValue);
 		}
-
-		selectElement.append(options);
+		console.log(options);
+			selectElement.append(options);
 		selectTd.append(selectElement);
 		row.append(selectTd);
 
@@ -643,7 +643,14 @@ var AnalysisInspector = Backbone.View.extend({
 	}
 },
 
-
+	/*This function takes in a binary string of value and return
+	* a decimal encoding of that value
+	* none has a value of 0
+	* partially denied has a value of -1
+	* fully denied has a value of -2
+	* partially satisfied has a value of 1
+	* fully satisfied has a value of 2
+	*/
 	comparisonSwitch: function(valueToEncode){
 	   var tempInput;
 	   switch(valueToEncode){
@@ -666,6 +673,10 @@ var AnalysisInspector = Backbone.View.extend({
 	   return tempInput;
 	},
 
+	/*this function takes in two values the first one is the binary string of the input value
+	* and the second one is the binary string of the value to compare.
+	* This function will return a boolean value that whether the input value is greater than the value to compare
+	 */
 	isIncreasing: function(inputValue, valueToCompare){
 	   var tempInput = this.comparisonSwitch(inputValue);
 	   var tempCompare = this.comparisonSwitch(valueToCompare);
@@ -677,6 +688,10 @@ var AnalysisInspector = Backbone.View.extend({
 	   }
 	},
 
+	/*this function takes in two values the first one is the binary string of the input value
+	* and the second one is the binary string of the value to compare.
+	* This function will return a boolean value that whether the input value is smaller than the value to compare
+	 */
 	isDecreasing: function(inputValue, valueToCompare){
 	   var tempInput = this.comparisonSwitch(inputValue);
 	   var tempCompare = this.comparisonSwitch(valueToCompare);
@@ -688,28 +703,37 @@ var AnalysisInspector = Backbone.View.extend({
 	   }
 	},
 
+	/*
+	*This function takes in an initial value and return a list of strings for options that contains values that are larger than the initial value
+	 */
 	increasing: function(initValue){
 		var possibleValueList = ['0000','0011','0010','1100','0100'];
 		var valueForOptions = {};
 		for(var i = 0; i <possibleValueList.length();i++){
-			if(this.isIncreasing(possibleValueList[i],initialValue)){
+			if(this.isIncreasing(possibleValueList[i],initValue)){
 				valueForOptions.push(possibleValueList[i]);
 			}
 		}
 		return this.convertToOptions(valueForOptions);
 	},
 
+	/*
+	*This function takes in an initial value and return a list of strings for options that contains values that are smaller than the initial value
+	 */
 	decreasing: function(initValue){
 		var possibleValueList = ['0000','0011','0010','1100','0100'];
 		var valueForOptions = {};
 		for(var i = 0; i <possibleValueList.length();i++){
-			if(this.isDecreasing(possibleValueList[i],initialValue)){
+			if(this.isDecreasing(possibleValueList[i],initValue)){
 				valueForOptions.push(possibleValueList[i]);
 			}
 		}
 		return this.convertToOptions(valueForOptions);
 	},
 
+	/*
+	*This function takes in an initial value and return a list of strings for options that contains values that are equal to the initial value
+	 */
 	constant: function(initValue){
 		return this.convertToOptions({initValue});
 	},
