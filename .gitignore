@@ -29,3 +29,4 @@ leaf-analysis/temp/default.json
 hs_err_pid*
 
 leaf-analysis/temp/output.out
+leaf-analysis/app.js
