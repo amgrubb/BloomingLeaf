@@ -711,7 +711,7 @@ var AnalysisInspector = Backbone.View.extend({
 	 */
 	increasing: function(initValue){
 		var possibleValueList = ['0000','0011','0010','1100','0100'];
-		var valueForOptions = {};
+		var valueForOptions = [];
 		for(var i = 0; i <possibleValueList.length;i++){
 			if(this.isIncreasing(possibleValueList[i],initValue)){
 				valueForOptions.push(possibleValueList[i]);
@@ -725,7 +725,7 @@ var AnalysisInspector = Backbone.View.extend({
 	 */
 	decreasing: function(initValue){
 		var possibleValueList = ['0000','0011','0010','1100','0100'];
-		var valueForOptions = {};
+		var valueForOptions = [];
 		for(var i = 0; i <possibleValueList.length;i++){
 			if(this.isDecreasing(possibleValueList[i],initValue)){
 				valueForOptions.push(possibleValueList[i]);
