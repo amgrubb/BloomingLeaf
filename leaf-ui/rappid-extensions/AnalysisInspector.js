@@ -597,7 +597,7 @@ var AnalysisInspector = Backbone.View.extend({
 					for (var i = 0; i < time_list.length; i++) {
 						if (time_list[i] == -1) {
 							assigned = false;
-							break
+							break;
 						}
 					}
 
@@ -643,7 +643,8 @@ var AnalysisInspector = Backbone.View.extend({
 	}
 },
 
-	/*This function takes in a binary string of value and return
+	/**
+	*This function takes in a binary string of value and return
 	* a decimal encoding of that value
 	* none has a value of 0
 	* partially denied has a value of -1
@@ -673,7 +674,8 @@ var AnalysisInspector = Backbone.View.extend({
 	   return tempInput;
 	},
 
-	/*this function takes in two values the first one is the binary string of the input value
+	/**
+	*this function takes in two values the first one is the binary string of the input value
 	* and the second one is the binary string of the value to compare.
 	* This function will return a boolean value that whether the input value is greater than the value to compare
 	 */
@@ -688,7 +690,8 @@ var AnalysisInspector = Backbone.View.extend({
 	   }
 	},
 
-	/*this function takes in two values the first one is the binary string of the input value
+	/**
+	*this function takes in two values the first one is the binary string of the input value
 	* and the second one is the binary string of the value to compare.
 	* This function will return a boolean value that whether the input value is smaller than the value to compare
 	 */
@@ -703,13 +706,13 @@ var AnalysisInspector = Backbone.View.extend({
 	   }
 	},
 
-	/*
+	/**
 	*This function takes in an initial value and return a list of strings for options that contains values that are larger than the initial value
 	 */
 	increasing: function(initValue){
 		var possibleValueList = ['0000','0011','0010','1100','0100'];
 		var valueForOptions = {};
-		for(var i = 0; i <possibleValueList.length();i++){
+		for(var i = 0; i <possibleValueList.length;i++){
 			if(this.isIncreasing(possibleValueList[i],initValue)){
 				valueForOptions.push(possibleValueList[i]);
 			}
@@ -717,13 +720,13 @@ var AnalysisInspector = Backbone.View.extend({
 		return this.convertToOptions(valueForOptions);
 	},
 
-	/*
+	/**
 	*This function takes in an initial value and return a list of strings for options that contains values that are smaller than the initial value
 	 */
 	decreasing: function(initValue){
 		var possibleValueList = ['0000','0011','0010','1100','0100'];
 		var valueForOptions = {};
-		for(var i = 0; i <possibleValueList.length();i++){
+		for(var i = 0; i <possibleValueList.length;i++){
 			if(this.isDecreasing(possibleValueList[i],initValue)){
 				valueForOptions.push(possibleValueList[i]);
 			}
@@ -731,7 +734,7 @@ var AnalysisInspector = Backbone.View.extend({
 		return this.convertToOptions(valueForOptions);
 	},
 
-	/*
+	/**
 	*This function takes in an initial value and return a list of strings for options that contains values that are equal to the initial value
 	 */
 	constant: function(initValue){
