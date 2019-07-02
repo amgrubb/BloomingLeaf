@@ -1,3 +1,4 @@
+//this is a test comment.
 var epochLists = [];
 var nameIdMapper = {};
 var constraintID = 0;
@@ -183,6 +184,7 @@ var AnalysisInspector = Backbone.View.extend({
 		//Create the object and fill the JSON file to be sent to backend.
 		//Get the AnalysisInspector view information
 		analysisRequest.action = "allNextStates";
+
 		analysisRequest.previousAnalysis = _.clone(savedAnalysisData.singlePathResult);
 		// need to remove TPs after current point from previous solution?
 		// update the time point for potentialEpoch
@@ -209,6 +211,7 @@ var AnalysisInspector = Backbone.View.extend({
 
 		console.log(analysisRequest);
 
+
 		//Prepare and send data to backend
 		this.sendToBackend();
 	},
@@ -231,8 +234,10 @@ var AnalysisInspector = Backbone.View.extend({
 		console.log(jsObject);
 		//Send data to backend
 		var isNodeServer = true;
+
 		backendComm(isNodeServer, jsObject);
 		;
+
 	},
 
 	/**
@@ -343,7 +348,9 @@ var AnalysisInspector = Backbone.View.extend({
 	 */
 	displayAbsoluteIntentionAssignments: function (e) {
 
+
 		var btnHtml = '<td><button class="unassign-abs-intent-btn" > Unassign </button></td>';
+
 
 		for (var i = 0; i < model.intentions.length; i++) {
 			var intention = model.intentions[i];
@@ -356,14 +363,17 @@ var AnalysisInspector = Backbone.View.extend({
 				funcType == 'MN' || funcType == 'SD' || funcType == 'DS') {
 
 
+
 				var absTime = intention.getAbsConstTime('A');
 				// default value to display.
 				// -1 means abs time does not exist. So display empty string instead.
 				var defaultVal = absTime === -1 ? '' : absTime;
 
+
 				$('#node-list').append('<tr nodeID = ' + intention.nodeID + ' srcEB = A><td>' + intentionName + ': A' + '</td><td>' + funcType + '</td>' +
 					'<td><input type="number" name="sth" value="' + defaultVal + '"></td>' + btnHtml + '</tr>');
 			} else if (funcType == 'UD') {
+
 
 				// the number of function transitions, is the number of functions minus one
 				var funcTransitions = intention.dynamicFunction.functionSegList.length - 1;
@@ -754,6 +764,7 @@ var AnalysisInspector = Backbone.View.extend({
 		}
 		return theOptionString;
 	},
+
 
     // Dismiss modal box
     dismissModalBox: function(e){
