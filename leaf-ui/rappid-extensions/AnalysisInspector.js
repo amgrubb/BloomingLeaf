@@ -633,8 +633,7 @@ var AnalysisInspector = Backbone.View.extend({
 		if (intEval != null) {
 			selectElement.val(intEval.evaluationValue);
 		}
-		console.log(options);
-			selectElement.append(options);
+		selectElement.append(options);
 		selectTd.append(selectElement);
 		row.append(selectTd);
 
@@ -659,16 +658,16 @@ var AnalysisInspector = Backbone.View.extend({
 			   tempInput = 0;
 			   break;
 		   case '0011':
-			   tempInput = -2;
+			   tempInput = 2;
 			   break;
 		   case '0010':
-			   tempInput = -1;
-			   break;
-		   case '0100':
 			   tempInput = 1;
 			   break;
+		   case '0100':
+			   tempInput = -1;
+			   break;
 		   case '1100':
-			   tempInput = 2;
+			   tempInput = -2;
 			   break;
 	   }
 	   return tempInput;
