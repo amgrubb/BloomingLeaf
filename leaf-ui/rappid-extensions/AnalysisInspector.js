@@ -487,7 +487,8 @@ var AnalysisInspector = Backbone.View.extend({
 						options = this.stochastic();
 						break;
 				}
-			} else if (func === "MP" || func === "MN" || func === "CR" || func === "RC" || func === "SD" || func === "DS") {
+			}
+			else if (func === "MP" || func === "MN" || func === "CR" || func === "RC" || func === "SD" || func === "DS") {
 				//check for every node if there is assigned time
 				for (var k = 0; k < constraints.length; k++) {
 					if (constraints[k].constraintSrcID === intention.nodeID) {
@@ -582,24 +583,35 @@ var AnalysisInspector = Backbone.View.extend({
 							options = this.convertToOptions(['0011']);
 						}
 					} else {
+						console.log("calling empty from compound functions")
 						var list = ['empty'];
 						options = this.convertToOptions(list);
 					}
-				} else if (func = "UD") {
-					var time_list = [];
-					for (var i = 0; i < constraints.length; i++) {
-						if (constraints[i].constranintSrcID === intention.nodeID) {
-							time_list.push(constraints[i].absoluteValue);
-						}
-					}
+				}
+			}
 
-					var assigned = true;
+			else if (func === "UD") {
+				var time_list = [];
+				for (var i = 0; i < constraints.length; i++) {
+					if (constraints[i].constraintSrcID === intention.nodeID) {
+						time_list.push(constraints[i].absoluteValue);
+					}
+				}
+
+				var assigned = true;
+				if (time_list.length === 0 ){
+					assigned = false;
+				}
+
+
+				else {
 					for (var i = 0; i < time_list.length; i++) {
-						if (time_list[i] == -1) {
+						if (time_list[i] === -1) {
 							assigned = false;
 							break;
 						}
 					}
+				}
 
 					if (assigned === true) {
 						var func_list = intention.dynamicFunction.functionSegList;
@@ -621,10 +633,12 @@ var AnalysisInspector = Backbone.View.extend({
 									break;
 							}
 						}
-					} else {
-						options = this.convertToOptions(['empty']);
 					}
 				}
+				else {
+					options = this.convertToOptions(['empty']);
+				}
+
 
 			}
 
