@@ -500,7 +500,7 @@ var AnalysisInspector = Backbone.View.extend({
 			} else if (func === "MP" || func === "MN" || func === "CR" || func === "RC" || func === "SD" || func === "DS") {
 				//check for every node if there is assigned time
 				for (var k = 0; k < constraints.length; k++) {
-					if (constraints[k].constranintSrcID === intention.nodeID) {
+					if (constraints[k].constraintSrcID === intention.nodeID) {
 						var c = k
 					}
 				}
