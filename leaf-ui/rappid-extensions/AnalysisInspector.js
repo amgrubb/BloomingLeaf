@@ -146,7 +146,7 @@ var AnalysisInspector = Backbone.View.extend({
 		this.$el.html(_.template(this.template)());
 		$('head').append('<script src="./js/analysis.js"></script>');
 
-		// set default values for max abs time, conflict level, 
+		// set default values for max abs time, conflict level,
 		// relative time points and abs time points
 		$('#max-abs-time').val(model.maxAbsTime);
 		$('#conflict-level').val(analysisRequest.conflictLevel);
@@ -206,6 +206,10 @@ var AnalysisInspector = Backbone.View.extend({
         analysisRequest.previousAnalysis.assignedEpoch = previousTP;
         analysisRequest.previousAnalysis.timePointPath = analysisRequest.previousAnalysis.timePointPath.slice(0, currentState+1);
 
+
+
+
+
         console.log(analysisRequest);
 
 		//Prepare and send data to backend
@@ -229,7 +233,8 @@ var AnalysisInspector = Backbone.View.extend({
 		jsObject.model = model;
 		console.log(jsObject);
 		//Send data to backend
-		backendComm(jsObject);
+		var isNodeServer = true;
+		backendComm(isNodeServer,jsObject);;
 	},
 
 	/**
@@ -349,6 +354,7 @@ var AnalysisInspector = Backbone.View.extend({
             var intention = model.intentions[i];
             var funcType = intention.dynamicFunction.stringDynVis;
             var intentionName = intention.nodeName;
+            //console.log(intentionName);
 
             // nameIdMapper[name] = intention.nodeID;
             if (funcType == 'RC' || funcType == 'CR' || funcType == 'MP' ||
@@ -380,6 +386,7 @@ var AnalysisInspector = Backbone.View.extend({
             }
         }
 
+        //loadIntermediateValues();
     },
 
     /**
@@ -408,6 +415,8 @@ var AnalysisInspector = Backbone.View.extend({
         return absTimeValues
     },
 
+
+
     /**
      * Displays the Intermediate Values modal for the user
      *
@@ -422,6 +431,20 @@ var AnalysisInspector = Backbone.View.extend({
         intermTDialog.style.display = "block";
 
         var absTimeValues = analysisRequest.absTimePtsArr;
+        var constraints = model.constraints;
+
+        //Adding assigned time to absTimeValues
+        for ( var i = 0; i < constraints.length; i ++){
+        		var aTime = constraints[i].absoluteValue
+        		aTime = aTime.toString()
+        		if (!absTimeValues.includes(aTime) && aTime !== "-1"){
+        			absTimeValues.push(aTime); 
+        		}
+        		
+        	}
+        
+        absTimeValues.sort();
+        console.log(absTimeValues);
 
         for (var i = 0; i < absTimeValues.length; i++) {
             $('#header-row').append('<th>Absolute</th>');
@@ -429,24 +452,20 @@ var AnalysisInspector = Backbone.View.extend({
         }
 
         var options = `<option value="empty"> </option>
-						<option value="(no value)">(no value)</option>
-						<option value="0000">None (⊥, ⊥) </option>
-						<option value="0011">Satisfied (F, ⊥) </option>
-						<option value="0010">Partially Satisfied (P, ⊥) </option>
-						<option value="1100">Denied (⊥, F) </option>
-						<option value="0100">Partially Denied (⊥, P)</option>`;
+							<option value="(no value)">(no value)</option>
+							<option value="0000">None (⊥, ⊥) </option>
+							<option value="0011">Satisfied (F, ⊥) </option>
+							<option value="0010">Partially Satisfied (P, ⊥) </option>
+							<option value="1100">Denied (⊥, F) </option>
+							<option value="0100">Partially Denied (⊥, P)</option>`;
 
+        //loop over intentions to get intial values and funcType 
         for (var i = 0; i < model.intentions.length; i++) {
-            var intention = model.intentions[i];
-            var initValue = intention.getInitialSatValue(); // ex, '0000'
+            	var intention = model.intentions[i];
+            	var initValue = intention.getInitialSatValue();
+            	var func = intention.dynamicFunction.stringDynVis;
 
-            // If user put no absolute time points
-            if ($.isEmptyObject(absTimeValues)) {
-                $('#interm-list').append('<tr><td>' + intention.nodeName + '</td><td>' + satisfactionValuesDict[initValue].satValue + '</td></tr>');
-            } else {
-
-                // TODO, display previously saved options
-                var row = $('<tr></tr>');
+            	var row = $('<tr></tr>');
                 row.addClass('intention-row');
                 var name = $('<td></td>');
                 var sat = $('<td></td>');
@@ -456,35 +475,325 @@ var AnalysisInspector = Backbone.View.extend({
                 row.append(name);
                 row.append(satisfactionValuesDict[initValue].satValue);
 
-                // var appendList = '<tr class="intention-row"><td>' + name + '</td><td>'+satisfactionValuesDict[initValue].satValue+'</td>';
-
                 for (j = 0; j < absTimeValues.length; j++) {
 
-                    // Add select tags for each absolute time point
-                    var selectTd = $('<td></td>');
-                    var selectElement = $('<select></select>');
-                    selectElement.attr('nodeID', intention.nodeID);
-                    selectElement.attr('absTime', absTimeValues[j]);
-                    selectElement.append(options);
-
-                    var intEval = analysisRequest.getUserEvaluationByID(intention.nodeID, absTimeValues[j]);
-
-                    if (intEval != null) {
-                        selectElement.val(intEval.evaluationValue);
-                    }
-
-                    selectTd.append(selectElement);
-                    row.append(selectTd);
+                    	// Add select tags for each absolute time point
+                    	var selectTd = $('<td></td>');
+                    	var selectElement = $('<select></select>');
+                    	selectElement.attr('nodeID', intention.nodeID);
+                    	selectElement.attr('absTime', absTimeValues[j]);
 
 
-                    // var selectTag = '<select id="evalID" nodeID = ' + intention.nodeID + ' absTime = '+ absTimeValues[j] +'>' + options + '</select>'
-                    // appendList += '<td>' + selectTag + '</td>';
+
+            		if (func === "I"|| func === "D"|| func === "C"|| func === "R"){
+                        switch(func){
+                            case "I":
+                                options = this.increasing(initValue);
+                                break;
+                            case "D":
+                                options = this.decreasing(initValue);
+                                break;
+                            case "C":
+                                options = this.constant(initValue);
+                                break;
+                            case "R":
+                                options = this.stochastic();
+                                break;
+                            }
+            		}
+
+            		else if (func === "MP"|| func === "MN"|| func === "CR"|| func === "RC" || func === "SD" || func === "DS"){
+            		//check for every node if there is assigned time 
+            			for ( var k = 0; k < constraints.length;  k++){
+            				if (constraints[k].constranintSrcID === intention.nodeID){
+            					var c = k 
+            				}
+            			}
+            				if (constraints[c].absoluteValue !== -1){
+            					var ti = constraints[c].absoluteValue; 
+                    			var absVal = absTimeValues[j];
+
+            					if (func === "MP"){
+ 									if (absVal < ti) {
+ 										options = this.convertToOptions({"(no value)"});		
+ 									}
+ 									else{
+ 										if (intention.dynamicFunction.functionSegList[1].funcX  === '0010'){
+ 											options = this.convertToOptions({'0010'});	
+ 										}
+ 										else{
+ 											options = this.convertToOptions({'0011'});	
+ 											}
+ 									}
+                	 			}
+
+                	 			else if (func === "MN"){
+ 									if (absVal < ti) {
+ 										options = this.convertToOptions({"(no value)"});		
+ 									}
+ 									else{
+ 										if (intention.dynamicFunction.functionSegList[1].funcX  === '0100'){
+ 											options = this.convertToOptions({'0100'});	
+ 										}
+ 										else{
+ 										options = this.convertToOptions({'1100'});	
+ 										}
+ 									}
+                	 	
+            					}
+
+
+            					else if(func === "RC"){
+                        			if(absVal < ti){
+                                        var possibleValueList = {'0000','0011','0010','1100','0100','empty','no value'};
+                        				options = this.convertToOptions(possibleValueList);
+                       				}
+	                       			else{
+										var funcX = intention.dynamicFunction.functionSegList[1].funcX;
+                                        switch(funcX){
+                                            case '0000':
+                                            options = this.convertToOptions({'0000'});
+                                            break;
+                                            case '0011':
+                                            options = this.convertToOptions({'0011'});
+                                            break;
+                                            case '0100':
+                                            options = this.convertToOptions({'0100'});
+                                             break;
+                                            case '1100':
+                                            options = this.convertToOptions({'1100'});
+                                            break;
+                                            case '0010':
+                                            options = this.convertToOptions({'0010'});
+                                            break;
+                                        }
+	                       			}
+                     			}
+
+                    			else if(func === "CR"){
+                    				if(absVal < ti){
+                        				var funcX = intention.dynamicFunction.functionSegList[1].funcX;
+                           				switch(funcX){
+		                               		case '0000':
+		                                  	options = this.convertToOptions({'0000'});
+		                                    break;
+		                               		case '0011':
+		                                   	options = this.convertToOptions({'0011'});
+		                                    break;
+		                               		case '0100':
+		                                   	options = this.convertToOptions({'0100'});
+		                                     break;
+		                               		case '1100':
+		                                   	options = this.convertToOptions({'1100'});
+		                                    break;
+		                               		case '0010':
+		                                    options = this.convertToOptions({'0010'});
+		                                    break;
+                           				}
+                        			}
+			                       	else{
+                                       var possibleValueList = {'0000','0011','0010','1100','0100','empty','no value'};
+			                           options = this.convertToOptions(possibleValueList);
+			                       	}
+                     			}
+
+			                    else if(func === "SD"){
+
+			                    	if (absVal < ti) {
+			                    		options = this.convertToOptions({'0011'});	
+			                    	}
+			                    	else{
+			                    		options = this.convertToOptions({'1100'});
+			                    	}
+			                    	
+			                    }
+
+			                    else if(func === "DS"){
+			                    	if (absVal < ti) {
+			                    		options = this.convertToOptions({"1100"});		
+			                    	}
+			                    	else{
+			                    		options = this.convertToOptions({'0011'});	
+			                    	}
+			                    }
+			                }
+			                else{
+			                	options = this.convertToOptions({'empty'});
+			                }
+			        }
+
+            	else if (func = "UD"){
+                	var time_list = []
+                	for ( var i = 0; i < constraints.length; i ++){
+                    	if (constraints[i].constranintSrcID === intention.nodeID){
+                    		time_list.push(constraints[i].absoluteValue);
+                    	}
+                  	}
+
+                	var assigned = true; 
+                	for (var i =0 ; i<time_list.length; i++){
+                    	if (time_list[i] == -1){
+                      		assigned = false;
+                      		break
+                    	}
+                  	}
+
+                  	if (assigned === true){
+                    	var func_list = intention.dynamicFunction.functionSegList;
+                    	for (var i = 0 ; i < func_list.length; i++ )  {
+                    		var funcType = func_list.funcType;
+                      		var funcX = func_list.funcX;
+                      		switch(funcType){
+                                case "I":
+                                  options = this.increasing(funcX);
+                                    break;
+                                case "D":
+                                  options = this.decreasing(funcX);
+                                  break;
+                                case "C":
+                                  options = this.constant(funcX);
+                                  break;
+                                case "R":
+                                  options = this.stochastic();
+                                  break;
+                            }
+                    	}
+                  	}
+                  	else{
+                    	options = this.convertToOptions({'empty'});
+                  	}
                 }
-                $('#interm-list').append(row);
 
-            }
+                selectElement.append(options);
+
+                var intEval = analysisRequest.getUserEvaluationByID(intention.nodeID, absTimeValues[j]);
+
+                if (intEval != null) {
+                  selectElement.val(intEval.evaluationValue);
+                }
+
+                selectTd.append(selectElement);
+                row.append(selectTd);
+
+            	
+            	
+        }			
+         
+        
+},
+
+	comparisonSwitch: function(valueToEncode){
+   var tempInput;
+   switch(valueToEncode){
+       case '0000':
+           tempInput = 0;
+           break;
+       case '0011':
+           tempInput = -2;
+           break;
+       case '0010':
+           tempInput = -1;
+           break;
+       case '0100':
+           tempInput = 1;
+           break;
+       case '1100':
+           tempInput = 2;
+           break;
+   }
+   return tempInput;
+},
+
+isIncreasing: function(inputValue, valueToCompare){
+   var tempInput = this.comparisonSwitch(inputValue);
+   var tempCompare = this.comparisonSwitch(valueToCompare);
+   if (tempInput < tempCompare){
+       return false;
+   }
+   else{
+       return true;
+   }
+},
+
+isDecreasing: function(inputValue, valueToCompare){
+   var tempInput = this.comparisonSwitch(inputValue);
+   var tempCompare = this.comparisonSwitch(valueToCompare);
+   if(tempInput <= tempCompare){
+       return true;
+   }
+   else{
+       return false;
+   }
+},
+
+increasing: function(initValue){
+    var possibleValueList = {'0000','0011','0010','1100','0100'};
+    var valueForOptions = {};
+    for(var i = 0; i <possibleValueList.length();i++){
+        if(isIncreasing(possibleValueList[i],initialValue)){
+            valueForOptions.push(possibleValueList[i]);
         }
-    },
+    }
+    return this.convertToOptions(valueForOptions);
+},
+
+decreasing: function(initValue){
+    var possibleValueList = {'0000','0011','0010','1100','0100'};
+    var valueForOptions = {};
+    for(var i = 0; i <possibleValueList.length();i++){
+        if(isDecreasing(possibleValueList[i],initialValue)){
+            valueForOptions.push(possibleValueList[i]);
+        }
+    }
+    return this.convertToOptions(valueForOptions);
+},
+
+constant: function(initValue){
+    return this.convertToOptions({initValue});
+},
+
+stochastic: function(){
+    var possibleValueList = {'0000','0011','0010','1100','0100', 'no value'};
+    return this.convertToOptions(possibleValueList);
+},
+
+binaryToOption: function(binaryString){
+    var optionString = '';
+    switch(binaryString){
+        case "0000":
+            optionString = `<option value="0000">None (⊥, ⊥) </option>`;
+            break;
+        case "0011":
+            optionString = `<option value="0011">Satisfied (F, ⊥) </option>`;
+            break;
+        case "0010":
+            optionString = `<option value="0010">Partially Satisfied (P, ⊥) </option>`;
+            break;
+        case "0100":
+            optionString = `<option value="0100">Partially Denied (⊥, P)</option>`;
+            break;
+        case "1100":
+            optionString = `<option value="1100">Denied (⊥, F) </option>`;
+            break;
+        case 'empty':
+            optionString = `<option value="empty"> --- </option>`;
+            break;
+        case 'no value':
+            optionString = `<option value="(no value)">(no value)</option>`;
+            break; 
+    }
+    return optionString;
+},
+
+convertToOptions: function(choiceList){
+    var theOptionString = ``;
+    for(var i = 0; i < choiceList.length; i++){
+        var curString = this.binaryToOption(choiceList[i]);
+        theOptionString += curString;
+    }
+    return convertToOptions;
+},
+
     // Dismiss modal box
     dismissModalBox: function(e){
         var modal = document.getElementById('myModal');
@@ -625,6 +934,7 @@ var AnalysisInspector = Backbone.View.extend({
                 }
 
                 analysisRequest.userAssignmentsList.push(new UserEvaluation(nodeID, absTime, evalLabel));
+                console.log(analysisRequest.userAssignmentsList);
 
             });
         });
