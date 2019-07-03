@@ -438,8 +438,10 @@ var AnalysisInspector = Backbone.View.extend({
 			}
 		}
 	absTimeValues.sort();
-	console.log(absTimeValues);
-
+	if (absTimeValues[0] === ""){
+		absTimeValues.splice(0,1)
+	}
+	console.log(absTimeValues)
 	for (var s = 0; s < absTimeValues.length; s++) {
 		$('#header-row').append('<th>Absolute</th>');
 		$('#intentionRows').append('<th>' + absTimeValues[s] + '</th>');
@@ -995,7 +997,7 @@ var AnalysisInspector = Backbone.View.extend({
                 }
 
                 analysisRequest.userAssignmentsList.push(new UserEvaluation(nodeID, absTime, evalLabel));
-                console.log(analysisRequest.userAssignmentsList);
+                
 
             });
         });
