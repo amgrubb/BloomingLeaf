@@ -502,7 +502,7 @@ var AnalysisInspector = Backbone.View.extend({
 					if (func === "MP") {
 						if (absVal < ti) {
 							var finalValue = intention.functionSegList[0];
-							options = increasing(intialValue, finalValue);
+							options = this.increasing(initValue, finalValue);
 						} else {
 							if (intention.dynamicFunction.functionSegList[1].funcX === '0010') {
 								options = this.convertToOptions(['0010']);
@@ -513,7 +513,7 @@ var AnalysisInspector = Backbone.View.extend({
 					} else if (func === "MN") {
 						if (absVal < ti) {
 							var finalValue = intention.functionSegList[0];
-							options = decreasing(intialValue, finalValue);
+							options = this.decreasing(initValue, finalValue);
 						} else {
 							if (intention.dynamicFunction.functionSegList[1].funcX === '0100') {
 								options = this.convertToOptions(['0100']);
@@ -734,6 +734,7 @@ var AnalysisInspector = Backbone.View.extend({
 		}
 		else{
 			var withFinal = [];
+			var withFinalTwo =[];
 			for (var i = 0; i < possibleValueList.length; i++) {
 				if (this.isIncreasing(possibleValueList[i], initValue)) {
 					valueForOptions.push(possibleValueList[i]);
@@ -744,7 +745,12 @@ var AnalysisInspector = Backbone.View.extend({
 					withFinal.push(valueForOptions[i]);
 				}
 			}
-			return this.convertToOptions(withFinal);
+			for(var i = 0; i < withFinal.length; i++){
+				if(!(withFinal[i]===finalValue)){
+					withFinalTwo.push(withFinal[i]);
+				}
+			}
+			return this.convertToOptions(withFinalTwo);
 		}
 	},
 
@@ -764,6 +770,7 @@ var AnalysisInspector = Backbone.View.extend({
 		}
 		else {
 			var withFinal = [];
+			var withFinalTwo  = [];
 			for (var i = 0; i < possibleValueList.length; i++) {
 				if (this.isDecreasing(possibleValueList[i], initValue)) {
 					valueForOptions.push(possibleValueList[i]);
@@ -774,7 +781,12 @@ var AnalysisInspector = Backbone.View.extend({
 					withFinal.push(valueForOptions[i]);
 				}
 			}
-			return this.convertToOptions(withFinal);
+			for(var i = 0; i< withFinal.length; i++){
+				if(!(withFinal[i]===finalValue)){
+					withFinalTwo.push(withFinal[i]);
+				}
+			}
+			return this.convertToOptions(withFinalTwo);
 
 		}
 	},
