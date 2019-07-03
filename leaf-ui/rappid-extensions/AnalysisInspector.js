@@ -641,19 +641,16 @@ var AnalysisInspector = Backbone.View.extend({
 					options = this.convertToOptions(['empty']);
 				}
 
+			var intEval = analysisRequest.getUserEvaluationByID(intention.nodeID, absTimeValues[j]);
+
+			if (intEval != null) {
+				selectElement.val(intEval.evaluationValue);
+			}
+			selectElement.append(options);
+			selectTd.append(selectElement);
+			row.append(selectTd);
 
 			}
-
-		var intEval = analysisRequest.getUserEvaluationByID(intention.nodeID, absTimeValues[j]);
-
-		if (intEval != null) {
-			selectElement.val(intEval.evaluationValue);
-		}
-		selectElement.append(options);
-		selectTd.append(selectElement);
-		row.append(selectTd);
-
-		}
 		$('#interm-list').append(row);
 	}
 },
@@ -834,8 +831,8 @@ var AnalysisInspector = Backbone.View.extend({
 
 	/**
 	 *
-	 * @param choiceList: this is a list of
-	 * @returns {string}
+	 * @param choiceList: A list that contains binary strings of valid values
+	 * @returns {List that contains strings that are the string encoding of the binary strings in the choiceList}
 	 */
 	convertToOptions: function(choiceList){
 		var theOptionString = ``;
