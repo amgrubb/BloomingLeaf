@@ -501,8 +501,8 @@ var AnalysisInspector = Backbone.View.extend({
 
 					if (func === "MP") {
 						if (absVal < ti) {
-							var finalValue = intention.functionSegList[0];
-							options = increasing(intialValue, finalValue);
+							var finalValue = intention.dynamicFunction.functionSegList[0].funcX;
+							options = this.increasing(initValue, finalValue);
 						} else {
 							if (intention.dynamicFunction.functionSegList[1].funcX === '0010') {
 								options = this.convertToOptions(['0010']);
@@ -512,8 +512,8 @@ var AnalysisInspector = Backbone.View.extend({
 						}
 					} else if (func === "MN") {
 						if (absVal < ti) {
-							var finalValue = intention.functionSegList[0];
-							options = decreasing(intialValue, finalValue);
+							var finalValue = intention.dynamicFunction.functionSegList[0].funcX;
+							options = this.decreasing(initValue, finalValue);
 						} else {
 							if (intention.dynamicFunction.functionSegList[1].funcX === '0100') {
 								options = this.convertToOptions(['0100']);
@@ -642,7 +642,7 @@ var AnalysisInspector = Backbone.View.extend({
 				}
 
 
-			}
+			
 
 		var intEval = analysisRequest.getUserEvaluationByID(intention.nodeID, absTimeValues[j]);
 
