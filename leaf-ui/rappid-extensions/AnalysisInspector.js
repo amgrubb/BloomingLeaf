@@ -617,31 +617,35 @@ var AnalysisInspector = Backbone.View.extend({
 					}
 				}
 
-					if (assigned === true) {
-						var func_list = intention.dynamicFunction.functionSegList;
-						for (var i = 0; i < func_list[i].length; i++) {
-							var funcType = func_list[i].funcType;
-							var funcX = func_list.funcX;
-							switch (funcType) {
-								case "I":
-									options = this.increasing(funcX,'noFinal');
-									break;
-								case "D":
-									options = this.decreasing(funcX,'noFinal');
-									break;
-								case "C":
-									options = this.constant(funcX);
-									break;
-								case "R":
-									options = this.stochastic();
-									break;
-							}
+				if (assigned === true) {
+					var func_list = intention.dynamicFunction.functionSegList;
+					console.log(func_list);
+					for (var i = 0; i < func_list.length; i++) {
+						var funcType = func_list[i].funcType;
+						var funcX = func_list[i].funcX;
+						console.log(funcType);
+						switch (funcType) {
+							case "I":
+								options = this.increasing(funcX,'noFinal');
+								break;
+							case "D":
+								options = this.decreasing(funcX,'noFinal');
+								break;
+							case "C":
+								console.log("in constant")
+								options = this.constant(funcX);
+								break;
+							case "R":
+								options = this.stochastic();
+								break;
 						}
+						
 					}
 				}
 				else {
 					options = this.convertToOptions(['empty']);
 				}
+			}
 
 			var intEval = analysisRequest.getUserEvaluationByID(intention.nodeID, absTimeValues[j]);
 
