@@ -632,7 +632,6 @@ var AnalysisInspector = Backbone.View.extend({
 								options = this.decreasing(funcX,'noFinal');
 								break;
 							case "C":
-								console.log("in constant")
 								options = this.constant(funcX);
 								break;
 							case "R":
@@ -801,7 +800,7 @@ var AnalysisInspector = Backbone.View.extend({
 	*This function takes in an initial value and return a list of strings for options that contains values that are equal to the initial value
 	 */
 	constant: function(initValue){
-		return this.convertToOptions({initValue});
+		return this.convertToOptions([initValue]);
 	},
 
 
@@ -1041,9 +1040,6 @@ var AnalysisInspector = Backbone.View.extend({
 
         $('#rel-intention-assignents').append('<tr><td>' + epochHtml1 + '</td><td>' + relationship +
             '</td><td>'+ epochHtml2 +'</td><td><i class="fa fa-trash-o fa-2x" id="removeIntention" aria-hidden="true"></i></td></tr>');
-        // $("#removeIntention").prop('onclick', function() {
-        // 	console.log('hello');
-        // });
     },
 
     setDeleteRelAssignmentListener: function() {
