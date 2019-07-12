@@ -17,7 +17,7 @@ This file explains how to run the tool using a Node.js server.
 
 
 2. Run Node Server
-	i) The leaf-analysis folder should be structured in the following way: 
+	a) The leaf-analysis folder should be structured in the following way: 
 	
 	1. Place app.js file in the leaf-analysis folder. In the app.js file on line 6, update use path to be the absolte path 	       to the folder BloomingLeaf.
 	
@@ -28,7 +28,7 @@ This file explains how to run the tool using a Node.js server.
 	4. There is one more folder in leaf-analysis, and it is called the temp. The temp folder is where the default.json and 	       output.out files are written.  
 	
 
-	ii) In terminal (or cmd on Windows) type the following command: 
+	b) In terminal (or cmd on Windows) type the following command: 
 	
 	1. cd  in the leaf-analysis floder (path of the directory containing both app.js and temp folder)
 	
