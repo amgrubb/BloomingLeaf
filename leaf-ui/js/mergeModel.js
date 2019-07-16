@@ -43,18 +43,60 @@ function findToMergePairs(){
 				var time2DArray = [];
 				for(value in nodeTimeDict1[key1]){
 					var timeTuple = [value, 1];
-					time2DArray.append(timeTuple);
+					time2DArray.push(timeTuple);
 				}
 				for(value in nodeTimeDict2[key2]){
 					var timeTuple = [value,2];
-					time2DArray.append(timeTuple);
+					time2DArray.push(timeTuple);
 				}
 				//sort time2DArray according to the time value
 				//enter cases accordinly
-				
+				time2DArray = sort(time2DArray);
 			}
 		}
 	}
+}
+
+
+/*
+Using merge sort to sort the time2DArray 
+*/
+function sort(twoDArray){
+	if(twoDArray.length < 2){
+		return twoDArray;
+	}
+	var middle = Math.floor(twoDArray.length/2);
+	var rightArray = twoDArray.slice(middle);
+	var leftArray = twoDArray.slice(0,middle);
+	return merge(sort(leftArray), sort(rightArray));
+}
+
+function merge(leftList, rightList){
+	var i = 0; 
+	var j = 0; 
+	var lenLeft = leftList.length; 
+	var lenRight = rightList.length;
+	var toReturn; 
+	while(i < lenLeft && j < lenRight){
+		if(leftList[i][0] < rightList[j][0]){
+			toReturn.push(leftList[i]);
+			i++; 
+		}
+		else
+		{
+			toReturn.push(rightList[j]);
+			j++;
+		}
+	}
+
+	//glue the rest part of the list into the result
+	if((lenRight - j) > 1 ){
+		toReturn.concat(rightList.slice(j));
+	}
+	if((lenLeft - i) > 1){
+		toReturn.concat(leftList.slice(i)); 
+	}
+	return toReturn;
 }
 
 
