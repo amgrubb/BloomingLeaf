@@ -2,14 +2,7 @@
 1. get the name of the node
 2. get the starting and the ending point of each function
 3. merge those together and output a new json file that contains those merged information
-
-
-
-Functions: 
-function getNode
-function getTimePoints
-function findMatchPoint?:
-then go to cases: 
+cases: 
 1. doesn't have intersection: 
 	a. doesn't have gaps
 	b. has gaps
@@ -57,7 +50,6 @@ function findToMergePairs(){
 			}
 		}
 	}
-
 }
 
 /*
@@ -69,21 +61,35 @@ In this way, there are two possible patterns in mergedDictionary[key]:
 function switchCases(mergedDictionary){
 	for(var key in mergedDictionary){
 		if(mergedDictionary[key].length <= 2){
+			//this is to check whether there is a gap due to the max time in either model
+			var isGap = false; 
+			for(var i = 0; i < mergedDictionary[key].length; i++){
+				if
+			}
 
+			if(!isGap){
+				noGapNoConflict(model1,mergedDictionary[key][i]);
+			}
+			else{
+				withGapNoConflict(model1,);
+			}
 		}
 		else{
-			for(var i = 0; i < mergedDictionary[key].length - 1 ; i++){
+			for(var i = 0; i < mergedDictionary[key].length - 1 ; i=i+2){
 				if((mergedDictionary[key][i][1] === mergedDictionary[key][i+1][1])
 					&& (!(mergedDictionary[key][i][0] === mergedDictionary[key][i+1][0])))
 				{
 					//cases that there are no conflict and there is a gap between two intervals
+					noGapNoConflict(model1,mergedDictionary[key][i]);
 				}
 				else if(mergedDictionary[key][i][0] === mergedDictionary[key][i+1][0])
 				{
 					//cases that there is neither time conflict nor gap
+					noGapNoConflict(model1,mergedDictionary[key][i]);
 				}
 				else{
 					//cases that there are time conflict
+					withConflict(model,mergedDictionary[key][i]);
 				}
 			}
 		} 
@@ -131,4 +137,18 @@ function merge(leftList, rightList){
 	return toReturn;
 }
 
+/*deal with the cases which there is neither gap nor time conflict*/
+function noGapNoConflict(){
+
+}
+
+/*deal with the cases which there is time conflict but there is gap*/
+function withGapNoConflict(){
+
+}
+
+/*deal with the cases which there is time conflict*/
+function withConflict(){
+
+}
 
