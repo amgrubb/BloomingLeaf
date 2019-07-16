@@ -18,6 +18,7 @@ then go to cases:
 */
 var nodeTimeDict1 = {};
 var nodeTimeDict2 = {};
+var mergedDictionary = {};
 
 function createNodeTimeMap(model1, model2){
 	for(var i = 0; i < model1.intentions.length; i++){
@@ -41,22 +42,53 @@ function findToMergePairs(){
 				or that time value belongs to the second model
 				*/
 				var time2DArray = [];
-				for(value in nodeTimeDict1[key1]){
+				for(var value in nodeTimeDict1[key1]){
 					var timeTuple = [value, 1];
 					time2DArray.push(timeTuple);
 				}
-				for(value in nodeTimeDict2[key2]){
+				for(var value in nodeTimeDict2[key2]){
 					var timeTuple = [value,2];
 					time2DArray.push(timeTuple);
 				}
 				//sort time2DArray according to the time value
 				//enter cases accordinly
 				time2DArray = sort(time2DArray);
+				mergedDictionary[key1] = time2DArray;
 			}
 		}
 	}
+
 }
 
+/*
+Without losing ngenerality, denote the second element of the first tuple to be 1.
+In this way, there are two possible patterns in mergedDictionary[key]:
+1) 1..2..1..2
+2) 1..1..2..2
+*/
+function switchCases(mergedDictionary){
+	for(var key in mergedDictionary){
+		if(mergedDictionary[key].length <= 2){
+
+		}
+		else{
+			for(var i = 0; i < mergedDictionary[key].length - 1 ; i++){
+				if((mergedDictionary[key][i][1] === mergedDictionary[key][i+1][1])
+					&& (!(mergedDictionary[key][i][0] === mergedDictionary[key][i+1][0])))
+				{
+					//cases that there are no conflict and there is a gap between two intervals
+				}
+				else if(mergedDictionary[key][i][0] === mergedDictionary[key][i+1][0])
+				{
+					//cases that there is neither time conflict nor gap
+				}
+				else{
+					//cases that there are time conflict
+				}
+			}
+		} 
+	}
+}
 
 /*
 Using merge sort to sort the time2DArray 
