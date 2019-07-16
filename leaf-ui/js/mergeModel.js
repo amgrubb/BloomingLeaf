@@ -14,13 +14,32 @@ var nodeTimeDict2 = {};
 var mergedDictionary = {};
 
 function createNodeTimeMap(model1, model2){
-	for(var i = 0; i < model1.intentions.length; i++){
-		var intention = model1.intentions[i];
-		nodeTimeDict1[intention.nodeName]=constraints;
+	for(var constraint in model1.constarints){
+		var nodeId = constraint.constraintSrcID;
+		if(!(nodeTimeDict1[nodeId]==null)){
+			nodeTimeDict1[nodeId] = [constraint.absoluteValue];
+		}
+		else{
+			nodeTimeDict1[nodeId].push(constraint.absoluteValue);
+		}
 	}
-	for(var i = 0; i < model2.intentions.length; i++){
-		var intention = model2.intentions[i];
-		nodeTimeDict2[intention.nodeName]=constraints;
+
+	for(var constraint in model2.constarints){
+		var nodeId = constraint.constraintSrcID;
+		if(!(nodeTimeDict2[nodeId]==null)){
+			nodeTimeDict2[nodeId] = [constraint.absoluteValue];
+		}
+		else{
+			nodeTimeDict2[nodeId].push(constraint.absoluteValue);
+		}
+	}
+
+	//push maxtime to value of each node
+	for(var key in nodeTimeDict1){
+		nodeTimeDic1[key].push(model1.maxAbsTime);
+	}
+	for(var key in nodeTimeDict2){
+		nodeTimeDic2[key].push(model2.maxAbsTime);
 	}
 }
 
@@ -60,26 +79,17 @@ In this way, there are two possible patterns in mergedDictionary[key]:
 */
 function switchCases(mergedDictionary){
 	for(var key in mergedDictionary){
-		if(mergedDictionary[key].length <= 2){
-			//this is to check whether there is a gap due to the max time in either model
-			var isGap = false; 
-			for(var i = 0; i < mergedDictionary[key].length; i++){
-				if
-			}
-
-			if(!isGap){
-				noGapNoConflict(model1,mergedDictionary[key][i]);
-			}
-			else{
-				withGapNoConflict(model1,);
-			}
+		if(mergedDictionary[key].length < 2){
+			//this case is only possible when only model1 or model 2 contains this node
+			//so no gap no time conflict
+			return noGapNoConflict(model1,mergedDictionary[key]);
 		}
 		else{
 			for(var i = 0; i < mergedDictionary[key].length - 1 ; i=i+2){
 				if((mergedDictionary[key][i][1] === mergedDictionary[key][i+1][1])
 					&& (!(mergedDictionary[key][i][0] === mergedDictionary[key][i+1][0])))
 				{
-					//cases that there are no conflict and there is a gap between two intervals
+					//cases that there is no conflict and there is a gap between two intervals
 					noGapNoConflict(model1,mergedDictionary[key][i]);
 				}
 				else if(mergedDictionary[key][i][0] === mergedDictionary[key][i+1][0])
@@ -88,7 +98,7 @@ function switchCases(mergedDictionary){
 					noGapNoConflict(model1,mergedDictionary[key][i]);
 				}
 				else{
-					//cases that there are time conflict
+					//cases that there are time conflicts
 					withConflict(model,mergedDictionary[key][i]);
 				}
 			}
@@ -126,7 +136,6 @@ function merge(leftList, rightList){
 			j++;
 		}
 	}
-
 	//glue the rest part of the list into the result
 	if((lenRight - j) > 1 ){
 		toReturn.concat(rightList.slice(j));
@@ -138,17 +147,17 @@ function merge(leftList, rightList){
 }
 
 /*deal with the cases which there is neither gap nor time conflict*/
-function noGapNoConflict(){
+function noGapNoConflict(model1, ){
 
 }
 
 /*deal with the cases which there is time conflict but there is gap*/
-function withGapNoConflict(){
+function withGapNoConflict(model1, ){
 
 }
 
 /*deal with the cases which there is time conflict*/
-function withConflict(){
-
+function withConflict(model1, ){
+	//what to do here?
 }
 
