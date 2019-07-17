@@ -183,6 +183,7 @@ var AnalysisInspector = Backbone.View.extend({
 		//Create the object and fill the JSON file to be sent to backend.
 		//Get the AnalysisInspector view information
 		analysisRequest.action = "allNextStates";
+
 		analysisRequest.previousAnalysis = _.clone(savedAnalysisData.singlePathResult);
 		// need to remove TPs after current point from previous solution?
 		// update the time point for potentialEpoch
@@ -209,6 +210,7 @@ var AnalysisInspector = Backbone.View.extend({
 
 		console.log(analysisRequest);
 
+
 		//Prepare and send data to backend
 		this.sendToBackend();
 	},
@@ -231,8 +233,10 @@ var AnalysisInspector = Backbone.View.extend({
 		console.log(jsObject);
 		//Send data to backend
 		var isNodeServer = true;
+
 		backendComm(isNodeServer, jsObject);
 		;
+
 	},
 
 	/**
@@ -314,8 +318,10 @@ var AnalysisInspector = Backbone.View.extend({
 		analysisRequest.conflictLevel = $('#conflict-level').val()[0];
 	},
 
+
 	changeAbsTimePts: function (event) {
-		var regex = new RegExp("^(([1-9]0*)+\\s+)*([1-9]+0*)*$");
+	var regex = new RegExp("^(([1-9]0*)+\\s+)*([1-9]+0*)*$");
+
 
 		var absTime = $('#abs-time-pts');
 		if (regex.test(absTime.val())) {
@@ -351,6 +357,9 @@ var AnalysisInspector = Backbone.View.extend({
 			var intentionName = intention.nodeName;
 			//console.log(intentionName);
 
+
+
+
 			// nameIdMapper[name] = intention.nodeID;
 			if (funcType == 'RC' || funcType == 'CR' || funcType == 'MP' ||
 				funcType == 'MN' || funcType == 'SD' || funcType == 'DS') {
@@ -365,10 +374,12 @@ var AnalysisInspector = Backbone.View.extend({
 					'<td><input type="number" name="sth" value="' + defaultVal + '"></td>' + btnHtml + '</tr>');
 			} else if (funcType == 'UD') {
 
+
 				// the number of function transitions, is the number of functions minus one
 				var funcTransitions = intention.dynamicFunction.functionSegList.length - 1;
 				var currBound = 'A';
 				for (var j = 0; j < funcTransitions; j++) {
+
 
 					// default value to display
 					var absTime = intention.getAbsConstTime(currBound);
@@ -381,8 +392,10 @@ var AnalysisInspector = Backbone.View.extend({
 			}
 		}
 
+
 		//loadIntermediateValues();
 	},
+
 
 	/**
 	 * Returns an array of numbers containing numbers that the
@@ -691,6 +704,7 @@ var AnalysisInspector = Backbone.View.extend({
 	   return tempInput;
 	},
 
+
 	/**
 	*this function takes in two values the first one is the binary string of the input value
 	* and the second one is the binary string of the value to compare.
@@ -706,6 +720,7 @@ var AnalysisInspector = Backbone.View.extend({
 		   return true;
 	   }
 	},
+
 
 	/**
 	*this function takes in two values the first one is the binary string of the input value
@@ -860,6 +875,7 @@ var AnalysisInspector = Backbone.View.extend({
 		return theOptionString;
 	},
 
+
     // Dismiss modal box
     dismissModalBox: function(e){
         var modal = document.getElementById('myModal');
@@ -1000,7 +1016,9 @@ var AnalysisInspector = Backbone.View.extend({
                 }
 
                 analysisRequest.userAssignmentsList.push(new UserEvaluation(nodeID, absTime, evalLabel));
+
                 
+
 
             });
         });
