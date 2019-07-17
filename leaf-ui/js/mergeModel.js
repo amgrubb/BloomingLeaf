@@ -13,6 +13,8 @@ var nodeTimeDict1 = {};
 var nodeTimeDict2 = {};
 var mergedDictionary = {};
 
+
+
 function createNodeTimeMap(model1, model2){
 	for(var constraint in model1.constarints){
 		var nodeId = constraint.constraintSrcID;
@@ -146,18 +148,166 @@ function merge(leftList, rightList){
 	return toReturn;
 }
 
+
+
+
+
+
 /*deal with the cases which there is neither gap nor time conflict*/
-function noGapNoConflict(model1, ){
+//assume model1 happens first
+function noGapNoConflict(model1, model2, delta){
+	//2. add intentions
+	//need to prevent the repetition of the node id
+		//if name different, then different id
+		//if name the same, then leave it alone
+	var newIntentions = [];
+	var curCountForID = 0;
+	for(var intention1 in model1.intentions){
+		var newID = createID(curCountForID);
+		for(var i = 0; i < model1.links.length; i++){
+			if(model1.links[i].linkSrcID === intention1.nodeID){
+				model1.links[i].linkSrcID = newID;
+			}
+			if(model1.links[i].linkDestID === intention1.nodeID){
+				model1.links[i].linkDestID = newID;
+			}
+		}
+		intention1.nodeID = newID; 
+		intention1.dynamicFunction.intentionID = newID; 
+		newIntentions.push(intention1);
+		curCountForID ++;
+	}
+
+	for(var intention2 in model2.intentions){
+		for(var intention in newIntentions){
+			if(!((intention.nodeName === intention2.nodeName)
+				&&(intention.nodeType === intention2.nodeType))){
+				var newID = createID(curCountForID);
+				for(var i = 0; i < model2.links.length; i++){
+					if(model2.links[i].linkSrcID === intention2.nodeID){
+						model2.links[i].linkSrcID = newID;
+					}
+					if(model2.links[i].linkDestID === intention2.nodeID){
+						model2.links[i].linkDestID = newID;
+					}
+				}
+
+				intention2.nodeID = newID; 
+				intention2.dynamicFunction.intentionID = newID; 
+				newIntentions.push(intention2);
+				curCountForID ++;
+			}
+		}
+	}
+
+	//modify links
+	//change linkID, change linkSrcID
+	var newLinks = [];
+	var linkCount = 0
+	for(var link in model1.links){
+		var newID = createID(linkCount);
+		link.linkID = newID;
+		linkCount ++;
+		newLinks.push(link);
+	}
+
+
+	for(var link in model2.links){
+		var isInNewLink = false;
+		for(var newLink in newLinks){
+			if(isSameLink(newLink,link)){
+				isInNewLink = true;
+			}
+		}
+		if(!isInNewLink){
+			var newID = createID(linkCount); 
+			link.linkID = newID; 
+			linkCount ++;
+			newLinks.push(link);
+		}
+	}
+
+
+	//update link source ID
+	//1. update all of the constraints & absValues
+	var maxTime1 = model1.maxAbsTime;
+	var newConstraints1 = model1.constraints;
+	var newConstraints2= updateAbs(model2.constraints,delta,maxTime1);
+	for(var constriant in newConstraints2){
+		newConstraints1.push(constraint);
+	}
+	model1.constraints = newConstaints1;
+	//3. update functions
+
+
+
+	//3. deal with conflict value? 
+
+
+
+}
+
+
+function isSameLink(link1, link2){
+	var isSame = true; 
+	for(var attribute in link1){
+		if(!(link1[attribute] === link2[attribute]){
+			isSame = false;
+		}
+	}
+	return isSame;
+}
+/**
+* Creates and returns a 4 digit ID for this node
+*
+* @returns {String}
+*/
+function createID(curCountForID) {
+        var id = newID.toString();
+        while (id.length < 4){
+                id = '0' + id;
+        }
+        return id;
+}
+
+function updateAbs(constraints2, delta, maxTime1){
+	var updatedConstraint2 = [];
+	var toAdd = maxTime1 + delta; 
+	for(var constraint in constarints2){
+		constraint.absoluteValue += toAdd;
+		updateConstraint2.push(constraint);
+	}
+	return updateConstraint2;
 
 }
 
 /*deal with the cases which there is time conflict but there is gap*/
-function withGapNoConflict(model1, ){
+function withGapNoConflict(model1, model2){
+	//TBD
+	//not decided yet
 
 }
 
 /*deal with the cases which there is time conflict*/
-function withConflict(model1, ){
-	//what to do here?
+function withConflict(model1, model2, delta){
+	//TBD
+	//not decided yet
+}
+
+
+
+
+
+
+function mergeModels(delta, model1, model2){
+	if(delta > 0){
+		withGapNoConflict(model1, model2, delta);
+	}
+	else if(delta == 0){
+		noGapNoConflict(model1, model2);
+	}
+	else{
+		withConflict(model1, model2, delta);
+	}
 }
 
