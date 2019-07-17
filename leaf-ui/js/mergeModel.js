@@ -240,7 +240,7 @@ function noGapNoConflict(model1, model2, delta){
 	model1.constraints = newConstaints1;
 
 	//3. update functions
-
+	//if same node, put what are in the funcSegList into that of the other node
 
 
 	//3. deal with conflict value? 
