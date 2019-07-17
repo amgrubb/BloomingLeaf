@@ -156,10 +156,11 @@ function merge(leftList, rightList){
 /*deal with the cases which there is neither gap nor time conflict*/
 //assume model1 happens first
 function noGapNoConflict(model1, model2, delta){
-	//2. add intentions
+	//add intentions
 	//need to prevent the repetition of the node id
 		//if name different, then different id
 		//if name the same, then leave it alone
+	//change linkDestID, change linkSrcID accordingly
 	var newIntentions = [];
 	var curCountForID = 0;
 	for(var intention1 in model1.intentions){
@@ -201,7 +202,6 @@ function noGapNoConflict(model1, model2, delta){
 	}
 
 	//modify links
-	//change linkID, change linkSrcID
 	var newLinks = [];
 	var linkCount = 0
 	for(var link in model1.links){
@@ -230,6 +230,7 @@ function noGapNoConflict(model1, model2, delta){
 
 	//update link source ID
 	//1. update all of the constraints & absValues
+	//prevent name conflict?
 	var maxTime1 = model1.maxAbsTime;
 	var newConstraints1 = model1.constraints;
 	var newConstraints2= updateAbs(model2.constraints,delta,maxTime1);
@@ -237,6 +238,7 @@ function noGapNoConflict(model1, model2, delta){
 		newConstraints1.push(constraint);
 	}
 	model1.constraints = newConstaints1;
+
 	//3. update functions
 
 
@@ -257,6 +259,8 @@ function isSameLink(link1, link2){
 	}
 	return isSame;
 }
+
+
 /**
 * Creates and returns a 4 digit ID for this node
 *
