@@ -182,7 +182,7 @@ function noRepetitionOnIntentions(visitedActorIDSet, theActorToAdd){
 			throw "there exist an intention that is in 2 different actors";
 		}
 	}
-	return false; 
+	return noRepetition; 
 }
 
 /*
