@@ -241,16 +241,16 @@ function noGapNoConflict(model1, model2, delta){
 	//TODO: Pack all part that are not function related to another function
 
 	/*
-	1. merge intentions in two models: 
-	need to prevent the repetition of the node id
-		1. if name different, then different id
-		2. if name the same, then leave it alone
+	Merge intentions in two models: 
+	In order to prevent the repetition of the node id, whenever an intention
+	with a different name is added into the newIntentions, a new node id will
+	be assigned to that node. Then, all of the related object that contains
+	that node id will be changed accordngly.
 	*/
 	var models = [model1, model2];
 	var newIntentions = [];
 	var curCountForID = 0;
 	for(var i = 0; i < model1.intentions.length; i++){
-		//intention1 in model1.intentions)
 		var newID = createID(curCountForID);
 		updateIDRelatedObject(newID, model1.intentions[i].nodeID, model1, i);
 		newIntentions.push(intention1);
@@ -270,9 +270,9 @@ function noGapNoConflict(model1, model2, delta){
 				Following updates Functions: 
 				If there are intention in model2
 				with the same name of another intention in model1,
-				then the merged new intetion has a function type of "UD" and it 
+				then the merged intetion will have a function type of "UD" and it 
 				contains all of the function segments in model2 and the function segments 
-				in model1
+				in model1. 
 				*/
 				//TODO: the function stop may need to be modified.
 				if(!(intention2.funcSegList.length == 0)){
@@ -287,13 +287,14 @@ function noGapNoConflict(model1, model2, delta){
 
 	/*
 	merge actors:
-	1. Merge actors with the same name together
-	2. Check whether same name , different actors? If so, raise errors
-	3. Put missings in the actors into the merged actor
+	1. Merge actors with the same name together:
+		Check whether same name , different actors? If so, raise errors, if not, add to merged actors
+	3. Put leftover actors that do not have repetitive intentions into the merged actors. 
 	*/
 	var newActors = [];
 	var actorsNameSet = new Set();
-	/*the following is the set that contains the intention id of each 
+	/*
+	the following is the set that contains the intention id of each 
 	actor that has been visited in the algorithm
 	*/
 	var visitedActorIDSet = new Set();
@@ -438,18 +439,17 @@ function isSameLink(link1, link2){
 	return isSame;
 }
 
-
 /**
 * Creates and returns a 4 digit ID for this intention
 *
 * @returns {String}
 */
 function createID(newID) {
-        var id = newID.toString();
-        while (id.length < 4){
-                id = '0' + id;
-        }
-        return id;
+	var id = newID.toString();
+	while (id.length < 4){
+		id = '0' + id;
+	}
+	return id;
 }
 
 /*This function add the (delta + maxTime1) to all of the absolute values in the
@@ -462,14 +462,12 @@ function updateAbs(constraints2, delta, maxTime1){
 		updateConstraint2.push(constraint);
 	}
 	return updateConstraint2;
-
 }
 
 /*deal with the cases which there is time conflict but there is gap*/
 function withGapNoConflict(model1, model2){
 	//TBD
 	//not decided yet
-
 }
 
 /*deal with the cases which there is time conflict*/
