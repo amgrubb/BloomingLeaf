@@ -174,11 +174,15 @@ This function make sure that there is no intention in the actor to be add to the
 that has been had by other actors that have names different from current actor.
 */
 function noRepetitionOnIntentions(visitedActorIDSet, theActorToAdd){
+	var noRepetition = true; 
 	for(var intentionId in theActorToAdd.intentionIDs){
 		if(theActorToAdd.has(intentionId)){
+			noRepetition = false; 
+			//TODO: will be changed into another way to handle this error
 			throw "there exist an intention that is in 2 different actors";
 		}
 	}
+	return false; 
 }
 
 /*
@@ -235,7 +239,7 @@ function updateIDRelatedObject(newId, curId, model, curIndex){
 function noGapNoConflict(model1, model2, delta){
 
 	//TODO: Pack all part that are not function related to another function
-	
+
 	/*
 	1. merge intentions in two models: 
 	need to prevent the repetition of the node id
