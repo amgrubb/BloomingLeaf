@@ -269,6 +269,8 @@ function noGapNoConflict(model1, model2, delta){
 	}
 
 	//TODO: What to do with conflict value? 
+	//TODO: What is numRelTime?
+	//TODO: What is current state?
 	var newAnalysisRequest = [];
 	for(var assingment in model1.analysisRequest.userAssignmentsList){
 		newAnalysisRequest.push(assignment);
@@ -278,12 +280,25 @@ function noGapNoConflict(model1, model2, delta){
 		numAbs += delta + maxTime1; 
 		model2.analysisRequest.userAssignmentsList[i].absTime = numAbs.toString();
 	}
+	for(var i = 0; i < model2.analysisRequest.absTimePtsArr.length; i++){
+		var absValNum = parseInt(model2.analysisRequest.absTimePtsArr[i]);
+		absValNum += delta + maxTime;
+		model2.analysisRequest.absTimePtsArr[i] = absValNum.toString();
+	}
+
+	var absTimePtsTemp = model2.analysisRequest.absTimePts.split(" ");
+	var stringAbsTimePts = "";
+	for(var num in absTimePtsTemp){
+		var numVal = parseInt(num); 
+		numVal += (delta + maxTime1); 
+		stringAbsTimePts = stringAbsTimePts + numVal.toString() + " ";
+	}
+	stringAbsTimePts = stringAbsTimePts.substr(0, stringAbsTimePts.length - 1);
+	model2.analysisRequest.absTimePts = stringAbsTimePts;
+
 	for(var assignment in model2.analysisRequest.userAssignmentsList){
 		newAnalysisRequest.push(assignment);
 	}
-
-
-
 
 	return newIntentions, newLinks, newConstraints, newAnalysisRequest;
 }
