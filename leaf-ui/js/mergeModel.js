@@ -186,7 +186,12 @@ function noRepetitionOnIntentions(visitedActorIDSet, theActorToAdd){
 This function generates new nodeID for each of the actor in the new merged actors
 */
 function newActorID(counter){
-
+        var id = newID.toString();
+        while (id.length < 3){
+                id = '0' + id;
+        }
+        id = 'a' + id;
+        return id;
 }
 
 
@@ -416,7 +421,7 @@ function isSameLink(link1, link2){
 *
 * @returns {String}
 */
-function createID(curCountForID) {
+function createID(newID) {
         var id = newID.toString();
         while (id.length < 4){
                 id = '0' + id;
