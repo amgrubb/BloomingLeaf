@@ -147,10 +147,46 @@ function merge(leftList, rightList){
 }
 
 /*this function merge two actors with the same name together*/
-function mergeToOneActor(actor1, actor){
+//TODO: missing newNodeID here
+function mergeToOneActor(visitedActorIDSet, actor1, actor2, newNodeID){
+	var actors = [actor1, actor2]; 
+	var actorToReturn = new Object();
+	actorToReturn["nodeID"] = newNodeID;
+	actorToReturn["nodeName"] = actor1.nodeName; 
+	var newIntentionIDs = new Set();
+	for(var i = 0; i < actors.length; i++){
+		var actor = actors[i];
+		if(noRepetitionOnIntentions(visitedActorIDSet, actor)){
+			for(var j = 0; j < actor.intentionIDs.length; j++){
+				newIntentionIDs.add(actor.intentionIDs[i]);
+			}
+		}
+		else{
+			throw "there exist an intention that is in 2 different actors";
+		}
+	}
+	var newIntentionIDsList = [];
+	for (var item of newIntentionIDs.values()){
+		newIntentionIDsList.push(item);
+	}
+	actorToRetun["intentionIDs"] = newIntentionIDsList;
+	return actorToReturn;
+}
+
+/*
+This function make sure that there is no intention in the actor to be add to the merged actors
+that has been had by other actors that have names different from current actor.
+*/
+function noRepetitionOnIntentions(visitedActorIDSet, theActorToAdd){
 
 }
 
+/*
+This function generates new nodeID for each of the actor in the new merged actors
+*/
+function newActorID(counter){
+
+}
 
 /*deal with the cases which there is neither gap nor time conflict*/
 //assume model1 happens first
@@ -165,6 +201,7 @@ function noGapNoConflict(model1, model2, delta){
 	change the function type of the intention to "UD" and add all of the functions in model2 
 	to the function list of the new intention
 	*/
+	var models = [model1, model2];
 	var newIntentions = [];
 	var curCountForID = 0;
 	for(var intention1 in model1.intentions){
@@ -254,27 +291,41 @@ function noGapNoConflict(model1, model2, delta){
 	var newActors = [];
 	var actorsNameSet = new Set();
 	//the following is the set that contains the name of each actor that has been visited in the algorithm
-	var visitedActorNameSet = new Set();
+	var visitedActorIDSet = new Set();
 	for(var actor1 in model1.actors){
 		for(actor2 in model2.actors){
 			if(actor1.nodeName === actor2.nodeName){
-				var mergedActor = mergeToOneActor(actor1, actor2);
+				//TODO: generate new nodeID for the actors
+				var mergedActor = mergeToOneActor(visitedActorIDSet, actor1, actor2, newNodeID);
 				newActors.push(mergedActor);
-				for(var intention in mergedActor.intentionIDs){
-					visitedActorNameSet.add();
+				for(var intentionId in mergedActor.intentionIDs){
+					visitedActorIDSet.add(intentionId);
 				}
 				actorsNameSet.add(actor1.nodeName);
 			}
 		}
 	}
 
-	//not correct!!!!!!!!
-	//need to check
-	for(var actor1 in model1.actors){
-		if(!actorNameSet.has(actor1.nodeName)){
-			actorNameSet
+	//add left over actors in model1 and model2 into the merged actors
+	for(var i=0; i < models.length; i++){
+		var model = models[i];
+		for(var actor in model.actors){
+			if(!actorNameSet.has(actor.nodeName)){
+				if(noRepetitionOnIntentions(visitedActorIDSet, actor)){
+					actorNameSet.add(actor.nodeName);
+					for(var intentionId in actor.intentionIDs){
+						visitedActorIDSet.add(intentionId);
+					}
+					newActors.push(actor);
+				}
+				else{
+					throw "there exist an intention that is in 2 different actors";
+				}
+			}
 		}
 	}
+
+
 	/*
 	modify links: 
 	1. Add all links in model1 to the merged model's links
@@ -322,10 +373,12 @@ function noGapNoConflict(model1, model2, delta){
 	//TODO: What to do with conflict value? 
 	//TODO: What is current state?
 	//TODO: What to do with previous analysis?
-	var newAnalysisRequest = [];
-	for(var assingment in model1.analysisRequest.userAssignmentsList){
-		newAnalysisRequest.push(assignment);
-	}
+	var newAnalysisRequest = {};
+	newAnalysisRequest["userAssignmentsList"] = [];
+	newAnalysisRequest["absTimePtsArr"] = [];
+
+	/*The following block is the update to model2: ie adding delta + maxTime1 to each of the 
+	absolute value*/
 	for(var i = 0; i < model2.analysisRequest.userAssignmentsList.length; i++){
 		var numAbs = parseInt(model2.analysisRequest.userAssignmentsList[i].absTime);
 		numAbs += delta + maxTime1; 
@@ -346,14 +399,22 @@ function noGapNoConflict(model1, model2, delta){
 	}
 	stringAbsTimePts = stringAbsTimePts.substr(0, stringAbsTimePts.length - 1);
 	model2.analysisRequest.absTimePts = stringAbsTimePts;
+	/*The previous block is the update to model2 */
 
-	var model1NumRelTime = paseInt(model1.analysisRequest.numRelTime); 
-	var model2NumRelTime = parseInt(model2.analysisRequest.numRelTime); 
-	newAnalysisRequest.numRelTime = (model1NumRelTime + model2NumRelTime).toString;
-
-	for(var assignment in model2.analysisRequest.userAssignmentsList){
-		newAnalysisRequest.push(assignment);
+	var absTimePts = "";
+	var modelNumRelTime = 0;
+	for(var model in [model1, model2]){
+		for(var assingment in model.analysisRequest.userAssignmentsList){
+			newAnalysisRequest["userAssignmentsList"].push(assignment);
+		}
+		for(var absTimePt in model.analysisRequest.absTimePtsArr){
+			newAnalysisRequest["absTimePtsArr"].push(absTimePt);
+		}
+		absTimePts += model.analysisRequest.absTimePts + " ";
+		modelNumRelTime += parseInt(model.analysisRequest.numRelTime);
 	}
+	newAnalysisRequest["numRelTime"] = modelNumRelTime.toString();
+	newAnalysisRequest["absTimePts"] = absTimePts.substr(0, stringAbsTimePts.length - 1);
 
 	return newIntentions, newLinks, newConstraints, newAnalysisRequest;
 }
