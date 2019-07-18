@@ -412,7 +412,7 @@ function isSameLink(link1, link2){
 
 
 /**
-* Creates and returns a 4 digit ID for this node
+* Creates and returns a 4 digit ID for this intention
 *
 * @returns {String}
 */
