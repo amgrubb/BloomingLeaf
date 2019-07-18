@@ -146,9 +146,10 @@ function merge(leftList, rightList){
 	return toReturn;
 }
 
+/*this function merge two actors with the same name together*/
+function mergeToOneActor(actor1, actor){
 
-
-
+}
 
 
 /*deal with the cases which there is neither gap nor time conflict*/
@@ -168,6 +169,8 @@ function noGapNoConflict(model1, model2, delta){
 	var curCountForID = 0;
 	for(var intention1 in model1.intentions){
 		var newID = createID(curCountForID);
+		/*The following block of code is to update the original intention ids to new ids
+		Will be put into a seperate function later*/ 
 		for(var i = 0; i < model1.links.length; i++){
 			if(model1.links[i].linkSrcID === intention1.nodeID){
 				model1.links[i].linkSrcID = newID;
@@ -182,8 +185,17 @@ function noGapNoConflict(model1, model2, delta){
 				model1.analysisRequest.userAssignmentsList[i].intentionID = newID; 
 			}
 		}
+
+		for(var i = 0 ; i < model1.actors.length; i++){
+			for(var j = 0; j < actor.intentionIDs.length; j++){
+				if(model1.actors[i].intentionIDs[j] === intention1.nodeID){
+					model1.actors[i].intentionIDs[j] = newID;
+				}
+			}
+		}
 		intention1.nodeID = newID;
-		intention1.dynamicFunction.intentionID = newID; 
+		intention1.dynamicFunction.intentionID = newID;
+		/*new id update is finished here*/ 
 		newIntentions.push(intention1);
 		curCountForID ++;
 	}
@@ -224,6 +236,36 @@ function noGapNoConflict(model1, model2, delta){
 		}
 	}
 
+	/*
+	merge actors:
+	1. Merge actors with the same name together
+	2. Check whether same name , different actors? If so, raise errors
+	3. Put missings in the actors into the corresponding actor
+	*/
+	var newActors = [];
+	var actorsNameSet = new Set();
+	//the following is the set that contains the name of each actor that has been visited in the algorithm
+	var visitedActorNameSet = new Set();
+	for(var actor1 in model1.actors){
+		for(actor2 in model2.actors){
+			if(actor1.nodeName === actor2.nodeName){
+				var mergedActor = mergeToOneActor(actor1, actor2);
+				newActors.push(mergedActor);
+				for(var intention in mergedActor.intentionIDs){
+					visitedActorNameSet.add();
+				}
+				actorsNameSet.add(actor1.nodeName);
+			}
+		}
+	}
+
+	//not correct!!!!!!!!
+	//need to check
+	for(var actor1 in model1.actors){
+		if(!actorNameSet.has(actor1.nodeName)){
+			actorNameSet
+		}
+	}
 	/*
 	modify links: 
 	1. Add all links in model1 to the merged model's links
@@ -269,8 +311,8 @@ function noGapNoConflict(model1, model2, delta){
 	}
 
 	//TODO: What to do with conflict value? 
-	//TODO: What is numRelTime?
 	//TODO: What is current state?
+	//TODO: What to do with previous analysis?
 	var newAnalysisRequest = [];
 	for(var assingment in model1.analysisRequest.userAssignmentsList){
 		newAnalysisRequest.push(assignment);
@@ -295,6 +337,10 @@ function noGapNoConflict(model1, model2, delta){
 	}
 	stringAbsTimePts = stringAbsTimePts.substr(0, stringAbsTimePts.length - 1);
 	model2.analysisRequest.absTimePts = stringAbsTimePts;
+
+	var model1NumRelTime = paseInt(model1.analysisRequest.numRelTime); 
+	var model2NumRelTime = parseInt(model2.analysisRequest.numRelTime); 
+	newAnalysisRequest.numRelTime = (model1NumRelTime + model2NumRelTime).toString;
 
 	for(var assignment in model2.analysisRequest.userAssignmentsList){
 		newAnalysisRequest.push(assignment);
