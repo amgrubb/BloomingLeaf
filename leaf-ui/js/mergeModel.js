@@ -233,6 +233,9 @@ function updateIDRelatedObject(newId, curId, model, curIndex){
 /*deal with the cases which there is neither gap nor time conflict*/
 //assume model1 happens first
 function noGapNoConflict(model1, model2, delta){
+
+	//TODO: Pack all part that are not function related to another function
+	
 	/*
 	1. merge intentions in two models: 
 	need to prevent the repetition of the node id
