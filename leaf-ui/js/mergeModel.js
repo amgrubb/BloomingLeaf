@@ -147,7 +147,6 @@ function merge(leftList, rightList){
 }
 
 /*this function merge two actors with the same name together*/
-//TODO: missing newNodeID here
 function mergeToOneActor(visitedActorIDSet, actor1, actor2, newNodeID){
 	var actors = [actor1, actor2]; 
 	var actorToReturn = new Object();
@@ -194,7 +193,14 @@ function newActorID(counter){
         return id;
 }
 
+function updateActorId(){
 
+}
+/*
+This function update the old ids into new ids and also update the intention id part in the following objects: 
+1. Links: change linkDestID, change linkSrcID according to the new nodeID generated.
+2. 
+*/
 function updateIDRelatedObject(newId, curId, model, curIndex){
 	for(var i = 0; i < model1.links.length; i++){
 		if(model.links[i].linkSrcID === curId){
@@ -228,14 +234,10 @@ function updateIDRelatedObject(newId, curId, model, curIndex){
 //assume model1 happens first
 function noGapNoConflict(model1, model2, delta){
 	/*
-	1)add intentionsneed to prevent the repetition of the node id
+	1. merge intentions in two models: 
+	need to prevent the repetition of the node id
 		1. if name different, then different id
 		2. if name the same, then leave it alone
-	2) Update links: change linkDestID, change linkSrcID according to the new nodeID generated
-	in the first step
-	3) Update functions: If there are function in the node with the same name in model2,
-	change the function type of the intention to "UD" and add all of the functions in model2 
-	to the function list of the new intention
 	*/
 	var models = [model1, model2];
 	var newIntentions = [];
@@ -257,7 +259,14 @@ function noGapNoConflict(model1, model2, delta){
 				curCountForID ++;
 			}
 			else{
-				//functionList of the nodes with the same names are updated here
+				/*
+				Following updates Functions: 
+				If there are intention in model2
+				with the same name of another intention in model1,
+				then the merged new intetion has a function type of "UD" and it 
+				contains all of the function segments in model2 and the function segments 
+				in model1
+				*/
 				//TODO: the function stop may need to be modified.
 				if(!(intention2.funcSegList.length == 0)){
 					intention.stringDynVis = "UD";
@@ -273,18 +282,25 @@ function noGapNoConflict(model1, model2, delta){
 	merge actors:
 	1. Merge actors with the same name together
 	2. Check whether same name , different actors? If so, raise errors
-	3. Put missings in the actors into the corresponding actor
+	3. Put missings in the actors into the merged actor
 	*/
 	var newActors = [];
 	var actorsNameSet = new Set();
-	//the following is the set that contains the name of each actor that has been visited in the algorithm
+	/*the following is the set that contains the intention id of each 
+	actor that has been visited in the algorithm
+	*/
 	var visitedActorIDSet = new Set();
+	var actorCounter = 0;
 	for(var actor1 in model1.actors){
 		for(actor2 in model2.actors){
 			if(actor1.nodeName === actor2.nodeName){
 				//TODO: generate new nodeID for the actors
-				var mergedActor = mergeToOneActor(visitedActorIDSet, actor1, actor2, newNodeID);
+				var newActorId = newActorID(actorCounter);
+				var mergedActor = mergeToOneActor(visitedActorIDSet, actor1, actor2, newActorId);
 				newActors.push(mergedActor);
+				actorCounter ++;
+				//TODO: update all the objects in the model that contains the actor id. 
+				//TODO: Maybe shouldn't be called here
 				for(var intentionId in mergedActor.intentionIDs){
 					visitedActorIDSet.add(intentionId);
 				}
@@ -293,7 +309,7 @@ function noGapNoConflict(model1, model2, delta){
 		}
 	}
 
-	//add left over actors in model1 and model2 into the merged actors
+	//Add leftover actors in model1 and model2 into the merged actors
 	models = [model1, model2];
 	for(var i=0; i < models.length; i++){
 		var model = models[i];
@@ -314,7 +330,7 @@ function noGapNoConflict(model1, model2, delta){
 	/*
 	modify links: 
 	1. Add all links in model1 to the merged model's links
-	2. Add all links that are not in model1 to the merged model's links
+	2. Add all links in model2 that are not in model1 to the merged model's links
 	*/
 	var newLinks = [];
 	var linkCount = 0
@@ -340,8 +356,8 @@ function noGapNoConflict(model1, model2, delta){
 	}
 
 	/*
-	1) Update all of the constraints & absValues by adding (maxTime + delta) to all of the
-	absValue in model2
+	1) Update all of the constraints & absValues in model2 
+	by adding (maxTime + delta) to all of the absValues
 	2) Update the analysis request
 	*/
 	//TODO: check repetitions of the constriants?
@@ -429,6 +445,8 @@ function createID(newID) {
         return id;
 }
 
+/*This function add the (delta + maxTime1) to all of the absolute values in the
+constraints of the second model*/
 function updateAbs(constraints2, delta, maxTime1){
 	var updatedConstraint2 = [];
 	var toAdd = maxTime1 + delta; 
@@ -453,6 +471,9 @@ function withConflict(model1, model2, delta){
 	//not decided yet
 }
 
+/*
+main function for merging models
+*/
 function mergeModels(delta, model1, model2){
 	if(delta > 0){
 		withGapNoConflict(model1, model2, delta);
