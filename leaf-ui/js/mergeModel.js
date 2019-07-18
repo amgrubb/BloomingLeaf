@@ -13,8 +13,6 @@ var nodeTimeDict1 = {};
 var nodeTimeDict2 = {};
 var mergedDictionary = {};
 
-
-
 function createNodeTimeMap(model1, model2){
 	for(var constraint in model1.constarints){
 		var nodeId = constraint.constraintSrcID;
@@ -156,11 +154,16 @@ function merge(leftList, rightList){
 /*deal with the cases which there is neither gap nor time conflict*/
 //assume model1 happens first
 function noGapNoConflict(model1, model2, delta){
-	//add intentions
-	//need to prevent the repetition of the node id
-		//if name different, then different id
-		//if name the same, then leave it alone
-	//change linkDestID, change linkSrcID accordingly
+	/*
+	1)add intentionsneed to prevent the repetition of the node id
+		1. if name different, then different id
+		2. if name the same, then leave it alone
+	2) Update links: change linkDestID, change linkSrcID according to the new nodeID generated
+	in the first step
+	3) Update functions: If there are function in the node with the same name in model2,
+	change the function type of the intention to "UD" and add all of the functions in model2 
+	to the function list of the new intention
+	*/
 	var newIntentions = [];
 	var curCountForID = 0;
 	for(var intention1 in model1.intentions){
@@ -173,7 +176,13 @@ function noGapNoConflict(model1, model2, delta){
 				model1.links[i].linkDestID = newID;
 			}
 		}
-		intention1.nodeID = newID; 
+
+		for(var i=0 ; i < model1.analysisRequest.userAssignmentsList.length; i++){
+			if(model1.analysisRequest.userAssignmentsList[i].intentionID === intention1.nodeID){
+				model1.analysisRequest.userAssignmentsList[i].intentionID = newID; 
+			}
+		}
+		intention1.nodeID = newID;
 		intention1.dynamicFunction.intentionID = newID; 
 		newIntentions.push(intention1);
 		curCountForID ++;
@@ -192,16 +201,34 @@ function noGapNoConflict(model1, model2, delta){
 						model2.links[i].linkDestID = newID;
 					}
 				}
-
+				for(var i=0 ; i < model2.analysisRequest.userAssignmentsList.length; i++){
+					if(model2.analysisRequest.userAssignmentsList[i].intentionID === intention2.nodeID){
+						model2.analysisRequest.userAssignmentsList[i].intentionID = newID; 
+					}
+				}
 				intention2.nodeID = newID; 
 				intention2.dynamicFunction.intentionID = newID; 
 				newIntentions.push(intention2);
 				curCountForID ++;
 			}
+			else{
+				//functionList of the nodes with the same names are updated here
+				//TODO: the function stop may need to be modified.
+				if(!(intention2.funcSegList.length == 0)){
+					intention.stringDynVis = "UD";
+					for(var func in intention2.functionSegList){
+						intention.functionSegList.push(func);
+					}
+				}
+			}
 		}
 	}
 
-	//modify links
+	/*
+	modify links: 
+	1. Add all links in model1 to the merged model's links
+	2. Add all links that are not in model1 to the merged model's links
+	*/
 	var newLinks = [];
 	var linkCount = 0
 	for(var link in model1.links){
@@ -210,8 +237,6 @@ function noGapNoConflict(model1, model2, delta){
 		linkCount ++;
 		newLinks.push(link);
 	}
-
-
 	for(var link in model2.links){
 		var isInNewLink = false;
 		for(var newLink in newLinks){
@@ -227,26 +252,40 @@ function noGapNoConflict(model1, model2, delta){
 		}
 	}
 
-
-	//update link source ID
-	//1. update all of the constraints & absValues
-	//prevent name conflict?
+	/*
+	1) Update all of the constraints & absValues by adding (maxTime + delta) to all of the
+	absValue in model2
+	2) Update the analysis request
+	*/
+	//TODO: check repetitions of the constriants?
 	var maxTime1 = model1.maxAbsTime;
-	var newConstraints1 = model1.constraints;
+	var newConstraints = []
+	for(var constraint in model1.constraints){
+		newConstraints.push(constraint);
+	}
 	var newConstraints2= updateAbs(model2.constraints,delta,maxTime1);
 	for(var constriant in newConstraints2){
-		newConstraints1.push(constraint);
+		newConstraints.push(constraint);
 	}
-	model1.constraints = newConstaints1;
 
-	//3. update functions
-	//if same node, put what are in the funcSegList into that of the other node
+	//TODO: What to do with conflict value? 
+	var newAnalysisRequest = [];
+	for(var assingment in model1.analysisRequest.userAssignmentsList){
+		newAnalysisRequest.push(assignment);
+	}
+	for(var i = 0; i < model2.analysisRequest.userAssignmentsList.length; i++){
+		var numAbs = parseInt(model2.analysisRequest.userAssignmentsList[i].absTime);
+		numAbs += delta + maxTime1; 
+		model2.analysisRequest.userAssignmentsList[i].absTime = numAbs.toString();
+	}
+	for(var assignment in model2.analysisRequest.userAssignmentsList){
+		newAnalysisRequest.push(assignment);
+	}
 
 
-	//3. deal with conflict value? 
 
 
-
+	return newIntentions, newLinks, newConstraints, newAnalysisRequest;
 }
 
 
@@ -297,11 +336,6 @@ function withConflict(model1, model2, delta){
 	//TBD
 	//not decided yet
 }
-
-
-
-
-
 
 function mergeModels(delta, model1, model2){
 	if(delta > 0){
