@@ -205,6 +205,7 @@ function noGapNoConflict(model1, model2, delta){
 			if(!((intention.nodeName === intention2.nodeName)
 				&&(intention.nodeType === intention2.nodeType))){
 				var newID = createID(curCountForID);
+				/*The following part is updating the original id to new ids will be put into another function*/
 				for(var i = 0; i < model2.links.length; i++){
 					if(model2.links[i].linkSrcID === intention2.nodeID){
 						model2.links[i].linkSrcID = newID;
@@ -218,8 +219,16 @@ function noGapNoConflict(model1, model2, delta){
 						model2.analysisRequest.userAssignmentsList[i].intentionID = newID; 
 					}
 				}
+				for(var i = 0 ; i < model2.actors.length; i++){
+					for(var j = 0; j < actor.intentionIDs.length; j++){
+						if(model2.actors[i].intentionIDs[j] === intention2.nodeID){
+							model2.actors[i].intentionIDs[j] = newID;
+						}
+					}
+				}
 				intention2.nodeID = newID; 
-				intention2.dynamicFunction.intentionID = newID; 
+				intention2.dynamicFunction.intentionID = newID;
+				/*update finished here*/
 				newIntentions.push(intention2);
 				curCountForID ++;
 			}
