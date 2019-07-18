@@ -161,9 +161,6 @@ function mergeToOneActor(visitedActorIDSet, actor1, actor2, newNodeID){
 				newIntentionIDs.add(actor.intentionIDs[i]);
 			}
 		}
-		else{
-			throw "there exist an intention that is in 2 different actors";
-		}
 	}
 	var newIntentionIDsList = [];
 	for (var item of newIntentionIDs.values()){
@@ -178,7 +175,11 @@ This function make sure that there is no intention in the actor to be add to the
 that has been had by other actors that have names different from current actor.
 */
 function noRepetitionOnIntentions(visitedActorIDSet, theActorToAdd){
-
+	for(var intentionId in theActorToAdd.intentionIDs){
+		if(theActorToAdd.has(intentionId)){
+			throw "there exist an intention that is in 2 different actors";
+		}
+	}
 }
 
 /*
@@ -187,6 +188,36 @@ This function generates new nodeID for each of the actor in the new merged actor
 function newActorID(counter){
 
 }
+
+
+function updateIDRelatedObject(newId, curId, model, curIndex){
+	for(var i = 0; i < model1.links.length; i++){
+		if(model.links[i].linkSrcID === curId){
+			model.links[i].linkSrcID = newId;
+		}
+		if(model.links[i].linkDestID === curId){
+			model.links[i].linkDestID = newId;
+		}
+	}
+
+	for(var i=0 ; i < model.analysisRequest.userAssignmentsList.length; i++){
+		if(model.analysisRequest.userAssignmentsList[i].intentionID === curId){
+			model.analysisRequest.userAssignmentsList[i].intentionID = newId; 
+		}
+	}
+
+	for(var i = 0 ; i < model.actors.length; i++){
+		for(var j = 0; j < actor.intentionIDs.length; j++){
+			if(model.actors[i].intentionIDs[j] === curId){
+				model.actors[i].intentionIDs[j] = newId;
+			}
+		}
+	}
+
+	model.intentions[curIndex].nodeID = newID;
+	model.intentions[curIndex].dynamicFunction.intentionID = newID;
+}
+
 
 /*deal with the cases which there is neither gap nor time conflict*/
 //assume model1 happens first
@@ -204,68 +235,19 @@ function noGapNoConflict(model1, model2, delta){
 	var models = [model1, model2];
 	var newIntentions = [];
 	var curCountForID = 0;
-	for(var intention1 in model1.intentions){
+	for(var i = 0; i < model1.intentions.length; i++){
+		//intention1 in model1.intentions)
 		var newID = createID(curCountForID);
-		/*The following block of code is to update the original intention ids to new ids
-		Will be put into a seperate function later*/ 
-		for(var i = 0; i < model1.links.length; i++){
-			if(model1.links[i].linkSrcID === intention1.nodeID){
-				model1.links[i].linkSrcID = newID;
-			}
-			if(model1.links[i].linkDestID === intention1.nodeID){
-				model1.links[i].linkDestID = newID;
-			}
-		}
-
-		for(var i=0 ; i < model1.analysisRequest.userAssignmentsList.length; i++){
-			if(model1.analysisRequest.userAssignmentsList[i].intentionID === intention1.nodeID){
-				model1.analysisRequest.userAssignmentsList[i].intentionID = newID; 
-			}
-		}
-
-		for(var i = 0 ; i < model1.actors.length; i++){
-			for(var j = 0; j < actor.intentionIDs.length; j++){
-				if(model1.actors[i].intentionIDs[j] === intention1.nodeID){
-					model1.actors[i].intentionIDs[j] = newID;
-				}
-			}
-		}
-		intention1.nodeID = newID;
-		intention1.dynamicFunction.intentionID = newID;
-		/*new id update is finished here*/ 
+		updateIDRelatedObject(newID, model1.intentions[i].nodeID, model1, i);
 		newIntentions.push(intention1);
 		curCountForID ++;
 	}
 
-	for(var intention2 in model2.intentions){
+	for(var i = 0; i < model2.intentions.length; i++){
 		for(var intention in newIntentions){
-			if(!((intention.nodeName === intention2.nodeName)
-				&&(intention.nodeType === intention2.nodeType))){
+			if(!(intention.nodeName === intention2.nodeName)){
 				var newID = createID(curCountForID);
-				/*The following part is updating the original id to new ids will be put into another function*/
-				for(var i = 0; i < model2.links.length; i++){
-					if(model2.links[i].linkSrcID === intention2.nodeID){
-						model2.links[i].linkSrcID = newID;
-					}
-					if(model2.links[i].linkDestID === intention2.nodeID){
-						model2.links[i].linkDestID = newID;
-					}
-				}
-				for(var i=0 ; i < model2.analysisRequest.userAssignmentsList.length; i++){
-					if(model2.analysisRequest.userAssignmentsList[i].intentionID === intention2.nodeID){
-						model2.analysisRequest.userAssignmentsList[i].intentionID = newID; 
-					}
-				}
-				for(var i = 0 ; i < model2.actors.length; i++){
-					for(var j = 0; j < actor.intentionIDs.length; j++){
-						if(model2.actors[i].intentionIDs[j] === intention2.nodeID){
-							model2.actors[i].intentionIDs[j] = newID;
-						}
-					}
-				}
-				intention2.nodeID = newID; 
-				intention2.dynamicFunction.intentionID = newID;
-				/*update finished here*/
+				updateIDRelatedObject(newID, model2.intentions[i].nodeID, model2, i)
 				newIntentions.push(intention2);
 				curCountForID ++;
 			}
@@ -307,6 +289,7 @@ function noGapNoConflict(model1, model2, delta){
 	}
 
 	//add left over actors in model1 and model2 into the merged actors
+	models = [model1, model2];
 	for(var i=0; i < models.length; i++){
 		var model = models[i];
 		for(var actor in model.actors){
@@ -317,9 +300,6 @@ function noGapNoConflict(model1, model2, delta){
 						visitedActorIDSet.add(intentionId);
 					}
 					newActors.push(actor);
-				}
-				else{
-					throw "there exist an intention that is in 2 different actors";
 				}
 			}
 		}
