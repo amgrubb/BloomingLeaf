@@ -27,15 +27,15 @@ var AnalysisInspector = Backbone.View.extend({
 		'<font size="2">(e.g. 5 8 22)</font>',
 		'<input id="abs-time-pts" class="analysis-input" type="text"/>',
 		'<hr>',
-		'<button id="btn-view-assignment" class="analysis-btns inspector-btn sub-label green-btn">View List of Assignments</button>',
 		'<button id="btn-view-intermediate" class="analysis-btns inspector-btn sub-label green-btn">View Intermediate Values</button>',
 
 		// This is the modal box of assignments
-		'<div id="myModal" class="modal">',
+		/**'<div id="myModal" class="modal">',
 		'<div class="modal-content">',
 		'<div class="modal-header">',
 		'<span class="close">&times;</span>',
-		'<h2>Absolute and Relative Assignments</h2>',
+		
+		//'<h2>Absolute and Relative Assignments</h2>',
 		'</div>',
 		'<div class="modal-body">',
 		'<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Absolute Intention Assignments</h3>',
@@ -84,6 +84,7 @@ var AnalysisInspector = Backbone.View.extend({
 		'</div>',
 		'</div>',
 		'</div>',
+		*/
 		'<div id="intermediateTable" class="intermT">',
 		'<div class="intermContent">',
 		'<div class="intermHeader">',
@@ -118,18 +119,13 @@ var AnalysisInspector = Backbone.View.extend({
 		'<br>',
 		'<hr>',
 		'<button id="btn-single-path" class="analysis-btns inspector-btn sub-label green-btn">Simulate Single Path</button>',
-		//'<button id="btn-single-path" class="analysis-btns inspector-btn sub-label green-btn">1. Simulate Single Path</button>',
 		'<button id="btn-all-next-state" class="analysis-btns inspector-btn sub-label ice-btn">Explore Possible Next States</button>'
 	].join(''),
 
 	events: {
-		'click #btn-view-assignment': 'loadListOfAssignments',
 		'click #btn-view-intermediate': 'loadIntermediateValues',
 		'click .close': 'dismissModalBox',
 		'click .closeIntermT': 'dismissIntermTable',
-		'click .unassign-abs-intent-btn': 'unassignAbsIntentValue',
-		'click .unassign-abs-rel-btn': 'unassignAbsRelValue',
-		'click #btn-save-assignment': 'saveAssignment',
 		'click #btn-single-path': 'singlePath',
 		'click #btn-all-next-state': 'getAllNextStates',
 		'click .addIntention': 'addRelAssignmentRow',
@@ -269,40 +265,6 @@ var AnalysisInspector = Backbone.View.extend({
 
 	},
 
-	/**
-	 * Displays the links for the Absolute Relationship Assignments for
-	 * the Absolute and Relative Assignments modal
-	 */
-	displayAbsoluteRelationshipAssignments: function (e) {
-		var btnHtml = '<td><button class="unassign-abs-rel-btn" > Unassign </button></td>';
-		// Get a list of links
-		var links = graph.getLinks();
-
-		for (var i = 0; i < model.links.length; i++) {
-			var link = model.links[i];
-			var sourceID = link.linkSrcID;
-			var targetID = link.linkDestID;
-
-			// If this link does not have a source and a target
-			if (sourceID == null || targetID == null) {
-				continue;
-			}
-
-			var sourceName = model.getIntentionByID(sourceID).nodeName;
-			var targetName = model.getIntentionByID(targetID).nodeName;
-
-
-			if (link.linkType == 'NBD' || link.linkType == 'NBT' || link.isEvolvingRelationship()) {
-				var linkAbsTime = link.absoluteValue;
-				var defaultValue = linkAbsTime == -1 ? '' : linkAbsTime;
-
-				$('#link-list').append('<tr linkID = ' + link.linkID + '><td>' + link.linkType + '</td><td>' + sourceName + '</td><td>' + targetName +
-					'</td><td><input type="number" name="sth" value=' + defaultValue + '></td>' + btnHtml +
-					'</tr>');
-			}
-
-		}
-	},
 
 	addRelTime: function (event) {
 
@@ -342,59 +304,6 @@ var AnalysisInspector = Backbone.View.extend({
 		}
 	},
 
-
-	/**
-	 * Displays the nodes for the Absolute Intention Assignments for
-	 * the Absolute and Relative Assignments modal
-	 */
-	displayAbsoluteIntentionAssignments: function (e) {
-
-		var btnHtml = '<td><button class="unassign-abs-intent-btn" > Unassign </button></td>';
-
-		for (var i = 0; i < model.intentions.length; i++) {
-			var intention = model.intentions[i];
-			var funcType = intention.dynamicFunction.stringDynVis;
-			var intentionName = intention.nodeName;
-			//console.log(intentionName);
-
-
-
-
-			// nameIdMapper[name] = intention.nodeID;
-			if (funcType == 'RC' || funcType == 'CR' || funcType == 'MP' ||
-				funcType == 'MN' || funcType == 'SD' || funcType == 'DS') {
-
-
-				var absTime = intention.getAbsConstTime('A');
-				// default value to display.
-				// -1 means abs time does not exist. So display empty string instead.
-				var defaultVal = absTime === -1 ? '' : absTime;
-
-				$('#node-list').append('<tr nodeID = ' + intention.nodeID + ' srcEB = A><td>' + intentionName + ': A' + '</td><td>' + funcType + '</td>' +
-					'<td><input type="number" name="sth" value="' + defaultVal + '"></td>' + btnHtml + '</tr>');
-			} else if (funcType == 'UD') {
-
-
-				// the number of function transitions, is the number of functions minus one
-				var funcTransitions = intention.dynamicFunction.functionSegList.length - 1;
-				var currBound = 'A';
-				for (var j = 0; j < funcTransitions; j++) {
-
-
-					// default value to display
-					var absTime = intention.getAbsConstTime(currBound);
-					var defaultVal = absTime === -1 ? '' : absTime;
-
-					$('#node-list').append('<tr nodeID = ' + intention.nodeID + ' srcEB = ' + currBound + '><td>' + intentionName + ': ' + currBound + '</td><td>' + funcType + '</td>' +
-						'<td><input type="number" name="sth" value=' + defaultVal + '></td>' + btnHtml + '</tr>');
-					currBound = String.fromCharCode(currBound.charCodeAt(0) + 1);
-				}
-			}
-		}
-
-
-		//loadIntermediateValues();
-	},
 
 
 	/**
@@ -911,88 +820,8 @@ var AnalysisInspector = Backbone.View.extend({
         constraint.absoluteValue = -1;
     },
 
-    /**
-     * Saves the Relative Intention Assignments from the
-     * Absolute and Relative Assignments into the graph object
-     */
-    saveRelativeIntentionAssignments: function() {
-        $('.rel-intent-table tr').each(function () {
-            var nodeID1 = $(this).find('#epoch1List select option:checked').attr('nodeID');
-            var epoch1 = $(this).find('#epoch1List select option:checked').attr('epoch');
-            var type = $(this).find('#relationshipLists select option:checked').text();
-            var nodeID2 = $(this).find('#epoch2List select option:checked').attr('nodeID');
-            var epoch2 = $(this).find('#epoch2List select option:checked').attr('epoch');
 
-            if (!nodeID1 || !epoch1 || !type || !nodeID2 || !epoch2) {
-                return;
-            }
 
-            // create constraints object
-            var constraint = new Constraint(type, nodeID1, epoch1, nodeID2, epoch2);
-
-            if (!model.existsConstraint(constraint)) {
-                model.saveRelIntAssignment(type, nodeID1, epoch1, nodeID2, epoch2);
-            }
-        });
-
-    },
-
-    /**
-     * Saves the Absolute Intention Assignments from the
-     * Absolute and Relative Assignments to the graph object
-     */
-    saveAbsoluteIntentionAssignments() {
-        // Save absolute intention assignments
-        $.each($('#node-list').find("tr input[type=number]"), function(){
-            var newTime = parseInt($(this).val()); // ex 15
-            if (isNaN(newTime)) {
-                return;
-            }
-            var row = $(this).closest('tr');
-            var srcEB = row.attr('srcEB'); // ex. 'A'
-            var funcValue = row.find('td:nth-child(2)').html(); // ex. 'MP'
-            var nodeID = row.attr('nodeID'); // ex. '0000'
-
-            model.setAbsConstBySrcID(nodeID, srcEB, newTime);
-
-        });
-    },
-
-    /**
-     * Saves the Absolute Relationship Assignments from the
-     * Absolute and Relative Assignments into the graph object
-     */
-    saveAbsoluteRelationshipAssignments() {
-        // Save absolute relationship assignment
-        $.each($('#link-list').find("tr input[type=number]"), function() {
-            var newTime = parseInt($(this).val());
-            if (isNaN(newTime)) {
-                return;
-            }
-            var row = $(this).closest('tr');
-            var linkID = row.attr('linkID');
-            var link = model.getLinkByID(linkID);
-            link.absoluteValue = newTime;
-        });
-    },
-
-    // TODO: Check if the times users put in are valid
-    /**
-     * Saves absolute intention and relationship assignments to the graph object
-     *
-     * This function is called on click for #btn-save-assignment
-     */
-    saveAssignment: function(e){
-
-        this.saveRelativeIntentionAssignments();
-        this.saveAbsoluteIntentionAssignments();
-        this.saveAbsoluteRelationshipAssignments();
-
-        // Dismiss the modal
-        var modal = document.getElementById('myModal');
-        modal.style.display = "none";
-        $("#epoch1List select").val();
-    },
 
     /**
      * Save the intermediate table values into analysisRequest
