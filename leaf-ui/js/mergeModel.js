@@ -253,10 +253,10 @@ function updateIntentionId(newId, curId, model, curIndex){
 
 
 /*
-The follwing function merges links, actors, analysisRequest together in 2 models:
+The follwing function merges links, actors, constraints, analysisRequest together in 2 models:
 Note this should be called after intentions are merged.
 */
-function mergeLinksActorsRequest(model1, model2, delta){
+function mergeLinksActorsConstraintRequest(model1, model2, delta){
 	/*
 	merge actors:
 	1. Merge actors with the same name together:
@@ -453,7 +453,7 @@ function noGapNoConflict(model1, model2, delta){
 			}
 		}
 	}
-	var newActors, newLinks, newConstraints, newAnalysisRequest = mergeLinksActorsRequest(model1, model2, delta);
+	var newActors, newLinks, newConstraints, newAnalysisRequest = mergeLinksActorsConstraintRequest(model1, model2, delta);
 	//clean up "^^"s in the new ids
 	newLinks = removeExtraNewLinks(newLinks);
 	newConstaints = removeExtraNewConstrains(newConstraints);
