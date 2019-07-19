@@ -292,8 +292,7 @@ function mergeLinksActorsRequest(model1, model2, delta){
 	//Add leftover actors in model1 and model2 into the merged actors
 	models = [model1, model2];
 	for(var i=0; i < models.length; i++){
-		var model = models[i];
-		for(var actor in model.actors){
+		for(var actor in models[i].actors){
 			if(!actorNameSet.has(actor.nodeName)){
 				if(noRepetitionOnIntentions(visitedActorIDSet, actor)){
 					actorNameSet.add(actor.nodeName);
@@ -302,7 +301,7 @@ function mergeLinksActorsRequest(model1, model2, delta){
 					}
 					var newActorId = newActorID(actorCounter);
 					actorCounter++;
-					updateActorId(model, actor.nodeID, newActorId);
+					updateActorId(models[i], actor.nodeID, newActorId);
 					actor.nodeID = newActorId;
 					newActors.push(actor);
 				}
@@ -455,6 +454,7 @@ function noGapNoConflict(model1, model2, delta){
 		}
 	}
 	var newActors, newLinks, newConstraints, newAnalysisRequest = mergeLinksActorsRequest(model1, model2, delta);
+	//clean up "^^"s in the new ids
 	newLinks = removeExtraNewLinks(newLinks);
 	newConstaints = removeExtraNewConstrains(newConstraints);
 	newAnalysisRequest = removeExtraNewAnalysisRequest(newAnalysisRequest);
