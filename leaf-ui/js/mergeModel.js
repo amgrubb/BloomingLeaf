@@ -197,16 +197,19 @@ function newActorID(counter){
         return id;
 }
 
-function updateActorId(){
+
+/*This helper function updates all old actor ids into the new actor id*/
+function updateActorId(model,curId, newId){
 
 }
+
 /*
 This function update the old ids into new ids and also update the intention id part in the following objects: 
 1. Links: change linkDestID, change linkSrcID according to the new nodeID generated.
 2. 
 */
 function updateIDRelatedObject(newId, curId, model, curIndex){
-	for(var i = 0; i < model1.links.length; i++){
+	for(var i = 0; i < model.links.length; i++){
 		if(model.links[i].linkSrcID === curId){
 			model.links[i].linkSrcID = newId;
 		}
@@ -234,57 +237,11 @@ function updateIDRelatedObject(newId, curId, model, curIndex){
 }
 
 
-/*deal with the cases which there is neither gap nor time conflict*/
-//assume model1 happens first
-function noGapNoConflict(model1, model2, delta){
-
-	//TODO: Pack all part that are not function related to another function
-
-	/*
-	Merge intentions in two models: 
-	In order to prevent the repetition of the node id, whenever an intention
-	with a different name is added into the newIntentions, a new node id will
-	be assigned to that node. Then, all of the related object that contains
-	that node id will be changed accordngly.
-	*/
-	var models = [model1, model2];
-	var newIntentions = [];
-	var curCountForID = 0;
-	for(var i = 0; i < model1.intentions.length; i++){
-		var newID = createID(curCountForID);
-		updateIDRelatedObject(newID, model1.intentions[i].nodeID, model1, i);
-		newIntentions.push(intention1);
-		curCountForID ++;
-	}
-
-	for(var i = 0; i < model2.intentions.length; i++){
-		for(var intention in newIntentions){
-			if(!(intention.nodeName === intention2.nodeName)){
-				var newID = createID(curCountForID);
-				updateIDRelatedObject(newID, model2.intentions[i].nodeID, model2, i)
-				newIntentions.push(intention2);
-				curCountForID ++;
-			}
-			else{
-				/*
-				Following updates Functions: 
-				If there are intention in model2
-				with the same name of another intention in model1,
-				then the merged intetion will have a function type of "UD" and it 
-				contains all of the function segments in model2 and the function segments 
-				in model1. 
-				*/
-				//TODO: the function stop may need to be modified.
-				if(!(intention2.funcSegList.length == 0)){
-					intention.stringDynVis = "UD";
-					for(var func in intention2.functionSegList){
-						intention.functionSegList.push(func);
-					}
-				}
-			}
-		}
-	}
-
+/*
+The follwing function merges links, actors, analysisRequest together in 2 models:
+Note this should be called after intentions are merged.
+*/
+function mergeLinksActorsRequest(model1, model2, delta){
 	/*
 	merge actors:
 	1. Merge actors with the same name together:
@@ -328,6 +285,7 @@ function noGapNoConflict(model1, model2, delta){
 					for(var intentionId in actor.intentionIDs){
 						visitedActorIDSet.add(intentionId);
 					}
+					//TODO: assign new actor id to the newly added actors
 					newActors.push(actor);
 				}
 			}
@@ -425,9 +383,61 @@ function noGapNoConflict(model1, model2, delta){
 	newAnalysisRequest["numRelTime"] = modelNumRelTime.toString();
 	newAnalysisRequest["absTimePts"] = absTimePts.substr(0, stringAbsTimePts.length - 1);
 
-	return newIntentions, newLinks, newConstraints, newAnalysisRequest;
+	return newLinks, newConstraints, newAnalysisRequest;
 }
 
+
+/*deal with the cases which there is neither gap nor time conflict*/
+//assume model1 happens first
+function noGapNoConflict(model1, model2, delta){
+	/*
+	Merge intentions in two models: 
+	In order to prevent the repetition of the node id, whenever an intention
+	with a different name is added into the newIntentions, a new node id will
+	be assigned to that node. Then, all of the related object that contains
+	that node id will be changed accordngly.
+	*/
+	var models = [model1, model2];
+	var newIntentions = [];
+	var curCountForID = 0;
+	for(var i = 0; i < model1.intentions.length; i++){
+		var newID = createID(curCountForID);
+		updateIDRelatedObject(newID, model1.intentions[i].nodeID, model1, i);
+		newIntentions.push(intention1);
+		curCountForID ++;
+	}
+
+	for(var i = 0; i < model2.intentions.length; i++){
+		for(var intention in newIntentions){
+			if(!(intention.nodeName === intention2.nodeName)){
+				var newID = createID(curCountForID);
+				//by reference? or a copy is passed in? 
+				updateIDRelatedObject(newID, model2.intentions[i].nodeID, model2, i)
+				newIntentions.push(intention2);
+				curCountForID ++;
+			}
+			else{
+				/*
+				Following updates Functions: 
+				If there are intention in model2
+				with the same name of another intention in model1,
+				then the merged intetion will have a function type of "UD" and it 
+				contains all of the function segments in model2 and the function segments 
+				in model1. 
+				*/
+				//TODO: the function stop may need to be modified.
+				if(!(intention2.funcSegList.length == 0)){
+					intention.stringDynVis = "UD";
+					for(var func in intention2.functionSegList){
+						intention.functionSegList.push(func);
+					}
+				}
+			}
+		}
+	}
+	var newLinks, newConstraints, newAnalysisRequest = mergeLinksActorsRequest(model1, model2, delta); 
+	return newIntentions, newLinks, newConstraints, newAnalysisRequest;
+}
 
 function isSameLink(link1, link2){
 	var isSame = true; 
@@ -479,7 +489,10 @@ function withConflict(model1, model2, delta){
 /*
 main function for merging models
 */
+var model1, model2; 
 function mergeModels(delta, model1, model2){
+	model1 = model1; 
+	model2 = model2; 
 	if(delta > 0){
 		withGapNoConflict(model1, model2, delta);
 	}
