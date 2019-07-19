@@ -146,6 +146,7 @@ function merge(leftList, rightList){
 	return toReturn;
 }
 
+
 /*this function merge two actors with the same name together*/
 function mergeToOneActor(visitedActorIDSet, actor1, actor2, newNodeID){
 	var actors = [actor1, actor2]; 
@@ -189,26 +190,40 @@ function noRepetitionOnIntentions(visitedActorIDSet, theActorToAdd){
 This function generates new nodeID for each of the actor in the new merged actors
 */
 function newActorID(counter){
-        var id = newID.toString();
-        while (id.length < 3){
-                id = '0' + id;
-        }
-        id = 'a' + id;
-        return id;
+	var id = newID.toString();
+	while (id.length < 3){
+		id = '0' + id;
+	}
+	id = 'a' + id;
+	id = id + "^^";
+	return id;
 }
 
 
 /*This helper function updates all old actor ids into the new actor id*/
 function updateActorId(model,curId, newId){
+	//modify "nodeID" for var actor in actors
+	//modify "nodeActorID" for var intention in intentions
+	for(var i = 0; i < model.actors.length; i++){
+		if(model.actors[i].nodeID === curId){
+			model.actors[i].nodeID = newId;
+		}
+	}
+	for(var i = 0; i < model.intentions.length; i++){
+		if(model.intentions[i].nodeActorID === curId){
+			model.intentions[i].nodeActorID = newId; 
+		}
+	}
 
 }
 
 /*
 This function update the old ids into new ids and also update the intention id part in the following objects: 
 1. Links: change linkDestID, change linkSrcID according to the new nodeID generated.
-2. 
+2. Change the intentionId in the dynamic function in intentions to the newId
+3. Change the nodeId in the intentions into the newId
 */
-function updateIDRelatedObject(newId, curId, model, curIndex){
+function updateIntentionId(newId, curId, model, curIndex){
 	for(var i = 0; i < model.links.length; i++){
 		if(model.links[i].linkSrcID === curId){
 			model.links[i].linkSrcID = newId;
@@ -259,13 +274,13 @@ function mergeLinksActorsRequest(model1, model2, delta){
 	for(var actor1 in model1.actors){
 		for(actor2 in model2.actors){
 			if(actor1.nodeName === actor2.nodeName){
-				//TODO: generate new nodeID for the actors
 				var newActorId = newActorID(actorCounter);
 				var mergedActor = mergeToOneActor(visitedActorIDSet, actor1, actor2, newActorId);
 				newActors.push(mergedActor);
 				actorCounter ++;
-				//TODO: update all the objects in the model that contains the actor id. 
-				//TODO: Maybe shouldn't be called here
+				//Update all the objects in the model1 and model2 that has the old actor id into the newly generated id
+				updateActorId(model1, model1.actor.nodeID, newActorId);
+				updateActorId(model2, model2.actor.nodeID, newActorId);
 				for(var intentionId in mergedActor.intentionIDs){
 					visitedActorIDSet.add(intentionId);
 				}
@@ -285,13 +300,15 @@ function mergeLinksActorsRequest(model1, model2, delta){
 					for(var intentionId in actor.intentionIDs){
 						visitedActorIDSet.add(intentionId);
 					}
-					//TODO: assign new actor id to the newly added actors
+					var newActorId = newActorID(actorCounter);
+					actorCounter++;
+					updateActorId(model, actor.nodeID, newActorId);
+					actor.nodeID = newActorId;
 					newActors.push(actor);
 				}
 			}
 		}
 	}
-
 
 	/*
 	modify links: 
@@ -383,7 +400,9 @@ function mergeLinksActorsRequest(model1, model2, delta){
 	newAnalysisRequest["numRelTime"] = modelNumRelTime.toString();
 	newAnalysisRequest["absTimePts"] = absTimePts.substr(0, stringAbsTimePts.length - 1);
 
-	return newLinks, newConstraints, newAnalysisRequest;
+
+
+	return newActors, newLinks, newConstraints, newAnalysisRequest;
 }
 
 
@@ -402,7 +421,7 @@ function noGapNoConflict(model1, model2, delta){
 	var curCountForID = 0;
 	for(var i = 0; i < model1.intentions.length; i++){
 		var newID = createID(curCountForID);
-		updateIDRelatedObject(newID, model1.intentions[i].nodeID, model1, i);
+		updateIntentionId(newID, model1.intentions[i].nodeID, model1, i);
 		newIntentions.push(intention1);
 		curCountForID ++;
 	}
@@ -412,7 +431,7 @@ function noGapNoConflict(model1, model2, delta){
 			if(!(intention.nodeName === intention2.nodeName)){
 				var newID = createID(curCountForID);
 				//by reference? or a copy is passed in? 
-				updateIDRelatedObject(newID, model2.intentions[i].nodeID, model2, i)
+				updateIntentionId(newID, model2.intentions[i].nodeID, model2, i)
 				newIntentions.push(intention2);
 				curCountForID ++;
 			}
@@ -435,10 +454,80 @@ function noGapNoConflict(model1, model2, delta){
 			}
 		}
 	}
-	var newLinks, newConstraints, newAnalysisRequest = mergeLinksActorsRequest(model1, model2, delta); 
-	return newIntentions, newLinks, newConstraints, newAnalysisRequest;
+	var newActors, newLinks, newConstraints, newAnalysisRequest = mergeLinksActorsRequest(model1, model2, delta);
+	newLinks = removeExtraNewLinks(newLinks);
+	newConstaints = removeExtraNewConstrains(newConstraints);
+	newAnalysisRequest = removeExtraNewAnalysisRequest(newAnalysisRequest);
+	newIntention = removeExtraNewIntentions(newIntentions);
+	newActors = removeExtraNewActors(newActors);
+	return newActors, newIntentions, newLinks, newConstraints, newAnalysisRequest;
 }
 
+/*remove the extra "^^" that are put at the end of the newId generated*/
+function removeExtraNewLinks(newLinks){
+	for(var i = 0; i < newLinks.length; i++){
+		if(newLinks[i].linkSrcID.substr(-2) === '^^'){
+			newLinks[i].linkSrcID = newLinks[i].linkSrcID.substr(0, newLinks[i].linkSrcID.length - 3);
+		}
+		if(newLinks[i].linkDestID.substr(-2) === "^^"){
+			newLinks[i].linkDestID = newLinks[i].linkDestID.substr(0,newLinks[i].linkDestID.length - 3);
+		}
+	}
+	return newLinks; 
+}
+
+/*remove the extra "^^" that are put at the end of the newId generated*/
+function removeExtraNewConstrains(newConstraints){
+	for(var i = 0; i < newConstraints.length; i++){
+		if(newConstraints[i].constraintSrcID.substr(-2) === '^^'){
+			newConstraints[i].constraintSrcID = newConstraints[i].constraintSrcID.substr(0, newLinks[i].linkSrcID.length - 3);
+		}
+	}
+	return newConstraints;
+}
+
+/*remove the extra "^^" that are put at the end of the newId generated*/
+function removeExtraNewAnalysisRequest(newAnalysisRequest){
+	for(var i = 0; i < newAnalysisRequest.userAssignmentsList.length; i++){
+		if(newAnalysisRequest.userAssignmentsList[i].intentionID.substr(-2) === '^^'){
+			newAnalysisRequest.userAssignmentsList[i].intentionID = newAnalysisRequest.userAssignmentsList[i].intentionID.substr(0, newLinks[i].linkSrcID.length - 3);
+		}
+	}
+	return newAnalysisRequest;
+}
+
+/*remove the extra "^^" that are put at the end of the newId generated*/
+function removeExtraNewIntentions(newIntentions){
+	for(var i = 0; i < newIntentions.length; i++){
+		if(newIntentions[i].nodeActorID.substr(-2) === '^^'){
+			newIntentions[i].nodeActorID = newIntentions[i].nodeActorID.substr(0, newLinks[i].linkSrcID.length - 3);
+		}
+		if(newIntentions[i].nodeID.substr(-2) === '^^'){
+			newIntentions[i].nodeID = newIntentions[i].nodeID.substr(0, newLinks[i].linkSrcID.length - 3);
+		}
+		if(newIntentions[i].dynamicFunction.intentionID.substr(-2) === '^^'){
+			newIntentions[i].dynamicFunction.intentionID = newIntentions[i].dynamicFunction.intentionID.substr(0, newLinks[i].linkSrcID.length - 3);
+		}
+	}
+	return newIntentions;
+}
+
+/*remove the extra "^^" that are put at the end of the newId generated*/
+function removeExtraNewActors(newActors){
+	for(var i = 0; i < newActors.length; i++){
+		if(newActors[i].nodeID.substr(-2) === '^^'){
+			newActors[i].nodeID = newActors[i].nodeID.substr(0, newLinks[i].linkSrcID.length - 3);
+		}
+		for(var j = 0; j < newActors[i].intentionIDs.length; j++){
+			if(newActors[i].intentionIDs[j].substr(-2) === '^^'){
+				newActors[i].intentionIDs[j] = newActors[i].intentionIDs[j].substr(0, newLinks[i].linkSrcID.length - 3);
+			}
+		}
+	}
+	return newActors;
+}
+
+/*Returns a boolean indicating whether the two inputs are the same link*/
 function isSameLink(link1, link2){
 	var isSame = true; 
 	for(var attribute in link1){
@@ -450,7 +539,7 @@ function isSameLink(link1, link2){
 }
 
 /**
-* Creates and returns a 4 digit ID for this intention
+* Creates and returns a 4 digit ID for a intention
 *
 * @returns {String}
 */
@@ -459,6 +548,7 @@ function createID(newID) {
 	while (id.length < 4){
 		id = '0' + id;
 	}
+	id = id + '^^';
 	return id;
 }
 
