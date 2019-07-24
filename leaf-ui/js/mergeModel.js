@@ -64,7 +64,7 @@ function mergeToOneActor(visitedActorIDSet, actor1, actor2, newNodeID){
 	for (var item of newIntentionIDs.values()){
 		newIntentionIDsList.push(item);
 	}
-	actorToRetun["intentionIDs"] = newIntentionIDsList;
+	actorToReturn["intentionIDs"] = newIntentionIDsList;
 	return actorToReturn;
 }
 
@@ -75,7 +75,7 @@ that has been had by other actors that have names different from current actor.
 function noRepetitionOnIntentions(visitedActorIDSet, theActorToAdd){
 	var noRepetition = true; 
 	for(var intentionId in theActorToAdd.intentionIDs){
-		if(theActorToAdd.has(intentionId)){
+		if(visitedActorIDSet.has(intentionId)){
 			noRepetition = false; 
 			//TODO: will be changed into another way to handle this error
 			throw "there exist an intention that is in 2 different actors";
@@ -88,7 +88,7 @@ function noRepetitionOnIntentions(visitedActorIDSet, theActorToAdd){
 This function generates new nodeID for each of the actor in the new merged actors
 */
 function newActorID(counter){
-	var id = newID.toString();
+	var id = counter.toString();
 	while (id.length < 3){
 		id = '0' + id;
 	}
@@ -102,14 +102,14 @@ function newActorID(counter){
 function updateActorId(model,curId, newId){
 	//modify "nodeID" for var actor in actors
 	//modify "nodeActorID" for var intention in intentions
-	for(var i = 0; i < model.actors.length; i++){
-		if(model.actors[i].nodeID === curId){
-			model.actors[i].nodeID = newId;
+	for(var i = 0; i < model.model.actors.length; i++){
+		if(model.model.actors[i].nodeID === curId){
+			model.model.actors[i].nodeID = newId;
 		}
 	}
-	for(var i = 0; i < model.intentions.length; i++){
-		if(model.intentions[i].nodeActorID === curId){
-			model.intentions[i].nodeActorID = newId; 
+	for(var i = 0; i < model.model.intentions.length; i++){
+		if(model.model.intentions[i].nodeActorID === curId){
+			model.model.intentions[i].nodeActorID = newId; 
 		}
 	}
 
@@ -122,31 +122,29 @@ This function update the old ids into new ids and also update the intention id p
 3. Change the nodeId in the intentions into the newId
 */
 function updateIntentionId(newId, curId, model, curIndex){
-	for(var i = 0; i < model.links.length; i++){
-		if(model.links[i].linkSrcID === curId){
-			model.links[i].linkSrcID = newId;
+	for(var i = 0; i < model.model.links.length; i++){
+		if(model.model.links[i].linkSrcID === curId){
+			model.model.links[i].linkSrcID = newId;
 		}
-		if(model.links[i].linkDestID === curId){
-			model.links[i].linkDestID = newId;
+		if(model.model.links[i].linkDestID === curId){
+			model.model.links[i].linkDestID = newId;
 		}
 	}
-
 	for(var i=0 ; i < model.analysisRequest.userAssignmentsList.length; i++){
 		if(model.analysisRequest.userAssignmentsList[i].intentionID === curId){
 			model.analysisRequest.userAssignmentsList[i].intentionID = newId; 
 		}
 	}
-
-	for(var i = 0 ; i < model.actors.length; i++){
-		for(var j = 0; j < actor.intentionIDs.length; j++){
-			if(model.actors[i].intentionIDs[j] === curId){
-				model.actors[i].intentionIDs[j] = newId;
+	for(var i = 0 ; i < model.model.actors.length; i++){
+		for(var j = 0; j < model.model.actors[i].intentionIDs.length; j++){
+			if(model.model.actors[i].intentionIDs[j] === curId){
+				model.model.actors[i].intentionIDs[j] = newId;
 			}
 		}
 	}
 
-	model.intentions[curIndex].nodeID = newID;
-	model.intentions[curIndex].dynamicFunction.intentionID = newID;
+	model.model.intentions[curIndex].nodeID = newId;
+	model.model.intentions[curIndex].dynamicFunction.intentionID = newId;
 }
 
 
@@ -169,20 +167,20 @@ function mergeLinksActorsConstraintRequest(model1, model2, delta){
 	*/
 	var visitedActorIDSet = new Set();
 	var actorCounter = 0;
-	for(var actor1 in model1.actors){
-		for(actor2 in model2.actors){
-			if(actor1.nodeName === actor2.nodeName){
+	for(var actor1 in model1.model.actors){
+		for(var actor2 in model2.model.actors){
+			if(model1.model.actors[actor1].nodeName === model2.model.actors[actor2].nodeName){
 				var newActorId = newActorID(actorCounter);
-				var mergedActor = mergeToOneActor(visitedActorIDSet, actor1, actor2, newActorId);
+				var mergedActor = mergeToOneActor(visitedActorIDSet, model1.model.actors[actor1], model2.model.actors[actor2], newActorId);
 				newActors.push(mergedActor);
 				actorCounter ++;
 				//Update all the objects in the model1 and model2 that has the old actor id into the newly generated id
-				updateActorId(model1, model1.actor.nodeID, newActorId);
-				updateActorId(model2, model2.actor.nodeID, newActorId);
+				updateActorId(model1, model1.model.actors[actor1].nodeID, newActorId);
+				updateActorId(model2, model2.model.actors[actor2].nodeID, newActorId);
 				for(var intentionId in mergedActor.intentionIDs){
-					visitedActorIDSet.add(intentionId);
+					visitedActorIDSet.add(mergedActor.intentionIDs[intentionId]);
 				}
-				actorsNameSet.add(actor1.nodeName);
+				actorsNameSet.add(model1.model.actors[actor1].nodeName);
 			}
 		}
 	}
@@ -190,18 +188,18 @@ function mergeLinksActorsConstraintRequest(model1, model2, delta){
 	//Add leftover actors in model1 and model2 into the merged actors
 	models = [model1, model2];
 	for(var i=0; i < models.length; i++){
-		for(var actor in models[i].actors){
-			if(!actorNameSet.has(actor.nodeName)){
-				if(noRepetitionOnIntentions(visitedActorIDSet, actor)){
-					actorNameSet.add(actor.nodeName);
-					for(var intentionId in actor.intentionIDs){
+		for(var actor in models[i].model.actors){
+			if(!actorsNameSet.has(models[i].model.actors[actor].nodeName)){
+				if(noRepetitionOnIntentions(visitedActorIDSet, models[i].model.actors[actor])){
+					actorsNameSet.add(models[i].model.actors[actor].nodeName);
+					for(var intentionId in models[i].model.actors[actor].intentionIDs){
 						visitedActorIDSet.add(intentionId);
 					}
 					var newActorId = newActorID(actorCounter);
 					actorCounter++;
-					updateActorId(models[i], actor.nodeID, newActorId);
-					actor.nodeID = newActorId;
-					newActors.push(actor);
+					updateActorId(models[i], models[i].model.actors[actor].nodeID, newActorId);
+					models[i].model.actors[actor].nodeID = newActorId;
+					newActors.push(models[i].model.actors[actor]);
 				}
 			}
 		}
@@ -214,13 +212,13 @@ function mergeLinksActorsConstraintRequest(model1, model2, delta){
 	*/
 	var newLinks = [];
 	var linkCount = 0
-	for(var link in model1.links){
+	for(var link in model1.model.links){
 		var newID = createID(linkCount);
 		link.linkID = newID;
 		linkCount ++;
 		newLinks.push(link);
 	}
-	for(var link in model2.links){
+	for(var link in model2.model.links){
 		var isInNewLink = false;
 		for(var newLink in newLinks){
 			if(isSameLink(newLink,link)){
@@ -243,10 +241,10 @@ function mergeLinksActorsConstraintRequest(model1, model2, delta){
 	//TODO: check repetitions of the constriants?
 	var maxTime1 = model1.maxAbsTime;
 	var newConstraints = []
-	for(var constraint in model1.constraints){
+	for(var constraint in model1.model.constraints){
 		newConstraints.push(constraint);
 	}
-	var newConstraints2= updateAbs(model2.constraints,delta,maxTime1);
+	var newConstraints2= updateAbs(model2.model.constraints,delta,maxTime1);
 	for(var constriant in newConstraints2){
 		newConstraints.push(constraint);
 	}
@@ -284,22 +282,21 @@ function mergeLinksActorsConstraintRequest(model1, model2, delta){
 
 	var absTimePts = "";
 	var modelNumRelTime = 0;
-	for(var model in [model1, model2]){
-		for(var assingment in model.analysisRequest.userAssignmentsList){
-			newAnalysisRequest["userAssignmentsList"].push(assignment);
+	var models = [model1, model2];
+	for(var i = 0; i < 2; i++){
+		var model = models[i];
+		for(var j = 0; j < model.analysisRequest.userAssignmentsList.length; j++){
+			newAnalysisRequest["userAssignmentsList"].push(model.analysisRequest.userAssignmentsList[j]);
 		}
-		for(var absTimePt in model.analysisRequest.absTimePtsArr){
-			newAnalysisRequest["absTimePtsArr"].push(absTimePt);
+		for(var k = 0; k < model.analysisRequest.absTimePtsArr.length; k++){
+			newAnalysisRequest["absTimePtsArr"].push(model.analysisRequest.absTimePtsArr[k]);
 		}
 		absTimePts += model.analysisRequest.absTimePts + " ";
 		modelNumRelTime += parseInt(model.analysisRequest.numRelTime);
 	}
 	newAnalysisRequest["numRelTime"] = modelNumRelTime.toString();
 	newAnalysisRequest["absTimePts"] = absTimePts.substr(0, stringAbsTimePts.length - 1);
-
-
-
-	return newActors, newLinks, newConstraints, newAnalysisRequest;
+	return [newActors, newLinks, newConstraints, newAnalysisRequest];
 }
 
 
@@ -313,23 +310,23 @@ function noGapNoConflict(model1, model2, delta){
 	be assigned to that node. Then, all of the related object that contains
 	that node id will be changed accordngly.
 	*/
-	var models = [model1, model2];
+	var models = [model1.model, model2.model];
 	var newIntentions = [];
 	var curCountForID = 0;
-	for(var i = 0; i < model1.intentions.length; i++){
+	for(var i = 0; i < model1.model.intentions.length; i++){
 		var newID = createID(curCountForID);
-		updateIntentionId(newID, model1.intentions[i].nodeID, model1, i);
-		newIntentions.push(intention1);
+		updateIntentionId(newID, model1.model.intentions[i].nodeID, model1, i);
+		newIntentions.push(model1.model.intentions[i]);
 		curCountForID ++;
 	}
 
-	for(var i = 0; i < model2.intentions.length; i++){
+	for(var i = 0; i < model2.model.intentions.length; i++){
 		for(var intention in newIntentions){
-			if(!(intention.nodeName === intention2.nodeName)){
+			if(!(intention.nodeName === model2.model.intentions[i].nodeName)){
 				var newID = createID(curCountForID);
 				//by reference? or a copy is passed in? 
-				updateIntentionId(newID, model2.intentions[i].nodeID, model2, i)
-				newIntentions.push(intention2);
+				updateIntentionId(newID, model2.model.intentions[i].nodeID, model2, i)
+				newIntentions.push(model2.model.intentions[i]);
 				curCountForID ++;
 			}
 			else{
@@ -351,13 +348,28 @@ function noGapNoConflict(model1, model2, delta){
 			}
 		}
 	}
-	var newActors, newLinks, newConstraints, newAnalysisRequest = mergeLinksActorsConstraintRequest(model1, model2, delta);
+	var newActors, newLinks, newConstraints, newAnalysisRequest;
+	var resultArray = mergeLinksActorsConstraintRequest(model1, model2, delta);
+	newActors = resultArray[0];
+	newLinks = resultArray[1];
+	newConstraints = resultArray[2];
+	newAnalysisRequest = resultArray[3];
 	//clean up "^^"s in the new ids
 	newLinks = removeExtraNewLinks(newLinks);
 	newConstaints = removeExtraNewConstrains(newConstraints);
 	newAnalysisRequest = removeExtraNewAnalysisRequest(newAnalysisRequest);
 	newIntention = removeExtraNewIntentions(newIntentions);
 	newActors = removeExtraNewActors(newActors);
+	console.log("newActors#########################################################################################################################################");
+	console.log(newActors);
+	console.log("newIntentions#########################################################################################################################################")
+	console.log(newIntentions);
+	console.log("newLinks#########################################################################################################################################");
+	console.log(newLinks);
+	console.log("newConstraints#########################################################################################################################################");
+	console.log(newConstraints);
+	console.log("newAnalysisRequest#########################################################################################################################################");
+	console.log(newAnalysisRequest);
 	return newActors, newIntentions, newLinks, newConstraints, newAnalysisRequest;
 }
 
@@ -429,7 +441,7 @@ function removeExtraNewActors(newActors){
 function isSameLink(link1, link2){
 	var isSame = true; 
 	for(var attribute in link1){
-		if(!(link1[attribute] === link2[attribute]){
+		if(!link1[attribute] === link2[attribute]){
 			isSame = false;
 		}
 	}
@@ -455,11 +467,11 @@ constraints of the second model*/
 function updateAbs(constraints2, delta, maxTime1){
 	var updatedConstraint2 = [];
 	var toAdd = maxTime1 + delta; 
-	for(var constraint in constarints2){
+	for(var constraint in constraints2){
 		constraint.absoluteValue += toAdd;
 		updateConstraint2.push(constraint);
 	}
-	return updateConstraint2;
+	return updatedConstraint2;
 }
 
 /*deal with the cases which there is time conflict but there is gap*/
@@ -477,14 +489,350 @@ function withConflict(model1, model2, delta){
 /*
 main function for merging models
 */
-var model1, model2; 
+var model1 , model2; 
 function mergeModels(delta, model1, model2){
-	model1 = model1; 
-	model2 = model2; 
+	model1 = {
+  "graph": {
+    "cells": [
+      {
+        "type": "basic.Actor",
+        "size": {
+          "width": 280,
+          "height": 320
+        },
+        "position": {
+          "x": 500,
+          "y": 240
+        },
+        "angle": 0,
+        "id": "d1290ec4-0f53-4173-a5e1-ed2c151ab2eb",
+        "z": -1,
+        "nodeID": "a001",
+        "embeds": [
+          "f9da86a3-af82-4df5-ace3-0896eace9c11"
+        ],
+        "attrs": {
+          ".label": {
+            "cx": 70,
+            "cy": 32.249837451167
+          },
+          ".name": {
+            "text": "Actor_1"
+          }
+        }
+      },
+      {
+        "type": "basic.Actor",
+        "size": {
+          "width": 400,
+          "height": 380
+        },
+        "position": {
+          "x": 60,
+          "y": 350
+        },
+        "angle": 0,
+        "id": "f38d8a46-5fbe-4316-8790-7643fd0f325d",
+        "z": 0,
+        "nodeID": "a000",
+        "embeds": [
+          "5c82d7b5-9951-496c-8f97-827bd9a1c53b",
+          "3f9cba59-2e35-4bb6-8fa1-b981ccc017e4"
+        ],
+        "attrs": {
+          ".label": {
+            "cx": 100,
+            "cy": 38.218645162923
+          },
+          ".name": {
+            "text": "Actor_0"
+          }
+        }
+      },
+      {
+        "type": "basic.Goal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "position": {
+          "x": 120,
+          "y": 460
+        },
+        "angle": 0,
+        "id": "5c82d7b5-9951-496c-8f97-827bd9a1c53b",
+        "z": 1,
+        "nodeID": "0000",
+        "parent": "f38d8a46-5fbe-4316-8790-7643fd0f325d",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Goal_0"
+          }
+        }
+      },
+      {
+        "type": "basic.Goal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "position": {
+          "x": 270,
+          "y": 510
+        },
+        "angle": 0,
+        "id": "3f9cba59-2e35-4bb6-8fa1-b981ccc017e4",
+        "z": 2,
+        "nodeID": "0001",
+        "parent": "f38d8a46-5fbe-4316-8790-7643fd0f325d",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Goal_1"
+          }
+        }
+      },
+      {
+        "type": "basic.Goal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "position": {
+          "x": 560,
+          "y": 380
+        },
+        "angle": 0,
+        "id": "f9da86a3-af82-4df5-ace3-0896eace9c11",
+        "z": 3,
+        "nodeID": "0002",
+        "parent": "d1290ec4-0f53-4173-a5e1-ed2c151ab2eb",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Goal_2"
+          }
+        }
+      }
+    ]
+  },
+  "model": {
+    "actors": [
+      {
+        "nodeID": "a000",
+        "nodeName": "Actor_0",
+        "intentionIDs": [
+          "0000",
+          "0001"
+        ]
+      },
+      {
+        "nodeID": "a001",
+        "nodeName": "Actor_1",
+        "intentionIDs": [
+          "0002"
+        ]
+      }
+    ],
+    "intentions": [
+      {
+        "nodeActorID": "a000",
+        "nodeID": "0000",
+        "nodeType": "basic.Goal",
+        "nodeName": "Goal_0",
+        "dynamicFunction": {
+          "intentionID": "0000",
+          "stringDynVis": "NT",
+          "functionSegList": [
+            
+          ]
+        }
+      },
+      {
+        "nodeActorID": "a000",
+        "nodeID": "0001",
+        "nodeType": "basic.Goal",
+        "nodeName": "Goal_1",
+        "dynamicFunction": {
+          "intentionID": "0001",
+          "stringDynVis": "NT",
+          "functionSegList": [
+            
+          ]
+        }
+      },
+      {
+        "nodeActorID": "a001",
+        "nodeID": "0002",
+        "nodeType": "basic.Goal",
+        "nodeName": "Goal_2",
+        "dynamicFunction": {
+          "intentionID": "0002",
+          "stringDynVis": "NT",
+          "functionSegList": [
+            
+          ]
+        }
+      }
+    ],
+    "links": [
+      
+    ],
+    "constraints": [
+      
+    ],
+    "maxAbsTime": "100"
+  },
+  "analysisRequest": {
+    "action": null,
+    "conflictLevel": "S",
+    "numRelTime": "1",
+    "absTimePts": "",
+    "absTimePtsArr": [
+      
+    ],
+    "currentState": "0",
+    "userAssignmentsList": [
+      {
+        "intentionID": "0000",
+        "absTime": "0",
+        "evaluationValue": "(no value)"
+      },
+      {
+        "intentionID": "0001",
+        "absTime": "0",
+        "evaluationValue": "(no value)"
+      },
+      {
+        "intentionID": "0002",
+        "absTime": "0",
+        "evaluationValue": "(no value)"
+      }
+    ],
+    "previousAnalysis": null
+  }
+};
+	model2 = {
+  "graph": {
+    "cells": [
+      {
+        "type": "basic.Actor",
+        "size": {
+          "width": 330,
+          "height": 350
+        },
+        "position": {
+          "x": 210,
+          "y": 260
+        },
+        "angle": 0,
+        "id": "c13a0f73-e78a-4899-9325-99b9a75e3a2f",
+        "z": 1,
+        "nodeID": "a002",
+        "embeds": [
+          "748cbca3-1f10-4d5d-b2cf-0e0e4cd17129"
+        ],
+        "attrs": {
+          ".label": {
+            "cx": 82.5,
+            "cy": 35.234244356147
+          },
+          ".name": {
+            "text": "Actor_1"
+          }
+        }
+      },
+      {
+        "type": "basic.Goal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "position": {
+          "x": 310,
+          "y": 450
+        },
+        "angle": 0,
+        "id": "748cbca3-1f10-4d5d-b2cf-0e0e4cd17129",
+        "z": 2,
+        "nodeID": "0003",
+        "parent": "c13a0f73-e78a-4899-9325-99b9a75e3a2f",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Goal_3"
+          }
+        }
+      }
+    ]
+  },
+  "model": {
+    "actors": [
+      {
+        "nodeID": "a002",
+        "nodeName": "Actor_1",
+        "intentionIDs": [
+          "0003"
+        ]
+      }
+    ],
+    "intentions": [
+      {
+        "nodeActorID": "a002",
+        "nodeID": "0003",
+        "nodeType": "basic.Goal",
+        "nodeName": "Goal_3",
+        "dynamicFunction": {
+          "intentionID": "0003",
+          "stringDynVis": "NT",
+          "functionSegList": [
+            
+          ]
+        }
+      }
+    ],
+    "links": [
+      
+    ],
+    "constraints": [
+      
+    ],
+    "maxAbsTime": "100"
+  },
+  "analysisRequest": {
+    "action": null,
+    "conflictLevel": "S",
+    "numRelTime": "1",
+    "absTimePts": "",
+    "absTimePtsArr": [
+      
+    ],
+    "currentState": "0",
+    "userAssignmentsList": [
+      {
+        "intentionID": "0003",
+        "absTime": "0",
+        "evaluationValue": "(no value)"
+      }
+    ],
+    "previousAnalysis": null
+  }
+} ;
+	delta = 0; 
 	if(delta > 0){
 		withGapNoConflict(model1, model2, delta);
 	}
 	else if(delta == 0){
+		console.log("here 1");
 		noGapNoConflict(model1, model2);
 	}
 	else{
