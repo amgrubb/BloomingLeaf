@@ -62,7 +62,9 @@ function mergeToOneActor(visitedActorIDSet, actor1, actor2, newNodeID){
 	}
 	var newIntentionIDsList = [];
 	for (var item of newIntentionIDs.values()){
-		newIntentionIDsList.push(item);
+		if(typeof item !== 'undefined'){
+			newIntentionIDsList.push(item);
+		}
 	}
 	actorToReturn["intentionIDs"] = newIntentionIDsList;
 	return actorToReturn;
@@ -360,15 +362,15 @@ function noGapNoConflict(model1, model2, delta){
 	newAnalysisRequest = removeExtraNewAnalysisRequest(newAnalysisRequest);
 	newIntention = removeExtraNewIntentions(newIntentions);
 	newActors = removeExtraNewActors(newActors);
-	console.log("newActors#########################################################################################################################################");
+	console.log("newActors");
 	console.log(newActors);
-	console.log("newIntentions#########################################################################################################################################")
+	console.log("newIntentions");
 	console.log(newIntentions);
-	console.log("newLinks#########################################################################################################################################");
+	console.log("newLinks");
 	console.log(newLinks);
-	console.log("newConstraints#########################################################################################################################################");
+	console.log("newConstraints");
 	console.log(newConstraints);
-	console.log("newAnalysisRequest#########################################################################################################################################");
+	console.log("newAnalysisRequest");
 	console.log(newAnalysisRequest);
 	return newActors, newIntentions, newLinks, newConstraints, newAnalysisRequest;
 }
@@ -377,10 +379,10 @@ function noGapNoConflict(model1, model2, delta){
 function removeExtraNewLinks(newLinks){
 	for(var i = 0; i < newLinks.length; i++){
 		if(newLinks[i].linkSrcID.substr(-2) === '^^'){
-			newLinks[i].linkSrcID = newLinks[i].linkSrcID.substr(0, newLinks[i].linkSrcID.length - 3);
+			newLinks[i].linkSrcID = newLinks[i].linkSrcID.substr(0, newLinks[i].linkSrcID.length - 2);
 		}
 		if(newLinks[i].linkDestID.substr(-2) === "^^"){
-			newLinks[i].linkDestID = newLinks[i].linkDestID.substr(0,newLinks[i].linkDestID.length - 3);
+			newLinks[i].linkDestID = newLinks[i].linkDestID.substr(0,newLinks[i].linkDestID.length - 2);
 		}
 	}
 	return newLinks; 
@@ -390,7 +392,7 @@ function removeExtraNewLinks(newLinks){
 function removeExtraNewConstrains(newConstraints){
 	for(var i = 0; i < newConstraints.length; i++){
 		if(newConstraints[i].constraintSrcID.substr(-2) === '^^'){
-			newConstraints[i].constraintSrcID = newConstraints[i].constraintSrcID.substr(0, newLinks[i].linkSrcID.length - 3);
+			newConstraints[i].constraintSrcID = newConstraints[i].constraintSrcID.substr(0, newConstraints[i].constraintSrcID.length - 2);
 		}
 	}
 	return newConstraints;
@@ -400,7 +402,7 @@ function removeExtraNewConstrains(newConstraints){
 function removeExtraNewAnalysisRequest(newAnalysisRequest){
 	for(var i = 0; i < newAnalysisRequest.userAssignmentsList.length; i++){
 		if(newAnalysisRequest.userAssignmentsList[i].intentionID.substr(-2) === '^^'){
-			newAnalysisRequest.userAssignmentsList[i].intentionID = newAnalysisRequest.userAssignmentsList[i].intentionID.substr(0, newLinks[i].linkSrcID.length - 3);
+			newAnalysisRequest.userAssignmentsList[i].intentionID = newAnalysisRequest.userAssignmentsList[i].intentionID.substr(0, newAnalysisRequest.userAssignmentsList[i].intentionID.length - 2);
 		}
 	}
 	return newAnalysisRequest;
@@ -410,13 +412,13 @@ function removeExtraNewAnalysisRequest(newAnalysisRequest){
 function removeExtraNewIntentions(newIntentions){
 	for(var i = 0; i < newIntentions.length; i++){
 		if(newIntentions[i].nodeActorID.substr(-2) === '^^'){
-			newIntentions[i].nodeActorID = newIntentions[i].nodeActorID.substr(0, newLinks[i].linkSrcID.length - 3);
+			newIntentions[i].nodeActorID = newIntentions[i].nodeActorID.substr(0, newIntentions[i].nodeActorID.length - 2);
 		}
 		if(newIntentions[i].nodeID.substr(-2) === '^^'){
-			newIntentions[i].nodeID = newIntentions[i].nodeID.substr(0, newLinks[i].linkSrcID.length - 3);
+			newIntentions[i].nodeID = newIntentions[i].nodeID.substr(0, newIntentions[i].nodeID.length - 2);
 		}
 		if(newIntentions[i].dynamicFunction.intentionID.substr(-2) === '^^'){
-			newIntentions[i].dynamicFunction.intentionID = newIntentions[i].dynamicFunction.intentionID.substr(0, newLinks[i].linkSrcID.length - 3);
+			newIntentions[i].dynamicFunction.intentionID = newIntentions[i].dynamicFunction.intentionID.substr(0, newIntentions[i].dynamicFunction.intentionID.length - 2);
 		}
 	}
 	return newIntentions;
@@ -424,13 +426,14 @@ function removeExtraNewIntentions(newIntentions){
 
 /*remove the extra "^^" that are put at the end of the newId generated*/
 function removeExtraNewActors(newActors){
+	console.log(newActors);
 	for(var i = 0; i < newActors.length; i++){
 		if(newActors[i].nodeID.substr(-2) === '^^'){
-			newActors[i].nodeID = newActors[i].nodeID.substr(0, newLinks[i].linkSrcID.length - 3);
+			newActors[i].nodeID = newActors[i].nodeID.substr(0, newActors[i].nodeID.length - 2);
 		}
 		for(var j = 0; j < newActors[i].intentionIDs.length; j++){
 			if(newActors[i].intentionIDs[j].substr(-2) === '^^'){
-				newActors[i].intentionIDs[j] = newActors[i].intentionIDs[j].substr(0, newLinks[i].linkSrcID.length - 3);
+				newActors[i].intentionIDs[j] = newActors[i].intentionIDs[j].substr(0, newActors[i].intentionIDs[j].length - 2);
 			}
 		}
 	}
