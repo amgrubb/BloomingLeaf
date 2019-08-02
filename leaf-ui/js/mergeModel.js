@@ -314,37 +314,49 @@ function noGapNoConflict(model1, model2, delta){
 	*/
 	var models = [model1.model, model2.model];
 	var newIntentions = [];
+	var newIntentionNameSet = new Set();
 	var curCountForID = 0;
 	for(var i = 0; i < model1.model.intentions.length; i++){
 		var newID = createID(curCountForID);
 		updateIntentionId(newID, model1.model.intentions[i].nodeID, model1, i);
 		newIntentions.push(model1.model.intentions[i]);
+		newIntentionNameSet.add(model1.model.intentions[i].nodeName);
 		curCountForID ++;
 	}
 
 	for(var i = 0; i < model2.model.intentions.length; i++){
-		for(var intention in newIntentions){
-			if(!(intention.nodeName === model2.model.intentions[i].nodeName)){
-				var newID = createID(curCountForID);
-				//by reference? or a copy is passed in? 
-				updateIntentionId(newID, model2.model.intentions[i].nodeID, model2, i)
-				newIntentions.push(model2.model.intentions[i]);
-				curCountForID ++;
-			}
-			else{
-				/*
-				Following updates Functions: 
-				If there are intention in model2
-				with the same name of another intention in model1,
-				then the merged intetion will have a function type of "UD" and it 
-				contains all of the function segments in model2 and the function segments 
-				in model1. 
-				*/
-				//TODO: the function stop may need to be modified.
-				if(!(intention2.funcSegList.length == 0)){
-					intention.stringDynVis = "UD";
-					for(var func in intention2.functionSegList){
-						intention.functionSegList.push(func);
+		if(!newIntentionNameSet.has(model2.model.intentions[i].nodeName)){
+			var newID = createID(curCountForID);
+			updateIntentionId(newID, model2.model.intentions[i].nodeID, model2, i)
+			newIntentions.push(model2.model.intentions[i]);
+			newIntentionNameSet.add(model2.model.intentions[i].nodeName);
+			curCountForID ++;
+		}
+		else{
+			/*
+			Following updates Functions: 
+			If there are intention in model2
+			with the same name of another intention in model1,
+			then the merged intetion will have a function type of "UD" and it 
+			contains all of the function segments in model2 and the function segments 
+			in model1. 
+			*/
+			//TODO: the function stop may need to be modified.
+			for(var j=0; j < newIntentions.length; j++){
+				if(newIntentions[j].nodeName === model2.model.intentions[i].nodeName){
+					if(!(model2.model.intentions[i].dynamicFunction.functionSegList.length == 0)){
+						if(!(newIntentions[j].dynamicFunction.functionSegList.length == 0)){
+							newIntentions[j].dynamicFunction.stringDynVis = "UD";
+							for(var func in model2.model.intentions[i].dynamicFunction.functionSegList){
+								newIntentions[j].dynamicFunction.functionSegList.push(func);
+							}
+						}
+						else{
+							newIntentions[j].stringDynVis = model2.model.intentions[i].dynamicFunction.stringDynVis;
+							for(var func in model2.model.intentions[i].dynamicFunction.functionSegList){
+								newIntentions[j].dynamicFunction.functionSegList.push(func);
+							}
+						}
 					}
 				}
 			}
@@ -362,17 +374,7 @@ function noGapNoConflict(model1, model2, delta){
 	newAnalysisRequest = removeExtraNewAnalysisRequest(newAnalysisRequest);
 	newIntention = removeExtraNewIntentions(newIntentions);
 	newActors = removeExtraNewActors(newActors);
-	console.log("newActors");
-	console.log(newActors);
-	console.log("newIntentions");
-	console.log(newIntentions);
-	console.log("newLinks");
-	console.log(newLinks);
-	console.log("newConstraints");
-	console.log(newConstraints);
-	console.log("newAnalysisRequest");
-	console.log(newAnalysisRequest);
-	return newActors, newIntentions, newLinks, newConstraints, newAnalysisRequest;
+	return [newActors, newIntentions, newLinks, newConstraints, newAnalysisRequest];
 }
 
 /*remove the extra "^^" that are put at the end of the newId generated*/
@@ -426,7 +428,6 @@ function removeExtraNewIntentions(newIntentions){
 
 /*remove the extra "^^" that are put at the end of the newId generated*/
 function removeExtraNewActors(newActors){
-	console.log(newActors);
 	for(var i = 0; i < newActors.length; i++){
 		if(newActors[i].nodeID.substr(-2) === '^^'){
 			newActors[i].nodeID = newActors[i].nodeID.substr(0, newActors[i].nodeID.length - 2);
@@ -494,352 +495,48 @@ main function for merging models
 */
 var model1 , model2; 
 function mergeModels(delta, model1, model2){
-	model1 = {
-  "graph": {
-    "cells": [
-      {
-        "type": "basic.Actor",
-        "size": {
-          "width": 280,
-          "height": 320
-        },
-        "position": {
-          "x": 500,
-          "y": 240
-        },
-        "angle": 0,
-        "id": "d1290ec4-0f53-4173-a5e1-ed2c151ab2eb",
-        "z": -1,
-        "nodeID": "a001",
-        "embeds": [
-          "f9da86a3-af82-4df5-ace3-0896eace9c11"
-        ],
-        "attrs": {
-          ".label": {
-            "cx": 70,
-            "cy": 32.249837451167
-          },
-          ".name": {
-            "text": "Actor_1"
-          }
-        }
-      },
-      {
-        "type": "basic.Actor",
-        "size": {
-          "width": 400,
-          "height": 380
-        },
-        "position": {
-          "x": 60,
-          "y": 350
-        },
-        "angle": 0,
-        "id": "f38d8a46-5fbe-4316-8790-7643fd0f325d",
-        "z": 0,
-        "nodeID": "a000",
-        "embeds": [
-          "5c82d7b5-9951-496c-8f97-827bd9a1c53b",
-          "3f9cba59-2e35-4bb6-8fa1-b981ccc017e4"
-        ],
-        "attrs": {
-          ".label": {
-            "cx": 100,
-            "cy": 38.218645162923
-          },
-          ".name": {
-            "text": "Actor_0"
-          }
-        }
-      },
-      {
-        "type": "basic.Goal",
-        "size": {
-          "width": 100,
-          "height": 60
-        },
-        "position": {
-          "x": 120,
-          "y": 460
-        },
-        "angle": 0,
-        "id": "5c82d7b5-9951-496c-8f97-827bd9a1c53b",
-        "z": 1,
-        "nodeID": "0000",
-        "parent": "f38d8a46-5fbe-4316-8790-7643fd0f325d",
-        "attrs": {
-          ".satvalue": {
-            "text": ""
-          },
-          ".name": {
-            "text": "Goal_0"
-          }
-        }
-      },
-      {
-        "type": "basic.Goal",
-        "size": {
-          "width": 100,
-          "height": 60
-        },
-        "position": {
-          "x": 270,
-          "y": 510
-        },
-        "angle": 0,
-        "id": "3f9cba59-2e35-4bb6-8fa1-b981ccc017e4",
-        "z": 2,
-        "nodeID": "0001",
-        "parent": "f38d8a46-5fbe-4316-8790-7643fd0f325d",
-        "attrs": {
-          ".satvalue": {
-            "text": ""
-          },
-          ".name": {
-            "text": "Goal_1"
-          }
-        }
-      },
-      {
-        "type": "basic.Goal",
-        "size": {
-          "width": 100,
-          "height": 60
-        },
-        "position": {
-          "x": 560,
-          "y": 380
-        },
-        "angle": 0,
-        "id": "f9da86a3-af82-4df5-ace3-0896eace9c11",
-        "z": 3,
-        "nodeID": "0002",
-        "parent": "d1290ec4-0f53-4173-a5e1-ed2c151ab2eb",
-        "attrs": {
-          ".satvalue": {
-            "text": ""
-          },
-          ".name": {
-            "text": "Goal_2"
-          }
-        }
-      }
-    ]
-  },
-  "model": {
-    "actors": [
-      {
-        "nodeID": "a000",
-        "nodeName": "Actor_0",
-        "intentionIDs": [
-          "0000",
-          "0001"
-        ]
-      },
-      {
-        "nodeID": "a001",
-        "nodeName": "Actor_1",
-        "intentionIDs": [
-          "0002"
-        ]
-      }
-    ],
-    "intentions": [
-      {
-        "nodeActorID": "a000",
-        "nodeID": "0000",
-        "nodeType": "basic.Goal",
-        "nodeName": "Goal_0",
-        "dynamicFunction": {
-          "intentionID": "0000",
-          "stringDynVis": "NT",
-          "functionSegList": [
-            
-          ]
-        }
-      },
-      {
-        "nodeActorID": "a000",
-        "nodeID": "0001",
-        "nodeType": "basic.Goal",
-        "nodeName": "Goal_1",
-        "dynamicFunction": {
-          "intentionID": "0001",
-          "stringDynVis": "NT",
-          "functionSegList": [
-            
-          ]
-        }
-      },
-      {
-        "nodeActorID": "a001",
-        "nodeID": "0002",
-        "nodeType": "basic.Goal",
-        "nodeName": "Goal_2",
-        "dynamicFunction": {
-          "intentionID": "0002",
-          "stringDynVis": "NT",
-          "functionSegList": [
-            
-          ]
-        }
-      }
-    ],
-    "links": [
-      
-    ],
-    "constraints": [
-      
-    ],
-    "maxAbsTime": "100"
-  },
-  "analysisRequest": {
-    "action": null,
-    "conflictLevel": "S",
-    "numRelTime": "1",
-    "absTimePts": "",
-    "absTimePtsArr": [
-      
-    ],
-    "currentState": "0",
-    "userAssignmentsList": [
-      {
-        "intentionID": "0000",
-        "absTime": "0",
-        "evaluationValue": "(no value)"
-      },
-      {
-        "intentionID": "0001",
-        "absTime": "0",
-        "evaluationValue": "(no value)"
-      },
-      {
-        "intentionID": "0002",
-        "absTime": "0",
-        "evaluationValue": "(no value)"
-      }
-    ],
-    "previousAnalysis": null
-  }
-};
-	model2 = {
-  "graph": {
-    "cells": [
-      {
-        "type": "basic.Actor",
-        "size": {
-          "width": 330,
-          "height": 350
-        },
-        "position": {
-          "x": 210,
-          "y": 260
-        },
-        "angle": 0,
-        "id": "c13a0f73-e78a-4899-9325-99b9a75e3a2f",
-        "z": 1,
-        "nodeID": "a002",
-        "embeds": [
-          "748cbca3-1f10-4d5d-b2cf-0e0e4cd17129"
-        ],
-        "attrs": {
-          ".label": {
-            "cx": 82.5,
-            "cy": 35.234244356147
-          },
-          ".name": {
-            "text": "Actor_1"
-          }
-        }
-      },
-      {
-        "type": "basic.Goal",
-        "size": {
-          "width": 100,
-          "height": 60
-        },
-        "position": {
-          "x": 310,
-          "y": 450
-        },
-        "angle": 0,
-        "id": "748cbca3-1f10-4d5d-b2cf-0e0e4cd17129",
-        "z": 2,
-        "nodeID": "0003",
-        "parent": "c13a0f73-e78a-4899-9325-99b9a75e3a2f",
-        "attrs": {
-          ".satvalue": {
-            "text": ""
-          },
-          ".name": {
-            "text": "Goal_3"
-          }
-        }
-      }
-    ]
-  },
-  "model": {
-    "actors": [
-      {
-        "nodeID": "a002",
-        "nodeName": "Actor_1",
-        "intentionIDs": [
-          "0003"
-        ]
-      }
-    ],
-    "intentions": [
-      {
-        "nodeActorID": "a002",
-        "nodeID": "0003",
-        "nodeType": "basic.Goal",
-        "nodeName": "Goal_3",
-        "dynamicFunction": {
-          "intentionID": "0003",
-          "stringDynVis": "NT",
-          "functionSegList": [
-            
-          ]
-        }
-      }
-    ],
-    "links": [
-      
-    ],
-    "constraints": [
-      
-    ],
-    "maxAbsTime": "100"
-  },
-  "analysisRequest": {
-    "action": null,
-    "conflictLevel": "S",
-    "numRelTime": "1",
-    "absTimePts": "",
-    "absTimePtsArr": [
-      
-    ],
-    "currentState": "0",
-    "userAssignmentsList": [
-      {
-        "intentionID": "0003",
-        "absTime": "0",
-        "evaluationValue": "(no value)"
-      }
-    ],
-    "previousAnalysis": null
-  }
-} ;
-	delta = 0; 
+	model1 = model1;
+	model2 = model2;
+	delta = delta; 
+	var toReturn; 
 	if(delta > 0){
-		withGapNoConflict(model1, model2, delta);
+		toReturn = withGapNoConflict(model1, model2, delta);
 	}
 	else if(delta == 0){
-		console.log("here 1");
-		noGapNoConflict(model1, model2);
+		toReturn = noGapNoConflict(model1, model2);
 	}
 	else{
-		withConflict(model1, model2, delta);
+		toReturn = withConflict(model1, model2, delta);
 	}
+	return toReturn; 
 }
+
+const fs = require('fs');
+if (process.argv.length !== 5) {
+    console.error('Invalid input');
+    process.exit(1);
+}
+else{
+	var inputModel1;
+	var inputModel2;
+	var rawData1 = fs.readFileSync(process.argv[3]);
+	inputModel1 = JSON.parse(rawData1);
+	var rawData2 = fs.readFileSync(process.argv[4]);
+	inputModel2 = JSON.parse(rawData2);
+	var outPutString = ``;
+	var resultList = mergeModels(process.argv[2], inputModel1, inputModel2);
+	var commentList = ["newActors","newIntentions","newLinks","newConstraints","newAnalysisRequest"];
+	for(var i = 0; i < resultList.length; i++){
+		outPutString += commentList[i];
+		outPutString += '\n';
+		outPutString += JSON.stringify(resultList[i]);
+		outPutString += '\n';
+	}
+	fs.writeFile('OutputForMerge.txt', outPutString, (err) => { 
+    	// In case of a error throw err. 
+    	if (err) throw err; 
+	});
+
+}
+
 
