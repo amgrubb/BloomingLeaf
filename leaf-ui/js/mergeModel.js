@@ -56,7 +56,7 @@ function mergeToOneActor(visitedActorIDSet, actor1, actor2, newNodeID){
 		var actor = actors[i];
 		if(noRepetitionOnIntentions(visitedActorIDSet, actor)){
 			for(var j = 0; j < actor.intentionIDs.length; j++){
-				newIntentionIDs.add(actor.intentionIDs[i]);
+				newIntentionIDs.add(actor.intentionIDs[j]);
 			}
 		}
 	}
