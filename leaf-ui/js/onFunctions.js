@@ -14,7 +14,7 @@ $('#analysis-btn').on('click', function() {
 
     syntaxCheck();
     // If there are no cycles then switch view to Analysis
-    if (!cycle) {
+    if (!cycle[0]) {
         switchToAnalysisMode(); 
     }
 

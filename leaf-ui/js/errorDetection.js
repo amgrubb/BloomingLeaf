@@ -14,28 +14,62 @@ function cycleCheckForLinks(cycle) {
 	var elements;
 	var cellView;
 		// If there is no cycle, leave the color the way it was
-		if (!cycle) {
-			elements = graph.getElements();
-			for (var i = 0; i < elements.length; i++) {
-				cellView  = elements[i].findView(paper);
-				cellView.model.changeToOriginalColour();
-			}
+	if (!cycle[0]) {
+		elements = graph.getElements();
+		for (var i = 0; i < elements.length; i++) {
+			cellView  = elements[i].findView(paper);
+			cellView.model.changeToOriginalColour();
 		}
-		else {
-			swal("Cycle in the graph", "", "error");
-			elements = graph.getElements();
-			for (var i = 0; i < elements.length; i++) {
-				cellView  = elements[i].findView(paper);
-				if (recursiveStack[cellView.model.attributes.elementid]) {
-					cellView.model.attr({'.outer': {'fill': 'red'}});
-				}
-				else {
-					cellView.model.changeToOriginalColour();
+	}
+	else {
+		swal("Cycle in the graph", "", "error");
+		elements = graph.getElements();
+		var color_list = [];
+		var count = 0; 
+		for (var k = 0 ; k < cycle[1].length; k++){
+			var color = getRandomColor();
+			for (var j =0 ; j < color_list.length; j++){
+				if (color !== color_list.length[j]){
+					count +=1; 
+							
 				}
 			}
-		}
+						
+			if (count === color_list.length){
+				color_list.push(color);
+			}
+			else{
+				var color = getRandomColor();	
+			}	
+			for (var l = 0 ; l< cycle[1][k].length; l++){
+				for (var i = 0; i < elements.length; i++) {
+				cellView  = elements[i].findView(paper);
+				//if (recursiveStack[cellView.model.attributes.elementid]) 
+				if (cellView.model.attributes.elementid === cycle[1][k][l]){
+						cellView.model.attr({'.outer': {'fill': color}});
+					}
+					//else {
+						//cellView.model.changeToOriginalColour();
+					//}
+				}	
+			}
+			
+		}	
+	}
 	
 }
+
+function getRandomColor() {
+	var color_list = []
+	color_list.push('#963232')
+	color_list.push('#b82f27')
+	color_list.push('#29611f')
+	color_list.push('#bf7a10')
+	color_list.push('#670000')
+	var num = Math.round(Math.random() * 6);
+	return color_list[num];
+}
+
 /**
  * Initializes and returns a 'DestSourceMapper' object which contains
  * information about links by indicating the source nodes to destination nodes
@@ -322,6 +356,7 @@ function syntaxCheck() {
 function cycleCheck(links, vertices) {
 	var graphs = {};
 	var visited = {};
+	var cycle_list = []; 
 	var cycle = false;
 	// Iterate over links to create map between src node and dest node of each link
 	links.forEach(function(element){
@@ -341,12 +376,18 @@ function cycleCheck(links, vertices) {
 
 	vertices.forEach(function(vertex){
 			if (!visited[vertex.id]) {
-				if (isCycle(vertex.id, visited, graphs)){
+				cycle_sublist = []; 
+				cycle_sublist.push(vertex.id);
+				if (isCycle(vertex.id, visited, graphs,cycle_sublist,cycle_list)){
 					cycle = true;
 				}
 			}
 	});
-	return cycle;
+	var list = [] ;
+	list.push(cycle);
+	var cycleList = checkCycleList(cycle_list,graphs);
+	list.push(cycleList);
+	return list;
 }
 
 /**
@@ -360,9 +401,11 @@ function cycleCheck(links, vertices) {
  * @param {Object} graphs
  * @returns {Boolean}
  */
-function isCycle(vertexId, visited, graphs){
+function isCycle(vertexId, visited, graphs,cycle_sublist,cycle_list){
 	visited[vertexId] = true;
 	recursiveStack[vertexId] = true;
+	
+
 	if (graphs[vertexId] == null) {
 		recursiveStack[vertexId] = false;
 		return false;
@@ -370,15 +413,35 @@ function isCycle(vertexId, visited, graphs){
 	else {
 		for(var i = 0; i < graphs[vertexId].length; i++) {
 			if (!visited[graphs[vertexId][i]]) {
-				if (isCycle(graphs[vertexId][i], visited, graphs)) {
+				cycle_sublist.push(graphs[vertexId][i]);
+				if (isCycle(graphs[vertexId][i], visited, graphs,cycle_sublist,cycle_list)) {
 					return true;
 				}
 			}
 			else if (recursiveStack[graphs[vertexId][i]]){
+				cycle_list.push(cycle_sublist);
 				return true;
 			}
 		}
 	}
 	recursiveStack[vertexId] = false;
 	return false;
+}
+
+function checkCycleList(cycle_list,graphs){
+	for (var i = 0 ; i < cycle_list.length; i++){
+		var last = cycle_list[i].length - 1; 
+		if (graphs[cycle_list[i][last]].length === 1){
+			if (graphs[cycle_list[i][last]] !== cycle_list[i][0]){
+				vertexId = cycle_list[i].splice(0,1)
+				recursiveStack[vertexId] = false;
+			}
+		}
+		else{
+			if (graphs[cycle_list[i][last]][0] !== cycle_list[i][0]){
+				cycle_list[i].splice(0,1)
+			}	
+		}
+	}
+	return cycle_list
 }
