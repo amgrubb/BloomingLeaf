@@ -1,6 +1,6 @@
 
 
-function backendComm(jsObject){
+function backendComm(isNode,jsObject){
 	/**
 	* Print the input to the console.
 	*/
