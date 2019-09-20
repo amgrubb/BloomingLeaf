@@ -24,7 +24,6 @@ exports.serve_static_file = function (fileName, res) {
         else {
             // send success code 200 and Content-type based on file extension 
             var ct = content_type_for_path(fileName);
-            console.log("This is ct "+ct);
             res.writeHead(200, { "Content-Type" : ct });
             // send data
             res.write(data);
