@@ -3,7 +3,9 @@
 This file explains how to run the tool using a Node.js server.
 
 ## Project Setup
-1. Install the node server
+1. Set up the project according to the contribution guide (including acquiring Rappid).
+
+2. Install the node server
 
 	Download nodeJS from https://nodejs.org/en/download/ and run the installer appropriate for your operating system. 
 	
@@ -18,7 +20,7 @@ This file explains how to run the tool using a Node.js server.
 	v10.15.0
 
 
-2. Run Node Server
+3. Run Node Server
 
 	a) You need to add the analysis file to the correct folder and set the absolute path of your local machine, to connect the analysis in BloomingLeaf.
 	
@@ -41,7 +43,7 @@ This file explains how to run the tool using a Node.js server.
 
 
 
-3. How the Node Server Works  
+4. How the Node Server Works  
 
 	The node server is consistent of four files: `app.js`, `backendComm.js`, `fileServer.js`, and `index.html`. 
 
