@@ -1,20 +1,22 @@
+var nodeServer = true;      						// Whether the tool is running locally on a Node Server.
+var url = "http://localhost:8080/untitled.html";	// Hardcoded URL for Node calls. 
 
-
-function backendComm(isNode,jsObject){
+function backendComm(jsObject){	
 	/**
 	* Print the input to the console.
 	*/
 	console.log(JSON.stringify(jsObject));
 	console.log(jsObject.analysisRequest.action);
 
-	var isNode = true;
-    if(isNode){
+	console.log(nodeServer);
+    if(nodeServer){
         nodeBackendCommFunc(jsObject);
         return;
-    }
-	//backend script called
+	}
+	
+	// Code for running the tool on University Servers with sandbox for webserver.
+	// Need to use CGI to call java on a different server.
 	var pathToCGI = "./cgi-bin/backendCom.cgi";
-
  	$.ajax({
 		url: pathToCGI,
 		type: "post",
@@ -35,31 +37,34 @@ function backendComm(isNode,jsObject){
 	});
 }
 
-//TODO: node server stuff
+// Code for calling the java function via Node.
 function nodeBackendCommFunc(jsObject){
-   console.log(JSON.stringify(jsObject));
+   console.log("Calling Backend via Node Server"); //JSON.stringify(jsObject));
+   
    var xhr = new XMLHttpRequest();
    var isGetNextSteps ;
-   //TODO: might need to change here
-   var url = "http://localhost:8080/untitled.html";
    xhr.open("POST", url, true);
    xhr.setRequestHeader("Content-Type", "application/json");
+
    var data = JSON.stringify(jsObject);
-   xhr.onreadystatechange = function() {
-       if (xhr.readyState == XMLHttpRequest.DONE) {
+   xhr.onreadystatechange = function() {	
+		// This function get caled when the response is received.
+		console.log("Reading the response");
+		if (xhr.readyState == XMLHttpRequest.DONE) {
            if(jsObject.analysisRequest.action=="allNextStates"){
                isGetNextSteps = true;
            }
            else{
                isGetNextSteps = false;
-            }
+        	}
             
             var response = xhr.responseText;
    			responseFunc(isGetNextSteps,response);
 
        }
    }
-   xhr.send(data);
+   xhr.send(data);	// Why is this sent down here? What is this send function.
+
    // console.log(xhr.responseText);
    // response=xhr.responseText;
    // responseFunc(isGetNextSteps,response);
@@ -99,7 +104,6 @@ function responseFunc(isGetNextSteps, response){
         }
     }
 }
-//TODO: end here
 
 function executeJava(isGetNextSteps){
 	var pathToCGI = "./cgi-bin/executeJava.cgi";
