@@ -3,8 +3,9 @@
 //Last updated: 4/28/2019
 
 // Name of .jar file for BloomingLeaf project must be Blooming.jar
-var userPath = "/Users/judySmith/git/BloomingLeaf"
 //var userPath = "/Users/<your user path here>/BloomingLeaf"
+var userPath = "/Users/judySmith/git/BloomingLeaf"
+
 var http = require('http'),
     url = require('url'),
     fileServer = require('./node/fileServer.js'),
@@ -55,7 +56,11 @@ function processPost(queryObj,req,res) {
         }
     fs.writeFileSync(userPath+"/leaf-analysis/temp/default.json",body);
     passIntoJar();
-    wait(1000);
+
+    //TODO: Can this function be written in an asynchronous call?
+    wait(1000);         
+    
+    //TODO: Can this be made asynchronous by moving the follow code down to to "HERE"
     //read from output.out and pass the data as a string with the response 
     analysisFile = fs.readFileSync(userPath+"/leaf-analysis/temp/output.out");
     analysisFileString = String(analysisFile);
@@ -92,6 +97,7 @@ function passIntoJar() {
                 console.log('exec error: ' + error);
             }
             else{
+                //HERE 
                 return stdout;
             }
         });
