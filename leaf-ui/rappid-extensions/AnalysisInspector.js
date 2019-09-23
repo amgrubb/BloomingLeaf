@@ -232,9 +232,7 @@ var AnalysisInspector = Backbone.View.extend({
 		jsObject.model = model;
 		console.log(jsObject);
 		//Send data to backend
-		var isNodeServer = true;
-
-		backendComm(isNodeServer, jsObject);
+		backendComm(jsObject);		//TODO: Need to add parameter for Node Server.
 		;
 
 	},

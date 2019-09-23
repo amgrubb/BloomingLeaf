@@ -3,8 +3,9 @@
 //Last updated: 4/28/2019
 
 // Name of .jar file for BloomingLeaf project must be Blooming.jar
-var userPath = "/Users/judySmith/git/BloomingLeaf"
 //var userPath = "/Users/<your user path here>/BloomingLeaf"
+var userPath = "/Users/judySmith/git/BloomingLeaf"
+
 var http = require('http'),
     url = require('url'),
     fileServer = require('./node/fileServer.js'),
@@ -13,6 +14,7 @@ var http = require('http'),
     utils = require('./node/utils.js');
     exec = require('child_process').exec;
 
+//TODO: If wait is not longer needed, this function can be removed.
 function wait(ms){
    var start = new Date().getTime();
    var end = start;
@@ -54,15 +56,19 @@ function processPost(queryObj,req,res) {
             qs.processQuery(queryObj,res);
         }
     fs.writeFileSync(userPath+"/leaf-analysis/temp/default.json",body);
-    passIntoJar();
-    wait(1000);
-    //read from output.out and pass the data as a string with the response 
-    analysisFile = fs.readFileSync(userPath+"/leaf-analysis/temp/output.out");
-    analysisFileString = String(analysisFile);
-    res.writeHead(200, { "Content-Type" : 'text/plain'});
-    // send data
-    res.write(analysisFileString);
-    res.end();
+    passIntoJar(res);
+
+    // //TODO: Can this function be written in an asynchronous call?
+    // wait(1000);         
+    
+    // //TODO: Can this be made asynchronous by moving the follow code down to to "HERE"
+    // //read from output.out and pass the data as a string with the response 
+    // analysisFile = fs.readFileSync(userPath+"/leaf-analysis/temp/output.out");
+    // analysisFileString = String(analysisFile);
+    // res.writeHead(200, { "Content-Type" : 'text/plain'});
+    // // send data
+    // res.write(analysisFileString);
+    // res.end();
     });
     
 }
@@ -85,13 +91,21 @@ function handle_incoming_request(req, res) {
 /*
 *This function executed the jar file 
 */
-function passIntoJar() {
+function passIntoJar(res) {
     child = exec('java -jar '+userPath+'/leaf-analysis/bin/Blooming.jar ',
         function (error, stdout, stderr){
             if(error !== null){
                 console.log('exec error: ' + error);
             }
             else{
+                //Analysis return code.
+                analysisFile = fs.readFileSync(userPath+"/leaf-analysis/temp/output.out");
+                analysisFileString = String(analysisFile);
+                res.writeHead(200, { "Content-Type" : 'text/plain'});
+                // send data
+                res.write(analysisFileString);
+                res.end();
+            
                 return stdout;
             }
         });
