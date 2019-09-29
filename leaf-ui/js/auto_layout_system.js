@@ -62,7 +62,7 @@ class Node{
 
 }
 
-function initializeNodes(JSONInput){
+function initializeNodes(JSONInput, nodeSet){
 	//TODO: construct node accordingly
 	//construct clusterDictionary
 	//constuct clusterDictionary
@@ -86,7 +86,7 @@ function changeNodePos(node, newX, newY){
 }
 
 
-function attractionSum(curNode){
+function setAttractionSum(curNode){
 	var curName = curNode.nodeName;
 	for(var node in nodes){
 		var nodeName = node.nodeName;
@@ -102,7 +102,7 @@ function attractionSum(curNode){
 	}
 }
 
-function repulsionSum(curNode){
+function setRepulsionSum(curNode){
 	var curName = curNode.nodeName;
 	for(var node in nodes){
 		var nodeName = node.nodeName;
@@ -159,5 +159,32 @@ function repulsion(node1, node2){
 		forceY = -forceY;
 	}
 	return forceX, forceY;
+}
+
+/*Should be called after initialization(initial position should be assigned in the
+initializeNodes)*/
+function adjustment(nodeSet,moveConstant){
+	for(var node of nodeSet){
+		setAttractionSum(node); 
+		setRepulsionSum(node);
+		var moveX = moveConstant * node.forceX; 
+		var moveY = moveConstant * node.forceY;
+		node.nodeX += moveX; 
+		node.nodeY += moveY;
+	}
+}
+
+function forceDirectedAlgorithm(JSONInput){
+	var numIterations = 70;
+	var numConstant = 5;
+	var nodeSet = new Set();
+	initializeNodes(JSONInput, nodeSet);
+	for(var i = 0; i < numItertions; i++){
+		adjustment(nodeSet);
+	}
+	/*print x, y here*/ 
+	for(var node of nodeSet){
+		console.log("x value: "node.nodeX + " ; y value: "+node.nodeY);
+	}
 }
 
