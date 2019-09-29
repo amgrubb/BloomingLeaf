@@ -188,3 +188,32 @@ function forceDirectedAlgorithm(JSONInput){
 	}
 }
 
+/*The part that read in the JSON files for the model*/ 
+const fs = require('fs');
+if (process.argv.length !== 5) {
+    console.error('Invalid input');
+    process.exit(1);
+}
+else{
+	var inputModel1;
+	var inputModel2;
+	var rawData1 = fs.readFileSync(process.argv[3]);
+	inputModel1 = JSON.parse(rawData1);
+	var rawData2 = fs.readFileSync(process.argv[4]);
+	inputModel2 = JSON.parse(rawData2);
+	var outPutString = ``;
+	var resultList = mergeModels(process.argv[2], inputModel1, inputModel2);
+	var commentList = ["newActors","newIntentions","newLinks","newConstraints","newAnalysisRequest"];
+	for(var i = 0; i < resultList.length; i++){
+		outPutString += commentList[i];
+		outPutString += '\n';
+		outPutString += JSON.stringify(resultList[i]);
+		outPutString += '\n';
+	}
+	fs.writeFile('OutputForMerge.txt', outPutString, (err) => { 
+    	// In case of a error throw err. 
+    	if (err) throw err; 
+	});
+
+}
+
