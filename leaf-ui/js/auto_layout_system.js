@@ -62,7 +62,11 @@ class Node{
 
 }
 
-function initializeNodes(JSONInput, nodeSet){
+function initializeNodes(resultList, nodeSet){
+	//nodeName = nodeID
+	//link
+	//均匀分布
+	//construct a coordinate system
 	//TODO: construct node accordingly
 	//construct clusterDictionary
 	//constuct clusterDictionary
@@ -174,11 +178,11 @@ function adjustment(nodeSet,moveConstant){
 	}
 }
 
-function forceDirectedAlgorithm(JSONInput){
+function forceDirectedAlgorithm(resultList){
 	var numIterations = 70;
 	var numConstant = 5;
 	var nodeSet = new Set();
-	initializeNodes(JSONInput, nodeSet);
+	initializeNodes(resultList, nodeSet);
 	for(var i = 0; i < numItertions; i++){
 		adjustment(nodeSet);
 	}
@@ -203,6 +207,7 @@ else{
 	inputModel2 = JSON.parse(rawData2);
 	var outPutString = ``;
 	var resultList = mergeModels(process.argv[2], inputModel1, inputModel2);
+	forceDirectedAlgorithm(resultList);
 	var commentList = ["newActors","newIntentions","newLinks","newConstraints","newAnalysisRequest"];
 	for(var i = 0; i < resultList.length; i++){
 		outPutString += commentList[i];
