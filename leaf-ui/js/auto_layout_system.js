@@ -63,6 +63,38 @@ class Node{
 }
 
 function initializeNodes(resultList, nodeSet){
+	/*here construct a coordinate*/ 
+	var listOfIntentions = restList[1];
+	var numIntentions = listOfIntentions.length; 
+	var numXY = Math.ceil(Math.sqrt(numIntentions));
+	var curX, curY = 0, 0;
+	var listOfLinks = resultList[2];
+	for(var i=0, i < listOfIntentions.length; i++){
+		var intention = listOfIntentions[i];
+		var nodeID = intention["nodeID"];
+		var connectionSet = new Set();
+		for(var link in listOfLinks){
+			var src = link['linkSrcID'];
+			var dest = link['linkDestID'];
+			if(src == nodeID){
+				connectionSet.add(dest);
+			}
+			else if(dest == nodeID){
+				connectionSet.add(src);
+			}
+		}
+		//go to next y or stay in the same y
+		if((curX + 1) <= numXY){
+			curX += 1; 
+			curY += 0; 
+		}
+		else{
+			curX = 0;
+			curY += 1;
+		}
+		var node = new Node(nodeID,curX,curY,connectionSet);
+		nodeSet.add(node);
+	}
 	//nodeName = nodeID
 	//link
 	//均匀分布
