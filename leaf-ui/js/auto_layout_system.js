@@ -8,12 +8,15 @@
 var defaultCoefficientValue= 0.5; 
 var numVertices = 10; 
 var area = 1000*1000;
-var gravityDict = new Set();
+var gravityDict = new Object();
 var resourcesGravity = 5; 
 var taskGravity = 3; 
 var softgoalGravity = 1;
 var goalGravity = 0;
+var IDNodeIDDict = new Object();
 
+//TODO: node ids: generated, reusable in different visual layout? ids linked only by their name. Would that be fine to keep that structure for now? 
+//TODO: What to include in the abstract?
 
 class Node{
   constructor(name,x,y,connectionSet,gravity) {
@@ -72,9 +75,11 @@ class Node{
 }
 
 //todo: id? 
-function IDToNodeID(resultList, model1, model2){
+function makeDictIDToNodeID(resultList, model1, model2){
 
+	IDNodeIDDict =
 }
+
 
 
 function initializaGravityDict(resultList){
