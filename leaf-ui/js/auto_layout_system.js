@@ -3,22 +3,27 @@
 //default attraction on each links
 //default repulsion between two nodes
 //default layout: evenly distributed on the coordinate
-
-
 //E: repulsion coefficient
 //k: attraction coefficient
 var defaultCoefficientValue= 0.5; 
 var numVertices = 10; 
 var area = 1000*1000;
+var gravityDict = new Set();
+var resourcesGravity = 5; 
+var taskGravity = 3; 
+var softgoalGravity = 1;
+var goalGravity = 0;
+
 
 class Node{
-  constructor(name,x,y,connectionSet) {
+  constructor(name,x,y,connectionSet,gravity) {
     this.nodeName = name;
     this.nodeX = x; 
     this.nodeY = y; 
     this.connectedTo = connectionSet;
     this.forcesX = 0;
     this.forcesY = 0;
+    this.gravity = gravity;
   }
   set xValue(newX){
   	this.nodeX = newX; 
@@ -60,14 +65,49 @@ class Node{
   	this.forceY = newForceY;
   }
 
+  set gravity(gravity){
+  	this.gravity = gravity;
+  }
+
 }
 
-function initializeNodes(resultList, nodeSet){
+//todo: id? 
+function IDToNodeID(resultList, model1, model2){
+
+}
+
+
+function initializaGravityDict(resultList){
+	var listOfIntentions = restList[1];
+	for(var i=0, i < listOfIntentions.length; i++){
+		var curIntention = listOfIntentions[i];
+		if(curIntention["nodeType"] == "basic.Resource"){
+			gravityDict[curIntention["nodeID"]] = resourcesGravity;
+		}
+		else if(curIntention["nodeType"] == "basic.Task"){
+			gravityDict[curIntention["nodeID"]] = taskGravity;
+		}
+		else if(curIntention["nodeType"] == "basic.Goal"){
+			gravityDict[curIntention["nodeID"]] = goalGravity;
+		}
+		else if(curIntention["nodeType"] == "basic.Softgoal"){
+			gravityDict[curIntention["nodeID"]] = softgoalGravity;
+		}
+	}
+
+}
+
+//add model1 and model2 to the parameters of this function
+function initializeNodes(resultList, nodeSet, model1, model2){
+	//assume each node no more than 2 lines with a size of width: 150 height: 100
+	initializaGravityDict(resultList);
+	var width = 150; 
+	var height = 100; 
 	/*here construct a coordinate*/ 
 	var listOfIntentions = restList[1];
 	var numIntentions = listOfIntentions.length; 
 	var numXY = Math.ceil(Math.sqrt(numIntentions));
-	var curX, curY = 0, 0;
+	var curXCount, curYCount = 0, 0;
 	var listOfLinks = resultList[2];
 	for(var i=0, i < listOfIntentions.length; i++){
 		var intention = listOfIntentions[i];
@@ -84,15 +124,16 @@ function initializeNodes(resultList, nodeSet){
 			}
 		}
 		//go to next y or stay in the same y
-		if((curX + 1) <= numXY){
-			curX += 1; 
-			curY += 0; 
+		if((curXCount + 1) <= numXY){
+			curXCount += 1; 
+			curYCount += 0; 
 		}
 		else{
-			curX = 0;
-			curY += 1;
+			curXCount = 0;
+			curYCount += 1;
 		}
-		var node = new Node(nodeID,curX,curY,connectionSet);
+		var gravity = gravityDict[nodeID];
+		var node = new Node(nodeID,(curXCount-1)*width,curYCount*height,connectionSet,gravity);
 		nodeSet.add(node);
 	}
 	//nodeName = nodeID
@@ -239,6 +280,7 @@ else{
 	inputModel2 = JSON.parse(rawData2);
 	var outPutString = ``;
 	var resultList = mergeModels(process.argv[2], inputModel1, inputModel2);
+	initializaNodes(resultList, inputModel1, inputModel2);
 	forceDirectedAlgorithm(resultList);
 	var commentList = ["newActors","newIntentions","newLinks","newConstraints","newAnalysisRequest"];
 	for(var i = 0; i < resultList.length; i++){
