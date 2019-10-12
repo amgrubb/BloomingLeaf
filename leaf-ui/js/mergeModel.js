@@ -102,6 +102,15 @@ function newActorID(counter){
 
 /*This helper function updates all old actor ids into the new actor id*/
 function updateActorId(model,curId, newId){
+	//modify the id in the graph
+	var cells = model["graph"]["cells"]; 
+	for(var i = 0; i < cells.length; i++){
+		if(model["graph"]["cells"][i]["type"]!= "link"){
+			if(model["graph"]["cells"][i]["nodeID"] == curId){
+				model["graph"]["cells"]["nodeID"] = newId;
+			}
+		}
+	}
 	//modify "nodeID" for var actor in actors
 	//modify "nodeActorID" for var intention in intentions
 	for(var i = 0; i < model.model.actors.length; i++){
@@ -538,5 +547,306 @@ else{
 	});
 
 }
+
+
+/*The following part gives the merge result to the visual layout of the two models*/
+//repulsion coefficient dictionary: {Set of vertices that should be grouped together}:{Value of repulsion}
+//attraction coefficient dictionary: similar structure
+//default attraction on each links
+//default repulsion between two nodes
+//default layout: evenly distributed on the coordinate
+//E: repulsion coefficient
+//k: attraction coefficient
+var defaultCoefficientValue= 0.5; 
+var numVertices = 10; 
+var area = 1000*1000;
+var gravityDict = new Object();
+var resourcesGravity = 5; 
+var taskGravity = 3; 
+var softgoalGravity = 1;
+var goalGravity = 0;
+var IDNodeIDDict = new Object();
+
+//TODO: node ids: generated, reusable in different visual layout? ids linked only by their name. Would that be fine to keep that structure for now? 
+//TODO: What to include in the abstract?
+
+class Node{
+  constructor(name,x,y,connectionSet,gravity) {
+    this.nodeName = name;
+    this.nodeX = x; 
+    this.nodeY = y; 
+    this.connectedTo = connectionSet;
+    this.forcesX = 0;
+    this.forcesY = 0;
+    this.gravity = gravity;
+  }
+  set xValue(newX){
+  	this.nodeX = newX; 
+  }
+  set yValue(newY){
+  	this.nodeY = newY; 
+  }
+
+  get xValue(){
+  	return this.nodeX; 
+  }
+
+  get yValue(){
+  	return this.nodeY;
+  }
+
+  get forcesX(){
+  	return this.forceX;
+  }
+
+  get forcesY(){
+  	return this.forceY;
+  }
+
+  isConnectdTo(anotherNode){
+  	if(this.connectedTo.has(anotherNode)){
+  		return true;
+  	}
+  	else{
+  		return false;
+  	}
+  }
+
+  set forceX(newForceX){
+  	this.forceX = newForceX;
+  }
+
+  set forceY(newForceY){
+  	this.forceY = newForceY;
+  }
+
+  set gravity(gravity){
+  	this.gravity = gravity;
+  }
+
+}
+
+/*construct a dictionary that map id of the graph to id of the node;
+id of the node to id of the graph;
+node name to the node id; should be called*/
+//NOTE: The model1 and model2 passed in should be the updated version
+
+function makeDictIDToNodeID(model1, model2){
+	for(var i = 0; i < model1["graph"]["cells"].length; i++){
+		if(model1["graph"]["cells"][i]["type"] != "link"){
+			var nodeId = model1["graph"]["cells"][i]["nodeID"];
+			var graphId = model1["graph"]["cells"][i]["id"];
+			var nodeName = model1["graph"]["cells"][i]["attrs"][".name"]["text"];
+			IDNodeIDDict[nodeId] = graphId;
+			IDNodeIDDict[graphId] = nodeId;
+			IDNodeIDDict[nodeName] = nodeId;
+		}
+	}
+
+	for(var j = 0; j < model2["graph"]["cells"].length; j++){
+		if(model2["graph"]["cells"][j]["type"] != "link"){
+			var nodeId = model2["graph"]["cells"][i]["nodeID"];
+			var graphId = model2["graph"]["cells"][i]["id"];
+			var nodeName = model2["graph"]["cells"][i]["attrs"][".name"]["text"];
+			IDNodeIDDict[nodeId] = graphId;
+			IDNodeIDDict[graphId] = nodeId;
+			IDNodeIDDict[nodeName] = nodeId;
+		}
+	}
+}
+
+
+
+function initializaGravityDict(resultList){
+	var listOfIntentions = restList[1];
+	for(var i=0, i < listOfIntentions.length; i++){
+		var curIntention = listOfIntentions[i];
+		if(curIntention["nodeType"] == "basic.Resource"){
+			gravityDict[curIntention["nodeID"]] = resourcesGravity;
+		}
+		else if(curIntention["nodeType"] == "basic.Task"){
+			gravityDict[curIntention["nodeID"]] = taskGravity;
+		}
+		else if(curIntention["nodeType"] == "basic.Goal"){
+			gravityDict[curIntention["nodeID"]] = goalGravity;
+		}
+		else if(curIntention["nodeType"] == "basic.Softgoal"){
+			gravityDict[curIntention["nodeID"]] = softgoalGravity;
+		}
+	}
+
+}
+
+//add model1 and model2 to the parameters of this function
+function initializeNodes(resultList, nodeSet, model1, model2){
+	//assume each node no more than 2 lines with a size of width: 150 height: 100
+	initializaGravityDict(resultList);
+	makeDictIDToNodeID(model1, model2)
+	var width = 150; 
+	var height = 100; 
+	/*here construct a coordinate*/ 
+	var listOfIntentions = restList[1];
+	var numIntentions = listOfIntentions.length; 
+	var numXY = Math.ceil(Math.sqrt(numIntentions));
+	var curXCount, curYCount = 0, 0;
+	var listOfLinks = resultList[2];
+	for(var i=0, i < listOfIntentions.length; i++){
+		var intention = listOfIntentions[i];
+		var nodeID = intention["nodeID"];
+		var connectionSet = new Set();
+		for(var link in listOfLinks){
+			var src = link['linkSrcID'];
+			var dest = link['linkDestID'];
+			if(src == nodeID){
+				connectionSet.add(dest);
+			}
+			else if(dest == nodeID){
+				connectionSet.add(src);
+			}
+		}
+		//go to next y or stay in the same y
+		if((curXCount + 1) <= numXY){
+			curXCount += 1; 
+			curYCount += 0; 
+		}
+		else{
+			curXCount = 0;
+			curYCount += 1;
+		}
+		var gravity = gravityDict[nodeID];
+		var node = new Node(nodeID,(curXCount-1)*width,curYCount*height,connectionSet,gravity);
+		nodeSet.add(node);
+	}
+	//nodeName = nodeID
+	//link
+	//均匀分布
+	//construct a coordinate system
+	//TODO: construct node accordingly
+	//construct clusterDictionary
+	//constuct clusterDictionary
+	//place each node evenly in the coordinate
+	//var nodes = [node1, node2, node3...];
+}
+
+
+function coefficientValue(clusterDictionary, nodeNamePair){
+	for(var key in clusterDictionary){
+		if(key.has(nodeNamePair)){
+			return clusterDictionary[key];
+		}
+	}
+	return defaultCoefficientValue; 
+}
+
+function changeNodePos(node, newX, newY){
+	node.nodeX = newX; 
+	node.nodeY = newY;
+}
+
+
+function setAttractionSum(curNode){
+	var curName = curNode.nodeName;
+	for(var node in nodes){
+		var nodeName = node.nodeName;
+		if(curName != nodeName){
+			var forceX, forceY = attraction(curNode, node);
+			var curXForce = curNode.forcesX; 
+			curXForce += forceX; 
+			curNode.forcesX = curXForce;
+			var curYForce = curNode.forcesY; 
+			curYForce += forceY; 
+			curNode.forcesY = curYForce; 
+		}
+	}
+}
+
+function setRepulsionSum(curNode){
+	var curName = curNode.nodeName;
+	for(var node in nodes){
+		var nodeName = node.nodeName;
+		if(curName != nodeName){
+			var forceX, forceY = repulsion(curNode, node);
+			var curXForce = curNode.forcesX; 
+			curXForce += forceX; 
+			curNode.forcesX = curXForce;
+			var curYForce = curNode.forcesY; 
+			curYForce += forceY; 
+			curNode.forcesY = curYForce; 
+		}
+
+	}
+}
+
+function attraction(node1, node2){
+	var d = Math.sqrt((node2.xValue - node1.xValue)^2 + (node1.yValue - node2.yValue)^2);
+	var k = coefficientValue(clusterDictionary, [node1.nodeName, node2.nodeName]);
+	var coefficient = k * Math.sqrt(area/numVertices); 
+	var forceSum = d^2/(coefficient^2);
+	var dx = Math.sqrt((node2.xValue - node1.xValue)^2); 
+	var dy = Math.sqrt((node1.yValue - node2.yValue)^2);
+	var cos = dx/d;
+	var sin = dy/d;
+	var forceX = cos*forceSum; 
+	var forceY = sine*forceSum;
+	//direction
+	if(node2.xValue < node1.xValue){
+		forceX = -forceX;
+	}
+	if(node2.yValue < node1.yValue){
+		forceY = -forceY;
+	}
+	return forceX, forceY; 
+}
+
+function repulsion(node1, node2){
+	var d = Math.sqrt((node2.xValue - node1.xValue)^2 + (node1.yValue - node2.yValue)^2);
+	var k = coefficeintValue(clusterDictionary, [node1.nodeName, node2.nodeName]); 
+	var coefficient = k * Math.sqrt(area/numVertices);
+	var forceSum = -coefficient^2/d;
+	var dx = Math.sqrt((node2.xValue - node1.xValue)^2); 
+	var dy = Math.sqrt((node1.yValue - node2.yValue)^2);
+	var cos = dx/d;
+	var sin = dy/d;
+	var forceX = cos*forceSum; 
+	var forceY = sine*forceSum;
+	//direction
+	if(node2.xValue < node1.xValue){
+		forceX = -forceX;
+	}
+	if(node2.yValue < node1.yValue){
+		forceY = -forceY;
+	}
+	return forceX, forceY;
+}
+
+/*Should be called after initialization(initial position should be assigned in the
+initializeNodes)*/
+function adjustment(nodeSet,moveConstant){
+	for(var node of nodeSet){
+		setAttractionSum(node); 
+		setRepulsionSum(node);
+		var moveX = moveConstant * node.forceX; 
+		var moveY = moveConstant * node.forceY;
+		node.nodeX += moveX; 
+		node.nodeY += moveY;
+	}
+}
+
+function forceDirectedAlgorithm(resultList){
+	var numIterations = 70;
+	var numConstant = 5;
+	var nodeSet = new Set();
+	initializeNodes(resultList, nodeSet);
+	for(var i = 0; i < numItertions; i++){
+		adjustment(nodeSet);
+	}
+	/*print x, y here*/ 
+	for(var node of nodeSet){
+		console.log("x value: "node.nodeX + " ; y value: "+node.nodeY);
+	}
+}
+
+var resultList1 = 
+forceDirectedAlgorithm()
 
 
