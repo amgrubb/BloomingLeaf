@@ -566,28 +566,33 @@ var taskGravity = 3;
 var softgoalGravity = 1;
 var goalGravity = 0;
 var IDNodeIDDict = new Object();
+var nodeIdNodePosDict = new Object();
 
 class Node{
-  constructor(name,x,y,connectionSet,gravity,type, nodeId) {
+  constructor(name,x,y,connectionList,gravity,type, nodeId) {
     this.nodeName = name;
     this.nodeX = x; 
     this.nodeY = y; 
-    this.connectedTo = connectionSet;
+    this.connectedTo = connectionList;
     this.forcesX = 0;
     this.forcesY = 0;
     this.gravity = gravity;
     this.type = type;
     this.nodeId = nodeId;
   }
-  set xValue(newX){
+  set nodeX(newX){
   	this.nodeX = newX; 
   }
-  set yValue(newY){
+  set nodeY(newY){
   	this.nodeY = newY; 
   }
 
-  get xValue(){
+  get nodeX(){
   	return this.nodeX; 
+  }
+
+  get nodeY(){
+  	return this.nodeY;
   }
 
   get nodeName(){
@@ -600,10 +605,6 @@ class Node{
 
   get type(){
   	return this.type; 
-  }
-
-  get yValue(){
-  	return this.nodeY;
   }
 
   get forcesX(){
@@ -708,17 +709,20 @@ function initializeNodes(resultList, nodeSet, model1, model2){
 		var intention = listOfIntentions[i];
 		var nodeID = intention["nodeID"];
 		var nodeType = intention["nodeType"];
-		var connectionSet = new Set();
+		var connectionList = [];
 		var nodeId = intention["nodeID"];
 		for(var link in listOfLinks){
 			var src = link['linkSrcID'];
 			var dest = link['linkDestID'];
 			if(src == nodeID){
-				connectionSet.add(dest);
+				var curConnection = new Object(); 
+				curConnection["destId"] = dest; 
+				curConnection["linkId"] = link["linkID"];
+				connectionList.push(curConnection);
 			}
-			else if(dest == nodeID){
-				connectionSet.add(src);
-			}
+			// else if(dest == nodeID){
+			// 	connectionList.push(src);
+			// }
 		}
 		//go to next y or stay in the same y
 		if((curXCount + 1) <= numXY){
@@ -730,7 +734,7 @@ function initializeNodes(resultList, nodeSet, model1, model2){
 			curYCount += 1;
 		}
 		var gravity = gravityDict[nodeID];
-		var node = new Node(nodeID,(curXCount-1)*width,curYCount*height,connectionSet,gravity, nodeType, nodeId);
+		var node = new Node(nodeID,(curXCount-1)*width,curYCount*height,connectionList,gravity, nodeType, nodeId);
 		nodeSet.add(node);
 	}
 	//nodeName = nodeID
@@ -794,42 +798,42 @@ function setRepulsionSum(curNode){
 }
 
 function attraction(node1, node2){
-	var d = Math.sqrt((node2.xValue - node1.xValue)^2 + (node1.yValue - node2.yValue)^2);
+	var d = Math.sqrt((node2.nodeX - node1.nodeX)^2 + (node1.nodeY - node2.nodeY)^2);
 	var k = coefficientValue(clusterDictionary, [node1.nodeName, node2.nodeName]);
 	var coefficient = k * Math.sqrt(area/numVertices); 
 	var forceSum = d^2/(coefficient^2);
-	var dx = Math.sqrt((node2.xValue - node1.xValue)^2); 
-	var dy = Math.sqrt((node1.yValue - node2.yValue)^2);
+	var dx = Math.sqrt((node2.nodeX - node1.nodeX)^2); 
+	var dy = Math.sqrt((node1.nodeY - node2.nodeY)^2);
 	var cos = dx/d;
 	var sin = dy/d;
 	var forceX = cos*forceSum; 
 	var forceY = sine*forceSum;
 	//direction
-	if(node2.xValue < node1.xValue){
+	if(node2.nodeX < node1.nodeX){
 		forceX = -forceX;
 	}
-	if(node2.yValue < node1.yValue){
+	if(node2.nodeY < node1.nodeY){
 		forceY = -forceY;
 	}
 	return forceX, forceY; 
 }
 
 function repulsion(node1, node2){
-	var d = Math.sqrt((node2.xValue - node1.xValue)^2 + (node1.yValue - node2.yValue)^2);
+	var d = Math.sqrt((node2.nodeX - node1.nodeX)^2 + (node1.nodeY - node2.nodeY)^2);
 	var k = coefficeintValue(clusterDictionary, [node1.nodeName, node2.nodeName]); 
 	var coefficient = k * Math.sqrt(area/numVertices);
 	var forceSum = -coefficient^2/d;
-	var dx = Math.sqrt((node2.xValue - node1.xValue)^2); 
-	var dy = Math.sqrt((node1.yValue - node2.yValue)^2);
+	var dx = Math.sqrt((node2.nodeX - node1.nodeX)^2); 
+	var dy = Math.sqrt((node1.nodeY - node2.nodeY)^2);
 	var cos = dx/d;
 	var sin = dy/d;
 	var forceX = cos*forceSum; 
 	var forceY = sine*forceSum;
 	//direction
-	if(node2.xValue < node1.xValue){
+	if(node2.nodeX < node1.nodeX){
 		forceX = -forceX;
 	}
-	if(node2.yValue < node1.yValue){
+	if(node2.nodeY < node1.nodeY){
 		forceY = -forceY;
 	}
 	return forceX, forceY;
@@ -848,7 +852,7 @@ function adjustment(nodeSet,moveConstant){
 	}
 }
 
-function listForGraphicalLinks(nodeSet){
+function listForGraphicalNodes(nodeSet){
 	var nodes = [];
 	var zCounter = 1;
 	for(var node of nodeSet){
@@ -889,30 +893,53 @@ function listForGraphicalLinks(nodeSet){
 	return nodes; 
 }
 
-function listForGraphicalNodes(nodeSet, zToStartFrom){
+function nodeIdNodePosDict(nodeSet){
+	for(var node of nodeSet){
+		var newPos = new Object(); 
+		newPos["x"] = node.nodeX; 
+		newPos["y"] = node.nodeY;
+		nodeIdNodePosDict[node.nodeId] = newPos;
+	}
+}
+
+
+function listForGraphicalLinks(nodeSet, zToStartFrom){
 	var links = [];
-	var linkIdSet = new Set();
+	//var linkIdSet = new Set();
+	var linkList = [];
 	//source: graphical Id
 	//target: x, y pos of destination
 	//linkId
 	//linkGraphicalId
-
+	//nodeIdNodePosDict
 	for(var node of nodeSet){
-		var connectionSet = node.connectedTo; 
-		for(var connection of connectionSet){
-			var graphicalId = 
-			var newDest = new Object(); 
-			var newLinkId = ; 
-			linkIdSet.add(newLinkId);
-
+		var connectionList = node.connectedTo; 
+		for(var connection in connectionList){
+			var newTarget = new Object(); 
+			newTarget["x"] = nodeIdNodePosDict[connection]["x"];
+			newTarget["y"] = nodeIdNodePosDict[connection]["y"]; 
+			newTarget["linkID"] = nodeIdNodePosDict[connection]["linkId"];
+			newTarget["linkType"] = ;
+			linkList.push(newTarget);
 		}
 	}
-	for(var link of linksTemp){
-		newLink = new Object();
-		newLink["type"] = "link";
-		newSource = new Object();
-		newSource["id"] = ; 
-		newLink["source"] = newSource;
+
+	for(var link in linkList){
+		var oneLinkGraphical = new Object(); 
+		oneLinkGraphical["type"] = "link"; 
+		var newSource = new Object(); 
+		//hard coded as 1, but incorrect!!!!!
+		//TODO: change here!!!!
+		newSource["id"] = 1; 
+		oneLinkGraphical["source"] = newSource; 
+		var newTarget = new Object(); 
+		newTarget["x"] = link["x"];
+		newTarget["y"] = link["y"];
+		oneLinkGraphical["target"] = newTarget;
+		var newLabels = new Object(); 
+		newLabels["position"] = 0.5;
+		var newAttrs = new Object();
+		oneLinkGraphical["attrs"] = newAttrs;
 	}
 
 
@@ -935,5 +962,8 @@ function forceDirectedAlgorithm(resultList, model1, model2){
 
 var resultList1 = 
 forceDirectedAlgorithm()
+
+//TODO:graphical ids are important and it contains information about the graphical object!
+//Need to find how they are generated to do the position modification
 
 
