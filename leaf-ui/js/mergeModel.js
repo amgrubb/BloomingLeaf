@@ -567,11 +567,8 @@ var softgoalGravity = 1;
 var goalGravity = 0;
 var IDNodeIDDict = new Object();
 
-//TODO: node ids: generated, reusable in different visual layout? ids linked only by their name. Would that be fine to keep that structure for now? 
-//TODO: What to include in the abstract?
-
 class Node{
-  constructor(name,x,y,connectionSet,gravity) {
+  constructor(name,x,y,connectionSet,gravity,type, nodeId) {
     this.nodeName = name;
     this.nodeX = x; 
     this.nodeY = y; 
@@ -579,6 +576,8 @@ class Node{
     this.forcesX = 0;
     this.forcesY = 0;
     this.gravity = gravity;
+    this.type = type;
+    this.nodeId = nodeId;
   }
   set xValue(newX){
   	this.nodeX = newX; 
@@ -589,6 +588,18 @@ class Node{
 
   get xValue(){
   	return this.nodeX; 
+  }
+
+  get nodeName(){
+  	return this.nodeName;
+  }
+
+  get nodeId(){
+  	return this.nodeId;
+  }
+
+  get type(){
+  	return this.type; 
   }
 
   get yValue(){
@@ -630,7 +641,6 @@ class Node{
 id of the node to id of the graph;
 node name to the node id; should be called*/
 //NOTE: The model1 and model2 passed in should be the updated version
-
 function makeDictIDToNodeID(model1, model2){
 	for(var i = 0; i < model1["graph"]["cells"].length; i++){
 		if(model1["graph"]["cells"][i]["type"] != "link"){
@@ -693,7 +703,9 @@ function initializeNodes(resultList, nodeSet, model1, model2){
 	for(var i=0, i < listOfIntentions.length; i++){
 		var intention = listOfIntentions[i];
 		var nodeID = intention["nodeID"];
+		var nodeType = intention["nodeType"];
 		var connectionSet = new Set();
+		var nodeId = intention["nodeID"];
 		for(var link in listOfLinks){
 			var src = link['linkSrcID'];
 			var dest = link['linkDestID'];
@@ -714,7 +726,7 @@ function initializeNodes(resultList, nodeSet, model1, model2){
 			curYCount += 1;
 		}
 		var gravity = gravityDict[nodeID];
-		var node = new Node(nodeID,(curXCount-1)*width,curYCount*height,connectionSet,gravity);
+		var node = new Node(nodeID,(curXCount-1)*width,curYCount*height,connectionSet,gravity, nodeType, nodeId);
 		nodeSet.add(node);
 	}
 	//nodeName = nodeID
@@ -832,7 +844,54 @@ function adjustment(nodeSet,moveConstant){
 	}
 }
 
-function forceDirectedAlgorithm(resultList){
+function listForGraphicalLinks(nodeSet){
+	var nodes = [];
+	for(var node of nodeSet){
+		var newNode = new Object();
+		newNode["type"] = node.type;
+		var newSize = new Object();
+		newSize["width"] = 150; 
+	    newSize["height"] = 100; 
+		newNode["size"] = newSize;
+		var newPosition = new Object();
+		newPosition["x"] = node.nodeX;
+		newPosition["y"] = node.nodeY;
+		newNode["position"] = newPosition;
+		//how to deal with angle? 
+		//TODO: fix this later
+		newNode["angle"] = 0; 
+		newNode["id"] = IDNodeIDDict[node.nodeId];
+		//TODO: fix this later. all z's are hard coded as 1 
+		newNode["z"] = 1;
+		newNode["nodeID"] = node.nodeId;
+		newAttrs = new Object();
+		newSatValues = new Object();
+		//TODO: fix the following later!
+		//Incorrectly hard coded here!
+		newSatValues["text"] = "";
+		newAttrs[ ".satvalue"] = newSatValue; 
+		newName = new Object();
+		newName["text"] = node.nodeName;
+		newAttrs[".name"] = newName;
+		newLabel = new Object();
+		//TODO: currently all cx and cy are hard coded; changes are needed here
+		newLabel["cx"]= 32;
+		newLabel["cy"] = 10;
+		newAttrs[".label"] = newLabel;
+		newNode["attrs"] = newAttrs;
+		nodes.push(newNode);
+	}
+	return nodes; 
+}
+
+function listForGraphicalNodes(nodeSet){
+	var links = [];
+	for(var node of nodeSet){
+
+	}
+}
+
+function forceDirectedAlgorithm(resultList, model1, model2){
 	var numIterations = 70;
 	var numConstant = 5;
 	var nodeSet = new Set();
@@ -840,10 +899,9 @@ function forceDirectedAlgorithm(resultList){
 	for(var i = 0; i < numItertions; i++){
 		adjustment(nodeSet);
 	}
-	/*print x, y here*/ 
-	for(var node of nodeSet){
-		console.log("x value: "node.nodeX + " ; y value: "+node.nodeY);
-	}
+	var listForGraphicalNodes = listForGraphicalNodes(nodeSet);
+	var listForGraphicalLinks = listForGraphicalLinks(nodeSet);
+	var newCellsList = listForGraphicalNodes.concat(listForGraphicalLinks);
 }
 
 var resultList1 = 
