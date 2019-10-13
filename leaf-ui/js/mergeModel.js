@@ -942,11 +942,27 @@ function listForGraphicalLinks(nodeSet, zToStartFrom){
 		newLabels["position"] = 0.5;
 		var newAttrs = new Object();
 		newAttrs["text"] = link["linkType"];
-		oneLinkGraphical["attrs"] = newAttrs;
-		
+		newLabels["attrs"] = newAttrs;
+		oneLinkGraphical["labels"] = newLabels;
+		oneLinkGraphical["linkID"] = link["linkID"];
+
+		var newAttrs1 = new Object();
+		var newConnection = new Object();
+		newConnection["stroke"] = "#000000";
+		newAttrs1[".connection"] = newConnection;
+		var newMarkerSource = new Object();
+		newMarkerSource["d"] = "0";
+		newAttrs1[".marker-source"] = newMarkerSource;
+		var newMarkerTarget = new Object();
+		newMarkerTarget["stroke"] = "#000000";
+		//is this correct? 
+		newMarkerTarget["d"] = "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5";
+		newAttrs1[".marker-target"] = newMarkerTarget;
+		oneLinkGraphical["attrs"] = newAttrs1;
+		oneLinkGraphical["z"] = zToStartFrom; 
+		zToStartFrom ++;
 	}
-
-
+	return oneLinkGraphical;
 }
 
 function forceDirectedAlgorithm(resultList, model1, model2){
