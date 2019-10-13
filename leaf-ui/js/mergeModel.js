@@ -614,6 +614,10 @@ class Node{
   	return this.forceY;
   }
 
+  get connectedTo(){
+  	return this.connectedTo;
+  }
+
   isConnectdTo(anotherNode){
   	if(this.connectedTo.has(anotherNode)){
   		return true;
@@ -886,9 +890,21 @@ function listForGraphicalLinks(nodeSet){
 
 function listForGraphicalNodes(nodeSet){
 	var links = [];
+	var linksTemp = new Set();
+	//source: graphical Id
+	//target: x, y pos of destination
 	for(var node of nodeSet){
 
 	}
+	for(var link of linksTemp){
+		newLink = new Object();
+		newLink["type"] = "link";
+		newSource = new Object();
+		newSource["id"] = ; 
+		newLink["source"] = newSource;
+	}
+
+
 }
 
 function forceDirectedAlgorithm(resultList, model1, model2){
