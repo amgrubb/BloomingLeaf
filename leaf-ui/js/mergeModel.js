@@ -718,6 +718,7 @@ function initializeNodes(resultList, nodeSet, model1, model2){
 				var curConnection = new Object(); 
 				curConnection["destId"] = dest; 
 				curConnection["linkId"] = link["linkID"];
+				curConnection["linkType"] = link["linkType"];
 				connectionList.push(curConnection);
 			}
 			// else if(dest == nodeID){
@@ -916,10 +917,11 @@ function listForGraphicalLinks(nodeSet, zToStartFrom){
 		var connectionList = node.connectedTo; 
 		for(var connection in connectionList){
 			var newTarget = new Object(); 
-			newTarget["x"] = nodeIdNodePosDict[connection]["x"];
-			newTarget["y"] = nodeIdNodePosDict[connection]["y"]; 
-			newTarget["linkID"] = nodeIdNodePosDict[connection]["linkId"];
-			newTarget["linkType"] = ;
+			newTarget["x"] = nodeIdNodePosDict[[connection]["destId"]]["x"]];
+			newTarget["y"] = nodeIdNodePosDict[[connection]["destId"]]["y"]]; 
+			//
+			newTarget["linkID"] = connection["linkId"];
+			newTarget["linkType"] = connection["linkType"];
 			linkList.push(newTarget);
 		}
 	}
@@ -939,7 +941,9 @@ function listForGraphicalLinks(nodeSet, zToStartFrom){
 		var newLabels = new Object(); 
 		newLabels["position"] = 0.5;
 		var newAttrs = new Object();
+		newAttrs["text"] = link["linkType"];
 		oneLinkGraphical["attrs"] = newAttrs;
+		
 	}
 
 
