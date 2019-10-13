@@ -850,6 +850,7 @@ function adjustment(nodeSet,moveConstant){
 
 function listForGraphicalLinks(nodeSet){
 	var nodes = [];
+	var zCounter = 1;
 	for(var node of nodeSet){
 		var newNode = new Object();
 		newNode["type"] = node.type;
@@ -865,8 +866,8 @@ function listForGraphicalLinks(nodeSet){
 		//TODO: fix this later
 		newNode["angle"] = 0; 
 		newNode["id"] = IDNodeIDDict[node.nodeId];
-		//TODO: fix this later. all z's are hard coded as 1 
-		newNode["z"] = 1;
+		newNode["z"] = zCounter;
+		zCounter ++;
 		newNode["nodeID"] = node.nodeId;
 		newAttrs = new Object();
 		newSatValues = new Object();
@@ -888,13 +889,23 @@ function listForGraphicalLinks(nodeSet){
 	return nodes; 
 }
 
-function listForGraphicalNodes(nodeSet){
+function listForGraphicalNodes(nodeSet, zToStartFrom){
 	var links = [];
-	var linksTemp = new Set();
+	var linkIdSet = new Set();
 	//source: graphical Id
 	//target: x, y pos of destination
-	for(var node of nodeSet){
+	//linkId
+	//linkGraphicalId
 
+	for(var node of nodeSet){
+		var connectionSet = node.connectedTo; 
+		for(var connection of connectionSet){
+			var graphicalId = 
+			var newDest = new Object(); 
+			var newLinkId = ; 
+			linkIdSet.add(newLinkId);
+
+		}
 	}
 	for(var link of linksTemp){
 		newLink = new Object();
@@ -916,7 +927,9 @@ function forceDirectedAlgorithm(resultList, model1, model2){
 		adjustment(nodeSet);
 	}
 	var listForGraphicalNodes = listForGraphicalNodes(nodeSet);
-	var listForGraphicalLinks = listForGraphicalLinks(nodeSet);
+	var curZ = listForGraphicalNodes.length; 
+	var zToStartFrom = curZ + 1; 
+	var listForGraphicalLinks = listForGraphicalLinks(nodeSet,zToStartFrom);
 	var newCellsList = listForGraphicalNodes.concat(listForGraphicalLinks);
 }
 
