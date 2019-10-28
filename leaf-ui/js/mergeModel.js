@@ -223,24 +223,24 @@ function mergeLinksActorsConstraintRequest(model1, model2, delta){
 	*/
 	var newLinks = [];
 	var linkCount = 0
-	for(var link in model1.model.links){
+	for(var i = 0 ; i < model1.model.links.length; i++){
 		var newID = createID(linkCount);
-		link.linkID = newID;
+		model1.model.links[i].linkID = newID;
 		linkCount ++;
-		newLinks.push(link);
+		newLinks.push(model1.model.links[i]);
 	}
-	for(var link in model2.model.links){
+	for(var i = 0; i < model2.model.links.length; i++){
 		var isInNewLink = false;
 		for(var newLink in newLinks){
-			if(isSameLink(newLink,link)){
+			if(isSameLink(newLink,model2.model.links[i])){
 				isInNewLink = true;
 			}
 		}
 		if(!isInNewLink){
 			var newID = createID(linkCount); 
-			link.linkID = newID; 
+			model2.model.links[i].linkID = newID; 
 			linkCount ++;
-			newLinks.push(link);
+			newLinks.push(model2.model.links[i]);
 		}
 	}
 
@@ -388,7 +388,9 @@ function noGapNoConflict(model1, model2, delta){
 
 /*remove the extra "^^" that are put at the end of the newId generated*/
 function removeExtraNewLinks(newLinks){
+	console.log("newLinks: " + newLinks);
 	for(var i = 0; i < newLinks.length; i++){
+		console.log(newLinks[i]);
 		if(newLinks[i].linkSrcID.substr(-2) === '^^'){
 			newLinks[i].linkSrcID = newLinks[i].linkSrcID.substr(0, newLinks[i].linkSrcID.length - 2);
 		}
@@ -917,8 +919,8 @@ function listForGraphicalLinks(nodeSet, zToStartFrom){
 		var connectionList = node.connectedTo; 
 		for(var connection in connectionList){
 			var newTarget = new Object(); 
-			newTarget["x"] = nodeIdNodePosDict[[connection]["destId"]]["x"]];
-			newTarget["y"] = nodeIdNodePosDict[[connection]["destId"]]["y"]]; 
+			newTarget["x"] = nodeIdNodePosDict[[connection]["destId"]]["x"];
+			newTarget["y"] = nodeIdNodePosDict[[connection]["destId"]]["y"]; 
 			//
 			newTarget["linkID"] = connection["linkId"];
 			newTarget["linkType"] = connection["linkType"];
