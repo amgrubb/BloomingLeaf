@@ -572,53 +572,57 @@ var nodeIdNodePosDict = new Object();
 
 class Node{
   constructor(name,x,y,connectionList,gravity,type, nodeId) {
-    this.nodeName = name;
-    this.nodeX = x; 
-    this.nodeY = y; 
-    this.connectedTo = connectionList;
-    this.forcesX = 0;
-    this.forcesY = 0;
-    this.gravity = gravity;
-    this.type = type;
-    this.nodeId = nodeId;
+    this.nodeName1 = name;
+    this.nodeX1 = x; 
+    this.nodeY1 = y; 
+    this.connectedTo1 = connectionList;
+    this.forcesX1 = 0;
+    this.forcesY1 = 0;
+    this.gravity1 = gravity;
+    this.type1 = type;
+    this.nodeId1 = nodeId;
   }
   set nodeX(newX){
-  	this.nodeX = newX; 
+  	this.nodeX1 = newX; 
   }
   set nodeY(newY){
-  	this.nodeY = newY; 
+  	this.nodeY1 = newY; 
   }
 
+  // set nodeName(newName){
+  // 	this.nodeName = newName;
+  // }
+
   get nodeX(){
-  	return this.nodeX; 
+  	return this.nodeX1; 
   }
 
   get nodeY(){
-  	return this.nodeY;
+  	return this.nodeY1;
   }
 
   get nodeName(){
-  	return this.nodeName;
+  	return this.nodeName1;
   }
 
   get nodeId(){
-  	return this.nodeId;
+  	return this.nodeId1;
   }
 
   get type(){
-  	return this.type; 
+  	return this.type1; 
   }
 
   get forcesX(){
-  	return this.forceX;
+  	return this.forceX1;
   }
 
   get forcesY(){
-  	return this.forceY;
+  	return this.forceY1;
   }
 
   get connectedTo(){
-  	return this.connectedTo;
+  	return this.connectedTo1;
   }
 
   isConnectdTo(anotherNode){
@@ -631,15 +635,15 @@ class Node{
   }
 
   set forceX(newForceX){
-  	this.forceX = newForceX;
+  	this.forceX1 = newForceX;
   }
 
   set forceY(newForceY){
-  	this.forceY = newForceY;
+  	this.forceY1 = newForceY;
   }
 
   set gravity(gravity){
-  	this.gravity = gravity;
+  	this.gravity1 = gravity;
   }
 
 }
@@ -649,6 +653,7 @@ id of the node to id of the graph;
 node name to the node id; should be called*/
 //NOTE: The model1 and model2 passed in should be the updated version
 function makeDictIDToNodeID(model1, model2){
+	var debugCtr = 0;
 	for(var i = 0; i < model1["graph"]["cells"].length; i++){
 		if(model1["graph"]["cells"][i]["type"] != "link"){
 			var nodeId = model1["graph"]["cells"][i]["nodeID"];
@@ -662,21 +667,21 @@ function makeDictIDToNodeID(model1, model2){
 
 	for(var j = 0; j < model2["graph"]["cells"].length; j++){
 		if(model2["graph"]["cells"][j]["type"] != "link"){
-			var nodeId = model2["graph"]["cells"][i]["nodeID"];
-			var graphId = model2["graph"]["cells"][i]["id"];
-			var nodeName = model2["graph"]["cells"][i]["attrs"][".name"]["text"];
+			var nodeId = model2["graph"]["cells"][j]["nodeID"];
+			var graphId = model2["graph"]["cells"][j]["id"];
+			var nodeName = model2["graph"]["cells"][j]["attrs"][".name"]["text"];
 			IDNodeIDDict[nodeId] = graphId;
 			IDNodeIDDict[graphId] = nodeId;
 			IDNodeIDDict[nodeName] = nodeId;
 		}
 	}
 }
-
+//TODO: change IDNodeIDDict
 
 
 function initializaGravityDict(resultList){
-	var listOfIntentions = restList[1];
-	for(var i=0, i < listOfIntentions.length; i++){
+	var listOfIntentions = resultList[1];
+	for(var i=0; i < listOfIntentions.length; i++){
 		var curIntention = listOfIntentions[i];
 		if(curIntention["nodeType"] == "basic.Resource"){
 			gravityDict[curIntention["nodeID"]] = resourcesGravity;
@@ -702,12 +707,13 @@ function initializeNodes(resultList, nodeSet, model1, model2){
 	var width = 150; 
 	var height = 100; 
 	/*here construct a coordinate*/ 
-	var listOfIntentions = restList[1];
+	var listOfIntentions = resultList[1];
 	var numIntentions = listOfIntentions.length; 
 	var numXY = Math.ceil(Math.sqrt(numIntentions));
-	var curXCount, curYCount = 0, 0;
+	var curXCount = 0;
+	var curYCount = 0; 
 	var listOfLinks = resultList[2];
-	for(var i=0, i < listOfIntentions.length; i++){
+	for(var i=0; i < listOfIntentions.length; i++){
 		var intention = listOfIntentions[i];
 		var nodeID = intention["nodeID"];
 		var nodeType = intention["nodeType"];
@@ -767,9 +773,9 @@ function changeNodePos(node, newX, newY){
 }
 
 
-function setAttractionSum(curNode){
+function setAttractionSum(curNode, nodeSet){
 	var curName = curNode.nodeName;
-	for(var node in nodes){
+	for(var node in nodeSet){
 		var nodeName = node.nodeName;
 		if(curName != nodeName){
 			var forceX, forceY = attraction(curNode, node);
@@ -783,9 +789,9 @@ function setAttractionSum(curNode){
 	}
 }
 
-function setRepulsionSum(curNode){
+function setRepulsionSum(curNode, nodeSet){
 	var curName = curNode.nodeName;
-	for(var node in nodes){
+	for(var node in nodeSet){
 		var nodeName = node.nodeName;
 		if(curName != nodeName){
 			var forceX, forceY = repulsion(curNode, node);
@@ -846,10 +852,10 @@ function repulsion(node1, node2){
 initializeNodes)*/
 function adjustment(nodeSet,moveConstant){
 	for(var node of nodeSet){
-		setAttractionSum(node); 
-		setRepulsionSum(node);
-		var moveX = moveConstant * node.forceX; 
-		var moveY = moveConstant * node.forceY;
+		setAttractionSum(node,nodeSet); 
+		setRepulsionSum(node,nodeSet);
+		var moveX = moveConstant * node.forcesX1; 
+		var moveY = moveConstant * node.forcesY1;
 		node.nodeX += moveX; 
 		node.nodeY += moveY;
 	}
