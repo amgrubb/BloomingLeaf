@@ -1313,18 +1313,43 @@ else{
 	var resultList = mergeModels(process.argv[2], inputModel1, inputModel2);
 	makeDictIDToNodeID(inputModel1, inputModel2);
 	var graphicalResultList = forceDirectedAlgorithm(resultList,inputModel1, inputModel2);
-	//TODO: structure incorrect
-	//Check!!!!!
-	outPutString += "graph";
+	var resultList = mergeModels(0, inputModel1, inputModel2);
+	makeDictIDToNodeID(inputModel1, inputModel2);
+	var graphicalResultList = forceDirectedAlgorithm(resultList,inputModel1, inputModel2);
+	var outPutString = "";
+	var outPut = new Object();
+	var graphicalCells = new Object();
+	graphicalCells["cells"] = []; 
 	for(var i = 0; i < graphicalResultList.length; i++){
-		outPutString += JSON.stringify(graphicalResultList[i]);
+		for(var j = 0; j < graphicalResultList[i].length; j++){
+			graphicalCells["cells"].push(graphicalResultList[i][j]);
+		}
 	}
-	outPutString += "model";
-	var commentList = ["actors","intentions","links","constraints","analysisRequest"];
+	outPut["graph"] = graphicalCells;
+	var semanticElems = new Object();
+	var actorsList = [];
+	var intentionsList = [];
+	var linksList = [];
+	var constraintsList = [];
+	var analysisRequestList = [];
+	var listOfLists = [];
+	listOfLists.push(actorsList);
+	listOfLists.push(intentionsList);
+	listOfLists.push(linksList);
+	listOfLists.push(constraintsList);
+	listOfLists.push(analysisRequestList);
 	for(var i = 0; i < resultList.length; i++){
-		outPutString += commentList[i];
-		outPutString += JSON.stringify(resultList[i]);
+		for(var j = 0; j < resultList[i].length; j++){
+			listOfLists[i].push(resultList[i][j]);
+		}
 	}
+	semanticElems["actors"] = actorsList;
+	semanticElems["intentions"] = intentionsList;
+	semanticElems["links"] = linksList;
+	semanticElems["constraints"] = constraintsList;
+	semanticElems["analysisRequest"] = analysisRequestList;
+	outPut["model"] = semanticElems;
+	outPutString = JSON.stringify(outPut);
 	//TODO: The check should end here
 	fs.writeFile('OutputForMerge.txt', outPutString, (err) => { 
     	// In case of a error throw err. 
@@ -1332,4 +1357,42 @@ else{
 	});
 }
 
+	// var resultList = mergeModels(0, inputModel1, inputModel2);
+	// makeDictIDToNodeID(inputModel1, inputModel2);
+	// var graphicalResultList = forceDirectedAlgorithm(resultList,inputModel1, inputModel2);
+	// var outPutString = "";
+	// var outPut = new Object();
+	// var graphicalCells = new Object();
+	// graphicalCells["cells"] = []; 
+	// for(var i = 0; i < graphicalResultList.length; i++){
+	// 	for(var j = 0; j < graphicalResultList[i].length; j++){
+	// 		graphicalCells["cells"].push(graphicalResultList[i][j]);
+	// 	}
+	// }
+	// outPut["graph"] = graphicalCells;
+	// var semanticElems = new Object();
+	// var actorsList = [];
+	// var intentionsList = [];
+	// var linksList = [];
+	// var constraintsList = [];
+	// var analysisRequestList = [];
+	// var listOfLists = [];
+	// listOfLists.push(actorsList);
+	// listOfLists.push(intentionsList);
+	// listOfLists.push(linksList);
+	// listOfLists.push(constraintsList);
+	// listOfLists.push(analysisRequestList);
+	// for(var i = 0; i < resultList.length; i++){
+	// 	for(var j = 0; j < resultList[i].length; j++){
+	// 		listOfLists[i].push(resultList[i][j]);
+	// 	}
+	// }
+	// semanticElems["actors"] = actorsList;
+	// semanticElems["intentions"] = intentionsList;
+	// semanticElems["links"] = linksList;
+	// semanticElems["constraints"] = constraintsList;
+	// semanticElems["analysisRequest"] = analysisRequestList;
+	// outPut["model"] = semanticElems;
+	// outPutString = JSON.stringify(outPut);
+	// console.log(outPutString);
 
