@@ -592,7 +592,7 @@ function listForGraphicalActors(actorSet, curZ){
   var zCounter = curZ;
   for(var node of actorSet){
     var newNode = new Object();
-    newNode["type"] = node.type;
+    newNode["type"] = "basic.Actor";
     var newSize = new Object();
     newSize["width"] = 150; 
       newSize["height"] = 100; 
@@ -610,11 +610,6 @@ function listForGraphicalActors(actorSet, curZ){
     zCounter ++;
     newNode["nodeID"] = node.nodeId;
     newAttrs = new Object();
-    newSatValues = new Object();
-    //TODO: fix the following later!
-    //Incorrectly hard coded here!
-    newSatValues["text"] = "";
-    newAttrs[ ".satvalue"] = newSatValues; 
     newName = new Object();
     newName["text"] = node.nodeName;
     newAttrs[".name"] = newName;
@@ -688,6 +683,9 @@ function setNodeIdNodePosDict(nodeIdNodePosDict,nodeSet){
 		newPos["y"] = node.nodeY;
 		nodeIdNodePosDict[node.nodeId] = newPos;
 	}
+	for(var node of nodeSet){
+		nodeIdNodePosDict[node.nodeX, node.nodeY] = node.nodeId;
+	}
 }
 
 function listForGraphicalLinks(nodeSet, zToStartFrom,nodeIdNodePosDict){
@@ -702,26 +700,32 @@ function listForGraphicalLinks(nodeSet, zToStartFrom,nodeIdNodePosDict){
 			newTarget["y"] = nodeIdNodePosDict[connection["destId"]]["y"]; 
 			newTarget["linkID"] = connection["linkId"];
 			newTarget["linkType"] = connection["linkType"];
+			//TODO: continue here
+			newTarget["linkSrcID"]= node.nodeId;
 			linkList.push(newTarget);
 		}
 	}
 
 	for(var i = 0; i < linkList.length; i++){
 		var link = linkList[i];
+		console.log("link here!");
+		console.log(link);
 		var oneLinkGraphical = new Object(); 
 		oneLinkGraphical["type"] = "link"; 
 		var newSource = new Object(); 
 		//TODO: Change here
-		newSource["id"] = 123; 
+		var sourceId = link["linkSrcID"];
+		newSource["id"] = sourceId.toString(); 
 		oneLinkGraphical["source"] = newSource; 
-		var newTarget = new Object(); 
-		newTarget["x"] = link["x"];
-		newTarget["y"] = link["y"];
+		var newTarget = new Object();
+		var nodeId = nodeIdNodePosDict[link["x"],link["y"]];
+		newTarget["id"] = nodeId.toString(10);
 		oneLinkGraphical["target"] = newTarget;
 		var newLabels = new Object(); 
 		newLabels["position"] = 0.5;
 		var newAttrs = new Object();
-		newAttrs["text"] = link["linkType"];
+		var text = link["linkType"];
+		newAttrs["text"] = text.toLowerCase();
 		newLabels["attrs"] = newAttrs;
 		oneLinkGraphical["labels"] = newLabels;
 		oneLinkGraphical["linkID"] = link["linkID"];
@@ -759,7 +763,7 @@ function forceDirectedAlgorithm(resultList, model1, model2){
 		moveNodesToAbsPos(nodeSet,actorSet);
 	}
 	setNodeIdNodePosDict(nodeIdNodePosDict, nodeSet);
-	var curZ = -1;
+	var curZ = 1;
 	var listForGraphicalActors1 = listForGraphicalActors(actorSet, curZ); 
 	curZ = curZ + listForGraphicalActors.length;
 	var listForGraphicalNodes1 = listForGraphicalNodes(nodeSet, curZ);
@@ -770,8 +774,8 @@ function forceDirectedAlgorithm(resultList, model1, model2){
 
 //TODO:graphical ids are important and it contains information about the graphical object!
 //Need to find how they are generated to do the position modification
-inputModel1 = {"graph":{"cells":[{"type":"basic.Actor","size":{"width":240,"height":220},"position":{"x":560,"y":650},"angle":0,"id":"caed5a24-6995-455a-be35-0519e1102d0b","z":0,"nodeID":"a001","embeds":["68426e4a-b453-4dad-88c0-08e2d54e7061"],"attrs":{".label":{"cx":60,"cy":22.30173846174509},".name":{"text":"Actor_1"}}},{"type":"basic.Actor","size":{"width":270,"height":310},"position":{"x":290,"y":360},"angle":0,"id":"cfdc807b-8cab-42c3-a138-1db6ae3a91c4","z":1,"nodeID":"a000","embeds":["aefeb7df-676a-450d-83bd-55c5f58d8893","c68eea0f-6aa6-4ce3-81a4-8e79d15e07dc"],"attrs":{".label":{"cx":67.5,"cy":31.255033489030836},".name":{"text":"Actor_0"}}},{"type":"basic.Goal","size":{"width":100,"height":60},"position":{"x":330,"y":450},"angle":0,"id":"c68eea0f-6aa6-4ce3-81a4-8e79d15e07dc","z":2,"nodeID":"0000","parent":"cfdc807b-8cab-42c3-a138-1db6ae3a91c4","attrs":{".satvalue":{"text":""},".name":{"text":"Goal_0"}}},{"type":"basic.Goal","size":{"width":100,"height":60},"position":{"x":600,"y":720},"angle":0,"id":"68426e4a-b453-4dad-88c0-08e2d54e7061","z":4,"nodeID":"0002","parent":"caed5a24-6995-455a-be35-0519e1102d0b","attrs":{".satvalue":{"text":""},".name":{"text":"Goal_2"}}},{"type":"basic.Resource","size":{"width":100,"height":60},"position":{"x":370,"y":580},"angle":0,"id":"aefeb7df-676a-450d-83bd-55c5f58d8893","z":5,"nodeID":"0003","parent":"cfdc807b-8cab-42c3-a138-1db6ae3a91c4","attrs":{".satvalue":{"text":""},".name":{"text":"Resource_3"}}},{"type":"link","source":{"id":"aefeb7df-676a-450d-83bd-55c5f58d8893"},"target":{"id":"68426e4a-b453-4dad-88c0-08e2d54e7061"},"labels":[{"position":0.5,"attrs":{"text":{"text":"and"}}}],"id":"4e4bc83b-ea10-4caa-9233-f1d8f47e2b4c","z":6,"linkID":"0001","attrs":{".connection":{"stroke":"#000000"},".marker-source":{"d":"0"},".marker-target":{"stroke":"#000000","d":"M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"}}},{"type":"link","source":{"id":"c68eea0f-6aa6-4ce3-81a4-8e79d15e07dc"},"target":{"id":"68426e4a-b453-4dad-88c0-08e2d54e7061"},"labels":[{"position":0.5,"attrs":{"text":{"text":"and"}}}],"id":"fb0e6545-0d19-4642-a0a3-98d7ea806b4b","z":7,"linkID":"0002","attrs":{".connection":{"stroke":"#000000"},".marker-source":{"d":"0"},".marker-target":{"stroke":"#000000","d":"M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"}}}]},"model":{"actors":[{"nodeID":"a000","nodeName":"Actor_0","intentionIDs":["0000","0001","0003"]},{"nodeID":"a001","nodeName":"Actor_1","intentionIDs":["0002"]}],"intentions":[{"nodeActorID":"a000","nodeID":"0000","nodeType":"basic.Goal","nodeName":"Goal_0","dynamicFunction":{"intentionID":"0000","stringDynVis":"NT","functionSegList":[]}},{"nodeActorID":"a001","nodeID":"0002","nodeType":"basic.Goal","nodeName":"Goal_2","dynamicFunction":{"intentionID":"0002","stringDynVis":"NT","functionSegList":[]}},{"nodeActorID":"a000","nodeID":"0003","nodeType":"basic.Resource","nodeName":"Resource_3","dynamicFunction":{"intentionID":"0003","stringDynVis":"NT","functionSegList":[]}}],"links":[{"linkID":"0001","linkType":"AND","postType":null,"linkSrcID":"0003","linkDestID":"0002","absoluteValue":-1},{"linkID":"0002","linkType":"AND","postType":null,"linkSrcID":"0000","linkDestID":"0002","absoluteValue":-1}],"constraints":[],"maxAbsTime":"100"},"analysisRequest":{"action":null,"conflictLevel":"S","numRelTime":"1","absTimePts":"","absTimePtsArr":[],"currentState":"0","userAssignmentsList":[{"intentionID":"0000","absTime":"0","evaluationValue":"(no value)"},{"intentionID":"0002","absTime":"0","evaluationValue":"(no value)"},{"intentionID":"0003","absTime":"0","evaluationValue":"(no value)"}],"previousAnalysis":null}};
-inputModel2 = {"graph":{"cells":[{"type":"basic.Actor","size":{"width":200,"height":160},"position":{"x":710,"y":350},"angle":0,"id":"4734e3c8-111c-49b1-bce3-04afc5fab159","z":-1,"nodeID":"a002","embeds":["4a0d0277-9bbb-4c0c-af71-cd698394b3e5"],"attrs":{".label":{"cx":50,"cy":16.332756630338366},".name":{"text":"Actor_2"}}},{"type":"basic.Actor","size":{"width":240,"height":220},"position":{"x":560,"y":650},"angle":0,"id":"caed5a24-6995-455a-be35-0519e1102d0b","z":0,"nodeID":"a001","embeds":["68426e4a-b453-4dad-88c0-08e2d54e7061"],"attrs":{".label":{"cx":60,"cy":22.30173846174509},".name":{"text":"Actor_1"}}},{"type":"basic.Actor","size":{"width":360,"height":310},"position":{"x":290,"y":360},"angle":0,"id":"cfdc807b-8cab-42c3-a138-1db6ae3a91c4","z":1,"nodeID":"a000","embeds":["aefeb7df-676a-450d-83bd-55c5f58d8893","34117b0f-97eb-4ef0-bb61-661f7c85b446","c68eea0f-6aa6-4ce3-81a4-8e79d15e07dc"],"attrs":{".label":{"cx":90,"cy":31.255033489030836},".name":{"text":"Actor_0"}}},{"type":"basic.Goal","size":{"width":100,"height":60},"position":{"x":340,"y":460},"angle":0,"id":"c68eea0f-6aa6-4ce3-81a4-8e79d15e07dc","z":2,"nodeID":"0000","parent":"cfdc807b-8cab-42c3-a138-1db6ae3a91c4","attrs":{".satvalue":{"text":""},".name":{"text":"Goal_0"}}},{"type":"basic.Goal","size":{"width":100,"height":60},"position":{"x":600,"y":720},"angle":0,"id":"68426e4a-b453-4dad-88c0-08e2d54e7061","z":4,"nodeID":"0002","parent":"caed5a24-6995-455a-be35-0519e1102d0b","attrs":{".satvalue":{"text":""},".name":{"text":"Goal_2"}}},{"type":"basic.Resource","size":{"width":100,"height":60},"position":{"x":330,"y":560},"angle":0,"id":"aefeb7df-676a-450d-83bd-55c5f58d8893","z":5,"nodeID":"0003","parent":"cfdc807b-8cab-42c3-a138-1db6ae3a91c4","attrs":{".satvalue":{"text":""},".name":{"text":"Resource_3"}}},{"type":"link","source":{"id":"aefeb7df-676a-450d-83bd-55c5f58d8893"},"target":{"id":"68426e4a-b453-4dad-88c0-08e2d54e7061"},"labels":[{"position":0.5,"attrs":{"text":{"text":"and"}}}],"id":"4e4bc83b-ea10-4caa-9233-f1d8f47e2b4c","z":6,"linkID":"0001","attrs":{".connection":{"stroke":"#000000"},".marker-source":{"d":"0"},".marker-target":{"stroke":"#000000","d":"M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"}}},{"type":"link","source":{"id":"c68eea0f-6aa6-4ce3-81a4-8e79d15e07dc"},"target":{"id":"68426e4a-b453-4dad-88c0-08e2d54e7061"},"labels":[{"position":0.5,"attrs":{"text":{"text":"and"}}}],"id":"fb0e6545-0d19-4642-a0a3-98d7ea806b4b","z":7,"linkID":"0002","attrs":{".connection":{"stroke":"#000000"},".marker-source":{"d":"0"},".marker-target":{"stroke":"#000000","d":"M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"}}},{"type":"basic.Task","size":{"width":100,"height":60},"position":{"x":490,"y":430},"angle":0,"id":"34117b0f-97eb-4ef0-bb61-661f7c85b446","z":8,"nodeID":"0004","parent":"cfdc807b-8cab-42c3-a138-1db6ae3a91c4","attrs":{".satvalue":{"text":""},".name":{"text":"Task_4"}}},{"type":"link","source":{"id":"34117b0f-97eb-4ef0-bb61-661f7c85b446"},"target":{"id":"c68eea0f-6aa6-4ce3-81a4-8e79d15e07dc"},"labels":[{"position":0.5,"attrs":{"text":{"text":"and"}}}],"id":"6a5108e0-e237-4788-9df2-7edd0741f0cb","z":9,"linkID":"0003","attrs":{".connection":{"stroke":"#000000"},".marker-source":{"d":"0"},".marker-target":{"stroke":"#000000","d":"M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"}}},{"type":"basic.Task","size":{"width":100,"height":60},"position":{"x":780,"y":410},"angle":0,"id":"4a0d0277-9bbb-4c0c-af71-cd698394b3e5","z":10,"nodeID":"0005","parent":"4734e3c8-111c-49b1-bce3-04afc5fab159","attrs":{".satvalue":{"text":""},".name":{"text":"Task_5"}}}]},"model":{"actors":[{"nodeID":"a000","nodeName":"Actor_0","intentionIDs":["0000","0001","0003","0004"]},{"nodeID":"a001","nodeName":"Actor_1","intentionIDs":["0002"]},{"nodeID":"a002","nodeName":"Actor_2","intentionIDs":["0005"]}],"intentions":[{"nodeActorID":"a000","nodeID":"0000","nodeType":"basic.Goal","nodeName":"Goal_0","dynamicFunction":{"intentionID":"0000","stringDynVis":"NT","functionSegList":[]}},{"nodeActorID":"a001","nodeID":"0002","nodeType":"basic.Goal","nodeName":"Goal_2","dynamicFunction":{"intentionID":"0002","stringDynVis":"NT","functionSegList":[]}},{"nodeActorID":"a000","nodeID":"0003","nodeType":"basic.Resource","nodeName":"Resource_3","dynamicFunction":{"intentionID":"0003","stringDynVis":"NT","functionSegList":[]}},{"nodeActorID":"a000","nodeID":"0004","nodeType":"basic.Task","nodeName":"Task_4","dynamicFunction":{"intentionID":"0004","stringDynVis":"NT","functionSegList":[]}},{"nodeActorID":"a002","nodeID":"0005","nodeType":"basic.Task","nodeName":"Task_5","dynamicFunction":{"intentionID":"0005","stringDynVis":"NT","functionSegList":[]}}],"links":[{"linkID":"0001","linkType":"AND","postType":null,"linkSrcID":"0003","linkDestID":"0002","absoluteValue":-1},{"linkID":"0002","linkType":"AND","postType":null,"linkSrcID":"0000","linkDestID":"0002","absoluteValue":-1},{"linkID":"0003","linkType":"AND","postType":null,"linkSrcID":"0004","linkDestID":"0000","absoluteValue":-1}],"constraints":[],"maxAbsTime":"100"},"analysisRequest":{"action":null,"conflictLevel":"S","numRelTime":"1","absTimePts":"","absTimePtsArr":[],"currentState":"0","userAssignmentsList":[{"intentionID":"0000","absTime":"0","evaluationValue":"(no value)"},{"intentionID":"0002","absTime":"0","evaluationValue":"(no value)"},{"intentionID":"0003","absTime":"0","evaluationValue":"(no value)"},{"intentionID":"0004","absTime":"0","evaluationValue":"(no value)"},{"intentionID":"0005","absTime":"0","evaluationValue":"(no value)"}],"previousAnalysis":null}}
+inputModel1 = {"graph":{"cells":[{"type":"basic.Actor","size":{"width":230,"height":200},"position":{"x":270,"y":320},"angle":0,"id":"40b1a1fb-19fa-4bf9-ac80-c8eed24bd36e","z":1,"nodeID":"a000","embeds":["97870869-7b37-4d6c-a7bd-82d65cf7ee73"],"attrs":{".label":{"cx":57.5,"cy":20.31209415515964},".name":{"text":"Actor_0"}}},{"type":"basic.Task","size":{"width":100,"height":60},"position":{"x":330,"y":370},"angle":0,"id":"97870869-7b37-4d6c-a7bd-82d65cf7ee73","z":2,"nodeID":"0000","parent":"40b1a1fb-19fa-4bf9-ac80-c8eed24bd36e","attrs":{".satvalue":{"text":""},".name":{"text":"Task_0"}}}]},"model":{"actors":[{"nodeID":"a000","nodeName":"Actor_0","intentionIDs":["0000"]}],"intentions":[{"nodeActorID":"a000","nodeID":"0000","nodeType":"basic.Task","nodeName":"Task_0","dynamicFunction":{"intentionID":"0000","stringDynVis":"NT","functionSegList":[]}}],"links":[],"constraints":[],"maxAbsTime":"100"},"analysisRequest":{"action":null,"conflictLevel":"S","numRelTime":"1","absTimePts":"","absTimePtsArr":[],"currentState":"0","userAssignmentsList":[{"intentionID":"0000","absTime":"0","evaluationValue":"(no value)"}],"previousAnalysis":null}};
+inputModel2 = {"graph":{"cells":[{"type":"basic.Task","size":{"width":100,"height":60},"position":{"x":250,"y":330},"angle":0,"id":"49af21d8-859f-4263-a5c4-0a9476fe469d","z":1,"nodeID":"0003","attrs":{".satvalue":{"text":""},".name":{"text":"Task_3"}}}]},"model":{"actors":[],"intentions":[{"nodeActorID":"-","nodeID":"0003","nodeType":"basic.Task","nodeName":"Task_3","dynamicFunction":{"intentionID":"0003","stringDynVis":"NT","functionSegList":[]}}],"links":[],"constraints":[],"maxAbsTime":"100"},"analysisRequest":{"action":null,"conflictLevel":"S","numRelTime":"1","absTimePts":"","absTimePtsArr":[],"currentState":"0","userAssignmentsList":[{"intentionID":"0003","absTime":"0","evaluationValue":"(no value)"}],"previousAnalysis":null}};
 /*
 1. get the name of the node
 2. get the starting and the ending point of each function
