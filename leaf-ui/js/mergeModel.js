@@ -10,9 +10,9 @@ var defaultCoefficientValue= 0.5;
 var numVertices = 10; 
 var area = 1000*1000;
 var gravityDict = new Object();
-var resourcesGravity = -60; 
-var taskGravity = -40; 
-var softgoalGravity = -20;
+var resourcesGravity = 60; 
+var taskGravity = 40; 
+var softgoalGravity = 20;
 var goalGravity = 0;
 var IDNodeIDDict = new Object();
 // var nodeIdNodePosDict = new Object();
@@ -45,6 +45,10 @@ class Node{
   }
   get nodeX(){
   	return this.nodeX1; 
+  }
+
+  get actorId1(){
+  	return this.actorId;
   }
 
   get nodeY(){
@@ -239,6 +243,10 @@ class Actor{
     this.nodeId1 = actorId;
     this.connCtrDic = new Object(); 
     this.intentionList1 = intentionList;
+    this.sizeX1 = 150;
+    this.sizeY1 = 100;
+    // this toAddX1 = 0; 
+    // this toAddY1 = 0; 
   }
   get intentionList(){
   	return this.intentionList1;
@@ -246,6 +254,12 @@ class Actor{
   set nodeX(newX){
   	this.nodeX1 = newX; 
   }
+  // set toAddX(newToAddX){
+  // 	this.toAddX1 = newToAddX;
+  // }
+  // set toAddY(newToAddY){
+  // 	this.toAddY1 = newToAddY;
+  // }
   set nodeY(newY){
   	this.nodeY1 = newY; 
   }
@@ -272,6 +286,18 @@ class Actor{
   }
   set setForcesY(newForceY){
   	this.forcesY1 = newForceY;
+  }
+  set sizeX(newX){
+  	this.sizeX1 = newX;
+  }
+  set sizeY(newY){
+  	this.sizeY1 = newY;
+  }
+  get sizeX(){
+  	return this.sizeX1;
+  }
+  get sizeY(){
+  	return this.sizeY1;
   }
   incCtr(actorId){
   	var curCount = this.connCtrDic[actorId]; 
@@ -359,8 +385,8 @@ function moveNodesToAbsPos(nodeSet,actorSet){
 				if(node.nodeId == intentionId){
 					var curX = node.nodeX; 
 					var curY = node.nodeY; 
-					curX = curX + actor.nodeX; 
-					curY = curY + actor.nodeY;
+					node.nodeX = curX + actor.nodeX; 
+					node.nodeY = curY + actor.nodeY;
 				}
 			}
 		}
@@ -594,8 +620,8 @@ function listForGraphicalActors(actorSet, curZ){
     var newNode = new Object();
     newNode["type"] = "basic.Actor";
     var newSize = new Object();
-    newSize["width"] = 150; 
-      newSize["height"] = 100; 
+    newSize["width"] = node.sizeX + 200; 
+    newSize["height"] = node.sizeY + 200; 
     newNode["size"] = newSize;
     var newPosition = new Object();
     newPosition["x"] = node.nodeX;
@@ -614,9 +640,9 @@ function listForGraphicalActors(actorSet, curZ){
     newName["text"] = node.nodeName;
     newAttrs[".name"] = newName;
     newLabel = new Object();
-    //TODO: currently all cx and cy are hard coded; changes are needed here
-    newLabel["cx"]= 32;
-    newLabel["cy"] = 10;
+    //TODO: The label for the actor is currently hard coded here
+    newLabel["cx"]= node.nodeX + ((node.sizeX + 200)/4);
+    newLabel["cy"] = node.nodeY + ((node.sizeY + 200)/10);
     newAttrs[".label"] = newLabel;
     newNode["attrs"] = newAttrs;
 
@@ -708,8 +734,6 @@ function listForGraphicalLinks(nodeSet, zToStartFrom,nodeIdNodePosDict){
 
 	for(var i = 0; i < linkList.length; i++){
 		var link = linkList[i];
-		console.log("link here!");
-		console.log(link);
 		var oneLinkGraphical = new Object(); 
 		oneLinkGraphical["type"] = "link"; 
 		var newSource = new Object(); 
@@ -749,6 +773,67 @@ function listForGraphicalLinks(nodeSet, zToStartFrom,nodeIdNodePosDict){
 	return links;
 }
 
+function setCoordinatePositive(nodeSet){
+	var maxNXDict = new Object();
+	var maxNYDict = new Object();
+	for(var node of nodeSet){
+		var curX = node.nodeX;
+		var curY = node.nodeY;
+		var curActor = node.actorId1;
+		if(typeof maxNXDict[curActor] === 'undefined'){
+			maxNXDict[curActor] = 0;
+		}
+		if(typeof maxNYDict[curActor] === 'undefined'){
+			maxNYDict[curActor] = 0;
+		}
+
+		if(curX < 0){
+			if(maxNXDict[curActor] > curX){
+				maxNXDict[curActor] = curX;
+			}
+		}
+		if(curY < 0){
+			if(maxNYDict[curActor] > curY){
+				maxNYDict[curActor] = curY;
+			}
+		}
+	}
+
+	for(var node of nodeSet){
+		var curId = node.actorId1;
+		node.nodeX = node.nodeX - maxNXDict[curId];
+		node.nodeY = node.nodeY - maxNYDict[curId];
+	}
+}
+
+function getSizeOfActor(nodeSet, actorSet){
+	var maxPXDict = new Object();
+	var maxPYDict = new Object();
+	for(var node of nodeSet){
+		var curX = node.nodeX;
+		var curY = node.nodeY;
+		var curActor = node.actorId1;
+		if(typeof maxPXDict[curActor] === 'undefined'){
+			maxPXDict[curActor] = 150;
+		}
+		if(typeof maxPYDict[curActor] === 'undefined'){
+			maxPYDict[curActor] = 100;
+		}
+
+		if(maxPXDict[curActor] < curX){
+			maxPXDict[curActor] = curX;
+		}
+		if(maxPYDict[curActor] < curY){
+			maxPYDict[curActor] = curY;
+		}
+	}
+	for(var actor of actorSet){
+		var actorId = actor.nodeId;
+		actor.sizeX = maxPXDict[actorId] - actor.nodeX;
+		actor.sizeY = maxPYDict[actorId] - actor.nodeY;
+	}
+}
+
 function forceDirectedAlgorithm(resultList, model1, model2){
 	var numIterations = 20;
 	var numConstant = 0.2;
@@ -760,8 +845,10 @@ function forceDirectedAlgorithm(resultList, model1, model2){
 	for(var i = 0; i < numIterations; i++){
 		adjustment(nodeSet, actorSet, numConstant,true);
 		adjustment(nodeSet, actorSet, numConstant,false);
-		moveNodesToAbsPos(nodeSet,actorSet);
 	}
+	setCoordinatePositive(nodeSet);
+	getSizeOfActor(nodeSet, actorSet);
+	moveNodesToAbsPos(nodeSet,actorSet);
 	setNodeIdNodePosDict(nodeIdNodePosDict, nodeSet);
 	var curZ = 1;
 	var listForGraphicalActors1 = listForGraphicalActors(actorSet, curZ); 
