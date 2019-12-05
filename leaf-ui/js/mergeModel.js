@@ -451,7 +451,7 @@ function setRepulsionSum(curNode, nodeSet, actorSet, isActor){
 		curNode.setForcesY = 0; 
 		for(var node of Array.from(nodeSet).reverse()){
 			var nodeName = node.nodeName;
-			if(curName != nodeName){
+			if(curName !== nodeName){
 				var forces = repulsion(curNode, node, isActor);
 				var forceX = forces[0]; 
 				var forceY = forces[1];
@@ -852,7 +852,7 @@ function forceDirectedAlgorithm(resultList, model1, model2){
 	setNodeIdNodePosDict(nodeIdNodePosDict, nodeSet);
 	var curZ = 1;
 	var listForGraphicalActors1 = listForGraphicalActors(actorSet, curZ); 
-	curZ = curZ + listForGraphicalActors.length;
+	curZ = curZ + listForGraphicalActors1.length;
 	var listForGraphicalNodes1 = listForGraphicalNodes(nodeSet, curZ);
 	var curZ = curZ + listForGraphicalNodes1.length; 
 	var listForGraphicalLinks1 = listForGraphicalLinks(nodeSet,curZ,nodeIdNodePosDict);
