@@ -73,37 +73,200 @@ function nodeBackendCommFunc(jsObject){
 
 //deal with the response sent back by the server
 function responseFunc(isGetNextSteps, response){
-   var results = JSON.parse(response);
-   if (errorExists(results)) {
-        var msg = getErrorMessage(results.errorMessage);
-        alert(msg);
-    }
-   else {
-       if (results == ""){
-            alert("Error while reading the resonse file from server. This can be due an error in executing java application.");
-            return;
-        }
-       else {
-           if(isGetNextSteps){
-                   savedAnalysisData.allNextStatesResult = results;
-                   console.log("in backendcomm, saving all next state results");
-                    open_analysis_viewer();
-           }else {
-                console.log(JSON.stringify(results));
-                savedAnalysisData.singlePathResult = results;
-                analysisResult.assignedEpoch = results.assignedEpoch;
-                analysisResult.timePointPath = results.timePointPath;
-                analysisResult.timePointPathSize = results.timePointPathSize;
-                analysisResult.elementList = results.elementList;
-                analysisResult.allSolution = results.allSolution;
-                analysisRequest.previousAnalysis = analysisResult;
-                console.log("previousAnalysis");
-                console.log(analysisRequest.previousAnalysis);
-                displayAnalysis(results);
-            }
-        }
-    }
-}
+	var results = JSON.parse(response);
+	if (errorExists(results)) { 
+		 var msg = getErrorMessage(results.errorMessage);
+		 alert(msg);
+	 }
+	else {
+		if (results == ""){ 
+			 alert("Error while reading the resonse file from server. This can be due an error in executing java application.");
+			 return;
+		 }
+		else {
+			if(isGetNextSteps){ 
+					savedAnalysisData.allNextStatesResult = results;
+					console.log("in backendcomm, saving all next state results");
+					 open_analysis_viewer();
+			} else {
+				var resultsString = JSON.stringify(results);
+				 console.log(JSON.stringify(results)); 
+				 savedAnalysisData.singlePathResult = results;
+				 analysisResult.assignedEpoch = results.assignedEpoch;
+				 analysisResult.timePointPath = results.timePointPath;
+				 analysisResult.timePointPathSize = results.timePointPathSize;
+				 analysisResult.elementList = results.elementList;
+				 analysisResult.allSolution = results.allSolution;
+				 analysisRequest.previousAnalysis = analysisResult;
+				 console.log("previousAnalysis");
+				 console.log(analysisRequest.previousAnalysis);
+				 displayAnalysis(results);
+ 
+				 analysisResult.elementListPercentEvals = [];
+				 var percentagePerEvaluation = 0.0;
+ 
+				 for(var i = 0; i < results.elementList.length; ++i) //iterate through all the intentions
+				 {
+
+					 analysisResult.elementListPercentEvals[i] = new intentionPercentages();
+					 analysisResult.elementListPercentEvals[i].id = results.elementList[i].id;
+					 analysisResult.elementListPercentEvals[i].numEvals = analysisResult.elementList[i].status.length;
+ 
+					 analysisResult.elementListPercentEvals[i].initializeIntentionEvaluations();
+					 percentagePerEvaluation = 1.0 / analysisResult.elementListPercentEvals[i].numEvals;
+ 
+					 for(var k = 0; k < analysisResult.elementListPercentEvals[i].numEvals; ++k) //iterate through the evaluation points and find the 
+					 {
+							 //determine type of evalutation and add it to corresponding num
+							 switch(analysisResult.elementList[i].status[k]) //ASK: appears backwards?
+							 {
+								 case "0011": //FS
+									 analysisResult.elementListPercentEvals[i].intentionEvaluations[0].percent += percentagePerEvaluation;
+									 break;
+								 case "0010": //PS
+									 analysisResult.elementListPercentEvals[i].intentionEvaluations[1].percent += percentagePerEvaluation;
+									 break;
+								 case "0111": //FS PD
+									 analysisResult.elementListPercentEvals[i].intentionEvaluations[2].percent += percentagePerEvaluation;
+									 break;
+								 case "1111": //FS FD ---> ask: should these be the same? 
+								 case "0110": //PS PD ---> alternativy a lighter purple for 0110 and darker for 1111
+									 analysisResult.elementListPercentEvals[i].intentionEvaluations[3].percent += percentagePerEvaluation;
+									 break;
+								 case "1110": //PS FD
+									 analysisResult.elementListPercentEvals[i].intentionEvaluations[4].percent += percentagePerEvaluation;
+									 break;
+								 case "0100": //PD
+									 analysisResult.elementListPercentEvals[i].intentionEvaluations[5].percent += percentagePerEvaluation;
+									 break;
+								 case "1100": //FD
+									 analysisResult.elementListPercentEvals[i].intentionEvaluations[6].percent += percentagePerEvaluation;
+									 break;
+								 case "0000": //N aka nothing
+									 analysisResult.elementListPercentEvals[i].intentionEvaluations[7].percent += percentagePerEvaluation;
+									 break;
+								 default:
+									 console.log("Evaluation "+analysisResult.elementList[i].status[k]+" is not determined.");
+									 break;
+							 }
+					 }
+				 }
+			 }
+		 }
+	 }
+
+	 changeIntentionsByPercentage();
+	 generateConsoleReport();
+ }
+ 
+ function changeIntentionsByPercentage()
+ {
+	 var elements = graph.getElements(); //get list of all the elements in the graph (aka goal model)
+	 for (var i = 0; i < elements.length; i++){ //cycle through the individual element, determine type (task, goal, etc) and adjust color accordingly
+			 var cellView  = elements[i].findView(paper);
+ 
+			 var offsetPercents = [];
+			 var offsetColors = [];
+			 var numOffsets = 0;
+ 
+			 var offsetTotal = 0.0;
+ 
+			 var lastIndex = 0;
+			 console.log("element "+i+":");
+			 for(var j = 0; j < 8; ++j) //look at all the percents
+			 {
+				 //the before and after buffer gradient into the other evaluations, which are so tiny you can't see them
+				 //this creates the appearance of stripes instead of an actual gradient
+				 if(analysisResult.elementListPercentEvals[i].intentionEvaluations[j].percent > 0)
+				 {
+					 //before buffer
+					 offsetTotal += 0.001;
+					 offsetPercents.push(offsetTotal)
+					 offsetColors.push(analysisResult.elementListPercentEvals[i].intentionEvaluations[j].color);
+ 
+					 //actual color chunk
+					 offsetTotal += analysisResult.elementListPercentEvals[i].intentionEvaluations[j].percent - 0.002;
+					 offsetPercents.push(offsetTotal);
+					 offsetColors.push(analysisResult.elementListPercentEvals[i].intentionEvaluations[j].color);
+					 
+					 lastIndex = j;
+ 
+					 //console.log("offset "+j+": "+offsetTotal);
+ 
+					 //after buffer
+					 offsetTotal += 0.001; //add a black "buffer" so the colors don't gradient with eachother
+					 offsetPercents.push(offsetTotal);
+					 offsetColors.push(analysisResult.elementListPercentEvals[i].intentionEvaluations[j].color);
+					 
+					 
+					 numOffsets += 3;
+				 }
+			 }
+ 
+			 while(numOffsets < 24)
+			 {
+				 offsetPercents.push(100);
+				 offsetColors.push(analysisResult.elementListPercentEvals[i].intentionEvaluations[lastIndex].color);
+				 ++numOffsets;
+			 }
+ 
+			 
+			 cellView.model.attr({'.outer' : {'fill' :
+			 {
+			  type: 'linearGradient',
+			 stops: [
+				 { offset: offsetPercents[0], color: offsetColors[0]},
+				 { offset: offsetPercents[1], color: offsetColors[1]},
+				 { offset: offsetPercents[2], color: offsetColors[2]},
+				 { offset: offsetPercents[3], color: offsetColors[3]},
+				 { offset: offsetPercents[4], color: offsetColors[4]},
+				 { offset: offsetPercents[5], color: offsetColors[5]},
+				 { offset: offsetPercents[6], color: offsetColors[6]},
+				 { offset: offsetPercents[7], color: offsetColors[7]},
+				 { offset: offsetPercents[8], color: offsetColors[8]},
+				 { offset: offsetPercents[9], color: offsetColors[9]},
+				 { offset: offsetPercents[10], color: offsetColors[10]},
+				 { offset: offsetPercents[11], color: offsetColors[11]},
+				 { offset: offsetPercents[12], color: offsetColors[13]},
+				 { offset: offsetPercents[14], color: offsetColors[14]},
+				 { offset: offsetPercents[15], color: offsetColors[15]},
+				 { offset: offsetPercents[16], color: offsetColors[16]},
+				 { offset: offsetPercents[17], color: offsetColors[17]},
+				 { offset: offsetPercents[18], color: offsetColors[18]},
+				 { offset: offsetPercents[19], color: offsetColors[19]},
+				 { offset: offsetPercents[20], color: offsetColors[20]},
+				 { offset: offsetPercents[21], color: offsetColors[21]},
+				 { offset: offsetPercents[22], color: offsetColors[22]},
+				 { offset: offsetPercents[23], color: offsetColors[23]},
+				 { offset: offsetPercents[24], color: offsetColors[24]},
+			 ]
+		  }
+		  }});
+	 }
+ }
+ 
+ function generateConsoleReport()
+ {
+	 console.log("");
+	 console.log("Output:");
+	 //iterate through intentions
+	 for(var i = 0; i < analysisResult.elementList.length; ++i)
+	 {
+		 console.log("Goal " + analysisResult.elementList[i].id+":");
+		 //iternate through the 8 different possible evalutions for each intention
+		 for(var j = 0; j < 8; ++j)
+		 {
+			 if(analysisResult.elementListPercentEvals[i].intentionEvaluations[j].percent > 0.0)
+			 {
+				 //output it to the console
+				 console.log(analysisResult.elementListPercentEvals[i].intentionEvaluations[j].type
+				 + " -> "
+				 + Math.floor(analysisResult.elementListPercentEvals[i].intentionEvaluations[j].percent * 1000)/10
+				 + "%");
+			 }
+		 }
+	 }
+ }
 
 function executeJava(isGetNextSteps){
 	var pathToCGI = "./cgi-bin/executeJava.cgi";
