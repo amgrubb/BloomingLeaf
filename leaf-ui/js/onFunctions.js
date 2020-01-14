@@ -195,6 +195,68 @@ function switchToModellingMode() {
 
 	mode = "Modelling";
 }
+/**
+ * Source:https://www.w3schools.com/howto/howto_js_rangeslider.asp 
+ */
+var slider = document.getElementById("colorReset");
+var on = false;
+
+slider.oninput = function() {
+  on = !on;
+    
+  if(on){
+    var elements = graph.getElements();
+    for (var i = 0; i < elements.length; i++){
+        var cellView = elements[i].findView(paper);
+        var intention = model.getIntentionByID(cellView.model.attributes.nodeID);
+        var initSatVal = intention.getInitialSatValue();
+
+        switch(initSatVal){
+
+            case "0000":
+                cellView.model.attr({'.outer': {'fill': '#ffffff'}});
+                break;
+            case "0011":
+                cellView.model.attr({'.outer': {'fill': '#313866'}});
+                break;
+            case "0010":
+                cellView.model.attr({'.outer': {'fill': '#50409a'}});
+                break;
+            case "0100":
+                cellView.model.attr({'.outer': {'fill': '#781c5f'}});
+                break;
+            case "0110":
+                cellView.model.attr({'.outer': {'fill': '#964ec2'}});
+                break; 
+            case "0111":
+                cellView.model.attr({'.outer': {'fill': '#964ec2'}});
+                break; 
+            case "1100":
+                cellView.model.attr({'.outer': {'fill': '#c5093b'}});
+                break;       
+            case "1110":
+                cellView.model.attr({'.outer': {'fill': '#7e1a5c'}});
+                break;
+            case "1111":
+                cellView.model.attr({'.outer': {'fill': '#964ec2'}});
+                break;
+            case "":
+                cellView.model.attr({'.outer': {'fill': '#ffffff'}});
+                break;
+        }
+    }
+    
+    }else{
+        var elements = graph.getElements();
+        for (var i = 0; i < elements.length; i++){
+            var cellView = elements[i].findView(paper);
+            cellView.model.changeToOriginalColour();
+        }
+            
+    }
+}
+
+
 
 /**
  * Set up tool bar button on click functions

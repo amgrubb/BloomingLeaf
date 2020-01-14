@@ -35,7 +35,7 @@ body {
   margin: 0;
   padding-top: 8px;
   background-color: #333;
-  color: #CCFFCC;
+  color: #ff1493;/* #CCFFCC;*/
   font-size: 1.4em;
   font-style: italic;
 }
@@ -528,6 +528,48 @@ select > .select-placeholder {
   box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.25);
   z-index: 3;
 }
+/*Representative Color Slider*/
+.slidecontainer {
+  width: 100%; /* Width of the outside container */
+}
+
+/* The slider itself */
+.slider {
+  -webkit-appearance: none;  /* Override default CSS styles */
+  appearance: none;
+  width: 50px; /* Full-width */
+  height: 25px; /* Specified height */
+  border-radius: 5px;
+  background: #E8E8E8; /* white background */
+  outline: none; /* Remove outline */
+  opacity: .9; /* Set transparency (for mouse-over effects on hover) */
+  -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+  transition: opacity .2s;
+}
+
+/* Mouse-over effects */
+.slider:hover {
+  opacity: 1; /* Fully shown on mouse-over */
+}
+
+/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none; /* Override default look */
+  appearance: none;
+  width: 25px; /* Set a specific slider handle width */
+  height: 25px; /* Slider handle height */
+  border-radius: 25%;
+  background: #27ae60; /* Green background */
+  cursor: pointer; /* Cursor on hover */
+}
+
+.slider::-moz-range-thumb {
+  width: 25px; /* Set a specific slider handle width */
+  height: 25px; /* Slider handle height */
+  background: #27ae60; /* Green background */
+  cursor: pointer; /* Cursor on hover */
+}
+
 
 #modeText{
    float: right;
