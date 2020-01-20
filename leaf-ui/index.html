@@ -41,7 +41,7 @@
 
             <button id="btn-zoom-in" class="btn">Zoom In</button>
             <button id="btn-zoom-out" class="btn">Zoom Out</button>
-            <button id="btn-svg" class="btn">Open as SVG</button>
+            <button id="btn-svg" class="btn">Open as SVG</button>            
             <input type="file" id="loader" style="display:none">
 
 
@@ -64,27 +64,31 @@
               </div>
             </div>
 
-
+           
             <div id="dropdown-model" class="dropdown" style='display: none'>
                 <button id="modeling-btn" class="red-btn btn">Model</button>
                 <div class="dropdown-toolbar">
                     <a id="model-cur-btn">From Initial State</a>
                 </div>
             </div>
-
+            
             <!-- OLD Button to switch between Constraint view and the Relationship view.
 			The functionality for the Constraint view still exists in the code.
 		      <button id="symbolic-btn" class="blue-btn btn">Model Constraints</button>-->
             <button id="analysis-btn" class="green-btn btn" style="border-radius:none;">Analysis</button>
-			
-
+            <input type="range" min="0" max="1" value="0" class="slider" id="colorReset">
+            <!--button id = "color-label" class = "btn">Sat. Slider<button-->
+            <p id = "top-label" style = "display: inline">Sat Slider<p>
+            <p id = "on-off" style = "padding-left:67em;"> Off &ensp; On</p>
         </div>
+        
 
         <div id="stencil" class="left-panel"><label>Stencil</label></div>
         <div id="history" class="left-panel"><label>History Log</label></div>
 
         <div id="paper">
         </div>
+        
         <div class="inspector">
             <div id="layout"></div>
         </div>

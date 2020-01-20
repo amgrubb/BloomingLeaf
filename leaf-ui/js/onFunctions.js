@@ -78,8 +78,9 @@ function reassignIntentionIDs() {
 /**
  * Helper function for switching to Analysis view.
  */
+var inAnalysis = false;
 function switchToAnalysisMode() {
-
+    inAnalysis = true;
 	reassignIntentionIDs();
 	
 	// Clear the right panel
@@ -195,6 +196,83 @@ function switchToModellingMode() {
 
 	mode = "Modelling";
 }
+function makePurple(){
+    var elements = graph.getElements();
+    for (var i = 0; i < elements.length; i++){
+        var cellView = elements[i].findView(paper);
+        var intention = model.getIntentionByID(cellView.model.attributes.nodeID);
+        var initSatVal = intention.getInitialSatValue();
+
+        switch(initSatVal){
+
+            case "0000":
+                cellView.model.attr({'.outer': {'fill': '#ffffff'}});
+                break;
+            case "0011":
+                cellView.model.attr({'.outer': {'fill': '#313866'}});
+                break;
+            case "0010":
+                cellView.model.attr({'.outer': {'fill': '#50409a'}});
+                break;
+            case "0100":
+                cellView.model.attr({'.outer': {'fill': '#781c5f'}});
+                break;
+            case "0110":
+                cellView.model.attr({'.outer': {'fill': '#964ec2'}});
+                break; 
+            case "0111":
+                cellView.model.attr({'.outer': {'fill': '#964ec2'}});
+                break; 
+            case "1100":
+                cellView.model.attr({'.outer': {'fill': '#c5093b'}});
+                break;       
+            case "1110":
+                cellView.model.attr({'.outer': {'fill': '#7e1a5c'}});
+                break;
+            case "1111":
+                cellView.model.attr({'.outer': {'fill': '#964ec2'}});
+                break;
+            case "":
+                cellView.model.attr({'.outer': {'fill': '#ffffff'}});
+                break;
+        }
+    }
+}
+function returnAllColors(){
+    var elements = graph.getElements();
+    for (var i = 0; i < elements.length; i++){
+        var cellView = elements[i].findView(paper);
+        cellView.model.changeToOriginalColour();
+    }
+}
+function placeholderMegan(){
+    var elements = graph.getElements();
+    for (var i = 0; i < elements.length; i++){
+        var cellView = elements[i].findView(paper);
+        cellView.model.attr({'.outer': {'fill': '#ff00ea'}});
+    } 
+}
+/**
+ * Source:https://www.w3schools.com/howto/howto_js_rangeslider.asp 
+ */
+var slider = document.getElementById("colorReset");
+var on = false;
+
+slider.oninput = function() {
+  on = !on;
+  if(on){
+    if(inAnalysis){
+        placeholderMegan();
+    }else if(on&& !inAnalysis){
+        makePurple();
+        setInterval(makePurple(),3000);
+    }
+    }else{
+       returnAllColors();            
+    }
+}
+
+
 
 /**
  * Set up tool bar button on click functions
