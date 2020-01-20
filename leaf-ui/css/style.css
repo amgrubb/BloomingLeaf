@@ -532,6 +532,19 @@ select > .select-placeholder {
 .slidecontainer {
   width: 100%; /* Width of the outside container */
 }
+#top-label{
+  background-color: #333;
+  border: none;
+  color: white;
+  text-shadow: none;
+  font-size: 0.75em;
+  margin-left: 10px;
+}
+#on-off{
+  font-size: 10px;
+  color: white;
+  margin-top: -20px;
+  }
 
 /* The slider itself */
 .slider {

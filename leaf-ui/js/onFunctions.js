@@ -195,16 +195,7 @@ function switchToModellingMode() {
 
 	mode = "Modelling";
 }
-/**
- * Source:https://www.w3schools.com/howto/howto_js_rangeslider.asp 
- */
-var slider = document.getElementById("colorReset");
-var on = false;
-
-slider.oninput = function() {
-  on = !on;
-    
-  if(on){
+function makePurple(){
     var elements = graph.getElements();
     for (var i = 0; i < elements.length; i++){
         var cellView = elements[i].findView(paper);
@@ -245,14 +236,28 @@ slider.oninput = function() {
                 break;
         }
     }
+}
+function returnAllColors(){
+    var elements = graph.getElements();
+    for (var i = 0; i < elements.length; i++){
+        var cellView = elements[i].findView(paper);
+        cellView.model.changeToOriginalColour();
+    }
+}
+/**
+ * Source:https://www.w3schools.com/howto/howto_js_rangeslider.asp 
+ */
+var slider = document.getElementById("colorReset");
+var on = false;
+
+slider.oninput = function() {
+  on = !on;
+    
+  if(on){
+    makePurple();
     
     }else{
-        var elements = graph.getElements();
-        for (var i = 0; i < elements.length; i++){
-            var cellView = elements[i].findView(paper);
-            cellView.model.changeToOriginalColour();
-        }
-            
+       returnAllColors();            
     }
 }
 
