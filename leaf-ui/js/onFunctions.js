@@ -78,8 +78,9 @@ function reassignIntentionIDs() {
 /**
  * Helper function for switching to Analysis view.
  */
+var inAnalysis = false;
 function switchToAnalysisMode() {
-
+    inAnalysis = true;
 	reassignIntentionIDs();
 	
 	// Clear the right panel
@@ -244,6 +245,13 @@ function returnAllColors(){
         cellView.model.changeToOriginalColour();
     }
 }
+function placeholderMegan(){
+    var elements = graph.getElements();
+    for (var i = 0; i < elements.length; i++){
+        var cellView = elements[i].findView(paper);
+        cellView.model.attr({'.outer': {'fill': '#ff00ea'}});
+    } 
+}
 /**
  * Source:https://www.w3schools.com/howto/howto_js_rangeslider.asp 
  */
@@ -252,10 +260,13 @@ var on = false;
 
 slider.oninput = function() {
   on = !on;
-    
   if(on){
-    makePurple();
-    
+    if(inAnalysis){
+        placeholderMegan();
+    }else if(on&& !inAnalysis){
+        makePurple();
+        setInterval(makePurple(),3000);
+    }
     }else{
        returnAllColors();            
     }
