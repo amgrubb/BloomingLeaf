@@ -20,6 +20,7 @@ $('#analysis-btn').on('click', function() {
 
     // If there are cycles, then display error message. Otherwise, remove any "red" elements.
     cycleCheckForLinks(cycle);
+    refreshColorVis();
 });
 
 $('#load-sample').on('click', function() {
@@ -97,7 +98,8 @@ function switchToAnalysisMode() {
 	$('#analysis-btn').css("display", "none");
 	$('#symbolic-btn').css("display", "none");
 	$('#cycledetect-btn').css("display", "none");
-	$('#dropdown-model').css("display", "");
+    $('#dropdown-model').css("display", "");
+    $('#on-off').css("display", "none");
 
 	$('#model-toolbar').css("display", "none");
 
@@ -159,6 +161,7 @@ function revertNodeValuesToInitial() {
  * Display the modeling mode page
  */
 function switchToModellingMode() {
+    analysisResult.isPathSim = false;
 	analysisRequest.previousAnalysis = null;
 	clearInspector();
 
@@ -179,7 +182,8 @@ function switchToModellingMode() {
 	$('#analysis-btn').css("display","");
 	$('#symbolic-btn').css("display","");
 	$('#cycledetect-btn').css("display","");
-	$('#dropdown-model').css("display","none");
+    $('#dropdown-model').css("display","none");
+    $('#on-off').css("display", "");
 
 	$('#model-toolbar').css("display","");
 
@@ -194,8 +198,10 @@ function switchToModellingMode() {
 	// Clear previous slider setup
 	clearHistoryLog();
 
-	mode = "Modelling";
+    mode = "Modelling";
+    refreshColorVis();
 }
+
 function makePurple(){
     var elements = graph.getElements();
     for (var i = 0; i < elements.length; i++){
@@ -245,12 +251,15 @@ function returnAllColors(){
         cellView.model.changeToOriginalColour();
     }
 }
-function placeholderMegan(){
-    var elements = graph.getElements();
-    for (var i = 0; i < elements.length; i++){
-        var cellView = elements[i].findView(paper);
-        cellView.model.attr({'.outer': {'fill': '#ff00ea'}});
-    } 
+
+function refreshColorVis(){
+    if(on&&!analysisResult.isPathSim){
+        makePurple();
+    }else if( on && analysisResult.isPathSim){
+        changeIntentionsByPercentage();
+    } else if(!on){
+        returnAllColors();
+    }
 }
 /**
  * Source:https://www.w3schools.com/howto/howto_js_rangeslider.asp 
@@ -260,16 +269,7 @@ var on = false;
 
 slider.oninput = function() {
   on = !on;
-  if(on){
-    if(inAnalysis){
-        placeholderMegan();
-    }else if(on&& !inAnalysis){
-        makePurple();
-        setInterval(makePurple(),3000);
-    }
-    }else{
-       returnAllColors();            
-    }
+  refreshColorVis();
 }
 
 

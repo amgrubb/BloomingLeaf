@@ -323,6 +323,7 @@ class AnalysisResult {
         this.elementList; 
         this.allSolution;
         this.elementListPercentEvals;
+        this.isPathSim = false; //used for slider visualization
     }
 }
 

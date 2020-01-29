@@ -155,8 +155,11 @@ function responseFunc(isGetNextSteps, response){
 		 }
 	 }
 
-	 changeIntentionsByPercentage();
+	 //changeIntentionsByPercentage();
 	 generateConsoleReport();
+
+	 analysisResult.isPathSim = true;
+	 refreshColorVis();
  }
  
  function changeIntentionsByPercentage()
