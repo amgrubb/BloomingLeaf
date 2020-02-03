@@ -374,8 +374,8 @@ function moveNodesToAbsPos(nodeSet,actorSet){
 				if(node.nodeId == intentionId){
 					var curX = node.nodeX; 
 					var curY = node.nodeY; 
-					node.nodeX = curX + actor.nodeX; 
-					node.nodeY = curY + actor.nodeY;
+					node.nodeX = curX + actor.nodeX + 30; 
+					node.nodeY = curY + actor.nodeY + 30;
 				}
 			}
 		}
