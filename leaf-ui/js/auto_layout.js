@@ -146,10 +146,10 @@ function initializaGravityDict(resultList){
 }
 
 //add model1 and model2 to the parameters of this function
-function initializeNodes(resultList, nodeSet, model1, model2){
+function initializeNodes(resultList, nodeSet, mergedModel){
 	//assume each node no more than 2 lines with a size of width: 150 height: 100
 	initializaGravityDict(resultList);
-	makeDictIDToNodeID(model1, model2)
+	makeDictIDToNodeID(mergedModel)
 	var width = 150; 
 	var height = 100; 
 	/*here construct a coordinate*/ 
@@ -299,7 +299,7 @@ class Actor{
   }
 }
 
-function initializeActors(resultList,actorSet, model1, model2){
+function initializeActors(resultList,actorSet, mergedModel){
 	var actors = resultList[0];
 	var width = 150; 
 	var height = 100; 
@@ -738,9 +738,13 @@ function listForGraphicalLinks(nodeSet, zToStartFrom,nodeIdNodePosDict){
 		newLabels["position"] = 0.5;
 		var newAttrs = new Object();
 		var text = link["linkType"];
-		newAttrs["text"] = text.toLowerCase();
+		var text1 = new Object();
+		text1["text"] = text.toLowerCase();
+		newAttrs["text"] = text1;
 		newLabels["attrs"] = newAttrs;
-		oneLinkGraphical["labels"] = newLabels;
+		var labelList = [];
+		labelList.push(newLabels);
+		oneLinkGraphical["labels"] = labelList;
 		oneLinkGraphical["linkID"] = link["linkID"];
 
 		var newAttrs1 = new Object();
@@ -823,14 +827,14 @@ function getSizeOfActor(nodeSet, actorSet){
 	}
 }
 
-function forceDirectedAlgorithm(resultList, model1, model2){
+function forceDirectedAlgorithm(resultList, mergedModel){
 	var numIterations = 20;
 	var numConstant = 0.2;
 	var nodeSet = new Set();
 	var actorSet = new Set();
 	var nodeIdNodePosDict = new Object();
-	initializeActors(resultList,actorSet, model1, model2);
-	initializeNodes(resultList, nodeSet, model1, model2);
+	initializeActors(resultList,actorSet, mergedModel);
+	initializeNodes(resultList, nodeSet, mergedModel);
 	for(var i = 0; i < numIterations; i++){
 		adjustment(nodeSet, actorSet, numConstant,true);
 		adjustment(nodeSet, actorSet, numConstant,false);
@@ -848,24 +852,46 @@ function forceDirectedAlgorithm(resultList, model1, model2){
 	return [listForGraphicalActors1, listForGraphicalNodes1, listForGraphicalLinks1];
 }
 
-//TODO:graphical ids are important and it contains information about the graphical object!
-//Need to find how they are generated to do the position modification
-inputModel1 = {"graph":{"cells":[{"type":"basic.Actor","size":{"width":230,"height":200},"position":{"x":270,"y":320},"angle":0,"id":"40b1a1fb-19fa-4bf9-ac80-c8eed24bd36e","z":1,"nodeID":"a000","embeds":["97870869-7b37-4d6c-a7bd-82d65cf7ee73"],"attrs":{".label":{"cx":57.5,"cy":20.31209415515964},".name":{"text":"Actor_0"}}},{"type":"basic.Task","size":{"width":100,"height":60},"position":{"x":330,"y":370},"angle":0,"id":"97870869-7b37-4d6c-a7bd-82d65cf7ee73","z":2,"nodeID":"0000","parent":"40b1a1fb-19fa-4bf9-ac80-c8eed24bd36e","attrs":{".satvalue":{"text":""},".name":{"text":"Task_0"}}}]},"model":{"actors":[{"nodeID":"a000","nodeName":"Actor_0","intentionIDs":["0000"]}],"intentions":[{"nodeActorID":"a000","nodeID":"0000","nodeType":"basic.Task","nodeName":"Task_0","dynamicFunction":{"intentionID":"0000","stringDynVis":"NT","functionSegList":[]}}],"links":[],"constraints":[],"maxAbsTime":"100"},"analysisRequest":{"action":null,"conflictLevel":"S","numRelTime":"1","absTimePts":"","absTimePtsArr":[],"currentState":"0","userAssignmentsList":[{"intentionID":"0000","absTime":"0","evaluationValue":"(no value)"}],"previousAnalysis":null}};
-inputModel2 = {"graph":{"cells":[{"type":"basic.Task","size":{"width":100,"height":60},"position":{"x":250,"y":330},"angle":0,"id":"49af21d8-859f-4263-a5c4-0a9476fe469d","z":1,"nodeID":"0003","attrs":{".satvalue":{"text":""},".name":{"text":"Task_3"}}}]},"model":{"actors":[],"intentions":[{"nodeActorID":"-","nodeID":"0003","nodeType":"basic.Task","nodeName":"Task_3","dynamicFunction":{"intentionID":"0003","stringDynVis":"NT","functionSegList":[]}}],"links":[],"constraints":[],"maxAbsTime":"100"},"analysisRequest":{"action":null,"conflictLevel":"S","numRelTime":"1","absTimePts":"","absTimePtsArr":[],"currentState":"0","userAssignmentsList":[{"intentionID":"0003","absTime":"0","evaluationValue":"(no value)"}],"previousAnalysis":null}};
-/*
-1. get the name of the node
-2. get the starting and the ending point of each function
-3. merge those together and output a new json file that contains those merged information
-cases: 
-1. doesn't have intersection: 
-	a. doesn't have gaps
-	b. has gaps
-2. have intersections: 
-	left blank
-*/
-var nodeTimeDict1 = {};
-var nodeTimeDict2 = {};
-var mergedDictionary = {};
+
+
+	makeDictIDToNodeID(mergedModel);
+	var graphicalResultList = forceDirectedAlgorithm(resultList,mergedModel);
+	var outPutString = "";
+	var outPut = new Object();
+	var graphicalCells = new Object();
+	graphicalCells["cells"] = []; 
+	for(var i = 0; i < graphicalResultList.length; i++){
+		for(var j = 0; j < graphicalResultList[i].length; j++){
+			graphicalCells["cells"].push(graphicalResultList[i][j]);
+		}
+	}
+	outPut["graph"] = graphicalCells;
+	var semanticElems = new Object();
+	var actorsList = [];
+	var intentionsList = [];
+	var linksList = [];
+	var constraintsList = [];
+	var analysisRequestList = [];
+	var listOfLists = [];
+	listOfLists.push(actorsList);
+	listOfLists.push(intentionsList);
+	listOfLists.push(linksList);
+	listOfLists.push(constraintsList);
+	listOfLists.push(analysisRequestList);
+	for(var i = 0; i < resultList.length; i++){
+		for(var j = 0; j < resultList[i].length; j++){
+			listOfLists[i].push(resultList[i][j]);
+		}
+	}
+	semanticElems["actors"] = actorsList;
+	semanticElems["intentions"] = intentionsList;
+	semanticElems["links"] = linksList;
+	semanticElems["constraints"] = constraintsList;
+	semanticElems["analysisRequest"] = analysisRequestList;
+	outPut["model"] = semanticElems;
+	outPutString = JSON.stringify(outPut);
+	console.log(outPutString);
+
 
 
 
