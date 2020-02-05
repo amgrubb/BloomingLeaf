@@ -887,9 +887,11 @@ function forceDirectedAlgorithm(resultList, model1, model2){
 function freeNodeX(nodeSet){
 	var curMax = 0; 
 	for(var node of nodeSet){
-		var curX = node.nodeX;
-		if(curX > curMax){
-			curMax = curX;
+		if(node.nodeId !== "-"){
+			var curX = node.nodeX;
+			if(curX > curMax){
+				curMax = curX;
+			}
 		}
 	}
 	return curMax;
@@ -1527,5 +1529,5 @@ function mergeModels(delta, model11, model21){
 	semanticElems["analysisRequest"] = analysisRequestList;
 	outPut["model"] = semanticElems;
 	outPutString = JSON.stringify(outPut);
-	console.log(outPutString);
+	freeNodeX(outPutString);
 
