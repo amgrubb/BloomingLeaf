@@ -376,18 +376,34 @@ function initializeActors(resultList,actorSet, model1, model2){
 	}
 }
 
-function moveNodesToAbsPos(nodeSet,actorSet){
-	for(var actor of actorSet){
-		var intentionList = actor.intentionList; 
-		for(var i = 0; i < intentionList.length; i++){
-			var intentionId = intentionList[i];
-			for(var node of nodeSet){
-				if(node.nodeId == intentionId){
-					var curX = node.nodeX; 
-					var curY = node.nodeY; 
-					node.nodeX = curX + actor.nodeX + 30; 
-					node.nodeY = curY + actor.nodeY + 30;
+
+
+/**************changed here****/
+function moveNodesToAbsPos(nodeSet,actorSet,withFreeNodeInfo, freeNodeXInfo){
+	if(withFreeNodeInfo == false){
+		for(var actor of actorSet){
+			var intentionList = actor.intentionList; 
+			for(var i = 0; i < intentionList.length; i++){
+				var intentionId = intentionList[i];
+				for(var node of nodeSet){
+					if(node.nodeId == intentionId){
+						var curX = node.nodeX; 
+						var curY = node.nodeY; 
+						node.nodeX = curX + actor.nodeX + 30; 
+						node.nodeY = curY + actor.nodeY + 30;
+					}
 				}
+			}
+		}
+	}
+	else{
+		for(var node of nodeSet){
+			//cases that curNode doesn't belong to any actor
+			if(node.nodeId === "-"){
+				var curX = node.nodeX; 
+				var curY = node.nodeY; 
+				node.nodeX = curX + freeNodeXInfo + 230; 
+				node.nodeY = curY + freeNodeXInfo + 230;
 			}
 		}
 	}
@@ -850,10 +866,15 @@ function forceDirectedAlgorithm(resultList, model1, model2){
 		adjustment(nodeSet, actorSet, numConstant,true);
 		adjustment(nodeSet, actorSet, numConstant,false);
 	}
+	var withFreeNodeInfo = false; 
 	setCoordinatePositive(nodeSet);
 	getSizeOfActor(nodeSet, actorSet);
-	moveNodesToAbsPos(nodeSet,actorSet);
+	moveNodesToAbsPos(nodeSet,actorSet, withFreeNodeInfo, 0);
+	withFreeNodeInfo = true;
+	var freeNodeXInfo = freeNodeX(nodeSet);
+	moveNodesToAbsPos(nodeSet,actorSet, withFreeNodeInfo, freeNodeXInfo);
 	setNodeIdNodePosDict(nodeIdNodePosDict, nodeSet);
+
 	var curZ = 1;
 	var listForGraphicalActors1 = listForGraphicalActors(actorSet, curZ); 
 	curZ = curZ + listForGraphicalActors1.length;
@@ -861,6 +882,17 @@ function forceDirectedAlgorithm(resultList, model1, model2){
 	var curZ = curZ + listForGraphicalNodes1.length; 
 	var listForGraphicalLinks1 = listForGraphicalLinks(nodeSet,curZ,nodeIdNodePosDict);
 	return [listForGraphicalActors1, listForGraphicalNodes1, listForGraphicalLinks1];
+}
+
+function freeNodeX(nodeSet){
+	var curMax = 0; 
+	for(var node of nodeSet){
+		var curX = node.nodeX;
+		if(curX > curMax){
+			curMax = curX;
+		}
+	}
+	return curMax;
 }
 
 //TODO:graphical ids are important and it contains information about the graphical object!
@@ -1455,8 +1487,8 @@ function mergeModels(delta, model11, model21){
 // }
 	var inputModel1 = '';
 	var inputModel2 = '';
-	inputModel1 = {"graph":{"cells":[{"type":"basic.Actor","size":{"width":250,"height":230},"position":{"x":260,"y":360},"angle":0,"id":"d5445cc1-55a8-4140-8663-a736eff1e81c","z":1,"nodeID":"a000","embeds":["0e9aec95-ce1f-4e40-a1af-f7dd0c2fa727"],"attrs":{".label":{"cx":62.5,"cy":23.296556356259288},".name":{"text":"Actor_0"}}},{"type":"basic.Goal","size":{"width":100,"height":60},"position":{"x":350,"y":450},"angle":0,"id":"0e9aec95-ce1f-4e40-a1af-f7dd0c2fa727","z":2,"nodeID":"0000","parent":"d5445cc1-55a8-4140-8663-a736eff1e81c","attrs":{".satvalue":{"text":""},".name":{"text":"Goal_0"}}}]},"model":{"actors":[{"nodeID":"a000","nodeName":"Actor_0","intentionIDs":["0000"]}],"intentions":[{"nodeActorID":"a000","nodeID":"0000","nodeType":"basic.Goal","nodeName":"Goal_0","dynamicFunction":{"intentionID":"0000","stringDynVis":"NT","functionSegList":[]}}],"links":[],"constraints":[],"maxAbsTime":"100"},"analysisRequest":{"action":null,"conflictLevel":"S","numRelTime":"1","absTimePts":"","absTimePtsArr":[],"currentState":"0","userAssignmentsList":[{"intentionID":"0000","absTime":"0","evaluationValue":"(no value)"}],"previousAnalysis":null}};
-	inputModel2 = {"graph":{"cells":[{"type":"basic.Actor","size":{"width":250,"height":230},"position":{"x":260,"y":360},"angle":0,"id":"d5445cc1-55a8-4140-8663-a736eff1e81c","z":1,"nodeID":"a000","embeds":["0e9aec95-ce1f-4e40-a1af-f7dd0c2fa727"],"attrs":{".label":{"cx":62.5,"cy":23.296556356259288},".name":{"text":"Actor_0"}}},{"type":"basic.Goal","size":{"width":100,"height":60},"position":{"x":350,"y":450},"angle":0,"id":"0e9aec95-ce1f-4e40-a1af-f7dd0c2fa727","z":2,"nodeID":"0000","parent":"d5445cc1-55a8-4140-8663-a736eff1e81c","attrs":{".satvalue":{"text":""},".name":{"text":"Goal_0"}}}]},"model":{"actors":[{"nodeID":"a000","nodeName":"Actor_0","intentionIDs":["0000"]}],"intentions":[{"nodeActorID":"a000","nodeID":"0000","nodeType":"basic.Goal","nodeName":"Goal_0","dynamicFunction":{"intentionID":"0000","stringDynVis":"NT","functionSegList":[]}}],"links":[],"constraints":[],"maxAbsTime":"100"},"analysisRequest":{"action":null,"conflictLevel":"S","numRelTime":"1","absTimePts":"","absTimePtsArr":[],"currentState":"0","userAssignmentsList":[{"intentionID":"0000","absTime":"0","evaluationValue":"(no value)"}],"previousAnalysis":null}};
+	inputModel1 = {"graph":{"cells":[{"type":"basic.Goal","size":{"width":100,"height":60},"position":{"x":100,"y":350},"angle":0,"id":"d161dfda-9b23-4908-bf31-6eb5b3ba5de4","z":1,"nodeID":"0000","attrs":{".satvalue":{"text":""},".name":{"text":"Goal_0"}}},{"type":"basic.Goal","size":{"width":100,"height":60},"position":{"x":360,"y":340},"angle":0,"id":"fe02b259-5364-46ab-9a45-987d013d0437","z":2,"nodeID":"0001","attrs":{".satvalue":{"text":""},".name":{"text":"Goal_1"}}},{"type":"link","source":{"id":"d161dfda-9b23-4908-bf31-6eb5b3ba5de4"},"target":{"id":"fe02b259-5364-46ab-9a45-987d013d0437"},"labels":[{"position":0.5,"attrs":{"text":{"text":"and"}}}],"id":"f63919c2-da41-46a5-9ff6-d33376da28b6","z":3,"linkID":"0000","attrs":{".connection":{"stroke":"#000000"},".marker-source":{"d":"0"},".marker-target":{"stroke":"#000000","d":"M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"}}}]},"model":{"actors":[],"intentions":[{"nodeActorID":"-","nodeID":"0000","nodeType":"basic.Goal","nodeName":"Goal_0","dynamicFunction":{"intentionID":"0000","stringDynVis":"NT","functionSegList":[]}},{"nodeActorID":"-","nodeID":"0001","nodeType":"basic.Goal","nodeName":"Goal_1","dynamicFunction":{"intentionID":"0001","stringDynVis":"NT","functionSegList":[]}}],"links":[{"linkID":"0000","linkType":"AND","postType":null,"linkSrcID":"0000","linkDestID":"0001","absoluteValue":-1}],"constraints":[],"maxAbsTime":"100"},"analysisRequest":{"action":null,"conflictLevel":"S","numRelTime":"1","absTimePts":"","absTimePtsArr":[],"currentState":"0","userAssignmentsList":[{"intentionID":"0000","absTime":"0","evaluationValue":"(no value)"},{"intentionID":"0001","absTime":"0","evaluationValue":"(no value)"}],"previousAnalysis":null}};
+	inputModel2 = {"graph":{"cells":[{"type":"basic.Goal","size":{"width":100,"height":60},"position":{"x":100,"y":350},"angle":0,"id":"d161dfda-9b23-4908-bf31-6eb5b3ba5de4","z":1,"nodeID":"0000","attrs":{".satvalue":{"text":""},".name":{"text":"Goal_0"}}},{"type":"basic.Goal","size":{"width":100,"height":60},"position":{"x":360,"y":340},"angle":0,"id":"fe02b259-5364-46ab-9a45-987d013d0437","z":2,"nodeID":"0001","attrs":{".satvalue":{"text":""},".name":{"text":"Goal_1"}}},{"type":"link","source":{"id":"d161dfda-9b23-4908-bf31-6eb5b3ba5de4"},"target":{"id":"fe02b259-5364-46ab-9a45-987d013d0437"},"labels":[{"position":0.5,"attrs":{"text":{"text":"and"}}}],"id":"f63919c2-da41-46a5-9ff6-d33376da28b6","z":3,"linkID":"0000","attrs":{".connection":{"stroke":"#000000"},".marker-source":{"d":"0"},".marker-target":{"stroke":"#000000","d":"M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"}}}]},"model":{"actors":[],"intentions":[{"nodeActorID":"-","nodeID":"0000","nodeType":"basic.Goal","nodeName":"Goal_0","dynamicFunction":{"intentionID":"0000","stringDynVis":"NT","functionSegList":[]}},{"nodeActorID":"-","nodeID":"0001","nodeType":"basic.Goal","nodeName":"Goal_1","dynamicFunction":{"intentionID":"0001","stringDynVis":"NT","functionSegList":[]}}],"links":[{"linkID":"0000","linkType":"AND","postType":null,"linkSrcID":"0000","linkDestID":"0001","absoluteValue":-1}],"constraints":[],"maxAbsTime":"100"},"analysisRequest":{"action":null,"conflictLevel":"S","numRelTime":"1","absTimePts":"","absTimePtsArr":[],"currentState":"0","userAssignmentsList":[{"intentionID":"0000","absTime":"0","evaluationValue":"(no value)"},{"intentionID":"0001","absTime":"0","evaluationValue":"(no value)"}],"previousAnalysis":null}};
 
 	var resultList = mergeModels(0, inputModel1, inputModel2);
 	makeDictIDToNodeID(inputModel1, inputModel2);
