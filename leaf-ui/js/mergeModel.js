@@ -374,6 +374,7 @@ function initializeActors(resultList,actorSet, model1, model2){
 			actor.incCtr(srcActor);
 		}
 	}
+	return [curXCount,curYCount];
 }
 
 
@@ -633,41 +634,44 @@ function listForGraphicalActors(actorSet, curZ){
   var nodes = [];
   var zCounter = curZ;
   for(var node of actorSet){
-    var newNode = new Object();
-    newNode["type"] = "basic.Actor";
-    var newSize = new Object();
-    newSize["width"] = node.sizeX + 200; 
-    newSize["height"] = node.sizeY + 200; 
-    newNode["size"] = newSize;
-    var newPosition = new Object();
-    newPosition["x"] = node.nodeX;
-    newPosition["y"] = node.nodeY;
-    newNode["position"] = newPosition;
-    //how to deal with angle? 
-    //TODO: fix this later
-    newNode["angle"] = 0; 
-    //Changed the hash code for ids into the node ids
-    newNode["id"] = node.nodeId;
-    newNode["z"] = zCounter;
-    zCounter ++;
-    newNode["nodeID"] = node.nodeId;
-    newAttrs = new Object();
-    newName = new Object();
-    newName["text"] = node.nodeName;
-    newAttrs[".name"] = newName;
-    newLabel = new Object();
-    //TODO: The label for the actor is currently hard coded here
-    newLabel["cx"]= node.nodeX + ((node.sizeX + 200)/4);
-    newLabel["cy"] = node.nodeY + ((node.sizeY + 200)/10);
-    newAttrs[".label"] = newLabel;
-    newNode["attrs"] = newAttrs;
+	var actorId = node.nodeId;
+	if(!actorId.contains("-")){
+	    var newNode = new Object();
+	    newNode["type"] = "basic.Actor";
+	    var newSize = new Object();
+	    newSize["width"] = node.sizeX + 200; 
+	    newSize["height"] = node.sizeY + 200; 
+	    newNode["size"] = newSize;
+	    var newPosition = new Object();
+	    newPosition["x"] = node.nodeX;
+	    newPosition["y"] = node.nodeY;
+	    newNode["position"] = newPosition;
+	    //how to deal with angle? 
+	    //TODO: fix this later
+	    newNode["angle"] = 0; 
+	    //Changed the hash code for ids into the node ids
+	    newNode["id"] = node.nodeId;
+	    newNode["z"] = zCounter;
+	    zCounter ++;
+	    newNode["nodeID"] = node.nodeId;
+	    newAttrs = new Object();
+	    newName = new Object();
+	    newName["text"] = node.nodeName;
+	    newAttrs[".name"] = newName;
+	    newLabel = new Object();
+	    //TODO: The label for the actor is currently hard coded here
+	    newLabel["cx"]= node.nodeX + ((node.sizeX + 200)/4);
+	    newLabel["cy"] = node.nodeY + ((node.sizeY + 200)/10);
+	    newAttrs[".label"] = newLabel;
+	    newNode["attrs"] = newAttrs;
 
-    newNode["embeds"] = [];
-    for(var i = 0; i < node.intentionList.length; i++){
-      newNode["embeds"].push(node.intentionList[i]);
-    }
+	    newNode["embeds"] = [];
+	    for(var i = 0; i < node.intentionList.length; i++){
+	      newNode["embeds"].push(node.intentionList[i]);
+	    }
 
-    nodes.push(newNode);
+	    nodes.push(newNode);
+	}
   }
   return nodes;
 }
@@ -712,7 +716,6 @@ function listForGraphicalNodes(nodeSet, curZ){
 		if((typeof node.parent !== 'undefined')&&(node.parent !== "****")){
 			newNode["parent"] = node.parent;
 		}
-
 		nodes.push(newNode);
 	}
 	return nodes; 
@@ -854,14 +857,30 @@ function getSizeOfActor(nodeSet, actorSet){
 	}
 }
 
+//Those fake actors have id begin with "-"
+function initializeActorForFreeNodes(actorSet, nodeSet, model1, model2, curXCount, curYCount){
+	var width = 150; 
+	var height = 100; 
+	for(var node of nodeSet){
+		if(node.nodeId == "-"){
+			var actorForCurFreeNode = new Actor(node.nodeName,(curXCount-1)*width, curYCount*height, "-"+node.nodeId, [node.nodeId]);
+			actorSet.add(actorForCurFreeNode);
+		}
+	}
+}
+
+
 function forceDirectedAlgorithm(resultList, model1, model2){
 	var numIterations = 20;
 	var numConstant = 0.2;
 	var nodeSet = new Set();
 	var actorSet = new Set();
 	var nodeIdNodePosDict = new Object();
-	initializeActors(resultList,actorSet, model1, model2);
+	var xyCounts = initializeActors(resultList,actorSet, model1, model2);
 	initializeNodes(resultList, nodeSet, model1, model2);
+	var curXCount = xyCounts[0]; 
+	var curYCount = xyCounts[1];
+	initializeActorForFreeNodes(actorSet,nodeSet,model1, model2, curXCount, curYCount);
 	for(var i = 0; i < numIterations; i++){
 		adjustment(nodeSet, actorSet, numConstant,true);
 		adjustment(nodeSet, actorSet, numConstant,false);
@@ -870,9 +889,10 @@ function forceDirectedAlgorithm(resultList, model1, model2){
 	setCoordinatePositive(nodeSet);
 	getSizeOfActor(nodeSet, actorSet);
 	moveNodesToAbsPos(nodeSet,actorSet, withFreeNodeInfo, 0);
-	withFreeNodeInfo = true;
-	var freeNodeXInfo = freeNodeX(nodeSet);
-	moveNodesToAbsPos(nodeSet,actorSet, withFreeNodeInfo, freeNodeXInfo);
+	// withFreeNodeInfo = true;
+	// //change here
+	// var freeNodeXInfo = freeNodeX(nodeSet);
+	// moveNodesToAbsPos(nodeSet,actorSet, withFreeNodeInfo, freeNodeXInfo);
 	setNodeIdNodePosDict(nodeIdNodePosDict, nodeSet);
 
 	var curZ = 1;
@@ -884,18 +904,20 @@ function forceDirectedAlgorithm(resultList, model1, model2){
 	return [listForGraphicalActors1, listForGraphicalNodes1, listForGraphicalLinks1];
 }
 
-function freeNodeX(nodeSet){
-	var curMax = 0; 
-	for(var node of nodeSet){
-		if(node.nodeId !== "-"){
-			var curX = node.nodeX;
-			if(curX > curMax){
-				curMax = curX;
-			}
-		}
-	}
-	return curMax;
-}
+
+//place all of the free nodes on the right of everything else
+// function freeNodeX(nodeSet){
+// 	var curMax = 0; 
+// 	for(var node of nodeSet){
+// 		if(!node.nodeId.includes("-")){
+// 			var curX = node.nodeX;
+// 			if(curX > curMax){
+// 				curMax = curX;
+// 			}
+// 		}
+// 	}
+// 	return curMax;
+// }
 
 //TODO:graphical ids are important and it contains information about the graphical object!
 //Need to find how they are generated to do the position modification
