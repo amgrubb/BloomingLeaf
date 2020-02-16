@@ -164,10 +164,21 @@ function responseFunc(isGetNextSteps, response){
  
  function changeIntentionsByPercentage()
  {
-	 var elements = graph.getElements(); //get list of all the elements in the graph (aka goal model)
+	 var actorBuffer = 0;
+	 var percentEvalIndex = 0;
+
+	 var elements = graph.getElements(); //get list of every element in the graph (aka goal model)
 	 for (var i = 0; i < elements.length; i++){ //cycle through the individual element, determine type (task, goal, etc) and adjust color accordingly
 			 var cellView  = elements[i].findView(paper);
- 
+			 var intention = model.getIntentionByID(cellView.model.attributes.nodeID);
+
+			 if(intention == null) {
+				 actorBuffer += 1;
+			 }
+			 percentEvalIndex = i - actorBuffer;
+
+			 if(intention != null && analysisResult.elementListPercentEvals[percentEvalIndex] != null) {
+
 			 var offsetPercents = [];
 			 var offsetColors = [];
 			 var numOffsets = 0;
@@ -180,17 +191,17 @@ function responseFunc(isGetNextSteps, response){
 			 {
 				 //the before and after buffer gradient into the other evaluations, which are so tiny you can't see them
 				 //this creates the appearance of stripes instead of an actual gradient
-				 if(analysisResult.elementListPercentEvals[i].intentionEvaluations[j].percent > 0)
+				 if(analysisResult.elementListPercentEvals[percentEvalIndex].intentionEvaluations[j].percent > 0)
 				 {
 					 //before buffer
 					 offsetTotal += 0.001;
 					 offsetPercents.push(offsetTotal)
-					 offsetColors.push(analysisResult.elementListPercentEvals[i].intentionEvaluations[j].color);
+					 offsetColors.push(analysisResult.elementListPercentEvals[percentEvalIndex].intentionEvaluations[j].color);
  
 					 //actual color chunk
-					 offsetTotal += analysisResult.elementListPercentEvals[i].intentionEvaluations[j].percent - 0.002;
+					 offsetTotal += analysisResult.elementListPercentEvals[percentEvalIndex].intentionEvaluations[j].percent - 0.002;
 					 offsetPercents.push(offsetTotal);
-					 offsetColors.push(analysisResult.elementListPercentEvals[i].intentionEvaluations[j].color);
+					 offsetColors.push(analysisResult.elementListPercentEvals[percentEvalIndex].intentionEvaluations[j].color);
 					 
 					 lastIndex = j;
  
@@ -199,7 +210,7 @@ function responseFunc(isGetNextSteps, response){
 					 //after buffer
 					 offsetTotal += 0.001; //add a black "buffer" so the colors don't gradient with eachother
 					 offsetPercents.push(offsetTotal);
-					 offsetColors.push(analysisResult.elementListPercentEvals[i].intentionEvaluations[j].color);
+					 offsetColors.push(analysisResult.elementListPercentEvals[percentEvalIndex].intentionEvaluations[j].color);
 					 
 					 
 					 numOffsets += 3;
@@ -209,7 +220,7 @@ function responseFunc(isGetNextSteps, response){
 			 while(numOffsets <= 24)
 			 {
 				 offsetPercents.push(100);
-				 offsetColors.push(analysisResult.elementListPercentEvals[i].intentionEvaluations[lastIndex].color);
+				 offsetColors.push(analysisResult.elementListPercentEvals[percentEvalIndex].intentionEvaluations[lastIndex].color);
 				 ++numOffsets;
 			 }
  
@@ -246,6 +257,7 @@ function responseFunc(isGetNextSteps, response){
 		  }
 		  }});
 	 }
+	}
  }
  
  function generateConsoleReport()

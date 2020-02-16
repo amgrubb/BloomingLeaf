@@ -202,47 +202,29 @@ function switchToModellingMode() {
     refreshColorVis();
 }
 
+var colorVisDict = {
+    "0000" : "#FFFFFF",
+    "0011" : "#001196",
+    "0010" : '#8FB8DE',
+    "0100" : '#DBAADD',
+    "0110" : '#643A71',
+    "0111" : '#8B5FBF', 
+    "1100" : '#FF2600',
+    "1110" : '#8D5A97', 
+    "1111" : '#0D0221' }
+
 function makePurple(){
     var elements = graph.getElements();
     for (var i = 0; i < elements.length; i++){
         var cellView = elements[i].findView(paper);
         var intention = model.getIntentionByID(cellView.model.attributes.nodeID);
+        if(intention != null) {
         var initSatVal = intention.getInitialSatValue();
 
-        switch(initSatVal){
-
-            case "0000":
-                cellView.model.attr({'.outer': {'fill': '#ffffff'}});
-                break;
-            case "0011":
-                cellView.model.attr({'.outer': {'fill': '#313866'}});
-                break;
-            case "0010":
-                cellView.model.attr({'.outer': {'fill': '#50409a'}});
-                break;
-            case "0100":
-                cellView.model.attr({'.outer': {'fill': '#781c5f'}});
-                break;
-            case "0110":
-                cellView.model.attr({'.outer': {'fill': '#964ec2'}});
-                break; 
-            case "0111":
-                cellView.model.attr({'.outer': {'fill': '#964ec2'}});
-                break; 
-            case "1100":
-                cellView.model.attr({'.outer': {'fill': '#c5093b'}});
-                break;       
-            case "1110":
-                cellView.model.attr({'.outer': {'fill': '#7e1a5c'}});
-                break;
-            case "1111":
-                cellView.model.attr({'.outer': {'fill': '#964ec2'}});
-                break;
-            case "":
-                cellView.model.attr({'.outer': {'fill': '#ffffff'}});
-                break;
-        }
+        var colorChange = colorVisDict[initSatVal];
+        cellView.model.attr({'.outer': {'fill': colorChange}});
     }
+}
 }
 function returnAllColors(){
     var elements = graph.getElements();
