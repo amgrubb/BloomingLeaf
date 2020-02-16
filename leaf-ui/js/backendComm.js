@@ -206,7 +206,7 @@ function responseFunc(isGetNextSteps, response){
 				 }
 			 }
  
-			 while(numOffsets < 24)
+			 while(numOffsets <= 24)
 			 {
 				 offsetPercents.push(100);
 				 offsetColors.push(analysisResult.elementListPercentEvals[i].intentionEvaluations[lastIndex].color);
