@@ -374,20 +374,37 @@ function initializeActors(resultList,actorSet, model1, model2){
 			actor.incCtr(srcActor);
 		}
 	}
+	return [curXCount,curYCount];
 }
 
-function moveNodesToAbsPos(nodeSet,actorSet){
-	for(var actor of actorSet){
-		var intentionList = actor.intentionList; 
-		for(var i = 0; i < intentionList.length; i++){
-			var intentionId = intentionList[i];
-			for(var node of nodeSet){
-				if(node.nodeId == intentionId){
-					var curX = node.nodeX; 
-					var curY = node.nodeY; 
-					node.nodeX = curX + actor.nodeX; 
-					node.nodeY = curY + actor.nodeY;
+
+
+/**************changed here****/
+function moveNodesToAbsPos(nodeSet,actorSet,withFreeNodeInfo, freeNodeXInfo){
+	if(withFreeNodeInfo == false){
+		for(var actor of actorSet){
+			var intentionList = actor.intentionList; 
+			for(var i = 0; i < intentionList.length; i++){
+				var intentionId = intentionList[i];
+				for(var node of nodeSet){
+					if(node.nodeId == intentionId){
+						var curX = node.nodeX; 
+						var curY = node.nodeY; 
+						node.nodeX = curX + actor.nodeX + 30; 
+						node.nodeY = curY + actor.nodeY + 30;
+					}
 				}
+			}
+		}
+	}
+	else{
+		for(var node of nodeSet){
+			//cases that curNode doesn't belong to any actor
+			if(node.nodeId === "-"){
+				var curX = node.nodeX; 
+				var curY = node.nodeY; 
+				node.nodeX = curX + freeNodeXInfo + 230; 
+				node.nodeY = curY + freeNodeXInfo + 230;
 			}
 		}
 	}
@@ -617,41 +634,44 @@ function listForGraphicalActors(actorSet, curZ){
   var nodes = [];
   var zCounter = curZ;
   for(var node of actorSet){
-    var newNode = new Object();
-    newNode["type"] = "basic.Actor";
-    var newSize = new Object();
-    newSize["width"] = node.sizeX + 200; 
-    newSize["height"] = node.sizeY + 200; 
-    newNode["size"] = newSize;
-    var newPosition = new Object();
-    newPosition["x"] = node.nodeX;
-    newPosition["y"] = node.nodeY;
-    newNode["position"] = newPosition;
-    //how to deal with angle? 
-    //TODO: fix this later
-    newNode["angle"] = 0; 
-    //Changed the hash code for ids into the node ids
-    newNode["id"] = node.nodeId;
-    newNode["z"] = zCounter;
-    zCounter ++;
-    newNode["nodeID"] = node.nodeId;
-    newAttrs = new Object();
-    newName = new Object();
-    newName["text"] = node.nodeName;
-    newAttrs[".name"] = newName;
-    newLabel = new Object();
-    //TODO: The label for the actor is currently hard coded here
-    newLabel["cx"]= node.nodeX + ((node.sizeX + 200)/4);
-    newLabel["cy"] = node.nodeY + ((node.sizeY + 200)/10);
-    newAttrs[".label"] = newLabel;
-    newNode["attrs"] = newAttrs;
+	var actorId = node.nodeId;
+	if(!actorId.contains("-")){
+	    var newNode = new Object();
+	    newNode["type"] = "basic.Actor";
+	    var newSize = new Object();
+	    newSize["width"] = node.sizeX + 200; 
+	    newSize["height"] = node.sizeY + 200; 
+	    newNode["size"] = newSize;
+	    var newPosition = new Object();
+	    newPosition["x"] = node.nodeX;
+	    newPosition["y"] = node.nodeY;
+	    newNode["position"] = newPosition;
+	    //how to deal with angle? 
+	    //TODO: fix this later
+	    newNode["angle"] = 0; 
+	    //Changed the hash code for ids into the node ids
+	    newNode["id"] = node.nodeId;
+	    newNode["z"] = zCounter;
+	    zCounter ++;
+	    newNode["nodeID"] = node.nodeId;
+	    newAttrs = new Object();
+	    newName = new Object();
+	    newName["text"] = node.nodeName;
+	    newAttrs[".name"] = newName;
+	    newLabel = new Object();
+	    //TODO: The label for the actor is currently hard coded here
+	    newLabel["cx"]= node.nodeX + ((node.sizeX + 200)/4);
+	    newLabel["cy"] = node.nodeY + ((node.sizeY + 200)/10);
+	    newAttrs[".label"] = newLabel;
+	    newNode["attrs"] = newAttrs;
 
-    newNode["embeds"] = [];
-    for(var i = 0; i < node.intentionList.length; i++){
-      newNode["embeds"].push(node.intentionList[i]);
-    }
+	    newNode["embeds"] = [];
+	    for(var i = 0; i < node.intentionList.length; i++){
+	      newNode["embeds"].push(node.intentionList[i]);
+	    }
 
-    nodes.push(newNode);
+	    nodes.push(newNode);
+	}
   }
   return nodes;
 }
@@ -696,7 +716,6 @@ function listForGraphicalNodes(nodeSet, curZ){
 		if((typeof node.parent !== 'undefined')&&(node.parent !== "****")){
 			newNode["parent"] = node.parent;
 		}
-
 		nodes.push(newNode);
 	}
 	return nodes; 
@@ -749,9 +768,13 @@ function listForGraphicalLinks(nodeSet, zToStartFrom,nodeIdNodePosDict){
 		newLabels["position"] = 0.5;
 		var newAttrs = new Object();
 		var text = link["linkType"];
-		newAttrs["text"] = text.toLowerCase();
+		var text1 = new Object();
+		text1["text"] = text.toLowerCase();
+		newAttrs["text"] = text1;
 		newLabels["attrs"] = newAttrs;
-		oneLinkGraphical["labels"] = newLabels;
+		var labelList = [];
+		labelList.push(newLabels);
+		oneLinkGraphical["labels"] = labelList;
 		oneLinkGraphical["linkID"] = link["linkID"];
 
 		var newAttrs1 = new Object();
@@ -834,22 +857,44 @@ function getSizeOfActor(nodeSet, actorSet){
 	}
 }
 
+//Those fake actors have id begin with "-"
+function initializeActorForFreeNodes(actorSet, nodeSet, model1, model2, curXCount, curYCount){
+	var width = 150; 
+	var height = 100; 
+	for(var node of nodeSet){
+		if(node.nodeId == "-"){
+			var actorForCurFreeNode = new Actor(node.nodeName,(curXCount-1)*width, curYCount*height, "-"+node.nodeId, [node.nodeId]);
+			actorSet.add(actorForCurFreeNode);
+		}
+	}
+}
+
+
 function forceDirectedAlgorithm(resultList, model1, model2){
 	var numIterations = 20;
 	var numConstant = 0.2;
 	var nodeSet = new Set();
 	var actorSet = new Set();
 	var nodeIdNodePosDict = new Object();
-	initializeActors(resultList,actorSet, model1, model2);
+	var xyCounts = initializeActors(resultList,actorSet, model1, model2);
 	initializeNodes(resultList, nodeSet, model1, model2);
+	var curXCount = xyCounts[0]; 
+	var curYCount = xyCounts[1];
+	initializeActorForFreeNodes(actorSet,nodeSet,model1, model2, curXCount, curYCount);
 	for(var i = 0; i < numIterations; i++){
 		adjustment(nodeSet, actorSet, numConstant,true);
 		adjustment(nodeSet, actorSet, numConstant,false);
 	}
+	var withFreeNodeInfo = false; 
 	setCoordinatePositive(nodeSet);
 	getSizeOfActor(nodeSet, actorSet);
-	moveNodesToAbsPos(nodeSet,actorSet);
+	moveNodesToAbsPos(nodeSet,actorSet, withFreeNodeInfo, 0);
+	// withFreeNodeInfo = true;
+	// //change here
+	// var freeNodeXInfo = freeNodeX(nodeSet);
+	// moveNodesToAbsPos(nodeSet,actorSet, withFreeNodeInfo, freeNodeXInfo);
 	setNodeIdNodePosDict(nodeIdNodePosDict, nodeSet);
+
 	var curZ = 1;
 	var listForGraphicalActors1 = listForGraphicalActors(actorSet, curZ); 
 	curZ = curZ + listForGraphicalActors1.length;
@@ -858,6 +903,21 @@ function forceDirectedAlgorithm(resultList, model1, model2){
 	var listForGraphicalLinks1 = listForGraphicalLinks(nodeSet,curZ,nodeIdNodePosDict);
 	return [listForGraphicalActors1, listForGraphicalNodes1, listForGraphicalLinks1];
 }
+
+
+//place all of the free nodes on the right of everything else
+// function freeNodeX(nodeSet){
+// 	var curMax = 0; 
+// 	for(var node of nodeSet){
+// 		if(!node.nodeId.includes("-")){
+// 			var curX = node.nodeX;
+// 			if(curX > curMax){
+// 				curMax = curX;
+// 			}
+// 		}
+// 	}
+// 	return curMax;
+// }
 
 //TODO:graphical ids are important and it contains information about the graphical object!
 //Need to find how they are generated to do the position modification
@@ -1370,10 +1430,12 @@ function withConflict(model1, model2, delta){
 /*
 main function for merging models
 */
-var model1 , model2; 
-function mergeModels(delta, model1, model2){
-	model1 = model1;
-	model2 = model2;
+//var model1 , model2; 
+function mergeModels(delta, model11, model21){
+	var model1 = new Object(); 
+	var model2 = new Object();
+	model1 = model11;
+	model2 = model21;
 	delta = delta; 
 	var toReturn; 
 	if(delta > 0){
@@ -1447,6 +1509,10 @@ function mergeModels(delta, model1, model2){
 //     	if (err) throw err; 
 // 	});
 // }
+	var inputModel1 = '';
+	var inputModel2 = '';
+	inputModel1 = {"graph":{"cells":[{"type":"basic.Goal","size":{"width":100,"height":60},"position":{"x":100,"y":350},"angle":0,"id":"d161dfda-9b23-4908-bf31-6eb5b3ba5de4","z":1,"nodeID":"0000","attrs":{".satvalue":{"text":""},".name":{"text":"Goal_0"}}},{"type":"basic.Goal","size":{"width":100,"height":60},"position":{"x":360,"y":340},"angle":0,"id":"fe02b259-5364-46ab-9a45-987d013d0437","z":2,"nodeID":"0001","attrs":{".satvalue":{"text":""},".name":{"text":"Goal_1"}}},{"type":"link","source":{"id":"d161dfda-9b23-4908-bf31-6eb5b3ba5de4"},"target":{"id":"fe02b259-5364-46ab-9a45-987d013d0437"},"labels":[{"position":0.5,"attrs":{"text":{"text":"and"}}}],"id":"f63919c2-da41-46a5-9ff6-d33376da28b6","z":3,"linkID":"0000","attrs":{".connection":{"stroke":"#000000"},".marker-source":{"d":"0"},".marker-target":{"stroke":"#000000","d":"M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"}}}]},"model":{"actors":[],"intentions":[{"nodeActorID":"-","nodeID":"0000","nodeType":"basic.Goal","nodeName":"Goal_0","dynamicFunction":{"intentionID":"0000","stringDynVis":"NT","functionSegList":[]}},{"nodeActorID":"-","nodeID":"0001","nodeType":"basic.Goal","nodeName":"Goal_1","dynamicFunction":{"intentionID":"0001","stringDynVis":"NT","functionSegList":[]}}],"links":[{"linkID":"0000","linkType":"AND","postType":null,"linkSrcID":"0000","linkDestID":"0001","absoluteValue":-1}],"constraints":[],"maxAbsTime":"100"},"analysisRequest":{"action":null,"conflictLevel":"S","numRelTime":"1","absTimePts":"","absTimePtsArr":[],"currentState":"0","userAssignmentsList":[{"intentionID":"0000","absTime":"0","evaluationValue":"(no value)"},{"intentionID":"0001","absTime":"0","evaluationValue":"(no value)"}],"previousAnalysis":null}};
+	inputModel2 = {"graph":{"cells":[{"type":"basic.Goal","size":{"width":100,"height":60},"position":{"x":100,"y":350},"angle":0,"id":"d161dfda-9b23-4908-bf31-6eb5b3ba5de4","z":1,"nodeID":"0000","attrs":{".satvalue":{"text":""},".name":{"text":"Goal_0"}}},{"type":"basic.Goal","size":{"width":100,"height":60},"position":{"x":360,"y":340},"angle":0,"id":"fe02b259-5364-46ab-9a45-987d013d0437","z":2,"nodeID":"0001","attrs":{".satvalue":{"text":""},".name":{"text":"Goal_1"}}},{"type":"link","source":{"id":"d161dfda-9b23-4908-bf31-6eb5b3ba5de4"},"target":{"id":"fe02b259-5364-46ab-9a45-987d013d0437"},"labels":[{"position":0.5,"attrs":{"text":{"text":"and"}}}],"id":"f63919c2-da41-46a5-9ff6-d33376da28b6","z":3,"linkID":"0000","attrs":{".connection":{"stroke":"#000000"},".marker-source":{"d":"0"},".marker-target":{"stroke":"#000000","d":"M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"}}}]},"model":{"actors":[],"intentions":[{"nodeActorID":"-","nodeID":"0000","nodeType":"basic.Goal","nodeName":"Goal_0","dynamicFunction":{"intentionID":"0000","stringDynVis":"NT","functionSegList":[]}},{"nodeActorID":"-","nodeID":"0001","nodeType":"basic.Goal","nodeName":"Goal_1","dynamicFunction":{"intentionID":"0001","stringDynVis":"NT","functionSegList":[]}}],"links":[{"linkID":"0000","linkType":"AND","postType":null,"linkSrcID":"0000","linkDestID":"0001","absoluteValue":-1}],"constraints":[],"maxAbsTime":"100"},"analysisRequest":{"action":null,"conflictLevel":"S","numRelTime":"1","absTimePts":"","absTimePtsArr":[],"currentState":"0","userAssignmentsList":[{"intentionID":"0000","absTime":"0","evaluationValue":"(no value)"},{"intentionID":"0001","absTime":"0","evaluationValue":"(no value)"}],"previousAnalysis":null}};
 
 	var resultList = mergeModels(0, inputModel1, inputModel2);
 	makeDictIDToNodeID(inputModel1, inputModel2);
@@ -1485,5 +1551,5 @@ function mergeModels(delta, model1, model2){
 	semanticElems["analysisRequest"] = analysisRequestList;
 	outPut["model"] = semanticElems;
 	outPutString = JSON.stringify(outPut);
-	console.log(outPutString);
+	freeNodeX(outPutString);
 
