@@ -378,6 +378,7 @@ function initializeActors(resultList,actorSet, model1, model2){
 }
 
 function calculateActorPosWithRec(actorSet){
+	console.log(actorSet);
 	var actorsXSorted = sortActorX(actorSet);
 	var actorsYSorted = sortActorY(actorSet);
 	var curX = 0; 
@@ -395,7 +396,7 @@ function calculateActorPosWithRec(actorSet){
 }
 
 function sortActorX(actorSet){
-	var actorsXSorted; 
+	var actorsXSorted = []; 
 	for(var actor of actorSet){
 		actorsXSorted.push(actor);
 	}
@@ -404,7 +405,7 @@ function sortActorX(actorSet){
 }
 
 function sortActorY(actorSet){
-	var actorsYSorted; 
+	var actorsYSorted = []; 
 	for(var actor of actorSet){
 		actorsYSorted.push(actor);
 	}
@@ -414,8 +415,8 @@ function sortActorY(actorSet){
 
 
 /**************changed here****/
-function moveNodesToAbsPos(nodeSet,actorSet,withFreeNodeInfo, freeNodeXInfo){
-	if(withFreeNodeInfo == false){
+function moveNodesToAbsPos(nodeSet,actorSet){
+	// if(withFreeNodeInfo == false){
 		for(var actor of actorSet){
 			var intentionList = actor.intentionList; 
 			for(var i = 0; i < intentionList.length; i++){
@@ -430,18 +431,18 @@ function moveNodesToAbsPos(nodeSet,actorSet,withFreeNodeInfo, freeNodeXInfo){
 				}
 			}
 		}
-	}
-	else{
-		for(var node of nodeSet){
-			//cases that curNode doesn't belong to any actor
-			if(node.nodeId === "-"){
-				var curX = node.nodeX; 
-				var curY = node.nodeY; 
-				node.nodeX = curX + freeNodeXInfo + 230; 
-				node.nodeY = curY + freeNodeXInfo + 230;
-			}
-		}
-	}
+	// }
+	// else{
+	// 	for(var node of nodeSet){
+	// 		//cases that curNode doesn't belong to any actor
+	// 		if(node.nodeId === "-"){
+	// 			var curX = node.nodeX; 
+	// 			var curY = node.nodeY; 
+	// 			node.nodeX = curX + freeNodeXInfo + 230; 
+	// 			node.nodeY = curY + freeNodeXInfo + 230;
+	// 		}
+	// 	}
+	// }
 }
 /*end of the actor-related code*/
 
@@ -921,9 +922,9 @@ function forceDirectedAlgorithm(resultList, model1, model2){
 	}
 	setCoordinatePositive(nodeSet);
 	getSizeOfActor(nodeSet, actorSet);
-	moveNodesToAbsPos(nodeSet,actorSet, withFreeNodeInfo, 0);
-	setNodeIdNodePosDict(nodeIdNodePosDict, nodeSet);
 	calculateActorPosWithRec(actorSet);
+	moveNodesToAbsPos(nodeSet,actorSet);
+	setNodeIdNodePosDict(nodeIdNodePosDict, nodeSet);
 	var curZ = 1;
 	var listForGraphicalActors1 = listForGraphicalActors(actorSet, curZ); 
 	curZ = curZ + listForGraphicalActors1.length;
@@ -1580,5 +1581,5 @@ function mergeModels(delta, model11, model21){
 	semanticElems["analysisRequest"] = analysisRequestList;
 	outPut["model"] = semanticElems;
 	outPutString = JSON.stringify(outPut);
-	freeNodeX(outPutString);
+	console.log(outPutString);
 
