@@ -377,6 +377,40 @@ function initializeActors(resultList,actorSet, model1, model2){
 	return [curXCount,curYCount];
 }
 
+function calculateActorPosWithRec(actorSet){
+	var actorsXSorted = sortActorX(actorSet);
+	var actorsYSorted = sortActorY(actorSet);
+	var curX = 0; 
+	var curY = 0; 
+	for(var i = 0; i < actorsXSorted.length; i++){
+		var curNode = actorsXSorted[i];
+		curNode.nodeX = curNode.nodeX + curX; 
+		curX += curNode.sizeX;
+	}
+	for(var i = 0; i < actorsYSorted.length; i++){
+		var curNode = actorYSorted[i];
+		curNode.nodeY = curNode.nodeY + curY;
+		curY += curNode.sizeY;
+	}
+}
+
+function sortActorX(actorSet){
+	var actorsXSorted; 
+	for(var actor of actorSet){
+		actorsXSorted.push(actor);
+	}
+	actorsXSorted.sort(function(a,b){return a.nodeX - b.nodeX});
+	return actorsXSorted; 
+}
+
+function sortActorY(actorSet){
+	var actorsYSorted; 
+	for(var actor of actorSet){
+		actorsYSorted.push(actor);
+	}
+	actorsYSorted.sort(function(a,b){return a.nodeY - b.nodeY});
+	return actorsYSorted; 
+}
 
 
 /**************changed here****/
@@ -885,16 +919,11 @@ function forceDirectedAlgorithm(resultList, model1, model2){
 		adjustment(nodeSet, actorSet, numConstant,true);
 		adjustment(nodeSet, actorSet, numConstant,false);
 	}
-	var withFreeNodeInfo = false; 
 	setCoordinatePositive(nodeSet);
 	getSizeOfActor(nodeSet, actorSet);
 	moveNodesToAbsPos(nodeSet,actorSet, withFreeNodeInfo, 0);
-	// withFreeNodeInfo = true;
-	// //change here
-	// var freeNodeXInfo = freeNodeX(nodeSet);
-	// moveNodesToAbsPos(nodeSet,actorSet, withFreeNodeInfo, freeNodeXInfo);
 	setNodeIdNodePosDict(nodeIdNodePosDict, nodeSet);
-
+	calculateActorPosWithRec(actorSet);
 	var curZ = 1;
 	var listForGraphicalActors1 = listForGraphicalActors(actorSet, curZ); 
 	curZ = curZ + listForGraphicalActors1.length;
