@@ -388,7 +388,7 @@ function calculateActorPosWithRec(actorSet){
 		curX += curNode.sizeX;
 	}
 	for(var i = 0; i < actorsYSorted.length; i++){
-		var curNode = actorYSorted[i];
+		var curNode = actorsYSorted[i];
 		curNode.nodeY = curNode.nodeY + curY;
 		curY += curNode.sizeY;
 	}
@@ -669,7 +669,7 @@ function listForGraphicalActors(actorSet, curZ){
   var zCounter = curZ;
   for(var node of actorSet){
 	var actorId = node.nodeId;
-	if(!actorId.contains("-")){
+	if(! actorId.includes("-")){
 	    var newNode = new Object();
 	    newNode["type"] = "basic.Actor";
 	    var newSize = new Object();
