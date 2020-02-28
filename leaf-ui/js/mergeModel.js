@@ -454,10 +454,16 @@ function changeNodePos(node, newX, newY){
 function setAttractionSum(curNode, nodeSet, actorSet, isActor){
 	if(! isActor){
 		var curName = curNode.nodeName;
+		var elemSet = new Set(); 
 		//clean up the value for attraction for each iteration
 		curNode.setForcesX = 0; 
 		curNode.setForcesY = 0;
-		for(var node of Array.from(nodeSet).reverse()){
+		for(var node of nodeSet){
+			if(node.actorId1 === curNode.actorId1){
+				elemSet.add(node);
+			}
+		}
+		for(var node of Array.from(elemSet).reverse()){
 			var nodeName = node.nodeName;
 			if(curName != nodeName){
 				var forces = attraction(curNode, node, isActor);
@@ -498,9 +504,15 @@ function setRepulsionSum(curNode, nodeSet, actorSet, isActor){
 	if(! isActor){
 		var curName = curNode.nodeName;
 		//clean up the value for attraction for each iteration
+		var elemSet = new Set();
 		curNode.setForcesX = 0; 
 		curNode.setForcesY = 0; 
-		for(var node of Array.from(nodeSet).reverse()){
+		for(var node of nodeSet){
+			if(node.actorId1 === curNode.actorId1){
+				elemSet.add(node);
+			}
+		}
+		for(var node of Array.from(elemSet).reverse()){
 			var nodeName = node.nodeName;
 			if(curName !== nodeName){
 				var forces = repulsion(curNode, node, isActor);
