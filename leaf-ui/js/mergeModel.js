@@ -456,8 +456,8 @@ function setAttractionSum(curNode, nodeSet, actorSet, isActor){
 		var curName = curNode.nodeName;
 		var elemSet = new Set(); 
 		//clean up the value for attraction for each iteration
-		curNode.setForcesX = 0; 
-		curNode.setForcesY = 0;
+		// curNode.setForcesX = 0; 
+		// curNode.setForcesY = 0;
 		for(var node of nodeSet){
 			if(node.actorId1 === curNode.actorId1){
 				elemSet.add(node);
@@ -481,8 +481,8 @@ function setAttractionSum(curNode, nodeSet, actorSet, isActor){
 	else{
 		var curName = curNode.nodeName;
 		//clean up the value for attraction for each iteration
-		curNode.setForcesX = 0; 
-		curNode.setForcesY = 0;
+		// curNode.setForcesX = 0; 
+		// curNode.setForcesY = 0;
 		for(var actor of Array.from(actorSet).reverse()){
 			var actorName = actor.nodeName;
 			if(curName != actorName){
@@ -505,8 +505,8 @@ function setRepulsionSum(curNode, nodeSet, actorSet, isActor){
 		var curName = curNode.nodeName;
 		//clean up the value for attraction for each iteration
 		var elemSet = new Set();
-		curNode.setForcesX = 0; 
-		curNode.setForcesY = 0; 
+		// curNode.setForcesX = 0; 
+		// curNode.setForcesY = 0; 
 		for(var node of nodeSet){
 			if(node.actorId1 === curNode.actorId1){
 				elemSet.add(node);
@@ -530,8 +530,8 @@ function setRepulsionSum(curNode, nodeSet, actorSet, isActor){
 	else{
 		var curName = curNode.nodeName;
 		//clean up the value for attraction for each iteration
-		curNode.setForcesX = 0; 
-		curNode.setForcesY = 0; 
+		// curNode.setForcesX = 0; 
+		// curNode.setForcesY = 0; 
 		for(var actor of Array.from(actorSet).reverse()){
 			var nodeName = actor.nodeName;
 			if(curName != nodeName){
@@ -656,6 +656,8 @@ initializeNodes)*/
 function adjustment(nodeSet, actorSet, moveConstant, isActor){
 	if(! isActor){
 		for(var node of Array.from(nodeSet).reverse()){
+			node.setForcesX = 0; 
+			node.setForcesY = 0;
 			setAttractionSum(node,nodeSet, actorSet, isActor); 
 			setRepulsionSum(node,nodeSet, actorSet, isActor);
 			var moveX = moveConstant * node.forcesX1;
@@ -666,6 +668,8 @@ function adjustment(nodeSet, actorSet, moveConstant, isActor){
 	}
 	else{
 		for(var actor of Array.from(actorSet).reverse()){
+			node.setForcesX = 0; 
+			node.setForcesY = 0;
 			setAttractionSum(actor,nodeSet, actorSet, isActor); 
 			setRepulsionSum(actor,nodeSet, actorSet, isActor);
 			var moveX = moveConstant * actor.forcesX1;
