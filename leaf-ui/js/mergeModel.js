@@ -668,8 +668,8 @@ function adjustment(nodeSet, actorSet, moveConstant, isActor){
 	}
 	else{
 		for(var actor of Array.from(actorSet).reverse()){
-			node.setForcesX = 0; 
-			node.setForcesY = 0;
+			actor.setForcesX = 0; 
+			actor.setForcesY = 0;
 			setAttractionSum(actor,nodeSet, actorSet, isActor); 
 			setRepulsionSum(actor,nodeSet, actorSet, isActor);
 			var moveX = moveConstant * actor.forcesX1;
