@@ -384,7 +384,7 @@ function calculateActorPosWithRec(actorSet){
 	var curY = 0; 
 	for(var i = 0; i < actorsXSorted.length; i++){
 		var curNode = actorsXSorted[i];
-		curNode.nodeX = curNode.nodeX + curX; 
+		curNode.nodeX = curNode.nodeX + curX;
 		curX += curNode.sizeX;
 	}
 	for(var i = 0; i < actorsYSorted.length; i++){
@@ -424,24 +424,12 @@ function moveNodesToAbsPos(nodeSet,actorSet){
 					if(node.nodeId == intentionId){
 						var curX = node.nodeX; 
 						var curY = node.nodeY; 
-						node.nodeX = curX + actor.nodeX + 30; 
-						node.nodeY = curY + actor.nodeY + 30;
+						node.nodeX = curX + actor.nodeX + 150; 
+						node.nodeY = curY + actor.nodeY + 100;
 					}
 				}
 			}
 		}
-	// }
-	// else{
-	// 	for(var node of nodeSet){
-	// 		//cases that curNode doesn't belong to any actor
-	// 		if(node.nodeId === "-"){
-	// 			var curX = node.nodeX; 
-	// 			var curY = node.nodeY; 
-	// 			node.nodeX = curX + freeNodeXInfo + 230; 
-	// 			node.nodeY = curY + freeNodeXInfo + 230;
-	// 		}
-	// 	}
-	// }
 }
 /*end of the actor-related code*/
 
@@ -912,8 +900,8 @@ function getSizeOfActor(nodeSet, actorSet){
 		if(typeof maxPYDict[actorId] === 'undefined'){
 			 maxPYDict[actorId] = 100; 
 		}
-		var x = maxPXDict[actorId] - actor.nodeX; 
-		var y = maxPYDict[actorId] - actor.nodeY;
+		var x = maxPXDict[actorId] - actor.nodeX + 300; 
+		var y = maxPYDict[actorId] - actor.nodeY + 200;
 		actor.sizeX = x;
 		actor.sizeY = y;
 	}
