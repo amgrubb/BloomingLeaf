@@ -378,7 +378,6 @@ function initializeActors(resultList,actorSet, model1, model2){
 }
 
 function calculateActorPosWithRec(actorSet){
-	console.log(actorSet);
 	var actorsXSorted = sortActorX(actorSet);
 	var actorsYSorted = sortActorY(actorSet);
 	var curX = 0; 
@@ -389,7 +388,7 @@ function calculateActorPosWithRec(actorSet){
 		curX += curNode.sizeX;
 	}
 	for(var i = 0; i < actorsYSorted.length; i++){
-		var curNode = actorYSorted[i];
+		var curNode = actorsYSorted[i];
 		curNode.nodeY = curNode.nodeY + curY;
 		curY += curNode.sizeY;
 	}
@@ -455,10 +454,16 @@ function changeNodePos(node, newX, newY){
 function setAttractionSum(curNode, nodeSet, actorSet, isActor){
 	if(! isActor){
 		var curName = curNode.nodeName;
+		var elemSet = new Set(); 
 		//clean up the value for attraction for each iteration
-		curNode.setForcesX = 0; 
-		curNode.setForcesY = 0;
-		for(var node of Array.from(nodeSet).reverse()){
+		// curNode.setForcesX = 0; 
+		// curNode.setForcesY = 0;
+		for(var node of nodeSet){
+			if(node.actorId1 === curNode.actorId1){
+				elemSet.add(node);
+			}
+		}
+		for(var node of Array.from(elemSet).reverse()){
 			var nodeName = node.nodeName;
 			if(curName != nodeName){
 				var forces = attraction(curNode, node, isActor);
@@ -476,8 +481,8 @@ function setAttractionSum(curNode, nodeSet, actorSet, isActor){
 	else{
 		var curName = curNode.nodeName;
 		//clean up the value for attraction for each iteration
-		curNode.setForcesX = 0; 
-		curNode.setForcesY = 0;
+		// curNode.setForcesX = 0; 
+		// curNode.setForcesY = 0;
 		for(var actor of Array.from(actorSet).reverse()){
 			var actorName = actor.nodeName;
 			if(curName != actorName){
@@ -499,9 +504,15 @@ function setRepulsionSum(curNode, nodeSet, actorSet, isActor){
 	if(! isActor){
 		var curName = curNode.nodeName;
 		//clean up the value for attraction for each iteration
-		curNode.setForcesX = 0; 
-		curNode.setForcesY = 0; 
-		for(var node of Array.from(nodeSet).reverse()){
+		var elemSet = new Set();
+		// curNode.setForcesX = 0; 
+		// curNode.setForcesY = 0; 
+		for(var node of nodeSet){
+			if(node.actorId1 === curNode.actorId1){
+				elemSet.add(node);
+			}
+		}
+		for(var node of Array.from(elemSet).reverse()){
 			var nodeName = node.nodeName;
 			if(curName !== nodeName){
 				var forces = repulsion(curNode, node, isActor);
@@ -519,8 +530,8 @@ function setRepulsionSum(curNode, nodeSet, actorSet, isActor){
 	else{
 		var curName = curNode.nodeName;
 		//clean up the value for attraction for each iteration
-		curNode.setForcesX = 0; 
-		curNode.setForcesY = 0; 
+		// curNode.setForcesX = 0; 
+		// curNode.setForcesY = 0; 
 		for(var actor of Array.from(actorSet).reverse()){
 			var nodeName = actor.nodeName;
 			if(curName != nodeName){
@@ -645,6 +656,8 @@ initializeNodes)*/
 function adjustment(nodeSet, actorSet, moveConstant, isActor){
 	if(! isActor){
 		for(var node of Array.from(nodeSet).reverse()){
+			node.setForcesX = 0; 
+			node.setForcesY = 0;
 			setAttractionSum(node,nodeSet, actorSet, isActor); 
 			setRepulsionSum(node,nodeSet, actorSet, isActor);
 			var moveX = moveConstant * node.forcesX1;
@@ -655,6 +668,8 @@ function adjustment(nodeSet, actorSet, moveConstant, isActor){
 	}
 	else{
 		for(var actor of Array.from(actorSet).reverse()){
+			actor.setForcesX = 0; 
+			actor.setForcesY = 0;
 			setAttractionSum(actor,nodeSet, actorSet, isActor); 
 			setRepulsionSum(actor,nodeSet, actorSet, isActor);
 			var moveX = moveConstant * actor.forcesX1;
@@ -670,7 +685,7 @@ function listForGraphicalActors(actorSet, curZ){
   var zCounter = curZ;
   for(var node of actorSet){
 	var actorId = node.nodeId;
-	if(!actorId.contains("-")){
+	if(! actorId.includes("-")){
 	    var newNode = new Object();
 	    newNode["type"] = "basic.Actor";
 	    var newSize = new Object();
@@ -1208,11 +1223,11 @@ function mergeLinksActorsConstraintRequest(model1, model2, delta){
 	//TODO: check repetitions of the constriants?
 	var maxTime1 = model1.maxAbsTime;
 	var newConstraints = []
-	for(var constraint in model1.model.constraints){
+	for(var constraint of model1.model.constraints){
 		newConstraints.push(constraint);
 	}
 	var newConstraints2= updateAbs(model2.model.constraints,delta,maxTime1);
-	for(var constriant in newConstraints2){
+	for(var constraint of newConstraints2){
 		newConstraints.push(constraint);
 	}
 
@@ -1335,7 +1350,7 @@ function noGapNoConflict(model1, model2, delta){
 	newAnalysisRequest = resultArray[3];
 	//clean up "^^"s in the new ids
 	newLinks = removeExtraNewLinks(newLinks);
-	newConstaints = removeExtraNewConstrains(newConstraints);
+	newConstaints = removeExtraNewConstraints(newConstraints);
 	newAnalysisRequest = removeExtraNewAnalysisRequest(newAnalysisRequest);
 	newIntention = removeExtraNewIntentions(newIntentions);
 	newActors = removeExtraNewActors(newActors);
@@ -1359,7 +1374,7 @@ function removeExtraNewLinks(newLinks){
 }
 
 /*remove the extra "^^" that are put at the end of the newId generated*/
-function removeExtraNewConstrains(newConstraints){
+function removeExtraNewConstraints(newConstraints){
 	for(var i = 0; i < newConstraints.length; i++){
 		if(newConstraints[i].constraintSrcID.substr(-2) === '^^'){
 			newConstraints[i].constraintSrcID = newConstraints[i].constraintSrcID.substr(0, newConstraints[i].constraintSrcID.length - 2);
@@ -1439,9 +1454,9 @@ constraints of the second model*/
 function updateAbs(constraints2, delta, maxTime1){
 	var updatedConstraint2 = [];
 	var toAdd = maxTime1 + delta; 
-	for(var constraint in constraints2){
+	for(var constraint of constraints2){
 		constraint.absoluteValue += toAdd;
-		updateConstraint2.push(constraint);
+		updatedConstraint2.push(constraint);
 	}
 	return updatedConstraint2;
 }
@@ -1542,8 +1557,8 @@ function mergeModels(delta, model11, model21){
 // }
 	var inputModel1 = '';
 	var inputModel2 = '';
-	inputModel1 = {"graph":{"cells":[{"type":"basic.Goal","size":{"width":100,"height":60},"position":{"x":100,"y":350},"angle":0,"id":"d161dfda-9b23-4908-bf31-6eb5b3ba5de4","z":1,"nodeID":"0000","attrs":{".satvalue":{"text":""},".name":{"text":"Goal_0"}}},{"type":"basic.Goal","size":{"width":100,"height":60},"position":{"x":360,"y":340},"angle":0,"id":"fe02b259-5364-46ab-9a45-987d013d0437","z":2,"nodeID":"0001","attrs":{".satvalue":{"text":""},".name":{"text":"Goal_1"}}},{"type":"link","source":{"id":"d161dfda-9b23-4908-bf31-6eb5b3ba5de4"},"target":{"id":"fe02b259-5364-46ab-9a45-987d013d0437"},"labels":[{"position":0.5,"attrs":{"text":{"text":"and"}}}],"id":"f63919c2-da41-46a5-9ff6-d33376da28b6","z":3,"linkID":"0000","attrs":{".connection":{"stroke":"#000000"},".marker-source":{"d":"0"},".marker-target":{"stroke":"#000000","d":"M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"}}}]},"model":{"actors":[],"intentions":[{"nodeActorID":"-","nodeID":"0000","nodeType":"basic.Goal","nodeName":"Goal_0","dynamicFunction":{"intentionID":"0000","stringDynVis":"NT","functionSegList":[]}},{"nodeActorID":"-","nodeID":"0001","nodeType":"basic.Goal","nodeName":"Goal_1","dynamicFunction":{"intentionID":"0001","stringDynVis":"NT","functionSegList":[]}}],"links":[{"linkID":"0000","linkType":"AND","postType":null,"linkSrcID":"0000","linkDestID":"0001","absoluteValue":-1}],"constraints":[],"maxAbsTime":"100"},"analysisRequest":{"action":null,"conflictLevel":"S","numRelTime":"1","absTimePts":"","absTimePtsArr":[],"currentState":"0","userAssignmentsList":[{"intentionID":"0000","absTime":"0","evaluationValue":"(no value)"},{"intentionID":"0001","absTime":"0","evaluationValue":"(no value)"}],"previousAnalysis":null}};
-	inputModel2 = {"graph":{"cells":[{"type":"basic.Goal","size":{"width":100,"height":60},"position":{"x":100,"y":350},"angle":0,"id":"d161dfda-9b23-4908-bf31-6eb5b3ba5de4","z":1,"nodeID":"0000","attrs":{".satvalue":{"text":""},".name":{"text":"Goal_0"}}},{"type":"basic.Goal","size":{"width":100,"height":60},"position":{"x":360,"y":340},"angle":0,"id":"fe02b259-5364-46ab-9a45-987d013d0437","z":2,"nodeID":"0001","attrs":{".satvalue":{"text":""},".name":{"text":"Goal_1"}}},{"type":"link","source":{"id":"d161dfda-9b23-4908-bf31-6eb5b3ba5de4"},"target":{"id":"fe02b259-5364-46ab-9a45-987d013d0437"},"labels":[{"position":0.5,"attrs":{"text":{"text":"and"}}}],"id":"f63919c2-da41-46a5-9ff6-d33376da28b6","z":3,"linkID":"0000","attrs":{".connection":{"stroke":"#000000"},".marker-source":{"d":"0"},".marker-target":{"stroke":"#000000","d":"M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"}}}]},"model":{"actors":[],"intentions":[{"nodeActorID":"-","nodeID":"0000","nodeType":"basic.Goal","nodeName":"Goal_0","dynamicFunction":{"intentionID":"0000","stringDynVis":"NT","functionSegList":[]}},{"nodeActorID":"-","nodeID":"0001","nodeType":"basic.Goal","nodeName":"Goal_1","dynamicFunction":{"intentionID":"0001","stringDynVis":"NT","functionSegList":[]}}],"links":[{"linkID":"0000","linkType":"AND","postType":null,"linkSrcID":"0000","linkDestID":"0001","absoluteValue":-1}],"constraints":[],"maxAbsTime":"100"},"analysisRequest":{"action":null,"conflictLevel":"S","numRelTime":"1","absTimePts":"","absTimePtsArr":[],"currentState":"0","userAssignmentsList":[{"intentionID":"0000","absTime":"0","evaluationValue":"(no value)"},{"intentionID":"0001","absTime":"0","evaluationValue":"(no value)"}],"previousAnalysis":null}};
+	inputModel1 = {"graph":{"cells":[{"type":"basic.Actor","size":{"width":330,"height":280},"position":{"x":310,"y":180},"angle":0,"id":"a4f91bd4-9259-4006-93b4-2da136b148cd","z":-1,"nodeID":"aNaN","embeds":["37a9312f-66d5-4305-a33e-b700865a046d","af433156-e2d5-4d98-a0b3-97d39d76f677","42e00225-ffd6-45d8-8774-1b5508153674","98bd1291-e5de-4e1f-ae94-6096275b7a27","61f4c814-56d5-4aaa-ad7c-5f98cf18f261","abc5f00c-eb04-4538-a0ad-468c23f37da2","72533443-52a6-44e1-89c7-0c81f3e45425"],"attrs":{".label":{"cx":82.5,"cy":28.270615378919},".name":{"text":"Spadina\nProject","font-size":13}}},{"type":"basic.Actor","size":{"width":130,"height":120},"position":{"x":220,"y":200},"angle":0,"id":"f2cf28b4-cf4a-4308-ae36-551b859c45b0","z":0,"nodeID":"a001","embeds":["0feb280b-d95d-470e-bea0-4901a69ebfd9"],"attrs":{".label":{"cx":32.5,"cy":12.353299855639},".name":{"text":"Metro","font-size":13}}},{"type":"basic.Goal","size":{"width":100,"height":60},"position":{"x":430,"y":190},"angle":0,"id":"af433156-e2d5-4d98-a0b3-97d39d76f677","z":2,"nodeID":"0000","parent":"a4f91bd4-9259-4006-93b4-2da136b148cd","attrs":{".satvalue":{"text":""},".name":{"text":"Have Spadina\nExpressway","font-size":13}}},{"type":"basic.Task","size":{"width":100,"height":60},"position":{"x":320,"y":300},"angle":0,"id":"42e00225-ffd6-45d8-8774-1b5508153674","z":3,"nodeID":"0001","parent":"a4f91bd4-9259-4006-93b4-2da136b148cd","attrs":{".satvalue":{"text":"(F, ⊥)"},".funcvalue":{"text":"C"},".name":{"text":"Plan Project","font-size":13},".label":{"cx":25,"cy":6.3833753244528}}},{"type":"basic.Goal","size":{"width":90,"height":60},"position":{"x":420,"y":290},"angle":0,"id":"98bd1291-e5de-4e1f-ae94-6096275b7a27","z":4,"nodeID":"0002","parent":"a4f91bd4-9259-4006-93b4-2da136b148cd","attrs":{".satvalue":{"text":""},".name":{"text":"Get Funding","font-size":13},".label":{"cx":22.5,"cy":6.3833753244527855}}},{"type":"basic.Goal","size":{"width":90,"height":60},"position":{"x":530,"y":280},"angle":0,"id":"61f4c814-56d5-4aaa-ad7c-5f98cf18f261","z":5,"nodeID":"0003","parent":"a4f91bd4-9259-4006-93b4-2da136b148cd","attrs":{".satvalue":{"text":""},".name":{"text":"Build Spadina\nExpressway","font-size":13},".label":{"cx":22.5,"cy":6.3833753244527855}}},{"type":"basic.Goal","size":{"width":90,"height":60},"position":{"x":410,"y":390},"angle":0,"id":"72533443-52a6-44e1-89c7-0c81f3e45425","z":6,"nodeID":"0004","parent":"a4f91bd4-9259-4006-93b4-2da136b148cd","attrs":{".satvalue":{"text":""},".name":{"text":"Connected\nExpressway","font-size":13},".label":{"cx":22.5,"cy":6.3833753244527855}}},{"type":"basic.Goal","size":{"width":90,"height":60},"position":{"x":500,"y":370},"angle":0,"id":"abc5f00c-eb04-4538-a0ad-468c23f37da2","z":7,"nodeID":"0005","parent":"a4f91bd4-9259-4006-93b4-2da136b148cd","attrs":{".satvalue":{"text":""},".name":{"text":"Terminal\nExpressway","font-size":13},".label":{"cx":22.5,"cy":6.3833753244527855}}},{"type":"basic.Task","size":{"width":100,"height":60},"position":{"x":240,"y":390},"angle":0,"id":"4972530a-4b6b-4a3b-b90c-73913b2e036c","z":8,"nodeID":"0006","attrs":{".satvalue":{"text":""},".name":{"text":"Get Funding\nFrom Metro","font-size":13}}},{"type":"basic.Task","size":{"width":110,"height":60},"position":{"x":220,"y":240},"angle":0,"id":"0feb280b-d95d-470e-bea0-4901a69ebfd9","z":9,"nodeID":"0007","parent":"f2cf28b4-cf4a-4308-ae36-551b859c45b0","attrs":{".satvalue":{"text":"(⊥, F)"},".funcvalue":{"text":"DS"},".name":{"text":"Approve Project\nFunding","font-size":13},".label":{"cx":27.5,"cy":6.3833753244528}}},{"type":"link","source":{"id":"42e00225-ffd6-45d8-8774-1b5508153674"},"target":{"id":"af433156-e2d5-4d98-a0b3-97d39d76f677"},"labels":[{"position":0.5,"attrs":{"text":{"text":"and"}}}],"id":"b9ac4786-3267-4405-90ed-8c70ce52211a","z":10,"linkID":"0000","attrs":{".connection":{"stroke":"#000000"},".marker-source":{"d":"0"},".marker-target":{"stroke":"#000000","d":"M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"}}},{"type":"link","source":{"id":"98bd1291-e5de-4e1f-ae94-6096275b7a27"},"target":{"id":"af433156-e2d5-4d98-a0b3-97d39d76f677"},"labels":[{"position":0.5,"attrs":{"text":{"text":"and"}}}],"id":"022d7b89-5c92-4d25-bdab-4699d93de0fd","z":11,"linkID":"0001","attrs":{".connection":{"stroke":"#000000"},".marker-source":{"d":"0"},".marker-target":{"stroke":"#000000","d":"M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"}}},{"type":"link","source":{"id":"61f4c814-56d5-4aaa-ad7c-5f98cf18f261"},"target":{"id":"af433156-e2d5-4d98-a0b3-97d39d76f677"},"labels":[{"position":0.5,"attrs":{"text":{"text":"and"}}}],"id":"0b39aa13-f3f3-434e-b2ba-2fda12b4e685","z":12,"linkID":"0002","attrs":{".connection":{"stroke":"#000000"},".marker-source":{"d":"0"},".marker-target":{"stroke":"#000000","d":"M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"}}},{"type":"link","source":{"id":"72533443-52a6-44e1-89c7-0c81f3e45425"},"target":{"id":"61f4c814-56d5-4aaa-ad7c-5f98cf18f261"},"labels":[{"position":0.5,"attrs":{"text":{"text":"or"}}}],"id":"37a9312f-66d5-4305-a33e-b700865a046d","z":13,"linkID":"0003","link-type":"OR","parent":"a4f91bd4-9259-4006-93b4-2da136b148cd","vertices":[{"x":510,"y":350}],"attrs":{".connection":{"stroke":"#000000"},".marker-source":{"d":"0"},".marker-target":{"stroke":"#000000","d":"M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"}}},{"type":"link","source":{"id":"abc5f00c-eb04-4538-a0ad-468c23f37da2"},"target":{"id":"61f4c814-56d5-4aaa-ad7c-5f98cf18f261"},"labels":[{"position":0.5,"attrs":{"text":{"text":"or"}}}],"id":"1c91a5b8-d06f-4879-86ac-321effaf5b5e","z":14,"linkID":"0004","link-type":"OR","attrs":{".connection":{"stroke":"#000000"},".marker-source":{"d":"0"},".marker-target":{"stroke":"#000000","d":"M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"}}},{"type":"link","source":{"id":"4972530a-4b6b-4a3b-b90c-73913b2e036c"},"target":{"id":"98bd1291-e5de-4e1f-ae94-6096275b7a27"},"labels":[{"position":0.5,"attrs":{"text":{"text":"++S"}}}],"id":"dc5acb62-a5ce-4b2f-859a-9c42e5cb2431","z":15,"linkID":"0005","link-type":"++S","vertices":[{"x":390,"y":400}],"attrs":{".connection":{"stroke":"#000000"},".marker-source":{"d":"0"},".marker-target":{"stroke":"#000000","d":"M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"}}},{"type":"link","source":{"id":"0feb280b-d95d-470e-bea0-4901a69ebfd9"},"target":{"id":"4972530a-4b6b-4a3b-b90c-73913b2e036c"},"labels":[{"position":0.5,"attrs":{"text":{"text":"++"}}}],"id":"2b9e1d45-a542-4dac-9364-cd35fd969b01","z":16,"linkID":"0006","link-type":"++","attrs":{".connection":{"stroke":"#000000"},".marker-source":{"d":"0"},".marker-target":{"stroke":"#000000","d":"M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"}}}]},"model":{"actors":[{"nodeID":"a000","nodeName":"Spadina\nProject","intentionIDs":["0000","0001","0002","0001","0002","0003","0004","0005","0005","0006","0000","0001","0002","0003","0004","0005","0002","0001","0001","0002","0003","0003","0002","0002","0003","0003","0004","0005","0000","0001","0002","0003","0004","0005","0003","0004","0005","0003","0003","0005","0002"]},{"nodeID":"a001","nodeName":"Metro","intentionIDs":["0007","0007","0007","0007","0007","0007","0007"]},{"nodeID":"aNaN","nodeName":"Spadina\nProject","intentionIDs":["0000","0001","0003","0002","0001","0000","0003","0002","0004","0005","0003","0002","0002","0002","0001","0000","0003","0005","0004","0000","0003","0002","0005","0004","0001","0003","0005","0003","0002","0001","0001","0001","0002","0003","0005","0005","0005","0004","0004"]}],"intentions":[{"nodeActorID":"aNaN","nodeID":"0000","nodeType":"basic.Goal","nodeName":"Have Spadina\nExpressway","dynamicFunction":{"intentionID":"0000","stringDynVis":"NT","functionSegList":[]}},{"nodeActorID":"aNaN","nodeID":"0001","nodeType":"basic.Task","nodeName":"Plan Project","dynamicFunction":{"intentionID":"0001","stringDynVis":"C","functionSegList":[{"funcType":"C","funcX":"0011","funcStart":"0","funcStop":"Infinity"}]}},{"nodeActorID":"aNaN","nodeID":"0002","nodeType":"basic.Goal","nodeName":"Get Funding","dynamicFunction":{"intentionID":"0002","stringDynVis":"NT","functionSegList":[]}},{"nodeActorID":"aNaN","nodeID":"0003","nodeType":"basic.Goal","nodeName":"Build Spadina\nExpressway","dynamicFunction":{"intentionID":"0003","stringDynVis":"NT","functionSegList":[]}},{"nodeActorID":"aNaN","nodeID":"0004","nodeType":"basic.Goal","nodeName":"Connected\nExpressway","dynamicFunction":{"intentionID":"0004","stringDynVis":"NT","functionSegList":[]}},{"nodeActorID":"aNaN","nodeID":"0005","nodeType":"basic.Goal","nodeName":"Terminal\nExpressway","dynamicFunction":{"intentionID":"0005","stringDynVis":"NT","functionSegList":[]}},{"nodeActorID":"a000","nodeID":"0006","nodeType":"basic.Task","nodeName":"Get Funding\nFrom Metro","dynamicFunction":{"intentionID":"0006","stringDynVis":"NT","functionSegList":[]}},{"nodeActorID":"a001","nodeID":"0007","nodeType":"basic.Task","nodeName":"Approve Project\nFunding","dynamicFunction":{"intentionID":"0007","stringDynVis":"DS","functionSegList":[{"funcType":"C","funcX":"1100","funcStart":"0","funcStop":"A"},{"funcType":"C","funcX":"0011","funcStart":"A","funcStop":"Infinity"}]}}],"links":[{"linkID":"0000","linkType":"AND","postType":null,"linkSrcID":"0001","linkDestID":"0000","absoluteValue":-1},{"linkID":"0001","linkType":"AND","postType":null,"linkSrcID":"0002","linkDestID":"0000","absoluteValue":-1},{"linkID":"0002","linkType":"AND","postType":null,"linkSrcID":"0003","linkDestID":"0000","absoluteValue":-1},{"linkID":"0003","linkType":"OR","postType":null,"linkSrcID":"0004","linkDestID":"0003","absoluteValue":-1},{"linkID":"0004","linkType":"OR","postType":null,"linkSrcID":"0005","linkDestID":"0003","absoluteValue":-1},{"linkID":"0005","linkType":"++S","postType":null,"linkSrcID":"0006","linkDestID":"0002","absoluteValue":-1},{"linkID":"0006","linkType":"++","postType":null,"linkSrcID":"0007","linkDestID":"0006","absoluteValue":-1}],"constraints":[{"constraintType":"A","constraintSrcID":"0007","constraintSrcEB":"A","constraintDestID":null,"constraintDestEB":null,"absoluteValue":-1}],"maxAbsTime":"100"},"analysisRequest":{"action":null,"conflictLevel":"S","numRelTime":"1","absTimePts":"","absTimePtsArr":[],"currentState":"0","userAssignmentsList":[{"intentionID":"0000","absTime":"0","evaluationValue":"(no value)"},{"intentionID":"0001","absTime":"0","evaluationValue":"0011"},{"intentionID":"0002","absTime":"0","evaluationValue":"(no value)"},{"intentionID":"0003","absTime":"0","evaluationValue":"(no value)"},{"intentionID":"0004","absTime":"0","evaluationValue":"(no value)"},{"intentionID":"0005","absTime":"0","evaluationValue":"(no value)"},{"intentionID":"0006","absTime":"0","evaluationValue":"(no value)"},{"intentionID":"0007","absTime":"0","evaluationValue":"1100"}],"previousAnalysis":null}};
+	inputModel2 = {"graph":{"cells":[{"type":"basic.Actor","size":{"width":330,"height":280},"position":{"x":310,"y":180},"angle":0,"id":"a4f91bd4-9259-4006-93b4-2da136b148cd","z":-1,"nodeID":"aNaN","embeds":["37a9312f-66d5-4305-a33e-b700865a046d","af433156-e2d5-4d98-a0b3-97d39d76f677","42e00225-ffd6-45d8-8774-1b5508153674","98bd1291-e5de-4e1f-ae94-6096275b7a27","61f4c814-56d5-4aaa-ad7c-5f98cf18f261","abc5f00c-eb04-4538-a0ad-468c23f37da2","72533443-52a6-44e1-89c7-0c81f3e45425"],"attrs":{".label":{"cx":82.5,"cy":28.270615378919},".name":{"text":"Spadina\nProject","font-size":13}}},{"type":"basic.Actor","size":{"width":130,"height":120},"position":{"x":220,"y":200},"angle":0,"id":"f2cf28b4-cf4a-4308-ae36-551b859c45b0","z":0,"nodeID":"a001","embeds":["0feb280b-d95d-470e-bea0-4901a69ebfd9"],"attrs":{".label":{"cx":32.5,"cy":12.353299855639},".name":{"text":"Metro","font-size":13}}},{"type":"basic.Goal","size":{"width":100,"height":60},"position":{"x":430,"y":190},"angle":0,"id":"af433156-e2d5-4d98-a0b3-97d39d76f677","z":2,"nodeID":"0000","parent":"a4f91bd4-9259-4006-93b4-2da136b148cd","attrs":{".satvalue":{"text":""},".name":{"text":"Have Spadina\nExpressway","font-size":13}}},{"type":"basic.Task","size":{"width":100,"height":60},"position":{"x":320,"y":300},"angle":0,"id":"42e00225-ffd6-45d8-8774-1b5508153674","z":3,"nodeID":"0001","parent":"a4f91bd4-9259-4006-93b4-2da136b148cd","attrs":{".satvalue":{"text":"(F, ⊥)"},".funcvalue":{"text":"C"},".name":{"text":"Plan Project","font-size":13},".label":{"cx":25,"cy":6.3833753244528}}},{"type":"basic.Goal","size":{"width":90,"height":60},"position":{"x":420,"y":290},"angle":0,"id":"98bd1291-e5de-4e1f-ae94-6096275b7a27","z":4,"nodeID":"0002","parent":"a4f91bd4-9259-4006-93b4-2da136b148cd","attrs":{".satvalue":{"text":""},".name":{"text":"Get Funding","font-size":13},".label":{"cx":22.5,"cy":6.3833753244527855}}},{"type":"basic.Goal","size":{"width":90,"height":60},"position":{"x":530,"y":280},"angle":0,"id":"61f4c814-56d5-4aaa-ad7c-5f98cf18f261","z":5,"nodeID":"0003","parent":"a4f91bd4-9259-4006-93b4-2da136b148cd","attrs":{".satvalue":{"text":""},".name":{"text":"Build Spadina\nExpressway","font-size":13},".label":{"cx":22.5,"cy":6.3833753244527855}}},{"type":"basic.Goal","size":{"width":90,"height":60},"position":{"x":410,"y":390},"angle":0,"id":"72533443-52a6-44e1-89c7-0c81f3e45425","z":6,"nodeID":"0004","parent":"a4f91bd4-9259-4006-93b4-2da136b148cd","attrs":{".satvalue":{"text":""},".name":{"text":"Connected\nExpressway","font-size":13},".label":{"cx":22.5,"cy":6.3833753244527855}}},{"type":"basic.Goal","size":{"width":90,"height":60},"position":{"x":500,"y":370},"angle":0,"id":"abc5f00c-eb04-4538-a0ad-468c23f37da2","z":7,"nodeID":"0005","parent":"a4f91bd4-9259-4006-93b4-2da136b148cd","attrs":{".satvalue":{"text":""},".name":{"text":"Terminal\nExpressway","font-size":13},".label":{"cx":22.5,"cy":6.3833753244527855}}},{"type":"basic.Task","size":{"width":100,"height":60},"position":{"x":240,"y":390},"angle":0,"id":"4972530a-4b6b-4a3b-b90c-73913b2e036c","z":8,"nodeID":"0006","attrs":{".satvalue":{"text":""},".name":{"text":"Get Funding\nFrom Metro","font-size":13}}},{"type":"basic.Task","size":{"width":110,"height":60},"position":{"x":220,"y":240},"angle":0,"id":"0feb280b-d95d-470e-bea0-4901a69ebfd9","z":9,"nodeID":"0007","parent":"f2cf28b4-cf4a-4308-ae36-551b859c45b0","attrs":{".satvalue":{"text":"(⊥, F)"},".funcvalue":{"text":"DS"},".name":{"text":"Approve Project\nFunding","font-size":13},".label":{"cx":27.5,"cy":6.3833753244528}}},{"type":"link","source":{"id":"42e00225-ffd6-45d8-8774-1b5508153674"},"target":{"id":"af433156-e2d5-4d98-a0b3-97d39d76f677"},"labels":[{"position":0.5,"attrs":{"text":{"text":"and"}}}],"id":"b9ac4786-3267-4405-90ed-8c70ce52211a","z":10,"linkID":"0000","attrs":{".connection":{"stroke":"#000000"},".marker-source":{"d":"0"},".marker-target":{"stroke":"#000000","d":"M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"}}},{"type":"link","source":{"id":"98bd1291-e5de-4e1f-ae94-6096275b7a27"},"target":{"id":"af433156-e2d5-4d98-a0b3-97d39d76f677"},"labels":[{"position":0.5,"attrs":{"text":{"text":"and"}}}],"id":"022d7b89-5c92-4d25-bdab-4699d93de0fd","z":11,"linkID":"0001","attrs":{".connection":{"stroke":"#000000"},".marker-source":{"d":"0"},".marker-target":{"stroke":"#000000","d":"M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"}}},{"type":"link","source":{"id":"61f4c814-56d5-4aaa-ad7c-5f98cf18f261"},"target":{"id":"af433156-e2d5-4d98-a0b3-97d39d76f677"},"labels":[{"position":0.5,"attrs":{"text":{"text":"and"}}}],"id":"0b39aa13-f3f3-434e-b2ba-2fda12b4e685","z":12,"linkID":"0002","attrs":{".connection":{"stroke":"#000000"},".marker-source":{"d":"0"},".marker-target":{"stroke":"#000000","d":"M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"}}},{"type":"link","source":{"id":"72533443-52a6-44e1-89c7-0c81f3e45425"},"target":{"id":"61f4c814-56d5-4aaa-ad7c-5f98cf18f261"},"labels":[{"position":0.5,"attrs":{"text":{"text":"or"}}}],"id":"37a9312f-66d5-4305-a33e-b700865a046d","z":13,"linkID":"0003","link-type":"OR","parent":"a4f91bd4-9259-4006-93b4-2da136b148cd","vertices":[{"x":510,"y":350}],"attrs":{".connection":{"stroke":"#000000"},".marker-source":{"d":"0"},".marker-target":{"stroke":"#000000","d":"M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"}}},{"type":"link","source":{"id":"abc5f00c-eb04-4538-a0ad-468c23f37da2"},"target":{"id":"61f4c814-56d5-4aaa-ad7c-5f98cf18f261"},"labels":[{"position":0.5,"attrs":{"text":{"text":"or"}}}],"id":"1c91a5b8-d06f-4879-86ac-321effaf5b5e","z":14,"linkID":"0004","link-type":"OR","attrs":{".connection":{"stroke":"#000000"},".marker-source":{"d":"0"},".marker-target":{"stroke":"#000000","d":"M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"}}},{"type":"link","source":{"id":"4972530a-4b6b-4a3b-b90c-73913b2e036c"},"target":{"id":"98bd1291-e5de-4e1f-ae94-6096275b7a27"},"labels":[{"position":0.5,"attrs":{"text":{"text":"++S"}}}],"id":"dc5acb62-a5ce-4b2f-859a-9c42e5cb2431","z":15,"linkID":"0005","link-type":"++S","vertices":[{"x":390,"y":400}],"attrs":{".connection":{"stroke":"#000000"},".marker-source":{"d":"0"},".marker-target":{"stroke":"#000000","d":"M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"}}},{"type":"link","source":{"id":"0feb280b-d95d-470e-bea0-4901a69ebfd9"},"target":{"id":"4972530a-4b6b-4a3b-b90c-73913b2e036c"},"labels":[{"position":0.5,"attrs":{"text":{"text":"++"}}}],"id":"2b9e1d45-a542-4dac-9364-cd35fd969b01","z":16,"linkID":"0006","link-type":"++","attrs":{".connection":{"stroke":"#000000"},".marker-source":{"d":"0"},".marker-target":{"stroke":"#000000","d":"M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"}}}]},"model":{"actors":[{"nodeID":"a000","nodeName":"Spadina\nProject","intentionIDs":["0000","0001","0002","0001","0002","0003","0004","0005","0005","0006","0000","0001","0002","0003","0004","0005","0002","0001","0001","0002","0003","0003","0002","0002","0003","0003","0004","0005","0000","0001","0002","0003","0004","0005","0003","0004","0005","0003","0003","0005","0002"]},{"nodeID":"a001","nodeName":"Metro","intentionIDs":["0007","0007","0007","0007","0007","0007","0007"]},{"nodeID":"aNaN","nodeName":"Spadina\nProject","intentionIDs":["0000","0001","0003","0002","0001","0000","0003","0002","0004","0005","0003","0002","0002","0002","0001","0000","0003","0005","0004","0000","0003","0002","0005","0004","0001","0003","0005","0003","0002","0001","0001","0001","0002","0003","0005","0005","0005","0004","0004"]}],"intentions":[{"nodeActorID":"aNaN","nodeID":"0000","nodeType":"basic.Goal","nodeName":"Have Spadina\nExpressway","dynamicFunction":{"intentionID":"0000","stringDynVis":"NT","functionSegList":[]}},{"nodeActorID":"aNaN","nodeID":"0001","nodeType":"basic.Task","nodeName":"Plan Project","dynamicFunction":{"intentionID":"0001","stringDynVis":"C","functionSegList":[{"funcType":"C","funcX":"0011","funcStart":"0","funcStop":"Infinity"}]}},{"nodeActorID":"aNaN","nodeID":"0002","nodeType":"basic.Goal","nodeName":"Get Funding","dynamicFunction":{"intentionID":"0002","stringDynVis":"NT","functionSegList":[]}},{"nodeActorID":"aNaN","nodeID":"0003","nodeType":"basic.Goal","nodeName":"Build Spadina\nExpressway","dynamicFunction":{"intentionID":"0003","stringDynVis":"NT","functionSegList":[]}},{"nodeActorID":"aNaN","nodeID":"0004","nodeType":"basic.Goal","nodeName":"Connected\nExpressway","dynamicFunction":{"intentionID":"0004","stringDynVis":"NT","functionSegList":[]}},{"nodeActorID":"aNaN","nodeID":"0005","nodeType":"basic.Goal","nodeName":"Terminal\nExpressway","dynamicFunction":{"intentionID":"0005","stringDynVis":"NT","functionSegList":[]}},{"nodeActorID":"a000","nodeID":"0006","nodeType":"basic.Task","nodeName":"Get Funding\nFrom Metro","dynamicFunction":{"intentionID":"0006","stringDynVis":"NT","functionSegList":[]}},{"nodeActorID":"a001","nodeID":"0007","nodeType":"basic.Task","nodeName":"Approve Project\nFunding","dynamicFunction":{"intentionID":"0007","stringDynVis":"DS","functionSegList":[{"funcType":"C","funcX":"1100","funcStart":"0","funcStop":"A"},{"funcType":"C","funcX":"0011","funcStart":"A","funcStop":"Infinity"}]}}],"links":[{"linkID":"0000","linkType":"AND","postType":null,"linkSrcID":"0001","linkDestID":"0000","absoluteValue":-1},{"linkID":"0001","linkType":"AND","postType":null,"linkSrcID":"0002","linkDestID":"0000","absoluteValue":-1},{"linkID":"0002","linkType":"AND","postType":null,"linkSrcID":"0003","linkDestID":"0000","absoluteValue":-1},{"linkID":"0003","linkType":"OR","postType":null,"linkSrcID":"0004","linkDestID":"0003","absoluteValue":-1},{"linkID":"0004","linkType":"OR","postType":null,"linkSrcID":"0005","linkDestID":"0003","absoluteValue":-1},{"linkID":"0005","linkType":"++S","postType":null,"linkSrcID":"0006","linkDestID":"0002","absoluteValue":-1},{"linkID":"0006","linkType":"++","postType":null,"linkSrcID":"0007","linkDestID":"0006","absoluteValue":-1}],"constraints":[{"constraintType":"A","constraintSrcID":"0007","constraintSrcEB":"A","constraintDestID":null,"constraintDestEB":null,"absoluteValue":-1}],"maxAbsTime":"100"},"analysisRequest":{"action":null,"conflictLevel":"S","numRelTime":"1","absTimePts":"","absTimePtsArr":[],"currentState":"0","userAssignmentsList":[{"intentionID":"0000","absTime":"0","evaluationValue":"(no value)"},{"intentionID":"0001","absTime":"0","evaluationValue":"0011"},{"intentionID":"0002","absTime":"0","evaluationValue":"(no value)"},{"intentionID":"0003","absTime":"0","evaluationValue":"(no value)"},{"intentionID":"0004","absTime":"0","evaluationValue":"(no value)"},{"intentionID":"0005","absTime":"0","evaluationValue":"(no value)"},{"intentionID":"0006","absTime":"0","evaluationValue":"(no value)"},{"intentionID":"0007","absTime":"0","evaluationValue":"1100"}],"previousAnalysis":null}};
 
 	var resultList = mergeModels(0, inputModel1, inputModel2);
 	makeDictIDToNodeID(inputModel1, inputModel2);
