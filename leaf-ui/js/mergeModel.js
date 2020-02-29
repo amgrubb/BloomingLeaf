@@ -714,8 +714,8 @@ function listForGraphicalActors(actorSet, curZ){
 	    newAttrs[".name"] = newName;
 	    newLabel = new Object();
 	    //TODO: The label for the actor is currently hard coded here
-	    newLabel["cx"]= node.nodeX + ((node.sizeX + 200)/4);
-	    newLabel["cy"] = node.nodeY + ((node.sizeY + 200)/10);
+	    newLabel["cx"]= ((node.sizeX + 200)/4);
+	    newLabel["cy"] = ((node.sizeY + 200)/10);
 	    newAttrs[".label"] = newLabel;
 	    newNode["attrs"] = newAttrs;
 
@@ -934,7 +934,7 @@ function initializeActorForFreeNodes(actorSet, nodeSet, model1, model2, curXCoun
 
 function forceDirectedAlgorithm(resultList, model1, model2){
 	var numIterations = 20;
-	var numConstant = 0.02;
+	var numConstant = 0.002;
 	var nodeSet = new Set();
 	var actorSet = new Set();
 	var nodeIdNodePosDict = new Object();
