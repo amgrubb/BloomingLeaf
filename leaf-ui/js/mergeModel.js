@@ -601,9 +601,6 @@ function attraction(node1, node2, isActor){
 		var k = (1/(connectionCtr + 1)) * cToMultiply;
 		var coefficient = k * Math.sqrt(area/numVertices); 
 		var forceSum = 10000 * Math.pow(d,2)/(Math.pow(coefficient,2));
-		console.log(forceSum);
-		console.log("**********");
-		console.log("**********");
 		var dx = Math.sqrt(firstNumber); 
 		var dy = Math.sqrt(secondNumber);
 		var cos = dx/d;
@@ -825,19 +822,18 @@ function listForGraphicalLinks(nodeSet, zToStartFrom,nodeIdNodePosDict){
 	var linkList = [];
 	for(var node of nodeSet){
 		var connectionList = node.connectedTo;
-		console.log("^^^^^^^^^");
-		console.log(connectionList);
 		for(var k = 0; k < connectionList.length; k++){
 			var connection = connectionList[k];
-			var newTarget = new Object(); 
-			console.log(nodeIdNodePosDict[connection["destId"]]);
-			newTarget["x"] = nodeIdNodePosDict[connection["destId"]]["x"];
-			newTarget["y"] = nodeIdNodePosDict[connection["destId"]]["y"]; 
-			newTarget["linkID"] = connection["linkId"];
-			newTarget["linkType"] = connection["linkType"];
+			var newTarget = new Object();
+			if(!(typeof nodeIdNodePosDict[connection["destId"]] === "undefined")){
+				newTarget["x"] = nodeIdNodePosDict[connection["destId"]]["x"];
+				newTarget["y"] = nodeIdNodePosDict[connection["destId"]]["y"]; 
+				newTarget["linkID"] = connection["linkId"];
+				newTarget["linkType"] = connection["linkType"];
 			//TODO: continue here
-			newTarget["linkSrcID"]= node.nodeId;
-			linkList.push(newTarget);
+				newTarget["linkSrcID"]= node.nodeId;
+				linkList.push(newTarget);
+			}
 		}
 	}
 
@@ -1676,195 +1672,93 @@ function mergeModels(delta, model11, model21){
       {
         "type": "basic.Actor",
         "size": {
-          "width": 160,
-          "height": 140
+          "width": 400,
+          "height": 340
         },
         "position": {
-          "x": 290,
-          "y": 240
+          "x": 510,
+          "y": 340
         },
         "angle": 0,
-        "id": "05cac69b-a841-4b01-a874-c997c55dfcc7",
+        "id": "7f7c98b7-95ea-4c6c-bc5d-6feeb2bc81a8",
         "z": 0,
         "nodeID": "a001",
         "embeds": [
-          "fcb1e398-ca37-4b89-b30f-ae980b9d11bd",
-          "4d5f67bb-9b5f-46b8-b613-54ace5d70166"
+          "681dbcfe-1093-4e4e-aec4-5dcc4c4c4187",
+          "663f8625-f535-4b1e-a856-3bdb3533ed6a",
+          "46e000fd-6374-432f-9dc7-22e766b043fa",
+          "4991a010-c4ea-4133-983f-4c2caf096090",
+          "2356d4dd-4701-4e5f-923d-89a3ecdd5758",
+          "29f7bba5-7df0-40a7-a1f8-650d9ed3ae3a",
+          "092b059c-8635-4eae-a24c-b95ec0c79655",
+          "d816555e-7776-4b79-b22f-e20616549a72"
         ],
         "attrs": {
           ".label": {
-            "cx": 40,
-            "cy": 14.343049506168555
+            "cx": 100,
+            "cy": 34.23944281161755
           },
           ".name": {
-            "text": "Recommenders",
-            "font-size": 16
+            "text": "Accounts \nPayable"
           }
         }
       },
       {
         "type": "basic.Actor",
         "size": {
-          "width": 410,
-          "height": 400
+          "width": 430,
+          "height": 420
         },
         "position": {
-          "x": -70,
-          "y": 260
+          "x": 70,
+          "y": 290
         },
         "angle": 0,
-        "id": "1f024b2d-1a00-4648-b641-2acbd5d59fdf",
+        "id": "575c8ede-35d3-4825-8479-427c30352e2c",
         "z": 1,
         "nodeID": "a000",
         "embeds": [
-          "75277bbe-7469-480e-9337-c0d659a13308",
-          "1ec80f65-9e0c-4db9-b969-bac3eaf84b1a",
-          "9a4df421-1928-4621-b283-69fce7e562ce",
-          "e5b43131-971b-47f5-b36b-966ea7ef26ba",
-          "d9151a25-e49c-47e4-ace1-ad9ddc068aee",
-          "1a5c454b-2fec-458a-9f63-8b02ccc7eb6f",
-          "f689ec31-bd28-4ec0-87f3-72b9ba8bc260",
-          "78aba7e2-dfd4-4766-8b9c-e74493fde3e8",
-          "7badc410-bb38-4247-9eb4-cface8a66f6f",
-          "cbdc8cad-14a9-4c5c-a72b-b65ac1484c8b",
-          "d7e61fc9-c67a-47f1-b7a0-f4cf4960cdb5",
-          "d51372c5-ecc3-4be2-93aa-288a7b81788d",
-          "ca34f7fc-1782-40a7-99bd-9280ffd4a3e0",
-          "32ee0467-ba69-4d4e-bcb4-85fb0127df84",
-          "c0ff7362-0da4-4e6a-84de-830e2dc3b4e1",
-          "39ad8e3f-ed73-4bf2-a50f-e5544e7b73e2",
-          "48ca629c-948c-49b6-883f-fba985b36cc4",
-          "d0d9cae8-d5e8-485a-bd36-c7a73eb4ff7d",
-          "cec2904c-a0ec-4197-925a-0bb753dcaf5e",
-          "4e72e494-11ec-4067-b980-4d92933f638c",
-          "9ff74192-6805-43f6-a12d-85246712f59c",
-          "42ec5a43-b374-4460-bb2a-f807d977905d",
-          "4d5f67bb-9b5f-46b8-b613-54ace5d70166"
+          "095beac2-3d77-46e7-96fc-4b80b87a8d33",
+          "ae4d0d89-c660-4501-8637-293b975dc919",
+          "b337bd0c-bf07-4692-9b5b-a2c9cb1d0b5d",
+          "1d3c9373-e161-4650-9afa-d6c77d96ff22",
+          "41981df1-5149-4475-8d97-c2e3fa050820",
+          "22b118be-e70c-48a2-baac-cc912dfe5a86",
+          "f8e17fdb-f710-43df-be1d-525a6450acba",
+          "9055a1d9-3ba8-4ed8-94ac-b640fb85a039",
+          "9dc7c7ce-f3f9-41cf-a6f9-0915756cf005"
         ],
         "attrs": {
           ".label": {
-            "cx": 102.5,
-            "cy": 40.208242989286276
+            "cx": 107.5,
+            "cy": 42.197839007395146
           },
           ".name": {
-            "text": "Student",
-            "font-size": 16
+            "text": "Client"
           }
         }
       },
       {
-        "type": "basic.Goal",
+        "type": "basic.Resource",
         "size": {
           "width": 100,
           "height": 60
         },
         "position": {
-          "x": -30,
-          "y": 330
+          "x": 310,
+          "y": 350
         },
         "angle": 0,
-        "id": "ca34f7fc-1782-40a7-99bd-9280ffd4a3e0",
-        "z": 2,
-        "nodeID": "0000",
-        "elementid": "0000",
-        "parent": "1f024b2d-1a00-4648-b641-2acbd5d59fdf",
-        "attrs": {
-          ".satvalue": {
-            "text": ""
-          },
-          ".name": {
-            "text": "Be Admitted \nto Graduate \nSchool",
-            "font-size": 16
-          },
-          "text": {
-            "fill": "black"
-          }
-        }
-      },
-      {
-        "type": "basic.Goal",
-        "size": {
-          "width": 100,
-          "height": 60
-        },
-        "position": {
-          "x": 100,
-          "y": 270
-        },
-        "angle": 0,
-        "id": "d7e61fc9-c67a-47f1-b7a0-f4cf4960cdb5",
-        "z": 3,
-        "nodeID": "0001",
-        "elementid": "0001",
-        "parent": "1f024b2d-1a00-4648-b641-2acbd5d59fdf",
-        "attrs": {
-          ".satvalue": {
-            "text": ""
-          },
-          ".name": {
-            "text": "Have \nSuccessful \nAplication",
-            "font-size": 16
-          },
-          "text": {
-            "fill": "black"
-          }
-        }
-      },
-      {
-        "type": "basic.Goal",
-        "size": {
-          "width": 100,
-          "height": 60
-        },
-        "position": {
-          "x": -60,
-          "y": 410
-        },
-        "angle": 0,
-        "id": "48ca629c-948c-49b6-883f-fba985b36cc4",
+        "id": "b337bd0c-bf07-4692-9b5b-a2c9cb1d0b5d",
         "z": 4,
         "nodeID": "0002",
-        "elementid": "0002",
-        "parent": "1f024b2d-1a00-4648-b641-2acbd5d59fdf",
+        "parent": "575c8ede-35d3-4825-8479-427c30352e2c",
         "attrs": {
           ".satvalue": {
             "text": ""
           },
           ".name": {
-            "text": "Complete\nUnder-\ngraduate",
-            "font-size": 16
-          },
-          "text": {
-            "fill": "black"
-          }
-        }
-      },
-      {
-        "type": "basic.Goal",
-        "size": {
-          "width": 100,
-          "height": 60
-        },
-        "position": {
-          "x": 60,
-          "y": 430
-        },
-        "angle": 0,
-        "id": "9ff74192-6805-43f6-a12d-85246712f59c",
-        "z": 5,
-        "nodeID": "0003",
-        "elementid": "0003",
-        "parent": "1f024b2d-1a00-4648-b641-2acbd5d59fdf",
-        "attrs": {
-          ".satvalue": {
-            "text": ""
-          },
-          ".name": {
-            "text": "Obtain\nGood \nGrades",
-            "font-size": 16
-          },
-          "text": {
-            "fill": "black"
+            "text": "Budget"
           }
         }
       },
@@ -1875,234 +1769,92 @@ function mergeModels(delta, model11, model21){
           "height": 60
         },
         "position": {
-          "x": -60,
-          "y": 480
+          "x": 240,
+          "y": 450
         },
         "angle": 0,
-        "id": "42ec5a43-b374-4460-bb2a-f807d977905d",
-        "z": 6,
-        "nodeID": "0004",
-        "elementid": "0004",
-        "parent": "1f024b2d-1a00-4648-b641-2acbd5d59fdf",
-        "attrs": {
-          ".satvalue": {
-            "text": "(⊥, F)"
-          },
-          ".funcvalue": {
-            "text": "I"
-          },
-          ".name": {
-            "text": "Complete \nCourses",
-            "font-size": 16
-          },
-          "text": {
-            "fill": "black"
-          }
-        }
-      },
-      {
-        "type": "basic.Softgoal",
-        "size": {
-          "width": 100,
-          "height": 60
-        },
-        "position": {
-          "x": 10,
-          "y": 560
-        },
-        "angle": 0,
-        "id": "d0d9cae8-d5e8-485a-bd36-c7a73eb4ff7d",
-        "z": 7,
-        "nodeID": "0005",
-        "elementid": "0005",
-        "parent": "1f024b2d-1a00-4648-b641-2acbd5d59fdf",
+        "id": "41981df1-5149-4475-8d97-c2e3fa050820",
+        "z": 5,
+        "nodeID": "0003",
+        "parent": "575c8ede-35d3-4825-8479-427c30352e2c",
         "attrs": {
           ".satvalue": {
             "text": ""
           },
           ".name": {
-            "text": "Gain\nKnowledge",
-            "font-size": 16
-          },
-          "text": {
-            "fill": "black"
+            "text": "Buy Item"
           }
         }
       },
       {
-        "type": "basic.Softgoal",
+        "type": "basic.Task",
         "size": {
           "width": 100,
           "height": 60
         },
         "position": {
           "x": 80,
-          "y": 500
+          "y": 470
         },
         "angle": 0,
-        "id": "d51372c5-ecc3-4be2-93aa-288a7b81788d",
+        "id": "ae4d0d89-c660-4501-8637-293b975dc919",
+        "z": 6,
+        "nodeID": "0004",
+        "parent": "575c8ede-35d3-4825-8479-427c30352e2c",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Recieve Item"
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "position": {
+          "x": 390,
+          "y": 480
+        },
+        "angle": 0,
+        "id": "9dc7c7ce-f3f9-41cf-a6f9-0915756cf005",
+        "z": 7,
+        "nodeID": "0005",
+        "parent": "575c8ede-35d3-4825-8479-427c30352e2c",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Order Via\n Purchasing Item"
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "position": {
+          "x": 360,
+          "y": 550
+        },
+        "angle": 0,
+        "id": "9055a1d9-3ba8-4ed8-94ac-b640fb85a039",
         "z": 8,
         "nodeID": "0006",
-        "elementid": "0006",
-        "parent": "1f024b2d-1a00-4648-b641-2acbd5d59fdf",
+        "parent": "575c8ede-35d3-4825-8479-427c30352e2c",
         "attrs": {
           ".satvalue": {
             "text": ""
           },
           ".name": {
-            "text": "Writing\nSkills",
-            "font-size": 16
-          },
-          "text": {
-            "fill": "black"
-          }
-        }
-      },
-      {
-        "type": "basic.Task",
-        "size": {
-          "width": 100,
-          "height": 60
-        },
-        "position": {
-          "x": 180,
-          "y": 530
-        },
-        "angle": 0,
-        "id": "c0ff7362-0da4-4e6a-84de-830e2dc3b4e1",
-        "z": 9,
-        "nodeID": "0007",
-        "elementid": "0007",
-        "parent": "1f024b2d-1a00-4648-b641-2acbd5d59fdf",
-        "attrs": {
-          ".satvalue": {
-            "text": ""
-          },
-          ".name": {
-            "text": "Internship",
-            "font-size": 16
-          },
-          "text": {
-            "fill": "black"
-          }
-        }
-      },
-      {
-        "type": "basic.Task",
-        "size": {
-          "width": 100,
-          "height": 60
-        },
-        "position": {
-          "x": 120,
-          "y": 590
-        },
-        "angle": 0,
-        "id": "39ad8e3f-ed73-4bf2-a50f-e5544e7b73e2",
-        "z": 10,
-        "nodeID": "0008",
-        "elementid": "0008",
-        "parent": "1f024b2d-1a00-4648-b641-2acbd5d59fdf",
-        "attrs": {
-          ".satvalue": {
-            "text": ""
-          },
-          ".name": {
-            "text": "Do\nResearch\nWork",
-            "font-size": 16
-          },
-          "text": {
-            "fill": "black"
-          }
-        }
-      },
-      {
-        "type": "basic.Softgoal",
-        "size": {
-          "width": 100,
-          "height": 60
-        },
-        "position": {
-          "x": 200,
-          "y": 460
-        },
-        "angle": 0,
-        "id": "32ee0467-ba69-4d4e-bcb4-85fb0127df84",
-        "z": 11,
-        "nodeID": "0009",
-        "elementid": "0009",
-        "parent": "1f024b2d-1a00-4648-b641-2acbd5d59fdf",
-        "attrs": {
-          ".satvalue": {
-            "text": ""
-          },
-          ".name": {
-            "text": "Gain\nExperience",
-            "font-size": 16
-          },
-          "text": {
-            "fill": "black"
-          }
-        }
-      },
-      {
-        "type": "basic.Task",
-        "size": {
-          "width": 100,
-          "height": 60
-        },
-        "position": {
-          "x": 200,
-          "y": 310
-        },
-        "angle": 0,
-        "id": "4d5f67bb-9b5f-46b8-b613-54ace5d70166",
-        "z": 13,
-        "nodeID": "0010",
-        "elementid": "0010",
-        "parent": "1f024b2d-1a00-4648-b641-2acbd5d59fdf",
-        "attrs": {
-          ".satvalue": {
-            "text": "(⊥, F)"
-          },
-          ".funcvalue": {
-            "text": "DS"
-          },
-          ".name": {
-            "text": "Complete GRE",
-            "font-size": 16
-          },
-          "text": {
-            "fill": "black"
-          }
-        }
-      },
-      {
-        "type": "basic.Task",
-        "size": {
-          "width": 100,
-          "height": 60
-        },
-        "position": {
-          "x": 90,
-          "y": 360
-        },
-        "angle": 0,
-        "id": "4e72e494-11ec-4067-b980-4d92933f638c",
-        "z": 14,
-        "nodeID": "0011",
-        "elementid": "0011",
-        "parent": "1f024b2d-1a00-4648-b641-2acbd5d59fdf",
-        "attrs": {
-          ".satvalue": {
-            "text": ""
-          },
-          ".name": {
-            "text": "Finish \nStatement\nof Purpose",
-            "font-size": 16
-          },
-          "text": {
-            "fill": "black"
+            "text": "Order Via \nExpertSys Item"
           }
         }
       },
@@ -2113,25 +1865,20 @@ function mergeModels(delta, model11, model21){
           "height": 60
         },
         "position": {
-          "x": 200,
-          "y": 380
+          "x": 220,
+          "y": 610
         },
         "angle": 0,
-        "id": "cec2904c-a0ec-4197-925a-0bb753dcaf5e",
-        "z": 15,
-        "nodeID": "0012",
-        "elementid": "0012",
-        "parent": "1f024b2d-1a00-4648-b641-2acbd5d59fdf",
+        "id": "095beac2-3d77-46e7-96fc-4b80b87a8d33",
+        "z": 9,
+        "nodeID": "0007",
+        "parent": "575c8ede-35d3-4825-8479-427c30352e2c",
         "attrs": {
           ".satvalue": {
             "text": ""
           },
           ".name": {
-            "text": "Obtain\nStrong \nRecomm-\nendation\nLetters",
-            "font-size": 16
-          },
-          "text": {
-            "fill": "black"
+            "text": "Ordered Item"
           }
         }
       },
@@ -2142,35 +1889,273 @@ function mergeModels(delta, model11, model21){
           "height": 60
         },
         "position": {
-          "x": 320,
-          "y": 290
+          "x": 130,
+          "y": 540
         },
         "angle": 0,
-        "id": "fcb1e398-ca37-4b89-b30f-ae980b9d11bd",
-        "z": 16,
-        "nodeID": "0013",
-        "elementid": "0013",
-        "parent": "05cac69b-a841-4b01-a874-c997c55dfcc7",
+        "id": "f8e17fdb-f710-43df-be1d-525a6450acba",
+        "z": 10,
+        "nodeID": "0008",
+        "parent": "575c8ede-35d3-4825-8479-427c30352e2c",
         "attrs": {
           ".satvalue": {
             "text": ""
           },
           ".name": {
-            "text": "Submit \nRecomm-\nendation\nLetters",
-            "font-size": 16
+            "text": "Order By Phone"
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "position": {
+          "x": 460,
+          "y": 300
+        },
+        "angle": 0,
+        "id": "623f5f6f-ac6b-4274-b295-baadff54d3c8",
+        "z": 11,
+        "nodeID": "0009",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
           },
-          "text": {
-            "fill": "black"
+          ".name": {
+            "text": "Pay for Item"
+          }
+        }
+      },
+      {
+        "type": "basic.Goal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "position": {
+          "x": 90,
+          "y": 390
+        },
+        "angle": 0,
+        "id": "1d3c9373-e161-4650-9afa-d6c77d96ff22",
+        "z": 12,
+        "nodeID": "0010",
+        "parent": "575c8ede-35d3-4825-8479-427c30352e2c",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Has Item"
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "position": {
+          "x": 190,
+          "y": 340
+        },
+        "angle": 0,
+        "id": "22b118be-e70c-48a2-baac-cc912dfe5a86",
+        "z": 13,
+        "nodeID": "0011",
+        "parent": "575c8ede-35d3-4825-8479-427c30352e2c",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Lease Item"
+          }
+        }
+      },
+      {
+        "type": "basic.Softgoal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "position": {
+          "x": 700,
+          "y": 340
+        },
+        "angle": 0,
+        "id": "46e000fd-6374-432f-9dc7-22e766b043fa",
+        "z": 14,
+        "nodeID": "0012",
+        "parent": "7f7c98b7-95ea-4c6c-bc5d-6feeb2bc81a8",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Low Overhead"
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "position": {
+          "x": 580,
+          "y": 440
+        },
+        "angle": 0,
+        "id": "663f8625-f535-4b1e-a856-3bdb3533ed6a",
+        "z": 15,
+        "nodeID": "0013",
+        "parent": "7f7c98b7-95ea-4c6c-bc5d-6feeb2bc81a8",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Pay For Item"
+          }
+        }
+      },
+      {
+        "type": "basic.Softgoal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "position": {
+          "x": 530,
+          "y": 540
+        },
+        "angle": 0,
+        "id": "4991a010-c4ea-4133-983f-4c2caf096090",
+        "z": 16,
+        "nodeID": "0014",
+        "parent": "7f7c98b7-95ea-4c6c-bc5d-6feeb2bc81a8",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Fast Payment"
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "position": {
+          "x": 630,
+          "y": 600
+        },
+        "angle": 0,
+        "id": "d816555e-7776-4b79-b22f-e20616549a72",
+        "z": 17,
+        "nodeID": "0015",
+        "parent": "7f7c98b7-95ea-4c6c-bc5d-6feeb2bc81a8",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Pay when \nItem Received"
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "position": {
+          "x": 780,
+          "y": 570
+        },
+        "angle": 0,
+        "id": "092b059c-8635-4eae-a24c-b95ec0c79655",
+        "z": 18,
+        "nodeID": "0016",
+        "parent": "7f7c98b7-95ea-4c6c-bc5d-6feeb2bc81a8",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Pay When Invoiced"
+          }
+        }
+      },
+      {
+        "type": "basic.Softgoal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "position": {
+          "x": 790,
+          "y": 460
+        },
+        "angle": 0,
+        "id": "29f7bba5-7df0-40a7-a1f8-650d9ed3ae3a",
+        "z": 19,
+        "nodeID": "0017",
+        "parent": "7f7c98b7-95ea-4c6c-bc5d-6feeb2bc81a8",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Few Errors"
+          }
+        }
+      },
+      {
+        "type": "basic.Goal",
+        "size": {
+          "width": 80,
+          "height": 50
+        },
+        "position": {
+          "x": 700,
+          "y": 480
+        },
+        "angle": 0,
+        "id": "2356d4dd-4701-4e5f-923d-89a3ecdd5758",
+        "z": 20,
+        "nodeID": "0018",
+        "parent": "7f7c98b7-95ea-4c6c-bc5d-6feeb2bc81a8",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Payment Made"
+          },
+          ".label": {
+            "cx": 20,
+            "cy": 5.388114452858044
           }
         }
       },
       {
         "type": "link",
         "source": {
-          "id": "d7e61fc9-c67a-47f1-b7a0-f4cf4960cdb5"
+          "id": "b337bd0c-bf07-4692-9b5b-a2c9cb1d0b5d"
         },
         "target": {
-          "id": "ca34f7fc-1782-40a7-99bd-9280ffd4a3e0"
+          "id": "41981df1-5149-4475-8d97-c2e3fa050820"
         },
         "labels": [
           {
@@ -2182,31 +2167,29 @@ function mergeModels(delta, model11, model21){
             }
           }
         ],
-        "id": "dc6ec1a1-6238-4b1e-a213-e35ad8593ad5",
-        "z": 18,
+        "id": "7f9fb6cb-5485-4346-9669-253fa8373c73",
+        "z": 21,
         "linkID": "0001",
         "attrs": {
           ".connection": {
-            "stroke": "black",
-            "stroke-width": 1
+            "stroke": "#000000"
           },
           ".marker-source": {
             "d": "0"
           },
           ".marker-target": {
-            "stroke": "black",
-            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5",
-            "stroke-width": 1
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
           }
         }
       },
       {
         "type": "link",
         "source": {
-          "id": "48ca629c-948c-49b6-883f-fba985b36cc4"
+          "id": "41981df1-5149-4475-8d97-c2e3fa050820"
         },
         "target": {
-          "id": "ca34f7fc-1782-40a7-99bd-9280ffd4a3e0"
+          "id": "ae4d0d89-c660-4501-8637-293b975dc919"
         },
         "labels": [
           {
@@ -2218,75 +2201,63 @@ function mergeModels(delta, model11, model21){
             }
           }
         ],
-        "id": "d9151a25-e49c-47e4-ace1-ad9ddc068aee",
-        "z": 19,
+        "id": "4c823c01-2c18-49ae-b84d-7eafd9dd8f81",
+        "z": 22,
         "linkID": "0002",
-        "parent": "1f024b2d-1a00-4648-b641-2acbd5d59fdf",
-        "vertices": [
-          {
-            "x": -60,
-            "y": 360
-          }
-        ],
         "attrs": {
           ".connection": {
-            "stroke": "black",
-            "stroke-width": 1
+            "stroke": "#000000"
           },
           ".marker-source": {
             "d": "0"
           },
           ".marker-target": {
-            "stroke": "black",
-            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5",
-            "stroke-width": 1
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
           }
         }
       },
       {
         "type": "link",
         "source": {
-          "id": "9ff74192-6805-43f6-a12d-85246712f59c"
+          "id": "41981df1-5149-4475-8d97-c2e3fa050820"
         },
         "target": {
-          "id": "ca34f7fc-1782-40a7-99bd-9280ffd4a3e0"
+          "id": "095beac2-3d77-46e7-96fc-4b80b87a8d33"
         },
         "labels": [
           {
             "position": 0.5,
             "attrs": {
               "text": {
-                "text": "+"
+                "text": "and"
               }
             }
           }
         ],
-        "id": "92dde823-c3fe-4474-ad71-e1eef91e36ca",
-        "z": 20,
+        "id": "73066356-5b91-469a-8ad6-db822e6d0d71",
+        "z": 23,
         "linkID": "0003",
-        "link-type": "+",
         "attrs": {
           ".connection": {
-            "stroke": "black",
-            "stroke-width": 1
+            "stroke": "#000000"
           },
           ".marker-source": {
             "d": "0"
           },
           ".marker-target": {
-            "stroke": "black",
-            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5",
-            "stroke-width": 1
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
           }
         }
       },
       {
         "type": "link",
         "source": {
-          "id": "42ec5a43-b374-4460-bb2a-f807d977905d"
+          "id": "41981df1-5149-4475-8d97-c2e3fa050820"
         },
         "target": {
-          "id": "48ca629c-948c-49b6-883f-fba985b36cc4"
+          "id": "623f5f6f-ac6b-4274-b295-baadff54d3c8"
         },
         "labels": [
           {
@@ -2298,573 +2269,549 @@ function mergeModels(delta, model11, model21){
             }
           }
         ],
-        "id": "75277bbe-7469-480e-9337-c0d659a13308",
-        "z": 21,
-        "linkID": "0004",
-        "link-type": "++",
-        "vertices": [
-          {
-            "x": -90,
-            "y": 480
-          }
-        ],
-        "parent": "1f024b2d-1a00-4648-b641-2acbd5d59fdf",
-        "attrs": {
-          ".connection": {
-            "stroke": "black",
-            "stroke-width": 1
-          },
-          ".marker-source": {
-            "d": "0"
-          },
-          ".marker-target": {
-            "stroke": "black",
-            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5",
-            "stroke-width": 1
-          }
-        }
-      },
-      {
-        "type": "link",
-        "source": {
-          "id": "42ec5a43-b374-4460-bb2a-f807d977905d"
-        },
-        "target": {
-          "id": "9ff74192-6805-43f6-a12d-85246712f59c"
-        },
-        "labels": [
-          {
-            "position": 0.5,
-            "attrs": {
-              "text": {
-                "text": "+"
-              }
-            }
-          }
-        ],
-        "id": "65c81a64-ba7b-4139-8562-6393b66170a2",
-        "z": 22,
-        "linkID": "0005",
-        "link-type": "+",
-        "attrs": {
-          ".connection": {
-            "stroke": "black",
-            "stroke-width": 1
-          },
-          ".marker-source": {
-            "d": "0"
-          },
-          ".marker-target": {
-            "stroke": "black",
-            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5",
-            "stroke-width": 1
-          }
-        }
-      },
-      {
-        "type": "link",
-        "source": {
-          "id": "4e72e494-11ec-4067-b980-4d92933f638c"
-        },
-        "target": {
-          "id": "d7e61fc9-c67a-47f1-b7a0-f4cf4960cdb5"
-        },
-        "labels": [
-          {
-            "position": 0.5,
-            "attrs": {
-              "text": {
-                "text": "and"
-              }
-            }
-          }
-        ],
-        "id": "4c3a6c40-b5d4-4759-9d29-a0695a368661",
-        "z": 23,
-        "linkID": "0006",
-        "attrs": {
-          ".connection": {
-            "stroke": "black",
-            "stroke-width": 1
-          },
-          ".marker-source": {
-            "d": "0"
-          },
-          ".marker-target": {
-            "stroke": "black",
-            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5",
-            "stroke-width": 1
-          }
-        }
-      },
-      {
-        "type": "link",
-        "source": {
-          "id": "4d5f67bb-9b5f-46b8-b613-54ace5d70166"
-        },
-        "target": {
-          "id": "d7e61fc9-c67a-47f1-b7a0-f4cf4960cdb5"
-        },
-        "labels": [
-          {
-            "position": 0.5,
-            "attrs": {
-              "text": {
-                "text": "and"
-              }
-            }
-          }
-        ],
-        "id": "9a4df421-1928-4621-b283-69fce7e562ce",
-        "z": 24,
-        "linkID": "0007",
-        "parent": "1f024b2d-1a00-4648-b641-2acbd5d59fdf",
-        "vertices": [
-          {
-            "x": 240,
-            "y": 290
-          }
-        ],
-        "attrs": {
-          ".connection": {
-            "stroke": "black",
-            "stroke-width": 1
-          },
-          ".marker-source": {
-            "d": "0"
-          },
-          ".marker-target": {
-            "stroke": "black",
-            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5",
-            "stroke-width": 1
-          }
-        }
-      },
-      {
-        "type": "link",
-        "source": {
-          "id": "fcb1e398-ca37-4b89-b30f-ae980b9d11bd"
-        },
-        "target": {
-          "id": "d7e61fc9-c67a-47f1-b7a0-f4cf4960cdb5"
-        },
-        "labels": [
-          {
-            "position": 0.5,
-            "attrs": {
-              "text": {
-                "text": "and"
-              }
-            }
-          }
-        ],
-        "id": "228c2c79-2cbc-4871-b8f6-9a74e8914e21",
+        "id": "975739db-a1a3-476e-9f36-ba5f5587d0be",
         "z": 25,
-        "linkID": "0008",
-        "vertices": [
-          {
-            "x": 240,
-            "y": 250
-          }
-        ],
+        "linkID": "0005",
+        "link-type": "++",
         "attrs": {
           ".connection": {
-            "stroke": "black",
-            "stroke-width": 1
+            "stroke": "#000000"
           },
           ".marker-source": {
             "d": "0"
           },
           ".marker-target": {
-            "stroke": "black",
-            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5",
-            "stroke-width": 1
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
           }
         }
       },
       {
         "type": "link",
         "source": {
-          "id": "42ec5a43-b374-4460-bb2a-f807d977905d"
+          "id": "623f5f6f-ac6b-4274-b295-baadff54d3c8"
         },
         "target": {
-          "id": "d0d9cae8-d5e8-485a-bd36-c7a73eb4ff7d"
+          "id": "663f8625-f535-4b1e-a856-3bdb3533ed6a"
         },
         "labels": [
           {
             "position": 0.5,
             "attrs": {
               "text": {
-                "text": "+"
+                "text": "++"
               }
             }
           }
         ],
-        "id": "e5b43131-971b-47f5-b36b-966ea7ef26ba",
+        "id": "44bd78e9-da38-4c80-9c23-ca4129c2ab50",
         "z": 26,
-        "linkID": "0009",
-        "link-type": "+",
-        "vertices": [
-          {
-            "x": -40,
-            "y": 590
-          }
-        ],
-        "parent": "1f024b2d-1a00-4648-b641-2acbd5d59fdf",
+        "linkID": "0006",
+        "link-type": "++",
         "attrs": {
           ".connection": {
-            "stroke": "black",
-            "stroke-width": 1
+            "stroke": "#000000"
           },
           ".marker-source": {
             "d": "0"
           },
           ".marker-target": {
-            "stroke": "black",
-            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5",
-            "stroke-width": 1
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
           }
         }
       },
       {
         "type": "link",
         "source": {
-          "id": "42ec5a43-b374-4460-bb2a-f807d977905d"
+          "id": "4991a010-c4ea-4133-983f-4c2caf096090"
         },
         "target": {
-          "id": "d51372c5-ecc3-4be2-93aa-288a7b81788d"
+          "id": "663f8625-f535-4b1e-a856-3bdb3533ed6a"
         },
         "labels": [
           {
             "position": 0.5,
             "attrs": {
               "text": {
-                "text": "+"
+                "text": "and"
               }
             }
           }
         ],
-        "id": "0b243493-b561-4bd1-b0bf-33fe477e0d60",
+        "id": "3ad0e78b-79fd-4705-beba-0f7f3d0318f4",
         "z": 27,
-        "linkID": "0010",
-        "link-type": "+",
+        "linkID": "0007",
         "attrs": {
           ".connection": {
-            "stroke": "black",
-            "stroke-width": 1
+            "stroke": "#000000"
           },
           ".marker-source": {
             "d": "0"
           },
           ".marker-target": {
-            "stroke": "black",
-            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5",
-            "stroke-width": 1
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
           }
         }
       },
       {
         "type": "link",
         "source": {
-          "id": "d51372c5-ecc3-4be2-93aa-288a7b81788d"
+          "id": "2356d4dd-4701-4e5f-923d-89a3ecdd5758"
         },
         "target": {
-          "id": "4e72e494-11ec-4067-b980-4d92933f638c"
+          "id": "663f8625-f535-4b1e-a856-3bdb3533ed6a"
         },
         "labels": [
           {
             "position": 0.5,
             "attrs": {
               "text": {
-                "text": "+"
+                "text": "and"
               }
             }
           }
         ],
-        "id": "1ec80f65-9e0c-4db9-b969-bac3eaf84b1a",
+        "id": "63cec8bd-cf66-453b-9291-7099020502df",
         "z": 28,
-        "linkID": "0011",
-        "link-type": "+",
-        "parent": "1f024b2d-1a00-4648-b641-2acbd5d59fdf",
-        "vertices": [
-          {
-            "x": 170,
-            "y": 460
-          }
-        ],
+        "linkID": "0008",
         "attrs": {
           ".connection": {
-            "stroke": "black",
-            "stroke-width": 1
+            "stroke": "#000000"
           },
           ".marker-source": {
             "d": "0"
           },
           ".marker-target": {
-            "stroke": "black",
-            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5",
-            "stroke-width": 1
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
           }
         }
       },
       {
         "type": "link",
         "source": {
-          "id": "d0d9cae8-d5e8-485a-bd36-c7a73eb4ff7d"
+          "id": "092b059c-8635-4eae-a24c-b95ec0c79655"
         },
         "target": {
-          "id": "c0ff7362-0da4-4e6a-84de-830e2dc3b4e1"
+          "id": "29f7bba5-7df0-40a7-a1f8-650d9ed3ae3a"
         },
         "labels": [
           {
             "position": 0.5,
             "attrs": {
               "text": {
-                "text": "+"
+                "text": "+S"
               }
             }
           }
         ],
-        "id": "ddf982a1-62be-48e3-a013-962e82c9a98a",
+        "id": "f8d375aa-8730-4e2b-96df-b2d2ca2883c8",
         "z": 29,
-        "linkID": "0012",
-        "link-type": "+",
+        "linkID": "0009",
+        "link-type": "+S",
         "attrs": {
           ".connection": {
-            "stroke": "black",
-            "stroke-width": 1
+            "stroke": "#000000"
           },
           ".marker-source": {
             "d": "0"
           },
           ".marker-target": {
-            "stroke": "black",
-            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5",
-            "stroke-width": 1
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
           }
         }
       },
       {
         "type": "link",
         "source": {
-          "id": "d0d9cae8-d5e8-485a-bd36-c7a73eb4ff7d"
+          "id": "46e000fd-6374-432f-9dc7-22e766b043fa"
         },
         "target": {
-          "id": "39ad8e3f-ed73-4bf2-a50f-e5544e7b73e2"
+          "id": "663f8625-f535-4b1e-a856-3bdb3533ed6a"
         },
         "labels": [
           {
             "position": 0.5,
             "attrs": {
               "text": {
-                "text": "+"
+                "text": "and"
               }
             }
           }
         ],
-        "id": "1a5c454b-2fec-458a-9f63-8b02ccc7eb6f",
+        "id": "fda898fd-f268-422f-a964-c37c0e9e1308",
         "z": 30,
-        "linkID": "0013",
-        "link-type": "+",
-        "parent": "1f024b2d-1a00-4648-b641-2acbd5d59fdf",
-        "vertices": [
-          {
-            "x": 110,
-            "y": 660
-          }
-        ],
+        "linkID": "0010",
         "attrs": {
           ".connection": {
-            "stroke": "black",
-            "stroke-width": 1
+            "stroke": "#000000"
           },
           ".marker-source": {
             "d": "0"
           },
           ".marker-target": {
-            "stroke": "black",
-            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5",
-            "stroke-width": 1
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
           }
         }
       },
       {
         "type": "link",
         "source": {
-          "id": "c0ff7362-0da4-4e6a-84de-830e2dc3b4e1"
+          "id": "092b059c-8635-4eae-a24c-b95ec0c79655"
         },
         "target": {
-          "id": "32ee0467-ba69-4d4e-bcb4-85fb0127df84"
+          "id": "4991a010-c4ea-4133-983f-4c2caf096090"
         },
         "labels": [
           {
             "position": 0.5,
             "attrs": {
               "text": {
-                "text": "+"
+                "text": "-S"
               }
             }
           }
         ],
-        "id": "f689ec31-bd28-4ec0-87f3-72b9ba8bc260",
+        "id": "bd2634df-5d72-4090-bb0d-7b8494189aec",
         "z": 31,
-        "linkID": "0014",
-        "link-type": "+",
-        "parent": "1f024b2d-1a00-4648-b641-2acbd5d59fdf",
+        "linkID": "0011",
+        "link-type": "-S",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "link",
+        "source": {
+          "id": "d816555e-7776-4b79-b22f-e20616549a72"
+        },
+        "target": {
+          "id": "2356d4dd-4701-4e5f-923d-89a3ecdd5758"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "or"
+              }
+            }
+          }
+        ],
+        "id": "681dbcfe-1093-4e4e-aec4-5dcc4c4c4187",
+        "z": 32,
+        "linkID": "0012",
+        "link-type": "OR",
+        "parent": "7f7c98b7-95ea-4c6c-bc5d-6feeb2bc81a8",
         "vertices": [
           {
-            "x": 300,
+            "x": 720,
             "y": 550
           }
         ],
         "attrs": {
           ".connection": {
-            "stroke": "black",
-            "stroke-width": 1
+            "stroke": "#000000"
           },
           ".marker-source": {
             "d": "0"
           },
           ".marker-target": {
-            "stroke": "black",
-            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5",
-            "stroke-width": 1
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
           }
         }
       },
       {
         "type": "link",
         "source": {
-          "id": "39ad8e3f-ed73-4bf2-a50f-e5544e7b73e2"
+          "id": "d816555e-7776-4b79-b22f-e20616549a72"
         },
         "target": {
-          "id": "32ee0467-ba69-4d4e-bcb4-85fb0127df84"
+          "id": "29f7bba5-7df0-40a7-a1f8-650d9ed3ae3a"
         },
         "labels": [
           {
             "position": 0.5,
             "attrs": {
               "text": {
-                "text": "+"
+                "text": "+S"
               }
             }
           }
         ],
-        "id": "7badc410-bb38-4247-9eb4-cface8a66f6f",
-        "z": 32,
-        "linkID": "0015",
-        "link-type": "+",
-        "parent": "1f024b2d-1a00-4648-b641-2acbd5d59fdf",
-        "vertices": [
-          {
-            "x": 300,
-            "y": 610
-          },
-          {
-            "x": 320,
-            "y": 540
-          }
-        ],
-        "attrs": {
-          ".connection": {
-            "stroke": "black",
-            "stroke-width": 1
-          },
-          ".marker-source": {
-            "d": "0"
-          },
-          ".marker-target": {
-            "stroke": "black",
-            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5",
-            "stroke-width": 1
-          }
-        }
-      },
-      {
-        "type": "link",
-        "source": {
-          "id": "32ee0467-ba69-4d4e-bcb4-85fb0127df84"
-        },
-        "target": {
-          "id": "cec2904c-a0ec-4197-925a-0bb753dcaf5e"
-        },
-        "labels": [
-          {
-            "position": 0.5,
-            "attrs": {
-              "text": {
-                "text": "+"
-              }
-            }
-          }
-        ],
-        "id": "78aba7e2-dfd4-4766-8b9c-e74493fde3e8",
+        "id": "5c62d204-a23a-4baf-86ea-a0a073397790",
         "z": 33,
-        "linkID": "0016",
-        "link-type": "+",
-        "parent": "1f024b2d-1a00-4648-b641-2acbd5d59fdf",
-        "vertices": [
-          {
-            "x": 330,
-            "y": 470
-          }
-        ],
+        "linkID": "0013",
+        "link-type": "+S",
         "attrs": {
           ".connection": {
-            "stroke": "black",
-            "stroke-width": 1
+            "stroke": "#000000"
           },
           ".marker-source": {
             "d": "0"
           },
           ".marker-target": {
-            "stroke": "black",
-            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5",
-            "stroke-width": 1
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
           }
         }
       },
       {
         "type": "link",
         "source": {
-          "id": "32ee0467-ba69-4d4e-bcb4-85fb0127df84"
+          "id": "29f7bba5-7df0-40a7-a1f8-650d9ed3ae3a"
         },
         "target": {
-          "id": "4e72e494-11ec-4067-b980-4d92933f638c"
+          "id": "46e000fd-6374-432f-9dc7-22e766b043fa"
         },
         "labels": [
           {
             "position": 0.5,
             "attrs": {
               "text": {
-                "text": "+"
+                "text": "+S"
               }
             }
           }
         ],
-        "id": "cbdc8cad-14a9-4c5c-a72b-b65ac1484c8b",
+        "id": "e987ca97-e107-48c3-a9b5-b648358e0513",
         "z": 34,
-        "linkID": "0017",
-        "link-type": "+",
-        "parent": "1f024b2d-1a00-4648-b641-2acbd5d59fdf",
-        "vertices": [
-          {
-            "x": 190,
-            "y": 470
-          }
-        ],
+        "linkID": "0014",
+        "link-type": "+S",
         "attrs": {
           ".connection": {
-            "stroke": "black",
-            "stroke-width": 1
+            "stroke": "#000000"
           },
           ".marker-source": {
             "d": "0"
           },
           ".marker-target": {
-            "stroke": "black",
-            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5",
-            "stroke-width": 1
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "link",
+        "source": {
+          "id": "41981df1-5149-4475-8d97-c2e3fa050820"
+        },
+        "target": {
+          "id": "1d3c9373-e161-4650-9afa-d6c77d96ff22"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "or"
+              }
+            }
+          }
+        ],
+        "id": "ec2b012a-acf8-4408-8fc2-17a7ccacba22",
+        "z": 35,
+        "linkID": "0015",
+        "link-type": "OR",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "link",
+        "source": {
+          "id": "22b118be-e70c-48a2-baac-cc912dfe5a86"
+        },
+        "target": {
+          "id": "1d3c9373-e161-4650-9afa-d6c77d96ff22"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "or"
+              }
+            }
+          }
+        ],
+        "id": "17dc4fde-a0d4-4bd4-85a1-135d12b17d05",
+        "z": 36,
+        "linkID": "0016",
+        "link-type": "OR",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "link",
+        "source": {
+          "id": "f8e17fdb-f710-43df-be1d-525a6450acba"
+        },
+        "target": {
+          "id": "095beac2-3d77-46e7-96fc-4b80b87a8d33"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "or"
+              }
+            }
+          }
+        ],
+        "id": "d26920e9-853e-4c8d-842f-281b260548b7",
+        "z": 37,
+        "linkID": "0018",
+        "link-type": "OR",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "link",
+        "source": {
+          "id": "9055a1d9-3ba8-4ed8-94ac-b640fb85a039"
+        },
+        "target": {
+          "id": "095beac2-3d77-46e7-96fc-4b80b87a8d33"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "or"
+              }
+            }
+          }
+        ],
+        "id": "5d2add62-0e11-4390-be2f-c52ccdcbaee9",
+        "z": 38,
+        "linkID": "0019",
+        "link-type": "OR",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "link",
+        "source": {
+          "id": "9dc7c7ce-f3f9-41cf-a6f9-0915756cf005"
+        },
+        "target": {
+          "id": "095beac2-3d77-46e7-96fc-4b80b87a8d33"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "or"
+              }
+            }
+          }
+        ],
+        "id": "6856f988-26ee-45f8-afb8-ea91f7a0db16",
+        "z": 39,
+        "linkID": "0020",
+        "link-type": "OR",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "link",
+        "source": {
+          "id": "092b059c-8635-4eae-a24c-b95ec0c79655"
+        },
+        "target": {
+          "id": "2356d4dd-4701-4e5f-923d-89a3ecdd5758"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "or"
+              }
+            }
+          }
+        ],
+        "id": "ce291f26-2967-4b78-a196-0f5b75f52b6f",
+        "z": 40,
+        "linkID": "0021",
+        "link-type": "OR",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
           }
         }
       }
@@ -2874,188 +2821,97 @@ function mergeModels(delta, model11, model21){
     "actors": [
       {
         "nodeID": "a000",
-        "nodeName": "Student",
+        "nodeName": "Client",
         "intentionIDs": [
           "0000",
-          "0001",
+          "0000",
+          "0000",
           "0002",
           "0003",
+          "0000",
+          "0000",
           "0004",
-          "0004",
+          "0005",
+          "0005",
+          "0006",
           "0005",
           "0006",
           "0007",
           "0008",
+          "0008",
+          "0004",
           "0009",
-          "0011",
-          "0010",
-          "0012",
-          "0013",
-          "0013",
-          "0013",
+          "0000",
+          "0000",
+          "0000",
           "0000",
           "0001",
-          "0002",
-          "0000",
-          "0000",
-          "0002",
-          "0003",
-          "0003",
-          "0004",
-          "0004",
-          "0003",
-          "0012",
-          "0011",
-          "0011",
-          "0013",
-          "0006",
-          "0005",
-          "0004",
-          "0005",
-          "0004",
-          "0006",
-          "0005",
-          "0005",
-          "0007",
-          "0008",
-          "0007",
-          "0009",
-          "0007",
-          "0009",
-          "0009",
-          "0009",
-          "0007",
-          "0008",
-          "0007",
-          "0005",
-          "0008",
-          "0006",
-          "0006",
-          "0002",
-          "0002",
-          "0002",
-          "0004",
-          "0011",
-          "0011",
-          "0004",
           "0001",
+          "0010",
+          "0010",
           "0000",
-          "0012",
           "0011",
-          "0013",
-          "0003",
           "0002",
-          "0013",
-          "0003",
           "0002",
-          "0004",
-          "0006",
-          "0009",
-          "0007",
-          "0005",
+          "0003",
+          "0010",
           "0008",
-          "0002",
           "0003",
-          "0013",
-          "0012",
+          "0008",
+          "0003",
+          "0005",
+          "0003",
+          "0003",
           "0011",
-          "0004",
-          "0006",
-          "0009",
-          "0013",
-          "0009",
-          "0007",
-          "0006",
-          "0005",
           "0008",
-          "0009",
-          "0009",
-          "0009",
-          "0007",
-          "0007",
-          "0008",
-          "0005",
           "0008",
           "0006",
-          "0007",
-          "0000",
-          "0002",
-          "0004",
-          "0005",
-          "0008",
-          "0009",
-          "0010",
-          "0012",
-          "0009",
-          "0007",
-          "0008",
-          "0012",
-          "0010",
-          "0012",
-          "0007",
-          "0008",
-          "0008",
-          "0008",
-          "0002",
-          "0004",
-          "0004",
-          "0002",
-          "0004",
-          "0004",
-          "0005",
-          "0005",
-          "0004",
-          "0004",
-          "0010",
-          "0010",
-          "0012",
-          "0011",
-          "0004",
-          "0003",
-          "0004",
-          "0010"
+          "0005"
         ]
       },
       {
         "nodeID": "a001",
-        "nodeName": "Recommenders",
+        "nodeName": "Accounts \nPayable",
         "intentionIDs": [
+          "0012",
+          "0013",
+          "0014",
+          "0014",
+          "0015",
+          "0016",
+          "0017",
+          "0018",
+          "0018",
+          "0018",
+          "0018",
+          "0014",
+          "0018",
+          "0018",
+          "0016",
+          "0016",
+          "0016",
+          "0012",
+          "0012",
+          "0018",
+          "0014",
+          "0018",
+          "0015",
+          "0018",
+          "0016",
           "0015",
           "0015",
-          "0015",
-          "0015",
-          "0010"
+          "0017",
+          "0016",
+          "0015"
         ]
       }
     ],
     "intentions": [
       {
         "nodeActorID": "a000",
-        "nodeID": "0000",
-        "nodeType": "basic.Goal",
-        "nodeName": "Be Admitted \nto Graduate \nSchool",
-        "dynamicFunction": {
-          "intentionID": "0000",
-          "stringDynVis": "NT",
-          "functionSegList": []
-        }
-      },
-      {
-        "nodeActorID": "a000",
-        "nodeID": "0001",
-        "nodeType": "basic.Goal",
-        "nodeName": "Have \nSuccessful \nAplication",
-        "dynamicFunction": {
-          "intentionID": "0001",
-          "stringDynVis": "NT",
-          "functionSegList": []
-        }
-      },
-      {
-        "nodeActorID": "a000",
         "nodeID": "0002",
-        "nodeType": "basic.Goal",
-        "nodeName": "Complete\nUnder-\ngraduate",
+        "nodeType": "basic.Resource",
+        "nodeName": "Budget",
         "dynamicFunction": {
           "intentionID": "0002",
           "stringDynVis": "NT",
@@ -3065,8 +2921,8 @@ function mergeModels(delta, model11, model21){
       {
         "nodeActorID": "a000",
         "nodeID": "0003",
-        "nodeType": "basic.Goal",
-        "nodeName": "Obtain\nGood \nGrades",
+        "nodeType": "basic.Task",
+        "nodeName": "Buy Item",
         "dynamicFunction": {
           "intentionID": "0003",
           "stringDynVis": "NT",
@@ -3077,25 +2933,18 @@ function mergeModels(delta, model11, model21){
         "nodeActorID": "a000",
         "nodeID": "0004",
         "nodeType": "basic.Task",
-        "nodeName": "Complete \nCourses",
+        "nodeName": "Recieve Item",
         "dynamicFunction": {
           "intentionID": "0004",
-          "stringDynVis": "I",
-          "functionSegList": [
-            {
-              "funcType": "I",
-              "funcX": "0011",
-              "funcStart": "0",
-              "funcStop": "Infinity"
-            }
-          ]
+          "stringDynVis": "NT",
+          "functionSegList": []
         }
       },
       {
         "nodeActorID": "a000",
         "nodeID": "0005",
-        "nodeType": "basic.Softgoal",
-        "nodeName": "Gain\nKnowledge",
+        "nodeType": "basic.Task",
+        "nodeName": "Order Via\n Purchasing Item",
         "dynamicFunction": {
           "intentionID": "0005",
           "stringDynVis": "NT",
@@ -3105,8 +2954,8 @@ function mergeModels(delta, model11, model21){
       {
         "nodeActorID": "a000",
         "nodeID": "0006",
-        "nodeType": "basic.Softgoal",
-        "nodeName": "Writing\nSkills",
+        "nodeType": "basic.Task",
+        "nodeName": "Order Via \nExpertSys Item",
         "dynamicFunction": {
           "intentionID": "0006",
           "stringDynVis": "NT",
@@ -3116,8 +2965,8 @@ function mergeModels(delta, model11, model21){
       {
         "nodeActorID": "a000",
         "nodeID": "0007",
-        "nodeType": "basic.Task",
-        "nodeName": "Internship",
+        "nodeType": "basic.Goal",
+        "nodeName": "Ordered Item",
         "dynamicFunction": {
           "intentionID": "0007",
           "stringDynVis": "NT",
@@ -3128,7 +2977,7 @@ function mergeModels(delta, model11, model21){
         "nodeActorID": "a000",
         "nodeID": "0008",
         "nodeType": "basic.Task",
-        "nodeName": "Do\nResearch\nWork",
+        "nodeName": "Order By Phone",
         "dynamicFunction": {
           "intentionID": "0008",
           "stringDynVis": "NT",
@@ -3138,8 +2987,8 @@ function mergeModels(delta, model11, model21){
       {
         "nodeActorID": "a000",
         "nodeID": "0009",
-        "nodeType": "basic.Softgoal",
-        "nodeName": "Gain\nExperience",
+        "nodeType": "basic.Task",
+        "nodeName": "Pay for Item",
         "dynamicFunction": {
           "intentionID": "0009",
           "stringDynVis": "NT",
@@ -3149,32 +2998,19 @@ function mergeModels(delta, model11, model21){
       {
         "nodeActorID": "a000",
         "nodeID": "0010",
-        "nodeType": "basic.Task",
-        "nodeName": "Complete GRE",
+        "nodeType": "basic.Goal",
+        "nodeName": "Has Item",
         "dynamicFunction": {
           "intentionID": "0010",
-          "stringDynVis": "DS",
-          "functionSegList": [
-            {
-              "funcType": "C",
-              "funcX": "1100",
-              "funcStart": "0",
-              "funcStop": "A"
-            },
-            {
-              "funcType": "C",
-              "funcX": "0011",
-              "funcStart": "A",
-              "funcStop": "Infinity"
-            }
-          ]
+          "stringDynVis": "NT",
+          "functionSegList": []
         }
       },
       {
         "nodeActorID": "a000",
         "nodeID": "0011",
         "nodeType": "basic.Task",
-        "nodeName": "Finish \nStatement\nof Purpose",
+        "nodeName": "Lease Item",
         "dynamicFunction": {
           "intentionID": "0011",
           "stringDynVis": "NT",
@@ -3182,10 +3018,10 @@ function mergeModels(delta, model11, model21){
         }
       },
       {
-        "nodeActorID": "a000",
+        "nodeActorID": "a001",
         "nodeID": "0012",
-        "nodeType": "basic.Goal",
-        "nodeName": "Obtain\nStrong \nRecomm-\nendation\nLetters",
+        "nodeType": "basic.Softgoal",
+        "nodeName": "Low Overhead",
         "dynamicFunction": {
           "intentionID": "0012",
           "stringDynVis": "NT",
@@ -3196,9 +3032,64 @@ function mergeModels(delta, model11, model21){
         "nodeActorID": "a001",
         "nodeID": "0013",
         "nodeType": "basic.Task",
-        "nodeName": "Submit \nRecomm-\nendation\nLetters",
+        "nodeName": "Pay For Item",
         "dynamicFunction": {
           "intentionID": "0013",
+          "stringDynVis": "NT",
+          "functionSegList": []
+        }
+      },
+      {
+        "nodeActorID": "a001",
+        "nodeID": "0014",
+        "nodeType": "basic.Softgoal",
+        "nodeName": "Fast Payment",
+        "dynamicFunction": {
+          "intentionID": "0014",
+          "stringDynVis": "NT",
+          "functionSegList": []
+        }
+      },
+      {
+        "nodeActorID": "a001",
+        "nodeID": "0015",
+        "nodeType": "basic.Task",
+        "nodeName": "Pay when \nItem Received",
+        "dynamicFunction": {
+          "intentionID": "0015",
+          "stringDynVis": "NT",
+          "functionSegList": []
+        }
+      },
+      {
+        "nodeActorID": "a001",
+        "nodeID": "0016",
+        "nodeType": "basic.Task",
+        "nodeName": "Pay When Invoiced",
+        "dynamicFunction": {
+          "intentionID": "0016",
+          "stringDynVis": "NT",
+          "functionSegList": []
+        }
+      },
+      {
+        "nodeActorID": "a001",
+        "nodeID": "0017",
+        "nodeType": "basic.Softgoal",
+        "nodeName": "Few Errors",
+        "dynamicFunction": {
+          "intentionID": "0017",
+          "stringDynVis": "NT",
+          "functionSegList": []
+        }
+      },
+      {
+        "nodeActorID": "a001",
+        "nodeID": "0018",
+        "nodeType": "basic.Goal",
+        "nodeName": "Payment Made",
+        "dynamicFunction": {
+          "intentionID": "0018",
           "stringDynVis": "NT",
           "functionSegList": []
         }
@@ -3206,180 +3097,177 @@ function mergeModels(delta, model11, model21){
     ],
     "links": [
       {
-        "linkID": "0000",
-        "linkType": "++S",
-        "postType": null,
-        "linkSrcID": "0012",
-        "linkDestID": "0013",
-        "absoluteValue": -1
-      },
-      {
         "linkID": "0001",
         "linkType": "AND",
         "postType": null,
-        "linkSrcID": "0001",
-        "linkDestID": "0000",
+        "linkSrcID": "0002",
+        "linkDestID": "0003",
         "absoluteValue": -1
       },
       {
         "linkID": "0002",
         "linkType": "AND",
         "postType": null,
-        "linkSrcID": "0002",
-        "linkDestID": "0000",
+        "linkSrcID": "0003",
+        "linkDestID": "0004",
         "absoluteValue": -1
       },
       {
         "linkID": "0003",
-        "linkType": "+",
+        "linkType": "AND",
         "postType": null,
         "linkSrcID": "0003",
-        "linkDestID": "0000",
+        "linkDestID": "0007",
         "absoluteValue": -1
       },
       {
         "linkID": "0004",
-        "linkType": "++",
+        "linkType": "AND",
         "postType": null,
-        "linkSrcID": "0004",
-        "linkDestID": "0002",
+        "linkSrcID": "0003",
+        "linkDestID": "a000",
         "absoluteValue": -1
       },
       {
         "linkID": "0005",
-        "linkType": "+",
+        "linkType": "++",
         "postType": null,
-        "linkSrcID": "0004",
-        "linkDestID": "0003",
+        "linkSrcID": "0003",
+        "linkDestID": "0009",
         "absoluteValue": -1
       },
       {
         "linkID": "0006",
-        "linkType": "AND",
+        "linkType": "++",
         "postType": null,
-        "linkSrcID": "0011",
-        "linkDestID": "0001",
+        "linkSrcID": "0009",
+        "linkDestID": "0013",
         "absoluteValue": -1
       },
       {
         "linkID": "0007",
         "linkType": "AND",
         "postType": null,
-        "linkSrcID": "0010",
-        "linkDestID": "0001",
+        "linkSrcID": "0014",
+        "linkDestID": "0013",
         "absoluteValue": -1
       },
       {
         "linkID": "0008",
         "linkType": "AND",
         "postType": null,
-        "linkSrcID": "0013",
-        "linkDestID": "0001",
+        "linkSrcID": "0018",
+        "linkDestID": "0013",
         "absoluteValue": -1
       },
       {
         "linkID": "0009",
-        "linkType": "+",
+        "linkType": "+S",
         "postType": null,
-        "linkSrcID": "0004",
-        "linkDestID": "0005",
+        "linkSrcID": "0016",
+        "linkDestID": "0017",
         "absoluteValue": -1
       },
       {
         "linkID": "0010",
-        "linkType": "+",
+        "linkType": "AND",
         "postType": null,
-        "linkSrcID": "0004",
-        "linkDestID": "0006",
+        "linkSrcID": "0012",
+        "linkDestID": "0013",
         "absoluteValue": -1
       },
       {
         "linkID": "0011",
-        "linkType": "+",
+        "linkType": "-S",
         "postType": null,
-        "linkSrcID": "0006",
-        "linkDestID": "0011",
+        "linkSrcID": "0016",
+        "linkDestID": "0014",
         "absoluteValue": -1
       },
       {
         "linkID": "0012",
-        "linkType": "+",
+        "linkType": "OR",
+        "postType": null,
+        "linkSrcID": "0015",
+        "linkDestID": "0018",
+        "absoluteValue": -1
+      },
+      {
+        "linkID": "0013",
+        "linkType": "+S",
+        "postType": null,
+        "linkSrcID": "0015",
+        "linkDestID": "0017",
+        "absoluteValue": -1
+      },
+      {
+        "linkID": "0014",
+        "linkType": "+S",
+        "postType": null,
+        "linkSrcID": "0017",
+        "linkDestID": "0012",
+        "absoluteValue": -1
+      },
+      {
+        "linkID": "0015",
+        "linkType": "OR",
+        "postType": null,
+        "linkSrcID": "0003",
+        "linkDestID": "0010",
+        "absoluteValue": -1
+      },
+      {
+        "linkID": "0016",
+        "linkType": "OR",
+        "postType": null,
+        "linkSrcID": "0011",
+        "linkDestID": "0010",
+        "absoluteValue": -1
+      },
+      {
+        "linkID": "0018",
+        "linkType": "OR",
+        "postType": null,
+        "linkSrcID": "0008",
+        "linkDestID": "0007",
+        "absoluteValue": -1
+      },
+      {
+        "linkID": "0019",
+        "linkType": "OR",
+        "postType": null,
+        "linkSrcID": "0006",
+        "linkDestID": "0007",
+        "absoluteValue": -1
+      },
+      {
+        "linkID": "0020",
+        "linkType": "OR",
         "postType": null,
         "linkSrcID": "0005",
         "linkDestID": "0007",
         "absoluteValue": -1
       },
       {
-        "linkID": "0013",
-        "linkType": "+",
+        "linkID": "0021",
+        "linkType": "OR",
         "postType": null,
-        "linkSrcID": "0005",
-        "linkDestID": "0008",
-        "absoluteValue": -1
-      },
-      {
-        "linkID": "0014",
-        "linkType": "+",
-        "postType": null,
-        "linkSrcID": "0007",
-        "linkDestID": "0009",
-        "absoluteValue": -1
-      },
-      {
-        "linkID": "0015",
-        "linkType": "+",
-        "postType": null,
-        "linkSrcID": "0008",
-        "linkDestID": "0009",
-        "absoluteValue": -1
-      },
-      {
-        "linkID": "0016",
-        "linkType": "+",
-        "postType": null,
-        "linkSrcID": "0009",
-        "linkDestID": "0012",
-        "absoluteValue": -1
-      },
-      {
-        "linkID": "0017",
-        "linkType": "+",
-        "postType": null,
-        "linkSrcID": "0009",
-        "linkDestID": "0011",
+        "linkSrcID": "0016",
+        "linkDestID": "0018",
         "absoluteValue": -1
       }
     ],
-    "constraints": [
-      {
-        "constraintType": "A",
-        "constraintSrcID": "0010",
-        "constraintSrcEB": "A",
-        "constraintDestID": null,
-        "constraintDestEB": null,
-        "absoluteValue": -1
-      }
-    ],
+    "constraints": [],
     "maxAbsTime": "100"
   },
   "analysisRequest": {
-    "action": "allNextStates",
+    "action": null,
     "conflictLevel": "S",
-    "numRelTime": "10",
+    "numRelTime": "1",
     "absTimePts": "",
     "absTimePtsArr": [],
-    "currentState": "11|86",
+    "currentState": "0",
     "userAssignmentsList": [
-      {
-        "intentionID": "0000",
-        "absTime": "0",
-        "evaluationValue": "(no value)"
-      },
-      {
-        "intentionID": "0001",
-        "absTime": "0",
-        "evaluationValue": "(no value)"
-      },
       {
         "intentionID": "0002",
         "absTime": "0",
@@ -3393,7 +3281,7 @@ function mergeModels(delta, model11, model21){
       {
         "intentionID": "0004",
         "absTime": "0",
-        "evaluationValue": "1100"
+        "evaluationValue": "(no value)"
       },
       {
         "intentionID": "0005",
@@ -3423,7 +3311,7 @@ function mergeModels(delta, model11, model21){
       {
         "intentionID": "0010",
         "absTime": "0",
-        "evaluationValue": "1100"
+        "evaluationValue": "(no value)"
       },
       {
         "intentionID": "0011",
@@ -3437,6 +3325,31 @@ function mergeModels(delta, model11, model21){
       },
       {
         "intentionID": "0013",
+        "absTime": "0",
+        "evaluationValue": "(no value)"
+      },
+      {
+        "intentionID": "0014",
+        "absTime": "0",
+        "evaluationValue": "(no value)"
+      },
+      {
+        "intentionID": "0015",
+        "absTime": "0",
+        "evaluationValue": "(no value)"
+      },
+      {
+        "intentionID": "0016",
+        "absTime": "0",
+        "evaluationValue": "(no value)"
+      },
+      {
+        "intentionID": "0017",
+        "absTime": "0",
+        "evaluationValue": "(no value)"
+      },
+      {
+        "intentionID": "0018",
         "absTime": "0",
         "evaluationValue": "(no value)"
       }
