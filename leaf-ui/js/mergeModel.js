@@ -10,9 +10,9 @@ var defaultCoefficientValue= 0.5;
 var numVertices = 10; 
 var area = 1000*1000;
 var gravityDict = new Object();
-var resourcesGravity = 60; 
-var taskGravity = 40; 
-var softgoalGravity = 20;
+var resourcesGravity = 360; 
+var taskGravity = 240; 
+var softgoalGravity = 120;
 var goalGravity = 0;
 var IDNodeIDDict = new Object();
 var imaginaryActorIdList = []
@@ -207,7 +207,8 @@ function initializeNodes(resultList, nodeSet, model1, model2){
 			curYCount += 1;
 		}
 		var gravity = gravityDict[nodeId];
-		var node = new Node(nodeName,(curXCount-1)*width,curYCount*height,connectionList,gravity, nodeType, nodeId, actorId);
+		var randomHeightCons = Math.random(); 
+		var node = new Node(nodeName,(curXCount-1)*width,curYCount*height*randomHeightCons,connectionList,gravity, nodeType, nodeId, actorId);
 		nodeSet.add(node);
 	}
 	//nodeName = nodeID
@@ -351,7 +352,8 @@ function initializeActors(resultList,actorSet, model1, model2){
 			curXCount = 0;
 			curYCount += 1;
 		}
-		var actor = new Actor(actorName,(curXCount-1)*width, curYCount*height, actorID, intentionList);
+		var randomHeightCons = Math.random(); 
+		var actor = new Actor(actorName,(curXCount-1)*width, curYCount*height*randomHeightCons, actorID, intentionList);
 		actorSet.add(actor);
 	}
 	for(var link in listOfLinks){
