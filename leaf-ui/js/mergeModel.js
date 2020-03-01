@@ -600,7 +600,8 @@ function attraction(node1, node2, isActor){
 		}
 		var k = (1/(connectionCtr + 1)) * cToMultiply;
 		var coefficient = k * Math.sqrt(area/numVertices); 
-		var forceSum = 10000 * Math.pow(d,2)/(Math.pow(coefficient,2));
+		var forceSum = 100000 * Math.pow(d,2)/(Math.pow(coefficient,2));
+		console.log(forceSum);
 		var dx = Math.sqrt(firstNumber); 
 		var dy = Math.sqrt(secondNumber);
 		var cos = dx/d;
@@ -655,7 +656,7 @@ function repulsion(node1, node2, isActor){
 		//coefficeintValue(clusterDictionary, [node1.nodeName, node2.nodeName]); 
 		var coefficient = k * Math.sqrt(area/numVertices);
 		//TODOTODO: changed here
-		var forceSum = Math.pow(coefficient,2)/(10*d);
+		var forceSum = (1/10000)*Math.pow(coefficient,2)/(10*d);
 		var dx = Math.sqrt(firstNumber); 
 		var dy = Math.sqrt(secondNumber);
 		var cos = dx/d;
