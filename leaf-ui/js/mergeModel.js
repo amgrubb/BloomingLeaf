@@ -15,6 +15,7 @@ var taskGravity = 40;
 var softgoalGravity = 20;
 var goalGravity = 0;
 var IDNodeIDDict = new Object();
+var imaginaryActorIdList = []
 // var nodeIdNodePosDict = new Object();
 
 class Node{
@@ -317,7 +318,6 @@ function initializeActors(resultList,actorSet, model1, model2){
 	/*here construct a coordinate*/ 
 	var listOfActors = resultList[0];
 	var numActors = listOfActors.length; 
-	console.log(numActors);
 	var numXY = Math.ceil(Math.sqrt(numActors));
 	var curXCount = 0;
 	var curYCount = 0; 
@@ -768,8 +768,16 @@ function listForGraphicalNodes(nodeSet, curZ){
 		newLabel["cy"] = 10;
 		newAttrs[".label"] = newLabel;
 		newNode["attrs"] = newAttrs;
+		var isFreeNode = false; 
+		for(var l = 0; l < imaginaryActorIdList.length; l ++){
+			if(node.nodeId == imaginaryActorIdList[l]){
+				isFreeNode = true;
+			}
+		}
 		if((typeof node.parent !== 'undefined')&&(node.parent !== "****")){
-			newNode["parent"] = node.parent;
+			if(! isFreeNode){
+				newNode["parent"] = node.parent;
+			}
 		}
 		nodes.push(newNode);
 	}
@@ -923,11 +931,12 @@ function getSizeOfActor(nodeSet, actorSet){
 //Those fake actors have id begin with "-"
 function initializeActorForFreeNodes(actorSet, nodeSet, model1, model2, curXCount, curYCount){
 	var width = 150; 
-	var height = 100; 
+	var height = 100;
 	for(var node of nodeSet){
-		if(node.nodeId == "-"){
+		if(node.parent == "-"){
 			var actorForCurFreeNode = new Actor(node.nodeName,(curXCount-1)*width, curYCount*height, "-"+node.nodeId, [node.nodeId]);
 			actorSet.add(actorForCurFreeNode);
+			imaginaryActorIdList.push(actorForFreeNode.nodeId);
 		}
 	}
 }
