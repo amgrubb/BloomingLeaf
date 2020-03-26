@@ -161,7 +161,7 @@ function revertNodeValuesToInitial() {
  * Display the modeling mode page
  */
 function switchToModellingMode() {
-    analysisResult.isPathSim = false;
+    analysisResult.isPathSim = false; //reset isPathSim for color visualization slider
 	analysisRequest.previousAnalysis = null;
 	clearInspector();
 
@@ -202,7 +202,9 @@ function switchToModellingMode() {
     refreshColorVis();
 }
 
-var colorVisDict = {
+//code for color visualization slider
+
+var colorVisDict = { //satisfaction values and their cooresponding color
     "0000" : "#FFFFFF",
     "0011" : "#001196",
     "0010" : '#8FB8DE',
@@ -211,21 +213,26 @@ var colorVisDict = {
     "0111" : '#8B5FBF', 
     "1100" : '#FF2600',
     "1110" : '#8D5A97', 
-    "1111" : '#0D0221' }
+    "1111" : '#0D0221' 
+}
 
-function makePurple(){
+//changes each intention by their initial user set satisfaction value in modeling mode
+function changeIntentions(){
     var elements = graph.getElements();
-    for (var i = 0; i < elements.length; i++){
-        var cellView = elements[i].findView(paper);
-        var intention = model.getIntentionByID(cellView.model.attributes.nodeID);
-        if(intention != null) {
-        var initSatVal = intention.getInitialSatValue();
-
-        var colorChange = colorVisDict[initSatVal];
-        cellView.model.attr({'.outer': {'fill': colorChange}});
+    for (var i = 0; i < elements.length; i++){ 
+        var cellView = elements[i].findView(paper); 
+        var intention = model.getIntentionByID(cellView.model.attributes.nodeID); //aquires current intention
+        if (intention != null){
+        var initSatVal = intention.getInitialSatValue(); //user set initial sat value
+        var colorChange = colorVisDict[initSatVal]; //get color for cooresponding sat value
+        cellView.model.attr({'.outer': {'fill': colorChange}}); //change intention color to match sat value
+    }else{
+        cellView.model.changeToOriginalColour();
+    }
     }
 }
-}
+
+//returns element color to based on element type
 function returnAllColors(){
     var elements = graph.getElements();
     for (var i = 0; i < elements.length; i++){
@@ -234,27 +241,27 @@ function returnAllColors(){
     }
 }
 
+//runs after every event that could change intentions
 function refreshColorVis(){
-    if(on&&!analysisResult.isPathSim){
-        makePurple();
-    }else if( on && analysisResult.isPathSim){
+    if(on&&!analysisResult.isPathSim){ //slider is on in modeling mode OR slidere is on in analysis mode without simulated path
+        changeIntentions();
+    }
+    else if( on && analysisResult.isPathSim){ //slider is on and a single path is simulated in analysis mode
         changeIntentionsByPercentage();
-    } else if(!on){
+    }else if(!on){ //slider is off
         returnAllColors();
     }
 }
+
 /**
  * Source:https://www.w3schools.com/howto/howto_js_rangeslider.asp 
  */
 var slider = document.getElementById("colorReset");
 var on = false;
-
-slider.oninput = function() {
+slider.oninput = function() { //turns slider on/off and refreshes
   on = !on;
   refreshColorVis();
 }
-
-
 
 /**
  * Set up tool bar button on click functions

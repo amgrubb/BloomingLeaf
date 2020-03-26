@@ -164,67 +164,51 @@ function responseFunc(isGetNextSteps, response){
  
  function changeIntentionsByPercentage()
  {
+	 var elements = graph.getElements(); //get list of all the elements in the graph (aka goal model)
 	 var actorBuffer = 0;
-	 var percentEvalIndex = 0;
-
-	 var elements = graph.getElements(); //get list of every element in the graph (aka goal model)
 	 for (var i = 0; i < elements.length; i++){ //cycle through the individual element, determine type (task, goal, etc) and adjust color accordingly
 			 var cellView  = elements[i].findView(paper);
 			 var intention = model.getIntentionByID(cellView.model.attributes.nodeID);
-
-			 if(intention == null) {
+			 if(intention == null) //intention is an actor...will screw up color list matching up with element #
+			 {
 				 actorBuffer += 1;
 			 }
-			 percentEvalIndex = i - actorBuffer;
-
-			 if(intention != null && analysisResult.elementListPercentEvals[percentEvalIndex] != null) {
-
+			 if(intention != null && analysisResult.elementListPercentEvals[i - actorBuffer] != null) {
 			 var offsetPercents = [];
 			 var offsetColors = [];
 			 var numOffsets = 0;
- 
 			 var offsetTotal = 0.0;
- 
 			 var lastIndex = 0;
 			 console.log("element "+i+":");
 			 for(var j = 0; j < 8; ++j) //look at all the percents
 			 {
 				 //the before and after buffer gradient into the other evaluations, which are so tiny you can't see them
 				 //this creates the appearance of stripes instead of an actual gradient
-				 if(analysisResult.elementListPercentEvals[percentEvalIndex].intentionEvaluations[j].percent > 0)
+				 if(analysisResult.elementListPercentEvals[i - actorBuffer].intentionEvaluations[j].percent > 0)
 				 {
 					 //before buffer
 					 offsetTotal += 0.001;
 					 offsetPercents.push(offsetTotal)
-					 offsetColors.push(analysisResult.elementListPercentEvals[percentEvalIndex].intentionEvaluations[j].color);
- 
+					 offsetColors.push(analysisResult.elementListPercentEvals[i - actorBuffer].intentionEvaluations[j].color);
 					 //actual color chunk
-					 offsetTotal += analysisResult.elementListPercentEvals[percentEvalIndex].intentionEvaluations[j].percent - 0.002;
+					 offsetTotal += analysisResult.elementListPercentEvals[i - actorBuffer].intentionEvaluations[j].percent - 0.002;
 					 offsetPercents.push(offsetTotal);
-					 offsetColors.push(analysisResult.elementListPercentEvals[percentEvalIndex].intentionEvaluations[j].color);
-					 
+					 offsetColors.push(analysisResult.elementListPercentEvals[i - actorBuffer].intentionEvaluations[j].color);
 					 lastIndex = j;
- 
 					 //console.log("offset "+j+": "+offsetTotal);
- 
 					 //after buffer
 					 offsetTotal += 0.001; //add a black "buffer" so the colors don't gradient with eachother
 					 offsetPercents.push(offsetTotal);
-					 offsetColors.push(analysisResult.elementListPercentEvals[percentEvalIndex].intentionEvaluations[j].color);
-					 
-					 
+					 offsetColors.push(analysisResult.elementListPercentEvals[i - actorBuffer].intentionEvaluations[j].color);
 					 numOffsets += 3;
 				 }
 			 }
- 
 			 while(numOffsets <= 24)
 			 {
 				 offsetPercents.push(100);
-				 offsetColors.push(analysisResult.elementListPercentEvals[percentEvalIndex].intentionEvaluations[lastIndex].color);
+				 offsetColors.push(analysisResult.elementListPercentEvals[i - actorBuffer].intentionEvaluations[lastIndex].color);
 				 ++numOffsets;
 			 }
- 
-			 
 			 cellView.model.attr({'.outer' : {'fill' :
 			 {
 			  type: 'linearGradient',
