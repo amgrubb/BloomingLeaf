@@ -99,7 +99,7 @@ function switchToAnalysisMode() {
 	$('#symbolic-btn').css("display", "none");
 	$('#cycledetect-btn').css("display", "none");
     $('#dropdown-model').css("display", "");
-    $('#on-off').css("display", "none");
+    //$('#on-off').css("display", "none");
 
 	$('#model-toolbar').css("display", "none");
 
@@ -122,7 +122,10 @@ $('#model-cur-btn').on('click', function() {
 	// Cleaning the previous analysis data for new execution
 	//globalAnalysisResult.elementList = "";
 	savedAnalysisData.finalAssignedEpoch="";
-	savedAnalysisData.finalValueTimePoints="";
+    savedAnalysisData.finalValueTimePoints="";
+    
+    analysisResult.isPathSim = false;
+    refreshColorVis();
 });
 
 
@@ -199,7 +202,9 @@ function switchToModellingMode() {
 	clearHistoryLog();
 
     mode = "Modelling";
-    refreshColorVis();
+
+    //analysisResult.isPathSim = false;
+    //refreshColorVis();
 }
 
 //code for color visualization slider
@@ -224,6 +229,11 @@ function changeIntentions(){
         var intention = model.getIntentionByID(cellView.model.attributes.nodeID); //aquires current intention
         if (intention != null){
         var initSatVal = intention.getInitialSatValue(); //user set initial sat value
+        console.log(initSatVal);
+        if (initSatVal == '(no value)')
+        {
+            cellView.model.changeToOriginalColour();
+        }
         var colorChange = colorVisDict[initSatVal]; //get color for cooresponding sat value
         cellView.model.attr({'.outer': {'fill': colorChange}}); //change intention color to match sat value
     }else{
