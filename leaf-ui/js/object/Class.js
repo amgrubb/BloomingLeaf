@@ -324,6 +324,8 @@ class AnalysisResult {
         this.allSolution;
         this.elementListPercentEvals;
         this.isPathSim = false; //used for slider visualization
+        //NEW AND IMPROVED elementListPercentEvals
+        this.intentionListColorVis; //array of intentionColorVis
     }
 }
 
@@ -368,13 +370,22 @@ class intentionPercentages {
      */
     initializeIntentionEvaluations()
     {
-        this.intentionEvaluations[0] = new Evaluation("FS", "#313866");  
-        this.intentionEvaluations[1] = new Evaluation("PS", "#50409a");
-        this.intentionEvaluations[2] = new Evaluation("FSPD", "#7347ae");
-        this.intentionEvaluations[3] = new Evaluation("SD", "#964ec2");
-        this.intentionEvaluations[4] = new Evaluation("PSFD", "#7e1a5c");
-        this.intentionEvaluations[5] = new Evaluation("PD", "#781c5f");
-        this.intentionEvaluations[6] = new Evaluation("FD", "#c5093b");
+        // this.intentionEvaluations[0] = new Evaluation("FS", "#313866");  
+        // this.intentionEvaluations[1] = new Evaluation("PS", "#50409a");
+        // this.intentionEvaluations[2] = new Evaluation("FSPD", "#7347ae");
+        // this.intentionEvaluations[3] = new Evaluation("SD", "#964ec2");
+        // this.intentionEvaluations[4] = new Evaluation("PSFD", "#7e1a5c");
+        // this.intentionEvaluations[5] = new Evaluation("PD", "#781c5f");
+        // this.intentionEvaluations[6] = new Evaluation("FD", "#c5093b");
+        // this.intentionEvaluations[7] = new Evaluation("N", "#ffffff");
+
+        this.intentionEvaluations[0] = new Evaluation("FS", "#001196");  
+        this.intentionEvaluations[1] = new Evaluation("PS", "#8FB8DE");
+        this.intentionEvaluations[2] = new Evaluation("FSPD", "#8B5FBF");
+        this.intentionEvaluations[3] = new Evaluation("SD", "#643A71");
+        this.intentionEvaluations[4] = new Evaluation("PSFD", "#8D5A97");
+        this.intentionEvaluations[5] = new Evaluation("PD", "#DBAADD");
+        this.intentionEvaluations[6] = new Evaluation("FD", "#FF2600");
         this.intentionEvaluations[7] = new Evaluation("N", "#ffffff");
     }
 }
