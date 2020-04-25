@@ -954,6 +954,8 @@ var ElementInspector = Backbone.View.extend({
         
         if (initSatVal == '(no value)') {
             this.cell.attr('.satvalue/text', '');
+            refreshColorVis();
+
         } else {
             this.cell.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
         }
