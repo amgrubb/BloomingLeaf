@@ -173,6 +173,20 @@ function responseFunc(isGetNextSteps, response){
 			 {
 				 actorBuffer += 1;
 			 }
+
+			//  if(analysisResult.elementListPercentEvals[i] != null)	{ 
+			// 	 console.log("before actor buffer: "+analysisResult.elementListPercentEvals[i].id);
+			// }
+			// else{
+			// 	console.log("before actor buffer: null :/");
+			// }
+			// if(analysisResult.elementListPercentEvals[i - actorBuffer] != null) {
+			// 	 console.log("after actor buffer: "+analysisResult.elementListPercentEvals[i - actorBuffer].id);
+			// }
+			// else{
+			// 	console.log("after actor buffer: null :/");
+			// }
+
 			 if(intention != null && analysisResult.elementListPercentEvals[i - actorBuffer] != null) {
 			 var offsetPercents = [];
 			 var offsetColors = [];
