@@ -101,66 +101,36 @@ function responseFunc(isGetNextSteps, response){
 				 console.log("previousAnalysis");
 				 console.log(analysisRequest.previousAnalysis);
 				 displayAnalysis(results);
- 
-				 analysisResult.elementListPercentEvals = [];
+
+				 analysisResult.colorVis = new ColorVisual(results.elementList.length);
+				 analysisResult.isPathSim = true;
 				 var percentagePerEvaluation = 0.0;
  
-				 for(var i = 0; i < results.elementList.length; ++i) //iterate through all the intentions
+				 for(var i = 0; i < results.elementList.length; ++i) 
 				 {
-
-					 analysisResult.elementListPercentEvals[i] = new intentionPercentages();
-					 analysisResult.elementListPercentEvals[i].id = results.elementList[i].id;
-					 analysisResult.elementListPercentEvals[i].numEvals = analysisResult.elementList[i].status.length;
+					 analysisResult.colorVis.intentionListColorVis[i].id = results.elementList[i].id;
+					 analysisResult.colorVis.intentionListColorVis[i].numEvals = analysisResult.elementList[i].status.length;
  
-					 analysisResult.elementListPercentEvals[i].initializeIntentionEvaluations();
-					 percentagePerEvaluation = 1.0 / analysisResult.elementListPercentEvals[i].numEvals;
- 
-					 for(var k = 0; k < analysisResult.elementListPercentEvals[i].numEvals; ++k) //iterate through the evaluation points and find the 
-					 {
-							 //determine type of evalutation and add it to corresponding num
-							 switch(analysisResult.elementList[i].status[k]) //ASK: appears backwards?
-							 {
-								 case "0011": //FS
-									 analysisResult.elementListPercentEvals[i].intentionEvaluations[0].percent += percentagePerEvaluation;
-									 break;
-								 case "0010": //PS
-									 analysisResult.elementListPercentEvals[i].intentionEvaluations[1].percent += percentagePerEvaluation;
-									 break;
-								 case "0111": //FS PD
-									 analysisResult.elementListPercentEvals[i].intentionEvaluations[2].percent += percentagePerEvaluation;
-									 break;
-								 case "1111": //FS FD ---> ask: should these be the same? 
-								 case "0110": //PS PD ---> alternativy a lighter purple for 0110 and darker for 1111
-									 analysisResult.elementListPercentEvals[i].intentionEvaluations[3].percent += percentagePerEvaluation;
-									 break;
-								 case "1110": //PS FD
-									 analysisResult.elementListPercentEvals[i].intentionEvaluations[4].percent += percentagePerEvaluation;
-									 break;
-								 case "0100": //PD
-									 analysisResult.elementListPercentEvals[i].intentionEvaluations[5].percent += percentagePerEvaluation;
-									 break;
-								 case "1100": //FD
-									 analysisResult.elementListPercentEvals[i].intentionEvaluations[6].percent += percentagePerEvaluation;
-									 break;
-								 case "0000": //N aka nothing
-									 analysisResult.elementListPercentEvals[i].intentionEvaluations[7].percent += percentagePerEvaluation;
-									 break;
-								 default:
-									 console.log("Evaluation "+analysisResult.elementList[i].status[k]+" is not determined.");
-									 break;
-							 }
+					 percentPerEvaluation = 1.0 / analysisResult.colorVis.intentionListColorVis[i].numEvals;
+					 for(var k = 0; k < analysisResult.colorVis.intentionListColorVis[i].numEvals; ++k) 
+					 { 
+							 var eval = analysisResult.elementList[i].status[k]; 
+							 var newPercent = analysisResult.colorVis.intentionListColorVis[i].evals[eval];
+							 newPercent += percentPerEvaluation;
+							 analysisResult.colorVis.intentionListColorVis[i].evals[eval] = newPercent;
 					 }
+
 				 }
 			 }
 		 }
 	 }
-
-	 //changeIntentionsByPercentage();
 	 generateConsoleReport();
-
 	 analysisResult.isPathSim = true;
 	 refreshColorVis();
  }
+
+
+ 
  
  function changeIntentionsByPercentage()
  {
