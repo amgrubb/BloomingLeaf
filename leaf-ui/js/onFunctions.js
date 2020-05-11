@@ -209,18 +209,6 @@ function switchToModellingMode() {
 
 //code for color visualization slider
 
-var colorVisDict = { //satisfaction values and their cooresponding color
-    "0000" : "#FFFFFF",
-    "0011" : "#001196",
-    "0010" : '#8FB8DE',
-    "0100" : '#DBAADD',
-    "0110" : '#643A71',
-    "0111" : '#8B5FBF', 
-    "1100" : '#FF2600',
-    "1110" : '#8D5A97', 
-    "1111" : '#0D0221' 
-}
-
 //changes each intention by their initial user set satisfaction value in modeling mode
 function changeIntentions(){
     var elements = graph.getElements();
@@ -234,7 +222,7 @@ function changeIntentions(){
         {
             cellView.model.changeToOriginalColour();
         }
-        var colorChange = colorVisDict[initSatVal]; //get color for cooresponding sat value
+        var colorChange = ColorVisual.colorVisDict[initSatVal]; //get color for cooresponding sat value
         cellView.model.attr({'.outer': {'fill': colorChange}}); //change intention color to match sat value
     }else{
         cellView.model.changeToOriginalColour();

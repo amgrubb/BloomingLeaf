@@ -326,7 +326,7 @@ class AnalysisResult {
         this.isPathSim = false; //used for slider visualization
         //NEW AND IMPROVED elementListPercentEvals
         this.intentionListColorVis; //array of intentionColorVis
-        this.colorVis;
+        this.colorVis; //color visualization for analysis mode  
     }
 }
 
@@ -393,7 +393,6 @@ class ColorVisual {
     {
         for(var i = 0; i < this.numIntentions; ++i) {
             this.intentionListColorVis[i] = new intentionColorVis();
-			//this.intentionListColorVis[i].initializeEvalDict();
         }
     }
 }
