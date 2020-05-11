@@ -381,10 +381,11 @@ class ColorVisual {
             7: "1110" ,
             5: "1111" };
 
+    static numEvals = Object.keys(ColorVisual.colorVisDict).length + 1
+
     constructor(numIntentions) {
         this.numIntentions = numIntentions;
-        this.intentionListColorVis = [];
-
+        this.intentionListColorVis = [];        
         this.initializeIntentionListColorVis();
     }      
 
@@ -395,70 +396,7 @@ class ColorVisual {
 			//this.intentionListColorVis[i].initializeEvalDict();
         }
     }
-
 }
-
-
-// class Evaluation {
-//     constructor(type, color)
-//     {
-//         /*
-//         9 combinations because satisfied and denied have three states: fully, partial, none
-//         -> however full-full or partial-partial are the same color so they're grouped together = 8 combos
-//         -> 11/27 reversed everything to utalize this class directly from the backend server
-//         0. Fully Satisfied = FS (0011)
-//         1. Partially Satisfied =  PS (0010)
-//         2. Fully Satisfied Partially Denied = FSPD (0111)
-//         3. Satisfied-Denied (equally) = SD (1111) OR (0110)
-//         4. Partially Satisfied Fully Denied = PSFD (1110)
-//         5. Partially Denied = PD (0100)
-//         6. Fully Denied = FD (1100)
-//         7. Nothing = N (0000)
-//         */
-//         this.type = type; //string that defines what kind of evaluation it is (see above)
-//         this.percent = 0.0; //percentage of time that the intention holds a particular type
-//         this.color = color; //string that cooresponds to the display color
-//     }
-
-//     containsEval()
-//     {
-//         return percent > 0.0;
-//     }
-// }
-
-
-// class intentionPercentages {
-//     constructor()
-//     {
-//         this.id;
-//         this.numEvals;
-//         this.intentionEvaluations = [];
-//     }
-//     /**
-//         initializes array intentionEvaluations, where each element represents a particular evaluation type
-//      */
-//     initializeIntentionEvaluations()
-//     {
-//         // this.intentionEvaluations[0] = new Evaluation("FS", "#313866");  
-//         // this.intentionEvaluations[1] = new Evaluation("PS", "#50409a");
-//         // this.intentionEvaluations[2] = new Evaluation("FSPD", "#7347ae");
-//         // this.intentionEvaluations[3] = new Evaluation("SD", "#964ec2");
-//         // this.intentionEvaluations[4] = new Evaluation("PSFD", "#7e1a5c");
-//         // this.intentionEvaluations[5] = new Evaluation("PD", "#781c5f");
-//         // this.intentionEvaluations[6] = new Evaluation("FD", "#c5093b");
-//         // this.intentionEvaluations[7] = new Evaluation("N", "#ffffff");
-
-//         this.intentionEvaluations[0] = new Evaluation("FS", "#001196");  
-//         this.intentionEvaluations[1] = new Evaluation("PS", "#8FB8DE");
-//         this.intentionEvaluations[2] = new Evaluation("FSPD", "#8B5FBF");
-//         this.intentionEvaluations[3] = new Evaluation("SD", "#643A71");
-//         this.intentionEvaluations[4] = new Evaluation("PSFD", "#8D5A97");
-//         this.intentionEvaluations[5] = new Evaluation("PD", "#DBAADD");
-//         this.intentionEvaluations[6] = new Evaluation("FD", "#FF2600");
-//         this.intentionEvaluations[7] = new Evaluation("N", "#ffffff");
-//     }
-// }
-
 
 class Link {
 

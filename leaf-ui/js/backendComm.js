@@ -105,7 +105,8 @@ function responseFunc(isGetNextSteps, response){
 				 analysisResult.colorVis = new ColorVisual(results.elementList.length);
 				 analysisResult.isPathSim = true;
 				 var percentagePerEvaluation = 0.0;
- 
+				
+				 //calculate evaluation percentages and other data ColorVis
 				 for(var i = 0; i < results.elementList.length; ++i) 
 				 {
 					 analysisResult.colorVis.intentionListColorVis[i].id = results.elementList[i].id;
@@ -119,132 +120,130 @@ function responseFunc(isGetNextSteps, response){
 							 newPercent += percentPerEvaluation;
 							 analysisResult.colorVis.intentionListColorVis[i].evals[eval] = newPercent;
 					 }
-
 				 }
 			 }
 		 }
 	 }
-	 generateConsoleReport();
+	generateColorVisConsoleReport();
 	 analysisResult.isPathSim = true;
 	 refreshColorVis();
  }
 
-
- 
- 
+ //color intentions by their evaluation information from simulate single path
  function changeIntentionsByPercentage()
  {
-	 var elements = graph.getElements(); //get list of all the elements in the graph (aka goal model)
+	 var count = 1;
+	 var elements = graph.getElements(); 
 	 var actorBuffer = 0;
-	 for (var i = 0; i < elements.length; i++){ //cycle through the individual element, determine type (task, goal, etc) and adjust color accordingly
-			 var cellView  = elements[i].findView(paper);
-			 var intention = model.getIntentionByID(cellView.model.attributes.nodeID);
-			 if(intention == null) //intention is an actor...will screw up color list matching up with element #
-			 {
-				 actorBuffer += 1;
-			 }
+ 
+	 for (var i = 0; i < elements.length; i++){ 
+		 ++count;
+ 
+		 var cellView  = elements[i].findView(paper);
+		 var intention = model.getIntentionByID(cellView.model.attributes.nodeID);
+ 
+		 if(intention == null) //is an actor or something went wrong
+		 {
+			 actorBuffer += 1;
+		 }
+ 
+		 var element = analysisResult.colorVis.intentionListColorVis[i - actorBuffer];
+			 if(intention != null && element != null) {
+ 
+				 var offsetPercents = [];
+				 var offsetColors = [];
+				 var numOffsets = 0;
+				 var offsetTotal = 0.0;
+				 var lastIndex = 0;
 
-			//  if(analysisResult.elementListPercentEvals[i] != null)	{ 
-			// 	 console.log("before actor buffer: "+analysisResult.elementListPercentEvals[i].id);
-			// }
-			// else{
-			// 	console.log("before actor buffer: null :/");
-			// }
-			// if(analysisResult.elementListPercentEvals[i - actorBuffer] != null) {
-			// 	 console.log("after actor buffer: "+analysisResult.elementListPercentEvals[i - actorBuffer].id);
-			// }
-			// else{
-			// 	console.log("after actor buffer: null :/");
-			// }
-
-			 if(intention != null && analysisResult.elementListPercentEvals[i - actorBuffer] != null) {
-			 var offsetPercents = [];
-			 var offsetColors = [];
-			 var numOffsets = 0;
-			 var offsetTotal = 0.0;
-			 var lastIndex = 0;
-			 console.log("element "+i+":");
-			 for(var j = 0; j < 8; ++j) //look at all the percents
-			 {
-				 //the before and after buffer gradient into the other evaluations, which are so tiny you can't see them
-				 //this creates the appearance of stripes instead of an actual gradient
-				 if(analysisResult.elementListPercentEvals[i - actorBuffer].intentionEvaluations[j].percent > 0)
+				for(var j = 0; j < ColorVisual.numEvals; ++j)
 				 {
-					 //before buffer
-					 offsetTotal += 0.001;
-					 offsetPercents.push(offsetTotal)
-					 offsetColors.push(analysisResult.elementListPercentEvals[i - actorBuffer].intentionEvaluations[j].color);
-					 //actual color chunk
-					 offsetTotal += analysisResult.elementListPercentEvals[i - actorBuffer].intentionEvaluations[j].percent - 0.002;
-					 offsetPercents.push(offsetTotal);
-					 offsetColors.push(analysisResult.elementListPercentEvals[i - actorBuffer].intentionEvaluations[j].color);
-					 lastIndex = j;
-					 //console.log("offset "+j+": "+offsetTotal);
-					 //after buffer
-					 offsetTotal += 0.001; //add a black "buffer" so the colors don't gradient with eachother
-					 offsetPercents.push(offsetTotal);
-					 offsetColors.push(analysisResult.elementListPercentEvals[i - actorBuffer].intentionEvaluations[j].color);
-					 numOffsets += 3;
+					var eval = ColorVisual.colorVisOrder[j];
+
+					 if(element.evals[eval] > 0)
+					 {
+						 //before buffer
+						 offsetTotal += 0.001;
+						 offsetPercents.push(offsetTotal)
+						 offsetColors.push(ColorVisual.colorVisDict[eval]);
+	 
+						 //actual color chunk
+						 offsetTotal += element.evals[eval] - 0.002;
+						 offsetPercents.push(offsetTotal);
+						 offsetColors.push(ColorVisual.colorVisDict[eval]);
+						 
+						 lastIndex = eval;	 
+						 //after buffer
+						 offsetTotal += 0.001;
+						 offsetPercents.push(offsetTotal);
+						 offsetColors.push(ColorVisual.colorVisDict[eval]);
+						 
+						 numOffsets += 3;
+					 }
 				 }
+	 
+				 while(numOffsets <= 24)
+				 {
+					 offsetPercents.push(100);
+					 offsetColors.push(ColorVisual.colorVisDict[lastIndex]);
+					 ++numOffsets;
+				 }	 
+				 cellView.model.attr({'.outer' : {'fill' :
+				 {
+				  type: 'linearGradient',
+				 stops: [
+					 { offset: offsetPercents[0], color: offsetColors[0]},
+					 { offset: offsetPercents[1], color: offsetColors[1]},
+					 { offset: offsetPercents[2], color: offsetColors[2]},
+					 { offset: offsetPercents[3], color: offsetColors[3]},
+					 { offset: offsetPercents[4], color: offsetColors[4]},
+					 { offset: offsetPercents[5], color: offsetColors[5]},
+					 { offset: offsetPercents[6], color: offsetColors[6]},
+					 { offset: offsetPercents[7], color: offsetColors[7]},
+					 { offset: offsetPercents[8], color: offsetColors[8]},
+					 { offset: offsetPercents[9], color: offsetColors[9]},
+					 { offset: offsetPercents[10], color: offsetColors[10]},
+					 { offset: offsetPercents[11], color: offsetColors[11]},
+					 { offset: offsetPercents[12], color: offsetColors[13]},
+					 { offset: offsetPercents[14], color: offsetColors[14]},
+					 { offset: offsetPercents[15], color: offsetColors[15]},
+					 { offset: offsetPercents[16], color: offsetColors[16]},
+					 { offset: offsetPercents[17], color: offsetColors[17]},
+					 { offset: offsetPercents[18], color: offsetColors[18]},
+					 { offset: offsetPercents[19], color: offsetColors[19]},
+					 { offset: offsetPercents[20], color: offsetColors[20]},
+					 { offset: offsetPercents[21], color: offsetColors[21]},
+					 { offset: offsetPercents[22], color: offsetColors[22]},
+					 { offset: offsetPercents[23], color: offsetColors[23]},
+					 { offset: offsetPercents[24], color: offsetColors[24]}
+				 ]
+			  }
+			  }});
 			 }
-			 while(numOffsets <= 24)
-			 {
-				 offsetPercents.push(100);
-				 offsetColors.push(analysisResult.elementListPercentEvals[i - actorBuffer].intentionEvaluations[lastIndex].color);
-				 ++numOffsets;
-			 }
-			 cellView.model.attr({'.outer' : {'fill' :
-			 {
-			  type: 'linearGradient',
-			 stops: [
-				 { offset: offsetPercents[0], color: offsetColors[0]},
-				 { offset: offsetPercents[1], color: offsetColors[1]},
-				 { offset: offsetPercents[2], color: offsetColors[2]},
-				 { offset: offsetPercents[3], color: offsetColors[3]},
-				 { offset: offsetPercents[4], color: offsetColors[4]},
-				 { offset: offsetPercents[5], color: offsetColors[5]},
-				 { offset: offsetPercents[6], color: offsetColors[6]},
-				 { offset: offsetPercents[7], color: offsetColors[7]},
-				 { offset: offsetPercents[8], color: offsetColors[8]},
-				 { offset: offsetPercents[9], color: offsetColors[9]},
-				 { offset: offsetPercents[10], color: offsetColors[10]},
-				 { offset: offsetPercents[11], color: offsetColors[11]},
-				 { offset: offsetPercents[12], color: offsetColors[13]},
-				 { offset: offsetPercents[14], color: offsetColors[14]},
-				 { offset: offsetPercents[15], color: offsetColors[15]},
-				 { offset: offsetPercents[16], color: offsetColors[16]},
-				 { offset: offsetPercents[17], color: offsetColors[17]},
-				 { offset: offsetPercents[18], color: offsetColors[18]},
-				 { offset: offsetPercents[19], color: offsetColors[19]},
-				 { offset: offsetPercents[20], color: offsetColors[20]},
-				 { offset: offsetPercents[21], color: offsetColors[21]},
-				 { offset: offsetPercents[22], color: offsetColors[22]},
-				 { offset: offsetPercents[23], color: offsetColors[23]},
-				 { offset: offsetPercents[24], color: offsetColors[24]},
-			 ]
-		  }
-		  }});
 	 }
-	}
  }
  
- function generateConsoleReport()
+//prints colorVis information
+ function generateColorVisConsoleReport()
  {
 	 console.log("");
-	 console.log("Output:");
-	 //iterate through intentions
-	 for(var i = 0; i < analysisResult.elementList.length; ++i)
+	 console.log("Color Visualization Output:");
+
+	 for(var i = 0; i < analysisResult.colorVis.numIntentions; ++i)
 	 {
-		 console.log("Goal " + analysisResult.elementList[i].id+":");
-		 //iternate through the 8 different possible evalutions for each intention
-		 for(var j = 0; j < 8; ++j)
+		var intention = analysisResult.colorVis.intentionListColorVis[i];
+
+		 console.log("Intention " + intention.id+":");
+
+		 for(var j = 0; j < ColorVisual.numEvals; ++j)
 		 {
-			 if(analysisResult.elementListPercentEvals[i].intentionEvaluations[j].percent > 0.0)
+			 var evalType = ColorVisual.colorVisOrder[j];
+			 if(intention.evals[evalType] > 0.0)
 			 {
 				 //output it to the console
-				 console.log(analysisResult.elementListPercentEvals[i].intentionEvaluations[j].type
+				 console.log(evalType
 				 + " -> "
-				 + Math.floor(analysisResult.elementListPercentEvals[i].intentionEvaluations[j].percent * 1000)/10
+				 + Math.floor(intention.evals[evalType] * 1000)/10
 				 + "%");
 			 }
 		 }
