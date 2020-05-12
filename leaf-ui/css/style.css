@@ -466,6 +466,7 @@ select > .select-placeholder {
   padding: 0px;
   position: relative;
   top: -15px;
+  left: 5px;
 }
 #on-off{
   font-size: 8px;
@@ -484,7 +485,7 @@ select > .select-placeholder {
   cursor: pointer;
   display: inline-block;
   height: 35px;
-  width: 130px;
+  width: 100px;
   margin-top: 0px;
   margin-bottom: -20px;
   padding-top: 0px;
