@@ -197,13 +197,13 @@ var satisfactionValuesDict = {
 	"0110": {
 	    name: "conflict",
         satValue: "(P, P)",
-        color: "red",
+        color: "black",
 		chartVal: 3
     },
 	"0111": {
         name: "conflict",
 		satValue: "(F, P)",
-		color: "red",
+		color: "black",
 		chartVal: 3
 	},
 	"1100": {
@@ -215,13 +215,13 @@ var satisfactionValuesDict = {
 	"1110": {
         name: "conflict",
         satValue: "(P, F)",
-        color: "red",
+        color: "black",
 		chartVal: 3
     },
 	"1111": {
         name: "conflict",
 		satValue: "(F, F)",
-		color: "red",
+		color: "black",
 		chartVal: 3
 	},
 	"(no value)": {

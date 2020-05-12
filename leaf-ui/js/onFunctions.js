@@ -150,9 +150,12 @@ function revertNodeValuesToInitial() {
 
 		var initSatVal = intention.getInitialSatValue();
 		if (initSatVal === '(no value)') {
-			curr.attr('.satvalue/text', '');
+            curr.attr('.satvalue/text', '');
+            curr.attr({text: {fill: 'black',stroke:'none','font-weight' : 'normal','font-size': 10}});
+
 		} else {
-			curr.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
+            curr.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
+            curr.attr({text: {fill: 'black',stroke:'none','font-weight' : 'normal','font-size': 10}});
 		}
 		curr.attr({text: {fill: 'black'}});
 	}

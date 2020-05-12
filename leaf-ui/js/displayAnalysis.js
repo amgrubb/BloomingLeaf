@@ -169,7 +169,8 @@ function updateNodeValues(nodeID, satValue) {
 
 	if ((cell != null) && (satValue in satisfactionValuesDict)) {
         cell.attr(".satvalue/text", satisfactionValuesDict[satValue].satValue);
-        cell.attr({text: {fill: satisfactionValuesDict[satValue].color}});
+        //makes text bolder and larger with a white boarder so it can stand out from dark or black backgrounds
+        cell.attr({text: {fill: satisfactionValuesDict[satValue].color,stroke: 'white', 'stroke-width' : '.5', 'font-weight' : '900','font-size': 15}});
     }
 }
 
