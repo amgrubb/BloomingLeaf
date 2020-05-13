@@ -212,6 +212,43 @@ function switchToModellingMode() {
 
 //code for color visualization slider
 
+//makes text on intentions white when EVO is activated
+function changeIntentionsText(){
+    var elements = graph.getElements();
+    var curr;
+    var intention;
+    var initSatVal;
+    for (var i = 0; i < elements.length; i++) {
+        curr = elements[i].findView(paper).model;
+
+		if (curr.attributes.type !== 'basic.Goal' &&
+			curr.attributes.type !== 'basic.Task' &&
+			curr.attributes.type !== 'basic.Softgoal' &&
+			curr.attributes.type !== 'basic.Resource') {
+			continue;
+		}
+        intention = model.getIntentionByID(curr.attributes.nodeID);
+	    initSatVal = intention.getInitialSatValue();
+        if (initSatVal === '(no value)') {
+            curr.attr('.satvalue/text', '');
+            curr.attr({text: {fill: 'black',stroke:'none','font-weight' : 'normal','font-size': 10}});
+
+		}else{
+            curr = elements[i].findView(paper).model;
+            curr.attr({text: {fill: 'white',stroke:'none'}});
+        }
+    }
+}
+
+//returns text to black in modeling mode
+function revertIntentionsText(){
+    var elements = graph.getElements();
+    var curr;
+    for (var i = 0; i < elements.length; i++) {
+        curr = elements[i].findView(paper).model;
+        curr.attr({text: {fill: 'black',stroke:'none'}});
+    }
+}
 //changes each intention by their initial user set satisfaction value in modeling mode
 function changeIntentions(){
     var elements = graph.getElements();
@@ -246,11 +283,14 @@ function returnAllColors(){
 function refreshColorVis(){
     if(on&&!analysisResult.isPathSim){ //slider is on in modeling mode OR slidere is on in analysis mode without simulated path
         changeIntentions();
+        changeIntentionsText()
     }
     else if( on && analysisResult.isPathSim){ //slider is on and a single path is simulated in analysis mode
         changeIntentionsByPercentage();
+        changeIntentionsText()
     }else if(!on){ //slider is off
         returnAllColors();
+        revertIntentionsText();
     }
 }
 

@@ -369,9 +369,9 @@ class ColorVisual {
     //     "1100" : "#FF2600",
     //     "1110" : "#8D5A97", 
     //     "1111" : "#0D0221" };
-
+//replaced white with grey for readability
     static colorVisDict = {
-        "0000" : "#FFFFFF",
+        "0000" : "#D3D3D3",
         "0011" : "#003fff",
         "0010" : "#8FB8DE",
         "0100" : "#fbaca8",
