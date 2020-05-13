@@ -148,7 +148,7 @@ function revertNodeValuesToInitial() {
 
 		var intention = model.getIntentionByID(curr.attributes.nodeID);
 
-		var initSatVal = intention.getInitialSatValue();
+		/**var initSatVal = intention.getInitialSatValue();
 		if (initSatVal === '(no value)') {
             curr.attr('.satvalue/text', '');
             curr.attr({text: {fill: 'black',stroke:'none','font-weight' : 'normal','font-size': 10}});
@@ -156,7 +156,7 @@ function revertNodeValuesToInitial() {
 		} else {
             curr.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
             curr.attr({text: {fill: 'black',stroke:'none','font-weight' : 'normal','font-size': 10}});
-		}
+		}**/
 		curr.attr({text: {fill: 'black'}});
 	}
 }
@@ -213,7 +213,7 @@ function switchToModellingMode() {
 //code for color visualization slider
 
 //makes text on intentions white when EVO is activated
-function changeIntentionsText(){
+function changeIntentionsText(inAnalysis){
     var elements = graph.getElements();
     var curr;
     var intention;
@@ -229,13 +229,18 @@ function changeIntentionsText(){
 		}
         intention = model.getIntentionByID(curr.attributes.nodeID);
 	    initSatVal = intention.getInitialSatValue();
-        if (initSatVal === '(no value)') {
-            curr.attr('.satvalue/text', '');
-            curr.attr({text: {fill: 'black',stroke:'none','font-weight' : 'normal','font-size': 10}});
+        if(!inAnalysis){   
+            if (initSatVal === '(no value)') {
+                curr.attr('.satvalue/text', '');
+                curr.attr({text: {fill: 'black',stroke:'none','font-weight' : 'normal','font-size': 10}});
 
-		}else{
+		    }else{
+                curr = elements[i].findView(paper).model;
+                curr.attr({text: {fill: 'white',stroke:'none'}});
+            }
+        }else{
             curr = elements[i].findView(paper).model;
-            curr.attr({text: {fill: 'white',stroke:'none'}});
+            curr.attr({text: {fill: 'white',stroke:'none'}});    
         }
     }
 }
@@ -249,6 +254,7 @@ function revertIntentionsText(){
         curr.attr({text: {fill: 'black',stroke:'none'}});
     }
 }
+
 //changes each intention by their initial user set satisfaction value in modeling mode
 function changeIntentions(){
     var elements = graph.getElements();
@@ -270,6 +276,7 @@ function changeIntentions(){
     }
 }
 
+
 //returns element color to based on element type
 function returnAllColors(){
     var elements = graph.getElements();
@@ -283,11 +290,11 @@ function returnAllColors(){
 function refreshColorVis(){
     if(on&&!analysisResult.isPathSim){ //slider is on in modeling mode OR slidere is on in analysis mode without simulated path
         changeIntentions();
-        changeIntentionsText()
+        changeIntentionsText(false)
     }
     else if( on && analysisResult.isPathSim){ //slider is on and a single path is simulated in analysis mode
         changeIntentionsByPercentage();
-        changeIntentionsText()
+        changeIntentionsText(true)
     }else if(!on){ //slider is off
         returnAllColors();
         revertIntentionsText();

@@ -169,7 +169,7 @@ function updateNodeValues(nodeID, satValue) {
 
 	if ((cell != null) && (satValue in satisfactionValuesDict)) {
         cell.attr(".satvalue/text", satisfactionValuesDict[satValue].satValue);
-        cell.attr({text: {fill: satisfactionValuesDict[satValue].color}});
+        cell.attr({text: {fill: 'white'}});//satisfactionValuesDict[satValue].color
     }
 }
 
