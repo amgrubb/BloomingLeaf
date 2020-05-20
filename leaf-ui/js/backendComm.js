@@ -128,7 +128,36 @@ function responseFunc(isGetNextSteps, response){
 	 analysisResult.isPathSim = true;
 	 refreshColorVis();
  }
+ 
+ function defineGradient(element) {
+	var gradientStops = [];	
+	var offsetTotal = 0.0;
+	
+	for(var j = 0; j < ColorVisual.numEvals; ++j) {
+		var eval = ColorVisual.colorVisOrder[j];
+		if(element.evals[eval] > 0) {
+			//before buffer
+			offsetTotal += 0.001;
+			gradientStops.push({offset: String(offsetTotal*100) + '%',
+			color: ColorVisual.colorVisDict[eval]})
+			//element color
+			offsetTotal += element.evals[eval] - 0.002;
+			gradientStops.push({offset: String(offsetTotal*100) + '%',
+			color: ColorVisual.colorVisDict[eval]})
+			//after buffer
+			offsetTotal += 0.001;
+			gradientStops.push({offset: String(offsetTotal*100) + '%',
+			color: ColorVisual.colorVisDict[eval]})
+		}
+	}
+	
+var gradientId = paper.defineGradient({
+	type: 'linearGradient',
+	stops: gradientStops
+});
 
+return gradientId;
+}
  //color intentions by their evaluation information from simulate single path
  function changeIntentionsByPercentage()
  {
@@ -149,76 +178,9 @@ function responseFunc(isGetNextSteps, response){
  
 		 var element = analysisResult.colorVis.intentionListColorVis[i - actorBuffer];
 			 if(intention != null && element != null) {
- 
-				 var offsetPercents = [];
-				 var offsetColors = [];
-				 var numOffsets = 0;
-				 var offsetTotal = 0.0;
-				 var lastIndex = 0;
-
-				for(var j = 0; j < ColorVisual.numEvals; ++j)
-				 {
-					var eval = ColorVisual.colorVisOrder[j];
-
-					 if(element.evals[eval] > 0)
-					 {
-						 //before buffer
-						 offsetTotal += 0.001;
-						 offsetPercents.push(offsetTotal)
-						 offsetColors.push(ColorVisual.colorVisDict[eval]);
-	 
-						 //actual color chunk
-						 offsetTotal += element.evals[eval] - 0.002;
-						 offsetPercents.push(offsetTotal);
-						 offsetColors.push(ColorVisual.colorVisDict[eval]);
-						 
-						 lastIndex = eval;	 
-						 //after buffer
-						 offsetTotal += 0.001;
-						 offsetPercents.push(offsetTotal);
-						 offsetColors.push(ColorVisual.colorVisDict[eval]);
-						 
-						 numOffsets += 3;
-					 }
-				 }
-	 
-				 while(numOffsets <= 24)
-				 {
-					 offsetPercents.push(100);
-					 offsetColors.push(ColorVisual.colorVisDict[lastIndex]);
-					 ++numOffsets;
-				 }	 
-				 cellView.model.attr({'.outer' : {'fill' :
-				 {
-				  type: 'linearGradient',
-				 stops: [
-					 { offset: offsetPercents[0], color: offsetColors[0]},
-					 { offset: offsetPercents[1], color: offsetColors[1]},
-					 { offset: offsetPercents[2], color: offsetColors[2]},
-					 { offset: offsetPercents[3], color: offsetColors[3]},
-					 { offset: offsetPercents[4], color: offsetColors[4]},
-					 { offset: offsetPercents[5], color: offsetColors[5]},
-					 { offset: offsetPercents[6], color: offsetColors[6]},
-					 { offset: offsetPercents[7], color: offsetColors[7]},
-					 { offset: offsetPercents[8], color: offsetColors[8]},
-					 { offset: offsetPercents[9], color: offsetColors[9]},
-					 { offset: offsetPercents[10], color: offsetColors[10]},
-					 { offset: offsetPercents[11], color: offsetColors[11]},
-					 { offset: offsetPercents[12], color: offsetColors[13]},
-					 { offset: offsetPercents[14], color: offsetColors[14]},
-					 { offset: offsetPercents[15], color: offsetColors[15]},
-					 { offset: offsetPercents[16], color: offsetColors[16]},
-					 { offset: offsetPercents[17], color: offsetColors[17]},
-					 { offset: offsetPercents[18], color: offsetColors[18]},
-					 { offset: offsetPercents[19], color: offsetColors[19]},
-					 { offset: offsetPercents[20], color: offsetColors[20]},
-					 { offset: offsetPercents[21], color: offsetColors[21]},
-					 { offset: offsetPercents[22], color: offsetColors[22]},
-					 { offset: offsetPercents[23], color: offsetColors[23]},
-					 { offset: offsetPercents[24], color: offsetColors[24]}
-				 ]
-			  }
-			  }});
+				var gradientID = defineGradient(element);
+				cellView.model.attr({'.outer' : {'fill' : 'url(#' + gradientID + ')'}});
+				
 			 }
 	 }
  }
