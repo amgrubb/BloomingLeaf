@@ -191,6 +191,7 @@ return gradientId;
 	 console.log("");
 	 console.log("Color Visualization Output:");
 
+	 if(analysisResult.colorVis != null) {
 	 for(var i = 0; i < analysisResult.colorVis.numIntentions; ++i)
 	 {
 		var intention = analysisResult.colorVis.intentionListColorVis[i];
@@ -210,6 +211,10 @@ return gradientId;
 			 }
 		 }
 	 }
+	}
+	else {
+		console.log("ERROR: colorVis is undefined.");
+	}
  }
 
 function executeJava(isGetNextSteps){

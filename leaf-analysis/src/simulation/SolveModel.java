@@ -133,7 +133,7 @@ public class SolveModel {
 			return modelSpec;
 			
 		} catch(Exception e) {
-			throw new RuntimeException("Error in convertModelFromFile() method: /n" + e.getMessage());
+			throw new RuntimeException("Error in convertModelFromFile() method: \n " + e.getMessage());
 		}
 	}
 }
