@@ -384,7 +384,7 @@ function createIntention(cell) {
         // from the actor
         if (userIntention.nodeActorID !== '-') {
         	var actor = model.getActorByID(userIntention.nodeActorID);
-        	actor.removeIntentionID(userIntention.nodeID);
+        	actor.removeIntentionID(userIntention.nodeID, analysisRequest.userAssignmentsList);
         }
 
     });
@@ -942,7 +942,7 @@ graph.on('remove', function(cell) {
         // from the actor
         if (userIntention.nodeActorID !== '-') {
             var actor = model.getActorByID(userIntention.nodeActorID);
-            actor.removeIntentionID(userIntention.nodeID);
+            actor.removeIntentionID(userIntention.nodeID,analysisRequest.userAssignmentsList);
         }
     }
     else if((!cell.isLink()) && (cell["attributes"]["type"]=="basic.Actor")){
