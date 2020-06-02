@@ -376,7 +376,7 @@ function createIntention(cell) {
     	clearInspector();
     	var userIntention = model.getIntentionByID(cell.attributes.nodeID);
     	// remove this intention from the model
-        model.removeIntention(userIntention.nodeID);
+        
         // remove all intention evaluations associated with this intention
         analysisRequest.removeIntention(userIntention.nodeID);
 
@@ -948,8 +948,10 @@ graph.on('remove', function(cell) {
     else if((!cell.isLink()) && (cell["attributes"]["type"]=="basic.Actor")){
         //To remove actor
         model.removeActor(cell['attributes']['nodeID']);
+        model.removeIntention(userIntention.nodeID);
 
     }
+    
 
     //TODO: What I have changed finished
 	else if (cell.isLink() && (cell.prop("link-type") == 'NBT' || cell.prop("link-type") == 'NBD')) {
