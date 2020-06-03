@@ -177,6 +177,21 @@ class Model {
            }
        }
    }
+   /**
+    * 
+    * removes all leftover information from analysis and resets to the inital states
+    * 
+    */
+   removeAnalysis(){
+    analysisRequest.action = null;
+    analysisRequest.conflictLevel = "S";
+    analysisRequest.numRelTime = "1";
+    analysisRequest.absTimePts= "";
+    analysisRequest.absTimePtsArr = [];
+    analysisRequest.currentState = "0";
+    analysisRequest.userAssignmentsList = [];
+    analysisRequest.previousAnalysis = null;
+   }
 
    removeIntentionLinks(nodeID){
 
