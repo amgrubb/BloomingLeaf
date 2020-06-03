@@ -179,12 +179,10 @@ class Model {
    }
 
    removeIntentionLinks(nodeID){
+
        for (var i = 0; i < this.links.length; i++) {
            if (this.links[i].linkSrcID == nodeID || this.links[i].linkDestID == nodeID) {
                this.links.splice(i, 1);
-
-               return;
-
            }
 
        }
@@ -197,8 +195,6 @@ class Model {
      * @param {String} linkID
      */
     removeLink(linkID) {
-        for (var i = 0; i < this.links.length; i++) {
-        }
         for (var i = 0; i < this.links.length; i++) {
             if (this.links[i].linkID == linkID) {
                 this.links.splice(i, 1);

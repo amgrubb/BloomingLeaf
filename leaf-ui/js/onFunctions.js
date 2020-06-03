@@ -945,6 +945,7 @@ graph.on('remove', function(cell) {
             actor.removeIntentionID(userIntention.nodeID,analysisRequest.userAssignmentsList);
         }
         model.removeIntention(userIntention.nodeID);
+       
     }
     else if((!cell.isLink()) && (cell["attributes"]["type"]=="basic.Actor")){
         //To remove actor
