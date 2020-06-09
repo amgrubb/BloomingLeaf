@@ -104,18 +104,26 @@ function responseFunc(isGetNextSteps, response){
 
 				 analysisResult.colorVis = new ColorVisual(results.elementList.length);
 				 analysisResult.isPathSim = true;
+				 $('#modelingSlider').css("display", "none");
+				 $('#analysisSlider').css("display", "");
+				 document.getElementById("colorResetAnalysis").value = sliderOption;
+				 refreshColorVis();
+
 				 var percentagePerEvaluation = 0.0;
 				
-				 //calculate evaluation percentages and other data ColorVis
+				 //calculate evaluation percentages and other data for ColorVis
 				 for(var i = 0; i < results.elementList.length; ++i) 
 				 {
 					 analysisResult.colorVis.intentionListColorVis[i].id = results.elementList[i].id;
 					 analysisResult.colorVis.intentionListColorVis[i].numEvals = analysisResult.elementList[i].status.length;
  
 					 percentPerEvaluation = 1.0 / analysisResult.colorVis.intentionListColorVis[i].numEvals;
+					 //console.log("element = "+results.elementList[i].id);
 					 for(var k = 0; k < analysisResult.colorVis.intentionListColorVis[i].numEvals; ++k) 
 					 { 
 							 var eval = analysisResult.elementList[i].status[k]; 
+							 analysisResult.colorVis.intentionListColorVis[i].timePoints.push(eval); //for fill intention by timepoint
+							 //console.log("eval = "+analysisResult.colorVis.intentionListColorVis[i].timePoints[k]);
 							 var newPercent = analysisResult.colorVis.intentionListColorVis[i].evals[eval];
 							 newPercent += percentPerEvaluation;
 							 analysisResult.colorVis.intentionListColorVis[i].evals[eval] = newPercent;
@@ -124,48 +132,89 @@ function responseFunc(isGetNextSteps, response){
 			 }
 		 }
 	 }
+	//ColorVisual.curTimePoint = analysisResult.colorVis.intentionListColorVis[0].numEvals; 
+	//TODO: numEvals is the same for every intention, it should not be a separate variable for each intention :/
 	generateColorVisConsoleReport();
-	 analysisResult.isPathSim = true;
-	 refreshColorVis();
+	analysisResult.isPathSim = true;
+	refreshColorVis();
  }
- 
- function defineGradient(element) {
-	var gradientStops = [];	
-	var offsetTotal = 0.0;
-	
-	for(var j = 0; j < ColorVisual.numEvals; ++j) {
-		var eval = ColorVisual.colorVisOrder[j];
-		if(element.evals[eval] > 0) {
-			//before buffer
-			offsetTotal += 0.001;
-			gradientStops.push({offset: String(offsetTotal*100) + '%',
-			color: ColorVisual.colorVisDict[eval]})
-			//element color
-			offsetTotal += element.evals[eval] - 0.002;
-			gradientStops.push({offset: String(offsetTotal*100) + '%',
-			color: ColorVisual.colorVisDict[eval]})
-			//after buffer
-			offsetTotal += 0.001;
-			gradientStops.push({offset: String(offsetTotal*100) + '%',
-			color: ColorVisual.colorVisDict[eval]})
-		}
-	}
-	
-var gradientId = paper.defineGradient({
-	type: 'linearGradient',
-	stops: gradientStops
-});
 
-return gradientId;
+
+
+function defineGradient(element) {
+	//console.log("sliderOption = "+sliderOption);
+		var gradientStops = [];	
+		var offsetTotal = 0.0;
+		var gradientID;
+		
+		if(sliderOption == 2) { //fill by time
+			var percentPerTimePoint = 1.0 / element.timePoints.length;
+			var timePointColor;
+			//console.log("percentPerTimePoint = "+percentPerTimePoint);
+			for(var j = 0; j < element.timePoints.length; ++j) {
+				timePointColor = ColorVisual.colorVisDict[element.timePoints[j]];
+				//console.log("timePointColor = "+timePointColor);
+				//before buffer
+				offsetTotal += 0.001;
+				gradientStops.push({offset: String(offsetTotal*100) + '%',
+				color: ColorVisual.colorVisDict[element.timePoints[j]]})
+				//element color
+				offsetTotal += percentPerTimePoint - 0.002;
+				gradientStops.push({offset: String(offsetTotal*100) + '%',
+				color: ColorVisual.colorVisDict[element.timePoints[j]]})
+				//after buffer
+				offsetTotal += 0.001;
+				gradientStops.push({offset: String(offsetTotal*100) + '%',
+				color: ColorVisual.colorVisDict[element.timePoints[j]]})
+			}
+			gradientId = paper.defineGradient({
+				type: 'linearGradient',
+				stops: gradientStops
+			});
+		}
+		else if(sliderOption == 1) { //fill by %
+			for(var j = 0; j < ColorVisual.numEvals; ++j) {
+			var eval = ColorVisual.colorVisOrder[j];
+			if(element.evals[eval] > 0) {
+				//before buffer
+				offsetTotal += 0.001;
+				gradientStops.push({offset: String(offsetTotal*100) + '%',
+				color: ColorVisual.colorVisDict[eval]})
+				//element color
+				offsetTotal += element.evals[eval] - 0.002;
+				gradientStops.push({offset: String(offsetTotal*100) + '%',
+				color: ColorVisual.colorVisDict[eval]})
+				//after buffer
+				offsetTotal += 0.001;
+				gradientStops.push({offset: String(offsetTotal*100) + '%',
+				color: ColorVisual.colorVisDict[eval]})
+			}
+		}
+		gradientId = paper.defineGradient({
+			type: 'linearGradient',
+			stops: gradientStops
+		});
+	}
+	//else { //fill by user selected timepoint
+	// 	var timepoint = 3;//get timepoint
+	// 	var index = timepoint - 1;
+	// 	var eval = element.timePoints[index];
+	// 	console.log("eval at timepoint "+timepoint+" = "+eval);
+	// 	gradientID = ColorVisual.colorVisDict[eval];
+	// }
+
+	return gradientId;
 }
+
  //color intentions by their evaluation information from simulate single path
- function changeIntentionsByPercentage()
+ // previously changeIntentionsByPercentage
+ function changeIntentionsColorVis()
  {
 	 var count = 1;
 	 var elements = graph.getElements(); 
 	 var actorBuffer = 0;
  
-	 for (var i = 0; i < elements.length; i++){ 
+	 for (var i = 0; i < elements.length; i++){  //iterate through elements
 		 ++count;
  
 		 var cellView  = elements[i].findView(paper);
@@ -178,9 +227,19 @@ return gradientId;
  
 		 var element = analysisResult.colorVis.intentionListColorVis[i - actorBuffer];
 			 if(intention != null && element != null) {
+				 if(sliderOption != 3) {
 				var gradientID = defineGradient(element);
 				cellView.model.attr({'.outer' : {'fill' : 'url(#' + gradientID + ')'}});
-				
+				 }
+				 else {
+					var timepoint = ColorVisual.curTimePoint;
+					//TODO: delete instance of ColorVisual when switching to modeling mode
+					//TODO: fix bug that gives invalid timepoint immediately after simulating a single path
+					var eval = element.timePoints[timepoint];
+					//console.log("eval at timepoint "+timepoint+" = "+eval);
+					var color = ColorVisual.colorVisDict[eval];
+					cellView.model.attr({'.outer' : {'fill' : color}})
+				 }
 			 }
 	 }
  }
