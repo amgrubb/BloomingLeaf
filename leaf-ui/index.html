@@ -74,11 +74,18 @@
                 </div>
             </div>
 
-            <!-- slider for turning color visualization on/off -->
-            <div id = "color-button" > <!-- slider div -->
-              <input type="range" min="0" max="1" value="0" class="slider" id="colorReset"> <!-- makes slider -->
+            <!-- modeling mode slider: simple off/on option-->
+            <div class = "color-button" id="modelingSlider"> <!-- slider div -->
+              <input type="range" min="0" max="1" value="0" class="EVO-slider" id="colorReset"> <!-- makes slider -->
               <p id = "top-label" style = "display: inline-block" >EVO</p> <!-- sat slider label -->
               <p id = "on-off">  Off &ensp; On</p> <!--  on/off label -->
+            </div>
+
+            <!-- Analysis mode slider: option to fill by percentage of timepoints -->
+            <div class = "color-button" id='analysisSlider' style='display: none'> <!-- slider div -->
+              <input type="range" min="0" max="3" value="0" class="EVO-slider" id="colorResetAnalysis"> <!-- makes slider -->
+              <p id = "top-label-analysis" style = "display: inline-block" >EVO</p> <!-- sat slider label -->
+              <p id = "on-off"> Off &ensp; % &ensp; Time &ensp; State </p> <!--  on/off label -->
             </div>
             
             <!-- OLD Button to switch between Constraint view and the Relationship view.

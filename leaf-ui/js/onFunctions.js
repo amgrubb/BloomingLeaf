@@ -101,7 +101,7 @@ function switchToAnalysisMode() {
     $('#dropdown-model').css("display", "");
     //$('#on-off').css("display", "none");
 
-	$('#model-toolbar').css("display", "none");
+    $('#model-toolbar').css("display", "none");
 
 	$('#modeText').text("Analysis");
 
@@ -191,7 +191,14 @@ function switchToModellingMode() {
     $('#dropdown-model').css("display","none");
     $('#on-off').css("display", "");
 
-	$('#model-toolbar').css("display","");
+    $('#model-toolbar').css("display","");
+    $('#modelingSlider').css("display", "");
+    $('#analysisSlider').css("display", "none");
+   if(sliderOption > 0) {
+       sliderOption = '1';
+   }
+   document.getElementById("colorReset").value = sliderOption;
+    refreshColorVis();
 
 	$('#sliderValue').text("");
 

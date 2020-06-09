@@ -336,7 +336,7 @@ class intentionColorVis{
         this.id;
         this.numEvals;
         this.evals;
-
+        this.timePoints = []; //array of evals at each time point
         this.initializeEvalDict();
     }
 
