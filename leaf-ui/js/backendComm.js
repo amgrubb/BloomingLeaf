@@ -142,7 +142,6 @@ function responseFunc(isGetNextSteps, response){
 
 
 function defineGradient(element) {
-	//console.log("sliderOption = "+sliderOption);
 		var gradientStops = [];	
 		var offsetTotal = 0.0;
 		var gradientID;
@@ -150,10 +149,8 @@ function defineGradient(element) {
 		if(sliderOption == 2) { //fill by time
 			var percentPerTimePoint = 1.0 / element.timePoints.length;
 			var timePointColor;
-			//console.log("percentPerTimePoint = "+percentPerTimePoint);
 			for(var j = 0; j < element.timePoints.length; ++j) {
 				timePointColor = ColorVisual.colorVisDict[element.timePoints[j]];
-				//console.log("timePointColor = "+timePointColor);
 				//before buffer
 				offsetTotal += 0.001;
 				gradientStops.push({offset: String(offsetTotal*100) + '%',
@@ -195,13 +192,6 @@ function defineGradient(element) {
 			stops: gradientStops
 		});
 	}
-	//else { //fill by user selected timepoint
-	// 	var timepoint = 3;//get timepoint
-	// 	var index = timepoint - 1;
-	// 	var eval = element.timePoints[index];
-	// 	console.log("eval at timepoint "+timepoint+" = "+eval);
-	// 	gradientID = ColorVisual.colorVisDict[eval];
-	// }
 
 	return gradientId;
 }
@@ -230,13 +220,11 @@ function defineGradient(element) {
 				 if(sliderOption != 3) {
 				var gradientID = defineGradient(element);
 				cellView.model.attr({'.outer' : {'fill' : 'url(#' + gradientID + ')'}});
-				 }
+				 } //visualize model at user selected timepoint
 				 else {
 					var timepoint = ColorVisual.curTimePoint;
 					//TODO: delete instance of ColorVisual when switching to modeling mode
-					//TODO: fix bug that gives invalid timepoint immediately after simulating a single path
 					var eval = element.timePoints[timepoint];
-					//console.log("eval at timepoint "+timepoint+" = "+eval);
 					var color = ColorVisual.colorVisDict[eval];
 					cellView.model.attr({'.outer' : {'fill' : color}})
 				 }

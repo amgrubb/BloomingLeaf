@@ -323,14 +323,12 @@ var slider = document.getElementById("colorReset");
 var sliderOption = slider.value;
 slider.oninput = function() { //turns slider on/off and refreshes
   sliderOption = this.value;
- //console.log("option (modeling slider) = "+sliderOption);
   refreshColorVis();
 }
 
 var sliderAnalysis = document.getElementById("colorResetAnalysis");
 sliderAnalysis.oninput = function() { //changes slider mode and refreshes
   sliderOption = this.value;
- // console.log("option (analysis slider)= "+sliderOption);
   refreshColorVis();
 }
 
