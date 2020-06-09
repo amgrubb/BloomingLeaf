@@ -288,16 +288,26 @@ function returnAllColors(){
 
 //runs after every event that could change intentions
 function refreshColorVis(){
-    if(on&&!analysisResult.isPathSim){ //slider is on in modeling mode OR slidere is on in analysis mode without simulated path
-        changeIntentions();
-        changeIntentionsText(false)
-    }
-    else if( on && analysisResult.isPathSim){ //slider is on and a single path is simulated in analysis mode
-        changeIntentionsByPercentage();
-        changeIntentionsText(true)
-    }else if(!on){ //slider is off
-        returnAllColors();
-        revertIntentionsText();
+    switch(sliderOption) {
+        case '1':
+        case '2':
+        case '3':
+            if(!analysisResult.isPathSim ) {
+           // console.log("changing intentions by initial state");
+            changeIntentions();
+            changeIntentionsText(false)
+            }
+            else {
+           // console.log("filling intentions by: "+sliderOption);
+            changeIntentionsColorVis();
+            changeIntentionsText(true) 
+            }
+            break;
+        default:
+            //console.log("colorVis off");
+            returnAllColors();
+            revertIntentionsText();    
+                break;
     }
 }
 
@@ -305,9 +315,17 @@ function refreshColorVis(){
  * Source:https://www.w3schools.com/howto/howto_js_rangeslider.asp 
  */
 var slider = document.getElementById("colorReset");
-var on = false;
+var sliderOption = slider.value;
 slider.oninput = function() { //turns slider on/off and refreshes
-  on = !on;
+  sliderOption = this.value;
+ //console.log("option (modeling slider) = "+sliderOption);
+  refreshColorVis();
+}
+
+var sliderAnalysis = document.getElementById("colorResetAnalysis");
+sliderAnalysis.oninput = function() { //changes slider mode and refreshes
+  sliderOption = this.value;
+ // console.log("option (analysis slider)= "+sliderOption);
   refreshColorVis();
 }
 
