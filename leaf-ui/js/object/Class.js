@@ -393,7 +393,8 @@ class ColorVisual {
             5: "1111" };
 
     static numEvals = Object.keys(ColorVisual.colorVisDict).length + 1
-
+    static curTimePoint = 0;
+    
     constructor(numIntentions) {
         this.numIntentions = numIntentions;
         this.intentionListColorVis = [];        

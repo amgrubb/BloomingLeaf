@@ -70,11 +70,12 @@ function createSlider(currentAnalysis, isSwitch) {
 
     // Set initial value of the slider
     sliderObject.sliderElement.noUiSlider.set(isSwitch ? 0 : sliderMax);
-
+    ColorVisual.curTimePoint = sliderMax;
     sliderObject.sliderElement.noUiSlider.on('update', function( values, handle ) {
         updateSliderValues(parseInt(values[handle]), currentAnalysis);
     });
-
+    
+    refreshColorVis(); 
     adjustSliderWidth(sliderMax);
 }
 
@@ -117,8 +118,6 @@ function adjustSliderWidth(maxValue){
         new_width = max;
     }
     $('#slider').width(new_width);
-
-
 }
 
 /**
@@ -142,7 +141,10 @@ function updateSliderValues(sliderValue, currentAnalysis){
 	for (var i = 0; i < currentAnalysis.numOfElements; i++) {
 		var element = currentAnalysis.elements[i];
 		updateNodeValues(element.id, element.status[value]);
-	}
+    }
+    
+    ColorVisual.curTimePoint = value;
+    refreshColorVis();
 }
 
 

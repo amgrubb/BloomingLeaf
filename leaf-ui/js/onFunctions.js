@@ -213,8 +213,6 @@ function switchToModellingMode() {
 
     mode = "Modelling";
 
-    //analysisResult.isPathSim = false;
-    //refreshColorVis();
 }
 
 //code for color visualization slider
