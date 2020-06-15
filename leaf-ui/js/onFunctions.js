@@ -202,7 +202,8 @@ function switchToModellingMode() {
 $('#btn-undo').on('click', _.bind(commandManager.undo, commandManager));
 $('#btn-redo').on('click', _.bind(commandManager.redo, commandManager));
 $('#btn-clear-all').on('click', function(){
-	graph.clear();
+    graph.clear();
+    model.removeAnalysis();
 	// Delete cookie by setting expiry to past date
 	document.cookie='graph={}; expires=Thu, 18 Dec 2013 12:00:00 UTC';
 });
@@ -384,7 +385,7 @@ function createIntention(cell) {
         // from the actor
         if (userIntention.nodeActorID !== '-') {
         	var actor = model.getActorByID(userIntention.nodeActorID);
-        	actor.removeIntentionID(userIntention.nodeID);
+        	actor.removeIntentionID(userIntention.nodeID, analysisRequest.userAssignmentsList);
         }
 
     });
@@ -942,13 +943,13 @@ graph.on('remove', function(cell) {
         // from the actor
         if (userIntention.nodeActorID !== '-') {
             var actor = model.getActorByID(userIntention.nodeActorID);
-            actor.removeIntentionID(userIntention.nodeID);
+            actor.removeIntentionID(userIntention.nodeID,analysisRequest.userAssignmentsList);
         }
-        model.removeIntention(userIntention.nodeID); 
     }
     else if((!cell.isLink()) && (cell["attributes"]["type"]=="basic.Actor")){
         //To remove actor
         model.removeActor(cell['attributes']['nodeID']);
+
 
     }
     
