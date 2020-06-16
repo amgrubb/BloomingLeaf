@@ -75,7 +75,7 @@ function createSlider(currentAnalysis, isSwitch) {
         updateSliderValues(parseInt(values[handle]), currentAnalysis);
     });
     
-    refreshColorVis(); 
+    ColorVisual.refreshColorVis(); 
     adjustSliderWidth(sliderMax);
 }
 
@@ -144,7 +144,7 @@ function updateSliderValues(sliderValue, currentAnalysis){
     }
     
     ColorVisual.curTimePoint = value;
-    refreshColorVis();
+    ColorVisual.refreshColorVis();
 }
 
 

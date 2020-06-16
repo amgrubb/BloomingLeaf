@@ -358,7 +358,6 @@ class intentionColorVis{
 }
 
 class ColorVisual {
-
     // static colorVisDict = {
     //     "0000" : "#FFFFFF",
     //     "0011" : "#001196",
@@ -392,19 +391,102 @@ class ColorVisual {
             7: "1110" ,
             5: "1111" };
 
-    static numEvals = Object.keys(ColorVisual.colorVisDict).length + 1
+    static numEvals = Object.keys(ColorVisual.colorVisDict).length + 1;
     static curTimePoint = 0;
-    
-    constructor(numIntentions) {
-        this.numIntentions = numIntentions;
+    static sliderOption = 0;
+
+    static refreshColorVis() {
+        console.log("inside ColorVisualSlider static method refreshColorVis()");
+        switch(this.sliderOption) {
+            case '1':
+            case '2':
+            case '3':
+                if(!analysisResult.isPathSim ) {
+               // console.log("changing intentions by initial state");
+                changeIntentions();
+                changeIntentionsText(false)
+                }
+                else {
+               // console.log("filling intentions by: "+sliderOption);
+                changeIntentionsColorVis();
+                changeIntentionsText(true) 
+                }
+                break;
+            default://colorVis off
+                returnAllColors();
+                revertIntentionsText();    
+                    break;
+        }
+    }
+        
+    constructor(elementList) {
+        this.numIntentions = elementList.length;
+        this.numTimePoints = elementList[0].status.length;
         this.intentionListColorVis = [];        
         this.initializeIntentionListColorVis();
-    }      
+        this.singlePathResponse(elementList);
+    }  
 
-    initializeIntentionListColorVis()
-    {
+    singlePathResponse(elementList) {
+        console.log("inside singlePathResponse");
+        $('#modelingSlider').css("display", "none");
+        $('#analysisSlider').css("display", "");
+        document.getElementById("colorResetAnalysis").value = ColorVisual.sliderOption;
+        ColorVisual.refreshColorVis();
+
+        var percentPerEvaluation = 1.0 / this.numTimePoints;
+        console.log("percentagePerEvaluation = "+percentPerEvaluation);
+       
+        //calculate evaluation percentages and other data for ColorVis
+        for(var i = 0; i < this.numIntentions; ++i) 
+        {
+            this.intentionListColorVis[i].id = elementList[i].id;
+            //this.intentionListColorVis[i].numEvals = elementList[i].status.length;
+            //percentPerEvaluation = 1.0 / analysisResult.colorVis.intentionListColorVis[i].numEvals;
+            //console.log("element = "+results.elementList[i].id);
+            for(var k = 0; k < this.numTimePoints; ++k) 
+            { 
+                    var currEval = elementList[i].status[k]; 
+                    this.intentionListColorVis[i].timePoints.push(currEval); //for fill intention by timepoint
+                    //console.log("eval = "+analysisResult.colorVis.intentionListColorVis[i].timePoints[k]);
+                    var newPercent = this.intentionListColorVis[i].evals[currEval];
+                    newPercent += percentPerEvaluation;
+                    this.intentionListColorVis[i].evals[currEval] = newPercent;
+            }
+        }
+        this.generateColorVisConsoleReport();
+    }    
+
+    initializeIntentionListColorVis()  {
         for(var i = 0; i < this.numIntentions; ++i) {
             this.intentionListColorVis[i] = new intentionColorVis();
+        }
+    }
+
+    //prints colorVis information
+    generateColorVisConsoleReport() {
+        console.log("");
+        console.log("Color Visualization Output:");
+
+        if(analysisResult.colorVis != null) {
+        for(var i = 0; i < analysisResult.colorVis.numIntentions; ++i) {
+            var intention = analysisResult.colorVis.intentionListColorVis[i];
+            console.log("Intention " + intention.id+":");
+
+            for(var j = 0; j < ColorVisual.numEvals; ++j) {
+                var evalType = ColorVisual.colorVisOrder[j];
+                if(intention.evals[evalType] > 0.0)  {
+                    //output it to the console
+                    console.log(evalType
+                    + " -> "
+                    + Math.floor(intention.evals[evalType] * 1000)/10
+                    + "%");
+                }
+            }
+        }
+        }
+        else {
+            console.log("ERROR: colorVis is undefined.");
         }
     }
 }

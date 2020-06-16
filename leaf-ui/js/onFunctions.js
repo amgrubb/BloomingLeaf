@@ -20,7 +20,7 @@ $('#analysis-btn').on('click', function() {
 
     // If there are cycles, then display error message. Otherwise, remove any "red" elements.
     cycleCheckForLinks(cycle);
-    refreshColorVis();
+    ColorVisual.refreshColorVis();
 });
 
 $('#load-sample').on('click', function() {
@@ -125,7 +125,7 @@ $('#model-cur-btn').on('click', function() {
     savedAnalysisData.finalValueTimePoints="";
     
     analysisResult.isPathSim = false;
-    refreshColorVis();
+    ColorVisual.refreshColorVis();
 });
 
 
@@ -194,11 +194,11 @@ function switchToModellingMode() {
     $('#model-toolbar').css("display","");
     $('#modelingSlider').css("display", "");
     $('#analysisSlider').css("display", "none");
-   if(sliderOption > 0) {
-       sliderOption = '1';
+   if(ColorVisual.sliderOption > 0) {
+    ColorVisual.sliderOption = '1';
    }
-   document.getElementById("colorReset").value = sliderOption;
-    refreshColorVis();
+   document.getElementById("colorReset").value = ColorVisual.sliderOption;
+   ColorVisual.refreshColorVis();
 
 	$('#sliderValue').text("");
 
@@ -293,46 +293,46 @@ function returnAllColors(){
 /**
  * Runs after every event that could change intentions
  */
-function refreshColorVis(){
-    switch(sliderOption) {
-        case '1':
-        case '2':
-        case '3':
-            if(!analysisResult.isPathSim ) {
-           // console.log("changing intentions by initial state");
-            changeIntentions();
-            changeIntentionsText(false)
-            }
-            else {
-           // console.log("filling intentions by: "+sliderOption);
-            changeIntentionsColorVis();
-            changeIntentionsText(true) 
-            }
-            break;
-        default://colorVis off
-            returnAllColors();
-            revertIntentionsText();    
-                break;
-    }
-}
+// function refreshColorVis(){
+//     switch(sliderOption) {
+//         case '1':
+//         case '2':
+//         case '3':
+//             if(!analysisResult.isPathSim ) {
+//            // console.log("changing intentions by initial state");
+//             changeIntentions();
+//             changeIntentionsText(false)
+//             }
+//             else {
+//            // console.log("filling intentions by: "+sliderOption);
+//             changeIntentionsColorVis();
+//             changeIntentionsText(true) 
+//             }
+//             break;
+//         default://colorVis off
+//             returnAllColors();
+//             revertIntentionsText();    
+//                 break;
+//     }
+// }
 
 /**
  * Source:https://www.w3schools.com/howto/howto_js_rangeslider.asp 
  * Two option modeling mode slider
  */
 var sliderModeling = document.getElementById("colorReset");
-var sliderOption = slider.value;
+var sliderOption = sliderModeling.value;
 sliderModeling.oninput = function() { //turns slider on/off and refreshes
-  sliderOption = this.value;
-  refreshColorVis();
+  ColorVisual.sliderOption = this.value;
+  ColorVisual.refreshColorVis();
 }
 /**
  * Four option analysis mode slider
  */
 var sliderAnalysis = document.getElementById("colorResetAnalysis");
 sliderAnalysis.oninput = function() { //changes slider mode and refreshes
-  sliderOption = this.value;
-  refreshColorVis();
+    ColorVisual.sliderOption = this.value;
+    ColorVisual.refreshColorVis();
 }
 
 /**

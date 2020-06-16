@@ -102,41 +102,42 @@ function responseFunc(isGetNextSteps, response){
 				 console.log(analysisRequest.previousAnalysis);
 				 displayAnalysis(results);
 
-				 analysisResult.colorVis = new ColorVisual(results.elementList.length);
-				 analysisResult.isPathSim = true;
-				 $('#modelingSlider').css("display", "none");
-				 $('#analysisSlider').css("display", "");
-				 document.getElementById("colorResetAnalysis").value = sliderOption;
-				 refreshColorVis();
 
-				 var percentagePerEvaluation = 0.0;
+				 analysisResult.colorVis = new ColorVisual(results.elementList);
+				 analysisResult.isPathSim = true;
+				//  $('#modelingSlider').css("display", "none");
+				//  $('#analysisSlider').css("display", "");
+				//  document.getElementById("colorResetAnalysis").value = ColorVisual.sliderOption;
+				//  ColorVisual.refreshColorVis();
+
+				//  var percentagePerEvaluation = 0.0;
 				
-				 //calculate evaluation percentages and other data for ColorVis
-				 for(var i = 0; i < results.elementList.length; ++i) 
-				 {
-					 analysisResult.colorVis.intentionListColorVis[i].id = results.elementList[i].id;
-					 analysisResult.colorVis.intentionListColorVis[i].numEvals = analysisResult.elementList[i].status.length;
+				//  //calculate evaluation percentages and other data for ColorVis
+				//  for(var i = 0; i < results.elementList.length; ++i) 
+				//  {
+				// 	 analysisResult.colorVis.intentionListColorVis[i].id = results.elementList[i].id;
+				// 	 analysisResult.colorVis.intentionListColorVis[i].numEvals = analysisResult.elementList[i].status.length;
  
-					 percentPerEvaluation = 1.0 / analysisResult.colorVis.intentionListColorVis[i].numEvals;
-					 //console.log("element = "+results.elementList[i].id);
-					 for(var k = 0; k < analysisResult.colorVis.intentionListColorVis[i].numEvals; ++k) 
-					 { 
-							 var eval = analysisResult.elementList[i].status[k]; 
-							 analysisResult.colorVis.intentionListColorVis[i].timePoints.push(eval); //for fill intention by timepoint
-							 //console.log("eval = "+analysisResult.colorVis.intentionListColorVis[i].timePoints[k]);
-							 var newPercent = analysisResult.colorVis.intentionListColorVis[i].evals[eval];
-							 newPercent += percentPerEvaluation;
-							 analysisResult.colorVis.intentionListColorVis[i].evals[eval] = newPercent;
-					 }
-				 }
+				// 	 percentPerEvaluation = 1.0 / analysisResult.colorVis.intentionListColorVis[i].numEvals;
+				// 	 //console.log("element = "+results.elementList[i].id);
+				// 	 for(var k = 0; k < analysisResult.colorVis.intentionListColorVis[i].numEvals; ++k) 
+				// 	 { 
+				// 			 var eval = analysisResult.elementList[i].status[k]; 
+				// 			 analysisResult.colorVis.intentionListColorVis[i].timePoints.push(eval); //for fill intention by timepoint
+				// 			 //console.log("eval = "+analysisResult.colorVis.intentionListColorVis[i].timePoints[k]);
+				// 			 var newPercent = analysisResult.colorVis.intentionListColorVis[i].evals[eval];
+				// 			 newPercent += percentPerEvaluation;
+				// 			 analysisResult.colorVis.intentionListColorVis[i].evals[eval] = newPercent;
+				// 	 }
+				//  }
 			 }
 		 }
 	 }
 	//ColorVisual.curTimePoint = analysisResult.colorVis.intentionListColorVis[0].numEvals; 
 	//TODO: numEvals is the same for every intention, it should not be a separate variable for each intention :/
 	generateColorVisConsoleReport();
-	analysisResult.isPathSim = true;
-	refreshColorVis();
+	//analysisResult.isPathSim = true;
+	//ColorVisual.refreshColorVis();
  }
 
 
@@ -146,7 +147,7 @@ function defineGradient(element) {
 		var offsetTotal = 0.0;
 		var gradientID;
 		
-		if(sliderOption == 2) { //fill by time
+		if(ColorVisual.sliderOption == 2) { //fill by time
 			var percentPerTimePoint = 1.0 / element.timePoints.length;
 			var timePointColor;
 			for(var j = 0; j < element.timePoints.length; ++j) {
@@ -169,7 +170,7 @@ function defineGradient(element) {
 				stops: gradientStops
 			});
 		}
-		else if(sliderOption == 1) { //fill by %
+		else if(ColorVisual.sliderOption == 1) { //fill by %
 			for(var j = 0; j < ColorVisual.numEvals; ++j) {
 			var eval = ColorVisual.colorVisOrder[j];
 			if(element.evals[eval] > 0) {
@@ -217,7 +218,7 @@ function defineGradient(element) {
  
 		 var element = analysisResult.colorVis.intentionListColorVis[i - actorBuffer];
 			 if(intention != null && element != null) {
-				 if(sliderOption != 3) {
+				 if(ColorVisual.sliderOption != 3) {
 				var gradientID = defineGradient(element);
 				cellView.model.attr({'.outer' : {'fill' : 'url(#' + gradientID + ')'}});
 				 } //visualize model at user selected timepoint
@@ -232,37 +233,6 @@ function defineGradient(element) {
 	 }
  }
  
-//prints colorVis information
- function generateColorVisConsoleReport()
- {
-	 console.log("");
-	 console.log("Color Visualization Output:");
-
-	 if(analysisResult.colorVis != null) {
-	 for(var i = 0; i < analysisResult.colorVis.numIntentions; ++i)
-	 {
-		var intention = analysisResult.colorVis.intentionListColorVis[i];
-
-		 console.log("Intention " + intention.id+":");
-
-		 for(var j = 0; j < ColorVisual.numEvals; ++j)
-		 {
-			 var evalType = ColorVisual.colorVisOrder[j];
-			 if(intention.evals[evalType] > 0.0)
-			 {
-				 //output it to the console
-				 console.log(evalType
-				 + " -> "
-				 + Math.floor(intention.evals[evalType] * 1000)/10
-				 + "%");
-			 }
-		 }
-	 }
-	}
-	else {
-		console.log("ERROR: colorVis is undefined.");
-	}
- }
 
 function executeJava(isGetNextSteps){
 	var pathToCGI = "./cgi-bin/executeJava.cgi";
