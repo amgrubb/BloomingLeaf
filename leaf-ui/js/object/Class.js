@@ -332,8 +332,7 @@ class intentionColorVis{
     constructor()
     {
         this.id;
-        //this.numEvals;
-        this.evals;
+        this.evals; //list of percentages that each evaluation holds
         this.timePoints = []; //array of evals at each time point
         this.initializeEvalDict();
     }
@@ -377,7 +376,9 @@ class ColorVisual {
         "1100" : "#FF2600",
         "1110" : "#ca2c92", 
         "1111" : "#0D0221" };
-
+    /**
+     * Defines order of evaluations for filling intentions by %
+     */
     static colorVisOrder = {
             6: "0000" ,
             1: "0011" ,
@@ -389,10 +390,17 @@ class ColorVisual {
             7: "1110" ,
             5: "1111" };
 
+    //number of evaluation types
     static numEvals = Object.keys(ColorVisual.colorVisDict).length + 1;
+    //current time point, defined by selection in lower time point slider after simulating a single path
     static curTimePoint = 0;
+    //user selected slider option
     static sliderOption = 0;
 
+    /**
+     * Checks validity, sets sliderOption, and refreshes visualization
+     * @param {*} newSliderOption 
+     */
     static setSliderOption(newSliderOption) {
         if(newSliderOption >= 0 && newSliderOption <= 3) {
             ColorVisual.sliderOption = newSliderOption;
@@ -403,11 +411,18 @@ class ColorVisual {
         ColorVisual.refresh();
     }
 
+    /**
+     * Set new time point and refresh
+     * @param {*} newTimePoint 
+     */
     static setCurTimePoint(newTimePoint) {
         ColorVisual.curTimePoint = newTimePoint;
         ColorVisual.refresh();
     }
 
+    /**
+     * Runs after any event that may change visualization, such as setting a sat value, changing slider option, or selecting a time point
+     */
     static refresh() {
         console.log("inside ColorVisualSlider static method refresh()");
         switch(this.sliderOption) {
@@ -436,9 +451,12 @@ class ColorVisual {
         this.numTimePoints = elementList[0].status.length;
         this.intentionListColorVis = [];        
         this.initializeIntentionListColorVis();
-        //this.singlePathResponse(elementList);
     }  
 
+    /**
+     * Switches to analysis slider, uses the single path analysis results to calculate evaluation percentages, stores time point info, prints info to console
+     * @param {*} elementList List of elements containing analysis results
+     */
     singlePathResponse(elementList) {
         console.log("inside singlePathResponse");
         $('#modelingSlider').css("display", "none");
@@ -465,13 +483,18 @@ class ColorVisual {
         ColorVisual.refresh();
     }    
 
+    /**
+     * Initialize the list of intentions
+     */
     initializeIntentionListColorVis()  {
         for(var i = 0; i < this.numIntentions; ++i) {
             this.intentionListColorVis[i] = new intentionColorVis();
         }
     }
 
-    //prints colorVis information
+    /**
+     * Prints evaluation percentage information to console
+     */
     generateConsoleReport() {
         console.log("");
         console.log("Color Visualization Output:");
@@ -498,7 +521,11 @@ class ColorVisual {
         }
     }
 
-
+    /**
+     * Used for filling intentions by time points or %. Creates a stripe visualization using gradients with a before and after buffer.
+     * @param {*} element 
+     * Returns gradientID 
+     */
     static defineGradient(element) {
             var gradientStops = [];	
             var offsetTotal = 0.0;
@@ -552,8 +579,9 @@ class ColorVisual {
             return gradientId;
      }
 
-    //color intentions by their evaluation information from simulate single path
-    // previously changeIntentionsByPercentage
+     /**
+      * Colors intentions by their evaluation information and slider option after simulating single path
+      */
     static changeIntentionsColorVis()
     {
         var count = 1;
@@ -587,8 +615,10 @@ class ColorVisual {
         }
     }
 
-    //makes text on intentions white when EVO is activated
-    static changeIntentionsText(inAnalysis){
+    /**
+     * Makes text on intentions white when EVO is activated
+     */
+    static changeIntentionsText(){
         var elements = graph.getElements();
         var curr;
         var intention;
@@ -620,7 +650,9 @@ class ColorVisual {
         }
     }
 
-    //returns text to black in modeling mode
+    /**
+     * returns text to black in modeling mode
+     */
     static revertIntentionsText(){
         var elements = graph.getElements();
         var curr;
@@ -630,7 +662,9 @@ class ColorVisual {
         }
     }
 
-    //changes each intention by their initial user set satisfaction value in modeling mode
+    /**
+     * changes each intention by their initial user set satisfaction value in modeling mode
+     */
     static changeIntentions(){
         var elements = graph.getElements();
         for (var i = 0; i < elements.length; i++){ 
@@ -651,7 +685,9 @@ class ColorVisual {
         }
     }
 
-    //returns element color to based on element type
+    /**
+     * Returns element color to based on element type
+     */
     static returnAllColors(){
             var elements = graph.getElements();
             for (var i = 0; i < elements.length; i++){
@@ -660,6 +696,9 @@ class ColorVisual {
             }
         }
 
+    /**
+     * Switch back to modeling slider, if EVO is on the visualization returns to filling by initial state.
+     */
      static switchToModelingMode() {
             $('#modelingSlider').css("display", "");
             $('#analysisSlider').css("display", "none");
