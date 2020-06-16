@@ -102,137 +102,14 @@ function responseFunc(isGetNextSteps, response){
 				 console.log(analysisRequest.previousAnalysis);
 				 displayAnalysis(results);
 
-
 				 analysisResult.colorVis = new ColorVisual(results.elementList);
 				 analysisResult.isPathSim = true;
-				//  $('#modelingSlider').css("display", "none");
-				//  $('#analysisSlider').css("display", "");
-				//  document.getElementById("colorResetAnalysis").value = ColorVisual.sliderOption;
-				//  ColorVisual.refreshColorVis();
-
-				//  var percentagePerEvaluation = 0.0;
-				
-				//  //calculate evaluation percentages and other data for ColorVis
-				//  for(var i = 0; i < results.elementList.length; ++i) 
-				//  {
-				// 	 analysisResult.colorVis.intentionListColorVis[i].id = results.elementList[i].id;
-				// 	 analysisResult.colorVis.intentionListColorVis[i].numEvals = analysisResult.elementList[i].status.length;
- 
-				// 	 percentPerEvaluation = 1.0 / analysisResult.colorVis.intentionListColorVis[i].numEvals;
-				// 	 //console.log("element = "+results.elementList[i].id);
-				// 	 for(var k = 0; k < analysisResult.colorVis.intentionListColorVis[i].numEvals; ++k) 
-				// 	 { 
-				// 			 var eval = analysisResult.elementList[i].status[k]; 
-				// 			 analysisResult.colorVis.intentionListColorVis[i].timePoints.push(eval); //for fill intention by timepoint
-				// 			 //console.log("eval = "+analysisResult.colorVis.intentionListColorVis[i].timePoints[k]);
-				// 			 var newPercent = analysisResult.colorVis.intentionListColorVis[i].evals[eval];
-				// 			 newPercent += percentPerEvaluation;
-				// 			 analysisResult.colorVis.intentionListColorVis[i].evals[eval] = newPercent;
-				// 	 }
-				//  }
+				 analysisResult.colorVis.singlePathResponse(results.elementList);
 			 }
 		 }
 	 }
-	//ColorVisual.curTimePoint = analysisResult.colorVis.intentionListColorVis[0].numEvals; 
-	//TODO: numEvals is the same for every intention, it should not be a separate variable for each intention :/
-	generateColorVisConsoleReport();
-	//analysisResult.isPathSim = true;
-	//ColorVisual.refreshColorVis();
+
  }
-
-
-
-function defineGradient(element) {
-		var gradientStops = [];	
-		var offsetTotal = 0.0;
-		var gradientID;
-		
-		if(ColorVisual.sliderOption == 2) { //fill by time
-			var percentPerTimePoint = 1.0 / element.timePoints.length;
-			var timePointColor;
-			for(var j = 0; j < element.timePoints.length; ++j) {
-				timePointColor = ColorVisual.colorVisDict[element.timePoints[j]];
-				//before buffer
-				offsetTotal += 0.001;
-				gradientStops.push({offset: String(offsetTotal*100) + '%',
-				color: ColorVisual.colorVisDict[element.timePoints[j]]})
-				//element color
-				offsetTotal += percentPerTimePoint - 0.002;
-				gradientStops.push({offset: String(offsetTotal*100) + '%',
-				color: ColorVisual.colorVisDict[element.timePoints[j]]})
-				//after buffer
-				offsetTotal += 0.001;
-				gradientStops.push({offset: String(offsetTotal*100) + '%',
-				color: ColorVisual.colorVisDict[element.timePoints[j]]})
-			}
-			gradientId = paper.defineGradient({
-				type: 'linearGradient',
-				stops: gradientStops
-			});
-		}
-		else if(ColorVisual.sliderOption == 1) { //fill by %
-			for(var j = 0; j < ColorVisual.numEvals; ++j) {
-			var eval = ColorVisual.colorVisOrder[j];
-			if(element.evals[eval] > 0) {
-				//before buffer
-				offsetTotal += 0.001;
-				gradientStops.push({offset: String(offsetTotal*100) + '%',
-				color: ColorVisual.colorVisDict[eval]})
-				//element color
-				offsetTotal += element.evals[eval] - 0.002;
-				gradientStops.push({offset: String(offsetTotal*100) + '%',
-				color: ColorVisual.colorVisDict[eval]})
-				//after buffer
-				offsetTotal += 0.001;
-				gradientStops.push({offset: String(offsetTotal*100) + '%',
-				color: ColorVisual.colorVisDict[eval]})
-			}
-		}
-		gradientId = paper.defineGradient({
-			type: 'linearGradient',
-			stops: gradientStops
-		});
-	}
-
-	return gradientId;
-}
-
- //color intentions by their evaluation information from simulate single path
- // previously changeIntentionsByPercentage
- function changeIntentionsColorVis()
- {
-	 var count = 1;
-	 var elements = graph.getElements(); 
-	 var actorBuffer = 0;
- 
-	 for (var i = 0; i < elements.length; i++){  //iterate through elements
-		 ++count;
- 
-		 var cellView  = elements[i].findView(paper);
-		 var intention = model.getIntentionByID(cellView.model.attributes.nodeID);
- 
-		 if(intention == null) //is an actor or something went wrong
-		 {
-			 actorBuffer += 1;
-		 }
- 
-		 var element = analysisResult.colorVis.intentionListColorVis[i - actorBuffer];
-			 if(intention != null && element != null) {
-				 if(ColorVisual.sliderOption != 3) {
-				var gradientID = defineGradient(element);
-				cellView.model.attr({'.outer' : {'fill' : 'url(#' + gradientID + ')'}});
-				 } //visualize model at user selected timepoint
-				 else {
-					var timepoint = ColorVisual.curTimePoint;
-					//TODO: delete instance of ColorVisual when switching to modeling mode
-					var eval = element.timePoints[timepoint];
-					var color = ColorVisual.colorVisDict[eval];
-					cellView.model.attr({'.outer' : {'fill' : color}})
-				 }
-			 }
-	 }
- }
- 
 
 function executeJava(isGetNextSteps){
 	var pathToCGI = "./cgi-bin/executeJava.cgi";

@@ -20,7 +20,7 @@ $('#analysis-btn').on('click', function() {
 
     // If there are cycles, then display error message. Otherwise, remove any "red" elements.
     cycleCheckForLinks(cycle);
-    ColorVisual.refreshColorVis();
+    //ColorVisual.refresh();
 });
 
 $('#load-sample').on('click', function() {
@@ -125,7 +125,6 @@ $('#model-cur-btn').on('click', function() {
     savedAnalysisData.finalValueTimePoints="";
     
     analysisResult.isPathSim = false;
-    ColorVisual.refreshColorVis();
 });
 
 
@@ -192,13 +191,10 @@ function switchToModellingMode() {
     $('#on-off').css("display", "");
 
     $('#model-toolbar').css("display","");
-    $('#modelingSlider').css("display", "");
-    $('#analysisSlider').css("display", "none");
-   if(ColorVisual.sliderOption > 0) {
-    ColorVisual.sliderOption = '1';
-   }
-   document.getElementById("colorReset").value = ColorVisual.sliderOption;
-   ColorVisual.refreshColorVis();
+
+    ColorVisual.switchToModelingMode();
+    analysisResult.colorVis = [];
+
 
 	$('#sliderValue').text("");
 
@@ -215,124 +211,21 @@ function switchToModellingMode() {
 
 }
 
-//code for color visualization slider
-
-//makes text on intentions white when EVO is activated
-function changeIntentionsText(inAnalysis){
-    var elements = graph.getElements();
-    var curr;
-    var intention;
-    var initSatVal;
-    for (var i = 0; i < elements.length; i++) {
-        curr = elements[i].findView(paper).model;
-
-		if (curr.attributes.type !== 'basic.Goal' &&
-			curr.attributes.type !== 'basic.Task' &&
-			curr.attributes.type !== 'basic.Softgoal' &&
-			curr.attributes.type !== 'basic.Resource') {
-			continue;
-		}
-        intention = model.getIntentionByID(curr.attributes.nodeID);
-	    initSatVal = intention.getInitialSatValue();
-        if(!inAnalysis){   
-            if (initSatVal === '(no value)') {
-                curr.attr('.satvalue/text', '');
-                curr.attr({text: {fill: 'black',stroke:'none','font-weight' : 'normal','font-size': 10}});
-
-		    }else{
-                curr = elements[i].findView(paper).model;
-                curr.attr({text: {fill: 'white',stroke:'none'}});
-            }
-        }else{
-            curr = elements[i].findView(paper).model;
-            curr.attr({text: {fill: 'white',stroke:'none'}});    
-        }
-    }
-}
-
-//returns text to black in modeling mode
-function revertIntentionsText(){
-    var elements = graph.getElements();
-    var curr;
-    for (var i = 0; i < elements.length; i++) {
-        curr = elements[i].findView(paper).model;
-        curr.attr({text: {fill: 'black',stroke:'none'}});
-    }
-}
-
-//changes each intention by their initial user set satisfaction value in modeling mode
-function changeIntentions(){
-    var elements = graph.getElements();
-    for (var i = 0; i < elements.length; i++){ 
-        var cellView = elements[i].findView(paper); 
-        var intention = model.getIntentionByID(cellView.model.attributes.nodeID); //aquires current intention
-        if (intention != null){
-        var initSatVal = intention.getInitialSatValue(); //user set initial sat value
-        console.log(initSatVal);
-        if (initSatVal == '(no value)')
-        {
-            cellView.model.changeToOriginalColour();
-        }
-        var colorChange = ColorVisual.colorVisDict[initSatVal]; //get color for cooresponding sat value
-        cellView.model.attr({'.outer': {'fill': colorChange}}); //change intention color to match sat value
-    }else{
-        cellView.model.changeToOriginalColour();
-    }
-    }
-}
-
-
-//returns element color to based on element type
-function returnAllColors(){
-    var elements = graph.getElements();
-    for (var i = 0; i < elements.length; i++){
-        var cellView = elements[i].findView(paper);
-        cellView.model.changeToOriginalColour();
-    }
-}
-/**
- * Runs after every event that could change intentions
- */
-// function refreshColorVis(){
-//     switch(sliderOption) {
-//         case '1':
-//         case '2':
-//         case '3':
-//             if(!analysisResult.isPathSim ) {
-//            // console.log("changing intentions by initial state");
-//             changeIntentions();
-//             changeIntentionsText(false)
-//             }
-//             else {
-//            // console.log("filling intentions by: "+sliderOption);
-//             changeIntentionsColorVis();
-//             changeIntentionsText(true) 
-//             }
-//             break;
-//         default://colorVis off
-//             returnAllColors();
-//             revertIntentionsText();    
-//                 break;
-//     }
-// }
-
 /**
  * Source:https://www.w3schools.com/howto/howto_js_rangeslider.asp 
  * Two option modeling mode slider
  */
 var sliderModeling = document.getElementById("colorReset");
-var sliderOption = sliderModeling.value;
+//var sliderOption = sliderModeling.value;
 sliderModeling.oninput = function() { //turns slider on/off and refreshes
-  ColorVisual.sliderOption = this.value;
-  ColorVisual.refreshColorVis();
+  ColorVisual.setSliderOption(this.value);
 }
 /**
  * Four option analysis mode slider
  */
 var sliderAnalysis = document.getElementById("colorResetAnalysis");
 sliderAnalysis.oninput = function() { //changes slider mode and refreshes
-    ColorVisual.sliderOption = this.value;
-    ColorVisual.refreshColorVis();
+    ColorVisual.setSliderOption(this.value);
 }
 
 /**

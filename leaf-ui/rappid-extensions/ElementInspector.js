@@ -942,7 +942,7 @@ var ElementInspector = Backbone.View.extend({
      * and updateChartUserDefined.
      */
     updateCell: function(event) {
-        ColorVisual.refreshColorVis();
+        ColorVisual.refresh();
         var funcType = this.intention.dynamicFunction.stringDynVis;
         var initSatVal = this.intention.getInitialSatValue();
 
@@ -954,8 +954,6 @@ var ElementInspector = Backbone.View.extend({
         
         if (initSatVal == '(no value)') {
             this.cell.attr('.satvalue/text', '');
-            ColorVisual.refreshColorVis();
-
         } else {
             this.cell.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
         }
