@@ -70,12 +70,10 @@ function createSlider(currentAnalysis, isSwitch) {
 
     // Set initial value of the slider
     sliderObject.sliderElement.noUiSlider.set(isSwitch ? 0 : sliderMax);
-   //ColorVisual.curTimePoint = sliderMax;
     sliderObject.sliderElement.noUiSlider.on('update', function( values, handle ) {
         updateSliderValues(parseInt(values[handle]), currentAnalysis);
     });
     ColorVisual.setCurTimePoint(sliderMax);
-    //ColorVisual.refresh(); 
     adjustSliderWidth(sliderMax);
 }
 
@@ -144,8 +142,6 @@ function updateSliderValues(sliderValue, currentAnalysis){
     }
     
     ColorVisual.setCurTimePoint(value);
-    //ColorVisual.curTimePoint = value;
-    //ColorVisual.refresh();
 }
 
 

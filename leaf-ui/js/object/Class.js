@@ -579,7 +579,6 @@ class ColorVisual {
                     } //visualize model at user selected timepoint
                     else {
                         var timepoint = ColorVisual.curTimePoint;
-                        //TODO: delete instance of ColorVisual when switching to modeling mode
                         var intentionEval = element.timePoints[timepoint];
                         var color = ColorVisual.colorVisDict[intentionEval];
                         cellView.model.attr({'.outer' : {'fill' : color}})

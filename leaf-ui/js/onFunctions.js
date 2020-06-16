@@ -20,7 +20,6 @@ $('#analysis-btn').on('click', function() {
 
     // If there are cycles, then display error message. Otherwise, remove any "red" elements.
     cycleCheckForLinks(cycle);
-    //ColorVisual.refresh();
 });
 
 $('#load-sample').on('click', function() {
@@ -306,9 +305,11 @@ $('#btn-zoom-out').on('click', function() {
 $('#btn-save').on('click', function() {
 	var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
 	if (name){
+        ColorVisual.returnAllColors();
 		var fileName = name + ".json";
 		var obj = getFullJson();
-		download(fileName, JSON.stringify(obj));
+        download(fileName, JSON.stringify(obj));
+        ColorVisual.refresh();
 	}
 });
 
