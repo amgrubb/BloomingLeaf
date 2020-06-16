@@ -290,8 +290,9 @@ function returnAllColors(){
         cellView.model.changeToOriginalColour();
     }
 }
-
-//runs after every event that could change intentions
+/**
+ * Runs after every event that could change intentions
+ */
 function refreshColorVis(){
     switch(sliderOption) {
         case '1':
@@ -308,8 +309,7 @@ function refreshColorVis(){
             changeIntentionsText(true) 
             }
             break;
-        default:
-            //console.log("colorVis off");
+        default://colorVis off
             returnAllColors();
             revertIntentionsText();    
                 break;
@@ -318,14 +318,17 @@ function refreshColorVis(){
 
 /**
  * Source:https://www.w3schools.com/howto/howto_js_rangeslider.asp 
+ * Two option modeling mode slider
  */
-var slider = document.getElementById("colorReset");
+var sliderModeling = document.getElementById("colorReset");
 var sliderOption = slider.value;
-slider.oninput = function() { //turns slider on/off and refreshes
+sliderModeling.oninput = function() { //turns slider on/off and refreshes
   sliderOption = this.value;
   refreshColorVis();
 }
-
+/**
+ * Four option analysis mode slider
+ */
 var sliderAnalysis = document.getElementById("colorResetAnalysis");
 sliderAnalysis.oninput = function() { //changes slider mode and refreshes
   sliderOption = this.value;
