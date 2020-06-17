@@ -450,7 +450,7 @@ class ColorVisual {
         this.numIntentions = elementList.length;
         this.numTimePoints = elementList[0].status.length;
         this.intentionListColorVis = [];        
-        this.initializeIntentionListColorVis();
+        this.initializeIntentionList();
     }  
 
     /**
@@ -486,7 +486,7 @@ class ColorVisual {
     /**
      * Initialize the list of intentions
      */
-    initializeIntentionListColorVis()  {
+    initializeIntentionList()  {
         for(var i = 0; i < this.numIntentions; ++i) {
             this.intentionListColorVis[i] = new intentionColorVis();
         }
