@@ -199,8 +199,13 @@ class Model {
            if (this.links[i].linkSrcID == nodeID || this.links[i].linkDestID == nodeID) {
                this.links.splice(i, 1);
            }
-
        }
+       //added a second loop to catch biconditional arrows
+       for (var i = 0; i < this.links.length; i++) {
+        if (this.links[i].linkSrcID == nodeID || this.links[i].linkDestID == nodeID) {
+            this.links.splice(i, 1);
+        }
+    }
    }
 
     /**
