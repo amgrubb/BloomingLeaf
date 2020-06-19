@@ -211,13 +211,28 @@ $('#btn-clear-all').on('click', function(){
 $('#btn-clear-elabel').on('click', function(){
 	var elements = graph.getElements();
 	for (var i = 0; i < elements.length; i++){
+        var cellView = elements[i].findView(paper); 
+        var intention = model.getIntentionByID(cellView.model.attributes.nodeID);
+
+        console.log("initSatValue = "+intention.getInitialSatValue());
+        intention.changeInitialSatValue("0000");
+
+        console.log("elements[i] before = ");
+        console.log(elements[i]);
+
 		elements[i].removeAttr(".satvalue/d");
 		elements[i].attr(".constraints/lastval", "none");
 		elements[i].attr(".funcvalue/text", " ");
-		var cellView  = elements[i].findView(paper);
+
+        console.log("cellView = ");
+        console.log(cellView);
+
 		elementInspector.render(cellView.model);
 		elementInspector.$('#init-sat-value').val("none");
-		elementInspector.updateHTML(null);
+        elementInspector.updateHTML(null);
+        
+        console.log("elements[i] = after ");
+        console.log(elements[i]);
 
 	}
 
