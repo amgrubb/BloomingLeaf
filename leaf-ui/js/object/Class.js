@@ -834,6 +834,9 @@ class Intention {
         this.dynamicFunction.functionSegList = [];
     }
 
+    /**
+     * Sets the initial satisfaction value for this Intention to '(no value)'
+     */
     removeInitialSatValue() {
         this.changeInitialSatValue('(no value)');
     }
