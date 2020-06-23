@@ -834,6 +834,10 @@ class Intention {
         this.dynamicFunction.functionSegList = [];
     }
 
+    removeInitialSatValue() {
+        this.changeInitialSatValue('(no value)');
+    }
+
     /**
      * Creates and returns a 4 digit ID for this node
      *
