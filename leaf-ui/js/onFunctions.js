@@ -215,16 +215,14 @@ $('#btn-clear-elabel').on('click', function(){
         var cell = cellView.model;
         var intention = model.getIntentionByID(cellView.model.attributes.nodeID);
 
-        if(intention != null) {
-        console.log("initSatValue = "+intention.getInitialSatValue());
-        intention.removeInitialSatValue();
-        console.log("initSatValue = "+intention.getInitialSatValue()); 
-
-       cell.attr(".satvalue/text", "");
-       cell.attr(".funcvalue/text", "");
-
-       elementInspector.$('#init-sat-value').val('(no value)');
-       elementInspector.$('.function-type').val('(no value)');
+        if(intention != null && intention.getInitialSatValue() != '(no value)') {
+            intention.removeInitialSatValue();
+     
+            cell.attr(".satvalue/text", "");
+            cell.attr(".funcvalue/text", "");
+     
+            elementInspector.$('#init-sat-value').val('(no value)');
+            elementInspector.$('.function-type').val('(no value)');
         }
 	}
 });
