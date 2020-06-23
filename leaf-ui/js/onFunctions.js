@@ -212,46 +212,23 @@ $('#btn-clear-elabel').on('click', function(){
 	var elements = graph.getElements();
 	for (var i = 0; i < elements.length; i++){
         var cellView = elements[i].findView(paper); 
+        var cell = cellView.model;
         var intention = model.getIntentionByID(cellView.model.attributes.nodeID);
 
+        if(intention != null) {
         console.log("initSatValue = "+intention.getInitialSatValue());
         intention.removeInitialSatValue();
-        console.log("initSatValue = "+intention.getInitialSatValue());   
+        console.log("initSatValue = "+intention.getInitialSatValue()); 
 
-        //console.log("elements[i] before = ");
-        //console.log(elements[i]);
+       cell.attr(".satvalue/text", "");
+       cell.attr(".funcvalue/text", "");
 
-       // console.log("1");
-       // elements[i].removeAttr(".satvalue/d");
-
-       // console.log("2");
-      //  elements[i].removeAttr(".satvalue.text");
-
-       // console.log("3");
-       // elements[i].attr(".constraints/lastval", "none");
-
-       // console.log("4");
-		//elements[i].attr(".funcvalue/text", " ");
-
-        //console.log("cellView = ");
-        //console.log(cellView);
-        // console.log("5");
-        // elementInspector.render(cellView.model);
-
-        console.log("6");
-        elementInspector.$('#init-sat-value').val("none");
-
-        // console.log("7");
-        // elementInspector.updateHTML(null);
-        
-       // console.log("elements[i] = after ");
-      // console.log(elements[i]);
-      console.log("8");
-
-
+       elementInspector.$('#init-sat-value').val('(no value)');
+       elementInspector.$('.function-type').val('(no value)');
+        }
 	}
-
 });
+
 $('#btn-clear-flabel').on('click', function(){
 	var elements = graph.getElements();
 	for (var i = 0; i < elements.length; i++){
