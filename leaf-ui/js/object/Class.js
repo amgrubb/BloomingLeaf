@@ -914,7 +914,7 @@ class Intention {
      * Resets dynamic function
      */
     removeFunction() {
-        this.dynamicFunction = new EvolvingFunction(this.nodeID); //what do I set it to to indicate none? look at how an intention is initiated
+        this.dynamicFunction = new EvolvingFunction(this.nodeID);
     }
 
     /**
