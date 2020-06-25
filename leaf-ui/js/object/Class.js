@@ -914,6 +914,7 @@ class Intention {
      * Resets dynamic function
      */
     removeFunction() {
+        this.removeAbsCosnt();
         this.dynamicFunction = new EvolvingFunction(this.nodeID);
     }
 
