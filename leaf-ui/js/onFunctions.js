@@ -211,17 +211,22 @@ $('#btn-clear-all').on('click', function(){
 $('#btn-clear-elabel').on('click', function(){
 	var elements = graph.getElements();
 	for (var i = 0; i < elements.length; i++){
-		elements[i].removeAttr(".satvalue/d");
-		elements[i].attr(".constraints/lastval", "none");
-		elements[i].attr(".funcvalue/text", " ");
-		var cellView  = elements[i].findView(paper);
-		elementInspector.render(cellView.model);
-		elementInspector.$('#init-sat-value').val("none");
-		elementInspector.updateHTML(null);
+        var cellView = elements[i].findView(paper); 
+        var cell = cellView.model;
+        var intention = model.getIntentionByID(cellView.model.attributes.nodeID);
 
+        if(intention != null && intention.getInitialSatValue() != '(no value)') {
+            intention.removeInitialSatValue();
+     
+            cell.attr(".satvalue/text", "");
+            cell.attr(".funcvalue/text", "");
+     
+            elementInspector.$('#init-sat-value').val('(no value)');
+            elementInspector.$('.function-type').val('(no value)');
+        }
 	}
-
 });
+
 $('#btn-clear-flabel').on('click', function(){
 	var elements = graph.getElements();
 	for (var i = 0; i < elements.length; i++){
