@@ -903,6 +903,9 @@ class Intention {
         }
     }
 
+    removeFunction() {
+        this.dynamicFunction = new EvolvingFunction(this.nodeID); //what do I set it to to indicate none? look at how an intention is initiated
+    }
 
     /**
      * Returns the number of function segments for this

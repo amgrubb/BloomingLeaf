@@ -65,7 +65,7 @@ reader.onload = function() {
 		        cells[i].attrs['.satvalue'].text = updateSatValueTextToNew(satValText);
 		    
 		        // create the evolving function
-		        if (cells[i].attrs['.funcvalue'] != null) {
+		        if (cells[i].attrs['.funcvalue'] != null) { //maybe
 
 			        var stringDynVis = cells[i].attrs['.funcvalue'].text;
 			    
