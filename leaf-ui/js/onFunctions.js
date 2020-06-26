@@ -228,11 +228,18 @@ $('#btn-clear-elabel').on('click', function(){
 });
 
 $('#btn-clear-flabel').on('click', function(){
-	var elements = graph.getElements();
+    var elements = graph.getElements();
+    
 	for (var i = 0; i < elements.length; i++){
-		if (elements[i].attr(".constraints/lastval") != "none"){
-			elements[i].attr(".funcvalue/text", "C");
-		}
+        var cellView = elements[i].findView(paper); 
+        var cell = cellView.model;
+        var intention = model.getIntentionByID(cellView.model.attributes.nodeID);
+
+        if(intention != null) {
+            intention.removeFunction();
+            cell.attr(".funcvalue/text", "");
+            elementInspector.$('.function-type').val('(no value)');
+        }
 	}
 });
 

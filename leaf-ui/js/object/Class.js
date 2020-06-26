@@ -910,6 +910,13 @@ class Intention {
         }
     }
 
+    /**
+     * Resets dynamic function
+     */
+    removeFunction() {
+        this.removeAbsCosnt();
+        this.dynamicFunction = new EvolvingFunction(this.nodeID);
+    }
 
     /**
      * Returns the number of function segments for this
