@@ -10,64 +10,49 @@
  *
  * @param {Boolean} cycle: The constraint links in the current model.
  */
-function cycleCheckForLinks(cycle) {
-	var elements;
-	var cellView;
-		// If there is no cycle, leave the color the way it was
-	if (!cycle[0]) {
+function cycleCheckForLinks(cycleList) {
+
+		var elements;
+		var cellView;
 		elements = graph.getElements();
 		for (var i = 0; i < elements.length; i++) {
-			cellView  = elements[i].findView(paper);
-			cellView.model.changeToOriginalColour();
-		}
-	}
-	else {
-		swal("Cycle in the graph", "", "error");
-		elements = graph.getElements();
-		var color_list = [];
-		var count = 0; 
-		for (var k = 0 ; k < cycle[1].length; k++){
-			var color = getRandomColor();
-			for (var j =0 ; j < color_list.length; j++){
-				if (color !== color_list.length[j]){
-					count +=1; 
-							
-				}
-			}
-						
-			if (count === color_list.length){
-				color_list.push(color);
-			}
-			else{
-				var color = getRandomColor();	
-			}	
-			for (var l = 0 ; l< cycle[1][k].length; l++){
-				for (var i = 0; i < elements.length; i++) {
 				cellView  = elements[i].findView(paper);
-				//if (recursiveStack[cellView.model.attributes.elementid]) 
-				if (cellView.model.attributes.elementid === cycle[1][k][l]){
-						cellView.model.attr({'.outer': {'fill': color}});
-					}
-					//else {
-						//cellView.model.changeToOriginalColour();
-					//}
-				}	
-			}
-			
-		}	
-	}
+				cellView.model.changeToOriginalColour();
+		}
+	
+		if(isACycle(cycleList)) {
+			swal("Cycle in the graph", "", "error");
+			elements = graph.getElements();
+			var color_list = initColorList();
+			var cycleIndex = 0; 
+			for (var k = 0 ; k < cycleList.length; k++){
+				cycleIndex = k % 5;
+				var color = color_list[cycleIndex];
+				cycleIndex += 1;
+				for (var l = 0 ; l< cycleList[k].length; l++){
+					for (var i = 0; i < elements.length; i++) {
+					cellView  = elements[i].findView(paper);
+					if (cellView.model.attributes.elementid == cycleList[k][l] && cellView.model.attributes.type != "basic.Actor"){
+							cellView.model.attr({'.outer': {'fill': color}});
+						}
+	
+					}	
+				}
+		}
+		}
 	
 }
 
 function getRandomColor() {
-	var color_list = []
-	color_list.push('#963232')
-	color_list.push('#b82f27')
-	color_list.push('#29611f')
-	color_list.push('#bf7a10')
-	color_list.push('#670000')
-	var num = Math.round(Math.random() * 6);
-	return color_list[num];
+	var color_list = [];
+	
+	color_list.push('#ccff00'); //yellow-green
+	color_list.push('#09fbd3'); //green blue 
+	color_list.push('#ff00c0'); //pink
+	color_list.push('#00ff00'); //green 
+	color_list.push('#fffd5a'); //yellow 
+
+	return color_list;
 }
 
 /**
