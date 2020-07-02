@@ -329,6 +329,101 @@ function syntaxCheck() {
     return false;
 }
 
+
+function cycleSearchDFSMethod() {
+	var links = getLinks();
+	var vertices = getElementList();
+	var isCycle = false;
+
+	//how can we initiate a list to traverse like a graph ? linked list baby xx
+	//double array. index = src nodeID. sub array corresponds to each dest nodeID that goes with the src
+
+	//initialize linkMap, a 2D array. 1st index = src nodeID. Subarray at index = dest nodes corresponding to the src
+	var linkMap = initiateLinkGraph(vertices, links)
+	console.log(linkMap);
+
+	var cycleList = traverseGraphForCycles(linkMap);
+
+	if(cycleList.length > 0) {
+		return cycleList;
+	}
+	return null;
+}
+
+function initiateLinkGraph(vertices, links) {
+	var linkMap = [];
+
+	vertices.forEach(function(element){
+		var src = element.id;
+		linkMap[src] = [];
+	 });
+
+	links.forEach(function(element){
+		var src = element.linkSrcID;
+		//linkMap[src] = [];
+		//linkMap[src].push([element.linkDestID]);
+		linkMap[src].push(element.linkDestID);
+	});
+
+	return linkMap;
+}
+
+function traverseGraphForCycles(linkMap) {
+	var vertices = getElementList();
+	var notVisited = [];
+	var cycleList = [];
+
+	vertices.forEach(function(element){
+		notVisited.push(element.id);
+	 });
+
+
+	while (notVisited.length > 0) { //while all nodes haven't yet been visited
+	var start = notVisited[0]; 	//pick a start node
+	notVisited.splice(0,1); //remove curr from visited list
+	var walkList = [];
+	console.log("new walk");
+	traverseGraphRecursive(linkMap, start, walkList, notVisited, cycleList); 
+	}
+	console.log(cycleList);
+	return cycleList;
+}
+
+function traverseGraphRecursive(linkMap, currNode, walkList, notVisited, cycleList) {
+	if(walkList.includes(currNode)) {
+		//found a cycle
+		console.log("cycle found");
+		var cycle = [];
+		var prev = currNode;
+		//the cycle is the part of the list from first instance of repeat node to now
+		for(var i = walkList.indexOf(currNode); i < walkList.length; ++i) {
+			cycle.push(walkList[i]);
+			var remove = linkMap[prev].indexOf(walkList[i]); //get rid of cycle link to from prev to curr node so graph doesn't get stuck
+			linkMap[prev].splice(remove, 1);
+			prev = walkList[i];
+		}
+		cycleList.push(cycle);
+	}
+	
+	//push node to walk list
+	walkList.push(currNode);
+
+	//remove curr from notVisited list
+	if(notVisited.includes(currNode)) {
+		notVisited.splice(notVisited.indexOf(currNode), 1);
+	}
+
+	//if we have unvisited dest nodes, go there
+	if(linkMap[currNode].length > 0) {
+		for(var i = 0; i < linkMap[currNode].length; ++i) {
+		var next = linkMap[currNode][i];
+		walkList = traverseGraphRecursive(linkMap, next, walkList, notVisited, cycleList);
+		}
+	}
+		walkList.pop();
+		return walkList;
+}
+
 /**
  * Returns true iff there is a cycle in the graph represented by
  * links and vertices. 
