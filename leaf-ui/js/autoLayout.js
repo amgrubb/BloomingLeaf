@@ -14,7 +14,7 @@ var resourcesGravity = 920;
 var taskGravity = 680; 
 var softgoalGravity = 440;
 var goalGravity = 0;
-var IDNodeIDDict = new Object();
+// var IDNodeIDDict = new Object();
 var imaginaryActorIdList = []
 // var nodeIdNodePosDict = new Object();
 
@@ -110,30 +110,30 @@ class Node{
 id of the node to id of the graph;
 node name to the node id; should be called*/
 //NOTE: The model1 and model2 passed in should be the updated version
-function makeDictIDToNodeID(model1, model2){
-	var debugCtr = 0;
-	for(var i = 0; i < model1["graph"]["cells"].length; i++){
-		if(model1["graph"]["cells"][i]["type"] != "link"){
-			var nodeId = model1["graph"]["cells"][i]["nodeID"];
-			var graphId = model1["graph"]["cells"][i]["id"];
-			var nodeName = model1["graph"]["cells"][i]["attrs"][".name"]["text"];
-			IDNodeIDDict[nodeId] = graphId;
-			IDNodeIDDict[graphId] = nodeId;
-			IDNodeIDDict[nodeName] = nodeId;
-		}
-	}
+// function makeDictIDToNodeID(model1, model2){
+// 	var debugCtr = 0;
+// 	for(var i = 0; i < model1["graph"]["cells"].length; i++){
+// 		if(model1["graph"]["cells"][i]["type"] != "link"){
+// 			var nodeId = model1["graph"]["cells"][i]["nodeID"];
+// 			var graphId = model1["graph"]["cells"][i]["id"];
+// 			var nodeName = model1["graph"]["cells"][i]["attrs"][".name"]["text"];
+// 			IDNodeIDDict[nodeId] = graphId;
+// 			IDNodeIDDict[graphId] = nodeId;
+// 			IDNodeIDDict[nodeName] = nodeId;
+// 		}
+// 	}
 
-	for(var j = 0; j < model2["graph"]["cells"].length; j++){
-		if(model2["graph"]["cells"][j]["type"] != "link"){
-			var nodeId = model2["graph"]["cells"][j]["nodeID"];
-			var graphId = model2["graph"]["cells"][j]["id"];
-			var nodeName = model2["graph"]["cells"][j]["attrs"][".name"]["text"];
-			IDNodeIDDict[nodeId] = graphId;
-			IDNodeIDDict[graphId] = nodeId;
-			IDNodeIDDict[nodeName] = nodeId;
-		}
-	}
-}
+// 	for(var j = 0; j < model2["graph"]["cells"].length; j++){
+// 		if(model2["graph"]["cells"][j]["type"] != "link"){
+// 			var nodeId = model2["graph"]["cells"][j]["nodeID"];
+// 			var graphId = model2["graph"]["cells"][j]["id"];
+// 			var nodeName = model2["graph"]["cells"][j]["attrs"][".name"]["text"];
+// 			IDNodeIDDict[nodeId] = graphId;
+// 			IDNodeIDDict[graphId] = nodeId;
+// 			IDNodeIDDict[nodeName] = nodeId;
+// 		}
+// 	}
+// }
 //TODO: change IDNodeIDDict
 
 
@@ -158,10 +158,10 @@ function initializaGravityDict(resultList){
 }
 
 //add model1 and model2 to the parameters of this function
-function initializeNodes(resultList, nodeSet, model1, model2){
+function initializeNodes(resultList, nodeSet){
 	//assume each node no more than 2 lines with a size of width: 150 height: 100
 	initializaGravityDict(resultList);
-	makeDictIDToNodeID(model1, model2)
+	//makeDictIDToNodeID(model1, model2)
 	var width = 150; 
 	var height = 100; 
 	/*here construct a coordinate*/ 
@@ -319,12 +319,13 @@ class Actor{
   }
 }
 
-function initializeActors(resultList,actorSet, model1, model2){
+function initializeActors(resultList,actorSet){
 	var actors = resultList[0];
 	var width = 150; 
 	var height = 100; 
 	/*here construct a coordinate*/ 
 	var listOfActors = resultList[0];
+	console.log(resultList[0])
 	var numActors = listOfActors.length; 
 	var numXY = Math.ceil(Math.sqrt(numActors));
 	var curXCount = 0;
@@ -1065,7 +1066,7 @@ function getSizeOfActor(nodeSet, actorSet){
 }
 
 //Those fake actors have id begin with "-"
-function initializeActorForFreeNodes(actorSet, nodeSet, model1, model2, curXCount, curYCount){
+function initializeActorForFreeNodes(actorSet, nodeSet, curXCount, curYCount){
 	var width = 150; 
 	var height = 100;
 	for(var node of nodeSet){
@@ -1084,18 +1085,18 @@ function initializeActorForFreeNodes(actorSet, nodeSet, model1, model2, curXCoun
 }
 
 
-function forceDirectedAlgorithm(resultList, model1, model2){
+function forceDirectedAlgorithm(resultList){
 	var numIterations = 120;
 	var numConstant = 0.02;
 	var nodeSet = new Set();
 	var actorSet = new Set();
 	var nodeIdNodePosDict = new Object();
-	var xyCounts = initializeActors(resultList,actorSet, model1, model2);
-	initializeNodes(resultList, nodeSet, model1, model2);
+	var xyCounts = initializeActors(resultList,actorSet);
+	initializeNodes(resultList, nodeSet);
 	var curXCount = xyCounts[0]; 
 	var curYCount = xyCounts[1];
 	if(resultList[0].length != 0){
-		initializeActorForFreeNodes(actorSet,nodeSet,model1, model2, curXCount, curYCount);
+		initializeActorForFreeNodes(actorSet,nodeSet, curXCount, curYCount);
 	}
 	for(var i = 0; i < numIterations; i++){
 		adjustment(nodeSet, actorSet, numConstant,true);
@@ -1115,6 +1116,7 @@ function forceDirectedAlgorithm(resultList, model1, model2){
 	var listForGraphicalLinks1 = listForGraphicalLinks(nodeSet,curZ,nodeIdNodePosDict);
 	return [listForGraphicalActors1, listForGraphicalNodes1, listForGraphicalLinks1];
 }
+
 const fs = require('fs');
 if (process.argv.length !== 3) {
     console.error('Invalid input');
@@ -1123,7 +1125,30 @@ if (process.argv.length !== 3) {
 else{
 	var rawData1 = fs.readFileSync(process.argv[2]);
 	resultList = JSON.parse(rawData1);
-	var graphicalResultList = forceDirectedAlgorithm(resultList,inputModel1, inputModel2);
+	actorList = [];
+	//console.log(resultList["model"]);
+	//console.log(resultList["model"]["actors"])
+	for(var i = 0; i < resultList["model"]["actors"].length; i++){
+		actorList.push(resultList["model"]["actors"][i]);
+	}
+	intentionList = [];
+	for(var i = 0; i < resultList["model"]["intentions"].length; i++){
+		intentionList.push(resultList["model"]["intentions"][i]);
+	}
+	linkList = [];
+	for(var link of resultList["model"]["links"]){
+		linkList.push(link);
+	}
+	constraintList = [];
+	for(var constraint of resultList["model"]["constraints"]){
+		constraintList.push(constraint);
+	}
+	analysisRequestList = [];
+	for(var ranalysisRequest of resultList["model"]["analysisRequest"]){
+		analysisRequestList.push(ranalysisRequest);
+	}
+	newResultList = [actorList, intentionList, linkList, constraintList, analysisRequestList]
+	var graphicalResultList = forceDirectedAlgorithm(newResultList);
 	var outPutString = "";
 	var outPut = new Object();
 	var graphicalCells = new Object();
