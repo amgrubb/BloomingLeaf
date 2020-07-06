@@ -43,7 +43,11 @@ function cycleCheckForLinks(cycleList) {
 	
 }
 
-function getRandomColor() {
+/**
+ * Initializes cycle coloring list
+ * @returns {array} color_list: list of cycle colors
+ */
+function initColorList() {
 	var color_list = [];
 	
 	color_list.push('#ccff00'); //yellow-green
@@ -330,13 +334,19 @@ function syntaxCheck() {
 }
 
 
+/**
+ * Check is a cycle exists
+ * @param {*} cycleList 
+ * @returns true if at least one cycle is present, false otherwise
+ */
+function isACycle(cycleList) {
+	return (cycleList != null);
+}
+
 function cycleSearchDFSMethod() {
 	var links = getLinks();
 	var vertices = getElementList();
 	var isCycle = false;
-
-	//how can we initiate a list to traverse like a graph ? linked list baby xx
-	//double array. index = src nodeID. sub array corresponds to each dest nodeID that goes with the src
 
 	//initialize linkMap, a 2D array. 1st index = src nodeID. Subarray at index = dest nodes corresponding to the src
 	var linkMap = initiateLinkGraph(vertices, links)
@@ -360,8 +370,6 @@ function initiateLinkGraph(vertices, links) {
 
 	links.forEach(function(element){
 		var src = element.linkSrcID;
-		//linkMap[src] = [];
-		//linkMap[src].push([element.linkDestID]);
 		linkMap[src].push(element.linkDestID);
 	});
 

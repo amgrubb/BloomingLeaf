@@ -10,16 +10,24 @@ $('#analysis-btn').on('click', function() {
     var jsLinks;
     var cycle;
     jsLinks = getLinks();
-    cycle = cycleCheck(jsLinks, getElementList());
-
+    //cycle = cycleCheck(jsLinks, getElementList());
     syntaxCheck();
-    // If there are no cycles then switch view to Analysis
-    if (!cycle[0]) {
-        switchToAnalysisMode(); 
+
+    var cycleList = cycleSearchDFSMethod();
+    cycleCheckForLinks(cycleList);
+
+    // var cycleList = cycleSearchLinkEliminationMethod();
+    if(!isACycle(cycleList)) {
+        switchToAnalysisMode();
     }
 
-    // If there are cycles, then display error message. Otherwise, remove any "red" elements.
-    cycleCheckForLinks(cycle);
+    // // If there are no cycles then switch view to Analysis
+    // if (!cycle[0]) {
+    //     switchToAnalysisMode(); 
+    // }
+
+    // // If there are cycles, then display error message. Otherwise, remove any "red" elements.
+    // cycleCheckForLinks(cycle);
 });
 
 $('#load-sample').on('click', function() {
