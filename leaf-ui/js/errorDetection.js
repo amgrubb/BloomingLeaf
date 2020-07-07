@@ -3,6 +3,20 @@
  * cycle detection for the web
  */
 
+ /**
+  * Changes all intentions to their original colors
+  * Note: if this is ever merged with the color-visualization branch, EVO will need to be refreshed here
+  */
+function clearCycleHighlighting() {
+	var elements = graph.getElements();
+	var cellView;
+
+	//remove all previous coloring
+	for (var i = 0; i < elements.length; i++) {
+		cellView  = elements[i].findView(paper);
+		cellView.model.changeToOriginalColour();
+	}
+}
 
 /**
  * Alert the user if there are any cycles and mark the elements in the cycle with obnoxious neon colors
@@ -11,15 +25,9 @@
  * @param {Array of Array<String>} cycleList: list of cycles in current model
  */
 function cycleResponse(cycleList) {
-	var elements;
-	var cellView;
-	elements = graph.getElements();
 
 	//remove all previous coloring
-	for (var i = 0; i < elements.length; i++) {
-			cellView  = elements[i].findView(paper);
-			cellView.model.changeToOriginalColour();
-	}
+	clearCycleHighlighting();
 	
 	if(isACycle(cycleList)) {
 		swal("Cycle in the graph", "", "error");
