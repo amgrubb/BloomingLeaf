@@ -7,27 +7,14 @@ It also contains the setup for Rappid elements.
  * Switches to Analysis view iff there are no cycles and no syntax errors.
  */
 $('#analysis-btn').on('click', function() {
-    var jsLinks;
-    var cycle;
-    jsLinks = getLinks();
-    //cycle = cycleCheck(jsLinks, getElementList());
     syntaxCheck();
 
-    var cycleList = cycleSearchDFSMethod();
-    cycleCheckForLinks(cycleList);
+    var cycleList = cycleSearch();
+    cycleResponse(cycleList); //If there are cycles, then display error message. Otherwise, remove any "red" elements.
 
-    // var cycleList = cycleSearchLinkEliminationMethod();
     if(!isACycle(cycleList)) {
         switchToAnalysisMode();
     }
-
-    // // If there are no cycles then switch view to Analysis
-    // if (!cycle[0]) {
-    //     switchToAnalysisMode(); 
-    // }
-
-    // // If there are cycles, then display error message. Otherwise, remove any "red" elements.
-    // cycleCheckForLinks(cycle);
 });
 
 $('#load-sample').on('click', function() {

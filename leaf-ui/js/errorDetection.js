@@ -5,42 +5,36 @@
 
 
 /**
- * Alert the user if there are any cycles and mark the elements in the cycle as red
- * If there are no cycles then remove the red elements if there are any
+ * Alert the user if there are any cycles and mark the elements in the cycle with obnoxious neon colors
+ * Remove any previous cycle highlighting
  *
- * @param {Boolean} cycle: The constraint links in the current model.
+ * @param {Array of Array<String>} cycleList: list of cycles in current model
  */
-function cycleCheckForLinks(cycleList) {
+function cycleResponse(cycleList) {
+	var elements;
+	var cellView;
+	elements = graph.getElements();
 
-		var elements;
-		var cellView;
-		elements = graph.getElements();
-		for (var i = 0; i < elements.length; i++) {
-				cellView  = elements[i].findView(paper);
-				cellView.model.changeToOriginalColour();
-		}
+	//remove all previous coloring
+	for (var i = 0; i < elements.length; i++) {
+			cellView  = elements[i].findView(paper);
+			cellView.model.changeToOriginalColour();
+	}
 	
-		if(isACycle(cycleList)) {
-			swal("Cycle in the graph", "", "error");
-			elements = graph.getElements();
-			var color_list = initColorList();
-			var cycleIndex = 0; 
-			for (var k = 0 ; k < cycleList.length; k++){
-				cycleIndex = k % 5;
-				var color = color_list[cycleIndex];
-				cycleIndex += 1;
-				for (var l = 0 ; l< cycleList[k].length; l++){
-					for (var i = 0; i < elements.length; i++) {
-					cellView  = elements[i].findView(paper);
-					if (cellView.model.attributes.elementid == cycleList[k][l] && cellView.model.attributes.type != "basic.Actor"){
-							cellView.model.attr({'.outer': {'fill': color}});
-						}
-	
-					}	
-				}
-		}
-		}
-	
+	if(isACycle(cycleList)) {
+		swal("Cycle in the graph", "", "error");
+		var color_list = initColorList();
+		var cycleIndex = 0; 
+		for (var k = 0 ; k < cycleList.length; k++){ //for each cycle
+			cycleIndex = k % 5;
+			var color = color_list[cycleIndex];
+			for (var l = 0 ; l< cycleList[k].length; l++){ //for each element inside of a particular cycle
+				var cycleNode = getElementById(cycleList[k][l]);
+				cellView  = cycleNode.findView(paper);
+				cellView.model.attr({'.outer': {'fill': color}});
+			}
+	}
+	}
 }
 
 /**
@@ -336,14 +330,19 @@ function syntaxCheck() {
 
 /**
  * Check is a cycle exists
- * @param {*} cycleList 
+ * @param {Array of Array<String>} cycleList 
  * @returns true if at least one cycle is present, false otherwise
  */
 function isACycle(cycleList) {
 	return (cycleList != null);
 }
 
-function cycleSearchDFSMethod() {
+/**
+ * Uses Depth First Search to find cycles in the graph.
+ * @returns {Array of Array<String>} cycleList if at least one cycle exists
+ * @returns {null} otherwise
+ */
+function cycleSearch() {
 	var links = getLinks();
 	var vertices = getElementList();
 	var isCycle = false;
@@ -352,7 +351,7 @@ function cycleSearchDFSMethod() {
 	var linkMap = initiateLinkGraph(vertices, links)
 	console.log(linkMap);
 
-	var cycleList = traverseGraphForCycles(linkMap);
+	var cycleList = traverseGraphForCycles(linkMap); //search for cycles
 
 	if(cycleList.length > 0) {
 		return cycleList;
@@ -360,14 +359,22 @@ function cycleSearchDFSMethod() {
 	return null;
 }
 
+/**
+ * Creates an array representation of the graph.  
+ * @param {Array.<Object>} vertices list of elements in the graph
+ * @param {Array.<Object>} links list of links in the graph
+ * @returns {Array of Array<String>} linkMap, a double array where the first index corresponds to an element/src ID, and the corresponding child array contains each dest ID associated with it
+ */
 function initiateLinkGraph(vertices, links) {
 	var linkMap = [];
 
+	//initiate a subarray for each index of linkMap that corresponds to an element ID
 	vertices.forEach(function(element){
 		var src = element.id;
 		linkMap[src] = [];
 	 });
 
+	//push each link's dest ID onto the index of linkMap that corresponds to the src ID
 	links.forEach(function(element){
 		var src = element.linkSrcID;
 		linkMap[src].push(element.linkDestID);
@@ -376,28 +383,42 @@ function initiateLinkGraph(vertices, links) {
 	return linkMap;
 }
 
+/**
+ * Finds cycles in the model via depth first search
+ * Note: when two cycles share two or more nodes with each other, it only returns one of the cycles
+ * @param {Array of Array<String>} linkMap 
+ * @returns {Array of Array<String>} cycleList
+ */
 function traverseGraphForCycles(linkMap) {
 	var vertices = getElementList();
 	var notVisited = [];
 	var cycleList = [];
 
-	vertices.forEach(function(element){
+	vertices.forEach(function(element){ //create list of nodes to track which have not yet been visited
 		notVisited.push(element.id);
 	 });
 
-
 	while (notVisited.length > 0) { //while all nodes haven't yet been visited
-	var start = notVisited[0]; 	//pick a start node
-	notVisited.splice(0,1); //remove curr from visited list
+	var start = (notVisited.splice(0,1)).pop();
+	//console.log(start);
 	var walkList = [];
 	console.log("new walk");
-	traverseGraphRecursive(linkMap, start, walkList, notVisited, cycleList); 
+	traverseGraphRecursive(linkMap, start, walkList, notVisited, cycleList); //search for cycles
 	}
 	console.log(cycleList);
 	return cycleList;
 }
 
+/**
+ * Helper function for traverseGraphForCycles
+ * @param {Array of Array<String>} linkMap List of dest nodes associated with each src node
+ * @param {String} currNode Current node of the function call
+ * @param {Array.<String>} walkList List of nodes in current walk
+ * @param {Array.<String>} notVisited List of nodes that have not yet be visited, only used to determine start node for a new walk and to know when we're done traversing the graph
+ * @param {Array of Array<String>} cycleList Double array that represents the cycles found in a graph. First index = separate cycle, child array = nodes in cycle
+ */
 function traverseGraphRecursive(linkMap, currNode, walkList, notVisited, cycleList) {
+
 	if(walkList.includes(currNode)) {
 		//found a cycle
 		console.log("cycle found");
@@ -406,14 +427,14 @@ function traverseGraphRecursive(linkMap, currNode, walkList, notVisited, cycleLi
 		//the cycle is the part of the list from first instance of repeat node to now
 		for(var i = walkList.indexOf(currNode); i < walkList.length; ++i) {
 			cycle.push(walkList[i]);
-			var remove = linkMap[prev].indexOf(walkList[i]); //get rid of cycle link to from prev to curr node so graph doesn't get stuck
+			var remove = linkMap[prev].indexOf(walkList[i]); //get rid of cycle link from prev to curr node so graph traversal doesn't get stuck. problem: when multiple cycles share nodes, this inhibits others from being found. Should we just start a new walk?
 			linkMap[prev].splice(remove, 1);
 			prev = walkList[i];
 		}
 		cycleList.push(cycle);
 	}
 	
-	//push node to walk list
+	//push current node to walk list
 	walkList.push(currNode);
 
 	//remove curr from notVisited list
@@ -424,12 +445,12 @@ function traverseGraphRecursive(linkMap, currNode, walkList, notVisited, cycleLi
 	//if we have unvisited dest nodes, go there
 	if(linkMap[currNode].length > 0) {
 		for(var i = 0; i < linkMap[currNode].length; ++i) {
-		var next = linkMap[currNode][i];
-		walkList = traverseGraphRecursive(linkMap, next, walkList, notVisited, cycleList);
+		var next = linkMap[currNode][i]; //set next to a dest node that has currNode as its src
+		traverseGraphRecursive(linkMap, next, walkList, notVisited, cycleList); 
 		}
 	}
-		walkList.pop();
-		return walkList;
+
+	walkList.pop(); //done with function call, so take a "step back" in the graph
 }
 
 /**
@@ -441,95 +462,95 @@ function traverseGraphRecursive(linkMap, currNode, walkList, notVisited, cycleLi
  * @param {Object} vertices
  * @returns {Boolean}
  */
-function cycleCheck(links, vertices) {
-	var graphs = {};
-	var visited = {};
-	var cycle_list = []; 
-	var cycle = false;
-	// Iterate over links to create map between src node and dest node of each link
-	links.forEach(function(element){
-		var src = element.linkSrcID;
-		if(src in graphs){
-			graphs[src].push(element.linkDestID);
-		}
-		else{
-			graphs[src] = [element.linkDestID];
-		}
-	});
-	// Iterate over all vertices to initialize visited stack and recursive stack to false
-	vertices.forEach(function(vertex){
-		visited[vertex.id] = false;
-		recursiveStack[vertex.id] = false;
-	});
+// function cycleCheck(links, vertices) {
+// 	var graphs = {};
+// 	var visited = {};
+// 	var cycle_list = []; 
+// 	var cycle = false;
+// 	// Iterate over links to create map between src node and dest node of each link
+// 	links.forEach(function(element){
+// 		var src = element.linkSrcID;
+// 		if(src in graphs){
+// 			graphs[src].push(element.linkDestID);
+// 		}
+// 		else{
+// 			graphs[src] = [element.linkDestID];
+// 		}
+// 	});
+// 	// Iterate over all vertices to initialize visited stack and recursive stack to false
+// 	vertices.forEach(function(vertex){
+// 		visited[vertex.id] = false;
+// 		recursiveStack[vertex.id] = false;
+// 	});
 
-	vertices.forEach(function(vertex){
-			if (!visited[vertex.id]) {
-				cycle_sublist = []; 
-				cycle_sublist.push(vertex.id);
-				if (isCycle(vertex.id, visited, graphs,cycle_sublist,cycle_list)){
-					cycle = true;
-				}
-			}
-	});
-	var list = [] ;
-	list.push(cycle);
-	var cycleList = checkCycleList(cycle_list,graphs);
-	list.push(cycleList);
-	return list;
-}
+// 	vertices.forEach(function(vertex){
+// 			if (!visited[vertex.id]) {
+// 				cycle_sublist = []; 
+// 				cycle_sublist.push(vertex.id);
+// 				if (isCycle(vertex.id, visited, graphs,cycle_sublist,cycle_list)){
+// 					cycle = true;
+// 				}
+// 			}
+// 	});
+// 	var list = [] ;
+// 	list.push(cycle);
+// 	var cycleList = checkCycleList(cycle_list,graphs);
+// 	list.push(cycleList);
+// 	return list;
+// }
 
-/**
- * Returns true if cycle is detected with DFS.
- * This function is not to be called on its own.
- * This function should be called as a helper function for
- * cycleCheck(). 
- *
- * @param {String} vertexId
- * @param {Object} visited
- * @param {Object} graphs
- * @returns {Boolean}
- */
-function isCycle(vertexId, visited, graphs,cycle_sublist,cycle_list){
-	visited[vertexId] = true;
-	recursiveStack[vertexId] = true;
+// /**
+//  * Returns true if cycle is detected with DFS.
+//  * This function is not to be called on its own.
+//  * This function should be called as a helper function for
+//  * cycleCheck(). 
+//  *
+//  * @param {String} vertexId
+//  * @param {Object} visited
+//  * @param {Object} graphs
+//  * @returns {Boolean}
+//  */
+// function isCycle(vertexId, visited, graphs,cycle_sublist,cycle_list){
+// 	visited[vertexId] = true;
+// 	recursiveStack[vertexId] = true;
 	
 
-	if (graphs[vertexId] == null) {
-		recursiveStack[vertexId] = false;
-		return false;
-	}
-	else {
-		for(var i = 0; i < graphs[vertexId].length; i++) {
-			if (!visited[graphs[vertexId][i]]) {
-				cycle_sublist.push(graphs[vertexId][i]);
-				if (isCycle(graphs[vertexId][i], visited, graphs,cycle_sublist,cycle_list)) {
-					return true;
-				}
-			}
-			else if (recursiveStack[graphs[vertexId][i]]){
-				cycle_list.push(cycle_sublist);
-				return true;
-			}
-		}
-	}
-	recursiveStack[vertexId] = false;
-	return false;
-}
+// 	if (graphs[vertexId] == null) {
+// 		recursiveStack[vertexId] = false;
+// 		return false;
+// 	}
+// 	else {
+// 		for(var i = 0; i < graphs[vertexId].length; i++) {
+// 			if (!visited[graphs[vertexId][i]]) {
+// 				cycle_sublist.push(graphs[vertexId][i]);
+// 				if (isCycle(graphs[vertexId][i], visited, graphs,cycle_sublist,cycle_list)) {
+// 					return true;
+// 				}
+// 			}
+// 			else if (recursiveStack[graphs[vertexId][i]]){
+// 				cycle_list.push(cycle_sublist);
+// 				return true;
+// 			}
+// 		}
+// 	}
+// 	recursiveStack[vertexId] = false;
+// 	return false;
+// }
 
-function checkCycleList(cycle_list,graphs){
-	for (var i = 0 ; i < cycle_list.length; i++){
-		var last = cycle_list[i].length - 1; 
-		if (graphs[cycle_list[i][last]].length === 1){
-			if (graphs[cycle_list[i][last]] !== cycle_list[i][0]){
-				vertexId = cycle_list[i].splice(0,1)
-				recursiveStack[vertexId] = false;
-			}
-		}
-		else{
-			if (graphs[cycle_list[i][last]][0] !== cycle_list[i][0]){
-				cycle_list[i].splice(0,1)
-			}	
-		}
-	}
-	return cycle_list
-}
+// function checkCycleList(cycle_list,graphs){
+// 	for (var i = 0 ; i < cycle_list.length; i++){
+// 		var last = cycle_list[i].length - 1; 
+// 		if (graphs[cycle_list[i][last]].length === 1){
+// 			if (graphs[cycle_list[i][last]] !== cycle_list[i][0]){
+// 				vertexId = cycle_list[i].splice(0,1)
+// 				recursiveStack[vertexId] = false;
+// 			}
+// 		}
+// 		else{
+// 			if (graphs[cycle_list[i][last]][0] !== cycle_list[i][0]){
+// 				cycle_list[i].splice(0,1)
+// 			}	
+// 		}
+// 	}
+// 	return cycle_list
+// }
