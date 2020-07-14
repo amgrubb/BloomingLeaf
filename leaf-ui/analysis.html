@@ -8,7 +8,7 @@
 
         <link rel="stylesheet" type="text/css" href="./rappid/dist/joint.ui.stencil.css" />
         <link rel="stylesheet" type="text/css" href="./rappid/dist/joint.ui.halo.css" />
-        <link rel="stylesheet" type="text/css" href="./rappid/dist/joint.ui.selectionView.css" />
+        <link rel="stylesheet" type="text/css" href="./rappid/dist/joint.ui.selection.css" />
         <link rel="stylesheet" type="text/css" href="./rappid/dist/joint.ui.paperScroller.css" />
 
         <link rel="stylesheet" type="text/css" href="./rappid/dist/rappid.min.css" />
@@ -35,7 +35,7 @@
     </head>
     <body>
         <p id="name">BloomingLeaf</p>
-        <div class="toolbar">
+        <div class="toolbar">   <!-- TODO: Could be "toolbar-div"-->
             <!-- <div id="model-toolbar">
                 <button id="btn-save" class="btn">Save</button>
             </div> -->
@@ -114,9 +114,9 @@
         };
         </script>
 
-        <script src="./rappid/lib/jquery/jquery.min.js"></script>
-        <script src="./rappid/lib/lodash/lodash.min.js"></script>
-        <script src="./rappid/lib/backbone/backbone-min.js"></script>
+        <script src="./rappid/node_modules/jquery/dist/jquery.js"></script>
+        <script src="./rappid/node_modules/lodash/index.js"></script>
+        <script src="./rappid/node_modules/backbone/backbone.js"></script>
 
         <script src="./rappid/dist/rappid.min.js"></script>
 
@@ -124,7 +124,7 @@
         <script src="./rappid/dist/joint.ui.clipboard.js"></script>
         <script src="./rappid/dist/joint.ui.stencil.js"></script>
         <script src="./rappid/dist/joint.ui.paperScroller.js"></script>
-        <script src="./rappid/dist/joint.ui.selectionView.js"></script>
+        <script src="./rappid/dist/joint.ui.selection.js"></script>
         <script src="./rappid/dist/joint.format.svg.js"></script>
         <script src="./rappid/dist/joint.dia.command.js"></script>
 

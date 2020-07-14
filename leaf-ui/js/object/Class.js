@@ -177,17 +177,35 @@ class Model {
            }
        }
    }
+   /**
+    * 
+    * removes all leftover information from analysis and resets to the inital states
+    * 
+    */
+   removeAnalysis(){
+    analysisRequest.action = null;
+    analysisRequest.conflictLevel = "S";
+    analysisRequest.numRelTime = "1";
+    analysisRequest.absTimePts= "";
+    analysisRequest.absTimePtsArr = [];
+    analysisRequest.currentState = "0";
+    analysisRequest.userAssignmentsList = [];
+    analysisRequest.previousAnalysis = null;
+   }
 
    removeIntentionLinks(nodeID){
+
        for (var i = 0; i < this.links.length; i++) {
            if (this.links[i].linkSrcID == nodeID || this.links[i].linkDestID == nodeID) {
                this.links.splice(i, 1);
-
-               return;
-
            }
-
        }
+       //added a second loop to catch biconditional arrows
+       for (var i = 0; i < this.links.length; i++) {
+        if (this.links[i].linkSrcID == nodeID || this.links[i].linkDestID == nodeID) {
+            this.links.splice(i, 1);
+        }
+    }
    }
 
     /**
@@ -197,8 +215,6 @@ class Model {
      * @param {String} linkID
      */
     removeLink(linkID) {
-        for (var i = 0; i < this.links.length; i++) {
-        }
         for (var i = 0; i < this.links.length; i++) {
             if (this.links[i].linkID == linkID) {
                 this.links.splice(i, 1);
@@ -281,16 +297,16 @@ class Actor {
      *
      * @param{String} nodeID
      */
-    removeIntentionID(nodeID) {
+    removeIntentionID(nodeID,  userAssignmentsList) {
         for (var i = 0; i < this.intentionIDs.length; i++) {
             if (this.intentionIDs[i] == nodeID) {
                 this.intentionIDs.splice(i, 1);
                 return ;
             }
         }
-        while (i < this.userAssignmentsList.length) {
-            if (this.userAssignmentsList[i].intentionID == nodeID) {
-                this.userAssignmentsList.splice(i, 1);
+        while (i < userAssignmentsList.length) {
+            if (userAssignmentsList[i].intentionID == nodeID) {
+                userAssignmentsList.splice(i, 1);
             } else {
                 i++;
             }
@@ -1204,6 +1220,13 @@ class Intention {
     }
 
     /**
+     * Sets the initial satisfaction value for this Intention to '(no value)'
+     */
+    removeInitialSatValue() {
+        this.changeInitialSatValue('(no value)');
+    }
+
+    /**
      * Creates and returns a 4 digit ID for this node
      *
      * @returns {String}
@@ -1272,6 +1295,13 @@ class Intention {
         }
     }
 
+    /**
+     * Resets dynamic function
+     */
+    removeFunction() {
+        this.removeAbsCosnt();
+        this.dynamicFunction = new EvolvingFunction(this.nodeID);
+    }
 
     /**
      * Returns the number of function segments for this
