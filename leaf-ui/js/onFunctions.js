@@ -106,7 +106,9 @@ function switchToAnalysisMode() {
 	if (currentHalo) {
 		currentHalo.remove();
 	}
-	mode = "Analysis";
+    mode = "Analysis";
+    
+    ColorVisual.refresh();
 }
 
 // Switches to modeling mode
@@ -336,6 +338,20 @@ $('#btn-fnt').on('click', function(){
 	for (var i = 0; i < elements.length; i++){
 		elements[i].attr(".name/font-size", 10);
 	}
+});
+
+$('#colorblind-mode-isOff').on('click', function(){ //activates colorblind mode
+    $('#colorblind-mode-isOff').css("display", "none");
+    $('#colorblind-mode-isOn').css("display", "");
+
+    ColorVisual.toggleColorBlindMode(true);
+});
+
+$('#colorblind-mode-isOn').on('click', function(){ //turns off colorblind mode
+    $('#colorblind-mode-isOn').css("display", "none");
+    $('#colorblind-mode-isOff').css("display", "");
+
+    ColorVisual.toggleColorBlindMode(false);
 });
 
 /**

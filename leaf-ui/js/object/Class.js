@@ -406,12 +406,26 @@ class ColorVisual {
             7: "1110" ,
             5: "1111" };
 
+     //replaces all conflicting evals with dark grey
+     static colorVisDictColorBlind = {
+            "0000" : "#D3D3D3",
+            "0011" : "#003fff",
+            "0010" : "#8FB8DE",
+            "0100" : "#fbaca8",
+            "0110" : "#333333",
+            "0111" : "#333333", 
+            "1100" : "#FF2600",
+            "1110" : "#333333", 
+            "1111" : "#333333" };
+
     //number of evaluation types
     static numEvals = Object.keys(ColorVisual.colorVisDict).length + 1;
     //current time point, defined by selection in lower time point slider after simulating a single path
     static curTimePoint = 0;
     //user selected slider option
     static sliderOption = 0;
+    //whether color blind mode is activated
+    static isColorBlindMode = false;
 
     /**
      * Checks validity, sets sliderOption, and refreshes visualization
@@ -447,11 +461,11 @@ class ColorVisual {
             case '3':
                 if(!analysisResult.isPathSim ) {
                // console.log("changing intentions by initial state");
-                ColorVisual.changeIntentions();
+                ColorVisual.colorIntentionsModeling();
                 }
                 else {
                // console.log("filling intentions by: "+sliderOption);
-                ColorVisual.changeIntentionsColorVis();
+                ColorVisual.colorIntentionsAnalysis();
                 }
                 ColorVisual.changeIntentionsText();
                 break;
@@ -468,6 +482,11 @@ class ColorVisual {
         this.intentionListColorVis = [];        
         this.initializeIntentionList();
     }  
+
+    static toggleColorBlindMode(isTurningOnColorBlindMode) {
+        ColorVisual.isColorBlindMode = isTurningOnColorBlindMode;
+        ColorVisual.refresh();
+    }
 
     /**
      * Switches to analysis slider, uses the single path analysis results to calculate evaluation percentages, stores time point info, prints info to console
@@ -545,25 +564,27 @@ class ColorVisual {
     static defineGradient(element) {
             var gradientStops = [];	
             var offsetTotal = 0.0;
+            var currColor;
             //var gradientID;
 
             if(ColorVisual.sliderOption == 2) { //fill by time
             var percentPerTimePoint = 1.0 / element.timePoints.length;
-            var timePointColor;
+            //var timePointColor;
             for(var j = 0; j < element.timePoints.length; ++j) {
-                timePointColor = ColorVisual.colorVisDict[element.timePoints[j]];
+                currColor = ColorVisual.getColor(element.timePoints[j]);
+
                 //before buffer
                 offsetTotal += 0.001;
                 gradientStops.push({offset: String(offsetTotal*100) + '%',
-                color: ColorVisual.colorVisDict[element.timePoints[j]]})
+                color: currColor})
                 //element color
                 offsetTotal += percentPerTimePoint - 0.002;
                 gradientStops.push({offset: String(offsetTotal*100) + '%',
-                color: ColorVisual.colorVisDict[element.timePoints[j]]})
+                color: currColor})
                 //after buffer
                 offsetTotal += 0.001;
                 gradientStops.push({offset: String(offsetTotal*100) + '%',
-                color: ColorVisual.colorVisDict[element.timePoints[j]]})
+                color: currColor})
             }
 
             }
@@ -571,18 +592,19 @@ class ColorVisual {
             for(var j = 0; j < ColorVisual.numEvals; ++j) {
             var intentionEval = ColorVisual.colorVisOrder[j];
             if(element.evals[intentionEval] > 0) {
+                currColor = ColorVisual.getColor(intentionEval);
                 //before buffer
                 offsetTotal += 0.001;
                 gradientStops.push({offset: String(offsetTotal*100) + '%',
-                color: ColorVisual.colorVisDict[intentionEval]})
+                color: currColor})
                 //element color
                 offsetTotal += element.evals[intentionEval] - 0.002;
                 gradientStops.push({offset: String(offsetTotal*100) + '%',
-                color: ColorVisual.colorVisDict[intentionEval]})
+                color: currColor})
                 //after buffer
                 offsetTotal += 0.001;
                 gradientStops.push({offset: String(offsetTotal*100) + '%',
-                color: ColorVisual.colorVisDict[intentionEval]})
+                color: currColor})
             }
             } }
 
@@ -590,7 +612,6 @@ class ColorVisual {
             type: 'linearGradient',
             stops: gradientStops
             });
-            
 
             return gradientId;
      }
@@ -598,20 +619,18 @@ class ColorVisual {
      /**
       * Colors intentions by their evaluation information and slider option after simulating single path
       */
-    static changeIntentionsColorVis()
+    static colorIntentionsAnalysis()
     {
         var count = 1;
         var elements = graph.getElements(); 
         var actorBuffer = 0;
     
-        for (var i = 0; i < elements.length; i++){  //iterate through elements
+        for (var i = 0; i < elements.length; i++) { 
             ++count;
-    
             var cellView  = elements[i].findView(paper);
             var intention = model.getIntentionByID(cellView.model.attributes.nodeID);
     
-            if(intention == null) //is an actor or something went wrong
-            {
+            if(intention == null) { //is an actor or something went wrong
                 actorBuffer += 1;
             }
     
@@ -624,7 +643,7 @@ class ColorVisual {
                     else {
                         var timepoint = ColorVisual.curTimePoint;
                         var intentionEval = element.timePoints[timepoint];
-                        var color = ColorVisual.colorVisDict[intentionEval];
+                        var color = ColorVisual.getColor(intentionEval);
                         cellView.model.attr({'.outer' : {'fill' : color}})
                     }
                 }
@@ -681,7 +700,7 @@ class ColorVisual {
     /**
      * changes each intention by their initial user set satisfaction value in modeling mode
      */
-    static changeIntentions(){
+    static colorIntentionsModeling(){
         var elements = graph.getElements();
         for (var i = 0; i < elements.length; i++){ 
             var cellView = elements[i].findView(paper); 
@@ -693,12 +712,25 @@ class ColorVisual {
             {
                 cellView.model.changeToOriginalColour();
             }
-            var colorChange = ColorVisual.colorVisDict[initSatVal]; //get color for cooresponding sat value
+           // var colorChange = ColorVisual.colorVisDict[initSatVal]; //get color for cooresponding sat value
+           var colorChange = ColorVisual.getColor(initSatVal);
+           console.log("color = "+colorChange);
             cellView.model.attr({'.outer': {'fill': colorChange}}); //change intention color to match sat value
         }else{
             cellView.model.changeToOriginalColour();
         }
         }
+    }
+
+    /**
+     * Returns color that corresponds to an intention eval. Checks for color blind mode first.
+     * @param {*} intentionEval four digit code that corresponds to evidence pair (ex. 0011)
+     */
+    static getColor(intentionEval) {
+        if(ColorVisual.isColorBlindMode) {
+            return ColorVisual.colorVisDictColorBlind[intentionEval];
+        }
+        return ColorVisual.colorVisDict[intentionEval];
     }
 
     /**
