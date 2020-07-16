@@ -1144,10 +1144,13 @@ else{
 		constraintList.push(constraint);
 	}
 	analysisRequestList = [];
-	for(var ranalysisRequest of resultList["model"]["analysisRequest"]){
-		analysisRequestList.push(ranalysisRequest);
-	}
-	newResultList = [actorList, intentionList, linkList, constraintList, analysisRequestList]
+
+	// console.log(resultList["analysisRequest"])
+	// for(var ranalysisRequest of resultList["analysisRequest"]){
+	// 	analysisRequestList.push(ranalysisRequest);
+	// }
+	//newResultList = [actorList, intentionList, linkList, constraintList, analysisRequestList]
+	newResultList = [actorList, intentionList, linkList, constraintList]
 	var graphicalResultList = forceDirectedAlgorithm(newResultList);
 	var outPutString = "";
 	var outPut = new Object();
@@ -1183,7 +1186,7 @@ else{
 	semanticElems["analysisRequest"] = analysisRequestList;
 	outPut["model"] = semanticElems;
 	outPutString = JSON.stringify(outPut);
-	fs.writeFile('OutputForMerge.txt', outPutString, (err) => { 
+	fs.writeFile('OutputForMerge1.txt', outPutString, (err) => { 
 	//In case of a error throw err. 
 		if (err) throw err; 
  	});
