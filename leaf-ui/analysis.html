@@ -40,17 +40,17 @@
                 <button id="btn-save" class="btn">Save</button>
             </div> -->
 
-            <button id="btn-zoom-in" class="btn">Zoom In</button>
-            <button id="btn-zoom-out" class="btn">Zoom Out</button>
+            <button id="btn-zoom-in" class="btn" onclick="zoomIn()">Zoom In</button>
+            <button id="btn-zoom-out" class="btn" onclick="zoomOut()">Zoom Out</button>
 
             <!-- <button id="btn-save-leaf" class="btn"> Export .leaf </button> -->
 
             <div class="dropdown">
               <div class="btn">Font Size</div>
               <div class="dropdown-toolbar">
-                <a id="btn-fnt">Default</a>
-                <a id="btn-fnt-up">Increase</a>
-                <a id="btn-fnt-down">Decrease</a>
+                <a id="btn-fnt" onclick="defaultFont()">Default</a>
+                <a id="btn-fnt-up" onclick="fontUp()">Increase</a>
+                <a id="btn-fnt-down" onclick="fontDown()">Decrease</a>
               </div>
             </div>
 
