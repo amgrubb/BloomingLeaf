@@ -173,6 +173,8 @@ var AnalysisInspector = Backbone.View.extend({
 		this.sendToBackend();
 	},
 
+	//add a instance to class analysisRequest that stores the user selected timepoint
+
 	/**
 	 * Retrieves information about the current model and sends to the backend
 	 * to get all next possible states.
@@ -180,6 +182,8 @@ var AnalysisInspector = Backbone.View.extend({
 	 * This function is called on click for #btn-all-next-state
 	 */
 	getAllNextStates: function () {
+		if(analysisRequest.action != null) { //path has been simulated
+			if(analysisResult.selectedTimePoint != analysisResult.maxTimePoint) { //last timepoint is not selected
 		//Create the object and fill the JSON file to be sent to backend.
 		//Get the AnalysisInspector view information
 		analysisRequest.action = "allNextStates";
@@ -213,6 +217,15 @@ var AnalysisInspector = Backbone.View.extend({
 
 		//Prepare and send data to backend
 		this.sendToBackend();
+
+		} else {
+			swal("Error: Cannot explore next states with last time point selected.", "", "error");
+		}
+		} else {
+			swal("Error: Cannot explore next states before simulating a single path.", "", "error");
+		}
+
+
 	},
 
 	/**
