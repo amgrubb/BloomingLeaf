@@ -1,0 +1,143 @@
+SETCOORDINATEPOSITIVE(nodeSet)
+\begin{algorithm}
+  \caption{Function that set the relative coordinates to positive numbers}
+  \begin{algorithmic}[1]
+  \Statex
+  \Function{setCoordinatePositive}{\mWord{node1}, \mWord{node2}, \mWord{isActor}}
+  \Let{\mWord{maxNXDict}}{\mWord{new dictionary}}
+  \Let{\mWord{maxNYDict}}{\mWord{new dictionary}}
+  \For{$\mWord{node} \in \mWord{nodeSet}$}
+  				\Let{\mWord{curActor}}{\mWord{node}.\mWord{actorId}}
+                \If{$\mWord{typeof} \mWord{curActor} = \mWord{undefined}$}
+                    \State $\mWord{maxNXDict}.\mWord{curActor} = 0$
+                \EndIf
+                \If{$\mWord{typeof} \mWord{curActor} = \mWord{undefined}$}
+                    \State $\mWord{maxNYDict}.\mWord{curActor} = 0$
+                \EndIf
+
+                \If{$\mWord{curX} < 0$}
+                	\If{$\mWord{maxNXDict}.\mWord{curActor} > \mWord{curX}$}
+                    	\State $\mWord{maxNXDict}.\mWord{curActor} = \mWord{curX}$
+                    \EndIf
+                \EndIf
+
+                \If{$\mWord{curY} < 0$}
+                	\If{$\mWord{maxNYDict}.\mWord{curActor} > \mWord{curY}$}
+                    	\State $\mWord{maxNYDict}.\mWord{curActor} = \mWord{curY}$
+                    \EndIf
+                \EndIf
+  \EndFor
+  \For{$\mWord{node} \in \mWord{nodeSet}$}
+  	\State $\mWord{curId} = \mWord{node}.\mWord{actorId}$
+  	\State $\mWord{node}.\mWord{nodeX} = \mWord{node}.\mWord{nodeX} - \mWord{maxNXDict}.\mWord{curId}$
+	\State $\mWord{node}.\mWord{nodeY} = \mWord{node}.\mWord{nodeY} - \mWord{maxNYDict}'\mWord{curId}$
+  \EndFor
+  \EndFunction
+  \end{algorithmic}
+\end{algorithm}
+
+
+GETSIZEOFACTOR(actorSet, nodeSet)
+\begin{algorithm}
+  \caption{Function that calculates sizes of actors}
+  \begin{algorithmic}[1]
+  \Statex
+  \Function{getSizeOfActor}{\mWord{actorSet}, \mWord{nodeSet}}
+  \Let{\mWord{maxPXDict}}{\mWord{new dictionary}}
+  \Let{\mWord{maxPYDict}}{\mWord{new dictionary}}
+  \Let{\mWord{minPXDict}}{\mWord{new dictionary}}
+  \Let{\mWord{minPYDict}}{\mWord{new dictionary}}
+  \For{$\mWord{node} \in \mWord{nodeSet}$}
+  	\State $\mWord{curX} = \mWord{node}.\mWord{nodeX}$
+  	\State $\mWord{curY} = \mWord{node}.\mWord{nodeY}$
+  	\State $\mWord{curActor} = \mWord{node}.\mWord{parent}$
+  		\If{$\mWord{typeof} \mWord{maxPXDict}.\mWord{curActor} = \mWord{undefined}$}
+        	\State $\mWord{maxPXDict}.\mWord{curActor} = 150$
+        \EndIf
+        \If{$\mWord{typeof} \mWord{maxPYDict}.\mWord{curActor} = \mWord{undefined}$}
+        	\State $\mWord{maxPYDict}.\mWord{curActor} = 100$
+        \EndIf
+  		\If{$\mWord{typeof} \mWord{minPXDict}.\mWord{curActor} = \mWord{undefined}$}
+        	\State $\mWord{minPXDict}.\mWord{curActor} = 150$
+        \EndIf
+        \If{$\mWord{typeof} \mWord{minPYDict}.\mWord{curActor} = \mWord{undefined}$}
+        	\State $\mWord{minPYDict}.\mWord{curActor} = 100$
+        \EndIf
+
+        \If{$\mWord{maxPXDict}.\mWord{curActor} < \mWord{curX}$}
+        	\State $\mWord{maxPXDict}.\mWord{curActor} = \mWord{curX}$
+        \EndIf
+        \If{$\mWord{maxPYDict}.\mWord{curActor} < \mWord{curX}$}
+        	\State $\mWord{maxPYDict}.\mWord{curActor} = \mWord{curX}$
+        \EndIf
+        \If{$\mWord{minPXDict}.\mWord{curActor} > \mWord{curX}$}
+        	\State $\mWord{minPXDict}.\mWord{curActor} = \mWord{curX}$
+        \EndIf
+        \If{$\mWord{minPYDict}.\mWord{curActor} > \mWord{curX}$}
+        	\State $\mWord{minPYDict}.\mWord{curActor} = \mWord{curX}$
+        \EndIf
+  \EndFor
+  \For{$\mWord{actor} \in \mWord{actorSet}$}
+  \State$\mWord{actorId} = \mWord{actor}.\mWord{nodeId}$
+  	\If{$\mWord{typeof} \mWord{maxPXDict}.\mWord{actorId} = \mWord{undefined}$}
+      \State $\mWord{maxPXDict}.\mWord{curActor} = 150$
+    \EndIf
+  	\If{$\mWord{typeof} \mWord{maxPYDict}.\mWord{actorId} = \mWord{undefined}$}
+      \State $\mWord{maxPYDict}.\mWord{curActor} = 100$
+    \EndIf
+  	\If{$\mWord{typeof} \mWord{minPXDict}.\mWord{actorId} = \mWord{undefined}$}
+      \State $\mWord{minPXDict}.\mWord{curActor} = 0$
+    \EndIf
+  	\If{$\mWord{typeof} \mWord{minPYDict}.\mWord{actorId} = \mWord{undefined}$}
+      \State $\mWord{minPYDict}.\mWord{curActor} = 0$
+    \EndIf
+    \State$\mWord{x} = \mWord{maxPXDict}.\mWord{actorId} - \mWord{minPXDict}.\mWord{actorId} + 300$
+    \State$\mWord{x} = \mWord{maxPYDict}.\mWord{actorId} - \mWord{minPYDict}.\mWord{actorId} + 200$
+    \State$\mWord{actor}.\mWord{sizeX} = \mWord{x}$
+    \State$\mWord{actor}.\mWord{sizeY} = \mWord{y}$
+  \EndFor
+  \EndFunction
+  \end{algorithmic}
+
+CALCULATEACTORPOSWITHREC(actorSet) 
+\begin{algorithm}
+  \caption{Function that find the final positions for the actors}
+  \begin{algorithmic}[1]
+  \Statex
+  \Function{calculateActorPosWithRec}{\mWord{actorSet}}
+  \State$\mWord{actorsXSorted} = \mWord{sortActorX}(\mWord{actorSet})$
+  \State$\mWord{actorsYSorted} = \mWord{sortActorY}(\mWord{actorSet})$
+  \State$\mWord{curX} = 0$
+  \State$\mWord{curY} = 0$
+  \For{$\mWord{actor} \in \mWord{actorsXSorted}$}
+  	\State$\mWord{actor}.\mWord{nodeX} = \mWord{actor}.\mWord{nodeX} + \mWord{curX}$
+  	\State$\mWord{curX} += \mWord{curNode}.\mWord{sizeX}$
+  \EndFor
+  \For{$\mWord{actor} \in \mWord{actorsYSorted}$}
+  	\State$\mWord{actor}.\mWord{nodeY} = \mWord{actor}.\mWord{nodeY} + \mWord{curY}$
+  	\State$\mWord{curY} += \mWord{curNode}.\mWord{sizeY}$
+  \EndFor
+  \EndFunction
+\end{algorithmic}
+
+MOVENODESTOABSPOS(actorSet,nodeSet)
+\begin{algorithm}
+  \caption{Function that find the final positions for the nodes}
+  \begin{algorithmic}[1]
+  \Statex
+  \Function{moveNodesToAbsPos}{\mWord{nodeSet},\mWord{actorSet}}
+  \For{$\mWord{node} \in \mWord{nodeSet}$}
+  	\State $\mWord{actorId} = \mWord{node}.\mWord{parent}$
+  	\For{$\mWord{actor} \in \mWord{actorSet}$}
+  		\If{$\mWord{actor}.\mWord{nodeId} = \mWord{actorId}$}
+  			\State $\mWord{curX} = \mWord{node}.\mWord{nodeX}$
+  			\State $\mWord{curY} = \mWord{node}.\mWord{nodeY}$
+  			\State $\mWord{node}.\mWord{nodeX} = \mWord{curX} + \mWord{actor}.\mWord{nodeX} + 150$
+  			\State $\mWord{node}.\mWord{nodeY} = \mWord{curY} + \mWord{actor}.\mWord{nodeY} + 100$
+  		\EndIf
+  	\EndFor
+  \EndFor
+  \EndFunction
+\end{algorithmic}
+
+
