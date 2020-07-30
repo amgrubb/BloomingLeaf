@@ -124,46 +124,6 @@ function renderNavigationSidebar(currentPage = 0){
     //updateSliderValues(currentPage);
 }
 
-//These functions are used in the nav bar in both windows. Is there a better place to put them?
-
-function zoomIn(pPaperScroller) {
-    pPaperScroller.zoom(0.2, { max: 3 });
-}
-
-function zoomOut(pPaperScroller) {
-pPaperScroller.zoom(-0.2, { min: 0.2 });
-}
-
-function fontUp(pPaper) {
-    var elements = graph.getElements();
-	for (var i = 0; i < elements.length; i++){
-        var cellView = elements[i].findView(pPaper); 
-        
-        if (cellView.model.attr(".name/font-size") < max_font){
-			cellView.model.attr(".name/font-size", cellView.model.attr(".name/font-size") + 1);
-		}
-	}
-}
-
-function fontDown(pPaper) {
-    var elements = graph.getElements();
-	for (var i = 0; i < elements.length; i++){
-        var cellView = elements[i].findView(pPaper); 
-        if (cellView.model.attr(".name/font-size") > min_font){
-			cellView.model.attr(".name/font-size", cellView.model.attr(".name/font-size") - 1);
-		}
-	}
-}
-
-function defaultFont(pPaper) {
-    var elements = graph.getElements();
-	for (var i = 0; i < elements.length; i++){
-        var cellView = elements[i].findView(pPaper); 
-        cellView.model.attr(".name/font-size", 10);
-	}
-}
-
-//end nav bar functions
 
 function updateNodesValues(currentPage, step = 0){
     if(currentPage == "")
