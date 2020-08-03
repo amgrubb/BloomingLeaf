@@ -116,6 +116,8 @@ $('#model-cur-btn').on('click', function() {
 	savedAnalysisData.finalAssignedEpoch="";
     savedAnalysisData.finalValueTimePoints="";
     analysisResult.isPathSimulated = false;
+
+    analysisRequest.action = null;
 });
 
 
