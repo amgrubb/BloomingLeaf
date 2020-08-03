@@ -173,8 +173,6 @@ var AnalysisInspector = Backbone.View.extend({
 		this.sendToBackend();
 	},
 
-	//add a instance to class analysisRequest that stores the user selected timepoint
-
 	/**
 	 * Retrieves information about the current model and sends to the backend
 	 * to get all next possible states.
