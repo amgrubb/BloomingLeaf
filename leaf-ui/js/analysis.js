@@ -124,6 +124,7 @@ function renderNavigationSidebar(currentPage = 0){
     //updateSliderValues(currentPage);
 }
 
+
 function updateNodesValues(currentPage, step = 0){
     if(currentPage == "")
         currentPage = 0;

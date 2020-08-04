@@ -251,16 +251,6 @@ $('#btn-svg').on('click', function() {
 	paper.openAsSVG();
 });
 
-// Zoom in
-$('#btn-zoom-in').on('click', function() {
-	paperScroller.zoom(0.2, { max: 3 });
-});
-
-// Zoom out
-$('#btn-zoom-out').on('click', function() {
-	paperScroller.zoom(-0.2, { min: 0.2 });
-});
-
 // Save the current graph to json file
 $('#btn-save').on('click', function() {
 	var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
@@ -275,34 +265,6 @@ $('#btn-save').on('click', function() {
 // Workaround for load, activates a hidden input element
 $('#btn-load').on('click', function(){
 	$('#loader').click();
-});
-
-// Increase font size
-$('#btn-fnt-up').on('click', function(){
-	var elements = graph.getElements();
-	for (var i = 0; i < elements.length; i++){
-		if (elements[i].attr(".name/font-size") < max_font){
-			elements[i].attr(".name/font-size", elements[i].attr(".name/font-size") + 1);
-		}
-	}
-});
-
-// Decrease font size
-$('#btn-fnt-down').on('click', function(){
-	var elements = graph.getElements();
-	for (var i = 0; i < elements.length; i++){
-		if (elements[i].attr(".name/font-size") > min_font){
-			elements[i].attr(".name/font-size", elements[i].attr(".name/font-size") - 1);
-		}
-	}
-});
-
-// Default font size
-$('#btn-fnt').on('click', function(){
-	var elements = graph.getElements();
-	for (var i = 0; i < elements.length; i++){
-		elements[i].attr(".name/font-size", 10);
-	}
 });
 
 /**
@@ -407,9 +369,6 @@ function createActor(cell) {
  * Set up on events for Rappid/JointJS objets
  */
 var element_counter = 0;
-var max_font = 20;
-var min_font = 6;
-var current_font = 10;
 
 // Whenever an element is added to the graph
 graph.on("add", function(cell) {
