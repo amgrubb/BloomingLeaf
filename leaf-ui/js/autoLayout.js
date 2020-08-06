@@ -17,7 +17,7 @@ var goalGravity = 0;
 // var IDNodeIDDict = new Object();
 var imaginaryActorIdList = []
 // var nodeIdNodePosDict = new Object();
-var userPath = "/Users/wangyilin/git/BloomingLeaf"
+var userPath = "/Users/wangyilin/Documents/GitHub/BloomingLeaf/leaf-ui/js/"
 
 class Node{
   constructor(name,x,y,connectionList,gravity,type, nodeId, actorId) {
