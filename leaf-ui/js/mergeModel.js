@@ -15,6 +15,7 @@
 // var softgoalGravity = 440;
 // var goalGravity = 0;
  var IDNodeIDDict = new Object();
+ var userPath = "/Users/wangyilin/git/BloomingLeaf"
 // var imaginaryActorIdList = []
 // // var nodeIdNodePosDict = new Object();
 
@@ -1767,7 +1768,7 @@ else{
 	semanticElems["analysisRequest"] = analysisRequestList;
 	output["model"] = semanticElems;
 	outPutString = JSON.stringify(output);
-	fs.writeFile('resultList.txt', outPutString, (err) => { 
+	fs.writeFile(userPath+'resultList.txt', outPutString, (err) => { 
 	//In case of a error throw err. 
 		if (err) throw err; 
  	});

@@ -17,6 +17,7 @@ var goalGravity = 0;
 // var IDNodeIDDict = new Object();
 var imaginaryActorIdList = []
 // var nodeIdNodePosDict = new Object();
+var userPath = "/Users/wangyilin/git/BloomingLeaf"
 
 class Node{
   constructor(name,x,y,connectionList,gravity,type, nodeId, actorId) {
@@ -1186,7 +1187,7 @@ else{
 	semanticElems["analysisRequest"] = analysisRequestList;
 	outPut["model"] = semanticElems;
 	outPutString = JSON.stringify(outPut);
-	fs.writeFile('OutputForMerge1.txt', outPutString, (err) => { 
+	fs.writeFile(userPath+'OutputForMerge1.txt', outPutString, (err) => { 
 	//In case of a error throw err. 
 		if (err) throw err; 
  	});
