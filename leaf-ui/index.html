@@ -39,18 +39,18 @@
                 <button id="btn-load" class="btn">Load</button>
             </div>
 
-            <button id="btn-zoom-in" class="btn">Zoom In</button>
-            <button id="btn-zoom-out" class="btn">Zoom Out</button>
-            <button id="btn-svg" class="btn">Open as SVG</button>            
+            <button id="btn-zoom-in" class="btn" onclick = "zoomIn(paperScroller)">Zoom In</button>
+            <button id="btn-zoom-out" class="btn" onclick = "zoomOut(paperScroller)">Zoom Out</button>
+            <button id="btn-svg" class="btn">Open as SVG</button>
             <input type="file" id="loader" style="display:none">
 
 
             <div class="dropdown">
               <div class="btn">Font Size</div>
               <div class="dropdown-toolbar">
-                <a id="btn-fnt">Default</a>
-                <a id="btn-fnt-up">Increase</a>
-                <a id="btn-fnt-down">Decrease</a>
+                <a id="btn-fnt" onclick = "defaultFont(paper)">Default</a>
+                <a id="btn-fnt-up" onclick = "fontUp(paper)">Increase</a>
+                <a id="btn-fnt-down" onclick = "fontDown(paper)">Decrease</a>
               </div>
             </div>
 

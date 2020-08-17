@@ -121,6 +121,7 @@ $('#model-cur-btn').on('click', function() {
     savedAnalysisData.finalValueTimePoints="";
     
     analysisResult.isPathSim = false;
+    analysisRequest.action = null;
 });
 
 
@@ -282,16 +283,6 @@ $('#btn-clear-cycle').on('click',function(){
 // Open as SVG
 $('#btn-svg').on('click', function() {
 	paper.openAsSVG();
-});
-
-// Zoom in
-$('#btn-zoom-in').on('click', function() {
-	paperScroller.zoom(0.2, { max: 3 });
-});
-
-// Zoom out
-$('#btn-zoom-out').on('click', function() {
-	paperScroller.zoom(-0.2, { min: 0.2 });
 });
 
 // Save the current graph to json file
@@ -456,9 +447,6 @@ function createActor(cell) {
  * Set up on events for Rappid/JointJS objets
  */
 var element_counter = 0;
-var max_font = 20;
-var min_font = 6;
-var current_font = 10;
 
 // Whenever an element is added to the graph
 graph.on("add", function(cell) {
