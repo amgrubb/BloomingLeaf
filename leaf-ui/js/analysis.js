@@ -1,3 +1,7 @@
+/**
+ * This file contains functions associated with the Next State window.
+ */
+
 //Defining local scope
 var analysis = {};
 
@@ -22,11 +26,6 @@ var satValueDict = {
     "denied": "1100",
     "none": "0000"
 };
-
-var sliderNextState = document.getElementById("colorResetNextState"); ///problem: analysis.js is rendered first, because colorResetNextState doesn't exist we get an error
-sliderNextState.oninput = function() { //changes slider mode and refreshes 
-    ColorVisualNextState.setSliderOption(this.value);
-}
 
 //Executing scripts only when page is fully loaded
 window.onload = function(){
