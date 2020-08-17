@@ -184,8 +184,6 @@ var AnalysisInspector = Backbone.View.extend({
 			if(analysisResult.selectedTimePoint != analysisResult.maxTimePoint) { //last timepoint is not selected
 		//Create the object and fill the JSON file to be sent to backend.
 		//Get the AnalysisInspector view information
-		if(analysisResult.isPathSim) {
-				if(ColorVisual.curTimePoint != analysisResult.colorVis.numTimePoints - 1) {
 			analysisRequest.action = "allNextStates";
 
 			analysisRequest.previousAnalysis = _.clone(savedAnalysisData.singlePathResult);

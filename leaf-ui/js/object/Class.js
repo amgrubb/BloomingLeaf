@@ -341,6 +341,8 @@ class AnalysisResult {
         this.elementListPercentEvals;
         this.isPathSim = false; //used for slider visualization
         this.colorVis; //color visualization for analysis mode  
+        this.selectedTimePoint; //find where slider is initialized and set timepoint in here. Also place it in update function
+        this.maxTimePoint;
     }
 }
 

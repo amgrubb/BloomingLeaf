@@ -303,34 +303,6 @@ $('#btn-load').on('click', function(){
 	$('#loader').click();
 });
 
-// Increase font size
-$('#btn-fnt-up').on('click', function(){
-	var elements = graph.getElements();
-	for (var i = 0; i < elements.length; i++){
-		if (elements[i].attr(".name/font-size") < max_font){
-			elements[i].attr(".name/font-size", elements[i].attr(".name/font-size") + 1);
-		}
-	}
-});
-
-// Decrease font size
-$('#btn-fnt-down').on('click', function(){
-	var elements = graph.getElements();
-	for (var i = 0; i < elements.length; i++){
-		if (elements[i].attr(".name/font-size") > min_font){
-			elements[i].attr(".name/font-size", elements[i].attr(".name/font-size") - 1);
-		}
-	}
-});
-
-// Default font size
-$('#btn-fnt').on('click', function(){
-	var elements = graph.getElements();
-	for (var i = 0; i < elements.length; i++){
-		elements[i].attr(".name/font-size", 10);
-	}
-});
-
 $('#colorblind-mode-isOff').on('click', function(){ //activates colorblind mode
     $('#colorblind-mode-isOff').css("display", "none");
     $('#colorblind-mode-isOn').css("display", "");
