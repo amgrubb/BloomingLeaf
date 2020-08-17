@@ -23,7 +23,10 @@ var satValueDict = {
     "none": "0000"
 };
 
-
+var sliderNextState = document.getElementById("colorResetNextState"); ///problem: analysis.js is rendered first, because colorResetNextState doesn't exist we get an error
+sliderNextState.oninput = function() { //changes slider mode and refreshes 
+    ColorVisualNextState.setSliderOption(this.value);
+}
 
 //Executing scripts only when page is fully loaded
 window.onload = function(){
@@ -122,6 +125,9 @@ function renderNavigationSidebar(currentPage = 0){
     updatePagination(currentPage);
     updateNodesValues(currentPage);
     //updateSliderValues(currentPage);
+
+    ColorVisualNextState.refresh();
+
 }
 
 

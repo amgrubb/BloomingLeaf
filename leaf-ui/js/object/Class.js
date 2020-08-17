@@ -456,17 +456,14 @@ class ColorVisual {
      * Runs after any event that may change visualization, such as setting a sat value, changing slider option, or selecting a time point
      */
     static refresh() {
-        console.log("inside ColorVisualSlider static method refresh()");
         switch(this.sliderOption) {
             case '1':
             case '2':
             case '3':
                 if(!analysisResult.isPathSim ) {
-               // console.log("changing intentions by initial state");
                 ColorVisual.colorIntentionsModeling();
                 }
                 else {
-               // console.log("filling intentions by: "+sliderOption);
                 ColorVisual.colorIntentionsAnalysis();
                 }
                 ColorVisual.changeIntentionsText();
@@ -495,14 +492,12 @@ class ColorVisual {
      * @param {*} elementList List of elements containing analysis results
      */
     singlePathResponse(elementList) {
-        console.log("inside singlePathResponse");
         $('#modelingSlider').css("display", "none");
         $('#analysisSlider').css("display", "");
         document.getElementById("colorResetAnalysis").value = ColorVisual.sliderOption;
 
         var percentPerEvaluation = 1.0 / this.numTimePoints;
-        console.log("percentagePerEvaluation = "+percentPerEvaluation);
-       
+
         //calculate evaluation percentages and other data for ColorVis
         for(var i = 0; i < this.numIntentions; ++i) 
         {
@@ -709,14 +704,10 @@ class ColorVisual {
             var intention = model.getIntentionByID(cellView.model.attributes.nodeID); //aquires current intention
             if (intention != null){
             var initSatVal = intention.getInitialSatValue(); //user set initial sat value
-            console.log(initSatVal);
-            if (initSatVal == '(no value)')
-            {
+            if (initSatVal == '(no value)') {
                 cellView.model.changeToOriginalColour();
             }
-           // var colorChange = ColorVisual.colorVisDict[initSatVal]; //get color for cooresponding sat value
            var colorChange = ColorVisual.getColor(initSatVal);
-           console.log("color = "+colorChange);
             cellView.model.attr({'.outer': {'fill': colorChange}}); //change intention color to match sat value
         }else{
             cellView.model.changeToOriginalColour();
@@ -759,6 +750,143 @@ class ColorVisual {
         ColorVisual.refresh();
         }
 
+}
+
+
+class ColorVisualNextState  {
+
+    //user selected slider option in the next state window
+    static sliderOptionNextState = 0;
+
+    static setSliderOption(newSliderOption) {
+        if(newSliderOption >= 0 && newSliderOption <= 2) {
+            ColorVisualNextState.sliderOptionNextState = newSliderOption;
+        }
+        else {
+            console.log("ERROR: invalid sliderOption");
+        }
+        ColorVisualNextState.refresh();
+    }
+
+    static refresh() {
+        switch(this.sliderOptionNextState) {
+
+            case '1':
+            ColorVisualNextState.colorIntentionsByState();
+            this.changeIntentionsText(analysis.elements, analysis.paper);
+                break;
+
+            case '2':
+            ColorVisualNextState.colorIntentionsByPercents();
+            this.changeIntentionsText(analysis.elements, analysis.paper);
+                break;
+
+            default://colorVis off
+               this.returnAllColors(analysis.elements, analysis.paper);
+               this.revertIntentionsText();    
+                break;
+
+        }
+    }
+
+    /**
+     * changes each intention by their satisfaction value for the displayed state
+     */
+    static colorIntentionsByState(){
+        var cell;
+        var value;
+        var cellView;
+        var colorChange;
+
+        for(var i = 0; i < analysis.elements.length; i++){
+            cell = analysis.elements[i];
+            value = cell.attributes.attrs[".satvalue"].value;
+            cellView = cell.findView(analysis.paper); 
+            colorChange = ColorVisual.getColor(value);
+            cellView.model.attr({'.outer': {'fill': colorChange}}); 
+        }
+    }
+
+    static revertIntentionsText(){
+        var curr;
+        for (var i = 0; i < analysis.elements.length; i++) {
+            curr = analysis.elements[i].findView(analysis.paper).model;
+            curr.attr({text: {fill: 'black',stroke:'none'}});
+        }
+    }
+
+    static colorIntentionsByPercents(){
+        var intentionPercents = [];
+        //acquire all next state info
+        var percentPerEvaluation = 1.0 / analysis.analysisResult.allSolution.length; //number of next states
+        var step = 0;
+        //store: ID + percents per eval
+        for(var i = 0; i< analysis.elements.length; i++){ //for each elements
+            //compile and calculate % for each node -> % must be updated every time a filter is applied
+            intentionPercents.push(new intentionColorVis());
+            for(var j = 0; j < analysis.analysisResult.allSolution.length; j++) { //for each next state
+            var currEval = analysis.analysisResult.allSolution[j].intentionElements[i].status[step];
+            var newPercent = intentionPercents[i].evals[currEval];
+            newPercent += percentPerEvaluation;
+            intentionPercents[i].evals[currEval] = newPercent;
+            }
+            var gradientID = this.defineGradient(intentionPercents[i]);
+            var cell = analysis.elements[i];
+            var cellView = cell.findView(analysis.paper); 
+            cellView.model.attr({'.outer' : {'fill' : 'url(#' + gradientID + ')'}});
+        }
+    }
+
+    static defineGradient(element) {
+        var gradientStops = [];	
+        var offsetTotal = 0.0;
+        var currColor;
+        //var gradientID;
+
+        for(var j = 0; j < ColorVisual.numEvals; ++j) {
+        var intentionEval = ColorVisual.colorVisOrder[j];
+        if(element.evals[intentionEval] > 0) {
+            currColor = ColorVisual.getColor(intentionEval);
+            //before buffer
+            offsetTotal += 0.001;
+            gradientStops.push({offset: String(offsetTotal*100) + '%',
+            color: currColor})
+            //element color
+            offsetTotal += element.evals[intentionEval] - 0.002;
+            gradientStops.push({offset: String(offsetTotal*100) + '%',
+            color: currColor})
+            //after buffer
+            offsetTotal += 0.001;
+            gradientStops.push({offset: String(offsetTotal*100) + '%',
+            color: currColor})
+        }
+        }
+
+        var gradientId = analysis.paper.defineGradient({
+        type: 'linearGradient',
+        stops: gradientStops
+        });
+
+        return gradientId;
+    }
+
+    static changeIntentionsText(elements, paper){
+        var curr;
+        var intention;
+        for (var i = 0; i < elements.length; i++) {
+            curr = elements[i].findView(paper).model;
+            if(curr.attributes.type !== 'basic.Actor') {
+                curr.attr({text: {fill: 'white',stroke:'none'}});
+        }
+        }
+    }
+
+    static returnAllColors(elements, paper){
+        for (var i = 0; i < elements.length; i++){
+            var cellView = elements[i].findView(paper);
+            cellView.model.changeToOriginalColour();
+        }
+    }
 }
 
 class Link {
