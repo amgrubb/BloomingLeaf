@@ -469,8 +469,8 @@ class ColorVisual {
                 ColorVisual.changeIntentionsText();
                 break;
             default://colorVis off
-                ColorVisual.returnAllColors();
-                ColorVisual.revertIntentionsText();    
+                ColorVisual.returnAllColors(graph.getElements(), paper);
+                ColorVisual.revertIntentionsText(graph.getElements(), paper);    
                     break;
         }
     }
@@ -686,8 +686,7 @@ class ColorVisual {
     /**
      * returns text to black in modeling mode
      */
-    static revertIntentionsText(){
-        var elements = graph.getElements();
+    static revertIntentionsText(elements, paper){
         var curr;
         for (var i = 0; i < elements.length; i++) {
             curr = elements[i].findView(paper).model;
@@ -721,7 +720,6 @@ class ColorVisual {
      * @param {*} intentionEval four digit code that corresponds to evidence pair (ex. 0011)
      */
     static getColor(intentionEval) {
-        console.log(this.isColorBlindMode);
         if(ColorVisual.isColorBlindMode) {
             return ColorVisual.colorVisDictColorBlind[intentionEval];
         }
@@ -731,13 +729,12 @@ class ColorVisual {
     /**
      * Returns element color to based on element type
      */
-    static returnAllColors(){
-            var elements = graph.getElements();
-            for (var i = 0; i < elements.length; i++){
-                var cellView = elements[i].findView(paper);
-                cellView.model.changeToOriginalColour();
-            }
+    static returnAllColors(elements, paper){
+        for (var i = 0; i < elements.length; i++){
+            var cellView = elements[i].findView(paper);
+            cellView.model.changeToOriginalColour();
         }
+    }
 
     /**
      * Switch back to modeling slider, if EVO is on the visualization returns to filling by initial state.
@@ -756,15 +753,21 @@ class ColorVisual {
 
 
 class ColorVisualNextState  {
-
     //user selected slider option in the next state window
     static sliderOptionNextState = 0;
-    static isColorBlindMode = false;
 
+    /**
+     * Next State window has new instance of ColorVisual.
+     * This passes the color blind mode option through the Next State window
+     */
     static setColorBlindFromPrevWindow() {
         ColorVisual.isColorBlindMode = window.opener.analysisResult.colorVis.isColorBlind;
     }
 
+    /**
+     * Sets new slider option and refreshes to make applicable changes
+     * @param {*} newSliderOption 
+     */
     static setSliderOption(newSliderOption) {
         if(newSliderOption >= 0 && newSliderOption <= 2) {
             ColorVisualNextState.sliderOptionNextState = newSliderOption;
@@ -775,6 +778,9 @@ class ColorVisualNextState  {
         ColorVisualNextState.refresh();
     }
 
+    /**
+     * Changes visual layout depending on slider option.
+     */
     static refresh() {
         switch(this.sliderOptionNextState) {
             case '1':
@@ -788,8 +794,8 @@ class ColorVisualNextState  {
                 break;
 
             default://colorVis off
-               this.returnAllColors(analysis.elements, analysis.paper);
-               this.revertIntentionsText();    
+               ColorVisual.returnAllColors(analysis.elements, analysis.paper);
+               ColorVisual.revertIntentionsText(analysis.elements, analysis.paper);    
                 break;
         }
     }
@@ -812,14 +818,9 @@ class ColorVisualNextState  {
         }
     }
 
-    static revertIntentionsText(){
-        var curr;
-        for (var i = 0; i < analysis.elements.length; i++) {
-            curr = analysis.elements[i].findView(analysis.paper).model;
-            curr.attr({text: {fill: 'black',stroke:'none'}});
-        }
-    }
-
+    /**
+     * Colors intentions by the percentages of possible next states that hold each evaluation.
+     */
     static colorIntentionsByPercents(){
         var intentionPercents = [];
         //acquire all next state info
@@ -842,6 +843,10 @@ class ColorVisualNextState  {
         }
     }
 
+    /**
+     * Creates a gradient for an intention in colorIntentionsByPercents()
+     * @param {*} element 
+     */
     static defineGradient(element) {
         var gradientStops = [];	
         var offsetTotal = 0.0;
@@ -875,6 +880,11 @@ class ColorVisualNextState  {
         return gradientId;
     }
 
+    /**
+     * Changes text color to white when EVO is on.
+     * @param {*} elements 
+     * @param {*} paper 
+     */
     static changeIntentionsText(elements, paper){
         var curr;
         var intention;
@@ -883,13 +893,6 @@ class ColorVisualNextState  {
             if(curr.attributes.type !== 'basic.Actor') {
                 curr.attr({text: {fill: 'white',stroke:'none'}});
         }
-        }
-    }
-
-    static returnAllColors(elements, paper){
-        for (var i = 0; i < elements.length; i++){
-            var cellView = elements[i].findView(paper);
-            cellView.model.changeToOriginalColour();
         }
     }
 }
