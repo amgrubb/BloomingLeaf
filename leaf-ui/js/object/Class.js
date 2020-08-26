@@ -478,7 +478,8 @@ class ColorVisual {
     constructor(elementList) {
         this.numIntentions = elementList.length;
         this.numTimePoints = elementList[0].status.length;
-        this.intentionListColorVis = [];        
+        this.intentionListColorVis = [];  
+        this.isColorBlind = ColorVisual.isColorBlindMode; //assessable in next state window  
         this.initializeIntentionList();
     }  
 
@@ -720,6 +721,7 @@ class ColorVisual {
      * @param {*} intentionEval four digit code that corresponds to evidence pair (ex. 0011)
      */
     static getColor(intentionEval) {
+        console.log(this.isColorBlindMode);
         if(ColorVisual.isColorBlindMode) {
             return ColorVisual.colorVisDictColorBlind[intentionEval];
         }
@@ -757,6 +759,11 @@ class ColorVisualNextState  {
 
     //user selected slider option in the next state window
     static sliderOptionNextState = 0;
+    static isColorBlindMode = false;
+
+    static setColorBlindFromPrevWindow() {
+        ColorVisual.isColorBlindMode = window.opener.analysisResult.colorVis.isColorBlind;
+    }
 
     static setSliderOption(newSliderOption) {
         if(newSliderOption >= 0 && newSliderOption <= 2) {
@@ -770,7 +777,6 @@ class ColorVisualNextState  {
 
     static refresh() {
         switch(this.sliderOptionNextState) {
-
             case '1':
             ColorVisualNextState.colorIntentionsByState();
             this.changeIntentionsText(analysis.elements, analysis.paper);
@@ -785,7 +791,6 @@ class ColorVisualNextState  {
                this.returnAllColors(analysis.elements, analysis.paper);
                this.revertIntentionsText();    
                 break;
-
         }
     }
 
