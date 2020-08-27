@@ -517,6 +517,17 @@ class ColorVisual {
     }    
 
     /**
+     * Turn off EVO
+     */
+    static deactivate() {
+        document.getElementById("colorResetAnalysis").value = 0;
+        document.getElementById("colorReset").value = 0;
+        ColorVisual.sliderOption = 0;
+        
+        ColorVisual.refresh();
+    }
+
+    /**
      * Initialize the list of intentions
      */
     initializeIntentionList()  {

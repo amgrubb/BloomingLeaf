@@ -27,10 +27,11 @@ function clearCycleHighlighting() {
  */
 function cycleResponse(cycleList) {
 
-	//remove all previous coloring
+	//remove all previous coloring, deactivate EVO
 	clearCycleHighlighting();
-	
+
 	if(isACycle(cycleList)) {
+		ColorVisual.deactivate(); 
 		swal("Cycle in the graph", "", "error");
 		var color_list = initColorList();
 		var cycleIndex = 0; 
