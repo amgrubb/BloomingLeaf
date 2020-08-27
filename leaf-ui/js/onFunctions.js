@@ -253,7 +253,8 @@ $('#btn-clear-elabel').on('click', function(){
             elementInspector.$('#init-sat-value').val('(no value)');
             elementInspector.$('.function-type').val('(no value)');
         }
-	}
+    }
+    ColorVisual.refresh();
 });
 
 $('#btn-clear-flabel').on('click', function(){

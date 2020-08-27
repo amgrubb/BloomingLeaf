@@ -16,6 +16,7 @@ function clearCycleHighlighting() {
 		cellView  = elements[i].findView(paper);
 		cellView.model.changeToOriginalColour();
 	}
+	ColorVisual.refresh();
 }
 
 /**
