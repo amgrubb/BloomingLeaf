@@ -670,7 +670,7 @@ class ColorVisual {
             if(!analysisResult.isPathSim){   
                 if (initSatVal === '(no value)') {
                     curr.attr('.satvalue/text', '');
-                    curr.attr({text: {fill: 'black',stroke:'none','font-weight' : 'normal','font-size': 10}});
+                    curr.attr({text: {fill: 'black',stroke:'none','font-weight' : 'normal'}});
 
                 }else{
                     curr = elements[i].findView(paper).model;
