@@ -6,5 +6,5 @@
 
 var sliderNextState = document.getElementById("colorResetNextState");
 sliderNextState.oninput = function() { //changes slider mode and refreshes 
-    ColorVisualNextState.setSliderOption(this.value);
+    EVONextState.setSliderOption(this.value);
 }

@@ -104,7 +104,7 @@ function responseFunc(isGetNextSteps, response){
 				 console.log(analysisRequest.previousAnalysis);
 				 displayAnalysis(results);
 
-				 analysisResult.colorVis = new ColorVisual(results.elementList);
+				 analysisResult.colorVis = new EVO(results.elementList);
 				 analysisResult.isPathSim = true;
 				 analysisResult.colorVis.singlePathResponse(results.elementList);
 			 }

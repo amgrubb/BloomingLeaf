@@ -125,8 +125,8 @@ function renderNavigationSidebar(currentPage = 0){
     updateNodesValues(currentPage);
     //updateSliderValues(currentPage);
 
-    ColorVisualNextState.setColorBlindFromPrevWindow();
-    ColorVisualNextState.refresh();
+    EVONextState.setColorBlindFromPrevWindow();
+    EVONextState.refresh();
 }
 
 

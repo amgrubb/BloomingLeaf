@@ -13,6 +13,7 @@ $('#analysis-btn').on('click', function() {
     cycleResponse(cycleList); //If there are cycles, then display error message. Otherwise, remove any "red" elements.
 
     if(!isACycle(cycleList)) {
+        clearCycleHighlighting();
         switchToAnalysisMode();
     }
 });
@@ -108,7 +109,6 @@ function switchToAnalysisMode() {
 	}
     mode = "Analysis";
     
-    //ColorVisual.refresh();
     IntentionColoring.refresh();
 }
 
@@ -190,7 +190,7 @@ function switchToModellingMode() {
 
     $('#model-toolbar').css("display","");
 
-    ColorVisual.switchToModelingMode();
+    EVO.switchToModelingMode();
     analysisResult.colorVis = [];
 
 
@@ -216,14 +216,14 @@ function switchToModellingMode() {
 var sliderModeling = document.getElementById("colorReset");
 //var sliderOption = sliderModeling.value;
 sliderModeling.oninput = function() { //turns slider on/off and refreshes
-  ColorVisual.setSliderOption(this.value);
+  EVO.setSliderOption(this.value);
 }
 /**
  * Four option analysis mode slider
  */
 var sliderAnalysis = document.getElementById("colorResetAnalysis");
 sliderAnalysis.oninput = function() { //changes slider mode and refreshes
-    ColorVisual.setSliderOption(this.value);
+    EVO.setSliderOption(this.value);
 }
 
 /**
@@ -255,7 +255,6 @@ $('#btn-clear-elabel').on('click', function(){
             elementInspector.$('.function-type').val('(no value)');
         }
     }
-    //ColorVisual.refresh();
     IntentionColoring.refresh();
 });
 
@@ -292,12 +291,12 @@ $('#btn-svg').on('click', function() {
 $('#btn-save').on('click', function() {
 	var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
 	if (name){
-        ColorVisual.returnAllColors();
+        EVO.returnAllColors();
         clearCycleHighlighting();
 		var fileName = name + ".json";
 		var obj = getFullJson();
         download(fileName, JSON.stringify(obj));
-        ColorVisual.refresh();
+        EVO.refresh();
 	}
 });
 
@@ -310,14 +309,14 @@ $('#colorblind-mode-isOff').on('click', function(){ //activates colorblind mode
     $('#colorblind-mode-isOff').css("display", "none");
     $('#colorblind-mode-isOn').css("display", "");
 
-    ColorVisual.toggleColorBlindMode(true);
+    IntentionColoring.toggleColorBlindMode(true);
 });
 
 $('#colorblind-mode-isOn').on('click', function(){ //turns off colorblind mode
     $('#colorblind-mode-isOn').css("display", "none");
     $('#colorblind-mode-isOff').css("display", "");
 
-    ColorVisual.toggleColorBlindMode(false);
+    IntentionColoring.toggleColorBlindMode(false);
 });
 
 /**

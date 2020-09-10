@@ -942,7 +942,6 @@ var ElementInspector = Backbone.View.extend({
      * and updateChartUserDefined.
      */
     updateCell: function(event) {        
-        //ColorVisual.refresh();
         IntentionColoring.refresh();
         changeFont(current_font, paper);
         var funcType = this.intention.dynamicFunction.stringDynVis;

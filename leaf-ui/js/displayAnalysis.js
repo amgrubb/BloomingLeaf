@@ -74,7 +74,7 @@ function createSlider(currentAnalysis, isSwitch) {
     sliderObject.sliderElement.noUiSlider.on('update', function( values, handle ) {
         updateSliderValues(parseInt(values[handle]), currentAnalysis);
     });
-    ColorVisual.setCurTimePoint(sliderMax);
+    EVO.setCurTimePoint(sliderMax);
     adjustSliderWidth(sliderMax);
 }
 
@@ -144,7 +144,7 @@ function updateSliderValues(sliderValue, currentAnalysis){
 		updateNodeValues(element.id, element.status[value]);
     }
     
-    ColorVisual.setCurTimePoint(value);
+    EVO.setCurTimePoint(value);
 }
 
 

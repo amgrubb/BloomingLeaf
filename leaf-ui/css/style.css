@@ -500,7 +500,7 @@ select > .select-placeholder {
   top: -2px;
   width: 92px; /* 92 */
 }
-.color-button {
+.EVO-whole-button {
   cursor: pointer;
   display: inline-block;
   height: 35px;
