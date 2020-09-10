@@ -383,6 +383,10 @@ class IntentionColoring {
         IntentionColoring.refresh();
     }
 
+    /**
+     * Toggles color blind mode
+     * @param {*} isTurningOnColorBlindMode 
+     */
     static toggleColorBlindMode(isTurningOnColorBlindMode) {
         IntentionColoring.isColorBlindMode = isTurningOnColorBlindMode;
         IntentionColoring.refresh();
