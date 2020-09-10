@@ -108,7 +108,8 @@ function switchToAnalysisMode() {
 	}
     mode = "Analysis";
     
-    ColorVisual.refresh();
+    //ColorVisual.refresh();
+    IntentionColoring.refresh();
 }
 
 // Switches to modeling mode
@@ -254,7 +255,8 @@ $('#btn-clear-elabel').on('click', function(){
             elementInspector.$('.function-type').val('(no value)');
         }
     }
-    ColorVisual.refresh();
+    //ColorVisual.refresh();
+    IntentionColoring.refresh();
 });
 
 $('#btn-clear-flabel').on('click', function(){

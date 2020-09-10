@@ -346,6 +346,42 @@ class AnalysisResult {
     }
 }
 
+class IntentionColoring {
+    static colorMode = "none"; //none, EVO, cycle
+    static isColorBlindMode = false;
+
+    //TODO: when EVO is turned off, turn this mode to none \/
+    //move colorblind mode
+    //change ColorVisual.refresh() to IntentionColor.refresh() 
+    //change ColorVisual class name to EVO, IntentionColorVis to EVOIntention
+
+    static refresh() {
+        switch(IntentionColoring.colorMode) {
+            case "EVO":
+                console.log("EVO");
+                ColorVisual.refresh();
+                break;
+            case "cycle":
+                console.log("cycle");
+                break;
+
+            default: //do nothing
+                console.log("nothing");
+                break;
+        }
+    }
+
+    static setColorMode(newColorMode) {
+        console.log("setColorMode");
+        IntentionColoring.colorMode = newColorMode;
+        if(newColorMode != "EVO") {
+            ColorVisual.deactivate();
+        }
+        IntentionColoring.refresh();
+    }
+        
+}
+
 class intentionColorVis{
     constructor()
     {
@@ -441,6 +477,12 @@ class ColorVisual {
             console.log("ERROR: invalid sliderOption");
         }
         ColorVisual.refresh();
+
+        if(ColorVisual.sliderOption > 0) { //not off
+            IntentionColoring.setColorMode("EVO");
+        } else { //off
+            IntentionColoring.setColorMode("none");
+        }
     }
 
     /**
@@ -449,7 +491,8 @@ class ColorVisual {
      */
     static setCurTimePoint(newTimePoint) {
         ColorVisual.curTimePoint = newTimePoint;
-        ColorVisual.refresh();
+        //ColorVisual.refresh();
+        IntentionColoring.refresh();
     }
 
     /**
@@ -523,7 +566,7 @@ class ColorVisual {
         document.getElementById("colorResetAnalysis").value = 0;
         document.getElementById("colorReset").value = 0;
         ColorVisual.sliderOption = 0;
-        
+
         ColorVisual.refresh();
     }
 
@@ -757,7 +800,8 @@ class ColorVisual {
             ColorVisual.sliderOption = '1';
         }
         document.getElementById("colorReset").value = ColorVisual.sliderOption;
-        ColorVisual.refresh();
+        //ColorVisual.refresh();
+        IntentionColoring.refresh();
         }
 
 }

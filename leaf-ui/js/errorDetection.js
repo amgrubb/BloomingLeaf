@@ -16,7 +16,8 @@ function clearCycleHighlighting() {
 		cellView  = elements[i].findView(paper);
 		cellView.model.changeToOriginalColour();
 	}
-	ColorVisual.refresh();
+	//ColorVisual.refresh();
+	IntentionColoring.setColorMode("none");
 }
 
 /**
@@ -31,7 +32,8 @@ function cycleResponse(cycleList) {
 	clearCycleHighlighting();
 
 	if(isACycle(cycleList)) {
-		ColorVisual.deactivate(); 
+		//ColorVisual.deactivate(); 
+		IntentionColoring.setColorMode("cycle");
 		swal("Cycle in the graph", "", "error");
 		var color_list = initColorList();
 		var cycleIndex = 0; 
