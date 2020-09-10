@@ -346,28 +346,34 @@ class AnalysisResult {
     }
 }
 
+/**  
+ * Prevents conflict in coloring modes. Refreshes when changes are made in the model.
+ * EVO operates though IntentionColoring to allow for a deactivation mode
+ */
 class IntentionColoring {
     static colorMode = "none"; //none, EVO, cycle
-    static isColorBlindMode = false;
+    static isColorBlindMode = false; //color blind mode
 
-    //TODO: when EVO is turned off, turn this mode to none ??
-
+    /**
+     * Colors intentions by their mode
+     */
     static refresh() {
         switch(IntentionColoring.colorMode) {
             case "EVO":
-                console.log("EVO");
                 EVO.refresh();
                 break;
             case "cycle":
-                console.log("cycle");
                 break;
-
             // default: //do nothing
             //     console.log("nothing");
             //     break;
         }
     }
 
+    /**
+     * Change color mode
+     * @param {*} newColorMode 
+     */
     static setColorMode(newColorMode) {
         console.log("setColorMode");
         IntentionColoring.colorMode = newColorMode;
