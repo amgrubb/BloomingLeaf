@@ -31,7 +31,6 @@ function cycleResponse(cycleList) {
 	clearCycleHighlighting();
 
 	if(isACycle(cycleList)) {
-		//EVO.deactivate(); 
 		IntentionColoring.setColorMode("cycle");
 		swal("Cycle in the graph", "", "error");
 		var color_list = initColorList();
