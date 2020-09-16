@@ -291,11 +291,14 @@ $('#btn-svg').on('click', function() {
 $('#btn-save').on('click', function() {
 	var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
 	if (name){
-        EVO.deactivate();
         clearCycleHighlighting();
+        EVO.deactivate();
+       // EVO.returnAllColors(graph.getElements(), paper);
+       // EVO.revertIntentionsText(graph.getElements(), paper);    
 		var fileName = name + ".json";
 		var obj = getFullJson();
         download(fileName, JSON.stringify(obj));
+        //IntentionColoring.refresh();
 	}
 });
 

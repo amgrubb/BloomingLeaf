@@ -4,7 +4,7 @@
  * 
  */
 
-var sliderNextState = document.getElementById("colorResetNextState");
-sliderNextState.oninput = function() { //changes slider mode and refreshes 
-    EVONextState.setSliderOption(this.value);
-}
+// var sliderNextState = document.getElementById("colorResetNextState");
+// sliderNextState.oninput = function() { //changes slider mode and refreshes 
+//     EVONextState.setSliderOption(this.value);
+// }
