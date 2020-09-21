@@ -6,7 +6,7 @@
 //Flag to turn on console log notification
 var develop = false;
 var session_id = Date.now();
-var Tracking = false;
+var Tracking = false;		// Default to no tracking, if user doesn't consent.
 
 
 
