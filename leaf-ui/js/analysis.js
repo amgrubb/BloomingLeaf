@@ -1,3 +1,7 @@
+/**
+ * This file contains functions associated with the Next State window.
+ */
+
 //Defining local scope
 var analysis = {};
 
@@ -22,8 +26,6 @@ var satValueDict = {
     "denied": "1100",
     "none": "0000"
 };
-
-
 
 //Executing scripts only when page is fully loaded
 window.onload = function(){
@@ -122,6 +124,9 @@ function renderNavigationSidebar(currentPage = 0){
     updatePagination(currentPage);
     updateNodesValues(currentPage);
     //updateSliderValues(currentPage);
+
+    EVONextState.setColorBlindFromPrevWindow();
+    EVONextState.refresh();
 }
 
 
@@ -1389,6 +1394,8 @@ function save_current_state(){
 
 
     window.opener.backendComm(jsObject);
+
+    window.close();
 
 }
 

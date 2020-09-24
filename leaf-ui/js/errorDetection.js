@@ -16,6 +16,7 @@ function clearCycleHighlighting() {
 		cellView  = elements[i].findView(paper);
 		cellView.model.changeToOriginalColour();
 	}
+	IntentionColoring.setColorMode("EVO");
 }
 
 /**
@@ -26,10 +27,11 @@ function clearCycleHighlighting() {
  */
 function cycleResponse(cycleList) {
 
-	//remove all previous coloring
+	//remove all previous coloring, deactivate EVO
 	clearCycleHighlighting();
-	
+
 	if(isACycle(cycleList)) {
+		IntentionColoring.setColorMode("cycle");
 		swal("Cycle in the graph", "", "error");
 		var color_list = initColorList();
 		var cycleIndex = 0; 

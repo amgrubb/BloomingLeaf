@@ -73,39 +73,46 @@ function nodeBackendCommFunc(jsObject){
 
 //deal with the response sent back by the server
 function responseFunc(isGetNextSteps, response){
-   var results = JSON.parse(response);
-   if (errorExists(results)) {
-        var msg = getErrorMessage(results.errorMessage);
-        alert(msg);
-    }
-   else {
-       if (results == ""){
-            alert("Error while reading the resonse file from server. This can be due an error in executing java application.");
-            return;
-        }
-       else {
-           if(isGetNextSteps){
-				   console.log("All Paths Results (responseFunc):")
-				   console.log(JSON.stringify(results));
-                   savedAnalysisData.allNextStatesResult = results;
-                   console.log("in backendcomm, saving all next state results");
-                    open_analysis_viewer();
-           }else {
-                console.log(JSON.stringify(results));
-                savedAnalysisData.singlePathResult = results;
-                analysisResult.assignedEpoch = results.assignedEpoch;
-                analysisResult.timePointPath = results.timePointPath;
-                analysisResult.timePointPathSize = results.timePointPathSize;
-                analysisResult.elementList = results.elementList;
-                analysisResult.allSolution = results.allSolution;
-                analysisRequest.previousAnalysis = analysisResult;
-                console.log("previousAnalysis");
-                console.log(analysisRequest.previousAnalysis);
-                displayAnalysis(results);
-            }
-        }
-    }
-}
+	var results = JSON.parse(response);
+	if (errorExists(results)) { 
+		 var msg = getErrorMessage(results.errorMessage);
+		 alert(msg);
+	 }
+	else {
+		if (results == ""){ 
+			 alert("Error while reading the resonse file from server. This can be due an error in executing java application.");
+			 return;
+		 }
+		else {
+			if(isGetNextSteps){ 
+					console.log("All Paths Results (responseFunc):")
+					console.log(JSON.stringify(results));	
+					savedAnalysisData.allNextStatesResult = results;
+					console.log("in backendcomm, saving all next state results");
+					 open_analysis_viewer();
+			} else {
+				var resultsString = JSON.stringify(results);
+				 console.log(JSON.stringify(results)); 
+				 savedAnalysisData.singlePathResult = results;
+				 analysisResult.assignedEpoch = results.assignedEpoch;
+				 analysisResult.timePointPath = results.timePointPath;
+				 analysisResult.timePointPathSize = results.timePointPathSize;
+				 analysisResult.elementList = results.elementList;
+				 analysisResult.allSolution = results.allSolution;
+				 analysisRequest.previousAnalysis = analysisResult;
+				 console.log("previousAnalysis");
+				 console.log(analysisRequest.previousAnalysis);
+				 displayAnalysis(results);
+
+				 analysisResult.colorVis = new EVO(results.elementList);
+				 analysisResult.isPathSim = true;
+				 analysisResult.colorVis.singlePathResponse(results.elementList);
+			 }
+		 }
+	 }
+
+ }
+
 
 function executeJava(isGetNextSteps){
 	var pathToCGI = "./cgi-bin/executeJava.cgi";

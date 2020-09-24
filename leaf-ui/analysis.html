@@ -63,6 +63,13 @@
               </div>
             </div> -->
 
+            <!-- EVO for next state. Three option slider: off, overlay selected state, overlay by % for all possible next states -->
+            <!-- <div class = "EVO-whole-button" id="nextStateSlider"> 
+              <input type="range" min="0" max="2" value="0" class="EVO-slider" id="colorResetNextState">
+              <p id = "top-label-nextState" style = "display: inline-block" >EVO</p>
+              <p class = "on-off">  Off &ensp; State  &ensp; %</p> 
+            </div> -->
+
         </div>
 
         <div id="navigation" class="left-panel" style="background-color: #333;">
@@ -96,7 +103,7 @@
 
             <br>
             <label>Actions</label>
-            <button class="inspector-btn" onclick="save_current_state()">Save</button>
+            <button class="inspector-btn" onclick="save_current_state()">Save &amp Close</button>
             <button class="inspector-btn" onclick="generate_next_states()">Explore Next States</button>
             <button class="inspector-btn" onclick="window.close();">Close</button>
         </div>
@@ -144,6 +151,9 @@
         <script src="./js/displayAnalysis.js"></script>
 
         <script src="./js/backendComm.js"></script>
+        <script src="./js/onFunctionsNextState.js"></script>
+        <script src="./js/onFunctionsBothWindows.js"></script>
+
 
         <script src="./js/object/InputAnalysis.js"></script>
         <!-- <script src="./js/object/InputModel.js"></script> -->

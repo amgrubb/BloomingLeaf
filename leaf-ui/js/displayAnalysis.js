@@ -71,11 +71,10 @@ function createSlider(currentAnalysis, isSwitch) {
 
     // Set initial value of the slider
     sliderObject.sliderElement.noUiSlider.set(isSwitch ? 0 : sliderMax);
-
     sliderObject.sliderElement.noUiSlider.on('update', function( values, handle ) {
         updateSliderValues(parseInt(values[handle]), currentAnalysis);
     });
-
+    EVO.setCurTimePoint(sliderMax);
     adjustSliderWidth(sliderMax);
 }
 
@@ -118,8 +117,6 @@ function adjustSliderWidth(maxValue){
         new_width = max;
     }
     $('#slider').width(new_width);
-
-
 }
 
 /**
@@ -145,7 +142,9 @@ function updateSliderValues(sliderValue, currentAnalysis){
 	for (var i = 0; i < currentAnalysis.numOfElements; i++) {
 		var element = currentAnalysis.elements[i];
 		updateNodeValues(element.id, element.status[value]);
-	}
+    }
+    
+    EVO.setCurTimePoint(value);
 }
 
 
@@ -172,7 +171,7 @@ function updateNodeValues(nodeID, satValue) {
 
 	if ((cell != null) && (satValue in satisfactionValuesDict)) {
         cell.attr(".satvalue/text", satisfactionValuesDict[satValue].satValue);
-        cell.attr({text: {fill: satisfactionValuesDict[satValue].color}});
+        cell.attr({text: {fill: 'white'}});//satisfactionValuesDict[satValue].color
     }
 }
 
