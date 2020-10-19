@@ -441,6 +441,7 @@ var AnalysisInspector = Backbone.View.extend({
 	 * This function is called on click for #btn-view-intermediate
 	 */
 	loadIntermediateValues: function (e) {
+		console.log("loading values");
 		$('#interm-list').find("tr:gt(1)").remove();
 		$('#header').find("th:gt(1)").remove();
 		$('#intentionRows').find("th:gt(1)").remove();
@@ -449,6 +450,7 @@ var AnalysisInspector = Backbone.View.extend({
 		intermTDialog.style.display = "block";
 
 		var absTimeValues = analysisRequest.absTimePtsArr;
+		console.log("absTime = " + absTimeValues);
 		var constraints = model.constraints;
 
 		//Adding assigned time to absTimeValues
@@ -459,11 +461,11 @@ var AnalysisInspector = Backbone.View.extend({
 				absTimeValues.push(aTime);
 			}
 		}
-	absTimeValues.sort();
+	absTimeValues.sort(function(a,b) {return a-b});
 	if (absTimeValues[0] === ""){
 		absTimeValues.splice(0,1)
 	}
-	console.log(absTimeValues)
+	console.log("absTimeLength = " + absTimeValues.length);
 	for (var s = 0; s < absTimeValues.length; s++) {
 		$('#header-row').append('<th>Absolute</th>');
 		$('#intentionRows').append('<th>' + absTimeValues[s] + '</th>');
@@ -471,10 +473,15 @@ var AnalysisInspector = Backbone.View.extend({
 
 
 	//loop over intentions to get intial values and funcType
+	console.log("model intentions length = " + model.intentions.length);
+	console.log("updated");
 	for (var i = 0; i < model.intentions.length; i++) {
+		console.log("i =" + i);
 		var intention = model.intentions[i];
 		var initValue = intention.getInitialSatValue();
 		var func = intention.dynamicFunction.stringDynVis;
+		console.log("intention = " + intention);
+		console.log("func = " + func);
 
 		var row = $('<tr></tr>');
 		row.addClass('intention-row');
@@ -618,9 +625,9 @@ var AnalysisInspector = Backbone.View.extend({
 
 			else if (func === "UD") {
 				var time_list = [];
-				for (var i = 0; i < constraints.length; i++) {
-					if (constraints[i].constraintSrcID === intention.nodeID) {
-						time_list.push(constraints[i].absoluteValue);
+				for (var y = 0; y < constraints.length; y++) {
+					if (constraints[y].constraintSrcID === intention.nodeID) {
+						time_list.push(constraints[y].absoluteValue);
 					}
 				}
 
@@ -631,8 +638,8 @@ var AnalysisInspector = Backbone.View.extend({
 
 
 				else {
-					for (var i = 0; i < time_list.length; i++) {
-						if (time_list[i] === -1) {
+					for (var z = 0; z < time_list.length; z++) {
+						if (time_list[z] === -1) {
 							assigned = false;
 							break;
 						}
@@ -642,9 +649,9 @@ var AnalysisInspector = Backbone.View.extend({
 				if (assigned === true) {
 					var func_list = intention.dynamicFunction.functionSegList;
 					console.log(func_list);
-					for (var i = 0; i < func_list.length; i++) {
-						var funcType = func_list[i].funcType;
-						var funcX = func_list[i].funcX;
+					for (var x = 0; x < func_list.length; x++) {
+						var funcType = func_list[x].funcType;
+						var funcX = func_list[x].funcX;
 						console.log(funcType);
 						switch (funcType) {
 							case "I":
@@ -664,10 +671,15 @@ var AnalysisInspector = Backbone.View.extend({
 					}
 				}
 				else {
+					console.log("options empty");
 					options = this.convertToOptions(['empty']);
 				}
 			}
-
+			else {
+				var possibleValueList = ['0000', '0011', '0010', '1100', '0100', 'empty', 'no value'];
+				options = this.convertToOptions(possibleValueList);
+			}
+			console.log(options);
 			var intEval = analysisRequest.getUserEvaluationByID(intention.nodeID, absTimeValues[j]);
 
 			if (intEval != null) {
@@ -881,6 +893,7 @@ var AnalysisInspector = Backbone.View.extend({
 			var curString = this.binaryToOption(choiceList[i]);
 			theOptionString += curString;
 		}
+		console.log("convert to options: " + theOptionString);
 		return theOptionString;
 	},
 
