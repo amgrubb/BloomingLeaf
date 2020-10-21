@@ -277,6 +277,8 @@ public class ModelSpecBuilder {
 								contribution.add(new Contribution(intentElementSrc, intentElementDest, ContributionType.getByCode(linkType)));
 								break;
 							case "AND":
+								// TODO: confirm change
+								allDecompositionLinks.add(link);
 							case "OR":
 								allDecompositionLinks.add(link);
 								break;
@@ -303,6 +305,8 @@ public class ModelSpecBuilder {
 								}
 								break;
 							case "AND":
+								//TODO confirm change
+								allDecompositionLinks.add(link);
 							case "OR":
 								allDecompositionLinks.add(link);
 								break;
@@ -346,6 +350,7 @@ public class ModelSpecBuilder {
 					boolean andPost = false;
 					boolean orPost = false;
 					for (InputLink inputLink : allDecompositionLinks) {
+						// TODO: destId is never reset? This seems broken
 						if (destID.equals(inputLink.getLinkDestID())) {
 							curDestLinks.add(inputLink);
 							if (inputLink.getPostType() != null) {
@@ -354,18 +359,21 @@ public class ModelSpecBuilder {
 									andPost = true;
 								if (inputLink.getPostType().equals("OR"))
 									orPost = true;
-
 							}
+							// If PostType == null then link is an EvolvingDecomposition, use LinkType
 							if (inputLink.getLinkType().equals("AND"))
 								andLink = true;
 							if (inputLink.getLinkType().equals("OR"))
 								orLink = true;
 						}
 					}
+					// catch: andLink and orLink cannot both be true
 					if (andLink && orLink)
 						throw new IllegalArgumentException("Invalid decomposition relationship type.");
-
+					// Array of source elements the size of allDecompositionLinks
 					LinkableElement[] linkElementsSrc = new LinkableElement[curDestLinks.size()];
+					// For all links in curDestLinks, save source element (singular)
+					// TODO: update to save more than one source element
 					for (int i = 0; i < curDestLinks.size(); i++) {
 						InputLink link = curDestLinks.get(i);
 						linkElementsSrc[i] = getIntentionalElementById(link.getLinkSrcID(), modelSpec.getIntElements());
@@ -377,8 +385,10 @@ public class ModelSpecBuilder {
 							dType = DecompositionType.AND;
 						if (orLink)
 							dType = DecompositionType.OR;
+						// Create Decomposition object and save to list 
 						decomposition.add(new Decomposition(linkElementsSrc, intentElementDest, dType));
 					} else {
+						// catch: andLink and orLink cannot both be true
 						if (andPost && orPost)
 							throw new IllegalArgumentException("Invalid evolving decomposition relationship type.");
 
@@ -392,6 +402,7 @@ public class ModelSpecBuilder {
 							post = DecompositionType.AND;
 						if (orPost)
 							post = DecompositionType.OR;
+						// Create EvolvingDecomposition object and save to list
 						evolvingDecomposition.add(new EvolvingDecomposition(linkElementsSrc, intentElementDest, pre, post, absTime));
 						for (InputLink iLink : curDestLinks) {
 							if (pre != null && !iLink.getLinkType().equals(pre.getCode()))
@@ -405,13 +416,55 @@ public class ModelSpecBuilder {
 							if (post == null && !iLink.getPostType().equals("NO"))
 								throw new IllegalArgumentException("Relationships for ID: " + destID + " must be all the same types.");
 						}
-
 					}
+					// TODO: purpose of this?
 					for (InputLink inputLink : curDestLinks) {
 						allDecompositionLinks.remove(inputLink);
 					}
-
 				}
+
+				//  -------------------------------------------------
+
+				// TODO: consolidate Decomposition links with the same source node
+
+				HashMap<String, ArrayList<Decomposition>> decompositionMap = new HashMap<String, ArrayList<Decomposition>>();
+				for (Decomposition decomp : decomposition) {
+					// Put links in map with destId:Decomposition
+					if (decompositionMap.containsKey(decomp.getDest)) {
+						decompositionMap.get(decomp.getDest).add(decomp);
+					} else {
+						decompositionMap.put(decomp.getDest, Arrays.asList(decomp))
+					}
+				}
+
+				// Add Decomposition objects with src[] to a list
+				List<Decomposition> updatedDecomposition = new ArrayList<Decomposition>();
+				for (Map.Entry<String, ArrayList<Decomposition>> entry : decompositionMap.entrySet) {
+					// Create LinkableElement[] of sources
+					List<LinkableElement> srcs = new ArrayList<LinkableElement>;
+
+					DecompositionType type = entry.getValue().get(0).getDecomposition();
+					for (Decomposition link : entry.getValue()) {
+						// Check all DecompositionTypes are the same
+						if (link.getDecomposition() != type) {
+							throw new IllegalArgumentException("Invalid decomposition relationship type.");
+						}
+						// Use getZeroSrc under assumption that only one src exists??? 
+						srcs.add(link.getZeroSrc());
+					}
+					// Convert to array
+					LinkableElement[] sources = srcs.toArray();
+					
+					updatedDecomposition.add(new Decomposition(sources, link.getDest(), link.getDecomposition()));
+				}
+				// TODO: Map to new var for now. Fix later.
+				decomposition = updatedDecomposition;
+
+				//  -------------------------------------------------
+				// TODO: consolidate EvolvingDecomposition links with the same source node
+				//  -------------------------------------------------
+
+
 				modelSpec.setDecomposition(decomposition);
 				modelSpec.setEvolvingDecomposition(evolvingDecomposition);
 			}

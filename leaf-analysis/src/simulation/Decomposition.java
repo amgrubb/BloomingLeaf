@@ -8,7 +8,7 @@ package simulation;
  *
  */
 public class Decomposition extends ElementLink {
-	private DecompositionType decomposition = DecompositionType.AND;
+	private DecompositionType decomposition = null;
 	
 	public DecompositionType getDecomposition() {
 		return decomposition;
@@ -21,5 +21,4 @@ public class Decomposition extends ElementLink {
 		super(s, d);
 		decomposition = dT;
 	}
-
 }
