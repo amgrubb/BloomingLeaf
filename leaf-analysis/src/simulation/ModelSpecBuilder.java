@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 
 import interface_objects.*;
 
@@ -427,20 +428,23 @@ public class ModelSpecBuilder {
 				HashMap<String, ArrayList<Decomposition>> decompositionMap = new HashMap<String, ArrayList<Decomposition>>();
 				for (Decomposition decomp : decomposition) {
 					// Put links in map with destId:Decomposition
-					if (decompositionMap.containsKey(decomp.getDest)) {
-						decompositionMap.get(decomp.getDest).add(decomp);
+					if (decompositionMap.containsKey(decomp.getDest().getId())) {
+						decompositionMap.get(decomp.getDest().getId()).add(decomp);
 					} else {
-						decompositionMap.put(decomp.getDest, Arrays.asList(decomp))
+						ArrayList<Decomposition> decompObjList = new ArrayList<Decomposition>();
+						decompObjList.add(decomp);
+						decompositionMap.put(decomp.getDest().getId(), decompObjList);
 					}
 				}
 
 				// Add Decomposition objects with src[] to a list
 				List<Decomposition> updatedDecomposition = new ArrayList<Decomposition>();
-				for (Map.Entry<String, ArrayList<Decomposition>> entry : decompositionMap.entrySet) {
+				for (Map.Entry<String, ArrayList<Decomposition>> entry : decompositionMap.entrySet()) {
 					// Create LinkableElement[] of sources
-					List<LinkableElement> srcs = new ArrayList<LinkableElement>;
+					List<LinkableElement> srcs = new ArrayList<LinkableElement>();
 
 					DecompositionType type = entry.getValue().get(0).getDecomposition();
+					LinkableElement dest = entry.getValue().get(0).getDest();
 					for (Decomposition link : entry.getValue()) {
 						// Check all DecompositionTypes are the same
 						if (link.getDecomposition() != type) {
@@ -450,9 +454,11 @@ public class ModelSpecBuilder {
 						srcs.add(link.getZeroSrc());
 					}
 					// Convert to array
-					LinkableElement[] sources = srcs.toArray();
-					
-					updatedDecomposition.add(new Decomposition(sources, link.getDest(), link.getDecomposition()));
+					LinkableElement[] sources = new LinkableElement[srcs.size()];
+					for (int i = 0; i < srcs.size(); i++) {
+						sources[i] = srcs.get(i);
+					}
+					updatedDecomposition.add(new Decomposition(sources, dest, type));
 				}
 				// TODO: Map to new var for now. Fix later.
 				decomposition = updatedDecomposition;

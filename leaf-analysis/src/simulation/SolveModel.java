@@ -27,7 +27,7 @@ public class SolveModel {
 	 */
 	public static void main(String[] args) {
 		//This is the default filePath to be executed if no file is pass through parameters
-		String filePath = "temp/"; 			
+		String filePath = "leaf-analysis/temp/"; 			
 		String inputFile = "default.json";
 		String outputFile = "output.out";
 				
@@ -96,7 +96,6 @@ public class SolveModel {
 				file.createNewFile();
 			}
 			PrintWriter printFile = new PrintWriter(file);
-			//printFile.printf(sb.toString());
 			printFile.printf(gson.toJson(outputModel));
 			printFile.close();
 		} catch (Exception e) {
