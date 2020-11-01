@@ -73,6 +73,7 @@ function nodeBackendCommFunc(jsObject){
 
 //deal with the response sent back by the server
 function responseFunc(isGetNextSteps, response){
+	console.log(JSON.stringify(response));
 	var results = JSON.parse(response);
 	if (errorExists(results)) { 
 		 var msg = getErrorMessage(results.errorMessage);
