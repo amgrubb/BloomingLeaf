@@ -277,8 +277,6 @@ public class ModelSpecBuilder {
 								contribution.add(new Contribution(intentElementSrc, intentElementDest, ContributionType.getByCode(linkType)));
 								break;
 							case "AND":
-								// TODO: confirm change
-								allDecompositionLinks.add(link);
 							case "OR":
 								allDecompositionLinks.add(link);
 								break;
@@ -305,8 +303,6 @@ public class ModelSpecBuilder {
 								}
 								break;
 							case "AND":
-								//TODO confirm change
-								allDecompositionLinks.add(link);
 							case "OR":
 								allDecompositionLinks.add(link);
 								break;
@@ -373,7 +369,8 @@ public class ModelSpecBuilder {
 					// Array of source elements the size of allDecompositionLinks
 					LinkableElement[] linkElementsSrc = new LinkableElement[curDestLinks.size()];
 					// For all links in curDestLinks, save source element (singular)
-					// TODO: update to save more than one source element
+
+					// TODO: update to save more than one source element?
 					for (int i = 0; i < curDestLinks.size(); i++) {
 						InputLink link = curDestLinks.get(i);
 						linkElementsSrc[i] = getIntentionalElementById(link.getLinkSrcID(), modelSpec.getIntElements());
@@ -417,7 +414,7 @@ public class ModelSpecBuilder {
 								throw new IllegalArgumentException("Relationships for ID: " + destID + " must be all the same types.");
 						}
 					}
-					// TODO: purpose of this?
+					// TODO: purpose of this? Is the while loop only running once?
 					for (InputLink inputLink : curDestLinks) {
 						allDecompositionLinks.remove(inputLink);
 					}
