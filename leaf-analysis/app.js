@@ -9,7 +9,7 @@ var userPath = "/Users/judySmith/git/BloomingLeaf"
 var http = require('http'),
     url = require('url'),
     fileServer = require('./node/fileServer.js'),
-    fs = require('fs');
+    fs = require('fs-extra');
     qs = require('./node/query.js'),
     utils = require('./node/utils.js');
     exec = require('child_process').exec;
@@ -55,7 +55,7 @@ function processPost(queryObj,req,res) {
             queryObj.message = body; // specific to the chat application
             qs.processQuery(queryObj,res);
         }
-    fs.writeFileSync(userPath+"/leaf-analysis/temp/default.json",body);
+    fs.outputFileSync(userPath+"/leaf-analysis/temp/default.json",body);
     passIntoJar(res);
 
     // //TODO: Can this function be written in an asynchronous call?
