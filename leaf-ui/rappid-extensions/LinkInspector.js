@@ -147,7 +147,11 @@ var LinkInspector = Backbone.View.extend({
         this.cell.prop("link-type", relationshipVal);
         this.cell.label(0 , {position: 0.5, attrs: {text: {text: linkValText[relationshipVal]}}});
 
-        this.link.linkType = relationshipVal.toUpperCase();
+        //TODO: need better fix to updaate text and influence source/target cells
+        var decomposition = Decomposition.findLinkDecomposition(this.link);
+        decomposition.updateConstantRelationship(relationshipVal.toUpperCase());
+
+        //this.link.linkType = relationshipVal.toUpperCase();
         this.link.postType = null;
 
         // Adding or removing tags from node depending on type of link

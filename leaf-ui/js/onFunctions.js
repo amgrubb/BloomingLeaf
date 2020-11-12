@@ -176,7 +176,9 @@ function switchToModellingMode() {
 	$('#cycledetect-btn').css("display","");
 	$('#dropdown-model').css("display","none");
 
-	$('#model-toolbar').css("display","");
+    $('#model-toolbar').css("display","");
+    
+    $('#modeText').text("Modeling View");
 
 	$('#sliderValue').text("");
 
@@ -280,9 +282,15 @@ function createLink(cell) {
     cell.on("change:target", function () {
     	var target = cell.getTargetElement();
     	if (target === null) {
-    		link.linkDestID = null;
+            link.linkDestID = null;
+
+            // TODO: confirm change
+            Decomposition.removeLink(link);
     	} else {
-    		link.linkDestID = target.attributes.nodeID;
+            link.linkDestID = target.attributes.nodeID;
+            
+            // TODO: confirm change
+            Decomposition.addNewLink(link);
     	}
     });
     cell.on("change:source", function () {
@@ -298,9 +306,14 @@ function createLink(cell) {
     // variable as well
     cell.on("remove", function () {
     	clearInspector();
-		model.removeLink(link.linkID);
+        model.removeLink(link.linkID);
+
+        // TODO: Confirm change
+        Decomposition.removeLink(link);
     });
     model.links.push(link);
+
+    // don't add to decomposition yet; wait until has target
 }
 
 /**
