@@ -1,0 +1,56 @@
+<!--This is the modal box of assignments-->
+<div id="myModal" class="modal">
+	<div class="modal-content">
+		<div class="modal-header">
+		    <span class="close">&times;</span>
+		    <h2>Absolute and Relative Assignments</h2>
+		</div>
+		<div class="modal-body">
+		    <h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Max Absolute Time</h3>
+		    <input style="float:left;"; id="max-abs-time" class="analysis-input" type="number" min="1" step="1" value="100"/>
+		    <h3 style="text-align:left; align:left; color:#1E85F7; margin-bottom:5px; margin-top:50px">Absolute Intention Assignments</h3>
+		    <table id="node-list" class="abs-table">
+                <tr>
+                    <th>Epoch Boundary Name</th>
+                    <th>Function</th>
+                    <th>Assigned Time</th>
+                    <th>Action</th>
+                </tr>
+		    </table>
+		    <div class=absRelationship>
+		        <h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Absolute Relationship Assignment</h3>
+                <table id="link-list" class="abs-table">
+                    <tr>
+                        <th>Link Type</th>
+                        <th>Source Node name</th>
+                        <th>Dest Node name</th>
+                        <th>Assigned Time</th>
+                        <th>Action</th>
+                    </tr>
+                </table>
+		    </div>
+		    <div class=relIntention>
+		        <div class=headings>
+		            <h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Relative Intention Assignments',
+                        <div class="addIntention" style="display:inline">',
+                            <i class="fa fa-plus" id="addIntent" style="font-size:30px; float:right; margin-right:20px;"></i>
+                        </div>
+		            </h3>
+		        </div>
+                <div>
+                    <table id="rel-intention-assignents" class="rel-intent-table">
+                        <tr>
+                            <th>Epoch Boundary Name 1</th>
+                            <th>Relationship</th>
+                            <th>Epcoch Boundary Name 2</th>
+                            <th></th>
+                        </tr>
+                    </table>
+                </div>
+		    </div>
+		    <div class="modal-footer" style="margin-top: 10px;">
+		        <button id="btn-save-assignment" class="analysis-btns inspector-btn sub-label green-btn" style="border-radius:40px;">Save</button>
+		    </div>
+		</div>
+	</div>
+</div>
