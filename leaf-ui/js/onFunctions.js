@@ -24,6 +24,20 @@ $('#max-abs-time').on('click', function(){
     }
 });
 
+/** 
+ * Sets Absolute time points
+ */
+$('#abs-time-pts').on('click', function(){
+    var regex = new RegExp("^(([1-9]0*)+\\s+)*([1-9]+0*)*$");
+    var absTime = $('#abs-time-pts');
+    if (regex.test(absTime.val())) {
+        analysisRequest.absTimePts = absTime.val().trim();
+        analysisRequest.changeTimePoints(this.getAbsoluteTimePoints());
+    } else {
+        absTime.val(analysisRequest.absTimePts);
+    }
+});
+
 /**
  * Add relative intention row
  */
@@ -54,6 +68,19 @@ $('.addIntention').on('click', function(){
 
         $('#rel-intention-assignents').append('<tr><td>' + epochHtml1 + '</td><td>' + relationship +
             '</td><td>'+ epochHtml2 +'</td><td><i class="fa fa-trash-o fa-2x" id="removeIntention" aria-hidden="true"></i></td></tr>');
+});
+
+$(document.body).on('click', '#removeIntention', function(){
+    var row = $(this).parent().parent();
+    var nodeID1 = row.find('#epoch1List select option:checked').attr('nodeID');
+    var epoch1 = row.find('#epoch1List select option:checked').attr('epoch');
+    var type = row.find('#relationshipLists select option:checked').text();
+    var nodeID2 = row.find('#epoch2List select option:checked').attr('nodeID');
+    var epoch2 = row.find('#epoch2List select option:checked').attr('epoch');
+    var constraint = new Constraint(type, nodeID1, epoch1, nodeID2, epoch2);
+
+    model.removeConstraint(constraint);
+    row.remove();
 });
 /**
  * Opens Assignments Table
@@ -110,6 +137,29 @@ $('#load-sample').on('click', function() {
         var newModel = new Blob([response], {type : 'application/json'});
         reader.readAsText(newModel);  	
     });
+});
+
+$('#unassign-abs-rel-btn').on('click', function() {
+    var button = e.target;
+        var row = $(button).closest('tr');
+        var assignedTime = row.find('input[type=number]');
+        $(assignedTime).val('');
+
+        var linkID = row.attr('linkID');
+        var link = model.getLinkByID(linkID);
+        link.absoluteValue = -1;
+});
+
+$('#unassign-abs-intent-btn').on('click', function() {
+    var button = e.target;
+    var row = $(button).closest('tr');
+    var assignedTime = row.find('input[type=number]');
+    $(assignedTime).val('');
+
+    var nodeID = row.attr('nodeID');
+    var srcEB = row.attr('srcEB');
+    var constraint = model.getAbsConstBySrcID(nodeID, srcEB);
+    constraint.absoluteValue = -1;
 });
 
 /**
@@ -311,13 +361,12 @@ function switchToAnalysisMode() {
 	removeHighlight();
 
 	analysisInspector.render();
-	console.log("after render");
 	$('.inspector').append(analysisInspector.el);
 	$('#stencil').css("display", "none");
 	$('#history').css("display", "");
 
     $('#analysis-btn').css("display", "none");
-    $('#btn-view-assignment').css("display","none");
+    // $('#btn-view-assignment').css("display","none");
 	$('#symbolic-btn').css("display", "none");
 	$('#cycledetect-btn').css("display", "none");
     $('#dropdown-model').css("display", "");

@@ -68,14 +68,6 @@
               </div>
             </div>
 
-           
-            <div id="dropdown-model" class="dropdown" style='display: none'>
-                <button id="modeling-btn" class="red-btn btn">Model</button>
-                <div class="dropdown-toolbar">
-                    <a id="model-cur-btn">From Initial State</a>
-                </div>
-            </div>
-
             <!-- modeling mode slider: simple off/on option-->
             <div class = "EVO-whole-button" id="modelingSlider"> <!-- slider div -->
               <input type="range" min="0" max="1" value="0" class="EVO-slider" id="colorReset"> <!-- makes slider -->
@@ -100,7 +92,9 @@
                 </div>
                 <div class="modal-body">
                     <h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Max Absolute Time</h3>
-                    <input style="float:left;"; id="max-abs-time" class="analysis-input" type="number" min="1" step="1" value="100"/>
+                            <input style="float:left;"; id="max-abs-time" class="analysis-input" type="number" min="1" step="1" value="100"/>
+                        <h3 style="text-align:left; color:#1E85F7; margin-bottom:5px; margin-top: 30px;">Absolute Time Points</h3>
+                            <input style="float:left;"; id="abs-time-pts" class="analysis-input" type="number" placeholder="(e.g. 5 8 22)"/>
                     <h3 style="text-align:left; align:left; color:#1E85F7; margin-bottom:5px; margin-top:50px">Absolute Intention Assignments</h3>
                     <table id="node-list" class="abs-table">
                             <tr>
@@ -147,6 +141,7 @@
                 </div>
               </div>
             </div>
+            
 
             <!-- OLD Button to switch between Constraint view and the Relationship view.
 			The functionality for the Constraint view still exists in the code.
