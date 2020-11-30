@@ -15,7 +15,7 @@ $('.close').on('click', function(){
 /**
  * Sets Max Absolute Time
  */
-$('#max-abs-time').on('click', function(){
+$('#max-abs-time').on('change', function(){
     var maxTime = $('#max-abs-time');
     if (maxTime.val() !== "") {
         model.maxAbsTime = maxTime.val()
@@ -27,12 +27,13 @@ $('#max-abs-time').on('click', function(){
 /** 
  * Sets Absolute time points
  */
-$('#abs-time-pts').on('click', function(){
+$('#abs-time-pts').on('change', function(){
+    console.log("setting time points");
     var regex = new RegExp("^(([1-9]0*)+\\s+)*([1-9]+0*)*$");
     var absTime = $('#abs-time-pts');
     if (regex.test(absTime.val())) {
         analysisRequest.absTimePts = absTime.val().trim();
-        analysisRequest.changeTimePoints(this.getAbsoluteTimePoints());
+        analysisRequest.changeTimePoints(getAbsoluteTimePoints());
     } else {
         absTime.val(analysisRequest.absTimePts);
     }
@@ -83,7 +84,7 @@ $(document.body).on('click', '#removeIntention', function(){
     row.remove();
 });
 /**
- * Opens Assignments Table
+ * Displays the absolute and relative assignments modal for the user.
  */
 $('#btn-view-assignment').on('click', function() {
 	epochLists = [];
@@ -101,8 +102,9 @@ $('#btn-view-assignment').on('click', function() {
 	displayAbsoluteRelationshipAssignments();
 });
 
+// TODO: Check if the times users put in are valid
 /**
- * Saves and dismisses Assignments Table
+ * Saves absolute intention and relationship assignments to the graph object
  */
 $('#btn-save-assignment').on('click', function() {
     saveRelativeIntentionAssignments();
@@ -139,7 +141,8 @@ $('#load-sample').on('click', function() {
     });
 });
 
-$('#unassign-abs-rel-btn').on('click', function() {
+// Trigger when unassign button is pressed. Change the assigned time of the node/link in the same row to none
+$(document).on('click', '.unassign-abs-rel-btn', function(e) {
     var button = e.target;
         var row = $(button).closest('tr');
         var assignedTime = row.find('input[type=number]');
@@ -150,7 +153,7 @@ $('#unassign-abs-rel-btn').on('click', function() {
         link.absoluteValue = -1;
 });
 
-$('#unassign-abs-intent-btn').on('click', function() {
+$(document).on('click', '.unassign-abs-intent-btn', function(e) {
     var button = e.target;
     var row = $(button).closest('tr');
     var assignedTime = row.find('input[type=number]');
@@ -160,7 +163,37 @@ $('#unassign-abs-intent-btn').on('click', function() {
     var srcEB = row.attr('srcEB');
     var constraint = model.getAbsConstBySrcID(nodeID, srcEB);
     constraint.absoluteValue = -1;
+    console.log(constraint);
+    console.log(model.getAbsConstBySrcID(nodeID, srcEB));
 });
+
+/**
+ * Returns an array of numbers containing numbers that the
+ * user has inputed in the Absolute Time Points input box.
+ * @returns {Array.<Number>}
+ */
+function getAbsoluteTimePoints() {
+    var absValues = document.getElementById('abs-time-pts').value;
+    var absTimeValues;
+    console.log("get has these time points: " + absTimeValues);
+    if (absValues != '') {
+        absTimeValues = absValues.split(' ');
+        absTimeValues.map(function (i) {
+            if (i != '') {
+                return parseInt(i, 10);
+            }
+        });
+
+        //Sort into ascending order
+        absTimeValues.sort(function (a, b) {
+            return a - b
+        });
+    } else {
+        absTimeValues = [];
+    }
+
+    return absTimeValues
+}
 
 /**
 * Displays the links for the Absolute Relationship Assignments for
@@ -202,7 +235,7 @@ function displayAbsoluteRelationshipAssignments() {
 */
 function displayAbsoluteIntentionAssignments() {
 
-	var btnHtml = '<td><button class="unassign-abs-intent-btn" > Unassign </button></td>';
+	var btnHtml = '<td><button class="unassign-abs-intent-btn"> Unassign </button></td>';
 
 	for (var i = 0; i < model.intentions.length; i++) {
 		var intention = model.intentions[i];
@@ -366,7 +399,6 @@ function switchToAnalysisMode() {
 	$('#history').css("display", "");
 
     $('#analysis-btn').css("display", "none");
-    // $('#btn-view-assignment').css("display","none");
 	$('#symbolic-btn').css("display", "none");
 	$('#cycledetect-btn').css("display", "none");
     $('#dropdown-model').css("display", "");
