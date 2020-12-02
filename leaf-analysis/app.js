@@ -4,7 +4,7 @@
 
 // Name of .jar file for BloomingLeaf project must be Blooming.jar
 //var userPath = "/Users/<your user path here>/BloomingLeaf"
-var userPath = "/Users/alieshghi/GitHub/BloomingLeaf"
+var userPath = "/Users/JudySmith/git/BloomingLeaf"
 
 var http = require('http'),
     url = require('url'),

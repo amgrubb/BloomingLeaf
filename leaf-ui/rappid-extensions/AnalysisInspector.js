@@ -454,7 +454,6 @@ var AnalysisInspector = Backbone.View.extend({
 				}
 			$('#interm-list').append(row);
 		}
-		console.log(selectElement.innerHTML());
 	},
 
 	/**
