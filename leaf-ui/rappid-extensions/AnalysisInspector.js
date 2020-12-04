@@ -207,7 +207,6 @@ var AnalysisInspector = Backbone.View.extend({
 	 * This function is called on click for #btn-view-intermediate
 	 */
 	loadIntermediateValues: function (e) {
-		console.log("loading values");
 		$('#interm-list').find("tr:gt(1)").remove();
 		$('#header').find("th:gt(1)").remove();
 		$('#intentionRows').find("th:gt(1)").remove();
@@ -216,7 +215,6 @@ var AnalysisInspector = Backbone.View.extend({
 		intermTDialog.style.display = "block";
 
 		var absTimeValues = analysisRequest.absTimePtsArr;
-		console.log("absTime = " + absTimeValues);
 		var constraints = model.constraints;
 		//Adding assigned time to absTimeValues
 		for (var i = 0; i < constraints.length; i++) {
@@ -241,12 +239,9 @@ var AnalysisInspector = Backbone.View.extend({
 		console.log("model intentions length = " + model.intentions.length);
 		console.log("updated");
 		for (var i = 0; i < model.intentions.length; i++) {
-			console.log("i =" + i);
 			var intention = model.intentions[i];
 			var initValue = intention.getInitialSatValue();
 			var func = intention.dynamicFunction.stringDynVis;
-			console.log("intention = " + intention);
-			console.log("func = " + func);
 
 			var row = $('<tr></tr>');
 			row.addClass('intention-row');
@@ -655,7 +650,6 @@ var AnalysisInspector = Backbone.View.extend({
 			var curString = this.binaryToOption(choiceList[i]);
 			theOptionString += curString;
 		}
-		console.log("convert to options: " + theOptionString);
 		return theOptionString;
 	},
 
@@ -665,55 +659,9 @@ var AnalysisInspector = Backbone.View.extend({
     },
 
     /**
-     * Saves the Relative Intention Assignments from the
-     * Absolute and Relative Assignments into the graph object
-     */
-
-    /**
-     * Saves the Absolute Intention Assignments from the
-     * Absolute and Relative Assignments to the graph object
-     */
-    saveAbsoluteIntentionAssignments() {
-        // Save absolute intention assignments
-        $.each($('#node-list').find("tr input[type=number]"), function(){
-            var newTime = parseInt($(this).val()); // ex 15
-            if (isNaN(newTime)) {
-                return;
-            }
-            var row = $(this).closest('tr');
-            var srcEB = row.attr('srcEB'); // ex. 'A'
-            var funcValue = row.find('td:nth-child(2)').html(); // ex. 'MP'
-            var nodeID = row.attr('nodeID'); // ex. '0000'
-
-            model.setAbsConstBySrcID(nodeID, srcEB, newTime);
-
-        });
-    },
-
-    /**
-     * Saves the Absolute Relationship Assignments from the
-     * Absolute and Relative Assignments into the graph object
-     */
-    saveAbsoluteRelationshipAssignments() {
-        // Save absolute relationship assignment
-        $.each($('#link-list').find("tr input[type=number]"), function() {
-            var newTime = parseInt($(this).val());
-            if (isNaN(newTime)) {
-                return;
-            }
-            var row = $(this).closest('tr');
-            var linkID = row.attr('linkID');
-            var link = model.getLinkByID(linkID);
-            link.absoluteValue = newTime;
-        });
-    },
-
-    /**
      * Save the intermediate table values into analysisRequest
      */
     saveIntermTable: function() {
-
-		console.log("SAVING");
 
         // Clear all intention evaluations with the exception
         // of the evaluations on the initial time point
@@ -732,10 +680,6 @@ var AnalysisInspector = Backbone.View.extend({
                 }
 
                 analysisRequest.userAssignmentsList.push(new UserEvaluation(nodeID, absTime, evalLabel));
-
-                
-
-
             });
         });
 
