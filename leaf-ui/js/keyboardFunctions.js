@@ -70,7 +70,7 @@ if(macOS) {
  *
  */
 window.onclick = function(event) {
-	var modal = document.getElementById('myModal');
+	var modal = document.getElementById('assignmentsModal');
 	var intermT = document.getElementById('intermediateTable');
   if (event.target == modal) {
   	modal.style.display = "none";

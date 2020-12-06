@@ -80,13 +80,8 @@ var AnalysisInspector = Backbone.View.extend({
 
 		// set default values for max abs time, conflict level,
 		// relative time points and abs time points
-		$('#max-abs-time').val(model.maxAbsTime);
 		$('#conflict-level').val(analysisRequest.conflictLevel);
 		$('#num-rel-time').val(analysisRequest.numRelTime);
-		$('#abs-time-pts').val(analysisRequest.absTimePts);
-
-		// This is needed to allow the user to delete relative assignments
-		//this.setDeleteRelAssignmentListener();
 	},
 
 	/**
@@ -236,8 +231,6 @@ var AnalysisInspector = Backbone.View.extend({
 
 
 		//loop over intentions to get intial values and funcType
-		console.log("model intentions length = " + model.intentions.length);
-		console.log("updated");
 		for (var i = 0; i < model.intentions.length; i++) {
 			var intention = model.intentions[i];
 			var initValue = intention.getInitialSatValue();

@@ -8,7 +8,7 @@ It also contains the setup for Rappid elements.
  */
 
 $('.close').on('click', function(){
-    var modal = document.getElementById('myModal');
+    var modal = document.getElementById('assignmentsModal');
     modal.style.display = "none";
 });
 
@@ -83,13 +83,14 @@ $(document.body).on('click', '#removeIntention', function(){
     model.removeConstraint(constraint);
     row.remove();
 });
+
 /**
  * Displays the absolute and relative assignments modal for the user.
  */
 $('#btn-view-assignment').on('click', function() {
 	epochLists = [];
 	graph.constraintValues = [];
-	var modal = document.getElementById('myModal');
+	var modal = document.getElementById('assignmentsModal');
 
 	// Clear all previous table entries
 	$(".abs-table").find("tr:gt(0)").remove();
@@ -102,9 +103,9 @@ $('#btn-view-assignment').on('click', function() {
 	displayAbsoluteRelationshipAssignments();
 });
 
-// TODO: Check if the times users put in are valid
 /**
  * Saves absolute intention and relationship assignments to the graph object
+ * TODO: Check if the times users put in are valid
  */
 $('#btn-save-assignment').on('click', function() {
     saveRelativeIntentionAssignments();
@@ -112,7 +113,7 @@ $('#btn-save-assignment').on('click', function() {
     saveAbsoluteRelationshipAssignments();
 
     // Dismiss the modal
-    var modal = document.getElementById('myModal');
+    var modal = document.getElementById('assignmentsModal');
     modal.style.display = "none";
     $("#epoch1List select").val();
 });
@@ -141,7 +142,10 @@ $('#load-sample').on('click', function() {
     });
 });
 
-// Trigger when unassign button is pressed. Change the assigned time of the node/link in the same row to none
+/**
+ * Trigger when unassign button is pressed. 
+ * Change the assigned time of the node/link in the same row to none
+ */ 
 $(document).on('click', '.unassign-abs-rel-btn', function(e) {
     var button = e.target;
         var row = $(button).closest('tr');
