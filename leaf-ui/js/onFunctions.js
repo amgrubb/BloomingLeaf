@@ -608,7 +608,7 @@ $('#btn-save').on('click', function() {
        // EVO.returnAllColors(graph.getElements(), paper);
        // EVO.revertIntentionsText(graph.getElements(), paper);    
 		var fileName = name + ".json";
-		var obj = getFullJson();
+		var obj = getModelJson();
         download(fileName, JSON.stringify(obj));
         //IntentionColoring.refresh();
 	}
