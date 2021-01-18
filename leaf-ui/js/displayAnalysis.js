@@ -237,14 +237,6 @@ function updateHistory(currentAnalysis){
     historyObject.currentStep = historyObject.nextStep;
     historyObject.nextStep++;
 
-    if (historyObject.allHistory.length == 0) {
-        var log = new logObject(currentAnalysis, 0);
-    } else {
-        var l = historyObject.allHistory.length - 1;
-        // historyObject.allHistory[l].sliderEnd = currentValueLimit;
-        // historyObject.allHistory[l].analysisLength = currentValueLimit - historyObject.allHistory[l].sliderBegin;
-        var log = new logObject(currentAnalysis, 0);
-    }
-
+    var log = new logObject(currentAnalysis, 0);
     historyObject.allHistory.push(log);
 }

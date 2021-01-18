@@ -400,7 +400,7 @@ function switchToAnalysisMode() {
 	analysisInspector.render();
 	$('.inspector').append(analysisInspector.el);
 	$('#stencil').css("display", "none");
-	$('#history').css("display", "");
+	$('#history').css("display", "none");
 
     $('#analysis-btn').css("display", "none");
 	$('#symbolic-btn').css("display", "none");
