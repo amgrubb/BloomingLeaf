@@ -400,7 +400,7 @@ function switchToAnalysisMode() {
 	analysisInspector.render();
 	$('.inspector').append(analysisInspector.el);
 	$('#stencil').css("display", "none");
-	$('#history').css("display", "");
+	$('#history').css("display", "none");
 
     $('#analysis-btn').css("display", "none");
 	$('#symbolic-btn').css("display", "none");
@@ -608,9 +608,21 @@ $('#btn-save').on('click', function() {
        // EVO.returnAllColors(graph.getElements(), paper);
        // EVO.revertIntentionsText(graph.getElements(), paper);    
 		var fileName = name + ".json";
-		var obj = getFullJson();
+		var obj = getModelJson();
         download(fileName, JSON.stringify(obj));
         //IntentionColoring.refresh();
+	}
+});
+
+// Save the current graph and analysis to json file
+$('#btn-save-all').on('click', function() {
+	var name = window.prompt("WARNING: ANALYSIS SAVE NOT YET IMPLEMENTED. \nPlease enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
+	if (name){
+        clearCycleHighlighting();
+        EVO.deactivate();   
+		var fileName = name + ".json";
+		var obj = getFullJson();
+        download(fileName, JSON.stringify(obj));
 	}
 });
 

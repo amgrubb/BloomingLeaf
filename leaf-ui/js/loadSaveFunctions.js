@@ -436,6 +436,20 @@ function getNodeID(rapID, cells) {
  *
  * @returns {Object}
  */
+function getModelJson() {
+	var obj = {};
+	obj.graph = graph.toJSON();
+	obj.model = model;
+	return obj;
+}
+
+/**
+ * Returns an object that contains the current graph, model and analysisRequest.
+ * This return object is what the user would download when clicking the Save button
+ * in the top menu bar.
+ *
+ * @returns {Object}
+ */
 function getFullJson() {
 	var obj = {};
 	obj.graph = graph.toJSON();
