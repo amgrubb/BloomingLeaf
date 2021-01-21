@@ -1,3 +1,9 @@
+/**
+ * This file contains the communication between the front and back end of Bloomingleaf.
+ * When analysis is run, the analysisRequest is bundled and sent to the backend,
+ * which returns the analysisResult.
+ */
+
 var nodeServer = true;      						// Whether the tool is running locally on a Node Server.
 var url = "http://localhost:8080/untitled.html";	// Hardcoded URL for Node calls. 
 
@@ -107,10 +113,18 @@ function responseFunc(isGetNextSteps, response){
 				 analysisResult.colorVis = new EVO(results.elementList);
 				 analysisResult.isPathSim = true;
 				 analysisResult.colorVis.singlePathResponse(results.elementList);
+
+				 // Save analysisResult to the corresponding analysis configuration object
+				 currAnalysisConfig.addAnalysis(analysisResult);
+				 // Add the analysisConfiguration to the analysisMap for access in the analysis config sidebar
+				 analysisMap[currAnalysisConfig.id] = currAnalysisConfig;
+				 console.log("Saved analysis configuration and result");
+				 //TODO remove this
+				 //confirm how many results there are 
+				 console.log("Num analysis results: " + analysisMap[currAnalysisConfig.id].analysisResults.length);
 			 }
 		 }
 	 }
-
  }
 
 
