@@ -1,3 +1,7 @@
+/**
+ * This file contains declarations for various objects used in the frontend processes.
+ */
+
 // Used to manipulate slider during analysis
 var sliderObject = function(){
 	this.sliderElement;
@@ -182,5 +186,42 @@ class ChartObj {
 			},
 			options: this.options
 		});
+	}
+}
+
+class AnalysisConfiguration {
+	/**
+	 * This class is used to hold analysis configuration specifications and results 
+	 * for view in the analysis configuration & results sidebar. 
+	 * The object is initialized by passing in an AnalysisRequest object into the constructor.
+	 * 
+	 * @param {String} id
+     * @param {String} action
+     * @param {String} conflictLevel
+     * @param {String} numRelTime
+     * @param {String} absTimePts
+     * @param {String} currentState
+     * @param {Array.<UserEvaluation>} userAssignmentsList
+     * @param {Array.<AnalysisResult>} analysisResults
+	 */
+
+	constructor(id, analysisRequest) {
+		this.id = id;
+		this.action = analysisRequest.action;
+        this.conflictLevel = analysisRequest.conflictLevel;
+        this.numRelTime = analysisRequest.numRelTime;
+        this.absTimePts = analysisRequest.absTimePts;
+        this.absTimePtsArr = analysisRequest.absTimePts;
+        this.currentState = analysisRequest.currentState;
+        this.userAssignmentsList = analysisRequest.userAssignmentsList;
+        this.analysisResults = [];
+	}
+
+	/**
+	 * Add a new AnalysisResult to the analysisResults array.
+	 * @param {AnalysisResult} analysisResult 
+	 */
+	addAnalysis(analysisResult) {
+		this.analysisResults.push(analysisResult);
 	}
 }

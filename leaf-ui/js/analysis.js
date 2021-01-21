@@ -2,9 +2,9 @@
  * This file contains functions associated with the Next State window.
  */
 
+// GLOBAL VARIABLES
 //Defining local scope
 var analysis = {};
-
 analysis.analysisResult;
 analysis.elements = [];
 analysis.currentState;
@@ -15,6 +15,12 @@ var analysisResult;
 var savedAnalysisData;
 var graph;
 var current;
+// Analysis Configuration map (key: configId, value: analysisConfig object)
+var analysisMap = new Map();
+// Global variable to keep track of what analysis configuration is currently being used
+var currAnalysisConfig;
+// Count for number of analysis configurations
+var configCount = 0;
 
 var model;
 
