@@ -4,6 +4,14 @@ It also contains the setup for Rappid elements.
 */
 
 /**
+ * Adds a new AnalysisConfig
+ */
+$('.addConfig').on('click', function(){
+    addAnalysisConfig();
+    console.log("adding config");
+});
+
+/**
  * Closes Assignments Table
  */
 
@@ -400,7 +408,8 @@ function switchToAnalysisMode() {
 	analysisInspector.render();
 	$('.inspector').append(analysisInspector.el);
 	$('#stencil').css("display", "none");
-	$('#history').css("display", "none");
+    $('#history').css("display", "none");
+    $('#analysis-sidebar').css("display","");
 
     $('#analysis-btn').css("display", "none");
 	$('#symbolic-btn').css("display", "none");
@@ -491,8 +500,9 @@ function switchToModellingMode() {
 
 	graph.elementsBeforeAnalysis = [];
 
-	$('#stencil').css("display","");
-	$('#history').css("display","none");
+    $('#stencil').css("display","");
+    $('#history').css("display","none");
+    $('#analysis-sidebar').css("display","none");
     $('#btn-view-assignment').css("display","");
 	$('#analysis-btn').css("display","");
 	$('#symbolic-btn').css("display","");

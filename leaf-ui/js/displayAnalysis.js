@@ -3,6 +3,15 @@
  * that the web application would receive from the back end.
  */
 
+// Analysis Configuration map (key: configId, value: analysisConfig object)
+var analysisMap = new Map();
+// Global variable to keep track of what analysis configuration is currently being used
+var currAnalysisConfig;
+// Count for number of analysis configurations
+var configCount = 0;
+// Current Selected AnalysisConfig HTML
+var currentConfigHtml;
+
 /**
  * Displays the analysis to the web app, by displaying the slider and the
  * history log
@@ -32,6 +41,10 @@ function displayAnalysis(analysisResults){
 
     // Update history log
     updateHistory(currentAnalysis);
+
+    // Update Analysis Config bar
+    updateResults(currentAnalysis);
+
 
     createSlider(currentAnalysis, false);
 }
@@ -240,3 +253,88 @@ function updateHistory(currentAnalysis){
     var log = new logObject(currentAnalysis, 0);
     historyObject.allHistory.push(log);
 }
+
+/**
+ * Adds a new analysisConfig to the sidebar
+ */
+function addAnalysisConfig(){
+    $(".log-elements").css("background-color", "");
+    var numElements = analysisMap.size;
+    var id = "Configuration" + (numElements+1).toString()
+    var analysisConfig = new AnalysisConfiguration(id, new AnalysisRequest());
+    analysisMap.set(id, analysisConfig);
+    console.log(analysisMap);
+    currAnalysisConfig = analysisConfig;
+    var buttonLabel = currAnalysisConfig.id + "-button";
+    var label = currAnalysisConfig.id + "-dropdown";
+    $("#analysis-sidebar").append(
+        '<button class="log-elements" id="'+currAnalysisConfig.id+'" style="padding: 12px; font-size: 16px; border: none; outline: none; background-color:#A9A9A9">' + currAnalysisConfig.id + '</button><div style="position:absolute; display:inline-block"><button class="dropdown" id= "'+buttonLabel+'" style="padding: 12px; font-size: 16px; height: 42px; border: none; outline: none;"><i class="fa fa-caret-down fa-2x" style="cursor:pointer;"></i></button>'
+        + '</div><div class = "dropdown-container" id="'+label+'"></div>'
+      );
+}
+
+/**
+ * Adds result to UI menu
+ */
+function updateResults(){
+    $(".result-elements").css("background-color", "");
+    console.log(currAnalysisConfig);
+    var label = currAnalysisConfig.id + "-dropdown";
+    var resultCount = analysisMap.get(currAnalysisConfig.id).analysisResults.length;
+    var id = "Result " + resultCount;
+    console.log(label);
+    document.getElementById(label).insertAdjacentHTML("beforeend","<a class='result-elements' style='background-color:#A9A9A9''>" + id + "</a>");
+}
+
+/**
+ * Switches between analysis configurations
+ */
+$('#analysis-sidebar').on("click", ".log-elements", function(e){
+    //Save past analysis config into map
+    analysisMap.set(currAnalysisConfig.id, currAnalysisConfig);
+    currentConfigHtml = e.target;
+    var txt = $(e.target).text();
+    console.log('switching to: ' + txt);
+
+    var analysisConfig = analysisMap.get(txt);
+    currAnalysisConfig = analysisConfig;
+
+    $(".log-elements").css("background-color", "");
+    $(".result-elements").css("background-color", "");
+    $(e.target).css("background-color", "#A9A9A9");
+});
+
+$('#analysis-sidebar').on("click", ".dropdown", function(e){
+    currentConfigHtml = e.target;
+    var id = e.currentTarget.id.split("-")[0]+"-dropdown";
+    var dropdown = document.getElementById(id);
+    console.log(dropdown);
+    if (dropdown.style.display === "block") {
+            dropdown.style.display = "none";
+            } else {
+            dropdown.style.display = "block";
+            }
+    
+});
+
+$('#analysis-sidebar').on("click", ".result-elements", function(e){
+    $(".result-elements").css("background-color", "");
+    $(".log-elements").css("background-color", "");
+    var configId = e.currentTarget.parentElement.id.split("-")[0];
+    var resultIndex = $(e.target).text().split(" ")[1];
+    var currAnalysisConfig = analysisMap.get(configId)
+    var currAnalysisResults = currAnalysisConfig.analysisResults[resultIndex];
+    $(e.target).css("background-color", "#A9A9A9");
+    $("#"+configId).css("background-color","#A9A9A9")
+
+    //TODO: Get actual switch between results working
+    // Check if slider has already been initialized
+    // if (sliderObject.sliderElement.hasOwnProperty('noUiSlider')) {
+    //     console.log(sliderObject);
+    //     console.log(sliderObject.sliderElement);
+
+    //     sliderObject.sliderElement.noUiSlider.destroy();
+    // }
+    // createSlider(currAnalysisResults, true);
+});
+

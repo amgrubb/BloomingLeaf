@@ -100,33 +100,33 @@ function responseFunc(isGetNextSteps, response){
 				var resultsString = JSON.stringify(results);
 				 console.log(JSON.stringify(results)); 
 				 savedAnalysisData.singlePathResult = results;
-				 analysisResult.assignedEpoch = results.assignedEpoch;
-				 analysisResult.timePointPath = results.timePointPath;
-				 analysisResult.timePointPathSize = results.timePointPathSize;
-				 analysisResult.elementList = results.elementList;
-				 analysisResult.allSolution = results.allSolution;
-				 analysisRequest.previousAnalysis = analysisResult;
-				 console.log("previousAnalysis");
-				 console.log(analysisRequest.previousAnalysis);
-				 displayAnalysis(results);
+				//  analysisResult.assignedEpoch = results.assignedEpoch;
+				//  analysisResult.timePointPath = results.timePointPath;
+				//  analysisResult.timePointPathSize = results.timePointPathSize;
+				//  analysisResult.elementList = results.elementList;
+				//  analysisResult.allSolution = results.allSolution;
+				//  analysisRequest.previousAnalysis = analysisResult;
+				//  console.log("previousAnalysis");
+				//  console.log(analysisRequest.previousAnalysis);
+				//  displayAnalysis(results);
 
-				 analysisResult.colorVis = new EVO(results.elementList);
-				 analysisResult.isPathSim = true;
-				 analysisResult.colorVis.singlePathResponse(results.elementList);
-
+				//  analysisResult.colorVis = new EVO(results.elementList);
+				//  analysisResult.isPathSim = true;
+				//  analysisResult.colorVis.singlePathResponse(results.elementList);
+				analysisResult = convertToAnalysisResult(results);
+				displayAnalysis(results);
+				// TODO: Need to make a new object to add to the results list to avoid overwriting the same global variable each time
 				 // Save analysisResult to the corresponding analysis configuration object
-				 currAnalysisConfig.addAnalysis(analysisResult);
+				 currAnalysisConfig.addResult(convertToAnalysisResult(results));
 				 // Add the analysisConfiguration to the analysisMap for access in the analysis config sidebar
-				 analysisMap[currAnalysisConfig.id] = currAnalysisConfig;
-				 console.log("Saved analysis configuration and result");
+				 analysisMap.set(currAnalysisConfig.id, currAnalysisConfig);
 				 //TODO remove this
 				 //confirm how many results there are 
-				 console.log("Num analysis results: " + analysisMap[currAnalysisConfig.id].analysisResults.length);
+				 console.log("Num analysis results: " + analysisMap.get(currAnalysisConfig.id).analysisResults.length);
 			 }
 		 }
 	 }
  }
-
 
 function executeJava(isGetNextSteps){
 	var pathToCGI = "./cgi-bin/executeJava.cgi";
@@ -352,4 +352,18 @@ function getIDs(backendErrorMsg) {
 	}
 
 	return arr;
+}
+
+function convertToAnalysisResult(results){
+	var tempResult = new AnalysisResult();
+	tempResult.assignedEpoch = results.assignedEpoch;
+	tempResult.timePointPath = results.timePointPath;
+	tempResult.timePointPathSize = results.timePointPathSize;
+	tempResult.elementList = results.elementList;
+	tempResult.allSolution = results.allSolution;
+	tempResult.previousAnalysis = analysisResult;
+	tempResult.colorVis = new EVO(results.elementList);
+	tempResult.isPathSim = true;
+	tempResult.colorVis.singlePathResponse(results.elementList);
+	return tempResult;
 }

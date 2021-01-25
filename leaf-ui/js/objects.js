@@ -221,7 +221,7 @@ class AnalysisConfiguration {
 	 * Add a new AnalysisResult to the analysisResults array.
 	 * @param {AnalysisResult} analysisResult 
 	 */
-	addAnalysis(analysisResult) {
+	addResult(analysisResult) {
 		this.analysisResults.push(analysisResult);
 	}
 }

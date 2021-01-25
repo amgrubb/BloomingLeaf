@@ -96,12 +96,12 @@ var AnalysisInspector = Backbone.View.extend({
 		analysisRequest.action = "singlePath";
 		analysisRequest.currentState = "0|0";
 
-		// TODO: add a check to see if this configuration already exists
-		// Save the current analysis configuration
-		currAnalysisConfig = new AnalysisConfiguration(configCount, analysisRequest);
-		// Increase the number of configurations
-		configCount += 1;
-		console.log("Num configurations: " + configCount);
+		// // TODO: add a check to see if this configuration already exists
+		// // Save the current analysis configuration
+		// currAnalysisConfig = new AnalysisConfiguration(configCount, analysisRequest);
+		// // Increase the number of configurations
+		// configCount += 1;
+		// console.log("Num configurations: " + configCount);
 
 		//Prepare and send data to backend
 		this.sendToBackend();
