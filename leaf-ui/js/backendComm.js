@@ -100,29 +100,12 @@ function responseFunc(isGetNextSteps, response){
 				var resultsString = JSON.stringify(results);
 				 console.log(JSON.stringify(results)); 
 				 savedAnalysisData.singlePathResult = results;
-				//  analysisResult.assignedEpoch = results.assignedEpoch;
-				//  analysisResult.timePointPath = results.timePointPath;
-				//  analysisResult.timePointPathSize = results.timePointPathSize;
-				//  analysisResult.elementList = results.elementList;
-				//  analysisResult.allSolution = results.allSolution;
-				//  analysisRequest.previousAnalysis = analysisResult;
-				//  console.log("previousAnalysis");
-				//  console.log(analysisRequest.previousAnalysis);
-				//  displayAnalysis(results);
-
-				//  analysisResult.colorVis = new EVO(results.elementList);
-				//  analysisResult.isPathSim = true;
-				//  analysisResult.colorVis.singlePathResponse(results.elementList);
 				analysisResult = convertToAnalysisResult(results);
 				displayAnalysis(results);
-				// TODO: Need to make a new object to add to the results list to avoid overwriting the same global variable each time
-				 // Save analysisResult to the corresponding analysis configuration object
+				 // Save result to the corresponding analysis configuration object
 				 currAnalysisConfig.addResult(convertToAnalysisResult(results));
 				 // Add the analysisConfiguration to the analysisMap for access in the analysis config sidebar
 				 analysisMap.set(currAnalysisConfig.id, currAnalysisConfig);
-				 //TODO remove this
-				 //confirm how many results there are 
-				 console.log("Num analysis results: " + analysisMap.get(currAnalysisConfig.id).analysisResults.length);
 			 }
 		 }
 	 }

@@ -259,6 +259,7 @@ function updateHistory(currentAnalysis){
  */
 function addAnalysisConfig(){
     $(".log-elements").css("background-color", "");
+    $("result-elements").css("background-color", "");
     var numElements = analysisMap.size;
     var id = "Configuration" + (numElements+1).toString()
     var analysisConfig = new AnalysisConfiguration(id, new AnalysisRequest());
