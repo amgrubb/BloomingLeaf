@@ -207,6 +207,7 @@ class AnalysisConfiguration {
 
 	constructor(id, analysisRequest) {
 		this.id = id;
+		this.analysisRequest = analysisRequest;
 		this.action = analysisRequest.action;
         this.conflictLevel = analysisRequest.conflictLevel;
         this.numRelTime = analysisRequest.numRelTime;
@@ -223,5 +224,25 @@ class AnalysisConfiguration {
 	 */
 	addResult(analysisResult) {
 		this.analysisResults.push(analysisResult);
+	}
+
+	/**
+	 * Updates Config Values from AnalysisRequest
+	 */
+	updateAnalysis(analysisRequest){
+		this.action = analysisRequest.action;
+        this.conflictLevel = analysisRequest.conflictLevel;
+        this.numRelTime = analysisRequest.numRelTime;
+        this.absTimePts = analysisRequest.absTimePts;
+        this.absTimePtsArr = analysisRequest.absTimePts;
+        this.currentState = analysisRequest.currentState;
+        this.userAssignmentsList = analysisRequest.userAssignmentsList;
+	}
+
+	/**
+	 * Returns AnalysisRequest object associated with this Config
+	 */
+	getAnalysisRequest(){
+		return this.analysisRequest;
 	}
 }

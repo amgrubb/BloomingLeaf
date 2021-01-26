@@ -97,11 +97,13 @@ function responseFunc(isGetNextSteps, response){
 					console.log("in backendcomm, saving all next state results");
 					 open_analysis_viewer();
 			} else {
-				var resultsString = JSON.stringify(results);
-				 console.log(JSON.stringify(results)); 
-				 savedAnalysisData.singlePathResult = results;
+				console.log(JSON.stringify(results)); 
+				savedAnalysisData.singlePathResult = results;
 				analysisResult = convertToAnalysisResult(results);
 				displayAnalysis(results);
+
+				// Update results in analysis sidebar
+				updateResults();
 				 // Save result to the corresponding analysis configuration object
 				 currAnalysisConfig.addResult(convertToAnalysisResult(results));
 				 // Add the analysisConfiguration to the analysisMap for access in the analysis config sidebar
@@ -172,7 +174,7 @@ function getFileResults(isGetNextSteps){
                     analysisResult.allSolution = results.allSolution;
                     analysisRequest.previousAnalysis = analysisResult;
                     console.log("previousAnalysis");
-                    console.log(analysisRequest.previousAnalysis);
+					console.log(analysisRequest.previousAnalysis);
 					displayAnalysis(results);
 				}
 			}

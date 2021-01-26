@@ -40,10 +40,10 @@ function displayAnalysis(analysisResults){
     // ElementList = analysisResults.elementList;
 
     // Update history log
-    updateHistory(currentAnalysis);
+    // updateHistory(currentAnalysis);
 
     // Update Analysis Config bar
-    updateResults(currentAnalysis);
+    
 
 
     createSlider(currentAnalysis, false);
@@ -255,17 +255,45 @@ function updateHistory(currentAnalysis){
 }
 
 /**
+ * Function to set up the initial config
+ */
+function addFirstAnalysisConfig(){
+    $(".log-elements").css("background-color", "");
+    $(".result-elements").css("background-color", "");
+    var id = "Configuration1"
+    currAnalysisConfig = new AnalysisConfiguration(id, new AnalysisRequest());
+    analysisMap.set(id, currAnalysisConfig);
+    analysisRequest = currAnalysisConfig.getAnalysisRequest();
+    var buttonLabel = currAnalysisConfig.id + "-button";
+    var label = currAnalysisConfig.id + "-dropdown";
+    $("#analysis-sidebar").append(
+        '<button class="log-elements" id="'+currAnalysisConfig.id+'" style="padding: 12px; font-size: 16px; border: none; outline: none; background-color:#A9A9A9">' + currAnalysisConfig.id + '</button><div style="position:absolute; display:inline-block"><button class="dropdown" id= "'+buttonLabel+'" style="padding: 12px; font-size: 16px; height: 42px; border: none; outline: none;"><i class="fa fa-caret-down fa-2x" style="cursor:pointer;"></i></button>'
+        + '</div><div class = "dropdown-container" id="'+label+'"></div>'
+      );
+
+    console.log(analysisMap)
+}
+
+/**
  * Adds a new analysisConfig to the sidebar
  */
 function addAnalysisConfig(){
     $(".log-elements").css("background-color", "");
-    $("result-elements").css("background-color", "");
+    $(".result-elements").css("background-color", "");
+    // Update current config with current analysisRequest and set the udpated config in map
+    currAnalysisConfig.updateAnalysis(analysisRequest);
+    analysisMap.set(currAnalysisConfig.id, currAnalysisConfig);
+
+    // Figure out number of new config, name and create it, and then add it to the map
     var numElements = analysisMap.size;
     var id = "Configuration" + (numElements+1).toString()
-    var analysisConfig = new AnalysisConfiguration(id, new AnalysisRequest());
-    analysisMap.set(id, analysisConfig);
-    console.log(analysisMap);
-    currAnalysisConfig = analysisConfig;
+    var newConfig = new AnalysisConfiguration(id, new AnalysisRequest());
+    analysisMap.set(id, newConfig);
+
+    // Update current config to be the new config, and update analysisRequest to match new config
+    currAnalysisConfig = newConfig;
+    analysisRequest = currAnalysisConfig.getAnalysisRequest();
+
     var buttonLabel = currAnalysisConfig.id + "-button";
     var label = currAnalysisConfig.id + "-dropdown";
     $("#analysis-sidebar").append(
@@ -279,11 +307,9 @@ function addAnalysisConfig(){
  */
 function updateResults(){
     $(".result-elements").css("background-color", "");
-    console.log(currAnalysisConfig);
     var label = currAnalysisConfig.id + "-dropdown";
     var resultCount = analysisMap.get(currAnalysisConfig.id).analysisResults.length;
     var id = "Result " + resultCount;
-    console.log(label);
     document.getElementById(label).insertAdjacentHTML("beforeend","<a class='result-elements' style='background-color:#A9A9A9''>" + id + "</a>");
 }
 
@@ -291,25 +317,27 @@ function updateResults(){
  * Switches between analysis configurations
  */
 $('#analysis-sidebar').on("click", ".log-elements", function(e){
-    //Save past analysis config into map
+    //Save and/or update past analysis config in map
+    currAnalysisConfig.updateAnalysis(analysisRequest)
     analysisMap.set(currAnalysisConfig.id, currAnalysisConfig);
     currentConfigHtml = e.target;
     var txt = $(e.target).text();
-    console.log('switching to: ' + txt);
 
-    var analysisConfig = analysisMap.get(txt);
-    currAnalysisConfig = analysisConfig;
+    currAnalysisConfig = analysisMap.get(txt);
+    analysisRequest = currAnalysisConfig.getAnalysisRequest();
 
     $(".log-elements").css("background-color", "");
     $(".result-elements").css("background-color", "");
     $(e.target).css("background-color", "#A9A9A9");
 });
 
+/**
+ * Ties dropdown bar to open or close on click action
+ */
 $('#analysis-sidebar').on("click", ".dropdown", function(e){
     currentConfigHtml = e.target;
     var id = e.currentTarget.id.split("-")[0]+"-dropdown";
     var dropdown = document.getElementById(id);
-    console.log(dropdown);
     if (dropdown.style.display === "block") {
             dropdown.style.display = "none";
             } else {
@@ -318,6 +346,9 @@ $('#analysis-sidebar').on("click", ".dropdown", function(e){
     
 });
 
+/**
+ * Ties Results to update UI and show associated results on click action
+ */
 $('#analysis-sidebar').on("click", ".result-elements", function(e){
     $(".result-elements").css("background-color", "");
     $(".log-elements").css("background-color", "");
@@ -328,14 +359,13 @@ $('#analysis-sidebar').on("click", ".result-elements", function(e){
     $(e.target).css("background-color", "#A9A9A9");
     $("#"+configId).css("background-color","#A9A9A9")
 
-    //TODO: Get actual switch between results working
-    // Check if slider has already been initialized
-    // if (sliderObject.sliderElement.hasOwnProperty('noUiSlider')) {
-    //     console.log(sliderObject);
-    //     console.log(sliderObject.sliderElement);
+    displayAnalysis(currAnalysisResults)
+});
 
-    //     sliderObject.sliderElement.noUiSlider.destroy();
-    // }
-    // createSlider(currAnalysisResults, true);
+/**
+ * Adds a new AnalysisConfig
+ */
+$('.addConfig').on('click', function(){
+    addAnalysisConfig();
 });
 

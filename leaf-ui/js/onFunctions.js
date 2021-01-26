@@ -4,14 +4,6 @@ It also contains the setup for Rappid elements.
 */
 
 /**
- * Adds a new AnalysisConfig
- */
-$('.addConfig').on('click', function(){
-    addAnalysisConfig();
-    console.log("adding config");
-});
-
-/**
  * Closes Assignments Table
  */
 
@@ -423,7 +415,9 @@ function switchToAnalysisMode() {
 
 	// Disable link settings
 	$('.link-tools .tool-remove').css("display", "none");
-	$('.link-tools .tool-options').css("display", "none");
+    $('.link-tools .tool-options').css("display", "none");
+    
+    loadAnalysisConfig();
 
 	if (currentHalo) {
 		currentHalo.remove();
@@ -504,7 +498,8 @@ function switchToModellingMode() {
     $('#history').css("display","none");
     $('#analysis-sidebar').css("display","none");
     $('#btn-view-assignment').css("display","");
-	$('#analysis-btn').css("display","");
+    $('#analysis-btn').css("display","");
+    $('#analysis-sidebar').css("display","none");
 	$('#symbolic-btn').css("display","");
 	$('#cycledetect-btn').css("display","");
     $('#dropdown-model').css("display","none");
@@ -525,7 +520,7 @@ function switchToModellingMode() {
 	graph.allElements = null;
 
 	// Clear previous slider setup
-	clearHistoryLog();
+	//clearHistoryLog();
 
     mode = "Modelling";
 
@@ -1351,5 +1346,11 @@ function checkForMultipleNB(node) {
 	}
 
 	return num >= 1;
+}
+
+function loadAnalysisConfig(){
+    if(analysisMap.size == 0){
+        addFirstAnalysisConfig();
+    }
 }
 
