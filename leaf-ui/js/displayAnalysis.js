@@ -261,9 +261,12 @@ function addFirstAnalysisConfig(){
     $(".log-elements").css("background-color", "");
     $(".result-elements").css("background-color", "");
     var id = "Configuration1"
-    currAnalysisConfig = new AnalysisConfiguration(id, new AnalysisRequest());
+    currAnalysisConfig = new AnalysisConfiguration(id, analysisRequest);
     analysisMap.set(id, currAnalysisConfig);
-    analysisRequest = currAnalysisConfig.getAnalysisRequest();
+    // TODO: Find better way to preserve original default from model
+    // Currently necessary for User Assignments List preservation
+    defaultUAL = currAnalysisConfig.userAssignmentsList;
+    console.log(analysisRequest.userAssignmentsList);
     var buttonLabel = currAnalysisConfig.id + "-button";
     var label = currAnalysisConfig.id + "-dropdown";
     $("#analysis-sidebar").append(
@@ -287,12 +290,21 @@ function addAnalysisConfig(){
     // Figure out number of new config, name and create it, and then add it to the map
     var numElements = analysisMap.size;
     var id = "Configuration" + (numElements+1).toString()
-    var newConfig = new AnalysisConfiguration(id, new AnalysisRequest());
+    
+    // default Analysis Request needed for now for user assignments list
+    // TODO: Look into perserving base UAL throughout analysisRequests
+    var newRequest = new AnalysisRequest();
+    newRequest.userAssignmentsList = defaultUAL;
+
+    var newConfig = new AnalysisConfiguration(id, newRequest);
     analysisMap.set(id, newConfig);
 
     // Update current config to be the new config, and update analysisRequest to match new config
     currAnalysisConfig = newConfig;
     analysisRequest = currAnalysisConfig.getAnalysisRequest();
+
+    // Reset analysis sidebar to default
+    updateAnalysisBar();
 
     var buttonLabel = currAnalysisConfig.id + "-button";
     var label = currAnalysisConfig.id + "-dropdown";
@@ -300,6 +312,8 @@ function addAnalysisConfig(){
         '<button class="log-elements" id="'+currAnalysisConfig.id+'" style="padding: 12px; font-size: 16px; border: none; outline: none; background-color:#A9A9A9">' + currAnalysisConfig.id + '</button><div style="position:absolute; display:inline-block"><button class="dropdown" id= "'+buttonLabel+'" style="padding: 12px; font-size: 16px; height: 42px; border: none; outline: none;"><i class="fa fa-caret-down fa-2x" style="cursor:pointer;"></i></button>'
         + '</div><div class = "dropdown-container" id="'+label+'"></div>'
       );
+
+    console.log(analysisRequest.userAssignmentsList);
 }
 
 /**
@@ -311,6 +325,12 @@ function updateResults(){
     var resultCount = analysisMap.get(currAnalysisConfig.id).analysisResults.length;
     var id = "Result " + resultCount;
     document.getElementById(label).insertAdjacentHTML("beforeend","<a class='result-elements' style='background-color:#A9A9A9''>" + id + "</a>");
+}
+
+function updateAnalysisBar(){
+    $('#conflict-level').val(analysisRequest.conflictLevel);
+    $('#num-rel-time').val(analysisRequest.numRelTime);
+    document.getElementById('conflict-level').value = analysisRequest.conflictLevel;
 }
 
 /**
@@ -325,6 +345,8 @@ $('#analysis-sidebar').on("click", ".log-elements", function(e){
 
     currAnalysisConfig = analysisMap.get(txt);
     analysisRequest = currAnalysisConfig.getAnalysisRequest();
+    updateAnalysisBar();
+    console.log(analysisRequest.userAssignmentsList);
 
     $(".log-elements").css("background-color", "");
     $(".result-elements").css("background-color", "");
@@ -352,13 +374,18 @@ $('#analysis-sidebar').on("click", ".dropdown", function(e){
 $('#analysis-sidebar').on("click", ".result-elements", function(e){
     $(".result-elements").css("background-color", "");
     $(".log-elements").css("background-color", "");
+
+    // Grab Config and result information
     var configId = e.currentTarget.parentElement.id.split("-")[0];
     var resultIndex = $(e.target).text().split(" ")[1];
     var currAnalysisConfig = analysisMap.get(configId)
     var currAnalysisResults = currAnalysisConfig.analysisResults[resultIndex];
+    analysisRequest = currAnalysisConfig.getAnalysisRequest();
+
+    // Update UI accordingly
     $(e.target).css("background-color", "#A9A9A9");
     $("#"+configId).css("background-color","#A9A9A9")
-
+    updateAnalysisBar()
     displayAnalysis(currAnalysisResults)
 });
 
