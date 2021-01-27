@@ -379,7 +379,7 @@ $('#analysis-sidebar').on("click", ".result-elements", function(e){
     var configId = e.currentTarget.parentElement.id.split("-")[0];
     var resultIndex = $(e.target).text().split(" ")[1];
     var currAnalysisConfig = analysisMap.get(configId)
-    var currAnalysisResults = currAnalysisConfig.analysisResults[resultIndex];
+    var currAnalysisResults = currAnalysisConfig.analysisResults[resultIndex-1];
     analysisRequest = currAnalysisConfig.getAnalysisRequest();
 
     // Update UI accordingly

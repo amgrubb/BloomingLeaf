@@ -102,10 +102,10 @@ function responseFunc(isGetNextSteps, response){
 				analysisResult = convertToAnalysisResult(results);
 				displayAnalysis(results);
 
-				// Update results in analysis sidebar
-				updateResults();
 				 // Save result to the corresponding analysis configuration object
 				 currAnalysisConfig.addResult(convertToAnalysisResult(results));
+				 // Update results in analysis sidebar
+				updateResults();
 				 // Add the analysisConfiguration to the analysisMap for access in the analysis config sidebar
 				 analysisMap.set(currAnalysisConfig.id, currAnalysisConfig);
 			 }
