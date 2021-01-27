@@ -241,6 +241,9 @@ class AnalysisConfiguration {
 
 	/**
 	 * Returns AnalysisRequest object associated with this Config
+	 * This is currently used to streamline getting request from currentAnalysisConfig
+	 * TODO: Consider/switch to a more efficient way to return 
+	 * since this is duplicate data being held in the Config 
 	 */
 	getAnalysisRequest(){
 		return this.analysisRequest;
