@@ -1,6 +1,7 @@
 /**
  * This file contains functions that help display the analysis
  * that the web application would receive from the back end.
+ * It also contains functions for the analysis configuration sidebar
  */
 
 // Analysis Configuration map (key: configId, value: analysisConfig object)
@@ -9,8 +10,6 @@ var analysisMap = new Map();
 var currAnalysisConfig;
 // Count for number of analysis configurations
 var configCount = 0;
-// Current Selected AnalysisConfig HTML
-var currentConfigHtml;
 
 /**
  * Displays the analysis to the web app, by displaying the slider and the
@@ -41,10 +40,6 @@ function displayAnalysis(analysisResults){
 
     // Update history log
     // updateHistory(currentAnalysis);
-
-    // Update Analysis Config bar
-    
-
 
     createSlider(currentAnalysis, false);
 }
@@ -255,7 +250,7 @@ function updateHistory(currentAnalysis){
 }
 
 /**
- * Function to set up the initial config
+ * Function to set up the initial analysis configuration upon page load
  */
 function addFirstAnalysisConfig(){
     $(".log-elements").css("background-color", "");
@@ -278,7 +273,7 @@ function addFirstAnalysisConfig(){
 }
 
 /**
- * Adds a new analysisConfig to the sidebar
+ * Adds a new analysis configuration to the Config sidebar
  */
 function addAnalysisConfig(){
     $(".log-elements").css("background-color", "");
@@ -288,8 +283,7 @@ function addAnalysisConfig(){
     analysisMap.set(currAnalysisConfig.id, currAnalysisConfig);
 
     // Figure out number of new config, name and create it, and then add it to the map
-    var numElements = analysisMap.size;
-    var id = "Configuration" + (numElements+1).toString()
+    var id = "Configuration" + (analysisMap.size+1).toString()
     
     // default Analysis Request needed for now for user assignments list
     // TODO: Look into perserving base UAL throughout analysisRequests
@@ -304,7 +298,7 @@ function addAnalysisConfig(){
     analysisRequest = currAnalysisConfig.getAnalysisRequest();
 
     // Reset analysis sidebar to default
-    updateAnalysisBar();
+    refreshAnalysisBar();
 
     var buttonLabel = currAnalysisConfig.id + "-button";
     var label = currAnalysisConfig.id + "-dropdown";
@@ -327,7 +321,7 @@ function updateResults(){
     document.getElementById(label).insertAdjacentHTML("beforeend","<a class='result-elements' style='background-color:#A9A9A9''>" + id + "</a>");
 }
 
-function updateAnalysisBar(){
+function refreshAnalysisBar(){
     $('#conflict-level').val(analysisRequest.conflictLevel);
     $('#num-rel-time').val(analysisRequest.numRelTime);
     document.getElementById('conflict-level').value = analysisRequest.conflictLevel;
@@ -340,12 +334,11 @@ $('#analysis-sidebar').on("click", ".log-elements", function(e){
     //Save and/or update past analysis config in map
     currAnalysisConfig.updateAnalysis(analysisRequest)
     analysisMap.set(currAnalysisConfig.id, currAnalysisConfig);
-    currentConfigHtml = e.target;
     var txt = $(e.target).text();
 
     currAnalysisConfig = analysisMap.get(txt);
     analysisRequest = currAnalysisConfig.getAnalysisRequest();
-    updateAnalysisBar();
+    refreshAnalysisBar();
     console.log(analysisRequest.userAssignmentsList);
 
     $(".log-elements").css("background-color", "");
@@ -357,7 +350,6 @@ $('#analysis-sidebar').on("click", ".log-elements", function(e){
  * Ties dropdown bar to open or close on click action
  */
 $('#analysis-sidebar').on("click", ".dropdown", function(e){
-    currentConfigHtml = e.target;
     var id = e.currentTarget.id.split("-")[0]+"-dropdown";
     var dropdown = document.getElementById(id);
     if (dropdown.style.display === "block") {
@@ -385,7 +377,7 @@ $('#analysis-sidebar').on("click", ".result-elements", function(e){
     // Update UI accordingly
     $(e.target).css("background-color", "#A9A9A9");
     $("#"+configId).css("background-color","#A9A9A9")
-    updateAnalysisBar()
+    refreshAnalysisBar()
     displayAnalysis(currAnalysisResults)
 });
 

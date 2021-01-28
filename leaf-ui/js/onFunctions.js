@@ -1348,6 +1348,11 @@ function checkForMultipleNB(node) {
 	return num >= 1;
 }
 
+/**
+ * Function to add first analysis configuration 
+ * if no configs exist when switching to analysis mode
+ * TODO: Add functionality for loading in all configs stored in uploaded JSON
+ */
 function loadAnalysisConfig(){
     if(analysisMap.size == 0){
         addFirstAnalysisConfig();
