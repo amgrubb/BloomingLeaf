@@ -341,6 +341,9 @@ $('.inspector').append(linkInspector.el);
 // Interface set up for modelling mode on startup
 $('#history').css("display","none");
 
+// Set up Analysis Config Sidebar as none for startup on modelling mode
+$('#analysis-sidebar').css("display","none");
+
 // Initialize Slider setup
 sliderObject.sliderElement = document.getElementById('slider');
 sliderObject.sliderValueElement = document.getElementById('sliderValue');

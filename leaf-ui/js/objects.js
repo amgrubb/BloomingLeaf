@@ -207,6 +207,7 @@ class AnalysisConfiguration {
 
 	constructor(id, analysisRequest) {
 		this.id = id;
+		this.analysisRequest = analysisRequest;
 		this.action = analysisRequest.action;
         this.conflictLevel = analysisRequest.conflictLevel;
         this.numRelTime = analysisRequest.numRelTime;
@@ -221,7 +222,30 @@ class AnalysisConfiguration {
 	 * Add a new AnalysisResult to the analysisResults array.
 	 * @param {AnalysisResult} analysisResult 
 	 */
-	addAnalysis(analysisResult) {
+	addResult(analysisResult) {
 		this.analysisResults.push(analysisResult);
+	}
+
+	/**
+	 * Updates Config Values from AnalysisRequest
+	 */
+	updateAnalysis(analysisRequest){
+		this.action = analysisRequest.action;
+        this.conflictLevel = analysisRequest.conflictLevel;
+        this.numRelTime = analysisRequest.numRelTime;
+        this.absTimePts = analysisRequest.absTimePts;
+        this.absTimePtsArr = analysisRequest.absTimePts;
+        this.currentState = analysisRequest.currentState;
+        this.userAssignmentsList = analysisRequest.userAssignmentsList;
+	}
+
+	/**
+	 * Returns AnalysisRequest object associated with this Config
+	 * This is currently used to streamline getting request from currentAnalysisConfig
+	 * TODO: Consider/switch to a more efficient way to return 
+	 * since this is duplicate data being held in the Config 
+	 */
+	getAnalysisRequest(){
+		return this.analysisRequest;
 	}
 }

@@ -15,12 +15,8 @@ var analysisResult;
 var savedAnalysisData;
 var graph;
 var current;
-// Analysis Configuration map (key: configId, value: analysisConfig object)
-var analysisMap = new Map();
-// Global variable to keep track of what analysis configuration is currently being used
-var currAnalysisConfig;
-// Count for number of analysis configurations
-var configCount = 0;
+// TODO: AnalysisConfig variables moved to displayAnalysis
+// Need to come back to determine if location of othe vars is correct
 
 var model;
 

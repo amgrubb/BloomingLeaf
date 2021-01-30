@@ -400,7 +400,8 @@ function switchToAnalysisMode() {
 	analysisInspector.render();
 	$('.inspector').append(analysisInspector.el);
 	$('#stencil').css("display", "none");
-	$('#history').css("display", "none");
+    $('#history').css("display", "none");
+    $('#analysis-sidebar').css("display","");
 
     $('#analysis-btn').css("display", "none");
 	$('#symbolic-btn').css("display", "none");
@@ -414,7 +415,9 @@ function switchToAnalysisMode() {
 
 	// Disable link settings
 	$('.link-tools .tool-remove').css("display", "none");
-	$('.link-tools .tool-options').css("display", "none");
+    $('.link-tools .tool-options').css("display", "none");
+    
+    loadAnalysisConfig();
 
 	if (currentHalo) {
 		currentHalo.remove();
@@ -491,10 +494,12 @@ function switchToModellingMode() {
 
 	graph.elementsBeforeAnalysis = [];
 
-	$('#stencil').css("display","");
-	$('#history').css("display","none");
+    $('#stencil').css("display","");
+    $('#history').css("display","none");
+    $('#analysis-sidebar').css("display","none");
     $('#btn-view-assignment').css("display","");
-	$('#analysis-btn').css("display","");
+    $('#analysis-btn').css("display","");
+    $('#analysis-sidebar').css("display","none");
 	$('#symbolic-btn').css("display","");
 	$('#cycledetect-btn').css("display","");
     $('#dropdown-model').css("display","none");
@@ -515,7 +520,7 @@ function switchToModellingMode() {
 	graph.allElements = null;
 
 	// Clear previous slider setup
-	clearHistoryLog();
+	//clearHistoryLog();
 
     mode = "Modelling";
 
@@ -1341,5 +1346,16 @@ function checkForMultipleNB(node) {
 	}
 
 	return num >= 1;
+}
+
+/**
+ * Function to add first analysis configuration 
+ * if no configs exist when switching to analysis mode
+ * TODO: Add functionality for loading in all configs stored in uploaded JSON
+ */
+function loadAnalysisConfig(){
+    if(analysisMap.size == 0){
+        addFirstAnalysisConfig();
+    }
 }
 

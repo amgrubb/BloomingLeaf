@@ -146,6 +146,15 @@ body {
   background-color: #E8E8E8;
 }
 
+#analysis-sidebar a{
+  padding: 16px;
+  display: block;
+}
+
+#analysis-sidebar a:hover {
+  background-color: #E8E8E8;
+}
+
 /* Right Panel */
 .inspector {
   position: absolute;
