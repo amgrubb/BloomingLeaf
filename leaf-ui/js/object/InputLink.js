@@ -19,7 +19,7 @@ class InputLink {
 function getLinks(){
 
 	var links = [];
-	getIntentitonalElements();
+	getIntentionalElements();
 	//Verifying if links are valid
 	graph.getLinks().forEach(function(link){
 	    if(isLinkInvalid(link))

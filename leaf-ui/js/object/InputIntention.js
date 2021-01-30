@@ -16,7 +16,7 @@ class InputIntention {
  *
  * @returns {Array.<InputIntention>}
  */
-function getIntentitonalElements() {
+function getIntentionalElements() {
 	
 	var intentions = [];
 	var intentionsCount = 0;
