@@ -619,7 +619,19 @@ $('#btn-save').on('click', function() {
 	}
 });
 
-// Save the current graph and analysis to json file
+// Save the current graph and analysis (without results) to json file
+$('#btn-save-analysis').on('click', function() {
+	var name = window.prompt("WARNING: ANALYSIS SAVE NOT YET IMPLEMENTED. \nPlease enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
+	if (name){
+        clearCycleHighlighting();
+        EVO.deactivate();   
+		var fileName = name + ".json";
+		var obj = getModelAnalysisJson();
+        download(fileName, JSON.stringify(obj));
+	}
+});
+
+// Save the current graph and analysis (with results) to json file
 $('#btn-save-all').on('click', function() {
 	var name = window.prompt("WARNING: ANALYSIS SAVE NOT YET IMPLEMENTED. \nPlease enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
 	if (name){

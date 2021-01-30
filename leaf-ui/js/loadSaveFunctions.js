@@ -444,7 +444,25 @@ function getModelJson() {
 }
 
 /**
- * Returns an object that contains the current graph, model and analysisRequest.
+ * Returns an object that contains the current graph, model and analysis configurations
+ * and REMOVES results from the analysisConfigurations
+ * This return object is what the user would download when clicking the Save button
+ * in the top menu bar.
+ *
+ * @returns {Object}
+ */
+function getModelAnalysisJson() {
+	var obj = {};
+	obj.graph = graph.toJSON();
+	obj.model = model;
+	// make copy of analysisMap w/ no results, then convert to array
+	obj.analysisMap = Array.from(removeAnalysisResults(analysisMap).entries());
+
+	return obj;
+}
+
+/**
+ * Returns an object that contains the current graph, model and analysis configurations.
  * This return object is what the user would download when clicking the Save button
  * in the top menu bar.
  *
@@ -454,30 +472,28 @@ function getFullJson() {
 	var obj = {};
 	obj.graph = graph.toJSON();
 	obj.model = model;
+	// Maps don't convert well to JSON
 	obj.analysisMap = Array.from(analysisMap.entries());
-	//stringifyAnalysisMap(analysisMap);
-	// console.log(obj.analysisMap);
-	// console.log(analysisMap.get("Configuration1").stringify());
+
 	return obj;
 }
 
-// to return to map, use map = new Map(JSON.parse(jsonText));
-
 /**
- * Returns a JSON representation of the AnalysisMap
+ * Returns a copy of the analysisMap with no
+ * analysisResults in each analysisConfig
  */
-/** 
-function stringifyAnalysisMap(analysisMap) {
-	var analysisMapString = "{";
+function removeAnalysisResults(analysisMap) {
+	// deep copy: stringify, then parse to new Map
+	let tempJSON = JSON.stringify(Array.from(analysisMap.entries()));
+	var analysisMapNoResults = new Map(JSON.parse(tempJSON));
 
-	for(let [key, value] of analysisMap) {
-		analysisMapString += '"' + key + '":';
-		analysisMapString += value.stringify() + ",";
+	// for each configuration
+	for(let [key, value] of analysisMapNoResults) {
+		analysisMapNoResults.get(key).analysisResults = [];
 	}
 
-	return analysisMapString.slice(0,-1) + "}";
+	return analysisMapNoResults;
 }
-*/
 
 /**
  * Helper function to download saved graph in JSON format
