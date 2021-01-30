@@ -430,7 +430,7 @@ function getNodeID(rapID, cells) {
 }
 
 /**
- * Returns an object that contains the current graph, model and analysisRequest.
+ * Returns an object that contains the current graph, model.
  * This return object is what the user would download when clicking the Save button
  * in the top menu bar.
  *
@@ -454,9 +454,30 @@ function getFullJson() {
 	var obj = {};
 	obj.graph = graph.toJSON();
 	obj.model = model;
-	obj.analysisRequest = analysisRequest;
+	obj.analysisMap = Array.from(analysisMap.entries());
+	//stringifyAnalysisMap(analysisMap);
+	// console.log(obj.analysisMap);
+	// console.log(analysisMap.get("Configuration1").stringify());
 	return obj;
 }
+
+// to return to map, use map = new Map(JSON.parse(jsonText));
+
+/**
+ * Returns a JSON representation of the AnalysisMap
+ */
+/** 
+function stringifyAnalysisMap(analysisMap) {
+	var analysisMapString = "{";
+
+	for(let [key, value] of analysisMap) {
+		analysisMapString += '"' + key + '":';
+		analysisMapString += value.stringify() + ",";
+	}
+
+	return analysisMapString.slice(0,-1) + "}";
+}
+*/
 
 /**
  * Helper function to download saved graph in JSON format

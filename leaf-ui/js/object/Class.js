@@ -344,6 +344,7 @@ class AnalysisResult {
         this.selectedTimePoint; //find where slider is initialized and set timepoint in here. Also place it in update function
         this.maxTimePoint;
     }
+
 }
 
 /**  

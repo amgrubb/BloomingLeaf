@@ -248,4 +248,11 @@ class AnalysisConfiguration {
 	getAnalysisRequest(){
 		return this.analysisRequest;
 	}
+
+	/**
+	 * Returns a JSON representation of the AnalysisConfig object
+	 */
+	stringify(){
+		return JSON.stringify(this);
+	}
 }
