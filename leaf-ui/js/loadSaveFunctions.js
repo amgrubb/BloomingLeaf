@@ -275,8 +275,8 @@ function loadFromObject(obj) {
 			analysisMap.set(config.id, config);
 		}
 		console.log(analysisMap);
-		// TODO: figure out how to autoset to first item in config bar
-		analysisRequest = analysisMap.get("Configuration1").analysisRequest;
+		// Load the configs into the analysis view config sidebar
+		loadAnalysis();
 	} else {
 		// Else if no analysisMap param, grab the analysisRequest
 		analysisRequest = Object.assign(new AnalysisRequest, obj.analysisRequest);

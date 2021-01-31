@@ -10,8 +10,6 @@ var analysisMap = new Map();
 var currAnalysisConfig;
 // Count for number of analysis configurations
 var configCount = 0;
-// bool 
-var loadAnalysis = false;
 
 /**
  * Displays the analysis to the web app, by displaying the slider and the
@@ -293,12 +291,15 @@ function loadAnalysis(){
         addAnalysisConfig();
         // Add the results (if any) to the sidebar
         updateResults();
+        console.log("analysis request:")
+        console.log(analysisRequest);
         // Refresh the sidebar to include the config vars
         refreshAnalysisBar();
     }
     // TODO: figure out how to set it to the element of the map that will populate on top
     currAnalysisConfig = analysisMap.get("Configuration1");
     analysisRequest = currAnalysisConfig.analysisRequest;
+    console.log("analysis request:")
     console.log(analysisRequest);
     refreshAnalysisBar();
 }
@@ -358,9 +359,9 @@ function updateResults(){
     $(".result-elements").css("background-color", "");
     var label = currAnalysisConfig.id + "-dropdown";
     var resultCount = analysisMap.get(currAnalysisConfig.id).analysisResults.length;
-    // if there are no results, do not populate UI
-    if (resultCount != 0) {
-        var id = "Result " + resultCount;
+    // Loop through all results and populate UI
+    for (var i=0; i < resultCount; i++) {
+        var id = "Result " + (i+1);
         document.getElementById(label).insertAdjacentHTML("beforeend","<a class='result-elements' style='background-color:#A9A9A9''>" + id + "</a>");
     }
 }
@@ -369,7 +370,6 @@ function refreshAnalysisBar(){
     console.log("refresh the analysis sidebar");
     $('#conflict-level').val(analysisRequest.conflictLevel);
     $('#num-rel-time').val(analysisRequest.numRelTime);
-    document.getElementById('conflict-level').value = analysisRequest.conflictLevel;
 }
 
 /**

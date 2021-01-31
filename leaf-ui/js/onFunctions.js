@@ -1371,8 +1371,6 @@ function loadAnalysisConfig(){
     // if there are no configs in the map
     if(analysisMap.size == 0){
         addFirstAnalysisConfig();
-    } else {
-        loadAnalysis();
     }
 }
 
