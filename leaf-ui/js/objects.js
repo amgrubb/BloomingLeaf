@@ -196,6 +196,7 @@ class AnalysisConfiguration {
 	 * The object is initialized by passing in an AnalysisRequest object into the constructor.
 	 * 
 	 * @param {String} id
+	 * @param {AnalysisRequest} analysisRequest
      * @param {String} action
      * @param {String} conflictLevel
      * @param {String} numRelTime
@@ -224,6 +225,14 @@ class AnalysisConfiguration {
 	 */
 	addResult(analysisResult) {
 		this.analysisResults.push(analysisResult);
+	}
+
+	/**
+	 * Set the AnalysisResults param
+	 * @param {Array.<AnalysisResult>} analysisResults 
+	 */
+	setResults(analysisResults) {
+		this.analysisResults = analysisResults;
 	}
 
 	/**

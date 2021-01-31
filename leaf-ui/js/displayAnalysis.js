@@ -10,6 +10,8 @@ var analysisMap = new Map();
 var currAnalysisConfig;
 // Count for number of analysis configurations
 var configCount = 0;
+// bool 
+var loadAnalysis = false;
 
 /**
  * Displays the analysis to the web app, by displaying the slider and the
@@ -273,11 +275,38 @@ function addFirstAnalysisConfig(){
 }
 
 /**
+ * Function to load analysis configurations and results from JSON into the config sidebar
+ * TODO: before running, wipe all other variables and analysis sidebars 
+ * so that we can load a new thing after running others
+ */
+function loadAnalysis(){
+    // Loop through each configuration
+	for(let config of analysisMap.values()) {
+        console.log(config);
+        currAnalysisConfig = config;
+        analysisRequest = currAnalysisConfig.getAnalysisRequest();
+        // TODO: Find better way to preserve original default from model
+        // Currently necessary for User Assignments List preservation
+        defaultUAL = currAnalysisConfig.userAssignmentsList;
+        console.log(analysisRequest.userAssignmentsList);
+        // Add the config to the sidebar
+        addAnalysisConfig();
+        // Add the results (if any) to the sidebar
+        updateResults();
+        // Refresh the sidebar to include the config vars
+        refreshAnalysisBar();
+    }
+    // TODO: figure out how to set it to the element of the map that will populate on top
+    currAnalysisConfig = analysisMap.get("Configuration1");
+    analysisRequest = currAnalysisConfig.analysisRequest;
+    console.log(analysisRequest);
+    refreshAnalysisBar();
+}
+
+/**
  * Adds a new analysis configuration to the Config sidebar
  */
-function addAnalysisConfig(){
-    $(".log-elements").css("background-color", "");
-    $(".result-elements").css("background-color", "");
+function addNewAnalysisConfig(){
     // Update current config with current analysisRequest and set the udpated config in map
     currAnalysisConfig.updateAnalysis(analysisRequest);
     analysisMap.set(currAnalysisConfig.id, currAnalysisConfig);
@@ -299,29 +328,45 @@ function addAnalysisConfig(){
 
     // Reset analysis sidebar to default
     refreshAnalysisBar();
+    // Add the config to the sidebar
+    addAnalysisConfig();
 
+    //TODO @ali do we wanna keep this log or can I delete it?
+    console.log(analysisRequest.userAssignmentsList);
+}
+
+/**
+ * Adds an analysis configuration to the UI (config sidebar)
+ */
+function addAnalysisConfig() {
+    console.log("add a new config to the UI");
+    $(".log-elements").css("background-color", "");
+    $(".result-elements").css("background-color", "");
     var buttonLabel = currAnalysisConfig.id + "-button";
     var label = currAnalysisConfig.id + "-dropdown";
     $("#analysis-sidebar").append(
         '<button class="log-elements" id="'+currAnalysisConfig.id+'" style="padding: 12px; font-size: 16px; border: none; outline: none; background-color:#A9A9A9">' + currAnalysisConfig.id + '</button><div style="position:absolute; display:inline-block"><button class="dropdown" id= "'+buttonLabel+'" style="padding: 12px; font-size: 16px; height: 42px; border: none; outline: none;"><i class="fa fa-caret-down fa-2x" style="cursor:pointer;"></i></button>'
         + '</div><div class = "dropdown-container" id="'+label+'"></div>'
       );
-
-    console.log(analysisRequest.userAssignmentsList);
 }
 
 /**
  * Adds result to UI menu
  */
 function updateResults(){
+    console.log("add results to the UI");
     $(".result-elements").css("background-color", "");
     var label = currAnalysisConfig.id + "-dropdown";
     var resultCount = analysisMap.get(currAnalysisConfig.id).analysisResults.length;
-    var id = "Result " + resultCount;
-    document.getElementById(label).insertAdjacentHTML("beforeend","<a class='result-elements' style='background-color:#A9A9A9''>" + id + "</a>");
+    // if there are no results, do not populate UI
+    if (resultCount != 0) {
+        var id = "Result " + resultCount;
+        document.getElementById(label).insertAdjacentHTML("beforeend","<a class='result-elements' style='background-color:#A9A9A9''>" + id + "</a>");
+    }
 }
 
 function refreshAnalysisBar(){
+    console.log("refresh the analysis sidebar");
     $('#conflict-level').val(analysisRequest.conflictLevel);
     $('#num-rel-time').val(analysisRequest.numRelTime);
     document.getElementById('conflict-level').value = analysisRequest.conflictLevel;
@@ -385,6 +430,6 @@ $('#analysis-sidebar').on("click", ".result-elements", function(e){
  * Adds a new AnalysisConfig
  */
 $('.addConfig').on('click', function(){
-    addAnalysisConfig();
+    addNewAnalysisConfig();
 });
 

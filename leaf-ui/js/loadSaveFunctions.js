@@ -248,9 +248,10 @@ function updateSatValueTextToNew(oldText) {
 }
 
 /**
- * Given an object obj containing a model, graph and analysisRequest, 
- * updates the global variables: model, graph and analysisRequest
+ * Given an object obj containing a model, graph and analysis configurations and results, 
+ * updates the global variables: model, graph and analysisMap
  * to the objects from obj
+ * If the obj does not contain analysis information, do not update global vars
  *
  * @param {Object} obj
  */
@@ -262,7 +263,25 @@ function loadFromObject(obj) {
 	model.constraints = getConstArr(obj.model.constraints);
 	model.maxAbsTime = obj.model.maxAbsTime;
 
-	analysisRequest = Object.assign(new AnalysisRequest, obj.analysisRequest);
+	// If the object contains analysis, create analysis fields from JSON
+	if (obj.analysisMap != undefined) {
+		// Parse analysis as map
+		var tempMap = new Map(Object.entries(obj.analysisMap));
+		// Loop through all analysis configs
+		for(let configObj of tempMap.values()) {
+			var config = new AnalysisConfiguration(configObj.id, configObj.analysisRequest);
+			config.setResults(configObj.analysisResults);
+			// Add config to the global analysisMap
+			analysisMap.set(config.id, config);
+		}
+		console.log(analysisMap);
+		// TODO: figure out how to autoset to first item in config bar
+		analysisRequest = analysisMap.get("Configuration1").analysisRequest;
+	} else {
+		// Else if no analysisMap param, grab the analysisRequest
+		analysisRequest = Object.assign(new AnalysisRequest, obj.analysisRequest);
+	}
+
 	graph.fromJSON(obj.graph);
 }
 
@@ -440,12 +459,13 @@ function getModelJson() {
 	var obj = {};
 	obj.graph = graph.toJSON();
 	obj.model = model;
+	obj.analysisRequest = analysisRequest;
 	return obj;
 }
 
 /**
  * Returns an object that contains the current graph, model and analysis configurations
- * and REMOVES results from the analysisConfigurations
+ * and REMOVES results from the analysisConfigurations map.
  * This return object is what the user would download when clicking the Save button
  * in the top menu bar.
  *
@@ -453,10 +473,11 @@ function getModelJson() {
  */
 function getModelAnalysisJson() {
 	var obj = {};
+	// obj.analysis = true;
 	obj.graph = graph.toJSON();
 	obj.model = model;
-	// make copy of analysisMap w/ no results, then convert to array
-	obj.analysisMap = Array.from(removeAnalysisResults(analysisMap).entries());
+	// Remove analysis results then convert to array tuple for JSON.stringify() functionality
+	obj.analysisMap = Object.fromEntries(removeAnalysisResults(analysisMap));
 
 	return obj;
 }
@@ -472,24 +493,26 @@ function getFullJson() {
 	var obj = {};
 	obj.graph = graph.toJSON();
 	obj.model = model;
-	// Maps don't convert well to JSON
-	obj.analysisMap = Array.from(analysisMap.entries());
+	// Convert to array tuple for JSON.stringify() functionality
+	// obj.analysisMap = Array.from(analysisMap.entries());
+	obj.analysisMap = Object.fromEntries(analysisMap);
 
 	return obj;
 }
 
 /**
- * Returns a copy of the analysisMap with no
+ * Helper function to return a copy of the analysisMap with no
  * analysisResults in each analysisConfig
  */
 function removeAnalysisResults(analysisMap) {
-	// deep copy: stringify, then parse to new Map
-	let tempJSON = JSON.stringify(Array.from(analysisMap.entries()));
-	var analysisMapNoResults = new Map(JSON.parse(tempJSON));
-
-	// for each configuration
-	for(let [key, value] of analysisMapNoResults) {
-		analysisMapNoResults.get(key).analysisResults = [];
+	// Deep copy the map: stringify, then parse to new Map
+	let tempJSON = JSON.stringify(Object.fromEntries(analysisMap));
+	var analysisMapNoResults = new Map(Object.entries(JSON.parse(tempJSON)));
+	
+	// for each AnalysisConfiguration obj
+	for(let config of analysisMapNoResults.values()) {
+		// put empty array into the analysisResults field
+		config.analysisResults = [];
 	}
 
 	return analysisMapNoResults;
