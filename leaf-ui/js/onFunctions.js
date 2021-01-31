@@ -24,21 +24,6 @@ $('#max-abs-time').on('change', function(){
     }
 });
 
-/** 
- * Sets Absolute time points
- */
-$('#abs-time-pts').on('change', function(){
-    console.log("setting time points");
-    var regex = new RegExp("^(([1-9]0*)+\\s+)*([1-9]+0*)*$");
-    var absTime = $('#abs-time-pts');
-    if (regex.test(absTime.val())) {
-        analysisRequest.absTimePts = absTime.val().trim();
-        analysisRequest.changeTimePoints(getAbsoluteTimePoints());
-    } else {
-        absTime.val(analysisRequest.absTimePts);
-    }
-});
-
 /**
  * Add relative intention row
  */
@@ -108,6 +93,7 @@ $('#btn-view-assignment').on('click', function() {
  * TODO: Check if the times users put in are valid
  */
 $('#btn-save-assignment').on('click', function() {
+    saveAbsoluteTimePoints();
     saveRelativeIntentionAssignments();
     saveAbsoluteIntentionAssignments();
     saveAbsoluteRelationshipAssignments();
@@ -167,8 +153,6 @@ $(document).on('click', '.unassign-abs-intent-btn', function(e) {
     var srcEB = row.attr('srcEB');
     var constraint = model.getAbsConstBySrcID(nodeID, srcEB);
     constraint.absoluteValue = -1;
-    console.log(constraint);
-    console.log(model.getAbsConstBySrcID(nodeID, srcEB));
 });
 
 /**
@@ -197,6 +181,23 @@ function getAbsoluteTimePoints() {
     }
 
     return absTimeValues
+}
+
+/** 
+ * Sets Absolute time points
+ */
+function saveAbsoluteTimePoints() {
+    var regex = new RegExp("^(([1-9]0*)+\\s+)*([1-9]+0*)*$");
+    var absTime = $('#abs-time-pts');
+    if (regex.test(absTime.val())) {
+        analysisRequest.absTimePts = absTime.val().trim();
+        analysisRequest.changeTimePoints(getAbsoluteTimePoints());
+    } else {
+        absTime.val(analysisRequest.absTimePts);
+    }
+    
+    // Updates the analysis request time points based on the saved assignments
+    analysisRequest.changeTimePoints(getAbsoluteTimePoints());
 }
 
 /**
@@ -318,7 +319,6 @@ function saveAbsoluteIntentionAssignments(){
         var nodeID = row.attr('nodeID'); // ex. '0000'
 
         model.setAbsConstBySrcID(nodeID, srcEB, newTime);
-
     });
 }
 
