@@ -283,10 +283,6 @@ function loadAnalysis(){
         console.log(config);
         currAnalysisConfig = config;
         analysisRequest = currAnalysisConfig.getAnalysisRequest();
-        // TODO: Find better way to preserve original default from model
-        // Currently necessary for User Assignments List preservation
-        defaultUAL = currAnalysisConfig.userAssignmentsList;
-        console.log(analysisRequest.userAssignmentsList);
         // Add the config to the sidebar
         addAnalysisConfig();
         // Add the results (if any) to the sidebar
@@ -331,9 +327,6 @@ function addNewAnalysisConfig(){
     refreshAnalysisBar();
     // Add the config to the sidebar
     addAnalysisConfig();
-
-    //TODO @ali do we wanna keep this log or can I delete it?
-    console.log(analysisRequest.userAssignmentsList);
 }
 
 /**
