@@ -358,12 +358,19 @@ function updateResults(){
     console.log("add results to the UI");
     $(".result-elements").css("background-color", "");
     var label = currAnalysisConfig.id + "-dropdown";
+    // clear all results from dropdown (prevents duplication)
+    document.getElementById(label).innerHTML = "";
+
     var resultCount = analysisMap.get(currAnalysisConfig.id).analysisResults.length;
-    // Loop through all results and populate UI
+    // Loop through all results and populate dropdown
     for (var i=0; i < resultCount; i++) {
         var id = "Result " + (i+1);
-        document.getElementById(label).insertAdjacentHTML("beforeend","<a class='result-elements' style='background-color:#A9A9A9''>" + id + "</a>");
+        document.getElementById(label).insertAdjacentHTML("beforeend","<a class='result-elements'>" + id + "</a>");
     }
+
+    // highlight newest/last result
+    $(document.getElementById(label).lastChild).css("background-color", "#A9A9A9");
+    
 }
 
 function refreshAnalysisBar(){
