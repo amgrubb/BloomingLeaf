@@ -619,9 +619,21 @@ $('#btn-save').on('click', function() {
 	}
 });
 
-// Save the current graph and analysis to json file
+// Save the current graph and analysis (without results) to json file
+$('#btn-save-analysis').on('click', function() {
+	var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
+	if (name){
+        clearCycleHighlighting();
+        EVO.deactivate();   
+		var fileName = name + ".json";
+		var obj = getModelAnalysisJson();
+        download(fileName, JSON.stringify(obj));
+	}
+});
+
+// Save the current graph and analysis (with results) to json file
 $('#btn-save-all').on('click', function() {
-	var name = window.prompt("WARNING: ANALYSIS SAVE NOT YET IMPLEMENTED. \nPlease enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
+	var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
 	if (name){
         clearCycleHighlighting();
         EVO.deactivate();   
@@ -1351,9 +1363,12 @@ function checkForMultipleNB(node) {
 /**
  * Function to add first analysis configuration 
  * if no configs exist when switching to analysis mode
- * TODO: Add functionality for loading in all configs stored in uploaded JSON
+ * If the analysisMap contains configurations loaded from JSON, populate the sidebar
+ * 
+ * TODO: fix bug - creates a duplicate config if switching from model to analysis multiple times
  */
 function loadAnalysisConfig(){
+    // if there are no configs in the map
     if(analysisMap.size == 0){
         addFirstAnalysisConfig();
     }
