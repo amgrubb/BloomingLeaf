@@ -25,10 +25,10 @@ function displayAnalysis(analysisResults){
     currentAnalysis.type = "Single Path";
 
     // Save data for get possible next states
-    savedAnalysisData.singlePathResult.assignedEpoch = analysisResults.assignedEpoch;
-    savedAnalysisData.singlePathResult.finalValueTimePoints = analysisResults.finalValueTimePoints;
     savedAnalysisData.singlePathResult = analysisResults;
-    console.log("savedAnalysisData");
+    // savedAnalysisData.singlePathResult.assignedEpoch = analysisResults.assignedEpoch;
+    // savedAnalysisData.singlePathResult.finalValueTimePoints = analysisResults.finalValueTimePoints;
+    console.log(savedAnalysisData);
 
     // Check if slider has already been initialized
     if (sliderObject.sliderElement.hasOwnProperty('noUiSlider')) {
@@ -289,14 +289,8 @@ function loadAnalysis(){
         updateResults();
         console.log("analysis request:")
         console.log(analysisRequest);
-        // Refresh the sidebar to include the config vars
-        refreshAnalysisBar();
     }
-    // TODO: figure out how to set it to the element of the map that will populate on top
-    currAnalysisConfig = analysisMap.get("Configuration1");
-    analysisRequest = currAnalysisConfig.analysisRequest;
-    console.log("analysis request:")
-    console.log(analysisRequest);
+    // Refresh the sidebar to include the config vars
     refreshAnalysisBar();
 }
 
