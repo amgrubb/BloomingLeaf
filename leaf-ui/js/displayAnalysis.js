@@ -290,14 +290,16 @@ function loadAnalysis(){
         console.log("analysis request:")
         console.log(analysisRequest);
         // Refresh the sidebar to include the config vars
-        refreshAnalysisBar();
+        refreshAnalysis();
     }
     // TODO: figure out how to set it to the element of the map that will populate on top
     currAnalysisConfig = analysisMap.get("Configuration1");
+    // Set default UAL to preserve in future configs
+    defaultUAL = currAnalysisConfig.userAssignmentsList;
     analysisRequest = currAnalysisConfig.analysisRequest;
     console.log("analysis request:")
     console.log(analysisRequest);
-    refreshAnalysisBar();
+    refreshAnalysisUI();
 }
 
 /**
@@ -324,7 +326,7 @@ function addNewAnalysisConfig(){
     analysisRequest = currAnalysisConfig.getAnalysisRequest();
 
     // Reset analysis sidebar to default
-    refreshAnalysisBar();
+    refreshAnalysisUI();
     // Add the config to the sidebar
     addAnalysisConfig();
 }
@@ -366,8 +368,13 @@ function updateResults(){
     
 }
 
-function refreshAnalysisBar(){
+/**
+ * Refreshes analysisRequest values in the UI 
+ * in places such as the right sidebar and absolute time points field
+ */
+function refreshAnalysisUI(){
     console.log("refresh the analysis sidebar");
+    $('#abs-time-pts').val(analysisRequest.absTimePtsArr);
     $('#conflict-level').val(analysisRequest.conflictLevel);
     $('#num-rel-time').val(analysisRequest.numRelTime);
 }
@@ -383,7 +390,7 @@ $('#analysis-sidebar').on("click", ".log-elements", function(e){
 
     currAnalysisConfig = analysisMap.get(txt);
     analysisRequest = currAnalysisConfig.getAnalysisRequest();
-    refreshAnalysisBar();
+    refreshAnalysisUI();
     console.log(analysisRequest.userAssignmentsList);
 
     $(".log-elements").css("background-color", "");
@@ -422,7 +429,7 @@ $('#analysis-sidebar').on("click", ".result-elements", function(e){
     // Update UI accordingly
     $(e.target).css("background-color", "#A9A9A9");
     $("#"+configId).css("background-color","#A9A9A9")
-    refreshAnalysisBar()
+    refreshAnalysisUI()
     displayAnalysis(currAnalysisResults)
 });
 
