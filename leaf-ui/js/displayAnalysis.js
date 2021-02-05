@@ -294,6 +294,8 @@ function loadAnalysis(){
     }
     // TODO: figure out how to set it to the element of the map that will populate on top
     currAnalysisConfig = analysisMap.get("Configuration1");
+    // Set default UAL to preserve in future configs
+    defaultUAL = currAnalysisConfig.userAssignmentsList;
     analysisRequest = currAnalysisConfig.analysisRequest;
     console.log("analysis request:")
     console.log(analysisRequest);
