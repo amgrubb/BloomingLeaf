@@ -277,6 +277,8 @@ function loadAnalysis(){
         updateResults();
         console.log(analysisRequest);
     }
+    // Set default UAL to preserve in future configs
+    defaultUAL = currAnalysisConfig.userAssignmentsList;
     // Refresh the sidebar to include the config vars
     refreshAnalysisBar();
 }
