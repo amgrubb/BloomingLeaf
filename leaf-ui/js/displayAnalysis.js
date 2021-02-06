@@ -25,22 +25,13 @@ function displayAnalysis(analysisResults){
     currentAnalysis.type = "Single Path";
 
     // Save data for get possible next states
-    savedAnalysisData.singlePathResult.assignedEpoch = analysisResults.assignedEpoch;
-    savedAnalysisData.singlePathResult.finalValueTimePoints = analysisResults.finalValueTimePoints;
+    // TODO double check this still works
     savedAnalysisData.singlePathResult = analysisResults;
-    console.log("savedAnalysisData");
 
     // Check if slider has already been initialized
     if (sliderObject.sliderElement.hasOwnProperty('noUiSlider')) {
         sliderObject.sliderElement.noUiSlider.destroy();
     }
-
-    // This might be unnecessary
-    // ElementList = analysisResults.elementList;
-
-    // Update history log
-    // updateHistory(currentAnalysis);
-
     createSlider(currentAnalysis, false);
 }
 
@@ -261,15 +252,12 @@ function addFirstAnalysisConfig(){
     // TODO: Find better way to preserve original default from model
     // Currently necessary for User Assignments List preservation
     defaultUAL = currAnalysisConfig.userAssignmentsList;
-    console.log(analysisRequest.userAssignmentsList);
     var buttonLabel = currAnalysisConfig.id + "-button";
     var label = currAnalysisConfig.id + "-dropdown";
     $("#analysis-sidebar").append(
         '<button class="log-elements" id="'+currAnalysisConfig.id+'" style="padding: 12px; font-size: 16px; border: none; outline: none; background-color:#A9A9A9">' + currAnalysisConfig.id + '</button><div style="position:absolute; display:inline-block"><button class="dropdown" id= "'+buttonLabel+'" style="padding: 12px; font-size: 16px; height: 42px; border: none; outline: none;"><i class="fa fa-caret-down fa-2x" style="cursor:pointer;"></i></button>'
         + '</div><div class = "dropdown-container" id="'+label+'"></div>'
       );
-
-    console.log(analysisMap)
 }
 
 /**
@@ -287,7 +275,6 @@ function loadAnalysis(){
         addAnalysisConfig();
         // Add the results (if any) to the sidebar
         updateResults();
-        console.log("analysis request:")
         console.log(analysisRequest);
     }
     // TODO: figure out how to set it to the element of the map that will populate on top
@@ -295,8 +282,6 @@ function loadAnalysis(){
     // Set default UAL to preserve in future configs
     defaultUAL = currAnalysisConfig.userAssignmentsList;
     analysisRequest = currAnalysisConfig.analysisRequest;
-    console.log("analysis request:")
-    console.log(analysisRequest);
     // Refresh the sidebar to include the config vars
     refreshAnalysisUI();
 }
@@ -334,7 +319,6 @@ function addNewAnalysisConfig(){
  * Adds an analysis configuration to the UI (config sidebar)
  */
 function addAnalysisConfig() {
-    console.log("add a new config to the UI");
     $(".log-elements").css("background-color", "");
     $(".result-elements").css("background-color", "");
     var buttonLabel = currAnalysisConfig.id + "-button";
@@ -349,7 +333,6 @@ function addAnalysisConfig() {
  * Adds result to UI menu
  */
 function updateResults(){
-    console.log("add results to the UI");
     $(".result-elements").css("background-color", "");
     var label = currAnalysisConfig.id + "-dropdown";
     // clear all results from dropdown (prevents duplication)

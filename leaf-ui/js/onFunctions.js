@@ -1367,8 +1367,11 @@ function checkForMultipleNB(node) {
  * TODO: fix bug - creates a duplicate config if switching from model to analysis multiple times
  */
 function loadAnalysisConfig(){
+    // Refresh the analysis sidebar to reflect current analysis request values
+    refreshAnalysisBar();
     // if there are no configs in the map
     if(analysisMap.size == 0){
+        // Add a new, empty config to the map
         addFirstAnalysisConfig();
     }
 }
