@@ -94,9 +94,9 @@ $('#btn-view-assignment').on('click', function() {
  */
 $('#btn-save-assignment').on('click', function() {
     saveAbsoluteTimePoints();
-    saveRelativeIntentionAssignments();
     saveAbsoluteIntentionAssignments();
     saveAbsoluteRelationshipAssignments();
+    saveRelativeIntentionAssignments();
 
     // Dismiss the modal
     var modal = document.getElementById('assignmentsModal');
@@ -315,7 +315,6 @@ function saveAbsoluteIntentionAssignments(){
         }
         var row = $(this).closest('tr');
         var srcEB = row.attr('srcEB'); // ex. 'A'
-        var funcValue = row.find('td:nth-child(2)').html(); // ex. 'MP'
         var nodeID = row.attr('nodeID'); // ex. '0000'
 
         model.setAbsConstBySrcID(nodeID, srcEB, newTime);

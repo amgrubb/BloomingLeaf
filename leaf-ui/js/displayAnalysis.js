@@ -289,8 +289,6 @@ function loadAnalysis(){
         updateResults();
         console.log("analysis request:")
         console.log(analysisRequest);
-        // Refresh the sidebar to include the config vars
-        refreshAnalysis();
     }
     // TODO: figure out how to set it to the element of the map that will populate on top
     currAnalysisConfig = analysisMap.get("Configuration1");
@@ -299,6 +297,7 @@ function loadAnalysis(){
     analysisRequest = currAnalysisConfig.analysisRequest;
     console.log("analysis request:")
     console.log(analysisRequest);
+    // Refresh the sidebar to include the config vars
     refreshAnalysisUI();
 }
 
@@ -316,7 +315,7 @@ function addNewAnalysisConfig(){
     // default Analysis Request needed for now for user assignments list
     // TODO: Look into perserving base UAL throughout analysisRequests
     var newRequest = new AnalysisRequest();
-    newRequest.userAssignmentsList = defaultUAL;
+    defaultUAL.forEach(userEval => newRequest.userAssignmentsList.push(userEval));
 
     var newConfig = new AnalysisConfiguration(id, newRequest);
     analysisMap.set(id, newConfig);
@@ -384,14 +383,13 @@ function refreshAnalysisUI(){
  */
 $('#analysis-sidebar').on("click", ".log-elements", function(e){
     //Save and/or update past analysis config in map
-    currAnalysisConfig.updateAnalysis(analysisRequest)
+    currAnalysisConfig.updateAnalysis(analysisRequest);
     analysisMap.set(currAnalysisConfig.id, currAnalysisConfig);
-    var txt = $(e.target).text();
 
+    var txt = $(e.target).text();
     currAnalysisConfig = analysisMap.get(txt);
-    analysisRequest = currAnalysisConfig.getAnalysisRequest();
+    analysisRequest = currAnalysisConfig.getAnalysisRequest();;
     refreshAnalysisUI();
-    console.log(analysisRequest.userAssignmentsList);
 
     $(".log-elements").css("background-color", "");
     $(".result-elements").css("background-color", "");

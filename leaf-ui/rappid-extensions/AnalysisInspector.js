@@ -663,8 +663,8 @@ var AnalysisInspector = Backbone.View.extend({
 
         // Clear all intention evaluations with the exception
         // of the evaluations on the initial time point
-        analysisRequest.clearUserEvaluations();
-
+		analysisRequest.clearUserEvaluations();
+		
         // for each row of the table
         $('.intention-row').each(function () {
             // for each column of the current row
@@ -680,7 +680,6 @@ var AnalysisInspector = Backbone.View.extend({
                 analysisRequest.userAssignmentsList.push(new UserEvaluation(nodeID, absTime, evalLabel));
             });
         });
-
 
         this.dismissIntermTable();
     },

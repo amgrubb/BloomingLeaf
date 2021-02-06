@@ -239,13 +239,14 @@ class AnalysisConfiguration {
 	 * Updates Config Values from AnalysisRequest
 	 */
 	updateAnalysis(analysisRequest){
+		this.analysisRequest = analysisRequest;
 		this.action = analysisRequest.action;
         this.conflictLevel = analysisRequest.conflictLevel;
         this.numRelTime = analysisRequest.numRelTime;
         this.absTimePts = analysisRequest.absTimePts;
         this.absTimePtsArr = analysisRequest.absTimePts;
         this.currentState = analysisRequest.currentState;
-        this.userAssignmentsList = analysisRequest.userAssignmentsList;
+		this.userAssignmentsList = analysisRequest.userAssignmentsList;
 	}
 
 	/**
