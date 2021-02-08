@@ -77,6 +77,28 @@ function createSlider(currentAnalysis, isSwitch) {
     adjustSliderWidth(sliderMax);
 }
 
+/**
+ * Reset display to default, before result is displayed
+ */
+function hideAnalysis() {
+    removeSlider();
+    refreshAnalysisBar();
+    // show modeling mode EVO slider
+    $('#modelingSlider').css("display", ""); // ask Kate and Megan
+    $('#analysisSlider').css("display", "none");
+}
+
+/**
+ * Removes the slider from the UI
+ */
+function removeSlider() {
+    // if there's a slider, remove it
+    if (sliderObject.sliderElement.hasOwnProperty('noUiSlider')) {
+        sliderObject.sliderElement.noUiSlider.destroy();
+    }
+    $('#sliderValue').text("");
+}
+
 /*
  * Creates and displays new slider after the user clicks a different
  * analysis from the history log. This function is called when
@@ -306,8 +328,9 @@ function addNewAnalysisConfig(){
     currAnalysisConfig = newConfig;
     analysisRequest = currAnalysisConfig.getAnalysisRequest();
 
-    // Reset analysis sidebar to default
-    refreshAnalysisBar();
+    // Reset analysis view to default
+    hideAnalysis();
+    // refreshAnalysisBar();
     // Add the config to the sidebar
     addAnalysisConfig();
 }
@@ -363,7 +386,10 @@ $('#analysis-sidebar').on("click", ".log-elements", function(e){
 
     currAnalysisConfig = analysisMap.get(txt);
     analysisRequest = currAnalysisConfig.getAnalysisRequest();
-    refreshAnalysisBar();
+    // restore default analysis view
+    hideAnalysis();
+    //refreshAnalysisBar(); // reset UI
+    // removeSlider();
     console.log(analysisRequest.userAssignmentsList);
 
     $(".log-elements").css("background-color", "");
@@ -395,15 +421,18 @@ $('#analysis-sidebar').on("click", ".result-elements", function(e){
     // Grab Config and result information
     var configId = e.currentTarget.parentElement.id.split("-")[0];
     var resultIndex = $(e.target).text().split(" ")[1];
-    var currAnalysisConfig = analysisMap.get(configId)
+    var currAnalysisConfig = analysisMap.get(configId);
     var currAnalysisResults = currAnalysisConfig.analysisResults[resultIndex-1];
     analysisRequest = currAnalysisConfig.getAnalysisRequest();
 
     // Update UI accordingly
     $(e.target).css("background-color", "#A9A9A9");
-    $("#"+configId).css("background-color","#A9A9A9")
-    refreshAnalysisBar()
-    displayAnalysis(currAnalysisResults)
+    $("#"+configId).css("background-color","#A9A9A9");
+    refreshAnalysisBar();
+    displayAnalysis(currAnalysisResults);
+    // show EVO analysis slider
+    $('#modelingSlider').css("display", "none"); // ask Kate and Megan
+    $('#analysisSlider').css("display", "");
 });
 
 /**
