@@ -1368,7 +1368,7 @@ function checkForMultipleNB(node) {
  */
 function loadAnalysisConfig(){
     // Refresh the analysis sidebar to reflect current analysis request values
-    refreshAnalysisBar();
+    refreshAnalysisUI();
     // if there are no configs in the map
     if(analysisMap.size == 0){
         // Add a new, empty config to the map
