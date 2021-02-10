@@ -8,8 +8,6 @@
 var analysisMap = new Map();
 // Global variable to keep track of what analysis configuration is currently being used
 var currAnalysisConfig;
-// Count for number of analysis configurations
-var configCount = 0;
 
 /**
  * Displays the analysis to the web app, by displaying the slider and the
@@ -249,15 +247,10 @@ function addFirstAnalysisConfig(){
     var id = "Configuration1"
     currAnalysisConfig = new AnalysisConfiguration(id, analysisRequest);
     analysisMap.set(id, currAnalysisConfig);
-    // TODO: Find better way to preserve original default from model
     // Currently necessary for User Assignments List preservation
     defaultUAL = currAnalysisConfig.userAssignmentsList;
-    var buttonLabel = currAnalysisConfig.id + "-button";
-    var label = currAnalysisConfig.id + "-dropdown";
-    $("#analysis-sidebar").append(
-        '<button class="log-elements" id="'+currAnalysisConfig.id+'" style="padding: 12px; font-size: 16px; border: none; outline: none; background-color:#A9A9A9">' + currAnalysisConfig.id + '</button><div style="position:absolute; display:inline-block"><button class="dropdown" id= "'+buttonLabel+'" style="padding: 12px; font-size: 16px; height: 42px; border: none; outline: none;"><i class="fa fa-caret-down fa-2x" style="cursor:pointer;"></i></button>'
-        + '</div><div class = "dropdown-container" id="'+label+'"></div>'
-      );
+    // Add the empty first config to the UI
+    addAnalysisConfig();
 }
 
 /**
@@ -320,11 +313,35 @@ function addAnalysisConfig() {
     $(".result-elements").css("background-color", "");
     var buttonLabel = currAnalysisConfig.id + "-button";
     var label = currAnalysisConfig.id + "-dropdown";
-    $("#analysis-sidebar").append(
-        '<button class="log-elements" id="'+currAnalysisConfig.id+'" style="padding: 12px; font-size: 16px; border: none; outline: none; background-color:#A9A9A9">' + currAnalysisConfig.id + '</button><div style="position:absolute; display:inline-block"><button class="dropdown" id= "'+buttonLabel+'" style="padding: 12px; font-size: 16px; height: 42px; border: none; outline: none;"><i class="fa fa-caret-down fa-2x" style="cursor:pointer;"></i></button>'
+    // Add a larger div to contain the configuration "<config id>-container"
+    $("#configurations").append(
+        '<div class = "analysis-configuration" id="' + currAnalysisConfig.id + '-container">'
+        + '<button class="log-elements" id="'+currAnalysisConfig.id+'" style="padding: 12px; font-size: 16px; border: none; outline: none; background-color:#A9A9A9">' + currAnalysisConfig.id + '</button><div style="position:absolute; display:inline-block"><button class="dropdown" id= "'+buttonLabel+'" style="padding: 12px; font-size: 16px; height: 42px; border: none; outline: none;"><i class="fa fa-caret-down fa-2x" style="cursor:pointer;"></i></button>'
         + '</div><div class = "dropdown-container" id="'+label+'"></div>'
+        + '</div>'
       );
 }
+
+/**
+ * Removes an analysis configuration from the analysisMap and UI sidebar
+ * TODO implement with a button
+ */
+function removeConfiguration() {
+    // Remove full configuration div (includes results)
+    var configDiv = document.getElementById(currAnalysisConfig.id);
+    configDiv.remove();
+    // Remove config from analysisMap
+    analysisMap.delete(currAnalysisConfig.id);
+}
+
+/**
+ * Clears the analysis config sidebar
+ */
+function clearAnalysis() {
+    // Remove all child elements of the configurations div
+    $('#configurations').empty();
+}
+
 
 /**
  * Adds result to UI menu
