@@ -263,6 +263,14 @@ function loadFromObject(obj) {
 	model.constraints = getConstArr(obj.model.constraints);
 	model.maxAbsTime = obj.model.maxAbsTime;
 
+	// Clear any previous analysis data 
+	if (analysisMap.size != 0) {
+		// Clear the analysisMap to remove any previous analysis
+		clearAnalysis();
+		analysisMap.clear();
+		currAnalysisConfig = null;
+	}
+
 	// If the object contains analysis, create analysis fields from JSON
 	if (obj.analysisMap != undefined) {
 		// Parse analysis as map
@@ -280,6 +288,7 @@ function loadFromObject(obj) {
 	} else {
 		// Else if no analysisMap param, grab the analysisRequest
 		analysisRequest = Object.assign(new AnalysisRequest, obj.analysisRequest);
+		
 	}
 
 	graph.fromJSON(obj.graph);

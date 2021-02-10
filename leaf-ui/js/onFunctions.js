@@ -1365,7 +1365,6 @@ function checkForMultipleNB(node) {
  * if no configs exist when switching to analysis mode
  * If the analysisMap contains configurations loaded from JSON, populate the sidebar
  * 
- * TODO: fix bug - creates a duplicate config if switching from model to analysis multiple times
  */
 function loadAnalysisConfig(){
     // Refresh the analysis sidebar to reflect current analysis request values
