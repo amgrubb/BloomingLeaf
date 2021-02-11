@@ -340,7 +340,7 @@ function removeConfiguration() {
 /**
  * Clears the analysis config sidebar
  */
-function clearAnalysis() {
+function clearAnalysisConfigSidebar() {
     // Remove all child elements of the configurations div
     $('#configurations').empty();
 }
