@@ -430,18 +430,23 @@ var AnalysisInspector = Backbone.View.extend({
 					var possibleValueList = ['0000', '0011', '0010', '1100', '0100', 'empty', 'no value'];
 					options = this.convertToOptions(possibleValueList);
 				}
-				var intEval = analysisRequest.getUserEvaluationByID(intention.nodeID, absTimeValues[j]);
-
-				if (intEval != null) {
-					selectElement.val(intEval.evaluationValue);
-				}
 				selectElement.append(options);
 				selectTd.append(selectElement);
 				row.append(selectTd);
-
 				}
 			$('#interm-list').append(row);
 		}
+		// Needed after looping through and appending rows to avoid voiding the select
+		$('.intention-row').each(function () {
+            $(this).find('select').each(function () {
+                var nodeID = $(this).attr('nodeID');
+				var absTime = $(this).attr('absTime');
+				var intEval = analysisRequest.getUserEvaluationByID(nodeID, absTime);
+				if (intEval != null) {
+					$(this).val(intEval.evaluationValue);
+				}
+            });
+        });
 	},
 
 	/**
@@ -658,8 +663,8 @@ var AnalysisInspector = Backbone.View.extend({
 
         // Clear all intention evaluations with the exception
         // of the evaluations on the initial time point
-        analysisRequest.clearUserEvaluations();
-
+		analysisRequest.clearUserEvaluations();
+		
         // for each row of the table
         $('.intention-row').each(function () {
             // for each column of the current row
@@ -675,7 +680,6 @@ var AnalysisInspector = Backbone.View.extend({
                 analysisRequest.userAssignmentsList.push(new UserEvaluation(nodeID, absTime, evalLabel));
             });
         });
-
 
         this.dismissIntermTable();
     },

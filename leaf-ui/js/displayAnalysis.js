@@ -270,10 +270,13 @@ function loadAnalysis(){
         updateResults();
         console.log(analysisRequest);
     }
+    // TODO: figure out how to set it to the element of the map that will populate on top
+    currAnalysisConfig = analysisMap.get("Configuration1");
     // Set default UAL to preserve in future configs
     defaultUAL = currAnalysisConfig.userAssignmentsList;
+    analysisRequest = currAnalysisConfig.analysisRequest;
     // Refresh the sidebar to include the config vars
-    refreshAnalysisBar();
+    refreshAnalysisUI();
 }
 
 /**
@@ -290,7 +293,7 @@ function addNewAnalysisConfig(){
     // default Analysis Request needed for now for user assignments list
     // TODO: Look into perserving base UAL throughout analysisRequests
     var newRequest = new AnalysisRequest();
-    newRequest.userAssignmentsList = defaultUAL;
+    defaultUAL.forEach(userEval => newRequest.userAssignmentsList.push(userEval));
 
     var newConfig = new AnalysisConfiguration(id, newRequest);
     analysisMap.set(id, newConfig);
@@ -300,7 +303,7 @@ function addNewAnalysisConfig(){
     analysisRequest = currAnalysisConfig.getAnalysisRequest();
 
     // Reset analysis sidebar to default
-    refreshAnalysisBar();
+    refreshAnalysisUI();
     // Add the config to the sidebar
     addAnalysisConfig();
 }
@@ -364,7 +367,13 @@ function updateResults(){
     
 }
 
-function refreshAnalysisBar(){
+/**
+ * Refreshes analysisRequest values in the UI 
+ * in places such as the right sidebar and absolute time points field
+ */
+function refreshAnalysisUI(){
+    console.log("refresh the analysis sidebar");
+    $('#abs-time-pts').val(analysisRequest.absTimePtsArr);
     $('#conflict-level').val(analysisRequest.conflictLevel);
     $('#num-rel-time').val(analysisRequest.numRelTime);
 }
@@ -374,14 +383,13 @@ function refreshAnalysisBar(){
  */
 $('#analysis-sidebar').on("click", ".log-elements", function(e){
     //Save and/or update past analysis config in map
-    currAnalysisConfig.updateAnalysis(analysisRequest)
+    currAnalysisConfig.updateAnalysis(analysisRequest);
     analysisMap.set(currAnalysisConfig.id, currAnalysisConfig);
-    var txt = $(e.target).text();
 
+    var txt = $(e.target).text();
     currAnalysisConfig = analysisMap.get(txt);
-    analysisRequest = currAnalysisConfig.getAnalysisRequest();
-    refreshAnalysisBar();
-    console.log(analysisRequest.userAssignmentsList);
+    analysisRequest = currAnalysisConfig.getAnalysisRequest();;
+    refreshAnalysisUI();
 
     $(".log-elements").css("background-color", "");
     $(".result-elements").css("background-color", "");
@@ -419,7 +427,7 @@ $('#analysis-sidebar').on("click", ".result-elements", function(e){
     // Update UI accordingly
     $(e.target).css("background-color", "#A9A9A9");
     $("#"+configId).css("background-color","#A9A9A9")
-    refreshAnalysisBar()
+    refreshAnalysisUI()
     displayAnalysis(currAnalysisResults)
 });
 
