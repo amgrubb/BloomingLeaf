@@ -446,6 +446,12 @@ $('#model-cur-btn').on('click', function() {
  * satisfaction value and colours all text to black
  */
 function revertNodeValuesToInitial() {
+    // reset values
+    for (var i = 0; i < graph.elementsBeforeAnalysis.length; i++) {
+		var value = graph.elementsBeforeAnalysis[i]
+		updateNodeValues(i, value, "toInitModel");
+	}
+
 	var elements = graph.getElements();
 	var curr;
 	for (var i = 0; i < elements.length; i++) {
@@ -482,12 +488,6 @@ function switchToModellingMode() {
     analysisResult.isPathSim = false; //reset isPathSim for color visualization slider
 	analysisRequest.previousAnalysis = null;
 	clearInspector();
-
-	// Reset to initial graph prior to analysis
-	for (var i = 0; i < graph.elementsBeforeAnalysis.length; i++) {
-		var value = graph.elementsBeforeAnalysis[i]
-		updateNodeValues(i, value, "toInitModel");
-	}
 
 	// Reset to initial graph prior to analysis
 	revertNodeValuesToInitial();
