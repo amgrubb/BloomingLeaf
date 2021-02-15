@@ -489,7 +489,6 @@ function switchToModellingMode() {
     analysisResult.isPathSim = false; //reset isPathSim for color visualization slider
 	analysisRequest.previousAnalysis = null;
 	clearInspector();
-    removeSlider();
 
 	// Reset to initial graph prior to analysis
 	revertNodeValuesToInitial();
@@ -512,8 +511,7 @@ function switchToModellingMode() {
     EVO.switchToModelingMode();
     analysisResult.colorVis = [];
 
-
-	$('#sliderValue').text("");
+    removeSlider();
 
 	// Reinstantiate link settings
 	$('.link-tools .tool-remove').css("display","");
