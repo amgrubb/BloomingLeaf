@@ -83,6 +83,9 @@ function createSlider(currentAnalysis, isSwitch) {
 function hideAnalysis() {
     removeSlider();
     refreshAnalysisBar();
+    revertNodeValuesToInitial();
+    EVO.switchToModelingMode();
+    analysisResult.colorVis = [];
     // show modeling mode EVO slider
     $('#modelingSlider').css("display", ""); // ask Kate and Megan
     $('#analysisSlider').css("display", "none");
