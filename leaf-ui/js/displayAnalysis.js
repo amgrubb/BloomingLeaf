@@ -84,10 +84,11 @@ function hideAnalysis() {
     removeSlider();
     refreshAnalysisBar();
     revertNodeValuesToInitial();
+    // TODO: make sure EVO goes back to analysis mode properly when clicking on result
     EVO.switchToModelingMode();
     analysisResult.colorVis = [];
     // show modeling mode EVO slider
-    $('#modelingSlider').css("display", ""); // ask Kate and Megan
+    $('#modelingSlider').css("display", "");
     $('#analysisSlider').css("display", "none");
 }
 
@@ -333,7 +334,7 @@ function addNewAnalysisConfig(){
 
     // Reset analysis view to default
     hideAnalysis();
-    // refreshAnalysisBar();
+
     // Add the config to the sidebar
     addAnalysisConfig();
 }
@@ -389,10 +390,10 @@ $('#analysis-sidebar').on("click", ".log-elements", function(e){
 
     currAnalysisConfig = analysisMap.get(txt);
     analysisRequest = currAnalysisConfig.getAnalysisRequest();
+    
     // restore default analysis view
     hideAnalysis();
-    //refreshAnalysisBar(); // reset UI
-    // removeSlider();
+
     console.log(analysisRequest.userAssignmentsList);
 
     $(".log-elements").css("background-color", "");

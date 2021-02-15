@@ -446,6 +446,7 @@ $('#model-cur-btn').on('click', function() {
  * satisfaction value and colours all text to black
  */
 function revertNodeValuesToInitial() {
+    // TODO: get satisfaction text to disappear
     // reset values
     for (var i = 0; i < graph.elementsBeforeAnalysis.length; i++) {
 		var value = graph.elementsBeforeAnalysis[i]
