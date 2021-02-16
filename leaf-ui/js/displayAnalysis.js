@@ -267,7 +267,7 @@ function loadAnalysis(){
         // Add the config to the sidebar
         addAnalysisConfig();
         // Add the results (if any) to the sidebar
-        updateResults();
+        loadResults();
         console.log(analysisRequest);
     }
     // TODO: figure out how to set it to the element of the map that will populate on top
@@ -314,17 +314,18 @@ function addNewAnalysisConfig(){
 function addAnalysisConfig() {
     $(".log-elements").css("background-color", "");
     $(".result-elements").css("background-color", "");
-    var buttonLabel = currAnalysisConfig.id + "-button";
-    var label = currAnalysisConfig.id + "-dropdown";
+
     // Add a larger div to contain the configuration "<config id>-container"
     $("#configurations").append(
-        '<div class = "analysis-configuration" id="' + currAnalysisConfig.id + '-container">'
-        + '<button class="log-elements" id="'+currAnalysisConfig.id+'" style="padding: 12px; font-size: 16px; border: none; outline: none; background-color:#A9A9A9">' + currAnalysisConfig.id + '</button><div style="position:absolute; display:inline-block"><button class="dropdown" id= "'+buttonLabel+'" style="padding: 12px; font-size: 16px; height: 42px; border: none; outline: none;"><i class="fa fa-caret-down fa-2x" style="cursor:pointer;"></i></button>'
-        + '</div><div class = "dropdown-container" id="'+label+'"></div>'
+        '<div class = "analysis-configuration" id="' + currAnalysisConfig.id + '">'
+        + '<button class="log-elements" style="padding: 12px; font-size: 16px; border: none; outline: none; background-color:#A9A9A9; width: 79%">' + currAnalysisConfig.id + '</button><div style="position:absolute; display:inline-block"><button class="dropdown" style="padding: 12px; font-size: 16px; height: 42px; border: none; outline: none;"><i class="fa fa-caret-down fa-2x" style="cursor:pointer;"></i></button>'
+        + '</div><div class="dropdown-container" style="display:block"></div>'
         + '</div>'
       );
-    document.getElementById(currAnalysisConfig.id).addEventListener('dblclick', function(){rename(this)});
-    document.getElementById(currAnalysisConfig.id).addEventListener('click', function(){switchConfigs(this)});
+    mainElement = document.getElementById(currAnalysisConfig.id);
+    mainElement.querySelector('.log-elements').addEventListener('dblclick', function(){rename(this)});
+    mainElement.querySelector('.log-elements').addEventListener('click', function(){switchConfigs(this.parentElement)});
+    mainElement.querySelector('.dropdown').addEventListener('click', function(){toggleDropdown(this.parentElement.parentElement.querySelector('.dropdown-container'))})
 }
 
 /**
@@ -347,31 +348,45 @@ function clearAnalysisConfigSidebar() {
     $('#configurations').empty();
 }
 
+function loadResults(){
+    $(".result-elements").css("background-color", "");
+    var id = currAnalysisConfig.id;
 
+    var dropdownElement = document.getElementById(id).querySelector('.dropdown-container');
+    // clear all results from dropdown (prevents duplication)
+    dropdownElement.innerHTML = "";
+    var resultCount = analysisMap.get(currAnalysisConfig.id).analysisResults.length;
+
+    // Loop through and add all results
+    for (var i=0; i < resultCount; i++) {
+        dropdownElement.insertAdjacentHTML("beforeend","<a class='result-elements' id='"+i+"'>" + "Result " + (i+1) + "</a>");
+    }
+    const results = dropdownElement.querySelectorAll('.result-elements');
+    results.forEach(function(result){
+        result.addEventListener('click', function(){switchResults(result, result.parentElement.parentElement)});
+    });
+
+    // TODO: Not necessary to highlight last result for each config - move to end of loading all results
+    // Highlight last result
+    $(dropdownElement.lastChild).css("background-color", "#A9A9A9");
+
+}
 /**
  * Adds result to UI menu
  */
 function updateResults(){
     $(".result-elements").css("background-color", "");
-    console.log(currAnalysisConfig);
-    var label = currAnalysisConfig.id + "-dropdown";
+    var id = currAnalysisConfig.id;
+
     // clear all results from dropdown (prevents duplication)
-    document.getElementById(label).innerHTML = "";
-
+    var dropdownElement = document.getElementById(id).querySelector('.dropdown-container');
     var resultCount = analysisMap.get(currAnalysisConfig.id).analysisResults.length;
-    // Loop through all results and populate dropdown
-    for (var i=0; i < resultCount; i++) {
-        var title = "Result " + (i+1);
-        document.getElementById(label).insertAdjacentHTML("beforeend","<a class='result-elements' id='"+i+"'>" + title + "</a>");
-    }
+    dropdownElement.insertAdjacentHTML("beforeend","<a class='result-elements' id='"+(resultCount-1)+"'>" + "Result " + (resultCount) + "</a>");
 
-    const results = document.querySelectorAll('.result-elements');
-    results.forEach(function(result){
-        result.addEventListener('click', function(){switchResults(result, result.parentElement.parentElement.querySelector('.log-elements'))});
-    })
+    dropdownElement.lastChild.addEventListener('click', function(){switchResults(this, this.parentElement.parentElement)});
 
     // highlight newest/last result
-    $(document.getElementById(label).lastChild).css("background-color", "#A9A9A9");
+    $(dropdownElement.lastChild).css("background-color", "#A9A9A9");
     
 }
 
@@ -386,6 +401,7 @@ function refreshAnalysisUI(){
 }
 
 function rename(configElement){
+    var configContainerElement = configElement.parentElement;
     var element = $(configElement);
     var input = $('<input>').attr("id", "configInput").val( element.text());
     element.replaceWith(input);
@@ -393,23 +409,23 @@ function rename(configElement){
     input.focus();
     document.getElementById("configInput").addEventListener("keyup", function(e){
         if (e.key == "Enter"){
-            setConfigName(configElement, this);
+            setConfigName(configContainerElement, configElement, this);
         }
     })
 }
 
-function setConfigName(configElement, inputElement){
-    if(analysisMap.has(inputElement.value)){
+function setConfigName(configContainerElement, configElement, inputElement){
+    if(analysisMap.has(inputElement.value) && inputElement.value != configContainerElement.id){
         console.log("Name taken error - add popup for this");
         return;
     }
-
-    config = analysisMap.get(configElement.id);
-    analysisMap.delete(configElement.id);
+    console.log(configContainerElement)
+    config = analysisMap.get(configContainerElement.id);
+    analysisMap.delete(configContainerElement.id);
     config.updateId(inputElement.value);
     analysisMap.set(inputElement.value, config);
     console.log(analysisMap);
-    configElement.id = inputElement.value;
+    configContainerElement.id = inputElement.value;
     configElement.innerHTML = inputElement.value;
 
     inputElement.replaceWith(configElement);
@@ -422,11 +438,10 @@ function switchConfigs(configElement){
     currAnalysisConfig = analysisMap.get(configElement.id);
     analysisRequest = currAnalysisConfig.getAnalysisRequest();
     refreshAnalysisUI();
-    console.log(configElement);
     
     $(".log-elements").css("background-color", "");
     $(".result-elements").css("background-color", "");
-    $(configElement).css("background-color", "#A9A9A9");
+    $(configElement.querySelector('.log-elements')).css("background-color", "#A9A9A9");
 
 }
 
@@ -443,7 +458,7 @@ function switchResults(resultElement, configElement){
     $(".result-elements").css("background-color", "");
     $(".log-elements").css("background-color", "");
     $(resultElement).css("background-color", "#A9A9A9");
-    $(configElement).css("background-color","#A9A9A9");
+    $(configElement.querySelector(".log-elements")).css("background-color","#A9A9A9");
     refreshAnalysisUI();
     displayAnalysis(currAnalysisResults);
 }
@@ -451,16 +466,14 @@ function switchResults(resultElement, configElement){
 /**
  * Ties dropdown bar to open or close on click action
  */
-$('#analysis-sidebar').on("click", ".dropdown", function(e){
-    var id = e.currentTarget.id.split("-")[0]+"-dropdown";
-    var dropdown = document.getElementById(id);
-    if (dropdown.style.display === "block") {
-            dropdown.style.display = "none";
-            } else {
-            dropdown.style.display = "block";
-            }
+function toggleDropdown(dropdownContainer){
+    if (dropdownContainer.style.display === "block") {
+        dropdownContainer.style.display = "none";
+        } else {
+        dropdownContainer.style.display = "block";
+        }
     
-});
+}
 
 /**
  * Adds a new AnalysisConfig
