@@ -323,6 +323,8 @@ function addAnalysisConfig() {
         + '</div><div class = "dropdown-container" id="'+label+'"></div>'
         + '</div>'
       );
+    document.getElementById(currAnalysisConfig.id).addEventListener('dblclick', function(){rename(this.id)});
+    document.getElementById(currAnalysisConfig.id).addEventListener('click', function(){switchConfigs(this)});
 }
 
 /**
@@ -351,6 +353,7 @@ function clearAnalysisConfigSidebar() {
  */
 function updateResults(){
     $(".result-elements").css("background-color", "");
+    console.log(currAnalysisConfig);
     var label = currAnalysisConfig.id + "-dropdown";
     // clear all results from dropdown (prevents duplication)
     document.getElementById(label).innerHTML = "";
@@ -358,9 +361,14 @@ function updateResults(){
     var resultCount = analysisMap.get(currAnalysisConfig.id).analysisResults.length;
     // Loop through all results and populate dropdown
     for (var i=0; i < resultCount; i++) {
-        var id = "Result " + (i+1);
-        document.getElementById(label).insertAdjacentHTML("beforeend","<a class='result-elements'>" + id + "</a>");
+        var title = "Result " + (i+1);
+        document.getElementById(label).insertAdjacentHTML("beforeend","<a class='result-elements' id='"+i+"'>" + title + "</a>");
     }
+
+    const results = document.querySelectorAll('.result-elements');
+    results.forEach(function(result){
+        result.addEventListener('click', function(){switchResults(result, result.parentElement.parentElement.querySelector('.log-elements'))});
+    })
 
     // highlight newest/last result
     $(document.getElementById(label).lastChild).css("background-color", "#A9A9A9");
@@ -372,29 +380,45 @@ function updateResults(){
  * in places such as the right sidebar and absolute time points field
  */
 function refreshAnalysisUI(){
-    console.log("refresh the analysis sidebar");
     $('#abs-time-pts').val(analysisRequest.absTimePtsArr);
     $('#conflict-level').val(analysisRequest.conflictLevel);
     $('#num-rel-time').val(analysisRequest.numRelTime);
 }
 
-/**
- * Switches between analysis configurations
- */
-$('#analysis-sidebar').on("click", ".log-elements", function(e){
-    //Save and/or update past analysis config in map
+function rename(id){
+    console.log("renaming");
+    console.log(id);
+}
+
+function switchConfigs(configElement){
     currAnalysisConfig.updateAnalysis(analysisRequest);
     analysisMap.set(currAnalysisConfig.id, currAnalysisConfig);
 
-    var txt = $(e.target).text();
-    currAnalysisConfig = analysisMap.get(txt);
+    currAnalysisConfig = analysisMap.get(configElement.id);
     analysisRequest = currAnalysisConfig.getAnalysisRequest();;
     refreshAnalysisUI();
-
+    console.log(configElement);
+    
     $(".log-elements").css("background-color", "");
     $(".result-elements").css("background-color", "");
-    $(e.target).css("background-color", "#A9A9A9");
-});
+    $(configElement).css("background-color", "#A9A9A9");
+
+}
+
+function switchResults(resultElement, configElement){
+    var currAnalysisId = configElement.id;
+    currAnalysisConfig = analysisMap.get(currAnalysisId);
+    var currAnalysisResults = currAnalysisConfig.analysisResults[resultElement.id];
+    analysisRequest = currAnalysisConfig.getAnalysisRequest();
+
+    // Update UI accordingly
+    $(".result-elements").css("background-color", "");
+    $(".log-elements").css("background-color", "");
+    $(resultElement).css("background-color", "#A9A9A9");
+    $(configElement).css("background-color","#A9A9A9");
+    refreshAnalysisUI();
+    displayAnalysis(currAnalysisResults);
+}
 
 /**
  * Ties dropdown bar to open or close on click action
@@ -413,23 +437,23 @@ $('#analysis-sidebar').on("click", ".dropdown", function(e){
 /**
  * Ties Results to update UI and show associated results on click action
  */
-$('#analysis-sidebar').on("click", ".result-elements", function(e){
-    $(".result-elements").css("background-color", "");
-    $(".log-elements").css("background-color", "");
+// $('#analysis-sidebar').on("click", ".result-elements", function(e){
+//     $(".result-elements").css("background-color", "");
+//     $(".log-elements").css("background-color", "");
 
-    // Grab Config and result information
-    var configId = e.currentTarget.parentElement.id.split("-")[0];
-    var resultIndex = $(e.target).text().split(" ")[1];
-    var currAnalysisConfig = analysisMap.get(configId)
-    var currAnalysisResults = currAnalysisConfig.analysisResults[resultIndex-1];
-    analysisRequest = currAnalysisConfig.getAnalysisRequest();
+//     // Grab Config and result information
+//     var configId = e.currentTarget.parentElement.id.split("-")[0];
+//     var resultIndex = $(e.target).text().split(" ")[1];
+//     var currAnalysisConfig = analysisMap.get(configId)
+//     var currAnalysisResults = currAnalysisConfig.analysisResults[resultIndex-1];
+//     analysisRequest = currAnalysisConfig.getAnalysisRequest();
 
-    // Update UI accordingly
-    $(e.target).css("background-color", "#A9A9A9");
-    $("#"+configId).css("background-color","#A9A9A9")
-    refreshAnalysisUI()
-    displayAnalysis(currAnalysisResults)
-});
+//     // Update UI accordingly
+//     $(e.target).css("background-color", "#A9A9A9");
+//     $("#"+configId).css("background-color","#A9A9A9")
+//     refreshAnalysisUI()
+//     displayAnalysis(currAnalysisResults)
+// });
 
 /**
  * Adds a new AnalysisConfig
