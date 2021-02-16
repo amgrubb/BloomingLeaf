@@ -249,6 +249,10 @@ class AnalysisConfiguration {
 		this.userAssignmentsList = analysisRequest.userAssignmentsList;
 	}
 
+	updateId(id){
+		this.id = id;
+	}
+
 	/**
 	 * Returns AnalysisRequest object associated with this Config
 	 * This is currently used to streamline getting request from currentAnalysisConfig

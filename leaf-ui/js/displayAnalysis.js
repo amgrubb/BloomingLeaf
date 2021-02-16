@@ -323,7 +323,7 @@ function addAnalysisConfig() {
         + '</div><div class = "dropdown-container" id="'+label+'"></div>'
         + '</div>'
       );
-    document.getElementById(currAnalysisConfig.id).addEventListener('dblclick', function(){rename(this.id)});
+    document.getElementById(currAnalysisConfig.id).addEventListener('dblclick', function(){rename(this)});
     document.getElementById(currAnalysisConfig.id).addEventListener('click', function(){switchConfigs(this)});
 }
 
@@ -385,9 +385,34 @@ function refreshAnalysisUI(){
     $('#num-rel-time').val(analysisRequest.numRelTime);
 }
 
-function rename(id){
-    console.log("renaming");
-    console.log(id);
+function rename(configElement){
+    var element = $(configElement);
+    var input = $('<input>').attr("id", "configInput").val( element.text());
+    element.replaceWith(input);
+    console.log(element);
+    input.focus();
+    document.getElementById("configInput").addEventListener("keyup", function(e){
+        if (e.key == "Enter"){
+            setConfigName(configElement, this);
+        }
+    })
+}
+
+function setConfigName(configElement, inputElement){
+    if(analysisMap.has(inputElement.value)){
+        console.log("Name taken error - add popup for this");
+        return;
+    }
+
+    config = analysisMap.get(configElement.id);
+    analysisMap.delete(configElement.id);
+    config.updateId(inputElement.value);
+    analysisMap.set(inputElement.value, config);
+    console.log(analysisMap);
+    configElement.id = inputElement.value;
+    configElement.innerHTML = inputElement.value;
+
+    inputElement.replaceWith(configElement);
 }
 
 function switchConfigs(configElement){
@@ -395,7 +420,7 @@ function switchConfigs(configElement){
     analysisMap.set(currAnalysisConfig.id, currAnalysisConfig);
 
     currAnalysisConfig = analysisMap.get(configElement.id);
-    analysisRequest = currAnalysisConfig.getAnalysisRequest();;
+    analysisRequest = currAnalysisConfig.getAnalysisRequest();
     refreshAnalysisUI();
     console.log(configElement);
     
@@ -405,6 +430,9 @@ function switchConfigs(configElement){
 
 }
 
+/**
+ * Ties Results to update UI and show associated results on click action
+ */
 function switchResults(resultElement, configElement){
     var currAnalysisId = configElement.id;
     currAnalysisConfig = analysisMap.get(currAnalysisId);
@@ -433,27 +461,6 @@ $('#analysis-sidebar').on("click", ".dropdown", function(e){
             }
     
 });
-
-/**
- * Ties Results to update UI and show associated results on click action
- */
-// $('#analysis-sidebar').on("click", ".result-elements", function(e){
-//     $(".result-elements").css("background-color", "");
-//     $(".log-elements").css("background-color", "");
-
-//     // Grab Config and result information
-//     var configId = e.currentTarget.parentElement.id.split("-")[0];
-//     var resultIndex = $(e.target).text().split(" ")[1];
-//     var currAnalysisConfig = analysisMap.get(configId)
-//     var currAnalysisResults = currAnalysisConfig.analysisResults[resultIndex-1];
-//     analysisRequest = currAnalysisConfig.getAnalysisRequest();
-
-//     // Update UI accordingly
-//     $(e.target).css("background-color", "#A9A9A9");
-//     $("#"+configId).css("background-color","#A9A9A9")
-//     refreshAnalysisUI()
-//     displayAnalysis(currAnalysisResults)
-// });
 
 /**
  * Adds a new AnalysisConfig
