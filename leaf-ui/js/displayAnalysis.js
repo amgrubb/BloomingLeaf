@@ -86,7 +86,7 @@ function hideAnalysis() {
     revertNodeValuesToInitial();
     // TODO: make sure EVO goes back to analysis mode properly when clicking on result
     EVO.switchToModelingMode();
-    analysisResult.colorVis = [];
+    //analysisResult.colorVis = [];
     // show modeling mode EVO slider
     $('#modelingSlider').css("display", "");
     $('#analysisSlider').css("display", "none");
@@ -435,8 +435,18 @@ $('#analysis-sidebar').on("click", ".result-elements", function(e){
     refreshAnalysisBar();
     displayAnalysis(currAnalysisResults);
     // show EVO analysis slider
-    $('#modelingSlider').css("display", "none"); // ask Kate and Megan
+    $('#modelingSlider').css("display", "none");
     $('#analysisSlider').css("display", "");
+
+    // show current EVO
+    // currAnalysisResults.colorVis.colorIntentionsAnalysis();
+
+    // TODO: does this make sense?
+    //document.getElementById("colorReset").value = EVO.sliderOption;
+    //document.getElementById("colorResetAnalysis").value = EVO.sliderOption;
+    EVO.refresh();
+
+    // chance displayAnalysis() to refresh EVO?
 });
 
 /**
