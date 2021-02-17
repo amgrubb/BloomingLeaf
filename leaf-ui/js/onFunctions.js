@@ -94,9 +94,9 @@ $('#btn-view-assignment').on('click', function() {
  */
 $('#btn-save-assignment').on('click', function() {
     saveAbsoluteTimePoints();
-    saveRelativeIntentionAssignments();
     saveAbsoluteIntentionAssignments();
     saveAbsoluteRelationshipAssignments();
+    saveRelativeIntentionAssignments();
 
     // Dismiss the modal
     var modal = document.getElementById('assignmentsModal');
@@ -315,7 +315,6 @@ function saveAbsoluteIntentionAssignments(){
         }
         var row = $(this).closest('tr');
         var srcEB = row.attr('srcEB'); // ex. 'A'
-        var funcValue = row.find('td:nth-child(2)').html(); // ex. 'MP'
         var nodeID = row.attr('nodeID'); // ex. '0000'
 
         model.setAbsConstBySrcID(nodeID, srcEB, newTime);
@@ -1365,11 +1364,10 @@ function checkForMultipleNB(node) {
  * if no configs exist when switching to analysis mode
  * If the analysisMap contains configurations loaded from JSON, populate the sidebar
  * 
- * TODO: fix bug - creates a duplicate config if switching from model to analysis multiple times
  */
 function loadAnalysisConfig(){
     // Refresh the analysis sidebar to reflect current analysis request values
-    refreshAnalysisBar();
+    refreshAnalysisUI();
     // if there are no configs in the map
     if(analysisMap.size == 0){
         // Add a new, empty config to the map

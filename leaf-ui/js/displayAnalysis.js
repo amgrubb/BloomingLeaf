@@ -8,8 +8,6 @@
 var analysisMap = new Map();
 // Global variable to keep track of what analysis configuration is currently being used
 var currAnalysisConfig;
-// Count for number of analysis configurations
-var configCount = 0;
 
 /**
  * Displays the analysis to the web app, by displaying the slider and the
@@ -82,7 +80,7 @@ function createSlider(currentAnalysis, isSwitch) {
  */
 function hideAnalysis() {
     removeSlider();
-    refreshAnalysisBar();
+    refreshAnalysisUI();
     revertNodeValuesToInitial();
     // TODO: make sure EVO goes back to analysis mode properly when clicking on result
     EVO.switchToModelingMode();
@@ -275,15 +273,10 @@ function addFirstAnalysisConfig(){
     var id = "Configuration1"
     currAnalysisConfig = new AnalysisConfiguration(id, analysisRequest);
     analysisMap.set(id, currAnalysisConfig);
-    // TODO: Find better way to preserve original default from model
     // Currently necessary for User Assignments List preservation
     defaultUAL = currAnalysisConfig.userAssignmentsList;
-    var buttonLabel = currAnalysisConfig.id + "-button";
-    var label = currAnalysisConfig.id + "-dropdown";
-    $("#analysis-sidebar").append(
-        '<button class="log-elements" id="'+currAnalysisConfig.id+'" style="padding: 12px; font-size: 16px; border: none; outline: none; background-color:#A9A9A9">' + currAnalysisConfig.id + '</button><div style="position:absolute; display:inline-block"><button class="dropdown" id= "'+buttonLabel+'" style="padding: 12px; font-size: 16px; height: 42px; border: none; outline: none;"><i class="fa fa-caret-down fa-2x" style="cursor:pointer;"></i></button>'
-        + '</div><div class = "dropdown-container" id="'+label+'"></div>'
-      );
+    // Add the empty first config to the UI
+    addAnalysisConfig();
 }
 
 /**
@@ -303,10 +296,13 @@ function loadAnalysis(){
         updateResults();
         console.log(analysisRequest);
     }
+    // TODO: figure out how to set it to the element of the map that will populate on top
+    currAnalysisConfig = analysisMap.get("Configuration1");
     // Set default UAL to preserve in future configs
     defaultUAL = currAnalysisConfig.userAssignmentsList;
+    analysisRequest = currAnalysisConfig.analysisRequest;
     // Refresh the sidebar to include the config vars
-    refreshAnalysisBar();
+    refreshAnalysisUI();
 }
 
 /**
@@ -323,7 +319,7 @@ function addNewAnalysisConfig(){
     // default Analysis Request needed for now for user assignments list
     // TODO: Look into perserving base UAL throughout analysisRequests
     var newRequest = new AnalysisRequest();
-    newRequest.userAssignmentsList = defaultUAL;
+    defaultUAL.forEach(userEval => newRequest.userAssignmentsList.push(userEval));
 
     var newConfig = new AnalysisConfiguration(id, newRequest);
     analysisMap.set(id, newConfig);
@@ -334,7 +330,6 @@ function addNewAnalysisConfig(){
 
     // Reset analysis view to default
     hideAnalysis();
-
     // Add the config to the sidebar
     addAnalysisConfig();
 }
@@ -347,11 +342,35 @@ function addAnalysisConfig() {
     $(".result-elements").css("background-color", "");
     var buttonLabel = currAnalysisConfig.id + "-button";
     var label = currAnalysisConfig.id + "-dropdown";
-    $("#analysis-sidebar").append(
-        '<button class="log-elements" id="'+currAnalysisConfig.id+'" style="padding: 12px; font-size: 16px; border: none; outline: none; background-color:#A9A9A9">' + currAnalysisConfig.id + '</button><div style="position:absolute; display:inline-block"><button class="dropdown" id= "'+buttonLabel+'" style="padding: 12px; font-size: 16px; height: 42px; border: none; outline: none;"><i class="fa fa-caret-down fa-2x" style="cursor:pointer;"></i></button>'
+    // Add a larger div to contain the configuration "<config id>-container"
+    $("#configurations").append(
+        '<div class = "analysis-configuration" id="' + currAnalysisConfig.id + '-container">'
+        + '<button class="log-elements" id="'+currAnalysisConfig.id+'" style="padding: 12px; font-size: 16px; border: none; outline: none; background-color:#A9A9A9">' + currAnalysisConfig.id + '</button><div style="position:absolute; display:inline-block"><button class="dropdown" id= "'+buttonLabel+'" style="padding: 12px; font-size: 16px; height: 42px; border: none; outline: none;"><i class="fa fa-caret-down fa-2x" style="cursor:pointer;"></i></button>'
         + '</div><div class = "dropdown-container" id="'+label+'"></div>'
+        + '</div>'
       );
 }
+
+/**
+ * Removes an analysis configuration from the analysisMap and UI sidebar
+ * TODO implement with a button
+ */
+function removeConfiguration() {
+    // Remove full configuration div (includes results)
+    var configDiv = document.getElementById(currAnalysisConfig.id);
+    configDiv.remove();
+    // Remove config from analysisMap
+    analysisMap.delete(currAnalysisConfig.id);
+}
+
+/**
+ * Clears the analysis config sidebar
+ */
+function clearAnalysisConfigSidebar() {
+    // Remove all child elements of the configurations div
+    $('#configurations').empty();
+}
+
 
 /**
  * Adds result to UI menu
@@ -374,7 +393,13 @@ function updateResults(){
     
 }
 
-function refreshAnalysisBar(){
+/**
+ * Refreshes analysisRequest values in the UI 
+ * in places such as the right sidebar and absolute time points field
+ */
+function refreshAnalysisUI(){
+    console.log("refresh the analysis sidebar");
+    $('#abs-time-pts').val(analysisRequest.absTimePtsArr);
     $('#conflict-level').val(analysisRequest.conflictLevel);
     $('#num-rel-time').val(analysisRequest.numRelTime);
 }
@@ -384,10 +409,10 @@ function refreshAnalysisBar(){
  */
 $('#analysis-sidebar').on("click", ".log-elements", function(e){
     //Save and/or update past analysis config in map
-    currAnalysisConfig.updateAnalysis(analysisRequest)
+    currAnalysisConfig.updateAnalysis(analysisRequest);
     analysisMap.set(currAnalysisConfig.id, currAnalysisConfig);
-    var txt = $(e.target).text();
 
+    var txt = $(e.target).text();
     currAnalysisConfig = analysisMap.get(txt);
     analysisRequest = currAnalysisConfig.getAnalysisRequest();
     
@@ -432,7 +457,7 @@ $('#analysis-sidebar').on("click", ".result-elements", function(e){
     // Update UI accordingly
     $(e.target).css("background-color", "#A9A9A9");
     $("#"+configId).css("background-color","#A9A9A9");
-    refreshAnalysisBar();
+    refreshAnalysisUI();
     displayAnalysis(currAnalysisResults);
     // show EVO analysis slider
     $('#modelingSlider').css("display", "none");
