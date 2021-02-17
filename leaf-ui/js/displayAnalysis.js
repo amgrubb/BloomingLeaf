@@ -250,7 +250,7 @@ function addFirstAnalysisConfig(){
     // Currently necessary for User Assignments List preservation
     defaultUAL = currAnalysisConfig.userAssignmentsList;
     // Add the empty first config to the UI
-    addAnalysisConfig();
+    addAnalysisConfig(currAnalysisConfig);
 }
 
 /**
@@ -261,20 +261,18 @@ function addFirstAnalysisConfig(){
 function loadAnalysis(){
     // Loop through each configuration
 	for(let config of analysisMap.values()) {
-        console.log(config);
-        currAnalysisConfig = config;
-        analysisRequest = currAnalysisConfig.getAnalysisRequest();
         // Add the config to the sidebar
-        addAnalysisConfig();
+        addAnalysisConfig(config);
         // Add the results (if any) to the sidebar
-        loadResults();
-        console.log(analysisRequest);
+        loadResults(config);
     }
-    // TODO: figure out how to set it to the element of the map that will populate on top
-    currAnalysisConfig = analysisMap.get("Configuration1");
+    firstConfigElement = document.getElementById('configurations').childNodes[0];
+    currAnalysisConfig = analysisMap.get(firstConfigElement.id);
     // Set default UAL to preserve in future configs
     defaultUAL = currAnalysisConfig.userAssignmentsList;
     analysisRequest = currAnalysisConfig.analysisRequest;
+    
+    switchConfigs(firstConfigElement);
     // Refresh the sidebar to include the config vars
     refreshAnalysisUI();
 }
@@ -305,27 +303,22 @@ function addNewAnalysisConfig(){
     // Reset analysis sidebar to default
     refreshAnalysisUI();
     // Add the config to the sidebar
-    addAnalysisConfig();
+    addAnalysisConfig(currAnalysisConfig);
 }
 
 /**
  * Adds an analysis configuration to the UI (config sidebar)
  */
-function addAnalysisConfig() {
+function addAnalysisConfig(config) {
     $(".log-elements").css("background-color", "");
     $(".result-elements").css("background-color", "");
 
-    // Add a larger div to contain the configuration "<config id>-container"
-    $("#configurations").append(
-        '<div class = "analysis-configuration" id="' + currAnalysisConfig.id + '">'
-        + '<button class="log-elements" style="padding: 12px; font-size: 16px; border: none; outline: none; background-color:#A9A9A9; width: 79%">' + currAnalysisConfig.id + '</button><div style="position:absolute; display:inline-block"><button class="dropdown" style="padding: 12px; font-size: 16px; height: 42px; border: none; outline: none;"><i class="fa fa-caret-down fa-2x" style="cursor:pointer;"></i></button>'
-        + '</div><div class="dropdown-container" style="display:block"></div>'
-        + '</div>'
-      );
-    mainElement = document.getElementById(currAnalysisConfig.id);
+    // Add config to config container
+    $("#configurations").append(getHTMLString(config.id));
+    mainElement = document.getElementById(config.id);
     mainElement.querySelector('.log-elements').addEventListener('dblclick', function(){rename(this)});
     mainElement.querySelector('.log-elements').addEventListener('click', function(){switchConfigs(this.parentElement)});
-    mainElement.querySelector('.dropdown').addEventListener('click', function(){toggleDropdown(this.parentElement.parentElement.querySelector('.dropdown-container'))})
+    mainElement.querySelector('.dropdown-button').addEventListener('click', function(){toggleDropdown(this.parentElement.parentElement.querySelector('.dropdown-container'))})
 }
 
 /**
@@ -348,14 +341,17 @@ function clearAnalysisConfigSidebar() {
     $('#configurations').empty();
 }
 
-function loadResults(){
+/**
+ * Loads in results to the UI menu when file is being loaded into BloomingLeaf
+ */
+function loadResults(config){
     $(".result-elements").css("background-color", "");
-    var id = currAnalysisConfig.id;
+    var id = config.id;
 
     var dropdownElement = document.getElementById(id).querySelector('.dropdown-container');
     // clear all results from dropdown (prevents duplication)
     dropdownElement.innerHTML = "";
-    var resultCount = analysisMap.get(currAnalysisConfig.id).analysisResults.length;
+    var resultCount = analysisMap.get(id).analysisResults.length;
 
     // Loop through and add all results
     for (var i=0; i < resultCount; i++) {
@@ -366,7 +362,6 @@ function loadResults(){
         result.addEventListener('click', function(){switchResults(result, result.parentElement.parentElement)});
     });
 
-    // TODO: Not necessary to highlight last result for each config - move to end of loading all results
     // Highlight last result
     $(dropdownElement.lastChild).css("background-color", "#A9A9A9");
 
@@ -467,12 +462,28 @@ function switchResults(resultElement, configElement){
  * Ties dropdown bar to open or close on click action
  */
 function toggleDropdown(dropdownContainer){
-    if (dropdownContainer.style.display === "block") {
+    if (dropdownContainer.style.display !== "none") {
         dropdownContainer.style.display = "none";
         } else {
         dropdownContainer.style.display = "block";
         }
     
+}
+
+/**
+ * Creates HTML string to be appended when adding configurations
+ */
+function getHTMLString(id){
+    return'<div class = "analysis-configuration" id="' + id + '">' +
+            '<button class="log-elements" style="background-color:#A9A9A9;">' 
+            + id + '</button>' +
+            '<div style="position:absolute; display:inline-block">'+
+            '<button class="dropdown-button">'+
+                '<i class="fa fa-caret-down fa-2x" style="cursor:pointer;"></i>'+
+            '</button>' +
+            '</div>'+
+            '<div class="dropdown-container"></div>' +
+           '</div>';
 }
 
 /**

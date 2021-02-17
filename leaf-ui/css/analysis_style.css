@@ -336,6 +336,27 @@ select::-ms-expand {
     -ms-word-break: normal;
     word-break: normal;
 }
+
+.log-elements {
+    padding: 12px; 
+    font-size: 16px; 
+    border: none; 
+    outline: none;  
+    width: 79%
+  }
+  
+  .dropdown-button {
+    padding: 12px; 
+    font-size: 16px; 
+    height: 42px; 
+    border: none; 
+    outline: none;
+  }
+  
+  .dropdown-container {
+    display:block
+  }
+
 #removeIntention{
     cursor: pointer;
 }
