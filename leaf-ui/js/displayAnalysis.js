@@ -438,15 +438,13 @@ $('#analysis-sidebar').on("click", ".result-elements", function(e){
     $('#modelingSlider').css("display", "none");
     $('#analysisSlider').css("display", "");
 
-    // show current EVO
+    // TODO: show current EVO
+    // perhaps it would be more useful to refresh EVO every time displayAnalysis() is called?
+    // since it switches to modeling mode every time hideAnalysis() is called
+    EVO.refresh();
     // currAnalysisResults.colorVis.colorIntentionsAnalysis();
-
-    // TODO: does this make sense?
     //document.getElementById("colorReset").value = EVO.sliderOption;
     //document.getElementById("colorResetAnalysis").value = EVO.sliderOption;
-    EVO.refresh();
-
-    // chance displayAnalysis() to refresh EVO?
 });
 
 /**
