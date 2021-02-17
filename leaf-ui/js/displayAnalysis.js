@@ -395,13 +395,21 @@ function refreshAnalysisUI(){
     $('#num-rel-time').val(analysisRequest.numRelTime);
 }
 
+/**
+ * Replaces config button with input box for users to update name
+ * 
+ * @param {HTMLElement} configElement 
+ */
 function rename(configElement){
+    // Save config parent element to preserve past ID
     var configContainerElement = configElement.parentElement;
+    // Grab JQuery config button element, and replace with new input element
     var element = $(configElement);
     var input = $('<input>').attr("id", "configInput").val( element.text());
     element.replaceWith(input);
-    console.log(element);
     input.focus();
+
+    // Set event listener for enter key to set config name when user presses enter
     document.getElementById("configInput").addEventListener("keyup", function(e){
         if (e.key == "Enter"){
             setConfigName(configContainerElement, configElement, this);
@@ -409,23 +417,44 @@ function rename(configElement){
     })
 }
 
+/**
+ * Updates configuration name in UI and analysisMap, 
+ * and replaces input element with config button
+ * 
+ * Also checks to make sure name does not currently exist in system
+ * 
+ * TODO: Add popup when name currently exists in system
+ * 
+ * @param {HTMLElement} configContainerElement 
+ * @param {HTMLElement} configElement 
+ * @param {HTMLElement} inputElement 
+ */
 function setConfigName(configContainerElement, configElement, inputElement){
     if(analysisMap.has(inputElement.value) && inputElement.value != configContainerElement.id){
         console.log("Name taken error - add popup for this");
         return;
     }
-    console.log(configContainerElement)
+
+    // Get config from analysisMap, and delete previously associated entry
     config = analysisMap.get(configContainerElement.id);
     analysisMap.delete(configContainerElement.id);
+
+    // Update config id, and add with new id as key to analysisMap
     config.updateId(inputElement.value);
     analysisMap.set(inputElement.value, config);
-    console.log(analysisMap);
+
+    // Replace input field with config button
     configContainerElement.id = inputElement.value;
     configElement.innerHTML = inputElement.value;
-
     inputElement.replaceWith(configElement);
 }
 
+/**
+ * Switches to selected config and associated analysisRequest 
+ * and updates UI accordly
+ * 
+ * @param {JQueryElement} configElement 
+ */
 function switchConfigs(configElement){
     currAnalysisConfig.updateAnalysis(analysisRequest);
     analysisMap.set(currAnalysisConfig.id, currAnalysisConfig);
@@ -437,7 +466,6 @@ function switchConfigs(configElement){
     $(".log-elements").css("background-color", "");
     $(".result-elements").css("background-color", "");
     $(configElement.querySelector('.log-elements')).css("background-color", "#A9A9A9");
-
 }
 
 /**
