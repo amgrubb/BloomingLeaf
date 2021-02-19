@@ -314,11 +314,13 @@ function addAnalysisConfig(config) {
     $(".result-elements").css("background-color", "");
 
     // Add config to config container
-    $("#configurations").append(getHTMLString(config.id));
+    $("#configurations").append(getConfigHtml(config.id));
+
+    // Get main config element and add event listeners for all interactive components
     mainElement = document.getElementById(config.id);
-    mainElement.querySelector('.log-elements').addEventListener('dblclick', function(){rename(this)});
-    mainElement.querySelector('.log-elements').addEventListener('click', function(){switchConfigs(this.parentElement)});
-    mainElement.querySelector('.dropdown-button').addEventListener('click', function(){toggleDropdown(this.parentElement.parentElement.querySelector('.dropdown-container'))})
+    mainElement.querySelector('.log-elements').addEventListener('dblclick', function(){rename(this /** Config element */)});
+    mainElement.querySelector('.log-elements').addEventListener('click', function(){switchConfigs(this.parentElement /** Config element */)});
+    mainElement.querySelector('.dropdown-button').addEventListener('click', function(){toggleDropdown(this.parentElement.parentElement /** Config element */)})
 }
 
 /**
@@ -359,7 +361,8 @@ function loadResults(config){
     }
     const results = dropdownElement.querySelectorAll('.result-elements');
     results.forEach(function(result){
-        result.addEventListener('click', function(){switchResults(result, result.parentElement.parentElement)});
+
+        result.addEventListener('click', function(){switchResults(result /** Result element */, result.parentElement.parentElement /** Config element */)});
     });
 
     // Highlight last result
@@ -373,12 +376,13 @@ function updateResults(){
     $(".result-elements").css("background-color", "");
     var id = currAnalysisConfig.id;
 
-    // clear all results from dropdown (prevents duplication)
+    // Get dropdown element and current result count from current config
     var dropdownElement = document.getElementById(id).querySelector('.dropdown-container');
     var resultCount = analysisMap.get(currAnalysisConfig.id).analysisResults.length;
+    
+    // Add new result element to end of result list, and attatch event listener on click
     dropdownElement.insertAdjacentHTML("beforeend","<a class='result-elements' id='"+(resultCount-1)+"'>" + "Result " + (resultCount) + "</a>");
-
-    dropdownElement.lastChild.addEventListener('click', function(){switchResults(this, this.parentElement.parentElement)});
+    dropdownElement.lastChild.addEventListener('click', function(){switchResults(this /** Result element */, this.parentElement.parentElement /** Config element */)});
 
     // highlight newest/last result
     $(dropdownElement.lastChild).css("background-color", "#A9A9A9");
@@ -456,9 +460,12 @@ function setConfigName(configContainerElement, configElement, inputElement){
  * @param {JQueryElement} configElement 
  */
 function switchConfigs(configElement){
+    // Update analysisMap with current config to perserve any changes
     currAnalysisConfig.updateAnalysis(analysisRequest);
     analysisMap.set(currAnalysisConfig.id, currAnalysisConfig);
 
+    // Set current config and analysis to associated clicked element
+    // and reset UI to reflect switch
     currAnalysisConfig = analysisMap.get(configElement.id);
     analysisRequest = currAnalysisConfig.getAnalysisRequest();
     refreshAnalysisUI();
@@ -488,12 +495,23 @@ function switchResults(resultElement, configElement){
 
 /**
  * Ties dropdown bar to open or close on click action
+ * Also updates dropdown icon to reflect if dropdown is open or closed
+ * 
+ * TODO: Currently could be a bit confusing when new config is added with dropdown in block display 
+ * but no results yet - maybe add "no simulations run" message in place of first result for that case? 
  */
-function toggleDropdown(dropdownContainer){
+function toggleDropdown(dropdownElement){
+    // Grab container and icon from dropdown Element
+    dropdownContainer = dropdownElement.querySelector('.dropdown-container');
+    dropdownIcon = dropdownElement.querySelector('.dropdown-button').firstChild;
+    
+    // Switch container display and icon orientation
     if (dropdownContainer.style.display !== "none") {
         dropdownContainer.style.display = "none";
-        } else {
+        dropdownIcon.className = "fa fa-caret-down fa-2x";
+    } else {
         dropdownContainer.style.display = "block";
+        dropdownIcon.className = "fa fa-caret-up fa-2x";
         }
     
 }
@@ -501,13 +519,13 @@ function toggleDropdown(dropdownContainer){
 /**
  * Creates HTML string to be appended when adding configurations
  */
-function getHTMLString(id){
+function getConfigHtml(id){
     return'<div class = "analysis-configuration" id="' + id + '">' +
             '<button class="log-elements" style="background-color:#A9A9A9;">' 
             + id + '</button>' +
             '<div style="position:absolute; display:inline-block">'+
             '<button class="dropdown-button">'+
-                '<i class="fa fa-caret-down fa-2x" style="cursor:pointer;"></i>'+
+                '<i id="drop-icon" class="fa fa-caret-up fa-2x" style="cursor:pointer;"></i>'+
             '</button>' +
             '</div>'+
             '<div class="dropdown-container"></div>' +
@@ -520,4 +538,3 @@ function getHTMLString(id){
 $('.addConfig').on('click', function(){
     addNewAnalysisConfig();
 });
-
