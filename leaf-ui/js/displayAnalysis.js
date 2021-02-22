@@ -405,20 +405,33 @@ function refreshAnalysisUI(){
  * @param {HTMLElement} configElement 
  */
 function rename(configElement){
-    // Save config parent element to preserve past ID
+    // Get past ID
     var configContainerElement = configElement.parentElement;
+    var inputId = configContainerElement.id + "-input";
     // Grab JQuery config button element, and replace with new input element
     var element = $(configElement);
-    var input = $('<input>').attr("id", "configInput").val( element.text());
+    var input = $('<input>').attr("class", "configInput").attr("id", inputId).val( element.text());
     element.replaceWith(input);
     input.focus();
 
+    inputElement = document.getElementById(inputId)
+
+    // Handler function to setConfigName on click
+    handler = function(e){
+        if (!$(e.target).is(input)){
+            setConfigName(configContainerElement, configElement, inputElement);
+        }
+    };
+
+    // Event listener for clicks outside input box
+    document.addEventListener("click", handler);
+
     // Set event listener for enter key to set config name when user presses enter
-    document.getElementById("configInput").addEventListener("keyup", function(e){
+    document.getElementById(inputId).addEventListener("keyup", function(e){
         if (e.key == "Enter"){
             setConfigName(configContainerElement, configElement, this);
         }
-    })
+    }) 
 }
 
 /**
@@ -434,8 +447,15 @@ function rename(configElement){
  * @param {HTMLElement} inputElement 
  */
 function setConfigName(configContainerElement, configElement, inputElement){
+    // Remove event listener for clicks outside input box
+    document.removeEventListener("click", handler);
+
+    // Check for duplicate names
     if(analysisMap.has(inputElement.value) && inputElement.value != configContainerElement.id){
         console.log("Name taken error - add popup for this");
+        // Currently this just resets to original name to stop UI from getting messy
+        // TODO: Remove after adding popup
+        inputElement.replaceWith(configElement);
         return;
     }
 
