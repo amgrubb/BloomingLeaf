@@ -75,6 +75,32 @@ function createSlider(currentAnalysis, isSwitch) {
     adjustSliderWidth(sliderMax);
 }
 
+/**
+ * Reset display to default, before result is displayed
+ */
+function hideAnalysis() {
+    removeSlider();
+    refreshAnalysisUI();
+    revertNodeValuesToInitial();
+    // TODO: make sure EVO goes back to analysis mode properly when clicking on result
+    EVO.switchToModelingMode();
+    //analysisResult.colorVis = [];
+    // show modeling mode EVO slider
+    $('#modelingSlider').css("display", "");
+    $('#analysisSlider').css("display", "none");
+}
+
+/**
+ * Removes the slider from the UI
+ */
+function removeSlider() {
+    // if there's a slider, remove it
+    if (sliderObject.sliderElement.hasOwnProperty('noUiSlider')) {
+        sliderObject.sliderElement.noUiSlider.destroy();
+    }
+    $('#sliderValue').text("");
+}
+
 /*
  * Creates and displays new slider after the user clicks a different
  * analysis from the history log. This function is called when
@@ -302,8 +328,8 @@ function addNewAnalysisConfig(){
     currAnalysisConfig = newConfig;
     analysisRequest = currAnalysisConfig.getAnalysisRequest();
 
-    // Reset analysis sidebar to default
-    refreshAnalysisUI();
+    // Reset analysis view to default
+    hideAnalysis();
     // Add the config to the sidebar
     addAnalysisConfig();
 }
@@ -388,8 +414,12 @@ $('#analysis-sidebar').on("click", ".log-elements", function(e){
 
     var txt = $(e.target).text();
     currAnalysisConfig = analysisMap.get(txt);
-    analysisRequest = currAnalysisConfig.getAnalysisRequest();;
-    refreshAnalysisUI();
+    analysisRequest = currAnalysisConfig.getAnalysisRequest();
+    
+    // restore default analysis view
+    hideAnalysis();
+
+    console.log(analysisRequest.userAssignmentsList);
 
     $(".log-elements").css("background-color", "");
     $(".result-elements").css("background-color", "");
@@ -420,15 +450,26 @@ $('#analysis-sidebar').on("click", ".result-elements", function(e){
     // Grab Config and result information
     var configId = e.currentTarget.parentElement.id.split("-")[0];
     var resultIndex = $(e.target).text().split(" ")[1];
-    var currAnalysisConfig = analysisMap.get(configId)
+    var currAnalysisConfig = analysisMap.get(configId);
     var currAnalysisResults = currAnalysisConfig.analysisResults[resultIndex-1];
     analysisRequest = currAnalysisConfig.getAnalysisRequest();
 
     // Update UI accordingly
     $(e.target).css("background-color", "#A9A9A9");
-    $("#"+configId).css("background-color","#A9A9A9")
-    refreshAnalysisUI()
-    displayAnalysis(currAnalysisResults)
+    $("#"+configId).css("background-color","#A9A9A9");
+    refreshAnalysisUI();
+    displayAnalysis(currAnalysisResults);
+    // show EVO analysis slider
+    $('#modelingSlider').css("display", "none");
+    $('#analysisSlider').css("display", "");
+
+    // TODO: show current EVO
+    // perhaps it would be more useful to refresh EVO every time displayAnalysis() is called?
+    // since it switches to modeling mode every time hideAnalysis() is called
+    EVO.refresh();
+    // currAnalysisResults.colorVis.colorIntentionsAnalysis();
+    //document.getElementById("colorReset").value = EVO.sliderOption;
+    //document.getElementById("colorResetAnalysis").value = EVO.sliderOption;
 });
 
 /**
