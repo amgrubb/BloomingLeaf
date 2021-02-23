@@ -268,7 +268,7 @@ function updateHistory(currentAnalysis){
  * Function to set up the initial analysis configuration upon page load
  */
 function addFirstAnalysisConfig(){
-    $(".log-elements").css("background-color", "");
+    $(".config-elements").css("background-color", "");
     $(".result-elements").css("background-color", "");
     var id = "Configuration1"
     currAnalysisConfig = new AnalysisConfiguration(id, analysisRequest);
@@ -336,7 +336,7 @@ function addNewAnalysisConfig(){
  * Adds an analysis configuration to the UI (config sidebar)
  */
 function addAnalysisConfig(config) {
-    $(".log-elements").css("background-color", "");
+    $(".config-elements").css("background-color", "");
     $(".result-elements").css("background-color", "");
 
     // Add config to config container
@@ -344,8 +344,8 @@ function addAnalysisConfig(config) {
 
     // Get main config element and add event listeners for all interactive components
     mainElement = document.getElementById(config.id);
-    mainElement.querySelector('.log-elements').addEventListener('dblclick', function(){rename(this /** Config element */)});
-    mainElement.querySelector('.log-elements').addEventListener('click', function(){switchConfigs(this.parentElement /** Config element */)});
+    mainElement.querySelector('.config-elements').addEventListener('dblclick', function(){rename(this /** Config element */)});
+    mainElement.querySelector('.config-elements').addEventListener('click', function(){switchConfigs(this.parentElement /** Config element */)});
     mainElement.querySelector('.dropdown-button').addEventListener('click', function(){toggleDropdown(this.parentElement.parentElement /** Config element */)})
 }
 
@@ -518,9 +518,9 @@ function switchConfigs(configElement){
     // restore default analysis view
     hideAnalysis();
     
-    $(".log-elements").css("background-color", "");
+    $(".config-elements").css("background-color", "");
     $(".result-elements").css("background-color", "");
-    $(configElement.querySelector('.log-elements')).css("background-color", "#A9A9A9");
+    $(configElement.querySelector('.config-elements')).css("background-color", "#A9A9A9");
 }
 
 /**
@@ -534,9 +534,9 @@ function switchResults(resultElement, configElement){
 
     // Update UI accordingly
     $(".result-elements").css("background-color", "");
-    $(".log-elements").css("background-color", "");
+    $(".config-elements").css("background-color", "");
     $(resultElement).css("background-color", "#A9A9A9");
-    $(configElement.querySelector(".log-elements")).css("background-color","#A9A9A9");
+    $(configElement.querySelector(".config-elements")).css("background-color","#A9A9A9");
     refreshAnalysisUI();
     displayAnalysis(currAnalysisResults);
     // show EVO analysis slider
@@ -580,7 +580,7 @@ function toggleDropdown(dropdownElement){
  */
 function getConfigHtml(id){
     return'<div class = "analysis-configuration" id="' + id + '">' +
-            '<button class="log-elements" style="background-color:#A9A9A9;">' 
+            '<button class="config-elements" style="background-color:#A9A9A9;">' 
             + id + '</button>' +
             '<div style="position:absolute; display:inline-block">'+
             '<button class="dropdown-button">'+
