@@ -399,7 +399,7 @@ function switchToAnalysisMode() {
 	analysisInspector.render();
 	$('.inspector').append(analysisInspector.el);
 	$('#stencil').css("display", "none");
-    $('#history').css("display", "none");
+    $('#history').css("display", "none"); //TODO: remove
     $('#analysis-sidebar').css("display","");
 
     $('#analysis-btn').css("display", "none");
@@ -550,8 +550,18 @@ $('#btn-redo').on('click', _.bind(commandManager.redo, commandManager));
 $('#btn-clear-all').on('click', function(){
     graph.clear();
     model.removeAnalysis();
+    // clear analysis sidebar
+    clearAnalysisConfigSidebar();
 	// Delete cookie by setting expiry to past date
 	document.cookie='graph={}; expires=Thu, 18 Dec 2013 12:00:00 UTC';
+});
+$('#btn-clear-analysis').on('click', function() {
+    // clear analysis request object
+    model.removeAnalysis();
+    // clear analysis sidebar
+    clearAnalysisConfigSidebar();
+    // remove all configs from analysisMap
+    analysisMap.clear();
 });
 
 $('#btn-clear-elabel').on('click', function(){
