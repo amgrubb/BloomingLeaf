@@ -445,6 +445,13 @@ $('#model-cur-btn').on('click', function() {
  * satisfaction value and colours all text to black
  */
 function revertNodeValuesToInitial() {
+    // TODO: get satisfaction text to disappear
+    // reset values
+    for (var i = 0; i < graph.elementsBeforeAnalysis.length; i++) {
+		var value = graph.elementsBeforeAnalysis[i]
+		updateNodeValues(i, value, "toInitModel");
+	}
+
 	var elements = graph.getElements();
 	var curr;
 	for (var i = 0; i < elements.length; i++) {
@@ -483,12 +490,6 @@ function switchToModellingMode() {
 	clearInspector();
 
 	// Reset to initial graph prior to analysis
-	for (var i = 0; i < graph.elementsBeforeAnalysis.length; i++) {
-		var value = graph.elementsBeforeAnalysis[i]
-		updateNodeValues(i, value, "toInitModel");
-	}
-
-	// Reset to initial graph prior to analysis
 	revertNodeValuesToInitial();
 
 	graph.elementsBeforeAnalysis = [];
@@ -509,8 +510,7 @@ function switchToModellingMode() {
     EVO.switchToModelingMode();
     analysisResult.colorVis = [];
 
-
-	$('#sliderValue').text("");
+    removeSlider();
 
 	// Reinstantiate link settings
 	$('.link-tools .tool-remove').css("display","");
