@@ -293,6 +293,7 @@ function addNewAnalysisConfig(){
     // default Analysis Request needed for now for user assignments list
     // TODO: Look into perserving base UAL throughout analysisRequests
     var newRequest = new AnalysisRequest();
+    // give the new request the defaultUAL
     defaultUAL.forEach(userEval => newRequest.userAssignmentsList.push(userEval));
 
     var newConfig = new AnalysisConfiguration(id, newRequest);
