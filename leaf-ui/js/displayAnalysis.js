@@ -346,19 +346,21 @@ function addAnalysisConfig(config) {
     mainElement = document.getElementById(config.id);
     mainElement.querySelector('.config-elements').addEventListener('dblclick', function(){rename(this /** Config element */)});
     mainElement.querySelector('.config-elements').addEventListener('click', function(){switchConfigs(this.parentElement /** Config element */)});
-    mainElement.querySelector('.dropdown-button').addEventListener('click', function(){toggleDropdown(this.parentElement.parentElement /** Config element */)})
+    mainElement.querySelector('.dropdown-button').addEventListener('click', function(){toggleDropdown(this.parentElement.parentElement /** Config element */)});
+    mainElement.querySelector('.deleteconfig-button').addEventListener('click', function(){removeConfiguration(this.parentElement.parentElement)});
 }
 
 /**
  * Removes an analysis configuration from the analysisMap and UI sidebar
  * TODO implement with a button
+ * @param {HTML Element} configElement
  */
-function removeConfiguration() {
+function removeConfiguration(configElement) {
     // Remove full configuration div (includes results)
-    var configDiv = document.getElementById(currAnalysisConfig.id);
+    var configDiv = document.getElementById(configElement.id);
     configDiv.remove();
     // Remove config from analysisMap
-    analysisMap.delete(currAnalysisConfig.id);
+    analysisMap.delete(configElement.id);
 }
 
 /**
@@ -436,7 +438,7 @@ function rename(configElement){
     var inputId = configContainerElement.id + "-input";
     // Grab JQuery config button element, and replace with new input element
     var element = $(configElement);
-    var input = $('<input>').attr("class", "configInput").attr("id", inputId).val( element.text());
+    var input = $('<input>').attr("class", "configInput").attr("id", inputId).attr("style", "width:60%").val( element.text());
     element.replaceWith(input);
     input.focus();
 
@@ -582,11 +584,14 @@ function getConfigHtml(id){
     return'<div class = "analysis-configuration" id="' + id + '">' +
             '<button class="config-elements" style="background-color:#A9A9A9;">' 
             + id + '</button>' +
-            '<div style="position:absolute; display:inline-block">'+
+            '<div id="config-buttons" style="position:absolute; display:inline-block">' +
+            '<button class="deleteconfig-button">' +
+                '<i id="garbage-icon" class="fa fa-trash-o" aria-hidden="true"></i>' +
+            '</button>' +
             '<button class="dropdown-button">'+
                 '<i id="drop-icon" class="fa fa-caret-up fa-2x" style="cursor:pointer;"></i>'+
             '</button>' +
-            '</div>'+
+            '</div>' +
             '<div class="dropdown-container"></div>' +
            '</div>';
 }

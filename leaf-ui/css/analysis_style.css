@@ -342,19 +342,29 @@ select::-ms-expand {
     font-size: 16px; 
     border: none; 
     outline: none;  
-    width: 79%
+    width: 71%;
   }
   
   .dropdown-button {
-    padding: 12px; 
-    font-size: 16px; 
+    padding: 2px 7px 4px 7px; 
+    font-size: 15px; 
     height: 42px; 
     border: none; 
     outline: none;
+    float: left;
   }
   
   .dropdown-container {
     display:block
+  }
+
+  .deleteconfig-button{
+    padding: 7px; 
+    font-size: 16px; 
+    height: 42px; 
+    border: none; 
+    outline: none;
+    box-shadow: -1px 0px 0px 0px rgb(71, 65, 65);
   }
 
 #removeIntention{
