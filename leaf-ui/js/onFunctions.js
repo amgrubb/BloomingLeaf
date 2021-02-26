@@ -409,6 +409,11 @@ function switchToAnalysisMode() {
     //$('#on-off').css("display", "none");
 
     $('#model-toolbar').css("display", "none");
+    $('#btn-clear-all').css("display", "none");
+    $('#btn-clear-elabel').css("display", "none");
+    $('#btn-clear-flabel').css("display", "none");
+    $('#btn-clear-cycle').css("display", "none");
+
 
 	$('#modeText').text("Analysis");
 
@@ -505,6 +510,10 @@ function switchToModellingMode() {
     $('#on-off').css("display", "");
 
     $('#model-toolbar').css("display","");
+    $('#btn-clear-all').css("display", "");
+    $('#btn-clear-elabel').css("display", "");
+    $('#btn-clear-flabel').css("display", "");
+    $('#btn-clear-cycle').css("display", "");
 
     EVO.switchToModelingMode();
     analysisResult.colorVis = [];
@@ -553,6 +562,7 @@ $('#btn-clear-all').on('click', function(){
     model.removeAnalysis();
     // clear analysis sidebar
     clearAnalysisConfigSidebar();
+    addFirstAnalysisConfig();
     // remove all configs from analysisMap
     analysisMap.clear();
 	// Delete cookie by setting expiry to past date
@@ -568,6 +578,7 @@ $('#btn-clear-analysis').on('click', function() {
     analysisRequest = defaultRequest;
     // clear analysis sidebar
     clearAnalysisConfigSidebar();
+    addFirstAnalysisConfig();
     // remove all configs from analysisMap
     analysisMap.clear();
 });
