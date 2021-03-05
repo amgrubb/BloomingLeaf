@@ -75,6 +75,32 @@ function createSlider(currentAnalysis, isSwitch) {
     adjustSliderWidth(sliderMax);
 }
 
+/**
+ * Reset display to default, before result is displayed
+ */
+function hideAnalysis() {
+    removeSlider();
+    refreshAnalysisUI();
+    revertNodeValuesToInitial();
+    // TODO: make sure EVO goes back to analysis mode properly when clicking on result
+    EVO.switchToModelingMode();
+    //analysisResult.colorVis = [];
+    // show modeling mode EVO slider
+    $('#modelingSlider').css("display", "");
+    $('#analysisSlider').css("display", "none");
+}
+
+/**
+ * Removes the slider from the UI
+ */
+function removeSlider() {
+    // if there's a slider, remove it
+    if (sliderObject.sliderElement.hasOwnProperty('noUiSlider')) {
+        sliderObject.sliderElement.noUiSlider.destroy();
+    }
+    $('#sliderValue').text("");
+}
+
 /*
  * Creates and displays new slider after the user clicks a different
  * analysis from the history log. This function is called when
@@ -242,7 +268,7 @@ function updateHistory(currentAnalysis){
  * Function to set up the initial analysis configuration upon page load
  */
 function addFirstAnalysisConfig(){
-    $(".log-elements").css("background-color", "");
+    $(".config-elements").css("background-color", "");
     $(".result-elements").css("background-color", "");
     var id = "Configuration1"
     currAnalysisConfig = new AnalysisConfiguration(id, analysisRequest);
@@ -250,7 +276,7 @@ function addFirstAnalysisConfig(){
     // Currently necessary for User Assignments List preservation
     defaultUAL = currAnalysisConfig.userAssignmentsList;
     // Add the empty first config to the UI
-    addAnalysisConfig();
+    addAnalysisConfig(currAnalysisConfig);
 }
 
 /**
@@ -261,20 +287,18 @@ function addFirstAnalysisConfig(){
 function loadAnalysis(){
     // Loop through each configuration
 	for(let config of analysisMap.values()) {
-        console.log(config);
-        currAnalysisConfig = config;
-        analysisRequest = currAnalysisConfig.getAnalysisRequest();
         // Add the config to the sidebar
-        addAnalysisConfig();
+        addAnalysisConfig(config);
         // Add the results (if any) to the sidebar
-        updateResults();
-        console.log(analysisRequest);
+        loadResults(config);
     }
-    // TODO: figure out how to set it to the element of the map that will populate on top
-    currAnalysisConfig = analysisMap.get("Configuration1");
+    firstConfigElement = document.getElementById('configurations').childNodes[0];
+    currAnalysisConfig = analysisMap.get(firstConfigElement.id);
     // Set default UAL to preserve in future configs
     defaultUAL = currAnalysisConfig.userAssignmentsList;
     analysisRequest = currAnalysisConfig.analysisRequest;
+    
+    switchConfigs(firstConfigElement);
     // Refresh the sidebar to include the config vars
     refreshAnalysisUI();
 }
@@ -303,27 +327,27 @@ function addNewAnalysisConfig(){
     currAnalysisConfig = newConfig;
     analysisRequest = currAnalysisConfig.getAnalysisRequest();
 
-    // Reset analysis sidebar to default
-    refreshAnalysisUI();
+    // Reset analysis view to default
+    hideAnalysis();
     // Add the config to the sidebar
-    addAnalysisConfig();
+    addAnalysisConfig(currAnalysisConfig);
 }
 
 /**
  * Adds an analysis configuration to the UI (config sidebar)
  */
-function addAnalysisConfig() {
-    $(".log-elements").css("background-color", "");
+function addAnalysisConfig(config) {
+    $(".config-elements").css("background-color", "");
     $(".result-elements").css("background-color", "");
-    var buttonLabel = currAnalysisConfig.id + "-button";
-    var label = currAnalysisConfig.id + "-dropdown";
-    // Add a larger div to contain the configuration "<config id>-container"
-    $("#configurations").append(
-        '<div class = "analysis-configuration" id="' + currAnalysisConfig.id + '-container">'
-        + '<button class="log-elements" id="'+currAnalysisConfig.id+'" style="padding: 12px; font-size: 16px; border: none; outline: none; background-color:#A9A9A9">' + currAnalysisConfig.id + '</button><div style="position:absolute; display:inline-block"><button class="dropdown" id= "'+buttonLabel+'" style="padding: 12px; font-size: 16px; height: 42px; border: none; outline: none;"><i class="fa fa-caret-down fa-2x" style="cursor:pointer;"></i></button>'
-        + '</div><div class = "dropdown-container" id="'+label+'"></div>'
-        + '</div>'
-      );
+
+    // Add config to config container
+    $("#configurations").append(getConfigHtml(config.id));
+
+    // Get main config element and add event listeners for all interactive components
+    mainElement = document.getElementById(config.id);
+    mainElement.querySelector('.config-elements').addEventListener('dblclick', function(){rename(this /** Config element */)});
+    mainElement.querySelector('.config-elements').addEventListener('click', function(){switchConfigs(this.parentElement /** Config element */)});
+    mainElement.querySelector('.dropdown-button').addEventListener('click', function(){toggleDropdown(this.parentElement.parentElement /** Config element */)})
 }
 
 /**
@@ -346,25 +370,49 @@ function clearAnalysisConfigSidebar() {
     $('#configurations').empty();
 }
 
+/**
+ * Loads in results to the UI menu when file is being loaded into BloomingLeaf
+ */
+function loadResults(config){
+    $(".result-elements").css("background-color", "");
+    var id = config.id;
 
+    var dropdownElement = document.getElementById(id).querySelector('.dropdown-container');
+    // clear all results from dropdown (prevents duplication)
+    dropdownElement.innerHTML = "";
+    var resultCount = analysisMap.get(id).analysisResults.length;
+
+    // Loop through and add all results
+    for (var i=0; i < resultCount; i++) {
+        dropdownElement.insertAdjacentHTML("beforeend","<a class='result-elements' id='"+i+"'>" + "Result " + (i+1) + "</a>");
+    }
+    const results = dropdownElement.querySelectorAll('.result-elements');
+    results.forEach(function(result){
+
+        result.addEventListener('click', function(){switchResults(result /** Result element */, result.parentElement.parentElement /** Config element */)});
+    });
+
+    // Highlight last result
+    $(dropdownElement.lastChild).css("background-color", "#A9A9A9");
+
+}
 /**
  * Adds result to UI menu
  */
 function updateResults(){
     $(".result-elements").css("background-color", "");
-    var label = currAnalysisConfig.id + "-dropdown";
-    // clear all results from dropdown (prevents duplication)
-    document.getElementById(label).innerHTML = "";
+    var id = currAnalysisConfig.id;
 
+    // Get dropdown element and current result count from current config
+    var dropdownElement = document.getElementById(id).querySelector('.dropdown-container');
     var resultCount = analysisMap.get(currAnalysisConfig.id).analysisResults.length;
-    // Loop through all results and populate dropdown
-    for (var i=0; i < resultCount; i++) {
-        var id = "Result " + (i+1);
-        document.getElementById(label).insertAdjacentHTML("beforeend","<a class='result-elements'>" + id + "</a>");
-    }
+    
+    // Add new result element to end of result list, and attatch event listener on click
+    dropdownElement.insertAdjacentHTML("beforeend","<a class='result-elements' id='"+(resultCount-1)+"'>" + "Result " + (resultCount) + "</a>");
+    dropdownElement.lastChild.addEventListener('click', function(){switchResults(this /** Result element */, this.parentElement.parentElement /** Config element */)});
 
     // highlight newest/last result
-    $(document.getElementById(label).lastChild).css("background-color", "#A9A9A9");
+    $(dropdownElement.lastChild).css("background-color", "#A9A9A9");
     
 }
 
@@ -373,64 +421,176 @@ function updateResults(){
  * in places such as the right sidebar and absolute time points field
  */
 function refreshAnalysisUI(){
-    console.log("refresh the analysis sidebar");
     $('#abs-time-pts').val(analysisRequest.absTimePtsArr);
     $('#conflict-level').val(analysisRequest.conflictLevel);
     $('#num-rel-time').val(analysisRequest.numRelTime);
 }
 
 /**
- * Switches between analysis configurations
+ * Replaces config button with input box for users to update name
+ * 
+ * @param {HTMLElement} configElement 
  */
-$('#analysis-sidebar').on("click", ".log-elements", function(e){
-    //Save and/or update past analysis config in map
+function rename(configElement){
+    // Get past ID
+    var configContainerElement = configElement.parentElement;
+    var inputId = configContainerElement.id + "-input";
+    // Grab JQuery config button element, and replace with new input element
+    var element = $(configElement);
+    var input = $('<input>').attr("class", "configInput").attr("id", inputId).val( element.text());
+    element.replaceWith(input);
+    input.focus();
+
+    inputElement = document.getElementById(inputId)
+
+    // Handler function to setConfigName on click
+    handler = function(e){
+        if (!$(e.target).is(input)){
+            setConfigName(configContainerElement, configElement, inputElement);
+        }
+    };
+
+    // Event listener for clicks outside input box
+    document.addEventListener("click", handler);
+
+    // Set event listener for enter key to set config name when user presses enter
+    document.getElementById(inputId).addEventListener("keyup", function(e){
+        if (e.key == "Enter"){
+            setConfigName(configContainerElement, configElement, this);
+        }
+    }) 
+}
+
+/**
+ * Updates configuration name in UI and analysisMap, 
+ * and replaces input element with config button
+ * 
+ * Also checks to make sure name does not currently exist in system
+ * 
+ * TODO: Add popup when name currently exists in system
+ * 
+ * @param {HTMLElement} configContainerElement 
+ * @param {HTMLElement} configElement 
+ * @param {HTMLElement} inputElement 
+ */
+function setConfigName(configContainerElement, configElement, inputElement){
+    // Remove event listener for clicks outside input box
+    document.removeEventListener("click", handler);
+
+    // Check for duplicate names
+    if(analysisMap.has(inputElement.value) && inputElement.value != configContainerElement.id){
+        console.log("Name taken error - add popup for this");
+        // Currently this just resets to original name to stop UI from getting messy
+        // TODO: Remove after adding popup
+        inputElement.replaceWith(configElement);
+        return;
+    }
+
+    // Get config from analysisMap, and delete previously associated entry
+    config = analysisMap.get(configContainerElement.id);
+    analysisMap.delete(configContainerElement.id);
+
+    // Update config id, and add with new id as key to analysisMap
+    config.updateId(inputElement.value);
+    analysisMap.set(inputElement.value, config);
+
+    // Replace input field with config button
+    configContainerElement.id = inputElement.value;
+    configElement.innerHTML = inputElement.value;
+    inputElement.replaceWith(configElement);
+}
+
+/**
+ * Switches to selected config and associated analysisRequest 
+ * and updates UI accordly
+ * 
+ * @param {JQueryElement} configElement 
+ */
+function switchConfigs(configElement){
+    // Update analysisMap with current config to perserve any changes
     currAnalysisConfig.updateAnalysis(analysisRequest);
     analysisMap.set(currAnalysisConfig.id, currAnalysisConfig);
 
-    var txt = $(e.target).text();
-    currAnalysisConfig = analysisMap.get(txt);
-    analysisRequest = currAnalysisConfig.getAnalysisRequest();;
-    refreshAnalysisUI();
-
-    $(".log-elements").css("background-color", "");
-    $(".result-elements").css("background-color", "");
-    $(e.target).css("background-color", "#A9A9A9");
-});
-
-/**
- * Ties dropdown bar to open or close on click action
- */
-$('#analysis-sidebar').on("click", ".dropdown", function(e){
-    var id = e.currentTarget.id.split("-")[0]+"-dropdown";
-    var dropdown = document.getElementById(id);
-    if (dropdown.style.display === "block") {
-            dropdown.style.display = "none";
-            } else {
-            dropdown.style.display = "block";
-            }
+    // Set current config and analysis to associated clicked element
+    // and reset UI to reflect switch
+    currAnalysisConfig = analysisMap.get(configElement.id);
+    analysisRequest = currAnalysisConfig.getAnalysisRequest();
     
-});
+    // restore default analysis view
+    hideAnalysis();
+    
+    $(".config-elements").css("background-color", "");
+    $(".result-elements").css("background-color", "");
+    $(configElement.querySelector('.config-elements')).css("background-color", "#A9A9A9");
+}
 
 /**
  * Ties Results to update UI and show associated results on click action
  */
-$('#analysis-sidebar').on("click", ".result-elements", function(e){
-    $(".result-elements").css("background-color", "");
-    $(".log-elements").css("background-color", "");
-
-    // Grab Config and result information
-    var configId = e.currentTarget.parentElement.id.split("-")[0];
-    var resultIndex = $(e.target).text().split(" ")[1];
-    var currAnalysisConfig = analysisMap.get(configId)
-    var currAnalysisResults = currAnalysisConfig.analysisResults[resultIndex-1];
+function switchResults(resultElement, configElement){
+    var currAnalysisId = configElement.id;
+    currAnalysisConfig = analysisMap.get(currAnalysisId);
+    var currAnalysisResults = currAnalysisConfig.analysisResults[resultElement.id];
     analysisRequest = currAnalysisConfig.getAnalysisRequest();
 
     // Update UI accordingly
-    $(e.target).css("background-color", "#A9A9A9");
-    $("#"+configId).css("background-color","#A9A9A9")
-    refreshAnalysisUI()
-    displayAnalysis(currAnalysisResults)
-});
+    $(".result-elements").css("background-color", "");
+    $(".config-elements").css("background-color", "");
+    $(resultElement).css("background-color", "#A9A9A9");
+    $(configElement.querySelector(".config-elements")).css("background-color","#A9A9A9");
+    refreshAnalysisUI();
+    displayAnalysis(currAnalysisResults);
+    // show EVO analysis slider
+    $('#modelingSlider').css("display", "none");
+    $('#analysisSlider').css("display", "");
+
+    // TODO: show current EVO
+    // perhaps it would be more useful to refresh EVO every time displayAnalysis() is called?
+    // since it switches to modeling mode every time hideAnalysis() is called
+    EVO.refresh();
+    // currAnalysisResults.colorVis.colorIntentionsAnalysis();
+    //document.getElementById("colorReset").value = EVO.sliderOption;
+    //document.getElementById("colorResetAnalysis").value = EVO.sliderOption;
+}
+
+/**
+ * Ties dropdown bar to open or close on click action
+ * Also updates dropdown icon to reflect if dropdown is open or closed
+ * 
+ * TODO: Currently could be a bit confusing when new config is added with dropdown in block display 
+ * but no results yet - maybe add "no simulations run" message in place of first result for that case? 
+ */
+function toggleDropdown(dropdownElement){
+    // Grab container and icon from dropdown Element
+    dropdownContainer = dropdownElement.querySelector('.dropdown-container');
+    dropdownIcon = dropdownElement.querySelector('.dropdown-button').firstChild;
+    
+    // Switch container display and icon orientation
+    if (dropdownContainer.style.display !== "none") {
+        dropdownContainer.style.display = "none";
+        dropdownIcon.className = "fa fa-caret-down fa-2x";
+    } else {
+        dropdownContainer.style.display = "block";
+        dropdownIcon.className = "fa fa-caret-up fa-2x";
+        }
+    
+}
+
+/**
+ * Creates HTML string to be appended when adding configurations
+ */
+function getConfigHtml(id){
+    return'<div class = "analysis-configuration" id="' + id + '">' +
+            '<button class="config-elements" style="background-color:#A9A9A9;">' 
+            + id + '</button>' +
+            '<div style="position:absolute; display:inline-block">'+
+            '<button class="dropdown-button">'+
+                '<i id="drop-icon" class="fa fa-caret-up fa-2x" style="cursor:pointer;"></i>'+
+            '</button>' +
+            '</div>'+
+            '<div class="dropdown-container"></div>' +
+           '</div>';
+}
 
 /**
  * Adds a new AnalysisConfig
@@ -438,4 +598,3 @@ $('#analysis-sidebar').on("click", ".result-elements", function(e){
 $('.addConfig').on('click', function(){
     addNewAnalysisConfig();
 });
-
