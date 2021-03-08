@@ -5,19 +5,6 @@ var sliderObject = function(){
 	this.pastAnalysisValues = [];
 }
 
-
-// Used to control past analysis values through the history log
-var historyObject = function(){
-	this.allHistory = [];
-	this.nextStep = 1;			//Used to denote last analysis appended
-	this.currentStep = null;	//Used to signal current step shown with history log
-}
-
-// Individual logs on the history log
-var logObject = function(analysis){
-	this.analysis = analysis;
-};
-
 // Used to save analysis results
 function analysisObject () {
     this.type;

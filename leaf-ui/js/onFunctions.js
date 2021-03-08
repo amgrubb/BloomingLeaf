@@ -400,7 +400,6 @@ function switchToAnalysisMode() {
 	analysisInspector.render();
 	$('.inspector').append(analysisInspector.el);
 	$('#stencil').css("display", "none");
-	$('#history').css("display", "");
 
     $('#analysis-btn').css("display", "none");
 	$('#symbolic-btn').css("display", "none");
@@ -492,7 +491,6 @@ function switchToModellingMode() {
 	graph.elementsBeforeAnalysis = [];
 
 	$('#stencil').css("display","");
-	$('#history').css("display","none");
     $('#btn-view-assignment').css("display","");
 	$('#analysis-btn').css("display","");
 	$('#symbolic-btn').css("display","");
@@ -513,9 +511,6 @@ function switchToModellingMode() {
 	$('.link-tools .tool-options').css("display","");
 
 	graph.allElements = null;
-
-	// Clear previous slider setup
-	clearHistoryLog();
 
     mode = "Modelling";
 

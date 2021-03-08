@@ -338,9 +338,6 @@ stencil.load([goal, task, sgoal, res, act]);
 // Setup LinkInspector
 $('.inspector').append(linkInspector.el);
 
-// Interface set up for modelling mode on startup
-$('#history').css("display","none");
-
 // Initialize Slider setup
 sliderObject.sliderElement = document.getElementById('slider');
 sliderObject.sliderValueElement = document.getElementById('sliderValue');
