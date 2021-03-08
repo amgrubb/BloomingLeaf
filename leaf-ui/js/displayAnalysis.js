@@ -8,6 +8,8 @@
 var analysisMap = new Map();
 // Global variable to keep track of what analysis configuration is currently being used
 var currAnalysisConfig;
+//Global variable to keep track of the highest initial position
+var highestPosition;
 
 /**
  * Displays the analysis to the web app, by displaying the slider and the
@@ -270,8 +272,9 @@ function updateHistory(currentAnalysis){
 function addFirstAnalysisConfig(){
     $(".config-elements").css("background-color", "");
     $(".result-elements").css("background-color", "");
-    var id = "Configuration1"
-    currAnalysisConfig = new AnalysisConfiguration(id, analysisRequest);
+    var id = "Configuration1";
+    currAnalysisConfig = new AnalysisConfiguration(id, analysisRequest, 1);
+    highestPosition = 1;
     analysisMap.set(id, currAnalysisConfig);
     // Currently necessary for User Assignments List preservation
     defaultUAL = currAnalysisConfig.userAssignmentsList;
@@ -309,17 +312,19 @@ function loadAnalysis(){
 function addNewAnalysisConfig(){
     // Update current config with current analysisRequest and set the udpated config in map
     currAnalysisConfig.updateAnalysis(analysisRequest);
-    analysisMap.set(currAnalysisConfig.id, currAnalysisConfig);
+    //Ask Ali about this -- why set config in map here? We need to get rid of this somehow?
+    //analysisMap.set(currAnalysisConfig.id, currAnalysisConfig);
 
     // Figure out number of new config, name and create it, and then add it to the map
-    var id = "Configuration" + (analysisMap.size+1).toString()
+    highestPosition += 1;
+    var id = "Configuration" + (highestPosition).toString();
     
     // default Analysis Request needed for now for user assignments list
     // TODO: Look into perserving base UAL throughout analysisRequests
     var newRequest = new AnalysisRequest();
     defaultUAL.forEach(userEval => newRequest.userAssignmentsList.push(userEval));
 
-    var newConfig = new AnalysisConfiguration(id, newRequest);
+    var newConfig = new AnalysisConfiguration(id, newRequest, highestPosition);
     analysisMap.set(id, newConfig);
 
     // Update current config to be the new config, and update analysisRequest to match new config

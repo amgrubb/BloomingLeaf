@@ -197,6 +197,7 @@ class AnalysisConfiguration {
 	 * 
 	 * @param {String} id
 	 * @param {AnalysisRequest} analysisRequest
+	 * @param {Int} initialPosition
      * @param {String} action
      * @param {String} conflictLevel
      * @param {String} numRelTime
@@ -206,7 +207,7 @@ class AnalysisConfiguration {
      * @param {Array.<AnalysisResult>} analysisResults
 	 */
 
-	constructor(id, analysisRequest) {
+	constructor(id, analysisRequest, initialPosition) {
 		this.id = id;
 		this.analysisRequest = analysisRequest;
 		this.action = analysisRequest.action;
@@ -217,6 +218,7 @@ class AnalysisConfiguration {
         this.currentState = analysisRequest.currentState;
         this.userAssignmentsList = analysisRequest.userAssignmentsList;
         this.analysisResults = [];
+		this.initialPosition = initialPosition;
 	}
 
 	/**
@@ -268,5 +270,12 @@ class AnalysisConfiguration {
 	 */
 	stringify(){
 		return JSON.stringify(this);
+	}
+
+	/**
+	 * Returns initial position
+	 */
+	getInitialPosition(){
+		return initialPosition;
 	}
 }
