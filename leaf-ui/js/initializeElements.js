@@ -121,7 +121,6 @@ var currentAnalysis;
 var elementList;
 
 // Analysis variables
-var historyObject = new historyObject();
 var sliderObject = new sliderObject();
 
 var loader;
