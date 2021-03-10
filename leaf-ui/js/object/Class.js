@@ -1753,6 +1753,7 @@ class AnalysisRequest {
      * @param {Array.<UserEvaluation>} userAssignmentsList
      * @param {AnalysisResult} previousAnalysis
      */
+    /** 
     constructor() {
         this.action = null;
         this.conflictLevel = "S";
@@ -1762,6 +1763,36 @@ class AnalysisRequest {
         this.currentState = "0";
         this.userAssignmentsList = [];
         this.previousAnalysis = null;
+    }
+    */
+    constructor(analysisRequest) {
+        if (arguments.length == 1){
+            this.action = analysisRequest.action;
+            this.conflictLevel = analysisRequest.conflictLevel;
+            this.numRelTime = analysisRequest.numRelTime;
+            this.absTimePts = analysisRequest.absTimePts;
+            this.absTimePtsArr = analysisRequest.absTimePtsArr;
+            this.currentState = analysisRequest.currentState;
+            this.userAssignmentsList = analysisRequest.userAssignmentsList;
+            this.previousAnalysis = analysisRequest.previousAnalysis;
+        } else {
+            this.action = null;
+            this.conflictLevel = "S";
+            this.numRelTime = "1";
+            this.absTimePts = "";
+            this.absTimePtsArr = [];
+            this.currentState = "0";
+            this.userAssignmentsList = [];
+            this.previousAnalysis = null;
+        }
+        /*this.action = analysisRequest.action;
+        this.conflictLevel = analysisRequest.conflictLevel;
+        this.numRelTime = "1";
+        this.absTimePts = "";
+        this.absTimePtsArr = [];
+        this.currentState = "0";
+        this.userAssignmentsList = [];
+        this.previousAnalysis = null;*/
     }
 
     /**

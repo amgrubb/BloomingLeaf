@@ -277,6 +277,9 @@ function addFirstAnalysisConfig(){
     defaultUAL = currAnalysisConfig.userAssignmentsList;
     // Add the empty first config to the UI
     addAnalysisConfig(currAnalysisConfig);
+
+    console.log('analysis map:');
+    console.log(analysisMap);
 }
 
 /**
@@ -294,9 +297,21 @@ function loadAnalysis(){
     }
     firstConfigElement = document.getElementById('configurations').childNodes[0];
     currAnalysisConfig = analysisMap.get(firstConfigElement.id);
+
+    console.log('current config:');
+    console.log(currAnalysisConfig);
+
     // Set default UAL to preserve in future configs
     defaultUAL = currAnalysisConfig.userAssignmentsList;
     analysisRequest = currAnalysisConfig.analysisRequest;
+
+    console.log('loaded analysis request:');
+    console.log(analysisRequest);
+    console.log('is loaded analysis request instance of AnalysisRequest class?');
+    console.log(analysisRequest instanceof AnalysisRequest);
+
+    console.log('default UAL:');
+    console.log(defaultUAL);
     
     switchConfigs(firstConfigElement);
     // Refresh the sidebar to include the config vars
@@ -405,6 +420,8 @@ function updateResults(){
 
     // Get dropdown element and current result count from current config
     var dropdownElement = document.getElementById(id).querySelector('.dropdown-container');
+    console.log('analysis map:');
+    console.log(analysisMap);
     var resultCount = analysisMap.get(currAnalysisConfig.id).analysisResults.length;
     
     // Add new result element to end of result list, and attatch event listener on click

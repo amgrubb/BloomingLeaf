@@ -277,7 +277,8 @@ function loadFromObject(obj) {
 		var tempMap = new Map(Object.entries(obj.analysisMap));
 		// Loop through all analysis configs
 		for(let configObj of tempMap.values()) {
-			var config = new AnalysisConfiguration(configObj.id, configObj.analysisRequest);
+			var config = new AnalysisConfiguration(configObj.id, new AnalysisRequest(configObj.analysisRequest));
+			// TODO: make sure analysis results part of analysisResult class
 			config.setResults(configObj.analysisResults);
 			// Add config to the global analysisMap
 			analysisMap.set(config.id, config);

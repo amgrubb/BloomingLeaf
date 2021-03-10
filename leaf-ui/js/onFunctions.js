@@ -562,7 +562,6 @@ $('#btn-clear-all').on('click', function(){
     model.removeAnalysis();
     // clear analysis sidebar
     clearAnalysisConfigSidebar();
-    addFirstAnalysisConfig();
     // remove all configs from analysisMap
     analysisMap.clear();
 	// Delete cookie by setting expiry to past date
@@ -578,9 +577,10 @@ $('#btn-clear-analysis').on('click', function() {
     analysisRequest = defaultRequest;
     // clear analysis sidebar
     clearAnalysisConfigSidebar();
-    addFirstAnalysisConfig();
     // remove all configs from analysisMap
     analysisMap.clear();
+	// add back first default analysis config
+    addFirstAnalysisConfig();
 });
 
 $('#btn-clear-elabel').on('click', function(){
