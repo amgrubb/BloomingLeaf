@@ -433,8 +433,8 @@ $('#model-cur-btn').on('click', function() {
 	savedAnalysisData.finalAssignedEpoch="";
     savedAnalysisData.finalValueTimePoints="";
     
-    analysisResult.isPathSim = false;
     analysisRequest.action = null;
+
 });
 
 
@@ -457,16 +457,15 @@ function revertNodeValuesToInitial() {
 
 		var intention = model.getIntentionByID(curr.attributes.nodeID);
 
-		/**var initSatVal = intention.getInitialSatValue();
+		var initSatVal = intention.getInitialSatValue();
 		if (initSatVal === '(no value)') {
             curr.attr('.satvalue/text', '');
-            curr.attr({text: {fill: 'black',stroke:'none','font-weight' : 'normal','font-size': 10}});
 
 		} else {
             curr.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
-            curr.attr({text: {fill: 'black',stroke:'none','font-weight' : 'normal','font-size': 10}});
-		}**/
-		curr.attr({text: {fill: 'black'}});
+		}
+        //curr.attr({text: {fill: 'black'}});
+        curr.attr({text: {fill: 'black',stroke:'none','font-weight' : 'normal','font-size': 10}});
 	}
 }
 
@@ -476,15 +475,18 @@ function revertNodeValuesToInitial() {
  * Display the modeling mode page
  */
 function switchToModellingMode() {
+    console.log("inside switchToModelingMode");
     analysisResult.isPathSim = false; //reset isPathSim for color visualization slider
 	analysisRequest.previousAnalysis = null;
-	clearInspector();
-
-	// Reset to initial graph prior to analysis
-	for (var i = 0; i < graph.elementsBeforeAnalysis.length; i++) {
-		var value = graph.elementsBeforeAnalysis[i]
-		updateNodeValues(i, value, "toInitModel");
-	}
+    clearInspector();
+    
+    //graph.elementsBeforeAnalysis is never initialized?? what is this
+    // Reset to initial graph prior to analysis
+	// for (var i = 0; i < graph.elementsBeforeAnalysis.length; i++) {
+    //     var value = graph.elementsBeforeAnalysis[i]
+    //     console.log("value = "+value);
+	// 	updateNodeValues(i, value, "toInitModel");
+	// }
 
 	// Reset to initial graph prior to analysis
 	revertNodeValuesToInitial();
@@ -502,9 +504,7 @@ function switchToModellingMode() {
 
     $('#model-toolbar').css("display","");
 
-    EVO.switchToModelingMode();
     analysisResult.colorVis = [];
-
 
 	$('#sliderValue').text("");
 
@@ -518,7 +518,7 @@ function switchToModellingMode() {
 	clearHistoryLog();
 
     mode = "Modelling";
-
+    EVO.switchToModelingMode();
 }
 
 /**
