@@ -110,10 +110,6 @@ var model = new Model();
 var analysisRequest = new AnalysisRequest();
 var analysisResult = new AnalysisResult();
 
-console.log('initial analysis request');
-console.log(analysisRequest);
-console.log(analysisRequest instanceof AnalysisRequest);
-
 var linkInspector = new LinkInspector();
 var elementInspector = new ElementInspector();
 var analysisInspector = new AnalysisInspector();
