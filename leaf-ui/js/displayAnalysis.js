@@ -275,7 +275,6 @@ function addFirstAnalysisConfig(){
     $(".result-elements").css("background-color", "");
     var id = "Configuration1";
     currAnalysisConfig = new AnalysisConfiguration(id, analysisRequest, 1);
-    highestPosition = 1;
     analysisMap.set(id, currAnalysisConfig);
     // Currently necessary for User Assignments List preservation
     defaultUAL = currAnalysisConfig.userAssignmentsList;
@@ -355,8 +354,11 @@ function addAnalysisConfig(config) {
     mainElement.querySelector('.dropdown-button').addEventListener('click', function(){toggleDropdown(this.parentElement.parentElement /** Config element */)});
     mainElement.querySelector('.deleteconfig-button').addEventListener('click', function(){ 
         try{removeConfiguration(this.parentElement.parentElement)/** Config element */} 
-        catch(e){console.error(e);}
+        catch(e){console.error(e); alert(e);}
     });
+
+    //Whenever first or loaded configs are added, update the highest position
+    highestPosition = config.initialPosition;
 }
 
 /**
@@ -381,9 +383,8 @@ function removeConfiguration(configElement) {
         }
     }else{
         //Prevents undefined currAnalysisConfig
-        throw "Must have at least one config";
+        throw "Must have at least one configuration";
     }
-    console.log(currAnalysisConfig);
     configDiv.remove();
     // Remove config from analysisMap
     analysisMap.delete(configElement.id);
