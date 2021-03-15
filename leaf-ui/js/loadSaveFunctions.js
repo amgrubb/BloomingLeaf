@@ -9,6 +9,9 @@ reader = new FileReader();
 // Whenever the input is changed, read the file.
 loader.onchange = function() {
 	reader.readAsText(loader.files.item(0));
+	// Resets loader value so that the onchange event will still be triggered 
+	// if the same file is cleared and then loaded again
+	loader.value = "";
 };
 
 // When read is performed, if successful, load that file.
