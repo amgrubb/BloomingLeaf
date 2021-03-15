@@ -399,7 +399,7 @@ function switchToAnalysisMode() {
 	analysisInspector.render();
 	$('.inspector').append(analysisInspector.el);
 	$('#stencil').css("display", "none");
-    $('#history').css("display", "none"); //TODO: remove
+    $('#history').css("display", "none");
     $('#analysis-sidebar').css("display","");
 
     $('#analysis-btn').css("display", "none");
@@ -410,10 +410,7 @@ function switchToAnalysisMode() {
 
     // hide extra tools from modelling mode
     $('#model-toolbar').css("display", "none");
-    $('#btn-clear-all').css("display", "none");
-    $('#btn-clear-elabel').css("display", "none");
-    $('#btn-clear-flabel').css("display", "none");
-    $('#btn-clear-cycle').css("display", "none");
+    $('.model-clears').css("display", "none");
 
 
 	$('#modeText').text("Analysis");
@@ -513,10 +510,7 @@ function switchToModellingMode() {
 
     // show extra tools for modelling mode
     $('#model-toolbar').css("display","");
-    $('#btn-clear-all').css("display", "");
-    $('#btn-clear-elabel').css("display", "");
-    $('#btn-clear-flabel').css("display", "");
-    $('#btn-clear-cycle').css("display", "");
+    $('.model-clears').css("display", "");
 
     EVO.switchToModelingMode();
     analysisResult.colorVis = [];
@@ -572,7 +566,7 @@ $('#btn-clear-all').on('click', function(){
 $('#btn-clear-analysis').on('click', function() {
     // reset to default analysisRequest while preserving userAssignmentsList
     // restore initial userAssignmentsList - holds initial evals for each intention
-    analysisRequest.clearUserEvaluations()
+    analysisRequest.clearUserEvaluations();
     // copy initial userAssignmentsList into otherwise default analysisRequest
     var defaultRequest = new AnalysisRequest();
     defaultRequest.userAssignmentsList = analysisRequest.userAssignmentsList;

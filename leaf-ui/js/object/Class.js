@@ -334,6 +334,8 @@ class AnalysisResult {
 
     constructor(analysisResult) {
         if (arguments.length == 1){
+            // construct from object in shape of analysisRequest
+            // for loading from saved file
             this.assignedEpoch = analysisResult.assignedEpoch;
             this.timePointPath = analysisResult.timePointPath;
             this.timePointPathSize = analysisResult.timePointPathSize;
@@ -345,6 +347,7 @@ class AnalysisResult {
             this.selectedTimePoint = analysisResult.selectedTimePoint; //find where slider is initialized and set timepoint in here. Also place it in update function
             this.maxTimePoint = analysisResult.maxTimePoint;
         } else {
+            // new default analysisResult
             this.assignedEpoch;
             this.timePointPath ;
             this.timePointPathSize;
@@ -1769,6 +1772,7 @@ class AnalysisRequest {
     constructor(analysisRequest) {
         if (arguments.length == 1){
             // construct from object in shape of analysisRequest
+            // for loading from saved file
             this.action = analysisRequest.action;
             this.conflictLevel = analysisRequest.conflictLevel;
             this.numRelTime = analysisRequest.numRelTime;
