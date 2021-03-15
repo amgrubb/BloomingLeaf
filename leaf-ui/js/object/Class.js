@@ -332,17 +332,30 @@ class AnalysisResult {
      *   (for nodeID 0000, time point 0, its satisfaction value is none)
      */
 
-    constructor() {
-        this.assignedEpoch;
-        this.timePointPath ;
-        this.timePointPathSize;
-        this.elementList; 
-        this.allSolution;
-        this.elementListPercentEvals;
-        this.isPathSim = false; //used for slider visualization
-        this.colorVis; //color visualization for analysis mode  
-        this.selectedTimePoint; //find where slider is initialized and set timepoint in here. Also place it in update function
-        this.maxTimePoint;
+    constructor(analysisResult) {
+        if (arguments.length == 1){
+            this.assignedEpoch = analysisResult.assignedEpoch;
+            this.timePointPath = analysisResult.timePointPath;
+            this.timePointPathSize = analysisResult.timePointPathSize;
+            this.elementList = analysisResult.elementList; 
+            this.allSolution = analysisResult.allSolution;
+            this.elementListPercentEvals = analysisResult.elementListPercentEvals;
+            this.isPathSim = analysisResult.isPathSim ; //used for slider visualization
+            this.colorVis = analysisResult.colorVis; //color visualization for analysis mode  
+            this.selectedTimePoint = analysisResult.selectedTimePoint; //find where slider is initialized and set timepoint in here. Also place it in update function
+            this.maxTimePoint = analysisResult.maxTimePoint;
+        } else {
+            this.assignedEpoch;
+            this.timePointPath ;
+            this.timePointPathSize;
+            this.elementList; 
+            this.allSolution;
+            this.elementListPercentEvals;
+            this.isPathSim = false; //used for slider visualization
+            this.colorVis; //color visualization for analysis mode  
+            this.selectedTimePoint; //find where slider is initialized and set timepoint in here. Also place it in update function
+            this.maxTimePoint;
+        }
     }
     
 }
@@ -1753,20 +1766,9 @@ class AnalysisRequest {
      * @param {Array.<UserEvaluation>} userAssignmentsList
      * @param {AnalysisResult} previousAnalysis
      */
-    /** 
-    constructor() {
-        this.action = null;
-        this.conflictLevel = "S";
-        this.numRelTime = "1";
-        this.absTimePts = "";
-        this.absTimePtsArr = [];
-        this.currentState = "0";
-        this.userAssignmentsList = [];
-        this.previousAnalysis = null;
-    }
-    */
     constructor(analysisRequest) {
         if (arguments.length == 1){
+            // construct from object in shape of analysisRequest
             this.action = analysisRequest.action;
             this.conflictLevel = analysisRequest.conflictLevel;
             this.numRelTime = analysisRequest.numRelTime;
@@ -1776,6 +1778,7 @@ class AnalysisRequest {
             this.userAssignmentsList = analysisRequest.userAssignmentsList;
             this.previousAnalysis = analysisRequest.previousAnalysis;
         } else {
+            // new default analysisRequest
             this.action = null;
             this.conflictLevel = "S";
             this.numRelTime = "1";
@@ -1785,14 +1788,6 @@ class AnalysisRequest {
             this.userAssignmentsList = [];
             this.previousAnalysis = null;
         }
-        /*this.action = analysisRequest.action;
-        this.conflictLevel = analysisRequest.conflictLevel;
-        this.numRelTime = "1";
-        this.absTimePts = "";
-        this.absTimePtsArr = [];
-        this.currentState = "0";
-        this.userAssignmentsList = [];
-        this.previousAnalysis = null;*/
     }
 
     /**

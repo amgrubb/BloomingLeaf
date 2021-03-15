@@ -280,6 +280,10 @@ function loadFromObject(obj) {
 			var config = new AnalysisConfiguration(configObj.id, new AnalysisRequest(configObj.analysisRequest));
 			// TODO: make sure analysis results part of analysisResult class
 			config.setResults(configObj.analysisResults);
+			console.log(configObj.analysisResults);
+			console.log('are results part of analysisResult class?');
+			console.log(configObj.analysisResults[0] instanceof AnalysisResult);
+			//console.log(analysisRequest instanceof AnalysisRequest);
 			// Add config to the global analysisMap
 			analysisMap.set(config.id, config);
 		}
