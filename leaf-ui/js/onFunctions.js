@@ -475,23 +475,12 @@ function revertNodeValuesToInitial() {
  * Display the modeling mode page
  */
 function switchToModellingMode() {
-    console.log("inside switchToModelingMode");
     analysisResult.isPathSim = false; //reset isPathSim for color visualization slider
 	analysisRequest.previousAnalysis = null;
     clearInspector();
-    
-    //graph.elementsBeforeAnalysis is never initialized?? what is this
-    // Reset to initial graph prior to analysis
-	// for (var i = 0; i < graph.elementsBeforeAnalysis.length; i++) {
-    //     var value = graph.elementsBeforeAnalysis[i]
-    //     console.log("value = "+value);
-	// 	updateNodeValues(i, value, "toInitModel");
-	// }
 
 	// Reset to initial graph prior to analysis
 	revertNodeValuesToInitial();
-
-	graph.elementsBeforeAnalysis = [];
 
 	$('#stencil').css("display","");
 	$('#history').css("display","none");
@@ -834,7 +823,6 @@ function updateDataBase(graph, timestamp){
 
     //save elements in global variable for slider, used for toBackEnd funciton only
     graph.allElements = elements;
-    graph.elementsBeforeAnalysis = elements;
 
     //print each actor in the model
     for (var a = 0; a < actors.length; a++){
