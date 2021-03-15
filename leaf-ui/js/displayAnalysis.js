@@ -9,6 +9,7 @@ var analysisMap = new Map();
 // Global variable to keep track of what analysis configuration is currently being used
 var currAnalysisConfig;
 //Global variable to keep track of the highest initial position
+//This acts like a global iterator to keep track of what the ID and initialPosition attribute of new configurations should be
 var highestPosition;
 
 /**
@@ -311,11 +312,11 @@ function loadAnalysis(){
  */
 function addNewAnalysisConfig(){
     // Update current config with current analysisRequest and set the udpated config in map
+    // Necessary for switching to the newly added config without losing analysisRequest info
     currAnalysisConfig.updateAnalysis(analysisRequest);
-    //Ask Ali about this -- why set config in map here? We need to get rid of this somehow?
-    //analysisMap.set(currAnalysisConfig.id, currAnalysisConfig);
+    analysisMap.set(currAnalysisConfig.id, currAnalysisConfig);
 
-    // Figure out number of new config, name and create it, and then add it to the map
+    // Figure out initial position of new config, name and create it, and then add it to the map
     highestPosition += 1;
     var id = "Configuration" + (highestPosition).toString();
     
@@ -352,7 +353,10 @@ function addAnalysisConfig(config) {
     mainElement.querySelector('.config-elements').addEventListener('dblclick', function(){rename(this /** Config element */)});
     mainElement.querySelector('.config-elements').addEventListener('click', function(){switchConfigs(this.parentElement /** Config element */)});
     mainElement.querySelector('.dropdown-button').addEventListener('click', function(){toggleDropdown(this.parentElement.parentElement /** Config element */)});
-    mainElement.querySelector('.deleteconfig-button').addEventListener('click', function(){removeConfiguration(this.parentElement.parentElement)});
+    mainElement.querySelector('.deleteconfig-button').addEventListener('click', function(){ 
+        try{removeConfiguration(this.parentElement.parentElement)/** Config element */} 
+        catch(e){console.error(e);}
+    });
 }
 
 /**
@@ -363,9 +367,27 @@ function addAnalysisConfig(config) {
 function removeConfiguration(configElement) {
     // Remove full configuration div (includes results)
     var configDiv = document.getElementById(configElement.id);
+    //returns a NodeList (not an array) of all configuration elements
+    var configList = document.querySelectorAll('.analysis-configuration');
+    //use configList to assign a new currAnalysisConfig
+    //ensures that deleted node is not re-added when in addNewAnalysisConfig
+    if (configList.length > 1){
+        for(i=0; i < configList.length; i++){
+            if (configList[i] == configDiv){
+                if (i == 0){currAnalysisConfig = analysisMap.get(configList[i+1].id);}
+                else{currAnalysisConfig = analysisMap.get(configList[i-1].id);}
+                break;
+            }
+        }
+    }else{
+        //Prevents undefined currAnalysisConfig
+        throw "Must have at least one config";
+    }
+    console.log(currAnalysisConfig);
     configDiv.remove();
     // Remove config from analysisMap
     analysisMap.delete(configElement.id);
+
 }
 
 /**
