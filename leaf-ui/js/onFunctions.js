@@ -408,6 +408,7 @@ function switchToAnalysisMode() {
     $('#dropdown-model').css("display", "");
     //$('#on-off').css("display", "none");
 
+    // hide extra tools from modelling mode
     $('#model-toolbar').css("display", "none");
     $('#btn-clear-all').css("display", "none");
     $('#btn-clear-elabel').css("display", "none");
@@ -510,6 +511,7 @@ function switchToModellingMode() {
     $('#dropdown-model').css("display","none");
     $('#on-off').css("display", "");
 
+    // show extra tools for modelling mode
     $('#model-toolbar').css("display","");
     $('#btn-clear-all').css("display", "");
     $('#btn-clear-elabel').css("display", "");
