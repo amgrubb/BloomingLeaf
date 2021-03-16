@@ -100,7 +100,7 @@ function responseFunc(isGetNextSteps, response){
 				console.log(JSON.stringify(results)); 
 				savedAnalysisData.singlePathResult = results;
 				analysisResult = convertToAnalysisResult(results);
-				displayAnalysis(results);
+                displayAnalysis(analysisResult);
 
 				// Save result to the corresponding analysis configuration object
 				currAnalysisConfig.addResult(analysisResult);
@@ -175,7 +175,8 @@ function getFileResults(isGetNextSteps){
                     analysisRequest.previousAnalysis = analysisResult;
                     console.log("previousAnalysis");
 					console.log(analysisRequest.previousAnalysis);
-					displayAnalysis(results);
+                    //display analysis result rather than raw results
+                    displayAnalysis(analysisResult);
 				}
 			}
 		}
