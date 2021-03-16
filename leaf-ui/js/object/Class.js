@@ -343,7 +343,36 @@ class AnalysisResult {
         this.colorVis; //color visualization for analysis mode  
         this.selectedTimePoint; //find where slider is initialized and set timepoint in here. Also place it in update function
         this.maxTimePoint;
+
+
+        this.elements;
+        this.numOfElements;
+        this.timeScale;
+        this.relativeTime;
     }
+    // Parse results from backend
+    initFromBackEnd = function (analysisResults) {
+        this.elements = [];
+        this.numOfElements = Number(analysisResults.elementList.length);
+        this.timeScale = Number(analysisResults.timePointPath.length) - 1;
+        this.relativeTime = [];
+
+        for (var i = 0; i < analysisResults.timePointPath.length; i++) {
+            var aux = analysisResults.timePointPath[i];
+            this.relativeTime.push(aux);
+        }
+
+        for (var i = 0; i < this.numOfElements; i++) {
+            //strips first element since it is already shown on graph
+            var results = analysisResults.elementList[i];
+            //results.pop(0);
+            this.elements.push(results)
+        }
+        return this;
+    };
+
+
+
     
 }
 
