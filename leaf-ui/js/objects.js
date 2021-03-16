@@ -271,11 +271,5 @@ class AnalysisConfiguration {
 	stringify(){
 		return JSON.stringify(this);
 	}
-
-	/**
-	 * Returns initial position
-	 */
-	getInitialPosition(){
-		return initialPosition;
-	}
+	
 }
