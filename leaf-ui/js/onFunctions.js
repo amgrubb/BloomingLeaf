@@ -94,9 +94,9 @@ $('#btn-view-assignment').on('click', function() {
  */
 $('#btn-save-assignment').on('click', function() {
     saveAbsoluteTimePoints();
-    saveRelativeIntentionAssignments();
     saveAbsoluteIntentionAssignments();
     saveAbsoluteRelationshipAssignments();
+    saveRelativeIntentionAssignments();
 
     // Dismiss the modal
     var modal = document.getElementById('assignmentsModal');
@@ -315,7 +315,6 @@ function saveAbsoluteIntentionAssignments(){
         }
         var row = $(this).closest('tr');
         var srcEB = row.attr('srcEB'); // ex. 'A'
-        var funcValue = row.find('td:nth-child(2)').html(); // ex. 'MP'
         var nodeID = row.attr('nodeID'); // ex. '0000'
 
         model.setAbsConstBySrcID(nodeID, srcEB, newTime);
@@ -400,6 +399,7 @@ function switchToAnalysisMode() {
 	analysisInspector.render();
 	$('.inspector').append(analysisInspector.el);
 	$('#stencil').css("display", "none");
+    $('#analysis-sidebar').css("display","");
 
     $('#analysis-btn').css("display", "none");
 	$('#symbolic-btn').css("display", "none");
@@ -413,7 +413,9 @@ function switchToAnalysisMode() {
 
 	// Disable link settings
 	$('.link-tools .tool-remove').css("display", "none");
-	$('.link-tools .tool-options').css("display", "none");
+    $('.link-tools .tool-options').css("display", "none");
+    
+    loadAnalysisConfig();
 
 	if (currentHalo) {
 		currentHalo.remove();
@@ -442,6 +444,13 @@ $('#model-cur-btn').on('click', function() {
  * satisfaction value and colours all text to black
  */
 function revertNodeValuesToInitial() {
+    // TODO: get satisfaction text to disappear
+    // reset values
+    for (var i = 0; i < graph.elementsBeforeAnalysis.length; i++) {
+		var value = graph.elementsBeforeAnalysis[i]
+		updateNodeValues(i, value, "toInitModel");
+	}
+
 	var elements = graph.getElements();
 	var curr;
 	for (var i = 0; i < elements.length; i++) {
@@ -480,19 +489,15 @@ function switchToModellingMode() {
 	clearInspector();
 
 	// Reset to initial graph prior to analysis
-	for (var i = 0; i < graph.elementsBeforeAnalysis.length; i++) {
-		var value = graph.elementsBeforeAnalysis[i]
-		updateNodeValues(i, value, "toInitModel");
-	}
-
-	// Reset to initial graph prior to analysis
 	revertNodeValuesToInitial();
 
 	graph.elementsBeforeAnalysis = [];
 
-	$('#stencil').css("display","");
+    $('#stencil').css("display","");
+    $('#analysis-sidebar').css("display","none");
     $('#btn-view-assignment').css("display","");
-	$('#analysis-btn').css("display","");
+    $('#analysis-btn').css("display","");
+    $('#analysis-sidebar').css("display","none");
 	$('#symbolic-btn').css("display","");
 	$('#cycledetect-btn').css("display","");
     $('#dropdown-model').css("display","none");
@@ -503,15 +508,13 @@ function switchToModellingMode() {
     EVO.switchToModelingMode();
     analysisResult.colorVis = [];
 
-
-	$('#sliderValue').text("");
+    removeSlider();
 
 	// Reinstantiate link settings
 	$('.link-tools .tool-remove').css("display","");
 	$('.link-tools .tool-options').css("display","");
 
 	graph.allElements = null;
-
     mode = "Modelling";
 
 }
@@ -603,9 +606,33 @@ $('#btn-save').on('click', function() {
        // EVO.returnAllColors(graph.getElements(), paper);
        // EVO.revertIntentionsText(graph.getElements(), paper);    
 		var fileName = name + ".json";
-		var obj = getFullJson();
+		var obj = getModelJson();
         download(fileName, JSON.stringify(obj));
         //IntentionColoring.refresh();
+	}
+});
+
+// Save the current graph and analysis (without results) to json file
+$('#btn-save-analysis').on('click', function() {
+	var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
+	if (name){
+        clearCycleHighlighting();
+        EVO.deactivate();   
+		var fileName = name + ".json";
+		var obj = getModelAnalysisJson();
+        download(fileName, JSON.stringify(obj));
+	}
+});
+
+// Save the current graph and analysis (with results) to json file
+$('#btn-save-all').on('click', function() {
+	var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
+	if (name){
+        clearCycleHighlighting();
+        EVO.deactivate();   
+		var fileName = name + ".json";
+		var obj = getFullJson();
+        download(fileName, JSON.stringify(obj));
 	}
 });
 
@@ -1324,5 +1351,21 @@ function checkForMultipleNB(node) {
 	}
 
 	return num >= 1;
+}
+
+/**
+ * Function to add first analysis configuration 
+ * if no configs exist when switching to analysis mode
+ * If the analysisMap contains configurations loaded from JSON, populate the sidebar
+ * 
+ */
+function loadAnalysisConfig(){
+    // Refresh the analysis sidebar to reflect current analysis request values
+    refreshAnalysisUI();
+    // if there are no configs in the map
+    if(analysisMap.size == 0){
+        // Add a new, empty config to the map
+        addFirstAnalysisConfig();
+    }
 }
 

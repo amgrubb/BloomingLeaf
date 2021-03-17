@@ -28,7 +28,7 @@ This file contains functions that are associated with keyboard shortcuts.
 ctrl-c <br >ctrl-v
 
 ## loadSaveFunctions.js
-This file contains code associated with loading and saving a current model as a JSON file
+This file contains code associated with loading and saving a current model and analysis as a JSON file
 ### Main functions in this file:
 download\
 reader.onload functions

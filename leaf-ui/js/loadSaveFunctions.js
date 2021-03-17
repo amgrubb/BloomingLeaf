@@ -248,9 +248,10 @@ function updateSatValueTextToNew(oldText) {
 }
 
 /**
- * Given an object obj containing a model, graph and analysisRequest, 
- * updates the global variables: model, graph and analysisRequest
+ * Given an object obj containing a model, graph and analysis configurations and results, 
+ * updates the global variables: model, graph and analysisMap
  * to the objects from obj
+ * If the obj does not contain analysis information, do not update global vars
  *
  * @param {Object} obj
  */
@@ -262,7 +263,34 @@ function loadFromObject(obj) {
 	model.constraints = getConstArr(obj.model.constraints);
 	model.maxAbsTime = obj.model.maxAbsTime;
 
-	analysisRequest = Object.assign(new AnalysisRequest, obj.analysisRequest);
+	// Clear any previous analysis data 
+	if (analysisMap.size != 0) {
+		// Clear the analysisMap to remove any previous analysis
+		clearAnalysisConfigSidebar();
+		analysisMap.clear();
+		currAnalysisConfig = null;
+	}
+
+	// If the object contains analysis, create analysis fields from JSON
+	if (obj.analysisMap != undefined) {
+		// Parse analysis as map
+		var tempMap = new Map(Object.entries(obj.analysisMap));
+		// Loop through all analysis configs
+		for(let configObj of tempMap.values()) {
+			var config = new AnalysisConfiguration(configObj.id, configObj.analysisRequest);
+			config.setResults(configObj.analysisResults);
+			// Add config to the global analysisMap
+			analysisMap.set(config.id, config);
+		}
+		console.log(analysisMap);
+		// Load the configs into the analysis view config sidebar
+		loadAnalysis();
+	} else {
+		// Else if no analysisMap param, grab the analysisRequest
+		analysisRequest = Object.assign(new AnalysisRequest, obj.analysisRequest);
+		
+	}
+
 	graph.fromJSON(obj.graph);
 }
 
@@ -430,7 +458,41 @@ function getNodeID(rapID, cells) {
 }
 
 /**
- * Returns an object that contains the current graph, model and analysisRequest.
+ * Returns an object that contains the current graph, model.
+ * This return object is what the user would download when clicking the Save button
+ * in the top menu bar.
+ *
+ * @returns {Object}
+ */
+function getModelJson() {
+	var obj = {};
+	obj.graph = graph.toJSON();
+	obj.model = model;
+	obj.analysisRequest = analysisRequest;
+	return obj;
+}
+
+/**
+ * Returns an object that contains the current graph, model and analysis configurations
+ * and REMOVES results from the analysisConfigurations map.
+ * This return object is what the user would download when clicking the Save button
+ * in the top menu bar.
+ *
+ * @returns {Object}
+ */
+function getModelAnalysisJson() {
+	var obj = {};
+	// obj.analysis = true;
+	obj.graph = graph.toJSON();
+	obj.model = model;
+	// Remove analysis results then convert to array tuple for JSON.stringify() functionality
+	obj.analysisMap = Object.fromEntries(removeAnalysisResults(analysisMap));
+
+	return obj;
+}
+
+/**
+ * Returns an object that contains the current graph, model and analysis configurations.
  * This return object is what the user would download when clicking the Save button
  * in the top menu bar.
  *
@@ -440,8 +502,29 @@ function getFullJson() {
 	var obj = {};
 	obj.graph = graph.toJSON();
 	obj.model = model;
-	obj.analysisRequest = analysisRequest;
+	// Convert to array tuple for JSON.stringify() functionality
+	// obj.analysisMap = Array.from(analysisMap.entries());
+	obj.analysisMap = Object.fromEntries(analysisMap);
+
 	return obj;
+}
+
+/**
+ * Helper function to return a copy of the analysisMap with no
+ * analysisResults in each analysisConfig
+ */
+function removeAnalysisResults(analysisMap) {
+	// Deep copy the map: stringify, then parse to new Map
+	let tempJSON = JSON.stringify(Object.fromEntries(analysisMap));
+	var analysisMapNoResults = new Map(Object.entries(JSON.parse(tempJSON)));
+	
+	// for each AnalysisConfiguration obj
+	for(let config of analysisMapNoResults.values()) {
+		// put empty array into the analysisResults field
+		config.analysisResults = [];
+	}
+
+	return analysisMapNoResults;
 }
 
 /**

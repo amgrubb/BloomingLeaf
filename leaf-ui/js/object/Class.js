@@ -344,6 +344,7 @@ class AnalysisResult {
         this.selectedTimePoint; //find where slider is initialized and set timepoint in here. Also place it in update function
         this.maxTimePoint;
     }
+    
 }
 
 /**  
@@ -798,8 +799,9 @@ class EVO {
      * Switch back to modeling slider, if EVO is on the visualization returns to filling by initial state.
      */
      static switchToModelingMode() {
-            $('#modelingSlider').css("display", "");
-            $('#analysisSlider').css("display", "none");
+        $('#modelingSlider').css("display", "");
+        $('#analysisSlider').css("display", "none");
+        // if EVO is on in analysis mode, keep it on
         if(EVO.sliderOption > 0) {
             EVO.sliderOption = '1';
         }

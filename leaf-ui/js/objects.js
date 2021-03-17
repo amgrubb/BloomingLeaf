@@ -1,3 +1,7 @@
+/**
+ * This file contains declarations for various objects used in the frontend processes.
+ */
+
 // Used to manipulate slider during analysis
 var sliderObject = function(){
 	this.sliderElement;
@@ -169,5 +173,87 @@ class ChartObj {
 			},
 			options: this.options
 		});
+	}
+}
+
+class AnalysisConfiguration {
+	/**
+	 * This class is used to hold analysis configuration specifications and results 
+	 * for view in the analysis configuration & results sidebar. 
+	 * The object is initialized by passing in an AnalysisRequest object into the constructor.
+	 * 
+	 * @param {String} id
+	 * @param {AnalysisRequest} analysisRequest
+     * @param {String} action
+     * @param {String} conflictLevel
+     * @param {String} numRelTime
+     * @param {String} absTimePts
+     * @param {String} currentState
+     * @param {Array.<UserEvaluation>} userAssignmentsList
+     * @param {Array.<AnalysisResult>} analysisResults
+	 */
+
+	constructor(id, analysisRequest) {
+		this.id = id;
+		this.analysisRequest = analysisRequest;
+		this.action = analysisRequest.action;
+        this.conflictLevel = analysisRequest.conflictLevel;
+        this.numRelTime = analysisRequest.numRelTime;
+        this.absTimePts = analysisRequest.absTimePts;
+        this.absTimePtsArr = analysisRequest.absTimePts;
+        this.currentState = analysisRequest.currentState;
+        this.userAssignmentsList = analysisRequest.userAssignmentsList;
+        this.analysisResults = [];
+	}
+
+	/**
+	 * Add a new AnalysisResult to the analysisResults array.
+	 * @param {AnalysisResult} analysisResult 
+	 */
+	addResult(analysisResult) {
+		this.analysisResults.push(analysisResult);
+	}
+
+	/**
+	 * Set the AnalysisResults param
+	 * @param {Array.<AnalysisResult>} analysisResults 
+	 */
+	setResults(analysisResults) {
+		this.analysisResults = analysisResults;
+	}
+
+	/**
+	 * Updates Config Values from AnalysisRequest
+	 */
+	updateAnalysis(analysisRequest){
+		this.analysisRequest = analysisRequest;
+		this.action = analysisRequest.action;
+        this.conflictLevel = analysisRequest.conflictLevel;
+        this.numRelTime = analysisRequest.numRelTime;
+        this.absTimePts = analysisRequest.absTimePts;
+        this.absTimePtsArr = analysisRequest.absTimePts;
+        this.currentState = analysisRequest.currentState;
+		this.userAssignmentsList = analysisRequest.userAssignmentsList;
+	}
+
+	updateId(id){
+		this.id = id;
+	}
+
+	/**
+	 * Returns AnalysisRequest object associated with this Config
+	 * This is currently used to streamline getting request from currentAnalysisConfig
+	 * TODO: Consider/switch to a more efficient way to return 
+	 * since this is duplicate data being held in the Config 
+	 */
+	getAnalysisRequest(){
+		return this.analysisRequest;
+	}
+
+	/**
+	 * Returns a JSON representation of the AnalysisConfig object
+	 */
+	stringify(){
+		return JSON.stringify(this);
 	}
 }
