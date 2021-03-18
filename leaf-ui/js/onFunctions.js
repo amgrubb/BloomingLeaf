@@ -434,8 +434,8 @@ $('#model-cur-btn').on('click', function() {
 	savedAnalysisData.finalAssignedEpoch="";
     savedAnalysisData.finalValueTimePoints="";
     
-    analysisResult.isPathSim = false;
     analysisRequest.action = null;
+
 });
 
 
@@ -465,16 +465,15 @@ function revertNodeValuesToInitial() {
 
 		var intention = model.getIntentionByID(curr.attributes.nodeID);
 
-		/**var initSatVal = intention.getInitialSatValue();
+		var initSatVal = intention.getInitialSatValue();
 		if (initSatVal === '(no value)') {
             curr.attr('.satvalue/text', '');
-            curr.attr({text: {fill: 'black',stroke:'none','font-weight' : 'normal','font-size': 10}});
 
 		} else {
             curr.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
-            curr.attr({text: {fill: 'black',stroke:'none','font-weight' : 'normal','font-size': 10}});
-		}**/
-		curr.attr({text: {fill: 'black'}});
+		}
+        //curr.attr({text: {fill: 'black'}});
+        curr.attr({text: {fill: 'black',stroke:'none','font-weight' : 'normal','font-size': 10}});
 	}
 }
 
@@ -505,7 +504,6 @@ function switchToModellingMode() {
 
     $('#model-toolbar').css("display","");
 
-    EVO.switchToModelingMode();
     analysisResult.colorVis = [];
 
     removeSlider();
@@ -516,7 +514,7 @@ function switchToModellingMode() {
 
 	graph.allElements = null;
     mode = "Modelling";
-
+    EVO.switchToModelingMode();
 }
 
 /**
@@ -856,7 +854,6 @@ function updateDataBase(graph, timestamp){
 
     //save elements in global variable for slider, used for toBackEnd funciton only
     graph.allElements = elements;
-    graph.elementsBeforeAnalysis = elements;
 
     //print each actor in the model
     for (var a = 0; a < actors.length; a++){
