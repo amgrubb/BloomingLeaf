@@ -396,6 +396,17 @@ function switchToAnalysisMode() {
 	
 	removeHighlight();
 
+    // clear results if changed model during modeling mode
+    let modelChanged = !(JSON.stringify(previousModel) === JSON.stringify(model));
+    if (modelChanged){
+        console.log('clearing results');
+        console.log('previous model:');
+        console.log(previousModel);
+        console.log('current model:');
+        console.log(model);
+        clearResults();
+    }
+
 	analysisInspector.render();
 	$('.inspector').append(analysisInspector.el);
 	$('#stencil').css("display", "none");
@@ -495,6 +506,9 @@ function switchToModellingMode() {
 	revertNodeValuesToInitial();
 
 	graph.elementsBeforeAnalysis = [];
+
+    // store deep copy of model for detecting model changes
+    previousModel = JSON.parse(JSON.stringify(model));
 
     $('#stencil').css("display","");
     $('#analysis-sidebar').css("display","none");

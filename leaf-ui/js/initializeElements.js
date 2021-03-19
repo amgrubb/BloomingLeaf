@@ -122,6 +122,7 @@ var elementList;
 
 // Analysis variables
 var sliderObject = new sliderObject();
+var previousModel;
 
 var loader;
 var reader;
