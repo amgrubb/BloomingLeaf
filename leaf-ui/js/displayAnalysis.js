@@ -337,10 +337,9 @@ function updateResults(){
     for(let config of analysisMap.values()) {
         // remove analysis results from each config
         config.deleteResults();
-        // remove all results from config div
-        var dropdownElement = document.getElementById(config.id).querySelector('.dropdown-container');
-        dropdownElement.innerHTML = "";
     }
+    // remove all results from config div
+    $('.result-elements').remove();
 }
 
 /**
