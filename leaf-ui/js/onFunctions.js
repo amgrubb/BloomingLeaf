@@ -407,6 +407,16 @@ function switchToAnalysisMode() {
         clearResults();
     }
 
+    // Checks if the user assignments list has changed since last switching to Assignments mode
+    // If so, update UAL for all configs and then update defaultUAL 
+    if(analysisRequest.userAssignmentsList !== defaultUAL){
+        for(let config of analysisMap.values()){
+            config.updateUal(analysisRequest.userAssignmentsList);
+        }
+        defaultUAL = [];
+        analysisRequest.userAssignmentsList.forEach(uAL => defaultUAL.push(uAL));
+    }
+
 	analysisInspector.render();
 	$('.inspector').append(analysisInspector.el);
 	$('#stencil').css("display", "none");

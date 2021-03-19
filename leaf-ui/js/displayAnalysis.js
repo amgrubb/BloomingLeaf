@@ -189,7 +189,7 @@ function addFirstAnalysisConfig(){
     currAnalysisConfig = new AnalysisConfiguration(id, analysisRequest);
     analysisMap.set(id, currAnalysisConfig);
     // Currently necessary for User Assignments List preservation
-    defaultUAL = currAnalysisConfig.userAssignmentsList;
+    currAnalysisConfig.userAssignmentsList.forEach(uAL => defaultUAL.push(uAL));
     // Add the empty first config to the UI
     addAnalysisConfig(currAnalysisConfig);
 }
@@ -210,7 +210,7 @@ function loadAnalysis(){
     firstConfigElement = document.getElementById('configurations').childNodes[0];
     currAnalysisConfig = analysisMap.get(firstConfigElement.id);
     // Set default UAL to preserve in future configs
-    defaultUAL = currAnalysisConfig.userAssignmentsList;
+    currAnalysisConfig.userAssignmentsList.forEach(uAL => defaultUAL.push(uAL));
     analysisRequest = currAnalysisConfig.analysisRequest;
     switchConfigs(firstConfigElement);
     // Refresh the sidebar to include the config vars

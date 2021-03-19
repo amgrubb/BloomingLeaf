@@ -119,6 +119,7 @@ var actorInspector =  new ActorInspector();
 var currentHalo;
 var currentAnalysis;
 var elementList;
+var defaultUAL = [];
 
 // Analysis variables
 var sliderObject = new sliderObject();

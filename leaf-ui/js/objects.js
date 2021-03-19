@@ -176,6 +176,7 @@ class ChartObj {
 	}
 }
 
+// TODO: Clean up this config. We potentially only need the id, analysisRequest, and analysisResults params
 class AnalysisConfiguration {
 	/**
 	 * This class is used to hold analysis configuration specifications and results 
@@ -253,6 +254,14 @@ class AnalysisConfiguration {
 
 	updateId(id){
 		this.id = id;
+	}
+
+	/**
+	 * Updates user assignments list param for config and for config's analysisRequest
+	 */
+	updateUal(userAssignmentsList){
+		this.userAssignmentsList = userAssignmentsList;
+		this.analysisRequest.userAssignmentsList = userAssignmentsList;
 	}
 
 	/**
