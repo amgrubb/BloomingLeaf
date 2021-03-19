@@ -230,6 +230,14 @@ class AnalysisConfiguration {
 	}
 
 	/**
+	 * Delete all analysisResults
+	 * @param {AnalysisResult} analysisResult 
+	 */
+	deleteResults() {
+		this.analysisResults = [];
+	}
+
+	/**
 	 * Updates Config Values from AnalysisRequest
 	 */
 	updateAnalysis(analysisRequest){

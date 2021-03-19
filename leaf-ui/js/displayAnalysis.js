@@ -331,6 +331,19 @@ function updateResults(){
 }
 
 /**
+ * Clear all results from all configs
+ */
+ function clearResults(){
+    for(let config of analysisMap.values()) {
+        // remove analysis results from each config
+        config.deleteResults();
+        // remove all results from config div
+        var dropdownElement = document.getElementById(config.id).querySelector('.dropdown-container');
+        dropdownElement.innerHTML = "";
+    }
+}
+
+/**
  * Refreshes analysisRequest values in the UI 
  * in places such as the right sidebar and absolute time points field
  */
