@@ -399,7 +399,6 @@ function switchToAnalysisMode() {
 	analysisInspector.render();
 	$('.inspector').append(analysisInspector.el);
 	$('#stencil').css("display", "none");
-    $('#history').css("display", "none");
     $('#analysis-sidebar').css("display","");
 
     $('#analysis-btn').css("display", "none");
@@ -408,7 +407,10 @@ function switchToAnalysisMode() {
     $('#dropdown-model').css("display", "");
     //$('#on-off').css("display", "none");
 
+    // hide extra tools from modelling mode
     $('#model-toolbar').css("display", "none");
+    $('.model-clears').css("display", "none");
+
 
 	$('#modeText').text("Analysis");
 
@@ -435,8 +437,8 @@ $('#model-cur-btn').on('click', function() {
 	savedAnalysisData.finalAssignedEpoch="";
     savedAnalysisData.finalValueTimePoints="";
     
-    analysisResult.isPathSim = false;
     analysisRequest.action = null;
+
 });
 
 
@@ -466,16 +468,15 @@ function revertNodeValuesToInitial() {
 
 		var intention = model.getIntentionByID(curr.attributes.nodeID);
 
-		/**var initSatVal = intention.getInitialSatValue();
+		var initSatVal = intention.getInitialSatValue();
 		if (initSatVal === '(no value)') {
             curr.attr('.satvalue/text', '');
-            curr.attr({text: {fill: 'black',stroke:'none','font-weight' : 'normal','font-size': 10}});
 
 		} else {
             curr.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
-            curr.attr({text: {fill: 'black',stroke:'none','font-weight' : 'normal','font-size': 10}});
-		}**/
-		curr.attr({text: {fill: 'black'}});
+		}
+        //curr.attr({text: {fill: 'black'}});
+        curr.attr({text: {fill: 'black',stroke:'none','font-weight' : 'normal','font-size': 10}});
 	}
 }
 
@@ -495,7 +496,6 @@ function switchToModellingMode() {
 	graph.elementsBeforeAnalysis = [];
 
     $('#stencil').css("display","");
-    $('#history').css("display","none");
     $('#analysis-sidebar').css("display","none");
     $('#btn-view-assignment').css("display","");
     $('#analysis-btn').css("display","");
@@ -505,9 +505,10 @@ function switchToModellingMode() {
     $('#dropdown-model').css("display","none");
     $('#on-off').css("display", "");
 
+    // show extra tools for modelling mode
     $('#model-toolbar').css("display","");
+    $('.model-clears').css("display", "");
 
-    EVO.switchToModelingMode();
     analysisResult.colorVis = [];
 
     removeSlider();
@@ -517,12 +518,8 @@ function switchToModellingMode() {
 	$('.link-tools .tool-options').css("display","");
 
 	graph.allElements = null;
-
-	// Clear previous slider setup
-	//clearHistoryLog();
-
     mode = "Modelling";
-
+    EVO.switchToModelingMode();
 }
 
 /**
@@ -549,9 +546,29 @@ $('#btn-undo').on('click', _.bind(commandManager.undo, commandManager));
 $('#btn-redo').on('click', _.bind(commandManager.redo, commandManager));
 $('#btn-clear-all').on('click', function(){
     graph.clear();
+    // reset to default analysisRequest
     model.removeAnalysis();
+    // clear analysis sidebar
+    clearAnalysisConfigSidebar();
+    // remove all configs from analysisMap
+    analysisMap.clear();
 	// Delete cookie by setting expiry to past date
 	document.cookie='graph={}; expires=Thu, 18 Dec 2013 12:00:00 UTC';
+});
+$('#btn-clear-analysis').on('click', function() {
+    // reset to default analysisRequest while preserving userAssignmentsList
+    // restore initial userAssignmentsList - holds initial evals for each intention
+    analysisRequest.clearUserEvaluations();
+    // copy initial userAssignmentsList into otherwise default analysisRequest
+    var defaultRequest = new AnalysisRequest();
+    defaultRequest.userAssignmentsList = analysisRequest.userAssignmentsList;
+    analysisRequest = defaultRequest;
+    // clear analysis sidebar
+    clearAnalysisConfigSidebar();
+    // remove all configs from analysisMap
+    analysisMap.clear();
+	// add back first default analysis config
+    addFirstAnalysisConfig();
 });
 
 $('#btn-clear-elabel').on('click', function(){
@@ -862,7 +879,6 @@ function updateDataBase(graph, timestamp){
 
     //save elements in global variable for slider, used for toBackEnd funciton only
     graph.allElements = elements;
-    graph.elementsBeforeAnalysis = elements;
 
     //print each actor in the model
     for (var a = 0; a < actors.length; a++){

@@ -10,8 +10,7 @@ var analysisMap = new Map();
 var currAnalysisConfig;
 
 /**
- * Displays the analysis to the web app, by displaying the slider and the
- * history log
+ * Displays the analysis to the web app, by displaying the slider
  *
  * @param {Object} analysisResults
  *   Object which contains data gotten from back end
@@ -101,24 +100,6 @@ function removeSlider() {
     $('#sliderValue').text("");
 }
 
-/*
- * Creates and displays new slider after the user clicks a different
- * analysis from the history log. This function is called when
- * the user clicks a different analysis from the history log.
- *
- * @param {Object} currentAnalysis
- *   Contains data about the analysis that the back end performed
- * @param {Number} historyIndex
- *   A valid index for the array historyObject.allHistory, indicating
- *   which analysis/history log that the user clicked on
- */
-function switchHistory(currentAnalysis) {
-
-    sliderObject.sliderElement.noUiSlider.destroy();
-    createSlider(currentAnalysis, true);
-}
-
-
 /**
  * Adjusts the width of the slider depending on the width of the paper
  *
@@ -198,72 +179,6 @@ function updateNodeValues(nodeID, satValue) {
     }
 }
 
-
-/**
- * Display history log
- *
- */
-$('#history').on("click", ".log-elements", function(e){
-    var txt = $(e.target).text();
-    var step = parseInt(txt.split(":")[0].split(" ")[1]);
-    var log = historyObject.allHistory[step - 1];
-    var currentAnalysis = log.analysis;
-
-    switchHistory(currentAnalysis);
-
-    $(".log-elements:nth-of-type(" + historyObject.currentStep.toString() +")").css("background-color", "");
-    $(e.target).css("background-color", "#E8E8E8");
-
-    historyObject.currentStep = step;
-});
-
-
-/**
- * Clears the history log on the web application, and clears
- * historyObject to its inital state
- */
-function clearHistoryLog(){
-
-    $('.log-elements').remove();
-
-    if (sliderObject.sliderElement.noUiSlider) {
-        sliderObject.sliderElement.noUiSlider.destroy();
-    }
-
-    sliderObject.pastAnalysisValues = [];
-
-    historyObject.allHistory = [];
-    historyObject.currentStep = null;
-    historyObject.nextStep = 1;
-}
-
-
-/**
- * Updates history log in order to display the new analysis,
- * and updates the historyObject to store information about
- * the new analysis.
- *
- * @param {Object} currentAnalysis
- *   Contains data about the analysis that the back end performed
- * @param {Number} currentValueLimit
- */
-function updateHistory(currentAnalysis){
-    var logMessage = "Step " + historyObject.nextStep.toString() + ": " + currentAnalysis.type;
-    logMessage = logMessage.replace("<", "&lt");
-
-    if ($(".log-elements")) {
-        $(".log-elements").last().css("background-color", "");
-    }
-
-    $("#history").append("<a class='log-elements' style='background-color:#E8E8E8''>" + logMessage + "</a>");
-
-    historyObject.currentStep = historyObject.nextStep;
-    historyObject.nextStep++;
-
-    var log = new logObject(currentAnalysis, 0);
-    historyObject.allHistory.push(log);
-}
-
 /**
  * Function to set up the initial analysis configuration upon page load
  */
@@ -297,7 +212,6 @@ function loadAnalysis(){
     // Set default UAL to preserve in future configs
     defaultUAL = currAnalysisConfig.userAssignmentsList;
     analysisRequest = currAnalysisConfig.analysisRequest;
-    
     switchConfigs(firstConfigElement);
     // Refresh the sidebar to include the config vars
     refreshAnalysisUI();
@@ -317,6 +231,7 @@ function addNewAnalysisConfig(){
     // default Analysis Request needed for now for user assignments list
     // TODO: Look into perserving base UAL throughout analysisRequests
     var newRequest = new AnalysisRequest();
+    // give the new request the defaultUAL
     defaultUAL.forEach(userEval => newRequest.userAssignmentsList.push(userEval));
 
     var newConfig = new AnalysisConfiguration(id, newRequest);
