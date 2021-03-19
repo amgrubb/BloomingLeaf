@@ -338,7 +338,7 @@ function updateResults(){
         // remove analysis results from each config
         config.deleteResults();
     }
-    // remove all results from config div
+    // remove all results from all config divs
     $('.result-elements').remove();
 }
 
