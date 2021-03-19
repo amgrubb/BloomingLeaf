@@ -100,11 +100,11 @@ $('#tracking-decline').click(function() {
     $closeButton.trigger('click');
 });
 
-
 var graph;
 var paper;
 var stencil;
 var mode;
+var showEditingWarning = true;
 
 var model = new Model();
 var analysisRequest = new AnalysisRequest();

@@ -536,6 +536,26 @@ function switchToModellingMode() {
 	graph.allElements = null;
     mode = "Modelling";
     EVO.switchToModelingMode();
+
+    // Popup to warn user that changing model will clear results
+    // From analysis configuration sidebar
+    // Defaults to showing each time if user clicks out of box instead of selecting option
+    if (showEditingWarning){
+        const dialog = showAlert('Warning',
+        '<p>Changing the model will clear all ' +
+        'results from all configurations.</p><p>Do you wish to proceed?</p>' +
+        '<p><button type="button" class="model-editing"' +
+        ' id="repeat" style="width:100%">Yes' +
+        '</button><button type="button" ' +
+        'class="model-editing" id="singular" style="width:100%">Yes, please do not show this warning again ' +
+        '</button> <button type="button" class="model-editing"' +
+        ' id="decline" onclick="switchToAnalysisMode()" style="width:100%"> No, please return to analysis mode' +
+        '</button></p>',
+        window.innerWidth * 0.3, 'alert', 'warning');
+        document.querySelectorAll('.model-editing').forEach(function(button){
+            button.addEventListener('click', function(){dialog.close(); if(button.id == 'singular'){showEditingWarning = false;};});
+        });
+    }
 }
 
 /**
