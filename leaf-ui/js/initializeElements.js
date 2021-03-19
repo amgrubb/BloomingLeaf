@@ -121,7 +121,6 @@ var currentAnalysis;
 var elementList;
 
 // Analysis variables
-var historyObject = new historyObject();
 var sliderObject = new sliderObject();
 
 var loader;
@@ -337,9 +336,6 @@ stencil.load([goal, task, sgoal, res, act]);
 
 // Setup LinkInspector
 $('.inspector').append(linkInspector.el);
-
-// Interface set up for modelling mode on startup
-$('#history').css("display","none");
 
 // Set up Analysis Config Sidebar as none for startup on modelling mode
 $('#analysis-sidebar').css("display","none");

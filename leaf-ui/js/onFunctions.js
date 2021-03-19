@@ -399,7 +399,6 @@ function switchToAnalysisMode() {
 	analysisInspector.render();
 	$('.inspector').append(analysisInspector.el);
 	$('#stencil').css("display", "none");
-    $('#history').css("display", "none");
     $('#analysis-sidebar').css("display","");
 
     $('#analysis-btn').css("display", "none");
@@ -438,8 +437,8 @@ $('#model-cur-btn').on('click', function() {
 	savedAnalysisData.finalAssignedEpoch="";
     savedAnalysisData.finalValueTimePoints="";
     
-    analysisResult.isPathSim = false;
     analysisRequest.action = null;
+
 });
 
 
@@ -469,16 +468,15 @@ function revertNodeValuesToInitial() {
 
 		var intention = model.getIntentionByID(curr.attributes.nodeID);
 
-		/**var initSatVal = intention.getInitialSatValue();
+		var initSatVal = intention.getInitialSatValue();
 		if (initSatVal === '(no value)') {
             curr.attr('.satvalue/text', '');
-            curr.attr({text: {fill: 'black',stroke:'none','font-weight' : 'normal','font-size': 10}});
 
 		} else {
             curr.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
-            curr.attr({text: {fill: 'black',stroke:'none','font-weight' : 'normal','font-size': 10}});
-		}**/
-		curr.attr({text: {fill: 'black'}});
+		}
+        //curr.attr({text: {fill: 'black'}});
+        curr.attr({text: {fill: 'black',stroke:'none','font-weight' : 'normal','font-size': 10}});
 	}
 }
 
@@ -498,7 +496,6 @@ function switchToModellingMode() {
 	graph.elementsBeforeAnalysis = [];
 
     $('#stencil').css("display","");
-    $('#history').css("display","none");
     $('#analysis-sidebar').css("display","none");
     $('#btn-view-assignment').css("display","");
     $('#analysis-btn').css("display","");
@@ -512,7 +509,6 @@ function switchToModellingMode() {
     $('#model-toolbar').css("display","");
     $('.model-clears').css("display", "");
 
-    EVO.switchToModelingMode();
     analysisResult.colorVis = [];
 
     removeSlider();
@@ -522,12 +518,8 @@ function switchToModellingMode() {
 	$('.link-tools .tool-options').css("display","");
 
 	graph.allElements = null;
-
-	// Clear previous slider setup
-	//clearHistoryLog();
-
     mode = "Modelling";
-
+    EVO.switchToModelingMode();
 }
 
 /**
@@ -887,7 +879,6 @@ function updateDataBase(graph, timestamp){
 
     //save elements in global variable for slider, used for toBackEnd funciton only
     graph.allElements = elements;
-    graph.elementsBeforeAnalysis = elements;
 
     //print each actor in the model
     for (var a = 0; a < actors.length; a++){
