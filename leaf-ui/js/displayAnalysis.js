@@ -331,6 +331,18 @@ function updateResults(){
 }
 
 /**
+ * Clear all results from all configs
+ */
+ function clearResults(){
+    for(let config of analysisMap.values()) {
+        // remove analysis results from each config
+        config.deleteResults();
+    }
+    // remove all results from all config divs
+    $('.result-elements').remove();
+}
+
+/**
  * Refreshes analysisRequest values in the UI 
  * in places such as the right sidebar and absolute time points field
  */

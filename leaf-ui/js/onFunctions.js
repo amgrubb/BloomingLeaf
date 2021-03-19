@@ -410,6 +410,7 @@ function switchToAnalysisMode() {
     // hide extra tools from modelling mode
     $('#model-toolbar').css("display", "none");
     $('.model-clears').css("display", "none");
+    $('.analysis-clears').css("display", "");
 
 
 	$('#modeText').text("Analysis");
@@ -508,6 +509,7 @@ function switchToModellingMode() {
     // show extra tools for modelling mode
     $('#model-toolbar').css("display","");
     $('.model-clears').css("display", "");
+    $('.analysis-clears').css("display", "none");
 
     analysisResult.colorVis = [];
 
@@ -555,21 +557,6 @@ $('#btn-clear-all').on('click', function(){
 	// Delete cookie by setting expiry to past date
 	document.cookie='graph={}; expires=Thu, 18 Dec 2013 12:00:00 UTC';
 });
-$('#btn-clear-analysis').on('click', function() {
-    // reset to default analysisRequest while preserving userAssignmentsList
-    // restore initial userAssignmentsList - holds initial evals for each intention
-    analysisRequest.clearUserEvaluations();
-    // copy initial userAssignmentsList into otherwise default analysisRequest
-    var defaultRequest = new AnalysisRequest();
-    defaultRequest.userAssignmentsList = analysisRequest.userAssignmentsList;
-    analysisRequest = defaultRequest;
-    // clear analysis sidebar
-    clearAnalysisConfigSidebar();
-    // remove all configs from analysisMap
-    analysisMap.clear();
-	// add back first default analysis config
-    addFirstAnalysisConfig();
-});
 
 $('#btn-clear-elabel').on('click', function(){
 	var elements = graph.getElements();
@@ -613,6 +600,26 @@ $('#btn-clear-flabel').on('click', function(){
  */
 $('#btn-clear-cycle').on('click',function(){
     clearCycleHighlighting();
+});
+
+$('#btn-clear-analysis').on('click', function() {
+    // reset to default analysisRequest while preserving userAssignmentsList
+    // restore initial userAssignmentsList - holds initial evals for each intention
+    analysisRequest.clearUserEvaluations();
+    // copy initial userAssignmentsList into otherwise default analysisRequest
+    var defaultRequest = new AnalysisRequest();
+    defaultRequest.userAssignmentsList = analysisRequest.userAssignmentsList;
+    analysisRequest = defaultRequest;
+    // clear analysis sidebar
+    clearAnalysisConfigSidebar();
+    // remove all configs from analysisMap
+    analysisMap.clear();
+	// add back first default analysis config
+    addFirstAnalysisConfig();
+});
+
+$('#btn-clear-results').on('click', function() {
+    clearResults();
 });
 
 // Open as SVG
