@@ -393,8 +393,6 @@ function rename(configElement){
  * 
  * Also checks to make sure name does not currently exist in system
  * 
- * TODO: Add popup when name currently exists in system
- * 
  * @param {HTMLElement} configContainerElement 
  * @param {HTMLElement} configElement 
  * @param {HTMLElement} inputElement 
@@ -405,9 +403,8 @@ function setConfigName(configContainerElement, configElement, inputElement){
 
     // Check for duplicate names
     if(analysisMap.has(inputElement.value) && inputElement.value != configContainerElement.id){
-        console.log("Name taken error - add popup for this");
-        // Currently this just resets to original name to stop UI from getting messy
-        // TODO: Remove after adding popup
+        alert("Sorry, this name is already in use. Please try another.");
+        // Reset to original name
         inputElement.replaceWith(configElement);
         return;
     }
