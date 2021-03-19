@@ -43,7 +43,7 @@ function displayAnalysis(analysisResults, isSwitch){
  * @param {number} currentValueLimit
  * @param {Boolean} isSwitch
  *   True if the slider is being created when we are switching analysis results,
- *   false otherwise
+ *   false if new result from the back end
  */
 function createSlider(currentAnalysis, isSwitch) {
 
