@@ -219,6 +219,13 @@ class AnalysisConfiguration {
 	 * @param {Array.<AnalysisResult>} analysisResults 
 	 */
 	setResults(analysisResults) {
+		// if results not AnalysisResult class yet, convert to AnalysisResult
+		for (var i = 0; i < analysisResults.length; i++){
+			if (! (analysisResults[i] instanceof AnalysisResult)) {
+				analysisResults[i] = new AnalysisResult(analysisResults[i])
+			}
+		}
+
 		this.analysisResults = analysisResults;
 	}
 

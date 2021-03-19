@@ -407,7 +407,10 @@ function switchToAnalysisMode() {
     $('#dropdown-model').css("display", "");
     //$('#on-off').css("display", "none");
 
+    // hide extra tools from modelling mode
     $('#model-toolbar').css("display", "none");
+    $('.model-clears').css("display", "none");
+
 
 	$('#modeText').text("Analysis");
 
@@ -502,7 +505,9 @@ function switchToModellingMode() {
     $('#dropdown-model').css("display","none");
     $('#on-off').css("display", "");
 
+    // show extra tools for modelling mode
     $('#model-toolbar').css("display","");
+    $('.model-clears').css("display", "");
 
     analysisResult.colorVis = [];
 
@@ -541,9 +546,29 @@ $('#btn-undo').on('click', _.bind(commandManager.undo, commandManager));
 $('#btn-redo').on('click', _.bind(commandManager.redo, commandManager));
 $('#btn-clear-all').on('click', function(){
     graph.clear();
+    // reset to default analysisRequest
     model.removeAnalysis();
+    // clear analysis sidebar
+    clearAnalysisConfigSidebar();
+    // remove all configs from analysisMap
+    analysisMap.clear();
 	// Delete cookie by setting expiry to past date
 	document.cookie='graph={}; expires=Thu, 18 Dec 2013 12:00:00 UTC';
+});
+$('#btn-clear-analysis').on('click', function() {
+    // reset to default analysisRequest while preserving userAssignmentsList
+    // restore initial userAssignmentsList - holds initial evals for each intention
+    analysisRequest.clearUserEvaluations();
+    // copy initial userAssignmentsList into otherwise default analysisRequest
+    var defaultRequest = new AnalysisRequest();
+    defaultRequest.userAssignmentsList = analysisRequest.userAssignmentsList;
+    analysisRequest = defaultRequest;
+    // clear analysis sidebar
+    clearAnalysisConfigSidebar();
+    // remove all configs from analysisMap
+    analysisMap.clear();
+	// add back first default analysis config
+    addFirstAnalysisConfig();
 });
 
 $('#btn-clear-elabel').on('click', function(){
