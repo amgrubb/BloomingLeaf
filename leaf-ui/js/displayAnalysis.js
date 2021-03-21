@@ -188,8 +188,6 @@ function addFirstAnalysisConfig(){
     var id = "Configuration1"
     currAnalysisConfig = new AnalysisConfiguration(id, analysisRequest);
     analysisMap.set(id, currAnalysisConfig);
-    // Currently necessary for User Assignments List preservation
-    currAnalysisConfig.userAssignmentsList.forEach(uAL => defaultUAL.push(uAL));
     // Add the empty first config to the UI
     addAnalysisConfig(currAnalysisConfig);
 }
@@ -211,6 +209,7 @@ function loadAnalysis(){
     currAnalysisConfig = analysisMap.get(firstConfigElement.id);
     // Set default UAL to preserve in future configs
     currAnalysisConfig.userAssignmentsList.forEach(uAL => defaultUAL.push(uAL));
+    console.log('calling loadAnalysis');
     analysisRequest = currAnalysisConfig.analysisRequest;
     switchConfigs(firstConfigElement);
     // Refresh the sidebar to include the config vars
