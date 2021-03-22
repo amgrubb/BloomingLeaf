@@ -319,7 +319,10 @@ Actor.numOfCreatedInstances = 0;
 
 class AnalysisResult {
     /**
+     *
      * @param {Array.<String>} assignedEpoch
+     *   Each element represents an epoch with its assigned value
+     *   ex: ["TE2_2","TE1_32"]
      * @param {Array.<String>} timePointPath
      *   Each element represents a time point in the analysis
      *   ex: ['0', '7']
@@ -330,6 +333,11 @@ class AnalysisResult {
      *   represents the evaluation for that intention
      *   ex: {'0000': {'0': '0000', '7': 'DNE'}}
      *   (for nodeID 0000, time point 0, its satisfaction value is none)
+     * @param {Array.<Object>} elementList
+     *   List of elements containing analysis results
+     *   ex: [{id: "0001", status:["0010","0100"]}]
+     * @param {Number} timeScale
+     *   Number of time point in the analysis (except 0)
      */
 
     constructor() {
@@ -338,38 +346,23 @@ class AnalysisResult {
         this.timePointPathSize;
         this.elementList; 
         this.allSolution;
-        this.elementListPercentEvals;
         this.isPathSim = false; //used for slider visualization
         this.colorVis; //color visualization for analysis mode  
         this.selectedTimePoint; //find where slider is initialized and set timepoint in here. Also place it in update function
-        this.maxTimePoint;
-
-
-        this.elements;
-        this.numOfElements;
         this.timeScale;
-        this.relativeTime;
+        
+
+
+
+
+
     }
-    // Parse results from backend
-    initFromBackEnd = function (analysisResults) {
-        this.elements = [];
-        this.numOfElements = Number(analysisResults.elementList.length);
-        this.timeScale = Number(analysisResults.timePointPath.length) - 1;
-        this.relativeTime = [];
-
-        for (var i = 0; i < analysisResults.timePointPath.length; i++) {
-            var aux = analysisResults.timePointPath[i];
-            this.relativeTime.push(aux);
-        }
-
-        for (var i = 0; i < this.numOfElements; i++) {
-            //strips first element since it is already shown on graph
-            var results = analysisResults.elementList[i];
-            //results.pop(0);
-            this.elements.push(results)
-        }
+    getTimeScale() {
+        this.timeScale = Number(this.timePointPath.length) - 1;
         return this;
-    };
+    }
+
+
 
 
 

@@ -19,8 +19,8 @@ var currAnalysisConfig;
 function displayAnalysis(analysisResults){
 
     // Change the format of the analysis result from the back end
-    var currentAnalysis = new AnalysisResult();
-    currentAnalysis.initFromBackEnd(analysisResults);
+    var currentAnalysis = analysisResults;
+    currentAnalysis.getTimeScale();
     currentAnalysis.type = "Single Path";
 
     // Save data for get possible next states
@@ -47,7 +47,7 @@ function displayAnalysis(analysisResults){
 function createSlider(currentAnalysis, isSwitch) {
 
     var sliderMax = currentAnalysis.timeScale;
-    analysisResult.maxTimePoint = sliderMax;
+    //analysisResult.maxTimePoint = sliderMax;
     var density = (sliderMax < 25) ? (100 / sliderMax) : 4;
 
     noUiSlider.create(sliderObject.sliderElement, {
@@ -159,12 +159,12 @@ function updateSliderValues(sliderValue, currentAnalysis){
 
     var value = sliderValue;
     $('#sliderValue').text(value);
-    sliderObject.sliderValueElement.innerHTML = value + "|" + currentAnalysis.relativeTime[value];
+    sliderObject.sliderValueElement.innerHTML = value + "|" + currentAnalysis.timePointPath[value];
     // Update the analysisRequest current state.
     analysisRequest.currentState = sliderObject.sliderValueElement.innerHTML;
 
-	for (var i = 0; i < currentAnalysis.numOfElements; i++) {
-		var element = currentAnalysis.elements[i];
+    for (var i = 0; i < currentAnalysis.elementList.length; i++) {
+        var element = currentAnalysis.elementList[i];
 		updateNodeValues(element.id, element.status[value]);
     }
     
