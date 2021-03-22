@@ -208,8 +208,9 @@ function loadAnalysis(){
     firstConfigElement = document.getElementById('configurations').childNodes[0];
     currAnalysisConfig = analysisMap.get(firstConfigElement.id);
     // Set default UAL to preserve in future configs
+    // It is necessary to push each UAL seperately 
+    // to avoid the defaultUAL variable updating along with currAnalysisConfig
     currAnalysisConfig.userAssignmentsList.forEach(uAL => defaultUAL.push(uAL));
-    console.log('calling loadAnalysis');
     analysisRequest = currAnalysisConfig.analysisRequest;
     switchConfigs(firstConfigElement);
     // Refresh the sidebar to include the config vars
