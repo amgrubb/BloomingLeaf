@@ -264,6 +264,7 @@ function loadFromObject(obj) {
 	model.maxAbsTime = obj.model.maxAbsTime;
 
 	// store deep copy of model for detecting model changes
+	// copy is NOT of type Model
     previousModel = JSON.parse(JSON.stringify(model));
 
 	// Clear any previous analysis data 

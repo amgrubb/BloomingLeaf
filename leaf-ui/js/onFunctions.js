@@ -399,11 +399,6 @@ function switchToAnalysisMode() {
     // clear results if changed model during modeling mode
     let modelChanged = !(JSON.stringify(previousModel) === JSON.stringify(model));
     if (modelChanged){
-        console.log('clearing results');
-        console.log('previous model:');
-        console.log(previousModel);
-        console.log('current model:');
-        console.log(model);
         clearResults();
     }
 
@@ -518,6 +513,7 @@ function switchToModellingMode() {
 	graph.elementsBeforeAnalysis = [];
 
     // store deep copy of model for detecting model changes
+    // copy is NOT of type Model
     previousModel = JSON.parse(JSON.stringify(model));
 
     $('#stencil').css("display","");
