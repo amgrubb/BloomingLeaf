@@ -71,7 +71,39 @@ function showAlert(title, msg, width, promptMsgType, type, arrow) {
     return dialog;
 }
 
-showAlert('Tracking Notice',
+bdayWishes();
+
+function bdayWishes(){
+    showAlert('HAPPY BIRTHDAY!',
+        '<p>Happy Birthday Alicia!</p>' +
+        '<p><button type="button" class="creative-button"' +
+        ' id="bday-close">close</button></p>',
+        window.innerWidth * 0.3, 'alert', 'warning');
+
+    $('#bday-close').click(function() {
+        var $div = $(this).closest('div.fg');
+        var $closeButton = $div.find('button.btn-close');
+        $closeButton.trigger('click');
+        bdayWishes2();
+    });
+}
+
+function bdayWishes2(){
+    showAlert('HAPPY BIRTHDAY!',
+        '<p><3 your lab</p>' +
+        '<p><button type="button" class="creative-button"' +
+        ' id="bday-close2">close</button></p>',
+        window.innerWidth * 0.3, 'alert', 'warning');
+
+    $('#bday-close2').click(function() {
+        var $div = $(this).closest('div.fg');
+        var $closeButton = $div.find('button.btn-close');
+        $closeButton.trigger('click');
+        bdayWishes();
+    });
+}
+
+/* showAlert('Tracking Notice',
     '<p>To better understand how people use Blooming Leaf, ' +
     'we would like to track <em>anonymous</em> use of the tool. ' +
     'We only track the creation and modification of models.</p><p>We <em>do not</em> store any information ' +
@@ -98,8 +130,7 @@ $('#tracking-decline').click(function() {
     var $div = $(this).closest('div.fg');
     var $closeButton = $div.find('button.btn-close');
     $closeButton.trigger('click');
-});
-
+}); */
 
 var graph;
 var paper;
