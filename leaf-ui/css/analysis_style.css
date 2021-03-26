@@ -365,6 +365,7 @@ select::-ms-expand {
     border: none; 
     outline: none;
     box-shadow: -1px 0px 0px 0px rgb(71, 65, 65);
+    cursor: pointer;
   }
 
 #removeIntention{

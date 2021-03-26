@@ -10,7 +10,7 @@ var analysisMap = new Map();
 var currAnalysisConfig;
 //Global variable to keep track of the highest initial position
 //This acts like a global iterator to keep track of what the ID and initialPosition attribute of new configurations should be
-var highestPosition;
+var highestPosition = 1;
 
 /**
  * Displays the analysis to the web app, by displaying the slider and the
@@ -357,8 +357,12 @@ function addAnalysisConfig(config) {
         catch(e){console.error(e); alert(e);}
     });
 
-    //Whenever first or loaded configs are added, update the highest position
-    highestPosition = config.initialPosition;
+    // Whenever first or loaded configs are added, update the highest position 
+    // Check if configuration added has higher initialPosition than current highest position, prevents naming duplicates
+    if(config.initialPosition > highestPosition) {
+        highestPosition = config.initialPosition;
+        console.log(highestPosition);
+    }
 }
 
 /**
@@ -367,25 +371,25 @@ function addAnalysisConfig(config) {
  * @param {HTML Element} configElement
  */
 function removeConfiguration(configElement) {
-    // Remove full configuration div (includes results)
-    var configDiv = document.getElementById(configElement.id);
-    //returns a NodeList (not an array) of all configuration elements
-    var configList = document.querySelectorAll('.analysis-configuration');
-    //use configList to assign a new currAnalysisConfig
-    //ensures that deleted node is not re-added when in addNewAnalysisConfig
-    if (configList.length > 1){
-        for(i=0; i < configList.length; i++){
-            if (configList[i] == configDiv){
-                if (i == 0){currAnalysisConfig = analysisMap.get(configList[i+1].id);}
-                else{currAnalysisConfig = analysisMap.get(configList[i-1].id);}
-                break;
-            }
-        }
+    console.log(currAnalysisConfig);
+    // Access previous and next element in HTML div, check if they exist
+    // If they do exist, set currAnalysisConfig to them
+    // If not, throw exception
+    prevElement = $(configElement).prev();
+    nextElement = $(configElement).next();
+    if ($(prevElement).length){ currAnalysisConfig = analysisMap.get(prevElement.attr("id"));
+    }else if ($(nextElement).length){ currAnalysisConfig = analysisMap.get(nextElement.attr("id"));
     }else{
-        //Prevents undefined currAnalysisConfig
+        // Prevents undefined currAnalysisConfig
         throw "Must have at least one configuration";
     }
-    configDiv.remove();
+    // Highlight the currAnalysisConfig in the UI
+    newConfigElement = document.getElementById(currAnalysisConfig.id);
+    $(".config-elements").css("background-color", "");
+    $(".result-elements").css("background-color", "");
+    $(newConfigElement.querySelector('.config-elements')).css("background-color", "#A9A9A9");
+    // Remove full configuration div (includes results)
+    configElement.remove();
     // Remove config from analysisMap
     analysisMap.delete(configElement.id);
 
@@ -487,7 +491,8 @@ function rename(configElement){
         if (e.key == "Enter"){
             setConfigName(configContainerElement, configElement, this);
         }
-    }) 
+    })
+    console.log(highestPosition); 
 }
 
 /**
