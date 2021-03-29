@@ -14,8 +14,11 @@ var currAnalysisConfig;
  *
  * @param {Object} analysisResults
  *   Object which contains data gotten from back end
+ * @param {Boolean} isSwitch
+ *   True if we are switching analysis results,
+ *   false if new result from the back end
  */
-function displayAnalysis(analysisResults){
+function displayAnalysis(analysisResults, isSwitch){
 
     // Change the format of the analysis result from the back end
     var currentAnalysis = new analysisObject.initFromBackEnd(analysisResults);
@@ -29,7 +32,7 @@ function displayAnalysis(analysisResults){
     if (sliderObject.sliderElement.hasOwnProperty('noUiSlider')) {
         sliderObject.sliderElement.noUiSlider.destroy();
     }
-    createSlider(currentAnalysis, false);
+    createSlider(currentAnalysis, isSwitch);
 }
 
 /**
@@ -39,8 +42,8 @@ function displayAnalysis(analysisResults){
  *   Contains data about the analysis that the back end performed
  * @param {number} currentValueLimit
  * @param {Boolean} isSwitch
- *   True if the slider is being created when we are switching analysis's
- *   with the history log, false otherwise
+ *   True if the slider is being created when we are switching analysis results,
+ *   false if new result from the back end
  */
 function createSlider(currentAnalysis, isSwitch) {
 
@@ -66,6 +69,7 @@ function createSlider(currentAnalysis, isSwitch) {
     });
 
     // Set initial value of the slider
+    // 0 if switching between existing results; sliderMax if new result
     sliderObject.sliderElement.noUiSlider.set(isSwitch ? 0 : sliderMax);
     sliderObject.sliderElement.noUiSlider.on('update', function( values, handle ) {
         updateSliderValues(parseInt(values[handle]), currentAnalysis);
@@ -462,7 +466,7 @@ function switchResults(resultElement, configElement){
     $(resultElement).css("background-color", "#A9A9A9");
     $(configElement.querySelector(".config-elements")).css("background-color","#A9A9A9");
     refreshAnalysisUI();
-    displayAnalysis(currAnalysisResults);
+    displayAnalysis(currAnalysisResults, true);
     // show EVO analysis slider
     $('#modelingSlider').css("display", "none");
     $('#analysisSlider').css("display", "");
