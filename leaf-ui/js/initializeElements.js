@@ -100,11 +100,11 @@ $('#tracking-decline').click(function() {
     $closeButton.trigger('click');
 });
 
-
 var graph;
 var paper;
 var stencil;
 var mode;
+var showEditingWarning = true;
 
 var model = new Model();
 var analysisRequest = new AnalysisRequest();
@@ -119,9 +119,11 @@ var actorInspector =  new ActorInspector();
 var currentHalo;
 var currentAnalysis;
 var elementList;
+var defaultUAL = [];
 
 // Analysis variables
 var sliderObject = new sliderObject();
+var previousModel;
 
 var loader;
 var reader;

@@ -266,6 +266,10 @@ function loadFromObject(obj) {
 	model.constraints = getConstArr(obj.model.constraints);
 	model.maxAbsTime = obj.model.maxAbsTime;
 
+	// store deep copy of model for detecting model changes
+	// copy is NOT of type Model
+    previousModel = JSON.parse(JSON.stringify(model));
+
 	// Clear any previous analysis data 
 	if (analysisMap.size != 0) {
 		// Clear the analysisMap to remove any previous analysis

@@ -396,6 +396,22 @@ function switchToAnalysisMode() {
 	
 	removeHighlight();
 
+    // clear results if changed model during modeling mode
+    let modelChanged = !(JSON.stringify(previousModel) === JSON.stringify(model));
+    if (modelChanged){
+        clearResults();
+    }
+
+    // Checks if the user assignments list has changed since last switching to Assignments mode
+    // If so, update UAL for all configs and then update defaultUAL 
+    if(analysisRequest.userAssignmentsList !== defaultUAL){
+        for(let config of analysisMap.values()){
+            config.updateUAL(analysisRequest.userAssignmentsList);
+        }
+        defaultUAL = [];
+        analysisRequest.userAssignmentsList.forEach(uAL => defaultUAL.push(uAL));
+    }
+
 	analysisInspector.render();
 	$('.inspector').append(analysisInspector.el);
 	$('#stencil').css("display", "none");
@@ -496,6 +512,10 @@ function switchToModellingMode() {
 
 	graph.elementsBeforeAnalysis = [];
 
+    // store deep copy of model for detecting model changes
+    // copy is NOT of type Model
+    previousModel = JSON.parse(JSON.stringify(model));
+
     $('#stencil').css("display","");
     $('#analysis-sidebar').css("display","none");
     $('#btn-view-assignment').css("display","");
@@ -522,6 +542,26 @@ function switchToModellingMode() {
 	graph.allElements = null;
     mode = "Modelling";
     EVO.switchToModelingMode();
+
+    // Popup to warn user that changing model will clear results
+    // From analysis configuration sidebar
+    // Defaults to showing each time if user clicks out of box instead of selecting option
+    if (showEditingWarning){
+        const dialog = showAlert('Warning',
+        '<p>Changing the model will clear all ' +
+        'results from all configurations.</p><p>Do you wish to proceed?</p>' +
+        '<p><button type="button" class="model-editing"' +
+        ' id="repeat" style="width:100%">Yes' +
+        '</button><button type="button" ' +
+        'class="model-editing" id="singular" style="width:100%">Yes, please do not show this warning again ' +
+        '</button> <button type="button" class="model-editing"' +
+        ' id="decline" onclick="switchToAnalysisMode()" style="width:100%"> No, please return to analysis mode' +
+        '</button></p>',
+        window.innerWidth * 0.3, 'alert', 'warning');
+        document.querySelectorAll('.model-editing').forEach(function(button){
+            button.addEventListener('click', function(){dialog.close(); if(button.id == 'singular'){showEditingWarning = false;};});
+        });
+    }
 }
 
 /**
