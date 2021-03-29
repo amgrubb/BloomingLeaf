@@ -13,12 +13,10 @@ var currAnalysisConfig;
  * Displays the analysis to the web app, by displaying the slider and the
  * history log
  *
- * @param {Object} analysisResults
- *   Object which contains data gotten from back end
+ *@param {AnalysisResult} analysisResults
+ *   an AnalysisResult object that contains data gotten from back end
  */
-function displayAnalysis(analysisResults){
-
-    // Change the format of the analysis result from the back end
+function displayAnalysis(analysisResults) {
     var currentAnalysis = analysisResults;
     currentAnalysis.getTimeScale();
     currentAnalysis.type = "Single Path";
@@ -37,8 +35,8 @@ function displayAnalysis(analysisResults){
 /**
  * Creates a slider and displays it in the web app
  *
- * @param {Object} currentAnalysis
- *   Contains data about the analysis that the back end performed
+ * @param {AnalysisResult} currentAnalysis
+ *  an AnalysisResult object that contains data about the analysis that the back end performed
  * @param {number} currentValueLimit
  * @param {Boolean} isSwitch
  *   True if the slider is being created when we are switching analysis's
@@ -150,8 +148,8 @@ function adjustSliderWidth(maxValue){
  * @param {Number} sliderValue
  *   Current value of the slider
  * @param {Number} currentValueLimit
- * @param {Object} currentAnalysis
- *   Contains data about the analysis that the back end performed
+ * @param {AnalysisResult} currentAnalysis
+ *  an AnalysisResult object that contains data about the analysis that the back end performed
  */
 function updateSliderValues(sliderValue, currentAnalysis){
 
@@ -244,8 +242,8 @@ function clearHistoryLog(){
  * and updates the historyObject to store information about
  * the new analysis.
  *
- * @param {Object} currentAnalysis
- *   Contains data about the analysis that the back end performed
+ * @param {AnalysisResult} currentAnalysis
+ *  an AnalysisResult object that contains data about the analysis that the back end performed
  * @param {Number} currentValueLimit
  */
 function updateHistory(currentAnalysis){

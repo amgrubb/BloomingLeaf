@@ -319,7 +319,6 @@ Actor.numOfCreatedInstances = 0;
 
 class AnalysisResult {
     /**
-     *
      * @param {Array.<String>} assignedEpoch
      *   Each element represents an epoch with its assigned value
      *   ex: ["TE2_2","TE1_32"]
@@ -328,16 +327,23 @@ class AnalysisResult {
      *   ex: ['0', '7']
      * @param {Number} timePointPathSize
      *   Size of the time point path. ex: 2
-     * @param {Object} values
-     *   Maps an intention ID and time point to a string which
-     *   represents the evaluation for that intention
-     *   ex: {'0000': {'0': '0000', '7': 'DNE'}}
-     *   (for nodeID 0000, time point 0, its satisfaction value is none)
      * @param {Array.<Object>} elementList
      *   List of elements containing analysis results
      *   ex: [{id: "0001", status:["0010","0100"]}]
+     *   (for nodeID 0001, time point 0, its satisfaction value is "0010", timd point 1, its satisfaction value is "0100")
+     * @param {Boolean} isPathSim
+     *   Used for slider visualization
+     *   true if single path simulated
+     * @param {Array.<Object>} colorVis
+     *   Color visualization for analysis mode
+     *   ex: {numIntentions: 21, numTimePoints: 2, intentionListColorVis: Array(21), isColorBlind: false}
+     * @param {Number} selectedTimePoint
+     *   Finds where slider is initialized and sets timepoint in here
+     *   Also place it in update function
+     *   ex: 1
      * @param {Number} timeScale
      *   Number of time point in the analysis (except 0)
+     *   ex: 10
      */
 
     constructor() {
@@ -345,21 +351,16 @@ class AnalysisResult {
         this.timePointPath ;
         this.timePointPathSize;
         this.elementList; 
-        this.allSolution;
-        this.isPathSim = false; //used for slider visualization
-        this.colorVis; //color visualization for analysis mode  
-        this.selectedTimePoint; //find where slider is initialized and set timepoint in here. Also place it in update function
+        this.allSolution; //potentially deprecated
+        this.isPathSim = false;
+        this.colorVis;
+        this.selectedTimePoint;
         this.timeScale;
-        
-
-
-
-
-
     }
+
     getTimeScale() {
         this.timeScale = Number(this.timePointPath.length) - 1;
-        return this;
+
     }
 
 
