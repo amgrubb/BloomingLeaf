@@ -694,6 +694,7 @@ function createIntention(cell) {
         if (userIntention.nodeActorID !== '-') {
         	var actor = model.getActorByID(userIntention.nodeActorID);
         	actor.removeIntentionID(userIntention.nodeID, analysisRequest.userAssignmentsList);
+            console.log('removed node cell.on line 697');
         }
 
     });
@@ -1044,9 +1045,16 @@ paper.on('cell:pointerdown', function(cellView, evt, x, y) {
 		cell.reparent();
 	}
 
-	// Unembed cell so you can move it out of actor
+	// Unembed intention so you can move it out of actor
 	if (cell.get('parent') && !(cell instanceof joint.dia.Link)) {
 		graph.getCell(cell.get('parent')).unembed(cell);
+
+        // remove nodeID from actor intentionIDs list
+        var userIntention = model.getIntentionByID(cell.attributes.nodeID);
+        if (userIntention.nodeActorID !== '-') {
+            var actor = model.getActorByID(userIntention.nodeActorID);
+            actor.removeIntentionID(userIntention.nodeID, analysisRequest.userAssignmentsList);
+        }
 	}
 });
 
@@ -1247,7 +1255,10 @@ graph.on('remove', function(cell) {
         // from the actor
         if (userIntention.nodeActorID !== '-') {
             var actor = model.getActorByID(userIntention.nodeActorID);
+            console.log(model);
             actor.removeIntentionID(userIntention.nodeID,analysisRequest.userAssignmentsList);
+            console.log('removed node graph.on line 1251');
+            console.log(model);
         }
         model.removeIntention(userIntention.nodeID);
     }
