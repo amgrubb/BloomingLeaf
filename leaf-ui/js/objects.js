@@ -259,7 +259,7 @@ class AnalysisConfiguration {
 	/**
 	 * Updates user assignments list param for config and for config's analysisRequest
 	 */
-	updateUal(userAssignmentsList){
+	updateUAL(userAssignmentsList){
 		this.userAssignmentsList = userAssignmentsList;
 		this.analysisRequest.userAssignmentsList = userAssignmentsList;
 	}

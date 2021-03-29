@@ -406,7 +406,7 @@ function switchToAnalysisMode() {
     // If so, update UAL for all configs and then update defaultUAL 
     if(analysisRequest.userAssignmentsList !== defaultUAL){
         for(let config of analysisMap.values()){
-            config.updateUal(analysisRequest.userAssignmentsList);
+            config.updateUAL(analysisRequest.userAssignmentsList);
         }
         defaultUAL = [];
         analysisRequest.userAssignmentsList.forEach(uAL => defaultUAL.push(uAL));
