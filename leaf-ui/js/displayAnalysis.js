@@ -100,17 +100,7 @@ function removeSlider() {
     $('#sliderValue').text("");
 }
 
-/*
- * Creates and displays new slider after the user clicks a different
- * analysis from the history log. This function is called when
- * the user clicks a different analysis from the history log.
- *
- * @param {Object} currentAnalysis
- *   Contains data about the analysis that the back end performed
- * @param {Number} historyIndex
- *   A valid index for the array historyObject.allHistory, indicating
- *   which analysis/history log that the user clicked on
- */
+
 function switchHistory(currentAnalysis) {
 
     sliderObject.sliderElement.noUiSlider.destroy();
