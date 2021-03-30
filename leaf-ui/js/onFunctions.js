@@ -410,7 +410,7 @@ function switchToAnalysisMode() {
 
     $('#model-toolbar').css("display", "none");
 
-	$('#modeText').text("Analysis");
+	$('#modeText').text("Analysis View");
 
 	// Disable link settings
 	$('.link-tools .tool-remove').css("display", "none");
@@ -496,6 +496,7 @@ function switchToModellingMode() {
     analysisResult.colorVis = [];
 
 	$('#sliderValue').text("");
+    $('#modeText').text("Modeling View");
 
 	// Reinstantiate link settings
 	$('.link-tools .tool-remove').css("display","");
