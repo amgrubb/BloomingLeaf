@@ -495,6 +495,8 @@ function revertNodeValuesToInitial() {
         //curr.attr({text: {fill: 'black'}});
         curr.attr({text: {fill: 'black',stroke:'none','font-weight' : 'normal','font-size': 10}});
 	}
+    // Remove slider
+    removeSlider();
 }
 
 /**
@@ -532,8 +534,6 @@ function switchToModellingMode() {
     $('.analysis-clears').css("display", "none");
 
     analysisResult.colorVis = [];
-
-    removeSlider();
 
 	// Reinstantiate link settings
 	$('.link-tools .tool-remove').css("display","");
@@ -656,6 +656,8 @@ $('#btn-clear-analysis').on('click', function() {
     analysisMap.clear();
 	// add back first default analysis config
     addFirstAnalysisConfig();
+    // reset graph to initial values
+    revertNodeValuesToInitial();
 });
 
 $('#btn-clear-results').on('click', function() {
