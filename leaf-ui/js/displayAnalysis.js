@@ -12,20 +12,19 @@ var currAnalysisConfig;
 /**
  * Displays the analysis to the web app, by displaying the slider
  *
- * @param {Object} analysisResults
- *   Object which contains data gotten from back end
+ * @param {AnalysisResult} analysisResult
+ *   AnalysisResult object returned from backend
  * @param {Boolean} isSwitch
  *   True if we are switching analysis results,
  *   false if new result from the back end
  */
-function displayAnalysis(analysisResults, isSwitch){
-    var currentAnalysis = analysisResults;
-    currentAnalysis.getTimeScale();
+function displayAnalysis(analysisResult, isSwitch){
+    var currentAnalysis = analysisResult;
+    currentAnalysis.setTimeScale();
     currentAnalysis.type = "Single Path";
 
     // Save data for get possible next states
-    // TODO double check this still works
-    savedAnalysisData.singlePathResult = analysisResults;
+    savedAnalysisData.singlePathResult = analysisResult;
 
     // Check if slider has already been initialized
     if (sliderObject.sliderElement.hasOwnProperty('noUiSlider')) {

@@ -100,7 +100,7 @@ function responseFunc(isGetNextSteps, response){
 				console.log(JSON.stringify(results)); 
 				savedAnalysisData.singlePathResult = results;
 				analysisResult = convertToAnalysisResult(results);
-				displayAnalysis(results, false);
+				displayAnalysis(analysisResult, false);
 
 				// Save result to the corresponding analysis configuration object
 				currAnalysisConfig.addResult(analysisResult);
@@ -132,6 +132,7 @@ function executeJava(isGetNextSteps){
 
 
 function getFileResults(isGetNextSteps){
+	console.log('getFileResults()');
 	var pathToCGI = "./cgi-bin/fileRead.cgi";
 
 	//Executing action to send backend
@@ -166,17 +167,14 @@ function getFileResults(isGetNextSteps){
                     console.log("in backendcomm, saving all next state results");
 					open_analysis_viewer();
 				}else{
+					analysisResult = convertToAnalysisResult(results);
                     savedAnalysisData.singlePathResult = results;
-                    analysisResult.assignedEpoch = results.assignedEpoch;
-                    analysisResult.timePointPath = results.timePointPath;
-                    analysisResult.timePointPathSize = results.timePointPathSize;
-                    analysisResult.elementList = results.elementList;
-                    analysisResult.allSolution = results.allSolution;
                     analysisRequest.previousAnalysis = analysisResult;
                     console.log("previousAnalysis");
 					console.log(analysisRequest.previousAnalysis);
-					//pass displayAnalysis an AnalysisResult object
-					displayAnalysis(results, false);
+					//pass in an AnalysisResult object
+					
+					displayAnalysis(analysisResult, false);
 				}
 			}
 		}
