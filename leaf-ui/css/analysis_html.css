@@ -129,15 +129,6 @@ body {
   background-color: rgba(90, 90, 90, 1);
 }
 
-#history a{
-  padding: 16px;
-  display: block;
-}
-
-#history a:hover {
-  background-color: #E8E8E8;
-}
-
 /* Right Panel */
 .inspector {
   left: auto;

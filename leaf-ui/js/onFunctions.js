@@ -396,10 +396,25 @@ function switchToAnalysisMode() {
 	
 	removeHighlight();
 
+    // clear results if changed model during modeling mode
+    let modelChanged = !(JSON.stringify(previousModel) === JSON.stringify(model));
+    if (modelChanged){
+        clearResults();
+    }
+
+    // Checks if the user assignments list has changed since last switching to Assignments mode
+    // If so, update UAL for all configs and then update defaultUAL 
+    if(analysisRequest.userAssignmentsList !== defaultUAL){
+        for(let config of analysisMap.values()){
+            config.updateUAL(analysisRequest.userAssignmentsList);
+        }
+        defaultUAL = [];
+        analysisRequest.userAssignmentsList.forEach(uAL => defaultUAL.push(uAL));
+    }
+
 	analysisInspector.render();
 	$('.inspector').append(analysisInspector.el);
 	$('#stencil').css("display", "none");
-    $('#history').css("display", "none");
     $('#analysis-sidebar').css("display","");
 
     $('#analysis-btn').css("display", "none");
@@ -408,7 +423,11 @@ function switchToAnalysisMode() {
     $('#dropdown-model').css("display", "");
     //$('#on-off').css("display", "none");
 
+    // hide extra tools from modelling mode
     $('#model-toolbar').css("display", "none");
+    $('.model-clears').css("display", "none");
+    $('.analysis-clears').css("display", "");
+
 
 	$('#modeText').text("Analysis");
 
@@ -435,8 +454,8 @@ $('#model-cur-btn').on('click', function() {
 	savedAnalysisData.finalAssignedEpoch="";
     savedAnalysisData.finalValueTimePoints="";
     
-    analysisResult.isPathSim = false;
     analysisRequest.action = null;
+
 });
 
 
@@ -466,16 +485,15 @@ function revertNodeValuesToInitial() {
 
 		var intention = model.getIntentionByID(curr.attributes.nodeID);
 
-		/**var initSatVal = intention.getInitialSatValue();
+		var initSatVal = intention.getInitialSatValue();
 		if (initSatVal === '(no value)') {
             curr.attr('.satvalue/text', '');
-            curr.attr({text: {fill: 'black',stroke:'none','font-weight' : 'normal','font-size': 10}});
 
 		} else {
             curr.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
-            curr.attr({text: {fill: 'black',stroke:'none','font-weight' : 'normal','font-size': 10}});
-		}**/
-		curr.attr({text: {fill: 'black'}});
+		}
+        //curr.attr({text: {fill: 'black'}});
+        curr.attr({text: {fill: 'black',stroke:'none','font-weight' : 'normal','font-size': 10}});
 	}
 }
 
@@ -494,8 +512,11 @@ function switchToModellingMode() {
 
 	graph.elementsBeforeAnalysis = [];
 
+    // store deep copy of model for detecting model changes
+    // copy is NOT of type Model
+    previousModel = JSON.parse(JSON.stringify(model));
+
     $('#stencil').css("display","");
-    $('#history').css("display","none");
     $('#analysis-sidebar').css("display","none");
     $('#btn-view-assignment').css("display","");
     $('#analysis-btn').css("display","");
@@ -505,9 +526,11 @@ function switchToModellingMode() {
     $('#dropdown-model').css("display","none");
     $('#on-off').css("display", "");
 
+    // show extra tools for modelling mode
     $('#model-toolbar').css("display","");
+    $('.model-clears').css("display", "");
+    $('.analysis-clears').css("display", "none");
 
-    EVO.switchToModelingMode();
     analysisResult.colorVis = [];
 
     removeSlider();
@@ -517,12 +540,28 @@ function switchToModellingMode() {
 	$('.link-tools .tool-options').css("display","");
 
 	graph.allElements = null;
-
-	// Clear previous slider setup
-	//clearHistoryLog();
-
     mode = "Modelling";
+    EVO.switchToModelingMode();
 
+    // Popup to warn user that changing model will clear results
+    // From analysis configuration sidebar
+    // Defaults to showing each time if user clicks out of box instead of selecting option
+    if (showEditingWarning){
+        const dialog = showAlert('Warning',
+        '<p>Changing the model will clear all ' +
+        'results from all configurations.</p><p>Do you wish to proceed?</p>' +
+        '<p><button type="button" class="model-editing"' +
+        ' id="repeat" style="width:100%">Yes' +
+        '</button><button type="button" ' +
+        'class="model-editing" id="singular" style="width:100%">Yes, please do not show this warning again ' +
+        '</button> <button type="button" class="model-editing"' +
+        ' id="decline" onclick="switchToAnalysisMode()" style="width:100%"> No, please return to analysis mode' +
+        '</button></p>',
+        window.innerWidth * 0.3, 'alert', 'warning');
+        document.querySelectorAll('.model-editing').forEach(function(button){
+            button.addEventListener('click', function(){dialog.close(); if(button.id == 'singular'){showEditingWarning = false;};});
+        });
+    }
 }
 
 /**
@@ -549,7 +588,12 @@ $('#btn-undo').on('click', _.bind(commandManager.undo, commandManager));
 $('#btn-redo').on('click', _.bind(commandManager.redo, commandManager));
 $('#btn-clear-all').on('click', function(){
     graph.clear();
+    // reset to default analysisRequest
     model.removeAnalysis();
+    // clear analysis sidebar
+    clearAnalysisConfigSidebar();
+    // remove all configs from analysisMap
+    analysisMap.clear();
 	// Delete cookie by setting expiry to past date
 	document.cookie='graph={}; expires=Thu, 18 Dec 2013 12:00:00 UTC';
 });
@@ -596,6 +640,26 @@ $('#btn-clear-flabel').on('click', function(){
  */
 $('#btn-clear-cycle').on('click',function(){
     clearCycleHighlighting();
+});
+
+$('#btn-clear-analysis').on('click', function() {
+    // reset to default analysisRequest while preserving userAssignmentsList
+    // restore initial userAssignmentsList - holds initial evals for each intention
+    analysisRequest.clearUserEvaluations();
+    // copy initial userAssignmentsList into otherwise default analysisRequest
+    var defaultRequest = new AnalysisRequest();
+    defaultRequest.userAssignmentsList = analysisRequest.userAssignmentsList;
+    analysisRequest = defaultRequest;
+    // clear analysis sidebar
+    clearAnalysisConfigSidebar();
+    // remove all configs from analysisMap
+    analysisMap.clear();
+	// add back first default analysis config
+    addFirstAnalysisConfig();
+});
+
+$('#btn-clear-results').on('click', function() {
+    clearResults();
 });
 
 // Open as SVG
@@ -862,7 +926,6 @@ function updateDataBase(graph, timestamp){
 
     //save elements in global variable for slider, used for toBackEnd funciton only
     graph.allElements = elements;
-    graph.elementsBeforeAnalysis = elements;
 
     //print each actor in the model
     for (var a = 0; a < actors.length; a++){

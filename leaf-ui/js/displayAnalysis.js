@@ -10,13 +10,15 @@ var analysisMap = new Map();
 var currAnalysisConfig;
 
 /**
- * Displays the analysis to the web app, by displaying the slider and the
- * history log
+ * Displays the analysis to the web app, by displaying the slider
  *
- *@param {AnalysisResult} analysisResults
- *   an AnalysisResult object that contains data gotten from back end
+ * @param {Object} analysisResults
+ *   Object which contains data gotten from back end
+ * @param {Boolean} isSwitch
+ *   True if we are switching analysis results,
+ *   false if new result from the back end
  */
-function displayAnalysis(analysisResults) {
+function displayAnalysis(analysisResults, isSwitch){
     var currentAnalysis = analysisResults;
     currentAnalysis.getTimeScale();
     currentAnalysis.type = "Single Path";
@@ -29,7 +31,7 @@ function displayAnalysis(analysisResults) {
     if (sliderObject.sliderElement.hasOwnProperty('noUiSlider')) {
         sliderObject.sliderElement.noUiSlider.destroy();
     }
-    createSlider(currentAnalysis, false);
+    createSlider(currentAnalysis, isSwitch);
 }
 
 /**
@@ -39,8 +41,8 @@ function displayAnalysis(analysisResults) {
  *  an AnalysisResult object that contains data about the analysis that the back end performed
  * @param {number} currentValueLimit
  * @param {Boolean} isSwitch
- *   True if the slider is being created when we are switching analysis's
- *   with the history log, false otherwise
+ *   True if the slider is being created when we are switching analysis results,
+ *   false if new result from the back end
  */
 function createSlider(currentAnalysis, isSwitch) {
 
@@ -66,6 +68,7 @@ function createSlider(currentAnalysis, isSwitch) {
     });
 
     // Set initial value of the slider
+    // 0 if switching between existing results; sliderMax if new result
     sliderObject.sliderElement.noUiSlider.set(isSwitch ? 0 : sliderMax);
     sliderObject.sliderElement.noUiSlider.on('update', function( values, handle ) {
         updateSliderValues(parseInt(values[handle]), currentAnalysis);
@@ -99,14 +102,6 @@ function removeSlider() {
     }
     $('#sliderValue').text("");
 }
-
-
-function switchHistory(currentAnalysis) {
-
-    sliderObject.sliderElement.noUiSlider.destroy();
-    createSlider(currentAnalysis, true);
-}
-
 
 /**
  * Adjusts the width of the slider depending on the width of the paper
@@ -187,72 +182,6 @@ function updateNodeValues(nodeID, satValue) {
     }
 }
 
-
-/**
- * Display history log
- *
- */
-$('#history').on("click", ".log-elements", function(e){
-    var txt = $(e.target).text();
-    var step = parseInt(txt.split(":")[0].split(" ")[1]);
-    var log = historyObject.allHistory[step - 1];
-    var currentAnalysis = log.analysis;
-
-    switchHistory(currentAnalysis);
-
-    $(".log-elements:nth-of-type(" + historyObject.currentStep.toString() +")").css("background-color", "");
-    $(e.target).css("background-color", "#E8E8E8");
-
-    historyObject.currentStep = step;
-});
-
-
-/**
- * Clears the history log on the web application, and clears
- * historyObject to its inital state
- */
-function clearHistoryLog(){
-
-    $('.log-elements').remove();
-
-    if (sliderObject.sliderElement.noUiSlider) {
-        sliderObject.sliderElement.noUiSlider.destroy();
-    }
-
-    sliderObject.pastAnalysisValues = [];
-
-    historyObject.allHistory = [];
-    historyObject.currentStep = null;
-    historyObject.nextStep = 1;
-}
-
-
-/**
- * Updates history log in order to display the new analysis,
- * and updates the historyObject to store information about
- * the new analysis.
- *
- * @param {AnalysisResult} currentAnalysis
- *  an AnalysisResult object that contains data about the analysis that the back end performed
- * @param {Number} currentValueLimit
- */
-function updateHistory(currentAnalysis){
-    var logMessage = "Step " + historyObject.nextStep.toString() + ": " + currentAnalysis.type;
-    logMessage = logMessage.replace("<", "&lt");
-
-    if ($(".log-elements")) {
-        $(".log-elements").last().css("background-color", "");
-    }
-
-    $("#history").append("<a class='log-elements' style='background-color:#E8E8E8''>" + logMessage + "</a>");
-
-    historyObject.currentStep = historyObject.nextStep;
-    historyObject.nextStep++;
-
-    var log = new logObject(currentAnalysis, 0);
-    historyObject.allHistory.push(log);
-}
-
 /**
  * Function to set up the initial analysis configuration upon page load
  */
@@ -262,8 +191,6 @@ function addFirstAnalysisConfig(){
     var id = "Configuration1"
     currAnalysisConfig = new AnalysisConfiguration(id, analysisRequest);
     analysisMap.set(id, currAnalysisConfig);
-    // Currently necessary for User Assignments List preservation
-    defaultUAL = currAnalysisConfig.userAssignmentsList;
     // Add the empty first config to the UI
     addAnalysisConfig(currAnalysisConfig);
 }
@@ -284,9 +211,10 @@ function loadAnalysis(){
     firstConfigElement = document.getElementById('configurations').childNodes[0];
     currAnalysisConfig = analysisMap.get(firstConfigElement.id);
     // Set default UAL to preserve in future configs
-    defaultUAL = currAnalysisConfig.userAssignmentsList;
+    // It is necessary to push each UAL seperately 
+    // to avoid the defaultUAL variable updating along with currAnalysisConfig
+    currAnalysisConfig.userAssignmentsList.forEach(uAL => defaultUAL.push(uAL));
     analysisRequest = currAnalysisConfig.analysisRequest;
-    
     switchConfigs(firstConfigElement);
     // Refresh the sidebar to include the config vars
     refreshAnalysisUI();
@@ -306,6 +234,7 @@ function addNewAnalysisConfig(){
     // default Analysis Request needed for now for user assignments list
     // TODO: Look into perserving base UAL throughout analysisRequests
     var newRequest = new AnalysisRequest();
+    // give the new request the defaultUAL
     defaultUAL.forEach(userEval => newRequest.userAssignmentsList.push(userEval));
 
     var newConfig = new AnalysisConfiguration(id, newRequest);
@@ -405,6 +334,18 @@ function updateResults(){
 }
 
 /**
+ * Clear all results from all configs
+ */
+ function clearResults(){
+    for(let config of analysisMap.values()) {
+        // remove analysis results from each config
+        config.deleteResults();
+    }
+    // remove all results from all config divs
+    $('.result-elements').remove();
+}
+
+/**
  * Refreshes analysisRequest values in the UI 
  * in places such as the right sidebar and absolute time points field
  */
@@ -455,8 +396,6 @@ function rename(configElement){
  * 
  * Also checks to make sure name does not currently exist in system
  * 
- * TODO: Add popup when name currently exists in system
- * 
  * @param {HTMLElement} configContainerElement 
  * @param {HTMLElement} configElement 
  * @param {HTMLElement} inputElement 
@@ -467,9 +406,8 @@ function setConfigName(configContainerElement, configElement, inputElement){
 
     // Check for duplicate names
     if(analysisMap.has(inputElement.value) && inputElement.value != configContainerElement.id){
-        console.log("Name taken error - add popup for this");
-        // Currently this just resets to original name to stop UI from getting messy
-        // TODO: Remove after adding popup
+        alert("Sorry, this name is already in use. Please try another.");
+        // Reset to original name
         inputElement.replaceWith(configElement);
         return;
     }
@@ -527,7 +465,7 @@ function switchResults(resultElement, configElement){
     $(resultElement).css("background-color", "#A9A9A9");
     $(configElement.querySelector(".config-elements")).css("background-color","#A9A9A9");
     refreshAnalysisUI();
-    displayAnalysis(currAnalysisResults);
+    displayAnalysis(currAnalysisResults, true);
     // show EVO analysis slider
     $('#modelingSlider').css("display", "none");
     $('#analysisSlider').css("display", "");

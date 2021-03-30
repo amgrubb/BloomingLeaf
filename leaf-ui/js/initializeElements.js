@@ -100,11 +100,11 @@ $('#tracking-decline').click(function() {
     $closeButton.trigger('click');
 });
 
-
 var graph;
 var paper;
 var stencil;
 var mode;
+var showEditingWarning = true;
 
 var model = new Model();
 var analysisRequest = new AnalysisRequest();
@@ -119,10 +119,11 @@ var actorInspector =  new ActorInspector();
 var currentHalo;
 var currentAnalysis;
 var elementList;
+var defaultUAL = [];
 
 // Analysis variables
-var historyObject = new historyObject();
 var sliderObject = new sliderObject();
+var previousModel;
 
 var loader;
 var reader;
@@ -337,9 +338,6 @@ stencil.load([goal, task, sgoal, res, act]);
 
 // Setup LinkInspector
 $('.inspector').append(linkInspector.el);
-
-// Interface set up for modelling mode on startup
-$('#history').css("display","none");
 
 // Set up Analysis Config Sidebar as none for startup on modelling mode
 $('#analysis-sidebar').css("display","none");
