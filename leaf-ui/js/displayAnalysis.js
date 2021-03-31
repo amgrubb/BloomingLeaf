@@ -273,8 +273,9 @@ function updateHistory(currentAnalysis){
 function addFirstAnalysisConfig(){
     $(".config-elements").css("background-color", "");
     $(".result-elements").css("background-color", "");
-    var id = "Configuration1";
-    currAnalysisConfig = new AnalysisConfiguration(id, analysisRequest, 1);
+    highestPosition = 1;
+    var id = ("Configuration" + highestPosition);
+    currAnalysisConfig = new AnalysisConfiguration(id, analysisRequest, highestPosition);
     analysisMap.set(id, currAnalysisConfig);
     // Currently necessary for User Assignments List preservation
     defaultUAL = currAnalysisConfig.userAssignmentsList;
@@ -294,6 +295,11 @@ function loadAnalysis(){
         addAnalysisConfig(config);
         // Add the results (if any) to the sidebar
         loadResults(config);
+        // Whenever first or loaded configs are added, update the highest position 
+        // Check if configuration added has higher initialPosition than current highest position, prevents naming duplicates
+        if(config.initialPosition > highestPosition) {
+            highestPosition = config.initialPosition;
+        }
     }
     firstConfigElement = document.getElementById('configurations').childNodes[0];
     currAnalysisConfig = analysisMap.get(firstConfigElement.id);
@@ -352,36 +358,31 @@ function addAnalysisConfig(config) {
     mainElement.querySelector('.config-elements').addEventListener('dblclick', function(){rename(this /** Config element */)});
     mainElement.querySelector('.config-elements').addEventListener('click', function(){switchConfigs(this.parentElement /** Config element */)});
     mainElement.querySelector('.dropdown-button').addEventListener('click', function(){toggleDropdown(this.parentElement.parentElement /** Config element */)});
-    mainElement.querySelector('.deleteconfig-button').addEventListener('click', function(){ 
-        try{removeConfiguration(this.parentElement.parentElement)/** Config element */} 
-        catch(e){console.error(e); alert(e);}
-    });
-
-    // Whenever first or loaded configs are added, update the highest position 
-    // Check if configuration added has higher initialPosition than current highest position, prevents naming duplicates
-    if(config.initialPosition > highestPosition) {
-        highestPosition = config.initialPosition;
-        console.log(highestPosition);
-    }
+    mainElement.querySelector('.deleteconfig-button').addEventListener('click', function(){removeConfiguration(this.parentElement.parentElement)/** Config element */});
 }
 
 /**
  * Removes an analysis configuration from the analysisMap and UI sidebar
- * TODO implement with a button
  * @param {HTML Element} configElement
  */
 function removeConfiguration(configElement) {
-    console.log(currAnalysisConfig);
     // Access previous and next element in HTML div, check if they exist
-    // If they do exist, set currAnalysisConfig to them
-    // If not, throw exception
+    // If not, populate with new default configuration, reset highestPosition to 1
     prevElement = $(configElement).prev();
     nextElement = $(configElement).next();
-    if ($(prevElement).length){ currAnalysisConfig = analysisMap.get(prevElement.attr("id"));
-    }else if ($(nextElement).length){ currAnalysisConfig = analysisMap.get(nextElement.attr("id"));
-    }else{
-        // Prevents undefined currAnalysisConfig
-        throw "Must have at least one configuration";
+    if ((!$(prevElement).length) && (!$(nextElement).length)) {
+        // Remove full configuration div (includes results)
+        configElement.remove();
+        // Remove config from analysisMap
+        // We have to do this here in case we are deleting a config with the name Configuration1, in order to avoid removing the new configuration from the analysisMap
+        analysisMap.delete(configElement.id);
+        addFirstAnalysisConfig();
+        return;
+    }else if(currAnalysisConfig.id == configElement.id){
+       // If prev and next do exist, and the currently selected configuration is the one we are deleting, set currAnalysisConfig to prev element if available or next element if not
+       // If the curreAnalysisConfig is not the one we are deleting, keep it
+        if ($(prevElement).length){ currAnalysisConfig = analysisMap.get(prevElement.attr("id"));
+        }else if ($(nextElement).length){ currAnalysisConfig = analysisMap.get(nextElement.attr("id"));} 
     }
     // Highlight the currAnalysisConfig in the UI
     newConfigElement = document.getElementById(currAnalysisConfig.id);
@@ -392,7 +393,6 @@ function removeConfiguration(configElement) {
     configElement.remove();
     // Remove config from analysisMap
     analysisMap.delete(configElement.id);
-
 }
 
 /**
@@ -492,7 +492,6 @@ function rename(configElement){
             setConfigName(configContainerElement, configElement, this);
         }
     })
-    console.log(highestPosition); 
 }
 
 /**
