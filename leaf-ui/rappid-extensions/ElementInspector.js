@@ -74,7 +74,7 @@ var ElementInspector = Backbone.View.extend({
             '<textarea class="cell-attrs-text"></textarea>',
             '<label>Initial Satisfaction Value:</label>',
             '<select id="init-sat-value">',
-                '<option value="(no value)"> (no value) </option>',
+                '<option value="(no value)" disabled selected> (no value) </option>',
                 '<option value=none> None (⊥, ⊥)</option>',
 				'<option value=satisfied> Satisfied (F, ⊥)</option>',
                 '<option value=partiallysatisfied> Partially Satisfied (P, ⊥) </option>',
