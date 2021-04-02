@@ -8,6 +8,9 @@
 var analysisMap = new Map();
 // Global variable to keep track of what analysis configuration is currently being used
 var currAnalysisConfig;
+//Global variable to keep track of the highest initial position
+//This acts like a global iterator to keep track of what the ID and initialPosition attribute of new configurations should be
+var highestPosition = 1;
 
 /**
  * Displays the analysis to the web app, by displaying the slider
@@ -189,8 +192,9 @@ function updateNodeValues(nodeID, satValue) {
 function addFirstAnalysisConfig(){
     $(".config-elements").css("background-color", "");
     $(".result-elements").css("background-color", "");
-    var id = "Configuration1"
-    currAnalysisConfig = new AnalysisConfiguration(id, analysisRequest);
+    highestPosition = 1;
+    var id = ("Configuration" + highestPosition);
+    currAnalysisConfig = new AnalysisConfiguration(id, analysisRequest, highestPosition);
     analysisMap.set(id, currAnalysisConfig);
     // Add the empty first config to the UI
     addAnalysisConfig(currAnalysisConfig);
@@ -208,6 +212,11 @@ function loadAnalysis(){
         addAnalysisConfig(config);
         // Add the results (if any) to the sidebar
         loadResults(config);
+        // Whenever first or loaded configs are added, update the highest position 
+        // Check if configuration added has higher initialPosition than current highest position, prevents naming duplicates
+        if(config.initialPosition > highestPosition) {
+            highestPosition = config.initialPosition;
+        }
     }
     firstConfigElement = document.getElementById('configurations').childNodes[0];
     currAnalysisConfig = analysisMap.get(firstConfigElement.id);
@@ -226,11 +235,13 @@ function loadAnalysis(){
  */
 function addNewAnalysisConfig(){
     // Update current config with current analysisRequest and set the udpated config in map
+    // Necessary for switching to the newly added config without losing analysisRequest info
     currAnalysisConfig.updateAnalysis(analysisRequest);
     analysisMap.set(currAnalysisConfig.id, currAnalysisConfig);
 
-    // Figure out number of new config, name and create it, and then add it to the map
-    var id = "Configuration" + (analysisMap.size+1).toString()
+    // Figure out initial position of new config, name and create it, and then add it to the map
+    highestPosition += 1;
+    var id = "Configuration" + (highestPosition).toString();
     
     // default Analysis Request needed for now for user assignments list
     // TODO: Look into perserving base UAL throughout analysisRequests
@@ -238,7 +249,7 @@ function addNewAnalysisConfig(){
     // give the new request the defaultUAL
     defaultUAL.forEach(userEval => newRequest.userAssignmentsList.push(userEval));
 
-    var newConfig = new AnalysisConfiguration(id, newRequest);
+    var newConfig = new AnalysisConfiguration(id, newRequest, highestPosition);
     analysisMap.set(id, newConfig);
 
     // Update current config to be the new config, and update analysisRequest to match new config
@@ -265,19 +276,42 @@ function addAnalysisConfig(config) {
     mainElement = document.getElementById(config.id);
     mainElement.querySelector('.config-elements').addEventListener('dblclick', function(){rename(this /** Config element */)});
     mainElement.querySelector('.config-elements').addEventListener('click', function(){switchConfigs(this.parentElement /** Config element */)});
-    mainElement.querySelector('.dropdown-button').addEventListener('click', function(){toggleDropdown(this.parentElement.parentElement /** Config element */)})
+    mainElement.querySelector('.dropdown-button').addEventListener('click', function(){toggleDropdown(this.parentElement.parentElement /** Config element */)});
+    mainElement.querySelector('.deleteconfig-button').addEventListener('click', function(){removeConfiguration(this.parentElement.parentElement)/** Config element */});
 }
 
 /**
  * Removes an analysis configuration from the analysisMap and UI sidebar
- * TODO implement with a button
+ * @param {HTML Element} configElement
  */
-function removeConfiguration() {
+function removeConfiguration(configElement) {
+    // Access previous and next element in HTML div, check if they exist
+    // If not, populate with new default configuration, reset highestPosition to 1
+    prevElement = $(configElement).prev();
+    nextElement = $(configElement).next();
+    if ((!$(prevElement).length) && (!$(nextElement).length)) {
+        // Remove full configuration div (includes results)
+        configElement.remove();
+        // Remove config from analysisMap
+        // We have to do this here in case we are deleting a config with the name Configuration1, in order to avoid removing the new configuration from the analysisMap
+        analysisMap.delete(configElement.id);
+        addFirstAnalysisConfig();
+        return;
+    }else if(currAnalysisConfig.id == configElement.id){
+       // If prev and next do exist, and the currently selected configuration is the one we are deleting, set currAnalysisConfig to prev element if available or next element if not
+       // If the curreAnalysisConfig is not the one we are deleting, keep it
+        if ($(prevElement).length){ currAnalysisConfig = analysisMap.get(prevElement.attr("id"));
+        }else if ($(nextElement).length){ currAnalysisConfig = analysisMap.get(nextElement.attr("id"));} 
+    }
+    // Highlight the currAnalysisConfig in the UI
+    newConfigElement = document.getElementById(currAnalysisConfig.id);
+    $(".config-elements").css("background-color", "");
+    $(".result-elements").css("background-color", "");
+    $(newConfigElement.querySelector('.config-elements')).css("background-color", "#A9A9A9");
     // Remove full configuration div (includes results)
-    var configDiv = document.getElementById(currAnalysisConfig.id);
-    configDiv.remove();
+    configElement.remove();
     // Remove config from analysisMap
-    analysisMap.delete(currAnalysisConfig.id);
+    analysisMap.delete(configElement.id);
 }
 
 /**
@@ -367,7 +401,7 @@ function rename(configElement){
     var inputId = configContainerElement.id + "-input";
     // Grab JQuery config button element, and replace with new input element
     var element = $(configElement);
-    var input = $('<input>').attr("class", "configInput").attr("id", inputId).val( element.text());
+    var input = $('<input>').attr("class", "configInput").attr("id", inputId).attr("style", "width:60%").val( element.text());
     element.replaceWith(input);
     input.focus();
 
@@ -388,7 +422,7 @@ function rename(configElement){
         if (e.key == "Enter"){
             setConfigName(configContainerElement, configElement, this);
         }
-    }) 
+    })
 }
 
 /**
@@ -510,11 +544,14 @@ function getConfigHtml(id){
     return'<div class = "analysis-configuration" id="' + id + '">' +
             '<button class="config-elements" style="background-color:#A9A9A9;">' 
             + id + '</button>' +
-            '<div style="position:absolute; display:inline-block">'+
+            '<div id="config-buttons" style="position:absolute; display:inline-block">' +
+            '<button class="deleteconfig-button">' +
+                '<i id="garbage-icon" class="fa fa-trash-o" aria-hidden="true"></i>' +
+            '</button>' +
             '<button class="dropdown-button">'+
                 '<i id="drop-icon" class="fa fa-caret-up fa-2x" style="cursor:pointer;"></i>'+
             '</button>' +
-            '</div>'+
+            '</div>' +
             '<div class="dropdown-container"></div>' +
            '</div>';
 }
