@@ -9,6 +9,9 @@ reader = new FileReader();
 // Whenever the input is changed, read the file.
 loader.onchange = function() {
 	reader.readAsText(loader.files.item(0));
+	// Resets loader value so that the onchange event will still be triggered 
+	// if the same file is cleared and then loaded again
+	loader.value = "";
 };
 
 // When read is performed, if successful, load that file.
@@ -263,6 +266,10 @@ function loadFromObject(obj) {
 	model.constraints = getConstArr(obj.model.constraints);
 	model.maxAbsTime = obj.model.maxAbsTime;
 
+	// store deep copy of model for detecting model changes
+	// copy is NOT of type Model
+    previousModel = JSON.parse(JSON.stringify(model));
+
 	// Clear any previous analysis data 
 	if (analysisMap.size != 0) {
 		// Clear the analysisMap to remove any previous analysis
@@ -277,12 +284,11 @@ function loadFromObject(obj) {
 		var tempMap = new Map(Object.entries(obj.analysisMap));
 		// Loop through all analysis configs
 		for(let configObj of tempMap.values()) {
-			var config = new AnalysisConfiguration(configObj.id, configObj.analysisRequest, configObj.initialPosition);
+			var config = new AnalysisConfiguration(configObj.id, new AnalysisRequest(configObj.analysisRequest), configObj.initialPosition);
 			config.setResults(configObj.analysisResults);
 			// Add config to the global analysisMap
 			analysisMap.set(config.id, config);
 		}
-		console.log(analysisMap);
 		// Load the configs into the analysis view config sidebar
 		loadAnalysis();
 	} else {

@@ -73,7 +73,7 @@ body {
 
 #paper svg {
    /* Grid background image */
-   //background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAHUlEQVQYV2NkYGAwBuKzQIwXMBJSAJMfVUidcAQAnUQBC6jEGBUAAAAASUVORK5CYII=');
+   /*background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAHUlEQVQYV2NkYGAwBuKzQIwXMBJSAJMfVUidcAQAnUQBC6jEGBUAAAAASUVORK5CYII=');*/
    background-color: white;
    box-shadow: 1px 1px 1px lightgray;
 }
@@ -135,15 +135,6 @@ body {
   color: #bcbcbc;
   text-shadow: 0 -1px 0 #000;
   background-color: rgba(90, 90, 90, 1);
-}
-
-#history a{
-  padding: 16px;
-  display: block;
-}
-
-#history a:hover {
-  background-color: #E8E8E8;
 }
 
 #analysis-sidebar a{
