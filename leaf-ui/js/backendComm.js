@@ -131,8 +131,7 @@ function executeJava(isGetNextSteps){
 }
 
 
-function getFileResults(isGetNextSteps){
-	console.log('getFileResults()');
+function getFileResults(isGetNextSteps) {
 	var pathToCGI = "./cgi-bin/fileRead.cgi";
 
 	//Executing action to send backend
@@ -173,7 +172,6 @@ function getFileResults(isGetNextSteps){
                     console.log("previousAnalysis");
 					console.log(analysisRequest.previousAnalysis);
 					//pass in an AnalysisResult object
-					
 					displayAnalysis(analysisResult, false);
 				}
 			}

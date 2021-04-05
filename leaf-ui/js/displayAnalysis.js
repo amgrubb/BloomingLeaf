@@ -144,11 +144,9 @@ function updateSliderValues(sliderValue, currentAnalysis){
     sliderObject.sliderValueElement.innerHTML = value + "|" + currentAnalysis.timePointPath[value];
     // Update the analysisRequest current state.
     analysisRequest.currentState = sliderObject.sliderValueElement.innerHTML;
-
-    for (var i = 0; i < currentAnalysis.elementList.length; i++) {
-        var element = currentAnalysis.elementList[i];
-		updateNodeValues(element.id, element.status[value]);
-    }
+    currentAnalysis.elementList.forEach(function (element) {
+        updateNodeValues(element.id, element.status[value]); 
+    });
     
     EVO.setCurTimePoint(value);
 }

@@ -378,14 +378,7 @@ class AnalysisResult {
 
     setTimeScale() {
         this.timeScale = Number(this.timePointPath.length) - 1;
-
     }
-
-
-
-
-
-    
 }
 
 /**  
