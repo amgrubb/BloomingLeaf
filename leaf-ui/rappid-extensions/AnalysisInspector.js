@@ -108,7 +108,7 @@ var AnalysisInspector = Backbone.View.extend({
 	 */
 	getAllNextStates: function () {
 		if(analysisRequest.action != null) { //path has been simulated
-			if(analysisResult.selectedTimePoint != analysisResult.maxTimePoint) { //last timepoint is not selected
+			if (analysisResult.selectedTimePoint != analysisResult.timeScale) { //last timepoint is not selected
 		//Create the object and fill the JSON file to be sent to backend.
 		//Get the AnalysisInspector view information
 			analysisRequest.action = "allNextStates";

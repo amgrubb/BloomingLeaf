@@ -15,21 +15,19 @@ var highestPosition = 1;
 /**
  * Displays the analysis to the web app, by displaying the slider
  *
- * @param {Object} analysisResults
- *   Object which contains data gotten from back end
+ * @param {AnalysisResult} analysisResult
+ *   AnalysisResult object returned from backend
  * @param {Boolean} isSwitch
  *   True if we are switching analysis results,
  *   false if new result from the back end
  */
-function displayAnalysis(analysisResults, isSwitch){
-
-    // Change the format of the analysis result from the back end
-    var currentAnalysis = new analysisObject.initFromBackEnd(analysisResults);
+function displayAnalysis(analysisResult, isSwitch){
+    var currentAnalysis = analysisResult;
+    currentAnalysis.setTimeScale();
     currentAnalysis.type = "Single Path";
 
     // Save data for get possible next states
-    // TODO double check this still works
-    savedAnalysisData.singlePathResult = analysisResults;
+    savedAnalysisData.singlePathResult = analysisResult;
 
     // Check if slider has already been initialized
     if (sliderObject.sliderElement.hasOwnProperty('noUiSlider')) {
@@ -41,8 +39,8 @@ function displayAnalysis(analysisResults, isSwitch){
 /**
  * Creates a slider and displays it in the web app
  *
- * @param {Object} currentAnalysis
- *   Contains data about the analysis that the back end performed
+ * @param {AnalysisResult} currentAnalysis
+ *  an AnalysisResult object that contains data about the analysis that the back end performed
  * @param {number} currentValueLimit
  * @param {Boolean} isSwitch
  *   True if the slider is being created when we are switching analysis results,
@@ -51,7 +49,7 @@ function displayAnalysis(analysisResults, isSwitch){
 function createSlider(currentAnalysis, isSwitch) {
 
     var sliderMax = currentAnalysis.timeScale;
-    analysisResult.maxTimePoint = sliderMax;
+
     var density = (sliderMax < 25) ? (100 / sliderMax) : 4;
 
     noUiSlider.create(sliderObject.sliderElement, {
@@ -137,8 +135,8 @@ function adjustSliderWidth(maxValue){
  * @param {Number} sliderValue
  *   Current value of the slider
  * @param {Number} currentValueLimit
- * @param {Object} currentAnalysis
- *   Contains data about the analysis that the back end performed
+ * @param {AnalysisResult} currentAnalysis
+ *  an AnalysisResult object that contains data about the analysis that the back end performed
  */
 function updateSliderValues(sliderValue, currentAnalysis){
 
@@ -146,14 +144,12 @@ function updateSliderValues(sliderValue, currentAnalysis){
 
     var value = sliderValue;
     $('#sliderValue').text(value);
-    sliderObject.sliderValueElement.innerHTML = value + "|" + currentAnalysis.relativeTime[value];
+    sliderObject.sliderValueElement.innerHTML = value + "|" + currentAnalysis.timePointPath[value];
     // Update the analysisRequest current state.
     analysisRequest.currentState = sliderObject.sliderValueElement.innerHTML;
-
-	for (var i = 0; i < currentAnalysis.numOfElements; i++) {
-		var element = currentAnalysis.elements[i];
-		updateNodeValues(element.id, element.status[value]);
-    }
+    currentAnalysis.elementList.forEach(function (element) {
+        updateNodeValues(element.id, element.status[value]); 
+    });
     
     EVO.setCurTimePoint(value);
 }
