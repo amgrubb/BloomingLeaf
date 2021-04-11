@@ -682,6 +682,7 @@ function createIntention(cell) {
     // when the intention is removed, remove the intention from the global
     // model variable as well
     cell.on("remove", function () {
+        console.log("removed");
     	clearInspector();
     	var userIntention = model.getIntentionByID(cell.attributes.nodeID);
     	// remove this intention from the model
@@ -697,6 +698,36 @@ function createIntention(cell) {
             console.log('removed node cell.on line 697');
         }
 
+    });
+
+    /**
+     * Testing drag/drop behavior
+     */
+    cell.on('dragstart', function() {
+
+        console.log("dragging");
+
+        // Unembed intention so you can move it out of actor
+        if (cell.get('parent') && !(cell instanceof joint.dia.Link)) {
+            graph.getCell(cell.get('parent')).unembed(cell);
+
+            // remove nodeID from actor intentionIDs list
+            var userIntention = model.getIntentionByID(cell.attributes.nodeID);
+            if (userIntention.nodeActorID !== '-') {
+                var actor = model.getActorByID(userIntention.nodeActorID);
+                actor.removeIntentionID(userIntention.nodeID, analysisRequest.userAssignmentsList);
+            }
+        }
+    });
+
+    // drop cell in actor
+    cell.on('dragend', function() {
+        // not link
+        if (!(cell instanceof joint.dia.Link)){
+            // embed in actor
+            console.log("embedding in actor");
+            embedBasicActor(cell);
+        }
     });
 
 }
@@ -1044,18 +1075,6 @@ paper.on('cell:pointerdown', function(cellView, evt, x, y) {
 	if (cell instanceof joint.dia.Link){
 		cell.reparent();
 	}
-
-	// Unembed intention so you can move it out of actor
-	if (cell.get('parent') && !(cell instanceof joint.dia.Link)) {
-		graph.getCell(cell.get('parent')).unembed(cell);
-
-        // remove nodeID from actor intentionIDs list
-        var userIntention = model.getIntentionByID(cell.attributes.nodeID);
-        if (userIntention.nodeActorID !== '-') {
-            var actor = model.getActorByID(userIntention.nodeActorID);
-            actor.removeIntentionID(userIntention.nodeID, analysisRequest.userAssignmentsList);
-        }
-	}
 });
 
 // Unhighlight everything when blank is being clicked
@@ -1179,8 +1198,6 @@ paper.on('cell:pointerup', function(cellView, evt) {
             cellView.highlight();
 
             currentHalo = createHalo(cellView);
-
-            embedBasicActor(cellView.model);
 
             clearInspector();
 
