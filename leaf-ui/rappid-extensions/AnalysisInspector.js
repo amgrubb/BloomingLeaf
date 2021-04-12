@@ -109,10 +109,11 @@ var AnalysisInspector = Backbone.View.extend({
 	getAllNextStates: function () {
 		if(analysisRequest.action != null) { //path has been simulated
 			if (analysisResult.selectedTimePoint != analysisResult.timeScale) { //last timepoint is not selected
+			$("body").addClass("waiting"); //spinner under cursor 
 		//Create the object and fill the JSON file to be sent to backend.
 		//Get the AnalysisInspector view information
-			analysisRequest.action = "allNextStates";
-
+			analysisRequest.action = "allNextStates"; 
+			
 			analysisRequest.previousAnalysis = _.clone(savedAnalysisData.singlePathResult);
 			// need to remove TPs after current point from previous solution?
 			// update the time point for potentialEpoch
@@ -150,7 +151,7 @@ var AnalysisInspector = Backbone.View.extend({
 			swal("Error: Cannot explore next states before simulating a single path.", "", "error");
 		}
 
-
+		
 	},
 
 	/**
