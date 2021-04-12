@@ -83,7 +83,6 @@ function createSlider(currentAnalysis, isSwitch) {
  * Reset display to default, before result is displayed
  */
 function hideAnalysis() {
-    removeSlider();
     refreshAnalysisUI();
     revertNodeValuesToInitial();
     // TODO: make sure EVO goes back to analysis mode properly when clicking on result
@@ -374,6 +373,8 @@ function updateResults(){
     }
     // remove all results from all config divs
     $('.result-elements').remove();
+    // reset graph to initial values
+    revertNodeValuesToInitial();
 }
 
 /**
