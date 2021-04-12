@@ -332,7 +332,7 @@ var goal = new joint.shapes.basic.Goal({ position: {x: 50, y: 20} });
 var task = new joint.shapes.basic.Task({ position: {x: 50, y: 100} });
 var sgoal = new joint.shapes.basic.Softgoal({ position: {x: 50, y: 170} });
 var res = new joint.shapes.basic.Resource({ position: {x: 50, y: 250} });
-var act = new joint.shapes.basic.Actor({ position: {x: 40, y: 400} });
+var act = new joint.shapes.basic.Actor({ position: {x: 40, y: 355} });
 
 stencil.load([goal, task, sgoal, res, act]);
 
