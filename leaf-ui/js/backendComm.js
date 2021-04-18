@@ -79,7 +79,7 @@ function nodeBackendCommFunc(jsObject){
 
 //deal with the response sent back by the server
 function responseFunc(isGetNextSteps, response){
-	$("body").removeClass("waiting"); //remove spinner under cursor 
+	$("body").removeClass("waiting"); //Remove spinner under cursor 
 	var results = JSON.parse(response);
 	if (errorExists(results)) { 
 		 var msg = getErrorMessage(results.errorMessage);

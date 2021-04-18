@@ -17,8 +17,6 @@ body {
   font-family: Arial;
 }
 
-body.waiting,
-body.waiting a:hover,
 body.waiting *
 {
     cursor: wait !important;
