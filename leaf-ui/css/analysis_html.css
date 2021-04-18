@@ -17,6 +17,11 @@ body {
   font-family: Arial;
 }
 
+body.waiting *
+{
+    cursor: wait !important;
+}
+
 .header {
    padding: 0px;
 }
