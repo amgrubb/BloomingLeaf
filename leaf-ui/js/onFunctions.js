@@ -1033,7 +1033,7 @@ paper.on('blank:pointerdown', function(evt, x, y) {
 });
 
 /**
- * TODO: Unclear if this is actually doing anything - look into possible deletion
+ *
  */
 paper.on('cell:pointerdown', function(cellView, evt, x, y) {
 	
