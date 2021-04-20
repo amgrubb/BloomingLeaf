@@ -682,7 +682,7 @@ function createIntention(cell) {
     // when the intention is removed, remove the intention from the global
     // model variable as well
     cell.on("remove", function () {
-        console.log("removed");
+        console.log("removed 685");
     	clearInspector();
     	var userIntention = model.getIntentionByID(cell.attributes.nodeID);
     	// remove this intention from the model
@@ -703,7 +703,7 @@ function createIntention(cell) {
     /**
      * Testing drag/drop behavior
      */
-    cell.on('dragstart', function() {
+    cell.on("dragStart", function(evt, x, y) {
 
         console.log("dragging");
 
@@ -721,13 +721,18 @@ function createIntention(cell) {
     });
 
     // drop cell in actor
-    cell.on('dragend', function() {
+    cell.on("dragEnd", function(evt, x, y) {
         // not link
         if (!(cell instanceof joint.dia.Link)){
             // embed in actor
             console.log("embedding in actor");
             embedBasicActor(cell);
         }
+    });
+
+    // testing which event listeners work
+    cell.on("pointerdown", function() {
+        console.log("line 735");
     });
 
 }
@@ -1075,6 +1080,30 @@ paper.on('cell:pointerdown', function(cellView, evt, x, y) {
 	if (cell instanceof joint.dia.Link){
 		cell.reparent();
 	}
+});
+
+paper.on('element:mouseover', function(cellView, evt, x, y) {
+	var cell = cellView.model;
+	console.log('mouseover');
+    console.log(cell);
+});
+
+paper.on('element:dragEnd', function(cellView, evt, x, y) {
+	var cell = cellView.model;
+	console.log('dragEnd');
+    console.log(cell);
+});
+
+paper.on('element:dragStart', function(cellView, evt, x, y) {
+	var cell = cellView.model;
+	console.log('dragStart');
+    console.log(cell);
+});
+
+paper.on('element:dragEnd', function(cellView, evt, x, y) {
+	var cell = cellView.model;
+	console.log('dragEnd');
+    console.log(cell);
 });
 
 // Unhighlight everything when blank is being clicked
