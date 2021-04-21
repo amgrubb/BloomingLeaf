@@ -679,27 +679,6 @@ function createIntention(cell) {
 
     cell.attributes.nodeID = intention.nodeID;
 
-    // when the intention is removed, remove the intention from the global
-    // model variable as well
-    cell.on("remove", function () {
-        console.log("removed 685");
-    	clearInspector();
-    	var userIntention = model.getIntentionByID(cell.attributes.nodeID);
-    	// remove this intention from the model
-       // model.removeIntention(userIntention.nodeID);
-        // remove all intention evaluations associated with this intention
-        analysisRequest.removeIntention(userIntention.nodeID);
-
-        // if this intention has an actor, remove this intention's ID
-        // from the actor
-        if (userIntention.nodeActorID !== '-') {
-        	var actor = model.getActorByID(userIntention.nodeActorID);
-        	actor.removeIntentionID(userIntention.nodeID, analysisRequest.userAssignmentsList);
-            console.log('removed node cell.on line 697');
-        }
-
-    });
-
     /**
      * Testing drag/drop behavior
      */
@@ -707,7 +686,7 @@ function createIntention(cell) {
 
         console.log("dragging");
 
-        // Unembed intention so you can move it out of actor
+        // Unembed intention so user can move it out of actor
         if (cell.get('parent') && !(cell instanceof joint.dia.Link)) {
             graph.getCell(cell.get('parent')).unembed(cell);
 
@@ -715,7 +694,7 @@ function createIntention(cell) {
             var userIntention = model.getIntentionByID(cell.attributes.nodeID);
             if (userIntention.nodeActorID !== '-') {
                 var actor = model.getActorByID(userIntention.nodeActorID);
-                actor.removeIntentionID(userIntention.nodeID, analysisRequest.userAssignmentsList);
+                actor.removeIntentionID(userIntention.nodeID);
             }
         }
     });
@@ -725,7 +704,6 @@ function createIntention(cell) {
         // not link
         if (!(cell instanceof joint.dia.Link)){
             // embed in actor
-            console.log("embedding in actor");
             embedBasicActor(cell);
         }
     });
@@ -1080,13 +1058,26 @@ paper.on('cell:pointerdown', function(cellView, evt, x, y) {
 	if (cell instanceof joint.dia.Link){
 		cell.reparent();
 	}
+
+    // Unembed intention so user can move it out of actor
+    if (cell.get('parent') && !(cell instanceof joint.dia.Link)) {
+        graph.getCell(cell.get('parent')).unembed(cell);
+
+        // remove nodeID from actor intentionIDs list
+        var userIntention = model.getIntentionByID(cell.attributes.nodeID);
+        if (userIntention.nodeActorID !== '-') {
+            var actor = model.getActorByID(userIntention.nodeActorID);
+            actor.removeIntentionID(userIntention.nodeID);
+        }
+    }
 });
 
+/** 
 paper.on('element:mouseover', function(cellView, evt, x, y) {
 	var cell = cellView.model;
 	console.log('mouseover');
     console.log(cell);
-});
+});*/
 
 paper.on('element:dragEnd', function(cellView, evt, x, y) {
 	var cell = cellView.model;
@@ -1228,6 +1219,12 @@ paper.on('cell:pointerup', function(cellView, evt) {
 
             currentHalo = createHalo(cellView);
 
+            // not link
+            if (!(cellView.model instanceof joint.dia.Link)){
+                // embed in actor
+                embedBasicActor(cellView.model);
+            }
+
             clearInspector();
 
             if (cellView.model instanceof joint.shapes.basic.Actor) {
@@ -1257,7 +1254,7 @@ function embedBasicActor(cell) {
 					var nodeID = cell.attributes.nodeID;
 					var actorID = actorCell.attributes.nodeID
 					model.getIntentionByID(nodeID).nodeActorID = actorID;
-					model.getActorByID(actorID).intentionIDs.push(nodeID);
+					model.getActorByID(actorID).addIntentionID(nodeID);
 				}
 			}
 		}
@@ -1301,10 +1298,11 @@ graph.on('remove', function(cell) {
         // from the actor
         if (userIntention.nodeActorID !== '-') {
             var actor = model.getActorByID(userIntention.nodeActorID);
-            console.log(model);
-            actor.removeIntentionID(userIntention.nodeID,analysisRequest.userAssignmentsList);
+            //console.log(model);
+            actor.removeIntentionID(userIntention.nodeID);
             console.log('removed node graph.on line 1251');
-            console.log(model);
+            console.log(actor.intentionIDs);
+            //console.log(model);
         }
         model.removeIntention(userIntention.nodeID);
     }

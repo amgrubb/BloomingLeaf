@@ -51,7 +51,7 @@ reader.onload = function() {
 		    	cells[i]["nodeID"]  = intention.nodeID;
 
 		    	if (actorID !== '-') {
-		    		model.getActorByID(actorID).intentionIDs.push(intention.nodeID);
+		    		model.getActorByID(actorID).addIntentionID(intention.nodeID);
 		    	} 
 
 		        // create intention evaluation
@@ -59,6 +59,7 @@ reader.onload = function() {
 		        initSat = (initSat !== ' ' && initSat !== '')  ?  oldSatValToBinary[initSat] : '0000';
 			    var intentionEval = new UserEvaluation(intention.nodeID, '0', initSat);
 			    analysisRequest.userAssignmentsList.push(intentionEval);
+				console.log(analysisRequest.userAssignmentsList);
 		    
 		        // make the T upside down
 		        var satValText = cells[i].attrs['.satvalue'].text;
