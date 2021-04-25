@@ -502,7 +502,7 @@ select > .select-placeholder {
 }
 #colorResetAnalysis{
   position: relative;
-  top: -2px;
+  top: -6px;
   width: 92px; /* 92 */
 }
 .EVO-whole-button {
@@ -528,6 +528,14 @@ select > .select-placeholder {
   opacity: .9; /* Set transparency (for mouse-over effects on hover) */
   -webkit-transition: .2s; /* 0.2 seconds transition on hover */
   transition: opacity .2s;
+}
+
+#modelingSlider {
+  width: 100px;
+}
+
+#analysisSlider{
+  width: 140px;
 }
 
 /* Mouse-over effects */
