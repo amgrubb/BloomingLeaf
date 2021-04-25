@@ -1179,9 +1179,11 @@ function embedBasicActor(cell) {
     var ActorsBelow = paper.findViewsFromPoint(cell.getBBox().center());
 
     // intention always returns with ActorsBelow
+    // so always at least one element in list
     if (ActorsBelow.length > 1) {
         // if actors in addition to intention
         for (var i = 0; i < ActorsBelow.length; i++) {
+            // embed intention in each actor
             var actorCell = ActorsBelow[i].model;
             if (actorCell instanceof joint.shapes.basic.Actor) {
                 actorCell.embed(cell);
