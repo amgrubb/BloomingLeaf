@@ -1837,14 +1837,11 @@ class AnalysisRequest {
     }
 
     /**
-     * Removes all UserEvaluation objects in
-     * userAssignmentsList, with an intentionID equal to
-     * nodeID
+     * Removes the UserEvaluation object in
+     * userAssignmentsList that corresponds with nodeID
      *
      * @param {String}
      */
-
-
     removeIntention(nodeID) {
         for (var i = 0; i < this.userAssignmentsList.length; i++) {
             if (this.userAssignmentsList[i].intentionID == nodeID) {

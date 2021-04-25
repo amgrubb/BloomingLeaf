@@ -675,8 +675,6 @@ function createIntention(cell) {
 
     cell.attributes.nodeID = intention.nodeID;
 
-    // embed in any actors below
-    embedBasicActor(cell);
 }
 
 /**
@@ -717,7 +715,8 @@ graph.on("add", function(cell) {
 		cell.toBack();
 	}
 
-	paper.trigger("cell:pointerup", cell.findView(paper));
+    // trigger click on cell to highlight, activate inspector, etc. 
+    paper.trigger("cell:pointerup", cell.findView(paper));
 });
 
 
@@ -1007,7 +1006,7 @@ paper.on('blank:pointerdown', function(evt, x, y) {
  * Specifies behavior for clicking on cells and moving intentions/links
  */
 paper.on({
-    'cell:pointerdown': function(cellView, evt, x, y) {
+    'cell:pointerdown': function(cellView, evt) {
         var interact = true;
         if(mode == "Analysis"){
             interact = false;
@@ -1016,26 +1015,31 @@ paper.on({
         // pass data to pointermove and pointerup
         evt.data = {move: false, interact: interact};
     },
-    'cell:pointermove': function(cellView, evt, x, y) {
+    'cell:pointermove': function(cellView, evt) {
         if (!evt.data.move && evt.data.interact){
             // start of a click and drag
             evt.data.move = true;
         }
       },
-    'cell:pointerup': function(cellView, evt, x, y) {
+    'cell:pointerup': function(cellView, evt) {
+        // undefined event occurs due to paper.trigger("cell:pointerup"...
+        // on adding new cell to paper
+        if (evt == undefined) {
+            // same highlighting, actor embedding, etc. behavior as dragging cell 
+            evt = {data: {move: true, interact: true}};
+        }
+        
         // when interacting w/ cells on paper in modeling mode
-        // (undefined occurs when dragging new intention onto paper)
-        if (evt != undefined && evt.data.interact) {
+        if (evt.data.interact) {
             var cell = cellView.model;
-            if (cell instanceof joint.dia.Link) {
+            if (cell instanceof joint.dia.Link) { // Link behavior
                 if (evt.data.move){
                     // if link moved, reparent
                     cell.reparent();
                     // check if link still valid
                     basicActorLink(cell);
                 }
-            } else {
-                // Non-Link behavior
+            } else { // Non-Link behavior
 
                 // Element is selected
                 selection.reset();
@@ -1182,22 +1186,23 @@ function removeHighlight(){
  * @param {joint.dia.cell} cell
  */
 function embedBasicActor(cell) {
-    var ActorsBelow = paper.findViewsFromPoint(cell.getBBox().center());
+    // returns actors, intentions, etc. which overlap with this cell
+    // including the cell itself
+    var overlapCells = paper.findViewsFromPoint(cell.getBBox().center());
 
-    // intention always returns with ActorsBelow
-    // so always at least one element in list
-    if (ActorsBelow.length > 1) {
-        // if actors in addition to intention
-        for (var i = 0; i < ActorsBelow.length; i++) {
+    // find actors which overlap with cell
+    overlapCells = overlapCells.filter(view => view.model instanceof joint.shapes.basic.Actor);
+
+    // cell is over at least one actor
+    if (overlapCells.length > 0) {
+        for (var i = 0; i < overlapCells.length; i++) {
             // embed intention in each actor
-            var actorCell = ActorsBelow[i].model;
-            if (actorCell instanceof joint.shapes.basic.Actor) {
-                actorCell.embed(cell);
-                var nodeID = cell.attributes.nodeID;
-                var actorID = actorCell.attributes.nodeID
-                model.getIntentionByID(nodeID).nodeActorID = actorID;
-                model.getActorByID(actorID).addIntentionID(nodeID);
-            }
+            var actorCell = overlapCells[i].model;
+            actorCell.embed(cell);
+            var nodeID = cell.attributes.nodeID;
+            var actorID = actorCell.attributes.nodeID
+            model.getIntentionByID(nodeID).nodeActorID = actorID;
+            model.getActorByID(actorID).addIntentionID(nodeID);
         }
     } else {
         // intention not over any actor
