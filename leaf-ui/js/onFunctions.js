@@ -647,14 +647,6 @@ function createLink(cell) {
 			link.linkSrcID = source.attributes.nodeID;
 		}
     });
-
-    // when the link is removed, remove the link from the global model
-    // variable as well
-    cell.on("remove", function () {
-    	clearInspector();
-		model.removeLink(link.linkID);
-        console.log("removelink line 656");
-    });
     model.links.push(link);
 }
 
@@ -693,13 +685,6 @@ function createActor(cell) {
     cell.attr(".name/text", name);
 	cell.attributes.nodeID = actor.nodeID;
 	model.actors.push(actor);
-
-	// when the actor is removed, remove the actor from the
-	// global model variable as well
-	cell.on('remove', function() {
-		model.removeActor(actor.nodeID);
-        console.log('remove actor line 700');
-	});
 }
 
 /**
@@ -1013,7 +998,7 @@ paper.on('blank:pointerdown', function(evt, x, y) {
 });
 
 /**
- * Specifies behavior for clicking on cells: setting selections, 
+ * Specifies behavior for clicking on cells and moving intentions/links
  */
 paper.on({
     'cell:pointerdown': function(cellView, evt, x, y) {
@@ -1026,10 +1011,9 @@ paper.on({
         evt.data = {move: false, interact: interact};
     },
     'cell:pointermove': function(cellView, evt, x, y) {
-        if (evt.data.interact){
-            // a click and drag
+        if (!evt.data.move && evt.data.interact){
+            // start of a click and drag
             evt.data.move = true;
-            console.log('moved cell');
         }
       },
     'cell:pointerup': function(cellView, evt, x, y) {
@@ -1040,9 +1024,7 @@ paper.on({
             if (cell instanceof joint.dia.Link) {
                 if (evt.data.move){
                     // if link moved, reparent
-                    console.log(model);
                     cell.reparent();
-                    console.log(model);
                     // check if link still valid
                     basicActorLink(cell);
                 }
@@ -1083,7 +1065,6 @@ paper.on({
                         }
                         // embed element in new actor
                         embedBasicActor(cell);
-                        console.log(model);
                     }
                 }
             }
