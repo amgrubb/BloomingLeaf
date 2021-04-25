@@ -389,6 +389,7 @@ function reassignIntentionIDs() {
  */
 var inAnalysis = false;
 function switchToAnalysisMode() {
+    setInteraction(false);
     inAnalysis = true;
 	reassignIntentionIDs();
 	
@@ -410,7 +411,7 @@ function switchToAnalysisMode() {
 
     $('#model-toolbar').css("display", "none");
 
-	$('#modeText').text("Analysis");
+	$('#modeText').text("Analysis View");
 
 	// Disable link settings
 	$('.link-tools .tool-remove').css("display", "none");
@@ -475,6 +476,7 @@ function revertNodeValuesToInitial() {
  * Display the modeling mode page
  */
 function switchToModellingMode() {
+    setInteraction(true);
     analysisResult.isPathSim = false; //reset isPathSim for color visualization slider
 	analysisRequest.previousAnalysis = null;
     clearInspector();
@@ -496,6 +498,7 @@ function switchToModellingMode() {
     analysisResult.colorVis = [];
 
 	$('#sliderValue').text("");
+    $('#modeText').text("Modeling View");
 
 	// Reinstantiate link settings
 	$('.link-tools .tool-remove').css("display","");
@@ -1305,5 +1308,16 @@ function checkForMultipleNB(node) {
 	}
 
 	return num >= 1;
+}
+
+/**
+ * Sets interaction option on all elements in graph
+ * 
+ * @param {boolean} interactionValue 
+ */
+ function setInteraction(interactionValue){
+    _.each(graph.getCells(), function(cell) {
+        cell.findView(paper).options.interactive = interactionValue;
+    });
 }
 
