@@ -1214,18 +1214,17 @@ graph.on('change:size', function(cell, size) {
 graph.on('remove', function(cell) {
     //TODO: What I have changed
     if(cell.isLink() && !(cell.prop("link-type") == 'NBT' || cell.prop("link-type") == 'NBD')){
-        //To remove link
+        // To remove link
         var link = cell;
         clearInspector();
         model.removeLink(link.linkID);
     }
 
     else if((!cell.isLink()) && (!(cell["attributes"]["type"]=="basic.Actor"))){
-        //To remove intentions
+        // To remove intentions
         clearInspector();
         var userIntention = model.getIntentionByID(cell.attributes.nodeID);
         // remove this intention from the model
-        //model.removeIntention(userIntention.nodeID);
         model.removedynamicFunction(userIntention.nodeID);
         model.removeIntentionLinks(userIntention.nodeID);
         // remove all intention evaluations associated with this intention
@@ -1234,16 +1233,12 @@ graph.on('remove', function(cell) {
         // from the actor
         if (userIntention.nodeActorID !== '-') {
             var actor = model.getActorByID(userIntention.nodeActorID);
-            //console.log(model);
             actor.removeIntentionID(userIntention.nodeID);
-            console.log('removed node graph.on line 1251');
-            console.log(actor.intentionIDs);
-            //console.log(model);
         }
         model.removeIntention(userIntention.nodeID);
     }
     else if((!cell.isLink()) && (cell["attributes"]["type"]=="basic.Actor")){
-        //To remove actor
+        // To remove actor
         model.removeActor(cell['attributes']['nodeID']);
 
 
