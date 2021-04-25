@@ -674,6 +674,9 @@ function createIntention(cell) {
     analysisRequest.userAssignmentsList.push(intentionEval);
 
     cell.attributes.nodeID = intention.nodeID;
+
+    // embed in any actors below
+    embedBasicActor(cell);
 }
 
 /**
