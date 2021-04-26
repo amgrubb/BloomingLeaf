@@ -293,25 +293,29 @@ class Actor {
 
     /**
      * Removes intention ID nodeID from the
-     * intentionIDs array
+     * actor's intentionIDs array
      *
      * @param{String} nodeID
      */
-    removeIntentionID(nodeID,  userAssignmentsList) {
-        for (var i = 0; i < this.intentionIDs.length; i++) {
-            if (this.intentionIDs[i] == nodeID) {
-                this.intentionIDs.splice(i, 1);
-                return ;
-            }
-        }
-        while (i < userAssignmentsList.length) {
-            if (userAssignmentsList[i].intentionID == nodeID) {
-                userAssignmentsList.splice(i, 1);
-            } else {
-                i++;
-            }
-        }
+    removeIntentionID(nodeID) {
+        // remove node from intentionIDs list
+        var ind = this.intentionIDs.indexOf(nodeID);
+        this.intentionIDs.splice(ind, 1);
+    }
 
+    /**
+     * Adds intention ID nodeID to the
+     * intentionIDs array if not a duplicate
+     *
+     * @param{String} nodeID
+     */
+    addIntentionID(nodeID) {
+        // add if not in list already
+        if (!this.intentionIDs.includes(nodeID)) {
+            this.intentionIDs.push(nodeID);
+            // keep list sorted
+            this.intentionIDs.sort();
+        }
     }
 }
 Actor.numOfCreatedInstances = 0;
@@ -1833,22 +1837,16 @@ class AnalysisRequest {
     }
 
     /**
-     * Removes all UserEvaluation objects in
-     * userAssignmentsList, with an intentionID equal to
-     * nodeID
+     * Removes the UserEvaluation object in
+     * userAssignmentsList that corresponds with nodeID
      *
      * @param {String}
      */
-
-
     removeIntention(nodeID) {
-        var i = 0;
-
-        while (i < this.userAssignmentsList.length) {
+        for (var i = 0; i < this.userAssignmentsList.length; i++) {
             if (this.userAssignmentsList[i].intentionID == nodeID) {
                 this.userAssignmentsList.splice(i, 1);
-            } else {
-                i++;
+                break;
             }
         }
     }

@@ -51,7 +51,7 @@ reader.onload = function() {
 		    	cells[i]["nodeID"]  = intention.nodeID;
 
 		    	if (actorID !== '-') {
-		    		model.getActorByID(actorID).intentionIDs.push(intention.nodeID);
+		    		model.getActorByID(actorID).addIntentionID(intention.nodeID);
 		    	} 
 
 		        // create intention evaluation

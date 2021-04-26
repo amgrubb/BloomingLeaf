@@ -650,13 +650,6 @@ function createLink(cell) {
 			link.linkSrcID = source.attributes.nodeID;
 		}
     });
-
-    // when the link is removed, remove the link from the global model
-    // variable as well
-    cell.on("remove", function () {
-    	clearInspector();
-		model.removeLink(link.linkID);
-    });
     model.links.push(link);
 }
 
@@ -682,25 +675,6 @@ function createIntention(cell) {
 
     cell.attributes.nodeID = intention.nodeID;
 
-    // when the intention is removed, remove the intention from the global
-    // model variable as well
-    cell.on("remove", function () {
-    	clearInspector();
-    	var userIntention = model.getIntentionByID(cell.attributes.nodeID);
-    	// remove this intention from the model
-       // model.removeIntention(userIntention.nodeID);
-        // remove all intention evaluations associated with this intention
-        analysisRequest.removeIntention(userIntention.nodeID);
-
-        // if this intention has an actor, remove this intention's ID
-        // from the actor
-        if (userIntention.nodeActorID !== '-') {
-        	var actor = model.getActorByID(userIntention.nodeActorID);
-        	actor.removeIntentionID(userIntention.nodeID, analysisRequest.userAssignmentsList);
-        }
-
-    });
-
 }
 
 /**
@@ -715,12 +689,6 @@ function createActor(cell) {
     cell.attr(".name/text", name);
 	cell.attributes.nodeID = actor.nodeID;
 	model.actors.push(actor);
-
-	// when the actor is removed, remove the actor from the
-	// global modekl variable as well
-	cell.on('remove', function() {
-		model.removeActor(actor.nodeID);
-	});
 }
 
 /**
@@ -747,7 +715,8 @@ graph.on("add", function(cell) {
 		cell.toBack();
 	}
 
-	paper.trigger("cell:pointerup", cell.findView(paper));
+    // trigger click on cell to highlight, activate inspector, etc. 
+    paper.trigger("cell:pointerup", cell.findView(paper));
 });
 
 
@@ -1034,23 +1003,83 @@ paper.on('blank:pointerdown', function(evt, x, y) {
 });
 
 /**
- *
+ * Specifies behavior for clicking on cells and moving intentions/links
  */
-paper.on('cell:pointerdown', function(cellView, evt, x, y) {
-	
-	if(mode == "Analysis"){
-		return;
-	}
+paper.on({
+    'cell:pointerdown': function(cellView, evt) {
+        var interact = true;
+        if(mode == "Analysis"){
+            interact = false;
+        }
 
-	var cell = cellView.model;
-	if (cell instanceof joint.dia.Link){
-		cell.reparent();
-	}
+        // pass data to pointermove and pointerup
+        evt.data = {move: false, interact: interact};
+    },
+    'cell:pointermove': function(cellView, evt) {
+        if (!evt.data.move && evt.data.interact){
+            // start of a click and drag
+            evt.data.move = true;
+        }
+      },
+    'cell:pointerup': function(cellView, evt) {
+        // undefined event occurs due to paper.trigger("cell:pointerup"...
+        // on adding new cell to paper
+        if (evt == undefined) {
+            // same highlighting, actor embedding, etc. behavior as dragging cell 
+            evt = {data: {move: true, interact: true}};
+        }
+        
+        // when interacting w/ cells on paper in modeling mode
+        if (evt.data.interact) {
+            var cell = cellView.model;
+            if (cell instanceof joint.dia.Link) { // Link behavior
+                if (evt.data.move){
+                    // if link moved, reparent
+                    cell.reparent();
+                    // check if link still valid
+                    basicActorLink(cell);
+                }
+            } else { // Non-Link behavior
 
-	// Unembed cell so you can move it out of actor
-	if (cell.get('parent') && !(cell instanceof joint.dia.Link)) {
-		graph.getCell(cell.get('parent')).unembed(cell);
-	}
+                // Element is selected
+                selection.reset();
+                selection.add(cell);
+
+                // Remove highlight of other elements
+                removeHighlight();
+
+                // Highlight when cell is clicked
+                cellView.highlight();
+
+                currentHalo = createHalo(cellView);
+
+                clearInspector();
+
+                // render actor/element inspector
+                if (cell instanceof joint.shapes.basic.Actor) {
+                    actorInspector.render(cell);
+                } else {
+                    elementInspector.render(cell);
+                    // if user was dragging element
+                    if (evt.data.move) {
+                        // unembed intention from old actor
+                        if (cell.get('parent')) {
+                            graph.getCell(cell.get('parent')).unembed(cell);
+
+                            // remove nodeID from actor intentionIDs list
+                            var userIntention = model.getIntentionByID(cell.attributes.nodeID);
+                            if (userIntention.nodeActorID !== '-') {
+                                var actor = model.getActorByID(userIntention.nodeActorID);
+                                actor.removeIntentionID(userIntention.nodeID);
+                            }
+                        }
+                        // embed element in new actor
+                        embedBasicActor(cell);
+                    }
+                }
+            }
+        }
+    }
 });
 
 // Unhighlight everything when blank is being clicked
@@ -1152,66 +1181,34 @@ function removeHighlight(){
 }
 
 /**
- * Function for single click on cell
- * 
- */
-paper.on('cell:pointerup', function(cellView, evt) {
-	if(mode == "Modelling") {
-        // Link
-        if (cellView.model instanceof joint.dia.Link) {
-            var link = cellView.model;
-            basicActorLink(link);
-            // Element is selected
-        } else {
-
-            selection.reset();
-            selection.add(cellView.model);
-
-            // Remove highlight of other elements
-            removeHighlight();
-
-            // Highlight when cell is clicked
-            cellView.highlight();
-
-            currentHalo = createHalo(cellView);
-
-            embedBasicActor(cellView.model);
-
-            clearInspector();
-
-            if (cellView.model instanceof joint.shapes.basic.Actor) {
-            	actorInspector.render(cellView.model);
-			} else {
-                elementInspector.render(cellView.model);
-			}
-
-        }
-    }
-});
-
-/**
  * Embeds an element into an actor boundary
  *
  * @param {joint.dia.cell} cell
  */
 function embedBasicActor(cell) {
-	if (!(cell instanceof joint.shapes.basic.Actor)) {
-		var ActorsBelow = paper.findViewsFromPoint(cell.getBBox().center());
+    // returns actors, intentions, etc. which overlap with this cell
+    // including the cell itself
+    var overlapCells = paper.findViewsFromPoint(cell.getBBox().center());
 
-		if (ActorsBelow.length) {
-			for (var i = 0; i < ActorsBelow.length; i++) {
-				var actorCell = ActorsBelow[i].model;
-				if (actorCell instanceof joint.shapes.basic.Actor) {
-					actorCell.embed(cell);
-					var nodeID = cell.attributes.nodeID;
-					var actorID = actorCell.attributes.nodeID
-					model.getIntentionByID(nodeID).nodeActorID = actorID;
-					model.getActorByID(actorID).intentionIDs.push(nodeID);
-				}
-			}
-		}
-	}
+    // find actors which overlap with cell
+    overlapCells = overlapCells.filter(view => view.model instanceof joint.shapes.basic.Actor);
 
+    // cell is over at least one actor
+    if (overlapCells.length > 0) {
+        for (var i = 0; i < overlapCells.length; i++) {
+            // embed intention in each actor
+            var actorCell = overlapCells[i].model;
+            actorCell.embed(cell);
+            var nodeID = cell.attributes.nodeID;
+            var actorID = actorCell.attributes.nodeID
+            model.getIntentionByID(nodeID).nodeActorID = actorID;
+            model.getActorByID(actorID).addIntentionID(nodeID);
+        }
+    } else {
+        // intention not over any actor
+        var nodeID = cell.attributes.nodeID;
+        model.getIntentionByID(nodeID).nodeActorID = "-";
+    }
 }
 
 
@@ -1230,18 +1227,17 @@ graph.on('change:size', function(cell, size) {
 graph.on('remove', function(cell) {
     //TODO: What I have changed
     if(cell.isLink() && !(cell.prop("link-type") == 'NBT' || cell.prop("link-type") == 'NBD')){
-        //To remove link
+        // To remove link
         var link = cell;
         clearInspector();
         model.removeLink(link.linkID);
     }
 
     else if((!cell.isLink()) && (!(cell["attributes"]["type"]=="basic.Actor"))){
-        //To remove intentions
+        // To remove intentions
         clearInspector();
         var userIntention = model.getIntentionByID(cell.attributes.nodeID);
         // remove this intention from the model
-        //model.removeIntention(userIntention.nodeID);
         model.removedynamicFunction(userIntention.nodeID);
         model.removeIntentionLinks(userIntention.nodeID);
         // remove all intention evaluations associated with this intention
@@ -1250,12 +1246,12 @@ graph.on('remove', function(cell) {
         // from the actor
         if (userIntention.nodeActorID !== '-') {
             var actor = model.getActorByID(userIntention.nodeActorID);
-            actor.removeIntentionID(userIntention.nodeID,analysisRequest.userAssignmentsList);
+            actor.removeIntentionID(userIntention.nodeID);
         }
         model.removeIntention(userIntention.nodeID);
     }
     else if((!cell.isLink()) && (cell["attributes"]["type"]=="basic.Actor")){
-        //To remove actor
+        // To remove actor
         model.removeActor(cell['attributes']['nodeID']);
 
 
