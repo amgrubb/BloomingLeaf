@@ -527,7 +527,7 @@ function removeAnalysisResults(analysisMap) {
 	// for each AnalysisConfiguration obj
 	for(let config of analysisMapNoResults.values()) {
 		// put empty array into the analysisResults field
-		config.analysisResults = [];
+		config.deleteResults();
 	}
 
 	return analysisMapNoResults;

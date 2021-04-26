@@ -15,8 +15,6 @@ var analysisResult;
 var savedAnalysisData;
 var graph;
 var current;
-// AnalysisConfig variables moved to displayAnalysis
-// TODO: Need to come back to determine if location of othe vars is correct
 
 var model;
 

@@ -126,7 +126,7 @@ class AnalysisConfiguration {
         this.conflictLevel = analysisRequest.conflictLevel;
         this.numRelTime = analysisRequest.numRelTime;
         this.absTimePts = analysisRequest.absTimePts;
-        this.absTimePtsArr = analysisRequest.absTimePts;
+        this.absTimePtsArr = analysisRequest.absTimePtsArr;
         this.currentState = analysisRequest.currentState;
         this.userAssignmentsList = analysisRequest.userAssignmentsList;
         this.analysisResults = [];
@@ -173,7 +173,7 @@ class AnalysisConfiguration {
         this.conflictLevel = analysisRequest.conflictLevel;
         this.numRelTime = analysisRequest.numRelTime;
         this.absTimePts = analysisRequest.absTimePts;
-        this.absTimePtsArr = analysisRequest.absTimePts;
+        this.absTimePtsArr = analysisRequest.absTimePtsArr;
         this.currentState = analysisRequest.currentState;
 		this.userAssignmentsList = analysisRequest.userAssignmentsList;
 	}
