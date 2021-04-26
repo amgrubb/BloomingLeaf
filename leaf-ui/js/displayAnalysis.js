@@ -310,6 +310,7 @@ function removeConfiguration(configElement) {
     }
     // Highlight the currAnalysisConfig in the UI
     newConfigElement = document.getElementById(currAnalysisConfig.id);
+    analysisRequest = currAnalysisConfig;
     $(".config-elements").css("background-color", "");
     $(".result-elements").css("background-color", "");
     $(newConfigElement.querySelector('.config-elements')).css("background-color", "#A9A9A9");
