@@ -1889,8 +1889,6 @@ class AnalysisRequest {
      *
      * @param {String}
      */
-
-
     removeIntention(nodeID) {
         var i = 0;
 

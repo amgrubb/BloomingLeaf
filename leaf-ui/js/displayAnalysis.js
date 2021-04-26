@@ -185,27 +185,32 @@ function updateNodeValues(nodeID, satValue) {
  * 
  */
  function loadAnalysisConfig(){
-    // Refresh the analysis sidebar to reflect current analysis request values
-    refreshAnalysisUI();
     // if there are no configs in the map
     if(analysisMap.size == 0){
         // Add a new, empty config to the map
         addFirstAnalysisConfig();
     }
+    refreshAnalysisUI();
 }
 
 /**
  * Function to set up the initial analysis configuration upon page load
  */
 function addFirstAnalysisConfig(){
+    // reset to default analysisRequest while preserving userAssignmentsList
+    defaultAnalysisRequest();
+    // reset background colors
     $(".config-elements").css("background-color", "");
     $(".result-elements").css("background-color", "");
+    // reset highest position to 1
     highestPosition = 1;
+    // add config 1
     var id = ("Configuration" + highestPosition);
     currAnalysisConfig = new AnalysisConfiguration(id, analysisRequest, highestPosition);
     analysisMap.set(id, currAnalysisConfig);
     // Add the empty first config to the UI
     addAnalysisConfig(currAnalysisConfig);
+    refreshAnalysisUI();
 }
 
 /**
@@ -360,6 +365,7 @@ function updateResults(){
     // highlight newest/last result
     $(dropdownElement.lastChild).css("background-color", "#A9A9A9");
     
+    refreshAnalysisUI();
 }
 
 /**
@@ -384,6 +390,17 @@ function refreshAnalysisUI(){
     $('#abs-time-pts').val(analysisRequest.absTimePtsArr);
     $('#conflict-level').val(analysisRequest.conflictLevel);
     $('#num-rel-time').val(analysisRequest.numRelTime);
+
+    // conflict-level and num-rel-time only interactive
+    // until results generated from configuration
+    console.log(currAnalysisConfig);
+    if (currAnalysisConfig.analysisResults.length > 0){
+        $("#conflict-level").prop('disabled', true);
+        $('#num-rel-time').prop('disabled', true);
+    } else {
+        $("#conflict-level").prop('disabled', false);
+        $('#num-rel-time').prop('disabled', false);
+    }
 }
 
 /**
@@ -553,4 +570,17 @@ function getConfigHtml(id){
             '</div>' +
             '<div class="dropdown-container"></div>' +
            '</div>';
+}
+
+/**
+ * Reset global analysisRequest to default analysisRequest settings
+ * while preserving userAssignmentsList
+ */
+function defaultAnalysisRequest(){
+    // restore initial userAssignmentsList - holds initial evals for each intention
+    analysisRequest.clearUserEvaluations();
+    // copy initial userAssignmentsList into otherwise default analysisRequest
+    var defaultRequest = new AnalysisRequest();
+    defaultRequest.userAssignmentsList = analysisRequest.userAssignmentsList;
+    analysisRequest = defaultRequest;
 }

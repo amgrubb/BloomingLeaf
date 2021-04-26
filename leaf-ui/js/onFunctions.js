@@ -681,12 +681,7 @@ $('#btn-clear-cycle').on('click',function(){
 
 $('#btn-clear-analysis').on('click', function() {
     // reset to default analysisRequest while preserving userAssignmentsList
-    // restore initial userAssignmentsList - holds initial evals for each intention
-    analysisRequest.clearUserEvaluations();
-    // copy initial userAssignmentsList into otherwise default analysisRequest
-    var defaultRequest = new AnalysisRequest();
-    defaultRequest.userAssignmentsList = analysisRequest.userAssignmentsList;
-    analysisRequest = defaultRequest;
+    defaultAnalysisRequest();
     // clear analysis sidebar
     clearAnalysisConfigSidebar();
     // remove all configs from analysisMap
@@ -699,6 +694,7 @@ $('#btn-clear-analysis').on('click', function() {
 
 $('#btn-clear-results').on('click', function() {
     clearResults();
+    refreshAnalysisUI();
 });
 
 // Open as SVG
