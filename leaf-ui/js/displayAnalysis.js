@@ -200,9 +200,6 @@ function updateNodeValues(nodeID, satValue) {
 function addFirstAnalysisConfig(){
     // reset to default analysisRequest while preserving userAssignmentsList
     defaultAnalysisRequest();
-    // reset background colors
-    $(".config-elements").css("background-color", "");
-    $(".result-elements").css("background-color", "");
     // reset highest position to 1
     highestPosition = 1;
     // add config 1
@@ -312,9 +309,7 @@ function removeConfiguration(configElement) {
     // Highlight the currAnalysisConfig in the UI
     newConfigElement = document.getElementById(currAnalysisConfig.id);
     analysisRequest = currAnalysisConfig.getAnalysisRequest();
-    $(".config-elements").css("background-color", "");
-    $(".result-elements").css("background-color", "");
-    $(newConfigElement.querySelector('.config-elements')).css("background-color", "#A9A9A9");
+    switchSelectedShadingConfig(newConfigElement);
     // Remove full configuration div (includes results)
     configElement.remove();
     // Remove config from analysisMap
@@ -333,7 +328,6 @@ function clearAnalysisConfigSidebar() {
  * Loads in results to the UI menu when file is being loaded into BloomingLeaf
  */
 function loadResults(config){
-    $(".result-elements").css("background-color", "");
     var id = config.id;
 
     var dropdownElement = document.getElementById(id).querySelector('.dropdown-container');
@@ -346,15 +340,14 @@ function loadResults(config){
         dropdownElement.insertAdjacentHTML("beforeend","<a class='result-elements' id='"+i+"'>" + "Result " + (i+1) + "</a>");
     }
 
-    // Highlight last result
-    $(dropdownElement.lastChild).css("background-color", "#A9A9A9");
+    // highlight newest/last result
+    switchSelectedShadingResult($(dropdownElement.lastChild) /** last result */, dropdownElement.closest('.analysis-configuration') /** configuration element */);
 
 }
 /**
  * Adds result to UI menu
  */
 function updateResults(){
-    $(".result-elements").css("background-color", "");
     var id = currAnalysisConfig.id;
 
     // Get dropdown element and current result count from current config
@@ -365,7 +358,7 @@ function updateResults(){
     dropdownElement.insertAdjacentHTML("beforeend","<a class='result-elements' id='"+(resultCount-1)+"'>" + "Result " + (resultCount) + "</a>");
 
     // highlight newest/last result
-    $(dropdownElement.lastChild).css("background-color", "#A9A9A9");
+    switchSelectedShadingResult($(dropdownElement.lastChild) /** last result */, dropdownElement.closest('.analysis-configuration') /** configuration element */);
     
     refreshAnalysisUI();
 }
@@ -504,8 +497,7 @@ function switchConfigs(configElement){
     // restore default analysis view
     hideAnalysis();
     
-    $(".config-elements").css("background-color", "");
-    $(".result-elements").css("background-color", "");
+    switchSelectedShadingConfig(configElement);
     $(configElement.querySelector('.config-elements')).css("background-color", "#A9A9A9");
 }
 
@@ -519,10 +511,7 @@ function switchResults(resultElement, configElement){
     analysisRequest = currAnalysisConfig.getAnalysisRequest();
 
     // Update UI accordingly
-    $(".result-elements").css("background-color", "");
-    $(".config-elements").css("background-color", "");
-    $(resultElement).css("background-color", "#A9A9A9");
-    $(configElement.querySelector(".config-elements")).css("background-color","#A9A9A9");
+    switchSelectedShadingResult(resultElement, configElement);
     refreshAnalysisUI();
     displayAnalysis(currAnalysisResults, true);
     // show EVO analysis slider
@@ -533,9 +522,6 @@ function switchResults(resultElement, configElement){
     // perhaps it would be more useful to refresh EVO every time displayAnalysis() is called?
     // since it switches to modeling mode every time hideAnalysis() is called
     EVO.refresh();
-    // currAnalysisResults.colorVis.colorIntentionsAnalysis();
-    //document.getElementById("colorReset").value = EVO.sliderOption;
-    //document.getElementById("colorResetAnalysis").value = EVO.sliderOption;
 }
 
 /**
@@ -588,4 +574,30 @@ function defaultAnalysisRequest(){
     var defaultRequest = new AnalysisRequest();
     defaultRequest.userAssignmentsList = analysisRequest.userAssignmentsList;
     analysisRequest = defaultRequest;
+}
+
+/**
+ * Updates shading so that correct configuration is highlighted 
+ * when configuration is clicked
+ * 
+ * @param {JQueryElement} configElement 
+ */
+function switchSelectedShadingConfig(configElement){
+    $(".result-elements").css("background-color", "");
+    $(".config-elements").css("background-color", "");
+    $(configElement.querySelector(".config-elements")).css("background-color","#A9A9A9");
+}
+
+/**
+ * Updates shading so that correct configuration and result is highlighted 
+ * when result is clicked
+ * 
+ * @param {JQueryElement} resultElement
+ * @param {JQueryElement} configElement 
+ */
+function switchSelectedShadingResult(resultElement, configElement){
+    $(".result-elements").css("background-color", "");
+    $(".config-elements").css("background-color", "");
+    $(resultElement).css("background-color", "#A9A9A9");
+    $(configElement.querySelector(".config-elements")).css("background-color","#A9A9A9");
 }
