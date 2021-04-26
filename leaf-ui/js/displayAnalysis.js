@@ -190,6 +190,7 @@ function updateNodeValues(nodeID, satValue) {
         // Add a new, empty config to the map
         addFirstAnalysisConfig();
     }
+    // Refresh the analysis sidebar to reflect current analysis request values
     refreshAnalysisUI();
 }
 
@@ -310,7 +311,7 @@ function removeConfiguration(configElement) {
     }
     // Highlight the currAnalysisConfig in the UI
     newConfigElement = document.getElementById(currAnalysisConfig.id);
-    analysisRequest = currAnalysisConfig;
+    analysisRequest = currAnalysisConfig.getAnalysisRequest();
     $(".config-elements").css("background-color", "");
     $(".result-elements").css("background-color", "");
     $(newConfigElement.querySelector('.config-elements')).css("background-color", "#A9A9A9");
@@ -388,19 +389,22 @@ function updateResults(){
  * in places such as the right sidebar and absolute time points field
  */
 function refreshAnalysisUI(){
-    $('#abs-time-pts').val(analysisRequest.absTimePtsArr);
     $('#conflict-level').val(analysisRequest.conflictLevel);
     $('#num-rel-time').val(analysisRequest.numRelTime);
+    $('#abs-time-pts').val(analysisRequest.absTimePtsArr);
 
     // conflict-level and num-rel-time only interactive
     // until results generated from configuration
-    console.log(currAnalysisConfig);
     if (currAnalysisConfig.analysisResults.length > 0){
-        $("#conflict-level").prop('disabled', true);
+        $('#conflict-level').prop('disabled', true);
         $('#num-rel-time').prop('disabled', true);
+        $('#abs-time-pts').prop('disabled', true);
+        $('#max-abs-time').prop('disabled', true);
     } else {
-        $("#conflict-level").prop('disabled', false);
+        $('#conflict-level').prop('disabled', false);
         $('#num-rel-time').prop('disabled', false);
+        $('#abs-time-pts').prop('disabled', false);
+        $('#max-abs-time').prop('disabled', false);
     }
 }
 
