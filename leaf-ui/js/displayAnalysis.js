@@ -13,7 +13,7 @@ var currAnalysisConfig;
 var highestPosition = 1;
 
 /**
- * Displays the analysis to the web app, by displaying the slider
+ * Displays the analysis to the web app, by creating the slider display
  *
  * @param {AnalysisResult} analysisResult
  *   AnalysisResult object returned from backend
@@ -49,7 +49,6 @@ function displayAnalysis(analysisResult, isSwitch){
 function createSlider(currentAnalysis, isSwitch) {
 
     var sliderMax = currentAnalysis.timeScale;
-
     var density = (sliderMax < 25) ? (100 / sliderMax) : 4;
 
     noUiSlider.create(sliderObject.sliderElement, {
@@ -87,7 +86,6 @@ function hideAnalysis() {
     revertNodeValuesToInitial();
     // TODO: make sure EVO goes back to analysis mode properly when clicking on result
     EVO.switchToModelingMode();
-    //analysisResult.colorVis = [];
     // show modeling mode EVO slider
     $('#modelingSlider').css("display", "");
     $('#analysisSlider').css("display", "none");
@@ -146,9 +144,8 @@ function updateSliderValues(sliderValue, currentAnalysis){
     sliderObject.sliderValueElement.innerHTML = value + "|" + currentAnalysis.timePointPath[value];
     // Update the analysisRequest current state.
     analysisRequest.currentState = sliderObject.sliderValueElement.innerHTML;
-    currentAnalysis.elementList.forEach(function (element) {
-        updateNodeValues(element.id, element.status[value]); 
-    });
+    currentAnalysis.elementList.forEach(element => 
+        updateNodeValues(element.id, element.status[value]));
     
     EVO.setCurTimePoint(value);
 }
@@ -178,6 +175,22 @@ function updateNodeValues(nodeID, satValue) {
 	if ((cell != null) && (satValue in satisfactionValuesDict)) {
         cell.attr(".satvalue/text", satisfactionValuesDict[satValue].satValue);
         cell.attr({text: {fill: 'white'}});//satisfactionValuesDict[satValue].color
+    }
+}
+
+/**
+ * Function to add first analysis configuration 
+ * if no configs exist when switching to analysis mode
+ * If the analysisMap contains configurations loaded from JSON, populate the sidebar
+ * 
+ */
+ function loadAnalysisConfig(){
+    // Refresh the analysis sidebar to reflect current analysis request values
+    refreshAnalysisUI();
+    // if there are no configs in the map
+    if(analysisMap.size == 0){
+        // Add a new, empty config to the map
+        addFirstAnalysisConfig();
     }
 }
 
@@ -219,14 +232,14 @@ function loadAnalysis(){
     // It is necessary to push each UAL seperately 
     // to avoid the defaultUAL variable updating along with currAnalysisConfig
     currAnalysisConfig.userAssignmentsList.forEach(uAL => defaultUAL.push(uAL));
-    analysisRequest = currAnalysisConfig.analysisRequest;
+    analysisRequest = currAnalysisConfig.getAnalysisRequest();
     switchConfigs(firstConfigElement);
     // Refresh the sidebar to include the config vars
     refreshAnalysisUI();
 }
 
 /**
- * Adds a new analysis configuration to the Config sidebar
+ * Adds a new analysis configuration to the analysisMap and sidebar
  */
 function addNewAnalysisConfig(){
     // Update current config with current analysisRequest and set the udpated config in map
@@ -246,7 +259,6 @@ function addNewAnalysisConfig(){
 
     var newConfig = new AnalysisConfiguration(id, newRequest, highestPosition);
     analysisMap.set(id, newConfig);
-
     // Update current config to be the new config, and update analysisRequest to match new config
     currAnalysisConfig = newConfig;
     analysisRequest = currAnalysisConfig.getAnalysisRequest();
@@ -266,13 +278,6 @@ function addAnalysisConfig(config) {
 
     // Add config to config container
     $("#configurations").append(getConfigHtml(config.id));
-
-    // Get main config element and add event listeners for all interactive components
-    mainElement = document.getElementById(config.id);
-    mainElement.querySelector('.config-elements').addEventListener('dblclick', function(){rename(this /** Config element */)});
-    mainElement.querySelector('.config-elements').addEventListener('click', function(){switchConfigs(this.parentElement /** Config element */)});
-    mainElement.querySelector('.dropdown-button').addEventListener('click', function(){toggleDropdown(this.parentElement.parentElement /** Config element */)});
-    mainElement.querySelector('.deleteconfig-button').addEventListener('click', function(){removeConfiguration(this.parentElement.parentElement)/** Config element */});
 }
 
 /**
@@ -333,11 +338,6 @@ function loadResults(config){
     for (var i=0; i < resultCount; i++) {
         dropdownElement.insertAdjacentHTML("beforeend","<a class='result-elements' id='"+i+"'>" + "Result " + (i+1) + "</a>");
     }
-    const results = dropdownElement.querySelectorAll('.result-elements');
-    results.forEach(function(result){
-
-        result.addEventListener('click', function(){switchResults(result /** Result element */, result.parentElement.parentElement /** Config element */)});
-    });
 
     // Highlight last result
     $(dropdownElement.lastChild).css("background-color", "#A9A9A9");
@@ -356,7 +356,6 @@ function updateResults(){
     
     // Add new result element to end of result list, and attatch event listener on click
     dropdownElement.insertAdjacentHTML("beforeend","<a class='result-elements' id='"+(resultCount-1)+"'>" + "Result " + (resultCount) + "</a>");
-    dropdownElement.lastChild.addEventListener('click', function(){switchResults(this /** Result element */, this.parentElement.parentElement /** Config element */)});
 
     // highlight newest/last result
     $(dropdownElement.lastChild).css("background-color", "#A9A9A9");
@@ -398,7 +397,7 @@ function rename(configElement){
     var inputId = configContainerElement.id + "-input";
     // Grab JQuery config button element, and replace with new input element
     var element = $(configElement);
-    var input = $('<input>').attr("class", "configInput").attr("id", inputId).attr("style", "width:60%").val( element.text());
+    var input = $('<input>').attr("class", "config-input").attr("id", inputId).attr("style", "width:60%").val( element.text());
     element.replaceWith(input);
     input.focus();
 
@@ -408,6 +407,12 @@ function rename(configElement){
     handler = function(e){
         if (!$(e.target).is(input)){
             setConfigName(configContainerElement, configElement, inputElement);
+            // Check if click was on another config or result to trigger a switch
+            if ($(e.target).hasClass('config-elements')){
+                switchConfigs(e.target.closest('.analysis-configuration') /** Config element */);
+            } else if ($(e.target).hasClass('result-elements')){
+                switchResults(e.target /** Result element */, e.target.closest('.analysis-configuration') /** Config element */)
+            }
         }
     };
 
@@ -514,9 +519,6 @@ function switchResults(resultElement, configElement){
 /**
  * Ties dropdown bar to open or close on click action
  * Also updates dropdown icon to reflect if dropdown is open or closed
- * 
- * TODO: Currently could be a bit confusing when new config is added with dropdown in block display 
- * but no results yet - maybe add "no simulations run" message in place of first result for that case? 
  */
 function toggleDropdown(dropdownElement){
     // Grab container and icon from dropdown Element
@@ -542,20 +544,13 @@ function getConfigHtml(id){
             '<button class="config-elements" style="background-color:#A9A9A9;">' 
             + id + '</button>' +
             '<div id="config-buttons" style="position:absolute; display:inline-block">' +
-            '<button class="deleteconfig-button">' +
-                '<i id="garbage-icon" class="fa fa-trash-o" aria-hidden="true"></i>' +
-            '</button>' +
             '<button class="dropdown-button">'+
                 '<i id="drop-icon" class="fa fa-caret-up fa-2x" style="cursor:pointer;"></i>'+
+            '</button>' +
+            '<button class="deleteconfig-button">' +
+                '<i id="garbage-icon" class="fa fa-trash-o" aria-hidden="true"></i>' +
             '</button>' +
             '</div>' +
             '<div class="dropdown-container"></div>' +
            '</div>';
 }
-
-/**
- * Adds a new AnalysisConfig
- */
-$('.addConfig').on('click', function(){
-    addNewAnalysisConfig();
-});

@@ -128,6 +128,41 @@ $('#load-sample').on('click', function() {
     });
 });
 
+/** Analysis Configuration Sidebar */
+
+/**
+ * Adds a new AnalysisConfig
+ */
+ $('#addConfig').on('click', function(){
+    addNewAnalysisConfig();
+});
+
+/**
+ * Allows user to rename configuration element on doubleclick
+ */
+$(document).on('dblclick', '.config-elements', function(e){rename(e.target /** Config element */)});
+
+/**
+ * Switches UI to clicked configuration element
+ */
+$(document).on('click', '.config-elements', function(e){switchConfigs(e.target.closest('.analysis-configuration') /** Config element */)});
+   
+/**
+ * Toggles results dropdown menu on click of dropdown arrow
+ */
+$(document).on('click','.dropdown-button', function(e){toggleDropdown(e.target.closest('.analysis-configuration') /** Config element */)});
+
+/**
+ * Deletes configuration from UI and analysisMap on click of delete button
+ */
+$(document).on('click','.deleteconfig-button', function(e){removeConfiguration(e.target.closest('.analysis-configuration') /** Config element */)});
+
+/**
+ * Switches to clicked result and it's corresponding configuration in UI
+ */
+$(document).on('click', '.result-elements', function(e){switchResults(e.target /** Result element */, e.target.closest('.analysis-configuration') /** Config element */)})
+
+
 /**
  * Trigger when unassign button is pressed. 
  * Change the assigned time of the node/link in the same row to none
@@ -1424,22 +1459,6 @@ function checkForMultipleNB(node) {
 	}
 
 	return num >= 1;
-}
-
-/**
- * Function to add first analysis configuration 
- * if no configs exist when switching to analysis mode
- * If the analysisMap contains configurations loaded from JSON, populate the sidebar
- * 
- */
-function loadAnalysisConfig(){
-    // Refresh the analysis sidebar to reflect current analysis request values
-    refreshAnalysisUI();
-    // if there are no configs in the map
-    if(analysisMap.size == 0){
-        // Add a new, empty config to the map
-        addFirstAnalysisConfig();
-    }
 }
 
 /**

@@ -344,6 +344,13 @@ select::-ms-expand {
     outline: none;  
     width: 71%;
   }
+
+  .config-input {
+    padding: 10px; 
+    font-size: 16px; 
+    border: 1px solid black; 
+    outline: none;  
+  }
   
   .dropdown-button {
     padding: 2px 7px 4px 7px; 
@@ -365,6 +372,7 @@ select::-ms-expand {
     border: none; 
     outline: none;
     box-shadow: -1px 0px 0px 0px rgb(71, 65, 65);
+    float: left;
     cursor: pointer;
   }
 
