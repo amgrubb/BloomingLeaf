@@ -684,7 +684,7 @@ $('#btn-clear-cycle').on('click',function(){
 
 $('#btn-clear-analysis').on('click', function() {
     // reset to default analysisRequest while preserving userAssignmentsList
-    defaultAnalysisRequest();
+    resetToDefault();
     // clear analysis sidebar
     clearAnalysisConfigSidebar();
     // remove all configs from analysisMap

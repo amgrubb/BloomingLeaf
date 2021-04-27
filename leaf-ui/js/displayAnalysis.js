@@ -189,9 +189,10 @@ function updateNodeValues(nodeID, satValue) {
     if(analysisMap.size == 0){
         // Add a new, empty config to the map
         addFirstAnalysisConfig();
-    }
+    } else {
     // Refresh the analysis sidebar to reflect current analysis request values
     refreshAnalysisUI();
+    }
 }
 
 /**
@@ -199,7 +200,7 @@ function updateNodeValues(nodeID, satValue) {
  */
 function addFirstAnalysisConfig(){
     // reset to default analysisRequest while preserving userAssignmentsList
-    defaultAnalysisRequest();
+    resetToDefault();
     // reset highest position to 1
     highestPosition = 1;
     // add config 1
@@ -567,7 +568,7 @@ function getConfigHtml(id){
  * Reset global analysisRequest to default analysisRequest settings
  * while preserving userAssignmentsList
  */
-function defaultAnalysisRequest(){
+function resetToDefault(){
     // restore initial userAssignmentsList - holds initial evals for each intention
     analysisRequest.clearUserEvaluations();
     // copy initial userAssignmentsList into otherwise default analysisRequest
