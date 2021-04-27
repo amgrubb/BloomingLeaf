@@ -100,7 +100,6 @@ class ChartObj {
 	}
 }
 
-// TODO: Clean up this config. We potentially only need the id, analysisRequest, and analysisResults params
 class AnalysisConfiguration {
 	/**
 	 * This class is used to hold analysis configuration specifications and results 
@@ -110,11 +109,6 @@ class AnalysisConfiguration {
 	 * @param {String} id
 	 * @param {AnalysisRequest} analysisRequest
 	 * @param {Int} initialPosition
-     * @param {String} action
-     * @param {String} conflictLevel
-     * @param {String} numRelTime
-     * @param {String} absTimePts
-     * @param {String} currentState
      * @param {Array.<UserEvaluation>} userAssignmentsList
      * @param {Array.<AnalysisResult>} analysisResults
 	 */
@@ -122,12 +116,6 @@ class AnalysisConfiguration {
 	constructor(id, analysisRequest, initialPosition) {
 		this.id = id;
 		this.analysisRequest = analysisRequest;
-		this.action = analysisRequest.action;
-        this.conflictLevel = analysisRequest.conflictLevel;
-        this.numRelTime = analysisRequest.numRelTime;
-        this.absTimePts = analysisRequest.absTimePts;
-        this.absTimePtsArr = analysisRequest.absTimePtsArr;
-        this.currentState = analysisRequest.currentState;
         this.userAssignmentsList = analysisRequest.userAssignmentsList;
         this.analysisResults = [];
 		this.initialPosition = initialPosition;
@@ -169,12 +157,6 @@ class AnalysisConfiguration {
 	 */
 	updateAnalysis(analysisRequest){
 		this.analysisRequest = analysisRequest;
-		this.action = analysisRequest.action;
-        this.conflictLevel = analysisRequest.conflictLevel;
-        this.numRelTime = analysisRequest.numRelTime;
-        this.absTimePts = analysisRequest.absTimePts;
-        this.absTimePtsArr = analysisRequest.absTimePtsArr;
-        this.currentState = analysisRequest.currentState;
 		this.userAssignmentsList = analysisRequest.userAssignmentsList;
 	}
 

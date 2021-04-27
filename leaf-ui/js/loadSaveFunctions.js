@@ -464,7 +464,7 @@ function getNodeID(rapID, cells) {
 }
 
 /**
- * Returns an object that contains the current graph, model.
+ * Returns an object that contains the current graph, model, and analysis request.
  * This return object is what the user would download when clicking the Save button
  * in the top menu bar.
  *
@@ -479,7 +479,7 @@ function getModelJson() {
 }
 
 /**
- * Returns an object that contains the current graph, model and analysis configurations
+ * Returns an object that contains the current graph, model, and analysis configurations
  * and REMOVES results from the analysisConfigurations map.
  * This return object is what the user would download when clicking the Save button
  * in the top menu bar.

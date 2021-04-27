@@ -13,7 +13,7 @@ var currAnalysisConfig;
 var highestPosition = 1;
 
 /**
- * Displays the analysis to the web app, by displaying the slider
+ * Displays the analysis to the web app, by creating the slider display
  *
  * @param {AnalysisResult} analysisResult
  *   AnalysisResult object returned from backend
@@ -49,7 +49,6 @@ function displayAnalysis(analysisResult, isSwitch){
 function createSlider(currentAnalysis, isSwitch) {
 
     var sliderMax = currentAnalysis.timeScale;
-
     var density = (sliderMax < 25) ? (100 / sliderMax) : 4;
 
     noUiSlider.create(sliderObject.sliderElement, {
@@ -87,7 +86,6 @@ function hideAnalysis() {
     revertNodeValuesToInitial();
     // TODO: make sure EVO goes back to analysis mode properly when clicking on result
     EVO.switchToModelingMode();
-    //analysisResult.colorVis = [];
     // show modeling mode EVO slider
     $('#modelingSlider').css("display", "");
     $('#analysisSlider').css("display", "none");
@@ -146,9 +144,8 @@ function updateSliderValues(sliderValue, currentAnalysis){
     sliderObject.sliderValueElement.innerHTML = value + "|" + currentAnalysis.timePointPath[value];
     // Update the analysisRequest current state.
     analysisRequest.currentState = sliderObject.sliderValueElement.innerHTML;
-    currentAnalysis.elementList.forEach(function (element) {
-        updateNodeValues(element.id, element.status[value]); 
-    });
+    currentAnalysis.elementList.forEach(element => 
+        updateNodeValues(element.id, element.status[value]));
     
     EVO.setCurTimePoint(value);
 }
@@ -182,17 +179,37 @@ function updateNodeValues(nodeID, satValue) {
 }
 
 /**
+ * Function to add first analysis configuration 
+ * if no configs exist when switching to analysis mode
+ * If the analysisMap contains configurations loaded from JSON, populate the sidebar
+ * 
+ */
+ function loadAnalysisConfig(){
+    // if there are no configs in the map
+    if(analysisMap.size == 0){
+        // Add a new, empty config to the map
+        addFirstAnalysisConfig();
+    } else {
+    // Refresh the analysis sidebar to reflect current analysis request values
+    refreshAnalysisUI();
+    }
+}
+
+/**
  * Function to set up the initial analysis configuration upon page load
  */
 function addFirstAnalysisConfig(){
-    $(".config-elements").css("background-color", "");
-    $(".result-elements").css("background-color", "");
+    // reset to default analysisRequest while preserving userAssignmentsList
+    resetToDefault();
+    // reset highest position to 1
     highestPosition = 1;
+    // add config 1
     var id = ("Configuration" + highestPosition);
     currAnalysisConfig = new AnalysisConfiguration(id, analysisRequest, highestPosition);
     analysisMap.set(id, currAnalysisConfig);
     // Add the empty first config to the UI
     addAnalysisConfig(currAnalysisConfig);
+    refreshAnalysisUI();
 }
 
 /**
@@ -219,14 +236,14 @@ function loadAnalysis(){
     // It is necessary to push each UAL seperately 
     // to avoid the defaultUAL variable updating along with currAnalysisConfig
     currAnalysisConfig.userAssignmentsList.forEach(uAL => defaultUAL.push(uAL));
-    analysisRequest = currAnalysisConfig.analysisRequest;
+    analysisRequest = currAnalysisConfig.getAnalysisRequest();
     switchConfigs(firstConfigElement);
     // Refresh the sidebar to include the config vars
     refreshAnalysisUI();
 }
 
 /**
- * Adds a new analysis configuration to the Config sidebar
+ * Adds a new analysis configuration to the analysisMap and sidebar
  */
 function addNewAnalysisConfig(){
     // Update current config with current analysisRequest and set the udpated config in map
@@ -246,7 +263,6 @@ function addNewAnalysisConfig(){
 
     var newConfig = new AnalysisConfiguration(id, newRequest, highestPosition);
     analysisMap.set(id, newConfig);
-
     // Update current config to be the new config, and update analysisRequest to match new config
     currAnalysisConfig = newConfig;
     analysisRequest = currAnalysisConfig.getAnalysisRequest();
@@ -266,13 +282,6 @@ function addAnalysisConfig(config) {
 
     // Add config to config container
     $("#configurations").append(getConfigHtml(config.id));
-
-    // Get main config element and add event listeners for all interactive components
-    mainElement = document.getElementById(config.id);
-    mainElement.querySelector('.config-elements').addEventListener('dblclick', function(){rename(this /** Config element */)});
-    mainElement.querySelector('.config-elements').addEventListener('click', function(){switchConfigs(this.parentElement /** Config element */)});
-    mainElement.querySelector('.dropdown-button').addEventListener('click', function(){toggleDropdown(this.parentElement.parentElement /** Config element */)});
-    mainElement.querySelector('.deleteconfig-button').addEventListener('click', function(){removeConfiguration(this.parentElement.parentElement)/** Config element */});
 }
 
 /**
@@ -300,9 +309,8 @@ function removeConfiguration(configElement) {
     }
     // Highlight the currAnalysisConfig in the UI
     newConfigElement = document.getElementById(currAnalysisConfig.id);
-    $(".config-elements").css("background-color", "");
-    $(".result-elements").css("background-color", "");
-    $(newConfigElement.querySelector('.config-elements')).css("background-color", "#A9A9A9");
+    analysisRequest = currAnalysisConfig.getAnalysisRequest();
+    switchSelectedShadingConfig(newConfigElement);
     // Remove full configuration div (includes results)
     configElement.remove();
     // Remove config from analysisMap
@@ -321,7 +329,6 @@ function clearAnalysisConfigSidebar() {
  * Loads in results to the UI menu when file is being loaded into BloomingLeaf
  */
 function loadResults(config){
-    $(".result-elements").css("background-color", "");
     var id = config.id;
 
     var dropdownElement = document.getElementById(id).querySelector('.dropdown-container');
@@ -333,21 +340,15 @@ function loadResults(config){
     for (var i=0; i < resultCount; i++) {
         dropdownElement.insertAdjacentHTML("beforeend","<a class='result-elements' id='"+i+"'>" + "Result " + (i+1) + "</a>");
     }
-    const results = dropdownElement.querySelectorAll('.result-elements');
-    results.forEach(function(result){
 
-        result.addEventListener('click', function(){switchResults(result /** Result element */, result.parentElement.parentElement /** Config element */)});
-    });
-
-    // Highlight last result
-    $(dropdownElement.lastChild).css("background-color", "#A9A9A9");
+    // highlight newest/last result
+    switchSelectedShadingResult($(dropdownElement.lastChild) /** last result */, dropdownElement.closest('.analysis-configuration') /** configuration element */);
 
 }
 /**
  * Adds result to UI menu
  */
 function updateResults(){
-    $(".result-elements").css("background-color", "");
     var id = currAnalysisConfig.id;
 
     // Get dropdown element and current result count from current config
@@ -356,11 +357,11 @@ function updateResults(){
     
     // Add new result element to end of result list, and attatch event listener on click
     dropdownElement.insertAdjacentHTML("beforeend","<a class='result-elements' id='"+(resultCount-1)+"'>" + "Result " + (resultCount) + "</a>");
-    dropdownElement.lastChild.addEventListener('click', function(){switchResults(this /** Result element */, this.parentElement.parentElement /** Config element */)});
 
     // highlight newest/last result
-    $(dropdownElement.lastChild).css("background-color", "#A9A9A9");
+    switchSelectedShadingResult($(dropdownElement.lastChild) /** last result */, dropdownElement.closest('.analysis-configuration') /** configuration element */);
     
+    refreshAnalysisUI();
 }
 
 /**
@@ -382,9 +383,23 @@ function updateResults(){
  * in places such as the right sidebar and absolute time points field
  */
 function refreshAnalysisUI(){
-    $('#abs-time-pts').val(analysisRequest.absTimePtsArr);
     $('#conflict-level').val(analysisRequest.conflictLevel);
     $('#num-rel-time').val(analysisRequest.numRelTime);
+    $('#abs-time-pts').val(analysisRequest.absTimePtsArr);
+
+    // conflict-level and num-rel-time only interactive
+    // until results generated from configuration
+    if (currAnalysisConfig.analysisResults.length > 0){
+        $('#conflict-level').prop('disabled', true);
+        $('#num-rel-time').prop('disabled', true);
+        $('#abs-time-pts').prop('disabled', true);
+        $('#max-abs-time').prop('disabled', true);
+    } else {
+        $('#conflict-level').prop('disabled', false);
+        $('#num-rel-time').prop('disabled', false);
+        $('#abs-time-pts').prop('disabled', false);
+        $('#max-abs-time').prop('disabled', false);
+    }
 }
 
 /**
@@ -398,7 +413,7 @@ function rename(configElement){
     var inputId = configContainerElement.id + "-input";
     // Grab JQuery config button element, and replace with new input element
     var element = $(configElement);
-    var input = $('<input>').attr("class", "configInput").attr("id", inputId).attr("style", "width:60%").val( element.text());
+    var input = $('<input>').attr("class", "config-input").attr("id", inputId).attr("style", "width:60%").val( element.text());
     element.replaceWith(input);
     input.focus();
 
@@ -408,6 +423,12 @@ function rename(configElement){
     handler = function(e){
         if (!$(e.target).is(input)){
             setConfigName(configContainerElement, configElement, inputElement);
+            // Check if click was on another config or result to trigger a switch
+            if ($(e.target).hasClass('config-elements')){
+                switchConfigs(e.target.closest('.analysis-configuration') /** Config element */);
+            } else if ($(e.target).hasClass('result-elements')){
+                switchResults(e.target /** Result element */, e.target.closest('.analysis-configuration') /** Config element */)
+            }
         }
     };
 
@@ -477,8 +498,7 @@ function switchConfigs(configElement){
     // restore default analysis view
     hideAnalysis();
     
-    $(".config-elements").css("background-color", "");
-    $(".result-elements").css("background-color", "");
+    switchSelectedShadingConfig(configElement);
     $(configElement.querySelector('.config-elements')).css("background-color", "#A9A9A9");
 }
 
@@ -492,10 +512,7 @@ function switchResults(resultElement, configElement){
     analysisRequest = currAnalysisConfig.getAnalysisRequest();
 
     // Update UI accordingly
-    $(".result-elements").css("background-color", "");
-    $(".config-elements").css("background-color", "");
-    $(resultElement).css("background-color", "#A9A9A9");
-    $(configElement.querySelector(".config-elements")).css("background-color","#A9A9A9");
+    switchSelectedShadingResult(resultElement, configElement);
     refreshAnalysisUI();
     displayAnalysis(currAnalysisResults, true);
     // show EVO analysis slider
@@ -506,17 +523,11 @@ function switchResults(resultElement, configElement){
     // perhaps it would be more useful to refresh EVO every time displayAnalysis() is called?
     // since it switches to modeling mode every time hideAnalysis() is called
     EVO.refresh();
-    // currAnalysisResults.colorVis.colorIntentionsAnalysis();
-    //document.getElementById("colorReset").value = EVO.sliderOption;
-    //document.getElementById("colorResetAnalysis").value = EVO.sliderOption;
 }
 
 /**
  * Ties dropdown bar to open or close on click action
  * Also updates dropdown icon to reflect if dropdown is open or closed
- * 
- * TODO: Currently could be a bit confusing when new config is added with dropdown in block display 
- * but no results yet - maybe add "no simulations run" message in place of first result for that case? 
  */
 function toggleDropdown(dropdownElement){
     // Grab container and icon from dropdown Element
@@ -542,11 +553,11 @@ function getConfigHtml(id){
             '<button class="config-elements" style="background-color:#A9A9A9;">' 
             + id + '</button>' +
             '<div id="config-buttons" style="position:absolute; display:inline-block">' +
-            '<button class="deleteconfig-button">' +
-                '<i id="garbage-icon" class="fa fa-trash-o" aria-hidden="true"></i>' +
-            '</button>' +
             '<button class="dropdown-button">'+
                 '<i id="drop-icon" class="fa fa-caret-up fa-2x" style="cursor:pointer;"></i>'+
+            '</button>' +
+            '<button class="deleteconfig-button">' +
+                '<i id="garbage-icon" class="fa fa-trash-o" aria-hidden="true"></i>' +
             '</button>' +
             '</div>' +
             '<div class="dropdown-container"></div>' +
@@ -554,8 +565,40 @@ function getConfigHtml(id){
 }
 
 /**
- * Adds a new AnalysisConfig
+ * Reset global analysisRequest to default analysisRequest settings
+ * while preserving userAssignmentsList
  */
-$('.addConfig').on('click', function(){
-    addNewAnalysisConfig();
-});
+function resetToDefault(){
+    // restore initial userAssignmentsList - holds initial evals for each intention
+    analysisRequest.clearUserEvaluations();
+    // copy initial userAssignmentsList into otherwise default analysisRequest
+    var defaultRequest = new AnalysisRequest();
+    defaultRequest.userAssignmentsList = analysisRequest.userAssignmentsList;
+    analysisRequest = defaultRequest;
+}
+
+/**
+ * Updates shading so that correct configuration is highlighted 
+ * when configuration is clicked
+ * 
+ * @param {JQueryElement} configElement 
+ */
+function switchSelectedShadingConfig(configElement){
+    $(".result-elements").css("background-color", "");
+    $(".config-elements").css("background-color", "");
+    $(configElement.querySelector(".config-elements")).css("background-color","#A9A9A9");
+}
+
+/**
+ * Updates shading so that correct configuration and result is highlighted 
+ * when result is clicked
+ * 
+ * @param {JQueryElement} resultElement
+ * @param {JQueryElement} configElement 
+ */
+function switchSelectedShadingResult(resultElement, configElement){
+    $(".result-elements").css("background-color", "");
+    $(".config-elements").css("background-color", "");
+    $(resultElement).css("background-color", "#A9A9A9");
+    $(configElement.querySelector(".config-elements")).css("background-color","#A9A9A9");
+}

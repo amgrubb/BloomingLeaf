@@ -339,9 +339,6 @@ stencil.load([goal, task, sgoal, res, act]);
 // Setup LinkInspector
 $('.inspector').append(linkInspector.el);
 
-// Set up Analysis Config Sidebar as none for startup on modelling mode
-$('#analysis-sidebar').css("display","none");
-
 // Initialize Slider setup
 sliderObject.sliderElement = document.getElementById('slider');
 sliderObject.sliderValueElement = document.getElementById('sliderValue');
