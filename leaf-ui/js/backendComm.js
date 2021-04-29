@@ -1,6 +1,6 @@
 /**
  * This file contains the communication between the front and back end of Bloomingleaf.
- * When analysis is run, the analysisRequest is bundled and sent to the backend,
+ * When an analysis is run, the analysisRequest, model, and graph are bundled into an object, converted to JSON format, and sent to the backend,
  * which returns the analysisResult.
  */
 
@@ -98,7 +98,6 @@ function responseFunc(isGetNextSteps, response){
 					console.log("in backendcomm, saving all next state results");
 					open_analysis_viewer();
 			} else {
-				console.log(JSON.stringify(results)); 
 				savedAnalysisData.singlePathResult = results;
 				analysisResult = convertToAnalysisResult(results);
 				displayAnalysis(analysisResult, false);
@@ -171,7 +170,6 @@ function getFileResults(isGetNextSteps) {
                     savedAnalysisData.singlePathResult = results;
                     analysisRequest.previousAnalysis = analysisResult;
                     console.log("previousAnalysis");
-					console.log(analysisRequest.previousAnalysis);
 					//pass in an AnalysisResult object
 					displayAnalysis(analysisResult, false);
 				}

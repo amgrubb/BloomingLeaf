@@ -84,7 +84,6 @@ function createSlider(currentAnalysis, isSwitch) {
 function hideAnalysis() {
     refreshAnalysisUI();
     revertNodeValuesToInitial();
-    // TODO: make sure EVO goes back to analysis mode properly when clicking on result
     EVO.switchToModelingMode();
     // show modeling mode EVO slider
     $('#modelingSlider').css("display", "");
@@ -224,7 +223,6 @@ function loadAnalysis(){
         addAnalysisConfig(config);
         // Add the results (if any) to the sidebar
         loadResults(config);
-        // Whenever first or loaded configs are added, update the highest position 
         // Check if configuration added has higher initialPosition than current highest position, prevents naming duplicates
         if(config.initialPosition > highestPosition) {
             highestPosition = config.initialPosition;
@@ -256,7 +254,6 @@ function addNewAnalysisConfig(){
     var id = "Configuration" + (highestPosition).toString();
     
     // default Analysis Request needed for now for user assignments list
-    // TODO: Look into perserving base UAL throughout analysisRequests
     var newRequest = new AnalysisRequest();
     // give the new request the defaultUAL
     defaultUAL.forEach(userEval => newRequest.userAssignmentsList.push(userEval));
@@ -499,7 +496,6 @@ function switchConfigs(configElement){
     hideAnalysis();
     
     switchSelectedShadingConfig(configElement);
-    $(configElement.querySelector('.config-elements')).css("background-color", "#A9A9A9");
 }
 
 /**
@@ -519,7 +515,6 @@ function switchResults(resultElement, configElement){
     $('#modelingSlider').css("display", "none");
     $('#analysisSlider').css("display", "");
 
-    // TODO: show current EVO
     // perhaps it would be more useful to refresh EVO every time displayAnalysis() is called?
     // since it switches to modeling mode every time hideAnalysis() is called
     EVO.refresh();
