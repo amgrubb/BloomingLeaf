@@ -500,7 +500,6 @@ $('#model-cur-btn').on('click', function() {
  * satisfaction value and colours all text to black
  */
 function revertNodeValuesToInitial() {
-    // TODO: get satisfaction text to disappear
     // reset values
     for (var i = 0; i < graph.elementsBeforeAnalysis.length; i++) {
 		var value = graph.elementsBeforeAnalysis[i]
@@ -552,7 +551,9 @@ function switchToModellingMode() {
 	graph.elementsBeforeAnalysis = [];
 
     // store deep copy of model for detecting model changes
-    // copy is NOT of type Model
+    // switchToAnalysisMode compares the current model to previousModel
+    // and clears results if model changed during modelling mode
+    // previousModel is NOT of type Model
     previousModel = JSON.parse(JSON.stringify(model));
 
     $('#stencil').css("display","");
