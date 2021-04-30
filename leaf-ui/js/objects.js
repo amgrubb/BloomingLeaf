@@ -1,97 +1,12 @@
+/**
+ * This file contains declarations for various objects used in the frontend processes.
+ */
+
 // Used to manipulate slider during analysis
 var sliderObject = function(){
 	this.sliderElement;
 	this.sliderValueElement;
 	this.pastAnalysisValues = [];
-}
-
-
-// Used to control past analysis values through the history log
-var historyObject = function(){
-	this.allHistory = [];
-	this.nextStep = 1;			//Used to denote last analysis appended
-	this.currentStep = null;	//Used to signal current step shown with history log
-}
-
-// Individual logs on the history log
-var logObject = function(analysis){
-	this.analysis = analysis;
-};
-
-// Used to save analysis results
-function analysisObject () {
-    this.type;
-    this.elements;
-    this.numOfElements;
-    this.timeScale;
-    this.relativeTime;
-}
-
-// Parse results from backend
-analysisObject.initFromBackEnd = function(analysisResults){
-	this.elements = [];
-	this.numOfElements = Number(analysisResults.elementList.length);
-	this.timeScale = Number(analysisResults.timePointPath.length) - 1;
-	this.relativeTime = [];
-
-	for(var i = 0; i < analysisResults.timePointPath.length; i++){
-		var aux = analysisResults.timePointPath[i];
-		this.relativeTime.push(aux);
-	}
-
-	for (var i = 0; i < this.numOfElements ; i++){
-		//strips first element since it is already shown on graph
-		var results = analysisResults.elementList[i];
-		//results.pop(0);
-		this.elements.push(results)
-	}
-	return this;
-};
-
-
-analysisObject.nextStates = function(analysisResults){
-	this.elements = [];
-	this.numOfElements = Number(analysisResults.elementList.length);
-	this.timeScale = Number(analysisResults.elementList[0].status.length) - 1;
-	this.relativeTime = [];
-
-	for(var i = 0; i < this.timeScale; i++){
-		this.relativeTime.push(i);
-	}
-
-	for (var i = 0; i < this.numOfElements ; i++){
-		//strips first element since it is already shown on graph
-		var results = analysisResults.elementList[i].status;
-		results.pop(0);
-		this.elements.push(results)
-	}
-	return this;
-}
-
-//analysisObject.initFromBackEnd = function(analysisResults, analysisType){
-//	this.type = analysisType;
-//	this.elements = [];
-//	this.numOfElements = Number(analysisResults[0]);
-//	this.timeScale = Number(analysisResults[1]) - 1;
-//
-//	for (var i = 2; i < this.numOfElements + 2; i++){
-//		//strips first element since it is already shown on graph
-//		var results = analysisResults[i].split('\t');
-//		results.pop(0)
-//		this.elements.push(results)
-//	}
-//	return this;
-//}
-
-// Load results from a file
-// This is done through loading analysis on the analysis inspector
-analysisObject.initFromMain = function(elements, num, time){
-    this.type = "Compiled";
-    this.elements = elements;
-    this.numOfElements = num;
-    this.timeScale = time;
-
-    return this;
 }
 
 // Within intension constraints template
@@ -183,4 +98,95 @@ class ChartObj {
 			options: this.options
 		});
 	}
+}
+
+class AnalysisConfiguration {
+	/**
+	 * This class is used to hold analysis configuration specifications and results 
+	 * for view in the analysis configuration & results sidebar. 
+	 * The object is initialized by passing in an AnalysisRequest object into the constructor.
+	 * 
+	 * @param {String} id
+	 * @param {AnalysisRequest} analysisRequest
+	 * @param {Int} initialPosition
+     * @param {Array.<UserEvaluation>} userAssignmentsList
+     * @param {Array.<AnalysisResult>} analysisResults
+	 */
+
+	constructor(id, analysisRequest, initialPosition) {
+		this.id = id;
+		this.analysisRequest = analysisRequest;
+        this.userAssignmentsList = analysisRequest.userAssignmentsList;
+        this.analysisResults = [];
+		this.initialPosition = initialPosition;
+	}
+
+	/**
+	 * Add a new AnalysisResult to the analysisResults array.
+	 * @param {AnalysisResult} analysisResult 
+	 */
+	addResult(analysisResult) {
+		this.analysisResults.push(analysisResult);
+	}
+
+	/**
+	 * Set the AnalysisResults param
+	 * @param {Array.<AnalysisResult>} analysisResults 
+	 */
+	setResults(analysisResults) {
+		// if results not AnalysisResult class yet, convert to AnalysisResult
+		for (var i = 0; i < analysisResults.length; i++){
+			if (! (analysisResults[i] instanceof AnalysisResult)) {
+				analysisResults[i] = new AnalysisResult(analysisResults[i])
+			}
+		}
+
+		this.analysisResults = analysisResults;
+	}
+
+	/**
+	 * Delete all analysisResults
+	 * @param {AnalysisResult} analysisResult 
+	 */
+	deleteResults() {
+		this.analysisResults = [];
+	}
+
+	/**
+	 * Updates Config Values from AnalysisRequest
+	 */
+	updateAnalysis(analysisRequest){
+		this.analysisRequest = analysisRequest;
+		this.userAssignmentsList = analysisRequest.userAssignmentsList;
+	}
+
+	updateId(id){
+		this.id = id;
+	}
+
+	/**
+	 * Updates user assignments list param for config and for config's analysisRequest
+	 */
+	updateUAL(userAssignmentsList){
+		this.userAssignmentsList = userAssignmentsList;
+		this.analysisRequest.userAssignmentsList = userAssignmentsList;
+	}
+
+	/**
+	 * Returns AnalysisRequest object associated with this Config
+	 * This is currently used to streamline getting request from currentAnalysisConfig
+	 * TODO: Consider/switch to a more efficient way to return 
+	 * since this is duplicate data being held in the Config 
+	 */
+	getAnalysisRequest(){
+		return this.analysisRequest;
+	}
+
+	/**
+	 * Returns a JSON representation of the AnalysisConfig object
+	 */
+	stringify(){
+		return JSON.stringify(this);
+	}
+	
 }

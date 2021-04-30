@@ -94,9 +94,9 @@ $('#btn-view-assignment').on('click', function() {
  */
 $('#btn-save-assignment').on('click', function() {
     saveAbsoluteTimePoints();
-    saveRelativeIntentionAssignments();
     saveAbsoluteIntentionAssignments();
     saveAbsoluteRelationshipAssignments();
+    saveRelativeIntentionAssignments();
 
     // Dismiss the modal
     var modal = document.getElementById('assignmentsModal');
@@ -127,6 +127,41 @@ $('#load-sample').on('click', function() {
         reader.readAsText(newModel);  	
     });
 });
+
+/** Analysis Configuration Sidebar */
+
+/**
+ * Adds a new AnalysisConfig
+ */
+ $('#addConfig').on('click', function(){
+    addNewAnalysisConfig();
+});
+
+/**
+ * Allows user to rename configuration element on doubleclick
+ */
+$(document).on('dblclick', '.config-elements', function(e){rename(e.target /** Config element */)});
+
+/**
+ * Switches UI to clicked configuration element
+ */
+$(document).on('click', '.config-elements', function(e){switchConfigs(e.target.closest('.analysis-configuration') /** Config element */)});
+   
+/**
+ * Toggles results dropdown menu on click of dropdown arrow
+ */
+$(document).on('click','.dropdown-button', function(e){toggleDropdown(e.target.closest('.analysis-configuration') /** Config element */)});
+
+/**
+ * Deletes configuration from UI and analysisMap on click of delete button
+ */
+$(document).on('click','.deleteconfig-button', function(e){removeConfiguration(e.target.closest('.analysis-configuration') /** Config element */)});
+
+/**
+ * Switches to clicked result and it's corresponding configuration in UI
+ */
+$(document).on('click', '.result-elements', function(e){switchResults(e.target /** Result element */, e.target.closest('.analysis-configuration') /** Config element */)})
+
 
 /**
  * Trigger when unassign button is pressed. 
@@ -315,7 +350,6 @@ function saveAbsoluteIntentionAssignments(){
         }
         var row = $(this).closest('tr');
         var srcEB = row.attr('srcEB'); // ex. 'A'
-        var funcValue = row.find('td:nth-child(2)').html(); // ex. 'MP'
         var nodeID = row.attr('nodeID'); // ex. '0000'
 
         model.setAbsConstBySrcID(nodeID, srcEB, newTime);
@@ -398,10 +432,26 @@ function switchToAnalysisMode() {
 	
 	removeHighlight();
 
+    // clear results if changed model during modeling mode
+    let modelChanged = !(JSON.stringify(previousModel) === JSON.stringify(model));
+    if (modelChanged){
+        clearResults();
+    }
+
+    // Checks if the user assignments list has changed since last switching to Assignments mode
+    // If so, update UAL for all configs and then update defaultUAL 
+    if(analysisRequest.userAssignmentsList !== defaultUAL){
+        for(let config of analysisMap.values()){
+            config.updateUAL(analysisRequest.userAssignmentsList);
+        }
+        defaultUAL = [];
+        analysisRequest.userAssignmentsList.forEach(uAL => defaultUAL.push(uAL));
+    }
+
 	analysisInspector.render();
 	$('.inspector').append(analysisInspector.el);
 	$('#stencil').css("display", "none");
-	$('#history').css("display", "");
+    $('#analysis-sidebar').css("display","");
 
     $('#analysis-btn').css("display", "none");
 	$('#symbolic-btn').css("display", "none");
@@ -409,13 +459,19 @@ function switchToAnalysisMode() {
     $('#dropdown-model').css("display", "");
     //$('#on-off').css("display", "none");
 
+    // hide extra tools from modelling mode
     $('#model-toolbar').css("display", "none");
+    $('.model-clears').css("display", "none");
+    $('.analysis-clears').css("display", "");
 
+    // Show Analysis View tag
 	$('#modeText').text("Analysis View");
 
 	// Disable link settings
 	$('.link-tools .tool-remove').css("display", "none");
-	$('.link-tools .tool-options').css("display", "none");
+    $('.link-tools .tool-options').css("display", "none");
+    
+    loadAnalysisConfig();
 
 	if (currentHalo) {
 		currentHalo.remove();
@@ -444,6 +500,12 @@ $('#model-cur-btn').on('click', function() {
  * satisfaction value and colours all text to black
  */
 function revertNodeValuesToInitial() {
+    // reset values
+    for (var i = 0; i < graph.elementsBeforeAnalysis.length; i++) {
+		var value = graph.elementsBeforeAnalysis[i]
+		updateNodeValues(i, value, "toInitModel");
+	}
+
 	var elements = graph.getElements();
 	var curr;
 	for (var i = 0; i < elements.length; i++) {
@@ -468,6 +530,8 @@ function revertNodeValuesToInitial() {
         //curr.attr({text: {fill: 'black'}});
         curr.attr({text: {fill: 'black',stroke:'none','font-weight' : 'normal','font-size': 10}});
 	}
+    // Remove slider
+    removeSlider();
 }
 
 /**
@@ -479,25 +543,37 @@ function switchToModellingMode() {
     setInteraction(true);
     analysisResult.isPathSim = false; //reset isPathSim for color visualization slider
 	analysisRequest.previousAnalysis = null;
-    clearInspector();
+	clearInspector();
 
 	// Reset to initial graph prior to analysis
 	revertNodeValuesToInitial();
 
-	$('#stencil').css("display","");
-	$('#history').css("display","none");
+	graph.elementsBeforeAnalysis = [];
+
+    // store deep copy of model for detecting model changes
+    // switchToAnalysisMode compares the current model to previousModel
+    // and clears results if model changed during modelling mode
+    // previousModel is NOT of type Model
+    previousModel = JSON.parse(JSON.stringify(model));
+
+    $('#stencil').css("display","");
+    $('#analysis-sidebar').css("display","none");
     $('#btn-view-assignment').css("display","");
-	$('#analysis-btn').css("display","");
+    $('#analysis-btn').css("display","");
+    $('#analysis-sidebar').css("display","none");
 	$('#symbolic-btn').css("display","");
 	$('#cycledetect-btn').css("display","");
     $('#dropdown-model').css("display","none");
     $('#on-off').css("display", "");
 
+    // show extra tools for modelling mode
     $('#model-toolbar').css("display","");
+    $('.model-clears').css("display", "");
+    $('.analysis-clears').css("display", "none");
 
     analysisResult.colorVis = [];
 
-	$('#sliderValue').text("");
+    // Show Modelling View tag
     $('#modeText').text("Modeling View");
 
 	// Reinstantiate link settings
@@ -505,12 +581,28 @@ function switchToModellingMode() {
 	$('.link-tools .tool-options').css("display","");
 
 	graph.allElements = null;
-
-	// Clear previous slider setup
-	clearHistoryLog();
-
     mode = "Modelling";
     EVO.switchToModelingMode();
+
+    // Popup to warn user that changing model will clear results
+    // From analysis configuration sidebar
+    // Defaults to showing each time if user clicks out of box instead of selecting option
+    if (showEditingWarning){
+        const dialog = showAlert('Warning',
+        '<p>Changing the model will clear all ' +
+        'results from all configurations.</p><p>Do you wish to proceed?</p>' +
+        '<p><button type="button" class="model-editing"' +
+        ' id="repeat" style="width:100%">Yes' +
+        '</button><button type="button" ' +
+        'class="model-editing" id="singular" style="width:100%">Yes, please do not show this warning again ' +
+        '</button> <button type="button" class="model-editing"' +
+        ' id="decline" onclick="switchToAnalysisMode()" style="width:100%"> No, please return to analysis mode' +
+        '</button></p>',
+        window.innerWidth * 0.3, 'alert', 'warning');
+        document.querySelectorAll('.model-editing').forEach(function(button){
+            button.addEventListener('click', function(){dialog.close(); if(button.id == 'singular'){showEditingWarning = false;};});
+        });
+    }
 }
 
 /**
@@ -537,7 +629,12 @@ $('#btn-undo').on('click', _.bind(commandManager.undo, commandManager));
 $('#btn-redo').on('click', _.bind(commandManager.redo, commandManager));
 $('#btn-clear-all').on('click', function(){
     graph.clear();
+    // reset to default analysisRequest
     model.removeAnalysis();
+    // clear analysis sidebar
+    clearAnalysisConfigSidebar();
+    // remove all configs from analysisMap
+    analysisMap.clear();
 	// Delete cookie by setting expiry to past date
 	document.cookie='graph={}; expires=Thu, 18 Dec 2013 12:00:00 UTC';
 });
@@ -586,6 +683,24 @@ $('#btn-clear-cycle').on('click',function(){
     clearCycleHighlighting();
 });
 
+$('#btn-clear-analysis').on('click', function() {
+    // reset to default analysisRequest while preserving userAssignmentsList
+    resetToDefault();
+    // clear analysis sidebar
+    clearAnalysisConfigSidebar();
+    // remove all configs from analysisMap
+    analysisMap.clear();
+	// add back first default analysis config
+    addFirstAnalysisConfig();
+    // reset graph to initial values
+    revertNodeValuesToInitial();
+});
+
+$('#btn-clear-results').on('click', function() {
+    clearResults();
+    refreshAnalysisUI();
+});
+
 // Open as SVG
 $('#btn-svg').on('click', function() {
 	paper.openAsSVG();
@@ -600,9 +715,33 @@ $('#btn-save').on('click', function() {
        // EVO.returnAllColors(graph.getElements(), paper);
        // EVO.revertIntentionsText(graph.getElements(), paper);    
 		var fileName = name + ".json";
-		var obj = getFullJson();
+		var obj = getModelJson();
         download(fileName, JSON.stringify(obj));
         //IntentionColoring.refresh();
+	}
+});
+
+// Save the current graph and analysis (without results) to json file
+$('#btn-save-analysis').on('click', function() {
+	var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
+	if (name){
+        clearCycleHighlighting();
+        EVO.deactivate();   
+		var fileName = name + ".json";
+		var obj = getModelAnalysisJson();
+        download(fileName, JSON.stringify(obj));
+	}
+});
+
+// Save the current graph and analysis (with results) to json file
+$('#btn-save-all').on('click', function() {
+	var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
+	if (name){
+        clearCycleHighlighting();
+        EVO.deactivate();   
+		var fileName = name + ".json";
+		var obj = getFullJson();
+        download(fileName, JSON.stringify(obj));
 	}
 });
 
@@ -1323,9 +1462,8 @@ function checkForMultipleNB(node) {
  * 
  * @param {boolean} interactionValue 
  */
- function setInteraction(interactionValue){
+function setInteraction(interactionValue){
     _.each(graph.getCells(), function(cell) {
         cell.findView(paper).options.interactive = interactionValue;
     });
 }
-

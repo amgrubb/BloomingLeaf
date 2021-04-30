@@ -17,6 +17,11 @@ body {
   font-family: Arial;
 }
 
+body.waiting *
+{
+    cursor: wait !important;
+}
+
 .header {
    padding: 0px;
 }
@@ -127,15 +132,6 @@ body {
   color: #bcbcbc;
   text-shadow: 0 -1px 0 #000;
   background-color: rgba(90, 90, 90, 1);
-}
-
-#history a{
-  padding: 16px;
-  display: block;
-}
-
-#history a:hover {
-  background-color: #E8E8E8;
 }
 
 /* Right Panel */

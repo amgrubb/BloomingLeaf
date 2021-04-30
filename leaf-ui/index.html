@@ -25,20 +25,30 @@
             <div id="model-toolbar">
                 <button id="btn-undo" class="btn">Undo</button>
                 <button id="btn-redo" class="btn">Redo</button>
-                <div class="dropdown">
-                  <button id="btn-clear" class="btn">Clear</button>
-                  <!-- <div class="btn">Font Size</div> -->
-                  <div class="dropdown-toolbar">
-                    <a id="btn-clear-all">Full Model</a>
-                    <a id="btn-clear-elabel">Evaluation Labels</a>
-                    <a id="btn-clear-flabel">Dynamic Function Labels</a>
-                    <a id="btn-clear-cycle">Cycle Highlighting</a>
-                  </div>
-                </div>
-                <button id="btn-save" class="btn">Save</button>
                 <button id="btn-load" class="btn">Load</button>
             </div>
 
+            <div class="dropdown">
+                <button id="btn-big-save" class="btn">Save</button>
+                <div class="dropdown-toolbar">
+                    <a id="btn-save">Save Model</a>
+                    <a id="btn-save-analysis">Save Model and Analysis Configuration</a>
+                    <a id="btn-save-all">Save Model, Analysis Configuration, and Results</a>
+                </div>
+            </div>
+
+            <div class="dropdown">
+                <button id="btn-clear" class="btn">Clear</button>
+                <!-- <div class="btn">Font Size</div> -->
+                <div class="dropdown-toolbar">
+                  <a id="btn-clear-all" class='model-clears'>Full Model and Analysis</a>
+                  <a id="btn-clear-elabel" class='model-clears'>Evaluation Labels</a>
+                  <a id="btn-clear-flabel" class='model-clears'>Dynamic Function Labels</a>
+                  <a id="btn-clear-cycle" class='model-clears'>Cycle Highlighting</a>
+                  <a id="btn-clear-results" class='analysis-clears' style="display: none;">Results Only</a>
+                  <a id="btn-clear-analysis" class='analysis-clears' style="display: none;">Configurations and Results</a>
+                </div>
+            </div>
             <button id="btn-zoom-in" class="btn" onclick = "zoomIn(paperScroller)">Zoom In</button>
             <button id="btn-zoom-out" class="btn" onclick = "zoomOut(paperScroller)">Zoom Out</button>
             <button id="btn-svg" class="btn">Open as SVG</button>
@@ -57,7 +67,7 @@
             <div class="dropdown">
               <div class="btn">Help</div>
               <div class="dropdown-toolbar">
-                <a onclick="window.open('documentation.pdf'); return false;">Documentation</a>
+                <a href="/documentation.pdf" download='documentation.pdf'">Download Documentation</a>
                 <a onclick="window.open('legend.html', 'newwindow', 'width=300, height=250'); return false;">
                 Legend</a>
                 <a onclick="window.open('evo.html', 'newwindow', 'width=500, height=400'); return false;">
@@ -156,10 +166,14 @@
 		      <button id="symbolic-btn" class="blue-btn btn">Model Constraints</button>-->
             <button id="analysis-btn" class="green-btn btn" style="border-radius:none;">Analysis</button>
         </div>
-        
-
+         
         <div id="stencil" class="left-panel"><label>Stencil</label></div>
-        <div id="history" class="left-panel"><label>History Log</label></div>
+        <div id="analysis-sidebar" class="left-panel" style="display:none"><h3 style="text-align:left; color:#181b1fe3; margin-bottom:5px; margin-left: 10px;">Analysis
+            <div id="addConfig" style="display:inline">
+                <i class="fa fa-plus" id="addIntent" style="font-size:30px; float:right;  margin-bottom:5px; margin-right:20px;"></i>
+            </div></h3>
+            <div id="configurations" class="left-panel" style="margin-top:20px; overflow-y:auto; height:69%; box-shadow: none;"></div>
+        </div>
 
         <div id="paper">
         </div>
@@ -235,14 +249,14 @@
 		<script src="./js/object/InputLink.js"></script>
     <script src="./js/object/InputEvaluation.js"></script>
         <div class = "attribution">
-            <img src=http://upload.wikimedia.org/wikipedia/en/0/04/Utoronto_coa.svg style="width:25%;height:25%;float:left">
-            Release 1.0 - Beta <br>
-            Copyright 2015-2018.<br>University of Toronto<br>
-            Department of Computer Science. <br>
+            <img src="site-logo.PNG" style="width:25%;height:25%;float:left">
+            Release 1.5 <br>
+            Copyright 2015-2021.<br>Grubb Lab, Smith College<br>
+            & University of Toronto. <br>
             All rights reserved.<br>
             Powered by: <br>
             <img src="./jointjs.png" style="width:25%;height:25%;float:left">
-            Copyright 2014-2018.<br>client IO. All rights reserved.<br>
+            Copyright 2014-2021.<br>client IO. All rights reserved.<br>
     		JointJS: an HTML 5 diagramming component.<br>
     		<a href=http://jointjs.com target="_blank">http://jointjs.com</a>
         </div>

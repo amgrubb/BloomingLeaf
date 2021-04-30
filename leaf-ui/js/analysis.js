@@ -2,9 +2,9 @@
  * This file contains functions associated with the Next State window.
  */
 
+// GLOBAL VARIABLES
 //Defining local scope
 var analysis = {};
-
 analysis.analysisResult;
 analysis.elements = [];
 analysis.currentState;
@@ -1402,7 +1402,8 @@ function save_current_state(){
 
 //This function should get the current state and generate a new window with the next possible states
 function generate_next_states(){
-
+    
+    $("body").addClass("waiting"); //Adds "waiting" spinner under cursor 
     // Object to be sent to the backend
     var jsObject = {};
     //Get the Graph Model

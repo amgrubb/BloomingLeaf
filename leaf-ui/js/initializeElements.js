@@ -100,11 +100,11 @@ $('#tracking-decline').click(function() {
     $closeButton.trigger('click');
 });
 
-
 var graph;
 var paper;
 var stencil;
 var mode;
+var showEditingWarning = true;
 
 var model = new Model();
 var analysisRequest = new AnalysisRequest();
@@ -119,10 +119,11 @@ var actorInspector =  new ActorInspector();
 var currentHalo;
 var currentAnalysis;
 var elementList;
+var defaultUAL = [];
 
 // Analysis variables
-var historyObject = new historyObject();
 var sliderObject = new sliderObject();
+var previousModel;
 
 var loader;
 var reader;
@@ -331,15 +332,12 @@ var goal = new joint.shapes.basic.Goal({ position: {x: 50, y: 20} });
 var task = new joint.shapes.basic.Task({ position: {x: 50, y: 100} });
 var sgoal = new joint.shapes.basic.Softgoal({ position: {x: 50, y: 170} });
 var res = new joint.shapes.basic.Resource({ position: {x: 50, y: 250} });
-var act = new joint.shapes.basic.Actor({ position: {x: 40, y: 400} });
+var act = new joint.shapes.basic.Actor({ position: {x: 40, y: 355} });
 
 stencil.load([goal, task, sgoal, res, act]);
 
 // Setup LinkInspector
 $('.inspector').append(linkInspector.el);
-
-// Interface set up for modelling mode on startup
-$('#history').css("display","none");
 
 // Initialize Slider setup
 sliderObject.sliderElement = document.getElementById('slider');

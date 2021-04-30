@@ -1,3 +1,9 @@
+/**
+ * This file contains the communication between the front and back end of Bloomingleaf.
+ * When an analysis is run, the analysisRequest, model, and graph are bundled into an object, converted to JSON format, and sent to the backend,
+ * which returns the analysisResult.
+ */
+
 var nodeServer = true;      						// Whether the tool is running locally on a Node Server.
 var url = "http://localhost:8080/untitled.html";	// Hardcoded URL for Node calls. 
 
@@ -73,6 +79,7 @@ function nodeBackendCommFunc(jsObject){
 
 //deal with the response sent back by the server
 function responseFunc(isGetNextSteps, response){
+	$("body").removeClass("waiting"); //Remove spinner under cursor 
 	var results = JSON.parse(response);
 	if (errorExists(results)) { 
 		 var msg = getErrorMessage(results.errorMessage);
@@ -89,30 +96,22 @@ function responseFunc(isGetNextSteps, response){
 					console.log(JSON.stringify(results));	
 					savedAnalysisData.allNextStatesResult = results;
 					console.log("in backendcomm, saving all next state results");
-					 open_analysis_viewer();
+					open_analysis_viewer();
 			} else {
-				var resultsString = JSON.stringify(results);
-				 console.log(JSON.stringify(results)); 
-				 savedAnalysisData.singlePathResult = results;
-				 analysisResult.assignedEpoch = results.assignedEpoch;
-				 analysisResult.timePointPath = results.timePointPath;
-				 analysisResult.timePointPathSize = results.timePointPathSize;
-				 analysisResult.elementList = results.elementList;
-				 analysisResult.allSolution = results.allSolution;
-				 analysisRequest.previousAnalysis = analysisResult;
-				 console.log("previousAnalysis");
-				 console.log(analysisRequest.previousAnalysis);
-				 displayAnalysis(results);
+				savedAnalysisData.singlePathResult = results;
+				analysisResult = convertToAnalysisResult(results);
+				displayAnalysis(analysisResult, false);
 
-				 analysisResult.colorVis = new EVO(results.elementList);
-				 analysisResult.isPathSim = true;
-				 analysisResult.colorVis.singlePathResponse(results.elementList);
+				// Save result to the corresponding analysis configuration object
+				currAnalysisConfig.addResult(analysisResult);
+				// Update results in analysis sidebar
+				updateResults();
+				// Add the analysisConfiguration to the analysisMap for access in the analysis config sidebar
+				analysisMap.set(currAnalysisConfig.id, currAnalysisConfig);
 			 }
 		 }
 	 }
-
  }
-
 
 function executeJava(isGetNextSteps){
 	var pathToCGI = "./cgi-bin/executeJava.cgi";
@@ -132,7 +131,7 @@ function executeJava(isGetNextSteps){
 }
 
 
-function getFileResults(isGetNextSteps){
+function getFileResults(isGetNextSteps) {
 	var pathToCGI = "./cgi-bin/fileRead.cgi";
 
 	//Executing action to send backend
@@ -167,16 +166,12 @@ function getFileResults(isGetNextSteps){
                     console.log("in backendcomm, saving all next state results");
 					open_analysis_viewer();
 				}else{
+					analysisResult = convertToAnalysisResult(results);
                     savedAnalysisData.singlePathResult = results;
-                    analysisResult.assignedEpoch = results.assignedEpoch;
-                    analysisResult.timePointPath = results.timePointPath;
-                    analysisResult.timePointPathSize = results.timePointPathSize;
-                    analysisResult.elementList = results.elementList;
-                    analysisResult.allSolution = results.allSolution;
                     analysisRequest.previousAnalysis = analysisResult;
                     console.log("previousAnalysis");
-                    console.log(analysisRequest.previousAnalysis);
-					displayAnalysis(results);
+					//pass in an AnalysisResult object
+					displayAnalysis(analysisResult, false);
 				}
 			}
 		}
@@ -338,4 +333,18 @@ function getIDs(backendErrorMsg) {
 	}
 
 	return arr;
+}
+
+function convertToAnalysisResult(results){
+	var tempResult = new AnalysisResult();
+	tempResult.assignedEpoch = results.assignedEpoch;
+	tempResult.timePointPath = results.timePointPath;
+	tempResult.timePointPathSize = results.timePointPathSize;
+	tempResult.elementList = results.elementList;
+	tempResult.allSolution = results.allSolution;
+	tempResult.previousAnalysis = analysisResult;
+	tempResult.colorVis = new EVO(results.elementList);
+	tempResult.isPathSim = true;
+	tempResult.colorVis.singlePathResponse(results.elementList);
+	return tempResult;
 }
