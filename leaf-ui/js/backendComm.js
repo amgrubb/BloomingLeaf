@@ -101,13 +101,17 @@ function responseFunc(isGetNextSteps, response){
 				savedAnalysisData.singlePathResult = results;
 				analysisResult = convertToAnalysisResult(results);
 				displayAnalysis(analysisResult, false);
+				// Get the currently selected configuration's results list
+				// .where returns an array, but there should only ever be one selected so we just grab the first element
+				currConfigResults = configCollection.where({selected: true})[0].get("results");
+				currConfigResults.add(new ResultModel({name: "Result " + (currConfigResults.length+1), analysisResult: analysisResult}));
 
-				// Save result to the corresponding analysis configuration object
-				currAnalysisConfig.addResult(analysisResult);
-				// Update results in analysis sidebar
-				updateResults();
-				// Add the analysisConfiguration to the analysisMap for access in the analysis config sidebar
-				analysisMap.set(currAnalysisConfig.id, currAnalysisConfig);
+				// // Save result to the corresponding analysis configuration object
+				// currAnalysisConfig.addResult(analysisResult);
+				// // Update results in analysis sidebar
+				// updateResults();
+				// // Add the analysisConfiguration to the analysisMap for access in the analysis config sidebar
+				// analysisMap.set(currAnalysisConfig.id, currAnalysisConfig);
 			 }
 		 }
 	 }
