@@ -198,19 +198,19 @@ function updateNodeValues(nodeID, satValue) {
  * Function to set up the initial analysis configuration upon page load
  */
 function addFirstAnalysisConfig(){
-    // // reset to default analysisRequest while preserving userAssignmentsList
-    // resetToDefault();
-    // // reset highest position to 1
-    // highestPosition = 1;
-    // // add config 1
-    // var id = ("Configuration" + highestPosition);
-    // currAnalysisConfig = new AnalysisConfiguration(id, analysisRequest, highestPosition);
-    // analysisMap.set(id, currAnalysisConfig);
-    // // Add the empty first config to the UI
-    // addAnalysisConfig(currAnalysisConfig);
-    // refreshAnalysisUI();
-    configCollection.add(new ConfigModel({name:"Configuration1"}));
-    configCollection.add(new ConfigModel({name:"Configuration6"}))
+//     // // reset to default analysisRequest while preserving userAssignmentsList
+//     // resetToDefault();
+//     // // reset highest position to 1
+//     // highestPosition = 1;
+//     // // add config 1
+//     // var id = ("Configuration" + highestPosition);
+//     // currAnalysisConfig = new AnalysisConfiguration(id, analysisRequest, highestPosition);
+//     // analysisMap.set(id, currAnalysisConfig);
+//     // // Add the empty first config to the UI
+//     // addAnalysisConfig(currAnalysisConfig);
+//     // refreshAnalysisUI();
+//     configCollection.add(new ConfigModel({name:"Configuration1"}));
+//     configCollection.add(new ConfigModel({name:"Configuration6"}))
 }
 
 /**

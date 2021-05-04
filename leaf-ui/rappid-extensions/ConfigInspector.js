@@ -86,6 +86,7 @@ var ResultsDropdown = Backbone.View.extend({
         var view = new ResultView({model: result, config: this.config});
         this.config.set('selected', true);
         this.$('.dropdown-container').append(view.render().el);
+        console.log(this.$('.dropdown-container'))
     },
 })
 
@@ -104,14 +105,16 @@ var Config = Backbone.View.extend({
         this.innerView.render();
         this.model.on('destroy', this.remove, this);
         this.model.on('change:selected', this.updateHighlight, this);
+        this.model.on('change:name', this.renderName, this);
     },
 
     template: ['<script type="text/template" id="item-template">',
     '<div class="analysis-configuration" id="<%= name %>">',
         '<button class="config-elements" <% if (selected) { %> style="background-color:#A9A9A9;" <%} %> >',
         '<%= name %> </button>',
+        '<input class="config-input" value="<%- name %>" style="display:none"></input>',
         '<div id="config-buttons" style="position:absolute; display:inline-block">',
-        '<button id="deleteconfig-button">',
+        '<button class="deleteconfig-button">',
             '<i id="garbage-icon" class="fa fa-trash-o" aria-hidden="true"></i>' +
         '</button>',
         '<button class="dropdown-button">',
@@ -120,6 +123,15 @@ var Config = Backbone.View.extend({
         '</div>',
        '</div>',
        '</script>'].join(''),
+
+    events: {
+        'click .config-elements': 'switchConfig',
+        'click .deleteconfig-button': 'removeConfig',
+        'click .dropdown-button' : 'toggleDropdown',
+        'dblclick .config-elements': 'rename',
+        'blur .config-input': 'setConfigName',
+        'keyup .config-input': 'checkForEnter'
+    },
 
     /** Sets template and appends inner view */
     render: function() {
@@ -136,16 +148,17 @@ var Config = Backbone.View.extend({
      * 
      */
     rerender: function() {
-        dropdown = this.$('.dropdown-container').detach();
+        this.innerView.$el.detach()
+        //dropdown = this.$('.dropdown-container').detach();
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
-        this.$('.analysis-configuration').append(dropdown);
+        this.$('.analysis-configuration').append(this.innerView.$el);
         return this;
     },
 
-    events: {
-        'click .config-elements': 'switchConfig',
-        'click #deleteconfig-button': 'removeConfig',
-        'click .dropdown-button' : 'toggleDropdown'
+    renderName: function(){
+        console.log("rerendering name")
+        $('.config-elements', this.$el).html(this.model.get('name'));
+        return this;
     },
 
     /** 
@@ -164,6 +177,7 @@ var Config = Backbone.View.extend({
         currAnalysisConfig = this.model;
         this.model.set({selected:true});
         this.model.trigger('change:switchConfigs', this.model);
+        this.model.trigger('change:unselectResult', this.model);
     },
 
     /**
@@ -188,7 +202,50 @@ var Config = Backbone.View.extend({
             dropdownContainer.show();
             dropdownIcon.attr('class', 'fa fa-caret-up fa-2x');
         }
-    }
+    },
+
+    /**
+     * Replace config button element with config input element
+     */
+    rename : function(){
+        this.$el.addClass('editing');
+        this.$('.config-elements').attr("style", "display:none")
+        this.$('.config-input').attr("style", "display:inline-block")
+		this.$('.config-input').focus();
+    },
+
+    /**
+     * Check if user is currently editing name, and if name is unique
+     * If both are true, update model name and replace input with button element
+     */
+    setConfigName: function(){
+        if (!this.$el.hasClass('editing')) {
+            return;
+        }
+        this.$el.removeClass('editing');
+        
+        this.$('.config-input').attr("style", "display:none");
+        this.$('.config-elements').attr("style", "display:inline-block");
+
+        newName = this.$('.config-input').val().trim();
+        if (newName != this.model.get('name') && configCollection.pluck('name').includes(newName)){
+            alert("Sorry, this name is already in use. Please try another.");
+            this.$('.config-input').val(this.model.get('name'));
+        } else {
+            this.model.set('name', newName);
+        }
+    },
+
+    /**
+     * Check for enter key to set name while in config input
+     * 
+     * @param {Event} e 
+     */
+    checkForEnter: function(e){
+        if (e.key == "Enter"){
+            this.setConfigName();
+        }
+    },
 });
 
 /**
@@ -245,5 +302,4 @@ var ConfigInspector = Backbone.View.extend({
         var configModel = new ConfigModel({name: "Configuration" + (this.collection.length+1), results: new ResultCollection([])})
         configCollection.add(configModel);
     },
-    
 });
