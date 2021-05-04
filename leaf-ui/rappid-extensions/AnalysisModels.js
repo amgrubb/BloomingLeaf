@@ -11,11 +11,12 @@
 // TODO: Break AnalysisResult into params
 var ResultModel = Backbone.Model.extend({
     idAttribute: "uid",
+
     defaults: {
         name:"Default Result",
         analysisResult: new AnalysisResult(),
-    }
-})
+    },
+});
 
 /**
  * Collection that holds results for analysis configurations
@@ -24,8 +25,10 @@ var ResultModel = Backbone.Model.extend({
  */
 var ResultCollection = Backbone.Collection.extend({
     model: ResultModel,
+    
+    /** Used for eventually storing and accessing collection on server */
     url: "/results",
-})
+});
 
 /**
  * Model for analysis configurations
@@ -44,7 +47,9 @@ var ConfigModel = Backbone.Model.extend({
     initialize : function(){
         this.results = new ResultCollection([]);
     },
+
     idAttribute: "uid",
+
     defaults: {
         name:"Default Config",
         action: null,
@@ -65,7 +70,7 @@ var ConfigModel = Backbone.Model.extend({
         var newResultModel = new ResultModel({name: this.attributes.results.length+1, analysisResult : result, selected: true});
         this.get("results").add(newResultModel);
     },
-})
+});
 
 /**
  * Collection that holds analysis configurations
@@ -74,6 +79,8 @@ var ConfigModel = Backbone.Model.extend({
  */
 var ConfigCollection = Backbone.Collection.extend({
     model: ConfigModel,
+
+    /** Used for eventually storing and accessing collection on server */
     url: "/configurations",
 
     initialize: function(){
@@ -85,4 +92,4 @@ var ConfigCollection = Backbone.Collection.extend({
         this.filter(configModel => configModel.get('selected') == true && changedConfig != configModel)
             .forEach(model => model.set('selected', false));
     },
-})
+});
