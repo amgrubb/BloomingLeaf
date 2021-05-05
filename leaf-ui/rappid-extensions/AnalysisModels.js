@@ -89,7 +89,7 @@ var ConfigModel = Backbone.Model.extend({
     /** If a config was previously selected and now no longer is, unselect any selected results */
     updateSelected : function(){
         if (!this.get('selected')){
-            this.get('results').filter(result => result.get('selected')).forEach(result=> {result.set('selected', false); console.log(result);});
+            this.get('results').filter(result => result.get('selected')).forEach(result=> result.set('selected', false));
         }
     },
 });

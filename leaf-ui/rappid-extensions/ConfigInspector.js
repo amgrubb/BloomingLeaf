@@ -86,7 +86,6 @@ var ResultsDropdown = Backbone.View.extend({
         var view = new ResultView({model: result, config: this.config});
         this.config.set('selected', true);
         this.$('.dropdown-container').append(view.render().el);
-        console.log(this.$('.dropdown-container'))
     },
 })
 
@@ -155,6 +154,9 @@ var Config = Backbone.View.extend({
         return this;
     },
 
+    /**
+     * Resets element name in UI to current name
+     */
     renderName: function(){
         console.log("rerendering name")
         $('.config-elements', this.$el).html(this.model.get('name'));
@@ -209,8 +211,8 @@ var Config = Backbone.View.extend({
      */
     rename : function(){
         this.$el.addClass('editing');
-        this.$('.config-elements').attr("style", "display:none")
-        this.$('.config-input').attr("style", "display:inline-block")
+        this.$('.config-elements').css("display", "none");
+        this.$('.config-input').css("display", "inline-block");
 		this.$('.config-input').focus();
     },
 
@@ -219,15 +221,19 @@ var Config = Backbone.View.extend({
      * If both are true, update model name and replace input with button element
      */
     setConfigName: function(){
+        // If user is not currently editing, return
+        // Necessary so that we don't get duplicate calls while in function 
+        // but before hiding config-input
         if (!this.$el.hasClass('editing')) {
             return;
         }
         this.$el.removeClass('editing');
-        
-        this.$('.config-input').attr("style", "display:none");
-        this.$('.config-elements').attr("style", "display:inline-block");
+
+        this.$('.config-input').css("display", "none");
+        this.$('.config-elements').css("display", "inline-block");
 
         newName = this.$('.config-input').val().trim();
+        // If name is already taken by other configs, show error message and reset input box
         if (newName != this.model.get('name') && configCollection.pluck('name').includes(newName)){
             alert("Sorry, this name is already in use. Please try another.");
             this.$('.config-input').val(this.model.get('name'));
