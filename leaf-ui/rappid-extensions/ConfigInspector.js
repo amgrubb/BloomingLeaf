@@ -84,7 +84,6 @@ var ResultsDropdown = Backbone.View.extend({
     /** Adds new ResultView to dropdown container */
     loadResult : function(result) {
         var view = new ResultView({model: result, config: this.config});
-        this.config.set('selected', true);
         this.$('.dropdown-container').append(view.render().el);
     },
 })
@@ -148,7 +147,6 @@ var Config = Backbone.View.extend({
      */
     rerender: function() {
         this.innerView.$el.detach()
-        //dropdown = this.$('.dropdown-container').detach();
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
         this.$('.analysis-configuration').append(this.innerView.$el);
         return this;
@@ -158,7 +156,6 @@ var Config = Backbone.View.extend({
      * Resets element name in UI to current name
      */
     renderName: function(){
-        console.log("rerendering name")
         $('.config-elements', this.$el).html(this.model.get('name'));
         return this;
     },
