@@ -15,6 +15,7 @@ var ResultModel = Backbone.Model.extend({
     defaults: {
         name:"Default Result",
         analysisResult: new AnalysisResult(),
+        selected: true,
     },
 });
 
@@ -28,6 +29,17 @@ var ResultCollection = Backbone.Collection.extend({
     
     /** Used for eventually storing and accessing collection on server */
     url: "/results",
+
+    initialize : function(){
+        this.on('add', this.onSelectedChanged, this);
+        this.on('change:switchResults', this.onSelectedChanged, this);
+    },
+
+    /** When result is clicked/selected, find previously selected result and unselect it */ 
+    onSelectedChanged : function(changedResult){
+        this.filter(resultModel => resultModel.get('selected') == true && changedResult != resultModel)
+            .forEach(model => model.set('selected', false));
+    },
 });
 
 /**
@@ -46,6 +58,7 @@ var ResultCollection = Backbone.Collection.extend({
 var ConfigModel = Backbone.Model.extend({
     initialize : function(){
         this.results = new ResultCollection([]);
+        this.listenTo(this, 'change:selected', this.updateSelected);
     },
 
     idAttribute: "uid",
@@ -64,11 +77,20 @@ var ConfigModel = Backbone.Model.extend({
         results : new ResultCollection([])
     },
 
-    // Will be called to add a new result model to the results param
-    // when the backend returns an AnalysisResult
+    /**
+     * Will be called to add a new result model to the results param
+     * when the backend returns an AnalysisResult
+     */
     addResult : function(result){
-        var newResultModel = new ResultModel({name: this.attributes.results.length+1, analysisResult : result, selected: true});
+        var newResultModel = new ResultModel({name: 'Result ' + (this.get('results').length+1), analysisResult : result, selected: true});
         this.get("results").add(newResultModel);
+    },
+
+    /** If a config was previously selected and now no longer is, unselect any selected results */
+    updateSelected : function(){
+        if (!this.get('selected')){
+            this.get('results').filter(result => result.get('selected')).forEach(result=> result.set('selected', false));
+        }
     },
 });
 
@@ -84,12 +106,24 @@ var ConfigCollection = Backbone.Collection.extend({
     url: "/configurations",
 
     initialize: function(){
+        this.on('change:switchConfigs', this.onSelectedChanged, this);
+        this.on('change:unselectResult', this.unselectResults, this);
         this.on('add', this.onSelectedChanged, this);
     },
 
-    // When config is clicked/selected, find previously selected config and unselect it. 
+    /** 
+     * When config is clicked/selected, find previously selected config and unselect it.
+     */ 
     onSelectedChanged : function(changedConfig){
         this.filter(configModel => configModel.get('selected') == true && changedConfig != configModel)
-            .forEach(model => model.set('selected', false));
+            .forEach(model =>
+                model.set('selected', false));
+    },
+
+    /** 
+     * When config is clicked, unselect any results that may have been selected under it.
+     */ 
+     unselectResults : function(changedConfig){
+        changedConfig.get('results').forEach(result => result.set('selected', false));
     },
 });
