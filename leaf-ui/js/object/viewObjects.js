@@ -83,22 +83,14 @@ class SliderObj {
 	/**
 	 * TODO deep check to see what can be deprecated
 	 * docstring correctly once we figure out what each thing actually is
+	 * Used for displaying, updating, and removing slider in analysis view
 	 * 
 	 * @param {} sliderElement
 	 * @param {} sliderValueElement
 	 * @param {} pastAnalysisValues
 	 */
-	 constructor() {
+	constructor() {
         this.sliderElement = null;
 		this.sliderValueElement = null;
-		this.pastAnalysisValues = [];
     }
 }
-
-// Used to manipulate slider during analysis
-var sliderObject = function(){
-	this.sliderElement;
-	this.sliderValueElement;
-	this.pastAnalysisValues = [];
-}
-

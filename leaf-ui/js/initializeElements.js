@@ -122,7 +122,7 @@ var elementList;
 var defaultUAL = [];
 
 // Analysis variables
-var sliderObject = new sliderObject();
+var sliderObject = new sliderObj();
 var previousModel;
 
 var loader;
