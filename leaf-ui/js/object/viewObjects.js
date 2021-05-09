@@ -1,7 +1,7 @@
 class ChartObj {
 
 	/**
-	 * TODO: docstring
+	 * Defines chart object for rendering element inspector
 	 */
 
 	constructor() {
@@ -78,19 +78,18 @@ class ChartObj {
 }
 
 class SliderObj {
-
-
 	/**
 	 * TODO deep check to see what can be deprecated
-	 * docstring correctly once we figure out what each thing actually is
+	 * TODO see if we can move createSlider, removeSlider, updateSliderValues, etc. to the class definition
 	 * Used for displaying, updating, and removing slider in analysis view
 	 * 
 	 * @param {} sliderElement
 	 * @param {} sliderValueElement
-	 * @param {} pastAnalysisValues
 	 */
 	constructor() {
-        this.sliderElement = null;
-		this.sliderValueElement = null;
+        this.sliderElement = document.getElementById('slider');
+		this.sliderValueElement = document.getElementById('sliderValue');
     }
+
+
 }
