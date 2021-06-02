@@ -3,6 +3,14 @@ BloomingLeaf is a browser-based tool that uses precise semantics (with Tropos) t
 
 BloomingLeaf is developed at primarily in [The Grubb Lab](https://amgrubb.github.io/grubb-lab/) at Smith College, but was originally created as part of @amgrubb's [thesis](http://hdl.handle.net/1807/95842) at the University of Toronto. 
 
+**Goals of BloomingLeaf:**
+1. Enable modeling of goals with evolving intentions/goals.
+2. Enable simulation of goal models as intentions evolve.
+3. Enable stakeholders to ask time-based trade-off questions in early-phase requirements engineering.
+
+Review our [overview poster](http://www.cs.toronto.edu/~amgrubb/archive/RE18-Demo-Poster.pdf) to learn more about the original goals of BloomingLeaf Version 1.0. 
+
+
 ## *Updates for Version 1.5*
 In Version 1.5, we added the following model-management features (+ additional small features and fixes):
 
@@ -14,18 +22,6 @@ In Version 1.5, we added the following model-management features (+ additional s
 * spinner for next states
 
 See our [poster](https://amgrubb.github.io/posts/2021-04-01-restructuring) for further details about these additions.
-
-## Goals of BloomingLeaf
-1. Enable modeling of goals with evolving intentions/goals.
-2. Enable simulation of goal models as intentions evolve.
-3. Enable stakeholders to ask time-based trade-off questions in early-phase requirements engineering.
-
-Review our [overview poster](http://www.cs.toronto.edu/~amgrubb/archive/RE18-Demo-Poster.pdf) to learn more about the original goals of BloomingLeaf Version 1.0. 
-
-
-## Getting started
-* Check out the [project background](http://www.cs.toronto.edu/~amgrubb/thesis).
-* Try our [live demo](http://www.cs.utoronto.ca/~amgrubb/leaf-blooming-ui). (Recommended Brower: Chrome)
 
 ## Want to contribute?
 The [contributing guide](https://github.com/amgrubb/BloomingLeaf/blob/develop/CONTRIBUTING.md) and [Node guide](https://github.com/amgrubb/BloomingLeaf/blob/develop/NODE-README.md) are good places to start. 
