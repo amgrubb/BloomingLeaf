@@ -1,7 +1,7 @@
 # BloomingLeaf
 BloomingLeaf is a browser-based tool that uses precise semantics (with Tropos) to model goals and relationships that evolve over time. Simulation techniques are used to enable stakeholders to choose between design alternatives, ask what-if questions, and plan for software evolution in an ever-changing world. BloomingLeaf implements the Evolving Intentions framework. 
 
-BloomingLeaf is developed at primarily in [The Grubb Lab](https://amgrubb.github.io/grubb-lab/) at Smith College, but was originally created as part of @amgrubb's [thesis](http://hdl.handle.net/1807/95842) at the University of Toronto. 
+BloomingLeaf is developed primarily in [The Grubb Lab](https://amgrubb.github.io/grubb-lab/) at Smith College, but was originally created as part of @amgrubb's [thesis](http://hdl.handle.net/1807/95842) at the University of Toronto. 
 
 **Goals of BloomingLeaf:**
 1. Enable modeling of goals with evolving intentions/goals.
@@ -42,5 +42,4 @@ Tool                  | Description
 
 [JointJS (Rappid)]: https://github.com/clientIO/joint
 [JaCoP]: https://github.com/radsz/jacop
-
 
