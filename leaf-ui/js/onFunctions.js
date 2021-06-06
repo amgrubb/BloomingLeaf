@@ -862,11 +862,6 @@ graph.on("add", function(cell) {
 graph.on("change", function(){
 	var graphtext = JSON.stringify(graph.toJSON());
 	document.cookie = "graph=" + graphtext;
-    if (Tracking){
-    	console.log("User Tracking - Recorded");
-        var timestamp = new Date().toUTCString();
-        (graph, timestamp);
-    }
 });
 
 var selection = new Backbone.Collection();
