@@ -40,17 +40,17 @@
                 <button id="btn-save" class="btn">Save</button>
             </div> -->
 
-            <button id="btn-zoom-in" class="btn" onclick="zoomIn(analysis.paperScroller)">Zoom In</button>
-            <button id="btn-zoom-out" class="btn" onclick="zoomOut(analysis.paperScroller)">Zoom Out</button>
+            <button id="btn-zoom-in" class="btn">Zoom In</button>
+            <button id="btn-zoom-out" class="btn">Zoom Out</button>
 
             <!-- <button id="btn-save-leaf" class="btn"> Export .leaf </button> -->
 
             <div class="dropdown">
               <div class="btn">Font Size</div>
               <div class="dropdown-toolbar">
-                <a id="btn-fnt" onclick="defaultFont(analysis.paper)">Default</a>
-                <a id="btn-fnt-up" onclick="fontUp(analysis.paper)">Increase</a>
-                <a id="btn-fnt-down" onclick="fontDown(analysis.paper)">Decrease</a>
+                <a id="btn-fnt">Default</a>
+                <a id="btn-fnt-up">Increase</a>
+                <a id="btn-fnt-down">Decrease</a>
               </div>
             </div>
 
@@ -80,7 +80,7 @@
             <input id="currentPage" type="hidden" value="">
             <div style="display: inline-block;">
                     <input id="requiredState" type="text" placeholder="Digit desired page" style="width: 150px; padding: 3px;"/>
-                    <button class="inspector-btn-small" onclick="goToState()">Go</button>
+                    <button class="inspector-btn-small">Go</button>
             </div>
             <br>
             <div id="pagination" class="pagination" style="display:inline-block;">
@@ -89,23 +89,25 @@
 
             <br>
             <label>Filters</label>
-            <input id="conflictFl" class="filter_checkbox" type="checkbox" onclick="add_filter()"><font color="white"> Remove conflicts</font><br>
-            <input id="ttFl" class="filter_checkbox" type="checkbox" onclick="add_filter()"><font color="white"> Remove (T,T)</font><br>
-            <input id="leastTasksSatisfied" class="filter_checkbox" type="checkbox" onclick="add_filter()"><font color="white"> Least Task Satisfied</font><br>
-            <input id="mostTasksSatisfied" class="filter_checkbox" type="checkbox" onclick="add_filter()"><font color="white"> Most Task Satisfied</font><br>
-            <input id="leastResource" class="filter_checkbox" type="checkbox" onclick="add_filter()"><font color="white"> Least Resource Satisfied</font><br>
-            <input id="mostResource" class="filter_checkbox" type="checkbox" onclick="add_filter()"><font color="white"> Most Resource Satisfied</font><br>
-            <input id="leastGoalSatisfied" class="filter_checkbox" type="checkbox" onclick="add_filter()"><font color="white"> Least Goal Satisfied</font><br>
-            <input id="mostGoalSatisfied" class="filter_checkbox" type="checkbox" onclick="add_filter()"><font color="white"> Most Goal Satisfied</font><br>
-            <input id="LeastActor" class="filter_checkbox" type="checkbox" onclick="add_filter()"><font color="white"> Least Actor Involved</font><br>
-            <input id="mostActor" class="filter_checkbox" type="checkbox" onclick="add_filter()"><font color="white"> Most Actor Involved</font><br>
-            <input id="mostConstraintSatisfaction" class="filter_checkbox" type="checkbox" onclick="add_filter()"><font color="white"> Satisfaction of the Most Constrained Intention</font><br>
+            <input id="conflictFl" class="filter_checkbox" type="checkbox"><font color="white"> Remove conflicts</font><br>
+            <input id="ttFl" class="filter_checkbox" type="checkbox"><font color="white"> Remove (T,T)</font><br>
+            <input id="leastTasksSatisfied" class="filter_checkbox" type="checkbox"><font color="white"> Least Task Satisfied</font><br>
+            <input id="mostTasksSatisfied" class="filter_checkbox" type="checkbox"><font color="white"> Most Task Satisfied</font><br>
+            <input id="leastResource" class="filter_checkbox" type="checkbox"><font color="white"> Least Resource Satisfied</font><br>
+            <input id="mostResource" class="filter_checkbox" type="checkbox"><font color="white"> Most Resource Satisfied</font><br>
+            <input id="leastGoalSatisfied" class="filter_checkbox" type="checkbox"><font color="white"> Least Goal Satisfied</font><br>
+            <input id="mostGoalSatisfied" class="filter_checkbox" type="checkbox" ><font color="white"> Most Goal Satisfied</font><br>
+            <input id="LeastActor" class="filter_checkbox" type="checkbox" ><font color="white"> Least Actor Involved</font><br>
+            <input id="mostActor" class="filter_checkbox" type="checkbox" ><font color="white"> Most Actor Involved</font><br>
+            <input id="mostConstraintSatisfaction" class="filter_checkbox" type="checkbox"><font color="white"> Satisfaction of the Most Constrained Intention</font><br>
 
             <br>
             <label>Actions</label>
-            <button class="inspector-btn" onclick="save_current_state()">Save &amp Close</button>
-            <button class="inspector-btn" onclick="generate_next_states()">Explore Next States</button>
-            <button class="inspector-btn" onclick="window.close();">Close</button>
+            <button id="saveClose" class="inspector-btn">Save &amp Close</button> 
+            <button id="exploreNextSates" class="inspector-btn">Explore Next States</button>
+            <button id="close" class="inspector-btn">Close</button>
+
+            
         </div>
 
         <div id="paper">
