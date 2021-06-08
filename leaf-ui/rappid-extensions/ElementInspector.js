@@ -4,6 +4,7 @@ var alphaOnly = /[A-Z]/;
 
 // All valid initial value and function combination
 var validPair = {
+    //each has valid initialized value and default value 
     "NT": {
         "validInitValue": ["none", "satisfied", "partiallysatisfied", "denied", "partiallydenied", "(no value)"],
         "defaultValue": ["none"]
@@ -14,7 +15,8 @@ var validPair = {
     },
     "R":{
         "validInitValue": ["none", "satisfied", "partiallysatisfied", "denied", "partiallydenied", "(no value)"],
-        "defaultValue": ["none"]
+        //default value changed to (no value) 
+        "defaultValue": ["(no value)"]
     },
     "I": {
         "validInitValue": ["none", "satisfied", "partiallysatisfied", "denied", "partiallydenied"],
@@ -68,7 +70,8 @@ function called, will always be near the bottom.
 var ElementInspector = Backbone.View.extend({
 
     className: 'element-inspector',
-
+    
+    //html code that controls the display(?)
     template: [
             '<label>Node Name:</label>',
             '<textarea class="cell-attrs-text"></textarea>',
@@ -202,6 +205,8 @@ var ElementInspector = Backbone.View.extend({
         // Turn off repeating by default
         this.repeatOptionsDisplay = false;
         // TODO what does this do?
+        
+        //based on the constraint mode, either turns off, turns on, or updates the display(?)
         this.setRepeatConstraintMode("TurnOff");
 
         // Load initial value for function type in the html select element
@@ -224,16 +229,15 @@ var ElementInspector = Backbone.View.extend({
     /**
      * Checks the initial satisfaction value for a (no value).
      * If the initial satisfaction value is (no value), then set the
-     * availible function options to be No Function, Stochastic and UserDefined
-     * If not, set the function options so that all options are availible
+     * available function options to be No Function, Stochastic and UserDefined
+     * If not, set the function options so that all options are available
      */
     checkInitialSatValue() {
         if (this.intention.getInitialSatValue() == '(no value)') {
-            // remove current options, add 3 options
+            //for no value, stochastic should be only option 
             this.$('.function-type').empty();
-            this.$('.function-type').append('<option value=NT> No Function </option>');
             this.$('.function-type').append('<option value=R> Stochastic </option>');
-            this.$('.function-type').append('<option value=UD> User Defined </option>');
+            
         } else {
             this.$('.function-type').empty();
             this.$('.function-type').append('<option value=NT> No Function </option>');
@@ -502,6 +506,7 @@ var ElementInspector = Backbone.View.extend({
 
             }
         }
+
     },
 
     /**
@@ -839,7 +844,7 @@ var ElementInspector = Backbone.View.extend({
      * @param {String} mode
      */
     setRepeatConstraintMode: function(mode) {
-
+        //mode can either be turnon, turnoff, or update 
         // Reset options for select everytime repeat is clicked
         $("#repeat-begin").html('<option class="select-placeholder" selected disabled value="">Begin</option>');
         $("#repeat-end").html('<option class="select-placeholder" selected disabled value="">End</option>');

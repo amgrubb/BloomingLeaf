@@ -78,7 +78,7 @@ var ResultsDropdown = Backbone.View.extend({
         this.listenTo(this.collection, 'add', this.loadResult, this);
         this.$el.html(_.template(this.template)());
         this.collection.forEach(result => {this.loadResult(result)});
-        return this;
+        return this; 
     },
 
     /** Adds new ResultView to dropdown container */
