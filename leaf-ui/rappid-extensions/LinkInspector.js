@@ -247,13 +247,9 @@ var LinkInspector = Backbone.View.extend({
             // save into link object
             this.link.linkType = begin.toUpperCase();
             this.link.postType = 'NO';
-
-            $("#repeat-error").text("Saved!");
-            $("#repeat-error").css("color", "lightgreen");
-
         } else {
             this.setSelectValues('#link-type-end', "B");
-            $("#link-type-end").prop('disabled', '');
+            $("#link-type-end").prop('disabled', false);
             $("#link-type-end").css("background-color","");
         }
     },
@@ -352,9 +348,9 @@ var LinkInspector = Backbone.View.extend({
                 element.append($("<option></option>").attr("value", value).text(key));
             });
         } else if (type == "A") {
-            element.val("no");
-            $("#repeat-error").text("Saved!");
-            $("#repeat-error").css("color", "lightgreen");
+            $.each(relationA, function (value, key) {
+                element.append($("<option></option>").attr("value", value).text(key));
+            });
         } else if (type == "B") {
             $.each(relationB, function (value, key) {
                 element.append($("<option></option>").attr("value", value).text(key));
