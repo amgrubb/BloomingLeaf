@@ -124,7 +124,7 @@ var elementList;
 var defaultUAL = [];
 
 // Analysis variables
-var sliderObject = new sliderObject();
+var sliderObject = new SliderObj();
 var previousModel;
 
 var loader;
@@ -340,10 +340,6 @@ stencil.load([goal, task, sgoal, res, act]);
 
 // Setup LinkInspector
 $('.inspector').append(linkInspector.el);
-
-// Initialize Slider setup
-sliderObject.sliderElement = document.getElementById('slider');
-sliderObject.sliderValueElement = document.getElementById('sliderValue');
 
 $('#slider').width($('#paper').width() * 0.8);
 $('#slider').css("margin-top", $(window).height() * 0.9);
