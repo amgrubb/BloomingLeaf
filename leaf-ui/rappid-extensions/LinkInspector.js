@@ -175,7 +175,8 @@ var LinkInspector = Backbone.View.extend({
                 source.attr('.satvalue/text', '');
             }
             if (!this.hasNBLink(target, this.cell) && !this.hasNBTag(target)){
-                target.attr('.funcvalue/text', ''); 
+                
+                target.attr('.funcvalue/text', '');
                 target.attr('.satvalue/text', '');
             }
         }
