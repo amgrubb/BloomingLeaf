@@ -171,11 +171,11 @@ var LinkInspector = Backbone.View.extend({
         } else {
             //Verify if it is possible to remove the NB tag from source and target
             if (!this.hasNBLink(source, this.cell) && !this.hasNBTag(source)){
-                source.attr(".funcvalue/text", "");
+                source.attr('.funcvalue/text', '');
                 source.attr('.satvalue/text', '');
             }
             if (!this.hasNBLink(target, this.cell) && !this.hasNBTag(target)){
-                target.attr(".funcvalue/text", ""); 
+                target.attr('.funcvalue/text', ''); 
                 target.attr('.satvalue/text', '');
             }
         }
