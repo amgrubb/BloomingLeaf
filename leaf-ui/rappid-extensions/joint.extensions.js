@@ -46,8 +46,9 @@ joint.shapes.basic.Intention = joint.shapes.basic.Generic.extend({
             	'font-size': 10,
             	'x-alignment': 'middle',
             	'y-alignment': 'middle'
-            }
-        }
+            },
+        },
+        intention: new IntentionTest('-', this.type), 
     }, joint.dia.Element.prototype.defaults)
 });
 
@@ -158,7 +159,17 @@ joint.dia.Actorlink = joint.dia.Link.extend({
 	defaults: joint.util.deepSupplement({
 		type: 'Actorlink',
 	})
-})
+});
+
+joint.dia.Intentionlink = joint.dia.Link.extend({
+    defaults: joint.util.deepSupplement({
+		type: 'Intentionlink',
+	}),
+    postType: null,
+    linkSrcID: null,
+    linkDestID: null,
+    absoluteValue: -1
+});
 
 joint.shapes.basic.Actor = joint.shapes.basic.Generic.extend({
     markup: '<g class="scalable"><circle class = "outer"/></g><circle class="label"/><path class="line"/><text class = "name"/>',
@@ -197,7 +208,8 @@ joint.shapes.basic.Actor = joint.shapes.basic.Generic.extend({
             },
             ".line": {
             }
-        }
+        },
+        actor: new ActorTest()
     }, joint.dia.Element.prototype.defaults),
     changeToOriginalColour: function() {
         this.attr({'.outer': {'fill': '#EBFFEA'}});
