@@ -10,6 +10,16 @@
  * 		joint.shapes.basic.Actor: Actor node.
  *
  */
+
+joint.dia.BloomingGraph = joint.dia.Graph.extend({
+    defaults: joint.util.deepSupplement({
+        type: 'goalmodel.Graph',
+        maxAbsTime: 100,
+        constraints: []
+    }, joint.dia.Graph.prototype.defaults),
+
+})
+
 joint.shapes.basic.Intention = joint.shapes.basic.Generic.extend({
     // Changed satvalue to text
 	markup: '<g class="rotatable"><g class="scalable"><rect class="outer"/></g><text class="satvalue"/><text class="funcvalue"/><text class="name"/></g>',
