@@ -773,12 +773,15 @@ $('#colorblind-mode-isOn').on('click', function(){ //turns off colorblind mode
 function createLink(cell) {
 	var link = new Link('AND', cell.getSourceElement().attributes.nodeID,  -1);
 	cell.attributes.linkID = link.linkID;
+    cell.prop('linkSrcID', cell.getSourceElement().attributes.nodeID);
     cell.on("change:target", function () {
     	var target = cell.getTargetElement();
     	if (target === null) {
     		link.linkDestID = null;
+            cell.prop('linkDestID', null);
     	} else {
     		link.linkDestID = target.attributes.nodeID;
+            cell.prop('linkDestID', target.attributes.nodeID);
     	}
     });
     cell.on("change:source", function () {
@@ -842,7 +845,9 @@ graph.on("add", function(cell) {
         if (graph.getCell(cell.get("source").id) instanceof joint.shapes.basic.Actor){
             cell.prop("linktype", "actorlink");
             cell.label(0,{attrs:{text:{text:"is-a"}}});
-		}
+		} else{
+            cell.prop("linktype", "elementlink");
+        }
         createLink(cell);
     } else if (cell instanceof joint.shapes.basic.Intention){
 		createIntention(cell);
