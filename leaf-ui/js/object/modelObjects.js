@@ -1062,15 +1062,17 @@ class Intention {
         var funcSegLen = this.dynamicFunction.functionSegList.length;
         var funcSeg = this.dynamicFunction.functionSegList[funcSegLen - 1];
         funcSeg.funcType = funcValue;
+        
         if (funcValue == 'C') {
             funcSeg.funcX == '0000';
         } else if (funcValue == 'R') {
             // the marked value for a Stochastic function is always 0000
             funcSeg.funcX = '0000';
-        } else if (funcValue == 'I') {
-            funcSeg.funcX = '0011';
-        } else if (funcValue == 'D') {
-            funcSeg.funcX ='1100';
+                
+        //} else if (funcValue == 'I') {
+        //    funcSeg.funcX = '0011';
+        //} else if (funcValue == 'D') {
+        //    funcSeg.funcX ='1100';
         }
     }
 
