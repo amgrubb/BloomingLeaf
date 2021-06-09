@@ -1068,11 +1068,6 @@ class Intention {
         } else if (funcValue == 'R') {
             // the marked value for a Stochastic function is always 0000
             funcSeg.funcX = '0000';
-                
-        //} else if (funcValue == 'I') {
-        //    funcSeg.funcX = '0011';
-        //} else if (funcValue == 'D') {
-        //    funcSeg.funcX ='1100';
         }
     }
 
