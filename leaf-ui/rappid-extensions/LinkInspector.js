@@ -127,7 +127,7 @@ var LinkInspector = Backbone.View.extend({
         } else {
             this.$el.html(_.template(this.template)());
             $('#constant-links').val(values[0].trim());
-            this.evolvingRelations = false; //redundant????
+            this.evolvingRelations = false; 
         }
     },
 
@@ -275,7 +275,7 @@ var LinkInspector = Backbone.View.extend({
             '.marker-source': {'d': '0'},
             '.marker-target': {stroke: '#000000', "d": 'M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5'}
         });
-        this.cell.label(0, {position: 0.5, attrs: {text: {text: begin + " | " + end}}}); //do we need the codes then in lines 239 and 245????
+        this.cell.label(0, {position: 0.5, attrs: {text: {text: begin + " | " + end}}}); 
 
         // save into link object
         this.link.linkType = begin;
@@ -367,7 +367,7 @@ var LinkInspector = Backbone.View.extend({
         if (selector == "link-type-end") {
             var dupVal = $('#link-type-begin').val();
             $("select#link-type-end option").filter("[value='" + dupVal + "']").remove();
-        }//feels very inefficient????
+        }
     },
 
     clear: function(){
