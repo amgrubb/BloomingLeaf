@@ -16,17 +16,7 @@ $('#btn-fnt').on('click', function(){ defaultFont(analysis.paper);});
 $('#btn-fnt-up').on('click', function(){  fontUp(analysis.paper);});
 $('#btn-fnt-down').on('click', function(){ fontDown(analysis.paper);});
 $('#inspector-btn-small').on('click', function(){ goToState(); });
-$('#conflictFl').on('click', function(){ add_filter();});
-$('#leastTasksSatisfied').on('click', function(){ add_filter();});
-$('#mostTasksSatisfied').on('click', function(){ add_filter();});
-$('#leastResource').on('click', function(){ add_filter();});
-$('#mostResource').on('click', function(){ add_filter();});
-$('#leastGoalSatisfied').on('click', function(){ add_filter();});
-$('#mostGoalSatisfied').on('click', function(){ add_filter();});
-$('#LeastActor').on('click', function(){ add_filter();});
-$('#mostActor').on('click', function(){ add_filter();});
-$('#mostConstraintSatisfaction').on('click', function(){ add_filter();});
-
+$('.filter_checkbox').on('click', function(){add_filter()});
 $("#saveClose").on('click', function() { save_current_state();});
 $("#exploreNextSates").on('click', function() { generate_next_states();});
 $("#close").on('click', function() { window.close();});
