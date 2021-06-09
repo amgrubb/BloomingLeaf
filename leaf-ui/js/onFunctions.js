@@ -842,7 +842,6 @@ var element_counter = 0;
 graph.on("add", function(cell) {
 
 	if (cell instanceof joint.dia.Link){
-        console.log(cell);
         if (graph.getCell(cell.get("source").id) instanceof joint.shapes.basic.Actor){
             cell.prop("linktype", "actorlink");
             cell.label(0,{attrs:{text:{text:"is-a"}}});
