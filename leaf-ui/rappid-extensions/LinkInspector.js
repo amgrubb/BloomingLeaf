@@ -170,11 +170,16 @@ var LinkInspector = Backbone.View.extend({
             
         } else {
             //Verify if it is possible to remove the NB tag from source and target
-            if (!this.hasNBLink(source, this.cell) && this.hasNBTag(source)){
-                source.attr(".funcvalue/text", "");
+            if (!this.hasNBLink(source, this.cell) && !this.hasNBTag(source)){
+                
+                source.attr('.funcvalue/text', '');
+                source.attr('.satvalue/text', '');
+                
             }
-            if (!this.hasNBLink(target, this.cell) && this.hasNBTag(target)){
-                target.attr(".funcvalue/text", "");
+            if (!this.hasNBLink(target, this.cell) && !this.hasNBTag(target)){
+                
+                target.attr('.funcvalue/text', '');
+                target.attr('.satvalue/text', '');
             }
         }
 
@@ -248,10 +253,12 @@ var LinkInspector = Backbone.View.extend({
             this.link.linkType = begin.toUpperCase();
             this.link.postType = 'NO';
 
+            $("#repeat-error").text("Saved!");
+            $("#repeat-error").css("color", "lightgreen");
 
         } else {
             this.setSelectValues('#link-type-end', "B");
-            $("#link-type-end").prop('disabled', false);
+            $("#link-type-end").prop('disabled', '');
             $("#link-type-end").css("background-color","");
         }
     },
@@ -350,9 +357,9 @@ var LinkInspector = Backbone.View.extend({
                 element.append($("<option></option>").attr("value", value).text(key));
             });
         } else if (type == "A") {
-            $.each(relationA, function (value, key) {
-                element.append($("<option></option>").attr("value", value).text(key));
-            });
+            element.val("no");
+            $("#repeat-error").text("Saved!");
+            $("#repeat-error").css("color", "lightgreen");
         } else if (type == "B") {
             $.each(relationB, function (value, key) {
                 element.append($("<option></option>").attr("value", value).text(key));
