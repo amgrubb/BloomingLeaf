@@ -14,7 +14,7 @@ var validPair = {
     },
     "R":{
         "validInitValue": ["none", "satisfied", "partiallysatisfied", "denied", "partiallydenied", "(no value)"],
-        // default value changed to (no value)
+        // Default value changed to (no value)
         "defaultValue": ["(no value)"]
     },
     "I": {
