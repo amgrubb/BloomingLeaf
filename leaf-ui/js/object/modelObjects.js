@@ -268,7 +268,7 @@ class Actor {
      *   Array of intention IDs, for the intentions
      *   embedded inside this actor
      */
-    constructor() {
+    constructor(nodeName) {
         this.nodeID = this.createID();
         this.nodeName = nodeName;
         this.intentionIDs = [];

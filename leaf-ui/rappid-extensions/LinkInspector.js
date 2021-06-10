@@ -65,7 +65,7 @@ var LinkInspector = Backbone.View.extend({
         this.link = model.getLinkByID(cell.attributes.linkID);
 
         // Selecting which template to render ACTOR-LINK or INTENTIONS-LINK
-        if (cell.prop('linktype')) {
+        if (cell.prop('linktype') == 'actorlink') {
             this.$el.html(_.template(this.actortemplate)());
             $('#actor-link').val(cell.prop("link-type"));
         } else {
