@@ -231,9 +231,7 @@ var ElementInspector = Backbone.View.extend({
         if (this.intention.getInitialSatValue() == '(no value)') {
             // remove current options, add 3 options
             this.$('.function-type').empty();
-            this.$('.function-type').append('<option value=NT> No Function </option>');
             this.$('.function-type').append('<option value=R> Stochastic </option>');
-            this.$('.function-type').append('<option value=UD> User Defined </option>');
         } else {
             this.$('.function-type').empty();
             this.$('.function-type').append('<option value=NT> No Function </option>');
