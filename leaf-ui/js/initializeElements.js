@@ -80,7 +80,8 @@ var analysisResult = new AnalysisResult();
 
 
 var linkInspector = new LinkInspector();
-var elementInspector = new ElementInspector();
+// deleted this, now it is created in onFunctions
+// var elementInspector = new ElementInspector();
 var configCollection = new ConfigCollection([]);
 var configInspector = new ConfigInspector({collection:configCollection});
 var analysisInspector = new AnalysisInspector();
@@ -293,7 +294,6 @@ stencil = new joint.ui.Stencil({
 var commandManager = new joint.dia.CommandManager({ graph: graph });
 
 // A simple element editor.
-$('.inspector').append(elementInspector.el);
 $('.inspector').append(actorInspector.el);
 
 $('#stencil').append(stencil.render().el);

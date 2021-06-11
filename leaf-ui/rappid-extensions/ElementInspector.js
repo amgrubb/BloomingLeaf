@@ -179,15 +179,16 @@ var ElementInspector = Backbone.View.extend({
     /**
      * Initializes the element inspector using previously defined templates
      */
+    // edit this function so we do not call render(cell);
     render: function(cell) {
 
-        this.cell = cell; // Save the clicked node's backbone model
-        console.log(this.cell);
-        console.log(this.cell.attributes.nodeType);
+        // this.cell = cell; // Save the clicked node's backbone model
+        // console.log(this.cell);
+        // console.log(this.cell.attributes.nodeType);
 
         // Save the Intention object from the global model variable to
         // this.intention
-        this.intention = model.getIntentionByID(this.cell.attributes.nodeID);
+        // this.intention = model.getIntentionByID(this.cell.attributes.nodeID);
 
         this.$el.html(_.template(this.template)());
 
@@ -233,7 +234,7 @@ var ElementInspector = Backbone.View.extend({
     },
 
     /** Difference between function and method ??? 
-    switchModel(newCell) {
+        switchModel: function(newCell) {
         this.model = newCell;
     },
     */ 
@@ -242,9 +243,11 @@ var ElementInspector = Backbone.View.extend({
      * rendering elementInspector each time an element is clicked
      * (if it worked correctly)
      */
-    switchModel: function(newCell) {
+
+    switchModel(newCell) {
         this.model = newCell;
     },
+
 
     /**
      * Checks the initial satisfaction value for a (no value).
