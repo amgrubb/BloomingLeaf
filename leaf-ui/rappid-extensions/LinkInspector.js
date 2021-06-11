@@ -63,7 +63,6 @@ var LinkInspector = Backbone.View.extend({
     render: function(cell) {
         this.cell = cell;
         this.link = model.getLinkByID(cell.attributes.linkID);
-
         // Selecting which template to render ACTOR-LINK or INTENTIONS-LINK
         if (cell.prop('linktype')) {
             this.$el.html(_.template(this.actortemplate)());
@@ -106,7 +105,6 @@ var LinkInspector = Backbone.View.extend({
     switchMode: function() {
 
         var type = this.cell.attributes.labels[0].attrs.text.text;
-
         // array of link values
         var values = type.split("|");
 
@@ -139,7 +137,6 @@ var LinkInspector = Backbone.View.extend({
 
         var source = this.cell.getSourceElement();
         var target = this.cell.getTargetElement();
-
         var relationshipVal = $('.link-type option:selected').val();
 
         // store the new value into the link
@@ -171,13 +168,10 @@ var LinkInspector = Backbone.View.extend({
         } else {
             //Verify if it is possible to remove the NB tag from source and target
             if (!this.hasNBLink(source, this.cell) && !this.hasNBTag(source)){
-                
                 source.attr('.funcvalue/text', '');
                 source.attr('.satvalue/text', '');
-                
             }
             if (!this.hasNBLink(target, this.cell) && !this.hasNBTag(target)){
-                
                 target.attr('.funcvalue/text', '');
                 target.attr('.satvalue/text', '');
             }
@@ -252,9 +246,7 @@ var LinkInspector = Backbone.View.extend({
             // save into link object
             this.link.linkType = begin.toUpperCase();
             this.link.postType = 'NO';
-
             
-
         } else {
             this.setSelectValues('#link-type-end', "B");
             $("#link-type-end").prop('disabled', '');
