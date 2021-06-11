@@ -145,7 +145,6 @@ var LinkInspector = Backbone.View.extend({
         this.cell.label(0 , {position: 0.5, attrs: {text: {text: linkValText[relationshipVal]}}});
 
         this.link.linkType = relationshipVal.toUpperCase();
-        this.link.postType = null;
 
         // Adding or removing tags from node depending on type of link
         if (relationshipVal == 'NBT' || relationshipVal == 'NBD') {
@@ -228,14 +227,10 @@ var LinkInspector = Backbone.View.extend({
             $("#repeat-error").text("");
         } else if(begin == "and" || begin == "or") {
             this.setSelectValues('#link-type-end', 'A');
-
-            var end = $("#link-type-end").val();
-
             $("#link-type-end").prop('disabled', false);
             $("#link-type-end").css("background-color","");
             
             //Saving this option
-            this.cell.prop("link-type", begin + "|" + end);
             this.cell.attr({
                 '.connection': {stroke: '#000000', 'stroke-dasharray': '0 0'},
                 '.marker-source': {'d': '0'},
@@ -245,7 +240,7 @@ var LinkInspector = Backbone.View.extend({
             
             // save into link object
             this.link.linkType = begin.toUpperCase();
-            this.link.postType = 'NO';
+            this.link.postType = end.toUpperCase();
             
         } else {
             this.setSelectValues('#link-type-end', "B");
