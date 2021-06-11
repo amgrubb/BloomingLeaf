@@ -4,44 +4,247 @@
 	 * This function is called on click for #btn-view-intermediate
 	 */
 
- template: [
-    //This is the intermediate values table modal
-    '<div id="intermediateTable" class="intermT">',
-    '<div class="intermContent">',
-    '<div class="intermHeader">',
-    '<span class="closeIntermT">&times;</span>',
-    '<h2>Intermediate Values Table</h2>',
-    '</div>',
-    '<div class="intermBody">',
-    '<table id="interm-list" class="interm-table">',
-    '<thead id = "header">',
-    '<tr id="header-row">',
-    '<th style="width:110px"></th>',
-    '<th>  Initial Value  </th>',
-    '</tr>',
-    '</thead>',
-    '<tr id="intentionRows">',
-    '<th>',
-    '<div class="divisionLine"></div>',
-    '<div class="intentionPlace"><b>Intention</b></div>',
-    '<div class="timePlace"><b>Timeline</b></div>',
-    '<div class="outerdivslant borderdraw2">',
-    '</div>',
-    '<div class = "innerdivslant borderdraw2">',
-    '</div>',
-    '</th>',
-    '<th>0</th>',
-    '</tr>',
-    '</table>',
-    '<button id="btn-save-intermT" class="analysis-btns inspector-btn sub-label green-btn" style="border-radius:40px;">Save</button>',
-    '</div>',
-    '</div>',
-    '</div>',
-    '<br>',
-    '<hr>',
-'</script>'].join(''),
+var IntermediateValuesTable = Backbone.View.extend({
+    template: [
+        //This is the intermediate values table modal
+        '<div id="intermediateTable" class="intermT">',
+        '<div class="intermContent">',
+        '<div class="intermHeader">',
+        '<span class="closeIntermT">&times;</span>',
+        '<h2>Intermediate Values Table</h2>',
+        '</div>',
+        '<div class="intermBody">',
+        '<table id="interm-list" class="interm-table">',
+        '<thead id = "header">',
+        '<tr id="header-row">',
+        '<th style="width:110px"></th>',
+        '<th>  Initial Value  </th>',
+        '</tr>',
+        '</thead>',
+        '<tr id="intentionRows">',
+        '<th>',
+        '<div class="divisionLine"></div>',
+        '<div class="intentionPlace"><b>Intention</b></div>',
+        '<div class="timePlace"><b>Timeline</b></div>',
+        '<div class="outerdivslant borderdraw2">',
+        '</div>',
+        '<div class = "innerdivslant borderdraw2">',
+        '</div>',
+        '</th>',
+        '<th>0</th>',
+        '</tr>',
+        '</table>',
+        '<button id="btn-save-intermT" class="analysis-btns inspector-btn sub-label green-btn" style="border-radius:40px;">Save</button>',
+        '</div>',
+        '</div>',
+        '</div>',
+        '<br>',
+        '<hr>',
+        '</script>'].join(''),
 
-function loadIntermediate(e) {
+    /**
+	*This function takes in a binary string of value and return
+	* a decimal encoding of that value
+	* none has a value of 0
+	* partially denied has a value of -1
+	* fully denied has a value of -2
+	* partially satisfied has a value of 1
+	* fully satisfied has a value of 2
+	*/
+	comparisonSwitch: function(valueToEncode){
+        var tempInput;
+        switch(valueToEncode){
+            case '0000':
+                tempInput = 0;
+                break;
+            case '0011':
+                tempInput = 2;
+                break;
+            case '0010':
+                tempInput = 1;
+                break;
+            case '0100':
+                tempInput = -1;
+                break;
+            case '1100':
+                tempInput = -2;
+                break;
+        }
+        return tempInput;
+     },
+ 
+ 
+     /**
+     *this function takes in two values the first one is the binary string of the input value
+     * and the second one is the binary string of the value to compare.
+     * This function will return a boolean value that whether the input value is greater than the value to compare
+      */
+     isIncreasing: function(inputValue, valueToCompare){
+        var tempInput = this.comparisonSwitch(inputValue);
+        var tempCompare = this.comparisonSwitch(valueToCompare);
+        if (tempInput < tempCompare){
+            return false;
+        }
+        else{
+            return true;
+        }
+     },
+ 
+ 
+     /**
+     *this function takes in two values the first one is the binary string of the input value
+     * and the second one is the binary string of the value to compare.
+     * This function will return a boolean value that whether the input value is smaller than the value to compare
+      */
+     isDecreasing: function(inputValue, valueToCompare){
+        var tempInput = this.comparisonSwitch(inputValue);
+        var tempCompare = this.comparisonSwitch(valueToCompare);
+        if(tempInput <= tempCompare){
+            return true;
+        }
+        else{
+            return false;
+        }
+     },
+ 
+     /**
+     *This function takes in an initial value and return a list of strings for options that contains values that are larger than the initial value
+      */
+     increasing: function(initValue,finalValue){
+         var possibleValueList = ['0000','0011','0010','1100','0100'];
+         var valueForOptions = [];
+         if(finalValue === 'noFinal') {
+             for (var i = 0; i < possibleValueList.length; i++) {
+                 if (this.isIncreasing(possibleValueList[i], initValue)) {
+                     valueForOptions.push(possibleValueList[i]);
+                 }
+             }
+             return this.convertToOptions(valueForOptions);
+         }
+         else{
+             var withFinal = [];
+             var withFinalTwo =[];
+             for (var i = 0; i < possibleValueList.length; i++) {
+                 if (this.isIncreasing(possibleValueList[i], initValue)) {
+                     valueForOptions.push(possibleValueList[i]);
+                 }
+             }
+             for(var i=0;i<valueForOptions.length;i++){
+                 if(this.isDecreasing(valueForOptions[i],finalValue)){
+                     withFinal.push(valueForOptions[i]);
+                 }
+             }
+             for(var i = 0; i < withFinal.length; i++){
+                 if(!(withFinal[i]===finalValue)){
+                     withFinalTwo.push(withFinal[i]);
+                 }
+             }
+             return this.convertToOptions(withFinalTwo);
+         }
+     },
+ 
+     /**
+     *This function takes in an initial value and return a list of strings for options that contains values that are smaller than the initial value
+      */
+     decreasing: function(initValue,finalValue){
+         var possibleValueList = ['0000','0011','0010','1100','0100'];
+         var valueForOptions = [];
+         if(finalValue === 'noFinal') {
+             for (var i = 0; i < possibleValueList.length; i++) {
+                 if (this.isDecreasing(possibleValueList[i], initValue)) {
+                     valueForOptions.push(possibleValueList[i]);
+                 }
+             }
+             return this.convertToOptions(valueForOptions);
+         }
+         else {
+             var withFinal = [];
+             var withFinalTwo  = [];
+             for (var i = 0; i < possibleValueList.length; i++) {
+                 if (this.isDecreasing(possibleValueList[i], initValue)) {
+                     valueForOptions.push(possibleValueList[i]);
+                 }
+             }
+             for(var i=0; i<valueForOptions.length;i++){
+                 if(this.isIncreasing(valueForOptions[i],finalValue)){
+                     withFinal.push(valueForOptions[i]);
+                 }
+             }
+             for(var i = 0; i< withFinal.length; i++){
+                 if(!(withFinal[i]===finalValue)){
+                     withFinalTwo.push(withFinal[i]);
+                 }
+             }
+             return this.convertToOptions(withFinalTwo);
+ 
+         }
+     },
+ 
+     /**
+     *This function takes in an initial value and return a list of strings for options that contains values that are equal to the initial value
+      */
+     constant: function(initValue){
+         return this.convertToOptions([initValue]);
+     },
+ 
+ 
+     /**
+      *
+      * @returns {a list of strings for options that contains values that contains all possible values}
+      */
+     stochastic: function(){
+         var possibleValueList = ['0000','0011','0010','1100','0100', 'no value'];
+         return this.convertToOptions(possibleValueList);
+     },
+ 
+     /**
+      *
+      * @param binaryString: This is the binary string stands for the value
+      * @returns a string decode of that binary value
+      */
+     binaryToOption: function(binaryString){
+         var optionString = '';
+         switch(binaryString){
+             case "0000":
+                 optionString = `<option value="0000">None (⊥, ⊥) </option>`;
+                 break;
+             case "0011":
+                 optionString = `<option value="0011">Satisfied (F, ⊥) </option>`;
+                 break;
+             case "0010":
+                 optionString = `<option value="0010">Partially Satisfied (P, ⊥) </option>`;
+                 break;
+             case "0100":
+                 optionString = `<option value="0100">Partially Denied (⊥, P)</option>`;
+                 break;
+             case "1100":
+                 optionString = `<option value="1100">Denied (⊥, F) </option>`;
+                 break;
+             case 'empty':
+                 optionString = `<option value="empty"> --- </option>`;
+                 break;
+             case 'no value':
+                 optionString = `<option value="(no value)">(no value)</option>`;
+                 break;
+         }
+         return optionString;
+     },
+ 
+     /**
+      *
+      * @param choiceList: A list that contains binary strings of valid values
+      * @returns {List that contains strings that are the string encoding of the binary strings in the choiceList}
+      */
+     convertToOptions: function(choiceList){
+         var theOptionString = ``;
+         for(var i = 0; i < choiceList.length; i++){
+             var curString = this.binaryToOption(choiceList[i]);
+             theOptionString += curString;
+         }
+         return theOptionString;
+     },
+
+    loadIntermediate : function(e) {
     $('#interm-list').find("tr:gt(1)").remove();
     $('#header').find("th:gt(1)").remove();
     $('#intentionRows').find("th:gt(1)").remove();
@@ -286,18 +489,18 @@ function loadIntermediate(e) {
             }
         });
     });
-}
+},
 
 
-function dismissInterm(e){
+dismissInterm: function (e){
     var intermT = document.getElementById('intermediateTable');
     intermT.style.display = "none";
-}
+},
 
 /**
  * Save the intermediate table values into analysisRequest
  */
-function saveInterm() {
+saveInterm: function() {
 
     // Clear all intention evaluations with the exception
     // of the evaluations on the initial time point
@@ -321,3 +524,5 @@ function saveInterm() {
 
     this.dismissIntermTable();
 }
+
+})

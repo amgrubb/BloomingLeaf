@@ -59,6 +59,7 @@ var ConfigModel = Backbone.Model.extend({
     initialize : function(){
         this.results = new ResultCollection([]);
         this.listenTo(this, 'change:selected', this.updateSelected);
+        this.listenTo(this, 'change:numRelTime', this.checkChange);
     },
 
     idAttribute: "uid",
@@ -75,6 +76,10 @@ var ConfigModel = Backbone.Model.extend({
         previousAnalysis: null,
         selected: true,
         results : new ResultCollection([])
+    },
+
+    checkChange: function(){
+        console.log(this.get('numRelTime'));
     },
 
     /**
