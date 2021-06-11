@@ -61,11 +61,12 @@ var ActorInspector = Backbone.View.extend({
         updateType: function(){
             console.log("updateType");
             this.model.set('actorType', this.$('.actor-type').val());
+            console.log(model);
         },
 
         changeLine: function() {
             console.log("changeLine");
-            if (this.model.actorType == 'G') {
+            if (this.model.get('actorType') == 'G') {
                 this.model.attr({'.line': {'ref': '.label',
                 'ref-x': 0,
                 'ref-y': 0.08,
@@ -73,7 +74,7 @@ var ActorInspector = Backbone.View.extend({
                 'stroke-width': 1,
                 'stroke': 'black'}});
             }
-            else if (this.model.actorType == 'R'){
+            else if (this.model.get('actorType') == 'R'){
                 this.model.attr({'.line': {'ref': '.label',
                 'ref-x': 0,
                 'ref-y': 0.6,
@@ -81,10 +82,10 @@ var ActorInspector = Backbone.View.extend({
                 'stroke-width': 1,
                 'stroke': 'black'}});
             }
-            else{
-                this.model.attr({'.line': {}});
+            else if (this.model.get('actorType') == 'A'){
+                this.model.attr({'.line': {'stroke-width': 0}});
             }
-            
+
         }
 }
 
