@@ -14,7 +14,7 @@ var ResultView = Backbone.View.extend({
     /** Pass in config along with model so that view has reference to parent */
     initialize: function(options){
         this.config = options.config;
-        this.model.on('change:selected', this.updateHighlight, this);
+        this.model.on('change:selected', this.updateHighlight, this); //why not just use render instead of having a function that only calls render????
     },
 
     template: ['<script type="text/template" id="result-template">',
@@ -74,7 +74,7 @@ var ResultsDropdown = Backbone.View.extend({
      * Then adds all results associated with the configuration
      */
     render: function() {
-        this.stopListening();
+        this.stopListening(); //why????
         this.listenTo(this.collection, 'add', this.loadResult, this);
         this.$el.html(_.template(this.template)());
         this.collection.forEach(result => {this.loadResult(result)});
@@ -99,9 +99,9 @@ var Config = Backbone.View.extend({
 
     /** Create and render dropdown inner view, set listeners */
     initialize: function(){
-        this.innerView = new ResultsDropdown({collection:this.model.get("results"), config: this.model});
+        this.innerView = new ResultsDropdown({collection:this.model.get("results"), config: this.model}); //unsure the purpose of this line????
         this.innerView.render();
-        this.model.on('destroy', this.remove, this);
+        this.model.on('destroy', this.remove, this); //where did remove come from????
         this.model.on('change:selected', this.updateHighlight, this);
         this.model.on('change:name', this.renderName, this);
     },
@@ -257,7 +257,7 @@ var Config = Backbone.View.extend({
  * {ConfigCollection} collection
  */
 var ConfigInspector = Backbone.View.extend({
-    className: 'configs',
+    className: 'configs', //What's this for????
 
     collection: ConfigCollection,
 

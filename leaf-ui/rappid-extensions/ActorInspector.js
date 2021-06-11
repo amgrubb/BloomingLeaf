@@ -2,9 +2,12 @@
 var ENTER_KEY = 13;
 
 var ActorInspector = Backbone.View.extend({
+        model: joint.shapes.basic.Actor,
+        //className: 'element-inspector', //change???
 
-        className: 'element-inspector',
-
+        initialize: function() {
+            this.model.on('change:actorType', this.changeLine, this);
+        },
         template: [
             '<label>Actor name</label>',
             '<textarea class="cell-attrs-text" maxlength=100></textarea>',
@@ -16,23 +19,20 @@ var ActorInspector = Backbone.View.extend({
             '</select>'
         ].join(''),
 
+    
         events: {
             'keyup .cell-attrs-text': 'nameAction',
+            'change .actor-type': 'updateType'
+
         },
 
         /**
          * Initializes the element inspector using previously defined templates
          */
-        render: function(cell) {
-
-            this.cell = cell;
-
-            // Save actor here
-            this.actor = model.getActorByID(cell.attributes.nodeID);
-
+        render: function() {
+            console.log("rendering");
             // If the clicked node is an actor, render the actor inspector
             this.$el.html(_.template(this.template)());
-            this.$('.cell-attrs-text').val(this.actor.nodeName);
         },
 
 
@@ -42,6 +42,7 @@ var ActorInspector = Backbone.View.extend({
          */
         nameAction: function(event) {
             // Prevent the ENTER key from being recorded when naming nodes.
+            console.log("nameAction");
             if (event.which === ENTER_KEY) {
                 event.preventDefault();
             }
@@ -50,12 +51,40 @@ var ActorInspector = Backbone.View.extend({
             // Do not allow special characters in names, replace them with spaces.
             text = text.replace(/[^\w\n-]/g, ' ');
 
-            this.cell.attr({ '.name': { text: text } });
-            this.actor.nodeName = text;
+            this.model.attr({ '.name': {text: text }});
 
         },
       clear: function(){
             this.$el.html('');
+        },
+        
+        updateType: function(){
+            console.log("updateType");
+            this.model.set('actorType', this.$('.actor-type').val());
+        },
+
+        changeLine: function() {
+            console.log("changeLine");
+            if (this.model.actorType == 'G') {
+                this.model.attr({'.line': {'ref': '.label',
+                'ref-x': 0,
+                'ref-y': 0.08,
+                'd': 'M 5 10 L 55 10',
+                'stroke-width': 1,
+                'stroke': 'black'}});
+            }
+            else if (this.model.actorType == 'R'){
+                this.model.attr({'.line': {'ref': '.label',
+                'ref-x': 0,
+                'ref-y': 0.6,
+                'd': 'M 5 10 Q 30 20 55 10 Q 30 20 5 10' ,
+                'stroke-width': 1,
+                'stroke': 'black'}});
+            }
+            else{
+                this.model.attr({'.line': {}});
+            }
+            
         }
 }
 

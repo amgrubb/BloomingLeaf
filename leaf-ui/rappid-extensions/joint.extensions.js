@@ -224,32 +224,10 @@ joint.shapes.basic.Actor = joint.shapes.basic.Generic.extend({
             }
         },
         actor: new ActorTest(),
-        actortype: 'A'
+        actorType: 'A'
     }, joint.dia.Element.prototype.defaults),
     changeToOriginalColour: function() {
         this.attr({'.outer': {'fill': '#EBFFEA'}});
-    },
-    changeLine: function() {
-        if (this.actortype == 'G') {
-            this.attr({'.line': {'ref': '.label',
-            'ref-x': 0,
-            'ref-y': 0.08,
-            'd': 'M 5 10 L 55 10',
-            'stroke-width': 1,
-            'stroke': 'black'}});
-        }
-        else if (this.actortype == 'R'){
-            this.attr({'.line': {'ref': '.label',
-            'ref-x': 0,
-            'ref-y': 0.6,
-            'd': 'M 5 10 Q 30 20 55 10 Q 30 20 5 10' ,
-            'stroke-width': 1,
-            'stroke': 'black'}});
-        }
-        else{
-            this.attr({'.line': {}});
-        }
-        
     }
 
 });

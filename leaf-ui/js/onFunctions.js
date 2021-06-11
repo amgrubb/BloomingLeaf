@@ -940,7 +940,9 @@ paper.on({
 
                 // render actor/element inspector
                 if (cell instanceof joint.shapes.basic.Actor) {
-                    actorInspector.render(cell);
+                    var actorInspector =  new ActorInspector({model:cell});
+                    $('.inspector').append(actorInspector.el);
+                    actorInspector.render();
                 } else {
                     elementInspector.render(cell);
                     // if user was dragging element
@@ -1176,7 +1178,7 @@ function clearInspector() {
 	elementInspector.clear();
 	linkInspector.clear();
 	analysisInspector.clear();
-	actorInspector.clear();
+	//actorInspector.clear();
 }
 
 
