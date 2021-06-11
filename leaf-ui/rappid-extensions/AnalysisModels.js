@@ -57,7 +57,7 @@ var ResultCollection = Backbone.Collection.extend({
  */
 var ConfigModel = Backbone.Model.extend({
     initialize : function(){
-        this.results = new ResultCollection([]); //why do we need []????
+        this.results = new ResultCollection([]);
         this.listenTo(this, 'change:selected', this.updateSelected);
     },
 
@@ -74,16 +74,16 @@ var ConfigModel = Backbone.Model.extend({
         userAssignmentsList : [],
         previousAnalysis: null,
         selected: true,
-        results : new ResultCollection([]) //line 60 and 77 the same????
+        results : new ResultCollection([])
     },
 
     /**
      * Will be called to add a new result model to the results param
      * when the backend returns an AnalysisResult
      */
-    addResult : function(result){ //if result is passed here, why have line 17????
+    addResult : function(result){
         var newResultModel = new ResultModel({name: 'Result ' + (this.get('results').length+1), analysisResult : result, selected: true});
-        this.get("results").add(newResultModel); //assuming add is specified in the this.o in line 34????
+        this.get("results").add(newResultModel);
     },
 
     /** If a config was previously selected and now no longer is, unselect any selected results */
@@ -107,14 +107,14 @@ var ConfigCollection = Backbone.Collection.extend({
 
     initialize: function(){
         this.on('change:switchConfigs', this.onSelectedChanged, this);
-        this.on('change:unselectResult', this.unselectResults, this); //shouldn't it be switchConfigs?
+        this.on('change:unselectResult', this.unselectResults, this);
         this.on('add', this.onSelectedChanged, this);
     },
 
     /** 
      * When config is clicked/selected, find previously selected config and unselect it.
      */ 
-    onSelectedChanged : function(changedConfig){ //where did the changed Config come from?
+    onSelectedChanged : function(changedConfig){
         this.filter(configModel => configModel.get('selected') == true && changedConfig != configModel)
             .forEach(model =>
                 model.set('selected', false));
