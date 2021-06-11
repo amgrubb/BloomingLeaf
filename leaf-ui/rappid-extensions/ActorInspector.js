@@ -10,7 +10,7 @@ var ActorInspector = Backbone.View.extend({
         },
         template: [
             '<label>Actor name</label>',
-            '<textarea class="cell-attrs-text" maxlength=100></textarea>',
+            '<textarea class="cell-attrs-text" maxlength=100 placeholder="Enter Name"></textarea>',
             '<label> Actor type </label>',
             '<select class="actor-type">',
             '<option value=A> Actor </option>',
