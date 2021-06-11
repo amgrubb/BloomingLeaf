@@ -942,6 +942,7 @@ paper.on({
                 if (cell instanceof joint.shapes.basic.Actor) {
                     actorInspector.render(cell);
                 } else {
+                    elementInspector.switchModel(cell)
                     elementInspector.render(cell);
                     // if user was dragging element
                     if (evt.data.move) {

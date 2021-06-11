@@ -67,6 +67,14 @@ function called, will always be near the bottom.
 */
 
 var ElementInspector = Backbone.View.extend({
+    model: joint.shapes.basic.Intention,
+
+    initialize: function() {
+        this.listenTo(this, 'change: init-sat-value', this.initSatValueChanged); // init sat value
+        this.listenTo(this, 'change: function-type', this.funcTypeChanged); // function value
+        // are these the only ones we add? - they are the only events that change the view i think
+        // correct syntax?? or is it 'change: selected'
+    },
 
     className: 'element-inspector',
 
@@ -174,6 +182,8 @@ var ElementInspector = Backbone.View.extend({
     render: function(cell) {
 
         this.cell = cell; // Save the clicked node's backbone model
+        console.log(this.cell);
+        console.log(this.cell.attributes.nodeType);
 
         // Save the Intention object from the global model variable to
         // this.intention
@@ -220,6 +230,20 @@ var ElementInspector = Backbone.View.extend({
 
         this.updateCell();
 
+    },
+
+    /** Difference between function and method ??? 
+    switchModel(newCell) {
+        this.model = newCell;
+    },
+    */ 
+    /** This function should allow the model associated with the view to update each time a 
+     * new element is clicked instead of passing the model directly into the render function and 
+     * rendering elementInspector each time an element is clicked
+     * (if it worked correctly)
+     */
+    switchModel: function(newCell) {
+        this.model = newCell;
     },
 
     /**
