@@ -175,6 +175,7 @@ var Config = Backbone.View.extend({
     switchConfig : function(){
         currAnalysisConfig = this.model;
         this.model.set({selected:true});
+        analysisInspector.switchModel(this.model);
         this.model.trigger('change:switchConfigs', this.model);
         this.model.trigger('change:unselectResult', this.model);
     },
