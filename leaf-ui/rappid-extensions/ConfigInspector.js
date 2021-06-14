@@ -158,7 +158,6 @@ var Config = Backbone.View.extend({
      * Resets element name in UI to current name
      */
     renderName: function(){
-        console.log(this.model.get('numRelTime'));
         $('.config-elements', this.$el).html(this.model.get('name'));
         return this;
     },

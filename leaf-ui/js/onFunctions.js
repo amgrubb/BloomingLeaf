@@ -451,7 +451,6 @@ function switchToAnalysisMode() {
     $('#config').append(configInspector.el);
     configInspector.render();
 	$('#stencil').css("display", "none");
-    //$('#analysis-sidebar').css("display","");
 
     $('#analysis-btn').css("display", "none");
 	$('#symbolic-btn').css("display", "none");
@@ -558,7 +557,6 @@ function switchToModellingMode() {
     $('#analysis-sidebar').css("display","none");
     $('#btn-view-assignment').css("display","");
     $('#analysis-btn').css("display","");
-    //$('#analysis-sidebar').css("display","none");
 	$('#symbolic-btn').css("display","");
 	$('#cycledetect-btn').css("display","");
     $('#dropdown-model').css("display","none");
@@ -1171,8 +1169,8 @@ function clearInspector() {
 	actorInspector.clear();
 
     // Clear any analysis sidebar views
-    if($('.analysis-sidebar').length != 0){
-        $('.analysis-sidebar').trigger('clearInspector');
+    if($('.inspector-views').length != 0){
+        $('.inspector-views').trigger('clearInspector');
     }
 }
 

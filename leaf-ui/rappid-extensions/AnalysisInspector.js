@@ -11,7 +11,7 @@ var AnalysisInspector = Backbone.View.extend({
 	model: ConfigModel,
 	
 	template: ['<script type="text/template" id="item-template">',
-		'<div class="analysis-sidebar">',
+		'<div class="inspector-views">',
 		'<h2 style="text-align:center; width:100%;margin-top:6px;margin-bottom:0px">Analysis</h2>',
 		'<hr>',
 		'<h3> Simulation Start: 0 </h3>',
@@ -41,7 +41,7 @@ var AnalysisInspector = Backbone.View.extend({
 		'click #btn-save-intermT': 'saveIntermTable',
 		'change #num-rel-time': 'addRelTime', 
 		'change #conflict-level': 'changeConflictLevel',
-		'clearInspector .analysis-sidebar' : 'removeView'
+		'clearInspector .inspector-views' : 'removeView'
 	},
 
 	/** Sets template and injects model parameters */
