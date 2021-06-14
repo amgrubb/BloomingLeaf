@@ -12,7 +12,8 @@ var AnalysisInspector = Backbone.View.extend({
 	
 	//TO-DO anywhere analysrequest is updated -> this.model
 	//TO-DO connect configs and sidebar
-	template: ['<script type="text/template" id="item-template">', 
+	template: ['<script type="text/template" id="item-template">',
+		'<div class="analysis-sidebar">',
 		'<h2 style="text-align:center; width:100%;margin-top:6px;margin-bottom:0px">Analysis</h2>',
 		'<hr>',
 		'<h3> Simulation Start: 0 </h3>',
@@ -31,6 +32,7 @@ var AnalysisInspector = Backbone.View.extend({
 		'<button id="btn-single-path" class="analysis-btns inspector-btn sub-label green-btn">Simulate Single Path</button>',
 		'<button id="btn-all-next-state" class="analysis-btns inspector-btn sub-label ice-btn">Explore Possible Next States</button>',
 		'<hr>',
+		'</div>',
 		'</script>'].join(''),		
 	
 	events: {
@@ -41,21 +43,23 @@ var AnalysisInspector = Backbone.View.extend({
 		'click #btn-save-intermT': 'saveIntermTable',
 		'change #num-rel-time': 'addRelTime', 
 		'change #conflict-level': 'changeConflictLevel',
+		'clearInspector .analysis-sidebar' : 'removeView'
 	},
 
-	render: function () {
-		this.model = new ConfigModel; 
+	render: function () { 
 		this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
-
 		// These functions are used to communicate between analysisInspector and Main.js
 		$('head').append('<script src="./js/analysis.js"></script>');
 		return this;
 	},
 
 	rerender: function(){
-		console.log(this.model.get('numRelTime'));
 		this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
         return this;
+	},
+
+	removeView: function(){
+		this.remove();
 	},
 
 	switchModel: function(model){

@@ -448,7 +448,7 @@ function switchToAnalysisMode() {
     //     analysisRequest.userAssignmentsList.forEach(uAL => defaultUAL.push(uAL));
     // }
     
-	analysisInspector.render();
+	//analysisInspector.render();
 	$('.inspector').append(analysisInspector.el);
     $('#config').append(configInspector.el);
     configInspector.render();
@@ -1168,9 +1168,11 @@ graph.on('remove', function(cell) {
  * Clear the .inspector div
  */
 function clearInspector() {
+    var inspectorElement = $('.inspector')
+    console.log(inspectorElement.children());
 	elementInspector.clear();
 	linkInspector.clear();
-	analysisInspector.clear();
+	// analysisInspector.clear();
 	actorInspector.clear();
 }
 

@@ -135,6 +135,7 @@ var Config = Backbone.View.extend({
     render: function() {
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
         this.$('.analysis-configuration').append(this.innerView.$el);
+        this.showAnalysisInspector();
         return this;
     },
 
@@ -176,7 +177,7 @@ var Config = Backbone.View.extend({
     switchConfig : function(){
         currAnalysisConfig = this.model;
         this.model.set({selected:true});
-        analysisInspector.switchModel(this.model);
+        this.showAnalysisInspector();
         this.model.trigger('change:switchConfigs', this.model);
         this.model.trigger('change:unselectResult', this.model);
     },
@@ -186,6 +187,19 @@ var Config = Backbone.View.extend({
      */
     updateHighlight : function(){
         this.rerender()
+    },
+
+    /**
+     * Clears previous AnalysisInspector view (if any) and renders new view with current model
+     */
+    showAnalysisInspector: function(){
+        // If there is an analysis-sidebar element, trigger the clear event on that element
+        if($('.analysis-sidebar').length != 0){
+            $('.analysis-sidebar').trigger('clearInspector');
+        }
+        var analysisInspector = new AnalysisInspector({model: this.model});
+        $('.inspector').append(analysisInspector.el);
+        analysisInspector.render();
     },
 
     /**
