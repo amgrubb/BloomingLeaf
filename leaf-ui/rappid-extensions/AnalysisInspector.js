@@ -10,8 +10,6 @@ var AnalysisInspector = Backbone.View.extend({
 	className: 'analysis-inspector',
 	model: ConfigModel,
 	
-	//TO-DO anywhere analysrequest is updated -> this.model
-	//TO-DO connect configs and sidebar
 	template: ['<script type="text/template" id="item-template">',
 		'<div class="analysis-sidebar">',
 		'<h2 style="text-align:center; width:100%;margin-top:6px;margin-bottom:0px">Analysis</h2>',
@@ -36,7 +34,7 @@ var AnalysisInspector = Backbone.View.extend({
 		'</script>'].join(''),		
 	
 	events: {
-		'click #btn-view-intermediate': 'loadIntermediateValues',
+		'click #btn-view-intermediate': 'openIntermediateValuesTable',
 		'click .closeIntermT': 'dismissIntermTable',
 		'click #btn-single-path': 'singlePath',
 		'click #btn-all-next-state': 'getAllNextStates',
@@ -46,6 +44,7 @@ var AnalysisInspector = Backbone.View.extend({
 		'clearInspector .analysis-sidebar' : 'removeView'
 	},
 
+	/** Sets template and injects model parameters */
 	render: function () { 
 		this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
 		// These functions are used to communicate between analysisInspector and Main.js
@@ -53,54 +52,66 @@ var AnalysisInspector = Backbone.View.extend({
 		return this;
 	},
 
+	/** 
+     * Called for all events that require re-rendering of the template 
+     * after the first render call
+	 */ 
 	rerender: function(){
 		this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
         return this;
 	},
 
+	/**
+	 * Removes the view from the DOM. 
+	 * This also automatically calls stopListening() on all listenTo() events
+	 */
 	removeView: function(){
 		this.remove();
 	},
 
-	switchModel: function(model){
-		this.model = model; 
-		this.rerender()
+	/********************** Modal box related ****************************/
+	
+	/** Updates the model's conflict level based on dropdown element value*/
+	changeConflictLevel: function() {
+		this.model.set('conflictLevel', $('#conflict-level').val());
 	},
 
-	/********************** Modal box related ****************************/
-
-	addRelTime: function (event) {
+	/**
+	 * Updates the numRelTime parameter of the model
+	 * If the inputted value is empty, reset input value to model value
+	 */
+	addRelTime: function () {
 		var numRel = $('#num-rel-time');
 		if (numRel.val() !== "") {
 			this.model.set('numRelTime', numRel.val());
-			// TODO: phase out analysisRequest
-			analysisRequest.numRelTime = numRel.val()
 		} else {
 			numRel.val(this.model.get('numRelTime'));
 		}
-		console.log(this.model.get('numRelTime'))
-		},
-	
-	changeConflictLevel: function (event) {
-		this.model.set('conflictLevel', $('#conflict-level').val()[0]);
-		// TODO: Phase out analysisRequest
-		analysisRequest.conflictLevel = $('#conflict-level').val()[0];
+	},
+
+	/**
+	 * Creates, attaches, and renders view for the IVT
+	 */
+	openIntermediateValuesTable: function(){
+		var intermediateValuesTable = new IntermediateValuesTable();
+		this.$('.analysis-sidebar').append(intermediateValuesTable.el);
+		intermediateValuesTable.render();
+
 	},
 	
 	/**
-	 * Retrieves information about the current model and sends to the backend
-	 * to do single path analysis.
+	 * Sends to the backend to do single path analysis.
 	 *
 	 * This function is called on click for #btn-single-path
 	 */
 	singlePath: function () {
-		//Create the object and fill the JSON file to be sent to backend.
-		//Get the AnalysisInspector view information
+		// Create the object and fill the JSON file to be sent to backend.
+		// Get the AnalysisInspector view information
 
-		analysisRequest.action = "singlePath";
-		analysisRequest.currentState = "0|0";
+		this.model.set('action', 'singlePath')
+		this.model.set('currentState', '0|0')
 
-		//Prepare and send data to backend
+		// Prepare and send data to backend
 		this.sendToBackend();
 	},
 
@@ -109,6 +120,8 @@ var AnalysisInspector = Backbone.View.extend({
 	 * to get all next possible states.
 	 *
 	 * This function is called on click for #btn-all-next-state
+	 * 
+	 * TODO: Replace analysisRequest with config
 	 */
 	getAllNextStates: function () {
 		if(analysisRequest.action != null) { //path has been simulated
@@ -163,6 +176,8 @@ var AnalysisInspector = Backbone.View.extend({
 	 *
 	 * @param {Object} analysis
 	 *   InputAnalysis() object
+	 * 
+	 * TODO: Replace with graph + config
 	 */
 	sendToBackend: function () {
 		// Object to be sent to the backend
@@ -176,12 +191,5 @@ var AnalysisInspector = Backbone.View.extend({
 		backendComm(jsObject);		//TODO: Need to add parameter for Node Server.
 		;
 
-	},
-
-	/**
-	 * Removes all html for this inspector
-	 */
-	clear: function (e) {
-		this.$el.html('');
 	},
 });

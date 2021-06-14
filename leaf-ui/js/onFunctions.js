@@ -448,8 +448,6 @@ function switchToAnalysisMode() {
     //     analysisRequest.userAssignmentsList.forEach(uAL => defaultUAL.push(uAL));
     // }
     
-	//analysisInspector.render();
-	$('.inspector').append(analysisInspector.el);
     $('#config').append(configInspector.el);
     configInspector.render();
 	$('#stencil').css("display", "none");
@@ -1168,12 +1166,14 @@ graph.on('remove', function(cell) {
  * Clear the .inspector div
  */
 function clearInspector() {
-    var inspectorElement = $('.inspector')
-    console.log(inspectorElement.children());
 	elementInspector.clear();
 	linkInspector.clear();
-	// analysisInspector.clear();
 	actorInspector.clear();
+
+    // Clear any analysis sidebar views
+    if($('.analysis-sidebar').length != 0){
+        $('.analysis-sidebar').trigger('clearInspector');
+    }
 }
 
 

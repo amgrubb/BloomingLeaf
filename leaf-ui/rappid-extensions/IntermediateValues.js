@@ -1,10 +1,9 @@
 /**
-	 * Displays the Intermediate Values modal for the user
-	 *
-	 * This function is called on click for #btn-view-intermediate
-	 */
-
+* Displays the Intermediate Values modal of the current Config for the user
+*/
 var IntermediateValuesTable = Backbone.View.extend({
+    model: ConfigModel,
+    
     template: [
         //This is the intermediate values table modal
         '<div id="intermediateTable" class="intermT">',
@@ -39,9 +38,12 @@ var IntermediateValuesTable = Backbone.View.extend({
         '</div>',
         '</div>',
         '<br>',
-        '<hr>',
         '</script>'].join(''),
 
+    render: function(){
+        this.$el.html(_.template(this.template)());
+        return this;
+    },
     /**
 	*This function takes in a binary string of value and return
 	* a decimal encoding of that value
