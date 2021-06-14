@@ -187,7 +187,7 @@ var ElementInspector = Backbone.View.extend({
         // console.log(this.cell.attributes.nodeType);
 
         // Save the Intention object from the global model variable to
-        this.model.intention
+        //this.model.intention
         console.log(this.model);
         console.log(this.model.intention);
         this.model.intention = model.getIntentionByID(this.model.attributes.nodeID);
@@ -208,9 +208,9 @@ var ElementInspector = Backbone.View.extend({
         this.$('#init-sat-value').val(satisfactionValuesDict[this.model.intention.getInitialSatValue()].name);
         this.checkInitialSatValue();
 
-        if (!cell.attr(".satvalue/value") && cell.attr(".funcvalue/text") != "NB"){
-            cell.attr(".satvalue/value", 'none');
-            cell.attr(".funcvalue/text", ' ');
+        if (!this.model.attr(".satvalue/value") && this.model.attr(".funcvalue/text") != "NB"){
+            this.model.attr(".satvalue/value", 'none');
+            this.model.attr(".funcvalue/text", ' ');
          }
 
         // Turn off repeating by default
@@ -288,7 +288,7 @@ var ElementInspector = Backbone.View.extend({
 
       text = text.replace(/[^\w\n-]/g, ' ');
 
-      this.cell.attr({'.name': {text: text} });
+      this.model.attr({'.name': {text: text} });
       this.model.intention.nodeName = text;
     },
 
@@ -345,7 +345,7 @@ var ElementInspector = Backbone.View.extend({
     /**
      * Initializes components to display user defined functions
      */
-    renderUserDefined: function(cell){
+    renderUserDefined: function(){
         this.$('#markedValue').hide();
         $(".function-type").val('UD');
 
@@ -976,15 +976,15 @@ var ElementInspector = Backbone.View.extend({
         var initSatVal = this.model.intention.getInitialSatValue();
 
         if (funcType == 'NT') {
-            this.cell.attr(".funcvalue/text", '');
+            this.model.attr(".funcvalue/text", '');
         } else {
-            this.cell.attr(".funcvalue/text", funcType);
+            this.model.attr(".funcvalue/text", funcType);
         } 
         
         if (initSatVal == '(no value)') {
-            this.cell.attr('.satvalue/text', '');
+            this.model.attr('.satvalue/text', '');
         } else {
-            this.cell.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
+            this.model.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
         }
         
     },
