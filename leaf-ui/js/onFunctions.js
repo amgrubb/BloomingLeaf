@@ -943,6 +943,7 @@ paper.on({
                     actorInspector.render(cell);
                 } else {
                     var elementInspector = new ElementInspector({model: cell});
+                    console.log(elementInspector)
                     // HTML moved here from initializeElements
                     $('.inspector').append(elementInspector.el);
                     elementInspector.switchModel(cell)
@@ -1180,7 +1181,7 @@ function clearInspector() {
     // Eventually are we going to have a removeInspector function still 
     // or call all of the remove functions in all of the individual spots?
     // elementInspector.remove();
-	elementInspector.clear();
+	// elementInspector.clear();
 	linkInspector.clear();
 	analysisInspector.clear();
 	actorInspector.clear();
