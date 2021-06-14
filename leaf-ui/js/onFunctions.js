@@ -4,6 +4,17 @@ It also contains the setup for Rappid elements.
 */
 
 /**
+ * Event listeners for index.html toolbar functions
+ */
+ $('#btn-zoom-in').on('click', function(){ zoomIn(paperScroller); });
+ $('#btn-zoom-out').on('click', function(){ zoomOut(paperScroller); });
+ $('#btn-fnt').on('click', function(){ defaultFont(paper);});
+ $('#btn-fnt-up').on('click', function(){  fontUp(paper);});
+ $('#btn-fnt-down').on('click', function(){ fontDown(paper);}); 
+ $('#legend').on('click', function(){ window.open('./userguides/legend.html', 'newwindow', 'width=300, height=250'); return false;});
+ $('#evo-color-key').on('click', function(){ window.open('./userguides/evo.html', 'newwindow', 'width=500, height=400'); return false;});
+
+/**
  * Closes Assignments Table
  */
 

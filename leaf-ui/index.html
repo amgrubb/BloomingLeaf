@@ -49,8 +49,8 @@
                   <a id="btn-clear-analysis" class='analysis-clears' style="display: none;">Configurations and Results</a>
                 </div>
             </div>
-            <button id="btn-zoom-in" class="btn" onclick = "zoomIn(paperScroller)">Zoom In</button>
-            <button id="btn-zoom-out" class="btn" onclick = "zoomOut(paperScroller)">Zoom Out</button>
+            <button id="btn-zoom-in" class="btn">Zoom In</button>
+            <button id="btn-zoom-out" class="btn">Zoom Out</button>
             <button id="btn-svg" class="btn">Open as SVG</button>
             <input type="file" id="loader" style="display:none">
 
@@ -58,9 +58,9 @@
             <div class="dropdown">
               <div class="btn">Font Size</div>
               <div class="dropdown-toolbar">
-                <a id="btn-fnt" onclick = "defaultFont(paper)">Default</a>
-                <a id="btn-fnt-up" onclick = "fontUp(paper)">Increase</a>
-                <a id="btn-fnt-down" onclick = "fontDown(paper)">Decrease</a>
+                <a id="btn-fnt">Default</a>
+                <a id="btn-fnt-up">Increase</a>
+                <a id="btn-fnt-down">Decrease</a>
               </div>
             </div>
 
@@ -68,10 +68,8 @@
               <div class="btn">Help</div>
               <div class="dropdown-toolbar">
                 <a href="./userguides/documentation.pdf" download='documentation.pdf'">Download Documentation</a>
-                <a onclick="window.open('./userguides/legend.html', 'newwindow', 'width=300, height=250'); return false;">
-                Legend</a>
-                <a onclick="window.open('./userguides/evo.html', 'newwindow', 'width=500, height=400'); return false;">
-                EVO Color Key</a>
+                <a id="legend">Legend</a>
+                <a id="evo-color-key">EVO Color Key</a>
                 <a id="load-sample">Load Sample Model</a>
                 <a id = "colorblind-mode-isOff"> Turn on EVO Colorblind Mode</a>
                 <a id = "colorblind-mode-isOn" style='display: none'> Turn off EVO Colorblind Mode</a>
