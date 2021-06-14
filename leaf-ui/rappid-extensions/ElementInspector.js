@@ -182,10 +182,6 @@ var ElementInspector = Backbone.View.extend({
     
     render: function() {
 
-        // this.cell = cell; // Save the clicked node's backbone model
-        // console.log(this.cell);
-        // console.log(this.cell.attributes.nodeType);
-
         // Save the Intention object from the global model variable to
         //this.model.intention
         console.log(this.model);
