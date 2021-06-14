@@ -85,7 +85,6 @@ var configCollection = new ConfigCollection([]);
 var configInspector = new ConfigInspector({collection:configCollection});
 var analysisInspector = new AnalysisInspector();
 
-
 var currentHalo;
 var currentAnalysis;
 var elementList;
@@ -294,7 +293,6 @@ var commandManager = new joint.dia.CommandManager({ graph: graph });
 
 // A simple element editor.
 $('.inspector').append(elementInspector.el);
-
 
 $('#stencil').append(stencil.render().el);
 

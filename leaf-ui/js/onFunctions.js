@@ -1178,7 +1178,6 @@ function clearInspector() {
 	elementInspector.clear();
 	linkInspector.clear();
 	analysisInspector.clear();
-	//actorInspector.clear();
 }
 
 

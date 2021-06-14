@@ -3,8 +3,7 @@ var ENTER_KEY = 13;
 
 var ActorInspector = Backbone.View.extend({
         model: joint.shapes.basic.Actor,
-        //className: 'element-inspector', //change???
-
+        
         initialize: function() {
             this.model.on('change:actorType', this.changeLine, this);
         },
@@ -30,9 +29,8 @@ var ActorInspector = Backbone.View.extend({
          * Initializes the element inspector using previously defined templates
          */
         render: function() {
-            console.log("rendering");
             // If the clicked node is an actor, render the actor inspector
-            this.$el.html(_.template(this.template)());
+            this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
         },
 
 
@@ -42,7 +40,6 @@ var ActorInspector = Backbone.View.extend({
          */
         nameAction: function(event) {
             // Prevent the ENTER key from being recorded when naming nodes.
-            console.log("nameAction");
             if (event.which === ENTER_KEY) {
                 event.preventDefault();
             }
@@ -54,18 +51,13 @@ var ActorInspector = Backbone.View.extend({
             this.model.attr({ '.name': {text: text }});
 
         },
-      clear: function(){
-            this.$el.html('');
-        },
         
         updateType: function(){
-            console.log("updateType");
             this.model.set('actorType', this.$('.actor-type').val());
             console.log(model);
         },
 
         changeLine: function() {
-            console.log("changeLine");
             if (this.model.get('actorType') == 'G') {
                 this.model.attr({'.line': {'ref': '.label',
                 'ref-x': 0,
