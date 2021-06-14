@@ -37,7 +37,7 @@ window.onload = function(){
 
 function init(){
     //Page objects
-    analysis.graph = new joint.dia.Graph();
+    analysis.graph = new joint.dia.BloomingGraph();
     analysis.paper;
     analysis.paperScroller;
 
