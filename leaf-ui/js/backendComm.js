@@ -1,7 +1,13 @@
 /**
+ * backendComm.js Overview
  * This file contains the communication between the front and back end of Bloomingleaf.
- * When an analysis is run, the analysisRequest, model, and graph are bundled into an object, converted to JSON format, and sent to the backend,
+ * When an analysis is run, the analysisRequest, model, and graph are bundled into an object, 
+ * converted to JSON format, and sent to the backend,
  * which returns the analysisResult.
+ * 
+ * This is:
+ * Simulate Single Path - Step 3
+ * Explore Possible Next States - Step 3
  */
 
 var nodeServer = true;      						// Whether the tool is running locally on a Node Server.
@@ -11,6 +17,7 @@ function backendComm(jsObject){
 	/**
 	* Print the input to the console.
 	*/
+	console.log("Step 3");
 	console.log(JSON.stringify(jsObject));
 	console.log(jsObject.analysisRequest.action);
 

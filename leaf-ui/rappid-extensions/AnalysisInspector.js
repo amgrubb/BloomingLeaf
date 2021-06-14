@@ -58,14 +58,13 @@ var AnalysisInspector = Backbone.View.extend({
 		'<br>',
 		'<hr>',
 		'<button id="btn-single-path" class="analysis-btns inspector-btn sub-label green-btn">Simulate Single Path</button>',
-		//'<button id="btn-single-path" class="analysis-btns inspector-btn sub-label green-btn">1. Simulate Single Path</button>',
 		'<button id="btn-all-next-state" class="analysis-btns inspector-btn sub-label ice-btn">Explore Possible Next States</button>'
 	].join(''),
 
 	events: {
 		'click #btn-view-intermediate': 'loadIntermediateValues',
 		'click .closeIntermT': 'dismissIntermTable',
-		'click #btn-single-path': 'singlePath',
+		'click #btn-single-path': 'singlePath',	
 		'click #btn-all-next-state': 'getAllNextStates',
 		'click #btn-save-intermT': 'saveIntermTable',
 		'change #num-rel-time': 'addRelTime',
@@ -84,7 +83,10 @@ var AnalysisInspector = Backbone.View.extend({
 		$('#num-rel-time').val(analysisRequest.numRelTime);
 	},
 
-	/**
+
+
+	/**	
+	 * Simulate Single Path - Step 1 
 	 * Retrieves information about the current model and sends to the backend
 	 * to do single path analysis.
 	 *
@@ -101,6 +103,7 @@ var AnalysisInspector = Backbone.View.extend({
 	},
 
 	/**
+	 * Explore Possible Next States - Step 1
 	 * Retrieves information about the current model and sends to the backend
 	 * to get all next possible states.
 	 *
@@ -154,6 +157,8 @@ var AnalysisInspector = Backbone.View.extend({
 	},
 
 	/**
+	 * Simulate Single Path - Step 2 
+	 * Explore Possible Next States - Step 2 
 	 * Creates an object to send to the backend and calls
 	 * a backendComm() to send to backend
 	 *
@@ -167,7 +172,9 @@ var AnalysisInspector = Backbone.View.extend({
 
 		//Get the Graph Model
 		jsObject.model = model;
-		console.log(jsObject);
+		console.log("Step 2");
+		console.log(jsObject);		
+
 		//Send data to backend
 		backendComm(jsObject);		//TODO: Need to add parameter for Node Server.
 		;
