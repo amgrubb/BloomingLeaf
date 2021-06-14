@@ -825,10 +825,11 @@ function createIntention(cell) {
  * 
  * @param {joint.dia.Cell} cell
  */
-function createActor(cell) {
+function createActor(cell) {//TODO: right now there are two parameters the actor model in the joint.extensions file that hold the same information (attrs.name & actorName), find a way for actor inspector to be able to access attrs.name in the template script so that actorName is not needed
 	var name = cell.attr('.name/text') + "_" + Actor.numOfCreatedInstances;
 	var actor = new Actor(name);
     cell.attr(".name/text", name);
+    cell.set('actorName', name);
 	cell.attributes.nodeID = actor.nodeID;
 	model.actors.push(actor);
 }

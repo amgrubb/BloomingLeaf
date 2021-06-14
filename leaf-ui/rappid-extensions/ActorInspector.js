@@ -9,7 +9,7 @@ var ActorInspector = Backbone.View.extend({
         },
         template: ['<script type="text/template" id="item-template">',
             '<label>Actor name</label>',
-            '<textarea class="cell-attrs-text" maxlength=100 placeholder="Enter Name"></textarea>',
+            '<textarea class="cell-attrs-text" maxlength=100> <%= actorName %> </textarea>',
             '<label> Actor type </label>',
             '<select class="actor-type">',
             '<option value=A> Actor </option>',
@@ -50,6 +50,7 @@ var ActorInspector = Backbone.View.extend({
             text = text.replace(/[^\w\n-]/g, ' ');
 
             this.model.attr({ '.name': {text: text }});
+            this.model.set('actorName', text);
 
         },
         
