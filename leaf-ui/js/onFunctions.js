@@ -4,7 +4,7 @@ It also contains the setup for Rappid elements.
 */
 
 /**
- * Event listeners for index.html
+ * Event listeners for index.html toolbar functions
  */
  $('#btn-zoom-in').on('click', function(){ zoomIn(paperScroller); });
  $('#btn-zoom-out').on('click', function(){ zoomOut(paperScroller); });
