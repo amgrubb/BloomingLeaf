@@ -77,8 +77,8 @@ var ElementInspector = Backbone.View.extend({
     },
 
     className: 'element-inspector',
-
-    template: [
+     
+    template: ['<script type="text/template" id="item-template">',
             '<label>Node Name:</label>',
             '<textarea class="cell-attrs-text"></textarea>',
             '<label>Initial Satisfaction Value:</label>',
@@ -147,16 +147,28 @@ var ElementInspector = Backbone.View.extend({
                     '<label style="float:left; font-size:0.8em;" id="repeat-begin3" class="repeat-select3">Absolute Length:</label>',
                     '<input style="float:right;"class="repeat-select3" id="repeat-end3" type="number" value="0">',
                     '<p id="noteRepeat" style="text-align:left; float:left; color:red; font-size:0.7em;">Note: Leave Absolute Length as 0 for unknown length. If Absolute Length is less than 0 or Repeat Count is less than 2, they will be set to 0 or 2 respectively.</p>',
-            // change to blue or change color to green
-                    '<button style="margin-top:10px;" id="constraint-add" class="inspector-btn small-btn green-btn">Add</button>',
-                    '<button id="constraint-repeat" class="inspector-btn small-btn blue-btn">Set Repeats</button>',
-                    '<button id="constraint-restart" class="inspector-btn small-btn red-btn">Clear</button>',
+                // change to blue or change color to green
+                    //'<button class="dropdown-button">',
+                    //'<i id="drop-icon" class="fa fa-caret-up fa-2x" style="cursor:pointer;"></i>',
+                    //'</button>',
+                    '<button>', 
+                    '<i id ="constraint-add" class="inspector-btn small -btn green-btn" style ="margin-top:10px" value = "Add"></i>',
+                    '</button>',
+                    // //'<button style="margin-top:10px;" id="constraint-add" class="inspector-btn small-btn green-btn">Add</button>',
+                    '<button>',
+                    '<i id = "constraint-repeat" class="inspector-btn small-btn blue-btn">Set Repeats</i>',
+                    '</button>',
+                    // '<button id="constraint-repeat" class="inspector-btn small-btn blue-btn">Set Repeats</button>',
+                    '<button>',
+                    '<i id = "constraint-restart" class ="inspector-btn small-btn red-btn">Clear</i>',
+                    '</button>',
+                    //'<button id="constraint-restart" class="inspector-btn small-btn red-btn">Clear</button>',
                 '</div>',
             '</div>',
             '<br>',
             '<canvas id="chart" width="240" height="240"></canvas>',
-
-    ].join(''),
+            
+            '</script>'].join(''),
 
     events: {
         'change #init-sat-value':'initSatValueChanged',
@@ -184,11 +196,14 @@ var ElementInspector = Backbone.View.extend({
 
         // Save the Intention object from the global model variable to
         //this.model.intention
-        console.log(this.model);
-        console.log(this.model.intention);
-        this.model.intention = model.getIntentionByID(this.model.attributes.nodeID);
 
-        this.$el.html(_.template(this.template)());
+        console.log(this.model);
+        console.log(this.model.get('intention'));
+        //intention parameter in joint.extensions.js
+        //will probably delete the line below later 
+        //this.model.intention = model.getIntentionByID(this.model.attributes.nodeID);
+        this.model.get('intention'); 
+        this.$el.html(_.template($(this.template).html())(this.model.toJSON()))
 
         // Attributes
         this.chart = new ChartObj();
@@ -200,8 +215,8 @@ var ElementInspector = Backbone.View.extend({
         this.userConstraintsHTML = $("#new-user-constraints").last().clone();
 
         // Load initial value and node name
-        this.$('.cell-attrs-text').val(this.model.intention.nodeName);
-        this.$('#init-sat-value').val(satisfactionValuesDict[this.model.intention.getInitialSatValue()].name);
+        this.$('.cell-attrs-text').val(this.model.get('intention').nodeName);
+        this.$('#init-sat-value').val(satisfactionValuesDict[this.model.get('intention').getInitialSatValue()].name);
         this.checkInitialSatValue();
 
         if (!this.model.attr(".satvalue/value") && this.model.attr(".funcvalue/text") != "NB"){
@@ -215,7 +230,7 @@ var ElementInspector = Backbone.View.extend({
         this.setRepeatConstraintMode("TurnOff");
 
         // Load initial value for function type in the html select element
-        var functionType = this.model.intention.dynamicFunction.stringDynVis;
+        var functionType = this.model.get('intention').dynamicFunction.stringDynVis;
 
         if (functionType == 'UD') {
             this.renderUserDefined();
@@ -231,11 +246,7 @@ var ElementInspector = Backbone.View.extend({
 
     },
 
-    /** Difference between function and method ??? 
-        switchModel: function(newCell) {
-        this.model = newCell;
-    },
-    */ 
+    
     /** This function should allow the model associated with the view to update each time a 
      * new element is clicked instead of passing the model directly into the render function and 
      * rendering elementInspector each time an element is clicked
@@ -254,7 +265,7 @@ var ElementInspector = Backbone.View.extend({
      * If not, set the function options so that all options are availible
      */
     checkInitialSatValue() {
-        if (this.model.intention.getInitialSatValue() == '(no value)') {
+        if (this.model.get('intention').getInitialSatValue() == '(no value)') {
             // Stochastic should be the only option for '(no value)'
             this.$('.function-type').empty();
             this.$('.function-type').append('<option value=R> Stochastic </option>');
@@ -285,7 +296,7 @@ var ElementInspector = Backbone.View.extend({
       text = text.replace(/[^\w\n-]/g, ' ');
 
       this.model.attr({'.name': {text: text} });
-      this.model.intention.nodeName = text;
+      this.model.get('intention').nodeName = text;
     },
 
     /**
@@ -346,8 +357,8 @@ var ElementInspector = Backbone.View.extend({
         $(".function-type").val('UD');
 
         // Load the user defined constraints
-        var len = this.model.intention.getNumOfFuncSegements();
-        var funcSegments = this.model.intention.dynamicFunction.getFuncSegmentIterable();
+        var len = this.model.get('intention').getNumOfFuncSegements();
+        var funcSegments = this.model.get('intention').dynamicFunction.getFuncSegmentIterable();
 
 
         for (var i = 0; i < len; i++) {
@@ -369,10 +380,10 @@ var ElementInspector = Backbone.View.extend({
         }
 
         if (this.model.intention.dynamicFunction.hasRepeat()) {
-            var repBegin = this.model.intention.dynamicFunction.getStartRepeatEpoch();
-            var repEnd = this.model.intention.dynamicFunction.getEndRepeatEpoch();
-            var repNum = this.model.intention.dynamicFunction.getRepeatRepNum();
-            var absTime = this.model.intention.dynamicFunction.getRepeatAbsTime();
+            var repBegin = this.model.get('intention').dynamicFunction.getStartRepeatEpoch();
+            var repEnd = this.model.get('intention').dynamicFunction.getEndRepeatEpoch();
+            var repNum = this.model.get('intention').dynamicFunction.getRepeatRepNum();
+            var absTime = this.model.get('intention').dynamicFunction.getRepeatAbsTime();
 
             this.repeatOptionsDisplay = true;
 
@@ -396,7 +407,7 @@ var ElementInspector = Backbone.View.extend({
      */
     initSatValueChanged: function(event) {
         var initValue = this.$('#init-sat-value').val();
-        this.model.intention.changeInitialSatValue(satValueDict[initValue]);
+        this.model.get('intention').changeInitialSatValue(satValueDict[initValue]);
         this.checkInitialSatValue();
         this.updateCell(null);
         this.updateHTML(event);
@@ -411,7 +422,7 @@ var ElementInspector = Backbone.View.extend({
      */
     funcTypeChanged: function(event) {
         var funcType = this.$('.function-type').val();
-        this.model.intention.setEvolvingFunction(funcType);
+        this.model.get('intention').setEvolvingFunction(funcType);
         this.updateCell(null);
         this.updateHTML(event);
     },
@@ -423,7 +434,7 @@ var ElementInspector = Backbone.View.extend({
      */
     userFuncTypeChanged: function(event) {
         var funcType = this.$('.user-function-type').last().val();
-        this.model.intention.setUserDefinedSegment(funcType);
+        this.model.get('intention').setUserDefinedSegment(funcType);
         this.updateHTML(event);
     },
 
@@ -432,7 +443,7 @@ var ElementInspector = Backbone.View.extend({
      */
     userSatValChanged: function(event) {
         var satVal = satValueDict[this.$('.user-sat-value').last().val()];
-        this.model.intention.updateLastFuncSegSatVal(satVal);
+        this.model.get('intention').updateLastFuncSegSatVal(satVal);
         this.updateChartUserDefined(event);
     },
 
@@ -441,7 +452,7 @@ var ElementInspector = Backbone.View.extend({
      */
     funcSatValChanged: function(event) {
         var satValue = satValueDict[this.$('#markedValue').val()]; // 4 digit representation
-        this.model.intention.setMarkedValueToFunction(satValue);
+        this.model.get('intention').setMarkedValueToFunction(satValue);
 
         this.updateChart(event);
     },
@@ -457,7 +468,7 @@ var ElementInspector = Backbone.View.extend({
         // Check if selected init sat value and functionType pair is illegal
         this.validityCheck(event);
 
-        var functionType = this.model.intention.dynamicFunction.stringDynVis;
+        var functionType = this.model.get('intention').dynamicFunction.stringDynVis;
 
         // All functions that have satisfaction value associated with it
         var funcWithSatValue = ["I", "D", "RC", "MP", "MN", "UD"];
@@ -536,7 +547,7 @@ var ElementInspector = Backbone.View.extend({
     displayFunctionSatValue: function(event) {
         var functionType = this.$('.function-type').val();
         var initValue = this.$('#init-sat-value').val();
-        var markedValue = this.model.intention.dynamicFunction.getLastMarkedVal();
+        var markedValue = this.model.get('intention').dynamicFunction.getLastMarkedVal();
         this.$('#markedValue').show("fast");
         if (functionType == 'RC') {
             this.$('#markedValue').html(this.satValueOptions.noRandom);
@@ -571,7 +582,7 @@ var ElementInspector = Backbone.View.extend({
         }
         
         if (func == 'I' || func == 'D') {
-            var prevVal = satisfactionValuesDict[this.model.intention.dynamicFunction.getSecondLastMarkedVal()].name;
+            var prevVal = satisfactionValuesDict[this.model.get('intention').dynamicFunction.getSecondLastMarkedVal()].name;
             if (func == 'I') {
                 $(".user-sat-value").last().html(this.satValueOptions.positiveOnly(prevVal));
                 $(".user-sat-value").last().val("satisfied");
@@ -587,7 +598,7 @@ var ElementInspector = Backbone.View.extend({
         } else if (func == 'C') {
             $(".user-sat-value").last().html(this.satValueOptions.all);
             // Restrict input if it is the first constraint
-            if (this.model.intention.dynamicFunction.getFuncSegmentIterable().length == 1) {
+            if (this.model.get('intention').dynamicFunction.getFuncSegmentIterable().length == 1) {
                 $(".user-sat-value").last().val(this.$('#init-sat-value').val())
                 $(".user-sat-value").last().prop('disabled', true);
                 $(".user-sat-value").last().css("background-color","grey");
@@ -615,8 +626,8 @@ var ElementInspector = Backbone.View.extend({
      * satisfaction value(s)
      */
     updateChart: function(event) {
-        var funcType = this.model.intention.dynamicFunction.stringDynVis;
-        var initVal = satisfactionValuesDict[this.model.intention.getInitialSatValue()].chartVal;
+        var funcType = this.model.get('intention').dynamicFunction.stringDynVis;
+        var initVal = satisfactionValuesDict[this.model.get('intention').getInitialSatValue()].chartVal;
         var satVal = satvalues[this.$('#markedValue').val()];
         this.chart.reset();
         // Get the chart canvas
@@ -684,7 +695,7 @@ var ElementInspector = Backbone.View.extend({
      */
     updateChartUserDefined: function(event) {
         var context = $("#chart").get(0).getContext("2d");
-        var numFuncSegments = this.model.intention.getNumOfFuncSegements();
+        var numFuncSegments = this.model.get('intention').getNumOfFuncSegements();
 
         // Reset chart datasets
         this.chart.reset();
@@ -695,10 +706,10 @@ var ElementInspector = Backbone.View.extend({
 
 
         // Get init sat value
-        var initSatVal = satisfactionValuesDict[this.model.intention.getInitialSatValue()].chartVal;
+        var initSatVal = satisfactionValuesDict[this.model.get('intention').getInitialSatValue()].chartVal;
 
         // Add datapoints to graph for each userfunction/uservalue pair
-        var funcSegments = this.model.intention.dynamicFunction.getFuncSegmentIterable();
+        var funcSegments = this.model.get('intention').dynamicFunction.getFuncSegmentIterable();
 
         for (var i = 0; i < funcSegments.length; i++) {
             var currFunc = funcSegments[i].funcType;
@@ -745,7 +756,7 @@ var ElementInspector = Backbone.View.extend({
 
         // update html display for additional user inputs
         var html = this.userConstraintsHTML.clone();
-        this.model.intention.addUserDefinedSeg("C", "0000");
+        this.model.get('intention').addUserDefinedSeg("C", "0000");
 
         $(".user-sat-value").last().prop('disabled', true);
         $(".user-sat-value").last().css("background-color",'grey');
@@ -754,7 +765,7 @@ var ElementInspector = Backbone.View.extend({
 
         // If the initial value is (no value), limit the function options
         // to be either Constant or Stochastic
-        if (this.model.intention.getInitialSatValue() == '(no value)') {
+        if (this.model.get('intention').getInitialSatValue() == '(no value)') {
             var selectEl = html.children(":first");
             selectEl.find('option').remove();
             selectEl.append('<option value=C> Constant </option>');
@@ -784,7 +795,7 @@ var ElementInspector = Backbone.View.extend({
             this.setRepeatConstraintMode("Update");
         } else if (this.repeatOptionsDisplay){
             this.setRepeatConstraintMode("TurnOff");
-            this.model.intention.dynamicFunction.removeRepFuncSegments();
+            this.model.get('intention').dynamicFunction.removeRepFuncSegments();
             this.updateChartUserDefined(null);
         }
     },
@@ -817,7 +828,7 @@ var ElementInspector = Backbone.View.extend({
         } else {
 
             $("#repeat-error").hide();
-            this.model.intention.dynamicFunction.setRepeatingFunction(begin, end);
+            this.model.get('intention').dynamicFunction.setRepeatingFunction(begin, end);
         }
         this.updateChartUserDefined(null);
 
@@ -836,7 +847,7 @@ var ElementInspector = Backbone.View.extend({
         if (repVal < 2) {
             $('#repeat-end2').val(2);
         }
-        this.model.intention.dynamicFunction.setRepNum(repVal);
+        this.model.get('intention').dynamicFunction.setRepNum(repVal);
         this.updateChartUserDefined(null);
     },
 
@@ -851,7 +862,7 @@ var ElementInspector = Backbone.View.extend({
         if (absLength < 0) {
             $('#repeat-end3').val(0);
         }
-        this.model.intention.dynamicFunction.setAbsoluteTime(absLength);
+        this.model.get('intention').dynamicFunction.setAbsoluteTime(absLength);
         this.updateChartUserDefined(null);
     },
 
@@ -897,7 +908,7 @@ var ElementInspector = Backbone.View.extend({
         } else if (mode == "Update") {
 
             // Cannot repeat with only one constraint
-            var numSegments = this.model.intention.getNumOfFuncSegements().length;
+            var numSegments = this.model.get('intention').getNumOfFuncSegements().length;
             if (numSegments < 2) {
 
                 $("#repeat-error").text("More constraints are needed");
@@ -918,7 +929,7 @@ var ElementInspector = Backbone.View.extend({
                     $("#repeat-end").css("background-color","");
                 }
 
-                var funcSegments = this.model.intention.dynamicFunction.getFuncSegmentIterable();
+                var funcSegments = this.model.get('intention').dynamicFunction.getFuncSegmentIterable();
 
                 // Set select options
                 for (var i = 0; i < funcSegments.length - 1; i++) {
@@ -932,8 +943,8 @@ var ElementInspector = Backbone.View.extend({
                         $('<option></option>').val(endVal).html(endVal)
                     );
                 }
-                var repNum = this.model.intention.dynamicFunction.getRepeatRepNum();
-                var absTime = this.model.intention.dynamicFunction.getRepeatAbsTime;
+                var repNum = this.model.get('intention').dynamicFunction.getRepeatRepNum();
+                var absTime = this.model.get('intention').dynamicFunction.getRepeatAbsTime;
                 $("repeat-end2").val(repNum);
                 $("repeat-end3").val(absTime);
             }
@@ -968,8 +979,8 @@ var ElementInspector = Backbone.View.extend({
     updateCell: function(event) {        
         IntentionColoring.refresh();
         changeFont(current_font, paper);
-        var funcType = this.model.intention.dynamicFunction.stringDynVis;
-        var initSatVal = this.model.intention.getInitialSatValue();
+        var funcType = this.model.get('intention').dynamicFunction.stringDynVis;
+        var initSatVal = this.model.get('intention').getInitialSatValue();
 
         if (funcType == 'NT') {
             this.model.attr(".funcvalue/text", '');
