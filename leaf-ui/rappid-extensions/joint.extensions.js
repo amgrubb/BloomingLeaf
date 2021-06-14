@@ -229,5 +229,4 @@ joint.shapes.basic.Actor = joint.shapes.basic.Generic.extend({
     changeToOriginalColour: function() {
         this.attr({'.outer': {'fill': '#EBFFEA'}});
     }
-
 });
