@@ -459,12 +459,9 @@ function switchToAnalysisMode() {
     //     analysisRequest.userAssignmentsList.forEach(uAL => defaultUAL.push(uAL));
     // }
     
-	analysisInspector.render();
-	$('.inspector').append(analysisInspector.el);
     $('#config').append(configInspector.el);
     configInspector.render();
 	$('#stencil').css("display", "none");
-    //$('#analysis-sidebar').css("display","");
 
     $('#analysis-btn').css("display", "none");
 	$('#symbolic-btn').css("display", "none");
@@ -571,7 +568,6 @@ function switchToModellingMode() {
     $('#analysis-sidebar').css("display","none");
     $('#btn-view-assignment').css("display","");
     $('#analysis-btn').css("display","");
-    //$('#analysis-sidebar').css("display","none");
 	$('#symbolic-btn').css("display","");
 	$('#cycledetect-btn').css("display","");
     $('#dropdown-model').css("display","none");
@@ -1186,8 +1182,12 @@ graph.on('remove', function(cell) {
 function clearInspector() {
 	elementInspector.clear();
 	linkInspector.clear();
-	analysisInspector.clear();
 	actorInspector.clear();
+
+    // Clear any analysis sidebar views
+    if($('.inspector-views').length != 0){
+        $('.inspector-views').trigger('clearInspector');
+    }
 }
 
 

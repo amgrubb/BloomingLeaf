@@ -135,10 +135,12 @@ var Config = Backbone.View.extend({
     render: function() {
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
         this.$('.analysis-configuration').append(this.innerView.$el);
+        this.showAnalysisInspector();
         return this;
     },
 
-    /** Called for all events that require re-rendering of the template 
+    /** 
+     * Called for all events that require re-rendering of the template 
      * after the first render call
      * 
      * Detatches dropdown inner view in order to preserve events
@@ -165,7 +167,7 @@ var Config = Backbone.View.extend({
      * and triggering a removal of its respective view 
      */
     removeConfig:function(){
-        this.model.destroy()
+        this.model.destroy();
     },
 
     /**
@@ -175,6 +177,7 @@ var Config = Backbone.View.extend({
     switchConfig : function(){
         currAnalysisConfig = this.model;
         this.model.set({selected:true});
+        this.showAnalysisInspector();
         this.model.trigger('change:switchConfigs', this.model);
         this.model.trigger('change:unselectResult', this.model);
     },
@@ -184,6 +187,18 @@ var Config = Backbone.View.extend({
      */
     updateHighlight : function(){
         this.rerender()
+    },
+
+    /**
+     * Clears previous AnalysisInspector view (if any) and renders new view with current model
+     */
+    showAnalysisInspector: function(){
+        // If there is a previous sidebar view, clear it
+        clearInspector();
+        // Create and add new analysis sidebar view
+        var analysisInspector = new AnalysisInspector({model: this.model});
+        $('.inspector').append(analysisInspector.el);
+        analysisInspector.render();
     },
 
     /**
