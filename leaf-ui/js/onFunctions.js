@@ -4,6 +4,17 @@ It also contains the setup for Rappid elements.
 */
 
 /**
+ * Event listeners for index.html toolbar functions
+ */
+ $('#btn-zoom-in').on('click', function(){ zoomIn(paperScroller); });
+ $('#btn-zoom-out').on('click', function(){ zoomOut(paperScroller); });
+ $('#btn-fnt').on('click', function(){ defaultFont(paper);});
+ $('#btn-fnt-up').on('click', function(){  fontUp(paper);});
+ $('#btn-fnt-down').on('click', function(){ fontDown(paper);}); 
+ $('#legend').on('click', function(){ window.open('legend.html', 'newwindow', 'width=300, height=250'); return false;});
+ $('#evo-color-key').on('click', function(){ window.open('evo.html', 'newwindow', 'width=500, height=400'); return false;});
+
+/**
  * Closes Assignments Table
  */
 
@@ -448,12 +459,9 @@ function switchToAnalysisMode() {
     //     analysisRequest.userAssignmentsList.forEach(uAL => defaultUAL.push(uAL));
     // }
     
-	analysisInspector.render();
-	$('.inspector').append(analysisInspector.el);
     $('#config').append(configInspector.el);
     configInspector.render();
 	$('#stencil').css("display", "none");
-    //$('#analysis-sidebar').css("display","");
 
     $('#analysis-btn').css("display", "none");
 	$('#symbolic-btn').css("display", "none");
@@ -560,7 +568,6 @@ function switchToModellingMode() {
     $('#analysis-sidebar').css("display","none");
     $('#btn-view-assignment').css("display","");
     $('#analysis-btn').css("display","");
-    //$('#analysis-sidebar').css("display","none");
 	$('#symbolic-btn').css("display","");
 	$('#cycledetect-btn').css("display","");
     $('#dropdown-model').css("display","none");
@@ -1178,7 +1185,12 @@ graph.on('remove', function(cell) {
 function clearInspector() {
 	elementInspector.clear();
 	linkInspector.clear();
-	analysisInspector.clear();
+	actorInspector.clear();
+
+    // Clear any analysis sidebar views
+    if($('.inspector-views').length != 0){
+        $('.inspector-views').trigger('clearInspector');
+    }
 }
 
 
