@@ -83,7 +83,7 @@ var LinkInspector = Backbone.View.extend({
 
             if (this.model.get('evolving')) {
                 this.$el.html(_.template(this.evolvingtemplate)());
-                this.model.set('selected', false);
+                this.model.set('selected', false);//these two = setlectValues
                 this.model.set('relationship', 'Evolving');
 
 
@@ -92,22 +92,15 @@ var LinkInspector = Backbone.View.extend({
                 
                 this.updateBeginEvolRelations();
 
-                $('#link-type-end').val(this.model.get("postType"));
-                //Understand what this chunk is doing
-                if (this.model.get('postType') == null) {
-                    this.model.set('selected', false);
-                    this.model.set('relationship', 'Evolving');
-                    $('#link-type-begin').val(values[0].trim()).change(); //what does change do???
-                    this.updateBeginEvolRelations();
-                    $('#link-type-end').val(values[1].trim());
-                } else {
-                    $("#link-type-end").prop('disabled', true);
-                    $("#link-type-end").css("background-color", "grey");
-                    this.model.set('selected', false);
-                    this.model.set('relationship', 'Evolving');
+                //$('#link-type-end').val(this.model.get("postType"));
+                if (['AND', 'OR', 'NO'].includes(this.model.get('linkType'))){
+                    $('#link-type-end').val(this.model.get('postType').toLowerCase());
+                }else{
+                    $('#link-type-end').val(this.model.get('postType'));
                 }
-                //
             } else {
+                this.model.set('selected', false);
+                this.model.set('relationship', 'Evolving');
                 this.$el.html(_.template(this.template)());
                 $('#constant-links').val(this.model.get('linkType'));            
             }
@@ -126,16 +119,43 @@ var LinkInspector = Backbone.View.extend({
      * This function is called on click for #switch-link-type
      */
     switchMode: function() {
-
+        
+                /**Understand what this chunk is doing
+                if (this.model.get('postType') == null) {
+                    this.model.set('selected', false);
+                    this.model.set('relationship', 'Evolving');
+                    $('#link-type-begin').val(values[0].trim()).change(); //what does change do???
+                    this.updateBeginEvolRelations();
+                    $('#link-type-end').val(values[1].trim());
+                } else {
+                    $("#link-type-end").prop('disabled', true);
+                    $("#link-type-end").css("background-color", "grey");
+                    this.model.set('selected', false);
+                    this.model.set('relationship', 'Evolving');
+                }
+                */
+        var type = this.model.get('linkType') + " | " + this.model.get('postType');
+        var values = type.split("|");
         var current = this.model.get('evolving');
-        this.model.set('evolving', !current)
-
-        if (this.model.get('evolving')) {
-            this.$el.html(_.template(this.evolvingtemplate)());
-            
-        } else {
+        this.model.set('evolving', !current);
+        if(this.model.get('evolving')){
+            if (values.length > 1) {
+                this.model.set('selected', false);
+                this.model.set('relationship', 'Evolving');
+                $('#link-type-begin').val(values[0].trim()).change(); //what does change do???
+                this.updateBeginEvolRelations();
+                $('#link-type-end').val(values[1].trim());
+            }else{
+                $("#link-type-end").prop('disabled', true);
+                $("#link-type-end").css("background-color", "grey");
+                this.model.set('selected', false);
+                this.model.set('relationship', 'Evolving');
+            }
+        }else {
             this.$el.html(_.template(this.template)());
             $('#constant-links').val(values[0].trim());
+            this.model.set('selected', false);
+            this.model.set('relationship', 'Evolving');
         }
     },
 
