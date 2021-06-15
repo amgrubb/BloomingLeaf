@@ -11,8 +11,8 @@ It also contains the setup for Rappid elements.
  $('#btn-fnt').on('click', function(){ defaultFont(paper);});
  $('#btn-fnt-up').on('click', function(){  fontUp(paper);});
  $('#btn-fnt-down').on('click', function(){ fontDown(paper);}); 
- $('#legend').on('click', function(){ window.open('legend.html', 'newwindow', 'width=300, height=250'); return false;});
- $('#evo-color-key').on('click', function(){ window.open('evo.html', 'newwindow', 'width=500, height=400'); return false;});
+ $('#legend').on('click', function(){ window.open('./userguides/legend.html', 'newwindow', 'width=300, height=250'); return false;});
+ $('#evo-color-key').on('click', function(){ window.open('./userguides/evo.html', 'newwindow', 'width=500, height=400'); return false;});
 
 /**
  * Closes Assignments Table
