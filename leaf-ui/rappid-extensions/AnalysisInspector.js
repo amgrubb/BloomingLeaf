@@ -7,11 +7,11 @@ var saveIntermValues = {};
 var absoluteTimeValues;
 var saveIVT;
 var AnalysisInspector = Backbone.View.extend({
-	className: 'analysis-inspector',
+	// className: 'analysis-inspector',
 	model: ConfigModel,
 	
 	template: ['<script type="text/template" id="item-template">',
-		'<div class="inspector-views">',
+		'<div class="inspector-views" id="analysis-inspector">',
 		'<h2 style="text-align:center; width:100%;margin-top:6px;margin-bottom:0px">Analysis</h2>',
 		'<hr>',
 		'<h3> Simulation Start: 0 </h3>',
@@ -35,7 +35,6 @@ var AnalysisInspector = Backbone.View.extend({
 	
 	events: {
 		'click #btn-view-intermediate': 'openIntermediateValuesTable',
-		'click .closeIntermT': 'dismissIntermTable',
 		'click #btn-single-path': 'singlePath',
 		'click #btn-all-next-state': 'getAllNextStates',
 		'click #btn-save-intermT': 'saveIntermTable',
@@ -93,8 +92,8 @@ var AnalysisInspector = Backbone.View.extend({
 	 * Creates, attaches, and renders view for the IVT
 	 */
 	openIntermediateValuesTable: function(){
-		var intermediateValuesTable = new IntermediateValuesTable();
-		this.$('.analysis-sidebar').append(intermediateValuesTable.el);
+		var intermediateValuesTable = new IntermediateValuesTable({model: this.model});
+		this.$('#analysis-inspector').append(intermediateValuesTable.el);
 		intermediateValuesTable.render();
 
 	},
