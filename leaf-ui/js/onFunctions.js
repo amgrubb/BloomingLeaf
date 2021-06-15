@@ -130,6 +130,9 @@ $('#analysis-btn').on('click', function() {
     }
 });
 
+/** For Load Sample Model button */
+
+/** 
 $('#load-sample').on('click', function() {
 
     $.getJSON('http://www.cs.toronto.edu/~amgrubb/archive/REJ-Supplement/S1Frag.json', function(myData){		
@@ -138,6 +141,7 @@ $('#load-sample').on('click', function() {
         reader.readAsText(newModel);  	
     });
 });
+*/
 
 /** Analysis Configuration Sidebar */
 
