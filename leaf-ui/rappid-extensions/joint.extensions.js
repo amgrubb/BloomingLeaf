@@ -172,6 +172,7 @@ joint.dia.Celllink = joint.dia.Link.extend({
         relationship: 'Constant',
         linkType: 'AND',
         postType: null,
+        selected: false
         
     }),
     linkSrcID: null,

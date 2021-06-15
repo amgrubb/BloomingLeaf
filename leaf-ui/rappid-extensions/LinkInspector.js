@@ -5,7 +5,8 @@ var LinkInspector = Backbone.View.extend({
 
     initialize:function(){
         this.listenTo(this.model,'change:evolving', this.render);
-        this.listenTo(this.model,'change:relationship', this.render);
+        this.listenTo(this.model,'change:relationship', this.setSelectValues);
+        this.listenTo(this.model,'change:selected', this.setSelectValues);
     },
 
     template: [
@@ -73,7 +74,8 @@ var LinkInspector = Backbone.View.extend({
 
             if (this.model.get('evolving')) {
                 this.$el.html(_.template(this.evolvingtemplate)());
-                this.setSelectValues('#link-type-begin', 'Evolving');
+                this.model.set('selected', false);
+                this.model.set('relationship', 'Evolving');
 
 
                 $('#link-type-begin').val(this.model.get("linkType")).change();
@@ -88,14 +90,16 @@ var LinkInspector = Backbone.View.extend({
                 }
                 //Understand what this chunk is doing
                 if (this.model.get(postType) == null) {
-                    this.setSelectValues('#link-type-begin', 'Evolving');
+                    this.model.set('selected', false);
+                    this.model.set('relationship', 'Evolving');
                     $('#link-type-begin').val(values[0].trim()).change(); //what does change do???
                     this.updateBeginEvolRelations();
                     $('#link-type-end').val(values[1].trim());
                 } else {
                     $("#link-type-end").prop('disabled', true);
                     $("#link-type-end").css("background-color", "grey");
-                    this.setSelectValues('#link-type-begin', 'Evolving');
+                    this.model.set('selected', false);
+                    this.model.set('relationship', 'Evolving');
                 }
                 //
             } else {
@@ -207,8 +211,6 @@ var LinkInspector = Backbone.View.extend({
         return node.prop('.funcvalue/text') == 'NB';
     },
     updateActorLink: function() {
-        var source = this.model.getSourceElement();
-        var target = this.model.getTargetElement();
         this.model.set("linkType", $("#actor-link").val());
         this.model.label(0 , {position: 0.5, attrs: {text: {text: this.model.get("linkType")}}});
     },
@@ -218,14 +220,14 @@ var LinkInspector = Backbone.View.extend({
         var begin = $("#link-type-begin").val();
         //Enable the end select
         if (begin == "no") {
-            this.setSelectValues('#link-type-end', 'Evolving');
+            this.model.set('selected', true);
+            this.model.set('relationship', 'Evolving');
             $("#link-type-end").prop('disabled', false);
             $("#link-type-end").css("background-color", "");
         } else if(begin == "and" || begin == "or") {
-            this.setSelectValues('#link-type-end', 'A');
-
-            var end = $("#link-type-end").val();
-
+            this.model.set('selected', true);
+            this.model.set('relationship', 'A');
+            var end = this.model.get('postType');
             $("#link-type-end").prop('disabled', false);
             $("#link-type-end").css("background-color","");
             
@@ -242,7 +244,8 @@ var LinkInspector = Backbone.View.extend({
             $("#repeat-error").css("color", "lightgreen");
 
         } else {
-            this.setSelectValues('#link-type-end', "B");
+            this.model.set('selected', true);
+            this.model.set('relationship', 'B');
             $("#link-type-end").prop('disabled', ''); 
             $("#link-type-end").css("background-color","");
         }
@@ -254,7 +257,7 @@ var LinkInspector = Backbone.View.extend({
     updateEndEvolRelations: function() {
 
         // Save based on evolving relations
-        var begin = $("#link-type-begin").val();
+        var begin = this.model.get('linkType');
         var end = $("#link-type-end").val();
 
         this.model.set("postType", end);
@@ -281,9 +284,13 @@ var LinkInspector = Backbone.View.extend({
      *
      * Valid types: 'Constant', 'Evolving', 'A', 'B'
      */
-    setSelectValues: function(selector, type){
-
-        var element = $(selector);
+    setSelectValues: function(){
+        if(this.model.get('selected')){
+            var element = $("#link-type-end");  
+        }
+        else{
+            var element = $("#link-type-begin");
+        }
 
         var relationA = {"and": "And-Decomposition",
                          "or": "Or-Decomposition"};
@@ -319,7 +326,7 @@ var LinkInspector = Backbone.View.extend({
         element.append($('<option></option>').val("no").html("No Relationship"));
 
         // the select options for Constant Relationship
-        if (type == 'Constant') {
+        if (this.model.get('relationship') == 'Constant') {
             $.each(relationA, function (value, key) {
                 element.append($("<option></option>").attr('value', value).text(key));
             });
@@ -330,25 +337,25 @@ var LinkInspector = Backbone.View.extend({
             $.each(relationConst, function (value, key) {
                 element.append($("<option></option>").attr("value", value).text(key));
             });
-        } else if(type == 'Evolving') {
+        } else if(this.model.get('relationship') == 'Evolving') {
             $.each(relationA, function (value, key) {
                 element.append($("<option></option>").attr("value", value).text(key));
             });
             $.each(relationB, function (value, key) {
                 element.append($("<option></option>").attr("value", value).text(key));
             });
-        } else if (type == "A") {
+        } else if (this.model.get('relationship') == "A") {
             element.val("no");
             $("#repeat-error").text("Saved!");
             $("#repeat-error").css("color", "lightgreen");
-        } else if (type == "B") {
+        } else if (this.model.get('relationship') == "B") {
             $.each(relationB, function (value, key) {
                 element.append($("<option></option>").attr("value", value).text(key));
             });
         }
 
         // Remove duplicate options
-        if (selector == "link-type-end") {
+        if (this.model.get('selected')) {
             var dupVal = $('#link-type-begin').val();
             $("select#link-type-end option").filter("[value='" + dupVal + "']").remove();
         }
@@ -359,8 +366,9 @@ var LinkInspector = Backbone.View.extend({
     },
 
     checkType: function(){
-        if (this.type== 'Actor'){
-            this.model.set('evolving', false)
+        if (this.model.get('type')== 'Actor'){
+            this.model.set('evolving', false);
+            this.model.set('selected', false);
         }
     }
 });
