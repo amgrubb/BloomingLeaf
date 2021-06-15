@@ -59,13 +59,21 @@ var ActorInspector = Backbone.View.extend({
             this.model.set('actorName', text);
 
         },
+        /**
+         * Removes the view so we don't have multiple ones in the sidebar
+         */
         removeView: function(){
             this.remove();
         },
+        /**
+         * Changes the line that distinguishes the type of actor 
+         */
         updateType: function(){
             this.model.set('actorType', this.$('.actor-type').val());
         },
-
+        /**
+         * Changes the line that distinguishes the type of actor 
+         */
         changeLine: function() {
             if (this.model.get('actorType') == 'G') {
                 this.model.attr({'.line': {'ref': '.label',
