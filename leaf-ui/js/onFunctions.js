@@ -108,7 +108,7 @@ $('#btn-save-assignment').on('click', function() {
  * Switches to Analysis view iff there are no cycles and no syntax errors.
  */
 $('#analysis-btn').on('click', function() {
-    syntaxCheck();
+/*     syntaxCheck();
 
     var cycleList = cycleSearch();
     cycleResponse(cycleList); //If there are cycles, then display error message. Otherwise, remove any "red" elements.
@@ -116,7 +116,9 @@ $('#analysis-btn').on('click', function() {
     if(!isACycle(cycleList)) {
         clearCycleHighlighting();
         switchToAnalysisMode();
-    }
+    } */
+    
+    switchToAnalysisMode();
 });
 
 $('#load-sample').on('click', function() {
