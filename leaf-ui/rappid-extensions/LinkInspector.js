@@ -231,6 +231,7 @@ var LinkInspector = Backbone.View.extend({
             $("#link-type-end").css("background-color","");
             
             //Saving this option
+            this.cell.prop("link-type", begin + "|" + end);
             this.cell.attr({
                 '.connection': {stroke: '#000000', 'stroke-dasharray': '0 0'},
                 '.marker-source': {'d': '0'},
