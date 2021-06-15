@@ -83,7 +83,6 @@ var analysisResult = new AnalysisResult();
 var elementInspector = new ElementInspector();
 var configCollection = new ConfigCollection([]);
 var configInspector = new ConfigInspector({collection:configCollection});
-var analysisInspector = new AnalysisInspector();
 var actorInspector =  new ActorInspector();
 
     
