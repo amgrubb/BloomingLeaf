@@ -12,6 +12,7 @@ var LinkInspector = Backbone.View.extend({
     template: [
         '<label id="title">Constant Relationship</label>',
         '<br>',
+        '<div class="inspector-views">',
         '<select id="constant-links" class="link-type">',
             '<option value="NO">No Relationship</option>',
             '<option value="AND">And-Decomposition</option>',
@@ -33,28 +34,35 @@ var LinkInspector = Backbone.View.extend({
         '</select>',
         '<h5 id="repeat-error" class="inspector-error"></h5>',
             '<button id="switch-link-type" class="inspector-btn small-btn blue-btn">Evolving Relationships</button>',
-        '<br>'
+        '<br>',
+        '</div>',
     ].join(''),
 
     evolvingtemplate : [
             '<label id="title">Evolving Relationship</label>',
             '<br>',
+            '<div class="inspector-views">',
             '<h5 id="repeat-error" class="inspector-error"></h5>',
             '<select id="link-type-begin" class="repeat-select">',
             '</select>',
             '<select id="link-type-end" class="repeat-select">',
             '</select>',
             '<button id="switch-link-type" class="inspector-btn small-btn blue-btn">Constant Relationships</button>',
-            '<br>'
+            '<br>',
+            '</div>',
     ].join(''),
 
     actortemplate: [
             '<label> Link Type </label> <br>',
+            '<div class="inspector-views">',
             '<select id="actor-link" class="link-type">',
                 '<option value="is-a">is-a</option>',
                 '<option value="plays">plays</option>',
                 '<option value="is-part-of">is-part-of</option>',
-            '</select><br>'].join(''),
+            '</select><br>',
+            '</div>',
+        ].join(''),
+
 
     events: {
             'click #switch-link-type': 'switchMode',
@@ -62,6 +70,7 @@ var LinkInspector = Backbone.View.extend({
             'change #actor-link': 'updateActorLink',
             'change #link-type-begin': 'updateBeginEvolRelations',
             'change #link-type-end': 'updateEndEvolRelations',
+            'clearInspector .inspector-views': 'removeView',
     },
 
     //Method to create the Link Inspector using the template.
@@ -104,6 +113,10 @@ var LinkInspector = Backbone.View.extend({
             }
         }
 
+    },
+
+    removeView: function(){
+        this.remove();
     },
 
     /**
