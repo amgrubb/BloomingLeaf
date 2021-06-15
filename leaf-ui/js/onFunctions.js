@@ -985,7 +985,7 @@ paper.on("link:options", function(cell, evt){
 
 	clearInspector();
     
-    var linkInspector = new LinkInspector({model: cell});
+    var linkInspector = new LinkInspector({model: cell.model});
     $('.inspector').append(linkInspector.el);
 
 	linkInspector.render();
@@ -1186,7 +1186,7 @@ graph.on('remove', function(cell) {
 function clearInspector() {
 	elementInspector.clear();
 	//linkInspector.clear();
-	analysisInspector.clear();
+	//analysisInspector.clear();
 	actorInspector.clear();
 
     // Clear any analysis sidebar views

@@ -66,8 +66,9 @@ var LinkInspector = Backbone.View.extend({
 
     //Method to create the Link Inspector using the template.
     render: function() {
+        console.log(this.model.get('absoluteValue'));
         // Selecting which template to render ACTOR-LINK or INTENTIONS-LINK
-        if (this.model.get('type') == "Actor") {
+        if (this.model.prop('type') == "Actor") {
             this.$el.html(_.template(this.actortemplate)());
             $('#actor-link').val(this.model.get('linkType'));
         } else {
@@ -216,20 +217,15 @@ var LinkInspector = Backbone.View.extend({
     },
     // Generates the select values based on begin value
     updateBeginEvolRelations: function() {
+        this.model.set('selected', true);
         $("#repeat-error").text("");
         var begin = $("#link-type-begin").val();
         //Enable the end select
         if (begin == "no") {
-            this.model.set('selected', true);
             this.model.set('relationship', 'Evolving');
-            $("#link-type-end").prop('disabled', false);
-            $("#link-type-end").css("background-color", "");
         } else if(begin == "and" || begin == "or") {
-            this.model.set('selected', true);
             this.model.set('relationship', 'A');
             var end = this.model.get('postType');
-            $("#link-type-end").prop('disabled', false);
-            $("#link-type-end").css("background-color","");
             
             //Saving this option
             this.model.set("linkType", begin);
@@ -244,11 +240,10 @@ var LinkInspector = Backbone.View.extend({
             $("#repeat-error").css("color", "lightgreen");
 
         } else {
-            this.model.set('selected', true);
             this.model.set('relationship', 'B');
-            $("#link-type-end").prop('disabled', ''); 
-            $("#link-type-end").css("background-color","");
         }
+        $("#link-type-end").prop('disabled', false);
+        $("#link-type-end").css("background-color","");
     },
 
     /**
@@ -364,11 +359,4 @@ var LinkInspector = Backbone.View.extend({
     clear: function(){
         this.$el.html('');
     },
-
-    checkType: function(){
-        if (this.model.get('type')== 'Actor'){
-            this.model.set('evolving', false);
-            this.model.set('selected', false);
-        }
-    }
 });
