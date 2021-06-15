@@ -285,7 +285,6 @@ var ElementInspector = Backbone.View.extend({
       text = text.replace(/[^\w\n-]/g, ' ');
 
       this.model.attr({'.name': {text: text} });
-      // this.model.get('intention').nodeName = text;
       this.model.nodeName = text; 
     },
 

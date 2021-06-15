@@ -823,8 +823,6 @@ function createIntention(cell) {
     analysisRequest.userAssignmentsList.push(intentionEval);
 
     cell.attributes.nodeID = intention.nodeID;
-    // cell.attributes.set('nodeID', intention.nodeID);
-    // intention.IntentionTest.nodeID = intention.nodeID
 
 }
 
