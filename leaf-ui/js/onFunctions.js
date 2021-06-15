@@ -848,12 +848,12 @@ var element_counter = 0;
 // Whenever an element is added to the graph
 graph.on("add", function(cell) {
 
-	if (cell instanceof joint.dia.Link){
+	if (cell instanceof joint.dia.cellLink){
         if (graph.getCell(cell.get("source").id) instanceof joint.shapes.basic.Actor){
-            cell.prop("linktype", "actorlink");
+            cell.prop("type", "Actor");
             cell.label(0,{attrs:{text:{text:"is-a"}}});
 		} else{
-            cell.prop("linktype", "elementlink");
+            cell.prop("type", "element");
         }
         createLink(cell);
     } else if (cell instanceof joint.shapes.basic.Intention){

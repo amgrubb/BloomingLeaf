@@ -165,7 +165,7 @@ joint.shapes.basic.Resource = joint.shapes.basic.Intention.extend({
     }
 });
 
-joint.dia.Celllink = joint.dia.Link.extend({
+joint.dia.cellLink = joint.dia.Link.extend({
     initialize: function(){
         this.listenTo(this, 'change:type', this.checktType)
     },

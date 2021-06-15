@@ -66,7 +66,6 @@ var LinkInspector = Backbone.View.extend({
 
     //Method to create the Link Inspector using the template.
     render: function() {
-        console.log(this.model.get('absoluteValue'));
         // Selecting which template to render ACTOR-LINK or INTENTIONS-LINK
         if (this.model.prop('type') == "Actor") {
             this.$el.html(_.template(this.actortemplate)());
@@ -84,11 +83,7 @@ var LinkInspector = Backbone.View.extend({
                 
                 this.updateBeginEvolRelations();
 
-                if (['AND', 'OR', 'NO'].includes(this.model.get("linkType"))) {
-                    $('#link-type-end').val(this.model.get("postType").toLowerCase());
-                } else {
-                    $('#link-type-end').val(this.model.get("postType"));
-                }
+                $('#link-type-end').val(this.model.get("postType"));
                 //Understand what this chunk is doing
                 if (this.model.get(postType) == null) {
                     this.model.set('selected', false);
@@ -119,15 +114,15 @@ var LinkInspector = Backbone.View.extend({
      */
     switchMode: function() {
 
-        this.evolvingRelations = !this.evolvingRelations;
+        var current = this.model.get('evolving');
+        this.model.set('evolving', !current)
 
-        if (this.evolvingRelations) {
+        if (this.model.get('evolving')) {
             this.$el.html(_.template(this.evolvingtemplate)());
             
         } else {
             this.$el.html(_.template(this.template)());
             $('#constant-links').val(values[0].trim());
-            this.evolvingRelations = false; 
         }
     },
 
@@ -312,10 +307,10 @@ var LinkInspector = Backbone.View.extend({
 
         // set initial placeholder values
 
-        if (selector ==  '#link-type-begin') {
-            element.html('<option class="select-placeholder" selected disabled value="">Begin</option>');
-        } else if (selector == '#link-type-end') {
+        if (this.model.get('selected')) {
             element.html('<option class="select-placeholder" selected disabled value="">End</option>');
+        } else {
+            element.html('<option class="select-placeholder" selected disabled value="">Begin</option>');
         }
 
         element.append($('<option></option>').val("no").html("No Relationship"));

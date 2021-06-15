@@ -58,7 +58,7 @@ function init(){
         gridSize: 10,
         perpendicularLinks: false,
         model: analysis.graph,
-        defaultLink: new joint.dia.Link({
+        defaultLink: new joint.dia.cellLink({
             'attrs': {
                 '.connection': {stroke: '#000000'},
                 '.marker-source': {'d': '0'},
