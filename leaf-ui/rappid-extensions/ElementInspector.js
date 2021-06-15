@@ -76,7 +76,7 @@ var ElementInspector = Backbone.View.extend({
         // correct syntax?? or is it 'change: selected'
     },
 
-    className: 'element-inspector',
+    // className: 'element-inspector',
      
     template: ['<script type="text/template" id="item-template">',
             '<label>Node Name:</label>',
@@ -190,7 +190,8 @@ var ElementInspector = Backbone.View.extend({
         //intention parameter in joint.extensions.js
         //will probably delete the line below later 
         //this.model.intention = model.getIntentionByID(this.model.attributes.nodeID);
-        this.model.get('intention'); 
+        // this.model.get('intention'); 
+        console.log(this.model.nodeName);
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()))
 
         // Attributes
@@ -203,7 +204,7 @@ var ElementInspector = Backbone.View.extend({
         this.userConstraintsHTML = $("#new-user-constraints").last().clone();
 
         // Load initial value and node name
-        this.$('.cell-attrs-text').val(this.model.get('intention').nodeName);
+        this.$('.cell-attrs-text').val(this.model.nodeName);
         this.$('#init-sat-value').val(satisfactionValuesDict[this.model.get('intention').getInitialSatValue()].name);
         this.checkInitialSatValue();
 
@@ -284,7 +285,8 @@ var ElementInspector = Backbone.View.extend({
       text = text.replace(/[^\w\n-]/g, ' ');
 
       this.model.attr({'.name': {text: text} });
-      this.model.get('intention').nodeName = text;
+      // this.model.get('intention').nodeName = text;
+      this.model.nodeName = text; 
     },
 
     /**
@@ -367,7 +369,7 @@ var ElementInspector = Backbone.View.extend({
             }
         }
 
-        if (this.model.intention.dynamicFunction.hasRepeat()) {
+        if (this.model.get('intention').dynamicFunction.hasRepeat()) {
             var repBegin = this.model.get('intention').dynamicFunction.getStartRepeatEpoch();
             var repEnd = this.model.get('intention').dynamicFunction.getEndRepeatEpoch();
             var repNum = this.model.get('intention').dynamicFunction.getRepeatRepNum();
