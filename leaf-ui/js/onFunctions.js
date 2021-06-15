@@ -977,7 +977,11 @@ paper.on("link:options", function(cell, evt){
 	}
 
 	clearInspector();
-	linkInspector.render(cell.model);
+    
+    var linkInspector = new LinkInspector({model: cell});
+    $('.inspector').append(linkInspector.el);
+
+	linkInspector.render();
 
 });
 
@@ -1174,7 +1178,7 @@ graph.on('remove', function(cell) {
  */
 function clearInspector() {
 	elementInspector.clear();
-	linkInspector.clear();
+	//linkInspector.clear();
 	analysisInspector.clear();
 	actorInspector.clear();
 }

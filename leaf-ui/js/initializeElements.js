@@ -79,13 +79,14 @@ var analysisRequest = new AnalysisRequest();
 var analysisResult = new AnalysisResult();
 
 
-var linkInspector = new LinkInspector();
+
 var elementInspector = new ElementInspector();
 var configCollection = new ConfigCollection([]);
 var configInspector = new ConfigInspector({collection:configCollection});
 var analysisInspector = new AnalysisInspector();
 var actorInspector =  new ActorInspector();
 
+    
 var currentHalo;
 var currentAnalysis;
 var elementList;
@@ -306,8 +307,8 @@ var act = new joint.shapes.basic.Actor({ position: {x: 40, y: 355} });
 
 stencil.load([goal, task, sgoal, res, act]);
 
-// Setup LinkInspector
-$('.inspector').append(linkInspector.el);
+
+
 
 $('#slider').width($('#paper').width() * 0.8);
 $('#slider').css("margin-top", $(window).height() * 0.9);
