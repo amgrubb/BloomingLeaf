@@ -85,7 +85,7 @@ var LinkInspector = Backbone.View.extend({
 
                 $('#link-type-end').val(this.model.get("postType"));
                 //Understand what this chunk is doing
-                if (this.model.get(postType) == null) {
+                if (this.model.get('postType') == null) {
                     this.model.set('selected', false);
                     this.model.set('relationship', 'Evolving');
                     $('#link-type-begin').val(values[0].trim()).change(); //what does change do???
@@ -100,7 +100,7 @@ var LinkInspector = Backbone.View.extend({
                 //
             } else {
                 this.$el.html(_.template(this.template)());
-                $('#constant-links').val(this.model.get("linkType"));            
+                $('#constant-links').val(this.model.get('linkType'));            
             }
         }
 
