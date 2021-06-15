@@ -7,7 +7,9 @@ var ActorInspector = Backbone.View.extend({
         initialize: function() {
             this.model.on('change:actorType', this.changeLine, this);
         },
-        template: ['<script type="text/template" id="item-template">',
+        template: [
+            '<script type="text/template" id="item-template">',
+            '<div class="inspector-views">',
             '<label>Actor name</label>',
             '<textarea class="cell-attrs-text" maxlength=100> <%= actorName %> </textarea>',
             '<label> Actor type </label>',
@@ -16,13 +18,15 @@ var ActorInspector = Backbone.View.extend({
             '<option value=G> Agent </option>',
             '<option value=R> Role </option>',
             '</select>',
+            '</div>',
             '</script>'
         ].join(''),
 
     
         events: {
             'keyup .cell-attrs-text': 'nameAction',
-            'change .actor-type': 'updateType'
+            'change .actor-type': 'updateType', 
+            'clearInspector .inspector-views': 'removeView',
 
         },
 
@@ -53,7 +57,9 @@ var ActorInspector = Backbone.View.extend({
             this.model.set('actorName', text);
 
         },
-        
+        removeView: function(){
+            this.remove();
+        },
         updateType: function(){
             this.model.set('actorType', this.$('.actor-type').val());
         },

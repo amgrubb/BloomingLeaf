@@ -83,7 +83,7 @@ var linkInspector = new LinkInspector();
 var elementInspector = new ElementInspector();
 var configCollection = new ConfigCollection([]);
 var configInspector = new ConfigInspector({collection:configCollection});
-var actorInspector =  new ActorInspector();
+//var actorInspector =  new ActorInspector();
 
 var currentHalo;
 var currentAnalysis;
