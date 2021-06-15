@@ -63,7 +63,6 @@ var LinkInspector = Backbone.View.extend({
     render: function(cell) {
         this.cell = cell;
         this.link = model.getLinkByID(cell.attributes.linkID);
-
         // Selecting which template to render ACTOR-LINK or INTENTIONS-LINK
         if (cell.prop('linktype') == 'actorlink') {
             this.$el.html(_.template(this.actortemplate)());
@@ -106,7 +105,6 @@ var LinkInspector = Backbone.View.extend({
     switchMode: function() {
 
         var type = this.cell.attributes.labels[0].attrs.text.text;
-
         // array of link values
         var values = type.split("|");
 
@@ -139,7 +137,6 @@ var LinkInspector = Backbone.View.extend({
 
         var source = this.cell.getSourceElement();
         var target = this.cell.getTargetElement();
-
         var relationshipVal = $('.link-type option:selected').val();
 
         // store the new value into the link
@@ -175,7 +172,6 @@ var LinkInspector = Backbone.View.extend({
                 source.attr('.satvalue/text', '');
             }
             if (!this.hasNBLink(target, this.cell) && !this.hasNBTag(target)){
-                
                 target.attr('.funcvalue/text', '');
                 target.attr('.satvalue/text', '');
             }
@@ -249,10 +245,7 @@ var LinkInspector = Backbone.View.extend({
             // save into link object
             this.link.linkType = begin.toUpperCase();
             this.link.postType = 'NO';
-
-            $("#repeat-error").text("Saved!");
-            $("#repeat-error").css("color", "lightgreen");
-
+            
         } else {
             this.setSelectValues('#link-type-end', "B");
             $("#link-type-end").prop('disabled', ''); 
@@ -354,9 +347,9 @@ var LinkInspector = Backbone.View.extend({
                 element.append($("<option></option>").attr("value", value).text(key));
             });
         } else if (type == "A") {
-            element.val("no");
-            $("#repeat-error").text("Saved!");
-            $("#repeat-error").css("color", "lightgreen");
+            $.each(relationA, function (value, key) {
+                element.append($("<option></option>").attr("value", value).text(key));
+            });
         } else if (type == "B") {
             $.each(relationB, function (value, key) {
                 element.append($("<option></option>").attr("value", value).text(key));
