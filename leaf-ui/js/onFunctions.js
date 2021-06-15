@@ -15,6 +15,21 @@ It also contains the setup for Rappid elements.
  $('#evo-color-key').on('click', function(){ window.open('./userguides/evo.html', 'newwindow', 'width=500, height=400'); return false;});
 
 /**
+ * General javascript for user interaction
+ * When the user clicks anywhere outside of the a pop up, close it
+ */
+window.onclick = function(event) {
+	var modal = document.getElementById('assignmentsModal');
+	var intermT = document.getElementById('intermediateTable');
+    if (event.target == modal) {
+  	    modal.style.display = "none";
+    }
+	if(event.target == intermT){
+		intermT.style.display = "none";
+	}
+}
+
+/**
  * Closes Assignments Table
  */
 
