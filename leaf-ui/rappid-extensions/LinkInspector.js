@@ -82,10 +82,10 @@ var LinkInspector = Backbone.View.extend({
         } else {
 
             if (this.model.get('evolving')) {
+                this.model.set('evolving', true);
                 this.$el.html(_.template(this.evolvingtemplate)());
                 this.model.set('selected', false);//these two = setlectValues
                 this.model.set('relationship', 'Evolving');
-
 
                 $('#link-type-begin').val(this.model.get("linkType")).change();
 
@@ -99,8 +99,7 @@ var LinkInspector = Backbone.View.extend({
                     $('#link-type-end').val(this.model.get('postType'));
                 }
             } else {
-                this.model.set('selected', false);
-                this.model.set('relationship', 'Evolving');
+                this.model.set('evolving', false);
                 this.$el.html(_.template(this.template)());
                 $('#constant-links').val(this.model.get('linkType'));            
             }
@@ -139,6 +138,7 @@ var LinkInspector = Backbone.View.extend({
         var current = this.model.get('evolving');
         this.model.set('evolving', !current);
         if(this.model.get('evolving')){
+            console.log("WTF")
             if (values.length > 1) {
                 this.model.set('selected', false);
                 this.model.set('relationship', 'Evolving');
@@ -154,8 +154,7 @@ var LinkInspector = Backbone.View.extend({
         }else {
             this.$el.html(_.template(this.template)());
             $('#constant-links').val(values[0].trim());
-            this.model.set('selected', false);
-            this.model.set('relationship', 'Evolving');
+            this.model.set('evolving', false);
         }
     },
 
@@ -340,11 +339,18 @@ var LinkInspector = Backbone.View.extend({
 
         // set initial placeholder values
 
-        if (this.model.get('selected')) {
+        if (!this.model.get('selected')) {
             element.html('<option class="select-placeholder" selected disabled value="">End</option>');
-        } else {
+        }else {
             element.html('<option class="select-placeholder" selected disabled value="">Begin</option>');
         }
+        /**
+         * if (selector ==  '#link-type-begin') {
+            element.html('<option class="select-placeholder" selected disabled value="">Begin</option>');
+        } else if (selector == '#link-type-end') {
+            element.html('<option class="select-placeholder" selected disabled value="">End</option>');
+        }
+         */
 
         element.append($('<option></option>').val("no").html("No Relationship"));
 
