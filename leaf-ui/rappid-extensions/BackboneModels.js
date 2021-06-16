@@ -37,6 +37,10 @@ var EvolvingFunction = Backbone.Model.extend({
 
     defaults: { 
         stringDynVis: 'NT',  
+        // There can only be one RepFuncSegment
+        // If there is a RepFuncSegment, input a RepFuncSegment model into this parameter
+        RepFuncSegment: null,
+        // Array functionSegList contains all of the FuncSegment models (and only FuncSegment models)
         functionSegList: [], 
     }, 
 
