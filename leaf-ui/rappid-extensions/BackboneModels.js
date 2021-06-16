@@ -24,11 +24,15 @@
 /** This file contains backbone model representations of the original model objects - WIP */
 var EvolvingFunction = Backbone.Model.extend({
     initialize: function(options) { 
-        //phase this out?
         //this.intentionID = options.intentionID; 
-        //not completely sure about this line 
-        this.nodeID = options.nodeID; 
-        //perhaps create models for funcsegmentmodel and repfuncsegment here(?)
+        this.nodeID = options.nodeID;  
+        // Not Sure if this is done correctly
+        var FuncSegment = new FuncSegmentModel();
+        var FuncSegmentOptions = ; // Have to eventually add all of the FuncSegment parameters here
+        FuncSegment.initialize(FuncSegmentOptions);
+        var RepFuncSegment = new RepFuncSegmentModel();
+        var RepFuncSegmentOptions = ; // Have to eventually add all of the RepFuncSegment parameters here
+        RepFuncSegment.initialize(RepFuncSegmentOptions);
     }, 
 
     defaults: { 
