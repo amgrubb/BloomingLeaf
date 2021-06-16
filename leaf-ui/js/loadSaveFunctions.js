@@ -50,8 +50,6 @@ function loadFromObject(obj) {
 
 	// Clear any previous analysis data 
 	if (analysisMap.size != 0) {
-		// Clear the analysisMap to remove any previous analysis
-		clearAnalysisConfigSidebar();
 		analysisMap.clear();
 		currAnalysisConfig = null;
 	}

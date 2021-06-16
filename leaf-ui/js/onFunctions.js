@@ -587,8 +587,6 @@ $('#btn-clear-all').on('click', function(){
     graph.clear();
     // reset to default analysisRequest
     model.removeAnalysis();
-    // clear analysis sidebar
-    clearAnalysisConfigSidebar();
     // remove all configs from analysisMap
     analysisMap.clear();
 	// Delete cookie by setting expiry to past date
@@ -642,8 +640,6 @@ $('#btn-clear-cycle').on('click',function(){
 $('#btn-clear-analysis').on('click', function() {
     // reset to default analysisRequest while preserving userAssignmentsList
     resetToDefault();
-    // clear analysis sidebar
-    clearAnalysisConfigSidebar();
     // remove all configs from analysisMap
     analysisMap.clear();
     // reset graph to initial values
@@ -651,7 +647,6 @@ $('#btn-clear-analysis').on('click', function() {
 });
 
 $('#btn-clear-results').on('click', function() {
-    clearResults();
     refreshAnalysisUI();
 });
 

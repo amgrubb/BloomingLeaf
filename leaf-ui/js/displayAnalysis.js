@@ -177,29 +177,6 @@ function updateNodeValues(nodeID, satValue) {
     }
 }
 
-
-/**
- * Clears the analysis config sidebar
- */
-function clearAnalysisConfigSidebar() {
-    // Remove all child elements of the configurations div
-    $('#configurations').empty();
-}
-
-/**
- * Clear all results from all configs
- */
- function clearResults(){
-    for(let config of analysisMap.values()) {
-        // remove analysis results from each config
-        config.deleteResults();
-    }
-    // remove all results from all config divs
-    $('.result-elements').remove();
-    // reset graph to initial values
-    revertNodeValuesToInitial();
-}
-
 /**
  * Refreshes analysisRequest values in the UI 
  * in places such as the right sidebar and absolute time points field
@@ -225,28 +202,6 @@ function refreshAnalysisUI(){
 }
 
 /**
- * Switches to selected config and associated analysisRequest 
- * and updates UI accordly
- * 
- * @param {JQueryElement} configElement 
- */
-function switchConfigs(configElement){
-    // Update analysisMap with current config to perserve any changes
-    currAnalysisConfig.updateAnalysis(analysisRequest);
-    analysisMap.set(currAnalysisConfig.id, currAnalysisConfig);
-
-    // Set current config and analysis to associated clicked element
-    // and reset UI to reflect switch
-    currAnalysisConfig = analysisMap.get(configElement.id);
-    analysisRequest = currAnalysisConfig.getAnalysisRequest();
-    
-    // restore default analysis view
-    hideAnalysis();
-    
-    switchSelectedShadingConfig(configElement);
-}
-
-/**
  * Ties Results to update UI and show associated results on click action
  */
 function switchResults(resultElement, configElement){
@@ -256,7 +211,7 @@ function switchResults(resultElement, configElement){
     analysisRequest = currAnalysisConfig.getAnalysisRequest();
 
     // Update UI accordingly
-    switchSelectedShadingResult(resultElement, configElement);
+    ShadingResult(resultElement, configElement);
     refreshAnalysisUI();
     displayAnalysis(currAnalysisResults, true);
     // show EVO analysis slider
@@ -279,18 +234,6 @@ function resetToDefault(){
     var defaultRequest = new AnalysisRequest();
     defaultRequest.userAssignmentsList = analysisRequest.userAssignmentsList;
     analysisRequest = defaultRequest;
-}
-
-/**
- * Updates shading so that correct configuration is highlighted 
- * when configuration is clicked
- * 
- * @param {JQueryElement} configElement 
- */
-function switchSelectedShadingConfig(configElement){
-    $(".result-elements").css("background-color", "");
-    $(".config-elements").css("background-color", "");
-    $(configElement.querySelector(".config-elements")).css("background-color","#A9A9A9");
 }
 
 /**
