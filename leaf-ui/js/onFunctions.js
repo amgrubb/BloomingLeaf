@@ -852,6 +852,7 @@ graph.on("add", function(cell) {
         if (graph.getCell(cell.get("source").id) instanceof joint.shapes.basic.Actor){
             cell.prop("type", "Actor");
             cell.label(0,{attrs:{text:{text:"is-a"}}});
+            cell.prop("linkType", "is-a");
 		} else{
             cell.prop("type", "element");
         }
