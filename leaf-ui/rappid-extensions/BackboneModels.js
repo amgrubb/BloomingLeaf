@@ -25,6 +25,3 @@ var ConstraintModel = Backbone.Model.extend({
         this.absoluteValue = -1;
     }
 });
-
-//var intentionEval = new UserEvaluationModel({intentionID:intention.nodeID},{absTime:'0'}, {evaluationValue:'(no value)'});
-//var constraint = new ConstraintModel({constraintType:type},{constraintSrcID:nodeID1}, {constraintSrcEB:epoch1}, {constraintDestID: nodeID2}, {constraintDestEB:epoch2});
