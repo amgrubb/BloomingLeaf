@@ -1,26 +1,18 @@
 /** This file contains backbone model representations of the original model objects - WIP */
-
 var EvolvingFunction = Backbone.Model.extend({
     initialize: function(options) { 
+        //phase this out?
         //this.intentionID = options.intentionID; 
-        // I think that we are replacing intentionID with nodeID - check this
+        //not completely sure about this line 
         this.nodeID = options.nodeID; 
-        // Do we have to create collections for FuncSegment and RepFuncSegment 
-        // Or can we just create models directly into other models
-        var FuncSegment = new FuncSegmentModel();
-        var FuncSegmentOptions = ; // Have to eventually add all of the FuncSegment parameters here
-        FuncSegment.initialize(FuncSegmentOptions);
-        var RepFuncSegment = new RepFuncSegmentModel();
-        var RepFuncSegmentOptions = ; // Have to eventually add all of the RepFuncSegment parameters here
-        RepFuncSegment.initialize(RepFuncSegmentOptions);
- 
+        //perhaps create models for funcsegmentmodel and repfuncsegment here(?)
     }, 
- 
+
     defaults: { 
         stringDynVis: 'NT',  
         functionSegList: [], 
     }, 
- 
+
     /* Returns the 4 digit representation for this
      * EvolvingFunction's ith function segment's 
      * satisfaction value
@@ -28,7 +20,7 @@ var EvolvingFunction = Backbone.Model.extend({
     getMarkedVal: function(i) { 
         return this.functionSegList[i].funcX; 
     }, 
- 
+
      /**
      * Returns the 4 digit representation for this
      * EvolvingFunction's last function segment's
@@ -40,7 +32,7 @@ var EvolvingFunction = Backbone.Model.extend({
             return this.functionSegList[len - 1].funcX; 
         }
     }, 
- 
+
     /**
      * Returns the 4 digit representation for this
      * EvolvingFunction's second last function segment's
@@ -48,7 +40,7 @@ var EvolvingFunction = Backbone.Model.extend({
      * segment, this function returns the 4 digit representation of 
      * the only function segment's marked value
      */
- 
+
     getSecondLastMarkedVal: function() { 
         var len = this.functionSegList.length; 
         if (len > 1) { 
@@ -57,7 +49,7 @@ var EvolvingFunction = Backbone.Model.extend({
             return this.getLastMarkedVal(); 
         }
     }, 
- 
+
     /**
      * Returns the funcStop value for the last
      * function segment for this EvolvingFunction
@@ -71,7 +63,7 @@ var EvolvingFunction = Backbone.Model.extend({
             return this.functionSegList[len - 1].funcStop;
         }
     }, 
- 
+
     /**
      * Creates a new RepFuncSegment object containing function
      * segments in the relative time interval [time1, time2], and add it to this
@@ -84,34 +76,33 @@ var EvolvingFunction = Backbone.Model.extend({
      *   second relative time point
      */
     setRepeatingFunction: function(time1, time2) {
- 
+
         this.removeRepFuncSegments();
- 
+
         // find the index of the FuncSegment with start time time 1
         var startIndex = 0;
         while (this.functionSegList[startIndex].funcStart !== time1) {
             startIndex++;
         }
- 
+
         var repFuncSegments = [];
- 
+
         // push and remove, until we see a segment with our desired FuncEnd time
         while (this.functionSegList[startIndex].funcStop !== time2) {
             repFuncSegments.push(this.functionSegList[startIndex]);
             this.functionSegList.splice(startIndex, 1);
         }
- 
+
         // push and remove the last segment
         repFuncSegments.push(this.functionSegList[startIndex]);
         this.functionSegList.splice(startIndex, 1);
- 
- 
+
+
         // create and add a new RepFuncSegment
-        //may have to change this
         var repFuncSegment = new RepFuncSegment(repFuncSegments);
         this.functionSegList.splice(startIndex, 0, repFuncSegment);
     }, 
- 
+
     /**
      * Returns the FuncSegment in this EvolvingFunction's
      * functionSegList, with the relative start time time
@@ -126,7 +117,7 @@ var EvolvingFunction = Backbone.Model.extend({
             }
         }
     }, 
- 
+
     /**
      * If a RepFuncSegment exists in this EvolvingFunction's
      * functionSegList, retrieve the FuncSegments in the RepFuncSegment,
@@ -137,16 +128,16 @@ var EvolvingFunction = Backbone.Model.extend({
      * does nothing
      */
     removeRepFuncSegments: function() {
- 
+
         var repIndex = this.getRepFuncSegmentIndex();
         if (repIndex === -1) {
             return;
         }
- 
+
         var repFuncSegment = this.functionSegList[repIndex];
         // remove RepFuncSegment object from array
         this.functionSegList.splice(repIndex, 1);
- 
+
         // add the FuncSegments back into the array
         var j = repIndex;
         for (var i = 0; i < repFuncSegment.functionSegList.length; i++) {
@@ -154,7 +145,7 @@ var EvolvingFunction = Backbone.Model.extend({
             j++;
         }
     }, 
- 
+
     /**
      * Sets the repNum for the RepFuncSegment inside of this
      * EvolvingFunction's functionSegList, to count
@@ -171,7 +162,8 @@ var EvolvingFunction = Backbone.Model.extend({
         }
         this.functionSegList[repIndex].repNum = num;
     }, 
-  
+
+
     /**
      * Sets the absTime for the RepFuncSegment inside of this
      * EvolvingFunction's functionSegList, to time
@@ -188,9 +180,9 @@ var EvolvingFunction = Backbone.Model.extend({
         }
         this.functionSegList[repIndex].absTime = time;
     }, 
- 
- 
- 
+
+
+
     /**
      * Returns the index of the RepFuncSegment object
      * in this EvolvingFunction's functionSegList
@@ -203,19 +195,18 @@ var EvolvingFunction = Backbone.Model.extend({
     getRepFuncSegmentIndex: function() {
         // Find the index where the RepFuncSegment is located
         var repIndex = 0;
-        //may need to change this back, not sure 
-        while (repIndex < this.functionSegList.length && (!(this.functionSegList[repIndex] instanceof RepFuncSegmentModel))) {
+        while (repIndex < this.functionSegList.length && (!(this.functionSegList[repIndex] instanceof RepFuncSegment))) {
             repIndex++;
         }
- 
+
         // RepFuncSegment did not exist in functionSegList
         if (repIndex >= this.functionSegList.length) {
             return - 1;
         }
- 
+
         return repIndex;
     }, 
- 
+
     /**
      * Returns an array containing FuncSegment objects, for the
      * purpose of easy iteration. This function is useful when
@@ -240,8 +231,7 @@ var EvolvingFunction = Backbone.Model.extend({
         var res = [];
         for (var i = 0; i < this.functionSegList.length; i++) {
             var obj = this.functionSegList[i];
-            //may have to change this back
-            if (obj instanceof FuncSegmentModel) {
+            if (obj instanceof FuncSegment) {
                 var clone = Object.assign(new FuncSegment, obj); // deep copy
                 clone.isRepeat = false;
                 res.push(obj);
@@ -256,7 +246,7 @@ var EvolvingFunction = Backbone.Model.extend({
         }
         return res;
     }, 
- 
+
     /**
      * Returns true iff this EvolvingFunction contains
      * a repeating segment (ie, contains a RepFuncSegment)
@@ -265,14 +255,14 @@ var EvolvingFunction = Backbone.Model.extend({
      */
     hasRepeat: function() {
         for (var i = 0; i < this.functionSegList.length; i++) {
-            //may have to change this back
-            if (this.functionSegList[i] instanceof RepFuncSegmentModel) {
+            //convert instanceof to backbone version 
+            if (this.functionSegList[i] instanceof RepFuncSegment) {
                 return true;
             }
         }
         return false;
     }, 
- 
+
     /**
      * Returns the epoch boundary where the repeat segment
      * starts
@@ -284,13 +274,13 @@ var EvolvingFunction = Backbone.Model.extend({
      */
     getStartRepeatEpoch: function() {
         for (var i = 0; i < this.functionSegList.length; i++) {
-            //may have to change this back
-            if (this.functionSegList[i] instanceof RepFuncSegmentModel) {
+            //convert instanceof to backbone version 
+            if (this.functionSegList[i] instanceof RepFuncSegment) {
                 return this.functionSegList[i].functionSegList[0].funcStart;
             }
         }
     }, 
- 
+
     /**
      * Returns the epoch boundary where the repeat segment
      * ends
@@ -302,14 +292,14 @@ var EvolvingFunction = Backbone.Model.extend({
      */
     getEndRepeatEpoch: function() {
         for (var i = 0; i < this.functionSegList.length; i++) {
-            //may have to change this back 
-            if (this.functionSegList[i] instanceof RepFuncSegmentModel) {
+            //convert instanceof to backbone version 
+            if (this.functionSegList[i] instanceof RepFuncSegment) {
                 var len = this.functionSegList[i].functionSegList.length;
                 return this.functionSegList[i].functionSegList[len - 1].funcStop;
             }
         }
     }, 
- 
+
     /**
      * Returns the repNum attribute for this EvolvingFunction's
      * RepFuncSegment
@@ -320,13 +310,13 @@ var EvolvingFunction = Backbone.Model.extend({
      */
     getRepeatRepNum: function() {
         for (var i = 0; i < this.functionSegList.length; i++) {
-            //may have to change this back
-            if (this.functionSegList[i] instanceof RepFuncSegmentModel) {
+            //convert instanceof to backbone version 
+            if (this.functionSegList[i] instanceof RepFuncSegment) {
                 return this.functionSegList[i].repNum;
             }
         }
     }, 
- 
+
     /**
      * Returns the absTime attribute for this EvolvingFunction's
      * RepFuncSegment
@@ -337,10 +327,10 @@ var EvolvingFunction = Backbone.Model.extend({
      */
     getRepeatAbsTime: function() {
         for (var i = 0; i < this.functionSegList.length; i++) {
-            //may have to change this back
-            if (this.functionSegList[i] instanceof RepFuncSegmentModel) {
+            //convert instanceof to backbone version 
+            if (this.functionSegList[i] instanceof RepFuncSegment) {
                 return this.functionSegList[i].absTime;
             }
         }
     }, 
-});
+}); 
