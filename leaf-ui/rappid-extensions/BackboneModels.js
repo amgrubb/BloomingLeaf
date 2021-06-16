@@ -24,18 +24,11 @@
 /** This file contains backbone model representations of the original model objects - WIP */
 var EvolvingFunction = Backbone.Model.extend({
     initialize: function(options) { 
+        //phase this out?
         //this.intentionID = options.intentionID; 
-        // I think that we are replacing intentionID with nodeID - check this
+        //not completely sure about this line 
         this.nodeID = options.nodeID; 
-        // Do we have to create collections for FuncSegment and RepFuncSegment 
-        // Or can we just create models directly into other models
-        var FuncSegment = new FuncSegmentModel();
-        //var FuncSegmentOptions = ; // Have to eventually add all of the FuncSegment parameters here
-        FuncSegment.initialize(FuncSegmentOptions);
-        var RepFuncSegment = new RepFuncSegmentModel();
-        //var RepFuncSegmentOptions = ; // Have to eventually add all of the RepFuncSegment parameters here
-        RepFuncSegment.initialize(RepFuncSegmentOptions);
-
+        //perhaps create models for funcsegmentmodel and repfuncsegment here(?)
     }, 
 
     defaults: { 
@@ -129,7 +122,6 @@ var EvolvingFunction = Backbone.Model.extend({
 
 
         // create and add a new RepFuncSegment
-        //may have to change this
         var repFuncSegment = new RepFuncSegment(repFuncSegments);
         this.functionSegList.splice(startIndex, 0, repFuncSegment);
     }, 
@@ -226,8 +218,7 @@ var EvolvingFunction = Backbone.Model.extend({
     getRepFuncSegmentIndex: function() {
         // Find the index where the RepFuncSegment is located
         var repIndex = 0;
-        //may need to change this back, not sure 
-        while (repIndex < this.functionSegList.length && (!(this.functionSegList[repIndex] instanceof RepFuncSegmentModel))) {
+        while (repIndex < this.functionSegList.length && (!(this.functionSegList[repIndex] instanceof RepFuncSegment))) {
             repIndex++;
         }
 
@@ -263,8 +254,7 @@ var EvolvingFunction = Backbone.Model.extend({
         var res = [];
         for (var i = 0; i < this.functionSegList.length; i++) {
             var obj = this.functionSegList[i];
-            //may have to change this back
-            if (obj instanceof FuncSegmentModel) {
+            if (obj instanceof FuncSegment) {
                 var clone = Object.assign(new FuncSegment, obj); // deep copy
                 clone.isRepeat = false;
                 res.push(obj);
@@ -288,8 +278,8 @@ var EvolvingFunction = Backbone.Model.extend({
      */
     hasRepeat: function() {
         for (var i = 0; i < this.functionSegList.length; i++) {
-            //may have to change this back
-            if (this.functionSegList[i] instanceof RepFuncSegmentModel) {
+            //convert instanceof to backbone version 
+            if (this.functionSegList[i] instanceof RepFuncSegment) {
                 return true;
             }
         }
@@ -307,8 +297,8 @@ var EvolvingFunction = Backbone.Model.extend({
      */
     getStartRepeatEpoch: function() {
         for (var i = 0; i < this.functionSegList.length; i++) {
-            //may have to change this back
-            if (this.functionSegList[i] instanceof RepFuncSegmentModel) {
+            //convert instanceof to backbone version 
+            if (this.functionSegList[i] instanceof RepFuncSegment) {
                 return this.functionSegList[i].functionSegList[0].funcStart;
             }
         }
@@ -325,8 +315,8 @@ var EvolvingFunction = Backbone.Model.extend({
      */
     getEndRepeatEpoch: function() {
         for (var i = 0; i < this.functionSegList.length; i++) {
-            //may have to change this back 
-            if (this.functionSegList[i] instanceof RepFuncSegmentModel) {
+            //convert instanceof to backbone version 
+            if (this.functionSegList[i] instanceof RepFuncSegment) {
                 var len = this.functionSegList[i].functionSegList.length;
                 return this.functionSegList[i].functionSegList[len - 1].funcStop;
             }
@@ -343,8 +333,8 @@ var EvolvingFunction = Backbone.Model.extend({
      */
     getRepeatRepNum: function() {
         for (var i = 0; i < this.functionSegList.length; i++) {
-            //may have to change this back
-            if (this.functionSegList[i] instanceof RepFuncSegmentModel) {
+            //convert instanceof to backbone version 
+            if (this.functionSegList[i] instanceof RepFuncSegment) {
                 return this.functionSegList[i].repNum;
             }
         }
@@ -360,8 +350,8 @@ var EvolvingFunction = Backbone.Model.extend({
      */
     getRepeatAbsTime: function() {
         for (var i = 0; i < this.functionSegList.length; i++) {
-            //may have to change this back
-            if (this.functionSegList[i] instanceof RepFuncSegmentModel) {
+            //convert instanceof to backbone version 
+            if (this.functionSegList[i] instanceof RepFuncSegment) {
                 return this.functionSegList[i].absTime;
             }
         }
