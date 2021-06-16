@@ -64,7 +64,7 @@ var LinkInspector = Backbone.View.extend({
         this.cell = cell;
         this.link = model.getLinkByID(cell.attributes.linkID);
         // Selecting which template to render ACTOR-LINK or INTENTIONS-LINK
-        if (cell.prop('linktype')) {
+        if (cell.prop('linktype') == 'actorlink') {
             this.$el.html(_.template(this.actortemplate)());
             $('#actor-link').val(cell.prop("link-type"));
         } else {
@@ -125,7 +125,7 @@ var LinkInspector = Backbone.View.extend({
         } else {
             this.$el.html(_.template(this.template)());
             $('#constant-links').val(values[0].trim());
-            this.evolvingRelations = false;
+            this.evolvingRelations = false; 
         }
     },
 
@@ -166,11 +166,13 @@ var LinkInspector = Backbone.View.extend({
             
         } else {
             //Verify if it is possible to remove the NB tag from source and target
-            if (!this.hasNBLink(source, this.cell) && this.hasNBTag(source)){
-                source.attr(".funcvalue/text", "");
+            if (!this.hasNBLink(source, this.cell) && !this.hasNBTag(source)){
+                source.attr('.funcvalue/text', '');
+                source.attr('.satvalue/text', '');
             }
-            if (!this.hasNBLink(target, this.cell) && this.hasNBTag(target)){
-                target.attr(".funcvalue/text", "");
+            if (!this.hasNBLink(target, this.cell) && !this.hasNBTag(target)){
+                target.attr('.funcvalue/text', '');
+                target.attr('.satvalue/text', '');
             }
         }
 
@@ -220,9 +222,8 @@ var LinkInspector = Backbone.View.extend({
         //Enable the end select
         if (begin == "no") {
             this.setSelectValues('#link-type-end', 'Evolving');
-            $("#link-type-end").prop('disabled', true);
-            $("#link-type-end").css("background-color", "gray");
-            $("#repeat-error").text("");
+            $("#link-type-end").prop('disabled', false);
+            $("#link-type-end").css("background-color", "");
         } else if(begin == "and" || begin == "or") {
             this.setSelectValues('#link-type-end', 'A');
             $("#link-type-end").prop('disabled', false);
@@ -245,7 +246,7 @@ var LinkInspector = Backbone.View.extend({
             $("#repeat-error").css("color", "lightgreen");
         } else {
             this.setSelectValues('#link-type-end', "B");
-            $("#link-type-end").prop('disabled', '');
+            $("#link-type-end").prop('disabled', ''); 
             $("#link-type-end").css("background-color","");
         }
     },
@@ -265,7 +266,7 @@ var LinkInspector = Backbone.View.extend({
             '.marker-source': {'d': '0'},
             '.marker-target': {stroke: '#000000', "d": 'M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5'}
         });
-        this.cell.label(0, {position: 0.5, attrs: {text: {text: begin + " | " + end}}});
+        this.cell.label(0, {position: 0.5, attrs: {text: {text: begin + " | " + end}}}); 
 
         // save into link object
         this.link.linkType = begin;
@@ -344,9 +345,9 @@ var LinkInspector = Backbone.View.extend({
                 element.append($("<option></option>").attr("value", value).text(key));
             });
         } else if (type == "A") {
-            element.val("no");
-            $("#repeat-error").text("Saved!");
-            $("#repeat-error").css("color", "lightgreen");
+            $.each(relationA, function (value, key) {
+                element.append($("<option></option>").attr("value", value).text(key));
+            });
         } else if (type == "B") {
             $.each(relationB, function (value, key) {
                 element.append($("<option></option>").attr("value", value).text(key));

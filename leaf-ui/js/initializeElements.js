@@ -83,7 +83,6 @@ var linkInspector = new LinkInspector();
 var elementInspector = new ElementInspector();
 var configCollection = new ConfigCollection([]);
 var configInspector = new ConfigInspector({collection:configCollection});
-var analysisInspector = new AnalysisInspector();
 var actorInspector =  new ActorInspector();
 
 var currentHalo;
@@ -225,7 +224,7 @@ var oldSatValToBinary = {
 mode = "Modelling";		// 'Analysis' or 'Modelling'
 linkMode = "View";	// 'Relationships' or 'Constraints'
 
-graph = new joint.dia.Graph();
+graph = new joint.dia.BloomingGraph();
 
 graph.links = [];
 graph.intensionConstraints = [];
