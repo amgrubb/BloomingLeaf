@@ -139,41 +139,6 @@ $('#load-sample').on('click', function() {
     });
 });
 
-/** Analysis Configuration Sidebar */
-
-// /**
-//  * Adds a new AnalysisConfig
-//  */
-//  $('#addConfig').on('click', function(){
-//     addNewAnalysisConfig();
-// });
-
-// /**
-//  * Allows user to rename configuration element on doubleclick
-//  */
-// $(document).on('dblclick', '.config-elements', function(e){rename(e.target /** Config element */)});
-
-// /**
-//  * Switches UI to clicked configuration element
-//  */
-// $(document).on('click', '.config-elements', function(e){switchConfigs(e.target.closest('.analysis-configuration') /** Config element */)});
-   
-// /**
-//  * Toggles results dropdown menu on click of dropdown arrow
-//  */
-// $(document).on('click','.dropdown-button', function(e){toggleDropdown(e.target.closest('.analysis-configuration') /** Config element */)});
-
-// /**
-//  * Deletes configuration from UI and analysisMap on click of delete button
-//  */
-// $(document).on('click','.deleteconfig-button', function(e){removeConfiguration(e.target.closest('.analysis-configuration') /** Config element */)});
-
-// /**
-//  * Switches to clicked result and it's corresponding configuration in UI
-//  */
-// $(document).on('click', '.result-elements', function(e){switchResults(e.target /** Result element */, e.target.closest('.analysis-configuration') /** Config element */)})
-
-
 /**
  * Trigger when unassign button is pressed. 
  * Change the assigned time of the node/link in the same row to none
@@ -442,22 +407,6 @@ function switchToAnalysisMode() {
 	clearInspector();
 	
 	removeHighlight();
-
-    // // clear results if changed model during modeling mode
-    // let modelChanged = !(JSON.stringify(previousModel) === JSON.stringify(model));
-    // if (modelChanged){
-    //     clearResults();
-    // }
-
-    // // Checks if the user assignments list has changed since last switching to Assignments mode
-    // // If so, update UAL for all configs and then update defaultUAL 
-    // if(analysisRequest.userAssignmentsList !== defaultUAL){
-    //     for(let config of analysisMap.values()){
-    //         config.updateUAL(analysisRequest.userAssignmentsList);
-    //     }
-    //     defaultUAL = [];
-    //     analysisRequest.userAssignmentsList.forEach(uAL => defaultUAL.push(uAL));
-    // }
     
     $('#config').append(configInspector.el);
     configInspector.render();
@@ -697,8 +646,6 @@ $('#btn-clear-analysis').on('click', function() {
     clearAnalysisConfigSidebar();
     // remove all configs from analysisMap
     analysisMap.clear();
-	// add back first default analysis config
-    addFirstAnalysisConfig();
     // reset graph to initial values
     revertNodeValuesToInitial();
 });
