@@ -1,54 +1,3 @@
-// var FuncSegmentModel = Backbone.Model.extend({
-//     idAttribute: "uid",
-
-//     initialize: function(options) { 
-//         this.funcType = options.funcType;
-//         this.funcX = options.funcX;
-//         this.funcStart = options.funcStart;
-//         this.funcStop = options.funcStop;
-//     }
-
-// });    
-
-// var RepFuncSegmentModel = Backbone.Model.extend({
-//     idAttribute: "uid",
-
-//     initialize: function(options) { 
-//         this.functionSegList = options.functionSegList; 
-//         this.repNum = options.repNum; 
-//         this.absTime = options.absTime; 
-//     }
-
-// });     
-
-// FuncSegCollection = Backbone.Collection.extend({
-//     model: FuncSegmentModel,
-  
-//     getModel: function(){
-//       return this.at[0];
-//     }
-// });
-
-// RepFuncCollection = Backbone.Collection.extend({
-//     model: RepFuncSegmentModel,
-  
-//     getModel: function(){
-//       return this.at[0];
-//     }
-// });
-
-// //create instances of the model 
-// var ml = new FuncSegmentModel();
-// var m2 = new RepFuncSegmentModel();
-
-// //define new collections 
-// var col_1 = new FuncSegCollection([m1]); 
-// var col_2 = new RepFuncCollection([m2]);
-
-// //retrieve models 
-// var retrieved_1 = col_1.getModel();
-// var retrieved_2 = col_2.getModel(); 
-
 /** This file contains backbone model representations of the original model objects - WIP */
 
 var EvolvingFunction = Backbone.Model.extend({
@@ -64,6 +13,7 @@ var EvolvingFunction = Backbone.Model.extend({
         var RepFuncSegment = new RepFuncSegmentModel();
         var RepFuncSegmentOptions = ; // Have to eventually add all of the RepFuncSegment parameters here
         RepFuncSegment.initialize(RepFuncSegmentOptions);
+ 
     }, 
  
     defaults: { 
