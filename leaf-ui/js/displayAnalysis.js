@@ -82,7 +82,6 @@ function createSlider(currentAnalysis, isSwitch) {
  * Reset display to default, before result is displayed
  */
 function hideAnalysis() {
-    refreshAnalysisUI();
     revertNodeValuesToInitial();
     EVO.switchToModelingMode();
     // show modeling mode EVO slider
@@ -178,52 +177,6 @@ function updateNodeValues(nodeID, satValue) {
 }
 
 /**
- * Refreshes analysisRequest values in the UI 
- * in places such as the right sidebar and absolute time points field
- */
-function refreshAnalysisUI(){
-    $('#conflict-level').val(analysisRequest.conflictLevel);
-    $('#num-rel-time').val(analysisRequest.numRelTime);
-    $('#abs-time-pts').val(analysisRequest.absTimePtsArr);
-
-    // conflict-level and num-rel-time only interactive
-    // until results generated from configuration
-    if (currAnalysisConfig.analysisResults.length > 0){
-        $('#conflict-level').prop('disabled', true);
-        $('#num-rel-time').prop('disabled', true);
-        $('#abs-time-pts').prop('disabled', true);
-        $('#max-abs-time').prop('disabled', true);
-    } else {
-        $('#conflict-level').prop('disabled', false);
-        $('#num-rel-time').prop('disabled', false);
-        $('#abs-time-pts').prop('disabled', false);
-        $('#max-abs-time').prop('disabled', false);
-    }
-}
-
-/**
- * Ties Results to update UI and show associated results on click action
- */
-function switchResults(resultElement, configElement){
-    var currAnalysisId = configElement.id;
-    currAnalysisConfig = analysisMap.get(currAnalysisId);
-    var currAnalysisResults = currAnalysisConfig.analysisResults[resultElement.id];
-    analysisRequest = currAnalysisConfig.getAnalysisRequest();
-
-    // Update UI accordingly
-    ShadingResult(resultElement, configElement);
-    refreshAnalysisUI();
-    displayAnalysis(currAnalysisResults, true);
-    // show EVO analysis slider
-    $('#modelingSlider').css("display", "none");
-    $('#analysisSlider').css("display", "");
-
-    // perhaps it would be more useful to refresh EVO every time displayAnalysis() is called?
-    // since it switches to modeling mode every time hideAnalysis() is called
-    EVO.refresh();
-}
-
-/**
  * Reset global analysisRequest to default analysisRequest settings
  * while preserving userAssignmentsList
  */
@@ -234,18 +187,4 @@ function resetToDefault(){
     var defaultRequest = new AnalysisRequest();
     defaultRequest.userAssignmentsList = analysisRequest.userAssignmentsList;
     analysisRequest = defaultRequest;
-}
-
-/**
- * Updates shading so that correct configuration and result is highlighted 
- * when result is clicked
- * 
- * @param {JQueryElement} resultElement
- * @param {JQueryElement} configElement 
- */
-function switchSelectedShadingResult(resultElement, configElement){
-    $(".result-elements").css("background-color", "");
-    $(".config-elements").css("background-color", "");
-    $(resultElement).css("background-color", "#A9A9A9");
-    $(configElement.querySelector(".config-elements")).css("background-color","#A9A9A9");
 }

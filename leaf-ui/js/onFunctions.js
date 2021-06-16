@@ -646,10 +646,6 @@ $('#btn-clear-analysis').on('click', function() {
     revertNodeValuesToInitial();
 });
 
-$('#btn-clear-results').on('click', function() {
-    refreshAnalysisUI();
-});
-
 // Open as SVG
 $('#btn-svg').on('click', function() {
 	paper.openAsSVG();
