@@ -23,6 +23,8 @@
 
 /** This file contains backbone model representations of the original model objects - WIP */
 var EvolvingFunction = Backbone.Model.extend({
+    idAttribute: "uid",
+
     initialize: function(options) { 
         //this.intentionID = options.intentionID; 
         this.nodeID = options.nodeID;  
