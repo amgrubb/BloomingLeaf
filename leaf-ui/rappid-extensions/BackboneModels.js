@@ -2,16 +2,16 @@
 
 
 // FuncSegmentModel from FuncSegment class in modelObjects.js
-var FuncSegmentModel = Backbone.Model.extend({
+var FunctionSegmentBBM = Backbone.Model.extend({
     idAttribute: "uid",
 
     // initialize function - could also save all of the input parameters into one variable 
     // 'options' and then use that like Yesuegen 
     initialize: function (options) {
-        this.funcType = options.funcType;
-        this.funcX = options.funcX;
-        this.funcStart = options.funcStart;
-        this.funcStop = options.funcStop;
+        this.type = options.type;
+        this.refEvaluationValue = options.refEvaluationValue;
+        this.startTP = options.startTP;
+        this.stopTP = options.stopTP;
     },
 });
 
@@ -22,7 +22,7 @@ var RepFuncSegmentModel = Backbone.Model.extend({
     initialize: function(options) { 
         this.functionSegList = options.functionSegList; 
         this.repNum = options.repNum; 
-        this.absTime = options.absTime; 
+        this.absRepTime = options.absRepTime; 
     }
 
 });     
