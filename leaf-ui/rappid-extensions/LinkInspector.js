@@ -101,6 +101,7 @@ var LinkInspector = Backbone.View.extend({
                 this.endSwitchOff();
                 
             } else {
+                this.model.set('evolving', false);
                 this.$el.html(_.template(this.template)());
                 $('#constant-links').val(this.model.get('linkType'));            
             }
@@ -114,11 +115,11 @@ var LinkInspector = Backbone.View.extend({
 
     endSwitchOff: function (){
         console.log(this.model.get('selected'))
-        if (this.model.get('selected') || this.model.get('postType') !== null){
+        if (this.model.get('selected')){
            // console.log("hello?")
             $("#link-type-end").prop('disabled', false);
             $("#link-type-end").css("background-color", "");
-        } else if (!this.model.get('selected') && this.model.get('postType') == null) {
+        } else {
             //console.log("hello")
             $("#link-type-end").prop('disabled', true);
             $("#link-type-end").css("background-color", "gray");
@@ -135,11 +136,10 @@ var LinkInspector = Backbone.View.extend({
         var type = this.model.get('linkType');
         var postType = this.model.get('postType');
         var current = this.model.get('evolving');
-        console.log("selected: " + this.model.get('selected'))
         this.model.set('evolving', !current);
-        if(!current){
+        if(this.model.get('evolving')){
             if (postType !== null) {
-                //console.log(type + " " + postType)
+                console.log(type + " " + postType)
                 $('#link-type-begin').val(type); 
                 $('#link-type-end').val(postType);
             }
@@ -237,7 +237,7 @@ var LinkInspector = Backbone.View.extend({
     },
     // Generates the select values based on begin value
     updateBeginEvolRelations: function() {
-        //this.model.set('selected', true);
+        this.model.set('selected', true);
         $("#repeat-error").text("");
         var begin = $("#link-type-begin").val();
         var end = this.model.get('postType');
@@ -318,7 +318,6 @@ var LinkInspector = Backbone.View.extend({
                 "NBD": "Not Both (Denied)"
         };
 
-
         // set initial placeholder values
         if (selected) {
             element =  $("#link-type-end");
@@ -333,7 +332,7 @@ var LinkInspector = Backbone.View.extend({
 
         // the select options for Constant Relationship
         if (relation == 'Constant') {
-           // console.log("constant")
+            console.log("constant")
             $.each(relationA, function (value, key) {
                 element.append($("<option></option>").attr('value', value).text(key));
             });
@@ -345,7 +344,7 @@ var LinkInspector = Backbone.View.extend({
                 element.append($("<option></option>").attr("value", value).text(key));
             });
         } else if(relation == 'Evolving') {
-           // console.log("evolving")
+            console.log("evolving")
             $.each(relationA, function (value, key) {
                 element.append($("<option></option>").attr("value", value).text(key));
             });
@@ -353,12 +352,12 @@ var LinkInspector = Backbone.View.extend({
                 element.append($("<option></option>").attr("value", value).text(key));
             });
         } else if (relation == "A") {
-           // console.log("A")
+            console.log("A")
             $.each(relationA, function (value, key) {
                 element.append($("<option></option>").attr('value', value).text(key));
             });
         } else if (relation == "B") {
-            //console.log("B")
+            console.log("B")
             $.each(relationB, function (value, key) {
                 element.append($("<option></option>").attr("value", value).text(key));
             });

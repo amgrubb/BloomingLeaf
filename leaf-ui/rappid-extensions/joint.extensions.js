@@ -167,8 +167,7 @@ joint.shapes.basic.Resource = joint.shapes.basic.Intention.extend({
 
 joint.dia.cellLink = joint.dia.Link.extend({
     initialize: function(){
-        this.listenTo(this, 'change:relationship', this.checktRel);
-        this.listenTo(this, 'change:evolving', this.checktEvolve);
+        this.listenTo(this, 'change:type', this.checktType)
     },
     defaults: joint.util.deepSupplement({
         type: 'Intention',
@@ -183,15 +182,9 @@ joint.dia.cellLink = joint.dia.Link.extend({
     linkDestID: null,
     absoluteValue: -1,
 
-    checkRel: function(){
-        if (this.get('relationship')== 'constant'){
-           // this.set('evolving', false);
-            this.set('selected', false);
-        }
-    },
-    checkEvolve: function(){
-        if (!this.get('evolving')){
-            this.set('relationship', 'Constant');
+    checkType: function(){
+        if (this.get('type')== 'Actor'){
+            this.set('evolving', false);
             this.set('selected', false);
         }
     }
