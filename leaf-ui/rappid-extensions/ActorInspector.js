@@ -13,10 +13,10 @@ var ActorInspector = Backbone.View.extend({
             '<label>Actor name</label>',
             '<textarea class="cell-attrs-text" maxlength=100> <%= actorName %> </textarea>',
             '<label> Actor type </label>',
-            '<select class="actor-type">',
-            '<option value=A> Actor </option>',
-            '<option value=G> Agent </option>',
-            '<option value=R> Role </option>',
+            '<select id="actor-type-ID" class="actor-type">',
+            '<option value=A <%if (actorType === "A")  { %> selected <%} %>> Actor </option>',
+            '<option value=G <%if (actorType === "G")  { %> selected <%} %>> Agent </option>',
+            '<option value=R <%if (actorType === "R")  { %> selected <%} %>> Role </option>',
             '</select>',
             '</div>',
             '</script>'
@@ -25,7 +25,7 @@ var ActorInspector = Backbone.View.extend({
     
         events: {
             'keyup .cell-attrs-text': 'nameAction',
-            'change .actor-type': 'updateType', 
+            'change #actor-type-ID': 'updateType', 
             'clearInspector .inspector-views': 'removeView',
         },
 
@@ -35,8 +35,6 @@ var ActorInspector = Backbone.View.extend({
         render: function() {
             // If the clicked node is an actor, render the actor inspector
             this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
-            var actorType = this.model.get('actorType');
-            $('.actor-type').val(actorType);
         },
 
 
@@ -68,7 +66,7 @@ var ActorInspector = Backbone.View.extend({
          * Changes the line that distinguishes the type of actor 
          */
         updateType: function(){
-            this.model.set('actorType', this.$('.actor-type').val());
+            this.model.set('actorType', this.$('#actor-type-ID').val());
         },
         /**
          * Changes the line that distinguishes the type of actor 
