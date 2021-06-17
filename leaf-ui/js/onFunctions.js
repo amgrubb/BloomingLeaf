@@ -1185,7 +1185,6 @@ graph.on('remove', function(cell) {
 function clearInspector() {
 	elementInspector.clear();
 	linkInspector.clear();
-	//actorInspector.clear();
 
     // Clear any analysis sidebar views
     if($('.inspector-views').length != 0){

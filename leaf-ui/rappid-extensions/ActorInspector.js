@@ -27,7 +27,6 @@ var ActorInspector = Backbone.View.extend({
             'keyup .cell-attrs-text': 'nameAction',
             'change .actor-type': 'updateType', 
             'clearInspector .inspector-views': 'removeView',
-
         },
 
         /**
