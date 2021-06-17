@@ -3,25 +3,35 @@
 /** 
  * Backbone for UserEvaluation 
  * */ 
-var UserEvaluationModel = Backbone.Model.extend({  
+var UserEvaluationBBM = Backbone.Model.extend({  
     //Take in properties
     initialize: function(options){ //Named arguments and passes in parameter
         this.intentionID = options.intentionID; 
-        this.absTime = options.absTime;
-        this.evaluationValue = options.evaluationValue;
+        this.absTP = options.absTP;
+        this.assignedValue = options.assignedValue;
     }
 });
 
 /** 
  * Backbone for Constraint 
  * */
-var ConstraintModel = Backbone.Model.extend({
+var ConstraintBBM = Backbone.Model.extend({
     initialize: function(options){ //Named arguments and passes in parameter
-        this.constraintType = options.constraintType;
-        this.constraintSrcID = options.constraintSrcID;
-        this.constraintSrcEB = options.constraintSrcEB;
-        this.constraintDestID = options.constraintDestID;
-        this.constraintDestEB = options.constraintDestEB;
-        this.absoluteValue = -1;
-    }
+        this.type = options.type;
+        this.srcID = options.srcID;
+        this.srcRefTP = options.srcRefTP;
+        this.destID = options.destID;
+        this.destEB = options.destEB;
+        if (this.absTP != 'undefined') {
+            if (type  == '<' || type == '<='){
+                this.absTP = null; 
+            }
+            else{
+                this.absTP = this.absTP;
+            }
+        }
+    },
+    defaults: {
+        absTP: -1, 
+    },
 });
