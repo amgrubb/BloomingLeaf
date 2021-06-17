@@ -4,7 +4,6 @@ var IntentionBBM = Backbone.Model.extend({
     //not sure if this is correct(?)
     nodeID: this.createID(), 
 
-    //might have to change these two 
     initialize: function(options) { 
         this.nodeActorID = options.nodeActorID; 
         this.nodeType = options.nodeType; 
@@ -30,7 +29,8 @@ var IntentionBBM = Backbone.Model.extend({
         // change the function segment's marked value
 
         var funcSegList = this.dynamicFunction.functionSegList;
-
+        
+        //do we still need this? 
         // if (this.dynamicFunction.stringDynVis == 'C' ||
         //     (this.dynamicFunction.stringDynVis == 'UD' && funcSegList[0].funcType == 'C')) {
         //     funcSegList[0].funcX = initValue;
@@ -154,7 +154,8 @@ var IntentionBBM = Backbone.Model.extend({
 
         var initValue = analysisRequest.getUserEvaluationByID(this.nodeID, '0').evaluationValue;
 
-        //have to change all isntances of FuncSegment to FuncSegmentBBM 
+        // All instances of FuncSegment have been changed to FuncSegmentBBM and the initialization process has 
+        // also been changed accordingly 
         if (funcType == 'C' || funcType == 'R' || funcType == 'I' || funcType == 'D' || funcType == 'UD') {
             if (funcType == 'C') {
                 //var seg = new FuncSegment(funcType, initValue, '0', 'Infinity');
@@ -192,7 +193,6 @@ var IntentionBBM = Backbone.Model.extend({
                 seg2.initialize(seg2_options);
             } else if (funcType == 'CR') {
                 // Constant and Stochastic
-                //will likely have to change the formatting of the parameters
                 // var seg1 = new FuncSegment('C', initValue, '0', 'A');
                 var seg1 =  new FuncSegmentBBM(); 
                 var seg1_options = ({funcType: 'C', funcX: initValue, funcStart: '0', funcStop: 'A'}); 
@@ -213,7 +213,6 @@ var IntentionBBM = Backbone.Model.extend({
                 seg2.initialize(seg2_options);
             } else if (funcType == 'MN') {
                 // Decrease and Constant
-                //will likely have to change the formatting of the parameters
                 // var seg1 = new FuncSegment('D', null, '0', 'A');
                 var seg1 =  new FuncSegmentBBM(); 
                 var seg1_options = ({funcType: 'D', funcX: null, funcStart: '0', funcStop: 'A'}); 
@@ -224,7 +223,6 @@ var IntentionBBM = Backbone.Model.extend({
                 seg2.initialize(seg2_options);
             } else if (funcType == 'SD') {
                 // Constant and Constant
-                //will likely have to change the formatting of the parameters
                 // var seg1 = new FuncSegment('C', '0011', '0', 'A');
                 var seg1 =  new FuncSegmentBBM(); 
                 var seg1_options = ({funcType: 'C', funcX: '0011', funcStart: '0', funcStop: 'A'}); 
@@ -236,7 +234,6 @@ var IntentionBBM = Backbone.Model.extend({
                 analysisRequest.getUserEvaluationByID(this.nodeID, "0").evaluationValue = '0011';
             } else if (funcType == 'DS') {
                 // Constant and Constant
-                //will likely have to change the formatting of the parameters for 209-210 
                 // var seg1 = new FuncSegment('C', '1100', '0', 'A');
                 var seg1 =  new FuncSegmentBBM(); 
                 var seg1_options = ({funcType: 'C', funcX: '1100', funcStart: '0', funcStop: 'A'}); 
@@ -265,7 +262,7 @@ var IntentionBBM = Backbone.Model.extend({
     addAbsConst: function(funcType) {
         if (funcType == 'RC' || funcType == 'CR' || funcType == 'MP' ||
             funcType == 'MN' || funcType == 'SD' || funcType == 'DS') {
-            //will eventually changed to ConstrainModel
+            //will eventually changed to the backbone version 
             model.constraints.push(new Constraint('A', this.nodeID, 'A', null, null));
         }
     }, 
@@ -326,7 +323,8 @@ var IntentionBBM = Backbone.Model.extend({
         new_model.initialize(model_options); 
         //this.dynamicFunction.functionSegList.push(new FuncSegment(funcType, satValue, start, stop));
         this.dynamicFunction.functionSegList.push(new_model); 
-        //will eventually changed to ConstrainModel
+
+        //will eventually changed to the backbone version 
         model.constraints.push(new Constraint('A', this.nodeID, start, null, null));
 
     }, 
@@ -378,6 +376,7 @@ var IntentionBBM = Backbone.Model.extend({
 
         var lastObj = funcSegList[funcSegLen - 1];
 
+        // If instance of funcsegment backbone model 
         if (lastObj instanceof FuncSegmentBBM) {
             lastObj.funcX = satVal;
 
