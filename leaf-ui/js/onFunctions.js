@@ -108,16 +108,7 @@ $('#btn-save-assignment').on('click', function() {
  * Switches to Analysis view iff there are no cycles and no syntax errors.
  */
 $('#analysis-btn').on('click', function() {
-/*     syntaxCheck();
-
-    var cycleList = cycleSearch();
-    cycleResponse(cycleList); //If there are cycles, then display error message. Otherwise, remove any "red" elements.
-
-    if(!isACycle(cycleList)) {
-        clearCycleHighlighting();
-        switchToAnalysisMode();
-    } */
-    
+    //TODO: Add back in cycle detection after backbone migration.
     switchToAnalysisMode();
 });
 
