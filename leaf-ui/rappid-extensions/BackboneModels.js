@@ -16,11 +16,11 @@ var FunctionSegmentBBM = Backbone.Model.extend({
 });
 
 //RepFuncSegmentMOdel from RepFuncSegment class in modelObjects.js
-var RepFuncSegmentBBM = Backbone.Model.extend({
+var RepFunctionSegmentBBM = Backbone.Model.extend({
     idAttribute: "uid",
 
     initialize: function(options) { 
-        // this functionSegList is an array of all of the FunctionSegmentBBMs in the RepFuncSegmentBBM
+        // this functionSegList is an array of all of the FunctionSegmentBBMs in this BBM
         this.functionSegList = options.functionSegList; 
         this.repNum = options.repNum; 
         this.absRepTime = options.absRepTime; 
