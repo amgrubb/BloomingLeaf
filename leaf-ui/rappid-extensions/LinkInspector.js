@@ -61,6 +61,8 @@ var LinkInspector = Backbone.View.extend({
 
     //Method to create the Link Inspector using the template.
     render: function(cell) {
+        var staff = new LinkBB();
+        console.log(staff);
         this.cell = cell;
         this.link = model.getLinkByID(cell.attributes.linkID);
         // Selecting which template to render ACTOR-LINK or INTENTIONS-LINK

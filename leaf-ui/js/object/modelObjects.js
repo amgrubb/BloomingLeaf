@@ -345,10 +345,10 @@ class Link {
      */
     createID() {
         var id = Link.numOfCreatedInstances.toString();
-        Link.numOfCreatedInstances += 1;
         while (id.length < 4){
             id = '0' + id;
         }
+        Link.numOfCreatedInstances += 1;
         return id;
     }
 

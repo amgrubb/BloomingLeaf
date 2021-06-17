@@ -1,5 +1,5 @@
 /** This file contains backbone model representations of the original model objects - WIP */
-var LinkCollection = Backbone.Collection.extend({
+/**var LinkCollection = Backbone.Collection.extend({
     defaults: {
         numOfCreatedInstances: 0,
     },
@@ -11,12 +11,9 @@ var LinkCollection = Backbone.Collection.extend({
         this.collection.numOfCreatedInstances += 1;
         return id;
     },
-})
+})*/
 var LinkBB = Backbone.Model.extend({
-    collection: LinkCollection,
-    initialize: function(){
-        this.listenTo(this, 'change:type', this.checkType);
-    },
+    
     /**
      * {String} linkType
      *   Type of the link. ex: 'AND', 'OR', 'NO', etc.
@@ -29,7 +26,7 @@ var LinkBB = Backbone.Model.extend({
      */
     defaults: {
         type: 'Intention',
-        linkID: creatID(),
+        linkID: new createID(),
         linkType: 'AND',
         postType: null,
         //these are for the other branch 
@@ -37,6 +34,7 @@ var LinkBB = Backbone.Model.extend({
         //selected: false,
         //relationship: 'Constant',
     },
+    numOfCreatedInstances: 0,
     absoluteValue: -1,
     linkSrcID: null,//isn't the same ID as the source? Maybe there is a way
     linkDestID: null,
@@ -48,5 +46,13 @@ var LinkBB = Backbone.Model.extend({
     },
     isEvolvingRelationship: function() {
         return this.postType != null;
+    },
+    createID: function(){
+        var id = this.numOfCreatedInstances.toString();
+        while (id.length < 4){
+            id = '0' + id;
+        }
+        this.numOfCreatedInstances += 1;
+        return id;
     },
 })
