@@ -4,12 +4,13 @@ var LinkInspector = Backbone.View.extend({
     model: joint.dia.Celllink,
 
     initialize:function(){
-        this.listenTo(this.model,'change:evolving', this.render);
-        this.listenTo(this.model,'change:relationship', this.setSelectValues);
-        this.listenTo(this.model,'change:selected', this.endSwitchOff);
+        //this.listenTo(this.model,'change:evolving', this.render);
+        //this.listenTo(this.model,'change:relationship', this.setSelectValues);
+        //this.listenTo(this.model,'change:selected', this.endSwitchOff);
     },
 
     template: [
+        '<script type="text/template" id="item-template">',
         '<label id="title">Constant Relationship</label>',
         '<br>',
         '<div class="inspector-views">',
@@ -36,23 +37,57 @@ var LinkInspector = Backbone.View.extend({
             '<button id="switch-link-type" class="inspector-btn small-btn blue-btn">Evolving Relationships</button>',
         '<br>',
         '</div>',
+		'</script>'
     ].join(''),
 
     evolvingtemplate : [
+        '<script type="text/template" id="item-template">',
             '<label id="title">Evolving Relationship</label>',
             '<br>',
             '<div class="inspector-views">',
             '<h5 id="repeat-error" class="inspector-error"></h5>',
             '<select id="link-type-begin" class="repeat-select">',
+                '<option value="NO">No Relationship</option>',
+                '<option value="AND">And-Decomposition</option>',
+                '<option value="OR">Or-Decomposition</option>',
+                '<option value="++">++</option>',
+                '<option value="--">--</option>',
+                '<option value="+">+</option>',
+                '<option value="-">-</option>',
+                '<option value="+S">+S</option>',
+                '<option value="++S">++S</option>',
+                '<option value="-S">-S</option>',
+                '<option value="--S">--S</option>',
+                '<option value="+D">+D</option>',
+                '<option value="++D">++D</option>',
+                '<option value="-D">-D</option>',
+                '<option value="--D">--D</option>',
             '</select>',
-            '<select id="link-type-end" class="repeat-select">',
+            '<select id="link-type-end" class="repeat-select" <% if (!selected) {%> disabled= true style = "background-color:gray" <%} %>>',
+                '<option value="NO" <% if (linkType === "NO") {%> style= "display:none" <%} %>>No Relationship</option>',
+                '<option value="AND" <% if (linkType === "AND" || relationship === "B") {%> style= "display:none" <%}%>>And-Decomposition</option>',
+                '<option value="OR" <% if (linkType === "OR" || relationship === "B") {%> style= "display:none" <%}%>>Or-Decomposition</option>',
+                '<option value="++" <% if (linkType === "++" || relationship === "A") {%> style= "display:none" <%}%>>++</option>',
+                '<option value="--" <% if (linkType === "--" || relationship === "A") {%> style= "display:none" <%}%>>--</option>',
+                '<option value="+" <% if (linkType === "+" || relationship === "A") {%> style= "display:none" <%}%>>+</option>',
+                '<option value="-" <% if (linkType === "-" || relationship === "A") {%> style= "display:none" <%}%>>-</option>',
+                '<option value="+S" <% if (linkType === "+S" || relationship === "A") {%> style= "display:none" <%}%>>+S</option>',
+                '<option value="++S" <% if (linkType === "++S" || relationship === "A") {%> style= "display:none" <%}%>>++S</option>',
+                '<option value="-S" <% if (linkType === "-S" || relationship === "A") {%> style= "display:none" <%}%>>-S</option>',
+                '<option value="--S" <% if (linkType === "--S" || relationship === "A") {%> style= "display:none" <%}%>>--S</option>',
+                '<option value="+D" <% if (linkType === "+D" || relationship === "A") {%> style= "display:none" <%}%>>+D</option>',
+                '<option value="++D" <% if (linkType === "++D" || relationship === "A") {%> style= "display:none" <%}%>>++D</option>',
+                '<option value="-D" <% if (linkType === "-D" || relationship === "A") {%> style= "display:none" <%}%>>-D</option>',
+                '<option value="--D" <% if (linkType === "--S" || relationship === "A") {%> style= "display:none" <%}%>>--D</option>',
             '</select>',
             '<button id="switch-link-type" class="inspector-btn small-btn blue-btn">Constant Relationships</button>',
             '<br>',
             '</div>',
+            '</script>'
     ].join(''),
 
     actortemplate: [
+        '<script type="text/template" id="item-template">',
             '<label> Link Type </label> <br>',
             '<div class="inspector-views">',
             '<select id="actor-link" class="link-type">',
@@ -61,6 +96,7 @@ var LinkInspector = Backbone.View.extend({
                 '<option value="is-part-of">is-part-of</option>',
             '</select><br>',
             '</div>',
+            '</script>'
         ].join(''),
 
 
@@ -77,32 +113,33 @@ var LinkInspector = Backbone.View.extend({
     render: function() {
         // Selecting which template to render ACTOR-LINK or INTENTIONS-LINK
         if (this.model.get('type') == "Actor") {
-            this.$el.html(_.template(this.actortemplate)());
+            this.$el.html(_.template($(this.actortemplate).html())(this.model.toJSON()));;
             $('#actor-link').val(this.model.get('linkType'));
         } else {
 
-            if (this.model.get('evolving')) {
+            if (this.model.get('evolving')) {//something wrong in reading in the linktypes for dropdown, click gear multiple times
                 //this.model.set('evolving', true);
-               // console.log(this.model);
-                this.$el.html(_.template(this.evolvingtemplate)());
+                console.log(this.model.get('linkType') + " " + this.model.get('postType'));
+                this.$el.html(_.template($(this.evolvingtemplate).html())(this.model.toJSON()));;
+                console.log(this.model.toJSON())
                 //this.model.set('selected', false);//these two = setlectValues
-                this.model.set('relationship', 'Evolving');
-
-                if (['AND', 'OR', 'NO'].includes(this.model.get('linkType'))){
-                    $('#link-type-end').val(this.model.get('linkType').toLowerCase());
-                }else{
-                    $('#link-type-begin').val(this.model.get("linkType"));
+                if (this.model.get('postType') !== null) {
+                    if (['AND', 'OR', 'NO'].includes(this.model.get('linkType'))){
+                        $('#link-type-begin').val(this.model.get('linkType').toLowerCase());
+                    }else{
+                        $('#link-type-begin').val(this.model.get("linkType"));
+                    }
+                    $('#link-type-end').val(this.model.get('postType'));
+                    this.updateBeginEvolRelations();
+                    this.updateEndEvolRelations();
                 }
                 
-                $('#link-type-end').val(this.model.get('postType'));
-                
-                //this.updateBeginEvolRelations();
 
                 this.endSwitchOff();
                 
             } else {
                 this.model.set('evolving', false);
-                this.$el.html(_.template(this.template)());
+                this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
                 $('#constant-links').val(this.model.get('linkType'));            
             }
         }
@@ -113,18 +150,6 @@ var LinkInspector = Backbone.View.extend({
         this.remove();
     },
 
-    endSwitchOff: function (){
-        console.log(this.model.get('selected'))
-        if (this.model.get('selected')){
-           // console.log("hello?")
-            $("#link-type-end").prop('disabled', false);
-            $("#link-type-end").css("background-color", "");
-        } else {
-            //console.log("hello")
-            $("#link-type-end").prop('disabled', true);
-            $("#link-type-end").css("background-color", "gray");
-        }
-    },
 
     /**
      * Switches from Constant Relationship to Evolving Relationship
@@ -138,17 +163,18 @@ var LinkInspector = Backbone.View.extend({
         var current = this.model.get('evolving');
         this.model.set('evolving', !current);
         if(this.model.get('evolving')){
+            this.$el.html(_.template($(this.evolvingtemplate).html())(this.model.toJSON()));;
             if (postType !== null) {
-                console.log(type + " " + postType)
                 $('#link-type-begin').val(type); 
+                this.updateBeginEvolRelations();
                 $('#link-type-end').val(postType);
             }
-            this.model.set('relationship', 'Evolving');
         }else {
-            this.$el.html(_.template(this.template)());
+            this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
             $('#constant-links').val(type);
-            this.model.set('relationship', 'Constant');
+            //this.model.set('selected', false);
         }
+        //console.log("switched")
     },
 
     /**
@@ -277,6 +303,7 @@ var LinkInspector = Backbone.View.extend({
 
         $("#repeat-error").text("Saved!");
         $("#repeat-error").css("color", "lightgreen");
+        //this.model.set('selected', false);
 
     },
 
@@ -292,8 +319,10 @@ var LinkInspector = Backbone.View.extend({
      * Valid types: 'Constant', 'Evolving', 'A', 'B'
      */
     setSelectValues: function(){
+        //console.log("start running ")
+        //console.log(" ")
         var selected = this.model.get('selected');
-        var element; 
+        var element =  $("#link-type-end");
 
         var relationA = {"and": "And-Decomposition",
                          "or": "Or-Decomposition"};
@@ -313,38 +342,23 @@ var LinkInspector = Backbone.View.extend({
                 "--D": "--D"
         };
 
-        var relationConst = {
-                "NBT": "Not Both (None)",
-                "NBD": "Not Both (Denied)"
-        };
-
         // set initial placeholder values
         if (selected) {
-            element =  $("#link-type-end");
-            element.html('<option class="select-placeholder" selected disabled value="">End</option>');
+            if (this.model.get('postType') == null){
+                element.html('<option class="select-placeholder" selected disabled value="">End</option>');
+            }
         }else {
-            element =  $("#link-type-begin");
             element.html('<option class="select-placeholder" selected disabled value="">Begin</option>'); 
         }
+
 
         element.append($('<option></option>').val("no").html("No Relationship"));
         var relation = this.model.get('relationship');
 
         // the select options for Constant Relationship
-        if (relation == 'Constant') {
-            console.log("constant")
-            $.each(relationA, function (value, key) {
-                element.append($("<option></option>").attr('value', value).text(key));
-            });
 
-            $.each(relationB, function (value, key) {
-                    element.append($("<option></option>").attr("value", value).text(key));
-            });
-            $.each(relationConst, function (value, key) {
-                element.append($("<option></option>").attr("value", value).text(key));
-            });
-        } else if(relation == 'Evolving') {
-            console.log("evolving")
+    
+        if(relation == 'Evolving') {
             $.each(relationA, function (value, key) {
                 element.append($("<option></option>").attr("value", value).text(key));
             });
@@ -352,12 +366,10 @@ var LinkInspector = Backbone.View.extend({
                 element.append($("<option></option>").attr("value", value).text(key));
             });
         } else if (relation == "A") {
-            console.log("A")
             $.each(relationA, function (value, key) {
                 element.append($("<option></option>").attr('value', value).text(key));
             });
         } else if (relation == "B") {
-            console.log("B")
             $.each(relationB, function (value, key) {
                 element.append($("<option></option>").attr("value", value).text(key));
             });
@@ -368,5 +380,8 @@ var LinkInspector = Backbone.View.extend({
             var dupVal = $('#link-type-begin').val();
             $("select#link-type-end option").filter("[value='" + dupVal + "']").remove();
         }
+
+        //console.log("Finished running ")
+        //console.log(" ")
     },
 });
