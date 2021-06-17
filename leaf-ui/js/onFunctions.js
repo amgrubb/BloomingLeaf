@@ -11,8 +11,23 @@ It also contains the setup for Rappid elements.
  $('#btn-fnt').on('click', function(){ defaultFont(paper);});
  $('#btn-fnt-up').on('click', function(){  fontUp(paper);});
  $('#btn-fnt-down').on('click', function(){ fontDown(paper);}); 
- $('#legend').on('click', function(){ window.open('legend.html', 'newwindow', 'width=300, height=250'); return false;});
- $('#evo-color-key').on('click', function(){ window.open('evo.html', 'newwindow', 'width=500, height=400'); return false;});
+ $('#legend').on('click', function(){ window.open('./userguides/legend.html', 'newwindow', 'width=300, height=250'); return false;});
+ $('#evo-color-key').on('click', function(){ window.open('./userguides/evo.html', 'newwindow', 'width=500, height=400'); return false;});
+
+/**
+ * General javascript for user interaction
+ * When the user clicks anywhere outside of the a pop up, close it
+ */
+window.onclick = function(event) {
+	var modal = document.getElementById('assignmentsModal');
+	var intermT = document.getElementById('intermediateTable');
+    if (event.target == modal) {
+  	    modal.style.display = "none";
+    }
+	if(event.target == intermT){
+		intermT.style.display = "none";
+	}
+}
 
 /**
  * Closes Assignments Table
@@ -134,6 +149,9 @@ $('#analysis-btn').on('click', function() {
     }
 });
 
+/** For Load Sample Model button */
+
+/** 
 $('#load-sample').on('click', function() {
 
     $.getJSON('http://www.cs.toronto.edu/~amgrubb/archive/REJ-Supplement/S1Frag.json', function(myData){		
@@ -142,41 +160,7 @@ $('#load-sample').on('click', function() {
         reader.readAsText(newModel);  	
     });
 });
-
-/** Analysis Configuration Sidebar */
-
-// /**
-//  * Adds a new AnalysisConfig
-//  */
-//  $('#addConfig').on('click', function(){
-//     addNewAnalysisConfig();
-// });
-
-// /**
-//  * Allows user to rename configuration element on doubleclick
-//  */
-// $(document).on('dblclick', '.config-elements', function(e){rename(e.target /** Config element */)});
-
-// /**
-//  * Switches UI to clicked configuration element
-//  */
-// $(document).on('click', '.config-elements', function(e){switchConfigs(e.target.closest('.analysis-configuration') /** Config element */)});
-   
-// /**
-//  * Toggles results dropdown menu on click of dropdown arrow
-//  */
-// $(document).on('click','.dropdown-button', function(e){toggleDropdown(e.target.closest('.analysis-configuration') /** Config element */)});
-
-// /**
-//  * Deletes configuration from UI and analysisMap on click of delete button
-//  */
-// $(document).on('click','.deleteconfig-button', function(e){removeConfiguration(e.target.closest('.analysis-configuration') /** Config element */)});
-
-// /**
-//  * Switches to clicked result and it's corresponding configuration in UI
-//  */
-// $(document).on('click', '.result-elements', function(e){switchResults(e.target /** Result element */, e.target.closest('.analysis-configuration') /** Config element */)})
-
+*/
 
 /**
  * Trigger when unassign button is pressed. 
@@ -446,29 +430,10 @@ function switchToAnalysisMode() {
 	clearInspector();
 	
 	removeHighlight();
-
-    // // clear results if changed model during modeling mode
-    // let modelChanged = !(JSON.stringify(previousModel) === JSON.stringify(model));
-    // if (modelChanged){
-    //     clearResults();
-    // }
-
-    // // Checks if the user assignments list has changed since last switching to Assignments mode
-    // // If so, update UAL for all configs and then update defaultUAL 
-    // if(analysisRequest.userAssignmentsList !== defaultUAL){
-    //     for(let config of analysisMap.values()){
-    //         config.updateUAL(analysisRequest.userAssignmentsList);
-    //     }
-    //     defaultUAL = [];
-    //     analysisRequest.userAssignmentsList.forEach(uAL => defaultUAL.push(uAL));
-    // }
     
-	analysisInspector.render();
-	$('.inspector').append(analysisInspector.el);
     $('#config').append(configInspector.el);
     configInspector.render();
 	$('#stencil').css("display", "none");
-    //$('#analysis-sidebar').css("display","");
 
     $('#analysis-btn').css("display", "none");
 	$('#symbolic-btn').css("display", "none");
@@ -575,7 +540,6 @@ function switchToModellingMode() {
     $('#analysis-sidebar').css("display","none");
     $('#btn-view-assignment').css("display","");
     $('#analysis-btn').css("display","");
-    //$('#analysis-sidebar').css("display","none");
 	$('#symbolic-btn').css("display","");
 	$('#cycledetect-btn').css("display","");
     $('#dropdown-model').css("display","none");
@@ -646,8 +610,6 @@ $('#btn-clear-all').on('click', function(){
     graph.clear();
     // reset to default analysisRequest
     model.removeAnalysis();
-    // clear analysis sidebar
-    clearAnalysisConfigSidebar();
     // remove all configs from analysisMap
     analysisMap.clear();
 	// Delete cookie by setting expiry to past date
@@ -699,21 +661,16 @@ $('#btn-clear-cycle').on('click',function(){
 });
 
 $('#btn-clear-analysis').on('click', function() {
+    // TODO: Re-Implement for backbone view
+    
     // reset to default analysisRequest while preserving userAssignmentsList
     resetToDefault();
-    // clear analysis sidebar
-    clearAnalysisConfigSidebar();
-    // remove all configs from analysisMap
-    analysisMap.clear();
-	// add back first default analysis config
-    addFirstAnalysisConfig();
     // reset graph to initial values
     revertNodeValuesToInitial();
 });
 
 $('#btn-clear-results').on('click', function() {
-    clearResults();
-    refreshAnalysisUI();
+    // TODO: Re-implement for backbone view
 });
 
 // Open as SVG
@@ -1190,8 +1147,12 @@ graph.on('remove', function(cell) {
 function clearInspector() {
 	elementInspector.clear();
 	linkInspector.clear();
-	analysisInspector.clear();
 	actorInspector.clear();
+
+    // Clear any analysis sidebar views
+    if($('.inspector-views').length != 0){
+        $('.inspector-views').trigger('clearInspector');
+    }
 }
 
 

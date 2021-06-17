@@ -67,10 +67,10 @@
             <div class="dropdown">
               <div class="btn">Help</div>
               <div class="dropdown-toolbar">
-                <a href="/documentation.pdf" download='documentation.pdf'">Download Documentation</a>
+                <a href="./userguides/documentation.pdf" download='documentation.pdf'">Download Documentation</a>
                 <a id="legend">Legend</a>
                 <a id="evo-color-key">EVO Color Key</a>
-                <a id="load-sample">Load Sample Model</a>
+                <!-- <a id="load-sample">Load Sample Model</a> --> 
                 <a id = "colorblind-mode-isOff"> Turn on EVO Colorblind Mode</a>
                 <a id = "colorblind-mode-isOn" style='display: none'> Turn off EVO Colorblind Mode</a>
               </div>
@@ -165,10 +165,12 @@
         <script src="./js/object/viewObjects.js"></script>
 
         <!--Rappid extension files-->
+        <script src="./rappid-extensions/BackboneModels.js"></script>
         <script src="./rappid-extensions/AnalysisModels.js"></script>
         <script src="./rappid-extensions/AssignmentsTable.js"></script>
         <script src="./rappid-extensions/ElementInspector.js"></script>
         <script src="./rappid-extensions/ConfigInspector.js"></script>
+        <script src="./rappid-extensions/IntermediateValues.js"></script>
         <script src="./rappid-extensions/ActorInspector.js"></script>
         <script src="./rappid-extensions/LinkInspector.js"></script>
         <script src="./rappid-extensions/AnalysisInspector.js"></script>
@@ -178,7 +180,6 @@
         <script src="./js/initializeElements.js"></script>
         <script src="./js/displayAnalysis.js"></script>
         <script src="./js/errorDetection.js"></script>
-        <script src="./js/keyboardFunctions.js"></script>
         <script src="./js/loadSaveFunctions.js"></script>
         <script src="./js/onFunctions.js"></script>
         <script src="./js/onFunctionsBothWindows.js"></script>
@@ -200,13 +201,13 @@
 		<script src="./js/object/InputLink.js"></script>
     <script src="./js/object/InputEvaluation.js"></script>
         <div class = "attribution">
-            <img src="site-logo.PNG" style="width:25%;height:25%;float:left">
+            <img src="./images/site-logo.PNG" style="width:25%;height:25%;float:left">
             Release 1.5 <br>
             Copyright 2015-2021.<br>Grubb Lab, Smith College<br>
             & University of Toronto. <br>
             All rights reserved.<br>
             Powered by: <br>
-            <img src="./jointjs.png" style="width:25%;height:25%;float:left">
+            <img src="./images/jointjs.png" style="width:25%;height:25%;float:left">
             Copyright 2014-2021.<br>client IO. All rights reserved.<br>
     		JointJS: an HTML 5 diagramming component.<br>
     		<a href=http://jointjs.com target="_blank">http://jointjs.com</a>
