@@ -39,32 +39,32 @@ $('#max-abs-time').on('change', function(){
  * Add relative intention row
  */
 $('.addIntention').on('click', function(){
-    var intentions = model.intentions;
-        var epochHtml1 = '<div class="epochLists" id="epoch1List"><select><option selected>...</option>';
-        var epochHtml2 =  '<div class="epochLists" id="epoch2List"><select><option selected>...</option>';
-        for (var i = 0; i < intentions.length; i++) {
+    // var intentions = model.intentions;
+    //     var epochHtml1 = '<div class="epochLists" id="epoch1List"><select><option selected>...</option>';
+    //     var epochHtml2 =  '<div class="epochLists" id="epoch2List"><select><option selected>...</option>';
+    //     for (var i = 0; i < intentions.length; i++) {
 
-            // if number of function segments >= 2, we have at least one transition
-            if (intentions[i].getNumOfFuncSegements() >= 2) {
-                var funcSegments = intentions[i].dynamicFunction.getFuncSegmentIterable();
-                for (var j = 0; j < funcSegments.length - 1; j++) {
-                    var epoch = funcSegments[j].funcStop;
-                    var newEpochHtml = '<option nodeID=' + intentions[i].nodeID + ' epoch=' + epoch + '>' + intentions[i].nodeName + ': ' + epoch + '</option>';
-                    epochHtml1 += newEpochHtml;
-                    epochHtml2 += newEpochHtml;
-                }
-            }
-        }
+    //         // if number of function segments >= 2, we have at least one transition
+    //         if (intentions[i].getNumOfFuncSegements() >= 2) {
+    //             var funcSegments = intentions[i].dynamicFunction.getFuncSegmentIterable();
+    //             for (var j = 0; j < funcSegments.length - 1; j++) {
+    //                 var epoch = funcSegments[j].funcStop;
+    //                 var newEpochHtml = '<option nodeID=' + intentions[i].nodeID + ' epoch=' + epoch + '>' + intentions[i].nodeName + ': ' + epoch + '</option>';
+    //                 epochHtml1 += newEpochHtml;
+    //                 epochHtml2 += newEpochHtml;
+    //             }
+    //         }
+    //     }
 
-        epochHtml1 += '</select></div>';
-        epochHtml2 += '</select></div>';
+    //     epochHtml1 += '</select></div>';
+    //     epochHtml2 += '</select></div>';
 
 
-        var relationship = '<div class="epochLists" id="relationshipLists"><select><option selected>...'+
-            '</option><option value="eq">=</option><option value="lt"><</option></select></div>'
+    //     var relationship = '<div class="epochLists" id="relationshipLists"><select><option selected>...'+
+    //         '</option><option value="eq">=</option><option value="lt"><</option></select></div>'
 
-        $('#rel-intention-assignents').append('<tr><td>' + epochHtml1 + '</td><td>' + relationship +
-            '</td><td>'+ epochHtml2 +'</td><td><i class="fa fa-trash-o fa-2x" id="removeIntention" aria-hidden="true"></i></td></tr>');
+    //     $('#rel-intention-assignents').append('<tr><td>' + epochHtml1 + '</td><td>' + relationship +
+    //         '</td><td>'+ epochHtml2 +'</td><td><i class="fa fa-trash-o fa-2x" id="removeIntention" aria-hidden="true"></i></td></tr>');
 });
 
 $(document.body).on('click', '#removeIntention', function(){
@@ -84,19 +84,23 @@ $(document.body).on('click', '#removeIntention', function(){
  * Displays the absolute and relative assignments modal for the user.
  */
 $('#btn-view-assignment').on('click', function() {
-	epochLists = [];
-	graph.constraintValues = [];
-	var modal = document.getElementById('assignmentsModal');
+    var currentConfig = configCollection.filter(configModel => configModel.get('selected'));
+    var assignmentsModal = new AssignmentsTable({model: graph}, {config: currentConfig[0]});
+    $('#assignments-list').append(assignmentsModal.el);
+    assignmentsModal.render();
+	// epochLists = [];
+	// graph.constraintValues = [];
+	// var modal = document.getElementById('assignmentsModal');
 
-	// Clear all previous table entries
-	$(".abs-table").find("tr:gt(0)").remove();
+	// // Clear all previous table entries
+	// $(".abs-table").find("tr:gt(0)").remove();
 
-	// Display the modal by setting it to block display
-	modal.style.display = "block";
+	// // Display the modal by setting it to block display
+	// modal.style.display = "block";
 
 
-	displayAbsoluteIntentionAssignments();
-	displayAbsoluteRelationshipAssignments();
+	// displayAbsoluteIntentionAssignments();
+	// displayAbsoluteRelationshipAssignments();
 });
 
 /**

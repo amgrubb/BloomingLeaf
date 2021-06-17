@@ -15,7 +15,9 @@ joint.dia.BloomingGraph = joint.dia.Graph.extend({
     defaults: joint.util.deepSupplement({
         type: 'goalmodel.Graph',
         maxAbsTime: 100,
-        constraints: []
+        absTimePtsArr: [],
+        // TODO: Name with correct type of constraints
+        constraints: [],
     }, joint.dia.Graph.prototype.defaults),
 
 })
