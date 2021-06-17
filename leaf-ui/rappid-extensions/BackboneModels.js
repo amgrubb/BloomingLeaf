@@ -21,7 +21,7 @@ var ConstraintBBM = Backbone.Model.extend({
         this.srcID = options.srcID;
         this.srcRefTP = options.srcRefTP;
         this.destID = options.destID;
-        this.destEB = options.destEB;
+        this.destRefTP = options.destRefTP;
         if (this.absTP != 'undefined') {
             if (this.type  == '<' || this.type == '<='){
                 this.absTP = null; 
