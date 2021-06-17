@@ -1,5 +1,5 @@
 /** This file contains backbone model representations of the original model objects - WIP */
-var IntentionBBModel = Backbone.Model.extend({
+var IntentionBBM = Backbone.Model.extend({
     idAttribute: "uid", 
     //not sure if this is correct(?)
     nodeID: this.createID(), 
@@ -9,7 +9,8 @@ var IntentionBBModel = Backbone.Model.extend({
         this.nodeActorID = options.nodeActorID; 
         this.nodeType = options.nodeType; 
         this.nodeName = options.nodeName; 
-        var dynamicFunction =  new EvolvingFunction(); 
+        // Now uses BBM instead of regular class 
+        var dynamicFunction =  new EvolvingFunctionBBM(); 
         var evolvingFunctionOptions = ({nodeActorID: nodeActorID, nodeType: nodeType, nodeName: nodeName}); 
         dynamicFunction.initialize(evolvingFunctionOptions);  
     }, 
@@ -121,7 +122,7 @@ var IntentionBBModel = Backbone.Model.extend({
     removeFunction: function() {
         this.removeAbsCosnt();
         //this.dynamicFunction = new EvolvingFunction(this.nodeID);
-        this.dynamicFunction = new EvolvingFunctionModel(); 
+        this.dynamicFunction = new EvolvingFunctionBBM(); 
         var dynamicFuncOptions = ({nodeID: this.nodeID});  
         dynamicFunction.initialize(dynamicFuncOptions); 
     }, 
@@ -132,7 +133,7 @@ var IntentionBBModel = Backbone.Model.extend({
      *
      * @returns {Number}
      */
-    getNumOfFuncSegements: function() {
+    getNumOfFuncSegments: function() {
         return this.dynamicFunction.getFuncSegmentIterable().length;
     }, 
 
@@ -153,27 +154,27 @@ var IntentionBBModel = Backbone.Model.extend({
 
         var initValue = analysisRequest.getUserEvaluationByID(this.nodeID, '0').evaluationValue;
 
-        //have to change all isntances of FuncSegment to FuncSegmentModel 
+        //have to change all isntances of FuncSegment to FuncSegmentBBM 
         if (funcType == 'C' || funcType == 'R' || funcType == 'I' || funcType == 'D' || funcType == 'UD') {
             if (funcType == 'C') {
-                //var seg = new FuncSegmentModel(funcType, initValue, '0', 'Infinity');
-                var seg =  new FuncSegmentModel(); 
+                //var seg = new FuncSegment(funcType, initValue, '0', 'Infinity');
+                var seg =  new FuncSegmentBBM(); 
                 var seg_options = ({funcType: funcType, funcX: initValue, funcStart: 0, funcStop: Infinity}); 
                 seg.initialize(seg_options);  
             } else if (funcType == 'R') {
-                //var seg = new FuncSegmentModel(funcType, '0000', '0', 'Infinity');
-                var seg =  new FuncSegmentModel(); 
+                //var seg = new FuncSegment(funcType, '0000', '0', 'Infinity');
+                var seg =  new FuncSegmentBBM(); 
                 // the marked value for a Stochastic function is always 0000
                 var seg_options = ({funcType: funcType, funcX: '0000', funcStart: '0', funcStop: Infinity}); 
                 seg.initialize(seg_options);
             } else if (funcType == 'I' || funcType == 'D') {
-                //var seg = new FuncSegmentModel(funcType, null, '0', 'Infinity');
-                var seg =  new FuncSegmentModel(); 
+                //var seg = new FuncSegment(funcType, null, '0', 'Infinity');
+                var seg =  new FuncSegmentBBM(); 
                 var seg_options = ({funcType: funcType, funcX: null, funcStart: '0', funcStop: 'Infinity'}); 
                 seg.initialize(seg_options);
             } else if (funcType == 'UD') {
-                //var seg = new FuncSegmentModel('C', initValue, '0', 'A');
-                var seg =  new FuncSegmentModel(); 
+                //var seg = new FuncSegment('C', initValue, '0', 'A');
+                var seg =  new FuncSegmentBBM(); 
                 var seg_options = ({funcType: 'C', funcX: initValue, funcStart: '0', funcStop: 'A'}); 
                 seg.initialize(seg_options);
             }
@@ -181,67 +182,67 @@ var IntentionBBModel = Backbone.Model.extend({
         } else if (funcType == 'RC' || funcType == 'CR' || funcType == 'MP' || funcType == 'MN' || funcType == 'SD' || funcType == 'DS') {
             if (funcType == 'RC') {
                 // Stochastic and Constant
-                // var seg1 = new FuncSegmentModel('R', '0000', '0', 'A');
-                var seg1 =  new FuncSegmentModel(); 
+                // var seg1 = new FuncSegment('R', '0000', '0', 'A');
+                var seg1 =  new FuncSegmentBBM(); 
                 var seg1_options = ({funcType: 'R', funcX: '0000', funcStart: '0', funcStop: 'A'}); 
                 seg1.initialize(seg1_options);
-                // var seg2 = new FuncSegmentModel('C', null, 'A', 'Infinity');
-                var seg2 =  new FuncSegmentModel(); 
+                // var seg2 = new FuncSegment('C', null, 'A', 'Infinity');
+                var seg2 =  new FuncSegmentBBM(); 
                 var seg2_options = ({funcType: 'C', funcX: null, funcStart: 'A', funcStop: 'Infinity'}); 
                 seg2.initialize(seg2_options);
             } else if (funcType == 'CR') {
                 // Constant and Stochastic
                 //will likely have to change the formatting of the parameters
-                // var seg1 = new FuncSegmentModel('C', initValue, '0', 'A');
-                var seg1 =  new FuncSegmentModel(); 
+                // var seg1 = new FuncSegment('C', initValue, '0', 'A');
+                var seg1 =  new FuncSegmentBBM(); 
                 var seg1_options = ({funcType: 'C', funcX: initValue, funcStart: '0', funcStop: 'A'}); 
                 seg1.initialize(seg1_options);
-                // var seg2 = new FuncSegmentModel('R', '0000', 'A', 'Infinity');
-                var seg2 =  new FuncSegmentModel(); 
+                // var seg2 = new FuncSegment('R', '0000', 'A', 'Infinity');
+                var seg2 =  new FuncSegmentBBM(); 
                 var seg2_options = ({funcType: 'R', funcX: '0000', funcStart: 'A', funcStop: 'Infinity'}); 
                 seg2.initialize(seg2_options);
             } else if (funcType == 'MP') {
                 // Increase and Constant
-                // var seg1 = new FuncSegmentModel('I', null, '0', 'A');
-                var seg1 =  new FuncSegmentModel(); 
+                // var seg1 = new FuncSegment('I', null, '0', 'A');
+                var seg1 =  new FuncSegmentBBM(); 
                 var seg1_options = ({funcType: 'I', funcX: null, funcStart: '0', funcStop: 'A'}); 
                 seg1.initialize(seg1_options);
-                // var seg2 = new FuncSegmentModel('C', null, 'A', 'Infinity');
-                var seg2 =  new FuncSegmentModel(); 
+                // var seg2 = new FuncSegment('C', null, 'A', 'Infinity');
+                var seg2 =  new FuncSegmentBBM(); 
                 var seg2_options = ({funcType: 'C', funcX: null, funcStart: 'A', funcStop: 'Infinity'}); 
                 seg2.initialize(seg2_options);
             } else if (funcType == 'MN') {
                 // Decrease and Constant
                 //will likely have to change the formatting of the parameters
-                // var seg1 = new FuncSegmentModel('D', null, '0', 'A');
-                var seg1 =  new FuncSegmentModel(); 
+                // var seg1 = new FuncSegment('D', null, '0', 'A');
+                var seg1 =  new FuncSegmentBBM(); 
                 var seg1_options = ({funcType: 'D', funcX: null, funcStart: '0', funcStop: 'A'}); 
                 seg1.initialize(seg1_options);
-                // var seg2 = new FuncSegmentModel('C', null, 'A', 'Infinity');
-                var seg2 =  new FuncSegmentModel(); 
+                // var seg2 = new FuncSegment('C', null, 'A', 'Infinity');
+                var seg2 =  new FuncSegmentBBM(); 
                 var seg2_options = ({funcType: 'C', funcX: null, funcStart: 'A', funcStop: 'Infinity'}); 
                 seg2.initialize(seg2_options);
             } else if (funcType == 'SD') {
                 // Constant and Constant
                 //will likely have to change the formatting of the parameters
-                // var seg1 = new FuncSegmentModel('C', '0011', '0', 'A');
-                var seg1 =  new FuncSegmentModel(); 
+                // var seg1 = new FuncSegment('C', '0011', '0', 'A');
+                var seg1 =  new FuncSegmentBBM(); 
                 var seg1_options = ({funcType: 'C', funcX: '0011', funcStart: '0', funcStop: 'A'}); 
                 seg1.initialize(seg1_options);
-                // var seg2 = new FuncSegmentModel('C', '1100', 'A', 'Infinity');
-                var seg2 =  new FuncSegmentModel(); 
+                // var seg2 = new FuncSegment('C', '1100', 'A', 'Infinity');
+                var seg2 =  new FuncSegmentBBM(); 
                 var seg2_options = ({funcType: 'C', funcX: '1100', funcStart: 'A', funcStop: 'Infinity'}); 
                 seg2.initialize(seg2_options);
                 analysisRequest.getUserEvaluationByID(this.nodeID, "0").evaluationValue = '0011';
             } else if (funcType == 'DS') {
                 // Constant and Constant
                 //will likely have to change the formatting of the parameters for 209-210 
-                // var seg1 = new FuncSegmentModel('C', '1100', '0', 'A');
-                var seg1 =  new FuncSegmentModel(); 
+                // var seg1 = new FuncSegment('C', '1100', '0', 'A');
+                var seg1 =  new FuncSegmentBBM(); 
                 var seg1_options = ({funcType: 'C', funcX: '1100', funcStart: '0', funcStop: 'A'}); 
                 seg1.initialize(seg1_options);
-                // var seg2 = new FuncSegmentModel('C', '0011', 'A', 'Infinity');
-                var seg2 =  new FuncSegmentModel(); 
+                // var seg2 = new FuncSegment('C', '0011', 'A', 'Infinity');
+                var seg2 =  new FuncSegmentBBM(); 
                 var seg2_options = ({funcType: 'C', funcX: '0011', funcStart: 'A', funcStop: 'Infinity'}); 
                 seg2.initialize(seg2_options);
                 analysisRequest.getUserEvaluationByID(this.nodeID, "0").evaluationValue = '1100';
@@ -320,10 +321,10 @@ var IntentionBBModel = Backbone.Model.extend({
         var stop = String.fromCharCode(code);
 
         //may have to revert this change 
-        var new_model = new FuncSegmentModel(); 
+        var new_model = new FuncSegmentBBM(); 
         var model_options = ({funcType: funcType, funcX: satValue, funcStart: start, funcStop: stop})
         new_model.initialize(model_options); 
-        //this.dynamicFunction.functionSegList.push(new FuncSegmentModel(funcType, satValue, start, stop));
+        //this.dynamicFunction.functionSegList.push(new FuncSegment(funcType, satValue, start, stop));
         this.dynamicFunction.functionSegList.push(new_model); 
         //will eventually changed to ConstrainModel
         model.constraints.push(new Constraint('A', this.nodeID, start, null, null));
@@ -377,7 +378,7 @@ var IntentionBBModel = Backbone.Model.extend({
 
         var lastObj = funcSegList[funcSegLen - 1];
 
-        if (lastObj instanceof FuncSegmentModel) {
+        if (lastObj instanceof FuncSegmentBBM) {
             lastObj.funcX = satVal;
 
         } else {
