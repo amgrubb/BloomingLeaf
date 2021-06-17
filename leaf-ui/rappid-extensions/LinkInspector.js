@@ -93,7 +93,6 @@ var LinkInspector = Backbone.View.extend({
                 $('#constant-links').val(this.link.linkType);            
             }
         }
-
     },
 
     /**
@@ -175,7 +174,6 @@ var LinkInspector = Backbone.View.extend({
                 target.attr('.satvalue/text', '');
             }
         }
-
     },
 
     /**
@@ -219,6 +217,7 @@ var LinkInspector = Backbone.View.extend({
     updateBeginEvolRelations: function() {
         $("#repeat-error").text("");
         var begin = $("#link-type-begin").val();
+        var end = $("#link-type-end").val();
         //Enable the end select
         if (begin == "no") {
             this.setSelectValues('#link-type-end', 'Evolving');
@@ -236,14 +235,6 @@ var LinkInspector = Backbone.View.extend({
                 '.marker-source': {'d': '0'},
                 '.marker-target': {stroke: '#000000', "d": 'M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5'}
             });
-            this.cell.label(0 ,{position: 0.5, attrs: {text: {text: begin + " | " + end}}});
-            
-            // save into link object
-            this.link.linkType = begin.toUpperCase();
-            this.link.postType = end.toUpperCase();
-            
-            $("#repeat-error").text("Saved!");
-            $("#repeat-error").css("color", "lightgreen");
         } else {
             this.setSelectValues('#link-type-end', "B");
             $("#link-type-end").prop('disabled', ''); 
@@ -274,7 +265,6 @@ var LinkInspector = Backbone.View.extend({
 
         $("#repeat-error").text("Saved!");
         $("#repeat-error").css("color", "lightgreen");
-
     },
 
     /**
