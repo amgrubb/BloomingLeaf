@@ -6,6 +6,8 @@ var LinkInspector = Backbone.View.extend({
     initialize:function(){
         //this.listenTo(this.model,'change:linkType', this.rerender);
         this.listenTo(this.model,'change:relationship', this.rerender);
+        this.listenTo(this.model,'change:relationship', this.rerender);
+        this.listenTo(this.model,'change:selected', this.rerender);
         //this.listenTo(this.model,'change:selected', this.endSwitchOff);
     },
 
@@ -47,7 +49,6 @@ var LinkInspector = Backbone.View.extend({
             '<div class="inspector-views">',
             '<h5 id="repeat-error" class="inspector-error"></h5>',
             '<select id="link-type-begin" class="repeat-select">',
-                '<option <% if (selected) {%> style= "display:none" <%}%>>Begin</option>',
                 '<option value="NO">No Relationship</option>',
                 '<option value="AND">And-Decomposition</option>',
                 '<option value="OR">Or-Decomposition</option>',
@@ -65,22 +66,21 @@ var LinkInspector = Backbone.View.extend({
                 '<option value="--D">--D</option>',
             '</select>',
             '<select id="link-type-end" class="repeat-select" <% if (!selected) {%> disabled= true style = "background-color:gray"<%} %>>',
-                '<option <% if (selected) {%> style= "display:none" <%}%>>End</option>',
-                '<option value="NO" <% if (linkType === "NO") {%> style= "display:none" <%} %>>No Relationship</option>',
-                '<option value="AND" <% if (linkType === "AND" || relationship === "B") {%> style= "display:none" <%}%>>And-Decomposition</option>',
-                '<option value="OR" <% if (linkType === "OR" || relationship === "B") {%> style= "display:none" <%}%>>Or-Decomposition</option>',
-                '<option value="++" <% if (linkType === "++" || relationship === "A") {%> style= "display:none" <%}%>>++</option>',
-                '<option value="--" <% if (linkType === "--" || relationship === "A") {%> style= "display:none" <%}%>>--</option>',
-                '<option value="+" <% if (linkType === "+" || relationship === "A") {%> style= "display:none" <%}%>>+</option>',
-                '<option value="-" <% if (linkType === "-" || relationship === "A") {%> style= "display:none" <%}%>>-</option>',
-                '<option value="+S" <% if (linkType === "+S" || relationship === "A") {%> style= "display:none" <%}%>>+S</option>',
-                '<option value="++S" <% if (linkType === "++S" || relationship === "A") {%> style= "display:none" <%}%>>++S</option>',
-                '<option value="-S" <% if (linkType === "-S" || relationship === "A") {%> style= "display:none" <%}%>>-S</option>',
-                '<option value="--S" <% if (linkType === "--S" || relationship === "A") {%> style= "display:none" <%}%>>--S</option>',
-                '<option value="+D" <% if (linkType === "+D" || relationship === "A") {%> style= "display:none" <%}%>>+D</option>',
-                '<option value="++D" <% if (linkType === "++D" || relationship === "A") {%> style= "display:none" <%}%>>++D</option>',
-                '<option value="-D" <% if (linkType === "-D" || relationship === "A") {%> style= "display:none" <%}%>>-D</option>',
-                '<option value="--D" <% if (linkType === "--S" || relationship === "A") {%> style= "display:none" <%}%>>--D</option>',
+                '<option value="NO">No Relationship</option>',
+                '<option value="AND" class = "A">And-Decomposition</option>',
+                '<option value="OR" class = "A">Or-Decomposition</option>',
+                '<option value="++" class = "B">++</option>',
+                '<option value="--" class = "B">--</option>',
+                '<option value="+" class = "B">+</option>',
+                '<option value="-" class = "B">-</option>',
+                '<option value="+S" class = "B">+S</option>',
+                '<option value="++S" class = "B">++S</option>',
+                '<option value="-S" class = "B">-S</option>',
+                '<option value="--S" class = "B">--S</option>',
+                '<option value="+D" class = "B">+D</option>',
+                '<option value="++D" class = "B">++D</option>',
+                '<option value="-D" class = "B">-D</option>',
+                '<option value="--D" class = "B">--D</option>',
             '</select>',
             '<button id="switch-link-type" class="inspector-btn small-btn blue-btn">Constant Relationships</button>',
             '<br>',
@@ -128,7 +128,7 @@ var LinkInspector = Backbone.View.extend({
                         $('#link-type-begin').val(this.model.get("linkType"));
                     }
                     $('#link-type-end').val(this.model.get('postType'));
-                    this.updateEndEvolRelations();
+                    this.updateBeginEvolRelations();
                 }
                 
 
@@ -271,6 +271,8 @@ var LinkInspector = Backbone.View.extend({
         var begin = $("#link-type-begin").val();
         var end = this.model.get('postType');
         this.model.set("linkType", begin);
+        var option = "#link-type-end option[value= \"" + begin + "\"]";
+        
         if (['AND', 'OR', 'NO'].includes(begin)){
             begin = begin.toLowerCase();
         }
@@ -279,13 +281,16 @@ var LinkInspector = Backbone.View.extend({
         }
 
         //Enable the end select
-        if (begin == "no") {
-            this.model.set('relationship', 'Evolving');
-        } else if (begin == "and" || begin == "or"){
-            this.model.set('relationship', 'A');
+        $('option').show();
+        if(begin == "no"){
+            $('option').show();
+        }else if (begin == "and" || begin == "or"){
+            $('option.B').hide();
         } else {
-            this.model.set('relationship', 'B');
+            $('option.A').hide();
         }
+        $(option).hide();
+
         this.model.attr({
             '.connection': {stroke: '#000000', 'stroke-dasharray': '0 0'},
             '.marker-source': {'d': '0'},
