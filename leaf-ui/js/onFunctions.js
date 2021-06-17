@@ -638,12 +638,16 @@ $('#btn-clear-cycle').on('click',function(){
 });
 
 $('#btn-clear-analysis').on('click', function() {
+    // TODO: Re-Implement for backbone view
+    
     // reset to default analysisRequest while preserving userAssignmentsList
     resetToDefault();
-    // remove all configs from analysisMap
-    analysisMap.clear();
     // reset graph to initial values
     revertNodeValuesToInitial();
+});
+
+$('#btn-clear-results').on('click', function() {
+    // TODO: Re-implement for backbone view
 });
 
 // Open as SVG
