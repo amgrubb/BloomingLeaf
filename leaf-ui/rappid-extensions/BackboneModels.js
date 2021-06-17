@@ -1,34 +1,42 @@
-// var FuncSegmentModel = Backbone.Model.extend({
+/** This file contains backbone model representations of the original model objects - WIP */
+
+// // FuncSegmentModel from FuncSegment class in modelObjects.js
+// var FunctionSegmentBBM = Backbone.Model.extend({
+//     idAttribute: "uid",
+
+//     // Initialize function - save all of the input parameters into one 'option' input
+//     // And then use 'option' when intitializing the function
+//     initialize: function (options) {
+//         this.type = options.type;
+//         this.refEvaluationValue = options.refEvaluationValue;
+//         this.startTP = options.startTP;
+//         this.stopTP = options.stopTP;
+//     },
+// });
+
+// // RepFuncSegmentMOdel from RepFuncSegment class in modelObjects.js
+// var RepFuncSegmentBBM = Backbone.Model.extend({
 //     idAttribute: "uid",
 
 //     initialize: function(options) { 
-//         this.funcType = options.funcType;
-//         this.funcX = options.funcX;
-//         this.funcStart = options.funcStart;
-//         this.funcStop = options.funcStop;
-//     }
-
-// });    
-
-// var RepFuncSegmentModel = Backbone.Model.extend({
-//     idAttribute: "uid",
-
-//     initialize: function(options) { 
+//         // this functionSegList is an array of all of the FunctionSegmentBBMs in the RepFuncSegmentBBM
 //         this.functionSegList = options.functionSegList; 
 //         this.repNum = options.repNum; 
-//         this.absTime = options.absTime; 
+//         this.absRepTime = options.absRepTime; 
 //     }
 
-// });     
+// });  
 
-/** This file contains backbone model representations of the original model objects - WIP */
-var EvolvingFunction = Backbone.Model.extend({
+
+
+// Backbone Model of Evolving Function Class on modelObjects.js
+var EvolvingFunctionBBM = Backbone.Model.extend({
     idAttribute: "uid",
 
     initialize: function(options) { 
         //this.intentionID = options.intentionID; 
         this.nodeID = options.nodeID;  
-        // Not Sure if this is done correctly
+        // Not Sure if calling the other models inside this one is done correctly
         var FuncSegment = new FuncSegmentModel();
         var FuncSegmentOptions = ; // Have to eventually add all of the FuncSegment parameters here
         FuncSegment.initialize(FuncSegmentOptions);
@@ -51,7 +59,7 @@ var EvolvingFunction = Backbone.Model.extend({
      * satisfaction value
      */ 
     getMarkedVal: function(i) { 
-        return this.functionSegList[i].funcX; 
+        return this.functionSegList[i].refEvaluationValue; 
     }, 
 
      /**
@@ -62,7 +70,7 @@ var EvolvingFunction = Backbone.Model.extend({
     getLastMarkedVal: function() { 
         var len = this.functionSegList.length; 
         if (len > 0) { 
-            return this.functionSegList[len - 1].funcX; 
+            return this.functionSegList[len - 1].refEvaluationValue; 
         }
     }, 
 
@@ -77,14 +85,14 @@ var EvolvingFunction = Backbone.Model.extend({
     getSecondLastMarkedVal: function() { 
         var len = this.functionSegList.length; 
         if (len > 1) { 
-            return this.functionSegList[len - 2].funcX; 
+            return this.functionSegList[len - 2].refEvaluationValue; 
         } else { 
             return this.getLastMarkedVal(); 
         }
     }, 
 
     /**
-     * Returns the funcStop value for the last
+     * Returns the stopTP value for the last
      * function segment for this EvolvingFunction
      * Returns null if functionSegList is empty
      *
@@ -93,7 +101,7 @@ var EvolvingFunction = Backbone.Model.extend({
     getLastStopValueL: function() {
         len = this.functionSegList.length
         if (len > 0) {
-            return this.functionSegList[len - 1].funcStop;
+            return this.functionSegList[len - 1].stopTP;
         }
     }, 
 
@@ -108,20 +116,22 @@ var EvolvingFunction = Backbone.Model.extend({
      * @param {String} time2
      *   second relative time point
      */
+
+    // TODO: edit function so it uses BB Models
     setRepeatingFunction: function(time1, time2) {
 
         this.removeRepFuncSegments();
 
         // find the index of the FuncSegment with start time time 1
         var startIndex = 0;
-        while (this.functionSegList[startIndex].funcStart !== time1) {
+        while (this.functionSegList[startIndex].startTP !== time1) {
             startIndex++;
         }
 
         var repFuncSegments = [];
 
         // push and remove, until we see a segment with our desired FuncEnd time
-        while (this.functionSegList[startIndex].funcStop !== time2) {
+        while (this.functionSegList[startIndex].stopTP !== time2) {
             repFuncSegments.push(this.functionSegList[startIndex]);
             this.functionSegList.splice(startIndex, 1);
         }
@@ -145,7 +155,7 @@ var EvolvingFunction = Backbone.Model.extend({
      */
     findSegmentByStartTime: function(time) {
         for (var i = 0; i < this.functionSegList; i++) {
-            if (this.functionSegList[i].funcStart === time) {
+            if (this.functionSegList[i].startTP === time) {
                 return this.functionSegList[i];
             }
         }
@@ -309,7 +319,7 @@ var EvolvingFunction = Backbone.Model.extend({
         for (var i = 0; i < this.functionSegList.length; i++) {
             //convert instanceof to backbone version 
             if (this.functionSegList[i] instanceof RepFuncSegmentModel) {
-                return this.functionSegList[i].functionSegList[0].funcStart;
+                return this.functionSegList[i].functionSegList[0].startTP;
             }
         }
     }, 
@@ -328,7 +338,7 @@ var EvolvingFunction = Backbone.Model.extend({
             //convert instanceof to backbone version 
             if (this.functionSegList[i] instanceof RepFuncSegmentModel) {
                 var len = this.functionSegList[i].functionSegList.length;
-                return this.functionSegList[i].functionSegList[len - 1].funcStop;
+                return this.functionSegList[i].functionSegList[len - 1].stopTP;
             }
         }
     }, 
