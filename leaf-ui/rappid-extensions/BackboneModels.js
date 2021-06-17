@@ -1,19 +1,9 @@
 /** This file contains backbone model representations of the original model objects - WIP */
-/**var LinkCollection = Backbone.Collection.extend({
-    defaults: {
-        numOfCreatedInstances: 0,
-    },
-    createID: function(){
-        var id = this.collection.numOfCreatedInstances.toString();
-        while (id.length < 4){
-            id = '0' + id;
-        }
-        this.collection.numOfCreatedInstances += 1;
-        return id;
-    },
-})*/
-var LinkBB = Backbone.Model.extend({
+var LinkCollection = Backbone.Collection.extend({
     
+})
+var LinkBB = Backbone.Model.extend({
+    idAttribute: "uid",
     /**
      * {String} linkType
      *   Type of the link. ex: 'AND', 'OR', 'NO', etc.
@@ -24,20 +14,26 @@ var LinkBB = Backbone.Model.extend({
      * {Number} absoluteValue
      *   TODO ex. -1, 0,...,n
      */
+     initialize: function(options){
+        
+        this.linkSrcID = options.linkSrcID;//isn't the same ID as the source? Maybe there is a way
+        this.linkType =  'AND';
+        this.absoluteValue =  -1;
+        this.linkID = this.createID();
+        this.numOfCreatedInstances = new LinkCollection([]);
+     },
+    
     defaults: {
         type: 'Intention',
-        linkID: new createID(),
-        linkType: 'AND',
         postType: null,
+        linkDestID: null,
+        //linkID: createID(),
+        numOfCreatedInstances: new LinkCollection([]),
         //these are for the other branch 
         //evolving: false,
         //selected: false,
         //relationship: 'Constant',
     },
-    numOfCreatedInstances: 0,
-    absoluteValue: -1,
-    linkSrcID: null,//isn't the same ID as the source? Maybe there is a way
-    linkDestID: null,
     checkType: function(){
         if (this.get('type') == 'Actor'){
             this.set('evolving', false);
@@ -48,11 +44,11 @@ var LinkBB = Backbone.Model.extend({
         return this.postType != null;
     },
     createID: function(){
-        var id = this.numOfCreatedInstances.toString();
+        var id = this.get('numOfCreatedInstances').length.toString();
         while (id.length < 4){
             id = '0' + id;
         }
-        this.numOfCreatedInstances += 1;
+        this.get('numOfCreatedInstances').length ++;
         return id;
     },
 })
