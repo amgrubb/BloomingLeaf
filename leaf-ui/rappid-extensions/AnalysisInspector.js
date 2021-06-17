@@ -86,13 +86,14 @@ var AnalysisInspector = Backbone.View.extend({
 
 
 	/**	
-	 * Simulate Single Path - Step 1 
+	 * Simulate Single Path - Step 1 - Set up analysis request object. 
 	 * Retrieves information about the current model and sends to the backend
 	 * to do single path analysis.
 	 *
 	 * This function is called on click for #btn-single-path
 	 */
-	singlePath: function () {
+	singlePath: function (event) {
+		//TODO event.target.id   	//event target that called function.
 		//Create the object and fill the JSON file to be sent to backend.
 		//Get the AnalysisInspector view information
 		analysisRequest.action = "singlePath";
@@ -103,7 +104,7 @@ var AnalysisInspector = Backbone.View.extend({
 	},
 
 	/**
-	 * Explore Possible Next States - Step 1
+	 * Explore Possible Next States - Step 1 - Set up analysis request object.
 	 * Retrieves information about the current model and sends to the backend
 	 * to get all next possible states.
 	 *
@@ -172,8 +173,6 @@ var AnalysisInspector = Backbone.View.extend({
 
 		//Get the Graph Model
 		jsObject.model = model;
-		console.log("Step 2");
-		console.log(jsObject);		
 
 		//Send data to backend
 		backendComm(jsObject);		//TODO: Need to add parameter for Node Server.
