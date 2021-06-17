@@ -36,7 +36,4 @@ var ConstraintBBM = Backbone.Model.extend({
         }
  
     },
-    defaults: {
-        absTP: -1, 
-    },
 });
