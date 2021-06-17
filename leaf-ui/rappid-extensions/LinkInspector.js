@@ -61,7 +61,8 @@ var LinkInspector = Backbone.View.extend({
 
     //Method to create the Link Inspector using the template.
     render: function(cell) {
-        var staff = new LinkBB();
+        var staff = new LinkBB(this);
+        //this.set('linkID', createID);
         console.log(staff);
         this.cell = cell;
         this.link = model.getLinkByID(cell.attributes.linkID);
