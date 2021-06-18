@@ -172,7 +172,7 @@ joint.dia.cellLink = joint.dia.Link.extend({
     defaults: joint.util.deepSupplement({
         type: 'Intention',
         evolving: false,
-        relationship: 'Constant',
+        relationship: 'Constant', //no longer used, whether used by backend???
         linkType: 'AND',
         postType: null,
         selected: false
