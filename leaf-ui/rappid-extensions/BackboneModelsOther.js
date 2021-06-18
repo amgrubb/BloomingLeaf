@@ -9,7 +9,7 @@
 
 /** 
  * Backbone Model of Actor
- * */
+ */
  var ActorBBM = Backbone.Model.extend({
     initialize: function(options){ 
         this.type = options.type;       // Options are 'Actor', 'Agent', and 'Role'
@@ -20,7 +20,7 @@
 
 /** 
  * Backbone Model of Link.
- * */
+ */
  var LinkBBM = Backbone.Model.extend({  
     initialize: function(options){
         this.linkSrcID = options.linkSrcID;
@@ -36,7 +36,7 @@
 
 /** 
  * Backbone Model of UserEvaluations 
- * */ 
+ */ 
 var UserEvaluationBBM = Backbone.Model.extend({  
     initialize: function(options){      
         this.intentionID = options.intentionID; 
@@ -48,7 +48,7 @@ var UserEvaluationBBM = Backbone.Model.extend({
 
 /** 
  * Backbone Model of Constraints
- * */
+ */
 var ConstraintBBM = Backbone.Model.extend({
     initialize: function(options){ 
         this.type = options.type;               // Options are '=', '<', and '<='
@@ -58,7 +58,7 @@ var ConstraintBBM = Backbone.Model.extend({
         this.destRefTP = options.destRefTP;     // Reference Time Point A,B,C, etc.
         /* Absolute time points are only used with the '=' type of operator.
          *   If a timepoint is not given -1 should be assigned as the default value.
-         * */   
+         */   
         if (options.absTP == 'undefined') {
             if (this.type  == '<' || this.type == '<='){
                 this.absTP = null; 

@@ -7,7 +7,7 @@
 
 /** 
  * Backbone Model of An Atomic Function Segment
- * */
+ */
 var FunctionSegmentBBM = Backbone.Model.extend({
     initialize: function (options) {
         this.type = options.type;           // Atomic function types. 
@@ -20,7 +20,7 @@ var FunctionSegmentBBM = Backbone.Model.extend({
 /** 
  * Backbone Model of Evolving Functions
  *      TODO: Finish migration from modelObjects.js
- * */
+ */
 var EvolvingFunctionBBM = Backbone.Model.extend({
     initialize: function(options) { 
         this.intentionID = options.intentionID; 
@@ -42,10 +42,7 @@ var EvolvingFunctionBBM = Backbone.Model.extend({
     //TODO: I think could have some helper functions for the constructor. 
 });
 
-/** This file contains backbone model representations of the original model objects - WIP */
 var IntentionBBM = Backbone.Model.extend({
-    idAttribute: "uid",    
- 
     initialize: function(options) { 
         this.nodeType = options.nodeType; 
         this.nodeName = options.nodeName; 
