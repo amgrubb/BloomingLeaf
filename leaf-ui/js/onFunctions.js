@@ -25,7 +25,7 @@ window.onclick = function(event) {
   	    modal.style.display = "none";
     }
 	if(event.target == intermT){
-		intermT.style.display = "none";
+        intermT.remove("show");
 	}
 }
 

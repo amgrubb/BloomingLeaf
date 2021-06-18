@@ -95,7 +95,7 @@ var AnalysisInspector = Backbone.View.extend({
 		var intermediateValuesTable = new IntermediateValuesTable({model: this.model});
 		this.$('#analysis-inspector').append(intermediateValuesTable.el);
 		intermediateValuesTable.render();
-
+		
 	},
 
 	/**
