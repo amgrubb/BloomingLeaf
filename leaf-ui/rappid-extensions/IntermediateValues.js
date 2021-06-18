@@ -64,7 +64,7 @@ var IntermediateValuesTable = Backbone.View.extend({
         $('#interm-list').find("tr:gt(1)").remove();
         $('#header').find("th:gt(1)").remove();
         $('#intentionRows').find("th:gt(1)").remove();
-    
+        
         var absTimeValues = this.model.get('absTimePtsArr');
         var constraints = graph.get('constraints');
         
