@@ -1,7 +1,20 @@
 /**
  * This file contains functions related to the syntax checking and 
  * cycle detection for the web
+ * 
+ * June 2021 - Temporary turned off during the backbone migration.
  */
+
+//TODO: Add the code back into the analysis button click function.
+//  $('#analysis-btn').on('click', function() {
+// 	syntaxCheck();
+//     var cycleList = cycleSearch();
+//     cycleResponse(cycleList); //If there are cycles, then display error message. Otherwise, remove any "red" elements.
+//     if(!isACycle(cycleList)) {
+//         clearCycleHighlighting();
+//         switchToAnalysisMode();
+//     } 
+// });
 
  /**
   * Changes all intentions to their original colors
