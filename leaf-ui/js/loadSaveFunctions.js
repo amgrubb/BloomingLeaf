@@ -50,8 +50,6 @@ function loadFromObject(obj) {
 
 	// Clear any previous analysis data 
 	if (analysisMap.size != 0) {
-		// Clear the analysisMap to remove any previous analysis
-		clearAnalysisConfigSidebar();
 		analysisMap.clear();
 		currAnalysisConfig = null;
 	}
@@ -67,8 +65,6 @@ function loadFromObject(obj) {
 			// Add config to the global analysisMap
 			analysisMap.set(config.id, config);
 		}
-		// Load the configs into the analysis view config sidebar
-		loadAnalysis();
 	} else {
 		// Else if no analysisMap param, grab the analysisRequest
 		analysisRequest = Object.assign(new AnalysisRequest, obj.analysisRequest);
