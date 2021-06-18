@@ -36,7 +36,7 @@ var AnalysisInspector = Backbone.View.extend({
 	events: {
 		'click #btn-view-intermediate': 'openIntermediateValuesTable',
 		'click .closeIntermT': 'dismissIntermTable',
-		'click #btn-single-path': 'singlePath',
+		'click #btn-single-path': 'singlePath',	
 		'click #btn-all-next-state': 'getAllNextStates',
 		'click #btn-save-intermT': 'saveIntermTable',
 		'change #num-rel-time': 'addRelTime', 
@@ -98,10 +98,11 @@ var AnalysisInspector = Backbone.View.extend({
 		intermediateValuesTable.render();
 
 	},
-	
+
 	/**
-	 * Sends to the backend to do single path analysis.
-	 *
+	 * Simulate Single Path - Step 1 - Set up analysis request object. 
+	 * Retrieves information about the current model and sends to the backend
+	 * to do single path analysis.
 	 * This function is called on click for #btn-single-path
 	 */
 	singlePath: function () {
@@ -116,6 +117,7 @@ var AnalysisInspector = Backbone.View.extend({
 	},
 
 	/**
+	 * Explore Possible Next States - Step 1 - Set up analysis request object.
 	 * Retrieves information about the current model and sends to the backend
 	 * to get all next possible states.
 	 *
@@ -171,6 +173,8 @@ var AnalysisInspector = Backbone.View.extend({
 	},
 
 	/**
+	 * Simulate Single Path - Step 2 
+	 * Explore Possible Next States - Step 2 
 	 * Creates an object to send to the backend and calls
 	 * a backendComm() to send to backend
 	 *
@@ -186,7 +190,7 @@ var AnalysisInspector = Backbone.View.extend({
 
 		//Get the Graph Model
 		jsObject.model = model;
-		console.log(jsObject);
+
 		//Send data to backend
 		backendComm(jsObject);		//TODO: Need to add parameter for Node Server.
 		;
