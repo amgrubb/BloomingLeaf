@@ -44,13 +44,8 @@ var IntermediateValuesTable = Backbone.View.extend({
         'click #btn-save-intermT': 'saveInterm',
     },
 
-    events:{
-        'click .closeIntermT': 'dismissInterm',
-        'click #btn-save-intermT': 'saveInterm',
-    },
-
     render: function(){
-        this.$el.html(_.template(this.template)());
+        this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
         this.loadIntermediate();
         return this;
     },
@@ -60,10 +55,6 @@ var IntermediateValuesTable = Backbone.View.extend({
         return this;
     },
 
-    removeView: function(){
-		this.remove();
-	},
-    
     /**
      * 
      * @param {*} e 
