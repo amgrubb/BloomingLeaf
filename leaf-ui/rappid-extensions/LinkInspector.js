@@ -266,13 +266,16 @@ var LinkInspector = Backbone.View.extend({
     },
     // Generates the select values based on begin value
     updateBeginEvolRelations: function() {
+        //Enable the end select by changing the selected into true, because it doesn't change back to false, then end select will always be enabled from now on
         this.model.set('selected', true);
+
         $("#repeat-error").text("");
         var begin = $("#link-type-begin").val();
         var end = this.model.get('postType');
-        this.model.set("linkType", begin);
-        var option = "#link-type-end option[value= \"" + begin + "\"]";
+        this.model.set("linkType", begin); //modify the model
+        var option = "#link-type-end option[value= \"" + begin + "\"]"; //for hiding the already chosen value at the beginning later on in line 294
         
+        //makes the words on the links into lower case
         if (['AND', 'OR', 'NO'].includes(begin)){
             begin = begin.toLowerCase();
         }
@@ -280,9 +283,9 @@ var LinkInspector = Backbone.View.extend({
             end = end.toLowerCase();
         }
 
-        //Enable the end select
-        $('option').show();
-        if(begin == "no"){
+        //set the options
+        $('option').show(); //clear the previous selection
+        if(begin == "no"){ //need to specify case for "no" otherwise will be characterized as the else condition
             $('option').show();
         }else if (begin == "and" || begin == "or"){
             $('option.B').hide();
@@ -290,13 +293,7 @@ var LinkInspector = Backbone.View.extend({
             $('option.A').hide();
         }
         $(option).hide();
-
-        this.model.attr({
-            '.connection': {stroke: '#000000', 'stroke-dasharray': '0 0'},
-            '.marker-source': {'d': '0'},
-            '.marker-target': {stroke: '#000000', "d": 'M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5'}
-        });
-        this.model.label(0 ,{position: 0.5, attrs: {text: {text: begin + " | " + end}}});
+        this.model.label(0 ,{position: 0.5, attrs: {text: {text: begin + " | " + end}}}); //set the words on the link so user can see change
     },
 
     /**
@@ -309,11 +306,6 @@ var LinkInspector = Backbone.View.extend({
         var end = $("#link-type-end").val();
 
         this.model.set("postType", end);
-        this.model.attr({
-            '.connection': {stroke: '#000000', 'stroke-dasharray': '0 0'},
-            '.marker-source': {'d': '0'},
-            '.marker-target': {stroke: '#000000', "d": 'M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5'}
-        });
         if (['AND', 'OR', 'NO'].includes(begin)){
             begin = begin.toLowerCase();
         }
