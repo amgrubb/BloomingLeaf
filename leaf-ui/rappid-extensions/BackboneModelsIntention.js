@@ -126,8 +126,32 @@ var EvolvingFunctionBBM = Backbone.Model.extend({
      * @param {String} time2
      *   second relative time point
      */
-    // TODO add this function
+    // TODO fix this function
     setRepeatingFunction: function(time1, time2) {
+        this.removeRepFuncSegments();
+
+        // find the index of the FuncSegment with start time time 1
+        var startIndex = 0;
+        while (this.functionSegList[startIndex].funcStart !== time1) {
+            startIndex++;
+        }
+
+        var repFuncSegments = [];
+
+        // push and remove, until we see a segment with our desired FuncEnd time
+        while (this.functionSegList[startIndex].funcStop !== time2) {
+            repFuncSegments.push(this.functionSegList[startIndex]);
+            this.functionSegList.splice(startIndex, 1);
+        }
+
+        // push and remove the last segment
+        repFuncSegments.push(this.functionSegList[startIndex]);
+        this.functionSegList.splice(startIndex, 1);
+
+
+        // create and add a new RepFuncSegment
+        var repFuncSegment = new RepFuncSegment(repFuncSegments);
+        this.functionSegList.splice(startIndex, 0, repFuncSegment);        
     },         
 
     /**
@@ -334,6 +358,69 @@ var EvolvingFunctionBBM = Backbone.Model.extend({
         //     }
         // }
     },
+
+    /**
+     * Returns the epoch boundary where the repeat segment
+     * ends
+     *
+     * Precondition: This EvolvingFunction must contain a RepFuncSegment
+     *
+     * @returns {String}
+     *   ex: 'C'
+     */
+    // TODO - fix this function
+    // if the repeating segment is always the last in functionSegmentList, can we just index
+    // the last element in the list???
+     getEndRepeatEpoch: function() {
+        var len = this.functionSegList.length;
+        return this.functionSegList[len - 1].get(stopTP);
+        // Original Function
+        // for (var i = 0; i < this.functionSegList.length; i++) {
+        //     if (this.functionSegList[i] instanceof RepFuncSegment) {
+        //         var len = this.functionSegList[i].functionSegList.length;
+        //         return this.functionSegList[i].functionSegList[len - 1].funcStop;
+        //     }
+        // }
+    },
+
+    /**
+     * Returns the repNum attribute for this EvolvingFunction's
+     * RepFuncSegment
+     *
+     * Precondition: This EvolvingFunction must contain a RepFuncSegment
+     *
+     * @returns {Number}
+     */
+    // TODO - can i delete this???
+    getRepeatRepNum: function() {
+        return this.repNum;
+        // Original Function
+        // for (var i = 0; i < this.functionSegList.length; i++) {
+        //     if (this.functionSegList[i] instanceof RepFuncSegment) {
+        //         return this.functionSegList[i].repNum;
+        //     }
+        // }
+    },
+
+    /**
+     * Returns the absTime attribute for this EvolvingFunction's
+     * RepFuncSegment
+     *
+     * Precondition: This EvolvingFunction must contain a RepFuncSegment
+     *
+     * @returns {Number}
+     */
+    // TODO - can i delete this??
+    getRepeatAbsTime: function() {
+        return this.repAbsTime;
+        // Original Function
+        // for (var i = 0; i < this.functionSegList.length; i++) {
+        //     if (this.functionSegList[i] instanceof RepFuncSegment) {
+        //         return this.functionSegList[i].absTime;
+        //     }
+        // }
+    },
+
 
 });
 
