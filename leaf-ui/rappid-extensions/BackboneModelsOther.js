@@ -22,14 +22,16 @@
  * Backbone Model of Link.
  */
  var LinkBBM = Backbone.Model.extend({  
-    initialize: function(options){
-        this.linkSrcID = options.linkSrcID;
-    },    
+    /**initialize: function(options){
+        //this.linkSrcID = options.linkSrcID;
+    },*/    
     defaults: {
-        linkDestID: null,
+        //linkDestID: null,
         linkType:  'AND',
         postType: null,
-        absTime: -1
+        absTime: -1,
+        evolving: false,
+        selected: false,
     }
 });
 

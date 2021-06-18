@@ -330,7 +330,8 @@ class Link {
      *   TODO ex. -1, 0,...,n
      */
     constructor(linkType, linkSrcID, absoluteValue) {
-        this.linkID = this.createID();
+        //this.linkID = this.createID();
+        console.log("WTF");
         this.linkType = linkType;
         this.postType = null;
         this.linkSrcID = linkSrcID;
