@@ -133,7 +133,6 @@ var LinkInspector = Backbone.View.extend({
                 //didn't put updateConstantRelationship here because if it was rendered everything will be the same as previous and if previous was already constant it would not need new update until begin is changed       
             }
         }
-
     },
 
     /**
@@ -159,7 +158,6 @@ var LinkInspector = Backbone.View.extend({
     removeView: function(){
         this.remove();
     },
-
 
     /**
      * Switches from Constant Relationship to Evolving Relationship
@@ -205,7 +203,6 @@ var LinkInspector = Backbone.View.extend({
         this.model.set("linkType", relationshipVal);
         this.model.label(0 , {position: 0.5, attrs: {text: {text: linkValText[relationshipVal]}}});
 
-
         // Adding or removing tags from node depending on type of link
         if (this.model.get("linkType") =='NBT' || this.model.get("linkType") == 'NBD') {
             source.attr('.funcvalue/text', 'NB');
@@ -236,7 +233,6 @@ var LinkInspector = Backbone.View.extend({
                 target.attr('.satvalue/text', '');
             }
         }
-
     },
 
     /**
@@ -326,6 +322,5 @@ var LinkInspector = Backbone.View.extend({
 
         $("#repeat-error").text("Saved!");
         $("#repeat-error").css("color", "lightgreen");
-
     },
 });
