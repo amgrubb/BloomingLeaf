@@ -307,7 +307,7 @@ var LinkInspector = Backbone.View.extend({
     },
 
     /**
-     * This function is called on change for #link-type-end
+     * This function is called on change for #link-type-end, ot updates the end evolving relationship
      */
     updateEndEvolRelations: function() {
 
