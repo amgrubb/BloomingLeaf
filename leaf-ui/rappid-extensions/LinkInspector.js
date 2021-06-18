@@ -4,11 +4,7 @@ var LinkInspector = Backbone.View.extend({
     model: joint.dia.Celllink,
 
     initialize:function(){
-        //this.listenTo(this.model,'change:linkType', this.rerender);
-        this.listenTo(this.model,'change:relationship', this.rerender);
-        this.listenTo(this.model,'change:relationship', this.rerender);
         this.listenTo(this.model,'change:selected', this.rerender);
-        //this.listenTo(this.model,'change:selected', this.endSwitchOff);
     },
 
     template: [
@@ -67,7 +63,7 @@ var LinkInspector = Backbone.View.extend({
             '</select>',
             '<select id="link-type-end" class="repeat-select" <% if (!selected) {%> disabled= true style = "background-color:gray"<%} %>>',
                 '<option value="NO">No Relationship</option>',
-                '<option value="AND" class = "A">And-Decomposition</option>',
+                '<option value="AND" class = "A">And-Decomposition</option>', //class works with function in line 294 and 296
                 '<option value="OR" class = "A">Or-Decomposition</option>',
                 '<option value="++" class = "B">++</option>',
                 '<option value="--" class = "B">--</option>',
@@ -118,8 +114,8 @@ var LinkInspector = Backbone.View.extend({
             this.$el.html(_.template($(this.actortemplate).html())(this.model.toJSON()));;
             $('#actor-link').val(this.model.get('linkType'));
         } else {
-
-            if (this.model.get('evolving')) {//something wrong in reading in the linktypes for dropdown, click gear multiple times
+            //choose between constant or evolving template based on evolving parameter from model
+            if (this.model.get('evolving')) {
                 this.$el.html(_.template($(this.evolvingtemplate).html())(this.model.toJSON()));;
                 if (this.model.get('postType') !== null) {
                     if (['AND', 'OR', 'NO'].includes(this.model.get('linkType'))){
@@ -130,17 +126,22 @@ var LinkInspector = Backbone.View.extend({
                     $('#link-type-end').val(this.model.get('postType'));
                     this.updateBeginEvolRelations();
                 }
-                
-
             } else {
-                this.model.set('evolving', false);
+                this.model.set('evolving', false); //makes sure the rerender doesn't activate
                 this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
-                $('#constant-links').val(this.model.get('linkType'));            
+                $('#constant-links').val(this.model.get('linkType'));
+                //didn't put updateConstantRelationship here because if it was rendered everything will be the same as previous and if previous was already constant it would not need new update until begin is changed       
             }
         }
 
     },
 
+    /**
+     * rerender to update the html so that appropriate options are hidden/shown or disabled for evolving relations
+     * Only for evolving template as that is the only one that needs constant update for options
+     * 
+     * This function is called on when selected is changed
+     */
     rerender: function(){
         if (this.model.get('evolving')) {
             this.$el.html(_.template($(this.evolvingtemplate).html())(this.model.toJSON()));;
@@ -150,6 +151,11 @@ var LinkInspector = Backbone.View.extend({
         }
     },
 
+    /**
+     * remove the previous view so that we don't have multiple LinkInspector showing up
+     *
+     * This function is called when clearInspector is called
+     */
     removeView: function(){
         this.remove();
     },
@@ -167,16 +173,20 @@ var LinkInspector = Backbone.View.extend({
         var current = this.model.get('evolving');
         this.model.set('evolving', !current);
         if(this.model.get('evolving')){
-            this.$el.html(_.template($(this.evolvingtemplate).html())(this.model.toJSON()));;
-            if (postType !== null) {
+            this.$el.html(_.template($(this.evolvingtemplate).html())(this.model.toJSON()));
+            //if the postType is already chosen, meaning not the first time visiting LinkInspector, take the previous values
+            if (postType !== null) { 
                 $('#link-type-begin').val(type); 
-                this.updateBeginEvolRelations();
+                this.updateBeginEvolRelations(); //makes sure that the available options in the end are consistant with what is allowed if the begin is not changed
                 $('#link-type-end').val(postType);
             }
         }else {
+            this.model.set('evolving', false);
             this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
             $('#constant-links').val(type);
-            this.updateConstantRelationship();
+            this.updateConstantRelationship(); //makes sure that the effects for both intentions occur, can check by not connecting the link to anything else. 
+            //If a constant relationship is chosen then an error occurs, but when this function is not there, if we switch back from evolving to constant the error doesn't occur
+            //aslo reupdates what the relation in the middle of the link looks like (no "|")
         }
     },
 
@@ -288,7 +298,7 @@ var LinkInspector = Backbone.View.extend({
         if(begin == "no"){ //need to specify case for "no" otherwise will be characterized as the else condition
             $('option').show();
         }else if (begin == "and" || begin == "or"){
-            $('option.B').hide();
+            $('option.B').hide(); //hide options based on class assigned from line 69-83
         } else {
             $('option.A').hide();
         }
@@ -316,7 +326,6 @@ var LinkInspector = Backbone.View.extend({
 
         $("#repeat-error").text("Saved!");
         $("#repeat-error").css("color", "lightgreen");
-        //this.model.set('selected', false);
 
     },
 });
