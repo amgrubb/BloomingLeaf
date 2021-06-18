@@ -75,7 +75,7 @@ var mode;
 var showEditingWarning = true;
 
 var model = new Model();
-var analysisRequest = new AnalysisRequest();
+var analysisRequest = new AnalysisRequest();        //TODO: make not global!
 var analysisResult = new AnalysisResult();
 
 
