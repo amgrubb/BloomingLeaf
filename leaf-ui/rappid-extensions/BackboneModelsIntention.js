@@ -44,10 +44,10 @@ var EvolvingFunctionBBM = Backbone.Model.extend({
 
 var IntentionBBM = Backbone.Model.extend({
     initialize: function(options) { 
-        this.nodeType = options.nodeType; 
-        this.nodeName = options.nodeName; 
+        this.nodeType = options.nodeType;  
     }, 
     defaults: { 
+        nodeName: "untitled",
         nodeActorID: null,                     // Assigned on release operation.
         evolvingFunction: null, 
         initialValue: '(no value)'
