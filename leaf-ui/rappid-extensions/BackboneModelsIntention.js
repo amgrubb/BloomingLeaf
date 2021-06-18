@@ -127,9 +127,17 @@ var EvolvingFunctionBBM = Backbone.Model.extend({
      *   second relative time point
      */
     // TODO fix this function
+    // I think we should set it so that the repeating function starts at time 1 and ends at 
+    // time 2
     setRepeatingFunction: function(time1, time2) {
         this.removeRepFuncSegments();
 
+        this.removeRepFuncSegments();
+        var startIndex = 0;
+        while (this.functionSegList[startIndex].get('funcStart') !== time1) {
+            startIndex++;
+        }
+        // Original Function
         // find the index of the FuncSegment with start time time 1
         var startIndex = 0;
         while (this.functionSegList[startIndex].funcStart !== time1) {
@@ -257,7 +265,8 @@ var EvolvingFunctionBBM = Backbone.Model.extend({
      *
      * @returns {Number}
      */
-    // TODO update this function
+    // TODO fix this function
+    // should we return the index of the first repeating function segment?? 
     getRepFuncSegmentIndex: function() {
         // Find the index where the RepFuncSegment is located
         var repIndex = 0;
@@ -293,7 +302,7 @@ var EvolvingFunctionBBM = Backbone.Model.extend({
      *
      * @returns {Array.<FuncSegment>}
      */
-    // TODO ask abt this function, is it still neccessary 
+    // TODO ask abt this function, is it still neccessary??? 
     getFuncSegmentIterable: function() {
         var res = [];
         for (var i = 0; i < this.functionSegList.length; i++) {
@@ -346,9 +355,9 @@ var EvolvingFunctionBBM = Backbone.Model.extend({
         // would it be '0' or 0???
         if (this.repStart != 0) {
             var repStartIndex = this.repStart.charCodeAt() - 64; // this should be the index of the first repeating segment
-            return this.functionSegList[repStartIndex].get(startTP);
+            return this.functionSegList[repStartIndex].get('startTP');
         }
-        else return this.functionSegList[0].get(startTP);
+        else return this.functionSegList[0].get('startTP');
         // this is probs wrong
         // return this.repStart;
         // Original Function
@@ -372,8 +381,8 @@ var EvolvingFunctionBBM = Backbone.Model.extend({
     // if the repeating segment is always the last in functionSegmentList, can we just index
     // the last element in the list???
      getEndRepeatEpoch: function() {
-        var len = this.functionSegList.length;
-        return this.functionSegList[len - 1].get(stopTP);
+        var repStopIndex = this.repStart.charCodeAt() - 64; // this should be the index of the last repeating segment
+        return this.functionSegList[repStopIndex].get(stopTP);
         // Original Function
         // for (var i = 0; i < this.functionSegList.length; i++) {
         //     if (this.functionSegList[i] instanceof RepFuncSegment) {
