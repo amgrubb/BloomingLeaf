@@ -83,7 +83,6 @@ var linkInspector = new LinkInspector();
 var elementInspector = new ElementInspector();
 var configCollection = new ConfigCollection([]);
 var configInspector = new ConfigInspector({collection:configCollection});
-var actorInspector =  new ActorInspector();
 
 var currentHalo;
 var currentAnalysis;
@@ -293,7 +292,6 @@ var commandManager = new joint.dia.CommandManager({ graph: graph });
 
 // A simple element editor.
 $('.inspector').append(elementInspector.el);
-$('.inspector').append(actorInspector.el);
 
 $('#stencil').append(stencil.render().el);
 
