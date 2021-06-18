@@ -79,7 +79,7 @@ var AssignmentsTable = Backbone.View.extend({
     updateMaxAbsTime: function(){
         var maxTimeElement = $('#max-abs-time');
         if (maxTimeElement.val() !== "") {
-            this.model.prop('maxAbsTime', maxTimeElement.val())
+            this.model.set('maxAbsTime', maxTimeElement.val())
         } else {
             maxTimeElement.val(this.model.prop('maxAbsTime'));
         }
@@ -109,10 +109,11 @@ var AssignmentsTable = Backbone.View.extend({
          * Add new constraint to 
          * this.model.getElements().filter(//filter for intentions with funcseg lists > 2)
          * add all func segs for all relevant intentions to selectdropdown (maybe make a function for this?)
-         * 
+         * Doesn't need to be dynamic yet
          */
-
     }
+
+    
 
 // /**
 //  * Add relative intention row
@@ -194,4 +195,24 @@ var AssignmentsTable = Backbone.View.extend({
 //     $("#epoch1List select").val();
 // });
 
+});
+
+var RelativeIntentionView = new Backbone.View.extend({
+    model: Constraint,
+    template: [
+        '<tr><td> <div class="epochLists" id="epoch1List"><select><option selected>...</option> </td>',
+        '<td> relationship </td>',
+        '<td> <div class="epochLists" id="epoch2List"><select><option selected>...</option> </td>',
+        '<td><i class="fa fa-trash-o fa-2x" id="removeIntention" aria-hidden="true"></i></td></tr>'
+    ].join(""),
+
+    // pass in intentions from above in order to grab all relevent func seg lists
+    // class = id so that when you select one of the intention ids it removes that class
+
+    /**
+     * for intention in intention list:
+     *        for intention.relevent func segs:
+     *                  create new option tag html view (append to )
+     * 
+     */
 });

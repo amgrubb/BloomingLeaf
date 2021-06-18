@@ -99,8 +99,7 @@ $(document.body).on('click', '#removeIntention', function(){
  * Displays the absolute and relative assignments modal for the user.
  */
 $('#btn-view-assignment').on('click', function() {
-    var currentConfig = configCollection.filter(configModel => configModel.get('selected'));
-    var assignmentsModal = new AssignmentsTable({model: graph}, {config: currentConfig[0]});
+    var assignmentsModal = new AssignmentsTable({model: graph});
     $('#assignments-list').append(assignmentsModal.el);
     assignmentsModal.render();
 	// epochLists = [];
