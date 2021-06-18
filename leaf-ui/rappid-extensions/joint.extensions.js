@@ -172,6 +172,7 @@ joint.dia.cellLink = joint.dia.Link.extend({
     defaults: joint.util.deepSupplement({
         type: 'Link',
         link: new LinkBBM(),
+        selected: false,
     }),
     /** 
     linkSrcID: null,

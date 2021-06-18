@@ -7,7 +7,7 @@ var LinkInspector = Backbone.View.extend({
 
     initialize:function(){
         this.link = this.model.get('link');
-        this.listenTo(this.link,'change:selected', this.rerender);
+        this.listenTo(this.model,'change:selected', this.rerender);
     },
 
     template: [
@@ -119,12 +119,12 @@ var LinkInspector = Backbone.View.extend({
         // this.model.get
         // Selecting which template to render ACTOR-LINK or INTENTIONS-LINK
         if (link.get('type') == "Actor") {
-            this.$el.html(_.template($(this.actortemplate).html())(link.toJSON()));;
+            this.$el.html(_.template($(this.actortemplate).html())(this.model.toJSON()));;
             $('#actor-link').val(link.get('linkType'));
         } else {
             //choose between constant or evolving template based on evolving parameter from model
             if (link.get('evolving')) {
-                this.$el.html(_.template($(this.evolvingtemplate).html())(link.toJSON()));;
+                this.$el.html(_.template($(this.evolvingtemplate).html())(this.model.toJSON()));;
                 if (link.get('postType') !== null) {
                     if (['AND', 'OR', 'NO'].includes(link.get('linkType'))){
                         $('#link-type-begin').val(link.get('linkType').toLowerCase());
@@ -136,7 +136,7 @@ var LinkInspector = Backbone.View.extend({
                 }
             } else {
                 link.set('evolving', false); //makes sure the rerender doesn't activate
-                this.$el.html(_.template($(this.template).html())(link.toJSON()));
+                this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
                 $('#constant-links').val(link.get('linkType'));
                 //didn't put updateConstantRelationship here because if it was rendered everything will be the same as previous and if previous was already constant it would not need new update until begin is changed       
             }
@@ -153,7 +153,7 @@ var LinkInspector = Backbone.View.extend({
     rerender: function(){
         var link = this.model.get('link');
         if (link.get('evolving')) {
-            this.$el.html(_.template($(this.evolvingtemplate).html())(link.toJSON()));;
+            this.$el.html(_.template($(this.evolvingtemplate).html())(this.model.toJSON()));;
             $('#link-type-begin').val(link.get("linkType"));
             this.updateBeginEvolRelations();
             $('#link-type-end').val(link.get('postType'));
@@ -182,7 +182,7 @@ var LinkInspector = Backbone.View.extend({
         var current = link.get('evolving');
         link.set('evolving', !current);
         if(link.get('evolving')){
-            this.$el.html(_.template($(this.evolvingtemplate).html())(link.toJSON()));
+            this.$el.html(_.template($(this.evolvingtemplate).html())(this.model.toJSON()));
             //if the postType is already chosen, meaning not the first time visiting LinkInspector, take the previous values
             if (postType !== null) { 
                 $('#link-type-begin').val(type); 
@@ -191,7 +191,7 @@ var LinkInspector = Backbone.View.extend({
             }
         }else {
             link.set('evolving', false);
-            this.$el.html(_.template($(this.template).html())(link.toJSON()));
+            this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
             $('#constant-links').val(type);
             this.updateConstantRelationship(); //makes sure that the effects for both intentions occur, can check by not connecting the link to anything else. 
             //If a constant relationship is chosen then an error occurs, but when this function is not there, if we switch back from evolving to constant the error doesn't occur
@@ -286,7 +286,7 @@ var LinkInspector = Backbone.View.extend({
     updateBeginEvolRelations: function() {
         var link = this.model.get('link');
         //Enable the end select by changing the selected into true, because it doesn't change back to false, then end select will always be enabled from now on
-        link.set('selected', true);
+        this.model.set('selected', true);
 
         $("#repeat-error").text("");
         var begin = $("#link-type-begin").val();

@@ -31,7 +31,6 @@
         postType: null,
         absTime: -1,
         evolving: false,
-        selected: false,
     }
 });
 
