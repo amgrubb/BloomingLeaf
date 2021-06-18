@@ -48,9 +48,8 @@ var ActorInspector = Backbone.View.extend({
                 event.preventDefault();
             }
 
-            var text = this.$('.cell-attrs-text').val();
             // Do not allow special characters in names, replace them with spaces.
-            text = text.replace(/[^\w\n-]/g, ' ');
+            var text = this.$('.cell-attrs-text').val().replace(/[^\w\n-]/g, ' ');
 
             this.model.attr({ '.name': {text: text }});
             this.model.set('actorName', text);
@@ -72,7 +71,8 @@ var ActorInspector = Backbone.View.extend({
          * Changes the line that distinguishes the type of actor 
          */
         changeLine: function() {
-            if (this.model.get('actorType') == 'G') {
+            var actorType = this.model.get('actorType');
+            if (actorType== 'G') {
                 this.model.attr({'.line': {'ref': '.label',
                 'ref-x': 0,
                 'ref-y': 0.08,
@@ -80,7 +80,7 @@ var ActorInspector = Backbone.View.extend({
                 'stroke-width': 1,
                 'stroke': 'black'}});
             }
-            else if (this.model.get('actorType') == 'R'){
+            else if (actorType == 'R'){
                 this.model.attr({'.line': {'ref': '.label',
                 'ref-x': 0,
                 'ref-y': 0.6,
@@ -88,7 +88,7 @@ var ActorInspector = Backbone.View.extend({
                 'stroke-width': 1,
                 'stroke': 'black'}});
             }
-            else if (this.model.get('actorType') == 'A'){
+            else if (actorType == 'A'){
                 this.model.attr({'.line': {'stroke-width': 0}});
             }
 

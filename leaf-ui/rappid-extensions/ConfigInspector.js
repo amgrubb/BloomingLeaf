@@ -99,7 +99,7 @@ var Config = Backbone.View.extend({
 
     /** Create and render dropdown inner view, set listeners */
     initialize: function(){
-        this.innerView = new ResultsDropdown({collection:this.model.get("results"), config: this.model}); 
+        this.innerView = new ResultsDropdown({collection:this.model.get("results"), config: this.model});
         this.innerView.render();
         this.model.on('destroy', this.remove, this);
         this.model.on('change:selected', this.updateHighlight, this);
@@ -272,7 +272,7 @@ var Config = Backbone.View.extend({
  * {ConfigCollection} collection
  */
 var ConfigInspector = Backbone.View.extend({
-    className: 'configs', 
+    className: 'configs',
 
     collection: ConfigCollection,
 

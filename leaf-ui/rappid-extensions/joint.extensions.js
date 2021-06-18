@@ -223,6 +223,7 @@ joint.shapes.basic.Actor = joint.shapes.basic.Generic.extend({
             ".line": {
             }
         },
+        //TODO replace with new ActorBBM once it is in codebase
         actor: new ActorTest(),
         actorType: 'A',
         actorName: 'Actor'
