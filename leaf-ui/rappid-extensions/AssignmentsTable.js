@@ -23,18 +23,19 @@ var AssignmentsTable = Backbone.View.extend({
                     <th>Action</th>
                 </tr>
         </table>
-        <div class=absRelationship>
-            <h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Absolute Relationship Assignment</h3>
-                <table id="link-list" class="abs-table">
-                    <tr>
-                        <th>Link Type</th>
-                        <th>Source Node name</th>
-                        <th>Dest Node name</th>
-                        <th>Assigned Time</th>
-                        <th>Action</th>
-                    </tr>
-                </table>
-        </div> */
+        */
+        '<div class=absRelationship>',
+            '<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Absolute Relationship Assignment</h3>',
+                '<table id="link-list" class="abs-table">',
+                    '<tr>',
+                        '<th>Link Type</th>',
+                        '<th>Source Node name</th>',
+                        '<th>Dest Node name</th>',
+                        '<th>Assigned Time</th>',
+                        '<th>Action</th>',
+                    '</tr>',
+                '</table>',
+        '</div>', 
         '<div class=relIntention>',
             '<div class=headings>',
                 '<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Relative Intention Assignments',
@@ -101,10 +102,13 @@ var AssignmentsTable = Backbone.View.extend({
         }
     },
 
+    
+
     /**
      * Adds relative intention to constraints list
      */
-    addRelIntention: function(){
+    addRelIntentionRow: function(){
+        console.log(this.model.getIntentions()[0].prop('intention'))
         /**
          * Add new constraint to 
          * this.model.getElements().filter(//filter for intentions with funcseg lists > 2)
@@ -199,12 +203,27 @@ var AssignmentsTable = Backbone.View.extend({
 
 var RelativeIntentionView = new Backbone.View.extend({
     model: Constraint,
-    template: [
+    template: ['<script type="text/template" id="assignments-template">',
         '<tr><td> <div class="epochLists" id="epoch1List"><select><option selected>...</option> </td>',
-        '<td> relationship </td>',
+        '<td> <div class="epochLists" id="relationshipLists"><select>',
+            '<option selected>...</option>',
+            '<option value="eq">=</option><option value="lt"><</option></select></div></td>',
         '<td> <div class="epochLists" id="epoch2List"><select><option selected>...</option> </td>',
-        '<td><i class="fa fa-trash-o fa-2x" id="removeIntention" aria-hidden="true"></i></td></tr>'
+        '<td><i class="fa fa-trash-o fa-2x" id="removeIntention" aria-hidden="true"></i></td></tr>',
+        '</script>'
     ].join(""),
+
+    initialize: function(){
+
+    },
+
+    render: function(){
+        this.$el.html(_.template($(this.template).html())());
+        this.loadOptions();
+        return this;
+    }
+
+
 
     // pass in intentions from above in order to grab all relevent func seg lists
     // class = id so that when you select one of the intention ids it removes that class
@@ -216,3 +235,10 @@ var RelativeIntentionView = new Backbone.View.extend({
      * 
      */
 });
+
+// var OptionTagView = new Backbone.View.extend({
+//     template:['<script type="text/template" id="assignments-template">',
+//         '<option class=' + intentions[i].nodeID + ' epoch=' + epoch + '>' + intentions[i].nodeName + ': ' + epoch + '</option>',
+//         '</script>'
+//     ].join(""),
+// });
