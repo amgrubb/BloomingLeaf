@@ -20,6 +20,10 @@ joint.dia.BloomingGraph = joint.dia.Graph.extend({
         constraints: [],
     }, joint.dia.Graph.prototype.defaults),
 
+    getIntentions: function(){
+        return this.getElements().filter(element => element instanceof joint.shapes.basic.Intention);
+    }
+
 })
 
 joint.shapes.basic.Intention = joint.shapes.basic.Generic.extend({
@@ -60,7 +64,7 @@ joint.shapes.basic.Intention = joint.shapes.basic.Generic.extend({
             	'y-alignment': 'middle'
             },
         },
-        intention: new IntentionTest('-', this.type), 
+        intention: new IntentionBBM({nodeType: this.type}), 
     }, joint.dia.Element.prototype.defaults)
 });
 

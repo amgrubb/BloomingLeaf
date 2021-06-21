@@ -51,5 +51,12 @@ var IntentionBBM = Backbone.Model.extend({
         nodeActorID: null,                     // Assigned on release operation.
         evolvingFunction: null, 
         initialValue: '(no value)'
+    },
+
+    getNumFuncTransitions: function(){
+        evolvingFunc = this.get('evolvingFunction');
+        if (evolvingFunc != null){
+            return evolvingFunc.get('functionSegList')
+        }
     }
 });

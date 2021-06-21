@@ -14,16 +14,15 @@ var AssignmentsTable = Backbone.View.extend({
             '<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px; margin-top: 30px;">Absolute Time Points</h3>',
             '<h5 style="text-align:left; color:#1E85F7; margin-bottom:5px; margin-top: -5px;">e.g. 5 8 22</h5>',
                 '<input style="float:left;"; id="abs-time-pts" class="analysis-input" type="text"/>',
-        //'<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px; margin-top:50px">Absolute Intention Assignments</h3>',
-       /*  <table id="node-list" class="abs-table">
-                <tr>
-                    <th>Epoch Boundary Name</th>
-                    <th>Function</th>
-                    <th>Assigned Time</th>
-                    <th>Action</th>
-                </tr>
-        </table>
-        */
+        '<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px; margin-top:50px">Absolute Intention Assignments</h3>',
+       '<table id="node-list" class="abs-table">',
+                '<tr>',
+                    '<th>Epoch Boundary Name</th>',
+                    '<th>Function</th>',
+                    '<th>Assigned Time</th>',
+                    '<th>Action</th>',
+                '</tr>',
+        '</table>',
         '<div class=absRelationship>',
             '<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Absolute Relationship Assignment</h3>',
                 '<table id="link-list" class="abs-table">',
@@ -71,6 +70,8 @@ var AssignmentsTable = Backbone.View.extend({
 
     render: function(){
         this.$el.html(_.template($(this.template).html())());
+        this.displayAbsoluteIntentionAssignments();
+        this.displayAbsoluteRelationshipAssignments();
         return this;
     },
 
@@ -102,8 +103,63 @@ var AssignmentsTable = Backbone.View.extend({
         }
     },
 
-    
+    // var btnHtml = '<td><button class="unassign-abs-intent-btn"> Unassign </button></td>';
 
+	// for (var i = 0; i < model.intentions.length; i++) {
+	// 	var intention = model.intentions[i];
+	// 	var funcType = intention.dynamicFunction.stringDynVis;
+	// 	var intentionName = intention.nodeName;
+
+	// 	// nameIdMapper[name] = intention.nodeID;
+	// 	if (funcType == 'RC' || funcType == 'CR' || funcType == 'MP' ||
+	// 		funcType == 'MN' || funcType == 'SD' || funcType == 'DS') {
+
+	// 		var absTime = intention.getAbsConstTime('A');
+	// 		// default value to display.
+	// 		// -1 means abs time does not exist. So display empty string instead.
+	// 		var defaultVal = absTime === -1 ? '' : absTime;
+
+	// 		$('#node-list').append('<tr nodeID = ' + intention.nodeID + ' srcEB = A><td>' + intentionName + ': A' + '</td><td>' + funcType + '</td>' +
+	// 			'<td><input type="number" name="sth" value="' + defaultVal + '"></td>' + btnHtml + '</tr>');
+	// 	} else if (funcType == 'UD') {
+
+	// 		// the number of function transitions, is the number of functions minus one
+	// 		var funcTransitions = intention.dynamicFunction.functionSegList.length - 1;
+	// 		var currBound = 'A';
+	// 		for (var j = 0; j < funcTransitions; j++) {
+
+	// 			// default value to display
+	// 			var absTime = intention.getAbsConstTime(currBound);
+	// 			var defaultVal = absTime === -1 ? '' : absTime;
+
+	// 			$('#node-list').append('<tr nodeID = ' + intention.nodeID + ' srcEB = ' + currBound + '><td>' + intentionName + ': ' + currBound + '</td><td>' + funcType + '</td>' +
+	// 				'<td><input type="number" name="sth" value=' + defaultVal + '></td>' + btnHtml + '</tr>');
+	// 			currBound = String.fromCharCode(currBound.charCodeAt(0) + 1);
+    
+    displayAbsoluteIntentionAssignments: function() {
+        this.model.getIntentions().forEach(intentionCell => {
+            var intentionBbm = intentionCell.get('intention');
+            var funcType = intentionBbm.get('evolvingFunction')?.get('type');
+                if ((funcType == 'RC' || funcType == 'CR' || funcType == 'MP' ||
+                 	funcType == 'MN' || funcType == 'SD' || funcType == 'DS')){
+                    // NEW VIEW
+                } else if (funcType == 'UD'){
+                    // Iterate through and then new view
+                }
+        });
+    },
+
+    displayAbsoluteRelationshipAssignments: function(){
+        this.model.getLinks().forEach(linkCell => {
+            linkBbm = linkCell.get('link');
+            if(linkBbm.isValidAbsoluteRelationship()){
+                var linkRelationshipView = new LinkRelationshipView({model: linkBbm});
+                $('#link-list').append(linkRelationshipView.el);
+                linkRelationshipView.render();
+            }
+        })
+    },
+    
     /**
      * Adds relative intention to constraints list
      */
@@ -164,40 +220,77 @@ var AssignmentsTable = Backbone.View.extend({
 //     row.remove();
 // });
 
-// /**
-//  * Displays the absolute and relative assignments modal for the user.
-//  */
-// $('#btn-view-assignment').on('click', function() {
-// 	epochLists = [];
-// 	graph.constraintValues = [];
-// 	var modal = document.getElementById('assignmentsModal');
-
-// 	// Clear all previous table entries
-// 	$(".abs-table").find("tr:gt(0)").remove();
-
-// 	// Display the modal by setting it to block display
-// 	modal.style.display = "block";
 
 
-// 	displayAbsoluteIntentionAssignments();
-// 	displayAbsoluteRelationshipAssignments();
-// });
+});
 
-// /**
-//  * Saves absolute intention and relationship assignments to the graph object
-//  * TODO: Check if the times users put in are valid
-//  */
-// $('#btn-save-assignment').on('click', function() {
-//     saveAbsoluteTimePoints();
-//     saveAbsoluteIntentionAssignments();
-//     saveAbsoluteRelationshipAssignments();
-//     saveRelativeIntentionAssignments();
+var IntentionRelationshipView = new Backbone.View.extend({
+    model: IntentionBBM, // FunctionSegmentBBM
+    template: [
+        '<script type="text/template" id="item-template">',
+        '<tr><td>' + intentionName + ': ' + currBound + '</td><td>' + funcType + '</td>',
+        '<td><input id="absFuncSegValue" type="number" name="sth" value=' + defaultVal + '></td>' + btnHtml + '</tr>',
+        '</script>'
+    ].join(''),
 
-//     // Dismiss the modal
-//     var modal = document.getElementById('assignmentsModal');
-//     modal.style.display = "none";
-//     $("#epoch1List select").val();
-// });
+    events: {
+        'change #absIntentionValue' : 'updateAbsRelation',
+        'click #unassign-abs-rel-btn' : 'unassignAbsRelation'
+    },
+
+    render: function(){
+        this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
+        return this;
+    },
+
+    updateLinkAbsRelation: function(){
+        var newTime = parseInt($('#linkAbsRelation').val());
+        if (isNaN(newTime)) {
+            return;
+        }
+        this.model.set('linkAbsTime', newTime);
+    },
+
+    unassignAbsRelation: function(){
+        $('#linkAbsRelation').val('');
+        this.model.set('linkAbsTime', -1);
+    },
+
+});
+
+var LinkRelationshipView = new Backbone.View.extend({
+    model: LinkBBM,
+    template: [
+        '<script type="text/template" id="item-template">',
+        '<tr><td> <%= linkType %> </td><td> <%= linkSrcID %> </td>',
+        '<td> <%= linkDestID %> </td>',
+        '<td><input id="linkAbsRelation" type="number" name="sth" value= "<% if (linkAbsTime === -1) {%> "" <%} else { %> linkAbsTime <% } %>" ></td>',
+        '<td><button id="unassign-abs-rel-btn" > Unassign </button></td> </tr>',
+        '</script>'
+    ].join(''),
+
+    events: {
+        'change #linkAbsRelation' : 'updateLinkAbsRelation',
+        'click #unassign-abs-rel-btn' : 'unassignAbsRelation'
+    },
+
+    render: function(){
+        this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
+        return this;
+    },
+
+    updateLinkAbsRelation: function(){
+        var newTime = parseInt($('#linkAbsRelation').val());
+        if (isNaN(newTime)) {
+            return;
+        }
+        this.model.set('linkAbsTime', newTime);
+    },
+
+    unassignAbsRelation: function(){
+        $('#linkAbsRelation').val('');
+        this.model.set('linkAbsTime', -1);
+    },
 
 });
 
