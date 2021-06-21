@@ -116,7 +116,9 @@ var AssignmentsTable = Backbone.View.extend({
      * Adds relative intention to constraints list
      */
     addRelIntentionRow: function(){
-        var relIntentionRow = new RelativeIntentionView({model: new ConstraintBBM(), graph: this.model, new: true});
+        var newConstraint = new ConstraintBBM();
+        graph.get('constraints').push(newConstraint);
+        var relIntentionRow = new RelativeIntentionView({model: newConstraint, graph: this.model, new: true});
         $('#rel-intention-assigments').append(relIntentionRow.el);
         relIntentionRow.render();
     },
