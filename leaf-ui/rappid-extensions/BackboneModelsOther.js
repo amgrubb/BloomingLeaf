@@ -63,25 +63,21 @@ var UserEvaluationBBM = Backbone.Model.extend({
  * Backbone Model of Constraints
  */
 var ConstraintBBM = Backbone.Model.extend({
-    initialize: function(options){ 
-        this.type = options.type;               // Options are '=', '<', and '<='
-        this.srcID = options.srcID;
-        this.destID = options.destID;
-        this.srcRefTP = options.srcRefTP;       // Reference Time Point A,B,C, etc.
-        this.destRefTP = options.destRefTP;     // Reference Time Point A,B,C, etc.
-        /* Absolute time points are only used with the '=' type of operator.
-         *   If a timepoint is not given -1 should be assigned as the default value.
+    initialize: function(options){
+        _.extend({}, this.defaults, options)
+    },
+
+    defaults: {
+        type: null,           // Options are '=', '<', and '<='
+        srcID: null,
+        destID: null,
+        srcRefTP: null,       // Reference Time Point A,B,C, etc.
+        destRefTP: null,      // Reference Time Point A,B,C, etc.
+        /** 
+         * Absolute time points are only used with the '=' type of operator.
+         *  If a timepoint is not given -1 should be assigned as the default value.
          */   
-        if (options.absTP == 'undefined') {
-            if (this.type  == '<' || this.type == '<='){
-                this.absTP = null; 
-            }else{
-                this.absTP = -1;
-            }
-        }else{
-            this.absTP = this.absTP;
-        }
- 
+        absTP: -1,
     },
 });
 

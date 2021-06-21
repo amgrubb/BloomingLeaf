@@ -116,7 +116,7 @@ var AssignmentsTable = Backbone.View.extend({
      * Adds relative intention to constraints list
      */
     addRelIntentionRow: function(){
-        var relIntentionRow = new RelativeIntentionView({model: new Constraint(), new: true});
+        var relIntentionRow = new RelativeIntentionView({model: new ConstraintBBM(), graph: this.model, new: true});
         $('#rel-intention-assigments').append(relIntentionRow.el);
         relIntentionRow.render();
     },
@@ -150,12 +150,13 @@ var AssignmentsTable = Backbone.View.extend({
     },
 });
 
-var RelativeIntentionView = new Backbone.View.extend({
+var RelativeIntentionView = Backbone.View.extend({
     model: Constraint,
     
     initialize: function(options){
+        this.graph = options.graph;
         this.new = options.new;
-        this.model.on('destroy', this.remove, this);
+        this.listenTo(this.model, 'destroy', this.remove, this);
     },
 
     newConstraintTemplate: ['<script type="text/template" id="assignments-template">',
@@ -190,7 +191,7 @@ var RelativeIntentionView = new Backbone.View.extend({
     },
 
     loadOptions: function(){
-        this.model.getIntentions().forEach(intention => {
+        this.graph.getIntentions().forEach(intention => {
             if (intention.get('evolvingFunction') != null){
                 for (let funcSegment in intention.getFuncSegments().slice(1)){
                     var optionTag = this.getOptionTag(intention.get('id'), intention.get('nodeName'), funcSegment.get('startTP'));
@@ -226,7 +227,7 @@ var RelativeIntentionView = new Backbone.View.extend({
     },
 });
 
-var IntentionRelationshipView = new Backbone.View.extend({
+var IntentionRelationshipView = Backbone.View.extend({
     model: FunctionSegmentBBM,
 
     initialize: function(options){
@@ -267,7 +268,7 @@ var IntentionRelationshipView = new Backbone.View.extend({
 
 });
 
-var LinkRelationshipView = new Backbone.View.extend({
+var LinkRelationshipView = Backbone.View.extend({
     model: LinkBBM,
     template: [
         '<script type="text/template" id="item-template">',
