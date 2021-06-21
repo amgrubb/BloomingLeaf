@@ -9,6 +9,25 @@ var AssignmentsTable = Backbone.View.extend({
         '<h2>Absolute and Relative Assignments</h2>',
     '</div>',
     '<div class="modal-body">',
+    '<div class=relIntention>',
+            '<div class=headings>',
+                '<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Relative Intention Assignments',
+                        '<div id="add-intention" style="display:inline">',
+                            '<i class="fa fa-plus" id="addIntent" style="font-size:30px; float:right; margin-right:20px;"></i>',
+                        '</div>',
+                '</h3>',
+            '</div>',
+                '<div>',
+                    '<table id="rel-intention-assigments" class="rel-intent-table">',
+                        '<tr>',
+                            '<th>Epoch Boundary Name 1</th>',
+                            '<th>Relationship</th>',
+                            '<th>Epcoch Boundary Name 2</th>',
+                            '<th></th>',
+                        '</tr>',
+                    '</table>',
+                '</div>',
+        '</div>',
         '<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Max Absolute Time</h3>',
                 '<input style="float:left;"; id="max-abs-time" class="analysis-input" type="number" min="1" step="1" value="100"/>',
             '<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px; margin-top: 30px;">Absolute Time Points</h3>',
@@ -35,25 +54,6 @@ var AssignmentsTable = Backbone.View.extend({
                     '</tr>',
                 '</table>',
         '</div>', 
-        '<div class=relIntention>',
-            '<div class=headings>',
-                '<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Relative Intention Assignments',
-                        '<div id="add-intention" style="display:inline">',
-                            '<i class="fa fa-plus" id="addIntent" style="font-size:30px; float:right; margin-right:20px;"></i>',
-                        '</div>',
-                '</h3>',
-            '</div>',
-                '<div>',
-                    '<table id="rel-intention-assignents" class="rel-intent-table">',
-                        '<tr>',
-                            '<th>Epoch Boundary Name 1</th>',
-                            '<th>Relationship</th>',
-                            '<th>Epcoch Boundary Name 2</th>',
-                            '<th></th>',
-                        '</tr>',
-                    '</table>',
-                '</div>',
-        '</div>',
         '<div class="modal-footer" style="margin-top: 10px;">',
             '<button id="btn-save-assignment" class="analysis-btns inspector-btn sub-label green-btn" style="border-radius:40px;">Save</button>',
         '</div>',
@@ -63,13 +63,14 @@ var AssignmentsTable = Backbone.View.extend({
     '</script>'].join(''),
 
     events: {
+        'click #add-intention': 'addRelIntentionRow',
         'change #max-abs-time': 'updateMaxAbsTime',
-        'change #abs-time-pts': 'updateAbsTimePts',
-        'click #add-intention': 'addRelIntentionRow'
+        'change #abs-time-pts': 'updateAbsTimePts'
     },
 
     render: function(){
         this.$el.html(_.template($(this.template).html())());
+        this.loadRelativeIntentions();
         this.displayAbsoluteIntentionAssignments();
         this.displayAbsoluteRelationshipAssignments();
         return this;
@@ -91,7 +92,6 @@ var AssignmentsTable = Backbone.View.extend({
      * Sets Absolute time points
      */
     updateAbsTimePts: function() {
-        console.log("in abs time pts")
         // TODO: We could split at spaces + commas: /[ ,]+/) 
         // but would need to fix the regex.test var first
         var regex = new RegExp("^(([1-9]0*)+\\s+)*([1-9]+0*)*$");
@@ -103,49 +103,38 @@ var AssignmentsTable = Backbone.View.extend({
         }
     },
 
-    // var btnHtml = '<td><button class="unassign-abs-intent-btn"> Unassign </button></td>';
+    // TODO: Implement view to take in already selected constraint
+    loadRelativeIntentions: function(){
+        for (let constraint in this.model.get('constraints')){
+            var relIntentionRow = new RelativeIntentionView({model: constraint, new: false});
+        $('#rel-intention-assigments').append(relIntentionRow.el);
+        relIntentionRow.render();
+        }
+    },
 
-	// for (var i = 0; i < model.intentions.length; i++) {
-	// 	var intention = model.intentions[i];
-	// 	var funcType = intention.dynamicFunction.stringDynVis;
-	// 	var intentionName = intention.nodeName;
-
-	// 	// nameIdMapper[name] = intention.nodeID;
-	// 	if (funcType == 'RC' || funcType == 'CR' || funcType == 'MP' ||
-	// 		funcType == 'MN' || funcType == 'SD' || funcType == 'DS') {
-
-	// 		var absTime = intention.getAbsConstTime('A');
-	// 		// default value to display.
-	// 		// -1 means abs time does not exist. So display empty string instead.
-	// 		var defaultVal = absTime === -1 ? '' : absTime;
-
-	// 		$('#node-list').append('<tr nodeID = ' + intention.nodeID + ' srcEB = A><td>' + intentionName + ': A' + '</td><td>' + funcType + '</td>' +
-	// 			'<td><input type="number" name="sth" value="' + defaultVal + '"></td>' + btnHtml + '</tr>');
-	// 	} else if (funcType == 'UD') {
-
-	// 		// the number of function transitions, is the number of functions minus one
-	// 		var funcTransitions = intention.dynamicFunction.functionSegList.length - 1;
-	// 		var currBound = 'A';
-	// 		for (var j = 0; j < funcTransitions; j++) {
-
-	// 			// default value to display
-	// 			var absTime = intention.getAbsConstTime(currBound);
-	// 			var defaultVal = absTime === -1 ? '' : absTime;
-
-	// 			$('#node-list').append('<tr nodeID = ' + intention.nodeID + ' srcEB = ' + currBound + '><td>' + intentionName + ': ' + currBound + '</td><td>' + funcType + '</td>' +
-	// 				'<td><input type="number" name="sth" value=' + defaultVal + '></td>' + btnHtml + '</tr>');
-	// 			currBound = String.fromCharCode(currBound.charCodeAt(0) + 1);
+    /**
+     * Adds relative intention to constraints list
+     */
+    addRelIntentionRow: function(){
+        var relIntentionRow = new RelativeIntentionView({model: new Constraint(), new: true});
+        $('#rel-intention-assigments').append(relIntentionRow.el);
+        relIntentionRow.render();
+    },
     
     displayAbsoluteIntentionAssignments: function() {
         this.model.getIntentions().forEach(intentionCell => {
             var intentionBbm = intentionCell.get('intention');
-            var funcType = intentionBbm.get('evolvingFunction')?.get('type');
-                if ((funcType == 'RC' || funcType == 'CR' || funcType == 'MP' ||
-                 	funcType == 'MN' || funcType == 'SD' || funcType == 'DS')){
-                    // NEW VIEW
-                } else if (funcType == 'UD'){
-                    // Iterate through and then new view
+            var funcSegList = intentionBbm.get('evolvingFunction')?.get('functionSegList');
+            if (funcSegList != 'undefined'){
+                // TODO: Check with @amgrubb about how this is being sliced
+                for (let funcSeg of funcSegList.slice(1)){
+                    var intentionRelationshipView = new IntentionRelationshipView({
+                        model: funcSeg, funcType: intentionBbm.get('evolvingFunction').get('type'), 
+                        intentionName: intentionBbm.get('nodeName')});
+                    $('#node-list').append(intentionRelationshipView.el);
+                    intentionRelationshipView.render();  
                 }
+            }
         });
     },
 
@@ -159,101 +148,121 @@ var AssignmentsTable = Backbone.View.extend({
             }
         })
     },
+});
+
+var RelativeIntentionView = new Backbone.View.extend({
+    model: Constraint,
     
-    /**
-     * Adds relative intention to constraints list
-     */
-    addRelIntentionRow: function(){
-        console.log(this.model.getIntentions()[0].prop('intention'))
-        /**
-         * Add new constraint to 
-         * this.model.getElements().filter(//filter for intentions with funcseg lists > 2)
-         * add all func segs for all relevant intentions to selectdropdown (maybe make a function for this?)
-         * Doesn't need to be dynamic yet
-         */
-    }
+    initialize: function(options){
+        this.new = options.new;
+        this.model.on('destroy', this.remove, this);
+    },
 
-    
+    newConstraintTemplate: ['<script type="text/template" id="assignments-template">',
+        '<tr><td> <div class="epochLists"><select id="epoch1List"><option selected>...</option></select></div></td>',
+        '<td> <div class="epochLists"><select id="relationshipLists">',
+            '<option selected>...</option>',
+            '<option value="eq">=</option><option value="lt"><</option></select></div></td>',
+        '<td> <div class="epochLists"><select id="epoch2List><option selected>...</option></select></div></td>',
+        '<td><i class="fa fa-trash-o fa-2x" id="removeConstraint" aria-hidden="true"></i></td></tr>',
+        '</script>'
+    ].join(''),
 
-// /**
-//  * Add relative intention row
-//  */
-// $('.addIntention').on('click', function(){
-//     var intentions = model.intentions;
-//         var epochHtml1 = '<div class="epochLists" id="epoch1List"><select><option selected>...</option>';
-//         var epochHtml2 =  '<div class="epochLists" id="epoch2List"><select><option selected>...</option>';
-//         for (var i = 0; i < intentions.length; i++) {
+    loadedConstraintTemplate: [].join(''),
 
-//             // if number of function segments >= 2, we have at least one transition
-//             if (intentions[i].getNumOfFuncSegements() >= 2) {
-//                 var funcSegments = intentions[i].dynamicFunction.getFuncSegmentIterable();
-//                 for (var j = 0; j < funcSegments.length - 1; j++) {
-//                     var epoch = funcSegments[j].funcStop;
-//                     var newEpochHtml = '<option nodeID=' + intentions[i].nodeID + ' epoch=' + epoch + '>' + intentions[i].nodeName + ': ' + epoch + '</option>';
-//                     epochHtml1 += newEpochHtml;
-//                     epochHtml2 += newEpochHtml;
-//                 }
-//             }
-//         }
+    events: {
+        'change #epoch1List' : 'changeEpoch1',
+        'change #epoch2List' : 'changeEpoch2',
+        'change #relationshipLists' : 'changeRelationship',
+        'click #removeConstraint' : 'removeConstraint',
 
-//         epochHtml1 += '</select></div>';
-//         epochHtml2 += '</select></div>';
+    },
 
+    render: function(){
+        if (this.new){
+            this.$el.html(_.template($(this.newConstraintTemplate).html())());
+            this.loadOptions();
+        } else {
+            // TODO: Implement
+            this.$el.html(_.template($(this.loadedConstraintTemplate).html())());
+        }
+        return this;
+    },
 
-//         var relationship = '<div class="epochLists" id="relationshipLists"><select><option selected>...'+
-//             '</option><option value="eq">=</option><option value="lt"><</option></select></div>'
+    loadOptions: function(){
+        this.model.getIntentions().forEach(intention => {
+            if (intention.getFuncSegments()?.length >= 2){
+                for (let funcSegment in intention.getFuncSegments()){
+                    var optionTag = this.getOptionTag(intention.get('id'), intention.get('nodeName'), funcSegment.get('startTP'));
+                    $('#epoch1List').append(optionTag);
+                    $('#epoch2List').append(optionTag);
+                }
+            }
+        })
+    },
 
-//         $('#rel-intention-assignents').append('<tr><td>' + epochHtml1 + '</td><td>' + relationship +
-//             '</td><td>'+ epochHtml2 +'</td><td><i class="fa fa-trash-o fa-2x" id="removeIntention" aria-hidden="true"></i></td></tr>');
-// });
+    changeEpoch1: function(){
+        selectionOption = $('#epoch1List option:selected');
+        this.model.set('srcID', selectedOption.attr('class'));
+        this.model.set('srcRefTP', selectedOption.attr('epoch'));
+    },
 
-// $(document.body).on('click', '#removeIntention', function(){
-//     var row = $(this).parent().parent();
-//     var nodeID1 = row.find('#epoch1List select option:checked').attr('nodeID');
-//     var epoch1 = row.find('#epoch1List select option:checked').attr('epoch');
-//     var type = row.find('#relationshipLists select option:checked').text();
-//     var nodeID2 = row.find('#epoch2List select option:checked').attr('nodeID');
-//     var epoch2 = row.find('#epoch2List select option:checked').attr('epoch');
-//     var constraint = new Constraint(type, nodeID1, epoch1, nodeID2, epoch2);
+    changeEpoch2: function(){
+        selectionOption = $('#epoch2List option:selected');
+        this.model.set('srcID', selectedOption.attr('class'));
+        this.model.set('srcRefTP', selectedOption.attr('epoch'));
+    },
 
-//     model.removeConstraint(constraint);
-//     row.remove();
-// });
+    changeRelationship: function(){
+        this.model.set('type', $('#relationshipLists option:selected').text());
+    },
 
+    removeConstraint: function(){
+        this.model.destroy();
+    },
 
-
+    getOptionTag(intentionId, nodeName, epoch){
+        return '<option class='+ intentionId +' epoch='+ epoch +'>' + nodeName + ': ' + epoch + '</option>';
+    },
 });
 
 var IntentionRelationshipView = new Backbone.View.extend({
-    model: IntentionBBM, // FunctionSegmentBBM
+    model: FunctionSegmentBBM,
+
+    initialize: function(options){
+        this.funcType = options.funcType;
+        this.intentionName = options.intentionName;
+    },
+
     template: [
         '<script type="text/template" id="item-template">',
-        '<tr><td>' + intentionName + ': ' + currBound + '</td><td>' + funcType + '</td>',
-        '<td><input id="absFuncSegValue" type="number" name="sth" value=' + defaultVal + '></td>' + btnHtml + '</tr>',
+        '<tr><td> "<%= intentionName %>" : "<%= startTP %>"</td><td> <%= funcType %> </td>',
+        '<td><input id="absFuncSegValue" type="number" name="sth" value="<% if (startATP == -1) {%> "" <%} else { %> startATP <% } %>"></td>',
+        '<td><button id="unassign-abs-intent-btn"> Unassign </button></td></tr>',
         '</script>'
     ].join(''),
 
     events: {
-        'change #absIntentionValue' : 'updateAbsRelation',
-        'click #unassign-abs-rel-btn' : 'unassignAbsRelation'
+        'change #absFuncSegValue' : 'updateAbsFuncSegValue',
+        'click #unassign-abs-intent-btn' : 'unassignAbsIntention'
     },
 
     render: function(){
-        this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
+        this.$el.html(_.template($(this.template).html())(Object.assign(this.model, this.funcType, this.intentionName).toJSON()));
         return this;
     },
 
-    updateLinkAbsRelation: function(){
-        var newTime = parseInt($('#linkAbsRelation').val());
+    updateAbsFuncSegValue: function(){
+        var newTime = parseInt($('#absFuncSegValue').val());
         if (isNaN(newTime)) {
             return;
         }
-        this.model.set('linkAbsTime', newTime);
+        this.model.set('startATP', newTime);
     },
 
-    unassignAbsRelation: function(){
-        $('#linkAbsRelation').val('');
-        this.model.set('linkAbsTime', -1);
+    unassignAbsIntention: function(){
+        $('#absFuncSegValue').val('');
+        this.model.set('startATP', -1);
     },
 
 });
@@ -293,45 +302,3 @@ var LinkRelationshipView = new Backbone.View.extend({
     },
 
 });
-
-var RelativeIntentionView = new Backbone.View.extend({
-    model: Constraint,
-    template: ['<script type="text/template" id="assignments-template">',
-        '<tr><td> <div class="epochLists" id="epoch1List"><select><option selected>...</option> </td>',
-        '<td> <div class="epochLists" id="relationshipLists"><select>',
-            '<option selected>...</option>',
-            '<option value="eq">=</option><option value="lt"><</option></select></div></td>',
-        '<td> <div class="epochLists" id="epoch2List"><select><option selected>...</option> </td>',
-        '<td><i class="fa fa-trash-o fa-2x" id="removeIntention" aria-hidden="true"></i></td></tr>',
-        '</script>'
-    ].join(""),
-
-    initialize: function(){
-
-    },
-
-    render: function(){
-        this.$el.html(_.template($(this.template).html())());
-        this.loadOptions();
-        return this;
-    }
-
-
-
-    // pass in intentions from above in order to grab all relevent func seg lists
-    // class = id so that when you select one of the intention ids it removes that class
-
-    /**
-     * for intention in intention list:
-     *        for intention.relevent func segs:
-     *                  create new option tag html view (append to )
-     * 
-     */
-});
-
-// var OptionTagView = new Backbone.View.extend({
-//     template:['<script type="text/template" id="assignments-template">',
-//         '<option class=' + intentions[i].nodeID + ' epoch=' + epoch + '>' + intentions[i].nodeName + ': ' + epoch + '</option>',
-//         '</script>'
-//     ].join(""),
-// });

@@ -21,7 +21,12 @@ joint.dia.BloomingGraph = joint.dia.Graph.extend({
     }, joint.dia.Graph.prototype.defaults),
 
     getIntentions: function(){
-        return this.getElements().filter(element => element instanceof joint.shapes.basic.Intention);
+        return this.getElements().filter(element => element instanceof joint.shapes.basic.Intention)
+            .map(intentionCell => intentionCell.get('intention'));
+    },
+
+    getElementById: function(id){
+        return this.getCells().filter(cell => cell.get('id') == id);
     }
 
 })

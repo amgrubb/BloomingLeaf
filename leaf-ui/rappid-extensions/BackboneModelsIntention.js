@@ -12,8 +12,9 @@ var FunctionSegmentBBM = Backbone.Model.extend({
     initialize: function (options) {
         this.type = options.type;           // Atomic function types. 
         this.refEvidencePair = options.refEvidencePair;   //a.k.a. Evaluation Value
-        this.startTP = options.startTP;
-        this.stopTP = options.stopTP;
+        this.startTP = options.startTP; // Assigned time
+        this.startATP = options.startATP; // Integer time point. If not set defaults to undefined
+
     }
 });
 
@@ -53,10 +54,11 @@ var IntentionBBM = Backbone.Model.extend({
         initialValue: '(no value)'
     },
 
-    getNumFuncTransitions: function(){
+    getFuncSegments: function(){
         evolvingFunc = this.get('evolvingFunction');
         if (evolvingFunc != null){
-            return evolvingFunc.get('functionSegList')
+            return evolvingFunc.get('functionSegList');
         }
+        return null;
     }
 });
