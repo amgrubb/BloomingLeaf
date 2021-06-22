@@ -124,7 +124,7 @@ var Config = Backbone.View.extend({
 
     events: {
         'click .config-elements': 'switchConfig',
-        'click .deleteconfig-button': 'removeConfig',
+        'click .deleteconfig-button': 'removeConfig', 
         'click .dropdown-button' : 'toggleDropdown',
         'dblclick .config-elements': 'rename',
         'blur .config-input': 'setConfigName',
@@ -167,7 +167,20 @@ var Config = Backbone.View.extend({
      * and triggering a removal of its respective view 
      */
     removeConfig:function(){
-        this.model.destroy();
+        index = this.model.collection.indexOf(this.model);
+        if (this.model.collection.length != 1){
+            this.model.collection.at(this.model.collection.length - 1).set({selected:false});
+            this.model.collection.at(index).set({selected:false});
+            if (index != 0){
+                this.model.collection.at(0).set({selected:true});
+            } else {
+                this.model.collection.at(1).set({selected:true});
+            }
+            this.model.destroy();
+        }
+        else {
+            this.model.destroy();
+        }
     },
 
     /**
