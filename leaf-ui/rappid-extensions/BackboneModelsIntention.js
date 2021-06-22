@@ -63,7 +63,7 @@ var EvolvingFunctionBBM = Backbone.Model.extend({
      * EvolvingFunction's second last function segment's
      * marked value value. If there is no second last function
      * segment, this function returns the 4 digit representation of 
-     * the only ffunction segment's marked value
+     * the only function segment's marked value
      */
     getSecondLastMarkedVal: function() {
         var len = this.functionSegList.length;
@@ -104,10 +104,15 @@ var EvolvingFunctionBBM = Backbone.Model.extend({
         while (this.functionSegList[startIndex].get('startTP') !== time1) {
             startIndex++;
         }
-        repStart = String.fromCharCode(this.functionSegList[startIndex] + 64);
+        
+        if (startIndex == 0) { 
+            repStart = '0'; 
+        } else { 
+            repStart = String.fromCharCode(this.functionSegList[startIndex] + 64);
+        }
 
         var stopIndex = 0;
-        while (this.functionSegList[stopIndex].get('stopTP') !== time1) {
+        while (this.functionSegList[stopIndex].get('stopTP') !== time2) {
             stopIndex++;
         }
         repStop = String.fromCharCode(this.functionSegList[stopIndex] + 64);
