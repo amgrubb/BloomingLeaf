@@ -43,20 +43,6 @@ var EvolvingFunctionBBM = Backbone.Model.extend({
     
     // TODO update all of the function descriptions
 
-        /**
-     * Returns the 4 digit representation for this
-     * EvolvingFunction's ith function segment's 
-     * satisfaction value
-     *
-     * @param {Number} i
-     * @returns {String}
-     */
-    getMarkedVal: function(i) {
-        return this.functionSegList[i].get('refEvidencePair');
-        // Original Function
-        // return this.functionSegList[i].funcX;
-    },
-
     /**
      * Returns the 4 digit representation for this
      * EvolvingFunction's last function segment's
@@ -94,25 +80,6 @@ var EvolvingFunctionBBM = Backbone.Model.extend({
         //     return this.getLastMarkedVal();
         // }
     },    
-
-    /**
-     * Returns the funcStop value for the last
-     * function segment for this EvolvingFunction
-     * Returns null if functionSegList is empty
-     *
-     * returns {String | null}
-     */
-    getLastStopValue: function() {
-        len = this.functionSegList.length;
-        if (len > 0) {
-            return this.functionSegList[len - 1].get('stopTP');
-        }
-        // Original Function
-        // len = this.functionSegList.length
-        // if (len > 0) {
-        //     return this.functionSegList[len - 1].funcStop;
-        // }
-    },  
 
     /**
      * Creates a new RepFuncSegment object containing function
@@ -172,28 +139,7 @@ var EvolvingFunctionBBM = Backbone.Model.extend({
         // // create and add a new RepFuncSegment
         // var repFuncSegment = new RepFuncSegment(repFuncSegments);
         // this.functionSegList.splice(startIndex, 0, repFuncSegment);        
-    },         
-
-    /**
-     * Returns the FuncSegment in this EvolvingFunction's
-     * functionSegList, with the relative start time time
-     *
-     * @param {String} time
-     * @returns {FuncSegment}
-     */
-     findSegmentByStartTime: function(time) {
-        for (var i = 0; i < this.functionSegList.length; i++) {
-            if (this.functionSegList[i].get('startTP') === time) {
-                return this.functionSegList[i];
-            }
-        }
-        // Original Function
-        // for (var i = 0; i < this.functionSegList; i++) {
-        //     if (this.functionSegList[i].funcStart === time) {
-        //         return this.functionSegList[i];
-        //     }
-        // }
-    },    
+    },            
 
     /**
      * If a RepFuncSegment exists in this EvolvingFunction's
@@ -268,7 +214,7 @@ var EvolvingFunctionBBM = Backbone.Model.extend({
     // TODO - fix this function
      getEndRepeatEpoch: function() {
         var repStopIndex = this.repStop.charCodeAt() - 64; // this should be the index of the last repeating segment
-        return this.functionSegList[repStopIndex].get(stopTP);
+        return this.functionSegList[repStopIndex].get('stopTP');
         // Original Function
         // for (var i = 0; i < this.functionSegList.length; i++) {
         //     if (this.functionSegList[i] instanceof RepFuncSegment) {
@@ -280,6 +226,8 @@ var EvolvingFunctionBBM = Backbone.Model.extend({
 
     /**
      * Deleted Functions
+     * All of these functions were either never used or are now not needed b/c of refactor
+     * 
      * getRepeatAbsTime: function() {},
      * getRepeatRepNum: function() {},
      * hasRepeat: function() {}, 
@@ -287,6 +235,9 @@ var EvolvingFunctionBBM = Backbone.Model.extend({
      * setRepNum: function(num) {},
      * getFuncSegmentIterable: function() {},
      * getRepFuncSegmentIndex: function() {},  
+     * getLastStopValue: function() {},
+     * getMarkedVal: function(i) {},  
+     * findSegmentByStartTime: function(time) {}, 
      */
 
 
@@ -294,19 +245,8 @@ var EvolvingFunctionBBM = Backbone.Model.extend({
 
 var IntentionBBM = Backbone.Model.extend({
     initialize: function(options) { 
-        this.nodeType = options.nodeType;  
-    }, 
-    defaults: { 
-        nodeName: "untitled",
-        nodeActorID: null,                     // Assigned on release operation.
-        evolvingFunction: null, 
-        initialValue: '(no value)'
-    }
-});
-
-var IntentionBBM = Backbone.Model.extend({
-    initialize: function(options) { 
-        this.nodeType = options.nodeType;  
+        this.nodeType = options.nodeType;
+        this.nodeID = this.createID;  
     }, 
     defaults: { 
         nodeName: 'untitled',
@@ -323,7 +263,7 @@ var IntentionBBM = Backbone.Model.extend({
         // if there is only one function segment, and its constant, then we need to
         // change the function segment's marked value
  
-        var funcSegList = this.dynamicFunction.functionSegList;
+        var funcSegList = this.dynamicFunction.get('functionSegList');
         
         // if (this.dynamicFunction.stringDynVis == 'C' ||
         //     (this.dynamicFunction.stringDynVis == 'UD' && funcSegList[0].funcType == 'C')) {
