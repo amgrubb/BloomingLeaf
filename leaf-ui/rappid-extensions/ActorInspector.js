@@ -2,37 +2,39 @@
 var ENTER_KEY = 13;
 
 var ActorInspector = Backbone.View.extend({
-
-        className: 'element-inspector',
-
+        model: joint.shapes.basic.Actor,
+        
+        initialize: function() {
+            this.model.on('change:actorType', this.changeLine, this);
+        },
         template: [
+            '<script type="text/template" id="item-template">',
+            '<div class="inspector-views">',
             '<label>Actor name</label>',
-            '<textarea class="cell-attrs-text" maxlength=100></textarea>',
+            '<textarea class="cell-attrs-text" maxlength=100> <%= actorName %> </textarea>',
             '<label> Actor type </label>',
-            '<select class="actor-type">',
-            '<option value=A> Actor </option>',
-            '<option value=G> Agent </option>',
-            '<option value=R> Role </option>',
-            '</select>'
+            '<select id="actor-type-ID" class="actor-type">',
+            '<option value=A <%if (actorType === "A")  { %> selected <%} %>> Actor </option>',
+            '<option value=G <%if (actorType === "G")  { %> selected <%} %>> Agent </option>',
+            '<option value=R <%if (actorType === "R")  { %> selected <%} %>> Role </option>',
+            '</select>',
+            '</div>',
+            '</script>'
         ].join(''),
 
+    
         events: {
             'keyup .cell-attrs-text': 'nameAction',
+            'change #actor-type-ID': 'updateType', 
+            'clearInspector .inspector-views': 'removeView',
         },
 
         /**
          * Initializes the element inspector using previously defined templates
          */
-        render: function(cell) {
-
-            this.cell = cell;
-
-            // Save actor here
-            this.actor = model.getActorByID(cell.attributes.nodeID);
-
+        render: function() {
             // If the clicked node is an actor, render the actor inspector
-            this.$el.html(_.template(this.template)());
-            this.$('.cell-attrs-text').val(this.actor.nodeName);
+            this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
         },
 
 
@@ -46,16 +48,50 @@ var ActorInspector = Backbone.View.extend({
                 event.preventDefault();
             }
 
-            var text = this.$('.cell-attrs-text').val();
             // Do not allow special characters in names, replace them with spaces.
-            text = text.replace(/[^\w\n-]/g, ' ');
+            var text = this.$('.cell-attrs-text').val().replace(/[^\w\n-]/g, ' ');
 
-            this.cell.attr({ '.name': { text: text } });
-            this.actor.nodeName = text;
+            this.model.attr({ '.name': {text: text }});
+            this.model.set('actorName', text);
 
         },
-      clear: function(){
-            this.$el.html('');
+        /**
+         * Removes the view so we don't have multiple ones in the sidebar
+         */
+        removeView: function(){
+            this.remove();
+        },
+        /**
+         * Changes the line that distinguishes the type of actor 
+         */
+        updateType: function(){
+            this.model.set('actorType', this.$('#actor-type-ID').val());
+        },
+        /**
+         * Changes the line that distinguishes the type of actor 
+         */
+        changeLine: function() {
+            var actorType = this.model.get('actorType');
+            if (actorType== 'G') {
+                this.model.attr({'.line': {'ref': '.label',
+                'ref-x': 0,
+                'ref-y': 0.08,
+                'd': 'M 5 10 L 55 10',
+                'stroke-width': 1,
+                'stroke': 'black'}});
+            }
+            else if (actorType == 'R'){
+                this.model.attr({'.line': {'ref': '.label',
+                'ref-x': 0,
+                'ref-y': 0.6,
+                'd': 'M 5 10 Q 30 20 55 10 Q 30 20 5 10' ,
+                'stroke-width': 1,
+                'stroke': 'black'}});
+            }
+            else if (actorType == 'A'){
+                this.model.attr({'.line': {'stroke-width': 0}});
+            }
+
         }
 }
 
