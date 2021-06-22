@@ -79,7 +79,6 @@ var analysisRequest = new AnalysisRequest();        //TODO: make not global!
 var analysisResult = new AnalysisResult();
 
 
-
 var elementInspector = new ElementInspector();
 var configCollection = new ConfigCollection([]);
 var configInspector = new ConfigInspector({collection:configCollection});
@@ -303,9 +302,6 @@ var res = new joint.shapes.basic.Resource({ position: {x: 50, y: 250} });
 var act = new joint.shapes.basic.Actor({ position: {x: 40, y: 355} });
 
 stencil.load([goal, task, sgoal, res, act]);
-
-
-
 
 $('#slider').width($('#paper').width() * 0.8);
 $('#slider').css("margin-top", $(window).height() * 0.9);

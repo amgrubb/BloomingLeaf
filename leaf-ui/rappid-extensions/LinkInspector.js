@@ -106,7 +106,7 @@ var LinkInspector = Backbone.View.extend({
         ].join(''),
 
     events: {
-            'click #switch-link-type': 'switchMode',
+            'click #switch-link-type': 'renderNewMode',
             'change #constant-links': 'updateConstantRelationship',
             'change #actor-link': 'updateActorLink',
             'change #link-type-begin': 'updateBeginEvolRelations',
@@ -134,11 +134,7 @@ var LinkInspector = Backbone.View.extend({
             if (link.get('evolving')) {
                 this.$el.html(_.template($(this.evolvingtemplate).html())(this.model.toJSON()));;
                 if (link.get('postType') !== null) {
-                    if (['AND', 'OR', 'NO'].includes(link.get('linkType'))){
-                        $('#link-type-begin').val(link.get('linkType').toLowerCase());
-                    }else{
-                        $('#link-type-begin').val(link.get("linkType"));
-                    }
+                    $('#link-type-begin').val(link.get('linkType').toLowerCase());
                     $('#link-type-end').val(link.get('postType'));
                     this.updateBeginEvolRelations();
                 }else{
@@ -185,7 +181,7 @@ var LinkInspector = Backbone.View.extend({
      *
      * This function is called on click for #switch-link-type
      */
-    switchMode: function() {
+    renderNewMode: function() {
         var link = this.model.get('link');
         var type = link.get('linkType');
         var postType = link.get('postType');
@@ -203,7 +199,6 @@ var LinkInspector = Backbone.View.extend({
                 $('#link-type-end').placeholder = "End";
             }
         }else {
-            link.set('evolving', false);
             this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
             $('#constant-links').val(type);
             this.updateConstantRelationship(); //makes sure that the effects for both intentions occur, can check by not connecting the link to anything else. 
@@ -308,12 +303,8 @@ var LinkInspector = Backbone.View.extend({
         var option = "#link-type-end option[value= \"" + begin + "\"]"; //for hiding the already chosen value at the beginning later on in line 294
         
         //makes the words on the links into lower case
-        if (['AND', 'OR', 'NO'].includes(begin)){
-            begin = begin.toLowerCase();
-        }
-        if (['AND', 'OR', 'NO'].includes(end)){
-            end = end.toLowerCase();
-        }
+        begin = begin.toLowerCase();
+        end = end.toLowerCase();
 
         //set the options
         $('option').show(); //clear the previous selection
@@ -338,12 +329,9 @@ var LinkInspector = Backbone.View.extend({
         var end = $("#link-type-end").val();
 
         link.set("postType", end);
-        if (['AND', 'OR', 'NO'].includes(begin)){
-            begin = begin.toLowerCase();
-        }
-        if (['AND', 'OR', 'NO'].includes(end)){
-            end = end.toLowerCase();
-        }
+        begin = begin.toLowerCase();
+        end = end.toLowerCase();
+        
         this.model.label(0, {position: 0.5, attrs: {text: {text: begin + " | " + end}}});
 
         $("#repeat-error").text("Saved!");
