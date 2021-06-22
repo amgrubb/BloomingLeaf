@@ -83,7 +83,6 @@ var elementInspector = new ElementInspector();
 var configCollection = new ConfigCollection([]);
 var configInspector = new ConfigInspector({collection:configCollection});
 
-    
 var currentHalo;
 var currentAnalysis;
 var elementList;

@@ -912,8 +912,7 @@ paper.on("link:options", function(cell, evt){
     $('.inspector').append(linkInspector.el);
 
 	linkInspector.render();
-
-    
+ 
 });
 
 /**
@@ -1076,8 +1075,6 @@ graph.on('remove', function(cell) {
  */
 function clearInspector() {
 	elementInspector.clear();
-	//linkInspector.clear();
-	//analysisInspector.clear();
     // Clear any analysis sidebar views
     if($('.inspector-views').length != 0){
         $('.inspector-views').trigger('clearInspector');

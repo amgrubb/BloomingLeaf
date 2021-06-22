@@ -51,14 +51,14 @@ function init(){
     graph = jQuery.extend({}, window.opener.graph);
     var i = analysisRequest.currentState.indexOf('|', 0);
     current = parseInt(analysisRequest.currentState.substring(0, i));
-    //TODO delete / find its importance
+
     analysis.paper = new joint.dia.Paper({
         width: 1200,
         height: 600,
         gridSize: 10,
         perpendicularLinks: false,
         model: analysis.graph,
-        defaultLink: new joint.dia.cellLink({
+        defaultLink: new joint.dia.Link({
             'attrs': {
                 '.connection': {stroke: '#000000'},
                 '.marker-source': {'d': '0'},

@@ -27,7 +27,6 @@
     },
 
     defaults: {
-        //linkDestID: null,
         linkType:  'AND',
         postType: null,
         absTime: -1,
