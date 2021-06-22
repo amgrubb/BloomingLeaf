@@ -733,7 +733,8 @@ $('#colorblind-mode-isOn').on('click', function(){ //turns off colorblind mode
  */
 function createLink(cell) {
 	var link = new Link('AND', cell.getSourceElement().attributes.nodeID,  -1);
-	cell.attributes.linkID = link.linkID;
+	/**cell.attributes.linkID = link.linkID;
+    console.log("WE ARE ALIVE");
     cell.prop('linkSrcID', cell.getSourceElement().attributes.nodeID);
     cell.on("change:target", function () {
     	var target = cell.getTargetElement();
@@ -752,7 +753,7 @@ function createLink(cell) {
 		} else {
 			link.linkSrcID = source.attributes.nodeID;
 		}
-    });
+    });*/
     model.links.push(link);
 }
 
@@ -802,15 +803,16 @@ var element_counter = 0;
 
 // Whenever an element is added to the graph
 graph.on("add", function(cell) {
-
 	if (cell instanceof joint.dia.cellLink){
         if (graph.getCell(cell.get("source").id) instanceof joint.shapes.basic.Actor){
             cell.prop("type", "Actor");
             cell.label(0,{attrs:{text:{text:"is-a"}}});
-            cell.prop("linkType", "is-a");
+            cell.get("link").set("linkType", "is-a");
 		} else{
             cell.prop("type", "element");
+            cell.get("link").set("linkType", "AND");
         }
+        //TODO delete it
         createLink(cell);
     } else if (cell instanceof joint.shapes.basic.Intention){
 		createIntention(cell);
@@ -1143,6 +1145,7 @@ graph.on('remove', function(cell) {
  */
 function clearInspector() {
 	elementInspector.clear();
+	//linkInspector.clear();
 	//analysisInspector.clear();
     // Clear any analysis sidebar views
     if($('.inspector-views').length != 0){

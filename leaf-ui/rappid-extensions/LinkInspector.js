@@ -109,27 +109,36 @@ var LinkInspector = Backbone.View.extend({
 
     //Method to create the Link Inspector using the template.
     render: function() {
+        console.log(this.model)
+        var link = this.model.get('link');
+        if(link.get('postType') == null){
+            link.set('evolving', false);
+            this.model.set('selected', false);
+        }
         // Selecting which template to render ACTOR-LINK or INTENTIONS-LINK
         if (this.model.get('type') == "Actor") {
             this.$el.html(_.template($(this.actortemplate).html())(this.model.toJSON()));;
-            $('#actor-link').val(this.model.get('linkType'));
+            $('#actor-link').val(link.get('linkType'));
         } else {
             //choose between constant or evolving template based on evolving parameter from model
-            if (this.model.get('evolving')) {
+            if (link.get('evolving')) {
                 this.$el.html(_.template($(this.evolvingtemplate).html())(this.model.toJSON()));;
-                if (this.model.get('postType') !== null) {
-                    if (['AND', 'OR', 'NO'].includes(this.model.get('linkType'))){
-                        $('#link-type-begin').val(this.model.get('linkType').toLowerCase());
+                if (link.get('postType') !== null) {
+                    if (['AND', 'OR', 'NO'].includes(link.get('linkType'))){
+                        $('#link-type-begin').val(link.get('linkType').toLowerCase());
                     }else{
-                        $('#link-type-begin').val(this.model.get("linkType"));
+                        $('#link-type-begin').val(link.get("linkType"));
                     }
-                    $('#link-type-end').val(this.model.get('postType'));
+                    $('#link-type-end').val(link.get('postType'));
                     this.updateBeginEvolRelations();
+                }else{
+                    $('#link-type-begin').placeholder = "Begin";
+                    $('#link-type-end').placeholder = "End";
                 }
             } else {
-                this.model.set('evolving', false); //makes sure the rerender doesn't activate
+                link.set('evolving', false); //makes sure the rerender doesn't activate
                 this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
-                $('#constant-links').val(this.model.get('linkType'));
+                $('#constant-links').val(link.get('linkType'));
                 //didn't put updateConstantRelationship here because if it was rendered everything will be the same as previous and if previous was already constant it would not need new update until begin is changed       
             }
         }
@@ -142,11 +151,12 @@ var LinkInspector = Backbone.View.extend({
      * This function is called on when selected is changed
      */
     rerender: function(){
-        if (this.model.get('evolving')) {
+        var link = this.model.get('link');
+        if (link.get('evolving')) {
             this.$el.html(_.template($(this.evolvingtemplate).html())(this.model.toJSON()));;
-            $('#link-type-begin').val(this.model.get("linkType"));
+            $('#link-type-begin').val(link.get("linkType"));
             this.updateBeginEvolRelations();
-            $('#link-type-end').val(this.model.get('postType'));
+            $('#link-type-end').val(link.get('postType'));
         }
     },
 
@@ -166,20 +176,24 @@ var LinkInspector = Backbone.View.extend({
      * This function is called on click for #switch-link-type
      */
     switchMode: function() {
-        var type = this.model.get('linkType');
-        var postType = this.model.get('postType');
-        var current = this.model.get('evolving');
-        this.model.set('evolving', !current);
-        if(this.model.get('evolving')){
+        var link = this.model.get('link');
+        var type = link.get('linkType');
+        var postType = link.get('postType');
+        var current = link.get('evolving');
+        link.set('evolving', !current);
+        if(link.get('evolving')){
             this.$el.html(_.template($(this.evolvingtemplate).html())(this.model.toJSON()));
             //if the postType is already chosen, meaning not the first time visiting LinkInspector, take the previous values
             if (postType !== null) { 
                 $('#link-type-begin').val(type); 
                 this.updateBeginEvolRelations(); //makes sure that the available options in the end are consistant with what is allowed if the begin is not changed
                 $('#link-type-end').val(postType);
+            }else{
+                $('#link-type-begin').placeholder= "Begin";
+                $('#link-type-end').placeholder = "End";
             }
         }else {
-            this.model.set('evolving', false);
+            link.set('evolving', false);
             this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
             $('#constant-links').val(type);
             this.updateConstantRelationship(); //makes sure that the effects for both intentions occur, can check by not connecting the link to anything else. 
@@ -193,18 +207,18 @@ var LinkInspector = Backbone.View.extend({
      * This function is called on change for #constant-links.
      */
     updateConstantRelationship: function() {
-
+        var link = this.model.get('link');
         var source = this.model.getSourceElement();
         var target = this.model.getTargetElement();
 
         var relationshipVal = $('.link-type option:selected').val();
 
         // store the new value into the link
-        this.model.set("linkType", relationshipVal);
+        link.set("linkType", relationshipVal);
         this.model.label(0 , {position: 0.5, attrs: {text: {text: linkValText[relationshipVal]}}});
 
         // Adding or removing tags from node depending on type of link
-        if (this.model.get("linkType") =='NBT' || this.model.get("linkType") == 'NBD') {
+        if (link.get("linkType") =='NBT' || link.get("linkType") == 'NBD') {
             source.attr('.funcvalue/text', 'NB');
             source.attr('.satvalue/text', '(⊥, ⊥)');
             source.attr('.satvalue/value', '');
@@ -267,18 +281,20 @@ var LinkInspector = Backbone.View.extend({
         return node.prop('.funcvalue/text') == 'NB';
     },
     updateActorLink: function() {
-        this.model.set("linkType", $("#actor-link").val());
-        this.model.label(0 , {position: 0.5, attrs: {text: {text: this.model.get("linkType")}}});
+        var linktype = $("#actor-link").val();
+        this.model.get('link').set("linkType", linktype);
+        this.model.label(0 , {position: 0.5, attrs: {text: {text: linktype}}});
     },
     // Generates the select values based on begin value
     updateBeginEvolRelations: function() {
+        var link = this.model.get('link');
         //Enable the end select by changing the selected into true, because it doesn't change back to false, then end select will always be enabled from now on
         this.model.set('selected', true);
 
         $("#repeat-error").text("");
         var begin = $("#link-type-begin").val();
-        var end = this.model.get('postType');
-        this.model.set("linkType", begin); //modify the model
+        var end = link.get('postType');
+        link.set("linkType", begin); //modify the model
         var option = "#link-type-end option[value= \"" + begin + "\"]"; //for hiding the already chosen value at the beginning later on in line 294
         
         //makes the words on the links into lower case
@@ -306,12 +322,12 @@ var LinkInspector = Backbone.View.extend({
      * This function is called on change for #link-type-end, ot updates the end evolving relationship
      */
     updateEndEvolRelations: function() {
-
+        var link = this.model.get('link');
         // Save based on evolving relations
-        var begin = this.model.get('linkType');
+        var begin = link.get('linkType');
         var end = $("#link-type-end").val();
 
-        this.model.set("postType", end);
+        link.set("postType", end);
         if (['AND', 'OR', 'NO'].includes(begin)){
             begin = begin.toLowerCase();
         }

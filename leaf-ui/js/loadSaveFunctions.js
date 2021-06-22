@@ -126,6 +126,7 @@ function getLinksArr(arr) {
 	for (var i = 0; i < arr.length; i++) {
 		var link = new Link(arr[i].linkType, arr[i].linkSrcID, arr[i].absoluteValue);
 		link.linkID = arr[i].linkID;
+		console.log("WE ARE DEAD");
 		link.postType = arr[i].postType;
 		link.linkDestID = arr[i].linkDestID;
 		maxID = Math.max(maxID, parseInt(arr[i].linkID));

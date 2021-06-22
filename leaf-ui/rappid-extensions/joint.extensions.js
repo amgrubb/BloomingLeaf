@@ -166,18 +166,15 @@ joint.shapes.basic.Resource = joint.shapes.basic.Intention.extend({
 });
 
 joint.dia.cellLink = joint.dia.Link.extend({
-    initialize: function(){
+    /**initialize: function(){
         this.listenTo(this, 'change:type', this.checktType)
-    },
+    },*/
     defaults: joint.util.deepSupplement({
-        type: 'Intention',
-        evolving: false,
-        relationship: 'Constant', //no longer used, whether used by backend???
-        linkType: 'AND',
-        postType: null,
-        selected: false
-        
+        type: 'Link',
+        link: new LinkBBM(),
+        selected: false,
     }),
+    /** 
     linkSrcID: null,
     linkDestID: null,
     absoluteValue: -1,
@@ -187,11 +184,11 @@ joint.dia.cellLink = joint.dia.Link.extend({
             this.set('evolving', false);
             this.set('selected', false);
         }
-    }
+    }*/
 });
 
-
-joint.dia.Intentionlink = joint.dia.Link.extend({
+//TODO delete it
+/**joint.dia.Intentionlink = joint.dia.Link.extend({
     defaults: joint.util.deepSupplement({
 		type: 'Intentionlink',
 	}),
@@ -199,7 +196,7 @@ joint.dia.Intentionlink = joint.dia.Link.extend({
     linkSrcID: null,
     linkDestID: null,
     absoluteValue: -1
-});
+});*/
 
 joint.shapes.basic.Actor = joint.shapes.basic.Generic.extend({
     markup: '<g class="scalable"><circle class = "outer"/></g><circle class="label"/><path class="line"/><text class = "name"/>',
