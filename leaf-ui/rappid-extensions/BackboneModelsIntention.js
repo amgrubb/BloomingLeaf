@@ -224,7 +224,7 @@ var EvolvingFunctionBBM = Backbone.Model.extend({
     },
 
     /**
-     * Deleted Functions
+     * Deleted Functions in EvolvingFunctionBBM
      * All of these functions were either never used or are now not needed b/c of refactor
      * 
      * getRepeatAbsTime: function() {},
@@ -264,8 +264,8 @@ var IntentionBBM = Backbone.Model.extend({
         var funcSegList = this.evolvingFunction.get('functionSegList');
         
         if (this.evolvingFunction.get('stringDynVis') == 'C' || 
-            (this.evolvingFunction.get('stringDynVis') == 'UD' && funcSegList[0].funcType == 'C')) { 
-                funcsegList[0].funcX = initValue; 
+            (this.evolvingFunction.get('stringDynVis') == 'UD' && funcSegList[0].get('type') == 'C')) { 
+                functionSegList[0].set('refEvidencePair', initValue); 
             }
         this.evolvingFunction.set('stringDynVis', 'NT');
         this.evolvingFunction.set('functionSegList', []);
@@ -276,11 +276,14 @@ var IntentionBBM = Backbone.Model.extend({
      */
     removeInitialSatValue: function() {
         this.changeInitialSatValue('(no value)');
-    }, 
+    },    
 
     /**
      * Sets newID as the new ID for this intention
      */
+    // TODO - update this function
+    // if we are using the automatically generated 'id', then we can just call 
+    // it whenever we need?? and would we be not allowed to change it??
     setNewID: function(newID) {
         var oldID = this.get('id');   
         this.set('id', newID); 
@@ -349,9 +352,9 @@ var IntentionBBM = Backbone.Model.extend({
      * function type.
      */
     setEvolvingFunction: function(funcType) {
-        this.evolvingFunction.get('type') = funcType;
-        this.evolvingFunction.get('functionSegList') = [];
- 
+        this.evolvingFunction.set('type', funcType);
+        this.evolvingFunction.set('functionSegList', []);
+
         // Since function changed, remove all current absolute constraints related to this intention
         this.removeAbsCosnt();
  
@@ -420,6 +423,7 @@ var IntentionBBM = Backbone.Model.extend({
     addAbsConst: function(funcType) {
         if (funcType == 'RC' || funcType == 'CR' || funcType == 'MP' ||
             funcType == 'MN' || funcType == 'SD' || funcType == 'DS') {
+            // TODO - we are deleteing model i think, so how do we access constraints now???
             model.constraints.push(new ConstraintBBM({type: 'A', srcID: this.get('id'), srcRefTP: 'A', destID: null, destRefTP: null}));
         }
     }, 
