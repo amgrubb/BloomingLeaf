@@ -14,7 +14,6 @@ var FunctionSegmentBBM = Backbone.Model.extend({
         this.refEvidencePair = options.refEvidencePair;   //a.k.a. Evaluation Value
         this.startTP = options.startTP; // Assigned time
         this.startATP = options.startATP; // Integer time point. If not set defaults to undefined
-
     }
 });
 

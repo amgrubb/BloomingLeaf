@@ -18,6 +18,7 @@ joint.dia.BloomingGraph = joint.dia.Graph.extend({
         absTimePtsArr: [],
         // TODO: Name with correct type of constraints
         constraints: new ConstraintCollection([]),
+        userEvaluationList: new UserEvaluationCollection([])
     }, joint.dia.Graph.prototype.defaults),
 
     /**

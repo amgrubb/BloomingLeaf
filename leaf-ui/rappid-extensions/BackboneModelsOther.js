@@ -59,6 +59,10 @@ var UserEvaluationBBM = Backbone.Model.extend({
     }
 });
 
+var UserEvaluationCollection = Backbone.Collection.extend({
+    model: UserEvaluationBBM
+});
+
 /** 
  * Backbone Model of Constraints
  */
@@ -91,7 +95,7 @@ var ConstraintBBM = Backbone.Model.extend({
 });
 
 var ConstraintCollection = Backbone.Collection.extend({
-    model: Constraint
+    model: ConstraintBBM
 });
 
 
