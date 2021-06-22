@@ -52,7 +52,6 @@ var EvolvingFunctionBBM = Backbone.Model.extend({
      * @returns {String}
      */
     getMarkedVal: function(i) {
-        // TODO does functionSegList[i] access the element correctly if it is a BBM
         return this.functionSegList[i].get('refEvidencePair');
         // Original Function
         // return this.functionSegList[i].funcX;
@@ -130,36 +129,49 @@ var EvolvingFunctionBBM = Backbone.Model.extend({
     // I think we should set it so that the repeating function starts at time 1 and ends at 
     // time 2
     setRepeatingFunction: function(time1, time2) {
-        this.removeRepFuncSegments();
 
         this.removeRepFuncSegments();
+        hasRepeat = true;                        
+        repAbsTime =  time2 - time1;
+
         var startIndex = 0;
-        while (this.functionSegList[startIndex].get('funcStart') !== time1) {
+        while (this.functionSegList[startIndex].get('startTP') !== time1) {
             startIndex++;
         }
+        repStart = String.fromCharCode(this.functionSegList[startIndex] + 64);
+
+        var stopIndex = 0;
+        while (this.functionSegList[stopIndex].get('stopTP') !== time1) {
+            stopIndex++;
+        }
+        repStop = String.fromCharCode(this.functionSegList[stopIndex] + 64);
+
+        repCount = stopIndex - startIndex;
+
         // Original Function
-        // find the index of the FuncSegment with start time time 1
-        var startIndex = 0;
-        while (this.functionSegList[startIndex].funcStart !== time1) {
-            startIndex++;
-        }
+        // this.removeRepFuncSegments();
+        // // find the index of the FuncSegment with start time time 1
+        // var startIndex = 0;
+        // while (this.functionSegList[startIndex].funcStart !== time1) {
+        //     startIndex++;
+        // }
 
-        var repFuncSegments = [];
+        // var repFuncSegments = [];
 
-        // push and remove, until we see a segment with our desired FuncEnd time
-        while (this.functionSegList[startIndex].funcStop !== time2) {
-            repFuncSegments.push(this.functionSegList[startIndex]);
-            this.functionSegList.splice(startIndex, 1);
-        }
+        // // push and remove, until we see a segment with our desired FuncEnd time
+        // while (this.functionSegList[startIndex].funcStop !== time2) {
+        //     repFuncSegments.push(this.functionSegList[startIndex]);
+        //     this.functionSegList.splice(startIndex, 1);
+        // }
 
-        // push and remove the last segment
-        repFuncSegments.push(this.functionSegList[startIndex]);
-        this.functionSegList.splice(startIndex, 1);
+        // // push and remove the last segment
+        // repFuncSegments.push(this.functionSegList[startIndex]);
+        // this.functionSegList.splice(startIndex, 1);
 
 
-        // create and add a new RepFuncSegment
-        var repFuncSegment = new RepFuncSegment(repFuncSegments);
-        this.functionSegList.splice(startIndex, 0, repFuncSegment);        
+        // // create and add a new RepFuncSegment
+        // var repFuncSegment = new RepFuncSegment(repFuncSegments);
+        // this.functionSegList.splice(startIndex, 0, repFuncSegment);        
     },         
 
     /**
@@ -192,7 +204,7 @@ var EvolvingFunctionBBM = Backbone.Model.extend({
      * Updated: All of the parameters for a repeating segment are reset to the default,
      * which means there is no loner a repeating function segment in the EvolvingFunctionBBM     *  
      *
-     * Id a RepFuncSegment does not exist in functionSegList, this function
+     * If a RepFuncSegment does not exist in functionSegList, this function
      * does nothing
      */
     removeRepFuncSegments: function() {
@@ -218,129 +230,7 @@ var EvolvingFunctionBBM = Backbone.Model.extend({
         //     j++;
         // }
     },    
-
-    /**
-     * Sets the repCount for the RepFuncSegment inside of this
-     * EvolvingFunction's functionSegList, to count
-     *
-     * If there is no RepFuncSegment object this function does nothing
-     *
-     * @param {Number} count
-     */
-    setRepNum: function(num) {
-        this.repCount = num;
-        // Original Function
-        // var repIndex = this.getRepFuncSegmentIndex();
-        // if (repIndex === -1) {
-        //     return;
-        // }
-        // this.functionSegList[repIndex].repNum = num;
-    },
-
-    /**
-     * Sets the absTime for the RepFuncSegment inside of this
-     * EvolvingFunction's functionSegList, to time
-     *
-     * If there is no RepFuncSegment object in functionSegList
-     * this function does nothing
-     *
-     * @param {Number} time
-     */
-    setAbsoluteTime: function(time) {
-        this.repAbsTime = time;
-        // Original Function
-        // var repIndex = this.getRepFuncSegmentIndex();
-        // if (repIndex === -1) {
-        //     return;
-        // }
-        // this.functionSegList[repIndex].absTime = time;
-    },
-
-    /**
-     * Returns the index of the RepFuncSegment object
-     * in this EvolvingFunction's functionSegList
-     *
-     * Returns -1 if there is no RepFunccSegment object
-     * in functionSegList
-     *
-     * @returns {Number}
-     */
-    // TODO fix this function
-    // should we return the index of the first repeating function segment?? 
-    getRepFuncSegmentIndex: function() {
-        // Find the index where the RepFuncSegment is located
-        var repIndex = 0;
-        while (repIndex < this.functionSegList.length && (!(this.functionSegList[repIndex] instanceof RepFuncSegment))) {
-            repIndex++;
-        }
-
-        // RepFuncSegment did not exist in functionSegList
-        if (repIndex >= this.functionSegList.length) {
-            return - 1;
-        }
-
-        return repIndex;
-    },    
-
-    /**
-     * Returns an array containing FuncSegment objects, for the
-     * purpose of easy iteration. This function is useful when
-     * the functionSegList contains both FuncSegments and
-     * repFuncSegments.
-     *
-     * For example, if functionSegList contains a FuncSegment
-     * and a repFuncSegment containing three FuncSegments inside of it,
-     * this function returns an array of size 4, containing all the
-     * function segments in chronological order.
-     *
-     * Every FuncSegment in the returned array will be a deep copy of the
-     * origin FuncSegments.
-     *
-     * Each FuncSegment in the returned array will have a inRepeat attribute
-     * which evaluates to true iff the FuncSegment was part of a
-     * repFunctionSegment
-     *
-     * @returns {Array.<FuncSegment>}
-     */
-    // TODO ask abt this function, is it still neccessary??? 
-    getFuncSegmentIterable: function() {
-        var res = [];
-        for (var i = 0; i < this.functionSegList.length; i++) {
-            var obj = this.functionSegList[i];
-            if (obj instanceof FuncSegment) {
-                var clone = Object.assign(new FuncSegment, obj); // deep copy
-                clone.isRepeat = false;
-                res.push(obj);
-            } else {
-                var segList = obj.functionSegList;
-                for (var j = 0; j < segList.length; j++) {
-                    var clone = Object.assign(new FuncSegment, segList[j]);
-                    clone.isRepeat = true;
-                    res.push(clone);
-                }
-            }
-        }
-        return res;
-    },
     
-    /**
-     * Returns true if this EvolvingFunction contains
-     * a repeating segment (ie, contains a RepFuncSegment)
-     *
-     * @returns {Boolean}
-     */
-    // TODO if this.hasRepeat is a parameter, can we just use that instead of a function
-    hasRepeat: function() {
-        return this.hasRepeat;
-        // // Original Function
-        // for (var i = 0; i < this.functionSegList.length; i++) {
-        //     if (this.functionSegList[i] instanceof RepFuncSegment) {
-        //         return true;
-        //     }
-        // }
-        // return false;
-    },    
-
     /**
      * Returns the epoch boundary where the repeat segment
      * starts
@@ -350,16 +240,14 @@ var EvolvingFunctionBBM = Backbone.Model.extend({
      * @returns {String}
      *   ex: 'A'
      */
-    // TODO unsure abt this 
+    // TODO - fix this function 
     getStartRepeatEpoch: function() {
-        // would it be '0' or 0???
         if (this.repStart != 0) {
             var repStartIndex = this.repStart.charCodeAt() - 64; // this should be the index of the first repeating segment
             return this.functionSegList[repStartIndex].get('startTP');
         }
         else return this.functionSegList[0].get('startTP');
-        // this is probs wrong
-        // return this.repStart;
+
         // Original Function
         // for (var i = 0; i < this.functionSegList.length; i++) {
         //     if (this.functionSegList[i] instanceof RepFuncSegment) {
@@ -378,10 +266,8 @@ var EvolvingFunctionBBM = Backbone.Model.extend({
      *   ex: 'C'
      */
     // TODO - fix this function
-    // if the repeating segment is always the last in functionSegmentList, can we just index
-    // the last element in the list???
      getEndRepeatEpoch: function() {
-        var repStopIndex = this.repStart.charCodeAt() - 64; // this should be the index of the last repeating segment
+        var repStopIndex = this.repStop.charCodeAt() - 64; // this should be the index of the last repeating segment
         return this.functionSegList[repStopIndex].get(stopTP);
         // Original Function
         // for (var i = 0; i < this.functionSegList.length; i++) {
@@ -393,42 +279,15 @@ var EvolvingFunctionBBM = Backbone.Model.extend({
     },
 
     /**
-     * Returns the repNum attribute for this EvolvingFunction's
-     * RepFuncSegment
-     *
-     * Precondition: This EvolvingFunction must contain a RepFuncSegment
-     *
-     * @returns {Number}
+     * Deleted Functions
+     * getRepeatAbsTime: function() {},
+     * getRepeatRepNum: function() {},
+     * hasRepeat: function() {}, 
+     * setAbsoluteTime: function(time) {},
+     * setRepNum: function(num) {},
+     * getFuncSegmentIterable: function() {},
+     * getRepFuncSegmentIndex: function() {},  
      */
-    // TODO - can i delete this???
-    getRepeatRepNum: function() {
-        return this.repNum;
-        // Original Function
-        // for (var i = 0; i < this.functionSegList.length; i++) {
-        //     if (this.functionSegList[i] instanceof RepFuncSegment) {
-        //         return this.functionSegList[i].repNum;
-        //     }
-        // }
-    },
-
-    /**
-     * Returns the absTime attribute for this EvolvingFunction's
-     * RepFuncSegment
-     *
-     * Precondition: This EvolvingFunction must contain a RepFuncSegment
-     *
-     * @returns {Number}
-     */
-    // TODO - can i delete this??
-    getRepeatAbsTime: function() {
-        return this.repAbsTime;
-        // Original Function
-        // for (var i = 0; i < this.functionSegList.length; i++) {
-        //     if (this.functionSegList[i] instanceof RepFuncSegment) {
-        //         return this.functionSegList[i].absTime;
-        //     }
-        // }
-    },
 
 
 });
