@@ -12,8 +12,8 @@ var FunctionSegmentBBM = Backbone.Model.extend({
     initialize: function (options) {
         this.type = options.type;           // Atomic function types. 
         this.refEvidencePair = options.refEvidencePair;   //a.k.a. Evaluation Value
-        this.startTP = options.startTP; // Assigned time
-        this.startATP = options.startATP; // Integer time point. If not set defaults to undefined
+        this.startTP = options.startTP; // Start time point (char) 0,A,B,C
+        this.startAT = options.startAT; // Assigned/Absolute Time - Integer time value. If not set defaults to undefined
     }
 });
 
