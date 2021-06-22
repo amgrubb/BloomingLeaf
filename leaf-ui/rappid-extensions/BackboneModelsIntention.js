@@ -12,8 +12,8 @@ var FunctionSegmentBBM = Backbone.Model.extend({
     initialize: function (options) {
         this.type = options.type;           // Atomic function types. 
         this.refEvidencePair = options.refEvidencePair;   //a.k.a. Evaluation Value
-        this.startTP = options.startTP;
-        this.stopTP = options.stopTP;
+        this.startTP = options.startTP; // Start time point (char) 0,A,B,C
+        this.startAT = options.startAT; // Assigned/Absolute Time - Integer time value. If not set defaults to undefined
     }
 });
 
@@ -44,12 +44,24 @@ var EvolvingFunctionBBM = Backbone.Model.extend({
 
 var IntentionBBM = Backbone.Model.extend({
     initialize: function(options) { 
-        this.nodeType = options.nodeType;  
+        _.extend({}, this.defaults, options)
     }, 
     defaults: { 
         nodeName: "untitled",
+        nodeType: null,
         nodeActorID: null,                     // Assigned on release operation.
         evolvingFunction: null, 
         initialValue: '(no value)'
+    },
+
+    /**
+     * @returns Array of FunctionSegmentBBMs, or null if it is not an evolvingFunction
+     */
+    getFuncSegments: function(){
+        evolvingFunc = this.get('evolvingFunction');
+        if (evolvingFunc != null){
+            return evolvingFunc.get('functionSegList');
+        }
+        return null;
     }
 });
