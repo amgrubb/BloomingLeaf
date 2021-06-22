@@ -23,8 +23,9 @@
  */
  var LinkBBM = Backbone.Model.extend({  
     initialize: function(options){
-        this.linkSrcID = options.linkSrcID;
-    },    
+        _.extend({}, this.defaults, options);
+    },
+
     defaults: {
         linkDestID: null,
         linkType:  'AND',

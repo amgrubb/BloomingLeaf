@@ -802,10 +802,11 @@ graph.on("add", function(cell) {
         if (graph.getCell(cell.get("source").id) instanceof joint.shapes.basic.Actor){
             cell.prop("linktype", "actorlink");
             cell.label(0,{attrs:{text:{text:"is-a"}}});
+            cell.set('link', new LinkBBM({linkType: 'is-a'}));
 		} else{
-            cell.prop("linktype", "elementlink");
+            cell.prop("type", "element");
+            cell.set('link', new LinkBBM({}));
         }
-        createLink(cell);
     } else if (cell instanceof joint.shapes.basic.Intention){
 		cell.set('intention', new IntentionBBM({}));
 		cell.attr('.funcvalue/text', ' ');
@@ -937,7 +938,11 @@ paper.on("link:options", function(cell, evt){
 	}
 
 	clearInspector();
-	linkInspector.render(cell.model);
+    
+    var linkInspector = new LinkInspector({model: cell.model});
+    $('.inspector').append(linkInspector.el);
+
+	linkInspector.render();
 
 });
 

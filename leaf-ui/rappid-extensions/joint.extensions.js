@@ -191,14 +191,13 @@ joint.shapes.basic.Resource = joint.shapes.basic.Intention.extend({
     }
 });
 
-joint.dia.Actorlink = joint.dia.Link.extend({
-	defaults: joint.util.deepSupplement({
-		type: 'Actorlink',
-	}),
-    postType: null,
-    linkSrcID: null,
-    linkDestID: null,
-    absoluteValue: -1
+joint.dia.cellLink = joint.dia.Link.extend({
+    
+    defaults: joint.util.deepSupplement({
+        type: 'Link',
+        link: null,
+        selected: false,
+    }),
 });
 
 joint.dia.Intentionlink = joint.dia.Link.extend({
@@ -257,4 +256,4 @@ joint.shapes.basic.Actor = joint.shapes.basic.Generic.extend({
     changeToOriginalColour: function() {
         this.attr({'.outer': {'fill': '#EBFFEA'}});
     },
-});
+}); 
