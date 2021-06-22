@@ -84,7 +84,7 @@ joint.shapes.basic.Intention = joint.shapes.basic.Generic.extend({
             	'y-alignment': 'middle'
             },
         },
-        intention: new IntentionBBM({nodeType: this.type}), 
+        intention: null,
     }, joint.dia.Element.prototype.defaults)
 });
 

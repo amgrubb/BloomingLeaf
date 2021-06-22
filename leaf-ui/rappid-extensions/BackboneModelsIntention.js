@@ -44,15 +44,19 @@ var EvolvingFunctionBBM = Backbone.Model.extend({
 
 var IntentionBBM = Backbone.Model.extend({
     initialize: function(options) { 
-        this.nodeType = options.nodeType;  
+        _.extend({}, this.defaults, options)
     }, 
     defaults: { 
         nodeName: "untitled",
+        nodeType: null,
         nodeActorID: null,                     // Assigned on release operation.
         evolvingFunction: null, 
         initialValue: '(no value)'
     },
 
+    /**
+     * @returns Array of FunctionSegmentBBMs, or null if it is not an evolvingFunction
+     */
     getFuncSegments: function(){
         evolvingFunc = this.get('evolvingFunction');
         if (evolvingFunc != null){

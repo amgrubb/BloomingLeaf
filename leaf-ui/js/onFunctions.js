@@ -807,8 +807,9 @@ graph.on("add", function(cell) {
         }
         createLink(cell);
     } else if (cell instanceof joint.shapes.basic.Intention){
-		createIntention(cell);
+		cell.set('intention', new IntentionBBM({}));
 		cell.attr('.funcvalue/text', ' ');
+
 	} else if (cell instanceof joint.shapes.basic.Actor) {
 		createActor(cell);
 
