@@ -802,14 +802,15 @@ var element_counter = 0;
 
 // Whenever an element is added to the graph
 graph.on("add", function(cell) {
-
 	if (cell instanceof joint.dia.cellLink){
+        var link = cell.get("link");
         if (graph.getCell(cell.get("source").id) instanceof joint.shapes.basic.Actor){
             cell.prop("type", "Actor");
             cell.label(0,{attrs:{text:{text:"is-a"}}});
-            cell.prop("linkType", "is-a");
+            link.set("linkType", "is-a");
 		} else{
             cell.prop("type", "element");
+            link.set("linkType", "AND");
         }
         //TODO delete it
         createLink(cell);

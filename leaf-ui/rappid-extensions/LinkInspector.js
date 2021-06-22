@@ -3,10 +3,7 @@
 var LinkInspector = Backbone.View.extend({
     model: joint.dia.Celllink,
 
-    
-
     initialize:function(){
-        this.link = this.model.get('link');
         this.listenTo(this.model,'change:selected', this.rerender);
     },
 
@@ -112,13 +109,14 @@ var LinkInspector = Backbone.View.extend({
 
     //Method to create the Link Inspector using the template.
     render: function() {
-        console.log(this.model.get('star'));
-        console.log(this.model.get('link'));
+        console.log(this.model)
         var link = this.model.get('link');
-        // this.model.get('link').get('source')?
-        // this.model.get
+        if(link.get('postType') == null){
+            link.set('evolving', false);
+            this.model.set('selected', false);
+        }
         // Selecting which template to render ACTOR-LINK or INTENTIONS-LINK
-        if (link.get('type') == "Actor") {
+        if (this.model.get('type') == "Actor") {
             this.$el.html(_.template($(this.actortemplate).html())(this.model.toJSON()));;
             $('#actor-link').val(link.get('linkType'));
         } else {
@@ -133,6 +131,9 @@ var LinkInspector = Backbone.View.extend({
                     }
                     $('#link-type-end').val(link.get('postType'));
                     this.updateBeginEvolRelations();
+                }else{
+                    $('#link-type-begin').placeholder = "Begin";
+                    $('#link-type-end').placeholder = "End";
                 }
             } else {
                 link.set('evolving', false); //makes sure the rerender doesn't activate
@@ -141,7 +142,6 @@ var LinkInspector = Backbone.View.extend({
                 //didn't put updateConstantRelationship here because if it was rendered everything will be the same as previous and if previous was already constant it would not need new update until begin is changed       
             }
         }
-        console.log(this.model);
     },
 
     /**
@@ -188,6 +188,9 @@ var LinkInspector = Backbone.View.extend({
                 $('#link-type-begin').val(type); 
                 this.updateBeginEvolRelations(); //makes sure that the available options in the end are consistant with what is allowed if the begin is not changed
                 $('#link-type-end').val(postType);
+            }else{
+                $('#link-type-begin').placeholder= "Begin";
+                $('#link-type-end').placeholder = "End";
             }
         }else {
             link.set('evolving', false);
@@ -278,9 +281,9 @@ var LinkInspector = Backbone.View.extend({
         return node.prop('.funcvalue/text') == 'NB';
     },
     updateActorLink: function() {
-        var link = this.model.get('link');
-        link.set("linkType", $("#actor-link").val());
-        link.label(0 , {position: 0.5, attrs: {text: {text: link.get("linkType")}}});
+        var linktype = $("#actor-link").val();
+        this.model.get('link').set("linkType", linktype);
+        this.model.label(0 , {position: 0.5, attrs: {text: {text: linktype}}});
     },
     // Generates the select values based on begin value
     updateBeginEvolRelations: function() {
