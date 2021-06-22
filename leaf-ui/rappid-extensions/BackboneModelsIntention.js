@@ -533,6 +533,5 @@ var IntentionBBM = Backbone.Model.extend({
      * createID() 
      */
 });
-IntentionBBM.numOfCreatedInstances = 0; // static variable to keep track of number of instances
 
 
