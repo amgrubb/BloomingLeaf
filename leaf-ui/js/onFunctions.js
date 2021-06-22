@@ -726,38 +726,6 @@ $('#colorblind-mode-isOn').on('click', function(){ //turns off colorblind mode
 });
 
 /**
- * Creates an instance of a Link object and saves it in the global model
- * variable
- *
- * @param {joint.dia.Cell} cell
- */
-function createLink(cell) {
-	var link = new Link('AND', cell.getSourceElement().attributes.nodeID,  -1);
-	/**cell.attributes.linkID = link.linkID;
-    console.log("WE ARE ALIVE");
-    cell.prop('linkSrcID', cell.getSourceElement().attributes.nodeID);
-    cell.on("change:target", function () {
-    	var target = cell.getTargetElement();
-    	if (target === null) {
-    		link.linkDestID = null;
-            cell.prop('linkDestID', null);
-    	} else {
-    		link.linkDestID = target.attributes.nodeID;
-            cell.prop('linkDestID', target.attributes.nodeID);
-    	}
-    });
-    cell.on("change:source", function () {
-		var source = cell.getSourceElement();
-		if (source === null) {
-			link.linkSrcID = null;
-		} else {
-			link.linkSrcID = source.attributes.nodeID;
-		}
-    });*/
-    model.links.push(link);
-}
-
-/**
  * Creates an instance of a Intention object and saves it in the
  * global model variable
  *
@@ -882,8 +850,6 @@ paper.on({
                 if (evt.data.move){
                     // if link moved, reparent
                     cell.reparent();
-                    // check if link still valid
-                    basicActorLink(cell);
                 }
             } else { // Non-Link behavior
 
@@ -942,46 +908,13 @@ paper.on("link:options", function(cell, evt){
 	}
 
 	clearInspector();
-    
     var linkInspector = new LinkInspector({model: cell.model});
     $('.inspector').append(linkInspector.el);
 
 	linkInspector.render();
 
+    
 });
-
-/**
- * Check the relationship in the link. If the relationship is between
- * an Actor and anything other than an Actor then display the label as
- * "error". Otherwise, display it as "is-a" and prop "is-a" in the link-type
- * dropdown menu.
- *
- * @param {joint.dia.Link} link
- */
-function basicActorLink(link){
-    if (link.getSourceElement() != null) {
-        var sourceCell = link.getSourceElement().attributes.type;
-
-    }
-    // Check if link is valid or not
-    if (link.getTargetElement()) {
-        var targetCell = link.getTargetElement().attributes.type;
-
-        // Links of actors must be paired with other actors
-        if (((sourceCell == "basic.Actor") && (targetCell != "basic.Actor")) ||
-            ((sourceCell != "basic.Actor") && (targetCell == "basic.Actor"))) {
-            link.label(0, {position: 0.5, attrs: {text: {text: 'error'}}});
-        } else if ((sourceCell == "basic.Actor") && (targetCell == "basic.Actor")) {
-            if (!link.prop("link-type")) {
-                link.label(0 ,{position: 0.5, attrs: {text: {text: 'is-a'}}});
-                link.prop("link-type", "is-a");
-            } else {
-                link.label(0, {position: 0.5, attrs: {text: {text: link.prop("link-type")}}});
-            }
-        }
-    }
-}
-
 
 /**
  * Create a halo around the element that was just created

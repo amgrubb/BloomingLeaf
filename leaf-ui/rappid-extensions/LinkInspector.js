@@ -97,6 +97,13 @@ var LinkInspector = Backbone.View.extend({
             '</script>'
         ].join(''),
 
+    errortemplate: [
+        '<script type="text/template" id="item-template">',
+            '<label> Error </label> <br>',
+            '<div class="inspector-views">',
+            '</div>',
+            '</script>'
+        ].join(''),
 
     events: {
             'click #switch-link-type': 'switchMode',
@@ -109,17 +116,20 @@ var LinkInspector = Backbone.View.extend({
 
     //Method to create the Link Inspector using the template.
     render: function() {
-        console.log(this.model)
         var link = this.model.get('link');
         if(link.get('postType') == null){
             link.set('evolving', false);
             this.model.set('selected', false);
         }
-        // Selecting which template to render ACTOR-LINK or INTENTIONS-LINK
+        // Selecting which template to render ACTOR-LINK or ERROR or INTENTIONS-LINK
         if (this.model.get('type') == "Actor") {
-            this.$el.html(_.template($(this.actortemplate).html())(this.model.toJSON()));;
+            this.$el.html(_.template($(this.actortemplate).html())(this.model.toJSON()));
             $('#actor-link').val(link.get('linkType'));
-        } else {
+        } 
+        else if ( this.model.get('type') == "error"){
+            this.$el.html(_.template($(this.errortemplate).html())(this.model.toJSON()));
+        }
+        else {
             //choose between constant or evolving template based on evolving parameter from model
             if (link.get('evolving')) {
                 this.$el.html(_.template($(this.evolvingtemplate).html())(this.model.toJSON()));;

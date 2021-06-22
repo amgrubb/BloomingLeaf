@@ -51,7 +51,7 @@ function init(){
     graph = jQuery.extend({}, window.opener.graph);
     var i = analysisRequest.currentState.indexOf('|', 0);
     current = parseInt(analysisRequest.currentState.substring(0, i));
-
+    //TODO delete / find its importance
     analysis.paper = new joint.dia.Paper({
         width: 1200,
         height: 600,
