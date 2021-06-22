@@ -44,41 +44,16 @@ var EvolvingFunctionBBM = Backbone.Model.extend({
 
     /**
      * Returns the 4 digit representation for this
-     * EvolvingFunction's last function segment's
-     * marked value value
+     * EvolvingFunction's nth last function segment's
+     * marked value value. If there are no function segments, the function
+     * does not return anything.
      */
-    getLastMarkedVal: function() {
-        var len = this.functionSegList.length;
-        if (len > 0) {
-            return this.functionSegList[len - 1].get('refEvidencePair');
+    getNthLastMarkedVal: function(n) { 
+        var len = this.functionSegList.length; 
+        if (len > 0 && index <= len) {  
+            return this.functionSegList[len - n].get('refEvidencePair'); 
         }
-        // Original Function
-        // if (len > 0) {
-        //     return this.functionSegList[len - 1].funcX;
-        // }
-    },
-
-    /**
-     * Returns the 4 digit representation for this
-     * EvolvingFunction's second last function segment's
-     * marked value value. If there is no second last function
-     * segment, this function returns the 4 digit representation of 
-     * the only function segment's marked value
-     */
-    getSecondLastMarkedVal: function() {
-        var len = this.functionSegList.length;
-        if (len > 1) {
-            return this.functionSegList[len - 2].get('refEvidencePair');
-        } else {
-            return this.getLastMarkedVal();
-        }
-        // Original Function
-        // if (len > 1) {
-        //     return this.functionSegList[len - 2].funcX;
-        // } else {
-        //     return this.getLastMarkedVal();
-        // }
-    },    
+    }, 
 
     /**
      * Creates a new RepFuncSegment object containing function
@@ -98,7 +73,7 @@ var EvolvingFunctionBBM = Backbone.Model.extend({
 
         this.removeRepFuncSegments();
         hasRepeat = true;                        
-        repAbsTime =  time2 - time1;
+        repAbsTime =  parseInt(time2) - parseInt(time1);
 
         var startIndex = 0;
         while (this.functionSegList[startIndex].get('startTP') !== time1) {
@@ -249,7 +224,7 @@ var EvolvingFunctionBBM = Backbone.Model.extend({
 
 var IntentionBBM = Backbone.Model.extend({
     initialize: function(options) { 
-        this.nodeType = options.nodeType;  
+        _.extend({}, this.defaults, options) 
     }, 
     defaults: { 
         nodeName: 'untitled',
@@ -345,7 +320,7 @@ var IntentionBBM = Backbone.Model.extend({
      * Resets dynamic function
      */
     removeFunction: function() {
-        this.removeAbsCosnt();
+        this.removeAbsConst();
         this.evolvingFunction = new EvolvingFunctionBBM(); 
         // Set evolving function id to intention's id 
         this.evolvingFunction.get('id') = this.get('id'); 
@@ -361,7 +336,7 @@ var IntentionBBM = Backbone.Model.extend({
         this.evolvingFunction.set('functionSegList', []);
 
         // Since function changed, remove all current absolute constraints related to this intention
-        this.removeAbsCosnt();
+        this.removeAbsConst();
  
         // Add new absolute constraints if required
         this.addAbsConst(funcType);
@@ -449,7 +424,7 @@ var IntentionBBM = Backbone.Model.extend({
      * Removes the absolute Constraint object(s) for this Intention from
      * the global model variable, if such absolute Constraint object(s) exists
      */
-    removeAbsCosnt: function() {
+    removeAbsConst: function() {
         var i = 0;
         while (i < model.constraints.length) {
             var constraint = model.constraints[i];
