@@ -239,9 +239,12 @@ joint.shapes.basic.Actor = joint.shapes.basic.Generic.extend({
             ".line": {
             }
         },
-        actor: new ActorTest()
+        //TODO replace with new ActorBBM once it is in codebase
+        actor: new ActorTest(),
+        actorType: 'A',
+        actorName: 'Actor'
     }, joint.dia.Element.prototype.defaults),
     changeToOriginalColour: function() {
         this.attr({'.outer': {'fill': '#EBFFEA'}});
-    }
+    },
 });
