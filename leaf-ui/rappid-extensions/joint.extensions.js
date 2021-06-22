@@ -166,37 +166,14 @@ joint.shapes.basic.Resource = joint.shapes.basic.Intention.extend({
 });
 
 joint.dia.cellLink = joint.dia.Link.extend({
-    /**initialize: function(){
-        this.listenTo(this, 'change:type', this.checktType)
-    },*/
+    
     defaults: joint.util.deepSupplement({
         type: 'Link',
-        link: new LinkBBM(),
+        link: null,
         selected: false,
     }),
-    /** 
-    linkSrcID: null,
-    linkDestID: null,
-    absoluteValue: -1,
-
-    checkType: function(){
-        if (this.get('type')== 'Actor'){
-            this.set('evolving', false);
-            this.set('selected', false);
-        }
-    }*/
 });
 
-//TODO delete it
-/**joint.dia.Intentionlink = joint.dia.Link.extend({
-    defaults: joint.util.deepSupplement({
-		type: 'Intentionlink',
-	}),
-    postType: null,
-    linkSrcID: null,
-    linkDestID: null,
-    absoluteValue: -1
-});*/
 
 joint.shapes.basic.Actor = joint.shapes.basic.Generic.extend({
     markup: '<g class="scalable"><circle class = "outer"/></g><circle class="label"/><path class="line"/><text class = "name"/>',
@@ -244,4 +221,4 @@ joint.shapes.basic.Actor = joint.shapes.basic.Generic.extend({
     changeToOriginalColour: function() {
         this.attr({'.outer': {'fill': '#EBFFEA'}});
     },
-});
+}); 
