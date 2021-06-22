@@ -4,6 +4,32 @@ It also contains the setup for Rappid elements.
 */
 
 /**
+ * Event listeners for index.html toolbar functions
+ */
+ $('#btn-zoom-in').on('click', function(){ zoomIn(paperScroller); });
+ $('#btn-zoom-out').on('click', function(){ zoomOut(paperScroller); });
+ $('#btn-fnt').on('click', function(){ defaultFont(paper);});
+ $('#btn-fnt-up').on('click', function(){  fontUp(paper);});
+ $('#btn-fnt-down').on('click', function(){ fontDown(paper);}); 
+ $('#legend').on('click', function(){ window.open('./userguides/legend.html', 'newwindow', 'width=300, height=250'); return false;});
+ $('#evo-color-key').on('click', function(){ window.open('./userguides/evo.html', 'newwindow', 'width=500, height=400'); return false;});
+
+/**
+ * General javascript for user interaction
+ * When the user clicks anywhere outside of the a pop up, close it
+ */
+window.onclick = function(event) {
+	var modal = document.getElementById('assignmentsModal');
+	var intermT = document.getElementById('intermediateTable');
+    if (event.target == modal) {
+  	    modal.style.display = "none";
+    }
+	if(event.target == intermT){
+		intermT.style.display = "none";
+	}
+}
+
+/**
  * Closes Assignments Table
  */
 
@@ -108,17 +134,13 @@ $('#btn-save-assignment').on('click', function() {
  * Switches to Analysis view iff there are no cycles and no syntax errors.
  */
 $('#analysis-btn').on('click', function() {
-    syntaxCheck();
-
-    var cycleList = cycleSearch();
-    cycleResponse(cycleList); //If there are cycles, then display error message. Otherwise, remove any "red" elements.
-
-    if(!isACycle(cycleList)) {
-        clearCycleHighlighting();
-        switchToAnalysisMode();
-    }
+    //TODO: Add back in cycle detection after backbone migration.
+    switchToAnalysisMode();
 });
 
+/** For Load Sample Model button */
+
+/** 
 $('#load-sample').on('click', function() {
 
     $.getJSON('http://www.cs.toronto.edu/~amgrubb/archive/REJ-Supplement/S1Frag.json', function(myData){		
@@ -127,41 +149,7 @@ $('#load-sample').on('click', function() {
         reader.readAsText(newModel);  	
     });
 });
-
-/** Analysis Configuration Sidebar */
-
-/**
- * Adds a new AnalysisConfig
- */
- $('#addConfig').on('click', function(){
-    addNewAnalysisConfig();
-});
-
-/**
- * Allows user to rename configuration element on doubleclick
- */
-$(document).on('dblclick', '.config-elements', function(e){rename(e.target /** Config element */)});
-
-/**
- * Switches UI to clicked configuration element
- */
-$(document).on('click', '.config-elements', function(e){switchConfigs(e.target.closest('.analysis-configuration') /** Config element */)});
-   
-/**
- * Toggles results dropdown menu on click of dropdown arrow
- */
-$(document).on('click','.dropdown-button', function(e){toggleDropdown(e.target.closest('.analysis-configuration') /** Config element */)});
-
-/**
- * Deletes configuration from UI and analysisMap on click of delete button
- */
-$(document).on('click','.deleteconfig-button', function(e){removeConfiguration(e.target.closest('.analysis-configuration') /** Config element */)});
-
-/**
- * Switches to clicked result and it's corresponding configuration in UI
- */
-$(document).on('click', '.result-elements', function(e){switchResults(e.target /** Result element */, e.target.closest('.analysis-configuration') /** Config element */)})
-
+*/
 
 /**
  * Trigger when unassign button is pressed. 
@@ -431,27 +419,10 @@ function switchToAnalysisMode() {
 	clearInspector();
 	
 	removeHighlight();
-
-    // clear results if changed model during modeling mode
-    let modelChanged = !(JSON.stringify(previousModel) === JSON.stringify(model));
-    if (modelChanged){
-        clearResults();
-    }
-
-    // Checks if the user assignments list has changed since last switching to Assignments mode
-    // If so, update UAL for all configs and then update defaultUAL 
-    if(analysisRequest.userAssignmentsList !== defaultUAL){
-        for(let config of analysisMap.values()){
-            config.updateUAL(analysisRequest.userAssignmentsList);
-        }
-        defaultUAL = [];
-        analysisRequest.userAssignmentsList.forEach(uAL => defaultUAL.push(uAL));
-    }
-
-	analysisInspector.render();
-	$('.inspector').append(analysisInspector.el);
+    
+    $('#config').append(configInspector.el);
+    configInspector.render();
 	$('#stencil').css("display", "none");
-    $('#analysis-sidebar').css("display","");
 
     $('#analysis-btn').css("display", "none");
 	$('#symbolic-btn').css("display", "none");
@@ -470,8 +441,6 @@ function switchToAnalysisMode() {
 	// Disable link settings
 	$('.link-tools .tool-remove').css("display", "none");
     $('.link-tools .tool-options').css("display", "none");
-    
-    loadAnalysisConfig();
 
 	if (currentHalo) {
 		currentHalo.remove();
@@ -560,7 +529,6 @@ function switchToModellingMode() {
     $('#analysis-sidebar').css("display","none");
     $('#btn-view-assignment').css("display","");
     $('#analysis-btn').css("display","");
-    $('#analysis-sidebar').css("display","none");
 	$('#symbolic-btn').css("display","");
 	$('#cycledetect-btn').css("display","");
     $('#dropdown-model').css("display","none");
@@ -631,8 +599,6 @@ $('#btn-clear-all').on('click', function(){
     graph.clear();
     // reset to default analysisRequest
     model.removeAnalysis();
-    // clear analysis sidebar
-    clearAnalysisConfigSidebar();
     // remove all configs from analysisMap
     analysisMap.clear();
 	// Delete cookie by setting expiry to past date
@@ -684,21 +650,16 @@ $('#btn-clear-cycle').on('click',function(){
 });
 
 $('#btn-clear-analysis').on('click', function() {
+    // TODO: Re-Implement for backbone view
+    
     // reset to default analysisRequest while preserving userAssignmentsList
     resetToDefault();
-    // clear analysis sidebar
-    clearAnalysisConfigSidebar();
-    // remove all configs from analysisMap
-    analysisMap.clear();
-	// add back first default analysis config
-    addFirstAnalysisConfig();
     // reset graph to initial values
     revertNodeValuesToInitial();
 });
 
 $('#btn-clear-results').on('click', function() {
-    clearResults();
-    refreshAnalysisUI();
+    // TODO: Re-implement for backbone view
 });
 
 // Open as SVG
@@ -773,12 +734,15 @@ $('#colorblind-mode-isOn').on('click', function(){ //turns off colorblind mode
 function createLink(cell) {
 	var link = new Link('AND', cell.getSourceElement().attributes.nodeID,  -1);
 	cell.attributes.linkID = link.linkID;
+    cell.prop('linkSrcID', cell.getSourceElement().attributes.nodeID);
     cell.on("change:target", function () {
     	var target = cell.getTargetElement();
     	if (target === null) {
     		link.linkDestID = null;
+            cell.prop('linkDestID', null);
     	} else {
     		link.linkDestID = target.attributes.nodeID;
+            cell.prop('linkDestID', target.attributes.nodeID);
     	}
     });
     cell.on("change:source", function () {
@@ -822,10 +786,11 @@ function createIntention(cell) {
  * 
  * @param {joint.dia.Cell} cell
  */
-function createActor(cell) {
+function createActor(cell) {//TODO: right now there are two parameters the actor model in the joint.extensions file that hold the same information (attrs.name & actorName), find a way for actor inspector to be able to access attrs.name in the template script so that actorName is not needed
 	var name = cell.attr('.name/text') + "_" + Actor.numOfCreatedInstances;
 	var actor = new Actor(name);
     cell.attr(".name/text", name);
+    cell.set('actorName', name);
 	cell.attributes.nodeID = actor.nodeID;
 	model.actors.push(actor);
 }
@@ -842,8 +807,11 @@ graph.on("add", function(cell) {
         if (graph.getCell(cell.get("source").id) instanceof joint.shapes.basic.Actor){
             cell.prop("linktype", "actorlink");
             cell.label(0,{attrs:{text:{text:"is-a"}}});
-		}
-        createLink(cell);
+            cell.set('link', new LinkBBM({linkType: 'is-a'}));
+		} else{
+            cell.prop("type", "element");
+            cell.set('link', new LinkBBM({}));
+        }
     } else if (cell instanceof joint.shapes.basic.Intention){
 		createIntention(cell);
 		cell.attr('.funcvalue/text', ' ');
@@ -858,271 +826,10 @@ graph.on("add", function(cell) {
     paper.trigger("cell:pointerup", cell.findView(paper));
 });
 
-
-// used when reading form the database is needed
-function accessDatabaseWithRead(insert_query, read_query, type){
-    var queryString = "insert_query=" +  encodeURIComponent(insert_query) + "&type=" + type + "&read_query=" +  encodeURIComponent(read_query);
-    $.ajax({
-        type: "POST",
-        url: "./js/ajaxjs.php",
-        data: queryString,
-        cache: false,
-        success: function(html) {
-            //console.log(html);
-        },
-    });
-}
-
-function accessDatabase(sql_query, type) {
-    var queryString = "insert_query=" +  encodeURIComponent(sql_query) + "&type=" + type;
-    $.ajax({
-        type: "POST",
-        url: "./js/ajaxjs.php",
-        data: queryString,
-        cache: false,
-        success: function(html) {
-            //console.log(html);
-
-        },
-    });
-
-
-}
-
-// Generates file needed for backend analysis
-function updateDataBase(graph, timestamp){
-
-    //Step 0: Get elements from graph.
-    var all_elements = graph.getElements();
-    var savedLinks = [];
-    var savedConstraints = [];
-
-    if (linkMode == "View"){
-        savedConstraints = graph.intensionConstraints;
-        var links = graph.getLinks();
-        links.forEach(function(link){
-            if(!isLinkInvalid(link)){
-                if (link.attr('./display') != "none")
-                    savedLinks.push(link);
-            }
-            //else{link.remove();}
-        });
-    }else if (linkMode == "Constraints"){
-        savedLinks = graph.links;
-        var betweenIntensionConstraints = graph.getLinks();
-        betweenIntensionConstraints.forEach(function(link){
-            var linkStatus = link.attributes.labels[0].attrs.text.text.replace(/\s/g, '');
-            if(!isLinkInvalid(link) && (linkStatus != "constraint") && (linkStatus != "error")){
-                if (link.attr('./display') != "none")
-                    savedConstraints.push(link);
-            }
-            //else{link.remove();}
-        });
-    }
-
-    //Step 1: Filter out Actors
-    var elements = [];
-    var actors = [];
-    for (var e1 = 0; e1 < all_elements.length; e1++){
-        if (!(all_elements[e1] instanceof joint.shapes.basic.Actor)){
-            elements.push(all_elements[e1]);
-        }
-        else{
-            actors.push(all_elements[e1]);
-        }
-    }
-
-    //save elements in global variable for slider, used for toBackEnd funciton only
-    graph.allElements = elements;
-
-    //print each actor in the model
-    for (var a = 0; a < actors.length; a++){
-        var insert_query = "insert ignore into actors(session_id,id,name,action,timestamp) values " +
-            "(\'"+ session_id +"\',\'"+actors[a].id +"\',\'"+ actors[a].attr(".name/text") +"\', \'EDIT\',\'"+
-            timestamp + "\')";
-        var read_query = "select * from (select * from actors where id=\'" + actors[a].id +
-            "\' order by timestamp DESC limit 1) as temp where name=\'" +
-            actors[a].attr(".name/text") + "\'";
-        accessDatabaseWithRead(insert_query, read_query, 0);
-        accessDatabase("UPDATE ignore actors SET action=\'CREATE\' WHERE id=" + "\'" + actors[a].id + "\' ORDER BY timestamp ASC LIMIT 1",1);
-    }
-
-
-    // Step 2: Print each element in the model
-
-    // conversion between values used in Element Inspector with values used in backend
-    var satValueDict = {
-        "unknown": 5,
-        "satisfied": 3,
-        "partiallysatisfied": 2,
-        "partiallydenied": 1,
-        "denied": 0,
-        "conflict": 4,
-        "none": 6
-    }
-    for (var e = 0; e < elements.length; e++){
-
-        var actorid = '-';
-
-        if (elements[e].get("parent")){
-            actorid = elements[e].get("parent");
-        }
-
-        var type;
-        if (elements[e] instanceof joint.shapes.basic.Goal)
-            type = "G";
-        else if (elements[e] instanceof joint.shapes.basic.Task)
-            type = "T";
-        else if (elements[e] instanceof joint.shapes.basic.Softgoal)
-            type = "S";
-        else if (elements[e] instanceof joint.shapes.basic.Resource)
-            type = "R";
-        else
-            type = "I";
-
-        var v = elements[e].attr(".satvalue/value")
-
-        // treat satvalue as unknown if it is not yet defined
-        if((!v) || (v == "none"))
-            v = "none";
-        var insert_query = "insert ignore into intentions(session_id, id, actor_id,type,satValue,text,action,timestamp) values " +
-            "(\'"+ session_id +"\',\'"+elements[e].id +"\',\'"+ actorid + "\',\'" + type + "\',\'" + satValueDict[v] + "\',\'" +  elements[e].attr(".name/text").replace(/\n/g, " ") + "\', \'EDIT\',\'"+
-            timestamp + "\')";
-        var read_query = "select * from (select * from intentions where id=\'" + elements[e].id + "\' order by timestamp DESC limit 1) as temp where actor_id=\'"
-            + actorid + "\' and type=\'" + type + "\' and satValue=\'" + satValueDict[v] + "\' and text=\'" + elements[e].attr(".name/text").replace(/\n/g, " ") + "\'";
-        accessDatabaseWithRead(insert_query, read_query, 0);
-        accessDatabase("UPDATE intentions SET action=\'CREATE\' WHERE id=" + "\'" + elements[e].id + "\' ORDER BY timestamp ASC LIMIT 1",1);
-
-    }
-
-
-    //Step 3: Print each link in the model
-    for (var l = 0; l < savedLinks.length; l++){
-        var current = savedLinks[l];
-        var relationship = current.label(0).attrs.text.text.toUpperCase();
-
-        if (relationship.indexOf("|") > -1){
-            evolvRelationships = relationship.replace(/\s/g, '').split("|");
-
-            var insert_query = "insert ignore into links(session_id, id, type,source_id,target_id,evolvRelationships,action,timestamp) values " +
-                "(\'"+ session_id +"\',\'"+current.id +"\',\'"+ evolvRelationships[0] + "\',\'" + current.get("source").id + "\',\'" + current.get("target").id + "\',\'" +  evolvRelationships[1] + "\', \'EDIT\',\'"+
-                timestamp + "\') ";
-            var read_query = "select * from (select * from links where id=\'" + current.id+ "\' order by timestamp DESC limit 1) as temp where type=\'"
-                + evolvRelationships[0] + "\' and source_id=\'" + current.get("source").id + "\' and target_id=\'" + current.get("target").id + "\' and evolvRelationships=\'" + evolvRelationships[1] + "\'";
-            accessDatabaseWithRead(insert_query, read_query, 0);
-
-        }else{
-            var insert_query = "insert ignore into links(session_id,id,type,source_id,target_id,action,timestamp) values " +
-                "(\'"+ session_id +"\',\'"+current.id +"\',\'"+ relationship + "\',\'" + current.get("source").id + "\',\'" + current.get("target").id  + "\', \'EDIT\',\'"+
-                timestamp + "\')";
-            var read_query = "select * from (select * from links where id=\'" + current.id + "\' order by timestamp DESC limit 1) as temp where type=\'"
-                + relationship + "\' and source_id=\'" + current.get("source").id + "\' and target_id=\'" + current.get("target").id + "\' and evolvRelationships is NULL";
-            accessDatabaseWithRead(insert_query, read_query, 0);
-        }
-        accessDatabase("UPDATE links SET action=\'CREATE\' WHERE id=" + "\'" + current.id + "\' ORDER BY timestamp ASC LIMIT 1",1);
-
-    }
-
-    //Step 4: Print the dynamics of the intentions.
-    for (var e = 0; e < elements.length; e++){
-
-        var f = elements[e].attr(".funcvalue/text");
-        var init_value = elements[e].attr(".constraints/markedvalue");
-        var funcType = elements[e].attr(".constraints/function");
-        var funcTypeVal = elements[e].attr(".constraints/lastval");
-        var sat_value;
-        var function_string;
-        if  (f == " " || f == ""){
-            f = "NT";
-            sat_value = satValueDict[funcTypeVal];
-        }else if (f != "UD"){
-            sat_value = satValueDict[funcTypeVal];
-
-            // user defined constraints
-        }else{
-            var begin = elements[e].attr(".constraints/beginLetter");
-            var end = elements[e].attr(".constraints/endLetter");
-            var rBegin = elements[e].attr(".constraints/beginRepeat");
-            var rEnd = elements[e].attr(".constraints/endRepeat");
-            function_string = "";
-            sat_value = String(funcTypeVal.length);
-            for (var l = 0; l < funcTypeVal.length; l++){
-                if(l == funcTypeVal.length - 1){
-                    function_string += "\t" + begin[l] + "\t1\t" + funcType[l] + "\t" + satValueDict[funcTypeVal[l]];
-                }else{
-                    function_string += "\t" + begin[l] + "\t" + end[l] + "\t" + funcType[l] + "\t" + satValueDict[funcTypeVal[l]];
-                }
-            }
-
-            // repeating
-            if (elements[e].attr(".constraints/beginRepeat") && elements[e].attr(".constraints/endRepeat")){
-                // to infinity
-                if (rEnd == end[end.length - 1]){
-                    function_string += "\tR\t" + rBegin + "\t1";
-                }else{
-                    function_string += "\tR\t" + rBegin + "\t" + rEnd;
-                }
-            }else{
-                function_string += "\tN";
-            }
-
-        }
-        if (( typeof init_value !== 'undefined' ) && ( typeof sat_value !== 'undefined' )){
-            var insert_query;
-            var read_query;
-            if (typeof(function_string) !== 'undefined'){
-                insert_query = "insert ignore into dynamics(session_id,intention_id,function_type,init_value,sat_value,function_string,action,timestamp) values " +
-                    "(\'"+ session_id +"\',\'"+elements[e].id +"\',\'"+ f + "\',\'" + init_value + "\',\'" + sat_value + "\',\'" + function_string  + "\', \'EDIT\',\'"+
-                    timestamp + "\') ";
-                read_query = "select * from (select * from dynamics where intention_id=\'" + elements[e].id + "\' order by timestamp DESC limit 1) as temp where function_type=\'"
-                    + f + "\' and init_value=\'" + init_value + "\' and sat_value=\'" + sat_value + "\' and function_string=\'" + function_string + "\'";
-
-            } else{
-                insert_query = "insert ignore into dynamics(session_id,intention_id,function_type,init_value,sat_value,function_string,action,timestamp) values " +
-                    "(\'"+ session_id +"\',\'"+elements[e].id +"\',\'"+ f + "\',\'" + init_value + "\',\'" + sat_value + "\',\'NULL\', \'EDIT\',\'"+
-                    timestamp + "\') ";
-                read_query = "select * from (select * from dynamics where intention_id=\'" + elements[e].id + "\' order by timestamp DESC limit 1) as temp where function_type=\'"
-                    + f + "\' and init_value=\'" + init_value + "\' and sat_value=\'" + sat_value + "\' and function_string=\'NULL\'";
-            }
-            accessDatabaseWithRead(insert_query, read_query, 0);
-            accessDatabase("UPDATE dynamics SET action=\'CREATE\' WHERE intention_id=" + "\'" + elements[e].id + "\' ORDER BY timestamp ASC LIMIT 1",1);
-
-        }
-    }
-
-    //Step 5: Print constraints between intensions.
-    for (var e = 0; e < savedConstraints.length; e++){
-        var c = savedConstraints[e];
-        var type = c.attributes.labels[0].attrs.text.text.replace(/\s/g, '');
-        var source = c.getSourceElement().id;
-        var target = c.getTargetElement().id;
-        var sourceVar = c.attr('.constraintvar/src');
-        var targetVar = c.attr('.constraintvar/tar');
-
-        var insert_query = "insert ignore into constraints(session_id,type,source,sourceVar,target,targetVar,action,timestamp) values " +
-            "(\'"+ session_id +"\',\'"+type +"\',\'"+ source + "\',\'" + sourceVar + "\',\'" + target + "\',\'" + targetVar  + "\', \'EDIT\',\'"+
-            timestamp + "\') ";
-        var read_query = "select * from (select * from constraints where session_id=\'" + session_id + "\' and source=\'" + source+ "\' and target=\'" + target +"\' order by timestamp DESC limit 1) as temp where sourceVar=\'"
-            + sourceVar + "\' and targetVar=\'" + targetVar + "\'";
-        accessDatabaseWithRead(insert_query, read_query, 0);
-
-        accessDatabase("UPDATE constraints SET action=\'CREATE\' WHERE session_id=\'" + session_id + "\' and source=\'" + source+ "\' and target=\'" + target +"\'  ORDER BY timestamp ASC LIMIT 1",1);
-    }
-
-}
-
 // Auto-save the cookie whenever the graph is changed.
 graph.on("change", function(){
 	var graphtext = JSON.stringify(graph.toJSON());
 	document.cookie = "graph=" + graphtext;
-    if (Tracking){
-    	console.log("User Tracking - Recorded");
-        var timestamp = new Date().toUTCString();
-        updateDataBase(graph, timestamp);
-        accessDatabase("insert ignore into graphs(session_id,content,timestamp) values " +
-            "(\'"+ session_id +"\',\'"+graphtext +"\',\'"+ timestamp + "\') ",1);
-
-    }
 });
 
 var selection = new Backbone.Collection();
@@ -1196,7 +903,9 @@ paper.on({
 
                 // render actor/element inspector
                 if (cell instanceof joint.shapes.basic.Actor) {
-                    actorInspector.render(cell);
+                    var actorInspector =  new ActorInspector({model:cell});
+                    $('.inspector').append(actorInspector.el);
+                    actorInspector.render();
                 } else {
                     elementInspector.render(cell);
                     // if user was dragging element
@@ -1233,7 +942,11 @@ paper.on("link:options", function(cell, evt){
 	}
 
 	clearInspector();
-	linkInspector.render(cell.model);
+    
+    var linkInspector = new LinkInspector({model: cell.model});
+    $('.inspector').append(linkInspector.el);
+
+	linkInspector.render();
 
 });
 
@@ -1431,8 +1144,11 @@ graph.on('remove', function(cell) {
 function clearInspector() {
 	elementInspector.clear();
 	linkInspector.clear();
-	analysisInspector.clear();
-	actorInspector.clear();
+
+    // Clear any analysis sidebar views
+    if($('.inspector-views').length != 0){
+        $('.inspector-views').trigger('clearInspector');
+    }
 }
 
 

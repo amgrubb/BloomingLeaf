@@ -1,46 +1,25 @@
 /**
+ * backendComm.js Overview
  * This file contains the communication between the front and back end of Bloomingleaf.
- * When an analysis is run, the analysisRequest, model, and graph are bundled into an object, converted to JSON format, and sent to the backend,
+ * When an analysis is run, the analysisRequest, model, and graph are bundled into an object, 
+ * converted to JSON format, and sent to the backend,
  * which returns the analysisResult.
+ * 
+ * This is:
+ * Simulate Single Path - Step 3
+ * Explore Possible Next States - Step 3
  */
 
-var nodeServer = true;      						// Whether the tool is running locally on a Node Server.
 var url = "http://localhost:8080/untitled.html";	// Hardcoded URL for Node calls. 
 
 function backendComm(jsObject){	
 	/**
 	* Print the input to the console.
 	*/
+	console.log("Step 3");
 	console.log(JSON.stringify(jsObject));
 	console.log(jsObject.analysisRequest.action);
-
-	console.log(nodeServer);
-    if(nodeServer){
-        nodeBackendCommFunc(jsObject);
-        return;
-	}
-	
-	// Code for running the tool on University Servers with sandbox for webserver.
-	// Need to use CGI to call java on a different server.
-	var pathToCGI = "./cgi-bin/backendCom.cgi";
- 	$.ajax({
-		url: pathToCGI,
-		type: "post",
-		contentType: "json",
-		data:JSON.stringify(jsObject),
-		success: function(response){
-			setTimeout(function(){
-				if(jsObject.analysisRequest.action=="allNextStates"){
-					executeJava(true);
-				}else{
-					executeJava(false);
-				}
-		    }, 500);
-		}
-	})	.fail(function(){
-		msg = "Ops! Something went wrong.";
-		alert(msg);
-	});
+    nodeBackendCommFunc(jsObject);
 }
 
 // Code for calling the java function via Node.
@@ -66,14 +45,9 @@ function nodeBackendCommFunc(jsObject){
             
             var response = xhr.responseText;
    			responseFunc(isGetNextSteps,response);
-
        }
    }
    xhr.send(data);	// Why is this sent down here? What is this send function.
-
-   // console.log(xhr.responseText);
-   // response=xhr.responseText;
-   // responseFunc(isGetNextSteps,response);
 }
 
 
@@ -99,89 +73,21 @@ function responseFunc(isGetNextSteps, response){
 					open_analysis_viewer();
 			} else {
 				savedAnalysisData.singlePathResult = results;
+				console.log(JSON.stringify(results));			// Print the results of the analysis to the console.
 				analysisResult = convertToAnalysisResult(results);
 				displayAnalysis(analysisResult, false);
-
-				// Save result to the corresponding analysis configuration object
-				currAnalysisConfig.addResult(analysisResult);
-				// Update results in analysis sidebar
-				updateResults();
-				// Add the analysisConfiguration to the analysisMap for access in the analysis config sidebar
-				analysisMap.set(currAnalysisConfig.id, currAnalysisConfig);
+				// Get the currently selected configuration's results list
+				// .where returns an array, but there should only ever be one selected so we just grab the first element
+				currConfig = configCollection.where({selected: true})[0];
+				currConfig.addResult(analysisResult);
+				// // Save result to the corresponding analysis configuration object
+				// currAnalysisConfig.addResult(analysisResult);
+				// // Add the analysisConfiguration to the analysisMap for access in the analysis config sidebar
+				// analysisMap.set(currAnalysisConfig.id, currAnalysisConfig);
 			 }
 		 }
 	 }
  }
-
-function executeJava(isGetNextSteps){
-	var pathToCGI = "./cgi-bin/executeJava.cgi";
-	$.ajax({
-		url: pathToCGI,
-		type: "get",
-		success: function(response){
-		    setTimeout(function(){
-				getFileResults(isGetNextSteps);
-		    }, 500);
-		}
-	})
-	.fail(function(){
-		msg = "Ops! Something went wrong. Executing java.";
-		alert(msg);
-	});
-}
-
-
-function getFileResults(isGetNextSteps) {
-	var pathToCGI = "./cgi-bin/fileRead.cgi";
-
-	//Executing action to send backend
-	$.ajax({
-		url: pathToCGI,
-		type: "get",
-		success: function(response){
-			results = JSON.parse(response['data']);
-
-			if (errorExists(results)) {
-				var msg = getErrorMessage(results.errorMessage);
-				alert(msg);
-			} else {
-				/**
-					* Print the response data to the console.
-				*/
-					console.log(JSON.stringify(JSON.parse(response['data'])));
-
-				//globalAnalysisResult = results;
-
-				if (results == ""){
-					alert("Error while reading the resonse file from server. This can be due an error in executing java application.")
-					return
-				}
-
-
-				// do not need to store the past result for all next states
-				if(isGetNextSteps){
-					console.log("All Paths Results (getFileResults):")
-				    console.log(JSON.stringify(results));
-                    savedAnalysisData.allNextStatesResult = results;
-                    console.log("in backendcomm, saving all next state results");
-					open_analysis_viewer();
-				}else{
-					analysisResult = convertToAnalysisResult(results);
-                    savedAnalysisData.singlePathResult = results;
-                    analysisRequest.previousAnalysis = analysisResult;
-                    console.log("previousAnalysis");
-					//pass in an AnalysisResult object
-					displayAnalysis(analysisResult, false);
-				}
-			}
-		}
-	})
-	.fail(function(){
-		msg = "Error while executing CGI file: fileRead. Please contact the system Admin.";
-		alert(msg);
-	});
-}
-
 
 function open_analysis_viewer(){
     var urlBase = document.URL.substring(0, document.URL.lastIndexOf('/')+1);

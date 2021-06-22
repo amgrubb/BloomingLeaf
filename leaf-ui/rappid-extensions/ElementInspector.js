@@ -14,7 +14,8 @@ var validPair = {
     },
     "R":{
         "validInitValue": ["none", "satisfied", "partiallysatisfied", "denied", "partiallydenied", "(no value)"],
-        "defaultValue": ["none"]
+        // Default value changed to (no value)
+        "defaultValue": ["(no value)"]
     },
     "I": {
         "validInitValue": ["none", "satisfied", "partiallysatisfied", "denied", "partiallydenied"],
@@ -229,11 +230,9 @@ var ElementInspector = Backbone.View.extend({
      */
     checkInitialSatValue() {
         if (this.intention.getInitialSatValue() == '(no value)') {
-            // remove current options, add 3 options
+            // Stochastic should be the only option for '(no value)'
             this.$('.function-type').empty();
-            this.$('.function-type').append('<option value=NT> No Function </option>');
             this.$('.function-type').append('<option value=R> Stochastic </option>');
-            this.$('.function-type').append('<option value=UD> User Defined </option>');
         } else {
             this.$('.function-type').empty();
             this.$('.function-type').append('<option value=NT> No Function </option>');

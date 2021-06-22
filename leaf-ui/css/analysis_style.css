@@ -51,7 +51,6 @@
 
 /*Hide the intermTable dialog by default*/
 .intermT {
-    display: none;  /*Hidden by default */
     position: fixed; /* Stay in place */
     z-index: 1; /* Sit on top */
     padding-top: 100px; /* Location of the box */
@@ -349,6 +348,7 @@ select::-ms-expand {
     padding: 10px; 
     font-size: 16px; 
     border: 1px solid black; 
+    width: 60%;
     outline: none;  
   }
   
@@ -358,21 +358,21 @@ select::-ms-expand {
     height: 42px; 
     border: none; 
     outline: none;
-    float: left;
+    float: right;
   }
   
   .dropdown-container {
     display:block
   }
 
-  .deleteconfig-button{
+.deleteconfig-button{
     padding: 7px; 
     font-size: 16px; 
     height: 42px; 
     border: none; 
     outline: none;
     box-shadow: -1px 0px 0px 0px rgb(71, 65, 65);
-    float: left;
+    float: right;
     cursor: pointer;
   }
 

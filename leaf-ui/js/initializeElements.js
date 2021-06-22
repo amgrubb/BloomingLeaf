@@ -6,9 +6,6 @@
 //Flag to turn on console log notification
 var develop = false;
 var session_id = Date.now();
-var Tracking = false;		// Default to no tracking, if user doesn't consent.
-
-
 
 function guid() {
     // local function to create alphanumeric strings
@@ -71,35 +68,6 @@ function showAlert(title, msg, width, promptMsgType, type, arrow) {
     return dialog;
 }
 
-showAlert('Tracking Notice',
-    '<p>To better understand how people use Blooming Leaf, ' +
-    'we would like to track <em>anonymous</em> use of the tool. ' +
-    'We only track the creation and modification of models.</p><p>We <em>do not</em> store any information ' +
-    'that can identify you personally.</p><p>Please ' +
-    'state your preference below on whether you would ' +
-    'like to allow us to do this. </p><p><button type="button" class="creative-button"' +
-    ' id="tracking-consent">I consent to anonymous ' +
-    'tracking</button><button type="button" ' +
-    'class="creative-button" id="tracking-decline">I do ' +
-    'not wish to be tracked</button></p>',
-    window.innerWidth * 0.3, 'alert', 'warning');
-
-$('#tracking-consent').click(function() {
-    Tracking = true;
-    console.log(Tracking);
-    var $div = $(this).closest('div.fg');
-    var $closeButton = $div.find('button.btn-close');
-    $closeButton.trigger('click');
-});
-
-$('#tracking-decline').click(function() {
-    Tracking = false;
-    console.log(Tracking);
-    var $div = $(this).closest('div.fg');
-    var $closeButton = $div.find('button.btn-close');
-    $closeButton.trigger('click');
-});
-
 var graph;
 var paper;
 var stencil;
@@ -107,14 +75,14 @@ var mode;
 var showEditingWarning = true;
 
 var model = new Model();
-var analysisRequest = new AnalysisRequest();
+var analysisRequest = new AnalysisRequest();        //TODO: make not global!
 var analysisResult = new AnalysisResult();
 
 
 var linkInspector = new LinkInspector();
 var elementInspector = new ElementInspector();
-var analysisInspector = new AnalysisInspector();
-var actorInspector =  new ActorInspector();
+var configCollection = new ConfigCollection([]);
+var configInspector = new ConfigInspector({collection:configCollection});
 
 var currentHalo;
 var currentAnalysis;
@@ -122,7 +90,7 @@ var elementList;
 var defaultUAL = [];
 
 // Analysis variables
-var sliderObject = new sliderObject();
+var sliderObject = new SliderObj();
 var previousModel;
 
 var loader;
@@ -255,7 +223,7 @@ var oldSatValToBinary = {
 mode = "Modelling";		// 'Analysis' or 'Modelling'
 linkMode = "View";	// 'Relationships' or 'Constraints'
 
-graph = new joint.dia.Graph();
+graph = new joint.dia.BloomingGraph();
 
 graph.links = [];
 graph.intensionConstraints = [];
@@ -324,7 +292,6 @@ var commandManager = new joint.dia.CommandManager({ graph: graph });
 
 // A simple element editor.
 $('.inspector').append(elementInspector.el);
-$('.inspector').append(actorInspector.el);
 
 $('#stencil').append(stencil.render().el);
 
@@ -338,10 +305,6 @@ stencil.load([goal, task, sgoal, res, act]);
 
 // Setup LinkInspector
 $('.inspector').append(linkInspector.el);
-
-// Initialize Slider setup
-sliderObject.sliderElement = document.getElementById('slider');
-sliderObject.sliderValueElement = document.getElementById('sliderValue');
 
 $('#slider').width($('#paper').width() * 0.8);
 $('#slider').css("margin-top", $(window).height() * 0.9);

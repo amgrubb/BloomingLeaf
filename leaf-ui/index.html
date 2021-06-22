@@ -49,8 +49,8 @@
                   <a id="btn-clear-analysis" class='analysis-clears' style="display: none;">Configurations and Results</a>
                 </div>
             </div>
-            <button id="btn-zoom-in" class="btn" onclick = "zoomIn(paperScroller)">Zoom In</button>
-            <button id="btn-zoom-out" class="btn" onclick = "zoomOut(paperScroller)">Zoom Out</button>
+            <button id="btn-zoom-in" class="btn">Zoom In</button>
+            <button id="btn-zoom-out" class="btn">Zoom Out</button>
             <button id="btn-svg" class="btn">Open as SVG</button>
             <input type="file" id="loader" style="display:none">
 
@@ -58,21 +58,20 @@
             <div class="dropdown">
               <div class="btn">Font Size</div>
               <div class="dropdown-toolbar">
-                <a id="btn-fnt" onclick = "defaultFont(paper)">Default</a>
-                <a id="btn-fnt-up" onclick = "fontUp(paper)">Increase</a>
-                <a id="btn-fnt-down" onclick = "fontDown(paper)">Decrease</a>
+                <a id="btn-fnt">Default</a>
+                <a id="btn-fnt-up">Increase</a>
+                <a id="btn-fnt-down">Decrease</a>
               </div>
             </div>
 
             <div class="dropdown">
               <div class="btn">Help</div>
               <div class="dropdown-toolbar">
-                <a href="/documentation.pdf" download='documentation.pdf'">Download Documentation</a>
-                <a onclick="window.open('legend.html', 'newwindow', 'width=300, height=250'); return false;">
-                Legend</a>
-                <a onclick="window.open('evo.html', 'newwindow', 'width=500, height=400'); return false;">
-                EVO Color Key</a>
-                <a id="load-sample">Load Sample Model</a>
+                <a href="./userguides/documentation.pdf" download='documentation.pdf'">Download Documentation</a>
+                <a id="legend">Legend</a>
+                <a id="evo-color-key">EVO Color Key</a>
+                <!-- <a id="load-sample">Load Sample Model</a> --> 
+
                 <a id = "colorblind-mode-isOff"> Turn on EVO Colorblind Mode</a>
                 <a id = "colorblind-mode-isOn" style='display: none'> Turn off EVO Colorblind Mode</a>
               </div>
@@ -168,11 +167,14 @@
         </div>
          
         <div id="stencil" class="left-panel"><label>Stencil</label></div>
-        <div id="analysis-sidebar" class="left-panel" style="display:none"><h3 style="text-align:left; color:#181b1fe3; margin-bottom:5px; margin-left: 10px;">Analysis
+        <!-- <div id="analysis-sidebar" class="left-panel" style="display:none"><h3 style="text-align:left; color:#181b1fe3; margin-bottom:5px; margin-left: 10px;">Analysis
             <div id="addConfig" style="display:inline">
                 <i class="fa fa-plus" id="addIntent" style="font-size:30px; float:right;  margin-bottom:5px; margin-right:20px;"></i>
             </div></h3>
             <div id="configurations" class="left-panel" style="margin-top:20px; overflow-y:auto; height:69%; box-shadow: none;"></div>
+        </div> -->
+
+        <div id='config'> 
         </div>
 
         <div id="paper">
@@ -215,19 +217,28 @@
         <!-- <script src="./plugins/chart/Chart.min.js"></script> -->
         <script src="./plugins/chart/Chart.bundle.min.js"></script>
 
-        <script src="./js/object/Class.js"></script>
-        <script src="./js/objects.js"></script>
+        <!-- JS object files-->
+        <script src="./js/object/modelObjects.js"></script>
+        <script src="./js/object/evoObjects.js"></script>
+        <script src="./js/object/analysisObjects.js"></script>
+        <script src="./js/object/viewObjects.js"></script>
 
+        <!--Rappid extension files-->
+        <script src="./rappid-extensions/BackboneModelsIntention.js"></script>
+        <script src="./rappid-extensions/BackboneModelsOther.js"></script>
+        <script src="./rappid-extensions/AnalysisModels.js"></script>
         <script src="./rappid-extensions/ElementInspector.js"></script>
+        <script src="./rappid-extensions/ConfigInspector.js"></script>
+        <script src="./rappid-extensions/IntermediateValues.js"></script>
         <script src="./rappid-extensions/ActorInspector.js"></script>
         <script src="./rappid-extensions/LinkInspector.js"></script>
         <script src="./rappid-extensions/AnalysisInspector.js"></script>
         <script src="./rappid-extensions/joint.extensions.js"></script>
 
+        <!-- Front end scripts -->
         <script src="./js/initializeElements.js"></script>
         <script src="./js/displayAnalysis.js"></script>
         <script src="./js/errorDetection.js"></script>
-        <script src="./js/keyboardFunctions.js"></script>
         <script src="./js/loadSaveFunctions.js"></script>
         <script src="./js/onFunctions.js"></script>
         <script src="./js/onFunctionsBothWindows.js"></script>
@@ -239,23 +250,14 @@
 
 		<script src="./js/backendComm.js"></script>
 
-		<!-- OBJECTS to be sent to backend communication -->
-		<script src="./js/object/InputAnalysis.js"></script>
-		<!-- Model elements -->
-		<script src="./js/object/InputActor.js"></script>
-		<script src="./js/object/InputConstraint.js"></script>
-		<script src="./js/object/InputDynamic.js"></script>
-		<script src="./js/object/InputIntention.js"></script>
-		<script src="./js/object/InputLink.js"></script>
-    <script src="./js/object/InputEvaluation.js"></script>
         <div class = "attribution">
-            <img src="site-logo.PNG" style="width:25%;height:25%;float:left">
+            <img src="./images/site-logo.PNG" style="width:25%;height:25%;float:left">
             Release 1.5 <br>
             Copyright 2015-2021.<br>Grubb Lab, Smith College<br>
             & University of Toronto. <br>
             All rights reserved.<br>
             Powered by: <br>
-            <img src="./jointjs.png" style="width:25%;height:25%;float:left">
+            <img src="./images/jointjs.png" style="width:25%;height:25%;float:left">
             Copyright 2014-2021.<br>client IO. All rights reserved.<br>
     		JointJS: an HTML 5 diagramming component.<br>
     		<a href=http://jointjs.com target="_blank">http://jointjs.com</a>

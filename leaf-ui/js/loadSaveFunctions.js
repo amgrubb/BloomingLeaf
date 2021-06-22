@@ -23,231 +23,9 @@ reader.onload = function() {
 	}
 
 	var result = JSON.parse(reader.result);
-
-	// If JSON is from the old version of BloomingLeaf
-	if (!result.graph) {
-		model = new Model();
-		analysisRequest = new AnalysisRequest();
-
-		var cells = result.cells;
-
-		// Actors
-		for (var i = 0; i < cells.length; i++) {
-			if (cells[i].type == 'basic.Actor') {
-				var actorName = cells[i].attrs['.name'].text;
-				var newActor = new Actor(actorName);
-				cells[i]["nodeID"]  = newActor.nodeID;
-				model.actors.push(newActor);
-			}
-           
-				
-		}
-
-		// Intention
-		for (var i = 0; i < cells.length; i++) {
-		    if (isIntention(cells[i])) {
-		        var cellName = cells[i].attrs['.name'].text;
-		        var cellType = cells[i].type;
-		        var actorID = getActorID(cells[i].parent, cells);
-		        // create new intention here
-		    	var intention = new Intention(actorID, cellType, cellName);
-		    	cells[i]["nodeID"]  = intention.nodeID;
-
-		    	if (actorID !== '-') {
-		    		model.getActorByID(actorID).addIntentionID(intention.nodeID);
-		    	} 
-
-		        // create intention evaluation
-		        var initSat = cells[i].attrs['.satvalue'].text;
-		        initSat = (initSat !== ' ' && initSat !== '')  ?  oldSatValToBinary[initSat] : '0000';
-			    var intentionEval = new UserEvaluation(intention.nodeID, '0', initSat);
-			    analysisRequest.userAssignmentsList.push(intentionEval);
-		    
-		        // make the T upside down
-		        var satValText = cells[i].attrs['.satvalue'].text;
-		        cells[i].attrs['.satvalue'].text = updateSatValueTextToNew(satValText);
-		    
-		        // create the evolving function
-		        if (cells[i].attrs['.funcvalue'] != null) {
-
-			        var stringDynVis = cells[i].attrs['.funcvalue'].text;
-			    
-			        if (stringDynVis == 'UD') {
-			            var funcSegArr = [];
-			            var funcVisArr = cells[i].attrs['.constraints'].function;
-			            var markedValArr = cells[i].attrs['.constraints'].lastval; // denied, satisfied
-			            var beginLetterArr = cells[i].attrs['.constraints'].beginLetter;
-			            var endLetterArr = cells[i].attrs['.constraints'].endLetter;
-			            
-			            for (var j = 0; j < funcVisArr.length; j++) {
-			                funcSegArr.push(new FuncSegment(funcVisArr[j], satValueDict[markedValArr[j]], beginLetterArr[j], endLetterArr[j]));
-
-			                // Add empty absolute constraints
-			                if (j != 0) {
-			                	model.constraints.push(new Constraint('A', intention.nodeID, beginLetterArr[j], null, null));
-			                }
-			            }
-
-			            intention.dynamicFunction.stringDynVis = stringDynVis;
-			        	intention.dynamicFunction.functionSegList = funcSegArr;
-
-
-			        	// If there is a repeat
-			        	var beginRepeat = cells[i].attrs['.constraints'].beginRepeat;
-			        	var endRepeat = cells[i].attrs['.constraints'].endRepeat; 
-			        	if (beginRepeat && endRepeat) {
-			        		var repeatCount = cells[i].attrs['.constraints'].repeatCount;
-			        		var absoluteLen = cells[i].attrs['.constraints'].absoluteLen;
-
-			        		// If repeatCount is null, set to 2 for default
-			        		repeatCount = repeatCount ? repeatCount : 2;
-
-			        		intention.dynamicFunction.setRepeatingFunction(beginRepeat, endRepeat);
-			        		intention.dynamicFunction.setRepNum(repeatCount);
-			        		intention.dynamicFunction.setAbsoluteTime(absoluteLen);
-			        	}
-
-			        } else {
-			        	// Non user defined functions
-			        	intention.dynamicFunction.stringDynVis = stringDynVis;
-			        	var markedVal = satValueDict[cells[i].attrs['.constraints'].lastval];
-
-			        	if (stringDynVis == 'C' || stringDynVis == 'R') {
-			        		
-			        		intention.dynamicFunction.functionSegList = [new FuncSegment(stringDynVis, initSat, '0', 'Infinity')];
-			        	} else if (stringDynVis == 'I' || stringDynVis == 'D') {
-			        		
-			        		intention.dynamicFunction.functionSegList = [new FuncSegment(stringDynVis, markedVal, '0', 'Infinity')];
-			        	} else if (stringDynVis == 'RC') {
-			        		model.constraints.push(new Constraint('A', intention.nodeID, beginLetterArr[j], null, null));
-			        		intention.dynamicFunction.functionSegList = [
-			        			new FuncSegment('R', initSat, '0', 'A'),
-			        			new FuncSegment('C', markedVal, 'A', 'Infinity')
-			        		];
-			        	} else if (stringDynVis == 'CR') {
-			        		model.constraints.push(new Constraint('A', intention.nodeID, 'A', null, null));
-			        		intention.dynamicFunction.functionSegList = [
-			        			new FuncSegment('C', initSat, '0', 'A'),
-			        			new FuncSegment('R', '0000', 'A', 'Infinity')
-			        		];
-			        	} else if (stringDynVis == 'MP') {
-			        		model.constraints.push(new Constraint('A', intention.nodeID, 'A', null, null));
-			        		intention.dynamicFunction.functionSegList = [
-			        			new FuncSegment('I', markedVal, '0', 'A'),
-			        			new FuncSegment('C', markedVal, 'A', 'Infinity')
-			        		];
-			        	} else if (stringDynVis == 'MN') {
-			        		model.constraints.push(new Constraint('A', intention.nodeID, 'A', null, null));
-			        		intention.dynamicFunction.functionSegList = [
-			        			new FuncSegment('D', markedVal, '0', 'A'),
-			        			new FuncSegment('C', markedVal, 'A', 'Infinity')
-			        		];
-			        	} else if (stringDynVis == 'SD') {
-			        		model.constraints.push(new Constraint('A', intention.nodeID, 'A', null, null));
-			        		intention.dynamicFunction.functionSegList = [
-			        			new FuncSegment('C', '0011', '0', 'A'),
-			        			new FuncSegment('C', '1100', 'A', 'Infinity')
-			        		];
-			        	} else {
-			        		model.constraints.push(new Constraint('A', intention.nodeID, 'A', null, null));
-			        		intention.dynamicFunction.functionSegList = [
-			        			new FuncSegment('C', '1100', '0', 'A'),
-			        			new FuncSegment('C', '0011', 'A', 'Infinity')
-			        		];
-			        	}
-			        }
-
-			        // Assign absolute constraint's absolute values
-		        	var assignedTimes = cells[i].attrs['.assigned_time'];
-		        	if (assignedTimes) {
-		        		var curr = 'A';
-
-		        		Object.keys(assignedTimes).forEach(function(key) {
-		              	if (assignedTimes[key]) {
-			        			model.setAbsConstBySrcID(intention.nodeID, curr, parseInt(assignedTimes[key]));
-			        			curr = String.fromCharCode(curr.charCodeAt(0) + 1);
-		        			}
-		        		});
-		        	}
-			    }
-		        model.intentions.push(intention);
-		    } 
-		}
-
-		// Links
-		for (var i = 0; i < cells.length; i++) {
-			 if (cells[i].type == 'link') {
-				var type = cells[i].labels[0].attrs.text.text.toUpperCase();
-
-
-				if (type.indexOf('|') > -1) {
-					// If this is an evolving link
-					var linkType = type.split('|')[0].trim();
-					var postType = type.split('|')[1].trim();
-				} else {
-					var linkType = type.trim();
-					var postType = null;
-                }
-                var absolute = cells[i].attrs[".assigned_time"];
-                if (!absolute) {
-                    absoluteValue = -1;
-                } else {
-                    absoluteValue = absolute["0"];
-                    if (!absoluteValue) {
-                        absoluteValue = -1;
-                    } else {
-                        absoluteValue = parseInt(absoluteValue);
-                    }
-                }
-
-				var sourceID = cells[i].source.id;
-				var targetID = cells[i].target.id;
-								
-				// add absoluteValue and postType
-			    var newLink = new Link(linkType, getNodeID(sourceID, cells), absoluteValue);
-				newLink.linkDestID = getNodeID(targetID, cells);
-				newLink.postType = postType;
-		
-				// add linkID
-				cells[i]["linkID"]  = newLink.linkID;
-				model.links.push(newLink);
-			}
-		}
-		
-		graph.fromJSON(result);
-	} else {
-		// If the JSON is from the current version of BloomingLeaf
-		loadFromObject(result);
-	}
+	loadFromObject(result);
     var graphtext = JSON.stringify(graph.toJSON());
     document.cookie = "graph=" + graphtext;
-}
-
-/**
- * Returns the new representation of satisfaction values
- *
- * Examples:
- * (old -> new)
- * '' -> (⊥, ⊥)
- * (T, FD) -> (⊥, F)
- * (PS, T) -> (P, ⊥)
- *
- * @param {String} oldText
- *   old representation 
- */
-function updateSatValueTextToNew(oldText) {
-
-	// If empty, return string representation for none
-	if (oldText == '' || oldText == ' ') {
-		return '(⊥, ⊥)'
-	}
-	
-	// Replace all T's with ⊥'s
-	oldText = oldText.replace(/T/g, '⊥');
-
-	// Remove all S's and D's
-	oldText = oldText.replace(/S|D/g, '');
-	return oldText;
 }
 
 /**
@@ -272,8 +50,6 @@ function loadFromObject(obj) {
 
 	// Clear any previous analysis data 
 	if (analysisMap.size != 0) {
-		// Clear the analysisMap to remove any previous analysis
-		clearAnalysisConfigSidebar();
 		analysisMap.clear();
 		currAnalysisConfig = null;
 	}
@@ -289,8 +65,6 @@ function loadFromObject(obj) {
 			// Add config to the global analysisMap
 			analysisMap.set(config.id, config);
 		}
-		// Load the configs into the analysis view config sidebar
-		loadAnalysis();
 	} else {
 		// Else if no analysisMap param, grab the analysisRequest
 		analysisRequest = Object.assign(new AnalysisRequest, obj.analysisRequest);
@@ -424,45 +198,6 @@ function getFuncSegList(arr) {
 	return res;
 }
 
-
-/**
- * Returns an Actor nodeID for the Actor with Rappid ID rapID
- * Returns '-' if does not exist 
- *
- * @param {String} rapID
- *   This is a Rappid ID, which is 36 characters long
- * @returns {String}
- *   An actor nodeID of length 4, or '-' if does not exist
- */
-function getActorID(rapID, cells) {
-	for (var i = 0; i < cells.length; i++) {
-		if (cells[i].id === rapID) {
-			return cells[i].nodeID;
-		}
-	}
-
-	return '-';
-}
-
-/**
- * Returns a nodeID for the Intention with Rappid ID rapID
- * Returns '-' if does not exist 
- *
- * @param {String} rapID
- *   This is a Rappid ID, which is 36 characters long
- * @returns {String}
- *   A nodeID of length 4, or '-' if does not exist
- */
-function getNodeID(rapID, cells) {
-    for (var i = 0; i < cells.length; i++) {
-        if (cells[i].id == rapID) {
-            return cells[i].nodeID;
-        }
-    }
-
-    return "-";
-}
-
 /**
  * Returns an object that contains the current graph, model, and analysis request.
  * This return object is what the user would download when clicking the Save button
@@ -546,16 +281,6 @@ function download(filename, text) {
 
 	dl.click();
 	document.body.removeChild(dl);
-}
-
-/**
- * Returns true iff cell represents an intention
- */
-function isIntention(cell) {
-  return cell.type == 'basic.Goal' ||
-         cell.type == 'basic.Task' ||
-         cell.type == 'basic.Softgoal' ||
-         cell.type == 'basic.Resource';
 }
 
 /**
