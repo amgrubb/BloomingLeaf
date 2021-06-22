@@ -17,16 +17,30 @@ joint.dia.BloomingGraph = joint.dia.Graph.extend({
         maxAbsTime: 100,
         absTimePtsArr: [],
         // TODO: Name with correct type of constraints
-        constraints: [],
+        constraints: new ConstraintCollection([]),
     }, joint.dia.Graph.prototype.defaults),
 
+    /**
+     * @returns Array of all IntentionBBMs in the graph
+     */
     getIntentions: function(){
         return this.getElements().filter(element => element instanceof joint.shapes.basic.Intention)
             .map(intentionCell => intentionCell.get('intention'));
     },
 
-    getElementById: function(id){
-        return this.getCells().filter(cell => cell.get('id') == id);
+    /**
+     * Returns the cell associated with the id parameter
+     * There should be a 1 to 1 mapping of ids to cells
+     * 
+     * @param {String} id 
+     * @returns Cell
+     */
+    getCellById: function(id){
+        var cell = this.getCells().filter(cell => cell.get('id') == id);
+        if (cell.length == 1){
+            return cell[0]
+        }
+        return null;
     }
 
 })

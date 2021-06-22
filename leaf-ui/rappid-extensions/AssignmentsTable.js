@@ -66,9 +66,6 @@ var AssignmentsTable = Backbone.View.extend({
                     '</tr>',
                 '</table>',
         '</div>', 
-        '<div class="modal-footer" style="margin-top: 10px;">',
-            '<button id="btn-save-assignment" class="analysis-btns inspector-btn sub-label green-btn" style="border-radius:40px;">Save</button>',
-        '</div>',
     '</div>',
     '</div>',
     '</div>',
@@ -77,7 +74,8 @@ var AssignmentsTable = Backbone.View.extend({
     events: {
         'click #add-intention': 'addRelIntentionRow',
         'change #max-abs-time': 'updateMaxAbsTime',
-        'change #abs-time-pts': 'updateAbsTimePts'
+        'change #abs-time-pts': 'updateAbsTimePts',
+        'click .close': 'closeView'
     },
 
     /**
@@ -109,7 +107,7 @@ var AssignmentsTable = Backbone.View.extend({
      * Sets Absolute time points
      */
     updateAbsTimePts: function() {
-        // TODO: We could split at spaces + commas: /[ ,]+/) 
+        // TODO: We could split at spaces + commas with: /[ ,]+/) 
         // but would need to fix the regex.test var first
         var regex = new RegExp("^(([1-9]0*)+\\s+)*([1-9]+0*)*$");
         var absTimeElement = $('#abs-time-pts');
@@ -152,8 +150,9 @@ var AssignmentsTable = Backbone.View.extend({
     displayAbsoluteIntentionAssignments: function() {
         this.model.getIntentions().forEach(intentionCell => {
             var intentionBbm = intentionCell.get('intention');
-            var funcSegList = intentionBbm.get('evolvingFunction')?.get('functionSegList');
-            if (funcSegList != 'undefined'){
+            var funcSegList = intentionBbm?.get('evolvingFunction')?.get('functionSegList');
+            console.log(funcSegList);
+            if (funcSegList != undefined){
                 // TODO: Check with @amgrubb about how this is being sliced
                 for (let funcSeg of funcSegList.slice(1)){
                     var intentionRelationshipView = new IntentionRelationshipView({
@@ -179,6 +178,18 @@ var AssignmentsTable = Backbone.View.extend({
                 linkRelationshipView.render();
             }
         })
+    },
+
+    /**
+     * Removes all empty constraints from constraints array on graph object
+     * Before closing modal box
+     */
+    closeView: function(){
+        this.model.get('constraints').each(constraint => {
+            if(!constraint.isComplete()){
+            constraint.destroy()
+        }});
+        this.remove();
     },
 });
 
@@ -346,8 +357,10 @@ var IntentionRelationshipView = Backbone.View.extend({
  * Backbone View for the Absolute Relationship Assignments, where each instance of the view
  * Represents an evolving function transition of a LinkBBM
  */
+// TODO: Get linkSrc name and linkDest name instead of ids
 var LinkRelationshipView = Backbone.View.extend({
     model: LinkBBM,
+
     template: [
         '<script type="text/template" id="item-template">',
         '<tr><td> <%= linkType %> </td><td> <%= linkSrcID %> </td>',

@@ -18,42 +18,34 @@ It also contains the setup for Rappid elements.
  * General javascript for user interaction
  * When the user clicks anywhere outside of the a pop up, close it
  */
+// TODO: Permenently remove and figure out how to re-implement inside the respective views
 window.onclick = function(event) {
-	var modal = document.getElementById('assignmentsModal');
+	// var modal = document.getElementById('assignmentsModal');
 	var intermT = document.getElementById('intermediateTable');
-    if (event.target == modal) {
-  	    modal.style.display = "none";
-    }
+    // if (event.target == modal) {
+  	//     modal.style.display = "none";
+    // }
 	if(event.target == intermT){
 		intermT.style.display = "none";
 	}
 }
 
 /**
- * Closes Assignments Table
- */
-
-$('.close').on('click', function(){
-    var modal = document.getElementById('assignmentsModal');
-    modal.style.display = "none";
-});
-
-/**
  * Sets Max Absolute Time
  */
-$('#max-abs-time').on('change', function(){
-    var maxTime = $('#max-abs-time');
-    if (maxTime.val() !== "") {
-        model.maxAbsTime = maxTime.val()
-    } else {
-        maxTime.val(model.maxAbsTime);
-    }
-});
+// $('#max-abs-time').on('change', function(){
+//     var maxTime = $('#max-abs-time');
+//     if (maxTime.val() !== "") {
+//         model.maxAbsTime = maxTime.val()
+//     } else {
+//         maxTime.val(model.maxAbsTime);
+//     }
+// });
 
 /**
  * Add relative intention row
  */
-$('.addIntention').on('click', function(){
+// $('.addIntention').on('click', function(){
     // var intentions = model.intentions;
     //     var epochHtml1 = '<div class="epochLists" id="epoch1List"><select><option selected>...</option>';
     //     var epochHtml2 =  '<div class="epochLists" id="epoch2List"><select><option selected>...</option>';
@@ -80,20 +72,20 @@ $('.addIntention').on('click', function(){
 
     //     $('#rel-intention-assignents').append('<tr><td>' + epochHtml1 + '</td><td>' + relationship +
     //         '</td><td>'+ epochHtml2 +'</td><td><i class="fa fa-trash-o fa-2x" id="removeIntention" aria-hidden="true"></i></td></tr>');
-});
+// });
 
-$(document.body).on('click', '#removeIntention', function(){
-    var row = $(this).parent().parent();
-    var nodeID1 = row.find('#epoch1List select option:checked').attr('nodeID');
-    var epoch1 = row.find('#epoch1List select option:checked').attr('epoch');
-    var type = row.find('#relationshipLists select option:checked').text();
-    var nodeID2 = row.find('#epoch2List select option:checked').attr('nodeID');
-    var epoch2 = row.find('#epoch2List select option:checked').attr('epoch');
-    var constraint = new Constraint(type, nodeID1, epoch1, nodeID2, epoch2);
+// $(document.body).on('click', '#removeIntention', function(){
+//     var row = $(this).parent().parent();
+//     var nodeID1 = row.find('#epoch1List select option:checked').attr('nodeID');
+//     var epoch1 = row.find('#epoch1List select option:checked').attr('epoch');
+//     var type = row.find('#relationshipLists select option:checked').text();
+//     var nodeID2 = row.find('#epoch2List select option:checked').attr('nodeID');
+//     var epoch2 = row.find('#epoch2List select option:checked').attr('epoch');
+//     var constraint = new Constraint(type, nodeID1, epoch1, nodeID2, epoch2);
 
-    model.removeConstraint(constraint);
-    row.remove();
-});
+//     model.removeConstraint(constraint);
+//     row.remove();
+// });
 
 /**
  * Displays the absolute and relative assignments modal for the user.

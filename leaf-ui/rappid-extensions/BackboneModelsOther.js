@@ -79,5 +79,19 @@ var ConstraintBBM = Backbone.Model.extend({
          */   
         absTP: -1,
     },
+
+    /**
+     * Checks if type of constraint is null
+     * If so, constraint has not been fully assigned
+     */
+    isComplete: function(){
+        return (!this.get('type') == null);
+    },
+
 });
+
+var ConstraintCollection = Backbone.Collection.extend({
+    model: Constraint
+});
+
 
