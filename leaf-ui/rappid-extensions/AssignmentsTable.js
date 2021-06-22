@@ -22,10 +22,10 @@ var AssignmentsTable = Backbone.View.extend({
     '</div>',
     '<div class="modal-body">',
         '<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Max Absolute Time</h3>',
-                '<input style="float:left;"; id="max-abs-time" class="analysis-input" type="number" min="1" step="1" value="100"/>',
+                '<input style="float:left;"; id="max-abs-time" class="analysis-input" type="number" min="1" step="1" value="<%= maxAbsTime %>"/>',
             '<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px; margin-top: 30px;">Absolute Time Points</h3>',
             '<h5 style="text-align:left; color:#1E85F7; margin-bottom:5px; margin-top: -5px;">e.g. 5 8 22</h5>',
-                '<input style="float:left;"; id="abs-time-pts" class="analysis-input" type="text"/>',
+                '<input style="float:left;"; id="abs-time-pts" class="analysis-input" type="text" value="<%= absTimePtsArr.join(" ") %>"/>',
         '<div class=relIntention>',
                 '<div class=headings>',
                     '<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px; margin-top:50px">Relative Intention Assignments',
@@ -84,7 +84,7 @@ var AssignmentsTable = Backbone.View.extend({
      * And displays options for absolute intentions and relationships
      */
     render: function(){
-        this.$el.html(_.template($(this.template).html())());
+        this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
         this.loadRelativeIntentions();
         this.displayAbsoluteIntentionAssignments();
         this.displayAbsoluteRelationshipAssignments();
@@ -114,7 +114,7 @@ var AssignmentsTable = Backbone.View.extend({
         if (regex.test(absTimeElement.val())) {
             this.model.set('absTimePtsArr', absTimeElement.val().split(" "))
         } else {
-            absTimeElement.val(this.model.get('absTimePtsArr'));
+            absTimeElement.val(this.model.get('absTimePtsArr').join(" "));
         }
     },
 
