@@ -904,14 +904,7 @@ paper.on({
                     actorInspector.render();
                 } else {
                     var elementInspector = new ElementInspector({model: cell});
-<<<<<<< HEAD
-                    console.log(elementInspector)
-                    // HTML moved here from initializeElements
                     $('.inspector').append(elementInspector.el);
-                    elementInspector.switchModel(cell)
-=======
-                    $('.inspector').append(elementInspector.el);
->>>>>>> 262d9acd313cee03e13d239f7d2b72c7b377295e
                     elementInspector.render();
                     // if user was dragging element
                     if (evt.data.move) {
