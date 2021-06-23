@@ -18,100 +18,95 @@ It also contains the setup for Rappid elements.
  * General javascript for user interaction
  * When the user clicks anywhere outside of the a pop up, close it
  */
+// TODO: Permenently remove and figure out how to re-implement inside the respective views
 window.onclick = function(event) {
-	var modal = document.getElementById('assignmentsModal');
+	// var modal = document.getElementById('assignmentsModal');
 	var intermT = document.getElementById('intermediateTable');
-    if (event.target == modal) {
-  	    modal.style.display = "none";
-    }
+    // if (event.target == modal) {
+  	//     modal.style.display = "none";
+    // }
 	if(event.target == intermT){
 		intermT.style.display = "none";
 	}
 }
 
 /**
- * Closes Assignments Table
- */
-
-$('.close').on('click', function(){
-    var modal = document.getElementById('assignmentsModal');
-    modal.style.display = "none";
-});
-
-/**
  * Sets Max Absolute Time
  */
-$('#max-abs-time').on('change', function(){
-    var maxTime = $('#max-abs-time');
-    if (maxTime.val() !== "") {
-        model.maxAbsTime = maxTime.val()
-    } else {
-        maxTime.val(model.maxAbsTime);
-    }
-});
+// $('#max-abs-time').on('change', function(){
+//     var maxTime = $('#max-abs-time');
+//     if (maxTime.val() !== "") {
+//         model.maxAbsTime = maxTime.val()
+//     } else {
+//         maxTime.val(model.maxAbsTime);
+//     }
+// });
 
 /**
  * Add relative intention row
  */
-$('.addIntention').on('click', function(){
-    var intentions = model.intentions;
-        var epochHtml1 = '<div class="epochLists" id="epoch1List"><select><option selected>...</option>';
-        var epochHtml2 =  '<div class="epochLists" id="epoch2List"><select><option selected>...</option>';
-        for (var i = 0; i < intentions.length; i++) {
+// $('.addIntention').on('click', function(){
+    // var intentions = model.intentions;
+    //     var epochHtml1 = '<div class="epochLists" id="epoch1List"><select><option selected>...</option>';
+    //     var epochHtml2 =  '<div class="epochLists" id="epoch2List"><select><option selected>...</option>';
+    //     for (var i = 0; i < intentions.length; i++) {
 
-            // if number of function segments >= 2, we have at least one transition
-            if (intentions[i].getNumOfFuncSegements() >= 2) {
-                var funcSegments = intentions[i].dynamicFunction.getFuncSegmentIterable();
-                for (var j = 0; j < funcSegments.length - 1; j++) {
-                    var epoch = funcSegments[j].funcStop;
-                    var newEpochHtml = '<option nodeID=' + intentions[i].nodeID + ' epoch=' + epoch + '>' + intentions[i].nodeName + ': ' + epoch + '</option>';
-                    epochHtml1 += newEpochHtml;
-                    epochHtml2 += newEpochHtml;
-                }
-            }
-        }
+    //         // if number of function segments >= 2, we have at least one transition
+    //         if (intentions[i].getNumOfFuncSegements() >= 2) {
+    //             var funcSegments = intentions[i].dynamicFunction.getFuncSegmentIterable();
+    //             for (var j = 0; j < funcSegments.length - 1; j++) {
+    //                 var epoch = funcSegments[j].funcStop;
+    //                 var newEpochHtml = '<option nodeID=' + intentions[i].nodeID + ' epoch=' + epoch + '>' + intentions[i].nodeName + ': ' + epoch + '</option>';
+    //                 epochHtml1 += newEpochHtml;
+    //                 epochHtml2 += newEpochHtml;
+    //             }
+    //         }
+    //     }
 
-        epochHtml1 += '</select></div>';
-        epochHtml2 += '</select></div>';
+    //     epochHtml1 += '</select></div>';
+    //     epochHtml2 += '</select></div>';
 
 
-        var relationship = '<div class="epochLists" id="relationshipLists"><select><option selected>...'+
-            '</option><option value="eq">=</option><option value="lt"><</option></select></div>'
+    //     var relationship = '<div class="epochLists" id="relationshipLists"><select><option selected>...'+
+    //         '</option><option value="eq">=</option><option value="lt"><</option></select></div>'
 
-        $('#rel-intention-assignents').append('<tr><td>' + epochHtml1 + '</td><td>' + relationship +
-            '</td><td>'+ epochHtml2 +'</td><td><i class="fa fa-trash-o fa-2x" id="removeIntention" aria-hidden="true"></i></td></tr>');
-});
+    //     $('#rel-intention-assignents').append('<tr><td>' + epochHtml1 + '</td><td>' + relationship +
+    //         '</td><td>'+ epochHtml2 +'</td><td><i class="fa fa-trash-o fa-2x" id="removeIntention" aria-hidden="true"></i></td></tr>');
+// });
 
-$(document.body).on('click', '#removeIntention', function(){
-    var row = $(this).parent().parent();
-    var nodeID1 = row.find('#epoch1List select option:checked').attr('nodeID');
-    var epoch1 = row.find('#epoch1List select option:checked').attr('epoch');
-    var type = row.find('#relationshipLists select option:checked').text();
-    var nodeID2 = row.find('#epoch2List select option:checked').attr('nodeID');
-    var epoch2 = row.find('#epoch2List select option:checked').attr('epoch');
-    var constraint = new Constraint(type, nodeID1, epoch1, nodeID2, epoch2);
+// $(document.body).on('click', '#removeIntention', function(){
+//     var row = $(this).parent().parent();
+//     var nodeID1 = row.find('#epoch1List select option:checked').attr('nodeID');
+//     var epoch1 = row.find('#epoch1List select option:checked').attr('epoch');
+//     var type = row.find('#relationshipLists select option:checked').text();
+//     var nodeID2 = row.find('#epoch2List select option:checked').attr('nodeID');
+//     var epoch2 = row.find('#epoch2List select option:checked').attr('epoch');
+//     var constraint = new Constraint(type, nodeID1, epoch1, nodeID2, epoch2);
 
-    model.removeConstraint(constraint);
-    row.remove();
-});
+//     model.removeConstraint(constraint);
+//     row.remove();
+// });
 
 /**
  * Displays the absolute and relative assignments modal for the user.
  */
 $('#btn-view-assignment').on('click', function() {
-	epochLists = [];
-	graph.constraintValues = [];
-	var modal = document.getElementById('assignmentsModal');
+    var assignmentsModal = new AssignmentsTable({model: graph});
+    $('#assignments-list').append(assignmentsModal.el);
+    assignmentsModal.render();
+	// epochLists = [];
+	// graph.constraintValues = [];
+	// var modal = document.getElementById('assignmentsModal');
 
-	// Clear all previous table entries
-	$(".abs-table").find("tr:gt(0)").remove();
+	// // Clear all previous table entries
+	// $(".abs-table").find("tr:gt(0)").remove();
 
-	// Display the modal by setting it to block display
-	modal.style.display = "block";
+	// // Display the modal by setting it to block display
+	// modal.style.display = "block";
 
 
-	displayAbsoluteIntentionAssignments();
-	displayAbsoluteRelationshipAssignments();
+	// displayAbsoluteIntentionAssignments();
+	// displayAbsoluteRelationshipAssignments();
 });
 
 /**
@@ -134,15 +129,8 @@ $('#btn-save-assignment').on('click', function() {
  * Switches to Analysis view iff there are no cycles and no syntax errors.
  */
 $('#analysis-btn').on('click', function() {
-    syntaxCheck();
-
-    var cycleList = cycleSearch();
-    cycleResponse(cycleList); //If there are cycles, then display error message. Otherwise, remove any "red" elements.
-
-    if(!isACycle(cycleList)) {
-        clearCycleHighlighting();
-        switchToAnalysisMode();
-    }
+    //TODO: Add back in cycle detection after backbone migration.
+    switchToAnalysisMode();
 });
 
 /** For Load Sample Model button */
@@ -814,13 +802,15 @@ graph.on("add", function(cell) {
         if (graph.getCell(cell.get("source").id) instanceof joint.shapes.basic.Actor){
             cell.prop("linktype", "actorlink");
             cell.label(0,{attrs:{text:{text:"is-a"}}});
+            cell.set('link', new LinkBBM({linkType: 'is-a'}));
 		} else{
-            cell.prop("linktype", "elementlink");
+            cell.prop("type", "element");
+            cell.set('link', new LinkBBM({}));
         }
-        createLink(cell);
     } else if (cell instanceof joint.shapes.basic.Intention){
-		createIntention(cell);
+		cell.set('intention', new IntentionBBM({}));
 		cell.attr('.funcvalue/text', ' ');
+
 	} else if (cell instanceof joint.shapes.basic.Actor) {
 		createActor(cell);
 
@@ -948,7 +938,11 @@ paper.on("link:options", function(cell, evt){
 	}
 
 	clearInspector();
-	linkInspector.render(cell.model);
+    
+    var linkInspector = new LinkInspector({model: cell.model});
+    $('.inspector').append(linkInspector.el);
+
+	linkInspector.render();
 
 });
 

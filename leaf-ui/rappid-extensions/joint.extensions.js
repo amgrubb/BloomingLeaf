@@ -15,8 +15,34 @@ joint.dia.BloomingGraph = joint.dia.Graph.extend({
     defaults: joint.util.deepSupplement({
         type: 'goalmodel.Graph',
         maxAbsTime: 100,
-        constraints: []
+        absTimePtsArr: [],
+        // TODO: Name with correct type of constraints
+        constraints: new ConstraintCollection([]),
+        userEvaluationList: new UserEvaluationCollection([])
     }, joint.dia.Graph.prototype.defaults),
+
+    /**
+     * @returns Array of all IntentionBBMs in the graph
+     */
+    getIntentions: function(){
+        return this.getElements().filter(element => element instanceof joint.shapes.basic.Intention)
+            .map(intentionCell => intentionCell.get('intention'));
+    },
+
+    /**
+     * Returns the cell associated with the id parameter
+     * There should be a 1 to 1 mapping of ids to cells
+     * 
+     * @param {String} id 
+     * @returns Cell
+     */
+    getCellById: function(id){
+        var cell = this.getCells().filter(cell => cell.get('id') == id);
+        if (cell.length == 1){
+            return cell[0]
+        }
+        return null;
+    }
 
 })
 
@@ -58,7 +84,7 @@ joint.shapes.basic.Intention = joint.shapes.basic.Generic.extend({
             	'y-alignment': 'middle'
             },
         },
-        intention: new IntentionTest('-', this.type), 
+        intention: null,
     }, joint.dia.Element.prototype.defaults)
 });
 
@@ -165,14 +191,13 @@ joint.shapes.basic.Resource = joint.shapes.basic.Intention.extend({
     }
 });
 
-joint.dia.Actorlink = joint.dia.Link.extend({
-	defaults: joint.util.deepSupplement({
-		type: 'Actorlink',
-	}),
-    postType: null,
-    linkSrcID: null,
-    linkDestID: null,
-    absoluteValue: -1
+joint.dia.cellLink = joint.dia.Link.extend({
+    
+    defaults: joint.util.deepSupplement({
+        type: 'Link',
+        link: null,
+        selected: false,
+    }),
 });
 
 joint.dia.Intentionlink = joint.dia.Link.extend({
@@ -225,8 +250,6 @@ joint.shapes.basic.Actor = joint.shapes.basic.Generic.extend({
         },
         //TODO replace with new ActorBBM once it is in codebase
         actor: new ActorTest(),
-        actorType: 'A',
-        actorName: 'Actor'
     }, joint.dia.Element.prototype.defaults),
     changeToOriginalColour: function() {
         this.attr({'.outer': {'fill': '#EBFFEA'}});
