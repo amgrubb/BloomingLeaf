@@ -109,6 +109,12 @@ $('#btn-view-assignment').on('click', function() {
 	// displayAbsoluteRelationshipAssignments();
 });
 
+$('#btn-view-intermediate').on('click', function() {
+    var intermediateValuesTable = new IntermediateValuesTable({model: graph});
+	$('.intermediate-table').append(intermediateValuesTable.el);
+	intermediateValuesTable.render();
+});
+
 /**
  * Saves absolute intention and relationship assignments to the graph object
  * TODO: Check if the times users put in are valid
@@ -418,7 +424,7 @@ function switchToAnalysisMode() {
     $('#config').append(configInspector.el);
     configInspector.render();
 	$('#stencil').css("display", "none");
-
+    $('#btn-view-intermediate').css("display","none");
     $('#analysis-btn').css("display", "none");
 	$('#symbolic-btn').css("display", "none");
 	$('#cycledetect-btn').css("display", "none");
@@ -523,6 +529,7 @@ function switchToModellingMode() {
     $('#stencil').css("display","");
     $('#analysis-sidebar').css("display","none");
     $('#btn-view-assignment').css("display","");
+    $('#btn-view-intermediate').css("display","");
     $('#analysis-btn').css("display","");
 	$('#symbolic-btn').css("display","");
 	$('#cycledetect-btn').css("display","");
