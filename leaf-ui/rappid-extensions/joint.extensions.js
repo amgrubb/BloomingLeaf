@@ -191,7 +191,7 @@ joint.shapes.basic.Resource = joint.shapes.basic.Intention.extend({
     }
 });
 
-joint.dia.cellLink = joint.dia.Link.extend({
+joint.dia.CellLink = joint.dia.Link.extend({
     // In initialize, everytime the target is changed, the code updates it
     initialize: function(){
         this.on('change:target', this.updateTarget, this);
@@ -199,8 +199,6 @@ joint.dia.cellLink = joint.dia.Link.extend({
     defaults: joint.util.deepSupplement({
         type: 'Link',
         link: null,
-        selected: false,
-        isError: false,
     }),
     /**
      * This function updates the target, such that if the source is actor and the target is an actor, the actortemplate is going to show up and if the target is something else, an error message will pop out

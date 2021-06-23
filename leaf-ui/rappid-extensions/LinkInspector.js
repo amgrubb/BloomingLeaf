@@ -1,14 +1,13 @@
 // Class for the Link properties tab that appears when link settings are clicked.
 
 var LinkInspector = Backbone.View.extend({
-    model: joint.dia.Celllink,
+    model: joint.dia.CellLink,
 
     initialize:function(){
         this.link = this.model.get('link');
     },
 
     constanttemplate: [
-        '<script type="text/template" id="item-template">',
         '<label id="title">Constant Relationship</label>',
         '<br>',
         '<div class="inspector-views">',
@@ -35,11 +34,9 @@ var LinkInspector = Backbone.View.extend({
             '<button id="switch-to-evolving" class="inspector-btn small-btn blue-btn">Evolving Relationships</button>',
         '<br>',
         '</div>',
-		'</script>'
     ].join(''),
 
     evolvingtemplate : [
-        '<script type="text/template" id="item-template">',
             '<label id="title">Evolving Relationship</label>',
             '<br>',
             '<div class="inspector-views">',
@@ -81,11 +78,9 @@ var LinkInspector = Backbone.View.extend({
             '<button id="switch-to-constant" class="inspector-btn small-btn blue-btn">Constant Relationships</button>',
             '<br>',
             '</div>',
-            '</script>'
     ].join(''),
 
     actortemplate: [
-        '<script type="text/template" id="item-template">',
             '<label> Link Type </label> <br>',
             '<div class="inspector-views">',
             '<select id="actor-link" class="link-type">',
@@ -94,61 +89,40 @@ var LinkInspector = Backbone.View.extend({
                 '<option value="is-part-of">is-part-of</option>',
             '</select><br>',
             '</div>',
-            '</script>'
         ].join(''),
 
     events: {
             'click #switch-to-constant': 'renderConstant',
             'click #switch-to-evolving': 'renderEvolving',
             'change #constant-links': 'updateConstantRelationship',
-            'change #actor-link': 'updateActorLink',
             'change #link-type-begin': 'updateBeginEvolRelations',
             'change #link-type-end': 'updateEndEvolRelations',
+            'change #actor-link': 'updateActorLink',
             'clearInspector .inspector-views': 'removeView',
     },
 
-    //Method to create the Link Inspector using the template.
+    /** Chooses and sets correct template for link */
     render: function() {
-        if(this.link.get('postType') == null){
-            this.link.set('evolving', false);
-            this.model.set('selected', false);
-        }
-        // Selecting which template to render ACTOR-LINK or ERROR or INTENTIONS-LINK
-        if (this.model.get('type') == 'Actor') {
-            this.$el.html(_.template($(this.actortemplate).html())(this.model.toJSON()));
-            $('#actor-link').val(this.link.get('linkType'));
-        }
-        else {
-            //choose between constant or evolving template based on evolving parameter from model
-            if (this.link.get('evolving')) {
-                this.$el.html(_.template($(this.evolvingtemplate).html())(this.model.toJSON()));
+
+        // Intention Link template
+        if(this.model.get('type') == 'element') {
+            // Constant Link
+            if (!this.link.get('evolving')) {
+                this.$el.html(_.template(this.constanttemplate)());
+                $('#constant-links').val(this.link.get('linkType'));  
+            // Evolving Link
+            } else {
+                this.$el.html(_.template(this.evolvingtemplate)());
                 $('#link-type-begin').val(this.link.get('linkType'));
                 $('#link-type-end').val(this.link.get('postType'));
                 this.updateBeginEvolRelations();
-            } else {
-                this.link.set('evolving', false); //makes sure the rerender doesn't activate
-                this.$el.html(_.template($(this.constanttemplate).html())(this.model.toJSON()));
-                $('#constant-links').val(this.link.get('linkType'));       
             }
+        // Actor Link template
+        } else {
+            this.$el.html(_.template(this.actortemplate)());
+            $('#actor-link').val(this.link.get('linkType'));
         }
-    },
-
-    /**
-     * Remove the view to avoid having multiple LinkInspector views at a time
-     */
-    removeView: function(){
-        this.remove();
-    },
-
-    /**
-     * Switches from Constant Relationship to Evolving Relationship
-     */
-    renderEvolving: function(){
-        this.link.set('evolving', true);
-        this.$el.html(_.template($(this.evolvingtemplate).html())(this.model.toJSON()));
-        $('#link-type-begin').placeholder= "Begin";
-        $('#link-type-end').prop('disabled', true);
-        $('#link-type-end').placeholder = "End";
+        
     },
 
     /**
@@ -156,20 +130,33 @@ var LinkInspector = Backbone.View.extend({
      */
     renderConstant: function() {
         this.link.set('evolving', false);
-        this.$el.html(_.template($(this.constanttemplate).html())(this.model.toJSON()));
+        this.$el.html(_.template(this.constanttemplate)());
         this.updateConstantRelationship();
     },
 
     /**
-     * Saves the new constant relationship value to the link model.
-     * This function is called on change for #constant-links.
+     * Switches from Constant Relationship to Evolving Relationship
+     */
+    renderEvolving: function(){
+        this.link.set('evolving', true);
+        this.$el.html(_.template(this.evolvingtemplate)());
+        $('#link-type-begin').placeholder= 'Begin';
+        $('#link-type-end').prop('disabled', true);
+        $('#link-type-end').placeholder = 'End';
+    },
+
+    /**
+     * Updates linkType parameter for constant relationship based on selected value
      */
     updateConstantRelationship: function() {
+        // Set correct parameters and text for link
         this.setValues($('#constant-links').val(), null, false);
+
+        // Get link source and target cells
         var source = this.model.getSourceElement();
         var target = this.model.getTargetElement();
 
-        // Adding or removing tags from node depending on type of link
+        // Check if source/target cells need NBT/NBD text added or removed after link value update
         if (this.link.get('linkType') =='NBT' || this.link.get('linkType') == 'NBD') {
             source.attr('.funcvalue/text', 'NB');
             source.attr('.satvalue/text', '(⊥, ⊥)');
@@ -189,7 +176,7 @@ var LinkInspector = Backbone.View.extend({
             // targetIntention.dynamicFunction.stringDynVis = 'NB';
             
         } else {
-            //Verify if it is possible to remove the NB tag from source and target
+            // Check if cells have any other NBT/NBD links
             if (!this.hasNBLink(source, this.model) && !this.hasNBTag(source)){
                 source.attr('.funcvalue/text', '');
                 source.attr('.satvalue/text', '');
@@ -201,45 +188,10 @@ var LinkInspector = Backbone.View.extend({
         }
     },
 
-    /**
-     * Returns true iff the node is a source or target to an NBT or NBD
-     * link, other than the link provided as a parameter.
-     *
-     * @param {joint.dia.Element} node
-     *   node of interest
-     * @param {joint.dia.Link} link
-     *   link to 'ignore', when searching for a NBT or NBD
-     *   link connected to node
-     */
-    hasNBLink: function(node, link) {
-        console.log(node);
-        console.log(link);
-        var localLinks = graph.getLinks();
-        for(var i = 0; i < localLinks.length; i++) {
-            if ((localLinks[i]!=link) && (localLinks[i].prop("link-type") == 'NBT' || localLinks[i].prop("link-type") == 'NBD')){
-                if(localLinks[i].getTargetElement() == node || localLinks[i].getSourceElement() == node){
-                    return true;
-                }
-            }
-        }
-        return false;
-    },
-
-    /**
-     * Returns true iff the node has NB as its function value
-     *
-     * @param {joint.dia.Element} node
-     */
-    hasNBTag: function(node) {
-        console.log(node);
-        return node.prop('.funcvalue/text') == 'NB';
-    },
-
-    updateActorLink: function() {
-        this.setValues($("#actor-link").val(), null, false)
-    },
-
-    // Generates the select values based on begin value
+    /** 
+     * Updates linkType value based on selected value
+     * And generates the allowed select values for postType based on that linkType value
+     */ 
     updateBeginEvolRelations: function() {
         $('#link-type-end').prop('disabled', false);
         var begin = $('#link-type-begin').val();
@@ -254,17 +206,69 @@ var LinkInspector = Backbone.View.extend({
         } else if (begin != 'no') {
             $('option.A').hide(); // Hide options incompatible with +,-,++S, etc selection such as and/or
         }
-        $("#link-type-end option[value= \"" + begin + "\"]").hide(); // Hide already selected linkType value
+        $('#link-type-end option[value= \'' + begin + '\']').hide(); // Hide already selected linkType value
     },
 
     /**
-     * This function is called on change for #link-type-end, ot updates the end evolving relationship
+     * Updates postType based on selected value
      */
     updateEndEvolRelations: function() {
         // Save based on evolving relations
-        this.setValues(this.link.get('linkType'), $("#link-type-end").val(), true)
+        this.setValues(this.link.get('linkType'), $('#link-type-end').val(), true)
     },
 
+    /**
+     * Updates linkType for the actor based on updated select value
+     */
+    updateActorLink: function() {
+        this.setValues($('#actor-link').val(), null, false)
+    },
+
+    /**
+     * Remove the view to avoid having multiple LinkInspector views at a time
+     */
+    removeView: function(){
+        this.remove();
+    },
+
+    /**
+     * Returns true iff the node is a source or target to an NBT or NBD
+     * link, other than the link provided as a parameter.
+     *
+     * @param {joint.dia.Element} cell
+     *   node of interest
+     * @param {joint.dia.Link} link
+     *   link to 'ignore', when searching for a NBT or NBD
+     *   link connected to node
+     */
+    hasNBLink: function(cell, link) {
+        var localLinks = graph.getLinks();
+        for(var i = 0; i < localLinks.length; i++) {
+            if ((localLinks[i]!=link) && (localLinks[i].prop('link-type') == 'NBT' || localLinks[i].prop('link-type') == 'NBD')){
+                if(localLinks[i].getTargetElement() == cell || localLinks[i].getSourceElement() == cell){
+                    return true;
+                }
+            }
+        }
+        return false;
+    },
+
+    /**
+     * Returns true iff the node has NB as its function value
+     *
+     * @param {joint.dia.Element} cell
+     */
+    hasNBTag: function(cell) {
+        return cell.prop('.funcvalue/text') == 'NB';
+    },
+
+    /**
+     * Helper function to set link values and text
+     * 
+     * @param {String} linkType 
+     * @param {String} postType 
+     * @param {Boolean} evolving 
+     */
     setValues: function(linkType, postType, evolving){
         if(evolving){
             this.link.set('linkType', linkType);
@@ -274,6 +278,6 @@ var LinkInspector = Backbone.View.extend({
             this.link.set('linkType', linkType);
             this.model.set('postType', null);
             this.model.label(0 , {position: 0.5, attrs: {text: {text: linkType}}});
-        }    
+        } 
     }
 });

@@ -766,7 +766,7 @@ var element_counter = 0;
 
 // Whenever an element is added to the graph
 graph.on("add", function(cell) {
-	if (cell instanceof joint.dia.cellLink){
+	if (cell instanceof joint.dia.CellLink){
         if (graph.getCell(cell.get("source").id) instanceof joint.shapes.basic.Actor){
             cell.prop("type", "Actor");
             cell.label(0,{attrs:{text:{text:"is-a"}}});
