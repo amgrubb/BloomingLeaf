@@ -180,7 +180,6 @@ var ElementInspector = Backbone.View.extend({
     /**
      * Initializes the element inspector using previously defined templates
      */
-
     
     render: function() {
 

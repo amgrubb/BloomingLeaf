@@ -80,11 +80,6 @@ var analysisResult = new AnalysisResult();
 
 
 var linkInspector = new LinkInspector();
-<<<<<<< HEAD
-// deleted this, now it is created in onFunctions
-// var elementInspector = new ElementInspector();
-=======
->>>>>>> 262d9acd313cee03e13d239f7d2b72c7b377295e
 var configCollection = new ConfigCollection([]);
 var configInspector = new ConfigInspector({collection:configCollection});
 
@@ -294,13 +289,6 @@ stencil = new joint.ui.Stencil({
 
 var commandManager = new joint.dia.CommandManager({ graph: graph });
 
-<<<<<<< HEAD
-// A simple element editor.
-//$('.inspector').append(elementInspector.el);
-// $('.inspector').append(actorInspector.el);
-
-=======
->>>>>>> 262d9acd313cee03e13d239f7d2b72c7b377295e
 $('#stencil').append(stencil.render().el);
 
 var goal = new joint.shapes.basic.Goal({ position: {x: 50, y: 20} });
