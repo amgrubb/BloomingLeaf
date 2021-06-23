@@ -904,10 +904,7 @@ paper.on({
                     actorInspector.render();
                 } else {
                     var elementInspector = new ElementInspector({model: cell});
-                    console.log(elementInspector)
-                    // HTML moved here from initializeElements
                     $('.inspector').append(elementInspector.el);
-                    elementInspector.switchModel(cell)
                     elementInspector.render();
                     // if user was dragging element
                     if (evt.data.move) {
@@ -1058,9 +1055,7 @@ function embedBasicActor(cell) {
             model.getActorByID(actorID).addIntentionID(nodeID);
         }
     } else {
-        // intention not over any actor
-        var nodeID = cell.attributes.nodeID;
-        model.getIntentionByID(nodeID).nodeActorID = "-";
+        // TODO: reset actorID to null in cell
     }
 }
 
@@ -1143,10 +1138,6 @@ graph.on('remove', function(cell) {
  * Clear the .inspector div
  */
 function clearInspector() {
-    // Eventually are we going to have a removeInspector function still 
-    // or call all of the remove functions in all of the individual spots?
-    // elementInspector.remove();
-	// elementInspector.clear();
 	linkInspector.clear();
 
     // Clear any analysis sidebar views
