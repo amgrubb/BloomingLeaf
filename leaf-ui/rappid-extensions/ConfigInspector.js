@@ -135,7 +135,7 @@ var Config = Backbone.View.extend({
     render: function() {
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
         this.$('.analysis-configuration').append(this.innerView.$el);
-        this.showAnalysisInspector();
+        //this.showAnalysisInspector();
         return this;
     },
 

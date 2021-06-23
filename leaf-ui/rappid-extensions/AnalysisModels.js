@@ -54,20 +54,14 @@ var ResultCollection = Backbone.Collection.extend({
  * 
  */
 var ConfigModel = Backbone.Model.extend({
-    initialize : function(){
-        __.extend({}, this.defaults, options); 
+    initialize : function(options){
+        _.extend({}, this.defaults, options); 
         this.listenTo(this, 'change:selected', this.updateSelected);
     },
 
     idAttribute: "uid",
 
     defaults: {
-        //action: null,
-        //conflictLevel: "S",
-        //numRelTime: "1",
-        //currentState: "0",
-        //userAssignmentsList : [],
-        //previousAnalysis: null,
         name:"Default Config",
         selected: true,
         results : new ResultCollection([]), 
@@ -96,8 +90,8 @@ var ConfigModel = Backbone.Model.extend({
  */
 
 var ConfigAnalysis = Backbone.Model.extend ({ 
-    initialize : function(){
-        __.extend({}, this.defaults, options); 
+    initialize : function(options){
+        _.extend({}, this.defaults, options); 
     },
 
     idAttribute: "uid",

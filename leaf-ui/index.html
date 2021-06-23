@@ -94,12 +94,16 @@
             <button id="btn-view-assignment" class="blue-btn btn" style="position:relative; border-radius:none;">View Assignments List</button>
             <div id="assignments-list"></div>
             <!--This is the modal box of assignments-->
-            
-            <div id="dropdown-model" class="dropdown" style='display: none'>
-                <button id="modeling-btn" class="red-btn btn">Model</button>
-                <div class="dropdown-toolbar">
-                    <a id="model-cur-btn">From Initial State</a>
+            <div id = "takeABreak" style='display: none'>
+                <div id="dropdown-model" class="dropdown" style='display: none'>
+                    <button id="modeling-btn" class="red-btn btn">Model</button>
+                    <div class="dropdown-toolbar">
+                        <a id="model-cur-btn">From Initial State</a>
+                    </div>
                 </div>
+                <button id="analysis-para-btn" class="green-btn btn" >Analysis Paras</a>
+                <button id="simulate-path-btn" class="green-btn btn" >Simulate Single Path</a>
+                <button id="next-state-btn" class="green-btn btn" >Next State</a>
             </div>
 
             <!-- OLD Button to switch between Constraint view and the Relationship view.
