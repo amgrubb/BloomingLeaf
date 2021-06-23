@@ -869,7 +869,9 @@ paper.on({
                     $('.inspector').append(actorInspector.el);
                     actorInspector.render();
                 } else {
-                    elementInspector.render(cell);
+                    var elementInspector = new ElementInspector({model: cell});
+                    $('.inspector').append(elementInspector.el);
+                    elementInspector.render();
                     // if user was dragging element
                     if (evt.data.move) {
                         // unembed intention from old actor
@@ -990,9 +992,7 @@ function embedBasicActor(cell) {
             model.getActorByID(actorID).addIntentionID(nodeID);
         }
     } else {
-        // intention not over any actor
-        var nodeID = cell.attributes.nodeID;
-        model.getIntentionByID(nodeID).nodeActorID = "-";
+        // TODO: reset actorID to null in cell
     }
 }
 
@@ -1072,11 +1072,9 @@ graph.on('remove', function(cell) {
 
 
 /**
- * Clear the .inspector div
+ * Clear any analysis sidebar views
  */
 function clearInspector() {
-	elementInspector.clear();
-    // Clear any analysis sidebar views
     if($('.inspector-views').length != 0){
         $('.inspector-views').trigger('clearInspector');
     }
