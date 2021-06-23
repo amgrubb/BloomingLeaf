@@ -292,8 +292,8 @@ stencil = new joint.ui.Stencil({
 var commandManager = new joint.dia.CommandManager({ graph: graph });
 
 // A simple element editor.
-$('.inspector').append(elementInspector.el);
-$('.inspector').append(actorInspector.el);
+//$('.inspector').append(elementInspector.el);
+// $('.inspector').append(actorInspector.el);
 
 $('#stencil').append(stencil.render().el);
 

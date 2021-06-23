@@ -189,7 +189,7 @@ var ElementInspector = Backbone.View.extend({
         
         //this.model.intention = model.getIntentionByID(this.model.attributes.nodeID);
         // this.model.get('intention'); 
-        console.log(this.model.nodeName);
+        console.log(this.model.get('intention').get('nodeName'));
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()))
 
         // Attributes
@@ -202,7 +202,7 @@ var ElementInspector = Backbone.View.extend({
         this.userConstraintsHTML = $("#new-user-constraints").last().clone();
 
         // Load initial value and node name
-        this.$('.cell-attrs-text').val(this.model.nodeName);
+        this.$('.cell-attrs-text').val(this.model.get('intention').get('nodeName'));
         this.$('#init-sat-value').val(satisfactionValuesDict[this.model.get('intention').getInitialSatValue()].name);
         
         this.checkInitialSatValue();
@@ -222,7 +222,7 @@ var ElementInspector = Backbone.View.extend({
 
         // Load initial value for function type in the html select element
         
-        var functionType = this.model.get('intention').dynamicFunction.stringDynVis;
+        var functionType = this.model.get('intention').get('evolvingFunction').get('type');
 
         if (functionType == 'UD') {
             this.renderUserDefined();
@@ -610,7 +610,7 @@ var ElementInspector = Backbone.View.extend({
         } else if (func == 'C') {
             $(".user-sat-value").last().html(this.satValueOptions.all);
             // Restrict input if it is the first constraint
-            if (this.model.get('intention').get('evolvingFunction').get('functionSegList').length == 1) {
+            if (this.model.get('intention').get('evolvingFunction').getFuncSegments().length == 1) {
                 $(".user-sat-value").last().val(this.$('#init-sat-value').val())
                 $(".user-sat-value").last().prop('disabled', true);
                 $(".user-sat-value").last().css("background-color","grey");
@@ -714,7 +714,7 @@ var ElementInspector = Backbone.View.extend({
     updateChartUserDefined: function(event) {
         
         var context = $("#chart").get(0).getContext("2d");
-        var numFuncSegments = this.model.get('intention').get('evolvingFunction').get('functionSegList').length;
+        var numFuncSegments = this.model.get('intention').get('evolvingFunction').getFuncSegments().length;
 
         // Reset chart datasets
         this.chart.reset();
@@ -728,7 +728,7 @@ var ElementInspector = Backbone.View.extend({
         var initSatVal = satisfactionValuesDict[this.model.get('intention').getInitialSatValue()].chartVal;
 
         // Add datapoints to graph for each userfunction/uservalue pair
-        var funcSegments = this.model.get('intention').get('evolvingFunction').get('functionSegList');
+        var funcSegments = this.model.get('intention').get('evolvingFunction').getFuncSegments();
 
         for (var i = 0; i < funcSegments.length; i++) {
             var currFunc = funcSegments[i].get('type');
@@ -936,7 +936,7 @@ var ElementInspector = Backbone.View.extend({
         } else if (mode == "Update") {
 
             // Cannot repeat with only one constraint
-            var numSegments = this.model.get('intention').get('dynamicFunction').get('functionSegList').length;
+            var numSegments = this.model.get('intention').get('evolvingFunction').getFuncSegments().length;
             if (numSegments < 2) {
 
                 $("#repeat-error").text("More constraints are needed");
@@ -957,7 +957,7 @@ var ElementInspector = Backbone.View.extend({
                     $("#repeat-end").css("background-color","");
                 }
 
-                var funcSegments = this.model.get('intention').get('evolvingFunction').get('functionSegList');
+                var funcSegments = this.model.get('intention').get('evolvingFunction').getFuncSegments();
 
                 // Set select options
                 for (var i = 0; i < funcSegments.length - 1; i++) {
