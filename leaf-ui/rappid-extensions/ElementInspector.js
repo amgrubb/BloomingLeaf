@@ -180,6 +180,7 @@ var ElementInspector = Backbone.View.extend({
     /**
      * Initializes the element inspector using previously defined templates
      */
+
     
     render: function() {
 
@@ -189,7 +190,6 @@ var ElementInspector = Backbone.View.extend({
         
         //this.model.intention = model.getIntentionByID(this.model.attributes.nodeID);
         // this.model.get('intention'); 
-        console.log(this.model.get('intention').get('nodeName'));
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()))
 
         // Attributes
@@ -236,47 +236,46 @@ var ElementInspector = Backbone.View.extend({
 
         this.updateCell();
         
-    },
-
+    },  
     
     /** This function should allow the model associated with the view to update each time a 
      * new element is clicked instead of passing the model directly into the render function and 
      * rendering elementInspector each time an element is clicked
      * (if it worked correctly)
      */
+    
 
     switchModel: function (newCell) {
         this.model = newCell;
     },
 
-
-    /**
-     * Checks the initial satisfaction value for a (no value).
-     * If the initial satisfaction value is (no value), then set the
-     * availible function options to be No Function, Stochastic and UserDefined
-     * If not, set the function options so that all options are availible
-     */
-    checkInitialSatValue: function() {
-        /**
-        if (this.model.get('intention').getInitialSatValue() == '(no value)') {
-            // Stochastic should be the only option for '(no value)'
-            this.$('.function-type').empty();
-            this.$('.function-type').append('<option value=R> Stochastic </option>');
-        } else {
-            this.$('.function-type').empty();
-            this.$('.function-type').append('<option value=NT> No Function </option>');
-            this.$('.function-type').append('<option value=C> Constant </option>');
-            this.$('.function-type').append('<option value=R> Stochastic </option>');
-            this.$('.function-type').append('<option value=I> Increase </option>');
-            this.$('.function-type').append('<option value=D> Decrease </option>');
-            this.$('.function-type').append('<option value=RC> Stochastic-Constant </option>');
-            this.$('.function-type').append('<option value=CR> Constant-Stochastic </option>');
-            this.$('.function-type').append('<option value=MP> Montonic Positive </option>');
-            this.$('.function-type').append('<option value=MN> Montonic Negative </option>');
-            this.$('.function-type').append('<option value=SD> Satisfied Denied </option>');
-            this.$('.function-type').append('<option value=DS> Denied Satisfied </option>');
-            this.$('.function-type').append('<option value=UD> User Defined </option>');
-        */    
+//     /**
+//      * Checks the initial satisfaction value for a (no value).
+//      * If the initial satisfaction value is (no value), then set the
+//      * availible function options to be No Function, Stochastic and UserDefined
+//      * If not, set the function options so that all options are availible
+//      */
+  checkInitialSatValue: function() {
+        
+          if (this.model.get('intention').getInitialSatValue() == '(no value)') {
+          // Stochastic should be the only option for '(no value)'
+              this.$('.function-type').empty();
+              this.$('.function-type').append('<option value=R> Stochastic </option>');
+          } else {
+             this.$('.function-type').empty();
+             this.$('.function-type').append('<option value=NT> No Function </option>');
+             this.$('.function-type').append('<option value=C> Constant </option>');
+             this.$('.function-type').append('<option value=R> Stochastic </option>');
+             this.$('.function-type').append('<option value=I> Increase </option>');
+             this.$('.function-type').append('<option value=D> Decrease </option>');
+             this.$('.function-type').append('<option value=RC> Stochastic-Constant </option>');
+             this.$('.function-type').append('<option value=CR> Constant-Stochastic </option>');
+             this.$('.function-type').append('<option value=MP> Montonic Positive </option>');
+             this.$('.function-type').append('<option value=MN> Montonic Negative </option>');
+             this.$('.function-type').append('<option value=SD> Satisfied Denied </option>');
+             this.$('.function-type').append('<option value=DS> Denied Satisfied </option>');
+             this.$('.function-type').append('<option value=UD> User Defined </option>');   
+        }
     },
 
     nameAction: function(event) {
@@ -351,9 +350,8 @@ var ElementInspector = Backbone.View.extend({
         $(".function-type").val('UD');
 
         // Load the user defined constraints
-        var len = this.model.get('intention').get('evolvingFunction').get("functionSegList").length;
-        var funcSegments = this.model.get('intention').get('evolvingFunction').get("functionSegList");
-
+        var len = this.model.get('intention').getFuncSegments().length;
+        var funcSegments = this.model.get('intention').getFuncSegments();
 
         for (var i = 0; i < len; i++) {
 
@@ -374,8 +372,8 @@ var ElementInspector = Backbone.View.extend({
         }
 
         if (this.model.get('intention').get('evolvingFunction').get('hasRepeat')) {
-            var repBegin = this.model.get('intention').get('evolvingFunction').getStartRepeatEpoch();
-            var repEnd = this.model.get('intention').get('evolvingFunction').getEndRepeatEpoch();
+            var repBegin = this.model.get('intention').get('evolvingFunction').get('repStart');
+            var repEnd = this.model.get('intention').get('evolvingFunction').get('repStop');
             var repNum = this.model.get('intention').get('evolvingFunction').get('repCount');
             var absTime = this.model.get('intention').get('evolvingFunction').get('repAbsTime');
 
@@ -463,573 +461,573 @@ var ElementInspector = Backbone.View.extend({
         
     },
 
-    /**
-     * Updates the possible satisfaction values and buttons selections based on current
-     * function type.
-     *
-     * This function is called on change for .user-function-type
-     */
-    updateHTML: function(event) {
+//     /**
+//      * Updates the possible satisfaction values and buttons selections based on current
+//      * function type.
+//      *
+//      * This function is called on change for .user-function-type
+//      */
+//     updateHTML: function(event) {
         
-        // Check if selected init sat value and functionType pair is illegal
-        this.validityCheck(event);
+//         // Check if selected init sat value and functionType pair is illegal
+//         this.validityCheck(event);
 
-        var functionType = this.model.get('intention').get('evolvingFunction').get('type');
+//         var functionType = this.model.get('intention').get('evolvingFunction').get('type');
 
-        // All functions that have satisfaction value associated with it
-        var funcWithSatValue = ["I", "D", "RC", "MP", "MN", "UD"];
+//         // All functions that have satisfaction value associated with it
+//         var funcWithSatValue = ["I", "D", "RC", "MP", "MN", "UD"];
 
         
-        // Load initial value for function type in the html select element
+//         // Load initial value for function type in the html select element
 
-        if (functionType == 'UD') {
-            this.$('.function-type').val(functionType);
-            this.$('#markedValue').hide();
-            this.$('#user-constraints').show("fast");
-            this.addUDFunctionValues(null);
-        } else {
+//         if (functionType == 'UD') {
+//             this.$('.function-type').val(functionType);
+//             this.$('#markedValue').hide();
+//             this.$('#user-constraints').show("fast");
+//             this.addUDFunctionValues(null);
+//         } else {
 
-            if (funcWithSatValue.includes(functionType)) {
-                // Function with an associated satisfaction value
-                this.displayFunctionSatValue(null);
-            } else {
-                // Function without an associated satisfaction value
-                this.$('#markedValue').hide();
-            }
+//             if (funcWithSatValue.includes(functionType)) {
+//                 // Function with an associated satisfaction value
+//                 this.displayFunctionSatValue(null);
+//             } else {
+//                 // Function without an associated satisfaction value
+//                 this.$('#markedValue').hide();
+//             }
 
-            if (functionType == 'NB') {
-                $('#init-sat-value').prop('disabled', true);
-                $('#init-sat-value').css('background-color','grey');
-            } else {
-                this.$('.function-type').val(functionType);
-                this.$('#user-constraints').hide();
-                this.$('#init-sat-value').prop('disabled', false);
-            }
-        }
+//             if (functionType == 'NB') {
+//                 $('#init-sat-value').prop('disabled', true);
+//                 $('#init-sat-value').css('background-color','grey');
+//             } else {
+//                 this.$('.function-type').val(functionType);
+//                 this.$('#user-constraints').hide();
+//                 this.$('#init-sat-value').prop('disabled', false);
+//             }
+//         }
 
-        this.updateChart(null);
+//         this.updateChart(null);
         
-    },
+//     },
 
-    /**
-     * Checks the validity of the initial satisfaction value function type
-     * pair. If illegal, this function changes either the initial satisfaction
-     * value or the function type accordingly.
-     */
-    validityCheck: function(event) {
+//     /**
+//      * Checks the validity of the initial satisfaction value function type
+//      * pair. If illegal, this function changes either the initial satisfaction
+//      * value or the function type accordingly.
+//      */
+//     validityCheck: function(event) {
         
-        var functionType = this.$('.function-type').val();
-        var initValue = this.$('#init-sat-value').val();
+//         var functionType = this.$('.function-type').val();
+//         var initValue = this.$('#init-sat-value').val();
 
-        // If an element gets clicked, don't bother checking
-        if (event == null) {
-            return;
-        }
+//         // If an element gets clicked, don't bother checking
+//         if (event == null) {
+//             return;
+//         }
 
-        // Check what triggered the validty check
-        // Either init value changed, func type changed or simply an element gets clicked
-        var initValueChanged = event.target.id == 'init-sat-value';
-        var funcTypeChanged = event.target.className == 'function-type';
+//         // Check what triggered the validty check
+//         // Either init value changed, func type changed or simply an element gets clicked
+//         var initValueChanged = event.target.id == 'init-sat-value';
+//         var funcTypeChanged = event.target.className == 'function-type';
 
-        // Perform check
-        // If not UD, just do a regular check
-        if (functionType != "UD") {
-            // If not valid, 2 possible actions:
-            // change to default init value if functTypeChanged
-            // change to none function if initValueChanged
-            if ($.inArray(initValue, validPair[functionType]['validInitValue']) == -1) {
-                if (initValueChanged && initValue != "(no value)"){this.$('.function-type').val('none');}
-                if (initValueChanged && initValue == "(no value)"){this.$('.function-type').val('C');}
-                var newValue = validPair[functionType]['defaultValue'];
-                if (funcTypeChanged){this.$('#init-sat-value').val(newValue);}
+//         // Perform check
+//         // If not UD, just do a regular check
+//         if (functionType != "UD") {
+//             // If not valid, 2 possible actions:
+//             // change to default init value if functTypeChanged
+//             // change to none function if initValueChanged
+//             if ($.inArray(initValue, validPair[functionType]['validInitValue']) == -1) {
+//                 if (initValueChanged && initValue != "(no value)"){this.$('.function-type').val('none');}
+//                 if (initValueChanged && initValue == "(no value)"){this.$('.function-type').val('C');}
+//                 var newValue = validPair[functionType]['defaultValue'];
+//                 if (funcTypeChanged){this.$('#init-sat-value').val(newValue);}
 
-            }
-        }
+//             }
+//         }
         
-    },
+//     },
 
-    /**
-     * Displays the select element (#function-type) for the function type for the current cell.
-     * If the function type has an associated satisfaction value, displays another
-     * select element (#markedValue) for the associated satisfaction value.
-     */
-    displayFunctionSatValue: function(event) {
+//     /**
+//      * Displays the select element (#function-type) for the function type for the current cell.
+//      * If the function type has an associated satisfaction value, displays another
+//      * select element (#markedValue) for the associated satisfaction value.
+//      */
+//     displayFunctionSatValue: function(event) {
         
-        var functionType = this.$('.function-type').val();
-        var initValue = this.$('#init-sat-value').val();
-        var markedValue = this.model.get('intention').get('evolvingFunction').getNthLastMarkedVal(1);
-        this.$('#markedValue').show("fast");
-        if (functionType == 'RC') {
-            this.$('#markedValue').html(this.satValueOptions.noRandom);
-        } else if (functionType == 'I' || functionType == 'MP') {
-            this.$('#markedValue').html(this.satValueOptions.positiveOnly(initValue));
-        } else if (functionType == 'D' || functionType == 'MN') {
-            this.$('#markedValue').html(this.satValueOptions.negativeOnly(initValue));
-        }
+//         var functionType = this.$('.function-type').val();
+//         var initValue = this.$('#init-sat-value').val();
+//         var markedValue = this.model.get('intention').get('evolvingFunction').getNthLastMarkedVal(1);
+//         this.$('#markedValue').show("fast");
+//         if (functionType == 'RC') {
+//             this.$('#markedValue').html(this.satValueOptions.noRandom);
+//         } else if (functionType == 'I' || functionType == 'MP') {
+//             this.$('#markedValue').html(this.satValueOptions.positiveOnly(initValue));
+//         } else if (functionType == 'D' || functionType == 'MN') {
+//             this.$('#markedValue').html(this.satValueOptions.negativeOnly(initValue));
+//         }
 
-        if (markedValue) {
-            var value = satisfactionValuesDict[markedValue].name;
-            this.$('#markedValue').val(value);
-        }
+//         if (markedValue) {
+//             var value = satisfactionValuesDict[markedValue].name;
+//             this.$('#markedValue').val(value);
+//         }
 
-        this.$('#markedValue').change();
+//         this.$('#markedValue').change();
 
-        return;
+//         return;
     
-    },
+//     },
 
-    /**
-     * Adds appropriate satisfaction values option tags
-     * for .user-sat-value, which is the select tag used to
-     * indicate satisfaction values when creating a user defined function.
-     */
-    addUDFunctionValues: function(event) {
+//     /**
+//      * Adds appropriate satisfaction values option tags
+//      * for .user-sat-value, which is the select tag used to
+//      * indicate satisfaction values when creating a user defined function.
+//      */
+//     addUDFunctionValues: function(event) {
         
-        var func = $(".user-function-type").last().val();
+//         var func = $(".user-function-type").last().val();
 
-        // If initially disabled, enable it for now
-        if ($('.user-sat-value').last().prop('disabled')) {
-            $('.user-sat-value').last().prop('disabled', false);
-            $('.user-sat-value').last().css('background-color','');
-        }
+//         // If initially disabled, enable it for now
+//         if ($('.user-sat-value').last().prop('disabled')) {
+//             $('.user-sat-value').last().prop('disabled', false);
+//             $('.user-sat-value').last().css('background-color','');
+//         }
         
-        if (func == 'I' || func == 'D') {
-            var prevVal = satisfactionValuesDict[this.model.get('intention').get('evolvingFunction').getNthLastMarkedVal(2)].name;
-            if (func == 'I') {
-                $(".user-sat-value").last().html(this.satValueOptions.positiveOnly(prevVal));
-                $(".user-sat-value").last().val("satisfied");
-            } else {
-                $(".user-sat-value").last().html(this.satValueOptions.negativeOnly(prevVal));
-                $(".user-sat-value").last().val("denied");
-            }
-        } else if (func == 'R') {
-            $(".user-sat-value").last().html(this.satValueOptions.all);
-            $(".user-sat-value").last().val("(no value)")
-            $(".user-sat-value").last().prop('disabled', true);
-            $(".user-sat-value").last().css("background-color",'grey');
-        } else if (func == 'C') {
-            $(".user-sat-value").last().html(this.satValueOptions.all);
-            // Restrict input if it is the first constraint
-            if (this.model.get('intention').get('evolvingFunction').getFuncSegments().length == 1) {
-                $(".user-sat-value").last().val(this.$('#init-sat-value').val())
-                $(".user-sat-value").last().prop('disabled', true);
-                $(".user-sat-value").last().css("background-color","grey");
-            }
-        }
+//         if (func == 'I' || func == 'D') {
+//             var prevVal = satisfactionValuesDict[this.model.get('intention').get('evolvingFunction').getNthLastMarkedVal(2)].name;
+//             if (func == 'I') {
+//                 $(".user-sat-value").last().html(this.satValueOptions.positiveOnly(prevVal));
+//                 $(".user-sat-value").last().val("satisfied");
+//             } else {
+//                 $(".user-sat-value").last().html(this.satValueOptions.negativeOnly(prevVal));
+//                 $(".user-sat-value").last().val("denied");
+//             }
+//         } else if (func == 'R') {
+//             $(".user-sat-value").last().html(this.satValueOptions.all);
+//             $(".user-sat-value").last().val("(no value)")
+//             $(".user-sat-value").last().prop('disabled', true);
+//             $(".user-sat-value").last().css("background-color",'grey');
+//         } else if (func == 'C') {
+//             $(".user-sat-value").last().html(this.satValueOptions.all);
+//             // Restrict input if it is the first constraint
+//             if (this.model.get('intention').get('evolvingFunction').getFuncSegments().length == 1) {
+//                 $(".user-sat-value").last().val(this.$('#init-sat-value').val())
+//                 $(".user-sat-value").last().prop('disabled', true);
+//                 $(".user-sat-value").last().css("background-color","grey");
+//             }
+//         }
         
-    },
+//     },
 
-    /**
-     * Modifies the passed in datasets with their default values
-     * @param {Array.<Object>}
-     */
-    resetChartDatasets: function(datasets) {
+//     /**
+//      * Modifies the passed in datasets with their default values
+//      * @param {Array.<Object>}
+//      */
+//     resetChartDatasets: function(datasets) {
         
-        for (var i = 0; i < datasets.length; i++) {
-            datasets[i].borderDash = [];
-            datasets[i].data = [];
-            datasets[i].pointBackgroundColor = ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"];
-            datasets[i].pointBorderColor = ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"];
-            datasets[i].borderColor = "rgba(220,220,220,1)";
-        }
+//         for (var i = 0; i < datasets.length; i++) {
+//             datasets[i].borderDash = [];
+//             datasets[i].data = [];
+//             datasets[i].pointBackgroundColor = ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"];
+//             datasets[i].pointBorderColor = ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"];
+//             datasets[i].borderColor = "rgba(220,220,220,1)";
+//         }
         
-    },
+//     },
 
-    /**
-     * Updates the chart to represent data related to the the current function and
-     * satisfaction value(s)
-     */
-    updateChart: function(event) {
+//     /**
+//      * Updates the chart to represent data related to the the current function and
+//      * satisfaction value(s)
+//      */
+//     updateChart: function(event) {
         
-        var funcType = this.model.get('intention').get('evolvingFunction').get('type');
-        var initVal = satisfactionValuesDict[this.model.get('intention').getInitialSatValue()].chartVal;
-        var satVal = satvalues[this.$('#markedValue').val()];
-        this.chart.reset();
-        // Get the chart canvas
-        var context = $("#chart").get(0).getContext("2d");
+//         var funcType = this.model.get('intention').get('evolvingFunction').get('type');
+//         var initVal = satisfactionValuesDict[this.model.get('intention').getInitialSatValue()].chartVal;
+//         var satVal = satvalues[this.$('#markedValue').val()];
+//         this.chart.reset();
+//         // Get the chart canvas
+//         var context = $("#chart").get(0).getContext("2d");
 
-        // Render preview for user defined function types
-        if (funcType == "UD") {
-            this.updateChartUserDefined(null);
-            return;
-        }
+//         // Render preview for user defined function types
+//         if (funcType == "UD") {
+//             this.updateChartUserDefined(null);
+//             return;
+//         }
 
 
-        // Change chart dataset(s), depending on the function type
-        var threeLabelFunc = ['RC', 'CR', 'SD', 'DS', 'MP', 'MN'];
+//         // Change chart dataset(s), depending on the function type
+//         var threeLabelFunc = ['RC', 'CR', 'SD', 'DS', 'MP', 'MN'];
 
-        if (threeLabelFunc.includes(funcType)) {
-            this.chart.labels = ['0', 'A', 'Infinity'];
+//         if (threeLabelFunc.includes(funcType)) {
+//             this.chart.labels = ['0', 'A', 'Infinity'];
 
-            if (funcType === 'RC') {
-                this.chart.addDataSet(0, [initVal, initVal], true);
-                this.chart.addDataSet(1, [satVal, satVal], false);
-            } else if (funcType === 'CR') {
-                this.chart.addDataSet(0, [initVal, initVal], false);
-                this.chart.addDataSet(1, [initVal, initVal], true);
-            } else if (funcType === 'SD') {
-                this.chart.addDataSet(0, [2, 2], false);
-                this.chart.addDataSet(1, [-2, -2], false);
-            } else if (funcType === 'DS') {
-                this.chart.addDataSet(0, [-2, -2], false);
-                this.chart.addDataSet(1, [2, 2], false);
-            } else if (funcType === 'MP' || funcType === 'MN') {
-                this.chart.addDataSet(0, [initVal, satVal, satVal]);
-            }
-        } else {
-            this.chart.labels = ['0', 'Infinity'];
+//             if (funcType === 'RC') {
+//                 this.chart.addDataSet(0, [initVal, initVal], true);
+//                 this.chart.addDataSet(1, [satVal, satVal], false);
+//             } else if (funcType === 'CR') {
+//                 this.chart.addDataSet(0, [initVal, initVal], false);
+//                 this.chart.addDataSet(1, [initVal, initVal], true);
+//             } else if (funcType === 'SD') {
+//                 this.chart.addDataSet(0, [2, 2], false);
+//                 this.chart.addDataSet(1, [-2, -2], false);
+//             } else if (funcType === 'DS') {
+//                 this.chart.addDataSet(0, [-2, -2], false);
+//                 this.chart.addDataSet(1, [2, 2], false);
+//             } else if (funcType === 'MP' || funcType === 'MN') {
+//                 this.chart.addDataSet(0, [initVal, satVal, satVal]);
+//             }
+//         } else {
+//             this.chart.labels = ['0', 'Infinity'];
 
-            if (funcType === 'C') {
-                this.chart.addDataSet(0, [initVal, initVal], false);
-            } else if (funcType === 'R') {
-                this.chart.addDataSet(0, [initVal, initVal], true);
-            } else if (funcType === 'I' || funcType === 'D') {
-                this.chart.addDataSet(0, [initVal, satVal], false);
-            } else {
-                // display a dot
-                this.chart.addDataSet(0, [initVal], false);
-            }
-        }
+//             if (funcType === 'C') {
+//                 this.chart.addDataSet(0, [initVal, initVal], false);
+//             } else if (funcType === 'R') {
+//                 this.chart.addDataSet(0, [initVal, initVal], true);
+//             } else if (funcType === 'I' || funcType === 'D') {
+//                 this.chart.addDataSet(0, [initVal, satVal], false);
+//             } else {
+//                 // display a dot
+//                 this.chart.addDataSet(0, [initVal], false);
+//             }
+//         }
 
-        this.chart.display(context);
+//         this.chart.display(context);
         
-    },
+//     },
 
-    getUDChartLabel: function(num) {
+//     getUDChartLabel: function(num) {
         
-        var res = ['0'];
-        var curr = 'A'
-        for (var i = 0; i < num; i++) {
-            res.push(curr);
-            curr = String.fromCharCode(curr.charCodeAt(0) + 1);
-        }
-        return res;
+//         var res = ['0'];
+//         var curr = 'A'
+//         for (var i = 0; i < num; i++) {
+//             res.push(curr);
+//             curr = String.fromCharCode(curr.charCodeAt(0) + 1);
+//         }
+//         return res;
     
-    },
+//     },
 
-    /**
-     * Updates the chart to represent data related to the the current user
-     * defined function and satisfaction value(s)
-     */
-    updateChartUserDefined: function(event) {
+//     /**
+//      * Updates the chart to represent data related to the the current user
+//      * defined function and satisfaction value(s)
+//      */
+//     updateChartUserDefined: function(event) {
         
-        var context = $("#chart").get(0).getContext("2d");
-        var numFuncSegments = this.model.get('intention').get('evolvingFunction').getFuncSegments().length;
+//         var context = $("#chart").get(0).getContext("2d");
+//         var numFuncSegments = this.model.get('intention').get('evolvingFunction').getFuncSegments().length;
 
-        // Reset chart datasets
-        this.chart.reset();
+//         // Reset chart datasets
+//         this.chart.reset();
 
-        // Setting up the labels
-        this.chart.labels = this.getUDChartLabel(numFuncSegments);
+//         // Setting up the labels
+//         this.chart.labels = this.getUDChartLabel(numFuncSegments);
 
 
 
-        // Get init sat value
-        var initSatVal = satisfactionValuesDict[this.model.get('intention').getInitialSatValue()].chartVal;
+//         // Get init sat value
+//         var initSatVal = satisfactionValuesDict[this.model.get('intention').getInitialSatValue()].chartVal;
 
-        // Add datapoints to graph for each userfunction/uservalue pair
-        var funcSegments = this.model.get('intention').get('evolvingFunction').getFuncSegments();
+//         // Add datapoints to graph for each userfunction/uservalue pair
+//         var funcSegments = this.model.get('intention').get('evolvingFunction').getFuncSegments();
 
-        for (var i = 0; i < funcSegments.length; i++) {
-            var currFunc = funcSegments[i].get('type');
-            var currVal = funcSegments[i].get('refEvidencePair');
-            // TODO - idk abt this, this function does not exist
-            var coloured = funcSegments[i].isRepeat;
-            var data1; // first data point for this segment
-            var data2 = satisfactionValuesDict[currVal].chartVal;
-            if (i === 0) {
-                if (currFunc !== 'R') {
-                    data1 = initSatVal;
-                } else {
-                    data1 = 0;
-                }
-            } else {
-                // If previous function is stochastic, set the starting point to be either FD or FS
-                var prevFunc = funcSegments[i - 1].get('type');
-                var prevVal = funcSegments[i - 1].get('refEvidencePair');
-                if (prevFunc === 'R' && currFunc === 'I') {
-                    data1 = -2;
-                } else if (prevFunc === 'R' && currFunc === 'D') {
-                    data1 = 2;
-                } else if (currFunc == 'R') {
-                    data1 = 0;
-                } else if (currFunc === 'C'){
-                    data1 = data2;
-                } else {
-                    // set to previous function's marked value
-                    data1 = satisfactionValuesDict[prevVal].chartVal;
-                }
-            }
-            this.chart.addDataSet(i, [data1, data2], currFunc === 'R' || currVal === '(no value)', coloured);
-        }
+//         for (var i = 0; i < funcSegments.length; i++) {
+//             var currFunc = funcSegments[i].get('type');
+//             var currVal = funcSegments[i].get('refEvidencePair');
+//             // TODO - idk abt this, this function does not exist
+//             var coloured = funcSegments[i].isRepeat;
+//             var data1; // first data point for this segment
+//             var data2 = satisfactionValuesDict[currVal].chartVal;
+//             if (i === 0) {
+//                 if (currFunc !== 'R') {
+//                     data1 = initSatVal;
+//                 } else {
+//                     data1 = 0;
+//                 }
+//             } else {
+//                 // If previous function is stochastic, set the starting point to be either FD or FS
+//                 var prevFunc = funcSegments[i - 1].get('type');
+//                 var prevVal = funcSegments[i - 1].get('refEvidencePair');
+//                 if (prevFunc === 'R' && currFunc === 'I') {
+//                     data1 = -2;
+//                 } else if (prevFunc === 'R' && currFunc === 'D') {
+//                     data1 = 2;
+//                 } else if (currFunc == 'R') {
+//                     data1 = 0;
+//                 } else if (currFunc === 'C'){
+//                     data1 = data2;
+//                 } else {
+//                     // set to previous function's marked value
+//                     data1 = satisfactionValuesDict[prevVal].chartVal;
+//                 }
+//             }
+//             this.chart.addDataSet(i, [data1, data2], currFunc === 'R' || currVal === '(no value)', coloured);
+//         }
 
-        this.chart.display(context);
+//         this.chart.display(context);
         
-    },
+//     },
 
-    /**
-     * Adds new constraint for the user defined function.
-     * This function is called on click for #constraint-add.
-     * This function is also called when loading user defined
-     * constraints from previously stored.
-     */
-    addConstraint: function(event) {
+//     /**
+//      * Adds new constraint for the user defined function.
+//      * This function is called on click for #constraint-add.
+//      * This function is also called when loading user defined
+//      * constraints from previously stored.
+//      */
+//     addConstraint: function(event) {
         
-        // update html display for additional user inputs
-        var html = this.userConstraintsHTML.clone();
-        this.model.get('intention').addUserDefinedSeg("C", "0000");
+//         // update html display for additional user inputs
+//         var html = this.userConstraintsHTML.clone();
+//         this.model.get('intention').addUserDefinedSeg("C", "0000");
 
-        $(".user-sat-value").last().prop('disabled', true);
-        $(".user-sat-value").last().css("background-color",'grey');
-        $(".user-function-type").last().prop('disabled', true);
-        $(".user-function-type").last().css("background-color", 'grey');
+//         $(".user-sat-value").last().prop('disabled', true);
+//         $(".user-sat-value").last().css("background-color",'grey');
+//         $(".user-function-type").last().prop('disabled', true);
+//         $(".user-function-type").last().css("background-color", 'grey');
 
-        // If the initial value is (no value), limit the function options
-        // to be either Constant or Stochastic
-        if (this.model.get('intention').getInitialSatValue() == '(no value)') {
-            var selectEl = html.children(":first");
-            selectEl.find('option').remove();
-            selectEl.append('<option value=C> Constant </option>');
-            selectEl.append('<option value=R> Stochastic</option>');
-        }
+//         // If the initial value is (no value), limit the function options
+//         // to be either Constant or Stochastic
+//         if (this.model.get('intention').getInitialSatValue() == '(no value)') {
+//             var selectEl = html.children(":first");
+//             selectEl.find('option').remove();
+//             selectEl.append('<option value=C> Constant </option>');
+//             selectEl.append('<option value=R> Stochastic</option>');
+//         }
 
-        html.appendTo(this.$('#all-user-constraints'));
+//         html.appendTo(this.$('#all-user-constraints'));
 
 
-        if (this.repeatOptionsDisplay) {
-            this.setRepeatConstraintMode("Update");
-        }
+//         if (this.repeatOptionsDisplay) {
+//             this.setRepeatConstraintMode("Update");
+//         }
 
-        this.updateChartUserDefined(null);
+//         this.updateChartUserDefined(null);
         
-    },
+//     },
 
 
-    /**
-     * Toggles the display for the user defined function's
-     * repeat feature.
-     * This function is called on click for #constraint-repeat.
-     */
-    repeatConstraintControl: function(e){
+//     /**
+//      * Toggles the display for the user defined function's
+//      * repeat feature.
+//      * This function is called on click for #constraint-repeat.
+//      */
+//     repeatConstraintControl: function(e){
         
-        if (!this.repeatOptionsDisplay){
-            this.setRepeatConstraintMode("TurnOn");
-            this.setRepeatConstraintMode("Update");
-        } else if (this.repeatOptionsDisplay){
-            this.setRepeatConstraintMode("TurnOff");
-            this.model.get('intention').get('evolvingFunction').removeRepFuncSegments();
-            this.updateChartUserDefined(null);
-        }
+//         if (!this.repeatOptionsDisplay){
+//             this.setRepeatConstraintMode("TurnOn");
+//             this.setRepeatConstraintMode("Update");
+//         } else if (this.repeatOptionsDisplay){
+//             this.setRepeatConstraintMode("TurnOff");
+//             this.model.get('intention').get('evolvingFunction').removeRepFuncSegments();
+//             this.updateChartUserDefined(null);
+//         }
         
-    },
+//     },
 
-    /**
-     * Handles the changes done for the select elements for the
-     * repeat feature for user defined functions, by ensuring that
-     * the begin and end range of repeated constraints are valid.
-     * This function is called on change for .repeat-select
-     * (the select elements for repeat begin and end)
-     */
-    selectRepeatValues: function(event){
+//     /**
+//      * Handles the changes done for the select elements for the
+//      * repeat feature for user defined functions, by ensuring that
+//      * the begin and end range of repeated constraints are valid.
+//      * This function is called on change for .repeat-select
+//      * (the select elements for repeat begin and end)
+//      */
+//     selectRepeatValues: function(event){
         
-        var begin = $("#repeat-begin").val();
-        var end = $("#repeat-end").val();
+//         var begin = $("#repeat-begin").val();
+//         var end = $("#repeat-end").val();
 
-        if (begin === null || end === null) {
-            return;
-        }
+//         if (begin === null || end === null) {
+//             return;
+//         }
 
-        var nextChar = String.fromCharCode(begin.charCodeAt(0) + 1);
+//         var nextChar = String.fromCharCode(begin.charCodeAt(0) + 1);
 
-        if (begin >= end) {
-            $("#repeat-error").text("Repeated range must be chronological");
-            $("#repeat-error").show("fast");
+//         if (begin >= end) {
+//             $("#repeat-error").text("Repeated range must be chronological");
+//             $("#repeat-error").show("fast");
 
-        } else if (nextChar == end) {
-            $("#repeat-error").text("Repeated range must be at least two apart");
-            $("#repeat-error").show("fast");
+//         } else if (nextChar == end) {
+//             $("#repeat-error").text("Repeated range must be at least two apart");
+//             $("#repeat-error").show("fast");
 
-        } else {
+//         } else {
 
-            $("#repeat-error").hide();
-            this.model.get('intention').dynamicFunction.setRepeatingFunction(begin, end);
-        }
-        this.updateChartUserDefined(null);
+//             $("#repeat-error").hide();
+//             this.model.get('intention').dynamicFunction.setRepeatingFunction(begin, end);
+//         }
+//         this.updateChartUserDefined(null);
         
-    },
+//     },
 
-    /**
-     * Ensures that the number of repeat counts is a valid number,
-     * updates the constraintsObject with the new repeat count and
-     * updates the chart in case there are constraint lines that need
-     * to be coloured red.
-     *
-     * This function is called on change for #repeat-end2.
-     */
-    selectNumRepeatValues: function(event){
+//     /**
+//      * Ensures that the number of repeat counts is a valid number,
+//      * updates the constraintsObject with the new repeat count and
+//      * updates the chart in case there are constraint lines that need
+//      * to be coloured red.
+//      *
+//      * This function is called on change for #repeat-end2.
+//      */
+//     selectNumRepeatValues: function(event){
         
-        var repVal = $("#repeat-end2").val();
-        if (repVal < 2) {
-            $('#repeat-end2').val(2);
-        }
-        this.model.get('intention').get('evolvingFunction').set('repCount', repVal);
-        this.updateChartUserDefined(null);
+//         var repVal = $("#repeat-end2").val();
+//         if (repVal < 2) {
+//             $('#repeat-end2').val(2);
+//         }
+//         this.model.get('intention').get('evolvingFunction').set('repCount', repVal);
+//         this.updateChartUserDefined(null);
         
-    },
+//     },
 
-    /**
-     * Ensures that the absolute length is a non negative number and
-     * updates the constraintsObject to have the new absolute length.
-     *
-     * This function is called on change for #repeat-end3.
-     */
-    selectAbsoluteLength: function(event){
+//     /**
+//      * Ensures that the absolute length is a non negative number and
+//      * updates the constraintsObject to have the new absolute length.
+//      *
+//      * This function is called on change for #repeat-end3.
+//      */
+//     selectAbsoluteLength: function(event){
         
-        var absLength = $("#repeat-end3").val();
-        if (absLength < 0) {
-            $('#repeat-end3').val(0);
-        }
-        this.model.get('intention').get('evolvingFunction').set('repAbsTime', absLength);
-        this.updateChartUserDefined(null);
+//         var absLength = $("#repeat-end3").val();
+//         if (absLength < 0) {
+//             $('#repeat-end3').val(0);
+//         }
+//         this.model.get('intention').get('evolvingFunction').set('repAbsTime', absLength);
+//         this.updateChartUserDefined(null);
     
-    },
+//     },
 
-    /**
-     * Sets the mode for the user defined function's repeat feature.
-     * Depending on the mode, this function controls the display
-     * for repeat related elements and values.
-     *
-     * @param {String} mode
-     */
-    setRepeatConstraintMode: function(mode) {
+//     /**
+//      * Sets the mode for the user defined function's repeat feature.
+//      * Depending on the mode, this function controls the display
+//      * for repeat related elements and values.
+//      *
+//      * @param {String} mode
+//      */
+//     setRepeatConstraintMode: function(mode) {
         
-        // Reset options for select everytime repeat is clicked
-        $("#repeat-begin").html('<option class="select-placeholder" selected disabled value="">Begin</option>');
-        $("#repeat-end").html('<option class="select-placeholder" selected disabled value="">End</option>');
+//         // Reset options for select everytime repeat is clicked
+//         $("#repeat-begin").html('<option class="select-placeholder" selected disabled value="">Begin</option>');
+//         $("#repeat-end").html('<option class="select-placeholder" selected disabled value="">End</option>');
 
-        // Turn on all repeat related display and values
-        if (mode == "TurnOn") {
-            $("#repeat-begin").show("fast");
-            $("#repeat-end").show("fast");
-            $("#repeat-begin2").show("fast");
-            $("#repeat-end2").show("fast");
-            $("#repeat-begin3").show("fast");
-            $("#repeat-end3").show("fast");
-            $("#noteRepeat").show("fast");
-            $("#constraint-repeat").text("Clear Repeats");
-            this.repeatOptionsDisplay = true;
+//         // Turn on all repeat related display and values
+//         if (mode == "TurnOn") {
+//             $("#repeat-begin").show("fast");
+//             $("#repeat-end").show("fast");
+//             $("#repeat-begin2").show("fast");
+//             $("#repeat-end2").show("fast");
+//             $("#repeat-begin3").show("fast");
+//             $("#repeat-end3").show("fast");
+//             $("#noteRepeat").show("fast");
+//             $("#constraint-repeat").text("Clear Repeats");
+//             this.repeatOptionsDisplay = true;
 
-        // Turn off all repeat related display and values
-        } else if (mode == "TurnOff") {
-            $("#repeat-begin").hide();
-            $("#repeat-end").hide();
-            $("#constraint-repeat").text("Set Repeats");
-            $("#repeat-error").hide();
-            $("#repeat-begin2").hide();
-            $("#repeat-end2").hide();
-            $("#repeat-begin3").hide();
-            $("#repeat-end3").hide();
-            $("#noteRepeat").hide();
-            this.repeatOptionsDisplay = false;
+//         // Turn off all repeat related display and values
+//         } else if (mode == "TurnOff") {
+//             $("#repeat-begin").hide();
+//             $("#repeat-end").hide();
+//             $("#constraint-repeat").text("Set Repeats");
+//             $("#repeat-error").hide();
+//             $("#repeat-begin2").hide();
+//             $("#repeat-end2").hide();
+//             $("#repeat-begin3").hide();
+//             $("#repeat-end3").hide();
+//             $("#noteRepeat").hide();
+//             this.repeatOptionsDisplay = false;
 
-        // Update all repeat related display and values
-        } else if (mode == "Update") {
+//         // Update all repeat related display and values
+//         } else if (mode == "Update") {
 
-            // Cannot repeat with only one constraint
-            var numSegments = this.model.get('intention').get('evolvingFunction').getFuncSegments().length;
-            if (numSegments < 2) {
+//             // Cannot repeat with only one constraint
+//             var numSegments = this.model.get('intention').get('evolvingFunction').getFuncSegments().length;
+//             if (numSegments < 2) {
 
-                $("#repeat-error").text("More constraints are needed");
-                $("#repeat-error").show("fast");
-                $("#repeat-begin").prop('disabled', 'disabled');
-                $("#repeat-begin").css("background-color","grey");
-                $("#repeat-end").prop('disabled', 'disabled');
-                $("#repeat-end").css("background-color","grey");
+//                 $("#repeat-error").text("More constraints are needed");
+//                 $("#repeat-error").show("fast");
+//                 $("#repeat-begin").prop('disabled', 'disabled');
+//                 $("#repeat-begin").css("background-color","grey");
+//                 $("#repeat-end").prop('disabled', 'disabled');
+//                 $("#repeat-end").css("background-color","grey");
 
-            // Update HTML
-            } else {
+//             // Update HTML
+//             } else {
 
-                if ($("#repeat-begin").prop('disabled')) {
-                    $("#repeat-error").hide();
-                    $("#repeat-begin").prop('disabled', '');
-                    $("#repeat-begin").css("background-color","");
-                    $("#repeat-end").prop('disabled', '');
-                    $("#repeat-end").css("background-color","");
-                }
+//                 if ($("#repeat-begin").prop('disabled')) {
+//                     $("#repeat-error").hide();
+//                     $("#repeat-begin").prop('disabled', '');
+//                     $("#repeat-begin").css("background-color","");
+//                     $("#repeat-end").prop('disabled', '');
+//                     $("#repeat-end").css("background-color","");
+//                 }
 
-                var funcSegments = this.model.get('intention').get('evolvingFunction').getFuncSegments();
+//                 var funcSegments = this.model.get('intention').get('evolvingFunction').getFuncSegments();
 
-                // Set select options
-                for (var i = 0; i < funcSegments.length - 1; i++) {
-                    var beginVal = funcSegments[i].get('startTP');
-                    var endVal = funcSegments[i + 1].get('stopTP');
+//                 // Set select options
+//                 for (var i = 0; i < funcSegments.length - 1; i++) {
+//                     var beginVal = funcSegments[i].get('startTP');
+//                     var endVal = funcSegments[i + 1].get('stopTP');
 
-                    $("#repeat-begin").append(
-                        $('<option></option>').val(beginVal).html(beginVal)
-                    );
-                    $("#repeat-end").append(
-                        $('<option></option>').val(endVal).html(endVal)
-                    );
-                }
-                var repNum = this.model.get('intention').get('evolvingFunction').get('repCount');
-                var absTime = this.model.get('intention').get('evolvingFunction').get('repAbsTime');
-                $("repeat-end2").val(repNum);
-                $("repeat-end3").val(absTime);
-            }
-        }
+//                     $("#repeat-begin").append(
+//                         $('<option></option>').val(beginVal).html(beginVal)
+//                     );
+//                     $("#repeat-end").append(
+//                         $('<option></option>').val(endVal).html(endVal)
+//                     );
+//                 }
+//                 var repNum = this.model.get('intention').get('evolvingFunction').get('repCount');
+//                 var absTime = this.model.get('intention').get('evolvingFunction').get('repAbsTime');
+//                 $("repeat-end2").val(repNum);
+//                 $("repeat-end3").val(absTime);
+//             }
+//         }
         
-    },
+//     },
 
-    // Reset user-define chart to default
-    /**
-     * Removes all user constraints for user defined functions
-     * This function is called on click for #constraint-restart (red Clear button).
-     */
-    removeUserConstraints: function(e){
+//     // Reset user-define chart to default
+//     /**
+//      * Removes all user constraints for user defined functions
+//      * This function is called on click for #constraint-restart (red Clear button).
+//      */
+//     removeUserConstraints: function(e){
         
-        $('#init-sat-value').prop('disabled', '');
-        $('#init-sat-value').css("background-color","");
+//         $('#init-sat-value').prop('disabled', '');
+//         $('#init-sat-value').css("background-color","");
 
-        var html = this.userConstraintsHTML.clone();
-        this.$('#all-user-constraints').html('');
-        html.appendTo(this.$('#all-user-constraints'));
+//         var html = this.userConstraintsHTML.clone();
+//         this.$('#all-user-constraints').html('');
+//         html.appendTo(this.$('#all-user-constraints'));
 
-        if (this.repeatOptionsDisplay) {
-            this.setRepeatConstraintMode("TurnOff");
-        }
+//         if (this.repeatOptionsDisplay) {
+//             this.setRepeatConstraintMode("TurnOff");
+//         }
 
-        this.funcTypeChanged(null);
+//         this.funcTypeChanged(null);
         
-    },
+//     },
 
-    /**
-     * Makes corresponding changes for the cell attributes, according to the values in the
-     * inspector. This function is always called alongside with updateChart
-     * and updateChartUserDefined.
-     */
-    updateCell: function(event) {   
+//     /**
+//      * Makes corresponding changes for the cell attributes, according to the values in the
+//      * inspector. This function is always called alongside with updateChart
+//      * and updateChartUserDefined.
+//      */
+//     updateCell: function(event) {   
             
-        IntentionColoring.refresh();
-        changeFont(current_font, paper);
-        var funcType = this.model.get('intention').get('evolvingFunction').get('type');
-        var initSatVal = this.model.get('intention').getInitialSatValue();
+//         IntentionColoring.refresh();
+//         changeFont(current_font, paper);
+//         var funcType = this.model.get('intention').get('evolvingFunction').get('type');
+//         var initSatVal = this.model.get('intention').getInitialSatValue();
 
-        if (funcType == 'NT') {
-            this.model.attr(".funcvalue/text", '');
-        } else {
-            this.model.attr(".funcvalue/text", funcType);
-        } 
+//         if (funcType == 'NT') {
+//             this.model.attr(".funcvalue/text", '');
+//         } else {
+//             this.model.attr(".funcvalue/text", funcType);
+//         } 
         
-        if (initSatVal == '(no value)') {
-            this.model.attr('.satvalue/text', '');
-        } else {
-            this.model.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
-        }
+//         if (initSatVal == '(no value)') {
+//             this.model.attr('.satvalue/text', '');
+//         } else {
+//             this.model.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
+//         }
         
-    },
+//     },
 
-    clear: function(){
-        this.$el.html('');
-    }
-}
+//     clear: function(){
+//         this.$el.html('');
+//     }
+ }
 );
