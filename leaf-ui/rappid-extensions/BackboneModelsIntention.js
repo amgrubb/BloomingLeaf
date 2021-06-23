@@ -444,12 +444,10 @@ var IntentionBBM = Backbone.Model.extend({
     setMarkedValueToFunction: function(satValue) {
         var funcType = this.evolvingFunction.get('type');
  
-        var len = this.evolvingFunction.getFuncSegments().length;
-        // may have to change this line 
+        var len = this.getFuncSegments().length;
         this.getFuncSegments()[len - 1].set('refevidencePair', satValue);
  
         if (funcType == 'MP' || funcType == 'MN') {
-            // may have to change this line 
             this.getFuncSegments()[0].set('refEvidencePair', satValue);
         }
     }, 

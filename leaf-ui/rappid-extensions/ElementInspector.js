@@ -461,120 +461,120 @@ var ElementInspector = Backbone.View.extend({
         
     },
 
-//     /**
-//      * Updates the possible satisfaction values and buttons selections based on current
-//      * function type.
-//      *
-//      * This function is called on change for .user-function-type
-//      */
-//     updateHTML: function(event) {
+    /**
+     * Updates the possible satisfaction values and buttons selections based on current
+     * function type.
+     *
+     * This function is called on change for .user-function-type
+     */
+    updateHTML: function(event) {
         
-//         // Check if selected init sat value and functionType pair is illegal
-//         this.validityCheck(event);
+        // Check if selected init sat value and functionType pair is illegal
+        this.validityCheck(event);
 
-//         var functionType = this.model.get('intention').get('evolvingFunction').get('type');
+        var functionType = this.model.get('intention').get('evolvingFunction').get('type');
 
-//         // All functions that have satisfaction value associated with it
-//         var funcWithSatValue = ["I", "D", "RC", "MP", "MN", "UD"];
+        // All functions that have satisfaction value associated with it
+        var funcWithSatValue = ["I", "D", "RC", "MP", "MN", "UD"];
 
         
-//         // Load initial value for function type in the html select element
+        // Load initial value for function type in the html select element
 
-//         if (functionType == 'UD') {
-//             this.$('.function-type').val(functionType);
-//             this.$('#markedValue').hide();
-//             this.$('#user-constraints').show("fast");
-//             this.addUDFunctionValues(null);
-//         } else {
+        if (functionType == 'UD') {
+            this.$('.function-type').val(functionType);
+            this.$('#markedValue').hide();
+            this.$('#user-constraints').show("fast");
+            this.addUDFunctionValues(null);
+        } else {
 
-//             if (funcWithSatValue.includes(functionType)) {
-//                 // Function with an associated satisfaction value
-//                 this.displayFunctionSatValue(null);
-//             } else {
-//                 // Function without an associated satisfaction value
-//                 this.$('#markedValue').hide();
-//             }
+            if (funcWithSatValue.includes(functionType)) {
+                // Function with an associated satisfaction value
+                this.displayFunctionSatValue(null);
+            } else {
+                // Function without an associated satisfaction value
+                this.$('#markedValue').hide();
+            }
 
-//             if (functionType == 'NB') {
-//                 $('#init-sat-value').prop('disabled', true);
-//                 $('#init-sat-value').css('background-color','grey');
-//             } else {
-//                 this.$('.function-type').val(functionType);
-//                 this.$('#user-constraints').hide();
-//                 this.$('#init-sat-value').prop('disabled', false);
-//             }
-//         }
+            if (functionType == 'NB') {
+                $('#init-sat-value').prop('disabled', true);
+                $('#init-sat-value').css('background-color','grey');
+            } else {
+                this.$('.function-type').val(functionType);
+                this.$('#user-constraints').hide();
+                this.$('#init-sat-value').prop('disabled', false);
+            }
+        }
 
-//         this.updateChart(null);
+        this.updateChart(null);
         
-//     },
+    },
 
-//     /**
-//      * Checks the validity of the initial satisfaction value function type
-//      * pair. If illegal, this function changes either the initial satisfaction
-//      * value or the function type accordingly.
-//      */
-//     validityCheck: function(event) {
+    /**
+     * Checks the validity of the initial satisfaction value function type
+     * pair. If illegal, this function changes either the initial satisfaction
+     * value or the function type accordingly.
+     */
+    validityCheck: function(event) {
         
-//         var functionType = this.$('.function-type').val();
-//         var initValue = this.$('#init-sat-value').val();
+        var functionType = this.$('.function-type').val();
+        var initValue = this.$('#init-sat-value').val();
 
-//         // If an element gets clicked, don't bother checking
-//         if (event == null) {
-//             return;
-//         }
+        // If an element gets clicked, don't bother checking
+        if (event == null) {
+            return;
+        }
 
-//         // Check what triggered the validty check
-//         // Either init value changed, func type changed or simply an element gets clicked
-//         var initValueChanged = event.target.id == 'init-sat-value';
-//         var funcTypeChanged = event.target.className == 'function-type';
+        // Check what triggered the validty check
+        // Either init value changed, func type changed or simply an element gets clicked
+        var initValueChanged = event.target.id == 'init-sat-value';
+        var funcTypeChanged = event.target.className == 'function-type';
 
-//         // Perform check
-//         // If not UD, just do a regular check
-//         if (functionType != "UD") {
-//             // If not valid, 2 possible actions:
-//             // change to default init value if functTypeChanged
-//             // change to none function if initValueChanged
-//             if ($.inArray(initValue, validPair[functionType]['validInitValue']) == -1) {
-//                 if (initValueChanged && initValue != "(no value)"){this.$('.function-type').val('none');}
-//                 if (initValueChanged && initValue == "(no value)"){this.$('.function-type').val('C');}
-//                 var newValue = validPair[functionType]['defaultValue'];
-//                 if (funcTypeChanged){this.$('#init-sat-value').val(newValue);}
+        // Perform check
+        // If not UD, just do a regular check
+        if (functionType != "UD") {
+            // If not valid, 2 possible actions:
+            // change to default init value if functTypeChanged
+            // change to none function if initValueChanged
+            if ($.inArray(initValue, validPair[functionType]['validInitValue']) == -1) {
+                if (initValueChanged && initValue != "(no value)"){this.$('.function-type').val('none');}
+                if (initValueChanged && initValue == "(no value)"){this.$('.function-type').val('C');}
+                var newValue = validPair[functionType]['defaultValue'];
+                if (funcTypeChanged){this.$('#init-sat-value').val(newValue);}
 
-//             }
-//         }
+            }
+        }
         
-//     },
+    },
 
-//     /**
-//      * Displays the select element (#function-type) for the function type for the current cell.
-//      * If the function type has an associated satisfaction value, displays another
-//      * select element (#markedValue) for the associated satisfaction value.
-//      */
-//     displayFunctionSatValue: function(event) {
+    /**
+     * Displays the select element (#function-type) for the function type for the current cell.
+     * If the function type has an associated satisfaction value, displays another
+     * select element (#markedValue) for the associated satisfaction value.
+     */
+    displayFunctionSatValue: function(event) {
         
-//         var functionType = this.$('.function-type').val();
-//         var initValue = this.$('#init-sat-value').val();
-//         var markedValue = this.model.get('intention').get('evolvingFunction').getNthLastMarkedVal(1);
-//         this.$('#markedValue').show("fast");
-//         if (functionType == 'RC') {
-//             this.$('#markedValue').html(this.satValueOptions.noRandom);
-//         } else if (functionType == 'I' || functionType == 'MP') {
-//             this.$('#markedValue').html(this.satValueOptions.positiveOnly(initValue));
-//         } else if (functionType == 'D' || functionType == 'MN') {
-//             this.$('#markedValue').html(this.satValueOptions.negativeOnly(initValue));
-//         }
+        var functionType = this.$('.function-type').val();
+        var initValue = this.$('#init-sat-value').val();
+        var markedValue = this.model.get('intention').get('evolvingFunction').getNthLastMarkedVal(1);
+        this.$('#markedValue').show("fast");
+        if (functionType == 'RC') {
+            this.$('#markedValue').html(this.satValueOptions.noRandom);
+        } else if (functionType == 'I' || functionType == 'MP') {
+            this.$('#markedValue').html(this.satValueOptions.positiveOnly(initValue));
+        } else if (functionType == 'D' || functionType == 'MN') {
+            this.$('#markedValue').html(this.satValueOptions.negativeOnly(initValue));
+        }
 
-//         if (markedValue) {
-//             var value = satisfactionValuesDict[markedValue].name;
-//             this.$('#markedValue').val(value);
-//         }
+        if (markedValue) {
+            var value = satisfactionValuesDict[markedValue].name;
+            this.$('#markedValue').val(value);
+        }
 
-//         this.$('#markedValue').change();
+        this.$('#markedValue').change();
 
-//         return;
+        return;
     
-//     },
+    },
 
 //     /**
 //      * Adds appropriate satisfaction values option tags
