@@ -194,8 +194,8 @@ joint.shapes.basic.Resource = joint.shapes.basic.Intention.extend({
 joint.dia.CellLink = joint.dia.Link.extend({
     // In initialize, everytime the target is changed, the code updates it
     initialize: function(){
-        this.on('change:target', this.updateTarget, this);
-        this.on('change:source', this.updateSource, this);
+        this.on('change:target', this.updateLinkPointers, this);
+        this.on('change:source', this.updateLinkPointers, this);
     },
     defaults: joint.util.deepSupplement({
         type: 'Link',
@@ -203,13 +203,13 @@ joint.dia.CellLink = joint.dia.Link.extend({
     }),
 
     /**
-     * This function checks the updated source to determine if the link is still valid
+     * This function checks the updated target/source to determine if the link is still valid
      * And updates the CellLink type and LinkBBM linkType accordingly
      */
-    updateSource: function(){
+    updateLinkPointers: function(){
         var target = this.getTargetElement();
         var source = this.getSourceElement();
-        if (source !== null){
+        if ((target !== null && source !== null)){
             if (((source.get('type') === 'basic.Actor') && (target.get('type')  !== 'basic.Actor')) || ((source.get('type') !== 'basic.Actor') && (target.get('type')  === 'basic.Actor'))){
                 this.set('type', 'error');
                 this.label(0 , {position: 0.5, attrs: {text: {text: 'error'}}});
@@ -222,30 +222,6 @@ joint.dia.CellLink = joint.dia.Link.extend({
                 this.set('type', 'element');
                 this.get('link').set('linkType', 'and');
                 this.label(0, {position: 0.5, attrs: {text: {text: this.get('link').get('linkType')}}});
-            }
-        }
-    },
-
-    /**
-     * This function checks the updated target to determine if the link is still valid
-     * And updates the CellLink type and LinkBBM linkType accordingly
-     */
-    updateTarget: function(){
-        var target = this.getTargetElement();
-        var source = this.getSourceElement();
-        if (target !== null){
-            if (((source.get('type') === 'basic.Actor') && (target.get('type')  !== 'basic.Actor')) || ((source.get('type') !== 'basic.Actor') && (target.get('type')  === 'basic.Actor'))){
-                this.set('type', 'error');
-                this.label(0 , {position: 0.5, attrs: {text: {text: 'error'}}});
-            } else if (source.get('type') === "basic.Actor") {
-                this.set('type', 'Actor');
-                this.get('link').set('linkType', 'is-a');
-                this.label(0, {position: 0.5, attrs: {text: {text: this.get('link').get("linkType")}}});
-            }
-            else{
-                this.set('type', 'element');
-                this.get('link').set('linkType', 'and');
-                this.label(0, {position: 0.5, attrs: {text: {text: this.get('link').get("linkType")}}});
             }
         }
     },

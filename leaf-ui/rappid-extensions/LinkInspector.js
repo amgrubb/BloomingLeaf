@@ -129,7 +129,9 @@ var LinkInspector = Backbone.View.extend({
     renderConstant: function() {
         this.link.set('evolving', false);
         this.$el.html(_.template(this.constanttemplate)());
-        this.updateConstantRelationship();
+        $('#constant-links').val(this.link.get('linkType'));
+        this.setValues($('#constant-links').val(), null, false);
+        this.checkCellText();
     },
 
     /**
@@ -141,20 +143,19 @@ var LinkInspector = Backbone.View.extend({
         $('#link-type-end').prop('disabled', true);
     },
 
-    /**
-     * Updates linkType parameter for constant relationship based on selected value
-     */
-    updateConstantRelationship: function() {
-        // Set correct parameters and text for link
-        var linkType = this.link.get('linkType');
-        $('#constant-links').val(linkType)
-        this.setValues(type, null, false);
+    updateConstantRelationship: function(){
+        this.setValues($('#constant-links').val(), null, false);
+        this.checkCellText()
+    },
 
+    /**
+     * Checks if source/target cells need NBT/NBD text added or removed after link value update
+     */
+    checkCellText: function() {
         // Get link source and target cells
         var source = this.model.getSourceElement();
         var target = this.model.getTargetElement();
 
-        // Check if source/target cells need NBT/NBD text added or removed after link value update
         if (this.link.get('linkType') =='NBT' || this.link.get('linkType') == 'NBD') {
             source.attr('.funcvalue/text', 'NB');
             source.attr('.satvalue/text', '(⊥, ⊥)');
