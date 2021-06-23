@@ -165,7 +165,7 @@ var IntentionBBM = Backbone.Model.extend({
  
     //will likely have to change this function 
     changeInitialSatValue: function(initValue) {
-        var intentionEval = graph.get('userEvaluationList').set('id', '0');
+        var intentionEval = graph.get('userEvaluationList').get(this.get('id'), '0');
         intentionEval.get('assignedEvidencePair') = initValue;
  
         // if there is only one function segment, and its constant, then we need to
@@ -240,7 +240,7 @@ var IntentionBBM = Backbone.Model.extend({
     getInitialSatValue: function() {
         //var intentionEval = graph.getUserEvaluationByID(this.get('id'), '0');
         //TODO: Fix this 
-        var intentionEval = graph.get('userEvaluationList').set('id', '0');
+        var intentionEval = graph.get('userEvaluationList').get(this.get('id'), '0');
         if (typeof intentionEval == 'undefined'){
             return '(no value)';
         } else {
@@ -273,7 +273,7 @@ var IntentionBBM = Backbone.Model.extend({
         // Add new absolute constraints if required
         this.addAbsConstraint(funcType);
  
-        var initValue = graph.get('userEvaluationList').set('id', '0').get('assignedEvidencePair');
+        var initValue = graph.get('userEvaluationList').get(this.get('id'), '0').get('assignedEvidencePair');
  
         // All instances of FuncSegment have been changed to FunctionSegmentBBM and the initialization process has 
         // also been changed accordingly 

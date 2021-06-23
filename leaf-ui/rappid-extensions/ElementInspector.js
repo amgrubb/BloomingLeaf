@@ -221,7 +221,7 @@ var ElementInspector = Backbone.View.extend({
 
         // Load initial value for function type in the html select element
         
-        var functionType = this.model.get('intention').get('evolvingFunction').get('type');
+        var functionType = this.model.get('intention').get('type');
 
         if (functionType == 'UD') {
             this.renderUserDefined();
@@ -471,7 +471,7 @@ var ElementInspector = Backbone.View.extend({
         // Check if selected init sat value and functionType pair is illegal
         this.validityCheck(event);
 
-        var functionType = this.model.get('intention').get('evolvingFunction').get('type');
+        var functionType = this.model.get('intention').get('type');
 
         // All functions that have satisfaction value associated with it
         var funcWithSatValue = ["I", "D", "RC", "MP", "MN", "UD"];
@@ -638,7 +638,7 @@ var ElementInspector = Backbone.View.extend({
      */
     updateChart: function(event) {
         
-        var funcType = this.model.get('intention').get('evolvingFunction').get('type');
+        var funcType = this.model.get('intention').get('type');
         var initVal = satisfactionValuesDict[this.model.get('intention').getInitialSatValue()].chartVal;
         var satVal = satvalues[this.$('#markedValue').val()];
         this.chart.reset();
@@ -831,6 +831,11 @@ var ElementInspector = Backbone.View.extend({
         
         var begin = $("#repeat-begin").val();
         var end = $("#repeat-end").val();
+        // TODO: Update template 
+        var start = $("").val();
+        var stopRep = $("").val();
+        var count = $("").val();
+        var absTime = $("").val();
 
         if (begin === null || end === null) {
             return;
@@ -855,178 +860,186 @@ var ElementInspector = Backbone.View.extend({
         
     },
 
-//     /**
-//      * Ensures that the number of repeat counts is a valid number,
-//      * updates the constraintsObject with the new repeat count and
-//      * updates the chart in case there are constraint lines that need
-//      * to be coloured red.
-//      *
-//      * This function is called on change for #repeat-end2.
-//      */
-//     selectNumRepeatValues: function(event){
+    /**
+     * Ensures that the number of repeat counts is a valid number,
+     * updates the constraintsObject with the new repeat count and
+     * updates the chart in case there are constraint lines that need
+     * to be coloured red.
+     *
+     * This function is called on change for #repeat-end2.
+     */
+    selectNumRepeatValues: function(event){
         
-//         var repVal = $("#repeat-end2").val();
-//         if (repVal < 2) {
-//             $('#repeat-end2').val(2);
-//         }
-//         this.model.get('intention').get('evolvingFunction').set('repCount', repVal);
-//         this.updateChartUserDefined(null);
+        var repVal = $("#repeat-end2").val();
+        if (repVal < 2) {
+            $('#repeat-end2').val(2);
+        }
+        this.model.get('intention').get('evolvingFunction').set('repCount', repVal);
+        this.updateChartUserDefined(null);
         
-//     },
+    },
 
-//     /**
-//      * Ensures that the absolute length is a non negative number and
-//      * updates the constraintsObject to have the new absolute length.
-//      *
-//      * This function is called on change for #repeat-end3.
-//      */
-//     selectAbsoluteLength: function(event){
+    /**
+     * Ensures that the absolute length is a non negative number and
+     * updates the constraintsObject to have the new absolute length.
+     *
+     * This function is called on change for #repeat-end3.
+     */
+    selectAbsoluteLength: function(event){
         
-//         var absLength = $("#repeat-end3").val();
-//         if (absLength < 0) {
-//             $('#repeat-end3').val(0);
-//         }
-//         this.model.get('intention').get('evolvingFunction').set('repAbsTime', absLength);
-//         this.updateChartUserDefined(null);
+        var absLength = $("#repeat-end3").val();
+        if (absLength < 0) {
+            $('#repeat-end3').val(0);
+        }
+        this.model.get('intention').get('evolvingFunction').set('repAbsTime', absLength);
+        this.updateChartUserDefined(null);
     
-//     },
+    },
 
-//     /**
-//      * Sets the mode for the user defined function's repeat feature.
-//      * Depending on the mode, this function controls the display
-//      * for repeat related elements and values.
-//      *
-//      * @param {String} mode
-//      */
-//     setRepeatConstraintMode: function(mode) {
+    /**
+     * Sets the mode for the user defined function's repeat feature.
+     * Depending on the mode, this function controls the display
+     * for repeat related elements and values.
+     *
+     * @param {String} mode
+     */
+    setRepeatConstraintMode: function(mode) {
         
-//         // Reset options for select everytime repeat is clicked
-//         $("#repeat-begin").html('<option class="select-placeholder" selected disabled value="">Begin</option>');
-//         $("#repeat-end").html('<option class="select-placeholder" selected disabled value="">End</option>');
+        // Reset options for select everytime repeat is clicked
+        $("#repeat-begin").html('<option class="select-placeholder" selected disabled value="">Begin</option>');
+        $("#repeat-end").html('<option class="select-placeholder" selected disabled value="">End</option>');
 
-//         // Turn on all repeat related display and values
-//         if (mode == "TurnOn") {
-//             $("#repeat-begin").show("fast");
-//             $("#repeat-end").show("fast");
-//             $("#repeat-begin2").show("fast");
-//             $("#repeat-end2").show("fast");
-//             $("#repeat-begin3").show("fast");
-//             $("#repeat-end3").show("fast");
-//             $("#noteRepeat").show("fast");
-//             $("#constraint-repeat").text("Clear Repeats");
-//             this.repeatOptionsDisplay = true;
+        // Turn on all repeat related display and values
+        if (mode == "TurnOn") {
+            $("#repeat-begin").show("fast");
+            $("#repeat-end").show("fast");
+            $("#repeat-begin2").show("fast");
+            $("#repeat-end2").show("fast");
+            $("#repeat-begin3").show("fast");
+            $("#repeat-end3").show("fast");
+            $("#noteRepeat").show("fast");
+            $("#constraint-repeat").text("Clear Repeats");
+            this.repeatOptionsDisplay = true;
 
-//         // Turn off all repeat related display and values
-//         } else if (mode == "TurnOff") {
-//             $("#repeat-begin").hide();
-//             $("#repeat-end").hide();
-//             $("#constraint-repeat").text("Set Repeats");
-//             $("#repeat-error").hide();
-//             $("#repeat-begin2").hide();
-//             $("#repeat-end2").hide();
-//             $("#repeat-begin3").hide();
-//             $("#repeat-end3").hide();
-//             $("#noteRepeat").hide();
-//             this.repeatOptionsDisplay = false;
+        // Turn off all repeat related display and values
+        } else if (mode == "TurnOff") {
+            $("#repeat-begin").hide();
+            $("#repeat-end").hide();
+            $("#constraint-repeat").text("Set Repeats");
+            $("#repeat-error").hide();
+            $("#repeat-begin2").hide();
+            $("#repeat-end2").hide();
+            $("#repeat-begin3").hide();
+            $("#repeat-end3").hide();
+            $("#noteRepeat").hide();
+            this.repeatOptionsDisplay = false;
 
-//         // Update all repeat related display and values
-//         } else if (mode == "Update") {
+        // Update all repeat related display and values
+        } else if (mode == "Update") {
 
-//             // Cannot repeat with only one constraint
-//             var numSegments = this.model.get('intention').get('evolvingFunction').getFuncSegments().length;
-//             if (numSegments < 2) {
+            // Cannot repeat with only one constraint
+            var numSegments = this.model.get('intention').getFuncSegments().length;
+            if (numSegments < 2) {
 
-//                 $("#repeat-error").text("More constraints are needed");
-//                 $("#repeat-error").show("fast");
-//                 $("#repeat-begin").prop('disabled', 'disabled');
-//                 $("#repeat-begin").css("background-color","grey");
-//                 $("#repeat-end").prop('disabled', 'disabled');
-//                 $("#repeat-end").css("background-color","grey");
+                $("#repeat-error").text("More constraints are needed");
+                $("#repeat-error").show("fast");
+                $("#repeat-begin").prop('disabled', 'disabled');
+                $("#repeat-begin").css("background-color","grey");
+                $("#repeat-end").prop('disabled', 'disabled');
+                $("#repeat-end").css("background-color","grey");
 
-//             // Update HTML
-//             } else {
+            // Update HTML
+            } else {
 
-//                 if ($("#repeat-begin").prop('disabled')) {
-//                     $("#repeat-error").hide();
-//                     $("#repeat-begin").prop('disabled', '');
-//                     $("#repeat-begin").css("background-color","");
-//                     $("#repeat-end").prop('disabled', '');
-//                     $("#repeat-end").css("background-color","");
-//                 }
+                if ($("#repeat-begin").prop('disabled')) {
+                    $("#repeat-error").hide();
+                    $("#repeat-begin").prop('disabled', '');
+                    $("#repeat-begin").css("background-color","");
+                    $("#repeat-end").prop('disabled', '');
+                    $("#repeat-end").css("background-color","");
+                }
 
-//                 var funcSegments = this.model.get('intention').get('evolvingFunction').getFuncSegments();
+                var funcSegments = this.model.get('intention').getFuncSegments();
 
-//                 // Set select options
-//                 for (var i = 0; i < funcSegments.length - 1; i++) {
-//                     var beginVal = funcSegments[i].get('startTP');
-//                     var endVal = funcSegments[i + 1].get('stopTP');
+                // Set select options
+                for (var i = 0; i < funcSegments.length - 1; i++) {
+                    var beginVal = funcSegments[i].get('startTP');
 
-//                     $("#repeat-begin").append(
-//                         $('<option></option>').val(beginVal).html(beginVal)
-//                     );
-//                     $("#repeat-end").append(
-//                         $('<option></option>').val(endVal).html(endVal)
-//                     );
-//                 }
-//                 var repNum = this.model.get('intention').get('evolvingFunction').get('repCount');
-//                 var absTime = this.model.get('intention').get('evolvingFunction').get('repAbsTime');
-//                 $("repeat-end2").val(repNum);
-//                 $("repeat-end3").val(absTime);
-//             }
-//         }
+                    var len = this.getFuncSegments().length;
+                    var startCheck = this.evolvingFunction.getFuncSegments()[len - 1].get('startTP');
+                    if (startCheck == '0') {
+                        var endVal = 'A';
+                    }        
+                    else {
+                        var endVal = String.fromCharCode(startCheck.charCodeAt(0) + 1);
+                    }
+
+                    $("#repeat-begin").append(
+                        $('<option></option>').val(beginVal).html(beginVal)
+                    );
+                    $("#repeat-end").append(
+                        $('<option></option>').val(endVal).html(endVal)
+                    );
+                }
+                var repNum = this.model.get('intention').get('evolvingFunction').get('repCount');
+                var absTime = this.model.get('intention').get('evolvingFunction').get('repAbsTime');
+                $("repeat-end2").val(repNum);
+                $("repeat-end3").val(absTime);
+            }
+        }
         
-//     },
+    },
 
-//     // Reset user-define chart to default
-//     /**
-//      * Removes all user constraints for user defined functions
-//      * This function is called on click for #constraint-restart (red Clear button).
-//      */
-//     removeUserConstraints: function(e){
+    // Reset user-define chart to default
+    /**
+     * Removes all user constraints for user defined functions
+     * This function is called on click for #constraint-restart (red Clear button).
+     */
+    removeUserConstraints: function(e){
         
-//         $('#init-sat-value').prop('disabled', '');
-//         $('#init-sat-value').css("background-color","");
+        $('#init-sat-value').prop('disabled', '');
+        $('#init-sat-value').css("background-color","");
 
-//         var html = this.userConstraintsHTML.clone();
-//         this.$('#all-user-constraints').html('');
-//         html.appendTo(this.$('#all-user-constraints'));
+        var html = this.userConstraintsHTML.clone();
+        this.$('#all-user-constraints').html('');
+        html.appendTo(this.$('#all-user-constraints'));
 
-//         if (this.repeatOptionsDisplay) {
-//             this.setRepeatConstraintMode("TurnOff");
-//         }
+        if (this.repeatOptionsDisplay) {
+            this.setRepeatConstraintMode("TurnOff");
+        }
 
-//         this.funcTypeChanged(null);
+        this.funcTypeChanged(null);
         
-//     },
+    },
 
-//     /**
-//      * Makes corresponding changes for the cell attributes, according to the values in the
-//      * inspector. This function is always called alongside with updateChart
-//      * and updateChartUserDefined.
-//      */
-//     updateCell: function(event) {   
+    /**
+     * Makes corresponding changes for the cell attributes, according to the values in the
+     * inspector. This function is always called alongside with updateChart
+     * and updateChartUserDefined.
+     */
+    updateCell: function(event) {   
             
-//         IntentionColoring.refresh();
-//         changeFont(current_font, paper);
-//         var funcType = this.model.get('intention').get('evolvingFunction').get('type');
-//         var initSatVal = this.model.get('intention').getInitialSatValue();
+        IntentionColoring.refresh();
+        changeFont(current_font, paper);
+        var funcType = this.model.get('intention').get('type');
+        var initSatVal = this.model.get('intention').getInitialSatValue();
 
-//         if (funcType == 'NT') {
-//             this.model.attr(".funcvalue/text", '');
-//         } else {
-//             this.model.attr(".funcvalue/text", funcType);
-//         } 
+        if (funcType == 'NT') {
+            this.model.attr(".funcvalue/text", '');
+        } else {
+            this.model.attr(".funcvalue/text", funcType);
+        } 
         
-//         if (initSatVal == '(no value)') {
-//             this.model.attr('.satvalue/text', '');
-//         } else {
-//             this.model.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
-//         }
+        if (initSatVal == '(no value)') {
+            this.model.attr('.satvalue/text', '');
+        } else {
+            this.model.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
+        }
         
-//     },
+    },
 
-//     clear: function(){
-//         this.$el.html('');
-//     }
+    clear: function(){
+        this.$el.html('');
+    }
  }
 );
