@@ -766,7 +766,7 @@ var element_counter = 0;
 
 // Whenever an element is added to the graph
 graph.on("add", function(cell) {
-	if (cell instanceof joint.dia.cellLink){
+	if (cell instanceof joint.dia.CellLink){
         if (graph.getCell(cell.get("source").id) instanceof joint.shapes.basic.Actor){
             cell.prop("type", "Actor");
             cell.label(0,{attrs:{text:{text:"is-a"}}});
@@ -869,7 +869,9 @@ paper.on({
                     $('.inspector').append(actorInspector.el);
                     actorInspector.render();
                 } else {
-                    elementInspector.render(cell);
+                    var elementInspector = new ElementInspector({model: cell});
+                    $('.inspector').append(elementInspector.el);
+                    elementInspector.render();
                     // if user was dragging element
                     if (evt.data.move) {
                         // unembed intention from old actor
@@ -904,9 +906,14 @@ paper.on("link:options", function(cell, evt){
 	}
 
 	clearInspector();
+    
+    if (cell.model.get('type') == 'error'){
+        alert('Sorry, this link is not valid. Links must be between two elements of the same type. Aka Actor->Actor or Intention->Intention');
+        return;
+    }
+
     var linkInspector = new LinkInspector({model: cell.model});
     $('.inspector').append(linkInspector.el);
-
 	linkInspector.render();
  
 });
@@ -985,9 +992,7 @@ function embedBasicActor(cell) {
             model.getActorByID(actorID).addIntentionID(nodeID);
         }
     } else {
-        // intention not over any actor
-        var nodeID = cell.attributes.nodeID;
-        model.getIntentionByID(nodeID).nodeActorID = "-";
+        // TODO: reset actorID to null in cell
     }
 }
 
@@ -1067,11 +1072,9 @@ graph.on('remove', function(cell) {
 
 
 /**
- * Clear the .inspector div
+ * Clear any analysis sidebar views
  */
 function clearInspector() {
-	elementInspector.clear();
-    // Clear any analysis sidebar views
     if($('.inspector-views').length != 0){
         $('.inspector-views').trigger('clearInspector');
     }

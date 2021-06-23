@@ -171,8 +171,8 @@ var ElementInspector = Backbone.View.extend({
     /**
      * Initializes the element inspector using previously defined templates
      */
-    render: function(cell) {
-
+    render: function() {
+        /**
         this.cell = cell; // Save the clicked node's backbone model
 
         // Save the Intention object from the global model variable to
@@ -219,7 +219,7 @@ var ElementInspector = Backbone.View.extend({
         }
 
         this.updateCell();
-
+        */
     },
 
     /**

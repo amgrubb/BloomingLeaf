@@ -78,8 +78,6 @@ var model = new Model();
 var analysisRequest = new AnalysisRequest();        //TODO: make not global!
 var analysisResult = new AnalysisResult();
 
-
-var elementInspector = new ElementInspector();
 var configCollection = new ConfigCollection([]);
 var configInspector = new ConfigInspector({collection:configCollection});
 
@@ -241,7 +239,7 @@ paper = new joint.dia.Paper({
     gridSize: 10,
     perpendicularLinks: false,
     model: graph,
-    defaultLink: new joint.dia.cellLink({
+    defaultLink: new joint.dia.CellLink({
 		'attrs': {
 			'.connection': {stroke: '#000000'},
 			'.marker-source': {'d': '0'},
@@ -288,9 +286,6 @@ stencil = new joint.ui.Stencil({
 });
 
 var commandManager = new joint.dia.CommandManager({ graph: graph });
-
-// A simple element editor.
-$('.inspector').append(elementInspector.el);
 
 $('#stencil').append(stencil.render().el);
 

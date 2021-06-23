@@ -27,7 +27,7 @@
     },
 
     defaults: {
-        linkType:  'AND',
+        linkType:  'and',
         postType: null,
         absTime: -1,
         evolving: false,
