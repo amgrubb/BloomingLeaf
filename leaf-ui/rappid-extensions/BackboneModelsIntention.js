@@ -49,7 +49,7 @@ var EvolvingFunctionBBM = Backbone.Model.extend({
      * marked value value. If there are no function segments, the function
      * does not return anything.
      */
-    getNthLastMarkedVal: function(n) { 
+    getNthRefEvidencePair: function(n) { 
         var len = this.functionSegList.length; 
         if (len > 0 && index <= len) {  
             return this.functionSegList[len - n].get('refEvidencePair'); 
@@ -70,55 +70,18 @@ var EvolvingFunctionBBM = Backbone.Model.extend({
     // TODO fix this function
     // I think we should set it so that the repeating function starts at time 1 and ends at 
     // time 2
-    setRepeatingFunction: function(time1, time2) {
+    setRepeatingFunction: function(start, stopRep, count, absTime) {
 
         this.removeRepFuncSegments();
         hasRepeat = true;                        
-        repAbsTime =  parseInt(time2) - parseInt(time1);
-
-        var startIndex = 0;
-        while (this.functionSegList[startIndex].get('startTP') !== time1) {
-            startIndex++;
-        }
         
-        if (startIndex == 0) { 
-            repStart = '0'; 
-        } else { 
-            repStart = String.fromCharCode(this.functionSegList[startIndex] + 64);
-        }
-
-        var stopIndex = 0;
-        while (this.functionSegList[stopIndex].get('stopTP') !== time2) {
-            stopIndex++;
-        }
-        repStop = String.fromCharCode(this.functionSegList[stopIndex] + 64);
-
-        repCount = stopIndex - startIndex;
-
-        // Original Function
-        // this.removeRepFuncSegments();
-        // // find the index of the FuncSegment with start time time 1
-        // var startIndex = 0;
-        // while (this.functionSegList[startIndex].funcStart !== time1) {
-        //     startIndex++;
-        // }
-
-        // var repFuncSegments = [];
-
-        // // push and remove, until we see a segment with our desired FuncEnd time
-        // while (this.functionSegList[startIndex].funcStop !== time2) {
-        //     repFuncSegments.push(this.functionSegList[startIndex]);
-        //     this.functionSegList.splice(startIndex, 1);
-        // }
-
-        // // push and remove the last segment
-        // repFuncSegments.push(this.functionSegList[startIndex]);
-        // this.functionSegList.splice(startIndex, 1);
+        repStart = start;
+        repStop = stopRep;
+        repCount = count;
+        repAbsTime = absTime;
 
 
-        // // create and add a new RepFuncSegment
-        // var repFuncSegment = new RepFuncSegment(repFuncSegments);
-        // this.functionSegList.splice(startIndex, 0, repFuncSegment);        
+        
     },            
 
     /**
@@ -420,19 +383,22 @@ var IntentionBBM = Backbone.Model.extend({
      * @param {String} satValue
      *   ex: '0000'
      */
-    addUserDefinedSeg: function(funcType, satValue){
+    addUserDefinedSeg: function(funcType, satValue, startTime){
  
-        var len = this.evolvingFunction.getFuncSegments().length;
-        // originally used to be funcStop 
-        var start = this.evolvingFunction.getFuncSegments()[len - 1].get('stopTP');
-        var code = start.charCodeAt(0) + 1;
-        var stop = String.fromCharCode(code);
+        var len = this.getFuncSegments().length;
+        var startCheck = this.evolvingFunction.getFuncSegments()[len - 1].get('startTP');
+        if (startCheck == '0') {
+            var start = 'A';
+        }        
+        else {
+            var start = String.fromCharCode(startCheck.charCodeAt(0) + 1);
+        }
  
         //create new funcsegment model 
-        var new_model = new FunctionSegmentBBM({type: funcType, refEvidencePair: satValue, startTP: start, stopTP: stop}); 
-        this.evolvingFunction.getFuncSegments().push(new_model); 
+        var new_model = new FunctionSegmentBBM({type: funcType, refEvidencePair: satValue, startTP: start, startAT: startTime}); 
+        this.getFuncSegments().push(new_model); 
  
-        model.constraints.push(new ConstraintBBM({type: 'A', srcID: this.get('id'), srcRefTP: start, destID: null, destRefTP: null}));
+        graph.get('constraints').push(new ConstraintBBM({type: 'A', srcID: this.get('id'), srcRefTP: start, destID: null, destRefTP: null}));
  
     }, 
     /**
