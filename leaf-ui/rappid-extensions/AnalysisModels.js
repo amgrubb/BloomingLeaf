@@ -13,9 +13,7 @@ var ResultModel = Backbone.Model.extend({
     idAttribute: "uid",
 
     defaults: {
-        name:"Default Result",
         analysisResult: new AnalysisResult(),
-        selected: true,
     },
 });
 
@@ -57,22 +55,23 @@ var ResultCollection = Backbone.Collection.extend({
  */
 var ConfigModel = Backbone.Model.extend({
     initialize : function(){
-        this.results = new ResultCollection([]);
+        __extend({}, this.defaults, options); 
         this.listenTo(this, 'change:selected', this.updateSelected);
     },
 
     idAttribute: "uid",
 
     defaults: {
+        //action: null,
+        //conflictLevel: "S",
+        //numRelTime: "1",
+        //currentState: "0",
+        //userAssignmentsList : [],
+        //previousAnalysis: null,
         name:"Default Config",
-        action: null,
-        conflictLevel: "S",
-        numRelTime: "1",
-        currentState: "0",
-        userAssignmentsList : [],
-        previousAnalysis: null,
         selected: true,
-        results : new ResultCollection([])
+        results : new ResultCollection([]), 
+        graph: null, 
     },
 
     /**
@@ -80,7 +79,7 @@ var ConfigModel = Backbone.Model.extend({
      * when the backend returns an AnalysisResult
      */
     addResult : function(result){
-        var newResultModel = new ResultModel({name: 'Result ' + (this.get('results').length+1), analysisResult : result, selected: true});
+        var newResultModel = new ResultModel({name: 'Result ' + (this.get('results').length + 1), analysisResult : result, selected: true});
         this.get("results").add(newResultModel);
     },
 
@@ -91,6 +90,25 @@ var ConfigModel = Backbone.Model.extend({
         }
     },
 });
+
+/**
+ * Analysis Parameters 
+ */
+
+var ConfigAnalysis = Backbone.Model.extend ({ 
+    initialize : function(){
+        __extend({}, this.defaults, options); 
+    },
+
+    idAttribute: "uid",
+
+    defaults: {
+        conflictLevel: "S",
+        numRelTime: "1",
+        currentState: "0",
+        previousAnalysis: null,
+    },
+}); 
 
 /**
  * Collection that holds analysis configurations
@@ -125,3 +143,4 @@ var ConfigCollection = Backbone.Collection.extend({
         changedConfig.get('results').forEach(result => result.set('selected', false));
     },
 });
+
