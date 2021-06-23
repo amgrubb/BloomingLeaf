@@ -92,9 +92,11 @@
             </div>
             
             <button id="btn-view-assignment" class="blue-btn btn" style="position:relative; border-radius:none;">View Assignments List</button>
-            <div id="assignments-list"></div>
+            <!--This is the modal box of assignments-->
+            <button id="btn-view-assignment" class="blue-btn btn" style="position:relative; border-radius:none;">Intermediate Values</a>
             <!--This is the modal box of assignments-->
             
+            <button id="analysis-btn" class="green-btn btn" style="border-radius:none;">Analysis</button>
             <div id="dropdown-model" class="dropdown" style='display: none'>
                 <button id="modeling-btn" class="red-btn btn">Model</button>
                 <div class="dropdown-toolbar">
@@ -105,7 +107,10 @@
             <!-- OLD Button to switch between Constraint view and the Relationship view.
 			The functionality for the Constraint view still exists in the code.
 		      <button id="symbolic-btn" class="blue-btn btn">Model Constraints</button>-->
-            <button id="analysis-btn" class="green-btn btn" style="border-radius:none;">Analysis</button>
+            
+
+            <div id="assignments-list"></div>
+            <div id="intermediate-table"></div>
         </div>
          
         <div id="stencil" class="left-panel"><label>Stencil</label></div>
