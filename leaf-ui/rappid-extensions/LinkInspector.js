@@ -42,6 +42,7 @@ var LinkInspector = Backbone.View.extend({
             '<div class="inspector-views">',
             '<h5 id="repeat-error" class="inspector-error"></h5>',
             '<select id="link-type-begin" class="repeat-select">',
+                '<option value="" disabled selected hidden>Begin</option>',
                 '<option value="no">No Relationship</option>',
                 '<option value="and">And-Decomposition</option>',
                 '<option value="or">Or-Decomposition</option>',
@@ -59,6 +60,7 @@ var LinkInspector = Backbone.View.extend({
                 '<option value="--D">--D</option>',
             '</select>',
             '<select id="link-type-end" class="repeat-select">',
+                '<option value="" disabled selected hidden>End</option>',
                 '<option value="no">No Relationship</option>',
                 '<option value="and" class="A">And-Decomposition</option>',
                 '<option value="or" class="A">Or-Decomposition</option>',
@@ -103,7 +105,6 @@ var LinkInspector = Backbone.View.extend({
 
     /** Chooses and sets correct template for link */
     render: function() {
-
         // Intention Link template
         if(this.model.get('type') == 'element') {
             // Constant Link
@@ -121,8 +122,7 @@ var LinkInspector = Backbone.View.extend({
         } else {
             this.$el.html(_.template(this.actortemplate)());
             $('#actor-link').val(this.link.get('linkType'));
-        }
-        
+        }  
     },
 
     /**
@@ -140,9 +140,7 @@ var LinkInspector = Backbone.View.extend({
     renderEvolving: function(){
         this.link.set('evolving', true);
         this.$el.html(_.template(this.evolvingtemplate)());
-        $('#link-type-begin').placeholder= 'Begin';
         $('#link-type-end').prop('disabled', true);
-        $('#link-type-end').placeholder = 'End';
     },
 
     /**
@@ -150,7 +148,9 @@ var LinkInspector = Backbone.View.extend({
      */
     updateConstantRelationship: function() {
         // Set correct parameters and text for link
-        this.setValues($('#constant-links').val(), null, false);
+        var linkType = this.link.get('linkType');
+        $('#constant-links').val(linkType)
+        this.setValues(type, null, false);
 
         // Get link source and target cells
         var source = this.model.getSourceElement();
