@@ -80,7 +80,6 @@ var analysisResult = new AnalysisResult();
 
 
 var linkInspector = new LinkInspector();
-var elementInspector = new ElementInspector();
 var configCollection = new ConfigCollection([]);
 var configInspector = new ConfigInspector({collection:configCollection});
 
@@ -289,9 +288,6 @@ stencil = new joint.ui.Stencil({
 });
 
 var commandManager = new joint.dia.CommandManager({ graph: graph });
-
-// A simple element editor.
-$('.inspector').append(elementInspector.el);
 
 $('#stencil').append(stencil.render().el);
 
