@@ -180,6 +180,12 @@ var ElementInspector = Backbone.View.extend({
     /**
      * Initializes the element inspector using previously defined templates
      */
+<<<<<<< HEAD
+=======
+    render: function() {
+        /**
+        this.cell = cell; // Save the clicked node's backbone model
+>>>>>>> 262d9acd313cee03e13d239f7d2b72c7b377295e
 
     
     render: function() {
@@ -235,6 +241,7 @@ var ElementInspector = Backbone.View.extend({
         }
 
         this.updateCell();
+<<<<<<< HEAD
         
     },  
     
@@ -247,6 +254,9 @@ var ElementInspector = Backbone.View.extend({
 
     switchModel: function (newCell) {
         this.model = newCell;
+=======
+        */
+>>>>>>> 262d9acd313cee03e13d239f7d2b72c7b377295e
     },
 
 //     /**
