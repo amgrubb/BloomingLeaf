@@ -55,7 +55,7 @@ var ResultCollection = Backbone.Collection.extend({
  */
 var ConfigModel = Backbone.Model.extend({
     initialize : function(){
-        __extend({}, this.defaults, options); 
+        __.extend({}, this.defaults, options); 
         this.listenTo(this, 'change:selected', this.updateSelected);
     },
 
@@ -97,7 +97,7 @@ var ConfigModel = Backbone.Model.extend({
 
 var ConfigAnalysis = Backbone.Model.extend ({ 
     initialize : function(){
-        __extend({}, this.defaults, options); 
+        __.extend({}, this.defaults, options); 
     },
 
     idAttribute: "uid",
