@@ -212,6 +212,7 @@ joint.dia.Intentionlink = joint.dia.Link.extend({
 
 joint.shapes.basic.Actor = joint.shapes.basic.Generic.extend({
     markup: '<g class="scalable"><circle class = "outer"/></g><circle class="label"/><path class="line"/><text class = "name"/>',
+
     defaults: joint.util.deepSupplement({
         type: "basic.Actor",
         size: {
@@ -249,7 +250,7 @@ joint.shapes.basic.Actor = joint.shapes.basic.Generic.extend({
             }
         },
         //TODO replace with new ActorBBM once it is in codebase
-        actor: new ActorTest(),
+        actor: null,
     }, joint.dia.Element.prototype.defaults),
     changeToOriginalColour: function() {
         this.attr({'.outer': {'fill': '#EBFFEA'}});

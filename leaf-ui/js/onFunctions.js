@@ -776,21 +776,6 @@ function createIntention(cell) {
 }
 
 /**
- * Creates an instance of an Actor object and saves it in the
- * global model variable
- * 
- * @param {joint.dia.Cell} cell
- */
-function createActor(cell) {//TODO: right now there are two parameters the actor model in the joint.extensions file that hold the same information (attrs.name & actorName), find a way for actor inspector to be able to access attrs.name in the template script so that actorName is not needed
-	var name = cell.attr('.name/text') + "_" + Actor.numOfCreatedInstances;
-	var actor = new Actor(name);
-    cell.attr(".name/text", name);
-    cell.set('actorName', name);
-	cell.attributes.nodeID = actor.nodeID;
-	model.actors.push(actor);
-}
-
-/**
  * Set up on events for Rappid/JointJS objets
  */
 var element_counter = 0;
@@ -812,7 +797,10 @@ graph.on("add", function(cell) {
 		cell.attr('.funcvalue/text', ' ');
 
 	} else if (cell instanceof joint.shapes.basic.Actor) {
-		createActor(cell);
+        //TODO: right now there are two parameters the actor model in the joint.extensions file that hold the same information (attrs.name & actorName), find a way for actor inspector to be able to access attrs.name in the template script so that actorName is not needed
+		var name = cell.attr('.name/text') + "_" + Actor.numOfCreatedInstances;
+	    cell.set('actor', new ActorBBM({actorName: name}));
+        cell.attr(".name/text", name);
 
 		// Send actors to background so elements are placed on top
 		cell.toBack();
@@ -1139,8 +1127,6 @@ graph.on('remove', function(cell) {
  */
 function clearInspector() {
 	elementInspector.clear();
-	linkInspector.clear();
-
     // Clear any analysis sidebar views
     if($('.inspector-views').length != 0){
         $('.inspector-views').trigger('clearInspector');

@@ -11,10 +11,14 @@
  * Backbone Model of Actor
  */
  var ActorBBM = Backbone.Model.extend({
-    initialize: function(options){ 
-        this.type = options.type;       // Options are 'Actor', 'Agent', and 'Role'
-        this.name = options.name;
-    }
+    initialize: function(options){
+        _.extend({}, this.defaults, options);
+    },
+
+    defaults: {
+        type: 'A',
+        actorName: 'Actor'
+    },
 });
 
 
