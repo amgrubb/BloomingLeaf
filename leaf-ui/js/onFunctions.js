@@ -904,9 +904,14 @@ paper.on("link:options", function(cell, evt){
 	}
 
 	clearInspector();
+    
+    if (cell.model.get('type') == 'error'){
+        alert('Sorry, this link is not valid. Links must be between two elements of the same type. Aka Actor->Actor or Intention->Intention');
+        return;
+    }
+
     var linkInspector = new LinkInspector({model: cell.model});
     $('.inspector').append(linkInspector.el);
-
 	linkInspector.render();
  
 });
