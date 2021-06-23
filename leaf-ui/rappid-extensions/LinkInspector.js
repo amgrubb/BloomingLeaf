@@ -30,7 +30,6 @@ var LinkInspector = Backbone.View.extend({
             '<option value="NBT">Not Both (None)</option>',
             '<option value="NBD">Not Both (Denied)</option>',
         '</select>',
-        '<h5 id="repeat-error" class="inspector-error"></h5>',
             '<button id="switch-to-evolving" class="inspector-btn small-btn blue-btn">Evolving Relationships</button>',
         '<br>',
         '</div>',
@@ -40,7 +39,6 @@ var LinkInspector = Backbone.View.extend({
             '<label id="title">Evolving Relationship</label>',
             '<br>',
             '<div class="inspector-views">',
-            '<h5 id="repeat-error" class="inspector-error"></h5>',
             '<select id="link-type-begin" class="repeat-select">',
                 '<option value="" disabled selected hidden>Begin</option>',
                 '<option value="no">No Relationship</option>',
@@ -195,7 +193,6 @@ var LinkInspector = Backbone.View.extend({
     updateBeginEvolRelations: function() {
         $('#link-type-end').prop('disabled', false);
         var begin = $('#link-type-begin').val();
-        $("#repeat-error").text('');
 
         this.setValues(begin, this.link.get('postType'), true)
 
