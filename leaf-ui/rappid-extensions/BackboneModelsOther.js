@@ -23,14 +23,28 @@
  */
  var LinkBBM = Backbone.Model.extend({  
     initialize: function(options){
-        this.linkSrcID = options.linkSrcID;
-    },    
+        _.extend({}, this.defaults, options);
+    },
+
     defaults: {
-        linkDestID: null,
-        linkType:  'AND',
+        linkType:  'and',
         postType: null,
-        absTime: -1
-    }
+        absTime: -1,
+        evolving: false,
+    },
+
+    /**
+     * Checks if LinkBBM can have a valid absolute relationship
+     * 
+     * @returns Boolean
+     */
+    isValidAbsoluteRelationship: function(){
+        // If relationship is of type evolving and has a target and source, return true
+        if(this.linkType == 'NBD' || this.linkType == 'NBT' || this.postType != null){
+            return (this.linkSrcID != null && this.linkDestID != null);
+        }
+        return false;
+    },
 });
 
 
@@ -46,29 +60,43 @@ var UserEvaluationBBM = Backbone.Model.extend({
     }
 });
 
+var UserEvaluationCollection = Backbone.Collection.extend({
+    model: UserEvaluationBBM
+});
+
 /** 
  * Backbone Model of Constraints
  */
 var ConstraintBBM = Backbone.Model.extend({
-    initialize: function(options){ 
-        this.type = options.type;               // Options are '=', '<', and '<='
-        this.srcID = options.srcID;
-        this.destID = options.destID;
-        this.srcRefTP = options.srcRefTP;       // Reference Time Point A,B,C, etc.
-        this.destRefTP = options.destRefTP;     // Reference Time Point A,B,C, etc.
-        /* Absolute time points are only used with the '=' type of operator.
-         *   If a timepoint is not given -1 should be assigned as the default value.
-         */   
-        if (options.absTP == 'undefined') {
-            if (this.type  == '<' || this.type == '<='){
-                this.absTP = null; 
-            }else{
-                this.absTP = -1;
-            }
-        }else{
-            this.absTP = this.absTP;
-        }
- 
+    initialize: function(options){
+        _.extend({}, this.defaults, options)
     },
+
+    defaults: {
+        type: null,           // Options are '=', '<', and '<='
+        srcID: null,
+        destID: null,
+        srcRefTP: null,       // Reference Time Point A,B,C, etc.
+        destRefTP: null,      // Reference Time Point A,B,C, etc.
+        /** 
+         * Absolute time points are only used with the '=' type of operator.
+         *  If a timepoint is not given -1 should be assigned as the default value.
+         */   
+        absTP: -1,
+    },
+
+    /**
+     * Checks if type of constraint is null
+     * If so, constraint has not been fully assigned
+     */
+    isComplete: function(){
+        return (!this.get('type') == null);
+    },
+
 });
+
+var ConstraintCollection = Backbone.Collection.extend({
+    model: ConstraintBBM
+});
+
 

@@ -68,8 +68,6 @@ var ConfigModel = Backbone.Model.extend({
         action: null,
         conflictLevel: "S",
         numRelTime: "1",
-        absTimePts: "",
-        absTimePtsArr: [],
         currentState: "0",
         userAssignmentsList : [],
         previousAnalysis: null,
