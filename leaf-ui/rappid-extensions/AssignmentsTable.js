@@ -126,8 +126,8 @@ var AssignmentsTable = Backbone.View.extend({
     loadRelativeIntentions: function(){
         for (let constraint in this.model.get('constraints')){
             var relIntentionRow = new RelativeIntentionView({model: constraint, new: false});
-        $('#rel-intention-assigments').append(relIntentionRow.el);
-        relIntentionRow.render();
+            $('#rel-intention-assigments').append(relIntentionRow.el);
+            relIntentionRow.render();
         }
     },
 
@@ -212,7 +212,7 @@ var RelativeIntentionView = Backbone.View.extend({
         '<td> <div class="epochLists"><select id="relationshipLists">',
             '<option selected>...</option>',
             '<option value="eq">=</option><option value="lt"><</option></select></div></td>',
-        '<td> <div class="epochLists"><select id="epoch2List><option selected>...</option></select></div></td>',
+        '<td> <div class="epochLists"><select id="epoch2List"><option selected>...</option></select></div></td>',
         '<td><i class="fa fa-trash-o fa-2x" id="removeConstraint" aria-hidden="true"></i></td></tr>',
         '</script>'
     ].join(''),
