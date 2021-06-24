@@ -614,10 +614,62 @@ var IntentionUserEvaluationsView = Backbone.View.extend({
         this.allAbsoluteTimePoints = options.allAbsoluteTimePoints
     },
 
-    template: [].join(''),
+    template: [
+        '<script type="text/template" id="intention-user-eval-template">',
+        '<tr class="intention-row>',
+            '<td> INTENTION NAME HERE </td>',
+            'INITIAL VALUE HERE',
+        '</tr>',
+        '</script>'
+    ].join(''),
 
     render: function(){
-
+        this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
+        this.loadSelect();
     },
+
+    loadSelect: function(){
+        func = this.model.get('functionType');
+        initSatValue = this.model.get('initialSatValue');
+        functionSegments = this.model.getFuncSegments();
+        for (let absTimePt of this.allAbsoluteTimePoints){
+            /** Check func type */
+                // If I,D,C,R
+                    /** get options from init value (funcSeg[0]?),final */
+                // If MP, MN, CR, etc
+                    /** 
+                     * Check every funcSeg to see if there 
+                     * is an assigned time that matches
+                     * (func seg -> startAT)
+                     * 
+                     * Uses absTimePt, intention init value & final value
+                     * final value from functionSegList either 0 or 1 index
+                     * 
+                     * need to clarify additional logic w alicia
+                     */
+                // If UD
+                    /**
+                     * Get all func segments
+                     * Need funcType and funcX for each segment
+                     * need to clarify logic on absTP with alicia
+                     */
+
+
+            var selectUserEvaluationView = new SelectUserEvaluationView({absTimePt: absTimePt, });
+            $('.intention-row').append(selectUserEvaluationView.el);
+            selectUserEvaluationView.render();
+        }
+    }
+
+}),
+
+var SelectUserEvaluationView = Backbone.View.extend({
+    model: UserEvaluation,
+
+    initialize: function(options){
+        this.absTimePt = options.absTimePt;
+        this.intention = options.intention;
+        this.functionSegmentList = options.functionSegmentList;
+    }
 
 })
