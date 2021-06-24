@@ -166,7 +166,8 @@ var IntentionBBM = Backbone.Model.extend({
      * @param {*} initValue 
      */
     changeInitialSatValue: function(initValue) {
-        var intentionEval = graph.get('userEvaluationList').get(this.get('cid'), '0');
+        // var intentionEval = graph.get('userEvaluationList').(this.get('cid'), '0');
+        var intentionEval = graph.getUserEvaluationBBM(this.get('cid'), '0');
         intentionEval.get('assignedEvidencePair') = initValue;
  
         // if there is only one function segment, and its constant, then we need to
