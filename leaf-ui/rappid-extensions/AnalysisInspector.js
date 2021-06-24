@@ -14,8 +14,6 @@ var AnalysisInspector = Backbone.View.extend({
 		'<div class="inspector-views">',
 		'<h2 style="text-align:center; width:100%;margin-top:6px;margin-bottom:0px">Analysis</h2>',
 		'<hr>',
-		//'<button id="btn-view-intermediate" class="analysis-btns inspector-btn sub-label green-btn">Intermediate Values</button>',
-		//'<hr>',
 		'<h3> Simulation Start: 0 </h3>',
 		'<label class="sub-label"> Conflict Prevention Level </label>',
 		'<select id="conflict-level" class="sub-label" style="height:30px;">', 
@@ -34,7 +32,6 @@ var AnalysisInspector = Backbone.View.extend({
 		'</script>'].join(''),		
 	
 	events: {
-		//'click #btn-view-intermediate': 'openIntermediateValuesTable',
 		'click .closeIntermT': 'dismissIntermTable',
 		'click #btn-single-path': 'singlePath',	
 		'click #btn-all-next-state': 'getAllNextStates',
@@ -89,17 +86,6 @@ var AnalysisInspector = Backbone.View.extend({
 		}
 	},
 
-	/**
-	 * Creates, attaches, and renders view for the IVT
-	 */
-	/** 
-	openIntermediateValuesTable: function(){
-		var intermediateValuesTable = new IntermediateValuesTable({model: this.model});
-		this.$('.analysis-sidebar').append(intermediateValuesTable.el);
-		intermediateValuesTable.render();
-
-	},
-*/
 	/**
 	 * Simulate Single Path - Step 1 - Set up analysis request object. 
 	 * Retrieves information about the current model and sends to the backend
