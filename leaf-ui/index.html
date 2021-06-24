@@ -93,23 +93,30 @@
 
             <button id="btn-view-assignment" class="blue-btn btn" style="position:relative; border-radius:none;">View Assignments List</button>
             <div id="assignments-list"></div>
+
             <!--This is the modal box of assignments-->
-            <!-- <div id = "take-break" style='display: none'></div>
-            </div> -->
-            <div id="take-break" class="dropdown" style='display: none'>
-                <!-- <button id="modeling-btn" class="red-btn btn">Model</button> -->
-                <button id="analysis-para-btn" class="green-btn btn" >Analysis Paras</a>
-                <button id="simulate-path-btn" class="green-btn btn" >Simulate Single Path</a>
-                <button id="next-state-btn" class="green-btn btn" >Next State</a>
-                <!-- <div class="dropdown-toolbar">
-                    <a id="model-cur-btn">From Initial State</a>
-                </div> -->
+            <!-- Analysis parameters drop-down menu -->
+            <div id="analysis-dropdown" class="dropdown" style='display: none'>
+                <button id="analysis-para-btn" class="blue-btn btn">Analysis Parameters</button>
+                <div class="dropdown-toolbar">
+                    <a id="conflict-level-specifier">Conflict Level</a>
+                    <a id="num-rel-time-points">Number of Relative Time Points</a>
+                </div>
             </div>
+
+            <!-- Simulate single path button -->
+            <div id="simulate-single-path" class="dropdown" style='display: none'>
+                <button id="simulate-path-btn" class="darkgreen-btn btn" style="border-radius:none">Simulate Single Path</a>
+            </div>
+
+            <!-- Next state button -->
+            <div id="next-state" class="dropdown" style='display: none'>
+                <button id="state-specifier" class="lightgreen-btn btn" style="border-radius:none">Explore Possible Next States</a>
+            </div>
+
+            <!-- Model dropdown menu -->
             <div id="dropdown-model" class="dropdown" style='display: none'>
                 <button id="modeling-btn" class="red-btn btn">Model</button>
-                <!-- <button id="analysis-para-btn" class="green-btn btn" >Analysis Paras</a>
-                <button id="simulate-path-btn" class="green-btn btn" >Simulate Single Path</a>
-                <button id="next-state-btn" class="green-btn btn" >Next State</a> -->
                  <div class="dropdown-toolbar">
                     <a id="model-cur-btn">From Initial State</a>
                 </div>

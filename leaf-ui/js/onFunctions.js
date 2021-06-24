@@ -424,6 +424,9 @@ function switchToAnalysisMode() {
 	$('#cycledetect-btn').css("display", "none");
     $('#take-break').css("display", "");
     $('#dropdown-model').css("display", "");
+    $('#analysis-dropdown').css("display",""); 
+    $('#next-state').css("display",""); 
+    $('#simulate-single-path').css("display",""); 
     //$('#on-off').css("display", "none");
 
     // hide extra tools from modelling mode
@@ -529,6 +532,9 @@ function switchToModellingMode() {
 	$('#cycledetect-btn').css("display","");
     $('#take-break').css("display", "none");
     $('#dropdown-model').css("display","none");
+    $('#analysis-dropdown').css("display","none"); 
+    $('#next-state').css("display","none"); 
+    $('#simulate-single-path').css("display","none"); 
     $('#on-off').css("display", "");
 
     // show extra tools for modelling mode
