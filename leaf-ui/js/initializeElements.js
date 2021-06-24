@@ -78,8 +78,6 @@ var model = new Model();
 var analysisRequest = new AnalysisRequest();        //TODO: make not global!
 var analysisResult = new AnalysisResult();
 
-
-var linkInspector = new LinkInspector();
 var configCollection = new ConfigCollection([]);
 var configInspector = new ConfigInspector({collection:configCollection});
 
@@ -241,7 +239,7 @@ paper = new joint.dia.Paper({
     gridSize: 10,
     perpendicularLinks: false,
     model: graph,
-    defaultLink: new joint.dia.Link({
+    defaultLink: new joint.dia.CellLink({
 		'attrs': {
 			'.connection': {stroke: '#000000'},
 			'.marker-source': {'d': '0'},
@@ -298,9 +296,6 @@ var res = new joint.shapes.basic.Resource({ position: {x: 50, y: 250} });
 var act = new joint.shapes.basic.Actor({ position: {x: 40, y: 355} });
 
 stencil.load([goal, task, sgoal, res, act]);
-
-// Setup LinkInspector
-$('.inspector').append(linkInspector.el);
 
 $('#slider').width($('#paper').width() * 0.8);
 $('#slider').css("margin-top", $(window).height() * 0.9);
