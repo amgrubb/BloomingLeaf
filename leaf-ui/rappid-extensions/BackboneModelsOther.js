@@ -31,10 +31,10 @@
     },
 
     defaults: {
-        linkDestID: null,
-        linkType:  'AND',
+        linkType:  'and',
         postType: null,
-        absTime: -1
+        absTime: -1,
+        evolving: false,
     },
 
     /**
