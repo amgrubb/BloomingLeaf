@@ -171,9 +171,14 @@ var AssignmentsTable = Backbone.View.extend({
      */
     displayAbsoluteRelationshipAssignments: function(){
         this.model.getLinks().forEach(linkCell => {
+            console.log(linkCell)
             linkBbm = linkCell.get('link');
-            if(linkBbm.isValidAbsoluteRelationship()){
-                var linkRelationshipView = new LinkRelationshipView({model: linkBbm});
+            if(linkCell.isValidAbsoluteRelationship()){
+                var sourceName = linkCell.getSourceElement().get('intention').get('nodeName');
+                var targetName = linkCell.getTargetElement().get('intention').get('nodeName');
+                console.log(sourceName);
+                console.log(targetName)
+                var linkRelationshipView = new LinkRelationshipView({model: linkBbm, linkSrc: sourceName, linkDest: targetName});
                 $('#link-list').append(linkRelationshipView.el);
                 linkRelationshipView.render();
             }
@@ -361,10 +366,16 @@ var IntentionRelationshipView = Backbone.View.extend({
 var LinkRelationshipView = Backbone.View.extend({
     model: LinkBBM,
 
+    initialize: function(options){
+        this.linkSrc = options.linkSrc;
+        this.linkDest = options.linkDest;
+        console.log(this.linkSrc)
+    },
+
     template: [
         '<script type="text/template" id="item-template">',
-        '<tr><td> <%= linkType %> </td><td> <%= linkSrcID %> </td>',
-        '<td> <%= linkDestID %> </td>',
+        '<tr><td> <%= linkType %> </td><td> <%= linkSrc %> </td>',
+        '<td> <%= linkDest %> </td>',
         '<td><input id="linkAbsRelation" type="number" name="sth" value= "<% if (linkAbsTime === -1) {%> "" <%} else { %> linkAbsTime <% } %>" ></td>',
         '<td><button id="unassign-abs-rel-btn" > Unassign </button></td> </tr>',
         '</script>'
@@ -376,7 +387,9 @@ var LinkRelationshipView = Backbone.View.extend({
     },
 
     render: function(){
-        this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
+        console.log(Object.assign(this.model, this.linkSrc, this.linkDest).toJSON())
+        this.$el.html(_.template($(this.template).html())(Object.assign(this.model, this.linkSrc, this.linkDest).toJSON()));
+        console.log("rendering")
         return this;
     },
 

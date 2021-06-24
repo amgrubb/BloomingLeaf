@@ -225,6 +225,19 @@ joint.dia.CellLink = joint.dia.Link.extend({
             }
         }
     },
+
+    /**
+     * Checks if LinkBBM can have a valid absolute relationship
+     * 
+     * @returns Boolean
+     */
+     isValidAbsoluteRelationship: function(){
+        // If relationship is of type evolving and has a target and source, return true
+        if(this.get('link').get('linkType') == 'NBD' || this.get('link').get('linkType') == 'NBT' || this.get('link').get('postType') != null){
+            return (this.get('source') != null && this.get('target') != null);
+        }
+        return false;
+    },
 });
 
 
