@@ -42,7 +42,12 @@ joint.dia.BloomingGraph = joint.dia.Graph.extend({
             return cell[0]
         }
         return null;
-    }
+    },
+
+    getUserEvaluationBBM: function(absTP, cid) {
+
+        return this.constraints.findWhere({absTP: absTP, cid: cid});
+    },
 
 })
 
