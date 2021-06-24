@@ -111,7 +111,7 @@ $('#btn-view-assignment').on('click', function() {
 
 $('#btn-view-intermediate').on('click', function() {
     var intermediateValuesTable = new IntermediateValuesTable({model: graph});
-	$('.intermediate-table').append(intermediateValuesTable.el);
+	$('#intermediate-table').append(intermediateValuesTable.el);
 	intermediateValuesTable.render();
 });
 
