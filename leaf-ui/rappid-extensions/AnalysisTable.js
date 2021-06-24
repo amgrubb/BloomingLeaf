@@ -10,11 +10,11 @@
  * 
  * It can currently be accessed by a "View Assignments List" button in the toolbar
  */
- var AssignmentsTable = Backbone.View.extend({
+ var AnalysisTable = Backbone.View.extend({
     model: joint.dia.BloomingGraph,
 
     template: ['<script type="text/template" id="assignments-template">',
-    '<div id="assignmentsModal" class="modal" style="margin-left:110px">',
+    '<div id="analysisModal" class="modal" style="margin-left:110px">',
     '<div class="modal-content">',
     '<div class="modal-header">',
     '<span class="close">&times;</span>',

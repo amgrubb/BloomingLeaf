@@ -96,13 +96,7 @@
 
             <!--This is the modal box of assignments-->
             <!-- Analysis parameters drop-down menu -->
-            <div id="analysis-dropdown" class="dropdown" style='display: none'>
-                <button id="analysis-para-btn" class="blue-btn btn">Analysis Parameters</button>
-                <div class="dropdown-toolbar">
-                    <a id="conflict-level-specifier">Conflict Level</a>
-                    <a id="num-rel-time-points">Number of Relative Time Points</a>
-                </div>
-            </div>
+            <button id="analysis-menu" class="blue-btn btn" style='display: none'>Analysis Parameters</button>
 
             <!-- Simulate single path button -->
             <div id="simulate-single-path" class="dropdown" style='display: none'>
@@ -190,6 +184,8 @@
         <script src="./rappid-extensions/BackboneModelsOther.js"></script>
         <script src="./rappid-extensions/AnalysisModels.js"></script>
         <script src="./rappid-extensions/AssignmentsTable.js"></script>
+        <!-- new addition -->
+        <script src="./rappid-extensions/AnalysisTable.js"></script>
         <script src="./rappid-extensions/ElementInspector.js"></script>
         <script src="./rappid-extensions/ConfigInspector.js"></script>
         <script src="./rappid-extensions/IntermediateValues.js"></script>
@@ -197,6 +193,7 @@
         <script src="./rappid-extensions/LinkInspector.js"></script>
         <script src="./rappid-extensions/AnalysisInspector.js"></script>
         <script src="./rappid-extensions/joint.extensions.js"></script>
+       
 
         <!-- Front end scripts -->
         <script src="./js/initializeElements.js"></script>
