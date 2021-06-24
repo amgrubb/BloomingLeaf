@@ -201,8 +201,14 @@ var LinkInspector = Backbone.View.extend({
         $('option').show(); // Clear the previous selection
         if (begin == 'and' || begin == 'or'){
             $('option.B').hide(); // Hide options incompatible with and/or selection such as +,-,++S, etc
+            if($('#link-type-end :selected').attr('class') == 'B'){
+                this.setValues(begin, null, true)
+            }
         } else if (begin != 'no') {
             $('option.A').hide(); // Hide options incompatible with +,-,++S, etc selection such as and/or
+            if($('#link-type-end :selected').attr('class') == 'A'){
+                this.setValues(begin, null, true)
+            }
         }
         $('#link-type-end option[value= \'' + begin + '\']').hide(); // Hide already selected linkType value
     },
@@ -272,6 +278,7 @@ var LinkInspector = Backbone.View.extend({
             this.link.set('linkType', linkType);
             this.link.set('postType', postType);
             this.model.label(0, {position: 0.5, attrs: {text: {text: linkType + " | " + postType}}});
+            $('#link-type-end').val(this.link.get('postType'));
         } else{
             this.link.set('linkType', linkType);
             this.model.set('postType', null);
