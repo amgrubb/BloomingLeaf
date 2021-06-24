@@ -422,7 +422,7 @@ function switchToAnalysisMode() {
     $('#analysis-btn').css("display", "none");
 	$('#symbolic-btn').css("display", "none");
 	$('#cycledetect-btn').css("display", "none");
-    $('#takeABreak').css("display", "");
+    $('#take-break').css("display", "");
     $('#dropdown-model').css("display", "");
     //$('#on-off').css("display", "none");
 
@@ -527,7 +527,7 @@ function switchToModellingMode() {
     $('#analysis-btn').css("display","");
 	$('#symbolic-btn').css("display","");
 	$('#cycledetect-btn').css("display","");
-    $('#takeABreak').css("display", "none");
+    $('#take-break').css("display", "none");
     $('#dropdown-model').css("display","none");
     $('#on-off').css("display", "");
 

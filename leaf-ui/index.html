@@ -70,7 +70,7 @@
                 <a href="./userguides/documentation.pdf" download='documentation.pdf'">Download Documentation</a>
                 <a id="legend">Legend</a>
                 <a id="evo-color-key">EVO Color Key</a>
-                <!-- <a id="load-sample">Load Sample Model</a> --> 
+                <!-- <a id="load-sample">Load Sample Model</a> -->
 
                 <a id = "colorblind-mode-isOff"> Turn on EVO Colorblind Mode</a>
                 <a id = "colorblind-mode-isOn" style='display: none'> Turn off EVO Colorblind Mode</a>
@@ -90,20 +90,29 @@
               <p id = "top-label-analysis" style = "display: inside" >EVO</p> <!-- sat slider label -->
               <p id = "on-off"> Off &ensp; % &ensp; Time &ensp; State </p> <!--  on/off label -->
             </div>
-            
+
             <button id="btn-view-assignment" class="blue-btn btn" style="position:relative; border-radius:none;">View Assignments List</button>
             <div id="assignments-list"></div>
             <!--This is the modal box of assignments-->
-            <div id = "takeABreak" style='display: none'>
-                <div id="dropdown-model" class="dropdown" style='display: none'>
-                    <button id="modeling-btn" class="red-btn btn">Model</button>
-                    <div class="dropdown-toolbar">
-                        <a id="model-cur-btn">From Initial State</a>
-                    </div>
-                </div>
+            <!-- <div id = "take-break" style='display: none'></div>
+            </div> -->
+            <div id="take-break" class="dropdown" style='display: none'>
+                <!-- <button id="modeling-btn" class="red-btn btn">Model</button> -->
                 <button id="analysis-para-btn" class="green-btn btn" >Analysis Paras</a>
                 <button id="simulate-path-btn" class="green-btn btn" >Simulate Single Path</a>
                 <button id="next-state-btn" class="green-btn btn" >Next State</a>
+                <!-- <div class="dropdown-toolbar">
+                    <a id="model-cur-btn">From Initial State</a>
+                </div> -->
+            </div>
+            <div id="dropdown-model" class="dropdown" style='display: none'>
+                <button id="modeling-btn" class="red-btn btn">Model</button>
+                <!-- <button id="analysis-para-btn" class="green-btn btn" >Analysis Paras</a>
+                <button id="simulate-path-btn" class="green-btn btn" >Simulate Single Path</a>
+                <button id="next-state-btn" class="green-btn btn" >Next State</a> -->
+                 <div class="dropdown-toolbar">
+                    <a id="model-cur-btn">From Initial State</a>
+                </div>
             </div>
 
             <!-- OLD Button to switch between Constraint view and the Relationship view.
@@ -111,7 +120,7 @@
 		      <button id="symbolic-btn" class="blue-btn btn">Model Constraints</button>-->
             <button id="analysis-btn" class="green-btn btn" style="border-radius:none;">Analysis</button>
         </div>
-         
+
         <div id="stencil" class="left-panel"><label>Stencil</label></div>
         <!-- <div id="analysis-sidebar" class="left-panel" style="display:none"><h3 style="text-align:left; color:#181b1fe3; margin-bottom:5px; margin-left: 10px;">Analysis
             <div id="addConfig" style="display:inline">
@@ -120,12 +129,12 @@
             <div id="configurations" class="left-panel" style="margin-top:20px; overflow-y:auto; height:69%; box-shadow: none;"></div>
         </div> -->
 
-        <div id='config'> 
+        <div id='config'>
         </div>
 
         <div id="paper">
         </div>
-        
+
         <div class="inspector">
             <div id="layout"></div>
         </div>
