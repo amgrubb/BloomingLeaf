@@ -866,16 +866,24 @@ paper.on({
                         // unembed intention from old actor
                         if (cell.get('parent')) {
                             graph.getCell(cell.get('parent')).unembed(cell);
-
+                            /** 
                             // remove nodeID from actor intentionIDs list
                             var userIntention = model.getIntentionByID(cell.attributes.nodeID);
                             if (userIntention.nodeActorID !== '-') {
                                 var actor = model.getActorByID(userIntention.nodeActorID);
                                 actor.removeIntentionID(userIntention.nodeID);
                             }
+                            */
                         }
                         // embed element in new actor
-                        embedBasicActor(cell);
+                        var overlapCells = paper.findViewsFromPoint(cell.getBBox().center());
+
+                        // find actors which overlap with cell
+                        overlapCells = overlapCells.filter(view => view.model instanceof joint.shapes.basic.Actor);
+                        if (overlapCells.length > 0) {
+                            var actorCell = overlapCells[0].model;
+                            actorCell.embed(cell);
+                        }
                     }
                 }
             }
@@ -955,38 +963,6 @@ function removeHighlight(){
         cell.unhighlight();
     }
 }
-
-/**
- * Embeds an element into an actor boundary
- *
- * @param {joint.dia.cell} cell
- */
-function embedBasicActor(cell) {
-    // returns actors, intentions, etc. which overlap with this cell
-    // including the cell itself
-    var overlapCells = paper.findViewsFromPoint(cell.getBBox().center());
-
-    // find actors which overlap with cell
-    overlapCells = overlapCells.filter(view => view.model instanceof joint.shapes.basic.Actor);
-
-    // cell is over at least one actor
-    if (overlapCells.length > 0) {
-        for (var i = 0; i < overlapCells.length; i++) {
-            // embed intention in each actor
-            var actorCell = overlapCells[i].model;
-            actorCell.embed(cell);
-            var nodeID = cell.attributes.nodeID;
-            var actorID = actorCell.attributes.nodeID
-            model.getIntentionByID(nodeID).nodeActorID = actorID;
-            model.getActorByID(actorID).addIntentionID(nodeID);
-        }
-    } else {
-        // intention not over any actor
-        var nodeID = cell.attributes.nodeID;
-        model.getIntentionByID(nodeID).nodeActorID = "-";
-    }
-}
-
 
 graph.on('change:size', function(cell, size) {
 	cell.attr(".label/cx", 0.25 * size.width);
