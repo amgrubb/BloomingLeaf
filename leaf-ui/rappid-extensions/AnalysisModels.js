@@ -14,6 +14,7 @@ var ResultModel = Backbone.Model.extend({
 
     defaults: {
         analysisResult: new AnalysisResult(),
+        name:"Default Result", 
     },
 });
 
@@ -66,6 +67,7 @@ var ConfigModel = Backbone.Model.extend({
         selected: true,
         results : new ResultCollection([]), 
         graph: null, 
+        conflictLevel: 1,
     },
 
     /**
@@ -89,12 +91,10 @@ var ConfigModel = Backbone.Model.extend({
  * Analysis Parameters 
  */
 
-var ConfigAnalysis = Backbone.Model.extend ({ 
+var AnalysisParametersBBM = Backbone.Model.extend ({ 
     initialize : function(options){
         _.extend({}, this.defaults, options); 
     },
-
-    idAttribute: "uid",
 
     defaults: {
         conflictLevel: "S",

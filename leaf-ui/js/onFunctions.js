@@ -87,25 +87,6 @@ window.onclick = function(event) {
 //     row.remove();
 // });
 
-$('#analysis-menu').on('click', function() {
-    var analysisModal = new AnalysisTable({model: graph});
-    $('#assignments-list').append(analysisModal.el);
-    analysisModal.render();
-	// epochLists = [];
-	// graph.constraintValues = [];
-	// var modal = document.getElementById('assignmentsModal');
-
-	// // Clear all previous table entries
-	// $(".abs-table").find("tr:gt(0)").remove();
-
-	// // Display the modal by setting it to block display
-	// modal.style.display = "block";
-
-
-	// displayAbsoluteIntentionAssignments();
-	// displayAbsoluteRelationshipAssignments();
-});
-
 /**
  * Displays the absolute and relative assignments modal for the user.
  */
@@ -434,6 +415,10 @@ function switchToAnalysisMode() {
 	
 	removeHighlight();
     
+    var analysisInspector = new AnalysisInspector({model: AnalysisParametersBBM});
+
+    $('.inspector').append(analysisInspector.el);
+    analysisInspector.render();
     $('#config').append(configInspector.el);
     configInspector.render();
 	$('#stencil').css("display", "none");
@@ -443,7 +428,6 @@ function switchToAnalysisMode() {
 	$('#cycledetect-btn').css("display", "none");
     $('#take-break').css("display", "");
     $('#dropdown-model').css("display", "");
-    $('#analysis-menu').css("display",""); 
     $('#next-state').css("display",""); 
     $('#simulate-single-path').css("display",""); 
     //$('#on-off').css("display", "none");
@@ -551,7 +535,6 @@ function switchToModellingMode() {
 	$('#cycledetect-btn').css("display","");
     $('#take-break').css("display", "none");
     $('#dropdown-model').css("display","none");
-    $('#analysis-menu').css("display","none"); 
     $('#next-state').css("display","none"); 
     $('#simulate-single-path').css("display","none"); 
     $('#on-off').css("display", "");

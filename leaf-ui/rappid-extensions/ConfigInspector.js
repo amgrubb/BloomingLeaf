@@ -106,7 +106,8 @@ var Config = Backbone.View.extend({
         this.model.on('change:name', this.renderName, this);
     },
 
-    template: ['<script type="text/template" id="item-template">',
+    template: [
+    '<script type="text/template" id="item-template">',
     '<div class="analysis-configuration" id="<%= name %>">',
         '<button class="config-elements" <% if (selected) { %> style="background-color:#A9A9A9;" <%} %> >',
         '<%= name %> </button>',
@@ -135,7 +136,7 @@ var Config = Backbone.View.extend({
     render: function() {
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
         this.$('.analysis-configuration').append(this.innerView.$el);
-        //this.showAnalysisInspector();
+        this.showAnalysisInspector();
         return this;
     },
 

@@ -8,14 +8,13 @@ var absoluteTimeValues;
 var saveIVT;
 var AnalysisInspector = Backbone.View.extend({
 	className: 'analysis-inspector',
-	model: ConfigModel,
+	model: AnalysisParametersBBM,
 	
 	template: ['<script type="text/template" id="item-template">',
 		'<div class="inspector-views">',
 		'<h2 style="text-align:center; width:100%;margin-top:6px;margin-bottom:0px">Analysis</h2>',
 		'<hr>',
-		'<h3> Simulation Start: 0 </h3>',
-		'<label class="sub-label"> Conflict Prevention Level </label>',
+		'<h2> Simulation Start: 0 </h2>',
 		'<select id="conflict-level" class="sub-label" style="height:30px;">', 
 			'<option value=S <% if (conflictLevel === "S") { %> selected <%} %>> Strong </option>',
 			'<option value=M <% if (conflictLevel === "M") { %> selected <%} %>> Medium </option>',
@@ -46,6 +45,7 @@ var AnalysisInspector = Backbone.View.extend({
 
 	/** Sets template and injects model parameters */
 	render: function () { 
+		console.log(this.model);
 		this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
 		// These functions are used to communicate between analysisInspector and Main.js
 		$('head').append('<script src="./js/analysis.js"></script>');
