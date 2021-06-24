@@ -4,6 +4,10 @@ var ENTER_KEY = 13;
 var ActorInspector = Backbone.View.extend({
         model: joint.shapes.basic.Actor,
         
+        initialize: function() {
+            this.actor = this.model.get('actor');
+        },
+
         template: [
             '<script type="text/template" id="item-template">',
             '<div class="inspector-views">',
@@ -18,8 +22,7 @@ var ActorInspector = Backbone.View.extend({
             '</div>',
             '</script>'
         ].join(''),
-
-    
+  
         events: {
             'keyup .cell-attrs-text': 'nameAction',
             'change #actor-type-ID': 'updateType', 
@@ -31,10 +34,9 @@ var ActorInspector = Backbone.View.extend({
          */
         render: function() {
             // If the clicked node is an actor, render the actor inspector
-            this.$el.html(_.template($(this.template).html())(this.model.get('actor').toJSON()));
-            console.log(this.model.get('actor'))
-        },
+            this.$el.html(_.template($(this.template).html())(this.actor.toJSON()));
 
+        },
 
         /**
          * Updates the selected actor's name.
@@ -48,9 +50,8 @@ var ActorInspector = Backbone.View.extend({
 
             // Do not allow special characters in names, replace them with spaces.
             var text = this.$('.cell-attrs-text').val().replace(/[^\w\n-]/g, ' ');
-
             this.model.attr({ '.name': {text: text }});
-            this.model.get('actor').set('actorName', text);
+            this.actor.set('actorName', text);
 
         },
         /**
@@ -64,9 +65,12 @@ var ActorInspector = Backbone.View.extend({
          */
         updateType: function(){
             var actorType = $('#actor-type-ID').val();
+
             //TODO use the following code and find a method to directly listen to the model instead of taking the information from the interface, 
             //current problem is that actorType is within the actor parameter (actorBBM) but is dealing with attributes from the basic.Actor model
             this.model.get('actor').set('type', actorType);
+
+            this.actor.set('type', actorType);
             if (actorType== 'G') {
                 this.model.attr({'.line': {'ref': '.label',
                 'ref-x': 0,
