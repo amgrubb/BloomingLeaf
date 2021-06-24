@@ -782,7 +782,7 @@ var element_counter = 0;
 
 // Whenever an element is added to the graph
 graph.on("add", function(cell) {
-
+    var createdInstance = paper.findViewsInArea(paper.getArea())  
 	if (cell instanceof joint.dia.Link){
         if (graph.getCell(cell.get("source").id) instanceof joint.shapes.basic.Actor){
             cell.prop("linktype", "actorlink");
@@ -797,8 +797,8 @@ graph.on("add", function(cell) {
 		cell.attr('.funcvalue/text', ' ');
 
 	} else if (cell instanceof joint.shapes.basic.Actor) {
-        //TODO: right now there are two parameters the actor model in the joint.extensions file that hold the same information (attrs.name & actorName), find a way for actor inspector to be able to access attrs.name in the template script so that actorName is not needed
-		var name = cell.attr('.name/text') + "_" + Actor.numOfCreatedInstances;
+        createdInstance = createdInstance.filter(view => view.model instanceof joint.shapes.basic.Actor);
+		var name = cell.attr('.name/text') + "_" + (createdInstance.length-1);
 	    cell.set('actor', new ActorBBM({actorName: name}));
         cell.attr(".name/text", name);
 
@@ -1043,7 +1043,9 @@ function embedBasicActor(cell) {
             model.getActorByID(actorID).addIntentionID(nodeID);
         }
     } else {
-        // TODO: reset actorID to null in cell
+        // intention not over any actor
+        var nodeID = cell.attributes.nodeID;
+        model.getIntentionByID(nodeID).nodeActorID = "-";
     }
 }
 
