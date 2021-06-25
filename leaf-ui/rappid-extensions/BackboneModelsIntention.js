@@ -152,6 +152,9 @@ var IntentionBBM = Backbone.Model.extend({
     getFuncSegments: function(){
         evolvingFunc = this.get('evolvingFunction');
         if (evolvingFunc != null){
+            if(evolvingFunc.get('functionSegList').length < 1 ) {
+                return [];
+            }
             return evolvingFunc.get('functionSegList');
         }
         return null;
@@ -229,8 +232,11 @@ var IntentionBBM = Backbone.Model.extend({
      * @param {String} funcType
      */
     setEvolvingFunction: function(funcType) {
-        this.evolvingFunction.set('type', funcType);
-        this.evolvingFunction.set('functionSegList', []);
+        this.evolvingFunction = new EvolvingFunctionBBM({type: funcType});
+        console.log(this.evolvingFunction);
+        console.log(this.getFuncSegments());
+        // this.evolvingFunction.set('type', funcType);
+        // this.evolvingFunction.set('functionSegList', []);
 
         // Since function changed, remove all current absolute constraints related to this intention
         this.removeAbsConstraint();

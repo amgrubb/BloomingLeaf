@@ -160,6 +160,7 @@ var ElementInspector = Backbone.View.extend({
 
     events: {
         'change #init-sat-value':'initSatValueChanged',
+        'click .intention-elements': 'switchModel',
         
         'change .function-type':'funcTypeChanged',
         'change .function-sat-value':'funcSatValChanged',
