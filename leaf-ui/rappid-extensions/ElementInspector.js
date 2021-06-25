@@ -255,7 +255,7 @@ var ElementInspector = Backbone.View.extend({
 //      * If not, set the function options so that all options are availible
 //      */
   checkInitialSatValue: function() {
-        
+        console.log(this.model.get('intention').getInitialSatValue());
           if (this.model.get('intention').getInitialSatValue() == '(no value)') {
           // Stochastic should be the only option for '(no value)'
               this.$('.function-type').empty();
