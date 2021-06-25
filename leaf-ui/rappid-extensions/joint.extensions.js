@@ -45,7 +45,8 @@ joint.dia.BloomingGraph = joint.dia.Graph.extend({
     },
 
     getUserEvaluationBBM: function(cid, absTP) {
-        return this.userEvaluationList.findWhere({intentionID: cid, absTP: absTP});
+        console.log(this.get('userEvaluationList'));
+        return this.get('userEvaluationList').findWhere({intentionID: cid, absTP: absTP});
     },
 
 })

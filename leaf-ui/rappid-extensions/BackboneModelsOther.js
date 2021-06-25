@@ -63,9 +63,6 @@ var UserEvaluationBBM = Backbone.Model.extend({
 var UserEvaluationCollection = Backbone.Collection.extend({
     model: UserEvaluationBBM
 
-    //getAssignedEvidencePair: function(UserEvaluation){
-
-    //}
 });
 
 /** 

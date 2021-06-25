@@ -727,21 +727,14 @@ $('#colorblind-mode-isOn').on('click', function(){ //turns off colorblind mode
  * @param {joint.dia.Cell} cell
  */
 function createIntention(cell) {
-
-    var name = cell.attr(".name/text") + "_" + Intention.numOfCreatedInstances;
-    cell.attr(".name/text", name);
-
-    // create intention object
-    var type = cell.attributes.type;
-    var intention = new Intention('-', type, name);
-    model.intentions.push(intention);
+    var newIntentionBBM = new IntentionBBM({})
+    cell.set('intention', newIntentionBBM);
+    cell.attr('.funcvalue/text', ' ');
 
     // create intention evaluation object
-    var intentionEval = new UserEvaluation(intention.nodeID, '0', '(no value)');
-    analysisRequest.userAssignmentsList.push(intentionEval);
 
-    cell.attributes.nodeID = intention.nodeID;
-
+    var intentionEval = new UserEvaluationBBM({intentionID: newIntentionBBM.cid, absTP: '0', assignedEvidencePair: '(no value)'});
+    graph.get('userEvaluationList').push(intentionEval);
 }
 
 /**
@@ -776,8 +769,9 @@ graph.on("add", function(cell) {
             cell.set('link', new LinkBBM({}));
         }
     } else if (cell instanceof joint.shapes.basic.Intention){
-		cell.set('intention', new IntentionBBM({}));
-		cell.attr('.funcvalue/text', ' ');
+        createIntention(cell);
+		// cell.set('intention', new IntentionBBM({}));
+		// cell.attr('.funcvalue/text', ' ');
 
 	} else if (cell instanceof joint.shapes.basic.Actor) {
 		createActor(cell);
