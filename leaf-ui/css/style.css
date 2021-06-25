@@ -142,9 +142,21 @@ body.waiting *
   background-color: rgba(90, 90, 90, 1);
 }
 
-#analysis-sidebar a{
+#container-sidebar{
+  margin: 0;
+  text-align: left;
   padding: 16px;
   display: block;
+}
+#config-sidebar {
+  margin-top: 25%;
+}
+
+#config-sidebar :hover {
+  background-color: #E8E8E8;
+}
+#analysis-sidebar a{
+  margin-bottom: 25%;
 }
 
 #analysis-sidebar a:hover {
