@@ -367,9 +367,12 @@ var LinkRelationshipView = Backbone.View.extend({
     model: LinkBBM,
 
     initialize: function(options){
-        this.linkSrc = options.linkSrc;
-        this.linkDest = options.linkDest;
-        console.log(this.linkSrc)
+        this.linkInfo = {
+            linkSrc: options.linkSrc,
+            linkDest: options.linkDest,
+            linkAbsTime: this.model.get('linkAbsTime'),
+            linkType: this.model.get('linkType') + " | " + this.model.get('postType')
+        }
     },
 
     template: [
@@ -387,8 +390,8 @@ var LinkRelationshipView = Backbone.View.extend({
     },
 
     render: function(){
-        console.log(Object.assign(this.model, this.linkSrc, this.linkDest).toJSON())
-        this.$el.html(_.template($(this.template).html())(Object.assign(this.model, this.linkSrc, this.linkDest).toJSON()));
+        console.log(JSON.stringify(this.linkInfo))
+        this.$el.html(_.template($(this.template).html())(JSON.stringify(this.linkInfo)));
         console.log("rendering")
         return this;
     },
