@@ -71,7 +71,7 @@ var ElementInspector = Backbone.View.extend({
 
     initialize: function() {
         this.listenTo(this, 'change: intention', this.initSatValueChanged); // init sat value
-        // this.listenTo(this, 'change: function-type', this.funcTypeChanged); // function value
+        // this.listenTo(this, 'change: intention', this.funcTypeChanged); // function value
         // are these the only ones we add? - they are the only events that change the view i think
         // correct syntax?? or is it 'change: selected'
     },
@@ -428,6 +428,8 @@ var ElementInspector = Backbone.View.extend({
         
         var funcType = this.$('.function-type').val();
         this.model.get('intention').setEvolvingFunction(funcType);
+        console.log(this.$('.function-type').val());
+        console.log(this.model.get('intention').setEvolvingFunction(funcType));
         this.updateCell(null);
         this.updateHTML(event);
         
@@ -480,7 +482,10 @@ var ElementInspector = Backbone.View.extend({
         // Check if selected init sat value and functionType pair is illegal
         this.validityCheck(event);
 
-        var functionType = this.model.get('intention').get('type');
+        if (this.model.get('intention').get('evolvingFunction') != null) {
+        var functionType = this.model.get('intention').get('evolvingFunction').get('type');
+        }
+        else { var functionType = null;}
 
         // All functions that have satisfaction value associated with it
         var funcWithSatValue = ["I", "D", "RC", "MP", "MN", "UD"];
@@ -1030,8 +1035,12 @@ var ElementInspector = Backbone.View.extend({
             
         IntentionColoring.refresh();
         changeFont(current_font, paper);
-        var funcType = this.model.get('intention').get('type');
+        if (this.model.get('intention').get('evolvingFunction') != null) {
+        var funcType = this.model.get('intention').get('evolvingFunction').get('type');
+        }
+        else {var funcType = null;}
         var initSatVal = this.model.get('intention').getInitialSatValue();
+        console.log(funcType);
 
         if (funcType == 'NT') {
             this.model.attr(".funcvalue/text", '');
