@@ -109,6 +109,16 @@ $('#btn-view-assignment').on('click', function() {
 	// displayAbsoluteRelationshipAssignments();
 });
 
+//for single path, not functioning right now 
+$('#simulate-path-btn').on('click', function() {
+    console.log("Placeholder comment for simulate single path.");
+});
+
+//for next state, not functioning right now 
+$('#state-specifier').on('click', function() { 
+    console.log("Placeholder comment for next state."); 
+}); 
+
 /**
  * Saves absolute intention and relationship assignments to the graph object
  * TODO: Check if the times users put in are valid
@@ -416,11 +426,11 @@ function switchToAnalysisMode() {
 	removeHighlight();
     
     var analysisInspector = new AnalysisInspector({model: new AnalysisParametersBBM()});
+    
     $('#analysisID').append(analysisInspector.el);
-    analysisInspector.render();
-
     $('#config').append(configInspector.el);
     configInspector.render();
+    analysisInspector.render();
 	$('#stencil').css("display", "none");
 
     $('#analysis-btn').css("display", "none");

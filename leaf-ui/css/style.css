@@ -101,12 +101,35 @@ body.waiting *
 
 
 /* Left panel */
-.left-panel{
+/* .left-panel{
   position: absolute;
   left: 0;
   top: 40px;
   bottom: 0;
   width: 200px;
+
+  background-color: #f9f9f9;
+  box-shadow: 2px 0px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+} */
+.left-panel-c{
+  position: absolute;
+  /* position: relative;  */
+  left: auto;
+  top: 200px;
+  bottom: 0;
+  width: 250px;
+
+  background-color: #f9f9f9;
+  box-shadow: 2px 0px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+.left-panel-a{
+  position: absolute;
+  left: auto;
+  top: 40px;
+  bottom: 0;
+  width: 250px;
 
   background-color: #f9f9f9;
   box-shadow: 2px 0px 16px 0px rgba(0,0,0,0.2);
@@ -117,7 +140,7 @@ body.waiting *
   position: absolute;
   left: 0;
   top: 14px;
-  bottom: 0;
+  bottom: 400px;
   right: 0;
   width: 100%;
   border: none;
@@ -142,25 +165,31 @@ body.waiting *
   background-color: rgba(90, 90, 90, 1);
 }
 
-#container-sidebar{
-  margin: 0;
-  text-align: left;
-  padding: 16px;
-  display: block;
+/** test **/ 
+.container-sidebar{
+  left: auto; 
+  width: 200px; 
 }
+
 #config-sidebar {
-  margin-top: 25%;
+  margin-top: 75px;
 }
 
 #config-sidebar :hover {
   background-color: #E8E8E8;
 }
-#analysis-sidebar a{
-  margin-bottom: 25%;
+#analysis-sidebar{
+  margin-top: 0;
 }
 
-#analysis-sidebar a:hover {
+#analysis-sidebar :hover {
   background-color: #E8E8E8;
+}
+#config {
+  height: 75%;
+}
+#analysisID{
+  height: 75%;
 }
 
 /* Right Panel */

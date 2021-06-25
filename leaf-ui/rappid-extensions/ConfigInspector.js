@@ -277,14 +277,17 @@ var ConfigInspector = Backbone.View.extend({
     collection: ConfigCollection,
 
     template: [
-        '<div id = "container-sidebar">',
-        '<div id="config-sidebar" class="left-panel"><h3 style="text-align:left; color:#181b1fe3; margin-bottom:5px; margin-left: 10px;">Analysis',
+        //'<div class="left-panel-c" id="config">',
+		'<div class="container-sidebar">',
+        '<div id="config-sidebar";>',
+        '<h3 style="text-align:left; color:#181b1fe3; margin-top:5px; margin-left: 10px;">Analysis</h3>',
         '<div id="addConfig" style="display:inline">',
             '<i class="fa fa-plus" id="addIntent" style="font-size:30px; float:right;  margin-bottom:5px; margin-right:20px;"></i>',
         '</div></h3>',
-        '<div id="configurations" class="left-panel" style="margin-top:20px; overflow-y:auto; height:69%; box-shadow: none;"></div>',
+        '<div id="configurations" style="margin-top:20px; overflow-y:auto; height:69%; box-shadow: none;"></div>',
         '</div>',
         '</div>',
+        //'</div>',
 
     ].join(''),
 

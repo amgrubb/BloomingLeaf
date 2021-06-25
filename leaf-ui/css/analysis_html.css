@@ -93,7 +93,7 @@ body.waiting *
 
 
 /* Left panel */
-.left-panel{
+/* .left-panel{
   position: absolute;
   left: 0;
   top: 40px;
@@ -103,8 +103,26 @@ body.waiting *
   background-color: #f9f9f9;
   box-shadow: 2px 0px 16px 0px rgba(0,0,0,0.2);
   z-index: 1;
-}
+} */
+.left-panel-c{
+  position: absolute;
+  /* position: relative;  */
+  left: auto;
+  top: 200px;
+  bottom: 0;
+  width: 250px;
 
+  background-color: #f9f9f9;
+  box-shadow: 2px 0px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+.left-panel-a{
+  position: absolute;
+  left: auto;
+  top: 40px;
+  bottom: 0;
+  width: 250px;
+}
 .stencil {
   position: absolute;
   left: 0;
@@ -481,6 +499,13 @@ select > .select-placeholder {
   padding: 12px 16px;
   text-decoration: none;
   display: block;
+}
+
+#config {
+  height: 75%;
+}
+#analysisID{
+  height: 75%;
 }
 
 .dropdown-toolbar a:hover {

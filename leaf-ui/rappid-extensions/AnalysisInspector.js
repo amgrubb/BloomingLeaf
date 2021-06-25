@@ -12,8 +12,10 @@ var AnalysisInspector = Backbone.View.extend({
 	
 	template: [
 		'<script type="text/template" id="item-template">',
-        '<div id= "container-sidebar">',
-		'<div id="analysis-sidebar" class="left-panel"><h3 style="text-align:left; color:#181b1fe3; margin-bottom:5px; margin-left: 10px;">Analysis Parameters',
+        //'<div class="left-panel-a" id="analysisID>',
+		'<div class="container-sidebar" >',
+		'<div id="analysis-sidebar";>',
+		'<h3 style="text-align:left; color:#181b1fe3; margin-bottom:5px; margin-left: 10px;">Analysis Parameters</h3>',
 		'<div class="inspector-views">',
 		//'<h4 style="text-align:center; width:100%;margin-top:6px;margin-bottom:0px; margin-right:20px">Analysis</h4>',
 		'<hr>',
@@ -31,6 +33,7 @@ var AnalysisInspector = Backbone.View.extend({
 		'<hr>',
 		'</div>',
 		'</div>',
+		//'</div>',
 		'</script>'].join(''),		
 	
 	events: {
@@ -59,6 +62,8 @@ var AnalysisInspector = Backbone.View.extend({
 	 */ 
 	rerender: function(){
 		this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
+		console.log("manar lazem tsht8le l2na ra7 e6rdok :( kman abde tet3alme lebnane");
+		console.log(this.model);
         return this;
 	},
 
@@ -74,6 +79,9 @@ var AnalysisInspector = Backbone.View.extend({
 	
 	/** Updates the model's conflict level based on dropdown element value*/
 	changeConflictLevel: function() {
+		
+		console.log("manar lazem tcht8le l2na ra7 e6rdoke :( kman abde tet3alme lebnane");
+		console.log(this.model);
 		this.model.set('conflictLevel', $('#conflict-level').val());
 	},
 
@@ -112,7 +120,7 @@ var AnalysisInspector = Backbone.View.extend({
 
 		this.model.set('action', 'singlePath')
 		this.model.set('currentState', '0|0')
-
+		console.log("hello");
 		// Prepare and send data to backend
 		this.sendToBackend();
 	},
