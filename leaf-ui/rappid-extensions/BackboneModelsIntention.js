@@ -72,13 +72,12 @@ var EvolvingFunctionBBM = Backbone.Model.extend({
      * does not return anything.
      */
     getNthRefEvidencePair: function(n) { 
-        console.log(this.functionSegList);
-        if (this.functionSegList != null) {
-            var len = this.functionSegList.length; 
-        if (len > 0 && index <= len) {  
-            console.log(this.functionSegList[len - n]);
-            console.log(this.functionSegList[len - n].get('refEvidencePair'));
-            return this.functionSegList[len - n].get('refEvidencePair'); 
+        console.log(this.get('functionSegList'));
+        if (this.get('functionSegList') != null) {
+            var len = this.get('functionSegList').length; 
+        if (len > 0) {  
+            var funcSegList = this.get('functionSegList');
+            return funcSegList[len - n].get('refEvidencePair'); 
         }
         
         }
@@ -238,9 +237,9 @@ var IntentionBBM = Backbone.Model.extend({
      * @param {String} funcType
      */
     setEvolvingFunction: function(funcType) {
-        if (this.evolvingFunction != null) {
-            this.evolvingFunction.set('functionSegList', []);
-        }
+        // if (this.evolvingFunction != null) {
+        //     this.evolvingFunction.set('functionSegList', []);
+        // }
         this.set('evolvingFunction', new EvolvingFunctionBBM({type: funcType}));
 
         // Since function changed, remove all current absolute constraints related to this intention
@@ -266,8 +265,11 @@ var IntentionBBM = Backbone.Model.extend({
             } else if (funcType == 'UD') {
                 var seg =  new FunctionSegmentBBM({type: 'C', refEvidencePair: initValue, startTP: '0', startAT: 0}); 
             }
+            console.log(this.get('evolvingFunction').get('functionSegList'));
+
             this.getFuncSegments().push(seg);
             console.log(seg);
+            console.log(this.get('evolvingFunction').get('functionSegList'));
         } else if (funcType == 'RC' || funcType == 'CR' || funcType == 'MP' || funcType == 'MN' || funcType == 'SD' || funcType == 'DS') {
             if (funcType == 'RC') {
                 // Stochastic and Constant
@@ -399,7 +401,7 @@ var IntentionBBM = Backbone.Model.extend({
         else { var funcType = null; }
  
         var len = this.getFuncSegments().length;
-        this.getFuncSegments()[len - 1].set('refevidencePair', satValue);
+        this.getFuncSegments()[len - 1].set('refEvidencePair', satValue);
  
         if (funcType == 'MP' || funcType == 'MN') {
             this.getFuncSegments()[0].set('refEvidencePair', satValue);
