@@ -79,6 +79,7 @@ var ElementInspector = Backbone.View.extend({
     // className: 'element-inspector',
      
     template: ['<script type="text/template" id="item-template">',
+            '<div class="inspector-views">',
             '<label>Node Name:</label>',
             '<textarea class="cell-attrs-text"></textarea>',
             '<label>Initial Satisfaction Value:</label>',
@@ -174,8 +175,8 @@ var ElementInspector = Backbone.View.extend({
         'click #constraint-add': 'addConstraint',
         'click #constraint-repeat': 'repeatConstraintControl',
         'click #constraint-restart': 'removeUserConstraints',
-        'keyup .cell-attrs-text': 'nameAction'
-        
+        'keyup .cell-attrs-text': 'nameAction',
+        'clearInspector .inspector-views' : 'removeView',
     },
 
     /**
@@ -247,6 +248,13 @@ var ElementInspector = Backbone.View.extend({
 
     switchModel: function (newCell) {
         this.model = newCell;
+    },
+
+    /**
+         * Removes the view so we don't have multiple ones in the sidebar
+         */
+     removeView: function(){
+        this.remove();
     },
 
 //     /**
