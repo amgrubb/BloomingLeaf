@@ -415,10 +415,10 @@ function switchToAnalysisMode() {
 	
 	removeHighlight();
     
-    var analysisInspector = new AnalysisInspector({model: AnalysisParametersBBM});
-
-    $('.inspector').append(analysisInspector.el);
+    var analysisInspector = new AnalysisInspector({model: new AnalysisParametersBBM()});
+    $('#analysisID').append(analysisInspector.el);
     analysisInspector.render();
+
     $('#config').append(configInspector.el);
     configInspector.render();
 	$('#stencil').css("display", "none");
@@ -528,7 +528,7 @@ function switchToModellingMode() {
     previousModel = JSON.parse(JSON.stringify(model));
 
     $('#stencil').css("display","");
-    $('#analysis-sidebar').css("display","none");
+    $('#container-sidebar').css("display","none");
     $('#btn-view-assignment').css("display","");
     $('#analysis-btn').css("display","");
 	$('#symbolic-btn').css("display","");
@@ -776,9 +776,10 @@ var element_counter = 0;
 
 // Whenever an element is added to the graph
 graph.on("add", function(cell) {
-	if (cell instanceof joint.dia.CellLink){
+
+	if (cell instanceof joint.dia.Link){
         if (graph.getCell(cell.get("source").id) instanceof joint.shapes.basic.Actor){
-            cell.prop("type", "Actor");
+            cell.prop("linktype", "actorlink");
             cell.label(0,{attrs:{text:{text:"is-a"}}});
             cell.set('link', new LinkBBM({linkType: 'is-a'}));
 		} else{
@@ -856,6 +857,8 @@ paper.on({
                 if (evt.data.move){
                     // if link moved, reparent
                     cell.reparent();
+                    // check if link still valid
+                    basicActorLink(cell);
                 }
             } else { // Non-Link behavior
 
@@ -879,9 +882,7 @@ paper.on({
                     $('.inspector').append(actorInspector.el);
                     actorInspector.render();
                 } else {
-                    var elementInspector = new ElementInspector({model: cell});
-                    $('.inspector').append(elementInspector.el);
-                    elementInspector.render();
+                    //elementInspector.render(cell);
                     // if user was dragging element
                     if (evt.data.move) {
                         // unembed intention from old actor
@@ -917,15 +918,11 @@ paper.on("link:options", function(cell, evt){
 
 	clearInspector();
     
-    if (cell.model.get('type') == 'error'){
-        alert('Sorry, this link is not valid. Links must be between two elements of the same type. Aka Actor->Actor or Intention->Intention');
-        return;
-    }
-
     var linkInspector = new LinkInspector({model: cell.model});
     $('.inspector').append(linkInspector.el);
+
 	linkInspector.render();
- 
+
 });
 
 /**
@@ -1002,7 +999,9 @@ function embedBasicActor(cell) {
             model.getActorByID(actorID).addIntentionID(nodeID);
         }
     } else {
-        // TODO: reset actorID to null in cell
+        // intention not over any actor
+        var nodeID = cell.attributes.nodeID;
+        model.getIntentionByID(nodeID).nodeActorID = "-";
     }
 }
 
@@ -1082,7 +1081,7 @@ graph.on('remove', function(cell) {
 
 
 /**
- * Clear any analysis sidebar views
+ * Clear the .inspector div
  */
 function clearInspector() {
     if($('.inspector-views').length != 0){
