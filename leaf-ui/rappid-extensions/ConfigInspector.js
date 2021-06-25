@@ -124,11 +124,14 @@ var Config = Backbone.View.extend({
 
     events: {
         'click .config-elements': 'switchConfig',
-        'click .deleteconfig-button': 'removeConfig', 
         'click .dropdown-button' : 'toggleDropdown',
         'dblclick .config-elements': 'rename',
         'blur .config-input': 'setConfigName',
-        'keyup .config-input': 'checkForEnter'
+        'keyup .config-input': 'checkForEnter',
+        'click .deleteconfig-button': function(e) {
+            this.switchConfig(e);
+            this.removeConfig(e);
+        }
     },
 
     /** Sets template and appends inner view */
@@ -169,16 +172,14 @@ var Config = Backbone.View.extend({
     removeConfig:function(){
         index = this.model.collection.indexOf(this.model);
         if (this.model.collection.length != 1){
-            this.model.collection.at(this.model.collection.length - 1).set({selected:false});
-            this.model.collection.at(index).set({selected:false});
+            this.model.collection.at(this.model.collection.length - 1).set({selected:false}); // Remove original highlight
             if (index != 0){
                 this.model.collection.at(0).set({selected:true});
             } else {
                 this.model.collection.at(1).set({selected:true});
             }
             this.model.destroy();
-        }
-        else {
+        } else {
             this.model.destroy();
         }
     },
