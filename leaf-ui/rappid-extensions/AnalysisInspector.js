@@ -15,7 +15,7 @@ var AnalysisInspector = Backbone.View.extend({
         //'<div class="left-panel-a" id="analysisID>',
 		'<div class="container-sidebar" >',
 		'<div id="analysis-sidebar";>',
-		'<h3 style="text-align:left; color:#181b1fe3; margin-bottom:5px; margin-left: 10px;">Analysis Parameters</h3>',
+		'<h3 style="text-align:left; color:#181b1fe3; margin-left: 10px;">Analysis Parameters</h3>',
 		'<div class="inspector-views">',
 		//'<h4 style="text-align:center; width:100%;margin-top:6px;margin-bottom:0px; margin-right:20px">Analysis</h4>',
 		'<hr>',

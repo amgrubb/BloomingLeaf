@@ -280,7 +280,7 @@ var ConfigInspector = Backbone.View.extend({
         //'<div class="left-panel-c" id="config">',
 		'<div class="container-sidebar">',
         '<div id="config-sidebar";>',
-        '<h3 style="text-align:left; color:#181b1fe3; margin-top:5px; margin-left: 10px;">Analysis</h3>',
+        '<h3 style="text-align:left; color:#181b1fe3; margin-left: 10px;">Analysis',
         '<div id="addConfig" style="display:inline">',
             '<i class="fa fa-plus" id="addIntent" style="font-size:30px; float:right;  margin-bottom:5px; margin-right:20px;"></i>',
         '</div></h3>',

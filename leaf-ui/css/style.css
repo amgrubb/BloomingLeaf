@@ -173,6 +173,7 @@ body.waiting *
 
 #config-sidebar {
   margin-top: 75px;
+  margin-top: 330px;
 }
 
 #config-sidebar :hover {
@@ -180,6 +181,7 @@ body.waiting *
 }
 #analysis-sidebar{
   margin-top: 0;
+  margin-top: -330px;
 }
 
 #analysis-sidebar :hover {
