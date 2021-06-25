@@ -197,9 +197,8 @@ var Config = Backbone.View.extend({
         // If there is a previous sidebar view, clear it
         clearInspector();
         // Create and add new analysis sidebar view
-        var analysisInspector = new AnalysisInspector({model: this.model});
-        $('.inspector').append(analysisInspector.el);
-        analysisInspector.render();
+        //$('.inspector').append(analysisInspector.el);
+        //analysisInspector.render();
     },
 
     /**
@@ -278,12 +277,14 @@ var ConfigInspector = Backbone.View.extend({
     collection: ConfigCollection,
 
     template: [
-        '<div id="analysis-sidebar" class="left-panel"><h3 style="text-align:left; color:#181b1fe3; margin-bottom:5px; margin-left: 10px;">Analysis',
+        '<div id = "container-sidebar">',
+        '<div id="config-sidebar" class="left-panel"><h3 style="text-align:left; color:#181b1fe3; margin-bottom:5px; margin-left: 10px;">Analysis',
         '<div id="addConfig" style="display:inline">',
             '<i class="fa fa-plus" id="addIntent" style="font-size:30px; float:right;  margin-bottom:5px; margin-right:20px;"></i>',
         '</div></h3>',
         '<div id="configurations" class="left-panel" style="margin-top:20px; overflow-y:auto; height:69%; box-shadow: none;"></div>',
-    '</div>',
+        '</div>',
+        '</div>',
 
     ].join(''),
 

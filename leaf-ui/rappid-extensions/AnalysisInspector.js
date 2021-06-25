@@ -10,25 +10,26 @@ var AnalysisInspector = Backbone.View.extend({
 	className: 'analysis-inspector',
 	model: AnalysisParametersBBM,
 	
-	template: ['<script type="text/template" id="item-template">',
+	template: [
+		'<script type="text/template" id="item-template">',
+        '<div id= "container-sidebar">',
+		'<div id="analysis-sidebar" class="left-panel"><h3 style="text-align:left; color:#181b1fe3; margin-bottom:5px; margin-left: 10px;">Analysis Parameters',
 		'<div class="inspector-views">',
-		'<h2 style="text-align:center; width:100%;margin-top:6px;margin-bottom:0px">Analysis</h2>',
+		//'<h4 style="text-align:center; width:100%;margin-top:6px;margin-bottom:0px; margin-right:20px">Analysis</h4>',
 		'<hr>',
-		'<h2> Simulation Start: 0 </h2>',
+		//'<h4> Simulation Start: 0 </h4>',
+		'<h6><label class="sub-label"> Conflict Prevention Level </label></h6>',
 		'<select id="conflict-level" class="sub-label" style="height:30px;">', 
 			'<option value=S <% if (conflictLevel === "S") { %> selected <%} %>> Strong </option>',
 			'<option value=M <% if (conflictLevel === "M") { %> selected <%} %>> Medium </option>',
 			'<option value=W <% if (conflictLevel === "W") { %> selected <%} %>> Weak </option>',
 			'<option value=N <% if (conflictLevel === "N") { %> selected <%} %>> None </option>',
 		'</select>',
+		'<hr>',
 		'<label class="sub-label"> Num Relative Time Points </label>',
 		'<input id="num-rel-time" class="analysis-input" type="number" min="0" max="20" step="1" value="<%= numRelTime %>"/> </input>',
 		'<hr>',
-		'<button id="btn-view-intermediate" class="analysis-btns inspector-btn sub-label green-btn">View Intermediate Values</button>',
-		'<hr>',
-		'<button id="btn-single-path" class="analysis-btns inspector-btn sub-label green-btn">Simulate Single Path</button>',
-		'<button id="btn-all-next-state" class="analysis-btns inspector-btn sub-label ice-btn">Explore Possible Next States</button>',
-		'<hr>',
+		'</div>',
 		'</div>',
 		'</script>'].join(''),		
 	
@@ -94,7 +95,7 @@ var AnalysisInspector = Backbone.View.extend({
 	 */
 	openIntermediateValuesTable: function(){
 		var intermediateValuesTable = new IntermediateValuesTable();
-		this.$('.analysis-sidebar').append(intermediateValuesTable.el);
+		this.$('.container-sidebar').append(intermediateValuesTable.el);
 		intermediateValuesTable.render();
 
 	},

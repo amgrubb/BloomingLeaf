@@ -101,6 +101,7 @@ var AnalysisParametersBBM = Backbone.Model.extend ({
         numRelTime: "1",
         currentState: "0",
         previousAnalysis: null,
+        die: "yes, bade mot",
     },
 }); 
 
