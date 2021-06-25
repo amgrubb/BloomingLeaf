@@ -1,3 +1,4 @@
+myNull = null;
 /** 
  * This file contains Backbone Models for:
  *  FunctionSegment
@@ -73,11 +74,15 @@ var EvolvingFunctionBBM = Backbone.Model.extend({
     getNthRefEvidencePair: function(n) { 
         console.log(this.functionSegList);
         if (this.functionSegList != null) {
-        var len = this.functionSegList.length; 
+            var len = this.functionSegList.length; 
         if (len > 0 && index <= len) {  
+            console.log(this.functionSegList[len - n]);
+            console.log(this.functionSegList[len - n].get('refEvidencePair'));
             return this.functionSegList[len - n].get('refEvidencePair'); 
         }
-    }
+        
+        }
+            else {console.log("hi");}
     }, 
 
     /**
@@ -184,7 +189,7 @@ var IntentionBBM = Backbone.Model.extend({
         if (this.evolvingFunction != null) {
         if (this.evolvingFunction.get('type') == 'C' || 
             (this.evolvingFunction.get('type') == 'UD' && funcSegList[0].get('type') == 'C')) { 
-                functionSegList[0].set('refEvidencePair', initValue); 
+                this.getFuncSegments().set('refEvidencePair', initValue); 
             }
         this.evolvingFunction.set('type', 'NT');
         this.evolvingFunction.set('functionSegList', []);
@@ -267,29 +272,29 @@ var IntentionBBM = Backbone.Model.extend({
             if (funcType == 'RC') {
                 // Stochastic and Constant
                 var seg1 =  new FunctionSegmentBBM({type: 'R', refEvidencePair: '(no value)', startTP: '0', startAT: 0}); 
-                var seg2 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: null, startTP: 'A', startAT: null}); 
+                var seg2 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: null, startTP: 'A', startAT: myNull}); 
             } else if (funcType == 'CR') {
                 // Constant and Stochastic
                 var seg1 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: initValue, startTP: '0', startAT: 0}); 
-                var seg2 =  new FunctionSegmentBBM({type: 'R', refEvidencePair: '(no value)', startTP: 'A', startAT: null}); 
+                var seg2 =  new FunctionSegmentBBM({type: 'R', refEvidencePair: '(no value)', startTP: 'A', startAT: myNull}); 
             } else if (funcType == 'MP') {
                 // Increase and Constant
                 var seg1 =  new FunctionSegmentBBM({type: 'I', refEvidencePair: null, startTP: '0', startAT: 0}); 
-                var seg2 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: null, startTP: 'A', startAT: null}); 
+                var seg2 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: null, startTP: 'A', startAT: myNull}); 
             } else if (funcType == 'MN') {
                 // Decrease and Constant
                 var seg1 =  new FunctionSegmentBBM({type: 'D', refEvidencePair: null, startTP: '0', startAT: 0}); 
-                var seg2 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: null, startTP: 'A', startAT: null}); 
+                var seg2 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: null, startTP: 'A', startAT: myNull}); 
             } else if (funcType == 'SD') {
                 // Constant and Constant
                 var seg1 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: '0011', startTP: '0', startAT: 0}); 
-                var seg2 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: '1100', startTP: 'A', startAT: null}); 
+                var seg2 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: '1100', startTP: 'A', startAT: myNull}); 
                 // graph.get('userEvaluationList').get(this.cid, "0").get('assignedEvidencePair') = '0011';
                 graph.getUserEvaluationBBM(this.cid, '0').set('assignedEvidencePair', '0011');
             } else if (funcType == 'DS') {
                 // Constant and Constant
                 var seg1 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: '1100', startTP: '0', startAT: 0}); 
-                var seg2 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: '0011', startTP: 'A', startAT: null}); 
+                var seg2 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: '0011', startTP: 'A', startAT: myNull}); 
                 // graph.get('userEvaluationList').get(this.cid, "0").get('assignedEvidencePair') = '1100';
                 graph.getUserEvaluationBBM(this.cid, '0').set('assignedEvidencePair', '1100');
             }
@@ -364,7 +369,7 @@ var IntentionBBM = Backbone.Model.extend({
     addUserDefinedSeg: function(funcType, refEvidencePair, startTime){
  
         var len = this.getFuncSegments().length;
-        var startCheck = this.evolvingFunction.getFuncSegments()[len - 1].get('startTP');
+        var startCheck = this.getFuncSegments()[len - 1].get('startTP');
         if (startCheck == '0') {
             var start = 'A';
         }        
@@ -373,7 +378,7 @@ var IntentionBBM = Backbone.Model.extend({
         }
  
         //create new funcsegment model 
-        var new_model = new FunctionSegmentBBM({type: funcType, refEvidencePair: refEvidencePair, startTP: start, startAT: startTime}); 
+        var new_model = new FunctionSegmentBBM({type: funcType, refEvidencePair: refEvidencePair, startTP: start, startAT: myNull}); 
         this.getFuncSegments().push(new_model); 
  
         //graph.get('constraints').push(new ConstraintBBM({type: 'A', srcID: this.get('cid'), srcRefTP: start, destID: null, destRefTP: null}));
@@ -412,12 +417,28 @@ var IntentionBBM = Backbone.Model.extend({
             var funcSegLen = this.getFuncSegments().length;
         }
         else {var funcSegLen = null;};
+        console.log(funcSegLen);
         var functionSegment = this.getFuncSegments()[funcSegLen - 1];
         functionSegment.set('type', funcValue); 
         if (funcValue == 'C' || funcValue =='R') {
-            funcSeg.set('refEvidencePair', '0000');
+            functionSegment.set('refEvidencePair', '0000');
         } 
     }, 
+
+        /**
+     * Sets the satisfaction value for the last function segment
+     * in this Intention's evolving function, to satVal
+     *
+     * @param {String} satVal
+     *   ex: '0000'
+     */
+    updateLastFuncSegSatVal(satVal) {
+        var funcSegList = this.getFuncSegments();
+        var funcSegLen = this.getFuncSegments().length;
+    
+        var lastObj = funcSegList[funcSegLen - 1];
+        lastObj.set('refEvidencePair', satVal);
+    },
 });
 
 

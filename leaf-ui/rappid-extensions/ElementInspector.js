@@ -605,6 +605,8 @@ var ElementInspector = Backbone.View.extend({
         }
         
         if (func == 'I' || func == 'D') {
+            console.log(this.model.get('intention').get('evolvingFunction'));
+            console.log(this.model.get('intention').get('evolvingFunction').getNthRefEvidencePair(2));
             var prevVal = satisfactionValuesDict[this.model.get('intention').get('evolvingFunction').getNthRefEvidencePair(2)].name;
             if (func == 'I') {
                 $(".user-sat-value").last().html(this.satValueOptions.positiveOnly(prevVal));
@@ -743,6 +745,7 @@ var ElementInspector = Backbone.View.extend({
 
         // Add datapoints to graph for each userfunction/uservalue pair
         var funcSegments = this.model.get('intention').getFuncSegments();
+        console.log(funcSegments);
 
         for (var i = 0; i < funcSegments.length; i++) {
             var currFunc = funcSegments[i].get('type');
@@ -982,8 +985,8 @@ var ElementInspector = Backbone.View.extend({
                 for (var i = 0; i < funcSegments.length - 1; i++) {
                     var beginVal = funcSegments[i].get('startTP');
 
-                    var len = this.getFuncSegments().length;
-                    var startCheck = this.evolvingFunction.getFuncSegments()[len - 1].get('startTP');
+                    var len = this.model.get('intention').getFuncSegments().length;
+                    var startCheck = this.model.get('intention').getFuncSegments()[len - 1].get('startTP');
                     if (startCheck == '0') {
                         var endVal = 'A';
                     }        
