@@ -65,12 +65,8 @@ var ActorInspector = Backbone.View.extend({
          */
         updateType: function(){
             var actorType = $('#actor-type-ID').val();
-
-            //TODO use the following code and find a method to directly listen to the model instead of taking the information from the interface, 
-            //current problem is that actorType is within the actor parameter (actorBBM) but is dealing with attributes from the basic.Actor model
-            this.model.get('actor').set('type', actorType);
-
             this.actor.set('type', actorType);
+            
             if (actorType== 'G') {
                 this.model.attr({'.line': {'ref': '.label',
                 'ref-x': 0,

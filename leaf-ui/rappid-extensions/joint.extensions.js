@@ -267,7 +267,6 @@ joint.shapes.basic.Actor = joint.shapes.basic.Generic.extend({
             ".line": {
             }
         },
-        //TODO replace with new ActorBBM once it is in codebase
         actor: null,
     }, joint.dia.Element.prototype.defaults),
     changeToOriginalColour: function() {
