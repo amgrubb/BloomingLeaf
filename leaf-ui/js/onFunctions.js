@@ -745,28 +745,16 @@ function createIntention(cell) {
 }
 
 /**
- * Creates an instance of an Actor object and saves it in the
- * global model variable
- * 
- * @param {joint.dia.Cell} cell
- */
-function createActor(cell) {//TODO: right now there are two parameters the actor model in the joint.extensions file that hold the same information (attrs.name & actorName), find a way for actor inspector to be able to access attrs.name in the template script so that actorName is not needed
-	var name = cell.attr('.name/text') + "_" + Actor.numOfCreatedInstances;
-	var actor = new Actor(name);
-    cell.attr(".name/text", name);
-    cell.set('actorName', name);
-	cell.attributes.nodeID = actor.nodeID;
-	model.actors.push(actor);
-}
-
-/**
  * Set up on events for Rappid/JointJS objets
  */
 var element_counter = 0;
 
 // Whenever an element is added to the graph
 graph.on("add", function(cell) {
-	if (cell instanceof joint.dia.CellLink){
+    // Find how many cells are created on the graph
+    var createdInstance = paper.findViewsInArea(paper.getArea())  
+
+	if (cell instanceof joint.dia.Link){
         if (graph.getCell(cell.get("source").id) instanceof joint.shapes.basic.Actor){
             cell.prop("type", "Actor");
             cell.label(0,{attrs:{text:{text:"is-a"}}});
@@ -780,7 +768,13 @@ graph.on("add", function(cell) {
 		cell.attr('.funcvalue/text', ' ');
 
 	} else if (cell instanceof joint.shapes.basic.Actor) {
-		createActor(cell);
+        // Find how many instances of the actor is created out of all the cells
+        createdInstance = createdInstance.filter(view => view.model instanceof joint.shapes.basic.Actor);
+
+        // Create placeholder name based on the number of instances
+		var name = cell.attr('.name/text') + "_" + (createdInstance.length-1);
+	    cell.set('actor', new ActorBBM({actorName: name}));
+        cell.attr(".name/text", name);
 
 		// Send actors to background so elements are placed on top
 		cell.toBack();
@@ -863,7 +857,7 @@ paper.on({
 
                 clearInspector();
 
-                // render actor/element inspector
+                // Render actor/element inspector
                 if (cell instanceof joint.shapes.basic.Actor) {
                     var actorInspector =  new ActorInspector({model:cell});
                     $('.inspector').append(actorInspector.el);
@@ -872,21 +866,21 @@ paper.on({
                     var elementInspector = new ElementInspector({model: cell});
                     $('.inspector').append(elementInspector.el);
                     elementInspector.render();
-                    // if user was dragging element
+                    // If user was dragging element
                     if (evt.data.move) {
-                        // unembed intention from old actor
+                        // Unembed intention from old actor
                         if (cell.get('parent')) {
                             graph.getCell(cell.get('parent')).unembed(cell);
-
-                            // remove nodeID from actor intentionIDs list
-                            var userIntention = model.getIntentionByID(cell.attributes.nodeID);
-                            if (userIntention.nodeActorID !== '-') {
-                                var actor = model.getActorByID(userIntention.nodeActorID);
-                                actor.removeIntentionID(userIntention.nodeID);
-                            }
                         }
-                        // embed element in new actor
-                        embedBasicActor(cell);
+                        // Embed element in new actor
+                        var overlapCells = paper.findViewsFromPoint(cell.getBBox().center());
+
+                        // Find actors which overlap with cell
+                        overlapCells = overlapCells.filter(view => view.model instanceof joint.shapes.basic.Actor);
+                        if (overlapCells.length > 0) {
+                            var actorCell = overlapCells[0].model;
+                            actorCell.embed(cell);
+                        }
                     }
                 }
             }
@@ -966,36 +960,6 @@ function removeHighlight(){
         cell.unhighlight();
     }
 }
-
-/**
- * Embeds an element into an actor boundary
- *
- * @param {joint.dia.cell} cell
- */
-function embedBasicActor(cell) {
-    // returns actors, intentions, etc. which overlap with this cell
-    // including the cell itself
-    var overlapCells = paper.findViewsFromPoint(cell.getBBox().center());
-
-    // find actors which overlap with cell
-    overlapCells = overlapCells.filter(view => view.model instanceof joint.shapes.basic.Actor);
-
-    // cell is over at least one actor
-    if (overlapCells.length > 0) {
-        for (var i = 0; i < overlapCells.length; i++) {
-            // embed intention in each actor
-            var actorCell = overlapCells[i].model;
-            actorCell.embed(cell);
-            var nodeID = cell.attributes.nodeID;
-            var actorID = actorCell.attributes.nodeID
-            model.getIntentionByID(nodeID).nodeActorID = actorID;
-            model.getActorByID(actorID).addIntentionID(nodeID);
-        }
-    } else {
-        // TODO: reset actorID to null in cell
-    }
-}
-
 
 graph.on('change:size', function(cell, size) {
 	cell.attr(".label/cx", 0.25 * size.width);
