@@ -651,9 +651,12 @@ var ElementInspector = Backbone.View.extend({
      * satisfaction value(s)
      */
     updateChart: function(event) {
-        
-        var funcType = this.model.get('intention').get('type');
+        if (this.model.get('intention').get('evolvingFunction') != null ) {
+            var funcType = this.model.get('intention').get('evolvingFunction').get('type');
+        }
+        else { var funcType = null;}
         var initVal = satisfactionValuesDict[this.model.get('intention').getInitialSatValue()].chartVal;
+        console.log(funcType + " " + initVal);
         var satVal = satvalues[this.$('#markedValue').val()];
         this.chart.reset();
         // Get the chart canvas

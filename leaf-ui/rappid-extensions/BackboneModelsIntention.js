@@ -211,6 +211,7 @@ var IntentionBBM = Backbone.Model.extend({
         if (typeof intentionEval == 'undefined'){
             return '(no value)';
         } else {
+            console.log(intentionEval.get('assignedEvidencePair'));
             return intentionEval.get('assignedEvidencePair');
         }
     }, 
