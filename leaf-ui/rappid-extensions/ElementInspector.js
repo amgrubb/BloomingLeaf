@@ -436,9 +436,9 @@ var ElementInspector = Backbone.View.extend({
         // }
         
         // Before commenting out this line, every FunctionSegmentBBM was added to functionSegList twice ??
-        // this.model.get('intention').setEvolvingFunction(funcType);
+        this.model.get('intention').setEvolvingFunction(funcType);
         console.log(this.$('.function-type').val());
-        console.log(this.model.get('intention').setEvolvingFunction(funcType));
+        // console.log(this.model.get('intention').setEvolvingFunction(funcType));
         this.updateCell(null);
         this.updateHTML(event);
         
@@ -615,7 +615,7 @@ var ElementInspector = Backbone.View.extend({
         
         if (func == 'I' || func == 'D') {
             console.log(this.model.get('intention').get('evolvingFunction'));
-            console.log(this.model.get('intention').get('evolvingFunction').getNthRefEvidencePair(2));
+            // console.log(this.model.get('intention').get('evolvingFunction').getNthRefEvidencePair(2));
             var prevVal = satisfactionValuesDict[this.model.get('intention').get('evolvingFunction').getNthRefEvidencePair(2)].name;
             if (func == 'I') {
                 $(".user-sat-value").last().html(this.satValueOptions.positiveOnly(prevVal));
@@ -864,7 +864,9 @@ var ElementInspector = Backbone.View.extend({
         var start = $("").val();
         var stopRep = $("").val();
         var count = $("").val();
-        var absTime = $("").val();
+        // TODO: eventually an absTime parameter will be added to the user input
+        // var absTime = $("").val();
+        var absTime = null;
 
         if (begin === null || end === null) {
             return;

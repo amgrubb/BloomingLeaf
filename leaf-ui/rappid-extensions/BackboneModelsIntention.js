@@ -50,16 +50,18 @@ var FunctionSegmentBBM = Backbone.Model.extend({
  */
 var EvolvingFunctionBBM = Backbone.Model.extend({
  
-    defaults: { 
-        type: 'NT',                  // Named types on view list, was stringDynVis
-        // Array functionSegList contains all of the FunctionSegment models (and only FunctionSegment models)
-        functionSegList: [],        //of type FunctionSegmentBBM
+    defaults: function(){ 
+        return {
+            type: 'NT',                  // Named types on view list, was stringDynVis
+            // Array functionSegList contains all of the FunctionSegment models (and only FunctionSegment models)
+            functionSegList: [],        //of type FunctionSegmentBBM
 
-        hasRepeat: false,
-        repStart: null,         // 0, A, B, ..
-        repStop: null,          // B, C, D, ..
-        repCount: null,         // 2, 3, ..n
-        repAbsTime: null,       // 0, 1, ..n
+            hasRepeat: false,
+            repStart: null,         // 0, A, B, ..
+            repStop: null,          // B, C, D, ..
+            repCount: null,         // 2, 3, ..n
+            repAbsTime: null,       // 0, 1, ..n
+        }
        
     },
     
@@ -74,13 +76,14 @@ var EvolvingFunctionBBM = Backbone.Model.extend({
     getNthRefEvidencePair: function(n) { 
         if (this.get('functionSegList') != null) {
             var len = this.get('functionSegList').length; 
-        if (len > 0) {  
             var funcSegList = this.get('functionSegList');
-            return funcSegList[len - n].get('refEvidencePair'); 
+            if (len > 1) {  
+                return funcSegList[len - n].get('refEvidencePair'); 
+            }   
+            else {
+                return funcSegList[len - 1].get('refEvidencePair');
+            }     
         }
-        
-        }
-            else {console.log("hi");}
     }, 
 
     /**
@@ -235,11 +238,7 @@ var IntentionBBM = Backbone.Model.extend({
      * @param {String} funcType
      */
     setEvolvingFunction: function(funcType) {
-        if (this.get('evolvingFunction') != null) {
-            this.get('evolvingFunction').set('functionSegList', []);
-            this.set('evolvingFunction', null);
-        }
-        this.set('evolvingFunction', new EvolvingFunctionBBM({type: funcType}));
+        this.set('evolvingFunction', new EvolvingFunctionBBM({type: funcType, functionSegList: []}));
 
         // Since function changed, remove all current absolute constraints related to this intention
         this.removeAbsConstraint();
