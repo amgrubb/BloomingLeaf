@@ -438,7 +438,7 @@ var ElementInspector = Backbone.View.extend({
 
         // Sets the satisfaction value for the last function segment in
         // the Intention's evolving function to satVal
-        var funcSegLen = this.getFuncSegments().length;
+        var funcSegLen = this.model.get('intention').getFuncSegments().length;
         this.model.get('intention').getFuncSegments()[funcSegLen - 1].set('refEvidencePair', satVal);
 
         this.updateChartUserDefined(event);
