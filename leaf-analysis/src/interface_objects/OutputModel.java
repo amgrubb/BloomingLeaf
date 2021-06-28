@@ -9,7 +9,6 @@ public class OutputModel {
 	private List<IOStateModel> allSolution = new ArrayList<>();
 	private List<String> assignedEpoch = new ArrayList<>();
 	private List<String> timePointPath = new ArrayList<>();
-	@SuppressWarnings("unused")
 	private int timePointPathSize;
 	
 	public void setElementList(List<OutputElement> elementList) {

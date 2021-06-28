@@ -1,7 +1,6 @@
 package interface_objects;
 
 public class InputLink{
-	@SuppressWarnings("unused")
 	private String linkID;
 	private String linkType;
 	private String postType;

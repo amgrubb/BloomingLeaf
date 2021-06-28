@@ -305,7 +305,7 @@ public class TroposCSPAlgorithm {
     		absoluteCounter = 1;
     	else{
     		for (int i = 0; i < absoluteTimePoint.length; i++){
-    			absoluteCollection.put(Integer.valueOf(absoluteTimePoint[i]), new IntVar(store, "TA" + (i+1), absoluteTimePoint[i], absoluteTimePoint[i]));
+    			absoluteCollection.put(new Integer(absoluteTimePoint[i]), new IntVar(store, "TA" + (i+1), absoluteTimePoint[i], absoluteTimePoint[i]));
     		}
     		absoluteCounter = absoluteTimePoint.length + 1;	//To add Zero.
     	}
@@ -379,10 +379,10 @@ public class TroposCSPAlgorithm {
     				throw new RuntimeException("Error: Null found in " + etmp.toString());
     			//Check if absolute value already exists.
     			int etmpTime = etmp.getAbsoluteTime();
-    			IntVar absTemp = absoluteCollection.get(Integer.valueOf(etmpTime));
+    			IntVar absTemp = absoluteCollection.get(new Integer(etmpTime));
     			if (absTemp == null){
     				absTemp = new IntVar(store, "TAE" + absoluteCounter, etmpTime, etmpTime);
-    				absoluteCollection.put(Integer.valueOf(etmpTime), absTemp);
+    				absoluteCollection.put(new Integer(etmpTime), absTemp);
     				absoluteCounter++;
     			}
     			constraints.add(new XeqY(src, absTemp));
@@ -482,10 +482,10 @@ public class TroposCSPAlgorithm {
     			if (etmpTime > this.maxTime)
     				throw new RuntimeException("Absolute time selected for EBs cannot be greater than maxTime.");
     			
-    			newTimePoint = absoluteCollection.get(Integer.valueOf(etmpTime));
+    			newTimePoint = absoluteCollection.get(new Integer(etmpTime));
     			if (newTimePoint == null){
     				newTimePoint = new IntVar(store, "TAL" + absoluteCounter, etmpTime, etmpTime);
-    				absoluteCollection.put(Integer.valueOf(etmpTime), newTimePoint);
+    				absoluteCollection.put(new Integer(etmpTime), newTimePoint);
     				absoluteCounter++;
     			}
     		}else{
@@ -511,10 +511,10 @@ public class TroposCSPAlgorithm {
     			if (etmpTime > this.maxTime)
     				throw new RuntimeException("Absolute time selected for EBs cannot be greater than maxTime.");
     			
-    			newTimePoint = absoluteCollection.get(Integer.valueOf(etmpTime));
+    			newTimePoint = absoluteCollection.get(new Integer(etmpTime));
     			if (newTimePoint == null){
     				newTimePoint = new IntVar(store, "TAL" + absoluteCounter, etmpTime, etmpTime);
-    				absoluteCollection.put(Integer.valueOf(etmpTime), newTimePoint);
+    				absoluteCollection.put(new Integer(etmpTime), newTimePoint);
     				absoluteCounter++;
     			}
     		}else{
@@ -541,10 +541,10 @@ public class TroposCSPAlgorithm {
     			if (etmpTime > this.maxTime)
     				throw new RuntimeException("Absolute time selected for EBs cannot be greater than maxTime.");
     			
-    			newTimePoint = absoluteCollection.get(Integer.valueOf(etmpTime));
+    			newTimePoint = absoluteCollection.get(new Integer(etmpTime));
     			if (newTimePoint == null){
     				newTimePoint = new IntVar(store, "TA" + absoluteCounter, etmpTime, etmpTime);
-    				absoluteCollection.put(Integer.valueOf(etmpTime), newTimePoint);
+    				absoluteCollection.put(new Integer(etmpTime), newTimePoint);
     				absoluteCounter++;
     			}
     			//assignedEBs.add(newEpoch);  
@@ -558,10 +558,8 @@ public class TroposCSPAlgorithm {
     	}
     	    	
     	// Step 4A: Make list of previous names.
-    	@SuppressWarnings("unused")
-		int countTotalPreviousT = 0;	// Count the number of previous assignedEpochs that are Time Points.
-    	@SuppressWarnings("unused")
-		int countTotalPreviousE = 0;
+    	int countTotalPreviousT = 0;	// Count the number of previous assignedEpochs that are Time Points.
+    	int countTotalPreviousE = 0;
     	String[] exisitingNamedTimePoints = new String[initialValueTimePoints.length];
     	int[] exisitingNamedTimes = new int[initialValueTimePoints.length];
     	int maxPreviousTime = initialValueTimePoints[initialValueTimePoints.length - 1];
@@ -1776,7 +1774,7 @@ public class TroposCSPAlgorithm {
 				
 				UDFunctionCSP funcUD = element.getCspUDFunct();
 				String[] segmentDynamic = funcUD.getFunctions();
-				//int numSegments = segmentDynamic.length;		//Segments not EBs
+				int numSegments = segmentDynamic.length;		//Segments not EBs
 				int nS = -1;
 				for (int e = 0; e < epochs.length; e ++){
 					if(this.spec.getInitialAssignedEpochs().get(epochs[e].id()) != null && currentAbsoluteTime >= this.spec.getInitialAssignedEpochs().get(epochs[e].id())){
