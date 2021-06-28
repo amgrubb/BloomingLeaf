@@ -20,6 +20,7 @@ myNull = null;
  * 
  */
 var FunctionSegmentBBM = Backbone.Model.extend({
+
     initialize: function (options) {
         this.type = options.type;           // Atomic function types. 
         this.refEvidencePair = options.refEvidencePair;   //a.k.a. Evaluation Value
@@ -103,6 +104,7 @@ var EvolvingFunctionBBM = Backbone.Model.extend({
      *  Absolute time of repeating segment 
      */
     setRepeatingFunction: function(start, stopRep, count, absTime) {
+
         this.removeRepFuncSegments();
         hasRepeat = true;                         
         repStart = start;
@@ -116,6 +118,7 @@ var EvolvingFunctionBBM = Backbone.Model.extend({
      * which means there is no loner a repeating function segment in the EvolvingFunctionBBM     *  
      */ 
     removeRepFuncSegments: function() {
+
         hasRepeat = false;
         repStart = null;
         repStop = null;          
@@ -139,9 +142,11 @@ var EvolvingFunctionBBM = Backbone.Model.extend({
  * String of numbers that represents the initial satisfaction value
  */
 var IntentionBBM = Backbone.Model.extend({
+
     initialize: function(options) { 
         _.extend({}, this.defaults, options) 
     }, 
+
     defaults: { 
             nodeName: 'untitled',
             nodeActorID: null,                     // Assigned on release operation.
@@ -154,6 +159,7 @@ var IntentionBBM = Backbone.Model.extend({
     * @returns Array of FunctionSegmentBBMs, or null if it is not an evolvingFunction
     */
     getFuncSegments: function(){
+
         evolvingFunc = this.get('evolvingFunction');
         if (evolvingFunc != null){
             console.log(evolvingFunc.get('functionSegList'));
@@ -171,6 +177,7 @@ var IntentionBBM = Backbone.Model.extend({
      * @param {*} initValue 
      */
     changeInitialSatValue: function(initValue) {
+
         var intentionEval = graph.getUserEvaluationBBM(this.cid, '0');
         intentionEval.set('assignedEvidencePair', initValue);
         var funcSegList = this.getFuncSegments();
@@ -189,6 +196,7 @@ var IntentionBBM = Backbone.Model.extend({
      * Sets the initial satisfaction value for this Intention to '(no value)'
      */
     removeInitialSatValue: function() {
+
         this.changeInitialSatValue('(no value)');
     },    
  
@@ -199,6 +207,7 @@ var IntentionBBM = Backbone.Model.extend({
      * @returns {String}
      */
     getInitialSatValue: function() {
+
         var intentionEval = graph.getUserEvaluationBBM(this.cid, '0'); // Finding UserEvaluationBBM with same ID and startTP as this IntentionBBM 
         if (typeof intentionEval == 'undefined'){
             return '(no value)';
@@ -211,6 +220,7 @@ var IntentionBBM = Backbone.Model.extend({
      * Resets evolving functions
      */
     removeFunction: function() {
+
         this.removeAbsConstraint();
         this.model.get('intention').set('evolvingFunction', null); // Set to null 
     }, 
@@ -223,6 +233,7 @@ var IntentionBBM = Backbone.Model.extend({
      * @param {String} funcType
      */
     setEvolvingFunction: function(funcType) {
+
         this.set('evolvingFunction', new EvolvingFunctionBBM({type: funcType, functionSegList: []}));
 
         // Since function changed, remove all current absolute constraints related to this intention
@@ -234,6 +245,7 @@ var IntentionBBM = Backbone.Model.extend({
         // var initValue = graph.get('userEvaluationList').get(this.cid, '0').get('assignedEvidencePair');
         var initValue = graph.getUserEvaluationBBM(this.cid, '0').get('assignedEvidencePair');
  
+
         // Creates the correct FunctionSegmentBBM(s) for the selected function type
         if (funcType == 'C' || funcType == 'R' || funcType == 'I' || funcType == 'D' || funcType == 'UD') {
             if (funcType == 'C') {
@@ -291,6 +303,7 @@ var IntentionBBM = Backbone.Model.extend({
      *   ex: 'RC'
      */
     addAbsConstraint: function(funcType) {
+
         if (funcType == 'RC' || funcType == 'CR' || funcType == 'MP' ||
             funcType == 'MN' || funcType == 'SD' || funcType == 'DS') {
             graph.get('constraints').push(new ConstraintBBM({type: 'A', srcID: this.cid, srcRefTP: 'A', destID: null, destRefTP: null})); 
@@ -304,6 +317,7 @@ var IntentionBBM = Backbone.Model.extend({
 
     removeAbsConstraint: function() {
         // TODO - unsure abt this function 
+
         var i = 0;
         while (i < graph.get('constraints').length) {
             var constraint = graph.get('constraints');
@@ -332,6 +346,7 @@ var IntentionBBM = Backbone.Model.extend({
      * @param {Integer} startTime
      */
     addUserDefinedSeg: function(funcType, refEvidencePair, startTime){
+
         var len = this.getFuncSegments().length;
         var startCheck = this.getFuncSegments()[len - 1].get('startTP'); // Get last value in list 
         if (startCheck == '0') { // If previous segment is at 0 then next one is at A
@@ -356,6 +371,7 @@ var IntentionBBM = Backbone.Model.extend({
      */
     // TODO: i think we are going to have to change this function when we add views for the FunctionSegmentBBMs
     setMarkedValueToFunction: function(satValue) {
+
         if (this.get('evolvingFunction') != null) {
             var funcType = this.get('evolvingFunction').get('type'); 
         } else { 
@@ -377,6 +393,7 @@ var IntentionBBM = Backbone.Model.extend({
      * @param {String} funcValue
      */
     setUserDefinedSegment: function(funcValue) {
+
         if (this.getFuncSegments() != null) {
             var funcSegLen = this.getFuncSegments().length;
         } else { 
@@ -389,20 +406,6 @@ var IntentionBBM = Backbone.Model.extend({
         } 
     }, 
 
-    /**
-     * Sets the satisfaction value for the last function segment
-     * in this Intention's evolving function, to satVal
-     *
-     * @param {String} satVal
-     *   ex: '0000'
-     */
-    updateLastFuncSegSatVal(satVal) {
-        var funcSegList = this.getFuncSegments();
-        var funcSegLen = this.getFuncSegments().length;
-    
-        var lastObj = funcSegList[funcSegLen - 1]; // Set to last function segment 
-        lastObj.set('refEvidencePair', satVal);
-    },
 });
 
 

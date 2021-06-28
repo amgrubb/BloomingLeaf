@@ -435,7 +435,12 @@ var ElementInspector = Backbone.View.extend({
     userSatValChanged: function(event) {
         
         var satVal = satValueDict[this.$('.user-sat-value').last().val()];
-        this.model.get('intention').updateLastFuncSegSatVal(satVal);
+
+        // Sets the satisfaction value for the last function segment in
+        // the Intention's evolving function to satVal
+        var funcSegLen = this.getFuncSegments().length;
+        this.model.get('intention').getFuncSegments()[funcSegLen - 1].set('refEvidencePair', satVal);
+
         this.updateChartUserDefined(event);
         
     },
@@ -632,7 +637,7 @@ var ElementInspector = Backbone.View.extend({
      * satisfaction value(s)
      */
     updateChart: function(event) {
-        
+
         if (this.model.get('intention').get('evolvingFunction') != null ) {
             var funcType = this.model.get('intention').get('evolvingFunction').get('type');
         }
