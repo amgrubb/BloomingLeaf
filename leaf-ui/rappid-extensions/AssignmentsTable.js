@@ -148,10 +148,9 @@ var AssignmentsTable = Backbone.View.extend({
      * For each function segment transition in the graph
      */
     displayAbsoluteIntentionAssignments: function() {
-        console.log("Hi")
         this.model.getIntentions().forEach(intentionCell => {
             var intentionBbm = intentionCell.get('intention');
-            var funcSegList = intentionBbm.get('evolvingFunction')?.get('functionSegList');
+            var funcSegList = intentionBbm.get('evolvingFunction').get('functionSegList');
             console.log(funcSegList);
             if (funcSegList != undefined){
                 // TODO: Check with @amgrubb about how this is being sliced
@@ -164,15 +163,6 @@ var AssignmentsTable = Backbone.View.extend({
                 }
             }
         });
-
-        var funcSeg = new FunctionSegmentBBM({startTP: 0, startAT: 3});
-
-            var intentionRelationshipView = new IntentionRelationshipView({
-                model: funcSeg, funcType: "decrease", 
-                intentionName: "Go eat"});
-            $('#node-list').append(intentionRelationshipView.el);
-            console.log(intentionRelationshipView.el)
-            intentionRelationshipView.render();
     },
 
     /**
@@ -342,7 +332,6 @@ var IntentionRelationshipView = Backbone.View.extend({
     },
 
     render: function(){
-        console.log(this.model)
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
         this.$('.intstart').text(this.intentionName + " : " + this.model.get('startTP'));
         this.$('.func').text(this.funcType);
