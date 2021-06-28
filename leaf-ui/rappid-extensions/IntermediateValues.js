@@ -58,303 +58,24 @@ var IntermediateValuesTable = Backbone.View.extend({
     /**
      * Function to load in correct rows and dropdowns for IVT
      */
-    loadIntermediate : function() {
-        
-        var absTimeValues = this.model.get('absTimePtsArr');
-        var constraints = this.model.get('constraints');
-        
-        /** 
-         * LOGIC:
-         * Get all specified time points from links, intentions, and constraints list
-         * And combine with absTimePtsArr to get all time points
-         */
-        //Adding assigned time to absTimeValues
-        for (var i = 0; i < constraints.length; i++) {
-            var aTime = constraints[i].absoluteValue;
-            aTime = aTime.toString();
-            if (!absTimeValues.includes(aTime) && aTime !== "-1") {
-                absTimeValues.push(aTime);
-            }
-        }
-        /**
-         * Sort new array of all time points
-         */
-        absTimeValues.sort(function(a,b) {return a-b});
-
-        /**
-         * Might be able to remove this
-         */
-        if (absTimeValues[0] === ""){
-            absTimeValues.splice(0,1)
-        }
+    loadIntermediate: function() {
+        var absoluteTimePointsList = this.getAllAbsoluteTimePoints();
         
         /** 
          * Add all time points to top of table  
          */
-        for (var s = 0; s < absTimeValues.length; s++) {
+        for (var s = 0; s < absoluteTimePointsList.length; s++) {
             $('#header-row').append('<th>Absolute</th>');
             $('#intentionRows').append('<th>' + absTimeValues[s] + '</th>');
         }
-    
-        /**
-         * Heavy hitter logic - is this where we split off into Intention specific views?
-         */
-        //Loop over intentions to get initial values and funcType
-        for (var i = 0; i < model.intentions.length; i++) {
-            /** Get intention and initial sat value from intention */
-            var intention = model.intentions[i];
-            // Can initValue just be saved into the intention?
-            var initValue = intention.getInitialSatValue();
-            /** 
-             * Get type of function - this is now
-             * type param on EvolvingFunctionBBM
-             */
-            var func = intention.dynamicFunction.stringDynVis;
-            
-            /** 
-             * Create html row stuff
-             * Should know exactly how many dropdowns we need based on
-             * length of time pts array
-             * Can we pass that in as a parameter so we get structure set up
-             * and then fill in values? 
-             */
-            var row = $('<tr></tr>');
-            row.addClass('intention-row');
-            var name = $('<td></td>');
-            var sat = $('<td></td>');
-            
-            /** Get intention name */
-            name.text(intention.nodeName);
-            sat.text('Denied'); // ?? Why is this here
-            /**
-             * Add name to row and add initial sat value (at TP 0)
-             * NOT a dropdown at TP 0
-             */
-            row.append(name);
-            row.append(satisfactionValuesDict[initValue].satValue);
 
-            /**
-             * Go through each TP in array of absolute time pts
-             */
-            for (j = 0; j < absTimeValues.length; j++) {
-                var options = ``;
-    
-                // Add select tags for each absolute time point
-                var selectTd = $('<td></td>');
-                var selectElement = $('<select></select>');
-                selectElement.attr('nodeID', intention.nodeID);
-                selectElement.attr('absTime', absTimeValues[j]);
-    
-                /**
-                 * Simplest case - renders all possible options based on (monotonic?) type
-                 * 
-                 * Potential for dynamic dropdown here where we re-render with new init value
-                 * If new init value selected in previous dropdown? Curious
-                 */
-                if (func === "I" || func === "D" || func === "C" || func === "R") {
-                    switch (func) {
-                        case "I":
-                            options = this.increasing(initValue,'noFinal');
-                            break;
-                        case "D":
-                            options = this.decreasing(initValue,'noFinal');
-                            break;
-                        case "C":
-                            options = this.constant(initValue);
-                            break;
-                        case "R":
-                            options = this.stochastic();
-                            break;
-                    }
-                }
-                else if (func === "MP" || func === "MN" || func === "CR" || func === "RC" || func === "SD" || func === "DS") {
-                    /** 
-                     * For us this will look more like iterating through funcSegs absTime 
-                     * Confused at this point because it looks like we save k into c repeatedly, aka overwriting it?
-                     * So maybe we only get the last assigned TP?
-                     */
-                    //check for every node if there is assigned time
-                    for (var k = 0; k < constraints.length; k++) {
-                        if (constraints[k].constraintSrcID === intention.nodeID) {
-                            var c = k
-                        }
-                    }
-                    /**
-                     * Check if time is valid
-                     * We shouldn't need this since we will just be checking
-                     * if the specific intention's functionSegment has an AbsTime that matches
-                     */
-                    if (constraints[c].absoluteValue !== -1) {
-                        var ti = constraints[c].absoluteValue;
-                        // Just getting back the current abs value
-                        var absVal = absTimeValues[j];
-    
-                        if (func === "MP") {
-                            /** 
-                             * If the absoluteTP is less than the constraints time point (??)
-                             */
-                            if (absVal < ti) {
-                                // Here the final value looks more like the first value? Am I misunderstanding
-                                var finalValue = intention.dynamicFunction.functionSegList[0].funcX;
-                                // Get options list
-                                options = this.increasing(initValue, finalValue);
-                            } else {
-                                // Ask Alicia what is happening here
-                                if (intention.dynamicFunction.functionSegList[1].funcX === '0010') {
-                                    options = this.convertToOptions(['0010']);
-                                } else {
-                                    options = this.convertToOptions(['0011']);
-                                }
-                            }
-                        } else if (func === "MN") {
-                            if (absVal < ti) {
-                                var finalValue = intention.dynamicFunction.functionSegList[0].funcX;
-                                options = this.decreasing(initValue, finalValue);
-                            } else {
-                                if (intention.dynamicFunction.functionSegList[1].funcX === '0100') {
-                                    options = this.convertToOptions(['0100']);
-                                } else {
-                                    options = this.convertToOptions(['1100']);
-                                }
-                            }
-    
-                        } else if (func === "RC") {
-                            if (absVal < ti) {
-                                var possibleValueList = ['0000', '0011', '0010', '1100', '0100', 'empty', 'no value'];
-                                options = this.convertToOptions(possibleValueList);
-                            } else {
-                                var funcX = intention.dynamicFunction.functionSegList[1].funcX;
-                                /** Can't you just pass funcX into this.convertToOptions... */
-                                switch (funcX) {
-                                    case '0000':
-                                        options = this.convertToOptions(['0000']);
-                                        break;
-                                    case '0011':
-                                        options = this.convertToOptions(['0011']);
-                                        break;
-                                    case '0100':
-                                        options = this.convertToOptions(['0100']);
-                                        break;
-                                    case '1100':
-                                        options = this.convertToOptions(['1100']);
-                                        break;
-                                    case '0010':
-                                        options = this.convertToOptions(['0010']);
-                                        break;
-                                }
-                            }
-                        } else if (func === "CR") {
-                            if (absVal < ti) {
-                                var funcX = intention.dynamicFunction.functionSegList[1].funcX;
-                                switch (funcX) {
-                                    /** Again, can pass funcX into this.convertToOptions... */
-                                    case '0000':
-                                        options = this.convertToOptions(['0000']);
-                                        break;
-                                    case '0011':
-                                        options = this.convertToOptions(['0011']);
-                                        break;
-                                    case '0100':
-                                        options = this.convertToOptions(['0100']);
-                                        break;
-                                    case '1100':
-                                        options = this.convertToOptions(['1100']);
-                                        break;
-                                    case '0010':
-                                        options = this.convertToOptions(['0010']);
-                                        break;
-                                }
-                            } else {
-                                var possibleValueList = ['0000', '0011', '0010', '1100', '0100', 'empty', 'no value'];
-                                options = this.convertToOptions(possibleValueList);
-                            }
-                        } else if (func === "SD") {
-    
-                            if (absVal < ti) {
-                                options = this.convertToOptions(['0011']);
-                            } else {
-                                options = this.convertToOptions(['1100']);
-                            }
-    
-                        } else if (func === "DS") {
-                            if (absVal < ti) {
-                                options = this.convertToOptions(["1100"]);
-                            } else {
-                                options = this.convertToOptions(['0011']);
-                            }
-                        } else {
-                            /** What is this */
-                            console.log("calling empty from compound functions")
-                            var list = ['empty'];
-                            options = this.convertToOptions(list);
-                        }
-                    }
-                }
-    
-                else if (func === "UD") {
-                    var time_list = [];
-                    for (var y = 0; y < constraints.length; y++) {
-                        if (constraints[y].constraintSrcID === intention.nodeID) {
-                            /** Get all UD time point constraints for this intention */
-                            time_list.push(constraints[y].absoluteValue);
-                        }
-                    }
-    
-                    var assigned = true;
-                    if (time_list.length === 0 ){
-                        assigned = false;
-                    }
-    
-    
-                    else {
-                        for (var z = 0; z < time_list.length; z++) {
-                            if (time_list[z] === -1) {
-                                // Go through all the times and assign false if any of them are -1?
-                                assigned = false;
-                                break;
-                            }
-                        }
-                    }
-    
-                    if (assigned === true) {
-                        var func_list = intention.dynamicFunction.functionSegList;
-                        /** Go through all funcSegs and get type and time point */
-                        for (var x = 0; x < func_list.length; x++) {
-                            /** funcX is start point? Slight confusion on absTimePt used here */
-                            var funcType = func_list[x].funcType;
-                            var funcX = func_list[x].funcX;
-                            console.log(funcType);
-                            switch (funcType) {
-                                case "I":
-                                    options = this.increasing(funcX,'noFinal');
-                                    break;
-                                case "D":
-                                    options = this.decreasing(funcX,'noFinal');
-                                    break;
-                                case "C":
-                                    options = this.constant(funcX);
-                                    break;
-                                case "R":
-                                    options = this.stochastic();
-                                    break;
-                            }
-                            
-                        }
-                    }
-                    else {
-                        options = this.convertToOptions(['empty']);
-                    }
-                }
-                else {
-                    var possibleValueList = ['0000', '0011', '0010', '1100', '0100', 'empty', 'no value'];
-                    options = this.convertToOptions(possibleValueList);
-                }
-                /** Add all dropdowns to row */
-                selectElement.append(options);
-                selectTd.append(selectElement);
-                row.append(selectTd);
-                }
-            $('#interm-list').append(row);
+        /**
+         * Make row for each intention
+         */
+        for (let intentionCell in this.model.getElements().filter(element => element instanceof joint.shapes.basic.Intention)){
+            var intentionUserEvaluationsView = new IntentionUserEvaluationsView({model: intentionCell.get('intention'), intentionID: intentionCell.id, allAbsoluteTimePoints: absoluteTimePointsList});
+            $('#interm-list').append(intentionUserEvaluationsView.el);
+            intentionUserEvaluationsView.render();
         }
 
         // Needed after looping through and appending rows to avoid voiding the select
@@ -369,211 +90,6 @@ var IntermediateValuesTable = Backbone.View.extend({
             });
         });
     },
-
-
-    /**
-	*This function takes in a binary string of value and return
-	* a decimal encoding of that value
-	* none has a value of 0
-	* partially denied has a value of -1
-	* fully denied has a value of -2
-	* partially satisfied has a value of 1
-	* fully satisfied has a value of 2
-	*/
-	comparisonSwitch: function(valueToEncode){
-        var tempInput;
-        switch(valueToEncode){
-            case '0000':
-                tempInput = 0;
-                break;
-            case '0011':
-                tempInput = 2;
-                break;
-            case '0010':
-                tempInput = 1;
-                break;
-            case '0100':
-                tempInput = -1;
-                break;
-            case '1100':
-                tempInput = -2;
-                break;
-        }
-        return tempInput;
-    },
- 
- 
-     /**
-     *this function takes in two values the first one is the binary string of the input value
-     * and the second one is the binary string of the value to compare.
-     * This function will return a boolean value that whether the input value is greater than the value to compare
-      */
-    isIncreasing: function(inputValue, valueToCompare){
-        var tempInput = this.comparisonSwitch(inputValue);
-        var tempCompare = this.comparisonSwitch(valueToCompare);
-        if (tempInput < tempCompare){
-            return false;
-        }
-        else{
-            return true;
-        }
-    },
- 
- 
-     /**
-     *this function takes in two values the first one is the binary string of the input value
-     * and the second one is the binary string of the value to compare.
-     * This function will return a boolean value that whether the input value is smaller than the value to compare
-      */
-    isDecreasing: function(inputValue, valueToCompare){
-        var tempInput = this.comparisonSwitch(inputValue);
-        var tempCompare = this.comparisonSwitch(valueToCompare);
-        if(tempInput <= tempCompare){
-            return true;
-        }
-        else{
-            return false;
-        }
-    },
- 
-     /**
-     *This function takes in an initial value and return a list of strings for options that contains values that are larger than the initial value
-      */
-    increasing: function(initValue,finalValue){
-         var possibleValueList = ['0000','0011','0010','1100','0100'];
-         var valueForOptions = [];
-         if(finalValue === 'noFinal') {
-             for (var i = 0; i < possibleValueList.length; i++) {
-                 if (this.isIncreasing(possibleValueList[i], initValue)) {
-                     valueForOptions.push(possibleValueList[i]);
-                 }
-             }
-             return this.convertToOptions(valueForOptions);
-         }
-         else{
-             var withFinal = [];
-             var withFinalTwo =[];
-             for (var i = 0; i < possibleValueList.length; i++) {
-                 if (this.isIncreasing(possibleValueList[i], initValue)) {
-                     valueForOptions.push(possibleValueList[i]);
-                 }
-             }
-             for(var i=0;i<valueForOptions.length;i++){
-                 if(this.isDecreasing(valueForOptions[i],finalValue)){
-                     withFinal.push(valueForOptions[i]);
-                 }
-             }
-             for(var i = 0; i < withFinal.length; i++){
-                 if(!(withFinal[i]===finalValue)){
-                     withFinalTwo.push(withFinal[i]);
-                 }
-             }
-             return this.convertToOptions(withFinalTwo);
-         }
-    },
- 
-     /**
-     *This function takes in an initial value and return a list of strings for options that contains values that are smaller than the initial value
-      */
-    decreasing: function(initValue,finalValue){
-        var possibleValueList = ['0000','0011','0010','1100','0100'];
-        var valueForOptions = [];
-        if(finalValue === 'noFinal') {
-            for (var i = 0; i < possibleValueList.length; i++) {
-                if (this.isDecreasing(possibleValueList[i], initValue)) {
-                    valueForOptions.push(possibleValueList[i]);
-                }
-            }
-            return this.convertToOptions(valueForOptions);
-        } else {
-            var withFinal = [];
-            var withFinalTwo  = [];
-            for (var i = 0; i < possibleValueList.length; i++) {
-                if (this.isDecreasing(possibleValueList[i], initValue)) {
-                    valueForOptions.push(possibleValueList[i]);
-                }
-            }
-            for(var i=0; i<valueForOptions.length;i++){
-                if(this.isIncreasing(valueForOptions[i],finalValue)){
-                    withFinal.push(valueForOptions[i]);
-                }
-            }
-            for(var i = 0; i< withFinal.length; i++){
-                if(!(withFinal[i]===finalValue)){
-                    withFinalTwo.push(withFinal[i]);
-                }
-            }
-            return this.convertToOptions(withFinalTwo);
- 
-        }
-    },
- 
-     /**
-     *This function takes in an initial value and return a list of strings for options that contains values that are equal to the initial value
-      */
-    constant: function(initValue){
-        return this.convertToOptions([initValue]);
-    },
- 
- 
-     /**
-      *
-      * @returns {a list of strings for options that contains values that contains all possible values}
-      */
-    stochastic: function(){
-        var possibleValueList = ['0000','0011','0010','1100','0100', 'no value'];
-        return this.convertToOptions(possibleValueList);
-    },
- 
-     /**
-      *
-      * @param binaryString: This is the binary string stands for the value
-      * @returns a string decode of that binary value
-      */
-    binaryToOption: function(binaryString){
-         var optionString = '';
-         switch(binaryString){
-             case "0000":
-                 optionString = `<option value="0000">None (⊥, ⊥) </option>`;
-                 break;
-             case "0011":
-                 optionString = `<option value="0011">Satisfied (F, ⊥) </option>`;
-                 break;
-             case "0010":
-                 optionString = `<option value="0010">Partially Satisfied (P, ⊥) </option>`;
-                 break;
-             case "0100":
-                 optionString = `<option value="0100">Partially Denied (⊥, P)</option>`;
-                 break;
-             case "1100":
-                 optionString = `<option value="1100">Denied (⊥, F) </option>`;
-                 break;
-             case 'empty':
-                 optionString = `<option value="empty"> --- </option>`;
-                 break;
-             case 'no value':
-                 optionString = `<option value="(no value)">(no value)</option>`;
-                 break;
-         }
-         return optionString;
-    },
- 
-     /**
-      *
-      * @param choiceList: A list that contains binary strings of valid values
-      * @returns {List that contains strings that are the string encoding of the binary strings in the choiceList}
-      */
-    convertToOptions: function(choiceList){
-         var theOptionString = ``;
-         for(var i = 0; i < choiceList.length; i++){
-             var curString = this.binaryToOption(choiceList[i]);
-             theOptionString += curString;
-         }
-         return theOptionString;
-    },
-
-
-
 
     dismissInterm: function (){
         this.remove();
@@ -603,22 +119,45 @@ var IntermediateValuesTable = Backbone.View.extend({
         //     });
         // });
         this.dismissInterm();
+    },
+
+    getAllAbsoluteTimePoints: function(){
+        var absTimeValues = this.model.get('absTimePtsArr');
+        var constraintTimes = this.model.get('constraints').map(constraint => constraint.get('absTP'));
+        var linkTimes = this.model.getLinks().map(linkCell => linkCell.get('link').get('absTP'));
+        var intentionTimes = [];
+        this.model.getIntentions().forEach(intentionBBM => intentionBBM.getFuncSegments())
+                                                        .forEach(funcSegmentsList => {
+                                                            if (funcSegmentsList != null){
+                                                                for (let funcSeg of funcSegmentsList){
+                                                                    funcSegTP = funcSeg.get('startAT')
+                                                                    if (funcSegTP != -1){
+                                                                        intentionTimes.push(funcSegTP);
+                                                                    }
+                                                                }
+                                                            }
+                                                        });
+        
+        var allTimes = absTimeValues.concat(constraintTimes).concat(linkTimes).concat(intentionTimes);
+        var absoluteTimePointsList = Array.from(new Set(allTimes));
+        absoluteTimePointsList.sort(function(a,b) {return a-b})
+        return absoluteTimePointsList;
     }
-}),
+})
 
 var IntentionUserEvaluationsView = Backbone.View.extend({
     model: IntentionBBM,
 
     initialize: function(options){
-        this.constraints = options.constraints;
-        this.allAbsoluteTimePoints = options.allAbsoluteTimePoints
+        this.intentionID = options.intentionID;
+        this.allAbsoluteTimePoints = options.allAbsoluteTimePoints;
     },
 
     template: [
         '<script type="text/template" id="intention-user-eval-template">',
         '<tr class="intention-row>',
-            '<td> INTENTION NAME HERE </td>',
-            'INITIAL VALUE HERE',
+            '<td> "<%= nodeName %>" </td>',
+            '<%= initialValue %>',
         '</tr>',
         '</script>'
     ].join(''),
@@ -629,47 +168,262 @@ var IntentionUserEvaluationsView = Backbone.View.extend({
     },
 
     loadSelect: function(){
-        func = this.model.get('functionType');
-        initSatValue = this.model.get('initialSatValue');
-        functionSegments = this.model.getFuncSegments();
         for (let absTimePt of this.allAbsoluteTimePoints){
-            /** Check func type */
-                // If I,D,C,R
-                    /** get options from init value (funcSeg[0]?),final */
-                // If MP, MN, CR, etc
-                    /** 
-                     * Check every funcSeg to see if there 
-                     * is an assigned time that matches
-                     * (func seg -> startAT)
-                     * 
-                     * Uses absTimePt, intention init value & final value
-                     * final value from functionSegList either 0 or 1 index
-                     * 
-                     * need to clarify additional logic w alicia
-                     */
-                // If UD
-                    /**
-                     * Get all func segments
-                     * Need funcType and funcX for each segment
-                     * need to clarify logic on absTP with alicia
-                     */
-
-
-            var selectUserEvaluationView = new SelectUserEvaluationView({absTimePt: absTimePt, });
+            var selectUserEvaluationView = new SelectUserEvaluationView
+                                                ({intentionID: this.intentionID,
+                                                  absTimePt: absTimePt, 
+                                                  functionSegmentList: this.model.getFuncSegments(),
+                                                  funcType: this.model.get('functionType'),
+                                                  initValue: this.model.get('initialSatValue')});
             $('.intention-row').append(selectUserEvaluationView.el);
             selectUserEvaluationView.render();
         }
     }
 
-}),
+})
 
 var SelectUserEvaluationView = Backbone.View.extend({
-    model: UserEvaluation,
+    template: [
+        '<select class="evaluation-value"></select>'
+    ].join(''),
+
+    events: {
+        'change .evaluation-value':'updateEvaluationValue'
+    },
 
     initialize: function(options){
+        this.funcType = options.funcType;
         this.absTimePt = options.absTimePt;
-        this.intention = options.intention;
+        this.intentionID = options.intentionID;
+        this.initValue = options.initValue;
         this.functionSegmentList = options.functionSegmentList;
-    }
+        this.allOptions = ['0000', '0011', '0010', '1100', '0100', 'empty', 'no value']
+        this.userEvaluation = null;
+    },
 
-})
+    render: function(){
+        this.$el.html(_.template(this.template)());
+        this.$('select').append(this.getOptionsByType());
+
+    },
+
+    updateEvaluationValue: function(){
+        var evaluationValue = this.$('.evaluation-value').val();
+        if (this.userEvaluation != null){
+            this.userEvaluation.destroy();
+        }
+        // TODO: Check w/ Alicia for intended behavoir and handle null/no value
+        this.userEvaluation = new UserEvaluationBBM({intentionID: this.intentionID, 
+                                                     absTP: this.absTimePt, 
+                                                     assignedEvidencePair: evaluationValue});
+        // add new value to graph collection
+    },
+
+    getOptionsByType: function(){
+        var lastTP = -1;
+        var lastFuncSeg = this.intention.getFuncSegments()[-1];
+        var finalValue = lastFuncSeg.get('refEvidencePair');
+        var lastTP = lastFuncSeg.get('startAT');
+
+        switch (func) {
+            case 'I':
+                options = this.increasing(this.initValue,'noFinal');
+                break;
+            case 'D':
+                options = this.decreasing(this.initValue,'noFinal');
+                break;
+            case 'C':
+                options = this.constant(this.initValue);
+                break;
+            case 'R':
+                options = this.stochastic();
+                break;
+            case 'MP':
+                /** 
+                 * If the absoluteTP is less than the last constraints time point
+                 * Use the evaluation value from the first function segment to determine options
+                 */
+                 if (this.absTimePt < lastTP) {
+                    options = this.increasing(initValue, this.functionSegmentList[0].get('refEvidencePair'));
+                /**
+                 * Else use the evaluation value from the last function segment to determine options
+                 */
+                } else {
+                    options = this.convertToOptions([finalValue]);
+                }
+                break;
+            case 'MN':
+                /** 
+                 * If the absoluteTP is less than the last constraints time point
+                 * Use the evaluation value from the first function segment to determine options
+                 */
+                if (this.absTimePt < lastTP) {
+                    options = this.decreasing(initValue, this.functionSegmentList[0].get('refEvidencePair'));
+                /**
+                 * Else use the evaluation value from the last function segment to determine options
+                 */
+                } else {
+                    options = this.convertToOptions([finalValue]);
+                }
+                break;
+            case 'CR':
+                /** 
+                 * If the absoluteTP is less than the last constraints time point
+                 * Use the evaluation value from the last function segment to determine options
+                 */
+                // TODO: I feel like this should be the first value but check with Alicia before changing
+                if (this.absVal < lastTP){
+                    options = this.convertToOptions([finalValue]);
+                /**
+                 * Else allow any options
+                 */
+                } else {
+                    this.convertToOptions(this.allOptions);
+                }
+                break;
+            case 'RC':
+                /** 
+                 * If the absoluteTP is less than the last constraints time point
+                 * Allow any options
+                 */
+                if (this.absVal < lastTP){
+                    this.convertToOptions(this.allOptions);
+                /** 
+                 * Else se the evaluation value from the last function segment 
+                 * to determine options
+                 */
+                } else {
+                    options = this.convertToOptions([finalValue]);
+                }
+                break;
+            case 'SD':
+                /** 
+                 * If the absoluteTP is less than the last constraints time point
+                 * Allow only Satisfied
+                 */
+                if (this.absVal < lastTP) {
+                    options = this.convertToOptions(['0011']);
+                /**
+                 * Else allow only Denied
+                 */
+                } else {
+                    options = this.convertToOptions(['1100']);
+                }
+                break;
+            case 'DS':
+                /** 
+                 * If the absoluteTP is less than the last constraints time point
+                 * Allow only Denied
+                 */
+                if (this.absVal < lastTP) {
+                    options = this.convertToOptions(["1100"]);
+                /**
+                 * Else allow only Satisfied
+                 */
+                } else {
+                    options = this.convertToOptions(['0011']);
+                }
+                break;
+            case 'UD':
+                // TODO
+                // If the abs time pt falls between two consecutive func segments
+                // We restrict based on type
+                // Otherwise you can choose any values
+                options = this.convertToOptions(this.allOptions);
+                break;
+            default:
+                options = this.convertToOptions(this.allOptions);
+                break;
+        }
+        return options;
+    },
+ 
+    /**
+     *This function takes in an initial value and return a list of strings for options that contains values that are larger than the initial value
+     */
+    increasing: function(initValue, finalValue){
+        // IMPORTANT: This list must stay in order from least satisfied to most satisfied for this function to work
+        var possibleValueList = ['0011','0010','0000','0100','1100'];
+        if(finalValue === 'noFinal') {
+            return this.convertToOptions(possibleValueList.slice(possibleValueList.indexOf(initValue)));
+        }
+        else{
+            return this.convertToOptions(possibleValueList.slice(
+            possibleValueList.indexOf(initValue),
+            possibleValueList.indexOf(finalValue)+1));
+         }
+    },
+ 
+    /**
+     *This function takes in an initial value and return a list of strings for options that contains values that are smaller than the initial value
+     */
+    decreasing: function(initValue,finalValue){
+        // IMPORTANT: This list must stay in order from most satisfied to least satisfied for this function to work
+        var possibleValueList = ['1100','0100','0000','0010','0011'];
+        if(finalValue === 'noFinal') {
+            return this.convertToOptions(possibleValueList.slice(possibleValueList.indexOf(initValue)));
+        } else {
+            return this.convertToOptions(possibleValueList.slice(
+                possibleValueList.indexOf(initValue),
+                possibleValueList.indexOf(finalValue)+1));
+        }
+    },
+ 
+    /**
+     *This function takes in an initial value and return a list of strings for options that contains values that are equal to the initial value
+     */
+    //TODO: Do we need constant? Can we just select the constant value on all and disable?
+    constant: function(initValue){
+        return this.convertToOptions([initValue]);
+    },
+ 
+ 
+    /**
+     *
+     * @returns {a list of strings for options that contains values that contains all possible values}
+     */
+    stochastic: function(){
+        var possibleValueList = ['0000','0011','0010','1100','0100', 'no value'];
+        return this.convertToOptions(possibleValueList);
+    },
+ 
+     /**
+      *
+      * @param binaryString: This is the binary string stands for the value
+      * @returns a string decode of that binary value
+      */
+    binaryToOption: function(binaryString){
+         switch(binaryString){
+             case "0000":
+                 return `<option value="0000">None (⊥, ⊥) </option>`;
+             case "0011":
+                 return `<option value="0011">Satisfied (F, ⊥) </option>`;
+             case "0010":
+                 return `<option value="0010">Partially Satisfied (P, ⊥) </option>`;
+             case "0100":
+                 return `<option value="0100">Partially Denied (⊥, P)</option>`;
+             case "1100":
+                 return `<option value="1100">Denied (⊥, F) </option>`;
+             case 'empty':
+                 return `<option value="empty"> --- </option>`;
+             case 'no value':
+                 return `<option value="(no value)">(no value)</option>`;
+         }
+         return null;
+    },
+ 
+     /**
+      *
+      * @param choiceList: A list that contains binary strings of valid values
+      * @returns {List that contains strings that are the string encoding of the binary strings in the choiceList}
+      */
+    convertToOptions: function(choiceList){
+         var theOptionString = ``;
+         for(var i = 0; i < choiceList.length; i++){
+             var curString = this.binaryToOption(choiceList[i]);
+             theOptionString += curString;
+         }
+         return theOptionString;
+    },
+
+});

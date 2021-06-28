@@ -449,37 +449,37 @@ $('#model-cur-btn').on('click', function() {
  */
 function revertNodeValuesToInitial() {
     // reset values
-    for (var i = 0; i < graph.elementsBeforeAnalysis.length; i++) {
-		var value = graph.elementsBeforeAnalysis[i]
-		updateNodeValues(i, value, "toInitModel");
-	}
+    // for (var i = 0; i < graph.elementsBeforeAnalysis.length; i++) {
+	// 	var value = graph.elementsBeforeAnalysis[i]
+	// 	updateNodeValues(i, value, "toInitModel");
+	// }
 
-	var elements = graph.getElements();
-	var curr;
-	for (var i = 0; i < elements.length; i++) {
-		curr = elements[i].findView(paper).model;
+	// var elements = graph.getElements();
+	// var curr;
+	// for (var i = 0; i < elements.length; i++) {
+	// 	curr = elements[i].findView(paper).model;
 
-		if (curr.attributes.type !== 'basic.Goal' &&
-			curr.attributes.type !== 'basic.Task' &&
-			curr.attributes.type !== 'basic.Softgoal' &&
-			curr.attributes.type !== 'basic.Resource') {
-			continue;
-		}
+	// 	if (curr.attributes.type !== 'basic.Goal' &&
+	// 		curr.attributes.type !== 'basic.Task' &&
+	// 		curr.attributes.type !== 'basic.Softgoal' &&
+	// 		curr.attributes.type !== 'basic.Resource') {
+	// 		continue;
+	// 	}
 
-		var intention = model.getIntentionByID(curr.attributes.nodeID);
+	// 	var intention = model.getIntentionByID(curr.attributes.nodeID);
 
-		var initSatVal = intention.getInitialSatValue();
-		if (initSatVal === '(no value)') {
-            curr.attr('.satvalue/text', '');
+	// 	var initSatVal = intention.getInitialSatValue();
+	// 	if (initSatVal === '(no value)') {
+    //         curr.attr('.satvalue/text', '');
 
-		} else {
-            curr.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
-		}
-        //curr.attr({text: {fill: 'black'}});
-        curr.attr({text: {fill: 'black',stroke:'none','font-weight' : 'normal','font-size': 10}});
-	}
-    // Remove slider
-    removeSlider();
+	// 	} else {
+    //         curr.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
+	// 	}
+    //     //curr.attr({text: {fill: 'black'}});
+    //     curr.attr({text: {fill: 'black',stroke:'none','font-weight' : 'normal','font-size': 10}});
+	// }
+    // // Remove slider
+    // removeSlider();
 }
 
 /**

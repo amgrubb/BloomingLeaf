@@ -51,8 +51,7 @@ var IntentionBBM = Backbone.Model.extend({
         nodeType: null,
         nodeActorID: null,                     // Assigned on release operation.
         evolvingFunction: null, 
-        functionType: 'NT',                    // I, D, C, R, MP, UD, etc
-        initialValue: '(no value)',
+        initialValue: '(no value)'
     },
 
     /**
