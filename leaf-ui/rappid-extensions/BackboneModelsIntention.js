@@ -178,7 +178,7 @@ var IntentionBBM = Backbone.Model.extend({
         if (this.get('evolvingFunction') != null) {
             if (this.get('evolvingFunction').get('type') == 'C' || 
                 (this.get('evolvingFunction').get('type') == 'UD' && funcSegList[0].get('type') == 'C')) { 
-                    funcSegList[0].set('refEvidencePair', initValue); 
+                    funcSegList[0].set('refEvidencePair', initValue); // Set first index of funcSegList to given initValue 
             }
             this.get('evolvingFunction').set('type', 'NT');
             this.get('evolvingFunction').set('functionSegList', []);
@@ -199,11 +199,11 @@ var IntentionBBM = Backbone.Model.extend({
      * @returns {String}
      */
     getInitialSatValue: function() {
-        var intentionEval = graph.getUserEvaluationBBM(this.cid, '0');
+        var intentionEval = graph.getUserEvaluationBBM(this.cid, '0'); // Finding UserEvaluationBBM with same ID and startTP as this IntentionBBM 
         if (typeof intentionEval == 'undefined'){
             return '(no value)';
         } else {
-            return intentionEval.get('assignedEvidencePair');
+            return intentionEval.get('assignedEvidencePair'); 
         }
     }, 
  
@@ -212,7 +212,7 @@ var IntentionBBM = Backbone.Model.extend({
      */
     removeFunction: function() {
         this.removeAbsConstraint();
-        this.model.get('intention').set('evolvingFunction', null); 
+        this.model.get('intention').set('evolvingFunction', null); // Set to null 
     }, 
  
     /**
@@ -293,7 +293,7 @@ var IntentionBBM = Backbone.Model.extend({
     addAbsConstraint: function(funcType) {
         if (funcType == 'RC' || funcType == 'CR' || funcType == 'MP' ||
             funcType == 'MN' || funcType == 'SD' || funcType == 'DS') {
-            graph.get('constraints').push(new ConstraintBBM({type: 'A', srcID: this.cid, srcRefTP: 'A', destID: null, destRefTP: null}));
+            graph.get('constraints').push(new ConstraintBBM({type: 'A', srcID: this.cid, srcRefTP: 'A', destID: null, destRefTP: null})); 
         }
     }, 
  
@@ -308,7 +308,7 @@ var IntentionBBM = Backbone.Model.extend({
         while (i < graph.get('constraints').length) {
             var constraint = graph.get('constraints');
             if (constraint.get('type') == 'A' && constraint.get('srcID') === this.cid) {
-                graph.get('constraints').splice(i, 1);
+                graph.get('constraints').splice(i, 1); 
             } else {
                 i++;
             }
@@ -333,15 +333,14 @@ var IntentionBBM = Backbone.Model.extend({
      */
     addUserDefinedSeg: function(funcType, refEvidencePair, startTime){
         var len = this.getFuncSegments().length;
-        var startCheck = this.getFuncSegments()[len - 1].get('startTP');
-        if (startCheck == '0') {
+        var startCheck = this.getFuncSegments()[len - 1].get('startTP'); // Get last value in list 
+        if (startCheck == '0') { // If previous segment is at 0 then next one is at A
             var start = 'A';
-        }        
-        else {
-            var start = String.fromCharCode(startCheck.charCodeAt(0) + 1);
+        } else { // Otherwise, for following segment increase number by one 
+            var start = String.fromCharCode(startCheck.charCodeAt(0) + 1); 
         }
  
-        //create new FunctionSegmentBBM and adds it to functionSegList 
+        // Create new FunctionSegmentBBM and adds it to functionSegList 
         var new_model = new FunctionSegmentBBM({type: funcType, refEvidencePair: refEvidencePair, startTP: start, startAT: myNull}); 
         this.getFuncSegments().push(new_model); 
         //graph.get('constraints').push(new ConstraintBBM({type: 'A', srcID: this.get('cid'), srcRefTP: start, destID: null, destRefTP: null}));
@@ -358,15 +357,16 @@ var IntentionBBM = Backbone.Model.extend({
     // TODO: i think we are going to have to change this function when we add views for the FunctionSegmentBBMs
     setMarkedValueToFunction: function(satValue) {
         if (this.get('evolvingFunction') != null) {
-            var funcType = this.get('evolvingFunction').get('type');
+            var funcType = this.get('evolvingFunction').get('type'); 
+        } else { 
+            var funcType = null; 
         }
-        else { var funcType = null; }
  
         var len = this.getFuncSegments().length;
-        this.getFuncSegments()[len - 1].set('refEvidencePair', satValue);
+        this.getFuncSegments()[len - 1].set('refEvidencePair', satValue); // Set refEvidencePair for last value 
  
         if (funcType == 'MP' || funcType == 'MN') {
-            this.getFuncSegments()[0].set('refEvidencePair', satValue);
+            this.getFuncSegments()[0].set('refEvidencePair', satValue); // Set refEvidencePair for initial value 
         }
     }, 
  
@@ -379,12 +379,13 @@ var IntentionBBM = Backbone.Model.extend({
     setUserDefinedSegment: function(funcValue) {
         if (this.getFuncSegments() != null) {
             var funcSegLen = this.getFuncSegments().length;
+        } else { 
+            var funcSegLen = null;
         }
-        else {var funcSegLen = null;};
         var functionSegment = this.getFuncSegments()[funcSegLen - 1];
-        functionSegment.set('type', funcValue); 
+        functionSegment.set('type', funcValue); // Set type 
         if (funcValue == 'C' || funcValue =='R') {
-            functionSegment.set('refEvidencePair', '0000');
+            functionSegment.set('refEvidencePair', '0000'); // Set refEvidencePair
         } 
     }, 
 
@@ -399,7 +400,7 @@ var IntentionBBM = Backbone.Model.extend({
         var funcSegList = this.getFuncSegments();
         var funcSegLen = this.getFuncSegments().length;
     
-        var lastObj = funcSegList[funcSegLen - 1];
+        var lastObj = funcSegList[funcSegLen - 1]; // Set to last function segment 
         lastObj.set('refEvidencePair', satVal);
     },
 });
