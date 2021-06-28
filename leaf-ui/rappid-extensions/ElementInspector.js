@@ -410,9 +410,6 @@ var ElementInspector = Backbone.View.extend({
      */
     initSatValueChanged: function(event) {
         var initValue = this.$('#init-sat-value').val();
-        /**
-         * TODO update .changeInitalSatValue() inside intentionBBM model
-         */
         this.model.get('intention').changeInitialSatValue(satValueDict[initValue]);
         this.checkInitialSatValue();
         this.updateCell(null);

@@ -50,7 +50,9 @@ var FunctionSegmentBBM = Backbone.Model.extend({
  */
 var EvolvingFunctionBBM = Backbone.Model.extend({
  
+    // The default function sets the default values for the EvolvingFunctionBBM
     defaults: function(){ 
+        // The return resets the attributes if EvolvingFunctionBBM is recreated
         return {
             type: 'NT',                  // Named types on view list, was stringDynVis
             // Array functionSegList contains all of the FunctionSegment models (and only FunctionSegment models)
@@ -74,14 +76,15 @@ var EvolvingFunctionBBM = Backbone.Model.extend({
      * does not return anything.
      */
     getNthRefEvidencePair: function(n) { 
+
         if (this.get('functionSegList') != null) {
             var len = this.get('functionSegList').length; 
             var funcSegList = this.get('functionSegList');
-            if (len > 1) {  
+            if (len > 1) {    
                 return funcSegList[len - n].get('refEvidencePair'); 
             }   
-            else {
-                return funcSegList[len - 1].get('refEvidencePair');
+            else { // If the len is 1, can only return that FunctionSegmentBBM's refEvidencePair
+                return funcSegList[0].get('refEvidencePair');
             }     
         }
     }, 
@@ -140,11 +143,11 @@ var IntentionBBM = Backbone.Model.extend({
         _.extend({}, this.defaults, options) 
     }, 
     defaults: { 
-        nodeName: 'untitled',
-        nodeActorID: null,                     // Assigned on release operation.
-        nodeType: null,
-        evolvingFunction: null, 
-        initialValue: '(no value)'
+            nodeName: 'untitled',
+            nodeActorID: null,                     // Assigned on release operation.
+            nodeType: null,
+            evolvingFunction: null, 
+            initialValue: '(no value)'
     }, 
 
     /**
