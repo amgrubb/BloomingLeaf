@@ -15,8 +15,34 @@ joint.dia.BloomingGraph = joint.dia.Graph.extend({
     defaults: joint.util.deepSupplement({
         type: 'goalmodel.Graph',
         maxAbsTime: 100,
-        constraints: []
+        absTimePtsArr: [],
+        // TODO: Name with correct type of constraints
+        constraints: new ConstraintCollection([]),
+        userEvaluationList: new UserEvaluationCollection([])
     }, joint.dia.Graph.prototype.defaults),
+
+    /**
+     * @returns Array of all IntentionBBMs in the graph
+     */
+    getIntentions: function(){
+        return this.getElements().filter(element => element instanceof joint.shapes.basic.Intention)
+            .map(intentionCell => intentionCell.get('intention'));
+    },
+
+    /**
+     * Returns the cell associated with the id parameter
+     * There should be a 1 to 1 mapping of ids to cells
+     * 
+     * @param {String} id 
+     * @returns Cell
+     */
+    getCellById: function(id){
+        var cell = this.getCells().filter(cell => cell.get('id') == id);
+        if (cell.length == 1){
+            return cell[0]
+        }
+        return null;
+    }
 
 })
 
@@ -58,7 +84,7 @@ joint.shapes.basic.Intention = joint.shapes.basic.Generic.extend({
             	'y-alignment': 'middle'
             },
         },
-        intention: new IntentionTest('-', this.type), 
+        intention: null,
     }, joint.dia.Element.prototype.defaults)
 });
 
@@ -165,27 +191,46 @@ joint.shapes.basic.Resource = joint.shapes.basic.Intention.extend({
     }
 });
 
-joint.dia.cellLink = joint.dia.Link.extend({
-    
+joint.dia.CellLink = joint.dia.Link.extend({
+    // In initialize, everytime the target is changed, the code updates it
+    initialize: function(){
+        this.on('change:target', this.updateLinkPointers, this);
+        this.on('change:source', this.updateLinkPointers, this);
+    },
     defaults: joint.util.deepSupplement({
         type: 'Link',
         link: null,
-        selected: false,
     }),
+
+    /**
+     * This function checks the updated target/source to determine if the link is still valid
+     * And updates the CellLink type and LinkBBM linkType accordingly
+     */
+    updateLinkPointers: function(){
+        var target = this.getTargetElement();
+        var source = this.getSourceElement();
+        if ((target !== null && source !== null)){
+            if (((source.get('type') === 'basic.Actor') && (target.get('type')  !== 'basic.Actor')) || ((source.get('type') !== 'basic.Actor') && (target.get('type')  === 'basic.Actor'))){
+                this.set('type', 'error');
+                this.label(0 , {position: 0.5, attrs: {text: {text: 'error'}}});
+            } else if (source.get('type') === "basic.Actor") {
+                this.set('type', 'Actor');
+                this.get('link').set('linkType', 'is-a');
+                this.label(0, {position: 0.5, attrs: {text: {text: this.get('link').get('linkType')}}});
+            }
+            else{
+                this.set('type', 'element');
+                this.get('link').set('linkType', 'and');
+                this.label(0, {position: 0.5, attrs: {text: {text: this.get('link').get('linkType')}}});
+            }
+        }
+    },
 });
 
-joint.dia.Intentionlink = joint.dia.Link.extend({
-    defaults: joint.util.deepSupplement({
-		type: 'Intentionlink',
-	}),
-    postType: null,
-    linkSrcID: null,
-    linkDestID: null,
-    absoluteValue: -1
-});
 
 joint.shapes.basic.Actor = joint.shapes.basic.Generic.extend({
     markup: '<g class="scalable"><circle class = "outer"/></g><circle class="label"/><path class="line"/><text class = "name"/>',
+
     defaults: joint.util.deepSupplement({
         type: "basic.Actor",
         size: {
@@ -222,12 +267,9 @@ joint.shapes.basic.Actor = joint.shapes.basic.Generic.extend({
             ".line": {
             }
         },
-        //TODO replace with new ActorBBM once it is in codebase
-        actor: new ActorTest(),
-        actorType: 'A',
-        actorName: 'Actor'
+        actor: null,
     }, joint.dia.Element.prototype.defaults),
     changeToOriginalColour: function() {
         this.attr({'.outer': {'fill': '#EBFFEA'}});
     },
-}); 
+});

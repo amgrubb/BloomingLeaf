@@ -18,100 +18,95 @@ It also contains the setup for Rappid elements.
  * General javascript for user interaction
  * When the user clicks anywhere outside of the a pop up, close it
  */
+// TODO: Permenently remove and figure out how to re-implement inside the respective views
 window.onclick = function(event) {
-	var modal = document.getElementById('assignmentsModal');
+	// var modal = document.getElementById('assignmentsModal');
 	var intermT = document.getElementById('intermediateTable');
-    if (event.target == modal) {
-  	    modal.style.display = "none";
-    }
+    // if (event.target == modal) {
+  	//     modal.style.display = "none";
+    // }
 	if(event.target == intermT){
 		intermT.style.display = "none";
 	}
 }
 
 /**
- * Closes Assignments Table
- */
-
-$('.close').on('click', function(){
-    var modal = document.getElementById('assignmentsModal');
-    modal.style.display = "none";
-});
-
-/**
  * Sets Max Absolute Time
  */
-$('#max-abs-time').on('change', function(){
-    var maxTime = $('#max-abs-time');
-    if (maxTime.val() !== "") {
-        model.maxAbsTime = maxTime.val()
-    } else {
-        maxTime.val(model.maxAbsTime);
-    }
-});
+// $('#max-abs-time').on('change', function(){
+//     var maxTime = $('#max-abs-time');
+//     if (maxTime.val() !== "") {
+//         model.maxAbsTime = maxTime.val()
+//     } else {
+//         maxTime.val(model.maxAbsTime);
+//     }
+// });
 
 /**
  * Add relative intention row
  */
-$('.addIntention').on('click', function(){
-    var intentions = model.intentions;
-        var epochHtml1 = '<div class="epochLists" id="epoch1List"><select><option selected>...</option>';
-        var epochHtml2 =  '<div class="epochLists" id="epoch2List"><select><option selected>...</option>';
-        for (var i = 0; i < intentions.length; i++) {
+// $('.addIntention').on('click', function(){
+    // var intentions = model.intentions;
+    //     var epochHtml1 = '<div class="epochLists" id="epoch1List"><select><option selected>...</option>';
+    //     var epochHtml2 =  '<div class="epochLists" id="epoch2List"><select><option selected>...</option>';
+    //     for (var i = 0; i < intentions.length; i++) {
 
-            // if number of function segments >= 2, we have at least one transition
-            if (intentions[i].getNumOfFuncSegements() >= 2) {
-                var funcSegments = intentions[i].dynamicFunction.getFuncSegmentIterable();
-                for (var j = 0; j < funcSegments.length - 1; j++) {
-                    var epoch = funcSegments[j].funcStop;
-                    var newEpochHtml = '<option nodeID=' + intentions[i].nodeID + ' epoch=' + epoch + '>' + intentions[i].nodeName + ': ' + epoch + '</option>';
-                    epochHtml1 += newEpochHtml;
-                    epochHtml2 += newEpochHtml;
-                }
-            }
-        }
+    //         // if number of function segments >= 2, we have at least one transition
+    //         if (intentions[i].getNumOfFuncSegements() >= 2) {
+    //             var funcSegments = intentions[i].dynamicFunction.getFuncSegmentIterable();
+    //             for (var j = 0; j < funcSegments.length - 1; j++) {
+    //                 var epoch = funcSegments[j].funcStop;
+    //                 var newEpochHtml = '<option nodeID=' + intentions[i].nodeID + ' epoch=' + epoch + '>' + intentions[i].nodeName + ': ' + epoch + '</option>';
+    //                 epochHtml1 += newEpochHtml;
+    //                 epochHtml2 += newEpochHtml;
+    //             }
+    //         }
+    //     }
 
-        epochHtml1 += '</select></div>';
-        epochHtml2 += '</select></div>';
+    //     epochHtml1 += '</select></div>';
+    //     epochHtml2 += '</select></div>';
 
 
-        var relationship = '<div class="epochLists" id="relationshipLists"><select><option selected>...'+
-            '</option><option value="eq">=</option><option value="lt"><</option></select></div>'
+    //     var relationship = '<div class="epochLists" id="relationshipLists"><select><option selected>...'+
+    //         '</option><option value="eq">=</option><option value="lt"><</option></select></div>'
 
-        $('#rel-intention-assignents').append('<tr><td>' + epochHtml1 + '</td><td>' + relationship +
-            '</td><td>'+ epochHtml2 +'</td><td><i class="fa fa-trash-o fa-2x" id="removeIntention" aria-hidden="true"></i></td></tr>');
-});
+    //     $('#rel-intention-assignents').append('<tr><td>' + epochHtml1 + '</td><td>' + relationship +
+    //         '</td><td>'+ epochHtml2 +'</td><td><i class="fa fa-trash-o fa-2x" id="removeIntention" aria-hidden="true"></i></td></tr>');
+// });
 
-$(document.body).on('click', '#removeIntention', function(){
-    var row = $(this).parent().parent();
-    var nodeID1 = row.find('#epoch1List select option:checked').attr('nodeID');
-    var epoch1 = row.find('#epoch1List select option:checked').attr('epoch');
-    var type = row.find('#relationshipLists select option:checked').text();
-    var nodeID2 = row.find('#epoch2List select option:checked').attr('nodeID');
-    var epoch2 = row.find('#epoch2List select option:checked').attr('epoch');
-    var constraint = new Constraint(type, nodeID1, epoch1, nodeID2, epoch2);
+// $(document.body).on('click', '#removeIntention', function(){
+//     var row = $(this).parent().parent();
+//     var nodeID1 = row.find('#epoch1List select option:checked').attr('nodeID');
+//     var epoch1 = row.find('#epoch1List select option:checked').attr('epoch');
+//     var type = row.find('#relationshipLists select option:checked').text();
+//     var nodeID2 = row.find('#epoch2List select option:checked').attr('nodeID');
+//     var epoch2 = row.find('#epoch2List select option:checked').attr('epoch');
+//     var constraint = new Constraint(type, nodeID1, epoch1, nodeID2, epoch2);
 
-    model.removeConstraint(constraint);
-    row.remove();
-});
+//     model.removeConstraint(constraint);
+//     row.remove();
+// });
 
 /**
  * Displays the absolute and relative assignments modal for the user.
  */
 $('#btn-view-assignment').on('click', function() {
-	epochLists = [];
-	graph.constraintValues = [];
-	var modal = document.getElementById('assignmentsModal');
+    var assignmentsModal = new AssignmentsTable({model: graph});
+    $('#assignments-list').append(assignmentsModal.el);
+    assignmentsModal.render();
+	// epochLists = [];
+	// graph.constraintValues = [];
+	// var modal = document.getElementById('assignmentsModal');
 
-	// Clear all previous table entries
-	$(".abs-table").find("tr:gt(0)").remove();
+	// // Clear all previous table entries
+	// $(".abs-table").find("tr:gt(0)").remove();
 
-	// Display the modal by setting it to block display
-	modal.style.display = "block";
+	// // Display the modal by setting it to block display
+	// modal.style.display = "block";
 
 
-	displayAbsoluteIntentionAssignments();
-	displayAbsoluteRelationshipAssignments();
+	// displayAbsoluteIntentionAssignments();
+	// displayAbsoluteRelationshipAssignments();
 });
 
 /**
@@ -726,37 +721,6 @@ $('#colorblind-mode-isOn').on('click', function(){ //turns off colorblind mode
 });
 
 /**
- * Creates an instance of a Link object and saves it in the global model
- * variable
- *
- * @param {joint.dia.Cell} cell
- */
-function createLink(cell) {
-	var link = new Link('AND', cell.getSourceElement().attributes.nodeID,  -1);
-	cell.attributes.linkID = link.linkID;
-    cell.prop('linkSrcID', cell.getSourceElement().attributes.nodeID);
-    cell.on("change:target", function () {
-    	var target = cell.getTargetElement();
-    	if (target === null) {
-    		link.linkDestID = null;
-            cell.prop('linkDestID', null);
-    	} else {
-    		link.linkDestID = target.attributes.nodeID;
-            cell.prop('linkDestID', target.attributes.nodeID);
-    	}
-    });
-    cell.on("change:source", function () {
-		var source = cell.getSourceElement();
-		if (source === null) {
-			link.linkSrcID = null;
-		} else {
-			link.linkSrcID = source.attributes.nodeID;
-		}
-    });
-    model.links.push(link);
-}
-
-/**
  * Creates an instance of a Intention object and saves it in the
  * global model variable
  *
@@ -781,31 +745,18 @@ function createIntention(cell) {
 }
 
 /**
- * Creates an instance of an Actor object and saves it in the
- * global model variable
- * 
- * @param {joint.dia.Cell} cell
- */
-function createActor(cell) {//TODO: right now there are two parameters the actor model in the joint.extensions file that hold the same information (attrs.name & actorName), find a way for actor inspector to be able to access attrs.name in the template script so that actorName is not needed
-	var name = cell.attr('.name/text') + "_" + Actor.numOfCreatedInstances;
-	var actor = new Actor(name);
-    cell.attr(".name/text", name);
-    cell.set('actorName', name);
-	cell.attributes.nodeID = actor.nodeID;
-	model.actors.push(actor);
-}
-
-/**
  * Set up on events for Rappid/JointJS objets
  */
 var element_counter = 0;
 
 // Whenever an element is added to the graph
 graph.on("add", function(cell) {
+    // Find how many cells are created on the graph
+    var createdInstance = paper.findViewsInArea(paper.getArea())  
 
 	if (cell instanceof joint.dia.Link){
         if (graph.getCell(cell.get("source").id) instanceof joint.shapes.basic.Actor){
-            cell.prop("linktype", "actorlink");
+            cell.prop("type", "Actor");
             cell.label(0,{attrs:{text:{text:"is-a"}}});
             cell.set('link', new LinkBBM({linkType: 'is-a'}));
 		} else{
@@ -813,10 +764,17 @@ graph.on("add", function(cell) {
             cell.set('link', new LinkBBM({}));
         }
     } else if (cell instanceof joint.shapes.basic.Intention){
-		createIntention(cell);
+		cell.set('intention', new IntentionBBM({}));
 		cell.attr('.funcvalue/text', ' ');
+
 	} else if (cell instanceof joint.shapes.basic.Actor) {
-		createActor(cell);
+        // Find how many instances of the actor is created out of all the cells
+        createdInstance = createdInstance.filter(view => view.model instanceof joint.shapes.basic.Actor);
+
+        // Create placeholder name based on the number of instances
+		var name = cell.attr('.name/text') + "_" + (createdInstance.length-1);
+	    cell.set('actor', new ActorBBM({actorName: name}));
+        cell.attr(".name/text", name);
 
 		// Send actors to background so elements are placed on top
 		cell.toBack();
@@ -882,8 +840,6 @@ paper.on({
                 if (evt.data.move){
                     // if link moved, reparent
                     cell.reparent();
-                    // check if link still valid
-                    basicActorLink(cell);
                 }
             } else { // Non-Link behavior
 
@@ -901,28 +857,30 @@ paper.on({
 
                 clearInspector();
 
-                // render actor/element inspector
+                // Render actor/element inspector
                 if (cell instanceof joint.shapes.basic.Actor) {
                     var actorInspector =  new ActorInspector({model:cell});
                     $('.inspector').append(actorInspector.el);
                     actorInspector.render();
                 } else {
-                    elementInspector.render(cell);
-                    // if user was dragging element
+                    var elementInspector = new ElementInspector({model: cell});
+                    $('.inspector').append(elementInspector.el);
+                    elementInspector.render();
+                    // If user was dragging element
                     if (evt.data.move) {
-                        // unembed intention from old actor
+                        // Unembed intention from old actor
                         if (cell.get('parent')) {
                             graph.getCell(cell.get('parent')).unembed(cell);
-
-                            // remove nodeID from actor intentionIDs list
-                            var userIntention = model.getIntentionByID(cell.attributes.nodeID);
-                            if (userIntention.nodeActorID !== '-') {
-                                var actor = model.getActorByID(userIntention.nodeActorID);
-                                actor.removeIntentionID(userIntention.nodeID);
-                            }
                         }
-                        // embed element in new actor
-                        embedBasicActor(cell);
+                        // Embed element in new actor
+                        var overlapCells = paper.findViewsFromPoint(cell.getBBox().center());
+
+                        // Find actors which overlap with cell
+                        overlapCells = overlapCells.filter(view => view.model instanceof joint.shapes.basic.Actor);
+                        if (overlapCells.length > 0) {
+                            var actorCell = overlapCells[0].model;
+                            actorCell.embed(cell);
+                        }
                     }
                 }
             }
@@ -943,45 +901,16 @@ paper.on("link:options", function(cell, evt){
 
 	clearInspector();
     
+    if (cell.model.get('type') == 'error'){
+        alert('Sorry, this link is not valid. Links must be between two elements of the same type. Aka Actor->Actor or Intention->Intention');
+        return;
+    }
+
     var linkInspector = new LinkInspector({model: cell.model});
     $('.inspector').append(linkInspector.el);
-
 	linkInspector.render();
-
+ 
 });
-
-/**
- * Check the relationship in the link. If the relationship is between
- * an Actor and anything other than an Actor then display the label as
- * "error". Otherwise, display it as "is-a" and prop "is-a" in the link-type
- * dropdown menu.
- *
- * @param {joint.dia.Link} link
- */
-function basicActorLink(link){
-    if (link.getSourceElement() != null) {
-        var sourceCell = link.getSourceElement().attributes.type;
-
-    }
-    // Check if link is valid or not
-    if (link.getTargetElement()) {
-        var targetCell = link.getTargetElement().attributes.type;
-
-        // Links of actors must be paired with other actors
-        if (((sourceCell == "basic.Actor") && (targetCell != "basic.Actor")) ||
-            ((sourceCell != "basic.Actor") && (targetCell == "basic.Actor"))) {
-            link.label(0, {position: 0.5, attrs: {text: {text: 'error'}}});
-        } else if ((sourceCell == "basic.Actor") && (targetCell == "basic.Actor")) {
-            if (!link.prop("link-type")) {
-                link.label(0 ,{position: 0.5, attrs: {text: {text: 'is-a'}}});
-                link.prop("link-type", "is-a");
-            } else {
-                link.label(0, {position: 0.5, attrs: {text: {text: link.prop("link-type")}}});
-            }
-        }
-    }
-}
-
 
 /**
  * Create a halo around the element that was just created
@@ -1031,38 +960,6 @@ function removeHighlight(){
         cell.unhighlight();
     }
 }
-
-/**
- * Embeds an element into an actor boundary
- *
- * @param {joint.dia.cell} cell
- */
-function embedBasicActor(cell) {
-    // returns actors, intentions, etc. which overlap with this cell
-    // including the cell itself
-    var overlapCells = paper.findViewsFromPoint(cell.getBBox().center());
-
-    // find actors which overlap with cell
-    overlapCells = overlapCells.filter(view => view.model instanceof joint.shapes.basic.Actor);
-
-    // cell is over at least one actor
-    if (overlapCells.length > 0) {
-        for (var i = 0; i < overlapCells.length; i++) {
-            // embed intention in each actor
-            var actorCell = overlapCells[i].model;
-            actorCell.embed(cell);
-            var nodeID = cell.attributes.nodeID;
-            var actorID = actorCell.attributes.nodeID
-            model.getIntentionByID(nodeID).nodeActorID = actorID;
-            model.getActorByID(actorID).addIntentionID(nodeID);
-        }
-    } else {
-        // intention not over any actor
-        var nodeID = cell.attributes.nodeID;
-        model.getIntentionByID(nodeID).nodeActorID = "-";
-    }
-}
-
 
 graph.on('change:size', function(cell, size) {
 	cell.attr(".label/cx", 0.25 * size.width);
@@ -1139,13 +1036,9 @@ graph.on('remove', function(cell) {
 
 
 /**
- * Clear the .inspector div
+ * Clear any analysis sidebar views
  */
 function clearInspector() {
-	elementInspector.clear();
-	linkInspector.clear();
-
-    // Clear any analysis sidebar views
     if($('.inspector-views').length != 0){
         $('.inspector-views').trigger('clearInspector');
     }

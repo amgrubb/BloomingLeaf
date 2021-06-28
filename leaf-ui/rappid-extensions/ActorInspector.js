@@ -5,8 +5,9 @@ var ActorInspector = Backbone.View.extend({
         model: joint.shapes.basic.Actor,
         
         initialize: function() {
-            this.model.on('change:actorType', this.changeLine, this);
+            this.actor = this.model.get('actor');
         },
+
         template: [
             '<script type="text/template" id="item-template">',
             '<div class="inspector-views">',
@@ -14,15 +15,14 @@ var ActorInspector = Backbone.View.extend({
             '<textarea class="cell-attrs-text" maxlength=100> <%= actorName %> </textarea>',
             '<label> Actor type </label>',
             '<select id="actor-type-ID" class="actor-type">',
-            '<option value=A <%if (actorType === "A")  { %> selected <%} %>> Actor </option>',
-            '<option value=G <%if (actorType === "G")  { %> selected <%} %>> Agent </option>',
-            '<option value=R <%if (actorType === "R")  { %> selected <%} %>> Role </option>',
+            '<option value=A <%if (type === "A")  { %> selected <%} %>> Actor </option>',
+            '<option value=G <%if (type === "G")  { %> selected <%} %>> Agent </option>',
+            '<option value=R <%if (type === "R")  { %> selected <%} %>> Role </option>',
             '</select>',
             '</div>',
             '</script>'
         ].join(''),
-
-    
+  
         events: {
             'keyup .cell-attrs-text': 'nameAction',
             'change #actor-type-ID': 'updateType', 
@@ -34,9 +34,9 @@ var ActorInspector = Backbone.View.extend({
          */
         render: function() {
             // If the clicked node is an actor, render the actor inspector
-            this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
-        },
+            this.$el.html(_.template($(this.template).html())(this.actor.toJSON()));
 
+        },
 
         /**
          * Updates the selected actor's name.
@@ -50,9 +50,8 @@ var ActorInspector = Backbone.View.extend({
 
             // Do not allow special characters in names, replace them with spaces.
             var text = this.$('.cell-attrs-text').val().replace(/[^\w\n-]/g, ' ');
-
             this.model.attr({ '.name': {text: text }});
-            this.model.set('actorName', text);
+            this.actor.set('actorName', text);
 
         },
         /**
@@ -65,13 +64,9 @@ var ActorInspector = Backbone.View.extend({
          * Changes the line that distinguishes the type of actor 
          */
         updateType: function(){
-            this.model.set('actorType', this.$('#actor-type-ID').val());
-        },
-        /**
-         * Changes the line that distinguishes the type of actor 
-         */
-        changeLine: function() {
-            var actorType = this.model.get('actorType');
+            var actorType = $('#actor-type-ID').val();
+            this.actor.set('type', actorType);
+            
             if (actorType== 'G') {
                 this.model.attr({'.line': {'ref': '.label',
                 'ref-x': 0,
@@ -91,8 +86,7 @@ var ActorInspector = Backbone.View.extend({
             else if (actorType == 'A'){
                 this.model.attr({'.line': {'stroke-width': 0}});
             }
-
-        }
+        },
 }
 
 );
