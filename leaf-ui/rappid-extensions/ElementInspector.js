@@ -223,7 +223,10 @@ var ElementInspector = Backbone.View.extend({
 
         // Load initial value for function type in the html select element
         
-        var functionType = this.model.get('intention').get('type');
+        if (this.model.get('intention').get('evolvingFunction') != null ) {
+            var functionType = this.model.get('intention').get('evolvingFunction').get('type');
+        }
+        else {var functionType = null;}
 
         if (functionType == 'UD') {
             this.renderUserDefined();
@@ -264,7 +267,6 @@ var ElementInspector = Backbone.View.extend({
 //      * If not, set the function options so that all options are availible
 //      */
   checkInitialSatValue: function() {
-        console.log(this.model.get('intention').getInitialSatValue());
           if (this.model.get('intention').getInitialSatValue() == '(no value)') {
           // Stochastic should be the only option for '(no value)'
               this.$('.function-type').empty();
@@ -427,7 +429,14 @@ var ElementInspector = Backbone.View.extend({
     funcTypeChanged: function(event) {
         
         var funcType = this.$('.function-type').val();
-        this.model.get('intention').setEvolvingFunction(funcType);
+        // //TODO
+        // if (this.model.get('intention').get('evolvingFunction') != null) {
+        //     console.log("hi");
+        //     this.model.get('intention').get('evolvingFunction').set('functionSegList', []);
+        // }
+        
+        // Before commenting out this line, every FunctionSegmentBBM was added to functionSegList twice ??
+        // this.model.get('intention').setEvolvingFunction(funcType);
         console.log(this.$('.function-type').val());
         console.log(this.model.get('intention').setEvolvingFunction(funcType));
         this.updateCell(null);
