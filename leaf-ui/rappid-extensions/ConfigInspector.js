@@ -171,17 +171,15 @@ var Config = Backbone.View.extend({
      */
     removeConfig:function(){
         index = this.model.collection.indexOf(this.model);
-        if (this.model.collection.length != 1){
-            this.model.collection.at(this.model.collection.length - 1).set({selected:false}); // Remove original highlight
-            if (index != 0){
-                this.model.collection.at(0).set({selected:true});
-            } else {
-                this.model.collection.at(1).set({selected:true});
+        if (this.model.set({selected:true}) && this.model.collection.length > 1){
+           if (index > 0 ){
+                this.model.collection.at(index - 1).set({selected:true});
+           } else {
+                this.model.collection.at(index + 1).set({selected:true});       
             }
-            this.model.destroy();
-        } else {
-            this.model.destroy();
-        }
+           this.model.destroy();
+       }
+       this.model.destroy();  
     },
 
     /**
