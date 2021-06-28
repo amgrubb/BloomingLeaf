@@ -201,16 +201,19 @@ var LinkInspector = Backbone.View.extend({
         $('option').show(); // Clear the previous selection
         if (begin == 'and' || begin == 'or'){
             $('option.B').hide(); // Hide options incompatible with and/or selection such as +,-,++S, etc
-            if($('#link-type-end :selected').attr('class') == 'B'){
-                this.setValues(begin, null, true)
+            if($('#link-type-end :selected').attr('class') == 'B'){ //if user later chose an option in the beginning but the end is incompatible with and/or (ex. +,-,++S)
+                this.setValues(begin, null, true) //set postType to null so that user have to choose again
+                $('#link-type-end').val(null); //and reupdate what is shown in the end section
             }
         } else if (begin != 'no') {
             $('option.A').hide(); // Hide options incompatible with +,-,++S, etc selection such as and/or
-            if($('#link-type-end :selected').attr('class') == 'A'){
+            if($('#link-type-end :selected').attr('class') == 'A'){ //if user later chose an option in the beginning but the end is incompatible with +,-,++S (ex. and/or)
                 this.setValues(begin, null, true)
+                $('#link-type-end').val(null);
             }
         }
         $('#link-type-end option[value= \'' + begin + '\']').hide(); // Hide already selected linkType value
+        
     },
 
     /**
@@ -219,6 +222,10 @@ var LinkInspector = Backbone.View.extend({
     updateEndEvolRelations: function() {
         // Save based on evolving relations
         this.setValues(this.link.get('linkType'), $('#link-type-end').val(), true)
+
+        if(this.link.get('postType')!=null){
+            $('#link-type-begin option[value= \'' + this.link.get('postType') + '\']').hide(); // Hide the selected postType value in begin so that user can't duplicate
+        }
     },
 
     /**
@@ -278,7 +285,6 @@ var LinkInspector = Backbone.View.extend({
             this.link.set('linkType', linkType);
             this.link.set('postType', postType);
             this.model.label(0, {position: 0.5, attrs: {text: {text: linkType + " | " + postType}}});
-            $('#link-type-end').val(this.link.get('postType'));
         } else{
             this.link.set('linkType', linkType);
             this.model.set('postType', null);
