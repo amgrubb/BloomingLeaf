@@ -169,6 +169,7 @@ body.waiting *
 .container-sidebar{
   left: auto; 
   width: 200px; 
+  margin-top: -40px;
 }
 
 #config-sidebar {
@@ -176,17 +177,11 @@ body.waiting *
   margin-top: 330px;
 }
 
-#config-sidebar :hover {
-  background-color: #E8E8E8;
-}
 #analysis-sidebar{
   margin-top: 0;
   margin-top: -330px;
 }
 
-#analysis-sidebar :hover {
-  background-color: #E8E8E8;
-}
 #config {
   height: 75%;
 }
