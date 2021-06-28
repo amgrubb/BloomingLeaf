@@ -885,7 +885,7 @@ var ElementInspector = Backbone.View.extend({
         } else {
 
             $("#repeat-error").hide();
-            this.model.get('intention').get('EvolvingFunction').setRepeatingFunction(start, stopRep, count, absTime);
+            this.model.get('intention').get('evolvingFunction').setRepeatingFunction(start, stopRep, count, absTime);
         }
         this.updateChartUserDefined(null); 
         

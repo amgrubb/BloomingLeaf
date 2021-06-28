@@ -100,25 +100,17 @@ var EvolvingFunctionBBM = Backbone.Model.extend({
      *  Absolute time of repeating segment 
      */
     setRepeatingFunction: function(start, stopRep, count, absTime) {
-
         this.removeRepFuncSegments();
-        hasRepeat = true;                        
-        
+        hasRepeat = true;                         
         repStart = start;
         repStop = stopRep;
         repCount = count;
         repAbsTime = absTime;
-
-
-        
     },            
 
     /**
      * All of the parameters for a repeating segment are reset to the default,
      * which means there is no loner a repeating function segment in the EvolvingFunctionBBM     *  
-     *
-     * If a RepFuncSegment does not exist in functionSegList, this function
-     * does nothing
      */ 
     removeRepFuncSegments: function() {
         hasRepeat = false;
@@ -176,14 +168,8 @@ var IntentionBBM = Backbone.Model.extend({
      * @param {*} initValue 
      */
     changeInitialSatValue: function(initValue) {
-        // var intentionEval = graph.get('userEvaluationList').(this.get('cid'), '0');
-
         var intentionEval = graph.getUserEvaluationBBM(this.cid, '0');
         intentionEval.set('assignedEvidencePair', initValue);
-        
- 
-        // if there is only one function segment, and its constant, then we need to
-        // change the function segment's marked value
  
         var funcSegList = this.getFuncSegments();
         
@@ -212,7 +198,6 @@ var IntentionBBM = Backbone.Model.extend({
      * @returns {String}
      */
     getInitialSatValue: function() {
-
         var intentionEval = graph.getUserEvaluationBBM(this.cid, '0');
         if (typeof intentionEval == 'undefined'){
             return '(no value)';
@@ -227,7 +212,6 @@ var IntentionBBM = Backbone.Model.extend({
     removeFunction: function() {
         this.removeAbsConstraint();
         this.model.get('intention').set('evolvingFunction', null); 
-        // this.evolvingFunction.get('cid') = this.get('cid'); 
     }, 
  
     /**
@@ -248,10 +232,8 @@ var IntentionBBM = Backbone.Model.extend({
  
         // var initValue = graph.get('userEvaluationList').get(this.cid, '0').get('assignedEvidencePair');
         var initValue = graph.getUserEvaluationBBM(this.cid, '0').get('assignedEvidencePair');
-        console.log(initValue);
  
-        // All instances of FuncSegment have been changed to FunctionSegmentBBM and the initialization process has 
-        // also been changed accordingly 
+        // Creates the correct FunctionSegmentBBMs for the selected function type
         if (funcType == 'C' || funcType == 'R' || funcType == 'I' || funcType == 'D' || funcType == 'UD') {
             if (funcType == 'C') {
                 var seg =  new FunctionSegmentBBM({type: funcType, refEvidencePair: initValue, startTP: '0', startAT: 0});  
@@ -263,11 +245,7 @@ var IntentionBBM = Backbone.Model.extend({
             } else if (funcType == 'UD') {
                 var seg =  new FunctionSegmentBBM({type: 'C', refEvidencePair: initValue, startTP: '0', startAT: 0}); 
             }
-            console.log(this.get('evolvingFunction').get('functionSegList'));
-
             this.getFuncSegments().push(seg);
-            console.log(seg);
-            console.log(this.get('evolvingFunction').get('functionSegList'));
         } else if (funcType == 'RC' || funcType == 'CR' || funcType == 'MP' || funcType == 'MN' || funcType == 'SD' || funcType == 'DS') {
             if (funcType == 'RC') {
                 // Stochastic and Constant
@@ -289,13 +267,11 @@ var IntentionBBM = Backbone.Model.extend({
                 // Constant and Constant
                 var seg1 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: '0011', startTP: '0', startAT: 0}); 
                 var seg2 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: '1100', startTP: 'A', startAT: myNull}); 
-                // graph.get('userEvaluationList').get(this.cid, "0").get('assignedEvidencePair') = '0011';
                 graph.getUserEvaluationBBM(this.cid, '0').set('assignedEvidencePair', '0011');
             } else if (funcType == 'DS') {
                 // Constant and Constant
                 var seg1 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: '1100', startTP: '0', startAT: 0}); 
                 var seg2 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: '0011', startTP: 'A', startAT: myNull}); 
-                // graph.get('userEvaluationList').get(this.cid, "0").get('assignedEvidencePair') = '1100';
                 graph.getUserEvaluationBBM(this.cid, '0').set('assignedEvidencePair', '1100');
             }
             this.getFuncSegments().push(seg1, seg2);
@@ -320,25 +296,13 @@ var IntentionBBM = Backbone.Model.extend({
         }
     }, 
  
- 
-    /**
-     * Returns the Intention's absolute start time at the starting epoch boundary
-     * @param {String} source
-     *  ex. 'A'
-     */
-    getAbsConstTime: function(source) {
-        if (this.get('evolvingFunction').get('startTP') == source) {
-            return this.get('evolvingFunction').get('startAT')
-        }
-    }, 
- 
     /**
      * Removes the absolute Constraint object(s) for the Intention from
      * the global graph variable, if such absolute Constraint object(s) exists
      */
 
     removeAbsConstraint: function() {
-        // TODO - this function works, but i don't think it works correctly 
+        // TODO - unsure abt this function 
         var i = 0;
         while (i < graph.get('constraints').length) {
             var constraint = graph.get('constraints');
@@ -377,21 +341,21 @@ var IntentionBBM = Backbone.Model.extend({
             var start = String.fromCharCode(startCheck.charCodeAt(0) + 1);
         }
  
-        //create new funcsegment model 
+        //create new FunctionSegmentBBM and adds it to functionSegList 
         var new_model = new FunctionSegmentBBM({type: funcType, refEvidencePair: refEvidencePair, startTP: start, startAT: myNull}); 
         this.getFuncSegments().push(new_model); 
- 
         //graph.get('constraints').push(new ConstraintBBM({type: 'A', srcID: this.get('cid'), srcRefTP: start, destID: null, destRefTP: null}));
  
     }, 
     /**
-     * Sets the marked value for the FunctionSegmentBBMs in the
+     * Sets the refEvidencePair for the FunctionSegmentBBMs in the
      * EvolvingFunction for the Intention
      *
      * This function will only be called for I, D, RC, MP, MN functions
      * @param {String} satValue
      * ex: '0000'
      */
+    // TODO: i think we are going to have to change this function when we add views for the FunctionSegmentBBMs
     setMarkedValueToFunction: function(satValue) {
         if (this.get('evolvingFunction') != null) {
             var funcType = this.get('evolvingFunction').get('type');
@@ -417,16 +381,14 @@ var IntentionBBM = Backbone.Model.extend({
             var funcSegLen = this.getFuncSegments().length;
         }
         else {var funcSegLen = null;};
-        console.log(funcSegLen);
         var functionSegment = this.getFuncSegments()[funcSegLen - 1];
-        console.log(functionSegment);
         functionSegment.set('type', funcValue); 
         if (funcValue == 'C' || funcValue =='R') {
             functionSegment.set('refEvidencePair', '0000');
         } 
     }, 
 
-        /**
+    /**
      * Sets the satisfaction value for the last function segment
      * in this Intention's evolving function, to satVal
      *
