@@ -69,14 +69,9 @@ function called, will always be near the bottom.
 var ElementInspector = Backbone.View.extend({
     model: joint.shapes.basic.Intention,
 
-    initialize: function() {
-        this.listenTo(this, 'change: intention', this.initSatValueChanged); // init sat value
-        // this.listenTo(this, 'change: intention', this.funcTypeChanged); // function value
-        // are these the only ones we add? - they are the only events that change the view i think
-        // correct syntax?? or is it 'change: selected'
+    initialize: function() { // Listens for changes in the intentions
+        this.listenTo(this, 'change: intention', this.initSatValueChanged); 
     },
-
-    // className: 'element-inspector',
      
     template: ['<script type="text/template" id="item-template">',
             '<div class="inspector-views">',
@@ -185,12 +180,6 @@ var ElementInspector = Backbone.View.extend({
     
     render: function() {
 
-        console.log(this.model);
-        console.log(this.model.get('intention'));
-        console.log(this.model.get('intention').get('EvolvingFunctionBBM'));
-        
-        //this.model.intention = model.getIntentionByID(this.model.attributes.nodeID);
-        // this.model.get('intention'); 
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()))
 
         // Attributes
@@ -206,23 +195,20 @@ var ElementInspector = Backbone.View.extend({
         this.$('.cell-attrs-text').val(this.model.get('intention').get('nodeName'));
         this.$('#init-sat-value').val(satisfactionValuesDict[this.model.get('intention').getInitialSatValue()].name);
         
+        // Checks which function types are available based on initial satisfaction values
         this.checkInitialSatValue();
-        
-
         
         if (!this.model.attr(".satvalue/value") && this.model.attr(".funcvalue/text") != "NB"){
             this.model.attr(".satvalue/value", 'none');
             this.model.attr(".funcvalue/text", ' ');
         }
         
-
         // Turn off repeating by default
         this.repeatOptionsDisplay = false;
         // TODO what does this do?
         this.setRepeatConstraintMode("TurnOff");
 
         // Load initial value for function type in the html select element
-        
         if (this.model.get('intention').get('evolvingFunction') != null ) {
             var functionType = this.model.get('intention').get('evolvingFunction').get('type');
         }
@@ -242,31 +228,21 @@ var ElementInspector = Backbone.View.extend({
         
     },  
     
-    /** This function should allow the model associated with the view to update each time a 
-     * new element is clicked instead of passing the model directly into the render function and 
-     * rendering elementInspector each time an element is clicked
-     * (if it worked correctly)
-     */
-    
-
-    switchModel: function (newCell) {
-        this.model = newCell;
-    },
-
     /**
-         * Removes the view so we don't have multiple ones in the sidebar
-         */
+    * Removes the view so we don't have multiple ones in the sidebar
+    */
      removeView: function(){
         this.remove();
     },
 
-//     /**
-//      * Checks the initial satisfaction value for a (no value).
-//      * If the initial satisfaction value is (no value), then set the
-//      * availible function options to be No Function, Stochastic and UserDefined
-//      * If not, set the function options so that all options are availible
-//      */
+    /**
+     * Checks the initial satisfaction value for a (no value).
+     * If the initial satisfaction value is (no value), then set the
+     * availible function options to be Stochastic
+     * If not, set the function options so that all options are availible
+    */
   checkInitialSatValue: function() {
+
           if (this.model.get('intention').getInitialSatValue() == '(no value)') {
           // Stochastic should be the only option for '(no value)'
               this.$('.function-type').empty();
@@ -286,9 +262,11 @@ var ElementInspector = Backbone.View.extend({
              this.$('.function-type').append('<option value=DS> Denied Satisfied </option>');
              this.$('.function-type').append('<option value=UD> User Defined </option>');   
         }
+
     },
 
     nameAction: function(event) {
+
       if (event.which === ENTER_KEY) {
           event.preventDefault();
       }
@@ -299,6 +277,7 @@ var ElementInspector = Backbone.View.extend({
 
       this.model.attr({'.name': {text: text} });
       this.model.get('intention').set('nodeName', text); 
+
     },
 
     /**
@@ -308,6 +287,7 @@ var ElementInspector = Backbone.View.extend({
      * @returns {Object}
      */
     initializeSatValueOptions: function() {
+
         var satValueOptions = {};
 
         var none = '<option value=none selected> None (⊥, ⊥) </option>';
@@ -409,15 +389,17 @@ var ElementInspector = Backbone.View.extend({
      * This function is called on change for #init-sat-value,
      */
     initSatValueChanged: function(event) {
+
         var initValue = this.$('#init-sat-value').val();
         this.model.get('intention').changeInitialSatValue(satValueDict[initValue]);
         this.checkInitialSatValue();
         this.updateCell(null);
         this.updateHTML(event);
+
     },
 
     /**
-     * Clears all FuncSegments for this intention's Intention object's
+     * Clears all FuncSegments for this intention's
      * EvolvingFunction and adds new FuncSegments according to the current
      * function type.
      *
@@ -426,16 +408,9 @@ var ElementInspector = Backbone.View.extend({
     funcTypeChanged: function(event) {
         
         var funcType = this.$('.function-type').val();
-        // //TODO
-        // if (this.model.get('intention').get('evolvingFunction') != null) {
-        //     console.log("hi");
-        //     this.model.get('intention').get('evolvingFunction').set('functionSegList', []);
-        // }
-        
-        // Before commenting out this line, every FunctionSegmentBBM was added to functionSegList twice ??
+
         this.model.get('intention').setEvolvingFunction(funcType);
         console.log(this.$('.function-type').val());
-        // console.log(this.model.get('intention').setEvolvingFunction(funcType));
         this.updateCell(null);
         this.updateHTML(event);
         
@@ -466,7 +441,7 @@ var ElementInspector = Backbone.View.extend({
     },
 
     /**
-     * Sets the marked value
+     * Sets the refEvidencePair for the FunctionSegmentBBMs
      */
     funcSatValChanged: function(event) {
         
@@ -489,7 +464,7 @@ var ElementInspector = Backbone.View.extend({
         this.validityCheck(event);
 
         if (this.model.get('intention').get('evolvingFunction') != null) {
-        var functionType = this.model.get('intention').get('evolvingFunction').get('type');
+            var functionType = this.model.get('intention').get('evolvingFunction').get('type');
         }
         else { var functionType = null;}
 
@@ -498,7 +473,6 @@ var ElementInspector = Backbone.View.extend({
 
         
         // Load initial value for function type in the html select element
-
         if (functionType == 'UD') {
             this.$('.function-type').val(functionType);
             this.$('#markedValue').hide();
@@ -524,8 +498,8 @@ var ElementInspector = Backbone.View.extend({
             }
         }
 
-        this.updateChart(null);
-        
+        this.updateChart(null); 
+
     },
 
     /**
@@ -561,8 +535,8 @@ var ElementInspector = Backbone.View.extend({
                 if (funcTypeChanged){this.$('#init-sat-value').val(newValue);}
 
             }
-        }
-        
+        }  
+
     },
 
     /**
@@ -612,7 +586,6 @@ var ElementInspector = Backbone.View.extend({
         
         if (func == 'I' || func == 'D') {
             console.log(this.model.get('intention').get('evolvingFunction'));
-            // console.log(this.model.get('intention').get('evolvingFunction').getNthRefEvidencePair(2));
             var prevVal = satisfactionValuesDict[this.model.get('intention').get('evolvingFunction').getNthRefEvidencePair(2)].name;
             if (func == 'I') {
                 $(".user-sat-value").last().html(this.satValueOptions.positiveOnly(prevVal));
@@ -634,8 +607,8 @@ var ElementInspector = Backbone.View.extend({
                 $(".user-sat-value").last().prop('disabled', true);
                 $(".user-sat-value").last().css("background-color","grey");
             }
-        }
-        
+        } 
+
     },
 
     /**
@@ -659,6 +632,7 @@ var ElementInspector = Backbone.View.extend({
      * satisfaction value(s)
      */
     updateChart: function(event) {
+        
         if (this.model.get('intention').get('evolvingFunction') != null ) {
             var funcType = this.model.get('intention').get('evolvingFunction').get('type');
         }
@@ -675,7 +649,6 @@ var ElementInspector = Backbone.View.extend({
             this.updateChartUserDefined(null);
             return;
         }
-
 
         // Change chart dataset(s), depending on the function type
         var threeLabelFunc = ['RC', 'CR', 'SD', 'DS', 'MP', 'MN'];
@@ -743,8 +716,6 @@ var ElementInspector = Backbone.View.extend({
 
         // Setting up the labels
         this.chart.labels = this.getUDChartLabel(numFuncSegments);
-
-
 
         // Get init sat value
         var initSatVal = satisfactionValuesDict[this.model.get('intention').getInitialSatValue()].chartVal;
@@ -827,7 +798,6 @@ var ElementInspector = Backbone.View.extend({
         
     },
 
-
     /**
      * Toggles the display for the user defined function's
      * repeat feature.
@@ -857,11 +827,10 @@ var ElementInspector = Backbone.View.extend({
         
         var begin = $("#repeat-begin").val();
         var end = $("#repeat-end").val();
-        // TODO: Update template 
+        // TODO: Update template, eventually an absTime parameter will be added to the user input
         var start = $("").val();
         var stopRep = $("").val();
         var count = $("").val();
-        // TODO: eventually an absTime parameter will be added to the user input
         // var absTime = $("").val();
         var absTime = null;
 
