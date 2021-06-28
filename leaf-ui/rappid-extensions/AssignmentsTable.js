@@ -56,15 +56,15 @@ var AssignmentsTable = Backbone.View.extend({
         '</table>',
         '<div class=absRelationship>',
             '<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Absolute Relationship Assignment</h3>',
-                '<table id="link-list" class="abs-table">',
-                    '<tr>',
-                        '<th>Link Type</th>',
-                        '<th>Source Node name</th>',
-                        '<th>Dest Node name</th>',
-                        '<th>Assigned Time</th>',
-                        '<th>Action</th>',
-                    '</tr>',
-                '</table>',
+            '<table id="link-list" class="abs-table">',
+                '<tr>',
+                    '<th>Link Type</th>',
+                    '<th>Source Node name</th>',
+                    '<th>Dest Node name</th>',
+                    '<th>Assigned Time</th>',
+                    '<th>Action</th>',
+                '</tr>',
+            '</table>',
         '</div>', 
     '</div>',
     '</div>',
@@ -148,9 +148,10 @@ var AssignmentsTable = Backbone.View.extend({
      * For each function segment transition in the graph
      */
     displayAbsoluteIntentionAssignments: function() {
+        console.log("Hi")
         this.model.getIntentions().forEach(intentionCell => {
             var intentionBbm = intentionCell.get('intention');
-            var funcSegList = intentionBbm?.get('evolvingFunction')?.get('functionSegList');
+            var funcSegList = intentionBbm.get('evolvingFunction')?.get('functionSegList');
             console.log(funcSegList);
             if (funcSegList != undefined){
                 // TODO: Check with @amgrubb about how this is being sliced
@@ -163,6 +164,15 @@ var AssignmentsTable = Backbone.View.extend({
                 }
             }
         });
+
+        var funcSeg = new FunctionSegmentBBM({startTP: 0, startAT: 3});
+
+            var intentionRelationshipView = new IntentionRelationshipView({
+                model: funcSeg, funcType: "decrease", 
+                intentionName: "Go eat"});
+            $('#node-list').append(intentionRelationshipView.el);
+            console.log(intentionRelationshipView.el)
+            intentionRelationshipView.render();
     },
 
     /**
@@ -171,16 +181,13 @@ var AssignmentsTable = Backbone.View.extend({
      */
     displayAbsoluteRelationshipAssignments: function(){
         this.model.getLinks().forEach(linkCell => {
-            console.log(linkCell)
             linkBbm = linkCell.get('link');
             if(linkCell.isValidAbsoluteRelationship()){
                 var sourceName = linkCell.getSourceElement().get('intention').get('nodeName');
                 var targetName = linkCell.getTargetElement().get('intention').get('nodeName');
-                console.log(sourceName);
-                console.log(targetName)
                 var linkRelationshipView = new LinkRelationshipView({model: linkBbm, linkSrc: sourceName, linkDest: targetName});
-                $('#link-list').append(linkRelationshipView.el);
-                linkRelationshipView.render();
+                $('.abs-table').append(linkRelationshipView.el);
+                linkRelationshipView.render()
             }
         })
     },
@@ -204,7 +211,8 @@ var AssignmentsTable = Backbone.View.extend({
  */
 var RelativeIntentionView = Backbone.View.extend({
     model: Constraint,
-    
+    tagName: 'tr',
+
     initialize: function(options){
         this.graph = options.graph;
         // If constraint is a new blank instance or a loaded constraint
@@ -213,12 +221,12 @@ var RelativeIntentionView = Backbone.View.extend({
     },
 
     newConstraintTemplate: ['<script type="text/template" id="assignments-template">',
-        '<tr><td> <div class="epochLists"><select id="epoch1List"><option selected>...</option></select></div></td>',
+        '<td> <div class="epochLists"><select id="epoch1List"><option selected>...</option></select></div></td>',
         '<td> <div class="epochLists"><select id="relationshipLists">',
             '<option selected>...</option>',
             '<option value="eq">=</option><option value="lt"><</option></select></div></td>',
         '<td> <div class="epochLists"><select id="epoch2List"><option selected>...</option></select></div></td>',
-        '<td><i class="fa fa-trash-o fa-2x" id="removeConstraint" aria-hidden="true"></i></td></tr>',
+        '<td><i class="fa fa-trash-o fa-2x" id="removeConstraint" aria-hidden="true"></i></td>',
         '</script>'
     ].join(''),
 
@@ -312,6 +320,7 @@ var RelativeIntentionView = Backbone.View.extend({
  */
 var IntentionRelationshipView = Backbone.View.extend({
     model: FunctionSegmentBBM,
+    tagName: 'tr',
 
     initialize: function(options){
         this.funcType = options.funcType;
@@ -320,9 +329,10 @@ var IntentionRelationshipView = Backbone.View.extend({
 
     template: [
         '<script type="text/template" id="item-template">',
-        '<tr><td> "<%= intentionName %>" : "<%= startTP %>"</td><td> <%= funcType %> </td>',
-        '<td><input id="absFuncSegValue" type="number" name="sth" value="<% if (startATP == -1) {%> "" <%} else { %> startATP <% } %>"></td>',
-        '<td><button id="unassign-abs-intent-btn"> Unassign </button></td></tr>',
+        '<td class= "intstart"></td>',
+        '<td class= "func"></td>',
+        '<td><input id="absFuncSegValue" type="number" name="sth" value="<% if (startAT == -1) {%> "" <%} else { %> startAT <% } %>"></td>',
+        '<td><button id="unassign-abs-intent-btn"> Unassign </button></td>',
         '</script>'
     ].join(''),
 
@@ -332,7 +342,10 @@ var IntentionRelationshipView = Backbone.View.extend({
     },
 
     render: function(){
-        this.$el.html(_.template($(this.template).html())(Object.assign(this.model, this.funcType, this.intentionName).toJSON()));
+        console.log(this.model)
+        this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
+        this.$('.intstart').text(this.intentionName + " : " + this.model.get('startTP'));
+        this.$('.func').text(this.funcType);
         return this;
     },
 
@@ -365,22 +378,20 @@ var IntentionRelationshipView = Backbone.View.extend({
 // TODO: Get linkSrc name and linkDest name instead of ids
 var LinkRelationshipView = Backbone.View.extend({
     model: LinkBBM,
+    tagName: 'tr',
 
     initialize: function(options){
-        this.linkInfo = {
-            linkSrc: options.linkSrc,
-            linkDest: options.linkDest,
-            linkAbsTime: this.model.get('linkAbsTime'),
-            linkType: this.model.get('linkType') + " | " + this.model.get('postType')
-        }
+        this.linkSrc= options.linkSrc,
+        this.linkDest= options.linkDest
     },
 
     template: [
         '<script type="text/template" id="item-template">',
-        '<tr><td> <%= linkType %> </td><td> <%= linkSrc %> </td>',
-        '<td> <%= linkDest %> </td>',
-        '<td><input id="linkAbsRelation" type="number" name="sth" value= "<% if (linkAbsTime === -1) {%> "" <%} else { %> linkAbsTime <% } %>" ></td>',
-        '<td><button id="unassign-abs-rel-btn" > Unassign </button></td> </tr>',
+        '<td><%= linkType %> | <%= postType %></td>',
+        '<td class= "link-source"></td>',
+        '<td class= "link-dest"></td>',
+        '<td><input id="linkAbsRelation" type="number" name="sth" value= "<% if (absTime === -1) {%> "" <%} else { %> absTime <% } %>" > </td>',
+        '<td><button id="unassign-abs-rel-btn" > Unassign </button></td>',
         '</script>'
     ].join(''),
 
@@ -390,9 +401,9 @@ var LinkRelationshipView = Backbone.View.extend({
     },
 
     render: function(){
-        console.log(JSON.stringify(this.linkInfo))
-        this.$el.html(_.template($(this.template).html())(JSON.stringify(this.linkInfo)));
-        console.log("rendering")
+        this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
+        this.$('.link-source').text(this.linkSrc);
+        this.$('.link-dest').text(this.linkDest);
         return this;
     },
 
