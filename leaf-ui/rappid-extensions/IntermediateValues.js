@@ -32,7 +32,6 @@ var IntermediateValuesTable = Backbone.View.extend({
         '<th>0</th>',
         '</tr>',
         '</table>',
-        '<button id="btn-save-intermT" class="analysis-btns inspector-btn sub-label green-btn" style="border-radius:40px;">Save</button>',
         '</div>',
         '</div>',
         '</div>',
@@ -41,12 +40,11 @@ var IntermediateValuesTable = Backbone.View.extend({
     
     events:{
         'click .closeIntermT': 'dismissInterm',
-        'click #btn-save-intermT': 'saveInterm',
     },
 
     render: function(){
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
-        // this.loadIntermediate();
+        this.loadIntermediate();
         return this;
     },
 
@@ -73,7 +71,11 @@ var IntermediateValuesTable = Backbone.View.extend({
          * Make row for each intention
          */
         for (let intentionCell in this.model.getElements().filter(element => element instanceof joint.shapes.basic.Intention)){
-            var intentionUserEvaluationsView = new IntentionUserEvaluationsView({model: intentionCell.get('intention'), intentionID: intentionCell.id, allAbsoluteTimePoints: absoluteTimePointsList});
+            var userEvaluations = this.model.get('userEvaluationList').filter(userEvals => userEvals.get('intentionID') == this.model.id);
+            var intentionUserEvaluationsView = new IntentionUserEvaluationsView({model: intentionCell.get('intention'), 
+                                                                                 intentionID: intentionCell.id, 
+                                                                                 allAbsoluteTimePoints: absoluteTimePointsList,
+                                                                                 userEvals: userEvaluations});
             $('#interm-list').append(intentionUserEvaluationsView.el);
             intentionUserEvaluationsView.render();
         }
@@ -93,32 +95,6 @@ var IntermediateValuesTable = Backbone.View.extend({
 
     dismissInterm: function (){
         this.remove();
-    },
-
-    /**
-     * Save the intermediate table values into model
-     */
-    saveInterm: function() {
-        // Clear all intention evaluations with the exception
-        // of the evaluations on the initial time point
-        // this.model.clearUserEvaluations();
-        
-        // // for each row of the table
-        // $('.intention-row').each(function () {
-        //     // for each column of the current row
-        //     $(this).find('select').each(function () {
-        //         var nodeID = $(this).attr('nodeID');
-        //         var absTime = $(this).attr('absTime');
-        //         var evalLabel = $(this).find(":selected").val();
-
-        //         if (evalLabel === 'empty') {
-        //             return;
-        //         }
-
-        //         this.model.get('userAssignmentsList').push(new UserEvaluation(nodeID, absTime, evalLabel));
-        //     });
-        // });
-        this.dismissInterm();
     },
 
     getAllAbsoluteTimePoints: function(){
@@ -143,13 +119,14 @@ var IntermediateValuesTable = Backbone.View.extend({
         absoluteTimePointsList.sort(function(a,b) {return a-b})
         return absoluteTimePointsList;
     }
-})
+});
 
 var IntentionUserEvaluationsView = Backbone.View.extend({
     model: IntentionBBM,
 
     initialize: function(options){
         this.intentionID = options.intentionID;
+        this.userEvals = options.userEvals;
         this.allAbsoluteTimePoints = options.allAbsoluteTimePoints;
     },
 
@@ -169,18 +146,23 @@ var IntentionUserEvaluationsView = Backbone.View.extend({
 
     loadSelect: function(){
         for (let absTimePt of this.allAbsoluteTimePoints){
+            var currentUserEvals = this.userEvals.filter(userEval => userEval.get('absTP') == absTimePt);
+            var userEval = null;
+            if (currentUserEvals.length != 0){
+                userEval = currentUserEvals[0];
+            }
             var selectUserEvaluationView = new SelectUserEvaluationView
                                                 ({intentionID: this.intentionID,
                                                   absTimePt: absTimePt, 
                                                   functionSegmentList: this.model.getFuncSegments(),
                                                   funcType: this.model.get('functionType'),
-                                                  initValue: this.model.get('initialSatValue')});
+                                                  initValue: this.model.get('initialSatValue'),
+                                                  userEval: userEval});
             $('.intention-row').append(selectUserEvaluationView.el);
             selectUserEvaluationView.render();
         }
     }
-
-})
+});
 
 var SelectUserEvaluationView = Backbone.View.extend({
     template: [
@@ -195,16 +177,19 @@ var SelectUserEvaluationView = Backbone.View.extend({
         this.funcType = options.funcType;
         this.absTimePt = options.absTimePt;
         this.intentionID = options.intentionID;
+        this.userEvaluation = options.userEval;
         this.initValue = options.initValue;
         this.functionSegmentList = options.functionSegmentList;
         this.allOptions = ['0000', '0011', '0010', '1100', '0100', 'empty', 'no value']
-        this.userEvaluation = null;
+        
     },
 
     render: function(){
         this.$el.html(_.template(this.template)());
         this.$('select').append(this.getOptionsByType());
-
+        if (this.userEvaluation != null){
+            this.$('select').val(this.userEvaluation.get('assignedEvidencePair'));
+        }
     },
 
     updateEvaluationValue: function(){
@@ -227,115 +212,122 @@ var SelectUserEvaluationView = Backbone.View.extend({
 
         switch (func) {
             case 'I':
-                options = this.increasing(this.initValue,'noFinal');
-                break;
+                return this.increasing(this.initValue,'noFinal');
             case 'D':
-                options = this.decreasing(this.initValue,'noFinal');
-                break;
+                return this.decreasing(this.initValue,'noFinal');
             case 'C':
-                options = this.constant(this.initValue);
-                break;
+                return this.constant(this.initValue);
             case 'R':
-                options = this.stochastic();
-                break;
+                return this.stochastic();
             case 'MP':
-                /** 
-                 * If the absoluteTP is less than the last constraints time point
-                 * Use the evaluation value from the first function segment to determine options
-                 */
-                 if (this.absTimePt < lastTP) {
-                    options = this.increasing(initValue, this.functionSegmentList[0].get('refEvidencePair'));
                 /**
-                 * Else use the evaluation value from the last function segment to determine options
+                 * If there is a time point assigned for the last function segment
+                 */
+                if (lastTP != null){
+                    /** 
+                     * If the absoluteTP is less than the last constraints time point
+                     * Use the evaluation value from the first function segment to determine options
+                     */
+                    if (this.absTimePt < lastTP) {
+                        return this.increasing(initValue, this.functionSegmentList[0].get('refEvidencePair'));
+                    /**
+                     * Else use the evaluation value from the last function segment to determine options
+                     */
+                    } else {
+                        return this.convertToOptions([finalValue]);
+                    }
+                /**
+                 * If last TP is null, give all options >= initial
                  */
                 } else {
-                    options = this.convertToOptions([finalValue]);
+                    return this.convertToOptions(this.increasing(initValue, null));
                 }
-                break;
             case 'MN':
-                /** 
-                 * If the absoluteTP is less than the last constraints time point
-                 * Use the evaluation value from the first function segment to determine options
-                 */
-                if (this.absTimePt < lastTP) {
-                    options = this.decreasing(initValue, this.functionSegmentList[0].get('refEvidencePair'));
                 /**
-                 * Else use the evaluation value from the last function segment to determine options
+                 * If there is a time point assigned for the last function segment
+                 */
+                if (lastTP != null){
+                    /** 
+                     * If the absoluteTP is less than the last constraints time point
+                     * Use the evaluation value from the first function segment to determine options
+                     */
+                    if (this.absTimePt < lastTP) {
+                        return this.decreasing(initValue, this.functionSegmentList[0].get('refEvidencePair'));
+                    /**
+                     * Else use the evaluation value from the last function segment to determine options
+                     */
+                    } else {
+                        return this.convertToOptions([finalValue]);
+                    }
+                /**
+                 * If last TP is null, give all options <= initial
                  */
                 } else {
-                    options = this.convertToOptions([finalValue]);
+                    return this.convertToOptions(this.decreasing(initValue, null))
                 }
-                break;
             case 'CR':
-                /** 
-                 * If the absoluteTP is less than the last constraints time point
+                /**
+                 * If there is a time point assigned for the last function segment
+                 * And the absoluteTP is less than the last constraints time point
                  * Use the evaluation value from the last function segment to determine options
                  */
-                // TODO: I feel like this should be the first value but check with Alicia before changing
-                if (this.absVal < lastTP){
-                    options = this.convertToOptions([finalValue]);
+                if (lastTP != null && this.absVal < lastTP){
+                    // TODO: I feel like this should be the first value but check with Alicia before changing
+                    return this.convertToOptions([finalValue]);
                 /**
                  * Else allow any options
                  */
                 } else {
-                    this.convertToOptions(this.allOptions);
+                    return this.convertToOptions(this.allOptions);
                 }
-                break;
             case 'RC':
                 /** 
-                 * If the absoluteTP is less than the last constraints time point
-                 * Allow any options
+                 * If valid TP less than or equal to absolute value
+                 * Set options to constant value
                  */
-                if (this.absVal < lastTP){
-                    this.convertToOptions(this.allOptions);
-                /** 
-                 * Else se the evaluation value from the last function segment 
-                 * to determine options
+                if (lastTP != null && this.absVal >= lastTP){
+                    return this.convertToOptions([finalValue]);
+                /**
+                 * Else allow any options
                  */
                 } else {
-                    options = this.convertToOptions([finalValue]);
+                    return this.convertToOptions(this.allOptions);
                 }
-                break;
             case 'SD':
                 /** 
                  * If the absoluteTP is less than the last constraints time point
                  * Allow only Satisfied
                  */
                 if (this.absVal < lastTP) {
-                    options = this.convertToOptions(['0011']);
+                    return this.convertToOptions(['0011']);
                 /**
                  * Else allow only Denied
                  */
                 } else {
-                    options = this.convertToOptions(['1100']);
+                    return this.convertToOptions(['1100']);
                 }
-                break;
             case 'DS':
                 /** 
                  * If the absoluteTP is less than the last constraints time point
                  * Allow only Denied
                  */
                 if (this.absVal < lastTP) {
-                    options = this.convertToOptions(["1100"]);
+                    return this.convertToOptions(["1100"]);
                 /**
                  * Else allow only Satisfied
                  */
                 } else {
-                    options = this.convertToOptions(['0011']);
+                    return this.convertToOptions(['0011']);
                 }
-                break;
             case 'UD':
                 // TODO
                 // If the abs time pt falls between two consecutive func segments
                 // We restrict based on type
                 // Otherwise you can choose any values
-                options = this.convertToOptions(this.allOptions);
-                break;
+                return this.convertToOptions(this.allOptions);
             default:
-                options = this.convertToOptions(this.allOptions);
-                break;
+                return this.convertToOptions(this.allOptions);
         }
-        return options;
     },
  
     /**
@@ -344,7 +336,7 @@ var SelectUserEvaluationView = Backbone.View.extend({
     increasing: function(initValue, finalValue){
         // IMPORTANT: This list must stay in order from least satisfied to most satisfied for this function to work
         var possibleValueList = ['0011','0010','0000','0100','1100'];
-        if(finalValue === 'noFinal') {
+        if(finalValue == null) {
             return this.convertToOptions(possibleValueList.slice(possibleValueList.indexOf(initValue)));
         }
         else{
@@ -360,7 +352,7 @@ var SelectUserEvaluationView = Backbone.View.extend({
     decreasing: function(initValue,finalValue){
         // IMPORTANT: This list must stay in order from most satisfied to least satisfied for this function to work
         var possibleValueList = ['1100','0100','0000','0010','0011'];
-        if(finalValue === 'noFinal') {
+        if(finalValue == null) {
             return this.convertToOptions(possibleValueList.slice(possibleValueList.indexOf(initValue)));
         } else {
             return this.convertToOptions(possibleValueList.slice(
@@ -425,5 +417,4 @@ var SelectUserEvaluationView = Backbone.View.extend({
          }
          return theOptionString;
     },
-
 });
