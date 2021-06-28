@@ -70,7 +70,7 @@ var IntermediateValuesTable = Backbone.View.extend({
         /**
          * Make row for each intention
          */
-        for (let intentionCell in this.model.getElements().filter(element => element instanceof joint.shapes.basic.Intention)){
+        for (let intentionCell of this.model.getElements().filter(element => element instanceof joint.shapes.basic.Intention)){
             var userEvaluations = this.model.get('userEvaluationList').filter(userEvals => userEvals.get('intentionID') == this.model.id);
             var intentionUserEvaluationsView = new IntentionUserEvaluationsView({model: intentionCell.get('intention'), 
                                                                                  intentionID: intentionCell.id, 
@@ -102,17 +102,17 @@ var IntermediateValuesTable = Backbone.View.extend({
         var constraintTimes = this.model.get('constraints').map(constraint => constraint.get('absTP'));
         var linkTimes = this.model.getLinks().map(linkCell => linkCell.get('link').get('absTP'));
         var intentionTimes = [];
-        this.model.getIntentions().forEach(intentionBBM => intentionBBM.getFuncSegments())
-                                                        .forEach(funcSegmentsList => {
-                                                            if (funcSegmentsList != null){
-                                                                for (let funcSeg of funcSegmentsList){
-                                                                    funcSegTP = funcSeg.get('startAT')
-                                                                    if (funcSegTP != -1){
-                                                                        intentionTimes.push(funcSegTP);
-                                                                    }
-                                                                }
-                                                            }
-                                                        });
+        this.model.getIntentions().forEach(intentionBBM => intentionBBM.getFuncSegments()?.forEach(funcSegmentsList => {
+            if (funcSegmentsList != null){
+                for (let funcSeg of funcSegmentsList){
+                    funcSegTP = funcSeg.get('startAT')
+                    if (funcSegTP != -1){
+                        intentionTimes.push(funcSegTP);
+                    }
+                }
+            }
+        }))
+                                                        
         
         var allTimes = absTimeValues.concat(constraintTimes).concat(linkTimes).concat(intentionTimes);
         var absoluteTimePointsList = Array.from(new Set(allTimes));
@@ -132,9 +132,8 @@ var IntentionUserEvaluationsView = Backbone.View.extend({
 
     template: [
         '<script type="text/template" id="intention-user-eval-template">',
-        '<tr class="intention-row>',
-            '<td> "<%= nodeName %>" </td>',
-            '<%= initialValue %>',
+        '<tr class="intention-row">',
+            '<td> "<%= nodeName %>" </td> "<%= initialValue %>"',
         '</tr>',
         '</script>'
     ].join(''),
@@ -142,6 +141,7 @@ var IntentionUserEvaluationsView = Backbone.View.extend({
     render: function(){
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
         this.loadSelect();
+        return this;
     },
 
     loadSelect: function(){

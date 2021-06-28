@@ -92,7 +92,7 @@ var AnalysisInspector = Backbone.View.extend({
 	 * Creates, attaches, and renders view for the IVT
 	 */
 	openIntermediateValuesTable: function(){
-		var intermediateValuesTable = new IntermediateValuesTable({model: this.model});
+		var intermediateValuesTable = new IntermediateValuesTable({model: graph});
 		this.$('#analysis-inspector').append(intermediateValuesTable.el);
 		intermediateValuesTable.render();
 		
