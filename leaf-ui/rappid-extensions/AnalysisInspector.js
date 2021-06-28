@@ -25,8 +25,6 @@ var AnalysisInspector = Backbone.View.extend({
 		'<label class="sub-label"> Num Relative Time Points </label>',
 		'<input id="num-rel-time" class="analysis-input" type="number" min="0" max="20" step="1" value="<%= numRelTime %>"/> </input>',
 		'<hr>',
-		'<button id="btn-view-intermediate" class="analysis-btns inspector-btn sub-label green-btn">View Intermediate Values</button>',
-		'<hr>',
 		'<button id="btn-single-path" class="analysis-btns inspector-btn sub-label green-btn">Simulate Single Path</button>',
 		'<button id="btn-all-next-state" class="analysis-btns inspector-btn sub-label ice-btn">Explore Possible Next States</button>',
 		'<hr>',
@@ -34,7 +32,6 @@ var AnalysisInspector = Backbone.View.extend({
 		'</script>'].join(''),		
 	
 	events: {
-		'click #btn-view-intermediate': 'openIntermediateValuesTable',
 		'click .closeIntermT': 'dismissIntermTable',
 		'click #btn-single-path': 'singlePath',	
 		'click #btn-all-next-state': 'getAllNextStates',
@@ -87,16 +84,6 @@ var AnalysisInspector = Backbone.View.extend({
 		} else {
 			numRel.val(this.model.get('numRelTime'));
 		}
-	},
-
-	/**
-	 * Creates, attaches, and renders view for the IVT
-	 */
-	openIntermediateValuesTable: function(){
-		var intermediateValuesTable = new IntermediateValuesTable();
-		this.$('.analysis-sidebar').append(intermediateValuesTable.el);
-		intermediateValuesTable.render();
-
 	},
 
 	/**
