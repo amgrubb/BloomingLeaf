@@ -16,15 +16,15 @@ var AnalysisInspector = Backbone.View.extend({
 		'<div id="analysis-sidebar";>',
 		'<h5 style="text-align:center; color:#181b1fe3; margin-left: 10px;">Analysis Parameters</h5>',
 		'<div class="inspector-views"; style ="margin-top:-15px">',
-		'<label class="sub-label"> Conflict Prevention Level </label>',
-		'<select id="conflict-level" class="sub-label" style="height: 15px; width: 190px">', 
+		'<p style ="text-align: center;"><label class="sub-label"> Conflict Prevention Level </label>',
+		'<select id="conflict-level" class="sub-label" style="height: 15px; width: 170px">', 
 			'<option value=S <% if (conflictLevel === "S") { %> selected <%} %>> Strong </option>',
 			'<option value=M <% if (conflictLevel === "M") { %> selected <%} %>> Medium </option>',
 			'<option value=W <% if (conflictLevel === "W") { %> selected <%} %>> Weak </option>',
 			'<option value=N <% if (conflictLevel === "N") { %> selected <%} %>> None </option>',
 		'</select>',
-		'<label class="sub-label";> Num Relative Time Points </label>',
-		'<input id="num-rel-time" class="analysis-input" type="number" min="0" max="20" step="1" value="<%= numRelTime %>"/> </input>',
+		'<label class="sub-label"; > Num Relative Time Points </label>',
+		'<input id="num-rel-time" class="analysis-input" type="number" min="0" max="20" step="1" value="<%= numRelTime %>"/> </input></p>',
 		'<hr>',
 		'</div>',
 		'</div>',
@@ -56,7 +56,6 @@ var AnalysisInspector = Backbone.View.extend({
 	 */ 
 	rerender: function(){
 		this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
-		console.log("manar lazem tsht8le l2na ra7 e6rdok :( kman abde tet3alme lebnane");
 		console.log(this.model);
         return this;
 	},
@@ -74,7 +73,6 @@ var AnalysisInspector = Backbone.View.extend({
 	/** Updates the model's conflict level based on dropdown element value*/
 	changeConflictLevel: function() {
 		
-		console.log("manar lazem tcht8le l2na ra7 e6rdoke :( kman abde tet3alme lebnane");
 		console.log(this.model);
 		this.model.set('conflictLevel', $('#conflict-level').val());
 	},
