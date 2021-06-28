@@ -72,7 +72,6 @@ var EvolvingFunctionBBM = Backbone.Model.extend({
      * does not return anything.
      */
     getNthRefEvidencePair: function(n) { 
-        console.log(this.get('functionSegList'));
         if (this.get('functionSegList') != null) {
             var len = this.get('functionSegList').length; 
         if (len > 0) {  
@@ -185,13 +184,13 @@ var IntentionBBM = Backbone.Model.extend({
  
         var funcSegList = this.getFuncSegments();
         
-        if (this.evolvingFunction != null) {
-        if (this.evolvingFunction.get('type') == 'C' || 
-            (this.evolvingFunction.get('type') == 'UD' && funcSegList[0].get('type') == 'C')) { 
-                this.getFuncSegments().set('refEvidencePair', initValue); 
+        if (this.get('evolvingFunction') != null) {
+            if (this.get('evolvingFunction').get('type') == 'C' || 
+                (this.get('evolvingFunction').get('type') == 'UD' && funcSegList[0].get('type') == 'C')) { 
+                    funcSegList[0].set('refEvidencePair', initValue); 
             }
-        this.evolvingFunction.set('type', 'NT');
-        this.evolvingFunction.set('functionSegList', []);
+            this.get('evolvingFunction').set('type', 'NT');
+            this.get('evolvingFunction').set('functionSegList', []);
         }
         
     }, 
@@ -215,7 +214,6 @@ var IntentionBBM = Backbone.Model.extend({
         if (typeof intentionEval == 'undefined'){
             return '(no value)';
         } else {
-            console.log(intentionEval.get('assignedEvidencePair'));
             return intentionEval.get('assignedEvidencePair');
         }
     }, 
@@ -225,7 +223,7 @@ var IntentionBBM = Backbone.Model.extend({
      */
     removeFunction: function() {
         this.removeAbsConstraint();
-        this.evolvingFunction = null; 
+        this.model.get('intention').set('evolvingFunction', null); 
         // this.evolvingFunction.get('cid') = this.get('cid'); 
     }, 
  
@@ -237,9 +235,10 @@ var IntentionBBM = Backbone.Model.extend({
      * @param {String} funcType
      */
     setEvolvingFunction: function(funcType) {
-        // if (this.evolvingFunction != null) {
-        //     this.evolvingFunction.set('functionSegList', []);
-        // }
+        if (this.get('evolvingFunction') != null) {
+            this.get('evolvingFunction').set('functionSegList', []);
+            this.set('evolvingFunction', null);
+        }
         this.set('evolvingFunction', new EvolvingFunctionBBM({type: funcType}));
 
         // Since function changed, remove all current absolute constraints related to this intention
@@ -395,8 +394,8 @@ var IntentionBBM = Backbone.Model.extend({
      * ex: '0000'
      */
     setMarkedValueToFunction: function(satValue) {
-        if (this.evolvingFunction != null) {
-            var funcType = this.evolvingFunction.get('type');
+        if (this.get('evolvingFunction') != null) {
+            var funcType = this.get('evolvingFunction').get('type');
         }
         else { var funcType = null; }
  
@@ -421,6 +420,7 @@ var IntentionBBM = Backbone.Model.extend({
         else {var funcSegLen = null;};
         console.log(funcSegLen);
         var functionSegment = this.getFuncSegments()[funcSegLen - 1];
+        console.log(functionSegment);
         functionSegment.set('type', funcValue); 
         if (funcValue == 'C' || funcValue =='R') {
             functionSegment.set('refEvidencePair', '0000');
