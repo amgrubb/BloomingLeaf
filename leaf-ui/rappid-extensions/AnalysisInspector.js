@@ -12,28 +12,22 @@ var AnalysisInspector = Backbone.View.extend({
 	
 	template: [
 		'<script type="text/template" id="item-template">',
-        //'<div class="left-panel-a" id="analysisID>',
 		'<div class="container-sidebar" >',
 		'<div id="analysis-sidebar";>',
-		'<h3 style="text-align:left; color:#181b1fe3; margin-left: 10px;">Analysis Parameters</h3>',
-		'<div class="inspector-views">',
-		//'<h4 style="text-align:center; width:100%;margin-top:6px;margin-bottom:0px; margin-right:20px">Analysis</h4>',
-		'<hr>',
-		//'<h4> Simulation Start: 0 </h4>',
+		'<h5 style="text-align:center; color:#181b1fe3; margin-left: 10px;">Analysis Parameters</h5>',
+		'<div class="inspector-views"; style ="margin-top:-15px">',
 		'<label class="sub-label"> Conflict Prevention Level </label>',
-		'<select id="conflict-level" class="sub-label" style="height:30px;">', 
+		'<select id="conflict-level" class="sub-label" style="height: 15px; width: 190px">', 
 			'<option value=S <% if (conflictLevel === "S") { %> selected <%} %>> Strong </option>',
 			'<option value=M <% if (conflictLevel === "M") { %> selected <%} %>> Medium </option>',
 			'<option value=W <% if (conflictLevel === "W") { %> selected <%} %>> Weak </option>',
 			'<option value=N <% if (conflictLevel === "N") { %> selected <%} %>> None </option>',
 		'</select>',
-		//'<hr>',
-		'<p><label class="sub-label";> Num Relative Time Points </label></p>',
+		'<label class="sub-label";> Num Relative Time Points </label>',
 		'<input id="num-rel-time" class="analysis-input" type="number" min="0" max="20" step="1" value="<%= numRelTime %>"/> </input>',
 		'<hr>',
 		'</div>',
 		'</div>',
-		//'</div>',
 		'</script>'].join(''),		
 	
 	events: {
@@ -44,7 +38,7 @@ var AnalysisInspector = Backbone.View.extend({
 		'click #btn-save-intermT': 'saveIntermTable',
 		'change #num-rel-time': 'addRelTime', 
 		'change #conflict-level': 'changeConflictLevel',
-		'clearInspector .inspector-views' : 'removeView'
+		//'clearInspector .inspector-views' : 'removeView'
 	},
 
 	/** Sets template and injects model parameters */
