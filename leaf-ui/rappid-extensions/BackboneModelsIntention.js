@@ -161,7 +161,7 @@ var IntentionBBM = Backbone.Model.extend({
  
     /**
      * Called whenever the user changes or removes the Initial Satisfaction Value
-     * in the Element Inspector. Called on Chnage for #init-sat-value 
+     * in the Element Inspector. Called on Change for #init-sat-value 
      * 
      * Sets the refEvidence pair based on the chosen initValue
      * 
@@ -170,7 +170,6 @@ var IntentionBBM = Backbone.Model.extend({
     changeInitialSatValue: function(initValue) {
         var intentionEval = graph.getUserEvaluationBBM(this.cid, '0');
         intentionEval.set('assignedEvidencePair', initValue);
- 
         var funcSegList = this.getFuncSegments();
         
         if (this.get('evolvingFunction') != null) {
@@ -180,8 +179,7 @@ var IntentionBBM = Backbone.Model.extend({
             }
             this.get('evolvingFunction').set('type', 'NT');
             this.get('evolvingFunction').set('functionSegList', []);
-        }
-        
+        }     
     }, 
  
     /**
@@ -233,7 +231,7 @@ var IntentionBBM = Backbone.Model.extend({
         // var initValue = graph.get('userEvaluationList').get(this.cid, '0').get('assignedEvidencePair');
         var initValue = graph.getUserEvaluationBBM(this.cid, '0').get('assignedEvidencePair');
  
-        // Creates the correct FunctionSegmentBBMs for the selected function type
+        // Creates the correct FunctionSegmentBBM(s) for the selected function type
         if (funcType == 'C' || funcType == 'R' || funcType == 'I' || funcType == 'D' || funcType == 'UD') {
             if (funcType == 'C') {
                 var seg =  new FunctionSegmentBBM({type: funcType, refEvidencePair: initValue, startTP: '0', startAT: 0});  
@@ -331,7 +329,6 @@ var IntentionBBM = Backbone.Model.extend({
      * @param {Integer} startTime
      */
     addUserDefinedSeg: function(funcType, refEvidencePair, startTime){
- 
         var len = this.getFuncSegments().length;
         var startCheck = this.getFuncSegments()[len - 1].get('startTP');
         if (startCheck == '0') {
