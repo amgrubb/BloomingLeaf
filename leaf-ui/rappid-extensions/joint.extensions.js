@@ -230,6 +230,7 @@ joint.dia.CellLink = joint.dia.Link.extend({
 
 joint.shapes.basic.Actor = joint.shapes.basic.Generic.extend({
     markup: '<g class="scalable"><circle class = "outer"/></g><circle class="label"/><path class="line"/><text class = "name"/>',
+
     defaults: joint.util.deepSupplement({
         type: "basic.Actor",
         size: {
@@ -266,12 +267,9 @@ joint.shapes.basic.Actor = joint.shapes.basic.Generic.extend({
             ".line": {
             }
         },
-        //TODO replace with new ActorBBM once it is in codebase
-        actor: new ActorTest(),
-        actorType: 'A',
-        actorName: 'Actor'
+        actor: null,
     }, joint.dia.Element.prototype.defaults),
     changeToOriginalColour: function() {
         this.attr({'.outer': {'fill': '#EBFFEA'}});
     },
-}); 
+});
