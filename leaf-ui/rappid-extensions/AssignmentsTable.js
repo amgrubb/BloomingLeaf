@@ -150,16 +150,19 @@ var AssignmentsTable = Backbone.View.extend({
     displayAbsoluteIntentionAssignments: function() {
         this.model.getIntentions().forEach(intentionCell => {
             var intentionBbm = intentionCell.get('intention');
-            var funcSegList = intentionBbm.get('evolvingFunction').get('functionSegList');
+            var evolvingFunction = intentionBbm.get('evolvingFunction');
             console.log(funcSegList);
-            if (funcSegList != undefined){
-                // TODO: Check with @amgrubb about how this is being sliced
-                for (let funcSeg of funcSegList.slice(1)){
-                    var intentionRelationshipView = new IntentionRelationshipView({
-                        model: funcSeg, funcType: intentionBbm.get('evolvingFunction').get('type'), 
-                        intentionName: intentionBbm.get('nodeName')});
-                    $('#node-list').append(intentionRelationshipView.el);
-                    intentionRelationshipView.render();  
+            if(evolvingFunction != null){
+                var funcSegList = evolvingFunction.get('functionSegList');
+                if (funcSegList != undefined){
+                    // TODO: Check with @amgrubb about how this is being sliced
+                    for (let funcSeg of funcSegList.slice(1)){
+                        var intentionRelationshipView = new IntentionRelationshipView({
+                            model: funcSeg, funcType: intentionBbm.get('evolvingFunction').get('type'), 
+                            intentionName: intentionBbm.get('nodeName')});
+                        $('#node-list').append(intentionRelationshipView.el);
+                        intentionRelationshipView.render();  
+                    }
                 }
             }
         });
@@ -319,8 +322,8 @@ var IntentionRelationshipView = Backbone.View.extend({
 
     template: [
         '<script type="text/template" id="item-template">',
-        '<td class= "intstart"></td>',
-        '<td class= "func"></td>',
+        '<td class= "namestartTP"></td>',
+        '<td class= "func-type"></td>',
         '<td><input id="absFuncSegValue" type="number" name="sth" value="<% if (startAT == -1) {%> "" <%} else { %> startAT <% } %>"></td>',
         '<td><button id="unassign-abs-intent-btn"> Unassign </button></td>',
         '</script>'
@@ -333,8 +336,8 @@ var IntentionRelationshipView = Backbone.View.extend({
 
     render: function(){
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
-        this.$('.intstart').text(this.intentionName + " : " + this.model.get('startTP'));
-        this.$('.func').text(this.funcType);
+        this.$('.namestartTP').text(this.intentionName + " : " + this.model.get('startTP'));
+        this.$('.func-type').text(this.funcType);
         return this;
     },
 
