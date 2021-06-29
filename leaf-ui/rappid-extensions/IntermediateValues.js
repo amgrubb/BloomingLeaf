@@ -48,11 +48,6 @@ var IntermediateValuesTable = Backbone.View.extend({
         return this;
     },
 
-    rerender: function(){
-		this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
-        return this;
-    },
-
     /**
      * Function to load in correct rows and dropdowns for IVT
      */
@@ -62,6 +57,7 @@ var IntermediateValuesTable = Backbone.View.extend({
         /** 
          * Add all time points to top of table  
          */
+        // TODO: Hate this, can we make it better?
         for (var s = 0; s < absoluteTimePointsList.length; s++) {
             $('#header-row').append('<th>Absolute</th>');
             $('#intentionRows').append('<th>' + absoluteTimePointsList[s] + '</th>');
@@ -81,16 +77,17 @@ var IntermediateValuesTable = Backbone.View.extend({
         }
 
         // Needed after looping through and appending rows to avoid voiding the select
-        $('.intention-row').each(function () {
-            $(this).find('select').each(function () {
-                var nodeID = $(this).attr('nodeID');
-                var absTime = $(this).attr('absTime');
-                var intEval = this.model.getUserEvaluationByID(nodeID, absTime);
-                if (intEval != null) {
-                    $(this).val(intEval.evaluationValue);
-                }
-            });
-        });
+        // TODO: Should be able to delete now - but check before doing
+        // $('.intention-row').each(function () {
+        //     $(this).find('select').each(function () {
+        //         var nodeID = $(this).attr('nodeID');
+        //         var absTime = $(this).attr('absTime');
+        //         var intEval = this.model.getUserEvaluationByID(nodeID, absTime);
+        //         if (intEval != null) {
+        //             $(this).val(intEval.evaluationValue);
+        //         }
+        //     });
+        // });
     },
 
     dismissInterm: function (){
@@ -102,6 +99,7 @@ var IntermediateValuesTable = Backbone.View.extend({
         var constraintTimes = this.model.get('constraints').map(constraint => constraint.get('absTP'));
         var linkTimes = this.model.getLinks().map(linkCell => linkCell.get('link').get('absTP'));
         var intentionTimes = [];
+        // TODO: Messy, can we clean up?
         this.model.getIntentions().forEach(intentionBBM => intentionBBM.getFuncSegments()?.forEach(funcSegmentsList => {
             if (funcSegmentsList != null){
                 for (let funcSeg of funcSegmentsList){
@@ -113,7 +111,6 @@ var IntermediateValuesTable = Backbone.View.extend({
             }
         }));
                                                         
-        
         var allTimes = absTimeValues.concat(constraintTimes).concat(linkTimes).concat(intentionTimes);
         var absoluteTimePointsList = Array.from(new Set(allTimes));
         absoluteTimePointsList.sort(function(a,b) {return a-b})
@@ -151,6 +148,7 @@ var IntentionUserEvaluationsView = Backbone.View.extend({
             if (currentUserEvals.length != 0){
                 userEval = currentUserEvals[0];
             }
+            // TODO: Reduce params if possible 
             var selectUserEvaluationView = new SelectUserEvaluationView
                                                 ({intentionID: this.intentionID,
                                                   absTimePt: absTimePt, 
@@ -173,6 +171,7 @@ var SelectUserEvaluationView = Backbone.View.extend({
         'change .evaluation-value':'updateEvaluationValue'
     },
 
+    // TODO: Streamline initialize - too many params!
     initialize: function(options){
         this.funcType = options.funcType;
         this.absTimePt = options.absTimePt;
@@ -190,31 +189,33 @@ var SelectUserEvaluationView = Backbone.View.extend({
         if (this.userEvaluation != null){
             this.$('select').val(this.userEvaluation.get('assignedEvidencePair'));
         }
+        // TODO: else select what? (empty? no value? - Check with Alicia)
     },
 
     updateEvaluationValue: function(){
         var evaluationValue = this.$('.evaluation-value').val();
+        // Alternatively lets update it instead of destroying depending on what value it is
+        // TODO: Check w/ Alicia for intended behavior and handle null/no value
         if (this.userEvaluation != null){
             this.userEvaluation.destroy();
         }
-        // TODO: Check w/ Alicia for intended behavoir and handle null/no value
         this.userEvaluation = new UserEvaluationBBM({intentionID: this.intentionID, 
                                                      absTP: this.absTimePt, 
                                                      assignedEvidencePair: evaluationValue});
-        // add new value to graph collection
+        // TODO: add new value to graph collection
     },
 
     getOptionsByType: function(){
-        var lastTP = -1;
         var lastFuncSeg = this.intention.getFuncSegments()[-1];
         var finalValue = lastFuncSeg.get('refEvidencePair');
         var lastTP = lastFuncSeg.get('startAT');
+        var type = this.intention.get('evolvingFunction').get('type');
 
-        switch (func) {
+        switch (type) {
             case 'I':
-                return this.increasing(this.initValue,'noFinal');
+                return this.increasing(this.initValue, finalValue);
             case 'D':
-                return this.decreasing(this.initValue,'noFinal');
+                return this.decreasing(this.initValue, finalValue);
             case 'C':
                 return this.constant(this.initValue);
             case 'R':
@@ -274,12 +275,8 @@ var SelectUserEvaluationView = Backbone.View.extend({
                 if (lastTP != null && this.absVal < lastTP){
                     // TODO: I feel like this should be the first value but check with Alicia before changing
                     return this.convertToOptions([finalValue]);
-                /**
-                 * Else allow any options
-                 */
-                } else {
-                    return this.convertToOptions(this.allOptions);
-                }
+                } 
+                break;
             case 'RC':
                 /** 
                  * If valid TP less than or equal to absolute value
@@ -287,12 +284,8 @@ var SelectUserEvaluationView = Backbone.View.extend({
                  */
                 if (lastTP != null && this.absVal >= lastTP){
                     return this.convertToOptions([finalValue]);
-                /**
-                 * Else allow any options
-                 */
-                } else {
-                    return this.convertToOptions(this.allOptions);
-                }
+                };
+                break;
             case 'SD':
                 /** 
                  * If the absoluteTP is less than the last constraints time point
@@ -320,26 +313,45 @@ var SelectUserEvaluationView = Backbone.View.extend({
                     return this.convertToOptions(['0011']);
                 }
             case 'UD':
-                // TODO
-                // If the abs time pt falls between two consecutive func segments
-                // We restrict based on type
-                // Otherwise you can choose any values
-                return this.convertToOptions(this.allOptions);
-            default:
-                return this.convertToOptions(this.allOptions);
+                /**
+                 * If two consecutive function segments have valid startTPs
+                 * And the absVal TP falls between them
+                 */
+                for (let i=1; i < this.functionSegmentList.length; i++){
+                    funcSeg1 = this.functionSegmentList[i-1]
+                    funcSeg2 = this.functionSegmentList[i];
+                    // TODO: check for null? 
+                    if (funcSeg1.get('startAT') <= this.absVal && funcSeg2.get('startAT') > this.absVal){
+                        refPair = funcSeg1.get('refEvidencePair')
+                        switch (funcSeg1.get('type')) {
+                            case "I":
+                                return this.increasing(null, refPair);
+                            case "D":
+                                return this.decreasing(null,refPair);
+                            case "C":
+                                return this.constant(refPair);
+                            case "R":
+                                return this.stochastic();
+                        }
+                    }
+                }
+                break;  
         }
+        // Default case gives all options
+        return this.convertToOptions(this.allOptions);
     },
  
     /**
-     *This function takes in an initial value and return a list of strings for options that contains values that are larger than the initial value
+     * This function takes in an initial value and return a list of strings for options that contains values that are larger than the initial value
      */
     increasing: function(initValue, finalValue){
         // IMPORTANT: This list must stay in order from least satisfied to most satisfied for this function to work
         var possibleValueList = ['0011','0010','0000','0100','1100'];
         if(finalValue == null) {
             return this.convertToOptions(possibleValueList.slice(possibleValueList.indexOf(initValue)));
-        }
-        else{
+        } else if (initValue == null){
+            return this.convertToOptions(0, possibleValueList.slice(possibleValueList.indexOf(finalValue)+1));
+        } else{
             return this.convertToOptions(possibleValueList.slice(
             possibleValueList.indexOf(initValue),
             possibleValueList.indexOf(finalValue)+1));
@@ -347,13 +359,15 @@ var SelectUserEvaluationView = Backbone.View.extend({
     },
  
     /**
-     *This function takes in an initial value and return a list of strings for options that contains values that are smaller than the initial value
+     * This function takes in an initial value and return a list of strings for options that contains values that are smaller than the initial value
      */
     decreasing: function(initValue,finalValue){
         // IMPORTANT: This list must stay in order from most satisfied to least satisfied for this function to work
         var possibleValueList = ['1100','0100','0000','0010','0011'];
         if(finalValue == null) {
             return this.convertToOptions(possibleValueList.slice(possibleValueList.indexOf(initValue)));
+        } else if (initValue == null){
+            return this.convertToOptions(0, possibleValueList.slice(possibleValueList.indexOf(finalValue)+1));
         } else {
             return this.convertToOptions(possibleValueList.slice(
                 possibleValueList.indexOf(initValue),
@@ -374,6 +388,7 @@ var SelectUserEvaluationView = Backbone.View.extend({
      *
      * @returns {a list of strings for options that contains values that contains all possible values}
      */
+    // TODO: Is this the same as all options minus empty? Why no empty?
     stochastic: function(){
         var possibleValueList = ['0000','0011','0010','1100','0100', 'no value'];
         return this.convertToOptions(possibleValueList);
