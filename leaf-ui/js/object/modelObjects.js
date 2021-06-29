@@ -1116,7 +1116,6 @@ class IntentionTest {
      */
     constructor(nodeActorID, nodeType) {
         this.nodeActorID = nodeActorID;
-        //this for some reason is not updating??
         this.nodeID = this.createID();
         this.nodeType = nodeType;
         this.dynamicFunction = new EvolvingFunction(this.nodeID);
@@ -1159,8 +1158,8 @@ class IntentionTest {
      * @returns {String}
      */
     createID() {
-        var id = IntentionTest.numOfCreatedInstances.toString();
-        IntentionTest.numOfCreatedInstances += 1;
+        var id = Intention.numOfCreatedInstances.toString();
+        Intention.numOfCreatedInstances += 1;
         while (id.length < 4){
                 id = '0' + id;
         }
@@ -1436,8 +1435,7 @@ class IntentionTest {
         }
     }
 }
-// Static variable that keeps track of num of intention tests 
-IntentionTest.numOfCreatedInstances = 0; 
+
 class ActorTest {
 
     /**

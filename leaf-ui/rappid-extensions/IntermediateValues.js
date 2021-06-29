@@ -483,13 +483,11 @@ var IntermediateValuesTable = Backbone.View.extend({
     // Needed after looping through and appending rows to avoid voiding the select
     $('.intention-row').each(function () {
         $(this).find('select').each(function () {
-            //var nodeID = $(this).attr('nodeID');
-            console.log('this is' + $(this));
-            var nodeID = $(this).get('cid');
+            var nodeID = $(this).attr('nodeID');
             var absTime = $(this).attr('absTime');
-            var intEval = graph.get('userEvaluationList').get(nodeID, absTime);
+            var intEval = analysisRequest.getUserEvaluationByID(nodeID, absTime);
             if (intEval != null) {
-                $(this).val(intEval.get('assignedEvidencePair'));
+                $(this).val(intEval.evaluationValue);
             }
         });
     });
