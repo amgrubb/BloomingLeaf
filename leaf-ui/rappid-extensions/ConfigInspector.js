@@ -9,7 +9,7 @@
  * {ResultModel} model
  */
 var ResultView = Backbone.View.extend({
-    model: AnalysisParametersBBM,
+    model: ResultModel,
 
     /** Pass in config along with model so that view has reference to parent */
     initialize: function(options){
@@ -95,11 +95,10 @@ var ResultsDropdown = Backbone.View.extend({
  * {ConfigModel} model
  */
 var Config = Backbone.View.extend({
-    model: AnalysisParametersBBM,
+    model: ConfigModel,
 
     /** Create and render dropdown inner view, set listeners */
     initialize: function(){
-        console.log("Angela says yo momma is so fat your stupid" + this.model);
         this.innerView = new ResultsDropdown({collection:this.model.get("results"), config: this.model});
         this.innerView.render();
         this.model.on('destroy', this.remove, this);
@@ -137,7 +136,7 @@ var Config = Backbone.View.extend({
     render: function() {
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
         this.$('.analysis-configuration').append(this.innerView.$el);
-        //this.showAnalysisInspector();
+        this.showAnalysisInspector();
         return this;
     },
 
@@ -196,11 +195,10 @@ var Config = Backbone.View.extend({
      */
     showAnalysisInspector: function(){
         // If there is a previous sidebar view, clear it
-        //clearInspector();
+        clearInspector();
         // Create and add new analysis sidebar view
-        var analysisInspector = new AnalysisInspector({model: this.model});
-        $('.inspector').append(analysisInspector.el);
-        analysisInspector.render();
+        //$('.inspector').append(analysisInspector.el);
+        //analysisInspector.render();
     },
 
     /**
