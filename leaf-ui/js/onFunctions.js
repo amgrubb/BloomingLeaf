@@ -425,6 +425,7 @@ function switchToAnalysisMode() {
     configInspector.render();
 	$('#stencil').css("display", "none");
     $('#btn-view-intermediate').css("display","none");
+    $('#btn-view-assignment').css("display","none"); 
     $('#analysis-btn').css("display", "none");
 	$('#symbolic-btn').css("display", "none");
 	$('#cycledetect-btn').css("display", "none");
