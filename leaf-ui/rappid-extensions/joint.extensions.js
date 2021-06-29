@@ -11,7 +11,12 @@
  *
  */
 
+
+
 joint.dia.BloomingGraph = joint.dia.Graph.extend({
+    /**
+     * This is the constructor for the main graph object.
+     */
     defaults: joint.util.deepSupplement({
         type: 'goalmodel.Graph',
         maxAbsTime: 100,
