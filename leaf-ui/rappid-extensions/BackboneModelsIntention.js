@@ -176,14 +176,9 @@ var IntentionBBM = Backbone.Model.extend({
 
         // var intentionEval = graph.getUserEvaluationBBM(this.cid, '0');
         // intentionEval.set('assignedEvidencePair', initValue);
-        // console.log(intentionEval);
-        //console.log(initValue);
-        // console.log(intentionEval.get('assignedEvidencePair'));
         console.log(this.intention);
-        if (this.intention != null) {
-        this.intention.set('initialValue', initValue);
-        console.log(this.intention.get("initialValue"));
-    }
+        this.set('initialValue', initValue);
+        console.log(this.get("initialValue"));
 
         var funcSegList = this.getFuncSegments();
         
