@@ -738,10 +738,8 @@ function createIntention(cell) {
     cell.set('intention', newIntentionBBM);
     cell.attr('.funcvalue/text', ' ');
 
-    // create intention evaluation object
-
-    var intentionEval = new UserEvaluationBBM({intentionID: newIntentionBBM.cid, absTP: '0', assignedEvidencePair: '(no value)'});
-    graph.get('userEvaluationList').push(intentionEval);
+    // create intention evaluation object and add it to userEvaluationList    
+    graph.get('userEvaluationList').push(new UserEvaluationBBM({intentionID: newIntentionBBM.cid, absTP: '0'}));
 }
 
 /**
@@ -765,8 +763,6 @@ graph.on("add", function(cell) {
         }
     } else if (cell instanceof joint.shapes.basic.Intention){
         createIntention(cell);
-		// cell.set('intention', new IntentionBBM({}));
-		// cell.attr('.funcvalue/text', ' ');
 
 	} else if (cell instanceof joint.shapes.basic.Actor) {
         // Find how many instances of the actor is created out of all the cells
