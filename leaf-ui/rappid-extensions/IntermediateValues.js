@@ -64,7 +64,7 @@ var IntermediateValuesTable = Backbone.View.extend({
          */
         for (var s = 0; s < absoluteTimePointsList.length; s++) {
             $('#header-row').append('<th>Absolute</th>');
-            $('#intentionRows').append('<th>' + absTimeValues[s] + '</th>');
+            $('#intentionRows').append('<th>' + absoluteTimePointsList[s] + '</th>');
         }
 
         /**
@@ -111,7 +111,7 @@ var IntermediateValuesTable = Backbone.View.extend({
                     }
                 }
             }
-        }))
+        }));
                                                         
         
         var allTimes = absTimeValues.concat(constraintTimes).concat(linkTimes).concat(intentionTimes);

@@ -7,11 +7,11 @@ var saveIntermValues = {};
 var absoluteTimeValues;
 var saveIVT;
 var AnalysisInspector = Backbone.View.extend({
-	// className: 'analysis-inspector',
+	className: 'analysis-inspector',
 	model: ConfigModel,
 	
 	template: ['<script type="text/template" id="item-template">',
-		'<div class="inspector-views" id="analysis-inspector">',
+		'<div class="inspector-views">',
 		'<h2 style="text-align:center; width:100%;margin-top:6px;margin-bottom:0px">Analysis</h2>',
 		'<hr>',
 		'<h3> Simulation Start: 0 </h3>',
@@ -32,10 +32,8 @@ var AnalysisInspector = Backbone.View.extend({
 		'</script>'].join(''),		
 	
 	events: {
-		'click #btn-view-intermediate': 'openIntermediateValuesTable',
-		'click #btn-single-path': 'singlePath',
-		'click #btn-all-next-state': 'getAllNextStates',
-		'click #btn-save-intermT': 'saveIntermTable',
+		'click #btn-single-path': 'singlePath',	
+		'click #btn-all-next-state': 'getAllNextStates',,
 		'change #num-rel-time': 'addRelTime', 
 		'change #conflict-level': 'changeConflictLevel',
 		'clearInspector .inspector-views' : 'removeView'
@@ -84,16 +82,6 @@ var AnalysisInspector = Backbone.View.extend({
 		} else {
 			numRel.val(this.model.get('numRelTime'));
 		}
-	},
-
-	/**
-	 * Creates, attaches, and renders view for the IVT
-	 */
-	openIntermediateValuesTable: function(){
-		var intermediateValuesTable = new IntermediateValuesTable({model: graph});
-		this.$('#analysis-inspector').append(intermediateValuesTable.el);
-		intermediateValuesTable.render();
-		
 	},
 
 	/**
