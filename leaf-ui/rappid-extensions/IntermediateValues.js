@@ -73,22 +73,9 @@ var IntermediateValuesTable = Backbone.View.extend({
                                                                                  allAbsoluteTimePoints: absoluteTimePointsList,
                                                                                  userEvals: userEvaluations,
                                                                                  maxAbsTime: this.model.get('maxAbsTime')});
-            $('#interm-list').append(intentionUserEvaluationsView.el);
+            this.$('#interm-list').append(intentionUserEvaluationsView.el);
             intentionUserEvaluationsView.render();
         }
-
-        // Needed after looping through and appending rows to avoid voiding the select
-        // TODO: Should be able to delete now - but check before doing
-        // $('.intention-row').each(function () {
-        //     $(this).find('select').each(function () {
-        //         var nodeID = $(this).attr('nodeID');
-        //         var absTime = $(this).attr('absTime');
-        //         var intEval = this.model.getUserEvaluationByID(nodeID, absTime);
-        //         if (intEval != null) {
-        //             $(this).val(intEval.evaluationValue);
-        //         }
-        //     });
-        // });
     },
 
     dismissInterm: function (){
@@ -122,6 +109,10 @@ var IntermediateValuesTable = Backbone.View.extend({
 var IntentionUserEvaluationsView = Backbone.View.extend({
     model: IntentionBBM,
 
+    tagName: 'tr',
+
+    className: 'intention-row',
+
     initialize: function(options){
         this.intentionID = options.intentionID;
         this.userEvals = options.userEvals;
@@ -130,14 +121,13 @@ var IntentionUserEvaluationsView = Backbone.View.extend({
 
     template: [
         '<script type="text/template" id="intention-user-eval-template">',
-        '<tr class="intention-row">',
-            '<td> "<%= nodeName %>" </td> "<%= initialValue %>"',
-        '</tr>',
+            '<td class="intention-name"> "<%= nodeName %>" </td>',
         '</script>'
     ].join(''),
 
     render: function(){
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
+        this.$el.append(satisfactionValuesDict[this.model.get('initialValue')].satValue);
         this.loadSelect();
         return this;
     },
@@ -145,22 +135,23 @@ var IntentionUserEvaluationsView = Backbone.View.extend({
     loadSelect: function(){
         myNull = null;
 
+        // Iterate through all time points
         for (let absTime of this.allAbsoluteTimePoints){
             funcType = null;
             refPair = null;
             initValue = null;
             
             var userEval = null;
-            if (this.userEvals.filter(userEval => userEval.get('absTP') == absTimePt).length != 0){
+            if (this.userEvals.filter(userEval => userEval.get('absTP') == absTime).length != 0){
                 userEval = currentUserEvals[0];
             }
 
-            for (let i=0; i < this.getFuncSegments().length; i++){
+            for (let i=0; i < this.model.getFuncSegments()?.length; i++){
                 funcSeg1 = this.functionSegmentList[i];
                 startAT1 = funcSeg1.get('startAT');
                 
                 // If i is not the last index in the function segments list
-                if (i != this.getFuncSegments().length-1){
+                if (i != this.model.getFuncSegments()?.length-1){
                     // Get the next function segment and it's startAT
                     funcSeg2 = this.functionSegmentList[i+1];
                     startAT2 = funcSeg2.get('startAT')
@@ -199,10 +190,10 @@ var IntentionUserEvaluationsView = Backbone.View.extend({
             // Create a select menu for each time point on each intention
             var selectUserEvaluationView = new SelectUserEvaluationView
                                                 ({intentionID: this.intentionID,
-                                                  absTimePt: absTimePt, 
+                                                  absTimePt: absTime, 
                                                   optionsList: optionsList,
                                                   userEval: userEval});
-                $('.intention-row').append(selectUserEvaluationView.el);
+                this.$el.append(selectUserEvaluationView.el);
                 selectUserEvaluationView.render();
         }
     },
@@ -240,6 +231,8 @@ var IntentionUserEvaluationsView = Backbone.View.extend({
 });
 
 var SelectUserEvaluationView = Backbone.View.extend({
+    tagName: 'td',
+
     template: [
         '<select class="evaluation-value"></select>'
     ].join(''),
@@ -287,12 +280,11 @@ var SelectUserEvaluationView = Backbone.View.extend({
      * @returns {List that contains strings that are the string encoding of the binary strings in the choiceList}
      */
     convertToOptions: function(choiceList){
-        var theOptionString = ``;
+        var theOptionString = this.binaryToOption('empty');
         for(var i = 0; i < choiceList.length; i++){
             var curString = this.binaryToOption(choiceList[i]);
             theOptionString += curString;
         }
-        theOptionString += this.binaryToOption('empty');
         return theOptionString;
     },
  

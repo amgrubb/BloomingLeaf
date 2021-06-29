@@ -33,7 +33,7 @@ var AnalysisInspector = Backbone.View.extend({
 	
 	events: {
 		'click #btn-single-path': 'singlePath',	
-		'click #btn-all-next-state': 'getAllNextStates',,
+		'click #btn-all-next-state': 'getAllNextStates',
 		'change #num-rel-time': 'addRelTime', 
 		'change #conflict-level': 'changeConflictLevel',
 		'clearInspector .inspector-views' : 'removeView'
