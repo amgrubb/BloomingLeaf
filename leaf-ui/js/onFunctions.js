@@ -425,12 +425,12 @@ function switchToAnalysisMode() {
 	
 	removeHighlight();
     
-    var analysisInspector = new AnalysisInspector({model: new AnalysisParametersBBM()});
+    // var analysisInspector = new AnalysisInspector({model: new ConfigModel()});
     
-    $('#analysisID').append(analysisInspector.el);
+    // $('#analysisID').append(analysisInspector.el);
     $('#config').append(configInspector.el);
     configInspector.render();
-    analysisInspector.render();
+    // analysisInspector.render();
 	$('#stencil').css("display", "none");
 
     $('#analysis-btn').css("display", "none");
@@ -441,6 +441,7 @@ function switchToAnalysisMode() {
     $('#next-state').css("display",""); 
     $('#simulate-single-path').css("display",""); 
     //$('#on-off').css("display", "none");
+    $('#config').css("display",""); 
 
     // hide extra tools from modelling mode
     $('#model-toolbar').css("display", "none");
@@ -548,6 +549,7 @@ function switchToModellingMode() {
     $('#next-state').css("display","none"); 
     $('#simulate-single-path').css("display","none"); 
     $('#on-off').css("display", "");
+    $('#config').css("display", "none"); 
 
     // show extra tools for modelling mode
     $('#model-toolbar').css("display","");

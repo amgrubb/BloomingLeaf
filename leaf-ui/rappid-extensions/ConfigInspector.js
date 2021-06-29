@@ -197,8 +197,9 @@ var Config = Backbone.View.extend({
         // If there is a previous sidebar view, clear it
         clearInspector();
         // Create and add new analysis sidebar view
-        //$('.inspector').append(analysisInspector.el);
-        //analysisInspector.render();
+        var analysisInspector = new AnalysisInspector({model: this.model});
+        $('.inspector').append(analysisInspector.el);
+        analysisInspector.render();
     },
 
     /**

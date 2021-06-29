@@ -80,7 +80,7 @@ var analysisResult = new AnalysisResult();
 
 var configCollection = new ConfigCollection([]);
 var configInspector = new ConfigInspector({collection:configCollection});
-var analysisInspector = new AnalysisInspector({model: AnalysisParametersBBM});
+var analysisInspector = new AnalysisInspector({model: new ConfigModel()});
 
 var currentHalo;
 var currentAnalysis;
