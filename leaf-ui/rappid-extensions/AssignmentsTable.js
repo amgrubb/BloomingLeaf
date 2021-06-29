@@ -136,7 +136,7 @@ var AssignmentsTable = Backbone.View.extend({
      * And attatches representative view to the Assignments table
      */
     addRelIntentionRow: function(){
-        var newConstraint = new ConstraintBBM();
+        var newConstraint = new ConstraintBBM({});
         graph.get('constraints').push(newConstraint);
         var relIntentionRow = new RelativeIntentionView({model: newConstraint, graph: this.model, new: true});
         $('#rel-intention-assigments').append(relIntentionRow.el);
@@ -185,7 +185,7 @@ var AssignmentsTable = Backbone.View.extend({
      * Before closing modal box
      */
     closeView: function(){
-        this.model.get('constraints').each(constraint => {
+        this.model.get('constraints').slice().forEach(constraint => {
             if(!constraint.isComplete()){
             constraint.destroy()
         }});
