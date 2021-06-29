@@ -67,11 +67,12 @@ var IntermediateValuesTable = Backbone.View.extend({
          * Make row for each intention
          */
         for (let intentionCell of this.model.getElements().filter(element => element instanceof joint.shapes.basic.Intention)){
-            var userEvaluations = this.model.get('userEvaluationList').filter(userEvals => userEvals.get('intentionID') == this.model.id);
+            var userEvaluations = this.model.get('userEvaluationList').filter(userEvals => userEvals.get('intentionID') == intentionCell.id);
             var intentionUserEvaluationsView = new IntentionUserEvaluationsView({model: intentionCell.get('intention'), 
                                                                                  intentionID: intentionCell.id, 
                                                                                  allAbsoluteTimePoints: absoluteTimePointsList,
-                                                                                 userEvals: userEvaluations});
+                                                                                 userEvals: userEvaluations,
+                                                                                 maxAbsTime: this.model.get('maxAbsTime')});
             $('#interm-list').append(intentionUserEvaluationsView.el);
             intentionUserEvaluationsView.render();
         }
@@ -142,24 +143,100 @@ var IntentionUserEvaluationsView = Backbone.View.extend({
     },
 
     loadSelect: function(){
-        for (let absTimePt of this.allAbsoluteTimePoints){
-            var currentUserEvals = this.userEvals.filter(userEval => userEval.get('absTP') == absTimePt);
+        myNull = null;
+
+        for (let absTime of this.allAbsoluteTimePoints){
+            funcType = null;
+            refPair = null;
+            initValue = null;
+            
             var userEval = null;
-            if (currentUserEvals.length != 0){
+            if (this.userEvals.filter(userEval => userEval.get('absTP') == absTimePt).length != 0){
                 userEval = currentUserEvals[0];
             }
-            // TODO: Reduce params if possible 
+
+            for (let i=0; i < this.getFuncSegments().length; i++){
+                funcSeg1 = this.functionSegmentList[i];
+                startAT1 = funcSeg1.get('startAT');
+                
+                // If i is not the last index in the function segments list
+                if (i != this.getFuncSegments().length-1){
+                    // Get the next function segment and it's startAT
+                    funcSeg2 = this.functionSegmentList[i+1];
+                    startAT2 = funcSeg2.get('startAT')
+                    // If both startATs are valid and the absTime falls between them
+                    // Stop iterating through function segments
+                    if (startAT1 != myNull && startAT2 != myNull && 
+                        startAT1 <= absTime && startAT2 > absTime){
+                        funcType = funcSeg1.get('type');
+                        refPair = funcSeg1.get('refEvidencePair');
+                        break;
+                    }
+                // If this is both the last index and the first index
+                // Set an initial value (used for I and D functions) 
+                // And stop iterating through function segments
+                } else if (i == 0){
+                    funcType = funcSeg1.get('type');
+                    refPair = funcSeg1.get('refEvidencePair');
+                    initValue = this.model.get('initialValue');
+                    break;
+                }
+            } 
+
+            // Get funcType from above, and use it to set optionsList
+            switch (funcType) {
+                case "I":
+                    var optionsList = this.increasingOrDecreasing(initValue, refPair, true);
+                case "D":
+                    var optionsList = this.increasingOrDecreasing(initValue,refPair, false);
+                case "C":
+                    var optionsList = [refPair];
+                default:
+                    var optionsList = ['0000', '0011', '0010', '1100', '0100']
+
+            }
+
+            // Create a select menu for each time point on each intention
             var selectUserEvaluationView = new SelectUserEvaluationView
                                                 ({intentionID: this.intentionID,
                                                   absTimePt: absTimePt, 
-                                                  functionSegmentList: this.model.getFuncSegments(),
-                                                  funcType: this.model.get('functionType'),
-                                                  initValue: this.model.get('initialSatValue'),
+                                                  optionsList: optionsList,
                                                   userEval: userEval});
-            $('.intention-row').append(selectUserEvaluationView.el);
-            selectUserEvaluationView.render();
+                $('.intention-row').append(selectUserEvaluationView.el);
+                selectUserEvaluationView.render();
         }
-    }
+    },
+
+    /**
+     * This function takes in an initial value
+     * And returns a list of options with values 
+     * That are either larger or smaller than the initial value
+     * Depending on the increasing boolean parameter
+     * 
+     * @param {String} initValue 
+     * @param {String} finalValue 
+     * @param {Boolean} increasing If true - increasing, if false, decreasing
+     * @returns Array of binary string options that fit the parameters
+     */
+    increasingOrDecreasing: function(initValue, finalValue, increasing){
+        if (increasing){
+            // IMPORTANT: This list must stay in order from least satisfied to most satisfied for this function to work
+            var possibleValueList = ['0011','0010','0000','0100','1100'];
+        } else {
+            // IMPORTANT: This list must stay in order from most satisfied to least satisfied for this function to work
+            var possibleValueList = ['1100','0100','0000','0010','0011'];
+        }
+
+        if(finalValue == null) {
+            return possibleValueList.slice(possibleValueList.indexOf(initValue));
+        } else if (initValue == null){
+            return possibleValueList.slice(0,possibleValueList.indexOf(finalValue)+1);
+        } else{
+            return possibleValueList.slice(
+            possibleValueList.indexOf(initValue),
+            possibleValueList.indexOf(finalValue)+1);
+        }
+    },
 });
 
 var SelectUserEvaluationView = Backbone.View.extend({
@@ -171,265 +248,74 @@ var SelectUserEvaluationView = Backbone.View.extend({
         'change .evaluation-value':'updateEvaluationValue'
     },
 
-    // TODO: Streamline initialize - too many params!
     initialize: function(options){
-        this.funcType = options.funcType;
         this.absTimePt = options.absTimePt;
         this.intentionID = options.intentionID;
         this.userEvaluation = options.userEval;
-        this.initValue = options.initValue;
-        this.functionSegmentList = options.functionSegmentList;
-        this.allOptions = ['0000', '0011', '0010', '1100', '0100', 'empty', 'no value']
-        
+        this.optionsList = options.optionsList;    
     },
 
     render: function(){
         this.$el.html(_.template(this.template)());
-        this.$('select').append(this.getOptionsByType());
+        this.$('select').append(this.convertToOptions(this.optionsList));
         if (this.userEvaluation != null){
             this.$('select').val(this.userEvaluation.get('assignedEvidencePair'));
+        } else {
+            this.$('select').val('empty');
         }
-        // TODO: else select what? (empty? no value? - Check with Alicia)
     },
 
     updateEvaluationValue: function(){
         var evaluationValue = this.$('.evaluation-value').val();
-        // Alternatively lets update it instead of destroying depending on what value it is
-        // TODO: Check w/ Alicia for intended behavior and handle null/no value
         if (this.userEvaluation != null){
-            this.userEvaluation.destroy();
-        }
-        this.userEvaluation = new UserEvaluationBBM({intentionID: this.intentionID, 
+            if (evaluationValue == 'empty'){
+                this.userEvaluation.destroy();
+            } else {
+                this.userEvaluation.set('assignedEvidencePair', evaluationValue);
+            }
+        } else {
+            this.userEvaluation = new UserEvaluationBBM({intentionID: this.intentionID, 
                                                      absTP: this.absTimePt, 
                                                      assignedEvidencePair: evaluationValue});
+        }
         // TODO: add new value to graph collection
     },
 
-    getOptionsByType: function(){
-        var lastFuncSeg = this.intention.getFuncSegments()[-1];
-        var finalValue = lastFuncSeg.get('refEvidencePair');
-        var lastTP = lastFuncSeg.get('startAT');
-        var type = this.intention.get('evolvingFunction').get('type');
-
-        switch (type) {
-            case 'I':
-                return this.increasing(this.initValue, finalValue);
-            case 'D':
-                return this.decreasing(this.initValue, finalValue);
-            case 'C':
-                return this.constant(this.initValue);
-            case 'R':
-                return this.stochastic();
-            case 'MP':
-                /**
-                 * If there is a time point assigned for the last function segment
-                 */
-                if (lastTP != null){
-                    /** 
-                     * If the absoluteTP is less than the last constraints time point
-                     * Use the evaluation value from the first function segment to determine options
-                     */
-                    if (this.absTimePt < lastTP) {
-                        return this.increasing(initValue, this.functionSegmentList[0].get('refEvidencePair'));
-                    /**
-                     * Else use the evaluation value from the last function segment to determine options
-                     */
-                    } else {
-                        return this.convertToOptions([finalValue]);
-                    }
-                /**
-                 * If last TP is null, give all options >= initial
-                 */
-                } else {
-                    return this.convertToOptions(this.increasing(initValue, null));
-                }
-            case 'MN':
-                /**
-                 * If there is a time point assigned for the last function segment
-                 */
-                if (lastTP != null){
-                    /** 
-                     * If the absoluteTP is less than the last constraints time point
-                     * Use the evaluation value from the first function segment to determine options
-                     */
-                    if (this.absTimePt < lastTP) {
-                        return this.decreasing(initValue, this.functionSegmentList[0].get('refEvidencePair'));
-                    /**
-                     * Else use the evaluation value from the last function segment to determine options
-                     */
-                    } else {
-                        return this.convertToOptions([finalValue]);
-                    }
-                /**
-                 * If last TP is null, give all options <= initial
-                 */
-                } else {
-                    return this.convertToOptions(this.decreasing(initValue, null))
-                }
-            case 'CR':
-                /**
-                 * If there is a time point assigned for the last function segment
-                 * And the absoluteTP is less than the last constraints time point
-                 * Use the evaluation value from the last function segment to determine options
-                 */
-                if (lastTP != null && this.absVal < lastTP){
-                    // TODO: I feel like this should be the first value but check with Alicia before changing
-                    return this.convertToOptions([finalValue]);
-                } 
-                break;
-            case 'RC':
-                /** 
-                 * If valid TP less than or equal to absolute value
-                 * Set options to constant value
-                 */
-                if (lastTP != null && this.absVal >= lastTP){
-                    return this.convertToOptions([finalValue]);
-                };
-                break;
-            case 'SD':
-                /** 
-                 * If the absoluteTP is less than the last constraints time point
-                 * Allow only Satisfied
-                 */
-                if (this.absVal < lastTP) {
-                    return this.convertToOptions(['0011']);
-                /**
-                 * Else allow only Denied
-                 */
-                } else {
-                    return this.convertToOptions(['1100']);
-                }
-            case 'DS':
-                /** 
-                 * If the absoluteTP is less than the last constraints time point
-                 * Allow only Denied
-                 */
-                if (this.absVal < lastTP) {
-                    return this.convertToOptions(["1100"]);
-                /**
-                 * Else allow only Satisfied
-                 */
-                } else {
-                    return this.convertToOptions(['0011']);
-                }
-            case 'UD':
-                /**
-                 * If two consecutive function segments have valid startTPs
-                 * And the absVal TP falls between them
-                 */
-                for (let i=1; i < this.functionSegmentList.length; i++){
-                    funcSeg1 = this.functionSegmentList[i-1]
-                    funcSeg2 = this.functionSegmentList[i];
-                    // TODO: check for null? 
-                    if (funcSeg1.get('startAT') <= this.absVal && funcSeg2.get('startAT') > this.absVal){
-                        refPair = funcSeg1.get('refEvidencePair')
-                        switch (funcSeg1.get('type')) {
-                            case "I":
-                                return this.increasing(null, refPair);
-                            case "D":
-                                return this.decreasing(null,refPair);
-                            case "C":
-                                return this.constant(refPair);
-                            case "R":
-                                return this.stochastic();
-                        }
-                    }
-                }
-                break;  
+    /**
+     *
+     * @param choiceList: A list that contains binary strings of valid values
+     * @returns {List that contains strings that are the string encoding of the binary strings in the choiceList}
+     */
+    convertToOptions: function(choiceList){
+        var theOptionString = ``;
+        for(var i = 0; i < choiceList.length; i++){
+            var curString = this.binaryToOption(choiceList[i]);
+            theOptionString += curString;
         }
-        // Default case gives all options
-        return this.convertToOptions(this.allOptions);
+        theOptionString += this.binaryToOption('empty');
+        return theOptionString;
     },
- 
-    /**
-     * This function takes in an initial value and return a list of strings for options that contains values that are larger than the initial value
-     */
-    increasing: function(initValue, finalValue){
-        // IMPORTANT: This list must stay in order from least satisfied to most satisfied for this function to work
-        var possibleValueList = ['0011','0010','0000','0100','1100'];
-        if(finalValue == null) {
-            return this.convertToOptions(possibleValueList.slice(possibleValueList.indexOf(initValue)));
-        } else if (initValue == null){
-            return this.convertToOptions(0, possibleValueList.slice(possibleValueList.indexOf(finalValue)+1));
-        } else{
-            return this.convertToOptions(possibleValueList.slice(
-            possibleValueList.indexOf(initValue),
-            possibleValueList.indexOf(finalValue)+1));
-         }
-    },
- 
-    /**
-     * This function takes in an initial value and return a list of strings for options that contains values that are smaller than the initial value
-     */
-    decreasing: function(initValue,finalValue){
-        // IMPORTANT: This list must stay in order from most satisfied to least satisfied for this function to work
-        var possibleValueList = ['1100','0100','0000','0010','0011'];
-        if(finalValue == null) {
-            return this.convertToOptions(possibleValueList.slice(possibleValueList.indexOf(initValue)));
-        } else if (initValue == null){
-            return this.convertToOptions(0, possibleValueList.slice(possibleValueList.indexOf(finalValue)+1));
-        } else {
-            return this.convertToOptions(possibleValueList.slice(
-                possibleValueList.indexOf(initValue),
-                possibleValueList.indexOf(finalValue)+1));
-        }
-    },
- 
-    /**
-     *This function takes in an initial value and return a list of strings for options that contains values that are equal to the initial value
-     */
-    //TODO: Do we need constant? Can we just select the constant value on all and disable?
-    constant: function(initValue){
-        return this.convertToOptions([initValue]);
-    },
- 
  
     /**
      *
-     * @returns {a list of strings for options that contains values that contains all possible values}
+     * @param binaryString: This is the binary string stands for the value
+     * @returns a string decode of that binary value
      */
-    // TODO: Is this the same as all options minus empty? Why no empty?
-    stochastic: function(){
-        var possibleValueList = ['0000','0011','0010','1100','0100', 'no value'];
-        return this.convertToOptions(possibleValueList);
-    },
- 
-     /**
-      *
-      * @param binaryString: This is the binary string stands for the value
-      * @returns a string decode of that binary value
-      */
     binaryToOption: function(binaryString){
-         switch(binaryString){
-             case "0000":
-                 return `<option value="0000">None (⊥, ⊥) </option>`;
-             case "0011":
-                 return `<option value="0011">Satisfied (F, ⊥) </option>`;
-             case "0010":
-                 return `<option value="0010">Partially Satisfied (P, ⊥) </option>`;
-             case "0100":
-                 return `<option value="0100">Partially Denied (⊥, P)</option>`;
-             case "1100":
-                 return `<option value="1100">Denied (⊥, F) </option>`;
-             case 'empty':
-                 return `<option value="empty"> --- </option>`;
-             case 'no value':
-                 return `<option value="(no value)">(no value)</option>`;
-         }
-         return null;
-    },
- 
-     /**
-      *
-      * @param choiceList: A list that contains binary strings of valid values
-      * @returns {List that contains strings that are the string encoding of the binary strings in the choiceList}
-      */
-    convertToOptions: function(choiceList){
-         var theOptionString = ``;
-         for(var i = 0; i < choiceList.length; i++){
-             var curString = this.binaryToOption(choiceList[i]);
-             theOptionString += curString;
-         }
-         return theOptionString;
-    },
+        switch(binaryString){
+            case "0000":
+                return `<option value="0000">None (⊥, ⊥) </option>`;
+            case "0011":
+                return `<option value="0011">Satisfied (F, ⊥) </option>`;
+            case "0010":
+                return `<option value="0010">Partially Satisfied (P, ⊥) </option>`;
+            case "0100":
+                return `<option value="0100">Partially Denied (⊥, P)</option>`;
+            case "1100":
+                return `<option value="1100">Denied (⊥, F) </option>`;
+            case 'empty':
+                return `<option value="empty"> --- </option>`;
+        }
+        return null;
+    }
 });
