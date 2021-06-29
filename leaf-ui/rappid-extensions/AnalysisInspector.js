@@ -12,33 +12,20 @@ var AnalysisInspector = Backbone.View.extend({
 	
 	template: ['<script type="text/template" id="item-template">',
 		'<div class="inspector-views">',
-		'<h2 style="text-align:center; width:100%;margin-top:6px;margin-bottom:0px">Analysis</h2>',
-		'<hr>',
-		'<h3> Simulation Start: 0 </h3>',
-		'<label class="sub-label"> Conflict Prevention Level </label>',
+		'<label class="sub-label"> Conflict Prevention </label>',
 		'<select id="conflict-level" class="sub-label" style="height:30px;">', 
 			'<option value=S <% if (conflictLevel === "S") { %> selected <%} %>> Strong </option>',
 			'<option value=M <% if (conflictLevel === "M") { %> selected <%} %>> Medium </option>',
 			'<option value=W <% if (conflictLevel === "W") { %> selected <%} %>> Weak </option>',
 			'<option value=N <% if (conflictLevel === "N") { %> selected <%} %>> None </option>',
 		'</select>',
-		'<label class="sub-label"> Num Relative Time Points </label>',
+		'<label class="sub-label"> Num Relative Time Pts. </label>',
 		'<input id="num-rel-time" class="analysis-input" type="number" min="0" max="20" step="1" value="<%= numRelTime %>"/> </input>',
-		'<hr>',
-		'<button id="btn-single-path" class="analysis-btns inspector-btn sub-label green-btn">Simulate Single Path</button>',
-		'<button id="btn-all-next-state" class="analysis-btns inspector-btn sub-label ice-btn">Explore Possible Next States</button>',
-		'<hr>',
 		'</div>',
 		'</script>'].join(''),		
-	
 	events: {
-		'click .closeIntermT': 'dismissIntermTable',
-		'click #btn-single-path': 'singlePath',	
-		'click #btn-all-next-state': 'getAllNextStates',
-		'click #btn-save-intermT': 'saveIntermTable',
 		'change #num-rel-time': 'addRelTime', 
 		'change #conflict-level': 'changeConflictLevel',
-		'clearInspector .inspector-views' : 'removeView'
 	},
 
 	/** Sets template and injects model parameters */
