@@ -763,13 +763,13 @@ graph.on("add", function(cell) {
 
 	if (cell instanceof joint.dia.Link){
         if (graph.getCell(cell.get("source").id) instanceof joint.shapes.basic.Actor){
-            cell.prop("type", "Actor");
             cell.label(0,{attrs:{text:{text:"is-a"}}});
-            cell.set('link', new LinkBBM({linkType: 'is-a'}));
+            cell.set('link', new LinkBBM({displayType: "actor", linkType: 'is-a'}));
 		} else{
-            cell.prop("type", "element");
             cell.set('link', new LinkBBM({}));
         }
+        cell.set('type', 'Link')
+        console.log(cell)
     } else if (cell instanceof joint.shapes.basic.Intention){
 		cell.set('intention', new IntentionBBM({}));
 		cell.attr('.funcvalue/text', ' ');
@@ -785,8 +785,7 @@ graph.on("add", function(cell) {
 
 		// Send actors to background so elements are placed on top
 		cell.toBack();
-	}
-
+    }
     // trigger click on cell to highlight, activate inspector, etc. 
     paper.trigger("cell:pointerup", cell.findView(paper));
 });
@@ -908,7 +907,7 @@ paper.on("link:options", function(cell, evt){
 
 	clearInspector();
     
-    if (cell.model.get('type') == 'error'){
+    if (cell.model.get('link').get('displayType') == 'error'){
         alert('Sorry, this link is not valid. Links must be between two elements of the same type. Aka Actor->Actor or Intention->Intention');
         return;
     }
