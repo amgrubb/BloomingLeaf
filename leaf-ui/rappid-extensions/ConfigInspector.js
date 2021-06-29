@@ -107,7 +107,7 @@ var Config = Backbone.View.extend({
     },
 
     template: ['<script type="text/template" id="item-template">',
-    '<div class="analysis-configuration" id="<%= name %>">',
+    '<div class="analysis-configuration" id="<%= name %>" style="width: 100%;">',
         '<button class="config-elements" <% if (selected) { %> style="background-color:#A9A9A9;" <%} %> >',
         '<%= name %> </button>',
         '<input class="config-input" value="<%- name %>" style="display:none"></input>',
@@ -197,7 +197,7 @@ var Config = Backbone.View.extend({
         clearInspector();
         // Create and add new analysis sidebar view
         var analysisInspector = new AnalysisInspector({model: this.model});
-        $('.inspector').append(analysisInspector.el);
+        $('#analysisID').append(analysisInspector.el);
         analysisInspector.render();
     },
 
@@ -277,11 +277,11 @@ var ConfigInspector = Backbone.View.extend({
     collection: ConfigCollection,
 
     template: [
-        '<div id="analysis-sidebar" class="left-panel"><h3 style="text-align:left; color:#181b1fe3; margin-bottom:5px; margin-left: 10px;">Analysis',
+        '<div id="config-sidebar" class="container-sidebar"><h3 style="text-align:left; color:#181b1fe3; margin-bottom:5px; margin-left: 10px;">Analysis',
         '<div id="addConfig" style="display:inline">',
             '<i class="fa fa-plus" id="addIntent" style="font-size:30px; float:right;  margin-bottom:5px; margin-right:20px;"></i>',
         '</div></h3>',
-        '<div id="configurations" class="left-panel" style="margin-top:20px; overflow-y:auto; height:69%; box-shadow: none;"></div>',
+        '<div id="configurations" style="margin-top:20px; overflow-y:auto; height:69%; box-shadow: none;"></div>',
     '</div>',
 
     ].join(''),

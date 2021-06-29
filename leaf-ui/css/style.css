@@ -140,16 +140,7 @@ body.waiting *
   color: #bcbcbc;
   text-shadow: 0 -1px 0 #000;
   background-color: rgba(90, 90, 90, 1);
-}
-
-#analysis-sidebar a{
-  padding: 16px;
-  display: block;
-}
-
-#analysis-sidebar a:hover {
-  background-color: #E8E8E8;
-}
+} 
 
 /* Right Panel */
 .inspector {
@@ -189,14 +180,40 @@ body.waiting *
   display: block;
 }
 
+#container-sidebar { 
+  left: auto; 
+  width: 200px; 
+  margin-top: 60px; 
+}
+
+#config-sidebar { 
+  margin-top:100px; 
+  width: 200px; 
+  position: absolute; 
+}
+
+#analysis-sidebar { 
+  margin-top: 0px; 
+}
+
+#configID { 
+  /* empty for now */ 
+}
+
+#analysisID { 
+  /* empty for now */ 
+}
 
 .sub-label{
-  font-size: 1em !important;
+  font-size: 0.6em !important;
+  text-align: center; 
 }
+
 .sub-input{
-  width: 50px !important;
-  font-size: 0.9em;
+  width: 20px !important;
+  font-size: 0.5em;
 }
+
 .sub-btn {
   position: relative;
   vertical-align: top;
@@ -212,8 +229,8 @@ body.waiting *
 }
 
 .analysis-input {
-  font-size: 1em;
-  width: 200px;
+  font-size: 0.6em;
+  width: 165px;
   margin-bottom: 0px;
 }
 

@@ -421,7 +421,7 @@ function switchToAnalysisMode() {
 	
 	removeHighlight();
     
-    $('#config').append(configInspector.el);
+    $('#configID').append(configInspector.el);
     configInspector.render();
 	$('#stencil').css("display", "none");
     $('#btn-view-intermediate').css("display","none");
