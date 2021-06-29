@@ -90,43 +90,6 @@ var ConfigModel = Backbone.Model.extend({
             this.get('results').filter(result => result.get('selected')).forEach(result=> result.set('selected', false));
         }
     },
-
-    /**
-     * Returns the UserEvaluation object
-     * with node id nodeID with absolute time point
-     * absTime. If the desired UserEvaluation does
-     * not exist, returns null.
-     *
-     * @param {String} nodeID
-     *  ID of the intention
-     * @param {String} absTime
-     *  The desired absolute time
-     * @returns {UserEvaluation | null}
-     */
-    getUserEvaluationByID: function(nodeID, absTime) {
-        for(let userAssignment of this.get('userAssignmentsList')){
-            if(userAssignment.intentionID === nodeID 
-                && userAssignment.absTime === absTime){
-                    return userAssignment;
-            }
-        }
-    },
-
-    /**
-     * Deletes all UserEvaluations in this.userAssignmentsList
-     * with the exception of the initial UserEvaluations
-     */
-    clearUserEvaluations: function() {
-        var i = 0;
-        while (i < this.get('userAssignmentsList').length) {
-            if (this.get('userAssignmentsList')[i].absTime !== '0') {
-                this.get('userAssignmentsList').splice(i, 1);
-            } else {
-                i++;
-            }
-        }
-    }
-
 });
 
 /**
