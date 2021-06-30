@@ -11,13 +11,10 @@ var AnalysisInspector = Backbone.View.extend({
 	model: ConfigModel,
 	
 	template: ['<script type="text/template" id="item-template">',
-		// '<div class="inspector-views">',
-		// '<label class="sub-label"> Conflict Prevention </label>',
-		// '<select id="conflict-level" class="sub-label" style="height:30px;">', 
+		'<div class="inspector-views">',
 		'<div id="container-sidebar">', 
 		'<div id="analysis-sidebar">',
 		'<h5 style="text-align:center; color:#181b1fe3; margin-left: 10px;">Analysis Parameters</h5>',
-		'<div class="inspector-views"; style ="margin-top:-15px";>', 
 		'<p style="text-align:center";><label class = "sub-label"> Conflict Prevention Level</label>', 
 		'<select id="conflict-level" class="sub-label" style="height:15px; width: 170px";>', 
 			'<option value=S <% if (conflictLevel === "S") { %> selected <%} %>> Strong </option>',
@@ -28,10 +25,13 @@ var AnalysisInspector = Backbone.View.extend({
 		'<label class="sub-label"> Num Relative Time Points</label>',
 		'<input id="num-rel-time" class="analysis-input" type="number" min="0" max="20" step="1" value="<%= numRelTime %>"/> </input>',
 		'</div>',
+		'</div>',
+		'</div>',
 		'</script>'].join(''),		
 	events: {
 		'change #num-rel-time': 'addRelTime', 
 		'change #conflict-level': 'changeConflictLevel',
+		'clearInspector .inspector-views': 'removeView',
 	},
 
 	/** Sets template and injects model parameters */
