@@ -406,6 +406,19 @@ select > .select-placeholder {
   /*background: #27ae60;*/
   background: #1E85F7;
 }
+
+.dark-green-btn { 
+  background-color: rgb(19, 156, 19) !important;
+  -webkit-box-shadow: inset 0 -2px rgb(19, 156, 19);
+  box-shadow: inset 0 -2px rgb(14, 102, 14);
+}
+
+.light-green-btn { 
+  background-color: rgb(26, 201, 26) !important;
+  -webkit-box-shadow: inset 0 -2px rgb(26, 201, 26);
+  box-shadow: inset 0 -2px rgb(24, 172, 24);
+}
+
 .ice-btn{
   background: #00FFFF;
 }

@@ -115,6 +115,14 @@ $('#btn-view-intermediate').on('click', function() {
 	intermediateValuesTable.render();
 });
 
+$('#simulate-single-path-btn').on('click', function() { 
+    console.log("Waiting to connect to backbone!"); 
+}); 
+
+$('#next-state-btn').on('click', function() { 
+    console.log("Waiting to connect to backbone!"); 
+}); 
+
 /**
  * Saves absolute intention and relationship assignments to the graph object
  * TODO: Check if the times users put in are valid
@@ -432,6 +440,9 @@ function switchToAnalysisMode() {
     $('#dropdown-model').css("display", "");
     //$('#on-off').css("display", "none");
 
+    $('#simulate-single-path-btn').css("display", "");
+    $('#next-state-btn').css("display", "");
+
     // hide extra tools from modelling mode
     $('#model-toolbar').css("display", "none");
     $('.model-clears').css("display", "none");
@@ -535,6 +546,8 @@ function switchToModellingMode() {
 	$('#symbolic-btn').css("display","");
 	$('#cycledetect-btn').css("display","");
     $('#dropdown-model').css("display","none");
+    $('#simulate-single-path-btn').css("display", "none");
+    $('#next-state-btn').css("display", "none");
     $('#on-off').css("display", "");
 
     // show extra tools for modelling mode
