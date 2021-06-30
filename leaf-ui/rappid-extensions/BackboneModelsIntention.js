@@ -174,9 +174,9 @@ var IntentionBBM = Backbone.Model.extend({
      */
     changeInitialSatValue: function(initValue) {
 
-        // var intentionEval = graph.getUserEvaluationBBM(this.cid, '0');
-        // intentionEval.set('assignedEvidencePair', initValue);
-        console.log(this.intention);
+        var intentionEval = graph.getUserEvaluationBBM(this.cid, '0');
+        intentionEval.set('assignedEvidencePair', initValue);
+        console.log(this);
         this.set('initialValue', initValue);
         console.log(this.get("initialValue"));
 
@@ -221,7 +221,7 @@ var IntentionBBM = Backbone.Model.extend({
         this.set('evolvingFunction', new EvolvingFunctionBBM({type: funcType, functionSegList: []}));
  
         // var initValue = graph.getUserEvaluationBBM(this.cid, '0').get('assignedEvidencePair');
-        var initValue = this.get('evolvingFunction').get('initialValue');
+        var initValue = this.get('initialValue');
 
 
         // Creates the correct FunctionSegmentBBM(s) for the selected function type
