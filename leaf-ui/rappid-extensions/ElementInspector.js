@@ -139,7 +139,7 @@ var ElementInspector = Backbone.View.extend({
                     '<label style="float:left; font-size:0.8em;" id="repeat-begin3" class="repeat-select3">Absolute Length:</label>',
                     '<input style="float:right;"class="repeat-select3" id="repeat-end3" type="number" value="0">',
                     '<p id="noteRepeat" style="text-align:left; float:left; color:red; font-size:0.7em;">Note: Leave Absolute Length as 0 for unknown length. If Absolute Length is less than 0 or Repeat Count is less than 2, they will be set to 0 or 2 respectively.</p>',
-                // change to blue or change color to green
+                    // change to blue or change color to green
                     '<button style="margin-top:10px;" id="segment-add" class="inspector-btn small-btn green-btn">Add</button>',
                     '<button id="constraint-repeat" class="inspector-btn small-btn blue-btn">Set Repeats</button>',
                     '<button id="constraint-restart" class="inspector-btn small-btn red-btn">Clear</button>',
@@ -520,14 +520,12 @@ var ElementInspector = Backbone.View.extend({
         } else if (functionType == 'D' || functionType == 'MN') {
             this.$('#markedValue').html(this.satValueOptions.negativeOnly(initValue));
         }
-
         if (markedValue) {
-            var value = satisfactionValuesDict[markedValue].name;
-            this.$('#markedValue').val(value);
+            if (satisfactionValuesDict[markedValue != null]){
+                this.$('#markedValue').val(satisfactionValuesDict[markedValue].name());
+            }
         }
-
         this.$('#markedValue').change();
-
         return;
     },
 
