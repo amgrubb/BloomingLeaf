@@ -152,7 +152,7 @@ var ElementInspector = Backbone.View.extend({
 
     events: {
         'change #init-sat-value':'initSatValueChanged',
-        
+
         'change .function-type':'funcTypeChanged',
         'change .function-sat-value':'funcSatValChanged',
 
@@ -193,7 +193,7 @@ var ElementInspector = Backbone.View.extend({
         
         // Checks which function types are available based on initial satisfaction values
         this.checkInitialSatValue();
-        
+
         if (!this.model.attr(".satvalue/value") && this.model.attr(".funcvalue/text") != "NB"){
             this.model.attr(".satvalue/value", 'none');
             this.model.attr(".funcvalue/text", ' ');
@@ -236,18 +236,21 @@ var ElementInspector = Backbone.View.extend({
      * If not, set the function options so that all options are availible
     */
     checkInitialSatValue: function() {
-        // Hide all of the HTML except for the init-sat-value and function-type
-        console.log(this.intention.get('initialValue'));
-        this.$('#markedValue').hide();
-        this.$('#user-constraints').hide();
-        this.$('#segment-add').hide();
-        this.$('#constraint-repeat').hide();
-        this.$('#constraint-restart').hide();
         // Set correct dropdown options for function type based on initial satisfaction value
         $('option').show(); // Clear the previous selection
         if (this.intention.get('initialValue') == '(no value)'){
             // Hide all of the function options except for Stochastic is initial satisfaction value is '(no value)'
             $('option.B').hide(); 
+            this.$('#markedValue').hide();
+            this.$('#user-constraints').hide();
+            this.$('#segment-add').hide();
+            this.$('#constraint-repeat').hide();
+            this.$('#constraint-restart').hide();
+        } else {
+            this.$('#user-constraints').show();
+            this.$('#segment-add').show();
+            this.$('#constraint-repeat').show();
+            this.$('#constraint-restart').show();
         }
     },
 
