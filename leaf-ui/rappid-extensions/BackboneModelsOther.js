@@ -56,7 +56,8 @@
  * Backbone Model of UserEvaluations 
  */ 
 var UserEvaluationBBM = Backbone.Model.extend({  
-    initialize: function(options){      
+    initialize: function(options){    
+        // TODO: we may be phasing out this variable since we moved UserEvaluationList to IntentionBBM  
         this.intentionID = options.intentionID; 
         // TODO: Is absTP a letter or a number? It may need to be renamed.
         this.absTP = options.absTP;             

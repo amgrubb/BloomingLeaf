@@ -481,7 +481,7 @@ var ElementInspector = Backbone.View.extend({
         if (event == null) {
             return;
         }
-
+ 
         // Check what triggered the validty check
         // Either init value changed, func type changed or simply an element gets clicked
         var initValueChanged = event.target.id == 'init-sat-value';

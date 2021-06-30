@@ -149,8 +149,23 @@ var IntentionBBM = Backbone.Model.extend({
             nodeActorID: null,                     // Assigned on release operation.
             nodeType: null,
             evolvingFunction: null, 
-            initialValue: '(no value)'
+            initialValue: '(no value)',
+            userEvaluationList: new UserEvaluationCollection([])
     }, 
+
+    /**
+     * Allows you to find the UserEvaluationBBM with the intentionID and absTP 
+     * TODO - we may need to edit this later if we remove intentionID
+     * 
+     * @param {String} cid 
+     * The cid of the IntentionBBM the userEvaluationList is in
+     * @param {Integer} absTP 
+     * 
+     * @returns an UserEvaluationBBM
+     */
+    getUserEvaluationBBM: function(cid, absTP) {
+        return this.get('userEvaluationList').findWhere({intentionID: cid, absTP: absTP});
+    },
 
     /**
     * @returns Array of FunctionSegmentBBMs, or null if it is not an evolvingFunction
@@ -174,8 +189,8 @@ var IntentionBBM = Backbone.Model.extend({
      */
     changeInitialSatValue: function(initValue) {
 
-        var intentionEval = graph.getUserEvaluationBBM(this.cid, '0');
-        intentionEval.set('assignedEvidencePair', initValue);
+        // var intentionEval = this.getUserEvaluationBBM(this.cid, '0');
+        // intentionEval.set('assignedEvidencePair', initValue);
         this.set('initialValue', initValue);
 
         var funcSegList = this.getFuncSegments();
@@ -218,7 +233,6 @@ var IntentionBBM = Backbone.Model.extend({
 
         this.set('evolvingFunction', new EvolvingFunctionBBM({type: funcType, functionSegList: []}));
  
-        // var initValue = graph.getUserEvaluationBBM(this.cid, '0').get('assignedEvidencePair');
         var initValue = this.get('initialValue');
 
 
@@ -258,12 +272,14 @@ var IntentionBBM = Backbone.Model.extend({
                 // Constant and Constant
                 var seg1 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: '0011', startTP: '0', startAT: 0}); 
                 var seg2 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: '1100', startTP: 'A', startAT: myNull}); 
-                graph.getUserEvaluationBBM(this.cid, '0').set('assignedEvidencePair', '0011');
+                this.getUserEvaluationBBM(this.cid, '0').set('assignedEvidencePair', '0011');
+                this.set('initialValue', '0011');
             } else if (funcType == 'DS') {
                 // Constant and Constant
                 var seg1 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: '1100', startTP: '0', startAT: 0}); 
                 var seg2 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: '0011', startTP: 'A', startAT: myNull}); 
-                graph.getUserEvaluationBBM(this.cid, '0').set('assignedEvidencePair', '1100');
+                this.getUserEvaluationBBM(this.cid, '0').set('assignedEvidencePair', '1100');
+                this.set('initialValue', '1100');
             }
             this.getFuncSegments().push(seg1, seg2);
         }

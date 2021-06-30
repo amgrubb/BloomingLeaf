@@ -728,21 +728,6 @@ $('#colorblind-mode-isOn').on('click', function(){ //turns off colorblind mode
 });
 
 /**
- * Creates an instance of a Intention object and saves it in the
- * global model variable
- *
- * @param {joint.dia.Cell} cell
- */
-function createIntention(cell) {
-    var newIntentionBBM = new IntentionBBM({})
-    cell.set('intention', newIntentionBBM);
-    cell.attr('.funcvalue/text', ' ');
-
-    // create intention evaluation object and add it to userEvaluationList    
-    graph.get('userEvaluationList').push(new UserEvaluationBBM({intentionID: newIntentionBBM.cid, absTP: '0'}));
-}
-
-/**
  * Set up on events for Rappid/JointJS objets
  */
 var element_counter = 0;
@@ -762,7 +747,10 @@ graph.on("add", function(cell) {
             cell.set('link', new LinkBBM({}));
         }
     } else if (cell instanceof joint.shapes.basic.Intention){
-        createIntention(cell);
+        // Creates an instance of a IntentionBBM from the cell
+        var newIntentionBBM = new IntentionBBM({})
+        cell.set('intention', newIntentionBBM);
+        cell.attr('.funcvalue/text', ' ');
 
 	} else if (cell instanceof joint.shapes.basic.Actor) {
         // Find how many instances of the actor is created out of all the cells
