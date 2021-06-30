@@ -3,6 +3,8 @@ myNull = null;
  * This file contains Backbone Models for:
  *  FunctionSegment
  *  EvolvingFunction
+ *  UserEvaluation
+ *  UserEvaluationCollection
  *  Intention
  */
 
@@ -28,6 +30,23 @@ var FunctionSegmentBBM = Backbone.Model.extend({
         // Removed stopTP variable - stopTP is one letter after startTP or A is startTP is 0
         this.startAT = options.startAT; // Assigned/Absolute Time - Integer time value. If not set defaults to undefined
     }
+});
+
+/** 
+ * Backbone Model of UserEvaluations 
+ */ 
+ var UserEvaluationBBM = Backbone.Model.extend({  
+    initialize: function(options){    
+        // TODO: we may be phasing out this variable since we moved UserEvaluationList to IntentionBBM  
+        this.intentionID = options.intentionID; 
+        // TODO: Is absTP a letter or a number? It may need to be renamed.
+        this.absTP = options.absTP; // Integer Value   
+        this.assignedEvidencePair = options.assignedEvidencePair; //Evidence Pair
+    }
+});
+
+var UserEvaluationCollection = Backbone.Collection.extend({
+    model: UserEvaluationBBM
 });
 
 /** 
