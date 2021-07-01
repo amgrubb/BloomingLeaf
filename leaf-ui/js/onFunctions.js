@@ -773,6 +773,7 @@ graph.on("add", function(cell) {
     } else if (cell instanceof joint.shapes.basic.Intention){
 		cell.set('intention', new IntentionBBM({}));
 		cell.attr('.funcvalue/text', ' ');
+        console.log(cell)
 
 	} else if (cell instanceof joint.shapes.basic.Actor) {
         // Find how many instances of the actor is created out of all the cells

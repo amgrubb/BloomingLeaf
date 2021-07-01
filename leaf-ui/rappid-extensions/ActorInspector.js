@@ -34,8 +34,10 @@ var ActorInspector = Backbone.View.extend({
          */
         render: function() {
             // If the clicked node is an actor, render the actor inspector
-            this.$el.html(_.template($(this.template).html())(this.actor.toJSON()));
+            console.log(this.model)
 
+            this.$el.html(_.template($(this.template).html())(this.actor.toJSON()));
+            
         },
 
         /**

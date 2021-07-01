@@ -23,6 +23,7 @@ reader.onload = function() {
 	}
 
 	var result = JSON.parse(reader.result);
+	console.log(result)
 	loadFromObject(result);
     var graphtext = JSON.stringify(graph.toJSON());
     document.cookie = "graph=" + graphtext;
@@ -37,16 +38,27 @@ reader.onload = function() {
  * @param {Object} obj
  */
 function loadFromObject(obj) {
-	model = new Model();
-	model.actors = getActorsArr(obj.model.actors);
-	model.intentions = getIntentionsArr(obj.model.intentions);
-	model.links = getLinksArr(obj.model.links);
-	model.constraints = getConstArr(obj.model.constraints);
-	model.maxAbsTime = obj.model.maxAbsTime;
+	
+	//console.log(obj)
+	var cells = obj.graph.cells;
+
+	for (let cell of cells) {
+		if (cell.type == "basic.Actor"){
+			//console.log("A")
+			createBBActor(cell)
+		}else if (cell.type == "Link") {
+			createBBLink(cell)
+			//console.log("L")
+
+		}else{
+			createBBElement(cell)
+			//console.log("I")
+		}
+	}
 
 	// store deep copy of model for detecting model changes
 	// copy is NOT of type Model
-    previousModel = JSON.parse(JSON.stringify(model));
+    //previousModel = JSON.parse(JSON.stringify(model));
 
 	// Clear any previous analysis data 
 	if (analysisMap.size != 0) {
@@ -81,6 +93,7 @@ function loadFromObject(obj) {
  * @param {Array.<Object>} arr
  * @returns {Array.<Constraint>}
  */
+/*
 function getConstArr(arr) {
 	var res = [];
 
@@ -98,7 +111,7 @@ function getConstArr(arr) {
  *
  * @param {Array.<Object>} arr
  * @returns {Array.<Actor>}
- */
+ *//*
 function getActorsArr(arr) {
     var res = [];
     var maxID = 0;
@@ -118,7 +131,7 @@ function getActorsArr(arr) {
  *
  * @param {Array.<Object>} arr
  * @returns {Array.<Link>}
- */
+ *//*
 function getLinksArr(arr) {
 	var res = [];
 	var maxID = 0;
@@ -142,7 +155,7 @@ function getLinksArr(arr) {
  *
  * @param {Array.<Object>} arr
  * @returns {Array.<Intention>}
- */
+ *//*
 function getIntentionsArr(arr) {
     var res = [];
     var maxID = 0;
@@ -164,7 +177,7 @@ function getIntentionsArr(arr) {
  *
  * @param {Object} obj
  * @returns {EvolvingFunction}
- */
+ *//*
 function getEvolvingFunction(obj) {
 	var func = new EvolvingFunction(obj.intentionID);
 	func.stringDynVis = obj.stringDynVis;
@@ -178,7 +191,7 @@ function getEvolvingFunction(obj) {
  *
  * @param {Array.<Object>} arr
  * @returns {Array.<FuncSegment|RepFuncSegment>}
- */
+ *//*
 function getFuncSegList(arr) {
 	var res = [];
 	for (var i = 0; i < arr.length; i++) {
@@ -198,6 +211,55 @@ function getFuncSegList(arr) {
 	return res;
 }
 
+*/
+
+function createBBActor(obj){
+	console.log(obj);
+	var place = obj.actor;
+	//console.log(place)
+	var actorbbm = new ActorBBM({type: place.attributes.type, actorName: place.attributes.actorName});
+	//is cid important???
+	//console.log(actorbbm)
+	var actor = new joint.shapes.basic.Actor({position: {x: obj.position.x, y: obj.position.y}, size: {height: obj.size.height, width: obj.size.width}})
+	actor.set('actor', actorbbm)
+	//console.log(place.cid)
+	actor.set('cid', place.cid)
+
+	//console.log(obj.id)
+	actor.set('id', obj.id)
+
+	console.log(actor)
+
+	
+	
+
+}
+
+function createBBLink(obj){
+	console.log(obj);
+	var place = obj.link;
+	console.log(place)
+	var linkbbm = new LinkBBM({displayType: place.attributes.displayType, linkType: place.attributes.linkType, postType: place.attributes.postType, absTime: place.attributes.absTime, evolving: place.attributes.evolving});
+	//is cid important???
+	console.log(linkbbm)
+	//var actor = joint.shapes.basic.Actor({actor: actorbbm})
+	//console.log(actor)
+
+}
+
+function createBBElement(obj){
+	console.log(obj);
+	var place = obj.intention;
+	console.log(place)
+	var intentionbbm = new IntentionBBM({nodeName: place.attributes.nodeName, nodeType: place.attributes.nodeType, nodeActorID: place.attributes.nodeActorID, evolvingFunction: place.attributes.evolvingFunction, initialValue: place.attributes.initialValue});
+	//is cid important???
+	console.log(intentionbbm)
+	//var actor = joint.shapes.basic.Actor({actor: actorbbm})
+	//console.log(actor)
+
+}
+
+
 /**
  * Returns an object that contains the current graph, model, and analysis request.
  * This return object is what the user would download when clicking the Save button
@@ -208,7 +270,7 @@ function getFuncSegList(arr) {
 function getModelJson() {
 	var obj = {};
 	obj.graph = graph.toJSON();
-	obj.model = model;
+	//obj.model = model;
 	obj.analysisRequest = analysisRequest;
 	return obj;
 }
@@ -225,7 +287,7 @@ function getModelAnalysisJson() {
 	var obj = {};
 	// obj.analysis = true;
 	obj.graph = graph.toJSON();
-	obj.model = model;
+	//obj.model = model;
 	// Remove analysis results then convert to array tuple for JSON.stringify() functionality
 	obj.analysisMap = Object.fromEntries(removeAnalysisResults(analysisMap));
 
@@ -242,7 +304,7 @@ function getModelAnalysisJson() {
 function getFullJson() {
 	var obj = {};
 	obj.graph = graph.toJSON();
-	obj.model = model;
+	//obj.model = model;
 	// Convert to array tuple for JSON.stringify() functionality
 	// obj.analysisMap = Array.from(analysisMap.entries());
 	obj.analysisMap = Object.fromEntries(analysisMap);
