@@ -750,10 +750,11 @@ graph.on("add", function(cell) {
         // Creates an instance of a IntentionBBM from the cell
         var newIntentionBBM = new IntentionBBM({})
         cell.set('intention', newIntentionBBM);
+        cell.attr('.satvalue/text', '');
         cell.attr('.funcvalue/text', ' ');
         console.log(newIntentionBBM);
         // create intention evaluation object and add it to userEvaluationList 
-        newIntentionBBM.get('userEvaluationList').push(new UserEvaluationBBM({absTP: 0}));
+        newIntentionBBM.get('userEvaluationList').push(new UserEvaluationBBM({absTP: 0, assignedEvidencePair: '(no value)'}));
 	} else if (cell instanceof joint.shapes.basic.Actor) {
         // Find how many instances of the actor is created out of all the cells
         createdInstance = createdInstance.filter(view => view.model instanceof joint.shapes.basic.Actor);
@@ -773,7 +774,7 @@ graph.on("add", function(cell) {
 
 // Auto-save the cookie whenever the graph is changed.
 graph.on("change", function(){
-	var graphtext = JSON.stringify(graph.toJSON());
+	var graphtext = graph.toJSON();
 	document.cookie = "graph=" + graphtext;
 });
 

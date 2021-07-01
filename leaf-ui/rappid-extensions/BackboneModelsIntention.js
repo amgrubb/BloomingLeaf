@@ -12,13 +12,16 @@ myNull = null;
  * Backbone Model of UserEvaluations 
  */ 
  var UserEvaluationBBM = Backbone.Model.extend({  
-    initialize: function(options){    
+    initialize: function(options){  
+        _.extend({}, this.defaults, options)  
         // TODO: Is absTP a letter or a number? It may need to be renamed.
         this.absTP = options.absTP; // Integer Value   
     },
 
-    defaults: {
-        assignedEvidencePair: '(no value)', //Evidence Pair
+    defaults: function(){ 
+        return {
+            assignedEvidencePair: '(no value)', //Evidence Pair
+        }
     }
 });
 
@@ -32,7 +35,7 @@ var UserEvaluationCollection = Backbone.Collection.extend({
  * @param {String} type
  * Atomic function types
  * @param {String} refEvidencePair
- * Corresponds to....
+ * String of numbers that represents the satisfaction value
  * @param {String} startTP
  * Start time point (char) 0,A,B,C
  * @param {Integer} startAT
@@ -42,6 +45,7 @@ var UserEvaluationCollection = Backbone.Collection.extend({
 var FunctionSegmentBBM = Backbone.Model.extend({
 
     initialize: function (options) {
+        _.extend({}, this.defaults, options)
         this.type = options.type;           // Atomic function types. 
         this.refEvidencePair = options.refEvidencePair;   //a.k.a. Evaluation Value
         this.startTP = options.startTP; // Start time point (char) 0,A,B,C
@@ -95,7 +99,6 @@ var EvolvingFunctionBBM = Backbone.Model.extend({
      * does not return anything.
      */
     getNthRefEvidencePair: function(n) { 
-
         if (this.get('functionSegList') != null) {
             var len = this.get('functionSegList').length; 
             var funcSegList = this.get('functionSegList');
@@ -122,7 +125,6 @@ var EvolvingFunctionBBM = Backbone.Model.extend({
      *  Absolute time of repeating segment 
      */
     setRepeatingFunction: function(start, stopRep, count, absTime) {
-
         this.set('hasRepeat', true);                         
         this.set('repStart', start);
         this.set('repStop', stopRep);
@@ -135,7 +137,6 @@ var EvolvingFunctionBBM = Backbone.Model.extend({
      * which means there is no loner a repeating function segment in the EvolvingFunctionBBM     *  
      */ 
     removeRepFuncSegments: function() {
-
         this.set('hasRepeat', false);                         
         this.set('repStart', null);
         this.set('repStop', null);
@@ -155,8 +156,6 @@ var EvolvingFunctionBBM = Backbone.Model.extend({
  * Type of node. Ex: task, goal
  * @param {EvolvingFunctionBBM} evolvingFunction
  * If there is an evolving function this will contain an EvolvingFunctionBBM
- * @param {String} initialValue
- * String of numbers that represents the initial satisfaction value
  * @param {BackBone Collection} userEvaluationList
  * a collection of UserEvaluationBBMs
  */
@@ -166,13 +165,15 @@ var IntentionBBM = Backbone.Model.extend({
         _.extend({}, this.defaults, options) 
     }, 
 
-    defaults: { 
+    defaults: function(){ 
+        return {
             nodeName: 'untitled',
             nodeActorID: null,                     // Assigned on release operation.
             nodeType: null,
             evolvingFunction: null, 
             // initialValue: '(no value)',
             userEvaluationList: new UserEvaluationCollection([])
+        }
     }, 
 
     /**
@@ -193,7 +194,6 @@ var IntentionBBM = Backbone.Model.extend({
     * @returns Array of FunctionSegmentBBMs, or null if it is not an evolvingFunction
     */
     getFuncSegments: function(){
-
         evolvingFunc = this.get('evolvingFunction');
         if (evolvingFunc != null){
             return evolvingFunc.get('functionSegList');
@@ -210,12 +210,10 @@ var IntentionBBM = Backbone.Model.extend({
      * @param {String} initValue 
      */
     changeInitialSatValue: function(initValue) {
-
+        // Set the the first element of userEvaluationList to the initValue
         this.getUserEvaluationBBM(0).set('assignedEvidencePair', initValue);;
         // this.set('initialValue', initValue);
-
         var funcSegList = this.getFuncSegments();
-        
         if (this.get('evolvingFunction') != null) {
             // If the function is C or UD & C set refEvidencePair to initValue
             if (this.get('evolvingFunction').get('type') == 'C' || 
@@ -234,7 +232,6 @@ var IntentionBBM = Backbone.Model.extend({
      * Sets the initial satisfaction value for this Intention to '(no value)'
      */
     removeInitialSatValue: function() {
-
         this.changeInitialSatValue('(no value)');
     },    
  
@@ -255,9 +252,8 @@ var IntentionBBM = Backbone.Model.extend({
      * @param {String} funcType
      */
     setEvolvingFunction: function(funcType) {
-
         this.set('evolvingFunction', new EvolvingFunctionBBM({type: funcType, functionSegList: []}));
-        var initValue = this.getUserEvaluationBBM(0);
+        var initValue = this.getUserEvaluationBBM(0).get('assignedEvidencePair');
         // var initValue = this.get('initialValue');
 
 
@@ -327,7 +323,6 @@ var IntentionBBM = Backbone.Model.extend({
      * @param {Integer} startTime
      */
     addUserDefinedSeg: function(funcType, refEvidencePair, startTime){
-
         var len = this.getFuncSegments().length;
         var startCheck = this.getFuncSegments()[len - 1].get('startTP'); // Get last value in list 
         if (startCheck == '0') { // If previous segment is at 0 then next one is at A
@@ -349,7 +344,6 @@ var IntentionBBM = Backbone.Model.extend({
      */
     // TODO: i think we are going to have to change this function when we add views for the FunctionSegmentBBMs
     setMarkedValueToFunction: function(satValue) {
-
         if (this.get('evolvingFunction') != null) {
             var funcType = this.get('evolvingFunction').get('type'); 
         } else { 
@@ -371,7 +365,6 @@ var IntentionBBM = Backbone.Model.extend({
      * @param {String} funcValue
      */
     setUserDefinedSegment: function(funcValue) {
-
         if (this.getFuncSegments() != null) {
             var funcSegLen = this.getFuncSegments().length;
             var functionSegment = this.getFuncSegments()[funcSegLen - 1];

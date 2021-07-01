@@ -93,8 +93,8 @@ var ElementInspector = Backbone.View.extend({
                     '<option value=D class="B"> Decrease </option>',
                     '<option value=RC class="B"> Stochastic-Constant </option>',
                     '<option value=CR class="B"> Constant-Stochastic </option>',
-                    '<option value=MP class="B"> Montonic Positive </option>',
-                    '<option value=MN class="B"> Montonic Negative </option>',
+                    '<option value=MP class="B"> Monotonic Positive </option>',
+                    '<option value=MN class="B"> Monotonic Negative </option>',
                     '<option value=SD class="B"> Satisfied Denied </option>',
                     '<option value=DS class="B"> Denied Satisfied </option>',
                     '<option value=UD class="B"> User Defined </option>',
@@ -189,11 +189,8 @@ var ElementInspector = Backbone.View.extend({
 
         // Load initial value and node name
         this.$('.cell-attrs-text').val(this.intention.get('nodeName'));
-        console.log(this.intention.get('userEvaluationList'));
-        console.log(this.intention.getUserEvaluationBBM(0));
-        console.log(this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair'));
         this.$('#init-sat-value').val(satisfactionValuesDict[this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair')].name);
-        
+              
         // Checks which function types are available based on initial satisfaction values
         this.checkInitialSatValue();
 
@@ -428,7 +425,10 @@ var ElementInspector = Backbone.View.extend({
      */
     updateHTML: function(event) {
         // Check if selected init sat value and functionType pair is illegal
-        this.validityCheck(event);
+        // Only runs if evolvingFunction is defined and therefore there is a function type
+        // if (this.intention.get('evolvingFunction') != null) {
+            this.validityCheck(event);
+        // }
 
         if (this.intention.get('evolvingFunction') != null) {
             var functionType = this.intention.get('evolvingFunction').get('type');
@@ -476,7 +476,10 @@ var ElementInspector = Backbone.View.extend({
     validityCheck: function(event) {
         var functionType = this.$('.function-type').val();
         var initValue = this.$('#init-sat-value').val();
-
+        // Quick fix b/c functionType kept being reassigned null
+        if (functionType == null) {
+            functionType = 'NT';
+        }
         // If an element gets clicked, don't bother checking
         if (event == null) {
             return;
@@ -954,7 +957,7 @@ var ElementInspector = Backbone.View.extend({
                 this.model.attr(".funcvalue/text", this.intention.get('evolvingFunction').get('type'));
             } 
         }
-
+        
         if (this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair') == '(no value)') {
             this.model.attr('.satvalue/text', '');
         } else {
