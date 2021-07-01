@@ -66,22 +66,27 @@ var IntermediateValuesTable = Backbone.View.extend({
         /**
          * Make row for each intention
          */
-        for (let intentionCell of this.model.getElements().filter(element => element instanceof joint.shapes.basic.Intention)){
-            var userEvaluations = this.model.get('userEvaluationList').filter(userEvals => userEvals.get('intentionID') == intentionCell.id);
-            var intentionUserEvaluationsView = new IntentionUserEvaluationsView({model: intentionCell.get('intention'), 
-                                                                                 intentionID: intentionCell.id, 
-                                                                                 allAbsoluteTimePoints: absoluteTimePointsList,
-                                                                                 userEvals: userEvaluations,
-                                                                                 maxAbsTime: this.model.get('maxAbsTime')});
+        for (let intentionBBM of this.model.getIntentions()){
+            var intentionUserEvaluationsView = new IntentionUserEvaluationsView({model: intentionBBM,  
+                                                                                 allAbsoluteTimePoints: absoluteTimePointsList});
             this.$('#interm-list').append(intentionUserEvaluationsView.el);
             intentionUserEvaluationsView.render();
         }
     },
 
+    /**
+     * Remove view
+     */
     dismissInterm: function (){
         this.remove();
     },
 
+    /**
+     * Gets lists of all absolute time points from accross the graph object
+     * And combines them into one list sorted in ascending order
+     * 
+     * @returns sorted list of all time points in model
+     */
     getAllAbsoluteTimePoints: function(){
         var absTimeValues = this.model.get('absTimePtsArr');
         var constraintTimes = this.model.get('constraints').map(constraint => constraint.get('absTP'));
@@ -114,8 +119,6 @@ var IntentionUserEvaluationsView = Backbone.View.extend({
     className: 'intention-row',
 
     initialize: function(options){
-        this.intentionID = options.intentionID;
-        this.userEvals = options.userEvals;
         this.allAbsoluteTimePoints = options.allAbsoluteTimePoints;
     },
 
@@ -127,7 +130,10 @@ var IntentionUserEvaluationsView = Backbone.View.extend({
 
     render: function(){
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
+        // Add in initial value for TP 0
+        // TODO: Potentially change to get valeu from first item on user eval list
         this.$el.append(satisfactionValuesDict[this.model.get('initialValue')].satValue);
+        // Load select dropdowns for all other TPs
         this.loadSelect();
         return this;
     },
@@ -140,11 +146,6 @@ var IntentionUserEvaluationsView = Backbone.View.extend({
             funcType = null;
             refPair = null;
             initValue = null;
-            
-            var userEval = null;
-            if (this.userEvals.filter(userEval => userEval.get('absTP') == absTime).length != 0){
-                userEval = currentUserEvals[0];
-            }
 
             for (let i=0; i < this.model.getFuncSegments()?.length; i++){
                 funcSeg1 = this.functionSegmentList[i];
@@ -188,11 +189,11 @@ var IntentionUserEvaluationsView = Backbone.View.extend({
             }
 
             // Create a select menu for each time point on each intention
+            // And add it to row
             var selectUserEvaluationView = new SelectUserEvaluationView
-                                                ({intentionID: this.intentionID,
+                                                ({intention: this.model,
                                                   absTimePt: absTime, 
-                                                  optionsList: optionsList,
-                                                  userEval: userEval});
+                                                  optionsList: optionsList});
                 this.$el.append(selectUserEvaluationView.el);
                 selectUserEvaluationView.render();
         }
@@ -218,6 +219,7 @@ var IntentionUserEvaluationsView = Backbone.View.extend({
             var possibleValueList = ['1100','0100','0000','0010','0011'];
         }
 
+        // Return properly sliced list based on values passed in for init and final
         if(finalValue == null) {
             return possibleValueList.slice(possibleValueList.indexOf(initValue));
         } else if (initValue == null){
@@ -242,42 +244,59 @@ var SelectUserEvaluationView = Backbone.View.extend({
     },
 
     initialize: function(options){
+        this.intention = options.intention;
         this.absTimePt = options.absTimePt;
-        this.intentionID = options.intentionID;
-        this.userEvaluation = options.userEval;
-        this.optionsList = options.optionsList;    
+        this.optionsList = options.optionsList;
+        // Returns first user evaluation with absTP matching absTimePt
+        // If none exist, it returns undefined
+        this.userEval = this.intention.findWhere({'absTP' : this.absTimePt});   
     },
 
     render: function(){
         this.$el.html(_.template(this.template)());
+        // Add dropdown options to HTML select element
         this.$('select').append(this.convertToOptions(this.optionsList));
-        if (this.userEvaluation != null){
-            this.$('select').val(this.userEvaluation.get('assignedEvidencePair'));
+
+        // Set initial value if there is a userEvaluation matching the given TP
+        // Else set initial value to empty
+        if (this.userEval != 'undefined'){
+            this.$('select').val(this.userEval.get('assignedEvidencePair'));
         } else {
             this.$('select').val('empty');
         }
     },
 
+    /**
+     * Update user evaluation when select value changes
+     */
     updateEvaluationValue: function(){
+        // Get binary string evaluation value from html
         var evaluationValue = this.$('.evaluation-value').val();
-        if (this.userEvaluation != null){
+        if (this.userEval !=  'undefined'){
             if (evaluationValue == 'empty'){
-                this.userEvaluation.destroy();
+                // Triggers a destroy event in the UserEvaluationBBM collection
+                // Thus removing UserEvaluationBBM from collection
+                this.userEval.destroy();
+                // Resets this.userEval to undefined
+                this.userEval = undefined;
             } else {
-                this.userEvaluation.set('assignedEvidencePair', evaluationValue);
+                // Update evaluation value
+                this.userEval.set('assignedEvidencePair', evaluationValue);
             }
         } else {
-            this.userEvaluation = new UserEvaluationBBM({intentionID: this.intentionID, 
-                                                     absTP: this.absTimePt, 
+            // Create new UserEvaluationBBM and add it
+            // To the intentionBBMs userEvaluationList
+            this.userEval = new UserEvaluationBBM({absTP: this.absTimePt, 
                                                      assignedEvidencePair: evaluationValue});
+            this.intention.get('userEvaluationList').push(this.userEval);
         }
-        // TODO: add new value to graph collection
     },
 
     /**
-     *
-     * @param choiceList: A list that contains binary strings of valid values
-     * @returns {List that contains strings that are the string encoding of the binary strings in the choiceList}
+     * Converts list of binary values to list of html option strings
+     * 
+     * @param {Array<String>} choiceList: A list that contains binary strings of valid values
+     * @returns List of html option strings corresponding to binary string input
      */
     convertToOptions: function(choiceList){
         var theOptionString = this.binaryToOption('empty');
@@ -289,7 +308,8 @@ var SelectUserEvaluationView = Backbone.View.extend({
     },
  
     /**
-     *
+     * Helper function to convert binary strings to option tags 
+     * 
      * @param binaryString: This is the binary string stands for the value
      * @returns a string decode of that binary value
      */
