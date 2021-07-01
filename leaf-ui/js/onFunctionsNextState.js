@@ -10,6 +10,7 @@
 // }
 
 //Only event listeners
+$('#btn-debug').on('click', function(){ console.log(graph)});
 $('#btn-zoom-in').on('click', function(){ zoomIn(analysis.paperScroller); });
 $('#btn-zoom-out').on('click', function(){ zoomOut(analysis.paperScroller); });
 $('#btn-fnt').on('click', function(){ defaultFont(analysis.paper);});
