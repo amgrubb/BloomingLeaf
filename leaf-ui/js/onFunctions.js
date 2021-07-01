@@ -6,7 +6,7 @@ It also contains the setup for Rappid elements.
 /**
  * Event listeners for index.html toolbar functions
  */
- $('#btn-debug').on('click', function(){ console.log(graph)});
+ $('#btn-debug').on('click', function(){ console.log(graph.toJSON()) });
  $('#btn-zoom-in').on('click', function(){ zoomIn(paperScroller); });
  $('#btn-zoom-out').on('click', function(){ zoomOut(paperScroller); });
  $('#btn-fnt').on('click', function(){ defaultFont(paper);});
