@@ -174,8 +174,10 @@ var Config = Backbone.View.extend({
         if (this.model.set({selected:true}) && this.model.collection.length > 1){
            if (index > 0 ){
                 this.model.collection.at(index - 1).set({selected:true});
+                this.model.collection.at(index - 1).trigger('change:switchConfigs', this.model.collection.at(index-1)); 
            } else {
                 this.model.collection.at(index + 1).set({selected:true});       
+                this.model.collection.at(index + 1).trigger('change:switchConfigs', this.model.collection.at(index+1)); 
             }
            this.model.destroy();
        }
