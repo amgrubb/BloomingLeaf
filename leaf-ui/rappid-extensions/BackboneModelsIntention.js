@@ -9,6 +9,24 @@ myNull = null;
  */
 
 /** 
+ * Backbone Model of UserEvaluations 
+ */ 
+ var UserEvaluationBBM = Backbone.Model.extend({  
+    initialize: function(options){    
+        // TODO: Is absTP a letter or a number? It may need to be renamed.
+        this.absTP = options.absTP; // Integer Value   
+    },
+
+    defaults: {
+        assignedEvidencePair: '(no value)', //Evidence Pair
+    }
+});
+
+var UserEvaluationCollection = Backbone.Collection.extend({
+    model: UserEvaluationBBM
+});
+
+/** 
  * Backbone Model of An Atomic Function Segment
  * 
  * @param {String} type
@@ -30,23 +48,6 @@ var FunctionSegmentBBM = Backbone.Model.extend({
         // Removed stopTP variable - stopTP is one letter after startTP or A is startTP is 0
         this.startAT = options.startAT; // Assigned/Absolute Time - Integer time value. If not set defaults to undefined
     }
-});
-
-/** 
- * Backbone Model of UserEvaluations 
- */ 
- var UserEvaluationBBM = Backbone.Model.extend({  
-    initialize: function(options){    
-        // TODO: we may be phasing out this variable since we moved UserEvaluationList to IntentionBBM  
-        this.intentionID = options.intentionID; 
-        // TODO: Is absTP a letter or a number? It may need to be renamed.
-        this.absTP = options.absTP; // Integer Value   
-        this.assignedEvidencePair = options.assignedEvidencePair; //Evidence Pair
-    }
-});
-
-var UserEvaluationCollection = Backbone.Collection.extend({
-    model: UserEvaluationBBM
 });
 
 /** 
@@ -156,6 +157,8 @@ var EvolvingFunctionBBM = Backbone.Model.extend({
  * If there is an evolving function this will contain an EvolvingFunctionBBM
  * @param {String} initialValue
  * String of numbers that represents the initial satisfaction value
+ * @param {BackBone Collection} userEvaluationList
+ * a collection of UserEvaluationBBMs
  */
 var IntentionBBM = Backbone.Model.extend({
 
@@ -168,7 +171,7 @@ var IntentionBBM = Backbone.Model.extend({
             nodeActorID: null,                     // Assigned on release operation.
             nodeType: null,
             evolvingFunction: null, 
-            initialValue: '(no value)',
+            // initialValue: '(no value)',
             userEvaluationList: new UserEvaluationCollection([])
     }, 
 
@@ -182,8 +185,8 @@ var IntentionBBM = Backbone.Model.extend({
      * 
      * @returns an UserEvaluationBBM
      */
-    getUserEvaluationBBM: function(cid, absTP) {
-        return this.get('userEvaluationList').findWhere({intentionID: cid, absTP: absTP});
+    getUserEvaluationBBM: function(absTP) {
+        return this.get('userEvaluationList').findWhere({absTP: absTP});
     },
 
     /**
@@ -208,19 +211,22 @@ var IntentionBBM = Backbone.Model.extend({
      */
     changeInitialSatValue: function(initValue) {
 
-        // var intentionEval = this.getUserEvaluationBBM(this.cid, '0');
-        // intentionEval.set('assignedEvidencePair', initValue);
-        this.set('initialValue', initValue);
+        this.getUserEvaluationBBM(0).set('assignedEvidencePair', initValue);;
+        // this.set('initialValue', initValue);
 
         var funcSegList = this.getFuncSegments();
         
         if (this.get('evolvingFunction') != null) {
+            // If the function is C or UD & C set refEvidencePair to initValue
             if (this.get('evolvingFunction').get('type') == 'C' || 
                 (this.get('evolvingFunction').get('type') == 'UD' && funcSegList[0].get('type') == 'C')) { 
                     funcSegList[0].set('refEvidencePair', initValue); // Set first index of funcSegList to given initValue 
             }
+            else {
+            // If the function is not C or UD & C, reset the function type and clear the functionSegList
             this.get('evolvingFunction').set('type', 'NT');
             this.get('evolvingFunction').set('functionSegList', []);
+            }
         }     
     }, 
  
@@ -251,8 +257,8 @@ var IntentionBBM = Backbone.Model.extend({
     setEvolvingFunction: function(funcType) {
 
         this.set('evolvingFunction', new EvolvingFunctionBBM({type: funcType, functionSegList: []}));
- 
-        var initValue = this.get('initialValue');
+        var initValue = this.getUserEvaluationBBM(0);
+        // var initValue = this.get('initialValue');
 
 
         // Creates the correct FunctionSegmentBBM(s) for the selected function type
@@ -291,14 +297,14 @@ var IntentionBBM = Backbone.Model.extend({
                 // Constant and Constant
                 var seg1 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: '0011', startTP: '0', startAT: 0}); 
                 var seg2 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: '1100', startTP: 'A', startAT: myNull}); 
-                this.getUserEvaluationBBM(this.cid, '0').set('assignedEvidencePair', '0011');
-                this.set('initialValue', '0011');
+                this.getUserEvaluationBBM(0).set('assignedEvidencePair', '0011');
+                // this.set('initialValue', '0011');
             } else if (funcType == 'DS') {
                 // Constant and Constant
                 var seg1 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: '1100', startTP: '0', startAT: 0}); 
                 var seg2 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: '0011', startTP: 'A', startAT: myNull}); 
-                this.getUserEvaluationBBM(this.cid, '0').set('assignedEvidencePair', '1100');
-                this.set('initialValue', '1100');
+                this.getUserEvaluationBBM(0).set('assignedEvidencePair', '1100');
+                // this.set('initialValue', '1100');
             }
             this.getFuncSegments().push(seg1, seg2);
         }

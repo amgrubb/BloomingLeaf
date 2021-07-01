@@ -751,7 +751,9 @@ graph.on("add", function(cell) {
         var newIntentionBBM = new IntentionBBM({})
         cell.set('intention', newIntentionBBM);
         cell.attr('.funcvalue/text', ' ');
-
+        console.log(newIntentionBBM);
+        // create intention evaluation object and add it to userEvaluationList 
+        newIntentionBBM.get('userEvaluationList').push(new UserEvaluationBBM({absTP: 0}));
 	} else if (cell instanceof joint.shapes.basic.Actor) {
         // Find how many instances of the actor is created out of all the cells
         createdInstance = createdInstance.filter(view => view.model instanceof joint.shapes.basic.Actor);

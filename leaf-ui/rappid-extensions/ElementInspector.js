@@ -189,7 +189,10 @@ var ElementInspector = Backbone.View.extend({
 
         // Load initial value and node name
         this.$('.cell-attrs-text').val(this.intention.get('nodeName'));
-        this.$('#init-sat-value').val(satisfactionValuesDict[this.intention.get('initialValue')].name);
+        console.log(this.intention.get('userEvaluationList'));
+        console.log(this.intention.getUserEvaluationBBM(0));
+        console.log(this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair'));
+        this.$('#init-sat-value').val(satisfactionValuesDict[this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair')].name);
         
         // Checks which function types are available based on initial satisfaction values
         this.checkInitialSatValue();
@@ -238,7 +241,7 @@ var ElementInspector = Backbone.View.extend({
     checkInitialSatValue: function() {
         // Set correct dropdown options for function type based on initial satisfaction value
         $('option').show(); // Clear the previous selection
-        if (this.intention.get('initialValue') == '(no value)'){
+        if (this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair') == '(no value)'){
             // Hide all of the function options except for Stochastic is initial satisfaction value is '(no value)'
             $('option.B').hide(); 
             this.$('#markedValue').hide();
@@ -592,7 +595,7 @@ var ElementInspector = Backbone.View.extend({
     updateChart: function() {
         if (this.intention.get('evolvingFunction') != null ) {
             var funcType = this.intention.get('evolvingFunction').get('type');
-            var initVal = satisfactionValuesDict[this.intention.get('initialValue')].chartVal;
+            var initVal = satisfactionValuesDict[this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair')].chartVal;
             var satVal = satvalues[this.$('#markedValue').val()];
             this.chart.reset();
             // Get the chart canvas
@@ -670,7 +673,7 @@ var ElementInspector = Backbone.View.extend({
         this.chart.labels = this.getUDChartLabel(numFuncSegments);
 
         // Get init sat value
-        var initSatVal = satisfactionValuesDict[this.intention.get('initialValue')].chartVal;
+        var initSatVal = satisfactionValuesDict[this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair')].chartVal;
 
         // Add datapoints to graph for each userfunction/uservalue pair
         var funcSegments = this.intention.getFuncSegments();
@@ -728,7 +731,7 @@ var ElementInspector = Backbone.View.extend({
 
         // If the initial value is (no value), limit the function options
         // to be either Constant or Stochastic
-        if (this.intention.get('initialValue') == '(no value)') {
+        if (this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair') == '(no value)') {
             var selectEl = html.children(":first");
             selectEl.find('option').remove();
             selectEl.append('<option value=C> Constant </option>');
@@ -958,10 +961,10 @@ var ElementInspector = Backbone.View.extend({
             } 
         }
 
-        if (this.intention.get('initialValue') == '(no value)') {
+        if (this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair') == '(no value)') {
             this.model.attr('.satvalue/text', '');
         } else {
-            this.model.attr('.satvalue/text', satisfactionValuesDict[this.intention.get('initialValue')].satValue);
+            this.model.attr('.satvalue/text', satisfactionValuesDict[this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair')].satValue);
         } 
     },
 
