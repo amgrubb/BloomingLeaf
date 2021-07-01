@@ -149,8 +149,7 @@ var AssignmentsTable = Backbone.View.extend({
      */
     displayAbsoluteIntentionAssignments: function() {
         this.model.getIntentions().forEach(intentionCell => {
-            var intentionBbm = intentionCell.get('intention');
-            var evolvingFunction = intentionBbm.get('evolvingFunction');
+            var evolvingFunction = intentionCell.get('evolvingFunction');
             console.log(funcSegList);
             if(evolvingFunction != null){
                 var funcSegList = evolvingFunction.get('functionSegList');
@@ -176,10 +175,8 @@ var AssignmentsTable = Backbone.View.extend({
         this.model.getLinks().forEach(linkCell => {
             linkBbm = linkCell.get('link');
             if(linkCell.isValidAbsoluteRelationship()){
-                var sourceName = linkCell.getSourceElement().get('intention').get('nodeName');
-                var targetName = linkCell.getTargetElement().get('intention').get('nodeName');
-                var linkRelationshipView = new LinkRelationshipView({model: linkBbm, linkSrc: sourceName, linkDest: targetName});
-                $('.abs-table').append(linkRelationshipView.el);
+                var linkRelationshipView = new LinkRelationshipView({model: linkBbm, linkSrc: linkCell.getSourceElement().get('intention').get('nodeName'), linkDest: linkCell.getTargetElement().get('intention').get('nodeName')});
+                $('#link-list').append(linkRelationshipView.el);
                 linkRelationshipView.render()
             }
         })
