@@ -243,14 +243,8 @@ var ElementInspector = Backbone.View.extend({
             $('option.B').hide(); 
             this.$('#markedValue').hide();
             this.$('#user-constraints').hide();
-            this.$('#segment-add').hide();
-            this.$('#constraint-repeat').hide();
-            this.$('#constraint-restart').hide();
         } else {
             this.$('#user-constraints').show();
-            this.$('#segment-add').show();
-            this.$('#constraint-repeat').show();
-            this.$('#constraint-restart').show();
         }
     },
 
