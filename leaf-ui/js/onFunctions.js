@@ -6,6 +6,7 @@ It also contains the setup for Rappid elements.
 /**
  * Event listeners for index.html toolbar functions
  */
+ $('#btn-debug').on('click', function(){ console.log(graph.toJSON()) });
  $('#btn-zoom-in').on('click', function(){ zoomIn(paperScroller); });
  $('#btn-zoom-out').on('click', function(){ zoomOut(paperScroller); });
  $('#btn-fnt').on('click', function(){ defaultFont(paper);});
@@ -728,30 +729,6 @@ $('#colorblind-mode-isOn').on('click', function(){ //turns off colorblind mode
 });
 
 /**
- * Creates an instance of a Intention object and saves it in the
- * global model variable
- *
- * @param {joint.dia.Cell} cell
- */
-function createIntention(cell) {
-
-    var name = cell.attr(".name/text") + "_" + Intention.numOfCreatedInstances;
-    cell.attr(".name/text", name);
-
-    // create intention object
-    var type = cell.attributes.type;
-    var intention = new Intention('-', type, name);
-    model.intentions.push(intention);
-
-    // create intention evaluation object
-    var intentionEval = new UserEvaluation(intention.nodeID, '0', '(no value)');
-    analysisRequest.userAssignmentsList.push(intentionEval);
-
-    cell.attributes.nodeID = intention.nodeID;
-
-}
-
-/**
  * Set up on events for Rappid/JointJS objets
  */
 var element_counter = 0;
@@ -771,9 +748,13 @@ graph.on("add", function(cell) {
             cell.set('link', new LinkBBM({}));
         }
     } else if (cell instanceof joint.shapes.basic.Intention){
-		cell.set('intention', new IntentionBBM({}));
-		cell.attr('.funcvalue/text', ' ');
-
+        // Creates an instance of a IntentionBBM from the cell
+        var newIntentionBBM = new IntentionBBM({})
+        cell.set('intention', newIntentionBBM);
+        cell.attr('.satvalue/text', '');
+        cell.attr('.funcvalue/text', ' ');
+        // create intention evaluation object and add it to userEvaluationList 
+        newIntentionBBM.get('userEvaluationList').push(new UserEvaluationBBM({}));
 	} else if (cell instanceof joint.shapes.basic.Actor) {
         // Find how many instances of the actor is created out of all the cells
         createdInstance = createdInstance.filter(view => view.model instanceof joint.shapes.basic.Actor);
@@ -793,7 +774,7 @@ graph.on("add", function(cell) {
 
 // Auto-save the cookie whenever the graph is changed.
 graph.on("change", function(){
-	var graphtext = JSON.stringify(graph.toJSON());
+	var graphtext = graph.toJSON();
 	document.cookie = "graph=" + graphtext;
 });
 
