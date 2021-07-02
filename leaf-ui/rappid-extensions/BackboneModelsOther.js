@@ -51,23 +51,6 @@
     },
 });
 
-
-/** 
- * Backbone Model of UserEvaluations 
- */ 
-var UserEvaluationBBM = Backbone.Model.extend({  
-    initialize: function(options){      
-        this.intentionID = options.intentionID; 
-        // TODO: Is absTP a letter or a number? It may need to be renamed.
-        this.absTP = options.absTP;             
-        this.assignedEvidencePair = options.assignedEvidencePair; //Evidence Pair
-    }
-});
-
-var UserEvaluationCollection = Backbone.Collection.extend({
-    model: UserEvaluationBBM
-});
-
 /** 
  * Backbone Model of Constraints
  */
