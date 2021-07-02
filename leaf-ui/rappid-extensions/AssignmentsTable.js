@@ -376,7 +376,7 @@ var LinkRelationshipView = Backbone.View.extend({
 
     template: [
         '<script type="text/template" id="item-template">',
-        '<td><%= linkType %> | <%= postType %></td>',
+        '<td><%= linkType %><%if (evolving){%> | <%}%> <%=postType %></td>',
         '<td class= "link-source"></td>',
         '<td class= "link-dest"></td>',
         '<td><input id="linkAbsRelation" type="number" name="sth" value= "<% if (absTime === -1) {%> "" <%} else { %> absTime <% } %>" > </td>',

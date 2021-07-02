@@ -132,6 +132,7 @@ var LinkInspector = Backbone.View.extend({
         $('#constant-links').val(this.link.get('linkType'));
         this.setValues($('#constant-links').val(), null, false);
         this.checkCellText();
+        console.log(this.model)
     },
 
     /**
@@ -287,7 +288,7 @@ var LinkInspector = Backbone.View.extend({
             this.model.label(0, {position: 0.5, attrs: {text: {text: linkType + " | " + postType}}});
         } else{
             this.link.set('linkType', linkType);
-            this.model.set('postType', null);
+            this.link.set('postType', null);
             this.model.label(0 , {position: 0.5, attrs: {text: {text: linkType}}});
         } 
     }
