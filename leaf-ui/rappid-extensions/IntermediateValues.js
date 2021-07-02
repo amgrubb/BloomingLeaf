@@ -93,16 +93,13 @@ var IntermediateValuesTable = Backbone.View.extend({
         var linkTimes = this.model.getLinks().map(linkCell => linkCell.get('link').get('absTP'));
         var intentionTimes = [];
         // TODO: Messy, can we clean up?
-        this.model.getIntentions().forEach(intentionBBM => intentionBBM.getFuncSegments()?.forEach(funcSegmentsList => {
-            if (funcSegmentsList != null){
-                for (let funcSeg of funcSegmentsList){
-                    funcSegTP = funcSeg.get('startAT')
-                    if (funcSegTP != -1){
-                        intentionTimes.push(funcSegTP);
-                    }
-                }
+        this.model.getIntentions().forEach(intentionBBM => intentionBBM.getFuncSegments()?.forEach(funcSeg => {
+            funcSegTP = funcSeg.get('startAT')
+            if (funcSegTP != -1 && funcSegTP != myNull){
+                intentionTimes.push(funcSegTP);
             }
-        }));
+        }
+        ));
                                                         
         var allTimes = absTimeValues.concat(constraintTimes).concat(linkTimes).concat(intentionTimes);
         var absoluteTimePointsList = Array.from(new Set(allTimes));
@@ -120,19 +117,19 @@ var IntentionUserEvaluationsView = Backbone.View.extend({
 
     initialize: function(options){
         this.allAbsoluteTimePoints = options.allAbsoluteTimePoints;
+        this.functionSegmentList = this.model.getFuncSegments()
     },
 
     template: [
         '<script type="text/template" id="intention-user-eval-template">',
-            '<td class="intention-name"> "<%= nodeName %>" </td>',
+            '<td class="intention-name"> <%= nodeName %> </td>',
         '</script>'
     ].join(''),
 
     render: function(){
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
         // Add in initial value for TP 0
-        // TODO: Potentially change to get valeu from first item on user eval list
-        this.$el.append(satisfactionValuesDict[this.model.get('initialValue')].satValue);
+        this.$el.append(satisfactionValuesDict[this.model.getUserEvaluationBBM(0).get('assignedEvidencePair')].satValue);
         // Load select dropdowns for all other TPs
         this.loadSelect();
         return this;
@@ -147,12 +144,12 @@ var IntentionUserEvaluationsView = Backbone.View.extend({
             refPair = null;
             initValue = null;
 
-            for (let i=0; i < this.model.getFuncSegments()?.length; i++){
+            for (let i=0; i < this.functionSegmentList.length; i++){
                 funcSeg1 = this.functionSegmentList[i];
                 startAT1 = funcSeg1.get('startAT');
                 
                 // If i is not the last index in the function segments list
-                if (i != this.model.getFuncSegments()?.length-1){
+                if (i != this.functionSegmentList.length-1){
                     // Get the next function segment and it's startAT
                     funcSeg2 = this.functionSegmentList[i+1];
                     startAT2 = funcSeg2.get('startAT')
@@ -249,7 +246,7 @@ var SelectUserEvaluationView = Backbone.View.extend({
         this.optionsList = options.optionsList;
         // Returns first user evaluation with absTP matching absTimePt
         // If none exist, it returns undefined
-        this.userEval = this.intention.findWhere({'absTP' : this.absTimePt});   
+        this.userEval = this.intention.get('userEvaluationList').findWhere({'absTP' : this.absTimePt});   
     },
 
     render: function(){
@@ -259,7 +256,7 @@ var SelectUserEvaluationView = Backbone.View.extend({
 
         // Set initial value if there is a userEvaluation matching the given TP
         // Else set initial value to empty
-        if (this.userEval != 'undefined'){
+        if (this.userEval != undefined){
             this.$('select').val(this.userEval.get('assignedEvidencePair'));
         } else {
             this.$('select').val('empty');
@@ -272,7 +269,7 @@ var SelectUserEvaluationView = Backbone.View.extend({
     updateEvaluationValue: function(){
         // Get binary string evaluation value from html
         var evaluationValue = this.$('.evaluation-value').val();
-        if (this.userEval !=  'undefined'){
+        if (this.userEval != undefined){
             if (evaluationValue == 'empty'){
                 // Triggers a destroy event in the UserEvaluationBBM collection
                 // Thus removing UserEvaluationBBM from collection
