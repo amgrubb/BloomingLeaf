@@ -132,7 +132,6 @@ var LinkInspector = Backbone.View.extend({
         $('#constant-links').val(this.link.get('linkType'));
         this.setValues($('#constant-links').val(), null, false);
         this.checkCellText();
-        console.log(this.model)
     },
 
     /**
@@ -214,6 +213,7 @@ var LinkInspector = Backbone.View.extend({
             }
         }
         $('#link-type-end option[value= \'' + begin + '\']').hide(); // Hide already selected linkType value
+        this.checkCellText()
         
     },
 
