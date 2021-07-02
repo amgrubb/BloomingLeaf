@@ -73,7 +73,6 @@ var ConfigModel = Backbone.Model.extend({
         previousAnalysis: null,
         selected: true,
         results : new ResultCollection([]),
-        mode: true,
     },
 
     /**

@@ -101,12 +101,9 @@ var Config = Backbone.View.extend({
     initialize: function(){
         this.innerView = new ResultsDropdown({collection:this.model.get("results"), config: this.model});
         this.innerView.render();
-        // removes configurations
         this.model.on('destroy', this.remove, this);
-        // changes the highlighted result 
         this.model.on('change:selected', this.rerender, this);
         this.model.on('switch', this.showAnalysisInspector, this);
-        // changes result name 
         this.model.on('change:name', this.renderName, this);
     },
 
@@ -127,17 +124,11 @@ var Config = Backbone.View.extend({
        '</script>'].join(''),
 
     events: {
-        //enables switching of results 
         'click .config-elements': 'switchConfig',
-        //enables removal of results 
         'click .deleteconfig-button': 'removeConfig',
-        
         'click .dropdown-button' : 'toggleDropdown',
-        // enables renaming of results 
         'dblclick .config-elements': 'rename',
-        // set config name 
         'blur .config-input': 'setConfigName',
-        // only set the name if the user presses enter 
         'keyup .config-input': 'checkForEnter'
     },
 
@@ -145,8 +136,8 @@ var Config = Backbone.View.extend({
     render: function() {
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
         this.$('.analysis-configuration').append(this.innerView.$el);
-        if (this.model.get('mode') == false){
-            this.switchConfig();
+        if (this.model.get('selected') == true){
+            this.showAnalysisInspector();
         }
         return this;
     },
@@ -338,16 +329,12 @@ var ConfigInspector = Backbone.View.extend({
     /** Add a new configuration view to the sidebar */
     loadConfig : function(config) {
         var view = new Config({model: config});
-        //view.showAnalysisInspector();
         $('#configurations').append(view.render().el);
     }, 
 
     /** Create and add a new config model to the collection */
     addNewConfig : function(){
-        var configModel = new ConfigModel({name: "Request " + (this.collection.length+1), results: new ResultCollection([])})
-        if(this.collection.length == 0) { 
-            configModel.set('mode', false); 
-        }
+        var configModel = new ConfigModel({name: "Request " + (this.collection.length+1), results: new ResultCollection([])});
         configCollection.add(configModel);
     },
 });

@@ -196,14 +196,6 @@ body.waiting *
   margin-top: 0px; 
 }
 
-#configID { 
-  /* empty for now */ 
-}
-
-#analysisID { 
-  /* empty for now */ 
-}
-
 .sub-label{
   font-size: 0.6em !important;
   text-align: center; 
