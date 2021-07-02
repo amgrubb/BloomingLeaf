@@ -13,14 +13,14 @@ myNull = null;
  */ 
  var UserEvaluationBBM = Backbone.Model.extend({  
     initialize: function(options){  
-        _.extend({}, this.defaults, options)  
-        // TODO: Is absTP a letter or a number? It may need to be renamed.
-        this.absTP = options.absTP; // Integer Value   
+        _.extend({}, this.defaults, options)    
     },
 
     defaults: function(){ 
         return {
             assignedEvidencePair: '(no value)', //Evidence Pair
+            // TODO: Is absTP a letter or a number? It may need to be renamed.
+            absTP: 0, // Integer Value 
         }
     }
 });
@@ -50,7 +50,11 @@ var FunctionSegmentBBM = Backbone.Model.extend({
         this.refEvidencePair = options.refEvidencePair;   //a.k.a. Evaluation Value
         this.startTP = options.startTP; // Start time point (char) 0,A,B,C
         // Removed stopTP variable - stopTP is one letter after startTP or A is startTP is 0
-        this.startAT = options.startAT; // Assigned/Absolute Time - Integer time value. If not set defaults to undefined
+    },
+    defaults: function(){ 
+        return {
+            startAT: myNull, // Assigned/Absolute Time - Integer time value. If not set defaults to undefined
+        }
     }
 });
 
@@ -171,19 +175,15 @@ var IntentionBBM = Backbone.Model.extend({
             nodeActorID: null,                     // Assigned on release operation.
             nodeType: null,
             evolvingFunction: null, 
-            // initialValue: '(no value)',
             userEvaluationList: new UserEvaluationCollection([])
         }
     }, 
 
     /**
      * Allows you to find the UserEvaluationBBM with the intentionID and absTP 
-     * TODO - we may need to edit this later if we remove intentionID
      * 
-     * @param {String} cid 
-     * The cid of the IntentionBBM the userEvaluationList is in
      * @param {Integer} absTP 
-     * 
+     * Absolute Time - Integer time value
      * @returns an UserEvaluationBBM
      */
     getUserEvaluationBBM: function(absTP) {
@@ -212,9 +212,9 @@ var IntentionBBM = Backbone.Model.extend({
     changeInitialSatValue: function(initValue) {
         // Set the the first element of userEvaluationList to the initValue
         this.getUserEvaluationBBM(0).set('assignedEvidencePair', initValue);;
-        // this.set('initialValue', initValue);
-        var funcSegList = this.getFuncSegments();
+
         if (this.get('evolvingFunction') != null) {
+            var funcSegList = this.getFuncSegments();
             // If the function is C or UD & C set refEvidencePair to initValue
             if (this.get('evolvingFunction').get('type') == 'C' || 
                 (this.get('evolvingFunction').get('type') == 'UD' && funcSegList[0].get('type') == 'C')) { 
@@ -254,7 +254,6 @@ var IntentionBBM = Backbone.Model.extend({
     setEvolvingFunction: function(funcType) {
         this.set('evolvingFunction', new EvolvingFunctionBBM({type: funcType, functionSegList: []}));
         var initValue = this.getUserEvaluationBBM(0).get('assignedEvidencePair');
-        // var initValue = this.get('initialValue');
 
 
         // Creates the correct FunctionSegmentBBM(s) for the selected function type
@@ -294,13 +293,11 @@ var IntentionBBM = Backbone.Model.extend({
                 var seg1 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: '0011', startTP: '0', startAT: 0}); 
                 var seg2 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: '1100', startTP: 'A', startAT: myNull}); 
                 this.getUserEvaluationBBM(0).set('assignedEvidencePair', '0011');
-                // this.set('initialValue', '0011');
             } else if (funcType == 'DS') {
                 // Constant and Constant
                 var seg1 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: '1100', startTP: '0', startAT: 0}); 
                 var seg2 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: '0011', startTP: 'A', startAT: myNull}); 
                 this.getUserEvaluationBBM(0).set('assignedEvidencePair', '1100');
-                // this.set('initialValue', '1100');
             }
             this.getFuncSegments().push(seg1, seg2);
         }

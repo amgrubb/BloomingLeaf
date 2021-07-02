@@ -67,6 +67,8 @@ var ElementInspector = Backbone.View.extend({
 
     initialize: function() { // Listens for changes in the intentions
         this.listenTo(this, 'change: intention', this.initSatValueChanged); 
+        // Saves this.model.get('intention) as a local variable to access it more easily
+        this.intention = this.model.get('intention');
     },
      
     template: ['<script type="text/template" id="item-template">',
@@ -173,9 +175,6 @@ var ElementInspector = Backbone.View.extend({
      * Initializes the element inspector using previously defined templates
      */
     render: function() {
-        // Saves this.model.get('intention) as a local variable to access it more easily
-        this.intention = this.model.get('intention');
-
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()))
 
         // Attributes
@@ -476,7 +475,7 @@ var ElementInspector = Backbone.View.extend({
     validityCheck: function(event) {
         var functionType = this.$('.function-type').val();
         var initValue = this.$('#init-sat-value').val();
-        // Quick fix b/c functionType kept being reassigned null
+        // TODO: Quick fix b/c functionType kept being reassigned null
         if (functionType == null) {
             functionType = 'NT';
         }
