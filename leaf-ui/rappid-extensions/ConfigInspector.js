@@ -6,10 +6,10 @@
 /**
  * View for individual result buttons
  * 
- * {ResultModel} model
+ * {ResultBBM} model
  */
 var ResultView = Backbone.View.extend({
-    model: ResultModel,
+    model: ResultBBM,
 
     /** Pass in config along with model so that view has reference to parent */
     initialize: function(options){
@@ -49,7 +49,7 @@ var ResultView = Backbone.View.extend({
      */
     updateHighlight : function(){
         this.render();
-    }
+    },
 });
 
 /**
@@ -68,7 +68,7 @@ var ResultsDropdown = Backbone.View.extend({
     template: [
     '<div class="dropdown-container">',
     '</div>'].join(''),
-    
+
     /**
      * Resets listeners and resets template
      * Then adds all results associated with the configuration
@@ -92,10 +92,10 @@ var ResultsDropdown = Backbone.View.extend({
  * View for each configuration in the analysis configuration sidebar
  * Also containers ResultsDropdown as a inner view
  * 
- * {ConfigModel} model
+ * {ConfigBBM} model
  */
 var Config = Backbone.View.extend({
-    model: ConfigModel,
+    model: ConfigBBM,
 
     /** Create and render dropdown inner view, set listeners */
     initialize: function(){
@@ -334,7 +334,7 @@ var ConfigInspector = Backbone.View.extend({
 
     /** Create and add a new config model to the collection */
     addNewConfig : function(){
-        var configModel = new ConfigModel({name: "Request " + (this.collection.length+1), results: new ResultCollection([])});
+        var configModel = new ConfigBBM({name: "Request " + (this.collection.length+1), results: new ResultCollection([])})
         configCollection.add(configModel);
     },
 });
