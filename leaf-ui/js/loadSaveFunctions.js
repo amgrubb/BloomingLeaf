@@ -21,9 +21,8 @@ reader.onload = function() {
 	if (!reader.result || mode != 'Modelling') {
 		return;
 	}
-
+	console.log(reader.result);
 	var result = JSON.parse(reader.result);
-	console.log(result)
 	loadFromObject(result);
     var graphtext = JSON.stringify(graph.toJSON());
     document.cookie = "graph=" + graphtext;
@@ -38,15 +37,14 @@ reader.onload = function() {
  * @param {Object} obj
  */
 function loadFromObject(obj) {
-	
-	//console.log(obj)
-	var cells = obj.graph.cells;
+	graph.fromJSON(obj.graph);
 
-	for (let cell of cells) {
-		if (cell.type == "basic.Actor"){
+
+	for (let cell of graph.getCells()) {
+		if (cell.get('type') == "basic.Actor"){
 			//console.log("A")
 			createBBActor(cell)
-		}else if (cell.type == "Link") {
+		}else if (cell.get('type') == "Link") {
 			createBBLink(cell)
 			//console.log("L")
 
@@ -55,35 +53,7 @@ function loadFromObject(obj) {
 			//console.log("I")
 		}
 	}
-
-	// store deep copy of model for detecting model changes
-	// copy is NOT of type Model
-    //previousModel = JSON.parse(JSON.stringify(model));
-
-	// Clear any previous analysis data 
-	if (analysisMap.size != 0) {
-		analysisMap.clear();
-		currAnalysisConfig = null;
-	}
-
-	// If the object contains analysis, create analysis fields from JSON
-	if (obj.analysisMap != undefined) {
-		// Parse analysis as map
-		var tempMap = new Map(Object.entries(obj.analysisMap));
-		// Loop through all analysis configs
-		for(let configObj of tempMap.values()) {
-			var config = new AnalysisConfiguration(configObj.id, new AnalysisRequest(configObj.analysisRequest), configObj.initialPosition);
-			config.setResults(configObj.analysisResults);
-			// Add config to the global analysisMap
-			analysisMap.set(config.id, config);
-		}
-	} else {
-		// Else if no analysisMap param, grab the analysisRequest
-		analysisRequest = Object.assign(new AnalysisRequest, obj.analysisRequest);
-		
-	}
-
-	graph.fromJSON(obj.graph);
+	
 }
 
 /**
@@ -213,22 +183,23 @@ function getFuncSegList(arr) {
 
 */
 
-function createBBActor(obj){
-	console.log(obj);
-	var place = obj.actor;
+function createBBActor(cell){
+	console.log(cell);
+	var actor = cell.get('actor');
+	console.log(actor);
 	//console.log(place)
-	var actorbbm = new ActorBBM({type: place.attributes.type, actorName: place.attributes.actorName});
+	var actorbbm = new ActorBBM({type: actor.type, actorName: actor.attributes.actorName});
 	//is cid important???
 	//console.log(actorbbm)
-	var actor = new joint.shapes.basic.Actor({position: {x: obj.position.x, y: obj.position.y}, size: {height: obj.size.height, width: obj.size.width}})
-	actor.set('actor', actorbbm)
+	//var actor = new joint.shapes.basic.Actor({position: {x: obj.position.x, y: obj.position.y}, size: {height: obj.size.height, width: obj.size.width}})
+	cell.set('actor', actorbbm)
 	//console.log(place.cid)
-	actor.set('cid', place.cid)
+	//actor.set('cid', place.cid)
 
 	//console.log(obj.id)
-	actor.set('id', obj.id)
+	//actor.set('id', obj.id)
 
-	console.log(actor)
+	//console.log(actor)
 
 	
 	
@@ -270,6 +241,7 @@ function createBBElement(obj){
 function getModelJson() {
 	var obj = {};
 	obj.graph = graph.toJSON();
+	console.log(obj.graph);
 	//obj.model = model;
 	obj.analysisRequest = analysisRequest;
 	return obj;
@@ -304,6 +276,7 @@ function getModelAnalysisJson() {
 function getFullJson() {
 	var obj = {};
 	obj.graph = graph.toJSON();
+	console.log(graph.toJSON());
 	//obj.model = model;
 	// Convert to array tuple for JSON.stringify() functionality
 	// obj.analysisMap = Array.from(analysisMap.entries());
