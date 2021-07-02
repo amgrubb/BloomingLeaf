@@ -19,8 +19,7 @@ myNull = null;
     defaults: function(){ 
         return {
             assignedEvidencePair: '(no value)', //Evidence Pair
-            // TODO: Is absTP a letter or a number? It may need to be renamed.
-            absTP: 0, // Integer Value 
+            absTime: 0, // Integer Value 
         }
     }
 });
@@ -180,14 +179,14 @@ var IntentionBBM = Backbone.Model.extend({
     }, 
 
     /**
-     * Allows you to find the UserEvaluationBBM with the intentionID and absTP 
+     * Allows you to find the UserEvaluationBBM with the intentionID and absTime
      * 
-     * @param {Integer} absTP 
+     * @param {Integer} absTime 
      * Absolute Time - Integer time value
      * @returns an UserEvaluationBBM
      */
-    getUserEvaluationBBM: function(absTP) {
-        return this.get('userEvaluationList').findWhere({absTP: absTP});
+    getUserEvaluationBBM: function(absTime) {
+        return this.get('userEvaluationList').findWhere({absTime: absTime});
     },
 
     /**
