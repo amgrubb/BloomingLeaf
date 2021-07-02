@@ -238,7 +238,7 @@ var ElementInspector = Backbone.View.extend({
         // Set correct dropdown options for function type based on initial satisfaction value
         $('option').show(); // Clear the previous selection
         // Initialize evolvingFunction so the function type can be set as 'NT'
-        this.intention.set('evolvingFunction', new EvolvingFunctionBBM([]));
+        this.intention.set('evolvingFunction', new EvolvingFunctionBBM({}));
         if (this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair') == '(no value)'){
             // Hide all of the function options except for Stochastic is initial satisfaction value is '(no value)'
             $('option.B').hide(); 
