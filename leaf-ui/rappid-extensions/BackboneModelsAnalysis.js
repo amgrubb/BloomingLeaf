@@ -72,7 +72,8 @@ var ConfigModel = Backbone.Model.extend({
         userAssignmentsList : [],
         previousAnalysis: null,
         selected: true,
-        results : new ResultCollection([])
+        results : new ResultCollection([]),
+        mode: true,
     },
 
     /**

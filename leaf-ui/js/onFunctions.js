@@ -3,6 +3,8 @@ This file contains all the jQuery functions that are associated with buttons and
 It also contains the setup for Rappid elements.
 */
 
+// const { config } = require("process");
+
 /**
  * Event listeners for index.html toolbar functions
  */
@@ -419,12 +421,10 @@ function reassignIntentionIDs() {
 /**
  * Helper function for switching to Analysis view.
  */
-var inAnalysis = false;
 function switchToAnalysisMode() {
     setInteraction(false);
-    inAnalysis = true;
 	reassignIntentionIDs();
-	
+
 	// Clear the right panel
 	clearInspector();
 	
@@ -439,10 +439,12 @@ function switchToAnalysisMode() {
 	$('#symbolic-btn').css("display", "none");
 	$('#cycledetect-btn').css("display", "none");
     $('#dropdown-model').css("display", "");
+    
     //$('#on-off').css("display", "none");
 
     $('#simulate-single-path-btn').css("display", "");
     $('#next-state-btn').css("display", "");
+    $('#configID').css("display", ""); 
 
     // hide extra tools from modelling mode
     $('#model-toolbar').css("display", "none");
@@ -548,6 +550,7 @@ function switchToModellingMode() {
 	$('#cycledetect-btn').css("display","");
     $('#dropdown-model').css("display","none");
     $('#simulate-single-path-btn').css("display", "none");
+    $('#configID').css("display", "none"); 
     $('#next-state-btn').css("display", "none");
     $('#on-off').css("display", "");
 

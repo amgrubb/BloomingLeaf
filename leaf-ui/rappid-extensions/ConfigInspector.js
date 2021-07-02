@@ -101,8 +101,12 @@ var Config = Backbone.View.extend({
     initialize: function(){
         this.innerView = new ResultsDropdown({collection:this.model.get("results"), config: this.model});
         this.innerView.render();
+        // removes configurations
         this.model.on('destroy', this.remove, this);
-        this.model.on('change:selected', this.updateHighlight, this);
+        // changes the highlighted result 
+        this.model.on('change:selected', this.rerender, this);
+        this.model.on('switch', this.showAnalysisInspector, this);
+        // changes result name 
         this.model.on('change:name', this.renderName, this);
     },
 
@@ -123,21 +127,27 @@ var Config = Backbone.View.extend({
        '</script>'].join(''),
 
     events: {
+        //enables switching of results 
         'click .config-elements': 'switchConfig',
+        //enables removal of results 
+        'click .deleteconfig-button': 'removeConfig',
+        
         'click .dropdown-button' : 'toggleDropdown',
+        // enables renaming of results 
         'dblclick .config-elements': 'rename',
+        // set config name 
         'blur .config-input': 'setConfigName',
-        'keyup .config-input': 'checkForEnter',
-        'click .deleteconfig-button': function() {
-            this.removeConfig();
-        }
+        // only set the name if the user presses enter 
+        'keyup .config-input': 'checkForEnter'
     },
 
     /** Sets template and appends inner view */
     render: function() {
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
         this.$('.analysis-configuration').append(this.innerView.$el);
-        this.showAnalysisInspector();
+        if (this.model.get('mode') == false){
+            this.switchConfig();
+        }
         return this;
     },
 
@@ -192,13 +202,6 @@ var Config = Backbone.View.extend({
         this.showAnalysisInspector();
         this.model.trigger('change:switchConfigs', this.model);
         this.model.trigger('change:unselectResult', this.model);
-    },
-
-    /**
-     * Rerender highlight when select value changes
-     */
-    updateHighlight : function(){
-        this.rerender()
     },
 
     /**
@@ -316,20 +319,35 @@ var ConfigInspector = Backbone.View.extend({
         if(this.collection.length != 0){
             this.collection.each(this.loadConfig, this);
         } else {
-            this.addNewConfig();
+           this.addNewConfig();
         }
         return this;
+    },
+    /**
+     * Clears previous AnalysisInspector view (if any) and renders new view with current model
+     */
+     showAnalysisInspector: function(){
+        // If there is a previous sidebar view, clear it
+        clearInspector();
+        // Create and add new analysis sidebar view
+        var analysisInspector = new AnalysisInspector({model: this.model});
+        $('#analysisID').append(analysisInspector.el);
+        analysisInspector.render();
     },
 
     /** Add a new configuration view to the sidebar */
     loadConfig : function(config) {
         var view = new Config({model: config});
+        //view.showAnalysisInspector();
         $('#configurations').append(view.render().el);
-    },
+    }, 
 
     /** Create and add a new config model to the collection */
     addNewConfig : function(){
-        var configModel = new ConfigModel({name: "Configuration" + (this.collection.length+1), results: new ResultCollection([])})
+        var configModel = new ConfigModel({name: "Request " + (this.collection.length+1), results: new ResultCollection([])})
+        if(this.collection.length == 0) { 
+            configModel.set('mode', false); 
+        }
         configCollection.add(configModel);
     },
 });
