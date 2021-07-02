@@ -148,8 +148,8 @@ var AssignmentsTable = Backbone.View.extend({
      * For each function segment transition in the graph
      */
     displayAbsoluteIntentionAssignments: function() {
-        this.model.getIntentions().forEach(intentionCell => {
-            var evolvingFunction = intentionCell.get('evolvingFunction');
+        this.model.getIntentions().forEach(intentionBbm => {
+            var evolvingFunction = intentionBbm.get('evolvingFunction');
             console.log(funcSegList);
             if(evolvingFunction != null){
                 var funcSegList = evolvingFunction.get('functionSegList');
@@ -173,9 +173,8 @@ var AssignmentsTable = Backbone.View.extend({
      */
     displayAbsoluteRelationshipAssignments: function(){
         this.model.getLinks().forEach(linkCell => {
-            linkBbm = linkCell.get('link');
             if(linkCell.isValidAbsoluteRelationship()){
-                var linkRelationshipView = new LinkRelationshipView({model: linkBbm, linkSrc: linkCell.getSourceElement().get('intention').get('nodeName'), linkDest: linkCell.getTargetElement().get('intention').get('nodeName')});
+                var linkRelationshipView = new LinkRelationshipView({model: linkCell.get('link'), linkSrc: linkCell.getSourceElement().get('intention').get('nodeName'), linkDest: linkCell.getTargetElement().get('intention').get('nodeName')});
                 $('#link-list').append(linkRelationshipView.el);
                 linkRelationshipView.render()
             }
