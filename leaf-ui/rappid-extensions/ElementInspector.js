@@ -902,12 +902,12 @@ var ElementInspector = Backbone.View.extend({
                     var beginVal = funcSegments[i].get('startTP');
 
                     var len = this.intention.getFuncSegments().length;
-                    var startCheck = this.intention.getFuncSegments()[len - 1].get('startTP');
+                    var startCheck = this.intention.getFuncSegments()[i].get('startTP');
                     if (startCheck == '0') {
-                        var endVal = 'A';
+                        var endVal = 'B';
                     }        
                     else {
-                        var endVal = String.fromCharCode(startCheck.charCodeAt(0) + 1);
+                        var endVal = String.fromCharCode(startCheck.charCodeAt(0) + 2);
                     }
 
                     $("#repeat-begin").append(
