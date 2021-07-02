@@ -190,14 +190,14 @@ joint.shapes.basic.Resource = joint.shapes.basic.Intention.extend({
     }
 });
 
-joint.dia.CellLink = joint.dia.Link.extend({
+joint.shapes.basic.CellLink = joint.dia.Link.extend({
     // In initialize, everytime the target is changed, the code updates it
     initialize: function(){
         this.on('change:target', this.updateLinkPointers, this);
         this.on('change:source', this.updateLinkPointers, this);
     },
     defaults: joint.util.deepSupplement({
-        type: 'Link',
+        type: 'basic.CellLink',
         link: null,
     }),
 

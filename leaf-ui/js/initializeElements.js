@@ -239,7 +239,7 @@ paper = new joint.dia.Paper({
     gridSize: 10,
     perpendicularLinks: false,
     model: graph,
-    defaultLink: new joint.dia.CellLink({
+    defaultLink: new joint.shapes.basic.CellLink({
 		'attrs': {
 			'.connection': {stroke: '#000000'},
 			'.marker-source': {'d': '0'},

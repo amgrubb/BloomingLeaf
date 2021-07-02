@@ -21,8 +21,9 @@ reader.onload = function() {
 	if (!reader.result || mode != 'Modelling') {
 		return;
 	}
-	console.log(reader.result);
+	//console.log(reader.result);
 	var result = JSON.parse(reader.result);
+	console.log(result);
 	loadFromObject(result);
     var graphtext = JSON.stringify(graph.toJSON());
     document.cookie = "graph=" + graphtext;
@@ -37,16 +38,16 @@ reader.onload = function() {
  * @param {Object} obj
  */
 function loadFromObject(obj) {
+	console.log("read graph")
+	console.log(obj.graph)
 	graph.fromJSON(obj.graph);
-
-
 	for (let cell of graph.getCells()) {
 		if (cell.get('type') == "basic.Actor"){
 			//console.log("A")
 			createBBActor(cell)
-		}else if (cell.get('type') == "Link") {
+		}else if (cell.get('type') == "basic.CellLink") {
 			createBBLink(cell)
-			//console.log("L")
+			console.log("L")
 
 		}else{
 			createBBElement(cell)
@@ -184,47 +185,23 @@ function getFuncSegList(arr) {
 */
 
 function createBBActor(cell){
-	console.log(cell);
 	var actor = cell.get('actor');
-	console.log(actor);
-	//console.log(place)
 	var actorbbm = new ActorBBM({type: actor.type, actorName: actor.attributes.actorName});
-	//is cid important???
-	//console.log(actorbbm)
-	//var actor = new joint.shapes.basic.Actor({position: {x: obj.position.x, y: obj.position.y}, size: {height: obj.size.height, width: obj.size.width}})
 	cell.set('actor', actorbbm)
-	//console.log(place.cid)
-	//actor.set('cid', place.cid)
-
-	//console.log(obj.id)
-	//actor.set('id', obj.id)
-
-	//console.log(actor)
-
-	
-	
-
 }
 
-function createBBLink(obj){
-	console.log(obj);
-	var place = obj.link;
-	console.log(place)
-	var linkbbm = new LinkBBM({displayType: place.attributes.displayType, linkType: place.attributes.linkType, postType: place.attributes.postType, absTime: place.attributes.absTime, evolving: place.attributes.evolving});
-	//is cid important???
-	console.log(linkbbm)
-	//var actor = joint.shapes.basic.Actor({actor: actorbbm})
-	//console.log(actor)
-
+function createBBLink(cell){
+	var link = cell.get('link').attributes;
+	var linkbbm = new LinkBBM({displayType: link.displayType, linkType: link.linkType, postType: link.postType, absTime: link.absTime, evolving: link.evolving});
+	cell.set('link', linkbbm)
 }
 
-function createBBElement(obj){
-	console.log(obj);
-	var place = obj.intention;
-	console.log(place)
-	var intentionbbm = new IntentionBBM({nodeName: place.attributes.nodeName, nodeType: place.attributes.nodeType, nodeActorID: place.attributes.nodeActorID, evolvingFunction: place.attributes.evolvingFunction, initialValue: place.attributes.initialValue});
+function createBBElement(cell){
+	//console.log(obj);
+	var intention = cell.get('intention');
+	var intentionbbm = new IntentionBBM({nodeName: intention.nodeName, nodeType: intention.nodeType, nodeActorID: intention.nodeActorID, evolvingFunction: intention.evolvingFunction, initialValue: intention.initialValue});
 	//is cid important???
-	console.log(intentionbbm)
+	cell.set('intention', intentionbbm)
 	//var actor = joint.shapes.basic.Actor({actor: actorbbm})
 	//console.log(actor)
 

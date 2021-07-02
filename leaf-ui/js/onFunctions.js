@@ -738,15 +738,13 @@ graph.on("add", function(cell) {
     // Find how many cells are created on the graph
     var createdInstance = paper.findViewsInArea(paper.getArea())  
 
-	if (cell instanceof joint.dia.Link){
+	if (cell instanceof joint.shapes.basic.CellLink){
         if (graph.getCell(cell.get("source").id) instanceof joint.shapes.basic.Actor){
             cell.label(0,{attrs:{text:{text:"is-a"}}});
             cell.set('link', new LinkBBM({displayType: "actor", linkType: 'is-a'}));
 		} else{
             cell.set('link', new LinkBBM({}));
         }
-        cell.set('type', 'Link')
-        console.log(cell)
     } else if (cell instanceof joint.shapes.basic.Intention){
         // Creates an instance of a IntentionBBM from the cell
         var newIntentionBBM = new IntentionBBM({})
@@ -823,7 +821,7 @@ paper.on({
         // when interacting w/ cells on paper in modeling mode
         if (evt.data.interact) {
             var cell = cellView.model;
-            if (cell instanceof joint.dia.Link) { // Link behavior
+            if (cell instanceof joint.shapes.basic.CellLink) { // Link behavior
                 if (evt.data.move){
                     // if link moved, reparent
                     cell.reparent();
