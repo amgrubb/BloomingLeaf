@@ -255,48 +255,64 @@ var IntentionBBM = Backbone.Model.extend({
         var initValue = this.getUserEvaluationBBM(0).get('assignedEvidencePair');
 
 
+
+
         // Creates the correct FunctionSegmentBBM(s) for the selected function type
         if (funcType == 'C' || funcType == 'R' || funcType == 'I' || funcType == 'D' || funcType == 'UD') {
-            if (funcType == 'C') {
-                var seg =  new FunctionSegmentBBM({type: funcType, refEvidencePair: initValue, startTP: '0', startAT: 0});  
-            } else if (funcType == 'R') {
-                // The reference evidence pair for a Stochastic function is always 0000
-                var seg =  new FunctionSegmentBBM({type: funcType, refEvidencePair: '(no value)', startTP: '0', startAT: 0}); 
-            } else if (funcType == 'I') {
-                var seg =  new FunctionSegmentBBM({type: funcType, refEvidencePair: 'satisfied', startTP: '0', startAT: 0}); 
-            } else if (funcType == 'D') {
-                var seg =  new FunctionSegmentBBM({type: funcType, refEvidencePair: 'denied', startTP: '0', startAT: 0}); 
-            } else if (funcType == 'UD') {
-                var seg =  new FunctionSegmentBBM({type: 'C', refEvidencePair: initValue, startTP: '0', startAT: 0}); 
-            }
-            this.getFuncSegments().push(seg);
-        } else if (funcType == 'RC' || funcType == 'CR' || funcType == 'MP' || funcType == 'MN' || funcType == 'SD' || funcType == 'DS') {
-            if (funcType == 'RC') {
-                // Stochastic and Constant
-                var seg1 =  new FunctionSegmentBBM({type: 'R', refEvidencePair: '(no value)', startTP: '0', startAT: 0}); 
-                var seg2 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: null, startTP: 'A', startAT: myNull}); 
-            } else if (funcType == 'CR') {
-                // Constant and Stochastic
-                var seg1 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: initValue, startTP: '0', startAT: 0}); 
-                var seg2 =  new FunctionSegmentBBM({type: 'R', refEvidencePair: '(no value)', startTP: 'A', startAT: myNull}); 
-            } else if (funcType == 'MP') {
-                // Increase and Constant
-                var seg1 =  new FunctionSegmentBBM({type: 'I', refEvidencePair: null, startTP: '0', startAT: 0}); 
-                var seg2 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: null, startTP: 'A', startAT: myNull}); 
-            } else if (funcType == 'MN') {
-                // Decrease and Constant
-                var seg1 =  new FunctionSegmentBBM({type: 'D', refEvidencePair: null, startTP: '0', startAT: 0}); 
-                var seg2 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: null, startTP: 'A', startAT: myNull}); 
-            } else if (funcType == 'SD') {
-                // Constant and Constant
-                var seg1 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: '0011', startTP: '0', startAT: 0}); 
-                var seg2 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: '1100', startTP: 'A', startAT: myNull}); 
-                this.getUserEvaluationBBM(0).set('assignedEvidencePair', '0011');
-            } else if (funcType == 'DS') {
-                // Constant and Constant
-                var seg1 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: '1100', startTP: '0', startAT: 0}); 
-                var seg2 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: '0011', startTP: 'A', startAT: myNull}); 
-                this.getUserEvaluationBBM(0).set('assignedEvidencePair', '1100');
+            switch(funcType) {
+                case 'C':
+                    var seg =  new FunctionSegmentBBM({type: funcType, refEvidencePair: initValue, startTP: '0', startAT: 0});  
+                    break;
+                case 'R':
+                    //The reference evidence pair for a Stochastic function is always 0000
+                    var seg =  new FunctionSegmentBBM({type: funcType, refEvidencePair: '(no value)', startTP: '0', startAT: 0});
+                    break;
+                case 'I':
+                    var seg =  new FunctionSegmentBBM({type: funcType, refEvidencePair: 'satisfied', startTP: '0', startAT: 0}); 
+                    break;
+                case 'D':
+                    var seg =  new FunctionSegmentBBM({type: funcType, refEvidencePair: 'denied', startTP: '0', startAT: 0}); 
+                    break;
+                case 'UD':
+                    var seg =  new FunctionSegmentBBM({type: 'C', refEvidencePair: initValue, startTP: '0', startAT: 0}); 
+                    break;
+             }
+             this.getFuncSegments().push(seg);
+        } 
+        else if (funcType == 'RC' || funcType == 'CR' || funcType == 'MP' || funcType == 'MN' || funcType == 'SD' || funcType == 'DS') {
+            switch(funcType) {
+                case'RC':
+                    // Stochastic and Constant
+                    var seg1 =  new FunctionSegmentBBM({type: 'R', refEvidencePair: '(no value)', startTP: '0', startAT: 0}); 
+                    var seg2 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: null, startTP: 'A', startAT: myNull}); 
+                    break;
+                case 'CR':
+                    // Constant and Stochastic
+                    var seg1 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: initValue, startTP: '0', startAT: 0}); 
+                    var seg2 =  new FunctionSegmentBBM({type: 'R', refEvidencePair: '(no value)', startTP: 'A', startAT: myNull}); 
+                    break;
+                case 'MP':
+                    // Increase and Constant
+                    var seg1 =  new FunctionSegmentBBM({type: 'I', refEvidencePair: null, startTP: '0', startAT: 0}); 
+                    var seg2 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: null, startTP: 'A', startAT: myNull}); 
+                    break;
+                case 'MN':
+                    // Decrease and Constant
+                    var seg1 =  new FunctionSegmentBBM({type: 'D', refEvidencePair: null, startTP: '0', startAT: 0}); 
+                    var seg2 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: null, startTP: 'A', startAT: myNull}); 
+                    break;
+                case 'SD':
+                    // Constant and Constant
+                    var seg1 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: '0011', startTP: '0', startAT: 0}); 
+                    var seg2 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: '1100', startTP: 'A', startAT: myNull}); 
+                    this.getUserEvaluationBBM(0).set('assignedEvidencePair', '0011');
+                    break;
+                case 'DS':
+                    // Constant and Constant
+                    var seg1 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: '1100', startTP: '0', startAT: 0}); 
+                    var seg2 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: '0011', startTP: 'A', startAT: myNull}); 
+                    this.getUserEvaluationBBM(0).set('assignedEvidencePair', '1100');
+                    break;
             }
             this.getFuncSegments().push(seg1, seg2);
         }
