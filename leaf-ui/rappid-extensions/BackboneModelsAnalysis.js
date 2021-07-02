@@ -9,7 +9,7 @@
  * 
  */
 // TODO: Break AnalysisResult into params
-var ResultBBM = Backbone.Model.extend({
+var ResultModel = Backbone.Model.extend({
     idAttribute: "uid",
 
     defaults: {
@@ -22,10 +22,10 @@ var ResultBBM = Backbone.Model.extend({
 /**
  * Collection that holds results for analysis configurations
  * 
- * {ResultBBM} model
+ * {ResultModel} model
  */
 var ResultCollection = Backbone.Collection.extend({
-    model: ResultBBM,
+    model: ResultModel,
     
     /** Used for eventually storing and accessing collection on server */
     url: "/results",
@@ -55,7 +55,7 @@ var ResultCollection = Backbone.Collection.extend({
  * {AnalysisResult} previousAnalysis
  * 
  */
-var ConfigBBM = Backbone.Model.extend({
+var ConfigModel = Backbone.Model.extend({
     initialize : function(){
         this.results = new ResultCollection([]);
         this.listenTo(this, 'change:selected', this.updateSelected);
@@ -80,7 +80,7 @@ var ConfigBBM = Backbone.Model.extend({
      * when the backend returns an AnalysisResult
      */
     addResult : function(result){
-        var newResultModel = new ResultBBM({name: 'Result ' + (this.get('results').length+1), analysisResult : result, selected: true});
+        var newResultModel = new ResultModel({name: 'Result ' + (this.get('results').length+1), analysisResult : result, selected: true});
         this.get("results").add(newResultModel);
     },
 
@@ -95,10 +95,10 @@ var ConfigBBM = Backbone.Model.extend({
 /**
  * Collection that holds analysis configurations
  * 
- * {ConfigBBM} model
+ * {ConfigModel} model
  */
 var ConfigCollection = Backbone.Collection.extend({
-    model: ConfigBBM,
+    model: ConfigModel,
 
     /** Used for eventually storing and accessing collection on server */
     url: "/configurations",
