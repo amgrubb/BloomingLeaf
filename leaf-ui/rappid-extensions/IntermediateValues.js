@@ -2,7 +2,7 @@
 * Displays the Intermediate Values modal of the current Config for the user
 */
 var IntermediateValuesTable = Backbone.View.extend({
-    model: ConfigModel,
+    model: ConfigBBM,
     
     template: [
         //This is the intermediate values table modal
