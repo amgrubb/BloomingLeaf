@@ -237,6 +237,8 @@ var ElementInspector = Backbone.View.extend({
     checkInitialSatValue: function() {
         // Set correct dropdown options for function type based on initial satisfaction value
         $('option').show(); // Clear the previous selection
+        // Initialize evolvingFunction so the function type can be set as 'NT'
+        this.intention.set('evolvingFunction', new EvolvingFunctionBBM([]));
         if (this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair') == '(no value)'){
             // Hide all of the function options except for Stochastic is initial satisfaction value is '(no value)'
             $('option.B').hide(); 
@@ -475,10 +477,7 @@ var ElementInspector = Backbone.View.extend({
     validityCheck: function(event) {
         var functionType = this.$('.function-type').val();
         var initValue = this.$('#init-sat-value').val();
-        // TODO: Quick fix b/c functionType kept being reassigned null
-        if (functionType == null) {
-            functionType = 'NT';
-        }
+ 
         // If an element gets clicked, don't bother checking
         if (event == null) {
             return;
