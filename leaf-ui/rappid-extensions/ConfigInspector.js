@@ -128,9 +128,8 @@ var Config = Backbone.View.extend({
         'dblclick .config-elements': 'rename',
         'blur .config-input': 'setConfigName',
         'keyup .config-input': 'checkForEnter',
-        'click .deleteconfig-button': function(e) {
-            this.switchConfig(e);
-            this.removeConfig(e);
+        'click .deleteconfig-button': function() {
+            this.removeConfig();
         }
     },
 
