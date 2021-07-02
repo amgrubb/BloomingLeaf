@@ -8,7 +8,7 @@ var absoluteTimeValues;
 var saveIVT;
 var AnalysisInspector = Backbone.View.extend({
 	className: 'analysis-inspector',
-	model: ConfigModel,
+	model: ConfigBBM,
 	
 	template: ['<script type="text/template" id="item-template">',
 		'<div class="inspector-views">',
