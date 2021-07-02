@@ -132,14 +132,13 @@ var LinkInspector = Backbone.View.extend({
         $('#constant-links').val(this.link.get('linkType'));
         this.setValues($('#constant-links').val(), null, false);
         this.checkCellText();
+        console.log(this.model)
     },
 
     /**
      * Switches from Constant Relationship to Evolving Relationship
      */
     renderEvolving: function(){
-        this.link.set('linkType', 'and')
-        this.checkCellText();
         this.link.set('evolving', true);
         this.$el.html(_.template(this.evolvingtemplate)());
         $('#link-type-end').prop('disabled', true);
