@@ -112,7 +112,7 @@ var AssignmentsTable = Backbone.View.extend({
         var regex = new RegExp("^(([1-9]0*)+\\s+)*([1-9]+0*)*$");
         var absTimeElement = $('#abs-time-pts');
         if (regex.test(absTimeElement.val())) {
-            this.model.set('absTimePtsArr', absTimeElement.val().split(" "))
+            this.model.set('absTimePtsArr', absTimeElement.val().split(" ").map(i => Number(i)));
         } else {
             absTimeElement.val(this.model.get('absTimePtsArr').join(" "));
         }
@@ -150,7 +150,6 @@ var AssignmentsTable = Backbone.View.extend({
     displayAbsoluteIntentionAssignments: function() {
         this.model.getIntentions().forEach(intentionBbm => {
             var evolvingFunction = intentionBbm.get('evolvingFunction');
-            console.log(funcSegList);
             if(evolvingFunction != null){
                 var funcSegList = evolvingFunction.get('functionSegList');
                 if (funcSegList != undefined){
@@ -338,7 +337,7 @@ var IntentionRelationshipView = Backbone.View.extend({
     },
 
     /**
-     * Sets model startATP to the new time point 
+     * Sets model startAT to the new time point 
      * After checking if it is a number
      */
     updateAbsFuncSegValue: function(){
@@ -346,15 +345,15 @@ var IntentionRelationshipView = Backbone.View.extend({
         if (isNaN(newTime)) {
             return;
         }
-        this.model.set('startATP', newTime);
+        this.model.set('startAT', newTime);
     },
 
     /**
-     * Resets model startATP to -1, and resets UI input to be empty
+     * Resets model start AT to -1, and resets UI input to be empty
      */
     unassignAbsIntention: function(){
         $('#absFuncSegValue').val('');
-        this.model.set('startATP', -1);
+        this.model.set('startAT', -1);
     },
 
 });
@@ -408,7 +407,7 @@ var LinkRelationshipView = Backbone.View.extend({
     },
 
     /**
-     * Resets model startATP to -1, and resets UI input to be empty
+     * Resets model startAT to -1, and resets UI input to be empty
      */
     unassignAbsRelation: function(){
         $('#linkAbsRelation').val('');

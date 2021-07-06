@@ -98,13 +98,15 @@ var IntermediateValuesTable = Backbone.View.extend({
             if (funcSegTP != -1 && funcSegTP != myNull){
                 intentionTimes.push(funcSegTP);
             }
-        }
-        ));
+        }));
+        console.log(intentionTimes);
                                                         
         var allTimes = absTimeValues.concat(constraintTimes).concat(linkTimes).concat(intentionTimes);
+        console.log(allTimes);
         var absoluteTimePointsList = Array.from(new Set(allTimes));
+        console.log(absoluteTimePointsList);
         absoluteTimePointsList.sort(function(a,b) {return a-b})
-        return absoluteTimePointsList;
+        return absoluteTimePointsList.filter(TP => TP != 0);
     }
 });
 
@@ -117,7 +119,7 @@ var IntentionUserEvaluationsView = Backbone.View.extend({
 
     initialize: function(options){
         this.allAbsoluteTimePoints = options.allAbsoluteTimePoints;
-        this.functionSegmentList = this.model.getFuncSegments()
+        this.functionSegmentList = this.model.getFuncSegments();
     },
 
     template: [
@@ -135,6 +137,8 @@ var IntentionUserEvaluationsView = Backbone.View.extend({
         return this;
     },
 
+    // TODO: Currently only using initial Intention value as reference
+    // For UD logic should be able to check previous funcseg values instead
     loadSelect: function(){
         myNull = null;
 
@@ -152,13 +156,19 @@ var IntentionUserEvaluationsView = Backbone.View.extend({
                 if (i != this.functionSegmentList.length-1){
                     // Get the next function segment and it's startAT
                     funcSeg2 = this.functionSegmentList[i+1];
-                    startAT2 = funcSeg2.get('startAT')
+                    startAT2 = funcSeg2.get('startAT');
                     // If both startATs are valid and the absTime falls between them
                     // Stop iterating through function segments
                     if (startAT1 != myNull && startAT2 != myNull && 
                         startAT1 <= absTime && startAT2 > absTime){
                         funcType = funcSeg1.get('type');
                         refPair = funcSeg1.get('refEvidencePair');
+                        // If there is a user evaluation with a TP between (startAT1 inclusive) the two FuncSegments 
+                        // Use that assigned evidence pair as initial value
+                        lastUserEval = this.model.getLastUserEvaluationBetweenTPs(startAT1, startAT2);
+                        if (lastUserEval != null){
+                            initValue = lastUserEval.get('assignedEvidencePair');
+                        }
                         break;
                     }
                 // If this is both the last index and the first index
@@ -167,19 +177,36 @@ var IntentionUserEvaluationsView = Backbone.View.extend({
                 } else if (i == 0){
                     funcType = funcSeg1.get('type');
                     refPair = funcSeg1.get('refEvidencePair');
-                    initValue = this.model.get('initialValue');
+                    initValue = this.model.getUserEvaluationBBM(0).get('assignedEvidencePair');
                     break;
+                } else {
+                    if (startAT1 != myNull &&
+                        startAT1 <= absTime){
+                        // Use last UserEvaluationBBM assigned evidence pair as initial value
+                        // Since it is 0 inclusive there will always be at least one UserEval
+                        lastUserEval = this.model.getLastUserEvaluationBetweenTPs(0, startAT1);
+                        initValue = lastUserEval.get('assignedEvidencePair');
+                        funcType = funcSeg1.get('type');
+                        refPair = funcSeg1.get('refEvidencePair');
+                        break;
+                    }  
                 }
-            } 
-
+            }
+            console.log(funcType);
+            console.log(refPair);
+            console.log(initValue);
             // Get funcType from above, and use it to set optionsList
             switch (funcType) {
                 case "I":
                     var optionsList = this.increasingOrDecreasing(initValue, refPair, true);
+                    break;
                 case "D":
                     var optionsList = this.increasingOrDecreasing(initValue,refPair, false);
+                    break;
                 case "C":
+                    // TODO: How to handle - constant for the selected value but could be range (?)
                     var optionsList = [refPair];
+                    break;
                 default:
                     var optionsList = ['0000', '0011', '0010', '1100', '0100']
 
@@ -210,10 +237,10 @@ var IntentionUserEvaluationsView = Backbone.View.extend({
     increasingOrDecreasing: function(initValue, finalValue, increasing){
         if (increasing){
             // IMPORTANT: This list must stay in order from least satisfied to most satisfied for this function to work
-            var possibleValueList = ['0011','0010','0000','0100','1100'];
+            var possibleValueList = ['1100','0100','0000','0010','0011'];
         } else {
             // IMPORTANT: This list must stay in order from most satisfied to least satisfied for this function to work
-            var possibleValueList = ['1100','0100','0000','0010','0011'];
+            var possibleValueList = ['0011','0010','0000','0100','1100'];
         }
 
         // Return properly sliced list based on values passed in for init and final
@@ -246,11 +273,15 @@ var SelectUserEvaluationView = Backbone.View.extend({
         this.optionsList = options.optionsList;
         // Returns first user evaluation with absTP matching absTimePt
         // If none exist, it returns undefined
-        this.userEval = this.intention.get('userEvaluationList').findWhere({'absTP' : this.absTimePt});   
+        this.userEval = this.intention.get('userEvaluationList').findWhere({'absTime' : this.absTimePt});   
     },
 
+    // TODO: Add check for if optionsList only contains 1 value
+    // If so, automatically have that be the selected and only possible value
+    // Potentially using a different template so it is not a select but just text!
     render: function(){
         this.$el.html(_.template(this.template)());
+
         // Add dropdown options to HTML select element
         this.$('select').append(this.convertToOptions(this.optionsList));
 
@@ -283,7 +314,7 @@ var SelectUserEvaluationView = Backbone.View.extend({
         } else {
             // Create new UserEvaluationBBM and add it
             // To the intentionBBMs userEvaluationList
-            this.userEval = new UserEvaluationBBM({absTP: this.absTimePt, 
+            this.userEval = new UserEvaluationBBM({absTime: this.absTimePt, 
                                                      assignedEvidencePair: evaluationValue});
             this.intention.get('userEvaluationList').push(this.userEval);
         }

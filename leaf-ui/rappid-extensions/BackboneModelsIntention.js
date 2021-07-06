@@ -190,6 +190,19 @@ var IntentionBBM = Backbone.Model.extend({
     },
 
     /**
+     * @param {Integer} TP1 
+     * @param {Integer} TP2 
+     * @returns Last UserEvaluationBBMs between TP1 and TP2, or null if there is none
+     */
+    getLastUserEvaluationBetweenTPs: function(TP1, TP2){
+        var userEvals = this.get('userEvaluationList').filter(userEval => userEval.get('absTime') >= TP1 && userEval.get('absTime') < TP2);
+        if (userEvals.length > 0){
+            return userEvals[userEvals.length-1];
+        }
+        return null;
+    },
+
+    /**
     * @returns Array of FunctionSegmentBBMs, or null if it is not an evolvingFunction
     */
     getFuncSegments: function(){
@@ -384,8 +397,7 @@ var IntentionBBM = Backbone.Model.extend({
                 functionSegment.set('refEvidencePair', '0000'); // Set refEvidencePair
             }
         }     
-    }, 
-
+    },
 });
 
 
