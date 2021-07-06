@@ -200,7 +200,7 @@ var ElementInspector = Backbone.View.extend({
         
         // Turn off repeating by default
         this.repeatOptionsDisplay = false;
-        // TODO what does this do?
+        // Turn off display for repeat related elements and values
         this.setRepeatConstraintMode("TurnOff");
 
         // Load initial value for function type in the html select element
