@@ -776,7 +776,6 @@ var ElementInspector = Backbone.View.extend({
         var start = $("").val();
         var stopRep = $("").val();
         var count = $("#repeat-end2").val();
-        console.log(begin + " " + end + " " + count);
         // var absTime = $("").val();
         var absTime = null;
 
