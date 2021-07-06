@@ -45,13 +45,13 @@ var FunctionSegmentBBM = Backbone.Model.extend({
 
     initialize: function (options) {
         _.extend({}, this.defaults, options)
-        this.type = options.type;           // Atomic function types. 
-        this.refEvidencePair = options.refEvidencePair;   //a.k.a. Evaluation Value
-        this.startTP = options.startTP; // Start time point (char) 0,A,B,C
-        // Removed stopTP variable - stopTP is one letter after startTP or A is startTP is 0
     },
     defaults: function(){ 
         return {
+            type:'Constant',           // Atomic function types. 
+            refEvidencePair: 0000,   //a.k.a. Evaluation Value
+            startTP: 0,             // Start time point (char) 0,A,B,C
+            // Removed stopTP variable - stopTP is one letter after startTP or A is startTP is 0
             startAT: myNull, // Assigned/Absolute Time - Integer time value. If not set defaults to undefined
         }
     }

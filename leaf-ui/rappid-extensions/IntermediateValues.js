@@ -57,7 +57,6 @@ var IntermediateValuesTable = Backbone.View.extend({
         /** 
          * Add all time points to top of table  
          */
-        // TODO: Hate this, can we make it better?
         for (var s = 0; s < absoluteTimePointsList.length; s++) {
             $('#header-row').append('<th>Absolute</th>');
             $('#intentionRows').append('<th>' + absoluteTimePointsList[s] + '</th>');
@@ -92,19 +91,15 @@ var IntermediateValuesTable = Backbone.View.extend({
         var constraintTimes = this.model.get('constraints').map(constraint => constraint.get('absTP'));
         var linkTimes = this.model.getLinks().map(linkCell => linkCell.get('link').get('absTP'));
         var intentionTimes = [];
-        // TODO: Messy, can we clean up?
         this.model.getIntentions().forEach(intentionBBM => intentionBBM.getFuncSegments()?.forEach(funcSeg => {
             funcSegTP = funcSeg.get('startAT')
             if (funcSegTP != -1 && funcSegTP != myNull){
                 intentionTimes.push(funcSegTP);
             }
         }));
-        console.log(intentionTimes);
                                                         
         var allTimes = absTimeValues.concat(constraintTimes).concat(linkTimes).concat(intentionTimes);
-        console.log(allTimes);
         var absoluteTimePointsList = Array.from(new Set(allTimes));
-        console.log(absoluteTimePointsList);
         absoluteTimePointsList.sort(function(a,b) {return a-b})
         return absoluteTimePointsList.filter(TP => TP != 0);
     }
@@ -137,8 +132,12 @@ var IntentionUserEvaluationsView = Backbone.View.extend({
         return this;
     },
 
-    // TODO: Currently only using initial Intention value as reference
-    // For UD logic should be able to check previous funcseg values instead
+    /**
+     * Iterates through all absolute time points
+     * And determines the appropriate range of value options
+     * Then passes those options to a SelectUserEvaluationView
+     * To be converted into a select dropdown and added to the table
+     */
     loadSelect: function(){
         myNull = null;
 
@@ -192,9 +191,6 @@ var IntentionUserEvaluationsView = Backbone.View.extend({
                     }  
                 }
             }
-            console.log(funcType);
-            console.log(refPair);
-            console.log(initValue);
             // Get funcType from above, and use it to set optionsList
             switch (funcType) {
                 case "I":
@@ -204,7 +200,6 @@ var IntentionUserEvaluationsView = Backbone.View.extend({
                     var optionsList = this.increasingOrDecreasing(initValue,refPair, false);
                     break;
                 case "C":
-                    // TODO: How to handle - constant for the selected value but could be range (?)
                     var optionsList = [refPair];
                     break;
                 default:
@@ -278,7 +273,7 @@ var SelectUserEvaluationView = Backbone.View.extend({
 
     // TODO: Add check for if optionsList only contains 1 value
     // If so, automatically have that be the selected and only possible value
-    // Potentially using a different template so it is not a select but just text!
+    // Potentially using a different template
     render: function(){
         this.$el.html(_.template(this.template)());
 

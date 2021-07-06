@@ -319,14 +319,14 @@ var IntentionRelationshipView = Backbone.View.extend({
         '<script type="text/template" id="item-template">',
         '<td class= "namestartTP"></td>',
         '<td class= "func-type"></td>',
-        '<td><input id="absFuncSegValue" type="number" name="sth" value="<% if (startAT == -1) {%> "" <%} else { %> startAT <% } %>"></td>',
-        '<td><button id="unassign-abs-intent-btn"> Unassign </button></td>',
+        '<td><input class="absFuncSegValue" type="number" name="sth" value="<%- startAT %>"></td>',
+        '<td><button class="unassign-abs-intent-btn"> Unassign </button></td>',
         '</script>'
     ].join(''),
 
     events: {
-        'change #absFuncSegValue' : 'updateAbsFuncSegValue',
-        'click #unassign-abs-intent-btn' : 'unassignAbsIntention'
+        'change .absFuncSegValue' : 'updateAbsFuncSegValue',
+        'click .unassign-abs-intent-btn' : 'unassignAbsIntention'
     },
 
     render: function(){
@@ -341,7 +341,7 @@ var IntentionRelationshipView = Backbone.View.extend({
      * After checking if it is a number
      */
     updateAbsFuncSegValue: function(){
-        var newTime = parseInt($('#absFuncSegValue').val());
+        var newTime = parseInt(this.$('.absFuncSegValue').val());
         if (isNaN(newTime)) {
             return;
         }
@@ -352,8 +352,8 @@ var IntentionRelationshipView = Backbone.View.extend({
      * Resets model start AT to -1, and resets UI input to be empty
      */
     unassignAbsIntention: function(){
-        $('#absFuncSegValue').val('');
-        this.model.set('startAT', -1);
+        this.$('.absFuncSegValue').val('');
+        this.model.set('startAT', null);
     },
 
 });
