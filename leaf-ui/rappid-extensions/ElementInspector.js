@@ -200,7 +200,7 @@ var ElementInspector = Backbone.View.extend({
         
         // Turn off repeating by default
         this.repeatOptionsDisplay = false;
-        // TODO what does this do?
+        // Turn off display for repeat related elements and values
         this.setRepeatConstraintMode("TurnOff");
 
         // Load initial value for function type in the html select element
@@ -238,7 +238,9 @@ var ElementInspector = Backbone.View.extend({
         // Set correct dropdown options for function type based on initial satisfaction value
         $('option').show(); // Clear the previous selection
         // Initialize evolvingFunction so the function type can be set as 'NT'
-        this.intention.set('evolvingFunction', new EvolvingFunctionBBM({}));
+        if (this.intention.get('evolvingFunction') == null) {
+            this.intention.set('evolvingFunction', new EvolvingFunctionBBM({}));
+        }
         if (this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair') == '(no value)'){
             // Hide all of the function options except for Stochastic is initial satisfaction value is '(no value)'
             $('option.B').hide(); 
@@ -325,13 +327,15 @@ var ElementInspector = Backbone.View.extend({
         // evolvingFunction is defined before renderUserDefined() is called so it cannot be null 
         var funcSegments = this.intention.getFuncSegments();
         var len = funcSegments.length;
-
-        for (let funcSegment in funcSegments){
+        
+        // Iterates over funcSegments
+        funcSegments.forEach(
+            element => {
             // set the initial values 
-            $(".user-sat-value").last().val(satisfactionValuesDict[funcSegment.get('refEvidencePair')].name);
-            $(".user-function-type").last().val(funcSegment.get('type'));    
+            $(".user-sat-value").last().val(satisfactionValuesDict[element.get('refEvidencePair')].name);
+            $(".user-function-type").last().val(element.get('type'));    
 
-            if (funcSegment !== funcSegments[len - 1]) {
+            if (element !== funcSegments[len - 1]) {
                 // if it is not the last function segment, clone the select tags,
                 // and grey out the current select tags
                 var html = this.userConstraintsHTML.clone();
@@ -341,7 +345,7 @@ var ElementInspector = Backbone.View.extend({
                 $(".user-function-type").last().css("background-color", 'grey');
                 html.appendTo(this.$('#all-user-constraints'));
             }
-        }
+            })
 
         if (this.intention.get('evolvingFunction').get('hasRepeat')) {
             this.repeatOptionsDisplay = true;
@@ -771,7 +775,7 @@ var ElementInspector = Backbone.View.extend({
         // TODO: Update template, eventually an absTime parameter will be added to the user input
         var start = $("").val();
         var stopRep = $("").val();
-        var count = $("").val();
+        var count = $("#repeat-end2").val();
         // var absTime = $("").val();
         var absTime = null;
 
@@ -792,7 +796,7 @@ var ElementInspector = Backbone.View.extend({
         } else {
 
             $("#repeat-error").hide();
-            this.intention.get('evolvingFunction').setRepeatingFunction(start, stopRep, count, absTime);
+            this.intention.get('evolvingFunction').setRepeatingFunction(begin, end, count, absTime);
         }
         this.updateChartUserDefined(null); 
     },
@@ -898,12 +902,12 @@ var ElementInspector = Backbone.View.extend({
                     var beginVal = funcSegments[i].get('startTP');
 
                     var len = this.intention.getFuncSegments().length;
-                    var startCheck = this.intention.getFuncSegments()[len - 1].get('startTP');
+                    var startCheck = this.intention.getFuncSegments()[i].get('startTP');
                     if (startCheck == '0') {
-                        var endVal = 'A';
+                        var endVal = 'B';
                     }        
                     else {
-                        var endVal = String.fromCharCode(startCheck.charCodeAt(0) + 1);
+                        var endVal = String.fromCharCode(startCheck.charCodeAt(0) + 2);
                     }
 
                     $("#repeat-begin").append(
