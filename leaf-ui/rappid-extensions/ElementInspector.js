@@ -220,6 +220,13 @@ var ElementInspector = Backbone.View.extend({
 
         this.updateCell();   
     },  
+
+    rerender: function() {
+        this.innerView.$el.detach()
+        this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
+        this.$('.inspector-views').append(this.innerView.$el);
+        return this;
+    },
     
     /**
     * Removes the view so we don't have multiple ones in the sidebar
@@ -313,53 +320,6 @@ var ElementInspector = Backbone.View.extend({
         };
 
         return satValueOptions;
-    },
-
-
-    /**
-     * Initializes components to display user defined functions
-     */
-    renderUserDefined: function(){  
-        this.$('#markedValue').hide();
-        $(".function-type").val('UD');
-
-        // Load the user defined constraints
-        // evolvingFunction is defined before renderUserDefined() is called so it cannot be null 
-        var funcSegments = this.intention.getFuncSegments();
-        var len = funcSegments.length;
-        
-        // Iterates over funcSegments
-        funcSegments.forEach(
-            element => {
-            // set the initial values 
-            $(".user-sat-value").last().val(satisfactionValuesDict[element.get('refEvidencePair')].name);
-            $(".user-function-type").last().val(element.get('type'));    
-
-            if (element !== funcSegments[len - 1]) {
-                // if it is not the last function segment, clone the select tags,
-                // and grey out the current select tags
-                var html = this.userConstraintsHTML.clone();
-                $(".user-sat-value").last().prop('disabled', true);
-                $(".user-sat-value").last().css("background-color",'grey');
-                $(".user-function-type").last().prop('disabled', true);
-                $(".user-function-type").last().css("background-color", 'grey');
-                html.appendTo(this.$('#all-user-constraints'));
-            }
-            })
-
-        if (this.intention.get('evolvingFunction').get('hasRepeat')) {
-            this.repeatOptionsDisplay = true;
-
-            this.setRepeatConstraintMode("TurnOn");
-            this.setRepeatConstraintMode("Update");
-
-            $("#repeat-begin").val(this.intention.get('evolvingFunction').get('repStart'));
-            $("#repeat-end").val(this.intention.get('evolvingFunction').get('repStop'));
-            $("#repeat-end2").val(this.intention.get('evolvingFunction').get('repCount'));
-            $("#repeat-end3").val(this.intention.get('evolvingFunction').get('repAbsTime'));
-        }
-
-        this.updateChartUserDefined(null);  
     },
 
     /**
@@ -532,6 +492,52 @@ var ElementInspector = Backbone.View.extend({
         }
         this.$('#markedValue').change();
         return;
+    },
+
+    /**
+     * Initializes components to display user defined functions
+     */
+     renderUserDefined: function(){  
+        this.$('#markedValue').hide();
+        $(".function-type").val('UD');
+
+        // Load the user defined constraints
+        // evolvingFunction is defined before renderUserDefined() is called so it cannot be null 
+        var funcSegments = this.intention.getFuncSegments();
+        var len = funcSegments.length;
+        
+        // Iterates over funcSegments
+        funcSegments.forEach(
+            element => {
+            // set the initial values 
+            $(".user-sat-value").last().val(satisfactionValuesDict[element.get('refEvidencePair')].name);
+            $(".user-function-type").last().val(element.get('type'));    
+
+            if (element !== funcSegments[len - 1]) {
+                // if it is not the last function segment, clone the select tags,
+                // and grey out the current select tags
+                var html = this.userConstraintsHTML.clone();
+                $(".user-sat-value").last().prop('disabled', true);
+                $(".user-sat-value").last().css("background-color",'grey');
+                $(".user-function-type").last().prop('disabled', true);
+                $(".user-function-type").last().css("background-color", 'grey');
+                html.appendTo(this.$('#all-user-constraints'));
+            }
+            })
+
+        if (this.intention.get('evolvingFunction').get('hasRepeat')) {
+            this.repeatOptionsDisplay = true;
+
+            this.setRepeatConstraintMode("TurnOn");
+            this.setRepeatConstraintMode("Update");
+
+            $("#repeat-begin").val(this.intention.get('evolvingFunction').get('repStart'));
+            $("#repeat-end").val(this.intention.get('evolvingFunction').get('repStop'));
+            $("#repeat-end2").val(this.intention.get('evolvingFunction').get('repCount'));
+            $("#repeat-end3").val(this.intention.get('evolvingFunction').get('repAbsTime'));
+        }
+
+        this.updateChartUserDefined(null);  
     },
 
     /**
@@ -970,5 +976,45 @@ var ElementInspector = Backbone.View.extend({
     clear: function(){
         this.$el.html('');
     }
- }
+}
 );
+
+/************************************************** FunctionSegmentBBM View **************************************************/
+
+var FuncSegView = Backbone.View.extend({
+     model: joint.shapes.basic.Intention, 
+
+    /** Pass in a reference to parent configuration on intialization */
+    initialize: function(options){
+        this.config = options.config;
+    },
+
+    template: ['<script type="text/template" id="item-template">',
+            '<div class="inspector-views">',
+                '</select>',
+                '<div id="user-constraints">',
+                    '<div id="all-user-constraints">',
+                        '<div id="new-user-constraints">',
+                            '<select class="user-function-type user-defined-select">',
+                                '<option value=C> Constant </option>',
+                                '<option value=R> Stochastic </option>',
+                                '<option value=I> Increase </option>',
+                                '<option value=D> Decrease </option>',
+                            '</select>',
+                            '<select class="user-sat-value user-defined-select">',
+                                '<option value=none selected> None (⊥, ⊥) </option>',
+                                '<option value=satisfied> Satisfied (F, ⊥) </option>',
+                                '<option value=partiallysatisfied> Partially Satisfied (P, ⊥) </option>',
+                                '<option value=partiallydenied> Partially Denied (⊥, P)</option>',
+                                '<option value=denied> Denied (⊥, F)</option>',
+                                '<option value="(no value)"> (no value) </option>',
+                            '</select>',
+                        '</div>',
+                    '</div>',
+                '</div>',
+            '</div>',
+            '<br>',
+            '<canvas id="chart" width="240" height="240"></canvas>',
+            '</script>'].join(''),
+
+});
