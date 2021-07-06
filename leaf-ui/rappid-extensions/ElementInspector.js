@@ -775,7 +775,8 @@ var ElementInspector = Backbone.View.extend({
         // TODO: Update template, eventually an absTime parameter will be added to the user input
         var start = $("").val();
         var stopRep = $("").val();
-        var count = $("").val();
+        var count = $("#repeat-end2").val();
+        console.log(begin + " " + end + " " + count);
         // var absTime = $("").val();
         var absTime = null;
 
@@ -796,7 +797,7 @@ var ElementInspector = Backbone.View.extend({
         } else {
 
             $("#repeat-error").hide();
-            this.intention.get('evolvingFunction').setRepeatingFunction(start, stopRep, count, absTime);
+            this.intention.get('evolvingFunction').setRepeatingFunction(begin, end, count, absTime);
         }
         this.updateChartUserDefined(null); 
     },
