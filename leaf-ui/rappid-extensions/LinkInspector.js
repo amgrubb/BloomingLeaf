@@ -213,6 +213,7 @@ var LinkInspector = Backbone.View.extend({
             }
         }
         $('#link-type-end option[value= \'' + begin + '\']').hide(); // Hide already selected linkType value
+        this.checkCellText()
         
     },
 
@@ -287,7 +288,7 @@ var LinkInspector = Backbone.View.extend({
             this.model.label(0, {position: 0.5, attrs: {text: {text: linkType + " | " + postType}}});
         } else{
             this.link.set('linkType', linkType);
-            this.model.set('postType', null);
+            this.link.set('postType', null);
             this.model.label(0 , {position: 0.5, attrs: {text: {text: linkType}}});
         } 
     }
