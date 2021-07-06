@@ -69,6 +69,9 @@ var ElementInspector = Backbone.View.extend({
         this.listenTo(this, 'change: intention', this.initSatValueChanged); 
         // Saves this.model.get('intention) as a local variable to access it more easily
         this.intention = this.model.get('intention');
+        // Creates new view 
+        this.innerView = new FuncSegView({model: this.intention.get('evolvingFunction').get('functionSegList'), intention: this.model});
+        this.innerView.render();
     },
      
     template: ['<script type="text/template" id="item-template">',
@@ -176,6 +179,7 @@ var ElementInspector = Backbone.View.extend({
      */
     render: function() {
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()))
+        this.$('.inspector-views').append(this.innerView.$el);
 
         // Attributes
         this.chart = new ChartObj();
@@ -431,6 +435,7 @@ var ElementInspector = Backbone.View.extend({
         }
 
         this.updateChart(); 
+        this.rerender();
     },
 
     /**
@@ -982,11 +987,11 @@ var ElementInspector = Backbone.View.extend({
 /************************************************** FunctionSegmentBBM View **************************************************/
 
 var FuncSegView = Backbone.View.extend({
-     model: joint.shapes.basic.Intention, 
+     model: FunctionSegmentBBM, 
 
     /** Pass in a reference to parent configuration on intialization */
     initialize: function(options){
-        this.config = options.config;
+        this.intention = options.intention;
     },
 
     template: ['<script type="text/template" id="item-template">',
@@ -1011,5 +1016,22 @@ var FuncSegView = Backbone.View.extend({
                 '</div>',
                 '<br>',
                 '</script>'].join(''),
+
+    events: {
+        'change .repeat-select':'selectRepeatValues',
+        'change .repeat-select2':'selectNumRepeatValues',
+        'change .repeat-select3':'selectAbsoluteLength',
+
+        'click #segment-add': 'addSegment',
+        'click #constraint-repeat': 'repeatConstraintControl',
+        'click #constraint-restart': 'removeUserConstraints',
+        'keyup .cell-attrs-text': 'nameAction',
+        'clearInspector .inspector-views' : 'removeView'
+    },
+
+    render: function() {
+        this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
+        return this;
+    },
 
 });
