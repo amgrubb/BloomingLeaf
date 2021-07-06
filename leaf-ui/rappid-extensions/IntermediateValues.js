@@ -1,3 +1,4 @@
+myNull = null;
 /**
 * Displays the Intermediate Values modal of the current Config for the user
 */
@@ -93,7 +94,7 @@ var IntermediateValuesTable = Backbone.View.extend({
         var intentionTimes = [];
         this.model.getIntentions().forEach(intentionBBM => intentionBBM.getFuncSegments()?.forEach(funcSeg => {
             funcSegTP = funcSeg.get('startAT')
-            if (funcSegTP != -1 && funcSegTP != myNull){
+            if (funcSegTP != myNull){
                 intentionTimes.push(funcSegTP);
             }
         }));
@@ -139,7 +140,6 @@ var IntentionUserEvaluationsView = Backbone.View.extend({
      * To be converted into a select dropdown and added to the table
      */
     loadSelect: function(){
-        myNull = null;
 
         // Iterate through all time points
         for (let absTime of this.allAbsoluteTimePoints){
@@ -147,7 +147,9 @@ var IntentionUserEvaluationsView = Backbone.View.extend({
             refPair = null;
             initValue = null;
 
+            // Iterate through all FuncSegBBMs
             for (let i=0; i < this.functionSegmentList.length; i++){
+                // Get current FunSegBBM and its startAT
                 funcSeg1 = this.functionSegmentList[i];
                 startAT1 = funcSeg1.get('startAT');
                 
@@ -179,12 +181,13 @@ var IntentionUserEvaluationsView = Backbone.View.extend({
                     initValue = this.model.getUserEvaluationBBM(0).get('assignedEvidencePair');
                     break;
                 } else {
+                    // If AT is not null and less than absTime
                     if (startAT1 != myNull &&
                         startAT1 <= absTime){
                         // Use last UserEvaluationBBM assigned evidence pair as initial value
                         // Since it is 0 inclusive there will always be at least one UserEval
-                        lastUserEval = this.model.getLastUserEvaluationBetweenTPs(0, startAT1);
-                        initValue = lastUserEval.get('assignedEvidencePair');
+                        initValue = this.model.getLastUserEvaluationBetweenTPs(0, startAT1)
+                                                .get('assignedEvidencePair');
                         funcType = funcSeg1.get('type');
                         refPair = funcSeg1.get('refEvidencePair');
                         break;
