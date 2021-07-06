@@ -25,7 +25,17 @@ reader.onload = function() {
 	var result = JSON.parse(reader.result);
 	console.log(result);
 	loadFromObject(result);
-    var graphtext = JSON.stringify(graph.toJSON());
+    var graphtext = JSON.stringify(graph.toJSON(), function(key, value) {
+		if(key == 'models') {
+			//console.log(value)
+		  return value[0].attributes;
+		} else if (key == '_byId'){
+			return undefined
+		} else{
+			//console.log(key+ " " + value)
+		  return value;
+		}
+	  });
     document.cookie = "graph=" + graphtext;
 }
 
@@ -39,18 +49,23 @@ reader.onload = function() {
  */
 function loadFromObject(obj) {
 	console.log("read graph")
-	console.log(obj.graph)
-	graph.fromJSON(obj.graph);
-	for (let cell of graph.getCells()) {
+	console.log(obj.cells)
+	graph.fromJSON(obj);
+	var cells = graph.getCells();
+	console.log(cells[1])
+	for (var i = 0; i < cells.length; i++) {
+		cell = cells[i];
 		if (cell.get('type') == "basic.Actor"){
 			//console.log("A")
 			createBBActor(cell)
 		}else if (cell.get('type') == "basic.CellLink") {
 			createBBLink(cell)
-			console.log("L")
+			//console.log("L")
 
 		}else{
-			createBBElement(cell)
+			var userEval = obj.cells[i].intention.attributes.userEvaluationList.models;
+			//console.log(userEval)
+			createBBElement(cell, userEval)
 			//console.log("I")
 		}
 	}
@@ -196,15 +211,22 @@ function createBBLink(cell){
 	cell.set('link', linkbbm)
 }
 
-function createBBElement(cell){
-	//console.log(obj);
+function createBBElement(cell, userEval){
+	//console.log(cell)
 	var intention = cell.get('intention');
-	var intentionbbm = new IntentionBBM({nodeName: intention.nodeName, nodeType: intention.nodeType, nodeActorID: intention.nodeActorID, evolvingFunction: intention.evolvingFunction, initialValue: intention.initialValue});
-	//is cid important???
-	cell.set('intention', intentionbbm)
-	//var actor = joint.shapes.basic.Actor({actor: actorbbm})
-	//console.log(actor)
+	console.log(intention)
+	var evol = intention.attributes.evolvingFunction;
+	//console.log(evol)
+	var intentionbbm = new IntentionBBM({nodeName: intention.nodeName, nodeType: intention.nodeType});
+	//console.log(intention)
+	var evolving = new EvolvingFunctionBBM({type: evol.type, functionSegList: evol.functionSegList, hasRepeat: evol.hasRepeat, repStart: evol.repStart, repStop: evol.repStop, repCount: evol.repCount, repAbsTime: evol.repAbsTime});
+	//console.log(evolving)
+	console.log(userEval)
+	intentionbbm.get('userEvaluationList').push(new UserEvaluationBBM({assignedEvidencePair: userEval.assignedEvidencePair, absTime: userEval.absTime}))
+	intentionbbm.set('evolvingFunction', evolving)
 
+	cell.set('intention', intentionbbm)
+	//console.log(cell)
 }
 
 
@@ -216,11 +238,19 @@ function createBBElement(cell){
  * @returns {Object}
  */
 function getModelJson() {
-	var obj = {};
-	obj.graph = graph.toJSON();
-	console.log(obj.graph);
-	//obj.model = model;
-	obj.analysisRequest = analysisRequest;
+	var obj = graph.toJSON();
+	//TODO: Make it so that the download takes the entire userevaluationlist instead of the last one
+	obj = JSON.stringify(obj, function(key, value) {
+		if(key == 'models') {
+			//console.log(value)
+		  return value[0].attributes;
+		} else if (key == '_byId'){
+			return undefined
+		} else{
+			//console.log(key+ " " + value)
+		  return value;
+		}
+	  })
 	return obj;
 }
 

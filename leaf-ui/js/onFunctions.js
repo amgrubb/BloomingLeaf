@@ -680,7 +680,7 @@ $('#btn-save').on('click', function() {
        // EVO.revertIntentionsText(graph.getElements(), paper);    
 		var fileName = name + ".json";
 		var obj = getModelJson();
-        download(fileName, JSON.stringify(obj));
+        download(fileName, obj);
         //IntentionColoring.refresh();
 	}
 });
