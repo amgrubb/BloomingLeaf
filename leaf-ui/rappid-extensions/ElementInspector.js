@@ -69,9 +69,13 @@ var ElementInspector = Backbone.View.extend({
         this.listenTo(this, 'change: intention', this.initSatValueChanged); 
         // Saves this.model.get('intention) as a local variable to access it more easily
         this.intention = this.model.get('intention');
+        // Only creates the FunctionSegmentView if there is a function segment
+        if (this.intention.get('evolvingFunction') != null) {
         // Creates new view 
+        // the model assignment is incorrect here
         this.innerView = new FuncSegView({model: this.intention.get('evolvingFunction').get('functionSegList'), intention: this.model});
         this.innerView.render();
+                }
     },
      
     template: ['<script type="text/template" id="item-template">',
@@ -179,7 +183,7 @@ var ElementInspector = Backbone.View.extend({
      */
     render: function() {
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()))
-        this.$('.inspector-views').append(this.innerView.$el);
+        
 
         // Attributes
         this.chart = new ChartObj();
@@ -221,7 +225,7 @@ var ElementInspector = Backbone.View.extend({
                 this.displayFunctionSatValue(null);
             }
         }
-
+        this.$('.inspector-views').append(this.innerView.$el);
         this.updateCell();   
     },  
 
@@ -981,8 +985,7 @@ var ElementInspector = Backbone.View.extend({
     clear: function(){
         this.$el.html('');
     }
-}
-);
+});
 
 /************************************************** FunctionSegmentBBM View **************************************************/
 
@@ -991,20 +994,21 @@ var FuncSegView = Backbone.View.extend({
 
     /** Pass in a reference to parent configuration on intialization */
     initialize: function(options){
+        this.listenTo(this, 'change: intention', this.initSatValueChanged); 
         this.intention = options.intention;
     },
 
     template: ['<script type="text/template" id="item-template">',
-                '<div class=“inspector-views”>',
+                '<div class=“segment-views”>',
                     '<input style="float:left; width:20; display:inline-block;"class="repeat-select2" id="repeat-end2" value="2">',
                     '<output> startTP </output>',
-                    '<select class=“user-function-type user-defined-select”>',
+                    '<select class=“seg-function-type segment-views”>',
                                     '<option value=C> Constant </option>',
                                     '<option value=R> Stochastic </option>',
                                     '<option value=I> Increase </option>',
                                     '<option value=D> Decrease </option>',
                                 '</select>',
-                                '<select class=“user-sat-value user-defined-select”>',
+                                '<select class=“seg-sat-value segment-views”>',
                                     '<option value=none selected> None (⊥, ⊥) </option>',
                                     '<option value=satisfied> Satisfied (F, ⊥) </option>',
                                     '<option value=partiallysatisfied> Partially Satisfied (P, ⊥) </option>',
@@ -1018,15 +1022,8 @@ var FuncSegView = Backbone.View.extend({
                 '</script>'].join(''),
 
     events: {
-        'change .repeat-select':'selectRepeatValues',
-        'change .repeat-select2':'selectNumRepeatValues',
-        'change .repeat-select3':'selectAbsoluteLength',
-
-        'click #segment-add': 'addSegment',
-        'click #constraint-repeat': 'repeatConstraintControl',
-        'click #constraint-restart': 'removeUserConstraints',
-        'keyup .cell-attrs-text': 'nameAction',
-        'clearInspector .inspector-views' : 'removeView'
+        'change .user-function-type':'userFuncTypeChanged',
+        'change .user-sat-value':'userSatValChanged',
     },
 
     render: function() {
