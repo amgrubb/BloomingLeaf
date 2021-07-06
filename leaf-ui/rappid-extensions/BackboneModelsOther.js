@@ -38,18 +38,6 @@
         evolving: false,
     },
 
-    /**
-     * Checks if LinkBBM can have a valid absolute relationship
-     * 
-     * @returns Boolean
-     */
-    isValidAbsoluteRelationship: function(){
-        // If relationship is of type evolving and has a target and source, return true
-        if(this.linkType == 'NBD' || this.linkType == 'NBT' || this.postType != null){
-            return (this.linkSrcID != null && this.linkDestID != null);
-        }
-        return false;
-    },
 });
 
 /** 

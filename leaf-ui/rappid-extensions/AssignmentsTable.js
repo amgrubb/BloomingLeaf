@@ -56,15 +56,15 @@ var AssignmentsTable = Backbone.View.extend({
         '</table>',
         '<div class=absRelationship>',
             '<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Absolute Relationship Assignment</h3>',
-                '<table id="link-list" class="abs-table">',
-                    '<tr>',
-                        '<th>Link Type</th>',
-                        '<th>Source Node name</th>',
-                        '<th>Dest Node name</th>',
-                        '<th>Assigned Time</th>',
-                        '<th>Action</th>',
-                    '</tr>',
-                '</table>',
+            '<table id="link-list" class="abs-table">',
+                '<tr>',
+                    '<th>Link Type</th>',
+                    '<th>Source Node name</th>',
+                    '<th>Dest Node name</th>',
+                    '<th>Assigned Time</th>',
+                    '<th>Action</th>',
+                '</tr>',
+            '</table>',
         '</div>', 
     '</div>',
     '</div>',
@@ -148,18 +148,20 @@ var AssignmentsTable = Backbone.View.extend({
      * For each function segment transition in the graph
      */
     displayAbsoluteIntentionAssignments: function() {
-        this.model.getIntentions().forEach(intentionCell => {
-            var intentionBbm = intentionCell.get('intention');
-            var funcSegList = intentionBbm?.get('evolvingFunction')?.get('functionSegList');
+        this.model.getIntentions().forEach(intentionBbm => {
+            var evolvingFunction = intentionBbm.get('evolvingFunction');
             console.log(funcSegList);
-            if (funcSegList != undefined){
-                // TODO: Check with @amgrubb about how this is being sliced
-                for (let funcSeg of funcSegList.slice(1)){
-                    var intentionRelationshipView = new IntentionRelationshipView({
-                        model: funcSeg, funcType: intentionBbm.get('evolvingFunction').get('type'), 
-                        intentionName: intentionBbm.get('nodeName')});
-                    $('#node-list').append(intentionRelationshipView.el);
-                    intentionRelationshipView.render();  
+            if(evolvingFunction != null){
+                var funcSegList = evolvingFunction.get('functionSegList');
+                if (funcSegList != undefined){
+                    // TODO: Check with @amgrubb about how this is being sliced
+                    for (let funcSeg of funcSegList.slice(1)){
+                        var intentionRelationshipView = new IntentionRelationshipView({
+                            model: funcSeg, funcType: intentionBbm.get('evolvingFunction').get('type'), 
+                            intentionName: intentionBbm.get('nodeName')});
+                        $('#node-list').append(intentionRelationshipView.el);
+                        intentionRelationshipView.render();  
+                    }
                 }
             }
         });
@@ -171,11 +173,10 @@ var AssignmentsTable = Backbone.View.extend({
      */
     displayAbsoluteRelationshipAssignments: function(){
         this.model.getLinks().forEach(linkCell => {
-            linkBbm = linkCell.get('link');
-            if(linkBbm.isValidAbsoluteRelationship()){
-                var linkRelationshipView = new LinkRelationshipView({model: linkBbm});
+            if(linkCell.isValidAbsoluteRelationship()){
+                var linkRelationshipView = new LinkRelationshipView({model: linkCell.get('link'), linkSrc: linkCell.getSourceElement().get('intention').get('nodeName'), linkDest: linkCell.getTargetElement().get('intention').get('nodeName')});
                 $('#link-list').append(linkRelationshipView.el);
-                linkRelationshipView.render();
+                linkRelationshipView.render()
             }
         })
     },
@@ -199,7 +200,8 @@ var AssignmentsTable = Backbone.View.extend({
  */
 var RelativeIntentionView = Backbone.View.extend({
     model: Constraint,
-    
+    tagName: 'tr',
+
     initialize: function(options){
         this.graph = options.graph;
         // If constraint is a new blank instance or a loaded constraint
@@ -208,12 +210,12 @@ var RelativeIntentionView = Backbone.View.extend({
     },
 
     newConstraintTemplate: ['<script type="text/template" id="assignments-template">',
-        '<tr><td> <div class="epochLists"><select id="epoch1List"><option selected>...</option></select></div></td>',
+        '<td> <div class="epochLists"><select id="epoch1List"><option selected>...</option></select></div></td>',
         '<td> <div class="epochLists"><select id="relationshipLists">',
             '<option selected>...</option>',
             '<option value="eq">=</option><option value="lt"><</option></select></div></td>',
         '<td> <div class="epochLists"><select id="epoch2List"><option selected>...</option></select></div></td>',
-        '<td><i class="fa fa-trash-o fa-2x" id="removeConstraint" aria-hidden="true"></i></td></tr>',
+        '<td><i class="fa fa-trash-o fa-2x" id="removeConstraint" aria-hidden="true"></i></td>',
         '</script>'
     ].join(''),
 
@@ -307,6 +309,7 @@ var RelativeIntentionView = Backbone.View.extend({
  */
 var IntentionRelationshipView = Backbone.View.extend({
     model: FunctionSegmentBBM,
+    tagName: 'tr',
 
     initialize: function(options){
         this.funcType = options.funcType;
@@ -315,9 +318,10 @@ var IntentionRelationshipView = Backbone.View.extend({
 
     template: [
         '<script type="text/template" id="item-template">',
-        '<tr><td> "<%= intentionName %>" : "<%= startTP %>"</td><td> <%= funcType %> </td>',
-        '<td><input id="absFuncSegValue" type="number" name="sth" value="<% if (startATP == -1) {%> "" <%} else { %> startATP <% } %>"></td>',
-        '<td><button id="unassign-abs-intent-btn"> Unassign </button></td></tr>',
+        '<td class= "namestartTP"></td>',
+        '<td class= "func-type"></td>',
+        '<td><input id="absFuncSegValue" type="number" name="sth" value="<% if (startAT == -1) {%> "" <%} else { %> startAT <% } %>"></td>',
+        '<td><button id="unassign-abs-intent-btn"> Unassign </button></td>',
         '</script>'
     ].join(''),
 
@@ -327,7 +331,9 @@ var IntentionRelationshipView = Backbone.View.extend({
     },
 
     render: function(){
-        this.$el.html(_.template($(this.template).html())(Object.assign(this.model, this.funcType, this.intentionName).toJSON()));
+        this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
+        this.$('.namestartTP').text(this.intentionName + " : " + this.model.get('startTP'));
+        this.$('.func-type').text(this.funcType);
         return this;
     },
 
@@ -360,13 +366,20 @@ var IntentionRelationshipView = Backbone.View.extend({
 // TODO: Get linkSrc name and linkDest name instead of ids
 var LinkRelationshipView = Backbone.View.extend({
     model: LinkBBM,
+    tagName: 'tr',
+
+    initialize: function(options){
+        this.linkSrc= options.linkSrc,
+        this.linkDest= options.linkDest
+    },
 
     template: [
         '<script type="text/template" id="item-template">',
-        '<tr><td> <%= linkType %> </td><td> <%= linkSrcID %> </td>',
-        '<td> <%= linkDestID %> </td>',
-        '<td><input id="linkAbsRelation" type="number" name="sth" value= "<% if (linkAbsTime === -1) {%> "" <%} else { %> linkAbsTime <% } %>" ></td>',
-        '<td><button id="unassign-abs-rel-btn" > Unassign </button></td> </tr>',
+        '<td><%= linkType %><%if (evolving){%> | <%}%> <%=postType %></td>',
+        '<td class= "link-source"></td>',
+        '<td class= "link-dest"></td>',
+        '<td><input id="linkAbsRelation" type="number" name="sth" value= "<% if (absTime === -1) {%> "" <%} else { %> absTime <% } %>" > </td>',
+        '<td><button id="unassign-abs-rel-btn" > Unassign </button></td>',
         '</script>'
     ].join(''),
 
@@ -377,6 +390,8 @@ var LinkRelationshipView = Backbone.View.extend({
 
     render: function(){
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
+        this.$('.link-source').text(this.linkSrc);
+        this.$('.link-dest').text(this.linkDest);
         return this;
     },
 

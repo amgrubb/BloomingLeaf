@@ -226,27 +226,16 @@ joint.shapes.basic.CellLink = joint.dia.Link.extend({
     },
 
     /**
-     * This function checks the updated target to determine if the link is still valid
-     * And updates the CellLink type and LinkBBM linkType accordingly
+     * Checks if LinkBBM can have a valid absolute relationship
+     * 
+     * @returns Boolean
      */
-    updateTarget: function(){
-        var target = this.getTargetElement();
-        var source = this.getSourceElement();
-        if (target !== null){
-            if (((source.get('type') === 'basic.Actor') && (target.get('type')  !== 'basic.Actor')) || ((source.get('type') !== 'basic.Actor') && (target.get('type')  === 'basic.Actor'))){
-                this.get('link').set('displayType', 'error');
-                this.label(0 , {position: 0.5, attrs: {text: {text: 'error'}}});
-            } else if (source.get('type') === "basic.Actor") {
-                this.get('link').set('displayType', 'Actor');
-                this.get('link').set('linkType', 'is-a');
-                this.label(0, {position: 0.5, attrs: {text: {text: this.get('link').get("linkType")}}});
-            }
-            else{
-                this.get('link').set('displayType', 'element');
-                this.get('link').set('linkType', 'and');
-                this.label(0, {position: 0.5, attrs: {text: {text: this.get('link').get("linkType")}}});
-            }
+     isValidAbsoluteRelationship: function(){
+        // If relationship is of type evolving and has a target and source, return true
+        if(this.get('link').get('linkType') == 'NBD' || this.get('link').get('linkType') == 'NBT' || this.get('link').get('postType') != null){
+            return (this.get('source') != null && this.get('target') != null);
         }
+        return false;
     },
 });
 
