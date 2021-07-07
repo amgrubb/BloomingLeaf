@@ -209,11 +209,11 @@ var RelativeIntentionView = Backbone.View.extend({
     },
 
     newConstraintTemplate: ['<script type="text/template" id="assignments-template">',
-        '<td> <div class="epochLists"><select id="epoch1List"><option selected>...</option></select></div></td>',
+        '<td> <div class="epochLists"><select class="epoch1List"><option selected>...</option></select></div></td>',
         '<td> <div class="epochLists"><select id="relationshipLists">',
             '<option selected>...</option>',
             '<option value="eq">=</option><option value="lt"><</option></select></div></td>',
-        '<td> <div class="epochLists"><select id="epoch2List"><option selected>...</option></select></div></td>',
+        '<td> <div class="epochLists"><select class="epoch2List"><option selected>...</option></select></div></td>',
         '<td><i class="fa fa-trash-o fa-2x" id="removeConstraint" aria-hidden="true"></i></td>',
         '</script>'
     ].join(''),
@@ -221,8 +221,8 @@ var RelativeIntentionView = Backbone.View.extend({
     loadedConstraintTemplate: [].join(''),
 
     events: {
-        'change #epoch1List' : 'changeEpoch1',
-        'change #epoch2List' : 'changeEpoch2',
+        'change .epoch1List' : 'changeEpoch1',
+        'change .epoch2List' : 'changeEpoch2',
         'change #relationshipLists' : 'changeRelationship',
         'click #removeConstraint' : 'removeConstraint',
 
@@ -247,12 +247,13 @@ var RelativeIntentionView = Backbone.View.extend({
      * Loads all function segment transitions into the options dropdown menu
      */
     loadOptions: function(){
-        this.graph.getIntentions().forEach(intention => {
-            if (intention.get('evolvingFunction') != null){
-                for (let funcSegment in intention.getFuncSegments().slice(1)){
-                    var optionTag = this.getOptionTag(intention.get('id'), intention.get('nodeName'), funcSegment.get('startTP'));
-                    $('#epoch1List').append(optionTag);
-                    $('#epoch2List').append(optionTag);
+        this.graph.getElements().filter(element => element instanceof joint.shapes.basic.Intention).forEach(intentionCell => {
+            intentionBBM = intentionCell.get('intention')
+            if (intentionBBM.get('evolvingFunction') != null){
+                for (let funcSegment of intentionBBM.getFuncSegments().slice(1)){
+                    var optionTag = this.getOptionTag(intentionCell.get('id'), intentionBBM.get('nodeName'), funcSegment.get('startTP'));
+                    this.$('.epoch1List').append(optionTag);
+                    this.$('.epoch2List').append(optionTag);
                 }
             }
         })
@@ -263,7 +264,7 @@ var RelativeIntentionView = Backbone.View.extend({
      * To match the selected option
      */
     changeEpoch1: function(){
-        selectionOption = $('#epoch1List option:selected');
+        selectedOption = $('.epoch1List option:selected');;
         this.model.set('srcID', selectedOption.attr('class'));
         this.model.set('srcRefTP', selectedOption.attr('epoch'));
     },
@@ -273,7 +274,7 @@ var RelativeIntentionView = Backbone.View.extend({
      * To match the selected option
      */
     changeEpoch2: function(){
-        selectionOption = $('#epoch2List option:selected');
+        selectedOption = this.$('.epoch2List option:selected');
         this.model.set('destID', selectedOption.attr('class'));
         this.model.set('destRefTP', selectedOption.attr('epoch'));
     },
