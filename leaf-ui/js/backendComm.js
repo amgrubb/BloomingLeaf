@@ -12,37 +12,31 @@
 
 var url = "http://localhost:8080/untitled.html";	// Hardcoded URL for Node calls. 
 
-function backendComm(jsObject){	
-	/**
-	* Print the input to the console.
-	*/
-	console.log("Step 3");
-	console.log(JSON.stringify(jsObject));
-	console.log(jsObject.analysisRequest.action);
-    nodeBackendCommFunc(jsObject);
-}
+function backendComm(){	
+	console.log("Step 3 - BackendComm");
+	console.log(graph.toJSON());
+	console.log(JSON.stringify(graph));
 
-// Code for calling the java function via Node.
-function nodeBackendCommFunc(jsObject){
-   console.log("Calling Backend via Node Server"); //JSON.stringify(jsObject));
-   
    var xhr = new XMLHttpRequest();
    var isGetNextSteps ;
    xhr.open("POST", url, true);
    xhr.setRequestHeader("Content-Type", "application/json");
 
-   var data = JSON.stringify(jsObject);
+   var data = JSON.stringify(graph);
    xhr.onreadystatechange = function() {	
-		// This function get caled when the response is received.
+		// This function get called when the response is received.
 		console.log("Reading the response");
 		if (xhr.readyState == XMLHttpRequest.DONE) {
-           if(jsObject.analysisRequest.action=="allNextStates"){
+          
+			/* TODO Put Back
+		   if(jsObject.analysisRequest.action=="allNextStates"){
                isGetNextSteps = true;
            }
            else{
                isGetNextSteps = false;
         	}
-            
+            */ isGetNextSteps = false;
+
             var response = xhr.responseText;
    			responseFunc(isGetNextSteps,response);
        }

@@ -7,7 +7,7 @@ import com.google.gson.GsonBuilder;
 
 import interface_objects.FuncWrapper;
 import interface_objects.FuncWrapperDeserializer;
-import interface_objects.InputObject;
+import gson_classes.InputGraph;
 
 public class TestGson {
 
@@ -19,7 +19,7 @@ public class TestGson {
 
 		try {
 			Gson gson = builder.create();
-			InputObject frontendObject = gson.fromJson(new FileReader(filePath), InputObject.class);
+			InputGraph frontendObject = gson.fromJson(new FileReader(filePath), InputGraph.class);
 
 			System.out.println("Finished");
 			System.out.println(frontendObject);
