@@ -501,11 +501,10 @@ function revertNodeValuesToInitial() {
 			curr.attributes.type !== 'basic.Softgoal' &&
 			curr.attributes.type !== 'basic.Resource') {
 			continue;
-		}
+		}     
+		var intention = curr.get('intention');
+        var initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair'); 
 
-		var intention = model.getIntentionByID(curr.attributes.nodeID);
-
-		var initSatVal = intention.getInitialSatValue();
 		if (initSatVal === '(no value)') {
             curr.attr('.satvalue/text', '');
 
@@ -530,7 +529,7 @@ function switchToModellingMode() {
 	analysisRequest.previousAnalysis = null;
 	
     clearInspector();
-
+    
 	// Reset to initial graph prior to analysis
 	revertNodeValuesToInitial();
 
@@ -874,6 +873,7 @@ paper.on({
                     actorInspector.render();
                 } else {
                     var elementInspector = new ElementInspector({model: cell});
+                    console.log(elementInspector); 
                     $('.inspector').append(elementInspector.el);
                     elementInspector.render();
                     // If user was dragging element

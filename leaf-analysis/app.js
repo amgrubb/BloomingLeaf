@@ -113,3 +113,5 @@ function passIntoJar(res) {
 }
 
 var server = http.createServer(handle_incoming_request);
+
+server.listen(8080); 
