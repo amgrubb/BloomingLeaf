@@ -32,10 +32,8 @@ var AnalysisInspector = Backbone.View.extend({
 		'</script>'].join(''),		
 	
 	events: {
-		'click .closeIntermT': 'dismissIntermTable',
 		'click #btn-single-path': 'singlePath',	
 		'click #btn-all-next-state': 'getAllNextStates',
-		'click #btn-save-intermT': 'saveIntermTable',
 		'change #num-rel-time': 'addRelTime', 
 		'change #conflict-level': 'changeConflictLevel',
 		'clearInspector .inspector-views' : 'removeView'
