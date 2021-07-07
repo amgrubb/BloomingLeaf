@@ -542,7 +542,7 @@ function switchToModellingMode() {
     previousModel = JSON.parse(JSON.stringify(model));
     
 
-    // disappear 
+    // Disappear 
     $('#analysis-sidebar').css("display","none");
     $('#dropdown-model').css("display","none");
     $('#simulate-single-path-btn').css("display", "none");
@@ -550,7 +550,7 @@ function switchToModellingMode() {
     $('#next-state-btn').css("display", "none");
     $('.analysis-clears').css("display", "none");
     
-    // appear 
+    // Appear 
     $('#stencil').css("display","");
     $('#btn-view-assignment').css("display","");
     $('#btn-view-intermediate').css("display","");
@@ -558,7 +558,7 @@ function switchToModellingMode() {
 	$('#symbolic-btn').css("display","");
 	$('#cycledetect-btn').css("display","");
 
-    // show extra tools for modelling mode
+    // Show extra tools for modelling mode
     $('#model-toolbar').css("display","");
     $('.model-clears').css("display", "");
 

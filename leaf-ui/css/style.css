@@ -142,15 +142,6 @@ body.waiting *
   background-color: rgba(90, 90, 90, 1);
 }
 
-#analysis-sidebar a{
-  padding: 16px;
-  display: block;
-}
-
-#analysis-sidebar a:hover {
-  background-color: #E8E8E8;
-}
-
 /* Right Panel */
 .inspector {
   position: absolute;
@@ -189,6 +180,7 @@ body.waiting *
   display: block;
 }
 
+/* The left-side bar for analysisInspector and configInspector */
 #container-sidebar { 
   left: auto; 
   width: 200px; 
@@ -203,6 +195,15 @@ body.waiting *
 
 #analysis-sidebar { 
   margin-top: 0px; 
+}
+
+#analysis-sidebar a{
+  padding: 16px;
+  display: block;
+}
+
+#analysis-sidebar a:hover {
+  background-color: #E8E8E8;
 }
 
 .sub-label{

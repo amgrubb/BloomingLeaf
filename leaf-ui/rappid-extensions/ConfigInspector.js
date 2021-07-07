@@ -136,7 +136,7 @@ var Config = Backbone.View.extend({
     render: function() {
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
         this.$('.analysis-configuration').append(this.innerView.$el);
-        if (this.model.get('selected') == true){
+        if (this.model.get('selected')){
             this.showAnalysisInspector();
         }
         return this;
