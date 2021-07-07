@@ -354,6 +354,8 @@ var IntentionRelationshipView = Backbone.View.extend({
     unassignAbsIntention: function(){
         this.$('.absFuncSegValue').val('');
         this.model.set('startAT', null);
+        // Clear all previous UserEvaluations
+        this.model.set('userEvaluationList', new UserEvaluationCollection([]));
     },
 
 });
@@ -377,18 +379,23 @@ var LinkRelationshipView = Backbone.View.extend({
         '<td><%= linkType %><%if (evolving){%> | <%}%> <%=postType %></td>',
         '<td class= "link-source"></td>',
         '<td class= "link-dest"></td>',
-        '<td><input id="linkAbsRelation" type="number" name="sth" value= "<% if (absTime === -1) {%> "" <%} else { %> absTime <% } %>" > </td>',
-        '<td><button id="unassign-abs-rel-btn" > Unassign </button></td>',
+        '<td><input class="linkAbsRelation" type="number" name="sth" value= <%- absTime %> > </td>',
+        '<td><button class="unassign-abs-rel-btn" > Unassign </button></td>',
         '</script>'
     ].join(''),
 
     events: {
-        'change #linkAbsRelation' : 'updateLinkAbsRelation',
-        'click #unassign-abs-rel-btn' : 'unassignAbsRelation'
+        'change .linkAbsRelation' : 'updateLinkAbsRelation',
+        'click .unassign-abs-rel-btn' : 'unassignAbsRelation'
     },
 
     render: function(){
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
+        // TODO: Write statement to handle this case in script
+        // Or if absTime default changed to null just remove if statement
+        if(this.model.get('absTime') == -1){
+            this.$('.linkAbsRelation').val('')
+        }
         this.$('.link-source').text(this.linkSrc);
         this.$('.link-dest').text(this.linkDest);
         return this;
@@ -399,18 +406,18 @@ var LinkRelationshipView = Backbone.View.extend({
      * After checking if it is a number
      */
     updateLinkAbsRelation: function(){
-        var newTime = parseInt($('#linkAbsRelation').val());
+        var newTime = parseInt($('.linkAbsRelation').val());
         if (isNaN(newTime)) {
             return;
         }
-        this.model.set('linkAbsTime', newTime);
+        this.model.set('absTime', newTime);
     },
 
     /**
      * Resets model startAT to -1, and resets UI input to be empty
      */
     unassignAbsRelation: function(){
-        $('#linkAbsRelation').val('');
-        this.model.set('linkAbsTime', -1);
+        $('.linkAbsRelation').val('');
+        this.model.set('absTime', -1);
     },
 });

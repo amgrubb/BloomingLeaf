@@ -34,6 +34,7 @@ var IntermediateValuesTable = Backbone.View.extend({
         '</tr>',
         '</table>',
         '</div>',
+        '<div class="editWarning" style="text-align:center; "> Note: Removing an Assigned Time from an Intention will clear its User Evaluations List </div>',
         '</div>',
         '</div>',
         '<br>',
@@ -90,7 +91,7 @@ var IntermediateValuesTable = Backbone.View.extend({
     getAllAbsoluteTimePoints: function(){
         var absTimeValues = this.model.get('absTimePtsArr');
         var constraintTimes = this.model.get('constraints').map(constraint => constraint.get('absTP'));
-        var linkTimes = this.model.getLinks().map(linkCell => linkCell.get('link').get('absTP'));
+        var linkTimes = this.model.getLinks().map(linkCell => linkCell.get('link').get('absTime'));
         var intentionTimes = [];
         this.model.getIntentions().forEach(intentionBBM => intentionBBM.getFuncSegments()?.forEach(funcSeg => {
             funcSegTP = funcSeg.get('startAT')
@@ -106,6 +107,12 @@ var IntermediateValuesTable = Backbone.View.extend({
     }
 });
 
+/**
+ * Each instance of this view represents one Intention row in the IVT
+ * 
+ * It takes in an IntentionBBM as its model, and uses that and the allAbsoluteTimePoints list
+ * In order to determine and create the appropriate select menu for each time point
+ */
 var IntentionUserEvaluationsView = Backbone.View.extend({
     model: IntentionBBM,
 
@@ -254,6 +261,14 @@ var IntentionUserEvaluationsView = Backbone.View.extend({
     },
 });
 
+/**
+ * Each instance of this view maps to one select menu dropdown on the IVT
+ * 
+ * It takes in the list of predetermined options for the select menu
+ * And converts it into option tags
+ * Also takes in values needed to create/update UserEvaluationBBMs
+ * And the logic associated with those actions
+ */
 var SelectUserEvaluationView = Backbone.View.extend({
     tagName: 'td',
 
