@@ -430,7 +430,7 @@ function switchToAnalysisMode() {
     $('#configID').append(configInspector.el);
     configInspector.render();
 
-    // disappear
+    // Disappear
     $('#stencil').css("display", "none");
     $('#btn-view-intermediate').css("display","none");
     $('#btn-view-assignment').css("display","none"); 
@@ -439,21 +439,21 @@ function switchToAnalysisMode() {
 	$('#cycledetect-btn').css("display", "none");
     $('#model-toolbar').css("display", "none");
     $('.model-clears').css("display", "none");
+    $('#on-off').css("display", "none");
 
     // Disable link settings
 	$('.link-tools .tool-remove').css("display", "none");
     $('.link-tools .tool-options').css("display", "none");
     
-    // appear 
+    // Appear 
     $('#dropdown-model').css("display", "");
     $('#simulate-single-path-btn').css("display", "");
     $('#next-state-btn').css("display", "");
     $('#configID').css("display", ""); 
+    $('#on-off').css("display", "");
 
-    // hide extra tools from modelling mode
+    // Hide extra tools from modelling mode
     $('.analysis-clears').css("display", "");
-    
-    //$('#on-off').css("display", "none");
 
     // Show Analysis View tag
 	$('#modeText').text("Analysis View");
@@ -472,11 +472,11 @@ $('#model-cur-btn').on('click', function() {
 
 	// Cleaning the previous analysis data for new execution
 	//globalAnalysisResult.elementList = "";
-
 	savedAnalysisData.finalAssignedEpoch="";
     savedAnalysisData.finalValueTimePoints="";
     
     analysisRequest.action = null;
+
 });
 
 
@@ -541,7 +541,6 @@ function switchToModellingMode() {
     // previousModel is NOT of type Model
     previousModel = JSON.parse(JSON.stringify(model));
     
-    $('#on-off').css("display", "");
 
     // disappear 
     $('#analysis-sidebar').css("display","none");
@@ -873,7 +872,6 @@ paper.on({
                     actorInspector.render();
                 } else {
                     var elementInspector = new ElementInspector({model: cell});
-                    console.log(elementInspector); 
                     $('.inspector').append(elementInspector.el);
                     elementInspector.render();
                     // If user was dragging element
