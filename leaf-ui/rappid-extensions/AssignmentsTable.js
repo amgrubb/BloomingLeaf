@@ -356,7 +356,7 @@ var IntentionRelationshipView = Backbone.View.extend({
         this.$('.absFuncSegValue').val('');
         this.model.set('startAT', null);
         // Clear all previous UserEvaluations
-        this.model.set('userEvaluationList', new UserEvaluationCollection([]));
+        this.model.set('userEvaluationList', []);
     },
 
 });

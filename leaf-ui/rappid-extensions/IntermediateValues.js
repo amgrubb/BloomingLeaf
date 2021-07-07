@@ -286,7 +286,7 @@ var SelectUserEvaluationView = Backbone.View.extend({
         this.optionsList = options.optionsList;
         // Returns first user evaluation with absTP matching absTimePt
         // If none exist, it returns undefined
-        this.userEval = this.intention.get('userEvaluationList').findWhere({'absTime' : this.absTimePt});   
+        this.userEval = this.intention.getUserEvaluationBBM(this.absTimePt);   
     },
 
     // TODO: Add check for if optionsList only contains 1 value
