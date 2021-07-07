@@ -12,7 +12,7 @@ import java.util.List;
 public class InputGraph {
 	
 	private String maxAbsTime;
-	private ArrayList<String> absTimePtsArr;
+	private String[] absTimePtsArr;
 	private ArrayList<String> constraints;
 	private List<InputCell> cells;
 	
