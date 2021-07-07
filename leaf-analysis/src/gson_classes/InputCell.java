@@ -5,6 +5,8 @@ public class InputCell {
 	private String id;
 	private String angle;
 	private String z;
+	private BIActor actor;
+	
 	
 	
 }
