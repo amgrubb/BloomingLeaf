@@ -19,7 +19,7 @@ import interface_objects.OutputModel;
  * Then it executes all analysis creating a output file that has the json analysed file to be send back to the frontend.
  *
  */
-public class SolveModel {
+public class MainProgram {
 
 	/**
 	 * This method is responsible to execute all steps to generate the analysis file.
@@ -32,10 +32,10 @@ public class SolveModel {
 		String outputFile = "output.out";
 				
 		try {
-			//creating the backend model to be analysed
+			// Creating the backend model to be analyzed
 			ModelSpec modelSpec = convertModelFromFile(filePath + inputFile);
 			
-			//Analyse the model
+			// Creates the store and constraint problem to be solved.
 			TroposCSPAlgorithm solver = new TroposCSPAlgorithm(modelSpec);
 			//long startTime = System.currentTimeMillis();                            //Scaleability Testing
 			solver.solveModel();
@@ -58,7 +58,6 @@ public class SolveModel {
 			} catch (Exception f) {
 				throw new RuntimeException("Error while writing ErrorMessage: " + f.getMessage());
 			}
-//			throw new RuntimeException(e.getMessage());
 		} catch (Exception e) {
 			try {
 				File file;
