@@ -128,9 +128,7 @@ var Config = Backbone.View.extend({
         'dblclick .config-elements': 'rename',
         'blur .config-input': 'setConfigName',
         'keyup .config-input': 'checkForEnter',
-        'click .deleteconfig-button': function() {
-            this.removeConfig();
-        }
+        'click .deleteconfig-button': 'removeConfig',
     },
 
     /** Sets template and appends inner view */
@@ -170,7 +168,7 @@ var Config = Backbone.View.extend({
      */
     removeConfig:function(){
         index = this.model.collection.indexOf(this.model);
-        if (this.model.set({selected:true}) && this.model.collection.length > 1){
+        if (this.model.get('selected') == true && this.model.collection.length > 1){
            if (index > 0 ){
                 this.model.collection.at(index - 1).set({selected:true});
                 this.model.collection.at(index - 1).trigger('change:switchConfigs', this.model.collection.at(index-1)); 
