@@ -206,6 +206,15 @@
     height: 30px;
 }
 
+.intention-name {
+    border-top: 1px solid #dddddd;
+    border-right: 1px solid #dddddd;
+    border-bottom: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+    height: 30px;
+}
+
 
 .interm-table tr td input {
     font-size: 100%;

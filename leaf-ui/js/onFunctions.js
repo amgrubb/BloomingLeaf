@@ -16,98 +16,12 @@ It also contains the setup for Rappid elements.
  $('#evo-color-key').on('click', function(){ window.open('./userguides/evo.html', 'newwindow', 'width=500, height=400'); return false;});
 
 /**
- * General javascript for user interaction
- * When the user clicks anywhere outside of the a pop up, close it
- */
-// TODO: Permenently remove and figure out how to re-implement inside the respective views
-window.onclick = function(event) {
-	// var modal = document.getElementById('assignmentsModal');
-	var intermT = document.getElementById('intermediateTable');
-    // if (event.target == modal) {
-  	//     modal.style.display = "none";
-    // }
-	if(event.target == intermT){
-		intermT.style.display = "none";
-	}
-}
-
-/**
- * Sets Max Absolute Time
- */
-// $('#max-abs-time').on('change', function(){
-//     var maxTime = $('#max-abs-time');
-//     if (maxTime.val() !== "") {
-//         model.maxAbsTime = maxTime.val()
-//     } else {
-//         maxTime.val(model.maxAbsTime);
-//     }
-// });
-
-/**
- * Add relative intention row
- */
-// $('.addIntention').on('click', function(){
-    // var intentions = model.intentions;
-    //     var epochHtml1 = '<div class="epochLists" id="epoch1List"><select><option selected>...</option>';
-    //     var epochHtml2 =  '<div class="epochLists" id="epoch2List"><select><option selected>...</option>';
-    //     for (var i = 0; i < intentions.length; i++) {
-
-    //         // if number of function segments >= 2, we have at least one transition
-    //         if (intentions[i].getNumOfFuncSegements() >= 2) {
-    //             var funcSegments = intentions[i].dynamicFunction.getFuncSegmentIterable();
-    //             for (var j = 0; j < funcSegments.length - 1; j++) {
-    //                 var epoch = funcSegments[j].funcStop;
-    //                 var newEpochHtml = '<option nodeID=' + intentions[i].nodeID + ' epoch=' + epoch + '>' + intentions[i].nodeName + ': ' + epoch + '</option>';
-    //                 epochHtml1 += newEpochHtml;
-    //                 epochHtml2 += newEpochHtml;
-    //             }
-    //         }
-    //     }
-
-    //     epochHtml1 += '</select></div>';
-    //     epochHtml2 += '</select></div>';
-
-
-    //     var relationship = '<div class="epochLists" id="relationshipLists"><select><option selected>...'+
-    //         '</option><option value="eq">=</option><option value="lt"><</option></select></div>'
-
-    //     $('#rel-intention-assignents').append('<tr><td>' + epochHtml1 + '</td><td>' + relationship +
-    //         '</td><td>'+ epochHtml2 +'</td><td><i class="fa fa-trash-o fa-2x" id="removeIntention" aria-hidden="true"></i></td></tr>');
-// });
-
-// $(document.body).on('click', '#removeIntention', function(){
-//     var row = $(this).parent().parent();
-//     var nodeID1 = row.find('#epoch1List select option:checked').attr('nodeID');
-//     var epoch1 = row.find('#epoch1List select option:checked').attr('epoch');
-//     var type = row.find('#relationshipLists select option:checked').text();
-//     var nodeID2 = row.find('#epoch2List select option:checked').attr('nodeID');
-//     var epoch2 = row.find('#epoch2List select option:checked').attr('epoch');
-//     var constraint = new Constraint(type, nodeID1, epoch1, nodeID2, epoch2);
-
-//     model.removeConstraint(constraint);
-//     row.remove();
-// });
-
-/**
  * Displays the absolute and relative assignments modal for the user.
  */
 $('#btn-view-assignment').on('click', function() {
     var assignmentsModal = new AssignmentsTable({model: graph});
     $('#assignments-list').append(assignmentsModal.el);
     assignmentsModal.render();
-	// epochLists = [];
-	// graph.constraintValues = [];
-	// var modal = document.getElementById('assignmentsModal');
-
-	// // Clear all previous table entries
-	// $(".abs-table").find("tr:gt(0)").remove();
-
-	// // Display the modal by setting it to block display
-	// modal.style.display = "block";
-
-
-	// displayAbsoluteIntentionAssignments();
-	// displayAbsoluteRelationshipAssignments();
 });
 
 $('#btn-view-intermediate').on('click', function() {
@@ -116,21 +30,13 @@ $('#btn-view-intermediate').on('click', function() {
 	intermediateValuesTable.render();
 });
 
-/**
- * Saves absolute intention and relationship assignments to the graph object
- * TODO: Check if the times users put in are valid
- */
-$('#btn-save-assignment').on('click', function() {
-    saveAbsoluteTimePoints();
-    saveAbsoluteIntentionAssignments();
-    saveAbsoluteRelationshipAssignments();
-    saveRelativeIntentionAssignments();
+//TODO: implement step 1 of simulate single path 
+$('#simulate-single-path-btn').on('click', function() { 
+}); 
 
-    // Dismiss the modal
-    var modal = document.getElementById('assignmentsModal');
-    modal.style.display = "none";
-    $("#epoch1List select").val();
-});
+//TODO: impelement step 1 of next state button 
+$('#next-state-btn').on('click', function() { 
+}); 
 
 /**
  * Switches to Analysis view iff there are no cycles and no syntax errors.
@@ -154,217 +60,6 @@ $('#load-sample').on('click', function() {
 */
 
 /**
- * Trigger when unassign button is pressed. 
- * Change the assigned time of the node/link in the same row to none
- */ 
-$(document).on('click', '.unassign-abs-rel-btn', function(e) {
-    var button = e.target;
-        var row = $(button).closest('tr');
-        var assignedTime = row.find('input[type=number]');
-        $(assignedTime).val('');
-
-        var linkID = row.attr('linkID');
-        var link = model.getLinkByID(linkID);
-        link.absoluteValue = -1;
-});
-
-$(document).on('click', '.unassign-abs-intent-btn', function(e) {
-    var button = e.target;
-    var row = $(button).closest('tr');
-    var assignedTime = row.find('input[type=number]');
-    $(assignedTime).val('');
-
-    var nodeID = row.attr('nodeID');
-    var srcEB = row.attr('srcEB');
-    var constraint = model.getAbsConstBySrcID(nodeID, srcEB);
-    constraint.absoluteValue = -1;
-});
-
-/**
- * Returns an array of numbers containing numbers that the
- * user has inputed in the Absolute Time Points input box.
- * @returns {Array.<Number>}
- */
-function getAbsoluteTimePoints() {
-    var absValues = document.getElementById('abs-time-pts').value;
-    var absTimeValues;
-    console.log("get has these time points: " + absTimeValues);
-    if (absValues != '') {
-        absTimeValues = absValues.split(' ');
-        absTimeValues.map(function (i) {
-            if (i != '') {
-                return parseInt(i, 10);
-            }
-        });
-
-        //Sort into ascending order
-        absTimeValues.sort(function (a, b) {
-            return a - b
-        });
-    } else {
-        absTimeValues = [];
-    }
-
-    return absTimeValues
-}
-
-/** 
- * Sets Absolute time points
- */
-function saveAbsoluteTimePoints() {
-    var regex = new RegExp("^(([1-9]0*)+\\s+)*([1-9]+0*)*$");
-    var absTime = $('#abs-time-pts');
-    if (regex.test(absTime.val())) {
-        analysisRequest.absTimePts = absTime.val().trim();
-        analysisRequest.changeTimePoints(getAbsoluteTimePoints());
-    } else {
-        absTime.val(analysisRequest.absTimePts);
-    }
-    
-    // Updates the analysis request time points based on the saved assignments
-    analysisRequest.changeTimePoints(getAbsoluteTimePoints());
-}
-
-/**
-* Displays the links for the Absolute Relationship Assignments for
-* the Absolute and Relative Assignments modal
-*/
-function displayAbsoluteRelationshipAssignments() {
-	var btnHtml = '<td><button class="unassign-abs-rel-btn" > Unassign </button></td>';
-	// Get a list of links
-	var links = graph.getLinks();
-	for (var i = 0; i < model.links.length; i++) {
-		var link = model.links[i];
-		var sourceID = link.linkSrcID;
-		var targetID = link.linkDestID;
-
-		// If this link does not have a source and a target
-		if (sourceID == null || targetID == null) {
-			continue;
-		}
-
-		var sourceName = model.getIntentionByID(sourceID).nodeName;
-		var targetName = model.getIntentionByID(targetID).nodeName;
-
-
-		if (link.linkType == 'NBD' || link.linkType == 'NBT' || link.isEvolvingRelationship()) {
-			var linkAbsTime = link.absoluteValue;
-			var defaultValue = linkAbsTime == -1 ? '' : linkAbsTime;
-
-			$('#link-list').append('<tr linkID = ' + link.linkID + '><td>' + link.linkType + '</td><td>' + sourceName + '</td><td>' + targetName +
-				'</td><td><input type="number" name="sth" value=' + defaultValue + '></td>' + btnHtml +
-				'</tr>');
-		}
-
-	}
-}
-    
-/**
-* Displays the nodes for the Absolute Intention Assignments for
-* the Absolute and Relative Assignments modal
-*/
-function displayAbsoluteIntentionAssignments() {
-
-	var btnHtml = '<td><button class="unassign-abs-intent-btn"> Unassign </button></td>';
-
-	for (var i = 0; i < model.intentions.length; i++) {
-		var intention = model.intentions[i];
-		var funcType = intention.dynamicFunction.stringDynVis;
-		var intentionName = intention.nodeName;
-
-		// nameIdMapper[name] = intention.nodeID;
-		if (funcType == 'RC' || funcType == 'CR' || funcType == 'MP' ||
-			funcType == 'MN' || funcType == 'SD' || funcType == 'DS') {
-
-			var absTime = intention.getAbsConstTime('A');
-			// default value to display.
-			// -1 means abs time does not exist. So display empty string instead.
-			var defaultVal = absTime === -1 ? '' : absTime;
-
-			$('#node-list').append('<tr nodeID = ' + intention.nodeID + ' srcEB = A><td>' + intentionName + ': A' + '</td><td>' + funcType + '</td>' +
-				'<td><input type="number" name="sth" value="' + defaultVal + '"></td>' + btnHtml + '</tr>');
-		} else if (funcType == 'UD') {
-
-			// the number of function transitions, is the number of functions minus one
-			var funcTransitions = intention.dynamicFunction.functionSegList.length - 1;
-			var currBound = 'A';
-			for (var j = 0; j < funcTransitions; j++) {
-
-				// default value to display
-				var absTime = intention.getAbsConstTime(currBound);
-				var defaultVal = absTime === -1 ? '' : absTime;
-
-				$('#node-list').append('<tr nodeID = ' + intention.nodeID + ' srcEB = ' + currBound + '><td>' + intentionName + ': ' + currBound + '</td><td>' + funcType + '</td>' +
-					'<td><input type="number" name="sth" value=' + defaultVal + '></td>' + btnHtml + '</tr>');
-				currBound = String.fromCharCode(currBound.charCodeAt(0) + 1);
-			}
-		}
-	}
-}
-
-/**
-* Saves the Relative Intention Assignments from the
-* Absolute and Relative Assignments into the graph object
-*/
-function saveRelativeIntentionAssignments(){
-    $('.rel-intent-table tr').each(function () {
-        var nodeID1 = $(this).find('#epoch1List select option:checked').attr('nodeID');
-        var epoch1 = $(this).find('#epoch1List select option:checked').attr('epoch');
-        var type = $(this).find('#relationshipLists select option:checked').text();
-        var nodeID2 = $(this).find('#epoch2List select option:checked').attr('nodeID');
-        var epoch2 = $(this).find('#epoch2List select option:checked').attr('epoch');
-
-        if (!nodeID1 || !epoch1 || !type || !nodeID2 || !epoch2) {
-            return;
-        }
-
-        // create constraints object
-        var constraint = new Constraint(type, nodeID1, epoch1, nodeID2, epoch2);
-
-        if (!model.existsConstraint(constraint)) {
-            model.saveRelIntAssignment(type, nodeID1, epoch1, nodeID2, epoch2);
-        }
-    });
-}
-
-/**
-* Saves the Absolute Intention Assignments from the
-* Absolute and Relative Assignments to the graph object
-*/
-function saveAbsoluteIntentionAssignments(){
-    // Save absolute intention assignments
-    $.each($('#node-list').find("tr input[type=number]"), function(){
-        var newTime = parseInt($(this).val()); // ex 15
-        if (isNaN(newTime)) {
-            return;
-        }
-        var row = $(this).closest('tr');
-        var srcEB = row.attr('srcEB'); // ex. 'A'
-        var nodeID = row.attr('nodeID'); // ex. '0000'
-
-        model.setAbsConstBySrcID(nodeID, srcEB, newTime);
-    });
-}
-
-/**
-* Saves the Absolute Relationship Assignments from the
-* Absolute and Relative Assignments into the graph object
-*/
-function saveAbsoluteRelationshipAssignments(){
-    // Save absolute relationship assignment
-    $.each($('#link-list').find("tr input[type=number]"), function() {
-        var newTime = parseInt($(this).val());
-        if (isNaN(newTime)) {
-            return;
-        }
-        var row = $(this).closest('tr');
-        var linkID = row.attr('linkID');
-        var link = model.getLinkByID(linkID);
-        link.absoluteValue = newTime;
-    });
-}
-
-/**
  * Reassigned IDs if required.
  * If there are currently n intentions, and the nodeIDs of the intentions
  * are not exactly between 0000 and n - 1 inclusive, this function reassigns IDs 
@@ -385,7 +80,6 @@ function reassignIntentionIDs() {
 		var intention = intentions[i];
  		if (parseInt(intention.nodeID) !== currID) {
  			// The current intention's ID must be reassigned
-		
 			// Find the intention's cell
 			var cell;
 			for (var j = 0; j < elements.length; j++) {
@@ -411,38 +105,45 @@ function reassignIntentionIDs() {
 /**
  * Helper function for switching to Analysis view.
  */
-var inAnalysis = false;
 function switchToAnalysisMode() {
     setInteraction(false);
-    inAnalysis = true;
 	reassignIntentionIDs();
-	
+
 	// Clear the right panel
 	clearInspector();
 	
 	removeHighlight();
     
-    $('#config').append(configInspector.el);
+    $('#configID').append(configInspector.el);
     configInspector.render();
-	$('#stencil').css("display", "none");
+
+    // Disappear
+    $('#stencil').css("display", "none");
     $('#btn-view-intermediate').css("display","none");
+    $('#btn-view-assignment').css("display","none"); 
     $('#analysis-btn').css("display", "none");
 	$('#symbolic-btn').css("display", "none");
 	$('#cycledetect-btn').css("display", "none");
-    $('#dropdown-model').css("display", "");
-    //$('#on-off').css("display", "none");
-
-    // hide extra tools from modelling mode
     $('#model-toolbar').css("display", "none");
     $('.model-clears').css("display", "none");
+    $('#on-off').css("display", "none");
+
+    // Disable link settings
+	$('.link-tools .tool-remove').css("display", "none");
+    $('.link-tools .tool-options').css("display", "none");
+    
+    // Appear 
+    $('#dropdown-model').css("display", "");
+    $('#simulate-single-path-btn').css("display", "");
+    $('#next-state-btn').css("display", "");
+    $('#configID').css("display", ""); 
+    $('#on-off').css("display", "");
+
+    // Hide extra tools from modelling mode
     $('.analysis-clears').css("display", "");
 
     // Show Analysis View tag
 	$('#modeText').text("Analysis View");
-
-	// Disable link settings
-	$('.link-tools .tool-remove').css("display", "none");
-    $('.link-tools .tool-options').css("display", "none");
 
 	if (currentHalo) {
 		currentHalo.remove();
@@ -471,7 +172,7 @@ $('#model-cur-btn').on('click', function() {
  * satisfaction value and colours all text to black
  */
 function revertNodeValuesToInitial() {
-    // reset values
+    //reset values
     for (var i = 0; i < graph.elementsBeforeAnalysis.length; i++) {
 		var value = graph.elementsBeforeAnalysis[i]
 		updateNodeValues(i, value, "toInitModel");
@@ -487,11 +188,10 @@ function revertNodeValuesToInitial() {
 			curr.attributes.type !== 'basic.Softgoal' &&
 			curr.attributes.type !== 'basic.Resource') {
 			continue;
-		}
+		}     
+		var intention = curr.get('intention');
+        var initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair'); 
 
-		var intention = model.getIntentionByID(curr.attributes.nodeID);
-
-		var initSatVal = intention.getInitialSatValue();
 		if (initSatVal === '(no value)') {
             curr.attr('.satvalue/text', '');
 
@@ -514,8 +214,9 @@ function switchToModellingMode() {
     setInteraction(true);
     analysisResult.isPathSim = false; //reset isPathSim for color visualization slider
 	analysisRequest.previousAnalysis = null;
-	clearInspector();
-
+	
+    clearInspector();
+    
 	// Reset to initial graph prior to analysis
 	revertNodeValuesToInitial();
 
@@ -526,21 +227,27 @@ function switchToModellingMode() {
     // and clears results if model changed during modelling mode
     // previousModel is NOT of type Model
     previousModel = JSON.parse(JSON.stringify(model));
+    
 
-    $('#stencil').css("display","");
+    // Disappear 
     $('#analysis-sidebar').css("display","none");
+    $('#dropdown-model').css("display","none");
+    $('#simulate-single-path-btn').css("display", "none");
+    $('#configID').css("display", "none"); 
+    $('#next-state-btn').css("display", "none");
+    $('.analysis-clears').css("display", "none");
+    
+    // Appear 
+    $('#stencil').css("display","");
     $('#btn-view-assignment').css("display","");
     $('#btn-view-intermediate').css("display","");
     $('#analysis-btn').css("display","");
 	$('#symbolic-btn').css("display","");
 	$('#cycledetect-btn').css("display","");
-    $('#dropdown-model').css("display","none");
-    $('#on-off').css("display", "");
 
-    // show extra tools for modelling mode
+    // Show extra tools for modelling mode
     $('#model-toolbar').css("display","");
     $('.model-clears').css("display", "");
-    $('.analysis-clears').css("display", "none");
 
     analysisResult.colorVis = [];
 

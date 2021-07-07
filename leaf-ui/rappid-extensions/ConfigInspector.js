@@ -6,10 +6,10 @@
 /**
  * View for individual result buttons
  * 
- * {ResultModel} model
+ * {ResultBBM} model
  */
 var ResultView = Backbone.View.extend({
-    model: ResultModel,
+    model: ResultBBM,
 
     /** Pass in config along with model so that view has reference to parent */
     initialize: function(options){
@@ -49,7 +49,7 @@ var ResultView = Backbone.View.extend({
      */
     updateHighlight : function(){
         this.render();
-    }
+    },
 });
 
 /**
@@ -68,7 +68,7 @@ var ResultsDropdown = Backbone.View.extend({
     template: [
     '<div class="dropdown-container">',
     '</div>'].join(''),
-    
+
     /**
      * Resets listeners and resets template
      * Then adds all results associated with the configuration
@@ -92,22 +92,23 @@ var ResultsDropdown = Backbone.View.extend({
  * View for each configuration in the analysis configuration sidebar
  * Also containers ResultsDropdown as a inner view
  * 
- * {ConfigModel} model
+ * {ConfigBBM} model
  */
 var Config = Backbone.View.extend({
-    model: ConfigModel,
+    model: ConfigBBM,
 
     /** Create and render dropdown inner view, set listeners */
     initialize: function(){
         this.innerView = new ResultsDropdown({collection:this.model.get("results"), config: this.model});
         this.innerView.render();
         this.model.on('destroy', this.remove, this);
-        this.model.on('change:selected', this.updateHighlight, this);
+        this.model.on('change:selected', this.rerender, this);
+        this.model.on('switch', this.showAnalysisInspector, this);
         this.model.on('change:name', this.renderName, this);
     },
 
     template: ['<script type="text/template" id="item-template">',
-    '<div class="analysis-configuration" id="<%= name %>">',
+    '<div class="analysis-configuration" id="<%= name %>" style="width: 100%;">',
         '<button class="config-elements" <% if (selected) { %> style="background-color:#A9A9A9;" <%} %> >',
         '<%= name %> </button>',
         '<input class="config-input" value="<%- name %>" style="display:none"></input>',
@@ -135,7 +136,9 @@ var Config = Backbone.View.extend({
     render: function() {
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
         this.$('.analysis-configuration').append(this.innerView.$el);
-        this.showAnalysisInspector();
+        if (this.model.get('selected')){
+            this.showAnalysisInspector();
+        }
         return this;
     },
 
@@ -193,13 +196,6 @@ var Config = Backbone.View.extend({
     },
 
     /**
-     * Rerender highlight when select value changes
-     */
-    updateHighlight : function(){
-        this.rerender()
-    },
-
-    /**
      * Clears previous AnalysisInspector view (if any) and renders new view with current model
      */
     showAnalysisInspector: function(){
@@ -207,7 +203,7 @@ var Config = Backbone.View.extend({
         clearInspector();
         // Create and add new analysis sidebar view
         var analysisInspector = new AnalysisInspector({model: this.model});
-        $('.inspector').append(analysisInspector.el);
+        $('#analysisID').append(analysisInspector.el);
         analysisInspector.render();
     },
 
@@ -287,11 +283,11 @@ var ConfigInspector = Backbone.View.extend({
     collection: ConfigCollection,
 
     template: [
-        '<div id="analysis-sidebar" class="left-panel"><h3 style="text-align:left; color:#181b1fe3; margin-bottom:5px; margin-left: 10px;">Analysis',
+        '<div id="config-sidebar" class="container-sidebar"><h3 style="text-align:left; color:#181b1fe3; margin-bottom:5px; margin-left: 10px;">Analysis',
         '<div id="addConfig" style="display:inline">',
             '<i class="fa fa-plus" id="addIntent" style="font-size:30px; float:right;  margin-bottom:5px; margin-right:20px;"></i>',
         '</div></h3>',
-        '<div id="configurations" class="left-panel" style="margin-top:20px; overflow-y:auto; height:69%; box-shadow: none;"></div>',
+        '<div id="configurations" style="margin-top:20px; overflow-y:auto; height:69%; box-shadow: none;"></div>',
     '</div>',
 
     ].join(''),
@@ -314,20 +310,31 @@ var ConfigInspector = Backbone.View.extend({
         if(this.collection.length != 0){
             this.collection.each(this.loadConfig, this);
         } else {
-            this.addNewConfig();
+           this.addNewConfig();
         }
         return this;
+    },
+    /**
+     * Clears previous AnalysisInspector view (if any) and renders new view with current model
+     */
+     showAnalysisInspector: function(){
+        // If there is a previous sidebar view, clear it
+        clearInspector();
+        // Create and add new analysis sidebar view
+        var analysisInspector = new AnalysisInspector({model: this.model});
+        $('#analysisID').append(analysisInspector.el);
+        analysisInspector.render();
     },
 
     /** Add a new configuration view to the sidebar */
     loadConfig : function(config) {
         var view = new Config({model: config});
         $('#configurations').append(view.render().el);
-    },
+    }, 
 
     /** Create and add a new config model to the collection */
     addNewConfig : function(){
-        var configModel = new ConfigModel({name: "Configuration" + (this.collection.length+1), results: new ResultCollection([])})
+        var configModel = new ConfigBBM({name: "Request " + (this.collection.length+1), results: new ResultCollection([])})
         configCollection.add(configModel);
     },
 });

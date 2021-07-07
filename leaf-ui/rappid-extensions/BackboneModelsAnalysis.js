@@ -9,7 +9,7 @@
  * 
  */
 // TODO: Break AnalysisResult into params
-var ResultModel = Backbone.Model.extend({
+var ResultBBM = Backbone.Model.extend({
     idAttribute: "uid",
 
     defaults: {
@@ -22,10 +22,10 @@ var ResultModel = Backbone.Model.extend({
 /**
  * Collection that holds results for analysis configurations
  * 
- * {ResultModel} model
+ * {ResultBBM} model
  */
 var ResultCollection = Backbone.Collection.extend({
-    model: ResultModel,
+    model: ResultBBM,
     
     /** Used for eventually storing and accessing collection on server */
     url: "/results",
@@ -55,7 +55,7 @@ var ResultCollection = Backbone.Collection.extend({
  * {AnalysisResult} previousAnalysis
  * 
  */
-var ConfigModel = Backbone.Model.extend({
+var ConfigBBM = Backbone.Model.extend({
     initialize : function(){
         this.results = new ResultCollection([]);
         this.listenTo(this, 'change:selected', this.updateSelected);
@@ -72,7 +72,7 @@ var ConfigModel = Backbone.Model.extend({
         userAssignmentsList : [],
         previousAnalysis: null,
         selected: true,
-        results : new ResultCollection([])
+        results : new ResultCollection([]),
     },
 
     /**
@@ -80,7 +80,7 @@ var ConfigModel = Backbone.Model.extend({
      * when the backend returns an AnalysisResult
      */
     addResult : function(result){
-        var newResultModel = new ResultModel({name: 'Result ' + (this.get('results').length+1), analysisResult : result, selected: true});
+        var newResultModel = new ResultBBM({name: 'Result ' + (this.get('results').length+1), analysisResult : result, selected: true});
         this.get("results").add(newResultModel);
     },
 
@@ -95,10 +95,10 @@ var ConfigModel = Backbone.Model.extend({
 /**
  * Collection that holds analysis configurations
  * 
- * {ConfigModel} model
+ * {ConfigBBM} model
  */
 var ConfigCollection = Backbone.Collection.extend({
-    model: ConfigModel,
+    model: ConfigBBM,
 
     /** Used for eventually storing and accessing collection on server */
     url: "/configurations",

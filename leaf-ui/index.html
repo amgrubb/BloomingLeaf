@@ -4,7 +4,7 @@
         <meta charset="utf8"/>
 
         <title>BloomingLeaf</title>
-
+        <link rel="shortcut icon" type="image/jpg" href="./images/lab-bee.PNG"/>
         <link rel="stylesheet" type="text/css" href="./rappid/dist/joint.ui.stencil.css" />
         <link rel="stylesheet" type="text/css" href="./rappid/dist/joint.ui.halo.css" />
         <link rel="stylesheet" type="text/css" href="./rappid/dist/joint.ui.selection.css" />
@@ -98,6 +98,8 @@
             <!--This is the modal box of Intemdiate Values-->
 
             <button id="analysis-btn" class="green-btn btn" style="border-radius:none;">Analysis</button>
+            <button id="simulate-single-path-btn"; class="dark-green-btn btn"; style ="border-radius: none; display: none";>Simluate Single Path</button>
+            <button id="next-state-btn"; class="light-green-btn btn"; style = "border-radius: none; display: none"; >Explore Possible Next States</button>
             <div id="dropdown-model" class="dropdown" style='display: none'>
                 <button id="modeling-btn" class="red-btn btn">Model</button>
                 <div class="dropdown-toolbar">
@@ -110,7 +112,7 @@
 		      <button id="symbolic-btn" class="blue-btn btn">Model Constraints</button>-->
             
 
-            <div id="assignments-list"></div>
+            <div id="assignments-list"></div> 
             <div id="intermediate-table"></div>
         </div>
          
@@ -122,7 +124,10 @@
             <div id="configurations" class="left-panel" style="margin-top:20px; overflow-y:auto; height:69%; box-shadow: none;"></div>
         </div> -->
 
-        <div id='config'> 
+        <div id='configID'> 
+        </div>
+
+        <div id='analysisID'>
         </div>
 
         <div id="paper">
@@ -131,7 +136,7 @@
         <div class="inspector">
             <div id="layout"></div>
         </div>
-
+        
         <span id="modeText">Modeling View</span>
 
         <div id="slider"></div>
@@ -174,7 +179,7 @@
         <!--Rappid extension files-->
         <script src="./rappid-extensions/BackboneModelsIntention.js"></script>
         <script src="./rappid-extensions/BackboneModelsOther.js"></script>
-        <script src="./rappid-extensions/AnalysisModels.js"></script>
+        <script src="./rappid-extensions/BackboneModelsAnalysis.js"></script>
         <script src="./rappid-extensions/AssignmentsTable.js"></script>
         <script src="./rappid-extensions/ElementInspector.js"></script>
         <script src="./rappid-extensions/ConfigInspector.js"></script>
