@@ -12,6 +12,74 @@
 
 var url = "http://localhost:8080/untitled.html";	// Hardcoded URL for Node calls. 
 
+/**
+ * Explore Possible Next States - Step 1 - Set up analysis request object.
+ * Retrieves information about the current model and sends to the backend
+ * to get all next possible states.
+ *
+ * This function is called on click for #btn-all-next-state
+ * 
+ * TODO: Replace analysisRequest with config
+ */
+ function getAllNextStates() {
+    console.log("TODO: Implement Next States") 
+    /*
+    if (analysisRequest.action != null) { //path has been simulated
+        if (analysisResult.selectedTimePoint != analysisResult.timeScale) { //last timepoint is not selected
+            $("body").addClass("waiting"); //Adds "waiting" spinner under cursor 
+            //Create the object and fill the JSON file to be sent to backend.
+            //Get the AnalysisInspector view information
+
+            analysisRequest.action = "allNextStates";
+
+            analysisRequest.previousAnalysis = _.clone(savedAnalysisData.singlePathResult);
+            // need to remove TPs after current point from previous solution?
+            // update the time point for potentialEpoch
+            var previousTP = [];
+            var i = analysisRequest.currentState.indexOf('|', 0);
+            var currentState = parseInt(analysisRequest.currentState.substring(0, i));
+            for (var i = 0; i < currentState + 1; i++) {
+                for (var j = 0; j < analysisRequest.previousAnalysis.assignedEpoch.length; j++) {
+                    var regex = /(.*)_(.*)$/g;
+                    var match = regex.exec(analysisRequest.previousAnalysis.assignedEpoch[j]);
+                    if (match[2] === analysisRequest.previousAnalysis.timePointPath[i]) {
+                        previousTP.push(analysisRequest.previousAnalysis.assignedEpoch[j]);
+                        continue;
+                    }
+                }
+            }
+
+            console.log(previousTP);
+            // update current time point in the path if necessary (if epoch)
+            // remove all the time points after
+            analysisRequest.previousAnalysis.assignedEpoch = previousTP;
+            analysisRequest.previousAnalysis.timePointPath = analysisRequest.previousAnalysis.timePointPath.slice(0, currentState + 1);
+
+
+            console.log(analysisRequest);
+
+            // Object to be sent to the backend
+            var jsObject = {};
+            jsObject.analysisRequest = analysisRequest;
+
+            //Get the Graph Model
+            jsObject.model = model;
+
+            //Send data to backend
+            //backendComm(jsObject);		//TODO: Need to add parameter for Node Server.
+            // Temporary Disabled to updated calls to backend.
+            // TODO: Reconnect All Paths Analysis
+
+        } else {
+            swal("Error: Cannot explore next states with last time point selected.", "", "error");
+        }
+    } else {
+        swal("Error: Cannot explore next states before simulating a single path.", "", "error");
+    }
+    */
+}
+
+
 function backendComm(){	
 	console.log("Step 3 - BackendComm");
 	console.log(graph.toJSON());
@@ -248,3 +316,5 @@ function convertToAnalysisResult(results){
 	tempResult.colorVis.singlePathResponse(results.elementList);
 	return tempResult;
 }
+
+

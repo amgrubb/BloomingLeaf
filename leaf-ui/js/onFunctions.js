@@ -14,6 +14,9 @@ It also contains the setup for Rappid elements.
  $('#btn-fnt-down').on('click', function(){ fontDown(paper);}); 
  $('#legend').on('click', function(){ window.open('./userguides/legend.html', 'newwindow', 'width=300, height=250'); return false;});
  $('#evo-color-key').on('click', function(){ window.open('./userguides/evo.html', 'newwindow', 'width=500, height=400'); return false;});
+ $('#simulate-single-path-btn').on('click', function() { backendComm(); }); 
+ $('#next-state-btn').on('click', function() { getAllNextStates(); }); 
+
 
 /**
  * Displays the absolute and relative assignments modal for the user.
@@ -29,14 +32,6 @@ $('#btn-view-intermediate').on('click', function() {
 	$('#intermediate-table').append(intermediateValuesTable.el);
 	intermediateValuesTable.render();
 });
-
-//TODO: implement step 1 of simulate single path 
-$('#simulate-single-path-btn').on('click', function() { 
-}); 
-
-//TODO: impelement step 1 of next state button 
-$('#next-state-btn').on('click', function() { 
-}); 
 
 /**
  * Switches to Analysis view iff there are no cycles and no syntax errors.
