@@ -45,13 +45,13 @@ var FunctionSegmentBBM = Backbone.Model.extend({
 
     initialize: function (options) {
         _.extend({}, this.defaults, options)
-        this.type = options.type;           // Atomic function types. 
-        this.refEvidencePair = options.refEvidencePair;   //a.k.a. Evaluation Value
-        this.startTP = options.startTP; // Start time point (char) 0,A,B,C
-        // Removed stopTP variable - stopTP is one letter after startTP or A is startTP is 0
     },
     defaults: function(){ 
         return {
+            type:'Constant',           // Atomic function types. 
+            refEvidencePair: 0000,   //a.k.a. Evaluation Value
+            startTP: 0,             // Start time point (char) 0,A,B,C
+            // Removed stopTP variable - stopTP is one letter after startTP or A is startTP is 0
             startAT: myNull, // Assigned/Absolute Time - Integer time value. If not set defaults to undefined
         }
     }
@@ -187,6 +187,19 @@ var IntentionBBM = Backbone.Model.extend({
      */
     getUserEvaluationBBM: function(absTime) {
         return this.get('userEvaluationList').findWhere({absTime: absTime});
+    },
+
+    /**
+     * @param {Integer} TP1 
+     * @param {Integer} TP2 
+     * @returns Last UserEvaluationBBMs between TP1 and TP2, or null if there is none
+     */
+    getLastUserEvaluationBetweenTPs: function(TP1, TP2){
+        var userEvals = this.get('userEvaluationList').filter(userEval => userEval.get('absTime') >= TP1 && userEval.get('absTime') < TP2);
+        if (userEvals.length > 0){
+            return userEvals[userEvals.length-1];
+        }
+        return null;
     },
 
     /**
@@ -384,8 +397,7 @@ var IntentionBBM = Backbone.Model.extend({
                 functionSegment.set('refEvidencePair', '0000'); // Set refEvidencePair
             }
         }     
-    }, 
-
+    },
 });
 
 
