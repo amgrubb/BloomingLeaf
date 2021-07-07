@@ -69,13 +69,6 @@ var ElementInspector = Backbone.View.extend({
         this.listenTo(this, 'change: intention', this.initSatValueChanged); 
         // Saves this.model.get('intention) as a local variable to access it more easily
         this.intention = this.model.get('intention');
-        // Only creates the FunctionSegmentView if there is a function segment
-        if (this.intention.get('evolvingFunction') != null) {
-        // Creates new view 
-        // the model assignment is incorrect here
-        this.innerView = new FuncSegView({model: this.intention.get('evolvingFunction').get('functionSegList'), intention: this.model});
-        this.innerView.render();
-                }
     },
      
     template: ['<script type="text/template" id="item-template">',
@@ -225,14 +218,15 @@ var ElementInspector = Backbone.View.extend({
                 this.displayFunctionSatValue(null);
             }
         }
-        this.$('.inspector-views').append(this.innerView.$el);
+        // this.$('.inspector-views').append(this.innerView.$el);
         this.updateCell();   
     },  
 
     rerender: function() {
-        this.innerView.$el.detach()
-        this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
-        this.$('.inspector-views').append(this.innerView.$el);
+        this.renderFunctionSegments();
+        // this.innerView.$el.detach()
+        // this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
+        // this.$('.inspector-views').append(this.innerView.$el);
         return this;
     },
     
@@ -397,6 +391,7 @@ var ElementInspector = Backbone.View.extend({
      * This function is called on change for .user-function-type
      */
     updateHTML: function(event) {
+        this.renderFunctionSegments();
         // Check if selected init sat value and functionType pair is illegal
         // Only runs if evolvingFunction is defined and therefore there is a function type
         // if (this.intention.get('evolvingFunction') != null) {
@@ -984,6 +979,19 @@ var ElementInspector = Backbone.View.extend({
 
     clear: function(){
         this.$el.html('');
+    },
+
+    renderFunctionSegments: function() {                       
+        // Only creates the FunctionSegmentView if there is a function segment
+        if(this.intention.get('evolvingFunction') != null){
+            var funcSegList = this.intention.getFuncSegments();
+            funcSegList.forEach(
+                funcSeg => {
+                var functionSegView = new FuncSegView({model: funcSeg, funcType: funcSeg.get('type'), intention: this.model});
+                $('.inspector-views').append(functionSegView.el);
+                functionSegView.render();  
+            })
+        }
     }
 });
 
@@ -995,6 +1003,7 @@ var FuncSegView = Backbone.View.extend({
     /** Pass in a reference to parent configuration on intialization */
     initialize: function(options){
         this.listenTo(this, 'change: intention', this.initSatValueChanged); 
+        this.functionType = options.functionType;
         this.intention = options.intention;
     },
 
@@ -1031,4 +1040,35 @@ var FuncSegView = Backbone.View.extend({
         return this;
     },
 
+});
+
+/**
+ * View for dropdown result menu under configurations
+ * 
+ * {ResultCollection} collection
+ */
+ var SegmentGrouping = Backbone.View.extend({
+    model: EvolvingFunctionBBM,
+
+    /** Pass in a reference to parent configuration on intialization */
+    initialize: function(options){
+        this.functionSegmentList = this.get('functionSegmentList');
+    },
+
+
+    template: [
+    '<div class="">',
+    '</div>'].join(''),
+    
+    /**
+     * Resets listeners and resets template
+     * Then adds all results associated with the configuration
+     */
+    render: function() {
+        this.stopListening();
+        this.listenTo(this.collection, 'add', this.loadResult, this);
+        this.$el.html(_.template(this.template)());
+        this.collection.forEach(result => {this.loadResult(result)});
+        return this;
+    },
 });
