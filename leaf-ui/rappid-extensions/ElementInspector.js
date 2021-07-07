@@ -101,13 +101,15 @@ var ElementInspector = Backbone.View.extend({
                     '<option value=DS class="B"> Denied Satisfied </option>',
                     '<option value=UD class="B"> User Defined </option>',
                 '</select>',
-                '<select id="markedValue" class="function-sat-value">',
-                    '<option value=none> None (⊥, ⊥)</option>',
-                    '<option value=satisfied> Satisfied (F, ⊥)</option>',
-                    '<option value=partiallysatisfied> Partially Satisfied (P, ⊥) </option>',
-                    '<option value=partiallydenied> Partially Denied (⊥, P)</option>',
-                    '<option value=denied> Denied (⊥, F)</option>',
-                '</select>',
+                '<div id = segment-functions>',
+                '</div>',
+                // '<select id="markedValue" class="function-sat-value">',
+                //     '<option value=none> None (⊥, ⊥)</option>',
+                //     '<option value=satisfied> Satisfied (F, ⊥)</option>',
+                //     '<option value=partiallysatisfied> Partially Satisfied (P, ⊥) </option>',
+                //     '<option value=partiallydenied> Partially Denied (⊥, P)</option>',
+                //     '<option value=denied> Denied (⊥, F)</option>',
+                // '</select>',
                 '<div id="user-constraints">',
                     '<div id="all-user-constraints">',
                         '<div id="new-user-constraints">',
@@ -981,14 +983,14 @@ var ElementInspector = Backbone.View.extend({
         this.$el.html('');
     },
 
-    renderFunctionSegments: function() {                       
+    renderFunctionSegments: function() { 
         // Only creates the FunctionSegmentView if there is a function segment
         if(this.intention.get('evolvingFunction') != null){
             var funcSegList = this.intention.getFuncSegments();
             funcSegList.forEach(
                 funcSeg => {
                 var functionSegView = new FuncSegView({model: funcSeg, funcType: funcSeg.get('type'), intention: this.model});
-                $('.inspector-views').append(functionSegView.el);
+                $('#segment-functions').append(functionSegView.el);
                 functionSegView.render();  
             })
         }
@@ -1001,15 +1003,14 @@ var FuncSegView = Backbone.View.extend({
      model: FunctionSegmentBBM, 
 
     /** Pass in a reference to parent configuration on intialization */
-    initialize: function(options){
-        this.listenTo(this, 'change: intention', this.initSatValueChanged); 
+    initialize: function(options){ 
         this.functionType = options.functionType;
         this.intention = options.intention;
     },
 
     template: ['<script type="text/template" id="item-template">',
                 '<div class=“segment-views”>',
-                    '<input style="float:left; width:20; display:inline-block;"class="repeat-select2" id="repeat-end2" value="2">',
+                    '<input style="float:left; width:20%; display:inline-block;"class="repeat-select5" id="repeat-end2" value="2">',
                     '<output> startTP </output>',
                     '<select class=“seg-function-type segment-views”>',
                                     '<option value=C> Constant </option>',
