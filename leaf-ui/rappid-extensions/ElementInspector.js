@@ -223,14 +223,6 @@ var ElementInspector = Backbone.View.extend({
         // this.$('.inspector-views').append(this.innerView.$el);
         this.updateCell();   
     },  
-
-    rerender: function() {
-        this.renderFunctionSegments();
-        // this.innerView.$el.detach()
-        // this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
-        // this.$('.inspector-views').append(this.innerView.$el);
-        return this;
-    },
     
     /**
     * Removes the view so we don't have multiple ones in the sidebar
@@ -393,7 +385,6 @@ var ElementInspector = Backbone.View.extend({
      * This function is called on change for .user-function-type
      */
     updateHTML: function(event) {
-        this.renderFunctionSegments();
         // Check if selected init sat value and functionType pair is illegal
         // Only runs if evolvingFunction is defined and therefore there is a function type
         // if (this.intention.get('evolvingFunction') != null) {
@@ -984,6 +975,8 @@ var ElementInspector = Backbone.View.extend({
     },
 
     renderFunctionSegments: function() { 
+        // Removes functions segments that are currently displayed
+        $('#segment-functions').empty();
         // Only creates the FunctionSegmentView if there is a function segment
         if(this.intention.get('evolvingFunction') != null){
             var funcSegList = this.intention.getFuncSegments();
@@ -994,7 +987,12 @@ var ElementInspector = Backbone.View.extend({
                 functionSegView.render();  
             })
         }
-    }
+    },
+
+    rerender: function() {
+        this.renderFunctionSegments();
+        return this;
+    },
 });
 
 /************************************************** FunctionSegmentBBM View **************************************************/
@@ -1010,7 +1008,7 @@ var FuncSegView = Backbone.View.extend({
 
     template: ['<script type="text/template" id="item-template">',
                 '<div class=“segment-views”>',
-                    '<input style="float:left; width:20%; display:inline-block;"class="repeat-select5" id="repeat-end2" value="2">',
+                    '<input style="float:left; width:20%; display:inline-block; id="repeat-end5" value="2">',
                     '<output> startTP </output>',
                     '<select class=“seg-function-type segment-views”>',
                                     '<option value=C> Constant </option>',
