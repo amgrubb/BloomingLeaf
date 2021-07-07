@@ -30,6 +30,14 @@ $('#btn-view-intermediate').on('click', function() {
 	intermediateValuesTable.render();
 });
 
+//TODO: implement step 1 of simulate single path 
+$('#simulate-single-path-btn').on('click', function() { 
+}); 
+
+//TODO: impelement step 1 of next state button 
+$('#next-state-btn').on('click', function() { 
+}); 
+
 /**
  * Switches to Analysis view iff there are no cycles and no syntax errors.
  */
@@ -72,7 +80,6 @@ function reassignIntentionIDs() {
 		var intention = intentions[i];
  		if (parseInt(intention.nodeID) !== currID) {
  			// The current intention's ID must be reassigned
-		
 			// Find the intention's cell
 			var cell;
 			for (var j = 0; j < elements.length; j++) {
@@ -98,38 +105,45 @@ function reassignIntentionIDs() {
 /**
  * Helper function for switching to Analysis view.
  */
-var inAnalysis = false;
 function switchToAnalysisMode() {
     setInteraction(false);
-    inAnalysis = true;
 	reassignIntentionIDs();
-	
+
 	// Clear the right panel
 	clearInspector();
 	
 	removeHighlight();
     
-    $('#config').append(configInspector.el);
+    $('#configID').append(configInspector.el);
     configInspector.render();
-	$('#stencil').css("display", "none");
+
+    // Disappear
+    $('#stencil').css("display", "none");
     $('#btn-view-intermediate').css("display","none");
+    $('#btn-view-assignment').css("display","none"); 
     $('#analysis-btn').css("display", "none");
 	$('#symbolic-btn').css("display", "none");
 	$('#cycledetect-btn').css("display", "none");
-    $('#dropdown-model').css("display", "");
-    //$('#on-off').css("display", "none");
-
-    // hide extra tools from modelling mode
     $('#model-toolbar').css("display", "none");
     $('.model-clears').css("display", "none");
+    $('#on-off').css("display", "none");
+
+    // Disable link settings
+	$('.link-tools .tool-remove').css("display", "none");
+    $('.link-tools .tool-options').css("display", "none");
+    
+    // Appear 
+    $('#dropdown-model').css("display", "");
+    $('#simulate-single-path-btn').css("display", "");
+    $('#next-state-btn').css("display", "");
+    $('#configID').css("display", ""); 
+    $('#on-off').css("display", "");
+
+    // Hide extra tools from modelling mode
     $('.analysis-clears').css("display", "");
 
     // Show Analysis View tag
 	$('#modeText').text("Analysis View");
-
-	// Disable link settings
-	$('.link-tools .tool-remove').css("display", "none");
-    $('.link-tools .tool-options').css("display", "none");
 
 	if (currentHalo) {
 		currentHalo.remove();
@@ -174,11 +188,10 @@ function revertNodeValuesToInitial() {
 			curr.attributes.type !== 'basic.Softgoal' &&
 			curr.attributes.type !== 'basic.Resource') {
 			continue;
-		}
+		}     
+		var intention = curr.get('intention');
+        var initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair'); 
 
-		var intention = model.getIntentionByID(curr.attributes.nodeID);
-
-		var initSatVal = intention.getInitialSatValue();
 		if (initSatVal === '(no value)') {
             curr.attr('.satvalue/text', '');
 
@@ -201,8 +214,9 @@ function switchToModellingMode() {
     setInteraction(true);
     analysisResult.isPathSim = false; //reset isPathSim for color visualization slider
 	analysisRequest.previousAnalysis = null;
-	clearInspector();
-
+	
+    clearInspector();
+    
 	// Reset to initial graph prior to analysis
 	revertNodeValuesToInitial();
 
@@ -213,21 +227,27 @@ function switchToModellingMode() {
     // and clears results if model changed during modelling mode
     // previousModel is NOT of type Model
     previousModel = JSON.parse(JSON.stringify(model));
+    
 
-    $('#stencil').css("display","");
+    // Disappear 
     $('#analysis-sidebar').css("display","none");
+    $('#dropdown-model').css("display","none");
+    $('#simulate-single-path-btn').css("display", "none");
+    $('#configID').css("display", "none"); 
+    $('#next-state-btn').css("display", "none");
+    $('.analysis-clears').css("display", "none");
+    
+    // Appear 
+    $('#stencil').css("display","");
     $('#btn-view-assignment').css("display","");
     $('#btn-view-intermediate').css("display","");
     $('#analysis-btn').css("display","");
 	$('#symbolic-btn').css("display","");
 	$('#cycledetect-btn').css("display","");
-    $('#dropdown-model').css("display","none");
-    $('#on-off').css("display", "");
 
-    // show extra tools for modelling mode
+    // Show extra tools for modelling mode
     $('#model-toolbar').css("display","");
     $('.model-clears').css("display", "");
-    $('.analysis-clears').css("display", "none");
 
     analysisResult.colorVis = [];
 
