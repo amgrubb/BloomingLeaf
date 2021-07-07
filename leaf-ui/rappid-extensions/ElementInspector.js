@@ -982,7 +982,8 @@ var ElementInspector = Backbone.View.extend({
             var funcSegList = this.intention.getFuncSegments();
             funcSegList.forEach(
                 funcSeg => {
-                var functionSegView = new FuncSegView({model: funcSeg, funcType: funcSeg.get('type'), intention: this.model});
+                    console.log(funcSeg.get('refEvidencePair'));
+                var functionSegView = new FuncSegView({model: funcSeg, funcType: funcSeg.get('type'), intention: this.model, satValue:funcSeg.get('refEvidencePair')});
                 $('#segment-functions').append(functionSegView.el);
                 functionSegView.render();  
             })
@@ -1004,18 +1005,22 @@ var FuncSegView = Backbone.View.extend({
     initialize: function(options){ 
         this.functionType = options.functionType;
         this.intention = options.intention;
+        this.satValue = options.satValue;
+        // document.getElementById("greeting").innerHTML = "Bonjour";
     },
 
     template: ['<script type="text/template" id="item-template">',
                 '<div class=“segment-views”>',
                     '<input style="float:left; width:20%; display:inline-block; id="repeat-end5" value="2">',
                     '<output> startTP </output>',
-                    '<select class=“seg-function-type segment-views”>',
-                                    '<option value=C> Constant </option>',
-                                    '<option value=R> Stochastic </option>',
-                                    '<option value=I> Increase </option>',
-                                    '<option value=D> Decrease </option>',
-                                '</select>',
+                    // '<output> <%=satValue%> </output>',
+                    '<output class=“seg-function-type”> </output>',
+                    // '<select class=“seg-function-type segment-views”>',
+                    //                 '<option value=C> Constant </option>',
+                    //                 '<option value=R> Stochastic </option>',
+                    //                 '<option value=I> Increase </option>',
+                    //                 '<option value=D> Decrease </option>',
+                    //             '</select>',
                                 '<select class=“seg-sat-value segment-views”>',
                                     '<option value=none selected> None (⊥, ⊥) </option>',
                                     '<option value=satisfied> Satisfied (F, ⊥) </option>',
@@ -1030,13 +1035,40 @@ var FuncSegView = Backbone.View.extend({
                 '</script>'].join(''),
 
     events: {
-        'change .user-function-type':'userFuncTypeChanged',
+        'change .seg-function-type':'userFuncTypeChanged',
         'change .user-sat-value':'userSatValChanged',
     },
 
     render: function() {
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
+        // this.$('#segment-views').text(this.satVal);
+         // this.$('#segment-views').text(this.functionType);
+         console.log(this.satValue);
+        this.$('.seg-function-type').val(this.satValue);
+        this.$('.user-sat-value').text(this.functionType);
         return this;
+    },
+
+    initSatValueChanged: function(event) {
+        var initValue = this.$('.seg-function-type').val();
+        this.intention.changeInitialSatValue(satValueDict[initValue]);
+        this.checkInitialSatValue();
+        this.updateCell(null);
+        this.updateHTML(event);
+
+    },
+
+    /**
+     * Clears all FuncSegments for this intention's
+     * EvolvingFunction and adds new FuncSegments according to the current
+     * function type.
+     *
+     * This function is called on change for .function-type.
+     */
+    funcTypeChanged: function(event) {
+        this.intention.setEvolvingFunction(this.$('.function-type').val());
+        this.updateCell(null);
+        this.updateHTML(event);
     },
 
 });
