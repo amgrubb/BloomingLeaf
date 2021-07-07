@@ -125,7 +125,6 @@ var Config = Backbone.View.extend({
 
     events: {
         'click .config-elements': 'switchConfig',
-        'click .deleteconfig-button': 'removeConfig',
         'click .dropdown-button' : 'toggleDropdown',
         'dblclick .config-elements': 'rename',
         'blur .config-input': 'setConfigName',
