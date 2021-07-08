@@ -58,56 +58,15 @@ $('#load-sample').on('click', function() {
     });
 });
 */
-
-/**
- * Reassigned IDs if required.
- * If there are currently n intentions, and the nodeIDs of the intentions
- * are not exactly between 0000 and n - 1 inclusive, this function reassigns IDs 
- * so that the nodeIDs are all exactly between 0000 and n - 1 inclusive.
- *
- * For example: 
- * There are 2 intentions. The first intention has nodeID 0000 and the
- * second intention has nodeID 0002. This function will cause the 
- * the first intention to keep nodeID 0000 and the 
- * second intention to be assigned assigned nodeID 0001.
- */
-function reassignIntentionIDs() {
-	var elements = graph.getElements();
-	var intentions = model.intentions;
- 	var currID = 0;
-	var currIDStr;
-	for (var i = 0; i < intentions.length; i++) {
-		var intention = intentions[i];
- 		if (parseInt(intention.nodeID) !== currID) {
- 			// The current intention's ID must be reassigned
-			// Find the intention's cell
-			var cell;
-			for (var j = 0; j < elements.length; j++) {
-				if (elements[j].attributes.nodeID === intention.nodeID) {
-					cell = elements[j];
-				}
-            }
-
- 			currIDStr = currID.toString();
- 			while (currIDStr.length < 4){
-	                currIDStr = '0' + currIDStr;
-	        }
-			cell.attributes.nodeID = currIDStr;
-			intention.setNewID(currIDStr);
-		}
- 		currID += 1;
-	}
- 	Intention.numOfCreatedInstances = currID;
-	Link.numOfCreatedInstances = currID;
-}
-
+/** Initialize configCollection */
+let configCollection = new ConfigCollection([]);
+let configInspector = new ConfigInspector({collection:configCollection});
 
 /**
  * Helper function for switching to Analysis view.
  */
 function switchToAnalysisMode() {
     setInteraction(false);
-	reassignIntentionIDs();
 
 	// Clear the right panel
 	clearInspector();
@@ -144,11 +103,6 @@ function switchToAnalysisMode() {
 
     // Show Analysis View tag
 	$('#modeText').text("Analysis View");
-
-	if (currentHalo) {
-		currentHalo.remove();
-	}
-    mode = "Analysis";
     
     IntentionColoring.refresh();
 }
@@ -157,8 +111,6 @@ function switchToAnalysisMode() {
 $('#model-cur-btn').on('click', function() {
 	switchToModellingMode();
 
-	// Cleaning the previous analysis data for new execution
-	//globalAnalysisResult.elementList = "";
 	savedAnalysisData.finalAssignedEpoch="";
     savedAnalysisData.finalValueTimePoints="";
     
@@ -173,36 +125,36 @@ $('#model-cur-btn').on('click', function() {
  */
 function revertNodeValuesToInitial() {
     //reset values
-    for (var i = 0; i < graph.elementsBeforeAnalysis.length; i++) {
-		var value = graph.elementsBeforeAnalysis[i]
-		updateNodeValues(i, value, "toInitModel");
-	}
+    // for (var i = 0; i < graph.elementsBeforeAnalysis.length; i++) {
+	// 	var value = graph.elementsBeforeAnalysis[i]
+	// 	updateNodeValues(i, value, "toInitModel");
+	// }
 
-	var elements = graph.getElements();
-	var curr;
-	for (var i = 0; i < elements.length; i++) {
-		curr = elements[i].findView(paper).model;
+	// var elements = graph.getElements();
+	// var curr;
+	// for (var i = 0; i < elements.length; i++) {
+	// 	curr = elements[i].findView(paper).model;
 
-		if (curr.attributes.type !== 'basic.Goal' &&
-			curr.attributes.type !== 'basic.Task' &&
-			curr.attributes.type !== 'basic.Softgoal' &&
-			curr.attributes.type !== 'basic.Resource') {
-			continue;
-		}     
-		var intention = curr.get('intention');
-        var initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair'); 
+	// 	if (curr.attributes.type !== 'basic.Goal' &&
+	// 		curr.attributes.type !== 'basic.Task' &&
+	// 		curr.attributes.type !== 'basic.Softgoal' &&
+	// 		curr.attributes.type !== 'basic.Resource') {
+	// 		continue;
+	// 	}     
+	// 	var intention = curr.get('intention');
+    //     var initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair'); 
 
-		if (initSatVal === '(no value)') {
-            curr.attr('.satvalue/text', '');
+	// 	if (initSatVal === '(no value)') {
+    //         curr.attr('.satvalue/text', '');
 
-		} else {
-            curr.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
-		}
-        //curr.attr({text: {fill: 'black'}});
-        curr.attr({text: {fill: 'black',stroke:'none','font-weight' : 'normal','font-size': 10}});
-	}
-    // Remove slider
-    removeSlider();
+	// 	} else {
+    //         curr.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
+	// 	}
+    //     //curr.attr({text: {fill: 'black'}});
+    //     curr.attr({text: {fill: 'black',stroke:'none','font-weight' : 'normal','font-size': 10}});
+	// }
+    // // Remove slider
+    // removeSlider();
 }
 
 /**
@@ -212,22 +164,11 @@ function revertNodeValuesToInitial() {
  */
 function switchToModellingMode() {
     setInteraction(true);
-    analysisResult.isPathSim = false; //reset isPathSim for color visualization slider
-	analysisRequest.previousAnalysis = null;
 	
     clearInspector();
     
 	// Reset to initial graph prior to analysis
 	revertNodeValuesToInitial();
-
-	graph.elementsBeforeAnalysis = [];
-
-    // store deep copy of model for detecting model changes
-    // switchToAnalysisMode compares the current model to previousModel
-    // and clears results if model changed during modelling mode
-    // previousModel is NOT of type Model
-    previousModel = JSON.parse(JSON.stringify(model));
-    
 
     // Disappear 
     $('#analysis-sidebar').css("display","none");
@@ -249,7 +190,7 @@ function switchToModellingMode() {
     $('#model-toolbar').css("display","");
     $('.model-clears').css("display", "");
 
-    analysisResult.colorVis = [];
+    // analysisResult.colorVis = [];
 
     // Show Modelling View tag
     $('#modeText').text("Modeling View");
@@ -258,8 +199,6 @@ function switchToModellingMode() {
 	$('.link-tools .tool-remove').css("display","");
 	$('.link-tools .tool-options').css("display","");
 
-	graph.allElements = null;
-    mode = "Modelling";
     EVO.switchToModelingMode();
 
     // Popup to warn user that changing model will clear results
@@ -435,10 +374,14 @@ $('#colorblind-mode-isOn').on('click', function(){ //turns off colorblind mode
     IntentionColoring.toggleColorBlindMode(false);
 });
 
+$(window).resize(function() {
+	$('#slider').css("margin-top", $(this).height() * 0.9);
+	$('#slider').width($('#paper').width() * 0.8);
+});
+
 /**
  * Set up on events for Rappid/JointJS objets
  */
-var element_counter = 0;
 
 // Whenever an element is added to the graph
 graph.on("add", function(cell) {
@@ -460,7 +403,7 @@ graph.on("add", function(cell) {
         cell.set('intention', newIntentionBBM);
         cell.attr('.satvalue/text', '');
         cell.attr('.funcvalue/text', ' ');
-        // create intention evaluation object and add it to userEvaluationList 
+        // Create intention evaluation object and add it to userEvaluationList 
         newIntentionBBM.get('userEvaluationList').push(new UserEvaluationBBM({}));
 	} else if (cell instanceof joint.shapes.basic.Actor) {
         // Find how many instances of the actor is created out of all the cells
@@ -475,7 +418,7 @@ graph.on("add", function(cell) {
 		cell.toBack();
 	}
 
-    // trigger click on cell to highlight, activate inspector, etc. 
+    // Trigger click on cell to highlight, activate inspector, etc. 
     paper.trigger("cell:pointerup", cell.findView(paper));
 });
 
@@ -505,16 +448,13 @@ paper.on('blank:pointerdown', function(evt, x, y) {
  * Specifies behavior for clicking on cells and moving intentions/links
  */
 paper.on({
-    'cell:pointerdown': function(cellView, evt) {
-        var interact = true;
-        if(mode == "Analysis"){
-            interact = false;
-        }
-
+    // Note: cellView must remain in pointerdown and pointerup functions 
+    // In order for 
+    'cell:pointerdown': function(evt) {
         // pass data to pointermove and pointerup
-        evt.data = {move: false, interact: interact};
+        evt.data = {move: false};
     },
-    'cell:pointermove': function(cellView, evt) {
+    'cell:pointermove': function(evt) {
         if (!evt.data.move && evt.data.interact){
             // start of a click and drag
             evt.data.move = true;
@@ -527,18 +467,18 @@ paper.on({
             // same highlighting, actor embedding, etc. behavior as dragging cell 
             evt = {data: {move: true, interact: true}};
         }
-        
         // when interacting w/ cells on paper in modeling mode
-        if (evt.data.interact) {
+        if (cellView.model.findView(paper).options.interactive) {
             var cell = cellView.model;
             if (cell instanceof joint.dia.Link) { // Link behavior
                 if (evt.data.move){
-                    // if link moved, reparent
+                    // If link moved, reparent
                     cell.reparent();
                 }
             } else { // Non-Link behavior
-
                 // Element is selected
+                // TODO: Can this global variable be removed?
+                // Also - selection only ever contains one model - why is it a collection
                 selection.reset();
                 selection.add(cell);
 
@@ -547,8 +487,6 @@ paper.on({
 
                 // Highlight when cell is clicked
                 cellView.highlight();
-
-                currentHalo = createHalo(cellView);
 
                 clearInspector();
 
@@ -589,10 +527,7 @@ paper.on('blank:pointerclick', function(){
 });
 
 // Link equivalent of the element editor
-paper.on("link:options", function(cell, evt){
-	if(mode == "Analysis") {
-		return;
-	}
+paper.on("link:options", function(cell){
 
 	clearInspector();
     
@@ -608,51 +543,16 @@ paper.on("link:options", function(cell, evt){
 });
 
 /**
- * Create a halo around the element that was just created
- *
- * @param {joint.shapes} cellView
- * @returns {joint.ui.Halo} halo
- */
-function createHalo(cellView){
-	// var halo = new joint.ui.Halo({
- //        graph: graph,
- //        paper: paper,
- //        cellView: cellView,
- //    });
-
-    var halo = new joint.ui.Halo({
-    	type: 'toolbar',
-    	boxContent: false,
-        cellView: cellView
-    });
-
-    halo.removeHandle('unlink');
-    halo.removeHandle('clone');
-    halo.removeHandle('fork');
-    halo.removeHandle('rotate');
-
-
-    halo.on('action:resize:pointermove', function(cell) {
-    	cellView.unhighlight();
-		cellView.highlight();
-    });
-
-    halo.render();
-    return halo;
-}
-
-/**
  * Remove the highlight around all elements
  *
  * @param  {Array.<joint.dia.shapes>} elements
  */
 function removeHighlight(){
-	var cell;
 	var elements = graph.getElements();
     // Unhighlight everything
     for (var i = 0; i < elements.length; i++) {
-        cell = elements[i].findView(paper);
-        cell.unhighlight();
+        console.log(elements[i].findView(paper))
+        elements[i].findView(paper).unhighlight();
     }
 }
 
