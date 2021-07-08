@@ -126,8 +126,6 @@ var stencil = new joint.ui.Stencil({
 // Once those are re-implemented need for this global variable can be revisited
 var commandManager = new joint.dia.CommandManager({ graph: graph });
 
-var sliderObject = new SliderObj();
-
 /** JointJS and Rappid element page setup */
 
 $('#paper').append(paperScroller.render().el);

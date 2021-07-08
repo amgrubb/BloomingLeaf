@@ -371,6 +371,7 @@ paper.on({
 
                 // Highlight when cell is clicked
                 cellView.highlight();
+                createHalo(cellView);
 
                 clearInspector();
 
@@ -563,12 +564,46 @@ function clearAll(){
 } // End scope of configCollection and configInspector
 
 /**
+ * Create a halo around the element that was just created
+ *
+ * @param {joint.shapes} cellView
+ * @returns {joint.ui.Halo} halo
+ */
+ function createHalo(cellView){
+    var halo = new joint.ui.Halo({
+    	type: 'toolbar',
+    	boxContent: false,
+        cellView: cellView,
+    });
+
+    halo.removeHandle('unlink');
+    halo.removeHandle('clone');
+    halo.removeHandle('fork');
+    halo.removeHandle('rotate');
+
+
+    halo.on('action:resize:pointermove', function() {
+    	cellView.unhighlight();
+		cellView.highlight();
+    });
+
+    // Remove halo when cell is unhighlighted
+    halo.options.cellView.on('removeHalo', function(){
+        halo.remove();
+    });
+
+    halo.render();
+    return halo;
+}
+
+/**
  * Remove the highlight around all elements
  */
 function removeHighlight(){
     // Unhighlight everything
     for (let element of graph.getElements()){
         element.findView(paper).unhighlight();
+        element.findView(paper).trigger('removeHalo');
     }
 }
 

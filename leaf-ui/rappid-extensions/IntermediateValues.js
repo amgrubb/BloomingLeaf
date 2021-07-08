@@ -103,7 +103,7 @@ var IntermediateValuesTable = Backbone.View.extend({
         var allTimes = absTimeValues.concat(constraintTimes).concat(linkTimes).concat(intentionTimes);
         var absoluteTimePointsList = Array.from(new Set(allTimes));
         absoluteTimePointsList.sort(function(a,b) {return a-b})
-        return absoluteTimePointsList.filter(TP => TP != 0);
+        return absoluteTimePointsList.filter(TP => TP != 0 && TP != -1);
     }
 });
 

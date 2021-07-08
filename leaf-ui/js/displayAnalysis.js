@@ -4,6 +4,10 @@
  * It also contains functions for the analysis configuration sidebar
  */
 
+{
+
+let sliderObject = new SliderObj();
+
 /**
  * Displays the analysis to the web app, by creating the slider display
  *
@@ -158,3 +162,5 @@ function updateNodeValues(element, satValue) {
     //     cell.attr({text: {fill: 'white'}});//satisfactionValuesDict[satValue].color
     // }
 }
+
+} // End of sliderObj scope
