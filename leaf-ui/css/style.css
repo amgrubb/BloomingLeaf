@@ -293,13 +293,20 @@ body.waiting *
   font-size: 0.7em;
   font-weight: 200;
   display: inline-block;
-  border: 0;
+  border: 5;
+  border-color: #333;
+  border-style: solid;
 }
 
 #seg-time {
-  width:15px;
-  height: 15px;
+  width:14px;
+  height: 16px;
   float: left;
+}
+
+#startTP-out, #stopTP-out {
+  background-color: #333;
+  color: white;
 }
 
 #init-sat-value:disabled {
