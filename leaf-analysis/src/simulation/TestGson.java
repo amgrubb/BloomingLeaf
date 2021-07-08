@@ -23,6 +23,7 @@ public class TestGson {
 
 			System.out.println("Finished");
 			System.out.println(frontendObject);
+			//ModelSpec modelSpec =  BIModelSpecBuilder.buildModelSpec(frontendObject);
 			
 		} catch(Exception e) {
 			throw new RuntimeException("Error in convertModelFromFile() method: \n " + e.getMessage());

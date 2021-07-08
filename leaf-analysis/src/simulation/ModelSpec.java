@@ -53,7 +53,10 @@ public class ModelSpec {
     private boolean[][][] finalValues = null;	 // For single Solution    
     private boolean[][][][] allSolutionsValues;	 // For all solutions.
 
-    
+    public ModelSpec(){
+		
+	}
+
     
 	public List<UserEvaluation> getUserEvaluations() {
 		return userEvaluations;
@@ -214,14 +217,7 @@ public class ModelSpec {
 	public void setConflictAvoidLevel(char conflictAvoidLevel) {
 		this.conflictAvoidLevel = conflictAvoidLevel;
 	}
-
-	public ModelSpec(){
-		
-	}
-
-	public ModelSpec(String filename) {
-	}
-
+	
 	public boolean[][][][] getAllSolutionsValues() {
 		return allSolutionsValues;
 	}
