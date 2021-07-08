@@ -125,20 +125,21 @@ function adjustSliderWidth(maxValue){
  * @param {AnalysisResult} currentAnalysis
  *  an AnalysisResult object that contains data about the analysis that the back end performed
  */
+// TODO: Reimplement with new backbone models
 function updateSliderValues(sliderValue, currentAnalysis){
 
-    analysisResult.selectedTimePoint = sliderValue;
+    // analysisResult.selectedTimePoint = sliderValue;
 
-    var value = sliderValue;
-    $('#sliderValue').text(value);
-    sliderObject.sliderValueElement.innerHTML = value + "|" + currentAnalysis.timePointPath[value];
-    // Update the analysisRequest current state.
-    analysisRequest.currentState = sliderObject.sliderValueElement.innerHTML;
-    currentAnalysis.elementList.forEach(element => 
-        // TODO: Rewrite to set current sat value text to its value at TP slideValue
-        updateNodeValues(element, element.status[value]));
+    // var value = sliderValue;
+    // $('#sliderValue').text(value);
+    // sliderObject.sliderValueElement.innerHTML = value + "|" + currentAnalysis.timePointPath[value];
+    // // Update the analysisRequest current state.
+    // analysisRequest.currentState = sliderObject.sliderValueElement.innerHTML;
+    // currentAnalysis.elementList.forEach(element => 
+    //     // TODO: Rewrite to set current sat value text to its value at TP slideValue
+    //     updateNodeValues(element, element.status[value]));
     
-    EVO.setCurTimePoint(value);
+    // EVO.setCurTimePoint(value);
 }
 
 
@@ -152,8 +153,8 @@ function updateSliderValues(sliderValue, currentAnalysis){
 // TODO: Implement to work with new backbone models
 function updateNodeValues(element, satValue) {
 
-	if ((cell != null) && (satValue in satisfactionValuesDict)) {
-        cell.attr(".satvalue/text", satisfactionValuesDict[satValue].satValue);
-        cell.attr({text: {fill: 'white'}});//satisfactionValuesDict[satValue].color
-    }
+	// if ((cell != null) && (satValue in satisfactionValuesDict)) {
+    //     cell.attr(".satvalue/text", satisfactionValuesDict[satValue].satValue);
+    //     cell.attr({text: {fill: 'white'}});//satisfactionValuesDict[satValue].color
+    // }
 }

@@ -15,3 +15,6 @@ $('.filter_checkbox').on('click', function(){add_filter()});
 $("#saveClose").on('click', function() { save_current_state();});
 $("#exploreNextSates").on('click', function() { generate_next_states();});
 $("#close").on('click', function() { window.close();});
+$(window).resize(function() {
+	resizeWindow();
+});

@@ -4,15 +4,121 @@ It also contains the setup for Rappid elements.
 */
 
 /*** Event listeners for index.html toolbar functions ***/
+ /**
+ * Set up tool bar button on click functions
+ */
 
- $('#btn-debug').on('click', function(){ console.log(graph.toJSON()) });
- $('#btn-zoom-in').on('click', function(){ zoomIn(paperScroller); });
- $('#btn-zoom-out').on('click', function(){ zoomOut(paperScroller); });
- $('#btn-fnt').on('click', function(){ defaultFont(paper);});
- $('#btn-fnt-up').on('click', function(){  fontUp(paper);});
- $('#btn-fnt-down').on('click', function(){ fontDown(paper);}); 
- $('#legend').on('click', function(){ window.open('./userguides/legend.html', 'newwindow', 'width=300, height=250'); return false;});
- $('#evo-color-key').on('click', function(){ window.open('./userguides/evo.html', 'newwindow', 'width=500, height=400'); return false;});
+$('#btn-undo').on('click', _.bind(commandManager.undo, commandManager));
+$('#btn-redo').on('click', _.bind(commandManager.redo, commandManager));
+$('#btn-clear-all').on('click', function(){clearAll()});
+// TODO: Reimplement with new backbone structure
+$('#btn-clear-elabel').on('click', function(){
+	for (let element of graph.getElements()){
+        var cellView = element.findView(paper); 
+        var cell = cellView.model;
+        var intention = model.getIntentionByID(cellView.model.attributes.nodeID);
+
+        if(intention != null && intention.getInitialSatValue() != '(no value)') {
+            intention.removeInitialSatValue();
+     
+            cell.attr(".satvalue/text", "");
+            cell.attr(".funcvalue/text", "");
+     
+            elementInspector.$('#init-sat-value').val('(no value)');
+            elementInspector.$('.function-type').val('(no value)');
+        }
+    }
+    IntentionColoring.refresh();
+});
+// TODO: Reimplement with new backbone structure
+$('#btn-clear-flabel').on('click', function(){
+	for (let element of graph.getElements()){
+        var cellView = element.findView(paper); 
+        var cell = cellView.model;
+        var intention = model.getIntentionByID(cellView.model.attributes.nodeID);
+
+        if(intention != null) {
+            intention.removeFunction();
+            cell.attr(".funcvalue/text", "");
+            elementInspector.$('.function-type').val('(no value)');
+        }
+	}
+});
+
+/**
+ * This is an option under clear button to clear red-highlight from
+ * cycle detection function
+ */
+$('#btn-clear-cycle').on('click',function(){
+    clearCycleHighlighting();
+});
+
+$('#btn-clear-analysis').on('click', function() {
+    // TODO: Re-Implement for backbone view - What does clearing analysis mean now?
+    // reset graph to initial values
+    revertNodeValuesToInitial();
+});
+
+// TODO: Re-implement for backbone view
+$('#btn-clear-results').on('click', function() {});
+
+// Open as SVG
+$('#btn-svg').on('click', function() {
+	paper.openAsSVG();
+});
+
+// Save the current graph to json file
+$('#btn-save').on('click', function() {
+	var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
+	if (name){
+        clearCycleHighlighting();
+        EVO.deactivate();
+       // EVO.returnAllColors(graph.getElements(), paper);
+       // EVO.revertIntentionsText(graph.getElements(), paper);    
+		var fileName = name + ".json";
+		var obj = getModelJson();
+        download(fileName, JSON.stringify(obj));
+        //IntentionColoring.refresh();
+	}
+});
+
+// Save the current graph and analysis (without results) to json file
+$('#btn-save-analysis').on('click', function() {
+	var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
+	if (name){
+        clearCycleHighlighting();
+        EVO.deactivate();   
+		var fileName = name + ".json";
+		var obj = getModelAnalysisJson();
+        download(fileName, JSON.stringify(obj));
+	}
+});
+
+// Save the current graph and analysis (with results) to json file
+$('#btn-save-all').on('click', function() {
+	var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
+	if (name){
+        clearCycleHighlighting();
+        EVO.deactivate();   
+		var fileName = name + ".json";
+		var obj = getFullJson();
+        download(fileName, JSON.stringify(obj));
+	}
+});
+
+// Workaround for load, activates a hidden input element
+$('#btn-load').on('click', function(){
+	$('#loader').click();
+});
+ 
+$('#btn-debug').on('click', function(){ console.log(graph.toJSON()) });
+$('#btn-zoom-in').on('click', function(){ zoomIn(paperScroller); });
+$('#btn-zoom-out').on('click', function(){ zoomOut(paperScroller); });
+$('#btn-fnt').on('click', function(){ defaultFont(paper);});
+$('#btn-fnt-up').on('click', function(){  fontUp(paper);});
+$('#btn-fnt-down').on('click', function(){ fontDown(paper);}); 
+$('#legend').on('click', function(){ window.open('./userguides/legend.html', 'newwindow', 'width=300, height=250'); return false;});
+$('#evo-color-key').on('click', function(){ window.open('./userguides/evo.html', 'newwindow', 'width=500, height=400'); return false;});
 
 /**
  * Displays the absolute and relative assignments modal for the user.
@@ -81,112 +187,6 @@ document.getElementById("colorResetAnalysis").oninput = function() { //changes s
     EVO.setSliderOption(this.value);
 }
 
-/**
- * Set up tool bar button on click functions
- */
-$('#btn-undo').on('click', _.bind(commandManager.undo, commandManager));
-$('#btn-redo').on('click', _.bind(commandManager.redo, commandManager));
-$('#btn-clear-all').on('click', function(){clearAll()});
-// TODO: Reimplement with new backbone structure
-$('#btn-clear-elabel').on('click', function(){
-	for (let element of graph.getElements()){
-        var cellView = element.findView(paper); 
-        var cell = cellView.model;
-        var intention = model.getIntentionByID(cellView.model.attributes.nodeID);
-
-        if(intention != null && intention.getInitialSatValue() != '(no value)') {
-            intention.removeInitialSatValue();
-     
-            cell.attr(".satvalue/text", "");
-            cell.attr(".funcvalue/text", "");
-     
-            elementInspector.$('#init-sat-value').val('(no value)');
-            elementInspector.$('.function-type').val('(no value)');
-        }
-    }
-    IntentionColoring.refresh();
-});
-// TODO: Reimplement with new backbone structure
-$('#btn-clear-flabel').on('click', function(){
-	for (let element of graph.getElements()){
-        var cellView = element.findView(paper); 
-        var cell = cellView.model;
-        var intention = model.getIntentionByID(cellView.model.attributes.nodeID);
-
-        if(intention != null) {
-            intention.removeFunction();
-            cell.attr(".funcvalue/text", "");
-            elementInspector.$('.function-type').val('(no value)');
-        }
-	}
-});
-
-/**
- * This is an option under clear button to clear red-highlight from
- * cycle detection function
- */
- $('#btn-clear-cycle').on('click',function(){
-    clearCycleHighlighting();
-});
-
-$('#btn-clear-analysis').on('click', function() {
-    // TODO: Re-Implement for backbone view - What does clearing analysis mean now?
-    // reset graph to initial values
-    revertNodeValuesToInitial();
-});
-
-// TODO: Re-implement for backbone view
-$('#btn-clear-results').on('click', function() {});
-
-// Open as SVG
-$('#btn-svg').on('click', function() {
-	paper.openAsSVG();
-});
-
-// Save the current graph to json file
-$('#btn-save').on('click', function() {
-	var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
-	if (name){
-        clearCycleHighlighting();
-        EVO.deactivate();
-       // EVO.returnAllColors(graph.getElements(), paper);
-       // EVO.revertIntentionsText(graph.getElements(), paper);    
-		var fileName = name + ".json";
-		var obj = getModelJson();
-        download(fileName, JSON.stringify(obj));
-        //IntentionColoring.refresh();
-	}
-});
-
-// Save the current graph and analysis (without results) to json file
-$('#btn-save-analysis').on('click', function() {
-	var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
-	if (name){
-        clearCycleHighlighting();
-        EVO.deactivate();   
-		var fileName = name + ".json";
-		var obj = getModelAnalysisJson();
-        download(fileName, JSON.stringify(obj));
-	}
-});
-
-// Save the current graph and analysis (with results) to json file
-$('#btn-save-all').on('click', function() {
-	var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
-	if (name){
-        clearCycleHighlighting();
-        EVO.deactivate();   
-		var fileName = name + ".json";
-		var obj = getFullJson();
-        download(fileName, JSON.stringify(obj));
-	}
-});
-
-// Workaround for load, activates a hidden input element
-$('#btn-load').on('click', function(){
-	$('#loader').click();
-});
-
 $('#colorblind-mode-isOff').on('click', function(){ //activates colorblind mode
     $('#colorblind-mode-isOff').css("display", "none");
     $('#colorblind-mode-isOn').css("display", "");
@@ -202,8 +202,7 @@ $('#colorblind-mode-isOn').on('click', function(){ //turns off colorblind mode
 });
 
 $(window).resize(function() {
-	$('#slider').css("margin-top", $(this).height() * 0.9);
-	$('#slider').width($('#paper').width() * 0.8);
+	resizeWindow();
 });
 
 /*** Events for Rappid/JointJS objets ***/
@@ -324,14 +323,6 @@ graph.on('remove', function(cell) {
 	}
 });
 
-var selection = new Backbone.Collection();
-
-var selectionView = new joint.ui.SelectionView({
-	paper: paper,
-	graph: graph,
-	model: selection
-});
-
 /** Paper Events **/
 
 /**
@@ -374,11 +365,6 @@ paper.on({
                     cell.reparent();
                 }
             } else { // Non-Link behavior
-                // Element is selected
-                // TODO: Can this global variable be removed?
-                // Also - selection only ever contains one model - why is it a collection
-                selection.reset();
-                selection.add(cell);
 
                 // Remove highlight of other elements
                 removeHighlight();
@@ -495,8 +481,9 @@ function switchToAnalysisMode() {
 }
 
 {
-    /** Initialize showEditingWarning within scope of brackets */
-    let showEditingWarning = true;
+/** Initialize showEditingWarning within scope of brackets */
+let showEditingWarning = true;
+
 /**
  * Switches back to Modelling Mode from Analysis Mode
  * and resets the Nodes' satValues to the values prior to analysis
