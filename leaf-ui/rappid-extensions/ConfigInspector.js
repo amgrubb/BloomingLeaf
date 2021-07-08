@@ -166,7 +166,7 @@ var Config = Backbone.View.extend({
     },
 
     /** 
-     * Destroys config model, removing it from configCollection 
+     * Destroys config model, removing it from its collection 
      * and triggering a removal of its respective view 
      */
     removeConfig:function(){
@@ -252,7 +252,7 @@ var Config = Backbone.View.extend({
 
         newName = this.$('.config-input').val().trim();
         // If name is already taken by other configs, show error message and reset input box
-        if (newName != this.model.get('name') && configCollection.pluck('name').includes(newName)){
+        if (newName != this.model.get('name') && this.model.collection.pluck('name').includes(newName)){
             alert("Sorry, this name is already in use. Please try another.");
             this.$('.config-input').val(this.model.get('name'));
         } else {
@@ -335,6 +335,6 @@ var ConfigInspector = Backbone.View.extend({
     /** Create and add a new config model to the collection */
     addNewConfig : function(){
         var configModel = new ConfigBBM({name: "Request " + (this.collection.length+1), results: new ResultCollection([])})
-        configCollection.add(configModel);
+        this.collection.add(configModel);
     },
 });

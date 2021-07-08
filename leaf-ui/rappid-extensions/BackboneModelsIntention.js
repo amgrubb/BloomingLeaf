@@ -159,7 +159,7 @@ var EvolvingFunctionBBM = Backbone.Model.extend({
  * Type of node. Ex: task, goal
  * @param {EvolvingFunctionBBM} evolvingFunction
  * If there is an evolving function this will contain an EvolvingFunctionBBM
- * @param {BackBone Collection} userEvaluationList
+ * @param {Array} userEvaluationList
  * a collection of UserEvaluationBBMs
  */
 var IntentionBBM = Backbone.Model.extend({
@@ -174,19 +174,24 @@ var IntentionBBM = Backbone.Model.extend({
             nodeActorID: null,                     // Assigned on release operation.
             nodeType: null,
             evolvingFunction: null, 
-            userEvaluationList: new UserEvaluationCollection([])
+            userEvaluationList: []
         }
     }, 
 
     /**
-     * Allows you to find the UserEvaluationBBM with the intentionID and absTime
+     * Allows you to find the UserEvaluationBBM with the specified absTime
+     * If there is no UserEvaluationBBM with that absTime, return null
      * 
      * @param {Integer} absTime 
      * Absolute Time - Integer time value
-     * @returns an UserEvaluationBBM
+     * @returns an UserEvaluationBBM or null
      */
     getUserEvaluationBBM: function(absTime) {
-        return this.get('userEvaluationList').findWhere({absTime: absTime});
+        userEvals = this.get('userEvaluationList').filter(userEval => userEval.get('absTime') == absTime);
+        if (userEvals.length > 0){
+            return userEvals[userEvals.length-1]
+        }
+        return null;
     },
 
     /**

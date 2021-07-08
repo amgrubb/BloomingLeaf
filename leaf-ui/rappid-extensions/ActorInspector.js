@@ -1,6 +1,3 @@
-//Class for the element properties tab that appears when an element is clicked
-var ENTER_KEY = 13;
-
 var ActorInspector = Backbone.View.extend({
         model: joint.shapes.basic.Actor,
         
@@ -43,8 +40,8 @@ var ActorInspector = Backbone.View.extend({
          * This function is called on keyup for .cell-attrs-text
          */
         nameAction: function(event) {
-            // Prevent the ENTER key from being recorded when naming nodes.
-            if (event.which === ENTER_KEY) {
+            // Prevent the ENTER key (mapped as 13) from being recorded when naming nodes.
+            if (event.which === 13) {
                 event.preventDefault();
             }
 
