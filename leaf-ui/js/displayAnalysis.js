@@ -135,7 +135,8 @@ function updateSliderValues(sliderValue, currentAnalysis){
     // Update the analysisRequest current state.
     analysisRequest.currentState = sliderObject.sliderValueElement.innerHTML;
     currentAnalysis.elementList.forEach(element => 
-        updateNodeValues(element.id, element.status[value]));
+        // TODO: Rewrite to set current sat value text to its value at TP slideValue
+        updateNodeValues(element, element.status[value]));
     
     EVO.setCurTimePoint(value);
 }
@@ -144,39 +145,15 @@ function updateSliderValues(sliderValue, currentAnalysis){
 /**
  * Updates the satisfaction value of a particular node in the graph.
  * Used to display analysis results on the nodes.
- *
- * @param {String} nodeID
- *   nodeID of the node of interest
+ * 
  * @param {String} satValue
  *   Satisfaction value in string form. ie: '0011' for satisfied
  */
-function updateNodeValues(nodeID, satValue) {
-	var elements = graph.getElements();
-	var curr;
-	var cell;
-	for (var i = 0; i < elements.length; i++) {
-		curr = elements[i].findView(paper).model;
-		if (curr.attributes.nodeID == nodeID) {
-			cell = curr;
-			break;
-		}
-	}
+// TODO: Implement to work with new backbone models
+function updateNodeValues(element, satValue) {
 
 	if ((cell != null) && (satValue in satisfactionValuesDict)) {
         cell.attr(".satvalue/text", satisfactionValuesDict[satValue].satValue);
         cell.attr({text: {fill: 'white'}});//satisfactionValuesDict[satValue].color
     }
-}
-
-/**
- * Reset global analysisRequest to default analysisRequest settings
- * while preserving userAssignmentsList
- */
-function resetToDefault(){
-    // restore initial userAssignmentsList - holds initial evals for each intention
-    analysisRequest.clearUserEvaluations();
-    // copy initial userAssignmentsList into otherwise default analysisRequest
-    var defaultRequest = new AnalysisRequest();
-    defaultRequest.userAssignmentsList = analysisRequest.userAssignmentsList;
-    analysisRequest = defaultRequest;
 }

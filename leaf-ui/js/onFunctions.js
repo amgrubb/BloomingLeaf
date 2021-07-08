@@ -40,6 +40,7 @@ $('#next-state-btn').on('click', function() {
 /**
  * Switches to Analysis view iff there are no cycles and no syntax errors.
  */
+//TODO: Add back in cycle detection after backbone migration.
 $('#analysis-btn').on('click', function() {
     //TODO: Add back in cycle detection after backbone migration.
     switchToAnalysisMode();
@@ -85,7 +86,7 @@ document.getElementById("colorResetAnalysis").oninput = function() { //changes s
  */
 $('#btn-undo').on('click', _.bind(commandManager.undo, commandManager));
 $('#btn-redo').on('click', _.bind(commandManager.redo, commandManager));
-$('#btn-clear-all').on('click', clearAll());
+$('#btn-clear-all').on('click', function(){clearAll()});
 // TODO: Reimplement with new backbone structure
 $('#btn-clear-elabel').on('click', function(){
 	for (let element of graph.getElements()){
@@ -124,22 +125,18 @@ $('#btn-clear-flabel').on('click', function(){
  * This is an option under clear button to clear red-highlight from
  * cycle detection function
  */
-$('#btn-clear-cycle').on('click',function(){
+ $('#btn-clear-cycle').on('click',function(){
     clearCycleHighlighting();
 });
 
 $('#btn-clear-analysis').on('click', function() {
-    // TODO: Re-Implement for backbone view
-    
-    // reset to default analysisRequest while preserving userAssignmentsList
-    resetToDefault();
+    // TODO: Re-Implement for backbone view - What does clearing analysis mean now?
     // reset graph to initial values
     revertNodeValuesToInitial();
 });
 
-$('#btn-clear-results').on('click', function() {
-    // TODO: Re-implement for backbone view
-});
+// TODO: Re-implement for backbone view
+$('#btn-clear-results').on('click', function() {});
 
 // Open as SVG
 $('#btn-svg').on('click', function() {
@@ -271,7 +268,6 @@ graph.on('change:size', function(cell, size) {
 
 
 graph.on('remove', function(cell) {
-    //TODO: What I have changed
     if(cell.isLink() && !(cell.prop("link-type") == 'NBT' || cell.prop("link-type") == 'NBD')){
         // To remove link
         var link = cell;
@@ -303,7 +299,6 @@ graph.on('remove', function(cell) {
 
     }
     
-    //TODO: What I have changed finished
 	else if (cell.isLink() && (cell.prop("link-type") == 'NBT' || cell.prop("link-type") == 'NBD')) {
 		// Verify if is a Not both type. If it is remove labels from source and target node
 		var link = cell;
@@ -499,6 +494,9 @@ function switchToAnalysisMode() {
     // TODO: Add check for model changes to potentially clear configCollection back in
 }
 
+{
+    /** Initialize showEditingWarning within scope of brackets */
+    let showEditingWarning = true;
 /**
  * Switches back to Modelling Mode from Analysis Mode
  * and resets the Nodes' satValues to the values prior to analysis
@@ -566,6 +564,7 @@ function switchToAnalysisMode() {
         });
     }
 }
+} // End scope of showEditingWarning
 
 function clearAll(){
     graph.clear();
@@ -663,12 +662,6 @@ function setInteraction(interactionValue){
  */
 // TODO: Re-write with new models
  function revertNodeValuesToInitial() {
-    //reset values
-    // for (var i = 0; i < graph.elementsBeforeAnalysis.length; i++) {
-	// 	var value = graph.elementsBeforeAnalysis[i]
-	// 	updateNodeValues(i, value, "toInitModel");
-	// }
-
 	// var elements = graph.getElements();
 	// var curr;
 	// for (var i = 0; i < elements.length; i++) {

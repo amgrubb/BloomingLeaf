@@ -5,24 +5,7 @@
 
 /*** Various global Sat Value Dictionaries ***/
 
-// TODO: Can be repleaced using a function similar to increasingOrDecreasing in the IntermediateValues.js file
-// Or combined with other satValueDicts into one map
-var satvalues = {
-	"satisfied": 2, "partiallysatisfied": 1, "partiallydenied": -1, "denied": -2, "unknown": 4, "conflict":3, "none": 0,
-	"2": "satisfied", "1": "partiallysatisfied", "-1": "partiallydenied", "-2": "denied", "4": "unknown", "3": "conflict", "0": "none"
-};
-
-var satValueDict = {
-	"satisfied": "0011",
-	"partiallysatisfied": "0010",
-	"partiallydenied": "0100",
-	"denied": "1100",
-	"none": "0000",
-	"(no value)": "(no value)"
-};
-
-// Satisfaction text values corresponding to the binary representation.
-// This is used in updateNodeValues in displayAnalysis
+// Satisfaction binary representation corresponding to text values and styles.
 var satisfactionValuesDict = {
 	"0000": {
 	    name: "none",
@@ -87,7 +70,6 @@ var satisfactionValuesDict = {
 };
 
 /*** Global variables currently being used across the codebase ***/
-var showEditingWarning = true;
 
 // This object will be created to save necessary data for following analysis
 var savedAnalysisData = {};
