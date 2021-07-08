@@ -142,15 +142,6 @@ body.waiting *
   background-color: rgba(90, 90, 90, 1);
 }
 
-#analysis-sidebar a{
-  padding: 16px;
-  display: block;
-}
-
-#analysis-sidebar a:hover {
-  background-color: #E8E8E8;
-}
-
 /* Right Panel */
 .inspector {
   position: absolute;
@@ -189,14 +180,42 @@ body.waiting *
   display: block;
 }
 
+/* The left-side bar for analysisInspector and configInspector */
+#container-sidebar { 
+  left: auto; 
+  width: 200px; 
+  margin-top: 60px; 
+}
+
+#config-sidebar { 
+  margin-top:100px; 
+  width: 200px; 
+  position: absolute; 
+}
+
+#analysis-sidebar { 
+  margin-top: 0px; 
+}
+
+#analysis-sidebar a{
+  padding: 16px;
+  display: block;
+}
+
+#analysis-sidebar a:hover {
+  background-color: #E8E8E8;
+}
 
 .sub-label{
-  font-size: 1em !important;
+  font-size: 0.6em !important;
+  text-align: center; 
 }
+
 .sub-input{
-  width: 50px !important;
-  font-size: 0.9em;
+  width: 20px !important;
+  font-size: 0.5em;
 }
+
 .sub-btn {
   position: relative;
   vertical-align: top;
@@ -212,8 +231,8 @@ body.waiting *
 }
 
 .analysis-input {
-  font-size: 1em;
-  width: 200px;
+  font-size: 0.7em;
+  width: 165px;
   margin-bottom: 0px;
 }
 
@@ -343,6 +362,11 @@ select > .select-placeholder {
   border-color: rgba(29, 122, 208, 1);
 }
 
+.seg_sat_class{
+  background-color: rgba(36, 150, 255, 1);
+  border-color: rgba(29, 122, 208, 1);
+}
+
 .function-type, .function-sat-value{
   margin: auto;
   margin-bottom: 8px;
@@ -402,6 +426,19 @@ select > .select-placeholder {
   /*background: #27ae60;*/
   background: #1E85F7;
 }
+
+.dark-green-btn { 
+  background-color: rgb(19, 156, 19) !important;
+  -webkit-box-shadow: inset 0 -2px rgb(19, 156, 19);
+  box-shadow: inset 0 -2px rgb(14, 102, 14);
+}
+
+.light-green-btn { 
+  background-color: rgb(26, 201, 26) !important;
+  -webkit-box-shadow: inset 0 -2px rgb(26, 201, 26);
+  box-shadow: inset 0 -2px rgb(24, 172, 24);
+}
+
 .ice-btn{
   background: #00FFFF;
 }
