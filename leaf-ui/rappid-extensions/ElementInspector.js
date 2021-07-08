@@ -983,7 +983,7 @@ var ElementInspector = Backbone.View.extend({
             funcSegList.forEach(
                 funcSeg => {
                     console.log(funcSeg.get('refEvidencePair'));
-                var functionSegView = new FuncSegView({model: funcSeg, funcType: funcSeg.get('type'), intention: this.model, satValue:funcSeg.get('refEvidencePair')});
+                var functionSegView = new FuncSegView({model: funcSeg, intention: this.model});
                 $('#segment-functions').append(functionSegView.el);
                 functionSegView.render();  
             })
@@ -1003,16 +1003,23 @@ var FuncSegView = Backbone.View.extend({
 
     /** Pass in a reference to parent configuration on intialization */
     initialize: function(options){ 
-        this.functionType = options.functionType;
+        this.functionType = this.model.get('type');
         this.intention = options.intention;
-        this.satValue = options.satValue;
+        this.satValue = this.model.get('refEvidencePair');
+        this.startTP = this.model.get('startTP');
+        if (this.startTP != '0') {
+            this.stopTP = String.fromCharCode(begin.charCodeAt(0) + 1);
+        }
+        else {
+            this.stopTP = 'A';
+        }
         // document.getElementById("greeting").innerHTML = "Bonjour";
     },
 
     template: ['<script type="text/template" id="item-template">',
                 '<div class=“segment-views”>',
-                    '<input style="float:left; width:20%; display:inline-block; id="repeat-end5" value="2">',
-                    '<output> startTP </output>',
+                '<input style="float:left; width:20%; display:inline-block; id="repeat-end5" value="2">',
+                '<output> startTP </output>',
                     // '<output> <%=satValue%> </output>',
                     '<output class=“seg-function-type”> </output>',
                     // '<select class=“seg-function-type segment-views”>',
@@ -1021,7 +1028,7 @@ var FuncSegView = Backbone.View.extend({
                     //                 '<option value=I> Increase </option>',
                     //                 '<option value=D> Decrease </option>',
                     //             '</select>',
-                                '<select class=“seg-sat-value segment-views”>',
+                    '<select class=“seg-sat-value segment-views”>',
                                     '<option value=none selected> None (⊥, ⊥) </option>',
                                     '<option value=satisfied> Satisfied (F, ⊥) </option>',
                                     '<option value=partiallysatisfied> Partially Satisfied (P, ⊥) </option>',
