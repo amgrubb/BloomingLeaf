@@ -3,9 +3,8 @@ This file contains all the jQuery functions that are associated with buttons and
 It also contains the setup for Rappid elements.
 */
 
-/**
- * Event listeners for index.html toolbar functions
- */
+/*** Event listeners for index.html toolbar functions ***/
+
  $('#btn-debug').on('click', function(){ console.log(graph.toJSON()) });
  $('#btn-zoom-in').on('click', function(){ zoomIn(paperScroller); });
  $('#btn-zoom-out').on('click', function(){ zoomOut(paperScroller); });
@@ -58,54 +57,6 @@ $('#load-sample').on('click', function() {
     });
 });
 */
-/** Initialize configCollection */
-let configCollection = new ConfigCollection([]);
-let configInspector = new ConfigInspector({collection:configCollection});
-
-/**
- * Helper function for switching to Analysis view.
- */
-function switchToAnalysisMode() {
-    setInteraction(false);
-
-	// Clear the right panel
-	clearInspector();
-	
-	removeHighlight();
-    
-    $('#configID').append(configInspector.el);
-    configInspector.render();
-
-    // Disappear
-    $('#stencil').css("display", "none");
-    $('#btn-view-intermediate').css("display","none");
-    $('#btn-view-assignment').css("display","none"); 
-    $('#analysis-btn').css("display", "none");
-	$('#symbolic-btn').css("display", "none");
-	$('#cycledetect-btn').css("display", "none");
-    $('#model-toolbar').css("display", "none");
-    $('.model-clears').css("display", "none");
-    $('#on-off').css("display", "none");
-
-    // Disable link settings
-	$('.link-tools .tool-remove').css("display", "none");
-    $('.link-tools .tool-options').css("display", "none");
-    
-    // Appear 
-    $('#dropdown-model').css("display", "");
-    $('#simulate-single-path-btn').css("display", "");
-    $('#next-state-btn').css("display", "");
-    $('#configID').css("display", ""); 
-    $('#on-off').css("display", "");
-
-    // Hide extra tools from modelling mode
-    $('.analysis-clears').css("display", "");
-
-    // Show Analysis View tag
-	$('#modeText').text("Analysis View");
-    
-    IntentionColoring.refresh();
-}
 
 // Switches to modeling mode
 $('#model-cur-btn').on('click', function() {
@@ -113,129 +64,19 @@ $('#model-cur-btn').on('click', function() {
 
 	savedAnalysisData.finalAssignedEpoch="";
     savedAnalysisData.finalValueTimePoints="";
-    
-    analysisRequest.action = null;
-
 });
-
-
-/**
- * Sets each node/cellview in the paper to its initial 
- * satisfaction value and colours all text to black
- */
-function revertNodeValuesToInitial() {
-    //reset values
-    // for (var i = 0; i < graph.elementsBeforeAnalysis.length; i++) {
-	// 	var value = graph.elementsBeforeAnalysis[i]
-	// 	updateNodeValues(i, value, "toInitModel");
-	// }
-
-	// var elements = graph.getElements();
-	// var curr;
-	// for (var i = 0; i < elements.length; i++) {
-	// 	curr = elements[i].findView(paper).model;
-
-	// 	if (curr.attributes.type !== 'basic.Goal' &&
-	// 		curr.attributes.type !== 'basic.Task' &&
-	// 		curr.attributes.type !== 'basic.Softgoal' &&
-	// 		curr.attributes.type !== 'basic.Resource') {
-	// 		continue;
-	// 	}     
-	// 	var intention = curr.get('intention');
-    //     var initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair'); 
-
-	// 	if (initSatVal === '(no value)') {
-    //         curr.attr('.satvalue/text', '');
-
-	// 	} else {
-    //         curr.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
-	// 	}
-    //     //curr.attr({text: {fill: 'black'}});
-    //     curr.attr({text: {fill: 'black',stroke:'none','font-weight' : 'normal','font-size': 10}});
-	// }
-    // // Remove slider
-    // removeSlider();
-}
-
-/**
- * Switches back to Modelling Mode from Analysis Mode
- * and resets the Nodes' satValues to the values prior to analysis
- * Display the modeling mode page
- */
-function switchToModellingMode() {
-    setInteraction(true);
-	
-    clearInspector();
-    
-	// Reset to initial graph prior to analysis
-	revertNodeValuesToInitial();
-
-    // Disappear 
-    $('#analysis-sidebar').css("display","none");
-    $('#dropdown-model').css("display","none");
-    $('#simulate-single-path-btn').css("display", "none");
-    $('#configID').css("display", "none"); 
-    $('#next-state-btn').css("display", "none");
-    $('.analysis-clears').css("display", "none");
-    
-    // Appear 
-    $('#stencil').css("display","");
-    $('#btn-view-assignment').css("display","");
-    $('#btn-view-intermediate').css("display","");
-    $('#analysis-btn').css("display","");
-	$('#symbolic-btn').css("display","");
-	$('#cycledetect-btn').css("display","");
-
-    // Show extra tools for modelling mode
-    $('#model-toolbar').css("display","");
-    $('.model-clears').css("display", "");
-
-    // analysisResult.colorVis = [];
-
-    // Show Modelling View tag
-    $('#modeText').text("Modeling View");
-
-	// Reinstantiate link settings
-	$('.link-tools .tool-remove').css("display","");
-	$('.link-tools .tool-options').css("display","");
-
-    EVO.switchToModelingMode();
-
-    // Popup to warn user that changing model will clear results
-    // From analysis configuration sidebar
-    // Defaults to showing each time if user clicks out of box instead of selecting option
-    if (showEditingWarning){
-        const dialog = showAlert('Warning',
-        '<p>Changing the model will clear all ' +
-        'results from all configurations.</p><p>Do you wish to proceed?</p>' +
-        '<p><button type="button" class="model-editing"' +
-        ' id="repeat" style="width:100%">Yes' +
-        '</button><button type="button" ' +
-        'class="model-editing" id="singular" style="width:100%">Yes, please do not show this warning again ' +
-        '</button> <button type="button" class="model-editing"' +
-        ' id="decline" onclick="switchToAnalysisMode()" style="width:100%"> No, please return to analysis mode' +
-        '</button></p>',
-        window.innerWidth * 0.3, 'alert', 'warning');
-        document.querySelectorAll('.model-editing').forEach(function(button){
-            button.addEventListener('click', function(){dialog.close(); if(button.id == 'singular'){showEditingWarning = false;};});
-        });
-    }
-}
 
 /**
  * Source:https://www.w3schools.com/howto/howto_js_rangeslider.asp 
  * Two option modeling mode slider
  */
-var sliderModeling = document.getElementById("colorReset");
-//var sliderOption = sliderModeling.value;
-sliderModeling.oninput = function() { //turns slider on/off and refreshes
+document.getElementById("colorReset").oninput = function() { //turns slider on/off and refreshes
   EVO.setSliderOption(this.value);
 }
 /**
  * Four option analysis mode slider
  */
-var sliderAnalysis = document.getElementById("colorResetAnalysis");
-sliderAnalysis.oninput = function() { //changes slider mode and refreshes
+document.getElementById("colorResetAnalysis").oninput = function() { //changes slider mode and refreshes
     EVO.setSliderOption(this.value);
 }
 
@@ -244,20 +85,11 @@ sliderAnalysis.oninput = function() { //changes slider mode and refreshes
  */
 $('#btn-undo').on('click', _.bind(commandManager.undo, commandManager));
 $('#btn-redo').on('click', _.bind(commandManager.redo, commandManager));
-$('#btn-clear-all').on('click', function(){
-    graph.clear();
-    // reset to default analysisRequest
-    model.removeAnalysis();
-    // remove all configs from analysisMap
-    analysisMap.clear();
-	// Delete cookie by setting expiry to past date
-	document.cookie='graph={}; expires=Thu, 18 Dec 2013 12:00:00 UTC';
-});
-
+$('#btn-clear-all').on('click', clearAll());
+// TODO: Reimplement with new backbone structure
 $('#btn-clear-elabel').on('click', function(){
-	var elements = graph.getElements();
-	for (var i = 0; i < elements.length; i++){
-        var cellView = elements[i].findView(paper); 
+	for (let element of graph.getElements()){
+        var cellView = element.findView(paper); 
         var cell = cellView.model;
         var intention = model.getIntentionByID(cellView.model.attributes.nodeID);
 
@@ -273,12 +105,10 @@ $('#btn-clear-elabel').on('click', function(){
     }
     IntentionColoring.refresh();
 });
-
+// TODO: Reimplement with new backbone structure
 $('#btn-clear-flabel').on('click', function(){
-    var elements = graph.getElements();
-    
-	for (var i = 0; i < elements.length; i++){
-        var cellView = elements[i].findView(paper); 
+	for (let element of graph.getElements()){
+        var cellView = element.findView(paper); 
         var cell = cellView.model;
         var intention = model.getIntentionByID(cellView.model.attributes.nodeID);
 
@@ -379,9 +209,9 @@ $(window).resize(function() {
 	$('#slider').width($('#paper').width() * 0.8);
 });
 
-/**
- * Set up on events for Rappid/JointJS objets
- */
+/*** Events for Rappid/JointJS objets ***/
+
+/** Graph Events */
 
 // Whenever an element is added to the graph
 graph.on("add", function(cell) {
@@ -428,6 +258,77 @@ graph.on("change", function(){
 	document.cookie = "graph=" + graphtext;
 });
 
+graph.on('change:size', function(cell, size) {
+	cell.attr(".label/cx", 0.25 * size.width);
+
+	// Calculate point on actor boundary for label (to always remain on boundary)
+	var b = size.height;
+	var c = -(size.height/2 + (size.height/2) * (size.height/2) * (1 - (-0.75 * size.width/2) * (-0.75 * size.width/2)  / ((size.width/2) * (size.width/2)) ));
+	var y_cord = (-b + Math.sqrt(b*b - 4*c)) / 2;
+
+	cell.attr(".label/cy", y_cord);
+});
+
+
+graph.on('remove', function(cell) {
+    //TODO: What I have changed
+    if(cell.isLink() && !(cell.prop("link-type") == 'NBT' || cell.prop("link-type") == 'NBD')){
+        // To remove link
+        var link = cell;
+        clearInspector();
+        model.removeLink(link.linkID);
+    }
+
+    else if((!cell.isLink()) && (!(cell["attributes"]["type"]=="basic.Actor"))){
+        // To remove intentions
+        clearInspector();
+        var userIntention = model.getIntentionByID(cell.attributes.nodeID);
+        // remove this intention from the model
+        model.removedynamicFunction(userIntention.nodeID);
+        model.removeIntentionLinks(userIntention.nodeID);
+        // remove all intention evaluations associated with this intention
+        analysisRequest.removeIntention(userIntention.nodeID);
+        // if this intention has an actor, remove this intention's ID
+        // from the actor
+        if (userIntention.nodeActorID !== '-') {
+            var actor = model.getActorByID(userIntention.nodeActorID);
+            actor.removeIntentionID(userIntention.nodeID);
+        }
+        model.removeIntention(userIntention.nodeID);
+    }
+    else if((!cell.isLink()) && (cell["attributes"]["type"]=="basic.Actor")){
+        // To remove actor
+        model.removeActor(cell['attributes']['nodeID']);
+
+
+    }
+    
+    //TODO: What I have changed finished
+	else if (cell.isLink() && (cell.prop("link-type") == 'NBT' || cell.prop("link-type") == 'NBD')) {
+		// Verify if is a Not both type. If it is remove labels from source and target node
+		var link = cell;
+		var source = link.prop("source");
+		var target = link.prop("target");
+
+	    for (var i = 0; i < graph.getElements().length; i++ ) {
+			if (graph.getElements()[i].prop("id") == source["id"]) {
+				 source = graph.getElements()[i];
+		   	}
+		  	if (graph.getElements()[i].prop("id") == target["id"]) {
+			   target = graph.getElements()[i];
+		   	}
+	   	}
+
+		//Verify if it is possible to remove the NB tag from source and target
+		if (source !== null && !checkForMultipleNB(source)) {
+			source.attrs(".funcvalue/text", "");
+		}
+		if (target !== null && !checkForMultipleNB(target)) {
+			target.attrs(".funcvalue/text", "");
+		}
+	}
+});
+
 var selection = new Backbone.Collection();
 
 var selectionView = new joint.ui.SelectionView({
@@ -435,6 +336,8 @@ var selectionView = new joint.ui.SelectionView({
 	graph: graph,
 	model: selection
 });
+
+/** Paper Events **/
 
 /**
  * Initiate selecting when the user grabs the blank area of the paper while the Shift key is pressed.
@@ -542,6 +445,137 @@ paper.on("link:options", function(cell){
  
 });
 
+/*** Helper functions ***/
+
+{
+/** Initialize configCollection within scope of brackets */
+let configCollection = new ConfigCollection([]);
+let configInspector = new ConfigInspector({collection:configCollection});
+
+/**
+ * Helper function for switching to Analysis view.
+ */
+function switchToAnalysisMode() {
+    setInteraction(false);
+
+	// Clear the right panel
+	clearInspector();
+	
+	removeHighlight();
+    
+    $('#configID').append(configInspector.el);
+    configInspector.render();
+
+    // Disappear
+    $('#stencil').css("display", "none");
+    $('#btn-view-intermediate').css("display","none");
+    $('#btn-view-assignment').css("display","none"); 
+    $('#analysis-btn').css("display", "none");
+	$('#symbolic-btn').css("display", "none");
+	$('#cycledetect-btn').css("display", "none");
+    $('#model-toolbar').css("display", "none");
+    $('.model-clears').css("display", "none");
+    $('#on-off').css("display", "none");
+
+    // Disable link settings
+	$('.link-tools .tool-remove').css("display", "none");
+    $('.link-tools .tool-options').css("display", "none");
+    
+    // Appear 
+    $('#dropdown-model').css("display", "");
+    $('#simulate-single-path-btn').css("display", "");
+    $('#next-state-btn').css("display", "");
+    $('#configID').css("display", ""); 
+    $('#on-off').css("display", "");
+
+    // Hide extra tools from modelling mode
+    $('.analysis-clears').css("display", "");
+
+    // Show Analysis View tag
+	$('#modeText').text("Analysis View");
+    
+    IntentionColoring.refresh();
+
+    // TODO: Add check for model changes to potentially clear configCollection back in
+}
+
+/**
+ * Switches back to Modelling Mode from Analysis Mode
+ * and resets the Nodes' satValues to the values prior to analysis
+ * Display the modeling mode page
+ */
+ function switchToModellingMode() {
+    setInteraction(true);
+	
+    clearInspector();
+    
+	// Reset to initial graph prior to analysis
+	revertNodeValuesToInitial();
+
+    // Disappear 
+    $('#analysis-sidebar').css("display","none");
+    $('#dropdown-model').css("display","none");
+    $('#simulate-single-path-btn').css("display", "none");
+    $('#configID').css("display", "none"); 
+    $('#next-state-btn').css("display", "none");
+    $('.analysis-clears').css("display", "none");
+    
+    // Appear 
+    $('#stencil').css("display","");
+    $('#btn-view-assignment').css("display","");
+    $('#btn-view-intermediate').css("display","");
+    $('#analysis-btn').css("display","");
+	$('#symbolic-btn').css("display","");
+	$('#cycledetect-btn').css("display","");
+
+    // Show extra tools for modelling mode
+    $('#model-toolbar').css("display","");
+    $('.model-clears').css("display", "");
+
+    // analysisResult.colorVis = [];
+
+    // Show Modelling View tag
+    $('#modeText').text("Modeling View");
+
+	// Reinstantiate link settings
+	$('.link-tools .tool-remove').css("display","");
+	$('.link-tools .tool-options').css("display","");
+
+    EVO.switchToModelingMode();
+
+    // TODO: Determine if we should be setting action to null on all configs
+    configCollection.findWhere({selected: true}).set('action', null);
+
+    // Popup to warn user that changing model will clear results
+    // From analysis configuration sidebar
+    // Defaults to showing each time if user clicks out of box instead of selecting option
+    if (showEditingWarning){
+        const dialog = showAlert('Warning',
+        '<p>Changing the model will clear all ' +
+        'results from all configurations.</p><p>Do you wish to proceed?</p>' +
+        '<p><button type="button" class="model-editing"' +
+        ' id="repeat" style="width:100%">Yes' +
+        '</button><button type="button" ' +
+        'class="model-editing" id="singular" style="width:100%">Yes, please do not show this warning again ' +
+        '</button> <button type="button" class="model-editing"' +
+        ' id="decline" onclick="switchToAnalysisMode()" style="width:100%"> No, please return to analysis mode' +
+        '</button></p>',
+        window.innerWidth * 0.3, 'alert', 'warning');
+        document.querySelectorAll('.model-editing').forEach(function(button){
+            button.addEventListener('click', function(){dialog.close(); if(button.id == 'singular'){showEditingWarning = false;};});
+        });
+    }
+}
+
+function clearAll(){
+    graph.clear();
+    configCollection.reset();
+    // Delete cookie by setting expiry to past date
+	document.cookie='graph={}; expires=Thu, 18 Dec 2013 12:00:00 UTC';
+}
+
+} // End scope of configCollection and configInspector
+
 /**
  * Remove the highlight around all elements
  */
@@ -551,78 +585,6 @@ function removeHighlight(){
         element.findView(paper).unhighlight();
     }
 }
-
-graph.on('change:size', function(cell, size) {
-	cell.attr(".label/cx", 0.25 * size.width);
-
-	// Calculate point on actor boundary for label (to always remain on boundary)
-	var b = size.height;
-	var c = -(size.height/2 + (size.height/2) * (size.height/2) * (1 - (-0.75 * size.width/2) * (-0.75 * size.width/2)  / ((size.width/2) * (size.width/2)) ));
-	var y_cord = (-b + Math.sqrt(b*b - 4*c)) / 2;
-
-	cell.attr(".label/cy", y_cord);
-});
-
-
-graph.on('remove', function(cell) {
-    //TODO: What I have changed
-    if(cell.isLink() && !(cell.prop("link-type") == 'NBT' || cell.prop("link-type") == 'NBD')){
-        // To remove link
-        var link = cell;
-        clearInspector();
-        model.removeLink(link.linkID);
-    }
-
-    else if((!cell.isLink()) && (!(cell["attributes"]["type"]=="basic.Actor"))){
-        // To remove intentions
-        clearInspector();
-        var userIntention = model.getIntentionByID(cell.attributes.nodeID);
-        // remove this intention from the model
-        model.removedynamicFunction(userIntention.nodeID);
-        model.removeIntentionLinks(userIntention.nodeID);
-        // remove all intention evaluations associated with this intention
-        analysisRequest.removeIntention(userIntention.nodeID);
-        // if this intention has an actor, remove this intention's ID
-        // from the actor
-        if (userIntention.nodeActorID !== '-') {
-            var actor = model.getActorByID(userIntention.nodeActorID);
-            actor.removeIntentionID(userIntention.nodeID);
-        }
-        model.removeIntention(userIntention.nodeID);
-    }
-    else if((!cell.isLink()) && (cell["attributes"]["type"]=="basic.Actor")){
-        // To remove actor
-        model.removeActor(cell['attributes']['nodeID']);
-
-
-    }
-    
-    //TODO: What I have changed finished
-	else if (cell.isLink() && (cell.prop("link-type") == 'NBT' || cell.prop("link-type") == 'NBD')) {
-		// Verify if is a Not both type. If it is remove labels from source and target node
-		var link = cell;
-		var source = link.prop("source");
-		var target = link.prop("target");
-
-	    for (var i = 0; i < graph.getElements().length; i++ ) {
-			if (graph.getElements()[i].prop("id") == source["id"]) {
-				 source = graph.getElements()[i];
-		   	}
-		  	if (graph.getElements()[i].prop("id") == target["id"]) {
-			   target = graph.getElements()[i];
-		   	}
-	   	}
-
-		//Verify if it is possible to remove the NB tag from source and target
-		if (source !== null && !checkForMultipleNB(source)) {
-			source.attrs(".funcvalue/text", "");
-		}
-		if (target !== null && !checkForMultipleNB(target)) {
-			target.attrs(".funcvalue/text", "");
-		}
-	}
-});
-
 
 /**
  * Clear any analysis sidebar views
@@ -693,4 +655,43 @@ function setInteraction(interactionValue){
     _.each(graph.getCells(), function(cell) {
         cell.findView(paper).options.interactive = interactionValue;
     });
+}
+
+/**
+ * Sets each node/cellview in the paper to its initial 
+ * satisfaction value and colours all text to black
+ */
+// TODO: Re-write with new models
+ function revertNodeValuesToInitial() {
+    //reset values
+    // for (var i = 0; i < graph.elementsBeforeAnalysis.length; i++) {
+	// 	var value = graph.elementsBeforeAnalysis[i]
+	// 	updateNodeValues(i, value, "toInitModel");
+	// }
+
+	// var elements = graph.getElements();
+	// var curr;
+	// for (var i = 0; i < elements.length; i++) {
+	// 	curr = elements[i].findView(paper).model;
+
+	// 	if (curr.attributes.type !== 'basic.Goal' &&
+	// 		curr.attributes.type !== 'basic.Task' &&
+	// 		curr.attributes.type !== 'basic.Softgoal' &&
+	// 		curr.attributes.type !== 'basic.Resource') {
+	// 		continue;
+	// 	}     
+	// 	var intention = curr.get('intention');
+    //     var initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair'); 
+
+	// 	if (initSatVal === '(no value)') {
+    //         curr.attr('.satvalue/text', '');
+
+	// 	} else {
+    //         curr.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
+	// 	}
+    //     //curr.attr({text: {fill: 'black'}});
+    //     curr.attr({text: {fill: 'black',stroke:'none','font-weight' : 'normal','font-size': 10}});
+	// }
+    // // Remove slider
+    // removeSlider();
 }
