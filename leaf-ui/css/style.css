@@ -286,17 +286,22 @@ body.waiting *
   border: 0;
 }
 
-#segment-views{
+.seg-class{
   background-color: #1E85F7;
   border-color: rgba(31, 121, 101, 1);
   color: white;
-  font-size: 0.7em;
+  font-size: 0.65em;
   font-weight: 200;
-  width: 200px;
   display: inline-block;
   margin-left: auto;
   margin-right: auto;
   border: 0;
+}
+
+#seg-time {
+  width:15px;
+  height: 15px;
+  float: left;
 }
 
 #init-sat-value:disabled {
@@ -358,11 +363,6 @@ select > .select-placeholder {
 }
 
 .function-type{
-  background-color: rgba(36, 150, 255, 1);
-  border-color: rgba(29, 122, 208, 1);
-}
-
-.seg_sat_class{
   background-color: rgba(36, 150, 255, 1);
   border-color: rgba(29, 122, 208, 1);
 }

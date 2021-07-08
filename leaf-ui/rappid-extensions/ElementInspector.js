@@ -1008,7 +1008,7 @@ var FuncSegView = Backbone.View.extend({
         this.satValue = this.model.get('refEvidencePair');
         this.startTP = this.model.get('startTP');
         if (this.startTP != '0') {
-            this.stopTP = String.fromCharCode(begin.charCodeAt(0) + 1);
+            this.stopTP = String.fromCharCode(this.startTP.charCodeAt(0) + 1);
         }
         else {
             this.stopTP = 'A';
@@ -1017,18 +1017,18 @@ var FuncSegView = Backbone.View.extend({
     },
 
     template: ['<script type="text/template" id="item-template">',
-                '<div class=“segment-views”>',
-                '<input style="float:left; width:20%; display:inline-block; id="repeat-end5" value="2">',
-                '<output> startTP </output>',
+                '<div id=“segment-views”>',
+                '<input id="seg-time" class = "seg-class"> </input>',
+                '<output id = "startTP-out" class = "seg-class"> startTP </output>',
                     // '<output> <%=satValue%> </output>',
-                    '<output class=“seg-function-type”> </output>',
-                    // '<select class=“seg-function-type segment-views”>',
-                    //                 '<option value=C> Constant </option>',
-                    //                 '<option value=R> Stochastic </option>',
-                    //                 '<option value=I> Increase </option>',
-                    //                 '<option value=D> Decrease </option>',
-                    //             '</select>',
-                        '<select id=“seg-sat-value” class="seg_sat_class">',
+                    // '<output class=“seg-function-type”> </output>',
+                    '<select id=“seg-function-type" class = "seg-class">',
+                                    '<option value="C"> Constant </option>',
+                                    '<option value="R"> Stochastic </option>',
+                                    '<option value="I"> Increase </option>',
+                                    '<option value="D"> Decrease </option>',
+                                '</select>',
+                        '<select id=“seg-sat-value” class = "seg-class">',
                             '<option value=none selected> None (⊥, ⊥) </option>',
                             '<option value=satisfied> Satisfied (F, ⊥) </option>',
                             '<option value=partiallysatisfied> Partially Satisfied (P, ⊥) </option>',
@@ -1036,7 +1036,7 @@ var FuncSegView = Backbone.View.extend({
                             '<option value=denied> Denied (⊥, F)</option>',
                             '<option value=“(no value)“> (no value) </option>',
                         '</select>',
-                     '<output> stopTP </output>',
+                     '<output id = "stopTP-out" class = "seg-class"> stopTP </output>',
                 '</div>',
                 '<br>',
                 '</script>'].join(''),
@@ -1047,12 +1047,19 @@ var FuncSegView = Backbone.View.extend({
     },
 
     render: function() {
+        // console.log(this.get('functionType') + " " + this.get('satValue') + " " + this.get('startTP') + " " + this.get('stopTP'));
+        
+        console.log(this.model.get('functionType'));
+        console.log(this.functionType);
+        
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
+        this.$('#seg-function-type').attr('value',this.functionType);
+        console.log(this.$('#seg-function-type').attr('value'))
         // this.$('#segment-views').text(this.satVal);
          // this.$('#segment-views').text(this.functionType);
-         console.log(this.satValue);
-        this.$('.seg-function-type').val(this.satValue);
-        this.$('.user-sat-value').text(this.functionType);
+        //  console.log(this.satValue);
+        // this.$('.seg-function-type').val(this.satValue);
+        // this.$('.user-sat-value').text(this.functionType);
         return this;
     },
 
