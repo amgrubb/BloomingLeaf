@@ -128,7 +128,7 @@ function switchToAnalysisMode() {
     $('.link-tools .tool-options').css("display", "none");
     
     // Appear 
-    $('#dropdown-model').css("display", "");
+    $('#modeling-btn').css("display", "");
     $('#simulate-single-path-btn').css("display", "");
     $('#next-state-btn').css("display", "");
     $('#configID').css("display", ""); 
@@ -149,7 +149,7 @@ function switchToAnalysisMode() {
 }
 
 // Switches to modeling mode
-$('#model-cur-btn').on('click', function() {
+$('#modeling-btn').on('click', function() {
 	switchToModellingMode();
 
 	// Cleaning the previous analysis data for new execution
@@ -226,7 +226,7 @@ function switchToModellingMode() {
 
     // Disappear 
     $('#analysis-sidebar').css("display","none");
-    $('#dropdown-model').css("display","none");
+    $('#modeling-btn').css("display","none");
     $('#simulate-single-path-btn').css("display", "none");
     $('#configID').css("display", "none"); 
     $('#next-state-btn').css("display", "none");
