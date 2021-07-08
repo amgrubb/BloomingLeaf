@@ -190,6 +190,8 @@ body.waiting *
 #config-sidebar { 
   margin-top:100px; 
   width: 200px; 
+  top: 60px;
+  bottom: 0;
   position: absolute; 
 }
 

@@ -349,7 +349,7 @@ select::-ms-expand {
     font-size: 16px; 
     border: none; 
     outline: none;  
-    width: 71%;
+    width: 70%;
   }
 
   .config-input {
@@ -364,6 +364,7 @@ select::-ms-expand {
     padding: 2px 7px 4px 7px; 
     font-size: 15px; 
     height: 42px; 
+    width: 50%;
     border: none; 
     outline: none;
     float: right;

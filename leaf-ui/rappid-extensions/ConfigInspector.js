@@ -108,7 +108,7 @@ var Config = Backbone.View.extend({
     },
 
     template: ['<script type="text/template" id="item-template">',
-    '<div class="analysis-configuration" id="<%= name %>" style="width: 100%;">',
+    '<div class="analysis-configuration" id="<%= name %>">',
         '<button class="config-elements" <% if (selected) { %> style="background-color:#A9A9A9;" <%} %> >',
         '<%= name %> </button>',
         '<input class="config-input" value="<%- name %>" style="display:none"></input>',
@@ -287,7 +287,7 @@ var ConfigInspector = Backbone.View.extend({
         '<div id="addConfig" style="display:inline">',
             '<i class="fa fa-plus" id="addIntent" style="font-size:30px; float:right;  margin-bottom:5px; margin-right:20px;"></i>',
         '</div></h3>',
-        '<div id="configurations" style="margin-top:20px; overflow-y:auto; height:69%; box-shadow: none;"></div>',
+        '<div id="configurations" class="left-panel" style="margin-top:20px; overflow-y:auto; height:90%; box-shadow: none;"></div>',
     '</div>',
 
     ].join(''),
