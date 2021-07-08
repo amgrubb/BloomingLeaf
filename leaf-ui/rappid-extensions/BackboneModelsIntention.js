@@ -229,7 +229,6 @@ var IntentionBBM = Backbone.Model.extend({
     changeInitialSatValue: function(initValue) {
         // Set the the first element of userEvaluationList to the initValue
         this.getUserEvaluationBBM(0).set('assignedEvidencePair', initValue);;
-
         if (this.get('evolvingFunction') != null) {
             var funcSegList = this.getFuncSegments();
             // If the function is C or UD & C set refEvidencePair to initValue
@@ -285,10 +284,10 @@ var IntentionBBM = Backbone.Model.extend({
                 var seg =  new FunctionSegmentBBM({type: funcType, refEvidencePair: '(no value)', startTP: '0', startAT: 0});
                 break;
             case 'I':
-                var seg =  new FunctionSegmentBBM({type: funcType, refEvidencePair: 'satisfied', startTP: '0', startAT: 0}); 
+                var seg =  new FunctionSegmentBBM({type: funcType, refEvidencePair: '0011', startTP: '0', startAT: 0}); 
                 break;
             case 'D':
-                var seg =  new FunctionSegmentBBM({type: funcType, refEvidencePair: 'denied', startTP: '0', startAT: 0}); 
+                var seg =  new FunctionSegmentBBM({type: funcType, refEvidencePair: '1100', startTP: '0', startAT: 0}); 
                 break;
             case 'UD':
                 var seg =  new FunctionSegmentBBM({type: 'C', refEvidencePair: initValue, startTP: '0', startAT: 0}); 
