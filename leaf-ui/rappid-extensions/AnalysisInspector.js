@@ -1,44 +1,30 @@
-var epochLists = [];
-var nameIdMapper = {};
-var constraintID = 0;
-var rx = /Goal_\d+/g; // MATCH goal name Goal_x
-var extractEB = /[A-Z]+$/;
-var saveIntermValues = {};
-var absoluteTimeValues;
-var saveIVT;
 var AnalysisInspector = Backbone.View.extend({
 	className: 'analysis-inspector',
-	model: ConfigModel,
+	model: ConfigBBM,
 	
 	template: ['<script type="text/template" id="item-template">',
 		'<div class="inspector-views">',
-		'<h2 style="text-align:center; width:100%;margin-top:6px;margin-bottom:0px">Analysis</h2>',
-		'<hr>',
-		'<h3> Simulation Start: 0 </h3>',
-		'<label class="sub-label"> Conflict Prevention Level </label>',
-		'<select id="conflict-level" class="sub-label" style="height:30px;">', 
+		'<div id="container-sidebar">', 
+		'<div id="analysis-sidebar">',
+		'<h5 style="text-align:center; color:#181b1fe3; margin-left: 10px;">Analysis Parameters</h5>',
+		'<p style="text-align:center; margin-top: -20px;";><label class = "sub-label">Conflict Prevention Level</label>', 
+		'<select id="conflict-level" class="sub-label" style="height:20px; width: 170px";>', 
 			'<option value=S <% if (conflictLevel === "S") { %> selected <%} %>> Strong </option>',
 			'<option value=M <% if (conflictLevel === "M") { %> selected <%} %>> Medium </option>',
 			'<option value=W <% if (conflictLevel === "W") { %> selected <%} %>> Weak </option>',
 			'<option value=N <% if (conflictLevel === "N") { %> selected <%} %>> None </option>',
 		'</select>',
-		'<label class="sub-label"> Num Relative Time Points </label>',
+		'<label class="sub-label">Num Relative Time Points</label>',
 		'<input id="num-rel-time" class="analysis-input" type="number" min="0" max="20" step="1" value="<%= numRelTime %>"/> </input>',
-		'<hr>',
-		'<button id="btn-single-path" class="analysis-btns inspector-btn sub-label green-btn">Simulate Single Path</button>',
-		'<button id="btn-all-next-state" class="analysis-btns inspector-btn sub-label ice-btn">Explore Possible Next States</button>',
+		'</div>',
 		'<hr>',
 		'</div>',
+		'</div>',
 		'</script>'].join(''),		
-	
 	events: {
-		'click .closeIntermT': 'dismissIntermTable',
-		'click #btn-single-path': 'singlePath',	
-		'click #btn-all-next-state': 'getAllNextStates',
-		'click #btn-save-intermT': 'saveIntermTable',
 		'change #num-rel-time': 'addRelTime', 
 		'change #conflict-level': 'changeConflictLevel',
-		'clearInspector .inspector-views' : 'removeView'
+		'clearInspector .inspector-views': 'removeView',
 	},
 
 	/** Sets template and injects model parameters */
@@ -84,103 +70,5 @@ var AnalysisInspector = Backbone.View.extend({
 		} else {
 			numRel.val(this.model.get('numRelTime'));
 		}
-	},
-
-	/**
-	 * Simulate Single Path - Step 1 - Set up analysis request object. 
-	 * Retrieves information about the current model and sends to the backend
-	 * to do single path analysis.
-	 * This function is called on click for #btn-single-path
-	 */
-	singlePath: function () {
-		// Create the object and fill the JSON file to be sent to backend.
-		// Get the AnalysisInspector view information
-
-		this.model.set('action', 'singlePath')
-		this.model.set('currentState', '0|0')
-
-		// Prepare and send data to backend
-		this.sendToBackend();
-	},
-
-	/**
-	 * Explore Possible Next States - Step 1 - Set up analysis request object.
-	 * Retrieves information about the current model and sends to the backend
-	 * to get all next possible states.
-	 *
-	 * This function is called on click for #btn-all-next-state
-	 * 
-	 * TODO: Replace analysisRequest with config
-	 */
-	getAllNextStates: function () {
-		if(analysisRequest.action != null) { //path has been simulated
-			if (analysisResult.selectedTimePoint != analysisResult.timeScale) { //last timepoint is not selected
-			$("body").addClass("waiting"); //Adds "waiting" spinner under cursor 
-		//Create the object and fill the JSON file to be sent to backend.
-		//Get the AnalysisInspector view information
-		
-			analysisRequest.action = "allNextStates"; 
-			
-			analysisRequest.previousAnalysis = _.clone(savedAnalysisData.singlePathResult);
-			// need to remove TPs after current point from previous solution?
-			// update the time point for potentialEpoch
-			var previousTP = [];
-			var i = analysisRequest.currentState.indexOf('|', 0);
-			var currentState = parseInt(analysisRequest.currentState.substring(0, i));
-			for (var i = 0; i < currentState + 1; i++) {
-				for (var j = 0; j < analysisRequest.previousAnalysis.assignedEpoch.length; j++) {
-					var regex = /(.*)_(.*)$/g;
-					var match = regex.exec(analysisRequest.previousAnalysis.assignedEpoch[j]);
-					if (match[2] === analysisRequest.previousAnalysis.timePointPath[i]) {
-						previousTP.push(analysisRequest.previousAnalysis.assignedEpoch[j]);
-						continue;
-					}
-				}
-			}
-
-			console.log(previousTP);
-			// update current time point in the path if necessary (if epoch)
-			// remove all the time points after
-			analysisRequest.previousAnalysis.assignedEpoch = previousTP;
-			analysisRequest.previousAnalysis.timePointPath = analysisRequest.previousAnalysis.timePointPath.slice(0, currentState + 1);
-
-
-			console.log(analysisRequest);
-
-		//Prepare and send data to backend
-		this.sendToBackend();
-
-		} else {
-			swal("Error: Cannot explore next states with last time point selected.", "", "error");
-		}
-		} else {
-			swal("Error: Cannot explore next states before simulating a single path.", "", "error");
-		}
-			
-	},
-
-	/**
-	 * Simulate Single Path - Step 2 
-	 * Explore Possible Next States - Step 2 
-	 * Creates an object to send to the backend and calls
-	 * a backendComm() to send to backend
-	 *
-	 * @param {Object} analysis
-	 *   InputAnalysis() object
-	 * 
-	 * TODO: Replace with graph + config
-	 */
-	sendToBackend: function () {
-		// Object to be sent to the backend
-		var jsObject = {};
-		jsObject.analysisRequest = analysisRequest;
-
-		//Get the Graph Model
-		jsObject.model = model;
-
-		//Send data to backend
-		backendComm(jsObject);		//TODO: Need to add parameter for Node Server.
-		;
-
 	},
 });

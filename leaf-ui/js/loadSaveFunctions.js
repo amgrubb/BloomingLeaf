@@ -18,7 +18,7 @@ loader.onchange = function() {
 reader.onload = function() {
 
 	// If JSON is not recognized as a BloomingLeaf model, just return
-	if (!reader.result || mode != 'Modelling') {
+	if (!reader.result) {
 		return;
 	}
 	//console.log(reader.result);
