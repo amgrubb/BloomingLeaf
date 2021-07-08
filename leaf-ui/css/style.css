@@ -349,6 +349,11 @@ select > .select-placeholder {
   border-color: rgba(29, 122, 208, 1);
 }
 
+.seg_sat_class{
+  background-color: rgba(36, 150, 255, 1);
+  border-color: rgba(29, 122, 208, 1);
+}
+
 .function-type, .function-sat-value{
   margin: auto;
   margin-bottom: 8px;
