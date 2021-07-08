@@ -301,7 +301,13 @@ body.waiting *
 #seg-time {
   width:15px;
   height: 15px;
-  float: left;
+}
+
+#startTP-out, #stopTP-out {
+  background-color: #333;
+  color: white;
+  border-style: solid;
+  border-color: white;
 }
 
 #init-sat-value:disabled {
