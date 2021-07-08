@@ -290,11 +290,9 @@ body.waiting *
   background-color: #1E85F7;
   border-color: rgba(31, 121, 101, 1);
   color: white;
-  font-size: 0.65em;
+  font-size: 0.7em;
   font-weight: 200;
   display: inline-block;
-  margin-left: auto;
-  margin-right: auto;
   border: 0;
 }
 
