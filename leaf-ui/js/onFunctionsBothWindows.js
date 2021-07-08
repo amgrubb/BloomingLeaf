@@ -63,17 +63,34 @@ function defaultFont(pPaper) {
     changeFont(default_font, pPaper)
 }
 
-//end nav bar functions
+function resizeWindow(){
+    $('#slider').css("margin-top", $(this).height() * 0.9);
+	$('#slider').width($('#paper').width() * 0.8);
+}
+
+// End nav bar functions
 
 /**
  * Set up Ctrl+c and Ctrl+v shortcut for macOS
  *  
  */
- var clipboard = new joint.ui.Clipboard();
+{
+// TODO: Outstanding problem from develop - copy/paste pastes twice
+// Currently only one model can ever be selected at a time
+
+var clipboard = new joint.ui.Clipboard();
+var selection = new Backbone.Collection();
+
+var selectionView = new joint.ui.SelectionView({
+	paper: paper,
+	graph: graph,
+	model: selection
+});
  // Check if the browser is on Mac
  var macOS = navigator.platform.match(/(Mac|iPhone|iPod|iPad)/i)?true:false;
  if(macOS) {
      KeyboardJS.on('command + c, ctrl + c', function() {
+         getSelection();
          // Copy all selected elements and their associatedf links.
          clipboard.copyElements(selection, graph, { translate: { dx: 20, dy: 20 }, useLocalStorage: true });
      });
@@ -103,6 +120,7 @@ function defaultFont(pPaper) {
  } else {
  
      KeyboardJS.on('ctrl + c', function() {
+        getSelection();
          // Copy all selected elements and their associatedf links.
          clipboard.copyElements(selection, graph, { translate: { dx: 20, dy: 20 }, useLocalStorage: true });
      });
@@ -130,3 +148,15 @@ function defaultFont(pPaper) {
      });
  
  }
+
+ function getSelection(){
+    for (let element of graph.getElements()){
+        if (element.findView(paper).el.children.length == 2 &&
+            element.findView(paper).el.children[1].className.baseVal 
+            == 'joint-highlight-stroke joint-theme-default'){
+            selection.add(element);
+        }
+    }
+ }
+
+}

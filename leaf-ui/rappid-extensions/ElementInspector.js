@@ -69,6 +69,14 @@ var ElementInspector = Backbone.View.extend({
         this.listenTo(this, 'change: intention', this.initSatValueChanged); 
         // Saves this.model.get('intention) as a local variable to access it more easily
         this.intention = this.model.get('intention');
+        this.satValueDict = {
+            "satisfied": "0011",
+            "partiallysatisfied": "0010",
+            "partiallydenied": "0100",
+            "denied": "1100",
+            "none": "0000",
+            "(no value)": "(no value)"
+        };
     },
      
     template: ['<script type="text/template" id="item-template">',
@@ -284,31 +292,30 @@ var ElementInspector = Backbone.View.extend({
         satValueOptions.all = none + satisfied + partiallysatisfied + partiallydenied + denied + unknown;
         satValueOptions.noRandom = satisfied + partiallysatisfied + partiallydenied + denied;
 
-        /**TODO
-         * Returns
+        /**
+         * This function takes in an initial value
+         * And returns an html string options with values 
+         * That are either larger or smaller than the initial value
+         * Depending on the positive boolean parameter
+         * 
+         * @param {String} currentValue 
+         * @param {Boolean} positive If true - increasing, if false, decreasing
+         * @returns HTML string of options with values
          */
-        satValueOptions.positiveOnly = function(currentVal){
-            currentVal = satvalues[currentVal];
-            result = '';
-            for (var i = satvalues['satisfied'] ; i >= currentVal + 1 ; i--){
-                // Find text by value eg. given i = -1, we want to find partiallydenied as satvalues[partiallydenied] = -1
-                var text = satvalues[i];
-                result += eval(text);
-            }
-            return result;
-        };
+        satValueOptions.positiveOrNegative = function(currentVal, postive){
+            var satVals = ["satisfied", "partiallysatisfied","none", "partiallydenied", "denied"];
+            var result = '';
 
-        /**TODO
-         * Returns
-         */
-        satValueOptions.negativeOnly = function(currentVal){
-            currentVal = satvalues[currentVal];
-            result = '';
-            for (var i = currentVal - 1; i >= satvalues['denied']; i--){
-                // Find text by value eg. given i = -1, we want to find partiallydenied as satvalues[partiallydenied] = -1
-                var text = satvalues[i];
-                result += eval(text);
+            if (postive){
+                var valuesList = satVals.slice(0,satVals.indexOf(currentVal)+1);
+            } else {
+                var valuesList = satVals.slice(satVals.indexOf(currentVal));
             }
+
+            for (let value of valuesList){
+                result += eval(value);
+            }
+            console.log(result);
             return result;
         };
 
@@ -370,7 +377,7 @@ var ElementInspector = Backbone.View.extend({
      */
     initSatValueChanged: function(event) {
         var initValue = this.$('#init-sat-value').val();
-        this.intention.changeInitialSatValue(satValueDict[initValue]);
+        this.intention.changeInitialSatValue(this.satValueDict[initValue]);
         this.checkInitialSatValue();
         this.updateCell(null);
         this.updateHTML(event);
@@ -404,7 +411,7 @@ var ElementInspector = Backbone.View.extend({
      * This function is called on change for .user-sat-value
      */
     userSatValChanged: function(event) {       
-        var satVal = satValueDict[this.$('.user-sat-value').last().val()];
+        var satVal = this.satValueDict[this.$('.user-sat-value').last().val()];
 
         // Sets the satisfaction value for the last function segment
         // In the Intention's evolving function to satVal
@@ -418,7 +425,7 @@ var ElementInspector = Backbone.View.extend({
      * Sets the refEvidencePair for the FunctionSegmentBBMs
      */
     funcSatValChanged: function(event) {
-        this.intention.setMarkedValueToFunction(satValueDict[this.$('#markedValue').val()]); // 4 digit representation
+        this.intention.setMarkedValueToFunction(this.satValueDict[this.$('#markedValue').val()]); // 4 digit representation
         this.updateChart();  
     },
 
@@ -521,9 +528,9 @@ var ElementInspector = Backbone.View.extend({
         if (functionType == 'RC') {
             this.$('#markedValue').html(this.satValueOptions.noRandom);
         } else if (functionType == 'I' || functionType == 'MP') {
-            this.$('#markedValue').html(this.satValueOptions.positiveOnly(initValue));
+            this.$('#markedValue').html(this.satValueOptions.positiveOrNegative(initValue, true));
         } else if (functionType == 'D' || functionType == 'MN') {
-            this.$('#markedValue').html(this.satValueOptions.negativeOnly(initValue));
+            this.$('#markedValue').html(this.satValueOptions.positiveOrNegative(initValue, false));
         }
         if (markedValue) {
             if (satisfactionValuesDict[markedValue != null]){
@@ -551,10 +558,10 @@ var ElementInspector = Backbone.View.extend({
         if (func == 'I' || func == 'D') {
             var prevVal = satisfactionValuesDict[this.intention.get('evolvingFunction').getNthRefEvidencePair(2)].name;
             if (func == 'I') {
-                $(".user-sat-value").last().html(this.satValueOptions.positiveOnly(prevVal));
+                $(".user-sat-value").last().html(this.satValueOptions.positiveOrNegative(prevVal, true));
                 $(".user-sat-value").last().val("satisfied");
             } else {
-                $(".user-sat-value").last().html(this.satValueOptions.negativeOnly(prevVal));
+                $(".user-sat-value").last().html(this.satValueOptions.positiveOrNegative(prevVal, false));
                 $(".user-sat-value").last().val("denied");
             }
         } else if (func == 'R') {
@@ -592,6 +599,11 @@ var ElementInspector = Backbone.View.extend({
      * satisfaction value(s)
      */
     updateChart: function() {
+        var satvalues = {
+            "satisfied": 2, "partiallysatisfied": 1, "partiallydenied": -1, "denied": -2, "unknown": 4, "conflict":3, "none": 0,
+            "2": "satisfied", "1": "partiallysatisfied", "-1": "partiallydenied", "-2": "denied", "4": "unknown", "3": "conflict", "0": "none"
+        };
+
         if (this.intention.get('evolvingFunction') != null ) {
             var funcType = this.intention.get('evolvingFunction').get('type');
             var initVal = satisfactionValuesDict[this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair')].chartVal;
