@@ -1,11 +1,3 @@
-var epochLists = [];
-var nameIdMapper = {};
-var constraintID = 0;
-var rx = /Goal_\d+/g; // MATCH goal name Goal_x
-var extractEB = /[A-Z]+$/;
-var saveIntermValues = {};
-var absoluteTimeValues;
-var saveIVT;
 var AnalysisInspector = Backbone.View.extend({
 	className: 'analysis-inspector',
 	model: ConfigBBM,
