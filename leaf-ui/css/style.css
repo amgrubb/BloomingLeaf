@@ -274,7 +274,7 @@ body.waiting *
 .function-sat-value, .user-defined-select, .repeat-select,
 .relationship-select, .link-type, #conflict-level, #abs-vals,
 #assigned-vals{
-  background-color: #1E85F7;
+  background-color: rgba(36, 150, 255, 1);
   border-color: rgba(31, 121, 101, 1);
   color: white;
   font-size: 0.7em;
@@ -287,7 +287,7 @@ body.waiting *
 }
 
 .seg-class{
-  background-color: #1E85F7;
+  background-color: rgba(36, 150, 255, 1);
   border-color: rgba(31, 121, 101, 1);
   color: white;
   font-size: 0.7em;

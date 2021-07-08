@@ -179,7 +179,7 @@ var ElementInspector = Backbone.View.extend({
     render: function() {
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()))
         
-
+        console.log(satValueDict);
         // Attributes
         this.chart = new ChartObj();
 
@@ -979,11 +979,18 @@ var ElementInspector = Backbone.View.extend({
         $('#segment-functions').empty();
         // Only creates the FunctionSegmentView if there is a function segment
         if(this.intention.get('evolvingFunction') != null){
+            console.log(this.intention.get('evolvingFunction').get('type'));
+            var hasUD = false; 
+            if (this.intention.get('evolvingFunction').get('type') === 'UD') {
+                var hasUD = true;
+            }
+            console.log(hasUD);
             var funcSegList = this.intention.getFuncSegments();
+            console.log(funcSegList);
             funcSegList.forEach(
                 funcSeg => {
                     console.log(funcSeg.get('refEvidencePair'));
-                var functionSegView = new FuncSegView({model: funcSeg, intention: this.model});
+                var functionSegView = new FuncSegView({model: funcSeg, intention: this.model, hasUD: hasUD});
                 $('#segment-functions').append(functionSegView.el);
                 functionSegView.render();  
             })
@@ -1003,119 +1010,62 @@ var FuncSegView = Backbone.View.extend({
 
     /** Pass in a reference to parent configuration on intialization */
     initialize: function(options){ 
-        this.functionType = this.model.get('type');
+        // do we need to pass in this reference to the parent??
         this.intention = options.intention;
-        this.satValue = this.model.get('refEvidencePair');
-        this.startTP = this.model.get('startTP');
-        if (this.startTP != '0') {
-            this.stopTP = String.fromCharCode(this.startTP.charCodeAt(0) + 1);
+        this.functionType = options.functionType;
+        // Sets the stopTP to be one step after the startTP
+        if (this.model.get('startTP') != '0') {
+            this.stopTP = String.fromCharCode(this.model.get('startTP').charCodeAt(0) + 1);
         }
         else {
             this.stopTP = 'A';
         }
-        // document.getElementById("greeting").innerHTML = "Bonjour";
+        // Boolean if the function segment is a part of a UD function
+        this.hasUD = options.hasUD;
     },
 
     template: ['<script type="text/template" id="item-template">',
                 '<div id=“segment-views”>',
                 '<input id="seg-time" class = "seg-class"> </input>',
-                '<output id = "startTP-out" class = "seg-class" > 0 </output>',
-                    // '<output> <%=satValue%> </output>',
-                    // '<output class=“seg-function-type”> </output>',
-                    '<select id=“seg-function-type" class = "seg-class" style="width: 80px">',
-                        '<option value="C"> Constant </option>',
-                        '<option value="R"> Stochastic </option>',
-                        '<option value="I"> Increase </option>',
-                        '<option value="D"> Decrease </option>',
-                    '</select>',
-                    '<select id=“seg-sat-value” class = "seg-class" style="width: 83px">',
-                        '<option value=none selected> None (⊥, ⊥) </option>',
-                        '<option value=satisfied> Satisfied (F, ⊥) </option>',
-                        '<option value=partiallysatisfied> Partially Satisfied (P, ⊥) </option>',
-                        '<option value=partiallydenied> Partially Denied (⊥, P)</option>',
-                        '<option value=denied> Denied (⊥, F)</option>',
-                        '<option value=“(no value)“> (no value) </option>',
-                    '</select>',
-                    '<output id = "stopTP-out" class = "seg-class"> B </output>',
+                '<output id = "startTP-out" class = "seg-class" > <%= startTP %> </output>',
+                '<select id=“seg-function-type" class = "seg-class" style="width: 80px">',    
+                    '<option value="C" <% if (type === "C") { %> selected <%} %>> Constant </option>',
+                    '<option value="R" <% if (type === "R") { %> selected <%} %>> Stochastic </option>',
+                    '<option value="I" <% if (type === "I") { %> selected <%} %>> Increase </option>',
+                    '<option value="D" <% if (type === "D") { %> selected <%} %>> Decrease </option>',
+                '</select>',
+                '<select id=“seg-sat-value” class = "seg-class" style="width: 83px">',
+                    '<option value=none <% if (refEvidencePair === "0000") { %> selected <%} %>> None (⊥, ⊥) </option>',
+                    '<option value=satisfied <% if (refEvidencePair === "0011") { %> selected <%} %>> Satisfied (F, ⊥) </option>',
+                    '<option value=partiallysatisfied <% if (refEvidencePair === "0010") { %> selected <%} %>> Partially Satisfied (P, ⊥) </option>',
+                    '<option value=partiallydenied <% if (refEvidencePair === "0100") { %> selected <%} %>> Partially Denied (⊥, P)</option>',
+                    '<option value=denied <% if (refEvidencePair === "1100") { %> selected <%} %>> Denied (⊥, F)</option>',
+                    '<option value="(no value)" <% if (refEvidencePair === "(no value)") { %> selected <%} %>> (no value) </option>',
+                '</select>',
+                    '<output id = "stopTP-out" class = "seg-class"> end </output>',
                 '</div>',
                 '<br>',
                 '</script>'].join(''),
 
     events: {
-        'change .seg-function-type':'userFuncTypeChanged',
-        'change .user-sat-value':'userSatValChanged',
     },
 
     render: function() {
-        // console.log(this.get('functionType') + " " + this.get('satValue') + " " + this.get('startTP') + " " + this.get('stopTP'));
-        
-        console.log(this.model.get('functionType'));
-        console.log(this.functionType);
-        
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
-        this.$('#startTP-out').val(this.startTP);
-        this.$('#seg-function-type').val(this.functionType);
+        console.log(this.model.get('refEvidencePair'));
+        // <% if (hasUD === false) { %> disabled <%} %>
+        this.$('#seg-function-type').prop('disabled', true);
+        this.$('#seg-sat-value').prop('disabled', true);
+        console.log(this.$('#seg-sat-value').prop('disabled'))
+        console.log(this.hasUD);
+        if (this.hasUD === true) {
+            this.$('#seg-function-type').prop('disabled', false);
+            this.$('#seg-sat-value').prop('disabled', false);
+        }
+        // Have to manually add stopTP to html because it is not in the FunctionSegmentBBM
         this.$('#stopTP-out').val(this.stopTP);
         console.log(this.$('#seg-function-type').val(this.functionType))
-        // this.$('#segment-views').text(this.satVal);
-         // this.$('#segment-views').text(this.functionType);
-        //  console.log(this.satValue);
-        // this.$('.seg-function-type').val(this.satValue);
-        // this.$('.user-sat-value').text(this.functionType);
-        return this;
-    },
-
-    initSatValueChanged: function(event) {
-        var initValue = this.$('.seg-function-type').val();
-        this.intention.changeInitialSatValue(satValueDict[initValue]);
-        this.checkInitialSatValue();
-        this.updateCell(null);
-        this.updateHTML(event);
-
-    },
-
-    /**
-     * Clears all FuncSegments for this intention's
-     * EvolvingFunction and adds new FuncSegments according to the current
-     * function type.
-     *
-     * This function is called on change for .function-type.
-     */
-    funcTypeChanged: function(event) {
-        this.intention.setEvolvingFunction(this.$('.function-type').val());
-        this.updateCell(null);
-        this.updateHTML(event);
-    },
-
-});
-
-/**
- * View for dropdown result menu under configurations
- * 
- * {ResultCollection} collection
- */
- var SegmentGrouping = Backbone.View.extend({
-    model: EvolvingFunctionBBM,
-
-    /** Pass in a reference to parent configuration on intialization */
-    initialize: function(options){
-        this.functionSegmentList = this.get('functionSegmentList');
-    },
-
-
-    template: [
-    '<div class="">',
-    '</div>'].join(''),
-    
-    /**
-     * Resets listeners and resets template
-     * Then adds all results associated with the configuration
-     */
-    render: function() {
-        this.stopListening();
-        this.listenTo(this.collection, 'add', this.loadResult, this);
-        this.$el.html(_.template(this.template)());
-        this.collection.forEach(result => {this.loadResult(result)});
         return this;
     },
 });
+
