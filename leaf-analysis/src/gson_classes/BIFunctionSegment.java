@@ -6,7 +6,7 @@ public class BIFunctionSegment {
 	private class Attributes {
 		String refEvidencePair;
         Integer startAT;
-        Integer startTP;
+        String startTP;
         String type;
 	}
 }

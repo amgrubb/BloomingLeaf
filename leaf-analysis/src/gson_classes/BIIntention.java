@@ -1,13 +1,15 @@
 package gson_classes;
 
+import java.util.List;
+
 public class BIIntention {
     private Attributes attributes;
 
     private class Attributes {
-        String evolvingFunction; //The type is EvolvingFunctionBBM
+    	BIEvolvingFunction evolvingFunction; 
         String nodeActorID;
         String nodeName;
         String nodetype;
-        String userEvaluationList; // The type is BackBone Collection
+        List<BIUserEvaluation> userEvaluationList; 
     }
 }

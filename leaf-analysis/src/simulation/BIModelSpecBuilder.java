@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 
-import interface_objects.*;
+import gson_classes.*;
 
 /**
  * This class is responsible to get the frontend model and convert into the backend model filling the necessary attributes.

@@ -1,10 +1,12 @@
 package gson_classes;
 
+import java.util.List;
+
 public class BIEvolvingFunction {
 	private Attributes attributes;
 	
-	private class Attributes {
-        String functionSegList; //The type is array .<FunctionSegmentBBM>
+	private class Attributes {  
+		List<BIFunctionSegment> functionSegList; 
         Boolean hasRepeat;
         Integer repAbsTime;
         Integer repCount;

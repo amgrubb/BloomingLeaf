@@ -13,24 +13,10 @@ public class InputGraph {
 	
 	private String maxAbsTime;
 	private String[] absTimePtsArr;
-	private ArrayList<String> constraints;
+	//private ArrayList<String> constraints;
+	private List<BIConstraint> constraints;
 	private List<InputCell> cells;
 
-	//	InputModel model = new InputModel();
-	
 
-	
-	public String getMaxAbsTime() {
-		return maxAbsTime;
-	}
-	public String[] getAbsTimePtsArr() {
-		return absTimePtsArr;
-	}
-	public ArrayList<String> getConstraints() {
-		return constraints;
-	}
-	public List<InputCell> getCells() {
-		return cells;
-	}
 		
 }
