@@ -544,15 +544,11 @@ paper.on("link:options", function(cell){
 
 /**
  * Remove the highlight around all elements
- *
- * @param  {Array.<joint.dia.shapes>} elements
  */
 function removeHighlight(){
-	var elements = graph.getElements();
     // Unhighlight everything
-    for (var i = 0; i < elements.length; i++) {
-        console.log(elements[i].findView(paper))
-        elements[i].findView(paper).unhighlight();
+    for (let element of graph.getElements()){
+        element.findView(paper).unhighlight();
     }
 }
 
@@ -607,8 +603,6 @@ graph.on('remove', function(cell) {
 		var link = cell;
 		var source = link.prop("source");
 		var target = link.prop("target");
-		var sourceId;
-		var targetId;
 
 	    for (var i = 0; i < graph.getElements().length; i++ ) {
 			if (graph.getElements()[i].prop("id") == source["id"]) {
@@ -659,6 +653,35 @@ function checkForMultipleNB(node) {
 	}
 
 	return num >= 1;
+}
+
+/**
+ * Creates and returns an alert dialog box
+ * 
+ * @param {String} title 
+ * @param {String} msg 
+ * @param {Number} width 
+ * @param {String} promptMsgType 
+ * @param {Sting} type 
+ * @returns joint.ui.Dialog box
+ */
+function showAlert(title, msg, width, promptMsgType, type) {
+    var dialog;
+    var alertType = 'alert';
+    if(type) {
+        alertType = type;
+    }
+    dialog = new joint.ui.Dialog(
+        {
+            type: alertType,
+            width: width,
+            title: title,
+            content: '<div class="creativity-dialog-wrapper" data-prompttype="' + promptMsgType + '">' + msg + '</div>',
+            modal: false
+        });
+
+    dialog.open();
+    return dialog;
 }
 
 /**

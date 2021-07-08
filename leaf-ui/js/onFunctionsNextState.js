@@ -4,11 +4,6 @@
  * 
  */
 
-// var sliderNextState = document.getElementById("colorResetNextState");
-// sliderNextState.oninput = function() { //changes slider mode and refreshes 
-//     EVONextState.setSliderOption(this.value);
-// }
-
 //Only event listeners
 $('#btn-zoom-in').on('click', function(){ zoomIn(analysis.paperScroller); });
 $('#btn-zoom-out').on('click', function(){ zoomOut(analysis.paperScroller); });

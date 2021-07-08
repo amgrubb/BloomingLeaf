@@ -4,14 +4,6 @@
  * It also contains functions for the analysis configuration sidebar
  */
 
-// Analysis Configuration map (key: configId, value: analysisConfig object)
-var analysisMap = new Map();
-// Global variable to keep track of what analysis configuration is currently being used
-var currAnalysisConfig;
-//Global variable to keep track of the highest initial position
-//This acts like a global iterator to keep track of what the ID and initialPosition attribute of new configurations should be
-var highestPosition = 1;
-
 /**
  * Displays the analysis to the web app, by creating the slider display
  *

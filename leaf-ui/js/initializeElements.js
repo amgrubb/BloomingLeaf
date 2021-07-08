@@ -3,55 +3,10 @@
  * the necessary Rappid, JointJS and noUiSlider elements.
  */
 
-function guid() {
-    // local function to create alphanumeric strings
-    function s4() {
-        return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
-    }
-    // return lots of alphanumeric strings as new GUID
-    return s4() + s4() + s4() + s4() + s4() + s4() + s4() + s4();
-}
+/*** Various global Sat Value Dictionaries ***/
 
-function showAlert(title, msg, width, promptMsgType, type) {
-    var dialog;
-    var divId = guid();
-    var alertType = 'alert';
-    if(type) {
-        alertType = type;
-    }
-    dialog = new joint.ui.Dialog(
-        {
-            type: alertType,
-            width: width,
-            title: title,
-            content: '<div class="creativity-dialog-wrapper" id="' + divId + '" data-prompttype="' + promptMsgType + '">' + msg + '</div>',
-            modal: false
-        });
-
-    dialog.open();
-    return dialog;
-}
-
-var graph;
-var paper;
-var stencil;
-var mode;
-var showEditingWarning = true;
-
-var analysisResult = new AnalysisResult();
-
-// Analysis variables
-var sliderObject = new SliderObj();
-var previousModel;
-
-var loader;
-var reader;
-
-// This object will be created to save necessary data for following analysis
-var savedAnalysisData = {};
-
-// Properties for both core and simulator.
-
+// TODO: Can be repleaced using a function similar to increasingOrDecreasing in the IntermediateValues.js file
+// Or combined with other satValueDicts into one map
 var satvalues = {
 	"satisfied": 2, "partiallysatisfied": 1, "partiallydenied": -1, "denied": -2, "unknown": 4, "conflict":3, "none": 0,
 	"2": "satisfied", "1": "partiallysatisfied", "-1": "partiallydenied", "-2": "denied", "4": "unknown", "3": "conflict", "0": "none"
@@ -131,10 +86,17 @@ var satisfactionValuesDict = {
 	}
 };
 
-graph = new joint.dia.BloomingGraph();
+/*** Global variables currently being used across the codebase ***/
+var showEditingWarning = true;
 
-// Create a paper and wrap it in a PaperScroller.
-paper = new joint.dia.Paper({
+// This object will be created to save necessary data for following analysis
+var savedAnalysisData = {};
+
+/*** JointJS global elements such as graph, paper, stencil, etc ***/
+
+var graph = new joint.dia.BloomingGraph();
+
+var paper = new joint.dia.Paper({
     width: 1000,
     height: 1000,
     gridSize: 10,
@@ -169,16 +131,8 @@ var paperScroller = new joint.ui.PaperScroller({
 	paper: paper
 });
 
-$('#paper').append(paperScroller.render().el);
-paperScroller.center();
-
-// Disable context menu inside the paper.
-// TODO: Not sure what this does.
-paper.el.oncontextmenu = function(evt) { evt.preventDefault(); };
-
-
 // Create and populate stencil.
-stencil = new joint.ui.Stencil({
+var stencil = new joint.ui.Stencil({
 	graph: graph,
 	paper: paper,
 	label: 'hello',
@@ -189,6 +143,17 @@ stencil = new joint.ui.Stencil({
 // TODO: Currently tied to the Undo/Redo buttons. 
 // Once those are re-implemented need for this global variable can be revisited
 var commandManager = new joint.dia.CommandManager({ graph: graph });
+
+var sliderObject = new SliderObj();
+
+/** JointJS and Rappid element page setup */
+
+$('#paper').append(paperScroller.render().el);
+paperScroller.center();
+
+// Disable context menu inside the paper.
+// TODO: Not sure what this does.
+paper.el.oncontextmenu = function(evt) { evt.preventDefault(); };
 
 $('#stencil').append(stencil.render().el);
 
@@ -204,5 +169,5 @@ $('#slider').css("margin-top", $(window).height() * 0.9);
 // Adjust slider value position based on stencil width and paper width
 var sliderValuePosition = 200 + $('#paper').width() * 0.1;
 $('#sliderValue').css("top", '20px');
-$('#sliderValue').css("left", sliderValuePosition.toString() + 'px');
+$('#sliderValue').css("left", (200 + $('#paper').width() * 0.1).toString() + 'px');
 $('#sliderValue').css("position", "relative");

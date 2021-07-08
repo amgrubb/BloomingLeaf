@@ -198,7 +198,7 @@ var AssignmentsTable = Backbone.View.extend({
  * Represents a constraint in the graph's constraint list
  */
 var RelativeIntentionView = Backbone.View.extend({
-    model: Constraint,
+    model: ConstraintBBM,
     tagName: 'tr',
 
     initialize: function(options){
