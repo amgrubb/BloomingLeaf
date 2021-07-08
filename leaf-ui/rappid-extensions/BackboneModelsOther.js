@@ -65,7 +65,9 @@ var ConstraintBBM = Backbone.Model.extend({
      * If so, constraint has not been fully assigned
      */
     isComplete: function(){
-        return (!this.get('type') == null);
+        return (!(this.get('type') == null) && 
+                !(this.get('srcID') == null) &&
+                !(this.get('destID') == null));
     },
 
 });
