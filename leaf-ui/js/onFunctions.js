@@ -166,7 +166,7 @@ $('#load-sample').on('click', function() {
 */
 
 // Switches to modeling mode
-$('#model-cur-btn').on('click', function () {
+$('#modeling-btn').on('click', function () {
     switchToModellingMode();
 
     savedAnalysisData.finalAssignedEpoch = "";
