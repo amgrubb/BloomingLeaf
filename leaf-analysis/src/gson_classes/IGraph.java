@@ -1,6 +1,5 @@
 package gson_classes;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -9,13 +8,12 @@ import java.util.List;
  * IMPORTANT: The attributes in this class must be correlated (same name and type) with 
  * the JSON attributes.
  */
-public class InputGraph {
+public class IGraph {
 	
 	private String maxAbsTime;
 	private String[] absTimePtsArr;
-	//private ArrayList<String> constraints;
 	private List<BIConstraint> constraints;
-	private List<InputCell> cells;
+	private List<ICell> cells;
 
 
 		

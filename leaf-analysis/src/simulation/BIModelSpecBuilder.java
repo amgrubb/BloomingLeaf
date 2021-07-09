@@ -15,7 +15,7 @@ public class BIModelSpecBuilder {
     private final static boolean DEBUG = false;	
 
 	
-	public static ModelSpec buildModelSpec(InputGraph inGraph){
+	public static ModelSpec buildModelSpec(IGraph inGraph){
 		//Backend Model
 		ModelSpec modelSpec = new ModelSpec();
 		
