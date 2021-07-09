@@ -432,7 +432,7 @@ paper.on("link:options", function(cell){
 {
 /** Initialize configCollection within scope of brackets */
 let configCollection = new ConfigCollection([]);
-let configInspector = new ConfigInspector({collection:configCollection});
+let configInspector = null;
 
 /**
  * Helper function for switching to Analysis view.
@@ -445,36 +445,22 @@ function switchToAnalysisMode() {
 	
 	removeHighlight();
     
+    configInspector = new ConfigInspector({collection:configCollection});
     $('#configID').append(configInspector.el);
     configInspector.render();
 
-    // Disappear
-    $('#stencil').css("display", "none");
-    $('#btn-view-intermediate').css("display","none");
-    $('#btn-view-assignment').css("display","none"); 
-    $('#analysis-btn').css("display", "none");
-	$('#symbolic-btn').css("display", "none");
-	$('#cycledetect-btn').css("display", "none");
-    $('#model-toolbar').css("display", "none");
-    $('.model-clears').css("display", "none");
-    $('#on-off').css("display", "none");
-
-    // Disable link settings
-	$('.link-tools .tool-remove').css("display", "none");
-    $('.link-tools .tool-options').css("display", "none");
+    // Remove model only elements 
+    $('.model-only').css("display", "none");
     
-    // Appear 
-    $('#dropdown-model').css("display", "");
-    $('#simulate-single-path-btn').css("display", "");
-    $('#next-state-btn').css("display", "");
-    $('#configID').css("display", ""); 
-    $('#on-off').css("display", "");
-
-    // Hide extra tools from modelling mode
-    $('.analysis-clears').css("display", "");
+    // Show extra tools for analysis mode
+    $('.analysis-only').css("display","");
 
     // Show Analysis View tag
 	$('#modeText').text("Analysis View");
+    
+    // Disable link settings
+	$('.link-tools .tool-remove').css("display", "none");
+    $('.link-tools .tool-options').css("display", "none");
     
     IntentionColoring.refresh();
 
@@ -493,32 +479,14 @@ let showEditingWarning = true;
  function switchToModellingMode() {
     setInteraction(true);
 	
-    clearInspector();
-    
 	// Reset to initial graph prior to analysis
 	revertNodeValuesToInitial();
 
-    // Disappear 
-    $('#analysis-sidebar').css("display","none");
-    $('#dropdown-model').css("display","none");
-    $('#simulate-single-path-btn').css("display", "none");
-    $('#configID').css("display", "none"); 
-    $('#next-state-btn').css("display", "none");
-    $('.analysis-clears').css("display", "none");
+    // Remove analysis only elements 
+    $('.analysis-only').css("display", "none");
     
-    // Appear 
-    $('#stencil').css("display","");
-    $('#btn-view-assignment').css("display","");
-    $('#btn-view-intermediate').css("display","");
-    $('#analysis-btn').css("display","");
-	$('#symbolic-btn').css("display","");
-	$('#cycledetect-btn').css("display","");
-
     // Show extra tools for modelling mode
-    $('#model-toolbar').css("display","");
-    $('.model-clears').css("display", "");
-
-    // analysisResult.colorVis = [];
+    $('.model-only').css("display","");
 
     // Show Modelling View tag
     $('#modeText').text("Modeling View");
@@ -529,6 +497,8 @@ let showEditingWarning = true;
 
     EVO.switchToModelingMode();
 
+    // Remove configInspector view
+    configInspector.remove();
     // TODO: Determine if we should be setting action to null on all configs
     configCollection.findWhere({selected: true}).set('action', null);
 
