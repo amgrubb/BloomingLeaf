@@ -119,24 +119,24 @@ var ElementInspector = Backbone.View.extend({
                 //     '<option value=denied> Denied (⊥, F)</option>',
                 // '</select>',
                 '<div id="user-constraints">',
-                    '<div id="all-user-constraints">',
-                        '<div id="new-user-constraints">',
-                            '<select class="user-function-type user-defined-select">',
-                                '<option value=C> Constant </option>',
-                                '<option value=R> Stochastic </option>',
-                                '<option value=I> Increase </option>',
-                                '<option value=D> Decrease </option>',
-                            '</select>',
-                            '<select class="user-sat-value user-defined-select">',
-                            '<option value="0000" selected> None (⊥, ⊥)</option>',
-                            '<option value="0011"> Satisfied (F, ⊥)</option>',
-                            '<option value="0010"> Partially Satisfied (P, ⊥) </option>',
-                            '<option value="0100"> Partially Denied (⊥, P)</option>',
-                            '<option value="1100"> Denied (⊥, F)</option>',
-                            '<option value="(no value)"> (no value) </option>',
-                            '</select>',
-                        '</div>',
-                    '</div>',
+                    // '<div id="all-user-constraints">',
+                    //     '<div id="new-user-constraints">',
+                    //         '<select class="user-function-type user-defined-select">',
+                    //             '<option value=C> Constant </option>',
+                    //             '<option value=R> Stochastic </option>',
+                    //             '<option value=I> Increase </option>',
+                    //             '<option value=D> Decrease </option>',
+                    //         '</select>',
+                    //         '<select class="user-sat-value user-defined-select">',
+                    //         '<option value="0000" selected> None (⊥, ⊥)</option>',
+                    //         '<option value="0011"> Satisfied (F, ⊥)</option>',
+                    //         '<option value="0010"> Partially Satisfied (P, ⊥) </option>',
+                    //         '<option value="0100"> Partially Denied (⊥, P)</option>',
+                    //         '<option value="1100"> Denied (⊥, F)</option>',
+                    //         '<option value="(no value)"> (no value) </option>',
+                    //         '</select>',
+                    //     '</div>',
+                    // '</div>',
                     '<br>',
                     // Error message is controlled dynamically
                     '<label id="repeat-error"></label>',
@@ -664,8 +664,10 @@ var ElementInspector = Backbone.View.extend({
      * satisfaction value(s)
      */
     updateChart: function() {
-
-        if (this.intention.get('evolvingFunction') != null ) {
+        /**
+        console.log(this.intention.get('evolvingFunction'));
+        // && this.intention.get('evolvingFunction').get('type') != 'NT'
+        if (this.intention.get('evolvingFunction') != null) {
             var funcType = this.intention.get('evolvingFunction').get('type');
             var initVal = satisfactionValuesDict[this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair')].chartVal;
             var satVal = satisfactionValuesDict[this.$('#markedValue').val()].chartVal;
@@ -716,6 +718,7 @@ var ElementInspector = Backbone.View.extend({
             }
             this.chart.display(context);         
         }
+        */
     },
 
     getUDChartLabel: function(num) {
@@ -795,22 +798,23 @@ var ElementInspector = Backbone.View.extend({
         var html = this.userConstraintsHTML.clone();
         // TODO: Fix so there is startTime input
         this.intention.addUserDefinedSeg("C", "0000", 0);
+        this.renderFunctionSegments();
 
-        $(".user-sat-value").last().prop('disabled', true);
-        $(".user-sat-value").last().css("background-color",'grey');
-        $(".user-function-type").last().prop('disabled', true);
-        $(".user-function-type").last().css("background-color", 'grey');
+        // $(".user-sat-value").last().prop('disabled', true);
+        // $(".user-sat-value").last().css("background-color",'grey');
+        // $(".user-function-type").last().prop('disabled', true);
+        // $(".user-function-type").last().css("background-color", 'grey');
 
         // If the initial value is (no value), limit the function options
         // to be either Constant or Stochastic
-        if (this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair') == '(no value)') {
-            var selectEl = html.children(":first");
-            selectEl.find('option').remove();
-            selectEl.append('<option value=C> Constant </option>');
-            selectEl.append('<option value=R> Stochastic</option>');
-        }
-
-        html.appendTo(this.$('#all-user-constraints'));
+        // if (this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair') == '(no value)') {
+        //     var selectEl = html.children(":first");
+        //     selectEl.find('option').remove();
+        //     selectEl.append('<option value=C> Constant </option>');
+        //     selectEl.append('<option value=R> Stochastic</option>');
+        // }
+        // TODO: what odes this do??
+        // html.appendTo(this.$('#all-user-constraints'));
 
 
         if (this.repeatOptionsDisplay) {
@@ -1098,6 +1102,14 @@ var FuncSegView = Backbone.View.extend({
         this.hasUD = options.hasUD;
         // is there a different way to access the index of the FunctionSegmentBBM?
         this.index = options.index;
+        this.satValueDict = {
+            "satisfied": "0011",
+            "partiallysatisfied": "0010",
+            "partiallydenied": "0100",
+            "denied": "1100",
+            "none": "0000",
+            "(no value)": "(no value)"
+        };
     },
 
     template: ['<script type="text/template" id="item-template">',
@@ -1115,7 +1127,6 @@ var FuncSegView = Backbone.View.extend({
                     '<option value=partiallysatisfied <% if (refEvidencePair === "0010") { %> selected <%} %>> Partially Satisfied (P, ⊥) </option>',
                     '<option value=partiallydenied <% if (refEvidencePair === "0100") { %> selected <%} %>> Partially Denied (⊥, P)</option>',
                     '<option value=denied <% if (refEvidencePair === "1100") { %> selected <%} %>> Denied (⊥, F)</option>',
-                    '<option value="(no value)" <% if (refEvidencePair === "(no value)") { %> selected <%} %>> (no value) </option>',
                 '</select>',
                     '<output id = "stopTP-out" class = "seg-class" style="float:right"> end </output>',
                 '</div>',
@@ -1123,6 +1134,7 @@ var FuncSegView = Backbone.View.extend({
 
     events: {
         'change #seg-sat-value':'checkFuncSatValue',
+        'change #seg-function-type' : 'checkFuncValue', 
     },
 
     render: function() {
@@ -1136,15 +1148,17 @@ var FuncSegView = Backbone.View.extend({
             this.$('#seg-time').val(0);
             this.$('#seg-time').prop('disabled', true);
         }
-
-        // Disable the function satisfaction dropdown for constant and stochastic functions
-        if (this.model.get('type') == 'C' || this.model.get('type') == 'R') {
-            this.$('#seg-sat-value').prop('disabled', 'disabled');
-        }
+        this.checkFuncValue();
+        // // Disable the function satisfaction dropdown for constant and stochastic functions
+        // if (this.model.get('type') == 'C' || this.model.get('type') == 'R') {
+        //     this.$('#seg-sat-value').prop('disabled', 'disabled');
+        // }
 
         // For all function types except for UD disable the ability to select the function 
         this.$('#seg-function-type').prop('disabled', 'disabled');
         if (this.hasUD === true) {
+            this.checkFuncValue();
+            this.checkFuncSatValue();
             this.$('#seg-function-type').prop('disabled', '');
         }
 
@@ -1155,14 +1169,21 @@ var FuncSegView = Backbone.View.extend({
         return this;
     },
 
-    checkFuncSatValue: function() {
-        console.log(this.model.get('refEvidencePair'));
-        console.log(this.$('#seg-sat-value'));
-        console.log(this.$('#seg-sat-value').val());
-        this.model.set('refEvidencePair', this.$('#seg-sat-value').val()) // 4 digit representation
-        console.log(this.model.get('refEvidencePair'));
+    checkFuncSatValue: function () {
+        this.model.set('refEvidencePair', this.satValueDict[this.$('#seg-sat-value').val()]) // 4 digit representation
         // TODO: make it so the chart updates too 
         // this.updateChart();  
     },
+
+    checkFuncValue: function () {
+        this.model.set('type', this.$('#seg-function-type').val());
+        // Disable the function satisfaction dropdown for constant and stochastic functions
+        if (this.model.get('type') == 'C' || this.model.get('type') == 'R') {
+            this.$('#seg-sat-value').prop('disabled', 'disabled');
+        }
+        else {
+            this.$('#seg-sat-value').prop('disabled', '');
+        }
+    }
 });
 
