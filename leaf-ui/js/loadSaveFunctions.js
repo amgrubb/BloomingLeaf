@@ -18,7 +18,7 @@ loader.onchange = function() {
 reader.onload = function() {
 
 	// If JSON is not recognized as a BloomingLeaf model, just return
-	if (!reader.result || mode != 'Modelling') {
+	if (!reader.result) {
 		return;
 	}
 
@@ -46,7 +46,7 @@ function loadFromObject(obj) {
 
 	// store deep copy of model for detecting model changes
 	// copy is NOT of type Model
-    previousModel = JSON.parse(JSON.stringify(model));
+    var previousModel = JSON.parse(JSON.stringify(model));
 
 	// Clear any previous analysis data 
 	if (analysisMap.size != 0) {

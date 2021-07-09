@@ -298,7 +298,7 @@ function alertSyntaxError(title, message) {
 
         }, function(dismiss) {
             if (dismiss === 'cancel') {
-                $("#model-cur-btn").trigger("click");
+                $("#modeling-btn").trigger("click");
             }
     });
 }
