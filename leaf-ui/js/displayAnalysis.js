@@ -3,7 +3,7 @@
  * that the web application would receive from the back end.
  * It also contains functions for the analysis configuration sidebar
  */
-
+// TODO: Update these functions to take in a ResultBBM instead of an AnalysisResult
 {
 
 let sliderObject = new SliderObj();
