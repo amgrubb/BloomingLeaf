@@ -109,6 +109,9 @@ var ElementInspector = Backbone.View.extend({
                     '<option value=DS class="B"> Denied Satisfied </option>',
                     '<option value=UD class="B"> User Defined </option>',
                 '</select>',
+                //'<label style="font-size:0.8em" class="text-label hidden">absTime</label>', 
+                '<label style="font-size:0.8em" class="text-label">absTime</label>', 
+                //<%if 
                 '<div id = segment-functions>',
                 '</div>',
                 // '<select id="markedValue" class="function-sat-value">',
@@ -187,7 +190,6 @@ var ElementInspector = Backbone.View.extend({
     render: function() {
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()))
         
-        console.log(satValueDict);
         // Attributes
         this.chart = new ChartObj();
 
@@ -1000,6 +1002,7 @@ var ElementInspector = Backbone.View.extend({
             var funcSegList = this.intention.getFuncSegments();
             console.log(funcSegList);
             var i = 0;
+            // $('#segment-functions').append('<output class= text-label>absTime</output>'),
             funcSegList.forEach(
                 funcSeg => {
                     console.log(funcSeg.get('refEvidencePair'));
@@ -1012,6 +1015,9 @@ var ElementInspector = Backbone.View.extend({
     },
 
     rerender: function() {
+        if(this.intention.getFuncSegments().length != 0) {
+            $(".text-label").css("visibility", "visible");
+        }
         this.renderFunctionSegments();
         return this;
     },
@@ -1043,14 +1049,14 @@ var FuncSegView = Backbone.View.extend({
     template: ['<script type="text/template" id="item-template">',
                 '<div id=“segment-views”>',
                 '<input id="seg-time" class = "seg-class"> </input>',
-                '<output id = "startTP-out" class = "seg-class" > <%= startTP %> </output>',
-                '<select id=“seg-function-type" class = "seg-class" style="width: 80px">',    
+                '<output id = "startTP-out" class = "seg-class" style="float:left width:15px"> <%= startTP %> </output>',
+                '<select id=“seg-function-type" class = "seg-class" style="width: 94px">',    
                     '<option value="C" <% if (type === "C") { %> selected <%} %>> Constant </option>',
                     '<option value="R" <% if (type === "R") { %> selected <%} %>> Stochastic </option>',
                     '<option value="I" <% if (type === "I") { %> selected <%} %>> Increase </option>',
                     '<option value="D" <% if (type === "D") { %> selected <%} %>> Decrease </option>',
                 '</select>',
-                '<select id=“seg-sat-value” class = "seg-class" style="width: 83px">',
+                '<select id=“seg-sat-value” class = "seg-class" style="width: 96px">',
                     '<option value=none <% if (refEvidencePair === "0000") { %> selected <%} %>> None (⊥, ⊥) </option>',
                     '<option value=satisfied <% if (refEvidencePair === "0011") { %> selected <%} %>> Satisfied (F, ⊥) </option>',
                     '<option value=partiallysatisfied <% if (refEvidencePair === "0010") { %> selected <%} %>> Partially Satisfied (P, ⊥) </option>',
@@ -1058,9 +1064,8 @@ var FuncSegView = Backbone.View.extend({
                     '<option value=denied <% if (refEvidencePair === "1100") { %> selected <%} %>> Denied (⊥, F)</option>',
                     '<option value="(no value)" <% if (refEvidencePair === "(no value)") { %> selected <%} %>> (no value) </option>',
                 '</select>',
-                    '<output id = "stopTP-out" class = "seg-class"> end </output>',
+                    '<output id = "stopTP-out" class = "seg-class" style="float:right"> end </output>',
                 '</div>',
-                '<br>',
                 '</script>'].join(''),
 
     events: {

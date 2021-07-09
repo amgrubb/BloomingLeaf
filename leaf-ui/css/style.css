@@ -264,8 +264,14 @@ body.waiting *
   margin-bottom: 28px;
 }
 
-#function-div, #intension-div, #link-div, #query-div,#valuesDiv{
+#intension-div, #link-div, #query-div,#valuesDiv{
   width: 215px;
+  text-align: center;
+  margin: auto;
+}
+
+#function-div {
+  width: 250px;
   text-align: center;
   margin: auto;
 }
@@ -293,9 +299,19 @@ body.waiting *
   font-size: 0.7em;
   font-weight: 200;
   display: inline-block;
-  border: 5;
+  border: 4px;
   border-color: #333;
   border-style: solid;
+}
+
+.text-label{
+  visibility:hidden;
+  vertical-align: top;
+  text-align:left;
+}
+
+.hidden{
+  visibility:hidden;
 }
 
 #seg-time {
