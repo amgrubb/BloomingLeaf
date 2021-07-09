@@ -1029,16 +1029,15 @@ var FuncSegView = Backbone.View.extend({
     },
 
     template: ['<script type="text/template" id="item-template">',
-                '<div id=“segment-views”>',
                 '<input id="seg-time" class = "seg-class"> </input>',
                 '<output id = "startTP-out" class = "seg-class" > <%= startTP %> </output>',
-                '<select id=“seg-function-type" class = "seg-class" style="width: 80px">',    
+                '<select id="seg-function-type" class = "seg-class" style="width: 80px">',    
                     '<option value="C" <% if (type === "C") { %> selected <%} %>> Constant </option>',
                     '<option value="R" <% if (type === "R") { %> selected <%} %>> Stochastic </option>',
                     '<option value="I" <% if (type === "I") { %> selected <%} %>> Increase </option>',
                     '<option value="D" <% if (type === "D") { %> selected <%} %>> Decrease </option>',
                 '</select>',
-                '<select id=“seg-sat-value” class = "seg-class" style="width: 83px">',
+                '<select id="seg-sat-value" class = "seg-class" style="width: 83px">',
                     '<option value=none <% if (refEvidencePair === "0000") { %> selected <%} %>> None (⊥, ⊥) </option>',
                     '<option value=satisfied <% if (refEvidencePair === "0011") { %> selected <%} %>> Satisfied (F, ⊥) </option>',
                     '<option value=partiallysatisfied <% if (refEvidencePair === "0010") { %> selected <%} %>> Partially Satisfied (P, ⊥) </option>',
@@ -1047,7 +1046,6 @@ var FuncSegView = Backbone.View.extend({
                     '<option value="(no value)" <% if (refEvidencePair === "(no value)") { %> selected <%} %>> (no value) </option>',
                 '</select>',
                     '<output id = "stopTP-out" class = "seg-class"> end </output>',
-                '</div>',
                 '<br>',
                 '</script>'].join(''),
 
@@ -1058,15 +1056,14 @@ var FuncSegView = Backbone.View.extend({
     render: function() {
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
         console.log(this.model.get('refEvidencePair'));
-        // <% if (hasUD === false) { %> disabled <%} %>
-        this.$('#seg-function-type').prop('disabled', true);
-        this.$('#seg-sat-value').prop('disabled', true);
+        this.$('#seg-function-type').prop('disabled', 'disabled');
+        this.$('#seg-sat-value').prop('disabled', 'disabled');
         console.log(this.$('#seg-sat-value'));
         console.log(this.$('#seg-sat-value').prop('disabled'));
         console.log(this.hasUD);
         if (this.hasUD === true) {
-            this.$('#seg-function-type').prop('disabled', false);
-            this.$('#seg-sat-value').prop('disabled', false);
+            this.$('#seg-function-type').prop('disabled', '');
+            this.$('#seg-sat-value').prop('disabled', '');
         }
         // Have to manually add stopTP to html because it is not in the FunctionSegmentBBM
         this.$('#stopTP-out').val(this.stopTP);
