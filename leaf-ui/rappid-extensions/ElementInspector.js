@@ -351,12 +351,12 @@ var ElementInspector = Backbone.View.extend({
         
         // Iterates over funcSegments
         funcSegments.forEach(
-            element => {
+            functionSegment => {
             // set the initial values 
-            $(".user-sat-value").last().val(element.get('refEvidencePair'));
-            $(".user-function-type").last().val(element.get('type'));    
+            $(".user-sat-value").last().val(functionSegment.get('refEvidencePair'));
+            $(".user-function-type").last().val(functionSegment.get('type'));    
 
-            if (element !== funcSegments[len - 1]) {
+            if (functionSegment !== funcSegments[len - 1]) {
                 // if it is not the last function segment, clone the select tags,
                 // and grey out the current select tags
                 var html = this.userConstraintsHTML.clone();
