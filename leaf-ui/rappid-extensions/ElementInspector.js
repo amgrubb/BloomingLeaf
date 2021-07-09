@@ -987,12 +987,14 @@ var ElementInspector = Backbone.View.extend({
             console.log(hasUD);
             var funcSegList = this.intention.getFuncSegments();
             console.log(funcSegList);
+            var i = 0;
             funcSegList.forEach(
                 funcSeg => {
                     console.log(funcSeg.get('refEvidencePair'));
-                var functionSegView = new FuncSegView({model: funcSeg, intention: this.model, hasUD: hasUD});
-                $('#segment-functions').append(functionSegView.el);
-                functionSegView.render();  
+                    var functionSegView = new FuncSegView({model: funcSeg, intention: this.model, hasUD: hasUD, index: i});
+                    $('#segment-functions').append(functionSegView.el);
+                    functionSegView.render(); 
+                    i++; 
             })
         }
     },
@@ -1022,6 +1024,8 @@ var FuncSegView = Backbone.View.extend({
         }
         // Boolean if the function segment is a part of a UD function
         this.hasUD = options.hasUD;
+        // is there a different way to access the index of the FunctionSegmentBBM?
+        this.index = options.index;
     },
 
     template: ['<script type="text/template" id="item-template">',
@@ -1048,6 +1052,7 @@ var FuncSegView = Backbone.View.extend({
                 '</script>'].join(''),
 
     events: {
+        'change .seg-sat-value':'checkFuncSatValue',
     },
 
     render: function() {
@@ -1056,7 +1061,8 @@ var FuncSegView = Backbone.View.extend({
         // <% if (hasUD === false) { %> disabled <%} %>
         this.$('#seg-function-type').prop('disabled', true);
         this.$('#seg-sat-value').prop('disabled', true);
-        console.log(this.$('#seg-sat-value').prop('disabled'))
+        console.log(this.$('#seg-sat-value'));
+        console.log(this.$('#seg-sat-value').prop('disabled'));
         console.log(this.hasUD);
         if (this.hasUD === true) {
             this.$('#seg-function-type').prop('disabled', false);
@@ -1066,6 +1072,14 @@ var FuncSegView = Backbone.View.extend({
         this.$('#stopTP-out').val(this.stopTP);
         console.log(this.$('#seg-function-type').val(this.functionType))
         return this;
+    },
+
+    checkFuncSatValue: function() {
+        console.log(this.model.get('refEvidencePair'));
+        this.model.set('refEvidencePair', satValueDict[this.$('#seg-sat-value').val()]) // 4 digit representation
+        console.log(this.model.get('refEvidencePair'));
+        // TODO: make it so the chart updates too 
+        // this.updateChart();  
     },
 });
 
