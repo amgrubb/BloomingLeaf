@@ -135,9 +135,6 @@ $('#btn-view-intermediate').on('click', function() {
 	intermediateValuesTable.render();
 });
 
-$('#simulate-single-path-btn').on('click', function() { backendComm(); }); 
-$('#next-state-btn').on('click', function() { getAllNextStates(); }); 
-
 /**
  * Switches to Analysis view iff there are no cycles and no syntax errors.
  */
@@ -424,10 +421,16 @@ paper.on("link:options", function(cell){
 
 /*** Helper functions ***/
 
-{
+{ // Beginning scope of configCollection and configInspector
 /** Initialize configCollection within scope of brackets */
 let configCollection = new ConfigCollection([]);
 let configInspector = new ConfigInspector({collection:configCollection});
+
+$('#simulate-single-path-btn').on('click', function() { 
+    backendComm(configCollection.findWhere({selected: true}));
+}); 
+$('#next-state-btn').on('click', function() { getAllNextStates(); }); 
+
 
 /**
  * Helper function for switching to Analysis view.

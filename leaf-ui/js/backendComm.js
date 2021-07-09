@@ -80,17 +80,21 @@ var url = "http://localhost:8080/untitled.html";	// Hardcoded URL for Node calls
 }
 
 
-function backendComm(){	
-	console.log("Step 3 - BackendComm");
-	console.log(graph.toJSON());
-	console.log(JSON.stringify(graph));
+function backendComm(analysisRequest){
+	var jsObject = {};
+	jsObject.analysisRequest = analysisRequest;
+	jsObject.graph = graph;
+
+	
 
    var xhr = new XMLHttpRequest();
    var isGetNextSteps ;
    xhr.open("POST", url, true);
    xhr.setRequestHeader("Content-Type", "application/json");
 
-   var data = JSON.stringify(graph);
+   //var data = analysisRequestString + JSON.stringify(graph);
+   var data = JSON.stringify(jsObject);
+   console.log(data)
    xhr.onreadystatechange = function() {	
 		// This function get called when the response is received.
 		console.log("Reading the response");
