@@ -36,6 +36,7 @@ var ResultView = Backbone.View.extend({
      * 
      * Then, call displayAnalysis to display result in graph
      */
+    // TODO: Update this function to pass the ResultBBM into displayAnalysis
     switchResult : function(){
         this.model.set('selected',true);
         this.model.trigger('change:switchResults', this.model);
