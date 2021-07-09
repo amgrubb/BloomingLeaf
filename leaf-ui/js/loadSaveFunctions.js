@@ -25,17 +25,7 @@ reader.onload = function() {
 	var result = JSON.parse(reader.result);
 	console.log(result);
 	loadFromObject(result);
-    var graphtext = JSON.stringify(graph.toJSON(), function(key, value) {
-		if(key == 'models') {
-			//console.log(value)
-		  return value[0].attributes;
-		} else if (key == '_byId'){
-			return undefined
-		} else{
-			//console.log(key+ " " + value)
-		  return value;
-		}
-	  });
+    var graphtext = JSON.stringify(graph.toJSON())
     document.cookie = "graph=" + graphtext;
 }
 
@@ -63,9 +53,8 @@ function loadFromObject(obj) {
 			//console.log("L")
 
 		}else{
-			var userEval = obj.cells[i].intention.attributes.userEvaluationList.models;
-			//console.log(userEval)
-			createBBElement(cell, userEval)
+			var funcseg = obj.cells[i].intention.attributes.evolvingFunction.attributes.functionSegList;
+			createBBElement(cell, funcseg)
 			//console.log("I")
 		}
 	}
@@ -211,17 +200,21 @@ function createBBLink(cell){
 	cell.set('link', linkbbm)
 }
 
-function createBBElement(cell, userEval){
+function createBBElement(cell, funcsegs){
 	//console.log(cell)
 	var intention = cell.get('intention');
-	console.log(intention)
-	var evol = intention.attributes.evolvingFunction;
+	//console.log(intention)
+	var evol = intention.attributes.evolvingFunction.attributes;
 	//console.log(evol)
 	var intentionbbm = new IntentionBBM({nodeName: intention.nodeName, nodeType: intention.nodeType});
 	//console.log(intention)
-	var evolving = new EvolvingFunctionBBM({type: evol.type, functionSegList: evol.functionSegList, hasRepeat: evol.hasRepeat, repStart: evol.repStart, repStop: evol.repStop, repCount: evol.repCount, repAbsTime: evol.repAbsTime});
-	//console.log(evolving)
-	console.log(userEval)
+	var evolving = new EvolvingFunctionBBM({type: evol.type, hasRepeat: evol.hasRepeat, repStart: evol.repStart, repStop: evol.repStop, repCount: evol.repCount, repAbsTime: evol.repAbsTime});
+	for (let funcseg of funcsegs){
+		var funcsecbbm = new FunctionSegmentBBM({type: funcseg.attributes.type, refEvidencePair: funcseg.attributes.refEvidencePair, startTP: funcseg.attributes.startTP, startAT: funcseg.attributes.startAT})
+		evolving.get('functionSegList').push(funcsecbbm)
+	}
+	console.log(evolving.get('functionSegList'))
+	var userEval = intention.attributes.userEvaluationList[0].attributes;
 	intentionbbm.get('userEvaluationList').push(new UserEvaluationBBM({assignedEvidencePair: userEval.assignedEvidencePair, absTime: userEval.absTime}))
 	intentionbbm.set('evolvingFunction', evolving)
 
@@ -229,30 +222,6 @@ function createBBElement(cell, userEval){
 	//console.log(cell)
 }
 
-
-/**
- * Returns an object that contains the current graph, model, and analysis request.
- * This return object is what the user would download when clicking the Save button
- * in the top menu bar.
- *
- * @returns {Object}
- */
-function getModelJson() {
-	var obj = graph.toJSON();
-	//TODO: Make it so that the download takes the entire userevaluationlist instead of the last one
-	obj = JSON.stringify(obj, function(key, value) {
-		if(key == 'models') {
-			//console.log(value)
-		  return value[0].attributes;
-		} else if (key == '_byId'){
-			return undefined
-		} else{
-			//console.log(key+ " " + value)
-		  return value;
-		}
-	  })
-	return obj;
-}
 
 /**
  * Returns an object that contains the current graph, model, and analysis configurations

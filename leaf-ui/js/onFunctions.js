@@ -76,8 +76,7 @@ $('#btn-save').on('click', function() {
        // EVO.returnAllColors(graph.getElements(), paper);
        // EVO.revertIntentionsText(graph.getElements(), paper);    
 		var fileName = name + ".json";
-		var obj = getModelJson();
-        download(fileName, obj);
+        download(fileName, JSON.stringify(graph));
         //IntentionColoring.refresh();
 	}
 });
