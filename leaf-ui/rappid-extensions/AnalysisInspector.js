@@ -12,7 +12,7 @@ var AnalysisInspector = Backbone.View.extend({
 	
 	template: ['<script type="text/template" id="item-template">',
 		'<div class="inspector-views">',
-		'<div id="container-sidebar">', 
+		'<div class="container-sidebar">', 
 		'<div id="analysis-sidebar">',
 		'<h5 style="text-align:center; color:#181b1fe3; margin-left: 10px;">Analysis Parameters</h5>',
 		'<p style="text-align:center; margin-top: -20px;";><label class = "sub-label">Conflict Prevention Level</label>', 

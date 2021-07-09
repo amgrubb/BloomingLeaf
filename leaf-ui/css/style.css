@@ -30,7 +30,7 @@ body.waiting *
   color: red;
 }
 #name {
-  position: absolute;
+  position: fixed;
   top: 0px;
   left: 0px;
   right: 0px;
@@ -38,11 +38,12 @@ body.waiting *
   height: 40px;
   text-align: center;
   margin: 0;
-  padding-top: 8px;
+  /* padding-top: 8px; */
   background-color: #333;
   color: #CCFFCC;
   font-size: 1.4em;
   font-style: italic;
+  z-index: 2;
 }
 
 .dropdown {
@@ -107,9 +108,7 @@ body.waiting *
   top: 40px;
   bottom: 0;
   width: 200px;
-
   background-color: #f9f9f9;
-  box-shadow: 2px 0px 16px 0px rgba(0,0,0,0.2);
   z-index: 1;
 }
 
@@ -180,11 +179,13 @@ body.waiting *
   display: block;
 }
 
-/* The left-side bar for analysisInspector and configInspector */
-#container-sidebar { 
+/* The left panel */
+.container-sidebar { 
   left: auto; 
   width: 200px; 
-  margin-top: 60px; 
+  margin-top: 40px;
+  padding: 1px; 
+  background-color: #f9f9f9;
 }
 
 #config-sidebar { 
@@ -196,7 +197,7 @@ body.waiting *
 }
 
 #analysis-sidebar { 
-  margin-top: 0px; 
+  margin-top: -5px; 
 }
 
 #analysis-sidebar a{
@@ -472,7 +473,7 @@ select > .select-placeholder {
 
 /* Toolbar */
 .toolbar-div{
-   position: absolute;
+   position: fixed;
    top: 0px;
    left: 201px;
    right: 0;
