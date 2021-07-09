@@ -187,7 +187,6 @@ var ElementInspector = Backbone.View.extend({
     render: function() {
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()))
         
-        console.log(satValueDict);
         // Attributes
         this.chart = new ChartObj();
 
@@ -1026,7 +1025,6 @@ var FuncSegView = Backbone.View.extend({
     initialize: function(options){ 
         // do we need to pass in this reference to the parent??
         this.intention = options.intention;
-        this.functionType = options.functionType;
         // Sets the stopTP to be one step after the startTP
         if (this.model.get('startTP') != '0') {
             this.stopTP = String.fromCharCode(this.model.get('startTP').charCodeAt(0) + 1);
@@ -1067,25 +1065,35 @@ var FuncSegView = Backbone.View.extend({
 
     render: function() {
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
-        console.log(this.model.get('refEvidencePair'));
+
+        // TODO: implement the User Defined function Segments
+
+        // TODO: also diable it if it is part of a repeating segment
+        // Disable the absTime parameter and set it to zero if its the first function segment
+        if (this.index == 0) {
+            this.$('#seg-time').val(0);
+            this.$('#seg-time').prop('disabled', true);
+        }
+
+        // Disable the function satisfaction dropdown for constant and stochastic functions
+        if (this.model.get('type') == 'C' || this.model.get('type') == 'R') {
+            this.$('#seg-sat-value').prop('disabled', 'disabled');
+        }
+
+        // For all function types except for UD disable the ability to select the function 
         this.$('#seg-function-type').prop('disabled', 'disabled');
-        this.$('#seg-sat-value').prop('disabled', 'disabled');
-        console.log(this.$('#seg-sat-value'));
-        console.log(this.$('#seg-sat-value').prop('disabled'));
-        console.log(this.hasUD);
         if (this.hasUD === true) {
             this.$('#seg-function-type').prop('disabled', '');
-            this.$('#seg-sat-value').prop('disabled', '');
         }
+
         // Have to manually add stopTP to html because it is not in the FunctionSegmentBBM
         this.$('#stopTP-out').val(this.stopTP);
-        console.log(this.$('#seg-function-type').val(this.functionType))
         return this;
     },
 
     checkFuncSatValue: function() {
         console.log(this.model.get('refEvidencePair'));
-        this.model.set('refEvidencePair', satValueDict[this.$('#seg-sat-value').val()]) // 4 digit representation
+        this.model.set('refEvidencePair', [this.$('#seg-sat-value')]) // 4 digit representation
         console.log(this.model.get('refEvidencePair'));
         // TODO: make it so the chart updates too 
         // this.updateChart();  
