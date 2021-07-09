@@ -103,7 +103,7 @@ var IntermediateValuesTable = Backbone.View.extend({
         var allTimes = absTimeValues.concat(constraintTimes).concat(linkTimes).concat(intentionTimes);
         var absoluteTimePointsList = Array.from(new Set(allTimes));
         absoluteTimePointsList.sort(function(a,b) {return a-b})
-        return absoluteTimePointsList.filter(TP => TP != 0);
+        return absoluteTimePointsList.filter(TP => TP != 0 && TP != -1);
     }
 });
 
@@ -286,7 +286,7 @@ var SelectUserEvaluationView = Backbone.View.extend({
         this.optionsList = options.optionsList;
         // Returns first user evaluation with absTP matching absTimePt
         // If none exist, it returns undefined
-        this.userEval = this.intention.get('userEvaluationList').findWhere({'absTime' : this.absTimePt});   
+        this.userEval = this.intention.getUserEvaluationBBM(this.absTimePt);   
     },
 
     // TODO: Add check for if optionsList only contains 1 value
