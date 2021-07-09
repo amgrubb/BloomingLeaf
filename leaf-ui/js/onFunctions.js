@@ -267,16 +267,17 @@ graph.on('change:size', function(cell, size) {
 
 
 graph.on('remove', function(cell) {
+    // Clear right inspector side panel
+    clearInspector();
+
     if(cell.isLink() && !(cell.prop("link-type") == 'NBT' || cell.prop("link-type") == 'NBD')){
         // To remove link
         var link = cell;
-        clearInspector();
         model.removeLink(link.linkID);
     }
 
     else if((!cell.isLink()) && (!(cell["attributes"]["type"]=="basic.Actor"))){
         // To remove intentions
-        clearInspector();
         var userIntention = model.getIntentionByID(cell.attributes.nodeID);
         // remove this intention from the model
         model.removedynamicFunction(userIntention.nodeID);
@@ -337,8 +338,6 @@ paper.on('blank:pointerdown', function(evt, x, y) {
  * Specifies behavior for clicking on cells and moving intentions/links
  */
 paper.on({
-    // Note: cellView must remain in pointerdown and pointerup functions 
-    // In order for 
     'cell:pointerdown': function(evt) {
         // pass data to pointermove and pointerup
         evt.data = {move: false};
