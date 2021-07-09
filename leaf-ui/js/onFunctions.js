@@ -34,7 +34,7 @@ $('#btn-view-intermediate').on('click', function() {
 $('#simulate-single-path-btn').on('click', function() { 
 }); 
 
-//TODO: impelement step 1 of next state button 
+//TODO: implement step 1 of next state button 
 $('#next-state-btn').on('click', function() { 
 }); 
 
@@ -238,9 +238,9 @@ function switchToModellingMode() {
     $('.analysis-clears').css("display", "none");
     
     // Appear 
-    $('#stencil').css("display","");
-    $('#btn-view-assignment').css("display","");
     $('#btn-view-intermediate').css("display","");
+    $('#btn-view-assignment').css("display","");
+    $('#stencil').css("display","");
     $('#analysis-btn').css("display","");
 	$('#symbolic-btn').css("display","");
 	$('#cycledetect-btn').css("display","");
