@@ -1067,7 +1067,7 @@ var FuncSegView = Backbone.View.extend({
                 '</script>'].join(''),
 
     events: {
-        'change .seg-sat-value':'checkFuncSatValue',
+        'change #seg-sat-value':'checkFuncSatValue',
     },
 
     render: function() {
@@ -1095,12 +1095,16 @@ var FuncSegView = Backbone.View.extend({
 
         // Have to manually add stopTP to html because it is not in the FunctionSegmentBBM
         this.$('#stopTP-out').val(this.stopTP);
+
+        console.log(this.model.get('refEvidencePair'));
         return this;
     },
 
     checkFuncSatValue: function() {
         console.log(this.model.get('refEvidencePair'));
-        this.model.set('refEvidencePair', [this.$('#seg-sat-value')]) // 4 digit representation
+        console.log(this.$('#seg-sat-value'));
+        console.log(this.$('#seg-sat-value').val());
+        this.model.set('refEvidencePair', this.$('#seg-sat-value').val()) // 4 digit representation
         console.log(this.model.get('refEvidencePair'));
         // TODO: make it so the chart updates too 
         // this.updateChart();  
