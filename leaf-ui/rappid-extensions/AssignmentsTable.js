@@ -83,7 +83,7 @@ var AssignmentsTable = Backbone.View.extend({
      * Loads in any previously stored relative intentions
      * And displays options for absolute intentions and relationships
      */
-    render: function(){
+    render: function () {
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
         this.loadRelativeIntentions();
         this.displayAbsoluteIntentionAssignments();
@@ -94,7 +94,7 @@ var AssignmentsTable = Backbone.View.extend({
     /**
      * Sets Max Absolute Time
      */
-    updateMaxAbsTime: function(){
+    updateMaxAbsTime: function () {
         var maxTimeElement = $('#max-abs-time');
         if (maxTimeElement.val() !== "") {
             this.model.set('maxAbsTime', maxTimeElement.val())
@@ -106,7 +106,7 @@ var AssignmentsTable = Backbone.View.extend({
     /** 
      * Sets Absolute time points
      */
-    updateAbsTimePts: function() {
+    updateAbsTimePts: function () {
         // TODO: We could split at spaces + commas with: /[ ,]+/) 
         // but would need to fix the regex.test var first
         var regex = new RegExp("^(([1-9]0*)+\\s+)*([1-9]+0*)*$");
@@ -123,9 +123,9 @@ var AssignmentsTable = Backbone.View.extend({
      * Creates and appends a new view with each constraint as a model
      */
     // TODO: Implement view to take in already selected constraint
-    loadRelativeIntentions: function(){
-        for (let constraint in this.model.get('constraints')){
-            var relIntentionRow = new RelativeIntentionView({model: constraint, new: false});
+    loadRelativeIntentions: function () {
+        for (let constraint in this.model.get('constraints')) {
+            var relIntentionRow = new RelativeIntentionView({ model: constraint, new: false });
             $('#rel-intention-assigments').append(relIntentionRow.el);
             relIntentionRow.render();
         }
@@ -135,31 +135,32 @@ var AssignmentsTable = Backbone.View.extend({
      * Adds new default relative intention to constraints list
      * And attatches representative view to the Assignments table
      */
-    addRelIntentionRow: function(){
+    addRelIntentionRow: function () {
         var newConstraint = new ConstraintBBM({});
         graph.get('constraints').push(newConstraint);
-        var relIntentionRow = new RelativeIntentionView({model: newConstraint, graph: this.model, new: true});
+        var relIntentionRow = new RelativeIntentionView({ model: newConstraint, graph: this.model, new: true });
         $('#rel-intention-assigments').append(relIntentionRow.el);
         relIntentionRow.render();
     },
-    
+
     /**
      * Creates and attaches a new IntentionRelationshipView 
      * For each function segment transition in the graph
      */
-    displayAbsoluteIntentionAssignments: function() {
+    displayAbsoluteIntentionAssignments: function () {
         this.model.getIntentions().forEach(intentionBbm => {
             var evolvingFunction = intentionBbm.get('evolvingFunction');
-            if(evolvingFunction != null){
+            if (evolvingFunction != null) {
                 var funcSegList = evolvingFunction.get('functionSegList');
-                if (funcSegList != undefined){
+                if (funcSegList != undefined) {
                     // TODO: Check with @amgrubb about how this is being sliced
-                    for (let funcSeg of funcSegList.slice(1)){
+                    for (let funcSeg of funcSegList.slice(1)) {
                         var intentionRelationshipView = new IntentionRelationshipView({
-                            model: funcSeg, funcType: intentionBbm.get('evolvingFunction').get('type'), 
-                            intentionName: intentionBbm.get('nodeName')});
+                            model: funcSeg, funcType: intentionBbm.get('evolvingFunction').get('type'),
+                            intentionName: intentionBbm.get('nodeName')
+                        });
                         $('#node-list').append(intentionRelationshipView.el);
-                        intentionRelationshipView.render();  
+                        intentionRelationshipView.render();
                     }
                 }
             }
@@ -170,10 +171,10 @@ var AssignmentsTable = Backbone.View.extend({
      * Creates and attaches a new LinkRelationshipView
      * For each evolving link
      */
-    displayAbsoluteRelationshipAssignments: function(){
+    displayAbsoluteRelationshipAssignments: function () {
         this.model.getLinks().forEach(linkCell => {
-            if(linkCell.isValidAbsoluteRelationship()){
-                var linkRelationshipView = new LinkRelationshipView({model: linkCell.get('link'), linkSrc: linkCell.getSourceElement().get('intention').get('nodeName'), linkDest: linkCell.getTargetElement().get('intention').get('nodeName')});
+            if (linkCell.isValidAbsoluteRelationship()) {
+                var linkRelationshipView = new LinkRelationshipView({ model: linkCell.get('link'), linkSrc: linkCell.getSourceElement().get('intention').get('nodeName'), linkDest: linkCell.getTargetElement().get('intention').get('nodeName') });
                 $('#link-list').append(linkRelationshipView.el);
                 linkRelationshipView.render()
             }
@@ -184,11 +185,12 @@ var AssignmentsTable = Backbone.View.extend({
      * Removes all empty constraints from constraints array on graph object
      * Before closing modal box
      */
-    closeView: function(){
+    closeView: function () {
         this.model.get('constraints').slice().forEach(constraint => {
-            if(!constraint.isComplete()){
-            constraint.destroy()
-        }});
+            if (!constraint.isComplete()) {
+                constraint.destroy()
+            }
+        });
         this.remove();
     },
 });
@@ -201,7 +203,7 @@ var RelativeIntentionView = Backbone.View.extend({
     model: ConstraintBBM,
     tagName: 'tr',
 
-    initialize: function(options){
+    initialize: function (options) {
         this.graph = options.graph;
         // If constraint is a new blank instance or a loaded constraint
         this.new = options.new;
@@ -211,8 +213,8 @@ var RelativeIntentionView = Backbone.View.extend({
     newConstraintTemplate: ['<script type="text/template" id="assignments-template">',
         '<td> <div class="epochLists"><select class="epoch1List"><option selected>...</option></select></div></td>',
         '<td> <div class="epochLists"><select id="relationshipLists">',
-            '<option selected>...</option>',
-            '<option value="eq">=</option><option value="lt"><</option></select></div></td>',
+        '<option selected>...</option>',
+        '<option value="eq">=</option><option value="lt"><</option></select></div></td>',
         '<td> <div class="epochLists"><select class="epoch2List"><option selected>...</option></select></div></td>',
         '<td><i class="fa fa-trash-o fa-2x" id="removeConstraint" aria-hidden="true"></i></td>',
         '</script>'
@@ -221,10 +223,10 @@ var RelativeIntentionView = Backbone.View.extend({
     loadedConstraintTemplate: [].join(''),
 
     events: {
-        'change .epoch1List' : 'changeEpoch1',
-        'change .epoch2List' : 'changeEpoch2',
-        'change #relationshipLists' : 'changeRelationship',
-        'click #removeConstraint' : 'removeConstraint',
+        'change .epoch1List': 'changeEpoch1',
+        'change .epoch2List': 'changeEpoch2',
+        'change #relationshipLists': 'changeRelationship',
+        'click #removeConstraint': 'removeConstraint',
 
     },
 
@@ -232,8 +234,8 @@ var RelativeIntentionView = Backbone.View.extend({
      * Renders the correct template into the html element 
      * Based on whether or not it is a new default constraint of a loaded constraint
      */
-    render: function(){
-        if (this.new){
+    render: function () {
+        if (this.new) {
             this.$el.html(_.template($(this.newConstraintTemplate).html())());
             this.loadOptions();
         } else {
@@ -246,11 +248,11 @@ var RelativeIntentionView = Backbone.View.extend({
     /**
      * Loads all function segment transitions into the options dropdown menu
      */
-    loadOptions: function(){
+    loadOptions: function () {
         this.graph.getElements().filter(element => element instanceof joint.shapes.basic.Intention).forEach(intentionCell => {
             intentionBBM = intentionCell.get('intention')
-            if (intentionBBM.get('evolvingFunction') != null){
-                for (let funcSegment of intentionBBM.getFuncSegments().slice(1)){
+            if (intentionBBM.get('evolvingFunction') != null) {
+                for (let funcSegment of intentionBBM.getFuncSegments().slice(1)) {
                     var optionTag = this.getOptionTag(intentionCell.get('id'), intentionBBM.get('nodeName'), funcSegment.get('startTP'));
                     this.$('.epoch1List').append(optionTag);
                     this.$('.epoch2List').append(optionTag);
@@ -263,7 +265,7 @@ var RelativeIntentionView = Backbone.View.extend({
      * Updates the constraint model's source id and reference time point 
      * To match the selected option
      */
-    changeEpoch1: function(){
+    changeEpoch1: function () {
         selectedOption = $('.epoch1List option:selected');;
         this.model.set('srcID', selectedOption.attr('class'));
         this.model.set('srcRefTP', selectedOption.attr('epoch'));
@@ -273,7 +275,7 @@ var RelativeIntentionView = Backbone.View.extend({
      * Updates the constraint model's destination id and reference time point 
      * To match the selected option
      */
-    changeEpoch2: function(){
+    changeEpoch2: function () {
         selectedOption = this.$('.epoch2List option:selected');
         this.model.set('destID', selectedOption.attr('class'));
         this.model.set('destRefTP', selectedOption.attr('epoch'));
@@ -283,7 +285,7 @@ var RelativeIntentionView = Backbone.View.extend({
      * Updates the constraint model's relationship type
      * To match the selected option
      */
-    changeRelationship: function(){
+    changeRelationship: function () {
         this.model.set('type', $('#relationshipLists option:selected').text());
     },
 
@@ -291,15 +293,15 @@ var RelativeIntentionView = Backbone.View.extend({
      * Deletes the model, removing it from the graph's constraints list 
      * And triggering a removal of the view
      */
-    removeConstraint: function(){
+    removeConstraint: function () {
         this.model.destroy();
     },
 
     /**
      * Helper function to create individual option dropdown elements
      */
-    getOptionTag(intentionId, nodeName, epoch){
-        return '<option class='+ intentionId +' epoch='+ epoch +'>' + nodeName + ': ' + epoch + '</option>';
+    getOptionTag(intentionId, nodeName, epoch) {
+        return '<option class=' + intentionId + ' epoch=' + epoch + '>' + nodeName + ': ' + epoch + '</option>';
     },
 });
 
@@ -311,7 +313,7 @@ var IntentionRelationshipView = Backbone.View.extend({
     model: FunctionSegmentBBM,
     tagName: 'tr',
 
-    initialize: function(options){
+    initialize: function (options) {
         this.funcType = options.funcType;
         this.intentionName = options.intentionName;
     },
@@ -326,11 +328,11 @@ var IntentionRelationshipView = Backbone.View.extend({
     ].join(''),
 
     events: {
-        'change .absFuncSegValue' : 'updateAbsFuncSegValue',
-        'click .unassign-abs-intent-btn' : 'unassignAbsIntention'
+        'change .absFuncSegValue': 'updateAbsFuncSegValue',
+        'click .unassign-abs-intent-btn': 'unassignAbsIntention'
     },
 
-    render: function(){
+    render: function () {
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
         this.$('.namestartTP').text(this.intentionName + " : " + this.model.get('startTP'));
         this.$('.func-type').text(this.funcType);
@@ -341,7 +343,7 @@ var IntentionRelationshipView = Backbone.View.extend({
      * Sets model startAT to the new time point 
      * After checking if it is a number
      */
-    updateAbsFuncSegValue: function(){
+    updateAbsFuncSegValue: function () {
         var newTime = parseInt(this.$('.absFuncSegValue').val());
         if (isNaN(newTime)) {
             return;
@@ -352,7 +354,7 @@ var IntentionRelationshipView = Backbone.View.extend({
     /**
      * Resets model start AT to -1, and resets UI input to be empty
      */
-    unassignAbsIntention: function(){
+    unassignAbsIntention: function () {
         this.$('.absFuncSegValue').val('');
         this.model.set('startAT', null);
         // Clear all previous UserEvaluations
@@ -370,9 +372,9 @@ var LinkRelationshipView = Backbone.View.extend({
     model: LinkBBM,
     tagName: 'tr',
 
-    initialize: function(options){
-        this.linkSrc= options.linkSrc,
-        this.linkDest= options.linkDest
+    initialize: function (options) {
+        this.linkSrc = options.linkSrc,
+            this.linkDest = options.linkDest
     },
 
     template: [
@@ -386,15 +388,15 @@ var LinkRelationshipView = Backbone.View.extend({
     ].join(''),
 
     events: {
-        'change .linkAbsRelation' : 'updateLinkAbsRelation',
-        'click .unassign-abs-rel-btn' : 'unassignAbsRelation'
+        'change .linkAbsRelation': 'updateLinkAbsRelation',
+        'click .unassign-abs-rel-btn': 'unassignAbsRelation'
     },
 
-    render: function(){
+    render: function () {
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
         // TODO: Write statement to handle this case in script
         // Or if absTime default changed to null just remove if statement
-        if(this.model.get('absTime') == -1){
+        if (this.model.get('absTime') == -1) {
             this.$('.linkAbsRelation').val('')
         }
         this.$('.link-source').text(this.linkSrc);
@@ -406,7 +408,7 @@ var LinkRelationshipView = Backbone.View.extend({
      * Sets model linkAbsTime to the new time point 
      * After checking if it is a number
      */
-    updateLinkAbsRelation: function(){
+    updateLinkAbsRelation: function () {
         var newTime = parseInt($('.linkAbsRelation').val());
         if (isNaN(newTime)) {
             return;
@@ -417,7 +419,7 @@ var LinkRelationshipView = Backbone.View.extend({
     /**
      * Resets model startAT to -1, and resets UI input to be empty
      */
-    unassignAbsRelation: function(){
+    unassignAbsRelation: function () {
         $('.linkAbsRelation').val('');
         this.model.set('absTime', -1);
     },
