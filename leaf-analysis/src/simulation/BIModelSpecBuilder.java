@@ -66,6 +66,8 @@ public class BIModelSpecBuilder {
 //			if (frontendModel.getAbsTimePtsArr().length > 0) {
 //				modelSpec.setAbsoluteTimePoints(frontendModel.getAbsTimePtsArr());
 //			}
+			int[] atp = {2,3,4};
+			modelSpec.setAbsoluteTimePoints(atp);
 //			if (DEBUG) System.out.println("Read Absolute Time Points");
 
 			if (DEBUG) System.out.println("TODO: handle constraints and absTimePtsArr");

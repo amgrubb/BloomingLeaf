@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import gson_classes.IMain;
 import interface_objects.FuncWrapper;
 import interface_objects.FuncWrapperDeserializer;
 import interface_objects.InputObject;
@@ -33,7 +34,7 @@ public class MainProgram {
 				
 		try {
 			// Creating the backend model to be analyzed
-			ModelSpec modelSpec = convertModelFromFile(filePath + inputFile);
+			ModelSpec modelSpec = convertBackboneModelFromFile(filePath + inputFile);
 			
 			// Creates the store and constraint problem to be solved.
 			TroposCSPAlgorithm solver = new TroposCSPAlgorithm(modelSpec);
@@ -104,6 +105,30 @@ public class MainProgram {
 		
 	}
 
+	/**
+	 * This method converts the model file sent by the front-end into the ModelSpec
+	 * @param filePath
+	 * Path to the file with the front-end model
+	 * @return
+	 * ModelSpec back-end model
+	 */
+	private static ModelSpec convertBackboneModelFromFile(String filePath) {
+		GsonBuilder builder = new GsonBuilder();
+		builder.registerTypeAdapter(FuncWrapper.class, new FuncWrapperDeserializer());
+
+		try {
+			Gson gson = builder.create();
+			IMain frontendObject = gson.fromJson(new FileReader(filePath), IMain.class);
+
+			ModelSpec modelSpec =  BIModelSpecBuilder.buildModelSpec(frontendObject);
+			System.out.println("Finished");
+			return modelSpec;
+			
+		} catch(Exception e) {
+			throw new RuntimeException("Error in convertModelFromFile() method: \n " + e.getMessage());
+		}
+	} 
+	
 	/**
 	 * This method converts the model file sent by the frontend into the ModelSpecPojo in order to be analysed
 	 * @param filePath
