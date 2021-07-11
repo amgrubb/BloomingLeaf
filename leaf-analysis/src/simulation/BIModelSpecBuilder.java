@@ -12,256 +12,178 @@ import gson_classes.*;
  *
  */
 public class BIModelSpecBuilder {
-    private final static boolean DEBUG = false;	
+    private final static boolean DEBUG = true;	
 
-	
-	public static ModelSpec buildModelSpec(IGraph inGraph){
-		//Backend Model
-		ModelSpec modelSpec = new ModelSpec();
-		
-		
-		//Frontend model and analysis information
-		InputModel frontendModel = inGraph.getModel();
-		
-		InputAnalysis analysis = inGraph.getAnalysis();
-
-
-		try {
-
+    
+    /* Read in analysis parameters.
+     * 
+     */
+    private static void readAnalysisParameters(ModelSpec modelSpec, IAnalysisRequest aRequest) {
+    	try {
 			// Type of analysis
-			if (analysis.getAction().equals("allNextStates") && analysis.getCurrentState().equals("0")) {
-				modelSpec.setAnalysisType("allCurrentState");    //Convert to next analysis type.
-			} else {
-				modelSpec.setAnalysisType(analysis.getAction());
-			}
+			// TODO: Is this correct to select the analysis type.
+    		modelSpec.setAnalysisType("singlePath");
+//			if (aRequest.getAction().equals("allNextStates") && (aRequest.getCurrentState().equals("0"))) {
+//				modelSpec.setAnalysisType("allCurrentState");    //Convert to next analysis type.
+//			} else {
+//				modelSpec.setAnalysisType(aRequest.getAction());
+//			}
 			if (DEBUG) System.out.println("Read Type of Analysis");
 
 			// Conflict level
-			if (analysis.getConflictLevel() != null) {
-				modelSpec.setConflictAvoidLevel(analysis.getConflictLevel().charAt(0));
+			if (aRequest.getConflictLevel() != null) {
+				modelSpec.setConflictAvoidLevel(aRequest.getConflictLevel().charAt(0));
 			}
 			if (DEBUG) System.out.println("Read Conflict Level");
 
-			// Absolute time points
 
-			if (analysis.getAbsTimePtsArr().length > 0) {
-				modelSpec.setAbsoluteTimePoints(analysis.getAbsTimePtsArr());
+			//Number of Relative time
+			if(aRequest.getNumRelTime() != null){
+				modelSpec.setRelativeTimePoints(Integer.parseInt(aRequest.getNumRelTime()));
 			}
-			if (DEBUG) System.out.println("Read Absolute Time Points");
-
+			if (DEBUG) System.out.println("Read Relative Time");   		
+    
+			if (DEBUG) System.out.println("TODO: Handle userAssignmentList and previous Analysis, current state");
+			
+    	} catch (Exception e) {
+    		throw new RuntimeException(e.getMessage());
+    	}  
+    	
+    	
+    }
+ 
+    
+    private static void readOverallGraphParameters(ModelSpec modelSpec, IGraph frontendModel) {
+    	try {	
 			//Max Absolute Time
 			if(frontendModel.getMaxAbsTime() != null){
 				modelSpec.setMaxTime(Integer.parseInt(frontendModel.getMaxAbsTime()));
 			}
 			if (DEBUG) System.out.println("Read Max Absolute Time");
 
-			//Number of Relative time
-			if(analysis.getNumRelTime() != null){
-				modelSpec.setRelativeTimePoints(Integer.parseInt(analysis.getNumRelTime()));
-			}
+			//TODO: Add in.
+//			// Absolute time points
+//			if (frontendModel.getAbsTimePtsArr().length > 0) {
+//				modelSpec.setAbsoluteTimePoints(frontendModel.getAbsTimePtsArr());
+//			}
+//			if (DEBUG) System.out.println("Read Absolute Time Points");
 
-			if (DEBUG) System.out.println("Read Relative Time");
-
-			AnalysisResult prevResult = analysis.getPreviousAnalysis();
-
-			if(prevResult != null) {
-				// If there was an analysis before the current analysis, do the following:				
-				String[] absoluteTime = analysis.getCurrentState().split("\\|");
-				int currentState = Integer.parseInt(absoluteTime[0]);
-				// Creates initial Assigned Epoch Map.
-				String[] initialAssignedEpoch = prevResult.getAssignedEpoch();
-				HashMap<String, Integer> initialAssignedEpochMap = new HashMap<>();
-				//Send the whole hashmap
-				for(int i = 0; i < initialAssignedEpoch.length; i++){
-					String[] assignedEpoch = initialAssignedEpoch[i].split("_");
-					String key = assignedEpoch[0].toString();
-					for (int j = 1; j < assignedEpoch.length-1 ; j ++){
-						key += "_" + assignedEpoch[j].toString();
-					}
-					Integer value = Integer.parseInt(assignedEpoch[assignedEpoch.length-1]);
-					initialAssignedEpochMap.put(key, value);
-				}
-				modelSpec.setInitialAssignedEpochs(initialAssignedEpochMap);
-
-				// Creates array of size currentState + 1.
-				// TODO: Should this be currentState + 2???
-				String[] initialValueTimePoints = prevResult.getTimePointPath();
-				int[] initialValueTimePointsArray = new int[currentState+1];
-				for(int i = 0; i < currentState+1; i++){
-					initialValueTimePointsArray[i] = Integer.parseInt(initialValueTimePoints[i]);
-				}
-				modelSpec.setInitialValueTimePoints(initialValueTimePointsArray);
+			if (DEBUG) System.out.println("TODO: handle constraints and absTimePtsArr");
+			// TODO List<BIConstraint> getConstraints() 
+    		
+    	} catch (Exception e) {
+    		throw new RuntimeException(e.getMessage());
+    	}  
+    	
+    	
+    }    
+	
+	public static ModelSpec buildModelSpec(IMain inObject){
+		try {
+			// Back-end Model
+			ModelSpec modelSpec = new ModelSpec();
 				
-				// Set initial satisfaction values
-				// If previous analysis does not matter
-				
-				List<OutputElement> elementlist = prevResult.getElementList();
-				boolean[][][] initialValues = new boolean[elementlist.size()][currentState+1][4];
-				//System.out.println("parsing previous analysis result");
-				for (int i_state = 0; i_state <  currentState+1; i_state ++){
-					for (OutputElement e: elementlist){
-						String value = e.getStatus().get(i_state);
-						if (value != null){
-							for (int i = 0; i < 4; i++){
-								if (value.charAt(i) == '1'){
-									initialValues[Integer.parseInt(e.getId())][i_state][i] = true;
-								} else {
-									initialValues[Integer.parseInt(e.getId())][i_state][i] = false;
-								}
-							}
-						} else {
-							initialValues[Integer.parseInt(e.getId())][i_state][0] = false;
-							initialValues[Integer.parseInt(e.getId())][i_state][1] = false;
-							initialValues[Integer.parseInt(e.getId())][i_state][2] = false;
-							initialValues[Integer.parseInt(e.getId())][i_state][3] = false;
-						}
-						
-					}
-				}
-				modelSpec.setInitialValues(initialValues);
-				if (DEBUG) System.out.println("Handled Previous Result");
-				/*ArrayList<IntentionEvaluation> initUserAssign;
-				if (currentState > 0){
-					initUserAssign = new ArrayList<IntentionEvaluation>();
-					List<OutputElement> elementlist = prevResult.getElementList();
-					for (OutputElement e: elementlist){
-						
-						for(int i = 0; i < currentState+1; i++){
-							IntentionEvaluation eval = new IntentionEvaluation();
-							eval.setIntentionID(e.getId());
-							eval.setAbsTime(initialValueTimePoints[i]);
-							eval.setEvaluationValue(e.getStatus().get(i));
-							initUserAssign.add(eval);
-						}
-					}					
-					
-				} else {
-					initUserAssign = analysis.getInitialIntentionEvaluations();	
-				}
-				boolean[][][] initialValues = new boolean[initUserAssign.size()][currentState+1][4];
-				for (int i_state = 0; i_state < currentState+1; i_state ++) {
-					String evalValue = initUserAssign.get(i_state).getEvaluationValue();
-					if (evalValue != null){
-						for (int i = 0; i < 4; i ++){
-							if (evalValue.charAt(i) == '1'){
-								initialValues[i_state]
-							}
-						}
-					}
-					// The line below is an example of issue #156
-					// If intitialValues.length is 1 and Integer.parseInt(curr.getIntentionID()) is 3, this raises an error
-					////initialValues[Integer.parseInt(curr.getIntentionID())][0] = getEvaluationArray(evalValue);
-				}
-				modelSpec.setInitialValues(initialValues);
-				if (DEBUG) System.out.println("Handled Previous Result");*/
-
-			} /*else {
-				ArrayList<IntentionEvaluation> initUserAssign = analysis.getInitialIntentionEvaluations();
-				boolean[][][] initialValues = new boolean[initUserAssign.size()][1][4];
-				for (IntentionEvaluation curr: initUserAssign) {
-
-					String evalValue = curr.getEvaluationValue();
-
-					// The line below is an example of issue #156
-					// If intitialValues.length is 1 and Integer.parseInt(curr.getIntentionID()) is 3, this raises an error
-					initialValues[Integer.parseInt(curr.getIntentionID())][0] = getEvaluationArray(evalValue);
-				}
-				modelSpec.setInitialValues(initialValues);
-				if (DEBUG) System.out.println("Handled Previous Result");
-			}*/
+			// Front-end model components
+			readAnalysisParameters(modelSpec, inObject.getAnalysisRequest());
+			IGraph frontendModel = inObject.getGraph();
+			readOverallGraphParameters(modelSpec, frontendModel);		
 			
-			else {
-				// deal with no previous analysis but initial states
-				ArrayList<IntentionEvaluation> initUserAssign = analysis.getInitialIntentionEvaluations();
-				boolean[][][] initialValues = new boolean[frontendModel.getIntentions().size()][1][4];
-				if (!(initUserAssign == null) && !(initUserAssign.size() == 0)){
-					for (IntentionEvaluation curr: initUserAssign){
-						String evalValue = curr.getEvaluationValue();
-						for (int i = 0; i < 4; i ++){
-							if (evalValue.charAt(i) == '1'){
-								initialValues[Integer.parseInt(curr.getIntentionID())][0][i] = true;
-							} else {
-								initialValues[Integer.parseInt(curr.getIntentionID())][0][i] = false;
-							}
-						}
-					}
-					modelSpec.setInitialValues(initialValues);
-					// initial states need initial time points -> 0|0   getInitialValueTimePoints()
-					int[] initialValueTimePointsArray = new int[1];
-					initialValueTimePointsArray[0] = 0;
-					modelSpec.setInitialValueTimePoints(initialValueTimePointsArray);
+			// Collection of Cells
+			List<ICell> allCells = frontendModel.getCells();
+			
+			// Divide cells into actors, intentions, and links.
+			List<ICell> actors = new ArrayList<ICell>();
+			List<ICell> intentions = new ArrayList<ICell>();
+			List<ICell> links = new ArrayList<ICell>();
+			if (!allCells.isEmpty()) {
+				for(ICell cell: allCells){
+					if (cell.getType().equals("basic.Actor") && cell.getActor() != null) 
+						actors.add(cell);
+					else if (cell.getIntention() != null && (cell.getType().equals("basic.Task") ||
+							cell.getType().equals("basic.Goal") || cell.getType().equals("basic.Softgoal") ||
+							cell.getType().equals("basic.Resource")))
+						intentions.add(cell);
+					else if (cell.getLink() != null && (cell.getType().equals("element")))
+						links.add(cell);
+					else
+						throw new IllegalArgumentException("Cell with unknown type: " + cell.getType());	
 				}
-				
-				
-				
 			}
 			
-
-
-			//Getting Actors
-			if (!frontendModel.getActors().isEmpty()) {
-				modelSpec.setNumActors(frontendModel.getActors().size());
-
-				for(InputActor dataActor: frontendModel.getActors()){
-					modelSpec.getActors().add(new Actor(dataActor.getNodeId(), dataActor.getNodeName(), dataActor.getNodeType()));
+			// **** ACTORS **** 
+			// Getting Actor Data
+			if (!actors.isEmpty()) {
+				modelSpec.setNumActors(actors.size());
+				for(ICell dataActor: actors){		
+					modelSpec.getActors().add(new Actor(dataActor.getId(), 
+							dataActor.getActor().getActorName(), 
+							dataActor.getActor().getType()));
 				}
 			}
 			if (DEBUG) System.out.println("Read Actors");
-
-			//Getting intentional elements
-			if(!frontendModel.getIntentions().isEmpty()){
-				modelSpec.setNumIntentions(frontendModel.getIntentions().size());
-				for (InputIntention intention : frontendModel.getIntentions()) {
+			
+			// **** INTENTIONS **** 
+			// Getting intentional elements
+			if(!intentions.isEmpty()){
+				modelSpec.setNumIntentions(intentions.size());
+				for (ICell dataIntention : intentions){
+					// Get Data for one Intention
+					
 					Actor nodeActor = null;
-					if (!intention.getNodeActorID().equals("-")) {
+					if (dataIntention.getParent() != null) {
 						for(Actor actor : modelSpec.getActors()){
-							if(intention.getNodeActorID().equals(actor.getId())){
+							if(dataIntention.getParent().equals(actor.getId())){
 								nodeActor = actor;
 								break;
 							}
 						}
 					}
 
-					IntentionalElement element = new IntentionalElement(intention.getNodeID(), intention.getNodeName(), nodeActor, intention.getNodeType());
+					IntentionalElement element = new IntentionalElement(dataIntention.getId(), 
+							dataIntention.getIntention().getNodeName(), nodeActor, 
+							dataIntention.getType());
 
 					// Now that the IntentionElement has been created. assign a dynamic to it
-					EvolvingFunction dynamic = intention.getDynamicFunction();
-					String dynamicType = dynamic.getStringDynVis();
-
-					element.setDynamicType(IntentionalElementDynamicType.getByCode(dynamicType));
-
-					if (dynamicType.equals("UD")) {
-						element.setUserDefinedDynamicType(intention);
-					} else {
-
-						boolean[] dynamicFuncMarkedVal;
-
-						String evalValue = dynamic.getMarkedValue();
-						dynamicFuncMarkedVal = getEvaluationArray(evalValue);
-						element.setDynamicFunctionMarkedValue(dynamicFuncMarkedVal);
-					}
+					//TODO Add evolving functions.
+//					EvolvingFunction dynamic = dataIntention.getDynamicFunction();
+//					String dynamicType = dynamic.getStringDynVis();
+//
+//					element.setDynamicType(IntentionalElementDynamicType.getByCode(dynamicType));
+//
+//					if (dynamicType.equals("UD")) {
+//						element.setUserDefinedDynamicType(dataIntention);
+//					} else {
+//
+//						boolean[] dynamicFuncMarkedVal;
+//
+//						String evalValue = dynamic.getMarkedValue();
+//						dynamicFuncMarkedVal = getEvaluationArray(evalValue);
+//						element.setDynamicFunctionMarkedValue(dynamicFuncMarkedVal);
+//					}
 
 					modelSpec.getIntElements().add(element);
 				}
 			}
 			if (DEBUG) System.out.println("Read Elements");
+			
 
 			//Getting links
-			if(!frontendModel.getLinks().isEmpty()) {
-				ArrayList<InputLink> allInputLinks = (ArrayList<InputLink>) frontendModel.getLinks();
-
-				ArrayList<InputLink> allDecompositionLinks = new ArrayList<InputLink>();    // Temporary Place Holder to Collect Decomposition Links.
+			if(!links.isEmpty()) {
+				// Temporary Place Holder to Collect Decomposition Links.
+				ArrayList<ICell> allDecompositionLinks = new ArrayList<ICell>();
+				
+				// List to hold newly created links.
 				List<NotBothLink> notBothLink = new ArrayList<NotBothLink>();
 				List<Contribution> contribution = new ArrayList<Contribution>();
 				List<EvolvingContribution> evolvingContribution = new ArrayList<EvolvingContribution>();
 
-				for (ListIterator<InputLink> lk = allInputLinks.listIterator(); lk.hasNext(); ) {
-					InputLink link = lk.next();
-					String linkType = link.getLinkType();
-					String linkSrcID = link.getLinkSrcID();
-					String linkDestID = link.getLinkDestID();
-					String postType = link.getPostType();
-					int absTime = link.getAbsoluteValue();
+				//for (ListIterator<InputLink> lk = links.listIterator(); lk.hasNext(); ) {
+				for (ICell link : links){
+					String linkType = link.getLink().getLinkType();
+					String linkSrcID = link.getSourceID();
+					String linkDestID = link.getTargetID();
+					String postType = link.getLink().getPostType();
+					int absTime = link.getLink().getAbsTime();
 					IntentionalElement intentElementSrc = getIntentionalElementById(linkSrcID, modelSpec.getIntElements());
 					IntentionalElement intentElementDest = getIntentionalElementById(linkDestID, modelSpec.getIntElements());
 					if (postType == null) {
@@ -278,8 +200,8 @@ public class BIModelSpecBuilder {
 							case "++D": case "+D": case "-D": case "--D":
 								contribution.add(new Contribution(intentElementSrc, intentElementDest, ContributionType.getByCode(linkType)));
 								break;
-							case "AND":
-							case "OR":
+							case "and":
+							case "or":
 								allDecompositionLinks.add(link);
 								break;
 							default:
@@ -304,8 +226,8 @@ public class BIModelSpecBuilder {
 										throw new IllegalArgumentException("Invalid relationship type (type 1): " + linkType);
 								}
 								break;
-							case "AND":
-							case "OR":
+							case "and":
+							case "or":
 								allDecompositionLinks.add(link);
 								break;
 							case "NO":
@@ -315,8 +237,8 @@ public class BIModelSpecBuilder {
 									case "++D": case "+D": case "-D": case "--D":
 										evolvingContribution.add(new EvolvingContribution(intentElementSrc, intentElementDest, null, ContributionType.getByCode(postType), absTime));
 										break;
-									case "AND":
-									case "OR":
+									case "and":
+									case "or":
 										allDecompositionLinks.add(link);
 										break;
 									default:
@@ -329,6 +251,7 @@ public class BIModelSpecBuilder {
 					}
 				}
 
+				// Add all links, except decomposition links to the model.
 				modelSpec.setContribution(contribution);
 				modelSpec.setNotBothLink(notBothLink);
 				modelSpec.setEvolvingContribution(evolvingContribution);
@@ -338,29 +261,38 @@ public class BIModelSpecBuilder {
 				List<EvolvingDecomposition> evolvingDecomposition = new ArrayList<EvolvingDecomposition>();
 
 				while (allDecompositionLinks.size() > 0) {
-					String destID = allDecompositionLinks.get(0).getLinkDestID();
-					int absTime = allDecompositionLinks.get(0).getAbsoluteValue();
+//					String linkType = link.getLink().getLinkType();
+//					String linkSrcID = link.getSourceID();
+//					String linkDestID = link.getTargetID();
+//					String postType = link.getLink().getPostType();
+//					int absTime = link.getLink().getAbsTime();
+//					IntentionalElement intentElementSrc = getIntentionalElementById(linkSrcID, modelSpec.getIntElements());
+//					IntentionalElement intentElementDest = getIntentionalElementById(linkDestID, modelSpec.getIntElements());
+					
+					
+					String destID = allDecompositionLinks.get(0).getTargetID();
+					int absTime = allDecompositionLinks.get(0).getLink().getAbsTime();
 					IntentionalElement intentElementDest = getIntentionalElementById(destID, modelSpec.getIntElements());
-					ArrayList<InputLink> curDestLinks = new ArrayList<InputLink>();
+					ArrayList<ICell> curDestLinks = new ArrayList<ICell>();
 					boolean evolve = false;
 					boolean andLink = false;
 					boolean orLink = false;
 					boolean andPost = false;
 					boolean orPost = false;
-					for (InputLink inputLink : allDecompositionLinks) {
-						if (destID.equals(inputLink.getLinkDestID())) {
+					for (ICell inputLink : allDecompositionLinks) {
+						if (destID.equals(inputLink.getTargetID())) {
 							curDestLinks.add(inputLink);
-							if (inputLink.getPostType() != null) {
+							if (inputLink.getLink().getPostType() != null) {
 								evolve = true;
-								if (inputLink.getPostType().equals("AND"))
+								if (inputLink.getLink().getPostType().equals("and"))
 									andPost = true;
-								if (inputLink.getPostType().equals("OR"))
+								if (inputLink.getLink().getPostType().equals("or"))
 									orPost = true;
 
 							}
-							if (inputLink.getLinkType().equals("AND"))
+							if (inputLink.getLink().getLinkType().equals("and"))
 								andLink = true;
-							if (inputLink.getLinkType().equals("OR"))
+							if (inputLink.getLink().getLinkType().equals("or"))
 								orLink = true;
 						}
 					}
@@ -369,8 +301,8 @@ public class BIModelSpecBuilder {
 
 					LinkableElement[] linkElementsSrc = new LinkableElement[curDestLinks.size()];
 					for (int i = 0; i < curDestLinks.size(); i++) {
-						InputLink link = curDestLinks.get(i);
-						linkElementsSrc[i] = getIntentionalElementById(link.getLinkSrcID(), modelSpec.getIntElements());
+						ICell link = curDestLinks.get(i);
+						linkElementsSrc[i] = getIntentionalElementById(link.getSourceID(), modelSpec.getIntElements());
 					}
 
 					if (!evolve) {
@@ -395,21 +327,21 @@ public class BIModelSpecBuilder {
 						if (orPost)
 							post = DecompositionType.OR;
 						evolvingDecomposition.add(new EvolvingDecomposition(linkElementsSrc, intentElementDest, pre, post, absTime));
-						for (InputLink iLink : curDestLinks) {
-							if (pre != null && !iLink.getLinkType().equals(pre.getCode()))
+						for (ICell iLink : curDestLinks) {
+							if (pre != null && !iLink.getLink().getLinkType().equals(pre.getCode()))
 								throw new IllegalArgumentException("Relationships for ID: " + destID + " must be all the same types.");
-							if (pre == null && !iLink.getLinkType().equals("NO"))
+							if (pre == null && !iLink.getLink().getLinkType().equals("NO"))
 								throw new IllegalArgumentException("Relationships for ID: " + destID + " must be all the same types.");
-							if (iLink.getPostType() == null)
+							if (iLink.getLink().getPostType() == null)
 								throw new IllegalArgumentException("Relationships for ID: " + destID + " must be all the same types.");
-							if (post != null && !iLink.getPostType().equals(post.getCode()))
+							if (post != null && !iLink.getLink().getPostType().equals(post.getCode()))
 								throw new IllegalArgumentException("Relationships for ID: " + destID + " must be all the same types.");
-							if (post == null && !iLink.getPostType().equals("NO"))
+							if (post == null && !iLink.getLink().getPostType().equals("NO"))
 								throw new IllegalArgumentException("Relationships for ID: " + destID + " must be all the same types.");
 						}
 
 					}
-					for (InputLink inputLink : curDestLinks) {
+					for (ICell inputLink : curDestLinks) {
 						allDecompositionLinks.remove(inputLink);
 					}
 
@@ -419,6 +351,8 @@ public class BIModelSpecBuilder {
 			}
 			if (DEBUG) System.out.println("Read Links");
 
+			/* 
+			 * TODO: Readd Constraints and user evaluations.
 			//Getting constraints
 			if(!frontendModel.getConstraints().isEmpty()){
 				for(InputConstraint dataConstraint : frontendModel.getConstraints()){
@@ -454,7 +388,7 @@ public class BIModelSpecBuilder {
 
 
 			// Getting user evaluations a.k.a. non initial user assignments
-			ArrayList<IntentionEvaluation> nonInitialEvals = analysis.getNonInitialIntentionEvaluations();
+			ArrayList<IntentionEvaluation> nonInitialEvals = aRequest.getNonInitialIntentionEvaluations();
 			if (!nonInitialEvals.isEmpty()) {
 				for (IntentionEvaluation curr: nonInitialEvals) {
 					String intentionID = curr.getIntentionID();
@@ -474,13 +408,14 @@ public class BIModelSpecBuilder {
 
 			}
 			if (DEBUG) System.out.println("Read User Evaluations");
+			*/
+			
+			if (DEBUG) System.out.println("Returning Model Spec!!!!");
+			return modelSpec;
 
 		} catch (Exception e) {
 			throw new RuntimeException(e.getMessage());
 		}
-
-		return modelSpec;
-
 	}
 
 	/**

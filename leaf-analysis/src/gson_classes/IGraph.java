@@ -9,12 +9,21 @@ import java.util.List;
  * the JSON attributes.
  */
 public class IGraph {
-	
 	private String maxAbsTime;
 	private String[] absTimePtsArr;
 	private List<BIConstraint> constraints;
 	private List<ICell> cells;
-
-
-		
+	
+	public String getMaxAbsTime() {
+		return maxAbsTime;
+	}
+	public String[] getAbsTimePtsArr() {
+		return absTimePtsArr;
+	}
+	public List<BIConstraint> getConstraints() {
+		return constraints;
+	}
+	public List<ICell> getCells() {
+		return cells;
+	}		
 }

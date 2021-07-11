@@ -21,9 +21,9 @@ public class TestGson {
 			Gson gson = builder.create();
 			IMain frontendObject = gson.fromJson(new FileReader(filePath), IMain.class);
 
+			@SuppressWarnings("unused")
+			ModelSpec modelSpec =  BIModelSpecBuilder.buildModelSpec(frontendObject);
 			System.out.println("Finished");
-			System.out.println(frontendObject);
-			//ModelSpec modelSpec =  BIModelSpecBuilder.buildModelSpec(frontendObject);
 			
 		} catch(Exception e) {
 			throw new RuntimeException("Error in convertModelFromFile() method: \n " + e.getMessage());
