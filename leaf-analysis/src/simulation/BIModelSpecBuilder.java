@@ -6,13 +6,16 @@ import java.util.List;
 import java.util.ListIterator;
 
 import gson_classes.*;
+import interface_objects.AnalysisResult;
+import interface_objects.IntentionEvaluation;
+import interface_objects.OutputElement;
 
 /**
  * This class is responsible to get the frontend model and convert into the backend model filling the necessary attributes.
  *
  */
 public class BIModelSpecBuilder {
-    private final static boolean DEBUG = true;	
+    private final static boolean DEBUG = false;	
 
     
     /* Read in analysis parameters.
@@ -51,7 +54,27 @@ public class BIModelSpecBuilder {
     	
     	
     }
- 
+    private static void readPastAnalysis(ModelSpec modelSpec) {
+    	try {
+			boolean[][][] initialValues = new boolean[modelSpec.getNumIntentions()][1][4];
+			for (int j = 0; j < modelSpec.getNumIntentions(); j++){
+				for (int i = 0; i < 4; i ++){
+					initialValues[j][0][i] = false;
+				}
+				
+			}
+			modelSpec.setInitialValues(initialValues);
+
+			// initial states need initial time points -> 0|0   getInitialValueTimePoints()
+			int[] initialValueTimePointsArray = new int[1];
+			initialValueTimePointsArray[0] = 0;
+			modelSpec.setInitialValueTimePoints(initialValueTimePointsArray);
+
+			if (DEBUG) System.out.println("TODO: Handle actual past results and initial values.");
+    	}catch (Exception e) {
+    		throw new RuntimeException(e.getMessage());
+    	}    	
+    }
     
     private static void readOverallGraphParameters(ModelSpec modelSpec, IGraph frontendModel) {
     	try {	
@@ -116,10 +139,14 @@ public class BIModelSpecBuilder {
 			// Getting Actor Data
 			if (!actors.isEmpty()) {
 				modelSpec.setNumActors(actors.size());
-				for(ICell dataActor: actors){		
-					modelSpec.getActors().add(new Actor(dataActor.getId(), 
+				int actorID = 0;
+				for(ICell dataActor: actors){
+					String backID = "A" + String.format("%03d", actorID);
+					actorID ++;
+					modelSpec.getActors().add(new Actor(backID, 
 							dataActor.getActor().getActorName(), 
-							dataActor.getActor().getType()));
+							dataActor.getActor().getType(),
+							dataActor.getId()));
 				}
 			}
 			if (DEBUG) System.out.println("Read Actors");
@@ -128,22 +155,25 @@ public class BIModelSpecBuilder {
 			// Getting intentional elements
 			if(!intentions.isEmpty()){
 				modelSpec.setNumIntentions(intentions.size());
+				int intentionID = 0;
 				for (ICell dataIntention : intentions){
 					// Get Data for one Intention
-					
 					Actor nodeActor = null;
 					if (dataIntention.getParent() != null) {
 						for(Actor actor : modelSpec.getActors()){
-							if(dataIntention.getParent().equals(actor.getId())){
+							if(dataIntention.getParent().equals(actor.getUniqueID())){
 								nodeActor = actor;
 								break;
 							}
 						}
 					}
 
-					IntentionalElement element = new IntentionalElement(dataIntention.getId(), 
+					String backID = String.format("%04d", intentionID);
+					intentionID++;
+
+					IntentionalElement element = new IntentionalElement(backID, 
 							dataIntention.getIntention().getNodeName(), nodeActor, 
-							dataIntention.getType());
+							dataIntention.getType(), dataIntention.getId());
 
 					// Now that the IntentionElement has been created. assign a dynamic to it
 					//TODO Add evolving functions.
@@ -186,8 +216,8 @@ public class BIModelSpecBuilder {
 					String linkDestID = link.getTargetID();
 					String postType = link.getLink().getPostType();
 					int absTime = link.getLink().getAbsTime();
-					IntentionalElement intentElementSrc = getIntentionalElementById(linkSrcID, modelSpec.getIntElements());
-					IntentionalElement intentElementDest = getIntentionalElementById(linkDestID, modelSpec.getIntElements());
+					IntentionalElement intentElementSrc = getIntentionalElementByUniqueID(linkSrcID, modelSpec.getIntElements());
+					IntentionalElement intentElementDest = getIntentionalElementByUniqueID(linkDestID, modelSpec.getIntElements());
 					if (postType == null) {
 						// Not Evolving Link
 						switch (linkType) {
@@ -274,7 +304,7 @@ public class BIModelSpecBuilder {
 					
 					String destID = allDecompositionLinks.get(0).getTargetID();
 					int absTime = allDecompositionLinks.get(0).getLink().getAbsTime();
-					IntentionalElement intentElementDest = getIntentionalElementById(destID, modelSpec.getIntElements());
+					IntentionalElement intentElementDest = getIntentionalElementByUniqueID(destID, modelSpec.getIntElements());
 					ArrayList<ICell> curDestLinks = new ArrayList<ICell>();
 					boolean evolve = false;
 					boolean andLink = false;
@@ -304,7 +334,7 @@ public class BIModelSpecBuilder {
 					LinkableElement[] linkElementsSrc = new LinkableElement[curDestLinks.size()];
 					for (int i = 0; i < curDestLinks.size(); i++) {
 						ICell link = curDestLinks.get(i);
-						linkElementsSrc[i] = getIntentionalElementById(link.getSourceID(), modelSpec.getIntElements());
+						linkElementsSrc[i] = getIntentionalElementByUniqueID(link.getSourceID(), modelSpec.getIntElements());
 					}
 
 					if (!evolve) {
@@ -412,6 +442,8 @@ public class BIModelSpecBuilder {
 			if (DEBUG) System.out.println("Read User Evaluations");
 			*/
 			
+			readPastAnalysis(modelSpec); 
+			
 			if (DEBUG) System.out.println("Returning Model Spec!!!!");
 			return modelSpec;
 
@@ -456,9 +488,9 @@ public class BIModelSpecBuilder {
 	 * @return
 	 * returns the intentional element if exist or null
 	 */
-	private static IntentionalElement getIntentionalElementById(String elementId, List<IntentionalElement> list) {
+	private static IntentionalElement getIntentionalElementByUniqueID(String elementId, List<IntentionalElement> list) {
 		for(IntentionalElement iElement : list){
-			if(iElement.getId().equals(elementId))
+			if(iElement.getUniqueID().equals(elementId))
 				return iElement;
 		}
 		return null;

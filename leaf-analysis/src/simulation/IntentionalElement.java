@@ -83,5 +83,11 @@ public class IntentionalElement extends LinkableElement {
 		this.actor = nodeActor;
 		this.type = IntentionalElementType.getByName(nodeType); 
 	}
+	
+	public IntentionalElement(String nodeID, String nodeName, Actor nodeActor, String nodeType, String uniqueID){
+		super(nodeID, nodeName, uniqueID);
+		this.actor = nodeActor;
+		this.type = IntentionalElementType.getByName(nodeType); 
+	}
 
 }
