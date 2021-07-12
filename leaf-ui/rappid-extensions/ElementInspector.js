@@ -1128,7 +1128,7 @@ var FuncSegView = Backbone.View.extend({
                     '<option value=partiallydenied <% if (refEvidencePair === "0100") { %> selected <%} %>> Partially Denied (⊥, P)</option>',
                     '<option value=denied <% if (refEvidencePair === "1100") { %> selected <%} %>> Denied (⊥, F)</option>',
                 '</select>',
-                    '<output id = "stopTP-out" class = "seg-class" style="float:right; width:15px"> end </output>',
+                    '<output id = "stopTP-out" class = "seg-class" style="position:relative; left:8px; width:15px"> end </output>',
                 '</div>',
                 '</script>'].join(''),
     
