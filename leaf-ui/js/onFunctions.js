@@ -238,8 +238,8 @@ function switchToModellingMode() {
     $('.analysis-clears').css("display", "none");
     
     // Appear 
-    $('#btn-view-intermediate').css("display","");
     $('#btn-view-assignment').css("display","");
+    $('#btn-view-intermediate').css("display","");
     $('#stencil').css("display","");
     $('#analysis-btn').css("display","");
 	$('#symbolic-btn').css("display","");

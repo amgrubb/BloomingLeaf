@@ -45,34 +45,15 @@ body.waiting *
   font-style: italic;
 }
 
-/** experimental dim screen */ 
-.dimScreen
-{
-    position:fixed;
-    padding:0;
-    margin:0;
-
-    top:0;
-    left:0;
-
-    width: 100%;
-    height: 100%;
-    background:rgba(255,255,255,0.5);
-}
-
 /** Dims the entire page **/ 
 #page-mask {
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.5); /* Sets background color to gray */
   position: fixed;
-  top: 0;
+  top: 0; /* cover full page */ 
   right: 0;
   bottom: 0;
   left: 0;
-  z-index: 3; 
-}
-
-.image-format { 
-  z-index: 0; 
+  z-index: 3; /* Make sure it sits just under assignments table and IVT */ 
 }
 
 .dropdown {

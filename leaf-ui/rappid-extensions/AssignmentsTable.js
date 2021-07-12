@@ -67,7 +67,7 @@ var AssignmentsTable = Backbone.View.extend({
                 '</tr>',
             '</table>',
         '</div>', 
-    '</div>', 
+    '</div>',
     '</div>',
     '</div>',
     '</script>'].join(''),

@@ -6,7 +6,7 @@ var IntermediateValuesTable = Backbone.View.extend({
     model: joint.dia.BloomingGraph,
 
     template: ['<script type="text/template" id="item-template">',
-        '<div id="intermediateTable" class="intermT"; style="margin-left:110px";>',
+        '<div id="intermediateTable" class="intermT">',
         '<div id="page-mask"></div>', 
         '<div class="intermContent">',
         '<div class="intermHeader">',
