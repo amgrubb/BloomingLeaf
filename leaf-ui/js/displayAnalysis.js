@@ -11,16 +11,15 @@ let sliderObject = new SliderObj();
 /**
  * Displays the analysis to the web app, by creating the slider display
  *
- * @param {AnalysisResult} analysisResult
+ * @param {ResultBBM} analysisResult
  *   AnalysisResult object returned from backend
  * @param {Boolean} isSwitch
  *   True if we are switching analysis results,
  *   false if new result from the back end
  */
 function displayAnalysis(analysisResult, isSwitch){
-    var currentAnalysis = analysisResult;
-    currentAnalysis.setTimeScale();
-    currentAnalysis.type = "Single Path";
+    //analysisResult.setTimeScale();
+    //analysisResult = "Single Path";
 
     // Save data for get possible next states
     savedAnalysisData.singlePathResult = analysisResult;
@@ -29,13 +28,13 @@ function displayAnalysis(analysisResult, isSwitch){
     if (sliderObject.sliderElement.hasOwnProperty('noUiSlider')) {
         sliderObject.sliderElement.noUiSlider.destroy();
     }
-    createSlider(currentAnalysis, isSwitch);
+    createSlider(analysisResult, isSwitch);
 }
 
 /**
  * Creates a slider and displays it in the web app
  *
- * @param {AnalysisResult} currentAnalysis
+ * @param {ResultBBM} currentAnalysis
  *  an AnalysisResult object that contains data about the analysis that the back end performed
  * @param {number} currentValueLimit
  * @param {Boolean} isSwitch
@@ -44,7 +43,7 @@ function displayAnalysis(analysisResult, isSwitch){
  */
 function createSlider(currentAnalysis, isSwitch) {
 
-    var sliderMax = currentAnalysis.timeScale;
+    var sliderMax = currentAnalysis.get('timePointPath').length - 1; // .timeScale;
     var density = (sliderMax < 25) ? (100 / sliderMax) : 4;
 
     noUiSlider.create(sliderObject.sliderElement, {
@@ -126,41 +125,38 @@ function adjustSliderWidth(maxValue){
  * @param {Number} sliderValue
  *   Current value of the slider
  * @param {Number} currentValueLimit
- * @param {AnalysisResult} currentAnalysis
- *  an AnalysisResult object that contains data about the analysis that the back end performed
+ * @param {ResultBBM} currentAnalysis
+ *  an ResultBBM object that contains data about the analysis that the back end performed
  */
-// TODO: Reimplement with new backbone models
 function updateSliderValues(sliderValue, currentAnalysis){
+    currentAnalysis.set('selectedTimePoint', sliderValue);
 
-    // analysisResult.selectedTimePoint = sliderValue;
-
-    // var value = sliderValue;
-    // $('#sliderValue').text(value);
-    // sliderObject.sliderValueElement.innerHTML = value + "|" + currentAnalysis.timePointPath[value];
-    // // Update the analysisRequest current state.
-    // analysisRequest.currentState = sliderObject.sliderValueElement.innerHTML;
-    // currentAnalysis.elementList.forEach(element => 
-    //     // TODO: Rewrite to set current sat value text to its value at TP slideValue
-    //     updateNodeValues(element, element.status[value]));
+    $('#sliderValue').text(sliderValue);
+    var tpPath = currentAnalysis.get('timePointPath');
+    sliderObject.sliderValueElement.innerHTML = sliderValue + "|" + tpPath[sliderValue];
+    // Update the analysisRequest current state.
+    //analysisRequest.currentState = sliderObject.sliderValueElement.innerHTML;   //TODO: Perhalps this should be part of the call to simulate.
     
-    // EVO.setCurTimePoint(value);
+    currentAnalysis.get('elementList').forEach(element => 
+        updateNodeValues(element, sliderValue));
+
+    EVO.setCurTimePoint(sliderValue);
 }
 
-
 /**
- * Updates the satisfaction value of a particular node in the graph.
- * Used to display analysis results on the nodes.
- * 
- * @param {String} satValue
+ * @param {map} element
+ *  Map between element id and result data. 
  *   Satisfaction value in string form. ie: '0011' for satisfied
+ * @param {Number} sliderValue
+ *   Current value of the slider
  */
-// TODO: Implement to work with new backbone models
-function updateNodeValues(element, satValue) {
-
-	// if ((cell != null) && (satValue in satisfactionValuesDict)) {
-    //     cell.attr(".satvalue/text", satisfactionValuesDict[satValue].satValue);
-    //     cell.attr({text: {fill: 'white'}});//satisfactionValuesDict[satValue].color
-    // }
+function updateNodeValues(element, sliderValue) {
+    var satValue = element.status[sliderValue];
+    var cell = graph.getCell(element.id);
+	if ((cell != null) && (satValue in satisfactionValuesDict)) {
+        cell.attr(".satvalue/text", satisfactionValuesDict[satValue].satValue);
+        cell.attr({text: {fill: 'white'}}); //satisfactionValuesDict[satValue].color        // TODO: Does this need updating?
+    }
 }
 
 } // End of sliderObj scope

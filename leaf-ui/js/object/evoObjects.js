@@ -180,6 +180,7 @@ class EVO {
      * @param {*} elementList List of elements containing analysis results
      */
     singlePathResponse(elementList) {
+        /*TODO: Update with new objects.
         $('#modelingSlider').css("display", "none");
         $('#analysisSlider').css("display", "");
         document.getElementById("colorResetAnalysis").value = EVO.sliderOption;
@@ -201,6 +202,7 @@ class EVO {
         }
         this.generateConsoleReport();
         EVO.refresh();
+        */
     }    
 
     /**
@@ -230,22 +232,22 @@ class EVO {
         console.log("");
         console.log("Color Visualization Output:");
 
-        if(analysisResult.colorVis != null) {
-        for(var i = 0; i < analysisResult.colorVis.numIntentions; ++i) {
-            var intention = analysisResult.colorVis.intentionListColorVis[i];
-            console.log("Intention " + intention.id+":");
+        if (analysisResult.colorVis != null) {
+            for (var i = 0; i < analysisResult.colorVis.numIntentions; ++i) {
+                var intention = analysisResult.colorVis.intentionListColorVis[i];
+                console.log("Intention " + intention.id + ":");
 
-            for(var j = 0; j < EVO.numEvals; ++j) {
-                var evalType = EVO.colorVisOrder[j];
-                if(intention.evals[evalType] > 0.0)  {
-                    //output it to the console
-                    console.log(evalType
-                    + " -> "
-                    + Math.floor(intention.evals[evalType] * 1000)/10
-                    + "%");
+                for (var j = 0; j < EVO.numEvals; ++j) {
+                    var evalType = EVO.colorVisOrder[j];
+                    if (intention.evals[evalType] > 0.0) {
+                        //output it to the console
+                        console.log(evalType
+                            + " -> "
+                            + Math.floor(intention.evals[evalType] * 1000) / 10
+                            + "%");
+                    }
                 }
             }
-        }
         }
         else {
             console.log("ERROR: colorVis is undefined.");

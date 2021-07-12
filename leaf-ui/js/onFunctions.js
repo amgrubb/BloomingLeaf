@@ -430,7 +430,9 @@ paper.on("link:options", function (cell) {
     let configInspector = null;
 
     $('#simulate-single-path-btn').on('click', function() { 
-        backendComm(configCollection.findWhere({selected: true}));
+        var curRequest = configCollection.findWhere({selected: true});
+        curRequest.set('action', 'singlePath');
+        backendSimulationRequest(curRequest);
     }); 
     $('#next-state-btn').on('click', function() { getAllNextStates(); }); 
     

@@ -1360,7 +1360,8 @@ function save_current_state(){
     jsObject.analysisRequest = analysisRequest;
     console.log(jsObject);
 
-
+    // TODO Update call to backendComm.
+    console.log("TODO: Update Call to BackendComm");
     window.opener.backendComm(jsObject);
 
     window.close();
@@ -1391,7 +1392,9 @@ function generate_next_states(){
     jsObject.analysisRequest = analysisRequest;
     console.log(analysisRequest);
 
-    backendComm(jsObject);
+    // TODO Update call to backendComm.
+    console.log("TODO: Update Call to BackendComm");
+    backendComm(jsObject);      
 
 
 }
