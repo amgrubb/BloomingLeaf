@@ -1057,7 +1057,6 @@ var ElementInspector = Backbone.View.extend({
             if (this.intention.get('evolvingFunction').get('type') === 'UD') {
                 var hasUD = true;
             }
-            console.log(hasUD);
             var funcSegList = this.intention.getFuncSegments();
             console.log(funcSegList);
             var i = 0;
@@ -1065,7 +1064,8 @@ var ElementInspector = Backbone.View.extend({
             funcSegList.forEach(
                 funcSeg => {
                     console.log(funcSeg.get('refEvidencePair'));
-                    var functionSegView = new FuncSegView({model: funcSeg, intention: this.model, hasUD: hasUD, index: i});
+                    // this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair')
+                    var functionSegView = new FuncSegView({model: funcSeg, intention: this.model, hasUD: hasUD, index: i, initSatValue: this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair')});
                     $('#segment-functions').append(functionSegView.el);
                     functionSegView.render(); 
                     i++; 
@@ -1102,6 +1102,7 @@ var FuncSegView = Backbone.View.extend({
         this.hasUD = options.hasUD;
         // is there a different way to access the index of the FunctionSegmentBBM?
         this.index = options.index;
+        this.initSatValue = options.initSatValue;
         this.satValueDict = {
             "satisfied": "0011",
             "partiallysatisfied": "0010",
@@ -1135,6 +1136,7 @@ var FuncSegView = Backbone.View.extend({
     events: {
         'change #seg-sat-value':'setFuncSatValue',
         'change #seg-function-type' : 'checkFuncValue', 
+        'keyup .seg-time': 'nameAction',
     },
 
     render: function() {
@@ -1142,17 +1144,13 @@ var FuncSegView = Backbone.View.extend({
 
         // TODO: implement the User Defined function Segments
 
-        // TODO: also diable it if it is part of a repeating segment
+        // TODO: also disable it if it is part of a repeating segment
         // Disable the absTime parameter and set it to zero if its the first function segment
         if (this.index == 0) {
             this.$('.seg-time').val(0);
             this.$('.seg-time').prop('disabled', true);
         }
         this.checkFuncValue();
-        // // Disable the function satisfaction dropdown for constant and stochastic functions
-        // if (this.model.get('type') == 'C' || this.model.get('type') == 'R') {
-        //     this.$('#seg-sat-value').prop('disabled', 'disabled');
-        // }
 
         // For all function types except for UD disable the ability to select the function 
         this.$('#seg-function-type').prop('disabled', 'disabled');
@@ -1162,32 +1160,25 @@ var FuncSegView = Backbone.View.extend({
 
         // Have to manually add stopTP to html because it is not in the FunctionSegmentBBM
         this.$('#stopTP-out').val(this.stopTP);
-
+        console.log(this.absTime);
+        console.log(this.model.get('startAT'));
         console.log(this.model.get('refEvidencePair'));
         return this;
     },
 
-    // TODO: make it so it sets the correct satisfaction values as selectable in the second dropdown
-    checkSatValue: function () {
-        var functionType = this.$('#seg-function-type').val();
-        // TODO: import init-sat value into this view
-        var initValue = this.$('#init-sat-value').val();
-        var markedValue = this.intention.get('evolvingFunction').getNthRefEvidencePair(1);
-        if (functionType == 'RC') {
-            this.$('#markedValue').html(this.satValueOptionsNoRandom());
-        } else if (functionType == 'I' || functionType == 'MP') {
-            this.$('#markedValue').html(this.satValueOptionsPositiveOrNegative(initValue, true));
-        } else if (functionType == 'D' || functionType == 'MN') {
-            this.$('#markedValue').html(this.satValueOptionsPositiveOrNegative(initValue, false));
+    setAbsTime: function(event) {
+        // 13 corresponds to the Enter key so when Enter is pressed the name is updated
+        if (event.which === 13) {
+            event.preventDefault();
         }
-        if (markedValue) {
-            if (satisfactionValuesDict[markedValue != null]){
-                this.$('#markedValue').val(satisfactionValuesDict[markedValue].name());
-            }
-        }
-        this.$('#markedValue').change();
-        return;
-    },
+
+        var absTime = this.$('.seg-time').val();
+        // TODO: should we add an if statement here so you can only add numbers?
+        // text = text.replace(/[^\w\n-]/g, ' ');
+
+        this.model.set('startAT', absTime); 
+
+    },    
 
     setFuncSatValue: function () {
         this.model.set('refEvidencePair', this.satValueDict[this.$('#seg-sat-value').val()]) // 4 digit representation
@@ -1196,7 +1187,10 @@ var FuncSegView = Backbone.View.extend({
     },
 
     checkFuncValue: function () {
+        // set the function type to the type selected in the html
+        console.log(this.model.get('type'));
         this.model.set('type', this.$('#seg-function-type').val());
+        console.log(this.model.get('type'));
         // Disable the function satisfaction dropdown for constant and stochastic functions
         if (this.model.get('type') == 'C' || this.model.get('type') == 'R') {
             this.$('#seg-sat-value').prop('disabled', 'disabled');
@@ -1204,8 +1198,39 @@ var FuncSegView = Backbone.View.extend({
         else {
             this.$('#seg-sat-value').prop('disabled', '');
         }
+        this.checkSatValue();
     },
 
+
+    /**
+     * This function checks the initial satisfaction value and function type
+     * and determines which function satisfaction values should be selectable 
+     * 
+     * TODO: make sure that his function is working as it should, i don't know if i set initValue and markedValue correctly
+     */
+    checkSatValue: function () {
+        var functionType = this.$('#seg-function-type').val();
+        // TODO: import init-sat value into this view
+        var initValue = this.initSatValue;
+        console.log(this.initSatValue);
+        // var markedValue = this.intention.get('evolvingFunction').getNthRefEvidencePair(1);
+        var markedValue = this.model.get('refEvidencePair');
+        console.log(markedValue);
+        if (functionType == 'RC') {
+            this.$('#seg-sat-value').html(this.satValueOptionsNoRandom());
+        } else if (functionType == 'I' || functionType == 'MP') {
+            this.$('#seg-sat-value').html(this.satValueOptionsPositiveOrNegative(initValue, true));
+        } else if (functionType == 'D' || functionType == 'MN') {
+            this.$('#seg-sat-value').html(this.satValueOptionsPositiveOrNegative(initValue, false));
+        }
+        if (markedValue) {
+            if (this.satValueDict[markedValue != null]){
+                this.$('#seg-sat-value').val(this.satValueDict[markedValue]);
+            }
+        }
+        this.$('#seg-sat-value').change();
+        return;
+    },
         /**
          * This function takes in an initial value
          * And returns an html string options with values 
@@ -1221,9 +1246,9 @@ var FuncSegView = Backbone.View.extend({
             var result = '';
 
             if (postive) {
-                var valuesList = satVals.slice(0, satVals.indexOf(currentVal) + 1);
+                var valuesList = satVals.slice(0, satVals.indexOf(currentVal));
             } else {
-                var valuesList = satVals.slice(satVals.indexOf(currentVal));
+                var valuesList = satVals.slice(satVals.indexOf(currentVal) + 1);
             }
 
             for (let value of valuesList) {
