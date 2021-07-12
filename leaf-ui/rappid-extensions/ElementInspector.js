@@ -1133,7 +1133,7 @@ var FuncSegView = Backbone.View.extend({
                 '</script>'].join(''),
     
     events: {
-        'change #seg-sat-value':'checkFuncSatValue',
+        'change #seg-sat-value':'setFuncSatValue',
         'change #seg-function-type' : 'checkFuncValue', 
     },
 
@@ -1157,8 +1157,6 @@ var FuncSegView = Backbone.View.extend({
         // For all function types except for UD disable the ability to select the function 
         this.$('#seg-function-type').prop('disabled', 'disabled');
         if (this.hasUD === true) {
-            this.checkFuncValue();
-            this.checkFuncSatValue();
             this.$('#seg-function-type').prop('disabled', '');
         }
 
@@ -1169,7 +1167,29 @@ var FuncSegView = Backbone.View.extend({
         return this;
     },
 
-    checkFuncSatValue: function () {
+    // TODO: make it so it sets the correct satisfaction values as selectable in the second dropdown
+    checkSatValue: function () {
+        var functionType = this.$('#seg-function-type').val();
+        // TODO: import init-sat value into this view
+        var initValue = this.$('#init-sat-value').val();
+        var markedValue = this.intention.get('evolvingFunction').getNthRefEvidencePair(1);
+        if (functionType == 'RC') {
+            this.$('#markedValue').html(this.satValueOptionsNoRandom());
+        } else if (functionType == 'I' || functionType == 'MP') {
+            this.$('#markedValue').html(this.satValueOptionsPositiveOrNegative(initValue, true));
+        } else if (functionType == 'D' || functionType == 'MN') {
+            this.$('#markedValue').html(this.satValueOptionsPositiveOrNegative(initValue, false));
+        }
+        if (markedValue) {
+            if (satisfactionValuesDict[markedValue != null]){
+                this.$('#markedValue').val(satisfactionValuesDict[markedValue].name());
+            }
+        }
+        this.$('#markedValue').change();
+        return;
+    },
+
+    setFuncSatValue: function () {
         this.model.set('refEvidencePair', this.satValueDict[this.$('#seg-sat-value').val()]) // 4 digit representation
         // TODO: make it so the chart updates too 
         // this.updateChart();  
@@ -1184,6 +1204,72 @@ var FuncSegView = Backbone.View.extend({
         else {
             this.$('#seg-sat-value').prop('disabled', '');
         }
-    }
+    },
+
+        /**
+         * This function takes in an initial value
+         * And returns an html string options with values 
+         * That are either larger or smaller than the initial value
+         * Depending on the positive boolean parameter
+         * 
+         * @param {String} currentValue 
+         * @param {Boolean} positive If true - increasing, if false, decreasing
+         * @returns HTML string of options with values
+         */
+        satValueOptionsPositiveOrNegative: function (currentVal, postive) {
+            var satVals = ["0011", "0010", "0000", "0100", "1100"];
+            var result = '';
+
+            if (postive) {
+                var valuesList = satVals.slice(0, satVals.indexOf(currentVal) + 1);
+            } else {
+                var valuesList = satVals.slice(satVals.indexOf(currentVal));
+            }
+
+            for (let value of valuesList) {
+                result += this.binaryToOption(value);
+            }
+            return result;
+        },
+    
+        satValueOptionsAll: function () {
+            var result = '';
+            for (let value of ["0011", "0010", "0000", "0100", "1100", "unknown"]) {
+                result += this.binaryToOption(value);
+            }
+            return result;
+        },
+    
+        satValueOptionsNoRandom: function () {
+            var result = '';
+            for (let value of ["0011", "0010", "0100", "1100"]) {
+                result += this.binaryToOption(value);
+            }
+            return result;
+        },
+    
+        /**
+         * Helper function to convert binary strings to option tags 
+         * 
+         * @param binaryString: This is the binary string stands for the value
+         * @returns a string decode of that binary value
+         */
+         binaryToOption: function(binaryString){
+            switch(binaryString){
+                case "0000":
+                    return `<option value="0000">None (⊥, ⊥) </option>`;
+                case "0011":
+                    return `<option value="0011">Satisfied (F, ⊥) </option>`;
+                case "0010":
+                    return `<option value="0010">Partially Satisfied (P, ⊥) </option>`;
+                case "0100":
+                    return `<option value="0100">Partially Denied (⊥, P)</option>`;
+                case "1100":
+                    return `<option value="1100">Denied (⊥, F) </option>`;
+                case "unknown":
+                    return `'<option value="(no value)"> (no value) </option>'`;
+            }
+            return null;
+        },
 });
 

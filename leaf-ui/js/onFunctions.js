@@ -337,13 +337,14 @@ paper.on('blank:pointerdown', function (evt, x, y) {
 /**
  * Specifies behavior for clicking on cells and moving intentions/links
  */
+// TODO: Find better way to handle move instances than adding data to event and passing forward
 paper.on({
-    'cell:pointerdown': function (evt) {
+    'cell:pointerdown': function (cellView, evt) {
         // pass data to pointermove and pointerup
         evt.data = { move: false };
     },
-    'cell:pointermove': function (evt) {
-        if (!evt.data.move && evt.data.interact) {
+    'cell:pointermove': function (cellView, evt) {
+        if (!evt.data.move) {
             // start of a click and drag
             evt.data.move = true;
         }
@@ -358,6 +359,9 @@ paper.on({
         // when interacting w/ cells on paper in modeling mode
         if (cellView.model.findView(paper).options.interactive) {
             var cell = cellView.model;
+            // TODO: There is a link connect/link disconnect function that could be used here
+            // https://resources.jointjs.com/docs/jointjs/v3.3/joint.html#dia.Paper.events
+            // And then the cell:pointer events could be changed to element:pointer and links could be handled seperately
             if (cell instanceof joint.dia.Link) { // Link behavior
                 if (evt.data.move) {
                     // If link moved, reparent
