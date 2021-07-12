@@ -1113,25 +1113,25 @@ var FuncSegView = Backbone.View.extend({
     },
 
     template: ['<script type="text/template" id="item-template">',
-                '<input id="seg-time" class = "seg-class"> </input>',
-                '<output id = "startTP-out" class = "seg-class" style="float:left width:15px"> <%= startTP %> </output>',
-                '<select id="seg-function-type" class = "seg-class" style="width: 94px">',    
+                '<input class="seg-time"> </input>',
+                '<output id = "startTP-out" class = "seg-class" style="position:relative; left:14px; width:15px"> <%= startTP %> </output>',
+                '<select id="seg-function-type" class = "seg-class" style=" position:relative; left:10px; width: 95px">',    
                     '<option value="C" <% if (type === "C") { %> selected <%} %>> Constant </option>',
                     '<option value="R" <% if (type === "R") { %> selected <%} %>> Stochastic </option>',
                     '<option value="I" <% if (type === "I") { %> selected <%} %>> Increase </option>',
                     '<option value="D" <% if (type === "D") { %> selected <%} %>> Decrease </option>',
                 '</select>',
-                '<select id="seg-sat-value" class = "seg-class" style="width: 96px">',
+                '<select id="seg-sat-value" class = "seg-class" style=" position:relative; left:10px; width: 96px">',
                     '<option value=none <% if (refEvidencePair === "0000") { %> selected <%} %>> None (⊥, ⊥) </option>',
                     '<option value=satisfied <% if (refEvidencePair === "0011") { %> selected <%} %>> Satisfied (F, ⊥) </option>',
                     '<option value=partiallysatisfied <% if (refEvidencePair === "0010") { %> selected <%} %>> Partially Satisfied (P, ⊥) </option>',
                     '<option value=partiallydenied <% if (refEvidencePair === "0100") { %> selected <%} %>> Partially Denied (⊥, P)</option>',
                     '<option value=denied <% if (refEvidencePair === "1100") { %> selected <%} %>> Denied (⊥, F)</option>',
                 '</select>',
-                    '<output id = "stopTP-out" class = "seg-class" style="float:right"> end </output>',
+                    '<output id = "stopTP-out" class = "seg-class" style="float:right; width:15px"> end </output>',
                 '</div>',
                 '</script>'].join(''),
-
+    
     events: {
         'change #seg-sat-value':'setFuncSatValue',
         'change #seg-function-type' : 'checkFuncValue', 
@@ -1145,8 +1145,8 @@ var FuncSegView = Backbone.View.extend({
         // TODO: also diable it if it is part of a repeating segment
         // Disable the absTime parameter and set it to zero if its the first function segment
         if (this.index == 0) {
-            this.$('#seg-time').val(0);
-            this.$('#seg-time').prop('disabled', true);
+            this.$('.seg-time').val(0);
+            this.$('.seg-time').prop('disabled', true);
         }
         this.checkFuncValue();
         // // Disable the function satisfaction dropdown for constant and stochastic functions
