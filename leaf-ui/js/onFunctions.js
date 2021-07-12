@@ -13,6 +13,7 @@ $('#btn-redo').on('click', _.bind(commandManager.redo, commandManager));
 $('#btn-clear-all').on('click', function () { clearAll() });
 // TODO: Reimplement with new backbone structure
 $('#btn-clear-elabel').on('click', function () {
+    console.log("TODO: Reimplement with new backbone structure - #btn-clear-elabel");
     for (let element of graph.getElements()) {
         var cellView = element.findView(paper);
         var cell = cellView.model;
@@ -32,6 +33,7 @@ $('#btn-clear-elabel').on('click', function () {
 });
 // TODO: Reimplement with new backbone structure
 $('#btn-clear-flabel').on('click', function () {
+    console.log("TODO: Reimplement with new backbone structure - btn-clear-flabel");
     for (let element of graph.getElements()) {
         var cellView = element.findView(paper);
         var cell = cellView.model;
@@ -56,11 +58,14 @@ $('#btn-clear-cycle').on('click', function () {
 $('#btn-clear-analysis').on('click', function () {
     // TODO: Re-Implement for backbone view - What does clearing analysis mean now?
     // reset graph to initial values
+    console.log("btn-clear-analysis - TODO Re-Implement for backbone view - What does clearing analysis mean now")
     revertNodeValuesToInitial();
 });
 
 // TODO: Re-implement for backbone view
-$('#btn-clear-results').on('click', function () { });
+$('#btn-clear-results').on('click', function () { 
+    console.log("btn-clear-results - TODO Re-implement for backbone view");
+});
 
 // Open as SVG
 $('#btn-svg').on('click', function () {
@@ -140,7 +145,7 @@ $('#btn-view-intermediate').on('click', function () {
  */
 //TODO: Add back in cycle detection after backbone migration.
 $('#analysis-btn').on('click', function () {
-    //TODO: Add back in cycle detection after backbone migration.
+    console.log("TODO: Add back in cycle detection after backbone migration.");
     switchToAnalysisMode();
 });
 
@@ -656,6 +661,7 @@ function setInteraction(interactionValue) {
  */
 // TODO: Re-write with new models
 function revertNodeValuesToInitial() {
+    console.log("TODO: Rewrite revertNodeValuesToInitial");
     // var elements = graph.getElements();
     // var curr;
     // for (var i = 0; i < elements.length; i++) {
