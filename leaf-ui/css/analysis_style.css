@@ -1,6 +1,5 @@
 .modal {
     position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
     padding-top: 25px; /* Location of the box */
     left: 0;
     top: 0;
@@ -12,11 +11,12 @@
     /* box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19); */ 
     /* background-color: rgb(0,0,0); Fallback color
     background-color: rgba(0,0,0,0.4);  Black w/ opacity */
-    /* background-size: cover; */ 
+    /* background-size: cover; */
 }
 
 /* Modal Content */
 .modal-content {
+    z-index: 4; /** Sit on top **/ 
     position: relative;
     background-color: #fefefe;
     margin: auto;
@@ -70,6 +70,7 @@
 
 /*Intermediate Values Content*/
 .intermContent{
+    z-index: 4; /** Sit on top **/ 
     position: relative;
     background-color: #fefefe;
     margin: auto;

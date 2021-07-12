@@ -60,6 +60,21 @@ body.waiting *
     background:rgba(255,255,255,0.5);
 }
 
+/** Dims the entire page **/ 
+#page-mask {
+  background: rgba(0, 0, 0, 0.5);
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 3; 
+}
+
+.image-format { 
+  z-index: 0; 
+}
+
 .dropdown {
   position: relative;
   display: inline-block;
@@ -707,7 +722,6 @@ div.attribution{
   color: #333333;
   width: 190px;
   font-size: 9px;
-  z-index: 2;
   margin: 5px;
 }
 

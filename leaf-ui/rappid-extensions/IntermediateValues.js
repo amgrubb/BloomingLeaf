@@ -7,6 +7,7 @@ var IntermediateValuesTable = Backbone.View.extend({
 
     template: ['<script type="text/template" id="item-template">',
         '<div id="intermediateTable" class="intermT"; style="margin-left:110px";>',
+        '<div id="page-mask"></div>', 
         '<div class="intermContent">',
         '<div class="intermHeader">',
         '<span class="closeIntermT">&times;</span>',

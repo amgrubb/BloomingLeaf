@@ -15,6 +15,7 @@ var AssignmentsTable = Backbone.View.extend({
 
     template: ['<script type="text/template" id="assignments-template">',
     '<div id="assignmentsModal" class="modal" style="margin-left:110px">',
+    '<div id="page-mask"></div>', 
     '<div class="modal-content">',
     '<div class="modal-header">',
     '<span class="close">&times;</span>',
@@ -66,7 +67,7 @@ var AssignmentsTable = Backbone.View.extend({
                 '</tr>',
             '</table>',
         '</div>', 
-    '</div>',
+    '</div>', 
     '</div>',
     '</div>',
     '</script>'].join(''),
