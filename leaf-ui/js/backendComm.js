@@ -92,7 +92,6 @@ function backendSimulationRequest(analysisRequest) {
 	xhr.open("POST", url, true);
 	xhr.setRequestHeader("Content-Type", "application/json");
 
-	//var data = analysisRequestString + JSON.stringify(graph);
 	var data = JSON.stringify(jsObject);
 	console.log(data)
 	xhr.onreadystatechange = function () {
@@ -160,8 +159,10 @@ function convertToAnalysisResult(results){
 	tempResult.set('elementList', results.elementList);
 	tempResult.set('allSolution', results.allSolution);
 	//tempResult.previousAnalysis = analysisResult;	//TODO Do we need to add this? (Potentially deprecated)
-	tempResult.set('colorVis', new EVO(results.elementList));
 	tempResult.set('isPathSim', true);
+	var evoView = new EVO(results.elementList)
+	tempResult.set('colorVis', evoView);
+	evoView.singlePathResponse(results.elementList);
 	//tempResult.colorVis.singlePathResponse(results.elementList);	//TODO Update Evo.
 	return tempResult;
 }
