@@ -14,7 +14,7 @@ var AssignmentsTable = Backbone.View.extend({
     model: joint.dia.BloomingGraph,
 
     template: ['<script type="text/template" id="assignments-template">',
-    '<div id="assignmentsModal" class="modal" style="margin-left:110px">',
+    '<div id="assignmentsModal" class="modal">',
     '<div id="page-mask"></div>', 
     '<div class="modal-content">',
     '<div class="modal-header">',
