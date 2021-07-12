@@ -80,26 +80,24 @@ var url = "http://localhost:8080/untitled.html";	// Hardcoded URL for Node calls
 }
 
 
-function backendComm(analysisRequest){
+function backendComm(analysisRequest) {
 	var jsObject = {};
 	jsObject.analysisRequest = analysisRequest;
 	jsObject.graph = graph;
 
-	
+	var xhr = new XMLHttpRequest();
+	var isGetNextSteps;
+	xhr.open("POST", url, true);
+	xhr.setRequestHeader("Content-Type", "application/json");
 
-   var xhr = new XMLHttpRequest();
-   var isGetNextSteps ;
-   xhr.open("POST", url, true);
-   xhr.setRequestHeader("Content-Type", "application/json");
-
-   //var data = analysisRequestString + JSON.stringify(graph);
-   var data = JSON.stringify(jsObject);
-   console.log(data)
-   xhr.onreadystatechange = function() {	
+	//var data = analysisRequestString + JSON.stringify(graph);
+	var data = JSON.stringify(jsObject);
+	console.log(data)
+	xhr.onreadystatechange = function () {
 		// This function get called when the response is received.
 		console.log("Reading the response");
 		if (xhr.readyState == XMLHttpRequest.DONE) {
-          
+
 			/* TODO Put Back
 		   if(jsObject.analysisRequest.action=="allNextStates"){
                isGetNextSteps = true;
@@ -109,11 +107,11 @@ function backendComm(analysisRequest){
         	}
             */ isGetNextSteps = false;
 
-            var response = xhr.responseText;
-   			responseFunc(isGetNextSteps,response);
-       }
-   }
-   xhr.send(data);	// Why is this sent down here? What is this send function.
+			var response = xhr.responseText;
+			responseFunc(isGetNextSteps, response);
+		}
+	}
+	xhr.send(data);	// Why is this sent down here? What is this send function.
 }
 
 
@@ -308,13 +306,13 @@ function getIDs(backendErrorMsg) {
 }
 
 function convertToAnalysisResult(results){
-	var tempResult = new AnalysisResult();
+	var tempResult = new ResultBBM();
 	tempResult.assignedEpoch = results.assignedEpoch;
 	tempResult.timePointPath = results.timePointPath;
 	tempResult.timePointPathSize = results.timePointPathSize;
 	tempResult.elementList = results.elementList;
 	tempResult.allSolution = results.allSolution;
-	tempResult.previousAnalysis = analysisResult;
+	//tempResult.previousAnalysis = analysisResult;	//TODO Do we need to add this? (Potentially deprecated)
 	tempResult.colorVis = new EVO(results.elementList);
 	tempResult.isPathSim = true;
 	tempResult.colorVis.singlePathResponse(results.elementList);
