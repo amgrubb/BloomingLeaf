@@ -464,6 +464,8 @@ paper.on("link:options", function (cell) {
         // Disable link settings
         $('.link-tools .tool-remove').css("display", "none");
         $('.link-tools .tool-options').css("display", "none");
+        $('.attribution').css("display", "none");
+        $('.inspector').css("display", "none");
 
         IntentionColoring.refresh();
 
@@ -490,7 +492,8 @@ paper.on("link:options", function (cell) {
 
             // Show extra tools for modelling mode
             $('.model-only').css("display", "");
-
+            $('.attribution').css("display", "");
+            $('.inspector').css("display", "");
             // Show Modelling View tag
             $('#modeText').text("Modeling View");
 
