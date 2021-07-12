@@ -152,7 +152,7 @@ var ElementInspector = Backbone.View.extend({
                     '<input style="float:right;"class="repeat-select3" id="repeat-end3" type="number" value="0">',
                     '<p id="noteRepeat" style="text-align:left; float:left; color:red; font-size:0.7em;">Note: Leave Absolute Length as 0 for unknown length. If Absolute Length is less than 0 or Repeat Count is less than 2, they will be set to 0 or 2 respectively.</p>',
                     // change to blue or change color to green
-                    '<button style="margin-top:10px;" id="segment-add" class="inspector-btn small-btn green-btn">Add</button>',
+                    '<button style="margin-top:10px;" id="segment-add" class="inspector-btn small-btn blue-btn">Add</button>',
                     '<button id="constraint-repeat" class="inspector-btn small-btn blue-btn">Set Repeats</button>',
                     '<button id="constraint-restart" class="inspector-btn small-btn red-btn">Clear</button>',
                 '</div>',
@@ -205,6 +205,7 @@ var ElementInspector = Backbone.View.extend({
             this.model.attr(".funcvalue/text", ' ');
         }
         
+        
         // Turn off repeating by default
         this.repeatOptionsDisplay = false;
         // Turn off display for repeat related elements and values
@@ -222,7 +223,7 @@ var ElementInspector = Backbone.View.extend({
             
             if(functionType == 'I' || functionType == 'D' || functionType == 'MN' || functionType == 'MP'){
                 this.displayFunctionSatValue(null);
-            }
+            } 
         }
         // this.$('.inspector-views').append(this.innerView.$el);
         this.updateCell();   
@@ -461,6 +462,7 @@ var ElementInspector = Backbone.View.extend({
 
         if (this.intention.get('evolvingFunction') != null) {
             var functionType = this.intention.get('evolvingFunction').get('type');
+            
         }
         else { var functionType = null;}
 
@@ -1050,6 +1052,9 @@ var ElementInspector = Backbone.View.extend({
     renderFunctionSegments: function() { 
         // Removes functions segments that are currently displayed
         $('#segment-functions').empty();
+        if (this.intention.get('evolvingFunction').get('type') == 'NT'){
+            $(".text-label").css("visibility", "hidden");
+        }
         // Only creates the FunctionSegmentView if there is a function segment
         if(this.intention.get('evolvingFunction') != null){
             console.log(this.intention.get('evolvingFunction').get('type'));
@@ -1064,7 +1069,6 @@ var ElementInspector = Backbone.View.extend({
             // $('#segment-functions').append('<output class= text-label>absTime</output>'),
             funcSegList.forEach(
                 funcSeg => {
-                    console.log(funcSeg.get('refEvidencePair'));
                     var functionSegView = new FuncSegView({model: funcSeg, intention: this.model, hasUD: hasUD, index: i});
                     $('#segment-functions').append(functionSegView.el);
                     functionSegView.render(); 
