@@ -23,7 +23,7 @@ reader.onload = function() {
 	}
 	var result = JSON.parse(reader.result);
 	loadFromObject(result);
-    var graphtext = JSON.stringify(graph.toJSON())
+    var graphtext = JSON.stringify(graph.toJSON());
     document.cookie = "graph=" + graphtext;
 }
 
