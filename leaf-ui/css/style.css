@@ -687,7 +687,7 @@ select > .select-placeholder {
 
 /* Attribution */
 div.attribution{
-  position: fixed;
+  position: relative;
   bottom: 0;
   left: 30;
   color: #333333;
