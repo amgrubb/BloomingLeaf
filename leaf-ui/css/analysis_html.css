@@ -91,7 +91,6 @@ body.waiting *
 .element.basic.Path path { -webkit-svg-shadow: 1px 1px 2px gray; }
 .element.basic.Path path { fill: #3e3f47; }
 
-
 /* Left panel */
 .left-panel{
   position: absolute;
@@ -102,7 +101,8 @@ body.waiting *
 
   background-color: #f9f9f9;
   box-shadow: 2px 0px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1;
+  /* Should be less than the modal pop-ups. TODO: Verify function with next state analysis. */ 
+  z-index: 0;
 }
 
 .stencil {
@@ -588,7 +588,6 @@ div.attribution{
   color: #333333;
   width: 190px;
   font-size: 9px;
-  z-index: 2;
   margin: 5px;
 }
 /* The left-side bar for analysisInspector and configInspector */
