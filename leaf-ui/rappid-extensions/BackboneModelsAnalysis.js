@@ -4,13 +4,41 @@
  * Model for results
  * 
  * Attributes:
- * {String} name
- * {AnalysisResult} analysisResult
- * 
+ * @param {String} name
+ * @param {Array.<String>} assignedEpoch
+ *   Each element represents an epoch with its assigned value
+ *   ex: ["TE2_2","TE1_32"]
+ * @param {Array.<String>} timePointPath
+ *   Each element represents a time point in the analysis
+ *   ex: ['0', '7']
+ * @param {Number} timePointPathSize
+ *   Size of the time point path. ex: 2
+ * @param {Array.<Object>} elementList
+ *   List of elements containing analysis results
+ *   ex: [{id: "0001", status:["0010","0100"]}]
+ *   (for nodeID 0001, time point 0, its satisfaction value is "0010", timd point 1, its satisfaction value is "0100")
+ * @param {Boolean} isPathSim
+ *   Used for slider visualization
+ *   true if single path simulated
+ * @param {Array.<Object>} colorVis
+ *   Color visualization for analysis mode
+ *   ex: {numIntentions: 21, numTimePoints: 2, intentionListColorVis: Array(21), isColorBlind: false}
+ * @param {Number} selectedTimePoint
+ *   Finds where slider is initialized and sets timepoint in here
+ *   Also place it in update function
+ *   ex: 1
+ * @param {Number} timeScale
+ *   Number of time point in the analysis (except 0)
+ *   Replaces maxTimePoint for clarity
+ *   ex: 10
+ * @param {Boolean} selected
+ * Whether or not the ResultBBM is current selected to be shown
+ *
  */
-// TODO: Break AnalysisResult into params
 var ResultBBM = Backbone.Model.extend({
-    idAttribute: "uid",
+    initialize: function(options){  
+        _.extend({}, this.defaults, options);    
+    },
 
     initialize : function(options){
         _.extend({}, this.defaults, options);
@@ -18,9 +46,23 @@ var ResultBBM = Backbone.Model.extend({
 
     defaults: {
         name:"Default Result",
-        analysisResult: new AnalysisResult(),
+        assignedEpoch: null,
+        timePointPath: null,
+        elementList: null,
+        allSolution: null, // Potentially deprecated
+        elementLIstPercentEvals: null,
+        isPathSim: false, // Used for slider visualization
+        colorVis: null, // Color visualization for analysis mode
+        selectedTimePoint: null, // Find where slider is initialized and set timepoint in here. Also place it in update function
+        timesScale: null,
         selected: true,
     },
+
+    // TODO: Legacy function from AnalysisRequest JS object
+    // Determine if this is still needed
+    setTimeScale: function(){
+        this.set('timeScale', Number(this.get('timePointPath').lenth-1));
+    }
 });
 
 /**
@@ -59,6 +101,7 @@ var ResultCollection = Backbone.Collection.extend({
  * {AnalysisResult} previousAnalysis
  * 
  */
+// TODO: Update result references here to take in a resultBBM and not an AnalysisResult
 var ConfigBBM = Backbone.Model.extend({
     initialize : function(options){
         this.results = new ResultCollection([]);
@@ -68,16 +111,17 @@ var ConfigBBM = Backbone.Model.extend({
 
     idAttribute: "uid",
 
-    defaults: {
+    defaults: function() {
+        return {
         name:"Default Config",
         action: null,
         conflictLevel: "S",
         numRelTime: "1",
         currentState: "0",
-        userAssignmentsList : [],
         previousAnalysis: null,
         selected: true,
         results : new ResultCollection([]),
+        }
     },
 
     /**

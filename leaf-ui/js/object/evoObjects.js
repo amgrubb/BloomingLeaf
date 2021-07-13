@@ -11,15 +11,8 @@ class IntentionColoring {
      * Colors intentions by their mode
      */
     static refresh() {
-        switch(IntentionColoring.colorMode) {
-            case "EVO":
-                EVO.refresh();
-                break;
-            case "cycle":
-                break;
-            // default: //do nothing
-            //     console.log("nothing");
-            //     break;
+        if (IntentionColoring.colorMode == "EVO") {
+            EVO.refresh();
         }
     }
 
@@ -78,16 +71,6 @@ class EVO {
  * TODO: docstring 
  * 
  */
-    // static colorVisDict = {
-    //     "0000" : "#FFFFFF",
-    //     "0011" : "#001196",
-    //     "0010" : "#8FB8DE",
-    //     "0100" : "#DBAADD",
-    //     "0110" : "#643A71",
-    //     "0111" : "#8B5FBF", 
-    //     "1100" : "#FF2600",
-    //     "1110" : "#8D5A97", 
-    //     "1111" : "#0D0221" };
 //replaced white with grey for readability
     static colorVisDict = {
         "0000" : "#D3D3D3",
@@ -334,7 +317,6 @@ class EVO {
       */
     static colorIntentionsAnalysis()
     {
-        var count = 1;
         var elements = graph.getElements(); 
         var actorBuffer = 0;
     
@@ -601,7 +583,6 @@ class EVONextState  {
      */
     static changeIntentionsText(elements, paper){
         var curr;
-        var intention;
         for (var i = 0; i < elements.length; i++) {
             curr = elements[i].findView(paper).model;
             if(curr.attributes.type !== 'basic.Actor') {
