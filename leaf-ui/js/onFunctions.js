@@ -81,34 +81,7 @@ $('#btn-save').on('click', function() {
 	}
 });
 
-// Save the current graph and analysis (without results) to json file
-$('#btn-save-analysis').on('click', function() {
-	var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
-	if (name){
-        clearCycleHighlighting();
-        EVO.deactivate();   
-		var fileName = name + ".json";
-		var obj = getModelAnalysisJson();
-        download(fileName, JSON.stringify(obj));
-	}
-});
 
-// Save the current graph and analysis (with results) to json file
-$('#btn-save-all').on('click', function() {
-	var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
-	if (name){
-        clearCycleHighlighting();
-        EVO.deactivate();   
-		var fileName = name + ".json";
-		var obj = getFullJson();
-        download(fileName, obj);
-	}
-});
-
-// Workaround for load, activates a hidden input element
-$('#btn-load').on('click', function(){
-	$('#loader').click();
-});
  
 $('#btn-debug').on('click', function(){ console.log(graph.toJSON()) });
 $('#btn-zoom-in').on('click', function(){ zoomIn(paperScroller); });
@@ -556,6 +529,55 @@ function clearAll(){
     configCollection.reset();
     // Delete cookie by setting expiry to past date
 	document.cookie='graph={}; expires=Thu, 18 Dec 2013 12:00:00 UTC';
+}
+
+// Save the current graph and analysis (without results) to json file
+$('#btn-save-analysis').on('click', function() {
+	var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
+	if (name){
+        clearCycleHighlighting();
+        EVO.deactivate();   
+		var fileName = name + ".json";
+		var obj = getModelAnalysisJson(configCollection);
+        download(fileName, JSON.stringify(obj));
+	}
+});
+
+// Save the current graph and analysis (with results) to json file
+$('#btn-save-all').on('click', function() {
+	var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
+	if (name){
+        clearCycleHighlighting();
+        EVO.deactivate();   
+		var fileName = name + ".json";
+		var obj = getFullJson(configCollection);
+        download(fileName, obj);
+	}
+});
+
+// Workaround for load, activates a hidden input element
+$('#btn-load').on('click', function(){
+	$('#loader').click();
+});
+
+// Load ConfigCollection for display 
+// TODO: modify it to read results after results can be shown
+function loadConfig(loadedConfig){
+    //Clears current configCollection
+    while (model = configCollection.first()) {
+        model.destroy();
+      }
+    for(let config of loadedConfig){
+        var configbbm = new ConfigBBM({name:config.name, action: config.action, conflictLevel: config.conflictLevel, numRelTime: config.numRelTime, currentState: config.currentState, userAssignmentsList : config.userAssignmentsList, previousAnalysis: config.previousAnalysis, selected: config.selected})
+        if (config.results.length !== 0){
+            var results = configbbm.get('results')
+            for(let result of config.results){
+                var resultsbbm = new ResultBBM({name:result.attributes.name, analysisResult: result.attributes.analysisResult, selected: result.attributes.selected})
+                results.add(resultsbbm)
+            }
+        }
+        configCollection.add(configbbm)
+    }
 }
 
 } // End scope of configCollection and configInspector

@@ -12,6 +12,10 @@
 var ResultBBM = Backbone.Model.extend({
     idAttribute: "uid",
 
+    initialize : function(options){
+        _.extend({}, this.defaults, options);
+    },
+
     defaults: {
         name:"Default Result",
         analysisResult: new AnalysisResult(),
@@ -56,9 +60,10 @@ var ResultCollection = Backbone.Collection.extend({
  * 
  */
 var ConfigBBM = Backbone.Model.extend({
-    initialize : function(){
+    initialize : function(options){
         this.results = new ResultCollection([]);
         this.listenTo(this, 'change:selected', this.updateSelected);
+        _.extend({}, this.defaults, options);
     },
 
     idAttribute: "uid",

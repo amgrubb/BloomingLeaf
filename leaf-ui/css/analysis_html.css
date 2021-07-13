@@ -591,3 +591,28 @@ div.attribution{
   z-index: 2;
   margin: 5px;
 }
+/* The left-side bar for analysisInspector and configInspector */
+#container-sidebar { 
+  left: auto; 
+  width: 200px; 
+  margin-top: 60px; 
+}
+
+#config-sidebar { 
+  margin-top:100px; 
+  width: 200px; 
+  position: absolute; 
+}
+
+#analysis-sidebar { 
+  margin-top: 0px; 
+}
+
+#analysis-sidebar a{
+  padding: 16px;
+  display: block;
+}
+
+#analysis-sidebar a:hover {
+  background-color: #E8E8E8;
+}

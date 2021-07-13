@@ -21,9 +21,7 @@ reader.onload = function() {
 	if (!reader.result) {
 		return;
 	}
-	//console.log(reader.result);
 	var result = JSON.parse(reader.result);
-	console.log(result);
 	loadFromObject(result);
     var graphtext = JSON.stringify(graph.toJSON())
     document.cookie = "graph=" + graphtext;
@@ -38,27 +36,23 @@ reader.onload = function() {
  * @param {Object} obj
  */
 function loadFromObject(obj) {
-	console.log("read graph")
-	console.log(obj.cells)
-	graph.fromJSON(obj);
+	graph.fromJSON(obj.graph);
 	var cells = graph.getCells();
-	console.log(cells[1])
 	for (var i = 0; i < cells.length; i++) {
 		cell = cells[i];
 		if (cell.get('type') == "basic.Actor"){
-			//console.log("A")
 			createBBActor(cell)
 		}else if (cell.get('type') == "basic.CellLink") {
 			createBBLink(cell)
-			//console.log("L")
-
 		}else{
-			var funcseg = obj.cells[i].intention.attributes.evolvingFunction.attributes.functionSegList;
+			var funcseg = obj.graph.cells[i].intention.attributes.evolvingFunction.attributes.functionSegList;
 			createBBElement(cell, funcseg)
-			//console.log("I")
 		}
 	}
-	
+	// If the object contains configCollection, create configCollection fields from JSON
+	if (obj.configCollection != undefined) {
+		loadConfig(obj.configCollection)
+	} 
 }
 
 /**
@@ -201,25 +195,20 @@ function createBBLink(cell){
 }
 
 function createBBElement(cell, funcsegs){
-	//console.log(cell)
 	var intention = cell.get('intention');
-	//console.log(intention)
 	var evol = intention.attributes.evolvingFunction.attributes;
-	//console.log(evol)
 	var intentionbbm = new IntentionBBM({nodeName: intention.nodeName, nodeType: intention.nodeType});
-	//console.log(intention)
+
 	var evolving = new EvolvingFunctionBBM({type: evol.type, hasRepeat: evol.hasRepeat, repStart: evol.repStart, repStop: evol.repStop, repCount: evol.repCount, repAbsTime: evol.repAbsTime});
 	for (let funcseg of funcsegs){
 		var funcsecbbm = new FunctionSegmentBBM({type: funcseg.attributes.type, refEvidencePair: funcseg.attributes.refEvidencePair, startTP: funcseg.attributes.startTP, startAT: funcseg.attributes.startAT})
 		evolving.get('functionSegList').push(funcsecbbm)
 	}
-	console.log(evolving.get('functionSegList'))
 	var userEval = intention.attributes.userEvaluationList[0].attributes;
 	intentionbbm.get('userEvaluationList').push(new UserEvaluationBBM({assignedEvidencePair: userEval.assignedEvidencePair, absTime: userEval.absTime}))
 	intentionbbm.set('evolvingFunction', evolving)
 
 	cell.set('intention', intentionbbm)
-	//console.log(cell)
 }
 
 
@@ -231,13 +220,17 @@ function createBBElement(cell, funcsegs){
  *
  * @returns {Object}
  */
-function getModelAnalysisJson() {
+function getModelAnalysisJson(configCollection) {
 	var obj = {};
-	// obj.analysis = true;
-	obj.graph = graph.toJSON();
-	//obj.model = model;
-	// Remove analysis results then convert to array tuple for JSON.stringify() functionality
-	obj.analysisMap = Object.fromEntries(removeAnalysisResults(analysisMap));
+	obj.graph = graph;
+	// Clone to spearate the result removal from what is displayed in ConfigInspector 
+	var newConfig = configCollection.clone();
+
+	// Remove results
+	for (var i = 0; i<newConfig.length; i++){
+		newConfig.at(i).set('results', new ResultCollection([]))
+	}
+	obj.configCollection = newConfig.toJSON()
 
 	return obj;
 }
@@ -251,32 +244,10 @@ function getModelAnalysisJson() {
  */
 function getFullJson() {
 	var obj = {};
-	obj.graph = graph.toJSON();
-	console.log(graph.toJSON());
-	//obj.model = model;
-	// Convert to array tuple for JSON.stringify() functionality
-	// obj.analysisMap = Array.from(analysisMap.entries());
-	obj.analysisMap = Object.fromEntries(analysisMap);
+	obj.graph = graph;
+	obj.config = configCollection.toJSON();
 
 	return obj;
-}
-
-/**
- * Helper function to return a copy of the analysisMap with no
- * analysisResults in each analysisConfig
- */
-function removeAnalysisResults(analysisMap) {
-	// Deep copy the map: stringify, then parse to new Map
-	let tempJSON = JSON.stringify(Object.fromEntries(analysisMap));
-	var analysisMapNoResults = new Map(Object.entries(JSON.parse(tempJSON)));
-	
-	// for each AnalysisConfiguration obj
-	for(let config of analysisMapNoResults.values()) {
-		// put empty array into the analysisResults field
-		config.deleteResults();
-	}
-
-	return analysisMapNoResults;
 }
 
 /**
