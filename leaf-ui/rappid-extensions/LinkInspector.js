@@ -104,7 +104,6 @@ var LinkInspector = Backbone.View.extend({
     /** Chooses and sets correct template for link */
     render: function() {
         // Intention Link template
-        console.log(this.model)
         if(this.link.get('displayType') == 'element') {
             // Constant Link
             if (!this.link.get('evolving')) {
