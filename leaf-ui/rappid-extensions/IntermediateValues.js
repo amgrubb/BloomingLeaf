@@ -40,12 +40,12 @@ var IntermediateValuesTable = Backbone.View.extend({
         '</div>',
         '<br>',
         '</script>'].join(''),
-    
-    events:{
+
+    events: {
         'click .closeIntermT': 'dismissInterm',
     },
 
-    render: function(){
+    render: function () {
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
         this.loadIntermediate();
         return this;
@@ -54,9 +54,9 @@ var IntermediateValuesTable = Backbone.View.extend({
     /**
      * Function to load in correct rows and dropdowns for IVT
      */
-    loadIntermediate: function() {
+    loadIntermediate: function () {
         var absoluteTimePointsList = this.getAllAbsoluteTimePoints();
-        
+
         /** 
          * Add all time points to top of table  
          */
@@ -68,9 +68,11 @@ var IntermediateValuesTable = Backbone.View.extend({
         /**
          * Make row for each intention
          */
-        for (let intentionBBM of this.model.getIntentions()){
-            var intentionUserEvaluationsView = new IntentionUserEvaluationsView({model: intentionBBM,  
-                                                                                 allAbsoluteTimePoints: absoluteTimePointsList});
+        for (let intentionBBM of this.model.getIntentions()) {
+            var intentionUserEvaluationsView = new IntentionUserEvaluationsView({
+                model: intentionBBM,
+                allAbsoluteTimePoints: absoluteTimePointsList
+            });
             this.$('#interm-list').append(intentionUserEvaluationsView.el);
             intentionUserEvaluationsView.render();
         }
@@ -79,7 +81,7 @@ var IntermediateValuesTable = Backbone.View.extend({
     /**
      * Remove view
      */
-    dismissInterm: function (){
+    dismissInterm: function () {
         this.remove();
     },
 
@@ -89,22 +91,22 @@ var IntermediateValuesTable = Backbone.View.extend({
      * 
      * @returns sorted list of all time points in model
      */
-    getAllAbsoluteTimePoints: function(){
+    getAllAbsoluteTimePoints: function () {
         var absTimeValues = this.model.get('absTimePtsArr');
         var constraintTimes = this.model.get('constraints').map(constraint => constraint.get('absTP'));
         var linkTimes = this.model.getLinks().map(linkCell => linkCell.get('link').get('absTime'));
         var intentionTimes = [];
         this.model.getIntentions().forEach(intentionBBM => intentionBBM.getFuncSegments()?.forEach(funcSeg => {
             funcSegTP = funcSeg.get('startAT')
-            if (funcSegTP != myNull){
+            if (funcSegTP != myNull) {
                 intentionTimes.push(funcSegTP);
             }
         }));
-                                                        
+
         var allTimes = absTimeValues.concat(constraintTimes).concat(linkTimes).concat(intentionTimes);
         var absoluteTimePointsList = Array.from(new Set(allTimes));
-        absoluteTimePointsList.sort(function(a,b) {return a-b})
-        return absoluteTimePointsList.filter(TP => TP != 0);
+        absoluteTimePointsList.sort(function (a, b) { return a - b })
+        return absoluteTimePointsList.filter(TP => TP != 0 && TP != -1);
     }
 });
 
@@ -121,18 +123,18 @@ var IntentionUserEvaluationsView = Backbone.View.extend({
 
     className: 'intention-row',
 
-    initialize: function(options){
+    initialize: function (options) {
         this.allAbsoluteTimePoints = options.allAbsoluteTimePoints;
         this.functionSegmentList = this.model.getFuncSegments();
     },
 
     template: [
         '<script type="text/template" id="intention-user-eval-template">',
-            '<td class="intention-name"> <%= nodeName %> </td>',
+        '<td class="intention-name"> <%= nodeName %> </td>',
         '</script>'
     ].join(''),
 
-    render: function(){
+    render: function () {
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
         // Add in initial value for TP 0
         this.$el.append(satisfactionValuesDict[this.model.getUserEvaluationBBM(0).get('assignedEvidencePair')].satValue);
@@ -147,43 +149,43 @@ var IntentionUserEvaluationsView = Backbone.View.extend({
      * Then passes those options to a SelectUserEvaluationView
      * To be converted into a select dropdown and added to the table
      */
-    loadSelect: function(){
+    loadSelect: function () {
 
         // Iterate through all time points
-        for (let absTime of this.allAbsoluteTimePoints){
+        for (let absTime of this.allAbsoluteTimePoints) {
             funcType = null;
             refPair = null;
             initValue = null;
 
             // Iterate through all FuncSegBBMs
-            for (let i=0; i < this.functionSegmentList.length; i++){
+            for (let i = 0; i < this.functionSegmentList.length; i++) {
                 // Get current FunSegBBM and its startAT
                 funcSeg1 = this.functionSegmentList[i];
                 startAT1 = funcSeg1.get('startAT');
-                
+
                 // If i is not the last index in the function segments list
-                if (i != this.functionSegmentList.length-1){
+                if (i != this.functionSegmentList.length - 1) {
                     // Get the next function segment and it's startAT
-                    funcSeg2 = this.functionSegmentList[i+1];
+                    funcSeg2 = this.functionSegmentList[i + 1];
                     startAT2 = funcSeg2.get('startAT');
                     // If both startATs are valid and the absTime falls between them
                     // Stop iterating through function segments
-                    if (startAT1 != myNull && startAT2 != myNull && 
-                        startAT1 <= absTime && startAT2 > absTime){
+                    if (startAT1 != myNull && startAT2 != myNull &&
+                        startAT1 <= absTime && startAT2 > absTime) {
                         funcType = funcSeg1.get('type');
                         refPair = funcSeg1.get('refEvidencePair');
                         // If there is a user evaluation with a TP between (startAT1 inclusive) the two FuncSegments 
                         // Use that assigned evidence pair as initial value
                         lastUserEval = this.model.getLastUserEvaluationBetweenTPs(startAT1, startAT2);
-                        if (lastUserEval != null){
+                        if (lastUserEval != null) {
                             initValue = lastUserEval.get('assignedEvidencePair');
                         }
                         break;
                     }
-                // If this is both the last index and the first index
-                // Set an initial value (used for I and D functions) 
-                // And stop iterating through function segments
-                } else if (i == 0){
+                    // If this is both the last index and the first index
+                    // Set an initial value (used for I and D functions) 
+                    // And stop iterating through function segments
+                } else if (i == 0) {
                     funcType = funcSeg1.get('type');
                     refPair = funcSeg1.get('refEvidencePair');
                     initValue = this.model.getUserEvaluationBBM(0).get('assignedEvidencePair');
@@ -191,15 +193,15 @@ var IntentionUserEvaluationsView = Backbone.View.extend({
                 } else {
                     // If AT is not null and less than absTime
                     if (startAT1 != myNull &&
-                        startAT1 <= absTime){
+                        startAT1 <= absTime) {
                         // Use last UserEvaluationBBM assigned evidence pair as initial value
                         // Since it is 0 inclusive there will always be at least one UserEval
                         initValue = this.model.getLastUserEvaluationBetweenTPs(0, startAT1)
-                                                .get('assignedEvidencePair');
+                            .get('assignedEvidencePair');
                         funcType = funcSeg1.get('type');
                         refPair = funcSeg1.get('refEvidencePair');
                         break;
-                    }  
+                    }
                 }
             }
             // Get funcType from above, and use it to set optionsList
@@ -208,7 +210,7 @@ var IntentionUserEvaluationsView = Backbone.View.extend({
                     var optionsList = this.increasingOrDecreasing(initValue, refPair, true);
                     break;
                 case "D":
-                    var optionsList = this.increasingOrDecreasing(initValue,refPair, false);
+                    var optionsList = this.increasingOrDecreasing(initValue, refPair, false);
                     break;
                 case "C":
                     var optionsList = [refPair];
@@ -221,11 +223,13 @@ var IntentionUserEvaluationsView = Backbone.View.extend({
             // Create a select menu for each time point on each intention
             // And add it to row
             var selectUserEvaluationView = new SelectUserEvaluationView
-                                                ({intention: this.model,
-                                                  absTimePt: absTime, 
-                                                  optionsList: optionsList});
-                this.$el.append(selectUserEvaluationView.el);
-                selectUserEvaluationView.render();
+                ({
+                    intention: this.model,
+                    absTimePt: absTime,
+                    optionsList: optionsList
+                });
+            this.$el.append(selectUserEvaluationView.el);
+            selectUserEvaluationView.render();
         }
     },
 
@@ -240,24 +244,24 @@ var IntentionUserEvaluationsView = Backbone.View.extend({
      * @param {Boolean} increasing If true - increasing, if false, decreasing
      * @returns Array of binary string options that fit the parameters
      */
-    increasingOrDecreasing: function(initValue, finalValue, increasing){
-        if (increasing){
+    increasingOrDecreasing: function (initValue, finalValue, increasing) {
+        if (increasing) {
             // IMPORTANT: This list must stay in order from least satisfied to most satisfied for this function to work
-            var possibleValueList = ['1100','0100','0000','0010','0011'];
+            var possibleValueList = ['1100', '0100', '0000', '0010', '0011'];
         } else {
             // IMPORTANT: This list must stay in order from most satisfied to least satisfied for this function to work
-            var possibleValueList = ['0011','0010','0000','0100','1100'];
+            var possibleValueList = ['0011', '0010', '0000', '0100', '1100'];
         }
 
         // Return properly sliced list based on values passed in for init and final
-        if(finalValue == null) {
+        if (finalValue == null) {
             return possibleValueList.slice(possibleValueList.indexOf(initValue));
-        } else if (initValue == null){
-            return possibleValueList.slice(0,possibleValueList.indexOf(finalValue)+1);
-        } else{
+        } else if (initValue == null) {
+            return possibleValueList.slice(0, possibleValueList.indexOf(finalValue) + 1);
+        } else {
             return possibleValueList.slice(
-            possibleValueList.indexOf(initValue),
-            possibleValueList.indexOf(finalValue)+1);
+                possibleValueList.indexOf(initValue),
+                possibleValueList.indexOf(finalValue) + 1);
         }
     },
 });
@@ -278,22 +282,22 @@ var SelectUserEvaluationView = Backbone.View.extend({
     ].join(''),
 
     events: {
-        'change .evaluation-value':'updateEvaluationValue'
+        'change .evaluation-value': 'updateEvaluationValue'
     },
 
-    initialize: function(options){
+    initialize: function (options) {
         this.intention = options.intention;
         this.absTimePt = options.absTimePt;
         this.optionsList = options.optionsList;
         // Returns first user evaluation with absTP matching absTimePt
         // If none exist, it returns undefined
-        this.userEval = this.intention.get('userEvaluationList').findWhere({'absTime' : this.absTimePt});   
+        this.userEval = this.intention.getUserEvaluationBBM(this.absTimePt);
     },
 
     // TODO: Add check for if optionsList only contains 1 value
     // If so, automatically have that be the selected and only possible value
     // Potentially using a different template
-    render: function(){
+    render: function () {
         this.$el.html(_.template(this.template)());
 
         // Add dropdown options to HTML select element
@@ -301,7 +305,7 @@ var SelectUserEvaluationView = Backbone.View.extend({
 
         // Set initial value if there is a userEvaluation matching the given TP
         // Else set initial value to empty
-        if (this.userEval != undefined){
+        if (this.userEval != undefined) {
             this.$('select').val(this.userEval.get('assignedEvidencePair'));
         } else {
             this.$('select').val('empty');
@@ -311,11 +315,11 @@ var SelectUserEvaluationView = Backbone.View.extend({
     /**
      * Update user evaluation when select value changes
      */
-    updateEvaluationValue: function(){
+    updateEvaluationValue: function () {
         // Get binary string evaluation value from html
         var evaluationValue = this.$('.evaluation-value').val();
-        if (this.userEval != undefined){
-            if (evaluationValue == 'empty'){
+        if (this.userEval != undefined) {
+            if (evaluationValue == 'empty') {
                 // Triggers a destroy event in the UserEvaluationBBM collection
                 // Thus removing UserEvaluationBBM from collection
                 this.userEval.destroy();
@@ -328,8 +332,10 @@ var SelectUserEvaluationView = Backbone.View.extend({
         } else {
             // Create new UserEvaluationBBM and add it
             // To the intentionBBMs userEvaluationList
-            this.userEval = new UserEvaluationBBM({absTime: this.absTimePt, 
-                                                     assignedEvidencePair: evaluationValue});
+            this.userEval = new UserEvaluationBBM({
+                absTime: this.absTimePt,
+                assignedEvidencePair: evaluationValue
+            });
             this.intention.get('userEvaluationList').push(this.userEval);
         }
     },
@@ -340,23 +346,23 @@ var SelectUserEvaluationView = Backbone.View.extend({
      * @param {Array<String>} choiceList: A list that contains binary strings of valid values
      * @returns List of html option strings corresponding to binary string input
      */
-    convertToOptions: function(choiceList){
+    convertToOptions: function (choiceList) {
         var theOptionString = this.binaryToOption('empty');
-        for(var i = 0; i < choiceList.length; i++){
+        for (var i = 0; i < choiceList.length; i++) {
             var curString = this.binaryToOption(choiceList[i]);
             theOptionString += curString;
         }
         return theOptionString;
     },
- 
+
     /**
      * Helper function to convert binary strings to option tags 
      * 
      * @param binaryString: This is the binary string stands for the value
      * @returns a string decode of that binary value
      */
-    binaryToOption: function(binaryString){
-        switch(binaryString){
+    binaryToOption: function (binaryString) {
+        switch (binaryString) {
             case "0000":
                 return `<option value="0000">None (⊥, ⊥) </option>`;
             case "0011":
