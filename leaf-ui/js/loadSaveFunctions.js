@@ -189,8 +189,8 @@ function getFuncSegList(arr) {
  */
 function createBBActor(cell){
 	var actor = cell.get('actor');
-	var actorbbm = new ActorBBM({type: actor.type, actorName: actor.attributes.actorName});
-	cell.set('actor', actorbbm)
+	var actorBBM = new ActorBBM({type: actor.type, actorName: actor.attributes.actorName});
+	cell.set('actor', actorBBM)
 }
 
 /**
@@ -199,8 +199,8 @@ function createBBActor(cell){
  */
 function createBBLink(cell){
 	var link = cell.get('link').attributes;
-	var linkbbm = new LinkBBM({displayType: link.displayType, linkType: link.linkType, postType: link.postType, absTime: link.absTime, evolving: link.evolving});
-	cell.set('link', linkbbm)
+	var linkBBM = new LinkBBM({displayType: link.displayType, linkType: link.linkType, postType: link.postType, absTime: link.absTime, evolving: link.evolving});
+	cell.set('link', linkBBM)
 }
 
 /**
@@ -210,7 +210,7 @@ function createBBLink(cell){
 function createBBElement(cell, funcsegs){
 	var intention = cell.get('intention');
 	var evol = intention.attributes.evolvingFunction.attributes;
-	var intentionbbm = new IntentionBBM({nodeName: intention.nodeName, nodeType: intention.nodeType});
+	var intentionBBM = new IntentionBBM({nodeName: intention.nodeName, nodeType: intention.nodeType});
 
 	var evolving = new EvolvingFunctionBBM({type: evol.type, hasRepeat: evol.hasRepeat, repStart: evol.repStart, repStop: evol.repStop, repCount: evol.repCount, repAbsTime: evol.repAbsTime});
 	for (let funcseg of funcsegs){
@@ -218,10 +218,10 @@ function createBBElement(cell, funcsegs){
 		evolving.get('functionSegList').push(funcsecbbm)
 	}
 	var userEval = intention.attributes.userEvaluationList[0].attributes;
-	intentionbbm.get('userEvaluationList').push(new UserEvaluationBBM({assignedEvidencePair: userEval.assignedEvidencePair, absTime: userEval.absTime}))
-	intentionbbm.set('evolvingFunction', evolving)
+	intentionBBM.get('userEvaluationList').push(new UserEvaluationBBM({assignedEvidencePair: userEval.assignedEvidencePair, absTime: userEval.absTime}))
+	intentionBBM.set('evolvingFunction', evolving)
 
-	cell.set('intention', intentionbbm)
+	cell.set('intention', intentionBBM)
 }
 
 
