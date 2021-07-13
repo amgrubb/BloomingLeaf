@@ -529,7 +529,7 @@ $('#btn-save-all').on('click', function() {
         EVO.deactivate();   
 		var fileName = name + ".json";
 		var obj = getFullJson(configCollection);
-        download(fileName, obj);
+        download(fileName, JSON.stringify(obj));
 	}
 });
 
