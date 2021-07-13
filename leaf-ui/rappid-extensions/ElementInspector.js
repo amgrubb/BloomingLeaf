@@ -935,10 +935,10 @@ var FuncSegView = Backbone.View.extend({
 
     setAbsTime: function(event) {
         // 13 corresponds to the Enter key so when Enter is pressed the name is updated
-        // if (event.which === 13) {
-        //     event.preventDefault();
-        // }
-        // TODO: should we add an if statement here so you can only add numbers?
+        if (event.which === 13) {
+             event.preventDefault();
+        }
+        
         var absTime = Number((this.$('.seg-time').val()));
         this.model.set('startAT', absTime);         
         console.log(this.model); 
@@ -1006,6 +1006,48 @@ var FuncSegView = Backbone.View.extend({
         this.$('#seg-sat-value').change();
         return;
     },
+
+     /**
+     * Adds appropriate satisfaction values option tags
+     * for .user-sat-value, which is the select tag used to
+     * indicate satisfaction values when creating a user defined function.
+     */
+      checkUDFunctionValues: function() {
+        var func = this.$("#seg-function-type").last().val();
+        console.log(func);
+
+
+        if (func == 'I' || func == 'D') {
+            var prevVal = this.intention.get('evolvingFunction').getNthRefEvidencePair(2);
+            console.log(func + ' ' + prevVal);
+            if (func == 'I') {
+                this.$("#seg-sat-value").last().html(this.satValueOptionsPositiveOrNegative(prevVal, true));
+                $("#seg-sat-value").last().val("satisfied");
+            } else {
+                this.$("#seg-sat-value").last().html(this.satValueOptionsPositiveOrNegative(prevVal, false));
+                this.$("#seg-sat-value").last().val("denied");
+            }
+        } else if (func == 'R') {
+            this.$("#seg-sat-value").last().html(this.satValueOptionsAll());
+            this.$("#seg-sat-value").last().val("(no value)")
+            this.$("#seg-sat-value").last().prop('disabled', true);
+        } else if (func == 'C') {
+            this.$("#seg-sat-value").last().html(this.satValueOptionsAll());
+            // console.log(this.$("#seg-sat-value").last().html(this.satValueOptionsAll()));
+            // Restrict input to initial satisfaction value if it is the first constraint
+            if (this.index == 0) {
+                this.$("#seg-sat-value").last().val(this.initSatValue);
+                this.model.set('refEvidencePair', this.initSatValue);
+            }
+            if (this.index != 0) {
+                // this.$("#seg-sat-value").val(this.$("#seg-sat-value").last())
+                this.$("#seg-sat-value").last().prop('disabled', '');
+                // this.$("#seg-sat-value").last().val(this.intention.getFuncSegments()[this.index - 1]);
+                this.model.set('refEvidencePair', this.$("#seg-sat-value").last().val());
+            }
+        } 
+    },
+
     /**
      * This function takes in an initial value
      * And returns an html string options with values 
