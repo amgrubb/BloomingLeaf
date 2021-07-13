@@ -236,16 +236,14 @@ graph.on("add", function (cell) {
         createdInstance = createdInstance.filter(view => view.model instanceof joint.shapes.basic.Actor);
 
         // Create placeholder name based on the number of instances
+        var name;
         if (createdInstance.length >= 2){
             var lastactor = createdInstance[createdInstance.length - 2].model.attr('.name/text');
-            var num = Number.parseInt(lastactor.charAt(lastactor.length-1))+1
-            var name = cell.attr('.name/text') + "_" + num;
-
-        }else{
-            var name = cell.attr('.name/text') + "_0";
+            name = cell.attr('.name/text') + "_" + (Number.parseInt(lastactor.charAt(lastactor.length-1))+1);
+        } else{
+            name = cell.attr('.name/text') + "_0";
         }
 
-        
         cell.set('actor', new ActorBBM({ actorName: name }));
         cell.attr(".name/text", name);
 
