@@ -552,13 +552,22 @@ var ElementInspector = Backbone.View.extend({
         this.intention.addUserDefinedSeg("C", "0000", 0);
         this.renderFunctionSegments();
 
-    //     var funcSegLength = this.intention.getFuncSegments();
-    //     for (var i =0; i<funcSegLength-1; i++) {
-    //     if (i != funcSegLength-1) {
-    //         this.$('#seg-function-type').last().prop('disabled', 'disabled');
-    //         this.$('#seg-function-type').last().prop('disabled', 'disabled');
-    //     }
-    // }
+        // $(".user-sat-value").last().prop('disabled', true);
+        // $(".user-sat-value").last().css("background-color",'grey');
+        // $(".user-function-type").last().prop('disabled', true);
+        // $(".user-function-type").last().css("background-color", 'grey');
+
+        // If the initial value is (no value), limit the function options
+        // to be either Constant or Stochastic
+        // if (this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair') == '(no value)') {
+        //     var selectEl = html.children(":first");
+        //     selectEl.find('option').remove();
+        //     selectEl.append('<option value=C> Constant </option>');
+        //     selectEl.append('<option value=R> Stochastic</option>');
+        // }
+        // TODO: what odes this do??
+        // html.appendTo(this.$('#all-user-constraints'));
+        console.log(this.model);
 
         if (this.repeatOptionsDisplay) {
             this.setRepeatConstraintMode("Update");
@@ -865,9 +874,8 @@ var FuncSegView = Backbone.View.extend({
         };
         this.selected = true;
     },
-
     template: ['<script type="text/template" id="item-template">',
-                '<input class="seg-time"> </input>',
+                '<input class="seg-time" > </input>',
                 '<output id = "startTP-out" class = "seg-class" style="position:relative; left:14px; width:15px"> <%= startTP %> </output>',
                 '<select id="seg-function-type" class = "seg-class" style=" position:relative; left:10px; width: 95px">',    
                     '<option value="C" <% if (type === "C") { %> selected <%} %>> Constant </option>',
@@ -915,6 +923,7 @@ var FuncSegView = Backbone.View.extend({
 
         // Have to manually add stopTP to html because it is not in the FunctionSegmentBBM
         this.$('#stopTP-out').val(this.stopTP);
+        console.log(this.absTime);
         console.log(this.model.get('refEvidencePair'));
 
         if (this.selected == false) {
@@ -926,16 +935,13 @@ var FuncSegView = Backbone.View.extend({
 
     setAbsTime: function(event) {
         // 13 corresponds to the Enter key so when Enter is pressed the name is updated
-        if (event.which === 13) {
-            event.preventDefault();
-        }
-
-        var absTime = this.$('.seg-time').val();
+        // if (event.which === 13) {
+        //     event.preventDefault();
+        // }
         // TODO: should we add an if statement here so you can only add numbers?
-        // text = text.replace(/[^\w\n-]/g, ' ');
-
-        this.model.set('startAT', absTime); 
-
+        var absTime = Number((this.$('.seg-time').val()));
+        this.model.set('startAT', absTime);         
+        console.log(this.model); 
     },    
 
     setFuncSatValue: function () {
@@ -1000,112 +1006,70 @@ var FuncSegView = Backbone.View.extend({
         this.$('#seg-sat-value').change();
         return;
     },
+    /**
+     * This function takes in an initial value
+     * And returns an html string options with values 
+     * That are either larger or smaller than the initial value
+     * Depending on the positive boolean parameter
+     * 
+     * @param {String} currentValue 
+     * @param {Boolean} positive If true - increasing, if false, decreasing
+     * @returns HTML string of options with values
+     */
+    satValueOptionsPositiveOrNegative: function (currentVal, postive) {
+        var satVals = ["0011", "0010", "0000", "0100", "1100"];
+        var result = '';
+
+        if (postive) {
+            var valuesList = satVals.slice(0, satVals.indexOf(currentVal));
+        } else {
+            var valuesList = satVals.slice(satVals.indexOf(currentVal) + 1);
+        }
+
+        for (let value of valuesList) {
+            result += this.binaryToOption(value);
+        }
+        return result;
+    },
+
+    satValueOptionsAll: function () {
+        var result = '';
+        for (let value of ["0011", "0010", "0000", "0100", "1100", "unknown"]) {
+            result += this.binaryToOption(value);
+        }
+        return result;
+    },
+
+    satValueOptionsNoRandom: function () {
+        var result = '';
+        for (let value of ["0011", "0010", "0100", "1100"]) {
+            result += this.binaryToOption(value);
+        }
+        return result;
+    },
 
     /**
-     * Adds appropriate satisfaction values option tags
-     * for .user-sat-value, which is the select tag used to
-     * indicate satisfaction values when creating a user defined function.
+     * Helper function to convert binary strings to option tags 
+     * 
+     * @param binaryString: This is the binary string stands for the value
+     * @returns a string decode of that binary value
      */
-    checkUDFunctionValues: function() {
-        var func = this.$("#seg-function-type").last().val();
-        console.log(func);
-
-        
-        if (func == 'I' || func == 'D') {
-            var prevVal = this.intention.get('evolvingFunction').getNthRefEvidencePair(2);
-            console.log(func + ' ' + prevVal);
-            if (func == 'I') {
-                this.$("#seg-sat-value").last().html(this.satValueOptionsPositiveOrNegative(prevVal, true));
-                $("#seg-sat-value").last().val("satisfied");
-            } else {
-                this.$("#seg-sat-value").last().html(this.satValueOptionsPositiveOrNegative(prevVal, false));
-                this.$("#seg-sat-value").last().val("denied");
-            }
-        } else if (func == 'R') {
-            this.$("#seg-sat-value").last().html(this.satValueOptionsAll());
-            this.$("#seg-sat-value").last().val("(no value)")
-            this.$("#seg-sat-value").last().prop('disabled', true);
-        } else if (func == 'C') {
-            this.$("#seg-sat-value").last().html(this.satValueOptionsAll());
-            // console.log(this.$("#seg-sat-value").last().html(this.satValueOptionsAll()));
-            // Restrict input to initial satisfaction value if it is the first constraint
-            if (this.index == 0) {
-                this.$("#seg-sat-value").last().val(this.initSatValue);
-                this.model.set('refEvidencePair', this.initSatValue);
-            }
-            if (this.index != 0) {
-                // this.$("#seg-sat-value").val(this.$("#seg-sat-value").last())
-                this.$("#seg-sat-value").last().prop('disabled', '');
-                // this.$("#seg-sat-value").last().val(this.intention.getFuncSegments()[this.index - 1]);
-                this.model.set('refEvidencePair', this.$("#seg-sat-value").last().val());
-            }
-        } 
+        binaryToOption: function(binaryString){
+        switch(binaryString){
+            case "0000":
+                return `<option value="0000">None (⊥, ⊥) </option>`;
+            case "0011":
+                return `<option value="0011">Satisfied (F, ⊥) </option>`;
+            case "0010":
+                return `<option value="0010">Partially Satisfied (P, ⊥) </option>`;
+            case "0100":
+                return `<option value="0100">Partially Denied (⊥, P)</option>`;
+            case "1100":
+                return `<option value="1100">Denied (⊥, F) </option>`;
+            case "unknown":
+                return `'<option value="(no value)"> (no value) </option>'`;
+        }
+        return null;
     },
-    
-        /**
-         * This function takes in an initial value
-         * And returns an html string options with values 
-         * That are either larger or smaller than the initial value
-         * Depending on the positive boolean parameter
-         * 
-         * @param {String} currentValue 
-         * @param {Boolean} positive If true - increasing, if false, decreasing
-         * @returns HTML string of options with values
-         */
-             satValueOptionsPositiveOrNegative: function (currentVal, postive) {
-                var satVals = ["0011", "0010", "0000", "0100", "1100"];
-                var result = '';
-    
-                if (postive) {
-                    var valuesList = satVals.slice(0, satVals.indexOf(currentVal));
-                } else {
-                    var valuesList = satVals.slice(satVals.indexOf(currentVal) + 1);
-                }
-    
-                for (let value of valuesList) {
-                    result += this.binaryToOption(value);
-                }
-                return result;
-            },
-        
-            satValueOptionsAll: function () {
-                var result = '';
-                for (let value of ["0011", "0010", "0000", "0100", "1100", "unknown"]) {
-                    result += this.binaryToOption(value);
-                }
-                return result;
-            },
-        
-            satValueOptionsNoRandom: function () {
-                var result = '';
-                for (let value of ["0011", "0010", "0100", "1100"]) {
-                    result += this.binaryToOption(value);
-                }
-                return result;
-            },
-        
-            /**
-             * Helper function to convert binary strings to option tags 
-             * 
-             * @param binaryString: This is the binary string stands for the value
-             * @returns a string decode of that binary value
-             */
-             binaryToOption: function(binaryString){
-                switch(binaryString){
-                    case "0000":
-                        return `<option value="0000">None (⊥, ⊥) </option>`;
-                    case "0011":
-                        return `<option value="0011">Satisfied (F, ⊥) </option>`;
-                    case "0010":
-                        return `<option value="0010">Partially Satisfied (P, ⊥) </option>`;
-                    case "0100":
-                        return `<option value="0100">Partially Denied (⊥, P)</option>`;
-                    case "1100":
-                        return `<option value="1100">Denied (⊥, F) </option>`;
-                    case "unknown":
-                        return `'<option value="(no value)"> (no value) </option>'`;
-                }
-                return null;
-            },
 });
 
