@@ -1,18 +1,16 @@
 .modal {
     position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
-    padding-top: 100px; /* Location of the box */
+    padding-top: 25px; /* Location of the box */
     left: 0;
     top: 0;
     width: 100%; /* Full width */
     height: 90%; /* Full height */
-    overflow: scroll; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    overflow: auto; /* Enable scroll if needed */
 }
 
 /* Modal Content */
 .modal-content {
+    z-index: 4; /** Sit on top **/ 
     position: relative;
     background-color: #fefefe;
     margin: auto;
@@ -34,6 +32,7 @@
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
+    margin-left: 110px; 
     /* Add some styling */
     display: block;
     height: 30px;
@@ -58,12 +57,11 @@
     width: 100%; /* Full width */
     height: 100%; /* Full height */
     overflow: scroll; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
 
 /*Intermediate Values Content*/
 .intermContent{
+    z-index: 4; /** Sit on top **/ 
     position: relative;
     background-color: #fefefe;
     margin: auto;
