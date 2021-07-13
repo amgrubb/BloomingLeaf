@@ -276,6 +276,9 @@ var IntentionBBM = Backbone.Model.extend({
         var seg2 = null;
         // Creates the correct FunctionSegmentBBM(s) for the selected function type
         switch(funcType) {
+            case 'NT': 
+            var seg =  new FunctionSegmentBBM({type: funcType, refEvidencePair: '(no value)', startTP: '0', startAT: 0});
+                break;
             case 'C':
                 var seg =  new FunctionSegmentBBM({type: funcType, refEvidencePair: initValue, startTP: '0', startAT: 0});  
                 break;
