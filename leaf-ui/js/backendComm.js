@@ -122,24 +122,14 @@ function responseFunc(analysisRequest, response) {
 			return;
 		} else if (analysisRequest.get('action') == 'allNextStates') {
 				console.log("All Paths Results (responseFunc):")
-				// console.log(JSON.stringify(results));
 				// savedAnalysisData.allNextStatesResult = results;
-				// console.log("in backendcomm, saving all next state results");
 				// open_analysis_viewer();
 		} else if (analysisRequest.get('action') == 'singlePath') {
-				savedAnalysisData.singlePathResult = results;	//TODO What is this?
+				savedAnalysisData.singlePathResult = results;	//	TODO What is this?
 				console.log(JSON.stringify(results));			// Print the results of the analysis to the console.
-				var analysisResult = convertToAnalysisResult(results); //Type ResultBBM
+				var analysisResult = convertToAnalysisResult(results); 	// {ResultBBM}
 				displayAnalysis(analysisResult, false);
-
-				// Get the currently selected configuration's results list
-				// .where returns an array, but there should only ever be one selected so we just grab the first element
-				//currConfig = configCollection.where({ selected: true })[0];
 				analysisRequest.addResult(analysisResult);
-				// // Save result to the corresponding analysis configuration object
-				// currAnalysisConfig.addResult(analysisResult);
-				// // Add the analysisConfiguration to the analysisMap for access in the analysis config sidebar
-				// analysisMap.set(currAnalysisConfig.id, currAnalysisConfig);
 		} else {
 			alert("Error: Unknown analysis request type.");
 			return;
@@ -163,13 +153,8 @@ function convertToAnalysisResult(results){
 	var evoView = new EVO(results.elementList)
 	tempResult.set('colorVis', evoView);
 	evoView.singlePathResponse(results.elementList);
-	//tempResult.colorVis.singlePathResponse(results.elementList);	//TODO Update Evo.
 	return tempResult;
 }
-
-
-
-
 
 function open_analysis_viewer(){
     var urlBase = document.URL.substring(0, document.URL.lastIndexOf('/')+1);
