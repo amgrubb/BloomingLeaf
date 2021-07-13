@@ -255,7 +255,7 @@ function getModelAnalysisJson(configCollection) {
  *
  * @returns {Object}
  */
-function getFullJson(configCollection) {
+function getFullJson() {
 	var obj = {};
 	obj.graph = graph;
 	obj.config = configCollection.toJSON();
