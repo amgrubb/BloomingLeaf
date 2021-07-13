@@ -889,7 +889,7 @@ var FuncSegView = Backbone.View.extend({
     events: {
         'change #seg-sat-value':'setFuncSatValue',
         'change #seg-function-type' : 'checkFuncValue', 
-        'keyup .seg-time': 'nameAction',
+        'keyup .seg-time': 'setAbsTime',
     },
 
     render: function() {
@@ -900,7 +900,11 @@ var FuncSegView = Backbone.View.extend({
         if (this.index == 0) {
             this.$('.seg-time').val(0);
             this.$('.seg-time').prop('disabled', true);
+        } else if (this.index != 0 && this.model.get('startAT') != null) {
+            // this.setAbsTime();
+            this.$('.seg-time').val(this.model.get('startAT'));
         }
+
         this.checkFuncValue();
 
         // For all function types except for UD disable the ability to select the function 
@@ -973,11 +977,7 @@ var FuncSegView = Backbone.View.extend({
         var functionType = this.$('#seg-function-type').val();
         console.log(functionType);
         // TODO: i have no clue if this is working
-        if (this.index == 0) {
-            var initValue = this.initSatValue;
-        } else {
-            var initValue = this.intention.get('evolvingFunction').getNthRefEvidencePair(1);
-        }
+        var initValue = this.initSatValue;
         console.log(this.initSatValue);
         console.log(initValue);
         // var markedValue = this.intention.get('evolvingFunction').getNthRefEvidencePair(1);
