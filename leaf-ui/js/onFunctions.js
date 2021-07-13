@@ -566,11 +566,15 @@ function loadConfig(loadedConfig){
     //Clears current configCollection
     while (model = configCollection.first()) {
         model.destroy();
-      }
+    }
+
+    // Individually creates each ConfigBBM and add to collection
     for(let config of loadedConfig){
         var configbbm = new ConfigBBM({name:config.name, action: config.action, conflictLevel: config.conflictLevel, numRelTime: config.numRelTime, currentState: config.currentState, userAssignmentsList : config.userAssignmentsList, previousAnalysis: config.previousAnalysis, selected: config.selected})
-        if (config.results.length !== 0){
-            var results = configbbm.get('results')
+        if (config.results.length !== 0){ //create results if there applicable
+            var results = configbbm.get('results') // grabs the coolection from the configbbm
+            
+            // Individually creates each ResultBBM and add to collection
             for(let result of config.results){
                 var resultsbbm = new ResultBBM({name:result.attributes.name, analysisResult: result.attributes.analysisResult, selected: result.attributes.selected})
                 results.add(resultsbbm)

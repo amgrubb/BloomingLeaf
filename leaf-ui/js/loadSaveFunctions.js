@@ -41,12 +41,13 @@ function loadFromObject(obj) {
 	for (var i = 0; i < cells.length; i++) {
 		cell = cells[i];
 		if (cell.get('type') == "basic.Actor"){
-			createBBActor(cell)
+			createBBActor(cell) //Create actor
 		}else if (cell.get('type') == "basic.CellLink") {
-			createBBLink(cell)
+			createBBLink(cell) //Create link
 		}else{
+			// Singled out functionSegList from obj as it doesn't show up in the graph after reading from JSON
 			var funcseg = obj.graph.cells[i].intention.attributes.evolvingFunction.attributes.functionSegList;
-			createBBElement(cell, funcseg)
+			createBBElement(cell, funcseg) //Create element
 		}
 	}
 	// If the object contains configCollection, create configCollection fields from JSON
@@ -182,18 +183,30 @@ function getFuncSegList(arr) {
 
 */
 
+/**
+ * Returns a backbone model Actor with information from the obj
+ *
+ */
 function createBBActor(cell){
 	var actor = cell.get('actor');
 	var actorbbm = new ActorBBM({type: actor.type, actorName: actor.attributes.actorName});
 	cell.set('actor', actorbbm)
 }
 
+/**
+ * Returns a backbone model Link with information from the obj
+ *
+ */
 function createBBLink(cell){
 	var link = cell.get('link').attributes;
 	var linkbbm = new LinkBBM({displayType: link.displayType, linkType: link.linkType, postType: link.postType, absTime: link.absTime, evolving: link.evolving});
 	cell.set('link', linkbbm)
 }
 
+/**
+ * Returns a backbone model Element with information from the obj
+ *
+ */
 function createBBElement(cell, funcsegs){
 	var intention = cell.get('intention');
 	var evol = intention.attributes.evolvingFunction.attributes;
