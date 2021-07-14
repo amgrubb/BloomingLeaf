@@ -218,7 +218,7 @@ joint.shapes.basic.CellLink = joint.dia.Link.extend({
                 this.label(0, {position: 0.5, attrs: {text: {text: this.get('link').get('linkType')}}});
             }
             else{
-                this.get('link').set('displayType', 'element');
+                this.get('link').set('displayType', 'element'); //TODO: Should this be set to 'link'?
                 this.get('link').set('linkType', 'and');
                 this.label(0, {position: 0.5, attrs: {text: {text: this.get('link').get('linkType')}}});
             }
