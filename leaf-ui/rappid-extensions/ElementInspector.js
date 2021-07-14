@@ -553,6 +553,11 @@ var ElementInspector = Backbone.View.extend({
 
         this.intention.addUserDefinedSeg("C", "0000");
         var funcSegList = this.intention.getFuncSegments();
+        if(funcSegList.length>1){
+            console.log("Number:" + (funcSegList.length-2))
+            funcSegList[funcSegList.length-2].set('current', false);
+            console.log(funcSegList[funcSegList.length-2].get('current'))
+        }
         var model = funcSegList[funcSegList.length-1]
         // this.renderFunctionSegments();
         // $('#segment-functions').prop('disabled', 'disabled');
@@ -880,6 +885,7 @@ var FuncSegView = Backbone.View.extend({
             "none": "0000",
             "(no value)": "(no value)"
         };
+        this.listenTo(this.model, 'change:current', this.checkCurr)
     },
     template: ['<script type="text/template" id="item-template">',
                 '<input class="seg-time" > </input>',
@@ -909,7 +915,7 @@ var FuncSegView = Backbone.View.extend({
 
     render: function() {
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
-       // console.log("Number: " + this.index)
+        console.log(this.model)
         // TODO: also disable it if it is part of a repeating segment
         // Disable the absTime parameter and set it to zero if its the first function segment
         if (this.index == 0) {
@@ -924,7 +930,7 @@ var FuncSegView = Backbone.View.extend({
 
         // For all function types except for UD disable the ability to select the function 
         this.$('#seg-function-type').prop('disabled', 'disabled');
-        if (this.hasUD === true) {
+        if ((this.hasUD === true) & (this.model.get('current') === true)) {
             this.$('#seg-function-type').prop('disabled', '');
         }
 
@@ -932,10 +938,6 @@ var FuncSegView = Backbone.View.extend({
         this.$('#stopTP-out').val(this.stopTP);
        // console.log(this.model.get('refEvidencePair'));
 
-        if (this.selected == false) {
-            this.$('#seg-function-type').prop('disabled', 'disabled');
-            this.$('#seg-sat-value').prop('disabled', 'disabled');
-        }
         return this;
     },
 
@@ -1058,19 +1060,6 @@ var FuncSegView = Backbone.View.extend({
             if (this.index != 0) {
                 // this.$("#seg-sat-value").val(this.$("#seg-sat-value").last())
                 this.$("#seg-sat-value").prop('disabled', '');
-                
-                console.log(this.$("#seg-sat-value").val());
-                
-                // this.$("#seg-sat-value").val( this.intention.getFuncSegments()[this.index-1].get('refEvidencePair'));
-                // this.$("#seg-sat-value").val(this.intention.get('evolvingFunction').getNthRefEvidencePair(this.index));
-                console.log(this.intention.get('evolvingFunction').getNthRefEvidencePair(2));
-                var len = this.intention.getFuncSegments().length;
-                //if(this.index + 1==len){
-                //this.$("#seg-sat-value").val(this.intention.getFuncSegments()[this.index-1].get('refEvidencePair'));
-                //}
-                console.log(this.intention.getFuncSegments()[len - 2].get('refEvidencePair'));
-                // console.log(len);
-                // this.model.set('refEvidencePair', this.$("#seg-sat-value").val());
             }
         }
         return; 
@@ -1141,5 +1130,10 @@ var FuncSegView = Backbone.View.extend({
         }
         return null;
     },
+
+    checkCurr: function () {
+        this.$('#seg-function-type').prop('disabled', true);
+        this.$('#seg-sat-value').prop('disabled', true);
+    }
 });
 
