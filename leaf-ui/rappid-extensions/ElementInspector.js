@@ -770,7 +770,7 @@ var ElementInspector = Backbone.View.extend({
             $(".text-label").css("visibility", "hidden");
         }
         // Only creates the FunctionSegmentView if there is a function segment
-        if(this.intention.get('evolvingFunction') != null){
+        if(this.intention.get('evolvingFunction') != null && this.intention.get('evolvingFunction').get('type') != 'NT'){
             var hasUD = false; 
             if (this.intention.get('evolvingFunction').get('type') === 'UD') {
                 var hasUD = true;
