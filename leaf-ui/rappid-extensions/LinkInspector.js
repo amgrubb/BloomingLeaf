@@ -1,7 +1,7 @@
 // Class for the Link properties tab that appears when link settings are clicked.
 
 var LinkInspector = Backbone.View.extend({
-    model: joint.dia.CellLink,
+    model: joint.shapes.basic.CellLink,
 
     initialize:function(){
         this.link = this.model.get('link');
@@ -104,7 +104,7 @@ var LinkInspector = Backbone.View.extend({
     /** Chooses and sets correct template for link */
     render: function() {
         // Intention Link template
-        if(this.model.get('type') == 'element') {
+        if(this.link.get('displayType') == 'element') {
             // Constant Link
             if (!this.link.get('evolving')) {
                 this.$el.html(_.template(this.constanttemplate)());

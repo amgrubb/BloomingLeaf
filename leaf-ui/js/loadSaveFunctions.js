@@ -21,7 +21,6 @@ reader.onload = function() {
 	if (!reader.result) {
 		return;
 	}
-
 	var result = JSON.parse(reader.result);
 	loadFromObject(result);
     var graphtext = JSON.stringify(graph.toJSON());
@@ -37,41 +36,24 @@ reader.onload = function() {
  * @param {Object} obj
  */
 function loadFromObject(obj) {
-	model = new Model();
-	model.actors = getActorsArr(obj.model.actors);
-	model.intentions = getIntentionsArr(obj.model.intentions);
-	model.links = getLinksArr(obj.model.links);
-	model.constraints = getConstArr(obj.model.constraints);
-	model.maxAbsTime = obj.model.maxAbsTime;
-
-	// store deep copy of model for detecting model changes
-	// copy is NOT of type Model
-    var previousModel = JSON.parse(JSON.stringify(model));
-
-	// Clear any previous analysis data 
-	if (analysisMap.size != 0) {
-		analysisMap.clear();
-		currAnalysisConfig = null;
-	}
-
-	// If the object contains analysis, create analysis fields from JSON
-	if (obj.analysisMap != undefined) {
-		// Parse analysis as map
-		var tempMap = new Map(Object.entries(obj.analysisMap));
-		// Loop through all analysis configs
-		for(let configObj of tempMap.values()) {
-			var config = new AnalysisConfiguration(configObj.id, new AnalysisRequest(configObj.analysisRequest), configObj.initialPosition);
-			config.setResults(configObj.analysisResults);
-			// Add config to the global analysisMap
-			analysisMap.set(config.id, config);
-		}
-	} else {
-		// Else if no analysisMap param, grab the analysisRequest
-		analysisRequest = Object.assign(new AnalysisRequest, obj.analysisRequest);
-		
-	}
-
 	graph.fromJSON(obj.graph);
+	var cells = graph.getCells();
+	for (var i = 0; i < cells.length; i++) {
+		cell = cells[i];
+		if (cell.get('type') == "basic.Actor"){
+			createBBActor(cell) //Create actor
+		}else if (cell.get('type') == "basic.CellLink") {
+			createBBLink(cell) //Create link
+		}else{
+			// Singled out functionSegList from obj as it doesn't show up in the graph after reading from JSON
+			var funcseg = obj.graph.cells[i].intention.attributes.evolvingFunction.attributes.functionSegList;
+			createBBElement(cell, funcseg) //Create element
+		}
+	}
+	// If the object contains configCollection, create configCollection fields from JSON
+	if (obj.configCollection != undefined) {
+		loadConfig(obj.configCollection)
+	} 
 }
 
 /**
@@ -81,6 +63,7 @@ function loadFromObject(obj) {
  * @param {Array.<Object>} arr
  * @returns {Array.<Constraint>}
  */
+/*
 function getConstArr(arr) {
 	var res = [];
 
@@ -98,7 +81,7 @@ function getConstArr(arr) {
  *
  * @param {Array.<Object>} arr
  * @returns {Array.<Actor>}
- */
+ *//*
 function getActorsArr(arr) {
     var res = [];
     var maxID = 0;
@@ -118,7 +101,7 @@ function getActorsArr(arr) {
  *
  * @param {Array.<Object>} arr
  * @returns {Array.<Link>}
- */
+ *//*
 function getLinksArr(arr) {
 	var res = [];
 	var maxID = 0;
@@ -142,7 +125,7 @@ function getLinksArr(arr) {
  *
  * @param {Array.<Object>} arr
  * @returns {Array.<Intention>}
- */
+ *//*
 function getIntentionsArr(arr) {
     var res = [];
     var maxID = 0;
@@ -164,7 +147,7 @@ function getIntentionsArr(arr) {
  *
  * @param {Object} obj
  * @returns {EvolvingFunction}
- */
+ *//*
 function getEvolvingFunction(obj) {
 	var func = new EvolvingFunction(obj.intentionID);
 	func.stringDynVis = obj.stringDynVis;
@@ -179,6 +162,7 @@ function getEvolvingFunction(obj) {
  * @param {Array.<Object>} arr
  * @returns {Array.<FuncSegment|RepFuncSegment>}
  */
+/* TODO: Re-implement once we have finalized the functions segments.
 function getFuncSegList(arr) {
 	var res = [];
 	for (var i = 0; i < arr.length; i++) {
@@ -198,20 +182,49 @@ function getFuncSegList(arr) {
 	return res;
 }
 
+*/
+
 /**
- * Returns an object that contains the current graph, model, and analysis request.
- * This return object is what the user would download when clicking the Save button
- * in the top menu bar.
+ * Returns a backbone model Actor with information from the obj
  *
- * @returns {Object}
  */
-function getModelJson() {
-	var obj = {};
-	obj.graph = graph.toJSON();
-	obj.model = model;
-	obj.analysisRequest = analysisRequest;
-	return obj;
+function createBBActor(cell){
+	var actor = cell.get('actor');
+	var actorBBM = new ActorBBM({type: actor.type, actorName: actor.attributes.actorName});
+	cell.set('actor', actorBBM)
 }
+
+/**
+ * Returns a backbone model Link with information from the obj
+ *
+ */
+function createBBLink(cell){
+	var link = cell.get('link').attributes;
+	var linkBBM = new LinkBBM({displayType: link.displayType, linkType: link.linkType, postType: link.postType, absTime: link.absTime, evolving: link.evolving});
+	cell.set('link', linkBBM)
+}
+
+/**
+ * Returns a backbone model Element with information from the obj
+ *
+ */
+function createBBElement(cell, funcsegs){
+	var intention = cell.get('intention');
+	var evol = intention.attributes.evolvingFunction.attributes;
+	var intentionBBM = new IntentionBBM({nodeName: intention.nodeName, nodeType: intention.nodeType});
+
+	var evolving = new EvolvingFunctionBBM({type: evol.type, hasRepeat: evol.hasRepeat, repStart: evol.repStart, repStop: evol.repStop, repCount: evol.repCount, repAbsTime: evol.repAbsTime});
+	for (let funcseg of funcsegs){
+		var funcsecbbm = new FunctionSegmentBBM({type: funcseg.attributes.type, refEvidencePair: funcseg.attributes.refEvidencePair, startTP: funcseg.attributes.startTP, startAT: funcseg.attributes.startAT})
+		evolving.get('functionSegList').push(funcsecbbm)
+	}
+	var userEval = intention.attributes.userEvaluationList[0].attributes;
+	intentionBBM.get('userEvaluationList').push(new UserEvaluationBBM({assignedEvidencePair: userEval.assignedEvidencePair, absTime: userEval.absTime}))
+	intentionBBM.set('evolvingFunction', evolving)
+
+	cell.set('intention', intentionBBM)
+}
+
 
 /**
  * Returns an object that contains the current graph, model, and analysis configurations
@@ -221,13 +234,17 @@ function getModelJson() {
  *
  * @returns {Object}
  */
-function getModelAnalysisJson() {
+function getModelAnalysisJson(configCollection) {
 	var obj = {};
-	// obj.analysis = true;
-	obj.graph = graph.toJSON();
-	obj.model = model;
-	// Remove analysis results then convert to array tuple for JSON.stringify() functionality
-	obj.analysisMap = Object.fromEntries(removeAnalysisResults(analysisMap));
+	obj.graph = graph;
+	// Clone to spearate the result removal from what is displayed in ConfigInspector 
+	var newConfig = configCollection.clone();
+
+	// Remove results
+	for (var i = 0; i<newConfig.length; i++){
+		newConfig.at(i).set('results', new ResultCollection([]))
+	}
+	obj.configCollection = newConfig.toJSON()
 
 	return obj;
 }
@@ -239,33 +256,12 @@ function getModelAnalysisJson() {
  *
  * @returns {Object}
  */
-function getFullJson() {
+function getFullJson(configCollection) {
 	var obj = {};
-	obj.graph = graph.toJSON();
-	obj.model = model;
-	// Convert to array tuple for JSON.stringify() functionality
-	// obj.analysisMap = Array.from(analysisMap.entries());
-	obj.analysisMap = Object.fromEntries(analysisMap);
+	obj.graph = graph;
+	obj.config = configCollection.toJSON();
 
 	return obj;
-}
-
-/**
- * Helper function to return a copy of the analysisMap with no
- * analysisResults in each analysisConfig
- */
-function removeAnalysisResults(analysisMap) {
-	// Deep copy the map: stringify, then parse to new Map
-	let tempJSON = JSON.stringify(Object.fromEntries(analysisMap));
-	var analysisMapNoResults = new Map(Object.entries(JSON.parse(tempJSON)));
-	
-	// for each AnalysisConfiguration obj
-	for(let config of analysisMapNoResults.values()) {
-		// put empty array into the analysisResults field
-		config.deleteResults();
-	}
-
-	return analysisMapNoResults;
 }
 
 /**

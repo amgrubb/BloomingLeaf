@@ -15,6 +15,11 @@ public class Actor extends LinkableElement {
 		actorType = nodeType;
 		// nodeType indicates whether it is an Actor, Role, or Agent.
 	}
+	public Actor(String nodeID, String nodeName, String nodeType, String uniqueID){
+		super(nodeID, nodeName, uniqueID);
+		actorType = nodeType;
+		// nodeType indicates whether it is an Actor, Role, or Agent.
+	}
 
 	public String getActorType() {
 		return actorType;

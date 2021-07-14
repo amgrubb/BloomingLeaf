@@ -2,30 +2,20 @@
  * This file contains functions associated with the Next State window.
  */
 
-// GLOBAL VARIABLES
-//Defining local scope
-var analysis = {};
+{ // LOCAL GLOBAL VARIABLES
+let analysis = {};
 analysis.analysisResult;
 analysis.elements = [];
 analysis.currentState;
-var tempResults;
-var filterOrderQueue = [];
-var analysisRequest;
-var analysisResult;
-var savedAnalysisData;
-var graph;
-var current;
+let tempResults;
+let filterOrderQueue = [];
+let analysisRequest;
+let analysisResult;
+let savedAnalysisData;
+let graph;
+let current;
 
-var model;
-
-var satValueDict = {
-    "unknown": "0000",
-    "satisfied": "0011",
-    "partiallysatisfied": "0010",
-    "partiallydenied": "0100",
-    "denied": "1100",
-    "none": "0000"
-};
+let model;
 
 //Executing scripts only when page is fully loaded
 window.onload = function(){
@@ -58,7 +48,7 @@ function init(){
         gridSize: 10,
         perpendicularLinks: false,
         model: analysis.graph,
-        defaultLink: new joint.dia.Link({
+        defaultLink: new joint.shapes.basic.CellLink({
             'attrs': {
                 '.connection': {stroke: '#000000'},
                 '.marker-source': {'d': '0'},
@@ -76,20 +66,6 @@ function init(){
     $('#paper').append(analysis.paperScroller.render().el);
     analysis.paperScroller.center();
 
-    //Load graph by the cookie
-    /*if (analysis.page.cookie){
-        var cookies = analysis.page.cookie.split(";");
-        var prevgraph = "";
-        for (var i = 0; i < cookies.length; i++){
-            if (cookies[i].indexOf("graph=") >= 0){
-                prevgraph = cookies[i].substr(6);
-                break;
-            }
-        }
-        if (prevgraph){
-            analysis.graph.fromJSON(JSON.parse(prevgraph));
-        }
-    }*/
     analysis.graph.fromJSON(JSON.parse(JSON.stringify(window.opener.graph.toJSON())));
 
     //Filter out Actors
@@ -110,20 +86,12 @@ function renderNavigationSidebar(currentPage = 0){
     var currentPageIn = document.getElementById("currentPage");
     var num_states_lbl = document.getElementById("num_states_lbl");
 
-
-        //analysis.parentResults = jQuery.extend({}, window.opener.global_analysisResult);
-
-    //if(!analysis.analysisResult){
-     //   analysis.analysisResult = analysis.parentResults;
-    //}
-
     num_states_lbl.innerHTML += (analysis.analysisResult.allSolution.length);
 
     currentPageIn.value = currentPage.toString();
 
     updatePagination(currentPage);
     updateNodesValues(currentPage);
-    //updateSliderValues(currentPage);
 
     EVONextState.setColorBlindFromPrevWindow();
     EVONextState.refresh();
@@ -1392,7 +1360,8 @@ function save_current_state(){
     jsObject.analysisRequest = analysisRequest;
     console.log(jsObject);
 
-
+    // TODO Update call to backendComm.
+    console.log("TODO: Update Call to BackendComm");
     window.opener.backendComm(jsObject);
 
     window.close();
@@ -1423,7 +1392,11 @@ function generate_next_states(){
     jsObject.analysisRequest = analysisRequest;
     console.log(analysisRequest);
 
-    backendComm(jsObject);
+    // TODO Update call to backendComm.
+    console.log("TODO: Update Call to BackendComm");
+    backendComm(jsObject);      
 
 
 }
+
+} // End of scope of local global variables

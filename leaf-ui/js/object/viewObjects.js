@@ -76,22 +76,3 @@ class ChartObj {
 		});
 	}
 }
-
-class SliderObj {
-	/**
-	 * TODO finish docstring by figuring out what type of var params are
-	 * TODO see if we can move createSlider, removeSlider, updateSliderValues, etc. to the class definition
-	 * TODO integrate with the HTML implementation of the noUISlider lib in a Backbone template?
-	 * 
-	 * Used for displaying, updating, and removing slider in analysis view.
-	 * Holds the information displayed in the slider on the UI
-	 * JavaScript range slider library [noUISlider]
-	 * 
-	 * @param {} sliderElement
-	 * @param {} sliderValueElement
-	 */
-	constructor() {
-        this.sliderElement = document.getElementById('slider');
-		this.sliderValueElement = document.getElementById('sliderValue');
-    }
-}
