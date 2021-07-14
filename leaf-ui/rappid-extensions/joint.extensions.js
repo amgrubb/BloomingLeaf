@@ -190,14 +190,14 @@ joint.shapes.basic.Resource = joint.shapes.basic.Intention.extend({
     }
 });
 
-joint.dia.CellLink = joint.dia.Link.extend({
+joint.shapes.basic.CellLink = joint.dia.Link.extend({
     // In initialize, everytime the target is changed, the code updates it
     initialize: function(){
         this.on('change:target', this.updateLinkPointers, this);
         this.on('change:source', this.updateLinkPointers, this);
     },
     defaults: joint.util.deepSupplement({
-        type: 'Link',
+        type: 'basic.CellLink',
         link: null,
     }),
 
@@ -210,15 +210,15 @@ joint.dia.CellLink = joint.dia.Link.extend({
         var source = this.getSourceElement();
         if ((target !== null && source !== null)){
             if (((source.get('type') === 'basic.Actor') && (target.get('type')  !== 'basic.Actor')) || ((source.get('type') !== 'basic.Actor') && (target.get('type')  === 'basic.Actor'))){
-                this.set('type', 'error');
+                this.get('link').set('displayType', 'error');
                 this.label(0 , {position: 0.5, attrs: {text: {text: 'error'}}});
             } else if (source.get('type') === "basic.Actor") {
-                this.set('type', 'Actor');
+                this.get('link').set('displayType', 'Actor');
                 this.get('link').set('linkType', 'is-a');
                 this.label(0, {position: 0.5, attrs: {text: {text: this.get('link').get('linkType')}}});
             }
             else{
-                this.set('type', 'element');
+                this.get('link').set('displayType', 'element'); //TODO: Should this be set to 'link'?
                 this.get('link').set('linkType', 'and');
                 this.label(0, {position: 0.5, attrs: {text: {text: this.get('link').get('linkType')}}});
             }

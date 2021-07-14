@@ -48,7 +48,7 @@ function init(){
         gridSize: 10,
         perpendicularLinks: false,
         model: analysis.graph,
-        defaultLink: new joint.dia.Link({
+        defaultLink: new joint.shapes.basic.CellLink({
             'attrs': {
                 '.connection': {stroke: '#000000'},
                 '.marker-source': {'d': '0'},
@@ -1360,7 +1360,8 @@ function save_current_state(){
     jsObject.analysisRequest = analysisRequest;
     console.log(jsObject);
 
-
+    // TODO Update call to backendComm.
+    console.log("TODO: Update Call to BackendComm");
     window.opener.backendComm(jsObject);
 
     window.close();
@@ -1391,7 +1392,9 @@ function generate_next_states(){
     jsObject.analysisRequest = analysisRequest;
     console.log(analysisRequest);
 
-    backendComm(jsObject);
+    // TODO Update call to backendComm.
+    console.log("TODO: Update Call to BackendComm");
+    backendComm(jsObject);      
 
 
 }
