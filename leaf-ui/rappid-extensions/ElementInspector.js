@@ -107,10 +107,10 @@ var ElementInspector = Backbone.View.extend({
                     '<br>',
                     // Error message is controlled dynamically
                     '<label id="repeat-error"></label>',
-                    '<select id="repeat-begin" class="repeat-select">',
+                    '<select id="repeat-begin" class="repeat-select"style = "position:relative; left:38px; width: 93px">',
                         '<option class="select-placeholder" selected disabled value="">Begin</option>',
                     '</select>',
-                    '<select id="repeat-end" class="repeat-select">',
+                    '<select id="repeat-end" class="repeat-select" style= "position:relative; right:18px; width: 93px">',
                         '<option class="select-placeholder" selected disabled value="">End</option>',
                     '</select>',
                     '<label style="float:left; font-size:0.8em;" id="repeat-begin2" class="repeat-select2">Repeat counts:</label>',
