@@ -78,52 +78,23 @@ $('#btn-save').on('click', function () {
     if (name) {
         clearCycleHighlighting();
         EVO.deactivate();
-        // EVO.returnAllColors(graph.getElements(), paper);
-        // EVO.revertIntentionsText(graph.getElements(), paper);    
-        var fileName = name + ".json";
-        var obj = getModelJson();
+       // EVO.returnAllColors(graph.getElements(), paper);
+       // EVO.revertIntentionsText(graph.getElements(), paper);    
+		var fileName = name + ".json";
+        obj = {graph: graph.toJSON()} //same structure as the other two save options
         download(fileName, JSON.stringify(obj));
         //IntentionColoring.refresh();
     }
 });
-
-// Save the current graph and analysis (without results) to json file
-$('#btn-save-analysis').on('click', function () {
-    var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
-    if (name) {
-        clearCycleHighlighting();
-        EVO.deactivate();
-        var fileName = name + ".json";
-        var obj = getModelAnalysisJson();
-        download(fileName, JSON.stringify(obj));
-    }
-});
-
-// Save the current graph and analysis (with results) to json file
-$('#btn-save-all').on('click', function () {
-    var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
-    if (name) {
-        clearCycleHighlighting();
-        EVO.deactivate();
-        var fileName = name + ".json";
-        var obj = getFullJson();
-        download(fileName, JSON.stringify(obj));
-    }
-});
-
-// Workaround for load, activates a hidden input element
-$('#btn-load').on('click', function () {
-    $('#loader').click();
-});
-
-$('#btn-debug').on('click', function () { console.log(graph.toJSON()) });
-$('#btn-zoom-in').on('click', function () { zoomIn(paperScroller); });
-$('#btn-zoom-out').on('click', function () { zoomOut(paperScroller); });
-$('#btn-fnt').on('click', function () { defaultFont(paper); });
-$('#btn-fnt-up').on('click', function () { fontUp(paper); });
-$('#btn-fnt-down').on('click', function () { fontDown(paper); });
-$('#legend').on('click', function () { window.open('./userguides/legend.html', 'newwindow', 'width=300, height=250'); return false; });
-$('#evo-color-key').on('click', function () { window.open('./userguides/evo.html', 'newwindow', 'width=500, height=400'); return false; });
+ 
+$('#btn-debug').on('click', function(){ console.log(graph.toJSON()) });
+$('#btn-zoom-in').on('click', function(){ zoomIn(paperScroller); });
+$('#btn-zoom-out').on('click', function(){ zoomOut(paperScroller); });
+$('#btn-fnt').on('click', function(){ defaultFont(paper);});
+$('#btn-fnt-up').on('click', function(){  fontUp(paper);});
+$('#btn-fnt-down').on('click', function(){ fontDown(paper);}); 
+$('#legend').on('click', function(){ window.open('./userguides/legend.html', 'newwindow', 'width=300, height=250'); return false;});
+$('#evo-color-key').on('click', function(){ window.open('./userguides/evo.html', 'newwindow', 'width=500, height=400'); return false;});
 
 /**
  * Displays the absolute and relative assignments modal for the user.
@@ -211,13 +182,11 @@ graph.on("add", function (cell) {
     // Find how many cells are created on the graph
     var createdInstance = paper.findViewsInArea(paper.getArea())
 
-    if (cell instanceof joint.dia.Link) {
-        if (graph.getCell(cell.get("source").id) instanceof joint.shapes.basic.Actor) {
-            cell.prop("type", "Actor");
-            cell.label(0, { attrs: { text: { text: "is-a" } } });
-            cell.set('link', new LinkBBM({ linkType: 'is-a' }));
-        } else {
-            cell.prop("type", "element");
+	if (cell instanceof joint.shapes.basic.CellLink){
+        if (graph.getCell(cell.get("source").id) instanceof joint.shapes.basic.Actor){
+            cell.label(0,{attrs:{text:{text:"is-a"}}});
+            cell.set('link', new LinkBBM({displayType: "actor", linkType: 'is-a'}));
+		} else {
             cell.set('link', new LinkBBM({}));
         }
     } else if (cell instanceof joint.shapes.basic.Intention) {
@@ -363,11 +332,8 @@ paper.on({
         // when interacting w/ cells on paper in modeling mode
         if (cellView.model.findView(paper).options.interactive) {
             var cell = cellView.model;
-            // TODO: There is a link connect/link disconnect function that could be used here
-            // https://resources.jointjs.com/docs/jointjs/v3.3/joint.html#dia.Paper.events
-            // And then the cell:pointer events could be changed to element:pointer and links could be handled seperately
-            if (cell instanceof joint.dia.Link) { // Link behavior
-                if (evt.data.move) {
+            if (cell instanceof joint.shapes.basic.CellLink) { // Link behavior
+                if (evt.data.move){
                     // If link moved, reparent
                     cell.reparent();
                 }
@@ -423,7 +389,9 @@ paper.on("link:options", function (cell) {
 
     clearInspector();
 
-    if (cell.model.get('type') == 'error') {
+	clearInspector();
+    
+    if (cell.model.get('link').get('displayType') == 'error'){
         alert('Sorry, this link is not valid. Links must be between two elements of the same type. Aka Actor->Actor or Intention->Intention');
         return;
     }
@@ -544,6 +512,59 @@ paper.on("link:options", function (cell) {
         // Delete cookie by setting expiry to past date
         document.cookie = 'graph={}; expires=Thu, 18 Dec 2013 12:00:00 UTC';
     }
+
+// Save the current graph and analysis (without results) to json file
+$('#btn-save-analysis').on('click', function() {
+	var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
+	if (name){
+        clearCycleHighlighting();
+        EVO.deactivate();   
+		var fileName = name + ".json";
+		var obj = getModelAnalysisJson(configCollection);
+        download(fileName, JSON.stringify(obj));
+	}
+});
+
+// Save the current graph and analysis (with results) to json file
+$('#btn-save-all').on('click', function() {
+	var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
+	if (name){
+        clearCycleHighlighting();
+        EVO.deactivate();   
+		var fileName = name + ".json";
+		var obj = getFullJson(configCollection);
+        download(fileName, JSON.stringify(obj));
+	}
+});
+
+// Workaround for load, activates a hidden input element
+$('#btn-load').on('click', function(){
+	$('#loader').click();
+});
+
+// Load ConfigCollection for display 
+// TODO: modify it to read results after results can be shown
+function loadConfig(loadedConfig){
+    //Clears current configCollection
+    while (model = configCollection.first()) {
+        model.destroy();
+    }
+
+    // Individually creates each ConfigBBM and add to collection
+    for(let config of loadedConfig){
+        var configbbm = new ConfigBBM({name:config.name, action: config.action, conflictLevel: config.conflictLevel, numRelTime: config.numRelTime, currentState: config.currentState, userAssignmentsList : config.userAssignmentsList, previousAnalysis: config.previousAnalysis, selected: config.selected})
+        if (config.results.length !== 0){ //create results if there applicable
+            var results = configbbm.get('results') // grabs the coolection from the configbbm
+            
+            // Individually creates each ResultBBM and add to collection
+            for(let result of config.results){
+                var resultsbbm = new ResultBBM({name:result.attributes.name, analysisResult: result.attributes.analysisResult, selected: result.attributes.selected})
+                results.add(resultsbbm)
+            }
+        }
+        configCollection.add(configbbm)
+    }
+}
 
 } // End scope of configCollection and configInspector
 

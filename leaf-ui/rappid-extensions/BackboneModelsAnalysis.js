@@ -32,12 +32,12 @@
  *
  */
 var ResultBBM = Backbone.Model.extend({
-    initialize: function(options){  
-        _.extend({}, this.defaults, options);    
+    initialize : function(options){
+        _.extend({}, this.defaults, options);
     },
 
     defaults: function() {
-        return {
+        return {    //TODO: Verify if this return should be kept.
             name:"Default Result",
             assignedEpoch: null,
             timePointPath: null,
@@ -89,9 +89,9 @@ var ResultCollection = Backbone.Collection.extend({
  */
 var ConfigBBM = Backbone.Model.extend({
     initialize : function(options){
-        _.extend({}, this.defaults, options); 
         this.results = new ResultCollection([]);
         this.listenTo(this, 'change:selected', this.updateSelected);
+        _.extend({}, this.defaults, options);
     },
 
     idAttribute: "uid",
