@@ -11,5 +11,4 @@ import java.lang.reflect.Type;
  * This also makes converting the JSON to Java objects easier.
  */
 public interface FuncWrapper {
-	
 }

@@ -141,7 +141,7 @@ function adjustSliderWidth(maxValue){
  *   Current value of the slider
  * @param {Number} currentValueLimit
  * @param {ResultBBM} currentAnalysis
- *  an ResultBBM object that contains data about the analysis that the back end performed
+ *  a ResultBBM object that contains data about the analysis that the back end performed
  */
 function updateSliderValues(sliderValue, currentAnalysis){
     currentAnalysis.set('selectedTimePoint', sliderValue);
