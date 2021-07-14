@@ -551,6 +551,8 @@ var ElementInspector = Backbone.View.extend({
         // TODO: Fix so there is startTime input
         this.intention.addUserDefinedSeg("C", "0000", 0);
         this.renderFunctionSegments();
+        // TODO: disable function segments that are not the most recent
+        this.$('.segment-functions').prop('disabled', 'disabled');
 
         // $(".user-sat-value").last().prop('disabled', true);
         // $(".user-sat-value").last().css("background-color",'grey');
@@ -808,7 +810,7 @@ var ElementInspector = Backbone.View.extend({
         // Only creates the FunctionSegmentView if there is a function segment
         if(this.intention.get('evolvingFunction') != null){
             var hasUD = false; 
-            var selected = false;
+            //var selected = false;
             if (this.intention.get('evolvingFunction').get('type') === 'UD') {
                 var hasUD = true;
             }
@@ -818,12 +820,14 @@ var ElementInspector = Backbone.View.extend({
             // $('#segment-functions').append('<output class= text-label>absTime</output>'),
             funcSegList.forEach(
                 funcSeg => {
-                    if (i == funcSegList.length-1) {
-                        selected = true;
-                    }
+                    // if (i == funcSegList.length-1) {
+                    //     selected = true;
+                    // } else {
+                    //     selected == false;
+                    // }
                     console.log(funcSeg.get('refEvidencePair'));
                     // this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair')
-                    var functionSegView = new FuncSegView({model: funcSeg, intention: this.intention, hasUD: hasUD, index: i, initSatValue: this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair'), selected: selected});
+                    var functionSegView = new FuncSegView({model: funcSeg, intention: this.intention, hasUD: hasUD, index: i, initSatValue: this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair')});
                     $('#segment-functions').append(functionSegView.el);
                     functionSegView.render(); 
                     i++; 
@@ -872,7 +876,7 @@ var FuncSegView = Backbone.View.extend({
             "none": "0000",
             "(no value)": "(no value)"
         };
-        this.selected = true;
+        // this.selected = true;
     },
     template: ['<script type="text/template" id="item-template">',
                 '<input class="seg-time" > </input>',
@@ -923,7 +927,6 @@ var FuncSegView = Backbone.View.extend({
 
         // Have to manually add stopTP to html because it is not in the FunctionSegmentBBM
         this.$('#stopTP-out').val(this.stopTP);
-        console.log(this.absTime);
         console.log(this.model.get('refEvidencePair'));
 
         if (this.selected == false) {
@@ -948,6 +951,7 @@ var FuncSegView = Backbone.View.extend({
         console.log(this.$('#seg-sat-value').val());
         this.model.set('refEvidencePair', this.$('#seg-sat-value').val()) // 4 digit representation
         console.log(this.model.get('refEvidencePair'));
+        console.log(this.model);
 
         // TODO: make it so the chart updates too 
         // this.intention.updateChart();  
@@ -989,7 +993,7 @@ var FuncSegView = Backbone.View.extend({
         // var markedValue = this.intention.get('evolvingFunction').getNthRefEvidencePair(1);
         // var markedValue = this.model.get('refEvidencePair');
         var markedValue = this.intention.get('evolvingFunction').getNthRefEvidencePair(1);
-        console.log(this.intention.get('evolvingFunction'));
+        console.log(this.intention.get('evolvingFunction').getNthRefEvidencePair(1));
         console.log(markedValue);
         if (functionType == 'R') {
             this.$('#seg-sat-value').html(this.satValueOptionsNoRandom());
@@ -1016,36 +1020,52 @@ var FuncSegView = Backbone.View.extend({
         var func = this.$("#seg-function-type").last().val();
         console.log(func);
 
-
+        /**
         if (func == 'I' || func == 'D') {
             var prevVal = this.intention.get('evolvingFunction').getNthRefEvidencePair(2);
             console.log(func + ' ' + prevVal);
             if (func == 'I') {
-                this.$("#seg-sat-value").last().html(this.satValueOptionsPositiveOrNegative(prevVal, true));
-                $("#seg-sat-value").last().val("satisfied");
+                this.$("#seg-sat-value").html(this.satValueOptionsPositiveOrNegative(prevVal, true));
+                this.$("#seg-sat-value").val("satisfied"); 
             } else {
-                this.$("#seg-sat-value").last().html(this.satValueOptionsPositiveOrNegative(prevVal, false));
-                this.$("#seg-sat-value").last().val("denied");
+                this.$("#seg-sat-value").html(this.satValueOptionsPositiveOrNegative(prevVal, false));
+                this.$("#seg-sat-value").val("denied");
             }
         } else if (func == 'R') {
-            this.$("#seg-sat-value").last().html(this.satValueOptionsAll());
-            this.$("#seg-sat-value").last().val("(no value)")
-            this.$("#seg-sat-value").last().prop('disabled', true);
+            this.$("#seg-sat-value").html(this.satValueOptionsAll());
+            this.$("#seg-sat-value").val("(no value)")
+            this.$("#seg-sat-value").prop('disabled', true);
+            
         } else if (func == 'C') {
+            */
+            if (func == 'C') {
             this.$("#seg-sat-value").last().html(this.satValueOptionsAll());
+            // this.$("#seg-sat-value").val("satisfied");
             // console.log(this.$("#seg-sat-value").last().html(this.satValueOptionsAll()));
             // Restrict input to initial satisfaction value if it is the first constraint
             if (this.index == 0) {
-                this.$("#seg-sat-value").last().val(this.initSatValue);
+                this.$("#seg-sat-value").val(this.initSatValue);
+                console.log(this.initSatValue);
+                console.log(this.model.get('refEvidencePair'));
                 this.model.set('refEvidencePair', this.initSatValue);
+                console.log(this.model.get('refEvidencePair'));
             }
             if (this.index != 0) {
                 // this.$("#seg-sat-value").val(this.$("#seg-sat-value").last())
-                this.$("#seg-sat-value").last().prop('disabled', '');
-                // this.$("#seg-sat-value").last().val(this.intention.getFuncSegments()[this.index - 1]);
-                this.model.set('refEvidencePair', this.$("#seg-sat-value").last().val());
+                this.$("#seg-sat-value").prop('disabled', '');
+                console.log(this.$("#seg-sat-value").val());
+                // this.$("#seg-sat-value").val( this.intention.getFuncSegments()[this.index-1].get('refEvidencePair'));
+                // this.$("#seg-sat-value").val(this.intention.get('evolvingFunction').getNthRefEvidencePair(this.index));
+                console.log(this.intention.get('evolvingFunction').getNthRefEvidencePair(2));
+                var len = this.intention.getFuncSegments().length;
+                this.$("#seg-sat-value").val(this.intention.getFuncSegments()[this.index-2].get('refEvidencePair'));
+                console.log(this.intention.getFuncSegments()[this.index - 2].get('refEvidencePair'));
+                // console.log(len);
+                // this.model.set('refEvidencePair', this.$("#seg-sat-value").val());
             }
-        } 
+        }
+        this.$('#seg-sat-value').change();
+        return; 
     },
 
     /**
