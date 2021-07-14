@@ -39,6 +39,8 @@ var UserEvaluationCollection = Backbone.Collection.extend({
  * Start time point (char) 0,A,B,C
  * @param {Integer} startAT
  * Assigned/Absolute Time - Integer time value
+ * @param {Boolean} current
+ * True if FunctionSegmentBBM is the most recent and enabled, false if not most recent and it becomes disabled
  * 
  */
 var FunctionSegmentBBM = Backbone.Model.extend({
@@ -233,8 +235,7 @@ var IntentionBBM = Backbone.Model.extend({
         if (this.get('evolvingFunction') != null) {
             var funcSegList = this.getFuncSegments();
             // If the function is C or UD & C set refEvidencePair to initValue
-            if (this.get('evolvingFunction').get('type') == 'C' || 
-                (this.get('evolvingFunction').get('type') == 'UD' && funcSegList[0].get('type') == 'C')) { 
+            if (this.get('evolvingFunction').get('type') == 'C') { 
                     funcSegList[0].set('refEvidencePair', initValue); // Set first index of funcSegList to given initValue 
             }
             else {

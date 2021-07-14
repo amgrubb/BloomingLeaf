@@ -328,17 +328,13 @@ body.waiting *
 .seg-time {
   background-color: rgba(36, 150, 255, 1);
   color: white;
-
   font-size: 0.7em;
   font-weight: 200;
-
   height: 10px;
   width:14px;
-
   border: 4px;
   border-color: #333;
   border-style: solid;
-
   position:absolute;
   text-align: center;
 }
