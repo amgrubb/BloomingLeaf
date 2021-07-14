@@ -143,8 +143,9 @@ stencil.load([new joint.shapes.basic.Goal({ position: {x: 50, y: 20} }),
               new joint.shapes.basic.Resource({ position: {x: 50, y: 250} }),
               new joint.shapes.basic.Actor({ position: {x: 40, y: 355} })]);
 
+			  
 $('#slider').width($('#paper').width() * 0.8);
-$('#slider').css("margin-top", $(window).height() * 0.9);
+$('#slider').css("margin-top", $(window).height() * 0.7);
 
 // Adjust slider value position based on stencil width and paper width
 var sliderValuePosition = 200 + $('#paper').width() * 0.1;
