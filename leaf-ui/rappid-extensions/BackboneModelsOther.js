@@ -31,7 +31,7 @@
     },
 
     defaults: {
-        displayType: 'element',
+        displayType: 'element',     // TODO: should this be changed to 'link'?
         linkType:  'and',
         postType: null,
         absTime: -1,
