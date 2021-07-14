@@ -416,6 +416,7 @@ var ElementInspector = Backbone.View.extend({
      * satisfaction value(s)
      */
     updateChart: function() {
+        /**
         console.log(this.intention.get('evolvingFunction'));
         // && this.intention.get('evolvingFunction').get('type') != 'NT'
         if (this.intention.get('evolvingFunction') != null) {
@@ -471,6 +472,7 @@ var ElementInspector = Backbone.View.extend({
             }
             this.chart.display(context);         
         }
+        */
     },
 
     getUDChartLabel: function(num) {
@@ -549,10 +551,21 @@ var ElementInspector = Backbone.View.extend({
         // update html display for additional user inputs
         var html = this.userConstraintsHTML.clone();
         // TODO: Fix so there is startTime input
-        this.intention.addUserDefinedSeg("C", "0000", 0);
-        this.renderFunctionSegments();
+        for (var i = 0; i < this.intention.getFuncSegments().length-1; i++){
+            console.log(this.intention.getFuncSegments()[i])
+            this.intention.getFuncSegments()[i].set('current', false);
+        }
+
+        this.intention.addUserDefinedSeg("C", "0000");
+        var funcSegList = this.intention.getFuncSegments();
+        var model = funcSegList[funcSegList.length-1]
+        // this.renderFunctionSegments();
+        $('#segment-functions').prop('disabled', 'disabled');
+        var functionSegView = new FuncSegView({model: model, intention: this.intention, hasUD: true, index: funcSegList.length-1, initSatValue: this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair')});
+        $('#segment-functions').append(functionSegView.el);
+        functionSegView.render(); 
         // TODO: disable function segments that are not the most recent
-        this.$('.segment-functions').prop('disabled', 'disabled');
+
 
         // $(".user-sat-value").last().prop('disabled', true);
         // $(".user-sat-value").last().css("background-color",'grey');
@@ -820,8 +833,9 @@ var ElementInspector = Backbone.View.extend({
             // $('#segment-functions').append('<output class= text-label>absTime</output>'),
             funcSegList.forEach(
                 funcSeg => {
-                    // if (i == funcSegList.length-1) {
-                    //     selected = true;
+                    console.log(funcSeg)
+                    if (i == funcSegList.length-1) {
+                        selected = true;
                     // } else {
                     //     selected == false;
                     // }
@@ -831,6 +845,7 @@ var ElementInspector = Backbone.View.extend({
                     $('#segment-functions').append(functionSegView.el);
                     functionSegView.render(); 
                     i++; 
+                    }
             })
         }
     },
@@ -854,7 +869,7 @@ var FuncSegView = Backbone.View.extend({
         // do we need to pass in this reference to the parent??
         // now we can remove some of these parameters
         this.intention = options.intention;
-        console.log(this.intention);
+       // console.log(this.intention);
         // Sets the stopTP to be one step after the startTP
         if (this.model.get('startTP') != '0') {
             this.stopTP = String.fromCharCode(this.model.get('startTP').charCodeAt(0) + 1);
@@ -881,13 +896,13 @@ var FuncSegView = Backbone.View.extend({
     template: ['<script type="text/template" id="item-template">',
                 '<input class="seg-time" > </input>',
                 '<output id = "startTP-out" class = "seg-class" style="position:relative; left:14px; width:15px"> <%= startTP %> </output>',
-                '<select id="seg-function-type" class = "seg-class" style=" position:relative; left:10px; width: 95px">',    
+                '<select id="seg-function-type" class = "seg-class" <% if (!current) {%> disabled <%}%> style=" position:relative; left:10px; width: 95px; disabled: true">',    
                     '<option value="C" <% if (type === "C") { %> selected <%} %>> Constant </option>',
                     '<option value="R" <% if (type === "R") { %> selected <%} %>> Stochastic </option>',
                     '<option value="I" <% if (type === "I") { %> selected <%} %>> Increase </option>',
                     '<option value="D" <% if (type === "D") { %> selected <%} %>> Decrease </option>',
                 '</select>',
-                '<select id="seg-sat-value" class = "seg-class" style=" position:relative; left:10px; width: 96px">',
+                '<select id="seg-sat-value" class = "seg-class" <% if (!current) {%> disabled <%}%> style=" position:relative; left:10px; width: 96px">',
                     '<option value=none <% if (refEvidencePair === "0000") { %> selected <%} %>> None (⊥, ⊥) </option>',
                     '<option value=satisfied <% if (refEvidencePair === "0011") { %> selected <%} %>> Satisfied (F, ⊥) </option>',
                     '<option value=partiallysatisfied <% if (refEvidencePair === "0010") { %> selected <%} %>> Partially Satisfied (P, ⊥) </option>',
@@ -906,7 +921,7 @@ var FuncSegView = Backbone.View.extend({
 
     render: function() {
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
-
+       // console.log("Number: " + this.index)
         // TODO: also disable it if it is part of a repeating segment
         // Disable the absTime parameter and set it to zero if its the first function segment
         if (this.index == 0) {
@@ -927,7 +942,7 @@ var FuncSegView = Backbone.View.extend({
 
         // Have to manually add stopTP to html because it is not in the FunctionSegmentBBM
         this.$('#stopTP-out').val(this.stopTP);
-        console.log(this.model.get('refEvidencePair'));
+       // console.log(this.model.get('refEvidencePair'));
 
         if (this.selected == false) {
             this.$('#seg-function-type').prop('disabled', 'disabled');
@@ -944,14 +959,14 @@ var FuncSegView = Backbone.View.extend({
         
         var absTime = Number((this.$('.seg-time').val()));
         this.model.set('startAT', absTime);         
-        console.log(this.model); 
+        //console.log(this.model); 
     },    
 
     setFuncSatValue: function () {
-        console.log(this.$('#seg-sat-value').val());
+        //console.log(this.$('#seg-sat-value').val());
         this.model.set('refEvidencePair', this.$('#seg-sat-value').val()) // 4 digit representation
-        console.log(this.model.get('refEvidencePair'));
-        console.log(this.model);
+        //console.log(this.model.get('refEvidencePair'));
+       // console.log(this.model);
 
         // TODO: make it so the chart updates too 
         // this.intention.updateChart();  
@@ -965,9 +980,13 @@ var FuncSegView = Backbone.View.extend({
         if (this.model.get('type') == 'C' || this.model.get('type') == 'R') {
             this.$('#seg-sat-value').prop('disabled', 'disabled');
         }
-        else {
+        else if (this.model.get('type') == 'R') {
+            this.$("#seg-sat-value").html(this.satValueOptionsAll());
+            this.$("#seg-sat-value").val("(no value)");
+        } else {
             this.$('#seg-sat-value').prop('disabled', '');
         }
+
         if (this.hasUD == true) {
             this.checkUDFunctionValues()
         }
@@ -1018,12 +1037,11 @@ var FuncSegView = Backbone.View.extend({
      */
       checkUDFunctionValues: function() {
         var func = this.$("#seg-function-type").last().val();
-        console.log(func);
+        //console.log(func);
 
-        /**
         if (func == 'I' || func == 'D') {
             var prevVal = this.intention.get('evolvingFunction').getNthRefEvidencePair(2);
-            console.log(func + ' ' + prevVal);
+           // console.log(func + ' ' + prevVal);
             if (func == 'I') {
                 this.$("#seg-sat-value").html(this.satValueOptionsPositiveOrNegative(prevVal, true));
                 this.$("#seg-sat-value").val("satisfied"); 
@@ -1037,8 +1055,7 @@ var FuncSegView = Backbone.View.extend({
             this.$("#seg-sat-value").prop('disabled', true);
             
         } else if (func == 'C') {
-            */
-            if (func == 'C') {
+          //  if (func == 'C') {
             this.$("#seg-sat-value").last().html(this.satValueOptionsAll());
             // this.$("#seg-sat-value").val("satisfied");
             // console.log(this.$("#seg-sat-value").last().html(this.satValueOptionsAll()));
@@ -1053,18 +1070,21 @@ var FuncSegView = Backbone.View.extend({
             if (this.index != 0) {
                 // this.$("#seg-sat-value").val(this.$("#seg-sat-value").last())
                 this.$("#seg-sat-value").prop('disabled', '');
+                
                 console.log(this.$("#seg-sat-value").val());
+                
                 // this.$("#seg-sat-value").val( this.intention.getFuncSegments()[this.index-1].get('refEvidencePair'));
                 // this.$("#seg-sat-value").val(this.intention.get('evolvingFunction').getNthRefEvidencePair(this.index));
                 console.log(this.intention.get('evolvingFunction').getNthRefEvidencePair(2));
                 var len = this.intention.getFuncSegments().length;
-                this.$("#seg-sat-value").val(this.intention.getFuncSegments()[this.index-2].get('refEvidencePair'));
-                console.log(this.intention.getFuncSegments()[this.index - 2].get('refEvidencePair'));
+                //if(this.index + 1==len){
+                //this.$("#seg-sat-value").val(this.intention.getFuncSegments()[this.index-1].get('refEvidencePair'));
+                //}
+                console.log(this.intention.getFuncSegments()[len - 2].get('refEvidencePair'));
                 // console.log(len);
                 // this.model.set('refEvidencePair', this.$("#seg-sat-value").val());
             }
         }
-        this.$('#seg-sat-value').change();
         return; 
     },
 

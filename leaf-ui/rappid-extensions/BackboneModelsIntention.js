@@ -53,6 +53,7 @@ var FunctionSegmentBBM = Backbone.Model.extend({
             startTP: 0,             // Start time point (char) 0,A,B,C
             // Removed stopTP variable - stopTP is one letter after startTP or A is startTP is 0
             startAT: myNull, // Assigned/Absolute Time - Integer time value. If not set defaults to undefined
+            current: true,
         }
     }
 });
@@ -353,7 +354,7 @@ var IntentionBBM = Backbone.Model.extend({
      *   ex: '0000'
      * @param {Integer} startTime
      */
-    addUserDefinedSeg: function(funcType, refEvidencePair, startTime){
+    addUserDefinedSeg: function(funcType, refEvidencePair){
         var len = this.getFuncSegments().length;
         var startCheck = this.getFuncSegments()[len - 1].get('startTP'); // Get last value in list 
         if (startCheck == '0') { // If previous segment is at 0 then next one is at A
