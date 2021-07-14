@@ -45,6 +45,17 @@ body.waiting *
   font-style: italic;
 }
 
+/** Dims the entire page **/ 
+#page-mask {
+  background: rgba(0, 0, 0, 0.5); /* Sets background color to gray */
+  position: fixed;
+  top: 0; /* cover full page */ 
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 3; /* Make sure it sits just under assignments table and IVT */ 
+}
+
 .dropdown {
   position: relative;
   display: inline-block;
@@ -110,7 +121,8 @@ body.waiting *
 
   background-color: #f9f9f9;
   box-shadow: 2px 0px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1;
+  /* Should be less than the modal pop-ups */ 
+  z-index: 0;
 }
 
 .stencil {
@@ -741,9 +753,9 @@ div.attribution{
   color: #333333;
   width: 190px;
   font-size: 9px;
-  z-index: 2;
   margin: 5px;
 }
+
 
 /* Rappid selection box */
 .selection-box {
