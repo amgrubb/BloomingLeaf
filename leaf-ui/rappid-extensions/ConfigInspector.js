@@ -171,23 +171,23 @@ var Config = Backbone.View.extend({
      * Destroys config model, removing it from its collection 
      * and triggering a removal of its respective view 
      */
-    removeConfig: function() {
+    removeConfig: function () {
         index = this.model.collection.indexOf(this.model);
         if (this.model.get('selected') == true && this.model.collection.length > 1) {
-           if (index > 0 ){
-                this.model.collection.at(index - 1).set({selected:true});
+            if (index > 0) {
+                this.model.collection.at(index - 1).set({ selected: true });
                 this.model.set('selected', false);
-           } else {
-                this.model.collection.at(index + 1).set({selected:true});
+            } else {
+                this.model.collection.at(index + 1).set({ selected: true });
                 this.model.set('selected', false);
-           } 
-       }
-       this.model.destroy();  
+            }
+        }
+        this.model.destroy();
     },
-    
+
     /** If result is selected, update config **/
-    updateSelectedConfig : function(){
-        if (this.model.get('selected')){
+    updateSelectedConfig: function () {
+        if (this.model.get('selected')) {
             this.showAnalysisInspector();
             this.model.trigger('change:switchConfigs', this.model);
             this.model.trigger('change:unselectResult', this.model);
@@ -198,8 +198,8 @@ var Config = Backbone.View.extend({
      * Updates currAnalysisConfig (TODO: Remove currAnalysisConfig) with current model
      * Sets selected value to true and triggers a switchConfig event to update highlight
      */
-    switchConfig : function(){
-        this.model.set({selected:true});
+    switchConfig: function () {
+        this.model.set({ selected: true });
     },
 
     /**
