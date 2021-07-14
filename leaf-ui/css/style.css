@@ -200,12 +200,12 @@ body.waiting *
   left: auto; 
   width: 200px; 
   margin-top: 40px;
-  padding: 1px; 
+  padding-top: 1px; 
   background-color: #f9f9f9;
 }
 
 #config-sidebar { 
-  margin-top:100px; 
+  margin-top: 104px; 
   width: 200px; 
   top: 60px;
   bottom: 0;
@@ -213,7 +213,7 @@ body.waiting *
 }
 
 #analysis-sidebar { 
-  margin-top: -5px; 
+  margin-top: -10px; 
 }
 
 #analysis-sidebar a{

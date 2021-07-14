@@ -109,7 +109,7 @@ var Config = Backbone.View.extend({
     },
 
     template: ['<script type="text/template" id="item-template">',
-    '<div class="analysis-configuration" id="<%= name %>">',
+        '<div class="analysis-configuration" style="margin-bottom: 1px;" id="<%= name %>">',
         '<button class="config-elements" <% if (selected) { %> style="background-color:#A9A9A9;" <%} %> >',
         '<%= name %> </button>',
         '<input class="config-input" value="<%- name %>" style="display:none"></input>',
