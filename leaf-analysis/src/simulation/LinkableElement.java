@@ -13,18 +13,25 @@ import java.util.List;
 public abstract class LinkableElement{
     public String name = "NAME";
     public String id = "NO-ID";
+    private String uniqueID = "null"; 
     List<ElementLink> linksSrc = new ArrayList<ElementLink>();
     List<ElementLink> linksDest = new ArrayList<ElementLink>();
 	
 	public int getIdNum() {
 		return Integer.parseInt(id);
 	}
-
 	public LinkableElement(String nodeID, String nodeName) {
-		id = nodeID;
-		name = nodeName;
+		this.id = nodeID;
+		this.name = nodeName;
 	}
-
+	public LinkableElement(String nodeID, String nodeName, String uniqueID) {
+		this.id = nodeID;
+		this.name = nodeName;
+		this.uniqueID = uniqueID;
+	}
+	public String getUniqueID() {
+		return this.uniqueID;
+	}
     public void addLinksAsSrc(ElementLink iLink){
         linksSrc.add(iLink);
     }

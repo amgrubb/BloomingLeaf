@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import gson_classes.IMain;
 import interface_objects.FuncWrapper;
 import interface_objects.FuncWrapperDeserializer;
 import interface_objects.InputObject;
@@ -19,7 +20,7 @@ import interface_objects.OutputModel;
  * Then it executes all analysis creating a output file that has the json analysed file to be send back to the frontend.
  *
  */
-public class SolveModel {
+public class MainProgram {
 
 	/**
 	 * This method is responsible to execute all steps to generate the analysis file.
@@ -32,10 +33,10 @@ public class SolveModel {
 		String outputFile = "output.out";
 				
 		try {
-			//creating the backend model to be analysed
-			ModelSpec modelSpec = convertModelFromFile(filePath + inputFile);
+			// Creating the backend model to be analyzed
+			ModelSpec modelSpec = convertBackboneModelFromFile(filePath + inputFile);
 			
-			//Analyse the model
+			// Creates the store and constraint problem to be solved.
 			TroposCSPAlgorithm solver = new TroposCSPAlgorithm(modelSpec);
 			//long startTime = System.currentTimeMillis();                            //Scaleability Testing
 			solver.solveModel();
@@ -58,7 +59,6 @@ public class SolveModel {
 			} catch (Exception f) {
 				throw new RuntimeException("Error while writing ErrorMessage: " + f.getMessage());
 			}
-//			throw new RuntimeException(e.getMessage());
 		} catch (Exception e) {
 			try {
 				File file;
@@ -105,6 +105,30 @@ public class SolveModel {
 		
 	}
 
+	/**
+	 * This method converts the model file sent by the front-end into the ModelSpec
+	 * @param filePath
+	 * Path to the file with the front-end model
+	 * @return
+	 * ModelSpec back-end model
+	 */
+	private static ModelSpec convertBackboneModelFromFile(String filePath) {
+		GsonBuilder builder = new GsonBuilder();
+		builder.registerTypeAdapter(FuncWrapper.class, new FuncWrapperDeserializer());
+
+		try {
+			Gson gson = builder.create();
+			IMain frontendObject = gson.fromJson(new FileReader(filePath), IMain.class);
+
+			ModelSpec modelSpec =  BIModelSpecBuilder.buildModelSpec(frontendObject);
+			System.out.println("Finished");
+			return modelSpec;
+			
+		} catch(Exception e) {
+			throw new RuntimeException("Error in convertModelFromFile() method: \n " + e.getMessage());
+		}
+	} 
+	
 	/**
 	 * This method converts the model file sent by the frontend into the ModelSpecPojo in order to be analysed
 	 * @param filePath

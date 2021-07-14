@@ -167,6 +167,7 @@ public class TroposCSPAlgorithm {
 
     	//System.out.println(this.spec.getInitialValueTimePoints());
     	//System.out.println(this.spec.getInitialValues());
+    	//TODO: Start here!!
     	if (DEBUG)
 			System.out.println("Length of initialValueTimePoints: " + this.spec.getInitialValueTimePoints().length + 
 					"\nLength of initialValues()[0]: " + this.spec.getInitialValues()[0].length);

@@ -27,10 +27,6 @@
  *   Finds where slider is initialized and sets timepoint in here
  *   Also place it in update function
  *   ex: 1
- * @param {Number} timeScale
- *   Number of time point in the analysis (except 0)
- *   Replaces maxTimePoint for clarity
- *   ex: 10
  * @param {Boolean} selected
  * Whether or not the ResultBBM is current selected to be shown
  *
@@ -47,19 +43,12 @@ var ResultBBM = Backbone.Model.extend({
             timePointPath: null,
             elementList: null,
             allSolution: null, // Potentially deprecated
-            elementLIstPercentEvals: null,
-            isPathSim: false, // Used for slider visualization
+            //elementLIstPercentEvals: null,    //TODO: there has to be a typo here.
+            isPathSim: false, // Used for slider visualization  // Should be set to true for single path?
             colorVis: null, // Color visualization for analysis mode
             selectedTimePoint: null, // Find where slider is initialized and set timepoint in here. Also place it in update function
-            timesScale: null,
             selected: true,
         }
-    },
-
-    // TODO: Legacy function from AnalysisRequest JS object
-    // Determine if this is still needed
-    setTimeScale: function(){
-        this.set('timeScale', Number(this.get('timePointPath').lenth-1));
     }
 });
 
@@ -97,9 +86,7 @@ var ResultCollection = Backbone.Collection.extend({
  * {String} currentState
  * {Array.<UserEvaluation>} userAssignmentsList
  * {AnalysisResult} previousAnalysis
- * 
  */
-// TODO: Update result references here to take in a resultBBM and not an AnalysisResult
 var ConfigBBM = Backbone.Model.extend({
     initialize : function(options){
         _.extend({}, this.defaults, options); 
