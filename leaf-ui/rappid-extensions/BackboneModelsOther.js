@@ -31,7 +31,7 @@
     },
 
     defaults: {
-        displayType: "element",
+        displayType: 'element',
         linkType:  'and',
         postType: null,
         absTime: -1,

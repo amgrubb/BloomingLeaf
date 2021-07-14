@@ -161,7 +161,8 @@ function getEvolvingFunction(obj) {
  *
  * @param {Array.<Object>} arr
  * @returns {Array.<FuncSegment|RepFuncSegment>}
- *//*
+ */
+/* TODO: Re-implement once we have finalized the functions segments.
 function getFuncSegList(arr) {
 	var res = [];
 	for (var i = 0; i < arr.length; i++) {
