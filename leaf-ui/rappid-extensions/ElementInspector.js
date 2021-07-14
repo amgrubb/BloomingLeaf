@@ -550,17 +550,12 @@ var ElementInspector = Backbone.View.extend({
     addSegment: function() {
         // update html display for additional user inputs
         var html = this.userConstraintsHTML.clone();
-        // TODO: Fix so there is startTime input
-        for (var i = 0; i < this.intention.getFuncSegments().length-1; i++){
-            console.log(this.intention.getFuncSegments()[i])
-            this.intention.getFuncSegments()[i].set('current', false);
-        }
 
         this.intention.addUserDefinedSeg("C", "0000");
         var funcSegList = this.intention.getFuncSegments();
         var model = funcSegList[funcSegList.length-1]
         // this.renderFunctionSegments();
-        $('#segment-functions').prop('disabled', 'disabled');
+        // $('#segment-functions').prop('disabled', 'disabled');
         var functionSegView = new FuncSegView({model: model, intention: this.intention, hasUD: true, index: funcSegList.length-1, initSatValue: this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair')});
         $('#segment-functions').append(functionSegView.el);
         functionSegView.render(); 
@@ -829,23 +824,17 @@ var ElementInspector = Backbone.View.extend({
             }
             var funcSegList = this.intention.getFuncSegments();
             console.log(funcSegList);
+            // TODO: remove i and just use the funcSegList index
             var i = 0;
             // $('#segment-functions').append('<output class= text-label>absTime</output>'),
             funcSegList.forEach(
                 funcSeg => {
-                    console.log(funcSeg)
-                    if (i == funcSegList.length-1) {
-                        selected = true;
-                    // } else {
-                    //     selected == false;
-                    // }
                     console.log(funcSeg.get('refEvidencePair'));
                     // this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair')
                     var functionSegView = new FuncSegView({model: funcSeg, intention: this.intention, hasUD: hasUD, index: i, initSatValue: this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair')});
                     $('#segment-functions').append(functionSegView.el);
                     functionSegView.render(); 
                     i++; 
-                    }
             })
         }
     },
@@ -891,18 +880,17 @@ var FuncSegView = Backbone.View.extend({
             "none": "0000",
             "(no value)": "(no value)"
         };
-        // this.selected = true;
     },
     template: ['<script type="text/template" id="item-template">',
                 '<input class="seg-time" > </input>',
                 '<output id = "startTP-out" class = "seg-class" style="position:relative; left:14px; width:15px"> <%= startTP %> </output>',
-                '<select id="seg-function-type" class = "seg-class" <% if (!current) {%> disabled <%}%> style=" position:relative; left:10px; width: 95px; disabled: true">',    
+                '<select id="seg-function-type" class = "seg-class" style=" position:relative; left:10px; width: 95px">',    
                     '<option value="C" <% if (type === "C") { %> selected <%} %>> Constant </option>',
                     '<option value="R" <% if (type === "R") { %> selected <%} %>> Stochastic </option>',
                     '<option value="I" <% if (type === "I") { %> selected <%} %>> Increase </option>',
                     '<option value="D" <% if (type === "D") { %> selected <%} %>> Decrease </option>',
                 '</select>',
-                '<select id="seg-sat-value" class = "seg-class" <% if (!current) {%> disabled <%}%> style=" position:relative; left:10px; width: 96px">',
+                '<select id="seg-sat-value" class = "seg-class" style=" position:relative; left:10px; width: 96px">',
                     '<option value=none <% if (refEvidencePair === "0000") { %> selected <%} %>> None (⊥, ⊥) </option>',
                     '<option value=satisfied <% if (refEvidencePair === "0011") { %> selected <%} %>> Satisfied (F, ⊥) </option>',
                     '<option value=partiallysatisfied <% if (refEvidencePair === "0010") { %> selected <%} %>> Partially Satisfied (P, ⊥) </option>',

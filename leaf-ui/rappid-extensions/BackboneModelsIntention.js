@@ -53,7 +53,6 @@ var FunctionSegmentBBM = Backbone.Model.extend({
             startTP: 0,             // Start time point (char) 0,A,B,C
             // Removed stopTP variable - stopTP is one letter after startTP or A is startTP is 0
             startAT: myNull, // Assigned/Absolute Time - Integer time value. If not set defaults to undefined
-            current: true,
         }
     }
 });
