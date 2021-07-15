@@ -25,12 +25,6 @@
     <div class="name"><p id="name-text">BloomingLeaf</p></div>
 
     <div class="toolbar-div">
-        <div id="model-toolbar" class="model-only">
-            <button id="btn-undo" class="btn">Undo</button>
-            <button id="btn-redo" class="btn">Redo</button>
-            <button id="btn-debug" class="btn">Debug</button>
-            <button id="btn-load" class="btn">Load</button>
-        </div>
 
         <div class="dropdown">
             <button id="btn-big-save" class="btn">Save</button>
@@ -81,14 +75,23 @@
             </div>
         </div>
 
+        <button id="analysis-btn" class="green-btn btn model-only" style="border-radius:none;">Analysis</button>
+        <button id="modeling-btn" class="red-btn btn analysis-only" style='display: none';>Modeling</button>
+
         <!-- modeling mode slider: simple off/on option-->
+
         <div class="EVO-whole-button" id="modelingSlider">
             <!-- slider div -->
             <input type="range" min="0" max="1" value="0" class="EVO-slider" id="colorReset"> <!-- makes slider -->
             <p id="top-label" style="display: inline-block">EVO</p> <!-- sat slider label -->
             <p id="on-off" class="analysis-only"> Off &ensp; On</p> <!--  on/off label -->
         </div>
-
+        <div id="model-toolbar" class="model-only">
+            <button id="btn-undo" class="btn">Undo</button>
+            <button id="btn-redo" class="btn">Redo</button>
+            <button id="btn-debug" class="btn">Debug</button>
+            <button id="btn-load" class="btn">Load</button>
+        </div>
             
 
         <!-- Analysis mode slider: option to fill by percentage of timepoints -->
@@ -107,14 +110,10 @@
             Values</button>
         <!--This is the modal box of Intemdiate Values-->
 
-        <button id="analysis-btn" class="green-btn btn model-only" style="border-radius:none;">Analysis</button>
-
         <button id="simulate-single-path-btn" ; class="btn analysis-only" ;
             style="border-radius: none; display: none" ;>Simulate Path</button>
         <button id="next-state-btn" ; class="btn analysis-only"
             style="border-radius: none; display: none" ;>Explore States</button>
-        <button id="modeling-btn" ; class="red-btn btn analysis-only"
-            style='display: none';>Modeling</button>
        <!-- <div id="dropdown-model" class="dropdown analysis-only" style='display: none'>
             <button id="modeling-btn" class="red-btn btn">Model</button>
             <div class="dropdown-toolbar">
