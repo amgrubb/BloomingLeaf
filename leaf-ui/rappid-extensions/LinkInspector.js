@@ -10,7 +10,7 @@ var LinkInspector = Backbone.View.extend({
     constanttemplate: [
         '<label id="title">Constant Relationship</label>',
         '<br>',
-        '<div class="inspector-views">',
+        '<div class="inspector-views" id="right-inspector">',
         '<select id="constant-links" class="link-type">',
             '<option value="no">No Relationship</option>',
             '<option value="and">And-Decomposition</option>',
@@ -38,7 +38,7 @@ var LinkInspector = Backbone.View.extend({
     evolvingtemplate : [
             '<label id="title">Evolving Relationship</label>',
             '<br>',
-            '<div class="inspector-views">',
+            '<div class="inspector-views" id="right-inspector">',
             '<select id="link-type-begin" class="repeat-select">',
                 '<option value="" disabled selected hidden>Begin</option>',
                 '<option value="no">No Relationship</option>',
@@ -82,7 +82,7 @@ var LinkInspector = Backbone.View.extend({
 
     actortemplate: [
             '<label> Link Type </label> <br>',
-            '<div class="inspector-views">',
+            '<div class="inspector-views" id="right-inspector">',
             '<select id="actor-link" class="link-type">',
                 '<option value="is-a">is-a</option>',
                 '<option value="plays">plays</option>',

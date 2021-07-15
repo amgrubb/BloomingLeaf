@@ -458,8 +458,8 @@ paper.on("link:options", function (cell) {
         // Show extra tools for analysis mode
         $('.analysis-only').css("display", "");
 
-        // Show Analysis View tag
-        $('#modeText').text("Analysis View");
+        // TODO Show Analysis View tag
+        // $('#modeText').text("Analysis View");
 
         // Disable link settings
         $('.link-tools .tool-remove').css("display", "none");
@@ -494,8 +494,8 @@ paper.on("link:options", function (cell) {
             $('.model-only').css("display", "");
             $('.attribution').css("display", "");
             $('.inspector').css("display", "");
-            // Show Modelling View tag
-            $('#modeText').text("Modeling View");
+            // TODO Show Modelling View tag
+            // $('#modeText').text("Modeling View");
 
             // Reinstantiate link settings
             $('.link-tools .tool-remove').css("display", "");

@@ -7,7 +7,7 @@ var ActorInspector = Backbone.View.extend({
 
         template: [
             '<script type="text/template" id="item-template">',
-            '<div class="inspector-views">',
+            '<div class="inspector-views" id="right-inspector">',
             '<label>Actor name</label>',
             '<textarea class="cell-attrs-text" maxlength=100> <%= actorName %> </textarea>',
             '<label> Actor type </label>',

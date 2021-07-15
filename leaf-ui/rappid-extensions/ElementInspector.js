@@ -79,7 +79,7 @@ var ElementInspector = Backbone.View.extend({
     },
      
     template: ['<script type="text/template" id="item-template">',
-            '<div class="inspector-views">',
+            '<div class="inspector-views" id="right-inspector">',
             '<label>Node Name:</label>',
             '<textarea class="cell-attrs-text"></textarea>',
             '<label>Initial Satisfaction Value:</label>',

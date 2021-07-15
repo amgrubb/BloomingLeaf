@@ -74,8 +74,9 @@ body.waiting *
 #paper {
    position: absolute;
    top: 40px;
-   left: 201px;
-   width: 100%;
+   left: 200px;
+   right: 260px;
+   bottom: 0;
    overflow: hidden;
    background-color: hsla(220,11%,97%,.95);
 }
@@ -86,16 +87,10 @@ body.waiting *
   height: 100%;
 }
 
-#paper {
-   width: 80%;
-   height: 95%;
-}
-
 #paper svg {
    /* Grid background image */
    /*background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAHUlEQVQYV2NkYGAwBuKzQIwXMBJSAJMfVUidcAQAnUQBC6jEGBUAAAAASUVORK5CYII=');*/
    background-color: white;
-   box-shadow: 1px 1px 1px lightgray;
 }
 
 #paper svg .drawable {
@@ -162,9 +157,8 @@ body.waiting *
   position: absolute;
   right: 0px;
   top: 0px;
-  padding-top: 40px;
   width: 260px;
-  height: 103%;
+  height: 100%;
   /*padding: 10px;*/
   background-color: #333;
   color: #bcbcbc;
@@ -175,7 +169,7 @@ body.waiting *
 .inspector textarea {
    color: black;
    text-shadow: none;
-   box-shadow: inset 0 0 0 1px rgba(0,0,0,0.1),0px 0 0 1px rgba(255,255,255,0.1);
+   /* box-shadow: inset 0 0 0 1px rgba(0,0,0,0.1),0px 0 0 1px rgba(255,255,255,0.1); */
    border: 1px solid black;
    background: white;
    height: 20px;
@@ -186,6 +180,9 @@ body.waiting *
 /*   margin-left: auto;
    margin-right: auto;*/
 
+}
+#right-inspector{
+  margin-top: 50px;
 }
 
 .inspector label {
