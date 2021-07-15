@@ -778,7 +778,7 @@ var ElementInspector = Backbone.View.extend({
             // Creates a FuncSegView for each of the function segment in the functionSegList
             funcSegList.forEach(
                 funcSeg => {
-                    var functionSegView = new FuncSegView({model: funcSeg, hasUD: hasUD, index: i, initSatValue: this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair'), view: this});
+                    var functionSegView = new FuncSegView({model: funcSeg, intention:this.intention, hasUD: hasUD, index: i, initSatValue: this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair'), view: this});
                     $('#segment-functions').append(functionSegView.el);
                     functionSegView.render(); 
                     i++; 
@@ -806,7 +806,7 @@ var FuncSegView = Backbone.View.extend({
         // Reference to the ElementInspector view so it's functions can be accessedin the subview
         this.view = options.view;
         // Reference to the parent intention
-        this.intention = this.view.model.get('intention');
+        this.intention = options.intention;
  
         // Sets the stopTP to be one step after the startTP
         if (this.model.get('startTP') != '0') {
@@ -897,6 +897,7 @@ var FuncSegView = Backbone.View.extend({
         this.model.set('refEvidencePair', this.$('#seg-sat-value').val()) // 4 digit representation
         // TODO: make it so the chart updates too 
         // this.intention.updateChart();
+
         if (!this.hasUD) {
             this.view.updateChart(); 
         } 
