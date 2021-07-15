@@ -387,13 +387,12 @@ var ElementInspector = Backbone.View.extend({
      * satisfaction value(s)
      */
     updateChart: function() {
-        /**
         console.log(this.intention.get('evolvingFunction'));
-        // && this.intention.get('evolvingFunction').get('type') != 'NT'
+    
         if (this.intention.get('evolvingFunction') != null) {
             var funcType = this.intention.get('evolvingFunction').get('type');
             var initVal = satisfactionValuesDict[this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair')].chartVal;
-            if (this.intention.getFuncSegments()[0] != null) {
+            if (this.intention.getFuncSegments()[0] != null && funcType != 'C') {
                 var satVal = satisfactionValuesDict[this.intention.getFuncSegments()[0].get('refEvidencePair')].chartVal;
             }
             this.chart.reset();
@@ -443,7 +442,6 @@ var ElementInspector = Backbone.View.extend({
             }
             this.chart.display(context);         
         }
-        */
     },
 
     getUDChartLabel: function(num) {
@@ -780,7 +778,7 @@ var ElementInspector = Backbone.View.extend({
             // Creates a FuncSegView for each of the function segment in the functionSegList
             funcSegList.forEach(
                 funcSeg => {
-                    var functionSegView = new FuncSegView({model: funcSeg, intention: this.intention, hasUD: hasUD, index: i, initSatValue: this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair')});
+                    var functionSegView = new FuncSegView({model: funcSeg, hasUD: hasUD, index: i, initSatValue: this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair'), view: this});
                     $('#segment-functions').append(functionSegView.el);
                     functionSegView.render(); 
                     i++; 
@@ -805,8 +803,11 @@ var FuncSegView = Backbone.View.extend({
      model: FunctionSegmentBBM, 
 
     initialize: function(options){ 
+        // Reference to the ElementInspector view so it's functions can be accessedin the subview
+        this.view = options.view;
         // Reference to the parent intention
-        this.intention = options.intention;
+        this.intention = this.view.model.get('intention');
+ 
         // Sets the stopTP to be one step after the startTP
         if (this.model.get('startTP') != '0') {
             this.stopTP = String.fromCharCode(this.model.get('startTP').charCodeAt(0) + 1);
@@ -828,7 +829,7 @@ var FuncSegView = Backbone.View.extend({
             "(no value)": "(no value)"
         };
         // Listens to if the current parameter in the FunctionSegmentBBMs changes
-        this.listenTo(this.model, 'change:current', this.checkCurr)
+        this.listenTo(this.model, 'change:current', this.checkCurr);
     },
     template: ['<script type="text/template" id="item-template">',
                 '<input class="seg-time" > </input>',
@@ -895,7 +896,13 @@ var FuncSegView = Backbone.View.extend({
     setFuncSatValue: function () {
         this.model.set('refEvidencePair', this.$('#seg-sat-value').val()) // 4 digit representation
         // TODO: make it so the chart updates too 
-        // this.intention.updateChart();  
+        // this.intention.updateChart();
+        if (!this.hasUD) {
+            this.view.updateChart(); 
+        } 
+        // else {
+          //  this.view.updateChartUserDefined();
+        // }    
     },
 
     checkFuncValue: function () {
