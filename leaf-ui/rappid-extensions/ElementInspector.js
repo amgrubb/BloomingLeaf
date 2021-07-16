@@ -262,7 +262,7 @@ var ElementInspector = Backbone.View.extend({
             $("#repeat-end3").val(this.intention.get('evolvingFunction').get('repAbsTime'));
         }
 
-        this.updateChartUserDefined();  
+       // this.updateChartUserDefined();  
     },
 
     /**
@@ -330,7 +330,7 @@ var ElementInspector = Backbone.View.extend({
             }
         }
         this.rerender();
-        this.updateChart(); 
+      //  this.updateChart(); 
     },
 
     /**
@@ -368,148 +368,7 @@ var ElementInspector = Backbone.View.extend({
         }  
     },
 
-    /**
-     * Modifies the passed in datasets with their default values
-     * @param {Array.<Object>}
-     */
-    resetChartDatasets: function(datasets) {
-        for (var i = 0; i < datasets.length; i++) {
-            datasets[i].borderDash = [];
-            datasets[i].data = [];
-            datasets[i].pointBackgroundColor = ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"];
-            datasets[i].pointBorderColor = ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"];
-            datasets[i].borderColor = "rgba(220,220,220,1)";
-        }  
-    },
 
-    /**
-     * Updates the chart to represent data related to the the current function and
-     * satisfaction value(s)
-     */
-    updateChart: function() {
-        if (this.intention.get('evolvingFunction') != null) {
-            var funcType = this.intention.get('evolvingFunction').get('type');
-            var initVal = satisfactionValuesDict[this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair')].chartVal;
-            // if (this.intention.getFuncSegments()[0] != null && funcType != 'C') {
-            //     var satVal = satisfactionValuesDict[this.intention.getFuncSegments()[0].get('refEvidencePair')].chartVal;
-            // }
-            this.chart.reset();
-            // Get the chart canvas
-            var context = $("#chart").get(0).getContext("2d");
-    
-            // Render preview for user defined function types
-            if (funcType == "UD") {
-                this.updateChartUserDefined();
-                return;
-            }
-    
-            // Change chart dataset(s), depending on the function type
-            var threeLabelFunc = ['RC', 'CR', 'SD', 'DS', 'MP', 'MN'];
-    
-            if (threeLabelFunc.includes(funcType)) {
-                this.chart.labels = ['0', 'A', 'Infinity'];
-    
-                if (funcType === 'RC') {
-                    var satVal = satisfactionValuesDict[this.intention.getFuncSegments()[0].get('refEvidencePair')].chartVal;
-                    this.chart.addDataSet(0, [initVal, initVal], true);
-                    this.chart.addDataSet(1, [satVal, satVal], false);
-                } else if (funcType === 'CR') {
-                    this.chart.addDataSet(0, [initVal, initVal], false);
-                    this.chart.addDataSet(1, [initVal, initVal], true);
-                } else if (funcType === 'SD') {
-                    this.chart.addDataSet(0, [2, 2], false);
-                    this.chart.addDataSet(1, [-2, -2], false);
-                } else if (funcType === 'DS') {
-                    this.chart.addDataSet(0, [-2, -2], false);
-                    this.chart.addDataSet(1, [2, 2], false);
-                } else if (funcType === 'MP' || funcType === 'MN') {
-                    var satVal = satisfactionValuesDict[this.intention.getFuncSegments()[0].get('refEvidencePair')].chartVal;
-                    this.chart.addDataSet(0, [initVal, satVal, satVal]);
-                }
-            } else {
-                this.chart.labels = ['0', 'Infinity'];
-    
-                if (funcType === 'C') {
-                    this.chart.addDataSet(0, [initVal, initVal], false);
-                } else if (funcType === 'R') {
-                    this.chart.addDataSet(0, [initVal, initVal], true);
-                } else if (funcType === 'I' || funcType === 'D') {
-                    var satVal = satisfactionValuesDict[this.intention.getFuncSegments()[0].get('refEvidencePair')].chartVal;
-                    this.chart.addDataSet(0, [initVal, satVal], false);
-                } else {
-                    // display a dot
-                    this.chart.addDataSet(0, [initVal], false);
-                }
-            }
-            this.chart.display(context);         
-        }
-    },
-
-    getUDChartLabel: function(num) {
-        var res = ['0'];
-        var curr = 'A'
-        for (var i = 0; i < num; i++) {
-            res.push(curr);
-            curr = String.fromCharCode(curr.charCodeAt(0) + 1);
-        }
-        return res;
-    },
-
-    /**
-     * Updates the chart to represent data related to the the current user
-     * defined function and satisfaction value(s)
-     */
-    updateChartUserDefined: function() {
-        var context = $("#chart").get(0).getContext("2d");
-        // This will never be undefined because at least one 
-        // FunctionSegmentBBM will be in functionSegList at this point
-        var numFuncSegments = this.intention.getFuncSegments().length;
-
-        // Reset chart datasets
-        this.chart.reset();
-
-        // Setting up the labels
-        this.chart.labels = this.getUDChartLabel(numFuncSegments);
-
-        // Get init sat value
-        var initSatVal = satisfactionValuesDict[this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair')].chartVal;
-
-        // Add datapoints to graph for each userfunction/uservalue pair
-        var funcSegments = this.intention.getFuncSegments();
-
-        for (var i = 0; i < funcSegments.length; i++) {
-            var currFunc = funcSegments[i].get('type');
-            var currVal = funcSegments[i].get('refEvidencePair');
-            var coloured = funcSegments[i].isRepeat;
-            var data1; // first data point for this segment
-            var data2 = satisfactionValuesDict[currVal].chartVal;
-            if (i === 0) {
-                if (currFunc !== 'R') {
-                    data1 = initSatVal;
-                } else {
-                    data1 = 0;
-                }
-            } else {
-                // If previous function is stochastic, set the starting point to be either FD or FS
-                var prevFunc = funcSegments[i - 1].get('type');
-                var prevVal = funcSegments[i - 1].get('refEvidencePair');
-                if (prevFunc === 'R' && currFunc === 'I') {
-                    data1 = -2;
-                } else if (prevFunc === 'R' && currFunc === 'D') {
-                    data1 = 2;
-                } else if (currFunc == 'R') {
-                    data1 = 0;
-                } else if (currFunc === 'C'){
-                    data1 = data2;
-                } else {
-                    // set to previous function's marked value
-                    data1 = satisfactionValuesDict[prevVal].chartVal;
-                }
-            }
-            this.chart.addDataSet(i, [data1, data2], currFunc === 'R' || currVal === '(no value)', coloured);
-        }
-        this.chart.display(context);
-    },
 
     /**
      * Adds new FunctionSegmentBBM for the user defined function and renders a new FunctionSegmentView.
@@ -527,7 +386,7 @@ var ElementInspector = Backbone.View.extend({
         }
         // creates a new FunctionSegmentView from the new FunctionSegmentBBM
         var newFuncSeg = funcSegList[funcSegList.length-1]
-        var functionSegView = new FuncSegView({model: newFuncSeg, intention: this.intention, hasUD: true, index: funcSegList.length-1, initSatValue: this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair')});
+        var functionSegView = new FuncSegView({model: newFuncSeg, intention: this.intention, hasUD: true, index: funcSegList.length-1, initSatValue: this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair'), chart: this.chart});
         // Appends new FuncSegView to the html and renders it 
         $('#segment-functions').append(functionSegView.el);
         functionSegView.render(); 
@@ -535,7 +394,7 @@ var ElementInspector = Backbone.View.extend({
         if (this.repeatOptionsDisplay) {
             this.setRepeatConstraintMode("Update");
         }
-        this.updateChartUserDefined();
+        //this.updateChartUserDefined();
     },
 
     /**
@@ -550,7 +409,7 @@ var ElementInspector = Backbone.View.extend({
         } else if (this.repeatOptionsDisplay){
             this.setRepeatConstraintMode("TurnOff");
             this.intention.get('evolvingFunction').removeRepFuncSegments();
-            this.updateChartUserDefined();
+           // this.updateChartUserDefined();
         }
     },
 
@@ -590,7 +449,7 @@ var ElementInspector = Backbone.View.extend({
             $("#repeat-error").hide();
             this.intention.get('evolvingFunction').setRepeatingFunction(begin, end, count, absTime);
         }
-        this.updateChartUserDefined(); 
+        //this.updateChartUserDefined(); 
     },
 
     /**
@@ -607,7 +466,7 @@ var ElementInspector = Backbone.View.extend({
             $('#repeat-end2').val(2);
         }
         this.intention.get('evolvingFunction').set('repCount', repVal);
-        this.updateChartUserDefined(); 
+        //this.updateChartUserDefined(); 
     },
 
     /**
@@ -622,7 +481,7 @@ var ElementInspector = Backbone.View.extend({
             $('#repeat-end3').val(0);
         }
         this.intention.get('evolvingFunction').set('repAbsTime', absLength);
-        this.updateChartUserDefined();
+        //this.updateChartUserDefined();
     },
 
     /**
@@ -779,7 +638,7 @@ var ElementInspector = Backbone.View.extend({
             // Creates a FuncSegView for each of the function segment in the functionSegList
             funcSegList.forEach(
                 funcSeg => {
-                    var functionSegView = new FuncSegView({model: funcSeg, intention:this.intention, hasUD: hasUD, index: i, initSatValue: this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair'), view: this});
+                    var functionSegView = new FuncSegView({model: funcSeg, intention:this.intention, hasUD: hasUD, index: i, initSatValue: this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair'), chart: this.chart});
                     $('#segment-functions').append(functionSegView.el);
                     functionSegView.render(); 
                     i++; 
@@ -805,7 +664,7 @@ var FuncSegView = Backbone.View.extend({
 
     initialize: function(options){ 
         // Reference to the ElementInspector view so it's functions can be accessedin the subview
-        this.view = options.view;
+        this.chart = options.chart;
         // Reference to the parent intention
         this.intention = options.intention;
  
@@ -832,6 +691,13 @@ var FuncSegView = Backbone.View.extend({
         // Listens to if the current parameter in the FunctionSegmentBBMs changes
         this.listenTo(this.model, 'change:current', this.checkCurr);
         this.listenTo(this.model, 'change:refEvidencePair', this.updateNextFuncSeg);
+
+        if (!this.hasUD) {
+            this.listenTo(this.model, 'change', this.updateChart)
+        } 
+         else {
+            this.listenTo(this.model, 'change', this.updateChartUserDefined)
+         }  
     },
     template: ['<script type="text/template" id="item-template">',
                 '<input class="seg-time" > </input>',
@@ -861,6 +727,13 @@ var FuncSegView = Backbone.View.extend({
 
     render: function() {
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
+        
+        if (!this.hasUD) {
+            this.updateChart()
+        } 
+         else {
+            this.updateChartUserDefined()
+         }  
       
         // TODO: also disable it if it is part of a repeating segment
         // Disable the absTime parameter and set it to zero if its the first function segment
@@ -877,7 +750,7 @@ var FuncSegView = Backbone.View.extend({
         if ((this.hasUD === true) & (this.model.get('current') === true)) {
             this.$('#seg-function-type').prop('disabled', '');
         }
-
+        console.log(this.model.get('refEvidencePair'))
         // Have to manually add stopTP to html because it is not in the FunctionSegmentBBM
         this.$('#stopTP-out').val(this.stopTP);
         return this;
@@ -901,40 +774,34 @@ var FuncSegView = Backbone.View.extend({
             // this.updateNextFuncSeg();
              this.intention.getFuncSegments()[1].set('refEvidencePair', this.$('#seg-sat-value').val()); 
            
-         }
-        
-
-        if (!this.hasUD) {
-            this.view.updateChart(); 
-        } 
-        // else {
-        //     console.log(this.view);
-        //     this.view.updateChartUserDefined();
-        // }    
+         }  
     },
 
     checkFuncValue: function () {
         // set the function type to the type selected in the html
         this.model.set('type', this.$('#seg-function-type').val());
-        
+        //
+        console.log(this.model.get('type'))
+        console.log(this.model.get('refEvidencePair'))
         // Disable the function satisfaction dropdown for constant and stochastic functions
         if (this.model.get('type') == 'C' || this.model.get('type') == 'R') {
             this.$('#seg-sat-value').prop('disabled', 'disabled');
-            if (this.model.get('type') == 'C') {
+            if (this.intention.get('evolvingFunction').get('type') !== 'MP' && this.intention.get('evolvingFunction').get('type') !== 'MN' && (this.model.get('type') == 'C')) {
                     this.$("#seg-sat-value").val(this.initSatValue);
                     this.model.set('refEvidencePair', this.initSatValue);
                 }
         } else {
             this.$('#seg-sat-value').prop('disabled', '');
         }
-
+        console.log(this.model.get('refEvidencePair'))
         if (this.intention.get('evolvingFunction').get('type') == 'RC' && this.model.get('type') == 'C') {
             this.$('#seg-sat-value').prop('disabled', '');
         } else if (this.intention.get('evolvingFunction').get('type') == 'CR' && this.model.get('type') == 'C') {
             this.$("#seg-sat-value").val(this.initSatValue);
             this.model.set('refEvidencePair', this.initSatValue);
         }
-
+        console.log(this.model.get('refEvidencePair'))
+        
         if (this.hasUD == true) {
             this.checkUDFunctionValues()
         }
@@ -1086,6 +953,151 @@ var FuncSegView = Backbone.View.extend({
         if (!this.hasUD && (this.intention.get('evolvingFunction').get('type') == 'MP' || this.intention.get('evolvingFunction').get('type') == 'MN') && this.index == 1) {
             this.$('#seg-sat-value').val(this.intention.getFuncSegments()[1].get('refEvidencePair'));
         }
+    },
+
+    /**
+     * Updates the chart to represent data related to the the current function and
+     * satisfaction value(s)
+     */
+     updateChart: function() {
+        if (this.intention.get('evolvingFunction') != null) {
+            var funcType = this.intention.get('evolvingFunction').get('type');
+            var initVal = satisfactionValuesDict[this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair')].chartVal;
+            // if (this.intention.getFuncSegments()[0] != null && funcType != 'C') {
+            //     var satVal = satisfactionValuesDict[this.intention.getFuncSegments()[0].get('refEvidencePair')].chartVal;
+            // }
+            this.chart.reset();
+            // Get the chart canvas
+            var context = $("#chart").get(0).getContext("2d");
+    
+            // Render preview for user defined function types
+            if (funcType == "UD") {
+                this.updateChartUserDefined();
+                return;
+            }
+    
+            // Change chart dataset(s), depending on the function type
+            var threeLabelFunc = ['RC', 'CR', 'SD', 'DS', 'MP', 'MN'];
+    
+            if (threeLabelFunc.includes(funcType)) {
+                this.chart.labels = ['0', 'A', 'Infinity'];
+    
+                if (funcType === 'RC') {
+                    var satVal = satisfactionValuesDict[this.intention.getFuncSegments()[0].get('refEvidencePair')].chartVal;
+                    this.chart.addDataSet(0, [initVal, initVal], true);
+                    this.chart.addDataSet(1, [satVal, satVal], false);
+                } else if (funcType === 'CR') {
+                    this.chart.addDataSet(0, [initVal, initVal], false);
+                    this.chart.addDataSet(1, [initVal, initVal], true);
+                } else if (funcType === 'SD') {
+                    this.chart.addDataSet(0, [2, 2], false);
+                    this.chart.addDataSet(1, [-2, -2], false);
+                } else if (funcType === 'DS') {
+                    this.chart.addDataSet(0, [-2, -2], false);
+                    this.chart.addDataSet(1, [2, 2], false);
+                } else if (funcType === 'MP' || funcType === 'MN') {
+                    console.log(this.model.get('refEvidencePair'))
+                    var satVal = satisfactionValuesDict[this.intention.getFuncSegments()[0].get('refEvidencePair')].chartVal;
+                    this.chart.addDataSet(0, [initVal, satVal, satVal]);
+                }
+            } else {
+                this.chart.labels = ['0', 'Infinity'];
+    
+                if (funcType === 'C') {
+                    this.chart.addDataSet(0, [initVal, initVal], false);
+                } else if (funcType === 'R') {
+                    this.chart.addDataSet(0, [initVal, initVal], true);
+                } else if (funcType === 'I' || funcType === 'D') {
+                    var satVal = satisfactionValuesDict[this.intention.getFuncSegments()[0].get('refEvidencePair')].chartVal;
+                    this.chart.addDataSet(0, [initVal, satVal], false);
+                } else {
+                    // display a dot
+                    this.chart.addDataSet(0, [initVal], false);
+                }
+            }
+            this.chart.display(context);         
+        }
+    },
+
+    /**
+     * Updates the chart to represent data related to the the current user
+     * defined function and satisfaction value(s)
+     */
+     updateChartUserDefined: function() {
+        var context = $("#chart").get(0).getContext("2d");
+        // This will never be undefined because at least one 
+        // FunctionSegmentBBM will be in functionSegList at this point
+        var numFuncSegments = this.intention.getFuncSegments().length;
+
+        // Reset chart datasets
+        this.chart.reset();
+
+        // Setting up the labels
+        this.chart.labels = this.getUDChartLabel(numFuncSegments);
+
+        // Get init sat value
+        var initSatVal = satisfactionValuesDict[this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair')].chartVal;
+
+        // Add datapoints to graph for each userfunction/uservalue pair
+        var funcSegments = this.intention.getFuncSegments();
+
+        for (var i = 0; i < funcSegments.length; i++) {
+            var currFunc = funcSegments[i].get('type');
+            var currVal = funcSegments[i].get('refEvidencePair');
+            var coloured = funcSegments[i].isRepeat;
+            var data1; // first data point for this segment
+            var data2 = satisfactionValuesDict[currVal].chartVal;
+            if (i === 0) {
+                if (currFunc !== 'R') {
+                    data1 = initSatVal;
+                } else {
+                    data1 = 0;
+                }
+            } else {
+                // If previous function is stochastic, set the starting point to be either FD or FS
+                var prevFunc = funcSegments[i - 1].get('type');
+                var prevVal = funcSegments[i - 1].get('refEvidencePair');
+                if (prevFunc === 'R' && currFunc === 'I') {
+                    data1 = -2;
+                } else if (prevFunc === 'R' && currFunc === 'D') {
+                    data1 = 2;
+                } else if (currFunc == 'R') {
+                    data1 = 0;
+                } else if (currFunc === 'C'){
+                    data1 = data2;
+                } else {
+                    // set to previous function's marked value
+                    data1 = satisfactionValuesDict[prevVal].chartVal;
+                }
+            }
+            this.chart.addDataSet(i, [data1, data2], currFunc === 'R' || currVal === '(no value)', coloured);
+        }
+        this.chart.display(context);
+    },
+    
+    /**
+     * Modifies the passed in datasets with their default values
+     * @param {Array.<Object>}
+     */
+     resetChartDatasets: function(datasets) {
+        for (var i = 0; i < datasets.length; i++) {
+            datasets[i].borderDash = [];
+            datasets[i].data = [];
+            datasets[i].pointBackgroundColor = ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"];
+            datasets[i].pointBorderColor = ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"];
+            datasets[i].borderColor = "rgba(220,220,220,1)";
+        }  
+    },
+
+
+    getUDChartLabel: function(num) {
+        var res = ['0'];
+        var curr = 'A'
+        for (var i = 0; i < num; i++) {
+            res.push(curr);
+            curr = String.fromCharCode(curr.charCodeAt(0) + 1);
+        }
+        return res;
     },
 });
 

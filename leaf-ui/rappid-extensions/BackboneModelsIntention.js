@@ -300,7 +300,7 @@ var IntentionBBM = Backbone.Model.extend({
             case'RC':
                 // Stochastic and Constant
                 var seg1 =  new FunctionSegmentBBM({type: 'R', refEvidencePair: '(no value)', startTP: '0', startAT: 0}); 
-                var seg2 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: null, startTP: 'A', startAT: myNull}); 
+                var seg2 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: initValue, startTP: 'A', startAT: myNull}); 
                 break;
             case 'CR':
                 // Constant and Stochastic
@@ -309,13 +309,13 @@ var IntentionBBM = Backbone.Model.extend({
                 break;
             case 'MP':
                 // Increase and Constant
-                var seg1 =  new FunctionSegmentBBM({type: 'I', refEvidencePair: null, startTP: '0', startAT: 0}); 
-                var seg2 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: null, startTP: 'A', startAT: myNull}); 
+                var seg1 =  new FunctionSegmentBBM({type: 'I', refEvidencePair: '0011', startTP: '0', startAT: 0}); 
+                var seg2 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: '0011', startTP: 'A', startAT: myNull}); 
                 break;
             case 'MN':
                 // Decrease and Constant
-                var seg1 =  new FunctionSegmentBBM({type: 'D', refEvidencePair: null, startTP: '0', startAT: 0}); 
-                var seg2 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: null, startTP: 'A', startAT: myNull}); 
+                var seg1 =  new FunctionSegmentBBM({type: 'D', refEvidencePair: '1100', startTP: '0', startAT: 0}); 
+                var seg2 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: '1100', startTP: 'A', startAT: myNull}); 
                 break;
             case 'SD':
                 // Constant and Constant
