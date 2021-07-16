@@ -750,7 +750,6 @@ var FuncSegView = Backbone.View.extend({
         if ((this.hasUD === true) & (this.model.get('current') === true)) {
             this.$('#seg-function-type').prop('disabled', '');
         }
-        console.log(this.model.get('refEvidencePair'))
         // Have to manually add stopTP to html because it is not in the FunctionSegmentBBM
         this.$('#stopTP-out').val(this.stopTP);
         return this;
@@ -780,9 +779,6 @@ var FuncSegView = Backbone.View.extend({
     checkFuncValue: function () {
         // set the function type to the type selected in the html
         this.model.set('type', this.$('#seg-function-type').val());
-        //
-        console.log(this.model.get('type'))
-        console.log(this.model.get('refEvidencePair'))
         // Disable the function satisfaction dropdown for constant and stochastic functions
         if (this.model.get('type') == 'C' || this.model.get('type') == 'R') {
             this.$('#seg-sat-value').prop('disabled', 'disabled');
@@ -793,14 +789,12 @@ var FuncSegView = Backbone.View.extend({
         } else {
             this.$('#seg-sat-value').prop('disabled', '');
         }
-        console.log(this.model.get('refEvidencePair'))
         if (this.intention.get('evolvingFunction').get('type') == 'RC' && this.model.get('type') == 'C') {
             this.$('#seg-sat-value').prop('disabled', '');
         } else if (this.intention.get('evolvingFunction').get('type') == 'CR' && this.model.get('type') == 'C') {
             this.$("#seg-sat-value").val(this.initSatValue);
             this.model.set('refEvidencePair', this.initSatValue);
         }
-        console.log(this.model.get('refEvidencePair'))
         
         if (this.hasUD == true) {
             this.checkUDFunctionValues()
@@ -825,7 +819,7 @@ var FuncSegView = Backbone.View.extend({
             this.$("#seg-sat-value").html('<option value="(no value)"> (no value) </option>');
             this.$("#seg-sat-value").val("(no value)");
             this.model.get('refEvidencePair');
-        } else if (functionType == 'C') {
+        } else if (this.intention.get('evolvingFunction').get('type') !== 'MP' && this.intention.get('evolvingFunction').get('type') !== 'MN' && functionType == 'C') {
             this.$("#seg-sat-value").val(this.initSatValue);
             this.model.set('refEvidencePair', this.initSatValue);
         }
@@ -860,7 +854,7 @@ var FuncSegView = Backbone.View.extend({
             this.$("#seg-sat-value").val("(no value)");
             this.$("#seg-sat-value").prop('disabled', true);
             
-        } else if (func == 'C') {
+        } else if (this.intention.get('evolvingFunction').get('type') !== 'MP' && this.intention.get('evolvingFunction').get('type') !== 'MN' && func == 'C') {
             this.$("#seg-sat-value").last().html(this.satValueOptionsAll());
             // Restrict input to initial satisfaction value if it is the first constraint
             if (this.index == 0) {
@@ -981,7 +975,6 @@ var FuncSegView = Backbone.View.extend({
     
             if (threeLabelFunc.includes(funcType)) {
                 this.chart.labels = ['0', 'A', 'Infinity'];
-    
                 if (funcType === 'RC') {
                     var satVal = satisfactionValuesDict[this.intention.getFuncSegments()[0].get('refEvidencePair')].chartVal;
                     this.chart.addDataSet(0, [initVal, initVal], true);
@@ -996,7 +989,6 @@ var FuncSegView = Backbone.View.extend({
                     this.chart.addDataSet(0, [-2, -2], false);
                     this.chart.addDataSet(1, [2, 2], false);
                 } else if (funcType === 'MP' || funcType === 'MN') {
-                    console.log(this.model.get('refEvidencePair'))
                     var satVal = satisfactionValuesDict[this.intention.getFuncSegments()[0].get('refEvidencePair')].chartVal;
                     this.chart.addDataSet(0, [initVal, satVal, satVal]);
                 }
