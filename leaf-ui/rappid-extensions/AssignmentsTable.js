@@ -383,7 +383,7 @@ var LinkRelationshipView = Backbone.View.extend({
         '<td><%= linkType %><%if (evolving){%> | <%}%> <%=postType %></td>',
         '<td class= "link-source"></td>',
         '<td class= "link-dest"></td>',
-        '<td><input class="linkAbsRelation" type="number" name="sth" value= <%- absTime %> > </td>',
+        '<td><input class="linkAbsRelation" type="number" name="sth" value= <%- absTP %> > </td>',
         '<td><button class="unassign-abs-rel-btn" > Unassign </button></td>',
         '</script>'
     ].join(''),
@@ -396,8 +396,8 @@ var LinkRelationshipView = Backbone.View.extend({
     render: function () {
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
         // TODO: Write statement to handle this case in script
-        // Or if absTime default changed to null just remove if statement
-        if (this.model.get('absTime') == -1) {
+        // Or if absTP default changed to null just remove if statement
+        if (this.model.get('absTP') == -1) {
             this.$('.linkAbsRelation').val('')
         }
         this.$('.link-source').text(this.linkSrc);
@@ -406,7 +406,7 @@ var LinkRelationshipView = Backbone.View.extend({
     },
 
     /**
-     * Sets model linkAbsTime to the new time point 
+     * Sets model linkabsTP to the new time point 
      * After checking if it is a number
      */
     updateLinkAbsRelation: function () {
@@ -414,7 +414,7 @@ var LinkRelationshipView = Backbone.View.extend({
         if (isNaN(newTime)) {
             return;
         }
-        this.model.set('absTime', newTime);
+        this.model.set('absTP', newTime);
     },
 
     /**
@@ -422,6 +422,6 @@ var LinkRelationshipView = Backbone.View.extend({
      */
     unassignAbsRelation: function () {
         $('.linkAbsRelation').val('');
-        this.model.set('absTime', -1);
+        this.model.set('absTP', -1);
     },
 });

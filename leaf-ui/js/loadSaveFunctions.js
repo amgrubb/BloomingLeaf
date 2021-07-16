@@ -200,7 +200,7 @@ function createBBActor(cell){
  */
 function createBBLink(cell){
 	var link = cell.get('link').attributes;
-	var linkBBM = new LinkBBM({displayType: link.displayType, linkType: link.linkType, postType: link.postType, absTime: link.absTime, evolving: link.evolving});
+	var linkBBM = new LinkBBM({displayType: link.displayType, linkType: link.linkType, postType: link.postType, absTP: link.absTP, evolving: link.evolving});
 	cell.set('link', linkBBM)
 }
 
