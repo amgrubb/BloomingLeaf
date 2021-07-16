@@ -387,14 +387,15 @@ var ElementInspector = Backbone.View.extend({
      * satisfaction value(s)
      */
     updateChart: function() {
+        
         console.log(this.intention.get('evolvingFunction'));
     
         if (this.intention.get('evolvingFunction') != null) {
             var funcType = this.intention.get('evolvingFunction').get('type');
             var initVal = satisfactionValuesDict[this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair')].chartVal;
-            if (this.intention.getFuncSegments()[0] != null && funcType != 'C') {
-                var satVal = satisfactionValuesDict[this.intention.getFuncSegments()[0].get('refEvidencePair')].chartVal;
-            }
+            // if (this.intention.getFuncSegments()[0] != null && funcType != 'C') {
+            //     var satVal = satisfactionValuesDict[this.intention.getFuncSegments()[0].get('refEvidencePair')].chartVal;
+            // }
             this.chart.reset();
             // Get the chart canvas
             var context = $("#chart").get(0).getContext("2d");
@@ -412,6 +413,7 @@ var ElementInspector = Backbone.View.extend({
                 this.chart.labels = ['0', 'A', 'Infinity'];
     
                 if (funcType === 'RC') {
+                    var satVal = satisfactionValuesDict[this.intention.getFuncSegments()[0].get('refEvidencePair')].chartVal;
                     this.chart.addDataSet(0, [initVal, initVal], true);
                     this.chart.addDataSet(1, [satVal, satVal], false);
                 } else if (funcType === 'CR') {
@@ -424,6 +426,7 @@ var ElementInspector = Backbone.View.extend({
                     this.chart.addDataSet(0, [-2, -2], false);
                     this.chart.addDataSet(1, [2, 2], false);
                 } else if (funcType === 'MP' || funcType === 'MN') {
+                    var satVal = satisfactionValuesDict[this.intention.getFuncSegments()[0].get('refEvidencePair')].chartVal;
                     this.chart.addDataSet(0, [initVal, satVal, satVal]);
                 }
             } else {
@@ -434,6 +437,7 @@ var ElementInspector = Backbone.View.extend({
                 } else if (funcType === 'R') {
                     this.chart.addDataSet(0, [initVal, initVal], true);
                 } else if (funcType === 'I' || funcType === 'D') {
+                    var satVal = satisfactionValuesDict[this.intention.getFuncSegments()[0].get('refEvidencePair')].chartVal;
                     this.chart.addDataSet(0, [initVal, satVal], false);
                 } else {
                     // display a dot
@@ -830,6 +834,7 @@ var FuncSegView = Backbone.View.extend({
         };
         // Listens to if the current parameter in the FunctionSegmentBBMs changes
         this.listenTo(this.model, 'change:current', this.checkCurr);
+        // this.listenTo(this.model, 'change:refEvidencePair', this.updateNextFuncSeg);
     },
     template: ['<script type="text/template" id="item-template">',
                 '<input class="seg-time" > </input>',
@@ -895,8 +900,15 @@ var FuncSegView = Backbone.View.extend({
 
     setFuncSatValue: function () {
         this.model.set('refEvidencePair', this.$('#seg-sat-value').val()) // 4 digit representation
-        // TODO: make it so the chart updates too 
-        // this.intention.updateChart();
+
+        /**
+        // TODO
+        if (this.intention.getFuncSegments().length >= 2 && this.hasUD == false) {
+            // this.rerender();
+             this.intention.getFuncSegments()[1].set('refEvidencePair', this.$('#seg-sat-value').val()); 
+           
+         }
+         */
 
         if (!this.hasUD) {
             this.view.updateChart(); 
@@ -968,10 +980,13 @@ var FuncSegView = Backbone.View.extend({
             var prevVal = this.intention.get('evolvingFunction').getNthRefEvidencePair(2);
             if (func == 'I') {
                 this.$("#seg-sat-value").html(this.satValueOptionsPositiveOrNegative(prevVal, true));
-                this.$("#seg-sat-value").val("satisfied"); 
+                // this.$("#seg-sat-value").val("satisfied");
+                this.$("#seg-sat-value").val("0011");
+                console.log("hi"); 
             } else {
                 this.$("#seg-sat-value").html(this.satValueOptionsPositiveOrNegative(prevVal, false));
-                this.$("#seg-sat-value").val("denied");
+                // this.$("#seg-sat-value").val("denied");
+                this.$("#seg-sat-value").val("1100");
             }
         } else if (func == 'R') {
             this.$("#seg-sat-value").html(this.satValueOptionsAll());
@@ -1058,9 +1073,26 @@ var FuncSegView = Backbone.View.extend({
         return null;
     },
 
+    /**
+     * This function disables the segment function type and segment satisfaction value dropdowns.
+     * It is called when the current parameter in a function segment becomes false
+    */
     checkCurr: function () {
         this.$('#seg-function-type').prop('disabled', true);
         this.$('#seg-sat-value').prop('disabled', true);
-    }
+    },
+
+    updateNextFuncSeg: function() {
+        // var funcSegList = this.intention.getFuncSegments();
+        // funcSegList
+        if (!this.hasUD && this.index == 1) {
+            console.log(this.$('#seg-sat-value').val());
+            console.log(this.intention.getFuncSegments()[0].get('refEvidencePair'));
+            console.log(this.intention.getFuncSegments()[1].get('refEvidencePair'));
+            //this.$('#seg-sat-value').val(this.intention.getFuncSegments()[1].get('refEvidencePair'));
+            this.render();
+            console.log(this.$('#seg-sat-value').val());
+        }
+    },
 });
 
