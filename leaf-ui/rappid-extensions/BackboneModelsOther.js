@@ -15,9 +15,11 @@
         _.extend({}, this.defaults, options);
     },
 
-    defaults: {
-        type: 'A',
-        actorName: 'Actor'
+    defaults: function() {
+        return {
+            type: 'A',
+            actorName: 'Actor'
+        }
     },
 });
 
@@ -30,12 +32,14 @@
         _.extend({}, this.defaults, options);
     },
 
-    defaults: {
-        displayType: 'element',     // TODO: should this be changed to 'link'?
-        linkType:  'and',
-        postType: null,
-        absTime: -1,
-        evolving: false,
+    defaults: function() {
+        return {
+            displayType: 'element',     // TODO: should this be changed to 'link'?
+            linkType:  'and',
+            postType: null,
+            absTime: -1,
+            evolving: false,
+        }
     },
 
 });
@@ -48,17 +52,19 @@ var ConstraintBBM = Backbone.Model.extend({
         _.extend({}, this.defaults, options)
     },
 
-    defaults: {
-        type: null,           // Options are '=', '<', and '<='
-        srcID: null,
-        destID: null,
-        srcRefTP: null,       // Reference Time Point A,B,C, etc.
-        destRefTP: null,      // Reference Time Point A,B,C, etc.
-        /** 
-         * Absolute time points are only used with the '=' type of operator.
-         *  If a timepoint is not given -1 should be assigned as the default value.
-         */   
-        absTP: -1,
+    defaults: function() {
+        return {
+            type: null,           // Options are '=', '<', and '<='
+            srcID: null,
+            destID: null,
+            srcRefTP: null,       // Reference Time Point A,B,C, etc.
+            destRefTP: null,      // Reference Time Point A,B,C, etc.
+            /** 
+             * Absolute time points are only used with the '=' type of operator.
+             *  If a timepoint is not given -1 should be assigned as the default value.
+             */   
+            absTP: -1,
+        }
     },
 
     /**
