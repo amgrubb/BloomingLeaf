@@ -1,3 +1,4 @@
+myNull = null;
 /** 
  * This file contains Backbone Models for:
  *  Actor
@@ -34,7 +35,7 @@
         displayType: 'element',     // TODO: should this be changed to 'link'?
         linkType:  'and',
         postType: null,
-        absTime: -1,
+        absTime: myNull,
         evolving: false,
     },
 
