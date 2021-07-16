@@ -34,7 +34,7 @@
         displayType: 'element',     // TODO: should this be changed to 'link'?
         linkType:  'and',
         postType: null,
-        absTP: -1,
+        absTime: -1,
         evolving: false,
     },
 
