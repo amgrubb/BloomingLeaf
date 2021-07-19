@@ -534,7 +534,7 @@ select > .select-placeholder {
   left: 105px;
 }
 
-#on-off{
+.on-off{
   font-size: 8px;
   color: white;
   position: relative;
@@ -700,7 +700,7 @@ select > .select-placeholder {
 
 /* Attribution */
 div.attribution{
-  position: relative;
+  position: absolute;
   bottom: 0;
   left: 30;
   color: #333333;

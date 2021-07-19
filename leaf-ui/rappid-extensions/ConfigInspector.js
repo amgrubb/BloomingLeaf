@@ -288,7 +288,7 @@ var ConfigInspector = Backbone.View.extend({
         '<div id="addConfig" style="display:inline">',
         '<i class="fa fa-plus" id="addIntent" style="font-size:30px; float:right;  margin-bottom:5px; margin-right:20px;"></i>',
         '</div></h3>',
-        '<div id="configurations" class="left-panel" style="margin-top:20px; overflow-y:auto; height:90%; box-shadow: none;"></div>',
+        '<div id="configurations" class="left-panel" style="margin-top:20px; overflow-y:auto; box-shadow: none;"></div>',
     '</div>',
 
     ].join(''),
