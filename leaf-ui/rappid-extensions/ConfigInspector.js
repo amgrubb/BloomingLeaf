@@ -106,6 +106,7 @@ var Config = Backbone.View.extend({
         this.model.on('change:selected', this.rerender, this);
         this.model.on('switch', this.showAnalysisInspector, this);
         this.model.on('change:name', this.renderName, this);
+        this.model.on('change:selected', this.updateSelectedConfig, this);
     },
 
     template: ['<script type="text/template" id="item-template">',
@@ -175,13 +176,22 @@ var Config = Backbone.View.extend({
         if (this.model.get('selected') == true && this.model.collection.length > 1) {
             if (index > 0) {
                 this.model.collection.at(index - 1).set({ selected: true });
-                this.model.collection.at(index - 1).trigger('change:switchConfigs', this.model.collection.at(index - 1));
+                this.model.set('selected', false);
             } else {
                 this.model.collection.at(index + 1).set({ selected: true });
-                this.model.collection.at(index + 1).trigger('change:switchConfigs', this.model.collection.at(index + 1));
+                this.model.set('selected', false);
             }
         }
         this.model.destroy();
+    },
+
+    /** If result is selected, update config **/
+    updateSelectedConfig: function () {
+        if (this.model.get('selected')) {
+            this.showAnalysisInspector();
+            this.model.trigger('change:switchConfigs', this.model);
+            this.model.trigger('change:unselectResult', this.model);
+        }
     },
 
     /**
@@ -189,11 +199,7 @@ var Config = Backbone.View.extend({
      * Sets selected value to true and triggers a switchConfig event to update highlight
      */
     switchConfig: function () {
-        currAnalysisConfig = this.model;
         this.model.set({ selected: true });
-        this.showAnalysisInspector();
-        this.model.trigger('change:switchConfigs', this.model);
-        this.model.trigger('change:unselectResult', this.model);
     },
 
     /**

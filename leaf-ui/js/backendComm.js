@@ -12,82 +12,149 @@
 
 var url = "http://localhost:8080/untitled.html";	// Hardcoded URL for Node calls. 
 
-function backendComm(jsObject){	
-	/**
-	* Print the input to the console.
-	*/
-	console.log("Step 3");
-	console.log(JSON.stringify(jsObject));
-	console.log(jsObject.analysisRequest.action);
-    nodeBackendCommFunc(jsObject);
+/**
+ * Explore Possible Next States - Step 1 - Set up analysis request object.
+ * Retrieves information about the current model and sends to the backend
+ * to get all next possible states.
+ *
+ * This function is called on click for #btn-all-next-state
+ * 
+ * TODO: Replace analysisRequest with config
+ */
+ function getAllNextStates() {
+    console.log("TODO: Implement Next States") 
+    /*
+    if (analysisRequest.action != null) { //path has been simulated
+        if (analysisResult.selectedTimePoint != analysisResult.timeScale) { //last timepoint is not selected
+            $("body").addClass("waiting"); //Adds "waiting" spinner under cursor 
+            //Create the object and fill the JSON file to be sent to backend.
+            //Get the AnalysisInspector view information
+
+            analysisRequest.action = "allNextStates";
+
+            analysisRequest.previousAnalysis = _.clone(savedAnalysisData.singlePathResult);
+            // need to remove TPs after current point from previous solution?
+            // update the time point for potentialEpoch
+            var previousTP = [];
+            var i = analysisRequest.currentState.indexOf('|', 0);
+            var currentState = parseInt(analysisRequest.currentState.substring(0, i));
+            for (var i = 0; i < currentState + 1; i++) {
+                for (var j = 0; j < analysisRequest.previousAnalysis.assignedEpoch.length; j++) {
+                    var regex = /(.*)_(.*)$/g;
+                    var match = regex.exec(analysisRequest.previousAnalysis.assignedEpoch[j]);
+                    if (match[2] === analysisRequest.previousAnalysis.timePointPath[i]) {
+                        previousTP.push(analysisRequest.previousAnalysis.assignedEpoch[j]);
+                        continue;
+                    }
+                }
+            }
+
+            console.log(previousTP);
+            // update current time point in the path if necessary (if epoch)
+            // remove all the time points after
+            analysisRequest.previousAnalysis.assignedEpoch = previousTP;
+            analysisRequest.previousAnalysis.timePointPath = analysisRequest.previousAnalysis.timePointPath.slice(0, currentState + 1);
+
+
+            console.log(analysisRequest);
+
+            // Object to be sent to the backend
+            var jsObject = {};
+            jsObject.analysisRequest = analysisRequest;
+
+            //Get the Graph Model
+            jsObject.model = model;
+
+            //Send data to backend
+            //backendComm(jsObject);		//TODO: Need to add parameter for Node Server.
+            // Temporary Disabled to updated calls to backend.
+            // TODO: Reconnect All Paths Analysis
+
+        } else {
+            swal("Error: Cannot explore next states with last time point selected.", "", "error");
+        }
+    } else {
+        swal("Error: Cannot explore next states before simulating a single path.", "", "error");
+    }
+    */
 }
 
-// Code for calling the java function via Node.
-function nodeBackendCommFunc(jsObject){
-   console.log("Calling Backend via Node Server"); //JSON.stringify(jsObject));
-   
-   var xhr = new XMLHttpRequest();
-   var isGetNextSteps ;
-   xhr.open("POST", url, true);
-   xhr.setRequestHeader("Content-Type", "application/json");
+/** Makes a request for the backend and calls the response function.
+ * {ConfigBBM} analysisRequest
+ * Note: function was originally called `backendComm`.
+ */
+function backendSimulationRequest(analysisRequest) {
+	var jsObject = {};
+	jsObject.analysisRequest = analysisRequest;
+	jsObject.graph = graph;
 
-   var data = JSON.stringify(jsObject);
-   xhr.onreadystatechange = function() {	
-		// This function get caled when the response is received.
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", url, true);
+	xhr.setRequestHeader("Content-Type", "application/json");
+
+	var data = JSON.stringify(jsObject);
+	console.log(data)
+	xhr.onreadystatechange = function () {
+		// This function get called when the response is received.
 		console.log("Reading the response");
 		if (xhr.readyState == XMLHttpRequest.DONE) {
-           if(jsObject.analysisRequest.action=="allNextStates"){
-               isGetNextSteps = true;
-           }
-           else{
-               isGetNextSteps = false;
-        	}
-            
-            var response = xhr.responseText;
-   			responseFunc(isGetNextSteps,response);
-       }
-   }
-   xhr.send(data);	// Why is this sent down here? What is this send function.
+			var response = xhr.responseText;
+			responseFunc(analysisRequest, response);
+		}
+	}
+	xhr.send(data);	// Why is this sent down here? What is this send function.
 }
 
-
-//deal with the response sent back by the server
-function responseFunc(isGetNextSteps, response){
+/** Handles the response from the server.
+ * {ConfigBBM} analysisRequest
+ * Note: function was originally called `backendComm`.
+ */
+function responseFunc(analysisRequest, response) {
 	$("body").removeClass("waiting"); //Remove spinner under cursor 
 	var results = JSON.parse(response);
-	if (errorExists(results)) { 
-		 var msg = getErrorMessage(results.errorMessage);
-		 alert(msg);
-	 }
-	else {
-		if (results == ""){ 
-			 alert("Error while reading the resonse file from server. This can be due an error in executing java application.");
-			 return;
-		 }
-		else {
-			if(isGetNextSteps){ 
-					console.log("All Paths Results (responseFunc):")
-					console.log(JSON.stringify(results));	
-					savedAnalysisData.allNextStatesResult = results;
-					console.log("in backendcomm, saving all next state results");
-					open_analysis_viewer();
-			} else {
-				savedAnalysisData.singlePathResult = results;
+	if (errorExists(results)) {
+		var msg = getErrorMessage(results.errorMessage);
+		alert(msg);
+	} else {
+		console.log(analysisRequest.get('action'))
+		if (results == "") {
+			alert("Error while reading the response file from server. This can be due an error in executing java application.");
+			return;
+		} else if (analysisRequest.get('action') == 'allNextStates') {
+				console.log("All Paths Results (responseFunc):")
+				// savedAnalysisData.allNextStatesResult = results;
+				// open_analysis_viewer();
+		} else if (analysisRequest.get('action') == 'singlePath') {
+				savedAnalysisData.singlePathResult = results;	//	TODO What is this?
 				console.log(JSON.stringify(results));			// Print the results of the analysis to the console.
-				analysisResult = convertToAnalysisResult(results);
+				var analysisResult = convertToAnalysisResult(results); 	// {ResultBBM}
 				displayAnalysis(analysisResult, false);
-				// Get the currently selected configuration's results list
-				// .where returns an array, but there should only ever be one selected so we just grab the first element
-				currConfig = configCollection.where({selected: true})[0];
-				currConfig.addResult(analysisResult);
-				// // Save result to the corresponding analysis configuration object
-				// currAnalysisConfig.addResult(analysisResult);
-				// // Add the analysisConfiguration to the analysisMap for access in the analysis config sidebar
-				// analysisMap.set(currAnalysisConfig.id, currAnalysisConfig);
-			 }
-		 }
-	 }
- }
+				analysisRequest.addResult(analysisResult);
+		} else {
+			alert("Error: Unknown analysis request type.");
+			return;
+		}
+	}
+}
+
+/** Handles the response from the server.
+ * {json structure} results
+ * Note: function was originally called `backendComm`.
+ */
+function convertToAnalysisResult(results){
+	var tempResult = new ResultBBM();
+	tempResult.set('assignedEpoch', results.assignedEpoch);
+	tempResult.set('timePointPath', results.timePointPath);
+	tempResult.set('timePointPathSize', results.timePointPathSize);
+	tempResult.set('elementList', results.elementList);
+	tempResult.set('allSolution', results.allSolution);
+	//tempResult.previousAnalysis = analysisResult;	//TODO Do we need to add this? (Potentially deprecated)
+	tempResult.set('isPathSim', true);
+	var evoView = new EVO(results.elementList)
+	tempResult.set('colorVis', evoView);
+	evoView.singlePathResponse(results.elementList);
+	return tempResult;
+}
 
 function open_analysis_viewer(){
     var urlBase = document.URL.substring(0, document.URL.lastIndexOf('/')+1);
@@ -241,16 +308,5 @@ function getIDs(backendErrorMsg) {
 	return arr;
 }
 
-function convertToAnalysisResult(results){
-	var tempResult = new AnalysisResult();
-	tempResult.assignedEpoch = results.assignedEpoch;
-	tempResult.timePointPath = results.timePointPath;
-	tempResult.timePointPathSize = results.timePointPathSize;
-	tempResult.elementList = results.elementList;
-	tempResult.allSolution = results.allSolution;
-	tempResult.previousAnalysis = analysisResult;
-	tempResult.colorVis = new EVO(results.elementList);
-	tempResult.isPathSim = true;
-	tempResult.colorVis.singlePathResponse(results.elementList);
-	return tempResult;
-}
+
+

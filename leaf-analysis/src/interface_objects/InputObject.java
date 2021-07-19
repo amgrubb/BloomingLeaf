@@ -17,16 +17,16 @@ public class InputObject {
 		return analysisRequest;
 	}
 	
-	public void setAnalysis(InputAnalysis analysis) {
-		this.analysisRequest = analysis;
-	}
+//	public void setAnalysis(InputAnalysis analysis) {
+//		this.analysisRequest = analysis;
+//	}
 	
 	public InputModel getModel() {
 		return model;
 	}
-	
-	public void setModel(InputModel model) {
-		this.model = model;
-	}
+//	
+//	public void setModel(InputModel model) {
+//		this.model = model;
+//	}
 	
 }

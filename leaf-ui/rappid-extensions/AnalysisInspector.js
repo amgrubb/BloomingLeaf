@@ -70,5 +70,5 @@ var AnalysisInspector = Backbone.View.extend({
 		} else {
 			numRel.val(this.model.get('numRelTime'));
 		}
-	},
+	}
 });
