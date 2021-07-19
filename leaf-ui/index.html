@@ -27,8 +27,9 @@
     <div class="toolbar-div">
 
         <div class="dropdown">
-            <button id="btn-big-save" class="btn">Save</button>
+            <button id="btn-file" class="btn">File</button>
             <div class="dropdown-toolbar">
+                <a id="btn-load" class = "model-only">Load</a>
                 <a id="btn-save">Save Model</a>
                 <a id="btn-save-analysis">Save Model and Analysis Configuration</a>
                 <a id="btn-save-all">Save Model, Analysis Configuration, and Results</a>
@@ -37,30 +38,31 @@
         </div>
 
         <div class="dropdown">
-            <button id="btn-clear" class="btn">Clear</button>
-            <!-- <div class="btn">Font Size</div> -->
+            <button id="btn-edit" class="btn">Edit</button>
             <div class="dropdown-toolbar">
-                <a id="btn-clear-all" class='model-only'>Full Model and Analysis</a>
-                <a id="btn-clear-elabel" class='model-only'>Evaluation Labels</a>
-                <a id="btn-clear-flabel" class='model-only'>Dynamic Function Labels</a>
-                <a id="btn-clear-cycle" class='model-only'>Cycle Highlighting</a>
-                <a id="btn-clear-results" class='analysis-only' style="display: none;">Results Only</a>
-                <a id="btn-clear-analysis" class='analysis-only' style="display: none;">Configurations and Results</a>
+                <a id="btn-undo" class='model-only'>Undo</a>
+                <a id="btn-redo" class='model-only'>Redo</a>
+                <a id="btn-debug" class='model-only'>Debug</a>
+                <a id="btn-clear-all" class='model-only'>Clear Full Model and Analysis</a>
+                <a id="btn-clear-elabel" class='model-only'>Clear Evaluation Labels</a>
+                <a id="btn-clear-flabel" class='model-only'>Clear Dynamic Function Labels</a>
+                <a id="btn-clear-cycle" class='model-only'>Clear Cycle Highlighting</a>
+                <a id="btn-clear-results" class='analysis-only' style="display: none;">Clear Results Only</a>
+                <a id="btn-clear-analysis" class='analysis-only' style="display: none;">Clear Configurations and Results</a>
             </div>
         </div>
-        <button id="btn-zoom-in" class="btn">Zoom In</button>
-        <button id="btn-zoom-out" class="btn">Zoom Out</button>
-        <input type="file" id="loader" style="display:none">
-
-
         <div class="dropdown">
-            <div class="btn">Font Size</div>
+            <button id="btn-edit" class="btn">View</button>
             <div class="dropdown-toolbar">
-                <a id="btn-fnt">Default</a>
-                <a id="btn-fnt-up">Increase</a>
-                <a id="btn-fnt-down">Decrease</a>
+                <a id="btn-zoom-in">Zoom In</a>
+                <a id="btn-zoom-out">Zoom Out</a>
+                <a id="btn-fnt">Font Size: Default</a>
+                <a id="btn-fnt-up">Font Size: Increase</a>
+                <a id="btn-fnt-down">Font Size: Decrease</a>
             </div>
         </div>
+        
+        <input type="file" id="loader" style="display:none">
 
         <div class="dropdown">
             <div class="btn">Help</div>
@@ -85,12 +87,6 @@
             <input type="range" min="0" max="1" value="0" class="EVO-slider" id="colorReset"> <!-- makes slider -->
             <p id="top-label" style="display: inline-block">EVO</p> <!-- sat slider label -->
             <p class="on-off" class="analysis-only"> Off &ensp; On</p> <!--  on/off label -->
-        </div>
-        <div id="model-toolbar" class="model-only">
-            <button id="btn-undo" class="btn">Undo</button>
-            <button id="btn-redo" class="btn">Redo</button>
-            <button id="btn-debug" class="btn">Debug</button>
-            <button id="btn-load" class="btn">Load</button>
         </div>
             
 
