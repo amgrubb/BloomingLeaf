@@ -309,10 +309,6 @@ var ElementInspector = Backbone.View.extend({
             
         }
         else { var functionType = null;}
-
-        // All functions that have satisfaction value associated with it
-        var funcWithSatValue = ["I", "D", "RC", "MP", "MN", "UD"];
-
         
         // Load initial value for function type in the html select element
         if (functionType == 'UD') {
@@ -423,11 +419,9 @@ var ElementInspector = Backbone.View.extend({
     selectRepeatValues: function(){
         var begin = $("#repeat-begin").val();
         var end = $("#repeat-end").val();
-        // TODO: Update template, eventually an absTime parameter will be added to the user input
         var start = $("").val();
         var stopRep = $("").val();
         var count = $("#repeat-end2").val();
-        // var absTime = $("").val();
         var absTime = null;
 
         if (begin === null || end === null) {
@@ -663,7 +657,7 @@ var FuncSegView = Backbone.View.extend({
      model: FunctionSegmentBBM, 
 
     initialize: function(options){ 
-        // Reference to the ElementInspector view so it's functions can be accessedin the subview
+        // Reference to the cahrt in the ElementInspector view 
         this.chart = options.chart;
         // Reference to the parent intention
         this.intention = options.intention;
@@ -679,15 +673,7 @@ var FuncSegView = Backbone.View.extend({
         this.hasUD = options.hasUD;
         this.index = options.index;
         this.initSatValue = options.initSatValue;
-        // 
-        // this.satValueDict = {
-        //     "satisfied": "0011",
-        //     "partiallysatisfied": "0010",
-        //     "partiallydenied": "0100",
-        //     "denied": "1100",
-        //     "none": "0000",
-        //     "(no value)": "(no value)"
-        // };
+
         // Listens to if the current parameter in the FunctionSegmentBBMs changes
         this.listenTo(this.model, 'change:current', this.checkCurr);
         this.listenTo(this.model, 'change:refEvidencePair', this.updateNextFuncSeg);
@@ -727,7 +713,7 @@ var FuncSegView = Backbone.View.extend({
 
     render: function() {
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
-        
+
         if (!this.hasUD) {
             this.updateChart()
         } 
@@ -770,9 +756,9 @@ var FuncSegView = Backbone.View.extend({
         this.model.get('refEvidencePair');
         
         if (this.intention.getFuncSegments().length >= 2 && this.hasUD == false) {
-            // this.updateNextFuncSeg();
+            if (this.intention.get('evolvingFunction').get('type') !== 'SD' && this.intention.get('evolvingFunction').get('type') !== 'DS') {
              this.intention.getFuncSegments()[1].set('refEvidencePair', this.$('#seg-sat-value').val()); 
-           
+            }
          }  
     },
 
@@ -783,10 +769,14 @@ var FuncSegView = Backbone.View.extend({
         if (this.model.get('type') == 'C' || this.model.get('type') == 'R') {
             this.$('#seg-sat-value').prop('disabled', 'disabled');
             if (this.intention.get('evolvingFunction').get('type') !== 'MP' && this.intention.get('evolvingFunction').get('type') !== 'MN' && (this.model.get('type') == 'C')) {
-                    this.$("#seg-sat-value").val(this.initSatValue);
+                if (this.intention.get('evolvingFunction').get('type') == 'SD' || this.intention.get('evolvingFunction').get('type') == 'DS') {
+                    this.$("#seg-sat-value").val(this.model.get('refEvidencePair'));
+                }  else {    
+                this.$("#seg-sat-value").val(this.initSatValue);
                     this.model.set('refEvidencePair', this.initSatValue);
                 }
-        } else {
+        }
+     } else {
             this.$('#seg-sat-value').prop('disabled', '');
         }
         if (this.intention.get('evolvingFunction').get('type') == 'RC' && this.model.get('type') == 'C') {
@@ -819,7 +809,7 @@ var FuncSegView = Backbone.View.extend({
             this.$("#seg-sat-value").html('<option value="(no value)"> (no value) </option>');
             this.$("#seg-sat-value").val("(no value)");
             this.model.get('refEvidencePair');
-        } else if (this.intention.get('evolvingFunction').get('type') !== 'MP' && this.intention.get('evolvingFunction').get('type') !== 'MN' && functionType == 'C') {
+        } else if (this.intention.get('evolvingFunction').get('type') !== 'MP' && this.intention.get('evolvingFunction').get('type') !== 'MN' && this.intention.get('evolvingFunction').get('type') !== 'SD' && this.intention.get('evolvingFunction').get('type') !== 'DS' && functionType == 'C') {
             this.$("#seg-sat-value").val(this.initSatValue);
             this.model.set('refEvidencePair', this.initSatValue);
         }
@@ -854,7 +844,7 @@ var FuncSegView = Backbone.View.extend({
             this.$("#seg-sat-value").val("(no value)");
             this.$("#seg-sat-value").prop('disabled', true);
             
-        } else if (this.intention.get('evolvingFunction').get('type') !== 'MP' && this.intention.get('evolvingFunction').get('type') !== 'MN' && func == 'C') {
+        } else if (func == 'C') {
             this.$("#seg-sat-value").last().html(this.satValueOptionsAll());
             // Restrict input to initial satisfaction value if it is the first constraint
             if (this.index == 0) {
