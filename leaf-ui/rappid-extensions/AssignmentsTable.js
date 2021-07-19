@@ -395,11 +395,7 @@ var LinkRelationshipView = Backbone.View.extend({
 
     render: function () {
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
-        // TODO: Write statement to handle this case in script
-        // Or if absTime default changed to null just remove if statement
-        if (this.model.get('absTime') == -1) {
-            this.$('.linkAbsRelation').val('')
-        }
+        this.$('.linkAbsRelation').val('')
         this.$('.link-source').text(this.linkSrc);
         this.$('.link-dest').text(this.linkDest);
         return this;
@@ -418,10 +414,10 @@ var LinkRelationshipView = Backbone.View.extend({
     },
 
     /**
-     * Resets model startAT to -1, and resets UI input to be empty
+     * Resets model startAT to myNull, and resets UI input to be empty
      */
     unassignAbsRelation: function () {
         $('.linkAbsRelation').val('');
-        this.model.set('absTime', -1);
+        this.model.set('absTime', myNull);
     },
 });
