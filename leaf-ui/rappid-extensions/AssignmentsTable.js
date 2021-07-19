@@ -395,7 +395,11 @@ var LinkRelationshipView = Backbone.View.extend({
 
     render: function () {
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
-        this.$('.linkAbsRelation').val('')
+        // TODO: Write statement to handle this case in script
+        // Or if absTime default changed to null just remove if statement
+        if (this.model.get('absTime') == myNull) {
+            this.$('.linkAbsRelation').val('');
+        }
         this.$('.link-source').text(this.linkSrc);
         this.$('.link-dest').text(this.linkDest);
         return this;
