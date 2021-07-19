@@ -83,7 +83,6 @@ var ElementInspector = Backbone.View.extend({
                 '<option value="0100"> Partially Denied (⊥, P)</option>',
                 '<option value="1100"> Denied (⊥, F)</option>',
             '</select>',
-            // '<br>',
             '<div id="function-div">',
                 '<label>Function Type:</label>',
                 '<select class="function-type">',
@@ -131,7 +130,6 @@ var ElementInspector = Backbone.View.extend({
 
     events: {
         'change #init-sat-value':'initSatValueChanged',
-
         'change .function-type':'funcTypeChanged',
         'change .segment-functions':'updateHTML',
         
@@ -170,7 +168,6 @@ var ElementInspector = Backbone.View.extend({
             this.model.attr(".funcvalue/text", ' ');
         }
         
-        
         // Turn off repeating by default
         this.repeatOptionsDisplay = false;
         // Turn off display for repeat related elements and values
@@ -187,7 +184,6 @@ var ElementInspector = Backbone.View.extend({
             }
             
         }
-        // this.$('.inspector-views').append(this.innerView.$el);
         this.updateCell();   
     },  
     
@@ -241,6 +237,7 @@ var ElementInspector = Backbone.View.extend({
     renderUserDefined: function(){  
         $(".function-type").val('UD');
 
+        // this.rerender();
         // TODO: do we need this??
         //     if (functionSegment !== funcSegments[len - 1]) {
         //         // if it is not the last function segment, clone the select tags,
@@ -261,8 +258,6 @@ var ElementInspector = Backbone.View.extend({
             $("#repeat-end2").val(this.intention.get('evolvingFunction').get('repCount'));
             $("#repeat-end3").val(this.intention.get('evolvingFunction').get('repAbsTime'));
         }
-
-       // this.updateChartUserDefined();  
     },
 
     /**
@@ -305,8 +300,7 @@ var ElementInspector = Backbone.View.extend({
         this.validityCheck(event);
 
         if (this.intention.get('evolvingFunction') != null) {
-            var functionType = this.intention.get('evolvingFunction').get('type');
-            
+            var functionType = this.intention.get('evolvingFunction').get('type');    
         }
         else { var functionType = null;}
         
@@ -326,7 +320,6 @@ var ElementInspector = Backbone.View.extend({
             }
         }
         this.rerender();
-      //  this.updateChart(); 
     },
 
     /**
@@ -359,7 +352,6 @@ var ElementInspector = Backbone.View.extend({
                 if (initValueChanged && initValue == "(no value)"){this.$('.function-type').val('C');}
                 var newValue = validPair[functionType]['defaultValue'];
                 if (funcTypeChanged){this.$('#init-sat-value').val(newValue);}
-
             }
         }  
     },
@@ -382,7 +374,7 @@ var ElementInspector = Backbone.View.extend({
         }
         // creates a new FunctionSegmentView from the new FunctionSegmentBBM
         var newFuncSeg = funcSegList[funcSegList.length-1]
-        var functionSegView = new FuncSegView({model: newFuncSeg, intention: this.intention, hasUD: true, index: funcSegList.length-1, initSatValue: this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair'), chart: this.chart});
+        var functionSegView = new FuncSegView({model: newFuncSeg, intention: this.intention, index: funcSegList.length-1, initSatValue: this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair'), chart: this.chart});
         // Appends new FuncSegView to the html and renders it 
         $('#segment-functions').append(functionSegView.el);
         functionSegView.render(); 
@@ -390,7 +382,6 @@ var ElementInspector = Backbone.View.extend({
         if (this.repeatOptionsDisplay) {
             this.setRepeatConstraintMode("Update");
         }
-        //this.updateChartUserDefined();
     },
 
     /**
@@ -405,7 +396,6 @@ var ElementInspector = Backbone.View.extend({
         } else if (this.repeatOptionsDisplay){
             this.setRepeatConstraintMode("TurnOff");
             this.intention.get('evolvingFunction').removeRepFuncSegments();
-           // this.updateChartUserDefined();
         }
     },
 
@@ -443,7 +433,6 @@ var ElementInspector = Backbone.View.extend({
             $("#repeat-error").hide();
             this.intention.get('evolvingFunction').setRepeatingFunction(begin, end, count, absTime);
         }
-        //this.updateChartUserDefined(); 
     },
 
     /**
@@ -460,7 +449,6 @@ var ElementInspector = Backbone.View.extend({
             $('#repeat-end2').val(2);
         }
         this.intention.get('evolvingFunction').set('repCount', repVal);
-        //this.updateChartUserDefined(); 
     },
 
     /**
@@ -475,7 +463,6 @@ var ElementInspector = Backbone.View.extend({
             $('#repeat-end3').val(0);
         }
         this.intention.get('evolvingFunction').set('repAbsTime', absLength);
-        //this.updateChartUserDefined();
     },
 
     /**
@@ -623,16 +610,13 @@ var ElementInspector = Backbone.View.extend({
         }
         // Only creates the FunctionSegmentView if there is a function segment
         if(this.intention.get('evolvingFunction') != null && this.intention.get('evolvingFunction').get('type') != 'NT'){
-            var hasUD = false; 
-            if (this.intention.get('evolvingFunction').get('type') === 'UD') {
-                var hasUD = true;
-            }
+
             var funcSegList = this.intention.getFuncSegments();
             var i = 0;
             // Creates a FuncSegView for each of the function segment in the functionSegList
             funcSegList.forEach(
                 funcSeg => {
-                    var functionSegView = new FuncSegView({model: funcSeg, intention:this.intention, hasUD: hasUD, index: i, initSatValue: this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair'), chart: this.chart});
+                    var functionSegView = new FuncSegView({model: funcSeg, intention:this.intention, index: i, initSatValue: this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair'), chart: this.chart});
                     $('#segment-functions').append(functionSegView.el);
                     functionSegView.render(); 
                     i++; 
@@ -665,12 +649,15 @@ var FuncSegView = Backbone.View.extend({
         // Sets the stopTP to be one step after the startTP
         if (this.model.get('startTP') != '0') {
             this.stopTP = String.fromCharCode(this.model.get('startTP').charCodeAt(0) + 1);
-        }
-        else {
+        } else {
             this.stopTP = 'A';
         }
         // Boolean if the function segment is a part of a UD function
-        this.hasUD = options.hasUD;
+        if (this.intention.get('evolvingFunction').get('type') == 'UD') {
+            this.hasUD = true;
+        } else {
+            this.hasUD = false;
+        }
         this.index = options.index;
         this.initSatValue = options.initSatValue;
 
@@ -793,7 +780,6 @@ var FuncSegView = Backbone.View.extend({
             this.checkSatValue();
         }
     },
-
 
     /**
      * This function checks the initial satisfaction value and function type
@@ -1071,7 +1057,6 @@ var FuncSegView = Backbone.View.extend({
         }  
     },
 
-
     getUDChartLabel: function(num) {
         var res = ['0'];
         var curr = 'A'
@@ -1082,4 +1067,3 @@ var FuncSegView = Backbone.View.extend({
         return res;
     },
 });
-

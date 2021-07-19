@@ -231,7 +231,8 @@ var IntentionBBM = Backbone.Model.extend({
      */
     changeInitialSatValue: function(initValue) {
         // Set the the first element of userEvaluationList to the initValue
-        this.getUserEvaluationBBM(0).set('assignedEvidencePair', initValue);;
+        this.getUserEvaluationBBM(0).set('assignedEvidencePair', initValue);
+        
         if (this.get('evolvingFunction') != null) {
             var funcSegList = this.getFuncSegments();
             // If the function is C or UD & C set refEvidencePair to initValue
