@@ -777,8 +777,8 @@ var FuncSegView = Backbone.View.extend({
             this.model.set('refEvidencePair', this.initSatValue);
         }
         
-        if (this.hasUD == true) {
-            this.checkUDFunctionValues()
+        if (this.hasUD == true && this.model.get('current')) {
+                this.checkUDFunctionValues()
         }
         else {
             this.checkSatValue();
@@ -820,35 +820,37 @@ var FuncSegView = Backbone.View.extend({
      */
       checkUDFunctionValues: function() {
         var func = this.$("#seg-function-type").val();
+            if (func == 'I' || func == 'D') {
+                var prevVal = this.intention.get('evolvingFunction').getNthRefEvidencePair(2);
+                if (func == 'I') {
+                    this.$("#seg-sat-value").html(this.satValueOptionsPositiveOrNegative(prevVal, true));
+                    this.$("#seg-sat-value").val("0011");
+                    this.model.set('refEvidencePair', "0011")
+                } else {
+                    this.$("#seg-sat-value").html(this.satValueOptionsPositiveOrNegative(prevVal, false));
+                    this.$("#seg-sat-value").val("1100");
+                    this.model.set('refEvidencePair', "1100")
+                }
+                
+            } else if (func == 'R') {
+                this.$("#seg-sat-value").html(this.satValueOptionsAll());
+                this.$("#seg-sat-value").val("(no value)");
+                this.$("#seg-sat-value").prop('disabled', true);
+                
+            } else if (func == 'C') {
+                this.$("#seg-sat-value").last().html(this.satValueOptionsAll());
+                // Restrict input to initial satisfaction value if it is the first constraint
+                if (this.index == 0) {
+                    this.$("#seg-sat-value").val(this.initSatValue);
+                    this.model.set('refEvidencePair', this.initSatValue);
+                } else if (this.index != 0) {
+                    this.$("#seg-sat-value").val(this.model.get('refEvidencePair'));
+                }
 
-        if (func == 'I' || func == 'D') {
-            var prevVal = this.intention.get('evolvingFunction').getNthRefEvidencePair(2);
-            if (func == 'I') {
-                this.$("#seg-sat-value").html(this.satValueOptionsPositiveOrNegative(prevVal, true));
-                this.$("#seg-sat-value").val("0011");
-            } else {
-                this.$("#seg-sat-value").html(this.satValueOptionsPositiveOrNegative(prevVal, false));
-                this.$("#seg-sat-value").val("1100");
+                if (this.index != 0 && this.model.get('current')) {
+                    this.$("#seg-sat-value").prop('disabled', '');
             }
-            // if (this.index != 0 && this.model.get('current')) {
-            //     this.$("#seg-sat-value").prop('disabled', '');
-            // }
-        } else if (func == 'R') {
-            this.$("#seg-sat-value").html(this.satValueOptionsAll());
-            this.$("#seg-sat-value").val("(no value)");
-            this.$("#seg-sat-value").prop('disabled', true);
-            
-        } else if (func == 'C') {
-            this.$("#seg-sat-value").last().html(this.satValueOptionsAll());
-            // Restrict input to initial satisfaction value if it is the first constraint
-            if (this.index == 0) {
-                this.$("#seg-sat-value").val(this.initSatValue);
-                this.model.set('refEvidencePair', this.initSatValue);
-            } else if (this.index != 0 && this.model.get('current')) {
-                this.$("#seg-sat-value").prop('disabled', '');
-                this.$("#seg-sat-value").val(this.model.get('refEvidencePair'));
             }
-        }
         return; 
     },
 
