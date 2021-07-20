@@ -724,7 +724,7 @@ var FuncSegView = Backbone.View.extend({
       
         // For all function types except for UD disable the ability to select the function 
         this.$('#seg-function-type').prop('disabled', 'disabled');
-        if ((this.hasUD === true) & (this.model.get('current') === true)) {
+        if ((this.hasUD === true) && (this.model.get('current') === true)) {
             this.$('#seg-function-type').prop('disabled', '');
         }
         // Have to manually add stopTP to html because it is not in the FunctionSegmentBBM
@@ -778,7 +778,9 @@ var FuncSegView = Backbone.View.extend({
         }
         
         if (this.hasUD == true) {
-            this.checkUDFunctionValues()
+            if(this.model.get('current')){
+                this.checkUDFunctionValues()
+            }
         }
         else {
             this.checkSatValue();
@@ -824,11 +826,14 @@ var FuncSegView = Backbone.View.extend({
             var prevVal = this.intention.get('evolvingFunction').getNthRefEvidencePair(2);
             if (func == 'I') {
                 this.$("#seg-sat-value").html(this.satValueOptionsPositiveOrNegative(prevVal, true));
-                this.$("#seg-sat-value").val("0011"); 
+                this.$("#seg-sat-value").val("0011");
             } else {
                 this.$("#seg-sat-value").html(this.satValueOptionsPositiveOrNegative(prevVal, false));
                 this.$("#seg-sat-value").val("1100");
             }
+            // if (this.index != 0 && this.model.get('current')) {
+            //     this.$("#seg-sat-value").prop('disabled', '');
+            // }
         } else if (func == 'R') {
             this.$("#seg-sat-value").html(this.satValueOptionsAll());
             this.$("#seg-sat-value").val("(no value)");
@@ -839,7 +844,7 @@ var FuncSegView = Backbone.View.extend({
             if (this.index == 0) {
                 this.$("#seg-sat-value").val(this.initSatValue);
                 this.model.set('refEvidencePair', this.initSatValue);
-            } else if (this.index != 0) {
+            } else if (this.index != 0 && this.model.get('current')) {
                 this.$("#seg-sat-value").prop('disabled', '');
                 this.$("#seg-sat-value").val(this.model.get('refEvidencePair'));
             }
