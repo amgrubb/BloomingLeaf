@@ -832,9 +832,6 @@ var FuncSegView = Backbone.View.extend({
                 this.$("#seg-sat-value").html(this.satValueOptionsPositiveOrNegative(prevVal, false));
                 this.$("#seg-sat-value").val("1100");
             }
-            // if (this.index != 0 && this.model.get('current')) {
-            //     this.$("#seg-sat-value").prop('disabled', '');
-            // }
         } else if (func == 'R') {
             this.$("#seg-sat-value").html(this.satValueOptionsAll());
             this.$("#seg-sat-value").val("(no value)");
@@ -848,6 +845,9 @@ var FuncSegView = Backbone.View.extend({
                 this.model.set('refEvidencePair', this.initSatValue);
             } else if (this.index != 0 && this.model.get('current')) {
                 this.$("#seg-sat-value").prop('disabled', '');
+                this.$("#seg-sat-value").val(this.model.get('refEvidencePair'));
+            } else {
+                this.$("#seg-sat-value").prop('disabled', true);
                 this.$("#seg-sat-value").val(this.model.get('refEvidencePair'));
             }
         }
