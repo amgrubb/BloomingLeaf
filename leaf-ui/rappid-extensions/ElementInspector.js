@@ -401,10 +401,8 @@ var ElementInspector = Backbone.View.extend({
     selectRepeatValues: function () {
         var begin = $("#repeat-begin").val();
         var end = $("#repeat-end").val();
-        var start = $("").val();
-        var stopRep = $("").val();
         var count = $("#repeat-end2").val();
-        var absTime = null;
+        var absTime = $("#repeat-end3").val();
 
         if (begin === null || end === null) {
             return;
