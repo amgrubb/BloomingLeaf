@@ -665,7 +665,6 @@ var FuncSegView = Backbone.View.extend({
         this.initSatValue = options.initSatValue;
 
         // Listens to if the current parameter in the FunctionSegmentBBMs changes
-        this.listenTo(this.model, 'change:current', this.checkCurr);
         this.listenTo(this.model, 'change:refEvidencePair', this.updateNextFuncSeg);
 
         if (!this.hasUD) {
@@ -780,6 +779,9 @@ var FuncSegView = Backbone.View.extend({
         if (this.hasUD == true) {
             if(this.model.get('current')){
                 this.checkUDFunctionValues()
+            } else {
+                this.$("#seg-function-type").prop('disabled', true);
+                this.$("#seg-sat-value").prop('disabled', true);
             }
         }
         else {
@@ -827,9 +829,11 @@ var FuncSegView = Backbone.View.extend({
             if (func == 'I') {
                 this.$("#seg-sat-value").html(this.satValueOptionsPositiveOrNegative(prevVal, true));
                 this.$("#seg-sat-value").val("0011");
+                this.model.set('refEvidencePair', "0011");
             } else {
                 this.$("#seg-sat-value").html(this.satValueOptionsPositiveOrNegative(prevVal, false));
                 this.$("#seg-sat-value").val("1100");
+                this.model.set('refEvidencePair', "1100");
             }
         } else if (func == 'R') {
             this.$("#seg-sat-value").html(this.satValueOptionsAll());
@@ -916,15 +920,6 @@ var FuncSegView = Backbone.View.extend({
                 return `'<option value="(no value)"> (no value) </option>'`;
         }
         return null;
-    },
-
-    /**
-     * This function disables the segment function type and segment satisfaction value dropdowns.
-     * It is called when the current parameter in a function segment becomes false
-    */
-    checkCurr: function () {
-        this.$('#seg-function-type').prop('disabled', true);
-        this.$('#seg-sat-value').prop('disabled', true);
     },
 
     updateNextFuncSeg: function() {
