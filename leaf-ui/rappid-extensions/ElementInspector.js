@@ -106,7 +106,7 @@ var ElementInspector = Backbone.View.extend({
                     '<br>',
                     // Error message is controlled dynamically
                     '<label id="repeat-error"></label>',
-                    '<select id="repeat-begin" class="repeat-select"style = "position:relative; left:38px; width: 93px">',
+                    '<select id="repeat-begin" class="repeat-select" style = "position:relative; left:38px; width: 93px">',
                         '<option class="select-placeholder" selected disabled value="">Begin</option>',
                     '</select>',
                     '<select id="repeat-end" class="repeat-select" style= "position:relative; right:18px; width: 93px">',
@@ -375,7 +375,7 @@ var ElementInspector = Backbone.View.extend({
         }
 
         this.renderFunctionSegments();
-        // // creates a new FunctionSegmentView from the new FunctionSegmentBBM
+        // // Creates a new FunctionSegmentView from the new FunctionSegmentBBM
         // var newFuncSeg = funcSegList[funcSegList.length-1]
         // var functionSegView = new FuncSegView({model: newFuncSeg, intention: this.intention, index: funcSegList.length-1, initSatValue: this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair'), chart: this.chart});
         // // Appends new FuncSegView to the html and renders it 
@@ -628,7 +628,7 @@ var ElementInspector = Backbone.View.extend({
     },
 
     rerender: function() {
-        // Ads absTime label
+        // Adds absTime label
         if(this.intention.getFuncSegments().length != 0) {
             $(".text-label").css("visibility", "visible");
         }
@@ -644,7 +644,7 @@ var FuncSegView = Backbone.View.extend({
      model: FunctionSegmentBBM, 
 
     initialize: function(options){ 
-        // Reference to the cahrt in the ElementInspector view 
+        // Reference to the chart in the ElementInspector view 
         this.chart = options.chart;
         // Reference to the parent intention
         this.intention = options.intention;
@@ -747,7 +747,7 @@ var FuncSegView = Backbone.View.extend({
         
         if (this.intention.getFuncSegments().length >= 2 && this.hasUD == false) {
             if (this.intention.get('evolvingFunction').get('type') !== 'SD' && this.intention.get('evolvingFunction').get('type') !== 'DS') {
-             this.intention.getFuncSegments()[1].set('refEvidencePair', this.$('#seg-sat-value').val()); 
+                this.intention.getFuncSegments()[1].set('refEvidencePair', this.$('#seg-sat-value').val()); 
             }
          }  
     },
@@ -803,8 +803,7 @@ var FuncSegView = Backbone.View.extend({
         } else if (this.intention.get('evolvingFunction').get('type') !== 'MP' && this.intention.get('evolvingFunction').get('type') !== 'MN' && this.intention.get('evolvingFunction').get('type') !== 'SD' && this.intention.get('evolvingFunction').get('type') !== 'DS' && functionType == 'C') {
             this.$("#seg-sat-value").val(this.initSatValue);
             this.model.set('refEvidencePair', this.initSatValue);
-        }
-        else if (functionType == 'I') {
+        } else if (functionType == 'I') {
             this.$('#seg-sat-value').html(this.satValueOptionsPositiveOrNegative(initValue, true));
         } else if (functionType == 'D') {
             this.$('#seg-sat-value').html(this.satValueOptionsPositiveOrNegative(initValue, false));
@@ -834,7 +833,6 @@ var FuncSegView = Backbone.View.extend({
             this.$("#seg-sat-value").html(this.satValueOptionsAll());
             this.$("#seg-sat-value").val("(no value)");
             this.$("#seg-sat-value").prop('disabled', true);
-            
         } else if (func == 'C') {
             this.$("#seg-sat-value").last().html(this.satValueOptionsAll());
             // Restrict input to initial satisfaction value if it is the first constraint
@@ -859,11 +857,11 @@ var FuncSegView = Backbone.View.extend({
      * @param {Boolean} positive If true - increasing, if false, decreasing
      * @returns HTML string of options with values
      */
-    satValueOptionsPositiveOrNegative: function (currentVal, postive) {
+    satValueOptionsPositiveOrNegative: function (currentVal, positive) {
         var satVals = ["0011", "0010", "0000", "0100", "1100"];
         var result = '';
 
-        if (postive) {
+        if (positive) {
             var valuesList = satVals.slice(0, satVals.indexOf(currentVal));
         } else {
             var valuesList = satVals.slice(satVals.indexOf(currentVal) + 1);
