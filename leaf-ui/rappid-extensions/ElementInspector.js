@@ -216,6 +216,9 @@ var ElementInspector = Backbone.View.extend({
         }
     },
 
+    /**
+     * Sets the name in model attributes and in the cell's intention
+     */
     nameAction: function(event) {
         // 13 corresponds to the Enter key so when Enter is pressed the name is updated
         if (event.which === 13) {
@@ -587,10 +590,16 @@ var ElementInspector = Backbone.View.extend({
         } 
     },
 
+    /**
+     * Clears the element's html
+     */
     clear: function(){
         this.$el.html('');
     },
 
+    /**
+     * Renders a view for all of the existing FunctionSegmentBBMs that are part of the element
+     */
     renderFunctionSegments: function() { 
         // Removes functions segments that are currently displayed
         $('#segment-functions').empty();
@@ -613,6 +622,9 @@ var ElementInspector = Backbone.View.extend({
         }
     },
 
+    /**
+     * Called whenever the html is updated. Renders the views for the FunctionSegmentBBMs and adds an absTime label
+     */
     rerender: function() {
         // Adds absTime label
         if(this.intention.getFuncSegments().length != 0) {
@@ -653,6 +665,7 @@ var FuncSegView = Backbone.View.extend({
         // Listens to if the current parameter in the FunctionSegmentBBMs changes
         this.listenTo(this.model, 'change:refEvidencePair', this.updateNextFuncSeg);
 
+        // Updates the chart whenever there is a change to the model
         if (!this.hasUD) {
             this.listenTo(this.model, 'change', this.updateChart)
         } 
@@ -717,6 +730,10 @@ var FuncSegView = Backbone.View.extend({
         return this;
     },
 
+    /**
+     * Sets the absTime parameterof the current FunctionSegmentBBM. Called whenever a value is entered in 
+     * the absTime box in the view.
+     */
     setAbsTime: function(event) {
         // 13 corresponds to the Enter key so when Enter is pressed the name is updated
         if (event.which === 13) {
@@ -727,9 +744,13 @@ var FuncSegView = Backbone.View.extend({
         this.model.set('startAT', absTime);         
     },    
 
+    /**
+     * Sets the FunctionSegmentBBM's refEvidencePair to the value selected by the html
+     */
     setFuncSatValue: function () {
         this.model.set('refEvidencePair', this.$('#seg-sat-value').val()) // 4 digit representation
         
+        // For MP, MN, RC, and CR functions sets the second refEvidencePair to the value selected by the html 
         if (this.intention.getFuncSegments().length >= 2 && this.hasUD == false) {
             if (this.intention.get('evolvingFunction').get('type') !== 'SD' && this.intention.get('evolvingFunction').get('type') !== 'DS') {
                 this.intention.getFuncSegments()[1].set('refEvidencePair', this.$('#seg-sat-value').val()); 
@@ -737,6 +758,10 @@ var FuncSegView = Backbone.View.extend({
          }  
     },
 
+    /**
+     * Sets the FunctionSegmentBBM's function type to the type selected in the html.
+     * Also sets the satisfaction value depending on the different function types.
+     */
     checkFuncValue: function () {
         // set the function type to the type selected in the html
         this.model.set('type', this.$('#seg-function-type').val());
@@ -755,17 +780,19 @@ var FuncSegView = Backbone.View.extend({
             this.$('#seg-sat-value').prop('disabled', '');
         }
 
+        // Disable the satisfaction value for the constant segment of RC functions
         if (this.intention.get('evolvingFunction').get('type') == 'RC' && this.model.get('type') == 'C') {
             this.$('#seg-sat-value').prop('disabled', '');
+        // Sets the satisfaction value for the constant segment of CR functions
         } else if (this.intention.get('evolvingFunction').get('type') == 'CR' && this.model.get('type') == 'C') {
             this.$("#seg-sat-value").val(this.initSatValue);
             this.model.set('refEvidencePair', this.initSatValue);
         }
         
         if (this.hasUD == true) {
-            if(this.model.get('current')){
+            if(this.model.get('current')){  
                 this.checkUDFunctionValues()
-            } else {
+            } else { // If the model is not the most recent model disable the function type and satusfaction value selectors 
                 this.$("#seg-function-type").prop('disabled', true);
                 this.$("#seg-sat-value").prop('disabled', true);
             }
@@ -785,6 +812,7 @@ var FuncSegView = Backbone.View.extend({
         var functionType = this.$('#seg-function-type').val();
         var initValue = this.initSatValue;
       
+        // Set stochastic functions to (no value)
         if (functionType == 'R') {
             this.$('#seg-sat-value').html(this.satValueOptionsNoRandom());
             this.$("#seg-sat-value").html('<option value="(no value)"> (no value) </option>');
@@ -793,8 +821,10 @@ var FuncSegView = Backbone.View.extend({
         } else if (this.intention.get('evolvingFunction').get('type') !== 'MP' && this.intention.get('evolvingFunction').get('type') !== 'MN' && this.intention.get('evolvingFunction').get('type') !== 'SD' && this.intention.get('evolvingFunction').get('type') !== 'DS' && functionType == 'C') {
             this.$("#seg-sat-value").val(this.initSatValue);
             this.model.set('refEvidencePair', this.initSatValue);
+        // Set correct dropdown values for an increasing function depending on the initial sat value    
         } else if (functionType == 'I') {
             this.$('#seg-sat-value').html(this.satValueOptionsPositiveOrNegative(initValue, true));
+        // Set correct dropdown values for a decreasing function depending on the initial sat value 
         } else if (functionType == 'D') {
             this.$('#seg-sat-value').html(this.satValueOptionsPositiveOrNegative(initValue, false));
         }
@@ -868,6 +898,9 @@ var FuncSegView = Backbone.View.extend({
         return result;
     },
 
+     /**
+     * This function returns an html string with all of the satisfaction value options
+     */
     satValueOptionsAll: function () {
         var result = '';
         for (let value of ["0011", "0010", "0000", "0100", "1100", "unknown"]) {
@@ -876,6 +909,10 @@ var FuncSegView = Backbone.View.extend({
         return result;
     },
 
+     /**
+     * This function returns an html string with all of the satisfaction value options
+     * except for "None" and "(no value)"
+     */
     satValueOptionsNoRandom: function () {
         var result = '';
         for (let value of ["0011", "0010", "0100", "1100"]) {
@@ -925,9 +962,6 @@ var FuncSegView = Backbone.View.extend({
         if (this.intention.get('evolvingFunction') != null) {
             var funcType = this.intention.get('evolvingFunction').get('type');
             var initVal = satisfactionValuesDict[this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair')].chartVal;
-            // if (this.intention.getFuncSegments()[0] != null && funcType != 'C') {
-            //     var satVal = satisfactionValuesDict[this.intention.getFuncSegments()[0].get('refEvidencePair')].chartVal;
-            // }
             this.chart.reset();
             // Get the chart canvas
             var context = $("#chart").get(0).getContext("2d");
@@ -1049,6 +1083,9 @@ var FuncSegView = Backbone.View.extend({
         }  
     },
 
+    /**
+     * Returns all of the start and stop time points of the existing fucntion segments for UD functions
+     */
     getUDChartLabel: function(num) {
         var res = ['0'];
         var curr = 'A'
