@@ -238,14 +238,6 @@ var ElementInspector = Backbone.View.extend({
         $(".function-type").val('UD');
 
         this.rerender();
-        // TODO: do we need this??
-        //     if (functionSegment !== funcSegments[len - 1]) {
-        //         // if it is not the last function segment, clone the select tags,
-        //         // and grey out the current select tags
-        //         var html = this.userConstraintsHTML.clone();
-        //         html.appendTo(this.$('#all-user-constraints'));
-        //     }
-        //     })
 
         if (this.intention.get('evolvingFunction').get('hasRepeat')) {
             this.repeatOptionsDisplay = true;
@@ -375,12 +367,6 @@ var ElementInspector = Backbone.View.extend({
         }
 
         this.renderFunctionSegments();
-        // // Creates a new FunctionSegmentView from the new FunctionSegmentBBM
-        // var newFuncSeg = funcSegList[funcSegList.length-1]
-        // var functionSegView = new FuncSegView({model: newFuncSeg, intention: this.intention, index: funcSegList.length-1, initSatValue: this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair'), chart: this.chart});
-        // // Appends new FuncSegView to the html and renders it 
-        // $('#segment-functions').append(functionSegView.el);
-        // functionSegView.render(); 
 
         if (this.repeatOptionsDisplay) {
             this.setRepeatConstraintMode("Update");
@@ -922,6 +908,9 @@ var FuncSegView = Backbone.View.extend({
         return null;
     },
 
+    /**
+     * Sets the correct refEvidencePair for the second segment of MP and MN functions
+     */
     updateNextFuncSeg: function() {
         if (!this.hasUD && (this.intention.get('evolvingFunction').get('type') == 'MP' || this.intention.get('evolvingFunction').get('type') == 'MN') && this.index == 1) {
             this.$('#seg-sat-value').val(this.intention.getFuncSegments()[1].get('refEvidencePair'));
