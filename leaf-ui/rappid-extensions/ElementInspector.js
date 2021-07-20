@@ -731,7 +731,7 @@ var FuncSegView = Backbone.View.extend({
     },
 
     /**
-     * Sets the absTime parameterof the current FunctionSegmentBBM. Called whenever a value is entered in 
+     * Sets the absTime parameter of the current FunctionSegmentBBM. Called whenever a value is entered in 
      * the absTime box in the view.
      */
     setAbsTime: function(event) {
@@ -792,7 +792,7 @@ var FuncSegView = Backbone.View.extend({
         if (this.hasUD == true) {
             if (this.model.get('current')) {
                 this.checkUDFunctionValues()
-            } else { // If the model is not the most recent model disable the function type and satusfaction value selectors 
+            } else { // If the model is not the most recent model disable the function type and satisfaction value selectors 
                 this.$("#seg-function-type").prop('disabled', true);
                 this.$("#seg-sat-value").prop('disabled', true);
             }
