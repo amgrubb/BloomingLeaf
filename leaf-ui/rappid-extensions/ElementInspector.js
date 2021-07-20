@@ -4,11 +4,11 @@ var validPair = {
         "validInitValue": ["0000", "0011", "0010", "1100", "0100", "(no value)"],
         "defaultValue": ["0000"]
     },
-    "C":{
+    "C": {
         "validInitValue": ["0000", "0011", "0010", "1100", "0100", "(no value)"],
         "defaultValue": ["0000"]
     },
-    "R":{
+    "R": {
         "validInitValue": ["0000", "0011", "0010", "1100", "0100", "(no value)"],
         // Default value changed to (no value)
         "defaultValue": ["(no value)"]
@@ -64,92 +64,92 @@ function called, will always be near the bottom.
 var ElementInspector = Backbone.View.extend({
     model: joint.shapes.basic.Intention,
 
-    initialize: function() { // Listens for changes in the intentions
-        this.listenTo(this, 'change: intention', this.initSatValueChanged); 
+    initialize: function () { // Listens for changes in the intentions
+        this.listenTo(this, 'change: intention', this.initSatValueChanged);
         // Saves this.model.get('intention) as a local variable to access it more easily
         this.intention = this.model.get('intention');
     },
-     
+
     template: ['<script type="text/template" id="item-template">',
-            '<div class="inspector-views">',
-            '<label>Node Name:</label>',
-            '<textarea class="cell-attrs-text"></textarea>',
-            '<label>Initial Satisfaction Value:</label>',
-            '<select id="init-sat-value">',
-                '<option value="(no value)" disabled> (no value) </option>',
-                '<option value="0000"> None (⊥, ⊥)</option>',
-				'<option value="0011"> Satisfied (F, ⊥)</option>',
-                '<option value="0010"> Partially Satisfied (P, ⊥) </option>',
-                '<option value="0100"> Partially Denied (⊥, P)</option>',
-                '<option value="1100"> Denied (⊥, F)</option>',
-            '</select>',
-            '<div id="function-div">',
-                '<label>Function Type:</label>',
-                '<select class="function-type">',
-                    '<option value=NT class="B"> No Function </option>',
-                    '<option value=C class="B"> Constant </option>',
-                    '<option value=R class="A"> Stochastic </option>',
-                    '<option value=I class="B"> Increase </option>',
-                    '<option value=D class="B"> Decrease </option>',
-                    '<option value=RC class="B"> Stochastic-Constant </option>',
-                    '<option value=CR class="B"> Constant-Stochastic </option>',
-                    '<option value=MP class="B"> Monotonic Positive </option>',
-                    '<option value=MN class="B"> Monotonic Negative </option>',
-                    '<option value=SD class="B"> Satisfied Denied </option>',
-                    '<option value=DS class="B"> Denied Satisfied </option>',
-                    '<option value=UD class="B"> User Defined </option>',
-                '</select>',
-                '<label style="font-size:0.8em" class="text-label">absTime</label>', 
-                '<div id = segment-functions>',
-                '</div>',
-                '<div id="user-constraints">',
-                    '<br>',
-                    // Error message is controlled dynamically
-                    '<label id="repeat-error"></label>',
-                    '<select id="repeat-begin" class="repeat-select" style = "position:relative; left:38px; width: 93px">',
-                        '<option class="select-placeholder" selected disabled value="">Begin</option>',
-                    '</select>',
-                    '<select id="repeat-end" class="repeat-select" style= "position:relative; right:18px; width: 93px">',
-                        '<option class="select-placeholder" selected disabled value="">End</option>',
-                    '</select>',
-                    '<label style="float:left; font-size:0.8em;" id="repeat-begin2" class="repeat-select2">Repeat counts:</label>',
-                    '<input style="float:right;"class="repeat-select2" id="repeat-end2" type="number" value="2">',
-                    '<label style="float:left; font-size:0.8em;" id="repeat-begin3" class="repeat-select3">Absolute Length:</label>',
-                    '<input style="float:right;"class="repeat-select3" id="repeat-end3" type="number" value="0">',
-                    '<p id="noteRepeat" style="text-align:left; float:left; color:red; font-size:0.7em;">Note: Leave Absolute Length as 0 for unknown length. If Absolute Length is less than 0 or Repeat Count is less than 2, they will be set to 0 or 2 respectively.</p>',
-                    // change to blue or change color to green
-                    '<button style="margin-top:10px;" id="segment-add" class="inspector-btn small-btn blue-btn">Add</button>',
-                    '<button id="constraint-repeat" class="inspector-btn small-btn blue-btn">Set Repeats</button>',
-                    '<button id="constraint-restart" class="inspector-btn small-btn red-btn">Clear</button>',
-                '</div>',
-            '</div>',
-            '<br>',
-            '<canvas id="chart" width="240" height="240"></canvas>',
-            
-            '</script>'].join(''),
+        '<div class="inspector-views">',
+        '<label>Node Name:</label>',
+        '<textarea class="cell-attrs-text"></textarea>',
+        '<label>Initial Satisfaction Value:</label>',
+        '<select id="init-sat-value">',
+        '<option value="(no value)" disabled> (no value) </option>',
+        '<option value="0000"> None (⊥, ⊥)</option>',
+        '<option value="0011"> Satisfied (F, ⊥)</option>',
+        '<option value="0010"> Partially Satisfied (P, ⊥) </option>',
+        '<option value="0100"> Partially Denied (⊥, P)</option>',
+        '<option value="1100"> Denied (⊥, F)</option>',
+        '</select>',
+        '<div id="function-div">',
+        '<label>Function Type:</label>',
+        '<select class="function-type">',
+        '<option value=NT class="B"> No Function </option>',
+        '<option value=C class="B"> Constant </option>',
+        '<option value=R class="A"> Stochastic </option>',
+        '<option value=I class="B"> Increase </option>',
+        '<option value=D class="B"> Decrease </option>',
+        '<option value=RC class="B"> Stochastic-Constant </option>',
+        '<option value=CR class="B"> Constant-Stochastic </option>',
+        '<option value=MP class="B"> Monotonic Positive </option>',
+        '<option value=MN class="B"> Monotonic Negative </option>',
+        '<option value=SD class="B"> Satisfied Denied </option>',
+        '<option value=DS class="B"> Denied Satisfied </option>',
+        '<option value=UD class="B"> User Defined </option>',
+        '</select>',
+        '<label style="font-size:0.8em" class="text-label">absTime</label>',
+        '<div id = segment-functions>',
+        '</div>',
+        '<div id="user-constraints">',
+        '<br>',
+        // Error message is controlled dynamically
+        '<label id="repeat-error"></label>',
+        '<select id="repeat-begin" class="repeat-select" style = "position:relative; left:38px; width: 93px">',
+        '<option class="select-placeholder" selected disabled value="">Begin</option>',
+        '</select>',
+        '<select id="repeat-end" class="repeat-select" style= "position:relative; right:18px; width: 93px">',
+        '<option class="select-placeholder" selected disabled value="">End</option>',
+        '</select>',
+        '<label style="float:left; font-size:0.8em;" id="repeat-begin2" class="repeat-select2">Repeat counts:</label>',
+        '<input style="float:right;"class="repeat-select2" id="repeat-end2" type="number" value="2">',
+        '<label style="float:left; font-size:0.8em;" id="repeat-begin3" class="repeat-select3">Absolute Length:</label>',
+        '<input style="float:right;"class="repeat-select3" id="repeat-end3" type="number" value="0">',
+        '<p id="noteRepeat" style="text-align:left; float:left; color:red; font-size:0.7em;">Note: Leave Absolute Length as 0 for unknown length. If Absolute Length is less than 0 or Repeat Count is less than 2, they will be set to 0 or 2 respectively.</p>',
+        // change to blue or change color to green
+        '<button style="margin-top:10px;" id="segment-add" class="inspector-btn small-btn blue-btn">Add</button>',
+        '<button id="constraint-repeat" class="inspector-btn small-btn blue-btn">Set Repeats</button>',
+        '<button id="constraint-restart" class="inspector-btn small-btn red-btn">Clear</button>',
+        '</div>',
+        '</div>',
+        '<br>',
+        '<canvas id="chart" width="240" height="240"></canvas>',
+
+        '</script>'].join(''),
 
     events: {
-        'change #init-sat-value':'initSatValueChanged',
-        'change .function-type':'funcTypeChanged',
-        'change .segment-functions':'updateHTML',
-        
-        'change .repeat-select':'selectRepeatValues',
-        'change .repeat-select2':'selectNumRepeatValues',
-        'change .repeat-select3':'selectAbsoluteLength',
+        'change #init-sat-value': 'initSatValueChanged',
+        'change .function-type': 'funcTypeChanged',
+        'change .segment-functions': 'updateHTML',
+
+        'change .repeat-select': 'selectRepeatValues',
+        'change .repeat-select2': 'selectNumRepeatValues',
+        'change .repeat-select3': 'selectAbsoluteLength',
 
         'click #segment-add': 'addSegment',
         'click #constraint-repeat': 'repeatConstraintControl',
         'click #constraint-restart': 'removeUserConstraints',
         'keyup .cell-attrs-text': 'nameAction',
-        'clearInspector .inspector-views' : 'removeView',
+        'clearInspector .inspector-views': 'removeView',
     },
 
     /**
      * Initializes the element inspector using previously defined templates
      */
-    render: function() {
+    render: function () {
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()))
-        
+
         // Attributes
         this.chart = new ChartObj();
 
@@ -159,22 +159,22 @@ var ElementInspector = Backbone.View.extend({
         // Load initial value and node name
         this.$('.cell-attrs-text').val(this.intention.get('nodeName'));
         this.$('#init-sat-value').val(this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair'));
-              
+
         // Checks which function types are available based on initial satisfaction values
         this.checkInitialSatValue();
 
-        if (!this.model.attr(".satvalue/value") && this.model.attr(".funcvalue/text") != "NB"){
+        if (!this.model.attr(".satvalue/value") && this.model.attr(".funcvalue/text") != "NB") {
             this.model.attr(".satvalue/value", 'none');
             this.model.attr(".funcvalue/text", ' ');
         }
-        
+
         // Turn off repeating by default
         this.repeatOptionsDisplay = false;
         // Turn off display for repeat related elements and values
         this.setRepeatConstraintMode("TurnOff");
 
         // Load initial value for function type in the html select element
-        if (this.intention.get('evolvingFunction') != null ) {
+        if (this.intention.get('evolvingFunction') != null) {
             var functionType = this.intention.get('evolvingFunction').get('type');
 
             if (functionType == 'UD') {
@@ -182,15 +182,15 @@ var ElementInspector = Backbone.View.extend({
             } else {
                 this.updateHTML();
             }
-            
+
         }
-        this.updateCell();   
-    },  
-    
+        this.updateCell();
+    },
+
     /**
     * Removes the view so we don't have multiple ones in the sidebar
     */
-     removeView: function(){
+    removeView: function () {
         this.remove();
     },
 
@@ -200,23 +200,23 @@ var ElementInspector = Backbone.View.extend({
      * availible function options to be Stochastic
      * If not, set the function options so that all options are availible
     */
-    checkInitialSatValue: function() {
+    checkInitialSatValue: function () {
         // Set correct dropdown options for function type based on initial satisfaction value
         $('option').show(); // Clear the previous selection
         // Initialize evolvingFunction so the function type can be set as 'NT'
         if (this.intention.get('evolvingFunction') == null) {
             this.intention.set('evolvingFunction', new EvolvingFunctionBBM({}));
         }
-        if (this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair') == '(no value)'){
+        if (this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair') == '(no value)') {
             // Hide all of the function options except for Stochastic is initial satisfaction value is '(no value)'
-            $('option.B').hide(); 
+            $('option.B').hide();
             this.$('#user-constraints').hide();
         } else {
             this.$('#user-constraints').show();
         }
     },
 
-    nameAction: function(event) {
+    nameAction: function (event) {
         // 13 corresponds to the Enter key so when Enter is pressed the name is updated
         if (event.which === 13) {
             event.preventDefault();
@@ -226,15 +226,15 @@ var ElementInspector = Backbone.View.extend({
 
         text = text.replace(/[^\w\n-]/g, ' ');
 
-        this.model.attr({'.name': {text: text} });
-        this.intention.set('nodeName', text); 
+        this.model.attr({ '.name': { text: text } });
+        this.intention.set('nodeName', text);
 
     },
 
     /**
      * Initializes components to display user defined functions
      */
-    renderUserDefined: function(){  
+    renderUserDefined: function () {
         $(".function-type").val('UD');
 
         this.rerender();
@@ -258,7 +258,7 @@ var ElementInspector = Backbone.View.extend({
      *
      * This function is called on change for #init-sat-value,
      */
-    initSatValueChanged: function(event) {
+    initSatValueChanged: function (event) {
         var initValue = this.$('#init-sat-value').val();
         this.intention.changeInitialSatValue(initValue);
         this.checkInitialSatValue();
@@ -274,7 +274,7 @@ var ElementInspector = Backbone.View.extend({
      *
      * This function is called on change for .function-type.
      */
-    funcTypeChanged: function(event) {
+    funcTypeChanged: function (event) {
         this.intention.setEvolvingFunction(this.$('.function-type').val());
         this.updateCell();
         this.updateHTML(event);
@@ -286,16 +286,16 @@ var ElementInspector = Backbone.View.extend({
      *
      * This function is called on change for .user-function-type
      */
-    updateHTML: function(event) {
+    updateHTML: function (event) {
         // Check if selected init sat value and functionType pair is illegal
         // Only runs if evolvingFunction is defined and therefore there is a function type
         this.validityCheck(event);
 
         if (this.intention.get('evolvingFunction') != null) {
-            var functionType = this.intention.get('evolvingFunction').get('type');    
+            var functionType = this.intention.get('evolvingFunction').get('type');
         }
-        else { var functionType = null;}
-        
+        else { var functionType = null; }
+
         // Load initial value for function type in the html select element
         if (functionType == 'UD') {
             this.$('.function-type').val(functionType);
@@ -304,7 +304,7 @@ var ElementInspector = Backbone.View.extend({
 
             if (functionType == 'NB') {
                 $('#init-sat-value').prop('disabled', true);
-                $('#init-sat-value').css('background-color','grey');
+                $('#init-sat-value').css('background-color', 'grey');
             } else {
                 this.$('.function-type').val(functionType);
                 this.$('#user-constraints').hide();
@@ -319,15 +319,15 @@ var ElementInspector = Backbone.View.extend({
      * pair. If illegal, this function changes either the initial satisfaction
      * value or the function type accordingly.
      */
-    validityCheck: function(event) {
+    validityCheck: function (event) {
         var functionType = this.$('.function-type').val();
         var initValue = this.$('#init-sat-value').val();
- 
+
         // If an element gets clicked, don't bother checking
         if (event == null) {
             return;
         }
- 
+
         // Check what triggered the validty check
         // Either init value changed, func type changed or simply an element gets clicked
         var initValueChanged = event.target.id == 'init-sat-value';
@@ -340,12 +340,12 @@ var ElementInspector = Backbone.View.extend({
             // change to default init value if functTypeChanged
             // change to none function if initValueChanged
             if ($.inArray(initValue, validPair[functionType]['validInitValue']) == -1) {
-                if (initValueChanged && initValue != "(no value)"){this.$('.function-type').val('none');}
-                if (initValueChanged && initValue == "(no value)"){this.$('.function-type').val('C');}
+                if (initValueChanged && initValue != "(no value)") { this.$('.function-type').val('none'); }
+                if (initValueChanged && initValue == "(no value)") { this.$('.function-type').val('C'); }
                 var newValue = validPair[functionType]['defaultValue'];
-                if (funcTypeChanged){this.$('#init-sat-value').val(newValue);}
+                if (funcTypeChanged) { this.$('#init-sat-value').val(newValue); }
             }
-        }  
+        }
     },
 
 
@@ -356,14 +356,14 @@ var ElementInspector = Backbone.View.extend({
      * This function is also called when loading user defined
      * constraints from previously stored.
      */
-    addSegment: function() {
+    addSegment: function () {
         // Adds a new FunctionSegmentBBM to the functionSegList
         this.intention.addUserDefinedSeg("C", "0000");
         var funcSegList = this.intention.getFuncSegments();
-    
+
         // Sets current to false so it becomes disabled for the previous FunctionSegmentBBM to 
-        if(funcSegList.length>1){
-            funcSegList[funcSegList.length-2].set('current', false);
+        if (funcSegList.length > 1) {
+            funcSegList[funcSegList.length - 2].set('current', false);
         }
 
         this.renderFunctionSegments();
@@ -378,11 +378,11 @@ var ElementInspector = Backbone.View.extend({
      * repeat feature.
      * This function is called on click for #constraint-repeat.
      */
-    repeatConstraintControl: function(){
-        if (!this.repeatOptionsDisplay){
+    repeatConstraintControl: function () {
+        if (!this.repeatOptionsDisplay) {
             this.setRepeatConstraintMode("TurnOn");
             this.setRepeatConstraintMode("Update");
-        } else if (this.repeatOptionsDisplay){
+        } else if (this.repeatOptionsDisplay) {
             this.setRepeatConstraintMode("TurnOff");
             this.intention.get('evolvingFunction').removeRepFuncSegments();
         }
@@ -395,7 +395,7 @@ var ElementInspector = Backbone.View.extend({
      * This function is called on change for .repeat-select
      * (the select elements for repeat begin and end)
      */
-    selectRepeatValues: function(){
+    selectRepeatValues: function () {
         var begin = $("#repeat-begin").val();
         var end = $("#repeat-end").val();
         var start = $("").val();
@@ -432,7 +432,7 @@ var ElementInspector = Backbone.View.extend({
      *
      * This function is called on change for #repeat-end2.
      */
-    selectNumRepeatValues: function(){
+    selectNumRepeatValues: function () {
         var repVal = $("#repeat-end2").val();
         if (repVal < 2) {
             $('#repeat-end2').val(2);
@@ -446,7 +446,7 @@ var ElementInspector = Backbone.View.extend({
      *
      * This function is called on change for #repeat-end3.
      */
-    selectAbsoluteLength: function(){
+    selectAbsoluteLength: function () {
         var absLength = $("#repeat-end3").val();
         if (absLength < 0) {
             $('#repeat-end3').val(0);
@@ -461,7 +461,7 @@ var ElementInspector = Backbone.View.extend({
      *
      * @param {String} mode
      */
-    setRepeatConstraintMode: function(mode) {
+    setRepeatConstraintMode: function (mode) {
         // Reset options for select everytime repeat is clicked
         $("#repeat-begin").html('<option class="select-placeholder" selected disabled value="">Begin</option>');
         $("#repeat-end").html('<option class="select-placeholder" selected disabled value="">End</option>');
@@ -478,7 +478,7 @@ var ElementInspector = Backbone.View.extend({
             $("#constraint-repeat").text("Clear Repeats");
             this.repeatOptionsDisplay = true;
 
-        // Turn off all repeat related display and values
+            // Turn off all repeat related display and values
         } else if (mode == "TurnOff") {
             $("#repeat-begin").hide();
             $("#repeat-end").hide();
@@ -491,7 +491,7 @@ var ElementInspector = Backbone.View.extend({
             $("#noteRepeat").hide();
             this.repeatOptionsDisplay = false;
 
-        // Update all repeat related display and values
+            // Update all repeat related display and values
         } else if (mode == "Update") {
 
             // Cannot repeat with only one constraint
@@ -501,19 +501,19 @@ var ElementInspector = Backbone.View.extend({
                 $("#repeat-error").text("More constraints are needed");
                 $("#repeat-error").show("fast");
                 $("#repeat-begin").prop('disabled', 'disabled');
-                $("#repeat-begin").css("background-color","grey");
+                $("#repeat-begin").css("background-color", "grey");
                 $("#repeat-end").prop('disabled', 'disabled');
-                $("#repeat-end").css("background-color","grey");
+                $("#repeat-end").css("background-color", "grey");
 
-            // Update HTML
+                // Update HTML
             } else {
 
                 if ($("#repeat-begin").prop('disabled')) {
                     $("#repeat-error").hide();
                     $("#repeat-begin").prop('disabled', '');
-                    $("#repeat-begin").css("background-color","");
+                    $("#repeat-begin").css("background-color", "");
                     $("#repeat-end").prop('disabled', '');
-                    $("#repeat-end").css("background-color","");
+                    $("#repeat-end").css("background-color", "");
                 }
 
                 var funcSegments = this.intention.getFuncSegments();
@@ -525,7 +525,7 @@ var ElementInspector = Backbone.View.extend({
                     var startCheck = this.intention.getFuncSegments()[i].get('startTP');
                     if (startCheck == '0') {
                         var endVal = 'B';
-                    }        
+                    }
                     else {
                         var endVal = String.fromCharCode(startCheck.charCodeAt(0) + 2);
                     }
@@ -550,9 +550,9 @@ var ElementInspector = Backbone.View.extend({
      * Removes all user constraints for user defined functions
      * This function is called on click for #constraint-restart (red Clear button).
      */
-    removeUserConstraints: function(){
+    removeUserConstraints: function () {
         $('#init-sat-value').prop('disabled', '');
-        $('#init-sat-value').css("background-color","");
+        $('#init-sat-value').css("background-color", "");
 
         var html = this.userConstraintsHTML.clone();
         this.$('#all-user-constraints').html('');
@@ -569,7 +569,7 @@ var ElementInspector = Backbone.View.extend({
      * inspector. This function is always called alongside with updateChart
      * and updateChartUserDefined.
      */
-    updateCell: function() {     
+    updateCell: function () {
         IntentionColoring.refresh();
         changeFont(current_font, paper);
         if (this.intention.get('evolvingFunction') != null) {
@@ -577,45 +577,45 @@ var ElementInspector = Backbone.View.extend({
                 this.model.attr(".funcvalue/text", '');
             } else {
                 this.model.attr(".funcvalue/text", this.intention.get('evolvingFunction').get('type'));
-            } 
+            }
         }
-        
+
         if (this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair') == '(no value)') {
             this.model.attr('.satvalue/text', '');
         } else {
             this.model.attr('.satvalue/text', satisfactionValuesDict[this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair')].satValue);
-        } 
+        }
     },
 
-    clear: function(){
+    clear: function () {
         this.$el.html('');
     },
 
-    renderFunctionSegments: function() { 
+    renderFunctionSegments: function () {
         // Removes functions segments that are currently displayed
         $('#segment-functions').empty();
-        if (this.intention.get('evolvingFunction').get('type') == 'NT'){
+        if (this.intention.get('evolvingFunction').get('type') == 'NT') {
             $(".text-label").css("visibility", "hidden");
         }
         // Only creates the FunctionSegmentView if there is a function segment
-        if(this.intention.get('evolvingFunction') != null && this.intention.get('evolvingFunction').get('type') != 'NT'){
+        if (this.intention.get('evolvingFunction') != null && this.intention.get('evolvingFunction').get('type') != 'NT') {
 
             var funcSegList = this.intention.getFuncSegments();
             var i = 0;
             // Creates a FuncSegView for each of the function segment in the functionSegList
             funcSegList.forEach(
                 funcSeg => {
-                    var functionSegView = new FuncSegView({model: funcSeg, intention:this.intention, index: i, initSatValue: this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair'), chart: this.chart});
+                    var functionSegView = new FuncSegView({ model: funcSeg, intention: this.intention, index: i, initSatValue: this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair'), chart: this.chart });
                     $('#segment-functions').append(functionSegView.el);
-                    functionSegView.render(); 
-                    i++; 
-            })
+                    functionSegView.render();
+                    i++;
+                })
         }
     },
 
-    rerender: function() {
+    rerender: function () {
         // Adds absTime label
-        if(this.intention.getFuncSegments().length != 0) {
+        if (this.intention.getFuncSegments().length != 0) {
             $(".text-label").css("visibility", "visible");
         }
         // Renders all of the FuncSegViews
@@ -627,14 +627,14 @@ var ElementInspector = Backbone.View.extend({
 /************************************************** FunctionSegmentBBM View **************************************************/
 
 var FuncSegView = Backbone.View.extend({
-     model: FunctionSegmentBBM, 
+    model: FunctionSegmentBBM,
 
-    initialize: function(options){ 
+    initialize: function (options) {
         // Reference to the chart in the ElementInspector view 
         this.chart = options.chart;
         // Reference to the parent intention
         this.intention = options.intention;
- 
+
         // Sets the stopTP to be one step after the startTP
         if (this.model.get('startTP') != '0') {
             this.stopTP = String.fromCharCode(this.model.get('startTP').charCodeAt(0) + 1);
@@ -655,47 +655,47 @@ var FuncSegView = Backbone.View.extend({
 
         if (!this.hasUD) {
             this.listenTo(this.model, 'change', this.updateChart)
-        } 
-         else {
+        }
+        else {
             this.listenTo(this.model, 'change', this.updateChartUserDefined)
-         }  
+        }
     },
     template: ['<script type="text/template" id="item-template">',
-                '<input class="seg-time" > </input>',
-                '<output id = "startTP-out" class = "seg-class" style="position:relative; left:14px; width:15px"> <%= startTP %> </output>',
-                '<select id="seg-function-type" class = "seg-class" style=" position:relative; left:10px; width: 95px">',    
-                    '<option value="C" <% if (type === "C") { %> selected <%} %>> Constant </option>',
-                    '<option value="R" <% if (type === "R") { %> selected <%} %>> Stochastic </option>',
-                    '<option value="I" <% if (type === "I") { %> selected <%} %>> Increase </option>',
-                    '<option value="D" <% if (type === "D") { %> selected <%} %>> Decrease </option>',
-                '</select>',
-                '<select id="seg-sat-value" class = "seg-class" style=" position:relative; left:10px; width: 96px">',
-                    '<option value="0000" <% if (refEvidencePair === "0000") { %> selected <%} %>> None (⊥, ⊥) </option>',
-                    '<option value="0011" <% if (refEvidencePair === "0011") { %> selected <%} %>> Satisfied (F, ⊥) </option>',
-                    '<option value="0010" <% if (refEvidencePair === "0010") { %> selected <%} %>> Partially Satisfied (P, ⊥) </option>',
-                    '<option value="0100" <% if (refEvidencePair === "0100") { %> selected <%} %>> Partially Denied (⊥, P)</option>',
-                    '<option value="1100" <% if (refEvidencePair === "1100") { %> selected <%} %>> Denied (⊥, F)</option>',
-                '</select>',
-                    '<output id = "stopTP-out" class = "seg-class" style="position:relative; left:8px; width:15px"> end </output>',
-                '</div>',
-                '</script>'].join(''),
-    
+        '<input class="seg-time" > </input>',
+        '<output id = "startTP-out" class = "seg-class" style="position:relative; left:14px; width:15px"> <%= startTP %> </output>',
+        '<select id="seg-function-type" class = "seg-class" style=" position:relative; left:10px; width: 95px">',
+        '<option value="C" <% if (type === "C") { %> selected <%} %>> Constant </option>',
+        '<option value="R" <% if (type === "R") { %> selected <%} %>> Stochastic </option>',
+        '<option value="I" <% if (type === "I") { %> selected <%} %>> Increase </option>',
+        '<option value="D" <% if (type === "D") { %> selected <%} %>> Decrease </option>',
+        '</select>',
+        '<select id="seg-sat-value" class = "seg-class" style=" position:relative; left:10px; width: 96px">',
+        '<option value="0000" <% if (refEvidencePair === "0000") { %> selected <%} %>> None (⊥, ⊥) </option>',
+        '<option value="0011" <% if (refEvidencePair === "0011") { %> selected <%} %>> Satisfied (F, ⊥) </option>',
+        '<option value="0010" <% if (refEvidencePair === "0010") { %> selected <%} %>> Partially Satisfied (P, ⊥) </option>',
+        '<option value="0100" <% if (refEvidencePair === "0100") { %> selected <%} %>> Partially Denied (⊥, P)</option>',
+        '<option value="1100" <% if (refEvidencePair === "1100") { %> selected <%} %>> Denied (⊥, F)</option>',
+        '</select>',
+        '<output id = "stopTP-out" class = "seg-class" style="position:relative; left:8px; width:15px"> end </output>',
+        '</div>',
+        '</script>'].join(''),
+
     events: {
-        'change #seg-sat-value':'setFuncSatValue',
-        'change #seg-function-type' : 'checkFuncValue', 
+        'change #seg-sat-value': 'setFuncSatValue',
+        'change #seg-function-type': 'checkFuncValue',
         'keyup .seg-time': 'setAbsTime',
     },
 
-    render: function() {
+    render: function () {
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
-    
+
         if (!this.hasUD) {
             this.updateChart()
-        } 
-         else {
+        }
+        else {
             this.updateChartUserDefined()
-         }  
-    
+        }
+
         // TODO: also disable it if it is part of a repeating segment
         // Disable the absTime parameter and set it to zero if its the first function segment
         if (this.index == 0) {
@@ -704,9 +704,9 @@ var FuncSegView = Backbone.View.extend({
         } else if (this.index != 0 && this.model.get('startAT') != null) {
             this.$('.seg-time').val(this.model.get('startAT'));
         }
-        
+
         this.checkFuncValue();
-      
+
         // For all function types except for UD disable the ability to select the function 
         this.$('#seg-function-type').prop('disabled', 'disabled');
         if ((this.hasUD === true) && (this.model.get('current') === true)) {
@@ -717,24 +717,24 @@ var FuncSegView = Backbone.View.extend({
         return this;
     },
 
-    setAbsTime: function(event) {
+    setAbsTime: function (event) {
         // 13 corresponds to the Enter key so when Enter is pressed the name is updated
         if (event.which === 13) {
-             event.preventDefault();
+            event.preventDefault();
         }
-        
+
         var absTime = Number((this.$('.seg-time').val()));
-        this.model.set('startAT', absTime);         
-    },    
+        this.model.set('startAT', absTime);
+    },
 
     setFuncSatValue: function () {
         this.model.set('refEvidencePair', this.$('#seg-sat-value').val()) // 4 digit representation
-        
+
         if (this.intention.getFuncSegments().length >= 2 && this.hasUD == false) {
             if (this.intention.get('evolvingFunction').get('type') !== 'SD' && this.intention.get('evolvingFunction').get('type') !== 'DS') {
-                this.intention.getFuncSegments()[1].set('refEvidencePair', this.$('#seg-sat-value').val()); 
+                this.intention.getFuncSegments()[1].set('refEvidencePair', this.$('#seg-sat-value').val());
             }
-         }  
+        }
     },
 
     checkFuncValue: function () {
@@ -746,8 +746,8 @@ var FuncSegView = Backbone.View.extend({
             if (this.intention.get('evolvingFunction').get('type') !== 'MP' && this.intention.get('evolvingFunction').get('type') !== 'MN' && (this.model.get('type') == 'C')) {
                 if (this.intention.get('evolvingFunction').get('type') == 'SD' || this.intention.get('evolvingFunction').get('type') == 'DS') {
                     this.$("#seg-sat-value").val(this.model.get('refEvidencePair'));
-                }  else if (!this.hasUD) {    
-                this.$("#seg-sat-value").val(this.initSatValue);
+                } else if (!this.hasUD) {
+                    this.$("#seg-sat-value").val(this.initSatValue);
                     this.model.set('refEvidencePair', this.initSatValue);
                 }
             }
@@ -761,9 +761,9 @@ var FuncSegView = Backbone.View.extend({
             this.$("#seg-sat-value").val(this.initSatValue);
             this.model.set('refEvidencePair', this.initSatValue);
         }
-        
+
         if (this.hasUD == true) {
-            if(this.model.get('current')){
+            if (this.model.get('current')) {
                 this.checkUDFunctionValues()
             } else {
                 this.$("#seg-function-type").prop('disabled', true);
@@ -773,7 +773,7 @@ var FuncSegView = Backbone.View.extend({
         else {
             this.checkSatValue();
         }
-       
+
     },
 
     /**
@@ -784,7 +784,7 @@ var FuncSegView = Backbone.View.extend({
     checkSatValue: function () {
         var functionType = this.$('#seg-function-type').val();
         var initValue = this.initSatValue;
-      
+
         if (functionType == 'R') {
             this.$('#seg-sat-value').html(this.satValueOptionsNoRandom());
             this.$("#seg-sat-value").html('<option value="(no value)"> (no value) </option>');
@@ -802,12 +802,12 @@ var FuncSegView = Backbone.View.extend({
         return;
     },
 
-     /**
-     * Adds appropriate satisfaction values option tags
-     * for .user-sat-value, which is the select tag used to
-     * indicate satisfaction values when creating a user defined function.
-     */
-      checkUDFunctionValues: function() {
+    /**
+    * Adds appropriate satisfaction values option tags
+    * for .user-sat-value, which is the select tag used to
+    * indicate satisfaction values when creating a user defined function.
+    */
+    checkUDFunctionValues: function () {
         var func = this.$("#seg-function-type").val();
 
         if (func == 'I' || func == 'D') {
@@ -839,7 +839,7 @@ var FuncSegView = Backbone.View.extend({
                 this.$("#seg-sat-value").val(this.model.get('refEvidencePair'));
             }
         }
-        return; 
+        return;
     },
 
     /**
@@ -890,8 +890,8 @@ var FuncSegView = Backbone.View.extend({
      * @param binaryString: This is the binary string stands for the value
      * @returns a string decode of that binary value
      */
-        binaryToOption: function(binaryString){
-        switch(binaryString){
+    binaryToOption: function (binaryString) {
+        switch (binaryString) {
             case "0000":
                 return `<option value="0000">None (⊥, ⊥) </option>`;
             case "0011":
@@ -911,7 +911,7 @@ var FuncSegView = Backbone.View.extend({
     /**
      * Sets the correct refEvidencePair for the second segment of MP and MN functions
      */
-    updateNextFuncSeg: function() {
+    updateNextFuncSeg: function () {
         if (!this.hasUD && (this.intention.get('evolvingFunction').get('type') == 'MP' || this.intention.get('evolvingFunction').get('type') == 'MN') && this.index == 1) {
             this.$('#seg-sat-value').val(this.intention.getFuncSegments()[1].get('refEvidencePair'));
         }
@@ -921,7 +921,7 @@ var FuncSegView = Backbone.View.extend({
      * Updates the chart to represent data related to the the current function and
      * satisfaction value(s)
      */
-     updateChart: function() {
+    updateChart: function () {
         if (this.intention.get('evolvingFunction') != null) {
             var funcType = this.intention.get('evolvingFunction').get('type');
             var initVal = satisfactionValuesDict[this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair')].chartVal;
@@ -931,16 +931,16 @@ var FuncSegView = Backbone.View.extend({
             this.chart.reset();
             // Get the chart canvas
             var context = $("#chart").get(0).getContext("2d");
-    
+
             // Render preview for user defined function types
             if (funcType == "UD") {
                 this.updateChartUserDefined();
                 return;
             }
-    
+
             // Change chart dataset(s), depending on the function type
             var threeLabelFunc = ['RC', 'CR', 'SD', 'DS', 'MP', 'MN'];
-    
+
             if (threeLabelFunc.includes(funcType)) {
                 this.chart.labels = ['0', 'A', 'Infinity'];
                 if (funcType === 'RC') {
@@ -962,7 +962,7 @@ var FuncSegView = Backbone.View.extend({
                 }
             } else {
                 this.chart.labels = ['0', 'Infinity'];
-    
+
                 if (funcType === 'C') {
                     this.chart.addDataSet(0, [initVal, initVal], false);
                 } else if (funcType === 'R') {
@@ -975,7 +975,7 @@ var FuncSegView = Backbone.View.extend({
                     this.chart.addDataSet(0, [initVal], false);
                 }
             }
-            this.chart.display(context);         
+            this.chart.display(context);
         }
     },
 
@@ -983,7 +983,7 @@ var FuncSegView = Backbone.View.extend({
      * Updates the chart to represent data related to the the current user
      * defined function and satisfaction value(s)
      */
-     updateChartUserDefined: function() {
+    updateChartUserDefined: function () {
         var context = $("#chart").get(0).getContext("2d");
         // This will never be undefined because at least one 
         // FunctionSegmentBBM will be in functionSegList at this point
@@ -1023,7 +1023,7 @@ var FuncSegView = Backbone.View.extend({
                     data1 = 2;
                 } else if (currFunc == 'R') {
                     data1 = 0;
-                } else if (currFunc === 'C'){
+                } else if (currFunc === 'C') {
                     data1 = data2;
                 } else {
                     // set to previous function's marked value
@@ -1034,22 +1034,22 @@ var FuncSegView = Backbone.View.extend({
         }
         this.chart.display(context);
     },
-    
+
     /**
      * Modifies the passed in datasets with their default values
      * @param {Array.<Object>}
      */
-     resetChartDatasets: function(datasets) {
+    resetChartDatasets: function (datasets) {
         for (var i = 0; i < datasets.length; i++) {
             datasets[i].borderDash = [];
             datasets[i].data = [];
             datasets[i].pointBackgroundColor = ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"];
             datasets[i].pointBorderColor = ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"];
             datasets[i].borderColor = "rgba(220,220,220,1)";
-        }  
+        }
     },
 
-    getUDChartLabel: function(num) {
+    getUDChartLabel: function (num) {
         var res = ['0'];
         var curr = 'A'
         for (var i = 0; i < num; i++) {
