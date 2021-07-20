@@ -778,7 +778,9 @@ var FuncSegView = Backbone.View.extend({
         }
         
         if (this.hasUD == true) {
-            this.checkUDFunctionValues()
+            if(this.model.get('current')){
+                this.checkUDFunctionValues()
+            }
         }
         else {
             this.checkSatValue();
