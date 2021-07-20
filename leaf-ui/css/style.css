@@ -276,8 +276,14 @@ body.waiting *
   margin-bottom: 28px;
 }
 
-#function-div, #intension-div, #link-div, #query-div,#valuesDiv{
+#intension-div, #link-div, #query-div,#valuesDiv{
   width: 215px;
+  text-align: center;
+  margin: auto;
+}
+
+#function-div {
+  width: 250px;
   text-align: center;
   margin: auto;
 }
@@ -286,7 +292,7 @@ body.waiting *
 .function-sat-value, .user-defined-select, .repeat-select,
 .relationship-select, .link-type, #conflict-level, #abs-vals,
 #assigned-vals{
-  background-color: #1E85F7;
+  background-color: rgba(36, 150, 255, 1);
   border-color: rgba(31, 121, 101, 1);
   color: white;
   font-size: 0.7em;
@@ -296,6 +302,46 @@ body.waiting *
   margin-left: auto;
   margin-right: auto;
   border: 0;
+}
+
+.seg-class{
+  background-color: rgba(36, 150, 255, 1);
+  color: white;
+  font-size: 0.7em;
+  font-weight: 200;
+  display: inline-block;
+  border: 4px;
+  border-color: #333;
+  border-style: solid;
+}
+
+.text-label{
+  visibility:hidden;
+  vertical-align: top;
+  text-align:left;
+}
+
+.hidden{
+  visibility:hidden;
+}
+
+.seg-time {
+  background-color: rgba(36, 150, 255, 1);
+  color: white;
+  font-size: 0.7em;
+  font-weight: 200;
+  height: 10px;
+  width:14px;
+  border: 4px;
+  border-color: #333;
+  border-style: solid;
+  position:absolute;
+  text-align: center;
+}
+
+#startTP-out, #stopTP-out {
+  background-color: #333;
+  color: white;
 }
 
 #init-sat-value:disabled {
