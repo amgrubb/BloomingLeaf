@@ -1,3 +1,4 @@
+myNull = null;
 /**
  * Main view for the Assignments List Table
  * 
@@ -96,7 +97,8 @@ var AssignmentsTable = Backbone.View.extend({
      * Sets Max Absolute Time
      */
     updateMaxAbsTime: function () {
-        var maxTimeElement = $('#max-abs-time');
+        var maxTimeElement = this.$('#max-abs-time');
+        // var maxTimeElement = $('#max-abs-time');
         if (maxTimeElement.val() !== "") {
             this.model.set('maxAbsTime', maxTimeElement.val())
         } else {
@@ -410,7 +412,7 @@ var LinkRelationshipView = Backbone.View.extend({
      * After checking if it is a number
      */
     updateLinkAbsRelation: function () {
-        var newTime = parseInt($('.linkAbsRelation').val());
+        var newTime = parseInt(this.$('.linkAbsRelation').val());
         if (isNaN(newTime)) {
             return;
         }
