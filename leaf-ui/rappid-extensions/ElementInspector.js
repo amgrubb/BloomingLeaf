@@ -172,16 +172,10 @@ var ElementInspector = Backbone.View.extend({
         // Checks which function types are available based on initial satisfaction values
         this.checkInitialSatValue();
 
-        console.log(this.model.attr(".funcvalue/text"));
-        // if (this.intention.get('evolvingFunction') != null) {
-        //     console.log('hi');
-        //     console.log(this.intention.get('evolvingFunction').get('type'));
-        // }
-
         if (!this.model.attr(".satvalue/value") && this.model.attr(".funcvalue/text") != "NB") {
             this.model.attr(".satvalue/value", 'none');
             this.model.attr(".funcvalue/text", ' ');
-        } 
+        }
 
         // Turn off repeating by default
         this.repeatOptionsDisplay = false;
