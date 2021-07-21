@@ -437,12 +437,14 @@ paper.on("link:options", function (cell) {
         // Show extra tools for analysis mode
         $('.analysis-only').css("display", "");
 
-        // Show Analysis View tag
-        $('#modeText').text("Analysis View");
+        // TODO Show Analysis View tag
+        // $('#modeText').text("Analysis View");
 
         // Disable link settings
         $('.link-tools .tool-remove').css("display", "none");
         $('.link-tools .tool-options').css("display", "none");
+        $('.attribution').css("display", "none");
+        $('.inspector').css("display", "none");
 
         IntentionColoring.refresh();
 
@@ -469,9 +471,10 @@ paper.on("link:options", function (cell) {
 
             // Show extra tools for modelling mode
             $('.model-only').css("display", "");
-
-            // Show Modelling View tag
-            $('#modeText').text("Modeling View");
+            $('.attribution').css("display", "");
+            $('.inspector').css("display", "");
+            // TODO Show Modelling View tag
+            // $('#modeText').text("Modeling View");
 
             // Reinstantiate link settings
             $('.link-tools .tool-remove').css("display", "");

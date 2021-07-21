@@ -29,17 +29,21 @@ body.waiting *
 #swal2-content b{
   color: red;
 }
-#name {
-  position: absolute;
+
+.name {
+  position: fixed;
   top: 0px;
   left: 0px;
   right: 0px;
   width: 200px;
   height: 40px;
-  text-align: center;
-  margin: 0;
-  padding-top: 8px;
   background-color: #333;
+  z-index: 2; /* To make it above the left panel */
+}
+
+#name-text {
+  margin-top: 9px; /* Mathematically calculated the margin */
+  text-align: center;
   color: #CCFFCC;
   font-size: 1.4em;
   font-style: italic;
@@ -70,8 +74,9 @@ body.waiting *
 #paper {
    position: absolute;
    top: 40px;
-   left: 201px;
-   width: 100%;
+   left: 200px;
+   right: 260px;
+   bottom: 0;
    overflow: hidden;
    background-color: hsla(220,11%,97%,.95);
 }
@@ -82,16 +87,10 @@ body.waiting *
   height: 100%;
 }
 
-#paper {
-   width: 80%;
-   height: 95%;
-}
-
 #paper svg {
    /* Grid background image */
    /*background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAHUlEQVQYV2NkYGAwBuKzQIwXMBJSAJMfVUidcAQAnUQBC6jEGBUAAAAASUVORK5CYII=');*/
    background-color: white;
-   box-shadow: 1px 1px 1px lightgray;
 }
 
 #paper svg .drawable {
@@ -118,7 +117,6 @@ body.waiting *
   top: 40px;
   bottom: 0;
   width: 200px;
-
   background-color: #f9f9f9;
   box-shadow: 2px 0px 16px 0px rgba(0,0,0,0.2);
   /* Should be less than the modal pop-ups */ 
@@ -159,9 +157,8 @@ body.waiting *
   position: absolute;
   right: 0px;
   top: 0px;
-  padding-top: 40px;
   width: 260px;
-  height: 103%;
+  height: 100%;
   /*padding: 10px;*/
   background-color: #333;
   color: #bcbcbc;
@@ -184,6 +181,9 @@ body.waiting *
    margin-right: auto;*/
 
 }
+#right-inspector{
+  margin-top: 50px;
+}
 
 .inspector label {
 /*  margin: 14px 0 8px 0;*/
@@ -192,21 +192,25 @@ body.waiting *
   display: block;
 }
 
-/* The left-side bar for analysisInspector and configInspector */
-#container-sidebar { 
+/* The left panel */
+.container-sidebar { 
   left: auto; 
   width: 200px; 
-  margin-top: 60px; 
+  margin-top: 40px;
+  padding-top: 1px; 
+  background-color: #f9f9f9;
 }
 
 #config-sidebar { 
-  margin-top:100px; 
+  margin-top: 104px; 
   width: 200px; 
+  top: 60px;
+  bottom: 0;
   position: absolute; 
 }
 
 #analysis-sidebar { 
-  margin-top: 0px; 
+  margin-top: -10px; 
 }
 
 #analysis-sidebar a{
@@ -276,8 +280,14 @@ body.waiting *
   margin-bottom: 28px;
 }
 
-#function-div, #intension-div, #link-div, #query-div,#valuesDiv{
+#intension-div, #link-div, #query-div,#valuesDiv{
   width: 215px;
+  text-align: center;
+  margin: auto;
+}
+
+#function-div {
+  width: 250px;
   text-align: center;
   margin: auto;
 }
@@ -286,7 +296,7 @@ body.waiting *
 .function-sat-value, .user-defined-select, .repeat-select,
 .relationship-select, .link-type, #conflict-level, #abs-vals,
 #assigned-vals{
-  background-color: #1E85F7;
+  background-color: rgba(36, 150, 255, 1);
   border-color: rgba(31, 121, 101, 1);
   color: white;
   font-size: 0.7em;
@@ -296,6 +306,46 @@ body.waiting *
   margin-left: auto;
   margin-right: auto;
   border: 0;
+}
+
+.seg-class{
+  background-color: rgba(36, 150, 255, 1);
+  color: white;
+  font-size: 0.7em;
+  font-weight: 200;
+  display: inline-block;
+  border: 4px;
+  border-color: #333;
+  border-style: solid;
+}
+
+.text-label{
+  visibility:hidden;
+  vertical-align: top;
+  text-align:left;
+}
+
+.hidden{
+  visibility:hidden;
+}
+
+.seg-time {
+  background-color: rgba(36, 150, 255, 1);
+  color: white;
+  font-size: 0.7em;
+  font-weight: 200;
+  height: 10px;
+  width:14px;
+  border: 4px;
+  border-color: #333;
+  border-style: solid;
+  position:absolute;
+  text-align: center;
+}
+
+#startTP-out, #stopTP-out {
+  background-color: #333;
+  color: white;
 }
 
 #init-sat-value:disabled {
@@ -482,13 +532,12 @@ select > .select-placeholder {
 
 /* Toolbar */
 .toolbar-div{
-   position: absolute;
+   position: fixed;
    top: 0px;
    left: 201px;
    right: 0;
    padding-left: 0px;
    z-index: 1;
-   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.4);
    background-color: #333;
 }
 
@@ -531,7 +580,7 @@ select > .select-placeholder {
   left: 105px;
 }
 
-#on-off{
+.on-off{
   font-size: 8px;
   color: white;
   position: relative;
@@ -697,7 +746,7 @@ select > .select-placeholder {
 
 /* Attribution */
 div.attribution{
-  position: fixed;
+  position: absolute;
   bottom: 0;
   left: 30;
   color: #333333;

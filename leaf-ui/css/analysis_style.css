@@ -343,9 +343,10 @@ select::-ms-expand {
 }
 
 .config-elements {
-    padding: 12px; 
+    height: 42px;
     font-size: 16px; 
-    border: none; 
+    border: none;
+    box-shadow: -1px 0px 0px 0px rgb(71, 65, 65);
     outline: none;  
     width: 71%;
   }
@@ -362,9 +363,10 @@ select::-ms-expand {
     padding: 2px 7px 4px 7px; 
     font-size: 15px; 
     height: 42px; 
+    width: 50%;
     border: none; 
     outline: none;
-    float: right;
+    float: left;
   }
   
   .dropdown-container {
@@ -378,7 +380,8 @@ select::-ms-expand {
     border: none; 
     outline: none;
     box-shadow: -1px 0px 0px 0px rgb(71, 65, 65);
-    float: right;
+    width: 50%;
+    float: left;
     cursor: pointer;
   }
 
