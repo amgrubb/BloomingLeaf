@@ -425,7 +425,6 @@ var ElementInspector = Backbone.View.extend({
             valOption = String.fromCharCode(i);
             var disabledOpt = 'option[value=' + valOption + ']'
             this.$(disabledOpt).prop('disabled', 'disabled');
-            // this.$("#repeat-begin").prop('disabled', false);
         }
         this.$("option.repeat-select-begin").prop('disabled', false);
 
