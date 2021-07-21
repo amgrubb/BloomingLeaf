@@ -156,6 +156,15 @@ var ElementInspector = Backbone.View.extend({
         // Save html template to dynamically render more
         this.userConstraintsHTML = $("#new-user-constraints").last().clone();
 
+        // If the function is NB clear the functionSegList, set the function type to NB, and set the initial satisfaction value to none
+        if (!this.model.attr(".satvalue/value") && this.model.attr(".funcvalue/text") == "NB") {
+            if (this.intention.get('evolvingFunction') != null) {
+                this.intention.get('evolvingFunction').set('functionSegList', []);
+                this.intention.get('evolvingFunction').set('type', 'NB');
+                this.intention.getUserEvaluationBBM(0).set('assignedEvidencePair', '0000')
+            }
+        }
+
         // Load initial value and node name
         this.$('.cell-attrs-text').val(this.intention.get('nodeName'));
         this.$('#init-sat-value').val(this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair'));
@@ -163,10 +172,16 @@ var ElementInspector = Backbone.View.extend({
         // Checks which function types are available based on initial satisfaction values
         this.checkInitialSatValue();
 
+        console.log(this.model.attr(".funcvalue/text"));
+        // if (this.intention.get('evolvingFunction') != null) {
+        //     console.log('hi');
+        //     console.log(this.intention.get('evolvingFunction').get('type'));
+        // }
+
         if (!this.model.attr(".satvalue/value") && this.model.attr(".funcvalue/text") != "NB") {
             this.model.attr(".satvalue/value", 'none');
             this.model.attr(".funcvalue/text", ' ');
-        }
+        } 
 
         // Turn off repeating by default
         this.repeatOptionsDisplay = false;
@@ -213,6 +228,8 @@ var ElementInspector = Backbone.View.extend({
             this.$('#user-constraints').hide();
         } else {
             this.$('#user-constraints').show();
+            this.$('option[value=I]').prop('disabled', this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair') === '0011');
+            this.$('option[value=D]').prop('disabled', this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair') === '1100');
         }
     },
 
@@ -308,6 +325,8 @@ var ElementInspector = Backbone.View.extend({
             if (functionType == 'NB') {
                 $('#init-sat-value').prop('disabled', true);
                 $('#init-sat-value').css('background-color', 'grey');
+                $('.function-type').prop('disabled', true);
+                $('.function-type').css('background-color', 'grey');
             } else {
                 this.$('.function-type').val(functionType);
                 this.$('#user-constraints').hide();
@@ -789,6 +808,11 @@ var FuncSegView = Backbone.View.extend({
 
         if (this.hasUD == true) {
             if (this.model.get('current')) {
+                // If the initial satisfaction value is satisfied you can't select increasing
+                this.$('option[value=I]').prop('disabled', this.initSatValue === '0011');
+                // If the initial satisfaction value is denied you can't select decreasing
+                this.$('option[value=D]').prop('disabled', this.initSatValue === '1100');
+
                 this.checkUDFunctionValues()
             } else { // If the model is not the most recent model disable the function type and satisfaction value selectors 
                 this.$("#seg-function-type").prop('disabled', true);
