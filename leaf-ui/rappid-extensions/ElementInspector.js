@@ -411,11 +411,10 @@ var ElementInspector = Backbone.View.extend({
      * (the select elements for repeat begin and end)
      */
     selectRepeatValues: function () {
-        var begin = $("#repeat-begin").val();
-
         // If some of the repeat select values were previously disbaled, enable them
         this.$("option").prop('disabled', '');
 
+        var begin = this.$("#repeat-begin").val();
         var string1 = 'B'
         var minimumInt = string1.charCodeAt(0);
         var nextChar = String.fromCharCode(begin.charCodeAt(0) + 2);
@@ -426,11 +425,13 @@ var ElementInspector = Backbone.View.extend({
             valOption = String.fromCharCode(i);
             var disabledOpt = 'option[value=' + valOption + ']'
             this.$(disabledOpt).prop('disabled', 'disabled');
+            // this.$("#repeat-begin").prop('disabled', false);
         }
+        this.$("option.repeat-select-begin").prop('disabled', false);
 
-        var end = $("#repeat-end").val();
-        var count = $("#repeat-end2").val();
-        var absTime = $("#repeat-end3").val();
+        var end = this.$("#repeat-end").val();
+        var count = this.$("#repeat-end2").val();
+        var absTime = this.$("#repeat-end3").val();
 
         if (begin === null || end === null) {
             return;
@@ -547,7 +548,7 @@ var ElementInspector = Backbone.View.extend({
                     }
 
                     $("#repeat-begin").append(
-                        $('<option></option>').val(beginVal).html(beginVal)
+                        $('<option class = "repeat-select-begin"></option>').val(beginVal).html(beginVal)
                     );
                     $("#repeat-end").append(
                         $('<option></option>').val(endVal).html(endVal)
