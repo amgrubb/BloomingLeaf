@@ -39,6 +39,8 @@ var UserEvaluationCollection = Backbone.Collection.extend({
  * Start time point (char) 0,A,B,C
  * @param {Integer} startAT
  * Assigned/Absolute Time - Integer time value
+ * @param {Boolean} current
+ * True if FunctionSegmentBBM is the most recent and enabled, false if not most recent and it becomes disabled
  * 
  */
 var FunctionSegmentBBM = Backbone.Model.extend({
@@ -53,6 +55,7 @@ var FunctionSegmentBBM = Backbone.Model.extend({
             startTP: 0,             // Start time point (char) 0,A,B,C
             // Removed stopTP variable - stopTP is one letter after startTP or A is startTP is 0
             startAT: myNull, // Assigned/Absolute Time - Integer time value. If not set defaults to undefined
+            current: true
         }
     }
 });
@@ -228,13 +231,12 @@ var IntentionBBM = Backbone.Model.extend({
      */
     changeInitialSatValue: function(initValue) {
         // Set the the first element of userEvaluationList to the initValue
-        this.getUserEvaluationBBM(0).set('assignedEvidencePair', initValue);;
-
+        this.getUserEvaluationBBM(0).set('assignedEvidencePair', initValue);
+        
         if (this.get('evolvingFunction') != null) {
             var funcSegList = this.getFuncSegments();
             // If the function is C or UD & C set refEvidencePair to initValue
-            if (this.get('evolvingFunction').get('type') == 'C' || 
-                (this.get('evolvingFunction').get('type') == 'UD' && funcSegList[0].get('type') == 'C')) { 
+            if (this.get('evolvingFunction').get('type') == 'C') { 
                     funcSegList[0].set('refEvidencePair', initValue); // Set first index of funcSegList to given initValue 
             }
             else {
@@ -277,6 +279,9 @@ var IntentionBBM = Backbone.Model.extend({
         var seg2 = null;
         // Creates the correct FunctionSegmentBBM(s) for the selected function type
         switch(funcType) {
+            case 'NT': 
+                var seg =  new FunctionSegmentBBM({type: funcType, refEvidencePair: '(no value)', startTP: '0', startAT: 0});
+                break;
             case 'C':
                 var seg =  new FunctionSegmentBBM({type: funcType, refEvidencePair: initValue, startTP: '0', startAT: 0});  
                 break;
@@ -285,10 +290,10 @@ var IntentionBBM = Backbone.Model.extend({
                 var seg =  new FunctionSegmentBBM({type: funcType, refEvidencePair: '(no value)', startTP: '0', startAT: 0});
                 break;
             case 'I':
-                var seg =  new FunctionSegmentBBM({type: funcType, refEvidencePair: 'satisfied', startTP: '0', startAT: 0}); 
+                var seg =  new FunctionSegmentBBM({type: funcType, refEvidencePair: '0011', startTP: '0', startAT: 0}); 
                 break;
             case 'D':
-                var seg =  new FunctionSegmentBBM({type: funcType, refEvidencePair: 'denied', startTP: '0', startAT: 0}); 
+                var seg =  new FunctionSegmentBBM({type: funcType, refEvidencePair: '1100', startTP: '0', startAT: 0}); 
                 break;
             case 'UD':
                 var seg =  new FunctionSegmentBBM({type: 'C', refEvidencePair: initValue, startTP: '0', startAT: 0}); 
@@ -296,7 +301,7 @@ var IntentionBBM = Backbone.Model.extend({
             case'RC':
                 // Stochastic and Constant
                 var seg1 =  new FunctionSegmentBBM({type: 'R', refEvidencePair: '(no value)', startTP: '0', startAT: 0}); 
-                var seg2 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: null, startTP: 'A', startAT: myNull}); 
+                var seg2 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: initValue, startTP: 'A', startAT: myNull}); 
                 break;
             case 'CR':
                 // Constant and Stochastic
@@ -305,13 +310,13 @@ var IntentionBBM = Backbone.Model.extend({
                 break;
             case 'MP':
                 // Increase and Constant
-                var seg1 =  new FunctionSegmentBBM({type: 'I', refEvidencePair: null, startTP: '0', startAT: 0}); 
-                var seg2 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: null, startTP: 'A', startAT: myNull}); 
+                var seg1 =  new FunctionSegmentBBM({type: 'I', refEvidencePair: '0011', startTP: '0', startAT: 0}); 
+                var seg2 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: '0011', startTP: 'A', startAT: myNull}); 
                 break;
             case 'MN':
                 // Decrease and Constant
-                var seg1 =  new FunctionSegmentBBM({type: 'D', refEvidencePair: null, startTP: '0', startAT: 0}); 
-                var seg2 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: null, startTP: 'A', startAT: myNull}); 
+                var seg1 =  new FunctionSegmentBBM({type: 'D', refEvidencePair: '1100', startTP: '0', startAT: 0}); 
+                var seg2 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: '1100', startTP: 'A', startAT: myNull}); 
                 break;
             case 'SD':
                 // Constant and Constant
@@ -351,7 +356,7 @@ var IntentionBBM = Backbone.Model.extend({
      *   ex: '0000'
      * @param {Integer} startTime
      */
-    addUserDefinedSeg: function(funcType, refEvidencePair, startTime){
+    addUserDefinedSeg: function(funcType, refEvidencePair){
         var len = this.getFuncSegments().length;
         var startCheck = this.getFuncSegments()[len - 1].get('startTP'); // Get last value in list 
         if (startCheck == '0') { // If previous segment is at 0 then next one is at A
@@ -404,5 +409,4 @@ var IntentionBBM = Backbone.Model.extend({
         }     
     },
 });
-
 
