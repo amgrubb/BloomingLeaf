@@ -41,7 +41,7 @@ var AssignmentsTable = Backbone.View.extend({
                             '<tr>',
                                 '<th>Epoch Boundary Name 1</th>',
                                 '<th>Relationship</th>',
-                                '<th>Epcoch Boundary Name 2</th>',
+                                '<th>Epoch Boundary Name 2</th>',
                                 '<th></th>',
                             '</tr>',
                         '</table>',
