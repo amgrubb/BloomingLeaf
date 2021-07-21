@@ -433,6 +433,9 @@ paper.on("link:options", function (cell) {
 
         // Remove model only elements 
         $('.model-only').css("display", "none");
+        $('.inspector').css("display", "none");
+        $('#paper').css("right", "0px");
+
 
         // Show extra tools for analysis mode
         $('.analysis-only').css("display", "");
@@ -473,6 +476,7 @@ paper.on("link:options", function (cell) {
             $('.model-only').css("display", "");
             $('.attribution').css("display", "");
             $('.inspector').css("display", "");
+            $('#paper').css("right", "260px");
             // TODO Show Modelling View tag
             // $('#modeText').text("Modeling View");
 
