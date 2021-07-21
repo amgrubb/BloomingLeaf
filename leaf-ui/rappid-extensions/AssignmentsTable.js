@@ -422,7 +422,7 @@ var LinkRelationshipView = Backbone.View.extend({
      * Resets model startAT to myNull, and resets UI input to be empty
      */
     unassignAbsRelation: function () {
-        $('.linkAbsRelation').val('');
+        this.$('.linkAbsRelation').val('');
         this.model.set('absTime', myNull);
     },
 });
