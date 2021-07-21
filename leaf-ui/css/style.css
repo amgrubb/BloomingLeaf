@@ -289,7 +289,7 @@ body.waiting *
 }
 
 #init-sat-value, .actor-type, .function-type,
-.function-sat-value, .user-defined-select, .repeat-select,
+.function-sat-value, .user-defined-select, .repeat-select-begin, .repeat-select-end,
 .relationship-select, .link-type, #conflict-level, #abs-vals,
 #assigned-vals{
   background-color: rgba(36, 150, 255, 1);
@@ -362,7 +362,7 @@ body.waiting *
   margin-bottom: 8px;
   border-radius: 5px;
 }
-.user-defined-select, .repeat-select, .repeat-select2, .relationship-select{
+.user-defined-select, .repeat-select-begin, .repeat-select-end, .repeat-select2, .relationship-select{
   width: 104px;
   margin-bottom: 8px;
 }
@@ -372,7 +372,8 @@ body.waiting *
 }
 
 .user-defined-select:nth-child(1),
-.repeat-select:nth-of-type(1),
+.repeat-select-begin:nth-of-type(1),
+.repeat-select-end:nth-of-type(1),
 .repeat-select2:nth-of-type(3),
 .repeat-select3:nth-of-type(5),
 #relationship-src{
@@ -381,7 +382,8 @@ body.waiting *
 }
 
 .user-defined-select:nth-child(2),
-.repeat-select:nth-of-type(2),
+.repeat-select-begin:nth-of-type(2),
+.repeat-select-end:nth-of-type(2),
 .repeat-select2:nth-of-type(4),
 .repeat-select3:nth-of-type(6),
 #relationship-tar{
