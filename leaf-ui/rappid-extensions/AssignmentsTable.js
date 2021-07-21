@@ -98,7 +98,6 @@ var AssignmentsTable = Backbone.View.extend({
      */
     updateMaxAbsTime: function () {
         var maxTimeElement = this.$('#max-abs-time');
-        // var maxTimeElement = $('#max-abs-time');
         if (maxTimeElement.val() !== "") {
             this.model.set('maxAbsTime', maxTimeElement.val())
         } else {
