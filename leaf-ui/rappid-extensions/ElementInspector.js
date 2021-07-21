@@ -104,8 +104,6 @@ var ElementInspector = Backbone.View.extend({
         '</div>',
         '<div id="user-constraints">',
         '<br>',
-        // Error message is controlled dynamically
-        '<label id="repeat-error"></label>',
         '<select id="repeat-begin" class="repeat-select" style = "position:relative; left:38px; width: 93px">',
         '<option class="select-placeholder" selected disabled value="">Begin</option>',
         '</select>',
@@ -413,6 +411,22 @@ var ElementInspector = Backbone.View.extend({
      */
     selectRepeatValues: function () {
         var begin = $("#repeat-begin").val();
+
+        // If some of the repeat select values were previously disbaled, enable them
+        this.$("option").prop('disabled', '');
+
+        var string1 = 'B'
+        var minimumInt = string1.charCodeAt(0);
+        var nextChar = String.fromCharCode(begin.charCodeAt(0) + 2);
+
+        // Disable repeat end values from 'B' to one value after the repeat beginning value
+        // Because repeating segments must be two or more segments apart 
+        for (var i = (minimumInt); i < nextChar.charCodeAt(0); i++){
+            valOption = String.fromCharCode(i);
+            var disabledOpt = 'option[value=' + valOption + ']'
+            this.$(disabledOpt).prop('disabled', 'disabled');
+        }
+
         var end = $("#repeat-end").val();
         var count = $("#repeat-end2").val();
         var absTime = $("#repeat-end3").val();
@@ -421,21 +435,8 @@ var ElementInspector = Backbone.View.extend({
             return;
         }
 
-        var nextChar = String.fromCharCode(begin.charCodeAt(0) + 1);
+        this.intention.get('evolvingFunction').setRepeatingFunction(begin, end, count, absTime);
 
-        if (begin >= end) {
-            $("#repeat-error").text("Repeated range must be chronological");
-            $("#repeat-error").show("fast");
-
-        } else if (nextChar == end) {
-            $("#repeat-error").text("Repeated range must be at least two apart");
-            $("#repeat-error").show("fast");
-
-        } else {
-
-            $("#repeat-error").hide();
-            this.intention.get('evolvingFunction').setRepeatingFunction(begin, end, count, absTime);
-        }
     },
 
     /**
