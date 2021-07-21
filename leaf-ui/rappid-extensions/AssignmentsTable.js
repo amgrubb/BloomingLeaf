@@ -1,3 +1,4 @@
+myNull = null;
 /**
  * Main view for the Assignments List Table
  * 
@@ -40,7 +41,7 @@ var AssignmentsTable = Backbone.View.extend({
                             '<tr>',
                                 '<th>Epoch Boundary Name 1</th>',
                                 '<th>Relationship</th>',
-                                '<th>Epcoch Boundary Name 2</th>',
+                                '<th>Epoch Boundary Name 2</th>',
                                 '<th></th>',
                             '</tr>',
                         '</table>',
@@ -96,7 +97,7 @@ var AssignmentsTable = Backbone.View.extend({
      * Sets Max Absolute Time
      */
     updateMaxAbsTime: function () {
-        var maxTimeElement = $('#max-abs-time');
+        var maxTimeElement = this.$('#max-abs-time');
         if (maxTimeElement.val() !== "") {
             this.model.set('maxAbsTime', maxTimeElement.val())
         } else {
@@ -397,8 +398,8 @@ var LinkRelationshipView = Backbone.View.extend({
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
         // TODO: Write statement to handle this case in script
         // Or if absTime default changed to null just remove if statement
-        if (this.model.get('absTime') == -1) {
-            this.$('.linkAbsRelation').val('')
+        if (this.model.get('absTime') == myNull) {
+            this.$('.linkAbsRelation').val('');
         }
         this.$('.link-source').text(this.linkSrc);
         this.$('.link-dest').text(this.linkDest);
@@ -410,7 +411,7 @@ var LinkRelationshipView = Backbone.View.extend({
      * After checking if it is a number
      */
     updateLinkAbsRelation: function () {
-        var newTime = parseInt($('.linkAbsRelation').val());
+        var newTime = parseInt(this.$('.linkAbsRelation').val());
         if (isNaN(newTime)) {
             return;
         }
@@ -418,10 +419,10 @@ var LinkRelationshipView = Backbone.View.extend({
     },
 
     /**
-     * Resets model startAT to -1, and resets UI input to be empty
+     * Resets model startAT to myNull, and resets UI input to be empty
      */
     unassignAbsRelation: function () {
-        $('.linkAbsRelation').val('');
-        this.model.set('absTime', -1);
+        this.$('.linkAbsRelation').val('');
+        this.model.set('absTime', myNull);
     },
 });
