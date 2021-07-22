@@ -164,6 +164,15 @@ var ElementInspector = Backbone.View.extend({
             }
         }
 
+        // If function used to be NB, reset the function type and initial satisfaction value
+        if (!this.model.attr(".satvalue/value") && this.model.attr(".funcvalue/text") != "NB") {
+            if (this.intention.get('evolvingFunction') != null) {
+                this.intention.get('evolvingFunction').set('functionSegList', []);
+                this.intention.get('evolvingFunction').set('type', 'NT');
+                this.intention.getUserEvaluationBBM(0).set('assignedEvidencePair', '(no value)')
+            }            
+        }
+
         // Load initial value and node name
         this.$('.cell-attrs-text').val(this.intention.get('nodeName'));
         this.$('#init-sat-value').val(this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair'));
@@ -173,7 +182,7 @@ var ElementInspector = Backbone.View.extend({
 
         if (!this.model.attr(".satvalue/value") && this.model.attr(".funcvalue/text") != "NB") {
             this.model.attr(".satvalue/value", 'none');
-            this.model.attr(".funcvalue/text", ' ');
+            this.model.attr(".funcvalue/text", ' ');         
         }
 
         // Turn off repeating by default
@@ -417,7 +426,7 @@ var ElementInspector = Backbone.View.extend({
         var begin = this.$("#repeat-begin").val();
         var string1 = 'B'
         var minimumInt = string1.charCodeAt(0);
-        var nextChar = String.fromCharCode(begin.charCodeAt(0) + 2);
+        var nextChar = String.fromCharCode(begin.charCodeAt(0) + 1);
 
         // Disable repeat end values from 'B' to one value after the repeat beginning value
         // Because repeating segments must be two or more segments apart 
