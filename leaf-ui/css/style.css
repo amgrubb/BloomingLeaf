@@ -293,26 +293,13 @@ body.waiting *
 }
 
 #init-sat-value, .actor-type, .function-type,
-.function-sat-value, .user-defined-select, .repeat-select-end,
+.function-sat-value, .user-defined-select, .repeat-select-begin, .repeat-select-end,
 .relationship-select, .link-type, #conflict-level, #abs-vals,
 #assigned-vals{
   background-color: rgba(36, 150, 255, 1);
   border-color: rgba(31, 121, 101, 1);
   color: white;
   font-size: 0.7em;
-  font-weight: 200;
-  width: 200px;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  border: 0;
-}
-
-.repeat-select-begin{
-  background-color: rgba(36, 150, 255, 1);
-  border-color: rgba(31, 121, 101, 1);
-  color: white;
-  font-size: 11px;
   font-weight: 200;
   width: 200px;
   display: block;

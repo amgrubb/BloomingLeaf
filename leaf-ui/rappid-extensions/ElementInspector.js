@@ -556,7 +556,7 @@ var ElementInspector = Backbone.View.extend({
                     }
 
                     $("#repeat-begin").append(
-                        $('<option class = "repeat-select-begin"></option>').val(beginVal).html(beginVal)
+                        $('<option></option>').val(beginVal).html(beginVal)
                     );
                     $("#repeat-end").append(
                         $('<option></option>').val(endVal).html(endVal)
