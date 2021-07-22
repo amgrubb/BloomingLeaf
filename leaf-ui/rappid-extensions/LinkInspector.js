@@ -57,7 +57,7 @@ var LinkInspector = Backbone.View.extend({
                 '<option value="-D">-D</option>',
                 '<option value="--D">--D</option>',
             '</select>',
-            '<select id="link-type-end" class="repeat-select">',
+            '<select id="link-type-end" class="repeat-select-end">',
                 '<option value="" disabled selected hidden>End</option>',
                 '<option value="no">No Relationship</option>',
                 '<option value="and" class="A">And-Decomposition</option>',
