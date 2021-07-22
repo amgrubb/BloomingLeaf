@@ -436,7 +436,6 @@ paper.on("link:options", function (cell) {
         $('.inspector').css("display", "none");
         $('#paper').css("right", "0px");
 
-
         // Show extra tools for analysis mode
         $('.analysis-only').css("display", "");
 
