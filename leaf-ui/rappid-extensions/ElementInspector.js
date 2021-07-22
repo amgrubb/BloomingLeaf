@@ -416,7 +416,7 @@ var ElementInspector = Backbone.View.extend({
      * Handles the changes done for the select elements for the
      * repeat feature for user defined functions, by ensuring that
      * the begin and end range of repeated constraints are valid.
-     * This function is called on change for .repeat-select
+     * This function is called on change for .repeat-select-begin and .repeat-select-end
      * (the select elements for repeat begin and end)
      */
     selectRepeatValues: function () {
@@ -434,7 +434,6 @@ var ElementInspector = Backbone.View.extend({
             valOption = String.fromCharCode(i);
             var disabledOpt = 'option[value=' + valOption + ']'
             this.$(disabledOpt).prop('disabled', 'disabled');
-            // this.$("#repeat-begin").prop('disabled', false);
         }
         this.$("option.repeat-select-begin").prop('disabled', false);
 
