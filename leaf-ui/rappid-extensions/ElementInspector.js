@@ -791,6 +791,12 @@ var FuncSegView = Backbone.View.extend({
             } else { // If the model is not the most recent model disable the function type and satisfaction value selectors 
                 this.$("#seg-function-type").prop('disabled', true);
                 this.$("#seg-sat-value").prop('disabled', true);
+                // If the function is UD, stochastic, and not current you have to append (no value) to the html
+                if (this.model.get('type') == 'R') {
+                    this.$('#seg-sat-value').html(this.satValueOptionsNoRandom());
+                    this.$("#seg-sat-value").html('<option value="(no value)"> (no value) </option>');
+                    this.$("#seg-sat-value").val("(no value)");
+                }
             }
         }
         else {
@@ -849,6 +855,7 @@ var FuncSegView = Backbone.View.extend({
         } else if (func == 'R') {
             this.$("#seg-sat-value").html(this.satValueOptionsAll());
             this.$("#seg-sat-value").val("(no value)");
+            this.model.set('refEvidencePair', '(no value)');
             this.$("#seg-sat-value").prop('disabled', true);
         } else if (func == 'C') {
             this.$("#seg-sat-value").last().html(this.satValueOptionsAll());
