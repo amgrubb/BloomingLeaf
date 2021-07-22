@@ -424,11 +424,11 @@ var ElementInspector = Backbone.View.extend({
         this.$("option").prop('disabled', '');
 
         var begin = this.$("#repeat-begin").val();
-        var string1 = 'B'
+        var string1 = 'A'
         var minimumInt = string1.charCodeAt(0);
         var nextChar = String.fromCharCode(begin.charCodeAt(0) + 1);
 
-        // Disable repeat end values from 'B' to one value after the repeat beginning value
+        // Disable repeat end values from 'A' to one value after the repeat beginning value
         // Because repeating segments must be two or more segments apart 
         for (var i = (minimumInt); i < nextChar.charCodeAt(0); i++){
             valOption = String.fromCharCode(i);
@@ -544,15 +544,15 @@ var ElementInspector = Backbone.View.extend({
                 var funcSegments = this.intention.getFuncSegments();
 
                 // Set select options
-                for (var i = 0; i < funcSegments.length - 1; i++) {
+                for (var i = 0; i < funcSegments.length; i++) {
                     var beginVal = funcSegments[i].get('startTP');
 
                     var startCheck = this.intention.getFuncSegments()[i].get('startTP');
                     if (startCheck == '0') {
-                        var endVal = 'B';
+                        var endVal = 'A';
                     }
                     else {
-                        var endVal = String.fromCharCode(startCheck.charCodeAt(0) + 2);
+                        var endVal = String.fromCharCode(startCheck.charCodeAt(0) + 1);
                     }
 
                     $("#repeat-begin").append(
