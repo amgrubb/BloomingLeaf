@@ -367,7 +367,6 @@ class EVO {
         var elements = graph.getElements();
         var curr;
         var intention;
-        var initSatVal;
         for (var i = 0; i < elements.length; i++) {
             curr = elements[i].findView(paper).model;
 
@@ -378,7 +377,9 @@ class EVO {
                 continue;
             }
             intention = model.getIntentionByID(curr.attributes.nodeID);
-            initSatVal = intention.getInitialSatValue();
+            //initSatVal = intention.getInitialSatValue();
+            var initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair'); 
+            console.log('hi');  
             if(!analysisResult.isPathSim){   
                 if (initSatVal === '(no value)') {
                     curr.attr('.satvalue/text', '');
@@ -415,7 +416,8 @@ class EVO {
             var cellView = elements[i].findView(paper); 
             var intention = model.getIntentionByID(cellView.model.attributes.nodeID); //aquires current intention
             if (intention != null){
-            var initSatVal = intention.getInitialSatValue(); //user set initial sat value
+            // var initSatVal = intention.getInitialSatValue(); user set initial sat value
+            var initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair'); 
             if (initSatVal == '(no value)') {
                 cellView.model.changeToOriginalColour();
             }

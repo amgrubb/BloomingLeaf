@@ -18,8 +18,8 @@ $('#btn-clear-elabel').on('click', function () {
         var cellView = element.findView(paper);
         var cell = cellView.model;
         var intention = model.getIntentionByID(cellView.model.attributes.nodeID);
-
-        if (intention != null && intention.getInitialSatValue() != '(no value)') {
+        // console.log(intention.getInitialSatValue());
+        if (intention != null && intention.getUserEvaluationBBM(0).get('assignedEvidencePair') != '(no value)') {
             intention.removeInitialSatValue();
 
             cell.attr(".satvalue/text", "");
@@ -251,6 +251,7 @@ graph.on('remove', function (cell) {
 
     else if ((!cell.isLink()) && (!(cell["attributes"]["type"] == "basic.Actor"))) {
         // To remove intentions
+        console.log(model.getIntentionByID);
         var userIntention = model.getIntentionByID(cell.attributes.nodeID);
         // remove this intention from the model
         model.removedynamicFunction(userIntention.nodeID);
