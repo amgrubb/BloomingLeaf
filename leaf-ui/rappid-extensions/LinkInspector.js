@@ -8,9 +8,9 @@ var LinkInspector = Backbone.View.extend({
     },
 
     constanttemplate: [
-        '<label id="title">Constant Relationship</label>',
-        '<br>',
         '<div class="inspector-views" id="right-inspector">',
+        '<label id="title" style="top:45px">Constant Relationship</label>',
+        '<br>',
         '<select id="constant-links" class="link-type">',
             '<option value="no">No Relationship</option>',
             '<option value="and">And-Decomposition</option>',
@@ -36,9 +36,9 @@ var LinkInspector = Backbone.View.extend({
     ].join(''),
 
     evolvingtemplate : [
-            '<label id="title">Evolving Relationship</label>',
-            '<br>',
             '<div class="inspector-views" id="right-inspector">',
+            '<label id="title" style="top:45px">Evolving Relationship</label>',
+            '<br>',
             '<select id="link-type-begin" class="repeat-select">',
                 '<option value="" disabled selected hidden>Begin</option>',
                 '<option value="no">No Relationship</option>',
@@ -57,7 +57,7 @@ var LinkInspector = Backbone.View.extend({
                 '<option value="-D">-D</option>',
                 '<option value="--D">--D</option>',
             '</select>',
-            '<select id="link-type-end" class="repeat-select">',
+            '<select id="link-type-end" class="repeat-select-end">',
                 '<option value="" disabled selected hidden>End</option>',
                 '<option value="no">No Relationship</option>',
                 '<option value="and" class="A">And-Decomposition</option>',
@@ -81,8 +81,8 @@ var LinkInspector = Backbone.View.extend({
     ].join(''),
 
     actortemplate: [
-            '<label> Link Type </label> <br>',
             '<div class="inspector-views" id="right-inspector">',
+            '<label style="top:45px"> Link Type </label> <br>',
             '<select id="actor-link" class="link-type">',
                 '<option value="is-a">is-a</option>',
                 '<option value="plays">plays</option>',
