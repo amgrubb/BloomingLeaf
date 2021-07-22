@@ -39,7 +39,7 @@ var LinkInspector = Backbone.View.extend({
             '<div class="inspector-views" id="right-inspector">',
             '<label id="title" style="top:45px">Evolving Relationship</label>',
             '<br>',
-            '<select id="link-type-begin" class="repeat-select">',
+            '<select id="link-type-begin" class="repeat-select-begin">',
                 '<option value="" disabled selected hidden>Begin</option>',
                 '<option value="no">No Relationship</option>',
                 '<option value="and">And-Decomposition</option>',

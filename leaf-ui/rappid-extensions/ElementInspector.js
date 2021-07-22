@@ -65,7 +65,7 @@ var ElementInspector = Backbone.View.extend({
     model: joint.shapes.basic.Intention,
 
     initialize: function () { // Listens for changes in the intentions
-        this.listenTo(this, 'change: intention', this.initSatValueChanged);
+        this.listenTo(this, 'change:intention', this.initSatValueChanged);
         // Saves this.model.get('intention) as a local variable to access it more easily
         this.intention = this.model.get('intention');
     },
@@ -811,11 +811,18 @@ var FuncSegView = Backbone.View.extend({
 
         if (this.hasUD == true) {
             if (this.model.get('current')) {
-                // If the initial satisfaction value is satisfied you can't select increasing
-                this.$('option[value=I]').prop('disabled', this.initSatValue === '0011');
-                // If the initial satisfaction value is denied you can't select decreasing
-                this.$('option[value=D]').prop('disabled', this.initSatValue === '1100');
-
+                var len = this.intention.getFuncSegments().length;
+                if (len != 1) {
+                // If the satisfaction value of the previous FunctionSegmentBBM is satisfied you can't select increasing
+                this.$('option[value=I]').prop('disabled', this.intention.getFuncSegments()[len-2].get('refEvidencePair') === '0011');
+                // If the satisfaction value of the previos FunctionSegmentBBM is denied you can't select decreasing
+                this.$('option[value=D]').prop('disabled', this.intention.getFuncSegments()[len-2].get('refEvidencePair') === '1100');
+                } else {
+                    // If the initial satisfaction value is satisfied you can't select increasing
+                    this.$('option[value=I]').prop('disabled', this.initSatValue === '0011');
+                    // If the initial satisfaction value is denied you can't select decreasing
+                    this.$('option[value=D]').prop('disabled', this.initSatValue === '1100');
+                }
                 this.checkUDFunctionValues()
             } else { // If the model is not the most recent model disable the function type and satisfaction value selectors 
                 this.$("#seg-function-type").prop('disabled', true);
