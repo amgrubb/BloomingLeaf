@@ -104,12 +104,10 @@ var ElementInspector = Backbone.View.extend({
         '</div>',
         '<div id="user-constraints">',
         '<br>',
-        // Error message is controlled dynamically
-        '<label id="repeat-error"></label>',
-        '<select id="repeat-begin" class="repeat-select" style = "position:relative; left:38px; width: 93px">',
+        '<select id="repeat-begin" class="repeat-select-begin" style = "position:relative; left:38px; width: 93px">',
         '<option class="select-placeholder" selected disabled value="">Begin</option>',
         '</select>',
-        '<select id="repeat-end" class="repeat-select" style= "position:relative; right:18px; width: 93px">',
+        '<select id="repeat-end" class="repeat-select-end" style= "position:relative; right:18px; width: 93px">',
         '<option class="select-placeholder" selected disabled value="">End</option>',
         '</select>',
         '<label style="float:left; font-size:0.8em;" id="repeat-begin2" class="repeat-select2">Repeat counts:</label>',
@@ -133,7 +131,8 @@ var ElementInspector = Backbone.View.extend({
         'change .function-type': 'funcTypeChanged',
         'change .segment-functions': 'updateHTML',
 
-        'change .repeat-select': 'selectRepeatValues',
+        'change .repeat-select-begin': 'selectRepeatValues',
+        'change .repeat-select-end': 'selectRepeatValues',
         'change .repeat-select2': 'selectNumRepeatValues',
         'change .repeat-select3': 'selectAbsoluteLength',
 
@@ -156,6 +155,24 @@ var ElementInspector = Backbone.View.extend({
         // Save html template to dynamically render more
         this.userConstraintsHTML = $("#new-user-constraints").last().clone();
 
+        // If the function is NB clear the functionSegList, set the function type to NB, and set the initial satisfaction value to none
+        if (!this.model.attr(".satvalue/value") && this.model.attr(".funcvalue/text") == "NB") {
+            if (this.intention.get('evolvingFunction') != null) {
+                this.intention.get('evolvingFunction').set('functionSegList', []);
+                this.intention.get('evolvingFunction').set('type', 'NB');
+                this.intention.getUserEvaluationBBM(0).set('assignedEvidencePair', '0000')
+            }
+        }
+
+        // If function used to be NB, reset the function type and initial satisfaction value
+        if (!this.model.attr(".satvalue/value") && this.model.attr(".funcvalue/text") != "NB") {
+            if (this.intention.get('evolvingFunction') != null) {
+                this.intention.get('evolvingFunction').set('functionSegList', []);
+                this.intention.get('evolvingFunction').set('type', 'NT');
+                this.intention.getUserEvaluationBBM(0).set('assignedEvidencePair', '(no value)')
+            }            
+        }
+
         // Load initial value and node name
         this.$('.cell-attrs-text').val(this.intention.get('nodeName'));
         this.$('#init-sat-value').val(this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair'));
@@ -165,7 +182,7 @@ var ElementInspector = Backbone.View.extend({
 
         if (!this.model.attr(".satvalue/value") && this.model.attr(".funcvalue/text") != "NB") {
             this.model.attr(".satvalue/value", 'none');
-            this.model.attr(".funcvalue/text", ' ');
+            this.model.attr(".funcvalue/text", ' ');         
         }
 
         // Turn off repeating by default
@@ -213,6 +230,8 @@ var ElementInspector = Backbone.View.extend({
             this.$('#user-constraints').hide();
         } else {
             this.$('#user-constraints').show();
+            this.$('option[value=I]').prop('disabled', this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair') === '0011');
+            this.$('option[value=D]').prop('disabled', this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair') === '1100');
         }
     },
 
@@ -308,6 +327,8 @@ var ElementInspector = Backbone.View.extend({
             if (functionType == 'NB') {
                 $('#init-sat-value').prop('disabled', true);
                 $('#init-sat-value').css('background-color', 'grey');
+                $('.function-type').prop('disabled', true);
+                $('.function-type').css('background-color', 'grey');
             } else {
                 this.$('.function-type').val(functionType);
                 this.$('#user-constraints').hide();
@@ -395,34 +416,37 @@ var ElementInspector = Backbone.View.extend({
      * Handles the changes done for the select elements for the
      * repeat feature for user defined functions, by ensuring that
      * the begin and end range of repeated constraints are valid.
-     * This function is called on change for .repeat-select
+     * This function is called on change for .repeat-select-begin and .repeat-select-end
      * (the select elements for repeat begin and end)
      */
     selectRepeatValues: function () {
-        var begin = $("#repeat-begin").val();
-        var end = $("#repeat-end").val();
-        var count = $("#repeat-end2").val();
-        var absTime = $("#repeat-end3").val();
+        // If some of the repeat select values were previously disbaled, enable them
+        this.$("option").prop('disabled', '');
+
+        var begin = this.$("#repeat-begin").val();
+        var string1 = 'A'
+        var minimumInt = string1.charCodeAt(0);
+        var nextChar = String.fromCharCode(begin.charCodeAt(0) + 1);
+
+        // Disable repeat end values from 'A' to one value after the repeat beginning value
+        // Because repeating segments must be two or more segments apart 
+        for (var i = (minimumInt); i < nextChar.charCodeAt(0); i++){
+            valOption = String.fromCharCode(i);
+            var disabledOpt = 'option[value=' + valOption + ']'
+            this.$(disabledOpt).prop('disabled', 'disabled');
+        }
+        this.$("option.repeat-select-begin").prop('disabled', false);
+
+        var end = this.$("#repeat-end").val();
+        var count = this.$("#repeat-end2").val();
+        var absTime = this.$("#repeat-end3").val();
 
         if (begin === null || end === null) {
             return;
         }
 
-        var nextChar = String.fromCharCode(begin.charCodeAt(0) + 1);
+        this.intention.get('evolvingFunction').setRepeatingFunction(begin, end, count, absTime);
 
-        if (begin >= end) {
-            $("#repeat-error").text("Repeated range must be chronological");
-            $("#repeat-error").show("fast");
-
-        } else if (nextChar == end) {
-            $("#repeat-error").text("Repeated range must be at least two apart");
-            $("#repeat-error").show("fast");
-
-        } else {
-
-            $("#repeat-error").hide();
-            this.intention.get('evolvingFunction').setRepeatingFunction(begin, end, count, absTime);
-        }
     },
 
     /**
@@ -520,19 +544,19 @@ var ElementInspector = Backbone.View.extend({
                 var funcSegments = this.intention.getFuncSegments();
 
                 // Set select options
-                for (var i = 0; i < funcSegments.length - 1; i++) {
+                for (var i = 0; i < funcSegments.length; i++) {
                     var beginVal = funcSegments[i].get('startTP');
 
                     var startCheck = this.intention.getFuncSegments()[i].get('startTP');
                     if (startCheck == '0') {
-                        var endVal = 'B';
+                        var endVal = 'A';
                     }
                     else {
-                        var endVal = String.fromCharCode(startCheck.charCodeAt(0) + 2);
+                        var endVal = String.fromCharCode(startCheck.charCodeAt(0) + 1);
                     }
 
                     $("#repeat-begin").append(
-                        $('<option></option>').val(beginVal).html(beginVal)
+                        $('<option class = "repeat-select-begin"></option>').val(beginVal).html(beginVal)
                     );
                     $("#repeat-end").append(
                         $('<option></option>').val(endVal).html(endVal)
@@ -789,6 +813,11 @@ var FuncSegView = Backbone.View.extend({
 
         if (this.hasUD == true) {
             if (this.model.get('current')) {
+                // If the initial satisfaction value is satisfied you can't select increasing
+                this.$('option[value=I]').prop('disabled', this.initSatValue === '0011');
+                // If the initial satisfaction value is denied you can't select decreasing
+                this.$('option[value=D]').prop('disabled', this.initSatValue === '1100');
+
                 this.checkUDFunctionValues()
             } else { // If the model is not the most recent model disable the function type and satisfaction value selectors 
                 this.$("#seg-function-type").prop('disabled', true);
