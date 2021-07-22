@@ -82,7 +82,8 @@ $('#btn-save').on('click', function () {
        // EVO.revertIntentionsText(graph.getElements(), paper);    
 		var fileName = name + ".json";
         obj = {graph: graph.toJSON()} //same structure as the other two save options
-        download(fileName, JSON.stringify(obj));
+        console.log(obj)
+        download(fileName, stringifyCirc(obj));
         //IntentionColoring.refresh();
     }
 });
@@ -527,7 +528,8 @@ $('#btn-save-analysis').on('click', function() {
         EVO.deactivate();   
 		var fileName = name + ".json";
 		var obj = getModelAnalysisJson(configCollection);
-        download(fileName, JSON.stringify(obj));
+        console.log(obj)
+        download(fileName, stringifyCirc(obj));
 	}
 });
 
@@ -539,7 +541,7 @@ $('#btn-save-all').on('click', function() {
         EVO.deactivate();   
 		var fileName = name + ".json";
 		var obj = getFullJson(configCollection);
-        download(fileName, JSON.stringify(obj));
+        download(fileName, stringifyCirc(obj));
 	}
 });
 
@@ -551,24 +553,36 @@ $('#btn-load').on('click', function(){
 // Load ConfigCollection for display 
 // TODO: modify it to read results after results can be shown
 function loadConfig(loadedConfig){
+    var selectedConfig;
+    var selectedResult;
     //Clears current configCollection
-    while (model = configCollection.first()) {
+    while (model = configCollection.first()) { // TODO: Determine if it's okay to use model
         model.destroy();
     }
 
     // Individually creates each ConfigBBM and add to collection
     for(let config of loadedConfig){
+        if(config.selected){
+            selectedConfig = config.name;
+        }
         var configbbm = new ConfigBBM({name:config.name, action: config.action, conflictLevel: config.conflictLevel, numRelTime: config.numRelTime, currentState: config.currentState, userAssignmentsList : config.userAssignmentsList, previousAnalysis: config.previousAnalysis, selected: config.selected})
         if (config.results.length !== 0){ //create results if there applicable
             var results = configbbm.get('results') // grabs the coolection from the configbbm
-            
             // Individually creates each ResultBBM and add to collection
             for(let result of config.results){
+                if(result.selected){
+                    selectedResult = result.name;
+                }
                 var resultsbbm = new ResultBBM({name:result.attributes.name, analysisResult: result.attributes.analysisResult, selected: result.attributes.selected})
                 results.add(resultsbbm)
             }
         }
         configCollection.add(configbbm)
+    }
+    var configGroup = configCollection.filter(Config => Config.get('name') == selectedConfig);
+    configGroup[0].set('selected', true);
+    if (configGroup[0].get('results').length !== 0){
+        configGroup[0].get('results').filter(selectedRes => selectedRes.get('name') == selectedResult)[0].set('selected', true)
     }
 }
 
@@ -721,4 +735,18 @@ function revertNodeValuesToInitial() {
     // }
     // // Remove slider
     // removeSlider();
+}
+
+function stringifyCirc(obj){
+    var skipKeys = ['_events', 'change:refEvidencePair', 'context', '_listeners']
+    var graphtext = JSON.stringify(obj, function(key, value) {
+		if(skipKeys.includes(key)) {
+		  return null;
+		} else{
+			//console.log(key+ " " + value)
+		  return value;
+		}
+	  });
+
+      return graphtext
 }

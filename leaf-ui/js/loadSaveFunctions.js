@@ -21,6 +21,7 @@ reader.onload = function() {
 	if (!reader.result) {
 		return;
 	}
+	clearInspector();
 	var result = JSON.parse(reader.result);
 	loadFromObject(result);
     var graphtext = JSON.stringify(graph.toJSON());
@@ -50,6 +51,7 @@ function loadFromObject(obj) {
 			createBBElement(cell, funcseg) //Create element
 		}
 	}
+	loadConstraints();
 	// If the object contains configCollection, create configCollection fields from JSON
 	if (obj.configCollection != undefined) {
 		loadConfig(obj.configCollection)
@@ -190,7 +192,7 @@ function getFuncSegList(arr) {
  */
 function createBBActor(cell){
 	var actor = cell.get('actor');
-	var actorBBM = new ActorBBM({type: actor.type, actorName: actor.attributes.actorName});
+	var actorBBM = new ActorBBM({type: actor.attributes.type, actorName: actor.attributes.actorName});
 	cell.set('actor', actorBBM)
 }
 
@@ -211,20 +213,31 @@ function createBBLink(cell){
 function createBBElement(cell, funcsegs){
 	var intention = cell.get('intention');
 	var evol = intention.attributes.evolvingFunction.attributes;
-	var intentionBBM = new IntentionBBM({nodeName: intention.nodeName, nodeType: intention.nodeType});
+	var intentionBBM = new IntentionBBM({nodeName: intention.attributes.nodeName, nodeType: intention.attributes.nodeType});
 
 	var evolving = new EvolvingFunctionBBM({type: evol.type, hasRepeat: evol.hasRepeat, repStart: evol.repStart, repStop: evol.repStop, repCount: evol.repCount, repAbsTime: evol.repAbsTime});
 	for (let funcseg of funcsegs){
-		var funcsecbbm = new FunctionSegmentBBM({type: funcseg.attributes.type, refEvidencePair: funcseg.attributes.refEvidencePair, startTP: funcseg.attributes.startTP, startAT: funcseg.attributes.startAT})
+		var funcsecbbm = new FunctionSegmentBBM({type: funcseg.attributes.type, refEvidencePair: funcseg.attributes.refEvidencePair, startTP: funcseg.attributes.startTP, startAT: funcseg.attributes.startAT, current: funcseg.attributes.current})
 		evolving.get('functionSegList').push(funcsecbbm)
 	}
-	var userEval = intention.attributes.userEvaluationList[0].attributes;
-	intentionBBM.get('userEvaluationList').push(new UserEvaluationBBM({assignedEvidencePair: userEval.assignedEvidencePair, absTime: userEval.absTime}))
+	var userEvals = intention.attributes.userEvaluationList;
+	for (let userEval of userEvals){
+		intentionBBM.get('userEvaluationList').push(new UserEvaluationBBM({assignedEvidencePair: userEval.attributes.assignedEvidencePair, absTime: userEval.attributes.absTime}))
+	}
 	intentionBBM.set('evolvingFunction', evolving)
-
 	cell.set('intention', intentionBBM)
 }
 
+function loadConstraints (){
+	var constraints = graph.get('constraints');
+	var constraintCollection = new ConstraintCollection([]);
+	var constraintBBM;
+	for (let constraint of constraints){
+		constraintBBM = new ConstraintBBM({type: constraint.type, srcID: constraint.srcID, destID: constraint.destID, srcRefTP: constraint.srcRefTP, destRefTP: constraint.destRefTP, absTP: constraint.absTP});
+		constraintCollection.push(constraintBBM);
+	}
+	graph.set('constraints', constraintCollection);
+}
 
 /**
  * Returns an object that contains the current graph, model, and analysis configurations
@@ -236,7 +249,7 @@ function createBBElement(cell, funcsegs){
  */
 function getModelAnalysisJson(configCollection) {
 	var obj = {};
-	obj.graph = graph;
+	obj.graph = graph.toJSON();
 	// Clone to spearate the result removal from what is displayed in ConfigInspector 
 	var newConfig = configCollection.clone();
 
@@ -258,7 +271,7 @@ function getModelAnalysisJson(configCollection) {
  */
 function getFullJson(configCollection) {
 	var obj = {};
-	obj.graph = graph;
+	obj.graph = graph.toJSON();
 	obj.config = configCollection.toJSON();
 
 	return obj;
