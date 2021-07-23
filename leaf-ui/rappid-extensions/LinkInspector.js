@@ -182,11 +182,13 @@ var LinkInspector = Backbone.View.extend({
             
         } else {
             // Check if cells have any other NBT/NBD links
-            if (!this.hasNBLink(source, this.model) && !this.hasNBTag(source)){
+            // Clears the source if it doesn't have a NBT/NBD link
+            if (this.hasNBLink(source, this.model) && this.hasNBTag(source)){
                 source.attr('.funcvalue/text', '');
                 source.attr('.satvalue/text', '');
             }
-            if (!this.hasNBLink(target, this.model) && !this.hasNBTag(target)){
+            // Clears the target if it doesn't have a NBT/NBD link
+            if (this.hasNBLink(target, this.model) && this.hasNBTag(target)){
                 target.attr('.funcvalue/text', '');
                 target.attr('.satvalue/text', '');
             }
@@ -250,7 +252,7 @@ var LinkInspector = Backbone.View.extend({
     },
 
     /**
-     * Returns true iff the node is a source or target to an NBT or NBD
+     * Returns false if the node is a source or target to an NBT or NBD
      * link, other than the link provided as a parameter.
      *
      * @param {joint.dia.Element} cell
@@ -262,13 +264,15 @@ var LinkInspector = Backbone.View.extend({
     hasNBLink: function(cell, link) {
         var localLinks = graph.getLinks();
         for(var i = 0; i < localLinks.length; i++) {
-            if ((localLinks[i]!=link) && (localLinks[i].prop('link-type') == 'NBT' || localLinks[i].prop('link-type') == 'NBD')){
-                if(localLinks[i].getTargetElement() == cell || localLinks[i].getSourceElement() == cell){
-                    return true;
+            // Checks if the localLinks[i] is the current link and if it of type NBT/NBD 
+            if ((localLinks[i]!=link) && (localLinks[i].get('link').get('linkType') == 'NBT' || localLinks[i].get('link').get('linkType') == 'NBD')){
+                // Checks if the target or source element is the cell
+                if(localLinks[i].getTargetElement().get('id') === cell.get('id') || localLinks[i].getSourceElement().get('id') === cell.get('id')){
+                    return false;
                 }
             }
         }
-        return false;
+        return true;
     },
 
     /**
@@ -277,8 +281,6 @@ var LinkInspector = Backbone.View.extend({
      * @param {joint.dia.Element} cell
      */
     hasNBTag: function(cell) {
-        console.log(cell);
-        console.log(cell.attr('.funcvalue/text'));
         return cell.attr('.funcvalue/text') == 'NB';
     },
 
