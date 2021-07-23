@@ -114,8 +114,9 @@ var ConfigBBM = Backbone.Model.extend({
      * when the backend returns an AnalysisResult
      */
     addResult : function(result){
-        var newResultModel = new ResultBBM({name: 'Result ' + (this.get('results').length+1), analysisResult : result, selected: true});
-        this.get("results").add(newResultModel);
+        //var newResultModel = new ResultBBM({name: 'Result ' + (this.get('results').length+1), analysisResult : result, selected: true});
+        result.set('name', 'Result ' + (this.get('results').length+1))
+        this.get("results").add(result);
     },
 
     /** If a config was previously selected and now no longer is, unselect any selected results */

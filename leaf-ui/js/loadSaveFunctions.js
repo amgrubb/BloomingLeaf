@@ -53,7 +53,9 @@ function loadFromObject(obj) {
 	}
 	loadConstraints();
 	// If the object contains configCollection, create configCollection fields from JSON
+	console.log(obj.configCollection)
 	if (obj.configCollection != undefined) {
+		console.log("here")
 		loadConfig(obj.configCollection)
 	} 
 }
@@ -228,6 +230,10 @@ function createBBElement(cell, funcsegs){
 	cell.set('intention', intentionBBM)
 }
 
+/**
+ * Loads the constraints of graph as contraintBBM in a constraintCollection
+ *
+ */
 function loadConstraints (){
 	var constraints = graph.get('constraints');
 	var constraintCollection = new ConstraintCollection([]);
@@ -272,7 +278,8 @@ function getModelAnalysisJson(configCollection) {
 function getFullJson(configCollection) {
 	var obj = {};
 	obj.graph = graph.toJSON();
-	obj.config = configCollection.toJSON();
+	obj.configCollection = configCollection.toJSON();
+	console.log(obj)
 
 	return obj;
 }
