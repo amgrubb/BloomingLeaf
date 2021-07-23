@@ -452,7 +452,8 @@ paper.on("link:options", function (cell) {
         IntentionColoring.refresh();
 
         var currResult = configCollection.findWhere({ selected: true }).get('results').findWhere({ selected: true });
-        console.log(currResult)
+
+        // Display the analysis and slider
         if (currResult !== undefined){
             displayAnalysis(currResult, true)
         }
@@ -471,7 +472,8 @@ paper.on("link:options", function (cell) {
          */
         function switchToModellingMode() {
             setInteraction(true);
-
+            
+            // Remove Slider
             removeSlider();
 
             // Reset to initial graph prior to analysis
