@@ -313,7 +313,7 @@ var ElementInspector = Backbone.View.extend({
         this.validityCheck(event);
 
         if (this.intention.get('evolvingFunction') != null) {
-            var functionType = this.intention.get('evolvingFunction').get('type');    
+            var functionType = this.intention.get('evolvingFunction').get('type'); 
         }
         else { var functionType = null; }
 
