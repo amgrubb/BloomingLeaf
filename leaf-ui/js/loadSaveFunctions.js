@@ -217,8 +217,8 @@ function createBBElement(cell, funcsegs){
 
 	var evolving = new EvolvingFunctionBBM({type: evol.type, hasRepeat: evol.hasRepeat, repStart: evol.repStart, repStop: evol.repStop, repCount: evol.repCount, repAbsTime: evol.repAbsTime});
 	for (let funcseg of funcsegs){
-		var funcsecbbm = new FunctionSegmentBBM({type: funcseg.attributes.type, refEvidencePair: funcseg.attributes.refEvidencePair, startTP: funcseg.attributes.startTP, startAT: funcseg.attributes.startAT, current: funcseg.attributes.current})
-		evolving.get('functionSegList').push(funcsecbbm)
+		var funcsegBBM = new FunctionSegmentBBM({type: funcseg.attributes.type, refEvidencePair: funcseg.attributes.refEvidencePair, startTP: funcseg.attributes.startTP, startAT: funcseg.attributes.startAT, current: funcseg.attributes.current})
+		evolving.get('functionSegList').push(funcsegBBM)
 	}
 	var userEvals = intention.attributes.userEvaluationList;
 	for (let userEval of userEvals){
