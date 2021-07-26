@@ -564,13 +564,13 @@ function loadConfig(loadedConfig){
     var selectedConfig;
     var selectedResult;
     //Clears current configCollection
-    while (model = configCollection.first()) {
+    while (model = configCollection.first()){
         model.destroy();
     }
 
     // Individually creates each ConfigBBM and add to collection
     for(let config of loadedConfig){
-        if(config.selected){ // If selected is true
+        if (config.selected){ // If selected is true
             selectedConfig = config.name; //Record the name of config
         }
         var configBBM = new ConfigBBM({name:config.name, action: config.action, conflictLevel: config.conflictLevel, numRelTime: config.numRelTime, currentState: config.currentState, userAssignmentsList : config.userAssignmentsList, previousAnalysis: config.previousAnalysis, selected: config.selected})
