@@ -11,38 +11,39 @@ It also contains the setup for Rappid elements.
 $('#btn-undo').on('click', _.bind(commandManager.undo, commandManager));
 $('#btn-redo').on('click', _.bind(commandManager.redo, commandManager));
 $('#btn-clear-all').on('click', function () { clearAll() });
-// TODO: Reimplement with new backbone structure
+
 $('#btn-clear-elabel').on('click', function () {
-    console.log("TODO: Reimplement with new backbone structure - #btn-clear-elabel");
     for (let element of graph.getElements()) {
         var cellView = element.findView(paper);
         var cell = cellView.model;
-        var intention = model.getIntentionByID(cellView.model.attributes.nodeID);
-        // console.log(intention.getInitialSatValue());
+        var intention = cell.get('intention'); 
+
         if (intention != null && intention.getUserEvaluationBBM(0).get('assignedEvidencePair') != '(no value)') {
             intention.removeInitialSatValue();
 
             cell.attr(".satvalue/text", "");
             cell.attr(".funcvalue/text", "");
 
-            elementInspector.$('#init-sat-value').val('(no value)');
-            elementInspector.$('.function-type').val('(no value)');
+            // Leaving this here in case we need it later 
+            //elementInspector.$('#init-sat-value').val('(no value)');
+            //elementInspector.$('.function-type').val('(no value)');
         }
     }
     IntentionColoring.refresh();
 });
-// TODO: Reimplement with new backbone structure
+
 $('#btn-clear-flabel').on('click', function () {
-    console.log("TODO: Reimplement with new backbone structure - btn-clear-flabel");
     for (let element of graph.getElements()) {
         var cellView = element.findView(paper);
         var cell = cellView.model;
-        var intention = model.getIntentionByID(cellView.model.attributes.nodeID);
+        var intention = cell.get('intention'); 
 
         if (intention != null) {
             intention.removeFunction();
             cell.attr(".funcvalue/text", "");
-            elementInspector.$('.function-type').val('(no value)');
+
+            // Leaving this here in case we need it later 
+            // elementInspector.$('.function-type').val('(no value)');
         }
     }
 });
@@ -78,8 +79,8 @@ $('#btn-save').on('click', function () {
     if (name) {
         clearCycleHighlighting();
         EVO.deactivate();
-       // EVO.returnAllColors(graph.getElements(), paper);
-       // EVO.revertIntentionsText(graph.getElements(), paper);    
+        // EVO.returnAllColors(graph.getElements(), paper);
+        // EVO.revertIntentionsText(graph.getElements(), paper);    
 		var fileName = name + ".json";
         obj = {graph: graph.toJSON()} //same structure as the other two save options
         download(fileName, JSON.stringify(obj));
@@ -242,60 +243,61 @@ graph.on('change:size', function (cell, size) {
 graph.on('remove', function (cell) {
     // Clear right inspector side panel
     clearInspector();
+    
+    // Leaving this here for now in case we need this later 
 
-    if (cell.isLink() && !(cell.prop("link-type") == 'NBT' || cell.prop("link-type") == 'NBD')) {
-        // To remove link
-        var link = cell;
-        model.removeLink(link.linkID);
-    }
+    // if (cell.isLink() && !(cell.prop("link-type") == 'NBT' || cell.prop("link-type") == 'NBD')) {
+    //     // To remove link
+    //     var link = cell;
+    //     // model.removeLink(link.linkID);
+    // }
 
-    else if ((!cell.isLink()) && (!(cell["attributes"]["type"] == "basic.Actor"))) {
-        // To remove intentions
-        console.log(model.getIntentionByID);
-        var userIntention = model.getIntentionByID(cell.attributes.nodeID);
-        // remove this intention from the model
-        model.removedynamicFunction(userIntention.nodeID);
-        model.removeIntentionLinks(userIntention.nodeID);
-        // remove all intention evaluations associated with this intention
-        analysisRequest.removeIntention(userIntention.nodeID);
-        // if this intention has an actor, remove this intention's ID
-        // from the actor
-        if (userIntention.nodeActorID !== '-') {
-            var actor = model.getActorByID(userIntention.nodeActorID);
-            actor.removeIntentionID(userIntention.nodeID);
-        }
-        model.removeIntention(userIntention.nodeID);
-    }
-    else if ((!cell.isLink()) && (cell["attributes"]["type"] == "basic.Actor")) {
-        // To remove actor
-        model.removeActor(cell['attributes']['nodeID']);
+    // else if ((!cell.isLink()) && (!(cell["attributes"]["type"] == "basic.Actor"))) {
+    //     // To remove intentions
+    //     // var userIntention = model.getIntentionByID(cell.attributes.nodeID);
+    //     // remove this intention from the model
+    //     // model.removedynamicFunction(userIntention.nodeID);
+    //     // model.removeIntentionLinks(userIntention.nodeID);
+    //     // remove all intention evaluations associated with this intention
+    //     // analysisRequest.removeIntention(userIntention.nodeID);
+    //     // if this intention has an actor, remove this intention's ID
+    //     // from the actor
+    //     if (userIntention.nodeActorID !== '-') {
+    //         var actor = model.getActorByID(userIntention.nodeActorID);
+    //         actor.removeIntentionID(userIntention.nodeID);
+    //     }
+    //     model.removeIntention(userIntention.nodeID);
+    // }
+    // else if ((!cell.isLink()) && (cell["attributes"]["type"] == "basic.Actor")) {
+    //     // To remove actor
+    //     model.removeActor(cell['attributes']['nodeID']);
 
 
-    }
+    // }
 
-    else if (cell.isLink() && (cell.prop("link-type") == 'NBT' || cell.prop("link-type") == 'NBD')) {
-        // Verify if is a Not both type. If it is remove labels from source and target node
-        var link = cell;
-        var source = link.prop("source");
-        var target = link.prop("target");
+    // else if (cell.isLink() && (cell.prop("link-type") == 'NBT' || cell.prop("link-type") == 'NBD')) {
+    //     // Verify if is a Not both type. If it is remove labels from source and target node
+    //     var link = cell;
+    //     var source = link.prop("source");
+    //     var target = link.prop("target");
 
-        for (var i = 0; i < graph.getElements().length; i++) {
-            if (graph.getElements()[i].prop("id") == source["id"]) {
-                source = graph.getElements()[i];
-            }
-            if (graph.getElements()[i].prop("id") == target["id"]) {
-                target = graph.getElements()[i];
-            }
-        }
+    //     for (var i = 0; i < graph.getElements().length; i++) {
+    //         if (graph.getElements()[i].prop("id") == source["id"]) {
+    //             source = graph.getElements()[i];
+    //         }
+    //         if (graph.getElements()[i].prop("id") == target["id"]) {
+    //             target = graph.getElements()[i];
+    //         }
+    //     }
 
-        //Verify if it is possible to remove the NB tag from source and target
-        if (source !== null && !checkForMultipleNB(source)) {
-            source.attrs(".funcvalue/text", "");
-        }
-        if (target !== null && !checkForMultipleNB(target)) {
-            target.attrs(".funcvalue/text", "");
-        }
-    }
+    //     //Verify if it is possible to remove the NB tag from source and target
+    //     if (source !== null && !checkForMultipleNB(source)) {
+    //         source.attrs(".funcvalue/text", "");
+    //     }
+    //     if (target !== null && !checkForMultipleNB(target)) {
+    //         target.attrs(".funcvalue/text", "");
+    //     }
+    // }
 });
 
 /** Paper Events **/
