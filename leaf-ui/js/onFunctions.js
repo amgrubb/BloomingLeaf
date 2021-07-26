@@ -590,7 +590,9 @@ function loadConfig(loadedConfig){
 
     // Sets what the config/result the user was last on as selected
     var configGroup = configCollection.filter(Config => Config.get('name') == selectedConfig); //Find the config with the same name as the selected that is read in
-    configGroup[0].set('selected', true); // Set the selected to true
+    if(configGroup.length !== 0){
+        configGroup[0].set('selected', true); // Set the selected to true
+    }
 
     var currResult;
     if (configGroup[0].get('results').length !== 0){ // Within that selected config
