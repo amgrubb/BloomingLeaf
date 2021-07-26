@@ -36,16 +36,16 @@ public class ModelSpec {
 	private int numActors = 0;
 	private int numIntentions = 0;
 	private String inputFilename = "";
-    private int[][][] history;
+    private int[][][] history;	//TODO: Is this used? Is it left over from GrowingLeaf?
     private int relativeTimePoints = 0;
     private int[] absoluteTimePoints = null;
     
+    private HashMap<String, Integer> initialAssignedEpochs; //Hash map to hold the epochs with assigned values.
+    private int[] initialValueTimePoints = new int[] {0};		// Hold the assigned times for each of the initial Values. Should be same length of second paramater of initialValues;
     private boolean[][][] initialValues;		// Holds the initial values whether they are single or multiple.
     											//[this.numIntentions][this.numTimePoints][FD - index 0 / PD - index 1 / PS - index 2 / FS - index 3]
 												// Note if model only has initial values then it will be [numintentions][1][4].
-    private int[] initialValueTimePoints = new int[] {0};		// Hold the assigned times for each of the initial Values. Should be same length of second paramater of initialValues; 
-    private HashMap<String, Integer> initialAssignedEpochs; //Hash map to hold the epochs with assigned values.
-
+    private HashMap<String, boolean[][]> initialValuesMap; //TODO: Temporary or full replacement of initialValues. 
 
     private int[] finalValueTimePoints = null;
     private HashMap<String, Integer> finalAssignedEpochs = null;
@@ -56,8 +56,16 @@ public class ModelSpec {
     public ModelSpec(){
 		
 	}
-
     
+    
+	public HashMap<String, boolean[][]> getInitialValuesMap() {
+		return initialValuesMap;
+	}
+
+	public void setInitialValuesMap(HashMap<String, boolean[][]> initialValuesMap) {
+		this.initialValuesMap = initialValuesMap;
+	}
+
 	public List<UserEvaluation> getUserEvaluations() {
 		return userEvaluations;
 	}

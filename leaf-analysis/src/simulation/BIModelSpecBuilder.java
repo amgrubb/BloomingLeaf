@@ -24,13 +24,7 @@ public class BIModelSpecBuilder {
     private static void readAnalysisParameters(ModelSpec modelSpec, IAnalysisRequest aRequest) {
     	try {
 			// Type of analysis
-			// TODO: Is this correct to select the analysis type.
-    		modelSpec.setAnalysisType("singlePath");
-//			if (aRequest.getAction().equals("allNextStates") && (aRequest.getCurrentState().equals("0"))) {
-//				modelSpec.setAnalysisType("allCurrentState");    //Convert to next analysis type.
-//			} else {
-//				modelSpec.setAnalysisType(aRequest.getAction());
-//			}
+			modelSpec.setAnalysisType(aRequest.getAction());	
 			if (DEBUG) System.out.println("Read Type of Analysis");
 
 			// Conflict level
@@ -45,14 +39,27 @@ public class BIModelSpecBuilder {
 				modelSpec.setRelativeTimePoints(Integer.parseInt(aRequest.getNumRelTime()));
 			}
 			if (DEBUG) System.out.println("Read Relative Time");   		
-    
-			if (DEBUG) System.out.println("TODO: Handle userAssignmentList and previous Analysis, current state");
+
+			IPreviousAnalysis prevResult = aRequest.getPreviousAnalysis();
+			if(prevResult != null) {
+				// Get the list of assigned Time Points
+				modelSpec.setInitialAssignedEpochs(prevResult.getInitialAssignedEpochs());
+				
+				// Create the list of assigned values. Size is currentState + 1 (to include zero).
+				modelSpec.setInitialValueTimePoints(prevResult.getSelectedTimePointPath());
+				
+				// Assign the previous values as initial values.
+				modelSpec.setInitialValuesMap(prevResult.getSelectedPreviousValues());
+				//modelSpec.setInitialValues(null);	//TODO remove or replace.
+				
+				if (DEBUG) System.out.println("Handled Previous Result");
+			
+			}	
+			if (DEBUG) System.out.println("TODO: Handle userAssignmentList");
 			
     	} catch (Exception e) {
     		throw new RuntimeException(e.getMessage());
-    	}  
-    	
-    	
+    	}      	
     }
     private static void readPastAnalysis(ModelSpec modelSpec) {
     	try {
