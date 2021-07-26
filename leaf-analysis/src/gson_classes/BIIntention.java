@@ -18,7 +18,6 @@ public class BIIntention {
     	BIEvolvingFunction evolvingFunction; 
         //String nodeActorID;
         String nodeName;
-        //String nodeType;
         List<BIUserEvaluation> userEvaluationList;   
     }
 }
