@@ -53,9 +53,7 @@ function loadFromObject(obj) {
 	}
 	loadConstraints();
 	// If the object contains configCollection, create configCollection fields from JSON
-	console.log(obj.configCollection)
 	if (obj.configCollection != undefined) {
-		console.log("here")
 		loadConfig(obj.configCollection)
 	} 
 }
@@ -279,7 +277,6 @@ function getFullJson(configCollection) {
 	var obj = {};
 	obj.graph = graph.toJSON();
 	obj.configCollection = configCollection.toJSON();
-	console.log(obj)
 
 	return obj;
 }

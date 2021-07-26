@@ -82,7 +82,6 @@ $('#btn-save').on('click', function () {
        // EVO.revertIntentionsText(graph.getElements(), paper);    
 		var fileName = name + ".json";
         obj = {graph: graph.toJSON()} //same structure as the other two save options
-        console.log(obj)
         download(fileName, stringifyCirc(obj));
         //IntentionColoring.refresh();
     }
@@ -538,7 +537,6 @@ $('#btn-save-analysis').on('click', function() {
         EVO.deactivate();   
 		var fileName = name + ".json";
 		var obj = getModelAnalysisJson(configCollection);
-        console.log(obj)
         download(fileName, stringifyCirc(obj));
 	}
 });
@@ -563,7 +561,6 @@ $('#btn-load').on('click', function(){
 // Load ConfigCollection for display 
 // TODO: modify it to read results after results can be shown
 function loadConfig(loadedConfig){
-    console.log(loadedConfig)
     var selectedConfig;
     var selectedResult;
     //Clears current configCollection
@@ -584,7 +581,6 @@ function loadConfig(loadedConfig){
                 if(result.selected){ // If selected is true
                     selectedResult = result.name; // Record the name of result
                 }
-                console.log(result)
                 var resultsbbm = new ResultBBM({name: result.name, assignedEpoch: result.assignedEpoch, timePointPath: result.timePointPath, elementList: result.elementList, allSolution: result.allSolution, isPathSim: result.isPathSim, colorVis: result.colorVis, selectedTimePoint: result.selectedTimePoint, selected: result.selected});
                 results.add(resultsbbm)
             }

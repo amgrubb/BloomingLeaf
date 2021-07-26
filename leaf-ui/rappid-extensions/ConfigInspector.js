@@ -42,7 +42,6 @@ var ResultView = Backbone.View.extend({
         this.model.trigger('change:switchResults', this.model);
         this.config.set('selected', true);
         this.config.trigger('change:switchConfigs', this.config);
-        console.log(this.model)
         displayAnalysis(this.model, true);
     },
 
