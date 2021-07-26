@@ -414,7 +414,15 @@ paper.on("link:options", function (cell) {
         curRequest.set('action', 'singlePath');
         backendSimulationRequest(curRequest);
     }); 
-    $('#next-state-btn').on('click', function() { getAllNextStates(); }); 
+    $('#next-state-btn').on('click', function() { 
+        var curRequest = configCollection.findWhere({selected: true});
+        var curResult = curRequest.previousAttributes().results.findWhere({selected: true}); //results.findWhere({selected: true});
+        curRequest.set('action', 'allNextStates');
+        curRequest.set('previousAnalysis', curResult);        
+        console.log(JSON.stringify(curRequest));
+        console.log(curRequest);
+        backendSimulationRequest(curRequest);    
+    }); 
     
     /**
      * Helper function for switching to Analysis view.
