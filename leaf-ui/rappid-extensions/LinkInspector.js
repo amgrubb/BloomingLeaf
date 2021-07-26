@@ -127,26 +127,22 @@ var LinkInspector = Backbone.View.extend({
      * Switches from Evolving Relationship to Constant Relationship
      */
     renderConstant: function() {
-        console.log(this.link.get('absTime'));
         this.link.set('absTime', null);
         this.link.set('evolving', false);
         this.$el.html(_.template(this.constanttemplate)());
         $('#constant-links').val(this.link.get('linkType'));
         this.setValues($('#constant-links').val(), null, false);
         this.checkCellText();
-        console.log(this.link.get('absTime'));
     },
 
     /**
      * Switches from Constant Relationship to Evolving Relationship
      */
     renderEvolving: function(){
-        console.log(this.link.get('absTime'));
         this.link.set('absTime', null);
         this.link.set('evolving', true);
         this.$el.html(_.template(this.evolvingtemplate)());
         $('#link-type-end').prop('disabled', true);
-        console.log(this.link.get('absTime'));
     },
 
     updateConstantRelationship: function(){
