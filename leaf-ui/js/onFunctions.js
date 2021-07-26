@@ -596,8 +596,8 @@ function loadConfig(loadedConfig){
     if (configGroup[0].get('results').length !== 0){ // Within that selected config
         // Set selected of the selected result as true
         currResult= configGroup[0].get('results').filter(selectedRes => selectedRes.get('name') == selectedResult)[0]
+        currResult.set('selected', true)
     }
-    currResult.set('selected', true)
 }
 
 } // End scope of configCollection and configInspector
