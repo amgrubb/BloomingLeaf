@@ -217,20 +217,19 @@ function createBBElement(cell, funcsegs){
 
 	var evolving = new EvolvingFunctionBBM({type: evol.type, hasRepeat: evol.hasRepeat, repStart: evol.repStart, repStop: evol.repStop, repCount: evol.repCount, repAbsTime: evol.repAbsTime});
 	for (let funcseg of funcsegs){
-		var funcsegBBM = new FunctionSegmentBBM({type: funcseg.attributes.type, refEvidencePair: funcseg.attributes.refEvidencePair, startTP: funcseg.attributes.startTP, startAT: funcseg.attributes.startAT, current: funcseg.attributes.current})
-		evolving.get('functionSegList').push(funcsegBBM)
+		var funcsegBBM = new FunctionSegmentBBM({type: funcseg.attributes.type, refEvidencePair: funcseg.attributes.refEvidencePair, startTP: funcseg.attributes.startTP, startAT: funcseg.attributes.startAT, current: funcseg.attributes.current});
+		evolving.get('functionSegList').push(funcsegBBM);
 	}
 	var userEvals = intention.attributes.userEvaluationList;
 	for (let userEval of userEvals){
-		intentionBBM.get('userEvaluationList').push(new UserEvaluationBBM({assignedEvidencePair: userEval.attributes.assignedEvidencePair, absTime: userEval.attributes.absTime}))
+		intentionBBM.get('userEvaluationList').push(new UserEvaluationBBM({assignedEvidencePair: userEval.attributes.assignedEvidencePair, absTime: userEval.attributes.absTime}));
 	}
-	intentionBBM.set('evolvingFunction', evolving)
-	cell.set('intention', intentionBBM)
+	intentionBBM.set('evolvingFunction', evolving);
+	cell.set('intention', intentionBBM);
 }
 
 /**
  * Loads the constraints of graph as contraintBBM in a constraintCollection
- *
  */
 function loadConstraints (){
 	var constraints = graph.get('constraints');

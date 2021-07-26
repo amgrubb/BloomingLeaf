@@ -564,7 +564,7 @@ function loadConfig(loadedConfig){
     var selectedConfig;
     var selectedResult;
     //Clears current configCollection
-    while (model = configCollection.first()) { // TODO: Determine if it's okay to use model
+    while (model = configCollection.first()) {
         model.destroy();
     }
 
@@ -573,24 +573,24 @@ function loadConfig(loadedConfig){
         if(config.selected){ // If selected is true
             selectedConfig = config.name; //Record the name of config
         }
-        var configbbm = new ConfigBBM({name:config.name, action: config.action, conflictLevel: config.conflictLevel, numRelTime: config.numRelTime, currentState: config.currentState, userAssignmentsList : config.userAssignmentsList, previousAnalysis: config.previousAnalysis, selected: config.selected})
+        var configBBM = new ConfigBBM({name:config.name, action: config.action, conflictLevel: config.conflictLevel, numRelTime: config.numRelTime, currentState: config.currentState, userAssignmentsList : config.userAssignmentsList, previousAnalysis: config.previousAnalysis, selected: config.selected})
         if (config.results.length !== 0){ //create results if there applicable
-            var results = configbbm.get('results') // grabs the coolection from the configbbm
+            var results = configBBM.get('results') // grabs the coolection from the configbbm
             // Individually creates each ResultBBM and add to collection
-            for(let result of config.results){
-                if(result.selected){ // If selected is true
+            for (let result of config.results){
+                if (result.selected){ // If selected is true
                     selectedResult = result.name; // Record the name of result
                 }
-                var resultsbbm = new ResultBBM({name: result.name, assignedEpoch: result.assignedEpoch, timePointPath: result.timePointPath, elementList: result.elementList, allSolution: result.allSolution, isPathSim: result.isPathSim, colorVis: result.colorVis, selectedTimePoint: result.selectedTimePoint, selected: result.selected});
-                results.add(resultsbbm)
+                var resultsBBM = new ResultBBM({name: result.name, assignedEpoch: result.assignedEpoch, timePointPath: result.timePointPath, elementList: result.elementList, allSolution: result.allSolution, isPathSim: result.isPathSim, colorVis: result.colorVis, selectedTimePoint: result.selectedTimePoint, selected: result.selected});
+                results.add(resultsBBM)
             }
         }
-        configCollection.add(configbbm)
+        configCollection.add(configBBM)
     }
 
     // Sets what the config/result the user was last on as selected
     var configGroup = configCollection.filter(Config => Config.get('name') == selectedConfig); //Find the config with the same name as the selected that is read in
-    if(configGroup.length !== 0){
+    if (configGroup.length !== 0){
         configGroup[0].set('selected', true); // Set the selected to true
     }
 
@@ -759,7 +759,7 @@ function revertNodeValuesToInitial() {
 function stringifyCirc(obj){
     var skipKeys = ['_events', 'change:refEvidencePair', 'context', '_listeners']; // List of keys that contains circular structures
     var graphtext = JSON.stringify(obj, function(key, value) {
-		if(skipKeys.includes(key)) { //if key is in the list
+		if (skipKeys.includes(key)) { //if key is in the list
 		  return null; // Replace with null
 		} else{
 		  return value; // Otherwise return the value
