@@ -12,6 +12,7 @@ let filterOrderQueue = [];
 let analysisRequest;
 let analysisResult;
 let savedAnalysisData;
+let selectedResult;
 let graph;
 let current;
 
@@ -39,8 +40,10 @@ function init(){
     analysisRequest =  jQuery.extend(true, {}, window.opener.analysisRequest);
     analysisResult = jQuery.extend(true, {}, window.opener.analysisResult);
     graph = jQuery.extend({}, window.opener.graph);
-    var i = analysisRequest.currentState.indexOf('|', 0);
-    current = parseInt(analysisRequest.currentState.substring(0, i));
+    selectedResult = analysisRequest.returnSelectedResultBBM();
+    console.log(selectedResult);
+    current = parseInt(selectedResult.get('selectedTimePoint'));
+
 
     analysis.paper = new joint.dia.Paper({
         width: 1200,

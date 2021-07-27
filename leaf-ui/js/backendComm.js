@@ -129,6 +129,7 @@ function responseFunc(analysisRequest, response) {
 				console.log("All Paths Results (responseFunc):")
 				// TODO: Uncomment and update next line.
 				getAllNextStates(analysisRequest);
+				// TODO: update this line
 				savedAnalysisData.allNextStatesResult = results;
 				console.log(savedAnalysisData.allNextStatesResult);
 				console.log(results);				
@@ -280,6 +281,7 @@ function getElementById(id) {
 	var elements = graph.getElements();
 	for (var i = 0; i < elements.length; i++) {
 		if (id == elements[i].attributes.nodeID) {
+
 			return elements[i];
 		}
 	}
