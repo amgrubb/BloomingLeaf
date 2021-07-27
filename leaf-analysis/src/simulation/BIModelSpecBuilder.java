@@ -543,7 +543,7 @@ public class BIModelSpecBuilder {
 	 * @return
 	 * returns the intentional element if exist or null
 	 */
-	public static IntentionalElement getIntentionalElementByUniqueID(String elementId, List<IntentionalElement> list) {
+	private static IntentionalElement getIntentionalElementByUniqueID(String elementId, List<IntentionalElement> list) {
 		for(IntentionalElement iElement : list){
 			if(iElement.getUniqueID().equals(elementId))
 				return iElement;
