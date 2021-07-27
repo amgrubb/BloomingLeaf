@@ -377,9 +377,7 @@ class EVO {
                 continue;
             }
             intention = model.getIntentionByID(curr.attributes.nodeID);
-            //initSatVal = intention.getInitialSatValue();
             var initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair'); 
-            console.log('hi');  
             if(!analysisResult.isPathSim){   
                 if (initSatVal === '(no value)') {
                     curr.attr('.satvalue/text', '');
