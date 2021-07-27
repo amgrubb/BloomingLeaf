@@ -1,7 +1,6 @@
 package interface_objects;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Class responsible to receive data to execute the analysis

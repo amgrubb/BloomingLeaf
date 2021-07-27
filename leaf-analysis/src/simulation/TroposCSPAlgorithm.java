@@ -559,8 +559,10 @@ public class TroposCSPAlgorithm {
     	}
     	    	
     	// Step 4A: Make list of previous names.
-    	int countTotalPreviousT = 0;	// Count the number of previous assignedEpochs that are Time Points.
-    	int countTotalPreviousE = 0;
+    	@SuppressWarnings("unused")
+		int countTotalPreviousT = 0;	// Count the number of previous assignedEpochs that are Time Points.
+    	@SuppressWarnings("unused")
+		int countTotalPreviousE = 0;
     	String[] exisitingNamedTimePoints = new String[initialValueTimePoints.length];
     	int[] exisitingNamedTimes = new int[initialValueTimePoints.length];
     	int maxPreviousTime = initialValueTimePoints[initialValueTimePoints.length - 1];
@@ -1775,7 +1777,7 @@ public class TroposCSPAlgorithm {
 				
 				UDFunctionCSP funcUD = element.getCspUDFunct();
 				String[] segmentDynamic = funcUD.getFunctions();
-				int numSegments = segmentDynamic.length;		//Segments not EBs
+				//int numSegments = segmentDynamic.length;		//Segments not EBs
 				int nS = -1;
 				for (int e = 0; e < epochs.length; e ++){
 					if(this.spec.getInitialAssignedEpochs().get(epochs[e].id()) != null && currentAbsoluteTime >= this.spec.getInitialAssignedEpochs().get(epochs[e].id())){
