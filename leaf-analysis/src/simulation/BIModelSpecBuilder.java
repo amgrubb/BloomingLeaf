@@ -14,7 +14,15 @@ public class BIModelSpecBuilder {
 
     
     /* Read in analysis parameters.
-     * 
+     * // Depends on the number of intentions being set
+     */
+    
+    
+    
+    /** Read the elements that were passed as analysis request.
+     * @param modelSpec - the spec to be generated
+     * 	Note: this function depends on modelSpec.getNumIntentions() being set prior to being called.
+     * @param aRequest - the request passed from the front end
      */
     private static void readAnalysisParameters(ModelSpec modelSpec, IAnalysisRequest aRequest) {
     	try {
@@ -27,7 +35,6 @@ public class BIModelSpecBuilder {
 				modelSpec.setConflictAvoidLevel(aRequest.getConflictLevel().charAt(0));
 			}
 			if (DEBUG) System.out.println("Read Conflict Level");
-
 
 			//Number of Relative time
 			if(aRequest.getNumRelTime() != null){
@@ -45,9 +52,10 @@ public class BIModelSpecBuilder {
 				
 				// Assign the previous values as initial values.
 				modelSpec.setInitialValuesMap(prevResult.getSelectedPreviousValues());
-				if (DEBUG) System.out.println("Handled Previous Result");
+				if (DEBUG) System.out.println("Handled Previous Result into Hash Map");
 				
-				//TODO: Update with appropriate initial values. Need number of intentions instead of "1"
+				
+				//TODO: This code should be removed once a mapping between intentions and timepoints is created.
 				boolean[][][] initialValues = new boolean[modelSpec.getNumIntentions()][prevResult.getSelectedTimePoint()+1][4];
 				HashMap<String, boolean[][]> temp = prevResult.getSelectedPreviousValues(); //TODO REMOVE
 				int k = 0;
@@ -60,7 +68,7 @@ public class BIModelSpecBuilder {
 					k++;
 				}
 				modelSpec.setInitialValues(initialValues);	
-				
+				if (DEBUG) System.out.println("TEMP: Handled (Next State) Previous Result into Array");
 				
 			} else {
 				//TODO: Update with appropriate initial values.
@@ -76,10 +84,9 @@ public class BIModelSpecBuilder {
 				int[] initialValueTimePointsArray = new int[1];
 				initialValueTimePointsArray[0] = 0;
 				modelSpec.setInitialValueTimePoints(initialValueTimePointsArray);
-				if (DEBUG) System.out.println("TODO: Handle actual past results and initial values.");
-			}
-			if (DEBUG) System.out.println("TODO: Handle userAssignmentList");
-			
+				if (DEBUG) System.out.println("TEMP: Handled (Single Path) Previous Result into Array");
+				
+			}			
     	} catch (Exception e) {
     		throw new RuntimeException(e.getMessage());
     	}      	
@@ -112,6 +119,11 @@ public class BIModelSpecBuilder {
     	
     }    
 	
+    
+	/** Main function that generates the model spec.
+	 * @param inObject
+	 * @return A complete model of type ModelSpec
+	 */
 	public static ModelSpec buildModelSpec(IMain inObject){
 		try {
 			// Back-end Model
@@ -145,8 +157,8 @@ public class BIModelSpecBuilder {
 			if(!intentions.isEmpty())
 				modelSpec.setNumIntentions(intentions.size());
 			
-			// Front-end model components
-			readAnalysisParameters(modelSpec, inObject.getAnalysisRequest());
+			// Read the parameters associated with the model.
+			readAnalysisParameters(modelSpec, inObject.getAnalysisRequest()); 
 			readOverallGraphParameters(modelSpec, frontendModel);	
 			
 			
@@ -166,6 +178,10 @@ public class BIModelSpecBuilder {
 			}
 			if (DEBUG) System.out.println("Read Actors");
 			
+			
+			
+			if (DEBUG) System.out.println("TODO: Handle userAssignmentList");
+
 			// **** INTENTIONS **** 
 			// Getting intentional elements
 			if(!intentions.isEmpty()){

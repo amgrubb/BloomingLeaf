@@ -10,14 +10,14 @@ import java.util.List;
  */
 public class IGraph {
 	private String maxAbsTime;
-	private String[] absTimePtsArr;
+	private int[] absTimePtsArr;
 	private List<BIConstraint> constraints;
 	private List<ICell> cells;
 	
 	public String getMaxAbsTime() {
 		return maxAbsTime;
 	}
-	public String[] getAbsTimePtsArr() {
+	public int[] getAbsTimePtsArr() {
 		return absTimePtsArr;
 	}
 	public List<BIConstraint> getConstraints() {

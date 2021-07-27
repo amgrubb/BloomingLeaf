@@ -306,7 +306,7 @@ public class TroposCSPAlgorithm {
     		absoluteCounter = 1;
     	else{
     		for (int i = 0; i < absoluteTimePoint.length; i++){
-    			absoluteCollection.put(new Integer(absoluteTimePoint[i]), new IntVar(store, "TA" + (i+1), absoluteTimePoint[i], absoluteTimePoint[i]));
+    			absoluteCollection.put(Integer.valueOf(absoluteTimePoint[i]), new IntVar(store, "TA" + (i+1), absoluteTimePoint[i], absoluteTimePoint[i]));
     		}
     		absoluteCounter = absoluteTimePoint.length + 1;	//To add Zero.
     	}
@@ -380,10 +380,10 @@ public class TroposCSPAlgorithm {
     				throw new RuntimeException("Error: Null found in " + etmp.toString());
     			//Check if absolute value already exists.
     			int etmpTime = etmp.getAbsoluteTime();
-    			IntVar absTemp = absoluteCollection.get(new Integer(etmpTime));
+    			IntVar absTemp = absoluteCollection.get(Integer.valueOf(etmpTime));
     			if (absTemp == null){
     				absTemp = new IntVar(store, "TAE" + absoluteCounter, etmpTime, etmpTime);
-    				absoluteCollection.put(new Integer(etmpTime), absTemp);
+    				absoluteCollection.put(Integer.valueOf(etmpTime), absTemp);
     				absoluteCounter++;
     			}
     			constraints.add(new XeqY(src, absTemp));
@@ -483,10 +483,10 @@ public class TroposCSPAlgorithm {
     			if (etmpTime > this.maxTime)
     				throw new RuntimeException("Absolute time selected for EBs cannot be greater than maxTime.");
     			
-    			newTimePoint = absoluteCollection.get(new Integer(etmpTime));
+    			newTimePoint = absoluteCollection.get(Integer.valueOf(etmpTime));
     			if (newTimePoint == null){
     				newTimePoint = new IntVar(store, "TAL" + absoluteCounter, etmpTime, etmpTime);
-    				absoluteCollection.put(new Integer(etmpTime), newTimePoint);
+    				absoluteCollection.put(Integer.valueOf(etmpTime), newTimePoint);
     				absoluteCounter++;
     			}
     		}else{
@@ -512,10 +512,10 @@ public class TroposCSPAlgorithm {
     			if (etmpTime > this.maxTime)
     				throw new RuntimeException("Absolute time selected for EBs cannot be greater than maxTime.");
     			
-    			newTimePoint = absoluteCollection.get(new Integer(etmpTime));
+    			newTimePoint = absoluteCollection.get(Integer.valueOf(etmpTime));
     			if (newTimePoint == null){
     				newTimePoint = new IntVar(store, "TAL" + absoluteCounter, etmpTime, etmpTime);
-    				absoluteCollection.put(new Integer(etmpTime), newTimePoint);
+    				absoluteCollection.put(Integer.valueOf(etmpTime), newTimePoint);
     				absoluteCounter++;
     			}
     		}else{
@@ -542,10 +542,10 @@ public class TroposCSPAlgorithm {
     			if (etmpTime > this.maxTime)
     				throw new RuntimeException("Absolute time selected for EBs cannot be greater than maxTime.");
     			
-    			newTimePoint = absoluteCollection.get(new Integer(etmpTime));
+    			newTimePoint = absoluteCollection.get(Integer.valueOf(etmpTime));
     			if (newTimePoint == null){
     				newTimePoint = new IntVar(store, "TA" + absoluteCounter, etmpTime, etmpTime);
-    				absoluteCollection.put(new Integer(etmpTime), newTimePoint);
+    				absoluteCollection.put(Integer.valueOf(etmpTime), newTimePoint);
     				absoluteCounter++;
     			}
     			//assignedEBs.add(newEpoch);  
