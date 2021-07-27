@@ -21,39 +21,43 @@ var url = "http://localhost:8080/untitled.html";	// Hardcoded URL for Node calls
  * 
  * TODO: Replace analysisRequest with config
  */
- function getAllNextStates() {
+ function getAllNextStates(analysisRequest) {
     console.log("TODO: Implement Next States") 
-    /* TODO: Is any of this code still needed?
-    if (analysisRequest.action != null) { //path has been simulated
-        if (analysisResult.selectedTimePoint != analysisResult.timeScale) { //last timepoint is not selected
+    // TODO: Is any of this code still needed?
+
+    if (analysisRequest.get('action') != null) { //path has been simulated
+		var selectedResult = analysisRequest.returnSelectedResultBBM();
+		console.log(selectedResult);
+		console.log(selectedResult.get('selectedTimePoint') != selectedResult.get('timePointPath').length - 1);
+        if (selectedResult.get('selectedTimePoint') != selectedResult.get('timePointPath').length - 1) { //last timepoint is not selected
             $("body").addClass("waiting"); //Adds "waiting" spinner under cursor 
             //Create the object and fill the JSON file to be sent to backend.
             //Get the AnalysisInspector view information
 
-            analysisRequest.action = "allNextStates";
-
-            analysisRequest.previousAnalysis = _.clone(savedAnalysisData.singlePathResult);
+			
             // need to remove TPs after current point from previous solution?
             // update the time point for potentialEpoch
             var previousTP = [];
-            var i = analysisRequest.currentState.indexOf('|', 0);
-            var currentState = parseInt(analysisRequest.currentState.substring(0, i));
-            for (var i = 0; i < currentState + 1; i++) {
-                for (var j = 0; j < analysisRequest.previousAnalysis.assignedEpoch.length; j++) {
+			console.log(analysisRequest.get('previousAnalysis'));
+			console.log(selectedResult.get('selectedTimePoint'));
+            for (var i = 0; i < parseInt(selectedResult.get('selectedTimePoint')) + 1; i++) {
+                for (var j = 0; j < analysisRequest.get('previousAnalysis').get('assignedEpoch').length; j++) {
                     var regex = /(.*)_(.*)$/g;
-                    var match = regex.exec(analysisRequest.previousAnalysis.assignedEpoch[j]);
-                    if (match[2] === analysisRequest.previousAnalysis.timePointPath[i]) {
-                        previousTP.push(analysisRequest.previousAnalysis.assignedEpoch[j]);
+                    var match = regex.exec(analysisRequest.get('previousAnalysis').get('assignedEpoch')[j]);
+                    if (match[2] === analysisRequest.get('previousAnalysis').get('timePointPath')[i]) {
+                        previousTP.push(analysisRequest.get('previousAnalysis').get('assignedEpoch')[j]);
                         continue;
                     }
                 }
             }
-
+			console.log(analysisRequest.get('previousAnalysis').get('assignedEpoch'));
             console.log(previousTP);
             // update current time point in the path if necessary (if epoch)
             // remove all the time points after
-            analysisRequest.previousAnalysis.assignedEpoch = previousTP;
-            analysisRequest.previousAnalysis.timePointPath = analysisRequest.previousAnalysis.timePointPath.slice(0, currentState + 1);
+            // analysisRequest.previousAnalysis.assignedEpoch = previousTP;
+			analysisRequest.get('previousAnalysis').set('assignedEpoch', previousTP);
+            // analysisRequest.previousAnalysis.timePointPath = analysisRequest.previousAnalysis.timePointPath.slice(0, currentState + 1);
+			analysisRequest.get('previousAnalysis').set('timePointPath', analysisRequest.get('previousAnalysis').get('timePointPath').slice(0, parseInt(selectedResult.get('selectedTimePoint')) + 1));
 
 
             console.log(analysisRequest);
@@ -63,7 +67,8 @@ var url = "http://localhost:8080/untitled.html";	// Hardcoded URL for Node calls
             jsObject.analysisRequest = analysisRequest;
 
             //Get the Graph Model
-            jsObject.model = model;
+			jsObject.graph = graph;
+            // jsObject.model = model;
 
             //Send data to backend
             //backendComm(jsObject);		//TODO: Need to add parameter for Node Server.
@@ -75,8 +80,8 @@ var url = "http://localhost:8080/untitled.html";	// Hardcoded URL for Node calls
         }
     } else {
         swal("Error: Cannot explore next states before simulating a single path.", "", "error");
-    }
-    */
+	}
+
 }
 
 /** Makes a request for the backend and calls the response function.
@@ -123,7 +128,10 @@ function responseFunc(analysisRequest, response) {
 		} else if (analysisRequest.get('action') == 'allNextStates') {
 				console.log("All Paths Results (responseFunc):")
 				// TODO: Uncomment and update next line.
-				//savedAnalysisData.allNextStatesResult = results;
+				getAllNextStates(analysisRequest);
+				savedAnalysisData.allNextStatesResult = results;
+				console.log(savedAnalysisData.allNextStatesResult);
+				console.log(results);				
 				open_analysis_viewer();
 		} else if (analysisRequest.get('action') == 'singlePath') {
 				savedAnalysisData.singlePathResult = results;	//	TODO What is this?
@@ -308,6 +316,4 @@ function getIDs(backendErrorMsg) {
 
 	return arr;
 }
-
-
 

@@ -124,6 +124,14 @@ var ConfigBBM = Backbone.Model.extend({
             this.get('results').filter(result => result.get('selected')).forEach(result=> result.set('selected', false));
         }
     },
+
+    returnSelectedResultBBM : function() {
+        selectedResults = this.get('results').filter(result => result.get('selected') == true);
+        if (selectedResults.length > 0){
+            return selectedResults[selectedResults.length-1]
+        }
+        return null;
+    },
 });
 
 /**
