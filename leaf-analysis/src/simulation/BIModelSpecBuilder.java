@@ -10,14 +10,8 @@ import gson_classes.*;
  *
  */
 public class BIModelSpecBuilder {
-    private final static boolean DEBUG = false;	
-
-    
-    /* Read in analysis parameters.
-     * // Depends on the number of intentions being set
-     */
-    
-    
+    private final static boolean DEBUG = true;	
+   
     
     /** Read the elements that were passed as analysis request.
      * @param modelSpec - the spec to be generated
@@ -92,6 +86,12 @@ public class BIModelSpecBuilder {
     	}      	
     }
     
+    
+    /** Assigned the high-level items for the model.
+     * @param modelSpec
+     * @param frontendModel
+     * Note: Model constraints are assigned after intentions are established.
+     */
     private static void readOverallGraphParameters(ModelSpec modelSpec, IGraph frontendModel) {
     	try {	
 			//Max Absolute Time
@@ -100,17 +100,11 @@ public class BIModelSpecBuilder {
 			}
 			if (DEBUG) System.out.println("Read Max Absolute Time");
 
-			//TODO: Add in.
-//			// Absolute time points
-//			if (frontendModel.getAbsTimePtsArr().length > 0) {
-//				modelSpec.setAbsoluteTimePoints(frontendModel.getAbsTimePtsArr());
-//			}
-			int[] atp = {2,3,4};
-			modelSpec.setAbsoluteTimePoints(atp);
-//			if (DEBUG) System.out.println("Read Absolute Time Points");
-
-			if (DEBUG) System.out.println("TODO: handle constraints and absTimePtsArr");
-			// TODO List<BIConstraint> getConstraints() 
+			if(frontendModel.getAbsTimePtsArr() != null)
+				modelSpec.setAbsoluteTimePoints(frontendModel.getAbsTimePtsArr());
+			else
+				modelSpec.setAbsoluteTimePoints(null);
+			if (DEBUG) System.out.println("Read Absolute Time Points");
     		
     	} catch (Exception e) {
     		throw new RuntimeException(e.getMessage());
@@ -179,13 +173,10 @@ public class BIModelSpecBuilder {
 			if (DEBUG) System.out.println("Read Actors");
 			
 			
-			
-			if (DEBUG) System.out.println("TODO: Handle userAssignmentList");
-
 			// **** INTENTIONS **** 
 			// Getting intentional elements
 			if(!intentions.isEmpty()){
-				modelSpec.setNumIntentions(intentions.size());
+				//modelSpec.setNumIntentions(intentions.size());
 				int intentionID = 0;
 				for (ICell dataIntention : intentions){
 					// Get Data for one Intention
@@ -229,6 +220,10 @@ public class BIModelSpecBuilder {
 			}
 			if (DEBUG) System.out.println("Read Elements");
 			
+			if (DEBUG) System.out.println("TODO: Handle userAssignmentList");
+			if (DEBUG) System.out.println("TODO: handle constraints");
+			// TODO List<BIConstraint> getConstraints() 
+			
 
 			//Getting links
 			if(!links.isEmpty()) {
@@ -240,6 +235,7 @@ public class BIModelSpecBuilder {
 				List<Contribution> contribution = new ArrayList<Contribution>();
 				List<EvolvingContribution> evolvingContribution = new ArrayList<EvolvingContribution>();
 
+//START HERE - Convert to one class and move syntax checking to constructor.				
 				//for (ListIterator<InputLink> lk = links.listIterator(); lk.hasNext(); ) {
 				for (ICell link : links){
 					String linkType = link.getLink().getLinkType();
@@ -329,15 +325,7 @@ public class BIModelSpecBuilder {
 				List<Decomposition> decomposition = new ArrayList<Decomposition>();
 				List<EvolvingDecomposition> evolvingDecomposition = new ArrayList<EvolvingDecomposition>();
 
-				while (allDecompositionLinks.size() > 0) {
-//					String linkType = link.getLink().getLinkType();
-//					String linkSrcID = link.getSourceID();
-//					String linkDestID = link.getTargetID();
-//					String postType = link.getLink().getPostType();
-//					int absTime = link.getLink().getAbsTime();
-//					IntentionalElement intentElementSrc = getIntentionalElementById(linkSrcID, modelSpec.getIntElements());
-//					IntentionalElement intentElementDest = getIntentionalElementById(linkDestID, modelSpec.getIntElements());
-					
+				while (allDecompositionLinks.size() > 0) {				
 					
 					String destID = allDecompositionLinks.get(0).getTargetID();
 					//String postType = link.getLink().getPostType();
@@ -425,8 +413,11 @@ public class BIModelSpecBuilder {
 			}
 			if (DEBUG) System.out.println("Read Links");
 
+			BIConstraint[] newConstraints = frontendModel.getConstraints();
 			/* 
 			 * TODO: Readd Constraints and user evaluations.
+			
+			
 			//Getting constraints
 			if(!frontendModel.getConstraints().isEmpty()){
 				for(InputConstraint dataConstraint : frontendModel.getConstraints()){
