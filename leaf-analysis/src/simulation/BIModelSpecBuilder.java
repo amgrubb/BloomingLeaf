@@ -232,8 +232,7 @@ public class BIModelSpecBuilder {
 				
 				// List to hold newly created links.
 				List<NotBothLink> notBothLink = new ArrayList<NotBothLink>();
-				List<Contribution> contribution = new ArrayList<Contribution>();
-				List<EvolvingContribution> evolvingContribution = new ArrayList<EvolvingContribution>();
+				
 				/* Start to new contribution code. To replace both contribution and evolving contribution. */
 				List<ContributionLink> contributionLinks = new ArrayList<ContributionLink>();
 
@@ -244,197 +243,200 @@ public class BIModelSpecBuilder {
 					IntentionalElement intentElementSrc = getIntentionalElementByUniqueID(linkSrcID, modelSpec.getIntElements());
 					IntentionalElement intentElementDest = getIntentionalElementByUniqueID(linkDestID, modelSpec.getIntElements());
 					
-					/* Start to new contribution code. */
-	//Add			if (linkType.equals("NBT"))
-	//when				notBothLink.add(new NotBothLink(intentElementSrc, intentElementDest, false));
-	//remove		else if (linkType.equals("NBD"))	
-	//old				notBothLink.add(new NotBothLink(intentElementSrc, intentElementDest, true));
-					if (!(linkType.equals("NBT") || linkType.equals("NBD"))) { //becomes else
+					
+					if (linkType.equals("NBT"))
+						notBothLink.add(new NotBothLink(intentElementSrc, intentElementDest, false));
+					else if (linkType.equals("NBD"))	
+						notBothLink.add(new NotBothLink(intentElementSrc, intentElementDest, true));
+					else {
 						ContributionLink tempCont = ContributionLink.createConstributionLink(intentElementSrc, intentElementDest, link.getLink());
 						if (tempCont != null)
 							contributionLinks.add(tempCont);
 						else
-//TO Add					//allDecompositionLinks.add(link);
-							if (DEBUG) System.out.println("Decomposition Link Found");
-					}
-					
-					
-					
-					 
-					/* Start of old link code. */
-					if (link.getLink().getPostType() == null) {
-						// Not Evolving Link
-						switch (linkType) {
-							case "NBT":
-								notBothLink.add(new NotBothLink(intentElementSrc, intentElementDest, false));
-								break;
-							case "NBD":
-								notBothLink.add(new NotBothLink(intentElementSrc, intentElementDest, true));
-								break;
-							case "++":  case "+":  case "-":  case "--":
-							case "++S": case "+S": case "-S": case "--S":
-							case "++D": case "+D": case "-D": case "--D":
-								contribution.add(new Contribution(intentElementSrc, intentElementDest, ContributionType.getByCode(linkType)));
-								break;
-							case "and":
-							case "or":
-								allDecompositionLinks.add(link);
-								break;
-							default:
-								throw new IllegalArgumentException("(Simple) Invalid relationship type: " + linkType);
-						}
-					} else {
-						// Evolving Link
-						String postType = link.getLink().getPostType();
-						int absTime;
-						if (link.getLink().getAbsTime() == null)
-							absTime = -1;
-						else
-							absTime = link.getLink().getAbsTime();
-						switch (linkType) {
-							case "++":  case "+":  case "-":  case "--":
-							case "++S": case "+S": case "-S": case "--S":
-							case "++D": case "+D": case "-D": case "--D":
-								switch (postType) {
-									case "NO":
-									case "no":	
-										evolvingContribution.add(new EvolvingContribution(intentElementSrc, intentElementDest, ContributionType.getByCode(linkType), null, absTime));
-										break;
-									case "++":  case "+":  case "-":  case "--":
-									case "++S": case "+S": case "-S": case "--S":
-									case "++D": case "+D": case "-D": case "--D":
-										evolvingContribution.add(new EvolvingContribution(intentElementSrc, intentElementDest, ContributionType.getByCode(linkType), ContributionType.getByCode(postType), absTime));
-										break;
-									default:
-										throw new IllegalArgumentException("Invalid relationship type (type 1): " + linkType);
-								}
-								break;
-							case "and":
-							case "or":
-								allDecompositionLinks.add(link);
-								break;
-							case "NO":
-							case "no":	
-								switch (postType) {
-									case "++":  case "+":  case "-":  case "--":
-									case "++S": case "+S": case "-S": case "--S":
-									case "++D": case "+D": case "-D": case "--D":
-										evolvingContribution.add(new EvolvingContribution(intentElementSrc, intentElementDest, null, ContributionType.getByCode(postType), absTime));
-										break;
-									case "and":
-									case "or":
-										allDecompositionLinks.add(link);
-										break;
-									default:
-										throw new IllegalArgumentException("Invalid relationship type (type 2): " + linkType);
-								}
-								break;
-							default:
-								throw new IllegalArgumentException("Invalid relationship type (type 3): " + linkType);
-						}
+							allDecompositionLinks.add(link);
 					}
 				}
-
-				// Add all links, except decomposition links to the model.
-				modelSpec.setContribution(contribution);
 				modelSpec.setNotBothLink(notBothLink);
-				modelSpec.setEvolvingContribution(evolvingContribution);
-				if (DEBUG) System.out.println("Read (Contribution) Links");
-				
-				
-				
-				
-				// Converting Decomposition Links into singular decomposition links.
-				List<Decomposition> decomposition = new ArrayList<Decomposition>();
-				List<EvolvingDecomposition> evolvingDecomposition = new ArrayList<EvolvingDecomposition>();
-
-				while (allDecompositionLinks.size() > 0) {				
-					
-					String destID = allDecompositionLinks.get(0).getTargetID();
-					//String postType = link.getLink().getPostType();
-					int absTime;
-					if (allDecompositionLinks.get(0).getLink().getAbsTime() == null)
-						absTime = -1;
-					else
-						absTime = allDecompositionLinks.get(0).getLink().getAbsTime();
-					IntentionalElement intentElementDest = getIntentionalElementByUniqueID(destID, modelSpec.getIntElements());
-					ArrayList<ICell> curDestLinks = new ArrayList<ICell>();
-					boolean evolve = false;
-					boolean andLink = false;
-					boolean orLink = false;
-					boolean andPost = false;
-					boolean orPost = false;
-					for (ICell inputLink : allDecompositionLinks) {
-						if (destID.equals(inputLink.getTargetID())) {
-							curDestLinks.add(inputLink);
-							if (inputLink.getLink().getPostType() != null) {
-								evolve = true;
-								if (inputLink.getLink().getPostType().equals("and"))
-									andPost = true;
-								if (inputLink.getLink().getPostType().equals("or"))
-									orPost = true;
-
-							}
-							if (inputLink.getLink().getLinkType().equals("and"))
-								andLink = true;
-							if (inputLink.getLink().getLinkType().equals("or"))
-								orLink = true;
-						}
-					}
-					if (andLink && orLink)
-						throw new IllegalArgumentException("Invalid decomposition relationship type.");
-
-					LinkableElement[] linkElementsSrc = new LinkableElement[curDestLinks.size()];
-					for (int i = 0; i < curDestLinks.size(); i++) {
-						ICell link = curDestLinks.get(i);
-						linkElementsSrc[i] = getIntentionalElementByUniqueID(link.getSourceID(), modelSpec.getIntElements());
-					}
-
-					if (!evolve) {
-						DecompositionType dType = null;
-						if (andLink)
-							dType = DecompositionType.AND;
-						if (orLink)
-							dType = DecompositionType.OR;
-						decomposition.add(new Decomposition(linkElementsSrc, intentElementDest, dType));
-					} else {
-						if (andPost && orPost)
-							throw new IllegalArgumentException("Invalid evolving decomposition relationship type.");
-
-						DecompositionType pre = null;
-						DecompositionType post = null;
-						if (andLink)
-							pre = DecompositionType.AND;
-						if (orLink)
-							pre = DecompositionType.OR;
-						if (andPost)
-							post = DecompositionType.AND;
-						if (orPost)
-							post = DecompositionType.OR;
-						evolvingDecomposition.add(new EvolvingDecomposition(linkElementsSrc, intentElementDest, pre, post, absTime));
-						for (ICell iLink : curDestLinks) {
-							if (pre != null && !iLink.getLink().getLinkType().equals(pre.getCode()))
-								throw new IllegalArgumentException("Relationships for ID: " + destID + " must be all the same types.");
-							if (pre == null && !iLink.getLink().getLinkType().equals("NO"))
-								throw new IllegalArgumentException("Relationships for ID: " + destID + " must be all the same types.");
-							if (iLink.getLink().getPostType() == null)
-								throw new IllegalArgumentException("Relationships for ID: " + destID + " must be all the same types.");
-							if (post != null && !iLink.getLink().getPostType().equals(post.getCode()))
-								throw new IllegalArgumentException("Relationships for ID: " + destID + " must be all the same types.");
-							if (post == null && !iLink.getLink().getPostType().equals("NO"))
-								throw new IllegalArgumentException("Relationships for ID: " + destID + " must be all the same types.");
-						}
-
-					}
-					for (ICell inputLink : curDestLinks) {
-						allDecompositionLinks.remove(inputLink);
-					}
-
-				}
-				modelSpec.setDecomposition(decomposition);
-				modelSpec.setEvolvingDecomposition(evolvingDecomposition);
+				modelSpec.setContributionLinks(contributionLinks); 
+				modelSpec.setDecompositionLinks(DecompositionLink.createDecompositionLinks(allDecompositionLinks, modelSpec.getIntElements()));
 			}
-			if (DEBUG) System.out.println("Read Links");
+				/* Old Lists */
+				//List<Contribution> contribution = new ArrayList<Contribution>();
+				//List<EvolvingContribution> evolvingContribution = new ArrayList<EvolvingContribution>();
+
+					 
+					/* Start of Old Link Code. */
+//					if (link.getLink().getPostType() == null) {
+//						// Not Evolving Link
+//						switch (linkType) {
+//							case "NBT":
+//								notBothLink.add(new NotBothLink(intentElementSrc, intentElementDest, false));
+//								break;
+//							case "NBD":
+//								notBothLink.add(new NotBothLink(intentElementSrc, intentElementDest, true));
+//								break;
+//							case "++":  case "+":  case "-":  case "--":
+//							case "++S": case "+S": case "-S": case "--S":
+//							case "++D": case "+D": case "-D": case "--D":
+//								contribution.add(new Contribution(intentElementSrc, intentElementDest, ContributionType.getByCode(linkType)));
+//								break;
+//							case "and":
+//							case "or":
+//								allDecompositionLinks.add(link);
+//								break;
+//							default:
+//								throw new IllegalArgumentException("(Simple) Invalid relationship type: " + linkType);
+//						}
+//					} else {
+//						// Evolving Link
+//						String postType = link.getLink().getPostType();
+//						int absTime;
+//						if (link.getLink().getAbsTime() == null)
+//							absTime = -1;
+//						else
+//							absTime = link.getLink().getAbsTime();
+//						switch (linkType) {
+//							case "++":  case "+":  case "-":  case "--":
+//							case "++S": case "+S": case "-S": case "--S":
+//							case "++D": case "+D": case "-D": case "--D":
+//								switch (postType) {
+//									case "NO":
+//									case "no":	
+//										evolvingContribution.add(new EvolvingContribution(intentElementSrc, intentElementDest, ContributionType.getByCode(linkType), null, absTime));
+//										break;
+//									case "++":  case "+":  case "-":  case "--":
+//									case "++S": case "+S": case "-S": case "--S":
+//									case "++D": case "+D": case "-D": case "--D":
+//										evolvingContribution.add(new EvolvingContribution(intentElementSrc, intentElementDest, ContributionType.getByCode(linkType), ContributionType.getByCode(postType), absTime));
+//										break;
+//									default:
+//										throw new IllegalArgumentException("Invalid relationship type (type 1): " + linkType);
+//								}
+//								break;
+//							case "and":
+//							case "or":
+//								allDecompositionLinks.add(link);
+//								break;
+//							case "NO":
+//							case "no":	
+//								switch (postType) {
+//									case "++":  case "+":  case "-":  case "--":
+//									case "++S": case "+S": case "-S": case "--S":
+//									case "++D": case "+D": case "-D": case "--D":
+//										evolvingContribution.add(new EvolvingContribution(intentElementSrc, intentElementDest, null, ContributionType.getByCode(postType), absTime));
+//										break;
+//									case "and":
+//									case "or":
+//										allDecompositionLinks.add(link);
+//										break;
+//									default:
+//										throw new IllegalArgumentException("Invalid relationship type (type 2): " + linkType);
+//								}
+//								break;
+//							default:
+//								throw new IllegalArgumentException("Invalid relationship type (type 3): " + linkType);
+//						}
+//					}
+//				}
+//
+//				// Add all links, except decomposition links to the model.
+//				modelSpec.setContribution(contribution);
+//				modelSpec.setNotBothLink(notBothLink);
+//				modelSpec.setEvolvingContribution(evolvingContribution);
+//				if (DEBUG) System.out.println("Read (Contribution) Links");
+//
+//				// Converting Decomposition Links into singular decomposition links.
+//				List<Decomposition> decomposition = new ArrayList<Decomposition>();
+//				List<EvolvingDecomposition> evolvingDecomposition = new ArrayList<EvolvingDecomposition>();
+//
+//				while (allDecompositionLinks.size() > 0) {				
+//					
+//					String destID = allDecompositionLinks.get(0).getTargetID();
+//					//String postType = link.getLink().getPostType();
+//					int absTime;
+//					if (allDecompositionLinks.get(0).getLink().getAbsTime() == null)
+//						absTime = -1;
+//					else
+//						absTime = allDecompositionLinks.get(0).getLink().getAbsTime();
+//					IntentionalElement intentElementDest = getIntentionalElementByUniqueID(destID, modelSpec.getIntElements());
+//					ArrayList<ICell> curDestLinks = new ArrayList<ICell>();
+//					boolean evolve = false;
+//					boolean andLink = false;
+//					boolean orLink = false;
+//					boolean andPost = false;
+//					boolean orPost = false;
+//					for (ICell inputLink : allDecompositionLinks) {
+//						if (destID.equals(inputLink.getTargetID())) {
+//							curDestLinks.add(inputLink);
+//							if (inputLink.getLink().getPostType() != null) {
+//								evolve = true;
+//								if (inputLink.getLink().getPostType().equals("and"))
+//									andPost = true;
+//								if (inputLink.getLink().getPostType().equals("or"))
+//									orPost = true;
+//
+//							}
+//							if (inputLink.getLink().getLinkType().equals("and"))
+//								andLink = true;
+//							if (inputLink.getLink().getLinkType().equals("or"))
+//								orLink = true;
+//						}
+//					}
+//					if (andLink && orLink)
+//						throw new IllegalArgumentException("Invalid decomposition relationship type.");
+//
+//					LinkableElement[] linkElementsSrc = new LinkableElement[curDestLinks.size()];
+//					for (int i = 0; i < curDestLinks.size(); i++) {
+//						ICell link = curDestLinks.get(i);
+//						linkElementsSrc[i] = getIntentionalElementByUniqueID(link.getSourceID(), modelSpec.getIntElements());
+//					}
+//
+//					if (!evolve) {
+//						DecompositionType dType = null;
+//						if (andLink)
+//							dType = DecompositionType.AND;
+//						if (orLink)
+//							dType = DecompositionType.OR;
+//						decomposition.add(new Decomposition(linkElementsSrc, intentElementDest, dType));
+//					} else {
+//						if (andPost && orPost)
+//							throw new IllegalArgumentException("Invalid evolving decomposition relationship type.");
+//
+//						DecompositionType pre = null;
+//						DecompositionType post = null;
+//						if (andLink)
+//							pre = DecompositionType.AND;
+//						if (orLink)
+//							pre = DecompositionType.OR;
+//						if (andPost)
+//							post = DecompositionType.AND;
+//						if (orPost)
+//							post = DecompositionType.OR;
+//						evolvingDecomposition.add(new EvolvingDecomposition(linkElementsSrc, intentElementDest, pre, post, absTime));
+//						for (ICell iLink : curDestLinks) {
+//							if (pre != null && !iLink.getLink().getLinkType().equals(pre.getCode()))
+//								throw new IllegalArgumentException("Relationships for ID: " + destID + " must be all the same types.");
+//							if (pre == null && !iLink.getLink().getLinkType().equals("NO"))
+//								throw new IllegalArgumentException("Relationships for ID: " + destID + " must be all the same types.");
+//							if (iLink.getLink().getPostType() == null)
+//								throw new IllegalArgumentException("Relationships for ID: " + destID + " must be all the same types.");
+//							if (post != null && !iLink.getLink().getPostType().equals(post.getCode()))
+//								throw new IllegalArgumentException("Relationships for ID: " + destID + " must be all the same types.");
+//							if (post == null && !iLink.getLink().getPostType().equals("NO"))
+//								throw new IllegalArgumentException("Relationships for ID: " + destID + " must be all the same types.");
+//						}
+//
+//					}
+//					for (ICell inputLink : curDestLinks) {
+//						allDecompositionLinks.remove(inputLink);
+//					}
+//
+//				}
+//				modelSpec.setDecomposition(decomposition);
+//				modelSpec.setEvolvingDecomposition(evolvingDecomposition);
+//				
+//			}
+//			if (DEBUG) System.out.println("Read Links");
 
 			BIConstraint[] newConstraints = frontendModel.getConstraints();
 			/* 

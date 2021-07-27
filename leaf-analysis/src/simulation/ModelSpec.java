@@ -23,10 +23,15 @@ public class ModelSpec {
 	private List<IntentionalElement> intElements = new ArrayList<IntentionalElement>();
 	private List<Actor> actors = new ArrayList<Actor>();
 	private List<NotBothLink> notBothLink = new ArrayList<NotBothLink>();
+	
+	private List<ContributionLink> contributionLinks = new ArrayList<ContributionLink>();
+	private List<DecompositionLink> decompositionLinks = new ArrayList<DecompositionLink>();
+	
 	private List<Contribution> contribution = new ArrayList<Contribution>();
 	private List<Decomposition> decomposition = new ArrayList<Decomposition>();
 	private List<EvolvingContribution> evolvingContribution = new ArrayList<EvolvingContribution>();
 	private List<EvolvingDecomposition> evolvingDecomposition = new ArrayList<EvolvingDecomposition>();
+	
 	private List<EpochConstraint> constraintsBetweenEpochs = new ArrayList<EpochConstraint>();
 	private List<UserEvaluation> userEvaluations = new ArrayList<UserEvaluation>(); 
 	
@@ -58,6 +63,26 @@ public class ModelSpec {
 	}
     
     
+	public List<ContributionLink> getContributionLinks() {
+		return contributionLinks;
+	}
+
+
+	public void setContributionLinks(List<ContributionLink> contributionLinks) {
+		this.contributionLinks = contributionLinks;
+	}
+
+
+	public List<DecompositionLink> getDecompositionLinks() {
+		return decompositionLinks;
+	}
+
+
+	public void setDecompositionLinks(List<DecompositionLink> decompositionLinks) {
+		this.decompositionLinks = decompositionLinks;
+	}
+
+
 	public HashMap<String, boolean[][]> getInitialValuesMap() {
 		return initialValuesMap;
 	}
