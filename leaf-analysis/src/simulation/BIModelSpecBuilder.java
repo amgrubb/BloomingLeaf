@@ -3,12 +3,7 @@ package simulation;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ListIterator;
-
 import gson_classes.*;
-import interface_objects.AnalysisResult;
-import interface_objects.IntentionEvaluation;
-import interface_objects.OutputElement;
 
 /**
  * This class is responsible to get the frontend model and convert into the backend model filling the necessary attributes.
@@ -50,37 +45,44 @@ public class BIModelSpecBuilder {
 				
 				// Assign the previous values as initial values.
 				modelSpec.setInitialValuesMap(prevResult.getSelectedPreviousValues());
-				//modelSpec.setInitialValues(null);	//TODO remove or replace.
-				
 				if (DEBUG) System.out.println("Handled Previous Result");
-			
-			}	
+				
+				//TODO: Update with appropriate initial values. Need number of intentions instead of "1"
+				boolean[][][] initialValues = new boolean[modelSpec.getNumIntentions()][prevResult.getSelectedTimePoint()+1][4];
+				HashMap<String, boolean[][]> temp = prevResult.getSelectedPreviousValues(); //TODO REMOVE
+				int k = 0;
+				for (boolean[][] tempVals : temp.values()) {
+					for (int j = 0; j < tempVals.length; j++){
+						for (int i = 0; i < 4; i ++){
+							initialValues[k][j][i] = tempVals[j][i];
+						}
+					}
+					k++;
+				}
+				modelSpec.setInitialValues(initialValues);	
+				
+				
+			} else {
+				//TODO: Update with appropriate initial values.
+				boolean[][][] initialValues = new boolean[modelSpec.getNumIntentions()][1][4];
+				for (int j = 0; j < modelSpec.getNumIntentions(); j++){
+					for (int i = 0; i < 4; i ++){
+						initialValues[j][0][i] = false;
+					}
+				}
+				modelSpec.setInitialValues(initialValues);	
+				
+				// initial states need initial time points -> 0|0   getInitialValueTimePoints()
+				int[] initialValueTimePointsArray = new int[1];
+				initialValueTimePointsArray[0] = 0;
+				modelSpec.setInitialValueTimePoints(initialValueTimePointsArray);
+				if (DEBUG) System.out.println("TODO: Handle actual past results and initial values.");
+			}
 			if (DEBUG) System.out.println("TODO: Handle userAssignmentList");
 			
     	} catch (Exception e) {
     		throw new RuntimeException(e.getMessage());
     	}      	
-    }
-    private static void readPastAnalysis(ModelSpec modelSpec) {
-    	try {
-			boolean[][][] initialValues = new boolean[modelSpec.getNumIntentions()][1][4];
-			for (int j = 0; j < modelSpec.getNumIntentions(); j++){
-				for (int i = 0; i < 4; i ++){
-					initialValues[j][0][i] = false;
-				}
-				
-			}
-			modelSpec.setInitialValues(initialValues);
-
-			// initial states need initial time points -> 0|0   getInitialValueTimePoints()
-			int[] initialValueTimePointsArray = new int[1];
-			initialValueTimePointsArray[0] = 0;
-			modelSpec.setInitialValueTimePoints(initialValueTimePointsArray);
-
-			if (DEBUG) System.out.println("TODO: Handle actual past results and initial values.");
-    	}catch (Exception e) {
-    		throw new RuntimeException(e.getMessage());
-    	}    	
     }
     
     private static void readOverallGraphParameters(ModelSpec modelSpec, IGraph frontendModel) {
@@ -113,12 +115,9 @@ public class BIModelSpecBuilder {
 	public static ModelSpec buildModelSpec(IMain inObject){
 		try {
 			// Back-end Model
-			ModelSpec modelSpec = new ModelSpec();
-				
-			// Front-end model components
-			readAnalysisParameters(modelSpec, inObject.getAnalysisRequest());
+			ModelSpec modelSpec = new ModelSpec();	
+			
 			IGraph frontendModel = inObject.getGraph();
-			readOverallGraphParameters(modelSpec, frontendModel);		
 			
 			// Collection of Cells
 			List<ICell> allCells = frontendModel.getCells();
@@ -135,12 +134,21 @@ public class BIModelSpecBuilder {
 							cell.getType().equals("basic.Goal") || cell.getType().equals("basic.Softgoal") ||
 							cell.getType().equals("basic.Resource")))
 						intentions.add(cell);
-					else if (cell.getLink() != null && (cell.getType().equals("element")))
+					else if (cell.getLink() != null && 
+							((cell.getType().equals("element")) ||(cell.getType().equals("basic.CellLink"))))
 						links.add(cell);
 					else
 						throw new IllegalArgumentException("Cell with unknown type: " + cell.getType());	
 				}
 			}
+			
+			if(!intentions.isEmpty())
+				modelSpec.setNumIntentions(intentions.size());
+			
+			// Front-end model components
+			readAnalysisParameters(modelSpec, inObject.getAnalysisRequest());
+			readOverallGraphParameters(modelSpec, frontendModel);	
+			
 			
 			// **** ACTORS **** 
 			// Getting Actor Data
@@ -221,11 +229,9 @@ public class BIModelSpecBuilder {
 					String linkType = link.getLink().getLinkType();
 					String linkSrcID = link.getSourceID();
 					String linkDestID = link.getTargetID();
-					String postType = link.getLink().getPostType();
-					int absTime = link.getLink().getAbsTime();
 					IntentionalElement intentElementSrc = getIntentionalElementByUniqueID(linkSrcID, modelSpec.getIntElements());
 					IntentionalElement intentElementDest = getIntentionalElementByUniqueID(linkDestID, modelSpec.getIntElements());
-					if (postType == null) {
+					if (link.getLink().getPostType() == null) {
 						// Not Evolving Link
 						switch (linkType) {
 							case "NBT":
@@ -248,6 +254,12 @@ public class BIModelSpecBuilder {
 						}
 					} else {
 						// Evolving Link
+						String postType = link.getLink().getPostType();
+						int absTime;
+						if (link.getLink().getAbsTime() == null)
+							absTime = -1;
+						else
+							absTime = link.getLink().getAbsTime();
 						switch (linkType) {
 							case "++":  case "+":  case "-":  case "--":
 							case "++S": case "+S": case "-S": case "--S":
@@ -294,7 +306,9 @@ public class BIModelSpecBuilder {
 				modelSpec.setContribution(contribution);
 				modelSpec.setNotBothLink(notBothLink);
 				modelSpec.setEvolvingContribution(evolvingContribution);
-
+				
+				if (DEBUG) System.out.println("Read (Contribution) Links");
+				
 				// Converting Decomposition Links into singular decomposition links.
 				List<Decomposition> decomposition = new ArrayList<Decomposition>();
 				List<EvolvingDecomposition> evolvingDecomposition = new ArrayList<EvolvingDecomposition>();
@@ -310,7 +324,12 @@ public class BIModelSpecBuilder {
 					
 					
 					String destID = allDecompositionLinks.get(0).getTargetID();
-					int absTime = allDecompositionLinks.get(0).getLink().getAbsTime();
+					//String postType = link.getLink().getPostType();
+					int absTime;
+					if (allDecompositionLinks.get(0).getLink().getAbsTime() == null)
+						absTime = -1;
+					else
+						absTime = allDecompositionLinks.get(0).getLink().getAbsTime();
 					IntentionalElement intentElementDest = getIntentionalElementByUniqueID(destID, modelSpec.getIntElements());
 					ArrayList<ICell> curDestLinks = new ArrayList<ICell>();
 					boolean evolve = false;
@@ -449,7 +468,6 @@ public class BIModelSpecBuilder {
 			if (DEBUG) System.out.println("Read User Evaluations");
 			*/
 			
-			readPastAnalysis(modelSpec); 
 			
 			if (DEBUG) System.out.println("Returning Model Spec!!!!");
 			return modelSpec;

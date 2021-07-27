@@ -23,7 +23,7 @@ var url = "http://localhost:8080/untitled.html";	// Hardcoded URL for Node calls
  */
  function getAllNextStates() {
     console.log("TODO: Implement Next States") 
-    /*
+    /* TODO: Is any of this code still needed?
     if (analysisRequest.action != null) { //path has been simulated
         if (analysisResult.selectedTimePoint != analysisResult.timeScale) { //last timepoint is not selected
             $("body").addClass("waiting"); //Adds "waiting" spinner under cursor 
@@ -92,7 +92,7 @@ function backendSimulationRequest(analysisRequest) {
 	xhr.open("POST", url, true);
 	xhr.setRequestHeader("Content-Type", "application/json");
 
-	var data = JSON.stringify(jsObject);
+	var data = stringifyCirc(jsObject); 
 	console.log(data)
 	xhr.onreadystatechange = function () {
 		// This function get called when the response is received.
@@ -122,8 +122,9 @@ function responseFunc(analysisRequest, response) {
 			return;
 		} else if (analysisRequest.get('action') == 'allNextStates') {
 				console.log("All Paths Results (responseFunc):")
-				// savedAnalysisData.allNextStatesResult = results;
-				// open_analysis_viewer();
+				// TODO: Uncomment and update next line.
+				//savedAnalysisData.allNextStatesResult = results;
+				open_analysis_viewer();
 		} else if (analysisRequest.get('action') == 'singlePath') {
 				savedAnalysisData.singlePathResult = results;	//	TODO What is this?
 				console.log(JSON.stringify(results));			// Print the results of the analysis to the console.
