@@ -234,15 +234,34 @@ public class BIModelSpecBuilder {
 				List<NotBothLink> notBothLink = new ArrayList<NotBothLink>();
 				List<Contribution> contribution = new ArrayList<Contribution>();
 				List<EvolvingContribution> evolvingContribution = new ArrayList<EvolvingContribution>();
+				/* Start to new contribution code. To replace both contribution and evolving contribution. */
+				List<ContributionLink> contributionLinks = new ArrayList<ContributionLink>();
 
-//START HERE - Convert to one class and move syntax checking to constructor.				
-				//for (ListIterator<InputLink> lk = links.listIterator(); lk.hasNext(); ) {
 				for (ICell link : links){
 					String linkType = link.getLink().getLinkType();
 					String linkSrcID = link.getSourceID();
 					String linkDestID = link.getTargetID();
 					IntentionalElement intentElementSrc = getIntentionalElementByUniqueID(linkSrcID, modelSpec.getIntElements());
 					IntentionalElement intentElementDest = getIntentionalElementByUniqueID(linkDestID, modelSpec.getIntElements());
+					
+					/* Start to new contribution code. */
+	//Add			if (linkType.equals("NBT"))
+	//when				notBothLink.add(new NotBothLink(intentElementSrc, intentElementDest, false));
+	//remove		else if (linkType.equals("NBD"))	
+	//old				notBothLink.add(new NotBothLink(intentElementSrc, intentElementDest, true));
+					if (!(linkType.equals("NBT") || linkType.equals("NBD"))) { //becomes else
+						ContributionLink tempCont = ContributionLink.createConstributionLink(intentElementSrc, intentElementDest, link.getLink());
+						if (tempCont != null)
+							contributionLinks.add(tempCont);
+						else
+//TO Add					//allDecompositionLinks.add(link);
+							if (DEBUG) System.out.println("Decomposition Link Found");
+					}
+					
+					
+					
+					 
+					/* Start of old link code. */
 					if (link.getLink().getPostType() == null) {
 						// Not Evolving Link
 						switch (linkType) {
@@ -278,6 +297,7 @@ public class BIModelSpecBuilder {
 							case "++D": case "+D": case "-D": case "--D":
 								switch (postType) {
 									case "NO":
+									case "no":	
 										evolvingContribution.add(new EvolvingContribution(intentElementSrc, intentElementDest, ContributionType.getByCode(linkType), null, absTime));
 										break;
 									case "++":  case "+":  case "-":  case "--":
@@ -294,6 +314,7 @@ public class BIModelSpecBuilder {
 								allDecompositionLinks.add(link);
 								break;
 							case "NO":
+							case "no":	
 								switch (postType) {
 									case "++":  case "+":  case "-":  case "--":
 									case "++S": case "+S": case "-S": case "--S":
@@ -318,8 +339,10 @@ public class BIModelSpecBuilder {
 				modelSpec.setContribution(contribution);
 				modelSpec.setNotBothLink(notBothLink);
 				modelSpec.setEvolvingContribution(evolvingContribution);
-				
 				if (DEBUG) System.out.println("Read (Contribution) Links");
+				
+				
+				
 				
 				// Converting Decomposition Links into singular decomposition links.
 				List<Decomposition> decomposition = new ArrayList<Decomposition>();
@@ -520,7 +543,7 @@ public class BIModelSpecBuilder {
 	 * @return
 	 * returns the intentional element if exist or null
 	 */
-	private static IntentionalElement getIntentionalElementByUniqueID(String elementId, List<IntentionalElement> list) {
+	public static IntentionalElement getIntentionalElementByUniqueID(String elementId, List<IntentionalElement> list) {
 		for(IntentionalElement iElement : list){
 			if(iElement.getUniqueID().equals(elementId))
 				return iElement;
