@@ -409,15 +409,15 @@ class EVO {
      * changes each intention by their initial user set satisfaction value in modeling mode
      */
     static colorIntentionsModeling(){
+        var initSatVal; 
         var elements = graph.getElements();
         for (var i = 0; i < elements.length; i++){ 
             var cellView = elements[i].findView(paper); 
             var intention = model.getIntentionByID(cellView.model.attributes.nodeID); //aquires current intention
             if (intention != null){
-            // var initSatVal = intention.getInitialSatValue(); user set initial sat value
-            var initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair'); 
-            if (initSatVal == '(no value)') {
-                cellView.model.changeToOriginalColour();
+                initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair'); 
+                if (initSatVal == '(no value)') {
+                    cellView.model.changeToOriginalColour();
             }
            var colorChange = EVO.getColor(initSatVal);
             cellView.model.attr({'.outer': {'fill': colorChange}}); //change intention color to match sat value
@@ -464,7 +464,7 @@ class EVO {
 }
 
 class EVONextState  {
-    //user selected slider option in the next state window
+    // User selected slider option in the next state window
     static sliderOptionNextState = 0;
 
     /**
