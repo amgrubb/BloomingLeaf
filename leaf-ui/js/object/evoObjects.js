@@ -10,9 +10,9 @@ class IntentionColoring {
     /**
      * Colors intentions by their mode
      */
-    static refresh() {
+    static refresh(analysisResult) {
         if (IntentionColoring.colorMode == "EVO") {
-            EVO.refresh();
+            EVO.refresh(analysisResult);
         }
     }
 
@@ -20,22 +20,22 @@ class IntentionColoring {
      * Change color mode
      * @param {*} newColorMode 
      */
-    static setColorMode(newColorMode) {
+    static setColorMode(newColorMode, analysisResult) {
         console.log("setColorMode");
         IntentionColoring.colorMode = newColorMode;
         if(newColorMode != "EVO") {
             EVO.deactivate();
         }
-        IntentionColoring.refresh();
+        IntentionColoring.refresh(analysisResult);
     }
 
     /**
      * Toggles color blind mode
      * @param {*} isTurningOnColorBlindMode 
      */
-    static toggleColorBlindMode(isTurningOnColorBlindMode) {
+    static toggleColorBlindMode(isTurningOnColorBlindMode, analysisResult) {
         IntentionColoring.isColorBlindMode = isTurningOnColorBlindMode;
-        IntentionColoring.refresh();
+        IntentionColoring.refresh(analysisResult);
     }
         
 }
@@ -121,17 +121,17 @@ class EVO {
      * Checks validity, sets sliderOption, and refreshes visualization
      * @param {*} newSliderOption 
      */
-    static setSliderOption(newSliderOption) {
+    static setSliderOption(newSliderOption, analysisResult) {
         if(newSliderOption >= 0 && newSliderOption <= 3) {
             EVO.sliderOption = newSliderOption;
         }
         else {
             console.log("ERROR: invalid sliderOption");
         }
-        EVO.refresh();
+        EVO.refresh(analysisResult);
 
         if(EVO.sliderOption > 0) { //not off
-            IntentionColoring.setColorMode("EVO");
+            IntentionColoring.setColorMode("EVO", analysisResult);
         }
     }
 
@@ -139,27 +139,29 @@ class EVO {
      * Set new time point and refresh
      * @param {*} newTimePoint 
      */
-    static setCurTimePoint(newTimePoint) {
+    static setCurTimePoint(newTimePoint, analysisResult) {
         EVO.curTimePoint = newTimePoint;
-        IntentionColoring.refresh();
+        IntentionColoring.refresh(analysisResult);
     }
 
     /**
      * Runs after any event that may change visualization, such as setting a sat value, changing slider option, or selecting a time point
      */
-    static refresh() {
+    static refresh(analysisResult) {
         switch(this.sliderOption) {
             case '1':
             case '2':
             case '3':
-                if(!analysisResult.isPathSim ) {
-                EVO.colorIntentionsModeling();
+                if(analysisResult !== null){
+                    if(!analysisResult.get('isPathSim')) {
+                    EVO.colorIntentionsModeling(analysisResult);
+                    }
+                    else {
+                    EVO.colorIntentionsAnalysis(analysisResult);
+                    }
+                    EVO.changeIntentionsText(analysisResult);
+                    break;
                 }
-                else {
-                EVO.colorIntentionsAnalysis();
-                }
-                EVO.changeIntentionsText();
-                break;
             default://colorVis off
                 EVO.returnAllColors(graph.getElements(), paper);
                 EVO.revertIntentionsText(graph.getElements(), paper);    
@@ -179,7 +181,7 @@ class EVO {
      * Switches to analysis slider, uses the single path analysis results to calculate evaluation percentages, stores time point info, prints info to console
      * @param {*} elementList List of elements containing analysis results
      */
-    singlePathResponse(elementList) {    
+    singlePathResponse(elementList, analysisResult) {    
         $('#modelingSlider').css("display", "none");
         $('#analysisSlider').css("display", "");
         document.getElementById("colorResetAnalysis").value = EVO.sliderOption;
@@ -200,18 +202,18 @@ class EVO {
             }
         }
         this.generateConsoleReport();
-        EVO.refresh();
+        EVO.refresh(analysisResult);
     }    
 
     /**
      * Turn off EVO
      */
-    static deactivate() {
+    static deactivate(analysisResult) {
         document.getElementById("colorResetAnalysis").value = 0;
         document.getElementById("colorReset").value = 0;
         EVO.sliderOption = 0;
 
-        EVO.refresh();
+        EVO.refresh(analysisResult);
     }
 
     /**
@@ -330,21 +332,19 @@ class EVO {
      /**
       * Colors intentions by their evaluation information and slider option after simulating single path
       */
-    static colorIntentionsAnalysis()
+    static colorIntentionsAnalysis(analysisResult)
     {
         var elements = graph.getElements(); 
         var actorBuffer = 0;
     
         for (var i = 0; i < elements.length; i++) { 
-            ++count;
+            //++count;
             var cellView  = elements[i].findView(paper);
-            var intention = model.getIntentionByID(cellView.model.attributes.nodeID);
-    
+            var intention = elements[i].get('intention')
             if(intention == null) { //is an actor or something went wrong
                 actorBuffer += 1;
             }
-    
-            var element = analysisResult.colorVis.intentionListColorVis[i - actorBuffer];
+            var element = analysisResult.get('colorVis').intentionListColorVis[i - actorBuffer];
                 if(intention != null && element != null) {
                     if(EVO.sliderOption != 3) {
                     var gradientID = this.defineGradient(element);
@@ -363,7 +363,7 @@ class EVO {
     /**
      * Makes text on intentions white when EVO is activated
      */
-    static changeIntentionsText(){
+    static changeIntentionsText(analysisResult){
         var elements = graph.getElements();
         var curr;
         var intention;
@@ -377,9 +377,9 @@ class EVO {
                 curr.attributes.type !== 'basic.Resource') {
                 continue;
             }
-            intention = model.getIntentionByID(curr.attributes.nodeID);
-            initSatVal = intention.getInitialSatValue();
-            if(!analysisResult.isPathSim){   
+            intention = elements[i].get('intention');
+            initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair'); 
+            if(!analysisResult.get('isPathSim')){   
                 if (initSatVal === '(no value)') {
                     curr.attr('.satvalue/text', '');
                     curr.attr({text: {fill: 'black',stroke:'none','font-weight' : 'normal'}});
@@ -412,10 +412,10 @@ class EVO {
     static colorIntentionsModeling(){
         var elements = graph.getElements();
         for (var i = 0; i < elements.length; i++){ 
-            var cellView = elements[i].findView(paper); 
-            var intention = model.getIntentionByID(cellView.model.attributes.nodeID); //aquires current intention
+            var cellView = elements[i].findView(paper);
+            var intention = elements[i].get('intention'); //aquires current intention
             if (intention != null){
-            var initSatVal = intention.getInitialSatValue(); //user set initial sat value
+            var initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair');  //user set initial sat value
             if (initSatVal == '(no value)') {
                 cellView.model.changeToOriginalColour();
             }

@@ -152,7 +152,7 @@ function convertToAnalysisResult(results){
 	tempResult.set('isPathSim', true);
 	var evoView = new EVO(results.elementList)
 	tempResult.set('colorVis', evoView);
-	evoView.singlePathResponse(results.elementList);
+	evoView.singlePathResponse(results.elementList, tempResult);
 	return tempResult;
 }
 

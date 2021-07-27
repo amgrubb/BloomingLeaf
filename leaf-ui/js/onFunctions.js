@@ -11,27 +11,6 @@ It also contains the setup for Rappid elements.
 $('#btn-undo').on('click', _.bind(commandManager.undo, commandManager));
 $('#btn-redo').on('click', _.bind(commandManager.redo, commandManager));
 $('#btn-clear-all').on('click', function () { clearAll() });
-// TODO: Reimplement with new backbone structure
-$('#btn-clear-elabel').on('click', function () {
-    console.log("TODO: Reimplement with new backbone structure - #btn-clear-elabel");
-    for (let element of graph.getElements()) {
-        var cellView = element.findView(paper);
-        var cell = cellView.model;
-        var intention = model.getIntentionByID(cellView.model.attributes.nodeID);
-
-        if (intention != null && intention.getInitialSatValue() != '(no value)') {
-            intention.removeInitialSatValue();
-
-            cell.attr(".satvalue/text", "");
-            cell.attr(".funcvalue/text", "");
-
-            elementInspector.$('#init-sat-value').val('(no value)');
-            elementInspector.$('.function-type').val('(no value)');
-        }
-    }
-    IntentionColoring.refresh();
-});
-// TODO: Reimplement with new backbone structure
 $('#btn-clear-flabel').on('click', function () {
     console.log("TODO: Reimplement with new backbone structure - btn-clear-flabel");
     for (let element of graph.getElements()) {
@@ -51,9 +30,6 @@ $('#btn-clear-flabel').on('click', function () {
  * This is an option under clear button to clear red-highlight from
  * cycle detection function
  */
-$('#btn-clear-cycle').on('click', function () {
-    clearCycleHighlighting();
-});
 
 $('#btn-clear-analysis').on('click', function () {
     // TODO: Re-Implement for backbone view - What does clearing analysis mean now?
@@ -70,21 +46,6 @@ $('#btn-clear-results').on('click', function () {
 // Open as SVG
 $('#btn-svg').on('click', function () {
     paper.openAsSVG();
-});
-
-// Save the current graph to json file
-$('#btn-save').on('click', function () {
-    var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
-    if (name) {
-        clearCycleHighlighting();
-        EVO.deactivate();
-       // EVO.returnAllColors(graph.getElements(), paper);
-       // EVO.revertIntentionsText(graph.getElements(), paper);    
-		var fileName = name + ".json";
-        obj = {graph: graph.toJSON()} //same structure as the other two save options
-        download(fileName, stringifyCirc(obj));
-        //IntentionColoring.refresh();
-    }
 });
  
 $('#btn-debug').on('click', function(){ console.log(graph.toJSON()) });
@@ -111,14 +72,6 @@ $('#btn-view-intermediate').on('click', function () {
     intermediateValuesTable.render();
 });
 
-/**
- * Switches to Analysis view iff there are no cycles and no syntax errors.
- */
-//TODO: Add back in cycle detection after backbone migration.
-$('#analysis-btn').on('click', function () {
-    console.log("TODO: Add back in cycle detection after backbone migration.");
-    switchToAnalysisMode();
-});
 
 /** For Load Sample Model button */
 
@@ -139,34 +92,6 @@ $('#modeling-btn').on('click', function () {
 
     savedAnalysisData.finalAssignedEpoch = "";
     savedAnalysisData.finalValueTimePoints = "";
-});
-
-/**
- * Source:https://www.w3schools.com/howto/howto_js_rangeslider.asp 
- * Two option modeling mode slider
- */
-document.getElementById("colorReset").oninput = function () { //turns slider on/off and refreshes
-    EVO.setSliderOption(this.value);
-}
-/**
- * Four option analysis mode slider
- */
-document.getElementById("colorResetAnalysis").oninput = function () { //changes slider mode and refreshes
-    EVO.setSliderOption(this.value);
-}
-
-$('#colorblind-mode-isOff').on('click', function () { //activates colorblind mode
-    $('#colorblind-mode-isOff').css("display", "none");
-    $('#colorblind-mode-isOn').css("display", "");
-
-    IntentionColoring.toggleColorBlindMode(true);
-});
-
-$('#colorblind-mode-isOn').on('click', function () { //turns off colorblind mode
-    $('#colorblind-mode-isOn').css("display", "none");
-    $('#colorblind-mode-isOff').css("display", "");
-
-    IntentionColoring.toggleColorBlindMode(false);
 });
 
 $(window).resize(function () {
@@ -408,8 +333,9 @@ paper.on("link:options", function (cell) {
     /** Initialize configCollection within scope of brackets */
     let configCollection = new ConfigCollection([]);
     let configInspector = null;
+    let selectResult = null;
 
-    $('#simulate-single-path-btn').on('click', function() { 
+    $('#simulate-single-path-btn').on('click', function() {
         var curRequest = configCollection.findWhere({selected: true});
         curRequest.set('action', 'singlePath');
         backendSimulationRequest(curRequest);
@@ -448,7 +374,14 @@ paper.on("link:options", function (cell) {
         $('.attribution').css("display", "none");
         $('.inspector').css("display", "none");
 
-        IntentionColoring.refresh();
+        var selectConfig;
+        if (configCollection.length !== 0){
+            selectConfig = configCollection.filter(Config => Config.get('selected') == true)[0];
+            if (selectConfig.get('results') !== undefined){
+                selectResult = selectConfig.get('results').filter(resultModel => resultModel.get('selected') == true)
+            }
+        }
+        IntentionColoring.refresh(selectResult);
 
         var currResult = configCollection.findWhere({ selected: true }).get('results').findWhere({ selected: true });
 
@@ -493,7 +426,7 @@ paper.on("link:options", function (cell) {
             $('.link-tools .tool-remove').css("display", "");
             $('.link-tools .tool-options').css("display", "");
 
-            EVO.switchToModelingMode();
+            EVO.switchToModelingMode(selectResult);
 
             // Remove configInspector view
             configInspector.remove();
@@ -529,79 +462,167 @@ paper.on("link:options", function (cell) {
         document.cookie = 'graph={}; expires=Thu, 18 Dec 2013 12:00:00 UTC';
     }
 
-// Save the current graph and analysis (without results) to json file
-$('#btn-save-analysis').on('click', function() {
-	var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
-	if (name){
-        clearCycleHighlighting();
-        EVO.deactivate();   
-		var fileName = name + ".json";
-		var obj = getModelAnalysisJson(configCollection);
-        download(fileName, stringifyCirc(obj));
-	}
-});
+    // Save the current graph and analysis (without results) to json file
+    $('#btn-save-analysis').on('click', function() {
+        var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
+        if (name){
+            clearCycleHighlighting();
+            EVO.deactivate();   
+            var fileName = name + ".json";
+            var obj = getModelAnalysisJson(configCollection);
+            download(fileName, stringifyCirc(obj));
+        }
+    });
 
-// Save the current graph and analysis (with results) to json file
-$('#btn-save-all').on('click', function() {
-	var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
-	if (name){
-        clearCycleHighlighting();
-        EVO.deactivate();   
-		var fileName = name + ".json";
-		var obj = getFullJson(configCollection);
-        download(fileName, stringifyCirc(obj));
-	}
-});
+    // Save the current graph and analysis (with results) to json file
+    $('#btn-save-all').on('click', function() {
+        var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
+        if (name){
+            clearCycleHighlighting();
+            EVO.deactivate();   
+            var fileName = name + ".json";
+            var obj = getFullJson(configCollection);
+            download(fileName, stringifyCirc(obj));
+        }
+    });
 
-// Workaround for load, activates a hidden input element
-$('#btn-load').on('click', function(){
-	$('#loader').click();
-});
+        // Workaround for load, activates a hidden input element
+        $('#btn-load').on('click', function(){
+            $('#loader').click();
+        });
 
-// Load ConfigCollection for display 
-// TODO: modify it to read results after results can be shown
-function loadConfig(loadedConfig){
-    var selectedConfig;
-    var selectedResult;
-    //Clears current configCollection
-    while (model = configCollection.first()){
-        model.destroy();
+    // Load ConfigCollection for display 
+    // TODO: modify it to read results after results can be shown
+    function loadConfig(loadedConfig){
+        var selectedConfig;
+        var selectedResult;
+        //Clears current configCollection
+        while (model = configCollection.first()){
+            model.destroy();
+        }
+
+        // Individually creates each ConfigBBM and add to collection
+        for(let config of loadedConfig){
+            if (config.selected){ // If selected is true
+                selectedConfig = config.name; //Record the name of config
+            }
+            var configBBM = new ConfigBBM({name:config.name, action: config.action, conflictLevel: config.conflictLevel, numRelTime: config.numRelTime, currentState: config.currentState, userAssignmentsList : config.userAssignmentsList, previousAnalysis: config.previousAnalysis, selected: config.selected})
+            if (config.results.length !== 0){ //create results if there applicable
+                var results = configBBM.get('results') // grabs the coolection from the configbbm
+                // Individually creates each ResultBBM and add to collection
+                for (let result of config.results){
+                    if (result.selected){ // If selected is true
+                        selectedResult = result.name; // Record the name of result
+                    }
+                    var resultsBBM = new ResultBBM({name: result.name, assignedEpoch: result.assignedEpoch, timePointPath: result.timePointPath, elementList: result.elementList, allSolution: result.allSolution, isPathSim: result.isPathSim, colorVis: result.colorVis, selectedTimePoint: result.selectedTimePoint, selected: result.selected});
+                    results.add(resultsBBM)
+                }
+                configCollection.add(configbbm)
+            }
+            configCollection.add(configBBM)
+        }
+
+        // Sets what the config/result the user was last on as selected
+        var configGroup = configCollection.filter(Config => Config.get('name') == selectedConfig); //Find the config with the same name as the selected that is read in
+        if (configGroup.length !== 0){
+            configGroup[0].set('selected', true); // Set the selected to true
+        }
+
+        var currResult;
+        if (configGroup[0].get('results').length !== 0){ // Within that selected config
+            // Set selected of the selected result as true
+            currResult= configGroup[0].get('results').filter(selectedRes => selectedRes.get('name') == selectedResult)[0]
+            currResult.set('selected', true)
+        }
     }
 
-    // Individually creates each ConfigBBM and add to collection
-    for(let config of loadedConfig){
-        if (config.selected){ // If selected is true
-            selectedConfig = config.name; //Record the name of config
+    $('#btn-clear-cycle').on('click', function () {
+        clearCycleHighlighting(selectResult);
+    });
+
+    // Save the current graph to json file
+    $('#btn-save').on('click', function () {
+        var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
+        if (name) {
+            clearCycleHighlighting(selectResult);
+            EVO.deactivate();
+        // EVO.returnAllColors(graph.getElements(), paper);
+        // EVO.revertIntentionsText(graph.getElements(), paper);    
+            var fileName = name + ".json";
+            obj = {graph: graph.toJSON()} //same structure as the other two save options
+            download(fileName, JSON.stringify(obj));
+            IntentionColoring.refresh(selectResult);
         }
-        var configBBM = new ConfigBBM({name:config.name, action: config.action, conflictLevel: config.conflictLevel, numRelTime: config.numRelTime, currentState: config.currentState, userAssignmentsList : config.userAssignmentsList, previousAnalysis: config.previousAnalysis, selected: config.selected})
-        if (config.results.length !== 0){ //create results if there applicable
-            var results = configBBM.get('results') // grabs the coolection from the configbbm
-            // Individually creates each ResultBBM and add to collection
-            for (let result of config.results){
-                if (result.selected){ // If selected is true
-                    selectedResult = result.name; // Record the name of result
-                }
-                var resultsBBM = new ResultBBM({name: result.name, assignedEpoch: result.assignedEpoch, timePointPath: result.timePointPath, elementList: result.elementList, allSolution: result.allSolution, isPathSim: result.isPathSim, colorVis: result.colorVis, selectedTimePoint: result.selectedTimePoint, selected: result.selected});
-                results.add(resultsBBM)
+    });
+
+    /**
+     * Switches to Analysis view iff there are no cycles and no syntax errors.
+     * This file contains functions related to the syntax checking and 
+     * cycle detection for the web
+     * 
+     */
+
+    $('#analysis-btn').on('click', function() {
+        switchToAnalysisMode();
+    });
+
+    // TODO: Reimplement with new backbone structure
+    $('#btn-clear-elabel').on('click', function () {
+        console.log("TODO: Reimplement with new backbone structure - #btn-clear-elabel");
+        for (let element of graph.getElements()) {
+            var cellView = element.findView(paper);
+            var cell = cellView.model;
+            var intention = model.getIntentionByID(cellView.model.attributes.nodeID);
+
+            if (intention != null && intention.getInitialSatValue() != '(no value)') {
+                intention.removeInitialSatValue();
+
+                cell.attr(".satvalue/text", "");
+                cell.attr(".funcvalue/text", "");
+
+                elementInspector.$('#init-sat-value').val('(no value)');
+                elementInspector.$('.function-type').val('(no value)');
             }
         }
-        configCollection.add(configBBM)
-    }
+        IntentionColoring.refresh(selectResult);
+    });
 
-    // Sets what the config/result the user was last on as selected
-    var configGroup = configCollection.filter(Config => Config.get('name') == selectedConfig); //Find the config with the same name as the selected that is read in
-    if (configGroup.length !== 0){
-        configGroup[0].set('selected', true); // Set the selected to true
-    }
+    
+    $('#colorblind-mode-isOff').on('click', function () { //activates colorblind mode
+        $('#colorblind-mode-isOff').css("display", "none");
+        $('#colorblind-mode-isOn').css("display", "");
 
-    var currResult;
-    if (configGroup[0].get('results').length !== 0){ // Within that selected config
-        // Set selected of the selected result as true
-        currResult= configGroup[0].get('results').filter(selectedRes => selectedRes.get('name') == selectedResult)[0]
-        currResult.set('selected', true)
-    }
-}
+        IntentionColoring.toggleColorBlindMode(true, selectResult);
+    });
 
+    $('#colorblind-mode-isOn').on('click', function () { //turns off colorblind mode
+        $('#colorblind-mode-isOn').css("display", "none");
+        $('#colorblind-mode-isOff').css("display", "");
+
+        IntentionColoring.toggleColorBlindMode(false, selectResult);
+    });
+
+    /**
+     * Source:https://www.w3schools.com/howto/howto_js_rangeslider.asp 
+     * Two option modeling mode slider
+     */
+    document.getElementById("colorReset").oninput = function () { //turns slider on/off and refreshes
+        EVO.setSliderOption(this.value, selectResult);
+    }
+    /**
+     * Four option analysis mode slider
+     */
+    document.getElementById("colorResetAnalysis").oninput = function () { //changes slider mode and refreshes
+        var selectConfig;
+        //TODO: Find out why the selectResult is empty before we reassign it
+        if (configCollection.length !== 0){
+            selectConfig = configCollection.filter(Config => Config.get('selected') == true)[0];
+            if (selectConfig.get('results') !== undefined){
+                selectResult = selectConfig.get('results').filter(resultModel => resultModel.get('selected') == true)[0]
+            }
+        }
+        EVO.setSliderOption(this.value, selectResult);
+    }
 } // End scope of configCollection and configInspector
 
 /**
