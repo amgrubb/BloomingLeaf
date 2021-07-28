@@ -11,7 +11,6 @@ It also contains the setup for Rappid elements.
 $('#btn-undo').on('click', _.bind(commandManager.undo, commandManager));
 $('#btn-redo').on('click', _.bind(commandManager.redo, commandManager));
 $('#btn-clear-all').on('click', function () { clearAll() });
-
 $('#btn-clear-elabel').on('click', function () {
     for (let element of graph.getElements()) {
         var cellView = element.findView(paper);
@@ -24,7 +23,7 @@ $('#btn-clear-elabel').on('click', function () {
             cell.attr(".satvalue/text", "");
             cell.attr(".funcvalue/text", "");
 
-            // Leaving this here in case we need it later 
+            // TODO: Determine if we still need these lines.
             //elementInspector.$('#init-sat-value').val('(no value)');
             //elementInspector.$('.function-type').val('(no value)');
         }
@@ -42,7 +41,7 @@ $('#btn-clear-flabel').on('click', function () {
             intention.removeFunction();
             cell.attr(".funcvalue/text", "");
 
-            // Leaving this here in case we need it later 
+            // TODO: Determine if we still need this line. 
             // elementInspector.$('.function-type').val('(no value)');
         }
     }
@@ -244,7 +243,11 @@ graph.on('remove', function (cell) {
     // Clear right inspector side panel
     clearInspector();
     
-    // Leaving this here for now in case we need this later 
+    /**  TODO: Determine if we still need the rest of the code in this function. 
+     *   Figure out how to make the element inspector automatically update after the function 
+     *   label is changed to (no value) for the element. Currently the user needs to click the 
+     *   element again for it to update. 
+    */
 
     // if (cell.isLink() && !(cell.prop("link-type") == 'NBT' || cell.prop("link-type") == 'NBD')) {
     //     // To remove link
