@@ -35,7 +35,7 @@ let sliderObject = new SliderObj();
  *   True if we are switching analysis results,
  *   false if new result from the back end
  */
-function displayAnalysis(analysisResult, isSwitch){
+function displayAnalysis(analysisResult, isSwitch, viewMode){
 
     // Save data for get possible next states
     savedAnalysisData.singlePathResult = analysisResult;
@@ -44,7 +44,7 @@ function displayAnalysis(analysisResult, isSwitch){
     if (sliderObject.sliderElement.hasOwnProperty('noUiSlider')) {
         sliderObject.sliderElement.noUiSlider.destroy();
     }
-    createSlider(analysisResult, isSwitch);
+    createSlider(analysisResult, isSwitch, viewMode);
 }
 
 /**
@@ -57,7 +57,7 @@ function displayAnalysis(analysisResult, isSwitch){
  *   True if the slider is being created when we are switching analysis results,
  *   false if new result from the back end
  */
-function createSlider(currentAnalysis, isSwitch) {
+function createSlider(currentAnalysis, isSwitch, viewMode) {
     var sliderMax = currentAnalysis.get('timePointPath').length - 1; // .timeScale;
     var density = (sliderMax < 25) ? (100 / sliderMax) : 4;
 
@@ -82,18 +82,18 @@ function createSlider(currentAnalysis, isSwitch) {
     // 0 if switching between existing results; sliderMax if new result
     sliderObject.sliderElement.noUiSlider.set(isSwitch ? 0 : sliderMax);
     sliderObject.sliderElement.noUiSlider.on('update', function( values, handle ) {
-        updateSliderValues(parseInt(values[handle]), currentAnalysis);
+        updateSliderValues(parseInt(values[handle]), currentAnalysis, viewMode);
     });
-    EVO.setCurTimePoint(sliderMax, currentAnalysis);
+    EVO.setCurTimePoint(sliderMax, currentAnalysis, viewMode);
     adjustSliderWidth(sliderMax);
 }
 
 /**
  * Reset display to default, before result is displayed
  */
-function hideAnalysis(analysisResult) {
+function hideAnalysis(analysisResult, viewMode) {
     revertNodeValuesToInitial();
-    EVO.switchToModelingMode(analysisResult);
+    EVO.switchToModelingMode(analysisResult, viewMode);
     // show modeling mode EVO slider
     $('#modelingSlider').css("display", "");
     $('#analysisSlider').css("display", "none");
@@ -143,7 +143,7 @@ function adjustSliderWidth(maxValue){
  * @param {ResultBBM} currentAnalysis
  *  a ResultBBM object that contains data about the analysis that the back end performed
  */
-function updateSliderValues(sliderValue, currentAnalysis){
+function updateSliderValues(sliderValue, currentAnalysis, viewMode){
     currentAnalysis.set('selectedTimePoint', sliderValue);
 
     $('#sliderValue').text(sliderValue);
@@ -155,7 +155,7 @@ function updateSliderValues(sliderValue, currentAnalysis){
     currentAnalysis.get('elementList').forEach(element => 
         updateNodeValues(element, sliderValue));
 
-    EVO.setCurTimePoint(sliderValue, currentAnalysis);
+    EVO.setCurTimePoint(sliderValue, currentAnalysis, viewMode);
 }
 
 /**

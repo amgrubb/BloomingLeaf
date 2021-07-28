@@ -83,7 +83,7 @@ var url = "http://localhost:8080/untitled.html";	// Hardcoded URL for Node calls
  * {ConfigBBM} analysisRequest
  * Note: function was originally called `backendComm`.
  */
-function backendSimulationRequest(analysisRequest) {
+function backendSimulationRequest(analysisRequest, viewMode) {
 	var jsObject = {};
 	jsObject.analysisRequest = analysisRequest;
 	jsObject.graph = graph;
@@ -99,7 +99,7 @@ function backendSimulationRequest(analysisRequest) {
 		console.log("Reading the response");
 		if (xhr.readyState == XMLHttpRequest.DONE) {
 			var response = xhr.responseText;
-			responseFunc(analysisRequest, response);
+			responseFunc(analysisRequest, response, viewMode);
 		}
 	}
 	xhr.send(data);	// Why is this sent down here? What is this send function.
@@ -109,7 +109,7 @@ function backendSimulationRequest(analysisRequest) {
  * {ConfigBBM} analysisRequest
  * Note: function was originally called `backendComm`.
  */
-function responseFunc(analysisRequest, response) {
+function responseFunc(analysisRequest, response, viewMode) {
 	$("body").removeClass("waiting"); //Remove spinner under cursor 
 	var results = JSON.parse(response);
 	if (errorExists(results)) {
@@ -128,7 +128,7 @@ function responseFunc(analysisRequest, response) {
 				savedAnalysisData.singlePathResult = results;	//	TODO What is this?
 				console.log(JSON.stringify(results));			// Print the results of the analysis to the console.
 				var analysisResult = convertToAnalysisResult(results); 	// {ResultBBM}
-				displayAnalysis(analysisResult, false);
+				displayAnalysis(analysisResult, false, viewMode);
 				analysisRequest.addResult(analysisResult);
 		} else {
 			alert("Error: Unknown analysis request type.");
@@ -152,7 +152,7 @@ function convertToAnalysisResult(results){
 	tempResult.set('isPathSim', true);
 	var evoView = new EVO(results.elementList)
 	tempResult.set('colorVis', evoView);
-	evoView.singlePathResponse(results.elementList, tempResult);
+	evoView.singlePathResponse(results.elementList, tempResult, "analysis");
 	return tempResult;
 }
 
