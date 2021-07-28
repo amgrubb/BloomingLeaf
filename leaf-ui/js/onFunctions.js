@@ -72,6 +72,14 @@ $('#btn-view-intermediate').on('click', function () {
     intermediateValuesTable.render();
 });
 
+/**
+ * Switches to Analysis view if there are no cycles and no syntax errors.
+ */
+//TODO: Add back in cycle detection after backbone migration.
+$('#analysis-btn').on('click', function () {
+    console.log("TODO: Add back in cycle detection after backbone migration.");
+    switchToAnalysisMode();
+});
 
 /** For Load Sample Model button */
 
@@ -374,13 +382,6 @@ paper.on("link:options", function (cell) {
         $('.attribution').css("display", "none");
         $('.inspector').css("display", "none");
 
-        var selectConfig;
-        if (configCollection.length !== 0){
-            selectConfig = configCollection.filter(Config => Config.get('selected') == true)[0];
-            if (selectConfig.get('results') !== undefined){
-                selectResult = selectConfig.get('results').filter(resultModel => resultModel.get('selected') == true)
-            }
-        }
         IntentionColoring.refresh(selectResult);
 
         var currResult = configCollection.findWhere({ selected: true }).get('results').findWhere({ selected: true });
@@ -425,9 +426,7 @@ paper.on("link:options", function (cell) {
             // Reinstantiate link settings
             $('.link-tools .tool-remove').css("display", "");
             $('.link-tools .tool-options').css("display", "");
-
             EVO.switchToModelingMode(selectResult);
-
             // Remove configInspector view
             configInspector.remove();
             // TODO: Determine if we should be setting action to null on all configs
@@ -486,10 +485,10 @@ paper.on("link:options", function (cell) {
         }
     });
 
-        // Workaround for load, activates a hidden input element
-        $('#btn-load').on('click', function(){
-            $('#loader').click();
-        });
+    // Workaround for load, activates a hidden input element
+    $('#btn-load').on('click', function(){
+        $('#loader').click();
+    });
 
     // Load ConfigCollection for display 
     // TODO: modify it to read results after results can be shown
@@ -561,10 +560,6 @@ paper.on("link:options", function (cell) {
      * cycle detection for the web
      * 
      */
-
-    $('#analysis-btn').on('click', function() {
-        switchToAnalysisMode();
-    });
 
     // TODO: Reimplement with new backbone structure
     $('#btn-clear-elabel').on('click', function () {

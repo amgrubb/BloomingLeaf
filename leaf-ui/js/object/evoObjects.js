@@ -154,10 +154,10 @@ class EVO {
             case '3':
                 if(analysisResult !== null){
                     if(!analysisResult.get('isPathSim')) {
-                    EVO.colorIntentionsModeling(analysisResult);
+                        EVO.colorIntentionsModeling(analysisResult);
                     }
                     else {
-                    EVO.colorIntentionsAnalysis(analysisResult);
+                        EVO.colorIntentionsAnalysis(analysisResult);
                     }
                     EVO.changeIntentionsText(analysisResult);
                     break;
@@ -451,7 +451,7 @@ class EVO {
     /**
      * Switch back to modeling slider, if EVO is on the visualization returns to filling by initial state.
      */
-     static switchToModelingMode() {
+     static switchToModelingMode(analysisResult) {
         $('#modelingSlider').css("display", "");
         $('#analysisSlider').css("display", "none");
         // if EVO is on in analysis mode, keep it on
@@ -459,7 +459,7 @@ class EVO {
             EVO.sliderOption = '1';
         }
         document.getElementById("colorReset").value = EVO.sliderOption;
-        IntentionColoring.refresh();
+        IntentionColoring.refresh(analysisResult);// Here is the issue
     }
 }
 
