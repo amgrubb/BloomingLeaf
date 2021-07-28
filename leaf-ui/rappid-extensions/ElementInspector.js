@@ -123,7 +123,6 @@ var ElementInspector = Backbone.View.extend({
         '</div>',
         '<br>',
         '<canvas id="chart" width="240" height="240"></canvas>',
-
         '</script>'].join(''),
 
     events: {
