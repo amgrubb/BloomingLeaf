@@ -8,10 +8,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import gson_classes.IMain;
-import interface_objects.FuncWrapper;
-import interface_objects.FuncWrapperDeserializer;
-import interface_objects.InputObject;
-import interface_objects.OutputModel;
+import gson_classes.FuncWrapper;
+import gson_classes.FuncWrapperDeserializer;
 
 /**
  * SolveModelTest 
@@ -116,7 +114,7 @@ public class MainProgram {
 	 */
 	private static ModelSpec convertBackboneModelFromFile(String filePath) {
 		GsonBuilder builder = new GsonBuilder();
-		builder.registerTypeAdapter(FuncWrapper.class, new FuncWrapperDeserializer());
+		//builder.registerTypeAdapter(FuncWrapper.class, new FuncWrapperDeserializer());
 
 		try {
 			Gson gson = builder.create();

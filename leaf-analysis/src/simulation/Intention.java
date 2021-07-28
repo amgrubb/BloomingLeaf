@@ -1,9 +1,6 @@
 package simulation;
 
 import java.util.HashMap;
-import java.util.List;
-
-import org.jacop.core.IntVar;
 
 import gson_classes.BIEvolvingFunction;
 import gson_classes.BIFunctionSegment;
@@ -15,8 +12,8 @@ public class Intention extends LinkableElement {
 	
 	@SuppressWarnings("unused")
 	private Actor actor = null;
-	@SuppressWarnings("unused")
-	private IntentionalElementType type = IntentionalElementType.GOAL; 
+	
+	//private IntentionalElementType type = IntentionalElementType.GOAL; 
 	
 	private HashMap<Integer, String> userEvals;
 	private FunctionSegment[] evolvingFunctions;
@@ -25,13 +22,13 @@ public class Intention extends LinkableElement {
 			BIEvolvingFunction nodeFunctions, HashMap<Integer, String> nodeEvals){
 		super(Intention.getNewBackendID(), nodeName, uniqueID);
 		this.actor = nodeActor;
-		this.type = IntentionalElementType.getByBBMName(nodeType);
+		//this.type = IntentionalElementType.getByBBMName(nodeType);
 		this.userEvals = nodeEvals;
 		this.evolvingFunctions = unrollBIEvolvingFunction(nodeFunctions);
 	}
 	
 	private static String getNewBackendID() {
-		String backID = String.format("%04d", idcounter);
+		String backID = String.format("%03d", idcounter);
 		idcounter++;
 		return backID;
 	}
@@ -45,21 +42,67 @@ public class Intention extends LinkableElement {
 				list[i] = new FunctionSegment(seg.getType(),seg.getRefEvidencePair(), 
 						seg.getStartTP(), seg.getStartAT(), this.id);
 			}
+			return list;
 		} else {	// Has repeat!
-			//TODO unroll repeat
-//	        Integer repAbsTime;
-//	        Integer repCount;
-//	        String repStart;
-//	        String repStop;
+			int repStartIndex = -1;
+			int repStopIndex = -1;
+			BIFunctionSegment[] biList = inFunc.getFunctionSegList();
+			for (int i = 0; i < biList.length; i++) {
+				if (biList[i].getStartTP().equals(inFunc.getRepStart()))
+						repStartIndex = i;
+				if (biList[i].getStartTP().equals(inFunc.getRepStop()))
+						repStopIndex = i;
+			}
+			if (repStartIndex == -1) 
+				repStartIndex = 0;
+			if (repStopIndex == -1)
+				repStopIndex = biList.length;
+			int repLength = repStopIndex - repStartIndex; 
+			int realStopIndex = repStartIndex + (repLength * inFunc.getRepCount());
+			int totalNumSegment = biList.length + ((inFunc.getRepCount() - 1) * repLength);
 			
-			
+			FunctionSegment[] list = new FunctionSegment[totalNumSegment];
+						
+			//TODO: Implement absolute time assignments for repeated elements.
+			int i = 0; // Corresponds to the list index for the new FunctionSegment[]
+			int s = 0; // Corresponds to the input segment index.
+			while(i < repStartIndex){
+				BIFunctionSegment seg = biList[s];
+				list[i] = new FunctionSegment(seg.getType(),seg.getRefEvidencePair(), 
+						seg.getStartTP(), seg.getStartAT(), this.id);
+				i++;
+				s++;
+			}
+			int rNum = 1;
+			while(i < realStopIndex){
+				BIFunctionSegment seg = biList[s];
+				list[i] = new FunctionSegment(seg.getType(),seg.getRefEvidencePair(), 
+						"R" + rNum + seg.getStartTP(), seg.getStartAT(), this.id);
+				i++;
+				s++;
+				if (s == repStopIndex) {
+					rNum++;
+					s = repStartIndex;		
+				}
+			}
+			s = repStopIndex;
+			while(i < list.length) {	//TODO: Might need different condition.
+				BIFunctionSegment seg = biList[s];
+				list[i] = new FunctionSegment(seg.getType(),seg.getRefEvidencePair(), 
+						seg.getStartTP(), seg.getStartAT(), this.id);
+				i++;
+				s++;
+			}
+			return list;
 		}
-		
-		return null;
 	}
 	
 	
-	
+	public void assignNBFunction(String transitionTP, Integer transitionAT) {
+		this.evolvingFunctions = new FunctionSegment[2];
+		this.evolvingFunctions[0] = new FunctionSegment("C", "0000", "Initial", 0);
+		this.evolvingFunctions[1] = new FunctionSegment("R", "0000", transitionTP, transitionAT);
+	}
 	
 	/** Creates an intention to be added to the mode.
 	 *		Note: Assumes Actors have already been read into the model. 
@@ -95,12 +138,17 @@ public class Intention extends LinkableElement {
 		String type;
 		String refEvidencePair;
 		private FunctionSegment(String type, String refEvidencePair, String startTimePoint, Integer startAbsTime, String intentionID) {
-			this.startTP = "ETP" + intentionID + startTimePoint;
+			this.startTP = "E" + intentionID + "TP" + startTimePoint;
 			this.startAT = startAbsTime;
 			this.type = type;
 			this.refEvidencePair = refEvidencePair;
 		} 
-		
+		private FunctionSegment(String type, String refEvidencePair, String startTimePoint, Integer startAbsTime) {
+			this.startTP = startTimePoint;
+			this.startAT = startAbsTime;
+			this.type = type;
+			this.refEvidencePair = refEvidencePair;
+		} 
 	}
 	
 }

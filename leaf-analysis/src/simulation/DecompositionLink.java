@@ -27,13 +27,13 @@ public class DecompositionLink extends ElementLink {
 		return postDecomposition;
 	}
 
-	public static List<DecompositionLink> createDecompositionLinks(ArrayList<ICell> allDecompositionLinks, List<IntentionalElement> elementList) {
+	public static List<DecompositionLink> createDecompositionLinks(ArrayList<ICell> allDecompositionLinks, List<Intention> elementList) {
 		List<DecompositionLink> decompositionList = new ArrayList<DecompositionLink>();
 
 		while (allDecompositionLinks.size() > 0) {				
 			String destID = allDecompositionLinks.get(0).getTargetID();
 			int absTime = allDecompositionLinks.get(0).getLink().getAbsTime();		//TODO: Add check to make sure all AbsTime values are the same.
-			IntentionalElement intentElementDest = getIntentionalElementByUniqueID(destID, elementList);
+			Intention intentElementDest = getIntentionByUniqueID(destID, elementList);
 			ArrayList<ICell> curDestLinks = new ArrayList<ICell>();
 			boolean evolve = false;
 			boolean andLink = false;
@@ -63,7 +63,7 @@ public class DecompositionLink extends ElementLink {
 			LinkableElement[] linkElementsSrc = new LinkableElement[curDestLinks.size()];
 			for (int i = 0; i < curDestLinks.size(); i++) {
 				ICell link = curDestLinks.get(i);
-				linkElementsSrc[i] = getIntentionalElementByUniqueID(link.getSourceID(), elementList);
+				linkElementsSrc[i] = getIntentionByUniqueID(link.getSourceID(), elementList);
 			}
 
 			if (!evolve) {
@@ -113,7 +113,7 @@ public class DecompositionLink extends ElementLink {
 	
 	
 	/** **** Duplicated from BIModelSpecBuilder.java and ModelSpecBuilder.java
-	 * Return the first IntentionalElement by its ID
+	 * Return the first Intention by its ID
 	 * @param elementId
 	 * The id of the required element
 	 * @param list
@@ -121,8 +121,8 @@ public class DecompositionLink extends ElementLink {
 	 * @return
 	 * returns the intentional element if exist or null
 	 */
-	private static IntentionalElement getIntentionalElementByUniqueID(String elementId, List<IntentionalElement> list) {
-		for(IntentionalElement iElement : list){
+	private static Intention getIntentionByUniqueID(String elementId, List<Intention> list) {
+		for(Intention iElement : list){
 			if(iElement.getUniqueID().equals(elementId))
 				return iElement;
 		}

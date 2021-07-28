@@ -193,16 +193,19 @@ public class BIModelSpecBuilder {
 					String linkType = link.getLink().getLinkType();
 					String linkSrcID = link.getSourceID();
 					String linkDestID = link.getTargetID();
-					IntentionalElement intentElementSrc = getIntentionalElementByUniqueID(linkSrcID, modelSpec.getIntElements());
-					IntentionalElement intentElementDest = getIntentionalElementByUniqueID(linkDestID, modelSpec.getIntElements());
+					Intention intentElementSrc = getIntentionByUniqueID(linkSrcID, modelSpec.getIntentionList());
+					Intention intentElementDest = getIntentionByUniqueID(linkDestID, modelSpec.getIntentionList());
 					
 					
 					if (linkType.equals("NBT"))
-						notBothLink.add(new NotBothLink(intentElementSrc, intentElementDest, false));
+						notBothLink.add(new NotBothLink(intentElementSrc, intentElementDest, false, 
+								link.getLink().getAbsTime()));
 					else if (linkType.equals("NBD"))	
-						notBothLink.add(new NotBothLink(intentElementSrc, intentElementDest, true));
+						notBothLink.add(new NotBothLink(intentElementSrc, intentElementDest, true, 
+								link.getLink().getAbsTime()));
 					else {
-						ContributionLink tempCont = ContributionLink.createConstributionLink(intentElementSrc, intentElementDest, link.getLink());
+						ContributionLink tempCont = ContributionLink.createConstributionLink(intentElementSrc, 
+								intentElementDest, link.getLink());
 						if (tempCont != null)
 							contributionLinks.add(tempCont);
 						else
@@ -211,7 +214,8 @@ public class BIModelSpecBuilder {
 				}
 				modelSpec.setNotBothLink(notBothLink);
 				modelSpec.setContributionLinks(contributionLinks); 
-				modelSpec.setDecompositionLinks(DecompositionLink.createDecompositionLinks(allDecompositionLinks, modelSpec.getIntElements()));
+				modelSpec.setDecompositionLinks(DecompositionLink.createDecompositionLinks(allDecompositionLinks, 
+						modelSpec.getIntentionList()));
 			}
 
 			
@@ -251,7 +255,7 @@ public class BIModelSpecBuilder {
 //	}
 
 	/**
-	 * Return the first IntentionalElement by its ID
+	 * Return the first Intention by its ID
 	 * @param elementId
 	 * The id of the required element
 	 * @param list
@@ -259,8 +263,8 @@ public class BIModelSpecBuilder {
 	 * @return
 	 * returns the intentional element if exist or null
 	 */
-	private static IntentionalElement getIntentionalElementByUniqueID(String elementId, List<IntentionalElement> list) {
-		for(IntentionalElement iElement : list){
+	private static Intention getIntentionByUniqueID(String elementId, List<Intention> list) {
+		for(Intention iElement : list){
 			if(iElement.getUniqueID().equals(elementId))
 				return iElement;
 		}

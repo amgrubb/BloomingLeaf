@@ -1,5 +1,4 @@
-package interface_objects;
-
+package gson_classes;
 
 /**
  * Created by davidkwon on 2018-07-24.
