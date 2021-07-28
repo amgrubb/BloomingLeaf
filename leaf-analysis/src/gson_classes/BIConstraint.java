@@ -10,13 +10,4 @@ public class BIConstraint {
 	private String type;
 
 	
-//	private class Attributes {
-//		Integer absTP;
-//        String destID;
-//		String destRefTP;
-//        String srcID;
-//        String srcRefTP;
-//        String type;
-//	}
-	
 }

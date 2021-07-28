@@ -19,14 +19,14 @@ import interface_objects.OutputModel;
  *
  */
 public class ModelSpec {
-	
-	private List<IntentionalElement> intElements = new ArrayList<IntentionalElement>();
 	private List<Actor> actors = new ArrayList<Actor>();
-	private List<NotBothLink> notBothLink = new ArrayList<NotBothLink>();
-	
+	private List<Intention> intentions = new ArrayList<Intention>();
 	private List<ContributionLink> contributionLinks = new ArrayList<ContributionLink>();
 	private List<DecompositionLink> decompositionLinks = new ArrayList<DecompositionLink>();
+	private List<NotBothLink> notBothLink = new ArrayList<NotBothLink>();
 	
+	// To Be Removed
+	private List<IntentionalElement> intElements = new ArrayList<IntentionalElement>();
 	private List<Contribution> contribution = new ArrayList<Contribution>();
 	private List<Decomposition> decomposition = new ArrayList<Decomposition>();
 	private List<EvolvingContribution> evolvingContribution = new ArrayList<EvolvingContribution>();
@@ -38,12 +38,11 @@ public class ModelSpec {
 	private String analysisType = null;
 	private char conflictAvoidLevel = 'N'; 			// Should have the value S/M/W/N for Strong, Medium, Weak, None.
     private int maxTime = 5;
-	private int numActors = 0;
-	private int numIntentions = 0;
-	private String inputFilename = "";
-    private int[][][] history;	//TODO: Is this used? Is it left over from GrowingLeaf?
     private int relativeTimePoints = 0;
     private int[] absoluteTimePoints = null;
+
+    //	private String inputFilename = "";
+    //private int[][][] history;	//TODO: Is this used? Is it left over from GrowingLeaf?
     
     private HashMap<String, Integer> initialAssignedEpochs; //Hash map to hold the epochs with assigned values.
     private int[] initialValueTimePoints = new int[] {0};		// Hold the assigned times for each of the initial Values. Should be same length of second paramater of initialValues;
@@ -63,6 +62,11 @@ public class ModelSpec {
 	}
     
     
+	public List<Intention> getIntentions() {
+		return intentions;
+	}
+
+
 	public List<ContributionLink> getContributionLinks() {
 		return contributionLinks;
 	}
@@ -148,7 +152,7 @@ public class ModelSpec {
 	}
 
 	public int getNumIntentions() {
-		return numIntentions;
+		return this.intentions.size();
 	}
 
 	public boolean[][][] getInitialValues() {
@@ -171,9 +175,9 @@ public class ModelSpec {
 		return constraintsBetweenEpochs;
 	}
 
-	public String getInputFilename() {
-		return inputFilename;
-	}
+//	public String getInputFilename() {
+//		return inputFilename;
+//	}
 
 	public int getRelativeTimePoints() {
 		return relativeTimePoints;
@@ -207,21 +211,21 @@ public class ModelSpec {
 		this.decomposition = decomposition;
 	}
 
-	public int getNumActors() {
-		return numActors;
-	}
+//	public int getNumActors() {
+//		return numActors;
+//	}
+//
+//	public void setNumActors(int numActors) {
+//		this.numActors = numActors;
+//	}
 
-	public void setNumActors(int numActors) {
-		this.numActors = numActors;
-	}
-
-	public int[][][] getHistory() {
-		return history;
-	}
-
-	public void setHistory(int[][][] history) {
-		this.history = history;
-	}
+//	public int[][][] getHistory() {
+//		return history;
+//	}
+//
+//	public void setHistory(int[][][] history) {
+//		this.history = history;
+//	}
 
 	public void setIntElements(List<IntentionalElement> intElements) {
 		this.intElements = intElements;
@@ -231,13 +235,13 @@ public class ModelSpec {
 		this.constraintsBetweenEpochs = constraintsBetweenEpochs;
 	}
 
-	public void setNumIntentions(int numIntentions) {
-		this.numIntentions = numIntentions;
-	}
-
-	public void setInputFilename(String inputFilename) {
-		this.inputFilename = inputFilename;
-	}
+//	public void setNumIntentions(int numIntentions) {
+//		this.numIntentions = numIntentions;
+//	}
+//
+//	public void setInputFilename(String inputFilename) {
+//		this.inputFilename = inputFilename;
+//	}
 
 	public void setRelativeTimePoints(int relativeTimePoints) {
 		this.relativeTimePoints = relativeTimePoints;

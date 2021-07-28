@@ -134,7 +134,7 @@ public class MainProgram {
 	 * @param filePath
 	 * Path to the file with the frontend model
 	 * @return
-	 * ModelSpecPojo backend model
+	 * ModelSpec backend model
 	 */
 	private static ModelSpec convertModelFromFile(String filePath) {
 

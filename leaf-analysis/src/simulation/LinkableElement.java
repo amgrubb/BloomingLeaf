@@ -12,8 +12,8 @@ import java.util.List;
  */
 public abstract class LinkableElement{
     public String name = "NAME";
-    public String id = "NO-ID";
-    private String uniqueID = "null"; 
+    public String id = "NO-ID";	//Format that maps to array ordering.
+    private String uniqueID = null; 
     List<ElementLink> linksSrc = new ArrayList<ElementLink>();
     List<ElementLink> linksDest = new ArrayList<ElementLink>();
 	

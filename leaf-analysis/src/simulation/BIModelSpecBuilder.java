@@ -18,23 +18,22 @@ public class BIModelSpecBuilder {
      * 	Note: this function depends on modelSpec.getNumIntentions() being set prior to being called.
      * @param aRequest - the request passed from the front end
      */
-    private static void readAnalysisParameters(ModelSpec modelSpec, IAnalysisRequest aRequest) {
+    private static void readAnalysisParameters(ModelSpec modelSpec, IAnalysisRequest aRequest,
+    		int numIntentions) {
     	try {
 			// Type of analysis
 			modelSpec.setAnalysisType(aRequest.getAction());	
-			if (DEBUG) System.out.println("Read Type of Analysis");
 
 			// Conflict level
 			if (aRequest.getConflictLevel() != null) {
 				modelSpec.setConflictAvoidLevel(aRequest.getConflictLevel().charAt(0));
 			}
-			if (DEBUG) System.out.println("Read Conflict Level");
 
 			//Number of Relative time
 			if(aRequest.getNumRelTime() != null){
 				modelSpec.setRelativeTimePoints(Integer.parseInt(aRequest.getNumRelTime()));
-			}
-			if (DEBUG) System.out.println("Read Relative Time");   		
+			} 
+			if (DEBUG) System.out.println("Read Simple Analysis Parameters");
 
 			IPreviousAnalysis prevResult = aRequest.getPreviousAnalysis();
 			if(prevResult != null) {
@@ -49,8 +48,8 @@ public class BIModelSpecBuilder {
 				if (DEBUG) System.out.println("Handled Previous Result into Hash Map");
 				
 				
-				//TODO: This code should be removed once a mapping between intentions and timepoints is created.
-				boolean[][][] initialValues = new boolean[modelSpec.getNumIntentions()][prevResult.getSelectedTimePoint()+1][4];
+				//TODO: This code should be moved once a mapping between intentions and timepoints is created.
+				boolean[][][] initialValues = new boolean[numIntentions][prevResult.getSelectedTimePoint()+1][4];
 				HashMap<String, boolean[][]> temp = prevResult.getSelectedPreviousValues(); //TODO REMOVE
 				int k = 0;
 				for (boolean[][] tempVals : temp.values()) {
@@ -66,8 +65,8 @@ public class BIModelSpecBuilder {
 				
 			} else {
 				//TODO: Update with appropriate initial values.
-				boolean[][][] initialValues = new boolean[modelSpec.getNumIntentions()][1][4];
-				for (int j = 0; j < modelSpec.getNumIntentions(); j++){
+				boolean[][][] initialValues = new boolean[numIntentions][1][4];
+				for (int j = 0; j < numIntentions; j++){
 					for (int i = 0; i < 4; i ++){
 						initialValues[j][0][i] = false;
 					}
@@ -98,13 +97,13 @@ public class BIModelSpecBuilder {
 			if(frontendModel.getMaxAbsTime() != null){
 				modelSpec.setMaxTime(Integer.parseInt(frontendModel.getMaxAbsTime()));
 			}
-			if (DEBUG) System.out.println("Read Max Absolute Time");
 
 			if(frontendModel.getAbsTimePtsArr() != null)
 				modelSpec.setAbsoluteTimePoints(frontendModel.getAbsTimePtsArr());
 			else
 				modelSpec.setAbsoluteTimePoints(null);
-			if (DEBUG) System.out.println("Read Absolute Time Points");
+			
+			if (DEBUG) System.out.println("Read MaxTime & Absolute TPs");
     		
     	} catch (Exception e) {
     		throw new RuntimeException(e.getMessage());
@@ -148,83 +147,36 @@ public class BIModelSpecBuilder {
 				}
 			}
 			
-			if(!intentions.isEmpty())
-				modelSpec.setNumIntentions(intentions.size());
 			
 			// Read the parameters associated with the model.
-			readAnalysisParameters(modelSpec, inObject.getAnalysisRequest()); 
+			readAnalysisParameters(modelSpec, inObject.getAnalysisRequest(),
+					intentions.size()); 
 			readOverallGraphParameters(modelSpec, frontendModel);	
 			
 			
-			// **** ACTORS **** 
-			// Getting Actor Data
+			// **** ACTORS **** - Getting Actor Data
 			if (!actors.isEmpty()) {
-				modelSpec.setNumActors(actors.size());
 				int actorID = 0;
 				for(ICell dataActor: actors){
 					String backID = "A" + String.format("%03d", actorID);
 					actorID ++;
-					modelSpec.getActors().add(new Actor(backID, 
-							dataActor.getActor().getActorName(), 
-							dataActor.getActor().getType(),
-							dataActor.getId()));
+					modelSpec.getActors().add(new Actor(backID,	dataActor.getActor().getActorName(), 
+							dataActor.getActor().getType(),	dataActor.getId()));
 				}
 			}
 			if (DEBUG) System.out.println("Read Actors");
 			
 			
-			// **** INTENTIONS **** 
-			// Getting intentional elements
-			if(!intentions.isEmpty()){
-				//modelSpec.setNumIntentions(intentions.size());
-				int intentionID = 0;
+			// **** INTENTIONS **** - Getting intentional elements
+			if(!intentions.isEmpty()){			
 				for (ICell dataIntention : intentions){
-					// Get Data for one Intention
-					Actor nodeActor = null;
-					if (dataIntention.getParent() != null) {
-						for(Actor actor : modelSpec.getActors()){
-							if(dataIntention.getParent().equals(actor.getUniqueID())){
-								nodeActor = actor;
-								break;
-							}
-						}
-					}
-
-					String backID = String.format("%04d", intentionID);
-					intentionID++;
-
-					IntentionalElement element = new IntentionalElement(backID, 
-							dataIntention.getIntention().getNodeName(), nodeActor, 
-							dataIntention.getType(), dataIntention.getId());
-
-					// Now that the IntentionElement has been created. assign a dynamic to it
-					//TODO Add evolving functions.
-//					EvolvingFunction dynamic = dataIntention.getDynamicFunction();
-//					String dynamicType = dynamic.getStringDynVis();
-//
-//					element.setDynamicType(IntentionalElementDynamicType.getByCode(dynamicType));
-//
-//					if (dynamicType.equals("UD")) {
-//						element.setUserDefinedDynamicType(dataIntention);
-//					} else {
-//
-//						boolean[] dynamicFuncMarkedVal;
-//
-//						String evalValue = dynamic.getMarkedValue();
-//						dynamicFuncMarkedVal = getEvaluationArray(evalValue);
-//						element.setDynamicFunctionMarkedValue(dynamicFuncMarkedVal);
-//					}
-
-					modelSpec.getIntElements().add(element);
+					Intention newInt = Intention.createIntention(dataIntention, modelSpec);
+					System.out.print(newInt.getUniqueID());
+					modelSpec.getIntentions().add(newInt); 
 				}
 			}
 			if (DEBUG) System.out.println("Read Elements");
 			
-			if (DEBUG) System.out.println("TODO: Handle userAssignmentList");
-			if (DEBUG) System.out.println("TODO: handle constraints");
-			// TODO List<BIConstraint> getConstraints() 
-			
-
 			//Getting links
 			if(!links.isEmpty()) {
 				// Temporary Place Holder to Collect Decomposition Links.
@@ -260,183 +212,11 @@ public class BIModelSpecBuilder {
 				modelSpec.setContributionLinks(contributionLinks); 
 				modelSpec.setDecompositionLinks(DecompositionLink.createDecompositionLinks(allDecompositionLinks, modelSpec.getIntElements()));
 			}
-				/* Old Lists */
-				//List<Contribution> contribution = new ArrayList<Contribution>();
-				//List<EvolvingContribution> evolvingContribution = new ArrayList<EvolvingContribution>();
 
-					 
-					/* Start of Old Link Code. */
-//					if (link.getLink().getPostType() == null) {
-//						// Not Evolving Link
-//						switch (linkType) {
-//							case "NBT":
-//								notBothLink.add(new NotBothLink(intentElementSrc, intentElementDest, false));
-//								break;
-//							case "NBD":
-//								notBothLink.add(new NotBothLink(intentElementSrc, intentElementDest, true));
-//								break;
-//							case "++":  case "+":  case "-":  case "--":
-//							case "++S": case "+S": case "-S": case "--S":
-//							case "++D": case "+D": case "-D": case "--D":
-//								contribution.add(new Contribution(intentElementSrc, intentElementDest, ContributionType.getByCode(linkType)));
-//								break;
-//							case "and":
-//							case "or":
-//								allDecompositionLinks.add(link);
-//								break;
-//							default:
-//								throw new IllegalArgumentException("(Simple) Invalid relationship type: " + linkType);
-//						}
-//					} else {
-//						// Evolving Link
-//						String postType = link.getLink().getPostType();
-//						int absTime;
-//						if (link.getLink().getAbsTime() == null)
-//							absTime = -1;
-//						else
-//							absTime = link.getLink().getAbsTime();
-//						switch (linkType) {
-//							case "++":  case "+":  case "-":  case "--":
-//							case "++S": case "+S": case "-S": case "--S":
-//							case "++D": case "+D": case "-D": case "--D":
-//								switch (postType) {
-//									case "NO":
-//									case "no":	
-//										evolvingContribution.add(new EvolvingContribution(intentElementSrc, intentElementDest, ContributionType.getByCode(linkType), null, absTime));
-//										break;
-//									case "++":  case "+":  case "-":  case "--":
-//									case "++S": case "+S": case "-S": case "--S":
-//									case "++D": case "+D": case "-D": case "--D":
-//										evolvingContribution.add(new EvolvingContribution(intentElementSrc, intentElementDest, ContributionType.getByCode(linkType), ContributionType.getByCode(postType), absTime));
-//										break;
-//									default:
-//										throw new IllegalArgumentException("Invalid relationship type (type 1): " + linkType);
-//								}
-//								break;
-//							case "and":
-//							case "or":
-//								allDecompositionLinks.add(link);
-//								break;
-//							case "NO":
-//							case "no":	
-//								switch (postType) {
-//									case "++":  case "+":  case "-":  case "--":
-//									case "++S": case "+S": case "-S": case "--S":
-//									case "++D": case "+D": case "-D": case "--D":
-//										evolvingContribution.add(new EvolvingContribution(intentElementSrc, intentElementDest, null, ContributionType.getByCode(postType), absTime));
-//										break;
-//									case "and":
-//									case "or":
-//										allDecompositionLinks.add(link);
-//										break;
-//									default:
-//										throw new IllegalArgumentException("Invalid relationship type (type 2): " + linkType);
-//								}
-//								break;
-//							default:
-//								throw new IllegalArgumentException("Invalid relationship type (type 3): " + linkType);
-//						}
-//					}
-//				}
-//
-//				// Add all links, except decomposition links to the model.
-//				modelSpec.setContribution(contribution);
-//				modelSpec.setNotBothLink(notBothLink);
-//				modelSpec.setEvolvingContribution(evolvingContribution);
-//				if (DEBUG) System.out.println("Read (Contribution) Links");
-//
-//				// Converting Decomposition Links into singular decomposition links.
-//				List<Decomposition> decomposition = new ArrayList<Decomposition>();
-//				List<EvolvingDecomposition> evolvingDecomposition = new ArrayList<EvolvingDecomposition>();
-//
-//				while (allDecompositionLinks.size() > 0) {				
-//					
-//					String destID = allDecompositionLinks.get(0).getTargetID();
-//					//String postType = link.getLink().getPostType();
-//					int absTime;
-//					if (allDecompositionLinks.get(0).getLink().getAbsTime() == null)
-//						absTime = -1;
-//					else
-//						absTime = allDecompositionLinks.get(0).getLink().getAbsTime();
-//					IntentionalElement intentElementDest = getIntentionalElementByUniqueID(destID, modelSpec.getIntElements());
-//					ArrayList<ICell> curDestLinks = new ArrayList<ICell>();
-//					boolean evolve = false;
-//					boolean andLink = false;
-//					boolean orLink = false;
-//					boolean andPost = false;
-//					boolean orPost = false;
-//					for (ICell inputLink : allDecompositionLinks) {
-//						if (destID.equals(inputLink.getTargetID())) {
-//							curDestLinks.add(inputLink);
-//							if (inputLink.getLink().getPostType() != null) {
-//								evolve = true;
-//								if (inputLink.getLink().getPostType().equals("and"))
-//									andPost = true;
-//								if (inputLink.getLink().getPostType().equals("or"))
-//									orPost = true;
-//
-//							}
-//							if (inputLink.getLink().getLinkType().equals("and"))
-//								andLink = true;
-//							if (inputLink.getLink().getLinkType().equals("or"))
-//								orLink = true;
-//						}
-//					}
-//					if (andLink && orLink)
-//						throw new IllegalArgumentException("Invalid decomposition relationship type.");
-//
-//					LinkableElement[] linkElementsSrc = new LinkableElement[curDestLinks.size()];
-//					for (int i = 0; i < curDestLinks.size(); i++) {
-//						ICell link = curDestLinks.get(i);
-//						linkElementsSrc[i] = getIntentionalElementByUniqueID(link.getSourceID(), modelSpec.getIntElements());
-//					}
-//
-//					if (!evolve) {
-//						DecompositionType dType = null;
-//						if (andLink)
-//							dType = DecompositionType.AND;
-//						if (orLink)
-//							dType = DecompositionType.OR;
-//						decomposition.add(new Decomposition(linkElementsSrc, intentElementDest, dType));
-//					} else {
-//						if (andPost && orPost)
-//							throw new IllegalArgumentException("Invalid evolving decomposition relationship type.");
-//
-//						DecompositionType pre = null;
-//						DecompositionType post = null;
-//						if (andLink)
-//							pre = DecompositionType.AND;
-//						if (orLink)
-//							pre = DecompositionType.OR;
-//						if (andPost)
-//							post = DecompositionType.AND;
-//						if (orPost)
-//							post = DecompositionType.OR;
-//						evolvingDecomposition.add(new EvolvingDecomposition(linkElementsSrc, intentElementDest, pre, post, absTime));
-//						for (ICell iLink : curDestLinks) {
-//							if (pre != null && !iLink.getLink().getLinkType().equals(pre.getCode()))
-//								throw new IllegalArgumentException("Relationships for ID: " + destID + " must be all the same types.");
-//							if (pre == null && !iLink.getLink().getLinkType().equals("NO"))
-//								throw new IllegalArgumentException("Relationships for ID: " + destID + " must be all the same types.");
-//							if (iLink.getLink().getPostType() == null)
-//								throw new IllegalArgumentException("Relationships for ID: " + destID + " must be all the same types.");
-//							if (post != null && !iLink.getLink().getPostType().equals(post.getCode()))
-//								throw new IllegalArgumentException("Relationships for ID: " + destID + " must be all the same types.");
-//							if (post == null && !iLink.getLink().getPostType().equals("NO"))
-//								throw new IllegalArgumentException("Relationships for ID: " + destID + " must be all the same types.");
-//						}
-//
-//					}
-//					for (ICell inputLink : curDestLinks) {
-//						allDecompositionLinks.remove(inputLink);
-//					}
-//
-//				}
-//				modelSpec.setDecomposition(decomposition);
-//				modelSpec.setEvolvingDecomposition(evolvingDecomposition);
-//				
-//			}
-//			if (DEBUG) System.out.println("Read Links");
+			
+			if (DEBUG) System.out.println("TODO: Handle userAssignmentList");
+			if (DEBUG) System.out.println("TODO: handle constraints");
+			// TODO List<BIConstraint> getConstraints() 
 
 			BIConstraint[] newConstraints = frontendModel.getConstraints();
 			/* 
@@ -509,32 +289,32 @@ public class BIModelSpecBuilder {
 		}
 	}
 
-	/**
-	 * Returns the evaluation array which is an array of length 4 which represents
-	 * the evalValue
-	 * @param evalValue
-	 * evalValue of interest
-	 * @return
-	 * returns the evaluation array
-	 */
-	public static boolean[] getEvaluationArray(String evalValue) {
-		// This function was created as a temporary fix to issue #155
-		// The evalValue variable is an evaluation label for an intention.
-		// If the evaluation label is not a 4 digit binary string, for now, this will be
-		// considered to be equivalent to the evaluation label: "0000".
-		// ie, evaluation array will be an array of length 4, containing all false values.
-
-		if (evalValue.matches("[01]+") && evalValue.length() == 4) {
-			boolean[] res = new boolean[4];
-			for (int i = 0; i < 4; i++) {
-				res[i] = (evalValue.charAt(i) == '1');
-			}
-			return res;
-		} else {
-			return new boolean[] {false, false, false, false};
-		}
-
-	}
+//	/**
+//	 * Returns the evaluation array which is an array of length 4 which represents
+//	 * the evalValue
+//	 * @param evalValue
+//	 * evalValue of interest
+//	 * @return
+//	 * returns the evaluation array
+//	 */
+//	private static boolean[] getEvaluationArray(String evalValue) {
+//		// This function was created as a temporary fix to issue #155
+//		// The evalValue variable is an evaluation label for an intention.
+//		// If the evaluation label is not a 4 digit binary string, for now, this will be
+//		// considered to be equivalent to the evaluation label: "0000".
+//		// ie, evaluation array will be an array of length 4, containing all false values.
+//
+//		if (evalValue.matches("[01]+") && evalValue.length() == 4) {
+//			boolean[] res = new boolean[4];
+//			for (int i = 0; i < 4; i++) {
+//				res[i] = (evalValue.charAt(i) == '1');
+//			}
+//			return res;
+//		} else {
+//			return new boolean[] {false, false, false, false};
+//		}
+//
+//	}
 
 	/**
 	 * Return the first IntentionalElement by its ID

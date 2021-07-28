@@ -61,6 +61,19 @@ public enum IntentionalElementType {
 		return null;
 	}
 
+	public static IntentionalElementType getByBBMName(String name) { 
+		if (name.equals("basic.Task"))
+			return TASK;
+		else if (name.equals("basic.Goal"))
+			return GOAL;			
+		else if (name.equals("basic.Softgoal"))
+			return SOFTGOAL;
+		else if (name.equals("basic.Resource"))
+			return RESOURCE;
+		else
+			return null;
+		
+	}
 	private String getName() {
 		return name;
 	}

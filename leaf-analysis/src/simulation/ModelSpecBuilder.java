@@ -198,7 +198,7 @@ public class ModelSpecBuilder {
 
 			//Getting Actors
 			if (!frontendModel.getActors().isEmpty()) {
-				modelSpec.setNumActors(frontendModel.getActors().size());
+				//modelSpec.setNumActors(frontendModel.getActors().size());
 
 				for(InputActor dataActor: frontendModel.getActors()){
 					modelSpec.getActors().add(new Actor(dataActor.getNodeId(), dataActor.getNodeName(), dataActor.getNodeType()));
@@ -208,7 +208,7 @@ public class ModelSpecBuilder {
 
 			//Getting intentional elements
 			if(!frontendModel.getIntentions().isEmpty()){
-				modelSpec.setNumIntentions(frontendModel.getIntentions().size());
+				//modelSpec.setNumIntentions(frontendModel.getIntentions().size());
 				for (InputIntention intention : frontendModel.getIntentions()) {
 					Actor nodeActor = null;
 					if (!intention.getNodeActorID().equals("-")) {

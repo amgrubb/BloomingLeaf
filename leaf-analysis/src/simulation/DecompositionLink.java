@@ -3,7 +3,6 @@ package simulation;
 import java.util.ArrayList;
 import java.util.List;
 
-import gson_classes.BILink;
 import gson_classes.ICell;
 
 public class DecompositionLink extends ElementLink {

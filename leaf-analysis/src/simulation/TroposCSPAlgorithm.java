@@ -559,9 +559,7 @@ public class TroposCSPAlgorithm {
     	}
     	    	
     	// Step 4A: Make list of previous names.
-    	@SuppressWarnings("unused")
 		int countTotalPreviousT = 0;	// Count the number of previous assignedEpochs that are Time Points.
-    	@SuppressWarnings("unused")
 		int countTotalPreviousE = 0;
     	String[] exisitingNamedTimePoints = new String[initialValueTimePoints.length];
     	int[] exisitingNamedTimes = new int[initialValueTimePoints.length];
