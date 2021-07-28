@@ -101,8 +101,7 @@ public class BIModelSpecBuilder {
 			if(frontendModel.getAbsTimePtsArr() != null)
 				modelSpec.setAbsoluteTimePoints(frontendModel.getAbsTimePtsArr());
 			else
-				modelSpec.setAbsoluteTimePoints(null);
-			
+				modelSpec.setAbsoluteTimePoints(new int[0]);
 			if (DEBUG) System.out.println("Read MaxTime & Absolute TPs");
     		
     	} catch (Exception e) {
@@ -152,7 +151,9 @@ public class BIModelSpecBuilder {
 			readAnalysisParameters(modelSpec, inObject.getAnalysisRequest(),
 					intentions.size()); 
 			readOverallGraphParameters(modelSpec, frontendModel);	
-			
+			if (frontendModel.getConstraints() != null)
+				modelSpec.setConstraintsBetweenTPs(frontendModel.getConstraints());
+
 			
 			// **** ACTORS **** - Getting Actor Data
 			if (!actors.isEmpty()) {
@@ -213,73 +214,6 @@ public class BIModelSpecBuilder {
 				modelSpec.setDecompositionLinks(DecompositionLink.createDecompositionLinks(allDecompositionLinks, modelSpec.getIntElements()));
 			}
 
-			
-			if (DEBUG) System.out.println("TODO: Handle userAssignmentList");
-			if (DEBUG) System.out.println("TODO: handle constraints");
-			// TODO List<BIConstraint> getConstraints() 
-
-			BIConstraint[] newConstraints = frontendModel.getConstraints();
-			/* 
-			 * TODO: Readd Constraints and user evaluations.
-			
-			
-			//Getting constraints
-			if(!frontendModel.getConstraints().isEmpty()){
-				for(InputConstraint dataConstraint : frontendModel.getConstraints()){
-					String constraintType = dataConstraint.getConstraintType();
-					String constraintSrcID = dataConstraint.getConstraintSrcID();
-					String constraintSrcEB = dataConstraint.getConstraintSrcEB();
-					if (constraintType.equals("A")){
-						int absoluteValue = dataConstraint.getAbsoluteValue();
-						IntentionalElement src = null;
-						for(IntentionalElement tmp : modelSpec.getIntElements()){
-							if(constraintSrcID.equals(tmp.getId()))
-								src = tmp;
-						}
-						if (absoluteValue >= 0) {
-							modelSpec.getConstraintsBetweenEpochs().add(new EpochConstraint(src, constraintSrcEB, absoluteValue));
-						}
-					}else{
-						String constraintDestID = dataConstraint.getConstraintDestID();
-						String constraintDestEB = dataConstraint.getConstraintDestEB();
-						IntentionalElement src = null;
-						IntentionalElement dest = null;
-						for(IntentionalElement tmp : modelSpec.getIntElements()){
-							if(constraintSrcID.equals(tmp.getId()))
-								src = tmp;
-							if(constraintDestID.equals(tmp.getId()))
-								dest = tmp;
-						}
-						modelSpec.getConstraintsBetweenEpochs().add(new EpochConstraint(constraintType, src, dest, constraintSrcEB, constraintDestEB));
-					}
-				}
-			}
-			if (DEBUG) System.out.println("Read Constraints");
-
-
-			// Getting user evaluations a.k.a. non initial user assignments
-			ArrayList<IntentionEvaluation> nonInitialEvals = aRequest.getNonInitialIntentionEvaluations();
-			if (!nonInitialEvals.isEmpty()) {
-				for (IntentionEvaluation curr: nonInitialEvals) {
-					String intentionID = curr.getIntentionID();
-					int absTime = Integer.parseInt(curr.getAbsTime());
-					String evalValue = curr.getEvaluationValue();
-
-					IntentionalElement src = null;
-					for(IntentionalElement tmp : modelSpec.getIntElements()){
-						if(intentionID.equals(tmp.getId()))
-							src = tmp;
-					}
-
-					boolean[] values = getEvaluationArray(evalValue);
-
-					modelSpec.getUserEvaluations().add(new UserEvaluation(src, absTime, values));
-				}
-
-			}
-			if (DEBUG) System.out.println("Read User Evaluations");
-			*/
-			
 			
 			if (DEBUG) System.out.println("Returning Model Spec!!!!");
 			return modelSpec;

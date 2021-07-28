@@ -8,12 +8,14 @@ package simulation;
  *
  */
 public class ElementLink {
-	LinkableElement[] src = null;
-	LinkableElement dest = null;
-
-	/**
-	 * 
-	 */
+	private static int linkTPcounter = 1;
+	
+	private LinkableElement[] src = null;
+	private LinkableElement dest = null;
+	private boolean isEvolving = false;			// 	Whether link has a post relationship type.
+	private Integer absTime = null; 					//	Optional absolute time of transition.
+	private String linkTP = null;
+	
 	public ElementLink(LinkableElement[] s, LinkableElement d) {
 		src = s;
 		dest = d;
@@ -21,7 +23,27 @@ public class ElementLink {
 			s[i].addLinksAsSrc(this);
 		d.addLinksAsDest(this);
 	}
+	public ElementLink(LinkableElement[] s, LinkableElement d, Integer absoluteTime) {
+		this(s,d);
+		isEvolving = true;
+		absTime = absoluteTime;
+		linkTP = getNewLinkTP();
+	}
+	private static String getNewLinkTP() {
+		String tp = String.format("LTP", linkTPcounter);
+		linkTPcounter++;
+		return tp;
+	}
 
+	public boolean isEvolving() {
+		return isEvolving;
+	}
+	public Integer getAbsTime() {
+		return absTime;
+	}
+	public String getLinkTP() {
+		return linkTP;
+	}
 	/**
 	 * @return the src
 	 */

@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import gson_classes.BIConstraint;
 import interface_objects.IOIntention;
 import interface_objects.IOStateModel;
 import interface_objects.OutputElement;
@@ -18,12 +19,18 @@ import interface_objects.OutputModel;
  * @author A.M.Grubb
  *
  */
+/**
+ * @author amgrubb
+ *
+ */
 public class ModelSpec {
 	private List<Actor> actors = new ArrayList<Actor>();
 	private List<Intention> intentions = new ArrayList<Intention>();
 	private List<ContributionLink> contributionLinks = new ArrayList<ContributionLink>();
 	private List<DecompositionLink> decompositionLinks = new ArrayList<DecompositionLink>();
 	private List<NotBothLink> notBothLink = new ArrayList<NotBothLink>();
+
+	private BIConstraint[] constraintsBetweenTPs;
 	
 	// To Be Removed
 	private List<IntentionalElement> intElements = new ArrayList<IntentionalElement>();
@@ -31,15 +38,17 @@ public class ModelSpec {
 	private List<Decomposition> decomposition = new ArrayList<Decomposition>();
 	private List<EvolvingContribution> evolvingContribution = new ArrayList<EvolvingContribution>();
 	private List<EvolvingDecomposition> evolvingDecomposition = new ArrayList<EvolvingDecomposition>();
-	
+	private List<UserEvaluation> userEvaluations = new ArrayList<UserEvaluation>();
 	private List<EpochConstraint> constraintsBetweenEpochs = new ArrayList<EpochConstraint>();
-	private List<UserEvaluation> userEvaluations = new ArrayList<UserEvaluation>(); 
+ 
 	
 	private String analysisType = null;
 	private char conflictAvoidLevel = 'N'; 			// Should have the value S/M/W/N for Strong, Medium, Weak, None.
     private int maxTime = 5;
     private int relativeTimePoints = 0;
-    private int[] absoluteTimePoints = null;
+    //private int[] absoluteTimePoints = null;
+    private HashMap<String, Integer> absTP = new HashMap<String, Integer>();
+    
 
     //	private String inputFilename = "";
     //private int[][][] history;	//TODO: Is this used? Is it left over from GrowingLeaf?
@@ -52,221 +61,27 @@ public class ModelSpec {
     private HashMap<String, boolean[][]> initialValuesMap; //TODO: Temporary or full replacement of initialValues. 
 
     private int[] finalValueTimePoints = null;
-    private HashMap<String, Integer> finalAssignedEpochs = null;
+    private HashMap<String, Integer> finalAssignedEpochs = null;	 
     // One of these will be filled.
     private boolean[][][] finalValues = null;	 // For single Solution    
     private boolean[][][][] allSolutionsValues;	 // For all solutions.
 
     public ModelSpec(){
-		
-	}
+    }
     
-    
-	public List<Intention> getIntentions() {
-		return intentions;
-	}
-
-
-	public List<ContributionLink> getContributionLinks() {
-		return contributionLinks;
-	}
-
-
-	public void setContributionLinks(List<ContributionLink> contributionLinks) {
-		this.contributionLinks = contributionLinks;
-	}
-
-
-	public List<DecompositionLink> getDecompositionLinks() {
-		return decompositionLinks;
-	}
-
-
-	public void setDecompositionLinks(List<DecompositionLink> decompositionLinks) {
-		this.decompositionLinks = decompositionLinks;
-	}
-
-
-	public HashMap<String, boolean[][]> getInitialValuesMap() {
-		return initialValuesMap;
-	}
-
-	public void setInitialValuesMap(HashMap<String, boolean[][]> initialValuesMap) {
-		this.initialValuesMap = initialValuesMap;
-	}
-
-	public List<UserEvaluation> getUserEvaluations() {
-		return userEvaluations;
-	}
-
-	public boolean[][][] getFinalValues() {
-		return finalValues;
-	}
-
-	public int[] getFinalValueTimePoints() {
-		return finalValueTimePoints;
-	}
-
-	public HashMap<String, Integer> getFinalAssignedEpochs() {
-		return finalAssignedEpochs;
-	}
-
-	/*	Set Final Methods 
-	*/
-	public void setFinalValues(boolean[][][] finalValues) {
-		this.finalValues = finalValues;
-	}
-
-	public void setFinalValueTimePoints(int[] finalValueTimePoints) {
-		this.finalValueTimePoints = finalValueTimePoints;
-	}
-
-	public void setFinalAssignedEpochs(HashMap<String, Integer> finalAssignedEpochs) {
-		this.finalAssignedEpochs = finalAssignedEpochs;
-	}
-    /*	END OF Set Final Methods 
-	*/
-
-	public int[] getInitialValueTimePoints() {
-		return initialValueTimePoints;
-	}
-
-	public HashMap<String, Integer> getInitialAssignedEpochs() {
-		return initialAssignedEpochs;
-	}
-
-	public void setInitialAssignedEpochs(HashMap<String, Integer> initialAssignedEpochs) {
-		this.initialAssignedEpochs = initialAssignedEpochs;
-	}
-
-	public void setInitialValues(boolean[][][] initialValues) {
-		this.initialValues = initialValues;
-	}
-
-	public void setInitialValueTimePoints(int[] initialValueTimePoints) {
-		this.initialValueTimePoints = initialValueTimePoints;
-	}
-
-	public char getConflictAvoidLevel() {
-		return conflictAvoidLevel;
-	}
-
+    // ************* INTERESTING GETTERS/SETTERS ************* 
 	public int getNumIntentions() {
 		return this.intentions.size();
 	}
-
-	public boolean[][][] getInitialValues() {
-		return initialValues;
+    
+    public void setAbsoluteTimePoints(int[] absoluteTimePoints) {
+    	absTP.put("Initial", 0);		// Add Zero
+    	for (int i = 0; i < absoluteTimePoints.length; i++) {
+    		absTP.put("TA" + (i), absoluteTimePoints[i]);
+    	}
 	}
 
-	public List<IntentionalElement> getIntElements() {
-		return intElements;
-	}
-	
-	public int getMaxTime() {
-		return maxTime;
-	}
-
-	public void setMaxTime(int maxTime) {
-		this.maxTime = maxTime;
-	}
-
-	public List<EpochConstraint> getConstraintsBetweenEpochs() {
-		return constraintsBetweenEpochs;
-	}
-
-//	public String getInputFilename() {
-//		return inputFilename;
-//	}
-
-	public int getRelativeTimePoints() {
-		return relativeTimePoints;
-	}
-
-	public int[] getAbsoluteTimePoints() {
-		return absoluteTimePoints;
-	}
-		
-	public List<Actor> getActors() {
-		return actors;
-	}
-
-	public void setActors(List<Actor> actors) {
-		this.actors = actors;
-	}
-
-	public List<Contribution> getContribution() {
-		return contribution;
-	}
-
-	public void setContribution(List<Contribution> contribution) {
-		this.contribution = contribution;
-	}
-
-	public List<Decomposition> getDecomposition() {
-		return decomposition;
-	}
-
-	public void setDecomposition(List<Decomposition> decomposition) {
-		this.decomposition = decomposition;
-	}
-
-//	public int getNumActors() {
-//		return numActors;
-//	}
-//
-//	public void setNumActors(int numActors) {
-//		this.numActors = numActors;
-//	}
-
-//	public int[][][] getHistory() {
-//		return history;
-//	}
-//
-//	public void setHistory(int[][][] history) {
-//		this.history = history;
-//	}
-
-	public void setIntElements(List<IntentionalElement> intElements) {
-		this.intElements = intElements;
-	}
-
-	public void setConstraintsBetweenEpochs(List<EpochConstraint> constraintsBetweenEpochs) {
-		this.constraintsBetweenEpochs = constraintsBetweenEpochs;
-	}
-
-//	public void setNumIntentions(int numIntentions) {
-//		this.numIntentions = numIntentions;
-//	}
-//
-//	public void setInputFilename(String inputFilename) {
-//		this.inputFilename = inputFilename;
-//	}
-
-	public void setRelativeTimePoints(int relativeTimePoints) {
-		this.relativeTimePoints = relativeTimePoints;
-	}
-
-	public void setAbsoluteTimePoints(int[] absoluteTimePoints) {
-		this.absoluteTimePoints = absoluteTimePoints;
-	}
-
-	public void setConflictAvoidLevel(char conflictAvoidLevel) {
-		this.conflictAvoidLevel = conflictAvoidLevel;
-	}
-	
-	public boolean[][][][] getAllSolutionsValues() {
-		return allSolutionsValues;
-	}
-
-	public void setAllSolutionsValues(boolean[][][][] allSolutionsValues) {
-		this.allSolutionsValues = allSolutionsValues;
-	}
-
-	public void setFinalAllSolutionsValues(boolean[][][][] finalValues2) {
-		this.allSolutionsValues = finalValues2;
-	}
-
+    // ************* OTHER FUNCTIONS ************* 
 	public OutputModel getOutputModel() {
 		OutputModel output = new OutputModel();
     	// Print out Single Path Solotions.
@@ -347,6 +162,204 @@ public class ModelSpec {
 
 	}
 
+	
+	// ************* START OF GENERIC GETTERS AND SETTERS ************* 
+	public void setConstraintsBetweenTPs(BIConstraint[] constraintsBetweenTPs) {
+		this.constraintsBetweenTPs = constraintsBetweenTPs;
+	}
+
+	public List<Intention> getIntentions() {
+		return intentions;
+	}
+
+	public List<ContributionLink> getContributionLinks() {
+		return contributionLinks;
+	}
+
+	public void setContributionLinks(List<ContributionLink> contributionLinks) {
+		this.contributionLinks = contributionLinks;
+	}
+
+	public List<DecompositionLink> getDecompositionLinks() {
+		return decompositionLinks;
+	}
+
+	public void setDecompositionLinks(List<DecompositionLink> decompositionLinks) {
+		this.decompositionLinks = decompositionLinks;
+	}
+
+	public HashMap<String, boolean[][]> getInitialValuesMap() {
+		return initialValuesMap;
+	}
+
+	public void setInitialValuesMap(HashMap<String, boolean[][]> initialValuesMap) {
+		this.initialValuesMap = initialValuesMap;
+	}
+
+	public List<UserEvaluation> getUserEvaluations() {
+		return userEvaluations;
+	}
+
+	public boolean[][][] getFinalValues() {
+		return finalValues;
+	}
+
+	public int[] getFinalValueTimePoints() {
+		return finalValueTimePoints;
+	}
+
+	public HashMap<String, Integer> getFinalAssignedEpochs() {
+		return finalAssignedEpochs;
+	}
+
+	public void setFinalValues(boolean[][][] finalValues) {
+		this.finalValues = finalValues;
+	}
+
+	public void setFinalValueTimePoints(int[] finalValueTimePoints) {
+		this.finalValueTimePoints = finalValueTimePoints;
+	}
+
+	public void setFinalAssignedEpochs(HashMap<String, Integer> finalAssignedEpochs) {
+		this.finalAssignedEpochs = finalAssignedEpochs;
+	}
+
+	public int[] getInitialValueTimePoints() {
+		return initialValueTimePoints;
+	}
+
+	public HashMap<String, Integer> getInitialAssignedEpochs() {
+		return initialAssignedEpochs;
+	}
+
+	public void setInitialAssignedEpochs(HashMap<String, Integer> initialAssignedEpochs) {
+		this.initialAssignedEpochs = initialAssignedEpochs;
+	}
+
+	public void setInitialValues(boolean[][][] initialValues) {
+		this.initialValues = initialValues;
+	}
+
+	public void setInitialValueTimePoints(int[] initialValueTimePoints) {
+		this.initialValueTimePoints = initialValueTimePoints;
+	}
+
+	public char getConflictAvoidLevel() {
+		return conflictAvoidLevel;
+	}
+
+	public boolean[][][] getInitialValues() {
+		return initialValues;
+	}
+
+	public List<IntentionalElement> getIntElements() {
+		return intElements;
+	}
+
+	public int getMaxTime() {
+		return maxTime;
+	}
+
+	public void setMaxTime(int maxTime) {
+		this.maxTime = maxTime;
+	}
+
+	public List<EpochConstraint> getConstraintsBetweenEpochs() {
+		return constraintsBetweenEpochs;
+	}
+
+//	public String getInputFilename() {
+//		return inputFilename;
+//	}
+
+	public int getRelativeTimePoints() {
+		return relativeTimePoints;
+	}
+
+//	public int[] getAbsoluteTimePoints() {
+//		return absoluteTimePoints;
+//	}
+
+	public List<Actor> getActors() {
+		return actors;
+	}
+
+	public void setActors(List<Actor> actors) {
+		this.actors = actors;
+	}
+
+	public List<Contribution> getContribution() {
+		return contribution;
+	}
+
+	public void setContribution(List<Contribution> contribution) {
+		this.contribution = contribution;
+	}
+
+	public List<Decomposition> getDecomposition() {
+		return decomposition;
+	}
+
+	public void setDecomposition(List<Decomposition> decomposition) {
+		this.decomposition = decomposition;
+	}
+
+//	public int getNumActors() {
+//		return numActors;
+//	}
+//
+//	public void setNumActors(int numActors) {
+//		this.numActors = numActors;
+//	}
+
+//	public int[][][] getHistory() {
+//		return history;
+//	}
+//
+//	public void setHistory(int[][][] history) {
+//		this.history = history;
+//	}
+
+	public void setIntElements(List<IntentionalElement> intElements) {
+		this.intElements = intElements;
+	}
+
+	public void setConstraintsBetweenEpochs(List<EpochConstraint> constraintsBetweenEpochs) {
+		this.constraintsBetweenEpochs = constraintsBetweenEpochs;
+	}
+
+//	public void setNumIntentions(int numIntentions) {
+//		this.numIntentions = numIntentions;
+//	}
+//
+//	public void setInputFilename(String inputFilename) {
+//		this.inputFilename = inputFilename;
+//	}
+
+	public void setRelativeTimePoints(int relativeTimePoints) {
+		this.relativeTimePoints = relativeTimePoints;
+	}
+
+//	public void setAbsoluteTimePoints(int[] absoluteTimePoints) {
+//		this.absoluteTimePoints = absoluteTimePoints;
+//	}
+
+	public void setConflictAvoidLevel(char conflictAvoidLevel) {
+		this.conflictAvoidLevel = conflictAvoidLevel;
+	}
+
+	public boolean[][][][] getAllSolutionsValues() {
+		return allSolutionsValues;
+	}
+
+	public void setAllSolutionsValues(boolean[][][][] allSolutionsValues) {
+		this.allSolutionsValues = allSolutionsValues;
+	}
+
+	public void setFinalAllSolutionsValues(boolean[][][][] finalValues2) {
+		this.allSolutionsValues = finalValues2;
+	}
+
 	public List<NotBothLink> getNotBothLink() {
 		return notBothLink;
 	}
@@ -378,6 +391,5 @@ public class ModelSpec {
 	public void setAnalysisType(String analysisType) {
 		this.analysisType = analysisType;
 	}
-	
 	
 }

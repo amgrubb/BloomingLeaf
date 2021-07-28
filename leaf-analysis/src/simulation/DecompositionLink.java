@@ -8,44 +8,31 @@ import gson_classes.ICell;
 public class DecompositionLink extends ElementLink {
 	private DecompositionType preDecomposition = null;
 	private DecompositionType postDecomposition = null;
-	private int absTime = -1; 					//Optional absolute time of transition.
 
-	public DecompositionLink(LinkableElement[] s, LinkableElement d, DecompositionType r1, DecompositionType r2, int absoluteTime) {
+	public DecompositionLink(LinkableElement[] s, LinkableElement d, DecompositionType r1) {
 		super(s, d);
 		this.preDecomposition = r1;
-		this.postDecomposition = r2;
-		this.absTime = absoluteTime;
 	}
-
+	public DecompositionLink(LinkableElement[] s, LinkableElement d, DecompositionType r1, DecompositionType r2, Integer absoluteTime) {
+		super(s, d, absoluteTime);
+		this.preDecomposition = r1;
+		this.postDecomposition = r2;
+	}
+	
 	public DecompositionType getPreDecomposition() {
 		return preDecomposition;
 	}
-
-//	public void setPreDecomposition(DecompositionType preDecomposition) {
-//		this.preDecomposition = preDecomposition;
-//	}
 
 	public DecompositionType getPostDecomposition() {
 		return postDecomposition;
 	}
 
-//	public void setPostDecomposition(DecompositionType postDecomposition) {
-//		this.postDecomposition = postDecomposition;
-//	}
-
-	public int getAbsTime() {
-		return absTime;
-	}
 	public static List<DecompositionLink> createDecompositionLinks(ArrayList<ICell> allDecompositionLinks, List<IntentionalElement> elementList) {
 		List<DecompositionLink> decompositionList = new ArrayList<DecompositionLink>();
 
 		while (allDecompositionLinks.size() > 0) {				
 			String destID = allDecompositionLinks.get(0).getTargetID();
-			int absTime;
-			if (allDecompositionLinks.get(0).getLink().getAbsTime() == null)
-				absTime = -1;
-			else
-				absTime = allDecompositionLinks.get(0).getLink().getAbsTime();
+			int absTime = allDecompositionLinks.get(0).getLink().getAbsTime();		//TODO: Add check to make sure all AbsTime values are the same.
 			IntentionalElement intentElementDest = getIntentionalElementByUniqueID(destID, elementList);
 			ArrayList<ICell> curDestLinks = new ArrayList<ICell>();
 			boolean evolve = false;
@@ -85,7 +72,7 @@ public class DecompositionLink extends ElementLink {
 					dType = DecompositionType.AND;
 				if (orLink)
 					dType = DecompositionType.OR;
-				decompositionList.add(new DecompositionLink(linkElementsSrc, intentElementDest, dType, null, -1));
+				decompositionList.add(new DecompositionLink(linkElementsSrc, intentElementDest, dType));
 			} else {
 				if (andPost && orPost)
 					throw new IllegalArgumentException("Invalid evolving decomposition relationship type.");
