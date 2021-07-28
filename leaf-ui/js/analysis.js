@@ -9,7 +9,7 @@ analysis.elements = [];
 analysis.currentState;
 let tempResults;
 let filterOrderQueue = [];
-let analysisRequest;
+// let analysisRequest;
 let analysisResult;
 let savedAnalysisData;
 let selectedResult;
@@ -22,24 +22,38 @@ let model;
 window.onload = function(){
     //This merge the attributes of old page and new page
     analysis.page = jQuery.extend({}, window.opener.document);
+    var curRequest = Request.QueryString["myvar"];
+    console.log(curRequest);
     init();
     renderNavigationSidebar();
 }
 
 function init(){
     //Page objects
-    analysis.graph = graph;
+    analysis.graph = new joint.dia.BloomingGraph();
     analysis.paper;
     analysis.paperScroller;
 
     //Objects from parent page
     //analysis.parentResults = jQuery.extend({}, window.opener.global_analysisResult);
 
+    // var curRequest = configCollection.findWhere({selected: true});
+    // var curResult = curRequest.previousAttributes().results.findWhere({selected: true}); 
+    // curRequest.set('action', 'allNextStates');
+    // curRequest.set('previousAnalysis', curResult);
+
+    // var analysisRequest = getAnalysisRequest();
+    // const {curRequest} = require('./onFunctions.js');
+    // import * as curRequest from './onFunctions';
+    // console.log(curRequest);
+    // console.log(analysisRequest);
+
     console.log(window.opener.savedAnalysisData);
     savedAnalysisData = _.clone(jQuery.extend(true, {}, window.opener.savedAnalysisData));
     console.log(savedAnalysisData);
     //tempResults = jQuery.extend(true, {}, window.opener.savedAnalysisData.allNextStatesResult);
     analysisRequest =  jQuery.extend(true, {}, window.opener.analysisRequest);
+    console.log(analysisRequest);
     analysisResult = jQuery.extend(true, {}, window.opener.analysisResult);
     graph = jQuery.extend({}, window.opener.graph);
     selectedResult = analysisRequest.returnSelectedResultBBM();
@@ -113,9 +127,11 @@ function updateNodesValues(currentPage, step = 0){
 
     var cell;
     var value;
-    for(var i = 0; i < analysis.elements.length; i++){
-        cell = analysis.elements[i];
-        value = analysis.analysisResult.allSolution[currentPage].intentionElements[i].status[step];
+    for (let cell of analysis.graph.getElements()) {
+    // for(var i = 0; i < analysis.elements.length; i++){
+        // cell = analysis.elements[i];
+        // value = analysis.analysisResult.allSolution[currentPage].intentionElements[i].status[step];
+        satValue ;
         cell.attributes.attrs[".satvalue"].value = value;
 
         //Change backend value to user friendly view
@@ -150,7 +166,6 @@ function updateNodesValues(currentPage, step = 0){
             cell.removeAttr(".satvalue/d");
         }
     }
-
 }
 
 function updatePagination(currentPage){

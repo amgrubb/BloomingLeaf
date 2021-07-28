@@ -425,9 +425,19 @@ paper.on("link:options", function (cell) {
         curRequest.set('previousAnalysis', curResult);        
         console.log(JSON.stringify(curRequest));
         console.log(curRequest);
-        backendSimulationRequest(curRequest);    
+        backendSimulationRequest(curRequest); 
+        
+        // getAnalysisRequest();
+        
     }); 
-    
+
+    function getAnalysisRequest() {
+        var curRequest = configCollection.findWhere({selected: true});
+        var curResult = curRequest.previousAttributes().results.findWhere({selected: true}); 
+        curRequest.set('action', 'allNextStates');
+        curRequest.set('previousAnalysis', curResult);
+    }
+
     /**
      * Helper function for switching to Analysis view.
      */

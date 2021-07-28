@@ -166,10 +166,11 @@ function convertToAnalysisResult(results){
 	return tempResult;
 }
 
-function open_analysis_viewer(){
+function open_analysis_viewer(analysisRequest){
+	var analysisStringify = JSON.stringify(analysisRequest);
     var urlBase = document.URL.substring(0, document.URL.lastIndexOf('/')+1);
     var url = urlBase+"analysis.html";
-    var w = window.open(url, Date.now(), "status=0,title=0,height=600,width=1200,scrollbars=1");
+    var w = window.open(url + "?myvar=" + encodeURI(analysisStringify), Date.now(), "status=0,title=0,height=600,width=1200,scrollbars=1");
 
     if (!w) {
         alert('You must allow popups for this map to work.');
