@@ -9,21 +9,27 @@ analysis.elements = [];
 analysis.currentState;
 let tempResults;
 let filterOrderQueue = [];
-// let analysisRequest;
+let analysisRequest;
 let analysisResult;
 let savedAnalysisData;
 let selectedResult;
 let graph;
 let current;
 
-let model;
-
 //Executing scripts only when page is fully loaded
 window.onload = function(){
     //This merge the attributes of old page and new page
     analysis.page = jQuery.extend({}, window.opener.document);
-    var curRequest = sessionStorage.getItem("Request");
-    console.log(curRequest);
+    analysisRequest = JSON.parse(sessionStorage.getItem("Request"));
+    console.log(analysisRequest);
+    /**
+     *    
+        previousAnalysis: null,
+        selected: true,
+        results : new ResultCollection([]),
+     */
+    // var curRequest2 = new ConfigBBM({name: curRequest.name, action: curRequest.action, conflictLevel: curRequest.conflictLevel, numRelTime: curRequest.numRelTime, currentState: curRequest.currentState, previousAnalysis: curRequest.previousAnalysis});
+    // console.log(curRequest2);
     init();
     renderNavigationSidebar();
 }
@@ -35,32 +41,22 @@ function init(){
     analysis.paperScroller;
 
     //Objects from parent page
-    //analysis.parentResults = jQuery.extend({}, window.opener.global_analysisResult);
+    analysis.parentResults = jQuery.extend({}, window.opener.global_analysisResult);
 
-    // var curRequest = configCollection.findWhere({selected: true});
-    // var curResult = curRequest.previousAttributes().results.findWhere({selected: true}); 
-    // curRequest.set('action', 'allNextStates');
-    // curRequest.set('previousAnalysis', curResult);
-
-    // var analysisRequest = getAnalysisRequest();
-    // const {curRequest} = require('./onFunctions.js');
-    // import * as curRequest from './onFunctions';
-    // console.log(curRequest);
-    // console.log(analysisRequest);
-
-    console.log(window.opener.savedAnalysisData);
-    savedAnalysisData = _.clone(jQuery.extend(true, {}, window.opener.savedAnalysisData));
-    console.log(savedAnalysisData);
+    // savedAnalysisData = _.clone(jQuery.extend(true, {}, window.opener.savedAnalysisData));
     //tempResults = jQuery.extend(true, {}, window.opener.savedAnalysisData.allNextStatesResult);
-    analysisRequest =  jQuery.extend(true, {}, window.opener.analysisRequest);
-    console.log(analysisRequest);
-    analysisResult = jQuery.extend(true, {}, window.opener.analysisResult);
-    graph = jQuery.extend({}, window.opener.graph);
-    selectedResult = analysisRequest.returnSelectedResultBBM();
-    console.log(selectedResult);
-    current = parseInt(selectedResult.get('selectedTimePoint'));
-    console.log(current);
 
+    console.log(analysisRequest);
+    analysisResult = analysisRequest.previousAnalysis;
+    graph = jQuery.extend({}, window.opener.graph);
+    // for (let cell of analysis.graph.getElements()) {
+    for (let result of analysisRequest.results) {
+        if (result.selected == true) {
+            selectedResult = result;
+        }
+    }
+    console.log(selectedResult);
+    current = parseInt(selectedResult.selectedTimePoint);
 
     analysis.paper = new joint.dia.Paper({
         width: 1200,
@@ -88,17 +84,19 @@ function init(){
 
     analysis.graph.fromJSON(JSON.parse(JSON.stringify(window.opener.graph.toJSON())));
 
+    /** TODO: reimplement this
     //Filter out Actors
-    for (var e = 0; e < analysis.graph.getElements().length; e++){
-        if (!(analysis.graph.getElements()[e] instanceof joint.shapes.basic.Actor))
-            analysis.elements.push(analysis.graph.getElements()[e]);
+    for (var i = 0; i < analysis.graph.getElements().length; i++){
+        if (!(analysis.graph.getElements()[i] instanceof joint.shapes.basic.Actor))
+            analysis.elements.push(analysis.graph.getElements()[i]);
     }
+    */
 
     if(!analysis.analysisResult){
-        analysis.analysisResult = savedAnalysisData.allNextStatesResult;
+        analysis.analysisResult = analysisRequest.previousAnalysis;
     }
-    model =  jQuery.extend({}, window.opener.model);
 }
+
 
 function renderNavigationSidebar(currentPage = 0){
     clear_pagination_values();
@@ -124,47 +122,50 @@ function updateNodesValues(currentPage, step = 0){
 
     //Set the currentState variable so it can be sent back to the original path
     analysis.currentState = analysis.analysisResult.allSolution[currentPage];
-
-    var cell;
-    var value;
-    for (let cell of analysis.graph.getElements()) {
-    // for(var i = 0; i < analysis.elements.length; i++){
+    var i = 0;
+    for (let element of analysis.graph.getElements()) {
+        console.log(analysis.graph.getElements());
         // cell = analysis.elements[i];
         // value = analysis.analysisResult.allSolution[currentPage].intentionElements[i].status[step];
-        satValue ;
-        cell.attributes.attrs[".satvalue"].value = value;
+        satValue = selectedResult.elementList[i].status[step];
+        console.log(satValue);
+        console.log(element);
+        console.log(element.prop(".satvalue"));
+        element.prop(".satvalue").value = satValue;
+        console.log(element.prop[".satvalue"].value);
 
         //Change backend value to user friendly view
-        if ((value == "0001") || (value == "0011")) {
-            cell.attr(".satvalue/text", "(F, ⊥)");
-            cell.attr({text:{fill:'black'}});
-        }else if(value == "0010") {
-            cell.attr(".satvalue/text", "(P, ⊥)");
-            cell.attr({text:{fill:'black'}});
-        }else if ((value == "1000") || (value == "1100")){
-            cell.attr(".satvalue/text", "(⊥, F)");
-            cell.attr({text:{fill:'black'}});
-        }else if (value == "0100") {
-            cell.attr(".satvalue/text", "(⊥, P)");
-            cell.attr({text:{fill:'black'}});
-        }else if (value == "0110") {
-            cell.attr(".satvalue/text", "(P, P)");
-            cell.attr({text:{fill:'red'}});
-        }else if ((value == "1110") || (value == "1010")){
-            cell.attr(".satvalue/text", "(P, F)");
-            cell.attr({text:{fill:'red'}});
-        }else if ((value == "0111") || (value == "0101")){
-            cell.attr(".satvalue/text", "(F, P)");
-            cell.attr({text:{fill:'red'}});
-        }else if ((value == "1111") || (value == "1001") || (value == "1101") || (value == "1011") ){
-            cell.attr(".satvalue/text", "(F, F)");
-            cell.attr({text:{fill:'red'}});
-        }else if (value == "0000") {
-            cell.attr(".satvalue/text", "(⊥,⊥)");
-            cell.attr({text:{fill:'black'}});
+        if ((satValue == "0001") || (satValue == "0011")) {
+            element.attr(".satvalue/text", "(F, ⊥)");
+            element.attr({text:{fill:'black'}});
+        }else if(satValue == "0010") {
+            element.attr(".satvalue/text", "(P, ⊥)");
+            element.attr({text:{fill:'black'}});
+        }else if ((satValue == "1000") || (satValue == "1100")){
+            element.attr(".satvalue/text", "(⊥, F)");
+            element.attr({text:{fill:'black'}});
+        }else if (satValue == "0100") {
+            element.attr(".satvalue/text", "(⊥, P)");
+            element.attr({text:{fill:'black'}});
+        }else if (satValue == "0110") {
+            element.attr(".satvalue/text", "(P, P)");
+            element.attr({text:{fill:'red'}});
+        }else if ((satValue == "1110") || (satValue == "1010")){
+            element.attr(".satvalue/text", "(P, F)");
+            element.attr({text:{fill:'red'}});
+        }else if ((satValue == "0111") || (satValue == "0101")){
+            element.attr(".satvalue/text", "(F, P)");
+            element.attr({text:{fill:'red'}});
+        }else if ((satValue == "1111") || (satValue == "1001") || (satValue == "1101") || (satValue == "1011") ){
+            element.attr(".satvalue/text", "(F, F)");
+            element.attr({text:{fill:'red'}});
+        }else if (satValue == "0000") {
+            element.attr(".satvalue/text", "(⊥,⊥)");
+            element.attr({text:{fill:'black'}});
         }else {
-            cell.removeAttr(".satvalue/d");
+            element.removeAttr(".satvalue/d");
         }
+        i++;
     }
 }
 

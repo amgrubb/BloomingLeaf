@@ -167,9 +167,10 @@ function convertToAnalysisResult(results){
 }
 
 function open_analysis_viewer(analysisRequest){
+	console.log(analysisRequest);
 	var analysisStringify = JSON.stringify(analysisRequest);
+	sessionStorage.setItem("Request", analysisStringify);
     var urlBase = document.URL.substring(0, document.URL.lastIndexOf('/')+1);
-	sessionStorage.setItem("Request", analysisStringify)
     var url = urlBase+"analysis.html";
     var w = window.open(url, Date.now(), "status=0,title=0,height=600,width=1200,scrollbars=1");
 
