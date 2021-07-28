@@ -28,14 +28,16 @@ window.onload = function(){
 
 function init(){
     //Page objects
-    analysis.graph = new joint.dia.BloomingGraph();
+    analysis.graph = graph;
     analysis.paper;
     analysis.paperScroller;
 
     //Objects from parent page
     //analysis.parentResults = jQuery.extend({}, window.opener.global_analysisResult);
 
+    console.log(window.opener.savedAnalysisData);
     savedAnalysisData = _.clone(jQuery.extend(true, {}, window.opener.savedAnalysisData));
+    console.log(savedAnalysisData);
     //tempResults = jQuery.extend(true, {}, window.opener.savedAnalysisData.allNextStatesResult);
     analysisRequest =  jQuery.extend(true, {}, window.opener.analysisRequest);
     analysisResult = jQuery.extend(true, {}, window.opener.analysisResult);
@@ -43,6 +45,7 @@ function init(){
     selectedResult = analysisRequest.returnSelectedResultBBM();
     console.log(selectedResult);
     current = parseInt(selectedResult.get('selectedTimePoint'));
+    console.log(current);
 
 
     analysis.paper = new joint.dia.Paper({
@@ -338,8 +341,6 @@ function add_filter(){
                 }
                 break;
             case "mostTasksSatisfied":
-                console.log("mostTasksSatisfied");
-                console.log(tempResults.allSolution.length);
 
                 var index_to_keep = [];
                 var index_to_rm = [];
