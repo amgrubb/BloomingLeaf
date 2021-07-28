@@ -133,7 +133,7 @@ function responseFunc(analysisRequest, response) {
 				savedAnalysisData.allNextStatesResult = results;
 				console.log(savedAnalysisData.allNextStatesResult);
 				console.log(results);				
-				open_analysis_viewer();
+				open_analysis_viewer(analysisRequest);
 		} else if (analysisRequest.get('action') == 'singlePath') {
 				savedAnalysisData.singlePathResult = results;	//	TODO What is this?
 				console.log(JSON.stringify(results));			// Print the results of the analysis to the console.
@@ -169,8 +169,9 @@ function convertToAnalysisResult(results){
 function open_analysis_viewer(analysisRequest){
 	var analysisStringify = JSON.stringify(analysisRequest);
     var urlBase = document.URL.substring(0, document.URL.lastIndexOf('/')+1);
+	sessionStorage.setItem("Request", analysisStringify)
     var url = urlBase+"analysis.html";
-    var w = window.open(url + "?myvar=" + encodeURI(analysisStringify), Date.now(), "status=0,title=0,height=600,width=1200,scrollbars=1");
+    var w = window.open(url, Date.now(), "status=0,title=0,height=600,width=1200,scrollbars=1");
 
     if (!w) {
         alert('You must allow popups for this map to work.');

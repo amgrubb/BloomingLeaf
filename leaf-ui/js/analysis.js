@@ -22,7 +22,7 @@ let model;
 window.onload = function(){
     //This merge the attributes of old page and new page
     analysis.page = jQuery.extend({}, window.opener.document);
-    var curRequest = Request.QueryString["myvar"];
+    var curRequest = sessionStorage.getItem("Request");
     console.log(curRequest);
     init();
     renderNavigationSidebar();
