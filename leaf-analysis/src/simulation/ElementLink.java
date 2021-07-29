@@ -30,7 +30,7 @@ public class ElementLink {
 		linkTP = getNewLinkTP();
 	}
 	private static String getNewLinkTP() {
-		String tp = String.format("LTP", linkTPcounter);
+		String tp = "LTP" + linkTPcounter;
 		linkTPcounter++;
 		return tp;
 	}

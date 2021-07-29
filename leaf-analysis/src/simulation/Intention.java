@@ -131,24 +131,10 @@ public class Intention extends LinkableElement {
 		
 		return element;
 	}
-	
-	private class FunctionSegment {
-		String startTP;
-		Integer startAT;
-		String type;
-		String refEvidencePair;
-		private FunctionSegment(String type, String refEvidencePair, String startTimePoint, Integer startAbsTime, String intentionID) {
-			this.startTP = "E" + intentionID + "TP" + startTimePoint;
-			this.startAT = startAbsTime;
-			this.type = type;
-			this.refEvidencePair = refEvidencePair;
-		} 
-		private FunctionSegment(String type, String refEvidencePair, String startTimePoint, Integer startAbsTime) {
-			this.startTP = startTimePoint;
-			this.startAT = startAbsTime;
-			this.type = type;
-			this.refEvidencePair = refEvidencePair;
-		} 
+
+	public FunctionSegment[] getEvolvingFunctions() {
+		return evolvingFunctions;
 	}
+	
 	
 }

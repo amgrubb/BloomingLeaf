@@ -101,8 +101,14 @@ public class BICSPAlgorithm {
 		for (int i = 0; i < this.intentions.length; i++)
 			this.intentions[i] = elementList.get(i);
 
+		HashMap<Integer, List<String>> modelAbstime = this.spec.getAbsTimePoints();
+		//TODO: START HERE
+		// Incorporate model constraints and past values.
+		System.out.print(modelAbstime.size());
 		
+		//HashMap<String, Integer> modelTPs = this.spec.getModelTimePoints();
     	
+		
 //		this.constraints = new ArrayList<Constraint>();		
 //    	this.functionEBCollection = new HashMap<IntentionalElement, IntVar[]>();
 //    	this.decompEBCollection = new HashMap<EvolvingDecomposition, IntVar>();
@@ -115,11 +121,11 @@ public class BICSPAlgorithm {
     	//System.out.println(this.spec.getInitialValueTimePoints());
     	//System.out.println(this.spec.getInitialValues());
     	//TODO: Start here!!
-    	if (DEBUG)
-			System.out.println("Length of initialValueTimePoints: " + this.spec.getInitialValueTimePoints().length + 
-					"\nLength of initialValues()[0]: " + this.spec.getInitialValues()[0].length);
-    	if (this.spec.getInitialValueTimePoints().length != this.spec.getInitialValues()[0].length)
-    		throw new Exception("Input Error: The length of initialValueTimePoints and initialValues[0] do not match.");
+//    	if (DEBUG)
+//			System.out.println("Length of initialValueTimePoints: " + this.spec.getInitialValueTimePoints().length + 
+//					"\nLength of initialValues()[0]: " + this.spec.getInitialValues()[0].length);
+//    	if (this.spec.getInitialValueTimePoints().length != this.spec.getInitialValues()[0].length)
+//    		throw new Exception("Input Error: The length of initialValueTimePoints and initialValues[0] do not match.");
 
 		// Determine the number of observation steps.
 		// Add constraints between Intention EBs.

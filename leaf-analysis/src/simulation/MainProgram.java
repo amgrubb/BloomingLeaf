@@ -28,52 +28,55 @@ public class MainProgram {
 		//This is the default filePath to be executed if no file is pass through parameters
 		String filePath = "temp/"; 			
 		String inputFile = "default.json";
-		String outputFile = "output.out";
+		//String outputFile = "output.out";
 				
 		try {
-			// Creating the backend model to be analyzed
+			// Creating the back-end model to be analyzed
 			ModelSpec modelSpec = convertBackboneModelFromFile(filePath + inputFile);
 
 			System.out.print(modelSpec.getMaxTime());
 //			// Creates the store and constraint problem to be solved.
-//			TroposCSPAlgorithm solver = new TroposCSPAlgorithm(modelSpec);
+			BICSPAlgorithm solver = new BICSPAlgorithm(modelSpec);
 //			//long startTime = System.currentTimeMillis();                            //Scaleability Testing
 //			solver.solveModel();
 //            //long endTime = System.currentTimeMillis();                              //Scalability Testing
 //            //System.out.print("Time:" + (endTime - startTime));					  //Scalability Testing
 //			createOutputFile(solver, filePath + outputFile);
-	
-		} catch (RuntimeException e) {
-			try {
-				File file;
-				file = new File(filePath + outputFile);
-				if (!file.exists()) {
-					file.createNewFile();
-				}
-				PrintWriter printFile = new PrintWriter(file);
-				String message = "{ \"errorMessage\" : \"RuntimeException: " + e.getMessage() + "\" }";
-				message = message.replaceAll("\\r\\n|\\r|\\n", " ");
-				printFile.printf(message);
-				printFile.close();
-			} catch (Exception f) {
-				throw new RuntimeException("Error while writing ErrorMessage: " + f.getMessage());
-			}
+			System.out.print(solver.toString());
 		} catch (Exception e) {
-			try {
-				File file;
-				file = new File(filePath + outputFile);
-				if (!file.exists()) {
-					file.createNewFile();
-				}
-				PrintWriter printFile = new PrintWriter(file);
-				String message = "{ \"errorMessage\" : \"Exception: " + e.getMessage() + "\" }";
-				message = message.replaceAll("\\r\\n|\\r|\\n", " ");
-				printFile.printf(message);
-				printFile.close();
-			} catch (Exception f) {
-				throw new RuntimeException("Error while writing ErrorMessage: " + f.getMessage());
-			}
-		} 
+			System.err.print(e);
+		}
+//		} catch (RuntimeException e) {
+//			try {
+//				File file;
+//				file = new File(filePath + outputFile);
+//				if (!file.exists()) {
+//					file.createNewFile();
+//				}
+//				PrintWriter printFile = new PrintWriter(file);
+//				String message = "{ \"errorMessage\" : \"RuntimeException: " + e.getMessage() + "\" }";
+//				message = message.replaceAll("\\r\\n|\\r|\\n", " ");
+//				printFile.printf(message);
+//				printFile.close();
+//			} catch (Exception f) {
+//				throw new RuntimeException("Error while writing ErrorMessage: " + f.getMessage());
+//			}
+//		} catch (Exception e) {
+//			try {
+//				File file;
+//				file = new File(filePath + outputFile);
+//				if (!file.exists()) {
+//					file.createNewFile();
+//				}
+//				PrintWriter printFile = new PrintWriter(file);
+//				String message = "{ \"errorMessage\" : \"Exception: " + e.getMessage() + "\" }";
+//				message = message.replaceAll("\\r\\n|\\r|\\n", " ");
+//				printFile.printf(message);
+//				printFile.close();
+//			} catch (Exception f) {
+//				throw new RuntimeException("Error while writing ErrorMessage: " + f.getMessage());
+//			}
+//		} 
 	}
 
 // TODO: Add back in once Tropos Rewritten	

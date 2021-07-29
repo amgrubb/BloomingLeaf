@@ -30,6 +30,7 @@ public class ModelSpec {
 	private List<DecompositionLink> decompositionLinks = new ArrayList<DecompositionLink>();
 	private List<NotBothLink> notBothLink = new ArrayList<NotBothLink>();
 
+	//TODO Deal with constraints.
 	private BIConstraint[] constraintsBetweenTPs;
 	
 	// To Be Removed
@@ -88,17 +89,57 @@ public class ModelSpec {
     public HashMap<String, Integer> getModelTimePoints(){
     	HashMap<String, Integer> tpHash = new HashMap<String, Integer>();
     	tpHash.putAll(absTP);
-//    	private List<Intention> intentions = new ArrayList<Intention>();
-//    	private List<ContributionLink> contributionLinks = new ArrayList<ContributionLink>();
-//    	private List<DecompositionLink> decompositionLinks = new ArrayList<DecompositionLink>();
-//    	private List<NotBothLink> notBothLink = new ArrayList<NotBothLink>();
-    	//for (List<NotBothLink> link: notBothLink) {
-//    	for (List<DecompositionLink> link : decompositionLinks) {
-//    		if (link.isE)
-//    	}
+
+    	for (Intention node : intentions) {
+    		FunctionSegment[] segList = node.getEvolvingFunctions();
+    		for (int i = 0; i < segList.length; i++)
+    			addItemToHash(tpHash, segList[i].getStartTP(), segList[i].getStartAT());
+    	}
+    	for (DecompositionLink link : decompositionLinks) 
+    		if (link.isEvolving())
+    			addItemToHash(tpHash, link.getLinkTP(), link.getAbsTime());
+    	for (ContributionLink link : contributionLinks) 
+    		if (link.isEvolving())
+    			addItemToHash(tpHash, link.getLinkTP(), link.getAbsTime());  
+    	for (NotBothLink link : notBothLink) 
+   			addItemToHash(tpHash, link.getLinkTP(), link.getAbsTime()); 
     	return tpHash;
     }
-  
+    public HashMap<Integer, List<String>> getAbsTimePoints(){
+    	HashMap<String, Integer> tpHash = getModelTimePoints();
+    	
+    	
+    	HashMap<Integer, List<String>> absTPHashList = new HashMap<Integer, List<String>>();
+    	List<String> nullList = new ArrayList<>();
+    	//
+    	
+    	for (Map.Entry<String, Integer> set : tpHash.entrySet()) {
+    		if (set.getValue() == null) {
+    			nullList.add(set.getKey());
+    		} else if (absTPHashList.containsKey(set.getValue())){
+    			List<String> iTPList = absTPHashList.get(set.getValue());
+    			iTPList.add(set.getKey());
+    			absTPHashList.put(set.getValue(), iTPList);
+    		} else {
+    			List<String> iTPList = new ArrayList<>();
+    			iTPList.add(set.getKey());
+    			absTPHashList.put(set.getValue(), iTPList);
+    		}    			
+    	}
+    	absTPHashList.put(-1, nullList);
+    	return absTPHashList;
+    }
+    
+    //Helper function for getModelTimePoints() to avoid duplicate code.
+    private void addItemToHash(HashMap<String, Integer> hash, String key, Integer value) {
+    	if (!hash.containsKey(key))
+    		hash.put(key, value);
+    	else {
+    		Integer oldVal = hash.get(key);
+    		if (oldVal != value)
+    			throw new RuntimeException();    		
+    	}
+    }
     
     //TODO: Reimplement
 //	public OutputModel getOutputModel() {
@@ -218,29 +259,29 @@ public class ModelSpec {
 //		return userEvaluations;
 //	}
 
-	public boolean[][][] getFinalValues() {
-		return finalValues;
-	}
-
-	public int[] getFinalValueTimePoints() {
-		return finalValueTimePoints;
-	}
-
-	public HashMap<String, Integer> getFinalAssignedEpochs() {
-		return finalAssignedEpochs;
-	}
-
-	public void setFinalValues(boolean[][][] finalValues) {
-		this.finalValues = finalValues;
-	}
-
-	public void setFinalValueTimePoints(int[] finalValueTimePoints) {
-		this.finalValueTimePoints = finalValueTimePoints;
-	}
-
-	public void setFinalAssignedEpochs(HashMap<String, Integer> finalAssignedEpochs) {
-		this.finalAssignedEpochs = finalAssignedEpochs;
-	}
+//	public boolean[][][] getFinalValues() {
+//		return finalValues;
+//	}
+//
+//	public int[] getFinalValueTimePoints() {
+//		return finalValueTimePoints;
+//	}
+//
+//	public HashMap<String, Integer> getFinalAssignedEpochs() {
+//		return finalAssignedEpochs;
+//	}
+//
+//	public void setFinalValues(boolean[][][] finalValues) {
+//		this.finalValues = finalValues;
+//	}
+//
+//	public void setFinalValueTimePoints(int[] finalValueTimePoints) {
+//		this.finalValueTimePoints = finalValueTimePoints;
+//	}
+//
+//	public void setFinalAssignedEpochs(HashMap<String, Integer> finalAssignedEpochs) {
+//		this.finalAssignedEpochs = finalAssignedEpochs;
+//	}
 
 	public int[] getInitialValueTimePoints() {
 		return initialValueTimePoints;
@@ -366,17 +407,17 @@ public class ModelSpec {
 		this.conflictAvoidLevel = conflictAvoidLevel;
 	}
 
-	public boolean[][][][] getAllSolutionsValues() {
-		return allSolutionsValues;
-	}
-
-	public void setAllSolutionsValues(boolean[][][][] allSolutionsValues) {
-		this.allSolutionsValues = allSolutionsValues;
-	}
-
-	public void setFinalAllSolutionsValues(boolean[][][][] finalValues2) {
-		this.allSolutionsValues = finalValues2;
-	}
+//	public boolean[][][][] getAllSolutionsValues() {
+//		return allSolutionsValues;
+//	}
+//
+//	public void setAllSolutionsValues(boolean[][][][] allSolutionsValues) {
+//		this.allSolutionsValues = allSolutionsValues;
+//	}
+//
+//	public void setFinalAllSolutionsValues(boolean[][][][] finalValues2) {
+//		this.allSolutionsValues = finalValues2;
+//	}
 
 	public List<NotBothLink> getNotBothLink() {
 		return notBothLink;

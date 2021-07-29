@@ -38,4 +38,8 @@ public class NotBothLink {
 	public boolean isFinalDenied() {
 		return finalDenied;
 	}
+	public String getLinkTP() {
+		return linkTP;
+	}
+	
 }
