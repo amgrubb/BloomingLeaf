@@ -111,8 +111,8 @@ function renderNavigationSidebar(currentPage = 0){
     updatePagination(currentPage);
     updateNodesValues(currentPage);
 
-    EVONextState.setColorBlindFromPrevWindow();
-    EVONextState.refresh();
+    // EVONextState.setColorBlindFromPrevWindow();
+    // EVONextState.refresh();
 }
 
 
@@ -128,11 +128,7 @@ function updateNodesValues(currentPage, step = 0){
         // cell = analysis.elements[i];
         // value = analysis.analysisResult.allSolution[currentPage].intentionElements[i].status[step];
         satValue = selectedResult.elementList[i].status[step];
-        console.log(satValue);
-        console.log(element);
-        console.log(element.prop(".satvalue"));
-        element.prop(".satvalue").value = satValue;
-        console.log(element.prop[".satvalue"].value);
+        element.attr(".satvalue").value = satValue;
 
         //Change backend value to user friendly view
         if ((satValue == "0001") || (satValue == "0011")) {
@@ -171,7 +167,8 @@ function updateNodesValues(currentPage, step = 0){
 
 function updatePagination(currentPage){
     var pagination = document.getElementById("pagination");
-    var nextSteps_array_size = analysis.analysisResult.allSolution.length;
+    // var nextSteps_array_size = analysis.analysisResult.allSolution.length;
+    var nextSteps_array_size = selectedResult.allSolution.length;
     if(nextSteps_array_size > 6){
         renderPreviousBtn(pagination, currentPage);
         if(currentPage - 3 < 0){
@@ -211,7 +208,8 @@ function renderPreviousBtn(pagination, currentPage){
 
 function renderForwardBtn(pagination, currentPage){
     var value;
-    var nextSteps_array_size = analysis.analysisResult.allSolution.length;
+    // var nextSteps_array_size = analysis.analysisResult.allSolution.length;
+    var nextSteps_array_size = selectedResult.allSolution.length;
 
     if(currentPage == nextSteps_array_size-1){
         value = currentPage;
@@ -242,7 +240,8 @@ function clear_pagination_values(){
 
 function goToState(){
     var requiredState = parseInt(document.getElementById("requiredState").value);
-    var nextSteps_array_size = analysis.analysisResult.allSolution.length;
+    // var nextSteps_array_size = analysis.analysisResult.allSolution.length;
+    var nextSteps_array_size = selectedResult.allSolution.length;
 
     if((requiredState != "NaN") && (requiredState > 0)){
         if(requiredState > nextSteps_array_size){
@@ -256,7 +255,7 @@ function goToState(){
 
 function add_filter(){
     console.log("clicked");
-    tempResults = jQuery.extend(true, {}, window.opener.savedAnalysisData.allNextStatesResult);
+    // tempResults = jQuery.extend(true, {}, window.opener.savedAnalysisData.allNextStatesResult);
     var checkboxes = document.getElementsByClassName("filter_checkbox");
     for (var i_element = 0; i_element < checkboxes.length; i_element++){
         var checkbox = checkboxes[i_element];
@@ -279,11 +278,12 @@ function add_filter(){
         switch(filterOrderQueue[i_element]){
             case "conflictFl":
                 console.log("conflictFl");
-                console.log(tempResults.allSolution.length);
+                console.log(selectedResult.allSolution.length);
                 var index_to_rm = [];
-                for (var solution_index=0; solution_index < tempResults.allSolution.length; solution_index++) {
-                    for (var element_index=0; element_index < tempResults.allSolution[solution_index].intentionElements.length; element_index++){
-                        var value = tempResults.allSolution[solution_index].intentionElements[element_index].status[0];
+                for (var solution_index=0; solution_index < selectedResult.allSolution.length; solution_index++) {
+                    // TODO: what is intentionElements???
+                    for (var element_index=0; element_index < selectedResult.allSolution[solution_index].intentionElements.length; element_index++){
+                        var value = selectedResult.allSolution[solution_index].intentionElements[element_index].status[0];
                         if (	(value == "0110") ||
                             (value == "0111") ||
                             (value == "0101") ||
@@ -299,17 +299,17 @@ function add_filter(){
                     }
                 }
                 for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
-                    tempResults.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
+                    selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
                 }
                 break;
             case "ttFl":
                 console.log("ttFl");
-                console.log(tempResults.allSolution.length);
+                console.log(selectedResult.allSolution.length);
 
                 var index_to_rm = [];
-                for (var solution_index=0; solution_index < tempResults.allSolution.length; solution_index++) {
-                    for (var element_index=0; element_index < tempResults.allSolution[solution_index].intentionElements.length; element_index++){
-                        var value = tempResults.allSolution[solution_index].intentionElements[element_index].status[0];
+                for (var solution_index=0; solution_index < selectedResult.allSolution.length; solution_index++) {
+                    for (var element_index=0; element_index < selectedResult.allSolution[solution_index].intentionElements.length; element_index++){
+                        var value = selectedResult.allSolution[solution_index].intentionElements[element_index].status[0];
                         if (	value == "0000"){
                             index_to_rm.push(solution_index);
                             break;
@@ -317,23 +317,23 @@ function add_filter(){
                     }
                 }
                 for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
-                    tempResults.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
+                    selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
                 }
                 break;
             case "leastTasksSatisfied":
                 console.log("leastTasksSatisfied");
-                console.log(tempResults.allSolution.length);
+                console.log(selectedResult.allSolution.length);
 
                 var index_to_keep = [];
                 var index_to_rm = [];
 
-                var least_t_s = tempResults.allSolution.length;
-                for (var solution_index=0; solution_index < tempResults.allSolution.length; solution_index++) {
+                var least_t_s = selectedResult.allSolution.length;
+                for (var solution_index=0; solution_index < selectedResult.allSolution.length; solution_index++) {
                     var num_t_s = 0;
-                    for (var element_index=0; element_index < tempResults.allSolution[solution_index].intentionElements.length; element_index++){
+                    for (var element_index=0; element_index < selectedResult.allSolution[solution_index].intentionElements.length; element_index++){
                         //
-                        if (tempResults.allSolution[solution_index].intentionElements[element_index].type === "TASK"){
-                            var value = tempResults.allSolution[solution_index].intentionElements[element_index].status[0];
+                        if (selectedResult.allSolution[solution_index].intentionElements[element_index].type === "TASK"){
+                            var value = selectedResult.allSolution[solution_index].intentionElements[element_index].status[0];
                             if ((value == "0010" || value == "0011")){
                                 num_t_s ++;
                             }
@@ -353,7 +353,7 @@ function add_filter(){
                 }
                 index_to_rm.sort(function(a, b){return a-b});
                 for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
-                    tempResults.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
+                    selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
                 }
                 break;
             case "mostTasksSatisfied":
@@ -362,12 +362,12 @@ function add_filter(){
                 var index_to_rm = [];
 
                 var most_t_s = 0;
-                for (var solution_index=0; solution_index < tempResults.allSolution.length; solution_index++) {
+                for (var solution_index=0; solution_index < selectedResult.allSolution.length; solution_index++) {
                     var num_t_s = 0;
-                    for (var element_index=0; element_index < tempResults.allSolution[solution_index].intentionElements.length; element_index++){
+                    for (var element_index=0; element_index < selectedResult.allSolution[solution_index].intentionElements.length; element_index++){
                         //
-                        if (tempResults.allSolution[solution_index].intentionElements[element_index].type === "TASK"){
-                            var value = tempResults.allSolution[solution_index].intentionElements[element_index].status[0];
+                        if (selectedResult.allSolution[solution_index].intentionElements[element_index].type === "TASK"){
+                            var value = selectedResult.allSolution[solution_index].intentionElements[element_index].status[0];
                             if ((value == "0010" || value == "0011")){
                                 num_t_s ++;
                             }
@@ -387,22 +387,22 @@ function add_filter(){
                 }
                 index_to_rm.sort(function(a, b){return a-b});
                 for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
-                    tempResults.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
+                    selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
                 }
                 break;
             case "leastResource":
                 console.log("leastResource");
-                console.log(tempResults.allSolution.length);
+                console.log(selectedResult.allSolution.length);
 
                 var index_to_keep = [];
                 var index_to_rm = [];
 
-                var least_r_s = tempResults.allSolution.length;
-                for (var solution_index=0; solution_index < tempResults.allSolution.length; solution_index++) {
+                var least_r_s = selectedResult.allSolution.length;
+                for (var solution_index=0; solution_index < selectedResult.allSolution.length; solution_index++) {
                     var num_r_s = 0;
-                    for (var element_index=0; element_index < tempResults.allSolution[solution_index].intentionElements.length; element_index++){
-                        if (tempResults.allSolution[solution_index].intentionElements[element_index].type === "RESOURCE"){
-                            var value = tempResults.allSolution[solution_index].intentionElements[element_index].status[0];
+                    for (var element_index=0; element_index < selectedResult.allSolution[solution_index].intentionElements.length; element_index++){
+                        if (selectedResult.allSolution[solution_index].intentionElements[element_index].type === "RESOURCE"){
+                            var value = selectedResult.allSolution[solution_index].intentionElements[element_index].status[0];
                             if ((value == "0010" || value == "0011")){
                                 num_r_s ++;
                             }
@@ -422,22 +422,22 @@ function add_filter(){
                 }
                 index_to_rm.sort(function(a, b){return a-b});
                 for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
-                    tempResults.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
+                    selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
                 }
                 break;
             case "mostResource":
                 console.log("mostResource");
-                console.log(tempResults.allSolution.length);
+                console.log(selectedResult.allSolution.length);
 
                 var index_to_keep = [];
                 var index_to_rm = [];
 
                 var most_r_s = 0;
-                for (var solution_index=0; solution_index < tempResults.allSolution.length; solution_index++) {
+                for (var solution_index=0; solution_index < selectedResult.allSolution.length; solution_index++) {
                     var num_r_s = 0;
-                    for (var element_index=0; element_index < tempResults.allSolution[solution_index].intentionElements.length; element_index++){
-                        if (tempResults.allSolution[solution_index].intentionElements[element_index].type === "RESOURCE"){
-                            var value = tempResults.allSolution[solution_index].intentionElements[element_index].status[0];
+                    for (var element_index=0; element_index < selectedResult.allSolution[solution_index].intentionElements.length; element_index++){
+                        if (selectedResult.allSolution[solution_index].intentionElements[element_index].type === "RESOURCE"){
+                            var value = selectedResult.allSolution[solution_index].intentionElements[element_index].status[0];
                             if ((value == "0010" || value == "0011")){
                                 num_r_s ++;
                             }
@@ -457,22 +457,22 @@ function add_filter(){
                 }
                 index_to_rm.sort(function(a, b){return a-b});
                 for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
-                    tempResults.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
+                    selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
                 }
                 break;
             case "leastGoalSatisfied":
                 console.log("leastGoalSatisfied");
-                console.log(tempResults.allSolution.length);
+                console.log(selectedResult.allSolution.length);
 
                 var index_to_keep = [];
                 var index_to_rm = [];
 
-                var least_goal_s = tempResults.allSolution.length;
-                for (var solution_index=0; solution_index < tempResults.allSolution.length; solution_index++) {
+                var least_goal_s = selectedResult.allSolution.length;
+                for (var solution_index=0; solution_index < selectedResult.allSolution.length; solution_index++) {
                     var num_g_s = 0;
-                    for (var element_index=0; element_index < tempResults.allSolution[solution_index].intentionElements.length; element_index++){
-                        if (tempResults.allSolution[solution_index].intentionElements[element_index].type === "GOAL"){
-                            var value = tempResults.allSolution[solution_index].intentionElements[element_index].status[0];
+                    for (var element_index=0; element_index < selectedResult.allSolution[solution_index].intentionElements.length; element_index++){
+                        if (selectedResult.allSolution[solution_index].intentionElements[element_index].type === "GOAL"){
+                            var value = selectedResult.allSolution[solution_index].intentionElements[element_index].status[0];
                             if ((value == "0010" || value == "0011")){
                                 num_g_s ++;
                             }
@@ -492,22 +492,22 @@ function add_filter(){
                 }
                 index_to_rm.sort(function(a, b){return a-b});
                 for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
-                    tempResults.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
+                    selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
                 }
                 break;
             case "mostGoalSatisfied":
                 console.log("mostGoalSatisfied");
-                console.log(tempResults.allSolution.length);
+                console.log(selectedResult.allSolution.length);
 
                 var index_to_keep = [];
                 var index_to_rm = [];
 
                 var most_goal_s = 0;
-                for (var solution_index=0; solution_index < tempResults.allSolution.length; solution_index++) {
+                for (var solution_index=0; solution_index < selectedResult.allSolution.length; solution_index++) {
                     var num_g_s = 0;
-                    for (var element_index=0; element_index < tempResults.allSolution[solution_index].intentionElements.length; element_index++){
-                        if (tempResults.allSolution[solution_index].intentionElements[element_index].type === "GOAL"){
-                            var value = tempResults.allSolution[solution_index].intentionElements[element_index].status[0];
+                    for (var element_index=0; element_index < selectedResult.allSolution[solution_index].intentionElements.length; element_index++){
+                        if (selectedResult.allSolution[solution_index].intentionElements[element_index].type === "GOAL"){
+                            var value = selectedResult.allSolution[solution_index].intentionElements[element_index].status[0];
                             if ((value == "0010" || value == "0011")){
                                 num_g_s ++;
                             }
@@ -527,23 +527,23 @@ function add_filter(){
                 }
                 index_to_rm.sort(function(a, b){return a-b});
                 for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
-                    tempResults.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
+                    selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
                 }
                 break;
             case "LeastActor":
                 console.log("LeastActor");
-                console.log(tempResults.allSolution.length);
+                console.log(selectedResult.allSolution.length);
 
-                var least_actor = tempResults.allSolution.length;
+                var least_actor = selectedResult.allSolution.length;
                 var index_to_keep = [];
                 var index_to_rm = [];
-                for (var solution_index = 0; solution_index < tempResults.allSolution.length; solution_index++) {
+                for (var solution_index = 0; solution_index < selectedResult.allSolution.length; solution_index++) {
                     var actors = {};
-                    for (var element_index = 0; element_index < tempResults.allSolution[solution_index].intentionElements.length; element_index++) {
-                        if (! actors[tempResults.allSolution[solution_index].intentionElements[element_index].actorId]){
-                            actors[tempResults.allSolution[solution_index].intentionElements[element_index].actorId] = 0;
+                    for (var element_index = 0; element_index < selectedResult.allSolution[solution_index].intentionElements.length; element_index++) {
+                        if (! actors[selectedResult.allSolution[solution_index].intentionElements[element_index].actorId]){
+                            actors[selectedResult.allSolution[solution_index].intentionElements[element_index].actorId] = 0;
                         }
-                        var value = tempResults.allSolution[solution_index].intentionElements[element_index].status[0];
+                        var value = selectedResult.allSolution[solution_index].intentionElements[element_index].status[0];
                         if ((value == "0010" || value == "0011" || (value == "0110") ||
                             (value == "0111") ||
                             (value == "0101") ||
@@ -553,7 +553,7 @@ function add_filter(){
                             (value == "1001") ||
                             (value == "1101") ||
                             (value == "1011"))){
-                            actors[tempResults.allSolution[solution_index].intentionElements[element_index].actorId] =1;
+                            actors[selectedResult.allSolution[solution_index].intentionElements[element_index].actorId] =1;
                         }
                     }
                     var int_sat = Object.values(actors).reduce((a, b) => a + b);
@@ -572,23 +572,23 @@ function add_filter(){
                 }
                 index_to_rm.sort(function(a, b){return a-b});
                 for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
-                    tempResults.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
+                    selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
                 }
                 break;
             case "mostActor":
                 console.log("mostActor");
-                console.log(tempResults.allSolution.length);
+                console.log(selectedResult.allSolution.length);
 
                 var most_actor = 0;
                 var index_to_keep = [];
                 var index_to_rm = [];
-                for (var solution_index = 0; solution_index < tempResults.allSolution.length; solution_index++) {
+                for (var solution_index = 0; solution_index < selectedResult.allSolution.length; solution_index++) {
                     var actors = {};
-                    for (var element_index = 0; element_index < tempResults.allSolution[solution_index].intentionElements.length; element_index++) {
-                        if (! actors[tempResults.allSolution[solution_index].intentionElements[element_index].actorId]){
-                            actors[tempResults.allSolution[solution_index].intentionElements[element_index].actorId] = 0;
+                    for (var element_index = 0; element_index < selectedResult.allSolution[solution_index].intentionElements.length; element_index++) {
+                        if (! actors[selectedResult.allSolution[solution_index].intentionElements[element_index].actorId]){
+                            actors[selectedResult.allSolution[solution_index].intentionElements[element_index].actorId] = 0;
                         }
-                        var value = tempResults.allSolution[solution_index].intentionElements[element_index].status[0];
+                        var value = selectedResult.allSolution[solution_index].intentionElements[element_index].status[0];
                         if ((value == "0010" || value == "0011" || (value == "0110") ||
                             (value == "0111") ||
                             (value == "0101") ||
@@ -598,7 +598,7 @@ function add_filter(){
                             (value == "1001") ||
                             (value == "1101") ||
                             (value == "1011"))){
-                            actors[tempResults.allSolution[solution_index].intentionElements[element_index].actorId] =1;
+                            actors[selectedResult.allSolution[solution_index].intentionElements[element_index].actorId] =1;
                         }
                     }
                     console.log(actors);
@@ -619,18 +619,18 @@ function add_filter(){
                 }
                 index_to_rm.sort(function(a, b){return a-b});
                 for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
-                    tempResults.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
+                    selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
                 }
                 break;
             case "mostConstraintSatisfaction":
                 var domains = {};
-                for (var solution_index = 0; solution_index < tempResults.allSolution.length; solution_index++) {
-                    for (var element_index = 0; element_index < tempResults.allSolution[solution_index].intentionElements.length; element_index++) {
-                        if (! domains[tempResults.allSolution[solution_index].intentionElements[element_index].id]){
-                            domains[tempResults.allSolution[solution_index].intentionElements[element_index].id] = [tempResults.allSolution[solution_index].intentionElements[element_index].status[0]];
+                for (var solution_index = 0; solution_index < selectedResult.allSolution.length; solution_index++) {
+                    for (var element_index = 0; element_index < selectedResult.allSolution[solution_index].intentionElements.length; element_index++) {
+                        if (! domains[selectedResult.allSolution[solution_index].intentionElements[element_index].id]){
+                            domains[selectedResult.allSolution[solution_index].intentionElements[element_index].id] = [tempResults.allSolution[solution_index].intentionElements[element_index].status[0]];
                         } else {
-                            if (domains[tempResults.allSolution[solution_index].intentionElements[element_index].id].indexOf(tempResults.allSolution[solution_index].intentionElements[element_index].status[0]) == -1){
-                                domains[tempResults.allSolution[solution_index].intentionElements[element_index].id].push(tempResults.allSolution[solution_index].intentionElements[element_index].status[0])
+                            if (domains[selectedResult.allSolution[solution_index].intentionElements[element_index].id].indexOf(tempResults.allSolution[solution_index].intentionElements[element_index].status[0]) == -1){
+                                domains[selectedResult.allSolution[solution_index].intentionElements[element_index].id].push(tempResults.allSolution[solution_index].intentionElements[element_index].status[0])
                             }
                         }
                     }
@@ -649,10 +649,10 @@ function add_filter(){
                     }
                 });
                 var index_to_rm = [];
-                for (var solution_index = 0; solution_index < tempResults.allSolution.length; solution_index++) {
-                    for (var element_index = 0; element_index < tempResults.allSolution[solution_index].intentionElements.length; element_index++) {
-                        if (int_with_smallest_domain.indexOf(tempResults.allSolution[solution_index].intentionElements[element_index].id) != -1){
-                            if (tempResults.allSolution[solution_index].intentionElements[element_index].status[0] !== "0011"){
+                for (var solution_index = 0; solution_index < selectedResult.allSolution.length; solution_index++) {
+                    for (var element_index = 0; element_index < selectedResult.allSolution[solution_index].intentionElements.length; element_index++) {
+                        if (int_with_smallest_domain.indexOf(selectedResult.allSolution[solution_index].intentionElements[element_index].id) != -1){
+                            if (selectedResult.allSolution[solution_index].intentionElements[element_index].status[0] !== "0011"){
                                 index_to_rm.push(solution_index);
                                 break;
                             }
@@ -660,7 +660,7 @@ function add_filter(){
                     }
                 }
                 for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
-                    tempResults.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
+                    selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
                 }
                 break;
             default:
@@ -669,14 +669,19 @@ function add_filter(){
         }
     }
 
-    analysis.analysisResult = tempResults;
+    // analysis.analysisResult = tempResults;
+    for (let result of analysisRequest.results) {
+        if (result.selected == true) {
+            analysisRequest.result = selectedResult;
+        }
+    }
 
     renderNavigationSidebar();
 }
 
 
 function updateAnalysisRequestWithCurrentState(){
-    analysisRequest =  jQuery.extend(true, {}, window.opener.analysisRequest);
+    // analysisRequest =  jQuery.extend(true, {}, window.opener.analysisRequest);
 
     // updating input analysis
     var index_of_selected_state = parseInt(document.getElementById("currentPage").value);
