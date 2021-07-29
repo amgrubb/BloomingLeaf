@@ -201,6 +201,9 @@ var Config = Backbone.View.extend({
      * Sets selected value to true and triggers a switchConfig event to update highlight
      */
     switchConfig: function () {
+        $('#modelingSlider').css("display", "");
+        $('#analysisSlider').css("display", "none");
+        IntentionColoring.refresh(undefined)
         this.model.set({ selected: true });
     },
 

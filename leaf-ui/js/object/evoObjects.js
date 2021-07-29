@@ -152,7 +152,7 @@ class EVO {
             case '1':
             case '2':
             case '3':
-                if (analysisResult !== null){
+                if (analysisResult !== undefined){
                     if (analysisResult.get('selected')){
                         EVO.colorIntentionsAnalysis(analysisResult);
                     }
@@ -388,7 +388,7 @@ class EVO {
             }
             intention = elements[i].get('intention');
             initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair'); 
-            if(analysisResult !== null){
+            if(analysisResult !== undefined){
                 if(!analysisResult.get('isPathSim')){   
                     if (initSatVal === '(no value)') {
                         curr.attr('.satvalue/text', '');

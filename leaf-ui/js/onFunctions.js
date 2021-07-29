@@ -341,7 +341,7 @@ paper.on("link:options", function (cell) {
     /** Initialize configCollection within scope of brackets */
     let configCollection = new ConfigCollection([]);
     let configInspector = null;
-    let selectResult = null;
+    let selectResult = undefined;
 
     $('#simulate-single-path-btn').on('click', function() {
         var curRequest = configCollection.findWhere({selected: true});
@@ -402,7 +402,7 @@ paper.on("link:options", function (cell) {
          */
         function switchToModellingMode() {
             setInteraction(true);
-            if (selectResult !== null){
+            if (selectResult !== undefined){
                 selectResult.set('selected', false);
             }
             // Remove Slider
