@@ -18,7 +18,7 @@ var ResultView = Backbone.View.extend({
     },
 
     template: ['<script type="text/template" id="result-template">',
-        '<a class="result-elements" id="<%= name %>" <% if (selected) { %> style="background-color:#A9A9A9;" <%} %>)>', "<%= name %>", '</a>',
+        '<button class="result-elements" id="<%= name %>" <% if (selected) { %> style="background-color:#A9A9A9;" <%} %>)>', "<%= name %>", '</button>',
         '</script>'].join(''),
 
     /** Render updates model values in template (name & selected) */
