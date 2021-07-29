@@ -29,6 +29,7 @@ public class BICSPAlgorithm {
 	private int numIntentions;								// Number of intentions in the model.
 	
 	// Problem Variables:
+	private IntVar[] timePoints;							// Holds the list of time points to be solved.
 	private BooleanVar[][][] values;						// ** Holds the evaluations for each [this.numIntentions][this.numTimePoints][FS/PS/PD/FD Predicates]
 	
 	
@@ -102,9 +103,15 @@ public class BICSPAlgorithm {
 			this.intentions[i] = elementList.get(i);
 
 		HashMap<Integer, List<String>> modelAbstime = this.spec.getAbsTimePoints();
+		List<String> unassignedTimePoint = modelAbstime.get(-1);
+		modelAbstime.remove(-1);
+		this.numTP = modelAbstime.size() + unassignedTimePoint.size();
+		
+		
+		
 		//TODO: START HERE
 		// Incorporate model constraints and past values.
-		System.out.print(modelAbstime.size());
+		System.out.print(this.numTP);
 		
 		//HashMap<String, Integer> modelTPs = this.spec.getModelTimePoints();
     	

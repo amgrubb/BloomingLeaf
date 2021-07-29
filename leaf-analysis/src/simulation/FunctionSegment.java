@@ -10,7 +10,7 @@ public class FunctionSegment {
 		if (startAbsTime != null && startAbsTime == 0)
 			this.startTP = "Initial";
 		else
-			this.startTP = "E" + intentionID + "TP" + startTimePoint;
+			this.startTP = "E" + intentionID + "TP" + startTimePoint.charAt(0);
 		this.startAT = startAbsTime;
 		this.type = type;
 		this.refEvidencePair = refEvidencePair;
@@ -32,6 +32,9 @@ public class FunctionSegment {
 	}
 	public String getRefEvidencePair() {
 		return refEvidencePair;
+	}
+	public void updateStartTP(String startTP) {
+		this.startTP = startTP;
 	} 
 	
 	

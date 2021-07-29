@@ -1,6 +1,6 @@
 package simulation;
 
-public class NotBothLink {
+public class NotBothLink extends AbstractElement{
 	private static int linkTPcounter = 1;
 	private Intention element1;
 	private Intention element2;
@@ -8,11 +8,12 @@ public class NotBothLink {
 	private String linkTP = null;
 	private	boolean finalDenied;			// True for NBD and False for NBT links.
 	
-	public NotBothLink(Intention element1, Intention element2, boolean finalValueDenied, Integer absoluteTime){
+	public NotBothLink(Intention element1, Intention element2, boolean finalValueDenied, Integer absoluteTime, String uniqueID){
 //		if (!(element1.getDynamicType() == IntentionalElementDynamicType.NB || element1.getDynamicType() == IntentionalElementDynamicType.NT))
 //			System.err.println("Error: NotBothLink of " + element1.id + " and " + element2.id + " has intention with incorrect type (element 1).");
 //		if (!(element2.getDynamicType() == IntentionalElementDynamicType.NB || element2.getDynamicType() == IntentionalElementDynamicType.NT))
 //			System.err.println("Error: NotBothLink of " + element1.id + " and " + element2.id + " has intention with incorrect type (element 2).");
+		super(uniqueID);
 		this.element1 = element1;
 		this.element2 = element2;
 		this.absTime = absoluteTime;
@@ -40,6 +41,9 @@ public class NotBothLink {
 	}
 	public String getLinkTP() {
 		return linkTP;
+	}
+	public void updateLinkTP(String newLinkTP) {
+		linkTP = newLinkTP;
 	}
 	
 }

@@ -2,17 +2,17 @@ package simulation;
 
 import gson_classes.BILink;
 
-public class ContributionLink extends ElementLink {
+public class ContributionLink extends AbstractElementLink {
 	private ContributionType preContribution = null;
 	private ContributionType postContribution = null;
 
-	public ContributionLink(LinkableElement s, LinkableElement d, ContributionType r1) {
-		super(new LinkableElement[]{s}, d);
+	public ContributionLink(AbstractLinkableElement s, AbstractLinkableElement d, ContributionType r1, String uniqueID) {
+		super(new AbstractLinkableElement[]{s}, d, uniqueID);
 		this.preContribution = r1;
 	}
 
-	public ContributionLink(LinkableElement s, LinkableElement d, ContributionType r1, ContributionType r2, Integer absoluteTime) {
-		super(new LinkableElement[]{s}, d, absoluteTime);
+	public ContributionLink(AbstractLinkableElement s, AbstractLinkableElement d, ContributionType r1, ContributionType r2, Integer absoluteTime, String uniqueID) {
+		super(new AbstractLinkableElement[]{s}, d, absoluteTime, uniqueID);
 		this.preContribution = r1;
 		this.postContribution = r2;
 	}
@@ -31,7 +31,7 @@ public class ContributionLink extends ElementLink {
 	 * @param link Input link properties.
 	 * @return creates a contribution link, but null if decomposition link, error if incorrect link.
 	 */
-	public static ContributionLink createConstributionLink(LinkableElement s, LinkableElement d, BILink link) {
+	public static ContributionLink createConstributionLink(AbstractLinkableElement s, AbstractLinkableElement d, BILink link, String uniqueID) {
 		String linkType = link.getLinkType();
 		if (linkType.equals("NBT") || linkType.equals("NBD"))
 			throw new IllegalArgumentException("NBT/NBD relation not filtered prior to contriubtion links.");
@@ -42,7 +42,7 @@ public class ContributionLink extends ElementLink {
 				case "++":  case "+":  case "-":  case "--":
 				case "++S": case "+S": case "-S": case "--S":
 				case "++D": case "+D": case "-D": case "--D":
-					return new ContributionLink(s, d, ContributionType.getByCode(linkType));
+					return new ContributionLink(s, d, ContributionType.getByCode(linkType), uniqueID);
 				case "and":
 				case "or":
 				case "AND":
@@ -60,11 +60,11 @@ public class ContributionLink extends ElementLink {
 				case "++D": case "+D": case "-D": case "--D":
 					switch (postType) {
 						case "no": case "NO":
-							return new ContributionLink(s, d, ContributionType.getByCode(linkType), ContributionType.getByCode("no"), link.getAbsTime());
+							return new ContributionLink(s, d, ContributionType.getByCode(linkType), ContributionType.getByCode("no"), link.getAbsTime(), uniqueID);
 						case "++":  case "+":  case "-":  case "--":
 						case "++S": case "+S": case "-S": case "--S":
 						case "++D": case "+D": case "-D": case "--D":
-							return new ContributionLink(s, d, ContributionType.getByCode(linkType), ContributionType.getByCode(postType), link.getAbsTime());
+							return new ContributionLink(s, d, ContributionType.getByCode(linkType), ContributionType.getByCode(postType), link.getAbsTime(), uniqueID);
 						default:
 							throw new IllegalArgumentException("Invalid relationship type (type 1): " + linkType);
 					}
@@ -75,7 +75,7 @@ public class ContributionLink extends ElementLink {
 						case "++":  case "+":  case "-":  case "--":
 						case "++S": case "+S": case "-S": case "--S":
 						case "++D": case "+D": case "-D": case "--D":
-							return new ContributionLink(s, d, ContributionType.getByCode("no"), ContributionType.getByCode(postType), link.getAbsTime());
+							return new ContributionLink(s, d, ContributionType.getByCode("no"), ContributionType.getByCode(postType), link.getAbsTime(), uniqueID);
 						case "and": case "or": case "AND": case "OR":
 							return null;
 						default:

@@ -7,7 +7,7 @@ import gson_classes.BIFunctionSegment;
 import gson_classes.BIUserEvaluation;
 import gson_classes.ICell;
 
-public class Intention extends LinkableElement {
+public class Intention extends AbstractLinkableElement {
 	private static int idcounter = 0;
 	
 	@SuppressWarnings("unused")
@@ -31,6 +31,23 @@ public class Intention extends LinkableElement {
 		String backID = String.format("%03d", idcounter);
 		idcounter++;
 		return backID;
+	}
+	
+	public String getRealFuncSegTP(String initialTP) {
+		char letter = initialTP.charAt(0);
+		int segNum = letter - 'A' + 1;
+		if (evolvingFunctions.length > (segNum + 1))
+			return null;
+		else
+			return evolvingFunctions[segNum].getStartTP();
+	}
+	public boolean updateRealFuncSegTP(String oldSegTP, String newSegTP) {
+		for (FunctionSegment seg : evolvingFunctions) 
+			if (seg.getStartTP().equals(oldSegTP)){
+				seg.updateStartTP(newSegTP);
+				return true;
+			}
+		return false;
 	}
 	
 	private FunctionSegment[] unrollBIEvolvingFunction(BIEvolvingFunction inFunc) {

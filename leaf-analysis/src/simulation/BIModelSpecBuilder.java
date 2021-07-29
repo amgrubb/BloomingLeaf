@@ -151,9 +151,6 @@ public class BIModelSpecBuilder {
 			readAnalysisParameters(modelSpec, inObject.getAnalysisRequest(),
 					intentions.size()); 
 			readOverallGraphParameters(modelSpec, frontendModel);	
-			if (frontendModel.getConstraints() != null)
-				modelSpec.setConstraintsBetweenTPs(frontendModel.getConstraints());
-
 			
 			// **** ACTORS **** - Getting Actor Data
 			if (!actors.isEmpty()) {
@@ -193,19 +190,19 @@ public class BIModelSpecBuilder {
 					String linkType = link.getLink().getLinkType();
 					String linkSrcID = link.getSourceID();
 					String linkDestID = link.getTargetID();
-					Intention intentElementSrc = getIntentionByUniqueID(linkSrcID, modelSpec.getIntentionList());
-					Intention intentElementDest = getIntentionByUniqueID(linkDestID, modelSpec.getIntentionList());
+					Intention intentElementSrc = modelSpec.getIntentionByUniqueID(linkSrcID);
+					Intention intentElementDest = modelSpec.getIntentionByUniqueID(linkDestID);
 					
 					
 					if (linkType.equals("NBT"))
 						notBothLink.add(new NotBothLink(intentElementSrc, intentElementDest, false, 
-								link.getLink().getAbsTime()));
+								link.getLink().getAbsTime(), link.getId()));
 					else if (linkType.equals("NBD"))	
 						notBothLink.add(new NotBothLink(intentElementSrc, intentElementDest, true, 
-								link.getLink().getAbsTime()));
+								link.getLink().getAbsTime(), link.getId()));
 					else {
 						ContributionLink tempCont = ContributionLink.createConstributionLink(intentElementSrc, 
-								intentElementDest, link.getLink());
+								intentElementDest, link.getLink(), link.getId());
 						if (tempCont != null)
 							contributionLinks.add(tempCont);
 						else
@@ -215,59 +212,19 @@ public class BIModelSpecBuilder {
 				modelSpec.setNotBothLink(notBothLink);
 				modelSpec.setContributionLinks(contributionLinks); 
 				modelSpec.setDecompositionLinks(DecompositionLink.createDecompositionLinks(allDecompositionLinks, 
-						modelSpec.getIntentionList()));
+						modelSpec));
 			}
 
-			
+			// After all intentions, relationship, and function have been establish, then apply constraints.
+			if (frontendModel.getConstraints() != null)
+				modelSpec.applyConstraints(frontendModel.getConstraints());
+			if (DEBUG) System.out.println("Added model constraints.");
+
 			if (DEBUG) System.out.println("Returning Model Spec!!!!");
 			return modelSpec;
 
 		} catch (Exception e) {
 			throw new RuntimeException(e.getMessage());
 		}
-	}
-
-//	/**
-//	 * Returns the evaluation array which is an array of length 4 which represents
-//	 * the evalValue
-//	 * @param evalValue
-//	 * evalValue of interest
-//	 * @return
-//	 * returns the evaluation array
-//	 */
-//	private static boolean[] getEvaluationArray(String evalValue) {
-//		// This function was created as a temporary fix to issue #155
-//		// The evalValue variable is an evaluation label for an intention.
-//		// If the evaluation label is not a 4 digit binary string, for now, this will be
-//		// considered to be equivalent to the evaluation label: "0000".
-//		// ie, evaluation array will be an array of length 4, containing all false values.
-//
-//		if (evalValue.matches("[01]+") && evalValue.length() == 4) {
-//			boolean[] res = new boolean[4];
-//			for (int i = 0; i < 4; i++) {
-//				res[i] = (evalValue.charAt(i) == '1');
-//			}
-//			return res;
-//		} else {
-//			return new boolean[] {false, false, false, false};
-//		}
-//
-//	}
-
-	/**
-	 * Return the first Intention by its ID
-	 * @param elementId
-	 * The id of the required element
-	 * @param list
-	 * The model specification containing a list of all intentional elements
-	 * @return
-	 * returns the intentional element if exist or null
-	 */
-	private static Intention getIntentionByUniqueID(String elementId, List<Intention> list) {
-		for(Intention iElement : list){
-			if(iElement.getUniqueID().equals(elementId))
-				return iElement;
-		}
-		return null;
 	}
 }

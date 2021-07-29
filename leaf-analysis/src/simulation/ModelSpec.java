@@ -16,10 +16,6 @@ import gson_classes.BIConstraint;
 
 
 /**
- * @author A.M.Grubb
- *
- */
-/**
  * @author amgrubb
  *
  */
@@ -29,9 +25,12 @@ public class ModelSpec {
 	private List<ContributionLink> contributionLinks = new ArrayList<ContributionLink>();
 	private List<DecompositionLink> decompositionLinks = new ArrayList<DecompositionLink>();
 	private List<NotBothLink> notBothLink = new ArrayList<NotBothLink>();
-
-	//TODO Deal with constraints.
-	private BIConstraint[] constraintsBetweenTPs;
+	private List<Constraint> constraints = new ArrayList<Constraint>();
+	
+	// Store the names of any time point names that are changed for reference.
+	//		Original -> MergedTP/Element
+	private HashMap<String, String> changedTPNames  = new HashMap<String, String>();
+	private HashMap<String, AbstractElement> changedTPElements = new HashMap<String, AbstractElement>();
 	
 	// To Be Removed
 //	private List<IntentionalElement> intElements = new ArrayList<IntentionalElement>();
@@ -56,6 +55,7 @@ public class ModelSpec {
     
    //TODO: Merge with initialTimePoint function.
     private HashMap<String, Integer> initialAssignedEpochs; //Hash map to hold the epochs with assigned values.
+    
     
     private int[] initialValueTimePoints = new int[] {0};		// Hold the assigned times for each of the initial Values. Should be same length of second paramater of initialValues;
     private boolean[][][] initialValues;		// Holds the initial values whether they are single or multiple.
@@ -84,27 +84,194 @@ public class ModelSpec {
     	}
 	}
 
-    // ************* OTHER FUNCTIONS ************* 
-    
-    public HashMap<String, Integer> getModelTimePoints(){
-    	HashMap<String, Integer> tpHash = new HashMap<String, Integer>();
-    	tpHash.putAll(absTP);
+	/** 
+	 * Return the first Intention by its unique element ID
+	 * @param elementId The id of the required element
+	 * @return returns the intentional element if exist or null
+	 */
+	public Intention getIntentionByUniqueID(String elementId) {
+		for(Intention iElement : this.intentions){
+			if(iElement.getUniqueID().equals(elementId))
+				return iElement;
+		}
+		return null;
+	}
+	
+	/**
+	 * Returns a link (decomposition/contribution) associated with the
+	 * unique id provided 
+	 * @param elementId unique id for link
+	 * @return returns the element if exist or null
+	 */
+	private AbstractElementLink getLinkByUniqueID(String elementId) {
+		for (DecompositionLink link : decompositionLinks) 
+			if(link.isIDInDecompositionLink(elementId))
+				return link;
+		for (ContributionLink link : contributionLinks) 
+			if(link.getUniqueID().equals(elementId))
+				return link;
+		return null;	
+	}
+	
+	/**
+	 * Returns a Not Both Function link associated with the
+	 * unique id provided 
+	 * @param elementId unique id for link
+	 * @return returns the element if exist or null
+	 */
+	private NotBothLink getNBLinkByUniqueID(String elementId) {
+		for (NotBothLink link : notBothLink) 
+			if(link.getUniqueID().equals(elementId))
+				return link;
+		return null;	
+	}
+	
+	/**
+	 * Generic function to return an element based on it's unique id.
+	 * Iterates through each type of element.
+	 * @param uniqueID unique id for element
+	 * @return returns the element if exist or null
+	 */
+	private AbstractElement getElementByUniqueID(String uniqueID) {
+		AbstractElement element = null;
+		element = getIntentionByUniqueID(uniqueID);
+		if (element != null) 
+			return element;
+		element = getLinkByUniqueID(uniqueID);
+		if (element != null) 
+			return element;
+		element = getNBLinkByUniqueID(uniqueID);
+		if (element != null) 
+			return element;
+		return null;	
+	}
+	/**
+	 * Return the time point associated for a link or function segment 
+	 * @param element the model element of the desired time point
+	 * @param initialTP FunctionSegment start with a character 0,A,B,C,etc.
+	 * @return	the full name of the time point
+	 */
+	private String getRefTP(AbstractElement element, String initialTP) {
+		if (element instanceof Intention)
+			return ((Intention) element).getRealFuncSegTP(initialTP);
+		else if (element instanceof AbstractElementLink)
+			return ((AbstractElementLink) element).getLinkTP();
+		else if (element instanceof NotBothLink)
+			return ((NotBothLink) element).getLinkTP();
+		else
+			return null;	
+	}
 
-    	for (Intention node : intentions) {
-    		FunctionSegment[] segList = node.getEvolvingFunctions();
-    		for (int i = 0; i < segList.length; i++)
-    			addItemToHash(tpHash, segList[i].getStartTP(), segList[i].getStartAT());
+	/**
+	 * Update the time point name when time points are being merged
+	 * @param element the model element of the desired time point
+	 * @param oldTP	the old time point value
+	 * @param newTP the new time point value
+	 * @return whether the function was able to find the old value and update it
+	 */
+	private boolean updateRefTP(AbstractElement element, String oldTP, String newTP) {
+		if (element instanceof Intention)
+			return ((Intention) element).updateRealFuncSegTP(oldTP, newTP);
+		else if (element instanceof AbstractElementLink) {
+			((AbstractElementLink) element).updateLinkTP(newTP);
+			return true;
+		} else if (element instanceof NotBothLink) {
+			((NotBothLink) element).updateLinkTP(newTP);
+			return true;
+		} else
+			return false;	
+	}
+	
+
+    /**
+     * Applies the input constraints BBM to the model spec.
+     * Note: Can only be executed after all intentions, relationship, 
+     * and function have been establish, then apply constraints.
+     * @param constraints 	list of input constraint objects
+     */
+    public void applyConstraints(BIConstraint[] constraints){
+    	List<BIConstraint> equalList = new ArrayList<BIConstraint>();
+    	List<BIConstraint> lessThanList = new ArrayList<BIConstraint>();
+    	for (BIConstraint item : constraints) {
+    		if (item.getType().equals("="))
+    			equalList.add(item);
+    		else {
+    			lessThanList.add(item);
+    		}   		
     	}
-    	for (DecompositionLink link : decompositionLinks) 
-    		if (link.isEvolving())
-    			addItemToHash(tpHash, link.getLinkTP(), link.getAbsTime());
-    	for (ContributionLink link : contributionLinks) 
-    		if (link.isEvolving())
-    			addItemToHash(tpHash, link.getLinkTP(), link.getAbsTime());  
-    	for (NotBothLink link : notBothLink) 
-   			addItemToHash(tpHash, link.getLinkTP(), link.getAbsTime()); 
-    	return tpHash;
-    }
+    	
+    	// Update refTPs for '=' constraints.
+    	for (BIConstraint item : equalList) {    		
+    		// Maybe have already been updated.
+    		AbstractElement refEle1 = this.getElementByUniqueID(item.getSrcID());
+    		AbstractElement refEle2 = this.getElementByUniqueID(item.getDestID());
+			String refTP1 = this.getRefTP(refEle1, item.getSrcRefTP());
+			String refTP2 = this.getRefTP(refEle2, item.getDestRefTP());			
+			String mergeTP = refTP1 + "-" + refTP2;
+			// Update refTP1
+			if (!changedTPNames.containsValue(refTP1)) {
+				if (this.updateRefTP(refEle1, refTP1, mergeTP)) {
+					this.changedTPElements.put(refTP1, refEle1);
+					this.changedTPNames.put(refTP1, mergeTP);
+				}else
+					throw new RuntimeException(); 
+			}else {
+				List<String> affectedKeys = new ArrayList<String>();
+				for	(Map.Entry<String,String> entry : changedTPNames.entrySet()) {
+					if (entry.getValue().equals(refTP1)) 
+						affectedKeys.add(entry.getKey());
+				}
+				for	(String key : affectedKeys) {
+					if (this.updateRefTP(this.changedTPElements.get(key), this.changedTPNames.get(key), mergeTP)) {
+						//this.changedTPNames.remove(key);
+						this.changedTPNames.put(key, mergeTP);
+					}else
+						throw new RuntimeException(); 
+	
+				}
+			}
+			// Update refTP2
+			if (!changedTPNames.containsValue(refTP2)) {
+				if (this.updateRefTP(refEle2, refTP2, mergeTP)) {
+					this.changedTPElements.put(refTP2, refEle2);
+					this.changedTPNames.put(refTP2, mergeTP);
+				}else
+					throw new RuntimeException(); 
+			}else {
+				List<String> affectedKeys = new ArrayList<String>();
+				for	(Map.Entry<String,String> entry : changedTPNames.entrySet()) {
+					if (entry.getValue().equals(refTP2)) 
+						affectedKeys.add(entry.getKey());
+				}
+				for	(String key : affectedKeys) {
+					if (this.updateRefTP(this.changedTPElements.get(key), this.changedTPNames.get(key), mergeTP)) {
+						//this.changedTPNames.remove(key);
+						this.changedTPNames.put(key, mergeTP);
+					}else
+						throw new RuntimeException(); 
+	
+				}
+			}
+    	}
+    	
+    	// Create constraint objects for '<' constraints.
+    	for (BIConstraint item : lessThanList) {  
+    		AbstractElement refEle1 = this.getElementByUniqueID(item.getSrcID());
+    		AbstractElement refEle2 = this.getElementByUniqueID(item.getDestID());
+			String refTP1 = this.getRefTP(refEle1, item.getSrcRefTP());
+			String refTP2 = this.getRefTP(refEle2, item.getDestRefTP());
+			if (refTP1 == null || refTP2 == null)
+				throw new RuntimeException();  
+			if (changedTPNames.containsKey(refTP1)) 
+				refTP1 = changedTPNames.get(refTP1);
+			if (changedTPNames.containsKey(refTP2)) 
+				refTP2 = changedTPNames.get(refTP2);
+			this.constraints.add(new Constraint(item.getType(), refEle1, refTP1, refEle2, refTP2));
+    	}
+    }   
+    
+    
+    // ************* OTHER FUNCTIONS ************* 
     public HashMap<Integer, List<String>> getAbsTimePoints(){
     	HashMap<String, Integer> tpHash = getModelTimePoints();
     	
@@ -128,6 +295,26 @@ public class ModelSpec {
     	}
     	absTPHashList.put(-1, nullList);
     	return absTPHashList;
+    }
+    
+    private HashMap<String, Integer> getModelTimePoints(){
+    	HashMap<String, Integer> tpHash = new HashMap<String, Integer>();
+    	tpHash.putAll(absTP);
+
+    	for (Intention node : intentions) {
+    		FunctionSegment[] segList = node.getEvolvingFunctions();
+    		for (int i = 0; i < segList.length; i++)
+    			addItemToHash(tpHash, segList[i].getStartTP(), segList[i].getStartAT());
+    	}
+    	for (DecompositionLink link : decompositionLinks) 
+    		if (link.isEvolving())
+    			addItemToHash(tpHash, link.getLinkTP(), link.getAbsTime());
+    	for (ContributionLink link : contributionLinks) 
+    		if (link.isEvolving())
+    			addItemToHash(tpHash, link.getLinkTP(), link.getAbsTime());  
+    	for (NotBothLink link : notBothLink) 
+   			addItemToHash(tpHash, link.getLinkTP(), link.getAbsTime()); 
+    	return tpHash;
     }
     
     //Helper function for getModelTimePoints() to avoid duplicate code.
@@ -223,9 +410,9 @@ public class ModelSpec {
 
 	
 	// ************* START OF GENERIC GETTERS AND SETTERS ************* 
-	public void setConstraintsBetweenTPs(BIConstraint[] constraintsBetweenTPs) {
-		this.constraintsBetweenTPs = constraintsBetweenTPs;
-	}
+//	public void setConstraintsBetweenTPs(BIConstraint[] constraintsBetweenTPs) {
+//		this.constraintsBetweenTPs = constraintsBetweenTPs;
+//	}
 
 	public List<Intention> getIntentions() {
 		return intentions;

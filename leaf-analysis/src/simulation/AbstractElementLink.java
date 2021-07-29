@@ -7,24 +7,25 @@ package simulation;
  * @author A.M.Grubb
  *
  */
-public class ElementLink {
+public abstract class AbstractElementLink extends AbstractElement{
 	private static int linkTPcounter = 1;
 	
-	private LinkableElement[] src = null;
-	private LinkableElement dest = null;
+	private AbstractLinkableElement[] src = null;
+	private AbstractLinkableElement dest = null;
 	private boolean isEvolving = false;			// 	Whether link has a post relationship type.
 	private Integer absTime = null; 					//	Optional absolute time of transition.
 	private String linkTP = null;
 	
-	public ElementLink(LinkableElement[] s, LinkableElement d) {
+	public AbstractElementLink(AbstractLinkableElement[] s, AbstractLinkableElement d, String uniqueID) {
+		super(uniqueID);
 		src = s;
 		dest = d;
 		for(int i = 0; i < s.length; i++)
 			s[i].addLinksAsSrc(this);
 		d.addLinksAsDest(this);
 	}
-	public ElementLink(LinkableElement[] s, LinkableElement d, Integer absoluteTime) {
-		this(s,d);
+	public AbstractElementLink(AbstractLinkableElement[] s, AbstractLinkableElement d, Integer absoluteTime, String uniqueID) {
+		this(s,d,uniqueID);
 		isEvolving = true;
 		absTime = absoluteTime;
 		linkTP = getNewLinkTP();
@@ -44,34 +45,37 @@ public class ElementLink {
 	public String getLinkTP() {
 		return linkTP;
 	}
+	public void updateLinkTP(String newLinkTP) {
+		linkTP = newLinkTP;
+	}
 	/**
 	 * @return the src
 	 */
-	public LinkableElement[] getSrc() {
+	public AbstractLinkableElement[] getSrc() {
 		return src;
 	}
-	public LinkableElement getZeroSrc() {
+	public AbstractLinkableElement getZeroSrc() {
 		return src[0];
 	}
 	
 	/**
 	 * @param src the src to set
 	 */
-	public void setSrc(LinkableElement[] src) {
+	public void setSrc(AbstractLinkableElement[] src) {
 		this.src = src;
 	}
 
 	/**
 	 * @return the dest
 	 */
-	public LinkableElement getDest() {
+	public AbstractLinkableElement getDest() {
 		return dest;
 	}
 
 	/**
 	 * @param dest the dest to set
 	 */
-	public void setDest(LinkableElement dest) {
+	public void setDest(AbstractLinkableElement dest) {
 		this.dest = dest;
 	}
 

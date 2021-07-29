@@ -10,32 +10,30 @@ import java.util.List;
  * @author A.M.Grubb
  *
  */
-public abstract class LinkableElement{
-    public String name = "NAME";
-    public String id = "NO-ID";	//Format that maps to array ordering.
-    private String uniqueID = null; 
-    List<ElementLink> linksSrc = new ArrayList<ElementLink>();
-    List<ElementLink> linksDest = new ArrayList<ElementLink>();
+public abstract class AbstractLinkableElement extends AbstractElement{
+	protected String name = "NAME";
+    protected String id = "NO-ID";	//Format that maps to array ordering.
+ 
+    List<AbstractElementLink> linksSrc = new ArrayList<AbstractElementLink>();
+    List<AbstractElementLink> linksDest = new ArrayList<AbstractElementLink>();
 	
 	public int getIdNum() {
 		return Integer.parseInt(id);
 	}
-	public LinkableElement(String nodeID, String nodeName) {
+	public AbstractLinkableElement(String nodeID, String nodeName) {
+		super(null);
 		this.id = nodeID;
 		this.name = nodeName;
 	}
-	public LinkableElement(String nodeID, String nodeName, String uniqueID) {
+	public AbstractLinkableElement(String nodeID, String nodeName, String uniqueID) {
+		super(uniqueID);
 		this.id = nodeID;
 		this.name = nodeName;
-		this.uniqueID = uniqueID;
 	}
-	public String getUniqueID() {
-		return this.uniqueID;
-	}
-    public void addLinksAsSrc(ElementLink iLink){
+    public void addLinksAsSrc(AbstractElementLink iLink){
         linksSrc.add(iLink);
     }
-    public void addLinksAsDest(ElementLink iLink){
+    public void addLinksAsDest(AbstractElementLink iLink){
         linksDest.add(iLink);
     }
 
@@ -70,21 +68,21 @@ public abstract class LinkableElement{
 	/**
 	 * @param linksSrc the linksSrc to set
 	 */
-	public void setLinksSrc(List<ElementLink> linksSrc) {
+	public void setLinksSrc(List<AbstractElementLink> linksSrc) {
 		this.linksSrc = linksSrc;
 	}
 
-	public List<ElementLink> getLinksSrc() {
+	public List<AbstractElementLink> getLinksSrc() {
 		return linksSrc;
 	}
-	public List<ElementLink> getLinksDest() {
+	public List<AbstractElementLink> getLinksDest() {
 		return linksDest;
 	}
 
 	/**
 	 * @param linksDest the linksDest to set
 	 */
-	public void setLinksDest(List<ElementLink> linksDest) {
+	public void setLinksDest(List<AbstractElementLink> linksDest) {
 		this.linksDest = linksDest;
 	}
 	
