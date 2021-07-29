@@ -1,24 +1,24 @@
-package interface_objects;
+package gson_classes;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class OutputModel {
 
-	private List<OutputElement> elementList = new ArrayList<>();
-	private List<IOStateModel> allSolution = new ArrayList<>();
+//	private List<OutputElement> elementList = new ArrayList<>();
+//	private List<IOStateModel> allSolution = new ArrayList<>();
 	private List<String> assignedEpoch = new ArrayList<>();
 	private List<String> timePointPath = new ArrayList<>();
 	@SuppressWarnings("unused")
 	private int timePointPathSize;
 	
-	public void setElementList(List<OutputElement> elementList) {
-		this.elementList = elementList;
-	}
-
-	public List<OutputElement> getElementList() {
-		return this.elementList;
-	}
+//	public void setElementList(List<OutputElement> elementList) {
+//		this.elementList = elementList;
+//	}
+//
+//	public List<OutputElement> getElementList() {
+//		return this.elementList;
+//	}
 
 	public List<String> getAssignedEpoch() {
 		return assignedEpoch;
@@ -37,12 +37,12 @@ public class OutputModel {
 	}
 
 
-	public List<IOStateModel> getAllSolution() {
-		return allSolution;
-	}
-
-	public void setAllSolution(List<IOStateModel> allSolution) {
-		this.allSolution = allSolution;
-	}
+//	public List<IOStateModel> getAllSolution() {
+//		return allSolution;
+//	}
+//
+//	public void setAllSolution(List<IOStateModel> allSolution) {
+//		this.allSolution = allSolution;
+//	}
 	
 }

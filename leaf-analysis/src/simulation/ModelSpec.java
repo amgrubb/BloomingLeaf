@@ -12,7 +12,7 @@ import gson_classes.BIConstraint;
 //import interface_objects.IOIntention;
 //import interface_objects.IOStateModel;
 //import interface_objects.OutputElement;
-//import interface_objects.OutputModel;
+import gson_classes.OutputModel;
 
 
 /**
@@ -25,7 +25,7 @@ public class ModelSpec {
 	private List<ContributionLink> contributionLinks = new ArrayList<ContributionLink>();
 	private List<DecompositionLink> decompositionLinks = new ArrayList<DecompositionLink>();
 	private List<NotBothLink> notBothLink = new ArrayList<NotBothLink>();
-	private List<Constraint> constraints = new ArrayList<Constraint>();
+	private List<TPConstraint> constraints = new ArrayList<TPConstraint>();
 	
 	// Store the names of any time point names that are changed for reference.
 	//		Original -> MergedTP/Element
@@ -266,7 +266,7 @@ public class ModelSpec {
 				refTP1 = changedTPNames.get(refTP1);
 			if (changedTPNames.containsKey(refTP2)) 
 				refTP2 = changedTPNames.get(refTP2);
-			this.constraints.add(new Constraint(item.getType(), refEle1, refTP1, refEle2, refTP2));
+			this.constraints.add(new TPConstraint(item.getType(), refEle1, refTP1, refEle2, refTP2));
     	}
     }   
     
@@ -329,8 +329,8 @@ public class ModelSpec {
     }
     
     //TODO: Reimplement
-//	public OutputModel getOutputModel() {
-//		OutputModel output = new OutputModel();
+	public OutputModel getOutputModel() {
+		OutputModel output = new OutputModel();
 //    	// Print out Single Path Solotions.
 //		if(getFinalValues() != null){
 //	    	int i = -1;
@@ -405,8 +405,8 @@ public class ModelSpec {
 //		}
 //
 //
-//		return output;
-//	}
+		return output;
+	}
 
 	
 	// ************* START OF GENERIC GETTERS AND SETTERS ************* 

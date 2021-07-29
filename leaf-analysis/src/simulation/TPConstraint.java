@@ -1,13 +1,13 @@
 package simulation;
 
-public class Constraint {
+public class TPConstraint {
 	private String type;
 	private AbstractElement refEle1;
 	private String refTP1;
 	private AbstractElement refEle2;
 	private String refTP2;
 		
-	public Constraint(String type, AbstractElement refEle1, String refTP1, AbstractElement refEle2, String refTP2) {
+	public TPConstraint(String type, AbstractElement refEle1, String refTP1, AbstractElement refEle2, String refTP2) {
 		this.type = type;
 		this.refEle1 = refEle1;
 		this.refTP1 = refTP1;
