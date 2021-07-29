@@ -169,10 +169,6 @@ $('#colorblind-mode-isOn').on('click', function () { //turns off colorblind mode
     IntentionColoring.toggleColorBlindMode(false);
 });
 
-$(window).resize(function () {
-    resizeWindow();
-});
-
 /*** Events for Rappid/JointJS objets ***/
 
 /** Graph Events */
@@ -608,6 +604,9 @@ function loadConfig(loadedConfig){
     }
 }
 
+    $(window).resize(function () {
+        resizeWindow(configCollection.findWhere({ selected: true }).get('results').findWhere({ selected: true }).get('timePointPath').length - 1);
+    });
 } // End scope of configCollection and configInspector
 
 /**

@@ -119,18 +119,25 @@ function removeSlider() {
 function adjustSliderWidth(maxValue){
     // Min width of slider is 15% of paper's width
     var min = $('#paper').width() * 0.1;
+    console.log('min: ' + min)
     // Max width of slider is 90% of paper's width
     var max = $('#paper').width() * 0.6;
+    console.log('max: ' + max)
     // This is the width based on maxvalue
     var new_width = $('#paper').width() * maxValue / 100;
+    console.log('newwidth: ' + new_width)
     // new_width is too small or too large, adjust
     if (new_width < min){
         new_width = min;
+        console.log('adjusted min: ' + new_width)
     }
     if (new_width > max){
         new_width = max;
+        console.log('adjusted max: ' + new_width)
     }
     $('#slider').width(new_width);
+    console.log($('#slider').css("margin-top"))	
+    console.log($('#slider').css("width"))	
 }
 
 /**
