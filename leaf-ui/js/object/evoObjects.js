@@ -10,9 +10,9 @@ class IntentionColoring {
     /**
      * Colors intentions by their mode
      */
-    static refresh(analysisResult, viewMode) {
+    static refresh(analysisResult) {
         if (IntentionColoring.colorMode == "EVO") {
-            EVO.refresh(analysisResult, viewMode);
+            EVO.refresh(analysisResult);
         }
     }
 
@@ -20,22 +20,22 @@ class IntentionColoring {
      * Change color mode
      * @param {*} newColorMode 
      */
-    static setColorMode(newColorMode, analysisResult, viewMode) {
+    static setColorMode(newColorMode, analysisResult) {
         console.log("setColorMode");
         IntentionColoring.colorMode = newColorMode;
         if(newColorMode != "EVO") {
-            EVO.deactivate(viewMode);
+            EVO.deactivate();
         }
-        IntentionColoring.refresh(analysisResult, viewMode);
+        IntentionColoring.refresh(analysisResult);
     }
 
     /**
      * Toggles color blind mode
      * @param {*} isTurningOnColorBlindMode 
      */
-    static toggleColorBlindMode(isTurningOnColorBlindMode, analysisResult, viewMode) {
+    static toggleColorBlindMode(isTurningOnColorBlindMode, analysisResult) {
         IntentionColoring.isColorBlindMode = isTurningOnColorBlindMode;
-        IntentionColoring.refresh(analysisResult, viewMode);
+        IntentionColoring.refresh(analysisResult);
     }
         
 }
@@ -121,17 +121,17 @@ class EVO {
      * Checks validity, sets sliderOption, and refreshes visualization
      * @param {*} newSliderOption 
      */
-    static setSliderOption(newSliderOption, analysisResult, viewMode) {
+    static setSliderOption(newSliderOption, analysisResult) {
         if (newSliderOption >= 0 && newSliderOption <= 3) {
             EVO.sliderOption = newSliderOption;
         }
         else {
             console.log("ERROR: invalid sliderOption");
         }
-        EVO.refresh(analysisResult, viewMode);
+        EVO.refresh(analysisResult);
 
         if (EVO.sliderOption > 0) { //not off
-            IntentionColoring.setColorMode("EVO", analysisResult, viewMode);
+            IntentionColoring.setColorMode("EVO", analysisResult);
         }
     }
 
@@ -139,25 +139,29 @@ class EVO {
      * Set new time point and refresh
      * @param {*} newTimePoint 
      */
-    static setCurTimePoint(newTimePoint, analysisResult, viewMode) {
+    static setCurTimePoint(newTimePoint, analysisResult) {
         EVO.curTimePoint = newTimePoint;
-        IntentionColoring.refresh(analysisResult, viewMode);
+        IntentionColoring.refresh(analysisResult);
     }
 
     /**
      * Runs after any event that may change visualization, such as setting a sat value, changing slider option, or selecting a time point
      */
-    static refresh(analysisResult, viewMode) {
+    static refresh(analysisResult) {
         switch(this.sliderOption) {
             case '1':
             case '2':
             case '3':
-                console.log(viewMode)
-                if(viewMode === "modeling") {
-                    EVO.colorIntentionsModeling();
+                if (analysisResult !== null){
+                    if (analysisResult.get('selected')){
+                        EVO.colorIntentionsAnalysis(analysisResult);
+                    }
+                    else {
+                        EVO.colorIntentionsModeling();
+                    }
                 }
-                else {
-                    EVO.colorIntentionsAnalysis(analysisResult);
+                else{
+                    EVO.colorIntentionsModeling();
                 }
                 EVO.changeIntentionsText(analysisResult);
                 break;
@@ -180,7 +184,7 @@ class EVO {
      * Switches to analysis slider, uses the single path analysis results to calculate evaluation percentages, stores time point info, prints info to console
      * @param {*} elementList List of elements containing analysis results
      */
-    singlePathResponse(elementList, analysisResult, viewMode) {    
+    singlePathResponse(elementList, analysisResult) {    
         $('#modelingSlider').css("display", "none");
         $('#analysisSlider').css("display", "");
         document.getElementById("colorResetAnalysis").value = EVO.sliderOption;
@@ -201,18 +205,24 @@ class EVO {
             }
         }
         this.generateConsoleReport();
-        EVO.refresh(analysisResult, viewMode);
-    }    
+        EVO.refresh(analysisResult);
+    }   
+    
+    static update(analysisResult){
+        $('#modelingSlider').css("display", "none");
+        $('#analysisSlider').css("display", "");
+        EVO.setSliderOption('1', analysisResult);
+    }
 
     /**
      * Turn off EVO
      */
-    static deactivate(analysisResult, viewMode) {
+    static deactivate(analysisResult) {
         document.getElementById("colorResetAnalysis").value = 0;
         document.getElementById("colorReset").value = 0;
         EVO.sliderOption = 0;
 
-        EVO.refresh(analysisResult, viewMode);
+        EVO.refresh(analysisResult);
     }
 
     /**
@@ -378,18 +388,20 @@ class EVO {
             }
             intention = elements[i].get('intention');
             initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair'); 
-            if(!analysisResult.get('isPathSim')){   
-                if (initSatVal === '(no value)') {
-                    curr.attr('.satvalue/text', '');
-                    curr.attr({text: {fill: 'black',stroke:'none','font-weight' : 'normal'}});
-
+            if(analysisResult !== null){
+                if(!analysisResult.get('isPathSim')){   
+                    if (initSatVal === '(no value)') {
+                        curr.attr('.satvalue/text', '');
+                        curr.attr({text: {fill: 'black',stroke:'none','font-weight' : 'normal'}});
+    
+                    }else{
+                        curr = elements[i].findView(paper).model;
+                        curr.attr({text: {fill: 'white',stroke:'none'}});
+                    }
                 }else{
                     curr = elements[i].findView(paper).model;
-                    curr.attr({text: {fill: 'white',stroke:'none'}});
+                    curr.attr({text: {fill: 'white',stroke:'none'}});    
                 }
-            }else{
-                curr = elements[i].findView(paper).model;
-                curr.attr({text: {fill: 'white',stroke:'none'}});    
             }
         }
     }
@@ -450,7 +462,7 @@ class EVO {
     /**
      * Switch back to modeling slider, if EVO is on the visualization returns to filling by initial state.
      */
-     static switchToModelingMode(analysisResult, viewMode) {
+     static switchToModelingMode(analysisResult) {
         $('#modelingSlider').css("display", "");
         $('#analysisSlider').css("display", "none");
         // if EVO is on in analysis mode, keep it on
@@ -458,7 +470,7 @@ class EVO {
             EVO.sliderOption = '1';
         }
         document.getElementById("colorReset").value = EVO.sliderOption;
-        IntentionColoring.refresh(analysisResult, viewMode);
+        IntentionColoring.refresh(analysisResult);
     }
 }
 

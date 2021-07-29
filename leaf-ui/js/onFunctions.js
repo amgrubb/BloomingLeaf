@@ -342,12 +342,11 @@ paper.on("link:options", function (cell) {
     let configCollection = new ConfigCollection([]);
     let configInspector = null;
     let selectResult = null;
-    let viewMode = "modeling";
 
     $('#simulate-single-path-btn').on('click', function() {
         var curRequest = configCollection.findWhere({selected: true});
         curRequest.set('action', 'singlePath');
-        backendSimulationRequest(curRequest, viewMode);
+        backendSimulationRequest(curRequest);
     }); 
     $('#next-state-btn').on('click', function() { getAllNextStates(); }); 
     
@@ -355,14 +354,12 @@ paper.on("link:options", function (cell) {
      * Helper function for switching to Analysis view.
      */
     function switchToAnalysisMode() {
-        viewMode = "analysis";
         setInteraction(false);
-
+        document.getElementById("colorResetAnalysis").value = 1;
         // Clear the right panel
         clearInspector();
 
         removeHighlight();
-
         configInspector = new ConfigInspector({ collection: configCollection });
         $('#configID').append(configInspector.el);
         configInspector.render();
@@ -383,14 +380,12 @@ paper.on("link:options", function (cell) {
         $('.link-tools .tool-options').css("display", "none");
         $('.attribution').css("display", "none");
         $('.inspector').css("display", "none");
-
-        IntentionColoring.refresh(selectResult, viewMode);
-
+        IntentionColoring.refresh(selectResult);
         var currResult = configCollection.findWhere({ selected: true }).get('results').findWhere({ selected: true });
 
         // Display the analysis and slider
         if (currResult !== undefined){
-            displayAnalysis(currResult, true, viewMode);
+            displayAnalysis(currResult, true);
         }
 
         // TODO: Add check for model changes to potentially clear configCollection back in
@@ -406,9 +401,10 @@ paper.on("link:options", function (cell) {
          * Display the modeling mode page
          */
         function switchToModellingMode() {
-            viewMode = "modeling";
             setInteraction(true);
-            
+            if (selectResult !== null){
+                selectResult.set('selected', false);
+            }
             // Remove Slider
             removeSlider();
 
@@ -429,7 +425,7 @@ paper.on("link:options", function (cell) {
             // Reinstantiate link settings
             $('.link-tools .tool-remove').css("display", "");
             $('.link-tools .tool-options').css("display", "");
-            EVO.switchToModelingMode(selectResult, viewMode);
+            EVO.switchToModelingMode(selectResult);
             // Remove configInspector view
             configInspector.remove();
             // TODO: Determine if we should be setting action to null on all configs
@@ -468,8 +464,8 @@ paper.on("link:options", function (cell) {
     $('#btn-save-analysis').on('click', function() {
         var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
         if (name){
-            clearCycleHighlighting(selectResult, viewMode);
-            EVO.deactivate(viewMode);   
+            clearCycleHighlighting(selectResult);
+            EVO.deactivate();   
             var fileName = name + ".json";
             var obj = getModelAnalysisJson(configCollection);
             download(fileName, stringifyCirc(obj));
@@ -480,8 +476,8 @@ paper.on("link:options", function (cell) {
     $('#btn-save-all').on('click', function() {
         var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
         if (name){
-            clearCycleHighlighting(selectResult, viewMode);
-            EVO.deactivate(viewMode);   
+            clearCycleHighlighting(selectResult);
+            EVO.deactivate();   
             var fileName = name + ".json";
             var obj = getFullJson(configCollection);
             download(fileName, stringifyCirc(obj));
@@ -539,21 +535,21 @@ paper.on("link:options", function (cell) {
     }
 
     $('#btn-clear-cycle').on('click', function () {
-        clearCycleHighlighting(selectResult, viewMode);
+        clearCycleHighlighting(selectResult);
     });
 
     // Save the current graph to json file
     $('#btn-save').on('click', function () {
         var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
         if (name) {
-            clearCycleHighlighting(selectResult, viewMode);
-            EVO.deactivate(viewMode);
+            clearCycleHighlighting(selectResult);
+            EVO.deactivate();
         // EVO.returnAllColors(graph.getElements(), paper);
         // EVO.revertIntentionsText(graph.getElements(), paper);    
             var fileName = name + ".json";
             obj = {graph: graph.toJSON()} //same structure as the other two save options
             download(fileName, JSON.stringify(obj));
-            IntentionColoring.refresh(selectResult, viewMode);
+            IntentionColoring.refresh(selectResult);
         }
     });
 
@@ -582,7 +578,7 @@ paper.on("link:options", function (cell) {
                 elementInspector.$('.function-type').val('(no value)');
             }
         }
-        IntentionColoring.refresh(selectResult, viewMode);
+        IntentionColoring.refresh(selectResult);
     });
 
     
@@ -590,14 +586,14 @@ paper.on("link:options", function (cell) {
         $('#colorblind-mode-isOff').css("display", "none");
         $('#colorblind-mode-isOn').css("display", "");
 
-        IntentionColoring.toggleColorBlindMode(true, selectResult, viewMode);
+        IntentionColoring.toggleColorBlindMode(true, selectResult);
     });
 
     $('#colorblind-mode-isOn').on('click', function () { //turns off colorblind mode
         $('#colorblind-mode-isOn').css("display", "none");
         $('#colorblind-mode-isOff').css("display", "");
 
-        IntentionColoring.toggleColorBlindMode(false, selectResult, viewMode);
+        IntentionColoring.toggleColorBlindMode(false, selectResult);
     });
 
     /**
@@ -605,7 +601,7 @@ paper.on("link:options", function (cell) {
      * Two option modeling mode slider
      */
     document.getElementById("colorReset").oninput = function () { //turns slider on/off and refreshes
-        EVO.setSliderOption(this.value, selectResult, viewMode);
+        EVO.setSliderOption(this.value, selectResult);
     }
     /**
      * Four option analysis mode slider
@@ -619,7 +615,7 @@ paper.on("link:options", function (cell) {
                 selectResult = selectConfig.get('results').filter(resultModel => resultModel.get('selected') == true)[0]
             }
         }
-        EVO.setSliderOption(this.value, selectResult, viewMode);
+        EVO.setSliderOption(this.value, selectResult);
     }
 } // End scope of configCollection and configInspector
 

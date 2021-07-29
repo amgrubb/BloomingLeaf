@@ -38,6 +38,8 @@ var ResultView = Backbone.View.extend({
      */
     // TODO: Update this function to pass the ResultBBM into displayAnalysis
     switchResult: function () {
+        $('#modelingSlider').css("display", "none");
+        $('#analysisSlider').css("display", "");
         this.model.set('selected', true);
         this.model.trigger('change:switchResults', this.model);
         this.config.set('selected', true);

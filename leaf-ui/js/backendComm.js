@@ -83,7 +83,7 @@ var url = "http://localhost:8080/untitled.html";	// Hardcoded URL for Node calls
  * {ConfigBBM} analysisRequest
  * Note: function was originally called `backendComm`.
  */
-function backendSimulationRequest(analysisRequest, viewMode) {
+function backendSimulationRequest(analysisRequest) {
 	var jsObject = {};
 	jsObject.analysisRequest = analysisRequest;
 	jsObject.graph = graph;
@@ -99,7 +99,7 @@ function backendSimulationRequest(analysisRequest, viewMode) {
 		console.log("Reading the response");
 		if (xhr.readyState == XMLHttpRequest.DONE) {
 			var response = xhr.responseText;
-			responseFunc(analysisRequest, response, viewMode);
+			responseFunc(analysisRequest, response);
 		}
 	}
 	xhr.send(data);	// Why is this sent down here? What is this send function.
@@ -109,7 +109,7 @@ function backendSimulationRequest(analysisRequest, viewMode) {
  * {ConfigBBM} analysisRequest
  * Note: function was originally called `backendComm`.
  */
-function responseFunc(analysisRequest, response, viewMode) {
+function responseFunc(analysisRequest, response) {
 	$("body").removeClass("waiting"); //Remove spinner under cursor 
 	var results = JSON.parse(response);
 	if (errorExists(results)) {
@@ -128,7 +128,7 @@ function responseFunc(analysisRequest, response, viewMode) {
 				savedAnalysisData.singlePathResult = results;	//	TODO What is this?
 				console.log(JSON.stringify(results));			// Print the results of the analysis to the console.
 				var analysisResult = convertToAnalysisResult(results); 	// {ResultBBM}
-				displayAnalysis(analysisResult, false, viewMode);
+				displayAnalysis(analysisResult, false);
 				analysisRequest.addResult(analysisResult);
 		} else {
 			alert("Error: Unknown analysis request type.");
