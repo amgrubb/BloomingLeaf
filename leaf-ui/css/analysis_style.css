@@ -343,13 +343,14 @@ select::-ms-expand {
 }
 
 .result-elements {
-    height: 42px;
+    height: 30px;
     font-size: 16px; 
     border: none;
     box-shadow: -1px 0px 0px 0px rgb(71, 65, 65);
     outline: none;  
     width: 100%;
-  }
+    margin-bottom: 1px;
+}
 
 .config-elements {
     height: 42px;
@@ -358,30 +359,31 @@ select::-ms-expand {
     box-shadow: -1px 0px 0px 0px rgb(71, 65, 65);
     outline: none;  
     width: 71%;
-  }
+    margin-bottom: 1px;
+}
 
-  .config-input {
-    padding: 10px; 
-    font-size: 16px; 
-    border: 1px solid black; 
-    width: 60%;
-    outline: none;  
-  }
-  
-  .dropdown-button {
-    padding: 2px 7px 4px 7px; 
-    font-size: 15px; 
-    height: 42px; 
-    width: 50%;
-    border: none; 
-    outline: none;
-    float: left;
-  }
-  
-  .dropdown-container {
-    display:block;
-    width: 100%;
-  }
+.config-input {
+padding: 10px; 
+font-size: 16px; 
+border: 1px solid black; 
+width: 60%;
+outline: none;  
+}
+
+.dropdown-button {
+padding: 2px 7px 4px 7px; 
+font-size: 15px; 
+height: 42px; 
+width: 50%;
+border: none; 
+outline: none;
+float: left;
+}
+
+.dropdown-container {
+display:block;
+width: 100%;
+}
 
 .deleteconfig-button{
     padding: 7px; 
@@ -393,7 +395,7 @@ select::-ms-expand {
     width: 50%;
     float: left;
     cursor: pointer;
-  }
+}
 
 #removeConstraint{
     cursor: pointer;
