@@ -363,26 +363,26 @@ select::-ms-expand {
 }
 
 .config-input {
-padding: 10px; 
-font-size: 16px; 
-border: 1px solid black; 
-width: 60%;
-outline: none;  
+    padding: 10px; 
+    font-size: 16px; 
+    border: 1px solid black; 
+    width: 60%;
+    outline: none;  
 }
 
 .dropdown-button {
-padding: 2px 7px 4px 7px; 
-font-size: 15px; 
-height: 42px; 
-width: 50%;
-border: none; 
-outline: none;
-float: left;
-}
+    padding: 2px 7px 4px 7px; 
+    font-size: 15px; 
+    height: 42px; 
+    width: 50%;
+    border: none; 
+    outline: none;
+    float: left;
+    }
 
 .dropdown-container {
-display:block;
-width: 100%;
+    display:block;
+    width: 100%;
 }
 
 .deleteconfig-button{
