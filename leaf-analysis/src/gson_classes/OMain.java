@@ -13,6 +13,8 @@ public class OMain {
 	@SuppressWarnings("unused")
 	private int timePointPathSize;
 	//private List<IOStateModel> allSolution = new ArrayList<>();
+	@SuppressWarnings("unused")
+	private List<Integer> allSolution = new ArrayList<>();	//Tempary Place Holder
 	
 	public OMain(Integer[] timePointPath, HashMap<String, Integer> timePointAssignments) {
 		this.timePointAssignments = timePointAssignments;
@@ -22,7 +24,6 @@ public class OMain {
 	public void addElement(String id, String[] status) {
 		elementList.add(new OutputElement(id, status));
 	}
-
 
 	private class OutputElement {
 		@SuppressWarnings("unused")

@@ -331,11 +331,6 @@ public class BICSPAlgorithm {
 		} else {
 	    	if (DEBUG) System.out.println("Found Solution = True");
 
-// TODO: Add back in for all paths.	    	
-//	    	if (this.searchAll)
-//				this.saveAllSolution(label);				
-//			else
-				this.saveSingleSolution(label);
 			return true;
 		}
 	}
@@ -401,19 +396,7 @@ public class BICSPAlgorithm {
 			return null;
 	}
 	
-	private void saveSingleSolution(Search<IntVar> label) {
-		if (problemType == SearchType.PATH){
-			int[] timeOrder = this.createTimePointOrder();
-			if (DEBUG)
-				this.printSinglePathSolution(timeOrder);
-			this.saveSinglePathSolution(timeOrder);
-		}
-//TODO: Add next state
-//		}else if (problemType == SearchType.NEXT_STATE)	//TODO Implement Save/Print Single Next_State
-//    		throw new RuntimeException("ERROR: Save/Print Single Next_State not implemented.");
-//    	else if (problemType == SearchType.CURRENT_STATE) //TODO Implement Save/Print Single Current_State
-//    		throw new RuntimeException("ERROR: Save/Print Single Current_State not implemented.");
-	}
+
 		
 	
 	
@@ -485,40 +468,56 @@ public class BICSPAlgorithm {
 	/**
 	 * @param indexOrder
 	 */
-	private OMain saveSinglePathSolution(int[] indexOrder) {	
+	public OMain getSolutionOutModel() {	
+		if (problemType == SearchType.PATH){
+			int[] indexOrder = this.createTimePointOrder();
+			if (DEBUG) this.printSinglePathSolution(indexOrder);
 
-		// Get Time Points (timePointAssignments)
-		Integer[] finalTPPath = new Integer[indexOrder.length];
-    	for (int i = 0; i < indexOrder.length; i++)
-    		finalTPPath[i] = this.timePoints[indexOrder[i]].value();
-   		
-    	//private HashMap<IntVar, List<String>> timePointMap = new HashMap<IntVar, List<String>>();
-    	HashMap<String, Integer> finalTPAssignments = new HashMap<String, Integer>();
-    	for (int i = 0; i < indexOrder.length; i++) {
-    		List<String> listTPNames = timePointMap.get(this.timePoints[indexOrder[i]]);
-    		for (String name : listTPNames)
-    			finalTPAssignments.put(name, this.timePoints[indexOrder[i]].value());
-    	}
-    	
-    	OMain oModel = new OMain(finalTPPath, finalTPAssignments);
-    	
-    	// Get assigned values (elementList)
-    	for (int i = 0; i < this.intentions.length; i++){
-    		String[] nodeFinalValues = new String[this.values[i].length];
-    		for (int t = 0; t < this.values[i].length; t++){
-    			StringBuilder value = new StringBuilder();
-        		for (int v = 0; v < this.values[i][t].length; v++)
-        			if(this.values[i][indexOrder[t]][v].value() == 1)
-        				value.append("1");
-        			else
-        				value.append("0");
-        		nodeFinalValues[t] = value.toString();
-    		}
-    		oModel.addElement(this.intentions[i].getUniqueID(), nodeFinalValues);
-    	}  	
-//TODO: START HERE and TEST!
-    	return oModel; 
-    	
+			// Get Time Points (timePointAssignments)
+			Integer[] finalTPPath = new Integer[indexOrder.length];
+	    	for (int i = 0; i < indexOrder.length; i++)
+	    		finalTPPath[i] = this.timePoints[indexOrder[i]].value();
+	   		
+	    	HashMap<String, Integer> finalTPAssignments = new HashMap<String, Integer>();
+	    	HashMap<String, String> duplicateNames = this.spec.getChangedTPNames(); 
+	    	for (int i = 0; i < indexOrder.length; i++) {
+	    		List<String> listTPNames = timePointMap.get(this.timePoints[indexOrder[i]]);
+	    		for (String name : listTPNames) {
+	    			finalTPAssignments.put(name, this.timePoints[indexOrder[i]].value());
+	    			if (duplicateNames.containsValue(name)) {
+	    		          for (Map.Entry<String, String> entry : duplicateNames.entrySet()) 
+	    		              if (entry.getValue().equals(name)) 
+	    		            	  finalTPAssignments.put(entry.getKey(), this.timePoints[indexOrder[i]].value());
+	    			}
+	    		}
+	    	}
+	    	
+	    	OMain oModel = new OMain(finalTPPath, finalTPAssignments);
+	    	
+	    	// Get assigned values (elementList)
+	    	for (int i = 0; i < this.intentions.length; i++){
+	    		String[] nodeFinalValues = new String[this.values[i].length];
+	    		for (int t = 0; t < this.values[i].length; t++){
+	    			StringBuilder value = new StringBuilder();
+	        		for (int v = 0; v < this.values[i][t].length; v++)
+	        			if(this.values[i][indexOrder[t]][v].value() == 1)
+	        				value.append("1");
+	        			else
+	        				value.append("0");
+	        		nodeFinalValues[t] = value.toString();
+	    		}
+	    		oModel.addElement(this.intentions[i].getUniqueID(), nodeFinalValues);
+	    	}  	
+	    	return oModel; 	
+	    	
+		}
+		return null;
+    	//TODO: Add next state
+//		}else if (problemType == SearchType.NEXT_STATE)	//TODO Implement Save/Print Single Next_State
+//		this.saveAllSolution(label);
+//			throw new RuntimeException("ERROR: Save/Print Single Next_State not implemented.");
+//		else if (problemType == SearchType.CURRENT_STATE) //TODO Implement Save/Print Single Current_State
+//			throw new RuntimeException("ERROR: Save/Print Single Current_State not implemented.");
 	}
 
 }

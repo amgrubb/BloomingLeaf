@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import gson_classes.IMain;
+import gson_classes.OMain;
 import gson_classes.FuncWrapper;
 import gson_classes.FuncWrapperDeserializer;
 
@@ -41,8 +42,7 @@ public class MainProgram {
 			solver.solveModel();
             //long endTime = System.currentTimeMillis();                              //Scalability Testing
             //System.out.print("Time:" + (endTime - startTime));					  //Scalability Testing
-			createOutputFile(solver, filePath + outputFile);
-			System.out.print("Program Complete");			
+			createOutputFile(solver, filePath + outputFile);			
 		} catch (RuntimeException e) {
 			try {
 				File file;
@@ -85,8 +85,8 @@ public class MainProgram {
 	 */
 	private static void createOutputFile(BICSPAlgorithm solver, String filePath) {
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		//OutputModel outputModel = solver.getSpec().getOutputModel();
-		
+		OMain outputModel = solver.getSolutionOutModel();
+	
 		try {
 			File file;
 			file = new File(filePath);
@@ -94,8 +94,7 @@ public class MainProgram {
 				file.createNewFile();
 			}
 			PrintWriter printFile = new PrintWriter(file);
-			printFile.printf("TO Implement File Out");
-			//printFile.printf(gson.toJson(outputModel));
+			printFile.printf(gson.toJson(outputModel));
 			printFile.close();
 		} catch (Exception e) {
 			throw new RuntimeException("Error in createOutputFile: " + e.getMessage());

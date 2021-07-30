@@ -328,6 +328,10 @@ public class ModelSpec {
 		return intentions;
 	}
 
+	public HashMap<String, String> getChangedTPNames() {
+		return changedTPNames;
+	}
+
 	public List<ContributionLink> getContributionLinks() {
 		return contributionLinks;
 	}
