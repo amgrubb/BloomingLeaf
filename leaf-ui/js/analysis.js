@@ -14,6 +14,7 @@ let savedAnalysisData;
 let selectedResult;
 let graph;
 let current;
+let elements;
 
 //Executing scripts only when page is fully loaded
 window.onload = function(){
@@ -62,7 +63,6 @@ function init(){
         height: 600,
         gridSize: 10,
         perpendicularLinks: false,
-        model: analysis.graph,
         defaultLink: new joint.shapes.basic.CellLink({
             'attrs': {
                 '.connection': {stroke: '#000000'},
@@ -82,7 +82,7 @@ function init(){
     analysis.paperScroller.center();
 
     analysis.graph.fromJSON(JSON.parse(JSON.stringify(window.opener.graph.toJSON())));
-
+    elements = graph.getElements();
     /** TODO: reimplement this
     //Filter out Actors
     for (var i = 0; i < analysis.graph.getElements().length; i++){
@@ -90,7 +90,7 @@ function init(){
             analysis.elements.push(analysis.graph.getElements()[i]);
     }
     */
-
+   console.log(elements[0].get('intention'));
     if(!analysis.analysisResult){
         analysis.analysisResult = analysisRequest.previousAnalysis;
     }
@@ -693,61 +693,52 @@ function updateAnalysisRequestWithCurrentState(){
     for (var element_index = 0; element_index < savedAnalysisData.allNextStatesResult.allSolution[index_of_selected_state].intentionElements.length; element_index++){
         analysisRequest.previousAnalysis.elementList[element_index].status[currentState] = savedAnalysisData.allNextStatesResult.allSolution[index_of_selected_state].intentionElements[element_index].status[0];
     }
-
-
     // getting next time point
     var nextTimePoint = savedAnalysisData.singlePathResult.timePointPath[currentState];
     console.log(nextTimePoint);
-
-
-
+    
     // get the list of all epochs
     var allEpochs = {}; // intention id : list of epoch names
     var num_epochs = 0;
 
-    for (var i = 0; i < model.intentions.length ; i++){
+    for (var i = 0; i < elements[i].get('intention').length ; i++){
         // more than one piece of functions involved
-        if (!allEpochs[model.intentions[i].nodeID]){
-            allEpochs[model.intentions[i].nodeID] = [];
+        //TODO: replace nodeID
+        if (!allEpochs[elements[i].get('intention').cid]){
+            allEpochs[elements[i].get('intention').cid] = [];
         }
 
-        if (model.intentions[i].evolvingFunction.type === "NT" ||
-            model.intentions[i].evolvingFunction.type === "C" ||
-            model.intentions[i].evolvingFunction.type === "I" ||
-            model.intentions[i].evolvingFunction.type === "D" ||
-            model.intentions[i].evolvingFunction.type === "R" ||
-            model.intentions[i].evolvingFunction.type === "NB" ){
+        if (elements[i].get('intention').get('evolvingFunction').get('type') === "NT" ||
+            elements[i].get('intention').get('evolvingFunction').get('type') === "C" ||
+            elements[i].get('intention').get('evolvingFunction').get('type') === "I" ||
+            elements[i].get('intention').get('evolvingFunction').get('type') === "D" ||
+            elements[i].get('intention').get('evolvingFunction').get('type') === "R" ||
+            elements[i].get('intention').get('evolvingFunction').get('type') === "NB" ){
             continue;
         }
-        else if (model.intentions[i].evolvingFunction.type === "SD" ||
-            model.intentions[i].evolvingFunction.type === "DS" ||
-            model.intentions[i].evolvingFunction.type === "CR" ||
-            model.intentions[i].evolvingFunction.type === "RC" ||
-            model.intentions[i].evolvingFunction.type === "MP" ||
-            model.intentions[i].evolvingFunction.type === "MN" ){
-            allEpochs[model.intentions[i].nodeID].push("E" + model.intentions[i].nodeID);
+        else if (elements[i].get('intention').get('evolvingFunction').get('type') === "SD" ||
+            elements[i].get('intention').get('evolvingFunction').get('type') === "DS" ||
+            elements[i].get('intention').get('evolvingFunction').get('type') === "CR" ||
+            elements[i].get('intention').get('evolvingFunction').get('type') === "RC" ||
+            elements[i].get('intention').get('evolvingFunction').get('type') === "MP" ||
+            elements[i].get('intention').get('evolvingFunction').get('type') === "MN" ){
+            allEpochs[elements[i].nodeID].push("E" + elements[i].nodeID);
             num_epochs ++;
         }
-        else if (model.intentions[i].evolvingFunction.type === "UD"){
+        else if (elements[i].get('intention').get('evolvingFunction').get('type') === "UD"){
             // getting function charEB list
             var charEBs = [];
-            for (var j = 0; j < model.intentions[i].evolvingFunction.functionSegList.length; j ++){
-                if (charEBs.indexOf(model.intentions[i].evolvingFunction.functionSegList[j].startTP === -1)){
-                    charEBs.push(model.intentions[i].evolvingFunction.functionSegList[j].startTP);
+            for (var j = 0; j < elements[i].get('intention').get('evolvingFunction').get('functionSegList').length; j ++){
+                if (charEBs.indexOf(elements[i].get('intention').get('evolvingFunction').get('functionSegList')[j].get('startTP') === -1)){
+                    charEBs.push(elements[i].get('intention').get('evolvingFunction').get('functionSegList')[j].get('startTP'));
                 }
-                // TODO: Update/remove funcStop
-                if (charEBs.indexOf(model.intentions[i].evolvingFunction.functionSegList[j].funcStop === -1)){
-                    charEBs.push(model.intentions[i].evolvingFunction.functionSegList[j].funcStop);
-                }
-
             }
             // ignoring 0 and infinity in charEBs
             for (var k = 1; k < charEBs.length-1; k ++){
-                allEpochs[model.intentions[i].nodeID].push("E" + model.intentions[i].nodeID + "_" + charEBs[k]);
+                allEpochs[elements[i].nodeID].push("E" + elements[i].get('intention').cid + "_" + charEBs[k]);
                 num_epochs++;
             }
         }
-
     }
 
     console.log(allEpochs);
@@ -798,86 +789,90 @@ function updateAnalysisRequestWithCurrentState(){
     // determine the type of current time point
     var potentialEpochs = [];
     var definiteEpochs = [];
-    for (var i = 0; i < model.intentions.length ; i++) {
-        if (model.intentions[i].evolvingFunction.type === "NT" ||
-            model.intentions[i].evolvingFunction.type === "C" ||
-            model.intentions[i].evolvingFunction.type === "I" ||
-            model.intentions[i].evolvingFunction.type === "D" ||
-            model.intentions[i].evolvingFunction.type === "R" ||
-            model.intentions[i].evolvingFunction.type === "NB") {
+    for (var i = 0; i < elements[i].get('intention').length ; i++) {
+        if (elements[i].get('intention').get('evolvingFunction').get('type') === "NT" ||
+            elements[i].get('intention').get('evolvingFunction').get('type') === "C" ||
+            elements[i].get('intention').get('evolvingFunction').get('type') === "I" ||
+            elements[i].get('intention').get('evolvingFunction').get('type') === "D" ||
+            elements[i].get('intention').get('evolvingFunction').get('type') === "R" ||
+            elements[i].get('intention').get('evolvingFunction').get('type') === "NB") {
             continue;
         }
 
         // Satisfied Denied or Denied Satisfied
-        if (model.intentions[i].evolvingFunction.type === "SD" || model.intentions[i].evolvingFunction.type === "DS") {
+        if (elements[i].get('intention').get('evolvingFunction').get('type') === "SD" || elements[i].get('intention').get('evolvingFunction').get('type') === "DS") {
             // Epoch happens when previous is initial state and current is final state
-            var startValue = model.intentions[i].evolvingFunction.functionSegList[0].funcX;
-            var endValue = model.intentions[i].evolvingFunction.functionSegList[1].funcX;
+            var startValue =  elements[i].get('intention').get('evolvingFunction').get('functionSegList')[0].get('refEvidencePair');
+            var endValue =  elements[i].get('intention').get('evolvingFunction').get('functionSegList')[1].get('refEvidencePair');
             var previousStatus = analysisRequest.previousAnalysis.elementList[i].status[current];
             var curStatus = savedAnalysisData.allNextStatesResult.allSolution[index_of_selected_state].intentionElements[i].status[0];
             if (previousStatus === startValue && curStatus === endValue) {
-                definiteEpochs.push("E" + model.intentions[i].nodeID);
+                definiteEpochs.push("E" + elements[i].get('intention').cid);
             }
 
         }
 
         // Stochastic Constant
-        if (model.intentions[i].evolvingFunction.type === "RC") {
+        if (elements[i].get('intention').get('evolvingFunction').get('type') === "RC") {
             // check if epoch has happened already
             // check if obj["key"] != undefined
-            if (previousEpochs.indexOf("E" + model.intentions[i].nodeID) > -1) {
+            if (previousEpochs.indexOf("E" + elements[i].get('intention').cid) > -1) {
                 continue;
             }
             // check if current value is the final value
             // this goes into potential list
-            var endValue = model.intentions[i].evolvingFunction.functionSegList[1].funcX;
+            var endValue = elements[i].get('intention').get('evolvingFunction').get('functionSegList')[1].get('refEvidencePair');
             var curStatus = savedAnalysisData.allNextStatesResult.allSolution[index_of_selected_state].intentionElements[i].status[0];
             if (curStatus === endValue) {
-                potentialEpochs.push("E" + model.intentions[i].nodeID);
+                potentialEpochs.push("E" + elements[i].get('intention').cid);
             }
 
         }
 
         // Constant Stochastic
-        if (model.intentions[i].evolvingFunction.type === "CR") {
+        if (elements[i].get('intention').get('evolvingFunction').get('type') === "CR") {
             // check if epoch has happened already
-            if (previousEpochs.indexOf("E" + model.intentions[i].nodeID) > -1) {
+            if (previousEpochs.indexOf("E" + elements[i].get('intention').cid) > -1) {
                 break;
             }
             // TODO: add to potential epochs directly?
             // check if previous is constant value and current is not constant value
-            var startValue = model.intentions[i].evolvingFunction.functionSegList[0].funcX;
+            var startValue = elements[i].get('intention').get('evolvingFunction').get('functionSegList')[0].get('refEvidencePair');
             var curStatus = savedAnalysisData.allNextStatesResult.allSolution[index_of_selected_state].intentionElements[i].status[0];
             if (curStatus !== startValue) {
-                definiteEpochs.push("E" + model.intentions[i].nodeID) ;
+                definiteEpochs.push("E" + elements[i].get('intention').cid) ;
             }
 
         }
 
         // Monotonic Positive or Monotonic Negative
-        if (model.intentions[i].evolvingFunction.type === "MP" || model.intentions[i].evolvingFunction.type === "MN") {
+        if (elements[i].get('intention').get('evolvingFunction').get('type') === "MP" || elements[i].get('intention').get('evolvingFunction').get('type') === "MN") {
             // check if epoch has happened already
-            if (previousEpochs.indexOf("E" + model.intentions[i].nodeID) > -1) {
+            if (previousEpochs.indexOf("E" + elements[i].get('intention').cid) > -1) {
                 console.log("found epoch");
                 break;
             }
             // check if current value is the final value
             // this goes into potential list
-            var endValue = model.intentions[i].evolvingFunction.functionSegList[1].funcX;
+            var endValue = elements[i].get('intention').get('evolvingFunction').get('functionSegList')[1].get('refEvidencePair');
             var curStatus = savedAnalysisData.allNextStatesResult.allSolution[index_of_selected_state].intentionElements[i].status[0];
             if (curStatus === endValue) {
-                potentialEpochs.push("E" + model.intentions[i].nodeID);
+                potentialEpochs.push("E" + elements[i].get('intention').cid);
             }
 
         }
 
         // User Defined TODO: need to fix UD functions
-        if (model.intentions[i].evolvingFunction.type === "UD") {
+        if (elements[i].get('intention').get('evolvingFunction').get('type') === "UD") {
             var next_epoch = "";
             var cur_seg = -1;
-            for (var j = 0; j < model.intentions[i].evolvingFunction.functionSegList.length; j++) {
-                var start_epoch = "E" + model.intentions[i].nodeID + "_" + model.intentions[i].evolvingFunction.functionSegList[j].startTP;
-                var end_epoch = "E" + model.intentions[i].nodeID + "_" + model.intentions[i].evolvingFunction.functionSegList[j].funcStop;
+            for (var j = 0; j < elements[i].get('intention').get('evolvingFunction').get('functionSegList').length; j++) {
+                var start_epoch = "E" + elements[i].get('intention').cid + "_" + elements[i].get('intention').get('evolvingFunction').get('functionSegList')[j].get('startTP');
+                if (elements[i].get('intention').get('evolvingFunction').get('functionSegList')[j].get('startTP') == '0') {
+                    var end_epoch = "E" + elements[i].get('intention').cid + "_" + 'A';
+                } else {
+                    var end_epoch = "E" + elements[i].get('intention').cid + "_" + String.fromCharCode(elements[i].get('intention').get('evolvingFunction').get('functionSegList')[j].get('startTP').charCodeAt(0) + 1);;
+                }
                 if (previousEpochs.indexOf(end_epoch) == -1 && previousEpochs.indexOf(start_epoch) != -1){
                     //look for the seg that the start epoch happened and stop epoch hasn't
                     cur_seg = j;
@@ -890,18 +885,17 @@ function updateAnalysisRequestWithCurrentState(){
             if (cur_seg == -1){
                 break;
             }
-
-            var endValue = model.intentions[i].evolvingFunction.functionSegList[cur_seg].funcX;
+            var endValue = elements[i].get('intention').get('evolvingFunction').get('functionSegList')[cur_seg].get('refEvidencePair');
             var curStatus = savedAnalysisData.allNextStatesResult.allSolution[index_of_selected_state].intentionElements[i].status[0];
 
             // if the next segment is random, the epoch goes to potential epochs
             var go_to_potentials = 0;
-            if (cur_seg < model.intentions[i].evolvingFunction.functionSegList.length-1){
-                if (model.intentions[i].evolvingFunction.functionSegList[cur_seg+1].funcType === "R"){
+            if (cur_seg < elements[i].get('intention').get('evolvingFunction').get('functionSegList').length-1){
+                if (elements[i].get('intention').get('evolvingFunction').get('functionSegList')[cur_seg+1].get('type') === "R"){
                     go_to_potentials = 1;
                 }
             }
-            switch (model.intentions[i].evolvingFunction.functionSegList[cur_seg].funcType) {
+            switch (elements[i].get('intention').get('evolvingFunction').get('functionSegList')[cur_seg].get('type')) {
                 case "C":
                     if (curStatus !== endValue){
                         if (go_to_potentials == 1){
@@ -930,8 +924,8 @@ function updateAnalysisRequestWithCurrentState(){
                     }
                     break;
                 case "R":
-                    if ((cur_seg < model.intentions[i].evolvingFunction.functionSegList.length-1) && (model.intentions[i].evolvingFunction.functionSegList[cur_seg+1].funcType === "C")){
-                        if (curStatus === model.intentions[i].evolvingFunction.functionSegList[cur_seg+1].funcX){
+                    if ((cur_seg < elements[i].get('intention').get('evolvingFunction').get('functionSegList').length-1) && (elements[i].get('intention').get('evolvingFunction').get('functionSegList')[cur_seg+1].get('type') === "C")){
+                        if (curStatus === elements[i].get('intention').get('evolvingFunction').get('functionSegList')[cur_seg+1].get('refEvidencePair')){
                             potentialEpochs.push(next_epoch);
                         }
                     } else {
@@ -953,12 +947,12 @@ function updateAnalysisRequestWithCurrentState(){
         + AbsIntersction - previousEpochs.length - previousAbs - previousRel;
 
     console.log("numTPLeft " + numTPLeft);
-
-    var difference = parseInt(model.maxAbsTime) - nextTimePoint;
+    console.log(graph);
+    var difference = parseInt(graph.get('maxAbsTime')) - nextTimePoint;
     console.log("difference: " + difference);
     if (numTPLeft > difference){
         var newRand = Math.floor(Math.random() *
-            ( parseInt(model.maxAbsTime) - numTPLeft - parseInt(analysisRequest.previousAnalysis.timePointPath[current] + 1))
+            ( parseInt(graph.get('maxAbsTime')) - numTPLeft - parseInt(analysisRequest.previousAnalysis.timePointPath[current] + 1))
             + parseInt(analysisRequest.previousAnalysis.timePointPath[current]));
         console.log("newRand " + newRand);
         analysisRequest.previousAnalysis.timePointPath.push(newRand);
@@ -1080,45 +1074,41 @@ function updateAnalysisRequestWithCurrentState_copy(){
     var allEpochs = {}; // intention id : list of epoch names
     var num_epochs = 0;
 
-    for (var i = 0; i < model.intentions.length ; i++){
+    for (var i = 0; i < elements[i].get('intention').length ; i++){
         // more than one piece of functions involved
-        if (!allEpochs[model.intentions[i].nodeID]){
-            allEpochs[model.intentions[i].nodeID] = [];
+        if (!allEpochs[elements[i].get('intention').cid]){
+            allEpochs[elements[i].get('intention').cid] = [];
         }
 
-        if (model.intentions[i].evolvingFunction.type === "NT" ||
-            model.intentions[i].evolvingFunction.type === "C" ||
-            model.intentions[i].evolvingFunction.type === "I" ||
-            model.intentions[i].evolvingFunction.type === "D" ||
-            model.intentions[i].evolvingFunction.type === "R" ||
-            model.intentions[i].evolvingFunction.type === "NB" ){
+        if (elements[i].get('intention').get('evolvingFunction').get('type') === "NT" ||
+            elements[i].get('intention').get('evolvingFunction').get('type')  === "C" ||
+            elements[i].get('intention').get('evolvingFunction').get('type')  === "I" ||
+            elements[i].get('intention').get('evolvingFunction').get('type')  === "D" ||
+            elements[i].get('intention').get('evolvingFunction').get('type')  === "R" ||
+            elements[i].get('intention').get('evolvingFunction').get('type')  === "NB" ){
             continue;
         }
-        else if (model.intentions[i].evolvingFunction.type === "SD" ||
-            model.intentions[i].evolvingFunction.type === "DS" ||
-            model.intentions[i].evolvingFunction.type === "CR" ||
-            model.intentions[i].evolvingFunction.type === "RC" ||
-            model.intentions[i].evolvingFunction.type === "MP" ||
-            model.intentions[i].evolvingFunction.type === "MN" ){
-            allEpochs[model.intentions[i].nodeID].push("E" + model.intentions[i].nodeID);
+        else if (elements[i].get('intention').get('evolvingFunction').get('type')  === "SD" ||
+            elements[i].get('intention').get('evolvingFunction').get('type') === "DS" ||
+            elements[i].get('intention').get('evolvingFunction').get('type')  === "CR" ||
+            elements[i].get('intention').get('evolvingFunction').get('type')  === "RC" ||
+            elements[i].get('intention').get('evolvingFunction').get('type')  === "MP" ||
+            elements[i].get('intention').get('evolvingFunction').get('type')  === "MN" ){
+            allEpochs[elements[i].get('intention').cid].push("E" + elements[i].get('intention').cid);
             num_epochs ++;
         }
-        else if (model.intentions[i].evolvingFunction.type === "UD"){
+        else if (elements[i].get('intention').get('evolvingFunction').get('type')  === "UD"){
             //TODO: fix the name to be the inbetween start and end points
             // getting function charEB list
             var charEBs = [];
-            for (var j = 0; j < model.intentions[i].evolvingFunction.functionSegList.length; j ++){
-                if (charEBs.indexOf(model.intentions[i].evolvingFunction.functionSegList[j].startTP === -1)){
-                    charEBs.push(model.intentions[i].evolvingFunction.functionSegList[j].startTP);
+            for (var j = 0; j < elements[i].get('intention').get('evolvingFunction').get('functionSegList').length; j ++){
+                if (charEBs.indexOf(elements[i].get('intention').get('evolvingFunction').get('functionSegList')[j].get('startTP') === -1)){
+                    charEBs.push(elements[i].get('intention').get('evolvingFunction').get('functionSegList')[j].get('startTP'));
                 }
-                if (charEBs.indexOf(model.intentions[i].evolvingFunction.functionSegList[j].funcStop === -1)){
-                    charEBs.push(model.intentions[i].evolvingFunction.functionSegList[j].funcStop);
-                }
-
             }
             // ignoring 0 and infinity in charEBs
             for (var k = 1; k < charEBs.length-1; k ++){
-                allEpochs[model.intentions[i].nodeID].push("E" + model.intentions[i].nodeID + "_" + charEBs[k]);
+                allEpochs[elements[i].get('intention').cid].push("E" + elements[i].get('intention').cid + "_" + charEBs[k]);
                 num_epochs++;
             }
         }
@@ -1180,85 +1170,85 @@ function updateAnalysisRequestWithCurrentState_copy(){
     // determine the type of current time point
     var potentialEpochs = [];
     var potentialEpoch = "";
-    for (var i = 0; i < model.intentions.length ; i++){
-        if (model.intentions[i].evolvingFunction.type === "NT" ||
-            model.intentions[i].evolvingFunction.type === "C" ||
-            model.intentions[i].evolvingFunction.type === "I" ||
-            model.intentions[i].evolvingFunction.type === "D" ||
-            model.intentions[i].evolvingFunction.type === "R" ||
-            model.intentions[i].evolvingFunction.type === "NB" ){
+    for (var i = 0; i < elements[i].get('intention').length ; i++){
+        if (elements[i].get('intention').get('evolvingFunction').get('type') === "NT" ||
+            elements[i].get('intention').get('evolvingFunction').get('type') === "C" ||
+            elements[i].get('intention').get('evolvingFunction').get('type') === "I" ||
+            elements[i].get('intention').get('evolvingFunction').get('type') === "D" ||
+            elements[i].get('intention').get('evolvingFunction').get('type') === "R" ||
+            elements[i].get('intention').get('evolvingFunction').get('type') === "NB" ){
             continue;
         }
 
         // Satisfied Denied or Denied Satisfied
-        if (model.intentions[i].evolvingFunction.type === "SD" || model.intentions[i].evolvingFunction.type === "DS"){
+        if (elements[i].get('intention').get('evolvingFunction').get('type') === "SD" || elements[i].get('intention').get('evolvingFunction').get('type') === "DS"){
             // Epoch happens when previous is initial state and current is final state
-            var startValue = model.intentions[i].evolvingFunction.functionSegList[0].funcX;
-            var endValue = model.intentions[i].evolvingFunction.functionSegList[1].funcX;
+            var startValue = elements[i].get('intention').get('evolvingFunction').get('functionSegList')[0].get('refEvidencePair');
+            var endValue = elements[i].get('intention').get('evolvingFunction')[1].get('refEvidencePair');
             var previousStatus = analysisRequest.previousAnalysis.elementList[i].status[current];
             var curStatus = savedAnalysisData.allNextStatesResult.allSolution[index_of_selected_state].intentionElements[i].status[0];
             if (previousStatus === startValue && curStatus === endValue){
-                potentialEpoch = "E" + model.intentions[i].nodeID;
+                potentialEpoch = "E" + elements[i].get('intention').cid;
             }
 
         }
 
         // Stochastic Constant
-        if (model.intentions[i].evolvingFunction.type === "RC"){
+        if (elements[i].get('intention').get('evolvingFunction').get('type') === "RC"){
             // check if epoch has happened already
             // check if obj["key"] != undefined
-            if (previousEpochs.indexOf("E" + model.intentions[i].nodeID) > -1){
+            if (previousEpochs.indexOf("E" + elements[i].get('intention').cid) > -1){
                 continue;
             }
             // check if current value is the final value
             // this goes into potential list
-            var endValue = model.intentions[i].evolvingFunction.functionSegList[1].funcX;
+            var endValue = elements[i].get('intention').get('evolvingFunction').get('functionSegList')[1].get('refEvidencePair');
             var curStatus = savedAnalysisData.allNextStatesResult.allSolution[index_of_selected_state].intentionElements[i].status[0];
             if (curStatus === endValue){
-                potentialEpochs.push("E" + model.intentions[i].nodeID);
+                potentialEpochs.push("E" + elements[i].get('intention').cid);
             }
 
         }
 
         // Constant Stochastic
-        if (model.intentions[i].evolvingFunction.type === "CR"){
+        if (elements[i].get('intention').get('evolvingFunction').get('type') === "CR"){
             // check if epoch has happened already
-            if (previousEpochs.indexOf("E" + model.intentions[i].nodeID) > -1){
+            if (previousEpochs.indexOf("E" + elements[i].get('intention').cid) > -1){
                 break;
             }
             // TODO: add to potential epochs directly?
             // check if previous is constant value and current is not constant value
-            var startValue = model.intentions[i].evolvingFunction.functionSegList[0].funcX;
+            var startValue = elements[i].get('intention').get('evolvingFunction').get('functionSegList')[0].get('refEvidencePair');
             var curStatus = savedAnalysisData.allNextStatesResult.allSolution[index_of_selected_state].intentionElements[i].status[0];
             if (curStatus !== startValue){
-                potentialEpoch = "E" + model.intentions[i].nodeID;
+                potentialEpoch = "E" + elements[i].get('intention').cid;
             }
 
         }
 
         // Monotonic Positive or Monotonic Negative
-        if (model.intentions[i].evolvingFunction.type === "MP" || model.intentions[i].evolvingFunction.type === "MN") {
+        if (elements[i].get('intention').get('evolvingFunction').get('type') === "MP" || elements[i].get('intention').get('evolvingFunction').get('type') === "MN") {
             // check if epoch has happened already
-            if (previousEpochs.indexOf("E" + model.intentions[i].nodeID) > -1){
+            if (previousEpochs.indexOf("E" + elements[i].get('intention').cid) > -1){
                 console.log("found epoch");
                 break;
             }
             // check if current value is the final value
             // this goes into potential list
-            var endValue = model.intentions[i].evolvingFunction.functionSegList[1].funcX;
+            var endValue = elements[i].get('intention').get('evolvingFunction').get('functionSegList[1]').get('refEvidencePair');
             var curStatus = savedAnalysisData.allNextStatesResult.allSolution[index_of_selected_state].intentionElements[i].status[0];
             if (curStatus === endValue){
-                potentialEpochs.push("E" + model.intentions[i].nodeID);
+                potentialEpochs.push("E" + elements[i].get('intention').cid);
             }
 
         }
 
         // User Defined TODO: need to fix UD functions
-        if (model.intentions[i].evolvingFunction.type === "UD"){
+        if (elements[i].get('intention').get('evolvingFunction').get('type') === "UD"){
             var next_epoch_name = "";
             var next_funcseg_index = 0;
-            for (var j = 0; j < model.intentions[i].evolvingFunction.functionSegList.length; j ++){
-                var epoch_name = "E" + model.intentions[i].nodeID + "_" + model.intentions[i].evolvingFunction.functionSegList[j].funcType;
+            for (var j = 0; j < elements[i].get('intention').get('evolvingFunction').get('functionSegList').length; j ++){
+                var epoch_name = "E" + elements[i].get('intention').cid + "_" + elements[i].get('intention').get('evolvingFunction').get('functionSegList')[j].get('type');
                 if (previousEpochs.indexOf(epoch_name) == -1){
                     next_funcseg_index = j;
                     next_epoch_name = epoch_name;
@@ -1286,11 +1276,11 @@ function updateAnalysisRequestWithCurrentState_copy(){
 
     console.log("numTPLeft " + numTPLeft);
 
-    var difference = parseInt(model.maxAbsTime) - parseInt(analysisRequest.previousAnalysis.timePointPath[currentState]);
+    var difference = parseInt(graph.get('maxAbsTime')) - parseInt(analysisRequest.previousAnalysis.timePointPath[currentState]);
     console.log("difference: " + difference);
     if (numTPLeft > difference){
         var newRand = Math.floor(Math.random() *
-            ( parseInt(model.maxAbsTime) - numTPLeft - parseInt(analysisRequest.previousAnalysis.timePointPath[current] + 1))
+            ( parseInt(graph.get('maxAbsTime')) - numTPLeft - parseInt(analysisRequest.previousAnalysis.timePointPath[current] + 1))
             + parseInt(analysisRequest.previousAnalysis.timePointPath[current]));
         console.log("newRand " + newRand);
     }
@@ -1369,16 +1359,6 @@ function updateAnalysisRequestWithCurrentState_copy(){
 
 //This function should get the current state in the screen and save in the original path
 function save_current_state(){
-
-    var jsObject = {};
-
-    //Get the Graph Model
-    jsObject.model = model;
-
-    if(jsObject.model == null) {
-        return null;
-    }
-
     updateAnalysisRequestWithCurrentState();
     analysisRequest.action = "singlePath";
 
@@ -1400,13 +1380,6 @@ function generate_next_states(){
     $("body").addClass("waiting"); //Adds "waiting" spinner under cursor 
     // Object to be sent to the backend
     var jsObject = {};
-    //Get the Graph Model
-    jsObject.model = model;
-
-    if(jsObject.model == null) {
-        return null;
-    }
-
     updateAnalysisRequestWithCurrentState();
 
     /*for (var i = 0; i < analysisRequest.previousAnalysis.elementList.length ; i++){
