@@ -40,7 +40,7 @@ var ResultBBM = Backbone.Model.extend({
         return {    //TODO: Verify if this return should be kept.
             name:"Default Result",
             assignedEpoch: null,
-            timePointPath: null,
+            timePointPath: null,        // changed type to list of int.
             elementList: null,
             allSolution: null, // Potentially deprecated
             //elementLIstPercentEvals: null,    //TODO: there has to be a typo here.

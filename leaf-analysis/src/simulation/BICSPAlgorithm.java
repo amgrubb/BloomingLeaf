@@ -11,6 +11,8 @@ import org.jacop.core.*;
 import org.jacop.satwrapper.SatTranslation;
 import org.jacop.search.*;
 
+import gson_classes.OMain;
+
 public class BICSPAlgorithm {
 	// Elements needed for the CSP Solver
 	private Store store;									// CSP Store
@@ -28,7 +30,7 @@ public class BICSPAlgorithm {
 	private Intention[] intentions;							// array of intention elements in the model
 
 	// Problem Size: (numIntentions x numTimePoints x 4) + numTimePoints
-	private int numTP;										// Total number of time points in the path (to be calculated).
+	private int numTimePoints;										// Total number of time points in the path (to be calculated).
 	private int numIntentions;								// Number of intentions in the model.
 	
 	// Problem Variables:
@@ -96,10 +98,10 @@ public class BICSPAlgorithm {
 		HashMap<Integer, List<String>> modelAbstime = this.spec.getAbsTimePoints();
 		List<String> unassignedTimePoint = modelAbstime.get(-1);
 		modelAbstime.remove(-1);
-		this.numTP = modelAbstime.size() + unassignedTimePoint.size();
+		this.numTimePoints = modelAbstime.size() + unassignedTimePoint.size();
 		
 		// Create a IntVar for each Time Point
-		this.timePoints = new IntVar[this.numTP];
+		this.timePoints = new IntVar[this.numTimePoints];
 		int tpCounter = 0;
     	for (Map.Entry<Integer, List<String>> set : modelAbstime.entrySet()) {
     		this.timePoints[tpCounter] = new IntVar(store, "TP" + tpCounter, set.getKey(), set.getKey());
@@ -107,13 +109,13 @@ public class BICSPAlgorithm {
     		tpCounter++;
     	}
     	for (String item : unassignedTimePoint) {
-    		this.timePoints[tpCounter] = new IntVar(store, "TA" + tpCounter, 1, this.maxTime);
+    		this.timePoints[tpCounter] = new IntVar(store, "TP" + tpCounter, 1, this.maxTime);
     		List<String> toAdd = new ArrayList<String>();
     		toAdd.add(item);
     		timePointMap.put(this.timePoints[tpCounter], toAdd);
     		tpCounter++;    		
     	}
-    	if (DEBUG) System.out.println("\n Num TP is: " + this.numTP);
+    	if (DEBUG) System.out.println("\n Num TP is: " + this.numTimePoints);
 		
 	
 //    	this.functionEBCollection = new HashMap<IntentionalElement, IntVar[]>();
@@ -140,7 +142,7 @@ public class BICSPAlgorithm {
     	// Initialise Values Array.
     	//int lengthOfInitial = this.spec.getInitialValueTimePoints().length;
     	if (problemType == SearchType.PATH)
-    		this.values = new BooleanVar[this.numIntentions][this.numTP][4];	// 4 Predicates Values 0-FD, 1-PD, 2-PS, 3-FS
+    		this.values = new BooleanVar[this.numIntentions][this.numTimePoints][4];	// 4 Predicates Values 0-FD, 1-PD, 2-PS, 3-FS
     	//TODO: Add in other types of analysis.
 //    	else if (problemType == SearchType.NEXT_STATE)
 //    		this.values = new BooleanVar[this.numIntentions][lengthOfInitial + 1][4];	// 4 Predicates Values 0-FD, 1-PD, 2-PS, 3-FS;
@@ -346,7 +348,7 @@ public class BICSPAlgorithm {
 	private IntVar[] createVarList(){
     	if (problemType == SearchType.PATH){			
 			// Add full path to variables.
-			int fullListSize = (this.numIntentions * this.numTP * 4) + this.timePoints.length;// + this.epochs.length; 
+			int fullListSize = (this.numIntentions * this.numTimePoints * 4) + this.timePoints.length;// + this.epochs.length; 
 			IntVar[] fullList = new IntVar[fullListSize];
 			int fullListIndex = 0;
 			for (int i = 0; i < this.values.length; i++)
@@ -444,10 +446,10 @@ public class BICSPAlgorithm {
 	 */
 	private void printSinglePathSolution(int[] indexOrder) {
 		// Print out timepoint data.
-    	for (int i = 0; i < indexOrder.length; i++){
-    		System.out.print(this.timePoints[indexOrder[i]].id + "-" + this.timePoints[indexOrder[i]].value() + "\t");
-   		}
-    	System.out.println();
+//    	for (int i = 0; i < indexOrder.length; i++){
+//    		System.out.print(this.timePoints[indexOrder[i]].id + "-" + this.timePoints[indexOrder[i]].value() + "\t");
+//   		}
+//    	System.out.println();
 		
     	// Print out times.
     	System.out.print("Time:\t");
@@ -474,45 +476,49 @@ public class BICSPAlgorithm {
 //    		System.out.print(this.epochs[i].id + "-" + this.epochs[i].value() + "\t");
 //   		}   		
 	}	
+	
+	
+	
+	
+	
+	// ********************** Saving Solution ********************** 
 	/**
 	 * @param indexOrder
 	 */
-	private void saveSinglePathSolution(int[] indexOrder) {	
-		System.out.print("Add save function back.");
-	
-//		int[] finalValueTimePoints = new int[indexOrder.length];
-//    	for (int i = 0; i < indexOrder.length; i++)
-//    		finalValueTimePoints[i] = this.timePoints[indexOrder[i]].value();
-//   		this.spec.setFinalValueTimePoints(finalValueTimePoints);
-//    	
-//   		boolean[][][] finalValues = new boolean[this.intentions.length][indexOrder.length][4];
-//    	for (int i = 0; i < this.intentions.length; i++){
-//    		for (int t = 0; t < this.values[i].length; t++){
-//        		for (int v = 0; v < this.values[i][t].length; v++)
-//        			if(this.values[i][indexOrder[t]][v].value() == 1)
-//        				finalValues[i][t][v] = true;
-//        			else
-//        				finalValues[i][t][v] = false;
-//    		}
-//    	} 
-//    	this.spec.setFinalValues(finalValues);
-//    	
-//    	HashMap<String, Integer> finalAssignedEpochs = new HashMap<String, Integer>();
-//    	for (int i = 0; i < this.epochs.length; i++)
-//    		finalAssignedEpochs.put(this.epochs[i].id, this.epochs[i].value());	
-//    	for (int i = 0; i < indexOrder.length; i++)
-//    		finalAssignedEpochs.put(this.timePoints[indexOrder[i]].id, this.timePoints[indexOrder[i]].value());
-//    	this.spec.setFinalAssignedEpochs(finalAssignedEpochs);
+	private OMain saveSinglePathSolution(int[] indexOrder) {	
+
+		// Get Time Points (timePointAssignments)
+		Integer[] finalTPPath = new Integer[indexOrder.length];
+    	for (int i = 0; i < indexOrder.length; i++)
+    		finalTPPath[i] = this.timePoints[indexOrder[i]].value();
+   		
+    	//private HashMap<IntVar, List<String>> timePointMap = new HashMap<IntVar, List<String>>();
+    	HashMap<String, Integer> finalTPAssignments = new HashMap<String, Integer>();
+    	for (int i = 0; i < indexOrder.length; i++) {
+    		List<String> listTPNames = timePointMap.get(this.timePoints[indexOrder[i]]);
+    		for (String name : listTPNames)
+    			finalTPAssignments.put(name, this.timePoints[indexOrder[i]].value());
+    	}
+    	
+    	OMain oModel = new OMain(finalTPPath, finalTPAssignments);
+    	
+    	// Get assigned values (elementList)
+    	for (int i = 0; i < this.intentions.length; i++){
+    		String[] nodeFinalValues = new String[this.values[i].length];
+    		for (int t = 0; t < this.values[i].length; t++){
+    			StringBuilder value = new StringBuilder();
+        		for (int v = 0; v < this.values[i][t].length; v++)
+        			if(this.values[i][indexOrder[t]][v].value() == 1)
+        				value.append("1");
+        			else
+        				value.append("0");
+        		nodeFinalValues[t] = value.toString();
+    		}
+    		oModel.addElement(this.intentions[i].getUniqueID(), nodeFinalValues);
+    	}  	
+//TODO: START HERE and TEST!
+    	return oModel; 
+    	
 	}
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 }

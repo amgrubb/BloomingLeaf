@@ -9,15 +9,10 @@ import java.util.List;
 import java.util.Map;
 
 import gson_classes.BIConstraint;
-//import interface_objects.IOIntention;
-//import interface_objects.IOStateModel;
-//import interface_objects.OutputElement;
-import gson_classes.OutputModel;
-
 
 /**
+ * Hold the complete specification of the model.
  * @author amgrubb
- *
  */
 public class ModelSpec {
 	private List<Actor> actors = new ArrayList<Actor>();
@@ -63,11 +58,6 @@ public class ModelSpec {
 												// Note if model only has initial values then it will be [numintentions][1][4].
     private HashMap<String, boolean[][]> initialValuesMap; //TODO: Temporary or full replacement of initialValues. 
 
-//    private int[] finalValueTimePoints = null;
-//    private HashMap<String, Integer> finalAssignedEpochs = null;	 
-//    // One of these will be filled.
-//    private boolean[][][] finalValues = null;	 // For single Solution    
-//    private boolean[][][][] allSolutionsValues;	 // For all solutions.
 
     public ModelSpec(){
     }
@@ -327,86 +317,6 @@ public class ModelSpec {
     			throw new RuntimeException();    		
     	}
     }
-    
-    //TODO: Reimplement
-	public OutputModel getOutputModel() {
-		OutputModel output = new OutputModel();
-//    	// Print out Single Path Solotions.
-//		if(getFinalValues() != null){
-//	    	int i = -1;
-//	    	for (IntentionalElement element : getIntElements()){
-//	    		i++;
-//	    		OutputElement outputElement = new OutputElement();
-//	    		
-//	    		//outputElement.setId(element.getId());
-//	    		outputElement.setId(element.getUniqueID());
-//	    		for (int t = 0; t < getFinalValues()[i].length; t++){
-//	    			StringBuilder value = new StringBuilder();
-//	    			for (int v = 0; v < getFinalValues()[i][t].length; v++){
-//	        			if(getFinalValues()[i][t][v]){
-//	        				value.append("1");
-//	        			}else{
-//	        				value.append("0");
-//	        			}
-//	        		}
-//	        			outputElement.getStatus().add(value.toString());
-//	    		}
-//	    		output.getElementList().add(outputElement);
-//	    	} 			
-//		}
-//		//Print out All Next States
-//		if(getAllSolutionsValues() != null){
-//
-//			for(int i_states = 0; i_states < getAllSolutionsValues().length; i_states++){
-//				IOStateModel statesModel = new IOStateModel();
-//				for(int i_elements = 0; i_elements < getAllSolutionsValues()[i_states].length; i_elements++){
-//					IOIntention ioIntention = new IOIntention();
-//					String[] values = new String[getAllSolutionsValues()[i_states][i_elements].length];
-//					for(int i_steps = 0; i_steps < getAllSolutionsValues()[i_states][i_elements].length; i_steps++){
-//						StringBuilder value = new StringBuilder();
-//						for (int v = 0; v < getAllSolutionsValues()[i_states][i_elements][i_steps].length; v++){
-//		        			if(getAllSolutionsValues()[i_states][i_elements][i_steps][v]){
-//		        				value.append("1");
-//		        			}else{
-//		        				value.append("0");
-//		        			}
-//		        		}
-//						values[i_steps] = value.toString();		
-//
-//					}						
-//					ioIntention.setId(Integer.toString(i_elements));
-//        			ioIntention.setStatus(values);
-//        			ioIntention.setType(getIntElements().get(i_elements).getType());
-//        			if (getIntElements().get(i_elements).getActor() != null){
-//            			ioIntention.setActorId(getIntElements().get(i_elements).getActor().getId());
-//        			} else{
-//        				ioIntention.setActorId("-");
-//        			}
-//    				statesModel.getIntentionElements().add(ioIntention);
-//				}
-//				output.getAllSolution().add(statesModel);
-//			}
-//		}
-//		
-//    	
-//   		//Get final assigned epoch
-//		if(getFinalAssignedEpochs() != null){
-//			for (Map.Entry<String,Integer> entry : getFinalAssignedEpochs().entrySet()) {
-//				String key = entry.getKey();
-//				Integer value = entry.getValue();
-//				output.getAssignedEpoch().add(key+"_"+value);
-//			}
-//		}
-//
-//		if(getFinalValueTimePoints() != null){
-//			for(int a = 0; a < getFinalValueTimePoints().length; a++){
-//				output.getTimePointPath().add(Integer.toString(getFinalValueTimePoints()[a]));
-//			}	
-//		}
-//
-//
-		return output;
-	}
 
 	
 	// ************* START OF GENERIC GETTERS AND SETTERS ************* 
