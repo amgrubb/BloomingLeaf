@@ -605,7 +605,10 @@ function loadConfig(loadedConfig){
 }
 
     $(window).resize(function () {
-        resizeWindow(configCollection.findWhere({ selected: true }).get('results').findWhere({ selected: true }).get('timePointPath').length - 1);
+        var configResults = configCollection.findWhere({ selected: true }).get('results').findWhere({ selected: true });
+        if (configResults !== undefined){
+            resizeWindow(configResults.get('timePointPath').length - 1);
+        } 
     });
 } // End scope of configCollection and configInspector
 

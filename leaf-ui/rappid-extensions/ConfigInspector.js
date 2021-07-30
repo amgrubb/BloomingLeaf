@@ -200,6 +200,7 @@ var Config = Backbone.View.extend({
      */
     switchConfig: function () {
         this.model.set({ selected: true });
+        removeSlider();
     },
 
     /**
