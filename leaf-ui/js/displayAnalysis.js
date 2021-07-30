@@ -84,16 +84,16 @@ function createSlider(currentAnalysis, isSwitch) {
     sliderObject.sliderElement.noUiSlider.on('update', function( values, handle ) {
         updateSliderValues(parseInt(values[handle]), currentAnalysis);
     });
-    EVO.setCurTimePoint(sliderMax);
+    EVO.setCurTimePoint(sliderMax, currentAnalysis);
     adjustSliderWidth(sliderMax);
 }
 
 /**
  * Reset display to default, before result is displayed
  */
-function hideAnalysis() {
+function hideAnalysis(analysisResult) {
     revertNodeValuesToInitial();
-    EVO.switchToModelingMode();
+    EVO.switchToModelingMode(analysisResult);
     // show modeling mode EVO slider
     $('#modelingSlider').css("display", "");
     $('#analysisSlider').css("display", "none");
@@ -155,7 +155,7 @@ function updateSliderValues(sliderValue, currentAnalysis){
     currentAnalysis.get('elementList').forEach(element => 
         updateNodeValues(element, sliderValue));
 
-    EVO.setCurTimePoint(sliderValue);
+    EVO.setCurTimePoint(sliderValue, currentAnalysis);
 }
 
 /**

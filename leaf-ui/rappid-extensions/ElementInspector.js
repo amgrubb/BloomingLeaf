@@ -123,7 +123,6 @@ var ElementInspector = Backbone.View.extend({
         '</div>',
         '<br>',
         '<canvas id="chart" width="240" height="240"></canvas>',
-
         '</script>'].join(''),
 
     events: {
@@ -594,7 +593,7 @@ var ElementInspector = Backbone.View.extend({
      * and updateChartUserDefined.
      */
     updateCell: function () {
-        IntentionColoring.refresh();
+        IntentionColoring.refresh(undefined);
         changeFont(current_font, paper);
         if (this.intention.get('evolvingFunction') != null) {
             if (this.intention.get('evolvingFunction').get('type') == 'NT') {
