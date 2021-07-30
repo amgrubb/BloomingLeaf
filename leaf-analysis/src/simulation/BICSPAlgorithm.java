@@ -10,7 +10,7 @@ import org.jacop.core.*;
 import org.jacop.satwrapper.SatTranslation;
 import org.jacop.search.*;
 
-import gson_classes.OMain;
+import gson_classes.IOSolution;
 
 public class BICSPAlgorithm {
 	// Elements needed for the CSP Solver
@@ -467,7 +467,7 @@ public class BICSPAlgorithm {
 	/**
 	 * @param indexOrder
 	 */
-	public OMain getSolutionOutModel() {	
+	public IOSolution getSolutionOutModel() {	
 		if (problemType == SearchType.PATH){
 			int[] indexOrder = this.createTimePointOrder();
 			if (DEBUG) this.printSinglePathSolution(indexOrder);
@@ -491,7 +491,7 @@ public class BICSPAlgorithm {
 	    		}
 	    	}
 	    	
-	    	OMain oModel = new OMain(finalTPPath, finalTPAssignments);
+	    	IOSolution oModel = new IOSolution(finalTPPath, finalTPAssignments);
 	    	
 	    	// Get assigned values (elementList)
 	    	for (int i = 0; i < this.intentions.length; i++){

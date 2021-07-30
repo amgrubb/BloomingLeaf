@@ -8,7 +8,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import gson_classes.IMain;
-import gson_classes.OMain;
+import gson_classes.IOSolution;
 
 /**
  * SolveModelTest 
@@ -83,7 +83,7 @@ public class MainProgram {
 	 */
 	private static void createOutputFile(BICSPAlgorithm solver, String filePath) {
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		OMain outputModel = solver.getSolutionOutModel();
+		IOSolution outputModel = solver.getSolutionOutModel();
 	
 		try {
 			File file;

@@ -104,8 +104,8 @@ var ConfigBBM = Backbone.Model.extend({
         action: null,
         conflictLevel: "S",
         numRelTime: "1",
-        currentState: "0",
-        previousAnalysis: null,
+//        currentState: "0",        //TODO: Can we remove this?
+//        previousAnalysis: null,
         selected: true,
         results : new ResultCollection([]),
         }

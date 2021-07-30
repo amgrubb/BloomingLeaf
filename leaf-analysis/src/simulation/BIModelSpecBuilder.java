@@ -35,10 +35,10 @@ public class BIModelSpecBuilder {
 			} 
 			if (DEBUG) System.out.println("Read Simple Analysis Parameters");
 
-			IPreviousAnalysis prevResult = aRequest.getPreviousAnalysis();
+			IOSolution prevResult = aRequest.getPreviousAnalysis();
 			if(prevResult != null) {
 				// Get the list of assigned Time Points
-				modelSpec.setInitialAssignedEpochs(prevResult.getInitialAssignedEpochs());
+				modelSpec.setInitialAssignedEpochs(prevResult.getTimePointAssignments());
 				
 				// Create the list of assigned values. Size is currentState + 1 (to include zero).
 				modelSpec.setInitialValueTimePoints(prevResult.getSelectedTimePointPath());
@@ -72,11 +72,12 @@ public class BIModelSpecBuilder {
 					}
 				}
 				modelSpec.setInitialValues(initialValues);	
-				
+
+				//TODO: Will this bork if it is null?
 				// initial states need initial time points -> 0|0   getInitialValueTimePoints()
-				int[] initialValueTimePointsArray = new int[1];
-				initialValueTimePointsArray[0] = 0;
-				modelSpec.setInitialValueTimePoints(initialValueTimePointsArray);
+//				int[] initialValueTimePointsArray = new int[1];
+//				initialValueTimePointsArray[0] = 0;
+//				modelSpec.setInitialValueTimePoints(initialValueTimePointsArray);
 				if (DEBUG) System.out.println("TEMP: Handled (Single Path) Previous Result into Array");
 				
 			}			
