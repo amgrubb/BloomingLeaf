@@ -40,7 +40,7 @@ class IntentionColoring {
         
 }
 
-class intentionColorVis{
+class IntentionColorVis{
     constructor()
     {
         this.id;
@@ -228,7 +228,7 @@ class EVO {
      */
     initializeIntentionList()  {
         for(var i = 0; i < this.numIntentions; ++i) {
-            this.intentionListColorVis[i] = new intentionColorVis();
+            this.intentionListColorVis[i] = new IntentionColorVis();
         }
     }
 
@@ -548,7 +548,7 @@ class EVONextState  {
         //store: ID + percents per eval
         for (var i = 0; i< analysis.elements.length; i++) { // For each elements
             // Compile and calculate % for each node -> % must be updated every time a filter is applied
-            intentionPercents.push(new intentionColorVis());
+            intentionPercents.push(new IntentionColorVis());
             for (var j = 0; j < analysis.analysisResult.allSolution.length; j++) { // For each next state
             var currEval = analysis.analysisResult.allSolution[j].intentionElements[i].status[step];
             var newPercent = intentionPercents[i].evals[currEval];
