@@ -92,7 +92,7 @@ function backendSimulationRequest(analysisRequest) {
 	xhr.open("POST", url, true);
 	xhr.setRequestHeader("Content-Type", "application/json");
 
-	var data = stringifyCirc(jsObject); 
+	var data = backendStringifyCirc(jsObject); 
 	console.log(data)
 	xhr.onreadystatechange = function () {
 		// This function get called when the response is received.
@@ -103,6 +103,17 @@ function backendSimulationRequest(analysisRequest) {
 		}
 	}
 	xhr.send(data);	// Why is this sent down here? What is this send function.
+}
+function backendStringifyCirc(obj){
+    var skipKeys = ['_events', 'results', 'colorVis', 'change:refEvidencePair', 'context', '_listeners', '_previousAttributes']; // List of keys that contains circular structures
+    var graphtext = JSON.stringify(obj, function(key, value) {
+		if (skipKeys.includes(key)) { //if key is in the list
+		  return null; // Replace with null
+		} else{
+		  return value; // Otherwise return the value
+		}
+	  });
+      return graphtext
 }
 
 /** Handles the response from the server.
