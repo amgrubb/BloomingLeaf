@@ -395,7 +395,7 @@ class EVO {
                     }
                 }
                 else {
-                    curr = element.findView(paper).model;
+                    curr = elements[i].findView(paper).model;
                     curr.attr({text: {fill: 'white',stroke:'none'}});
                 }
             }
