@@ -5,8 +5,10 @@
  * 
  * Attributes:
  * @param {String} name
- * @param {Array.<String>} assignedEpoch
- *   Each element represents an epoch with its assigned value
+ * @param {HashMap.<String, Integer>} timePointAssignments
+ *   Hashmap between the symbolic names for time points and Absolute time point values
+ *   Was called assignedEpoch and
+ *   each element represents an epoch with its assigned value
  *   ex: ["TE2_2","TE1_32"]
  * @param {Array.<String>} timePointPath
  *   Each element represents a time point in the analysis
@@ -39,7 +41,7 @@ var ResultBBM = Backbone.Model.extend({
     defaults: function() {
         return {    //TODO: Verify if this return should be kept.
             name:"Default Result",
-            assignedEpoch: null,
+            timePointAssignments: null,
             timePointPath: null,        // changed type to list of int.
             elementList: null,
             allSolution: null, // Potentially deprecated

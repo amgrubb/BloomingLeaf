@@ -144,7 +144,7 @@ function responseFunc(analysisRequest, response) {
  */
 function convertToAnalysisResult(results){
 	var tempResult = new ResultBBM();
-	tempResult.set('assignedEpoch', results.assignedEpoch);
+	tempResult.set('timePointAssignments', results.timePointAssignments);	// Was called: 'assignedEpoch'
 	tempResult.set('timePointPath', results.timePointPath);
 	tempResult.set('timePointPathSize', results.timePointPathSize);
 	tempResult.set('elementList', results.elementList);
