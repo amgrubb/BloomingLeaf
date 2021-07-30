@@ -494,7 +494,7 @@ paper.on("link:options", function (cell) {
     function loadConfig(loadedConfig){
         var selectedConfig;
         var selectedResult;
-        //Clears current configCollection
+        // Clears current configCollection
         while (model = configCollection.first()){
             model.destroy();
         }
@@ -502,11 +502,11 @@ paper.on("link:options", function (cell) {
         // Individually creates each ConfigBBM and add to collection
         for(let config of loadedConfig){
             if (config.selected){ // If selected is true
-                selectedConfig = config.name; //Record the name of config
+                selectedConfig = config.name; // Record the name of config
             }
             var configBBM = new ConfigBBM({name:config.name, action: config.action, conflictLevel: config.conflictLevel, numRelTime: config.numRelTime, currentState: config.currentState, userAssignmentsList : config.userAssignmentsList, previousAnalysis: config.previousAnalysis, selected: config.selected})
-            if (config.results.length !== 0){ //create results if there applicable
-                var results = configBBM.get('results') // grabs the coolection from the configbbm
+            if (config.results.length !== 0){ // Creates results if there applicable
+                var results = configBBM.get('results'); // Grabs the coolection from the configBBM
                 // Individually creates each ResultBBM and add to collection
                 for (let result of config.results){
                     if (result.selected){ // If selected is true
@@ -515,9 +515,9 @@ paper.on("link:options", function (cell) {
                     var resultsBBM = new ResultBBM({name: result.name, assignedEpoch: result.assignedEpoch, timePointPath: result.timePointPath, elementList: result.elementList, allSolution: result.allSolution, isPathSim: result.isPathSim, colorVis: result.colorVis, selectedTimePoint: result.selectedTimePoint, selected: result.selected});
                     results.add(resultsBBM)
                 }
-                configCollection.add(configbbm)
+                configCollection.add(configBBM);
             }
-            configCollection.add(configBBM)
+            configCollection.add(configBBM);
         }
 
         // Sets what the config/result the user was last on as selected
@@ -530,7 +530,7 @@ paper.on("link:options", function (cell) {
         if (configGroup[0].get('results').length !== 0){ // Within that selected config
             // Set selected of the selected result as true
             currResult= configGroup[0].get('results').filter(selectedRes => selectedRes.get('name') == selectedResult)[0]
-            currResult.set('selected', true)
+            currResult.set('selected', true);
         }
     }
 
@@ -544,10 +544,8 @@ paper.on("link:options", function (cell) {
         if (name) {
             clearCycleHighlighting(selectResult);
             EVO.deactivate();
-        // EVO.returnAllColors(graph.getElements(), paper);
-        // EVO.revertIntentionsText(graph.getElements(), paper);    
             var fileName = name + ".json";
-            obj = {graph: graph.toJSON()} //same structure as the other two save options
+            var obj = {graph: graph.toJSON()}; // Same structure as the other two save options
             download(fileName, JSON.stringify(obj));
             IntentionColoring.refresh(selectResult);
         }
@@ -581,7 +579,6 @@ paper.on("link:options", function (cell) {
         IntentionColoring.refresh(selectResult);
     });
 
-    
     $('#colorblind-mode-isOff').on('click', function () { //activates colorblind mode
         $('#colorblind-mode-isOff').css("display", "none");
         $('#colorblind-mode-isOn').css("display", "");
@@ -609,10 +606,10 @@ paper.on("link:options", function (cell) {
     document.getElementById("colorResetAnalysis").oninput = function () { //changes slider mode and refreshes
         var selectConfig;
         //TODO: Find out why the selectResult is empty before we reassign it
-        if (configCollection.length !== 0){
+        if (configCollection.length !== 0) {
             selectConfig = configCollection.filter(Config => Config.get('selected') == true)[0];
-            if (selectConfig.get('results') !== undefined){
-                selectResult = selectConfig.get('results').filter(resultModel => resultModel.get('selected') == true)[0]
+            if (selectConfig.get('results') !== undefined) {
+                selectResult = selectConfig.get('results').filter(resultModel => resultModel.get('selected') == true)[0];
             }
         }
         EVO.setSliderOption(this.value, selectResult);
