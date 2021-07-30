@@ -417,6 +417,7 @@ class EVO {
      * changes each intention by their initial user set satisfaction value in modeling mode
      */
     static colorIntentionsModeling(){
+        var initSatVal; 
         var elements = graph.getElements();
         for (var i = 0; i < elements.length; i++){ 
             var cellView = elements[i].findView(paper);
@@ -472,7 +473,7 @@ class EVO {
 }
 
 class EVONextState  {
-    //user selected slider option in the next state window
+    // User selected slider option in the next state window
     static sliderOptionNextState = 0;
 
     /**

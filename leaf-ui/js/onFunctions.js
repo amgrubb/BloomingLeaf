@@ -12,16 +12,17 @@ $('#btn-undo').on('click', _.bind(commandManager.undo, commandManager));
 $('#btn-redo').on('click', _.bind(commandManager.redo, commandManager));
 $('#btn-clear-all').on('click', function () { clearAll() });
 $('#btn-clear-flabel').on('click', function () {
-    console.log("TODO: Reimplement with new backbone structure - btn-clear-flabel");
     for (let element of graph.getElements()) {
         var cellView = element.findView(paper);
         var cell = cellView.model;
-        var intention = model.getIntentionByID(cellView.model.attributes.nodeID);
+        var intention = cell.get('intention'); 
 
         if (intention != null) {
             intention.removeFunction();
             cell.attr(".funcvalue/text", "");
-            elementInspector.$('.function-type').val('(no value)');
+
+            // TODO: Determine if we still need this line. 
+            // elementInspector.$('.function-type').val('(no value)');
         }
     }
 });
@@ -175,59 +176,65 @@ graph.on('change:size', function (cell, size) {
 graph.on('remove', function (cell) {
     // Clear right inspector side panel
     clearInspector();
+    
+    /**  TODO: Determine if we still need the rest of the code in this function. 
+     *   Figure out how to make the element inspector automatically update after the function 
+     *   label is changed to (no value) for the element. Currently the user needs to click the 
+     *   element again for it to update. 
+    */
 
-    if (cell.isLink() && !(cell.prop("link-type") == 'NBT' || cell.prop("link-type") == 'NBD')) {
-        // To remove link
-        var link = cell;
-        model.removeLink(link.linkID);
-    }
+    // if (cell.isLink() && !(cell.prop("link-type") == 'NBT' || cell.prop("link-type") == 'NBD')) {
+    //     // To remove link
+    //     var link = cell;
+    //     // model.removeLink(link.linkID);
+    // }
 
-    else if ((!cell.isLink()) && (!(cell["attributes"]["type"] == "basic.Actor"))) {
-        // To remove intentions
-        var userIntention = model.getIntentionByID(cell.attributes.nodeID);
-        // remove this intention from the model
-        model.removedynamicFunction(userIntention.nodeID);
-        model.removeIntentionLinks(userIntention.nodeID);
-        // remove all intention evaluations associated with this intention
-        analysisRequest.removeIntention(userIntention.nodeID);
-        // if this intention has an actor, remove this intention's ID
-        // from the actor
-        if (userIntention.nodeActorID !== '-') {
-            var actor = model.getActorByID(userIntention.nodeActorID);
-            actor.removeIntentionID(userIntention.nodeID);
-        }
-        model.removeIntention(userIntention.nodeID);
-    }
-    else if ((!cell.isLink()) && (cell["attributes"]["type"] == "basic.Actor")) {
-        // To remove actor
-        model.removeActor(cell['attributes']['nodeID']);
+    // else if ((!cell.isLink()) && (!(cell["attributes"]["type"] == "basic.Actor"))) {
+    //     // To remove intentions
+    //     // var userIntention = model.getIntentionByID(cell.attributes.nodeID);
+    //     // remove this intention from the model
+    //     // model.removedynamicFunction(userIntention.nodeID);
+    //     // model.removeIntentionLinks(userIntention.nodeID);
+    //     // remove all intention evaluations associated with this intention
+    //     // analysisRequest.removeIntention(userIntention.nodeID);
+    //     // if this intention has an actor, remove this intention's ID
+    //     // from the actor
+    //     if (userIntention.nodeActorID !== '-') {
+    //         var actor = model.getActorByID(userIntention.nodeActorID);
+    //         actor.removeIntentionID(userIntention.nodeID);
+    //     }
+    //     model.removeIntention(userIntention.nodeID);
+    // }
+    // else if ((!cell.isLink()) && (cell["attributes"]["type"] == "basic.Actor")) {
+    //     // To remove actor
+    //     model.removeActor(cell['attributes']['nodeID']);
 
 
-    }
+    // }
 
-    else if (cell.isLink() && (cell.prop("link-type") == 'NBT' || cell.prop("link-type") == 'NBD')) {
-        // Verify if is a Not both type. If it is remove labels from source and target node
-        var link = cell;
-        var source = link.prop("source");
-        var target = link.prop("target");
+    // else if (cell.isLink() && (cell.prop("link-type") == 'NBT' || cell.prop("link-type") == 'NBD')) {
+    //     // Verify if is a Not both type. If it is remove labels from source and target node
+    //     var link = cell;
+    //     var source = link.prop("source");
+    //     var target = link.prop("target");
 
-        for (var i = 0; i < graph.getElements().length; i++) {
-            if (graph.getElements()[i].prop("id") == source["id"]) {
-                source = graph.getElements()[i];
-            }
-            if (graph.getElements()[i].prop("id") == target["id"]) {
-                target = graph.getElements()[i];
-            }
-        }
+    //     for (var i = 0; i < graph.getElements().length; i++) {
+    //         if (graph.getElements()[i].prop("id") == source["id"]) {
+    //             source = graph.getElements()[i];
+    //         }
+    //         if (graph.getElements()[i].prop("id") == target["id"]) {
+    //             target = graph.getElements()[i];
+    //         }
+    //     }
 
-        //Verify if it is possible to remove the NB tag from source and target
-        if (source !== null && !checkForMultipleNB(source)) {
-            source.attrs(".funcvalue/text", "");
-        }
-        if (target !== null && !checkForMultipleNB(target)) {
-            target.attrs(".funcvalue/text", "");
-        }
-    }
+    //     //Verify if it is possible to remove the NB tag from source and target
+    //     if (source !== null && !checkForMultipleNB(source)) {
+    //         source.attrs(".funcvalue/text", "");
+    //     }
+    //     if (target !== null && !checkForMultipleNB(target)) {
+    //         target.attrs(".funcvalue/text", "");
+    //     }
+    // }
 });
 
 /** Paper Events **/
@@ -381,11 +388,9 @@ paper.on("link:options", function (cell) {
         $('.attribution').css("display", "none");
         $('.inspector').css("display", "none");
         IntentionColoring.refresh(selectResult);
-        var currResult = configCollection.findWhere({ selected: true }).get('results').findWhere({ selected: true });
-
-        // Display the analysis and slider
-        if (currResult !== undefined){
-            displayAnalysis(currResult, true);
+        var configResults = configCollection.findWhere({ selected: true }).get('results');
+        if (configResults !== undefined){
+            selectResult = configResults.findWhere({ selected: true });
         }
 
         // TODO: Add check for model changes to potentially clear configCollection back in
@@ -544,19 +549,14 @@ paper.on("link:options", function (cell) {
         if (name) {
             clearCycleHighlighting(selectResult);
             EVO.deactivate();
+            // EVO.returnAllColors(graph.getElements(), paper);
+            // EVO.revertIntentionsText(graph.getElements(), paper);  
             var fileName = name + ".json";
             var obj = {graph: graph.toJSON()}; // Same structure as the other two save options
             download(fileName, JSON.stringify(obj));
             IntentionColoring.refresh(selectResult);
         }
     });
-
-    /**
-     * Switches to Analysis view iff there are no cycles and no syntax errors.
-     * This file contains functions related to the syntax checking and 
-     * cycle detection for the web
-     * 
-     */
 
     // TODO: Reimplement with new backbone structure
     $('#btn-clear-elabel').on('click', function () {
@@ -572,8 +572,9 @@ paper.on("link:options", function (cell) {
                 cell.attr(".satvalue/text", "");
                 cell.attr(".funcvalue/text", "");
 
-                elementInspector.$('#init-sat-value').val('(no value)');
-                elementInspector.$('.function-type').val('(no value)');
+                // TODO: Determine if we still need these lines.
+                //elementInspector.$('#init-sat-value').val('(no value)');
+                //elementInspector.$('.function-type').val('(no value)');
             }
         }
         IntentionColoring.refresh(selectResult);
