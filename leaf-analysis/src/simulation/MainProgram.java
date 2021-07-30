@@ -9,8 +9,6 @@ import com.google.gson.GsonBuilder;
 
 import gson_classes.IMain;
 import gson_classes.OMain;
-import gson_classes.FuncWrapper;
-import gson_classes.FuncWrapperDeserializer;
 
 /**
  * SolveModelTest 

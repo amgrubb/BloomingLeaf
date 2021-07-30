@@ -15,6 +15,7 @@ public class Intention extends AbstractLinkableElement {
 	
 	//private IntentionalElementType type = IntentionalElementType.GOAL; 
 	
+	@SuppressWarnings("unused")
 	private HashMap<Integer, String> userEvals;
 	private FunctionSegment[] evolvingFunctions;
 	

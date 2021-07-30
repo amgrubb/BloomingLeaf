@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.jacop.constraints.*;
-import org.jacop.constraints.Constraint;
 import org.jacop.core.*;
 import org.jacop.satwrapper.SatTranslation;
 import org.jacop.search.*;
@@ -26,7 +25,7 @@ public class BICSPAlgorithm {
 	private ModelSpec spec;									// Holds the model information.
 	private int maxTime;									// duplicated from spec to create shortcut for code.
 	private IntVar zero;									// (0) Initial Values time point.
-	private IntVar infinity;								// (maxTime + 1) Infinity used for intention functions, not a solved point.
+//	private IntVar infinity;								// (maxTime + 1) Infinity used for intention functions, not a solved point.
 	private Intention[] intentions;							// array of intention elements in the model
 
 	// Problem Size: (numIntentions x numTimePoints x 4) + numTimePoints
@@ -85,7 +84,7 @@ public class BICSPAlgorithm {
 		this.spec = spec;
 		this.maxTime = spec.getMaxTime();
 		this.zero = new IntVar(this.store, "Zero", 0, 0);
-		this.infinity = new IntVar(this.store, "Infinity", this.maxTime + 1, this.maxTime + 1);
+//		this.infinity = new IntVar(this.store, "Infinity", this.maxTime + 1, this.maxTime + 1);
 
     	// Initialize intentions and store them in array.
     	this.numIntentions = this.spec.getNumIntentions();
