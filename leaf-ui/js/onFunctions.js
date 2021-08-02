@@ -102,10 +102,6 @@ $('#modeling-btn').on('click', function () {
     savedAnalysisData.finalValueTimePoints = "";
 });
 
-$(window).resize(function () {
-    resizeWindow();
-});
-
 /*** Events for Rappid/JointJS objets ***/
 
 /** Graph Events */
@@ -349,9 +345,7 @@ paper.on("link:options", function (cell) {
     let configInspector = null;
     let selectResult = undefined;
 
-    /** Simulate Single Path: 
-     * Selects the current configuration and passes to backendSimulationRequest()  */
-    $('#simulate-single-path-btn').on('click', function() {
+    $('#simulate-path-btn').on('click', function() { 
         var curRequest = configCollection.findWhere({selected: true});
         curRequest.set('action', 'singlePath');
         backendSimulationRequest(curRequest);
@@ -562,6 +556,12 @@ paper.on("link:options", function (cell) {
         }
     }
 
+    $(window).resize(function () {
+        var configResults = configCollection.findWhere({ selected: true }).get('results').findWhere({ selected: true });
+        if (configResults !== undefined){
+            resizeWindow(configResults.get('timePointPath').length - 1);
+        } 
+    });
     $('#btn-clear-cycle').on('click', function () {
         clearCycleHighlighting(selectResult);
     });
