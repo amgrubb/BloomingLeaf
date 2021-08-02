@@ -128,7 +128,7 @@ class EVO {
         else {
             console.log("ERROR: invalid sliderOption");
         }
-        EVO.refresh(analysisResult);
+        //EVO.refresh(analysisResult);
 
         if (EVO.sliderOption > 0) { //not off
             IntentionColoring.setColorMode("EVO", analysisResult);
@@ -148,27 +148,26 @@ class EVO {
      * Runs after any event that may change visualization, such as setting a sat value, changing slider option, or selecting a time point
      */
     static refresh(analysisResult) {
-        switch(this.sliderOption) {
-            case '1':
-            case '2':
-            case '3':
-                if (analysisResult !== undefined){
-                    if (analysisResult.get('selected')){
-                        EVO.colorIntentionsAnalysis(analysisResult);
-                    }
-                    else {
-                        EVO.colorIntentionsModeling();
-                    }
+        if (this.sliderOption > 0) {
+            if (analysisResult !== undefined){
+                if (analysisResult.get('selected')){
+                    EVO.colorIntentionsAnalysis(analysisResult);
                 }
-                else{
+                else {
                     EVO.colorIntentionsModeling();
                 }
-                EVO.changeIntentionsText(analysisResult);
-                break;
-            default://colorVis off
-                EVO.returnAllColors(graph.getElements(), paper);
+            }
+            else{
+                EVO.colorIntentionsModeling();
+            }
+            EVO.changeIntentionsText(analysisResult);
+        } else {
+            EVO.returnAllColors(graph.getElements(), paper);
+            EVO.revertIntentionsText(graph.getElements(), paper);
                 EVO.revertIntentionsText(graph.getElements(), paper);    
-                    break;
+            EVO.revertIntentionsText(graph.getElements(), paper);
+                EVO.revertIntentionsText(graph.getElements(), paper);    
+            EVO.revertIntentionsText(graph.getElements(), paper);
         }
     }
         
