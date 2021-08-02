@@ -146,6 +146,7 @@ public class BICSPAlgorithm {
     		timePointMap.put(this.timePoints[tpCounter], toAdd);
     		tpCounter++; 
     	}
+    	this.constraints.add(new Alldifferent(this.timePoints));
     	if (DEBUG) System.out.println("\n Num TP is: " + this.numTimePoints);
 		
        	
@@ -438,7 +439,7 @@ public class BICSPAlgorithm {
 				}
 			Integer unassignedTP = null;
 			for (int t = 0; t < this.timePoints.length; t++) 
-				if (timePoints[t].min() == 0 &&
+				if (timePoints[t].min() == 1 &&
 						timePoints[t].max() == this.maxTime) {
 					unassignedTP = t;
 					break;
@@ -569,6 +570,7 @@ public class BICSPAlgorithm {
 	    	return oModel; 	
 		
 		} else if (problemType == SearchType.NEXT_STATE) {
+			if (DEBUG) System.out.println("Saving All Path Solution");
 			Search<IntVar> label = this.searchLabel;
 			int totalSolution = label.getSolutionListener().solutionsNo();
 
