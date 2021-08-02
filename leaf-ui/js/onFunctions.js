@@ -49,7 +49,6 @@ $('#btn-svg').on('click', function () {
     paper.openAsSVG();
 });
  
-$('#btn-debug').on('click', function(){ console.log(graph.toJSON()) });
 $('#btn-zoom-in').on('click', function(){ zoomIn(paperScroller); });
 $('#btn-zoom-out').on('click', function(){ zoomOut(paperScroller); });
 $('#btn-fnt').on('click', function(){ defaultFont(paper);});

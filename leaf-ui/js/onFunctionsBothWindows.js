@@ -159,4 +159,5 @@ function resizeWindow() {
         }
     }
 
+    $('#btn-debug').on('click', function(){ console.log(graph.toJSON()) });
 }

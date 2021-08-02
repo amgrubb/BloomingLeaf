@@ -4,9 +4,6 @@
 
 { // LOCAL GLOBAL VARIABLES
 let analysis = {};
-analysis.analysisResult;
-analysis.elements = [];
-analysis.currentState;
 let filterOrderQueue = [];
 let analysisRequest;
 let analysisResult;
@@ -19,7 +16,7 @@ let elements;
 //Executing scripts only when page is fully loaded
 window.onload = function(){
     //This merge the attributes of old page and new page
-    analysis.page = jQuery.extend({}, window.opener.document);
+    // analysis.page = jQuery.extend({}, window.opener.document);
     analysisRequest = JSON.parse(sessionStorage.getItem("Request"));
     console.log(analysisRequest);
     /**
@@ -35,20 +32,24 @@ window.onload = function(){
 }
 
 function init(){
-    //Page objects
-    analysis.graph = new joint.dia.BloomingGraph();
-    analysis.paper;
-    analysis.paperScroller;
+    // //Page objects
+    // analysis.graph = new joint.dia.BloomingGraph();
+    // analysis.paper;
+    // analysis.paperScroller;
 
-    //Objects from parent page
-    analysis.parentResults = jQuery.extend({}, window.opener.global_analysisResult);
+    // //Objects from parent page
+    // analysis.parentResults = jQuery.extend({}, window.opener.global_analysisResult);
 
     // savedAnalysisData = _.clone(jQuery.extend(true, {}, window.opener.savedAnalysisData));
     //tempResults = jQuery.extend(true, {}, window.opener.savedAnalysisData.allNextStatesResult);
 
     console.log(analysisRequest);
     analysisResult = analysisRequest.previousAnalysis;
-    graph = jQuery.extend({}, window.opener.graph);
+    newGraph = new joint.dia.BloomingGraph();
+    console.log(graph)
+    oldGraph = jQuery.extend({}, window.opener.graph.toJSON());
+    console.log(graph)
+    //loadFromObject();
     // for (let cell of analysis.graph.getElements()) {
     for (let result of analysisRequest.results) {
         if (result.selected == true) {
@@ -58,7 +59,7 @@ function init(){
     console.log(selectedResult);
     current = parseInt(selectedResult.selectedTimePoint);
 
-    analysis.paper = new joint.dia.Paper({
+    paper = new joint.dia.Paper({
         width: 1200,
         height: 600,
         gridSize: 10,
@@ -72,17 +73,19 @@ function init(){
             'labels': [{position: 0.5, attrs: {text: {text: "and"}}}]
         })
     });
-
-    analysis.paperScroller = new joint.ui.PaperScroller({
+    console.log(graph)
+    paperScroller = new joint.ui.PaperScroller({
         autoResizePaper: true,
-        paper: analysis.paper
+        paper: paper
     });
+    console.log(graph)
+    $('#paper').append(paperScroller.render().el);
+    paperScroller.center();
+    console.log(graph)
+    
+  //graph.fromJSON(JSON.parse(JSON.stringify(window.opener.graph.toJSON())));
 
-    $('#paper').append(analysis.paperScroller.render().el);
-    analysis.paperScroller.center();
-
-    analysis.graph.fromJSON(JSON.parse(JSON.stringify(window.opener.graph.toJSON())));
-    elements = graph.getElements();
+    //elements = graph.getElements();
     /** TODO: reimplement this
     //Filter out Actors
     for (var i = 0; i < analysis.graph.getElements().length; i++){
@@ -90,10 +93,93 @@ function init(){
             analysis.elements.push(analysis.graph.getElements()[i]);
     }
     */
-   console.log(elements[0].get('intention'));
-    if(!analysis.analysisResult){
-        analysis.analysisResult = analysisRequest.previousAnalysis;
-    }
+   //console.log(elements[0].get('intention'));
+    loadFromObject();
+    // if(!analysis.analysisResult){
+    //     analysis.analysisResult = analysisRequest.previousAnalysis;
+    // }
+
+
+}
+
+/**
+ * Given an object obj containing a model, graph and analysis configurations and results, 
+ * updates the global variables: model, graph and analysisMap
+ * to the objects from obj
+ * If the obj does not contain analysis information, do not update global vars
+ *
+ * @param {Object} obj
+ */
+ function loadFromObject() {
+	//graph.fromJSON(obj.graph);
+    console.log(graph)
+	var cells = graph.cells;
+    console.log(cells);
+	for (var i = 0; i < cells.length; i++) {
+		cell = cells[i];
+        console.log(cell);
+        console.log(cell.type);
+        console.log()
+		if (cell.type == "basic.Actor"){
+			createBBActor(cell) //Create actor
+		}else if (cell.type == "basic.CellLink") {
+			createBBLink(cell) //Create link
+		}else{
+			// Singled out functionSegList from obj as it doesn't show up in the graph after reading from JSON
+            console.log(cell.intention);
+            console.log(cell.intention.attributes.evolvingFunction.attributes.functionSegList);
+            // console.log(cell.get('intention').get('evolvingFunction'));
+            // console.log(cell.get('intention').getFuncSegments());
+			var funcseg = cell.intention.attributes.evolvingFunction.attributes.functionSegList;
+			createBBElement(cell, funcseg) //Create element
+		}
+	}
+}
+
+
+
+/**
+ * Returns a backbone model Actor with information from the obj
+ *
+ */
+ function createBBActor(cell){
+	var actor = cell.get('actor');
+	var actorBBM = new ActorBBM({type: actor.attributes.type, actorName: actor.attributes.actorName});
+	cell.set('actor', actorBBM)
+}
+
+/**
+ * Returns a backbone model Link with information from the obj
+ *
+ */
+function createBBLink(cell){
+	var link = cell.get('link').attributes;
+	var linkBBM = new LinkBBM({displayType: link.displayType, linkType: link.linkType, postType: link.postType, absTime: link.absTime, evolving: link.evolving});
+	cell.set('link', linkBBM)
+}
+
+/**
+ * Returns a backbone model Element with information from the obj
+ *
+ */
+function createBBElement(cell, funcsegs){
+	var intention = cell.intention;
+	var evol = intention.attributes.evolvingFunction.attributes;
+	var intentionBBM = new IntentionBBM({nodeName: intention.attributes.nodeName, nodeType: intention.attributes.nodeType});
+
+	var evolving = new EvolvingFunctionBBM({type: evol.type, hasRepeat: evol.hasRepeat, repStart: evol.repStart, repStop: evol.repStop, repCount: evol.repCount, repAbsTime: evol.repAbsTime});
+	for (let funcseg of funcsegs){
+		var funcsegBBM = new FunctionSegmentBBM({type: funcseg.attributes.type, refEvidencePair: funcseg.attributes.refEvidencePair, startTP: funcseg.attributes.startTP, startAT: funcseg.attributes.startAT, current: funcseg.attributes.current});
+		evolving.get('functionSegList').push(funcsegBBM);
+	}
+	var userEvals = intention.attributes.userEvaluationList;
+	for (let userEval of userEvals){
+		intentionBBM.get('userEvaluationList').push(new UserEvaluationBBM({assignedEvidencePair: userEval.attributes.assignedEvidencePair, absTime: userEval.attributes.absTime}));
+	}
+	intentionBBM.set('evolvingFunction', evolving);
+	cell.set('intention', intentionBBM);
+    console.log('hi');
+    console.log(cell);
 }
 
 
@@ -103,7 +189,7 @@ function renderNavigationSidebar(currentPage = 0){
     var currentPageIn = document.getElementById("currentPage");
     var num_states_lbl = document.getElementById("num_states_lbl");
 
-    num_states_lbl.innerHTML += (analysis.analysisResult.allSolution.length);
+    num_states_lbl.innerHTML += (selectedResult.allSolution.length);
 
     currentPageIn.value = currentPage.toString();
 
@@ -120,10 +206,9 @@ function updateNodesValues(currentPage, step = 0){
         currentPage = 0;
 
     //Set the currentState variable so it can be sent back to the original path
-    analysis.currentState = analysis.analysisResult.allSolution[currentPage];
     var i = 0;
-    for (let element of analysis.graph.getElements()) {
-        console.log(analysis.graph.getElements());
+    for (let element of graph.getElements()) {
+        console.log(graph.getElements());
         // cell = analysis.elements[i];
         // value = analysis.analysisResult.allSolution[currentPage].intentionElements[i].status[step];
         satValue = selectedResult.elementList[i].status[step];
