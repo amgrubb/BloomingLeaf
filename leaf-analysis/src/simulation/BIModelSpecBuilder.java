@@ -1,12 +1,11 @@
 package simulation;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import gson_classes.*;
 
 /**
- * This class is responsible to get the frontend model and convert into the backend model filling the necessary attributes.
+ * This class is responsible to get the front-end model and convert into the back-end model filling the necessary attributes.
  *
  */
 public class BIModelSpecBuilder {
@@ -36,53 +35,7 @@ public class BIModelSpecBuilder {
 			if (DEBUG) System.out.println("Read Simple Analysis Parameters");
 			modelSpec.setPreviousSolution(aRequest.getPreviousAnalysis());
 			if (DEBUG) System.out.println("Read Previous Results");
-			/*
-			if(prevResult != null) {
-				// Get the list of assigned Time Points
-				modelSpec.setInitialAssignedEpochs(prevResult.getTimePointAssignments());
-				
-				// Create the list of assigned values. Size is currentState + 1 (to include zero).
-				modelSpec.setInitialValueTimePoints(prevResult.getSelectedTimePointPath());
-				
-				// Assign the previous values as initial values.
-				modelSpec.setInitialValuesMap(prevResult.getSelectedPreviousValues());
-				if (DEBUG) System.out.println("Handled Previous Result into Hash Map");
-				
-				
-				//TODO: This code should be moved once a mapping between intentions and timepoints is created.
-				boolean[][][] initialValues = new boolean[numIntentions][prevResult.getSelectedTimePoint()+1][4];
-				HashMap<String, boolean[][]> temp = prevResult.getSelectedPreviousValues(); //TODO REMOVE
-				int k = 0;
-				for (boolean[][] tempVals : temp.values()) {
-					for (int j = 0; j < tempVals.length; j++){
-						for (int i = 0; i < 4; i ++){
-							initialValues[k][j][i] = tempVals[j][i];
-						}
-					}
-					k++;
-				}
-				modelSpec.setInitialValues(initialValues);	
-				if (DEBUG) System.out.println("TEMP: Handled (Next State) Previous Result into Array");
-				
-			} else {
-				//TODO: Update with appropriate initial values.
-				boolean[][][] initialValues = new boolean[numIntentions][1][4];
-				for (int j = 0; j < numIntentions; j++){
-					for (int i = 0; i < 4; i ++){
-						initialValues[j][0][i] = false;
-					}
-				}
-				modelSpec.setInitialValues(initialValues);	
 
-				//TODO: Will this bork if it is null?
-				// initial states need initial time points -> 0|0   getInitialValueTimePoints()
-//				int[] initialValueTimePointsArray = new int[1];
-//				initialValueTimePointsArray[0] = 0;
-//				modelSpec.setInitialValueTimePoints(initialValueTimePointsArray);
-				if (DEBUG) System.out.println("TEMP: Handled (Single Path) Previous Result into Array");
-				
-			}	
-			*/		
     	} catch (Exception e) {
     		throw new RuntimeException(e.getMessage());
     	}      	

@@ -19,7 +19,7 @@ public class BICSPAlgorithm {
 	private SatTranslation sat;								// Enables a SAT solver to be incorporated into CSP
 	private boolean searchAll = false;						// Flag for the solver to return the first solution or all solutions.
 	
-	private enum SearchType {PATH, NEXT_STATE};
+	private enum SearchType {PATH, NEXT_STATE, UPDATE_PATH};
 	private SearchType problemType = SearchType.PATH;
 
 	private ModelSpec spec;									// Holds the model information.
@@ -69,13 +69,18 @@ public class BICSPAlgorithm {
     	case "singlePath":
     		searchAll = false;
     		problemType = SearchType.PATH;
-        	if (DEBUG) System.out.println("Analysis selected: singlePath");
+        	if (DEBUG) System.out.println("Analysis selected: Full Single Path");
     		break;
     	case "allNextStates":
     		searchAll = true;
     		problemType = SearchType.NEXT_STATE;
-        	if (DEBUG) System.out.println("Analysis selected: allNextStates");
+        	if (DEBUG) System.out.println("Analysis selected: Explore All Next States");
     		break;
+    	case "updatePath":
+    		searchAll = false;
+    		problemType = SearchType.UPDATE_PATH;
+        	if (DEBUG) System.out.println("Analysis selected: Update Current Path");
+    		break;    		
     	default:
     		throw new Exception("User Error: User requested \'" + spec.getAnalysisType() + "\', no such scenario exists. ");
     	}
@@ -107,57 +112,48 @@ public class BICSPAlgorithm {
     		timePointMap.put(this.timePoints[tpCounter], set.getValue());
     		tpCounter++;
     	}
+    	
+    	HashMap<String, Integer> prevTPAssignments = this.spec.getPrevSelectedTPAssignments();
     	for (String item : unassignedTimePoint) {
-    		this.timePoints[tpCounter] = new IntVar(store, "TP" + tpCounter, 1, this.maxTime);
+    		Integer prevVal = null;
+           	if (problemType == SearchType.NEXT_STATE || problemType == SearchType.UPDATE_PATH) { 
+           		prevVal = prevTPAssignments.get(item);	           		
+           	}
+           	if (prevVal != null) 
+           		this.timePoints[tpCounter] = new IntVar(store, "TP" + tpCounter, prevVal, prevVal);
+	    	else
+           		this.timePoints[tpCounter] = new IntVar(store, "TP" + tpCounter, 1, this.maxTime);	    		
     		List<String> toAdd = new ArrayList<String>();
     		toAdd.add(item);
     		timePointMap.put(this.timePoints[tpCounter], toAdd);
-    		tpCounter++;    		
+    		tpCounter++;    	
     	}
     	if (DEBUG) System.out.println("\n Num TP is: " + this.numTimePoints);
 		
-	
-//    	this.functionEBCollection = new HashMap<IntentionalElement, IntVar[]>();
-//    	this.decompEBCollection = new HashMap<EvolvingDecomposition, IntVar>();
-//    	this.contribEBCollection = new HashMap<EvolvingContribution, IntVar>();
-//    	this.notBothEBCollection = new HashMap<NotBothLink, IntVar>();
-//    	this.epochToTimePoint = new HashMap<IntVar, IntVar>(); 
-
-    	//System.out.println(this.spec.getInitialValueTimePoints());
-    	//System.out.println(this.spec.getInitialValues());
-    	//TODO: Start here!!
-//    	if (DEBUG)
-//			System.out.println("Length of initialValueTimePoints: " + this.spec.getInitialValueTimePoints().length + 
-//					"\nLength of initialValues()[0]: " + this.spec.getInitialValues()[0].length);
-//    	if (this.spec.getInitialValueTimePoints().length != this.spec.getInitialValues()[0].length)
-//    		throw new Exception("Input Error: The length of initialValueTimePoints and initialValues[0] do not match.");
-
-		// Determine the number of observation steps.
-		// Add constraints between Intention EBs.
-//    	calculateSampleSizeAndCreateEBsAndTimePoints(this.spec.getAbsoluteTimePoints(), 
-//    			this.spec.getRelativeTimePoints(), this.spec.getInitialValueTimePoints(), 
-//    			this.spec.getInitialAssignedEpochs());
+       	
     	
     	// Initialise Values Array.
-    	//int lengthOfInitial = this.spec.getInitialValueTimePoints().length;
-    	if (problemType == SearchType.PATH)
+       	if (DEBUG) System.out.println("\nSetp: Initialize 'Value' Boolean Variables");
+       	if (problemType == SearchType.PATH || problemType == SearchType.UPDATE_PATH)
     		this.values = new BooleanVar[this.numIntentions][this.numTimePoints][4];	// 4 Predicates Values 0-FD, 1-PD, 2-PS, 3-FS
-    	//TODO: Add in other types of analysis.
-//    	else if (problemType == SearchType.NEXT_STATE)
-//    		this.values = new BooleanVar[this.numIntentions][lengthOfInitial + 1][4];	// 4 Predicates Values 0-FD, 1-PD, 2-PS, 3-FS;
-//    	else if (problemType == SearchType.CURRENT_STATE)
-//    		this.values = new BooleanVar[this.numIntentions][1][4];	// 4 Predicates Values 0-FD, 1-PD, 2-PS, 3-FS;
-
-    	if (DEBUG) System.out.println("\nMethod: initializeBooleanVarForValues();");
+    	else if (problemType == SearchType.NEXT_STATE) {
+    		int lengthOfInitial = this.spec.getPrevSelectedTP();
+    		this.values = new BooleanVar[this.numIntentions][lengthOfInitial + 1][4];	// 4 Predicates Values 0-FD, 1-PD, 2-PS, 3-FS;
+    	}
+    	
+    	    	
+    	if (DEBUG) System.out.println("\nMethod: initializeNodeVariables");
     	for (int i = 0; i < this.intentions.length; i++)
 			for (int t = 0; t < this.values[i].length; t++) {
 				// Creates IntVars and adds the FS -> PS invariant.
 				initializeNodeVariables(this.store, this.sat, this.values[i][t], this.intentions[i].getId() + "_" + t);
 			}
+    	
+ 		initializeConflictPrevention(this.spec, this.sat, this.values, this.zero);
 
-    	if (DEBUG) System.out.println("\nMethod: initializeConflictPrevention();");
- 		initializeConflictPrevention();
-
+ 		
+ 		
+ 		
  		
 //   		if (DEBUG)
 //   			System.out.println("\nMethod: genericAddLinkConstraints(this.sat, this.constraints, this.intentions, this.values);");
@@ -188,10 +184,21 @@ public class BICSPAlgorithm {
 //        if (DEBUG)
 //    		System.out.println("\nMethod: initialize User Evaluations");
 //        initializeUserEvaluations();
-//        
+
+ 		
+ 		// STAT HERE
+ 		//TODO: Add initial values from previous analysis. Assign values to the path as well.
+ 		// Need All variables in IOSolution...maybe not model spec.
+       	if (problemType == SearchType.NEXT_STATE || problemType == SearchType.UPDATE_PATH) {
+       		
+       	}
+
+ 		
     	if (DEBUG)	System.out.println("\nEnd of Init Procedure");	
 		
 	}
+	
+
 	
 	/**
 	 * Creates BooleanVars for each intention/time-point combo.
@@ -217,19 +224,20 @@ public class BICSPAlgorithm {
 	/**
 	 *  Helper function to call one of the generic conflict preventions levels.
 	 */
-	private void initializeConflictPrevention(){	//Full Model
-		char level = this.spec.getConflictAvoidLevel();
+	private static void initializeConflictPrevention(ModelSpec spec, SatTranslation sat, BooleanVar[][][] values, IntVar zero){	//Full Model
+		if (DEBUG) System.out.println("\nMethod: initializeConflictPrevention();");
+		char level = spec.getConflictAvoidLevel();
 		if (DEBUG)	System.out.println("\nConflict Prevention level is: " + level + "\n");
 		if (level == 'N' || level == 'n')
 			return;
-		for (int i = 0; i < this.values.length; i++)
-    		for (int t = 0; t < this.values[i].length; t++)
+		for (int i = 0; i < values.length; i++)
+    		for (int t = 0; t < values[i].length; t++)
     			if (level == 'S' || level == 's')
-    				strongConflictPrevention(this.sat, this.values[i][t], this.zero);
+    				strongConflictPrevention(sat, values[i][t], zero);
     			else if (level == 'M' || level == 'm')
-    				mediumConflictPrevention(this.sat, this.values[i][t], this.zero);
+    				mediumConflictPrevention(sat, values[i][t], zero);
     			else if (level == 'W' || level == 'w')
-    				weakConflictPrevention(this.sat, this.values[i][t], this.zero);
+    				weakConflictPrevention(sat, values[i][t], zero);
 	}
 	
 	

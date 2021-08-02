@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry excluding="simulation/SolveModelTest.java|interface_objects/|simulation/Contribution.java|simulation/Decomposition.java|simulation/EpochConstraint.java|simulation/EvolvingContribution.java|simulation/EvolvingDecomposition.java|simulation/IntentionalElement.java|simulation/IntentionalElementDynamicType.java|simulation/IntentionalElementType.java|simulation/ModelSpecBuilder.java|simulation/TestGson.java|simulation/TroposCSPAlgorithm.java|simulation/UDFunctionCSP.java|simulation/UserEvaluation.java" kind="src" path="src"/>
+	<classpathentry excluding="simulation/SolveModelTest.java|interface_objects/|simulation/Contribution.java|simulation/Decomposition.java|simulation/EpochConstraint.java|simulation/EvolvingContribution.java|simulation/EvolvingDecomposition.java|simulation/IntentionalElement.java|simulation/IntentionalElementDynamicType.java|simulation/IntentionalElementType.java|simulation/ModelSpecBuilder.java|simulation/TestGson.java|simulation/TroposCSPAlgorithm.java|simulation/UDFunctionCSP.java|simulation/UserEvaluation.java|gson_classes/IPreviousAnalysis.java" kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
 		<attributes>
 			<attribute name="module" value="true"/>

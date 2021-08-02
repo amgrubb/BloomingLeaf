@@ -3,6 +3,7 @@ package gson_classes;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class IOSolution {
 	private List<ElementData> elementList = new ArrayList<>();
@@ -25,26 +26,38 @@ public class IOSolution {
 	// *********** End of Returning The Solution *********** 
 	
 	// *** Start Input DATA ***
-	public HashMap<String, Integer> getTimePointAssignments() {
-		return timePointAssignments;
-	}
 	public Integer getSelectedTimePoint() {
 		return selectedTimePoint;
 	}
-	public Integer[] getTimePointPath() {
-		return timePointPath;
+	
+	public HashMap<String, Integer> getSelectedTPAssignments() {
+		if (timePointAssignments == null || selectedTimePoint == null)
+			return null;
+		HashMap<String, Integer> newHash = new HashMap<String, Integer>();
+		for (Map.Entry<String, Integer> entry : timePointAssignments.entrySet()) 
+			if (entry.getValue() <= selectedTimePoint)
+				newHash.put(entry.getKey(), entry.getValue());
+		return newHash;
 	}
-    public Integer[] getSelectedTimePointPath() {
-    	if (timePointPath == null || selectedTimePoint == null)
-    		return null;
-    	Integer[] path = new Integer[selectedTimePoint + 1];
-    	for (int i = 0; i < selectedTimePoint + 1; i++)
-    		path[i] = timePointPath[i];
-    	return path;
-    }
+	
+	
+//TODO: Add back in as required.
+
+
+//	public Integer[] getTimePointPath() {
+//		return timePointPath;
+//	}
+//    public Integer[] getSelectedTimePointPath() {
+//    	if (timePointPath == null || selectedTimePoint == null)
+//    		return null;
+//    	Integer[] path = new Integer[selectedTimePoint + 1];
+//    	for (int i = 0; i < selectedTimePoint + 1; i++)
+//    		path[i] = timePointPath[i];
+//    	return path;
+//    }
     
 	public HashMap<String, boolean[][]> getSelectedPreviousValues(){
-		if (elementList == null || selectedTimePoint == -1)
+		if (elementList == null || selectedTimePoint == null)
 			return null;
 		HashMap<String, boolean[][]> previousValuesMap = new HashMap<>();
 		for (ElementData e : elementList) {

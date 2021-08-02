@@ -49,29 +49,29 @@ public class ModelSpec {
     
     // ************* INTERESTING GETTERS/SETTERS ************* 
 
-    public HashMap<String, boolean[][]> getPrevIntentionAssignments() {	
-    	//TODO: Finish function.
-		//if(this.prevResult != null) 
-		//	return this.prevResult.getTimePointAssignments();
-		return null; //prevAssignmentsMaps;	//TODO: Add correct information.
-		//check if previous values and previous values length are the same.
-	}
-
-	public Integer[] getPrevTimePointPath() { 
-		//TODO: Finish function.
-		//Not Used yet.
-		//this.prevResult.getSelectedTimePointPath();
-		return null; //prevAbsTPVal;	//TODO: Add correct information.
-	}
+//    public HashMap<String, boolean[][]> getPrevIntentionAssignments() {	
+//    	//TODO: Finish function.
+//		//if(this.prevResult != null) 
+//		//	return this.prevResult.getTimePointAssignments();
+//		return null; //prevAssignmentsMaps;
+//		//check if previous values and previous values length are the same.
+//	}
+//
+//	public Integer[] getPrevTimePointPath() { 
+//		//TODO: Finish function.
+//		//Not Used yet.
+//		//this.prevResult.getSelectedTimePointPath();
+//		return null; //prevAbsTPVal;	
+//	}
 
 	
 	/** Returns the time point list with the associated absolute value from the 
 	 * previous analysis.
 	 * @return	map between time point name and absolute value
 	 */
-	public HashMap<String, Integer> getPrevTPAssignments() { //Not Used yet. 
+	public HashMap<String, Integer> getPrevSelectedTPAssignments() { //Not Used yet. 
 		if(this.prevResult != null) 
-			return this.prevResult.getTimePointAssignments();
+			return this.prevResult.getSelectedTPAssignments();
 		return null; 
 	}
 	
@@ -81,7 +81,7 @@ public class ModelSpec {
 	 * @return	The selected time point.
 	 */
 	public Integer getPrevSelectedTP() {
-		if(this.prevResult != null) 
+		if(this.prevResult != null && this.prevResult.getSelectedTimePoint() != null) 
 			return this.prevResult.getSelectedTimePoint();
 		return 0;
 	}
@@ -356,14 +356,14 @@ public class ModelSpec {
 //	private List<UserEvaluation> userEvaluations = new ArrayList<UserEvaluation>();
 //	private List<EpochConstraint> constraintsBetweenEpochs = new ArrayList<EpochConstraint>();
     //	private String inputFilename = "";
-    //private int[][][] history;	//TODO: Is this used? Is it left over from GrowingLeaf?
+    //private int[][][] history;	
     //private int[] absoluteTimePoints = null;
 	//    private boolean[][][] initialValues;		// Holds the initial values whether they are single or multiple.
 	//[this.numIntentions][this.numTimePoints][FD - index 0 / PD - index 1 / PS - index 2 / FS - index 3]
 	// Note if model only has initial values then it will be [numintentions][1][4].
 //  private HashMap<String, Integer> prevTPAssignments; //Hash map to hold the epochs with assigned values.    
 //  private Integer[] prevAbsTPVal;		// Hold the assigned times for each of the initial Values. Should be same length of second paramater of initialValues;
-//  private HashMap<String, boolean[][]> prevAssignmentsMaps; //TODO: Temporary or full replacement of initialValues. 
+//  private HashMap<String, boolean[][]> prevAssignmentsMaps;  
 
  
  
