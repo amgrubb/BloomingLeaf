@@ -49,22 +49,6 @@ public class ModelSpec {
     
     // ************* INTERESTING GETTERS/SETTERS ************* 
 
-//    public HashMap<String, boolean[][]> getPrevIntentionAssignments() {	
-//    	//TODO: Finish function.
-//		//if(this.prevResult != null) 
-//		//	return this.prevResult.getTimePointAssignments();
-//		return null; //prevAssignmentsMaps;
-//		//check if previous values and previous values length are the same.
-//	}
-//
-//	public Integer[] getPrevTimePointPath() { 
-//		//TODO: Finish function.
-//		//Not Used yet.
-//		//this.prevResult.getSelectedTimePointPath();
-//		return null; //prevAbsTPVal;	
-//	}
-
-	
 	/** Returns the time point list with the associated absolute value from the 
 	 * previous analysis.
 	 * @return	map between time point name and absolute value

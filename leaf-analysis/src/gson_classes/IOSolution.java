@@ -39,18 +39,23 @@ public class IOSolution {
 				newHash.put(entry.getKey(), entry.getValue());
 		return newHash;
 	}
-	
-	
-//TODO: Add back in as required.
-
 
     public Integer[] getSelectedTimePointPath() {
     	if (timePointPath == null || selectedTimePoint == null)
+    		return null;
+    	if (selectedTimePoint >= timePointPath.length)
     		return null;
     	Integer[] path = new Integer[selectedTimePoint + 1];
     	for (int i = 0; i < selectedTimePoint + 1; i++)
     		path[i] = timePointPath[i];
     	return path;
+    }
+    public Integer getSelectedAbsTime() {
+    	if (timePointPath == null || selectedTimePoint == null)
+    		return null;
+    	if (selectedTimePoint >= timePointPath.length)
+    		return null;
+    	return timePointPath[selectedTimePoint];
     }
     
 	public HashMap<String, boolean[][]> getSelectedPreviousValues(){
@@ -59,6 +64,8 @@ public class IOSolution {
 		HashMap<String, boolean[][]> previousValuesMap = new HashMap<>();
 		for (ElementData e : elementList) {
 			boolean[][] prevVal = new boolean[selectedTimePoint+1][4];
+			if (selectedTimePoint >= prevVal.length)
+				return null;
 			for (int t = 0; t < selectedTimePoint+1; t++) {
 				String value = e.status[t];
 				for (int i = 0; i < 4; i++){
@@ -74,7 +81,7 @@ public class IOSolution {
 		return previousValuesMap;	
 	}	
 	
-	
+
 	
 	
 	

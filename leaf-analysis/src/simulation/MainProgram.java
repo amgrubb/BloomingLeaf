@@ -32,8 +32,6 @@ public class MainProgram {
 		try {
 			// Creating the back-end model to be analyzed
 			ModelSpec modelSpec = convertBackboneModelFromFile(filePath + inputFile);
-
-			System.out.print(modelSpec.getMaxTime());
 			// Creates the store and constraint problem to be solved.
 			BICSPAlgorithm solver = new BICSPAlgorithm(modelSpec);
 			//long startTime = System.currentTimeMillis();                            //Scaleability Testing

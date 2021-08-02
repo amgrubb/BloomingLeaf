@@ -18,6 +18,7 @@ public class BICSPAlgorithm {
 	private List<Constraint> constraints;					// Holds the constraints to be added to the Store
 	private SatTranslation sat;								// Enables a SAT solver to be incorporated into CSP
 	private boolean searchAll = false;						// Flag for the solver to return the first solution or all solutions.
+	private Search<IntVar> searchLabel = null;
 	
 	private enum SearchType {PATH, NEXT_STATE, UPDATE_PATH};
 	private SearchType problemType = SearchType.PATH;
@@ -396,7 +397,7 @@ public class BICSPAlgorithm {
         	throw new RuntimeException("There is no solution to this model. The solver may have reached a timeout.");
 		} else {
 	    	if (DEBUG) System.out.println("Found Solution = True");
-
+	    	this.searchLabel = label;
 			return true;
 		}
 	}
@@ -425,32 +426,45 @@ public class BICSPAlgorithm {
 			}
 			return fullList;
 		}else if (problemType == SearchType.NEXT_STATE){
-			//TODO: How does this work???
-			// Solve only the next state.
-			int initial = this.spec.getPrevSelectedTP() - 1;
-			//IntVar[] fullList = new IntVar[(this.numIntentions * 8) + 1];
+			// Solve only the next state variables.
+			int initialAbs = this.spec.getPrevResult().getSelectedAbsTime();
+			
+			Integer tRef = null;
+			for (int t = 0; t < this.timePoints.length; t++) 
+				if (initialAbs == timePoints[t].min() &&
+						initialAbs == timePoints[t].max()) {
+					tRef = t;
+					break;
+				}
+			Integer unassignedTP = null;
+			for (int t = 0; t < this.timePoints.length; t++) 
+				if (timePoints[t].min() == 0 &&
+						timePoints[t].max() == this.maxTime) {
+					unassignedTP = t;
+					break;
+				}
+			if (tRef == null || unassignedTP == null) 
+				throw new RuntimeException("\n Reference Time Point not found in time point list.");
+			
+			if (DEBUG) System.out.println("RefTP: " + tRef + " Unassigned: " + unassignedTP + " Total: " + this.values.length);
+					
 			IntVar[] fullList = new IntVar[(this.numIntentions * 8)];
 			int fullListIndex = 0;
-			//fullList[fullListIndex] = this.minTimePoint;		// TODO: Should this be this.minTimePoint or this.nextTimePoint?
-			//fullListIndex++;
+
 			for (int i = 0; i < this.values.length; i++)
 				for (int v = 0; v < this.values[i][0].length; v++){
-					fullList[fullListIndex] = this.values[i][initial][v];
+					fullList[fullListIndex] = this.values[i][tRef][v];
 					fullListIndex++;
 				}
 			for (int i = 0; i < this.values.length; i++)
 				for (int v = 0; v < this.values[i][0].length; v++){
-					fullList[fullListIndex] = this.values[i][initial + 1][v];
+					fullList[fullListIndex] = this.values[i][unassignedTP][v];
 					fullListIndex++;
 				}			
 			return fullList;
 		}else
 			return null;
 	}
-	
-
-		
-	
 	
 	
 	// Methods for returning single path data.
@@ -502,12 +516,6 @@ public class BICSPAlgorithm {
     		}
     		System.out.println(element.name); // + "\t" + element.dynamicType.toString());
     	} 
-    	
-//    	// Print out intention epoch values.
-//    	System.out.print("Epoch Points:\t");
-//   		for (int i = 0; i < this.epochs.length; i++){
-//    		System.out.print(this.epochs[i].id + "-" + this.epochs[i].value() + "\t");
-//   		}   		
 	}	
 	
 	
@@ -559,15 +567,49 @@ public class BICSPAlgorithm {
 	    		oModel.addElement(this.intentions[i].getUniqueID(), nodeFinalValues);
 	    	}  	
 	    	return oModel; 	
-	    	
+		
+		} else if (problemType == SearchType.NEXT_STATE) {
+			Search<IntVar> label = this.searchLabel;
+			int totalSolution = label.getSolutionListener().solutionsNo();
+
+			//Get last time point starting index.
+			int startIndex = label.getSolution(1).length - (this.intentions.length * 4);
+			
+			if(DEBUG){
+				System.out.println("Saving all states");
+				System.out.println("\nThere are " + totalSolution + " possible next states.");
+				System.out.println("\n Solution: ");
+				for (int s = 1; s <= totalSolution; s++){	/// NOTE: Solution number starts at 1 not 0!!!
+					for (int v = 0; v < label.getSolution(s).length; v++)
+						System.out.print(label.getSolution(s)[v]);
+					System.out.println();
+				}
+				System.out.println("\n Finished Printing Solutions");
+				System.out.println("\n Starting index to save is: " + startIndex);
+			}
+			
+			boolean[][][][] finalValues = new boolean[totalSolution][this.intentions.length][1][4];
+			for (int s = 1; s <= totalSolution; s++){	/// NOTE: Solution number starts at 1 not 0!!!				
+				int solIndex = startIndex;
+				for (int i = 0; i < this.intentions.length; i++)
+					//for (int t = 0; t < 2; t++)
+						for (int v = 0; v < 4; v++){
+							if(label.getSolution(s)[solIndex].toString().equals("1"))
+								finalValues[s-1][i][0][v] = true;
+							else if(label.getSolution(s)[solIndex].toString().equals("0"))
+								finalValues[s-1][i][0][v] = false;
+							else
+								throw new RuntimeException("Error: " + label.getSolution(s)[v] + " has non-binary value.");
+							solIndex++;
+						}
+
+			}
+//			this.spec.setFinalAllSolutionsValues(finalValues);
+
+			if(DEBUG) System.out.println("\n Finished Saving Solutions"); 
+			
 		}
 		return null;
-    	//TODO: Add next state
-//		}else if (problemType == SearchType.NEXT_STATE)	//TODO Implement Save/Print Single Next_State
-//		this.saveAllSolution(label);
-//			throw new RuntimeException("ERROR: Save/Print Single Next_State not implemented.");
-//		else if (problemType == SearchType.CURRENT_STATE) //TODO Implement Save/Print Single Current_State
-//			throw new RuntimeException("ERROR: Save/Print Single Current_State not implemented.");
 	}
 
 }
