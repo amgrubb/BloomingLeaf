@@ -38,11 +38,13 @@ var ResultView = Backbone.View.extend({
      */
     // TODO: Update this function to pass the ResultBBM into displayAnalysis
     switchResult: function () {
+        $('#modelingSlider').css("display", "none");
+        $('#analysisSlider').css("display", "");
         this.model.set('selected', true);
         this.model.trigger('change:switchResults', this.model);
         this.config.set('selected', true);
         this.config.trigger('change:switchConfigs', this.config);
-        displayAnalysis(this.model, true);
+        displayAnalysis(this.model, true, "analysis");
     },
 
     /**
@@ -199,6 +201,9 @@ var Config = Backbone.View.extend({
      * Sets selected value to true and triggers a switchConfig event to update highlight
      */
     switchConfig: function () {
+        $('#modelingSlider').css("display", "");
+        $('#analysisSlider').css("display", "none");
+        IntentionColoring.refresh(undefined)
         this.model.set({ selected: true });
         removeSlider();
     },
