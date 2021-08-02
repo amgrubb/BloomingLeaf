@@ -46,9 +46,9 @@ function init(){
     console.log(analysisRequest);
     analysisResult = analysisRequest.previousAnalysis;
     newGraph = new joint.dia.BloomingGraph();
-    console.log(graph)
+    console.log(newGraph)
     oldGraph = jQuery.extend({}, window.opener.graph.toJSON());
-    console.log(graph)
+    console.log(oldGraph)
     //loadFromObject();
     // for (let cell of analysis.graph.getElements()) {
     for (let result of analysisRequest.results) {
@@ -73,15 +73,14 @@ function init(){
             'labels': [{position: 0.5, attrs: {text: {text: "and"}}}]
         })
     });
-    console.log(graph)
+
     paperScroller = new joint.ui.PaperScroller({
         autoResizePaper: true,
         paper: paper
     });
-    console.log(graph)
+  
     $('#paper').append(paperScroller.render().el);
     paperScroller.center();
-    console.log(graph)
     
   //graph.fromJSON(JSON.parse(JSON.stringify(window.opener.graph.toJSON())));
 
@@ -112,8 +111,8 @@ function init(){
  */
  function loadFromObject() {
 	//graph.fromJSON(obj.graph);
-    console.log(graph)
-	var cells = graph.cells;
+    console.log(oldGraph)
+	var cells = oldGraph.cells;
     console.log(cells);
 	for (var i = 0; i < cells.length; i++) {
 		cell = cells[i];
