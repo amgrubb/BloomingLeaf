@@ -9,60 +9,84 @@ import java.util.List;
 import java.util.Map;
 
 import gson_classes.BIConstraint;
+import gson_classes.IOSolution;
 
 /**
  * Hold the complete specification of the model.
  * @author amgrubb
  */
+/**
+ * @author amgrubb
+ *
+ */
 public class ModelSpec {
+	// Model Elements
 	private List<Actor> actors = new ArrayList<Actor>();
 	private List<Intention> intentions = new ArrayList<Intention>();
 	private List<ContributionLink> contributionLinks = new ArrayList<ContributionLink>();
 	private List<DecompositionLink> decompositionLinks = new ArrayList<DecompositionLink>();
 	private List<NotBothLink> notBothLink = new ArrayList<NotBothLink>();
-	private List<TPConstraint> constraints = new ArrayList<TPConstraint>();
-	
+
+	// Cross-Element Model Variables
+    private int maxTime = 5;
+    private HashMap<String, Integer> absTP = new HashMap<String, Integer>();
+    private List<TPConstraint> constraints = new ArrayList<TPConstraint>();
+    
+	// Analysis Parameters
+	private String analysisType = null;
+	private char conflictAvoidLevel = 'N'; 			// Should have the value S/M/W/N for Strong, Medium, Weak, None.
+    private int relativeTimePoints = 0;
+    private IOSolution prevResult;
+    
 	// Store the names of any time point names that are changed for reference.
 	//		Original -> MergedTP/Element
 	private HashMap<String, String> changedTPNames  = new HashMap<String, String>();
 	private HashMap<String, AbstractElement> changedTPElements = new HashMap<String, AbstractElement>();
-	
-	// To Be Removed
-//	private List<IntentionalElement> intElements = new ArrayList<IntentionalElement>();
-//	private List<Contribution> contribution = new ArrayList<Contribution>();
-//	private List<Decomposition> decomposition = new ArrayList<Decomposition>();
-//	private List<EvolvingContribution> evolvingContribution = new ArrayList<EvolvingContribution>();
-//	private List<EvolvingDecomposition> evolvingDecomposition = new ArrayList<EvolvingDecomposition>();
-//	private List<UserEvaluation> userEvaluations = new ArrayList<UserEvaluation>();
-//	private List<EpochConstraint> constraintsBetweenEpochs = new ArrayList<EpochConstraint>();
- 
-	
-	private String analysisType = null;
-	private char conflictAvoidLevel = 'N'; 			// Should have the value S/M/W/N for Strong, Medium, Weak, None.
-    private int maxTime = 5;
-    private int relativeTimePoints = 0;
-    //private int[] absoluteTimePoints = null;
-    private HashMap<String, Integer> absTP = new HashMap<String, Integer>();
-    
 
-    //	private String inputFilename = "";
-    //private int[][][] history;	//TODO: Is this used? Is it left over from GrowingLeaf?
-    
-   //TODO: Merge with initialTimePoint function.
-    private HashMap<String, Integer> initialAssignedEpochs; //Hash map to hold the epochs with assigned values.
-    
-    
-    private Integer[] initialValueTimePoints;		// Hold the assigned times for each of the initial Values. Should be same length of second paramater of initialValues;
-    private boolean[][][] initialValues;		// Holds the initial values whether they are single or multiple.
-    											//[this.numIntentions][this.numTimePoints][FD - index 0 / PD - index 1 / PS - index 2 / FS - index 3]
-												// Note if model only has initial values then it will be [numintentions][1][4].
-    private HashMap<String, boolean[][]> initialValuesMap; //TODO: Temporary or full replacement of initialValues. 
-
-
+	// Constructor of the Model
     public ModelSpec(){
     }
     
     // ************* INTERESTING GETTERS/SETTERS ************* 
+
+    public HashMap<String, boolean[][]> getPrevIntentionAssignments() {	
+    	//TODO: Finish function.
+		//if(this.prevResult != null) 
+		//	return this.prevResult.getTimePointAssignments();
+		return null; //prevAssignmentsMaps;	//TODO: Add correct information.
+		//check if previous values and previous values length are the same.
+	}
+
+	public Integer[] getPrevTimePointPath() { 
+		//TODO: Finish function.
+		//Not Used yet.
+		//this.prevResult.getSelectedTimePointPath();
+		return null; //prevAbsTPVal;	//TODO: Add correct information.
+	}
+
+	
+	/** Returns the time point list with the associated absolute value from the 
+	 * previous analysis.
+	 * @return	map between time point name and absolute value
+	 */
+	public HashMap<String, Integer> getPrevTPAssignments() { //Not Used yet. 
+		if(this.prevResult != null) 
+			return this.prevResult.getTimePointAssignments();
+		return null; 
+	}
+	
+	/**
+	 * Returns the time point selected with the slider in the front end.
+	 * This determines how next state and partial path analysis works.
+	 * @return	The selected time point.
+	 */
+	public Integer getPrevSelectedTP() {
+		if(this.prevResult != null) 
+			return this.prevResult.getSelectedTimePoint();
+		return 0;
+	}
+	
+    
 	public int getNumIntentions() {
 		return this.intentions.size();
 	}
@@ -320,12 +344,41 @@ public class ModelSpec {
 
 	
 	// ************* START OF GENERIC GETTERS AND SETTERS ************* 
+    
+	
+	
+	// To Be Removed
+//	private List<IntentionalElement> intElements = new ArrayList<IntentionalElement>();
+//	private List<Contribution> contribution = new ArrayList<Contribution>();
+//	private List<Decomposition> decomposition = new ArrayList<Decomposition>();
+//	private List<EvolvingContribution> evolvingContribution = new ArrayList<EvolvingContribution>();
+//	private List<EvolvingDecomposition> evolvingDecomposition = new ArrayList<EvolvingDecomposition>();
+//	private List<UserEvaluation> userEvaluations = new ArrayList<UserEvaluation>();
+//	private List<EpochConstraint> constraintsBetweenEpochs = new ArrayList<EpochConstraint>();
+    //	private String inputFilename = "";
+    //private int[][][] history;	//TODO: Is this used? Is it left over from GrowingLeaf?
+    //private int[] absoluteTimePoints = null;
+	//    private boolean[][][] initialValues;		// Holds the initial values whether they are single or multiple.
+	//[this.numIntentions][this.numTimePoints][FD - index 0 / PD - index 1 / PS - index 2 / FS - index 3]
+	// Note if model only has initial values then it will be [numintentions][1][4].
+//  private HashMap<String, Integer> prevTPAssignments; //Hash map to hold the epochs with assigned values.    
+//  private Integer[] prevAbsTPVal;		// Hold the assigned times for each of the initial Values. Should be same length of second paramater of initialValues;
+//  private HashMap<String, boolean[][]> prevAssignmentsMaps; //TODO: Temporary or full replacement of initialValues. 
+
+ 
+ 
+    
+    
 //	public void setConstraintsBetweenTPs(BIConstraint[] constraintsBetweenTPs) {
 //		this.constraintsBetweenTPs = constraintsBetweenTPs;
 //	}
 
 	public List<Intention> getIntentions() {
 		return intentions;
+	}
+
+	public void setPreviousSolution(IOSolution previousSolution) {
+		this.prevResult = previousSolution;
 	}
 
 	public HashMap<String, String> getChangedTPNames() {
@@ -348,13 +401,11 @@ public class ModelSpec {
 		this.decompositionLinks = decompositionLinks;
 	}
 
-	public HashMap<String, boolean[][]> getInitialValuesMap() {
-		return initialValuesMap;
-	}
 
-	public void setInitialValuesMap(HashMap<String, boolean[][]> initialValuesMap) {
-		this.initialValuesMap = initialValuesMap;
-	}
+//	public void setInitialValuesMap(HashMap<String, boolean[][]> initialValuesMap) {
+//		this.prevAssignmentsMaps = initialValuesMap;
+//	}
+
 
 //	public List<UserEvaluation> getUserEvaluations() {
 //		return userEvaluations;
@@ -384,33 +435,25 @@ public class ModelSpec {
 //		this.finalAssignedEpochs = finalAssignedEpochs;
 //	}
 
-	public Integer[] getInitialValueTimePoints() {
-		return initialValueTimePoints;
-	}
+//	public void setInitialAssignedEpochs(HashMap<String, Integer> initialAssignedEpochs) {
+//		this.prevTPAssignments = initialAssignedEpochs;
+//	}
 
-	public HashMap<String, Integer> getInitialAssignedEpochs() {
-		return initialAssignedEpochs;
-	}
+//	public void setInitialValues(boolean[][][] initialValues) {
+//		this.initialValues = initialValues;
+//	}
 
-	public void setInitialAssignedEpochs(HashMap<String, Integer> initialAssignedEpochs) {
-		this.initialAssignedEpochs = initialAssignedEpochs;
-	}
-
-	public void setInitialValues(boolean[][][] initialValues) {
-		this.initialValues = initialValues;
-	}
-
-	public void setInitialValueTimePoints(Integer[] initialValueTimePoints) {
-		this.initialValueTimePoints = initialValueTimePoints;
-	}
+//	public void setInitialValueTimePoints(Integer[] initialValueTimePoints) {
+//		this.prevAbsTPVal = initialValueTimePoints;
+//	}
 
 	public char getConflictAvoidLevel() {
 		return conflictAvoidLevel;
 	}
 
-	public boolean[][][] getInitialValues() {
-		return initialValues;
-	}
+//	public boolean[][][] getInitialValues() {
+//		return initialValues;
+//	}
 
 	public List<Intention> getIntentionList() {
 		return intentions;

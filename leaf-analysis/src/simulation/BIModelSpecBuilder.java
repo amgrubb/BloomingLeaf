@@ -34,8 +34,9 @@ public class BIModelSpecBuilder {
 				modelSpec.setRelativeTimePoints(Integer.parseInt(aRequest.getNumRelTime()));
 			} 
 			if (DEBUG) System.out.println("Read Simple Analysis Parameters");
-
-			IOSolution prevResult = aRequest.getPreviousAnalysis();
+			modelSpec.setPreviousSolution(aRequest.getPreviousAnalysis());
+			if (DEBUG) System.out.println("Read Previous Results");
+			/*
 			if(prevResult != null) {
 				// Get the list of assigned Time Points
 				modelSpec.setInitialAssignedEpochs(prevResult.getTimePointAssignments());
@@ -80,7 +81,8 @@ public class BIModelSpecBuilder {
 //				modelSpec.setInitialValueTimePoints(initialValueTimePointsArray);
 				if (DEBUG) System.out.println("TEMP: Handled (Single Path) Previous Result into Array");
 				
-			}			
+			}	
+			*/		
     	} catch (Exception e) {
     		throw new RuntimeException(e.getMessage());
     	}      	

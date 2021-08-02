@@ -8,7 +8,6 @@ public class IOSolution {
 	private List<ElementData> elementList = new ArrayList<>();
 	private HashMap<String, Integer> timePointAssignments;
 	private Integer[] timePointPath;
-//	private Integer timePointPathSize;
 	private Integer selectedTimePoint;
 	
 	//private List<IOStateModel> allSolution = new ArrayList<>();
@@ -19,7 +18,6 @@ public class IOSolution {
 	public IOSolution(Integer[] timePointPath, HashMap<String, Integer> timePointAssignments) {
 		this.timePointAssignments = timePointAssignments;
 		this.timePointPath = timePointPath;
-//		this.timePointPathSize = timePointPath.length;
 	}
 	public void addElement(String id, String[] status) {
 		elementList.add(new ElementData(id, status));
