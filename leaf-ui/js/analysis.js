@@ -45,8 +45,8 @@ function init(){
 
     console.log(analysisRequest);
     analysisResult = analysisRequest.previousAnalysis;
-    newGraph = new joint.dia.BloomingGraph();
-    console.log(newGraph)
+    graph = new joint.dia.BloomingGraph();
+    console.log(graph)
     oldGraph = jQuery.extend({}, window.opener.graph.toJSON());
     console.log(oldGraph)
     //loadFromObject();
@@ -64,6 +64,7 @@ function init(){
         height: 600,
         gridSize: 10,
         perpendicularLinks: false,
+        model: graph,
         defaultLink: new joint.shapes.basic.CellLink({
             'attrs': {
                 '.connection': {stroke: '#000000'},
@@ -82,7 +83,12 @@ function init(){
     $('#paper').append(paperScroller.render().el);
     paperScroller.center();
     
-  //graph.fromJSON(JSON.parse(JSON.stringify(window.opener.graph.toJSON())));
+  graph.fromJSON(oldGraph);
+  // $('#stencil').append(stencil.render().el);
+
+    console.log(paper);
+
+  console.log(graph)
 
     //elements = graph.getElements();
     /** TODO: reimplement this
@@ -92,12 +98,11 @@ function init(){
             analysis.elements.push(analysis.graph.getElements()[i]);
     }
     */
-   //console.log(elements[0].get('intention'));
     loadFromObject();
     // if(!analysis.analysisResult){
     //     analysis.analysisResult = analysisRequest.previousAnalysis;
     // }
-
+    console.log(graph.toJSON());
 
 }
 
@@ -111,25 +116,20 @@ function init(){
  */
  function loadFromObject() {
 	//graph.fromJSON(obj.graph);
-    console.log(oldGraph)
-	var cells = oldGraph.cells;
+	var cells = graph.getCells();
     console.log(cells);
 	for (var i = 0; i < cells.length; i++) {
 		cell = cells[i];
-        console.log(cell);
-        console.log(cell.type);
-        console.log()
-		if (cell.type == "basic.Actor"){
+		if (cell.get('type') == "basic.Actor"){
 			createBBActor(cell) //Create actor
-		}else if (cell.type == "basic.CellLink") {
+		}else if (cell.get('type') == "basic.CellLink") {
 			createBBLink(cell) //Create link
 		}else{
 			// Singled out functionSegList from obj as it doesn't show up in the graph after reading from JSON
-            console.log(cell.intention);
-            console.log(cell.intention.attributes.evolvingFunction.attributes.functionSegList);
             // console.log(cell.get('intention').get('evolvingFunction'));
             // console.log(cell.get('intention').getFuncSegments());
-			var funcseg = cell.intention.attributes.evolvingFunction.attributes.functionSegList;
+			var funcseg = cell.get('intention').attributes.evolvingFunction.attributes.functionSegList;
+            // maybe pass in the new cell we want to create in newGraph here
 			createBBElement(cell, funcseg) //Create element
 		}
 	}
@@ -147,6 +147,7 @@ function init(){
 	cell.set('actor', actorBBM)
 }
 
+$('#btn-debug').on('click', function(){ console.log(graph.toJSON()) });
 /**
  * Returns a backbone model Link with information from the obj
  *
@@ -162,7 +163,8 @@ function createBBLink(cell){
  *
  */
 function createBBElement(cell, funcsegs){
-	var intention = cell.intention;
+    console.log("creating element")
+	var intention = cell.get('intention');
 	var evol = intention.attributes.evolvingFunction.attributes;
 	var intentionBBM = new IntentionBBM({nodeName: intention.attributes.nodeName, nodeType: intention.attributes.nodeType});
 
@@ -176,6 +178,14 @@ function createBBElement(cell, funcsegs){
 		intentionBBM.get('userEvaluationList').push(new UserEvaluationBBM({assignedEvidencePair: userEval.attributes.assignedEvidencePair, absTime: userEval.attributes.absTime}));
 	}
 	intentionBBM.set('evolvingFunction', evolving);
+    // TODO: we have to make a new cell in the newGraph and give it the attributes of the old one????
+    // graph.get('cells').push(cell);
+    //console.log(graph.get('cells'));
+    
+
+    //graph.get('cells').models[0].intention = intentionBBM;
+    // console.log(newGraph.get('cells')[0]);
+    // newGraph.get('cells')[0].set('intention', intentionBBM);
 	cell.set('intention', intentionBBM);
     console.log('hi');
     console.log(cell);
@@ -207,7 +217,6 @@ function updateNodesValues(currentPage, step = 0){
     //Set the currentState variable so it can be sent back to the original path
     var i = 0;
     for (let element of graph.getElements()) {
-        console.log(graph.getElements());
         // cell = analysis.elements[i];
         // value = analysis.analysisResult.allSolution[currentPage].intentionElements[i].status[step];
         satValue = selectedResult.elementList[i].status[step];

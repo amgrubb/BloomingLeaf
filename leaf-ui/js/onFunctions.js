@@ -384,6 +384,7 @@ paper.on("link:options", function (cell) {
      */
     function switchToAnalysisMode() {
         setInteraction(false);
+        console.log(paper)
         document.getElementById("colorResetAnalysis").value = 1;
         // Clear the right panel
         clearInspector();
