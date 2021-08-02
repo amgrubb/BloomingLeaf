@@ -382,22 +382,40 @@ class EVO {
                 continue;
             }
             intention = elements[i].get('intention');
-            initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair'); 
+            initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair');
+            
+            // Shows the satvalue
+            $('.satvalue').css("display", "");
+
+            // If there is result
             if (analysisResult !== undefined) {
-                if (!analysisResult.get('isPathSim')) {   
-                    if (initSatVal === '(no value)') {
-                        curr.attr('.satvalue/text', '');
-                        curr.attr({text: {fill: 'black',stroke:'none','font-weight' : 'normal'}});
-                    }
-                    else {
+                
+                // If the result is selected 
+                if (analysisResult.get('selected')){
+
+                    if (this.sliderOption == 3){
                         curr = elements[i].findView(paper).model;
                         curr.attr({text: {fill: 'white',stroke:'none'}});
                     }
+
+                    else {
+                        // Sets the satvalue off
+                        $('.satvalue').css("display", "none");
+                    }
                 }
+
+                // If the result is not selected
                 else {
-                    curr = elements[i].findView(paper).model;
-                    curr.attr({text: {fill: 'white',stroke:'none'}});
+                    if (initSatVal === '(no value)'){
+                        curr.attr('.satvalue/text', '');
+                        curr.attr({text: {fill: 'black',stroke:'none','font-weight' : 'normal'}});
+                    }
                 }
+            }
+            // If there isn't result
+            else {
+                curr = elements[i].findView(paper).model;
+                curr.attr({text: {fill: 'white',stroke:'none'}});
             }
         }
     }
