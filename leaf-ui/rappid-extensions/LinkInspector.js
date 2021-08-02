@@ -39,7 +39,7 @@ var LinkInspector = Backbone.View.extend({
             '<div class="inspector-views" id="right-inspector">',
             '<label id="title" style="top:45px">Evolving Relationship</label>',
             '<br>',
-            '<select id="link-type-begin" class="repeat-select">',
+            '<select id="link-type-begin" class="repeat-select-begin">',
                 '<option value="" disabled selected hidden>Begin</option>',
                 '<option value="no">No Relationship</option>',
                 '<option value="and">And-Decomposition</option>',
@@ -127,6 +127,7 @@ var LinkInspector = Backbone.View.extend({
      * Switches from Evolving Relationship to Constant Relationship
      */
     renderConstant: function() {
+        this.link.set('absTime', null);
         this.link.set('evolving', false);
         this.$el.html(_.template(this.constanttemplate)());
         $('#constant-links').val(this.link.get('linkType'));
@@ -138,6 +139,7 @@ var LinkInspector = Backbone.View.extend({
      * Switches from Constant Relationship to Evolving Relationship
      */
     renderEvolving: function(){
+        this.link.set('absTime', null);
         this.link.set('evolving', true);
         this.$el.html(_.template(this.evolvingtemplate)());
         $('#link-type-end').prop('disabled', true);
@@ -176,11 +178,13 @@ var LinkInspector = Backbone.View.extend({
             
         } else {
             // Check if cells have any other NBT/NBD links
-            if (!this.hasNBLink(source, this.model) && !this.hasNBTag(source)){
+            // Clears the source if it doesn't have a NBT/NBD link
+            if (this.hasNBLink(source, this.model) && this.hasNBTag(source)){
                 source.attr('.funcvalue/text', '');
                 source.attr('.satvalue/text', '');
             }
-            if (!this.hasNBLink(target, this.model) && !this.hasNBTag(target)){
+            // Clears the target if it doesn't have a NBT/NBD link
+            if (this.hasNBLink(target, this.model) && this.hasNBTag(target)){
                 target.attr('.funcvalue/text', '');
                 target.attr('.satvalue/text', '');
             }
@@ -244,7 +248,7 @@ var LinkInspector = Backbone.View.extend({
     },
 
     /**
-     * Returns true iff the node is a source or target to an NBT or NBD
+     * Returns false if the node is a source or target to an NBT or NBD
      * link, other than the link provided as a parameter.
      *
      * @param {joint.dia.Element} cell
@@ -256,13 +260,15 @@ var LinkInspector = Backbone.View.extend({
     hasNBLink: function(cell, link) {
         var localLinks = graph.getLinks();
         for(var i = 0; i < localLinks.length; i++) {
-            if ((localLinks[i]!=link) && (localLinks[i].prop('link-type') == 'NBT' || localLinks[i].prop('link-type') == 'NBD')){
-                if(localLinks[i].getTargetElement() == cell || localLinks[i].getSourceElement() == cell){
-                    return true;
+            // Checks if the localLinks[i] is the current link and if it of type NBT/NBD 
+            if ((localLinks[i]!=link) && (localLinks[i].get('link').get('linkType') == 'NBT' || localLinks[i].get('link').get('linkType') == 'NBD')){
+                // Checks if the target or source element is the cell
+                if(localLinks[i].getTargetElement().get('id') === cell.get('id') || localLinks[i].getSourceElement().get('id') === cell.get('id')){
+                    return false;
                 }
             }
         }
-        return false;
+        return true;
     },
 
     /**
@@ -271,7 +277,7 @@ var LinkInspector = Backbone.View.extend({
      * @param {joint.dia.Element} cell
      */
     hasNBTag: function(cell) {
-        return cell.prop('.funcvalue/text') == 'NB';
+        return cell.attr('.funcvalue/text') == 'NB';
     },
 
     /**

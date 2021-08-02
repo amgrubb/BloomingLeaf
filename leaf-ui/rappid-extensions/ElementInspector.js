@@ -65,7 +65,7 @@ var ElementInspector = Backbone.View.extend({
     model: joint.shapes.basic.Intention,
 
     initialize: function () { // Listens for changes in the intentions
-        this.listenTo(this, 'change: intention', this.initSatValueChanged);
+        this.listenTo(this, 'change:intention', this.initSatValueChanged);
         // Saves this.model.get('intention) as a local variable to access it more easily
         this.intention = this.model.get('intention');
     },
@@ -123,7 +123,6 @@ var ElementInspector = Backbone.View.extend({
         '</div>',
         '<br>',
         '<canvas id="chart" width="240" height="240"></canvas>',
-
         '</script>'].join(''),
 
     events: {
@@ -313,7 +312,7 @@ var ElementInspector = Backbone.View.extend({
         this.validityCheck(event);
 
         if (this.intention.get('evolvingFunction') != null) {
-            var functionType = this.intention.get('evolvingFunction').get('type');    
+            var functionType = this.intention.get('evolvingFunction').get('type'); 
         }
         else { var functionType = null; }
 
@@ -594,7 +593,7 @@ var ElementInspector = Backbone.View.extend({
      * and updateChartUserDefined.
      */
     updateCell: function () {
-        IntentionColoring.refresh();
+        IntentionColoring.refresh(undefined);
         changeFont(current_font, paper);
         if (this.intention.get('evolvingFunction') != null) {
             if (this.intention.get('evolvingFunction').get('type') == 'NT') {
@@ -811,15 +810,28 @@ var FuncSegView = Backbone.View.extend({
 
         if (this.hasUD == true) {
             if (this.model.get('current')) {
-                // If the initial satisfaction value is satisfied you can't select increasing
-                this.$('option[value=I]').prop('disabled', this.initSatValue === '0011');
-                // If the initial satisfaction value is denied you can't select decreasing
-                this.$('option[value=D]').prop('disabled', this.initSatValue === '1100');
-
+                var len = this.intention.getFuncSegments().length;
+                if (len != 1) {
+                // If the satisfaction value of the previous FunctionSegmentBBM is satisfied you can't select increasing
+                this.$('option[value=I]').prop('disabled', this.intention.getFuncSegments()[len-2].get('refEvidencePair') === '0011');
+                // If the satisfaction value of the previos FunctionSegmentBBM is denied you can't select decreasing
+                this.$('option[value=D]').prop('disabled', this.intention.getFuncSegments()[len-2].get('refEvidencePair') === '1100');
+                } else {
+                    // If the initial satisfaction value is satisfied you can't select increasing
+                    this.$('option[value=I]').prop('disabled', this.initSatValue === '0011');
+                    // If the initial satisfaction value is denied you can't select decreasing
+                    this.$('option[value=D]').prop('disabled', this.initSatValue === '1100');
+                }
                 this.checkUDFunctionValues()
             } else { // If the model is not the most recent model disable the function type and satisfaction value selectors 
                 this.$("#seg-function-type").prop('disabled', true);
                 this.$("#seg-sat-value").prop('disabled', true);
+                // If the function is UD, stochastic, and not current you have to append (no value) to the html
+                if (this.model.get('type') == 'R') {
+                    this.$('#seg-sat-value').html(this.satValueOptionsNoRandom());
+                    this.$("#seg-sat-value").html('<option value="(no value)"> (no value) </option>');
+                    this.$("#seg-sat-value").val("(no value)");
+                }
             }
         }
         else {
@@ -878,6 +890,7 @@ var FuncSegView = Backbone.View.extend({
         } else if (func == 'R') {
             this.$("#seg-sat-value").html(this.satValueOptionsAll());
             this.$("#seg-sat-value").val("(no value)");
+            this.model.set('refEvidencePair', '(no value)');
             this.$("#seg-sat-value").prop('disabled', true);
         } else if (func == 'C') {
             this.$("#seg-sat-value").last().html(this.satValueOptionsAll());

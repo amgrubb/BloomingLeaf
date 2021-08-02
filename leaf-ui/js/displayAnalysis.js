@@ -84,16 +84,16 @@ function createSlider(currentAnalysis, isSwitch) {
     sliderObject.sliderElement.noUiSlider.on('update', function( values, handle ) {
         updateSliderValues(parseInt(values[handle]), currentAnalysis);
     });
-    EVO.setCurTimePoint(sliderMax);
+    EVO.setCurTimePoint(sliderMax, currentAnalysis);
     adjustSliderWidth(sliderMax);
 }
 
 /**
  * Reset display to default, before result is displayed
  */
-function hideAnalysis() {
+function hideAnalysis(analysisResult) {
     revertNodeValuesToInitial();
-    EVO.switchToModelingMode();
+    EVO.switchToModelingMode(analysisResult);
     // show modeling mode EVO slider
     $('#modelingSlider').css("display", "");
     $('#analysisSlider').css("display", "none");
@@ -120,9 +120,9 @@ function adjustSliderWidth(maxValue){
     // Min width of slider is 15% of paper's width
     var min = $('#paper').width() * 0.1;
     // Max width of slider is 90% of paper's width
-    var max = $('#paper').width() * 0.6;
+    var max = $('#paper').width() * 0.9;
     // This is the width based on maxvalue
-    var new_width = $('#paper').width() * maxValue / 100;
+    var new_width = $('#paper').width() * maxValue / 65;
     // new_width is too small or too large, adjust
     if (new_width < min){
         new_width = min;
@@ -155,7 +155,7 @@ function updateSliderValues(sliderValue, currentAnalysis){
     currentAnalysis.get('elementList').forEach(element => 
         updateNodeValues(element, sliderValue));
 
-    EVO.setCurTimePoint(sliderValue);
+    EVO.setCurTimePoint(sliderValue, currentAnalysis);
 }
 
 /**

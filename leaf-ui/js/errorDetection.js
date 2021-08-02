@@ -20,7 +20,7 @@
   * Changes all intentions to their original colors
   * Note: if this is ever merged with the color-visualization branch, EVO will need to be refreshed here
   */
-function clearCycleHighlighting() {
+function clearCycleHighlighting(analysisResult) {
 	var elements = graph.getElements();
 	var cellView;
 
@@ -29,7 +29,7 @@ function clearCycleHighlighting() {
 		cellView  = elements[i].findView(paper);
 		cellView.model.changeToOriginalColour();
 	}
-	IntentionColoring.setColorMode("EVO");
+	IntentionColoring.setColorMode("EVO", analysisResult);
 }
 
 /**
@@ -38,13 +38,13 @@ function clearCycleHighlighting() {
  *
  * @param {Array of Array<String>} cycleList: list of cycles in current model
  */
-function cycleResponse(cycleList) {
+function cycleResponse(cycleList, analysisResult) {
 
 	//remove all previous coloring, deactivate EVO
-	clearCycleHighlighting();
+	clearCycleHighlighting(analysisResult);
 
 	if(isACycle(cycleList)) {
-		IntentionColoring.setColorMode("cycle");
+		IntentionColoring.setColorMode("cycle", analysisResult);
 		swal("Cycle in the graph", "", "error");
 		var color_list = initColorList();
 		var cycleIndex = 0; 

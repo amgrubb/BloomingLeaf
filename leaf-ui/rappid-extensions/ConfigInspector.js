@@ -18,7 +18,7 @@ var ResultView = Backbone.View.extend({
     },
 
     template: ['<script type="text/template" id="result-template">',
-        '<a class="result-elements" id="<%= name %>" <% if (selected) { %> style="background-color:#A9A9A9;" <%} %>)>', "<%= name %>", '</a>',
+        '<button class="result-elements" id="<%= name %>" <% if (selected) { %> style="background-color:#A9A9A9;" <%} %>)>', "<%= name %>", '</button>',
         '</script>'].join(''),
 
     /** Render updates model values in template (name & selected) */
@@ -38,11 +38,13 @@ var ResultView = Backbone.View.extend({
      */
     // TODO: Update this function to pass the ResultBBM into displayAnalysis
     switchResult: function () {
+        $('#modelingSlider').css("display", "none");
+        $('#analysisSlider').css("display", "");
         this.model.set('selected', true);
         this.model.trigger('change:switchResults', this.model);
         this.config.set('selected', true);
         this.config.trigger('change:switchConfigs', this.config);
-        displayAnalysis(this.model.get('analysisResult'), true);
+        displayAnalysis(this.model, true, "analysis");
     },
 
     /**
@@ -110,7 +112,7 @@ var Config = Backbone.View.extend({
     },
 
     template: ['<script type="text/template" id="item-template">',
-        '<div class="analysis-configuration" style="margin-bottom: 1px;" id="<%= name %>">',
+        '<div class="analysis-configuration" id="<%= name %>">',
         '<button class="config-elements" <% if (selected) { %> style="background-color:#A9A9A9;" <%} %> >',
         '<%= name %> </button>',
         '<input class="config-input" value="<%- name %>" style="display:none"></input>',
@@ -199,7 +201,11 @@ var Config = Backbone.View.extend({
      * Sets selected value to true and triggers a switchConfig event to update highlight
      */
     switchConfig: function () {
+        $('#modelingSlider').css("display", "");
+        $('#analysisSlider').css("display", "none");
+        IntentionColoring.refresh(undefined)
         this.model.set({ selected: true });
+        removeSlider();
     },
 
     /**
