@@ -63,9 +63,10 @@ function defaultFont(pPaper) {
     changeFont(default_font, pPaper)
 }
 
-function resizeWindow() {
-    $('#slider').css("margin-top", $(this).height() * 0.9);
+function resizeWindow(sliderMax) {
+    $('#slider').css("margin-top", $(this).height() * 0.7);
     $('#slider').width($('#paper').width() * 0.8);
+    adjustSliderWidth(sliderMax)	
 }
 
 // End nav bar functions

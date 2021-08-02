@@ -120,9 +120,9 @@ function adjustSliderWidth(maxValue){
     // Min width of slider is 15% of paper's width
     var min = $('#paper').width() * 0.1;
     // Max width of slider is 90% of paper's width
-    var max = $('#paper').width() * 0.6;
+    var max = $('#paper').width() * 0.9;
     // This is the width based on maxvalue
-    var new_width = $('#paper').width() * maxValue / 100;
+    var new_width = $('#paper').width() * maxValue / 65;
     // new_width is too small or too large, adjust
     if (new_width < min){
         new_width = min;
