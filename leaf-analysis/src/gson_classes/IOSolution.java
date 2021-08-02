@@ -44,17 +44,14 @@ public class IOSolution {
 //TODO: Add back in as required.
 
 
-//	public Integer[] getTimePointPath() {
-//		return timePointPath;
-//	}
-//    public Integer[] getSelectedTimePointPath() {
-//    	if (timePointPath == null || selectedTimePoint == null)
-//    		return null;
-//    	Integer[] path = new Integer[selectedTimePoint + 1];
-//    	for (int i = 0; i < selectedTimePoint + 1; i++)
-//    		path[i] = timePointPath[i];
-//    	return path;
-//    }
+    public Integer[] getSelectedTimePointPath() {
+    	if (timePointPath == null || selectedTimePoint == null)
+    		return null;
+    	Integer[] path = new Integer[selectedTimePoint + 1];
+    	for (int i = 0; i < selectedTimePoint + 1; i++)
+    		path[i] = timePointPath[i];
+    	return path;
+    }
     
 	public HashMap<String, boolean[][]> getSelectedPreviousValues(){
 		if (elementList == null || selectedTimePoint == null)

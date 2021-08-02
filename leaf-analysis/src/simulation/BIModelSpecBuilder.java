@@ -30,10 +30,10 @@ public class BIModelSpecBuilder {
 
 			//Number of Relative time
 			if(aRequest.getNumRelTime() != null){
-				modelSpec.setRelativeTimePoints(Integer.parseInt(aRequest.getNumRelTime()));
+				modelSpec.setNumRelativeTimePoints(Integer.parseInt(aRequest.getNumRelTime()));
 			} 
 			if (DEBUG) System.out.println("Read Simple Analysis Parameters");
-			modelSpec.setPreviousSolution(aRequest.getPreviousAnalysis());
+			modelSpec.setPrevResult(aRequest.getPreviousAnalysis());
 			if (DEBUG) System.out.println("Read Previous Results");
 
     	} catch (Exception e) {

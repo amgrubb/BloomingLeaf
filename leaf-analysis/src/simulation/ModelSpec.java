@@ -35,7 +35,7 @@ public class ModelSpec {
 	// Analysis Parameters
 	private String analysisType = null;
 	private char conflictAvoidLevel = 'N'; 			// Should have the value S/M/W/N for Strong, Medium, Weak, None.
-    private int relativeTimePoints = 0;
+    private int numRelativeTimePoints = 0;
     private IOSolution prevResult;
     
 	// Store the names of any time point names that are changed for reference.
@@ -376,9 +376,13 @@ public class ModelSpec {
 	public List<Intention> getIntentions() {
 		return intentions;
 	}
+	
+	public IOSolution getPrevResult() {
+		return prevResult;
+	}
 
-	public void setPreviousSolution(IOSolution previousSolution) {
-		this.prevResult = previousSolution;
+	public void setPrevResult(IOSolution prevResult) {
+		this.prevResult = prevResult;
 	}
 
 	public HashMap<String, String> getChangedTPNames() {
@@ -475,8 +479,8 @@ public class ModelSpec {
 //		return inputFilename;
 //	}
 
-	public int getRelativeTimePoints() {
-		return relativeTimePoints;
+	public int getNumRelativeTimePoints() {
+		return numRelativeTimePoints;
 	}
 
 //	public int[] getAbsoluteTimePoints() {
@@ -539,8 +543,8 @@ public class ModelSpec {
 //		this.inputFilename = inputFilename;
 //	}
 
-	public void setRelativeTimePoints(int relativeTimePoints) {
-		this.relativeTimePoints = relativeTimePoints;
+	public void setNumRelativeTimePoints(int numRelativeTimePoints) {
+		this.numRelativeTimePoints = numRelativeTimePoints;
 	}
 
 //	public void setAbsoluteTimePoints(int[] absoluteTimePoints) {
