@@ -205,12 +205,6 @@ class EVO {
         this.generateConsoleReport();
         EVO.refresh(analysisResult);
     }   
-    
-    static update(analysisResult){
-        $('#modelingSlider').css("display", "none");
-        $('#analysisSlider').css("display", "");
-        EVO.setSliderOption('1', analysisResult);
-    }
 
     /**
      * Turn off EVO
@@ -389,7 +383,7 @@ class EVO {
 
             // If there is result
             if (analysisResult !== undefined) {
-                
+
                 // If the result is selected 
                 if (analysisResult.get('selected')){
 
