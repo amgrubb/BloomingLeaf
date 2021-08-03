@@ -101,33 +101,37 @@ public class BICSPAlgorithm {
 		
 		if (problemType == SearchType.PATH || problemType == SearchType.UPDATE_PATH) {
 			this.timePoints = createPathTimePoint(this.spec, this.store, this.timePointMap, this.maxTime);
-			this.numTimePoints = this.timePoints.length;
-	    	this.values = new BooleanVar[this.numIntentions][this.numTimePoints][4];	// 4 Predicates Values 0-FD, 1-PD, 2-PS, 3-FS
 		}else if (problemType == SearchType.NEXT_STATE) {
 			this.timePoints = createNextStateTimePoint(this.spec, this.store, this.timePointMap, this.maxTime);
-			this.numTimePoints = this.timePoints.length;
-			//TODO Update:
-	    	this.values = new BooleanVar[this.numIntentions][this.numTimePoints][4];	// 4 Predicates Values 0-FD, 1-PD, 2-PS, 3-FS
-	    	return;
 		}
+		this.numTimePoints = this.timePoints.length;
 		this.constraints.add(new Alldifferent(this.timePoints));
-
+		this.values = new BooleanVar[this.numIntentions][this.numTimePoints][4];	// 4 Predicates Values 0-FD, 1-PD, 2-PS, 3-FS
 		if (DEBUG) System.out.println("\n Num TP is: " + this.numTimePoints);       	
     	
     	// Initialise Values Array.
     	if (DEBUG) System.out.println("\nMethod: initializeNodeVariables");
-    	for (int i = 0; i < this.intentions.length; i++)
-			for (int t = 0; t < this.values[i].length; t++) {
-				// Creates IntVars and adds the FS -> PS invariant.
-				CSP.initializeNodeVariables(this.store, this.sat, this.values[i][t], this.intentions[i].getId() + "_" + t);
-			}
- 		CSP.initializeConflictPrevention(this.spec, this.sat, this.values, this.zero);
-
- 		//TODO: Rewrite with update version.
- 		// Assign Past Values
- 		if (problemType == SearchType.NEXT_STATE || problemType == SearchType.UPDATE_PATH) 
-       		funct(this.spec, this.constraints, this.timePoints, this.values, this.intentions);
-
+    	if (problemType == SearchType.PATH) {
+	    	for (int i = 0; i < this.intentions.length; i++)
+				for (int t = 0; t < this.values[i].length; t++) {
+					// Creates IntVars and adds the FS -> PS invariant.
+					CSP.initializeNodeVariables(this.store, this.sat, this.values[i][t], this.intentions[i].getId() + "_" + t);
+				}
+	 		CSP.initializeConflictPrevention(this.spec, this.sat, this.values, this.zero);
+    	} else if (problemType == SearchType.NEXT_STATE || problemType == SearchType.UPDATE_PATH) { 
+    		//TODO: START HERE
+    		
+    		
+    		
+    		// Assign past values with initialization?
+    		funct(this.spec, this.constraints, this.timePoints, this.values, this.intentions);
+    	
+    	
+    	}
+    	
+    	
+    	
+    	
  		//TODO: Add evolving functions, relationship, constraints, initial values.
     	if (DEBUG)	System.out.println("\nEnd of Init Procedure");	
 	}
@@ -268,7 +272,6 @@ public class BICSPAlgorithm {
     		timePointMap.put(newTP, entry.getValue());
 		}
 		
-		if (DEBUG) System.out.print("Num TP: " + timePointList.size());
 		IntVar[] list = new IntVar[timePointList.size()];
 		for (int i = 0; i < list.length; i ++)
 			list[i] = timePointList.get(i);
