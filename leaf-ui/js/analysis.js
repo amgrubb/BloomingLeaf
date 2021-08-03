@@ -79,14 +79,7 @@ function init(){
     $('#paper').append(paperScroller.render().el);
     paperScroller.center();
     
-  graph.fromJSON(oldGraph);
-
-  // $('#stencil').append(stencil.render().el);
-
-    console.log(paper);
-
-  console.log(graph)
-
+    // $('#stencil').append(stencil.render().el);
     //elements = graph.getElements();
     /** TODO: reimplement this
     //Filter out Actors
@@ -96,11 +89,11 @@ function init(){
     }
     */
     loadFromObject();
+    graph.fromJSON(oldGraph);
     // if(!analysis.analysisResult){
     //     analysis.analysisResult = analysisRequest.previousAnalysis;
     // }
     console.log(graph.toJSON());
-
 }
 
 /**
@@ -128,8 +121,6 @@ function init(){
 		}
 	}
 }
-
-
 
 /**
  * Returns a backbone model Actor with information from the obj
@@ -174,7 +165,6 @@ function createBBElement(cell, funcsegs){
 	cell.set('intention', intentionBBM);
 }
 
-
 function renderNavigationSidebar(currentPage = 0){
     clear_pagination_values();
 
@@ -192,7 +182,6 @@ function renderNavigationSidebar(currentPage = 0){
     // EVONextState.refresh();
 }
 
-
 function updateNodesValues(currentPage, step = 0){
     if(currentPage == "")
         currentPage = 0;
@@ -209,31 +198,31 @@ function updateNodesValues(currentPage, step = 0){
         if ((satValue == "0001") || (satValue == "0011")) {
             element.attr(".satvalue/text", "(F, ⊥)");
             element.attr({text:{fill:'black'}});
-        }else if(satValue == "0010") {
+        } else if (satValue == "0010") {
             element.attr(".satvalue/text", "(P, ⊥)");
             element.attr({text:{fill:'black'}});
-        }else if ((satValue == "1000") || (satValue == "1100")){
+        } else if ((satValue == "1000") || (satValue == "1100")){
             element.attr(".satvalue/text", "(⊥, F)");
             element.attr({text:{fill:'black'}});
-        }else if (satValue == "0100") {
+        } else if (satValue == "0100") {
             element.attr(".satvalue/text", "(⊥, P)");
             element.attr({text:{fill:'black'}});
-        }else if (satValue == "0110") {
+        } else if (satValue == "0110") {
             element.attr(".satvalue/text", "(P, P)");
             element.attr({text:{fill:'red'}});
-        }else if ((satValue == "1110") || (satValue == "1010")){
+        } else if ((satValue == "1110") || (satValue == "1010")){
             element.attr(".satvalue/text", "(P, F)");
             element.attr({text:{fill:'red'}});
-        }else if ((satValue == "0111") || (satValue == "0101")){
+        } else if ((satValue == "0111") || (satValue == "0101")){
             element.attr(".satvalue/text", "(F, P)");
             element.attr({text:{fill:'red'}});
-        }else if ((satValue == "1111") || (satValue == "1001") || (satValue == "1101") || (satValue == "1011") ){
+        } else if ((satValue == "1111") || (satValue == "1001") || (satValue == "1101") || (satValue == "1011") ){
             element.attr(".satvalue/text", "(F, F)");
             element.attr({text:{fill:'red'}});
-        }else if (satValue == "0000") {
+        } else if (satValue == "0000") {
             element.attr(".satvalue/text", "(⊥,⊥)");
             element.attr({text:{fill:'black'}});
-        }else {
+        } else {
             element.removeAttr(".satvalue/d");
         }
         i++;
@@ -244,27 +233,27 @@ function updatePagination(currentPage){
     var pagination = document.getElementById("pagination");
     // var nextSteps_array_size = analysis.analysisResult.allSolution.length;
     var nextSteps_array_size = selectedResult.allSolution.length;
-    if(nextSteps_array_size > 6){
+    if (nextSteps_array_size > 6){
         renderPreviousBtn(pagination, currentPage);
-        if(currentPage - 3 < 0){
+        if (currentPage - 3 < 0){
             for(var i = 0; i < 6; i++){
                 render_pagination_values(currentPage, i);
             }
-        }else{
-            if(currentPage + 3 < nextSteps_array_size){
-                for(i = currentPage - 3; i < currentPage + 3; i++){
+        } else {
+            if (currentPage + 3 < nextSteps_array_size){
+                for (i = currentPage - 3; i < currentPage + 3; i++){
                     render_pagination_values(currentPage, i);
                 }
-            }else{
-                for(i = currentPage - 3; i < nextSteps_array_size; i++){
+            } else {
+                for (i = currentPage - 3; i < nextSteps_array_size; i++){
                     render_pagination_values(currentPage, i);
                 }
             }
         }
         renderForwardBtn(pagination, currentPage)
-    }else{
+    } else {
         renderPreviousBtn(pagination, currentPage);
-        for(var i = 0; i < nextSteps_array_size; i++){
+        for (var i = 0; i < nextSteps_array_size; i++){
             render_pagination_values(currentPage, i);
         }
         renderForwardBtn(pagination, currentPage)
@@ -273,9 +262,9 @@ function updatePagination(currentPage){
 
 function renderPreviousBtn(pagination, currentPage){
     var value;
-    if(currentPage == 0){
+    if (currentPage == 0){
         value = 0;
-    }else{
+    } else {
         value = currentPage - 1;
     }
     pagination.innerHTML += '<a href="#" onclick="renderNavigationSidebar('+value.toString()+')">&laquo;</a>';
@@ -286,9 +275,9 @@ function renderForwardBtn(pagination, currentPage){
     // var nextSteps_array_size = analysis.analysisResult.allSolution.length;
     var nextSteps_array_size = selectedResult.allSolution.length;
 
-    if(currentPage == nextSteps_array_size-1){
+    if (currentPage == nextSteps_array_size-1){
         value = currentPage;
-    }else{
+    } else {
         value = currentPage + 1;
     }
     pagination.innerHTML += '<a href="#" onclick="renderNavigationSidebar(' + value.toString() + ')">&raquo;</a>';
@@ -296,9 +285,9 @@ function renderForwardBtn(pagination, currentPage){
 
 function render_pagination_values(currentPage, i){
     var pagination = document.getElementById("pagination");
-    if(currentPage == i){
+    if (currentPage == i){
         pagination.innerHTML += '<a href="#" class="active" onclick="renderNavigationSidebar(' + i.toString() + ')">' + i.toString() + '</a>';
-    }else{
+    } else {
         pagination.innerHTML += '<a href="#" onclick="renderNavigationSidebar(' + i.toString() + ')">' + i.toString() + '</a>';
     }
 }
@@ -318,15 +307,14 @@ function goToState(){
     // var nextSteps_array_size = analysis.analysisResult.allSolution.length;
     var nextSteps_array_size = selectedResult.allSolution.length;
 
-    if((requiredState != "NaN") && (requiredState > 0)){
-        if(requiredState > nextSteps_array_size){
+    if ((requiredState != "NaN") && (requiredState > 0)){
+        if (requiredState > nextSteps_array_size){
             renderNavigationSidebar(nextSteps_array_size);
-        }else{
+        } else {
             renderNavigationSidebar(requiredState);
         }
     }
 }
-
 
 function add_filter(){
     console.log("clicked");
@@ -341,7 +329,7 @@ function add_filter(){
             }
         }
         // check if something is just unchecked
-        else{
+        else {
             if (filterOrderQueue.indexOf(checkbox.id) != -1){
                 filterOrderQueue.splice(filterOrderQueue.indexOf(checkbox.id), 1);
             }
@@ -349,8 +337,8 @@ function add_filter(){
     }
     console.log(filterOrderQueue);
 
-    for(var i_element = 0; i_element <  filterOrderQueue.length; i_element++){
-        switch(filterOrderQueue[i_element]){
+    for (var i_element = 0; i_element <  filterOrderQueue.length; i_element++){
+        switch (filterOrderQueue[i_element]){
             case "conflictFl":
                 console.log("conflictFl");
                 console.log(selectedResult.allSolution.length);
@@ -359,7 +347,7 @@ function add_filter(){
                     // TODO: what is intentionElements???
                     for (var element_index=0; element_index < selectedResult.allSolution[solution_index].intentionElements.length; element_index++){
                         var value = selectedResult.allSolution[solution_index].intentionElements[element_index].status[0];
-                        if (	(value == "0110") ||
+                        if ((value == "0110") ||
                             (value == "0111") ||
                             (value == "0101") ||
                             (value == "1110") ||
@@ -385,7 +373,7 @@ function add_filter(){
                 for (var solution_index=0; solution_index < selectedResult.allSolution.length; solution_index++) {
                     for (var element_index=0; element_index < selectedResult.allSolution[solution_index].intentionElements.length; element_index++){
                         var value = selectedResult.allSolution[solution_index].intentionElements[element_index].status[0];
-                        if (	value == "0000"){
+                        if (value == "0000"){
                             index_to_rm.push(solution_index);
                             break;
                         }
@@ -406,7 +394,6 @@ function add_filter(){
                 for (var solution_index=0; solution_index < selectedResult.allSolution.length; solution_index++) {
                     var num_t_s = 0;
                     for (var element_index=0; element_index < selectedResult.allSolution[solution_index].intentionElements.length; element_index++){
-                        //
                         if (selectedResult.allSolution[solution_index].intentionElements[element_index].type === "TASK"){
                             var value = selectedResult.allSolution[solution_index].intentionElements[element_index].status[0];
                             if ((value == "0010" || value == "0011")){
@@ -432,7 +419,6 @@ function add_filter(){
                 }
                 break;
             case "mostTasksSatisfied":
-
                 var index_to_keep = [];
                 var index_to_rm = [];
 
@@ -440,7 +426,6 @@ function add_filter(){
                 for (var solution_index=0; solution_index < selectedResult.allSolution.length; solution_index++) {
                     var num_t_s = 0;
                     for (var element_index=0; element_index < selectedResult.allSolution[solution_index].intentionElements.length; element_index++){
-                        //
                         if (selectedResult.allSolution[solution_index].intentionElements[element_index].type === "TASK"){
                             var value = selectedResult.allSolution[solution_index].intentionElements[element_index].status[0];
                             if ((value == "0010" || value == "0011")){
@@ -750,7 +735,6 @@ function add_filter(){
             analysisRequest.result = selectedResult;
         }
     }
-
     renderNavigationSidebar();
 }
 
@@ -779,7 +763,6 @@ function updateAnalysisRequestWithCurrentState(){
 
     for (var i = 0; i < elements[i].length ; i++){
         // more than one piece of functions involved
-        //TODO: replace nodeID
         if (!allEpochs[elements[i].get('intention').cid]){
             allEpochs[elements[i].get('intention').cid] = [];
         }
@@ -841,7 +824,6 @@ function updateAnalysisRequestWithCurrentState(){
                 if (analysisRequest.absTimePtsArr.indexOf(match[1]) > -1){
                     AbsIntersction ++;
                 }
-
                 // count previous relative points - TR
                 if (analysisRequest.previousAnalysis.assignedEpoch[j].indexOf("R") > -1){
                     previousRel ++;
@@ -851,7 +833,7 @@ function updateAnalysisRequestWithCurrentState(){
         } else {
             if (analysisRequest.previousAnalysis.assignedEpoch[j].indexOf("E") > -1){
                 console.log("found function epoch");
-                    previousEpochs.push(match[1]);
+                previousEpochs.push(match[1]);
             }
         }
     }
@@ -885,7 +867,6 @@ function updateAnalysisRequestWithCurrentState(){
             if (previousStatus === startValue && curStatus === endValue) {
                 definiteEpochs.push("E" + elements[i].get('intention').cid);
             }
-
         }
 
         // Stochastic Constant
@@ -902,7 +883,6 @@ function updateAnalysisRequestWithCurrentState(){
             if (curStatus === endValue) {
                 potentialEpochs.push("E" + elements[i].get('intention').cid);
             }
-
         }
 
         // Constant Stochastic
@@ -918,7 +898,6 @@ function updateAnalysisRequestWithCurrentState(){
             if (curStatus !== startValue) {
                 definiteEpochs.push("E" + elements[i].get('intention').cid) ;
             }
-
         }
 
         // Monotonic Positive or Monotonic Negative
@@ -935,7 +914,6 @@ function updateAnalysisRequestWithCurrentState(){
             if (curStatus === endValue) {
                 potentialEpochs.push("E" + elements[i].get('intention').cid);
             }
-
         }
 
         // User Defined TODO: need to fix UD functions
@@ -1036,8 +1014,6 @@ function updateAnalysisRequestWithCurrentState(){
         analysisRequest.previousAnalysis.timePointPath.push(nextTimePoint);
     }
 
-
-
     // find TE and E0000 and update the TP
     // if multiple potential and no definite, determine which one is selected as an epoch TODO: need to test this
 
@@ -1113,9 +1089,6 @@ function updateAnalysisRequestWithCurrentState(){
         }
 
     }
-
-
-
     // remove all the time points after
     //analysisRequest.previousAnalysis.assignedEpoch = previousTP;
     //analysisRequest.previousAnalysis.timePointPath = analysisRequest.previousAnalysis.timePointPath.slice(0, currentState+1);
@@ -1139,7 +1112,6 @@ function updateAnalysisRequestWithCurrentState_copy(){
     for (var element_index = 0; element_index < savedAnalysisData.allNextStatesResult.allSolution[index_of_selected_state].intentionElements.length; element_index++){
         analysisRequest.previousAnalysis.elementList[element_index].status[currentState] = savedAnalysisData.allNextStatesResult.allSolution[index_of_selected_state].intentionElements[element_index].status[0];
     }
-
 
     // getting next time point
     var nextTimePoint = analysisRequest.previousAnalysis.timePointPath[currentState];
@@ -1360,9 +1332,6 @@ function updateAnalysisRequestWithCurrentState_copy(){
             + parseInt(analysisRequest.previousAnalysis.timePointPath[current]));
         console.log("newRand " + newRand);
     }
-
-
-
     // find TE and E0000 and update the TP
     // if multiple potential and no definite, determine which one is selected as an epoch TODO: need to test this
 
@@ -1424,8 +1393,6 @@ function updateAnalysisRequestWithCurrentState_copy(){
         previousTP.push("TR" + newRel + "_" + analysisRequest.previousAnalysis.timePointPath[currentState]);
     }
 
-
-
     // remove all the time points after
     analysisRequest.previousAnalysis.assignedEpoch = previousTP;
     analysisRequest.previousAnalysis.timePointPath = analysisRequest.previousAnalysis.timePointPath.slice(0, currentState+1);
@@ -1442,13 +1409,11 @@ function save_current_state(){
     console.log(jsObject);
 
     // TODO Update call to backendComm.
-    console.log("TODO: Update Call to BackendComm");
-    window.opener.backendComm(jsObject);
+    //console.log("TODO: Update Call to BackendComm");
+    window.opener.backendSimulationRequest(analysisRequest);
 
     window.close();
-
 }
-
 
 //This function should get the current state and generate a new window with the next possible states
 function generate_next_states(){
@@ -1467,10 +1432,9 @@ function generate_next_states(){
     console.log(analysisRequest);
 
     // TODO Update call to backendComm.
-    console.log("TODO: Update Call to BackendComm");
-    backendComm(jsObject);      
-
-
+    //console.log("TODO: Update Call to BackendComm");
+    //backendComm(jsObject);      
+    backendSimulationRequest(analysisRequest);
 }
 
 } // End of scope of local global variables
