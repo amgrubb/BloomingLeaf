@@ -125,7 +125,6 @@ public class BIModelSpecBuilder {
 			if(!intentions.isEmpty()){			
 				for (ICell dataIntention : intentions){
 					Intention newInt = Intention.createIntention(dataIntention, modelSpec);
-					System.out.print(newInt.getUniqueID());
 					modelSpec.getIntentions().add(newInt); 
 				}
 			}

@@ -49,16 +49,16 @@ public class ModelSpec {
     
     // ************* INTERESTING GETTERS/SETTERS ************* 
 
-	/** Returns the time point list with the associated absolute value from the 
-	 * previous analysis.
-	 * @return	map between time point name and absolute value
-	 */
-	public HashMap<String, Integer> getPrevSelectedTPAssignments() { //Not Used yet. 
-		if(this.prevResult != null) 
-			return this.prevResult.getSelectedTPAssignments();
-		return null; 
-	}
-	
+//	/** Returns the time point list with the associated absolute value from the 
+//	 * previous analysis.
+//	 * @return	map between time point name and absolute value
+//	 */
+//	public HashMap<String, Integer> getPrevSelectedTPAssignments() { //Not Used yet. 
+//		if(this.prevResult != null) 
+//			return this.prevResult.getSelectedTPAssignments();
+//		return null; 
+//	}
+    
 	/**
 	 * Returns the time point selected with the slider in the front end.
 	 * This determines how next state and partial path analysis works.
