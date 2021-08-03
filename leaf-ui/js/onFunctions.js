@@ -123,10 +123,10 @@ $('#analysis-btn').on('click', function () {
     var cycleList = cycleSearch();
 
     cycleResponse(cycleList); //If there are cycles, then display error message. Otherwise, remove any "red" elements.
-    // if(!isACycle(cycleList)) {
-    //     clearCycleHighlighting();
-    //     switchToAnalysisMode();
-    // } 
+    if(!isACycle(cycleList)) {
+        clearCycleHighlighting();
+        switchToAnalysisMode();
+    } 
 });
 
 /** For Load Sample Model button */
