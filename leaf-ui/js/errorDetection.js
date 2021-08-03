@@ -304,6 +304,152 @@ function alertSyntaxError(title, message) {
 }
 
 /**
+ * This class contains information about a link
+ */
+//  class InputLink {
+// 	constructor(linkType, linkSrcID, linkDestID, postType = null, absVal = -1) {
+// 		this.linkType = linkType;
+// 		this.linkSrcID = linkSrcID;
+// 		this.linkDestID = linkDestID;
+// 		this.postType = postType;
+// 		this.absoluteValue = absVal;
+// 	}
+// }
+
+/**
+ * Returns an array containing InputIntentions representing all 
+ * intentions currently on the graph
+ *
+ * @returns {Array.<InputIntention>}
+ */
+//  function getIntentitonalElements() {
+	
+// 	var intentions = [];
+// 	var intentionsCount = 0;
+// 	for (var i = 0; i < this.graph.getElements().length; i++){		
+// 		if (!(this.graph.getElements()[i] instanceof joint.shapes.basic.Actor)){
+			
+// 			/**
+// 			 * NODE ACTOR ID
+// 			 */
+// 			var actorid = '-';
+// 			if (this.graph.getElements()[i].get("parent")){
+// 				actorid = (this.graph.getCell(this.graph.getElements()[i].get("parent")).prop("elementid") || "-");
+// 			}
+			
+// 			/**
+// 			 * NODE ID
+// 			 */
+// 			//Making that the elementId has 4 digits
+// 			var elementID = intentionsCount.toString();
+// 			while (elementID.length < 4){ 
+// 				elementID = "0" + elementID;
+// 				}
+// 			//Adding the new id to the UI graph element
+// 			this.graph.getElements()[i].prop("elementid", elementID);
+			
+			
+// 			/**
+// 			 * NODE TYPE
+// 			 */
+// 			var elementType;
+// 			if (this.graph.getElements()[i] instanceof joint.shapes.basic.Goal)
+// 				elementType = "G";
+// 			else if (this.graph.getElements()[i] instanceof joint.shapes.basic.Task)
+// 				elementType = "T";
+// 			else if (this.graph.getElements()[i] instanceof joint.shapes.basic.Softgoal)
+// 				elementType = "S";
+// 			else if (this.graph.getElements()[i] instanceof joint.shapes.basic.Resource)
+// 				elementType = "R";
+// 			else
+// 				elementType = "I";
+			
+// 		  	/**
+// 		  	 * NODE NAME
+// 		  	 */
+// 		  	//Getting intentional element name
+// 			var intentionalElementName = this.graph.getElements()[i].attr(".name/text").replace(/\n/g, " ");
+			
+// 			/**
+// 			 * CREATING OBJECT
+// 			 */
+// 			var intentionalElement = new InputIntention(actorid, elementID, elementType, intentionalElementName);		  	
+// 			intentions.push(intentionalElement);
+
+// 			//iterating the counter
+// 			intentionsCount++;
+// 		}	  	
+// 	}
+// 	return intentions;
+// }
+
+/**
+ * Returns an array of InputLinks, of all links in the graph
+ *
+ * @returns {Array.<InputLinks>}
+ */
+function getLinks(){
+
+	var links = [];
+	// getIntentitonalElements();
+
+	//Verifying if links are valid
+	graph.getLinks().forEach(function(link){
+	    if(isLinkInvalid(link))
+	    		link.remove();
+    });
+
+	for (var i = 0; i < graph.getLinks().length; i++){
+
+		var current = graph.getLinks()[i];
+		var linkType = current.label(0).attrs.text.text.toUpperCase()
+		var source = "-";
+		var target = "-";
+		var absValue = 0;
+
+		if (graph.getLinks()[i].attr('.assigned_time') != undefined) {
+			absValue = parseInt(graph.getLinks()[i].attr('.assigned_time')[0]);
+		}
+
+		if (current.get("source").id) { 
+			source = graph.getCell(current.get("source").id).prop("elementid");
+		}
+			
+		if (current.get("target").id) { 
+			target = graph.getCell(current.get("target").id).prop("elementid");
+		}
+			
+		var link;
+		// displayType: 'element',     // TODO: should this be changed to 'link'?
+		// linkType: 'and',
+		// postType: null,
+		// absTime: myNull,
+		// evolving: false,
+		// vs 
+		// linkType, linkSrcID, linkDestID, postType = null, absVal = -1
+		//Remove constraints links
+		if (!(linkType.indexOf("=") > -1 || linkType.indexOf("<") > -1)) {
+			// Adding links
+			if (linkType.indexOf("|") > -1) {
+				var evolvRelationships = linkType.replace(/\s/g, '').split("|");
+				console.log(evolvRelationships) 
+				// link = new InputLink(linkType: evolvRelationships[0], source, target, postType: evolvRelationships[1], absValue);
+				link = new LinkBBM({displayType: source, linkType: evolvRelationships[0], postType: evolvRelationships[1], absTime: absValue}); 
+			} else if (linkType == "NBT" || linkType == "NBD") {
+				// link = new InputLink(linkType, source, target, null, absValue);
+				link = new LinkBBM({displayType: source, linkType: linkType, postType: null, absTime: absValue});
+			} else {
+				//link = new InputLink(linkType, source, target);
+				link = new LinkBBM({displayType: source, linkType: linkType}); 
+			}
+			links.push(link);
+		}
+
+	}
+
+	return links;
+}
+/**
  * Performs a syntax check on the current model, by checking if each destination
  * nodes with links, have valid constraints.
  * Returns true and displays an error popup iff a syntax error exists

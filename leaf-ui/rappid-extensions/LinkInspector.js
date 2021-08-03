@@ -121,6 +121,7 @@ var LinkInspector = Backbone.View.extend({
             this.$el.html(_.template(this.actortemplate)());
             $('#actor-link').val(this.link.get('linkType'));
         }  
+        console.log(this.model); 
     },
 
     /**

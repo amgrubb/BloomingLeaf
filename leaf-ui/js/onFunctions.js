@@ -116,8 +116,17 @@ $('#btn-view-intermediate').on('click', function () {
  */
 //TODO: Add back in cycle detection after backbone migration.
 $('#analysis-btn').on('click', function () {
-    console.log("TODO: Add back in cycle detection after backbone migration.");
     switchToAnalysisMode();
+    syntaxCheck();
+    
+    console.log("TODO: Add back in cycle detection after backbone migration.");
+    var cycleList = cycleSearch();
+
+    cycleResponse(cycleList); //If there are cycles, then display error message. Otherwise, remove any "red" elements.
+    // if(!isACycle(cycleList)) {
+    //     clearCycleHighlighting();
+    //     switchToAnalysisMode();
+    // } 
 });
 
 /** For Load Sample Model button */
