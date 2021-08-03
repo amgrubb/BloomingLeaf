@@ -104,6 +104,8 @@ var ElementInspector = Backbone.View.extend({
         '</div>',
         '<div id="user-constraints">',
         '<br>',
+        // Error message is controlled dynamically
+        '<label id=“repeat-error”></label>',
         '<select id="repeat-begin" class="repeat-select-begin" style = "position:relative; left:38px; width: 93px">',
         '<option class="select-placeholder" selected disabled value="">Begin</option>',
         '</select>',
@@ -439,6 +441,23 @@ var ElementInspector = Backbone.View.extend({
         var count = this.$("#repeat-end2").val();
         var absTime = this.$("#repeat-end3").val();
 
+        console.log('begin: ' + begin);
+        console.log('absTime: ' + absTime);
+        for (var i = 0; i<this.intention.getFuncSegments().length; i++) {
+            if (this.intention.getFuncSegments()[i].get('startTP') == begin) {
+                console.log('hi');
+                var repStartTimeVal = this.intention.getFuncSegments()[i].get('startAT');
+            }
+        }
+
+        if (this.$("#repeat-end3").val() !== '' && repStartTimeVal === null) {
+            console.log('whats up');
+            console.log($("#repeat-error").val());
+            $("#repeat-error").text("Enter an absTime value for function segment ");
+            $("#repeat-error").show("fast");      
+            console.log($("#repeat-error").val());      
+        }
+
         if (begin === null || end === null) {
             return;
         }
@@ -560,10 +579,8 @@ var ElementInspector = Backbone.View.extend({
                         $('<option></option>').val(endVal).html(endVal)
                     );
                 }
-                var repNum = this.intention.get('evolvingFunction').get('repCount');
-                var absTime = this.intention.get('evolvingFunction').get('repAbsTime');
-                $("repeat-end2").val(repNum);
-                $("repeat-end3").val(absTime);
+                $("repeat-end2").val(this.intention.get('evolvingFunction').get('repCount'));
+                $("repeat-end3").val(this.intention.get('evolvingFunction').get('repAbsTime'));
             }
         }
     },
