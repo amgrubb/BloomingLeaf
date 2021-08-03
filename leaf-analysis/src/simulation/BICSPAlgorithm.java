@@ -111,22 +111,17 @@ public class BICSPAlgorithm {
     	
     	// Initialise Values Array.
     	if (DEBUG) System.out.println("\nMethod: initializeNodeVariables");
-    	if (problemType == SearchType.PATH) {
-	    	for (int i = 0; i < this.intentions.length; i++)
-				for (int t = 0; t < this.values[i].length; t++) {
-					// Creates IntVars and adds the FS -> PS invariant.
-					CSP.initializeNodeVariables(this.store, this.sat, this.values[i][t], this.intentions[i].getId() + "_" + t);
-				}
-	 		CSP.initializeConflictPrevention(this.spec, this.sat, this.values, this.zero);
-    	} else if (problemType == SearchType.NEXT_STATE || problemType == SearchType.UPDATE_PATH) { 
-    		//TODO: START HERE
-    		
-    		
-    		
+
+    	
+    	for (int i = 0; i < this.intentions.length; i++)
+			for (int t = 0; t < this.values[i].length; t++) {
+				// Creates IntVars and adds the FS -> PS invariant.
+				CSP.initializeNodeVariables(this.store, this.sat, this.values[i][t], this.intentions[i].getId() + "_" + t);
+			}
+ 		CSP.initializeConflictPrevention(this.spec, this.sat, this.values, this.zero);
+    	if (problemType == SearchType.NEXT_STATE || problemType == SearchType.UPDATE_PATH) { 
     		// Assign past values with initialization?
-    		funct(this.spec, this.constraints, this.timePoints, this.values, this.intentions);
-    	
-    	
+    		initializePrevResults(this.spec, this.constraints, this.timePoints, this.values, this.intentions);
     	}
     	
     	
@@ -278,7 +273,6 @@ public class BICSPAlgorithm {
 		return list;
 	}
 	
-
 	private void createUpdatePathTimePoint(HashMap<Integer, List<String>> modelAbstime,
 			List<String> unassignedTimePoint, int numRelTP, HashMap<String, Integer> prevTPAssignments) {
 		/*
@@ -335,8 +329,7 @@ public class BICSPAlgorithm {
 		
 	}
 	
-	
-	private static void funct(ModelSpec spec, List<Constraint> constraints, 
+	private static void initializePrevResults(ModelSpec spec, List<Constraint> constraints, 
 			IntVar[] timePoints, BooleanVar[][][] values, Intention[] intentions) {
 		if (DEBUG) System.out.println("\nMethod: func");
    		IOSolution prev = spec.getPrevResult();
@@ -430,9 +423,9 @@ public class BICSPAlgorithm {
         // Create Var List
 		IntVar[] varList = null;
 		if (problemType == SearchType.PATH || problemType == SearchType.UPDATE_PATH)
-			varList = this.createPathVarList();
+			varList = createPathVarList();
 		else if (problemType == SearchType.NEXT_STATE)
-			varList = this.createNextStateVarList();
+			varList = createNextStateVarList(); 
 		
         // Create selection and find solution.
         SelectChoicePoint <IntVar> select = new SimpleSelect<IntVar>(varList, new MostConstrainedDynamic<IntVar>(), new IndomainSimpleRandom<IntVar>());//new MostConstrainedStatic<IntVar>(), new IndomainSimpleRandom<IntVar>()); 
@@ -479,46 +472,25 @@ public class BICSPAlgorithm {
 	}
 	
 	private IntVar[] createNextStateVarList(){
-//		}else if (problemType == SearchType.NEXT_STATE){
-//		// Solve only the next state variables.
-//		int initialAbs = this.spec.getPrevResult().getSelectedAbsTime();
-//		
-//		Integer tRef = null;
-//		for (int t = 0; t < this.timePoints.length; t++) 
-//			if (initialAbs == timePoints[t].min() &&
-//					initialAbs == timePoints[t].max()) {
-//				tRef = t;
-//				break;
-//			}
-//		Integer unassignedTP = null;
-//		for (int t = 0; t < this.timePoints.length; t++) 
-//			if (timePoints[t].min() == 1 &&
-//					timePoints[t].max() == this.maxTime) {
-//				unassignedTP = t;
-//				break;
-//			}
-//		if (tRef == null || unassignedTP == null) 
-//			throw new RuntimeException("\n Reference Time Point not found in time point list.");
-//		
-//		if (DEBUG) System.out.println("RefTP: " + tRef + " Unassigned: " + unassignedTP + " Total: " + this.values.length);
-//				
-//		IntVar[] fullList = new IntVar[(this.numIntentions * 8)];
-//		int fullListIndex = 0;
-//
-//		for (int i = 0; i < this.values.length; i++)
-//			for (int v = 0; v < this.values[i][0].length; v++){
-//				fullList[fullListIndex] = this.values[i][tRef][v];
-//				fullListIndex++;
-//			}
-//		for (int i = 0; i < this.values.length; i++)
-//			for (int v = 0; v < this.values[i][0].length; v++){
-//				fullList[fullListIndex] = this.values[i][unassignedTP][v];
-//				fullListIndex++;
-//			}			
-//		return fullList;
-//	}else
-//		return null;
-		return null;
+		// Solve only the next state variables.
+		int selectedTP = this.spec.getPrevResult().getSelectedTimePoint();
+		int numSelectTP =  this.numTimePoints - selectedTP;
+		
+		IntVar[] fullList = new IntVar[(this.numIntentions * numSelectTP * 4) + numSelectTP];
+		int fullListIndex = 0;
+		
+		for (int t = selectedTP; t < this.timePoints.length; t++) 
+			for (int i = 0; i < this.values.length; i++)	//Interate Over the Intentions
+				for (int v = 0; v < this.values[i][0].length; v++){
+					fullList[fullListIndex] = this.values[i][t][v];
+					fullListIndex++;
+				}
+		for (int i = selectedTP; i < this.timePoints.length; i++){
+			fullList[fullListIndex] = this.timePoints[i];
+			fullListIndex++;
+		}
+		return fullList;
+
 	}
 	
 
@@ -538,49 +510,45 @@ public class BICSPAlgorithm {
 	 * @param indexOrder
 	 */
 	private IOSolution getPathSolutionOutModel() {	
-		if (problemType == SearchType.PATH || problemType == SearchType.UPDATE_PATH){
-			int[] indexOrder = this.createTimePointOrder();
-			if (DEBUG) this.printSinglePathSolution(indexOrder);
+		int[] indexOrder = this.createTimePointOrder();
+		if (DEBUG) this.printSinglePathSolution(indexOrder);
 
-			// Get Time Points (timePointAssignments)
-			Integer[] finalTPPath = new Integer[indexOrder.length];
-	    	for (int i = 0; i < indexOrder.length; i++)
-	    		finalTPPath[i] = this.timePoints[indexOrder[i]].value();
-	   		
-	    	HashMap<String, Integer> finalTPAssignments = new HashMap<String, Integer>();
-	    	HashMap<String, String> duplicateNames = this.spec.getChangedTPNames(); 
-	    	for (int i = 0; i < indexOrder.length; i++) {
-	    		List<String> listTPNames = timePointMap.get(this.timePoints[indexOrder[i]]);
-	    		for (String name : listTPNames) {
-	    			finalTPAssignments.put(name, this.timePoints[indexOrder[i]].value());
-	    			if (duplicateNames.containsValue(name)) {
-	    		          for (Map.Entry<String, String> entry : duplicateNames.entrySet()) 
-	    		              if (entry.getValue().equals(name)) 
-	    		            	  finalTPAssignments.put(entry.getKey(), this.timePoints[indexOrder[i]].value());
-	    			}
-	    		}
-	    	}
-	    	
-	    	IOSolution oModel = new IOSolution(finalTPPath, finalTPAssignments);
-	    	
-	    	// Get assigned values (elementList)
-	    	for (int i = 0; i < this.intentions.length; i++){
-	    		String[] nodeFinalValues = new String[this.values[i].length];
-	    		for (int t = 0; t < this.values[i].length; t++){
-	    			StringBuilder value = new StringBuilder();
-	        		for (int v = 0; v < this.values[i][t].length; v++)
-	        			if(this.values[i][indexOrder[t]][v].value() == 1)
-	        				value.append("1");
-	        			else
-	        				value.append("0");
-	        		nodeFinalValues[t] = value.toString();
-	    		}
-	    		oModel.addElement(this.intentions[i].getUniqueID(), nodeFinalValues);
-	    	}  	
-	    	return oModel; 	
-		
-		} 
-		return null;
+		// Get Time Points (timePointAssignments)
+		Integer[] finalTPPath = new Integer[indexOrder.length];
+    	for (int i = 0; i < indexOrder.length; i++)
+    		finalTPPath[i] = this.timePoints[indexOrder[i]].value();
+   		
+    	HashMap<String, Integer> finalTPAssignments = new HashMap<String, Integer>();
+    	HashMap<String, String> duplicateNames = this.spec.getChangedTPNames(); 
+    	for (int i = 0; i < indexOrder.length; i++) {
+    		List<String> listTPNames = timePointMap.get(this.timePoints[indexOrder[i]]);
+    		for (String name : listTPNames) {
+    			finalTPAssignments.put(name, this.timePoints[indexOrder[i]].value());
+    			if (duplicateNames.containsValue(name)) {
+    		          for (Map.Entry<String, String> entry : duplicateNames.entrySet()) 
+    		              if (entry.getValue().equals(name)) 
+    		            	  finalTPAssignments.put(entry.getKey(), this.timePoints[indexOrder[i]].value());
+    			}
+    		}
+    	}
+    	
+    	IOSolution oModel = new IOSolution(finalTPPath, finalTPAssignments);
+    	
+    	// Get assigned values (elementList)
+    	for (int i = 0; i < this.intentions.length; i++){
+    		String[] nodeFinalValues = new String[this.values[i].length];
+    		for (int t = 0; t < this.values[i].length; t++){
+    			StringBuilder value = new StringBuilder();
+        		for (int v = 0; v < this.values[i][t].length; v++)
+        			if(this.values[i][indexOrder[t]][v].value() == 1)
+        				value.append("1");
+        			else
+        				value.append("0");
+        		nodeFinalValues[t] = value.toString();
+    		}
+    		oModel.addElement(this.intentions[i].getUniqueID(), nodeFinalValues);
+    	}  	
+    	return oModel; 	
 	}
 	
 	/**
@@ -638,28 +606,31 @@ public class BICSPAlgorithm {
 	// ********************** Saving / Printing NEXT STATE Solution ********************** 
 	private IOSolution getNextStateSolutionOutModel() {		
 		if (DEBUG) System.out.println("Saving All Path Solution");
-		/*
+
 		Search<IntVar> label = this.searchLabel;
 		int totalSolution = label.getSolutionListener().solutionsNo();
 
-		//Get last time point starting index.
-		int startIndex = label.getSolution(1).length - (this.intentions.length * 4);
 		
 		if(DEBUG){
 			System.out.println("Saving all states");
 			System.out.println("\nThere are " + totalSolution + " possible next states.");
 			System.out.println("\n Solution: ");
 			for (int s = 1; s <= totalSolution; s++){	/// NOTE: Solution number starts at 1 not 0!!!
-				for (int v = 0; v < label.getSolution(s).length; v++)
+				for (int v = 0; v < label.getSolution(s).length; v++) {
+					if (v % 4 == 0) 
+						System.out.print(" ");
 					System.out.print(label.getSolution(s)[v]);
+				}	
 				System.out.println();
 			}
 			System.out.println("\n Finished Printing Solutions");
-			System.out.println("\n Starting index to save is: " + startIndex);
+			System.out.println("\nThere are " + totalSolution + " possible next states.");
 		}
 		
+		//Get last time point starting index.
+		int startIndex = label.getSolution(1).length - (this.intentions.length * 4);
 
-			boolean[][][][] finalValues = new boolean[totalSolution][this.intentions.length][1][4];
+		boolean[][][][] finalValues = new boolean[totalSolution][this.intentions.length][1][4];
 		for (int s = 1; s <= totalSolution; s++){	/// NOTE: Solution number starts at 1 not 0!!!				
 			int solIndex = startIndex;
 			for (int i = 0; i < this.intentions.length; i++)
@@ -675,10 +646,10 @@ public class BICSPAlgorithm {
 					}
 
 		}
-		this.spec.setFinalAllSolutionsValues(finalValues);
+
 		if(DEBUG) System.out.println("\n Finished Saving Solutions");
-		*/
-		 
-		return null;
+
+		//this.spec.getPrevResult()
+		return this.spec.getPrevResult();
 	}
 }
