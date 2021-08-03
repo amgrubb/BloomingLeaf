@@ -18,6 +18,7 @@ let oldGraph;
 window.onload = function(){
     //This merge the attributes of old page and new page
     // analysis.page = jQuery.extend({}, window.opener.document);
+    page = jQuery.extend({}, window.opener.document);
     analysisRequest = JSON.parse(sessionStorage.getItem("Request"));
     console.log("AnalysisRequest: " + analysisRequest);
     console.log(analysisRequest);
@@ -79,6 +80,7 @@ function init(){
     paperScroller.center();
     
   graph.fromJSON(oldGraph);
+
   // $('#stencil').append(stencil.render().el);
 
     console.log(paper);
@@ -775,7 +777,7 @@ function updateAnalysisRequestWithCurrentState(){
     var allEpochs = {}; // intention id : list of epoch names
     var num_epochs = 0;
 
-    for (var i = 0; i < elements[i].get('intention').length ; i++){
+    for (var i = 0; i < elements[i].length ; i++){
         // more than one piece of functions involved
         //TODO: replace nodeID
         if (!allEpochs[elements[i].get('intention').cid]){
@@ -863,7 +865,7 @@ function updateAnalysisRequestWithCurrentState(){
     // determine the type of current time point
     var potentialEpochs = [];
     var definiteEpochs = [];
-    for (var i = 0; i < elements[i].get('intention').length ; i++) {
+    for (var i = 0; i < elements[i].length ; i++) {
         if (elements[i].get('intention').get('evolvingFunction').get('type') === "NT" ||
             elements[i].get('intention').get('evolvingFunction').get('type') === "C" ||
             elements[i].get('intention').get('evolvingFunction').get('type') === "I" ||
