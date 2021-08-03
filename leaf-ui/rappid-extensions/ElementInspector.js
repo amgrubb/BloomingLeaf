@@ -758,8 +758,14 @@ var FuncSegView = Backbone.View.extend({
         if (event.which === 13) {
             event.preventDefault();
         }
-
-        var absTime = Number((this.$('.seg-time').val()));
+        
+        // If the absTime is deleted, set absTime to null
+        if (this.$('.seg-time').val() !== '') {
+            var absTime = Number((this.$('.seg-time').val()));
+        } else {
+            var absTime = null;
+        }
+        
         this.model.set('startAT', absTime);
     },
 
