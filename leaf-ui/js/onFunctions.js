@@ -366,6 +366,7 @@ paper.on("link:options", function (cell) {
         configInspector = new ConfigInspector({ collection: configCollection });
         $('#configID').append(configInspector.el);
         configInspector.render();
+        $('#analysisID').css("display", "");
 
         // Remove model only elements 
         $('.model-only').css("display", "none");
@@ -427,8 +428,9 @@ paper.on("link:options", function (cell) {
             $('.link-tools .tool-remove').css("display", "");
             $('.link-tools .tool-options').css("display", "");
             EVO.switchToModelingMode(selectResult);
-            // Remove configInspector view
+            // Remove configInspector and analysis view
             configInspector.remove();
+            $('#analysisID').css("display", "none");
             // TODO: Determine if we should be setting action to null on all configs
             configCollection.findWhere({ selected: true }).set('action', null);
 

@@ -16,12 +16,8 @@ var IntermediateValuesTable = Backbone.View.extend({
         '<div class="intermBody">',
         '<table id="interm-list" class="interm-table">',
         '<thead id = "header">',
-        '<tr id="header-row">',
-        '<th style="width:110px"></th>',
-        '<th>  Initial Value  </th>',
-        '</tr>',
         '</thead>',
-        '<tr id="intentionRows">',
+        '<tr id="intentionRows" style = "width:110px">',
         '<th>',
         '<div class="divisionLine"></div>',
         '<div class="intentionPlace"><b>Intention</b></div>',
@@ -61,7 +57,6 @@ var IntermediateValuesTable = Backbone.View.extend({
          * Add all time points to top of table  
          */
         for (var s = 0; s < absoluteTimePointsList.length; s++) {
-            $('#header-row').append('<th>Absolute</th>');
             $('#intentionRows').append('<th>' + absoluteTimePointsList[s] + '</th>');
         }
 
@@ -106,7 +101,7 @@ var IntermediateValuesTable = Backbone.View.extend({
         var allTimes = absTimeValues.concat(constraintTimes).concat(linkTimes).concat(intentionTimes);
         var absoluteTimePointsList = Array.from(new Set(allTimes));
         absoluteTimePointsList.sort(function (a, b) { return a - b })
-        return absoluteTimePointsList.filter(TP => TP != 0 && TP != -1);
+        return absoluteTimePointsList.filter(TP => TP != 0 && TP != -1 && TP != null);
     }
 });
 
@@ -131,13 +126,14 @@ var IntentionUserEvaluationsView = Backbone.View.extend({
     template: [
         '<script type="text/template" id="intention-user-eval-template">',
         '<td class="intention-name"> <%= nodeName %> </td>',
+        '<td class="intention-satval"></td>', // TODO: make is so that when the window size decreases this line doesn't get squeezed
         '</script>'
     ].join(''),
 
     render: function () {
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
         // Add in initial value for TP 0
-        this.$el.append(satisfactionValuesDict[this.model.getUserEvaluationBBM(0).get('assignedEvidencePair')].satValue);
+        this.$('.intention-satval').append(satisfactionValuesDict[this.model.getUserEvaluationBBM(0).get('assignedEvidencePair')].satValue);
         // Load select dropdowns for all other TPs
         this.loadSelect();
         return this;
