@@ -238,6 +238,7 @@ public class BICSPAlgorithm {
     		toAdd.add("TNS-R");
     		newTPHash.put("TNS-R", toAdd);
 		}
+		// TODO: Should this look for the min key, not max key???
 		if (modelAbsTime.size() > 0) {
 			int maxKey = -1;
 			for	(Integer key : modelAbsTime.keySet()) 
@@ -471,6 +472,13 @@ public class BICSPAlgorithm {
 		return fullList;
 	}
 	
+	/**
+	 * Creates the var list with:
+	 * - select state
+	 * - next possible states (based on possible time points)
+	 * - time points for those states
+	 * @return
+	 */
 	private IntVar[] createNextStateVarList(){
 		// Solve only the next state variables.
 		int selectedTP = this.spec.getPrevResult().getSelectedTimePoint();
@@ -490,7 +498,6 @@ public class BICSPAlgorithm {
 			fullListIndex++;
 		}
 		return fullList;
-
 	}
 	
 
@@ -609,47 +616,88 @@ public class BICSPAlgorithm {
 
 		Search<IntVar> label = this.searchLabel;
 		int totalSolution = label.getSolutionListener().solutionsNo();
-
-		
+				
 		if(DEBUG){
 			System.out.println("Saving all states");
 			System.out.println("\nThere are " + totalSolution + " possible next states.");
 			System.out.println("\n Solution: ");
-			for (int s = 1; s <= totalSolution; s++){	/// NOTE: Solution number starts at 1 not 0!!!
-				for (int v = 0; v < label.getSolution(s).length; v++) {
-					if (v % 4 == 0) 
-						System.out.print(" ");
-					System.out.print(label.getSolution(s)[v]);
-				}	
-				System.out.println();
-			}
+//			for (int s = 1; s <= totalSolution; s++){	/// NOTE: Solution number starts at 1 not 0!!!
+//				for (int v = 0; v < label.getSolution(s).length; v++) {
+//					if (v % 4 == 0) 
+//						System.out.print(" ");
+//					System.out.print(label.getSolution(s)[v]);
+//				}	
+//				System.out.println();
+//			}
 			System.out.println("\n Finished Printing Solutions");
 			System.out.println("\nThere are " + totalSolution + " possible next states.");
 		}
 		
-		//Get last time point starting index.
-		int startIndex = label.getSolution(1).length - (this.intentions.length * 4);
+		int selectedTP = this.spec.getPrevResult().getSelectedTimePoint();
+		int numSelectTP =  this.numTimePoints - selectedTP;
+		int indexOfSelectTP = (this.numIntentions * numSelectTP * 4);	// Correct
+		
+		
+		//totalSolution = 10;		//TODO: Delete
+		String[][] finalValues = new String[totalSolution][this.intentions.length];
+		String[][] finalTP = new String[totalSolution][2];	// 0 is AbsTime, 1 is TPName
 
-		boolean[][][][] finalValues = new boolean[totalSolution][this.intentions.length][1][4];
-		for (int s = 1; s <= totalSolution; s++){	/// NOTE: Solution number starts at 1 not 0!!!				
-			int solIndex = startIndex;
-			for (int i = 0; i < this.intentions.length; i++)
-				//for (int t = 0; t < 2; t++)
-					for (int v = 0; v < 4; v++){
-						if(label.getSolution(s)[solIndex].toString().equals("1"))
-							finalValues[s-1][i][0][v] = true;
-						else if(label.getSolution(s)[solIndex].toString().equals("0"))
-							finalValues[s-1][i][0][v] = false;
-						else
-							throw new RuntimeException("Error: " + label.getSolution(s)[v] + " has non-binary value.");
-						solIndex++;
+		
+		for (int s = 1; s <= totalSolution; s++){	/// NOTE: Solution number starts at 1 not 0!!!
+			
+			System.out.println();
+			for (int v = 0; v < label.getSolution(s).length; v++) {
+				if (v % 4 == 0) 
+					System.out.print(" ");
+				System.out.print(label.getSolution(s)[v]);
+			}	
+			System.out.println();
+			
+
+			// Get Smallest Index of New TPs.
+			int indexOfNextState = -1;
+			if (numSelectTP > 2) {
+				int min = maxTime;
+				for (int z = indexOfSelectTP + 1; z < label.getSolution(s).length; z++) 
+					if (Integer.parseInt(label.getSolution(s)[z].toString()) < min) {
+						min = Integer.parseInt(label.getSolution(s)[z].toString());
+						indexOfNextState = z;
 					}
-
+			} else
+				indexOfNextState = indexOfSelectTP + 1;
+			System.out.println("\nCurrent:" + indexOfSelectTP + "-" + label.getSolution(s)[indexOfSelectTP].toString() + "\tNext:" +
+					indexOfNextState + "-" + label.getSolution(s)[indexOfNextState].toString());
+			
+			int startIndex = (this.numIntentions * 4) * (indexOfNextState - indexOfSelectTP);
+			int solIndex = startIndex;
+			for (int i = 0; i < this.intentions.length; i++) {
+				String outVal = label.getSolution(s)[solIndex].toString() + 
+						label.getSolution(s)[solIndex + 1].toString() + 
+						label.getSolution(s)[solIndex + 2].toString() +
+						label.getSolution(s)[solIndex + 3].toString();
+				finalValues[s-1][i] = outVal;
+				System.out.print(outVal + " ");
+				
+				solIndex += 4;
+			}
+			String tpID = this.timePoints[selectedTP + (indexOfNextState - indexOfSelectTP)].id;
+			if (tpID.equals("TNS-R")) {
+				//TODO: Update to get random time value.
+				finalTP[s-1][0] = label.getSolution(s)[indexOfNextState].toString();
+				finalTP[s-1][1] = tpID;	
+			}else if (tpID.equals("TNS-A")) {
+				//TODO: Update to get actual timepoint and value.
+				finalTP[s-1][0] = label.getSolution(s)[indexOfNextState].toString();
+				finalTP[s-1][1] = tpID;				
+			}else if (tpID.contains("TNS-")) {
+				//TODO: Update to get actual timepoint and value.
+				finalTP[s-1][0] = label.getSolution(s)[indexOfNextState].toString();
+				finalTP[s-1][1] = tpID;				
+			}				
 		}
-
+	
 		if(DEBUG) System.out.println("\n Finished Saving Solutions");
 
-		//this.spec.getPrevResult()
-		return this.spec.getPrevResult();
+		return this.spec.getPrevResult().getNewIOSolutionFromSelected(finalValues, finalTP);
 	}
 }

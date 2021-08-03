@@ -12,9 +12,13 @@ public class IOSolution {
 	private Integer selectedTimePoint;
 	
 	//private List<IOStateModel> allSolution = new ArrayList<>();
+	//@SuppressWarnings("unused")
+	//private List<Integer> allSolution = new ArrayList<>();	//Tempary Place Holder
 	@SuppressWarnings("unused")
-	private List<Integer> allSolution = new ArrayList<>();	//Tempary Place Holder
-
+	private String[][] finalValues;
+	@SuppressWarnings("unused")
+	private String[][] finalTP;
+	
 	// *********** Start of Returning The Solution *********** 
 	public IOSolution(Integer[] timePointPath, HashMap<String, Integer> timePointAssignments) {
 		this.timePointAssignments = timePointAssignments;
@@ -23,6 +27,21 @@ public class IOSolution {
 	public void addElement(String id, String[] status) {
 		elementList.add(new ElementData(id, status));
 	}
+	public IOSolution getNewIOSolutionFromSelected(String[][] finalValues, String[][] finalTP) {
+		IOSolution newObj = new IOSolution(getSelectedTimePointPath(), getSelectedTPAssignments());
+		newObj.selectedTimePoint = this.selectedTimePoint;
+		newObj.finalValues = finalValues;
+		newObj.finalTP = finalTP;
+		for (ElementData e : this.elementList) {
+			String[] newStatus = new String[this.selectedTimePoint + 1];
+			for (int t = 0; t < selectedTimePoint+1; t++) {
+				newStatus[t] = e.status[t];
+			}
+			newObj.addElement(e.id, newStatus);
+		}
+		return newObj;	
+	}
+	
 	// *********** End of Returning The Solution *********** 
 	
 	// *** Start Input DATA ***
