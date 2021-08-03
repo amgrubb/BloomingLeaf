@@ -168,6 +168,8 @@ function convertToAnalysisResult(results){
 
 function open_analysis_viewer(analysisRequest){
 	console.log(analysisRequest);
+	console.log(graph.toJSON());
+	console.log(JSON.stringify(graph));
 	var analysisStringify = JSON.stringify(analysisRequest);
 	sessionStorage.setItem("Request", analysisStringify);
     var urlBase = document.URL.substring(0, document.URL.lastIndexOf('/')+1);

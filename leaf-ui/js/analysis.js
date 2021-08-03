@@ -12,23 +12,20 @@ let selectedResult;
 let graph;
 let current;
 let elements;
+let oldGraph;
 
 //Executing scripts only when page is fully loaded
 window.onload = function(){
     //This merge the attributes of old page and new page
     // analysis.page = jQuery.extend({}, window.opener.document);
     analysisRequest = JSON.parse(sessionStorage.getItem("Request"));
+    console.log("AnalysisRequest: " + analysisRequest);
     console.log(analysisRequest);
-    /**
-     *    
-        previousAnalysis: null,
-        selected: true,
-        results : new ResultCollection([]),
-     */
-    // var curRequest2 = new ConfigBBM({name: curRequest.name, action: curRequest.action, conflictLevel: curRequest.conflictLevel, numRelTime: curRequest.numRelTime, currentState: curRequest.currentState, previousAnalysis: curRequest.previousAnalysis});
-    // console.log(curRequest2);
+  
     init();
     renderNavigationSidebar();
+    console.log(graph.toJSON());
+    console.log(JSON.stringify(graph));
 }
 
 function init(){
@@ -43,12 +40,10 @@ function init(){
     // savedAnalysisData = _.clone(jQuery.extend(true, {}, window.opener.savedAnalysisData));
     //tempResults = jQuery.extend(true, {}, window.opener.savedAnalysisData.allNextStatesResult);
 
-    console.log(analysisRequest);
     analysisResult = analysisRequest.previousAnalysis;
     graph = new joint.dia.BloomingGraph();
-    console.log(graph)
     oldGraph = jQuery.extend({}, window.opener.graph.toJSON());
-    console.log(oldGraph)
+    console.log("oldGraph: " + oldGraph)
     //loadFromObject();
     // for (let cell of analysis.graph.getElements()) {
     for (let result of analysisRequest.results) {
@@ -56,7 +51,7 @@ function init(){
             selectedResult = result;
         }
     }
-    console.log(selectedResult);
+    console.log("selectedResult: " + selectedResult);
     current = parseInt(selectedResult.selectedTimePoint);
 
     paper = new joint.dia.Paper({
@@ -117,7 +112,6 @@ function init(){
  function loadFromObject() {
 	//graph.fromJSON(obj.graph);
 	var cells = graph.getCells();
-    console.log(cells);
 	for (var i = 0; i < cells.length; i++) {
 		cell = cells[i];
 		if (cell.get('type') == "basic.Actor"){
@@ -126,10 +120,8 @@ function init(){
 			createBBLink(cell) //Create link
 		}else{
 			// Singled out functionSegList from obj as it doesn't show up in the graph after reading from JSON
-            // console.log(cell.get('intention').get('evolvingFunction'));
-            // console.log(cell.get('intention').getFuncSegments());
+            // TODO: check after this gets connected to the backend
 			var funcseg = cell.get('intention').attributes.evolvingFunction.attributes.functionSegList;
-            // maybe pass in the new cell we want to create in newGraph here
 			createBBElement(cell, funcseg) //Create element
 		}
 	}
@@ -163,7 +155,6 @@ function createBBLink(cell){
  *
  */
 function createBBElement(cell, funcsegs){
-    console.log("creating element")
 	var intention = cell.get('intention');
 	var evol = intention.attributes.evolvingFunction.attributes;
 	var intentionBBM = new IntentionBBM({nodeName: intention.attributes.nodeName, nodeType: intention.attributes.nodeType});
@@ -178,17 +169,7 @@ function createBBElement(cell, funcsegs){
 		intentionBBM.get('userEvaluationList').push(new UserEvaluationBBM({assignedEvidencePair: userEval.attributes.assignedEvidencePair, absTime: userEval.attributes.absTime}));
 	}
 	intentionBBM.set('evolvingFunction', evolving);
-    // TODO: we have to make a new cell in the newGraph and give it the attributes of the old one????
-    // graph.get('cells').push(cell);
-    //console.log(graph.get('cells'));
-    
-
-    //graph.get('cells').models[0].intention = intentionBBM;
-    // console.log(newGraph.get('cells')[0]);
-    // newGraph.get('cells')[0].set('intention', intentionBBM);
 	cell.set('intention', intentionBBM);
-    console.log('hi');
-    console.log(cell);
 }
 
 
