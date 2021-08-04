@@ -223,7 +223,7 @@ var Config = Backbone.View.extend({
         $('#modelingSlider').css("display", "");
         $('#analysisSlider').css("display", "none");
         removeSlider();
-        IntentionColoring.refresh(undefined);
+        EVO.refresh(undefined);
     },
     /**
      * Hide/Show results dropdown 
