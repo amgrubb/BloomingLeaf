@@ -142,6 +142,7 @@ var Config = Backbone.View.extend({
         this.$('.analysis-configuration').append(this.innerView.$el);
         if (this.model.get('selected')) {
             this.showAnalysisInspector();
+            this.resetAnalysis();
         }
         return this;
     },
@@ -201,9 +202,6 @@ var Config = Backbone.View.extend({
      * Sets selected value to true and triggers a switchConfig event to update highlight
      */
     switchConfig: function () {
-        $('#modelingSlider').css("display", "");
-        $('#analysisSlider').css("display", "none");
-        IntentionColoring.refresh(undefined)
         this.model.set({ selected: true });
         removeSlider();
     },
@@ -220,6 +218,13 @@ var Config = Backbone.View.extend({
         analysisInspector.render();
     },
 
+    resetAnalysis: function () {
+        // Removes the slider and  analysisSlider
+        $('#modelingSlider').css("display", "");
+        $('#analysisSlider').css("display", "none");
+        removeSlider();
+        IntentionColoring.refresh(undefined);
+    },
     /**
      * Hide/Show results dropdown 
      */
