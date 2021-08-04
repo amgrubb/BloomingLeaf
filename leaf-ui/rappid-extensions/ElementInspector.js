@@ -783,10 +783,12 @@ var FuncSegView = Backbone.View.extend({
         // If there is a repeating segment, disable/delete absTime values from one after the starting segment to the ending segment
         if ($("#repeat-begin").val() != null) {
             // If there is no end function segment selected, just disable the rest of the function segments
-            if (this.model.get('startTP').charCodeAt(0) > $("#repeat-begin").val().charCodeAt(0)) {
-                this.$('.seg-time').val('');
+            if ((this.model.get('startTP').charCodeAt(0) > $("#repeat-begin").val().charCodeAt(0))) {
+                if ($("#repeat-end").val() === null) { // This should prevent absTime values from being reset when switching intentions
+                    this.$('.seg-time').val('');
+                    this.model.set('startAT', null);
+                }
                 this.$('.seg-time').prop('disabled', true);
-                this.model.set('startAT', null);
                 if (this.stopTP.charCodeAt(0) > $("#repeat-end").val().charCodeAt(0)) {
                     this.$('.seg-time').prop('disabled', false);
                 }
