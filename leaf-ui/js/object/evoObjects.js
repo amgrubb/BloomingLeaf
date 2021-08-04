@@ -169,6 +169,7 @@ class EVO {
                 EVO.returnAllColors(graph.getElements(), paper);
                 EVO.revertIntentionsText(graph.getElements(), paper);
                 EVO.displaySlider(false);
+
                     break;
         }
     }
@@ -365,8 +366,10 @@ class EVO {
     static changeIntentionsText(analysisResult){
         var elements = graph.getElements();
         var curr;
-        var intention;
-        var initSatVal;
+        var timepoint;
+        var colorVis 
+        var satVal;
+        
         for (var i = 0; i < elements.length; i++) {
             curr = elements[i].findView(paper).model;
 
@@ -376,14 +379,18 @@ class EVO {
                 curr.attributes.type !== 'basic.Resource') {
                 continue;
             }
-            intention = elements[i].get('intention');
-            initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair');
 
             if (analysisResult !== undefined) {
                 curr = elements[i].findView(paper).model;
+                curr.attr({text: {fill: 'white',stroke:'none'}});
                 // If the result is selected 
                 if (analysisResult.get('selected')){
                     if (EVO.sliderOption == 3){
+                        // Resets the satvalue back
+                        timepoint = EVO.curTimePoint;
+                        colorVis = analysisResult.get('colorVis');
+                        satVal = colorVis.intentionListColorVis[0].timePoints[timepoint];
+                        curr.attr('.satvalue/text', satisfactionValuesDict[satVal].satValue);
                         $('.satvalue').css("display", "");
                         EVO.displaySlider(true);
                     }
@@ -425,8 +432,19 @@ class EVO {
      */
     static revertIntentionsText(elements, paper) {
         var curr;
+        var intention;
+        var initSatVal;
         for (var i = 0; i < elements.length; i++) {
+
             curr = elements[i].findView(paper).model;
+            intention = curr.get('intention');
+            initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair');
+
+            if (initSatVal === '(no value)') {
+                curr.attr('.satvalue/text', '');
+            } else {
+                curr.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
+            }
             curr.attr({text: {fill: 'black',stroke:'none'}});
         }
     }
