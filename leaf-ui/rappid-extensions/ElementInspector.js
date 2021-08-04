@@ -460,9 +460,14 @@ var ElementInspector = Backbone.View.extend({
             this.$("#repeat-error").hide();
         }
 
+        // Once a repeating start value is selected, rerender function segments to disable absTime
+        if ($("#repeat-begin").val() != null) {
+            this.rerender();
+        }
+
         if (begin === null || end === null) {
             return;
-        }
+        } 
 
         this.intention.get('evolvingFunction').setRepeatingFunction(begin, end, count, absTime);
 
@@ -773,7 +778,21 @@ var FuncSegView = Backbone.View.extend({
             this.$('.seg-time').prop('disabled', true);
         } else if (this.index != 0 && this.model.get('startAT') != null) {
             this.$('.seg-time').val(this.model.get('startAT'));
+        } 
+
+        // If there is a repeating segment, disable/delete absTime values from one after the starting segment to the ending segment
+        if ($("#repeat-begin").val() != null) {
+            // If there is no end function segment selected, just disable the rest of the function segments
+            if (this.model.get('startTP').charCodeAt(0) > $("#repeat-begin").val().charCodeAt(0)) {
+                this.$('.seg-time').val('');
+                this.$('.seg-time').prop('disabled', true);
+                this.model.set('startAT', null);
+                if (this.stopTP.charCodeAt(0) > $("#repeat-end").val().charCodeAt(0)) {
+                    this.$('.seg-time').prop('disabled', false);
+                }
+            }
         }
+        
         this.checkFuncValue();
 
         // For all function types except for UD disable the ability to select the function 
@@ -804,8 +823,6 @@ var FuncSegView = Backbone.View.extend({
         }
         this.model.set('startAT', absTime);
 
-        console.log(absTime);
-        console.log(this.$('.seg-time').val());
         // If the start of the repeating segment has an absolute time value, hide error message
         if (absTime !== null && this.model.get('startTP') === $("#repeat-begin").val()) {
             $("#repeat-error").hide();
