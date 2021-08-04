@@ -44,8 +44,8 @@ var ResultBBM = Backbone.Model.extend({
             timePointAssignments: null,
             timePointPath: null,        // changed type to list of int.
             elementList: null,
-            allSolution: null, // Potentially deprecated
-            //elementLIstPercentEvals: null,    //TODO: there has to be a typo here.
+            allSolutions: null, 
+            nextStateTPs: null,
             isPathSim: false, // Used for slider visualization  // Should be set to true for single path?
             colorVis: null, // Color visualization for analysis mode
             selectedTimePoint: null, // Find where slider is initialized and set timepoint in here. Also place it in update function

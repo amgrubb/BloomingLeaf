@@ -132,7 +132,9 @@ function responseFunc(analysisRequest, response) {
 			alert("Error while reading the response file from server. This can be due an error in executing java application.");
 			return;
 		} else if (analysisRequest.get('action') == 'allNextStates') {
-				console.log("All Paths Results (responseFunc):")
+				console.log("All Paths Results (responseFunc):");
+				console.log(JSON.stringify(results));
+				var analysisResult = convertToAnalysisResult(results); 	// {ResultBBM}
 				// TODO: Uncomment and update next line.
 				//savedAnalysisData.allNextStatesResult = results;
 				open_analysis_viewer();
@@ -159,8 +161,8 @@ function convertToAnalysisResult(results){
 	tempResult.set('timePointPath', results.timePointPath);
 	tempResult.set('timePointPathSize', results.timePointPathSize);
 	tempResult.set('elementList', results.elementList);
-	tempResult.set('allSolution', results.allSolution);
-	//tempResult.previousAnalysis = analysisResult;	//TODO Do we need to add this? (Potentially deprecated)
+	tempResult.set('allSolutions', results.allSolutions);			//Used for Next State
+	tempResult.set('nextStateTPs', results.nextStateTPs);		//Used for Next State
 	tempResult.set('isPathSim', true);
 	var evoView = new EVO(results.elementList)
 	tempResult.set('colorVis', evoView);
