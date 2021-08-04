@@ -30,6 +30,10 @@ var AnalysisInspector = Backbone.View.extend({
 	/** Sets template and injects model parameters */
 	render: function () { 
 		this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
+		if (this.model.get('results').length !== 0) {
+			$('#conflict-level').prop('disabled', true);
+			$('#num-rel-time').prop('disabled', true);
+		}
 		// These functions are used to communicate between analysisInspector and Main.js
 		$('head').append('<script src="./js/analysis.js"></script>');
 		return this;
