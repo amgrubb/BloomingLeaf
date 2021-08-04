@@ -44,7 +44,7 @@ var ResultView = Backbone.View.extend({
         this.model.trigger('change:switchResults', this.model);
         this.config.set('selected', true);
         this.config.trigger('change:switchConfigs', this.config);
-        displayAnalysis(this.model, true, "analysis");
+        displayAnalysis(this.model, true);
     },
 
     /**
@@ -203,7 +203,7 @@ var Config = Backbone.View.extend({
      */
     switchConfig: function () {
         this.model.set({ selected: true });
-        removeSlider();
+        this.resetAnalysis();
     },
 
     /**

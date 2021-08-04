@@ -167,7 +167,8 @@ class EVO {
                 break;
             default://colorVis off
                 EVO.returnAllColors(graph.getElements(), paper);
-                EVO.revertIntentionsText(graph.getElements(), paper);    
+                EVO.revertIntentionsText(graph.getElements(), paper);
+                EVO.displaySlider(false);
                     break;
         }
     }
@@ -300,7 +301,7 @@ class EVO {
             }
 
             }
-            else if(EVO.sliderOption == 1) { //fill by %
+            else if (EVO.sliderOption == 1) { //fill by %
             for(var j = 0; j < EVO.numEvals; ++j) {
             var intentionEval = EVO.colorVisOrder[j];
             if(element.evals[intentionEval] > 0) {
@@ -377,40 +378,45 @@ class EVO {
             }
             intention = elements[i].get('intention');
             initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair');
-            
-            // Shows the satvalue
-            $('.satvalue').css("display", "");
 
-            // If there is result
             if (analysisResult !== undefined) {
-
+                curr = elements[i].findView(paper).model;
                 // If the result is selected 
                 if (analysisResult.get('selected')){
-
-                    if (this.sliderOption == 3){
-                        curr = elements[i].findView(paper).model;
-                        curr.attr({text: {fill: 'white',stroke:'none'}});
+                    if (EVO.sliderOption == 3){
+                        $('.satvalue').css("display", "");
+                        EVO.displaySlider(true);
                     }
-
                     else {
-                        // Sets the satvalue off
                         $('.satvalue').css("display", "none");
+                        EVO.displaySlider(false);
                     }
                 }
-
-                // If the result is not selected
                 else {
-                    if (initSatVal === '(no value)'){
-                        curr.attr('.satvalue/text', '');
-                        curr.attr({text: {fill: 'black',stroke:'none','font-weight' : 'normal'}});
-                    }
+                    curr.attr({text: {fill: 'black',stroke:'none'}});
+                    $('.satvalue').css("display", "");
+                    EVO.displaySlider(false);
                 }
             }
-            // If there isn't result
             else {
-                curr = elements[i].findView(paper).model;
-                curr.attr({text: {fill: 'white',stroke:'none'}});
+                curr.attr({text: {fill: 'black',stroke:'none'}});
+                $('.satvalue').css("display", "");
+                EVO.displaySlider(false);
             }
+        }
+    }
+
+    /** 
+     * Makes slider dis/appear 
+     */
+     static displaySlider(isState){
+        if (isState){
+            $('#slider').css("display", "");
+            $('#sliderValue').css("display", "");
+        }
+        else {
+            $('#slider').css("display", "none");
+            $('#sliderValue').css("display", "none");
         }
     }
 
