@@ -17,7 +17,6 @@ public class BICSPAlgorithm {
 	private Store store;									// CSP Store
 	private List<Constraint> constraints;					// Holds the constraints to be added to the Store
 	private SatTranslation sat;								// Enables a SAT solver to be incorporated into CSP
-	private Search<IntVar> searchLabel = null;
 	
 	private enum SearchType {PATH, NEXT_STATE, UPDATE_PATH};
 	private SearchType problemType = SearchType.PATH;
@@ -271,63 +270,7 @@ public class BICSPAlgorithm {
 			list[i] = timePointList.get(i);
 		return list;
 	}
-	
-	private void createUpdatePathTimePoint(HashMap<Integer, List<String>> modelAbstime,
-			List<String> unassignedTimePoint, int numRelTP, HashMap<String, Integer> prevTPAssignments) {
-		/*
-		 * 
-				// Get the Unique Set of Time Point from the Model
-		HashMap<Integer, List<String>> modelAbstime = this.spec.getAbsTimePoints();
-		List<String> unassignedTimePoint = modelAbstime.get(-1);
-		modelAbstime.remove(-1);
-		int numRelTP = this.spec.getNumRelativeTimePoints(); 
-		HashMap<String, Integer> prevTPAssignments = this.spec.getPrevSelectedTPAssignments(); 
-		  
-		this.numTimePoints = modelAbstime.size() + unassignedTimePoint.size() + numRelTP;
 		
-		// Create a IntVar for each Time Point
-		this.timePoints = new IntVar[this.numTimePoints];
-		int tpCounter = 0;
-		// Absolute Time Points
-    	for (Map.Entry<Integer, List<String>> set : modelAbstime.entrySet()) {
-    		this.timePoints[tpCounter] = new IntVar(store, "TA" + tpCounter, set.getKey(), set.getKey());
-    		timePointMap.put(this.timePoints[tpCounter], set.getValue());
-    		tpCounter++;
-    	}
-    	
-    	// Unassigned Time Points & Relative Time Points
-    	for (String item : unassignedTimePoint) {
-    		Integer prevVal = null;
-           	if (problemType == SearchType.NEXT_STATE || problemType == SearchType.UPDATE_PATH) { 
-           		prevVal = prevTPAssignments.get(item);	           		
-           	}
-           	if (prevVal != null) 
-           		this.timePoints[tpCounter] = new IntVar(store, "TU" + tpCounter, prevVal, prevVal);
-	    	else
-           		this.timePoints[tpCounter] = new IntVar(store, "TU" + tpCounter, 1, this.maxTime);	    		
-    		List<String> toAdd = new ArrayList<String>();
-    		toAdd.add(item);
-    		timePointMap.put(this.timePoints[tpCounter], toAdd);
-    		tpCounter++;    	
-    	}
-    	for (int i = 0; i < numRelTP; i++) {
-    		Integer prevVal = null;
-           	if (problemType == SearchType.NEXT_STATE || problemType == SearchType.UPDATE_PATH) { 
-           		prevVal = prevTPAssignments.get("TR" + tpCounter);	           		
-           	}
-           	if (prevVal != null) 
-           		this.timePoints[tpCounter] = new IntVar(store, "TR" + tpCounter, prevVal, prevVal);
-	    	else
-           		this.timePoints[tpCounter] = new IntVar(store, "TR" + tpCounter, 1, this.maxTime);	    		
-    		List<String> toAdd = new ArrayList<String>();
-    		toAdd.add("TR" + tpCounter);
-    		timePointMap.put(this.timePoints[tpCounter], toAdd);
-    		tpCounter++; 
-    	}
-    	*/
-		
-	}
-	
 	private static void initializePrevResults(ModelSpec spec, List<Constraint> constraints, 
 			IntVar[] timePoints, BooleanVar[][][] values, Intention[] intentions) {
 		if (DEBUG) System.out.println("\nMethod: func");
@@ -541,44 +484,6 @@ public class BICSPAlgorithm {
 		return fullList;
 	}
 	
-	/**
-	 * Creates the var list with:
-	 * - select state
-	 * - next possible states (based on possible time points)
-	 * - time points for those states
-	 * @return
-	 */
-	private IntVar[] createNextStateVarListVersion1(){
-		// Solve only the next state variables.
-		int selectedTP = this.spec.getPrevResult().getSelectedTimePoint();
-		int numSelectTP =  this.numTimePoints - selectedTP;
-		
-		IntVar[] fullList = new IntVar[(this.numIntentions * numSelectTP * 4) + numSelectTP];
-		int fullListIndex = 0;
-		
-		for (int t = selectedTP; t < this.timePoints.length; t++) 
-			for (int i = 0; i < this.values.length; i++)	//Interate Over the Intentions
-				for (int v = 0; v < this.values[i][0].length; v++){
-					fullList[fullListIndex] = this.values[i][t][v];
-					fullListIndex++;
-				}
-		for (int i = selectedTP; i < this.timePoints.length; i++){
-			fullList[fullListIndex] = this.timePoints[i];
-			fullListIndex++;
-		}
-		return fullList;
-	}
-
-	// ********************** Saving / Printing				   ********************** 
-	
-//	public IOSolution getSolutionOutModel() {	
-//		if (problemType == SearchType.PATH || problemType == SearchType.UPDATE_PATH)
-//			return getPathSolutionOutModel();
-//		else if (problemType == SearchType.NEXT_STATE)
-//			return getNextStateSolutionOutModel();
-//		return null;
-//	}
-	
 	
 	// ********************** Saving / Printing Path Solution ********************** 
 	/**
@@ -677,99 +582,4 @@ public class BICSPAlgorithm {
     	} 
 	}	
 	
-	
-	// ********************** Saving / Printing NEXT STATE Solution ********************** 
-	
-/*	
-	private IOSolution getNextStateSolutionOutModelVersion1() {		
-		if (DEBUG) System.out.println("Saving All Path Solution");
-
-		Search<IntVar> label = this.searchLabel;
-		int totalSolution = label.getSolutionListener().solutionsNo();
-				
-		if(DEBUG){
-			System.out.println("Saving all states");
-			System.out.println("\nThere are " + totalSolution + " possible next states.");
-			System.out.println("\n Solution: ");
-			for (int s = 1; s <= totalSolution; s++){	/// NOTE: Solution number starts at 1 not 0!!!
-				for (int v = 0; v < label.getSolution(s).length; v++) {
-					if (v % 4 == 0) 
-						System.out.print(" ");
-					System.out.print(label.getSolution(s)[v]);
-				}	
-				System.out.println();
-			}
-			System.out.println("\n Finished Printing Solutions");
-			System.out.println("\nThere are " + totalSolution + " possible next states.");
-		}
-		
-		int selectedTP = this.spec.getPrevResult().getSelectedTimePoint();
-		int numSelectTP =  this.numTimePoints - selectedTP;
-		int indexOfSelectTP = (this.numIntentions * numSelectTP * 4);	// Correct
-		
-		
-		//totalSolution = 10;		//TODO: Delete
-		String[][] finalValues = new String[totalSolution][this.intentions.length];
-		String[][] finalTP = new String[totalSolution][2];	// 0 is AbsTime, 1 is TPName
-
-		
-		for (int s = 1; s <= totalSolution; s++){	/// NOTE: Solution number starts at 1 not 0!!!
-			
-			System.out.println();
-			for (int v = 0; v < label.getSolution(s).length; v++) {
-				if (v % 4 == 0) 
-					System.out.print(" ");
-				System.out.print(label.getSolution(s)[v]);
-			}	
-			System.out.println();
-			
-
-			// Get Smallest Index of New TPs.
-			int indexOfNextState = -1;
-			if (numSelectTP > 2) {
-				int min = maxTime;
-				for (int z = indexOfSelectTP + 1; z < label.getSolution(s).length; z++) 
-					if (Integer.parseInt(label.getSolution(s)[z].toString()) < min) {
-						min = Integer.parseInt(label.getSolution(s)[z].toString());
-						indexOfNextState = z;
-					}
-			} else
-				indexOfNextState = indexOfSelectTP + 1;
-			System.out.println("\nCurrent:" + indexOfSelectTP + "-" + label.getSolution(s)[indexOfSelectTP].toString() + "\tNext:" +
-					indexOfNextState + "-" + label.getSolution(s)[indexOfNextState].toString());
-			
-			int startIndex = (this.numIntentions * 4) * (indexOfNextState - indexOfSelectTP);
-			int solIndex = startIndex;
-			for (int i = 0; i < this.intentions.length; i++) {
-				String outVal = label.getSolution(s)[solIndex].toString() + 
-						label.getSolution(s)[solIndex + 1].toString() + 
-						label.getSolution(s)[solIndex + 2].toString() +
-						label.getSolution(s)[solIndex + 3].toString();
-				finalValues[s-1][i] = outVal;
-				System.out.print(outVal + " ");
-				
-				solIndex += 4;
-			}
-			String tpID = this.timePoints[selectedTP + (indexOfNextState - indexOfSelectTP)].id;
-			if (tpID.equals("TNS-R")) {
-				//TODO: Update to get random time value.
-				finalTP[s-1][0] = label.getSolution(s)[indexOfNextState].toString();
-				finalTP[s-1][1] = tpID;	
-			}else if (tpID.equals("TNS-A")) {
-				//TODO: Update to get actual timepoint and value.
-				finalTP[s-1][0] = label.getSolution(s)[indexOfNextState].toString();
-				finalTP[s-1][1] = tpID;				
-			}else if (tpID.contains("TNS-")) {
-				//TODO: Update to get actual timepoint and value.
-				finalTP[s-1][0] = label.getSolution(s)[indexOfNextState].toString();
-				finalTP[s-1][1] = tpID;				
-			}				
-		}
-	
-		if(DEBUG) System.out.println("\n Finished Saving Solutions");
-
-		//this.timePointMap "TNS-"
-		
-		//return this.spec.getPrevResult().getNewIOSolutionFromSelected(finalValues, finalTP);
-	}*/
 }
