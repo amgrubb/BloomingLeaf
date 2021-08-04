@@ -420,8 +420,10 @@ var ElementInspector = Backbone.View.extend({
      * (the select elements for repeat begin and end)
      */
     selectRepeatValues: function () {
-        // If some of the repeat select values were previously disbaled, enable them
+        // If some of the repeat select values were previously disabled, enable them
         this.$("option").prop('disabled', '');
+
+        $("#repeat-error").hide();
 
         var begin = this.$("#repeat-begin").val();
         var string1 = 'A'
@@ -441,22 +443,18 @@ var ElementInspector = Backbone.View.extend({
         var count = this.$("#repeat-end2").val();
         var absTime = this.$("#repeat-end3").val();
 
-        console.log('begin: ' + begin);
-        console.log('absTime: ' + absTime);
+        // find the startAT value for the starting repeating function segment
         for (var i = 0; i<this.intention.getFuncSegments().length; i++) {
             if (this.intention.getFuncSegments()[i].get('startTP') == begin) {
-                console.log('hi');
                 var repStartTimeVal = this.intention.getFuncSegments()[i].get('startAT');
             }
         }
 
+        // If there is an absolute length and the starting repeating segment doesn't have an startAT, show error message
         if ((this.$("#repeat-end3").val() !== '' ||  this.$("#repeat-end3").val() !== '0') && repStartTimeVal === null) {
-            console.log('whats up');
-            console.log(this.$("#repeat-error").text());
             this.$("#repeat-error").text("Enter an absTime value for function segment " + begin);
-            this.$("#repeat-error").show("fast");      
-            console.log(this.$("#repeat-error").text());      
-        }
+            this.$("#repeat-error").show("fast");          
+        } 
 
         if (begin === null || end === null) {
             return;
@@ -746,7 +744,6 @@ var FuncSegView = Backbone.View.extend({
             this.updateChartUserDefined()
         }
 
-        // TODO: also disable it if it is part of a repeating segment
         // Disable the absTime parameter and set it to zero if its the first function segment
         if (this.index == 0) {
             this.$('.seg-time').val(0);
@@ -782,8 +779,12 @@ var FuncSegView = Backbone.View.extend({
         } else {
             var absTime = null;
         }
-        
         this.model.set('startAT', absTime);
+
+        // If the start of the repeating segment has an absolute time value, hide error message
+        if (absTime !== null && this.model.get('startTP') === $("#repeat-begin").val()) {
+            $("#repeat-error").hide();
+        }
     },
 
     /**
