@@ -113,7 +113,6 @@ public class MainProgram {
 			IMain frontendObject = gson.fromJson(new FileReader(filePath), IMain.class);
 
 			ModelSpec modelSpec =  BIModelSpecBuilder.buildModelSpec(frontendObject);
-			System.out.println("Finished");
 			return modelSpec;
 			
 		} catch(Exception e) {

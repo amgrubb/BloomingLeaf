@@ -6,7 +6,7 @@ import org.jacop.core.Store;
 import org.jacop.satwrapper.SatTranslation;
 
 public class CSP {
-	private final static boolean DEBUG = true;
+	private final static boolean DEBUG = false;
 	
 	/**
 	 * Creates BooleanVars for each intention/time-point combo.

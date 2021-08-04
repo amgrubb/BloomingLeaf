@@ -53,7 +53,7 @@ public class BICSPAlgorithm {
 //    private boolean[] boolFSPD = new boolean[] {false, true, true, true};
 //    private boolean[] boolPSFD = new boolean[] {true, true, true, false};
     
-    private final static boolean DEBUG = true;	
+    private final static boolean DEBUG = false;	
     
 	public BICSPAlgorithm(ModelSpec spec) throws Exception {
     	if (DEBUG) System.out.println("Starting: TroposCSPAlgorithm");
@@ -430,11 +430,8 @@ public class BICSPAlgorithm {
 						label.getSolution(s)[solIndex + 2].toString() +
 						label.getSolution(s)[solIndex + 3].toString();
 				finalValues[s-1][i] = outVal;
-				System.out.print(outVal + " ");
-				
 				solIndex += 4;
 			}
-			System.out.println();
 		}
 		return finalValues;
 	}

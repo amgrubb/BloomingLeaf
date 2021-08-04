@@ -9,7 +9,7 @@ import gson_classes.*;
  *
  */
 public class BIModelSpecBuilder {
-    private final static boolean DEBUG = true;	
+    private final static boolean DEBUG = false;	
    
     
     /** Read the elements that were passed as analysis request.
