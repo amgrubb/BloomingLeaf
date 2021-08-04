@@ -105,7 +105,7 @@ var ElementInspector = Backbone.View.extend({
         '<div id="user-constraints">',
         '<br>',
         // Error message is controlled dynamically
-        '<label id=“repeat-error”></label>',
+        '<label id="repeat-error"></label>',
         '<select id="repeat-begin" class="repeat-select-begin" style = "position:relative; left:38px; width: 93px">',
         '<option class="select-placeholder" selected disabled value="">Begin</option>',
         '</select>',
@@ -450,12 +450,12 @@ var ElementInspector = Backbone.View.extend({
             }
         }
 
-        if (this.$("#repeat-end3").val() !== '' && repStartTimeVal === null) {
+        if ((this.$("#repeat-end3").val() !== '' ||  this.$("#repeat-end3").val() !== '0') && repStartTimeVal === null) {
             console.log('whats up');
-            console.log($("#repeat-error").val());
-            $("#repeat-error").text("Enter an absTime value for function segment ");
-            $("#repeat-error").show("fast");      
-            console.log($("#repeat-error").val());      
+            console.log(this.$("#repeat-error").text());
+            this.$("#repeat-error").text("Enter an absTime value for function segment " + begin);
+            this.$("#repeat-error").show("fast");      
+            console.log(this.$("#repeat-error").text());      
         }
 
         if (begin === null || end === null) {
