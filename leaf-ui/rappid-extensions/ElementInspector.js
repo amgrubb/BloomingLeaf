@@ -449,12 +449,13 @@ var ElementInspector = Backbone.View.extend({
                 var repStartTimeVal = this.intention.getFuncSegments()[i].get('startAT');
             }
         }
-
         // If there is an absolute length and the starting repeating segment doesn't have an startAT, show error message
-        if ((this.$("#repeat-end3").val() !== '' ||  this.$("#repeat-end3").val() !== '0') && repStartTimeVal === null) {
-            this.$("#repeat-error").text("Enter an absTime value for function segment " + begin);
-            this.$("#repeat-error").show("fast");          
-        } 
+        if ((begin !== null) && (absTime > 0)){
+            if (repStartTimeVal === null){
+                this.$("#repeat-error").text("Enter an absTime value for function segment " + begin);
+                this.$("#repeat-error").show("fast");
+            } 
+        }
 
         if (begin === null || end === null) {
             return;
@@ -488,10 +489,28 @@ var ElementInspector = Backbone.View.extend({
      */
     selectAbsoluteLength: function () {
         var absLength = $("#repeat-end3").val();
+        var begin = this.$("#repeat-begin").val();
         if (absLength < 0) {
             $('#repeat-end3').val(0);
         }
         this.intention.get('evolvingFunction').set('repAbsTime', absLength);
+
+        // For when user selects starting repeat value prior to adding absolute length
+        // find the startAT value for the starting repeating function segment
+        for (var i = 0; i<this.intention.getFuncSegments().length; i++) {
+            if (this.intention.getFuncSegments()[i].get('startTP') == begin) {
+                console.log('hi');
+                var repStartTimeVal = this.intention.getFuncSegments()[i].get('startAT');
+            }
+        }
+        
+        // If there is an absolute length and the starting repeating segment doesn't have an startAT, show error message
+        if ((begin !== null) && (absLength > 0)){
+            if (repStartTimeVal === null){
+                this.$("#repeat-error").text("Enter an absTime value for function segment " + begin);
+                this.$("#repeat-error").show("fast");
+            } 
+        }
     },
 
     /**
