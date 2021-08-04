@@ -242,7 +242,7 @@ var RelativeIntentionView = Backbone.View.extend({
      */
     loadOptions: function () {
         graph.getElements().filter(element => element instanceof joint.shapes.basic.Intention).forEach(intentionCell => {
-            var intentionBBM = intentionCell.get('intention')
+            var intentionBBM = intentionCell.get('intention');
             if (intentionBBM.get('evolvingFunction') != null) {
                 for (let funcSegment of intentionBBM.getFuncSegments().slice(1)) {
                     var srcOptionTag = this.getOptionTag(intentionCell.get('id'), intentionBBM.get('nodeName'), funcSegment.get('startTP'), 'src');
@@ -253,7 +253,7 @@ var RelativeIntentionView = Backbone.View.extend({
             }
         })
         graph.getLinks().forEach(linkCell => {
-            var linkBBM = linkCell.get('link')
+            var linkBBM = linkCell.get('link');
             if (linkBBM.get('evolving')) {
                 var srcOptionTag = this.getLinkOptionTag(linkCell.get('id'), linkBBM.get('linkType') + '|' + linkBBM.get('postType'), null, 'src');
                 var destOptionTag = this.getLinkOptionTag(linkCell.get('id'), linkBBM.get('linkType') + '|' + linkBBM.get('postType'), null, 'dest');
@@ -268,7 +268,7 @@ var RelativeIntentionView = Backbone.View.extend({
      * To match the selected option
      */
     changeEpoch1: function () {
-        selectedOption = this.$('.epoch1List option:selected');;
+        selectedOption = this.$('.epoch1List option:selected');
         this.model.set('srcID', selectedOption.attr('class'));
         this.model.set('srcRefTP', selectedOption.attr('epoch'));
     },
@@ -306,38 +306,36 @@ var RelativeIntentionView = Backbone.View.extend({
         var option;
         if (position ==='src'){
             if (this.model.get('srcID') === Id && this.model.get('srcRefTP') === epoch){
-                //console.log("selected src " + nodeName + " " + epoch)
                 option = '<option class=' + Id + ' epoch="' + epoch + '" selected>' + nodeName + ': ' + epoch + '</option>';
-            }else {
+            } else {
                 option = '<option class=' + Id + ' epoch=' + epoch + '>' + nodeName + ': ' + epoch + '</option>';
             }
         } else {
             if (this.model.get('destID') === Id && this.model.get('destRefTP') === epoch){
                 option = '<option class=' + Id + ' epoch="' + epoch + '" selected>' + nodeName + ': ' + epoch + '</option>';
-            }else {
+            } else {
                 option = '<option class=' + Id + ' epoch=' + epoch + '>' + nodeName + ': ' + epoch + '</option>';
             }
         }
-        return option
+        return option;
     },
 
     getLinkOptionTag(Id, nodeName, epoch, position) {
         var option;
         if (position ==='src'){
             if (this.model.get('srcID') === Id){
-                //console.log("selected src " + nodeName + " " + epoch)
                 option = '<option class=' + Id + ' epoch="' + epoch + '" selected>' + nodeName + '</option>';
-            }else {
+            } else {
                 option = '<option class=' + Id + ' epoch=' + epoch + '>' + nodeName + '</option>';
             }
         } else {
             if (this.model.get('destID') === Id){
                 option = '<option class=' + Id + ' epoch="' + epoch + '" selected>' + nodeName + '</option>';
-            }else {
+            } else {
                 option = '<option class=' + Id + ' epoch=' + epoch + '>' + nodeName + '</option>';
             }
         }
-        return option
+        return option;
     },
 });
 
