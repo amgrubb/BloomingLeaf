@@ -8,10 +8,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import gson_classes.IMain;
-import interface_objects.FuncWrapper;
-import interface_objects.FuncWrapperDeserializer;
-import interface_objects.InputObject;
-import interface_objects.OutputModel;
+import gson_classes.IOSolution;
 
 /**
  * SolveModelTest 
@@ -33,17 +30,15 @@ public class MainProgram {
 		String outputFile = "output.out";
 				
 		try {
-			// Creating the backend model to be analyzed
+			// Creating the back-end model to be analyzed
 			ModelSpec modelSpec = convertBackboneModelFromFile(filePath + inputFile);
-			
 			// Creates the store and constraint problem to be solved.
-			TroposCSPAlgorithm solver = new TroposCSPAlgorithm(modelSpec);
+			BICSPAlgorithm solver = new BICSPAlgorithm(modelSpec);
 			//long startTime = System.currentTimeMillis();                            //Scaleability Testing
-			solver.solveModel();
+			IOSolution outputModel = solver.solveModel();
             //long endTime = System.currentTimeMillis();                              //Scalability Testing
             //System.out.print("Time:" + (endTime - startTime));					  //Scalability Testing
-			createOutputFile(solver, filePath + outputFile);
-	
+			createOutputFile(outputModel, filePath + outputFile);			
 		} catch (RuntimeException e) {
 			try {
 				File file;
@@ -76,7 +71,7 @@ public class MainProgram {
 			}
 		} 
 	}
-
+	
 	/**
 	 * This method converts the Output object with the analyzed data into a json object file to be sent to frontend.
 	 * @param solver
@@ -84,11 +79,9 @@ public class MainProgram {
 	 * @param filePath
 	 * Name of the file to be read by CGI to be sent to frontend
 	 */
-	private static void createOutputFile(TroposCSPAlgorithm solver, String filePath) {
-		//Gson gson = new Gson();		
+	private static void createOutputFile(IOSolution outputModel, String filePath) {
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		OutputModel outputModel = solver.getSpec().getOutputModel();
-		
+	
 		try {
 			File file;
 			file = new File(filePath);
@@ -96,7 +89,6 @@ public class MainProgram {
 				file.createNewFile();
 			}
 			PrintWriter printFile = new PrintWriter(file);
-			//printFile.printf(sb.toString());
 			printFile.printf(gson.toJson(outputModel));
 			printFile.close();
 		} catch (Exception e) {
@@ -114,50 +106,17 @@ public class MainProgram {
 	 */
 	private static ModelSpec convertBackboneModelFromFile(String filePath) {
 		GsonBuilder builder = new GsonBuilder();
-		builder.registerTypeAdapter(FuncWrapper.class, new FuncWrapperDeserializer());
+		//builder.registerTypeAdapter(FuncWrapper.class, new FuncWrapperDeserializer());
 
 		try {
 			Gson gson = builder.create();
 			IMain frontendObject = gson.fromJson(new FileReader(filePath), IMain.class);
 
 			ModelSpec modelSpec =  BIModelSpecBuilder.buildModelSpec(frontendObject);
-			System.out.println("Finished");
 			return modelSpec;
 			
 		} catch(Exception e) {
 			throw new RuntimeException("Error in convertModelFromFile() method: \n " + e.getMessage());
 		}
 	} 
-	
-	/**
-	 * This method converts the model file sent by the frontend into the ModelSpecPojo in order to be analysed
-	 * @param filePath
-	 * Path to the file with the frontend model
-	 * @return
-	 * ModelSpecPojo backend model
-	 */
-	private static ModelSpec convertModelFromFile(String filePath) {
-
-		GsonBuilder builder = new GsonBuilder();
-		builder.registerTypeAdapter(FuncWrapper.class, new FuncWrapperDeserializer());
-
-		try {
-			Gson gson = builder.create();
-			//Gson gson = new Gson();
-			/*String js = "{\"analysisRequest\":{\"action\":\"singlePath\",\"conflictLevel\":\"S\",\"numRelTime\":\"1\",\"absTimePts\":\"\",\"absTimePtsArr\":[],\"currentState\":\"0\",\"userAssignmentsList\":[{\"intentionID\":\"0000\",\"absTime\":\"0\",\"evaluationValue\":\"0100\"}],\"previousAnalysis\":null},\"model\":{\"actors\":[],\"intentions\":[{\"nodeActorID\":\"-\",\"nodeID\":\"0000\",\"nodeType\":\"G\",\"nodeName\":\"Goal_0\",\"dynamicFunction\":{\"intentionID\":\"0000\",\"stringDynVis\":\"UD\",\"functionSegList\":[{\"funcType\":\"C\",\"funcX\":\"0100\",\"funcStart\":\"0\",\"funcStop\":\"A\"},{\"functionSegList\":[{\"funcType\":\"I\",\"funcX\":\"0011\",\"funcStart\":\"A\",\"funcStop\":\"B\"},{\"funcType\":\"D\",\"funcX\":\"1100\",\"funcStart\":\"B\",\"funcStop\":\"C\"},{\"funcType\":\"I\",\"funcX\":\"0011\",\"funcStart\":\"C\",\"funcStop\":\"D\"}],\"repNum\":\"2\",\"absTime\":\"0\"}]}}],\"links\":[],\"constraints\":[{\"constraintType\":\"A\",\"constraintSrcID\":\"0000\",\"constraintSrcEB\":\"A\",\"constraintDestID\":null,\"constraintDestEB\":null,\"absoluteValue\":-1},{\"constraintType\":\"A\",\"constraintSrcID\":\"0000\",\"constraintSrcEB\":\"B\",\"constraintDestID\":null,\"constraintDestEB\":null,\"absoluteValue\":-1},{\"constraintType\":\"A\",\"constraintSrcID\":\"0000\",\"constraintSrcEB\":\"C\",\"constraintDestID\":null,\"constraintDestEB\":null,\"absoluteValue\":-1}],\"maxAbsTime\":\"100\"}}";
-			String x1 = "{\"analysisRequest\":{\"action\":\"singlePath\",\"conflictLevel\":\"S\",\"numRelTime\":\"1\",\"absTimePts\":\"\",\"absTimePtsArr\":[],\"currentState\":\"0\",\"userAssignmentsList\":[{\"intentionID\":\"0000\",\"absTime\":\"0\",\"evaluationValue\":\"(no value)\"},{\"intentionID\":\"0001\",\"absTime\":\"0\",\"evaluationValue\":\"(no value)\"}],\"previousAnalysis\":null},\"model\":{\"actors\":[],\"intentions\":[{\"nodeActorID\":\"-\",\"nodeID\":\"0000\",\"nodeType\":\"G\",\"nodeName\":\"Goal_0\",\"dynamicFunction\":{\"intentionID\":\"0000\",\"stringDynVis\":\"UD\",\"functionSegList\":[{\"funcType\":\"C\",\"funcX\":\"(no value)\",\"funcStart\":\"0\",\"funcStop\":\"A\"},{\"funcType\":\"R\",\"funcX\":\"0000\",\"funcStart\":\"A\",\"funcStop\":\"B\"}]}},{\"nodeActorID\":\"-\",\"nodeID\":\"0001\",\"nodeType\":\"G\",\"nodeName\":\"Goal_1\",\"dynamicFunction\":{\"intentionID\":\"0001\",\"stringDynVis\":\"NT\",\"functionSegList\":[]}}],\"links\":[],\"constraints\":[{\"constraintType\":\"A\",\"constraintSrcID\":\"0000\",\"constraintSrcEB\":\"A\",\"constraintDestID\":null,\"constraintDestEB\":null,\"absoluteValue\":-1}],\"maxAbsTime\":\"100\"}}";
-			String x2 = "{\"analysisRequest\":{\"action\":\"singlePath\",\"conflictLevel\":\"S\",\"numRelTime\":\"1\",\"absTimePts\":\"\",\"absTimePtsArr\":[],\"currentState\":\"0\",\"userAssignmentsList\":[{\"intentionID\":\"0000\",\"absTime\":\"0\",\"evaluationValue\":\"(no value)\"},{\"intentionID\":\"0001\",\"absTime\":\"0\",\"evaluationValue\":\"(no value)\"}],\"previousAnalysis\":null},\"model\":{\"actors\":[{\"nodeID\":\"a000\",\"nodeName\":\"Actor_0\",\"intentionIDs\":[\"0000\"]}],\"intentions\":[{\"nodeActorID\":\"a000\",\"nodeID\":\"0000\",\"nodeType\":\"G\",\"nodeName\":\"Goal_0\",\"dynamicFunction\":{\"intentionID\":\"0000\",\"stringDynVis\":\"UD\",\"functionSegList\":[{\"funcType\":\"C\",\"funcX\":\"(no value)\",\"funcStart\":\"0\",\"funcStop\":\"A\"},{\"funcType\":\"R\",\"funcX\":\"0000\",\"funcStart\":\"A\",\"funcStop\":\"B\"}]}},{\"nodeActorID\":\"-\",\"nodeID\":\"0001\",\"nodeType\":\"G\",\"nodeName\":\"Goal_1\",\"dynamicFunction\":{\"intentionID\":\"0001\",\"stringDynVis\":\"NT\",\"functionSegList\":[]}}],\"links\":[],\"constraints\":[{\"constraintType\":\"A\",\"constraintSrcID\":\"0000\",\"constraintSrcEB\":\"A\",\"constraintDestID\":null,\"constraintDestEB\":null,\"absoluteValue\":-1}],\"maxAbsTime\":\"100\"}}";
-			//			InputObject frontendObject = gson.fromJson(new FileReader(filePath), InputObject.class);
-			InputObject frontendObject = gson.fromJson(x1, InputObject.class);
-			InputObject frontendObject = gson.fromJson(new FileReader(filePath), InputObject.class);
-			System.out.println(frontendObject.toString());*/
-			InputObject frontendObject = gson.fromJson(new FileReader(filePath), InputObject.class);
-			
-			ModelSpec modelSpec =  ModelSpecBuilder.buildModelSpec(frontendObject);
-			return modelSpec;
-			
-		} catch(Exception e) {
-			throw new RuntimeException("Error in convertModelFromFile() method: \n " + e.getMessage());
-		}
-	}
 }

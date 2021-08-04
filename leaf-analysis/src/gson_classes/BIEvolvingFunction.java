@@ -1,10 +1,8 @@
 package gson_classes;
 
-import java.util.List;
-
 public class BIEvolvingFunction {
 	private Attributes attributes;
-	public List<BIFunctionSegment> getFunctionSegList() {
+	public BIFunctionSegment[] getFunctionSegList() {
 		return attributes.functionSegList;
 	}
 	public Boolean getHasRepeat() {
@@ -27,7 +25,7 @@ public class BIEvolvingFunction {
 	}
 	
 	private class Attributes {  
-		List<BIFunctionSegment> functionSegList; 
+		BIFunctionSegment[] functionSegList; 
         Boolean hasRepeat;
         Integer repAbsTime;
         Integer repCount;

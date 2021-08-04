@@ -345,7 +345,9 @@ paper.on("link:options", function (cell) {
     let configInspector = null;
     let selectResult = undefined;
 
-    $('#simulate-path-btn').on('click', function() { 
+    /** Simulate Single Path: 
+     * Selects the current configuration and passes to backendSimulationRequest()  */
+    $('#simulate-single-path-btn').on('click', function() { 
         var curRequest = configCollection.findWhere({selected: true});
         curRequest.set('action', 'singlePath');
         backendSimulationRequest(curRequest);
@@ -354,6 +356,7 @@ paper.on("link:options", function (cell) {
     /** All Next States:
      * Selects the current configuration and prior results and passes them to backendSimulationRequest()  */
     $('#next-state-btn').on('click', function() { 
+        //TODO: Ensure that next state is never called from the last slider point.
         var curRequest = configCollection.findWhere({selected: true});
         var curResult = curRequest.previousAttributes().results.findWhere({selected: true}); 
         curRequest.set('action', 'allNextStates');
