@@ -84,7 +84,7 @@ function createSlider(currentAnalysis, isSwitch) {
     sliderObject.sliderElement.noUiSlider.on('update', function( values, handle ) {
         updateSliderValues(parseInt(values[handle]), currentAnalysis);
     });
-    EVO.setCurTimePoint(isSwitch ? 0 : sliderMax, currentAnalysis); 
+    EVO.setCurTimePoint(isSwitch ? 0 : sliderMax, currentAnalysis);
     adjustSliderWidth(sliderMax);
 }
 

@@ -128,7 +128,6 @@ class EVO {
         else {
             console.log("ERROR: invalid sliderOption");
         }
-        //EVO.refresh(analysisResult);
 
         if (EVO.sliderOption > 0) { //not off
             IntentionColoring.setColorMode("EVO", analysisResult);
