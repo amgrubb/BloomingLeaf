@@ -35,10 +35,10 @@ public class MainProgram {
 			// Creates the store and constraint problem to be solved.
 			BICSPAlgorithm solver = new BICSPAlgorithm(modelSpec);
 			//long startTime = System.currentTimeMillis();                            //Scaleability Testing
-			solver.solveModel();
+			IOSolution outputModel = solver.solveModel();
             //long endTime = System.currentTimeMillis();                              //Scalability Testing
             //System.out.print("Time:" + (endTime - startTime));					  //Scalability Testing
-			createOutputFile(solver, filePath + outputFile);			
+			createOutputFile(outputModel, filePath + outputFile);			
 		} catch (RuntimeException e) {
 			try {
 				File file;
@@ -79,9 +79,8 @@ public class MainProgram {
 	 * @param filePath
 	 * Name of the file to be read by CGI to be sent to frontend
 	 */
-	private static void createOutputFile(BICSPAlgorithm solver, String filePath) {
+	private static void createOutputFile(IOSolution outputModel, String filePath) {
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		IOSolution outputModel = solver.getSolutionOutModel();
 	
 		try {
 			File file;

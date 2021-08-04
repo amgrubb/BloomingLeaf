@@ -17,7 +17,6 @@ public class BICSPAlgorithm {
 	private Store store;									// CSP Store
 	private List<Constraint> constraints;					// Holds the constraints to be added to the Store
 	private SatTranslation sat;								// Enables a SAT solver to be incorporated into CSP
-	private boolean searchAll = false;						// Flag for the solver to return the first solution or all solutions.
 	private Search<IntVar> searchLabel = null;
 	
 	private enum SearchType {PATH, NEXT_STATE, UPDATE_PATH};
@@ -36,6 +35,7 @@ public class BICSPAlgorithm {
 	// Problem Variables:
 	private IntVar[] timePoints;							// Holds the list of time points to be solved.
 	private HashMap<IntVar, List<String>> timePointMap = new HashMap<IntVar, List<String>>(); // IntVar to list of unique time points from the model.
+	private HashMap<String, List<String>> nextStateTPHash = new HashMap<String, List<String>>(); 	// Holds the time points in the next state analysis.
 	private BooleanVar[][][] values;						// ** Holds the evaluations for each [this.numIntentions][this.numTP][FS/PS/PD/FD Predicates]	
 	
 //    private IntVar[] unsolvedTimePoints;					// Holds the list of time points without an absolute assignment. 
@@ -68,17 +68,14 @@ public class BICSPAlgorithm {
 		// Determine type of analysis
     	switch (spec.getAnalysisType()) {	
     	case "singlePath":
-    		searchAll = false;
     		problemType = SearchType.PATH;
         	if (DEBUG) System.out.println("Analysis selected: Full Single Path");
     		break;
     	case "allNextStates":
-    		searchAll = true;
     		problemType = SearchType.NEXT_STATE;
         	if (DEBUG) System.out.println("Analysis selected: Explore All Next States");
     		break;
     	case "updatePath":
-    		searchAll = false;
     		problemType = SearchType.UPDATE_PATH;
         	if (DEBUG) System.out.println("Analysis selected: Update Current Path");
     		break;    		
@@ -102,7 +99,7 @@ public class BICSPAlgorithm {
 		if (problemType == SearchType.PATH || problemType == SearchType.UPDATE_PATH) {
 			this.timePoints = createPathTimePoint(this.spec, this.store, this.timePointMap, this.maxTime);
 		}else if (problemType == SearchType.NEXT_STATE) {
-			this.timePoints = createNextStateTimePoint(this.spec, this.store, this.timePointMap, this.maxTime);
+			this.timePoints = createNextStateTimePoint(this.spec, this.store, this.timePointMap, this.nextStateTPHash, this.maxTime);
 		}
 		this.numTimePoints = this.timePoints.length;
 		this.constraints.add(new Alldifferent(this.timePoints));
@@ -185,7 +182,8 @@ public class BICSPAlgorithm {
 	}
 	
 	private static IntVar[] createNextStateTimePoint(ModelSpec spec, Store store, 
-			HashMap<IntVar, List<String>> timePointMap, int maxTime) {
+			HashMap<IntVar, List<String>> timePointMap, 
+			HashMap<String, List<String>> nextStateTPHash, int maxTime) {
 		
    		IOSolution prev = spec.getPrevResult();
    		if (prev == null)
@@ -238,14 +236,13 @@ public class BICSPAlgorithm {
     		toAdd.add("TNS-R");
     		newTPHash.put("TNS-R", toAdd);
 		}
-		// TODO: Should this look for the min key, not max key???
 		if (modelAbsTime.size() > 0) {
-			int maxKey = -1;
+			int minKey = maxTime + 1;
 			for	(Integer key : modelAbsTime.keySet()) 
-				if (key > maxKey)  
-					maxKey = key;
-			if (maxKey != -1) {
-	    		List<String> toAdd = modelAbsTime.get(maxKey);
+				if (key < minKey)  
+					minKey = key;
+			if (minKey != maxTime + 1) {
+	    		List<String> toAdd = modelAbsTime.get(minKey);
 	    		newTPHash.put("TNS-A", toAdd);
 			}
 		}
@@ -266,6 +263,7 @@ public class BICSPAlgorithm {
 			IntVar newTP = new IntVar(store, entry.getKey(), iMin, iMax);
 			timePointList.add(newTP);
     		timePointMap.put(newTP, entry.getValue());
+    		nextStateTPHash.put(entry.getKey(), entry.getValue());
 		}
 		
 		IntVar[] list = new IntVar[timePointList.size()];
@@ -386,21 +384,65 @@ public class BICSPAlgorithm {
 	 * 			FINDING SOLUTION
 	 * 
 	 *********************************************************************************************************/
-	/**
-	 * @return
-	 */
-	public boolean solveModel(){
-		Search<IntVar> label = new DepthFirstSearch<IntVar>();
-		label.getSolutionListener().recordSolutions(true);	// Record steps in search.
-        label.setPrintInfo(false); 							// Set to false if you don't want the CSP to print the solution as you go.
-        
-        // Sets the timeout for colony to ensure long processes do not kill the server.
-        SimpleTimeOut timeOutList = new SimpleTimeOut();
-        label.setTimeOutListener(timeOutList);
-        int timeOutValueInSeconds = 120;
-        label.setTimeOut(timeOutValueInSeconds);
+	public IOSolution solveModel() {
+		addConstraints();
 
-        
+		if (problemType == SearchType.PATH || problemType == SearchType.UPDATE_PATH) {
+			IntVar[] varList = createPathVarList();
+			@SuppressWarnings("unused")
+			Search<IntVar> pathLabel = findSolution(this.store, varList, false);
+			return getPathSolutionOutModel();
+		} else if (problemType == SearchType.NEXT_STATE) {
+			int selectedTP = this.spec.getPrevResult().getSelectedTimePoint();
+			HashMap<String, String[][]> allSolutions = new HashMap<String, String[][]>();
+			for (int i = selectedTP + 1; i < this.timePoints.length; i++) {
+				IntVar[] varList = createNextStateVarList(selectedTP, i);
+				Search<IntVar> stateLabel = findSolution(this.store, varList, true);
+				String[][] answer = getNextStateData(stateLabel);
+				allSolutions.put(this.timePoints[i].id, answer);
+			}
+			return this.spec.getPrevResult().getNewIOSolutionFromSelected(allSolutions, this.nextStateTPHash);
+		}		
+		return null;
+	}
+
+	private String[][] getNextStateData(Search<IntVar> label) {		
+		int totalSolution = label.getSolutionListener().solutionsNo();	
+		if(DEBUG){
+			System.out.println("\nThere are " + totalSolution + " possible next states.");
+			for (int s = 1; s <= totalSolution; s++){	/// NOTE: Solution number starts at 1 not 0!!!
+				for (int v = 0; v < label.getSolution(s).length; v++) {
+					if (v % 4 == 0) System.out.print(" ");
+					System.out.print(label.getSolution(s)[v]);
+				}	
+				System.out.println();
+			}
+			System.out.println("\nThere are " + totalSolution + " possible next states.");
+		}
+		
+		String[][] finalValues = new String[totalSolution][this.intentions.length];
+		int startIndex = label.getSolution(1).length - (this.intentions.length * 4);
+		for (int s = 1; s <= totalSolution; s++){	/// NOTE: Solution number starts at 1 not 0!!!		
+			int solIndex = startIndex;
+			for (int i = 0; i < this.intentions.length; i++) {
+				String outVal = label.getSolution(s)[solIndex].toString() + 
+						label.getSolution(s)[solIndex + 1].toString() + 
+						label.getSolution(s)[solIndex + 2].toString() +
+						label.getSolution(s)[solIndex + 3].toString();
+				finalValues[s-1][i] = outVal;
+				System.out.print(outVal + " ");
+				
+				solIndex += 4;
+			}
+			System.out.println();
+		}
+		return finalValues;
+	}
+
+	
+	
+	
+	private void addConstraints() {
         // Test and Add Constraints
         if(DEBUG)	
         	System.out.println("Constraints List:");
@@ -420,31 +462,36 @@ public class BICSPAlgorithm {
             	throw new RuntimeException("ERROR: Model not solvable because of conflicting constraints.\n Constraint: " + constraints.get(i).toString());
             }
         }
+	}
+	
+	private static Search<IntVar> findSolution(Store store, IntVar[] varList, boolean searchAll){
+		Search<IntVar> label = new DepthFirstSearch<IntVar>();
+		label.getSolutionListener().recordSolutions(true);	// Record steps in search.
+        label.setPrintInfo(false); 							// Set to false if you don't want the CSP to print the solution as you go.
         
-        // Create Var List
-		IntVar[] varList = null;
-		if (problemType == SearchType.PATH || problemType == SearchType.UPDATE_PATH)
-			varList = createPathVarList();
-		else if (problemType == SearchType.NEXT_STATE)
-			varList = createNextStateVarList(); 
+        // Sets the timeout for colony to ensure long processes do not kill the server.
+        SimpleTimeOut timeOutList = new SimpleTimeOut();
+        label.setTimeOutListener(timeOutList);
+        int timeOutValueInSeconds = 120;
+        label.setTimeOut(timeOutValueInSeconds);
 		
         // Create selection and find solution.
         SelectChoicePoint <IntVar> select = new SimpleSelect<IntVar>(varList, new MostConstrainedDynamic<IntVar>(), new IndomainSimpleRandom<IntVar>());//new MostConstrainedStatic<IntVar>(), new IndomainSimpleRandom<IntVar>()); 
         //label.setSolutionListener(new PrintOutListener<IntVar>());         
-        label.getSolutionListener().searchAll(this.searchAll);  
+        label.getSolutionListener().searchAll(searchAll);  
         if(DEBUG)	System.out.println("\nRunning Solver\n");
         boolean solutionFound = label.labeling(store, select);
         
         if (timeOutList.timeOutOccurred)
         	throw new RuntimeException("The solver timed out; thus, no solution was found. Current timeout is " + timeOutValueInSeconds + " seconds.");
+        
         // Return Solution
         if(!solutionFound){
         	if (DEBUG) System.out.println("Found Solution = False");
         	throw new RuntimeException("There is no solution to this model. The solver may have reached a timeout.");
 		} else {
 	    	if (DEBUG) System.out.println("Found Solution = True");
-	    	this.searchLabel = label;
-			return true;
+	    	return label;
 		}
 	}
 	
@@ -472,6 +519,7 @@ public class BICSPAlgorithm {
 		return fullList;
 	}
 	
+	
 	/**
 	 * Creates the var list with:
 	 * - select state
@@ -479,7 +527,31 @@ public class BICSPAlgorithm {
 	 * - time points for those states
 	 * @return
 	 */
-	private IntVar[] createNextStateVarList(){
+	private IntVar[] createNextStateVarList(int currentStateIndex, int nextStateIndex){
+		// Solve only the next state variables.
+		IntVar[] fullList = new IntVar[this.numIntentions * 2 * 4];
+		int fullListIndex = 0;
+		for (int i = 0; i < this.values.length; i++)
+			for (int v = 0; v < this.values[i][0].length; v++){
+				fullList[fullListIndex] = this.values[i][currentStateIndex][v];
+				fullListIndex++;
+			}
+		for (int i = 0; i < this.values.length; i++)
+			for (int v = 0; v < this.values[i][0].length; v++){
+				fullList[fullListIndex] = this.values[i][nextStateIndex][v];
+				fullListIndex++;
+			}	
+		return fullList;
+	}
+	
+	/**
+	 * Creates the var list with:
+	 * - select state
+	 * - next possible states (based on possible time points)
+	 * - time points for those states
+	 * @return
+	 */
+	private IntVar[] createNextStateVarListVersion1(){
 		// Solve only the next state variables.
 		int selectedTP = this.spec.getPrevResult().getSelectedTimePoint();
 		int numSelectTP =  this.numTimePoints - selectedTP;
@@ -499,17 +571,16 @@ public class BICSPAlgorithm {
 		}
 		return fullList;
 	}
-	
 
 	// ********************** Saving / Printing				   ********************** 
 	
-	public IOSolution getSolutionOutModel() {	
-		if (problemType == SearchType.PATH || problemType == SearchType.UPDATE_PATH)
-			return getPathSolutionOutModel();
-		else if (problemType == SearchType.NEXT_STATE)
-			return getNextStateSolutionOutModel();
-		return null;
-	}
+//	public IOSolution getSolutionOutModel() {	
+//		if (problemType == SearchType.PATH || problemType == SearchType.UPDATE_PATH)
+//			return getPathSolutionOutModel();
+//		else if (problemType == SearchType.NEXT_STATE)
+//			return getNextStateSolutionOutModel();
+//		return null;
+//	}
 	
 	
 	// ********************** Saving / Printing Path Solution ********************** 
@@ -611,7 +682,9 @@ public class BICSPAlgorithm {
 	
 	
 	// ********************** Saving / Printing NEXT STATE Solution ********************** 
-	private IOSolution getNextStateSolutionOutModel() {		
+	
+/*	
+	private IOSolution getNextStateSolutionOutModelVersion1() {		
 		if (DEBUG) System.out.println("Saving All Path Solution");
 
 		Search<IntVar> label = this.searchLabel;
@@ -621,14 +694,14 @@ public class BICSPAlgorithm {
 			System.out.println("Saving all states");
 			System.out.println("\nThere are " + totalSolution + " possible next states.");
 			System.out.println("\n Solution: ");
-//			for (int s = 1; s <= totalSolution; s++){	/// NOTE: Solution number starts at 1 not 0!!!
-//				for (int v = 0; v < label.getSolution(s).length; v++) {
-//					if (v % 4 == 0) 
-//						System.out.print(" ");
-//					System.out.print(label.getSolution(s)[v]);
-//				}	
-//				System.out.println();
-//			}
+			for (int s = 1; s <= totalSolution; s++){	/// NOTE: Solution number starts at 1 not 0!!!
+				for (int v = 0; v < label.getSolution(s).length; v++) {
+					if (v % 4 == 0) 
+						System.out.print(" ");
+					System.out.print(label.getSolution(s)[v]);
+				}	
+				System.out.println();
+			}
 			System.out.println("\n Finished Printing Solutions");
 			System.out.println("\nThere are " + totalSolution + " possible next states.");
 		}
@@ -698,6 +771,8 @@ public class BICSPAlgorithm {
 	
 		if(DEBUG) System.out.println("\n Finished Saving Solutions");
 
-		return this.spec.getPrevResult().getNewIOSolutionFromSelected(finalValues, finalTP);
-	}
+		//this.timePointMap "TNS-"
+		
+		//return this.spec.getPrevResult().getNewIOSolutionFromSelected(finalValues, finalTP);
+	}*/
 }

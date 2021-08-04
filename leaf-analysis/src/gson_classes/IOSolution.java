@@ -10,14 +10,10 @@ public class IOSolution {
 	private HashMap<String, Integer> timePointAssignments;
 	private Integer[] timePointPath;
 	private Integer selectedTimePoint;
-	
-	//private List<IOStateModel> allSolution = new ArrayList<>();
-	//@SuppressWarnings("unused")
-	//private List<Integer> allSolution = new ArrayList<>();	//Tempary Place Holder
 	@SuppressWarnings("unused")
-	private String[][] finalValues;
+	private HashMap<String, List<String>> nextStateTPs;
 	@SuppressWarnings("unused")
-	private String[][] finalTP;
+	private HashMap<String, String[][]> allSolutions;
 	
 	// *********** Start of Returning The Solution *********** 
 	public IOSolution(Integer[] timePointPath, HashMap<String, Integer> timePointAssignments) {
@@ -27,11 +23,13 @@ public class IOSolution {
 	public void addElement(String id, String[] status) {
 		elementList.add(new ElementData(id, status));
 	}
-	public IOSolution getNewIOSolutionFromSelected(String[][] finalValues, String[][] finalTP) {
+	public IOSolution getNewIOSolutionFromSelected(
+			HashMap<String, String[][]> allSolutions, 
+			HashMap<String, List<String>> nextStateTPs) {
 		IOSolution newObj = new IOSolution(getSelectedTimePointPath(), getSelectedTPAssignments());
 		newObj.selectedTimePoint = this.selectedTimePoint;
-		newObj.finalValues = finalValues;
-		newObj.finalTP = finalTP;
+		newObj.nextStateTPs = nextStateTPs;
+		newObj.allSolutions = allSolutions;
 		for (ElementData e : this.elementList) {
 			String[] newStatus = new String[this.selectedTimePoint + 1];
 			for (int t = 0; t < selectedTimePoint+1; t++) {
@@ -54,7 +52,7 @@ public class IOSolution {
 			return null;
 		HashMap<String, Integer> newHash = new HashMap<String, Integer>();
 		for (Map.Entry<String, Integer> entry : timePointAssignments.entrySet()) 
-			if (entry.getValue() <= selectedTimePoint)
+			if (entry.getValue() <= timePointPath[selectedTimePoint])
 				newHash.put(entry.getKey(), entry.getValue());
 		return newHash;
 	}
