@@ -348,7 +348,6 @@ paper.on("link:options", function (cell) {
 
     /** Simulate Single Path: 
      * Selects the current configuration and passes to backendSimulationRequest()  */
-    //$('#simulate-single-path-btn').on('click', function() { 
     $('#simulate-path-btn').on('click', function() { 
         var curRequest = configCollection.findWhere({selected: true});
         curRequest.set('action', 'singlePath');
