@@ -406,8 +406,6 @@ paper.on("link:options", function (cell) {
             if (selectResult !== undefined){
                 selectResult.set('selected', false);
             }
-            // // Remove Slider
-            // removeSlider();
 
             // Reset to initial graph prior to analysis
             revertNodeValuesToInitial();

@@ -21,7 +21,6 @@ class IntentionColoring {
      * @param {*} newColorMode 
      */
     static setColorMode(newColorMode, analysisResult) {
-        console.log("setColorMode");
         IntentionColoring.colorMode = newColorMode;
         if(newColorMode != "EVO") {
             EVO.deactivate();
@@ -344,7 +343,8 @@ class EVO {
             if (intention == null) { // If it is an actor or something went wrong
                 actorBuffer += 1;
             }
-            var element = analysisResult.get('colorVis').intentionListColorVis[i - actorBuffer];
+            if (analysisResult.get('colorVis') !== undefined) {
+                var element = analysisResult.get('colorVis').intentionListColorVis[i - actorBuffer];
                 if (intention != null && element != null) {
                     if (EVO.sliderOption != 3) {
                     var gradientID = this.defineGradient(element);
@@ -357,6 +357,7 @@ class EVO {
                         cellView.model.attr({'.outer' : {'fill' : color}});
                     }
                 }
+            }
         }
     }
 
@@ -369,7 +370,10 @@ class EVO {
         var timepoint;
         var colorVis 
         var satVal;
-        
+        var intention;
+        var initSatVal;
+
+        $('.satvalue').css("display", "");
         for (var i = 0; i < elements.length; i++) {
             curr = elements[i].findView(paper).model;
 
@@ -380,35 +384,41 @@ class EVO {
                 continue;
             }
 
+            // Sets satvalue/text to the initial sat value
+            intention = curr.get('intention');
+            initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair');
+            if (initSatVal === '(no value)') {
+                curr.attr('.satvalue/text', '');
+            } else {
+                curr.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
+            }
+
+            // The slider automatic setting
+            EVO.displaySlider(false);
+
             if (analysisResult !== undefined) {
-                curr = elements[i].findView(paper).model;
+                // The EVO mode fill color
                 curr.attr({text: {fill: 'white',stroke:'none'}});
                 // If the result is selected 
                 if (analysisResult.get('selected')){
-                    if (EVO.sliderOption == 3){
+                    if (EVO.sliderOption == 3){// If the option is states
                         // Resets the satvalue back
                         timepoint = EVO.curTimePoint;
                         colorVis = analysisResult.get('colorVis');
                         satVal = colorVis.intentionListColorVis[0].timePoints[timepoint];
                         curr.attr('.satvalue/text', satisfactionValuesDict[satVal].satValue);
-                        $('.satvalue').css("display", "");
                         EVO.displaySlider(true);
                     }
                     else {
                         $('.satvalue').css("display", "none");
-                        EVO.displaySlider(false);
                     }
                 }
                 else {
                     curr.attr({text: {fill: 'black',stroke:'none'}});
-                    $('.satvalue').css("display", "");
-                    EVO.displaySlider(false);
                 }
             }
             else {
                 curr.attr({text: {fill: 'black',stroke:'none'}});
-                $('.satvalue').css("display", "");
-                EVO.displaySlider(false);
             }
         }
     }
@@ -434,12 +444,14 @@ class EVO {
         var curr;
         var intention;
         var initSatVal;
+        // Displays .satvalue
+        $('.satvalue').css("display", "");
         for (var i = 0; i < elements.length; i++) {
-
             curr = elements[i].findView(paper).model;
             intention = curr.get('intention');
             initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair');
-
+            
+            // Sets satvalue/text to the initial sat value
             if (initSatVal === '(no value)') {
                 curr.attr('.satvalue/text', '');
             } else {
@@ -496,15 +508,15 @@ class EVO {
     /**
      * Switch back to modeling slider, if EVO is on the visualization returns to filling by initial state.
      */
-     static switchToModelingMode(analysisResult) {
+     static switchToModelingMode(analysisResult, modelMode = true) {
         $('#modelingSlider').css("display", "");
         $('#analysisSlider').css("display", "none");
         // if EVO is on in analysis mode, keep it on
-        if(EVO.sliderOption > 0) {
+        if(EVO.sliderOption > 0 && modelMode) {
             EVO.sliderOption = '1';
         }
         document.getElementById("colorReset").value = EVO.sliderOption;
-        IntentionColoring.refresh(analysisResult);
+        EVO.refresh(analysisResult);
     }
 }
 
