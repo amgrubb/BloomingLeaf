@@ -30,11 +30,12 @@ class IntentionColorVis{
     }
 }
 
-class EVO {
+
 /**
- * TODO: docstring 
+ * Colors the nodes based on the different EVO types 
  * 
  */
+class EVO {
 //replaced white with grey for readability
     static colorVisDict = {
         "0000" : "#D3D3D3",
@@ -166,6 +167,10 @@ class EVO {
         EVO.refresh(analysisResult);
     }   
     
+     /**
+     * Switch between update modeling slider to analysis slider for EVO
+     * 
+     */
     static update(analysisResult){
         $('#modelingSlider').css("display", "none");
         $('#analysisSlider').css("display", "");
