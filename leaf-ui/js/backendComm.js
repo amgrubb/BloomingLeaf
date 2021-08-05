@@ -35,28 +35,25 @@ var url = "http://localhost:8080/untitled.html";	// Hardcoded URL for Node calls
             //Get the AnalysisInspector view information
 
 			
-            // need to remove TPs after current point from previous solution?
+            
             // update the time point for potentialEpoch
             var previousTP = [];
 			console.log(analysisRequest.get('previousAnalysis'));
 			console.log(selectedResult.get('selectedTimePoint'));
-            for (var i = 0; i < parseInt(selectedResult.get('selectedTimePoint')) + 1; i++) {
-                for (var j = 0; j < analysisRequest.get('previousAnalysis').get('assignedEpoch').length; j++) {
-                    var regex = /(.*)_(.*)$/g;
-                    var match = regex.exec(analysisRequest.get('previousAnalysis').get('assignedEpoch')[j]);
-                    if (match[2] === analysisRequest.get('previousAnalysis').get('timePointPath')[i]) {
-                        previousTP.push(analysisRequest.get('previousAnalysis').get('assignedEpoch')[j]);
-                        continue;
-                    }
-                }
-            }
-			console.log(analysisRequest.get('previousAnalysis').get('assignedEpoch'));
-            console.log(previousTP);
-            // update current time point in the path if necessary (if epoch)
-            // remove all the time points after
-            // analysisRequest.previousAnalysis.assignedEpoch = previousTP;
-			analysisRequest.get('previousAnalysis').set('assignedEpoch', previousTP);
-            // analysisRequest.previousAnalysis.timePointPath = analysisRequest.previousAnalysis.timePointPath.slice(0, currentState + 1);
+			// Remove TPs after current point from previous solution?
+			for (var timePointName in analysisRequest.get('previousAnalysis').get('timePointAssignments')) {
+				// Remove anything that is not a digit from timePointName, should be left with selectedTimePoint
+				var timePointID = timePointName.replace(/[^0-9]/g,'');
+				// If the number in timePointName is gresater than the selectedTimePoint in the selectedResult 
+				// Remove the timePointName from the previousAnalysis
+				if (timePointID > selectedResult.get('selectedTimePoint')) {
+					delete analysisRequest.get('previousAnalysis').get('timePointAssignments')[timePointName];
+				}
+			}
+			console.log(analysisRequest.get('previousAnalysis'));
+
+
+            // Update timePointPath in previousAnalysis so it removes time points after the selectedTimePoint
 			analysisRequest.get('previousAnalysis').set('timePointPath', analysisRequest.get('previousAnalysis').get('timePointPath').slice(0, parseInt(selectedResult.get('selectedTimePoint')) + 1));
 
 
@@ -143,10 +140,12 @@ function responseFunc(analysisRequest, response) {
 				// TODO: Uncomment and update next line.
 				getAllNextStates(analysisRequest);
 				// TODO: update this line
+				console.log(results);
+				console.log(analysisRequest);
 				savedAnalysisData.allNextStatesResult = results;
-				console.log(savedAnalysisData.allNextStatesResult);
-				console.log(results);				
-				open_analysis_viewer(analysisRequest);
+				console.log(savedAnalysisData.allNextStatesResult);	
+				// TODO: fix this function call			
+				open_analysis_viewer(analysisRequest, savedAnalysisData.allNextStatesResult);
 		} else if (analysisRequest.get('action') == 'singlePath') {
 				savedAnalysisData.singlePathResult = results;	//	TODO What is this?
 				console.log(JSON.stringify(results));			// Print the results of the analysis to the console.
@@ -179,10 +178,10 @@ function convertToAnalysisResult(results){
 	return tempResult;
 }
 
-function open_analysis_viewer(analysisRequest){
+function open_analysis_viewer(analysisRequest, result){
 	console.log(analysisRequest);
 	console.log(graph.toJSON());
-	console.log(JSON.stringify(graph));
+	
 	var analysisStringify = JSON.stringify(analysisRequest);
 	sessionStorage.setItem("Request", analysisStringify);
     var urlBase = document.URL.substring(0, document.URL.lastIndexOf('/')+1);
