@@ -443,9 +443,9 @@ public class ModelSpec {
 //		return initialValues;
 //	}
 
-	public List<Intention> getIntentionList() {
-		return intentions;
-	}
+//	public List<Intention> getIntentionList() {
+//		return intentions;
+//	}
 
 	public int getMaxTime() {
 		return maxTime;
