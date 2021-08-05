@@ -168,7 +168,6 @@ class EVO {
                 EVO.returnAllColors(graph.getElements(), paper);
                 EVO.revertIntentionsText(graph.getElements(), paper);
                 EVO.displaySlider(false);
-
                     break;
         }
     }

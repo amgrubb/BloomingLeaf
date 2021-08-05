@@ -142,7 +142,6 @@ var Config = Backbone.View.extend({
         this.$('.analysis-configuration').append(this.innerView.$el);
         if (this.model.get('selected')) {
             this.showAnalysisInspector();
-            //this.resetAnalysis();
             EVO.switchToModelingMode(undefined, false);
         }
         return this;
