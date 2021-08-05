@@ -397,6 +397,8 @@ var ElementInspector = Backbone.View.extend({
 
         if (this.repeatOptionsDisplay) {
             this.setRepeatConstraintMode("Update");
+            this.$('#repeat-end3').val('0');
+            this.$("#repeat-error").hide();
         }
     },
 
