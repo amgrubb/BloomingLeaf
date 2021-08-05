@@ -383,7 +383,7 @@ paper.on("link:options", function (cell) {
         $('.link-tools .tool-options').css("display", "none");
         $('.attribution').css("display", "none");
         $('.inspector').css("display", "none");
-        IntentionColoring.refresh(selectResult);
+        EVO.refresh(selectResult);
         var configResults = configCollection.findWhere({ selected: true }).get('results');
         if (configResults !== undefined){
             selectResult = configResults.findWhere({ selected: true });
@@ -554,7 +554,7 @@ paper.on("link:options", function (cell) {
             var fileName = name + ".json";
             var obj = {graph: graph.toJSON()}; // Same structure as the other two save options
             download(fileName, JSON.stringify(obj));
-            IntentionColoring.refresh(selectResult);
+            EVO.refresh(selectResult);
         }
     });
 
@@ -577,21 +577,21 @@ paper.on("link:options", function (cell) {
                 //elementInspector.$('.function-type').val('(no value)');
             }
         }
-        IntentionColoring.refresh(selectResult);
+        EVO.refresh(selectResult);
     });
 
     $('#colorblind-mode-isOff').on('click', function () { //activates colorblind mode
         $('#colorblind-mode-isOff').css("display", "none");
         $('#colorblind-mode-isOn').css("display", "");
 
-        IntentionColoring.toggleColorBlindMode(true, selectResult);
+        EVO.toggleColorBlindMode(true, selectResult);
     });
 
     $('#colorblind-mode-isOn').on('click', function () { //turns off colorblind mode
         $('#colorblind-mode-isOn').css("display", "none");
         $('#colorblind-mode-isOff').css("display", "");
 
-        IntentionColoring.toggleColorBlindMode(false, selectResult);
+        EVO.toggleColorBlindMode(false, selectResult);
     });
 
     /**
@@ -741,7 +741,6 @@ function revertNodeValuesToInitial() {
     var curr;
     for (var i = 0; i < elements.length; i++) {
     	curr = elements[i].findView(paper).model;
-
     	if (curr.get('type') !== 'basic.Goal' &&
             curr.get('type') !== 'basic.Task' &&
     		curr.get('type') !== 'basic.Softgoal' &&

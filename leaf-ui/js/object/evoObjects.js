@@ -1,44 +1,8 @@
 
 /**  
  * Prevents conflict in coloring modes. Refreshes when changes are made in the model.
- * EVO operates though IntentionColoring to allow for a deactivation mode
+ *
  */
-class IntentionColoring {
-    static colorMode = "none"; //none, EVO, cycle
-    static isColorBlindMode = false; //color blind mode
-
-    /**
-     * Colors intentions by their mode
-     */
-    static refresh(analysisResult) {
-        if (IntentionColoring.colorMode == "EVO") {
-            EVO.refresh(analysisResult);
-        }
-    }
-
-    /**
-     * Change color mode
-     * @param {*} newColorMode 
-     */
-    static setColorMode(newColorMode, analysisResult) {
-        console.log("setColorMode");
-        IntentionColoring.colorMode = newColorMode;
-        if(newColorMode != "EVO") {
-            EVO.deactivate();
-        }
-        IntentionColoring.refresh(analysisResult);
-    }
-
-    /**
-     * Toggles color blind mode
-     * @param {*} isTurningOnColorBlindMode 
-     */
-    static toggleColorBlindMode(isTurningOnColorBlindMode, analysisResult) {
-        IntentionColoring.isColorBlindMode = isTurningOnColorBlindMode;
-        IntentionColoring.refresh(analysisResult);
-    }
-        
-}
 
 class IntentionColorVis{
     constructor()
@@ -115,7 +79,7 @@ class EVO {
     //user selected slider option
     static sliderOption = 0;
     //whether color blind mode is activated
-    //static isColorBlindMode = false;
+    static isColorBlindMode = false;
 
     /**
      * Checks validity, sets sliderOption, and refreshes visualization
@@ -129,9 +93,7 @@ class EVO {
             console.log("ERROR: invalid sliderOption");
         }
 
-        if (EVO.sliderOption > 0) { //not off
-            IntentionColoring.setColorMode("EVO", analysisResult);
-        }
+        EVO.refresh(analysisResult);
     }
 
     /**
@@ -140,7 +102,7 @@ class EVO {
      */
     static setCurTimePoint(newTimePoint, analysisResult) {
         EVO.curTimePoint = newTimePoint;
-        IntentionColoring.refresh(analysisResult);
+        EVO.refresh(analysisResult);
     }
 
     /**
@@ -174,7 +136,7 @@ class EVO {
         this.numIntentions = elementList.length;
         this.numTimePoints = elementList[0].status.length;
         this.intentionListColorVis = [];  
-        this.isColorBlind = IntentionColoring.isColorBlindMode; // Assessable in next state window  
+        this.isColorBlind = false; // Assessable in next state window  
         this.initializeIntentionList();
     }  
 
@@ -439,7 +401,7 @@ class EVO {
      * @param {*} intentionEval four digit code that corresponds to evidence pair (ex. 0011)
      */
     static getColor(intentionEval) {
-        if(IntentionColoring.isColorBlindMode) {
+        if(this.isColorBlindMode) {
             return EVO.colorVisDictColorBlind[intentionEval];
         }
         return EVO.colorVisDict[intentionEval];
@@ -466,7 +428,16 @@ class EVO {
             EVO.sliderOption = '1';
         }
         document.getElementById("colorReset").value = EVO.sliderOption;
-        IntentionColoring.refresh(analysisResult);
+        EVO.refresh(analysisResult);
+    }
+
+    /**
+     * Toggles color blind mode
+     * @param {*} isTurningOnColorBlindMode 
+     */
+     static toggleColorBlindMode(isTurningOnColorBlindMode, analysisResult) {
+        this.isColorBlindMode = isTurningOnColorBlindMode;
+        EVO.refresh(analysisResult);
     }
 }
 
@@ -479,7 +450,7 @@ class EVONextState  {
      * This passes the color blind mode option through the Next State window
      */
     static setColorBlindFromPrevWindow() {
-        IntentionColoring.isColorBlindMode = window.opener.analysisResult.colorVis.isColorBlind;
+        EVO.isColorBlindMode = window.opener.analysisResult.colorVis.isColorBlind;
     }
 
     /**
