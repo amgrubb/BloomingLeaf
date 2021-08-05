@@ -5,26 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jacop.constraints.Alldifferent;
-import org.jacop.constraints.And;
-import org.jacop.constraints.AndBool;
-import org.jacop.constraints.AndBoolVector;
-import org.jacop.constraints.Constraint;
-import org.jacop.constraints.IfThen;
-import org.jacop.constraints.IfThenElse;
-import org.jacop.constraints.Min;
-import org.jacop.constraints.Not;
-import org.jacop.constraints.Or;
-import org.jacop.constraints.OrBool;
-import org.jacop.constraints.OrBoolVector;
-import org.jacop.constraints.PrimitiveConstraint;
-import org.jacop.constraints.XeqC;
-import org.jacop.constraints.XeqY;
-import org.jacop.constraints.XgtC;
-import org.jacop.constraints.XgtY;
-import org.jacop.constraints.XltY;
-import org.jacop.constraints.XlteqY;
-import org.jacop.constraints.XplusCeqZ;
+import org.jacop.constraints.*;
 import org.jacop.core.BooleanVar;
 import org.jacop.core.IntVar;
 
@@ -260,7 +241,7 @@ public class CSPLinks {
 		
 		for (Intention node : spec.getIntentions()) {
 			int targetID = uniqueIDToValueIndex.get(node.getUniqueID());
-			
+			System.out.println("Target " + targetID);
 			List<ContributionLink> contributionLinks = new ArrayList<ContributionLink>();
 			List<DecompositionLink> decompositionLinks = new ArrayList<DecompositionLink>();
 			for (AbstractElementLink link : node.getLinksDest()) {
@@ -277,14 +258,77 @@ public class CSPLinks {
     		// Iterate over each time step.
     		for (int t = 0; t < values[0].length; t++){
     			
-    			List<PrimitiveConstraint> FSConstaints = new ArrayList<PrimitiveConstraint>();
-    			List<PrimitiveConstraint> PSConstaints = new ArrayList<PrimitiveConstraint>();
-    			List<PrimitiveConstraint> PDConstaints = new ArrayList<PrimitiveConstraint>();
-    			List<PrimitiveConstraint> FDConstaints = new ArrayList<PrimitiveConstraint>();
+    			ArrayList<PrimitiveConstraint> FSConstaints = new ArrayList<PrimitiveConstraint>();
+    			ArrayList<PrimitiveConstraint> PSConstaints = new ArrayList<PrimitiveConstraint>();
+    			ArrayList<PrimitiveConstraint> PDConstaints = new ArrayList<PrimitiveConstraint>();
+    			ArrayList<PrimitiveConstraint> FDConstaints = new ArrayList<PrimitiveConstraint>();
 
-    			//TODO: Add Decompositions back in.
-    			
-    			
+    			// Add decomposition link
+    			if (decompositionLinks.size() == 1) {
+    				DecompositionLink link = decompositionLinks.get(0);
+    				DecompositionType pre = link.getPreDecomposition();
+    				
+    				AbstractLinkableElement[] linkEle = link.getSrc();
+    				int numSrcEle = linkEle.length;
+    				int[] sourceID = new int[numSrcEle];
+    				for (int s = 0; s < numSrcEle; s++)
+    					sourceID[s] = uniqueIDToValueIndex.get(linkEle[s].getUniqueID());
+    				
+	    			PrimitiveConstraint[][] sourceValue = new PrimitiveConstraint[4][numSrcEle];
+	    			for (int s = 0; s < numSrcEle; s++){
+	    				sourceValue[3][s] = new XeqC(values[sourceID[s]][t][3], 1);
+	    				sourceValue[2][s] = new XeqC(values[sourceID[s]][t][2], 1);
+	    				sourceValue[1][s] = new XeqC(values[sourceID[s]][t][1], 1);
+	    				sourceValue[0][s] = new XeqC(values[sourceID[s]][t][0], 1);
+	    			}
+	    			if (!link.isEvolving()) {	    			
+		    			if (pre == DecompositionType.AND){	//And Rules
+		    				FSConstaints.add(new And(sourceValue[3]));
+		    				PSConstaints.add(new And(sourceValue[2]));
+		    				PDConstaints.add(new Or(sourceValue[1]));
+		    				FDConstaints.add(new Or(sourceValue[0]));
+		    			}else{  // Or Rules
+		    				FSConstaints.add(new Or(sourceValue[3]));
+		    				PSConstaints.add(new Or(sourceValue[2]));
+		    				PDConstaints.add(new And(sourceValue[1]));
+		    				FDConstaints.add(new And(sourceValue[0]));
+		    			}
+	    			} else {
+	    				DecompositionType post = link.getPreDecomposition();
+	    				IntVar refTP = getTimePoint(timePointMap, link.getLinkTP());
+		    			if (pre == DecompositionType.AND && post == DecompositionType.OR){
+		    				FSConstaints.add(new IfThenElse(new XgtY(refTP, timePoints[t]), new And(sourceValue[3]), new Or(sourceValue[3])));
+		    				PSConstaints.add(new IfThenElse(new XgtY(refTP, timePoints[t]), new And(sourceValue[2]), new Or(sourceValue[2])));
+		    				PDConstaints.add(new IfThenElse(new XgtY(refTP, timePoints[t]), new Or(sourceValue[1]), new And(sourceValue[1])));
+		    				FDConstaints.add(new IfThenElse(new XgtY(refTP, timePoints[t]), new Or(sourceValue[0]), new And(sourceValue[0])));
+		    			} else if (pre == DecompositionType.OR && post == DecompositionType.AND){
+		    				FSConstaints.add(new IfThenElse(new XgtY(refTP, timePoints[t]), new Or(sourceValue[3]), new And(sourceValue[3])));
+		    				PSConstaints.add(new IfThenElse(new XgtY(refTP, timePoints[t]), new Or(sourceValue[2]), new And(sourceValue[2])));
+		    				PDConstaints.add(new IfThenElse(new XgtY(refTP, timePoints[t]), new And(sourceValue[1]), new Or(sourceValue[1])));
+		    				FDConstaints.add(new IfThenElse(new XgtY(refTP, timePoints[t]), new And(sourceValue[0]), new Or(sourceValue[0])));
+		    			} else if (pre == DecompositionType.AND && post == null){
+		    				FSConstaints.add(new IfThen(new XgtY(refTP, timePoints[t]), new And(sourceValue[3])));
+		    				PSConstaints.add(new IfThen(new XgtY(refTP, timePoints[t]), new And(sourceValue[2])));
+		    				PDConstaints.add(new IfThen(new XgtY(refTP, timePoints[t]), new Or(sourceValue[1])));
+		    				FDConstaints.add(new IfThen(new XgtY(refTP, timePoints[t]), new Or(sourceValue[0])));
+		    			} else if (pre == DecompositionType.OR && post == null){
+		    				FSConstaints.add(new IfThen(new XgtY(refTP, timePoints[t]), new Or(sourceValue[3])));
+		    				PSConstaints.add(new IfThen(new XgtY(refTP, timePoints[t]), new Or(sourceValue[2])));
+		    				PDConstaints.add(new IfThen(new XgtY(refTP, timePoints[t]), new And(sourceValue[1])));
+		    				FDConstaints.add(new IfThen(new XgtY(refTP, timePoints[t]), new And(sourceValue[0])));    					
+		    			} else if (pre == null && post == DecompositionType.AND){
+		    				FSConstaints.add(new IfThen(new XlteqY(refTP, timePoints[t]), new And(sourceValue[3])));
+		    				PSConstaints.add(new IfThen(new XlteqY(refTP, timePoints[t]), new And(sourceValue[2])));
+		    				PDConstaints.add(new IfThen(new XlteqY(refTP, timePoints[t]), new Or(sourceValue[1])));
+		    				FDConstaints.add(new IfThen(new XlteqY(refTP, timePoints[t]), new Or(sourceValue[0])));
+		    			}else if (pre == null && post == DecompositionType.OR){
+		    				FSConstaints.add(new IfThen(new XlteqY(refTP, timePoints[t]), new Or(sourceValue[3])));
+		    				PSConstaints.add(new IfThen(new XlteqY(refTP, timePoints[t]), new Or(sourceValue[2])));
+		    				PDConstaints.add(new IfThen(new XlteqY(refTP, timePoints[t]), new And(sourceValue[1])));
+		    				FDConstaints.add(new IfThen(new XlteqY(refTP, timePoints[t]), new And(sourceValue[0])));
+		    			}
+	    			}
+    			}
     			
     			// Add constribution links in.
     			for(ContributionLink link : contributionLinks) {
@@ -335,7 +379,7 @@ public class CSPLinks {
     				}   			
     			}
     			
-    			// Create constraints for each element.
+    			// Add consitions for each element.
     			if (FSConstaints.size() > 0)
     				constraints.add(new IfThen(new XeqC(values[targetID][t][3], 1), new Or(FSConstaints)));
     			if (PSConstaints.size() > 0)
@@ -347,80 +391,6 @@ public class CSPLinks {
     		}
 		}
 	}
-//	if (decompositionLink != null){
-//	LinkableElement[] linkEle = decompositionLink.getSrc();
-//	int numLinks = linkEle.length;
-//	PrimitiveConstraint[][] sourceValue = new PrimitiveConstraint[4][numLinks];
-//	for (int s = 0; s < numLinks; s++){
-//		sourceValue[3][s] = new XeqC(values[linkEle[s].getIdNum()][t][3], 1);
-//		sourceValue[2][s] = new XeqC(values[linkEle[s].getIdNum()][t][2], 1);
-//		sourceValue[1][s] = new XeqC(values[linkEle[s].getIdNum()][t][1], 1);
-//		sourceValue[0][s] = new XeqC(values[linkEle[s].getIdNum()][t][0], 1);
-//	}
-//	if (decompositionLink.getDecomposition() == DecompositionType.AND){	//And Rules
-//		FSConstaints.add(new And(sourceValue[3]));
-//		PSConstaints.add(new And(sourceValue[2]));
-//		PDConstaints.add(new Or(sourceValue[1]));
-//		FDConstaints.add(new Or(sourceValue[0]));
-//	}else{  // Or Rules
-//		FSConstaints.add(new Or(sourceValue[3]));
-//		PSConstaints.add(new Or(sourceValue[2]));
-//		PDConstaints.add(new And(sourceValue[1]));
-//		FDConstaints.add(new And(sourceValue[0]));
-//	}
-//}else if (eDecompositionLink != null){
-//	// Evolving Decomposition
-//	LinkableElement[] linkEle = eDecompositionLink.getSrc();
-//	int numLinks = linkEle.length;
-//	DecompositionType pre = eDecompositionLink.getPreDecomposition();
-//	DecompositionType post = eDecompositionLink.getPostDecomposition();
-//	IntVar dempEB = this.decompEBCollection.get(eDecompositionLink);
-//	PrimitiveConstraint[][] sourceValue = new PrimitiveConstraint[4][numLinks];
-//	for (int s = 0; s < numLinks; s++){
-//		sourceValue[3][s] = new XeqC(values[linkEle[s].getIdNum()][t][3], 1);
-//		sourceValue[2][s] = new XeqC(values[linkEle[s].getIdNum()][t][2], 1);
-//		sourceValue[1][s] = new XeqC(values[linkEle[s].getIdNum()][t][1], 1);
-//		sourceValue[0][s] = new XeqC(values[linkEle[s].getIdNum()][t][0], 1);
-//	}
-//	if (pre == DecompositionType.AND && post == DecompositionType.OR){
-//		//constraints.add(new IfThenElse(new XgtY(dempEB, timePoints[t]), andC, orC));
-//		FSConstaints.add(new IfThenElse(new XgtY(dempEB, timePoints[t]), new And(sourceValue[3]), new Or(sourceValue[3])));
-//		PSConstaints.add(new IfThenElse(new XgtY(dempEB, timePoints[t]), new And(sourceValue[2]), new Or(sourceValue[2])));
-//		PDConstaints.add(new IfThenElse(new XgtY(dempEB, timePoints[t]), new Or(sourceValue[1]), new And(sourceValue[1])));
-//		FDConstaints.add(new IfThenElse(new XgtY(dempEB, timePoints[t]), new Or(sourceValue[0]), new And(sourceValue[0])));
-//	} else if (pre == DecompositionType.OR && post == DecompositionType.AND){
-//		//constraints.add(new IfThenElse(new XgtY(dempEB, timePoints[t]), orC, andC));
-//		FSConstaints.add(new IfThenElse(new XgtY(dempEB, timePoints[t]), new Or(sourceValue[3]), new And(sourceValue[3])));
-//		PSConstaints.add(new IfThenElse(new XgtY(dempEB, timePoints[t]), new Or(sourceValue[2]), new And(sourceValue[2])));
-//		PDConstaints.add(new IfThenElse(new XgtY(dempEB, timePoints[t]), new And(sourceValue[1]), new Or(sourceValue[1])));
-//		FDConstaints.add(new IfThenElse(new XgtY(dempEB, timePoints[t]), new And(sourceValue[0]), new Or(sourceValue[0])));
-//	} else if (pre == DecompositionType.AND && post == null){
-//		//constraints.add(new IfThen(new XgtY(dempEB, timePoints[t]), andC));
-//		FSConstaints.add(new IfThen(new XgtY(dempEB, timePoints[t]), new And(sourceValue[3])));
-//		PSConstaints.add(new IfThen(new XgtY(dempEB, timePoints[t]), new And(sourceValue[2])));
-//		PDConstaints.add(new IfThen(new XgtY(dempEB, timePoints[t]), new Or(sourceValue[1])));
-//		FDConstaints.add(new IfThen(new XgtY(dempEB, timePoints[t]), new Or(sourceValue[0])));
-//	} else if (pre == DecompositionType.OR && post == null){
-//		//constraints.add(new IfThen(new XgtY(dempEB, timePoints[t]), orC));
-//		FSConstaints.add(new IfThen(new XgtY(dempEB, timePoints[t]), new Or(sourceValue[3])));
-//		PSConstaints.add(new IfThen(new XgtY(dempEB, timePoints[t]), new Or(sourceValue[2])));
-//		PDConstaints.add(new IfThen(new XgtY(dempEB, timePoints[t]), new And(sourceValue[1])));
-//		FDConstaints.add(new IfThen(new XgtY(dempEB, timePoints[t]), new And(sourceValue[0])));    					
-//	} else if (pre == null && post == DecompositionType.AND){
-//		//constraints.add(new IfThen(new XlteqY(dempEB, timePoints[t]), andC));
-//		FSConstaints.add(new IfThen(new XlteqY(dempEB, timePoints[t]), new And(sourceValue[3])));
-//		PSConstaints.add(new IfThen(new XlteqY(dempEB, timePoints[t]), new And(sourceValue[2])));
-//		PDConstaints.add(new IfThen(new XlteqY(dempEB, timePoints[t]), new Or(sourceValue[1])));
-//		FDConstaints.add(new IfThen(new XlteqY(dempEB, timePoints[t]), new Or(sourceValue[0])));
-//	}else if (pre == null && post == DecompositionType.OR){
-//		//constraints.add(new IfThen(new XlteqY(dempEB, timePoints[t]), orC));
-//		FSConstaints.add(new IfThen(new XlteqY(dempEB, timePoints[t]), new Or(sourceValue[3])));
-//		PSConstaints.add(new IfThen(new XlteqY(dempEB, timePoints[t]), new Or(sourceValue[2])));
-//		PDConstaints.add(new IfThen(new XlteqY(dempEB, timePoints[t]), new And(sourceValue[1])));
-//		FDConstaints.add(new IfThen(new XlteqY(dempEB, timePoints[t]), new And(sourceValue[0])));
-//	}
-//}
-	
 
 	private static PrimitiveConstraint[] createBackwardContributionConstraint(ContributionType cType, BooleanVar[] src){
 		PrimitiveConstraint[] result = new PrimitiveConstraint[4];
