@@ -39,7 +39,7 @@ function clearCycleHighlighting() {
  * @param {Array of Array<String>} cycleList: list of cycles in current model
  */
 function cycleResponse(cycleList) {
-
+	console.log('hi you are bad'); 
 	//remove all previous coloring, deactivate EVO
 	clearCycleHighlighting();
 
@@ -384,6 +384,16 @@ function alertSyntaxError(title, message) {
 // }
 
 /**
+ * Returns true iff the link has a source and a target node
+ *
+ * @param {joint.dia.Link} link
+ * @param {Boolean}
+ */
+ function isLinkInvalid(link){
+	return (!link.prop('source/id') || !link.prop('target/id'));
+}
+
+/**
  * Returns an array of InputLinks, of all links in the graph
  *
  * @returns {Array.<InputLinks>}
@@ -395,8 +405,10 @@ function getLinks(){
 
 	//Verifying if links are valid
 	graph.getLinks().forEach(function(link){
-	    if(isLinkInvalid(link))
-	    		link.remove();
+	    if(isLinkInvalid(link)) { 
+			link.remove();
+		}
+	    console.log(link); 		
     });
 
 	for (var i = 0; i < graph.getLinks().length; i++){
@@ -409,14 +421,15 @@ function getLinks(){
 
 		if (graph.getLinks()[i].attr('.assigned_time') != undefined) {
 			absValue = parseInt(graph.getLinks()[i].attr('.assigned_time')[0]);
+			console.log(absValue); 
 		}
 
 		if (current.get("source").id) { 
-			source = graph.getCell(current.get("source").id).prop("elementid");
+			source = graph.getCell(current.get('source').id); 
 		}
 			
 		if (current.get("target").id) { 
-			target = graph.getCell(current.get("target").id).prop("elementid");
+			target = graph.getCell(current.get("target").id);
 		}
 			
 		var link;
@@ -427,12 +440,12 @@ function getLinks(){
 		// evolving: false,
 		// vs 
 		// linkType, linkSrcID, linkDestID, postType = null, absVal = -1
-		//Remove constraints links
+
+		// Remove constraints links
 		if (!(linkType.indexOf("=") > -1 || linkType.indexOf("<") > -1)) {
 			// Adding links
 			if (linkType.indexOf("|") > -1) {
 				var evolvRelationships = linkType.replace(/\s/g, '').split("|");
-				console.log(evolvRelationships) 
 				// link = new InputLink(linkType: evolvRelationships[0], source, target, postType: evolvRelationships[1], absValue);
 				link = new LinkBBM({displayType: source, linkType: evolvRelationships[0], postType: evolvRelationships[1], absTime: absValue}); 
 			} else if (linkType == "NBT" || linkType == "NBD") {
@@ -508,14 +521,16 @@ function getElementList() {
 		"denied": "1100",
 		"none": "0000",
 		"(no value)": "(no value)"
-	};
+	}; 
 
     for(var i = 0; i < this.graph.getElements().length; i++) {
         // If the element is NOT an actor 
         if (!(this.graph.getElements()[i] instanceof joint.shapes.basic.Actor)){
             var element= {};
+
+			// Gets current value, assigns "none" if null 
             var currentValue = (this.graph.getElements()[i].attr(".satvalue/value")||"none");
-			console.log(currentValue); 
+
             // Making currentValue to numeric values like 0000, 0001, 0011...
             if(!$.isNumeric(currentValue)) { 
 				currentValue = satValueDict[currentValue];
@@ -558,7 +573,7 @@ function isACycle(cycleList) {
  * @returns {null} otherwise
  */
 function cycleSearch() {
-	var links = getLinks();
+	var links = graph.getLinks();
 	var vertices = getElementList();
 	var isCycle = false;
 
@@ -567,31 +582,32 @@ function cycleSearch() {
 	//search for cycles
 	var cycleList = traverseGraphForCycles(linkMap); 
 
-	if(cycleList.length > 0) {
+	if (cycleList.length > 0) {
 		return cycleList;
 	}
-	return null; //no cycles are present in model
+	// If no cycles are present in model
+	return null; 
 }
 
 /**
  * Creates an array representation of the graph.  
  * @param {Array.<Object>} vertices list of elements in the graph
  * @param {Array.<Object>} links list of links in the graph
- * @returns {Array of Array<String>} linkMap, a double array where the first index corresponds to an element/src ID, and the corresponding child array contains each dest ID associated with it
+ * @returns {Array of Array<String>} linkMap, a hash table where the first index corresponds to an element/src ID, and the corresponding child array contains each dest ID associated with it
  */
 function initiateLinkGraph(vertices, links) {
-	var linkMap = [];
-
-	//initiate a subarray for each index of linkMap that corresponds to an element ID
-	vertices.forEach(function(element){
-		var src = element.id;
+	var linkMap = {}; 
+	// Initiate a subarray for each index of linkMap that corresponds to an element ID
+	vertices.forEach(function(vertex){
+		var src = vertex.id;
 		linkMap[src] = [];
 	 });
 
-	//push each link's dest ID onto the index of linkMap that corresponds to the src ID
-	links.forEach(function(element){
-		var src = element.linkSrcID;
-		linkMap[src].push(element.linkDestID);
+	// Push each link's dest ID onto the index of linkMap that corresponds to the src ID
+	links.forEach(function(link){
+		// Get the element of the source ID and use that to get the element of the dest ID 
+		var src = link.getSourceElement().prop('id'); 
+		linkMap[src] = link.getTargetElement().prop('id');
 	});
 
 	return linkMap;
@@ -610,19 +626,19 @@ function traverseGraphForCycles(linkMap) {
 
 	vertices.forEach(function(element){ //create list of nodes to track which have not yet been visited
 		notVisited.push(element.id);
-	 });
+	});
 
 	while (notVisited.length > 0) { //while all nodes haven't yet been visited
-	var start = (notVisited.splice(0,1)).pop();
-	var walkList = [];
-	traverseGraphRecursive(linkMap, start, walkList, notVisited, cycleList); //search for cycles
+		var start = (notVisited.splice(0,1)).pop();
+		var walkList = [];
+		traverseGraphRecursive(linkMap, start, walkList, notVisited, cycleList); //search for cycles
 	}
 	return cycleList;
 }
 
 /**
  * Helper function for traverseGraphForCycles
- * @param {Array of Array<String>} linkMap List of dest nodes associated with each src node
+ * @param {Array.<Map>} linkMap Hash Map of dest nodes associated with each src node
  * @param {String} currNode Current node of the function call
  * @param {Array.<String>} walkList List of nodes in current walk
  * @param {Array.<String>} notVisited List of nodes that have not yet be visited, only used to determine start node for a new walk and to know when we're done traversing the graph
@@ -637,8 +653,15 @@ function traverseGraphRecursive(linkMap, currNode, walkList, notVisited, cycleLi
 		//the cycle is the part of the list from first instance of repeat node to now
 		for(var i = walkList.indexOf(currNode); i < walkList.length; ++i) {
 			cycle.push(walkList[i]);
-			var remove = linkMap[prev].indexOf(walkList[i]); //get rid of cycle link from prev to curr node so graph traversal doesn't get stuck. problem: when multiple cycles share nodes, this inhibits others from being found. Should we just start a new walk?
-			linkMap[prev].splice(remove, 1);
+			/**
+			 * Get rid of cycle link from prev to curr node so graph traversal doesn't get stuck. 
+			 * Problem: when multiple cycles share nodes, this inhibits others from being found. 
+			 * Should we just start a new walk?
+			 */
+			// var remove = linkMap[prev].indexOf(walkList[i]); 
+			var remove = linkMap.get(prev).indexOf(walkList[i]); 
+			// linkMap[prev].splice(remove, 1);
+			linkMap.get(prev).splice(remove, 1); 
 			prev = walkList[i];
 		}
 		cycleList.push(cycle);

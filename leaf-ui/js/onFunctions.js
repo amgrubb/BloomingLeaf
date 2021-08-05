@@ -116,13 +116,14 @@ $('#btn-view-intermediate').on('click', function () {
  */
 //TODO: Add back in cycle detection after backbone migration.
 $('#analysis-btn').on('click', function () {
-    switchToAnalysisMode();
     syntaxCheck();
     
-    console.log("TODO: Add back in cycle detection after backbone migration.");
+    /**
+     * If there are cycles, then display error message.
+     * Otherwise, remove any "red" elements.
+     */
     var cycleList = cycleSearch();
-
-    cycleResponse(cycleList); //If there are cycles, then display error message. Otherwise, remove any "red" elements.
+    cycleResponse(cycleList);
     if(!isACycle(cycleList)) {
         clearCycleHighlighting();
         switchToAnalysisMode();
