@@ -469,7 +469,7 @@ var ElementInspector = Backbone.View.extend({
 
         if (begin === null || end === null) {
             return;
-        } 
+        }
 
         this.intention.get('evolvingFunction').setRepeatingFunction(begin, end, count, absTime);
 
