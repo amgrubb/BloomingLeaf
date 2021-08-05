@@ -23,8 +23,8 @@ public class CSPLinks {
 				
 		addForwardContribution(constraints, spec.getContributionLinks(), 
 				values, uniqueIDToValueIndex, timePoints, timePointMap); 
-		//addForwardDecomposition(constraints, spec.getDecompositionLinks(), 
-		//		values, uniqueIDToValueIndex, timePoints, timePointMap); 
+		addForwardDecomposition(constraints, spec.getDecompositionLinks(), 
+				values, uniqueIDToValueIndex, timePoints, timePointMap); 
 		
 		//addBackward
 	}
@@ -95,63 +95,33 @@ public class CSPLinks {
 
 	private static void addForwardDecomposition(
 			List<Constraint> constraints,
-			List<ContributionLink> contributionLinks,
+			List<DecompositionLink> decompositionLinks,
 			BooleanVar[][][] values,  
 			HashMap<String, Integer> uniqueIDToValueIndex,
 			IntVar[] timePoints,
 			HashMap<IntVar, List<String>> timePointMap) {
 		
-    	// Repeat process (forward and backward constraints) for each intention.
-
-/*
-    		Intention element = intentions[e];
-    		
-    		int targetID = element.getIdNum();
-
-    		if (element.getLinksDest().size() == 0) 
-    			continue;    		
-    		
-    		Decomposition decompositionLink = null;  
-    		EvolvingDecomposition eDecompositionLink = null;
-    		List<EvolvingContribution> eContributionLinks = new ArrayList<EvolvingContribution>();
-    		List<Intentions> contributionElements = new ArrayList<Intentions>();  
-    		List<ContributionType> contributionTypes = new ArrayList<ContributionType>();
-    		
-    		for (ListIterator<ElementLink> linksIteratorDest = element.getLinksDest().listIterator(); linksIteratorDest.hasNext();){
-    			ElementLink link = (ElementLink) linksIteratorDest.next();
-    				if (link instanceof Decomposition){
-    					if ((decompositionLink != null)||(eDecompositionLink != null))
-    						throw new RuntimeException("Error: Node ID: " + element.getId() + " has more than one decomposition link as it's destination.");    						
-    					decompositionLink = (Decomposition) link;	
-    				} else if (link instanceof EvolvingDecomposition) {
-    					if ((decompositionLink != null)||(eDecompositionLink != null))
-    						throw new RuntimeException("Error: Node ID: " + element.getId() + " has more than one decomposition link as it's destination.");
-    					eDecompositionLink = (EvolvingDecomposition) link;	    					
-    				} else if (link instanceof Contribution) {
-    					contributionElements.add((IntentionalElement) link.getZeroSrc());
-    					contributionTypes.add(((Contribution) link).getContribution());
-    				} else if (link instanceof EvolvingContribution) {
-    					eContributionLinks.add((EvolvingContribution) link);
-    				}
-    		}
-*/
-		
-/*
-
-    		// Step 1: Decomposition
-    		// (a) Decomposition without Evolution
-    		if (decompositionLink != null){
-    			LinkableElement[] linkEle = decompositionLink.getSrc();
-    			int numLinks = linkEle.length;
+		for(DecompositionLink link : decompositionLinks) {
+			AbstractLinkableElement[] linkEle = link.getSrc();
+			int numSrcEle = linkEle.length;
+			int[] sourceID = new int[numSrcEle];
+			for (int s = 0; s < numSrcEle; s++)
+				sourceID[s] = uniqueIDToValueIndex.get(linkEle[s].getUniqueID());
+			
+			int targetID = uniqueIDToValueIndex.get(link.getDest().getUniqueID());
+			DecompositionType pre = link.getPreDecomposition();
+			if (!link.isEvolving()) {
+				// No Evolution in Link. - Decomposition without Evolution
+				
        			for (int t = 0; t < values[targetID].length; t++){
-    				BooleanVar[][] sourceValue = new BooleanVar[4][numLinks];
-    				for (int s = 0; s < numLinks; s++){
-    					sourceValue[3][s] = values[linkEle[s].getIdNum()][t][3];
-    					sourceValue[2][s] = values[linkEle[s].getIdNum()][t][2];
-    					sourceValue[1][s] = values[linkEle[s].getIdNum()][t][1];
-    					sourceValue[0][s] = values[linkEle[s].getIdNum()][t][0];
+    				BooleanVar[][] sourceValue = new BooleanVar[4][numSrcEle];
+    				for (int s = 0; s < numSrcEle; s++){
+    					sourceValue[3][s] = values[sourceID[s]][t][3];
+    					sourceValue[2][s] = values[sourceID[s]][t][2];
+    					sourceValue[1][s] = values[sourceID[s]][t][1];
+    					sourceValue[0][s] = values[sourceID[s]][t][0];
     				}
-    				if (decompositionLink.getDecomposition() == DecompositionType.AND){	//And Rules
+    				if (pre == DecompositionType.AND){	//And Rules
     					constraints.add(new AndBool(sourceValue[3], values[targetID][t][3]));
     					constraints.add(new AndBool(sourceValue[2], values[targetID][t][2]));
     					constraints.add(new OrBool(sourceValue[1], values[targetID][t][1]));
@@ -163,21 +133,18 @@ public class CSPLinks {
     					constraints.add(new AndBool(sourceValue[0], values[targetID][t][0]));
     				}
     			}
-    		// (b) Evolving Decomposition
-    		}else if (eDecompositionLink != null){
-    			LinkableElement[] linkEle = eDecompositionLink.getSrc();
-    			int numLinks = linkEle.length;
-    			DecompositionType pre = eDecompositionLink.getPreDecomposition();
-    			DecompositionType post = eDecompositionLink.getPostDecomposition();
-    			IntVar dempEB = this.decompEBCollection.get(eDecompositionLink);
-    			for (int t = 0; t < values[targetID].length; t++){
-    				BooleanVar[][] sourceValue = new BooleanVar[4][numLinks];
-    				for (int s = 0; s < numLinks; s++){
-    					sourceValue[3][s] = values[linkEle[s].getIdNum()][t][3];
-    					sourceValue[2][s] = values[linkEle[s].getIdNum()][t][2];
-    					sourceValue[1][s] = values[linkEle[s].getIdNum()][t][1];
-    					sourceValue[0][s] = values[linkEle[s].getIdNum()][t][0];
-    				}          			    			
+			} else {
+				// Evolving Decomposition - must use time points.
+				DecompositionType post = link.getPreDecomposition();
+				IntVar refTP = getTimePoint(timePointMap, link.getLinkTP());
+	   			for (int t = 0; t < values[targetID].length; t++){
+    				BooleanVar[][] sourceValue = new BooleanVar[4][numSrcEle];
+    				for (int s = 0; s < numSrcEle; s++){
+    					sourceValue[3][s] = values[sourceID[s]][t][3];
+    					sourceValue[2][s] = values[sourceID[s]][t][2];
+    					sourceValue[1][s] = values[sourceID[s]][t][1];
+    					sourceValue[0][s] = values[sourceID[s]][t][0];
+    				}
 
     				PrimitiveConstraint and3 = new AndBoolVector(sourceValue[3], values[targetID][t][3]);
     				PrimitiveConstraint and2 = new AndBoolVector(sourceValue[2], values[targetID][t][2]);
@@ -188,46 +155,41 @@ public class CSPLinks {
     				PrimitiveConstraint or1 = new AndBoolVector(sourceValue[1], values[targetID][t][1]);
     				PrimitiveConstraint or0 = new AndBoolVector(sourceValue[0], values[targetID][t][0]);
 
-
     				if (pre == DecompositionType.AND && post == DecompositionType.OR){
-    					constraints.add(new IfThenElse(new XgtY(dempEB, timePoints[t]), and3, or3));
-    					constraints.add(new IfThenElse(new XgtY(dempEB, timePoints[t]), and2, or2));
-    					constraints.add(new IfThenElse(new XgtY(dempEB, timePoints[t]), and1, or1));
-    					constraints.add(new IfThenElse(new XgtY(dempEB, timePoints[t]), and0, or0));
+    					constraints.add(new IfThenElse(new XgtY(refTP, timePoints[t]), and3, or3));
+    					constraints.add(new IfThenElse(new XgtY(refTP, timePoints[t]), and2, or2));
+    					constraints.add(new IfThenElse(new XgtY(refTP, timePoints[t]), and1, or1));
+    					constraints.add(new IfThenElse(new XgtY(refTP, timePoints[t]), and0, or0));
     				} else if (pre == DecompositionType.OR && post == DecompositionType.AND){
-    					constraints.add(new IfThenElse(new XgtY(dempEB, timePoints[t]), or3, and3));
-    					constraints.add(new IfThenElse(new XgtY(dempEB, timePoints[t]), or2, and2));
-    					constraints.add(new IfThenElse(new XgtY(dempEB, timePoints[t]), or1, and1));
-    					constraints.add(new IfThenElse(new XgtY(dempEB, timePoints[t]), or0, and0));
+    					constraints.add(new IfThenElse(new XgtY(refTP, timePoints[t]), or3, and3));
+    					constraints.add(new IfThenElse(new XgtY(refTP, timePoints[t]), or2, and2));
+    					constraints.add(new IfThenElse(new XgtY(refTP, timePoints[t]), or1, and1));
+    					constraints.add(new IfThenElse(new XgtY(refTP, timePoints[t]), or0, and0));
     				} else if (pre == DecompositionType.AND && post == null){
-    					constraints.add(new IfThen(new XgtY(dempEB, timePoints[t]), and3));
-    					constraints.add(new IfThen(new XgtY(dempEB, timePoints[t]), and2));
-    					constraints.add(new IfThen(new XgtY(dempEB, timePoints[t]), and1));
-    					constraints.add(new IfThen(new XgtY(dempEB, timePoints[t]), and0));
+    					constraints.add(new IfThen(new XgtY(refTP, timePoints[t]), and3));
+    					constraints.add(new IfThen(new XgtY(refTP, timePoints[t]), and2));
+    					constraints.add(new IfThen(new XgtY(refTP, timePoints[t]), and1));
+    					constraints.add(new IfThen(new XgtY(refTP, timePoints[t]), and0));
     				} else if (pre == DecompositionType.OR && post == null){
-    					constraints.add(new IfThen(new XgtY(dempEB, timePoints[t]), or3));
-    					constraints.add(new IfThen(new XgtY(dempEB, timePoints[t]), or2));
-    					constraints.add(new IfThen(new XgtY(dempEB, timePoints[t]), or1));
-    					constraints.add(new IfThen(new XgtY(dempEB, timePoints[t]), or0));
+    					constraints.add(new IfThen(new XgtY(refTP, timePoints[t]), or3));
+    					constraints.add(new IfThen(new XgtY(refTP, timePoints[t]), or2));
+    					constraints.add(new IfThen(new XgtY(refTP, timePoints[t]), or1));
+    					constraints.add(new IfThen(new XgtY(refTP, timePoints[t]), or0));
     				} else if (pre == null && post == DecompositionType.AND){
-    					constraints.add(new IfThen(new XlteqY(dempEB, timePoints[t]), and3));
-    					constraints.add(new IfThen(new XlteqY(dempEB, timePoints[t]), and2));
-    					constraints.add(new IfThen(new XlteqY(dempEB, timePoints[t]), and1));
-    					constraints.add(new IfThen(new XlteqY(dempEB, timePoints[t]), and0));
+    					constraints.add(new IfThen(new XlteqY(refTP, timePoints[t]), and3));
+    					constraints.add(new IfThen(new XlteqY(refTP, timePoints[t]), and2));
+    					constraints.add(new IfThen(new XlteqY(refTP, timePoints[t]), and1));
+    					constraints.add(new IfThen(new XlteqY(refTP, timePoints[t]), and0));
     				} else if (pre == null && post == DecompositionType.OR){
-    					constraints.add(new IfThen(new XlteqY(dempEB, timePoints[t]), or3));
-    					constraints.add(new IfThen(new XlteqY(dempEB, timePoints[t]), or2));
-    					constraints.add(new IfThen(new XlteqY(dempEB, timePoints[t]), or1));
-    					constraints.add(new IfThen(new XlteqY(dempEB, timePoints[t]), or0));
-    				}	    	
-    			}
-    		}
-
-*/    		
-
+    					constraints.add(new IfThen(new XlteqY(refTP, timePoints[t]), or3));
+    					constraints.add(new IfThen(new XlteqY(refTP, timePoints[t]), or2));
+    					constraints.add(new IfThen(new XlteqY(refTP, timePoints[t]), or1));
+    					constraints.add(new IfThen(new XlteqY(refTP, timePoints[t]), or0));
+    				}	
+	   			}
+			}
+		}
 	}
-	
-	
 	
 	/**
 	 * Helper Method to create constraints for contribution links.
