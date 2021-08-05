@@ -25,22 +25,26 @@ public class BICSPAlgorithm {
 	private int maxTime;									// duplicated from spec to create shortcut for code.
 	private IntVar zero;									// (0) Initial Values time point.
 //	private IntVar infinity;								// (maxTime + 1) Infinity used for intention functions, not a solved point.
-	private Intention[] intentions;							// array of intention elements in the model
 
 	// Problem Size: (numIntentions x numTimePoints x 4) + numTimePoints
 	private int numTimePoints;										// Total number of time points in the path (to be calculated).
 	private int numIntentions;								// Number of intentions in the model.
 	
 	// Problem Variables:
+	private BooleanVar[][][] values;						// ** Holds the evaluations for each [this.numIntentions][this.numTP][FS/PS/PD/FD Predicates]
 	private IntVar[] timePoints;							// Holds the list of time points to be solved.
+	
+	// Mappings for problem variables
 	private HashMap<IntVar, List<String>> timePointMap = new HashMap<IntVar, List<String>>(); // IntVar to list of unique time points from the model.
 	private HashMap<String, List<String>> nextStateTPHash = new HashMap<String, List<String>>(); 	// Holds the time points in the next state analysis.
-	private BooleanVar[][][] values;						// ** Holds the evaluations for each [this.numIntentions][this.numTP][FS/PS/PD/FD Predicates]	
+	private HashMap<String, Integer> uniqueIDToValueIndex = new HashMap<String, Integer>();
+	private String[] valueIndexToUniqueID;
 	
 //    private IntVar[] unsolvedTimePoints;					// Holds the list of time points without an absolute assignment. 
 //    private IntVar[] nextTimePoints;						// Holds the list of next possible time points. Does not include multiple stochastic or absolute. Used for finding state.
 //    private IntVar nextTimePoint;							// Holds the single int value that will map to a value of nextTimePoints, to be solve by the solve if next state is used.
 //    private IntVar minTimePoint;									// Is assigned the minimum time of nextTimePoints.
+//	  private Intention[] intentions;							// array of intention elements in the model
 
 //    private boolean[] boolFD = new boolean[] {true, true, false, false};
 //    private boolean[] boolPD = new boolean[] {false, true, false, false};
@@ -52,7 +56,7 @@ public class BICSPAlgorithm {
 //    private boolean[] boolFSPD = new boolean[] {false, true, true, true};
 //    private boolean[] boolPSFD = new boolean[] {true, true, true, false};
     
-    private final static boolean DEBUG = false;	
+    private final static boolean DEBUG = true;	
     
 	public BICSPAlgorithm(ModelSpec spec) throws Exception {
     	if (DEBUG) System.out.println("Starting: TroposCSPAlgorithm");
@@ -87,14 +91,8 @@ public class BICSPAlgorithm {
 		this.maxTime = spec.getMaxTime();
 		this.zero = new IntVar(this.store, "Zero", 0, 0);
 //		this.infinity = new IntVar(this.store, "Infinity", this.maxTime + 1, this.maxTime + 1);
-
-    	// Initialize intentions and store them in array.
-    	this.numIntentions = this.spec.getNumIntentions();
-		this.intentions = new Intention[this.numIntentions];
-		List<Intention> elementList = this.spec.getIntentions();
-		for (int i = 0; i < this.intentions.length; i++)
-			this.intentions[i] = elementList.get(i);
 		
+		// Create time point path.
 		if (problemType == SearchType.PATH || problemType == SearchType.UPDATE_PATH) {
 			this.timePoints = createPathTimePoint(this.spec, this.store, this.timePointMap, this.maxTime);
 		}else if (problemType == SearchType.NEXT_STATE) {
@@ -102,26 +100,34 @@ public class BICSPAlgorithm {
 		}
 		this.numTimePoints = this.timePoints.length;
 		this.constraints.add(new Alldifferent(this.timePoints));
-		this.values = new BooleanVar[this.numIntentions][this.numTimePoints][4];	// 4 Predicates Values 0-FD, 1-PD, 2-PS, 3-FS
 		if (DEBUG) System.out.println("\n Num TP is: " + this.numTimePoints);       	
     	
     	// Initialise Values Array.
     	if (DEBUG) System.out.println("\nMethod: initializeNodeVariables");
-
-    	
-    	for (int i = 0; i < this.intentions.length; i++)
-			for (int t = 0; t < this.values[i].length; t++) {
+    	this.numIntentions = this.spec.getNumIntentions();
+		this.values = new BooleanVar[this.numIntentions][this.numTimePoints][4];	// 4 Predicates Values 0-FD, 1-PD, 2-PS, 3-FS
+    	this.valueIndexToUniqueID = new String[this.numIntentions];
+    	int indexCounter = 0;
+    	for (Intention element : this.spec.getIntentions()) {
+    		this.uniqueIDToValueIndex.put(element.uniqueID, indexCounter);
+    		this.valueIndexToUniqueID[indexCounter] = element.uniqueID;
+			for (int t = 0; t < this.numTimePoints; t++) {
 				// Creates IntVars and adds the FS -> PS invariant.
-				CSP.initializeNodeVariables(this.store, this.sat, this.values[i][t], this.intentions[i].getId() + "_" + t);
+				CSP.initializeNodeVariables(this.store, this.sat, this.values[indexCounter][t], element.getId() + "_" + t);
 			}
- 		CSP.initializeConflictPrevention(this.spec, this.sat, this.values, this.zero);
+			indexCounter++;
+    	}
+		CSP.initializeConflictPrevention(this.spec, this.sat, this.values, this.zero);
     	if (problemType == SearchType.NEXT_STATE || problemType == SearchType.UPDATE_PATH) { 
     		// Assign past values with initialization?
-    		initializePrevResults(this.spec, this.constraints, this.timePoints, this.values, this.intentions);
+    		initializePrevResults(this.spec, this.constraints, this.timePoints, this.values, this.uniqueIDToValueIndex);
     	}
     	
-    	
-    	
+    	//initializeLinkConstraints();
+    	//initializePathDynamicFunctions();
+    	//initializeStateDynamicFunctions(this.constraints, this.intentions, this.values, this.functionEBCollection, this.spec.getInitialValueTimePoints()[lengthOfInitial - 1], lengthOfInitial - 1, this.minTimePoint);
+    	//initializeUserEvaluations();
+    	//not both links
     	
  		//TODO: Add evolving functions, relationship, constraints, initial values.
     	if (DEBUG)	System.out.println("\nEnd of Init Procedure");	
@@ -182,7 +188,8 @@ public class BICSPAlgorithm {
 	
 	private static IntVar[] createNextStateTimePoint(ModelSpec spec, Store store, 
 			HashMap<IntVar, List<String>> timePointMap, 
-			HashMap<String, List<String>> nextStateTPHash, int maxTime) {
+			HashMap<String, List<String>> nextStateTPHash, 
+			int maxTime) {
 		
    		IOSolution prev = spec.getPrevResult();
    		if (prev == null)
@@ -272,7 +279,8 @@ public class BICSPAlgorithm {
 	}
 		
 	private static void initializePrevResults(ModelSpec spec, List<Constraint> constraints, 
-			IntVar[] timePoints, BooleanVar[][][] values, Intention[] intentions) {
+			IntVar[] timePoints, BooleanVar[][][] values,
+			HashMap<String, Integer> uniqueIDToValueIndex) {
 		if (DEBUG) System.out.println("\nMethod: func");
    		IOSolution prev = spec.getPrevResult();
    		if (prev == null)
@@ -293,8 +301,9 @@ public class BICSPAlgorithm {
    					}
    				if (tRef != null) {
    					// Loop through intentions and assign.
-   					for (int i = 0; i < intentions.length; i ++) {
-   						boolean[][] toAssignVals = prevIntVal.get(intentions[i].getUniqueID());
+   					for	(Map.Entry<String, Integer> entry : uniqueIDToValueIndex.entrySet()) {
+   						int i = entry.getValue();
+   						boolean[][] toAssignVals = prevIntVal.get(entry.getKey());
    						if (toAssignVals != null) {
    							constraints.add(new XeqC(values[i][tp][0], boolToInt(toAssignVals[tRef][0])));
    							constraints.add(new XeqC(values[i][tp][1], boolToInt(toAssignVals[tRef][1])));
@@ -363,11 +372,11 @@ public class BICSPAlgorithm {
 			System.out.println("\nThere are " + totalSolution + " possible next states.");
 		}
 		
-		String[][] finalValues = new String[totalSolution][this.intentions.length];
-		int startIndex = label.getSolution(1).length - (this.intentions.length * 4);
+		String[][] finalValues = new String[totalSolution][this.numIntentions];
+		int startIndex = label.getSolution(1).length - (this.numIntentions * 4);
 		for (int s = 1; s <= totalSolution; s++){	/// NOTE: Solution number starts at 1 not 0!!!		
 			int solIndex = startIndex;
-			for (int i = 0; i < this.intentions.length; i++) {
+			for (int i = 0; i < this.numIntentions; i++) {
 				String outVal = label.getSolution(s)[solIndex].toString() + 
 						label.getSolution(s)[solIndex + 1].toString() + 
 						label.getSolution(s)[solIndex + 2].toString() +
@@ -515,7 +524,7 @@ public class BICSPAlgorithm {
     	IOSolution oModel = new IOSolution(finalTPPath, finalTPAssignments);
     	
     	// Get assigned values (elementList)
-    	for (int i = 0; i < this.intentions.length; i++){
+    	for (int i = 0; i < this.values.length; i++){
     		String[] nodeFinalValues = new String[this.values[i].length];
     		for (int t = 0; t < this.values[i].length; t++){
     			StringBuilder value = new StringBuilder();
@@ -526,7 +535,7 @@ public class BICSPAlgorithm {
         				value.append("0");
         		nodeFinalValues[t] = value.toString();
     		}
-    		oModel.addElement(this.intentions[i].getUniqueID(), nodeFinalValues);
+    		oModel.addElement(this.valueIndexToUniqueID[i], nodeFinalValues);
     	}  	
     	return oModel; 	
 	}
@@ -570,15 +579,15 @@ public class BICSPAlgorithm {
     	System.out.println();
     	
     	// Print out Values.
-    	for (int i = 0; i < this.intentions.length; i++){
-    		Intention element = this.intentions[i];
-    		System.out.print(element.id + ":\t");
+    	for (int i = 0; i < this.numIntentions; i++){
+    		System.out.print(String.format("%03d", i) + ":\t");
     		for (int t = 0; t < this.values[i].length; t++){
         		for (int v = 0; v < this.values[i][t].length; v++)
         			System.out.print(this.values[i][indexOrder[t]][v].value());
         		System.out.print("\t");
     		}
-    		System.out.println(element.name); // + "\t" + element.dynamicType.toString());
+    		String name = this.spec.getIntentionByUniqueID(this.valueIndexToUniqueID[i]).getName();
+    		System.out.println(name); // + "\t" + element.dynamicType.toString());
     	} 
 	}	
 	
