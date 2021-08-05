@@ -7,7 +7,7 @@ let analysis = {};
 let filterOrderQueue = [];
 let analysisRequest;
 let analysisResult;
-let savedAnalysisData;
+let allNextStatesResult; // we are replacing savedAnalysisData with allNextStatesResult
 let selectedResult;
 let graph;
 let current;
@@ -20,8 +20,10 @@ window.onload = function(){
     // analysis.page = jQuery.extend({}, window.opener.document);
     page = jQuery.extend({}, window.opener.document);
     analysisRequest = JSON.parse(sessionStorage.getItem("Request"));
-    console.log("AnalysisRequest: " + analysisRequest);
     console.log(analysisRequest);
+
+    allNextStatesResult = JSON.parse(sessionStorage.getItem("Result"));
+    console.log(allNextStatesResult);
   
     init();
     renderNavigationSidebar();
@@ -52,7 +54,7 @@ function init(){
             selectedResult = result;
         }
     }
-    console.log("selectedResult: " + selectedResult);
+    console.log(selectedResult);
     current = parseInt(selectedResult.selectedTimePoint);
 
     paper = new joint.dia.Paper({
@@ -171,7 +173,10 @@ function renderNavigationSidebar(currentPage = 0){
     var currentPageIn = document.getElementById("currentPage");
     var num_states_lbl = document.getElementById("num_states_lbl");
 
-    num_states_lbl.innerHTML += (selectedResult.allSolution.length);
+    console.log(allNextStatesResult.allSolutions); 
+    // TODO: will indexing TNS-R always work like this??
+    console.log(allNextStatesResult.allSolutions["TNS-R"].length);
+    num_states_lbl.innerHTML += (allNextStatesResult.allSolutions["TNS-R"].length);
 
     currentPageIn.value = currentPage.toString();
 
@@ -189,6 +194,7 @@ function updateNodesValues(currentPage, step = 0){
     //Set the currentState variable so it can be sent back to the original path
     var i = 0;
     for (let element of graph.getElements()) {
+        console.log(element);
         // cell = analysis.elements[i];
         // value = analysis.analysisResult.allSolution[currentPage].intentionElements[i].status[step];
         satValue = selectedResult.elementList[i].status[step];
@@ -232,7 +238,7 @@ function updateNodesValues(currentPage, step = 0){
 function updatePagination(currentPage){
     var pagination = document.getElementById("pagination");
     // var nextSteps_array_size = analysis.analysisResult.allSolution.length;
-    var nextSteps_array_size = selectedResult.allSolution.length;
+    var nextSteps_array_size = allNextStatesResult.allSolutions["TNS-R"].length;
     if (nextSteps_array_size > 6){
         renderPreviousBtn(pagination, currentPage);
         if (currentPage - 3 < 0){
@@ -273,7 +279,7 @@ function renderPreviousBtn(pagination, currentPage){
 function renderForwardBtn(pagination, currentPage){
     var value;
     // var nextSteps_array_size = analysis.analysisResult.allSolution.length;
-    var nextSteps_array_size = selectedResult.allSolution.length;
+    var nextSteps_array_size = allNextStatesResult.allSolutions["TNS-R"].length;
 
     if (currentPage == nextSteps_array_size-1){
         value = currentPage;
@@ -305,7 +311,7 @@ function clear_pagination_values(){
 function goToState(){
     var requiredState = parseInt(document.getElementById("requiredState").value);
     // var nextSteps_array_size = analysis.analysisResult.allSolution.length;
-    var nextSteps_array_size = selectedResult.allSolution.length;
+    var nextSteps_array_size = allNextStatesResult.allSolutions["TNS-R"].length;
 
     if ((requiredState != "NaN") && (requiredState > 0)){
         if (requiredState > nextSteps_array_size){

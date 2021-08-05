@@ -21,7 +21,7 @@ var url = "http://localhost:8080/untitled.html";	// Hardcoded URL for Node calls
  * 
  * TODO: Replace analysisRequest with config
  */
- function getAllNextStates(analysisRequest) {
+ function getAllNextStates(analysisRequest, allNextStatesResult) {
     console.log("TODO: Implement Next States") 
     // TODO: Is any of this code still needed?
 
@@ -71,7 +71,9 @@ var url = "http://localhost:8080/untitled.html";	// Hardcoded URL for Node calls
             //backendComm(jsObject);		//TODO: Need to add parameter for Node Server.
             // Temporary Disabled to updated calls to backend.
             // TODO: Reconnect All Paths Analysis
-
+			// TODO: fix this function call
+			// TODO: is allNextStatesResult correct or do we have to fix/edit it before sending it to popout window
+            open_analysis_viewer(analysisRequest, allNextStatesResult);
         } else {
             swal("Error: Cannot explore next states with last time point selected.", "", "error");
         }
@@ -136,16 +138,12 @@ function responseFunc(analysisRequest, response) {
 		} else if (analysisRequest.get('action') == 'allNextStates') {
 				console.log("All Paths Results (responseFunc):");
 				console.log(JSON.stringify(results));
-				var analysisResult = convertToAnalysisResult(results); 	// {ResultBBM}
+				var allNextStatesResult = convertToAnalysisResult(results); 	// {ResultBBM}
 				// TODO: Uncomment and update next line.
-				getAllNextStates(analysisRequest);
+				getAllNextStates(analysisRequest, allNextStatesResult);
 				// TODO: update this line
-				console.log(results);
 				console.log(analysisRequest);
-				savedAnalysisData.allNextStatesResult = results;
-				console.log(savedAnalysisData.allNextStatesResult);	
-				// TODO: fix this function call			
-				open_analysis_viewer(analysisRequest, savedAnalysisData.allNextStatesResult);
+				console.log(allNextStatesResult);	
 		} else if (analysisRequest.get('action') == 'singlePath') {
 				savedAnalysisData.singlePathResult = results;	//	TODO What is this?
 				console.log(JSON.stringify(results));			// Print the results of the analysis to the console.
@@ -178,12 +176,15 @@ function convertToAnalysisResult(results){
 	return tempResult;
 }
 
-function open_analysis_viewer(analysisRequest, result){
+function open_analysis_viewer(analysisRequest, allNextStatesResult){
 	console.log(analysisRequest);
 	console.log(graph.toJSON());
 	
 	var analysisStringify = JSON.stringify(analysisRequest);
 	sessionStorage.setItem("Request", analysisStringify);
+	var allNextStatesResultStringify = JSON.stringify(allNextStatesResult);
+	sessionStorage.setItem("Result", allNextStatesResultStringify);
+
     var urlBase = document.URL.substring(0, document.URL.lastIndexOf('/')+1);
     var url = urlBase+"analysis.html";
     var w = window.open(url, Date.now(), "status=0,title=0,height=600,width=1200,scrollbars=1");
