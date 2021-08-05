@@ -123,6 +123,8 @@ public class BICSPAlgorithm {
     		initializePrevResults(this.spec, this.constraints, this.timePoints, this.values, this.uniqueIDToValueIndex);
     	}
     	
+    	CSPLinks.initializeLinkConstraints(this.constraints, this.spec, this.values, 
+    			this.uniqueIDToValueIndex, this.timePoints, this.timePointMap);
     	//initializeLinkConstraints();
     	//initializePathDynamicFunctions();
     	//initializeStateDynamicFunctions(this.constraints, this.intentions, this.values, this.functionEBCollection, this.spec.getInitialValueTimePoints()[lengthOfInitial - 1], lengthOfInitial - 1, this.minTimePoint);

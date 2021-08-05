@@ -16,8 +16,7 @@ public class CSPLinks {
 	 * Includes forward and backwards analysis rules.
 	 * Considers single and evolving intentions. 
 	 */
-	public static void initializeLinkConstraints(List<Constraint> constraints, 
-			ModelSpec spec, Intention[] intentions, 
+	public static void initializeLinkConstraints(List<Constraint> constraints, ModelSpec spec,  
 			BooleanVar[][][] values, HashMap<String, Integer> uniqueIDToValueIndex,
 			IntVar[] timePoints, HashMap<IntVar, List<String>> timePointMap) {
 				
@@ -84,13 +83,8 @@ public class CSPLinks {
 	   				else if (post != null)	
 	   					constraints.add(new IfThen(new XlteqY(refTP, timePoints[t]), postConstraint));
 	   			}
-				
-				
 			}
 		}
-
-
-		
 	}
 
 	private static void addForwardDecomposition(
