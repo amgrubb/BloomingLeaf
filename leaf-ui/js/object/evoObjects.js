@@ -145,7 +145,7 @@ class EVO {
      * Runs after any event that may change visualization, such as setting a sat value, changing slider option, or selecting a time point
      */
     static refresh(analysisResult) {
-        if (this.sliderOption > 0) {
+        if (EVO.sliderOption > 0) {
             if (analysisResult !== undefined){
                 if (analysisResult.get('selected')){
                     EVO.colorIntentionsAnalysis(analysisResult);
@@ -159,9 +159,19 @@ class EVO {
             }
             EVO.changeIntentionsText(analysisResult);
         } else {
+            if (analysisResult !== undefined) {
+                if (analysisResult.get('selected')) {
+                    EVO.displaySlider(true);
+                }
+                else {
+                    EVO.displaySlider(false);
+                }
+            }
+            else {
+                EVO.displaySlider(false);
+            }
             EVO.returnAllColors(graph.getElements(), paper);
             EVO.revertIntentionsText(graph.getElements(), paper);
-            EVO.displaySlider(false);
         }
     }
         
@@ -367,6 +377,7 @@ class EVO {
 
         // Shows .satvalue automatically
         $('.satvalue').css("display", "");
+
         for (var i = 0; i < elements.length; i++) {
             curr = elements[i].findView(paper).model;
 
@@ -420,12 +431,12 @@ class EVO {
     /** 
      * Makes slider dis/appear 
      */
-     static displaySlider(isState){
-        if (isState) {// If the sliderOption is set at state
+     static displaySlider(isOn){
+        if (isOn) {// If the sliderOption is set at state or off
             $('#slider').css("display", "");
             $('#sliderValue').css("display", "");
         }
-        else {// If the sliderOption is not set at state
+        else {// If the sliderOption is at % and time and when no result is selected
             $('#slider').css("display", "none");
             $('#sliderValue').css("display", "none");
         }
