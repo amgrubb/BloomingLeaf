@@ -13,6 +13,8 @@ import org.jacop.search.*;
 import gson_classes.IOSolution;
 
 public class BICSPAlgorithm {
+    private final static boolean DEBUG = false;
+    
 	// Elements needed for the CSP Solver
 	private Store store;									// CSP Store
 	private List<Constraint> constraints;					// Holds the constraints to be added to the Store
@@ -24,7 +26,7 @@ public class BICSPAlgorithm {
 	private ModelSpec spec;									// Holds the model information.
 	private int maxTime;									// duplicated from spec to create shortcut for code.
 	private IntVar zero;									// (0) Initial Values time point.
-//	private IntVar infinity;								// (maxTime + 1) Infinity used for intention functions, not a solved point.
+	private IntVar infinity;								// (maxTime + 1) Infinity used for intention functions, not a solved point.
 
 	// Problem Size: (numIntentions x numTimePoints x 4) + numTimePoints
 	private int numTimePoints;										// Total number of time points in the path (to be calculated).
@@ -55,8 +57,7 @@ public class BICSPAlgorithm {
 //    private boolean[] boolPSPD = new boolean[] {false, true, true, false};
 //    private boolean[] boolFSPD = new boolean[] {false, true, true, true};
 //    private boolean[] boolPSFD = new boolean[] {true, true, true, false};
-    
-    private final static boolean DEBUG = true;	
+   	
     
 	public BICSPAlgorithm(ModelSpec spec) throws Exception {
     	if (DEBUG) System.out.println("Starting: TroposCSPAlgorithm");
@@ -90,7 +91,7 @@ public class BICSPAlgorithm {
 		this.spec = spec;
 		this.maxTime = spec.getMaxTime();
 		this.zero = new IntVar(this.store, "Zero", 0, 0);
-//		this.infinity = new IntVar(this.store, "Infinity", this.maxTime + 1, this.maxTime + 1);
+		this.infinity = new IntVar(this.store, "Infinity", this.maxTime + 1, this.maxTime + 1);
 		
 		// Create time point path.
 		if (problemType == SearchType.PATH || problemType == SearchType.UPDATE_PATH) {
@@ -127,13 +128,14 @@ public class BICSPAlgorithm {
     			this.uniqueIDToValueIndex, this.timePoints, this.timePointMap);
 
     	CSPIntentions.initializeEvolvingFunctionsForIntentions(this.constraints, this.spec, this.values, 
-    			this.uniqueIDToValueIndex, this.timePoints, this.timePointMap);
-    	//initializePathDynamicFunctions();
-    	//initializeStateDynamicFunctions(this.constraints, this.intentions, this.values, this.functionEBCollection, this.spec.getInitialValueTimePoints()[lengthOfInitial - 1], lengthOfInitial - 1, this.minTimePoint);
+    			this.uniqueIDToValueIndex, this.timePoints, this.timePointMap, this.infinity);
+    	CSPIntentions.initializeUserEvaluationsForIntentions(this.constraints, this.spec, this.values, 
+    			this.uniqueIDToValueIndex, this.timePoints, this.timePointMap, this.infinity);
+
     	//initializeUserEvaluations();
-    	//not both links
+  
     	CSPIntentions.addNBFunctions();
- 		//TODO: Add evolving functions, relationship, constraints, initial values.
+
     	if (DEBUG)	System.out.println("\nEnd of Init Procedure");	
 	}
 
@@ -307,7 +309,8 @@ public class BICSPAlgorithm {
 	 */
 	private IOSolution getPathSolutionOutModel() {	
 		int[] indexOrder = this.createTimePointOrder();
-		if (DEBUG) this.printSinglePathSolution(indexOrder);
+		//if (DEBUG) 
+		this.printSinglePathSolution(indexOrder);
 
 		// Get Time Points (timePointAssignments)
 		Integer[] finalTPPath = new Integer[indexOrder.length];
@@ -375,9 +378,12 @@ public class BICSPAlgorithm {
 	 */
 	private void printSinglePathSolution(int[] indexOrder) {
 		// Print out timepoint data.
-    	for (int i = 0; i < indexOrder.length; i++)
-    		System.out.println(this.timePoints[indexOrder[i]].id + "-" + this.timePoints[indexOrder[i]].value() + "\t");
-
+		System.out.println("\nSolution!");
+    	for (int i = 0; i < indexOrder.length; i++) {
+    		System.out.print(this.timePoints[indexOrder[i]].id + " : " + this.timePoints[indexOrder[i]].value() + "   \t");
+    		System.out.println(timePointMap.get(this.timePoints[indexOrder[i]]));
+    	}
+    	
 		// Print out times.
     	System.out.print("Time:\t");
     	for (int i = 0; i < indexOrder.length; i++){

@@ -241,7 +241,7 @@ public class CSPLinks {
 		
 		for (Intention node : spec.getIntentions()) {
 			int targetID = uniqueIDToValueIndex.get(node.getUniqueID());
-			System.out.println("Target " + targetID);
+			if (DEBUG) System.out.println("Target " + targetID);
 			List<ContributionLink> contributionLinks = new ArrayList<ContributionLink>();
 			List<DecompositionLink> decompositionLinks = new ArrayList<DecompositionLink>();
 			for (AbstractElementLink link : node.getLinksDest()) {
