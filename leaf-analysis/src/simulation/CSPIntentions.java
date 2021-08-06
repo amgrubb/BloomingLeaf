@@ -23,7 +23,7 @@ public class CSPIntentions {
 	 *  Creates the dynamic function constraints for the full path.
 	 *  NotBoth constraints created at the end of the function.
 	 */
-	private void initializeEvolvingFunctionsForIntentions(
+	public void initializeEvolvingFunctionsForIntentions(
 			List<Constraint> constraints, ModelSpec spec,  
 			BooleanVar[][][] values, HashMap<String, Integer> uniqueIDToValueIndex,
 			IntVar[] timePoints, HashMap<IntVar, List<String>> timePointMap) {
@@ -34,13 +34,16 @@ public class CSPIntentions {
     		FunctionSegment[] segList = element.getEvolvingFunctions();
     		if (segList == null) continue;
     		
-    		IntentionalElementDynamicType tempType = element.dynamicType;
-        	if ((tempType == IntentionalElementDynamicType.NT) || (element.dynamicType == IntentionalElementDynamicType.RND) || 
-        		(tempType == IntentionalElementDynamicType.NB))
-        		continue;
- 
-    		IntVar[] epochs = this.functionEBCollection.get(element);
-    		boolean[] dynFVal = element.getDynamicFunctionMarkedValue();
+    		for (FunctionSegment seg : segList) {
+    			System.out.println(seg.getType() + "\t" + seg.getStartTP() + "\t" + seg.getRefEvidencePair());
+    		}
+//    		IntentionalElementDynamicType tempType = element.dynamicType;
+//        	if ((tempType == IntentionalElementDynamicType.NT) || (element.dynamicType == IntentionalElementDynamicType.RND) || 
+//        		(tempType == IntentionalElementDynamicType.NB))
+//        		continue;
+// 
+//    		IntVar[] epochs = this.functionEBCollection.get(element);
+//    		boolean[] dynFVal = element.getDynamicFunctionMarkedValue();
     		
     	}
 	}
