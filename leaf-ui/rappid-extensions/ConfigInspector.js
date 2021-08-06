@@ -44,7 +44,7 @@ var ResultView = Backbone.View.extend({
         this.model.trigger('change:switchResults', this.model);
         this.config.set('selected', true);
         this.config.trigger('change:switchConfigs', this.config);
-        displayAnalysis(this.model, true, "analysis");
+        displayAnalysis(this.model, true);
     },
 
     /**
@@ -142,6 +142,7 @@ var Config = Backbone.View.extend({
         this.$('.analysis-configuration').append(this.innerView.$el);
         if (this.model.get('selected')) {
             this.showAnalysisInspector();
+            EVO.switchToModelingMode(undefined, false);
         }
         return this;
     },
@@ -201,11 +202,13 @@ var Config = Backbone.View.extend({
      * Sets selected value to true and triggers a switchConfig event to update highlight
      */
     switchConfig: function () {
+
         $('#modelingSlider').css("display", "");
         $('#analysisSlider').css("display", "none");
         EVO.refresh(undefined);
+
         this.model.set({ selected: true });
-        removeSlider();
+        EVO.switchToModelingMode(undefined, false);
     },
 
     /**

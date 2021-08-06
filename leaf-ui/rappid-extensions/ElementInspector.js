@@ -593,7 +593,9 @@ var ElementInspector = Backbone.View.extend({
      * and updateChartUserDefined.
      */
     updateCell: function () {
+
         EVO.refresh(undefined);
+
         changeFont(current_font, paper);
         if (this.intention.get('evolvingFunction') != null) {
             if (this.intention.get('evolvingFunction').get('type') == 'NT') {
@@ -608,6 +610,7 @@ var ElementInspector = Backbone.View.extend({
         } else {
             this.model.attr('.satvalue/text', satisfactionValuesDict[this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair')].satValue);
         }
+        IntentionColoring.refresh(undefined);
     },
 
     /**

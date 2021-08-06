@@ -130,6 +130,7 @@ function responseFunc(analysisRequest, response) {
 				var analysisResult = convertToAnalysisResult(results); 	// {ResultBBM}
 				displayAnalysis(analysisResult, false);
 				analysisRequest.addResult(analysisResult);
+				EVO.refresh(analysisRequest);
 		} else {
 			alert("Error: Unknown analysis request type.");
 			return;

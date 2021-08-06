@@ -383,11 +383,14 @@ paper.on("link:options", function (cell) {
         $('.link-tools .tool-options').css("display", "none");
         $('.attribution').css("display", "none");
         $('.inspector').css("display", "none");
+
         EVO.refresh(selectResult);
+
         var configResults = configCollection.findWhere({ selected: true }).get('results');
         if (configResults !== undefined){
             selectResult = configResults.findWhere({ selected: true });
         }
+        IntentionColoring.refresh(selectResult);
 
         // TODO: Add check for model changes to potentially clear configCollection back in
     }
@@ -406,6 +409,9 @@ paper.on("link:options", function (cell) {
             if (selectResult !== undefined){
                 selectResult.set('selected', false);
             }
+
+            // Remove Slider
+            removeSlider();
 
             // Reset to initial graph prior to analysis
             revertNodeValuesToInitial();

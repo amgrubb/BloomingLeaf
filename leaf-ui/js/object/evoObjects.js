@@ -3,6 +3,41 @@
  * Prevents conflict in coloring modes. Refreshes when changes are made in the model.
  *
  */
+class IntentionColoring {
+    static colorMode = "none"; //none, EVO, cycle
+    static isColorBlindMode = false; //color blind mode
+
+    /**
+     * Colors intentions by their mode
+     */
+    static refresh(analysisResult) {
+        if (IntentionColoring.colorMode == "EVO") {
+            EVO.refresh(analysisResult);
+        }
+    }
+
+    /**
+     * Change color mode
+     * @param {*} newColorMode 
+     */
+    static setColorMode(newColorMode, analysisResult) {
+        IntentionColoring.colorMode = newColorMode;
+        if(newColorMode != "EVO") {
+            EVO.deactivate();
+        }
+        IntentionColoring.refresh(analysisResult);
+    }
+
+    /**
+     * Toggles color blind mode
+     * @param {*} isTurningOnColorBlindMode 
+     */
+    static toggleColorBlindMode(isTurningOnColorBlindMode, analysisResult) {
+        IntentionColoring.isColorBlindMode = isTurningOnColorBlindMode;
+        IntentionColoring.refresh(analysisResult);
+    }
+        
+}
 
 class IntentionColorVis{
     constructor()
@@ -126,6 +161,7 @@ class EVO {
         } else {
             EVO.returnAllColors(graph.getElements(), paper);
             EVO.revertIntentionsText(graph.getElements(), paper);
+            EVO.displaySlider(false);
         }
     }
         
@@ -162,8 +198,9 @@ class EVO {
         this.generateConsoleReport();
         EVO.refresh(analysisResult);
     }   
-    
-     /**
+
+  
+    /**
      * Switch between update modeling slider to analysis slider for EVO
      */
     static update(analysisResult){
@@ -172,6 +209,7 @@ class EVO {
         EVO.setSliderOption('1', analysisResult);
     }
 
+  
     /**
      * Turn off EVO
      */
@@ -266,7 +304,7 @@ class EVO {
             }
 
             }
-            else if(EVO.sliderOption == 1) { //fill by %
+            else if (EVO.sliderOption == 1) { //fill by %
             for(var j = 0; j < EVO.numEvals; ++j) {
             var intentionEval = EVO.colorVisOrder[j];
             if(element.evals[intentionEval] > 0) {
@@ -308,7 +346,8 @@ class EVO {
             if (intention == null) { // If it is an actor or something went wrong
                 actorBuffer += 1;
             }
-            var element = analysisResult.get('colorVis').intentionListColorVis[i - actorBuffer];
+            if (analysisResult.get('colorVis') !== undefined) {
+                var element = analysisResult.get('colorVis').intentionListColorVis[i - actorBuffer];
                 if (intention != null && element != null) {
                     if (EVO.sliderOption != 3) {
                     var gradientID = this.defineGradient(element);
@@ -321,6 +360,7 @@ class EVO {
                         cellView.model.attr({'.outer' : {'fill' : color}});
                     }
                 }
+            }
         }
     }
 
@@ -330,8 +370,13 @@ class EVO {
     static changeIntentionsText(analysisResult){
         var elements = graph.getElements();
         var curr;
+        var timepoint;
+        var colorVis 
+        var satVal;
         var intention;
         var initSatVal;
+
+        $('.satvalue').css("display", "");
         for (var i = 0; i < elements.length; i++) {
             curr = elements[i].findView(paper).model;
 
@@ -341,24 +386,57 @@ class EVO {
                 curr.attributes.type !== 'basic.Resource') {
                 continue;
             }
-            intention = elements[i].get('intention');
-            initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair'); 
+
+            // Sets satvalue/text to the initial sat value
+            intention = curr.get('intention');
+            initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair');
+            if (initSatVal === '(no value)') {
+                curr.attr('.satvalue/text', '');
+            } else {
+                curr.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
+            }
+
+            // The slider automatic setting
+            EVO.displaySlider(false);
+
             if (analysisResult !== undefined) {
-                if (!analysisResult.get('isPathSim')) {   
-                    if (initSatVal === '(no value)') {
-                        curr.attr('.satvalue/text', '');
-                        curr.attr({text: {fill: 'black',stroke:'none','font-weight' : 'normal'}});
+                // The EVO mode fill color
+                curr.attr({text: {fill: 'white',stroke:'none'}});
+                // If the result is selected 
+                if (analysisResult.get('selected')){
+                    if (EVO.sliderOption == 3){// If the option is states
+                        // Resets the satvalue back
+                        timepoint = EVO.curTimePoint;
+                        colorVis = analysisResult.get('colorVis');
+                        satVal = colorVis.intentionListColorVis[0].timePoints[timepoint];
+                        curr.attr('.satvalue/text', satisfactionValuesDict[satVal].satValue);
+                        EVO.displaySlider(true);
                     }
                     else {
-                        curr = elements[i].findView(paper).model;
-                        curr.attr({text: {fill: 'white',stroke:'none'}});
+                        $('.satvalue').css("display", "none");
                     }
                 }
                 else {
-                    curr = elements[i].findView(paper).model;
-                    curr.attr({text: {fill: 'white',stroke:'none'}});
+                    curr.attr({text: {fill: 'black',stroke:'none'}});
                 }
             }
+            else {
+                curr.attr({text: {fill: 'black',stroke:'none'}});
+            }
+        }
+    }
+
+    /** 
+     * Makes slider dis/appear 
+     */
+     static displaySlider(isState){
+        if (isState){
+            $('#slider').css("display", "");
+            $('#sliderValue').css("display", "");
+        }
+        else {
+            $('#slider').css("display", "none");
+            $('#sliderValue').css("display", "none");
         }
     }
 
@@ -367,8 +445,21 @@ class EVO {
      */
     static revertIntentionsText(elements, paper) {
         var curr;
+        var intention;
+        var initSatVal;
+        // Displays .satvalue
+        $('.satvalue').css("display", "");
         for (var i = 0; i < elements.length; i++) {
             curr = elements[i].findView(paper).model;
+            intention = curr.get('intention');
+            initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair');
+            
+            // Sets satvalue/text to the initial sat value
+            if (initSatVal === '(no value)') {
+                curr.attr('.satvalue/text', '');
+            } else {
+                curr.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
+            }
             curr.attr({text: {fill: 'black',stroke:'none'}});
         }
     }
@@ -420,15 +511,16 @@ class EVO {
     /**
      * Switch back to modeling slider, if EVO is on the visualization returns to filling by initial state.
      */
-     static switchToModelingMode(analysisResult) {
+     static switchToModelingMode(analysisResult, modelMode = true) {
         $('#modelingSlider').css("display", "");
         $('#analysisSlider').css("display", "none");
         // if EVO is on in analysis mode, keep it on
-        if(EVO.sliderOption > 0) {
+        if(EVO.sliderOption > 0 && modelMode) {
             EVO.sliderOption = '1';
         }
         document.getElementById("colorReset").value = EVO.sliderOption;
         EVO.refresh(analysisResult);
+
     }
 
     /**
