@@ -27,9 +27,12 @@ public class CSPIntentions {
 			List<Constraint> constraints, ModelSpec spec,  
 			BooleanVar[][][] values, HashMap<String, Integer> uniqueIDToValueIndex,
 			IntVar[] timePoints, HashMap<IntVar, List<String>> timePointMap) {
-	
+			
     	for (Intention element : spec.getIntentions()){
     		if (DEBUG) System.out.println("Evolving Intention for " + element.id);
+    		
+    		FunctionSegment[] segList = element.getEvolvingFunctions();
+    		if (segList == null) continue;
     		
     		IntentionalElementDynamicType tempType = element.dynamicType;
         	if ((tempType == IntentionalElementDynamicType.NT) || (element.dynamicType == IntentionalElementDynamicType.RND) || 
