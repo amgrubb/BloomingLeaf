@@ -27,8 +27,8 @@ window.onload = function(){
   
     init();
     renderNavigationSidebar();
-    console.log(graph.toJSON());
-    console.log(JSON.stringify(graph));
+    //console.log(graph.toJSON());
+    //console.log(JSON.stringify(graph));
 }
 
 function init(){
@@ -44,8 +44,8 @@ function init(){
     //tempResults = jQuery.extend(true, {}, window.opener.savedAnalysisData.allNextStatesResult);
 
     analysisResult = analysisRequest.previousAnalysis;
-    graph = new joint.dia.BloomingGraph();
-    oldGraph = jQuery.extend({}, window.opener.graph.toJSON());
+    newGraph = new joint.dia.BloomingGraph();
+    graph = jQuery.extend({}, window.opener.graph.toJSON());
     console.log("oldGraph: " + oldGraph)
     //loadFromObject();
     // for (let cell of analysis.graph.getElements()) {
@@ -62,7 +62,7 @@ function init(){
         height: 600,
         gridSize: 10,
         perpendicularLinks: false,
-        model: graph,
+        model: newGraph,
         defaultLink: new joint.shapes.basic.CellLink({
             'attrs': {
                 '.connection': {stroke: '#000000'},
@@ -73,13 +73,13 @@ function init(){
         })
     });
 
-    paperScroller = new joint.ui.PaperScroller({
-        autoResizePaper: true,
-        paper: paper
-    });
+    // paperScroller = new joint.ui.PaperScroller({
+    //     autoResizePaper: true,
+    //     paper: paper
+    // });
   
-    $('#paper').append(paperScroller.render().el);
-    paperScroller.center();
+    // $('#paper').append(paperScroller.render().el);
+    // paperScroller.center();
     
     // $('#stencil').append(stencil.render().el);
     //elements = graph.getElements();
@@ -90,12 +90,13 @@ function init(){
             analysis.elements.push(analysis.graph.getElements()[i]);
     }
     */
+    newGraph.fromJSON(JSON.parse(JSON.stringify(window.opener.graph.toJSON())));
     loadFromObject();
-    graph.fromJSON(oldGraph);
+    // graph.fromJSON(oldGraph);
     // if(!analysis.analysisResult){
     //     analysis.analysisResult = analysisRequest.previousAnalysis;
     // }
-    console.log(graph.toJSON());
+    //console.log(graph.toJSON());
 }
 
 /**
@@ -108,7 +109,7 @@ function init(){
  */
  function loadFromObject() {
 	//graph.fromJSON(obj.graph);
-	var cells = graph.getCells();
+	var cells = newGraph.getCells();
 	for (var i = 0; i < cells.length; i++) {
 		cell = cells[i];
 		if (cell.get('type') == "basic.Actor"){
@@ -193,7 +194,7 @@ function updateNodesValues(currentPage, step = 0){
 
     //Set the currentState variable so it can be sent back to the original path
     var i = 0;
-    for (let element of graph.getElements()) {
+    for (let element of newGraph.getElements()) {
         console.log(element);
         // cell = analysis.elements[i];
         // value = analysis.analysisResult.allSolution[currentPage].intentionElements[i].status[step];
