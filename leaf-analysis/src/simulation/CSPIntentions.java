@@ -25,14 +25,7 @@ public class CSPIntentions {
 		}
 		throw new RuntimeException("CSPIntentions: getTimePoint - cannot find timepoint for " + name);
 	}
-	
-	private static PrimitiveConstraint[] createXeqY(BooleanVar[] val1, BooleanVar[] val2){
-		return new PrimitiveConstraint[]{
-				new XeqY(val1[3], val2[3]),
-				new XeqY(val1[2], val2[2]),
-				new XeqY(val1[1], val2[1]),
-				new XeqY(val1[0], val2[0])};
-	}	
+		
 	private static PrimitiveConstraint[] createXeqC(BooleanVar[] val1, boolean[] val2){
 		return new PrimitiveConstraint[]{
 				new XeqC(val1[3], boolToInt(val2[3])),
@@ -64,10 +57,9 @@ public class CSPIntentions {
 				res[i] = (evalValue.charAt(i) == '1');
 			}
 			return res;
-		} else {
-			//return new boolean[] {false, false, false, false};
-			throw new RuntimeException("CSPIntentions: Invalid value " + evalValue + " in getEvaluationArray ");
-		}
+		} else if (evalValue.equals("(no value)")) 
+			return null;
+		throw new RuntimeException("CSPIntentions: Invalid value " + evalValue + " in getEvaluationArray ");
 	}
 	
 	/**
@@ -353,37 +345,36 @@ public class CSPIntentions {
 	public static void initializeUserEvaluationsForIntentions(
 			List<Constraint> constraints, ModelSpec spec,  
 			BooleanVar[][][] values, HashMap<String, Integer> uniqueIDToValueIndex,
-			IntVar[] timePoints, HashMap<IntVar, List<String>> timePointMap,
-			IntVar infinity) {
+			IntVar[] timePoints) { //, HashMap<IntVar, List<String>> timePointMap,
+			//IntVar infinity) {
 	
     	for (Intention element : spec.getIntentions()){
     		if (DEBUG) System.out.println("User Evaluations for " + element.id);
     		
     		Integer i = uniqueIDToValueIndex.get(element.getUniqueID());
-    		FunctionSegment[] segList = element.getEvolvingFunctions();
-    		if (i == null || segList == null) continue;
+    		HashMap<Integer, String> evals = element.getUserEvals();
+    		if (i == null || evals == null) continue;
     		
-    		for (int f = 0; f < segList.length; f++) {
-    			FunctionSegment seg = segList[f];
-    			System.out.println(seg.getType() + "\t" + seg.getStartTP() + "\t" + seg.getRefEvidencePair());
+    		for (Map.Entry<Integer, String> entry : evals.entrySet()) {
+    			if (DEBUG) System.out.println("User Eval: " + entry.getKey() + " - " + entry.getValue());
     			
-    			if (seg.getType().equals("R"))
+    			boolean[] refEvidence = convertEvalStringToEvidencePredicates(entry.getValue());
+    			if (refEvidence == null)
     				continue;
+    			
+    			Integer timeIndex = null;
+    			for (int tp = 0; tp < timePoints.length; tp ++) 
+    	   			if (timePoints[tp].min() == timePoints[tp].max() && timePoints[tp].min() == entry.getKey()) {
+    	   				timeIndex = tp;
+    	   				break;
+    	   			}
+    			if (timeIndex == null)
+    				throw new RuntimeException("CSPIntentions: Inapprorpriate user value for element: " + element.id);  
 
-    			IntVar segmentStart = getTimePoint(timePointMap, seg.getStartTP());
-				IntVar segmentEnd = null;
-				if (f == (segList.length - 1))
-					segmentEnd = infinity;
-				else
-					segmentEnd = getTimePoint(timePointMap, segList[f+1].getStartTP());
-				
-				boolean[] refEvidence = convertEvalStringToEvidencePredicates(seg.getRefEvidencePair());	
-					for (int t = 0; t < values[i].length; t++){
-						PrimitiveConstraint[] tempConstant = createXeqC(values[i][t], refEvidence);
-						constraints.add(new IfThen(
-								new And(new XlteqY(segmentStart, timePoints[t]), new XgtY(segmentEnd, timePoints[t])),
-								new And(tempConstant)));
-					}
+    			constraints.add(new XeqC(values[i][timeIndex][0], boolToInt(refEvidence[0])));
+				constraints.add(new XeqC(values[i][timeIndex][1], boolToInt(refEvidence[1])));
+				constraints.add(new XeqC(values[i][timeIndex][2], boolToInt(refEvidence[2])));
+				constraints.add(new XeqC(values[i][timeIndex][3], boolToInt(refEvidence[3])));
     		}
     	}
 	}

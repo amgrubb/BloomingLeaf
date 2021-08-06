@@ -42,23 +42,6 @@ public class BICSPAlgorithm {
 	private HashMap<String, Integer> uniqueIDToValueIndex = new HashMap<String, Integer>();
 	private String[] valueIndexToUniqueID;
 	
-//    private IntVar[] unsolvedTimePoints;					// Holds the list of time points without an absolute assignment. 
-//    private IntVar[] nextTimePoints;						// Holds the list of next possible time points. Does not include multiple stochastic or absolute. Used for finding state.
-//    private IntVar nextTimePoint;							// Holds the single int value that will map to a value of nextTimePoints, to be solve by the solve if next state is used.
-//    private IntVar minTimePoint;									// Is assigned the minimum time of nextTimePoints.
-//	  private Intention[] intentions;							// array of intention elements in the model
-
-//    private boolean[] boolFD = new boolean[] {true, true, false, false};
-//    private boolean[] boolPD = new boolean[] {false, true, false, false};
-//    private boolean[] boolPS = new boolean[] {false, false, true, false};
-//    private boolean[] boolFS = new boolean[] {false, false, true, true};
-//    private boolean[] boolTT = new boolean[] {false, false, false, false};
-//    private boolean[] boolFSFD = new boolean[] {true, true, true, true};
-//    private boolean[] boolPSPD = new boolean[] {false, true, true, false};
-//    private boolean[] boolFSPD = new boolean[] {false, true, true, true};
-//    private boolean[] boolPSFD = new boolean[] {true, true, true, false};
-   	
-    
 	public BICSPAlgorithm(ModelSpec spec) throws Exception {
     	if (DEBUG) System.out.println("Starting: TroposCSPAlgorithm");
 
@@ -130,7 +113,7 @@ public class BICSPAlgorithm {
     	CSPIntentions.initializeEvolvingFunctionsForIntentions(this.constraints, this.spec, this.values, 
     			this.uniqueIDToValueIndex, this.timePoints, this.timePointMap, this.infinity);
     	CSPIntentions.initializeUserEvaluationsForIntentions(this.constraints, this.spec, this.values, 
-    			this.uniqueIDToValueIndex, this.timePoints, this.timePointMap, this.infinity);
+    			this.uniqueIDToValueIndex, this.timePoints); //, this.timePointMap, this.infinity);
 
     	//initializeUserEvaluations();
   
