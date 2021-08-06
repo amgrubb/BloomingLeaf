@@ -38,13 +38,12 @@ var ResultView = Backbone.View.extend({
      */
     // TODO: Update this function to pass the ResultBBM into displayAnalysis
     switchResult: function () {
-        $('#modelingSlider').css("display", "none");
-        $('#analysisSlider').css("display", "");
         this.model.set('selected', true);
         this.model.trigger('change:switchResults', this.model);
         this.config.set('selected', true);
         this.config.trigger('change:switchConfigs', this.config);
         displayAnalysis(this.model, true);
+        EVO.refreshSlider(this.model);
     },
 
     /**
@@ -142,7 +141,7 @@ var Config = Backbone.View.extend({
         this.$('.analysis-configuration').append(this.innerView.$el);
         if (this.model.get('selected')) {
             this.showAnalysisInspector();
-            EVO.switchToModelingMode(undefined, false);
+            EVO.refreshSlider(undefined);
         }
         return this;
     },
@@ -205,10 +204,9 @@ var Config = Backbone.View.extend({
 
         $('#modelingSlider').css("display", "");
         $('#analysisSlider').css("display", "none");
-        EVO.refresh(undefined);
-
         this.model.set({ selected: true });
-        EVO.switchToModelingMode(undefined, false);
+        EVO.refresh(undefined);
+        EVO.refreshSlider(undefined);
     },
 
     /**

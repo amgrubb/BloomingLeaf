@@ -390,7 +390,7 @@ paper.on("link:options", function (cell) {
         if (configResults !== undefined){
             selectResult = configResults.findWhere({ selected: true });
         }
-        IntentionColoring.refresh(selectResult);
+        EVO.refresh(selectResult);
 
         // TODO: Add check for model changes to potentially clear configCollection back in
     }
@@ -540,8 +540,9 @@ paper.on("link:options", function (cell) {
     }
 
     $(window).resize(function () {
-        var configResults = configCollection.findWhere({ selected: true }).get('results').findWhere({ selected: true });
-        if (configResults !== undefined){
+        var config = configCollection.findWhere({ selected: true });
+        if (config !== undefined){
+            var configResults = config.get('results').findWhere({ selected: true });
             resizeWindow(configResults.get('timePointPath').length - 1);
         } 
     });

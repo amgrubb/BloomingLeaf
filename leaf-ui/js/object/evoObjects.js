@@ -25,7 +25,7 @@ class IntentionColoring {
         if(newColorMode != "EVO") {
             EVO.deactivate();
         }
-        IntentionColoring.refresh(analysisResult);
+        EVO.refresh(analysisResult);
     }
 
     /**
@@ -34,7 +34,7 @@ class IntentionColoring {
      */
     static toggleColorBlindMode(isTurningOnColorBlindMode, analysisResult) {
         IntentionColoring.isColorBlindMode = isTurningOnColorBlindMode;
-        IntentionColoring.refresh(analysisResult);
+        EVO.refresh(analysisResult);
     }
         
 }
@@ -122,6 +122,7 @@ class EVO {
      * @param {*} newSliderOption 
      */
     static setSliderOption(newSliderOption, analysisResult) {
+        console.log("setSliderOption");
         if (newSliderOption >= 0 && newSliderOption <= 3) {
             EVO.sliderOption = newSliderOption;
         }
@@ -197,16 +198,6 @@ class EVO {
         }
         this.generateConsoleReport();
         EVO.refresh(analysisResult);
-    }   
-
-  
-    /**
-     * Switch between update modeling slider to analysis slider for EVO
-     */
-    static update(analysisResult){
-        $('#modelingSlider').css("display", "none");
-        $('#analysisSlider').css("display", "");
-        EVO.setSliderOption('1', analysisResult);
     }
 
   
@@ -511,16 +502,33 @@ class EVO {
     /**
      * Switch back to modeling slider, if EVO is on the visualization returns to filling by initial state.
      */
-     static switchToModelingMode(analysisResult, modelMode = true) {
+     static switchToModelingMode(analysisResult) {
         $('#modelingSlider').css("display", "");
         $('#analysisSlider').css("display", "none");
-        // if EVO is on in analysis mode, keep it on
-        if(EVO.sliderOption > 0 && modelMode) {
+
+        if(EVO.sliderOption > 0) {
             EVO.sliderOption = '1';
         }
         document.getElementById("colorReset").value = EVO.sliderOption;
         EVO.refresh(analysisResult);
 
+    }
+
+    static refreshSlider(analysisResult) {
+        if (analysisResult == undefined) {
+            $('#modelingSlider').css("display", "");
+            $('#analysisSlider').css("display", "none");
+            if(EVO.sliderOption > 0) {
+                EVO.sliderOption = '1';
+            }
+            document.getElementById("colorReset").value = EVO.sliderOption;
+        }
+        else {
+            $('#modelingSlider').css("display", "none");
+            $('#analysisSlider').css("display", "");
+            document.getElementById("colorResetAnalysis").value = EVO.sliderOption;
+        }
+        EVO.refresh(analysisResult);
     }
 
     /**

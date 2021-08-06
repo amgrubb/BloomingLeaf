@@ -610,7 +610,6 @@ var ElementInspector = Backbone.View.extend({
         } else {
             this.model.attr('.satvalue/text', satisfactionValuesDict[this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair')].satValue);
         }
-        IntentionColoring.refresh(undefined);
     },
 
     /**
