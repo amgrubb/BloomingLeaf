@@ -553,13 +553,14 @@ var ElementInspector = Backbone.View.extend({
             $("#repeat-begin").hide();
             $("#repeat-end").hide();
             $("#constraint-repeat").text("Set Repeats");
-            $("#repeat-error").hide();
             $("#repeat-begin2").hide();
             $("#repeat-end2").hide();
             $("#repeat-begin3").hide();
             $("#repeat-end3").hide();
             $("#noteRepeat").hide();
+            this.$("#repeat-error").hide();
             this.repeatOptionsDisplay = false;
+            this.rerender();
 
             // Update all repeat related display and values
         } else if (mode == "Update") {
