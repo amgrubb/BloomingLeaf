@@ -130,7 +130,7 @@ public class BICSPAlgorithm {
     	//initializeStateDynamicFunctions(this.constraints, this.intentions, this.values, this.functionEBCollection, this.spec.getInitialValueTimePoints()[lengthOfInitial - 1], lengthOfInitial - 1, this.minTimePoint);
     	//initializeUserEvaluations();
     	//not both links
-    	
+    	CSPIntentions.addNBFunctions();
  		//TODO: Add evolving functions, relationship, constraints, initial values.
     	if (DEBUG)	System.out.println("\nEnd of Init Procedure");	
 	}
