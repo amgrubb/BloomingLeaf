@@ -1,7 +1,7 @@
 
 /**  
  * Prevents conflict in coloring modes. Refreshes when changes are made in the model.
- * EVO operates though IntentionColoring to allow for a deactivation mode
+ *
  */
 class IntentionColoring {
     static colorMode = "none"; //none, EVO, cycle
@@ -65,11 +65,12 @@ class IntentionColorVis{
     }
 }
 
-class EVO {
+
 /**
- * TODO: docstring 
+ * Colors the nodes based on the different EVO types 
  * 
  */
+class EVO {
 //replaced white with grey for readability
     static colorVisDict = {
         "0000" : "#D3D3D3",
@@ -114,7 +115,7 @@ class EVO {
     //user selected slider option
     static sliderOption = 0;
     //whether color blind mode is activated
-    //static isColorBlindMode = false;
+    static isColorBlindMode = false;
 
     /**
      * Checks validity, sets sliderOption, and refreshes visualization
@@ -127,11 +128,8 @@ class EVO {
         else {
             console.log("ERROR: invalid sliderOption");
         }
-        EVO.refresh(analysisResult);
 
-        if (EVO.sliderOption > 0) { //not off
-            IntentionColoring.setColorMode("EVO", analysisResult);
-        }
+        EVO.refresh(analysisResult);
     }
 
     /**
@@ -140,35 +138,30 @@ class EVO {
      */
     static setCurTimePoint(newTimePoint, analysisResult) {
         EVO.curTimePoint = newTimePoint;
-        IntentionColoring.refresh(analysisResult);
+        EVO.refresh(analysisResult);
     }
 
     /**
      * Runs after any event that may change visualization, such as setting a sat value, changing slider option, or selecting a time point
      */
     static refresh(analysisResult) {
-        switch(this.sliderOption) {
-            case '1':
-            case '2':
-            case '3':
-                if (analysisResult !== undefined){
-                    if (analysisResult.get('selected')){
-                        EVO.colorIntentionsAnalysis(analysisResult);
-                    }
-                    else {
-                        EVO.colorIntentionsModeling();
-                    }
+        if (this.sliderOption > 0) {
+            if (analysisResult !== undefined){
+                if (analysisResult.get('selected')){
+                    EVO.colorIntentionsAnalysis(analysisResult);
                 }
-                else{
+                else {
                     EVO.colorIntentionsModeling();
                 }
-                EVO.changeIntentionsText(analysisResult);
-                break;
-            default://colorVis off
-                EVO.returnAllColors(graph.getElements(), paper);
-                EVO.revertIntentionsText(graph.getElements(), paper);
-                EVO.displaySlider(false);
-                    break;
+            }
+            else{
+                EVO.colorIntentionsModeling();
+            }
+            EVO.changeIntentionsText(analysisResult);
+        } else {
+            EVO.returnAllColors(graph.getElements(), paper);
+            EVO.revertIntentionsText(graph.getElements(), paper);
+            EVO.displaySlider(false);
         }
     }
         
@@ -176,7 +169,7 @@ class EVO {
         this.numIntentions = elementList.length;
         this.numTimePoints = elementList[0].status.length;
         this.intentionListColorVis = [];  
-        this.isColorBlind = IntentionColoring.isColorBlindMode; // Assessable in next state window  
+        this.isColorBlind = false; // Assessable in next state window  
         this.initializeIntentionList();
     }  
 
@@ -206,6 +199,17 @@ class EVO {
         EVO.refresh(analysisResult);
     }   
 
+  
+    /**
+     * Switch between update modeling slider to analysis slider for EVO
+     */
+    static update(analysisResult){
+        $('#modelingSlider').css("display", "none");
+        $('#analysisSlider').css("display", "");
+        EVO.setSliderOption('1', analysisResult);
+    }
+
+  
     /**
      * Turn off EVO
      */
@@ -488,7 +492,7 @@ class EVO {
      * @param {*} intentionEval four digit code that corresponds to evidence pair (ex. 0011)
      */
     static getColor(intentionEval) {
-        if(IntentionColoring.isColorBlindMode) {
+        if (EVO.isColorBlindMode) {
             return EVO.colorVisDictColorBlind[intentionEval];
         }
         return EVO.colorVisDict[intentionEval];
@@ -516,6 +520,16 @@ class EVO {
         }
         document.getElementById("colorReset").value = EVO.sliderOption;
         EVO.refresh(analysisResult);
+
+    }
+
+    /**
+     * Toggles color blind mode
+     * @param {*} isTurningOnColorBlindMode 
+     */
+     static toggleColorBlindMode(isTurningOnColorBlindMode, analysisResult) {
+        EVO.isColorBlindMode = isTurningOnColorBlindMode;
+        EVO.refresh(analysisResult);
     }
 }
 
@@ -528,7 +542,7 @@ class EVONextState  {
      * This passes the color blind mode option through the Next State window
      */
     static setColorBlindFromPrevWindow() {
-        IntentionColoring.isColorBlindMode = window.opener.analysisResult.colorVis.isColorBlind;
+        EVO.isColorBlindMode = window.opener.analysisResult.colorVis.isColorBlind;
     }
 
     /**
