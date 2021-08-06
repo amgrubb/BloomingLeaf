@@ -203,7 +203,7 @@ var Config = Backbone.View.extend({
     switchConfig: function () {
         $('#modelingSlider').css("display", "");
         $('#analysisSlider').css("display", "none");
-        EVO.refresh(undefined)
+        EVO.refresh(undefined);
         this.model.set({ selected: true });
         removeSlider();
     },

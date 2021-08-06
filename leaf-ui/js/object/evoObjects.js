@@ -126,10 +126,6 @@ class EVO {
         } else {
             EVO.returnAllColors(graph.getElements(), paper);
             EVO.revertIntentionsText(graph.getElements(), paper);
-                EVO.revertIntentionsText(graph.getElements(), paper);    
-            EVO.revertIntentionsText(graph.getElements(), paper);
-                EVO.revertIntentionsText(graph.getElements(), paper);    
-            EVO.revertIntentionsText(graph.getElements(), paper);
         }
     }
         
@@ -169,7 +165,6 @@ class EVO {
     
      /**
      * Switch between update modeling slider to analysis slider for EVO
-     * 
      */
     static update(analysisResult){
         $('#modelingSlider').css("display", "none");
@@ -406,7 +401,7 @@ class EVO {
      * @param {*} intentionEval four digit code that corresponds to evidence pair (ex. 0011)
      */
     static getColor(intentionEval) {
-        if(this.isColorBlindMode) {
+        if (EVO.isColorBlindMode) {
             return EVO.colorVisDictColorBlind[intentionEval];
         }
         return EVO.colorVisDict[intentionEval];
@@ -441,7 +436,7 @@ class EVO {
      * @param {*} isTurningOnColorBlindMode 
      */
      static toggleColorBlindMode(isTurningOnColorBlindMode, analysisResult) {
-        this.isColorBlindMode = isTurningOnColorBlindMode;
+        EVO.isColorBlindMode = isTurningOnColorBlindMode;
         EVO.refresh(analysisResult);
     }
 }
