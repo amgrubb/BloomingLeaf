@@ -205,7 +205,6 @@ var Config = Backbone.View.extend({
         $('#modelingSlider').css("display", "");
         $('#analysisSlider').css("display", "none");
         this.model.set({ selected: true });
-        EVO.refresh(undefined);
         EVO.refreshSlider(undefined);
     },
 

@@ -122,7 +122,6 @@ class EVO {
      * @param {*} newSliderOption 
      */
     static setSliderOption(newSliderOption, analysisResult) {
-        console.log("setSliderOption");
         if (newSliderOption >= 0 && newSliderOption <= 3) {
             EVO.sliderOption = newSliderOption;
         }
@@ -361,12 +360,12 @@ class EVO {
     static changeIntentionsText(analysisResult){
         var elements = graph.getElements();
         var curr;
-        var timepoint;
         var colorVis 
         var satVal;
         var intention;
         var initSatVal;
 
+        // Shows .satvalue automatically
         $('.satvalue').css("display", "");
         for (var i = 0; i < elements.length; i++) {
             curr = elements[i].findView(paper).model;
@@ -378,12 +377,14 @@ class EVO {
                 continue;
             }
 
-            // Sets satvalue/text to the initial sat value
+            // Sets satvalue/text to the initSatVal
             intention = curr.get('intention');
             initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair');
-            if (initSatVal === '(no value)') {
+
+            if (initSatVal === '(no value)') {// If there is no initSatVal
                 curr.attr('.satvalue/text', '');
-            } else {
+            }
+            else {
                 curr.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
             }
 
@@ -397,21 +398,20 @@ class EVO {
                 if (analysisResult.get('selected')){
                     if (EVO.sliderOption == 3){// If the option is states
                         // Resets the satvalue back
-                        timepoint = EVO.curTimePoint;
                         colorVis = analysisResult.get('colorVis');
-                        satVal = colorVis.intentionListColorVis[0].timePoints[timepoint];
+                        satVal = colorVis.intentionListColorVis[0].timePoints[EVO.curTimePoint];
                         curr.attr('.satvalue/text', satisfactionValuesDict[satVal].satValue);
                         EVO.displaySlider(true);
                     }
-                    else {
+                    else {// If it is % or time
                         $('.satvalue').css("display", "none");
                     }
                 }
-                else {
+                else {// If result is unselected
                     curr.attr({text: {fill: 'black',stroke:'none'}});
                 }
             }
-            else {
+            else {// If a config without results is selected
                 curr.attr({text: {fill: 'black',stroke:'none'}});
             }
         }
@@ -421,11 +421,11 @@ class EVO {
      * Makes slider dis/appear 
      */
      static displaySlider(isState){
-        if (isState){
+        if (isState) {// If the sliderOption is set at state
             $('#slider').css("display", "");
             $('#sliderValue').css("display", "");
         }
-        else {
+        else {// If the sliderOption is not set at state
             $('#slider').css("display", "none");
             $('#sliderValue').css("display", "none");
         }
@@ -513,9 +513,11 @@ class EVO {
         EVO.refresh(analysisResult);
 
     }
-
+    /**
+     * Refresh teh slider for when swtcihing between configs and results
+     */
     static refreshSlider(analysisResult) {
-        if (analysisResult == undefined) {
+        if (analysisResult == undefined) {// If switching to configs
             $('#modelingSlider').css("display", "");
             $('#analysisSlider').css("display", "none");
             if(EVO.sliderOption > 0) {
@@ -523,7 +525,7 @@ class EVO {
             }
             document.getElementById("colorReset").value = EVO.sliderOption;
         }
-        else {
+        else {// If switching to result
             $('#modelingSlider').css("display", "none");
             $('#analysisSlider').css("display", "");
             document.getElementById("colorResetAnalysis").value = EVO.sliderOption;

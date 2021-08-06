@@ -593,7 +593,6 @@ var ElementInspector = Backbone.View.extend({
      * and updateChartUserDefined.
      */
     updateCell: function () {
-
         EVO.refresh(undefined);
 
         changeFont(current_font, paper);
