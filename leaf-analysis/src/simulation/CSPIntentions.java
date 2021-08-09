@@ -385,28 +385,33 @@ public class CSPIntentions {
 	 * 			NOT BOTH
 	 * 
 	 *********************************************************************************************************/
-	public static void addNBFunctions() {
-//    	// Not Both Dynamic Functions.
-//    	List<NotBothLink> notBothLinkList = this.spec.getNotBothLink();	
-//    	for(ListIterator<NotBothLink> ec = notBothLinkList.listIterator(); ec.hasNext(); ){		
-//    		NotBothLink link = ec.next();
-//            IntVar epoch = this.notBothEBCollection.get(link);
-//            int ele1 = link.getElement1().getIdNum();
-//            int ele2 = link.getElement2().getIdNum();
-//            for (int t = 0; t < values[ele1].length; t++){
-//            	if(link.isFinalDenied())
-//            		constraints.add(new IfThenElse(new XgtY(epoch, timePoints[t]), 
-//            				new And(new And(createXeqC(values[ele1][t], boolTT)), new And(createXeqC(values[ele2][t], boolTT))),
-//            				new Or(new And(new And(createXeqC(values[ele1][t], boolFS)), new And(createXeqC(values[ele2][t], boolFD))),
-//            					   new And(new And(createXeqC(values[ele1][t], boolFD)), new And(createXeqC(values[ele2][t], boolFS))))));
-//            	else
-//            		constraints.add(new IfThenElse(new XgtY(epoch, timePoints[t]), 
-//            				new And(new And(createXeqC(values[ele1][t], boolTT)), new And(createXeqC(values[ele2][t], boolTT))),
-//            				new Or(new And(new And(createXeqC(values[ele1][t], boolFS)), new And(createXeqC(values[ele2][t], boolTT))),
-//            					   new And(new And(createXeqC(values[ele1][t], boolTT)), new And(createXeqC(values[ele2][t], boolFS))))));            		
-//            }
-//    	}
-		System.out.print("Add NB functions");
+	public static void addNBFunctions(			
+			List<Constraint> constraints, ModelSpec spec,  
+			BooleanVar[][][] values, HashMap<String, Integer> uniqueIDToValueIndex,
+			IntVar[] timePoints, HashMap<IntVar, List<String>> timePointMap,
+			IntVar infinity) {
+
+    	// Not Both Dynamic Functions.
+    	List<NotBothLink> notBothLinkList = spec.getNotBothLink();	
+    	for(NotBothLink link : notBothLinkList){		
+
+    		Integer ele1 = uniqueIDToValueIndex.get(link.getElement1().getUniqueID());
+    		Integer ele2 = uniqueIDToValueIndex.get(link.getElement2().getUniqueID());
+    		IntVar refTP = getTimePoint(timePointMap, link.getLinkTP());
+
+    		for (int t = 0; t < values[ele1].length; t++){
+            	if(link.isFinalDenied())
+            		constraints.add(new IfThenElse(new XgtY(refTP, timePoints[t]), 
+            				new And(new And(createXeqC(values[ele1][t], boolTT)), new And(createXeqC(values[ele2][t], boolTT))),
+            				new Or(new And(new And(createXeqC(values[ele1][t], boolFS)), new And(createXeqC(values[ele2][t], boolFD))),
+            					   new And(new And(createXeqC(values[ele1][t], boolFD)), new And(createXeqC(values[ele2][t], boolFS))))));
+            	else
+            		constraints.add(new IfThenElse(new XgtY(refTP, timePoints[t]), 
+            				new And(new And(createXeqC(values[ele1][t], boolTT)), new And(createXeqC(values[ele2][t], boolTT))),
+            				new Or(new And(new And(createXeqC(values[ele1][t], boolFS)), new And(createXeqC(values[ele2][t], boolTT))),
+            					   new And(new And(createXeqC(values[ele1][t], boolTT)), new And(createXeqC(values[ele2][t], boolFS))))));            		
+            }
+    	}
+
 	}
-	
 }

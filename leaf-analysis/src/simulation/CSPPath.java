@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jacop.constraints.Constraint;
+import org.jacop.constraints.XltY;
 import org.jacop.core.IntVar;
 import org.jacop.core.Store;
 
@@ -157,6 +159,27 @@ public class CSPPath {
 		return list;
 	}
 		
-	
+	public static void createLTConstraintsBetweenTimePoint(
+			List<Constraint> constraints, ModelSpec spec,  
+			IntVar[] timePoints, HashMap<IntVar, List<String>> timePointMap) {
+
+		List<TPConstraint> ltTPconstraintsList = spec.getLtTPconstraints();	
+    	for(TPConstraint tpCont : ltTPconstraintsList){		
+    		IntVar refTP1 = getTimePoint(timePointMap, tpCont.getRefTP1());
+    		IntVar refTP2 = getTimePoint(timePointMap, tpCont.getRefTP2());
+    		constraints.add(new XltY(refTP1, refTP2));
+    	}
+    			
+	}
+    //TODO Move to approrpriate file.
+    private static IntVar getTimePoint(HashMap<IntVar, List<String>> timePointMap, String name) {
+		for (Map.Entry<IntVar, List<String>> entry : timePointMap.entrySet()) {
+			for (String item : entry.getValue()) {
+				if (item.equals(name))
+					return entry.getKey();
+			}
+		}
+		throw new RuntimeException("CSPIntentions: getTimePoint - cannot find timepoint for " + name);
+	}
 	
 }

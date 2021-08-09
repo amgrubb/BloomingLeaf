@@ -30,7 +30,7 @@ public class ModelSpec {
 	// Cross-Element Model Variables
     private int maxTime = 5;
     private HashMap<String, Integer> absTP = new HashMap<String, Integer>();
-    private List<TPConstraint> constraints = new ArrayList<TPConstraint>();
+    private List<TPConstraint> ltTPconstraints = new ArrayList<TPConstraint>();
     
 	// Analysis Parameters
 	private String analysisType = null;
@@ -48,16 +48,6 @@ public class ModelSpec {
     }
     
     // ************* INTERESTING GETTERS/SETTERS ************* 
-
-//	/** Returns the time point list with the associated absolute value from the 
-//	 * previous analysis.
-//	 * @return	map between time point name and absolute value
-//	 */
-//	public HashMap<String, Integer> getPrevSelectedTPAssignments() { //Not Used yet. 
-//		if(this.prevResult != null) 
-//			return this.prevResult.getSelectedTPAssignments();
-//		return null; 
-//	}
     
 	/**
 	 * Returns the time point selected with the slider in the front end.
@@ -191,7 +181,8 @@ public class ModelSpec {
     	List<BIConstraint> equalList = new ArrayList<BIConstraint>();
     	List<BIConstraint> lessThanList = new ArrayList<BIConstraint>();
     	for (BIConstraint item : constraints) {
-    		if (item.getType().equals("="))
+    		//Note: '<' is now 'lt' and '=' is now 'eq'
+    		if (item.getType().equals("=") || item.getType().equals("eq"))
     			equalList.add(item);
     		else {
     			lessThanList.add(item);
@@ -264,7 +255,7 @@ public class ModelSpec {
 				refTP1 = changedTPNames.get(refTP1);
 			if (changedTPNames.containsKey(refTP2)) 
 				refTP2 = changedTPNames.get(refTP2);
-			this.constraints.add(new TPConstraint(item.getType(), refEle1, refTP1, refEle2, refTP2));
+			this.ltTPconstraints.add(new TPConstraint(item.getType(), refEle1, refTP1, refEle2, refTP2));
     	}
     }   
     
@@ -434,6 +425,10 @@ public class ModelSpec {
 //	public void setInitialValueTimePoints(Integer[] initialValueTimePoints) {
 //		this.prevAbsTPVal = initialValueTimePoints;
 //	}
+
+	public List<TPConstraint> getLtTPconstraints() {
+		return ltTPconstraints;
+	}
 
 	public char getConflictAvoidLevel() {
 		return conflictAvoidLevel;

@@ -114,14 +114,11 @@ public class BICSPAlgorithm {
     			this.uniqueIDToValueIndex, this.timePoints, this.timePointMap, this.infinity);
     	CSPIntentions.initializeUserEvaluationsForIntentions(this.constraints, this.spec, this.values, 
     			this.uniqueIDToValueIndex, this.timePoints); //, this.timePointMap, this.infinity);
-
-
-    	//TODO: Implement NB Function.
-    	CSPIntentions.addNBFunctions();
-
-    	//TODO: Implement Constraints between time points???
-    	//Note: '<' is now 'lt' and '=' is now 'eq'
-    	
+    	CSPIntentions.addNBFunctions(this.constraints, this.spec, this.values, 
+    			this.uniqueIDToValueIndex, this.timePoints, this.timePointMap, this.infinity);
+    	CSPPath.createLTConstraintsBetweenTimePoint(this.constraints, this.spec, 
+    			this.timePoints, this.timePointMap);
+    	    	
     	if (DEBUG)	System.out.println("\nEnd of Init Procedure");	
 	}
 
