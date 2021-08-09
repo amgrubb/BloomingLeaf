@@ -734,10 +734,10 @@ var FuncSegView = Backbone.View.extend({
 
         // Updates the chart whenever there is a change to the model
         if (!this.hasUD) {
-            this.listenTo(this.model, 'change', this.updateChart)
+            this.listenTo(this.intention, 'change:evolvingFunction', this.updateChart);
         }
         else {
-            this.listenTo(this.model, 'change', this.updateChartUserDefined)
+            this.listenTo(this.intention, 'change:evolvingFunction', this.updateChartUserDefined);
         }
     },
     template: ['<script type="text/template" id="item-template">',
