@@ -23,7 +23,7 @@ public class NotBothLink extends AbstractElement{
 		this.element2.assignNBFunction(this.linkTP, this.absTime);
 	}
 	private static String getNewNBLinkTP() {
-		String tp = String.format("NBTP", linkTPcounter);
+		String tp = "NBTP" + linkTPcounter;
 		linkTPcounter++;
 		return tp;
 	}

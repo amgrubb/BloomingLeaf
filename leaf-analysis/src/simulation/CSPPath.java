@@ -171,8 +171,13 @@ public class CSPPath {
     	}
     			
 	}
-    //TODO Move to approrpriate file.
-    private static IntVar getTimePoint(HashMap<IntVar, List<String>> timePointMap, String name) {
+
+	/** Gets the CSP IntVar associated with a time point in the model. 
+	 * @param timePointMap	Map between IntVar time points and a collection of named time points from the model
+	 * @param name 	The time point name to fine.
+	 * @return	The found CSP IntVar Time Point
+	 */
+    public static IntVar getTimePoint(HashMap<IntVar, List<String>> timePointMap, String name) {
 		for (Map.Entry<IntVar, List<String>> entry : timePointMap.entrySet()) {
 			for (String item : entry.getValue()) {
 				if (item.equals(name))

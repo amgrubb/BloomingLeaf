@@ -10,21 +10,6 @@ import org.jacop.core.IntVar;
 
 public class CSPIntentions {
 	private final static boolean DEBUG = true;
-
-	/** Gets the CSP IntVar associated with a time point in the model. 
-	 * @param timePointMap	Map between IntVar time points and a collection of named time points from the model
-	 * @param name 	The time point name to fine.
-	 * @return	The found CSP IntVar Time Point
-	 */
-	private static IntVar getTimePoint(HashMap<IntVar, List<String>> timePointMap, String name) {
-		for (Map.Entry<IntVar, List<String>> entry : timePointMap.entrySet()) {
-			for (String item : entry.getValue()) {
-				if (item.equals(name))
-					return entry.getKey();
-			}
-		}
-		throw new RuntimeException("CSPIntentions: getTimePoint - cannot find timepoint for " + name);
-	}
 		
 	private static PrimitiveConstraint[] createXeqC(BooleanVar[] val1, boolean[] val2){
 		return new PrimitiveConstraint[]{
@@ -86,12 +71,12 @@ public class CSPIntentions {
     			if (seg.getType().equals("R"))
     				continue;
 
-    			IntVar segmentStart = getTimePoint(timePointMap, seg.getStartTP());
+    			IntVar segmentStart = CSPPath.getTimePoint(timePointMap, seg.getStartTP());
 				IntVar segmentEnd = null;
 				if (f == (segList.length - 1))
 					segmentEnd = infinity;
 				else
-					segmentEnd = getTimePoint(timePointMap, segList[f+1].getStartTP());
+					segmentEnd = CSPPath.getTimePoint(timePointMap, segList[f+1].getStartTP());
 				
 				boolean[] refEvidence = convertEvalStringToEvidencePredicates(seg.getRefEvidencePair());	
 				switch (seg.getType()) {
@@ -397,7 +382,7 @@ public class CSPIntentions {
 
     		Integer ele1 = uniqueIDToValueIndex.get(link.getElement1().getUniqueID());
     		Integer ele2 = uniqueIDToValueIndex.get(link.getElement2().getUniqueID());
-    		IntVar refTP = getTimePoint(timePointMap, link.getLinkTP());
+    		IntVar refTP = CSPPath.getTimePoint(timePointMap, link.getLinkTP());
 
     		for (int t = 0; t < values[ele1].length; t++){
             	if(link.isFinalDenied())

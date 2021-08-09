@@ -3,7 +3,6 @@ package simulation;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.jacop.constraints.*;
 import org.jacop.core.BooleanVar;
@@ -29,21 +28,6 @@ public class CSPLinks {
 				values, uniqueIDToValueIndex, timePoints, timePointMap); 
 	}
 	
-	
-	/** Gets the CSP IntVar associated with a time point in the model. 
-	 * @param timePointMap	Map between IntVar time points and a collection of named time points from the model
-	 * @param name 	The time point name to fine.
-	 * @return	The found CSP IntVar Time Point
-	 */
-	private static IntVar getTimePoint(HashMap<IntVar, List<String>> timePointMap, String name) {
-		for (Map.Entry<IntVar, List<String>> entry : timePointMap.entrySet()) {
-			for (String item : entry.getValue()) {
-				if (item.equals(name))
-					return entry.getKey();
-			}
-		}
-		throw new RuntimeException("CSPLinks: getTimePoint - cannot find timepoint for " + name);
-	}
 
 	/*********************************************************************************************
 	 * Forward Analysis
@@ -69,7 +53,7 @@ public class CSPLinks {
 			} else {
 				// Evolving Contributions - must use time points.
 				ContributionType post = link.getPostContribution();
-				IntVar refTP = getTimePoint(timePointMap, link.getLinkTP());
+				IntVar refTP = CSPPath.getTimePoint(timePointMap, link.getLinkTP());
 	   			for (int t = 0; t < values[targetID].length; t++){
 	   				PrimitiveConstraint preConstraint = null;
 	   				if(pre != null)
@@ -131,7 +115,7 @@ public class CSPLinks {
 			} else {
 				// Evolving Decomposition - must use time points.
 				DecompositionType post = link.getPreDecomposition();
-				IntVar refTP = getTimePoint(timePointMap, link.getLinkTP());
+				IntVar refTP = CSPPath.getTimePoint(timePointMap, link.getLinkTP());
 	   			for (int t = 0; t < values[targetID].length; t++){
     				BooleanVar[][] sourceValue = new BooleanVar[4][numSrcEle];
     				for (int s = 0; s < numSrcEle; s++){
@@ -295,7 +279,7 @@ public class CSPLinks {
 		    			}
 	    			} else {
 	    				DecompositionType post = link.getPreDecomposition();
-	    				IntVar refTP = getTimePoint(timePointMap, link.getLinkTP());
+	    				IntVar refTP = CSPPath.getTimePoint(timePointMap, link.getLinkTP());
 		    			if (pre == DecompositionType.AND && post == DecompositionType.OR){
 		    				FSConstaints.add(new IfThenElse(new XgtY(refTP, timePoints[t]), new And(sourceValue[3]), new Or(sourceValue[3])));
 		    				PSConstaints.add(new IfThenElse(new XgtY(refTP, timePoints[t]), new And(sourceValue[2]), new Or(sourceValue[2])));
@@ -346,7 +330,7 @@ public class CSPLinks {
     						FDConstaints.add(newConts[0]); 
     				} else {
     					ContributionType post = link.getPostContribution();
-    					IntVar refTP = getTimePoint(timePointMap, link.getLinkTP());
+    					IntVar refTP = CSPPath.getTimePoint(timePointMap, link.getLinkTP());
     					PrimitiveConstraint[] preConstraint = null;
     					if(pre != null)
     						preConstraint = createBackwardContributionConstraint(pre, values[sourceID][t]);

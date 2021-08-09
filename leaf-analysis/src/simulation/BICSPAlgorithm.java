@@ -109,7 +109,6 @@ public class BICSPAlgorithm {
     	
     	CSPLinks.initializeLinkConstraints(this.constraints, this.spec, this.values, 
     			this.uniqueIDToValueIndex, this.timePoints, this.timePointMap);
-
     	CSPIntentions.initializeEvolvingFunctionsForIntentions(this.constraints, this.spec, this.values, 
     			this.uniqueIDToValueIndex, this.timePoints, this.timePointMap, this.infinity);
     	CSPIntentions.initializeUserEvaluationsForIntentions(this.constraints, this.spec, this.values, 
