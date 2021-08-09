@@ -146,7 +146,8 @@ graph.on("add", function (cell) {
         // Send actors to background so elements are placed on top
         cell.toBack();
     }
-
+    
+    resetConfig()
     // Trigger click on cell to highlight, activate inspector, etc. 
     paper.trigger("cell:pointerup", cell.findView(paper));
 });
@@ -172,6 +173,8 @@ graph.on('change:size', function (cell, size) {
 graph.on('remove', function (cell) {
     // Clear right inspector side panel
     clearInspector();
+    // Clear Config view
+    resetConfig();
     
     /**  TODO: Determine if we still need the rest of the code in this function. 
      *   Figure out how to make the element inspector automatically update after the function 
@@ -353,6 +356,13 @@ paper.on("link:options", function (cell) {
     }); 
     $('#next-state-btn').on('click', function() { getAllNextStates(); }); 
     
+    function resetConfig(){
+        var model;
+        while (model = configCollection.first()) {
+            model.destroy();
+        }
+    }
+
     /**
      * Helper function for switching to Analysis view.
      */
@@ -366,6 +376,7 @@ paper.on("link:options", function (cell) {
         configInspector = new ConfigInspector({ collection: configCollection });
         $('#configID').append(configInspector.el);
         configInspector.render();
+        $('#analysisID').css("display", "");
 
         // Remove model only elements 
         $('.model-only').css("display", "none");
@@ -431,8 +442,9 @@ paper.on("link:options", function (cell) {
             $('.link-tools .tool-remove').css("display", "");
             $('.link-tools .tool-options').css("display", "");
             EVO.switchToModelingMode(selectResult);
-            // Remove configInspector view
+            // Remove configInspector and analysis view
             configInspector.remove();
+            $('#analysisID').css("display", "none");
             // TODO: Determine if we should be setting action to null on all configs
             configCollection.findWhere({ selected: true }).set('action', null);
 
@@ -500,9 +512,7 @@ paper.on("link:options", function (cell) {
         var selectedConfig;
         var selectedResult;
         // Clears current configCollection
-        while (model = configCollection.first()){
-            model.destroy();
-        }
+        resetConfig();
 
         // Individually creates each ConfigBBM and add to collection
         for(let config of loadedConfig){
