@@ -593,7 +593,8 @@ var ElementInspector = Backbone.View.extend({
      * and updateChartUserDefined.
      */
     updateCell: function () {
-        IntentionColoring.refresh(undefined);
+        EVO.refresh(undefined);
+
         changeFont(current_font, paper);
         if (this.intention.get('evolvingFunction') != null) {
             if (this.intention.get('evolvingFunction').get('type') == 'NT') {

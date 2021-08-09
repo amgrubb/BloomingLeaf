@@ -383,11 +383,14 @@ paper.on("link:options", function (cell) {
         $('.link-tools .tool-options').css("display", "none");
         $('.attribution').css("display", "none");
         $('.inspector').css("display", "none");
-        IntentionColoring.refresh(selectResult);
+
+        EVO.refresh(selectResult);
+
         var configResults = configCollection.findWhere({ selected: true }).get('results');
         if (configResults !== undefined){
             selectResult = configResults.findWhere({ selected: true });
         }
+        EVO.refresh(selectResult);
 
         // TODO: Add check for model changes to potentially clear configCollection back in
     }
@@ -406,6 +409,7 @@ paper.on("link:options", function (cell) {
             if (selectResult !== undefined){
                 selectResult.set('selected', false);
             }
+
             // Remove Slider
             removeSlider();
 
@@ -536,8 +540,9 @@ paper.on("link:options", function (cell) {
     }
 
     $(window).resize(function () {
-        var configResults = configCollection.findWhere({ selected: true }).get('results').findWhere({ selected: true });
-        if (configResults !== undefined){
+        var config = configCollection.findWhere({ selected: true });
+        if (config !== undefined){
+            var configResults = config.get('results').findWhere({ selected: true });
             resizeWindow(configResults.get('timePointPath').length - 1);
         } 
     });
@@ -556,7 +561,7 @@ paper.on("link:options", function (cell) {
             var fileName = name + ".json";
             var obj = {graph: graph.toJSON()}; // Same structure as the other two save options
             download(fileName, JSON.stringify(obj));
-            IntentionColoring.refresh(selectResult);
+            EVO.refresh(selectResult);
         }
     });
 
@@ -579,21 +584,21 @@ paper.on("link:options", function (cell) {
                 //elementInspector.$('.function-type').val('(no value)');
             }
         }
-        IntentionColoring.refresh(selectResult);
+        EVO.refresh(selectResult);
     });
 
     $('#colorblind-mode-isOff').on('click', function () { //activates colorblind mode
         $('#colorblind-mode-isOff').css("display", "none");
         $('#colorblind-mode-isOn').css("display", "");
 
-        IntentionColoring.toggleColorBlindMode(true, selectResult);
+        EVO.toggleColorBlindMode(true, selectResult);
     });
 
     $('#colorblind-mode-isOn').on('click', function () { //turns off colorblind mode
         $('#colorblind-mode-isOn').css("display", "none");
         $('#colorblind-mode-isOff').css("display", "");
 
-        IntentionColoring.toggleColorBlindMode(false, selectResult);
+        EVO.toggleColorBlindMode(false, selectResult);
     });
 
     /**
@@ -738,34 +743,30 @@ function setInteraction(interactionValue) {
  * Sets each node/cellview in the paper to its initial 
  * satisfaction value and colours all text to black
  */
-// TODO: Re-write with new models
 function revertNodeValuesToInitial() {
-    console.log("TODO: Rewrite revertNodeValuesToInitial");
-    // var elements = graph.getElements();
-    // var curr;
-    // for (var i = 0; i < elements.length; i++) {
-    // 	curr = elements[i].findView(paper).model;
+    var elements = graph.getElements();
+    var curr;
+    for (var i = 0; i < elements.length; i++) {
+    	curr = elements[i].findView(paper).model;
+    	if (curr.get('type') !== 'basic.Goal' &&
+            curr.get('type') !== 'basic.Task' &&
+    		curr.get('type') !== 'basic.Softgoal' &&
+    		curr.get('type') !== 'basic.Resource') {
+    		continue;
+    	}     
+    	var intention = curr.get('intention');
+        var initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair'); 
 
-    // 	if (curr.attributes.type !== 'basic.Goal' &&
-    // 		curr.attributes.type !== 'basic.Task' &&
-    // 		curr.attributes.type !== 'basic.Softgoal' &&
-    // 		curr.attributes.type !== 'basic.Resource') {
-    // 		continue;
-    // 	}     
-    // 	var intention = curr.get('intention');
-    //     var initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair'); 
+    	if (initSatVal === '(no value)') {
+            curr.attr('.satvalue/text', '');
 
-    // 	if (initSatVal === '(no value)') {
-    //         curr.attr('.satvalue/text', '');
-
-    // 	} else {
-    //         curr.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
-    // 	}
-    //     //curr.attr({text: {fill: 'black'}});
-    //     curr.attr({text: {fill: 'black',stroke:'none','font-weight' : 'normal','font-size': 10}});
-    // }
-    // // Remove slider
-    // removeSlider();
+    	} else {
+            curr.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
+    	}
+        curr.attr({text: {fill: 'black',stroke:'none','font-weight' : 'normal','font-size': 10}});
+    }
+    // Remove slider
+    removeSlider();
 }
 
 /**
