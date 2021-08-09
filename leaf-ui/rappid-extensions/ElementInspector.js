@@ -414,6 +414,8 @@ var ElementInspector = Backbone.View.extend({
         } else if (this.repeatOptionsDisplay) {
             this.setRepeatConstraintMode("TurnOff");
             this.intention.get('evolvingFunction').removeRepFuncSegments();
+            this.$("#repeat-end2").val('2');
+            this.$("#repeat-end3").val('0');
         }
     },
 
@@ -629,6 +631,9 @@ var ElementInspector = Backbone.View.extend({
 
         if (this.repeatOptionsDisplay) {
             this.setRepeatConstraintMode("TurnOff");
+            this.intention.get('evolvingFunction').removeRepFuncSegments();
+            this.$("#repeat-end2").val('2');
+            this.$("#repeat-end3").val('0');
         }
         this.funcTypeChanged(null);
     },
@@ -833,9 +838,11 @@ var FuncSegView = Backbone.View.extend({
         this.model.set('startAT', absTime);
 
         // If the start of the repeating segment has an absolute time value, hide error message
-        if (absTime !== null && this.model.get('startTP') === $("#repeat-begin").val()) {
+        if ((absTime !== null && this.model.get('startTP') === $("#repeat-begin").val()) || $("#repeat-end3").val() === '0') {
             $("#repeat-error").hide();
         } else {
+            var begin = this.$("#repeat-begin").val();
+            this.$("#repeat-error").text("Enter an absTime value for function segment " + begin);
             $("#repeat-error").show("fast");
         }
     },
