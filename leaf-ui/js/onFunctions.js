@@ -560,23 +560,19 @@ paper.on("link:options", function (cell) {
         }
     });
 
-    // TODO: Reimplement with new backbone structure
+
     $('#btn-clear-elabel').on('click', function () {
-        console.log("TODO: Reimplement with new backbone structure - #btn-clear-elabel");
         for (let element of graph.getElements()) {
             var cellView = element.findView(paper);
             var cell = cellView.model;
-            var intention = model.getIntentionByID(cellView.model.attributes.nodeID);
+            var intention = cell.get('intention');
+            var initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair');
+            var funcType = intention.get('evolvingFunction').get('type');
 
-            if (intention != null && intention.getInitialSatValue() != '(no value)') {
+            // If the initsatVal is not empty and if funcType empty
+            if (intention != null &&  initSatVal != '(no value)' && funcType === 'NT') {
                 intention.removeInitialSatValue();
-
                 cell.attr(".satvalue/text", "");
-                cell.attr(".funcvalue/text", "");
-
-                // TODO: Determine if we still need these lines.
-                //elementInspector.$('#init-sat-value').val('(no value)');
-                //elementInspector.$('.function-type').val('(no value)');
             }
         }
         IntentionColoring.refresh(selectResult);
