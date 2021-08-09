@@ -13,6 +13,8 @@ import org.jacop.search.*;
 import gson_classes.IOSolution;
 
 public class BICSPAlgorithm {
+    private final static boolean DEBUG = false;
+    
 	// Elements needed for the CSP Solver
 	private Store store;									// CSP Store
 	private List<Constraint> constraints;					// Holds the constraints to be added to the Store
@@ -24,36 +26,22 @@ public class BICSPAlgorithm {
 	private ModelSpec spec;									// Holds the model information.
 	private int maxTime;									// duplicated from spec to create shortcut for code.
 	private IntVar zero;									// (0) Initial Values time point.
-//	private IntVar infinity;								// (maxTime + 1) Infinity used for intention functions, not a solved point.
-	private Intention[] intentions;							// array of intention elements in the model
+	private IntVar infinity;								// (maxTime + 1) Infinity used for intention functions, not a solved point.
 
 	// Problem Size: (numIntentions x numTimePoints x 4) + numTimePoints
 	private int numTimePoints;										// Total number of time points in the path (to be calculated).
 	private int numIntentions;								// Number of intentions in the model.
 	
 	// Problem Variables:
+	private BooleanVar[][][] values;						// ** Holds the evaluations for each [this.numIntentions][this.numTP][FS/PS/PD/FD Predicates]
 	private IntVar[] timePoints;							// Holds the list of time points to be solved.
+	
+	// Mappings for problem variables
 	private HashMap<IntVar, List<String>> timePointMap = new HashMap<IntVar, List<String>>(); // IntVar to list of unique time points from the model.
 	private HashMap<String, List<String>> nextStateTPHash = new HashMap<String, List<String>>(); 	// Holds the time points in the next state analysis.
-	private BooleanVar[][][] values;						// ** Holds the evaluations for each [this.numIntentions][this.numTP][FS/PS/PD/FD Predicates]	
+	private HashMap<String, Integer> uniqueIDToValueIndex = new HashMap<String, Integer>();
+	private String[] valueIndexToUniqueID;
 	
-//    private IntVar[] unsolvedTimePoints;					// Holds the list of time points without an absolute assignment. 
-//    private IntVar[] nextTimePoints;						// Holds the list of next possible time points. Does not include multiple stochastic or absolute. Used for finding state.
-//    private IntVar nextTimePoint;							// Holds the single int value that will map to a value of nextTimePoints, to be solve by the solve if next state is used.
-//    private IntVar minTimePoint;									// Is assigned the minimum time of nextTimePoints.
-
-//    private boolean[] boolFD = new boolean[] {true, true, false, false};
-//    private boolean[] boolPD = new boolean[] {false, true, false, false};
-//    private boolean[] boolPS = new boolean[] {false, false, true, false};
-//    private boolean[] boolFS = new boolean[] {false, false, true, true};
-//    private boolean[] boolTT = new boolean[] {false, false, false, false};
-//    private boolean[] boolFSFD = new boolean[] {true, true, true, true};
-//    private boolean[] boolPSPD = new boolean[] {false, true, true, false};
-//    private boolean[] boolFSPD = new boolean[] {false, true, true, true};
-//    private boolean[] boolPSFD = new boolean[] {true, true, true, false};
-    
-    private final static boolean DEBUG = false;	
-    
 	public BICSPAlgorithm(ModelSpec spec) throws Exception {
     	if (DEBUG) System.out.println("Starting: TroposCSPAlgorithm");
 
@@ -86,241 +74,53 @@ public class BICSPAlgorithm {
 		this.spec = spec;
 		this.maxTime = spec.getMaxTime();
 		this.zero = new IntVar(this.store, "Zero", 0, 0);
-//		this.infinity = new IntVar(this.store, "Infinity", this.maxTime + 1, this.maxTime + 1);
-
-    	// Initialize intentions and store them in array.
-    	this.numIntentions = this.spec.getNumIntentions();
-		this.intentions = new Intention[this.numIntentions];
-		List<Intention> elementList = this.spec.getIntentions();
-		for (int i = 0; i < this.intentions.length; i++)
-			this.intentions[i] = elementList.get(i);
+		this.infinity = new IntVar(this.store, "Infinity", this.maxTime + 1, this.maxTime + 1);
 		
+		// Create time point path.
 		if (problemType == SearchType.PATH || problemType == SearchType.UPDATE_PATH) {
-			this.timePoints = createPathTimePoint(this.spec, this.store, this.timePointMap, this.maxTime);
+			this.timePoints = CSPPath.createPathTimePoint(this.spec, this.store, this.timePointMap, this.maxTime);
 		}else if (problemType == SearchType.NEXT_STATE) {
-			this.timePoints = createNextStateTimePoint(this.spec, this.store, this.timePointMap, this.nextStateTPHash, this.maxTime);
+			this.timePoints = CSPPath.createNextStateTimePoint(this.spec, this.store, this.timePointMap, this.nextStateTPHash, this.maxTime);
 		}
 		this.numTimePoints = this.timePoints.length;
 		this.constraints.add(new Alldifferent(this.timePoints));
-		this.values = new BooleanVar[this.numIntentions][this.numTimePoints][4];	// 4 Predicates Values 0-FD, 1-PD, 2-PS, 3-FS
 		if (DEBUG) System.out.println("\n Num TP is: " + this.numTimePoints);       	
     	
     	// Initialise Values Array.
     	if (DEBUG) System.out.println("\nMethod: initializeNodeVariables");
-
-    	
-    	for (int i = 0; i < this.intentions.length; i++)
-			for (int t = 0; t < this.values[i].length; t++) {
+    	this.numIntentions = this.spec.getNumIntentions();
+		this.values = new BooleanVar[this.numIntentions][this.numTimePoints][4];	// 4 Predicates Values 0-FD, 1-PD, 2-PS, 3-FS
+    	this.valueIndexToUniqueID = new String[this.numIntentions];
+    	int indexCounter = 0;
+    	for (Intention element : this.spec.getIntentions()) {
+    		this.uniqueIDToValueIndex.put(element.uniqueID, indexCounter);
+    		this.valueIndexToUniqueID[indexCounter] = element.uniqueID;
+			for (int t = 0; t < this.numTimePoints; t++) {
 				// Creates IntVars and adds the FS -> PS invariant.
-				CSP.initializeNodeVariables(this.store, this.sat, this.values[i][t], this.intentions[i].getId() + "_" + t);
+				CSPNode.initializeNodeVariables(this.store, this.sat, this.values[indexCounter][t], element.getId() + "_" + t);
 			}
- 		CSP.initializeConflictPrevention(this.spec, this.sat, this.values, this.zero);
+			indexCounter++;
+    	}
+		CSPNode.initializeConflictPrevention(this.spec, this.sat, this.values, this.zero);
     	if (problemType == SearchType.NEXT_STATE || problemType == SearchType.UPDATE_PATH) { 
     		// Assign past values with initialization?
-    		initializePrevResults(this.spec, this.constraints, this.timePoints, this.values, this.intentions);
+    		CSPNode.initializePrevResults(this.spec, this.constraints, this.timePoints, this.values, this.uniqueIDToValueIndex);
     	}
     	
-    	
-    	
-    	
- 		//TODO: Add evolving functions, relationship, constraints, initial values.
+    	CSPLinks.initializeLinkConstraints(this.constraints, this.spec, this.values, 
+    			this.uniqueIDToValueIndex, this.timePoints, this.timePointMap);
+    	CSPIntentions.initializeEvolvingFunctionsForIntentions(this.constraints, this.spec, this.values, 
+    			this.uniqueIDToValueIndex, this.timePoints, this.timePointMap, this.infinity);
+    	CSPIntentions.initializeUserEvaluationsForIntentions(this.constraints, this.spec, this.values, 
+    			this.uniqueIDToValueIndex, this.timePoints); //, this.timePointMap, this.infinity);
+    	CSPIntentions.addNBFunctions(this.constraints, this.spec, this.values, 
+    			this.uniqueIDToValueIndex, this.timePoints, this.timePointMap, this.infinity);
+    	CSPPath.createLTConstraintsBetweenTimePoint(this.constraints, this.spec, 
+    			this.timePoints, this.timePointMap);
+    	    	
     	if (DEBUG)	System.out.println("\nEnd of Init Procedure");	
 	}
-	
-	
-	/**
-	 * Assigned this.numTimePoints and creates time point list (this.timePoints) then
-	 * assigned the absolute, relative, and unassigned time points.
-	 * @param modelAbstime
-	 * @param unassignedTimePoint
-	 * @param numRelTP
-	 * @param prevTPAssignments
-	 */
-	private static IntVar[] createPathTimePoint(ModelSpec spec, Store store, 
-			HashMap<IntVar, List<String>> timePointMap, int maxTime) {
-		
-		// Get the Unique Set of Time Point from the Model
-		HashMap<Integer, List<String>> modelAbstime = spec.getAbsTimePoints();
-		List<String> unassignedTimePoint = modelAbstime.get(-1);
-		modelAbstime.remove(-1);
-		int numRelTP = spec.getNumRelativeTimePoints(); 
-		
-		int numTimePoints = modelAbstime.size() + unassignedTimePoint.size() + numRelTP;
-		
-		// Create a IntVar for each Time Point
-		IntVar[] timePoints = new IntVar[numTimePoints];
-		int tpCounter = 0;
-		
-		// Absolute Time Points
-    	for (Map.Entry<Integer, List<String>> set : modelAbstime.entrySet()) {
-    		timePoints[tpCounter] = new IntVar(store, "TA" + tpCounter, set.getKey(), set.getKey());
-    		timePointMap.put(timePoints[tpCounter], set.getValue());
-    		tpCounter++;
-    	}
-    	
-    	// Unassigned Time Points 
-    	for (String item : unassignedTimePoint) {
-        	timePoints[tpCounter] = new IntVar(store, "TU" + tpCounter, 1, maxTime);	    		
-    		List<String> toAdd = new ArrayList<String>();
-    		toAdd.add(item);
-    		timePointMap.put(timePoints[tpCounter], toAdd);
-    		tpCounter++;    	
-    	}
-    	
-    	// Relative Time Points
-    	for (int i = 0; i < numRelTP; i++) {
-          	timePoints[tpCounter] = new IntVar(store, "TR" + tpCounter, 1, maxTime);	    		
-    		List<String> toAdd = new ArrayList<String>();
-    		toAdd.add("TR" + tpCounter);
-    		timePointMap.put(timePoints[tpCounter], toAdd);
-    		tpCounter++; 
-    	}
-    	
-    	return timePoints;
-		
-	}
-	
-	private static IntVar[] createNextStateTimePoint(ModelSpec spec, Store store, 
-			HashMap<IntVar, List<String>> timePointMap, 
-			HashMap<String, List<String>> nextStateTPHash, int maxTime) {
-		
-   		IOSolution prev = spec.getPrevResult();
-   		if (prev == null)
-   			throw new RuntimeException("\n Previous results required, but null.");
-		
-		// Get the Unique Set of Time Point from the Model
-		HashMap<Integer, List<String>> modelAbsTime = spec.getAbsTimePoints();
-		List<String> unassignedTimePoint = modelAbsTime.get(-1);
-		modelAbsTime.remove(-1);
-		int numRelTP = spec.getNumRelativeTimePoints(); 
-		HashMap<String, Integer> prevTPAssignments = prev.getSelectedTPAssignments();
-		Integer[] prevTP = prev.getSelectedTimePointPath();
-		
-		List<IntVar> timePointList = new ArrayList<IntVar>();
-		
-		int tpCounter = 0;
-		for (Integer i : prevTP) {		// Last Time Points
-			IntVar newTP = new IntVar(store, "TL" + tpCounter, i, i);
 
-    		List<String> affectedKeys = new ArrayList<String>();
-			for	(Map.Entry<String, Integer> entry : prevTPAssignments.entrySet()) {
-				if (entry.getValue().equals(i))  
-					affectedKeys.add(entry.getKey());
-			}
-			for (String key : affectedKeys)		// Removes no longer needed entires. 
-				prevTPAssignments.remove(key);
-			if (modelAbsTime.containsKey(i)) {
-				List<String> absVal = modelAbsTime.get(i);
-				for (String v : absVal)
-					if (!affectedKeys.contains(v))
-						affectedKeys.add(v);
-				modelAbsTime.remove(i);			// Removes no longer needed entries.
-			}
-			for (String key : affectedKeys)
-				if (unassignedTimePoint.contains(key)) 
-					unassignedTimePoint.remove(key);
-			if (affectedKeys.isEmpty()) {
-				affectedKeys.add("TR" + tpCounter);
-				numRelTP--;
-			}
-			timePointList.add(newTP);
-    		timePointMap.put(newTP, affectedKeys);
-    		tpCounter++;
-		}
-
-		HashMap<String, List<String>> newTPHash = new HashMap<String, List<String>>();  
-		// Add a relative time point if available.
-		if (numRelTP > 0) {
-    		List<String> toAdd = new ArrayList<String>();
-    		toAdd.add("TNS-R");
-    		newTPHash.put("TNS-R", toAdd);
-		}
-		if (modelAbsTime.size() > 0) {
-			int minKey = maxTime + 1;
-			for	(Integer key : modelAbsTime.keySet()) 
-				if (key < minKey)  
-					minKey = key;
-			if (minKey != maxTime + 1) {
-	    		List<String> toAdd = modelAbsTime.get(minKey);
-	    		newTPHash.put("TNS-A", toAdd);
-			}
-		}
-		if (unassignedTimePoint.size() > 0) {
-			int c = 0; 
-			for (String newVal: unassignedTimePoint) {
-	    		List<String> toAdd = new ArrayList<String>();
-	    		toAdd.add(newVal);
-	    		newTPHash.put("TNS-" + c, toAdd);
-	    		c++;
-			}
-		}
-		int iMin = prev.getSelectedAbsTime() + 1;
-		int iMax = iMin + newTPHash.size() - 1;
-		if (iMax > maxTime)
-			throw new RuntimeException("\n The number of remaining time points won't fit in maxTime.");
-		for	(Map.Entry<String, List<String>> entry : newTPHash.entrySet()) {
-			IntVar newTP = new IntVar(store, entry.getKey(), iMin, iMax);
-			timePointList.add(newTP);
-    		timePointMap.put(newTP, entry.getValue());
-    		nextStateTPHash.put(entry.getKey(), entry.getValue());
-		}
-		
-		IntVar[] list = new IntVar[timePointList.size()];
-		for (int i = 0; i < list.length; i ++)
-			list[i] = timePointList.get(i);
-		return list;
-	}
-		
-	private static void initializePrevResults(ModelSpec spec, List<Constraint> constraints, 
-			IntVar[] timePoints, BooleanVar[][][] values, Intention[] intentions) {
-		if (DEBUG) System.out.println("\nMethod: func");
-   		IOSolution prev = spec.getPrevResult();
-   		if (prev == null)
-   			throw new RuntimeException("\n Previous results required, but null.");
-   		
-   		Integer[] prevTPPath = prev.getSelectedTimePointPath();
-   		HashMap<String, boolean[][]> prevIntVal = prev.getSelectedPreviousValues();
-   		
-   		for (int tp = 0; tp < timePoints.length; tp ++) {
-   			if (timePoints[tp].min() == timePoints[tp].max()) {
-   				// time point is already assigned.
-   				// get tIndexVal
-   				Integer tRef = null;
-   				for (int t = 0; t < prevTPPath.length; t++) 
-   					if (prevTPPath[t] == timePoints[tp].min()) {
-   						tRef = t;
-   						break;
-   					}
-   				if (tRef != null) {
-   					// Loop through intentions and assign.
-   					for (int i = 0; i < intentions.length; i ++) {
-   						boolean[][] toAssignVals = prevIntVal.get(intentions[i].getUniqueID());
-   						if (toAssignVals != null) {
-   							constraints.add(new XeqC(values[i][tp][0], boolToInt(toAssignVals[tRef][0])));
-   							constraints.add(new XeqC(values[i][tp][1], boolToInt(toAssignVals[tRef][1])));
-   							constraints.add(new XeqC(values[i][tp][2], boolToInt(toAssignVals[tRef][2])));
-   							constraints.add(new XeqC(values[i][tp][3], boolToInt(toAssignVals[tRef][3])));
-   						}
-   					}
-   				}
-   			}
-   		}
-	}
-	/**
-	 * Helper Function: Converts a boolean to an int. 
-	 * @param b	boolean value.
-	 * @return	int value of b.
-	 */
-	private static int boolToInt(boolean b) {
-	    return b ? 1 : 0;
-	}
-	
-
-	
-	
-	
-	
-	
 	
 	/*********************************************************************************************************
 	 * 
@@ -363,11 +163,11 @@ public class BICSPAlgorithm {
 			System.out.println("\nThere are " + totalSolution + " possible next states.");
 		}
 		
-		String[][] finalValues = new String[totalSolution][this.intentions.length];
-		int startIndex = label.getSolution(1).length - (this.intentions.length * 4);
+		String[][] finalValues = new String[totalSolution][this.numIntentions];
+		int startIndex = label.getSolution(1).length - (this.numIntentions * 4);
 		for (int s = 1; s <= totalSolution; s++){	/// NOTE: Solution number starts at 1 not 0!!!		
 			int solIndex = startIndex;
-			for (int i = 0; i < this.intentions.length; i++) {
+			for (int i = 0; i < this.numIntentions; i++) {
 				String outVal = label.getSolution(s)[solIndex].toString() + 
 						label.getSolution(s)[solIndex + 1].toString() + 
 						label.getSolution(s)[solIndex + 2].toString() +
@@ -491,7 +291,8 @@ public class BICSPAlgorithm {
 	 */
 	private IOSolution getPathSolutionOutModel() {	
 		int[] indexOrder = this.createTimePointOrder();
-		if (DEBUG) this.printSinglePathSolution(indexOrder);
+		//if (DEBUG) 
+		this.printSinglePathSolution(indexOrder);
 
 		// Get Time Points (timePointAssignments)
 		Integer[] finalTPPath = new Integer[indexOrder.length];
@@ -515,7 +316,7 @@ public class BICSPAlgorithm {
     	IOSolution oModel = new IOSolution(finalTPPath, finalTPAssignments);
     	
     	// Get assigned values (elementList)
-    	for (int i = 0; i < this.intentions.length; i++){
+    	for (int i = 0; i < this.values.length; i++){
     		String[] nodeFinalValues = new String[this.values[i].length];
     		for (int t = 0; t < this.values[i].length; t++){
     			StringBuilder value = new StringBuilder();
@@ -526,7 +327,7 @@ public class BICSPAlgorithm {
         				value.append("0");
         		nodeFinalValues[t] = value.toString();
     		}
-    		oModel.addElement(this.intentions[i].getUniqueID(), nodeFinalValues);
+    		oModel.addElement(this.valueIndexToUniqueID[i], nodeFinalValues);
     	}  	
     	return oModel; 	
 	}
@@ -559,9 +360,12 @@ public class BICSPAlgorithm {
 	 */
 	private void printSinglePathSolution(int[] indexOrder) {
 		// Print out timepoint data.
-    	for (int i = 0; i < indexOrder.length; i++)
-    		System.out.println(this.timePoints[indexOrder[i]].id + "-" + this.timePoints[indexOrder[i]].value() + "\t");
-
+		System.out.println("\nSolution!");
+    	for (int i = 0; i < indexOrder.length; i++) {
+    		System.out.print(this.timePoints[indexOrder[i]].id + " : " + this.timePoints[indexOrder[i]].value() + "   \t");
+    		System.out.println(timePointMap.get(this.timePoints[indexOrder[i]]));
+    	}
+    	
 		// Print out times.
     	System.out.print("Time:\t");
     	for (int i = 0; i < indexOrder.length; i++){
@@ -570,15 +374,15 @@ public class BICSPAlgorithm {
     	System.out.println();
     	
     	// Print out Values.
-    	for (int i = 0; i < this.intentions.length; i++){
-    		Intention element = this.intentions[i];
-    		System.out.print(element.id + ":\t");
+    	for (int i = 0; i < this.numIntentions; i++){
+    		System.out.print(String.format("%03d", i) + ":\t");
     		for (int t = 0; t < this.values[i].length; t++){
         		for (int v = 0; v < this.values[i][t].length; v++)
         			System.out.print(this.values[i][indexOrder[t]][v].value());
         		System.out.print("\t");
     		}
-    		System.out.println(element.name); // + "\t" + element.dynamicType.toString());
+    		String name = this.spec.getIntentionByUniqueID(this.valueIndexToUniqueID[i]).getName();
+    		System.out.println(name); // + "\t" + element.dynamicType.toString());
     	} 
 	}	
 	

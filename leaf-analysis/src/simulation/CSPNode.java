@@ -1,11 +1,19 @@
 package simulation;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.jacop.constraints.Constraint;
+import org.jacop.constraints.XeqC;
 import org.jacop.core.BooleanVar;
 import org.jacop.core.IntVar;
 import org.jacop.core.Store;
 import org.jacop.satwrapper.SatTranslation;
 
-public class CSP {
+import gson_classes.IOSolution;
+
+public class CSPNode {
 	private final static boolean DEBUG = false;
 	
 	/**
@@ -82,6 +90,56 @@ public class CSP {
 		satTrans.generate_and(wConflict, zero);	        					
 	}
 
+	
+	public static void initializePrevResults(ModelSpec spec, List<Constraint> constraints, 
+			IntVar[] timePoints, BooleanVar[][][] values,
+			HashMap<String, Integer> uniqueIDToValueIndex) {
+		if (DEBUG) System.out.println("\nMethod: func");
+   		IOSolution prev = spec.getPrevResult();
+   		if (prev == null)
+   			throw new RuntimeException("\n Previous results required, but null.");
+   		
+   		Integer[] prevTPPath = prev.getSelectedTimePointPath();
+   		HashMap<String, boolean[][]> prevIntVal = prev.getSelectedPreviousValues();
+   		
+   		for (int tp = 0; tp < timePoints.length; tp ++) {
+   			if (timePoints[tp].min() == timePoints[tp].max()) {
+   				// time point is already assigned.
+   				// get tIndexVal
+   				Integer tRef = null;
+   				for (int t = 0; t < prevTPPath.length; t++) 
+   					if (prevTPPath[t] == timePoints[tp].min()) {
+   						tRef = t;
+   						break;
+   					}
+   				if (tRef != null) {
+   					// Loop through intentions and assign.
+   					for	(Map.Entry<String, Integer> entry : uniqueIDToValueIndex.entrySet()) {
+   						int i = entry.getValue();
+   						boolean[][] toAssignVals = prevIntVal.get(entry.getKey());
+   						if (toAssignVals != null) {
+   							constraints.add(new XeqC(values[i][tp][0], boolToInt(toAssignVals[tRef][0])));
+   							constraints.add(new XeqC(values[i][tp][1], boolToInt(toAssignVals[tRef][1])));
+   							constraints.add(new XeqC(values[i][tp][2], boolToInt(toAssignVals[tRef][2])));
+   							constraints.add(new XeqC(values[i][tp][3], boolToInt(toAssignVals[tRef][3])));
+   						}
+   					}
+   				}
+   			}
+   		}
+	}
+
+	/**
+	 * Helper Function: Converts a boolean to an int. 
+	 * @param b	boolean value.
+	 * @return	int value of b.
+	 */
+	private static int boolToInt(boolean b) {
+	    return b ? 1 : 0;
+	}
+	
+
+	
 	
 	
 	

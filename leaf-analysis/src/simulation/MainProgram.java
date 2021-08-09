@@ -41,6 +41,7 @@ public class MainProgram {
 			createOutputFile(outputModel, filePath + outputFile);			
 		} catch (RuntimeException e) {
 			try {
+				System.err.println(e.getMessage());	//TODO: Remove
 				File file;
 				file = new File(filePath + outputFile);
 				if (!file.exists()) {
@@ -56,6 +57,7 @@ public class MainProgram {
 			}
 		} catch (Exception e) {
 			try {
+				System.err.println(e.getMessage());	//TODO: Remove
 				File file;
 				file = new File(filePath + outputFile);
 				if (!file.exists()) {

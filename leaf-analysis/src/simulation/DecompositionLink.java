@@ -47,7 +47,8 @@ public class DecompositionLink extends AbstractElementLink {
 
 		while (allDecompositionLinks.size() > 0) {				
 			String destID = allDecompositionLinks.get(0).getTargetID();
-			int absTime = allDecompositionLinks.get(0).getLink().getAbsTime();		//TODO: Add check to make sure all AbsTime values are the same.
+			Integer absTime = allDecompositionLinks.get(0).getLink().getAbsTime();		
+				//TODO: Add check to make sure all AbsTime values are the same.
 			Intention intentElementDest = modelSpec.getIntentionByUniqueID(destID);
 			ArrayList<ICell> curDestLinks = new ArrayList<ICell>();
 			boolean evolve = false;

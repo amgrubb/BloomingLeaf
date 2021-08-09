@@ -15,10 +15,6 @@ import gson_classes.IOSolution;
  * Hold the complete specification of the model.
  * @author amgrubb
  */
-/**
- * @author amgrubb
- *
- */
 public class ModelSpec {
 	// Model Elements
 	private List<Actor> actors = new ArrayList<Actor>();
@@ -30,7 +26,7 @@ public class ModelSpec {
 	// Cross-Element Model Variables
     private int maxTime = 5;
     private HashMap<String, Integer> absTP = new HashMap<String, Integer>();
-    private List<TPConstraint> constraints = new ArrayList<TPConstraint>();
+    private List<TPConstraint> ltTPconstraints = new ArrayList<TPConstraint>();
     
 	// Analysis Parameters
 	private String analysisType = null;
@@ -48,16 +44,6 @@ public class ModelSpec {
     }
     
     // ************* INTERESTING GETTERS/SETTERS ************* 
-
-//	/** Returns the time point list with the associated absolute value from the 
-//	 * previous analysis.
-//	 * @return	map between time point name and absolute value
-//	 */
-//	public HashMap<String, Integer> getPrevSelectedTPAssignments() { //Not Used yet. 
-//		if(this.prevResult != null) 
-//			return this.prevResult.getSelectedTPAssignments();
-//		return null; 
-//	}
     
 	/**
 	 * Returns the time point selected with the slider in the front end.
@@ -191,7 +177,8 @@ public class ModelSpec {
     	List<BIConstraint> equalList = new ArrayList<BIConstraint>();
     	List<BIConstraint> lessThanList = new ArrayList<BIConstraint>();
     	for (BIConstraint item : constraints) {
-    		if (item.getType().equals("="))
+    		//Note: '<' is now 'lt' and '=' is now 'eq'
+    		if (item.getType().equals("=") || item.getType().equals("eq"))
     			equalList.add(item);
     		else {
     			lessThanList.add(item);
@@ -264,7 +251,7 @@ public class ModelSpec {
 				refTP1 = changedTPNames.get(refTP1);
 			if (changedTPNames.containsKey(refTP2)) 
 				refTP2 = changedTPNames.get(refTP2);
-			this.constraints.add(new TPConstraint(item.getType(), refEle1, refTP1, refEle2, refTP2));
+			this.ltTPconstraints.add(new TPConstraint(item.getType(), refEle1, refTP1, refEle2, refTP2));
     	}
     }   
     
@@ -328,34 +315,6 @@ public class ModelSpec {
 
 	
 	// ************* START OF GENERIC GETTERS AND SETTERS ************* 
-    
-	
-	
-	// To Be Removed
-//	private List<IntentionalElement> intElements = new ArrayList<IntentionalElement>();
-//	private List<Contribution> contribution = new ArrayList<Contribution>();
-//	private List<Decomposition> decomposition = new ArrayList<Decomposition>();
-//	private List<EvolvingContribution> evolvingContribution = new ArrayList<EvolvingContribution>();
-//	private List<EvolvingDecomposition> evolvingDecomposition = new ArrayList<EvolvingDecomposition>();
-//	private List<UserEvaluation> userEvaluations = new ArrayList<UserEvaluation>();
-//	private List<EpochConstraint> constraintsBetweenEpochs = new ArrayList<EpochConstraint>();
-    //	private String inputFilename = "";
-    //private int[][][] history;	
-    //private int[] absoluteTimePoints = null;
-	//    private boolean[][][] initialValues;		// Holds the initial values whether they are single or multiple.
-	//[this.numIntentions][this.numTimePoints][FD - index 0 / PD - index 1 / PS - index 2 / FS - index 3]
-	// Note if model only has initial values then it will be [numintentions][1][4].
-//  private HashMap<String, Integer> prevTPAssignments; //Hash map to hold the epochs with assigned values.    
-//  private Integer[] prevAbsTPVal;		// Hold the assigned times for each of the initial Values. Should be same length of second paramater of initialValues;
-//  private HashMap<String, boolean[][]> prevAssignmentsMaps;  
-
- 
- 
-    
-    
-//	public void setConstraintsBetweenTPs(BIConstraint[] constraintsBetweenTPs) {
-//		this.constraintsBetweenTPs = constraintsBetweenTPs;
-//	}
 
 	public List<Intention> getIntentions() {
 		return intentions;
@@ -389,62 +348,12 @@ public class ModelSpec {
 		this.decompositionLinks = decompositionLinks;
 	}
 
-
-//	public void setInitialValuesMap(HashMap<String, boolean[][]> initialValuesMap) {
-//		this.prevAssignmentsMaps = initialValuesMap;
-//	}
-
-
-//	public List<UserEvaluation> getUserEvaluations() {
-//		return userEvaluations;
-//	}
-
-//	public boolean[][][] getFinalValues() {
-//		return finalValues;
-//	}
-//
-//	public int[] getFinalValueTimePoints() {
-//		return finalValueTimePoints;
-//	}
-//
-//	public HashMap<String, Integer> getFinalAssignedEpochs() {
-//		return finalAssignedEpochs;
-//	}
-//
-//	public void setFinalValues(boolean[][][] finalValues) {
-//		this.finalValues = finalValues;
-//	}
-//
-//	public void setFinalValueTimePoints(int[] finalValueTimePoints) {
-//		this.finalValueTimePoints = finalValueTimePoints;
-//	}
-//
-//	public void setFinalAssignedEpochs(HashMap<String, Integer> finalAssignedEpochs) {
-//		this.finalAssignedEpochs = finalAssignedEpochs;
-//	}
-
-//	public void setInitialAssignedEpochs(HashMap<String, Integer> initialAssignedEpochs) {
-//		this.prevTPAssignments = initialAssignedEpochs;
-//	}
-
-//	public void setInitialValues(boolean[][][] initialValues) {
-//		this.initialValues = initialValues;
-//	}
-
-//	public void setInitialValueTimePoints(Integer[] initialValueTimePoints) {
-//		this.prevAbsTPVal = initialValueTimePoints;
-//	}
+	public List<TPConstraint> getLtTPconstraints() {
+		return ltTPconstraints;
+	}
 
 	public char getConflictAvoidLevel() {
 		return conflictAvoidLevel;
-	}
-
-//	public boolean[][][] getInitialValues() {
-//		return initialValues;
-//	}
-
-	public List<Intention> getIntentionList() {
-		return intentions;
 	}
 
 	public int getMaxTime() {
@@ -454,22 +363,10 @@ public class ModelSpec {
 	public void setMaxTime(int maxTime) {
 		this.maxTime = maxTime;
 	}
-
-//	public List<EpochConstraint> getConstraintsBetweenEpochs() {
-//		return constraintsBetweenEpochs;
-//	}
-
-//	public String getInputFilename() {
-//		return inputFilename;
-//	}
-
+	
 	public int getNumRelativeTimePoints() {
 		return numRelativeTimePoints;
 	}
-
-//	public int[] getAbsoluteTimePoints() {
-//		return absoluteTimePoints;
-//	}
 
 	public List<Actor> getActors() {
 		return actors;
@@ -479,77 +376,13 @@ public class ModelSpec {
 		this.actors = actors;
 	}
 
-//	public List<Contribution> getContribution() {
-//		return contribution;
-//	}
-//
-//	public void setContribution(List<Contribution> contribution) {
-//		this.contribution = contribution;
-//	}
-//
-//	public List<Decomposition> getDecomposition() {
-//		return decomposition;
-//	}
-//
-//	public void setDecomposition(List<Decomposition> decomposition) {
-//		this.decomposition = decomposition;
-//	}
-
-//	public int getNumActors() {
-//		return numActors;
-//	}
-//
-//	public void setNumActors(int numActors) {
-//		this.numActors = numActors;
-//	}
-
-//	public int[][][] getHistory() {
-//		return history;
-//	}
-//
-//	public void setHistory(int[][][] history) {
-//		this.history = history;
-//	}
-
-//	public void setIntElements(List<IntentionalElement> intElements) {
-//		this.intElements = intElements;
-//	}
-//
-//	public void setConstraintsBetweenEpochs(List<EpochConstraint> constraintsBetweenEpochs) {
-//		this.constraintsBetweenEpochs = constraintsBetweenEpochs;
-//	}
-
-//	public void setNumIntentions(int numIntentions) {
-//		this.numIntentions = numIntentions;
-//	}
-//
-//	public void setInputFilename(String inputFilename) {
-//		this.inputFilename = inputFilename;
-//	}
-
 	public void setNumRelativeTimePoints(int numRelativeTimePoints) {
 		this.numRelativeTimePoints = numRelativeTimePoints;
 	}
 
-//	public void setAbsoluteTimePoints(int[] absoluteTimePoints) {
-//		this.absoluteTimePoints = absoluteTimePoints;
-//	}
-
 	public void setConflictAvoidLevel(char conflictAvoidLevel) {
 		this.conflictAvoidLevel = conflictAvoidLevel;
 	}
-
-//	public boolean[][][][] getAllSolutionsValues() {
-//		return allSolutionsValues;
-//	}
-//
-//	public void setAllSolutionsValues(boolean[][][][] allSolutionsValues) {
-//		this.allSolutionsValues = allSolutionsValues;
-//	}
-//
-//	public void setFinalAllSolutionsValues(boolean[][][][] finalValues2) {
-//		this.allSolutionsValues = finalValues2;
-//	}
 
 	public List<NotBothLink> getNotBothLink() {
 		return notBothLink;
@@ -558,22 +391,6 @@ public class ModelSpec {
 	public void setNotBothLink(List<NotBothLink> notBothLink) {
 		this.notBothLink = notBothLink;
 	}
-
-//	public List<EvolvingContribution> getEvolvingContribution() {
-//		return evolvingContribution;
-//	}
-//
-//	public void setEvolvingContribution(List<EvolvingContribution> evolvingContribution) {
-//		this.evolvingContribution = evolvingContribution;
-//	}
-//
-//	public List<EvolvingDecomposition> getEvolvingDecomposition() {
-//		return evolvingDecomposition;
-//	}
-//
-//	public void setEvolvingDecomposition(List<EvolvingDecomposition> evolvingDecomposition) {
-//		this.evolvingDecomposition = evolvingDecomposition;
-//	}
 
 	public String getAnalysisType() {
 		return analysisType;
