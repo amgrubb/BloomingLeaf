@@ -60,6 +60,8 @@
 
         // Make a copy of the graph and add it to the window.
         analysis.graph.fromJSON(JSON.parse(backendStringifyCirc(window.opener.graph.toJSON())));
+
+        //These object hold the request and results for the object.
         console.log("Request:" + JSON.stringify(myInputJSObject.request.toJSON()));
         console.log("Result:" + JSON.stringify(myInputJSObject.results.toJSON()));
         
