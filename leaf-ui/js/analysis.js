@@ -90,6 +90,7 @@ function init(){
             analysis.graph.fromJSON(JSON.parse(prevgraph));
         }
     }*/
+    console.log(JSON.stringify(window.opener.graph.toJSON()));
     analysis.graph.fromJSON(JSON.parse(JSON.stringify(window.opener.graph.toJSON())));
 
     //Filter out Actors
