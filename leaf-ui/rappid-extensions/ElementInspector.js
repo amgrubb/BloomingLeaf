@@ -733,12 +733,7 @@ var FuncSegView = Backbone.View.extend({
         this.listenTo(this.model, 'change:refEvidencePair', this.updateNextFuncSeg);
 
         // Updates the chart whenever there is a change to the model
-        if (!this.hasUD) {
-            this.listenTo(this.intention, 'change:evolvingFunction', this.updateChart);
-        }
-        else {
-            this.listenTo(this.intention, 'change:evolvingFunction', this.updateChartUserDefined);
-        }
+        this.listenTo(this.intention.get('evolvingFunction'), 'change:type', this.hasUD ? this.updateChartUserDefined : this.updateChart);
     },
     template: ['<script type="text/template" id="item-template">',
         '<input class="seg-time" > </input>',
