@@ -12,77 +12,6 @@
 
 var url = "http://localhost:8080/untitled.html";	// Hardcoded URL for Node calls. 
 
-/**
- * Explore Possible Next States - Step 1 - Set up analysis request object.
- * Retrieves information about the current model and sends to the backend
- * to get all next possible states.
- *
- * This function is called on click for #btn-all-next-state
- * 
- * TODO: Replace analysisRequest with config
- */
- function getAllNextStates(analysisRequest, allNextStatesResult) {
-    console.log("TODO: Implement Next States") 
-    // TODO: Is any of this code still needed?
-
-    if (analysisRequest.get('action') != null) { //path has been simulated
-		var selectedResult = analysisRequest.returnSelectedResultBBM();
-		console.log(selectedResult);
-		console.log(selectedResult.get('selectedTimePoint') != selectedResult.get('timePointPath').length - 1);
-        if (selectedResult.get('selectedTimePoint') != selectedResult.get('timePointPath').length - 1) { //last timepoint is not selected
-            $("body").addClass("waiting"); //Adds "waiting" spinner under cursor 
-            //Create the object and fill the JSON file to be sent to backend.
-            //Get the AnalysisInspector view information
-
-			
-            
-            // update the time point for potentialEpoch
-            var previousTP = [];
-			console.log(analysisRequest.get('previousAnalysis'));
-			console.log(selectedResult.get('selectedTimePoint'));
-			// Remove TPs after current point from previous solution?
-			for (var timePointName in analysisRequest.get('previousAnalysis').get('timePointAssignments')) {
-				// Remove anything that is not a digit from timePointName, should be left with selectedTimePoint
-				var timePointID = timePointName.replace(/[^0-9]/g,'');
-				// If the number in timePointName is gresater than the selectedTimePoint in the selectedResult 
-				// Remove the timePointName from the previousAnalysis
-				if (timePointID > selectedResult.get('selectedTimePoint')) {
-					delete analysisRequest.get('previousAnalysis').get('timePointAssignments')[timePointName];
-				}
-			}
-			console.log(analysisRequest.get('previousAnalysis'));
-
-
-            // Update timePointPath in previousAnalysis so it removes time points after the selectedTimePoint
-			analysisRequest.get('previousAnalysis').set('timePointPath', analysisRequest.get('previousAnalysis').get('timePointPath').slice(0, parseInt(selectedResult.get('selectedTimePoint')) + 1));
-
-
-            console.log(analysisRequest);
-
-            // Object to be sent to the backend
-            var jsObject = {};
-            jsObject.analysisRequest = analysisRequest;
-
-            //Get the Graph Model
-			jsObject.graph = graph;
-            // jsObject.model = model;
-
-            //Send data to backend
-            //backendComm(jsObject);		//TODO: Need to add parameter for Node Server.
-            // Temporary Disabled to updated calls to backend.
-            // TODO: Reconnect All Paths Analysis
-			// TODO: fix this function call
-			// TODO: is allNextStatesResult correct or do we have to fix/edit it before sending it to popout window
-            open_analysis_viewer(analysisRequest, allNextStatesResult);
-        } else {
-            swal("Error: Cannot explore next states with last time point selected.", "", "error");
-        }
-    } else {
-        swal("Error: Cannot explore next states before simulating a single path.", "", "error");
-	}
-
-}
-
 /** Makes a request for the backend and calls the response function.
  * {ConfigBBM} analysisRequest
  * Note: function was originally called `backendComm`.
@@ -139,13 +68,9 @@ function responseFunc(analysisRequest, response) {
 				console.log("All Paths Results (responseFunc):");
 				console.log(JSON.stringify(results));
 				var allNextStatesResult = convertToAnalysisResult(results); 	// {ResultBBM}
-				// TODO: Uncomment and update next line.
-				getAllNextStates(analysisRequest, allNextStatesResult);
-				// TODO: update this line
-				console.log(analysisRequest);
-				console.log(allNextStatesResult);	
-		} else if (analysisRequest.get('action') == 'singlePath') {
-				savedAnalysisData.singlePathResult = results;	//	TODO What is this?
+				open_next_state_viewer(analysisRequest, allNextStatesResult);
+			} else if (analysisRequest.get('action') == 'singlePath') {
+				savedAnalysisData.singlePathResult = results;	//	TODO What is this? Remove??
 				console.log(JSON.stringify(results));			// Print the results of the analysis to the console.
 				var analysisResult = convertToAnalysisResult(results); 	// {ResultBBM}
 				displayAnalysis(analysisResult, false);
@@ -176,15 +101,7 @@ function convertToAnalysisResult(results){
 	return tempResult;
 }
 
-function open_analysis_viewer(analysisRequest, allNextStatesResult){
-	console.log(analysisRequest);
-	console.log(graph.toJSON());
-	
-	var analysisStringify = JSON.stringify(analysisRequest);
-	sessionStorage.setItem("Request", analysisStringify);
-	var allNextStatesResultStringify = JSON.stringify(allNextStatesResult);
-	sessionStorage.setItem("Result", allNextStatesResultStringify);
-
+function open_next_state_viewer(analysisRequest, allNextStatesResult){
     var urlBase = document.URL.substring(0, document.URL.lastIndexOf('/')+1);
     var url = urlBase+"analysis.html";
     var w = window.open(url, Date.now(), "status=0,title=0,height=600,width=1200,scrollbars=1");
