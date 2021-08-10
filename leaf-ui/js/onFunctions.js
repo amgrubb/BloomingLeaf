@@ -563,8 +563,7 @@ paper.on("link:options", function (cell) {
 
     $('#btn-clear-elabel').on('click', function () {
         for (let element of graph.getElements()) {
-            var cellView = element.findView(paper);
-            var cell = cellView.model;
+            var cell = element.findView(paper).model;
             var intention = cell.get('intention');
             var initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair');
             var funcType = intention.get('evolvingFunction').get('type');
