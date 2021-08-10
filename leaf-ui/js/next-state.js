@@ -8,6 +8,10 @@
     // analysis.elements = [];
     // analysis.currentState;
     
+    var myInputJSObject;
+    myInputJSObject.request;
+    myInputJSObject.results;
+
     var satValueDict = {
         "unknown": "0000",
         "satisfied": "0011",
@@ -55,8 +59,9 @@
         analysis.paperScroller.center();
 
         // Make a copy of the graph and add it to the window.
-        analysis.graph.fromJSON(JSON.parse(JSON.stringify(window.opener.graph.toJSON())));
-
+        analysis.graph.fromJSON(JSON.parse(backendStringifyCirc(window.opener.graph.toJSON())));
+        console.log("Request:" + JSON.stringify(myInputJSObject.request.toJSON()));
+        console.log("Result:" + JSON.stringify(myInputJSObject.results.toJSON()));
         
     }
 

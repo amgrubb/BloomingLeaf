@@ -108,7 +108,17 @@ function open_next_state_viewer(analysisRequest, allNextStatesResult){
 
     if (!w) {
         alert('You must allow popups for this map to work.');
-    }
+	} else {
+		if (w != null && !w.closed) {
+			var jsObject = {};
+			jsObject.request = analysisRequest;
+			jsObject.results = allNextStatesResult;
+			w.myInputJSObject = jsObject;
+			w.focus();
+		} else {
+			alert("Popup has been closed.");
+		}		
+	}
 
 }
 

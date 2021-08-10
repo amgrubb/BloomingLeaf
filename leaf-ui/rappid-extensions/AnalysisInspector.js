@@ -31,7 +31,7 @@ var AnalysisInspector = Backbone.View.extend({
 	render: function () { 
 		this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
 		// These functions are used to communicate between analysisInspector and Main.js
-		$('head').append('<script src="./js/analysis.js"></script>');
+		$('head').append('<script src="./js/next-state.js"></script>');
 		return this;
 	},
 
