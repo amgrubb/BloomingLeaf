@@ -171,7 +171,7 @@ function generateSyntaxMessage(naryRelationships, destId){
     suggestionText += sourceNodeText + ' to ' + getNodeName(destId) + ' as ' + constraintsText + '.';
 
     // As an example, suggestionText should now look something like:
-    // "Have all n-ary links from Task_1, Task_2 and Task_3 to Goal_0 as AND or NO RELATIONSHIP or OR.""
+    // "Have all n-ary links from Task_1, Task_2 and Task_3 to Goal_0 as 'and' or 'no' or 'or'.""
     var s = '<p style="text-align:left"><b style="color:black"> Source nodes: </b>' + sourceNodeText + '<br>' +
     	'<b style="color:black"> Destination node: </b>' + getNodeName(destId) + 
     	'<br><b style="color:black"> Suggestion: </b>' + suggestionText + '<br></p>';
@@ -189,7 +189,7 @@ function getNodeName(id){
     var listNodes = graph.getElements();
     for(var i = 0; i < listNodes.length; i++){
         var cellView  = listNodes[i].findView(paper);
-        if(id == cellView.model.attributes.elementid){
+		if (id == cellView.model.attributes.id) {
             var nodeName = cellView.model.attr(".name");
             return nodeName.text;
         }
@@ -301,77 +301,6 @@ function alertSyntaxError(title, message) {
 	}
 }
 
-/** TODO: Find out if we still need getIntentionalElements().*/
-
-/**
- * Returns an array containing InputIntentions representing all 
- * intentions currently on the graph
- *
- * @returns {Array.<InputIntention>}
- */
-// function getIntentionalElements() {
-	
-// 	var intentions = [];
-// 	var intentionsCount = 0;
-// 	for (var i = 0; i < this.graph.getElements().length; i++){		
-// 		if (!(this.graph.getElements()[i] instanceof joint.shapes.basic.Actor)){
-			
-// 			/**
-// 			 * NODE ACTOR ID
-// 			 */
-// 			var actorid = '-';
-// 			if (this.graph.getElements()[i].get("parent")){
-// 				actorid = (this.graph.getCell(this.graph.getElements()[i].get("parent")).prop("elementid") || "-");
-// 			}
-			
-// 			/**
-// 			 * NODE ID
-// 			 */
-// 			//Making sure that the elementId has 4 digits
-// 			var elementID = intentionsCount.toString();
-// 			while (elementID.length < 4) { 
-// 				elementID = "0" + elementID;
-// 			}
-			
-// 			//Adding the new id to the UI graph element
-// 			this.graph.getElements()[i].prop("elementid", elementID);
-			
-// 			/**
-// 			 * NODE TYPE
-// 			 */
-// 			var elementType;
-
-// 			if (this.graph.getElements()[i] instanceof joint.shapes.basic.Goal) { 
-// 				elementType = "G";
-// 			} else if (this.graph.getElements()[i] instanceof joint.shapes.basic.Task) { 
-// 				elementType = "T"; 
-// 			} else if (this.graph.getElements()[i] instanceof joint.shapes.basic.Softgoal) { 
-// 				elementType = "S"; 
-// 			} else if (this.graph.getElements()[i] instanceof joint.shapes.basic.Resource) { 
-// 				elementType = "R";
-// 			} else { 
-// 				elementType = "I"; 
-// 			}
-			
-// 		  	/**
-// 		  	 * NODE NAME
-// 		  	 */
-// 		  	// Getting intentional element name
-// 			var intentionalElementName = this.graph.getElements()[i].attr(".name/text").replace(/\n/g, " ");
-			
-// 			/**
-// 			 * CREATING OBJECT
-// 			 */
-// 			var intentionalElement = new InputIntention(actorid, elementID, elementType, intentionalElementName);		  	
-// 			intentions.push(intentionalElement);
-
-// 			// Iterating the counter
-// 			intentionsCount++;
-// 		}	  	
-// 	}
-// 	return intentions;
-// }
-
 /**
  * Returns true iff the link has a source and a target node
  *
@@ -382,67 +311,6 @@ function alertSyntaxError(title, message) {
 	return (!link.prop('source/id') || !link.prop('target/id'));
 }
 
-/**
- * Returns an array of InputLinks, of all links in the graph
- *
- * @returns {Array.<InputLinks>}
- */
-function getLinks(){
-
-	var links = [];
-	
-	// getIntentitonalElements(); 
-
-	//Verifying if links are valid
-	graph.getLinks().forEach(function(link){
-	    if(isLinkInvalid(link)) { 
-			link.remove();
-		}	
-    });
-
-	for (var i = 0; i < graph.getLinks().length; i++) {
-
-		var current = graph.getLinks()[i];
-		var linkType = current.label(0).attrs.text.text.toUpperCase()
-		var source = "-";
-		var target = "-";
-		var absValue = 0;
-
-		if (graph.getLinks()[i].attr('.assigned_time') != undefined) {
-			absValue = parseInt(graph.getLinks()[i].attr('.assigned_time')[0]);
-		}
-
-		if (current.get("source").id) { 
-			source = graph.getCell(current.get('source').id); 
-		}
-			
-		if (current.get("target").id) { 
-			target = graph.getCell(current.get("target").id);
-		}
-			
-		var link;
-
-		// Remove constraints links
-		if (!(linkType.indexOf("=") > -1 || linkType.indexOf("<") > -1)) {
-			// Adding links
-			if (linkType.indexOf("|") > -1) {
-				var evolvRelationships = linkType.replace(/\s/g, '').split("|");
-				// link = new InputLink(linkType: evolvRelationships[0], source, target, postType: evolvRelationships[1], absValue);
-				link = new LinkBBM({displayType: source, linkType: evolvRelationships[0], postType: evolvRelationships[1], absTime: absValue}); 
-			} else if (linkType == "NBT" || linkType == "NBD") {
-				// link = new InputLink(linkType, source, target, null, absValue);
-				link = new LinkBBM({displayType: source, linkType: linkType, postType: null, absTime: absValue});
-			} else {
-				//link = new InputLink(linkType, source, target);
-				link = new LinkBBM({displayType: source, linkType: linkType}); 
-			}
-			links.push(link);
-		}
-
-	}
-
-	return links;
-}
 /**
  * Performs a syntax check on the current model, by checking if each destination
  * nodes with links, have valid constraints.
@@ -547,7 +415,6 @@ function isACycle(cycleList) {
 function cycleSearch() {
 	var links = graph.getLinks();
 	var vertices = getElementList();
-	var isCycle = false;
 
 	//initialize linkMap, a 2D array. 1st index = src nodeID. Subarray at index = dest nodes corresponding to the src
 	var linkMap = initiateLinkGraph(vertices, links)
