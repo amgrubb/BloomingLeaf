@@ -104,6 +104,8 @@ var ElementInspector = Backbone.View.extend({
         '</div>',
         '<div id="user-constraints">',
         '<br>',
+        // Error message is controlled dynamically
+        '<label id="repeat-error"></label>',
         '<select id="repeat-begin" class="repeat-select-begin" style = "position:relative; left:38px; width: 93px">',
         '<option class="select-placeholder" selected disabled value="">Begin</option>',
         '</select>',
@@ -195,6 +197,9 @@ var ElementInspector = Backbone.View.extend({
 
             if (functionType == 'UD') {
                 this.renderUserDefined();
+                if (this.intention.get('evolvingFunction').get('hasRepeat') == true) {
+                    this.selectRepeatValues();
+                }
             } else {
                 this.updateHTML();
             }
@@ -393,6 +398,8 @@ var ElementInspector = Backbone.View.extend({
 
         if (this.repeatOptionsDisplay) {
             this.setRepeatConstraintMode("Update");
+            this.$('#repeat-end3').val('0');
+            this.$("#repeat-error").hide();
         }
     },
 
@@ -419,7 +426,7 @@ var ElementInspector = Backbone.View.extend({
      * (the select elements for repeat begin and end)
      */
     selectRepeatValues: function () {
-        // If some of the repeat select values were previously disbaled, enable them
+        // If some of the repeat select values were previously disabled, enable them
         this.$("option").prop('disabled', '');
 
         var begin = this.$("#repeat-begin").val();
@@ -439,6 +446,27 @@ var ElementInspector = Backbone.View.extend({
         var end = this.$("#repeat-end").val();
         var count = this.$("#repeat-end2").val();
         var absTime = this.$("#repeat-end3").val();
+
+        // find the startAT value for the starting repeating function segment
+        for (var i = 0; i<this.intention.getFuncSegments().length; i++) {
+            if (this.intention.getFuncSegments()[i].get('startTP') == begin) {
+                var repStartTimeVal = this.intention.getFuncSegments()[i].get('startAT');
+            }
+        }
+        // If there is an absolute length and the starting repeating segment doesn't have an startAT, show error message
+        if ((begin !== null) && (absTime > 0)){
+            if (repStartTimeVal === null){
+                this.$("#repeat-error").text("Enter an absTime value for function segment " + begin);
+                this.$("#repeat-error").show("fast");
+            } 
+        } else {
+            this.$("#repeat-error").hide();
+        }
+
+        // Once a repeating start value is selected, rerender function segments to disable absTime
+        if ($("#repeat-begin").val() != null) {
+            this.rerender();
+        }
 
         if (begin === null || end === null) {
             return;
@@ -472,10 +500,29 @@ var ElementInspector = Backbone.View.extend({
      */
     selectAbsoluteLength: function () {
         var absLength = $("#repeat-end3").val();
+        var begin = this.$("#repeat-begin").val();
         if (absLength < 0) {
             $('#repeat-end3').val(0);
         }
         this.intention.get('evolvingFunction').set('repAbsTime', absLength);
+
+        // For when user selects starting repeat value prior to adding absolute length
+        // find the startAT value for the starting repeating function segment
+        for (var i = 0; i<this.intention.getFuncSegments().length; i++) {
+            if (this.intention.getFuncSegments()[i].get('startTP') == begin) {
+                var repStartTimeVal = this.intention.getFuncSegments()[i].get('startAT');
+            }
+        }
+        
+        // If there is an absolute length and the starting repeating segment doesn't have an startAT, show error message
+        if ((begin !== null) && (absLength > 0)){
+            if (repStartTimeVal === null){
+                this.$("#repeat-error").text("Enter an absTime value for function segment " + begin);
+                this.$("#repeat-error").show("fast");
+            } 
+        } else {
+            this.$("#repeat-error").hide();
+        }
     },
 
     /**
@@ -507,13 +554,14 @@ var ElementInspector = Backbone.View.extend({
             $("#repeat-begin").hide();
             $("#repeat-end").hide();
             $("#constraint-repeat").text("Set Repeats");
-            $("#repeat-error").hide();
             $("#repeat-begin2").hide();
             $("#repeat-end2").hide();
             $("#repeat-begin3").hide();
             $("#repeat-end3").hide();
             $("#noteRepeat").hide();
+            this.$("#repeat-error").hide();
             this.repeatOptionsDisplay = false;
+            this.rerender();
 
             // Update all repeat related display and values
         } else if (mode == "Update") {
@@ -561,10 +609,8 @@ var ElementInspector = Backbone.View.extend({
                         $('<option></option>').val(endVal).html(endVal)
                     );
                 }
-                var repNum = this.intention.get('evolvingFunction').get('repCount');
-                var absTime = this.intention.get('evolvingFunction').get('repAbsTime');
-                $("repeat-end2").val(repNum);
-                $("repeat-end3").val(absTime);
+                $("repeat-end2").val(this.intention.get('evolvingFunction').get('repCount'));
+                $("repeat-end3").val(this.intention.get('evolvingFunction').get('repAbsTime'));
             }
         }
     },
@@ -594,7 +640,8 @@ var ElementInspector = Backbone.View.extend({
      * and updateChartUserDefined.
      */
     updateCell: function () {
-        IntentionColoring.refresh(undefined);
+        EVO.refresh(undefined);
+
         changeFont(current_font, paper);
         if (this.intention.get('evolvingFunction') != null) {
             if (this.intention.get('evolvingFunction').get('type') == 'NT') {
@@ -730,14 +777,32 @@ var FuncSegView = Backbone.View.extend({
             this.updateChartUserDefined()
         }
 
-        // TODO: also disable it if it is part of a repeating segment
         // Disable the absTime parameter and set it to zero if its the first function segment
         if (this.index == 0) {
             this.$('.seg-time').val(0);
             this.$('.seg-time').prop('disabled', true);
         } else if (this.index != 0 && this.model.get('startAT') != null) {
             this.$('.seg-time').val(this.model.get('startAT'));
+        } 
+
+        // If there is a repeating segment, disable/delete absTime values from one after the starting segment to the ending segment
+        if ($("#repeat-begin").val() != null) {
+            // If there is no end function segment selected, just disable the rest of the function segments
+            if ($("#repeat-end").val() === null || $("#repeat-end").val() === '') {
+                if ((this.model.get('startTP').charCodeAt(0) > $("#repeat-begin").val().charCodeAt(0))) {
+                    this.$('.seg-time').val('');
+                    this.model.set('startAT', null);
+                    this.$('.seg-time').prop('disabled', true);
+                }
+            } else {
+                if ((this.model.get('startTP').charCodeAt(0) > $("#repeat-begin").val().charCodeAt(0)) && (this.stopTP.charCodeAt(0) < ($("#repeat-end").val().charCodeAt(0)+1))) {
+                this.$('.seg-time').val('');
+                this.model.set('startAT', null);
+                this.$('.seg-time').prop('disabled', true);
+                }
+            }  
         }
+        
         this.checkFuncValue();
 
         // For all function types except for UD disable the ability to select the function 
@@ -759,9 +824,21 @@ var FuncSegView = Backbone.View.extend({
         if (event.which === 13) {
             event.preventDefault();
         }
-
-        var absTime = Number((this.$('.seg-time').val()));
+        
+        // If the absTime is deleted, set absTime to null
+        if (this.$('.seg-time').val() !== '') {
+            var absTime = Number(this.$('.seg-time').val());
+        } else {
+            var absTime = null;
+        }
         this.model.set('startAT', absTime);
+
+        // If the start of the repeating segment has an absolute time value, hide error message
+        if (absTime !== null && this.model.get('startTP') === $("#repeat-begin").val()) {
+            $("#repeat-error").hide();
+        } else {
+            $("#repeat-error").show("fast");
+        }
     },
 
     /**

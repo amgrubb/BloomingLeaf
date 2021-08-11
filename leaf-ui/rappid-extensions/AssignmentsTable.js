@@ -126,11 +126,11 @@ var AssignmentsTable = Backbone.View.extend({
      */
     // TODO: Implement view to take in already selected constraint
     loadRelativeIntentions: function () {
-        for (let constraint in this.model.get('constraints')) {
-            var relIntentionRow = new RelativeIntentionView({ model: constraint, new: false });
+        this.model.get('constraints').forEach(constraint => {
+            var relIntentionRow = new RelativeIntentionView({ model: constraint});
             $('#rel-intention-assigments').append(relIntentionRow.el);
             relIntentionRow.render();
-        }
+        });
     },
 
     /**
@@ -140,7 +140,7 @@ var AssignmentsTable = Backbone.View.extend({
     addRelIntentionRow: function () {
         var newConstraint = new ConstraintBBM({});
         graph.get('constraints').push(newConstraint);
-        var relIntentionRow = new RelativeIntentionView({ model: newConstraint, graph: this.model, new: true });
+        var relIntentionRow = new RelativeIntentionView({ model: newConstraint });
         $('#rel-intention-assigments').append(relIntentionRow.el);
         relIntentionRow.render();
     },
@@ -206,23 +206,18 @@ var RelativeIntentionView = Backbone.View.extend({
     tagName: 'tr',
 
     initialize: function (options) {
-        this.graph = options.graph;
-        // If constraint is a new blank instance or a loaded constraint
-        this.new = options.new;
         this.listenTo(this.model, 'destroy', this.remove, this);
     },
 
-    newConstraintTemplate: ['<script type="text/template" id="assignments-template">',
-        '<td> <div class="epochLists"><select class="epoch1List"><option selected>...</option></select></div></td>',
+    template: ['<script type="text/template" id="assignments-template">',
+        '<td> <div class="epochLists"><select class="epoch1List"><option disabled <% if (srcID === null) { %> selected <%} %> hidden>...</option></select></div></td>',
         '<td> <div class="epochLists"><select id="relationshipLists">',
-        '<option selected>...</option>',
-        '<option value="eq">=</option><option value="lt"><</option></select></div></td>',
-        '<td> <div class="epochLists"><select class="epoch2List"><option selected>...</option></select></div></td>',
+        '<option disabled <% if (type === null) { %> selected <%} %> hidden>...</option>',
+        '<option value="eq" <% if (type === "eq") { %> selected <%} %>>=</option><option value="lt" <% if (type === "lt") { %> selected <%} %>><</option></select></div></td>',
+        '<td> <div class="epochLists"><select class="epoch2List"><option <% if (destID === null) { %> selected <%} %> hidden>...</option></select></div></td>',
         '<td><i class="fa fa-trash-o fa-2x" id="removeConstraint" aria-hidden="true"></i></td>',
         '</script>'
     ].join(''),
-
-    loadedConstraintTemplate: [].join(''),
 
     events: {
         'change .epoch1List': 'changeEpoch1',
@@ -237,13 +232,8 @@ var RelativeIntentionView = Backbone.View.extend({
      * Based on whether or not it is a new default constraint of a loaded constraint
      */
     render: function () {
-        if (this.new) {
-            this.$el.html(_.template($(this.newConstraintTemplate).html())());
+            this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
             this.loadOptions();
-        } else {
-            // TODO: Implement
-            this.$el.html(_.template($(this.loadedConstraintTemplate).html())());
-        }
         return this;
     },
 
@@ -251,14 +241,24 @@ var RelativeIntentionView = Backbone.View.extend({
      * Loads all function segment transitions into the options dropdown menu
      */
     loadOptions: function () {
-        this.graph.getElements().filter(element => element instanceof joint.shapes.basic.Intention).forEach(intentionCell => {
-            intentionBBM = intentionCell.get('intention')
+        graph.getElements().filter(element => element instanceof joint.shapes.basic.Intention).forEach(intentionCell => {
+            var intentionBBM = intentionCell.get('intention');
             if (intentionBBM.get('evolvingFunction') != null) {
                 for (let funcSegment of intentionBBM.getFuncSegments().slice(1)) {
-                    var optionTag = this.getOptionTag(intentionCell.get('id'), intentionBBM.get('nodeName'), funcSegment.get('startTP'));
-                    this.$('.epoch1List').append(optionTag);
-                    this.$('.epoch2List').append(optionTag);
+                    var srcOptionTag = this.getOptionTag(intentionCell.get('id'), intentionBBM.get('nodeName'), funcSegment.get('startTP'), 'src');
+                    var destOptionTag = this.getOptionTag(intentionCell.get('id'), intentionBBM.get('nodeName'), funcSegment.get('startTP'), 'dest');
+                    this.$('.epoch1List').append(srcOptionTag);
+                    this.$('.epoch2List').append(destOptionTag);
                 }
+            }
+        })
+        graph.getLinks().forEach(linkCell => {
+            var linkBBM = linkCell.get('link');
+            if (linkBBM.get('evolving')) {
+                var srcOptionTag = this.getLinkOptionTag(linkCell.get('id'), linkBBM.get('linkType') + '|' + linkBBM.get('postType'), null, 'src');
+                var destOptionTag = this.getLinkOptionTag(linkCell.get('id'), linkBBM.get('linkType') + '|' + linkBBM.get('postType'), null, 'dest');
+                this.$('.epoch1List').append(srcOptionTag);
+                this.$('.epoch2List').append(destOptionTag);
             }
         })
     },
@@ -268,7 +268,7 @@ var RelativeIntentionView = Backbone.View.extend({
      * To match the selected option
      */
     changeEpoch1: function () {
-        selectedOption = $('.epoch1List option:selected');;
+        selectedOption = this.$('.epoch1List option:selected');
         this.model.set('srcID', selectedOption.attr('class'));
         this.model.set('srcRefTP', selectedOption.attr('epoch'));
     },
@@ -288,7 +288,7 @@ var RelativeIntentionView = Backbone.View.extend({
      * To match the selected option
      */
     changeRelationship: function () {
-        this.model.set('type', $('#relationshipLists option:selected').text());
+        this.model.set('type', this.$('#relationshipLists').val());
     },
 
     /**
@@ -302,8 +302,40 @@ var RelativeIntentionView = Backbone.View.extend({
     /**
      * Helper function to create individual option dropdown elements
      */
-    getOptionTag(intentionId, nodeName, epoch) {
-        return '<option class=' + intentionId + ' epoch=' + epoch + '>' + nodeName + ': ' + epoch + '</option>';
+    getOptionTag(Id, nodeName, epoch, position) {
+        var option;
+        if (position ==='src'){
+            if (this.model.get('srcID') === Id && this.model.get('srcRefTP') === epoch){
+                option = '<option class=' + Id + ' epoch="' + epoch + '" selected>' + nodeName + ': ' + epoch + '</option>';
+            } else {
+                option = '<option class=' + Id + ' epoch=' + epoch + '>' + nodeName + ': ' + epoch + '</option>';
+            }
+        } else {
+            if (this.model.get('destID') === Id && this.model.get('destRefTP') === epoch){
+                option = '<option class=' + Id + ' epoch="' + epoch + '" selected>' + nodeName + ': ' + epoch + '</option>';
+            } else {
+                option = '<option class=' + Id + ' epoch=' + epoch + '>' + nodeName + ': ' + epoch + '</option>';
+            }
+        }
+        return option;
+    },
+
+    getLinkOptionTag(Id, nodeName, epoch, position) {
+        var option;
+        if (position ==='src'){
+            if (this.model.get('srcID') === Id){
+                option = '<option class=' + Id + ' epoch="' + epoch + '" selected>' + nodeName + '</option>';
+            } else {
+                option = '<option class=' + Id + ' epoch=' + epoch + '>' + nodeName + '</option>';
+            }
+        } else {
+            if (this.model.get('destID') === Id){
+                option = '<option class=' + Id + ' epoch="' + epoch + '" selected>' + nodeName + '</option>';
+            } else {
+                option = '<option class=' + Id + ' epoch=' + epoch + '>' + nodeName + '</option>';
+            }
+        }
+        return option;
     },
 });
 

@@ -12,6 +12,73 @@
 
 var url = "http://localhost:8080/untitled.html";	// Hardcoded URL for Node calls. 
 
+/**
+ * Explore Possible Next States - Step 1 - Set up analysis request object.
+ * Retrieves information about the current model and sends to the backend
+ * to get all next possible states.
+ *
+ * This function is called on click for #btn-all-next-state
+ * 
+ * TODO: Replace analysisRequest with config
+ */
+ function getAllNextStates() {
+    console.log("TODO: Implement Next States") 
+    /* TODO: Is any of this code still needed?
+    if (analysisRequest.action != null) { //path has been simulated
+        if (analysisResult.selectedTimePoint != analysisResult.timeScale) { //last timepoint is not selected
+            $("body").addClass("waiting"); //Adds "waiting" spinner under cursor 
+            //Create the object and fill the JSON file to be sent to backend.
+            //Get the AnalysisInspector view information
+
+            analysisRequest.action = "allNextStates";
+
+            analysisRequest.previousAnalysis = _.clone(savedAnalysisData.singlePathResult);
+            // need to remove TPs after current point from previous solution?
+            // update the time point for potentialEpoch
+            var previousTP = [];
+            var i = analysisRequest.currentState.indexOf('|', 0);
+            var currentState = parseInt(analysisRequest.currentState.substring(0, i));
+            for (var i = 0; i < currentState + 1; i++) {
+                for (var j = 0; j < analysisRequest.previousAnalysis.assignedEpoch.length; j++) {
+                    var regex = /(.*)_(.*)$/g;
+                    var match = regex.exec(analysisRequest.previousAnalysis.assignedEpoch[j]);
+                    if (match[2] === analysisRequest.previousAnalysis.timePointPath[i]) {
+                        previousTP.push(analysisRequest.previousAnalysis.assignedEpoch[j]);
+                        continue;
+                    }
+                }
+            }
+
+            console.log(previousTP);
+            // update current time point in the path if necessary (if epoch)
+            // remove all the time points after
+            analysisRequest.previousAnalysis.assignedEpoch = previousTP;
+            analysisRequest.previousAnalysis.timePointPath = analysisRequest.previousAnalysis.timePointPath.slice(0, currentState + 1);
+
+
+            console.log(analysisRequest);
+
+            // Object to be sent to the backend
+            var jsObject = {};
+            jsObject.analysisRequest = analysisRequest;
+
+            //Get the Graph Model
+            jsObject.model = model;
+
+            //Send data to backend
+            //backendComm(jsObject);		//TODO: Need to add parameter for Node Server.
+            // Temporary Disabled to updated calls to backend.
+            // TODO: Reconnect All Paths Analysis
+
+        } else {
+            swal("Error: Cannot explore next states with last time point selected.", "", "error");
+        }
+    } else {
+        swal("Error: Cannot explore next states before simulating a single path.", "", "error");
+    }
+    */
+}
+
 /** Makes a request for the backend and calls the response function.
  * {ConfigBBM} analysisRequest
  * Note: function was originally called `backendComm`.
@@ -67,10 +134,12 @@ function responseFunc(analysisRequest, response) {
 		} else if (analysisRequest.get('action') == 'allNextStates') {
 				console.log("All Paths Results (responseFunc):");
 				console.log(JSON.stringify(results));
-				var allNextStatesResult = convertToAnalysisResult(results); 	// {ResultBBM}
-				open_next_state_viewer(analysisRequest, allNextStatesResult);
-			} else if (analysisRequest.get('action') == 'singlePath') {
-				savedAnalysisData.singlePathResult = results;	//	TODO What is this? Remove??
+				var analysisResult = convertToAnalysisResult(results); 	// {ResultBBM}
+				// TODO: Uncomment and update next line.
+				//savedAnalysisData.allNextStatesResult = results;
+				open_analysis_viewer();
+		} else if (analysisRequest.get('action') == 'singlePath') {
+				savedAnalysisData.singlePathResult = results;	//	TODO What is this?
 				console.log(JSON.stringify(results));			// Print the results of the analysis to the console.
 				var analysisResult = convertToAnalysisResult(results); 	// {ResultBBM}
 				displayAnalysis(analysisResult, false);

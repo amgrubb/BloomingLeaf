@@ -8,14 +8,14 @@ var AnalysisInspector = Backbone.View.extend({
 		'<div id="analysis-sidebar">',
 		'<h5 style="text-align:center; color:#181b1fe3; margin-left: 10px;">Analysis Parameters</h5>',
 		'<p style="text-align:center; margin-top: -20px;";><label class = "sub-label">Conflict Prevention Level</label>', 
-		'<select id="conflict-level" class="sub-label" style="height:20px; width: 170px";>', 
+		'<select id="conflict-level" class="sub-label" style="height:20px; width: 170px">', 
 			'<option value=S <% if (conflictLevel === "S") { %> selected <%} %>> Strong </option>',
 			'<option value=M <% if (conflictLevel === "M") { %> selected <%} %>> Medium </option>',
 			'<option value=W <% if (conflictLevel === "W") { %> selected <%} %>> Weak </option>',
 			'<option value=N <% if (conflictLevel === "N") { %> selected <%} %>> None </option>',
 		'</select>',
 		'<label class="sub-label">Num Relative Time Points</label>',
-		'<input id="num-rel-time" class="analysis-input" type="number" min="0" max="20" step="1" value="<%= numRelTime %>"/> </input>',
+		'<input id="num-rel-time" class="analysis-input" type="number" min="0" max="20" step="1" value="<%= numRelTime %>"> </input>',
 		'</div>',
 		'<hr>',
 		'</div>',
@@ -30,6 +30,10 @@ var AnalysisInspector = Backbone.View.extend({
 	/** Sets template and injects model parameters */
 	render: function () { 
 		this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
+		if (this.model.get('results').length !== 0) {
+			$('#conflict-level').prop('disabled', true);
+			$('#num-rel-time').prop('disabled', true);
+		}
 		// These functions are used to communicate between analysisInspector and Main.js
 		$('head').append('<script src="./js/next-state.js"></script>');
 		return this;
