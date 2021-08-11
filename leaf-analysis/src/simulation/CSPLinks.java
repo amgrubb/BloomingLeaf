@@ -48,7 +48,7 @@ public class CSPLinks {
 					constraints.add(createForwardContributionConstraint(pre, 
 						values[sourceID][t], values[targetID][t]));
 				}
-			} else {
+			} else if (link.isEvolving()){
 				// Evolving Contributions - must use time points.
 				ContributionType post = link.getPostContribution();
 				IntVar refTP = CSPPath.getTimePoint(timePointMap, link.getLinkTP());
