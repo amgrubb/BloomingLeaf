@@ -251,7 +251,13 @@
         var index_of_selected_state = parseInt(document.getElementById("currentPage").value);
     
         // getting current state
-        var currentState = current + 1;
+        // var currentState = current + 1;
+        // var currentState = myInputJSObject.analysisRequest.results
+        for (let result of myInputJSObject.request.get('results')) {
+            if (result.selected == true) {
+                var currentState = result.selectedTimePoint;
+            }
+        }
         console.log(current);
         console.log(currentState);
     
@@ -600,5 +606,42 @@
         //analysisRequest.previousAnalysis.timePointPath = analysisRequest.previousAnalysis.timePointPath.slice(0, currentState+1);
     
         analysisRequest.currentState = currentState + "|" + analysisRequest.previousAnalysis.timePointPath[currentState];
-    }    
+    }  
+    
+//This function should get the current state in the screen and save in the original path
+function save_current_state(){
+    updateAnalysisRequestWithCurrentState();
+    analysisRequest.action = "singlePath";
+
+    jsObject.analysisRequest = analysisRequest;
+    console.log(jsObject);
+
+    // TODO Update call to backendComm.
+    //console.log("TODO: Update Call to BackendComm");
+    window.opener.backendSimulationRequest(analysisRequest);
+
+    window.close();
+}
+
+//This function should get the current state and generate a new window with the next possible states
+function generate_next_states(){
+    
+    $("body").addClass("waiting"); //Adds "waiting" spinner under cursor 
+    // Object to be sent to the backend
+    var jsObject = {};
+    updateAnalysisRequestWithCurrentState();
+
+    /*for (var i = 0; i < analysisRequest.previousAnalysis.elementList.length ; i++){
+        analysisRequest.previousAnalysis.elementList[i].status.slice(0, current+2);
+    }*/
+    analysisRequest.action = "allNextStates";
+
+    jsObject.analysisRequest = analysisRequest;
+    console.log(analysisRequest);
+
+    // TODO Update call to backendComm.
+    //console.log("TODO: Update Call to BackendComm");
+    //backendComm(jsObject);      
+    backendSimulationRequest(analysisRequest);
+}    
 }    
