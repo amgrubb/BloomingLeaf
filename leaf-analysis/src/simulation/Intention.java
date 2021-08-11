@@ -111,7 +111,7 @@ public class Intention extends AbstractLinkableElement {
 					repAT += repATLength;
 			}
 			s = repStopIndex;
-			while(i < list.length) {	//TODO: Might need different condition.
+			while(i < list.length) { 
 				BIFunctionSegment seg = biList[s];
 				list[i] = new FunctionSegment(seg.getType(),seg.getRefEvidencePair(), 
 						seg.getStartTP(), seg.getStartAT(), this.id);
