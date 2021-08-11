@@ -8,9 +8,10 @@
     // analysis.elements = [];
     // analysis.currentState;
     
+    // Analysis objects from original window
     var myInputJSObject;
-    myInputJSObject.request;
-    myInputJSObject.results;
+    myInputJSObject.request; // configBBM of the selected configuration 
+    myInputJSObject.results; // resultBBM of results from the backend
 
     var satValueDict = {
         "unknown": "0000",
@@ -28,6 +29,9 @@
         renderNavigationSidebar();
     }
     
+    /**
+     * Initializes all of the components needed for the popup window
+     */
     function init(){
         //Page objects
         analysis.graph = new joint.dia.BloomingGraph();
@@ -70,22 +74,25 @@
         
     }
 
-
-    function updateNodesValues(currentPage, step = 0){
+    /**
+     * Updates the satisfaction values of the elements based on which page is selected
+     * 
+     * @param {Integer} currentPage 
+     * The number of the page that is selected in the next State window
+     */
+    function updateNodesValues(currentPage){
         if(currentPage == "")
             currentPage = 0;
     
         //Set the currentState variable so it can be sent back to the original path
         var i = 0;
-        for (let element of analysis.graph.getElements()) {
-            console.log(element);
-            // cell = analysis.elements[i];
-            // value = analysis.analysisResult.allSolution[currentPage].intentionElements[i].status[step];
+        for (let element of analysis.graph.getElements()) {         
             // TODO: fix this line below
-            satValue = myInputJSObject.results.get('elementList')[i].status[myInputJSObject.results.get('elementList')[i].status.length - 1];
+            // TODO: allSolutions is a hshmap and will have more than one element
+            satValue = myInputJSObject.results.get('allSolutions')["TNS-R"][currentPage][i];
             element.attr(".satvalue").value = satValue;
     
-            //Change backend value to user friendly view
+            // Sets attributes of element from the refEvidence pair from resultBBM
             if ((satValue == "0001") || (satValue == "0011")) {
                 element.attr(".satvalue/text", "(F, ⊥)");
                 element.attr({text:{fill:'black'}});
@@ -120,6 +127,12 @@
         }
     }    
 
+    /**
+     * Renders sidebar on left side of next State
+     * 
+     * @param {Integer} currentPage 
+     * The number of the page that is selected in the next State window
+     */
     function renderNavigationSidebar(currentPage = 0){
         clear_pagination_values();
     
@@ -139,6 +152,12 @@
         // EVONextState.refresh();
     }
 
+    /**
+     * Updates which page is selected 
+     * 
+     * @param {Integer} currentPage
+     * The number of the page that is selected in the next State window 
+     */
     function updatePagination(currentPage){
         var pagination = document.getElementById("pagination");
         // TODO: have to update this, allSolutions is a hashmap
@@ -225,5 +244,4 @@
             }
         }
     }
-
-}
+ }
