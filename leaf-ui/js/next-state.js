@@ -7,6 +7,8 @@
     // analysis.analysisResult;
     // analysis.elements = [];
     // analysis.currentState;
+
+    var filterOrderQueue = [];
     
     // Analysis objects from original window
     var myInputJSObject;
@@ -245,403 +247,447 @@
         }
     }
 
-
-    function updateAnalysisRequestWithCurrentState(){
-        // updating input analysis
-        var index_of_selected_state = parseInt(document.getElementById("currentPage").value);
+    function clear_pagination_values(){
+        var pagination = document.getElementById("pagination");
+        var num_states_lbl = document.getElementById("num_states_lbl");
+        var currentPageIn = document.getElementById("currentPage");
     
-        // getting current state
-        // var currentState = current + 1;
-        // var currentState = myInputJSObject.analysisRequest.results
-        for (let result of myInputJSObject.request.get('results')) {
-            if (result.selected == true) {
-                var currentState = result.selectedTimePoint;
-            }
-        }
-        console.log(current);
-        console.log(currentState);
+        pagination.innerHTML = "";
+        num_states_lbl.innerHTML = "";
+        currentPageIn.value = "";
+    }
     
-        // update current state in the element list
-        for (var element_index = 0; element_index < savedAnalysisData.allNextStatesResult.allSolution[index_of_selected_state].intentionElements.length; element_index++){
-            analysisRequest.previousAnalysis.elementList[element_index].status[currentState] = savedAnalysisData.allNextStatesResult.allSolution[index_of_selected_state].intentionElements[element_index].status[0];
-        }
-        // getting next time point
-        var nextTimePoint = savedAnalysisData.singlePathResult.timePointPath[currentState];
-        console.log(nextTimePoint);
-        
-        // get the list of all epochs
-        var allEpochs = {}; // intention id : list of epoch names
-        var num_epochs = 0;
+    function goToState(){
+        var requiredState = parseInt(document.getElementById("requiredState").value);
+        // var nextSteps_array_size = analysis.analysisResult.allSolution.length;
+        var nextSteps_array_size = myInputJSObject.results.get('allSolutions')["TNS-R"].length;
     
-        for (var i = 0; i < elements[i].length ; i++){
-            // more than one piece of functions involved
-            if (!allEpochs[elements[i].get('intention').cid]){
-                allEpochs[elements[i].get('intention').cid] = [];
-            }
-    
-            if (elements[i].get('intention').get('evolvingFunction').get('type') === "NT" ||
-                elements[i].get('intention').get('evolvingFunction').get('type') === "C" ||
-                elements[i].get('intention').get('evolvingFunction').get('type') === "I" ||
-                elements[i].get('intention').get('evolvingFunction').get('type') === "D" ||
-                elements[i].get('intention').get('evolvingFunction').get('type') === "R" ||
-                elements[i].get('intention').get('evolvingFunction').get('type') === "NB" ){
-                continue;
-            }
-            else if (elements[i].get('intention').get('evolvingFunction').get('type') === "SD" ||
-                elements[i].get('intention').get('evolvingFunction').get('type') === "DS" ||
-                elements[i].get('intention').get('evolvingFunction').get('type') === "CR" ||
-                elements[i].get('intention').get('evolvingFunction').get('type') === "RC" ||
-                elements[i].get('intention').get('evolvingFunction').get('type') === "MP" ||
-                elements[i].get('intention').get('evolvingFunction').get('type') === "MN" ){
-                allEpochs[elements[i].nodeID].push("E" + elements[i].nodeID);
-                num_epochs ++;
-            }
-            else if (elements[i].get('intention').get('evolvingFunction').get('type') === "UD"){
-                // getting function charEB list
-                var charEBs = [];
-                for (var j = 0; j < elements[i].get('intention').get('evolvingFunction').get('functionSegList').length; j ++){
-                    if (charEBs.indexOf(elements[i].get('intention').get('evolvingFunction').get('functionSegList')[j].get('startTP') === -1)){
-                        charEBs.push(elements[i].get('intention').get('evolvingFunction').get('functionSegList')[j].get('startTP'));
-                    }
-                }
-                // ignoring 0 and infinity in charEBs
-                for (var k = 1; k < charEBs.length-1; k ++){
-                    allEpochs[elements[i].nodeID].push("E" + elements[i].get('intention').cid + "_" + charEBs[k]);
-                    num_epochs++;
-                }
-            }
-        }
-    
-        console.log(allEpochs);
-        console.log(num_epochs);
-    
-        // determine which epoch has happened
-        // count absolute time points that occurs
-    
-        var previousEpochs = []; // {epoch name : index in assignedEpoch} includes both E0000 and TE1 etc
-        var previousAbs = 0;
-        var previousRel = 0;
-        var AbsIntersction = 0;
-        //var previousTP = [];
-        for (var j = 0; j < analysisRequest.previousAnalysis.assignedEpoch.length; j ++){
-            var regex = /(.*)_(.*)$/g;
-            var match = regex.exec(analysisRequest.previousAnalysis.assignedEpoch[j]);
-            //previousTP.push(analysisRequest.previousAnalysis.assignedEpoch[j]);
-            if (analysisRequest.previousAnalysis.assignedEpoch[j].indexOf("T") > -1) {
-                // check if it's an absolute time point - TA
-                if (analysisRequest.previousAnalysis.assignedEpoch[j].indexOf("A") > -1){
-                    previousAbs ++;
-                } else {
-                    // not TA but happen to be on an abs time point
-                    if (analysisRequest.absTimePtsArr.indexOf(match[1]) > -1){
-                        AbsIntersction ++;
-                    }
-                    // count previous relative points - TR
-                    if (analysisRequest.previousAnalysis.assignedEpoch[j].indexOf("R") > -1){
-                        previousRel ++;
-                    }
-                }
-    
+        if ((requiredState != "NaN") && (requiredState > 0)){
+            if (requiredState > nextSteps_array_size){
+                renderNavigationSidebar(nextSteps_array_size);
             } else {
-                if (analysisRequest.previousAnalysis.assignedEpoch[j].indexOf("E") > -1){
-                    console.log("found function epoch");
-                    previousEpochs.push(match[1]);
+                renderNavigationSidebar(requiredState);
+            }
+        }
+    }
+    
+    function add_filter(){
+        console.log("clicked");
+        tempResults = myInputJSObject.results
+        var checkboxes = document.getElementsByClassName("filter_checkbox");
+        for (var i = 0; i < checkboxes.length; i++){
+            var checkbox = checkboxes[i];
+            // check if something is just checked
+            if (checkbox.checked){
+                if (filterOrderQueue.indexOf(checkbox.id) == -1){
+                    filterOrderQueue.push(checkbox.id);
+                }
+            }
+            // check if something is just unchecked
+            else {
+                if (filterOrderQueue.indexOf(checkbox.id) != -1){
+                    filterOrderQueue.splice(filterOrderQueue.indexOf(checkbox.id), 1);
                 }
             }
         }
+        console.log(filterOrderQueue);
     
-        console.log(previousEpochs);
-        console.log("previousAbs " + previousAbs);
-        console.log("AbsIntersction " + AbsIntersction);
-        console.log("previousRel " + previousRel);
-        //console.log(previousTP);
-    
-        // determine the type of current time point
-        var potentialEpochs = [];
-        var definiteEpochs = [];
-        for (var i = 0; i < elements[i].length ; i++) {
-            if (elements[i].get('intention').get('evolvingFunction').get('type') === "NT" ||
-                elements[i].get('intention').get('evolvingFunction').get('type') === "C" ||
-                elements[i].get('intention').get('evolvingFunction').get('type') === "I" ||
-                elements[i].get('intention').get('evolvingFunction').get('type') === "D" ||
-                elements[i].get('intention').get('evolvingFunction').get('type') === "R" ||
-                elements[i].get('intention').get('evolvingFunction').get('type') === "NB") {
-                continue;
-            }
-    
-            // Satisfied Denied or Denied Satisfied
-            if (elements[i].get('intention').get('evolvingFunction').get('type') === "SD" || elements[i].get('intention').get('evolvingFunction').get('type') === "DS") {
-                // Epoch happens when previous is initial state and current is final state
-                var startValue =  elements[i].get('intention').get('evolvingFunction').get('functionSegList')[0].get('refEvidencePair');
-                var endValue =  elements[i].get('intention').get('evolvingFunction').get('functionSegList')[1].get('refEvidencePair');
-                var previousStatus = analysisRequest.previousAnalysis.elementList[i].status[current];
-                var curStatus = savedAnalysisData.allNextStatesResult.allSolution[index_of_selected_state].intentionElements[i].status[0];
-                if (previousStatus === startValue && curStatus === endValue) {
-                    definiteEpochs.push("E" + elements[i].get('intention').cid);
-                }
-            }
-    
-            // Stochastic Constant
-            if (elements[i].get('intention').get('evolvingFunction').get('type') === "RC") {
-                // check if epoch has happened already
-                // check if obj["key"] != undefined
-                if (previousEpochs.indexOf("E" + elements[i].get('intention').cid) > -1) {
-                    continue;
-                }
-                // check if current value is the final value
-                // this goes into potential list
-                var endValue = elements[i].get('intention').get('evolvingFunction').get('functionSegList')[1].get('refEvidencePair');
-                var curStatus = savedAnalysisData.allNextStatesResult.allSolution[index_of_selected_state].intentionElements[i].status[0];
-                if (curStatus === endValue) {
-                    potentialEpochs.push("E" + elements[i].get('intention').cid);
-                }
-            }
-    
-            // Constant Stochastic
-            if (elements[i].get('intention').get('evolvingFunction').get('type') === "CR") {
-                // check if epoch has happened already
-                if (previousEpochs.indexOf("E" + elements[i].get('intention').cid) > -1) {
-                    break;
-                }
-                // TODO: add to potential epochs directly?
-                // check if previous is constant value and current is not constant value
-                var startValue = elements[i].get('intention').get('evolvingFunction').get('functionSegList')[0].get('refEvidencePair');
-                var curStatus = savedAnalysisData.allNextStatesResult.allSolution[index_of_selected_state].intentionElements[i].status[0];
-                if (curStatus !== startValue) {
-                    definiteEpochs.push("E" + elements[i].get('intention').cid) ;
-                }
-            }
-    
-            // Monotonic Positive or Monotonic Negative
-            if (elements[i].get('intention').get('evolvingFunction').get('type') === "MP" || elements[i].get('intention').get('evolvingFunction').get('type') === "MN") {
-                // check if epoch has happened already
-                if (previousEpochs.indexOf("E" + elements[i].get('intention').cid) > -1) {
-                    console.log("found epoch");
-                    break;
-                }
-                // check if current value is the final value
-                // this goes into potential list
-                var endValue = elements[i].get('intention').get('evolvingFunction').get('functionSegList')[1].get('refEvidencePair');
-                var curStatus = savedAnalysisData.allNextStatesResult.allSolution[index_of_selected_state].intentionElements[i].status[0];
-                if (curStatus === endValue) {
-                    potentialEpochs.push("E" + elements[i].get('intention').cid);
-                }
-            }
-    
-            // User Defined TODO: need to fix UD functions
-            if (elements[i].get('intention').get('evolvingFunction').get('type') === "UD") {
-                var next_epoch = "";
-                var cur_seg = -1;
-                for (var j = 0; j < elements[i].get('intention').get('evolvingFunction').get('functionSegList').length; j++) {
-                    var start_epoch = "E" + elements[i].get('intention').cid + "_" + elements[i].get('intention').get('evolvingFunction').get('functionSegList')[j].get('startTP');
-                    if (elements[i].get('intention').get('evolvingFunction').get('functionSegList')[j].get('startTP') == '0') {
-                        var end_epoch = "E" + elements[i].get('intention').cid + "_" + 'A';
-                    } else {
-                        var end_epoch = "E" + elements[i].get('intention').cid + "_" + String.fromCharCode(elements[i].get('intention').get('evolvingFunction').get('functionSegList')[j].get('startTP').charCodeAt(0) + 1);;
+        for (var i = 0; i <  filterOrderQueue.length; i++){
+            switch (filterOrderQueue[i]){
+                case "conflictFl":
+                    console.log("conflictFl");
+                    var index_to_rm = [];
+                    for (var solution_index=0; solution_index < tempResults.get('allSolutions')["TNS-R"].length; solution_index++) {
+                        for (var element_index=0; element_index < tempResults.get('allSolutions')["TNS-R"][solution_index].length; element_index++){
+                            var value = element_index < tempResults.get('allSolutions')["TNS-R"][solution_index][element_index];
+                            console.log(value);
+                            if ((value == "0110") ||
+                                (value == "0111") ||
+                                (value == "0101") ||
+                                (value == "1110") ||
+                                (value == "1010") ||
+                                (value == "1111") ||
+                                (value == "1001") ||
+                                (value == "1101") ||
+                                (value == "1011") ){
+                                index_to_rm.push(solution_index);
+                                break;
+                            }
+                        }
                     }
-                    if (previousEpochs.indexOf(end_epoch) == -1 && previousEpochs.indexOf(start_epoch) != -1){
-                        //look for the seg that the start epoch happened and stop epoch hasn't
-                        cur_seg = j;
-                        next_epoch = end_epoch;
+                    for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
+                        // selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
+                        tempResults.get('allSolutions')["TNS-R"].splice(index_to_rm[to_rm]-to_rm,1);
                     }
-                }
-    
-                console.log("next_epoch: " + next_epoch);
-                console.log("cur_seg: " + cur_seg);
-                if (cur_seg == -1){
                     break;
-                }
-                var endValue = elements[i].get('intention').get('evolvingFunction').get('functionSegList')[cur_seg].get('refEvidencePair');
-                var curStatus = savedAnalysisData.allNextStatesResult.allSolution[index_of_selected_state].intentionElements[i].status[0];
+                case "ttFl":
+                    console.log("ttFl");
+                    console.log(selectedResult.allSolution.length);
     
-                // if the next segment is random, the epoch goes to potential epochs
-                var go_to_potentials = 0;
-                if (cur_seg < elements[i].get('intention').get('evolvingFunction').get('functionSegList').length-1){
-                    if (elements[i].get('intention').get('evolvingFunction').get('functionSegList')[cur_seg+1].get('type') === "R"){
-                        go_to_potentials = 1;
+                    var index_to_rm = [];
+                    for (var solution_index=0; solution_index < selectedResult.allSolution.length; solution_index++) {
+                        for (var element_index=0; element_index < selectedResult.allSolution[solution_index].intentionElements.length; element_index++){
+                            var value = selectedResult.allSolution[solution_index].intentionElements[element_index].status[0];
+                            if (value == "0000"){
+                                index_to_rm.push(solution_index);
+                                break;
+                            }
+                        }
                     }
-                }
-                switch (elements[i].get('intention').get('evolvingFunction').get('functionSegList')[cur_seg].get('type')) {
-                    case "C":
-                        if (curStatus !== endValue){
-                            if (go_to_potentials == 1){
-                                potentialEpochs.push(next_epoch);
+                    for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
+                        selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
+                    }
+                    break;
+                case "leastTasksSatisfied":
+                    console.log("leastTasksSatisfied");
+                    console.log(selectedResult.allSolution.length);
+    
+                    var index_to_keep = [];
+                    var index_to_rm = [];
+    
+                    var least_t_s = selectedResult.allSolution.length;
+                    for (var solution_index=0; solution_index < selectedResult.allSolution.length; solution_index++) {
+                        var num_t_s = 0;
+                        for (var element_index=0; element_index < selectedResult.allSolution[solution_index].intentionElements.length; element_index++){
+                            if (selectedResult.allSolution[solution_index].intentionElements[element_index].type === "TASK"){
+                                var value = selectedResult.allSolution[solution_index].intentionElements[element_index].status[0];
+                                if ((value == "0010" || value == "0011")){
+                                    num_t_s ++;
+                                }
+                            }
+                        }
+                        if (least_t_s > num_t_s){
+                            least_t_s = num_t_s;
+                            index_to_rm = index_to_rm.concat(index_to_keep);
+                            index_to_keep = [];
+                        }
+                        if (num_t_s == least_t_s){
+                            index_to_keep.push(solution_index);
+                        }
+                        if (num_t_s > least_t_s){
+                            index_to_rm.push(solution_index);
+                        }
+                    }
+                    index_to_rm.sort(function(a, b){return a-b});
+                    for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
+                        selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
+                    }
+                    break;
+                case "mostTasksSatisfied":
+                    var index_to_keep = [];
+                    var index_to_rm = [];
+    
+                    var most_t_s = 0;
+                    for (var solution_index=0; solution_index < selectedResult.allSolution.length; solution_index++) {
+                        var num_t_s = 0;
+                        for (var element_index=0; element_index < selectedResult.allSolution[solution_index].intentionElements.length; element_index++){
+                            if (selectedResult.allSolution[solution_index].intentionElements[element_index].type === "TASK"){
+                                var value = selectedResult.allSolution[solution_index].intentionElements[element_index].status[0];
+                                if ((value == "0010" || value == "0011")){
+                                    num_t_s ++;
+                                }
+                            }
+                        }
+                        if (most_t_s < num_t_s){
+                            most_t_s = num_t_s;
+                            index_to_rm = index_to_rm.concat(index_to_keep);
+                            index_to_keep = [];
+                        }
+                        if (num_t_s == most_t_s){
+                            index_to_keep.push(solution_index);
+                        }
+                        if (num_t_s < most_t_s){
+                            index_to_rm.push(solution_index);
+                        }
+                    }
+                    index_to_rm.sort(function(a, b){return a-b});
+                    for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
+                        selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
+                    }
+                    break;
+                case "leastResource":
+                    console.log("leastResource");
+                    console.log(selectedResult.allSolution.length);
+    
+                    var index_to_keep = [];
+                    var index_to_rm = [];
+    
+                    var least_r_s = selectedResult.allSolution.length;
+                    for (var solution_index=0; solution_index < selectedResult.allSolution.length; solution_index++) {
+                        var num_r_s = 0;
+                        for (var element_index=0; element_index < selectedResult.allSolution[solution_index].intentionElements.length; element_index++){
+                            if (selectedResult.allSolution[solution_index].intentionElements[element_index].type === "RESOURCE"){
+                                var value = selectedResult.allSolution[solution_index].intentionElements[element_index].status[0];
+                                if ((value == "0010" || value == "0011")){
+                                    num_r_s ++;
+                                }
+                            }
+                        }
+                        if (least_r_s > num_r_s){
+                            least_r_s = num_r_s;
+                            index_to_rm = index_to_rm.concat(index_to_keep);
+                            index_to_keep = [];
+                        }
+                        if (num_r_s == least_r_s){
+                            index_to_keep.push(solution_index);
+                        }
+                        if (num_r_s > least_r_s){
+                            index_to_rm.push(solution_index);
+                        }
+                    }
+                    index_to_rm.sort(function(a, b){return a-b});
+                    for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
+                        selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
+                    }
+                    break;
+                case "mostResource":
+                    console.log("mostResource");
+                    console.log(selectedResult.allSolution.length);
+    
+                    var index_to_keep = [];
+                    var index_to_rm = [];
+    
+                    var most_r_s = 0;
+                    for (var solution_index=0; solution_index < selectedResult.allSolution.length; solution_index++) {
+                        var num_r_s = 0;
+                        for (var element_index=0; element_index < selectedResult.allSolution[solution_index].intentionElements.length; element_index++){
+                            if (selectedResult.allSolution[solution_index].intentionElements[element_index].type === "RESOURCE"){
+                                var value = selectedResult.allSolution[solution_index].intentionElements[element_index].status[0];
+                                if ((value == "0010" || value == "0011")){
+                                    num_r_s ++;
+                                }
+                            }
+                        }
+                        if (most_r_s < num_r_s){
+                            most_r_s = num_r_s;
+                            index_to_rm = index_to_rm.concat(index_to_keep);
+                            index_to_keep = [];
+                        }
+                        if (num_r_s == most_r_s){
+                            index_to_keep.push(solution_index);
+                        }
+                        if (num_r_s < most_r_s){
+                            index_to_rm.push(solution_index);
+                        }
+                    }
+                    index_to_rm.sort(function(a, b){return a-b});
+                    for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
+                        selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
+                    }
+                    break;
+                case "leastGoalSatisfied":
+                    console.log("leastGoalSatisfied");
+                    console.log(selectedResult.allSolution.length);
+    
+                    var index_to_keep = [];
+                    var index_to_rm = [];
+    
+                    var least_goal_s = selectedResult.allSolution.length;
+                    for (var solution_index=0; solution_index < selectedResult.allSolution.length; solution_index++) {
+                        var num_g_s = 0;
+                        for (var element_index=0; element_index < selectedResult.allSolution[solution_index].intentionElements.length; element_index++){
+                            if (selectedResult.allSolution[solution_index].intentionElements[element_index].type === "GOAL"){
+                                var value = selectedResult.allSolution[solution_index].intentionElements[element_index].status[0];
+                                if ((value == "0010" || value == "0011")){
+                                    num_g_s ++;
+                                }
+                            }
+                        }
+                        if (least_goal_s > num_g_s){
+                            least_goal_s = num_g_s;
+                            index_to_rm = index_to_rm.concat(index_to_keep);
+                            index_to_keep = [];
+                        }
+                        if (num_g_s == least_goal_s){
+                            index_to_keep.push(solution_index);
+                        }
+                        if (num_g_s > least_goal_s){
+                            index_to_rm.push(solution_index);
+                        }
+                    }
+                    index_to_rm.sort(function(a, b){return a-b});
+                    for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
+                        selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
+                    }
+                    break;
+                case "mostGoalSatisfied":
+                    console.log("mostGoalSatisfied");
+                    console.log(selectedResult.allSolution.length);
+    
+                    var index_to_keep = [];
+                    var index_to_rm = [];
+    
+                    var most_goal_s = 0;
+                    for (var solution_index=0; solution_index < selectedResult.allSolution.length; solution_index++) {
+                        var num_g_s = 0;
+                        for (var element_index=0; element_index < selectedResult.allSolution[solution_index].intentionElements.length; element_index++){
+                            if (selectedResult.allSolution[solution_index].intentionElements[element_index].type === "GOAL"){
+                                var value = selectedResult.allSolution[solution_index].intentionElements[element_index].status[0];
+                                if ((value == "0010" || value == "0011")){
+                                    num_g_s ++;
+                                }
+                            }
+                        }
+                        if (most_goal_s < num_g_s){
+                            most_goal_s = num_g_s;
+                            index_to_rm = index_to_rm.concat(index_to_keep);
+                            index_to_keep = [];
+                        }
+                        if (num_g_s == most_goal_s){
+                            index_to_keep.push(solution_index);
+                        }
+                        if (num_g_s < most_goal_s){
+                            index_to_rm.push(solution_index);
+                        }
+                    }
+                    index_to_rm.sort(function(a, b){return a-b});
+                    for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
+                        selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
+                    }
+                    break;
+                case "LeastActor":
+                    console.log("LeastActor");
+                    console.log(selectedResult.allSolution.length);
+    
+                    var least_actor = selectedResult.allSolution.length;
+                    var index_to_keep = [];
+                    var index_to_rm = [];
+                    for (var solution_index = 0; solution_index < selectedResult.allSolution.length; solution_index++) {
+                        var actors = {};
+                        for (var element_index = 0; element_index < selectedResult.allSolution[solution_index].intentionElements.length; element_index++) {
+                            if (! actors[selectedResult.allSolution[solution_index].intentionElements[element_index].actorId]){
+                                actors[selectedResult.allSolution[solution_index].intentionElements[element_index].actorId] = 0;
+                            }
+                            var value = selectedResult.allSolution[solution_index].intentionElements[element_index].status[0];
+                            if ((value == "0010" || value == "0011" || (value == "0110") ||
+                                (value == "0111") ||
+                                (value == "0101") ||
+                                (value == "1110") ||
+                                (value == "1010") ||
+                                (value == "1111") ||
+                                (value == "1001") ||
+                                (value == "1101") ||
+                                (value == "1011"))){
+                                actors[selectedResult.allSolution[solution_index].intentionElements[element_index].actorId] =1;
+                            }
+                        }
+                        var int_sat = Object.values(actors).reduce((a, b) => a + b);
+                        if (least_actor > int_sat){
+                            least_actor = int_sat;
+                            index_to_rm = index_to_rm.concat(index_to_keep);
+                            index_to_keep = [];
+                        }
+                        if (int_sat == least_actor){
+                            index_to_keep.push(solution_index);
+                        }
+                        if (int_sat > least_actor){
+                            index_to_rm.push(solution_index);
+                        }
+    
+                    }
+                    index_to_rm.sort(function(a, b){return a-b});
+                    for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
+                        selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
+                    }
+                    break;
+                case "mostActor":
+                    console.log("mostActor");
+                    console.log(selectedResult.allSolution.length);
+    
+                    var most_actor = 0;
+                    var index_to_keep = [];
+                    var index_to_rm = [];
+                    for (var solution_index = 0; solution_index < selectedResult.allSolution.length; solution_index++) {
+                        var actors = {};
+                        for (var element_index = 0; element_index < selectedResult.allSolution[solution_index].intentionElements.length; element_index++) {
+                            if (! actors[selectedResult.allSolution[solution_index].intentionElements[element_index].actorId]){
+                                actors[selectedResult.allSolution[solution_index].intentionElements[element_index].actorId] = 0;
+                            }
+                            var value = selectedResult.allSolution[solution_index].intentionElements[element_index].status[0];
+                            if ((value == "0010" || value == "0011" || (value == "0110") ||
+                                (value == "0111") ||
+                                (value == "0101") ||
+                                (value == "1110") ||
+                                (value == "1010") ||
+                                (value == "1111") ||
+                                (value == "1001") ||
+                                (value == "1101") ||
+                                (value == "1011"))){
+                                actors[selectedResult.allSolution[solution_index].intentionElements[element_index].actorId] =1;
+                            }
+                        }
+                        console.log(actors);
+                        console.log(Object.values(actors).reduce((a, b) => a + b));
+                        var int_sat = Object.values(actors).reduce((a, b) => a + b);
+                        if (most_actor < int_sat){
+                            most_actor = int_sat;
+                            index_to_rm = index_to_rm.concat(index_to_keep);
+                            index_to_keep = [];
+                        }
+                        if (int_sat == most_actor){
+                            index_to_keep.push(solution_index);
+                        }
+                        if (int_sat < most_actor){
+                            index_to_rm.push(solution_index);
+                        }
+    
+                    }
+                    index_to_rm.sort(function(a, b){return a-b});
+                    for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
+                        selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
+                    }
+                    break;
+                case "mostConstraintSatisfaction":
+                    var domains = {};
+                    for (var solution_index = 0; solution_index < selectedResult.allSolution.length; solution_index++) {
+                        for (var element_index = 0; element_index < selectedResult.allSolution[solution_index].intentionElements.length; element_index++) {
+                            if (! domains[selectedResult.allSolution[solution_index].intentionElements[element_index].id]){
+                                domains[selectedResult.allSolution[solution_index].intentionElements[element_index].id] = [selectedResult.allSolution[solution_index].intentionElements[element_index].status[0]];
                             } else {
-                                definiteEpochs.push(next_epoch);
+                                if (domains[selectedResult.allSolution[solution_index].intentionElements[element_index].id].indexOf(selectedResult.allSolution[solution_index].intentionElements[element_index].status[0]) == -1){
+                                    domains[selectedResult.allSolution[solution_index].intentionElements[element_index].id].push(selectedResult.allSolution[solution_index].intentionElements[element_index].status[0])
+                                }
                             }
                         }
-                        break;
-                    case "I":
-                        if (curStatus === endValue){
-                            if (go_to_potentials == 1){
-                                potentialEpochs.push(next_epoch);
-                            } else {
-                                definiteEpochs.push(next_epoch);
+                    }
+                    var length_domain= {};
+                    var least_domain = 9;
+                    var int_with_smallest_domain = [];
+                    Object.keys(domains).forEach(function(key) {
+                        length_domain[key] = domains[key].length;
+                        if (length_domain[key] < least_domain){
+                            least_domain = length_domain[key];
+                            int_with_smallest_domain = [];
+                        }
+                        if (length_domain[key] == least_domain){
+                            int_with_smallest_domain.push(key);
+                        }
+                    });
+                    var index_to_rm = [];
+                    for (var solution_index = 0; solution_index < selectedResult.allSolution.length; solution_index++) {
+                        for (var element_index = 0; element_index < selectedResult.allSolution[solution_index].intentionElements.length; element_index++) {
+                            if (int_with_smallest_domain.indexOf(selectedResult.allSolution[solution_index].intentionElements[element_index].id) != -1){
+                                if (selectedResult.allSolution[solution_index].intentionElements[element_index].status[0] !== "0011"){
+                                    index_to_rm.push(solution_index);
+                                    break;
+                                }
                             }
                         }
-                        break;
-                    case "D":
-                        if (curStatus === endValue){
-                            if (go_to_potentials == 1){
-                                potentialEpochs.push(next_epoch);
-                            } else {
-                                definiteEpochs.push(next_epoch);
-                            }
-                        }
-                        break;
-                    case "R":
-                        if ((cur_seg < elements[i].get('intention').get('evolvingFunction').get('functionSegList').length-1) && (elements[i].get('intention').get('evolvingFunction').get('functionSegList')[cur_seg+1].get('type') === "C")){
-                            if (curStatus === elements[i].get('intention').get('evolvingFunction').get('functionSegList')[cur_seg+1].get('refEvidencePair')){
-                                potentialEpochs.push(next_epoch);
-                            }
-                        } else {
-                            if (Math.random() >= 0.5){
-                                potentialEpochs.push(next_epoch);
-                            }
-                        }
-                        break;
-                }
-            }
-        }
-    
-        // update current
-        // number of time points left = num_all_epochs + num_relative + num_absolute+1 + intersection - prevE - prevA - prevR
-        // number of time points left >= max - cur time point
-        // if <, cur time point = rand(prev tp, max - tp left)
-    
-        var numTPLeft = num_epochs + parseInt(analysisRequest.numRelTime) + analysisRequest.absTimePtsArr.length
-            + AbsIntersction - previousEpochs.length - previousAbs - previousRel;
-    
-        console.log("numTPLeft " + numTPLeft);
-        console.log(graph);
-        var difference = parseInt(graph.get('maxAbsTime')) - nextTimePoint;
-        console.log("difference: " + difference);
-        if (numTPLeft > difference){
-            var newRand = Math.floor(Math.random() *
-                ( parseInt(graph.get('maxAbsTime')) - numTPLeft - parseInt(analysisRequest.previousAnalysis.timePointPath[current] + 1))
-                + parseInt(analysisRequest.previousAnalysis.timePointPath[current]));
-            console.log("newRand " + newRand);
-            analysisRequest.previousAnalysis.timePointPath.push(newRand);
-        } else {
-            analysisRequest.previousAnalysis.timePointPath.push(nextTimePoint);
-        }
-    
-        // find TE and E0000 and update the TP
-        // if multiple potential and no definite, determine which one is selected as an epoch TODO: need to test this
-    
-        if (definiteEpochs.length == 0 && potentialEpochs.length > 0){
-            var RandIndex = Math.floor(Math.random() *
-                (potentialEpochs.length));
-            definiteEpochs.push(potentialEpochs[RandIndex]) ;
-        }
-        if (definiteEpochs.length > 1){
-            alert("more than one epoch in this state");
-            return;
-        }
-        if (definiteEpochs.length == 1){
-            var potentialEpoch = definiteEpochs[0];
-            // it is an epoch
-            var TPforPotentialEpoch = "";
-            // update the time point for potentialEpoch E0000
-            for (var i = 0; i < savedAnalysisData.singlePathResult.assignedEpoch.length; i++){
-                var regex = /(.*)_(.*)$/g;
-                var match = regex.exec(savedAnalysisData.singlePathResult.assignedEpoch[i]);
-                if (match[1] === potentialEpoch){
-                    TPforPotentialEpoch = match[2];
-                    //analysisRequest.previousAnalysis.assignedEpoch[i] = match[1] + "_" + analysisRequest.previousAnalysis.timePointPath[currentState];
-                    analysisRequest.previousAnalysis.assignedEpoch.push(match[1] + "_" + nextTimePoint);
+                    }
+                    for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
+                        selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
+                    }
                     break;
-                }
+                default:
+                    console.log("default");
+                    break;
             }
-            // update the time point for the corresponding TE or TA
-            for (var i = 0; i < savedAnalysisData.singlePathResult.assignedEpoch.length; i++){
-                var regex = /(.*)_(.*)$/g;
-                var match = regex.exec(savedAnalysisData.singlePathResult.assignedEpoch[i]);
-                if (match[2] === TPforPotentialEpoch){
-                    if (match[1].indexOf("T") > -1){
-                        //analysisRequest.previousAnalysis.assignedEpoch[i] = match[1] + "_" + analysisRequest.previousAnalysis.timePointPath[currentState];
-                        analysisRequest.previousAnalysis.assignedEpoch.push(match[1] + "_" + nextTimePoint);
-                        //break;
-                    }
-                }
-            }
-        } else {
-            // it is a relative/absolute time point
-            if (analysisRequest.absTimePtsArr.indexOf(nextTimePoint) != -1){
-                // it is an absolute time point
-                var newAbs = analysisRequest.absTimePtsArr.indexOf(nextTimePoint)+1;
-    
-                //update time point path with TA?_tp
-                analysisRequest.previousAnalysis.assignedEpoch.push("TA" + newAbs + "_" + nextTimePoint);
-    
-            } else {
-                // it is a relative time point
-                // decide which relative time points have not occurred yet
-                var prevRelativePoints = [];
-                for (var i = 0; i < analysisRequest.previousAnalysis.assignedEpoch.length; i++){
-                    var regex = /TR(.*)_.*/g;
-                    var match = regex.exec(analysisRequest.previousAnalysis.assignedEpoch[i]);
-                    if (match !== null){
-                        prevRelativePoints.push(parseInt(match[1]));
-                    }
-                }
-                console.log(prevRelativePoints);
-    
-                var newRel = 1;
-                // pick one
-                for (var j = num_epochs+analysisRequest.absTimePtsArr.length+1; j <= parseInt(analysisRequest.numRelTime)+num_epochs+analysisRequest.absTimePtsArr.length; j ++){
-                    if (prevRelativePoints.indexOf(j) == -1){
-                        newRel = j;
-                        break;
-                    }
-                }
-    
-                // update time point path with TR?_tp
-                analysisRequest.previousAnalysis.assignedEpoch.push("TR" + newRel + "_" + nextTimePoint);
-            }
-    
         }
-        // remove all the time points after
-        //analysisRequest.previousAnalysis.assignedEpoch = previousTP;
-        //analysisRequest.previousAnalysis.timePointPath = analysisRequest.previousAnalysis.timePointPath.slice(0, currentState+1);
     
-        analysisRequest.currentState = currentState + "|" + analysisRequest.previousAnalysis.timePointPath[currentState];
-    }  
-    
-//This function should get the current state in the screen and save in the original path
-function save_current_state(){
-    updateAnalysisRequestWithCurrentState();
-    analysisRequest.action = "singlePath";
+        // analysis.analysisResult = tempResults;
+        myInputJSObject.results = tempResults;
 
-    jsObject.analysisRequest = analysisRequest;
-    console.log(jsObject);
+        renderNavigationSidebar();
+    }
 
-    // TODO Update call to backendComm.
-    //console.log("TODO: Update Call to BackendComm");
-    window.opener.backendSimulationRequest(analysisRequest);
-
-    window.close();
 }
-
-//This function should get the current state and generate a new window with the next possible states
-function generate_next_states(){
-    
-    $("body").addClass("waiting"); //Adds "waiting" spinner under cursor 
-    // Object to be sent to the backend
-    var jsObject = {};
-    updateAnalysisRequestWithCurrentState();
-
-    /*for (var i = 0; i < analysisRequest.previousAnalysis.elementList.length ; i++){
-        analysisRequest.previousAnalysis.elementList[i].status.slice(0, current+2);
-    }*/
-    analysisRequest.action = "allNextStates";
-
-    jsObject.analysisRequest = analysisRequest;
-    console.log(analysisRequest);
-
-    // TODO Update call to backendComm.
-    //console.log("TODO: Update Call to BackendComm");
-    //backendComm(jsObject);      
-    backendSimulationRequest(analysisRequest);
-}    
-}    

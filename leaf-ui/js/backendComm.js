@@ -134,10 +134,11 @@ function responseFunc(analysisRequest, response) {
 		} else if (analysisRequest.get('action') == 'allNextStates') {
 				console.log("All Paths Results (responseFunc):");
 				console.log(JSON.stringify(results));
-				var analysisResult = convertToAnalysisResult(results); 	// {ResultBBM}
+				var allNextStatesResult = convertToAnalysisResult(results); 	// {ResultBBM}
 				// TODO: Uncomment and update next line.
 				//savedAnalysisData.allNextStatesResult = results;
-				open_analysis_viewer();
+				// open_analysis_viewer();
+				open_next_state_viewer(analysisRequest, allNextStatesResult)
 		} else if (analysisRequest.get('action') == 'singlePath') {
 				savedAnalysisData.singlePathResult = results;	//	TODO What is this?
 				console.log(JSON.stringify(results));			// Print the results of the analysis to the console.
