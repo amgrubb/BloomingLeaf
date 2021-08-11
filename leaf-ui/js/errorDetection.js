@@ -5,16 +5,8 @@
  * June 2021 - Temporary turned off during the backbone migration.
  */
 
-//TODO: Add the code back into the analysis button click function.
-//  $('#analysis-btn').on('click', function() {
-// 	syntaxCheck();
-//     var cycleList = cycleSearch();
-//     cycleResponse(cycleList); //If there are cycles, then display error message. Otherwise, remove any "red" elements.
-//     if(!isACycle(cycleList)) {
-//         clearCycleHighlighting();
-//         switchToAnalysisMode();
-//     } 
-// });
+// const { connected } = require("process");
+
 
  /**
   * Changes all intentions to their original colors
@@ -39,10 +31,8 @@ function clearCycleHighlighting() {
  * @param {Array of Array<String>} cycleList: list of cycles in current model
  */
 function cycleResponse(cycleList) {
-	console.log('hi you are bad'); 
 	//remove all previous coloring, deactivate EVO
 	clearCycleHighlighting();
-
 	if(isACycle(cycleList)) {
 		IntentionColoring.setColorMode("cycle");
 		swal("Cycle in the graph", "", "error");
@@ -81,7 +71,7 @@ function initColorList() {
  * information about links by indicating the source nodes to destination nodes
  *
  * @param {Array of joint.dia.Link} jointLinks
- * @param {Array of InputLink} inputlinks
+ * @param {Array of InputLink} inputLinks
  * @returns {Object}
  *
  * Example object:
@@ -94,7 +84,7 @@ function initColorList() {
  *
  * linkDestID: id of a destination node for links
  * source: id of the source of the link
- * contraint: contraint types
+ * constraint: contraint types
  * linkView: linkView of the link
  * 
  * Interpretation:
@@ -103,29 +93,33 @@ function initColorList() {
  * link from node 1 to node 0
  * 
  */
-function initializeDestSourceMapper(jointLinks, inputlinks) {
+function initializeDestSourceMapper(links) {
+
     let destSourceMapper = {};
     let linkView;
     let constraint;
-    for(var j = 0; j < inputlinks.length; j++) {
-        linkView  = jointLinks[j].findView(paper);
 
-        if(!(inputlinks[j].linkDestID in destSourceMapper)) {
+    for (var j = 0; j < links.length; j++) {
+
+        linkView  = links[j].findView(paper);
+
+		if(!(links[j].getTargetElement().prop('id') in destSourceMapper)) {
             // Create empty object and arrays
-            destSourceMapper[inputlinks[j].linkDestID] = {};
-            destSourceMapper[inputlinks[j].linkDestID]["source"] = [];
-            destSourceMapper[inputlinks[j].linkDestID]["constraint"] = [];
-            destSourceMapper[inputlinks[j].linkDestID]["findview"] = [];
+            destSourceMapper[links[j].getTargetElement().prop('id')] = {};
+            destSourceMapper[links[j].getTargetElement().prop('id')]["source"] = [];
+            destSourceMapper[links[j].getTargetElement().prop('id')]["constraint"] = [];
+            destSourceMapper[links[j].getTargetElement().prop('id')]["findview"] = [];
         }
 
-        if (inputlinks[j].postType != null) {
-            constraint = inputlinks[j].linkType+"|"+inputlinks[j].postType;
-        }else {
-            constraint = inputlinks[j].linkType;
+		if (links[j].attributes.link.attributes.postType != null) {
+			constraint = links[j].attributes.link.attributes.linkType + "|" + 
+			links[j].attributes.link.attributes.postType; 
+        } else {
+			constraint = links[j].attributes.link.attributes.linkType; 
         }
-        destSourceMapper[inputlinks[j].linkDestID]["source"].push(inputlinks[j].linkSrcID);
-        destSourceMapper[inputlinks[j].linkDestID]["constraint"].push(constraint);
-        destSourceMapper[inputlinks[j].linkDestID]["findview"].push(linkView);
+		destSourceMapper[links[j].getTargetElement().prop('id')]["source"].push(links[j].getSourceElement().prop('id'));
+        destSourceMapper[links[j].getTargetElement().prop('id')]["constraint"].push(constraint);
+        destSourceMapper[links[j].getTargetElement().prop('id')]["findview"].push(linkView);
     }
     return destSourceMapper;
 }
@@ -213,16 +207,11 @@ function getNodeName(id){
  * @returns {boolean} 
  */
 function syntaxErrorExists(naryRelationships) {
-
-	if (naryRelationships.length < 2) {
-		return false;
-	}
 	for (var i = 1; i < naryRelationships.length; i++) {
 		if (naryRelationships[0].constraint != naryRelationships[i].constraint) {
 			return true;
 		}
 	}
-
 	return false;
 }
 
@@ -243,12 +232,9 @@ function syntaxErrorExists(naryRelationships) {
  */
 function getNaryRelationships(destSourceMapper, destId) {
 	var result = [];
-
-	var constraints = destSourceMapper[destId].constraint;
+	var constraints = destSourceMapper[destId].constraint; 
 	for (var i = 0; i < constraints.length; i++) {
-		if (constraints[i] == 'AND' || 
-			constraints[i] == 'OR' || 
-			constraints[i] == 'NO RELATIONSHIP') {
+		if (constraints[i] == 'and' || constraints[i] == 'or' || constraints[i] == 'no') { 
 			var obj = {
 				source: destSourceMapper[destId].source[i],
 				constraint: constraints[i],
@@ -257,7 +243,6 @@ function getNaryRelationships(destSourceMapper, destId) {
 			result.push(obj);
 		}
 	}
-
 	return result;
 }
 
@@ -304,17 +289,19 @@ function alertSyntaxError(title, message) {
 }
 
 /**
- * This class contains information about a link
+ * This class contains information about an intention
  */
-//  class InputLink {
-// 	constructor(linkType, linkSrcID, linkDestID, postType = null, absVal = -1) {
-// 		this.linkType = linkType;
-// 		this.linkSrcID = linkSrcID;
-// 		this.linkDestID = linkDestID;
-// 		this.postType = postType;
-// 		this.absoluteValue = absVal;
-// 	}
-// }
+ class InputIntention {
+	constructor(nodeActorID, nodeID, nodeType, nodeName) {
+		// parent actor id
+		this.nodeActorID = nodeActorID; 
+		this.nodeID = nodeID ;
+		this.nodeType = nodeType;
+		this.nodeName = nodeName;
+	}
+}
+
+/** TODO: Find out if we still need getIntentionalElements().*/
 
 /**
  * Returns an array containing InputIntentions representing all 
@@ -322,7 +309,7 @@ function alertSyntaxError(title, message) {
  *
  * @returns {Array.<InputIntention>}
  */
-//  function getIntentitonalElements() {
+// function getIntentionalElements() {
 	
 // 	var intentions = [];
 // 	var intentionsCount = 0;
@@ -340,34 +327,36 @@ function alertSyntaxError(title, message) {
 // 			/**
 // 			 * NODE ID
 // 			 */
-// 			//Making that the elementId has 4 digits
+// 			//Making sure that the elementId has 4 digits
 // 			var elementID = intentionsCount.toString();
-// 			while (elementID.length < 4){ 
+// 			while (elementID.length < 4) { 
 // 				elementID = "0" + elementID;
-// 				}
+// 			}
+			
 // 			//Adding the new id to the UI graph element
 // 			this.graph.getElements()[i].prop("elementid", elementID);
-			
 			
 // 			/**
 // 			 * NODE TYPE
 // 			 */
 // 			var elementType;
-// 			if (this.graph.getElements()[i] instanceof joint.shapes.basic.Goal)
+
+// 			if (this.graph.getElements()[i] instanceof joint.shapes.basic.Goal) { 
 // 				elementType = "G";
-// 			else if (this.graph.getElements()[i] instanceof joint.shapes.basic.Task)
-// 				elementType = "T";
-// 			else if (this.graph.getElements()[i] instanceof joint.shapes.basic.Softgoal)
-// 				elementType = "S";
-// 			else if (this.graph.getElements()[i] instanceof joint.shapes.basic.Resource)
+// 			} else if (this.graph.getElements()[i] instanceof joint.shapes.basic.Task) { 
+// 				elementType = "T"; 
+// 			} else if (this.graph.getElements()[i] instanceof joint.shapes.basic.Softgoal) { 
+// 				elementType = "S"; 
+// 			} else if (this.graph.getElements()[i] instanceof joint.shapes.basic.Resource) { 
 // 				elementType = "R";
-// 			else
-// 				elementType = "I";
+// 			} else { 
+// 				elementType = "I"; 
+// 			}
 			
 // 		  	/**
 // 		  	 * NODE NAME
 // 		  	 */
-// 		  	//Getting intentional element name
+// 		  	// Getting intentional element name
 // 			var intentionalElementName = this.graph.getElements()[i].attr(".name/text").replace(/\n/g, " ");
 			
 // 			/**
@@ -376,7 +365,7 @@ function alertSyntaxError(title, message) {
 // 			var intentionalElement = new InputIntention(actorid, elementID, elementType, intentionalElementName);		  	
 // 			intentions.push(intentionalElement);
 
-// 			//iterating the counter
+// 			// Iterating the counter
 // 			intentionsCount++;
 // 		}	  	
 // 	}
@@ -401,17 +390,17 @@ function alertSyntaxError(title, message) {
 function getLinks(){
 
 	var links = [];
-	// getIntentitonalElements();
+	
+	// getIntentitonalElements(); 
 
 	//Verifying if links are valid
 	graph.getLinks().forEach(function(link){
 	    if(isLinkInvalid(link)) { 
 			link.remove();
-		}
-	    console.log(link); 		
+		}	
     });
 
-	for (var i = 0; i < graph.getLinks().length; i++){
+	for (var i = 0; i < graph.getLinks().length; i++) {
 
 		var current = graph.getLinks()[i];
 		var linkType = current.label(0).attrs.text.text.toUpperCase()
@@ -421,7 +410,6 @@ function getLinks(){
 
 		if (graph.getLinks()[i].attr('.assigned_time') != undefined) {
 			absValue = parseInt(graph.getLinks()[i].attr('.assigned_time')[0]);
-			console.log(absValue); 
 		}
 
 		if (current.get("source").id) { 
@@ -433,13 +421,6 @@ function getLinks(){
 		}
 			
 		var link;
-		// displayType: 'element',     // TODO: should this be changed to 'link'?
-		// linkType: 'and',
-		// postType: null,
-		// absTime: myNull,
-		// evolving: false,
-		// vs 
-		// linkType, linkSrcID, linkDestID, postType = null, absVal = -1
 
 		// Remove constraints links
 		if (!(linkType.indexOf("=") > -1 || linkType.indexOf("<") > -1)) {
@@ -471,32 +452,23 @@ function getLinks(){
  */
 function syntaxCheck() {
 
-    // Get all links in the form of an InputLink
-    var inputLinks = getLinks();
+    // Get all links in the form a basic.CellLink
+    var links = graph.getLinks();
 
-    // Get all links in the form of a joint.dia.Link
-    var jointLinks = graph.getLinks();
-
-    // Create an object that represents the constraint links and its sources and destination
-    let destSourceMapper = initializeDestSourceMapper(jointLinks, inputLinks);
+    // Create an object that represents the constraint links + its source and destinations
+    let destSourceMapper = initializeDestSourceMapper(links);
     let errorText = '';
 
-    for (var destId in destSourceMapper){
-
-    	var naryRelationships = getNaryRelationships(destSourceMapper, destId);
-
-        // If there is a syntax error.
-        if (syntaxErrorExists(naryRelationships)){
-
-            errorText += generateSyntaxMessage(naryRelationships, destId);
-
+    for (var destID in destSourceMapper) {
+    	var naryRelationships = getNaryRelationships(destSourceMapper, destID);
+        // If there is a syntax error
+        if (syntaxErrorExists(naryRelationships)) {
+            errorText += generateSyntaxMessage(naryRelationships, destID);
             var linkViews = [];
             for (var i = 0; i < naryRelationships.length; i++) {
             	linkViews.push(naryRelationships[i].findview);
             }
-
             changeLinkColour(linkViews, 'red', 3);
-
         } else {
         	changeLinkColour(destSourceMapper[destId]['findview'], 'black', 1);
         }
@@ -505,8 +477,8 @@ function syntaxCheck() {
     if (errorText) {
     	alertSyntaxError('We found invalid link combinations', errorText);
     	return true;
-    }
-    return false;
+	}
+	return false; 
 }
 
 function getElementList() {
@@ -609,7 +581,6 @@ function initiateLinkGraph(vertices, links) {
 		var src = link.getSourceElement().prop('id'); 
 		linkMap[src] = link.getTargetElement().prop('id');
 	});
-
 	return linkMap;
 }
 
@@ -645,8 +616,7 @@ function traverseGraphForCycles(linkMap) {
  * @param {Array of Array<String>} cycleList Double array that represents the cycles found in a graph. First index = separate cycle, child array = nodes in cycle
  */
 function traverseGraphRecursive(linkMap, currNode, walkList, notVisited, cycleList) {
-
-	if(walkList.includes(currNode)) {
+	if (walkList.includes(currNode)) {
 		//found a cycle
 		var cycle = [];
 		var prev = currNode;
@@ -668,15 +638,14 @@ function traverseGraphRecursive(linkMap, currNode, walkList, notVisited, cycleLi
 	}
 	
 	//push current node to walk list
+	// walkList.push(currNode);
 	walkList.push(currNode);
-
 	//remove curr from notVisited list
 	if(notVisited.includes(currNode)) {
 		notVisited.splice(notVisited.indexOf(currNode), 1);
 	}
-
 	//if we have unvisited dest nodes, go there
-	if(linkMap[currNode].length > 0) {
+	if(linkMap.length > 0) {
 		for(var i = 0; i < linkMap[currNode].length; ++i) {
 		var next = linkMap[currNode][i]; //set next to a dest node that has currNode as its src
 		traverseGraphRecursive(linkMap, next, walkList, notVisited, cycleList); 

@@ -114,17 +114,18 @@ $('#btn-view-intermediate').on('click', function () {
 /**
  * Switches to Analysis view iff there are no cycles and no syntax errors.
  */
-//TODO: Add back in cycle detection after backbone migration.
 $('#analysis-btn').on('click', function () {
+    // Check if there are any syntax errors 
     syntaxCheck();
-    
     /**
      * If there are cycles, then display error message.
      * Otherwise, remove any "red" elements.
      */
-    var cycleList = cycleSearch();
+    //TODO: Add back in cycle detection after backbone migration.
+    var cycleList = cycleSearch(); 
+    // Alerts user if there are any cycles 
     cycleResponse(cycleList);
-    if(!isACycle(cycleList)) {
+    if (!isACycle(cycleList)) {
         clearCycleHighlighting();
         switchToAnalysisMode();
     } 

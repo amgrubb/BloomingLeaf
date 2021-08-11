@@ -270,7 +270,8 @@ function getParentActor(element) {
 function getElementById(id) {
 	var elements = graph.getElements();
 	for (var i = 0; i < elements.length; i++) {
-		if (id == elements[i].attributes.nodeID) {
+		if (id == elements[i].attributes.get('id')) {
+		// if (id == elements[i].attributes.nodeID) {
 			return elements[i];
 		}
 	}
