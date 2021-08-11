@@ -60,11 +60,6 @@ var ConstraintBBM = Backbone.Model.extend({
             destID: null,
             srcRefTP: null,       // Reference Time Point A,B,C, etc.
             destRefTP: null,      // Reference Time Point A,B,C, etc.
-            /** 
-             * Absolute time points are only used with the '=' type of operator.
-             *  If a timepoint is not given -1 should be assigned as the default value.
-             */
-            absTP: -1,
         }
     },
 

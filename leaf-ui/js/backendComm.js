@@ -23,7 +23,7 @@ var url = "http://localhost:8080/untitled.html";	// Hardcoded URL for Node calls
  */
  function getAllNextStates() {
     console.log("TODO: Implement Next States") 
-    /*
+    /* TODO: Is any of this code still needed?
     if (analysisRequest.action != null) { //path has been simulated
         if (analysisResult.selectedTimePoint != analysisResult.timeScale) { //last timepoint is not selected
             $("body").addClass("waiting"); //Adds "waiting" spinner under cursor 
@@ -92,7 +92,7 @@ function backendSimulationRequest(analysisRequest) {
 	xhr.open("POST", url, true);
 	xhr.setRequestHeader("Content-Type", "application/json");
 
-	var data = JSON.stringify(jsObject);
+	var data = backendStringifyCirc(jsObject); 
 	console.log(data)
 	xhr.onreadystatechange = function () {
 		// This function get called when the response is received.
@@ -103,6 +103,17 @@ function backendSimulationRequest(analysisRequest) {
 		}
 	}
 	xhr.send(data);	// Why is this sent down here? What is this send function.
+}
+function backendStringifyCirc(obj){
+    var skipKeys = ['_events', 'results', 'colorVis', 'change:refEvidencePair', 'context', '_listeners', '_previousAttributes']; // List of keys that contains circular structures
+    var graphtext = JSON.stringify(obj, function(key, value) {
+		if (skipKeys.includes(key)) { //if key is in the list
+		  return null; // Replace with null
+		} else{
+		  return value; // Otherwise return the value
+		}
+	  });
+      return graphtext
 }
 
 /** Handles the response from the server.
@@ -121,9 +132,12 @@ function responseFunc(analysisRequest, response) {
 			alert("Error while reading the response file from server. This can be due an error in executing java application.");
 			return;
 		} else if (analysisRequest.get('action') == 'allNextStates') {
-				console.log("All Paths Results (responseFunc):")
-				// savedAnalysisData.allNextStatesResult = results;
-				// open_analysis_viewer();
+				console.log("All Paths Results (responseFunc):");
+				console.log(JSON.stringify(results));
+				var analysisResult = convertToAnalysisResult(results); 	// {ResultBBM}
+				// TODO: Uncomment and update next line.
+				//savedAnalysisData.allNextStatesResult = results;
+				open_analysis_viewer();
 		} else if (analysisRequest.get('action') == 'singlePath') {
 				savedAnalysisData.singlePathResult = results;	//	TODO What is this?
 				console.log(JSON.stringify(results));			// Print the results of the analysis to the console.
@@ -143,12 +157,12 @@ function responseFunc(analysisRequest, response) {
  */
 function convertToAnalysisResult(results){
 	var tempResult = new ResultBBM();
-	tempResult.set('assignedEpoch', results.assignedEpoch);
+	tempResult.set('timePointAssignments', results.timePointAssignments);	// Was called: 'assignedEpoch'
 	tempResult.set('timePointPath', results.timePointPath);
 	tempResult.set('timePointPathSize', results.timePointPathSize);
 	tempResult.set('elementList', results.elementList);
-	tempResult.set('allSolution', results.allSolution);
-	//tempResult.previousAnalysis = analysisResult;	//TODO Do we need to add this? (Potentially deprecated)
+	tempResult.set('allSolutions', results.allSolutions);			//Used for Next State
+	tempResult.set('nextStateTPs', results.nextStateTPs);		//Used for Next State
 	tempResult.set('isPathSim', true);
 	var evoView = new EVO(results.elementList)
 	tempResult.set('colorVis', evoView);
