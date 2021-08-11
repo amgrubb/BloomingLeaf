@@ -158,8 +158,6 @@ var EvolvingFunctionBBM = Backbone.Model.extend({
  * @param {String} nodeName
  * @param {String} nodeActorID
  * ID of the Actor the Intention belongs to
- * @param {String} nodeType
- * Type of node. Ex: task, goal
  * @param {EvolvingFunctionBBM} evolvingFunction
  * If there is an evolving function this will contain an EvolvingFunctionBBM
  * @param {Array} userEvaluationList
@@ -175,7 +173,6 @@ var IntentionBBM = Backbone.Model.extend({
         return {
             nodeName: 'untitled',
             nodeActorID: null,                     // Assigned on release operation.
-            nodeType: null,
             evolvingFunction: null, 
             userEvaluationList: []
         }
