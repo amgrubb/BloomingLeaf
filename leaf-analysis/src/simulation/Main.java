@@ -17,7 +17,7 @@ import gson_classes.IOSolution;
  * Then it executes all analysis creating a output file that has the json analysed file to be send back to the frontend.
  *
  */
-public class MainProgram {
+public class Main {
 
 	/**
 	 * This method is responsible to execute all steps to generate the analysis file.

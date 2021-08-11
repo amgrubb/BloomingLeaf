@@ -13,7 +13,7 @@ import org.jacop.search.*;
 import gson_classes.IOSolution;
 
 public class BICSPAlgorithm {
-    private final static boolean DEBUG = true;
+    private final static boolean DEBUG = false;
     
 	// Elements needed for the CSP Solver
 	private Store store;									// CSP Store
