@@ -145,33 +145,26 @@ class EVO {
      * Runs after any event that may change visualization, such as setting a sat value, changing slider option, or selecting a time point
      */
     static refresh(analysisResult) {
-        if (EVO.sliderOption > 0) {
-            if (analysisResult !== undefined){
-                if (analysisResult.get('selected')){
-                    EVO.colorIntentionsAnalysis(analysisResult);
-                }
-                else {
-                    EVO.colorIntentionsModeling();
-                }
+        var isAnalysis;
+        if (EVO.sliderOption > 0) {// If EVO is on
+            if (analysisResult !== undefined && analysisResult.get('selected')){// If a result is selected
+                EVO.colorIntentionsAnalysis(analysisResult);
             }
             else{
                 EVO.colorIntentionsModeling();
             }
             EVO.changeIntentionsText(analysisResult);
-        } else {
-            if (analysisResult !== undefined) {
-                if (analysisResult.get('selected')) {
-                    EVO.displaySlider(true);
-                }
-                else {
-                    EVO.displaySlider(false);
-                }
+        }
+        else {// If EVO is off
+            if (analysisResult !== undefined && analysisResult.get('selected')) {// If a result is selected
+                isAnalysis = true;
             }
             else {
-                EVO.displaySlider(false);
+                isAnalysis = false;
             }
             EVO.returnAllColors(graph.getElements(), paper);
-            EVO.revertIntentionsText(graph.getElements(), paper);
+            EVO.displaySlider(isAnalysis);
+            EVO.revertIntentionsText(graph.getElements(), paper, isAnalysis);
         }
     }
         
@@ -445,7 +438,7 @@ class EVO {
     /**
      * returns text to black in modeling mode
      */
-    static revertIntentionsText(elements, paper) {
+    static revertIntentionsText(elements, paper, isAnalysis) {
         var curr;
         var intention;
         var initSatVal;
@@ -457,10 +450,12 @@ class EVO {
             initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair');
             
             // Sets satvalue/text to the initial sat value
-            if (initSatVal === '(no value)') {
-                curr.attr('.satvalue/text', '');
-            } else {
-                curr.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
+            if (!isAnalysis) {
+                if (initSatVal === '(no value)') {
+                    curr.attr('.satvalue/text', '');
+                } else {
+                    curr.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
+                }
             }
             curr.attr({text: {fill: 'black',stroke:'none'}});
         }
