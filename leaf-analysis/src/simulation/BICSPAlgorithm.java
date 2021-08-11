@@ -13,7 +13,6 @@ import org.jacop.search.*;
 import gson_classes.IOSolution;
 
 public class BICSPAlgorithm {
-    private final static boolean DEBUG = false;
     
 	// Elements needed for the CSP Solver
 	private Store store;									// CSP Store
@@ -43,28 +42,28 @@ public class BICSPAlgorithm {
 	private String[] valueIndexToUniqueID;
 	
 	public BICSPAlgorithm(ModelSpec spec) throws Exception {
-    	if (DEBUG) System.out.println("Starting: TroposCSPAlgorithm");
+    	if (Main.DEBUG) System.out.println("Starting: TroposCSPAlgorithm");
 
     	// Initialize Store
 		this.store = new Store();
 		this.sat = new SatTranslation(this.store); 
 		this.sat.impose();	
-		if (DEBUG)	this.sat.debug = true;			// This prints that SAT commands.
+		if (Main.DEBUG)	this.sat.debug = true;			// This prints that SAT commands.
 		this.constraints = new ArrayList<Constraint>();	
 		
 		// Determine type of analysis
     	switch (spec.getAnalysisType()) {	
     	case "singlePath":
     		problemType = SearchType.PATH;
-        	if (DEBUG) System.out.println("Analysis selected: Full Single Path");
+        	if (Main.DEBUG) System.out.println("Analysis selected: Full Single Path");
     		break;
     	case "allNextStates":
     		problemType = SearchType.NEXT_STATE;
-        	if (DEBUG) System.out.println("Analysis selected: Explore All Next States");
+        	if (Main.DEBUG) System.out.println("Analysis selected: Explore All Next States");
     		break;
     	case "updatePath":
     		problemType = SearchType.UPDATE_PATH;
-        	if (DEBUG) System.out.println("Analysis selected: Update Current Path");
+        	if (Main.DEBUG) System.out.println("Analysis selected: Update Current Path");
     		break;    		
     	default:
     		throw new Exception("User Error: User requested \'" + spec.getAnalysisType() + "\', no such scenario exists. ");
@@ -84,10 +83,10 @@ public class BICSPAlgorithm {
 		}
 		this.numTimePoints = this.timePoints.length;
 		this.constraints.add(new Alldifferent(this.timePoints));
-		if (DEBUG) System.out.println("\n Num TP is: " + this.numTimePoints);       	
+		if (Main.DEBUG) System.out.println("\n Num TP is: " + this.numTimePoints);       	
     	
     	// Initialise Values Array.
-    	if (DEBUG) System.out.println("\nMethod: initializeNodeVariables");
+    	if (Main.DEBUG) System.out.println("\nMethod: initializeNodeVariables");
     	this.numIntentions = this.spec.getNumIntentions();
 		this.values = new BooleanVar[this.numIntentions][this.numTimePoints][4];	// 4 Predicates Values 0-FD, 1-PD, 2-PS, 3-FS
     	this.valueIndexToUniqueID = new String[this.numIntentions];
@@ -118,7 +117,7 @@ public class BICSPAlgorithm {
     	CSPPath.createLTConstraintsBetweenTimePoint(this.constraints, this.spec, 
     			this.timePoints, this.timePointMap);
     	    	
-    	if (DEBUG)	System.out.println("\nEnd of Init Procedure");	
+    	if (Main.DEBUG)	System.out.println("\nEnd of Init Procedure");	
 	}
 
 	
@@ -151,7 +150,7 @@ public class BICSPAlgorithm {
 
 	private String[][] getNextStateData(Search<IntVar> label) {		
 		int totalSolution = label.getSolutionListener().solutionsNo();	
-		if(DEBUG){
+		if(Main.DEBUG){
 			System.out.println("\nThere are " + totalSolution + " possible next states.");
 			for (int s = 1; s <= totalSolution; s++){	/// NOTE: Solution number starts at 1 not 0!!!
 				for (int v = 0; v < label.getSolution(s).length; v++) {
@@ -184,15 +183,15 @@ public class BICSPAlgorithm {
 	
 	private void addConstraints() {
         // Test and Add Constraints
-        if(DEBUG)	
+        if(Main.DEBUG)	
         	System.out.println("Constraints List:");
         for (int i = 0; i < constraints.size(); i++) {
-            if(DEBUG)	System.out.println(constraints.get(i).toString());
+            if(Main.DEBUG)	System.out.println(constraints.get(i).toString());
             store.impose(constraints.get(i));
             if(!store.consistency()) {
             	Constraint errorConst = constraints.get(i);
             	ArrayList<Var> errorVarList = errorConst.arguments();
-            	if(DEBUG){
+            	if(Main.DEBUG){
             		for (Var temp : errorVarList) {
             			System.out.println(temp.id + "::" + temp.dom().toString());
             		}
@@ -219,7 +218,7 @@ public class BICSPAlgorithm {
         SelectChoicePoint <IntVar> select = new SimpleSelect<IntVar>(varList, new MostConstrainedDynamic<IntVar>(), new IndomainSimpleRandom<IntVar>());//new MostConstrainedStatic<IntVar>(), new IndomainSimpleRandom<IntVar>()); 
         //label.setSolutionListener(new PrintOutListener<IntVar>());         
         label.getSolutionListener().searchAll(searchAll);  
-        if(DEBUG)	System.out.println("\nRunning Solver\n");
+        if(Main.DEBUG)	System.out.println("\nRunning Solver\n");
         boolean solutionFound = label.labeling(store, select);
         
         if (timeOutList.timeOutOccurred)
@@ -227,10 +226,10 @@ public class BICSPAlgorithm {
         
         // Return Solution
         if(!solutionFound){
-        	if (DEBUG) System.out.println("Found Solution = False");
+        	if (Main.DEBUG) System.out.println("Found Solution = False");
         	throw new RuntimeException("There is no solution to this model. The solver may have reached a timeout.");
 		} else {
-	    	if (DEBUG) System.out.println("Found Solution = True");
+	    	if (Main.DEBUG) System.out.println("Found Solution = True");
 	    	return label;
 		}
 	}
@@ -291,8 +290,7 @@ public class BICSPAlgorithm {
 	 */
 	private IOSolution getPathSolutionOutModel() {	
 		int[] indexOrder = this.createTimePointOrder();
-		//if (DEBUG) 
-		this.printSinglePathSolution(indexOrder);
+		if (Main.DEBUG) this.printSinglePathSolution(indexOrder);
 
 		// Get Time Points (timePointAssignments)
 		Integer[] finalTPPath = new Integer[indexOrder.length];

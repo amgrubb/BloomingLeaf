@@ -9,8 +9,6 @@ import gson_classes.*;
  *
  */
 public class BIModelSpecBuilder {
-    private final static boolean DEBUG = true;	
-   
     
     /** Read the elements that were passed as analysis request.
      * @param modelSpec - the spec to be generated
@@ -32,9 +30,9 @@ public class BIModelSpecBuilder {
 			if(aRequest.getNumRelTime() != null){
 				modelSpec.setNumRelativeTimePoints(Integer.parseInt(aRequest.getNumRelTime()));
 			} 
-			if (DEBUG) System.out.println("Read Simple Analysis Parameters");
+			if (Main.DEBUG) System.out.println("Read Simple Analysis Parameters");
 			modelSpec.setPrevResult(aRequest.getPreviousAnalysis());
-			if (DEBUG) System.out.println("Read Previous Results");
+			if (Main.DEBUG) System.out.println("Read Previous Results");
 
     	} catch (Exception e) {
     		throw new RuntimeException(e.getMessage());
@@ -58,7 +56,7 @@ public class BIModelSpecBuilder {
 				modelSpec.setAbsoluteTimePoints(frontendModel.getAbsTimePtsArr());
 			else
 				modelSpec.setAbsoluteTimePoints(new int[0]);
-			if (DEBUG) System.out.println("Read MaxTime & Absolute TPs");
+			if (Main.DEBUG) System.out.println("Read MaxTime & Absolute TPs");
     		
     	} catch (Exception e) {
     		throw new RuntimeException(e.getMessage());
@@ -118,7 +116,7 @@ public class BIModelSpecBuilder {
 							dataActor.getActor().getType(),	dataActor.getId()));
 				}
 			}
-			if (DEBUG) System.out.println("Read Actors");
+			if (Main.DEBUG) System.out.println("Read Actors");
 			
 			
 			// **** INTENTIONS **** - Getting intentional elements
@@ -128,7 +126,7 @@ public class BIModelSpecBuilder {
 					modelSpec.getIntentions().add(newInt); 
 				}
 			}
-			if (DEBUG) System.out.println("Read Elements");
+			if (Main.DEBUG) System.out.println("Read Elements");
 			
 			//Getting links
 			if(!links.isEmpty()) {
@@ -173,9 +171,9 @@ public class BIModelSpecBuilder {
 			// After all intentions, relationship, and function have been establish, then apply constraints.
 			if (frontendModel.getConstraints() != null)
 				modelSpec.applyConstraints(frontendModel.getConstraints());
-			if (DEBUG) System.out.println("Added model constraints.");
+			if (Main.DEBUG) System.out.println("Added model constraints.");
 
-			if (DEBUG) System.out.println("Returning Model Spec!!!!");
+			if (Main.DEBUG) System.out.println("Returning Model Spec!!!!");
 			return modelSpec;
 
 		} catch (Exception e) {

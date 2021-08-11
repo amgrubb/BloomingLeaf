@@ -9,8 +9,7 @@ import org.jacop.core.BooleanVar;
 import org.jacop.core.IntVar;
 
 public class CSPIntentions {
-	private final static boolean DEBUG = true;
-		
+
 	private static PrimitiveConstraint[] createXeqC(BooleanVar[] val1, boolean[] val2){
 		return new PrimitiveConstraint[]{
 				new XeqC(val1[3], boolToInt(val2[3])),
@@ -58,7 +57,7 @@ public class CSPIntentions {
 			IntVar infinity) {
 			
     	for (Intention element : spec.getIntentions()){
-    		if (DEBUG) System.out.println("Evolving Intention for " + element.id);
+    		if (Main.DEBUG) System.out.println("Evolving Intention for " + element.id);
     		
     		Integer i = uniqueIDToValueIndex.get(element.getUniqueID());
     		FunctionSegment[] segList = element.getEvolvingFunctions();
@@ -334,14 +333,14 @@ public class CSPIntentions {
 			//IntVar infinity) {
 	
     	for (Intention element : spec.getIntentions()){
-    		if (DEBUG) System.out.println("User Evaluations for " + element.id);
+    		if (Main.DEBUG) System.out.println("User Evaluations for " + element.id);
     		
     		Integer i = uniqueIDToValueIndex.get(element.getUniqueID());
     		HashMap<Integer, String> evals = element.getUserEvals();
     		if (i == null || evals == null) continue;
     		
     		for (Map.Entry<Integer, String> entry : evals.entrySet()) {
-    			if (DEBUG) System.out.println("User Eval: " + entry.getKey() + " - " + entry.getValue());
+    			if (Main.DEBUG) System.out.println("User Eval: " + entry.getKey() + " - " + entry.getValue());
     			
     			boolean[] refEvidence = convertEvalStringToEvidencePredicates(entry.getValue());
     			if (refEvidence == null)
