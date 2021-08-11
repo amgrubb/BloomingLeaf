@@ -18,6 +18,7 @@ import gson_classes.IOSolution;
  *
  */
 public class Main {
+	public final static boolean DEBUG = false;
 
 	/**
 	 * This method is responsible to execute all steps to generate the analysis file.
@@ -41,7 +42,7 @@ public class Main {
 			createOutputFile(outputModel, filePath + outputFile);			
 		} catch (RuntimeException e) {
 			try {
-				System.err.println(e.getMessage());	//TODO: Remove
+				if (DEBUG) System.err.println(e.getMessage());	
 				File file;
 				file = new File(filePath + outputFile);
 				if (!file.exists()) {
@@ -57,7 +58,7 @@ public class Main {
 			}
 		} catch (Exception e) {
 			try {
-				System.err.println(e.getMessage());	//TODO: Remove
+				if (DEBUG) System.err.println(e.getMessage());	
 				File file;
 				file = new File(filePath + outputFile);
 				if (!file.exists()) {

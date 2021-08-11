@@ -9,8 +9,6 @@ import org.jacop.core.BooleanVar;
 import org.jacop.core.IntVar;
 
 public class CSPLinks {
-	private final static boolean DEBUG = true;
-	
 	/**
 	 * Add the constraints across the links in the model.
 	 * Includes forward and backwards analysis rules.
@@ -207,7 +205,7 @@ public class CSPLinks {
 			result = new And(new Or(new XeqC(src[1], 0), new XeqC(tgt[2], 1)), new Or(new XeqC(src[0], 0), new XeqC(tgt[3], 1)));
 		}else
 			throw new RuntimeException("ERROR: No rule for " + cType.toString() + " link type.");	
-		if (DEBUG)
+		if (Main.DEBUG)
 			System.out.println("Link: " + result.toString());
 		return result;
 	}
@@ -225,7 +223,7 @@ public class CSPLinks {
 		
 		for (Intention node : spec.getIntentions()) {
 			int targetID = uniqueIDToValueIndex.get(node.getUniqueID());
-			if (DEBUG) System.out.println("Target " + targetID);
+			if (Main.DEBUG) System.out.println("Target " + targetID);
 			List<ContributionLink> contributionLinks = new ArrayList<ContributionLink>();
 			List<DecompositionLink> decompositionLinks = new ArrayList<DecompositionLink>();
 			for (AbstractElementLink link : node.getLinksDest()) {

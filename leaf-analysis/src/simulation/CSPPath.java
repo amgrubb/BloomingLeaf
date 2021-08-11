@@ -13,8 +13,6 @@ import org.jacop.core.Store;
 import gson_classes.IOSolution;
 
 public class CSPPath {
-
-	
 	/**
 	 * Assigned this.numTimePoints and creates time point list (this.timePoints) then
 	 * assigned the absolute, relative, and unassigned time points.
