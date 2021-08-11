@@ -48,33 +48,45 @@ public class DecompositionLink extends AbstractElementLink {
 		while (allDecompositionLinks.size() > 0) {				
 			String destID = allDecompositionLinks.get(0).getTargetID();
 			Integer absTime = allDecompositionLinks.get(0).getLink().getAbsTime();		
-				//TODO: Add check to make sure all AbsTime values are the same.
 			Intention intentElementDest = modelSpec.getIntentionByUniqueID(destID);
 			ArrayList<ICell> curDestLinks = new ArrayList<ICell>();
 			boolean evolve = false;
 			boolean andLink = false;
 			boolean orLink = false;
+			boolean noLink = false;
 			boolean andPost = false;
 			boolean orPost = false;
+			boolean noPost = false;
 			for (ICell inputLink : allDecompositionLinks) {
 				if (destID.equals(inputLink.getTargetID())) {
-					curDestLinks.add(inputLink);				
+					curDestLinks.add(inputLink);	
+					
+					if (inputLink.getLink().getLinkType().equals("and"))
+						andLink = true;
+					if (inputLink.getLink().getLinkType().equals("or"))
+						orLink = true;
+					if (inputLink.getLink().getLinkType().equals("no"))
+						noLink = true;
+					
 					if (inputLink.getLink().getPostType() != null) {
 						evolve = true;
 						if (inputLink.getLink().getPostType().equals("and"))
 							andPost = true;
 						if (inputLink.getLink().getPostType().equals("or"))
 							orPost = true;
-
+						if (inputLink.getLink().getPostType().equals("no"))
+							noPost = true;					
 					}
-					if (inputLink.getLink().getLinkType().equals("and"))
-						andLink = true;
-					if (inputLink.getLink().getLinkType().equals("or"))
-						orLink = true;
+
+					
+					if (absTime != inputLink.getLink().getAbsTime())
+						throw new IllegalArgumentException("Not all decomposition children have the same absTime.");
 				}
 			}
-			if (andLink && orLink)
+			if (andLink && orLink || (noLink && (andLink || orLink)))
 				throw new IllegalArgumentException("Invalid decomposition relationship type.");
+			if (andPost && orPost || (noPost && (andPost || orPost)))
+				throw new IllegalArgumentException("Invalid decomposition post relationship type.");
 
 			AbstractLinkableElement[] linkElementsSrc = new AbstractLinkableElement[curDestLinks.size()];
 			List<String> linkUniqueIDList = new ArrayList<String>();
@@ -107,16 +119,16 @@ public class DecompositionLink extends AbstractElementLink {
 					post = DecompositionType.OR;
 				decompositionList.add(new DecompositionLink(linkElementsSrc, intentElementDest, pre, post, absTime, linkUniqueIDList));
 				for (ICell iLink : curDestLinks) {
-					if (pre != null && !iLink.getLink().getLinkType().equals(pre.getCode()))
-						throw new IllegalArgumentException("Relationships for ID: " + destID + " must be all the same types.");
-					if (pre == null && !iLink.getLink().getLinkType().equals("NO"))
-						throw new IllegalArgumentException("Relationships for ID: " + destID + " must be all the same types.");
+					if (pre != null && !iLink.getLink().getLinkType().equals(pre.getCode().toLowerCase()))
+						throw new IllegalArgumentException("(A) Relationships for ID: " + destID + " must be all the same types.");
+					if (pre == null && !iLink.getLink().getLinkType().equals("no"))
+						throw new IllegalArgumentException("(B) Relationships for ID: " + destID + " must be all the same types.");
 					if (iLink.getLink().getPostType() == null)
-						throw new IllegalArgumentException("Relationships for ID: " + destID + " must be all the same types.");
-					if (post != null && !iLink.getLink().getPostType().equals(post.getCode()))
-						throw new IllegalArgumentException("Relationships for ID: " + destID + " must be all the same types.");
-					if (post == null && !iLink.getLink().getPostType().equals("NO"))
-						throw new IllegalArgumentException("Relationships for ID: " + destID + " must be all the same types.");
+						throw new IllegalArgumentException("(C) Relationships for ID: " + destID + " must be all the same types.");
+					if (post != null && !iLink.getLink().getPostType().equals(post.getCode().toLowerCase()))
+						throw new IllegalArgumentException("(D) Relationships for ID: " + destID + " must be all the same types.");
+					if (post == null && !iLink.getLink().getPostType().equals("no"))
+						throw new IllegalArgumentException("(E) Relationships for ID: " + destID + " must be all the same types.");
 				}
 			}
 			for (ICell inputLink : curDestLinks) {

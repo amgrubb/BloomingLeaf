@@ -77,10 +77,15 @@ public class Intention extends AbstractLinkableElement {
 			int repLength = repStopIndex - repStartIndex; 
 			int realStopIndex = repStartIndex + (repLength * inFunc.getRepCount());
 			int totalNumSegment = biList.length + ((inFunc.getRepCount() - 1) * repLength);
-			
+
+			// Check to make sure if there is a repeating segment that it has a start time.
+			Integer repATLength = inFunc.getRepAbsTime();
+			Integer repAT = biList[repStartIndex].getStartAT();
+			if (repATLength != null && repAT == null)
+				throw new RuntimeException("Intention has repeating segment with absTime, but repStartAT is null.");
+
 			FunctionSegment[] list = new FunctionSegment[totalNumSegment];
-						
-			//TODO: Implement absolute time assignments for repeated elements.
+
 			int i = 0; // Corresponds to the list index for the new FunctionSegment[]
 			int s = 0; // Corresponds to the input segment index.
 			while(i < repStartIndex){
@@ -91,19 +96,22 @@ public class Intention extends AbstractLinkableElement {
 				s++;
 			}
 			int rNum = 1;
-			while(i < realStopIndex){
+			while(i < realStopIndex){				
 				BIFunctionSegment seg = biList[s];
+				String repTP = "E" + this.id + ":R" + rNum + seg.getStartTP();
 				list[i] = new FunctionSegment(seg.getType(),seg.getRefEvidencePair(), 
-						"R" + rNum + seg.getStartTP(), seg.getStartAT(), this.id);
+						repTP, repAT);
 				i++;
 				s++;
 				if (s == repStopIndex) {
 					rNum++;
 					s = repStartIndex;		
 				}
+				if (repATLength != null && repAT != null)
+					repAT += repATLength;
 			}
 			s = repStopIndex;
-			while(i < list.length) {	//TODO: Might need different condition.
+			while(i < list.length) { 
 				BIFunctionSegment seg = biList[s];
 				list[i] = new FunctionSegment(seg.getType(),seg.getRefEvidencePair(), 
 						seg.getStartTP(), seg.getStartAT(), this.id);

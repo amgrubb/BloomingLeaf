@@ -14,8 +14,6 @@ import org.jacop.satwrapper.SatTranslation;
 import gson_classes.IOSolution;
 
 public class CSPNode {
-	private final static boolean DEBUG = false;
-	
 	/**
 	 * Creates BooleanVars for each intention/time-point combo.
 	 * Adds the FS -> PS invariant.
@@ -42,9 +40,9 @@ public class CSPNode {
 	 *  Helper function to call one of the generic conflict preventions levels.
 	 */
 	public static void initializeConflictPrevention(ModelSpec spec, SatTranslation sat, BooleanVar[][][] values, IntVar zero){	//Full Model
-		if (DEBUG) System.out.println("\nMethod: initializeConflictPrevention();");
+		if (Main.DEBUG) System.out.println("\nMethod: initializeConflictPrevention();");
 		char level = spec.getConflictAvoidLevel();
-		if (DEBUG)	System.out.println("\nConflict Prevention level is: " + level + "\n");
+		if (Main.DEBUG)	System.out.println("\nConflict Prevention level is: " + level + "\n");
 		if (level == 'N' || level == 'n')
 			return;
 		for (int i = 0; i < values.length; i++)
@@ -94,7 +92,7 @@ public class CSPNode {
 	public static void initializePrevResults(ModelSpec spec, List<Constraint> constraints, 
 			IntVar[] timePoints, BooleanVar[][][] values,
 			HashMap<String, Integer> uniqueIDToValueIndex) {
-		if (DEBUG) System.out.println("\nMethod: func");
+		if (Main.DEBUG) System.out.println("\nMethod: func");
    		IOSolution prev = spec.getPrevResult();
    		if (prev == null)
    			throw new RuntimeException("\n Previous results required, but null.");

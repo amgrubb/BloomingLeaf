@@ -251,7 +251,7 @@ public class ModelSpec {
 				refTP1 = changedTPNames.get(refTP1);
 			if (changedTPNames.containsKey(refTP2)) 
 				refTP2 = changedTPNames.get(refTP2);
-			this.ltTPconstraints.add(new TPConstraint(item.getType(), refEle1, refTP1, refEle2, refTP2));
+			this.ltTPconstraints.add(new TPConstraint(refTP1, refTP2));
     	}
     }   
     

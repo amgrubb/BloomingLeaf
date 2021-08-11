@@ -17,7 +17,8 @@ import gson_classes.IOSolution;
  * Then it executes all analysis creating a output file that has the json analysed file to be send back to the frontend.
  *
  */
-public class MainProgram {
+public class Main {
+	public final static boolean DEBUG = false;
 
 	/**
 	 * This method is responsible to execute all steps to generate the analysis file.
@@ -41,7 +42,7 @@ public class MainProgram {
 			createOutputFile(outputModel, filePath + outputFile);			
 		} catch (RuntimeException e) {
 			try {
-				System.err.println(e.getMessage());	//TODO: Remove
+				if (DEBUG) System.err.println(e.getMessage());	
 				File file;
 				file = new File(filePath + outputFile);
 				if (!file.exists()) {
@@ -57,7 +58,7 @@ public class MainProgram {
 			}
 		} catch (Exception e) {
 			try {
-				System.err.println(e.getMessage());	//TODO: Remove
+				if (DEBUG) System.err.println(e.getMessage());	
 				File file;
 				file = new File(filePath + outputFile);
 				if (!file.exists()) {
