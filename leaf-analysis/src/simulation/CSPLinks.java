@@ -42,7 +42,7 @@ public class CSPLinks {
 			int sourceID = uniqueIDToValueIndex.get(link.getZeroSrc().getUniqueID());
 			int targetID = uniqueIDToValueIndex.get(link.getDest().getUniqueID());
 			ContributionType pre = link.getPreContribution();
-			if (!link.isEvolving()) {
+			if (!link.isEvolving() && pre != ContributionType.NONE) {
 				// No Evolution in Link. - Contribution without Evolution
 				for (int t = 0; t < values[targetID].length; t++){
 					constraints.add(createForwardContributionConstraint(pre, 
@@ -54,16 +54,17 @@ public class CSPLinks {
 				IntVar refTP = CSPPath.getTimePoint(timePointMap, link.getLinkTP());
 	   			for (int t = 0; t < values[targetID].length; t++){
 	   				PrimitiveConstraint preConstraint = null;
-	   				if(pre != null)
+	   				if(pre != null  && pre != ContributionType.NONE)
 	   					preConstraint = createForwardContributionConstraint(pre, values[sourceID][t], values[targetID][t]);
 	   				PrimitiveConstraint postConstraint = null;
-	   				if(post != null)
+	   				if(post != null && post != ContributionType.NONE)
 	   					postConstraint = createForwardContributionConstraint(post, values[sourceID][t], values[targetID][t]);
-	   				if((pre != null) && (post != null))
+	   				
+	   				if(preConstraint != null && postConstraint != null)
 	   					constraints.add(new IfThenElse(new XgtY(refTP, timePoints[t]), preConstraint, postConstraint));
-	   				else if (pre != null)
+	   				else if (preConstraint != null)
 	   					constraints.add(new IfThen(new XgtY(refTP, timePoints[t]), preConstraint));
-	   				else if (post != null)	
+	   				else if (postConstraint != null)	
 	   					constraints.add(new IfThen(new XlteqY(refTP, timePoints[t]), postConstraint));
 	   			}
 			}
@@ -330,15 +331,15 @@ public class CSPLinks {
     					ContributionType post = link.getPostContribution();
     					IntVar refTP = CSPPath.getTimePoint(timePointMap, link.getLinkTP());
     					PrimitiveConstraint[] preConstraint = null;
-    					if(pre != null)
+    					if(pre != null  && pre != ContributionType.NONE)
     						preConstraint = createBackwardContributionConstraint(pre, values[sourceID][t]);
     					PrimitiveConstraint[] postConstraint = null;
-    					if(post != null)
+    					if(post != null  && post != ContributionType.NONE)
     						postConstraint = createBackwardContributionConstraint(post, values[sourceID][t]);
     					// Note: I implemented this as a two if statements rather than and if->else if. The case of a pre and a post link might now work 
     					//		as two separate constraints. This depends on how the "IfThen" are treated in the "Or(FSConstaints)" below.
     					//		If no information is propagated for these links they might need to be written as Not(A) or (B). or all combinations in the IfThen. 
-    					if (pre != null){
+    					if (preConstraint != null){
         					if (preConstraint[3] != null)
         						FSConstaints.add(new IfThen(new XgtY(refTP, timePoints[t]), preConstraint[3]));
         					if (preConstraint[2] != null)
@@ -348,7 +349,7 @@ public class CSPLinks {
         					if (preConstraint[0] != null)
         						FDConstaints.add(new IfThen(new XgtY(refTP, timePoints[t]), preConstraint[0]));
     					}
-    					if (post != null){	
+    					if (postConstraint != null){	
         					if (postConstraint[3] != null)
         						FSConstaints.add(new IfThen(new XlteqY(refTP, timePoints[t]), postConstraint[3]));
         					if (postConstraint[2] != null)
