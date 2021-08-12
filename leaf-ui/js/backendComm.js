@@ -260,7 +260,7 @@ function getParentActor(element) {
 }
 
 /*
- * Returns the element with element id id.
+ * Returns the element with element id.
  * Returns null if no element with that element id exists.
  *
  * @param {String} id
@@ -270,8 +270,7 @@ function getParentActor(element) {
 function getElementById(id) {
 	var elements = graph.getElements();
 	for (var i = 0; i < elements.length; i++) {
-		if (id == elements[i].attributes.get('id')) {
-		// if (id == elements[i].attributes.nodeID) {
+		if (id == elements[i].get('id')) {
 			return elements[i];
 		}
 	}

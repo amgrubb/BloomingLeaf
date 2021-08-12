@@ -31,22 +31,24 @@ function clearCycleHighlighting() {
  * @param {Array of Array<String>} cycleList: list of cycles in current model
  */
 function cycleResponse(cycleList) {
-	//remove all previous coloring, deactivate EVO
+	// Remove all previous coloring, deactivate EVO
 	clearCycleHighlighting();
-	if(isACycle(cycleList)) {
+	if (isACycle(cycleList)) {
 		IntentionColoring.setColorMode("cycle");
 		swal("Cycle in the graph", "", "error");
 		var color_list = initColorList();
 		var cycleIndex = 0; 
-		for (var k = 0 ; k < cycleList.length; k++){ //for each cycle
+		// For each cycle
+		for (var k = 0 ; k < cycleList.length; k++) { 
 			cycleIndex = k % 5;
 			var color = color_list[cycleIndex];
-			for (var l = 0 ; l< cycleList[k].length; l++){ //for each element inside of a particular cycle
+			// For each element inside of a particular cycle
+			for (var l = 0 ; l < cycleList[k].length; l++) { 
 				var cycleNode = getElementById(cycleList[k][l]);
 				cellView  = cycleNode.findView(paper);
 				cellView.model.attr({'.outer': {'fill': color}});
 			}
-	}
+		}
 	}
 }
 
