@@ -289,19 +289,6 @@ function alertSyntaxError(title, message) {
 }
 
 /**
- * This class contains information about an intention
- */
- class InputIntention {
-	constructor(nodeActorID, nodeID, nodeType, nodeName) {
-		// parent actor id
-		this.nodeActorID = nodeActorID; 
-		this.nodeID = nodeID ;
-		this.nodeType = nodeType;
-		this.nodeName = nodeName;
-	}
-}
-
-/**
  * Returns true iff the link has a source and a target node
  *
  * @param {joint.dia.Link} link
@@ -323,7 +310,7 @@ function syntaxCheck() {
     // Get all links in the form a basic.CellLink
     var links = graph.getLinks();
 
-    // Create an object that represents the constraint links + its source and destinations
+    // Create an object that represents the constraint links & its source and destinations
     let destSourceMapper = initializeDestSourceMapper(links);
     let errorText = '';
 
@@ -342,6 +329,7 @@ function syntaxCheck() {
         }
     }
 
+	// If errorText is not empty
     if (errorText) {
     	alertSyntaxError('We found invalid link combinations', errorText);
     	return true;
