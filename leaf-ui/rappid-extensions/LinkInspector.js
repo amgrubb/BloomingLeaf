@@ -170,11 +170,13 @@ var LinkInspector = Backbone.View.extend({
             // var sourceIntention = model.getIntentionByID(source.attributes.nodeID);
             // var targetIntention = model.getIntentionByID(target.attributes.nodeID);
 
-            // sourceIntention.changeInitialSatValue('0000');
-            // sourceIntention.dynamicFunction.stringDynVis = 'NB';
-            
-            // targetIntention.changeInitialSatValue('0000');
-            // targetIntention.dynamicFunction.stringDynVis = 'NB';
+            source.get('intention').get('evolvingFunction').set('functionSegList', []);
+            source.get('intention').get('evolvingFunction').set('type', 'NB');
+            source.get('intention').getUserEvaluationBBM(0).set('assignedEvidencePair', '(no value)');
+
+            target.get('intention').get('evolvingFunction').set('functionSegList', []);
+            target.get('intention').get('evolvingFunction').set('type', 'NB');
+            target.get('intention').getUserEvaluationBBM(0).set('assignedEvidencePair', '(no value)')
             
         } else {
             // Check if cells have any other NBT/NBD links
