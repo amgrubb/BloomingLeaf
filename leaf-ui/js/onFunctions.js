@@ -62,12 +62,16 @@ $('#evo-color-key').on('click', function(){ window.open('./userguides/evo.html',
  * Displays the absolute and relative assignments modal for the user.
  */
 $('#btn-view-assignment').on('click', function () {
+    removeHighlight();
+    clearInspector();
     var assignmentsModal = new AssignmentsTable({ model: graph });
     $('#assignments-list').append(assignmentsModal.el);
     assignmentsModal.render();
 });
 
 $('#btn-view-intermediate').on('click', function () {
+    removeHighlight();
+    clearInspector();
     var intermediateValuesTable = new IntermediateValuesTable({ model: graph });
     $('#intermediate-table').append(intermediateValuesTable.el);
     intermediateValuesTable.render();
@@ -321,6 +325,7 @@ paper.on({
 // Unhighlight everything when blank is being clicked
 paper.on('blank:pointerclick', function () {
     removeHighlight();
+    clearInspector();
 });
 
 // Link equivalent of the element editor
