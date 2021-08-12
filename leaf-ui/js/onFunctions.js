@@ -27,23 +27,6 @@ $('#btn-clear-flabel').on('click', function () {
     }
 });
 
-/**
- * This is an option under clear button to clear red-highlight from
- * cycle detection function
- */
-
-$('#btn-clear-analysis').on('click', function () {
-    // TODO: Re-Implement for backbone view - What does clearing analysis mean now?
-    // reset graph to initial values
-    console.log("btn-clear-analysis - TODO Re-Implement for backbone view - What does clearing analysis mean now")
-    revertNodeValuesToInitial();
-});
-
-// TODO: Re-implement for backbone view
-$('#btn-clear-results').on('click', function () { 
-    console.log("btn-clear-results - TODO Re-implement for backbone view");
-});
-
 // Open as SVG
 $('#btn-svg').on('click', function () {
     paper.openAsSVG();
@@ -362,6 +345,42 @@ paper.on("link:options", function (cell) {
             model.destroy();
         }
     }
+    
+    /**
+     * This is an option under clear button to clear red-highlight from
+     * cycle detection function
+     */
+
+    $('#btn-clear-analysis').on('click', function () {
+        // TODO: Re-Implement for backbone view - What does clearing analysis mean now?
+        // reset graph to initial values
+        console.log(configCollection.first().get('results').first());
+        var model;
+        var results;
+        while (model = configCollection.first()) {
+            while (results = configCollection.first().get('results').first()) {
+                results.destroy();
+            }
+        }
+        $('#modelingSlider').css("display", "");
+        $('#analysisSlider').css("display", "none");
+        EVO.switchToModelingMode(undefined);
+        revertNodeValuesToInitial();
+    });
+
+    $('#btn-clear-results').on('click', function () {
+        var results;
+        for (var i = 0; i < configCollection.length; i++) {
+            while (results = configCollection.models[i].get('results').first()) {
+                results.destroy();
+            }
+        }
+        $('.result-elements').remove();
+        $('#modelingSlider').css("display", "");
+        $('#analysisSlider').css("display", "none");
+        EVO.switchToModelingMode(undefined);
+        revertNodeValuesToInitial();
+    });
 
     /**
      * Helper function for switching to Analysis view.
