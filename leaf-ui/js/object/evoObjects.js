@@ -397,7 +397,7 @@ class EVO {
 
             if (analysisResult !== undefined) {
                 // The EVO mode fill color
-                curr.attr({text: {fill: 'white',stroke:'none'}});
+                curr.attr({text: {fill: 'white'}});
                 // If the result is selected 
                 if (analysisResult.get('selected')){
                     if (EVO.sliderOption == 3){// If the option is states
@@ -412,11 +412,11 @@ class EVO {
                     }
                 }
                 else {// If result is unselected
-                    curr.attr({text: {fill: 'black',stroke:'none'}});
+                    curr.attr({text: {fill: 'black'}});
                 }
             }
             else {// If a config without results is selected
-                curr.attr({text: {fill: 'black',stroke:'none'}});
+                curr.attr({text: {fill: 'black'}});
             }
         }
     }
@@ -457,7 +457,7 @@ class EVO {
                     curr.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
                 }
             }
-            curr.attr({text: {fill: 'black',stroke:'none'}});
+            curr.attr({text: {fill: 'black'}});
         }
     }
 
@@ -683,7 +683,7 @@ class EVONextState  {
         for (var i = 0; i < elements.length; i++) {
             curr = elements[i].findView(paper).model;
             if (curr.attributes.type !== 'basic.Actor') {
-                curr.attr({text: {fill: 'white',stroke:'none'}});
+                curr.attr({text: {fill: 'white'}});
             }
         }
     }
