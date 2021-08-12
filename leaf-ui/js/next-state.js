@@ -341,7 +341,7 @@
                     break;
                 case "leastTasksSatisfied":
                     console.log("leastTasksSatisfied");
-                    console.log(selectedResult.allSolution.length);
+                    //console.log(selectedResult.allSolution.length);
     
                     var index_to_keep = [];
                     var index_to_rm = [];
@@ -351,7 +351,7 @@
                         var num_t_s = 0;
                         for (var element_index=0; element_index < tempResults.get('allSolutions')["TNS-R"][solution_index].length; element_index++){
                             if (selectedResult.allSolution[solution_index].intentionElements[element_index].type === "TASK"){
-                                var value = selectedResult.allSolution[solution_index].intentionElements[element_index].status[0];
+                                var value = tempResults.get('allSolutions')["TNS-R"][solution_index][element_index];
                                 if ((value == "0010" || value == "0011")){
                                     num_t_s ++;
                                 }
@@ -371,7 +371,8 @@
                     }
                     index_to_rm.sort(function(a, b){return a-b});
                     for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
-                        selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
+                        //selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
+                        tempResults.get('allSolutions')["TNS-R"].splice(index_to_rm[to_rm]-to_rm,1);
                     }
                     break;
                 case "mostTasksSatisfied":
@@ -379,11 +380,11 @@
                     var index_to_rm = [];
     
                     var most_t_s = 0;
-                    for (var solution_index=0; solution_index < selectedResult.allSolution.length; solution_index++) {
+                    for (var solution_index=0; solution_index < tempResults.get('allSolutions')["TNS-R"]; solution_index++) {
                         var num_t_s = 0;
                         for (var element_index=0; element_index < selectedResult.allSolution[solution_index].intentionElements.length; element_index++){
                             if (selectedResult.allSolution[solution_index].intentionElements[element_index].type === "TASK"){
-                                var value = selectedResult.allSolution[solution_index].intentionElements[element_index].status[0];
+                                var value = tempResults.get('allSolutions')["TNS-R"][solution_index][element_index];
                                 if ((value == "0010" || value == "0011")){
                                     num_t_s ++;
                                 }
@@ -403,22 +404,23 @@
                     }
                     index_to_rm.sort(function(a, b){return a-b});
                     for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
-                        selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
+                        //selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
+                        tempResults.get('allSolutions')["TNS-R"].splice(index_to_rm[to_rm]-to_rm,1);
                     }
                     break;
                 case "leastResource":
                     console.log("leastResource");
-                    console.log(selectedResult.allSolution.length);
+                    //console.log(selectedResult.allSolution.length);
     
                     var index_to_keep = [];
                     var index_to_rm = [];
     
-                    var least_r_s = selectedResult.allSolution.length;
-                    for (var solution_index=0; solution_index < selectedResult.allSolution.length; solution_index++) {
+                    var least_r_s = tempResults.get('allSolutions')["TNS-R"];
+                    for (var solution_index=0; solution_index < tempResults.get('allSolutions')["TNS-R"]; solution_index++) {
                         var num_r_s = 0;
                         for (var element_index=0; element_index < selectedResult.allSolution[solution_index].intentionElements.length; element_index++){
                             if (selectedResult.allSolution[solution_index].intentionElements[element_index].type === "RESOURCE"){
-                                var value = selectedResult.allSolution[solution_index].intentionElements[element_index].status[0];
+                                var value = tempResults.get('allSolutions')["TNS-R"][solution_index][element_index];
                                 if ((value == "0010" || value == "0011")){
                                     num_r_s ++;
                                 }
@@ -438,22 +440,23 @@
                     }
                     index_to_rm.sort(function(a, b){return a-b});
                     for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
-                        selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
+                        //selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
+                        tempResults.get('allSolutions')["TNS-R"].splice(index_to_rm[to_rm]-to_rm,1);
                     }
                     break;
                 case "mostResource":
                     console.log("mostResource");
-                    console.log(selectedResult.allSolution.length);
+                    //console.log(selectedResult.allSolution.length);
     
                     var index_to_keep = [];
                     var index_to_rm = [];
     
                     var most_r_s = 0;
-                    for (var solution_index=0; solution_index < selectedResult.allSolution.length; solution_index++) {
+                    for (var solution_index=0; solution_index < tempResults.get('allSolutions')["TNS-R"]; solution_index++) {
                         var num_r_s = 0;
                         for (var element_index=0; element_index < selectedResult.allSolution[solution_index].intentionElements.length; element_index++){
                             if (selectedResult.allSolution[solution_index].intentionElements[element_index].type === "RESOURCE"){
-                                var value = selectedResult.allSolution[solution_index].intentionElements[element_index].status[0];
+                                var value = tempResults.get('allSolutions')["TNS-R"][solution_index][element_index];
                                 if ((value == "0010" || value == "0011")){
                                     num_r_s ++;
                                 }
@@ -473,22 +476,23 @@
                     }
                     index_to_rm.sort(function(a, b){return a-b});
                     for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
-                        selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
+                        //selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
+                        tempResults.get('allSolutions')["TNS-R"].splice(index_to_rm[to_rm]-to_rm,1);
                     }
                     break;
                 case "leastGoalSatisfied":
                     console.log("leastGoalSatisfied");
-                    console.log(selectedResult.allSolution.length);
+                    //console.log(selectedResult.allSolution.length);
     
                     var index_to_keep = [];
                     var index_to_rm = [];
     
-                    var least_goal_s = selectedResult.allSolution.length;
-                    for (var solution_index=0; solution_index < selectedResult.allSolution.length; solution_index++) {
+                    var least_goal_s = tempResults.get('allSolutions')["TNS-R"];
+                    for (var solution_index=0; solution_index < tempResults.get('allSolutions')["TNS-R"]; solution_index++) {
                         var num_g_s = 0;
                         for (var element_index=0; element_index < selectedResult.allSolution[solution_index].intentionElements.length; element_index++){
                             if (selectedResult.allSolution[solution_index].intentionElements[element_index].type === "GOAL"){
-                                var value = selectedResult.allSolution[solution_index].intentionElements[element_index].status[0];
+                                var value = tempResults.get('allSolutions')["TNS-R"][solution_index][element_index];
                                 if ((value == "0010" || value == "0011")){
                                     num_g_s ++;
                                 }
@@ -508,22 +512,23 @@
                     }
                     index_to_rm.sort(function(a, b){return a-b});
                     for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
-                        selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
+                        //selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
+                        tempResults.get('allSolutions')["TNS-R"].splice(index_to_rm[to_rm]-to_rm,1);
                     }
                     break;
                 case "mostGoalSatisfied":
                     console.log("mostGoalSatisfied");
-                    console.log(selectedResult.allSolution.length);
+                    //console.log(selectedResult.allSolution.length);
     
                     var index_to_keep = [];
                     var index_to_rm = [];
     
                     var most_goal_s = 0;
-                    for (var solution_index=0; solution_index < selectedResult.allSolution.length; solution_index++) {
+                    for (var solution_index=0; solution_index < tempResults.get('allSolutions')["TNS-R"]; solution_index++) {
                         var num_g_s = 0;
                         for (var element_index=0; element_index < selectedResult.allSolution[solution_index].intentionElements.length; element_index++){
                             if (selectedResult.allSolution[solution_index].intentionElements[element_index].type === "GOAL"){
-                                var value = selectedResult.allSolution[solution_index].intentionElements[element_index].status[0];
+                                var value = tempResults.get('allSolutions')["TNS-R"][solution_index][element_index];
                                 if ((value == "0010" || value == "0011")){
                                     num_g_s ++;
                                 }
@@ -543,23 +548,24 @@
                     }
                     index_to_rm.sort(function(a, b){return a-b});
                     for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
-                        selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
+                        //selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
+                        tempResults.get('allSolutions')["TNS-R"].splice(index_to_rm[to_rm]-to_rm,1);
                     }
                     break;
                 case "LeastActor":
                     console.log("LeastActor");
-                    console.log(selectedResult.allSolution.length);
+                    //console.log(selectedResult.allSolution.length);
     
-                    var least_actor = selectedResult.allSolution.length;
+                    var least_actor = tempResults.get('allSolutions')["TNS-R"];
                     var index_to_keep = [];
                     var index_to_rm = [];
-                    for (var solution_index = 0; solution_index < selectedResult.allSolution.length; solution_index++) {
+                    for (var solution_index = 0; solution_index < tempResults.get('allSolutions')["TNS-R"]; solution_index++) {
                         var actors = {};
                         for (var element_index = 0; element_index < selectedResult.allSolution[solution_index].intentionElements.length; element_index++) {
                             if (! actors[selectedResult.allSolution[solution_index].intentionElements[element_index].actorId]){
                                 actors[selectedResult.allSolution[solution_index].intentionElements[element_index].actorId] = 0;
                             }
-                            var value = selectedResult.allSolution[solution_index].intentionElements[element_index].status[0];
+                            var value = tempResults.get('allSolutions')["TNS-R"][solution_index][element_index];
                             if ((value == "0010" || value == "0011" || (value == "0110") ||
                                 (value == "0111") ||
                                 (value == "0101") ||
@@ -588,23 +594,24 @@
                     }
                     index_to_rm.sort(function(a, b){return a-b});
                     for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
-                        selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
+                        //selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
+                        tempResults.get('allSolutions')["TNS-R"].splice(index_to_rm[to_rm]-to_rm,1);
                     }
                     break;
                 case "mostActor":
                     console.log("mostActor");
-                    console.log(selectedResult.allSolution.length);
+                    //console.log(selectedResult.allSolution.length);
     
                     var most_actor = 0;
                     var index_to_keep = [];
                     var index_to_rm = [];
-                    for (var solution_index = 0; solution_index < selectedResult.allSolution.length; solution_index++) {
+                    for (var solution_index = 0; solution_index < tempResults.get('allSolutions')["TNS-R"]; solution_index++) {
                         var actors = {};
                         for (var element_index = 0; element_index < selectedResult.allSolution[solution_index].intentionElements.length; element_index++) {
                             if (! actors[selectedResult.allSolution[solution_index].intentionElements[element_index].actorId]){
                                 actors[selectedResult.allSolution[solution_index].intentionElements[element_index].actorId] = 0;
                             }
-                            var value = selectedResult.allSolution[solution_index].intentionElements[element_index].status[0];
+                            var value = tempResults.get('allSolutions')["TNS-R"][solution_index][element_index];
                             if ((value == "0010" || value == "0011" || (value == "0110") ||
                                 (value == "0111") ||
                                 (value == "0101") ||
@@ -635,12 +642,13 @@
                     }
                     index_to_rm.sort(function(a, b){return a-b});
                     for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
-                        selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
+                        //selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
+                        tempResults.get('allSolutions')["TNS-R"].splice(index_to_rm[to_rm]-to_rm,1);
                     }
                     break;
                 case "mostConstraintSatisfaction":
                     var domains = {};
-                    for (var solution_index = 0; solution_index < selectedResult.allSolution.length; solution_index++) {
+                    for (var solution_index = 0; solution_index < tempResults.get('allSolutions')["TNS-R"]; solution_index++) {
                         for (var element_index = 0; element_index < selectedResult.allSolution[solution_index].intentionElements.length; element_index++) {
                             if (! domains[selectedResult.allSolution[solution_index].intentionElements[element_index].id]){
                                 domains[selectedResult.allSolution[solution_index].intentionElements[element_index].id] = [selectedResult.allSolution[solution_index].intentionElements[element_index].status[0]];
@@ -665,7 +673,7 @@
                         }
                     });
                     var index_to_rm = [];
-                    for (var solution_index = 0; solution_index < selectedResult.allSolution.length; solution_index++) {
+                    for (var solution_index = 0; solution_index < tempResults.get('allSolutions')["TNS-R"]; solution_index++) {
                         for (var element_index = 0; element_index < selectedResult.allSolution[solution_index].intentionElements.length; element_index++) {
                             if (int_with_smallest_domain.indexOf(selectedResult.allSolution[solution_index].intentionElements[element_index].id) != -1){
                                 if (selectedResult.allSolution[solution_index].intentionElements[element_index].status[0] !== "0011"){
@@ -676,7 +684,8 @@
                         }
                     }
                     for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
-                        selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
+                        //selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
+                        tempResults.get('allSolutions')["TNS-R"].splice(index_to_rm[to_rm]-to_rm,1);
                     }
                     break;
                 default:
