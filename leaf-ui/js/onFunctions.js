@@ -352,16 +352,8 @@ paper.on("link:options", function (cell) {
      */
 
     $('#btn-clear-analysis').on('click', function () {
-        // TODO: Re-Implement for backbone view - What does clearing analysis mean now?
-        // reset graph to initial values
-        console.log(configCollection.first().get('results').first());
-        var model;
-        var results;
-        while (model = configCollection.first()) {
-            while (results = configCollection.first().get('results').first()) {
-                results.destroy();
-            }
-        }
+        resetConfig();
+        // Updates EVO slider
         $('#modelingSlider').css("display", "");
         $('#analysisSlider').css("display", "none");
         EVO.switchToModelingMode(undefined);
@@ -376,6 +368,7 @@ paper.on("link:options", function (cell) {
             }
         }
         $('.result-elements').remove();
+        // Updates EVO slider
         $('#modelingSlider').css("display", "");
         $('#analysisSlider').css("display", "none");
         EVO.switchToModelingMode(undefined);
