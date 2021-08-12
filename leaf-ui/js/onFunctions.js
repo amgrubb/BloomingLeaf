@@ -358,7 +358,7 @@ paper.on("link:options", function (cell) {
         $('#analysisSlider').css("display", "none");
         EVO.switchToModelingMode(undefined);
         revertNodeValuesToInitial();
-        //configInspector = new ConfigInspector({ collection: configCollection });
+        // Creates new config
         $('#configID').append(configInspector.el);
         configInspector.render();
     });
