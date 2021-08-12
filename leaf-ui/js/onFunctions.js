@@ -688,13 +688,10 @@ function clearInspector() {
 function checkForMultipleNB(element) {
     var num = 0;
     var localLinks = graph.getConnectedLinks(element);
-
     if(localLinks != null){
         for (var i = 0; i < localLinks.length; i++) {
-            if (localLinks[i].get('link').get("link-type") == 'NBT' || localLinks[i].get('link').get("link-type") == 'NBD') {
-             //   if (localLinks[i].getSourceElement().prop("id") == node["id"] || localLinks[i].getTargetElement().prop("id") == node["id"]) {
-                    num += 1;
-            //    }
+            if (localLinks[i].get('link').get("linkType") == 'NBT' || localLinks[i].get('link').get("linkType") == 'NBD') {
+                num += 1;
             }
         }
     }

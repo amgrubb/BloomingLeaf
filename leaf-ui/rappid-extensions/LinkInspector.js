@@ -166,17 +166,13 @@ var LinkInspector = Backbone.View.extend({
             target.attr('.satvalue/text', '(⊥, ⊥)');
             target.attr('.satvalue/value', '');
 
-            // TODO: Re-implement this logic
-            // var sourceIntention = model.getIntentionByID(source.attributes.nodeID);
-            // var targetIntention = model.getIntentionByID(target.attributes.nodeID);
-
             source.get('intention').get('evolvingFunction').set('functionSegList', []);
             source.get('intention').get('evolvingFunction').set('type', 'NB');
-            source.get('intention').getUserEvaluationBBM(0).set('assignedEvidencePair', '(no value)');
+            source.get('intention').getUserEvaluationBBM(0).set('assignedEvidencePair', '0000');
 
             target.get('intention').get('evolvingFunction').set('functionSegList', []);
             target.get('intention').get('evolvingFunction').set('type', 'NB');
-            target.get('intention').getUserEvaluationBBM(0).set('assignedEvidencePair', '(no value)')
+            target.get('intention').getUserEvaluationBBM(0).set('assignedEvidencePair', '0000')
             
         } else {
             // Check if cells have any other NBT/NBD links
