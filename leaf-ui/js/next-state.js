@@ -81,7 +81,14 @@
         console.log("Result:" + JSON.stringify(myInputJSObject.results.toJSON()));
         console.log(myInputJSObject.request);
         console.log(myInputJSObject.results);
+        
+        makeHash();
+    }
 
+
+    function makeHash() {
+        // Clear array
+        allSolutionArray = [];
         allSolutionIndex = new Map();
         var i = 0;
         // Iterates of the hasmap allSolutions and combines all of the solutions into one array
@@ -109,7 +116,6 @@
             console.log(allSolutionArray);
             console.log(allSolutionIndex);
         }
-        
     }
 
     /**
@@ -308,9 +314,11 @@
     
     function add_filter(){
         console.log("clicked");
-        // tempResults = myInputJSObject.results
+        // Everytime a box is clicked/unclicked the results are reset
+        // myInputJSObject.results = originalResults;
+        tempResults = myInputJSObject.results;
         // TODO : is it enough to have only the solutions in tempResults or do we need more information??
-        tempResults.allTempSolutionArray = allSolutionArray;
+        //tempResults.allTempSolutionArray = allSolutionArray;
         var checkboxes = document.getElementsByClassName("filter_checkbox");
         for (var i = 0; i < checkboxes.length; i++){
             var checkbox = checkboxes[i];
@@ -333,28 +341,31 @@
             switch (filterOrderQueue[i]){
                 case "conflictFl":
                     console.log("conflictFl");
-                    var index_to_rm = [];
-                    for (var solution_index=0; solution_index < tempResults.allTempSolutionArray.length; solution_index++) {
-                        for (var element_index=0; element_index < tempResults.allTempSolutionArray[solution_index].length; element_index++){
-                            var value = tempResults.allTempSolutionArray[solution_index][element_index];
-                            console.log(value);
-                            if ((value == "0110") ||
-                                (value == "0111") ||
-                                (value == "0101") ||
-                                (value == "1110") ||
-                                (value == "1010") ||
-                                (value == "1111") ||
-                                (value == "1001") ||
-                                (value == "1101") ||
-                                (value == "1011") ){
-                                index_to_rm.push(solution_index);
-                                break;
+                    for (var solutionArray in tempResults.get('allSolutions')) {
+                        console.log(tempResults.get('allSolutions'))
+                        console.log(tempResults.get('allSolutions')[solutionArray]);
+                        var index_to_rm = [];
+                        for (var solution_index=0; solution_index < tempResults.get('allSolutions')[solutionArray].length; solution_index++) {
+                            for (var element_index=0; element_index < tempResults.get('allSolutions')[solutionArray][solution_index].length; element_index++){
+                                var value = tempResults.get('allSolutions')[solutionArray][solution_index][element_index];
+                                if ((value == "0110") ||
+                                    (value == "0111") ||
+                                    (value == "0101") ||
+                                    (value == "1110") ||
+                                    (value == "1010") ||
+                                    (value == "1111") ||
+                                    (value == "1001") ||
+                                    (value == "1101") ||
+                                    (value == "1011") ){
+                                    index_to_rm.push(solution_index);
+                                    break;
+                                }
                             }
                         }
-                    }
-                    for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
-                        // selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
-                        tempResults.allTempSolutionArray.splice(index_to_rm[to_rm]-to_rm,1);
+                        for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
+                            // selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
+                            tempResults.get('allSolutions')[solutionArray].splice(index_to_rm[to_rm]-to_rm,1);
+                        }
                     }
                     break;
                 case "ttFl":
@@ -742,7 +753,8 @@
     
         // analysis.analysisResult = tempResults;
         myInputJSObject.results = tempResults;
-
+        console.log(myInputJSObject.results);
+        makeHash();
         renderNavigationSidebar();
     }
 
