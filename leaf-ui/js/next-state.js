@@ -345,12 +345,15 @@
     
                     var index_to_keep = [];
                     var index_to_rm = [];
+                    console.log(analysis.graph.getElements());
+                    console.log(analysis.graph.getElements().attr('type'));
     
                     var least_t_s = tempResults.get('allSolutions')["TNS-R"].length;
                     for (var solution_index=0; solution_index < tempResults.get('allSolutions')["TNS-R"].length; solution_index++) {
                         var num_t_s = 0;
                         for (var element_index=0; element_index < tempResults.get('allSolutions')["TNS-R"][solution_index].length; element_index++){
-                            if (selectedResult.allSolution[solution_index].intentionElements[element_index].type === "TASK"){
+                            if (analysis.graph.getElements()[solution_index]) {
+                            // if (selectedResult.allSolution[solution_index].intentionElements[element_index].type === "TASK"){
                                 var value = tempResults.get('allSolutions')["TNS-R"][solution_index][element_index];
                                 if ((value == "0010" || value == "0011")){
                                     num_t_s ++;
@@ -487,8 +490,8 @@
                     var index_to_keep = [];
                     var index_to_rm = [];
     
-                    var least_goal_s = tempResults.get('allSolutions')["TNS-R"];
-                    for (var solution_index=0; solution_index < tempResults.get('allSolutions')["TNS-R"]; solution_index++) {
+                    var least_goal_s = tempResults.get('allSolutions')["TNS-R"].length;
+                    for (var solution_index=0; solution_index < tempResults.get('allSolutions')["TNS-R"].length; solution_index++) {
                         var num_g_s = 0;
                         for (var element_index=0; element_index < selectedResult.allSolution[solution_index].intentionElements.length; element_index++){
                             if (selectedResult.allSolution[solution_index].intentionElements[element_index].type === "GOAL"){
@@ -524,7 +527,7 @@
                     var index_to_rm = [];
     
                     var most_goal_s = 0;
-                    for (var solution_index=0; solution_index < tempResults.get('allSolutions')["TNS-R"]; solution_index++) {
+                    for (var solution_index=0; solution_index < tempResults.get('allSolutions')["TNS-R"].length; solution_index++) {
                         var num_g_s = 0;
                         for (var element_index=0; element_index < selectedResult.allSolution[solution_index].intentionElements.length; element_index++){
                             if (selectedResult.allSolution[solution_index].intentionElements[element_index].type === "GOAL"){
@@ -556,10 +559,10 @@
                     console.log("LeastActor");
                     //console.log(selectedResult.allSolution.length);
     
-                    var least_actor = tempResults.get('allSolutions')["TNS-R"];
+                    var least_actor = tempResults.get('allSolutions')["TNS-R"].length;
                     var index_to_keep = [];
                     var index_to_rm = [];
-                    for (var solution_index = 0; solution_index < tempResults.get('allSolutions')["TNS-R"]; solution_index++) {
+                    for (var solution_index = 0; solution_index < tempResults.get('allSolutions')["TNS-R"].length; solution_index++) {
                         var actors = {};
                         for (var element_index = 0; element_index < selectedResult.allSolution[solution_index].intentionElements.length; element_index++) {
                             if (! actors[selectedResult.allSolution[solution_index].intentionElements[element_index].actorId]){
@@ -605,7 +608,7 @@
                     var most_actor = 0;
                     var index_to_keep = [];
                     var index_to_rm = [];
-                    for (var solution_index = 0; solution_index < tempResults.get('allSolutions')["TNS-R"]; solution_index++) {
+                    for (var solution_index = 0; solution_index < tempResults.get('allSolutions')["TNS-R"].length; solution_index++) {
                         var actors = {};
                         for (var element_index = 0; element_index < selectedResult.allSolution[solution_index].intentionElements.length; element_index++) {
                             if (! actors[selectedResult.allSolution[solution_index].intentionElements[element_index].actorId]){
@@ -648,7 +651,7 @@
                     break;
                 case "mostConstraintSatisfaction":
                     var domains = {};
-                    for (var solution_index = 0; solution_index < tempResults.get('allSolutions')["TNS-R"]; solution_index++) {
+                    for (var solution_index = 0; solution_index < tempResults.get('allSolutions')["TNS-R"].length; solution_index++) {
                         for (var element_index = 0; element_index < selectedResult.allSolution[solution_index].intentionElements.length; element_index++) {
                             if (! domains[selectedResult.allSolution[solution_index].intentionElements[element_index].id]){
                                 domains[selectedResult.allSolution[solution_index].intentionElements[element_index].id] = [selectedResult.allSolution[solution_index].intentionElements[element_index].status[0]];
@@ -673,7 +676,7 @@
                         }
                     });
                     var index_to_rm = [];
-                    for (var solution_index = 0; solution_index < tempResults.get('allSolutions')["TNS-R"]; solution_index++) {
+                    for (var solution_index = 0; solution_index < tempResults.get('allSolutions')["TNS-R"].length; solution_index++) {
                         for (var element_index = 0; element_index < selectedResult.allSolution[solution_index].intentionElements.length; element_index++) {
                             if (int_with_smallest_domain.indexOf(selectedResult.allSolution[solution_index].intentionElements[element_index].id) != -1){
                                 if (selectedResult.allSolution[solution_index].intentionElements[element_index].status[0] !== "0011"){
