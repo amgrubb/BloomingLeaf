@@ -345,14 +345,14 @@
     
                     var index_to_keep = [];
                     var index_to_rm = [];
-                    console.log(analysis.graph.getElements());
-                    console.log(analysis.graph.getElements().attr('type'));
+                    console.log(analysis.graph.getElements()[0]);
+                    console.log(analysis.graph.getElements()[0].get('type'));
     
                     var least_t_s = tempResults.get('allSolutions')["TNS-R"].length;
                     for (var solution_index=0; solution_index < tempResults.get('allSolutions')["TNS-R"].length; solution_index++) {
                         var num_t_s = 0;
                         for (var element_index=0; element_index < tempResults.get('allSolutions')["TNS-R"][solution_index].length; element_index++){
-                            if (analysis.graph.getElements()[solution_index]) {
+                            if (analysis.graph.getElements()[element_index].get('type') === 'basic.Task') {
                             // if (selectedResult.allSolution[solution_index].intentionElements[element_index].type === "TASK"){
                                 var value = tempResults.get('allSolutions')["TNS-R"][solution_index][element_index];
                                 if ((value == "0010" || value == "0011")){
@@ -379,14 +379,16 @@
                     }
                     break;
                 case "mostTasksSatisfied":
+                    console.log('mostTasksSatisfied');
                     var index_to_keep = [];
                     var index_to_rm = [];
     
                     var most_t_s = 0;
-                    for (var solution_index=0; solution_index < tempResults.get('allSolutions')["TNS-R"]; solution_index++) {
+                    for (var solution_index=0; solution_index < tempResults.get('allSolutions')["TNS-R"].length; solution_index++) {
                         var num_t_s = 0;
-                        for (var element_index=0; element_index < selectedResult.allSolution[solution_index].intentionElements.length; element_index++){
-                            if (selectedResult.allSolution[solution_index].intentionElements[element_index].type === "TASK"){
+                        for (var element_index=0; element_index < tempResults.get('allSolutions')["TNS-R"][solution_index].length; element_index++){
+                            if (analysis.graph.getElements()[element_index].get('type') === 'basic.Task') {
+                            // if (selectedResult.allSolution[solution_index].intentionElements[element_index].type === "TASK"){
                                 var value = tempResults.get('allSolutions')["TNS-R"][solution_index][element_index];
                                 if ((value == "0010" || value == "0011")){
                                     num_t_s ++;
@@ -418,11 +420,12 @@
                     var index_to_keep = [];
                     var index_to_rm = [];
     
-                    var least_r_s = tempResults.get('allSolutions')["TNS-R"];
-                    for (var solution_index=0; solution_index < tempResults.get('allSolutions')["TNS-R"]; solution_index++) {
+                    var least_r_s = tempResults.get('allSolutions')["TNS-R"].length;
+                    for (var solution_index=0; solution_index < tempResults.get('allSolutions')["TNS-R"].length; solution_index++) {
                         var num_r_s = 0;
-                        for (var element_index=0; element_index < selectedResult.allSolution[solution_index].intentionElements.length; element_index++){
-                            if (selectedResult.allSolution[solution_index].intentionElements[element_index].type === "RESOURCE"){
+                        for (var element_index=0; element_index < tempResults.get('allSolutions')["TNS-R"][solution_index].length; element_index++){
+                            if (analysis.graph.getElements()[element_index].get('type') === 'basic.Resource') {
+                            // if (selectedResult.allSolution[solution_index].intentionElements[element_index].type === "RESOURCE"){
                                 var value = tempResults.get('allSolutions')["TNS-R"][solution_index][element_index];
                                 if ((value == "0010" || value == "0011")){
                                     num_r_s ++;
@@ -455,10 +458,11 @@
                     var index_to_rm = [];
     
                     var most_r_s = 0;
-                    for (var solution_index=0; solution_index < tempResults.get('allSolutions')["TNS-R"]; solution_index++) {
+                    for (var solution_index=0; solution_index < tempResults.get('allSolutions')["TNS-R"].length; solution_index++) {
                         var num_r_s = 0;
-                        for (var element_index=0; element_index < selectedResult.allSolution[solution_index].intentionElements.length; element_index++){
-                            if (selectedResult.allSolution[solution_index].intentionElements[element_index].type === "RESOURCE"){
+                        for (var element_index=0; element_index < tempResults.get('allSolutions')["TNS-R"][solution_index].length; element_index++){
+                            if (analysis.graph.getElements()[element_index].get('type') === 'basic.Resource') {
+                            // if (selectedResult.allSolution[solution_index].intentionElements[element_index].type === "RESOURCE"){
                                 var value = tempResults.get('allSolutions')["TNS-R"][solution_index][element_index];
                                 if ((value == "0010" || value == "0011")){
                                     num_r_s ++;
@@ -493,8 +497,9 @@
                     var least_goal_s = tempResults.get('allSolutions')["TNS-R"].length;
                     for (var solution_index=0; solution_index < tempResults.get('allSolutions')["TNS-R"].length; solution_index++) {
                         var num_g_s = 0;
-                        for (var element_index=0; element_index < selectedResult.allSolution[solution_index].intentionElements.length; element_index++){
-                            if (selectedResult.allSolution[solution_index].intentionElements[element_index].type === "GOAL"){
+                        for (var element_index=0; element_index < tempResults.get('allSolutions')["TNS-R"][solution_index].length; element_index++){
+                            if (analysis.graph.getElements()[element_index].get('type') === 'basic.Goal') {
+                            // if (selectedResult.allSolution[solution_index].intentionElements[element_index].type === "GOAL"){
                                 var value = tempResults.get('allSolutions')["TNS-R"][solution_index][element_index];
                                 if ((value == "0010" || value == "0011")){
                                     num_g_s ++;
@@ -529,8 +534,9 @@
                     var most_goal_s = 0;
                     for (var solution_index=0; solution_index < tempResults.get('allSolutions')["TNS-R"].length; solution_index++) {
                         var num_g_s = 0;
-                        for (var element_index=0; element_index < selectedResult.allSolution[solution_index].intentionElements.length; element_index++){
-                            if (selectedResult.allSolution[solution_index].intentionElements[element_index].type === "GOAL"){
+                        for (var element_index=0; element_index < tempResults.get('allSolutions')["TNS-R"][solution_index].length; element_index++){
+                            if (analysis.graph.getElements()[element_index].get('type') === 'basic.Goal') {
+                            // if (selectedResult.allSolution[solution_index].intentionElements[element_index].type === "GOAL"){
                                 var value = tempResults.get('allSolutions')["TNS-R"][solution_index][element_index];
                                 if ((value == "0010" || value == "0011")){
                                     num_g_s ++;
