@@ -338,7 +338,7 @@ function syntaxCheck() {
             }
             changeLinkColour(linkViews, 'red', 3);
         } else {
-        	changeLinkColour(destSourceMapper[destId]['findview'], 'black', 1);
+        	changeLinkColour(destSourceMapper[destID]['findview'], 'black', 1);
         }
     }
 
@@ -349,53 +349,20 @@ function syntaxCheck() {
 	return false; 
 }
 
-function getElementList() {
-    var elementList = [];
-    var intentionsCount = 0;
-
-	var satValueDict = {
-		"unknown": "0000",
-		"satisfied": "0011",
-		"partiallysatisfied": "0010",
-		"partiallydenied": "0100",
-		"denied": "1100",
-		"none": "0000",
-		"(no value)": "(no value)"
-	}; 
-
-    for(var i = 0; i < this.graph.getElements().length; i++) {
-        // If the element is NOT an actor 
-        if (!(this.graph.getElements()[i] instanceof joint.shapes.basic.Actor)){
-            var element= {};
-
-			// Gets current value, assigns "none" if null 
-            var currentValue = (this.graph.getElements()[i].attr(".satvalue/value")||"none");
-
-            // Making currentValue to numeric values like 0000, 0001, 0011...
-            if(!$.isNumeric(currentValue)) { 
-				currentValue = satValueDict[currentValue];
-			}
-
-            // Making sure that the elementId has 4 digits
-            var elementID = intentionsCount.toString();
-            while (elementID.length < 4){
-                elementID = "0" + elementID;
-            }
-
-            // Adding the new id to the UI graph element
-            this.graph.getElements()[i].prop("elementid", elementID);
-
-            element.id = elementID;
-            element.status = [];
-            element.status.push(currentValue);
-
-            intentionsCount++;
-
-			// Add element to list 
-            elementList.push(element);
-        }
-    }
-    return elementList;
+/**
+ * Return a list of non-actor elements in graph
+ * @returns {Array} elementList
+ */
+function getElementList() { 
+	var elementList = []; 
+	var elements = graph.getElements(); 
+	// Make sure to filter out actors from element list 
+	for (var i = 0; i < elements.length; i++) { 
+		if (!(elements[i] instanceof joint.shapes.basic.Actor)) { 
+			elementList.push(elements[i]); 
+		}
+	}
+	return elementList; 
 }
 
 /**
@@ -404,7 +371,21 @@ function getElementList() {
  * @returns true if at least one cycle is present, false otherwise
  */
 function isACycle(cycleList) {
+	// If cycle list is empty, then false 
 	return (cycleList != null);
+}
+
+/**
+ * 
+ * @param {HashMap.<String, Array<String>>} map 
+ * @returns {Integer}
+ */
+function getMapSize(map) { 
+	var len = 0;
+	for (key in map) {
+		len++;
+	}
+	return len;
 }
 
 /**
@@ -416,11 +397,11 @@ function cycleSearch() {
 	var links = graph.getLinks();
 	var vertices = getElementList();
 
-	//initialize linkMap, a 2D array. 1st index = src nodeID. Subarray at index = dest nodes corresponding to the src
+	// Initialize LinkMap, a HashMap. Index = src ID, value = Array of dest nodes(?)
 	var linkMap = initiateLinkGraph(vertices, links)
-	//search for cycles
+	// Search for cycles
 	var cycleList = traverseGraphForCycles(linkMap); 
-
+	// If there is a cycle 
 	if (cycleList.length > 0) {
 		return cycleList;
 	}
@@ -429,10 +410,11 @@ function cycleSearch() {
 }
 
 /**
- * Creates an array representation of the graph.  
+ * Creates a hash map representation of the graph.  
  * @param {Array.<Object>} vertices list of elements in the graph
  * @param {Array.<Object>} links list of links in the graph
- * @returns {Array of Array<String>} linkMap, a hash table where the first index corresponds to an element/src ID, and the corresponding child array contains each dest ID associated with it
+ * @returns {HashMap.<String, Array<String>>} linkMap, a hash map where the first index corresponds to an element/src ID, 
+ * and the corresponding child array contains each dest ID associated with it
  */
 function initiateLinkGraph(vertices, links) {
 	var linkMap = {}; 
@@ -446,7 +428,7 @@ function initiateLinkGraph(vertices, links) {
 	links.forEach(function(link){
 		// Get the element of the source ID and use that to get the element of the dest ID 
 		var src = link.getSourceElement().prop('id'); 
-		linkMap[src] = link.getTargetElement().prop('id');
+		linkMap[src].push(link.getTargetElement().prop('id'));
 	});
 	return linkMap;
 }
@@ -458,65 +440,71 @@ function initiateLinkGraph(vertices, links) {
  * @returns {Array of Array<String>} cycleList
  */
 function traverseGraphForCycles(linkMap) {
+	// Get a list of non-actor elements 
 	var vertices = getElementList();
 	var notVisited = [];
 	var cycleList = [];
 
-	vertices.forEach(function(element){ //create list of nodes to track which have not yet been visited
+	// Create list of nodes to track which have not yet been visited
+	vertices.forEach(function(element) { 
 		notVisited.push(element.id);
 	});
 
-	while (notVisited.length > 0) { //while all nodes haven't yet been visited
+	// While all nodes haven't yet been visited
+	while (notVisited.length > 0) { 
+		// Get the first element (start) 
 		var start = (notVisited.splice(0,1)).pop();
 		var walkList = [];
-		traverseGraphRecursive(linkMap, start, walkList, notVisited, cycleList); //search for cycles
+		// Search for cycles
+		traverseGraphRecursive(linkMap, start, walkList, notVisited, cycleList); 
 	}
 	return cycleList;
 }
 
 /**
  * Helper function for traverseGraphForCycles
- * @param {Array.<Map>} linkMap Hash Map of dest nodes associated with each src node
+ * @param {HashMap.<String, Array<String>>} linkMap Hash Map of dest nodes associated with each src node
  * @param {String} currNode Current node of the function call
  * @param {Array.<String>} walkList List of nodes in current walk
  * @param {Array.<String>} notVisited List of nodes that have not yet be visited, only used to determine start node for a new walk and to know when we're done traversing the graph
  * @param {Array of Array<String>} cycleList Double array that represents the cycles found in a graph. First index = separate cycle, child array = nodes in cycle
  */
 function traverseGraphRecursive(linkMap, currNode, walkList, notVisited, cycleList) {
+	// Since walk list is initialized to empty, it won't start here 
 	if (walkList.includes(currNode)) {
-		//found a cycle
+		// Found a cycle
 		var cycle = [];
 		var prev = currNode;
-		//the cycle is the part of the list from first instance of repeat node to now
-		for(var i = walkList.indexOf(currNode); i < walkList.length; ++i) {
+		// The cycle is the part of the list from first instance of repeat node to now
+		for (var i = walkList.indexOf(currNode); i < walkList.length; ++i) {
 			cycle.push(walkList[i]);
 			/**
 			 * Get rid of cycle link from prev to curr node so graph traversal doesn't get stuck. 
 			 * Problem: when multiple cycles share nodes, this inhibits others from being found. 
 			 * Should we just start a new walk?
 			 */
-			// var remove = linkMap[prev].indexOf(walkList[i]); 
-			var remove = linkMap.get(prev).indexOf(walkList[i]); 
-			// linkMap[prev].splice(remove, 1);
-			linkMap.get(prev).splice(remove, 1); 
+			var remove = linkMap[prev].indexOf(walkList[i]); 
+			linkMap[prev].splice(remove, 1); 
 			prev = walkList[i];
 		}
 		cycleList.push(cycle);
 	}
 	
-	//push current node to walk list
-	// walkList.push(currNode);
+	// Push current (start) node to walk list
 	walkList.push(currNode);
-	//remove curr from notVisited list
-	if(notVisited.includes(currNode)) {
+	// If curr is still marked as unvisited, remove it from notVisited 
+	if (notVisited.includes(currNode)) {
 		notVisited.splice(notVisited.indexOf(currNode), 1);
 	}
-	//if we have unvisited dest nodes, go there
-	if(linkMap.length > 0) {
-		for(var i = 0; i < linkMap[currNode].length; ++i) {
-		var next = linkMap[currNode][i]; //set next to a dest node that has currNode as its src
+	// If we have unvisited dest nodes, go there
+	if (getMapSize(linkMap) > 0) {
+		// Go through destination nodes of current node 
+		for (var i = 0; i < linkMap[currNode].length; ++i) {
+		// Set next to a dest node that has currNode as its src
+		var next = linkMap[currNode][i]; 
 		traverseGraphRecursive(linkMap, next, walkList, notVisited, cycleList); 
-		}
 	}
-	walkList.pop(); //done with function call, so take a "step back" in the graph
+	}
+	// Done with function call, so take a "step back" in the graph
+	walkList.pop(); 
 }
