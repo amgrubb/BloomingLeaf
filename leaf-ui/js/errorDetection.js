@@ -5,18 +5,18 @@
  * June 2021 - Temporary turned off during the backbone migration.
  */
 
+// TODO: Find out if this line is necessary 
 // const { connected } = require("process");
 
 
- /**
-  * Changes all intentions to their original colors
-  * Note: if this is ever merged with the color-visualization branch, EVO will need to be refreshed here
-  */
+/**
+ * Changes all intentions to their original colors
+ * Note: if this is ever merged with the color-visualization branch, EVO will need to be refreshed here
+ */
 function clearCycleHighlighting() {
 	var elements = graph.getElements();
 	var cellView;
-
-	//remove all previous coloring
+	// Remove all previous coloring
 	for (var i = 0; i < elements.length; i++) {
 		cellView  = elements[i].findView(paper);
 		cellView.model.changeToOriginalColour();
@@ -102,9 +102,7 @@ function initializeDestSourceMapper(links) {
     let constraint;
 
     for (var j = 0; j < links.length; j++) {
-
         linkView  = links[j].findView(paper);
-
 		if(!(links[j].getTargetElement().prop('id') in destSourceMapper)) {
             // Create empty object and arrays
             destSourceMapper[links[j].getTargetElement().prop('id')] = {};
@@ -112,7 +110,6 @@ function initializeDestSourceMapper(links) {
             destSourceMapper[links[j].getTargetElement().prop('id')]["constraint"] = [];
             destSourceMapper[links[j].getTargetElement().prop('id')]["findview"] = [];
         }
-
 		if (links[j].attributes.link.attributes.postType != null) {
 			constraint = links[j].attributes.link.attributes.linkType + "|" + 
 			links[j].attributes.link.attributes.postType; 
@@ -123,6 +120,7 @@ function initializeDestSourceMapper(links) {
         destSourceMapper[links[j].getTargetElement().prop('id')]["constraint"].push(constraint);
         destSourceMapper[links[j].getTargetElement().prop('id')]["findview"].push(linkView);
     }
+
     return destSourceMapper;
 }
 
@@ -189,7 +187,7 @@ function generateSyntaxMessage(naryRelationships, destId){
  */
 function getNodeName(id){
     var listNodes = graph.getElements();
-    for(var i = 0; i < listNodes.length; i++){
+    for (var i = 0; i < listNodes.length; i++) {
         var cellView  = listNodes[i].findView(paper);
 		if (id == cellView.model.attributes.id) {
             var nodeName = cellView.model.attr(".name");
