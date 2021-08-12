@@ -73,6 +73,20 @@
         console.log("Result:" + JSON.stringify(myInputJSObject.results.toJSON()));
         console.log(myInputJSObject.request);
         console.log(myInputJSObject.results);
+
+        // an array of all of the solutions and every element is another array with all of the refEvidencePairs for the intentions at that solution
+        var allSolutionArray = [];
+        for (var key in myInputJSObject.results.get('allSolutions')) {
+            console.log(key);
+            console.log(myInputJSObject.results.get('allSolutions')[key]);
+            myInputJSObject.results.get('allSolutions')[key].forEach(
+                solution => {
+                    console.log(solution);
+                    allSolutionArray.push(solution);
+            })
+            // allSolutionArray += myInputJSObject.results.get('allSolutions')[key];
+            console.log(allSolutionArray);
+        }
         
     }
 
