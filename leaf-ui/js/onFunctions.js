@@ -15,14 +15,9 @@ $('#btn-clear-flabel').on('click', function () {
     for (let element of graph.getElements()) {
         var cellView = element.findView(paper);
         var cell = cellView.model;
-        var intention = cell.get('intention'); 
-
-        if (intention != null) {
-            intention.removeFunction();
-            cell.attr(".funcvalue/text", "");
-
-            // TODO: Determine if we still need this line. 
-            // elementInspector.$('.function-type').val('(no value)');
+        if (intention != null && intention.get('evolvingFunction').get('type') !=  'NT') {
+                intention.removeFunction();
+                cell.attr(".funcvalue/text", "");
         }
     }
 });
