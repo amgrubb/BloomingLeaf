@@ -358,6 +358,9 @@ paper.on("link:options", function (cell) {
         $('#analysisSlider').css("display", "none");
         EVO.switchToModelingMode(undefined);
         revertNodeValuesToInitial();
+        //configInspector = new ConfigInspector({ collection: configCollection });
+        $('#configID').append(configInspector.el);
+        configInspector.render();
     });
 
     $('#btn-clear-results').on('click', function () {
