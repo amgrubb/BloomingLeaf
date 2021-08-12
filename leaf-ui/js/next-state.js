@@ -15,6 +15,14 @@
     myInputJSObject.request; // configBBM of the selected configuration 
     myInputJSObject.results; // resultBBM of results from the backend
 
+    var originalResults = myInputJSObject.results; // Copy of the original results
+
+    // an array of all of the solutions and every element is another array with all of the refEvidencePairs for the intentions at that solution
+    var allSolutionArray = [];
+    // Hashmap to keep track of at which index each array from allSolutions starts and ends once they 
+    // Are combined into allSolutionArray
+    var allSolutionIndex;
+
     var satValueDict = {
         "unknown": "0000",
         "satisfied": "0011",
@@ -74,18 +82,32 @@
         console.log(myInputJSObject.request);
         console.log(myInputJSObject.results);
 
-        // an array of all of the solutions and every element is another array with all of the refEvidencePairs for the intentions at that solution
-        var allSolutionArray = [];
+        allSolutionIndex = new Map();
+        var i = 0;
+        // Iterates of the hasmap allSolutions and combines all of the solutions into one array
         for (var key in myInputJSObject.results.get('allSolutions')) {
             console.log(key);
-            console.log(myInputJSObject.results.get('allSolutions')[key]);
+            
+            // Finds the index of the first element that will be added to allSolution
+            if (i != 0) {
+                i++;
+            }
+            // Adds the starting index and its key to hashmap
+            allSolutionIndex.set(key + "Start", i);
+          
+            // Adds every element (which are arrays) in the old array to the new array
             myInputJSObject.results.get('allSolutions')[key].forEach(
                 solution => {
                     console.log(solution);
                     allSolutionArray.push(solution);
             })
-            // allSolutionArray += myInputJSObject.results.get('allSolutions')[key];
+            // Finds the index of the last element added to allSolution
+            i = allSolutionArray.length-1;
+            // Adds the ending index and its key to hashmap
+            allSolutionIndex.set(key + "End", i);
+
             console.log(allSolutionArray);
+            console.log(allSolutionIndex);
         }
         
     }
@@ -105,7 +127,7 @@
         for (let element of analysis.graph.getElements()) {         
             // TODO: fix this line below
             // TODO: allSolutions is a hshmap and will have more than one element
-            satValue = myInputJSObject.results.get('allSolutions')["TNS-R"][currentPage][i];
+            satValue = allSolutionArray[currentPage][i];
             element.attr(".satvalue").value = satValue;
     
             // Sets attributes of element from the refEvidence pair from resultBBM
@@ -155,8 +177,7 @@
         var currentPageIn = document.getElementById("currentPage");
         var num_states_lbl = document.getElementById("num_states_lbl");
     
-        // TODO: have to update this, allSolutions is a hashmap
-        num_states_lbl.innerHTML += (myInputJSObject.results.get('allSolutions')["TNS-R"].length);
+        num_states_lbl.innerHTML += (allSolutionArray.length);
     
         currentPageIn.value = currentPage.toString();
     
@@ -177,7 +198,7 @@
     function updatePagination(currentPage){
         var pagination = document.getElementById("pagination");
         // TODO: have to update this, allSolutions is a hashmap
-        var nextSteps_array_size = myInputJSObject.results.get('allSolutions')["TNS-R"].length;
+        var nextSteps_array_size = allSolutionArray.length;
         if (nextSteps_array_size > 6){
             renderPreviousBtn(pagination, currentPage);
             if (currentPage - 3 < 0){
@@ -218,7 +239,7 @@
     function renderForwardBtn(pagination, currentPage){
         var value;
         // TODO: have to update this, allSolutions is a hashmap
-        var nextSteps_array_size = myInputJSObject.results.get('allSolutions')["TNS-R"].length;
+        var nextSteps_array_size = allSolutionArray.length;
     
         if (currentPage == nextSteps_array_size-1){
             value = currentPage;
@@ -250,7 +271,7 @@
     function goToState(){
         var requiredState = parseInt(document.getElementById("requiredState").value);
         // TODO: have to update this, allSolutions is a hashmap
-        var nextSteps_array_size = myInputJSObject.results.get('allSolutions')["TNS-R"].length;
+        var nextSteps_array_size = allSolutionArray.length;
     
         if ((requiredState != "NaN") && (requiredState > 0)){
             if (requiredState > nextSteps_array_size){
@@ -274,7 +295,7 @@
     function goToState(){
         var requiredState = parseInt(document.getElementById("requiredState").value);
         // var nextSteps_array_size = analysis.analysisResult.allSolution.length;
-        var nextSteps_array_size = myInputJSObject.results.get('allSolutions')["TNS-R"].length;
+        var nextSteps_array_size = allSolutionArray.length;
     
         if ((requiredState != "NaN") && (requiredState > 0)){
             if (requiredState > nextSteps_array_size){
@@ -287,7 +308,9 @@
     
     function add_filter(){
         console.log("clicked");
-        tempResults = myInputJSObject.results
+        // tempResults = myInputJSObject.results
+        // TODO : is it enough to have only the solutions in tempResults or do we need more information??
+        tempResults.allTempSolutionArray = allSolutionArray;
         var checkboxes = document.getElementsByClassName("filter_checkbox");
         for (var i = 0; i < checkboxes.length; i++){
             var checkbox = checkboxes[i];
@@ -311,9 +334,9 @@
                 case "conflictFl":
                     console.log("conflictFl");
                     var index_to_rm = [];
-                    for (var solution_index=0; solution_index < tempResults.get('allSolutions')["TNS-R"].length; solution_index++) {
-                        for (var element_index=0; element_index < tempResults.get('allSolutions')["TNS-R"][solution_index].length; element_index++){
-                            var value = tempResults.get('allSolutions')["TNS-R"][solution_index][element_index];
+                    for (var solution_index=0; solution_index < tempResults.allTempSolutionArray.length; solution_index++) {
+                        for (var element_index=0; element_index < tempResults.allTempSolutionArray[solution_index].length; element_index++){
+                            var value = tempResults.allTempSolutionArray[solution_index][element_index];
                             console.log(value);
                             if ((value == "0110") ||
                                 (value == "0111") ||
@@ -331,17 +354,17 @@
                     }
                     for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
                         // selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
-                        tempResults.get('allSolutions')["TNS-R"].splice(index_to_rm[to_rm]-to_rm,1);
+                        tempResults.allTempSolutionArray.splice(index_to_rm[to_rm]-to_rm,1);
                     }
                     break;
                 case "ttFl":
                     console.log("ttFl");
-                    console.log(tempResults.get('allSolutions')["TNS-R"]);
+                    console.log(tempResults.allTempSolutionArray);
     
                     var index_to_rm = [];
-                    for (var solution_index=0; solution_index < tempResults.get('allSolutions')["TNS-R"].length; solution_index++) {
-                        for (var element_index=0; element_index < tempResults.get('allSolutions')["TNS-R"][solution_index].length; element_index++){
-                            var value = tempResults.get('allSolutions')["TNS-R"][solution_index][element_index];
+                    for (var solution_index=0; solution_index < tempResults.allTempSolutionArray.length; solution_index++) {
+                        for (var element_index=0; element_index < tempResults.allTempSolutionArray[solution_index].length; element_index++){
+                            var value = tempResults.allTempSolutionArray[solution_index][element_index];
                             if (value == "0000"){
                                 index_to_rm.push(solution_index);
                                 break;
@@ -350,7 +373,7 @@
                     }
                     for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
                         // selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
-                        tempResults.get('allSolutions')["TNS-R"].splice(index_to_rm[to_rm]-to_rm,1);
+                        tempResults.allTempSolutionArray.splice(index_to_rm[to_rm]-to_rm,1);
                     }
                     break;
                 case "leastTasksSatisfied":
@@ -362,13 +385,13 @@
                     console.log(analysis.graph.getElements()[0]);
                     console.log(analysis.graph.getElements()[0].get('type'));
     
-                    var least_t_s = tempResults.get('allSolutions')["TNS-R"].length;
-                    for (var solution_index=0; solution_index < tempResults.get('allSolutions')["TNS-R"].length; solution_index++) {
+                    var least_t_s = tempResults.allTempSolutionArray.length;
+                    for (var solution_index=0; solution_index < tempResults.allTempSolutionArray.length; solution_index++) {
                         var num_t_s = 0;
-                        for (var element_index=0; element_index < tempResults.get('allSolutions')["TNS-R"][solution_index].length; element_index++){
+                        for (var element_index=0; element_index < tempResults.allTempSolutionArray[solution_index].length; element_index++){
                             if (analysis.graph.getElements()[element_index].get('type') === 'basic.Task') {
                             // if (selectedResult.allSolution[solution_index].intentionElements[element_index].type === "TASK"){
-                                var value = tempResults.get('allSolutions')["TNS-R"][solution_index][element_index];
+                                var value = tempResults.allTempSolutionArray[solution_index][element_index];
                                 if ((value == "0010" || value == "0011")){
                                     num_t_s ++;
                                 }
@@ -389,7 +412,7 @@
                     index_to_rm.sort(function(a, b){return a-b});
                     for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
                         //selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
-                        tempResults.get('allSolutions')["TNS-R"].splice(index_to_rm[to_rm]-to_rm,1);
+                        tempResults.allTempSolutionArray.splice(index_to_rm[to_rm]-to_rm,1);
                     }
                     break;
                 case "mostTasksSatisfied":
@@ -398,12 +421,12 @@
                     var index_to_rm = [];
     
                     var most_t_s = 0;
-                    for (var solution_index=0; solution_index < tempResults.get('allSolutions')["TNS-R"].length; solution_index++) {
+                    for (var solution_index=0; solution_index < tempResults.allTempSolutionArray.length; solution_index++) {
                         var num_t_s = 0;
-                        for (var element_index=0; element_index < tempResults.get('allSolutions')["TNS-R"][solution_index].length; element_index++){
+                        for (var element_index=0; element_index < tempResults.allTempSolutionArray[solution_index].length; element_index++){
                             if (analysis.graph.getElements()[element_index].get('type') === 'basic.Task') {
                             // if (selectedResult.allSolution[solution_index].intentionElements[element_index].type === "TASK"){
-                                var value = tempResults.get('allSolutions')["TNS-R"][solution_index][element_index];
+                                var value = tempResults.allTempSolutionArray[solution_index][element_index];
                                 if ((value == "0010" || value == "0011")){
                                     num_t_s ++;
                                 }
@@ -424,7 +447,7 @@
                     index_to_rm.sort(function(a, b){return a-b});
                     for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
                         //selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
-                        tempResults.get('allSolutions')["TNS-R"].splice(index_to_rm[to_rm]-to_rm,1);
+                        tempResults.allTempSolutionArray.splice(index_to_rm[to_rm]-to_rm,1);
                     }
                     break;
                 case "leastResource":
@@ -434,13 +457,13 @@
                     var index_to_keep = [];
                     var index_to_rm = [];
     
-                    var least_r_s = tempResults.get('allSolutions')["TNS-R"].length;
-                    for (var solution_index=0; solution_index < tempResults.get('allSolutions')["TNS-R"].length; solution_index++) {
+                    var least_r_s = tempResults.allTempSolutionArray.length;
+                    for (var solution_index=0; solution_index < tempResults.allTempSolutionArray.length; solution_index++) {
                         var num_r_s = 0;
-                        for (var element_index=0; element_index < tempResults.get('allSolutions')["TNS-R"][solution_index].length; element_index++){
+                        for (var element_index=0; element_index < tempResults.allTempSolutionArray[solution_index].length; element_index++){
                             if (analysis.graph.getElements()[element_index].get('type') === 'basic.Resource') {
                             // if (selectedResult.allSolution[solution_index].intentionElements[element_index].type === "RESOURCE"){
-                                var value = tempResults.get('allSolutions')["TNS-R"][solution_index][element_index];
+                                var value = tempResults.allTempSolutionArray[solution_index][element_index];
                                 if ((value == "0010" || value == "0011")){
                                     num_r_s ++;
                                 }
@@ -461,7 +484,7 @@
                     index_to_rm.sort(function(a, b){return a-b});
                     for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
                         //selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
-                        tempResults.get('allSolutions')["TNS-R"].splice(index_to_rm[to_rm]-to_rm,1);
+                        tempResults.allTempSolutionArray.splice(index_to_rm[to_rm]-to_rm,1);
                     }
                     break;
                 case "mostResource":
@@ -472,12 +495,12 @@
                     var index_to_rm = [];
     
                     var most_r_s = 0;
-                    for (var solution_index=0; solution_index < tempResults.get('allSolutions')["TNS-R"].length; solution_index++) {
+                    for (var solution_index=0; solution_index < tempResults.allTempSolutionArray.length; solution_index++) {
                         var num_r_s = 0;
-                        for (var element_index=0; element_index < tempResults.get('allSolutions')["TNS-R"][solution_index].length; element_index++){
+                        for (var element_index=0; element_index < tempResults.allTempSolutionArray[solution_index].length; element_index++){
                             if (analysis.graph.getElements()[element_index].get('type') === 'basic.Resource') {
                             // if (selectedResult.allSolution[solution_index].intentionElements[element_index].type === "RESOURCE"){
-                                var value = tempResults.get('allSolutions')["TNS-R"][solution_index][element_index];
+                                var value = tempResults.allTempSolutionArray[solution_index][element_index];
                                 if ((value == "0010" || value == "0011")){
                                     num_r_s ++;
                                 }
@@ -498,7 +521,7 @@
                     index_to_rm.sort(function(a, b){return a-b});
                     for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
                         //selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
-                        tempResults.get('allSolutions')["TNS-R"].splice(index_to_rm[to_rm]-to_rm,1);
+                        tempResults.allTempSolutionArray.splice(index_to_rm[to_rm]-to_rm,1);
                     }
                     break;
                 case "leastGoalSatisfied":
@@ -508,13 +531,13 @@
                     var index_to_keep = [];
                     var index_to_rm = [];
     
-                    var least_goal_s = tempResults.get('allSolutions')["TNS-R"].length;
-                    for (var solution_index=0; solution_index < tempResults.get('allSolutions')["TNS-R"].length; solution_index++) {
+                    var least_goal_s = tempResults.allTempSolutionArray.length;
+                    for (var solution_index=0; solution_index < tempResults.allTempSolutionArray.length; solution_index++) {
                         var num_g_s = 0;
-                        for (var element_index=0; element_index < tempResults.get('allSolutions')["TNS-R"][solution_index].length; element_index++){
+                        for (var element_index=0; element_index < tempResults.allTempSolutionArray[solution_index].length; element_index++){
                             if (analysis.graph.getElements()[element_index].get('type') === 'basic.Goal') {
                             // if (selectedResult.allSolution[solution_index].intentionElements[element_index].type === "GOAL"){
-                                var value = tempResults.get('allSolutions')["TNS-R"][solution_index][element_index];
+                                var value = tempResults.allTempSolutionArray[solution_index][element_index];
                                 if ((value == "0010" || value == "0011")){
                                     num_g_s ++;
                                 }
@@ -535,7 +558,7 @@
                     index_to_rm.sort(function(a, b){return a-b});
                     for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
                         //selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
-                        tempResults.get('allSolutions')["TNS-R"].splice(index_to_rm[to_rm]-to_rm,1);
+                        tempResults.allTempSolutionArray.splice(index_to_rm[to_rm]-to_rm,1);
                     }
                     break;
                 case "mostGoalSatisfied":
@@ -546,12 +569,12 @@
                     var index_to_rm = [];
     
                     var most_goal_s = 0;
-                    for (var solution_index=0; solution_index < tempResults.get('allSolutions')["TNS-R"].length; solution_index++) {
+                    for (var solution_index=0; solution_index < tempResults.allTempSolutionArray.length; solution_index++) {
                         var num_g_s = 0;
-                        for (var element_index=0; element_index < tempResults.get('allSolutions')["TNS-R"][solution_index].length; element_index++){
+                        for (var element_index=0; element_index < tempResults.allTempSolutionArray[solution_index].length; element_index++){
                             if (analysis.graph.getElements()[element_index].get('type') === 'basic.Goal') {
                             // if (selectedResult.allSolution[solution_index].intentionElements[element_index].type === "GOAL"){
-                                var value = tempResults.get('allSolutions')["TNS-R"][solution_index][element_index];
+                                var value = tempResults.allTempSolutionArray[solution_index][element_index];
                                 if ((value == "0010" || value == "0011")){
                                     num_g_s ++;
                                 }
@@ -572,23 +595,23 @@
                     index_to_rm.sort(function(a, b){return a-b});
                     for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
                         //selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
-                        tempResults.get('allSolutions')["TNS-R"].splice(index_to_rm[to_rm]-to_rm,1);
+                        tempResults.allTempSolutionArray.splice(index_to_rm[to_rm]-to_rm,1);
                     }
                     break;
                 case "LeastActor":
                     console.log("LeastActor");
                     //console.log(selectedResult.allSolution.length);
     
-                    var least_actor = tempResults.get('allSolutions')["TNS-R"].length;
+                    var least_actor = tempResults.allTempSolutionArray.length;
                     var index_to_keep = [];
                     var index_to_rm = [];
-                    for (var solution_index = 0; solution_index < tempResults.get('allSolutions')["TNS-R"].length; solution_index++) {
+                    for (var solution_index = 0; solution_index < tempResults.allTempSolutionArray.length; solution_index++) {
                         var actors = {};
                         for (var element_index = 0; element_index < selectedResult.allSolution[solution_index].intentionElements.length; element_index++) {
                             if (! actors[selectedResult.allSolution[solution_index].intentionElements[element_index].actorId]){
                                 actors[selectedResult.allSolution[solution_index].intentionElements[element_index].actorId] = 0;
                             }
-                            var value = tempResults.get('allSolutions')["TNS-R"][solution_index][element_index];
+                            var value = tempResults.allTempSolutionArray[solution_index][element_index];
                             if ((value == "0010" || value == "0011" || (value == "0110") ||
                                 (value == "0111") ||
                                 (value == "0101") ||
@@ -618,7 +641,7 @@
                     index_to_rm.sort(function(a, b){return a-b});
                     for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
                         //selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
-                        tempResults.get('allSolutions')["TNS-R"].splice(index_to_rm[to_rm]-to_rm,1);
+                        tempResults.allTempSolutionArray.splice(index_to_rm[to_rm]-to_rm,1);
                     }
                     break;
                 case "mostActor":
@@ -628,13 +651,13 @@
                     var most_actor = 0;
                     var index_to_keep = [];
                     var index_to_rm = [];
-                    for (var solution_index = 0; solution_index < tempResults.get('allSolutions')["TNS-R"].length; solution_index++) {
+                    for (var solution_index = 0; solution_index < tempResults.allTempSolutionArray.length; solution_index++) {
                         var actors = {};
                         for (var element_index = 0; element_index < selectedResult.allSolution[solution_index].intentionElements.length; element_index++) {
                             if (! actors[selectedResult.allSolution[solution_index].intentionElements[element_index].actorId]){
                                 actors[selectedResult.allSolution[solution_index].intentionElements[element_index].actorId] = 0;
                             }
-                            var value = tempResults.get('allSolutions')["TNS-R"][solution_index][element_index];
+                            var value = tempResults.allTempSolutionArray[solution_index][element_index];
                             if ((value == "0010" || value == "0011" || (value == "0110") ||
                                 (value == "0111") ||
                                 (value == "0101") ||
@@ -666,12 +689,12 @@
                     index_to_rm.sort(function(a, b){return a-b});
                     for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
                         //selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
-                        tempResults.get('allSolutions')["TNS-R"].splice(index_to_rm[to_rm]-to_rm,1);
+                        tempResults.allTempSolutionArray.splice(index_to_rm[to_rm]-to_rm,1);
                     }
                     break;
                 case "mostConstraintSatisfaction":
                     var domains = {};
-                    for (var solution_index = 0; solution_index < tempResults.get('allSolutions')["TNS-R"].length; solution_index++) {
+                    for (var solution_index = 0; solution_index < tempResults.allTempSolutionArray.length; solution_index++) {
                         for (var element_index = 0; element_index < selectedResult.allSolution[solution_index].intentionElements.length; element_index++) {
                             if (! domains[selectedResult.allSolution[solution_index].intentionElements[element_index].id]){
                                 domains[selectedResult.allSolution[solution_index].intentionElements[element_index].id] = [selectedResult.allSolution[solution_index].intentionElements[element_index].status[0]];
@@ -696,7 +719,7 @@
                         }
                     });
                     var index_to_rm = [];
-                    for (var solution_index = 0; solution_index < tempResults.get('allSolutions')["TNS-R"].length; solution_index++) {
+                    for (var solution_index = 0; solution_index < tempResults.allTempSolutionArray.length; solution_index++) {
                         for (var element_index = 0; element_index < selectedResult.allSolution[solution_index].intentionElements.length; element_index++) {
                             if (int_with_smallest_domain.indexOf(selectedResult.allSolution[solution_index].intentionElements[element_index].id) != -1){
                                 if (selectedResult.allSolution[solution_index].intentionElements[element_index].status[0] !== "0011"){
@@ -708,7 +731,7 @@
                     }
                     for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
                         //selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
-                        tempResults.get('allSolutions')["TNS-R"].splice(index_to_rm[to_rm]-to_rm,1);
+                        tempResults.allTempSolutionArray.splice(index_to_rm[to_rm]-to_rm,1);
                     }
                     break;
                 default:

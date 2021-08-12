@@ -10,7 +10,7 @@ $('#btn-zoom-out').on('click', function () { zoomOut(analysis.paperScroller); })
 $('#btn-fnt').on('click', function () { defaultFont(analysis.paper); });
 $('#btn-fnt-up').on('click', function () { fontUp(analysis.paper); });
 $('#btn-fnt-down').on('click', function () { fontDown(analysis.paper); });
-$('#inspector-btn-small').on('click', function () { goToState(); });
+$('.inspector-btn-small').on('click', function () { goToState(); });
 $('.filter_checkbox').on('click', function () { add_filter() });
 $("#saveClose").on('click', function () { save_current_state(); });
 $("#exploreNextStates").on('click', function () { generate_next_states(); });
