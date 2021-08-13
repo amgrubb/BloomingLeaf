@@ -15,7 +15,7 @@
     myInputJSObject.request; // configBBM of the selected configuration 
     myInputJSObject.results; // resultBBM of results from the backend
 
-    var originalResults = myInputJSObject.results; // Copy of the original results
+    var originalResults; // Copy of the original results to save as a reference
 
     // an array of all of the solutions and every element is another array with all of the refEvidencePairs for the intentions at that solution
     var allSolutionArray = [];
@@ -82,11 +82,15 @@
         console.log(myInputJSObject.request);
         console.log(myInputJSObject.results);
         
-        makeHash();
+        combineAllSolutions();
+        
+        // Sets originalResults as a deep copy of myInputJSObject.results 
+        // So originalResults does not contain references to myInputJSObject.results
+        originalResults = $.extend(true, {}, myInputJSObject.results);
     }
 
 
-    function makeHash() {
+    function combineAllSolutions() {
         // Clear array
         allSolutionArray = [];
         allSolutionIndex = new Map();
@@ -312,13 +316,16 @@
         }
     }
     
+    /**
+     * This function checks which boxes in next State have been checked/unchecked and shows the correct results
+     * based on this. The first switch case has been documented with comments.
+     */
     function add_filter(){
         console.log("clicked");
         // Everytime a box is clicked/unclicked the results are reset
-        // myInputJSObject.results = originalResults;
-        tempResults = myInputJSObject.results;
-        // tempResults = originalResults;
-        // TODO : is it enough to have only the solutions in tempResults or do we need more information??
+        myInputJSObject.results = originalResults;
+        // Deep copy of results so it doesn't contain references to the original object
+        tempResults = $.extend(true, {}, myInputJSObject.results);
 
         var checkboxes = document.getElementsByClassName("filter_checkbox");
         for (var i = 0; i < checkboxes.length; i++){
@@ -337,15 +344,22 @@
             }
         }
         console.log(filterOrderQueue);
-    
+        
+        // Iterates over all of the boxes that have been checked
         for (var i = 0; i <  filterOrderQueue.length; i++){
             switch (filterOrderQueue[i]){
                 case "conflictFl":
                     console.log("conflictFl");
+                    // Iterates over every key/value pair in the hashmap
                     for (var solutionArray in tempResults.get('allSolutions')) {
+                        // Empty array to that will contain all of the indices of the solutions we want
                         var index_to_rm = [];
+                        // Iterates over all of the solutions in the key/value pair 
                         for (var solution_index=0; solution_index < tempResults.get('allSolutions')[solutionArray].length; solution_index++) {
+                            // Iterates over all of the elements in the solution
                             for (var element_index=0; element_index < tempResults.get('allSolutions')[solutionArray][solution_index].length; element_index++){
+                                // Checks the value of each itention and if the value satisfyies the conditions then the
+                                // Index is pushed to the index array
                                 var value = tempResults.get('allSolutions')[solutionArray][solution_index][element_index];
                                 if ((value == "0110") ||
                                     (value == "0111") ||
@@ -361,8 +375,9 @@
                                 }
                             }
                         }
+                        // Iterates over the array with all of the indexes that satisfy the condition
                         for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
-                            // selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
+                            // Adds only the indexes that satisfy the condition to the array inside the hashmap
                             tempResults.get('allSolutions')[solutionArray].splice(index_to_rm[to_rm]-to_rm,1);
                         }
                     }
@@ -760,10 +775,10 @@
             }
         }
     
-        // analysis.analysisResult = tempResults;
+        // Set the new results with filters as the analysis object
         myInputJSObject.results = tempResults;
-        console.log(myInputJSObject.results);
-        makeHash();
+        // Create array with all Solutions from new hashmap
+        combineAllSolutions();
         renderNavigationSidebar();
     }
 
