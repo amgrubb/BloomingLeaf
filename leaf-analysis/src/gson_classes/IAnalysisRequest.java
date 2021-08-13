@@ -6,7 +6,7 @@ public class IAnalysisRequest {
 	private String action;
 	private String conflictLevel;
 	private String numRelTime;
-	private String currentState;
+//	private String currentState;
 	private IOSolution previousAnalysis;
 	//"userAssignmentsList":[]
 	//"previousAnalysis":null,
@@ -21,9 +21,9 @@ public class IAnalysisRequest {
 	public String getNumRelTime() {
 		return numRelTime;
 	}
-	public String getCurrentState() {
-		return currentState;
-	}
+//	public String getCurrentState() {
+//		return currentState;
+//	}
 	public IOSolution getPreviousAnalysis() {
 		return previousAnalysis;
 	}
