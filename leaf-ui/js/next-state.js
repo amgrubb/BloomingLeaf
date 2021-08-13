@@ -764,4 +764,51 @@
         renderNavigationSidebar();
     }
 
-}
+    
+    /*    // Analysis objects from original window
+        var myInputJSObject;
+        myInputJSObject.request; // configBBM of the selected configuration 
+        myInputJSObject.results; // resultBBM of results from the backend
+    */
+
+    /*This function should get the current state in the screen and 
+    *   save in the original path, as well as generate the remainder
+    *   of the simulation path.
+    */
+    function save_current_state(){
+        //updateAnalysisRequestWithCurrentState();  //TODO: Write.
+        myInputJSObject.request.set('action', "updatePath");
+        window.opener.backendSimulationRequest(myInputJSObject.request);
+
+        window.close();
+    }
+
+    //This function should get the current state and generate a new window with the next possible states
+    function generate_next_states(){
+        //updateAnalysisRequestWithCurrentState();  //TODO: Write.
+        //myInputJSObject.request.set('action', "updatePath");
+        window.opener.backendSimulationRequest(myInputJSObject.request);
+
+        window.close();
+
+        // $("body").addClass("waiting"); //Adds "waiting" spinner under cursor 
+        // // Object to be sent to the backend
+        // var jsObject = {};
+        // updateAnalysisRequestWithCurrentState();
+
+        // /*for (var i = 0; i < analysisRequest.previousAnalysis.elementList.length ; i++){
+        //     analysisRequest.previousAnalysis.elementList[i].status.slice(0, current+2);
+        // }*/
+        // analysisRequest.action = "allNextStates";
+
+        // jsObject.analysisRequest = analysisRequest;
+        // console.log(analysisRequest);
+
+        // // TODO Update call to backendComm.
+        // //console.log("TODO: Update Call to BackendComm");
+        // //backendComm(jsObject);      
+        // backendSimulationRequest(analysisRequest);
+    }
+
+
+} // End of LOCAL GLOBAL VARIABLES
