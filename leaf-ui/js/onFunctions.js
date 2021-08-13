@@ -220,12 +220,16 @@ $('#evo-color-key').on('click', function(){ window.open('./userguides/evo.html',
  * Displays the absolute and relative assignments modal for the user.
  */
 $('#btn-view-assignment').on('click', function () {
+    removeHighlight();
+    clearInspector();
     var assignmentsModal = new AssignmentsTable({ model: graph });
     $('#assignments-list').append(assignmentsModal.el);
     assignmentsModal.render();
 });
 
 $('#btn-view-intermediate').on('click', function () {
+    removeHighlight();
+    clearInspector();
     var intermediateValuesTable = new IntermediateValuesTable({ model: graph });
     $('#intermediate-table').append(intermediateValuesTable.el);
     intermediateValuesTable.render();
@@ -474,6 +478,7 @@ paper.on({
 // Unhighlight everything when blank is being clicked
 paper.on('blank:pointerclick', function () {
     removeHighlight();
+    clearInspector();
 });
 
 // Link equivalent of the element editor
@@ -742,23 +747,18 @@ paper.on("link:options", function (cell) {
         }
     });
 
-    // TODO: Reimplement with new backbone structure
+
     $('#btn-clear-elabel').on('click', function () {
-        console.log("TODO: Reimplement with new backbone structure - #btn-clear-elabel");
         for (let element of graph.getElements()) {
-            var cellView = element.findView(paper);
-            var cell = cellView.model;
-            var intention = model.getIntentionByID(cellView.model.attributes.nodeID);
+            var cell = element.findView(paper).model;
+            var intention = cell.get('intention');
+            var initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair');
+            var funcType = intention.get('evolvingFunction').get('type');
 
-            if (intention != null && intention.getInitialSatValue() != '(no value)') {
+            // If the initsatVal is not empty and if funcType empty
+            if (intention != null &&  initSatVal != '(no value)' && funcType === 'NT') {
                 intention.removeInitialSatValue();
-
                 cell.attr(".satvalue/text", "");
-                cell.attr(".funcvalue/text", "");
-
-                // TODO: Determine if we still need these lines.
-                //elementInspector.$('#init-sat-value').val('(no value)');
-                //elementInspector.$('.function-type').val('(no value)');
             }
         }
         EVO.refresh(selectResult);
