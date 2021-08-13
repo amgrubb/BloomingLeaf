@@ -174,33 +174,11 @@ $('#btn-clear-flabel').on('click', function () {
     for (let element of graph.getElements()) {
         var cellView = element.findView(paper);
         var cell = cellView.model;
-        var intention = cell.get('intention'); 
-
-        if (intention != null) {
-            intention.removeFunction();
-            cell.attr(".funcvalue/text", "");
-
-            // TODO: Determine if we still need this line. 
-            // elementInspector.$('.function-type').val('(no value)');
+        if (intention != null && intention.get('evolvingFunction').get('type') !=  'NT') {
+                intention.removeFunction();
+                cell.attr(".funcvalue/text", "");
         }
     }
-});
-
-/**
- * This is an option under clear button to clear red-highlight from
- * cycle detection function
- */
-
-$('#btn-clear-analysis').on('click', function () {
-    // TODO: Re-Implement for backbone view - What does clearing analysis mean now?
-    // reset graph to initial values
-    console.log("btn-clear-analysis - TODO Re-Implement for backbone view - What does clearing analysis mean now")
-    revertNodeValuesToInitial();
-});
-
-// TODO: Re-implement for backbone view
-$('#btn-clear-results').on('click', function () { 
-    console.log("btn-clear-results - TODO Re-implement for backbone view");
 });
 
 // Open as SVG
@@ -238,10 +216,20 @@ $('#btn-view-intermediate').on('click', function () {
 /**
  * Switches to Analysis view if there are no cycles and no syntax errors.
  */
-//TODO: Add back in cycle detection after backbone migration.
 $('#analysis-btn').on('click', function () {
-    console.log("TODO: Add back in cycle detection after backbone migration.");
-    switchToAnalysisMode();
+    // Check if there are any syntax errors 
+    var isError = syntaxCheck();
+    /**
+     * If there are cycles, then display error message.
+     * Otherwise, remove any "red" elements.
+     */
+    var cycleList = cycleSearch(); 
+    // Alerts user if there are any cycles 
+    cycleResponse(cycleList);
+    if (!isACycle(cycleList) && !isError) {
+        clearCycleHighlighting();
+        switchToAnalysisMode();
+    } 
 });
 
 /** For Load Sample Model button */
@@ -345,52 +333,30 @@ graph.on('remove', function (cell) {
     //     // model.removeLink(link.linkID);
     // }
 
-    // else if ((!cell.isLink()) && (!(cell["attributes"]["type"] == "basic.Actor"))) {
-    //     // To remove intentions
-    //     // var userIntention = model.getIntentionByID(cell.attributes.nodeID);
-    //     // remove this intention from the model
-    //     // model.removedynamicFunction(userIntention.nodeID);
-    //     // model.removeIntentionLinks(userIntention.nodeID);
-    //     // remove all intention evaluations associated with this intention
-    //     // analysisRequest.removeIntention(userIntention.nodeID);
-    //     // if this intention has an actor, remove this intention's ID
-    //     // from the actor
-    //     if (userIntention.nodeActorID !== '-') {
-    //         var actor = model.getActorByID(userIntention.nodeActorID);
-    //         actor.removeIntentionID(userIntention.nodeID);
-    //     }
-    //     model.removeIntention(userIntention.nodeID);
-    // }
-    // else if ((!cell.isLink()) && (cell["attributes"]["type"] == "basic.Actor")) {
-    //     // To remove actor
-    //     model.removeActor(cell['attributes']['nodeID']);
+    if ((!cell.isLink()) && (!(cell.prop("type") == "basic.Actor"))) {
+        if (cell.get('parent')) {
+            graph.getCell(cell.get('parent')).unembed(cell);
+        }
+    }
 
-
-    // }
-
-    // else if (cell.isLink() && (cell.prop("link-type") == 'NBT' || cell.prop("link-type") == 'NBD')) {
-    //     // Verify if is a Not both type. If it is remove labels from source and target node
-    //     var link = cell;
-    //     var source = link.prop("source");
-    //     var target = link.prop("target");
-
-    //     for (var i = 0; i < graph.getElements().length; i++) {
-    //         if (graph.getElements()[i].prop("id") == source["id"]) {
-    //             source = graph.getElements()[i];
-    //         }
-    //         if (graph.getElements()[i].prop("id") == target["id"]) {
-    //             target = graph.getElements()[i];
-    //         }
-    //     }
-
-    //     //Verify if it is possible to remove the NB tag from source and target
-    //     if (source !== null && !checkForMultipleNB(source)) {
-    //         source.attrs(".funcvalue/text", "");
-    //     }
-    //     if (target !== null && !checkForMultipleNB(target)) {
-    //         target.attrs(".funcvalue/text", "");
-    //     }
-    // }
+    else if (cell.isLink() && (cell.get('link').get("linkType") == 'NBT' || cell.get('link').get("linkType") == 'NBD')) {
+        // Verify if is a Not both type. If it is remove labels from source and target node
+        var source = graph.getCell(cell.get('source').id);
+        var target = graph.getCell(cell.get('target').id);
+        // Verify if it is possible to remove the NB tag from source and target
+        if (source !== null && !checkForMultipleNB(source)) {
+            source.get('intention').get('evolvingFunction').set('type', 'NT');
+            source.get('intention').getUserEvaluationBBM(0).set('assignedEvidencePair', '(no value)');
+            source.attr('.funcvalue/text', '');
+            source.attr('.satvalue/text', '');
+        }
+        if (target !== null && !checkForMultipleNB(target)) {
+            target.get('intention').get('evolvingFunction').set('type', 'NT');
+            target.get('intention').getUserEvaluationBBM(0).set('assignedEvidencePair', '(no value)');
+            target.attr('.funcvalue/text', '');
+            target.attr('.satvalue/text', '');
+        }
+    }
 });
 
 /** Paper Events **/
@@ -533,6 +499,38 @@ paper.on("link:options", function (cell) {
             model.destroy();
         }
     }
+    
+    /**
+     * This is an option under clear button to clear red-highlight from
+     * cycle detection function
+     */
+
+    $('#btn-clear-analysis').on('click', function () {
+        resetConfig();
+        // Updates EVO slider
+        $('#modelingSlider').css("display", "");
+        $('#analysisSlider').css("display", "none");
+        EVO.switchToModelingMode(undefined);
+        revertNodeValuesToInitial();
+        // Creates new config
+        $('#configID').append(configInspector.el);
+        configInspector.render();
+    });
+
+    $('#btn-clear-results').on('click', function () {
+        var results;
+        for (var i = 0; i < configCollection.length; i++) {
+            while (results = configCollection.models[i].get('results').first()) {
+                results.destroy();
+            }
+        }
+        $('.result-elements').remove();
+        // Updates EVO slider
+        $('#modelingSlider').css("display", "");
+        $('#analysisSlider').css("display", "none");
+        EVO.switchToModelingMode(undefined);
+        revertNodeValuesToInitial();
+    });
 
     /**
      * Helper function for switching to Analysis view.
@@ -861,18 +859,16 @@ function clearInspector() {
  * @param {joint.dia.element} node
  * @returns {Boolean}
  */
-function checkForMultipleNB(node) {
+function checkForMultipleNB(element) {
     var num = 0;
-    var localLinks = graph.getLinks();
-
-    for (var i = 0; i < localLinks.length; i++) {
-        if (localLinks[i].prop("link-type") == 'NBT' || localLinks[i].prop("link-type") == 'NBD') {
-            if (localLinks[i].getSourceElement().prop("id") == node["id"] || localLinks[i].getTargetElement().prop("id") == node["id"]) {
+    var localLinks = graph.getConnectedLinks(element);
+    if(localLinks != null){
+        for (var i = 0; i < localLinks.length; i++) {
+            if (localLinks[i].get('link').get("linkType") == 'NBT' || localLinks[i].get('link').get("linkType") == 'NBD') {
                 num += 1;
             }
         }
     }
-
     return num >= 1;
 }
 
