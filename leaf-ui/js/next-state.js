@@ -726,6 +726,7 @@
                 case "mostConstraintSatisfaction":
                     
                     for (var solutionArray in tempResults.get('allSolutions')) {
+                        console.log(solutionArray);
                         var domains = {};
                         for (var solution_index = 0; solution_index < tempResults.get('allSolutions')[solutionArray].length; solution_index++) {
                             for (var element_index = 0; element_index < tempResults.get('allSolutions')[solutionArray][solution_index].length; element_index++) {
@@ -740,6 +741,7 @@
                                 }
                             }
                         }
+                        console.log(domains);
                         var length_domain= {};
                         var least_domain = 9;
                         var int_with_smallest_domain = [];
@@ -767,6 +769,7 @@
                         for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
                             tempResults.get('allSolutions')[solutionArray].splice(index_to_rm[to_rm]-to_rm,1);
                         }
+                        console.log(domains);
                 }
                     break;
                 default:
