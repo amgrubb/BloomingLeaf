@@ -121,7 +121,7 @@ function backendStringifyCirc(obj){
  * Note: function was originally called `backendComm`.
  */
 function responseFunc(analysisRequest, response) {
-	$("body").removeClass("waiting"); //Remove spinner under cursor 
+	$("body").removeClass("loading"); //Remove spinner from page, can interact with page again 
 	var results = JSON.parse(response);
 	if (errorExists(results)) {
 		var msg = getErrorMessage(results.errorMessage);

@@ -522,7 +522,8 @@ paper.on("link:options", function (cell) {
     /** All Next States:
      * Selects the current configuration and prior results and passes them to backendSimulationRequest()  */
     $('#next-state-btn').on('click', function() { 
-        //TODO: Ensure that next state is never called from the last slider point.
+        //TODO: Ensure that next state is never called from the last slider point
+        $("body").addClass("loading"); // Adds spinner animation to page, cannot click on other things while loading
         var curRequest = configCollection.findWhere({selected: true});
         var curResult = curRequest.previousAttributes().results.findWhere({selected: true}); 
         curRequest.set('action', 'allNextStates');
