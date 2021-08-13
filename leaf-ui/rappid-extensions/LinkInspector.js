@@ -172,7 +172,7 @@ var LinkInspector = Backbone.View.extend({
 
             target.get('intention').get('evolvingFunction').set('functionSegList', []);
             target.get('intention').get('evolvingFunction').set('type', 'NB');
-            target.get('intention').getUserEvaluationBBM(0).set('assignedEvidencePair', '0000')
+            target.get('intention').getUserEvaluationBBM(0).set('assignedEvidencePair', '0000');
             
         } else {
             // Check if cells have any other NBT/NBD links

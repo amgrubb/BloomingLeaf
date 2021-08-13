@@ -695,7 +695,6 @@ function checkForMultipleNB(element) {
             }
         }
     }
-
     return num >= 1;
 }
 
