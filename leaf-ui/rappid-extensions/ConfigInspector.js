@@ -18,7 +18,7 @@ var ResultView = Backbone.View.extend({
     },
 
     template: ['<script type="text/template" id="result-template">',
-        '<a class="result-elements" id="<%= name %>" <% if (selected) { %> style="background-color:#A9A9A9;" <%} %>)>', "<%= name %>", '</a>',
+        '<button class="result-elements" id="<%= name %>" <% if (selected) { %> style="background-color:#A9A9A9;" <%} %>)>', "<%= name %>", '</button>',
         '</script>'].join(''),
 
     /** Render updates model values in template (name & selected) */
@@ -43,6 +43,7 @@ var ResultView = Backbone.View.extend({
         this.config.set('selected', true);
         this.config.trigger('change:switchConfigs', this.config);
         displayAnalysis(this.model, true);
+        EVO.refreshSlider(this.model);
     },
 
     /**
@@ -110,7 +111,7 @@ var Config = Backbone.View.extend({
     },
 
     template: ['<script type="text/template" id="item-template">',
-        '<div class="analysis-configuration" style="margin-bottom: 1px;" id="<%= name %>">',
+        '<div class="analysis-configuration" id="<%= name %>">',
         '<button class="config-elements" <% if (selected) { %> style="background-color:#A9A9A9;" <%} %> >',
         '<%= name %> </button>',
         '<input class="config-input" value="<%- name %>" style="display:none"></input>',
@@ -140,6 +141,7 @@ var Config = Backbone.View.extend({
         this.$('.analysis-configuration').append(this.innerView.$el);
         if (this.model.get('selected')) {
             this.showAnalysisInspector();
+            EVO.refreshSlider(undefined);
         }
         return this;
     },
@@ -199,7 +201,11 @@ var Config = Backbone.View.extend({
      * Sets selected value to true and triggers a switchConfig event to update highlight
      */
     switchConfig: function () {
+
+        $('#modelingSlider').css("display", "");
+        $('#analysisSlider').css("display", "none");
         this.model.set({ selected: true });
+        EVO.refreshSlider(undefined);
     },
 
     /**

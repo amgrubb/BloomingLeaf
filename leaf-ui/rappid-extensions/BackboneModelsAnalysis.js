@@ -5,8 +5,10 @@
  * 
  * Attributes:
  * @param {String} name
- * @param {Array.<String>} assignedEpoch
- *   Each element represents an epoch with its assigned value
+ * @param {HashMap.<String, Integer>} timePointAssignments
+ *   Hashmap between the symbolic names for time points and Absolute time point values
+ *   Was called assignedEpoch and
+ *   each element represents an epoch with its assigned value
  *   ex: ["TE2_2","TE1_32"]
  * @param {Array.<String>} timePointPath
  *   Each element represents a time point in the analysis
@@ -39,11 +41,11 @@ var ResultBBM = Backbone.Model.extend({
     defaults: function() {
         return {    //TODO: Verify if this return should be kept.
             name:"Default Result",
-            assignedEpoch: null,
-            timePointPath: null,
+            timePointAssignments: null,
+            timePointPath: null,        // changed type to list of int.
             elementList: null,
-            allSolution: null, // Potentially deprecated
-            //elementLIstPercentEvals: null,    //TODO: there has to be a typo here.
+            allSolutions: null, 
+            nextStateTPs: null,
             isPathSim: false, // Used for slider visualization  // Should be set to true for single path?
             colorVis: null, // Color visualization for analysis mode
             selectedTimePoint: null, // Find where slider is initialized and set timepoint in here. Also place it in update function
@@ -102,8 +104,8 @@ var ConfigBBM = Backbone.Model.extend({
         action: null,
         conflictLevel: "S",
         numRelTime: "1",
-        currentState: "0",
-        previousAnalysis: null,
+//        currentState: "0",        //TODO: Can we remove this?
+//        previousAnalysis: null,
         selected: true,
         results : new ResultCollection([]),
         }
@@ -116,6 +118,8 @@ var ConfigBBM = Backbone.Model.extend({
     addResult : function(result){
         result.set('name', 'Result ' + (this.get('results').length+1))
         this.get("results").add(result);
+		$('#conflict-level').prop('disabled', true);
+		$('#num-rel-time').prop('disabled', true);
     },
 
     /** If a config was previously selected and now no longer is, unselect any selected results */

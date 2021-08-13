@@ -133,7 +133,7 @@ function getIntentionsArr(arr) {
     var maxID = 0;
 
     for (var i = 0; i < arr.length; i++) {
-    	var intention = new Intention(arr[i].nodeActorID, arr[i].nodeType, arr[i].nodeName);
+    	var intention = new Intention(arr[i].nodeActorID, arr[i].nodeType, arr[i].nodeName);	// nodeType has been removed.
     	intention.nodeID = arr[i].nodeID;
     	maxID = Math.max(maxID, parseInt(arr[i].nodeID));
     	intention.dynamicFunction = getEvolvingFunction(arr[i].dynamicFunction);
@@ -213,7 +213,7 @@ function createBBLink(cell){
 function createBBElement(cell, funcsegs){
 	var intention = cell.get('intention');
 	var evol = intention.attributes.evolvingFunction.attributes;
-	var intentionBBM = new IntentionBBM({nodeName: intention.attributes.nodeName, nodeType: intention.attributes.nodeType});
+	var intentionBBM = new IntentionBBM({nodeName: intention.attributes.nodeName});
 
 	var evolving = new EvolvingFunctionBBM({type: evol.type, hasRepeat: evol.hasRepeat, repStart: evol.repStart, repStop: evol.repStop, repCount: evol.repCount, repAbsTime: evol.repAbsTime});
 	for (let funcseg of funcsegs){

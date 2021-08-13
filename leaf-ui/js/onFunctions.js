@@ -11,26 +11,6 @@ It also contains the setup for Rappid elements.
 $('#btn-undo').on('click', _.bind(commandManager.undo, commandManager));
 $('#btn-redo').on('click', _.bind(commandManager.redo, commandManager));
 $('#btn-clear-all').on('click', function () { clearAll() });
-$('#btn-clear-elabel').on('click', function () {
-    for (let element of graph.getElements()) {
-        var cellView = element.findView(paper);
-        var cell = cellView.model;
-        var intention = cell.get('intention'); 
-
-        if (intention != null && intention.getUserEvaluationBBM(0).get('assignedEvidencePair') != '(no value)') {
-            intention.removeInitialSatValue();
-
-            cell.attr(".satvalue/text", "");
-            cell.attr(".funcvalue/text", "");
-
-            // TODO: Determine if we still need these lines.
-            //elementInspector.$('#init-sat-value').val('(no value)');
-            //elementInspector.$('.function-type').val('(no value)');
-        }
-    }
-    IntentionColoring.refresh();
-});
-
 $('#btn-clear-flabel').on('click', function () {
     for (let element of graph.getElements()) {
         var cellView = element.findView(paper);
@@ -51,9 +31,6 @@ $('#btn-clear-flabel').on('click', function () {
  * This is an option under clear button to clear red-highlight from
  * cycle detection function
  */
-$('#btn-clear-cycle').on('click', function () {
-    clearCycleHighlighting();
-});
 
 $('#btn-clear-analysis').on('click', function () {
     // TODO: Re-Implement for backbone view - What does clearing analysis mean now?
@@ -71,21 +48,6 @@ $('#btn-clear-results').on('click', function () {
 $('#btn-svg').on('click', function () {
     paper.openAsSVG();
 });
-
-// Save the current graph to json file
-$('#btn-save').on('click', function () {
-    var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
-    if (name) {
-        clearCycleHighlighting();
-        EVO.deactivate();
-        // EVO.returnAllColors(graph.getElements(), paper);
-        // EVO.revertIntentionsText(graph.getElements(), paper);    
-		var fileName = name + ".json";
-        obj = {graph: graph.toJSON()} //same structure as the other two save options
-        download(fileName, stringifyCirc(obj));
-        //IntentionColoring.refresh();
-    }
-});
  
 $('#btn-debug').on('click', function(){ console.log(graph.toJSON()) });
 $('#btn-zoom-in').on('click', function(){ zoomIn(paperScroller); });
@@ -100,19 +62,23 @@ $('#evo-color-key').on('click', function(){ window.open('./userguides/evo.html',
  * Displays the absolute and relative assignments modal for the user.
  */
 $('#btn-view-assignment').on('click', function () {
+    removeHighlight();
+    clearInspector();
     var assignmentsModal = new AssignmentsTable({ model: graph });
     $('#assignments-list').append(assignmentsModal.el);
     assignmentsModal.render();
 });
 
 $('#btn-view-intermediate').on('click', function () {
+    removeHighlight();
+    clearInspector();
     var intermediateValuesTable = new IntermediateValuesTable({ model: graph });
     $('#intermediate-table').append(intermediateValuesTable.el);
     intermediateValuesTable.render();
 });
 
 /**
- * Switches to Analysis view iff there are no cycles and no syntax errors.
+ * Switches to Analysis view if there are no cycles and no syntax errors.
  */
 $('#analysis-btn').on('click', function () {
     // Check if there are any syntax errors 
@@ -149,38 +115,6 @@ $('#modeling-btn').on('click', function () {
 
     savedAnalysisData.finalAssignedEpoch = "";
     savedAnalysisData.finalValueTimePoints = "";
-});
-
-/**
- * Source:https://www.w3schools.com/howto/howto_js_rangeslider.asp 
- * Two option modeling mode slider
- */
-document.getElementById("colorReset").oninput = function () { //turns slider on/off and refreshes
-    EVO.setSliderOption(this.value);
-}
-/**
- * Four option analysis mode slider
- */
-document.getElementById("colorResetAnalysis").oninput = function () { //changes slider mode and refreshes
-    EVO.setSliderOption(this.value);
-}
-
-$('#colorblind-mode-isOff').on('click', function () { //activates colorblind mode
-    $('#colorblind-mode-isOff').css("display", "none");
-    $('#colorblind-mode-isOn').css("display", "");
-
-    IntentionColoring.toggleColorBlindMode(true);
-});
-
-$('#colorblind-mode-isOn').on('click', function () { //turns off colorblind mode
-    $('#colorblind-mode-isOn').css("display", "none");
-    $('#colorblind-mode-isOff').css("display", "");
-
-    IntentionColoring.toggleColorBlindMode(false);
-});
-
-$(window).resize(function () {
-    resizeWindow();
 });
 
 /*** Events for Rappid/JointJS objets ***/
@@ -226,7 +160,8 @@ graph.on("add", function (cell) {
         // Send actors to background so elements are placed on top
         cell.toBack();
     }
-
+    
+    resetConfig()
     // Trigger click on cell to highlight, activate inspector, etc. 
     paper.trigger("cell:pointerup", cell.findView(paper));
 });
@@ -252,6 +187,8 @@ graph.on('change:size', function (cell, size) {
 graph.on('remove', function (cell) {
     // Clear right inspector side panel
     clearInspector();
+    // Clear Config view
+    resetConfig();
     
     /**  TODO: Determine if we still need the rest of the code in this function. 
      *   Figure out how to make the element inspector automatically update after the function 
@@ -398,6 +335,7 @@ paper.on({
 // Unhighlight everything when blank is being clicked
 paper.on('blank:pointerclick', function () {
     removeHighlight();
+    clearInspector();
 });
 
 // Link equivalent of the element editor
@@ -424,28 +362,49 @@ paper.on("link:options", function (cell) {
     /** Initialize configCollection within scope of brackets */
     let configCollection = new ConfigCollection([]);
     let configInspector = null;
+    let selectResult = undefined;
 
-    $('#simulate-single-path-btn').on('click', function() { 
+    /** Simulate Single Path: 
+     * Selects the current configuration and passes to backendSimulationRequest()  */
+    $('#simulate-path-btn').on('click', function() { 
         var curRequest = configCollection.findWhere({selected: true});
         curRequest.set('action', 'singlePath');
         backendSimulationRequest(curRequest);
     }); 
-    $('#next-state-btn').on('click', function() { getAllNextStates(); }); 
+    /** All Next States:
+     * Selects the current configuration and prior results and passes them to backendSimulationRequest()  */
+    $('#next-state-btn').on('click', function() { 
+        //TODO: Ensure that next state is never called from the last slider point.
+        var curRequest = configCollection.findWhere({selected: true});
+        var curResult = curRequest.previousAttributes().results.findWhere({selected: true}); 
+        curRequest.set('action', 'allNextStates');
+        curRequest.set('previousAnalysis', curResult);        
+        console.log(JSON.stringify(curRequest));
+        console.log(curRequest);
+        backendSimulationRequest(curRequest);    
+    }); 
     
+    function resetConfig(){
+        var model;
+        while (model = configCollection.first()) {
+            model.destroy();
+        }
+    }
+
     /**
      * Helper function for switching to Analysis view.
      */
     function switchToAnalysisMode() {
         setInteraction(false);
-
+        document.getElementById("colorResetAnalysis").value = 1;
         // Clear the right panel
         clearInspector();
 
         removeHighlight();
-
         configInspector = new ConfigInspector({ collection: configCollection });
         $('#configID').append(configInspector.el);
         configInspector.render();
+        $('#analysisID').css("display", "");
 
         // Remove model only elements 
         $('.model-only').css("display", "none");
@@ -464,14 +423,13 @@ paper.on("link:options", function (cell) {
         $('.attribution').css("display", "none");
         $('.inspector').css("display", "none");
 
-        IntentionColoring.refresh();
+        EVO.refresh(selectResult);
 
-        var currResult = configCollection.findWhere({ selected: true }).get('results').findWhere({ selected: true });
-
-        // Display the analysis and slider
-        if (currResult !== undefined){
-            displayAnalysis(currResult, true)
+        var configResults = configCollection.findWhere({ selected: true }).get('results');
+        if (configResults !== undefined){
+            selectResult = configResults.findWhere({ selected: true });
         }
+        EVO.refresh(selectResult);
 
         // TODO: Add check for model changes to potentially clear configCollection back in
     }
@@ -487,7 +445,10 @@ paper.on("link:options", function (cell) {
          */
         function switchToModellingMode() {
             setInteraction(true);
-            
+            if (selectResult !== undefined){
+                selectResult.set('selected', false);
+            }
+
             // Remove Slider
             removeSlider();
 
@@ -508,11 +469,10 @@ paper.on("link:options", function (cell) {
             // Reinstantiate link settings
             $('.link-tools .tool-remove').css("display", "");
             $('.link-tools .tool-options').css("display", "");
-
-            EVO.switchToModelingMode();
-
-            // Remove configInspector view
+            EVO.switchToModelingMode(selectResult);
+            // Remove configInspector and analysis view
             configInspector.remove();
+            $('#analysisID').css("display", "none");
             // TODO: Determine if we should be setting action to null on all configs
             configCollection.findWhere({ selected: true }).set('action', null);
 
@@ -545,79 +505,156 @@ paper.on("link:options", function (cell) {
         document.cookie = 'graph={}; expires=Thu, 18 Dec 2013 12:00:00 UTC';
     }
 
-// Save the current graph and analysis (without results) to json file
-$('#btn-save-analysis').on('click', function() {
-	var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
-	if (name){
-        clearCycleHighlighting();
-        EVO.deactivate();   
-		var fileName = name + ".json";
-		var obj = getModelAnalysisJson(configCollection);
-        download(fileName, stringifyCirc(obj));
-	}
-});
+    // Save the current graph and analysis (without results) to json file
+    $('#btn-save-analysis').on('click', function() {
+        var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
+        if (name){
+            clearCycleHighlighting(selectResult);
+            EVO.deactivate();   
+            var fileName = name + ".json";
+            var obj = getModelAnalysisJson(configCollection);
+            download(fileName, stringifyCirc(obj));
+        }
+    });
 
-// Save the current graph and analysis (with results) to json file
-$('#btn-save-all').on('click', function() {
-	var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
-	if (name){
-        clearCycleHighlighting();
-        EVO.deactivate();   
-		var fileName = name + ".json";
-		var obj = getFullJson(configCollection);
-        download(fileName, stringifyCirc(obj));
-	}
-});
+    // Save the current graph and analysis (with results) to json file
+    $('#btn-save-all').on('click', function() {
+        var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
+        if (name){
+            clearCycleHighlighting(selectResult);
+            EVO.deactivate();   
+            var fileName = name + ".json";
+            var obj = getFullJson(configCollection);
+            download(fileName, stringifyCirc(obj));
+        }
+    });
 
-// Workaround for load, activates a hidden input element
-$('#btn-load').on('click', function(){
-	$('#loader').click();
-});
+    // Workaround for load, activates a hidden input element
+    $('#btn-load').on('click', function(){
+        $('#loader').click();
+    });
 
-// Load ConfigCollection for display 
-// TODO: modify it to read results after results can be shown
-function loadConfig(loadedConfig){
-    var selectedConfig;
-    var selectedResult;
-    //Clears current configCollection
-    while (model = configCollection.first()){
-        model.destroy();
+    // Load ConfigCollection for display 
+    // TODO: modify it to read results after results can be shown
+    function loadConfig(loadedConfig){
+        var selectedConfig;
+        var selectedResult;
+        // Clears current configCollection
+        resetConfig();
+
+        // Individually creates each ConfigBBM and add to collection
+        for(let config of loadedConfig){
+            if (config.selected){ // If selected is true
+                selectedConfig = config.name; // Record the name of config
+            }
+            var configBBM = new ConfigBBM({name:config.name, action: config.action, conflictLevel: config.conflictLevel, numRelTime: config.numRelTime, currentState: config.currentState, userAssignmentsList : config.userAssignmentsList, previousAnalysis: config.previousAnalysis, selected: config.selected})
+            if (config.results.length !== 0){ // Creates results if there applicable
+                var results = configBBM.get('results'); // Grabs the coolection from the configBBM
+                // Individually creates each ResultBBM and add to collection
+                for (let result of config.results){
+                    if (result.selected){ // If selected is true
+                        selectedResult = result.name; // Record the name of result
+                    }
+                    var resultsBBM = new ResultBBM({name: result.name, assignedEpoch: result.assignedEpoch, timePointPath: result.timePointPath, elementList: result.elementList, allSolution: result.allSolution, isPathSim: result.isPathSim, colorVis: result.colorVis, selectedTimePoint: result.selectedTimePoint, selected: result.selected});
+                    results.add(resultsBBM)
+                }
+                configCollection.add(configBBM);
+            }
+            configCollection.add(configBBM);
+        }
+
+        // Sets what the config/result the user was last on as selected
+        var configGroup = configCollection.filter(Config => Config.get('name') == selectedConfig); //Find the config with the same name as the selected that is read in
+        if (configGroup.length !== 0){
+            configGroup[0].set('selected', true); // Set the selected to true
+        }
+
+        var currResult;
+        if (configGroup[0].get('results').length !== 0){ // Within that selected config
+            // Set selected of the selected result as true
+            currResult= configGroup[0].get('results').filter(selectedRes => selectedRes.get('name') == selectedResult)[0]
+            currResult.set('selected', true);
+        }
     }
 
-    // Individually creates each ConfigBBM and add to collection
-    for(let config of loadedConfig){
-        if (config.selected){ // If selected is true
-            selectedConfig = config.name; //Record the name of config
+    $(window).resize(function () {
+        var config = configCollection.findWhere({ selected: true });
+        if (config !== undefined){
+            var configResults = config.get('results').findWhere({ selected: true });
+            resizeWindow(configResults.get('timePointPath').length - 1);
+        } 
+    });
+    $('#btn-clear-cycle').on('click', function () {
+        clearCycleHighlighting(selectResult);
+    });
+
+    // Save the current graph to json file
+    $('#btn-save').on('click', function () {
+        var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
+        if (name) {
+            clearCycleHighlighting(selectResult);
+            EVO.deactivate();
+            // EVO.returnAllColors(graph.getElements(), paper);
+            // EVO.revertIntentionsText(graph.getElements(), paper);  
+            var fileName = name + ".json";
+            var obj = {graph: graph.toJSON()}; // Same structure as the other two save options
+            download(fileName, JSON.stringify(obj));
+            EVO.refresh(selectResult);
         }
-        var configBBM = new ConfigBBM({name:config.name, action: config.action, conflictLevel: config.conflictLevel, numRelTime: config.numRelTime, currentState: config.currentState, userAssignmentsList : config.userAssignmentsList, previousAnalysis: config.previousAnalysis, selected: config.selected})
-        if (config.results.length !== 0){ //create results if there applicable
-            var results = configBBM.get('results') // grabs the coolection from the configbbm
-            // Individually creates each ResultBBM and add to collection
-            for (let result of config.results){
-                if (result.selected){ // If selected is true
-                    selectedResult = result.name; // Record the name of result
-                }
-                var resultsBBM = new ResultBBM({name: result.name, assignedEpoch: result.assignedEpoch, timePointPath: result.timePointPath, elementList: result.elementList, allSolution: result.allSolution, isPathSim: result.isPathSim, colorVis: result.colorVis, selectedTimePoint: result.selectedTimePoint, selected: result.selected});
-                results.add(resultsBBM)
+    });
+
+
+    $('#btn-clear-elabel').on('click', function () {
+        for (let element of graph.getElements()) {
+            var cell = element.findView(paper).model;
+            var intention = cell.get('intention');
+            var initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair');
+            var funcType = intention.get('evolvingFunction').get('type');
+
+            // If the initsatVal is not empty and if funcType empty
+            if (intention != null &&  initSatVal != '(no value)' && funcType === 'NT') {
+                intention.removeInitialSatValue();
+                cell.attr(".satvalue/text", "");
             }
         }
-        configCollection.add(configBBM)
-    }
+        EVO.refresh(selectResult);
+    });
 
-    // Sets what the config/result the user was last on as selected
-    var configGroup = configCollection.filter(Config => Config.get('name') == selectedConfig); //Find the config with the same name as the selected that is read in
-    if (configGroup.length !== 0){
-        configGroup[0].set('selected', true); // Set the selected to true
-    }
+    $('#colorblind-mode-isOff').on('click', function () { //activates colorblind mode
+        $('#colorblind-mode-isOff').css("display", "none");
+        $('#colorblind-mode-isOn').css("display", "");
 
-    var currResult;
-    if (configGroup[0].get('results').length !== 0){ // Within that selected config
-        // Set selected of the selected result as true
-        currResult= configGroup[0].get('results').filter(selectedRes => selectedRes.get('name') == selectedResult)[0]
-        currResult.set('selected', true)
-    }
-}
+        EVO.toggleColorBlindMode(true, selectResult);
+    });
 
+    $('#colorblind-mode-isOn').on('click', function () { //turns off colorblind mode
+        $('#colorblind-mode-isOn').css("display", "none");
+        $('#colorblind-mode-isOff').css("display", "");
+
+        EVO.toggleColorBlindMode(false, selectResult);
+    });
+
+    /**
+     * Source:https://www.w3schools.com/howto/howto_js_rangeslider.asp 
+     * Two option modeling mode slider
+     */
+    document.getElementById("colorReset").oninput = function () { //turns slider on/off and refreshes
+        EVO.setSliderOption(this.value, selectResult);
+    }
+    /**
+     * Four option analysis mode slider
+     */
+    document.getElementById("colorResetAnalysis").oninput = function () { //changes slider mode and refreshes
+        var selectConfig;
+        //TODO: Find out why the selectResult is empty before we reassign it
+        if (configCollection.length !== 0) {
+            selectConfig = configCollection.filter(Config => Config.get('selected') == true)[0];
+            if (selectConfig.get('results') !== undefined) {
+                selectResult = selectConfig.get('results').filter(resultModel => resultModel.get('selected') == true)[0];
+            }
+        }
+        EVO.setSliderOption(this.value, selectResult);
+    }
 } // End scope of configCollection and configInspector
 
 /**
@@ -739,34 +776,30 @@ function setInteraction(interactionValue) {
  * Sets each node/cellview in the paper to its initial 
  * satisfaction value and colours all text to black
  */
-// TODO: Re-write with new models
 function revertNodeValuesToInitial() {
-    console.log("TODO: Rewrite revertNodeValuesToInitial");
-    // var elements = graph.getElements();
-    // var curr;
-    // for (var i = 0; i < elements.length; i++) {
-    // 	curr = elements[i].findView(paper).model;
+    var elements = graph.getElements();
+    var curr;
+    for (var i = 0; i < elements.length; i++) {
+    	curr = elements[i].findView(paper).model;
+    	if (curr.get('type') !== 'basic.Goal' &&
+            curr.get('type') !== 'basic.Task' &&
+    		curr.get('type') !== 'basic.Softgoal' &&
+    		curr.get('type') !== 'basic.Resource') {
+    		continue;
+    	}     
+    	var intention = curr.get('intention');
+        var initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair'); 
 
-    // 	if (curr.attributes.type !== 'basic.Goal' &&
-    // 		curr.attributes.type !== 'basic.Task' &&
-    // 		curr.attributes.type !== 'basic.Softgoal' &&
-    // 		curr.attributes.type !== 'basic.Resource') {
-    // 		continue;
-    // 	}     
-    // 	var intention = curr.get('intention');
-    //     var initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair'); 
+    	if (initSatVal === '(no value)') {
+            curr.attr('.satvalue/text', '');
 
-    // 	if (initSatVal === '(no value)') {
-    //         curr.attr('.satvalue/text', '');
-
-    // 	} else {
-    //         curr.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
-    // 	}
-    //     //curr.attr({text: {fill: 'black'}});
-    //     curr.attr({text: {fill: 'black',stroke:'none','font-weight' : 'normal','font-size': 10}});
-    // }
-    // // Remove slider
-    // removeSlider();
+    	} else {
+            curr.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
+    	}
+        curr.attr({text: {fill: 'black',stroke:'none','font-weight' : 'normal','font-size': 10}});
+    }
+    // Remove slider
+    removeSlider();
 }
 
 /**
