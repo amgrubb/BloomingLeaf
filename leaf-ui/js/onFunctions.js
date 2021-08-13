@@ -796,7 +796,7 @@ function revertNodeValuesToInitial() {
     	} else {
             curr.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
     	}
-        curr.attr({text: {fill: 'black','font-weight' : 'normal'}});
+        curr.attr({text: {fill: 'black',stroke:'none','font-weight' : 'normal','font-size': 10}});
     }
     // Remove slider
     removeSlider();
