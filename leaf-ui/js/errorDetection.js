@@ -171,7 +171,7 @@ function generateSyntaxMessage(naryRelationships, destId){
     suggestionText += sourceNodeText + ' to ' + getNodeName(destId) + ' as ' + constraintsText + '.';
 
     // As an example, suggestionText should now look something like:
-    // "Have all n-ary links from Task_1, Task_2 and Task_3 to Goal_0 as 'and' or 'no' or 'or'.""
+    // "Have all n-ary links from Task_1, Task_2 and Task_3 to Goal_0 as 'and' or 'no' or 'or'."
     var s = '<p style="text-align:left"><b style="color:black"> Source nodes: </b>' + sourceNodeText + '<br>' +
     	'<b style="color:black"> Destination node: </b>' + getNodeName(destId) + 
     	'<br><b style="color:black"> Suggestion: </b>' + suggestionText + '<br></p>';
