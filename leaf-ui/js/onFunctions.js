@@ -82,7 +82,7 @@ $('#btn-view-intermediate').on('click', function () {
  */
 $('#analysis-btn').on('click', function () {
     // Check if there are any syntax errors 
-    syntaxCheck();
+    var isError = syntaxCheck();
     /**
      * If there are cycles, then display error message.
      * Otherwise, remove any "red" elements.
@@ -90,7 +90,7 @@ $('#analysis-btn').on('click', function () {
     var cycleList = cycleSearch(); 
     // Alerts user if there are any cycles 
     cycleResponse(cycleList);
-    if (!isACycle(cycleList)) {
+    if (!isACycle(cycleList) && !isError) {
         clearCycleHighlighting();
         switchToAnalysisMode();
     } 

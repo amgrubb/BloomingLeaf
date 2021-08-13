@@ -274,11 +274,7 @@ function alertSyntaxError(title, message) {
         	title: title,
             type: "warning",
             html: message,
-            showCloseButton: true,
-            showCancelButton: true,
             confirmButtonText: "Ok",
-            cancelButtonText: "Go back to Model View",
-            cancelButtonClass: "backModel"
         }).then(function() {
 
         }, function(dismiss) {
