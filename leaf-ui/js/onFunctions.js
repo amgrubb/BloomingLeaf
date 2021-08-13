@@ -198,7 +198,7 @@ graph.on('remove', function (cell) {
         // Verify if is a Not both type. If it is remove labels from source and target node
         var source = graph.getCell(cell.get('source').id);
         var target = graph.getCell(cell.get('target').id);
-        //Verify if it is possible to remove the NB tag from source and target
+        // Verify if it is possible to remove the NB tag from source and target
         if (source !== null && !checkForMultipleNB(source)) {
             source.get('intention').get('evolvingFunction').set('type', 'NT');
             source.get('intention').getUserEvaluationBBM(0).set('assignedEvidencePair', '(no value)');
