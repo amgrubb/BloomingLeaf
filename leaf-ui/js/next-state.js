@@ -795,7 +795,20 @@
         myInputJSObject.results; // resultBBM of results from the backend
     */
     function updateAnalysisRequestWithCurrentState(){
-        
+        /* List of things to update for next call to backend.
+        * 	
+            List<ElementData> elementList = new ArrayList<>();
+            HashMap<String, Integer> timePointAssignments;
+            Integer[] timePointPath;
+            Integer selectedTimePoint; - increment by 1.
+            HashMap<String, List<String>> nextStateTPs;
+            HashMap<String, String[][]> allSolutions; 
+        *
+        */
+        var newPreviousAnalysis = myInputJSObject.request.get('previousAnalysis');
+        console.log(newPreviousAnalysis);
+        console.log(myInputJSObject.results);
+
     }
 
 } // End of LOCAL GLOBAL VARIABLES
