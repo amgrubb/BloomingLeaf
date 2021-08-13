@@ -254,12 +254,7 @@ $('#load-sample').on('click', function() {
 */
 
 // Switches to modeling mode
-$('#modeling-btn').on('click', function () {
-    switchToModellingMode();
-
-    savedAnalysisData.finalAssignedEpoch = "";
-    savedAnalysisData.finalValueTimePoints = "";
-});
+$('#modeling-btn').on('click', function () {switchToModellingMode();});
 
 /*** Events for Rappid/JointJS objets ***/
 

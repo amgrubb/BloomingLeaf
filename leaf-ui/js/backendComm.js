@@ -63,8 +63,6 @@ function responseFunc(analysisRequest, response) {
 			alert("Error while reading the response file from server. This can be due an error in executing java application.");
 			return;
 		} else if (analysisRequest.get('action') == 'singlePath' || analysisRequest.get('action') == 'updatePath') {
-			savedAnalysisData.singlePathResult = results;	//	TODO What is this? TODO: Remove
-			
 			var analysisResult = convertToAnalysisResult(results); 	// {ResultBBM}
 			displayAnalysis(analysisResult, false);
 			analysisRequest.addResult(analysisResult);
