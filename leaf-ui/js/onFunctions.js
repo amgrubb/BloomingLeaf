@@ -80,10 +80,20 @@ $('#btn-view-intermediate').on('click', function () {
 /**
  * Switches to Analysis view if there are no cycles and no syntax errors.
  */
-//TODO: Add back in cycle detection after backbone migration.
 $('#analysis-btn').on('click', function () {
-    console.log("TODO: Add back in cycle detection after backbone migration.");
-    switchToAnalysisMode();
+    // Check if there are any syntax errors 
+    var isError = syntaxCheck();
+    /**
+     * If there are cycles, then display error message.
+     * Otherwise, remove any "red" elements.
+     */
+    var cycleList = cycleSearch(); 
+    // Alerts user if there are any cycles 
+    cycleResponse(cycleList);
+    if (!isACycle(cycleList) && !isError) {
+        clearCycleHighlighting();
+        switchToAnalysisMode();
+    } 
 });
 
 /** For Load Sample Model button */
