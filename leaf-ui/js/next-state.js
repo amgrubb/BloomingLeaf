@@ -710,46 +710,49 @@
                     break;
                 case "mostConstraintSatisfaction":
                     
-                    var domains = {};
-                    for (var solution_index = 0; solution_index < tempResults.get('allSolutions')[solutionArray].length; solution_index++) {
-                        for (var element_index = 0; element_index < selectedResult.allSolution[solution_index].intentionElements.length; element_index++) {
-                            if (! domains[selectedResult.allSolution[solution_index].intentionElements[element_index].id]){
-                                domains[selectedResult.allSolution[solution_index].intentionElements[element_index].id] = [selectedResult.allSolution[solution_index].intentionElements[element_index].status[0]];
-                            } else {
-                                if (domains[selectedResult.allSolution[solution_index].intentionElements[element_index].id].indexOf(selectedResult.allSolution[solution_index].intentionElements[element_index].status[0]) == -1){
-                                    domains[selectedResult.allSolution[solution_index].intentionElements[element_index].id].push(selectedResult.allSolution[solution_index].intentionElements[element_index].status[0])
+                    for (var solutionArray in tempResults.get('allSolutions')) {
+                        var domains = {};
+                        for (var solution_index = 0; solution_index < tempResults.get('allSolutions')[solutionArray].length; solution_index++) {
+                            for (var element_index = 0; element_index < tempResults.get('allSolutions')[solutionArray][solution_index].length; element_index++) {
+                                    console.log(analysis.graph.getElements()[element_index].get('intention').cid)
+                                if (! domains[analysis.graph.getElements()[element_index].get('intention').cid]){
+                                    // TODO: below this line doesn't work yet
+                                    domains[tempResults.get('allSolutions')[solutionArray][solution_index].intentionElements[element_index].id] = [tempResults.get('allSolutions')[solutionArray][solution_index].intentionElements[element_index].status[0]];
+                                } else {
+                                    if (domains[tempResults.get('allSolutions')[solutionArray][solution_index].intentionElements[element_index].id].indexOf(selectedResult.allSolution[solution_index].intentionElements[element_index].status[0]) == -1){
+                                        domains[tempResults.get('allSolutions')[solutionArray][solution_index].intentionElements[element_index].id].push(selectedResult.allSolution[solution_index].intentionElements[element_index].status[0])
+                                    }
                                 }
                             }
                         }
-                    }
-                    var length_domain= {};
-                    var least_domain = 9;
-                    var int_with_smallest_domain = [];
-                    Object.keys(domains).forEach(function(key) {
-                        length_domain[key] = domains[key].length;
-                        if (length_domain[key] < least_domain){
-                            least_domain = length_domain[key];
-                            int_with_smallest_domain = [];
-                        }
-                        if (length_domain[key] == least_domain){
-                            int_with_smallest_domain.push(key);
-                        }
-                    });
-                    var index_to_rm = [];
-                    for (var solution_index = 0; solution_index < tempResults.get('allSolutions')[solutionArray].length; solution_index++) {
-                        for (var element_index = 0; element_index < selectedResult.allSolution[solution_index].intentionElements.length; element_index++) {
-                            if (int_with_smallest_domain.indexOf(selectedResult.allSolution[solution_index].intentionElements[element_index].id) != -1){
-                                if (selectedResult.allSolution[solution_index].intentionElements[element_index].status[0] !== "0011"){
-                                    index_to_rm.push(solution_index);
-                                    break;
+                        var length_domain= {};
+                        var least_domain = 9;
+                        var int_with_smallest_domain = [];
+                        Object.keys(domains).forEach(function(key) {
+                            length_domain[key] = domains[key].length;
+                            if (length_domain[key] < least_domain){
+                                least_domain = length_domain[key];
+                                int_with_smallest_domain = [];
+                            }
+                            if (length_domain[key] == least_domain){
+                                int_with_smallest_domain.push(key);
+                            }
+                        });
+                        var index_to_rm = [];
+                        for (var solution_index = 0; solution_index < tempResults.get('allSolutions')[solutionArray].length; solution_index++) {
+                            for (var element_index = 0; element_index < tempResults.get('allSolutions')[solutionArray][solution_index].intentionElements.length; element_index++) {
+                                if (int_with_smallest_domain.indexOf(tempResults.get('allSolutions')[solutionArray][solution_index].intentionElements[element_index].id) != -1){
+                                    if (tempResults.get('allSolutions')[solutionArray][solution_index].intentionElements[element_index].status[0] !== "0011"){
+                                        index_to_rm.push(solution_index);
+                                        break;
+                                    }
                                 }
                             }
                         }
-                    }
-                    for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
-                        //selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
-                        tempResults.get('allSolutions')[solutionArray].splice(index_to_rm[to_rm]-to_rm,1);
-                    }
+                        for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
+                            tempResults.get('allSolutions')[solutionArray].splice(index_to_rm[to_rm]-to_rm,1);
+                        }
+                }
                     break;
                 default:
                     console.log("default");
