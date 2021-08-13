@@ -272,7 +272,7 @@ var ElementInspector = Backbone.View.extend({
         this.checkInitialSatValue();
         this.updateCell();
         this.updateHTML(event);
-
+        resetConfig();
     },
 
     /**
