@@ -121,7 +121,6 @@ $('#analysis-btn').on('click', function () {
      * If there are cycles, then display error message.
      * Otherwise, remove any "red" elements.
      */
-    //TODO: Add back in cycle detection after backbone migration.
     var cycleList = cycleSearch(); 
     // Alerts user if there are any cycles 
     cycleResponse(cycleList);
