@@ -2,16 +2,12 @@ package gson_classes;
 
 public class IAnalysisRequest {
 	@SuppressWarnings("unused")
-	private String name;
-	private String action;
-	private String conflictLevel;
+	private String name;					// Request X
+	private String action;					// "singlePath" or "allNextStates" or "updatePath"
+	private String conflictLevel;	
 	private String numRelTime;
-//	private String currentState;
-	private IOSolution previousAnalysis;
-	//"userAssignmentsList":[]
-	//"previousAnalysis":null,
-	//"selected":true,
-	//"results":[]
+	private IOSolution previousAnalysis;	// For "singlePath" from time point zero, previous analysis is assumed to be null;
+
 	public String getAction() {
 		return action;
 	}
@@ -21,9 +17,6 @@ public class IAnalysisRequest {
 	public String getNumRelTime() {
 		return numRelTime;
 	}
-//	public String getCurrentState() {
-//		return currentState;
-//	}
 	public IOSolution getPreviousAnalysis() {
 		return previousAnalysis;
 	}

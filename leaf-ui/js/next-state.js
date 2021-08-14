@@ -82,6 +82,9 @@
         console.log(myInputJSObject.request);
         console.log(myInputJSObject.results);
         
+        console.log("First Result: \n");
+        console.log(myInputJSObject.results);   //- has all solutions in it already.
+
         makeHash();
     }
 
@@ -805,10 +808,16 @@
             HashMap<String, String[][]> allSolutions; 
         *
         */
-        var newPreviousAnalysis = myInputJSObject.request.get('previousAnalysis');
-        console.log(newPreviousAnalysis);
-        console.log(myInputJSObject.results);
-
+        console.log("Old: \n");
+        console.log(myInputJSObject.request.get('previousAnalysis'));
+        console.log("Result: \n");
+        console.log(myInputJSObject.results);   //- has all solutions in it already.
+    
+        var newPreviousAnalysis = myInputJSObject.results; 
+        newPreviousAnalysis.set('selectedTimePoint', myInputJSObject.results.get('selectedTimePoint') + 1);                    //
+        myInputJSObject.request.set('previousAnalysis', newPreviousAnalysis);
+        console.log("New: \n");
+        console.log(myInputJSObject.request.get('previousAnalysis'));
     }
 
 } // End of LOCAL GLOBAL VARIABLES
