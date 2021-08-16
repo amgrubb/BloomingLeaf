@@ -496,7 +496,30 @@ paper.on("link:options", function (cell) {
         curRequest.set('previousAnalysis', curResult);        
         console.log(JSON.stringify(curRequest));
         console.log(curRequest);
-        backendSimulationRequest(curRequest);    
+        console.log(curResult);
+        // TODO: Currently timePointAssignments does not have the correct key, value pairs so we can't implement this part yet
+        /**
+        // Iterates over the hashmap timePointAssignments
+        for (var key in curResult.get('timePointAssignments')) {
+            // Removes anything except for digits from the keys
+            timePoint = key.replace(/\D+/g, '');
+            console.log(curResult.get('timePointPath')[curResult.get('timePointPath').length - 1] === curResult.get('timePointAssignments')[key]);
+            console.log(timePoint == curResult.get('selectedTimePoint'));
+            // If the largest time point is the value of the current key, value pair and the current key is the selected time point
+            if ((curResult.get('timePointPath')[curResult.get('timePointPath').length - 1] === curResult.get('timePointAssignments')[key]) && (timePoint === curResult.get('selectedTimePoint'))) {
+                // An alert pops up that you can't open next State from the last time point
+                // TODO: make alert prettier
+                showAlert('Error', "Can't Open Next State from Last Time Point", 200);
+                // alert('Can Not Open Next State from Last Time Point');
+                break;
+              // If the current time point is the selected time point run the backend analysis  
+            } else if (timePoint === curResult.get('selectedTimePoint')) {
+                backendSimulationRequest(curRequest);  
+            }
+        }
+        */
+        backendSimulationRequest(curRequest);  
+          
     }); 
     
     function resetConfig(){
