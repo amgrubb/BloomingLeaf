@@ -5,7 +5,7 @@
  { // LOCAL GLOBAL VARIABLES
     var analysis = {};
     // analysis.analysisResult;
-    // analysis.elements = [];
+    analysis.intentions = []; // Array of all of the intentions on the graph
     // analysis.currentState;
 
     var filterOrderQueue = [];
@@ -82,6 +82,13 @@
         console.log(myInputJSObject.request);
         console.log(myInputJSObject.results);
         
+        //Filter out Actors
+        for (var i = 0; i < analysis.graph.getElements().length; i++){
+            if (!(analysis.graph.getElements()[i] instanceof joint.shapes.basic.Actor))
+                analysis.intentions.push(analysis.graph.getElements()[i]);
+        }
+        console.log(analysis.intentions);
+
         combineAllSolutions();
         
         // Sets originalResults as a deep copy of myInputJSObject.results 
@@ -109,7 +116,6 @@
             // Adds every element (which are arrays) in the old array to the new array
             myInputJSObject.results.get('allSolutions')[key].forEach(
                 solution => {
-                    console.log(solution);
                     allSolutionArray.push(solution);
             })
             // Finds the index of the last element added to allSolution
@@ -134,9 +140,7 @@
     
         //Set the currentState variable so it can be sent back to the original path
         var i = 0;
-        for (let element of analysis.graph.getElements()) {         
-            // TODO: fix this line below
-            // TODO: allSolutions is a hshmap and will have more than one element
+        for (let element of analysis.intentions) {         
             satValue = allSolutionArray[currentPage][i];
             element.attr(".satvalue").value = satValue;
     
@@ -415,7 +419,7 @@
                         for (var solution_index=0; solution_index < tempResults.get('allSolutions')[solutionArray].length; solution_index++) {
                             var num_t_s = 0;
                             for (var element_index=0; element_index < tempResults.get('allSolutions')[solutionArray][solution_index].length; element_index++){
-                                if (analysis.graph.getElements()[element_index].get('type') === 'basic.Task') {
+                                if (analysis.intentions[element_index].get('type') === 'basic.Task') {
                                 // if (selectedResult.allSolution[solution_index].intentionElements[element_index].type === "TASK"){
                                     var value = tempResults.get('allSolutions')[solutionArray][solution_index][element_index];
                                     if ((value == "0010" || value == "0011")){
@@ -452,7 +456,7 @@
                         for (var solution_index=0; solution_index < tempResults.get('allSolutions')[solutionArray].length; solution_index++) {
                             var num_t_s = 0;
                             for (var element_index=0; element_index < tempResults.get('allSolutions')[solutionArray][solution_index].length; element_index++){
-                                if (analysis.graph.getElements()[element_index].get('type') === 'basic.Task') {
+                                if (analysis.intetions[element_index].get('type') === 'basic.Task') {
                                 // if (selectedResult.allSolution[solution_index].intentionElements[element_index].type === "TASK"){
                                     var value = tempResults.get('allSolutions')[solutionArray][solution_index][element_index];
                                     if ((value == "0010" || value == "0011")){
@@ -490,7 +494,7 @@
                         for (var solution_index=0; solution_index < tempResults.get('allSolutions')[solutionArray].length; solution_index++) {
                             var num_r_s = 0;
                             for (var element_index=0; element_index < tempResults.get('allSolutions')[solutionArray][solution_index].length; element_index++){
-                                if (analysis.graph.getElements()[element_index].get('type') === 'basic.Resource') {
+                                if (analysis.intentions[element_index].get('type') === 'basic.Resource') {
                                 // if (selectedResult.allSolution[solution_index].intentionElements[element_index].type === "RESOURCE"){
                                     var value = tempResults.get('allSolutions')[solutionArray][solution_index][element_index];
                                     if ((value == "0010" || value == "0011")){
@@ -528,7 +532,7 @@
                         for (var solution_index=0; solution_index < tempResults.get('allSolutions')[solutionArray].length; solution_index++) {
                             var num_r_s = 0;
                             for (var element_index=0; element_index < tempResults.get('allSolutions')[solutionArray][solution_index].length; element_index++){
-                                if (analysis.graph.getElements()[element_index].get('type') === 'basic.Resource') {
+                                if (analysis.intentions[element_index].get('type') === 'basic.Resource') {
                                 // if (selectedResult.allSolution[solution_index].intentionElements[element_index].type === "RESOURCE"){
                                     var value = tempResults.get('allSolutions')[solutionArray][solution_index][element_index];
                                     if ((value == "0010" || value == "0011")){
@@ -566,7 +570,7 @@
                         for (var solution_index=0; solution_index < tempResults.get('allSolutions')[solutionArray].length; solution_index++) {
                             var num_g_s = 0;
                             for (var element_index=0; element_index < tempResults.get('allSolutions')[solutionArray][solution_index].length; element_index++){
-                                if (analysis.graph.getElements()[element_index].get('type') === 'basic.Goal') {
+                                if (analysis.intentions[element_index].get('type') === 'basic.Goal') {
                                 // if (selectedResult.allSolution[solution_index].intentionElements[element_index].type === "GOAL"){
                                     var value = tempResults.get('allSolutions')[solutionArray][solution_index][element_index];
                                     if ((value == "0010" || value == "0011")){
@@ -603,7 +607,7 @@
                         for (var solution_index=0; solution_index < tempResults.get('allSolutions')[solutionArray].length; solution_index++) {
                             var num_g_s = 0;
                             for (var element_index=0; element_index < tempResults.get('allSolutions')[solutionArray][solution_index].length; element_index++){
-                                if (analysis.graph.getElements()[element_index].get('type') === 'basic.Goal') {
+                                if (analysis.intentions[element_index].get('type') === 'basic.Goal') {
                                 // if (selectedResult.allSolution[solution_index].intentionElements[element_index].type === "GOAL"){
                                     var value = tempResults.get('allSolutions')[solutionArray][solution_index][element_index];
                                     if ((value == "0010" || value == "0011")){
@@ -639,21 +643,25 @@
                         var index_to_rm = [];
                         for (var solution_index = 0; solution_index < tempResults.get('allSolutions')[solutionArray].length; solution_index++) {
                             var actors = {};
-                            for (var element_index = 0; element_index < selectedResult.allSolution[solution_index].intentionElements.length; element_index++) {
-                                if (! actors[selectedResult.allSolution[solution_index].intentionElements[element_index].actorId]){
-                                    actors[selectedResult.allSolution[solution_index].intentionElements[element_index].actorId] = 0;
-                                }
-                                var value = tempResults.get('allSolutions')[solutionArray][solution_index][element_index];
-                                if ((value == "0010" || value == "0011" || (value == "0110") ||
-                                    (value == "0111") ||
-                                    (value == "0101") ||
-                                    (value == "1110") ||
-                                    (value == "1010") ||
-                                    (value == "1111") ||
-                                    (value == "1001") ||
-                                    (value == "1101") ||
-                                    (value == "1011"))){
-                                    actors[selectedResult.allSolution[solution_index].intentionElements[element_index].actorId] =1;
+                            for (var element_index = 0; element_index < tempResults.get('allSolutions')[solutionArray][solution_index].length; element_index++) {
+                                console.log(analysis.intentions[element_index].getParentCell());
+                                if (analysis.intentions[element_index].getParentCell() != null) {
+                                    if (! actors[analysis.intentions[element_index].getParentCell().cid]){
+                                        console.log(analysis.intentions[element_index].getParentCell().cid);
+                                        actors[analysis.intentions[element_index].getParentCell().cid] = 0;
+                                    }
+                                    var value = tempResults.get('allSolutions')[solutionArray][solution_index][element_index];
+                                    if ((value == "0010" || value == "0011" || (value == "0110") ||
+                                        (value == "0111") ||
+                                        (value == "0101") ||
+                                        (value == "1110") ||
+                                        (value == "1010") ||
+                                        (value == "1111") ||
+                                        (value == "1001") ||
+                                        (value == "1101") ||
+                                        (value == "1011"))){
+                                        actors[analysis.intentions[element_index].getParentCell().cid] =1;
+                                    }
                                 }
                             }
                             var int_sat = Object.values(actors).reduce((a, b) => a + b);
@@ -732,8 +740,8 @@
                         var domains = {};
                         for (var solution_index = 0; solution_index < tempResults.get('allSolutions')[solutionArray].length; solution_index++) {
                             for (var element_index = 0; element_index < tempResults.get('allSolutions')[solutionArray][solution_index].length; element_index++) {
-                                    console.log(analysis.graph.getElements()[element_index].get('intention').cid)
-                                if (! domains[analysis.graph.getElements()[element_index].get('intention').cid]){
+                                    console.log(analysis.intentions[element_index].get('intention').cid)
+                                if (! domains[analysis.intentions[element_index].get('intention').cid]){
                                     // TODO: below this line doesn't work yet
                                     domains[tempResults.get('allSolutions')[solutionArray][solution_index].intentionElements[element_index].id] = [tempResults.get('allSolutions')[solutionArray][solution_index].intentionElements[element_index].status[0]];
                                 } else {
