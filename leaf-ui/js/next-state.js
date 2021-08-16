@@ -456,7 +456,7 @@
                         for (var solution_index=0; solution_index < tempResults.get('allSolutions')[solutionArray].length; solution_index++) {
                             var num_t_s = 0;
                             for (var element_index=0; element_index < tempResults.get('allSolutions')[solutionArray][solution_index].length; element_index++){
-                                if (analysis.intetions[element_index].get('type') === 'basic.Task') {
+                                if (analysis.intentions[element_index].get('type') === 'basic.Task') {
                                 // if (selectedResult.allSolution[solution_index].intentionElements[element_index].type === "TASK"){
                                     var value = tempResults.get('allSolutions')[solutionArray][solution_index][element_index];
                                     if ((value == "0010" || value == "0011")){
@@ -647,7 +647,7 @@
                                 console.log(analysis.intentions[element_index].getParentCell());
                                 if (analysis.intentions[element_index].getParentCell() != null) {
                                     if (! actors[analysis.intentions[element_index].getParentCell().cid]){
-                                        console.log(analysis.intentions[element_index].getParentCell().cid);
+                                        console.log(analysis.intentions[element_index]);
                                         actors[analysis.intentions[element_index].getParentCell().cid] = 0;
                                     }
                                     var value = tempResults.get('allSolutions')[solutionArray][solution_index][element_index];
@@ -693,21 +693,24 @@
                         var index_to_rm = [];
                         for (var solution_index = 0; solution_index < tempResults.get('allSolutions')[solutionArray].length; solution_index++) {
                             var actors = {};
-                            for (var element_index = 0; element_index < selectedResult.allSolution[solution_index].intentionElements.length; element_index++) {
-                                if (! actors[selectedResult.allSolution[solution_index].intentionElements[element_index].actorId]){
-                                    actors[selectedResult.allSolution[solution_index].intentionElements[element_index].actorId] = 0;
-                                }
-                                var value = tempResults.get('allSolutions')[solutionArray][solution_index][element_index];
-                                if ((value == "0010" || value == "0011" || (value == "0110") ||
-                                    (value == "0111") ||
-                                    (value == "0101") ||
-                                    (value == "1110") ||
-                                    (value == "1010") ||
-                                    (value == "1111") ||
-                                    (value == "1001") ||
-                                    (value == "1101") ||
-                                    (value == "1011"))){
-                                    actors[selectedResult.allSolution[solution_index].intentionElements[element_index].actorId] =1;
+                            for (var element_index = 0; element_index < tempResults.get('allSolutions')[solutionArray][solution_index].length; element_index++) {
+                                console.log(analysis.intentions[element_index].getParentCell());
+                                if (analysis.intentions[element_index].getParentCell() != null) {
+                                    if (! actors[analysis.intentions[element_index].getParentCell().cid]){
+                                        actors[analysis.intentions[element_index].getParentCell().cid] = 0;
+                                    }
+                                    var value = tempResults.get('allSolutions')[solutionArray][solution_index][element_index];
+                                    if ((value == "0010" || value == "0011" || (value == "0110") ||
+                                        (value == "0111") ||
+                                        (value == "0101") ||
+                                        (value == "1110") ||
+                                        (value == "1010") ||
+                                        (value == "1111") ||
+                                        (value == "1001") ||
+                                        (value == "1101") ||
+                                        (value == "1011"))){
+                                        actors[analysis.intentions[element_index].getParentCell().cid] =1;
+                                    }
                                 }
                             }
                             console.log(actors);
