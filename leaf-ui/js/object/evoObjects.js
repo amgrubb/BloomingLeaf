@@ -466,13 +466,13 @@ class EVO {
             intention = curr.get('intention');
             // If the intention is defined set initSatVal to the intention's initSatVal
             if (intention != null) {
-            initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair');
+                initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair');
             } else { // If the intention is not defined, set initSatVal to null
                 initSatVal = null;
             }
             // Sets satvalue/text to the initial sat value
             if (!isAnalysis) {
-                if (initSatVal === '(no value)') {
+                if (initSatVal === '(no value)' || initSatVal === null) {
                     curr.attr('.satvalue/text', '');
                 } else {
                     curr.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
