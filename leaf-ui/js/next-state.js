@@ -77,13 +77,13 @@
         analysis.graph.fromJSON(JSON.parse(backendStringifyCirc(window.opener.graph.toJSON())));
 
         //These object hold the request and results for the object.
-        console.log("Request:" + JSON.stringify(myInputJSObject.request.toJSON()));
-        console.log("Result:" + JSON.stringify(myInputJSObject.results.toJSON()));
-        console.log(myInputJSObject.request);
-        console.log(myInputJSObject.results);
+        // console.log("Request:" + JSON.stringify(myInputJSObject.request.toJSON()));
+        // console.log("Result:" + JSON.stringify(myInputJSObject.results.toJSON()));
+        // console.log(myInputJSObject.request);
+        // console.log(myInputJSObject.results);
         
-        console.log("First Result: \n");
-        console.log(myInputJSObject.results);   //- has all solutions in it already.
+        // console.log("First Result: \n");
+        // console.log(myInputJSObject.results);   //- has all solutions in it already.
 
         makeHash();
     }
@@ -96,7 +96,7 @@
         var i = 0;
         // Iterates of the hasmap allSolutions and combines all of the solutions into one array
         for (var key in myInputJSObject.results.get('allSolutions')) {
-            console.log(key);
+//            console.log(key);
             
             // Finds the index of the first element that will be added to allSolution
             if (i != 0) {
@@ -108,7 +108,7 @@
             // Adds every element (which are arrays) in the old array to the new array
             myInputJSObject.results.get('allSolutions')[key].forEach(
                 solution => {
-                    console.log(solution);
+//                    console.log(solution);
                     allSolutionArray.push(solution);
             })
             // Finds the index of the last element added to allSolution
@@ -116,8 +116,8 @@
             // Adds the ending index and its key to hashmap
             allSolutionIndex.set(key + "End", i);
 
-            console.log(allSolutionArray);
-            console.log(allSolutionIndex);
+//            console.log(allSolutionArray);
+//            console.log(allSolutionIndex);
         }
     }
 
@@ -339,7 +339,7 @@
                 }
             }
         }
-        console.log(filterOrderQueue);
+//        console.log(filterOrderQueue);
     
         for (var i = 0; i <  filterOrderQueue.length; i++){
             switch (filterOrderQueue[i]){
@@ -762,7 +762,7 @@
     
         // analysis.analysisResult = tempResults;
         myInputJSObject.results = tempResults;
-        console.log(myInputJSObject.results);
+//        console.log(myInputJSObject.results);
         makeHash();
         renderNavigationSidebar();
     }
@@ -777,7 +777,8 @@
     function save_current_state(){
         updateAnalysisRequestWithCurrentState();  
         myInputJSObject.request.set('action', "updatePath");
-        window.opener.backendSimulationRequest(myInputJSObject.request);
+        //window.opener.backendSimulationRequest(myInputJSObject.request);
+        console.log("New Request:" + JSON.stringify(myInputJSObject.request.toJSON()));
         window.close();
     }
 
@@ -787,8 +788,8 @@
     */
     function generate_next_states(){
         $("body").addClass("waiting");              //Adds "waiting" spinner under cursor 
-        updateAnalysisRequestWithCurrentState();  
-        window.opener.backendSimulationRequest(myInputJSObject.request);
+        // updateAnalysisRequestWithCurrentState();  
+        // window.opener.backendSimulationRequest(myInputJSObject.request);
         window.close();
     }
 
@@ -808,16 +809,55 @@
             HashMap<String, String[][]> allSolutions; 
         *
         */
-        console.log("Old: \n");
-        console.log(myInputJSObject.request.get('previousAnalysis'));
         console.log("Result: \n");
         console.log(myInputJSObject.results);   //- has all solutions in it already.
-    
+        //TODO: Get currentPage?
+        var currentPage = 1;
+
         var newPreviousAnalysis = myInputJSObject.results; 
+
         newPreviousAnalysis.set('selectedTimePoint', myInputJSObject.results.get('selectedTimePoint') + 1);                    //
+        newPreviousAnalysis.set('colorVis', null);
+        newPreviousAnalysis.set('name', myInputJSObject.request.get('results').get('name'));
+
+        // "timePointAssignments": {
+        //     "TA0": 1,
+        //     "TA2": 20,
+        //     "TA1": 10,
+        //     "TR10": 4,
+        //     "Initial": 0
+        //   },
+        //   "timePointPath": [
+        //     0,
+        //     1,
+        //     4,
+        //     10,
+        //     20
+        //   ],
+
+        // timePointPath
+        //var nextTimePointAbsVal = ??;
+        // TODO: Get the last value in timePointPath + 1 (called nextTimePointAbsVal) 
+        // and add it to timePointPath in newPreviousAnalysis
+
+        // timePointAssignments - 
+        // TODO: get the zero entry in nextStateTPs hashMap (in myInputJSObject.results)  
+        // add all 'values' as new entry to timePointAssignments in newPreviousAnalysis
+        // the 'value' becomes the key and nextTimePointAbsVal become the value
+
+
+
+
+
+
+
+        // TODO: elementList
+        // satValue = allSolutionArray[currentPage][i];
+
+
+        // Assign back to request.
         myInputJSObject.request.set('previousAnalysis', newPreviousAnalysis);
-        console.log("New: \n");
-        console.log(myInputJSObject.request.get('previousAnalysis'));
+        myInputJSObject.request.set('results', null);
     }
 
 } // End of LOCAL GLOBAL VARIABLES

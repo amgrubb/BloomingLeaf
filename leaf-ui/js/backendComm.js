@@ -84,11 +84,11 @@ function convertToAnalysisResult(results){
 	var tempResult = new ResultBBM();
 	tempResult.set('timePointAssignments', results.timePointAssignments);	// Was called: 'assignedEpoch'
 	tempResult.set('timePointPath', results.timePointPath);
-	tempResult.set('timePointPathSize', results.timePointPathSize);
 	tempResult.set('elementList', results.elementList);
 	tempResult.set('allSolutions', results.allSolutions);			//Used for Next State
 	tempResult.set('nextStateTPs', results.nextStateTPs);		//Used for Next State
-	tempResult.set('isPathSim', true);
+//	tempResult.set('isPathSim', true);
+	tempResult.set('selectedTimePoint', results.selectedTimePoint);
 	var evoView = new EVO(results.elementList)
 	tempResult.set('colorVis', evoView);
 	evoView.singlePathResponse(results.elementList, tempResult, "analysis");
