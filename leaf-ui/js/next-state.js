@@ -820,24 +820,24 @@
         newPreviousAnalysis.set('colorVis', null);
         newPreviousAnalysis.set('name', myInputJSObject.request.get('results').get('name'));
 
-        var timePointAssignments = {
-            "TA0": 1,
-            "TA2": 20,
-            "TA1": 10,
-            "TR10": 4,
-            "Initial": 0
-          };
-        var timePointPath = [
-            0,
-            1,
-            4,
-            10,
-            20
-          ];
+        // var timePointAssignments = {
+        //     "TA0": 1,
+        //     "TA2": 20,
+        //     "TA1": 10,
+        //     "TR10": 4,
+        //     "Initial": 0
+        //   };
+        // var timePointPath = [
+        //     0,
+        //     1,
+        //     4,
+        //     10,
+        //     20
+        //   ];
+        var timePointPath = newPreviousAnalysis.get('timePointPath');
 
         var nextTimePointAbsVal = timePointPath[timePointPath.length - 1] + 1;
-        console.log(nextTimePointAbsVal)
-        timePointPath[timePointPath.length] = nextTimePointAbsVal;
+        timePointPath.push(nextTimePointAbsVal);
         // TODO: Get the last value in timePointPath + 1 (called nextTimePointAbsVal) 
         // and add it to timePointPath in newPreviousAnalysis
 
@@ -848,10 +848,10 @@
         for (var key in myInputJSObject.results.get('nextStateTPs')) {
             myInputJSObject.results.get('nextStateTPs')[key].forEach(
                 solution => {
-                    timePointAssignments[solution] = timePointPath[timePointPath.length - 1]  
+                    newPreviousAnalysis.get('timePointAssignments')[solution] = timePointPath[timePointPath.length - 1]  
             })
         }
-        console.log(timePointAssignments)
+        console.log(newPreviousAnalysis.get('timePointAssignments'))
 
 
 
