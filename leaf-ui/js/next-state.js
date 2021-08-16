@@ -666,7 +666,9 @@
                                     }
                                 }
                             }
+                            console.log(actors);
                             var int_sat = Object.values(actors).reduce((a, b) => a + b);
+                            console.log(int_sat)
                             if (least_actor > int_sat){
                                 least_actor = int_sat;
                                 index_to_rm = index_to_rm.concat(index_to_keep);
@@ -748,10 +750,10 @@
                                     console.log(analysis.intentions[element_index].get('intention').cid)
                                 if (! domains[analysis.intentions[element_index].get('intention').cid]){
                                     // TODO: below this line doesn't work yet
-                                    domains[tempResults.get('allSolutions')[solutionArray][solution_index].intentionElements[element_index].id] = [tempResults.get('allSolutions')[solutionArray][solution_index].intentionElements[element_index].status[0]];
+                                    domains[analysis.intentions[element_index].get('intention').cid] = [tempResults.get('allSolutions')[solutionArray][solution_index][element_index]];
                                 } else {
-                                    if (domains[tempResults.get('allSolutions')[solutionArray][solution_index].intentionElements[element_index].id].indexOf(selectedResult.allSolution[solution_index].intentionElements[element_index].status[0]) == -1){
-                                        domains[tempResults.get('allSolutions')[solutionArray][solution_index].intentionElements[element_index].id].push(selectedResult.allSolution[solution_index].intentionElements[element_index].status[0])
+                                    if (domains[analysis.intentions[element_index].get('intention').cid].indexOf(tempResults.get('allSolutions')[solutionArray][solution_index][element_index]) == -1){
+                                        domains[analysis.intentions[element_index].get('intention').cid].push(tempResults.get('allSolutions')[solutionArray][solution_index][element_index])
                                     }
                                 }
                             }
@@ -772,9 +774,9 @@
                         });
                         var index_to_rm = [];
                         for (var solution_index = 0; solution_index < tempResults.get('allSolutions')[solutionArray].length; solution_index++) {
-                            for (var element_index = 0; element_index < tempResults.get('allSolutions')[solutionArray][solution_index].intentionElements.length; element_index++) {
-                                if (int_with_smallest_domain.indexOf(tempResults.get('allSolutions')[solutionArray][solution_index].intentionElements[element_index].id) != -1){
-                                    if (tempResults.get('allSolutions')[solutionArray][solution_index].intentionElements[element_index].status[0] !== "0011"){
+                            for (var element_index = 0; element_index < tempResults.get('allSolutions')[solutionArray][solution_index].length; element_index++) {
+                                if (int_with_smallest_domain.indexOf(analysis.intentions[element_index].get('intention').cid) != -1){
+                                    if (tempResults.get('allSolutions')[solutionArray][solution_index][element_index] !== "0011"){
                                         index_to_rm.push(solution_index);
                                         break;
                                     }
