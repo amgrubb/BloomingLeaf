@@ -347,6 +347,7 @@
         
         // Iterates over all of the boxes that have been checked
         for (var i = 0; i <  filterOrderQueue.length; i++){
+            $("body").addClass("loading");
             switch (filterOrderQueue[i]){
                 case "conflictFl":
                     console.log("conflictFl");
@@ -778,7 +779,7 @@
                     break;
             }
         }
-    
+        $("body").removeClass("loading");
         // Set the new results with filters as the analysis object
         myInputJSObject.results = tempResults;
         // Create array with all Solutions from new hashmap
