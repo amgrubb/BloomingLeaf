@@ -20,7 +20,7 @@ body {
 /* Disable pointer events */
 .waiting *
 {
-  pointer-events: none;
+  cursor: not-allowed;
 
 }
 
@@ -33,9 +33,9 @@ body {
   height:     100%;
   width:      100%;
   background: rgba( 255, 255, 255, .8 ) 
-              url('http://i.stack.imgur.com/FhHRx.gif') 
               50% 50% 
               no-repeat;
+  background-image: url(../images/loader.gif)
 }
 
 /* When the body has the loading class */

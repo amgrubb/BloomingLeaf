@@ -352,10 +352,12 @@
         // Iterates over all of the boxes that have been checked
         for (var i = 0; i <  filterOrderQueue.length; i++){
             $("body").addClass("loading");
+            // $('body').dblclick(function() {
+            //     $("body").removeClass("loading");
+            // });
             switch (filterOrderQueue[i]){
                 case "conflictFl":
                     console.log("conflictFl");
-                    $("body").addClass("loading"); // Adds spinner animation to page, cannot click on other things while loading
                     // Iterates over every key/value pair in the hashmap
                     for (var solutionArray in tempResults.get('allSolutions')) {
                         // Empty array to that will contain all of the indices of the solutions we want

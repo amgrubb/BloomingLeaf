@@ -488,7 +488,6 @@ paper.on("link:options", function (cell) {
     /** All Next States:
      * Selects the current configuration and prior results and passes them to backendSimulationRequest()  */
     $('#next-state-btn').on('click', function() { 
-        $("body").addClass("loading"); // Adds spinner animation to page, cannot click on other things while loading
         var curRequest = configCollection.findWhere({selected: true});
 
         // Checks to see if single path has been run by seeing if there are any results
@@ -501,6 +500,7 @@ paper.on("link:options", function (cell) {
 
         // If single path has been run backend analysis
         if (singlePathRun === true) {
+            $("body").addClass("loading"); // Adds spinner animation to page, cannot click on other things while loading
             var curResult = curRequest.previousAttributes().results.findWhere({selected: true}); 
             curRequest.set('action', 'allNextStates');
             curRequest.set('previousAnalysis', curResult);        
@@ -529,12 +529,10 @@ paper.on("link:options", function (cell) {
                 }
             }
             */
-            backendSimulationRequest(curRequest);  
+            backendSimulationRequest(curRequest);
         } else { // If single path has not been run show error message
             swal("Error: Cannot explore next states before simulating a single path.", "", "error");
-            $("body").removeClass("loading"); // Removes spinner animation fromo page
         }
-          
     }); 
     
     function resetConfig(){
