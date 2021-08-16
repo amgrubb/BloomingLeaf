@@ -779,7 +779,7 @@
         myInputJSObject.request.set('action', "updatePath");
         //window.opener.backendSimulationRequest(myInputJSObject.request);
         console.log("New Request:" + JSON.stringify(myInputJSObject.request.toJSON()));
-        window.close();
+        //window.close();
     }
 
     /*This function should get the current state in the screen and 
@@ -820,23 +820,24 @@
         newPreviousAnalysis.set('colorVis', null);
         newPreviousAnalysis.set('name', myInputJSObject.request.get('results').get('name'));
 
-        // "timePointAssignments": {
-        //     "TA0": 1,
-        //     "TA2": 20,
-        //     "TA1": 10,
-        //     "TR10": 4,
-        //     "Initial": 0
-        //   },
-        //   "timePointPath": [
-        //     0,
-        //     1,
-        //     4,
-        //     10,
-        //     20
-        //   ],
+        var timePointAssignments = {
+            "TA0": 1,
+            "TA2": 20,
+            "TA1": 10,
+            "TR10": 4,
+            "Initial": 0
+          };
+        var timePointPath = [
+            0,
+            1,
+            4,
+            10,
+            20
+          ];
 
-        // timePointPath
-        //var nextTimePointAbsVal = ??;
+        var nextTimePointAbsVal = timePointPath[timePointPath.length - 1] + 1;
+        console.log(nextTimePointAbsVal)
+        timePointPath[timePointPath.length] = nextTimePointAbsVal;
         // TODO: Get the last value in timePointPath + 1 (called nextTimePointAbsVal) 
         // and add it to timePointPath in newPreviousAnalysis
 
@@ -844,6 +845,13 @@
         // TODO: get the zero entry in nextStateTPs hashMap (in myInputJSObject.results)  
         // add all 'values' as new entry to timePointAssignments in newPreviousAnalysis
         // the 'value' becomes the key and nextTimePointAbsVal become the value
+        for (var key in myInputJSObject.results.get('nextStateTPs')) {
+            myInputJSObject.results.get('nextStateTPs')[key].forEach(
+                solution => {
+                    timePointAssignments[solution] = timePointPath[timePointPath.length - 1]  
+            })
+        }
+        console.log(timePointAssignments)
 
 
 
