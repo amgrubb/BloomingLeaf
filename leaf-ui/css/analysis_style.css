@@ -421,3 +421,39 @@ select::-ms-expand {
     background-color: #dddddd;
     transform: rotate(15deg);
 }
+
+/* Disable pointer events */
+.waiting *
+{
+  pointer-events: none;
+}
+
+.spinner {
+  display:    none;
+  position:   fixed;
+  z-index:    1000;
+  top:        0;
+  left:       0;
+  height:     100%;
+  width:      100%;
+  background: rgba( 255, 255, 255, .8 ) 
+              url('http://i.stack.imgur.com/FhHRx.gif') 
+              50% 50% 
+              no-repeat;
+}
+
+/* When the body has the loading class */
+body.loading .spinner {
+  overflow: hidden;   
+}
+
+/* Anytime the body has the loading class, modal element will be visible */
+body.loading .spinner {
+  display: block;
+}
+
+/* Animation */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
