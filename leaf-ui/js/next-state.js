@@ -104,7 +104,7 @@
         var i = 0;
         // Iterates of the hasmap allSolutions and combines all of the solutions into one array
         for (var key in myInputJSObject.results.get('allSolutions')) {
-//            console.log(key);
+            // console.log(key);
             
             // Finds the index of the first element that will be added to allSolution
             if (i != 0) {
@@ -634,8 +634,7 @@
                 case "LeastActor":
                     console.log("LeastActor");
                     if (analysis.intentions.length === analysis.graph.getElements().length) {
-                        // TODO: maybe make error message this look nicer??
-                        alert("Error: Cannot apply this filter with no actors.");
+                        swal("Error: Cannot apply this filter with no actors.", "", "error");
                         $('#LeastActor').prop('checked', false);
                     } else {
                         for (var solutionArray in tempResults.get('allSolutions')) {
@@ -688,8 +687,7 @@
                 case "mostActor":
                     console.log("mostActor");
                     if (analysis.intentions.length === analysis.graph.getElements().length) {
-                        // TODO: maybe make error message this look nicer??
-                        alert("Error: Cannot apply this filter with no actors.");
+                        swal("Error: Cannot apply this filter with no actors.", "", "error");
                         $('#mostActor').prop('checked', false);
                     } else {
                         for (var solutionArray in tempResults.get('allSolutions')) {

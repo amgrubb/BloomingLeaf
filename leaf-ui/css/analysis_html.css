@@ -62,6 +62,10 @@ body.loading .modal {
    padding: 0px;
 }
 
+#swal2-content b{
+  color: red;
+}
+
 #name {
   position: absolute;
   top: 0px;
