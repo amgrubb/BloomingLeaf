@@ -17,10 +17,11 @@
 
     var originalResults; // Copy of the original results to save as a reference
 
-    // an array of all of the solutions and every element is another array with all of the refEvidencePairs for the intentions at that solution
+    // An array of all of the solutions and every element is another array 
+    // with all of the refEvidencePairs for the intentions at that solution
     var allSolutionArray = [];
     // Hashmap to keep track of at which index each array from allSolutions starts and ends once they 
-    // Are combined into allSolutionArray
+    // are combined into allSolutionArray
     var allSolutionIndex;
 
     var satValueDict = {
@@ -76,13 +77,13 @@
         // Make a copy of the graph and add it to the window.
         analysis.graph.fromJSON(JSON.parse(backendStringifyCirc(window.opener.graph.toJSON())));
 
-        //These object hold the request and results for the object.
+        // These object hold the request and results for the object.
         // console.log("Request:" + JSON.stringify(myInputJSObject.request.toJSON()));
         // console.log("Result:" + JSON.stringify(myInputJSObject.results.toJSON()));
         // console.log(myInputJSObject.request);
         // console.log(myInputJSObject.results);
         
-        //Filter out Actors
+        // Filter out Actors
         for (var i = 0; i < analysis.graph.getElements().length; i++){
             if (!(analysis.graph.getElements()[i] instanceof joint.shapes.basic.Actor))
                 analysis.intentions.push(analysis.graph.getElements()[i]);
@@ -96,13 +97,12 @@
         originalResults = $.extend(true, {}, myInputJSObject.results);
     }
 
-
     function combineAllSolutions() {
         // Clear array
         allSolutionArray = [];
         allSolutionIndex = new Map();
         var i = 0;
-        // Iterates of the hasmap allSolutions and combines all of the solutions into one array
+        // Iterates over the hashmap allSolutions and combines all of the solutions into one array
         for (var key in myInputJSObject.results.get('allSolutions')) {
             // console.log(key);
             
@@ -111,7 +111,7 @@
                 i++;
             }
             // Adds the starting index and its key to hashmap
-            //allSolutionIndex.set(key, i);   // + "Start"
+            // allSolutionIndex.set(key, i);   // + "Start"
             allSolutionIndex[key] = i;
           
             // Adds every element (which are arrays) in the old array to the new array
@@ -125,8 +125,8 @@
             // Adds the ending index and its key to hashmap - TODO: Do we need the end?
             //allSolutionIndex.set(key + "End", i);
 
-//            console.log(allSolutionArray);
-//            console.log(allSolutionIndex);
+            // console.log(allSolutionArray);
+            // console.log(allSolutionIndex);
         }
     }
 
@@ -254,7 +254,7 @@
     function renderForwardBtn(pagination, currentPage){
         var value;
         var nextSteps_array_size = allSolutionArray.length;
-    
+
         if (currentPage == nextSteps_array_size-1){
             value = currentPage;
         } else {
@@ -281,30 +281,10 @@
         num_states_lbl.innerHTML = "";
         currentPageIn.value = "";
     }
-
-    function goToState(){
-        var requiredState = parseInt(document.getElementById("requiredState").value);
-        var nextSteps_array_size = allSolutionArray.length;
     
-        if ((requiredState != "NaN") && (requiredState > 0)){
-            if (requiredState > nextSteps_array_size){
-                renderNavigationSidebar(nextSteps_array_size);
-            } else {
-                renderNavigationSidebar(requiredState);
-            }
-        }
-    }
-
-    function clear_pagination_values(){
-        var pagination = document.getElementById("pagination");
-        var num_states_lbl = document.getElementById("num_states_lbl");
-        var currentPageIn = document.getElementById("currentPage");
-    
-        pagination.innerHTML = "";
-        num_states_lbl.innerHTML = "";
-        currentPageIn.value = "";
-    }
-    
+    /**
+     * Goes to entered state based on user input 
+     */
     function goToState(){
         var requiredState = parseInt(document.getElementById("requiredState").value);
         // var nextSteps_array_size = analysis.analysisResult.allSolution.length;
@@ -793,7 +773,7 @@
                     break;
             }
         }
-        $("body").removeClass("spinning");
+        $("body").removeClass("spinning"); // Remove spinner from cursor
         // Set the new results with filters as the analysis object
         myInputJSObject.results = tempResults;
         // Create array with all Solutions from new hashmap
@@ -801,10 +781,7 @@
         renderNavigationSidebar();
     }
 
-    
-
-
-    /*This function should get the current state in the screen and 
+    /*  This function should get the current state in the screen and 
     *   save in the original path, as well as generate the remainder
     *   of the simulation path.
     */
@@ -820,8 +797,7 @@
     *   save in the original path, as well as generates
     *   all possible next states.
     */
-    function generate_next_states(){
-        $("body").addClass("waiting");              //Adds "waiting" spinner under cursor 
+    function generate_next_states(){ 
         updateAnalysisRequestWithCurrentState();  
         window.opener.backendSimulationRequest(myInputJSObject.request);
         window.close();
@@ -865,7 +841,6 @@
         }      
         timePointPath.push(nextTimePointAbsVal);
 
-
         // TODO: get the zero entry in nextStateTPs hashMap (in newPreviousAnalysis)  
         // add all 'values' as new entry to timePointAssignments in newPreviousAnalysis
         // the 'value' becomes the key and nextTimePointAbsVal become the value
@@ -879,15 +854,8 @@
             }
         }
 
-
         // TODO: Update elementList
         // satValue = allSolutionArray[currentPage][i];
-
-
-        
-
-
-
 
         // Update values that are no longer needed.        
         newPreviousAnalysis.set('name', myInputJSObject.request.get('results').get('name'));

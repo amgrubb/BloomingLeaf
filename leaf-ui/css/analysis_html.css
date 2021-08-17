@@ -52,11 +52,11 @@ body.loading .modal {
   100% { transform: rotate(360deg); }
 }
 
+/* Adds waiting spinner to cursor */
 .spinning *
 {
     cursor: wait !important;
 }
-
 
 .header {
    padding: 0px;

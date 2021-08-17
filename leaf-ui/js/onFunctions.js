@@ -505,11 +505,11 @@ paper.on("link:options", function (cell) {
             // If the last time point is selected, error message shows that you can't open Next State
             if ((curResult.get('timePointPath').length - 1) === curResult.get('selectedTimePoint')) {
                 swal("Error: Cannot explore next states with last time point selected.", "", "error");
-                $("body").removeClass("loading"); // Removes spinner animation fromo page
+                $("body").removeClass("loading"); // Remove spinner from page, can interact with page again 
             } else {
                 // TODO: Fix this so that backendSimulationRequest is not called when spinner is removed on dblclick
-                $("body").dblclick(function(){
-                    $("body").removeClass("loading");
+                $("body").dblclick(function(){ // On double click, removes spinner and can interact with page again 
+                    $("body").removeClass("loading"); 
                 });
                 backendSimulationRequest(curRequest);  
             }
