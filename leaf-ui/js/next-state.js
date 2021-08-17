@@ -645,18 +645,19 @@
                         alert("Error: Cannot apply this filter with no actors.");
                         $('#LeastActor').prop('checked', false);
                     } else {
+                        var index_to_keep = [];
+                        var index_to_rm = [];
                         for (var solutionArray in tempResults.get('allSolutions')) {
                             var least_actor = tempResults.get('allSolutions')[solutionArray].length;
-                            var index_to_keep = [];
-                            var index_to_rm = [];
                             for (var solution_index = 0; solution_index < tempResults.get('allSolutions')[solutionArray].length; solution_index++) {
                                 var actors = {};
                                 for (var element_index = 0; element_index < tempResults.get('allSolutions')[solutionArray][solution_index].length; element_index++) {
-                                    console.log(analysis.intentions[element_index].getParentCell());
-                                    if (analysis.intentions[element_index].getParentCell() != null) {
-                                        if (! actors[analysis.intentions[element_index].getParentCell().cid]){
+                                    //console.log(analysis.intentions[element_index].getParentCell());
+                                    //if (analysis.intentions[element_index].getParentCell() != null) {
+                                        //console.log(analysis.intentions[element_index].actorId);
+                                        if (! actors[analysis.intentions[element_index].actorId]){
                                             console.log(analysis.intentions[element_index]);
-                                            actors[analysis.intentions[element_index].getParentCell().cid] = 0;
+                                            actors[analysis.intentions[element_index].actorId] = 0;
                                         }
                                         var value = tempResults.get('allSolutions')[solutionArray][solution_index][element_index];
                                         if ((value == "0010" || value == "0011" || (value == "0110") ||
@@ -668,9 +669,9 @@
                                             (value == "1001") ||
                                             (value == "1101") ||
                                             (value == "1011"))){
-                                            actors[analysis.intentions[element_index].getParentCell().cid] =1;
+                                            actors[analysis.intentions[element_index].actorId] =1;
                                         }
-                                    }
+                                    //}
                                 }
                                 console.log(actors);
                                 var int_sat = Object.values(actors).reduce((a, b) => a + b);
@@ -711,8 +712,8 @@
                                 for (var element_index = 0; element_index < tempResults.get('allSolutions')[solutionArray][solution_index].length; element_index++) {
                                     console.log(analysis.intentions[element_index].getParentCell());
                                     if (analysis.intentions[element_index].getParentCell() != null) {
-                                        if (! actors[analysis.intentions[element_index].getParentCell().cid]){
-                                            actors[analysis.intentions[element_index].getParentCell().cid] = 0;
+                                        if (! actors[analysis.intentions[element_index].actorId]){
+                                            actors[analysis.intentions[element_index].actorId] = 0;
                                         }
                                         var value = tempResults.get('allSolutions')[solutionArray][solution_index][element_index];
                                         if ((value == "0010" || value == "0011" || (value == "0110") ||
@@ -724,7 +725,7 @@
                                             (value == "1001") ||
                                             (value == "1101") ||
                                             (value == "1011"))){
-                                            actors[analysis.intentions[element_index].getParentCell().cid] =1;
+                                            actors[analysis.intentions[element_index].actorId] =1;
                                         }
                                     }
                                 }
