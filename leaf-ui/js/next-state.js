@@ -103,7 +103,8 @@
                 i++;
             }
             // Adds the starting index and its key to hashmap
-            allSolutionIndex.set(key, i);   // + "Start"
+            //allSolutionIndex.set(key, i);   // + "Start"
+            allSolutionIndex[key] = i;
           
             // Adds every element (which are arrays) in the old array to the new array
             myInputJSObject.results.get('allSolutions')[key].forEach(
@@ -801,7 +802,7 @@
         // Create temporary variable for previous results.
         var newPreviousAnalysis = myInputJSObject.results; 
         // Increment selected time point, because the user selected the values for this state.
-        newPreviousAnalysis.set('selectedTimePoint', myInputJSObject.results.get('selectedTimePoint') + 1);
+        newPreviousAnalysis.set('selectedTimePoint', newPreviousAnalysis.get('selectedTimePoint') + 1);
 
         // Get the page number currently selected on the interface.
         var currentPage = document.getElementById("currentPage").value;
@@ -814,24 +815,36 @@
                 // // Are combined into allSolutionArray
                 // var allSolutionIndex;    hashmap TNS-0Start -> 0; TNS-0End -> 7 etc.
                 // var filterOrderQueue = []; for which filters have been applied -> how does this affect the solution number?
-
-
+        var stateName;
+        for (var key in allSolutionIndex) {
+            if (allSolutionIndex[key] <= currentPage){
+                stateName = key;
+            }
+        }
+        console.log(stateName);
+        var listStateTPs = newPreviousAnalysis.get('nextStateTPs')[stateName];
         
-
         // Determine the next time point.
         var timePointPath = newPreviousAnalysis.get('timePointPath');
-        var nextTimePointAbsVal = timePointPath[timePointPath.length - 1] + 1;  // TODO: Update depending on the appropriate value based on the solution type.
+        var nextTimePointAbsVal = timePointPath[timePointPath.length - 1] + 1;  // TODO: Update depending on the appropriate value based on the solution type.        
+        //nextStateTPs":{"TNS-0":["E003TPA"],"TNS-A":["TA2"],"TNS-1":["E002TPA"],"TNS-R":["TNS-R"],"TNS-2":["E001TPA"]}
+        if (stateName == 'TNS-A'){
+            nextTimePointAbsVal = myInputJSObject.request.get('timePointAssignments')[listStateTPs[0]];     // START HERE - Get this line working.
+        }      
         timePointPath.push(nextTimePointAbsVal);
 
 
-        // TODO: get the zero entry in nextStateTPs hashMap (in myInputJSObject.results)  
+        // TODO: get the zero entry in nextStateTPs hashMap (in newPreviousAnalysis)  
         // add all 'values' as new entry to timePointAssignments in newPreviousAnalysis
         // the 'value' becomes the key and nextTimePointAbsVal become the value
-        for (var key in myInputJSObject.results.get('nextStateTPs')) {
-            myInputJSObject.results.get('nextStateTPs')[key].forEach(
-                solution => {
-                    newPreviousAnalysis.get('timePointAssignments')[solution] = timePointPath[timePointPath.length - 1]  
-            })
+        // TODO: check value.
+        for (var key in newPreviousAnalysis.get('nextStateTPs')) {
+            if (key == stateName){
+                newPreviousAnalysis.get('nextStateTPs')[key].forEach(
+                    solution => {
+                        newPreviousAnalysis.get('timePointAssignments')[solution] = nextTimePointAbsVal;  
+                })
+            }
         }
 
 
@@ -851,7 +864,7 @@
         newPreviousAnalysis.set('allSolutions', null);
 
         // Assign back to request.
-        myInputJSObject.request.set('previousAnalysis', newPreviousAnalysis);
+        //myInputJSObject.request.set('previousAnalysis', newPreviousAnalysis);
         myInputJSObject.request.set('results', null);
     }
 
