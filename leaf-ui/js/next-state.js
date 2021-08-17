@@ -638,106 +638,116 @@
                     break;
                 case "LeastActor":
                     console.log("LeastActor");
-                    
-                    for (var solutionArray in tempResults.get('allSolutions')) {
-                        var least_actor = tempResults.get('allSolutions')[solutionArray].length;
-                        var index_to_keep = [];
-                        var index_to_rm = [];
-                        for (var solution_index = 0; solution_index < tempResults.get('allSolutions')[solutionArray].length; solution_index++) {
-                            var actors = {};
-                            for (var element_index = 0; element_index < tempResults.get('allSolutions')[solutionArray][solution_index].length; element_index++) {
-                                console.log(analysis.intentions[element_index].getParentCell());
-                                if (analysis.intentions[element_index].getParentCell() != null) {
-                                    if (! actors[analysis.intentions[element_index].getParentCell().cid]){
-                                        console.log(analysis.intentions[element_index]);
-                                        actors[analysis.intentions[element_index].getParentCell().cid] = 0;
-                                    }
-                                    var value = tempResults.get('allSolutions')[solutionArray][solution_index][element_index];
-                                    if ((value == "0010" || value == "0011" || (value == "0110") ||
-                                        (value == "0111") ||
-                                        (value == "0101") ||
-                                        (value == "1110") ||
-                                        (value == "1010") ||
-                                        (value == "1111") ||
-                                        (value == "1001") ||
-                                        (value == "1101") ||
-                                        (value == "1011"))){
-                                        actors[analysis.intentions[element_index].getParentCell().cid] =1;
+                    if (analysis.intentions.length === analysis.graph.getElements().length) {
+                        // TODO: maybe make error message this look nicer??
+                        alert("Error: Cannot apply this filter with no actors.");
+                        $('#LeastActor').prop('checked', false);
+                    } else {
+                        for (var solutionArray in tempResults.get('allSolutions')) {
+                            var least_actor = tempResults.get('allSolutions')[solutionArray].length;
+                            var index_to_keep = [];
+                            var index_to_rm = [];
+                            for (var solution_index = 0; solution_index < tempResults.get('allSolutions')[solutionArray].length; solution_index++) {
+                                var actors = {};
+                                for (var element_index = 0; element_index < tempResults.get('allSolutions')[solutionArray][solution_index].length; element_index++) {
+                                    console.log(analysis.intentions[element_index].getParentCell());
+                                    if (analysis.intentions[element_index].getParentCell() != null) {
+                                        if (! actors[analysis.intentions[element_index].getParentCell().cid]){
+                                            console.log(analysis.intentions[element_index]);
+                                            actors[analysis.intentions[element_index].getParentCell().cid] = 0;
+                                        }
+                                        var value = tempResults.get('allSolutions')[solutionArray][solution_index][element_index];
+                                        if ((value == "0010" || value == "0011" || (value == "0110") ||
+                                            (value == "0111") ||
+                                            (value == "0101") ||
+                                            (value == "1110") ||
+                                            (value == "1010") ||
+                                            (value == "1111") ||
+                                            (value == "1001") ||
+                                            (value == "1101") ||
+                                            (value == "1011"))){
+                                            actors[analysis.intentions[element_index].getParentCell().cid] =1;
+                                        }
                                     }
                                 }
+                                console.log(actors);
+                                var int_sat = Object.values(actors).reduce((a, b) => a + b);
+                                console.log(int_sat)
+                                if (least_actor > int_sat){
+                                    least_actor = int_sat;
+                                    index_to_rm = index_to_rm.concat(index_to_keep);
+                                    index_to_keep = [];
+                                }
+                                if (int_sat == least_actor){
+                                    index_to_keep.push(solution_index);
+                                }
+                                if (int_sat > least_actor){
+                                    index_to_rm.push(solution_index);
+                                }
+            
                             }
-                            console.log(actors);
-                            var int_sat = Object.values(actors).reduce((a, b) => a + b);
-                            console.log(int_sat)
-                            if (least_actor > int_sat){
-                                least_actor = int_sat;
-                                index_to_rm = index_to_rm.concat(index_to_keep);
-                                index_to_keep = [];
+                            index_to_rm.sort(function(a, b){return a-b});
+                            for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
+                                tempResults.get('allSolutions')[solutionArray].splice(index_to_rm[to_rm]-to_rm,1);
                             }
-                            if (int_sat == least_actor){
-                                index_to_keep.push(solution_index);
-                            }
-                            if (int_sat > least_actor){
-                                index_to_rm.push(solution_index);
-                            }
-        
-                        }
-                        index_to_rm.sort(function(a, b){return a-b});
-                        for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
-                            tempResults.get('allSolutions')[solutionArray].splice(index_to_rm[to_rm]-to_rm,1);
-                        }
+                    }
                 }
                     break;
                 case "mostActor":
                     console.log("mostActor");
-    
-                    for (var solutionArray in tempResults.get('allSolutions')) {
-                        var most_actor = 0;
-                        var index_to_keep = [];
-                        var index_to_rm = [];
-                        for (var solution_index = 0; solution_index < tempResults.get('allSolutions')[solutionArray].length; solution_index++) {
-                            var actors = {};
-                            for (var element_index = 0; element_index < tempResults.get('allSolutions')[solutionArray][solution_index].length; element_index++) {
-                                console.log(analysis.intentions[element_index].getParentCell());
-                                if (analysis.intentions[element_index].getParentCell() != null) {
-                                    if (! actors[analysis.intentions[element_index].getParentCell().cid]){
-                                        actors[analysis.intentions[element_index].getParentCell().cid] = 0;
-                                    }
-                                    var value = tempResults.get('allSolutions')[solutionArray][solution_index][element_index];
-                                    if ((value == "0010" || value == "0011" || (value == "0110") ||
-                                        (value == "0111") ||
-                                        (value == "0101") ||
-                                        (value == "1110") ||
-                                        (value == "1010") ||
-                                        (value == "1111") ||
-                                        (value == "1001") ||
-                                        (value == "1101") ||
-                                        (value == "1011"))){
-                                        actors[analysis.intentions[element_index].getParentCell().cid] =1;
+                    if (analysis.intentions.length === analysis.graph.getElements().length) {
+                        // TODO: maybe make error message this look nicer??
+                        alert("Error: Cannot apply this filter with no actors.");
+                        $('#mostActor').prop('checked', false);
+                    } else {
+                        for (var solutionArray in tempResults.get('allSolutions')) {
+                            var most_actor = 0;
+                            var index_to_keep = [];
+                            var index_to_rm = [];
+                            for (var solution_index = 0; solution_index < tempResults.get('allSolutions')[solutionArray].length; solution_index++) {
+                                var actors = {};
+                                for (var element_index = 0; element_index < tempResults.get('allSolutions')[solutionArray][solution_index].length; element_index++) {
+                                    console.log(analysis.intentions[element_index].getParentCell());
+                                    if (analysis.intentions[element_index].getParentCell() != null) {
+                                        if (! actors[analysis.intentions[element_index].getParentCell().cid]){
+                                            actors[analysis.intentions[element_index].getParentCell().cid] = 0;
+                                        }
+                                        var value = tempResults.get('allSolutions')[solutionArray][solution_index][element_index];
+                                        if ((value == "0010" || value == "0011" || (value == "0110") ||
+                                            (value == "0111") ||
+                                            (value == "0101") ||
+                                            (value == "1110") ||
+                                            (value == "1010") ||
+                                            (value == "1111") ||
+                                            (value == "1001") ||
+                                            (value == "1101") ||
+                                            (value == "1011"))){
+                                            actors[analysis.intentions[element_index].getParentCell().cid] =1;
+                                        }
                                     }
                                 }
+                                console.log(actors);
+                                console.log(Object.values(actors).reduce((a, b) => a + b));
+                                var int_sat = Object.values(actors).reduce((a, b) => a + b);
+                                if (most_actor < int_sat){
+                                    most_actor = int_sat;
+                                    index_to_rm = index_to_rm.concat(index_to_keep);
+                                    index_to_keep = [];
+                                }
+                                if (int_sat == most_actor){
+                                    index_to_keep.push(solution_index);
+                                }
+                                if (int_sat < most_actor){
+                                    index_to_rm.push(solution_index);
+                                }
+            
                             }
-                            console.log(actors);
-                            console.log(Object.values(actors).reduce((a, b) => a + b));
-                            var int_sat = Object.values(actors).reduce((a, b) => a + b);
-                            if (most_actor < int_sat){
-                                most_actor = int_sat;
-                                index_to_rm = index_to_rm.concat(index_to_keep);
-                                index_to_keep = [];
+                            index_to_rm.sort(function(a, b){return a-b});
+                            for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
+                                //selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
+                                tempResults.get('allSolutions')[solutionArray].splice(index_to_rm[to_rm]-to_rm,1);
                             }
-                            if (int_sat == most_actor){
-                                index_to_keep.push(solution_index);
-                            }
-                            if (int_sat < most_actor){
-                                index_to_rm.push(solution_index);
-                            }
-        
-                        }
-                        index_to_rm.sort(function(a, b){return a-b});
-                        for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
-                            //selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
-                            tempResults.get('allSolutions')[solutionArray].splice(index_to_rm[to_rm]-to_rm,1);
-                        }
+                    }
                 }
                     break;
                 case "mostConstraintSatisfaction":

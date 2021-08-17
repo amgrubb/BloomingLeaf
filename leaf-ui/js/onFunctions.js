@@ -491,7 +491,7 @@ paper.on("link:options", function (cell) {
         var curRequest = configCollection.findWhere({selected: true});
 
         // Checks to see if single path has been run by seeing if there are any results
-        if (typeof curRequest.previousAttributes().results === 'undefined') {
+        if (typeof curRequest.previousAttributes().results === 'undefined' || curRequest.previousAttributes().results.length == 0) {
              var singlePathRun = false;
         } else {
             var singlePathRun = true;
@@ -507,29 +507,13 @@ paper.on("link:options", function (cell) {
             console.log(JSON.stringify(curRequest));
             console.log(curRequest);
             console.log(curResult);
-            //TODO: Ensure that next state is never called from the last slider point
-            // TODO: Currently timePointAssignments does not have the correct key, value pairs so we can't implement this part yet
-            /**
-            // Iterates over the hashmap timePointAssignments
-            for (var key in curResult.get('timePointAssignments')) {
-                // Removes anything except for digits from the keys
-                timePoint = key.replace(/\D+/g, '');
-                console.log(curResult.get('timePointPath')[curResult.get('timePointPath').length - 1] === curResult.get('timePointAssignments')[key]);
-                console.log(timePoint == curResult.get('selectedTimePoint'));
-                // If the largest time point is the value of the current key, value pair and the current key is the selected time point
-                if ((curResult.get('timePointPath')[curResult.get('timePointPath').length - 1] === curResult.get('timePointAssignments')[key]) && (timePoint === curResult.get('selectedTimePoint'))) {
-                    // An alert pops up that you can't open next State from the last time point
-                    swal("Error: Cannot explore next states with last time point selected.", "", "error");
+            // If the last time point is selected, error message shows that you can't open Next State
+            if ((curResult.get('timePointPath').length - 1) === curResult.get('selectedTimePoint')) {
+                swal("Error: Cannot explore next states with last time point selected.", "", "error");
                     $("body").removeClass("loading"); // Removes spinner animation fromo page
-                    break;
-                // If the current time point is the selected time point run the backend analysis  
-                } else if (timePoint === curResult.get('selectedTimePoint')) {
-                    backendSimulationRequest(curRequest);  
-                    break;
-                }
+            } else {
+                backendSimulationRequest(curRequest);  
             }
-            */
-            backendSimulationRequest(curRequest);
         } else { // If single path has not been run show error message
             swal("Error: Cannot explore next states before simulating a single path.", "", "error");
         }
