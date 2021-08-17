@@ -641,16 +641,13 @@
                         alert("Error: Cannot apply this filter with no actors.");
                         $('#LeastActor').prop('checked', false);
                     } else {
-                        var index_to_keep = [];
-                        var index_to_rm = [];
                         for (var solutionArray in tempResults.get('allSolutions')) {
+                            var index_to_keep = [];
+                            var index_to_rm = [];
                             var least_actor = tempResults.get('allSolutions')[solutionArray].length;
                             for (var solution_index = 0; solution_index < tempResults.get('allSolutions')[solutionArray].length; solution_index++) {
                                 var actors = {};
                                 for (var element_index = 0; element_index < tempResults.get('allSolutions')[solutionArray][solution_index].length; element_index++) {
-                                    //console.log(analysis.intentions[element_index].getParentCell());
-                                    //if (analysis.intentions[element_index].getParentCell() != null) {
-                                        //console.log(analysis.intentions[element_index].actorId);
                                         if (! actors[analysis.intentions[element_index].actorId]){
                                             console.log(analysis.intentions[element_index]);
                                             actors[analysis.intentions[element_index].actorId] = 0;
@@ -667,7 +664,6 @@
                                             (value == "1011"))){
                                             actors[analysis.intentions[element_index].actorId] =1;
                                         }
-                                    //}
                                 }
                                 console.log(actors);
                                 var int_sat = Object.values(actors).reduce((a, b) => a + b);
