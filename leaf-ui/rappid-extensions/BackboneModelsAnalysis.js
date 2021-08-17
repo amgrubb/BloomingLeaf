@@ -13,8 +13,6 @@
  * @param {Array.<String>} timePointPath
  *   Each element represents a time point in the analysis
  *   ex: ['0', '7']
- * @param {Number} timePointPathSize
- *   Size of the time point path. ex: 2
  * @param {Array.<Object>} elementList
  *   List of elements containing analysis results
  *   ex: [{id: "0001", status:["0010","0100"]}]
@@ -46,7 +44,7 @@ var ResultBBM = Backbone.Model.extend({
             elementList: null,
             allSolutions: null, 
             nextStateTPs: null,
-            isPathSim: false, // Used for slider visualization  // Should be set to true for single path?
+//            isPathSim: false, // Used for slider visualization  // Should be set to true for single path?
             colorVis: null, // Color visualization for analysis mode
             selectedTimePoint: null, // Find where slider is initialized and set timepoint in here. Also place it in update function
             selected: true,

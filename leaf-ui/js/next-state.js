@@ -77,10 +77,10 @@
         analysis.graph.fromJSON(JSON.parse(backendStringifyCirc(window.opener.graph.toJSON())));
 
         //These object hold the request and results for the object.
-        console.log("Request:" + JSON.stringify(myInputJSObject.request.toJSON()));
-        console.log("Result:" + JSON.stringify(myInputJSObject.results.toJSON()));
-        console.log(myInputJSObject.request);
-        console.log(myInputJSObject.results);
+        // console.log("Request:" + JSON.stringify(myInputJSObject.request.toJSON()));
+        // console.log("Result:" + JSON.stringify(myInputJSObject.results.toJSON()));
+        // console.log(myInputJSObject.request);
+        // console.log(myInputJSObject.results);
         
         //Filter out Actors
         for (var i = 0; i < analysis.graph.getElements().length; i++){
@@ -104,14 +104,15 @@
         var i = 0;
         // Iterates of the hasmap allSolutions and combines all of the solutions into one array
         for (var key in myInputJSObject.results.get('allSolutions')) {
-            console.log(key);
+//            console.log(key);
             
             // Finds the index of the first element that will be added to allSolution
             if (i != 0) {
                 i++;
             }
             // Adds the starting index and its key to hashmap
-            allSolutionIndex.set(key + "Start", i);
+            //allSolutionIndex.set(key, i);   // + "Start"
+            allSolutionIndex[key] = i;
           
             // Adds every element (which are arrays) in the old array to the new array
             myInputJSObject.results.get('allSolutions')[key].forEach(
@@ -120,11 +121,12 @@
             })
             // Finds the index of the last element added to allSolution
             i = allSolutionArray.length-1;
-            // Adds the ending index and its key to hashmap
-            allSolutionIndex.set(key + "End", i);
+            
+            // Adds the ending index and its key to hashmap - TODO: Do we need the end?
+            //allSolutionIndex.set(key + "End", i);
 
-            console.log(allSolutionArray);
-            console.log(allSolutionIndex);
+//            console.log(allSolutionArray);
+//            console.log(allSolutionIndex);
         }
     }
 
@@ -812,4 +814,103 @@
         renderNavigationSidebar();
     }
 
-}
+    
+
+
+    /*This function should get the current state in the screen and 
+    *   save in the original path, as well as generate the remainder
+    *   of the simulation path.
+    */
+    function save_current_state(){
+        updateAnalysisRequestWithCurrentState();  
+        myInputJSObject.request.set('action', "updatePath");
+        //window.opener.backendSimulationRequest(myInputJSObject.request);  //TODO: Add back in.
+        console.log("New Request:" + JSON.stringify(myInputJSObject.request.toJSON()));
+        window.close();
+    }
+
+    /*This function should get the current state in the screen and 
+    *   save in the original path, as well as generates
+    *   all possible next states.
+    */
+    function generate_next_states(){
+        $("body").addClass("waiting");              //Adds "waiting" spinner under cursor 
+        updateAnalysisRequestWithCurrentState();  
+        window.opener.backendSimulationRequest(myInputJSObject.request);
+        window.close();
+    }
+
+    function updateAnalysisRequestWithCurrentState(){
+        console.log("Result: \n");
+        console.log(myInputJSObject.results);   //- has all solutions in it already.
+
+        // Create temporary variable for previous results.
+        var newPreviousAnalysis = myInputJSObject.results; 
+        // Increment selected time point, because the user selected the values for this state.
+        newPreviousAnalysis.set('selectedTimePoint', newPreviousAnalysis.get('selectedTimePoint') + 1);
+
+        // Get the page number currently selected on the interface.
+        var currentPage = document.getElementById("currentPage").value;
+        console.log(currentPage);
+
+        // TODO: Use the page number to get the selected element from the allSolutionArray and allSolutionIndex
+                // // an array of all of the solutions and every element is another array with all of the refEvidencePairs for the intentions at that solution
+                // var allSolutionArray = [];   [solutionNum][intention]
+                // // Hashmap to keep track of at which index each array from allSolutions starts and ends once they 
+                // // Are combined into allSolutionArray
+                // var allSolutionIndex;    hashmap TNS-0Start -> 0; TNS-0End -> 7 etc.
+                // var filterOrderQueue = []; for which filters have been applied -> how does this affect the solution number?
+        var stateName;
+        for (var key in allSolutionIndex) {
+            if (allSolutionIndex[key] <= currentPage){
+                stateName = key;
+            }
+        }
+        console.log(stateName);
+        var listStateTPs = newPreviousAnalysis.get('nextStateTPs')[stateName];
+        
+        // Determine the next time point.
+        var timePointPath = newPreviousAnalysis.get('timePointPath');
+        var nextTimePointAbsVal = timePointPath[timePointPath.length - 1] + 1;  // TODO: Update depending on the appropriate value based on the solution type.        
+        //nextStateTPs":{"TNS-0":["E003TPA"],"TNS-A":["TA2"],"TNS-1":["E002TPA"],"TNS-R":["TNS-R"],"TNS-2":["E001TPA"]}
+        if (stateName == 'TNS-A'){
+            nextTimePointAbsVal = myInputJSObject.request.get('timePointAssignments')[listStateTPs[0]];     // START HERE - Get this line working.
+        }      
+        timePointPath.push(nextTimePointAbsVal);
+
+
+        // TODO: get the zero entry in nextStateTPs hashMap (in newPreviousAnalysis)  
+        // add all 'values' as new entry to timePointAssignments in newPreviousAnalysis
+        // the 'value' becomes the key and nextTimePointAbsVal become the value
+        // TODO: check value.
+        for (var key in newPreviousAnalysis.get('nextStateTPs')) {
+            if (key == stateName){
+                newPreviousAnalysis.get('nextStateTPs')[key].forEach(
+                    solution => {
+                        newPreviousAnalysis.get('timePointAssignments')[solution] = nextTimePointAbsVal;  
+                })
+            }
+        }
+
+
+        // TODO: Update elementList
+        // satValue = allSolutionArray[currentPage][i];
+
+
+        
+
+
+
+
+        // Update values that are no longer needed.        
+        newPreviousAnalysis.set('name', myInputJSObject.request.get('results').get('name'));
+        newPreviousAnalysis.set('colorVis', null);
+        newPreviousAnalysis.set('nextStateTPs', null);
+        newPreviousAnalysis.set('allSolutions', null);
+
+        // Assign back to request.
+        //myInputJSObject.request.set('previousAnalysis', newPreviousAnalysis);
+        myInputJSObject.request.set('results', null);
+    }
+
+} // End of LOCAL GLOBAL VARIABLES

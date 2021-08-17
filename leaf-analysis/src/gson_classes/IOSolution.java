@@ -10,9 +10,9 @@ public class IOSolution {
 	private HashMap<String, Integer> timePointAssignments;
 	private Integer[] timePointPath;
 	private Integer selectedTimePoint;
-	@SuppressWarnings("unused")
+	@SuppressWarnings("unused")			// Used by front end.
 	private HashMap<String, List<String>> nextStateTPs;
-	@SuppressWarnings("unused")
+	@SuppressWarnings("unused")			// Used by front end.
 	private HashMap<String, String[][]> allSolutions;
 	
 	// *********** Start of Returning The Solution *********** 
