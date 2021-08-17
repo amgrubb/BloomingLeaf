@@ -246,12 +246,7 @@ $('#load-sample').on('click', function() {
 */
 
 // Switches to modeling mode
-$('#modeling-btn').on('click', function () {
-    switchToModellingMode();
-
-    savedAnalysisData.finalAssignedEpoch = "";
-    savedAnalysisData.finalValueTimePoints = "";
-});
+$('#modeling-btn').on('click', function () {switchToModellingMode();});
 
 /*** Events for Rappid/JointJS objets ***/
 
@@ -739,7 +734,7 @@ paper.on("link:options", function (cell) {
                     if (result.selected){ // If selected is true
                         selectedResult = result.name; // Record the name of result
                     }
-                    var resultsBBM = new ResultBBM({name: result.name, assignedEpoch: result.assignedEpoch, timePointPath: result.timePointPath, elementList: result.elementList, allSolution: result.allSolution, isPathSim: result.isPathSim, colorVis: result.colorVis, selectedTimePoint: result.selectedTimePoint, selected: result.selected});
+                    var resultsBBM = new ResultBBM({name: result.name, assignedEpoch: result.assignedEpoch, timePointPath: result.timePointPath, elementList: result.elementList, allSolution: result.allSolution, colorVis: result.colorVis, selectedTimePoint: result.selectedTimePoint, selected: result.selected});
                     results.add(resultsBBM)
                 }
                 configCollection.add(configBBM);

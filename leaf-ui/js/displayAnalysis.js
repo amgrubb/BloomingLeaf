@@ -36,10 +36,6 @@ let sliderObject = new SliderObj();
  *   false if new result from the back end
  */
 function displayAnalysis(analysisResult, isSwitch){
-
-    // Save data for get possible next states
-    savedAnalysisData.singlePathResult = analysisResult;
-
     // Check if slider has already been initialized
     if (sliderObject.sliderElement.hasOwnProperty('noUiSlider')) {
         sliderObject.sliderElement.noUiSlider.destroy();

@@ -4,7 +4,6 @@
  */
 
 /*** Various global Sat Value Dictionaries ***/
-
 // Satisfaction binary representation corresponding to text values and styles.
 var satisfactionValuesDict = {
 	"0000": {
@@ -68,11 +67,6 @@ var satisfactionValuesDict = {
 		chartVal: 0
 	}
 };
-
-/*** Global variables currently being used across the codebase ***/
-
-// This object will be created to save necessary data for following analysis
-var savedAnalysisData = {};
 
 /*** JointJS global elements such as graph, paper, stencil, etc ***/
 
