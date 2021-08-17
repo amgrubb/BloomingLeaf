@@ -213,7 +213,6 @@
      */
     function updatePagination(currentPage){
         var pagination = document.getElementById("pagination");
-        // TODO: have to update this, allSolutions is a hashmap
         var nextSteps_array_size = allSolutionArray.length;
         if (nextSteps_array_size > 6){
             renderPreviousBtn(pagination, currentPage);
@@ -254,7 +253,6 @@
     
     function renderForwardBtn(pagination, currentPage){
         var value;
-        // TODO: have to update this, allSolutions is a hashmap
         var nextSteps_array_size = allSolutionArray.length;
     
         if (currentPage == nextSteps_array_size-1){
@@ -286,7 +284,6 @@
 
     function goToState(){
         var requiredState = parseInt(document.getElementById("requiredState").value);
-        // TODO: have to update this, allSolutions is a hashmap
         var nextSteps_array_size = allSolutionArray.length;
     
         if ((requiredState != "NaN") && (requiredState > 0)){
@@ -754,7 +751,6 @@
                             for (var element_index = 0; element_index < tempResults.get('allSolutions')[solutionArray][solution_index].length; element_index++) {
                                     console.log(analysis.intentions[element_index].get('intention').cid)
                                 if (! domains[analysis.intentions[element_index].get('intention').cid]){
-                                    // TODO: below this line doesn't work yet
                                     domains[analysis.intentions[element_index].get('intention').cid] = [tempResults.get('allSolutions')[solutionArray][solution_index][element_index]];
                                 } else {
                                     if (domains[analysis.intentions[element_index].get('intention').cid].indexOf(tempResults.get('allSolutions')[solutionArray][solution_index][element_index]) == -1){
