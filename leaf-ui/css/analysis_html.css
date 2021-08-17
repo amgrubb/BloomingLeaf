@@ -52,6 +52,11 @@ body.loading .modal {
   100% { transform: rotate(360deg); }
 }
 
+.spinning *
+{
+    cursor: wait !important;
+}
+
 
 .header {
    padding: 0px;
