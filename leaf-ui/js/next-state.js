@@ -779,7 +779,7 @@
     function save_current_state(){
         updateAnalysisRequestWithCurrentState();  
         myInputJSObject.request.set('action', "updatePath");
-        //window.opener.backendSimulationRequest(myInputJSObject.request);
+        //window.opener.backendSimulationRequest(myInputJSObject.request);  //TODO: Add back in.
         console.log("New Request:" + JSON.stringify(myInputJSObject.request.toJSON()));
         window.close();
     }
@@ -790,8 +790,8 @@
     */
     function generate_next_states(){
         $("body").addClass("waiting");              //Adds "waiting" spinner under cursor 
-        // updateAnalysisRequestWithCurrentState();  
-        // window.opener.backendSimulationRequest(myInputJSObject.request);
+        updateAnalysisRequestWithCurrentState();  
+        window.opener.backendSimulationRequest(myInputJSObject.request);
         window.close();
     }
 
