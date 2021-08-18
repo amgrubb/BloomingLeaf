@@ -257,6 +257,19 @@ public class ModelSpec {
     
     
     // ************* OTHER FUNCTIONS ************* 
+    public List<List<String>> getUDTimePointOrder(){
+    	List<List<String>> orderedTimePoints = new ArrayList<List<String>>();
+    	for (Intention node : intentions) {
+    		FunctionSegment[] segList = node.getEvolvingFunctions();
+    		if (segList.length > 2) {
+    			List<String> segTPList = new ArrayList<String>();
+    			for (int i = 0; i < segList.length; i++)
+    				segTPList.add(segList[i].getStartTP());
+    			orderedTimePoints.add(segTPList);
+    		}
+    	}
+    	return orderedTimePoints;
+    }
     public HashMap<Integer, List<String>> getAbsTimePoints(){
     	HashMap<String, Integer> tpHash = getModelTimePoints();
     	

@@ -21,7 +21,7 @@ public class CSPPath {
 	 * @param numRelTP
 	 * @param prevTPAssignments
 	 */
-	public static IntVar[] createPathTimePoint(ModelSpec spec, Store store, 
+	public static IntVar[] createPathTimePoint(ModelSpec spec, Store store, List<Constraint> constraints, 
 			HashMap<IntVar, List<String>> timePointMap, int maxTime) {
 		
 		// Get the Unique Set of Time Point from the Model
@@ -61,6 +61,15 @@ public class CSPPath {
     		tpCounter++; 
     	}
     	
+    	// Add constraints for UD TimePoint ordering.
+		List<List<String>> orderedTimePoints = spec.getUDTimePointOrder();
+    	for (List<String> items : orderedTimePoints) {
+    		for (int i = 1; i < items.size(); i++) {
+    			IntVar prev = getTimePoint(timePointMap, items.get(i-1));
+    			IntVar curr = getTimePoint(timePointMap, items.get(i));
+    			constraints.add(new XltY(prev, curr));
+    		}	
+    	}
     	return timePoints;
 		
 	}

@@ -77,7 +77,7 @@ public class BICSPAlgorithm {
 		
 		// Create time point path.
 		if (problemType == SearchType.PATH || problemType == SearchType.UPDATE_PATH) {
-			this.timePoints = CSPPath.createPathTimePoint(this.spec, this.store, this.timePointMap, this.maxTime);
+			this.timePoints = CSPPath.createPathTimePoint(this.spec, this.store, this.constraints, this.timePointMap, this.maxTime);
 		}else if (problemType == SearchType.NEXT_STATE) {
 			this.timePoints = CSPPath.createNextStateTimePoint(this.spec, this.store, this.timePointMap, this.nextStateTPHash, this.maxTime);
 		}
@@ -137,6 +137,17 @@ public class BICSPAlgorithm {
 		} else if (problemType == SearchType.NEXT_STATE) {
 			int selectedTP = this.spec.getPrevResult().getSelectedTimePoint();
 			HashMap<String, String[][]> allSolutions = new HashMap<String, String[][]>();
+			
+			// Determine which timepoints are assigned by abolute values.
+			//TODO: Write Code
+//			boolean[] nextTPAbs = new boolean[this.timePoints.length];
+//			for (int i = 0; i < this.timePoints.length; i++) {
+//				if (i <= selectedTP)
+//					nextTPAbs[i] = true;
+//				else {
+//					
+//				}
+//			}
 			for (int i = selectedTP + 1; i < this.timePoints.length; i++) {
 				IntVar[] varList = createNextStateVarList(selectedTP, i);
 				Search<IntVar> stateLabel = findSolution(this.store, varList, true);
