@@ -4,9 +4,7 @@
 
  { // LOCAL GLOBAL VARIABLES
     var analysis = {};
-    // analysis.analysisResult;
     analysis.intentions = []; // Array of all of the intentions on the graph
-    // analysis.currentState;
 
     var filterOrderQueue = [];
     
@@ -23,15 +21,6 @@
     // Hashmap to keep track of at which index each array from allSolutions starts and ends once they 
     // are combined into allSolutionArray
     var allSolutionIndex;
-
-    var satValueDict = {
-        "unknown": "0000",
-        "satisfied": "0011",
-        "partiallysatisfied": "0010",
-        "partiallydenied": "0100",
-        "denied": "1100",
-        "none": "0000"
-    };
     
     //Executing scripts only when page is fully loaded
     window.onload = function(){
@@ -80,16 +69,15 @@
         // These object hold the request and results for the object.
         // console.log("Request:" + JSON.stringify(myInputJSObject.request.toJSON()));
         // console.log("Result:" + JSON.stringify(myInputJSObject.results.toJSON()));
-        console.log(myInputJSObject.request);
+        // console.log(myInputJSObject.request);
         // console.log(myInputJSObject.results);
         
-        // Filter out Actors
+        // Filter out Actors and save all intentions into an array
         for (var i = 0; i < analysis.graph.getElements().length; i++){
             if (!(analysis.graph.getElements()[i] instanceof joint.shapes.basic.Actor))
                 analysis.intentions.push(analysis.graph.getElements()[i]);
         }
-        console.log(analysis.intentions);
-
+        // Turns the hashmap allSolutions into an array so the sidebar can be rendered
         combineAllSolutions();
         
         // Sets originalResults as a deep copy of myInputJSObject.results 
@@ -98,20 +86,18 @@
     }
 
     function combineAllSolutions() {
-        // Clear array
+        // Clear array and create blank hashmap
         allSolutionArray = [];
         allSolutionIndex = new Map();
         var i = 0;
         // Iterates over the hashmap allSolutions and combines all of the solutions into one array
         for (var key in myInputJSObject.results.get('allSolutions')) {
-            // console.log(key);
             
             // Finds the index of the first element that will be added to allSolution
             if (i != 0) {
                 i++;
             }
             // Adds the starting index and its key to hashmap
-            // allSolutionIndex.set(key, i);   // + "Start"
             allSolutionIndex[key] = i;
           
             // Adds every element (which are arrays) in the old array to the new array
@@ -124,9 +110,6 @@
             
             // Adds the ending index and its key to hashmap - TODO: Do we need the end?
             //allSolutionIndex.set(key + "End", i);
-
-            // console.log(allSolutionArray);
-            // console.log(allSolutionIndex);
         }
     }
 
@@ -188,10 +171,13 @@
      * The number of the page that is selected in the next State window
      */
     function renderNavigationSidebar(currentPage = 0){
-        clear_pagination_values();
-    
-        var currentPageIn = document.getElementById("currentPage");
+        var pagination = document.getElementById("pagination");
         var num_states_lbl = document.getElementById("num_states_lbl");
+        var currentPageIn = document.getElementById("currentPage");
+        // Clear any previous pages by reseting page values
+        pagination.innerHTML = "";
+        num_states_lbl.innerHTML = "";
+        currentPageIn.value = "";
     
         num_states_lbl.innerHTML += (allSolutionArray.length);
     
@@ -241,6 +227,9 @@
         }
     }
 
+    /**
+     * Renders the 'previous' button on the next State sidebar
+     */
     function renderPreviousBtn(pagination, currentPage){
         var value;
         if (currentPage == 0){
@@ -251,6 +240,9 @@
         pagination.innerHTML += '<a href="#" onclick="renderNavigationSidebar('+value.toString()+')">&laquo;</a>';
     }
     
+    /**
+     * Renders the 'next' button on the next State sidebar
+     */    
     function renderForwardBtn(pagination, currentPage){
         var value;
         var nextSteps_array_size = allSolutionArray.length;
@@ -263,6 +255,9 @@
         pagination.innerHTML += '<a href="#" onclick="renderNavigationSidebar(' + value.toString() + ')">&raquo;</a>';
     }
     
+    /**
+     * Renders the correct pages values you can select in next state based on the current selected state
+     */
     function render_pagination_values(currentPage, i){
         var pagination = document.getElementById("pagination");
         if (currentPage == i){
@@ -271,23 +266,12 @@
             pagination.innerHTML += '<a href="#" onclick="renderNavigationSidebar(' + i.toString() + ')">' + i.toString() + '</a>';
         }
     }
-
-    function clear_pagination_values(){
-        var pagination = document.getElementById("pagination");
-        var num_states_lbl = document.getElementById("num_states_lbl");
-        var currentPageIn = document.getElementById("currentPage");
-    
-        pagination.innerHTML = "";
-        num_states_lbl.innerHTML = "";
-        currentPageIn.value = "";
-    }
     
     /**
-     * Goes to entered state based on user input 
+     * Selects entered state based on user input 
      */
     function goToState(){
         var requiredState = parseInt(document.getElementById("requiredState").value);
-        // var nextSteps_array_size = analysis.analysisResult.allSolution.length;
         var nextSteps_array_size = allSolutionArray.length;
     
         if ((requiredState != "NaN") && (requiredState > 0)){
@@ -380,7 +364,6 @@
                             }
                         }
                         for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
-                            // selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
                             tempResults.get('allSolutions')[solutionArray].splice(index_to_rm[to_rm]-to_rm,1);
                         }
                 }
@@ -397,7 +380,6 @@
                             var num_t_s = 0;
                             for (var element_index=0; element_index < tempResults.get('allSolutions')[solutionArray][solution_index].length; element_index++){
                                 if (analysis.intentions[element_index].get('type') === 'basic.Task') {
-                                // if (selectedResult.allSolution[solution_index].intentionElements[element_index].type === "TASK"){
                                     var value = tempResults.get('allSolutions')[solutionArray][solution_index][element_index];
                                     if ((value == "0010" || value == "0011")){
                                         num_t_s ++;
@@ -434,7 +416,6 @@
                             var num_t_s = 0;
                             for (var element_index=0; element_index < tempResults.get('allSolutions')[solutionArray][solution_index].length; element_index++){
                                 if (analysis.intentions[element_index].get('type') === 'basic.Task') {
-                                // if (selectedResult.allSolution[solution_index].intentionElements[element_index].type === "TASK"){
                                     var value = tempResults.get('allSolutions')[solutionArray][solution_index][element_index];
                                     if ((value == "0010" || value == "0011")){
                                         num_t_s ++;
@@ -455,7 +436,6 @@
                         }
                         index_to_rm.sort(function(a, b){return a-b});
                         for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
-                            //selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
                             tempResults.get('allSolutions')[solutionArray].splice(index_to_rm[to_rm]-to_rm,1);
                         }
                 }
@@ -493,7 +473,6 @@
                         }
                         index_to_rm.sort(function(a, b){return a-b});
                         for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
-                            //selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
                             tempResults.get('allSolutions')[solutionArray].splice(index_to_rm[to_rm]-to_rm,1);
                         }
                 }
@@ -510,7 +489,6 @@
                             var num_r_s = 0;
                             for (var element_index=0; element_index < tempResults.get('allSolutions')[solutionArray][solution_index].length; element_index++){
                                 if (analysis.intentions[element_index].get('type') === 'basic.Resource') {
-                                // if (selectedResult.allSolution[solution_index].intentionElements[element_index].type === "RESOURCE"){
                                     var value = tempResults.get('allSolutions')[solutionArray][solution_index][element_index];
                                     if ((value == "0010" || value == "0011")){
                                         num_r_s ++;
@@ -531,7 +509,6 @@
                         }
                         index_to_rm.sort(function(a, b){return a-b});
                         for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
-                            //selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
                             tempResults.get('allSolutions')[solutionArray].splice(index_to_rm[to_rm]-to_rm,1);
                         }
                 }
@@ -548,7 +525,6 @@
                             var num_g_s = 0;
                             for (var element_index=0; element_index < tempResults.get('allSolutions')[solutionArray][solution_index].length; element_index++){
                                 if (analysis.intentions[element_index].get('type') === 'basic.Goal') {
-                                // if (selectedResult.allSolution[solution_index].intentionElements[element_index].type === "GOAL"){
                                     var value = tempResults.get('allSolutions')[solutionArray][solution_index][element_index];
                                     if ((value == "0010" || value == "0011")){
                                         num_g_s ++;
@@ -585,7 +561,6 @@
                             var num_g_s = 0;
                             for (var element_index=0; element_index < tempResults.get('allSolutions')[solutionArray][solution_index].length; element_index++){
                                 if (analysis.intentions[element_index].get('type') === 'basic.Goal') {
-                                // if (selectedResult.allSolution[solution_index].intentionElements[element_index].type === "GOAL"){
                                     var value = tempResults.get('allSolutions')[solutionArray][solution_index][element_index];
                                     if ((value == "0010" || value == "0011")){
                                         num_g_s ++;
@@ -606,7 +581,6 @@
                         }
                         index_to_rm.sort(function(a, b){return a-b});
                         for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
-                            //selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
                             tempResults.get('allSolutions')[solutionArray].splice(index_to_rm[to_rm]-to_rm,1);
                         }
                 }
@@ -771,7 +745,7 @@
         $("body").removeClass("spinning"); // Remove spinner from cursor
         // Set the new results with filters as the analysis object
         myInputJSObject.results = tempResults;
-        // Create array with all Solutions from new hashmap
+        // Creates array with all Solutions from new hashmap
         combineAllSolutions();
         renderNavigationSidebar();
     }
@@ -810,6 +784,9 @@
         }
     }
 
+    /**
+     * This funtion should update the analysis request with the state that is currently selected
+     */
     function updateAnalysisRequestWithCurrentState(){
         console.log('updateAnalysisRequestwithCurrentState');
         console.log(myInputJSObject.request);
