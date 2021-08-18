@@ -63,15 +63,33 @@ public class CSPPath {
     	
     	// Add constraints for UD TimePoint ordering.
 		List<List<String>> orderedTimePoints = spec.getUDTimePointOrder();
-    	for (List<String> items : orderedTimePoints) {
-    		for (int i = 1; i < items.size(); i++) {
-    			IntVar prev = getTimePoint(timePointMap, items.get(i-1));
-    			IntVar curr = getTimePoint(timePointMap, items.get(i));
+    	for (List<String> subList : orderedTimePoints) {
+    		for (int i = 1; i < subList.size(); i++) {
+    			IntVar prev = getTimePoint(timePointMap, subList.get(i-1));
+    			IntVar curr = getTimePoint(timePointMap, subList.get(i));
     			constraints.add(new XltY(prev, curr));
     		}	
     	}
     	return timePoints;
 		
+	}
+	private static List<String> pruneExtraUDTPforNextState(
+			ModelSpec spec, List<String> initialList){
+		List<String> prunedList = new ArrayList<String>();
+		List<List<String>> orderedTimePoints = spec.getUDTimePointOrder();
+    	for (List<String> subList : orderedTimePoints) {
+    		boolean found = false;
+    		for (int i = 0; i < subList.size(); i++) {
+    			if (found) {
+    				if (initialList.contains(subList.get(i))) {
+    					prunedList.add(subList.get(i));
+    					initialList.remove(subList.get(i));
+    				}
+    			} else if (!found && initialList.contains(subList.get(i))) 
+    				found = true;
+    		}	
+    	}
+		return prunedList;
 	}
 	
 	public static IntVar[] createNextStateTimePoint(ModelSpec spec, Store store, 
@@ -87,6 +105,7 @@ public class CSPPath {
 		HashMap<Integer, List<String>> modelAbsTime = spec.getAbsTimePoints();
 		List<String> unassignedTimePoint = modelAbsTime.get(-1);
 		modelAbsTime.remove(-1);
+		
 		int numRelTP = spec.getNumRelativeTimePoints(); 
 		HashMap<String, Integer> prevTPAssignments = prev.getSelectedTPAssignments();
 		Integer[] prevTP = prev.getSelectedTimePointPath();
@@ -142,7 +161,8 @@ public class CSPPath {
 	    		newTPHash.put("TNS-A", toAdd);
 			}
 		}
-		if (unassignedTimePoint.size() > 0) {
+		List<String> prunedTimePoints = pruneExtraUDTPforNextState(spec, unassignedTimePoint);
+		if (unassignedTimePoint.size() > 0) {		
 			int c = 0; 
 			for (String newVal: unassignedTimePoint) {
 	    		List<String> toAdd = new ArrayList<String>();
@@ -162,9 +182,19 @@ public class CSPPath {
     		nextStateTPHash.put(entry.getKey(), entry.getValue());
 		}
 		
+		for	(String item : prunedTimePoints) {
+			IntVar newTP = new IntVar(store, item, iMax + 1, spec.getMaxTime());
+			List<String> newItem = new ArrayList<String>();
+			newItem.add(item);
+    		timePointMap.put(newTP, newItem);
+    		//nextStateTPHash.put(entry.getKey(), entry.getValue());
+		}
+		
 		IntVar[] list = new IntVar[timePointList.size()];
 		for (int i = 0; i < list.length; i ++)
 			list[i] = timePointList.get(i);
+		
+		
 		return list;
 	}
 		
