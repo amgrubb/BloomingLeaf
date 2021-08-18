@@ -48,6 +48,8 @@ var ResultBBM = Backbone.Model.extend({
             colorVis: null, // Color visualization for analysis mode
             selectedTimePoint: null, // Find where slider is initialized and set timepoint in here. Also place it in update function
             selected: true,
+            nextPossibleAbsValue: null,
+            nextPossibleRndValue: null
         }
     }
 });

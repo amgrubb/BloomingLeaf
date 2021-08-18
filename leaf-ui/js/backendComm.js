@@ -89,6 +89,8 @@ function convertToAnalysisResult(results){
 	tempResult.set('nextStateTPs', results.nextStateTPs);		//Used for Next State
 //	tempResult.set('isPathSim', true);
 	tempResult.set('selectedTimePoint', results.selectedTimePoint);
+	tempResult.set('nextPossibleAbsValue', results.nextPossibleAbsValue);		//TODO: Add these values when other result BBMs are created.
+	tempResult.set('nextPossibleRndValue', results.nextPossibleRndValue);		//TODO: Add these values when other result BBMs are created.
 	var evoView = new EVO(results.elementList)
 	tempResult.set('colorVis', evoView);
 	evoView.singlePathResponse(results.elementList, tempResult, "analysis");

@@ -143,7 +143,7 @@ public class BICSPAlgorithm {
 				String[][] answer = getNextStateData(stateLabel);
 				allSolutions.put(this.timePoints[i].id, answer);
 			}
-			return this.spec.getPrevResult().getNewIOSolutionFromSelected(allSolutions, this.nextStateTPHash);
+			return this.spec.getPrevResult().getNewIOSolutionFromSelected(allSolutions, this.nextStateTPHash, this.maxTime);
 		}		
 		return null;
 	}

@@ -114,6 +114,8 @@ public class CSPPath {
     		tpCounter++;
 		}
 
+		//TODO: Add a condition to make sure that there is an available time point between now and the next TNS-A, i.e., a random/function value.
+		
 		HashMap<String, List<String>> newTPHash = new HashMap<String, List<String>>();  
 		// Add a relative time point if available.
 		if (numRelTP > 0) {
