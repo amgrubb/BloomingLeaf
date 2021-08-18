@@ -139,16 +139,22 @@ public class BICSPAlgorithm {
 			HashMap<String, String[][]> allSolutions = new HashMap<String, String[][]>();
 			
 			// Determine which timepoints are assigned by abolute values.
-			//TODO: Write Code
-//			boolean[] nextTPAbs = new boolean[this.timePoints.length];
-//			for (int i = 0; i < this.timePoints.length; i++) {
-//				if (i <= selectedTP)
-//					nextTPAbs[i] = true;
-//				else {
-//					
-//				}
-//			}
+			int selectedTPAbsTime = this.timePoints[selectedTP].value();
 			for (int i = selectedTP + 1; i < this.timePoints.length; i++) {
+				
+				
+				List<Constraint> nextStateConstraints = new ArrayList<Constraint>();
+				int newTime = selectedTPAbsTime + 1;
+				nextStateConstraints.add(new XeqC(this.timePoints[i], newTime));
+				//this.timePoints[i].setDomain(newTime, newTime);
+				for (int k = selectedTP + 1; k < this.timePoints.length; k++) {
+					if (k != i) {
+						newTime++;
+						nextStateConstraints.add(new XeqC(this.timePoints[i], newTime));
+					}
+				}
+				
+				
 				IntVar[] varList = createNextStateVarList(selectedTP, i);
 				Search<IntVar> stateLabel = findSolution(this.store, varList, true);
 				String[][] answer = getNextStateData(stateLabel);
