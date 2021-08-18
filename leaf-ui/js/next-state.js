@@ -843,7 +843,7 @@
         }
 
         // Update values that are no longer needed.        
-        newPreviousAnalysis.set('name', myInputJSObject.request.get('results').get('name'));
+        newPreviousAnalysis.set('name', null);
         newPreviousAnalysis.set('colorVis', null);
         newPreviousAnalysis.set('nextStateTPs', null);
         newPreviousAnalysis.set('allSolutions', null);
