@@ -80,7 +80,7 @@
         // These object hold the request and results for the object.
         // console.log("Request:" + JSON.stringify(myInputJSObject.request.toJSON()));
         // console.log("Result:" + JSON.stringify(myInputJSObject.results.toJSON()));
-        // console.log(myInputJSObject.request);
+        console.log(myInputJSObject.request);
         // console.log(myInputJSObject.results);
         
         // Filter out Actors
@@ -781,6 +781,8 @@
     *   of the simulation path.
     */
     function save_current_state(){
+        console.log('saveCurrentState');
+        console.log(myInputJSObject.request);
         updateAnalysisRequestWithCurrentState();  
         myInputJSObject.request.set('action', "updatePath");
         window.opener.backendSimulationRequest(myInputJSObject.request); 
@@ -802,6 +804,8 @@
     }
 
     function updateAnalysisRequestWithCurrentState(){
+        console.log('updateAnalysisRequestwithCurrentState');
+        console.log(myInputJSObject.request);
         // Create temporary variable for previous results.
         var newPreviousAnalysis = myInputJSObject.results; 
         // Increment selected time point, because the user selected the values for this state.
@@ -851,7 +855,7 @@
 
         // Assign back to request.
         myInputJSObject.request.set('previousAnalysis', newPreviousAnalysis);
-        myInputJSObject.request.set('results', null);
+        // myInputJSObject.request.set('results', null);
         console.log("New Request:" + JSON.stringify(myInputJSObject.request.toJSON()));
     }
 
