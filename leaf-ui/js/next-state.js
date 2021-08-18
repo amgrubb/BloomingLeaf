@@ -794,13 +794,20 @@
     *   all possible next states.
     */
     function generate_next_states(){ 
-        $("body").addClass("loading"); // Adds spinner animation to page, cannot click on other things while loading
-        $("body").dblclick(function(){ // On double click, removes spinner and can interact with page again 
-            $("body").removeClass("loading"); 
-        });
-        updateAnalysisRequestWithCurrentState();  
-        window.opener.backendSimulationRequest(myInputJSObject.request);
-        window.close();
+        console.log(myInputJSObject.results);
+        console.log(myInputJSObject.request.get('numRelTime'));
+        console.log(myInputJSObject.results.get('selectedTimePoint'));
+        if ((myInputJSObject.results.get('selectedTimePoint') + 1)>= myInputJSObject.request.get('numRelTime')) {
+            swal("Error: Cannot explore next state past this time point.", "", "error");
+        } else {
+            $("body").addClass("loading"); // Adds spinner animation to page, cannot click on other things while loading
+            $("body").dblclick(function(){ // On double click, removes spinner and can interact with page again 
+                $("body").removeClass("loading"); 
+            });
+            updateAnalysisRequestWithCurrentState();  
+            window.opener.backendSimulationRequest(myInputJSObject.request);
+            window.close();
+        }
     }
 
     function updateAnalysisRequestWithCurrentState(){
