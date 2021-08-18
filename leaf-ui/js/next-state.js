@@ -788,8 +788,7 @@
     function save_current_state(){
         updateAnalysisRequestWithCurrentState();  
         myInputJSObject.request.set('action', "updatePath");
-        //window.opener.backendSimulationRequest(myInputJSObject.request);  //TODO: Add back in.
-        console.log("New Request:" + JSON.stringify(myInputJSObject.request.toJSON()));
+        window.opener.backendSimulationRequest(myInputJSObject.request); 
         window.close();
     }
 
@@ -837,20 +836,11 @@
                 newPreviousAnalysis.get('timePointAssignments')[solution] = nextTimePointAbsVal;  
         })
 
-
-        // TODO: Update elementList
-        // satValue = allSolutionArray[currentPage][i];
-        //allSolutionArray[currentPage].forEach(
-
-        //)
-
-                // TODO: Use the page number to get the selected element from the allSolutionArray and allSolutionIndex
-                // // an array of all of the solutions and every element is another array with all of the refEvidencePairs for the intentions at that solution
-                // var allSolutionArray = [];   [solutionNum][intention]
-                // // Hashmap to keep track of at which index each array from allSolutions starts and ends once they 
-                // // Are combined into allSolutionArray
-                // var allSolutionIndex;    hashmap TNS-0Start -> 0; TNS-0End -> 7 etc.
-                // var filterOrderQueue = []; for which filters have been applied -> how does this affect the solution number?
+        // Update the elementList with the new states satisfaction values.
+        var elementList = newPreviousAnalysis.get('elementList');
+        for (let i = 0; i < elementList.length; i++){
+            elementList[i].status.push(allSolutionArray[currentPage][i]);
+        }
 
         // Update values that are no longer needed.        
         newPreviousAnalysis.set('name', myInputJSObject.request.get('results').get('name'));
@@ -861,8 +851,9 @@
         newPreviousAnalysis.set('nextPossibleRndValue', null);
 
         // Assign back to request.
-        //myInputJSObject.request.set('previousAnalysis', newPreviousAnalysis);
+        myInputJSObject.request.set('previousAnalysis', newPreviousAnalysis);
         myInputJSObject.request.set('results', null);
+        console.log("New Request:" + JSON.stringify(myInputJSObject.request.toJSON()));
     }
 
 } // End of LOCAL GLOBAL VARIABLES
