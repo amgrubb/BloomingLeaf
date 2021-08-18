@@ -292,8 +292,8 @@ body.waiting *
   margin: auto;
 }
 
-#init-sat-value, .actor-type, .function-type,
-.function-sat-value, .user-defined-select, .repeat-select-end,
+.actor-type, .function-type,
+.function-sat-value, .user-defined-select,
 .relationship-select, .link-type, #conflict-level, #abs-vals,
 #assigned-vals {
   background-color: rgba(36, 150, 255, 1);
@@ -308,7 +308,20 @@ body.waiting *
   border: 0;
 }
 
-.repeat-select-begin {
+#init-sat-value, .function-type {
+  background-color: rgba(36, 150, 255, 1);
+  border-color: rgba(31, 121, 101, 1);
+  color: white;
+  font-size: 11px;
+  font-weight: 200;
+  width: 200px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  border: 0;
+}
+
+.repeat-select-begin, .repeat-select-end {
   background-color: rgba(36, 150, 255, 1);
   border-color: rgba(31, 121, 101, 1);
   color: white;
