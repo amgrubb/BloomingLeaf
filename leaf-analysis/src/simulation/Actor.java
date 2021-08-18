@@ -7,7 +7,7 @@ package simulation;
  * @author A.M.Grubb
  *
  */
-public class Actor extends LinkableElement {
+public class Actor extends AbstractLinkableElement {
 	String actorType;
 
 	public Actor(String nodeID, String nodeName, String nodeType){

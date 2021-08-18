@@ -156,23 +156,6 @@ var ElementInspector = Backbone.View.extend({
         // Save html template to dynamically render more
         this.userConstraintsHTML = $("#new-user-constraints").last().clone();
 
-        // If the function is NB clear the functionSegList, set the function type to NB, and set the initial satisfaction value to none
-        if (!this.model.attr(".satvalue/value") && this.model.attr(".funcvalue/text") == "NB") {
-            if (this.intention.get('evolvingFunction') != null) {
-                this.intention.get('evolvingFunction').set('functionSegList', []);
-                this.intention.get('evolvingFunction').set('type', 'NB');
-                this.intention.getUserEvaluationBBM(0).set('assignedEvidencePair', '0000')
-            }
-        }
-
-        // If function used to be NB, reset the function type and initial satisfaction value
-        if (!this.model.attr(".satvalue/value") && this.model.attr(".funcvalue/text") != "NB") {
-            if (this.intention.get('evolvingFunction') != null) {
-                this.intention.get('evolvingFunction').set('functionSegList', []);
-                this.intention.get('evolvingFunction').set('type', 'NT');
-                this.intention.getUserEvaluationBBM(0).set('assignedEvidencePair', '(no value)')
-            }            
-        }
 
         // Load initial value and node name
         this.$('.cell-attrs-text').val(this.intention.get('nodeName'));
@@ -235,6 +218,8 @@ var ElementInspector = Backbone.View.extend({
             this.$('#user-constraints').show();
             this.$('option[value=I]').prop('disabled', this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair') === '0011');
             this.$('option[value=D]').prop('disabled', this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair') === '1100');
+            this.$('option[value=MP]').prop('disabled', this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair') === '0011');
+            this.$('option[value=MN]').prop('disabled', this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair') === '1100');
         }
     },
 
@@ -289,7 +274,7 @@ var ElementInspector = Backbone.View.extend({
         this.checkInitialSatValue();
         this.updateCell();
         this.updateHTML(event);
-
+        resetConfig();
     },
 
     /**
@@ -738,12 +723,7 @@ var FuncSegView = Backbone.View.extend({
         this.listenTo(this.model, 'change:refEvidencePair', this.updateNextFuncSeg);
 
         // Updates the chart whenever there is a change to the model
-        if (!this.hasUD) {
-            this.listenTo(this.model, 'change', this.updateChart)
-        }
-        else {
-            this.listenTo(this.model, 'change', this.updateChartUserDefined)
-        }
+        this.listenTo(this.model, 'change:refEvidencePair', this.hasUD ? this.updateChartUserDefined : this.updateChart);
     },
     template: ['<script type="text/template" id="item-template">',
         '<input class="seg-time" > </input>',
