@@ -412,6 +412,8 @@ var ElementInspector = Backbone.View.extend({
      * (the select elements for repeat begin and end)
      */
     selectRepeatValues: function () {
+        console.log(this.$("#repeat-begin").val());
+        console.log(this.$("#repeat-end").val());
         // If some of the repeat select values were previously disabled, enable them
         this.$("option").prop('disabled', '');
 
@@ -420,6 +422,10 @@ var ElementInspector = Backbone.View.extend({
         var minimumInt = string1.charCodeAt(0);
         var nextChar = String.fromCharCode(begin.charCodeAt(0) + 1);
 
+        // If the begining repeating segment is after or equal to the end repeating segment reset the end segment
+        if (this.$("#repeat-begin").val() >= this.$("#repeat-end").val()) {
+            this.$("#repeat-end").val('');
+        }
         // Disable repeat end values from 'A' to one value after the repeat beginning value
         // Because repeating segments must be two or more segments apart 
         for (var i = (minimumInt); i < nextChar.charCodeAt(0); i++){
