@@ -8,10 +8,10 @@ package simulation;
  *
  */
 public enum DecompositionType {
-	AND ("AND"), OR ("OR");
+	AND ("AND"), OR ("OR"), NONE ("no");
 	private String code;
 
-	private static final DecompositionType[] VALUES_ARRAY = new DecompositionType[] {AND,OR};
+	private static final DecompositionType[] VALUES_ARRAY = new DecompositionType[] {AND,OR,NONE};
 	public static DecompositionType getByCode(String code) {
 		for (int i = 0; i < VALUES_ARRAY.length; ++i) {
 			DecompositionType result = VALUES_ARRAY[i];

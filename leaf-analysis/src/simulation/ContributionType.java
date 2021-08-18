@@ -10,12 +10,12 @@ package simulation;
 public enum ContributionType {
 	P ("+"), PP ("++"), M ("-"), MM ("--"),
 	SP ("+S"), SPP ("++S"), SM ("-S"), SMM ("--S"),
-	DP ("+D"), DPP ("++D"), DM ("-D"), DMM ("--D");
+	DP ("+D"), DPP ("++D"), DM ("-D"), DMM ("--D"), NONE ("no");
 	
 	private String code;
 	
 	private static final ContributionType[] VALUES_ARRAY = new ContributionType[] {
-		P, PP, M, MM, SP, SPP, SM, SMM, DP, DPP, DM, DMM	};
+		P, PP, M, MM, SP, SPP, SM, SMM, DP, DPP, DM, DMM, NONE};
 	
 	public static ContributionType getByCode(String code) {
 		for (int i = 0; i < VALUES_ARRAY.length; ++i) {
