@@ -840,9 +840,9 @@ var FuncSegView = Backbone.View.extend({
         // If the start of the repeating segment has an absolute time value, hide error message
         if ((absTime !== null && this.model.get('startTP') === $("#repeat-begin").val()) || $("#repeat-end3").val() === '0') {
             $("#repeat-error").hide();
-        } else if (absTime === null && this.model.get('startTP') === $("#repeat-begin").val()) {
+        } else if (absTime === null && (this.model.get('startTP') == $("#repeat-begin").val())) {
             var begin = $("#repeat-begin").val();
-            this.$("#repeat-error").text("Enter an absTime value for function segment " + begin);
+            $("#repeat-error").text("Enter an absTime value for function segment " + begin);
             $("#repeat-error").show("fast");
         }
     },
