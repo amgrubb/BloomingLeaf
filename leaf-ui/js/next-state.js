@@ -677,9 +677,8 @@
                             for (var solution_index = 0; solution_index < tempResults.get('allSolutions')[solutionArray].length; solution_index++) {
                                 var actors = {};
                                 for (var element_index = 0; element_index < tempResults.get('allSolutions')[solutionArray][solution_index].length; element_index++) {
-                                    console.log(analysis.intentions[element_index].getParentCell());
-                                    if (analysis.intentions[element_index].getParentCell() != null) {
                                         if (! actors[analysis.intentions[element_index].actorId]){
+                                            console.log(analysis.intentions[element_index]);
                                             actors[analysis.intentions[element_index].actorId] = 0;
                                         }
                                         var value = tempResults.get('allSolutions')[solutionArray][solution_index][element_index];
@@ -694,10 +693,7 @@
                                             (value == "1011"))){
                                             actors[analysis.intentions[element_index].actorId] =1;
                                         }
-                                    }
                                 }
-                                console.log(actors);
-                                console.log(Object.values(actors).reduce((a, b) => a + b));
                                 var int_sat = Object.values(actors).reduce((a, b) => a + b);
                                 if (most_actor < int_sat){
                                     most_actor = int_sat;
@@ -714,7 +710,6 @@
                             }
                             index_to_rm.sort(function(a, b){return a-b});
                             for (var to_rm = 0; to_rm < index_to_rm.length; to_rm ++){
-                                //selectedResult.allSolution.splice(index_to_rm[to_rm]-to_rm,1);
                                 tempResults.get('allSolutions')[solutionArray].splice(index_to_rm[to_rm]-to_rm,1);
                             }
                     }
