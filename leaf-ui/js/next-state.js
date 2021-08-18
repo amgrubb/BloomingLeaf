@@ -80,7 +80,7 @@
         // These object hold the request and results for the object.
         // console.log("Request:" + JSON.stringify(myInputJSObject.request.toJSON()));
         // console.log("Result:" + JSON.stringify(myInputJSObject.results.toJSON()));
-        // console.log(myInputJSObject.request);
+        console.log(myInputJSObject.request);
         // console.log(myInputJSObject.results);
         
         // Filter out Actors
@@ -781,6 +781,8 @@
     *   of the simulation path.
     */
     function save_current_state(){
+        console.log('saveCurrentState');
+        console.log(myInputJSObject.request);
         updateAnalysisRequestWithCurrentState();  
         myInputJSObject.request.set('action', "updatePath");
         window.opener.backendSimulationRequest(myInputJSObject.request); 
@@ -792,16 +794,25 @@
     *   all possible next states.
     */
     function generate_next_states(){ 
-        $("body").addClass("loading"); // Adds spinner animation to page, cannot click on other things while loading
-        $("body").dblclick(function(){ // On double click, removes spinner and can interact with page again 
-            $("body").removeClass("loading"); 
-        });
-        updateAnalysisRequestWithCurrentState();  
-        window.opener.backendSimulationRequest(myInputJSObject.request);
-        window.close();
+        console.log(myInputJSObject.results);
+        console.log(myInputJSObject.request.get('numRelTime'));
+        console.log(myInputJSObject.results.get('selectedTimePoint'));
+        if ((myInputJSObject.results.get('selectedTimePoint') + 1)>= myInputJSObject.request.get('numRelTime')) {
+            swal("Error: Cannot explore next state past this time point.", "", "error");
+        } else {
+            $("body").addClass("loading"); // Adds spinner animation to page, cannot click on other things while loading
+            $("body").dblclick(function(){ // On double click, removes spinner and can interact with page again 
+                $("body").removeClass("loading"); 
+            });
+            updateAnalysisRequestWithCurrentState();  
+            window.opener.backendSimulationRequest(myInputJSObject.request);
+            window.close();
+        }
     }
 
     function updateAnalysisRequestWithCurrentState(){
+        console.log('updateAnalysisRequestwithCurrentState');
+        console.log(myInputJSObject.request);
         // Create temporary variable for previous results.
         var newPreviousAnalysis = myInputJSObject.results; 
         // Increment selected time point, because the user selected the values for this state.
@@ -851,7 +862,7 @@
 
         // Assign back to request.
         myInputJSObject.request.set('previousAnalysis', newPreviousAnalysis);
-        myInputJSObject.request.set('results', null);
+        // myInputJSObject.request.set('results', null);
         console.log("New Request:" + JSON.stringify(myInputJSObject.request.toJSON()));
     }
 

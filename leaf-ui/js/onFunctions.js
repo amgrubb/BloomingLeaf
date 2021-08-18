@@ -198,11 +198,9 @@ $('#evo-color-key').on('click', function(){ window.open('./userguides/evo.html',
  * Displays the absolute and relative assignments modal for the user.
  */
 $('#btn-view-assignment').on('click', function () {
-    console.log("btn clicked omg");
     removeHighlight();
     clearInspector();
     var assignmentsModal = new AssignmentsTable({ model: graph });
-    console.log('assignments??')
     $('#assignments-list').append(assignmentsModal.el);
     assignmentsModal.render();
 });

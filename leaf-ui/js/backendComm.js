@@ -65,6 +65,8 @@ function responseFunc(analysisRequest, response) {
 		} else if (analysisRequest.get('action') == 'singlePath' || analysisRequest.get('action') == 'updatePath') {
 			var analysisResult = convertToAnalysisResult(results); 	// {ResultBBM}
 			displayAnalysis(analysisResult, false);
+			console.log(analysisResult);
+			console.log(analysisRequest);
 			analysisRequest.addResult(analysisResult);
 		} else if (analysisRequest.get('action') == 'allNextStates') {
 			var allNextStatesResult = convertToAnalysisResult(results); 	// {ResultBBM}
