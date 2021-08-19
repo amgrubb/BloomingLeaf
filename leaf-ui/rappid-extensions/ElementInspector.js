@@ -427,6 +427,7 @@ var ElementInspector = Backbone.View.extend({
         if (this.$("#repeat-begin").val() >= this.$("#repeat-end").val()) {
             this.$("#repeat-end").val('');
         }
+        
         // Disable repeat end values from 'A' to one value after the repeat beginning value
         // Because repeating segments must be two or more segments apart 
         for (var i = (minimumInt); i < nextChar.charCodeAt(0); i++){
@@ -446,12 +447,15 @@ var ElementInspector = Backbone.View.extend({
                 var repStartTimeVal = this.intention.getFuncSegments()[i].get('startAT');
             }
         }
+        
         // If there is an absolute length and the starting repeating segment doesn't have an startAT, show error message
         if ((begin !== null) && (absTime > 0)){
             if (repStartTimeVal === null){
                 this.$("#repeat-error").text("Enter an absTime value for function segment " + begin);
                 this.$("#repeat-error").show("fast");
-            } 
+            } else {
+                this.$("#repeat-error").hide();
+            }
         } else {
             this.$("#repeat-error").hide();
         }
