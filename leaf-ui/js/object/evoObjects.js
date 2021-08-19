@@ -463,18 +463,20 @@ class EVO {
         $('.satvalue').css("display", "");
         for (var i = 0; i < elements.length; i++) {
             curr = elements[i].findView(paper).model;
-            intention = curr.get('intention');
-            initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair');
-            
-            // Sets satvalue/text to the initial sat value
-            if (!isAnalysis) {
-                if (initSatVal === '(no value)') {
-                    curr.attr('.satvalue/text', '');
-                } else {
-                    curr.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
+            if (curr instanceof joint.shapes.basic.Intention) {
+                intention = curr.get('intention');
+                initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair');
+                
+                // Sets satvalue/text to the initial sat value
+                if (!isAnalysis) {
+                    if (initSatVal === '(no value)') {
+                        curr.attr('.satvalue/text', '');
+                    } else {
+                        curr.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
+                    }
                 }
+                curr.attr({text: {fill: 'black',stroke:'none'}});
             }
-            curr.attr({text: {fill: 'black',stroke:'none'}});
         }
     }
 
