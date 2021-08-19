@@ -412,8 +412,6 @@ var ElementInspector = Backbone.View.extend({
      * (the select elements for repeat begin and end)
      */
     selectRepeatValues: function () {
-        console.log(this.$("#repeat-begin").val());
-        console.log(this.$("#repeat-end").val());
         // If some of the repeat select values were previously disabled, enable them
         this.$("option").prop('disabled', '');
 
