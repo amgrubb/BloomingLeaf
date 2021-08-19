@@ -17,7 +17,8 @@ body {
   font-family: Arial;
 }
 
-body.waiting *
+/* Adds waiting spinner to cursor */
+.spinning *
 {
     cursor: wait !important;
 }

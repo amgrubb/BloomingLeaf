@@ -65,7 +65,7 @@ public class CSPIntentions {
     		
     		for (int f = 0; f < segList.length; f++) {
     			FunctionSegment seg = segList[f];
-    			System.out.println(seg.getType() + "\t" + seg.getStartTP() + "\t" + seg.getRefEvidencePair());
+    			if (Main.DEBUG) System.out.println(seg.getType() + "\t" + seg.getStartTP() + "\t" + seg.getRefEvidencePair());
     			
     			if (seg.getType().equals("R"))
     				continue;
