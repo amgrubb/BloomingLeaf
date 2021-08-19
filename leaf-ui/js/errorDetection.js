@@ -411,8 +411,10 @@ function initiateLinkGraph(vertices, links) {
 	// Push each link's dest ID onto the index of linkMap that corresponds to the src ID
 	links.forEach(function(link){
 		// Get the element of the source ID and use that to get the element of the dest ID 
-		var src = link.getSourceElement().prop('id'); 
-		linkMap[src].push(link.getTargetElement().prop('id'));
+		var src = link.getSourceElement();
+		var targ = link.getTargetElement();
+		if (src.get('type') !== 'basic.Actor' && targ.get('type') !== 'basic.Actor') 
+			linkMap[src.prop('id')].push(targ.prop('id'));
 	});
 	return linkMap;
 }
