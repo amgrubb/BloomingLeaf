@@ -345,6 +345,7 @@ var ElementInspector = Backbone.View.extend({
         var initValueChanged = event.target.id == 'init-sat-value';
         var funcTypeChanged = event.target.className == 'function-type';
 
+        if (functionType !== null && initValue !== null) {
         // Perform check
         // If not UD, just do a regular check
         if (functionType != "UD") {
@@ -357,6 +358,7 @@ var ElementInspector = Backbone.View.extend({
                 var newValue = validPair[functionType]['defaultValue'];
                 if (funcTypeChanged) { this.$('#init-sat-value').val(newValue); }
             }
+        }
         }
     },
 
