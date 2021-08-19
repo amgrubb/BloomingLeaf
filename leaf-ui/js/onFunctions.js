@@ -291,7 +291,9 @@ paper.on({
 // Unhighlight everything when blank is being clicked
 paper.on('blank:pointerclick', function () {
     removeHighlight();
-    clearInspector();
+    if ($('.analysis-only').css("display") == "none"){
+        clearInspector();
+    }
 });
 
 // Link equivalent of the element editor
