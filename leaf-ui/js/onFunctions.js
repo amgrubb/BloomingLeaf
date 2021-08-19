@@ -495,7 +495,7 @@ paper.on("link:options", function (cell) {
 
         // If single path has been run backend analysis
         if (singlePathRun === true) {
-            $("body").addClass("loading"); // Adds spinner animation to page, cannot click on other things while loading
+            $("body").addClass("spinning"); // Adds spinner animation to page
             var curResult = curRequest.previousAttributes().results.findWhere({selected: true}); 
             curRequest.set('action', 'allNextStates');
             curRequest.set('previousAnalysis', curResult);        
@@ -505,12 +505,8 @@ paper.on("link:options", function (cell) {
             // If the last time point is selected, error message shows that you can't open Next State
             if ((curResult.get('timePointPath').length - 1) === curResult.get('selectedTimePoint')) {
                 swal("Error: Cannot explore next states with last time point selected.", "", "error");
-                $("body").removeClass("loading"); // Remove spinner from page, can interact with page again 
+                $("body").removeClass("spinning"); // Remove spinner from page
             } else {
-                // TODO: Fix this so that backendSimulationRequest is not called when spinner is removed on dblclick
-                $("body").dblclick(function(){ // On double click, removes spinner and can interact with page again 
-                    $("body").removeClass("loading"); 
-                });
                 backendSimulationRequest(curRequest);  
             }
         } else { // If single path has not been run show error message
