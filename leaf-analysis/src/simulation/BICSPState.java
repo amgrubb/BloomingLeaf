@@ -148,7 +148,7 @@ public class BICSPState {
 		HashMap<String, List<String>> nextStateTPHash = new HashMap<String, List<String>>();
 		List<String> prunedTimePoints = new ArrayList<String>();
 		
-		createNextStateTimePoint(spec, pathTPNames, nextStateTPHash, prunedTimePoints);
+		Integer minKey = createNextStateTimePoint(spec, pathTPNames, nextStateTPHash, prunedTimePoints);
 
 		// Iterate over each selected state.
 		for (String nextStateItems : nextStateTPHash.keySet()) {
@@ -161,25 +161,9 @@ public class BICSPState {
 			String[][] answer = algo.getNextStateData(stateLabel);
 			allSolutions.put(algo.timePoints[algo.timePoints.length - 1].id, answer);
 		}
-		return spec.getPrevResult().getNewIOSolutionFromSelected(allSolutions, nextStateTPHash, spec.getMaxTime());
+		return spec.getPrevResult().getNewIOSolutionFromSelected(allSolutions, nextStateTPHash, minKey, spec.getMaxTime());
 		
 	}
-
-/*
- * TODO: Add code to assign constraints for the appropriate constraints
- * 
- * 			List<Constraint> nextStateConstraints = new ArrayList<Constraint>();
-			int newTime = selectedTPAbsTime + 1;
-			nextStateConstraints.add(new XeqC(this.timePoints[i], newTime));
-			//this.timePoints[i].setDomain(newTime, newTime);
-			for (int k = selectedTP + 1; k < this.timePoints.length; k++) {
-				if (k != i) {
-					newTime++;
-					nextStateConstraints.add(new XeqC(this.timePoints[i], newTime));
-				}
-			}
- */
-
 
 /**
  * 
@@ -188,7 +172,7 @@ public class BICSPState {
  * @param newTPHash
  * @param prunedTimePoints
  */
-	private static void createNextStateTimePoint(ModelSpec spec, //Store store, 
+	private static Integer createNextStateTimePoint(ModelSpec spec, //Store store, 
 			List<List<String>> pathTPNames, 
 			HashMap<String, List<String>> newTPHash,
 			List<String> prunedTimePoints) {
@@ -232,12 +216,19 @@ public class BICSPState {
     		tpCounter++;
 		}
 		
-		// Add next absolute time point.
+		
 		@SuppressWarnings("unused")
-		boolean guarenteeNextAbs = false;		// TODO: Use this and figure it out.
+		boolean guarenteeNextAbs = false;
+		// TODO: If the current time is 19 and the next absTime is 20, then we only 
+		// want to generate states for the absTime point.
+		// Update algorithm so if guarenteeNextAbs == true then other time points
+		// will be pruned.
+		
+		// Add next absolute time point.
+		Integer minKey = null;
 		int maxTime = spec.getMaxTime();
 		if (modelAbsTime.size() > 0) {
-			int minKey = maxTime + 1;
+			minKey = maxTime + 1;
 			for	(Integer key : modelAbsTime.keySet()) 
 				if (key < minKey)  
 					minKey = key;
@@ -256,7 +247,10 @@ public class BICSPState {
     		newTPHash.put("TNS-R", toAdd);
 		}
 		
-		prunedTimePoints = pruneExtraUDTPforNextState(spec, unassignedTimePoint);
+		List<String> prunedList = pruneExtraUDTPforNextState(spec, unassignedTimePoint);
+		for (String item : prunedList)
+			prunedTimePoints.add(item);
+		
 		if (unassignedTimePoint.size() > 0) {		
 			int c = 0; 
 			for (String newVal: unassignedTimePoint) {
@@ -266,32 +260,7 @@ public class BICSPState {
 	    		c++;
 			}
 		}
-		
-		//TODO: Add a condition to make sure that there is an available time point between now and the next TNS-A, i.e., a random/function value.		
-//		int iMin = prev.getSelectedAbsTime() + 1;
-//		int iMax = iMin + newTPHash.size() - 1;
-//		if (iMax > maxTime)
-//			throw new RuntimeException("\n The number of remaining time points won't fit in maxTime.");
-//		for	(Map.Entry<String, List<String>> entry : newTPHash.entrySet()) {
-//			IntVar newTP = new IntVar(store, entry.getKey(), iMin, iMax);
-//			timePointList.add(newTP);
-//    		pathTPNames.put(newTP, entry.getValue());
-//    		nextStateTPHash.put(entry.getKey(), entry.getValue());
-//		}
-	
-//TODO: Add when intvar's exist.
-//		for	(String item : prunedTimePoints) {
-//			IntVar newTP = new IntVar(store, item, iMax + 1, spec.getMaxTime());
-//			List<String> newItem = new ArrayList<String>();
-//			newItem.add(item);
-//    		pathTPNames.put(newTP, newItem);
-//    		//nextStateTPHash.put(entry.getKey(), entry.getValue());
-//		}
-//		
-//		IntVar[] list = new IntVar[timePointList.size()];
-//		for (int i = 0; i < list.length; i ++)
-//			list[i] = timePointList.get(i);
-//		return list;
+		return minKey;
 	}
 
 	private static List<String> pruneExtraUDTPforNextState(
@@ -348,7 +317,7 @@ public class BICSPState {
 	private String[][] getNextStateData(Search<IntVar> label) {		
 		int totalSolution = label.getSolutionListener().solutionsNo();	
 		if(Main.DEBUG){
-			System.out.println("\nThere are " + totalSolution + " possible next states.");
+
 			for (int s = 1; s <= totalSolution; s++){	/// NOTE: Solution number starts at 1 not 0!!!
 				for (int v = 0; v < label.getSolution(s).length; v++) {
 					if (v % 4 == 0) System.out.print(" ");
@@ -356,7 +325,7 @@ public class BICSPState {
 				}	
 				System.out.println();
 			}
-			System.out.println("\nThere are " + totalSolution + " possible next states.");
+			System.out.println(totalSolution + "next state solution found.");
 		}
 		
 		String[][] finalValues = new String[totalSolution][this.numIntentions];

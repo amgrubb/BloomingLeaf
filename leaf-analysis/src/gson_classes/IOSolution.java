@@ -18,6 +18,7 @@ public class IOSolution {
 	private HashMap<String, List<String>> nextStateTPs;
 	@SuppressWarnings("unused")			// Used by front end.
 	private HashMap<String, String[][]> allSolutions;
+	@SuppressWarnings("unused")			// Used by front end.
 	private Integer nextPossibleAbsValue;
 	@SuppressWarnings("unused")			// Used by front end.
 	private Integer nextPossibleRndValue;
@@ -32,7 +33,8 @@ public class IOSolution {
 	}
 	public IOSolution getNewIOSolutionFromSelected(
 			HashMap<String, String[][]> allSolutions, 
-			HashMap<String, List<String>> nextStateTPs, int maxTime) {
+			HashMap<String, List<String>> nextStateTPs, 
+			Integer nextAbsVal, int maxTime) {
 		IOSolution newObj = new IOSolution(getSelectedTimePointPath(), getSelectedTPAssignments());
 		newObj.selectedTimePoint = this.selectedTimePoint;
 		newObj.nextStateTPs = nextStateTPs;
@@ -47,10 +49,10 @@ public class IOSolution {
 		int lower = newObj.timePointPath[newObj.timePointPath.length - 1] + 1;
 		int numMissingStates = this.timePointPath.length - newObj.timePointPath.length; 
 		int upper = maxTime - numMissingStates;
-		if (newObj.nextStateTPs.containsKey("TNS-A")) {
+		if (newObj.nextStateTPs.containsKey("TNS-A") && nextAbsVal != null) {
 			//Contains an AbsTimeValue
-			newObj.nextPossibleAbsValue = this.timePointAssignments.get(newObj.nextStateTPs.get("TNS-A").get(0));
-			upper = Math.min(upper, newObj.nextPossibleAbsValue - 1);
+			newObj.nextPossibleAbsValue = nextAbsVal; //this.timePointAssignments.get(newObj.nextStateTPs.get("TNS-A").get(0));
+			upper = Math.min(upper, nextAbsVal);
 		} 
 		newObj.nextPossibleRndValue = (int)Math.floor(Math.random()*(upper - lower + 1) + lower);
 		return newObj;	
