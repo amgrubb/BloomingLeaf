@@ -339,22 +339,26 @@ graph.on('remove', function (cell) {
         }
     }
 
-    else if (cell.isLink() && (cell.get('link').get("linkType") == 'NBT' || cell.get('link').get("linkType") == 'NBD')) {
-        // Verify if is a Not both type. If it is remove labels from source and target node
-        var source = graph.getCell(cell.get('source').id);
-        var target = graph.getCell(cell.get('target').id);
-        // Verify if it is possible to remove the NB tag from source and target
-        if (source !== null && !checkForMultipleNB(source)) {
-            source.get('intention').get('evolvingFunction').set('type', 'NT');
-            source.get('intention').getUserEvaluationBBM(0).set('assignedEvidencePair', '(no value)');
-            source.attr('.funcvalue/text', '');
-            source.attr('.satvalue/text', '');
-        }
-        if (target !== null && !checkForMultipleNB(target)) {
-            target.get('intention').get('evolvingFunction').set('type', 'NT');
-            target.get('intention').getUserEvaluationBBM(0).set('assignedEvidencePair', '(no value)');
-            target.attr('.funcvalue/text', '');
-            target.attr('.satvalue/text', '');
+    else if (cell.isLink()){
+        if (cell.get('link') !== null) {
+            if (cell.get('link').get("linkType") == 'NBT' || cell.get('link').get("linkType") == 'NBD') {
+                // Verify if is a Not both type. If it is remove labels from source and target node
+                var source = graph.getCell(cell.get('source').id);
+                var target = graph.getCell(cell.get('target').id);
+                // Verify if it is possible to remove the NB tag from source and target
+                if (source !== null && !checkForMultipleNB(source)) {
+                    source.get('intention').get('evolvingFunction').set('type', 'NT');
+                    source.get('intention').getUserEvaluationBBM(0).set('assignedEvidencePair', '(no value)');
+                    source.attr('.funcvalue/text', '');
+                    source.attr('.satvalue/text', '');
+                }
+                if (target !== null && !checkForMultipleNB(target)) {
+                    target.get('intention').get('evolvingFunction').set('type', 'NT');
+                    target.get('intention').getUserEvaluationBBM(0).set('assignedEvidencePair', '(no value)');
+                    target.attr('.funcvalue/text', '');
+                    target.attr('.satvalue/text', '');
+                }
+            }
         }
     }
 });
@@ -444,7 +448,9 @@ paper.on({
 // Unhighlight everything when blank is being clicked
 paper.on('blank:pointerclick', function () {
     removeHighlight();
-    clearInspector();
+    if ($('.analysis-only').css("display") == "none"){
+        clearInspector();
+    }
 });
 
 // Link equivalent of the element editor
