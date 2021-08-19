@@ -65,8 +65,6 @@ function responseFunc(analysisRequest, response) {
 		} else if (analysisRequest.get('action') == 'singlePath' || analysisRequest.get('action') == 'updatePath') {
 			var analysisResult = convertToAnalysisResult(results); 	// {ResultBBM}
 			displayAnalysis(analysisResult, false);
-			console.log(analysisResult);
-			console.log(analysisRequest);
 			analysisRequest.addResult(analysisResult);
 		} else if (analysisRequest.get('action') == 'allNextStates') {
 			var allNextStatesResult = convertToAnalysisResult(results); 	// {ResultBBM}
@@ -89,7 +87,6 @@ function convertToAnalysisResult(results){
 	tempResult.set('elementList', results.elementList);
 	tempResult.set('allSolutions', results.allSolutions);			//Used for Next State
 	tempResult.set('nextStateTPs', results.nextStateTPs);		//Used for Next State
-//	tempResult.set('isPathSim', true);
 	tempResult.set('selectedTimePoint', results.selectedTimePoint);
 	tempResult.set('nextPossibleAbsValue', results.nextPossibleAbsValue);		//TODO: Add these values when other result BBMs are created.
 	tempResult.set('nextPossibleRndValue', results.nextPossibleRndValue);		//TODO: Add these values when other result BBMs are created.

@@ -17,9 +17,6 @@
  *   List of elements containing analysis results
  *   ex: [{id: "0001", status:["0010","0100"]}]
  *   (for nodeID 0001, time point 0, its satisfaction value is "0010", timd point 1, its satisfaction value is "0100")
- * @param {Boolean} isPathSim
- *   Used for slider visualization
- *   true if single path simulated
  * @param {Array.<Object>} colorVis
  *   Color visualization for analysis mode
  *   ex: {numIntentions: 21, numTimePoints: 2, intentionListColorVis: Array(21), isColorBlind: false}
@@ -37,14 +34,13 @@ var ResultBBM = Backbone.Model.extend({
     },
 
     defaults: function() {
-        return {    //TODO: Verify if this return should be kept.
+        return {    
             name:"Default Result",
             timePointAssignments: null,
             timePointPath: null,        // changed type to list of int.
             elementList: null,
             allSolutions: null, 
             nextStateTPs: null,
-//            isPathSim: false, // Used for slider visualization  // Should be set to true for single path?
             colorVis: null, // Color visualization for analysis mode
             selectedTimePoint: null, // Find where slider is initialized and set timepoint in here. Also place it in update function
             selected: true,

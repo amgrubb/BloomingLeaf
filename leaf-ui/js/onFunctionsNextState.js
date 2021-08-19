@@ -41,7 +41,7 @@ function zoomOut(pPaperScroller) {
  */
 function changeFont(new_font, pPaper) {
     var elements = analysis.graph.getElements();
-    console.log(elements);
+
     for (var i = 0; i < elements.length; i++) {
         var cellView = elements[i].findView(pPaper);
         cellView.model.attr(".name/font-size", new_font);

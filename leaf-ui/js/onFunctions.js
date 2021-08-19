@@ -491,7 +491,6 @@ paper.on("link:options", function (cell) {
         } else {
             var singlePathRun = true;
         }
-        console.log(singlePathRun);
 
         // If single path has been run backend analysis
         if (singlePathRun === true) {
@@ -499,9 +498,7 @@ paper.on("link:options", function (cell) {
             var curResult = curRequest.previousAttributes().results.findWhere({selected: true}); 
             curRequest.set('action', 'allNextStates');
             curRequest.set('previousAnalysis', curResult);        
-            console.log(JSON.stringify(curRequest));
-            console.log(curRequest);
-            console.log(curResult);
+
             // If the last time point is selected, error message shows that you can't open Next State
             if ((curResult.get('timePointPath').length - 1) === curResult.get('selectedTimePoint')) {
                 swal("Error: Cannot explore next states with last time point selected.", "", "error");
@@ -558,7 +555,7 @@ paper.on("link:options", function (cell) {
      */
     function switchToAnalysisMode() {
         setInteraction(false);
-//        console.log(paper)
+        
         document.getElementById("colorResetAnalysis").value = 1;
         // Clear the right panel
         clearInspector();

@@ -35,14 +35,9 @@
     </head>
     <body>
         <div class="name"><p id="name">BloomingLeaf</p></div>
-        <div class="toolbar">   <!-- TODO: Could be "toolbar-div"-->
-            <!-- <div id="model-toolbar">
-                <button id="btn-save" class="btn">Save</button>
-            </div> -->
+        <div class="toolbar">  
             <button id="btn-zoom-in" class="btn">Zoom In</button>
             <button id="btn-zoom-out" class="btn">Zoom Out</button>
-
-            <!-- <button id="btn-save-leaf" class="btn"> Export .leaf </button> -->
 
             <div class="dropdown">
               <div class="btn">Font Size</div>
@@ -53,22 +48,6 @@
                 <a id="btn-debug" class='model-only'>Debug</a>
               </div>
             </div>
-
-            <!-- <div class="dropdown">
-              <div class="btn">Help</div>
-              <div class="dropdown-toolbar">
-                <a onclick="window.open('documentation.pdf'); return false;">Documentation</a>
-                <a onclick="window.open('legend.html', 'newwindow', 'width=300, height=250'); return false;">
-                Legend</a>
-              </div>
-            </div> -->
-
-            <!-- EVO for next state. Three option slider: off, overlay selected state, overlay by % for all possible next states -->
-            <!-- <div class = "EVO-whole-button" id="nextStateSlider"> 
-              <input type="range" min="0" max="2" value="0" class="EVO-slider" id="colorResetNextState">
-              <p id = "top-label-nextState" style = "display: inline-block" >EVO</p>
-              <p class = "on-off">  Off &ensp; State  &ensp; %</p> 
-            </div> -->
 
         </div>
 
@@ -111,10 +90,6 @@
         <div id="paper">
         </div>
 
-<!--
-        <div id="slider"></div>
-        <span id="sliderValue"></span>
--->
         <script type="text/javascript">
             SVGElement.prototype.getTransformToElement = SVGElement.prototype.getTransformToElement || function(toElement) {
             return toElement.getScreenCTM().inverse().multiply(this.getScreenCTM());
@@ -144,17 +119,6 @@
         <script src="./js/object/viewObjects.js"></script>
 
         <!-- Rappid extensions -->
-        <!-- <script src="./rappid-extensions/BackboneModelsIntention.js"></script>
-        <script src="./rappid-extensions/BackboneModelsOther.js"></script>
-        <script src="./rappid-extensions/BackboneModelsAnalysis.js"></script>
-        <script src="./rappid-extensions/AssignmentsTable.js"></script>
-        <script src="./rappid-extensions/ElementInspector.js"></script>
-        <script src="./rappid-extensions/ConfigInspector.js"></script>
-        <script src="./rappid-extensions/IntermediateValues.js"></script>
-        <script src="./rappid-extensions/ActorInspector.js"></script>
-        <script src="./rappid-extensions/LinkInspector.js"></script>
-        <script src="./rappid-extensions/AnalysisInspector.js"></script> -->
-
         <script src="./rappid-extensions/BackboneModelsIntention.js"></script>
         <script src="./rappid-extensions/BackboneModelsOther.js"></script>
         <script src="./rappid-extensions/BackboneModelsAnalysis.js"></script>
@@ -167,8 +131,7 @@
         <script src="./js/backendComm.js"></script> 
         <script src="./js/onFunctionsNextState.js"></script>
 
-        <!--SweetAlertJS is used for easy way to customize dialog or alert message
-       -->
+        <!--SweetAlertJS is used to customize dialog or alert message-->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/6.11.5/sweetalert2.all.js"></script>
     </body>
 </html>
