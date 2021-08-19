@@ -17,13 +17,24 @@ body {
   font-family: Arial;
 }
 
-body.waiting *
+/* Disable pointer events */
+.waiting *
+{
+  cursor: not-allowed;
+}
+
+/* Adds waiting spinner to cursor */
+.spinning *
 {
     cursor: wait !important;
 }
 
 .header {
    padding: 0px;
+}
+
+#swal2-content b{
+  color: red;
 }
 
 #name {

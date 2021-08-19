@@ -6,14 +6,22 @@ import java.util.List;
 import java.util.Map;
 
 public class IOSolution {
+	// Outputs of simulation paths (inputs for 'next state' and 'update path'.
 	private List<ElementData> elementList = new ArrayList<>();
 	private HashMap<String, Integer> timePointAssignments;
 	private Integer[] timePointPath;
+	
+	// Input for 'next state' or 'update path'
 	private Integer selectedTimePoint;
-	@SuppressWarnings("unused")
+	
+	// Outputs for 'next state'
 	private HashMap<String, List<String>> nextStateTPs;
-	@SuppressWarnings("unused")
+	@SuppressWarnings("unused")			// Used by front end.
 	private HashMap<String, String[][]> allSolutions;
+	@SuppressWarnings("unused")			// Used by front end.
+	private Integer nextPossibleAbsValue;
+	@SuppressWarnings("unused")			// Used by front end.
+	private Integer nextPossibleRndValue;
 	
 	// *********** Start of Returning The Solution *********** 
 	public IOSolution(Integer[] timePointPath, HashMap<String, Integer> timePointAssignments) {
@@ -25,7 +33,8 @@ public class IOSolution {
 	}
 	public IOSolution getNewIOSolutionFromSelected(
 			HashMap<String, String[][]> allSolutions, 
-			HashMap<String, List<String>> nextStateTPs) {
+			HashMap<String, List<String>> nextStateTPs, 
+			Integer nextAbsVal, int maxTime) {
 		IOSolution newObj = new IOSolution(getSelectedTimePointPath(), getSelectedTPAssignments());
 		newObj.selectedTimePoint = this.selectedTimePoint;
 		newObj.nextStateTPs = nextStateTPs;
@@ -37,6 +46,15 @@ public class IOSolution {
 			}
 			newObj.addElement(e.id, newStatus);
 		}
+		int lower = newObj.timePointPath[newObj.timePointPath.length - 1] + 1;
+		int numMissingStates = this.timePointPath.length - newObj.timePointPath.length; 
+		int upper = maxTime - numMissingStates;
+		if (newObj.nextStateTPs.containsKey("TNS-A") && nextAbsVal != null) {
+			//Contains an AbsTimeValue
+			newObj.nextPossibleAbsValue = nextAbsVal; //this.timePointAssignments.get(newObj.nextStateTPs.get("TNS-A").get(0));
+			upper = Math.min(upper, nextAbsVal);
+		} 
+		newObj.nextPossibleRndValue = (int)Math.floor(Math.random()*(upper - lower + 1) + lower);
 		return newObj;	
 	}
 	

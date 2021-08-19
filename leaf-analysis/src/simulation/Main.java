@@ -33,13 +33,30 @@ public class Main {
 		try {
 			// Creating the back-end model to be analyzed
 			ModelSpec modelSpec = convertBackboneModelFromFile(filePath + inputFile);
-			// Creates the store and constraint problem to be solved.
-			BICSPAlgorithm solver = new BICSPAlgorithm(modelSpec);
-			//long startTime = System.currentTimeMillis();                            //Scaleability Testing
-			IOSolution outputModel = solver.solveModel();
-            //long endTime = System.currentTimeMillis();                              //Scalability Testing
-            //System.out.print("Time:" + (endTime - startTime));					  //Scalability Testing
-			createOutputFile(outputModel, filePath + outputFile);			
+			
+			
+	    	switch (modelSpec.getAnalysisType()) {	
+	    	case "singlePath":
+	    	case "updatePath":
+				// Creates the store and constraint problem to be solved.
+	    		BICSPPath solver = new BICSPPath(modelSpec);
+				//long startTime = System.currentTimeMillis();                            //Scaleability Testing
+				IOSolution outputModel = solver.solveModel();
+	            //long endTime = System.currentTimeMillis();                              //Scalability Testing
+	            //System.out.print("Time:" + (endTime - startTime));					  //Scalability Testing
+				createOutputFile(outputModel, filePath + outputFile);	
+	    		break;
+	    	case "allNextStates":
+	    		IOSolution outputModelNext = BICSPState.solveModel(modelSpec);
+//				BICSPAlgorithm solverNext = new BICSPAlgorithm(modelSpec);	
+//				IOSolution outputModelNext = solverNext.solveModel();
+				createOutputFile(outputModelNext, filePath + outputFile);	
+	    		break;    		
+	    	default:
+	    		throw new Exception("User Error: User requested \'" + modelSpec.getAnalysisType() + "\', no such scenario exists. ");
+	    	}
+			
+		
 		} catch (RuntimeException e) {
 			try {
 				if (DEBUG) System.err.println(e.getMessage());	

@@ -10,8 +10,6 @@ import org.jacop.constraints.XltY;
 import org.jacop.core.IntVar;
 import org.jacop.core.Store;
 
-import gson_classes.IOSolution;
-
 public class CSPPath {
 	/**
 	 * Assigned this.numTimePoints and creates time point list (this.timePoints) then
@@ -21,7 +19,7 @@ public class CSPPath {
 	 * @param numRelTP
 	 * @param prevTPAssignments
 	 */
-	public static IntVar[] createPathTimePoint(ModelSpec spec, Store store, 
+	public static IntVar[] createPathTimePoint(ModelSpec spec, Store store, List<Constraint> constraints, 
 			HashMap<IntVar, List<String>> timePointMap, int maxTime) {
 		
 		// Get the Unique Set of Time Point from the Model
@@ -61,102 +59,19 @@ public class CSPPath {
     		tpCounter++; 
     	}
     	
+    	// Add constraints for UD TimePoint ordering.
+		List<List<String>> orderedTimePoints = spec.getUDTimePointOrder();
+    	for (List<String> subList : orderedTimePoints) {
+    		for (int i = 1; i < subList.size(); i++) {
+    			IntVar prev = getTimePoint(timePointMap, subList.get(i-1));
+    			IntVar curr = getTimePoint(timePointMap, subList.get(i));
+    			constraints.add(new XltY(prev, curr));
+    		}	
+    	}
     	return timePoints;
 		
 	}
-	
-	public static IntVar[] createNextStateTimePoint(ModelSpec spec, Store store, 
-			HashMap<IntVar, List<String>> timePointMap, 
-			HashMap<String, List<String>> nextStateTPHash, 
-			int maxTime) {
-		
-   		IOSolution prev = spec.getPrevResult();
-   		if (prev == null)
-   			throw new RuntimeException("\n Previous results required, but null.");
-		
-		// Get the Unique Set of Time Point from the Model
-		HashMap<Integer, List<String>> modelAbsTime = spec.getAbsTimePoints();
-		List<String> unassignedTimePoint = modelAbsTime.get(-1);
-		modelAbsTime.remove(-1);
-		int numRelTP = spec.getNumRelativeTimePoints(); 
-		HashMap<String, Integer> prevTPAssignments = prev.getSelectedTPAssignments();
-		Integer[] prevTP = prev.getSelectedTimePointPath();
-		
-		List<IntVar> timePointList = new ArrayList<IntVar>();
-		
-		int tpCounter = 0;
-		for (Integer i : prevTP) {		// Last Time Points
-			IntVar newTP = new IntVar(store, "TL" + tpCounter, i, i);
-
-    		List<String> affectedKeys = new ArrayList<String>();
-			for	(Map.Entry<String, Integer> entry : prevTPAssignments.entrySet()) {
-				if (entry.getValue().equals(i))  
-					affectedKeys.add(entry.getKey());
-			}
-			for (String key : affectedKeys)		// Removes no longer needed entires. 
-				prevTPAssignments.remove(key);
-			if (modelAbsTime.containsKey(i)) {
-				List<String> absVal = modelAbsTime.get(i);
-				for (String v : absVal)
-					if (!affectedKeys.contains(v))
-						affectedKeys.add(v);
-				modelAbsTime.remove(i);			// Removes no longer needed entries.
-			}
-			for (String key : affectedKeys)
-				if (unassignedTimePoint.contains(key)) 
-					unassignedTimePoint.remove(key);
-			if (affectedKeys.isEmpty()) {
-				affectedKeys.add("TR" + tpCounter);
-				numRelTP--;
-			}
-			timePointList.add(newTP);
-    		timePointMap.put(newTP, affectedKeys);
-    		tpCounter++;
-		}
-
-		HashMap<String, List<String>> newTPHash = new HashMap<String, List<String>>();  
-		// Add a relative time point if available.
-		if (numRelTP > 0) {
-    		List<String> toAdd = new ArrayList<String>();
-    		toAdd.add("TNS-R");
-    		newTPHash.put("TNS-R", toAdd);
-		}
-		if (modelAbsTime.size() > 0) {
-			int minKey = maxTime + 1;
-			for	(Integer key : modelAbsTime.keySet()) 
-				if (key < minKey)  
-					minKey = key;
-			if (minKey != maxTime + 1) {
-	    		List<String> toAdd = modelAbsTime.get(minKey);
-	    		newTPHash.put("TNS-A", toAdd);
-			}
-		}
-		if (unassignedTimePoint.size() > 0) {
-			int c = 0; 
-			for (String newVal: unassignedTimePoint) {
-	    		List<String> toAdd = new ArrayList<String>();
-	    		toAdd.add(newVal);
-	    		newTPHash.put("TNS-" + c, toAdd);
-	    		c++;
-			}
-		}
-		int iMin = prev.getSelectedAbsTime() + 1;
-		int iMax = iMin + newTPHash.size() - 1;
-		if (iMax > maxTime)
-			throw new RuntimeException("\n The number of remaining time points won't fit in maxTime.");
-		for	(Map.Entry<String, List<String>> entry : newTPHash.entrySet()) {
-			IntVar newTP = new IntVar(store, entry.getKey(), iMin, iMax);
-			timePointList.add(newTP);
-    		timePointMap.put(newTP, entry.getValue());
-    		nextStateTPHash.put(entry.getKey(), entry.getValue());
-		}
-		
-		IntVar[] list = new IntVar[timePointList.size()];
-		for (int i = 0; i < list.length; i ++)
-			list[i] = timePointList.get(i);
-		return list;
-	}
-		
+			
 	public static void createLTConstraintsBetweenTimePoint(
 			List<Constraint> constraints, ModelSpec spec,  
 			IntVar[] timePoints, HashMap<IntVar, List<String>> timePointMap) {
@@ -184,5 +99,4 @@ public class CSPPath {
 		}
 		throw new RuntimeException("CSPIntentions: getTimePoint - cannot find timepoint for " + name);
 	}
-	
 }

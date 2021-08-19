@@ -3,6 +3,165 @@ This file contains all the jQuery functions that are associated with buttons and
 It also contains the setup for Rappid elements.
 */
 
+// Used to be onFunctionsBothWindows.js
+// Navigation bar functions:
+var max_font = 20;
+var min_font = 6;
+var current_font = 10;
+var default_font = 10;
+
+function zoomIn(pPaperScroller) {
+    pPaperScroller.zoom(0.2, { max: 3 });
+}
+
+function zoomOut(pPaperScroller) {
+    pPaperScroller.zoom(-0.2, { min: 0.2 });
+}
+
+/**
+ * Helper function function for fontUp, fontDown, and defaultFont
+ * @param {int} new_font 
+ */
+function changeFont(new_font, pPaper) {
+    var elements = graph.getElements();
+    for (var i = 0; i < elements.length; i++) {
+        var cellView = elements[i].findView(pPaper);
+        cellView.model.attr(".name/font-size", new_font);
+    }
+    current_font = new_font;
+}
+
+/**
+ * Increases font size by 1
+ * @param {*} pPaper 
+ */
+function fontUp(pPaper) {
+    var new_font = current_font + 1;
+
+    if (new_font <= max_font) {
+        changeFont(new_font, pPaper)
+    }
+}
+
+/**
+ * Decreases font size by 1
+ * @param {*} pPaper 
+ */
+function fontDown(pPaper) {
+    var new_font = current_font - 1;
+
+    if (new_font >= min_font) {
+        changeFont(new_font, pPaper)
+    }
+}
+
+/**
+ * Changes font size to default (10)
+ * @param {*} pPaper 
+ */
+function defaultFont(pPaper) {
+    changeFont(default_font, pPaper)
+}
+
+function resizeWindow(sliderMax) {
+    $('#slider').css("margin-top", $(this).height() * 0.7);
+    $('#slider').width($('#paper').width() * 0.8);
+    adjustSliderWidth(sliderMax)	
+}
+
+// End nav bar functions
+
+/**
+ * Set up Ctrl+c and Ctrl+v shortcut for macOS
+ *  
+ */
+{
+    // TODO: Outstanding problem from develop - copy/paste pastes twice
+    // Currently only one model can ever be selected at a time
+
+    var clipboard = new joint.ui.Clipboard();
+    var selection = new Backbone.Collection();
+
+    var selectionView = new joint.ui.SelectionView({
+        paper: paper,
+        graph: graph,
+        model: selection
+    });
+    // Check if the browser is on Mac
+    var macOS = navigator.platform.match(/(Mac|iPhone|iPod|iPad)/i) ? true : false;
+    if (macOS) {
+        KeyboardJS.on('command + c, ctrl + c', function () {
+            getSelection();
+            // Copy all selected elements and their associatedf links.
+            clipboard.copyElements(selection, graph, { translate: { dx: 20, dy: 20 }, useLocalStorage: true });
+        });
+        KeyboardJS.on('command + v, ctrl + v', function () {
+            clipboard.pasteCells(graph);
+
+            selectionView.cancelSelection();
+
+            clipboard.pasteCells(graph, { link: { z: -1 }, useLocalStorage: true });
+
+            // Make sure pasted elements get selected immediately. This makes the UX better as
+            // the user can immediately manipulate the pasted elements.
+            clipboard.each(function (cell) {
+                if (cell.get('type') === 'link') return;
+
+                // Push to the selection not to the model from the clipboard but put the model into the graph.
+                // Note that they are different models. There is no views associated with the models
+                // in clipboard.
+                selection.add(graph.get('cells').get(cell.id));
+            });
+
+            selection.each(function (cell) {
+                selectionView.createSelectionBox(paper.findViewByModel(cell));
+            });
+        });
+
+    } else {
+
+        KeyboardJS.on('ctrl + c', function () {
+            getSelection();
+            // Copy all selected elements and their associatedf links.
+            clipboard.copyElements(selection, graph, { translate: { dx: 20, dy: 20 }, useLocalStorage: true });
+        });
+        KeyboardJS.on('ctrl + v', function () {
+            clipboard.pasteCells(graph);
+
+            selectionView.cancelSelection();
+
+            clipboard.pasteCells(graph, { link: { z: -1 }, useLocalStorage: true });
+
+            // Make sure pasted elements get selected immediately. This makes the UX better as
+            // the user can immediately manipulate the pasted elements.
+            clipboard.each(function (cell) {
+                if (cell.get('type') === 'link') return;
+
+                // Push to the selection not to the model from the clipboard but put the model into the graph.
+                // Note that they are different models. There is no views associated with the models
+                // in clipboard.
+                selection.add(graph.get('cells').get(cell.id));
+            });
+
+            selection.each(function (cell) {
+                selectionView.createSelectionBox(paper.findViewByModel(cell));
+            });
+        });
+
+    }
+
+    function getSelection() {
+        for (let element of graph.getElements()) {
+            if (element.findView(paper).el.children.length == 2 &&
+                element.findView(paper).el.children[1].className.baseVal
+                == 'joint-highlight-stroke joint-theme-default') {
+                selection.add(element);
+            }
+        }
+    }
+}
+// End of onFunctionsBothWindows.js functions
+
 /*** Event listeners for index.html toolbar functions ***/
 /**
 * Set up tool bar button on click functions
@@ -27,7 +186,6 @@ $('#btn-svg').on('click', function () {
     paper.openAsSVG();
 });
  
-$('#btn-debug').on('click', function(){ console.log(graph.toJSON()) });
 $('#btn-zoom-in').on('click', function(){ zoomIn(paperScroller); });
 $('#btn-zoom-out').on('click', function(){ zoomOut(paperScroller); });
 $('#btn-fnt').on('click', function(){ defaultFont(paper);});
@@ -88,12 +246,7 @@ $('#load-sample').on('click', function() {
 */
 
 // Switches to modeling mode
-$('#modeling-btn').on('click', function () {
-    switchToModellingMode();
-
-    savedAnalysisData.finalAssignedEpoch = "";
-    savedAnalysisData.finalValueTimePoints = "";
-});
+$('#modeling-btn').on('click', function () {switchToModellingMode();});
 
 /*** Events for Rappid/JointJS objets ***/
 
@@ -186,22 +339,26 @@ graph.on('remove', function (cell) {
         }
     }
 
-    else if (cell.isLink() && (cell.get('link').get("linkType") == 'NBT' || cell.get('link').get("linkType") == 'NBD')) {
-        // Verify if is a Not both type. If it is remove labels from source and target node
-        var source = graph.getCell(cell.get('source').id);
-        var target = graph.getCell(cell.get('target').id);
-        // Verify if it is possible to remove the NB tag from source and target
-        if (source !== null && !checkForMultipleNB(source)) {
-            source.get('intention').get('evolvingFunction').set('type', 'NT');
-            source.get('intention').getUserEvaluationBBM(0).set('assignedEvidencePair', '(no value)');
-            source.attr('.funcvalue/text', '');
-            source.attr('.satvalue/text', '');
-        }
-        if (target !== null && !checkForMultipleNB(target)) {
-            target.get('intention').get('evolvingFunction').set('type', 'NT');
-            target.get('intention').getUserEvaluationBBM(0).set('assignedEvidencePair', '(no value)');
-            target.attr('.funcvalue/text', '');
-            target.attr('.satvalue/text', '');
+    else if (cell.isLink()){
+        if (cell.get('link') !== null) {
+            if (cell.get('link').get("linkType") == 'NBT' || cell.get('link').get("linkType") == 'NBD') {
+                // Verify if is a Not both type. If it is remove labels from source and target node
+                var source = graph.getCell(cell.get('source').id);
+                var target = graph.getCell(cell.get('target').id);
+                // Verify if it is possible to remove the NB tag from source and target
+                if (source !== null && !checkForMultipleNB(source)) {
+                    source.get('intention').get('evolvingFunction').set('type', 'NT');
+                    source.get('intention').getUserEvaluationBBM(0).set('assignedEvidencePair', '(no value)');
+                    source.attr('.funcvalue/text', '');
+                    source.attr('.satvalue/text', '');
+                }
+                if (target !== null && !checkForMultipleNB(target)) {
+                    target.get('intention').get('evolvingFunction').set('type', 'NT');
+                    target.get('intention').getUserEvaluationBBM(0).set('assignedEvidencePair', '(no value)');
+                    target.attr('.funcvalue/text', '');
+                    target.attr('.satvalue/text', '');
+                }
+            }
         }
     }
 });
@@ -291,7 +448,9 @@ paper.on({
 // Unhighlight everything when blank is being clicked
 paper.on('blank:pointerclick', function () {
     removeHighlight();
-    clearInspector();
+    if ($('.analysis-only').css("display") == "none"){
+        clearInspector();
+    }
 });
 
 // Link equivalent of the element editor
@@ -330,14 +489,32 @@ paper.on("link:options", function (cell) {
     /** All Next States:
      * Selects the current configuration and prior results and passes them to backendSimulationRequest()  */
     $('#next-state-btn').on('click', function() { 
-        //TODO: Ensure that next state is never called from the last slider point.
         var curRequest = configCollection.findWhere({selected: true});
-        var curResult = curRequest.previousAttributes().results.findWhere({selected: true}); 
-        curRequest.set('action', 'allNextStates');
-        curRequest.set('previousAnalysis', curResult);        
-        console.log(JSON.stringify(curRequest));
-        console.log(curRequest);
-        backendSimulationRequest(curRequest);    
+
+        // Checks to see if single path has been run by seeing if there are any results
+        if (typeof curRequest.previousAttributes().results === 'undefined' || curRequest.previousAttributes().results.length == 0) {
+             var singlePathRun = false;
+        } else {
+            var singlePathRun = true;
+        }
+
+        // If single path has been run backend analysis
+        if (singlePathRun === true) {
+            $("body").addClass("spinning"); // Adds spinner animation to page
+            var curResult = curRequest.previousAttributes().results.findWhere({selected: true}); 
+            curRequest.set('action', 'allNextStates');
+            curRequest.set('previousAnalysis', curResult);        
+
+            // If the last time point is selected, error message shows that you can't open Next State
+            if ((curResult.get('timePointPath').length - 1) === curResult.get('selectedTimePoint')) {
+                swal("Error: Cannot explore next states with last time point selected.", "", "error");
+                $("body").removeClass("spinning"); // Remove spinner from page
+            } else {
+                backendSimulationRequest(curRequest);  
+            }
+        } else { // If single path has not been run show error message
+            swal("Error: Cannot explore next states before simulating a single path.", "", "error");
+        }
     }); 
     
     function resetConfig(){
@@ -384,6 +561,7 @@ paper.on("link:options", function (cell) {
      */
     function switchToAnalysisMode() {
         setInteraction(false);
+        
         document.getElementById("colorResetAnalysis").value = 1;
         // Clear the right panel
         clearInspector();
@@ -543,7 +721,7 @@ paper.on("link:options", function (cell) {
                     if (result.selected){ // If selected is true
                         selectedResult = result.name; // Record the name of result
                     }
-                    var resultsBBM = new ResultBBM({name: result.name, assignedEpoch: result.assignedEpoch, timePointPath: result.timePointPath, elementList: result.elementList, allSolution: result.allSolution, isPathSim: result.isPathSim, colorVis: result.colorVis, selectedTimePoint: result.selectedTimePoint, selected: result.selected});
+                    var resultsBBM = new ResultBBM({name: result.name, assignedEpoch: result.assignedEpoch, timePointPath: result.timePointPath, elementList: result.elementList, allSolution: result.allSolution, colorVis: result.colorVis, selectedTimePoint: result.selectedTimePoint, selected: result.selected});
                     results.add(resultsBBM)
                 }
                 configCollection.add(configBBM);
