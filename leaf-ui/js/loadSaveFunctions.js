@@ -133,7 +133,7 @@ function getIntentionsArr(arr) {
     var maxID = 0;
 
     for (var i = 0; i < arr.length; i++) {
-    	var intention = new Intention(arr[i].nodeActorID, arr[i].nodeType, arr[i].nodeName);	// nodeType has been removed.
+    	var intention = new Intention(arr[i].nodeType, arr[i].nodeName);	// nodeType has been removed.
     	intention.nodeID = arr[i].nodeID;
     	maxID = Math.max(maxID, parseInt(arr[i].nodeID));
     	intention.dynamicFunction = getEvolvingFunction(arr[i].dynamicFunction);

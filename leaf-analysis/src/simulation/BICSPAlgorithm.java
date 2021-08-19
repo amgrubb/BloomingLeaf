@@ -77,9 +77,9 @@ public class BICSPAlgorithm {
 		
 		// Create time point path.
 		if (problemType == SearchType.PATH || problemType == SearchType.UPDATE_PATH) {
-			this.timePoints = CSPPath.createPathTimePoint(this.spec, this.store, this.timePointMap, this.maxTime);
+			this.timePoints = CSPPath.createPathTimePoint(this.spec, this.store, this.constraints, this.timePointMap, this.maxTime);
 		}else if (problemType == SearchType.NEXT_STATE) {
-			this.timePoints = CSPPath.createNextStateTimePoint(this.spec, this.store, this.timePointMap, this.nextStateTPHash, this.maxTime);
+			this.timePoints = createNextStateTimePoint(this.spec, this.store, this.timePointMap, this.nextStateTPHash, this.maxTime);
 		}
 		this.numTimePoints = this.timePoints.length;
 		this.constraints.add(new Alldifferent(this.timePoints));
@@ -137,13 +137,30 @@ public class BICSPAlgorithm {
 		} else if (problemType == SearchType.NEXT_STATE) {
 			int selectedTP = this.spec.getPrevResult().getSelectedTimePoint();
 			HashMap<String, String[][]> allSolutions = new HashMap<String, String[][]>();
+			
+			// Determine which timepoints are assigned by abolute values.
+			int selectedTPAbsTime = this.timePoints[selectedTP].value();
 			for (int i = selectedTP + 1; i < this.timePoints.length; i++) {
+				
+				
+				List<Constraint> nextStateConstraints = new ArrayList<Constraint>();
+				int newTime = selectedTPAbsTime + 1;
+				nextStateConstraints.add(new XeqC(this.timePoints[i], newTime));
+				//this.timePoints[i].setDomain(newTime, newTime);
+				for (int k = selectedTP + 1; k < this.timePoints.length; k++) {
+					if (k != i) {
+						newTime++;
+						nextStateConstraints.add(new XeqC(this.timePoints[i], newTime));
+					}
+				}
+				
+				
 				IntVar[] varList = createNextStateVarList(selectedTP, i);
 				Search<IntVar> stateLabel = findSolution(this.store, varList, true);
 				String[][] answer = getNextStateData(stateLabel);
 				allSolutions.put(this.timePoints[i].id, answer);
 			}
-			return this.spec.getPrevResult().getNewIOSolutionFromSelected(allSolutions, this.nextStateTPHash);
+			return this.spec.getPrevResult().getNewIOSolutionFromSelected(allSolutions, this.nextStateTPHash, this.maxTime);
 		}		
 		return null;
 	}
@@ -383,5 +400,128 @@ public class BICSPAlgorithm {
     		System.out.println(name); // + "\t" + element.dynamicType.toString());
     	} 
 	}	
+	private static IntVar[] createNextStateTimePoint(ModelSpec spec, Store store, 
+			HashMap<IntVar, List<String>> timePointMap, 
+			HashMap<String, List<String>> nextStateTPHash, 
+			int maxTime) {
+		
+   		IOSolution prev = spec.getPrevResult();
+   		if (prev == null)
+   			throw new RuntimeException("\n Previous results required, but null.");
+		
+		// Get the Unique Set of Time Point from the Model
+		HashMap<Integer, List<String>> modelAbsTime = spec.getAbsTimePoints();
+		List<String> unassignedTimePoint = modelAbsTime.get(-1);
+		modelAbsTime.remove(-1);
+		
+		int numRelTP = spec.getNumRelativeTimePoints(); 
+		HashMap<String, Integer> prevTPAssignments = prev.getSelectedTPAssignments();
+		Integer[] prevTP = prev.getSelectedTimePointPath();
+		
+		List<IntVar> timePointList = new ArrayList<IntVar>();
+		
+		int tpCounter = 0;
+		for (Integer i : prevTP) {		// Last Time Points
+			IntVar newTP = new IntVar(store, "TL" + tpCounter, i, i);
+
+    		List<String> affectedKeys = new ArrayList<String>();
+			for	(Map.Entry<String, Integer> entry : prevTPAssignments.entrySet()) {
+				if (entry.getValue().equals(i))  
+					affectedKeys.add(entry.getKey());
+			}
+			for (String key : affectedKeys)		// Removes no longer needed entires. 
+				prevTPAssignments.remove(key);
+			if (modelAbsTime.containsKey(i)) {
+				List<String> absVal = modelAbsTime.get(i);
+				for (String v : absVal)
+					if (!affectedKeys.contains(v))
+						affectedKeys.add(v);
+				modelAbsTime.remove(i);			// Removes no longer needed entries.
+			}
+			for (String key : affectedKeys)
+				if (unassignedTimePoint.contains(key)) 
+					unassignedTimePoint.remove(key);
+			if (affectedKeys.isEmpty()) {
+				affectedKeys.add("TR" + tpCounter);
+				numRelTP--;
+			}
+			timePointList.add(newTP);
+    		timePointMap.put(newTP, affectedKeys);
+    		tpCounter++;
+		}
+
+		//TODO: Add a condition to make sure that there is an available time point between now and the next TNS-A, i.e., a random/function value.
+		
+		HashMap<String, List<String>> newTPHash = new HashMap<String, List<String>>();  
+		// Add a relative time point if available.
+		if (numRelTP > 0) {
+    		List<String> toAdd = new ArrayList<String>();
+    		toAdd.add("TNS-R");
+    		newTPHash.put("TNS-R", toAdd);
+		}
+		if (modelAbsTime.size() > 0) {
+			int minKey = maxTime + 1;
+			for	(Integer key : modelAbsTime.keySet()) 
+				if (key < minKey)  
+					minKey = key;
+			if (minKey != maxTime + 1) {
+	    		List<String> toAdd = modelAbsTime.get(minKey);
+	    		newTPHash.put("TNS-A", toAdd);
+			}
+		}
+		List<String> prunedTimePoints = pruneExtraUDTPforNextState(spec, unassignedTimePoint);
+		if (unassignedTimePoint.size() > 0) {		
+			int c = 0; 
+			for (String newVal: unassignedTimePoint) {
+	    		List<String> toAdd = new ArrayList<String>();
+	    		toAdd.add(newVal);
+	    		newTPHash.put("TNS-" + c, toAdd);
+	    		c++;
+			}
+		}
+		int iMin = prev.getSelectedAbsTime() + 1;
+		int iMax = iMin + newTPHash.size() - 1;
+		if (iMax > maxTime)
+			throw new RuntimeException("\n The number of remaining time points won't fit in maxTime.");
+		for	(Map.Entry<String, List<String>> entry : newTPHash.entrySet()) {
+			IntVar newTP = new IntVar(store, entry.getKey(), iMin, iMax);
+			timePointList.add(newTP);
+    		timePointMap.put(newTP, entry.getValue());
+    		nextStateTPHash.put(entry.getKey(), entry.getValue());
+		}
+		
+		for	(String item : prunedTimePoints) {
+			IntVar newTP = new IntVar(store, item, iMax + 1, spec.getMaxTime());
+			List<String> newItem = new ArrayList<String>();
+			newItem.add(item);
+    		timePointMap.put(newTP, newItem);
+    		//nextStateTPHash.put(entry.getKey(), entry.getValue());
+		}
+		
+		IntVar[] list = new IntVar[timePointList.size()];
+		for (int i = 0; i < list.length; i ++)
+			list[i] = timePointList.get(i);
+		
+		
+		return list;
+	}
+	private static List<String> pruneExtraUDTPforNextState(
+			ModelSpec spec, List<String> initialList){
+		List<String> prunedList = new ArrayList<String>();
+		List<List<String>> orderedTimePoints = spec.getUDTimePointOrder();
+    	for (List<String> subList : orderedTimePoints) {
+    		boolean found = false;
+    		for (int i = 0; i < subList.size(); i++) {
+    			if (found) {
+    				if (initialList.contains(subList.get(i))) {
+    					prunedList.add(subList.get(i));
+    					initialList.remove(subList.get(i));
+    				}
+    			} else if (!found && initialList.contains(subList.get(i))) 
+    				found = true;
+    		}	
+    	}
+		return prunedList;
+	}
 	
 }

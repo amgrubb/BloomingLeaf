@@ -35,7 +35,7 @@ var AnalysisInspector = Backbone.View.extend({
 			$('#num-rel-time').prop('disabled', true);
 		}
 		// These functions are used to communicate between analysisInspector and Main.js
-		$('head').append('<script src="./js/analysis.js"></script>');
+//		$('head').append('<script src="./js/next-state.js"></script>');		//TODO: Does this fix the problem.
 		return this;
 	},
 
