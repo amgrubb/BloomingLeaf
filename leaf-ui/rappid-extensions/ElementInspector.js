@@ -148,6 +148,7 @@ var ElementInspector = Backbone.View.extend({
      * Initializes the element inspector using previously defined templates
      */
     render: function () {
+       // console.log(this.intention)
         this.$el.html(_.template($(this.template).html())(this.model.toJSON()))
         
         // Attributes
@@ -735,6 +736,7 @@ var FuncSegView = Backbone.View.extend({
 
         // Updates the chart whenever there is a change to the model
         this.listenTo(this.model, 'change:refEvidencePair', this.hasUD ? this.updateChartUserDefined : this.updateChart);
+        this.listenTo(this.intention.getUserEvaluationBBM(0), 'change:assignedEvidencePair', this.hasUD ? this.updateChartUserDefined : this.updateChart);
     },
     template: ['<script type="text/template" id="item-template">',
         '<input class="seg-time" > </input>',
@@ -1071,6 +1073,7 @@ var FuncSegView = Backbone.View.extend({
      * satisfaction value(s)
      */
     updateChart: function () {
+        console.log(graph.toJSON())
         if (this.intention.get('evolvingFunction') != null) {
             var funcType = this.intention.get('evolvingFunction').get('type');
             var initVal = satisfactionValuesDict[this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair')].chartVal;

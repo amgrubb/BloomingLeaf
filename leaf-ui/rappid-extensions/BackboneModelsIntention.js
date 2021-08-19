@@ -229,15 +229,16 @@ var IntentionBBM = Backbone.Model.extend({
         
         if (this.get('evolvingFunction') != null) {
             var funcSegList = this.getFuncSegments();
-            // If the function is C or UD & C set refEvidencePair to initValue
-            if (this.get('evolvingFunction').get('type') == 'C') { 
-                    funcSegList[0].set('refEvidencePair', initValue); // Set first index of funcSegList to given initValue 
-            }
-            else {
+            // // If the function is C or UD & C set refEvidencePair to initValue
+            // if (this.get('evolvingFunction').get('type') == 'C') { 
+            //         funcSegList[0].set('refEvidencePair', initValue); // Set first index of funcSegList to given initValue 
+            // }
+            // else {
             // If the function is not C or UD & C, reset the function type and clear the functionSegList
             this.get('evolvingFunction').set('type', 'NT');
             this.get('evolvingFunction').set('functionSegList', []);
-            }
+            console.log(this)
+           // }
         }     
     }, 
  
