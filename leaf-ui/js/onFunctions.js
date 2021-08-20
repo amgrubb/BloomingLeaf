@@ -66,7 +66,7 @@ function defaultFont(pPaper) {
 function resizeWindow(sliderMax) {
     $('#slider').css("margin-top", $(this).height() * 0.7);
     $('#slider').width($('#paper').width() * 0.8);
-    adjustSliderWidth(sliderMax)	
+    adjustSliderWidth(sliderMax)
 }
 
 // End nav bar functions
@@ -174,9 +174,9 @@ $('#btn-clear-flabel').on('click', function () {
     for (let element of graph.getElements()) {
         var cellView = element.findView(paper);
         var cell = cellView.model;
-        if (intention != null && intention.get('evolvingFunction').get('type') !=  'NT') {
-                intention.removeFunction();
-                cell.attr(".funcvalue/text", "");
+        if (intention != null && intention.get('evolvingFunction').get('type') != 'NT') {
+            intention.removeFunction();
+            cell.attr(".funcvalue/text", "");
         }
     }
 });
@@ -185,14 +185,14 @@ $('#btn-clear-flabel').on('click', function () {
 $('#btn-svg').on('click', function () {
     paper.openAsSVG();
 });
- 
-$('#btn-zoom-in').on('click', function(){ zoomIn(paperScroller); });
-$('#btn-zoom-out').on('click', function(){ zoomOut(paperScroller); });
-$('#btn-fnt').on('click', function(){ defaultFont(paper);});
-$('#btn-fnt-up').on('click', function(){  fontUp(paper);});
-$('#btn-fnt-down').on('click', function(){ fontDown(paper);}); 
-$('#legend').on('click', function(){ window.open('./userguides/legend.html', 'newwindow', 'width=300, height=250'); return false;});
-$('#evo-color-key').on('click', function(){ window.open('./userguides/evo.html', 'newwindow', 'width=500, height=400'); return false;});
+
+$('#btn-zoom-in').on('click', function () { zoomIn(paperScroller); });
+$('#btn-zoom-out').on('click', function () { zoomOut(paperScroller); });
+$('#btn-fnt').on('click', function () { defaultFont(paper); });
+$('#btn-fnt-up').on('click', function () { fontUp(paper); });
+$('#btn-fnt-down').on('click', function () { fontDown(paper); });
+$('#legend').on('click', function () { window.open('./userguides/legend.html', 'newwindow', 'width=300, height=250'); return false; });
+$('#evo-color-key').on('click', function () { window.open('./userguides/evo.html', 'newwindow', 'width=500, height=400'); return false; });
 
 /**
  * Displays the absolute and relative assignments modal for the user.
@@ -223,13 +223,13 @@ $('#analysis-btn').on('click', function () {
      * If there are cycles, then display error message.
      * Otherwise, remove any "red" elements.
      */
-    var cycleList = cycleSearch(); 
+    var cycleList = cycleSearch();
     // Alerts user if there are any cycles 
     cycleResponse(cycleList);
     if (!isACycle(cycleList) && !isError) {
         clearCycleHighlighting();
         switchToAnalysisMode();
-    } 
+    }
 });
 
 /** For Load Sample Model button */
@@ -246,7 +246,7 @@ $('#load-sample').on('click', function() {
 */
 
 // Switches to modeling mode
-$('#modeling-btn').on('click', function () {switchToModellingMode();});
+$('#modeling-btn').on('click', function () { switchToModellingMode(); });
 
 /*** Events for Rappid/JointJS objets ***/
 
@@ -257,11 +257,11 @@ graph.on("add", function (cell) {
     // Find how many cells are created on the graph
     var createdInstance = paper.findViewsInArea(paper.getArea())
 
-	if (cell instanceof joint.shapes.basic.CellLink){
-        if (graph.getCell(cell.get("source").id) instanceof joint.shapes.basic.Actor){
-            cell.label(0,{attrs:{text:{text:"is-a"}}});
-            cell.set('link', new LinkBBM({displayType: "actor", linkType: 'is-a'}));
-		} else {
+    if (cell instanceof joint.shapes.basic.CellLink) {
+        if (graph.getCell(cell.get("source").id) instanceof joint.shapes.basic.Actor) {
+            cell.label(0, { attrs: { text: { text: "is-a" } } });
+            cell.set('link', new LinkBBM({ displayType: "actor", linkType: 'is-a' }));
+        } else {
             cell.set('link', new LinkBBM({}));
         }
     } else if (cell instanceof joint.shapes.basic.Intention) {
@@ -278,10 +278,10 @@ graph.on("add", function (cell) {
 
         // Create placeholder name based on the number of instances
         var name;
-        if (createdInstance.length >= 2){
+        if (createdInstance.length >= 2) {
             var lastactor = createdInstance[createdInstance.length - 2].model.attr('.name/text');
-            name = cell.attr('.name/text') + "_" + (Number.parseInt(lastactor.charAt(lastactor.length-1))+1);
-        } else{
+            name = cell.attr('.name/text') + "_" + (Number.parseInt(lastactor.charAt(lastactor.length - 1)) + 1);
+        } else {
             name = cell.attr('.name/text') + "_0";
         }
 
@@ -291,7 +291,7 @@ graph.on("add", function (cell) {
         // Send actors to background so elements are placed on top
         cell.toBack();
     }
-    
+
     resetConfig()
     // Trigger click on cell to highlight, activate inspector, etc. 
     paper.trigger("cell:pointerup", cell.findView(paper));
@@ -320,7 +320,7 @@ graph.on('remove', function (cell) {
     clearInspector();
     // Clear Config view
     resetConfig();
-    
+
     /**  TODO: Determine if we still need the rest of the code in this function. 
      *   Figure out how to make the element inspector automatically update after the function 
      *   label is changed to (no value) for the element. Currently the user needs to click the 
@@ -339,7 +339,7 @@ graph.on('remove', function (cell) {
         }
     }
 
-    else if (cell.isLink()){
+    else if (cell.isLink()) {
         if (cell.get('link') !== null) {
             if (cell.get('link').get("linkType") == 'NBT' || cell.get('link').get("linkType") == 'NBD') {
                 // Verify if is a Not both type. If it is remove labels from source and target node
@@ -399,7 +399,7 @@ paper.on({
         if (cellView.model.findView(paper).options.interactive) {
             var cell = cellView.model;
             if (cell instanceof joint.shapes.basic.CellLink) { // Link behavior
-                if (evt.data.move){
+                if (evt.data.move) {
                     // If link moved, reparent
                     cell.reparent();
                 }
@@ -448,7 +448,7 @@ paper.on({
 // Unhighlight everything when blank is being clicked
 paper.on('blank:pointerclick', function () {
     removeHighlight();
-    if ($('.analysis-only').css("display") == "none"){
+    if ($('.analysis-only').css("display") == "none") {
         clearInspector();
     }
 });
@@ -458,9 +458,9 @@ paper.on("link:options", function (cell) {
 
     clearInspector();
 
-	clearInspector();
-    
-    if (cell.model.get('link').get('displayType') == 'error'){
+    clearInspector();
+
+    if (cell.model.get('link').get('displayType') == 'error') {
         alert('Sorry, this link is not valid. Links must be between two elements of the same type. Aka Actor->Actor or Intention->Intention');
         return;
     }
@@ -481,19 +481,19 @@ paper.on("link:options", function (cell) {
 
     /** Simulate Single Path: 
      * Selects the current configuration and passes to backendSimulationRequest()  */
-    $('#simulate-path-btn').on('click', function() { 
-        var curRequest = configCollection.findWhere({selected: true});
+    $('#simulate-path-btn').on('click', function () {
+        var curRequest = configCollection.findWhere({ selected: true });
         curRequest.set('action', 'singlePath');
         backendSimulationRequest(curRequest);
-    }); 
+    });
     /** All Next States:
      * Selects the current configuration and prior results and passes them to backendSimulationRequest()  */
-    $('#next-state-btn').on('click', function() { 
-        var curRequest = configCollection.findWhere({selected: true});
+    $('#next-state-btn').on('click', function () {
+        var curRequest = configCollection.findWhere({ selected: true });
 
         // Checks to see if single path has been run by seeing if there are any results
         if (typeof curRequest.previousAttributes().results === 'undefined' || curRequest.previousAttributes().results.length == 0) {
-             var singlePathRun = false;
+            var singlePathRun = false;
         } else {
             var singlePathRun = true;
         }
@@ -501,29 +501,29 @@ paper.on("link:options", function (cell) {
         // If single path has been run backend analysis
         if (singlePathRun === true) {
             $("body").addClass("spinning"); // Adds spinner animation to page
-            var curResult = curRequest.previousAttributes().results.findWhere({selected: true}); 
+            var curResult = curRequest.previousAttributes().results.findWhere({ selected: true });
             curRequest.set('action', 'allNextStates');
-            curRequest.set('previousAnalysis', curResult);        
+            curRequest.set('previousAnalysis', curResult);
 
             // If the last time point is selected, error message shows that you can't open Next State
             if ((curResult.get('timePointPath').length - 1) === curResult.get('selectedTimePoint')) {
                 swal("Error: Cannot explore next states with last time point selected.", "", "error");
                 $("body").removeClass("spinning"); // Remove spinner from page
             } else {
-                backendSimulationRequest(curRequest);  
+                backendSimulationRequest(curRequest);
             }
         } else { // If single path has not been run show error message
             swal("Error: Cannot explore next states before simulating a single path.", "", "error");
         }
-    }); 
-    
-    function resetConfig(){
+    });
+
+    function resetConfig() {
         var model;
         while (model = configCollection.first()) {
             model.destroy();
         }
     }
-    
+
     /**
      * This is an option under clear button to clear red-highlight from
      * cycle detection function
@@ -561,7 +561,7 @@ paper.on("link:options", function (cell) {
      */
     function switchToAnalysisMode() {
         setInteraction(false);
-        
+
         document.getElementById("colorResetAnalysis").value = 1;
         // Clear the right panel
         clearInspector();
@@ -592,7 +592,7 @@ paper.on("link:options", function (cell) {
         EVO.refresh(selectResult);
 
         var configResults = configCollection.findWhere({ selected: true }).get('results');
-        if (configResults !== undefined){
+        if (configResults !== undefined) {
             selectResult = configResults.findWhere({ selected: true });
         }
         EVO.refresh(selectResult);
@@ -611,7 +611,7 @@ paper.on("link:options", function (cell) {
          */
         function switchToModellingMode() {
             setInteraction(true);
-            if (selectResult !== undefined){
+            if (selectResult !== undefined) {
                 selectResult.set('selected', false);
             }
 
@@ -672,11 +672,11 @@ paper.on("link:options", function (cell) {
     }
 
     // Save the current graph and analysis (without results) to json file
-    $('#btn-save-analysis').on('click', function() {
+    $('#btn-save-analysis').on('click', function () {
         var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
-        if (name){
+        if (name) {
             clearCycleHighlighting(selectResult);
-            EVO.deactivate();   
+            EVO.deactivate();
             var fileName = name + ".json";
             var obj = getModelAnalysisJson(configCollection);
             download(fileName, stringifyCirc(obj));
@@ -684,11 +684,11 @@ paper.on("link:options", function (cell) {
     });
 
     // Save the current graph and analysis (with results) to json file
-    $('#btn-save-all').on('click', function() {
+    $('#btn-save-all').on('click', function () {
         var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
-        if (name){
+        if (name) {
             clearCycleHighlighting(selectResult);
-            EVO.deactivate();   
+            EVO.deactivate();
             var fileName = name + ".json";
             var obj = getFullJson(configCollection);
             download(fileName, stringifyCirc(obj));
@@ -696,32 +696,32 @@ paper.on("link:options", function (cell) {
     });
 
     // Workaround for load, activates a hidden input element
-    $('#btn-load').on('click', function(){
+    $('#btn-load').on('click', function () {
         $('#loader').click();
     });
 
     // Load ConfigCollection for display 
     // TODO: modify it to read results after results can be shown
-    function loadConfig(loadedConfig){
+    function loadConfig(loadedConfig) {
         var selectedConfig;
         var selectedResult;
         // Clears current configCollection
         resetConfig();
 
         // Individually creates each ConfigBBM and add to collection
-        for(let config of loadedConfig){
-            if (config.selected){ // If selected is true
+        for (let config of loadedConfig) {
+            if (config.selected) { // If selected is true
                 selectedConfig = config.name; // Record the name of config
             }
-            var configBBM = new ConfigBBM({name:config.name, action: config.action, conflictLevel: config.conflictLevel, numRelTime: config.numRelTime, currentState: config.currentState, userAssignmentsList : config.userAssignmentsList, previousAnalysis: config.previousAnalysis, selected: config.selected})
-            if (config.results.length !== 0){ // Creates results if there applicable
+            var configBBM = new ConfigBBM({ name: config.name, action: config.action, conflictLevel: config.conflictLevel, numRelTime: config.numRelTime, currentState: config.currentState, userAssignmentsList: config.userAssignmentsList, previousAnalysis: config.previousAnalysis, selected: config.selected })
+            if (config.results.length !== 0) { // Creates results if there applicable
                 var results = configBBM.get('results'); // Grabs the coolection from the configBBM
                 // Individually creates each ResultBBM and add to collection
-                for (let result of config.results){
-                    if (result.selected){ // If selected is true
+                for (let result of config.results) {
+                    if (result.selected) { // If selected is true
                         selectedResult = result.name; // Record the name of result
                     }
-                    var resultsBBM = new ResultBBM({name: result.name, assignedEpoch: result.assignedEpoch, timePointPath: result.timePointPath, elementList: result.elementList, allSolution: result.allSolution, colorVis: result.colorVis, selectedTimePoint: result.selectedTimePoint, selected: result.selected});
+                    var resultsBBM = new ResultBBM({ name: result.name, assignedEpoch: result.assignedEpoch, timePointPath: result.timePointPath, elementList: result.elementList, allSolution: result.allSolution, colorVis: result.colorVis, selectedTimePoint: result.selectedTimePoint, selected: result.selected });
                     results.add(resultsBBM)
                 }
                 configCollection.add(configBBM);
@@ -731,24 +731,24 @@ paper.on("link:options", function (cell) {
 
         // Sets what the config/result the user was last on as selected
         var configGroup = configCollection.filter(Config => Config.get('name') == selectedConfig); //Find the config with the same name as the selected that is read in
-        if (configGroup.length !== 0){
+        if (configGroup.length !== 0) {
             configGroup[0].set('selected', true); // Set the selected to true
         }
 
         var currResult;
-        if (configGroup[0].get('results').length !== 0){ // Within that selected config
+        if (configGroup[0].get('results').length !== 0) { // Within that selected config
             // Set selected of the selected result as true
-            currResult= configGroup[0].get('results').filter(selectedRes => selectedRes.get('name') == selectedResult)[0]
+            currResult = configGroup[0].get('results').filter(selectedRes => selectedRes.get('name') == selectedResult)[0]
             currResult.set('selected', true);
         }
     }
 
     $(window).resize(function () {
         var config = configCollection.findWhere({ selected: true });
-        if (config !== undefined){
+        if (config !== undefined) {
             var configResults = config.get('results').findWhere({ selected: true });
             resizeWindow(configResults.get('timePointPath').length - 1);
-        } 
+        }
     });
     $('#btn-clear-cycle').on('click', function () {
         clearCycleHighlighting(selectResult);
@@ -763,7 +763,7 @@ paper.on("link:options", function (cell) {
             // EVO.returnAllColors(graph.getElements(), paper);
             // EVO.revertIntentionsText(graph.getElements(), paper);  
             var fileName = name + ".json";
-            var obj = {graph: graph.toJSON()}; // Same structure as the other two save options
+            var obj = { graph: graph.toJSON() }; // Same structure as the other two save options
             download(fileName, stringifyCirc(obj));
             EVO.refresh(selectResult);
         }
@@ -778,7 +778,7 @@ paper.on("link:options", function (cell) {
             var funcType = intention.get('evolvingFunction').get('type');
 
             // If the initsatVal is not empty and if funcType empty
-            if (intention != null &&  initSatVal != '(no value)' && funcType === 'NT') {
+            if (intention != null && initSatVal != '(no value)' && funcType === 'NT') {
                 intention.removeInitialSatValue();
                 cell.attr(".satvalue/text", "");
             }
@@ -886,7 +886,7 @@ function clearInspector() {
 function checkForMultipleNB(element) {
     var num = 0;
     var localLinks = graph.getConnectedLinks(element);
-    if(localLinks != null){
+    if (localLinks != null) {
         for (var i = 0; i < localLinks.length; i++) {
             if (localLinks[i].get('link').get("linkType") == 'NBT' || localLinks[i].get('link').get("linkType") == 'NBD') {
                 num += 1;
@@ -944,23 +944,23 @@ function revertNodeValuesToInitial() {
     var elements = graph.getElements();
     var curr;
     for (var i = 0; i < elements.length; i++) {
-    	curr = elements[i].findView(paper).model;
-    	if (curr.get('type') !== 'basic.Goal' &&
+        curr = elements[i].findView(paper).model;
+        if (curr.get('type') !== 'basic.Goal' &&
             curr.get('type') !== 'basic.Task' &&
-    		curr.get('type') !== 'basic.Softgoal' &&
-    		curr.get('type') !== 'basic.Resource') {
-    		continue;
-    	}     
-    	var intention = curr.get('intention');
-        var initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair'); 
+            curr.get('type') !== 'basic.Softgoal' &&
+            curr.get('type') !== 'basic.Resource') {
+            continue;
+        }
+        var intention = curr.get('intention');
+        var initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair');
 
-    	if (initSatVal === '(no value)') {
+        if (initSatVal === '(no value)') {
             curr.attr('.satvalue/text', '');
 
-    	} else {
+        } else {
             curr.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
-    	}
-        curr.attr({text: {fill: 'black',stroke:'none','font-weight' : 'normal','font-size': 10}});
+        }
+        curr.attr({ text: { fill: 'black', stroke: 'none', 'font-weight': 'normal', 'font-size': 10 } });
     }
     // Remove slider
     removeSlider();
@@ -969,15 +969,15 @@ function revertNodeValuesToInitial() {
 /**
  * Stringifies the code but avoids the circular structured components
  */
-function stringifyCirc(obj){
+function stringifyCirc(obj) {
     var skipKeys = ['_events', 'change:refEvidencePair', 'context', '_listeners']; // List of keys that contains circular structures
-    var graphtext = JSON.stringify(obj, function(key, value) {
-		if (skipKeys.includes(key)) { //if key is in the list
-		  return null; // Replace with null
-		} else{
-		  return value; // Otherwise return the value
-		}
-	  });
+    var graphtext = JSON.stringify(obj, function (key, value) {
+        if (skipKeys.includes(key)) { //if key is in the list
+            return null; // Replace with null
+        } else {
+            return value; // Otherwise return the value
+        }
+    });
 
-      return graphtext
+    return graphtext
 }

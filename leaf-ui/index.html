@@ -22,14 +22,16 @@
 </head>
 
 <body>
-    <div class="name"><p id="name-text">BloomingLeaf</p></div>
+    <div class="name">
+        <p id="name-text">BloomingLeaf</p>
+    </div>
 
     <div class="toolbar-div">
 
         <div class="dropdown">
             <button id="btn-file" class="btn">File</button>
             <div class="dropdown-toolbar">
-                <a id="btn-load" class = "model-only">Load</a>
+                <a id="btn-load" class="model-only">Load</a>
                 <a id="btn-save">Save Model</a>
                 <a id="btn-save-analysis">Save Model and Analysis Configuration</a>
                 <a id="btn-save-all">Save Model, Analysis Configuration, and Results</a>
@@ -47,7 +49,8 @@
                 <a id="btn-clear-flabel" class='model-only'>Clear Dynamic Function Labels</a>
                 <a id="btn-clear-cycle" class='model-only'>Clear Cycle Highlighting</a>
                 <a id="btn-clear-results" class='analysis-only' style="display: none;">Clear Results Only</a>
-                <a id="btn-clear-analysis" class='analysis-only' style="display: none;">Clear Configurations and Results</a>
+                <a id="btn-clear-analysis" class='analysis-only' style="display: none;">Clear Configurations and
+                    Results</a>
             </div>
         </div>
         <div class="dropdown">
@@ -60,7 +63,7 @@
                 <a id="btn-fnt-down">Font Size: Decrease</a>
             </div>
         </div>
-        
+
         <input type="file" id="loader" style="display:none">
 
         <div class="dropdown">
@@ -87,7 +90,7 @@
             <p id="top-label" style="display: inline-block">EVO</p> <!-- sat slider label -->
             <p class="on-off" class="analysis-only"> Off &ensp; On</p> <!--  on/off label -->
         </div>
-            
+
 
         <!-- Analysis mode slider: option to fill by percentage of timepoints -->
         <div class="EVO-whole-button" id='analysisSlider' style='display: none'>
@@ -98,18 +101,18 @@
             <p class="on-off"> Off &ensp; % &ensp; Time &ensp; State </p> <!--  on/off label -->
         </div>
 
-        <button id="btn-view-assignment" class="btn model-only"
-            style="position:relative; border-radius:none;">View Assignments List</button>
+        <button id="btn-view-assignment" class="btn model-only" style="position:relative; border-radius:none;">View
+            Assignments List</button>
         <!--This is the modal box of assignments-->
         <button id="btn-view-intermediate" class="btn model-only">Intermediate
             Values</button>
         <!--This is the modal box of Intermediate Values-->
 
-        <button id="simulate-path-btn" class="btn analysis-only"
-            style="border-radius: none; display: none" ;>Simulate Path</button>
-        <button id="next-state-btn" class="btn analysis-only"
-            style="border-radius: none; display: none">Explore States</button>
-       <!-- <div id="dropdown-model" class="dropdown analysis-only" style="display: none">
+        <button id="simulate-path-btn" class="btn analysis-only" style="border-radius: none; display: none" ;>Simulate
+            Path</button>
+        <button id="next-state-btn" class="btn analysis-only" style="border-radius: none; display: none">Explore
+            States</button>
+        <!-- <div id="dropdown-model" class="dropdown analysis-only" style="display: none">
             <button id="modeling-btn" class="red-btn btn">Model</button>
             <div class="dropdown-toolbar">
                 <a id="model-cur-btn">From Initial State</a>

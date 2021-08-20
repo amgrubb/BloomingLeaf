@@ -15,63 +15,63 @@ var AssignmentsTable = Backbone.View.extend({
     model: joint.dia.BloomingGraph,
 
     template: ['<script type="text/template" id="assignments-template">',
-    '<div id="assignmentsModal" class="modal">',
-    '<div id="page-mask"></div>', 
-    '<div class="modal-content">',
-    '<div class="modal-header">',
-    '<span class="close">&times;</span>',
-    '<h2>Absolute and Relative Assignments</h2>',
-    '</div>',
-    '<div class="modal-body">',
+        '<div id="assignmentsModal" class="modal">',
+        '<div id="page-mask"></div>',
+        '<div class="modal-content">',
+        '<div class="modal-header">',
+        '<span class="close">&times;</span>',
+        '<h2>Absolute and Relative Assignments</h2>',
+        '</div>',
+        '<div class="modal-body">',
         '<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Max Absolute Time</h3>',
-                '<input style="float:left;"; id="max-abs-time" class="analysis-input" type="number" min="1" step="1" value="<%= maxAbsTime %>"/>',
-            '<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px; margin-top: 30px;">Absolute Time Points</h3>',
-            '<h5 style="text-align:left; color:#1E85F7; margin-bottom:5px; margin-top: -5px;">e.g. 5 8 22</h5>',
-                '<input style="float:left;"; id="abs-time-pts" class="analysis-input" type="text" value="<%= absTimePtsArr.join(" ") %>"/>',
+        '<input style="float:left;"; id="max-abs-time" class="analysis-input" type="number" min="1" step="1" value="<%= maxAbsTime %>"/>',
+        '<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px; margin-top: 30px;">Absolute Time Points</h3>',
+        '<h5 style="text-align:left; color:#1E85F7; margin-bottom:5px; margin-top: -5px;">e.g. 5 8 22</h5>',
+        '<input style="float:left;"; id="abs-time-pts" class="analysis-input" type="text" value="<%= absTimePtsArr.join(" ") %>"/>',
         '<div class=relIntention>',
-                '<div class=headings>',
-                    '<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px; margin-top:50px">Relative Intention Assignments',
-                            '<div id="add-intention" style="display:inline">',
-                                '<i class="fa fa-plus" id="addIntent" style="font-size:30px; float:right; margin-right:20px;"></i>',
-                            '</div>',
-                    '</h3>',
-                '</div>',
-                    '<div>',
-                        '<table id="rel-intention-assigments" class="rel-intent-table">',
-                            '<tr>',
-                                '<th>Epoch Boundary Name 1</th>',
-                                '<th>Relationship</th>',
-                                '<th>Epoch Boundary Name 2</th>',
-                                '<th></th>',
-                            '</tr>',
-                        '</table>',
-                    '</div>',
-            '</div>',
+        '<div class=headings>',
+        '<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px; margin-top:50px">Relative Intention Assignments',
+        '<div id="add-intention" style="display:inline">',
+        '<i class="fa fa-plus" id="addIntent" style="font-size:30px; float:right; margin-right:20px;"></i>',
+        '</div>',
+        '</h3>',
+        '</div>',
+        '<div>',
+        '<table id="rel-intention-assigments" class="rel-intent-table">',
+        '<tr>',
+        '<th>Epoch Boundary Name 1</th>',
+        '<th>Relationship</th>',
+        '<th>Epoch Boundary Name 2</th>',
+        '<th></th>',
+        '</tr>',
+        '</table>',
+        '</div>',
+        '</div>',
         '<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px; margin-top:50px">Absolute Intention Assignments</h3>',
-       '<table id="node-list" class="abs-table">',
-                '<tr>',
-                    '<th>Epoch Boundary Name</th>',
-                    '<th>Function</th>',
-                    '<th>Assigned Time</th>',
-                    '<th>Action</th>',
-                '</tr>',
+        '<table id="node-list" class="abs-table">',
+        '<tr>',
+        '<th>Epoch Boundary Name</th>',
+        '<th>Function</th>',
+        '<th>Assigned Time</th>',
+        '<th>Action</th>',
+        '</tr>',
         '</table>',
         '<div class=absRelationship>',
-            '<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Absolute Relationship Assignment</h3>',
-            '<table id="link-list" class="abs-table">',
-                '<tr>',
-                    '<th>Link Type</th>',
-                    '<th>Source Node name</th>',
-                    '<th>Dest Node name</th>',
-                    '<th>Assigned Time</th>',
-                    '<th>Action</th>',
-                '</tr>',
-            '</table>',
-        '</div>', 
-    '</div>',
-    '</div>',
-    '</div>',
-    '</script>'].join(''),
+        '<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Absolute Relationship Assignment</h3>',
+        '<table id="link-list" class="abs-table">',
+        '<tr>',
+        '<th>Link Type</th>',
+        '<th>Source Node name</th>',
+        '<th>Dest Node name</th>',
+        '<th>Assigned Time</th>',
+        '<th>Action</th>',
+        '</tr>',
+        '</table>',
+        '</div>',
+        '</div>',
+        '</div>',
+        '</div>',
+        '</script>'].join(''),
 
     events: {
         'click #add-intention': 'addRelIntentionRow',
@@ -127,7 +127,7 @@ var AssignmentsTable = Backbone.View.extend({
     // TODO: Implement view to take in already selected constraint
     loadRelativeIntentions: function () {
         this.model.get('constraints').forEach(constraint => {
-            var relIntentionRow = new RelativeIntentionView({ model: constraint});
+            var relIntentionRow = new RelativeIntentionView({ model: constraint });
             $('#rel-intention-assigments').append(relIntentionRow.el);
             relIntentionRow.render();
         });
@@ -232,8 +232,8 @@ var RelativeIntentionView = Backbone.View.extend({
      * Based on whether or not it is a new default constraint of a loaded constraint
      */
     render: function () {
-            this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
-            this.loadOptions();
+        this.$el.html(_.template($(this.template).html())(this.model.toJSON()));
+        this.loadOptions();
         return this;
     },
 
@@ -304,14 +304,14 @@ var RelativeIntentionView = Backbone.View.extend({
      */
     getOptionTag(Id, nodeName, epoch, position) {
         var option;
-        if (position ==='src'){
-            if (this.model.get('srcID') === Id && this.model.get('srcRefTP') === epoch){
+        if (position === 'src') {
+            if (this.model.get('srcID') === Id && this.model.get('srcRefTP') === epoch) {
                 option = '<option class=' + Id + ' epoch="' + epoch + '" selected>' + nodeName + ': ' + epoch + '</option>';
             } else {
                 option = '<option class=' + Id + ' epoch=' + epoch + '>' + nodeName + ': ' + epoch + '</option>';
             }
         } else {
-            if (this.model.get('destID') === Id && this.model.get('destRefTP') === epoch){
+            if (this.model.get('destID') === Id && this.model.get('destRefTP') === epoch) {
                 option = '<option class=' + Id + ' epoch="' + epoch + '" selected>' + nodeName + ': ' + epoch + '</option>';
             } else {
                 option = '<option class=' + Id + ' epoch=' + epoch + '>' + nodeName + ': ' + epoch + '</option>';
@@ -322,14 +322,14 @@ var RelativeIntentionView = Backbone.View.extend({
 
     getLinkOptionTag(Id, nodeName, epoch, position) {
         var option;
-        if (position ==='src'){
-            if (this.model.get('srcID') === Id){
+        if (position === 'src') {
+            if (this.model.get('srcID') === Id) {
                 option = '<option class=' + Id + ' epoch="' + epoch + '" selected>' + nodeName + '</option>';
             } else {
                 option = '<option class=' + Id + ' epoch=' + epoch + '>' + nodeName + '</option>';
             }
         } else {
-            if (this.model.get('destID') === Id){
+            if (this.model.get('destID') === Id) {
                 option = '<option class=' + Id + ' epoch="' + epoch + '" selected>' + nodeName + '</option>';
             } else {
                 option = '<option class=' + Id + ' epoch=' + epoch + '>' + nodeName + '</option>';

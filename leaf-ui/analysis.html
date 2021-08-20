@@ -1,136 +1,154 @@
-
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf8"/>
 
-        <title>BloomingLeaf: Explore Next State</title>
+<head>
+    <meta charset="utf8" />
 
-        <link rel="stylesheet" type="text/css" href="./rappid/dist/joint.ui.stencil.css" />
-        <link rel="stylesheet" type="text/css" href="./rappid/dist/joint.ui.halo.css" />
-        <link rel="stylesheet" type="text/css" href="./rappid/dist/joint.ui.selection.css" />
-        <link rel="stylesheet" type="text/css" href="./rappid/dist/joint.ui.paperScroller.css" />
+    <title>BloomingLeaf: Explore Next State</title>
 
-        <link rel="stylesheet" type="text/css" href="./rappid/dist/rappid.min.css" />
+    <link rel="stylesheet" type="text/css" href="./rappid/dist/joint.ui.stencil.css" />
+    <link rel="stylesheet" type="text/css" href="./rappid/dist/joint.ui.halo.css" />
+    <link rel="stylesheet" type="text/css" href="./rappid/dist/joint.ui.selection.css" />
+    <link rel="stylesheet" type="text/css" href="./rappid/dist/joint.ui.paperScroller.css" />
 
-        <link rel="stylesheet" type="text/css" href="./css/analysis_html.css" />
+    <link rel="stylesheet" type="text/css" href="./rappid/dist/rappid.min.css" />
 
-		<style>
-		.pagination a {
-		    color: white;
-		    float: left;
-		    padding: 8px 16px;
-		    text-decoration: none;
-		    transition: background-color .3s;
-		}
+    <link rel="stylesheet" type="text/css" href="./css/analysis_html.css" />
 
-		.pagination a.active {
-		    background-color: #4CAF50;
-		    color: white;
-		}
+    <style>
+        .pagination a {
+            color: white;
+            float: left;
+            padding: 8px 16px;
+            text-decoration: none;
+            transition: background-color .3s;
+        }
 
-		.pagination a:hover:not(.active) {background-color: #ddd;}
-		</style>
+        .pagination a.active {
+            background-color: #4CAF50;
+            color: white;
+        }
 
-    </head>
-    <body>
-        <div class="name"><p id="name">BloomingLeaf</p></div>
-        <div class="toolbar">  
-            <button id="btn-zoom-in" class="btn">Zoom In</button>
-            <button id="btn-zoom-out" class="btn">Zoom Out</button>
+        .pagination a:hover:not(.active) {
+            background-color: #ddd;
+        }
+    </style>
 
-            <div class="dropdown">
-              <div class="btn">Font Size</div>
-              <div class="dropdown-toolbar">
+</head>
+
+<body>
+    <div class="name">
+        <p id="name">BloomingLeaf</p>
+    </div>
+    <div class="toolbar">
+        <button id="btn-zoom-in" class="btn">Zoom In</button>
+        <button id="btn-zoom-out" class="btn">Zoom Out</button>
+
+        <div class="dropdown">
+            <div class="btn">Font Size</div>
+            <div class="dropdown-toolbar">
                 <a id="btn-fnt">Default</a>
                 <a id="btn-fnt-up">Increase</a>
                 <a id="btn-fnt-down">Decrease</a>
-              </div>
             </div>
+        </div>
+
+    </div>
+
+    <div id="navigation" class="left-panel" style="background-color: #333;">
+        <br>
+        <label>Number of states</label>
+        <label id=num_states_lbl></label>
+        <label>Navigate</label>
+        <input id="currentPage" type="hidden" value="">
+        <div style="display: inline-block;">
+            <input id="requiredState" type="text" placeholder="Digit desired page"
+                style="width: 150px; padding: 3px;" />
+            <button class="inspector-btn-small">Go</button>
+        </div>
+        <br>
+        <div id="pagination" class="pagination" style="display:inline-block;">
 
         </div>
 
-        <div id="navigation" class="left-panel" style="background-color: #333;">
-            <br>
-            <label>Number of states</label>
-            <label id=num_states_lbl></label>
-            <label>Navigate</label>
-            <input id="currentPage" type="hidden" value="">
-            <div style="display: inline-block;">
-                    <input id="requiredState" type="text" placeholder="Digit desired page" style="width: 150px; padding: 3px;"/>
-                    <button class="inspector-btn-small">Go</button>
-            </div>
-            <br>
-            <div id="pagination" class="pagination" style="display:inline-block;">
+        <br>
+        <label>Filters</label>
+        <input id="conflictFl" class="filter_checkbox" type="checkbox">
+        <font color="white"> Remove conflicts</font><br>
+        <input id="ttFl" class="filter_checkbox" type="checkbox">
+        <font color="white"> Remove (T,T)</font><br>
+        <input id="leastTasksSatisfied" class="filter_checkbox" type="checkbox">
+        <font color="white"> Least Task Satisfied</font><br>
+        <input id="mostTasksSatisfied" class="filter_checkbox" type="checkbox">
+        <font color="white"> Most Task Satisfied</font><br>
+        <input id="leastResource" class="filter_checkbox" type="checkbox">
+        <font color="white"> Least Resource Satisfied</font><br>
+        <input id="mostResource" class="filter_checkbox" type="checkbox">
+        <font color="white"> Most Resource Satisfied</font><br>
+        <input id="leastGoalSatisfied" class="filter_checkbox" type="checkbox">
+        <font color="white"> Least Goal Satisfied</font><br>
+        <input id="mostGoalSatisfied" class="filter_checkbox" type="checkbox">
+        <font color="white"> Most Goal Satisfied</font><br>
+        <input id="LeastActor" class="filter_checkbox" type="checkbox">
+        <font color="white"> Least Actor Involved</font><br>
+        <input id="mostActor" class="filter_checkbox" type="checkbox">
+        <font color="white"> Most Actor Involved</font><br>
+        <input id="mostConstraintSatisfaction" class="filter_checkbox" type="checkbox">
+        <font color="white"> Satisfaction of the Most Constrained Intention</font><br>
 
-            </div>
+        <br>
+        <label>Actions</label>
+        <button id="saveClose" class="inspector-btn">Save &amp Close</button>
+        <button id="exploreNextStates" class="inspector-btn">Explore Next States</button>
+        <button id="close" class="inspector-btn">Close</button>
+    </div>
 
-            <br>
-            <label>Filters</label>
-            <input id="conflictFl" class="filter_checkbox" type="checkbox"><font color="white"> Remove conflicts</font><br>
-            <input id="ttFl" class="filter_checkbox" type="checkbox"><font color="white"> Remove (T,T)</font><br>
-            <input id="leastTasksSatisfied" class="filter_checkbox" type="checkbox"><font color="white"> Least Task Satisfied</font><br>
-            <input id="mostTasksSatisfied" class="filter_checkbox" type="checkbox"><font color="white"> Most Task Satisfied</font><br>
-            <input id="leastResource" class="filter_checkbox" type="checkbox"><font color="white"> Least Resource Satisfied</font><br>
-            <input id="mostResource" class="filter_checkbox" type="checkbox"><font color="white"> Most Resource Satisfied</font><br>
-            <input id="leastGoalSatisfied" class="filter_checkbox" type="checkbox"><font color="white"> Least Goal Satisfied</font><br>
-            <input id="mostGoalSatisfied" class="filter_checkbox" type="checkbox" ><font color="white"> Most Goal Satisfied</font><br>
-            <input id="LeastActor" class="filter_checkbox" type="checkbox" ><font color="white"> Least Actor Involved</font><br>
-            <input id="mostActor" class="filter_checkbox" type="checkbox" ><font color="white"> Most Actor Involved</font><br>
-            <input id="mostConstraintSatisfaction" class="filter_checkbox" type="checkbox"><font color="white"> Satisfaction of the Most Constrained Intention</font><br>
+    <div id="paper">
+    </div>
 
-            <br>
-            <label>Actions</label>
-            <button id="saveClose" class="inspector-btn">Save &amp Close</button> 
-            <button id="exploreNextStates" class="inspector-btn">Explore Next States</button>
-            <button id="close" class="inspector-btn">Close</button>   
-        </div>
-
-        <div id="paper">
-        </div>
-
-        <script type="text/javascript">
-            SVGElement.prototype.getTransformToElement = SVGElement.prototype.getTransformToElement || function(toElement) {
+    <script type="text/javascript">
+        SVGElement.prototype.getTransformToElement = SVGElement.prototype.getTransformToElement || function (toElement) {
             return toElement.getScreenCTM().inverse().multiply(this.getScreenCTM());
         };
-        </script>
+    </script>
 
-        <script src="./rappid/node_modules/jquery/dist/jquery.js"></script>
-        <script src="./rappid/node_modules/lodash/index.js"></script>
-        <script src="./rappid/node_modules/backbone/backbone.js"></script>
+    <script src="./rappid/node_modules/jquery/dist/jquery.js"></script>
+    <script src="./rappid/node_modules/lodash/index.js"></script>
+    <script src="./rappid/node_modules/backbone/backbone.js"></script>
 
-        <script src="./rappid/dist/rappid.min.js"></script>
+    <script src="./rappid/dist/rappid.min.js"></script>
 
-        <script src="./rappid/dist/joint.ui.halo.js"></script>
-        <script src="./rappid/dist/joint.ui.clipboard.js"></script>
-        <script src="./rappid/dist/joint.ui.stencil.js"></script>
-        <script src="./rappid/dist/joint.ui.paperScroller.js"></script>
-        <script src="./rappid/dist/joint.ui.selection.js"></script>
-        <script src="./rappid/dist/joint.format.svg.js"></script>
-        <script src="./rappid/dist/joint.dia.command.js"></script>
+    <script src="./rappid/dist/joint.ui.halo.js"></script>
+    <script src="./rappid/dist/joint.ui.clipboard.js"></script>
+    <script src="./rappid/dist/joint.ui.stencil.js"></script>
+    <script src="./rappid/dist/joint.ui.paperScroller.js"></script>
+    <script src="./rappid/dist/joint.ui.selection.js"></script>
+    <script src="./rappid/dist/joint.format.svg.js"></script>
+    <script src="./rappid/dist/joint.dia.command.js"></script>
 
-        <script src="./plugins/keyboard/keyboard.js"></script>
-        <script src="./plugins/slider/nouislider.min.js"></script>
-        <script src="./plugins/chart/Chart.bundle.min.js"></script>
+    <script src="./plugins/keyboard/keyboard.js"></script>
+    <script src="./plugins/slider/nouislider.min.js"></script>
+    <script src="./plugins/chart/Chart.bundle.min.js"></script>
 
-        <!-- JS object files-->
-        <script src="./js/object/evoObjects.js"></script>
-        <script src="./js/object/viewObjects.js"></script>
+    <!-- JS object files-->
+    <script src="./js/object/evoObjects.js"></script>
+    <script src="./js/object/viewObjects.js"></script>
 
-        <!-- Rappid extensions -->
-        <script src="./rappid-extensions/BackboneModelsIntention.js"></script>
-        <script src="./rappid-extensions/BackboneModelsOther.js"></script>
-        <script src="./rappid-extensions/BackboneModelsAnalysis.js"></script>
+    <!-- Rappid extensions -->
+    <script src="./rappid-extensions/BackboneModelsIntention.js"></script>
+    <script src="./rappid-extensions/BackboneModelsOther.js"></script>
+    <script src="./rappid-extensions/BackboneModelsAnalysis.js"></script>
 
-        <script src="./rappid-extensions/joint.extensions.js"></script>
-        <script src="./js/next-state.js"></script>
+    <script src="./rappid-extensions/joint.extensions.js"></script>
+    <script src="./js/next-state.js"></script>
 
-        <!-- Frontend scripts -->
-        <script src="./js/displayAnalysis.js"></script> 
-        <script src="./js/backendComm.js"></script> 
-        <script src="./js/onFunctionsNextState.js"></script>
+    <!-- Frontend scripts -->
+    <script src="./js/displayAnalysis.js"></script>
+    <script src="./js/backendComm.js"></script>
+    <script src="./js/onFunctionsNextState.js"></script>
 
-        <!--SweetAlertJS is used to customize dialog or alert message-->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/6.11.5/sweetalert2.all.js"></script>
-    </body>
+    <!--SweetAlertJS is used to customize dialog or alert message-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/6.11.5/sweetalert2.all.js"></script>
+</body>
+
 </html>

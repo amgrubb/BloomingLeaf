@@ -29,17 +29,17 @@
  *
  */
 var ResultBBM = Backbone.Model.extend({
-    initialize : function(options){
+    initialize: function (options) {
         _.extend({}, this.defaults, options);
     },
 
-    defaults: function() {
-        return {    
-            name:"Default Result",
+    defaults: function () {
+        return {
+            name: "Default Result",
             timePointAssignments: null,
             timePointPath: null,        // changed type to list of int.
             elementList: null,
-            allSolutions: null, 
+            allSolutions: null,
             nextStateTPs: null,
             colorVis: null, // Color visualization for analysis mode
             selectedTimePoint: null, // Find where slider is initialized and set timepoint in here. Also place it in update function
@@ -57,17 +57,17 @@ var ResultBBM = Backbone.Model.extend({
  */
 var ResultCollection = Backbone.Collection.extend({
     model: ResultBBM,
-    
+
     /** Used for eventually storing and accessing collection on server */
     url: "/results",
 
-    initialize : function(){
+    initialize: function () {
         this.on('add', this.onSelectedChanged, this);
         this.on('change:switchResults', this.onSelectedChanged, this);
     },
 
-    /** When result is clicked/selected, find previously selected result and unselect it */ 
-    onSelectedChanged : function(changedResult){
+    /** When result is clicked/selected, find previously selected result and unselect it */
+    onSelectedChanged: function (changedResult) {
         this.filter(resultModel => resultModel.get('selected') == true && changedResult != resultModel)
             .forEach(model => model.set('selected', false));
     },
@@ -86,7 +86,7 @@ var ResultCollection = Backbone.Collection.extend({
  * {AnalysisResult} previousAnalysis
  */
 var ConfigBBM = Backbone.Model.extend({
-    initialize : function(options){
+    initialize: function (options) {
         this.results = new ResultCollection([]);
         this.listenTo(this, 'change:selected', this.updateSelected);
         _.extend({}, this.defaults, options);
@@ -94,16 +94,16 @@ var ConfigBBM = Backbone.Model.extend({
 
     idAttribute: "uid",
 
-    defaults: function() {
+    defaults: function () {
         return {
-        name:"Default Config",
-        action: null,
-        conflictLevel: "S",
-        numRelTime: "1",
-//        currentState: "0",        //TODO: Can we remove this?
-//        previousAnalysis: null,
-        selected: true,
-        results : new ResultCollection([]),
+            name: "Default Config",
+            action: null,
+            conflictLevel: "S",
+            numRelTime: "1",
+            // currentState: "0",        //TODO: Can we remove this?
+            // previousAnalysis: null,
+            selected: true,
+            results: new ResultCollection([]),
         }
     },
 
@@ -111,24 +111,24 @@ var ConfigBBM = Backbone.Model.extend({
      * Will be called to add a new result model to the results param
      * when the backend returns an AnalysisResult
      */
-    addResult : function(result){
-        result.set('name', 'Result ' + (this.get('results').length+1))
+    addResult: function (result) {
+        result.set('name', 'Result ' + (this.get('results').length + 1))
         this.get("results").add(result);
-		$('#conflict-level').prop('disabled', true);
-		$('#num-rel-time').prop('disabled', true);
+        $('#conflict-level').prop('disabled', true);
+        $('#num-rel-time').prop('disabled', true);
     },
 
     /** If a config was previously selected and now no longer is, unselect any selected results */
-    updateSelected : function(){
-        if (!this.get('selected')){
-            this.get('results').filter(result => result.get('selected')).forEach(result=> result.set('selected', false));
+    updateSelected: function () {
+        if (!this.get('selected')) {
+            this.get('results').filter(result => result.get('selected')).forEach(result => result.set('selected', false));
         }
     },
 
-    returnSelectedResultBBM : function() {
+    returnSelectedResultBBM: function () {
         selectedResults = this.get('results').filter(result => result.get('selected') == true);
-        if (selectedResults.length > 0){
-            return selectedResults[selectedResults.length-1]
+        if (selectedResults.length > 0) {
+            return selectedResults[selectedResults.length - 1]
         }
         return null;
     },
@@ -145,7 +145,7 @@ var ConfigCollection = Backbone.Collection.extend({
     /** Used for eventually storing and accessing collection on server */
     url: "/configurations",
 
-    initialize: function(){
+    initialize: function () {
         this.on('change:switchConfigs', this.onSelectedChanged, this);
         this.on('change:unselectResult', this.unselectResults, this);
         this.on('add', this.onSelectedChanged, this);
@@ -153,8 +153,8 @@ var ConfigCollection = Backbone.Collection.extend({
 
     /** 
      * When config is clicked/selected, find previously selected config and unselect it.
-     */ 
-    onSelectedChanged : function(changedConfig){
+     */
+    onSelectedChanged: function (changedConfig) {
         this.filter(configModel => configModel.get('selected') == true && changedConfig != configModel)
             .forEach(model =>
                 model.set('selected', false));
@@ -162,8 +162,8 @@ var ConfigCollection = Backbone.Collection.extend({
 
     /** 
      * When config is clicked, unselect any results that may have been selected under it.
-     */ 
-     unselectResults : function(changedConfig){
+     */
+    unselectResults: function (changedConfig) {
         changedConfig.get('results').forEach(result => result.set('selected', false));
     },
 });

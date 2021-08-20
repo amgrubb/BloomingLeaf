@@ -10,13 +10,13 @@ myNull = null;
 
 /** 
  * Backbone Model of UserEvaluations 
- */ 
- var UserEvaluationBBM = Backbone.Model.extend({  
-    initialize: function(options){  
-        _.extend({}, this.defaults, options)    
+ */
+var UserEvaluationBBM = Backbone.Model.extend({
+    initialize: function (options) {
+        _.extend({}, this.defaults, options)
     },
 
-    defaults: function(){ 
+    defaults: function () {
         return {
             assignedEvidencePair: '(no value)', //Evidence Pair
             absTime: 0, // Integer Value 
@@ -48,9 +48,9 @@ var FunctionSegmentBBM = Backbone.Model.extend({
     initialize: function (options) {
         _.extend({}, this.defaults, options)
     },
-    defaults: function(){ 
+    defaults: function () {
         return {
-            type:'Constant',           // Atomic function types. 
+            type: 'Constant',           // Atomic function types. 
             refEvidencePair: 0000,   //a.k.a. Evaluation Value
             startTP: 0,             // Start time point (char) 0,A,B,C
             // Removed stopTP variable - stopTP is one letter after startTP or A is startTP is 0
@@ -80,9 +80,9 @@ var FunctionSegmentBBM = Backbone.Model.extend({
  * 
  */
 var EvolvingFunctionBBM = Backbone.Model.extend({
- 
+
     // The default function sets the default values for the EvolvingFunctionBBM
-    defaults: function(){ 
+    defaults: function () {
         // The return resets the attributes if EvolvingFunctionBBM is recreated
         return {
             type: 'NT',                  // Named types on view list, was stringDynVis
@@ -95,7 +95,7 @@ var EvolvingFunctionBBM = Backbone.Model.extend({
             repCount: null,         // 2, 3, ..n
             repAbsTime: null,       // 0, 1, ..n
         }
-       
+
     },
 
     /**
@@ -104,18 +104,18 @@ var EvolvingFunctionBBM = Backbone.Model.extend({
      * refEvidencePair value. If there are no function segments, the function
      * does not return anything.
      */
-    getNthRefEvidencePair: function(n) { 
+    getNthRefEvidencePair: function (n) {
         if (this.get('functionSegList') != null) {
-            var len = this.get('functionSegList').length; 
+            var len = this.get('functionSegList').length;
             var funcSegList = this.get('functionSegList');
-            if (len > 1) {    
-                return funcSegList[len - n].get('refEvidencePair'); 
-            }   
+            if (len > 1) {
+                return funcSegList[len - n].get('refEvidencePair');
+            }
             else { // If the len is 1, can only return that FunctionSegmentBBM's refEvidencePair
                 return funcSegList[0].get('refEvidencePair');
-            }     
+            }
         }
-    }, 
+    },
 
     /**
      * Creates a new RepFuncSegment object from the parameters start, stopRep, 
@@ -130,25 +130,25 @@ var EvolvingFunctionBBM = Backbone.Model.extend({
      * @param {Integer} absTime
      *  Absolute time of repeating segment 
      */
-    setRepeatingFunction: function(start, stopRep, count, absTime) {
-        this.set('hasRepeat', true);                         
+    setRepeatingFunction: function (start, stopRep, count, absTime) {
+        this.set('hasRepeat', true);
         this.set('repStart', start);
         this.set('repStop', stopRep);
         this.set('repCount', count);
         this.set('repAbsTime', absTime);
-    },            
+    },
 
     /**
      * All of the parameters for a repeating segment are reset to the default,
      * which means there is no loner a repeating function segment in the EvolvingFunctionBBM     *  
-     */ 
-    removeRepFuncSegments: function() {
-        this.set('hasRepeat', false);                         
+     */
+    removeRepFuncSegments: function () {
+        this.set('hasRepeat', false);
         this.set('repStart', null);
         this.set('repStop', null);
         this.set('repCount', null);
         this.set('repAbsTime', null);
-    },    
+    },
 
 });
 
@@ -163,17 +163,17 @@ var EvolvingFunctionBBM = Backbone.Model.extend({
  */
 var IntentionBBM = Backbone.Model.extend({
 
-    initialize: function(options) { 
-        _.extend({}, this.defaults, options) 
-    }, 
+    initialize: function (options) {
+        _.extend({}, this.defaults, options)
+    },
 
-    defaults: function(){ 
+    defaults: function () {
         return {
             nodeName: 'untitled',
-            evolvingFunction: null, 
+            evolvingFunction: null,
             userEvaluationList: []
         }
-    }, 
+    },
 
     /**
      * Allows you to find the UserEvaluationBBM with the specified absTime
@@ -183,10 +183,10 @@ var IntentionBBM = Backbone.Model.extend({
      * Absolute Time - Integer time value
      * @returns an UserEvaluationBBM or null
      */
-    getUserEvaluationBBM: function(absTime) {
+    getUserEvaluationBBM: function (absTime) {
         userEvals = this.get('userEvaluationList').filter(userEval => userEval.get('absTime') == absTime);
-        if (userEvals.length > 0){
-            return userEvals[userEvals.length-1]
+        if (userEvals.length > 0) {
+            return userEvals[userEvals.length - 1]
         }
         return null;
     },
@@ -196,10 +196,10 @@ var IntentionBBM = Backbone.Model.extend({
      * @param {Integer} TP2 
      * @returns Last UserEvaluationBBMs between TP1 and TP2, or null if there is none
      */
-    getLastUserEvaluationBetweenTPs: function(TP1, TP2){
+    getLastUserEvaluationBetweenTPs: function (TP1, TP2) {
         var userEvals = this.get('userEvaluationList').filter(userEval => userEval.get('absTime') >= TP1 && userEval.get('absTime') < TP2);
-        if (userEvals.length > 0){
-            return userEvals[userEvals.length-1];
+        if (userEvals.length > 0) {
+            return userEvals[userEvals.length - 1];
         }
         return null;
     },
@@ -207,14 +207,14 @@ var IntentionBBM = Backbone.Model.extend({
     /**
     * @returns Array of FunctionSegmentBBMs, or null if it is not an evolvingFunction
     */
-    getFuncSegments: function(){
+    getFuncSegments: function () {
         evolvingFunc = this.get('evolvingFunction');
-        if (evolvingFunc != null){
+        if (evolvingFunc != null) {
             return evolvingFunc.get('functionSegList');
         }
         return null;
     },
- 
+
     /**
      * Called whenever the user changes or removes the Initial Satisfaction Value
      * in the Element Inspector. Called on Change for #init-sat-value 
@@ -223,40 +223,40 @@ var IntentionBBM = Backbone.Model.extend({
      * 
      * @param {String} initValue 
      */
-    changeInitialSatValue: function(initValue) {
+    changeInitialSatValue: function (initValue) {
         // Set the the first element of userEvaluationList to the initValue
         this.getUserEvaluationBBM(0).set('assignedEvidencePair', initValue);
-        
+
         if (this.get('evolvingFunction') != null) {
             var funcSegList = this.getFuncSegments();
             // If the function is C or UD & C set refEvidencePair to initValue
-            if (this.get('evolvingFunction').get('type') == 'C') { 
-                    funcSegList[0].set('refEvidencePair', initValue); // Set first index of funcSegList to given initValue 
+            if (this.get('evolvingFunction').get('type') == 'C') {
+                funcSegList[0].set('refEvidencePair', initValue); // Set first index of funcSegList to given initValue 
             }
             else {
-            // If the function is not C or UD & C, reset the function type and clear the functionSegList
-            this.get('evolvingFunction').set('type', 'NT');
-            this.get('evolvingFunction').set('functionSegList', []);
-           }
-        }     
-    }, 
- 
+                // If the function is not C or UD & C, reset the function type and clear the functionSegList
+                this.get('evolvingFunction').set('type', 'NT');
+                this.get('evolvingFunction').set('functionSegList', []);
+            }
+        }
+    },
+
     /**
      * Sets the initial satisfaction value for this Intention to '(no value)'
      */
-    removeInitialSatValue: function() {
+    removeInitialSatValue: function () {
         this.changeInitialSatValue('(no value)');
-    },    
- 
+    },
+
     /**
      * Resets evolving functions
      */
     // TODO: this function will need to be updated 
-    removeFunction: function() {
+    removeFunction: function () {
         // this.removeAbsConstraint();
         this.set('evolvingFunction', null); // Set to null 
-    }, 
- 
+    },
+
     /**
      * Clears all FuncSegments for the Intention's
      * EvolvingFunction and adds new FuncSegments according to the current
@@ -264,64 +264,62 @@ var IntentionBBM = Backbone.Model.extend({
      * Called when user changes the function type in Element Inspector 
      * @param {String} funcType
      */
-    setEvolvingFunction: function(funcType) {
-        this.set('evolvingFunction', new EvolvingFunctionBBM({type: funcType, functionSegList: []}));
+    setEvolvingFunction: function (funcType) {
+        this.set('evolvingFunction', new EvolvingFunctionBBM({ type: funcType, functionSegList: [] }));
         var initValue = this.getUserEvaluationBBM(0).get('assignedEvidencePair');
-
-
 
         var seg2 = null;
         // Creates the correct FunctionSegmentBBM(s) for the selected function type
-        switch(funcType) {
-            case 'NT': 
-                var seg =  new FunctionSegmentBBM({type: funcType, refEvidencePair: '(no value)', startTP: '0', startAT: 0});
+        switch (funcType) {
+            case 'NT':
+                var seg = new FunctionSegmentBBM({ type: funcType, refEvidencePair: '(no value)', startTP: '0', startAT: 0 });
                 break;
             case 'C':
-                var seg =  new FunctionSegmentBBM({type: funcType, refEvidencePair: initValue, startTP: '0', startAT: 0});  
+                var seg = new FunctionSegmentBBM({ type: funcType, refEvidencePair: initValue, startTP: '0', startAT: 0 });
                 break;
             case 'R':
                 //The reference evidence pair for a Stochastic function is always 0000
-                var seg =  new FunctionSegmentBBM({type: funcType, refEvidencePair: '(no value)', startTP: '0', startAT: 0});
+                var seg = new FunctionSegmentBBM({ type: funcType, refEvidencePair: '(no value)', startTP: '0', startAT: 0 });
                 break;
             case 'I':
-                var seg =  new FunctionSegmentBBM({type: funcType, refEvidencePair: '0011', startTP: '0', startAT: 0}); 
+                var seg = new FunctionSegmentBBM({ type: funcType, refEvidencePair: '0011', startTP: '0', startAT: 0 });
                 break;
             case 'D':
-                var seg =  new FunctionSegmentBBM({type: funcType, refEvidencePair: '1100', startTP: '0', startAT: 0}); 
+                var seg = new FunctionSegmentBBM({ type: funcType, refEvidencePair: '1100', startTP: '0', startAT: 0 });
                 break;
             case 'UD':
-                var seg =  new FunctionSegmentBBM({type: 'C', refEvidencePair: initValue, startTP: '0', startAT: 0}); 
+                var seg = new FunctionSegmentBBM({ type: 'C', refEvidencePair: initValue, startTP: '0', startAT: 0 });
                 break;
-            case'RC':
+            case 'RC':
                 // Stochastic and Constant
-                var seg1 =  new FunctionSegmentBBM({type: 'R', refEvidencePair: '(no value)', startTP: '0', startAT: 0}); 
-                var seg2 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: initValue, startTP: 'A', startAT: myNull}); 
+                var seg1 = new FunctionSegmentBBM({ type: 'R', refEvidencePair: '(no value)', startTP: '0', startAT: 0 });
+                var seg2 = new FunctionSegmentBBM({ type: 'C', refEvidencePair: initValue, startTP: 'A', startAT: myNull });
                 break;
             case 'CR':
                 // Constant and Stochastic
-                var seg1 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: initValue, startTP: '0', startAT: 0}); 
-                var seg2 =  new FunctionSegmentBBM({type: 'R', refEvidencePair: '(no value)', startTP: 'A', startAT: myNull}); 
+                var seg1 = new FunctionSegmentBBM({ type: 'C', refEvidencePair: initValue, startTP: '0', startAT: 0 });
+                var seg2 = new FunctionSegmentBBM({ type: 'R', refEvidencePair: '(no value)', startTP: 'A', startAT: myNull });
                 break;
             case 'MP':
                 // Increase and Constant
-                var seg1 =  new FunctionSegmentBBM({type: 'I', refEvidencePair: '0011', startTP: '0', startAT: 0}); 
-                var seg2 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: '0011', startTP: 'A', startAT: myNull}); 
+                var seg1 = new FunctionSegmentBBM({ type: 'I', refEvidencePair: '0011', startTP: '0', startAT: 0 });
+                var seg2 = new FunctionSegmentBBM({ type: 'C', refEvidencePair: '0011', startTP: 'A', startAT: myNull });
                 break;
             case 'MN':
                 // Decrease and Constant
-                var seg1 =  new FunctionSegmentBBM({type: 'D', refEvidencePair: '1100', startTP: '0', startAT: 0}); 
-                var seg2 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: '1100', startTP: 'A', startAT: myNull}); 
+                var seg1 = new FunctionSegmentBBM({ type: 'D', refEvidencePair: '1100', startTP: '0', startAT: 0 });
+                var seg2 = new FunctionSegmentBBM({ type: 'C', refEvidencePair: '1100', startTP: 'A', startAT: myNull });
                 break;
             case 'SD':
                 // Constant and Constant
-                var seg1 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: '0011', startTP: '0', startAT: 0}); 
-                var seg2 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: '1100', startTP: 'A', startAT: myNull}); 
+                var seg1 = new FunctionSegmentBBM({ type: 'C', refEvidencePair: '0011', startTP: '0', startAT: 0 });
+                var seg2 = new FunctionSegmentBBM({ type: 'C', refEvidencePair: '1100', startTP: 'A', startAT: myNull });
                 this.getUserEvaluationBBM(0).set('assignedEvidencePair', '0011');
                 break;
             case 'DS':
                 // Constant and Constant
-                var seg1 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: '1100', startTP: '0', startAT: 0}); 
-                var seg2 =  new FunctionSegmentBBM({type: 'C', refEvidencePair: '0011', startTP: 'A', startAT: myNull}); 
+                var seg1 = new FunctionSegmentBBM({ type: 'C', refEvidencePair: '1100', startTP: '0', startAT: 0 });
+                var seg2 = new FunctionSegmentBBM({ type: 'C', refEvidencePair: '0011', startTP: 'A', startAT: myNull });
                 this.getUserEvaluationBBM(0).set('assignedEvidencePair', '1100');
                 break;
         }
@@ -332,8 +330,8 @@ var IntentionBBM = Backbone.Model.extend({
         else {
             this.getFuncSegments().push(seg1, seg2);
         }
-    }, 
- 
+    },
+
     /**
      * Adds a new FunctionSegmentBBM to the end of this Intention's EvolvingFunction's
      * function list.
@@ -350,19 +348,18 @@ var IntentionBBM = Backbone.Model.extend({
      *   ex: '0000'
      * @param {Integer} startTime
      */
-    addUserDefinedSeg: function(funcType, refEvidencePair){
+    addUserDefinedSeg: function (funcType, refEvidencePair) {
         var len = this.getFuncSegments().length;
         var startCheck = this.getFuncSegments()[len - 1].get('startTP'); // Get last value in list 
         if (startCheck == '0') { // If previous segment is at 0 then next one is at A
             var start = 'A';
         } else { // Otherwise, for following segment increase letter by one 
-            var start = String.fromCharCode(startCheck.charCodeAt(0) + 1); 
+            var start = String.fromCharCode(startCheck.charCodeAt(0) + 1);
         }
- 
+
         // Create new FunctionSegmentBBM and adds it to functionSegList 
-        this.getFuncSegments().push(new FunctionSegmentBBM({type: funcType, refEvidencePair: refEvidencePair, startTP: start, startAT: myNull})); 
- 
-    }, 
+        this.getFuncSegments().push(new FunctionSegmentBBM({ type: funcType, refEvidencePair: refEvidencePair, startTP: start, startAT: myNull }));
+    },
     /**
      * Sets the refEvidencePair for the FunctionSegmentBBMs in the
      * EvolvingFunction for the Intention
@@ -371,36 +368,35 @@ var IntentionBBM = Backbone.Model.extend({
      * ex: '0000'
      */
     // TODO: i think we are going to have to change this function when we add views for the FunctionSegmentBBMs
-    setMarkedValueToFunction: function(satValue) {
+    setMarkedValueToFunction: function (satValue) {
         if (this.get('evolvingFunction') != null) {
-            var funcType = this.get('evolvingFunction').get('type'); 
-        } else { 
-            var funcType = null; 
+            var funcType = this.get('evolvingFunction').get('type');
+        } else {
+            var funcType = null;
         }
- 
+
         var len = this.getFuncSegments().length;
         this.getFuncSegments()[len - 1].set('refEvidencePair', satValue); // Set refEvidencePair for last value 
- 
+
         if (funcType == 'MP' || funcType == 'MN') {
             this.getFuncSegments()[0].set('refEvidencePair', satValue); // Set refEvidencePair for initial value 
         }
-    }, 
- 
+    },
+
     /**
      * Sets the function type and marked value for the
      * last FunctionSegmentBBM for the Intention's EvolvingFunction
      *
      * @param {String} funcValue
      */
-    setUserDefinedSegment: function(funcValue) {
+    setUserDefinedSegment: function (funcValue) {
         if (this.getFuncSegments() != null) {
             var funcSegLen = this.getFuncSegments().length;
             var functionSegment = this.getFuncSegments()[funcSegLen - 1];
             functionSegment.set('type', funcValue); // Set type 
-            if (funcValue == 'C' || funcValue =='R') {
+            if (funcValue == 'C' || funcValue == 'R') {
                 functionSegment.set('refEvidencePair', '0000'); // Set refEvidencePair
             }
-        }     
+        }
     },
 });
-

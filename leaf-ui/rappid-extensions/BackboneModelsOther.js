@@ -78,5 +78,3 @@ var ConstraintBBM = Backbone.Model.extend({
 var ConstraintCollection = Backbone.Collection.extend({
     model: ConstraintBBM
 });
-
-
