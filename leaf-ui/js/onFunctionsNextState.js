@@ -11,7 +11,7 @@ $('#btn-fnt').on('click', function () { defaultFont(analysis.paper); });
 $('#btn-fnt-up').on('click', function () { fontUp(analysis.paper); });
 $('#btn-fnt-down').on('click', function () { fontDown(analysis.paper); });
 $('.inspector-btn-small').on('click', function () { goToState(); });
-$('.filter_checkbox').on('mousedown', function () { $("body").addClass("spinning");}); // Adds waiting spinner to cursor
+$('.filter_checkbox').on('mousedown', function () { $("body").addClass("spinning"); }); // Adds waiting spinner to cursor
 $('.filter_checkbox').on('click', function () { add_filter() });
 $("#saveClose").on('click', function () { save_current_state(); });
 $("#exploreNextStates").on('click', function () { generate_next_states(); });
@@ -84,6 +84,5 @@ function defaultFont(pPaper) {
 function resizeWindow(sliderMax) {
     $('#slider').css("margin-top", $(this).height() * 0.7);
     $('#slider').width($('#paper').width() * 0.8);
-    adjustSliderWidth(sliderMax)	
+    adjustSliderWidth(sliderMax)
 }
-

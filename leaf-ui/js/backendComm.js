@@ -21,7 +21,7 @@ function backendSimulationRequest(analysisRequest) {
 	xhr.open("POST", url, true);
 	xhr.setRequestHeader("Content-Type", "application/json");
 
-	var data = backendStringifyCirc(jsObject); 
+	var data = backendStringifyCirc(jsObject);
 	console.log(data)
 	xhr.onreadystatechange = function () {
 		// This function get called when the response is received.
@@ -34,16 +34,16 @@ function backendSimulationRequest(analysisRequest) {
 	xhr.send(data);	// Why is this sent down here? What is this send function.
 }
 
-function backendStringifyCirc(obj){
-    var skipKeys = ['_events', 'results', 'colorVis', 'change:refEvidencePair', 'context', '_listeners', '_previousAttributes']; // List of keys that contains circular structures
-    var graphtext = JSON.stringify(obj, function(key, value) {
+function backendStringifyCirc(obj) {
+	var skipKeys = ['_events', 'results', 'colorVis', 'change:refEvidencePair', 'context', '_listeners', '_previousAttributes']; // List of keys that contains circular structures
+	var graphtext = JSON.stringify(obj, function (key, value) {
 		if (skipKeys.includes(key)) { //if key is in the list
-		  return null; // Replace with null
-		} else{
-		  return value; // Otherwise return the value
+			return null; // Replace with null
+		} else {
+			return value; // Otherwise return the value
 		}
-	  });
-      return graphtext
+	});
+	return graphtext
 }
 
 /** Handles the response from the server.
@@ -80,7 +80,7 @@ function responseFunc(analysisRequest, response) {
  * {json structure} results
  * Note: function was originally called `backendComm`.
  */
-function convertToAnalysisResult(results){
+function convertToAnalysisResult(results) {
 	var tempResult = new ResultBBM();
 	tempResult.set('timePointAssignments', results.timePointAssignments);	// Was called: 'assignedEpoch'
 	tempResult.set('timePointPath', results.timePointPath);
@@ -96,13 +96,13 @@ function convertToAnalysisResult(results){
 	return tempResult;
 }
 
-function open_next_state_viewer(analysisRequest, allNextStatesResult){
-    var urlBase = document.URL.substring(0, document.URL.lastIndexOf('/')+1);
-    var url = urlBase+"analysis.html";
-    var w = window.open(url, Date.now(), "status=0,title=0,height=600,width=1200,scrollbars=1");
+function open_next_state_viewer(analysisRequest, allNextStatesResult) {
+	var urlBase = document.URL.substring(0, document.URL.lastIndexOf('/') + 1);
+	var url = urlBase + "analysis.html";
+	var w = window.open(url, Date.now(), "status=0,title=0,height=600,width=1200,scrollbars=1");
 
-    if (!w) {
-        alert('You must allow popups for this map to work.');
+	if (!w) {
+		alert('You must allow popups for this map to work.');
 	} else {
 		if (w != null && !w.closed) {
 			var jsObject = {};
@@ -112,7 +112,7 @@ function open_next_state_viewer(analysisRequest, allNextStatesResult){
 			w.focus();
 		} else {
 			alert("Popup has been closed.");
-		}		
+		}
 	}
 
 }
@@ -257,4 +257,3 @@ function getIDs(backendErrorMsg) {
 
 	return arr;
 }
-

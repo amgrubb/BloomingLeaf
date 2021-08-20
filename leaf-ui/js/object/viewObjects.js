@@ -5,17 +5,17 @@ class ChartObj {
 	 */
 
 	constructor() {
-		
+
 		this.labels;
 		this.dataSets = [];
 		this.options = {
 			// animation: false,
-			scaleOverride : true,
-			scaleSteps : 4,
-			scaleStepWidth : 1,
-			scaleStartValue : -2,
+			scaleOverride: true,
+			scaleSteps: 4,
+			scaleStepWidth: 1,
+			scaleStartValue: -2,
 			scaleFontSize: 10,
-			pointHitDetectionRadius : 5,
+			pointHitDetectionRadius: 5,
 			tooltipTemplate: "",
 			multiTooltipTemplate: "",
 			scales: {
@@ -23,12 +23,12 @@ class ChartObj {
 					ticks: {
 						min: -2.1,
 						max: 2.1,
-						callback: function(value, index, values) {
-							if (value == 2){return '(F, ⊥)'};
-							if (value == 1){return '(P, ⊥)'};
-							if (value == 0){return '(⊥, ⊥)'};
-							if (value == -1){return '(⊥, P)'};
-							if (value == -2){return '(⊥, F)'};
+						callback: function (value, index, values) {
+							if (value == 2) { return '(F, ⊥)' };
+							if (value == 1) { return '(P, ⊥)' };
+							if (value == 0) { return '(⊥, ⊥)' };
+							if (value == -1) { return '(⊥, P)' };
+							if (value == -2) { return '(⊥, F)' };
 						}
 					}
 				}]

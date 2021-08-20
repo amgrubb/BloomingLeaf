@@ -24,7 +24,7 @@ class IntentionColoring {
      */
     static setColorMode(newColorMode, analysisResult) {
         IntentionColoring.colorMode = newColorMode;
-        if(newColorMode != "EVO") {
+        if (newColorMode != "EVO") {
             EVO.deactivate();
         }
         EVO.refresh(analysisResult);
@@ -38,32 +38,31 @@ class IntentionColoring {
         IntentionColoring.isColorBlindMode = isTurningOnColorBlindMode;
         EVO.refresh(analysisResult);
     }
-        
+
 }
 
-class IntentionColorVis{
-    constructor()
-    {
+class IntentionColorVis {
+    constructor() {
         this.id;
         this.evals; //list of percentages that each evaluation holds
         this.timePoints = []; //array of evals at each time point
         this.initializeEvalDict();
     }
 
-    initializeEvalDict()
-    {
+    initializeEvalDict() {
         this.evals = {};
 
         this.evals = {
-            "0000" : 0.0, 
-            "0011" : 0.0, 
-            "0010" : 0.0,
-            "0100" : 0.0,
-            "0110" : 0.0,
-            "1111" : 0.0,
-            "0111" : 0.0,
-            "1100" : 0.0,
-            "1110" : 0.0 };
+            "0000": 0.0,
+            "0011": 0.0,
+            "0010": 0.0,
+            "0100": 0.0,
+            "0110": 0.0,
+            "1111": 0.0,
+            "0111": 0.0,
+            "1100": 0.0,
+            "1110": 0.0
+        };
     }
 }
 
@@ -73,42 +72,45 @@ class IntentionColorVis{
  * 
  */
 class EVO {
-//replaced white with grey for readability
+    //replaced white with grey for readability
     static colorVisDict = {
-        "0000" : "#D3D3D3",
-        "0011" : "#003fff",
-        "0010" : "#8FB8DE",
-        "0100" : "#fbaca8",
-        "0110" : "#9400D3",
-        "0111" : "#5946b2", 
-        "1100" : "#FF2600",
-        "1110" : "#ca2c92", 
-        "1111" : "#0D0221" };
+        "0000": "#D3D3D3",
+        "0011": "#003fff",
+        "0010": "#8FB8DE",
+        "0100": "#fbaca8",
+        "0110": "#9400D3",
+        "0111": "#5946b2",
+        "1100": "#FF2600",
+        "1110": "#ca2c92",
+        "1111": "#0D0221"
+    };
     /**
      * Defines order of evaluations for filling intentions by %
      */
     static colorVisOrder = {
-            6: "0000" ,
-            1: "0011" ,
-            2: "0010" ,
-            8: "0100" ,
-            4: "0110" ,
-            3: "0111" ,
-            9: "1100" ,
-            7: "1110" ,
-            5: "1111" };
+        6: "0000",
+        1: "0011",
+        2: "0010",
+        8: "0100",
+        4: "0110",
+        3: "0111",
+        9: "1100",
+        7: "1110",
+        5: "1111"
+    };
 
-     //replaces all conflicting evals with dark grey
-     static colorVisDictColorBlind = {
-            "0000" : "#D3D3D3",
-            "0011" : "#003fff",
-            "0010" : "#8FB8DE",
-            "0100" : "#fbaca8",
-            "0110" : "#333333",
-            "0111" : "#333333", 
-            "1100" : "#FF2600",
-            "1110" : "#333333", 
-            "1111" : "#333333" };
+    //replaces all conflicting evals with dark grey
+    static colorVisDictColorBlind = {
+        "0000": "#D3D3D3",
+        "0011": "#003fff",
+        "0010": "#8FB8DE",
+        "0100": "#fbaca8",
+        "0110": "#333333",
+        "0111": "#333333",
+        "1100": "#FF2600",
+        "1110": "#333333",
+        "1111": "#333333"
+    };
 
     //number of evaluation types
     static numEvals = Object.keys(EVO.colorVisDict).length + 1;
@@ -150,10 +152,10 @@ class EVO {
         var isAnalysis;
         // If EVO is on
         if (EVO.sliderOption > 0) {
-            if (analysisResult !== undefined && analysisResult.get('selected')){// If a result is selected
+            if (analysisResult !== undefined && analysisResult.get('selected')) {// If a result is selected
                 EVO.colorIntentionsAnalysis(analysisResult);
             }
-            else{
+            else {
                 EVO.colorIntentionsModeling();
             }
             EVO.changeIntentionsText(analysisResult);
@@ -171,21 +173,21 @@ class EVO {
             EVO.revertIntentionsText(graph.getElements(), paper, isAnalysis);
         }
     }
-        
+
     constructor(elementList) {
         this.numIntentions = elementList.length;
         this.numTimePoints = elementList[0].status.length;
         this.intentionListColorVis = [];
         // Assessable in next state window 
-        this.isColorBlind = false; 
+        this.isColorBlind = false;
         this.initializeIntentionList();
-    }  
+    }
 
     /**
      * Switches to analysis slider, uses the single path analysis results to calculate evaluation percentages, stores time point info, prints info to console
      * @param {*} elementList List of elements containing analysis results
      */
-    singlePathResponse(elementList, analysisResult) {    
+    singlePathResponse(elementList, analysisResult) {
         $('#modelingSlider').css("display", "none");
         $('#analysisSlider').css("display", "");
         document.getElementById("colorResetAnalysis").value = EVO.sliderOption;
@@ -195,7 +197,7 @@ class EVO {
         //calculate evaluation percentages and other data for ColorVis
         for (var i = 0; i < this.numIntentions; ++i) {
             this.intentionListColorVis[i].id = elementList[i].id;
-            for (var k = 0; k < this.numTimePoints; ++k) { 
+            for (var k = 0; k < this.numTimePoints; ++k) {
                 var currEval = elementList[i].status[k];
                 // For fill intention by timepoint
                 this.intentionListColorVis[i].timePoints.push(currEval);
@@ -208,7 +210,7 @@ class EVO {
         EVO.refresh(analysisResult);
     }
 
-  
+
     /**
      * Turn off EVO
      */
@@ -223,8 +225,8 @@ class EVO {
     /**
      * Initialize the list of intentions
      */
-    initializeIntentionList()  {
-        for(var i = 0; i < this.numIntentions; ++i) {
+    initializeIntentionList() {
+        for (var i = 0; i < this.numIntentions; ++i) {
             this.intentionListColorVis[i] = new IntentionColorVis();
         }
     }
@@ -279,71 +281,82 @@ class EVO {
      * Returns gradientID 
      */
     static defineGradient(element) {
-            var gradientStops = [];	
-            var offsetTotal = 0.0;
-            var currColor;
+        var gradientStops = [];
+        var offsetTotal = 0.0;
+        var currColor;
 
-            if (EVO.sliderOption == 2) {
+        if (EVO.sliderOption == 2) {
             // Fill by time
             var percentPerTimePoint = 1.0 / element.timePoints.length;
-            for(var j = 0; j < element.timePoints.length; ++j) {
+            for (var j = 0; j < element.timePoints.length; ++j) {
                 currColor = EVO.getColor(element.timePoints[j]);
 
                 // Before buffer
                 offsetTotal += 0.001;
-                gradientStops.push({offset: String(offsetTotal*100) + '%',
-                color: currColor});
+                gradientStops.push({
+                    offset: String(offsetTotal * 100) + '%',
+                    color: currColor
+                });
                 // Element color
                 offsetTotal += percentPerTimePoint - 0.002;
-                gradientStops.push({offset: String(offsetTotal*100) + '%',
-                color: currColor});
+                gradientStops.push({
+                    offset: String(offsetTotal * 100) + '%',
+                    color: currColor
+                });
                 // After buffer
                 offsetTotal += 0.001;
-                gradientStops.push({offset: String(offsetTotal*100) + '%',
-                color: currColor});
+                gradientStops.push({
+                    offset: String(offsetTotal * 100) + '%',
+                    color: currColor
+                });
             }
 
+        }
+        else if (EVO.sliderOption == 1) {
+            //fill by %
+            for (var j = 0; j < EVO.numEvals; ++j) {
+                var intentionEval = EVO.colorVisOrder[j];
+                if (element.evals[intentionEval] > 0) {
+                    currColor = EVO.getColor(intentionEval);
+                    // Before buffer
+                    offsetTotal += 0.001;
+                    gradientStops.push({
+                        offset: String(offsetTotal * 100) + '%',
+                        color: currColor
+                    });
+                    // Element color
+                    offsetTotal += element.evals[intentionEval] - 0.002;
+                    gradientStops.push({
+                        offset: String(offsetTotal * 100) + '%',
+                        color: currColor
+                    });
+                    // After buffer
+                    offsetTotal += 0.001;
+                    gradientStops.push({
+                        offset: String(offsetTotal * 100) + '%',
+                        color: currColor
+                    });
+                }
             }
-            else if (EVO.sliderOption == 1) {
-                //fill by %
-                for(var j = 0; j < EVO.numEvals; ++j) {
-                    var intentionEval = EVO.colorVisOrder[j];
-                    if(element.evals[intentionEval] > 0) {
-                        currColor = EVO.getColor(intentionEval);
-                        // Before buffer
-                        offsetTotal += 0.001;
-                        gradientStops.push({offset: String(offsetTotal*100) + '%',
-                        color: currColor});
-                        // Element color
-                        offsetTotal += element.evals[intentionEval] - 0.002;
-                        gradientStops.push({offset: String(offsetTotal*100) + '%',
-                        color: currColor});
-                        // After buffer
-                        offsetTotal += 0.001;
-                        gradientStops.push({offset: String(offsetTotal*100) + '%',
-                        color: currColor});
-                    }
-                } 
-            }
+        }
 
-            var gradientId = paper.defineGradient({
+        var gradientId = paper.defineGradient({
             type: 'linearGradient',
             stops: gradientStops
-            });
+        });
 
-            return gradientId;
-     }
+        return gradientId;
+    }
 
-     /**
-      * Colors intentions by their evaluation information and slider option after simulating single path
-      */
-    static colorIntentionsAnalysis(analysisResult)
-    {
-        var elements = graph.getElements(); 
+    /**
+     * Colors intentions by their evaluation information and slider option after simulating single path
+     */
+    static colorIntentionsAnalysis(analysisResult) {
+        var elements = graph.getElements();
         var actorBuffer = 0;
-    
-        for (var i = 0; i < elements.length; i++) { 
-            var cellView  = elements[i].findView(paper);
+
+        for (var i = 0; i < elements.length; i++) {
+            var cellView = elements[i].findView(paper);
             var intention = elements[i].get('intention');
             // If it is an actor or something went wrong
             if (intention == null) {
@@ -353,15 +366,15 @@ class EVO {
                 var element = analysisResult.get('colorVis').intentionListColorVis[i - actorBuffer];
                 if (intention != null && element != null) {
                     if (EVO.sliderOption != 3) {
-                    var gradientID = this.defineGradient(element);
-                    // Visualize model at user selected timepoint
-                    cellView.model.attr({'.outer' : {'fill' : 'url(#' + gradientID + ')'}});
+                        var gradientID = this.defineGradient(element);
+                        // Visualize model at user selected timepoint
+                        cellView.model.attr({ '.outer': { 'fill': 'url(#' + gradientID + ')' } });
                     }
                     else {
                         var timepoint = EVO.curTimePoint;
                         var intentionEval = element.timePoints[timepoint];
                         var color = EVO.getColor(intentionEval);
-                        cellView.model.attr({'.outer' : {'fill' : color}});
+                        cellView.model.attr({ '.outer': { 'fill': color } });
                     }
                 }
             }
@@ -371,10 +384,10 @@ class EVO {
     /**
      * Makes text on intentions white when EVO is activated
      */
-    static changeIntentionsText(analysisResult){
+    static changeIntentionsText(analysisResult) {
         var elements = graph.getElements();
         var curr;
-        var colorVis 
+        var colorVis
         var satVal;
         var intention;
         var initSatVal;
@@ -408,11 +421,11 @@ class EVO {
 
             if (analysisResult !== undefined) {
                 // The EVO mode fill color
-                curr.attr({text: {fill: 'white',stroke:'none'}});
+                curr.attr({ text: { fill: 'white', stroke: 'none' } });
                 // If the result is selected 
-                if (analysisResult.get('selected')){
+                if (analysisResult.get('selected')) {
                     // If the option is states
-                    if (EVO.sliderOption == 3){
+                    if (EVO.sliderOption == 3) {
                         // Resets the satvalue back
                         colorVis = analysisResult.get('colorVis');
                         satVal = colorVis.intentionListColorVis[0].timePoints[EVO.curTimePoint];
@@ -426,12 +439,12 @@ class EVO {
                 }
                 // If result is unselected
                 else {
-                    curr.attr({text: {fill: 'black',stroke:'none'}});
+                    curr.attr({ text: { fill: 'black', stroke: 'none' } });
                 }
             }
             // If a config without results is selected
             else {
-                curr.attr({text: {fill: 'black',stroke:'none'}});
+                curr.attr({ text: { fill: 'black', stroke: 'none' } });
             }
         }
     }
@@ -439,7 +452,7 @@ class EVO {
     /** 
      * Makes slider dis/appear 
      */
-     static displaySlider(isOn){
+    static displaySlider(isOn) {
         // If the sliderOption is set at state or off
         if (isOn) {
             $('#slider').css("display", "");
@@ -466,13 +479,13 @@ class EVO {
 
             if (curr instanceof joint.shapes.basic.Intention) {
                 intention = curr.get('intention');
-                 // If the intention is defined set initSatVal to the intention's initSatVal
-            if (intention != null) {
-                initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair');
-            } else { // If the intention is not defined, set initSatVal to null
-                initSatVal = null;
-            }
-              
+                // If the intention is defined set initSatVal to the intention's initSatVal
+                if (intention != null) {
+                    initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair');
+                } else { // If the intention is not defined, set initSatVal to null
+                    initSatVal = null;
+                }
+
                 // Sets satvalue/text to the initial sat value
                 if (!isAnalysis) {
                     if (initSatVal === '(no value)' || initSatVal === null) {
@@ -481,7 +494,7 @@ class EVO {
                         curr.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
                     }
                 }
-                curr.attr({text: {fill: 'black',stroke:'none'}});
+                curr.attr({ text: { fill: 'black', stroke: 'none' } });
             }
         }
     }
@@ -489,22 +502,22 @@ class EVO {
     /**
      * changes each intention by their initial user set satisfaction value in modeling mode
      */
-    static colorIntentionsModeling(){
-        var initSatVal; 
+    static colorIntentionsModeling() {
+        var initSatVal;
         var elements = graph.getElements();
-        for (var i = 0; i < elements.length; i++){ 
+        for (var i = 0; i < elements.length; i++) {
             var cellView = elements[i].findView(paper);
             // Aquires current intention
             var intention = elements[i].get('intention');
-            if (intention != null){
+            if (intention != null) {
                 // User set initial sat value
                 var initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair');
                 if (initSatVal == '(no value)') {
                     cellView.model.changeToOriginalColour();
                 }
-            var colorChange = EVO.getColor(initSatVal);
-            // Change intention color to match sat value
-                cellView.model.attr({'.outer': {'fill': colorChange}});
+                var colorChange = EVO.getColor(initSatVal);
+                // Change intention color to match sat value
+                cellView.model.attr({ '.outer': { 'fill': colorChange } });
             }
             else {
                 cellView.model.changeToOriginalColour();
@@ -536,11 +549,11 @@ class EVO {
     /**
      * Switch back to modeling slider, if EVO is on the visualization returns to filling by initial state.
      */
-     static switchToModelingMode(analysisResult) {
+    static switchToModelingMode(analysisResult) {
         $('#modelingSlider').css("display", "");
         $('#analysisSlider').css("display", "none");
 
-        if(EVO.sliderOption > 0) {
+        if (EVO.sliderOption > 0) {
             EVO.sliderOption = '1';
         }
         document.getElementById("colorReset").value = EVO.sliderOption;
@@ -555,7 +568,7 @@ class EVO {
         if (analysisResult == undefined) {
             $('#modelingSlider').css("display", "");
             $('#analysisSlider').css("display", "none");
-            if(EVO.sliderOption > 0) {
+            if (EVO.sliderOption > 0) {
                 EVO.sliderOption = '1';
             }
             document.getElementById("colorReset").value = EVO.sliderOption;
@@ -573,13 +586,13 @@ class EVO {
      * Toggles color blind mode
      * @param {*} isTurningOnColorBlindMode 
      */
-     static toggleColorBlindMode(isTurningOnColorBlindMode, analysisResult) {
+    static toggleColorBlindMode(isTurningOnColorBlindMode, analysisResult) {
         EVO.isColorBlindMode = isTurningOnColorBlindMode;
         EVO.refresh(analysisResult);
     }
 }
 
-class EVONextState  {
+class EVONextState {
     // User selected slider option in the next state window
     static sliderOptionNextState = 0;
 
@@ -596,7 +609,7 @@ class EVONextState  {
      * @param {*} newSliderOption 
      */
     static setSliderOption(newSliderOption) {
-        if(newSliderOption >= 0 && newSliderOption <= 2) {
+        if (newSliderOption >= 0 && newSliderOption <= 2) {
             EVONextState.sliderOptionNextState = newSliderOption;
         }
         else {
@@ -609,20 +622,20 @@ class EVONextState  {
      * Changes visual layout depending on slider option.
      */
     static refresh() {
-        switch(this.sliderOptionNextState) {
+        switch (this.sliderOptionNextState) {
             case '1':
-            EVONextState.colorIntentionsByState();
-            this.changeIntentionsText(analysis.elements, analysis.paper);
+                EVONextState.colorIntentionsByState();
+                this.changeIntentionsText(analysis.elements, analysis.paper);
                 break;
 
             case '2':
-            EVONextState.colorIntentionsByPercents();
-            this.changeIntentionsText(analysis.elements, analysis.paper);
+                EVONextState.colorIntentionsByPercents();
+                this.changeIntentionsText(analysis.elements, analysis.paper);
                 break;
 
             default://colorVis off
-               EVO.returnAllColors(analysis.elements, analysis.paper);
-               EVO.revertIntentionsText(analysis.elements, analysis.paper);    
+                EVO.returnAllColors(analysis.elements, analysis.paper);
+                EVO.revertIntentionsText(analysis.elements, analysis.paper);
                 break;
         }
     }
@@ -630,7 +643,7 @@ class EVONextState  {
     /**
      * changes each intention by their satisfaction value for the displayed state
      */
-    static colorIntentionsByState(){
+    static colorIntentionsByState() {
         var value;
         var cellView;
         var colorChange;
@@ -638,34 +651,34 @@ class EVONextState  {
         for (var i = 0; i < analysis.elements.length; i++) {
             cell = analysis.elements[i];
             value = cell.attributes.attrs[".satvalue"].value;
-            cellView = cell.findView(analysis.paper); 
+            cellView = cell.findView(analysis.paper);
             colorChange = EVO.getColor(value);
-            cellView.model.attr({'.outer': {'fill': colorChange}}); 
+            cellView.model.attr({ '.outer': { 'fill': colorChange } });
         }
     }
 
     /**
      * Colors intentions by the percentages of possible next states that hold each evaluation.
      */
-    static colorIntentionsByPercents(){
+    static colorIntentionsByPercents() {
         var intentionPercents = [];
         //acquire all next state info
         var percentPerEvaluation = 1.0 / analysis.analysisResult.allSolution.length; //number of next states
         var step = 0;
         //store: ID + percents per eval
-        for (var i = 0; i< analysis.elements.length; i++) { // For each elements
+        for (var i = 0; i < analysis.elements.length; i++) { // For each elements
             // Compile and calculate % for each node -> % must be updated every time a filter is applied
             intentionPercents.push(new IntentionColorVis());
             for (var j = 0; j < analysis.analysisResult.allSolution.length; j++) { // For each next state
-            var currEval = analysis.analysisResult.allSolution[j].intentionElements[i].status[step];
-            var newPercent = intentionPercents[i].evals[currEval];
-            newPercent += percentPerEvaluation;
-            intentionPercents[i].evals[currEval] = newPercent;
+                var currEval = analysis.analysisResult.allSolution[j].intentionElements[i].status[step];
+                var newPercent = intentionPercents[i].evals[currEval];
+                newPercent += percentPerEvaluation;
+                intentionPercents[i].evals[currEval] = newPercent;
             }
             var gradientID = this.defineGradient(intentionPercents[i]);
             var cell = analysis.elements[i];
-            var cellView = cell.findView(analysis.paper); 
-            cellView.model.attr({'.outer' : {'fill' : 'url(#' + gradientID + ')'}});
+            var cellView = cell.findView(analysis.paper);
+            cellView.model.attr({ '.outer': { 'fill': 'url(#' + gradientID + ')' } });
         }
     }
 
@@ -674,32 +687,38 @@ class EVONextState  {
      * @param {*} element 
      */
     static defineGradient(element) {
-        var gradientStops = [];	
+        var gradientStops = [];
         var offsetTotal = 0.0;
         var currColor;
 
-        for(var j = 0; j < EVO.numEvals; ++j) {
+        for (var j = 0; j < EVO.numEvals; ++j) {
             var intentionEval = EVO.colorVisOrder[j];
-            if(element.evals[intentionEval] > 0) {
+            if (element.evals[intentionEval] > 0) {
                 currColor = EVO.getColor(intentionEval);
                 // Before buffer
                 offsetTotal += 0.001;
-                gradientStops.push({offset: String(offsetTotal*100) + '%',
-                color: currColor});
+                gradientStops.push({
+                    offset: String(offsetTotal * 100) + '%',
+                    color: currColor
+                });
                 // Element color
                 offsetTotal += element.evals[intentionEval] - 0.002;
-                gradientStops.push({offset: String(offsetTotal*100) + '%',
-                color: currColor});
+                gradientStops.push({
+                    offset: String(offsetTotal * 100) + '%',
+                    color: currColor
+                });
                 // After buffer
                 offsetTotal += 0.001;
-                gradientStops.push({offset: String(offsetTotal*100) + '%',
-                color: currColor});
+                gradientStops.push({
+                    offset: String(offsetTotal * 100) + '%',
+                    color: currColor
+                });
             }
         }
 
         var gradientId = analysis.paper.defineGradient({
-        type: 'linearGradient',
-        stops: gradientStops
+            type: 'linearGradient',
+            stops: gradientStops
         });
     }
 
@@ -708,12 +727,12 @@ class EVONextState  {
      * @param {*} elements 
      * @param {*} paper 
      */
-    static changeIntentionsText(elements, paper){
+    static changeIntentionsText(elements, paper) {
         var curr;
         for (var i = 0; i < elements.length; i++) {
             curr = elements[i].findView(paper).model;
             if (curr.attributes.type !== 'basic.Actor') {
-                curr.attr({text: {fill: 'white',stroke:'none'}});
+                curr.attr({ text: { fill: 'white', stroke: 'none' } });
             }
         }
     }
