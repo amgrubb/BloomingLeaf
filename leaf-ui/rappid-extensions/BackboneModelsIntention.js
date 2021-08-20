@@ -237,7 +237,7 @@ var IntentionBBM = Backbone.Model.extend({
             // If the function is not C or UD & C, reset the function type and clear the functionSegList
             this.get('evolvingFunction').set('type', 'NT');
             this.get('evolvingFunction').set('functionSegList', []);
-            }
+           }
         }     
     }, 
  

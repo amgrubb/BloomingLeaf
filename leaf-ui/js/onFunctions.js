@@ -764,7 +764,7 @@ paper.on("link:options", function (cell) {
             // EVO.revertIntentionsText(graph.getElements(), paper);  
             var fileName = name + ".json";
             var obj = {graph: graph.toJSON()}; // Same structure as the other two save options
-            download(fileName, JSON.stringify(obj));
+            download(fileName, stringifyCirc(obj));
             EVO.refresh(selectResult);
         }
     });
