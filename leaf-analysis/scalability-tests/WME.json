@@ -1,0 +1,742 @@
+{
+    "analysisRequest": {
+      "action": "singlePath",
+      "conflictLevel": "S",
+      "numRelTime": "15",
+      "absTimePts": "",
+      "absTimePtsArr": [
+        
+      ],
+      "currentState": "0|0",
+      "userAssignmentsList": [
+        {
+          "intentionID": "0000",
+          "absTime": "0",
+          "evaluationValue": "(no value)"
+        },
+        {
+          "intentionID": "0001",
+          "absTime": "0",
+          "evaluationValue": "0011"
+        },
+        {
+          "intentionID": "0002",
+          "absTime": "0",
+          "evaluationValue": "0100"
+        },
+        {
+          "intentionID": "0003",
+          "absTime": "0",
+          "evaluationValue": "0011"
+        },
+        {
+          "intentionID": "0004",
+          "absTime": "0",
+          "evaluationValue": "(no value)"
+        },
+        {
+          "intentionID": "0005",
+          "absTime": "0",
+          "evaluationValue": "(no value)"
+        },
+        {
+          "intentionID": "0006",
+          "absTime": "0",
+          "evaluationValue": "(no value)"
+        },
+        {
+          "intentionID": "0007",
+          "absTime": "0",
+          "evaluationValue": "0000"
+        },
+        {
+          "intentionID": "0008",
+          "absTime": "0",
+          "evaluationValue": "0000"
+        },
+        {
+          "intentionID": "0009",
+          "absTime": "0",
+          "evaluationValue": "(no value)"
+        },
+        {
+          "intentionID": "0010",
+          "absTime": "0",
+          "evaluationValue": "(no value)"
+        },
+        {
+          "intentionID": "0011",
+          "absTime": "0",
+          "evaluationValue": "0011"
+        },
+        {
+          "intentionID": "0012",
+          "absTime": "0",
+          "evaluationValue": "1100"
+        },
+        {
+          "intentionID": "0013",
+          "absTime": "0",
+          "evaluationValue": "(no value)"
+        },
+        {
+          "intentionID": "0014",
+          "absTime": "0",
+          "evaluationValue": "(no value)"
+        },
+        {
+          "intentionID": "0015",
+          "absTime": "0",
+          "evaluationValue": "(no value)"
+        },
+        {
+          "intentionID": "0016",
+          "absTime": "0",
+          "evaluationValue": "(no value)"
+        },
+        {
+          "intentionID": "0017",
+          "absTime": "0",
+          "evaluationValue": "1100"
+        },
+        {
+          "intentionID": "0018",
+          "absTime": "0",
+          "evaluationValue": "(no value)"
+        },
+        {
+          "intentionID": "0019",
+          "absTime": "0",
+          "evaluationValue": "(no value)"
+        }
+      ],
+      "previousAnalysis": null
+    },
+    "model": {
+      "actors": [
+        {
+          "nodeID": "a000",
+          "nodeName": "Actor_0",
+          "intentionIDs": [
+            "0000",
+            "0001",
+            "0002",
+            "0003",
+            "0004",
+            "0005",
+            "0006",
+            "0008",
+            "0009",
+            "0010",
+            "0011",
+            "0012",
+            "0011",
+            "0013",
+            "0014",
+            "0015",
+            "0003",
+            "0007",
+            "0013",
+            "0013",
+            "0013",
+            "0015",
+            "0001",
+            "0005",
+            "0000",
+            "0002",
+            "0003",
+            "0007",
+            "0006",
+            "0009",
+            "0008",
+            "0010",
+            "0004",
+            "0013",
+            "0011",
+            "0015",
+            "0012",
+            "0014",
+            "0000",
+            "0005",
+            "0001",
+            "0003",
+            "0003",
+            "0020",
+            "0006",
+            "0009",
+            "0008",
+            "0008",
+            "0003",
+            "0000",
+            "0002",
+            "0004",
+            "0013",
+            "0004",
+            "0004",
+            "0008",
+            "0009",
+            "0014",
+            "0011",
+            "0020",
+            "0020",
+            "0001",
+            "0001",
+            "0009",
+            "0009",
+            "0009",
+            "0009",
+            "0008",
+            "0009",
+            "0009",
+            "0003",
+            "0013",
+            "0012",
+            "0002"
+          ]
+        },
+        {
+          "nodeID": "a001",
+          "nodeName": "Actor_1",
+          "intentionIDs": [
+            "0016",
+            "0017",
+            "0018",
+            "0019",
+            "0016",
+            "0017",
+            "0018",
+            "0019",
+            "0018",
+            "0018",
+            "0017",
+            "0017",
+            "0016",
+            "0018",
+            "0017"
+          ]
+        }
+      ],
+      "intentions": [
+        {
+          "nodeActorID": "a000",
+          "nodeID": "0000",
+          "nodeType": "basic.Task",
+          "nodeName": "Update Truck Route",
+          "dynamicFunction": {
+            "intentionID": "0000",
+            "stringDynVis": "NT",
+            "functionSegList": [
+              
+            ]
+          }
+        },
+        {
+          "nodeActorID": "a000",
+          "nodeID": "0001",
+          "nodeType": "basic.Task",
+          "nodeName": "Use Current Dump",
+          "dynamicFunction": {
+            "intentionID": "0001",
+            "stringDynVis": "SD",
+            "functionSegList": [
+              {
+                "funcType": "C",
+                "funcX": "0011",
+                "funcStart": "0",
+                "funcStop": "A"
+              },
+              {
+                "funcType": "C",
+                "funcX": "1100",
+                "funcStart": "A",
+                "funcStop": "Infinity"
+              }
+            ]
+          }
+        },
+        {
+          "nodeActorID": "a000",
+          "nodeID": "0002",
+          "nodeType": "basic.Task",
+          "nodeName": "Upgrade Truck",
+          "dynamicFunction": {
+            "intentionID": "0002",
+            "stringDynVis": "CR",
+            "functionSegList": [
+              {
+                "funcType": "C",
+                "funcX": "0100",
+                "funcStart": "0",
+                "funcStop": "A"
+              },
+              {
+                "funcType": "R",
+                "funcX": "0000",
+                "funcStart": "A",
+                "funcStop": "Infinity"
+              }
+            ]
+          }
+        },
+        {
+          "nodeActorID": "a000",
+          "nodeID": "0003",
+          "nodeType": "basic.Resource",
+          "nodeName": "Space in Dump",
+          "dynamicFunction": {
+            "intentionID": "0003",
+            "stringDynVis": "MN",
+            "functionSegList": [
+              {
+                "funcType": "D",
+                "funcX": "1100",
+                "funcStart": "0",
+                "funcStop": "A"
+              },
+              {
+                "funcType": "C",
+                "funcX": "1100",
+                "funcStart": "A",
+                "funcStop": "Infinity"
+              }
+            ]
+          }
+        },
+        {
+          "nodeActorID": "a000",
+          "nodeID": "0004",
+          "nodeType": "basic.Task",
+          "nodeName": "Process Green Waste",
+          "dynamicFunction": {
+            "intentionID": "0004",
+            "stringDynVis": "NT",
+            "functionSegList": [
+              
+            ]
+          }
+        },
+        {
+          "nodeActorID": "a000",
+          "nodeID": "0005",
+          "nodeType": "basic.Goal",
+          "nodeName": "Manage City Waste",
+          "dynamicFunction": {
+            "intentionID": "0005",
+            "stringDynVis": "NT",
+            "functionSegList": [
+              
+            ]
+          }
+        },
+        {
+          "nodeActorID": "a000",
+          "nodeID": "0006",
+          "nodeType": "basic.Goal",
+          "nodeName": "Comply with Standards",
+          "dynamicFunction": {
+            "intentionID": "0006",
+            "stringDynVis": "NT",
+            "functionSegList": [
+              
+            ]
+          }
+        },
+        {
+          "nodeActorID": "a000",
+          "nodeID": "0007",
+          "nodeType": "basic.Task",
+          "nodeName": "Build Large Dump",
+          "dynamicFunction": {
+            "intentionID": "0007",
+            "stringDynVis": "NB",
+            "functionSegList": [
+              
+            ]
+          }
+        },
+        {
+          "nodeActorID": "a000",
+          "nodeID": "0008",
+          "nodeType": "basic.Task",
+          "nodeName": "Build Small Dump",
+          "dynamicFunction": {
+            "intentionID": "0008",
+            "stringDynVis": "NB",
+            "functionSegList": [
+              
+            ]
+          }
+        },
+        {
+          "nodeActorID": "a000",
+          "nodeID": "0009",
+          "nodeType": "basic.Resource",
+          "nodeName": "Purchase Land",
+          "dynamicFunction": {
+            "intentionID": "0009",
+            "stringDynVis": "NT",
+            "functionSegList": [
+              
+            ]
+          }
+        },
+        {
+          "nodeActorID": "a000",
+          "nodeID": "0010",
+          "nodeType": "basic.Task",
+          "nodeName": "GW Education Program",
+          "dynamicFunction": {
+            "intentionID": "0010",
+            "stringDynVis": "NT",
+            "functionSegList": [
+              
+            ]
+          }
+        },
+        {
+          "nodeActorID": "a000",
+          "nodeID": "0011",
+          "nodeType": "basic.Goal",
+          "nodeName": "Have Workers Union Contract",
+          "dynamicFunction": {
+            "intentionID": "0011",
+            "stringDynVis": "CR",
+            "functionSegList": [
+              {
+                "funcType": "C",
+                "funcX": "0011",
+                "funcStart": "0",
+                "funcStop": "A"
+              },
+              {
+                "funcType": "R",
+                "funcX": "0000",
+                "funcStart": "A",
+                "funcStop": "Infinity"
+              }
+            ]
+          }
+        },
+        {
+          "nodeActorID": "a000",
+          "nodeID": "0012",
+          "nodeType": "basic.Task",
+          "nodeName": "Build Green Centre",
+          "dynamicFunction": {
+            "intentionID": "0012",
+            "stringDynVis": "DS",
+            "functionSegList": [
+              {
+                "funcType": "C",
+                "funcX": "1100",
+                "funcStart": "0",
+                "funcStop": "A"
+              },
+              {
+                "funcType": "C",
+                "funcX": "0011",
+                "funcStart": "A",
+                "funcStop": "Infinity"
+              }
+            ]
+          }
+        },
+        {
+          "nodeActorID": "a000",
+          "nodeID": "0013",
+          "nodeType": "basic.Softgoal",
+          "nodeName": "Positive City Image",
+          "dynamicFunction": {
+            "intentionID": "0013",
+            "stringDynVis": "NT",
+            "functionSegList": [
+              
+            ]
+          }
+        },
+        {
+          "nodeActorID": "a000",
+          "nodeID": "0014",
+          "nodeType": "basic.Softgoal",
+          "nodeName": "Reduce Operating Costs",
+          "dynamicFunction": {
+            "intentionID": "0014",
+            "stringDynVis": "NT",
+            "functionSegList": [
+              
+            ]
+          }
+        },
+        {
+          "nodeActorID": "a001",
+          "nodeID": "0015",
+          "nodeType": "basic.Softgoal",
+          "nodeName": "Quality of Waste Separation",
+          "dynamicFunction": {
+            "intentionID": "0015",
+            "stringDynVis": "NT",
+            "functionSegList": [
+              
+            ]
+          }
+        },
+        {
+          "nodeActorID": "a001",
+          "nodeID": "0016",
+          "nodeType": "basic.Softgoal",
+          "nodeName": "Evironmental Concern",
+          "dynamicFunction": {
+            "intentionID": "0016",
+            "stringDynVis": "R",
+            "functionSegList": [
+              {
+                "funcType": "R",
+                "funcX": "0000",
+                "funcStart": "0",
+                "funcStop": "Infinity"
+              }
+            ]
+          }
+        },
+        {
+          "nodeActorID": "a001",
+          "nodeID": "0017",
+          "nodeType": "basic.Softgoal",
+          "nodeName": "Willingness to Separate waste",
+          "dynamicFunction": {
+            "intentionID": "0017",
+            "stringDynVis": "MP",
+            "functionSegList": [
+              {
+                "funcType": "I",
+                "funcX": "0011",
+                "funcStart": "0",
+                "funcStop": "A"
+              },
+              {
+                "funcType": "C",
+                "funcX": "0011",
+                "funcStart": "A",
+                "funcStop": "Infinity"
+              }
+            ]
+          }
+        },
+        {
+          "nodeActorID": "a001",
+          "nodeID": "0018",
+          "nodeType": "basic.Softgoal",
+          "nodeName": "Enjoy city",
+          "dynamicFunction": {
+            "intentionID": "0018",
+            "stringDynVis": "NT",
+            "functionSegList": [
+              
+            ]
+          }
+        },
+        {
+          "nodeActorID": "a000",
+          "nodeID": "0019",
+          "nodeType": "basic.Task",
+          "nodeName": "Use New Dump",
+          "dynamicFunction": {
+            "intentionID": "0019",
+            "stringDynVis": "NT",
+            "functionSegList": [
+              
+            ]
+          }
+        }
+      ],
+      "links": [
+        {
+          "linkID": "0000",
+          "linkType": "OR",
+          "postType": null,
+          "linkSrcID": "0001",
+          "linkDestID": "0005",
+          "absoluteValue": -1
+        },
+        {
+          "linkID": "0001",
+          "linkType": "OR",
+          "postType": null,
+          "linkSrcID": "0019",
+          "linkDestID": "0005",
+          "absoluteValue": -1
+        },
+        {
+          "linkID": "0002",
+          "linkType": "OR",
+          "postType": null,
+          "linkSrcID": "0008",
+          "linkDestID": "0019",
+          "absoluteValue": -1
+        },
+        {
+          "linkID": "0003",
+          "linkType": "OR",
+          "postType": null,
+          "linkSrcID": "0007",
+          "linkDestID": "0019",
+          "absoluteValue": -1
+        },
+        {
+          "linkID": "0004",
+          "linkType": "AND",
+          "postType": null,
+          "linkSrcID": "0003",
+          "linkDestID": "0001",
+          "absoluteValue": -1
+        },
+        {
+          "linkID": "0005",
+          "linkType": "AND",
+          "postType": null,
+          "linkSrcID": "0002",
+          "linkDestID": "0004",
+          "absoluteValue": -1
+        },
+        {
+          "linkID": "0006",
+          "linkType": "AND",
+          "postType": null,
+          "linkSrcID": "0012",
+          "linkDestID": "0004",
+          "absoluteValue": -1
+        },
+        {
+          "linkID": "0007",
+          "linkType": "-",
+          "postType": null,
+          "linkSrcID": "0004",
+          "linkDestID": "0014",
+          "absoluteValue": -1
+        },
+        {
+          "linkID": "0008",
+          "linkType": "+",
+          "postType": null,
+          "linkSrcID": "0004",
+          "linkDestID": "0013",
+          "absoluteValue": -1
+        },
+        {
+          "linkID": "0009",
+          "linkType": "-",
+          "postType": null,
+          "linkSrcID": "0007",
+          "linkDestID": "0014",
+          "absoluteValue": -1
+        },
+        {
+          "linkID": "0010",
+          "linkType": "+",
+          "postType": null,
+          "linkSrcID": "0008",
+          "linkDestID": "0014",
+          "absoluteValue": -1
+        },
+        {
+          "linkID": "0011",
+          "linkType": "+",
+          "postType": null,
+          "linkSrcID": "0013",
+          "linkDestID": "0018",
+          "absoluteValue": -1
+        },
+        {
+          "linkID": "0013",
+          "linkType": "++",
+          "postType": null,
+          "linkSrcID": "0010",
+          "linkDestID": "0017",
+          "absoluteValue": -1
+        },
+        {
+          "linkID": "0014",
+          "linkType": "++",
+          "postType": null,
+          "linkSrcID": "0017",
+          "linkDestID": "0015",
+          "absoluteValue": -1
+        },
+        {
+          "linkID": "0015",
+          "linkType": "++",
+          "postType": null,
+          "linkSrcID": "0016",
+          "linkDestID": "0015",
+          "absoluteValue": -1
+        },
+        {
+          "linkID": "0016",
+          "linkType": "++",
+          "postType": null,
+          "linkSrcID": "0015",
+          "linkDestID": "0004",
+          "absoluteValue": -1
+        },
+        {
+          "linkID": "0018",
+          "linkType": "NBT",
+          "postType": null,
+          "linkSrcID": "0007",
+          "linkDestID": "0008",
+          "absoluteValue": -1
+        }
+      ],
+      "constraints": [
+        {
+          "constraintType": "A",
+          "constraintSrcID": "0001",
+          "constraintSrcEB": "A",
+          "constraintDestID": null,
+          "constraintDestEB": null,
+          "absoluteValue": -1
+        },
+        {
+          "constraintType": "A",
+          "constraintSrcID": "0003",
+          "constraintSrcEB": "A",
+          "constraintDestID": null,
+          "constraintDestEB": null,
+          "absoluteValue": -1
+        },
+        {
+          "constraintType": "A",
+          "constraintSrcID": "0012",
+          "constraintSrcEB": "A",
+          "constraintDestID": null,
+          "constraintDestEB": null,
+          "absoluteValue": -1
+        },
+        {
+          "constraintType": "A",
+          "constraintSrcID": "0017",
+          "constraintSrcEB": "A",
+          "constraintDestID": null,
+          "constraintDestEB": null,
+          "absoluteValue": -1
+        },
+        {
+          "constraintType": "A",
+          "constraintSrcID": "0011",
+          "constraintSrcEB": "A",
+          "constraintDestID": null,
+          "constraintDestEB": null,
+          "absoluteValue": -1
+        },
+        {
+          "constraintType": "A",
+          "constraintSrcID": "0002",
+          "constraintSrcEB": "A",
+          "constraintDestID": null,
+          "constraintDestEB": null,
+          "absoluteValue": -1
+        }
+      ],
+      "maxAbsTime": "30"
+    }
+  }
