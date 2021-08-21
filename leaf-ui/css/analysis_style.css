@@ -1,19 +1,16 @@
 .modal {
-    display: none;  /*Hidden by default */
     position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
-    padding-top: 100px; /* Location of the box */
+    padding-top: 25px; /* Location of the box */
     left: 0;
     top: 0;
     width: 100%; /* Full width */
     height: 90%; /* Full height */
-    overflow: scroll; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    overflow: auto; /* Enable scroll if needed */
 }
 
 /* Modal Content */
 .modal-content {
+    z-index: 4; /** Sit on top **/ 
     position: relative;
     background-color: #fefefe;
     margin: auto;
@@ -31,7 +28,7 @@
 /***/
 #interm-list select{
     /*Don't really need this just for demo styling*/
-    max-width: 180px;
+    width: 140px;
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
@@ -39,7 +36,7 @@
     display: block;
     height: 30px;
     float: right;
-    font-size: 16px;
+    font-size: 13px;
     line-height: 1.75;
     color: #333;
     background-color: #ffffff;
@@ -51,7 +48,6 @@
 
 /*Hide the intermTable dialog by default*/
 .intermT {
-    display: none;  /*Hidden by default */
     position: fixed; /* Stay in place */
     z-index: 1; /* Sit on top */
     padding-top: 100px; /* Location of the box */
@@ -60,12 +56,11 @@
     width: 100%; /* Full width */
     height: 100%; /* Full height */
     overflow: scroll; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
 
 /*Intermediate Values Content*/
 .intermContent{
+    z-index: 4; /** Sit on top **/ 
     position: relative;
     background-color: #fefefe;
     margin: auto;
@@ -208,6 +203,15 @@
     height: 30px;
 }
 
+.intention-name {
+    border-top: 1px solid #dddddd;
+    border-right: 1px solid #dddddd;
+    border-bottom: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+    height: 30px;
+}
+
 
 .interm-table tr td input {
     font-size: 100%;
@@ -250,7 +254,7 @@
     z-index:9999;position:relative;top:23px;
 }
 .timePlace{
-    z-index:9999;position:relative;top:-20px;left:112px;
+    z-index:9999;position:relative;top:-20px;left:100px;
 }
 .diag { position: relative; width: 50px; height: 5px; }
 /*.outerdivslant { position: relative; top: -44px; left: -8px; width: 100%; border-color: transparent transparent transparent #dddddd; border-width: 57px 0px 0px 203px;}
@@ -337,46 +341,62 @@ select::-ms-expand {
     word-break: normal;
 }
 
-.config-elements {
-    padding: 12px; 
+.result-elements {
+    height: 30px;
     font-size: 16px; 
-    border: none; 
+    border: none;
+    box-shadow: -1px 0px 0px 0px rgb(71, 65, 65);
+    outline: none;  
+    width: 100%;
+    margin-bottom: 1px;
+}
+
+.config-elements {
+    height: 42px;
+    font-size: 16px; 
+    border: none;
+    box-shadow: -1px 0px 0px 0px rgb(71, 65, 65);
     outline: none;  
     width: 71%;
-  }
+    margin-bottom: 1px;
+}
 
-  .config-input {
+.config-input {
     padding: 10px; 
     font-size: 16px; 
     border: 1px solid black; 
+    width: 60%;
     outline: none;  
-  }
-  
-  .dropdown-button {
+}
+
+.dropdown-button {
     padding: 2px 7px 4px 7px; 
     font-size: 15px; 
     height: 42px; 
+    width: 50%;
     border: none; 
     outline: none;
     float: left;
-  }
-  
-  .dropdown-container {
-    display:block
-  }
+    }
 
-  .deleteconfig-button{
+.dropdown-container {
+    display:block;
+    width: 100%;
+}
+
+.deleteconfig-button{
     padding: 7px; 
     font-size: 16px; 
     height: 42px; 
     border: none; 
     outline: none;
     box-shadow: -1px 0px 0px 0px rgb(71, 65, 65);
+    width: 50%;
     float: left;
     cursor: pointer;
-  }
+}
 
-#removeIntention{
+#removeConstraint{
     cursor: pointer;
 }
 

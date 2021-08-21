@@ -1,196 +1,119 @@
 /**
+ * backendComm.js Overview
  * This file contains the communication between the front and back end of Bloomingleaf.
- * When an analysis is run, the analysisRequest, model, and graph are bundled into an object, converted to JSON format, and sent to the backend,
+ * When an analysis is run, the analysisRequest, model, and graph are bundled into an object, 
+ * converted to JSON format, and sent to the backend,
  * which returns the analysisResult.
  */
 
-var nodeServer = true;      						// Whether the tool is running locally on a Node Server.
 var url = "http://localhost:8080/untitled.html";	// Hardcoded URL for Node calls. 
 
-function backendComm(jsObject){	
-	/**
-	* Print the input to the console.
-	*/
-	console.log(JSON.stringify(jsObject));
-	console.log(jsObject.analysisRequest.action);
+/** Makes a request for the backend and calls the response function.
+ * {ConfigBBM} analysisRequest
+ * Note: function was originally called `backendComm`.
+ */
+function backendSimulationRequest(analysisRequest) {
+	var jsObject = {};
+	jsObject.analysisRequest = analysisRequest;
+	jsObject.graph = graph;
 
-	console.log(nodeServer);
-    if(nodeServer){
-        nodeBackendCommFunc(jsObject);
-        return;
-	}
-	
-	// Code for running the tool on University Servers with sandbox for webserver.
-	// Need to use CGI to call java on a different server.
-	var pathToCGI = "./cgi-bin/backendCom.cgi";
- 	$.ajax({
-		url: pathToCGI,
-		type: "post",
-		contentType: "json",
-		data:JSON.stringify(jsObject),
-		success: function(response){
-			setTimeout(function(){
-				if(jsObject.analysisRequest.action=="allNextStates"){
-					executeJava(true);
-				}else{
-					executeJava(false);
-				}
-		    }, 500);
-		}
-	})	.fail(function(){
-		msg = "Ops! Something went wrong.";
-		alert(msg);
-	});
-}
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", url, true);
+	xhr.setRequestHeader("Content-Type", "application/json");
 
-// Code for calling the java function via Node.
-function nodeBackendCommFunc(jsObject){
-   console.log("Calling Backend via Node Server"); //JSON.stringify(jsObject));
-   
-   var xhr = new XMLHttpRequest();
-   var isGetNextSteps ;
-   xhr.open("POST", url, true);
-   xhr.setRequestHeader("Content-Type", "application/json");
-
-   var data = JSON.stringify(jsObject);
-   xhr.onreadystatechange = function() {	
-		// This function get caled when the response is received.
+	var data = backendStringifyCirc(jsObject);
+	console.log(data)
+	xhr.onreadystatechange = function () {
+		// This function get called when the response is received.
 		console.log("Reading the response");
 		if (xhr.readyState == XMLHttpRequest.DONE) {
-           if(jsObject.analysisRequest.action=="allNextStates"){
-               isGetNextSteps = true;
-           }
-           else{
-               isGetNextSteps = false;
-        	}
-            
-            var response = xhr.responseText;
-   			responseFunc(isGetNextSteps,response);
-
-       }
-   }
-   xhr.send(data);	// Why is this sent down here? What is this send function.
-
-   // console.log(xhr.responseText);
-   // response=xhr.responseText;
-   // responseFunc(isGetNextSteps,response);
+			var response = xhr.responseText;
+			responseFunc(analysisRequest, response);
+		}
+	}
+	xhr.send(data);	// Why is this sent down here? What is this send function.
 }
 
+function backendStringifyCirc(obj) {
+	var skipKeys = ['_events', 'results', 'colorVis', 'change:refEvidencePair', 'context', '_listeners', '_previousAttributes']; // List of keys that contains circular structures
+	var graphtext = JSON.stringify(obj, function (key, value) {
+		if (skipKeys.includes(key)) { //if key is in the list
+			return null; // Replace with null
+		} else {
+			return value; // Otherwise return the value
+		}
+	});
+	return graphtext
+}
 
-//deal with the response sent back by the server
-function responseFunc(isGetNextSteps, response){
-	$("body").removeClass("waiting"); //Remove spinner under cursor 
+/** Handles the response from the server.
+ * {ConfigBBM} analysisRequest
+ * Note: function was originally called `backendComm`.
+ */
+function responseFunc(analysisRequest, response) {
+	$("body").removeClass("spinning"); // Remove spinner from page
 	var results = JSON.parse(response);
-	if (errorExists(results)) { 
-		 var msg = getErrorMessage(results.errorMessage);
-		 alert(msg);
-	 }
-	else {
-		if (results == ""){ 
-			 alert("Error while reading the resonse file from server. This can be due an error in executing java application.");
-			 return;
-		 }
-		else {
-			if(isGetNextSteps){ 
-					console.log("All Paths Results (responseFunc):")
-					console.log(JSON.stringify(results));	
-					savedAnalysisData.allNextStatesResult = results;
-					console.log("in backendcomm, saving all next state results");
-					open_analysis_viewer();
-			} else {
-				savedAnalysisData.singlePathResult = results;
-				analysisResult = convertToAnalysisResult(results);
-				displayAnalysis(analysisResult, false);
-
-				// Save result to the corresponding analysis configuration object
-				currAnalysisConfig.addResult(analysisResult);
-				// Update results in analysis sidebar
-				updateResults();
-				// Add the analysisConfiguration to the analysisMap for access in the analysis config sidebar
-				analysisMap.set(currAnalysisConfig.id, currAnalysisConfig);
-			 }
-		 }
-	 }
- }
-
-function executeJava(isGetNextSteps){
-	var pathToCGI = "./cgi-bin/executeJava.cgi";
-	$.ajax({
-		url: pathToCGI,
-		type: "get",
-		success: function(response){
-		    setTimeout(function(){
-				getFileResults(isGetNextSteps);
-		    }, 500);
-		}
-	})
-	.fail(function(){
-		msg = "Ops! Something went wrong. Executing java.";
+	if (errorExists(results)) {
+		var msg = getErrorMessage(results.errorMessage);
 		alert(msg);
-	});
+	} else {
+		console.log(analysisRequest.get('action'));
+		console.log(JSON.stringify(results));
+		if (results == "") {
+			alert("Error while reading the response file from server. This can be due an error in executing java application.");
+			return;
+		} else if (analysisRequest.get('action') == 'singlePath' || analysisRequest.get('action') == 'updatePath') {
+			var analysisResult = convertToAnalysisResult(results); 	// {ResultBBM}
+			displayAnalysis(analysisResult, false);
+			analysisRequest.addResult(analysisResult);
+		} else if (analysisRequest.get('action') == 'allNextStates') {
+			var allNextStatesResult = convertToAnalysisResult(results); 	// {ResultBBM}
+			open_next_state_viewer(analysisRequest, allNextStatesResult)
+		} else {
+			alert("Error: Unknown analysis request type.");
+			return;
+		}
+	}
 }
 
-
-function getFileResults(isGetNextSteps) {
-	var pathToCGI = "./cgi-bin/fileRead.cgi";
-
-	//Executing action to send backend
-	$.ajax({
-		url: pathToCGI,
-		type: "get",
-		success: function(response){
-			results = JSON.parse(response['data']);
-
-			if (errorExists(results)) {
-				var msg = getErrorMessage(results.errorMessage);
-				alert(msg);
-			} else {
-				/**
-					* Print the response data to the console.
-				*/
-					console.log(JSON.stringify(JSON.parse(response['data'])));
-
-				//globalAnalysisResult = results;
-
-				if (results == ""){
-					alert("Error while reading the resonse file from server. This can be due an error in executing java application.")
-					return
-				}
-
-
-				// do not need to store the past result for all next states
-				if(isGetNextSteps){
-					console.log("All Paths Results (getFileResults):")
-				    console.log(JSON.stringify(results));
-                    savedAnalysisData.allNextStatesResult = results;
-                    console.log("in backendcomm, saving all next state results");
-					open_analysis_viewer();
-				}else{
-					analysisResult = convertToAnalysisResult(results);
-                    savedAnalysisData.singlePathResult = results;
-                    analysisRequest.previousAnalysis = analysisResult;
-                    console.log("previousAnalysis");
-					//pass in an AnalysisResult object
-					displayAnalysis(analysisResult, false);
-				}
-			}
-		}
-	})
-	.fail(function(){
-		msg = "Error while executing CGI file: fileRead. Please contact the system Admin.";
-		alert(msg);
-	});
+/** Handles the response from the server.
+ * {json structure} results
+ * Note: function was originally called `backendComm`.
+ */
+function convertToAnalysisResult(results) {
+	var tempResult = new ResultBBM();
+	tempResult.set('timePointAssignments', results.timePointAssignments);	// Was called: 'assignedEpoch'
+	tempResult.set('timePointPath', results.timePointPath);
+	tempResult.set('elementList', results.elementList);
+	tempResult.set('allSolutions', results.allSolutions);			//Used for Next State
+	tempResult.set('nextStateTPs', results.nextStateTPs);		//Used for Next State
+	tempResult.set('selectedTimePoint', results.selectedTimePoint);
+	tempResult.set('nextPossibleAbsValue', results.nextPossibleAbsValue);		//TODO: Add these values when other result BBMs are created.
+	tempResult.set('nextPossibleRndValue', results.nextPossibleRndValue);		//TODO: Add these values when other result BBMs are created.
+	var evoView = new EVO(results.elementList)
+	tempResult.set('colorVis', evoView);
+	evoView.singlePathResponse(results.elementList, tempResult, "analysis");
+	return tempResult;
 }
 
+function open_next_state_viewer(analysisRequest, allNextStatesResult) {
+	var urlBase = document.URL.substring(0, document.URL.lastIndexOf('/') + 1);
+	var url = urlBase + "analysis.html";
+	var w = window.open(url, Date.now(), "status=0,title=0,height=600,width=1200,scrollbars=1");
 
-function open_analysis_viewer(){
-    var urlBase = document.URL.substring(0, document.URL.lastIndexOf('/')+1);
-    var url = urlBase+"analysis.html";
-    var w = window.open(url, Date.now(), "status=0,title=0,height=600,width=1200,scrollbars=1");
-
-    if (!w) {
-        alert('You must allow popups for this map to work.');
-    }
+	if (!w) {
+		alert('You must allow popups for this map to work.');
+	} else {
+		if (w != null && !w.closed) {
+			var jsObject = {};
+			jsObject.request = analysisRequest;
+			jsObject.results = allNextStatesResult;
+			w.myInputJSObject = jsObject;
+			w.focus();
+		} else {
+			alert("Popup has been closed.");
+		}
+	}
 
 }
 
@@ -287,7 +210,7 @@ function getParentActor(element) {
 }
 
 /*
- * Returns the element with element id id.
+ * Returns the element with element id.
  * Returns null if no element with that element id exists.
  *
  * @param {String} id
@@ -297,7 +220,7 @@ function getParentActor(element) {
 function getElementById(id) {
 	var elements = graph.getElements();
 	for (var i = 0; i < elements.length; i++) {
-		if (id == elements[i].attributes.nodeID) {
+		if (id == elements[i].get('id')) {
 			return elements[i];
 		}
 	}
@@ -333,18 +256,4 @@ function getIDs(backendErrorMsg) {
 	}
 
 	return arr;
-}
-
-function convertToAnalysisResult(results){
-	var tempResult = new AnalysisResult();
-	tempResult.assignedEpoch = results.assignedEpoch;
-	tempResult.timePointPath = results.timePointPath;
-	tempResult.timePointPathSize = results.timePointPathSize;
-	tempResult.elementList = results.elementList;
-	tempResult.allSolution = results.allSolution;
-	tempResult.previousAnalysis = analysisResult;
-	tempResult.colorVis = new EVO(results.elementList);
-	tempResult.isPathSim = true;
-	tempResult.colorVis.singlePathResponse(results.elementList);
-	return tempResult;
 }

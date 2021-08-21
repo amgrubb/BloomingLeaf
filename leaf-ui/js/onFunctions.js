@@ -3,122 +3,238 @@ This file contains all the jQuery functions that are associated with buttons and
 It also contains the setup for Rappid elements.
 */
 
-/**
- * Closes Assignments Table
- */
+// Used to be onFunctionsBothWindows.js
+// Navigation bar functions:
+var max_font = 20;
+var min_font = 6;
+var current_font = 10;
+var default_font = 10;
 
-$('.close').on('click', function(){
-    var modal = document.getElementById('assignmentsModal');
-    modal.style.display = "none";
-});
+function zoomIn(pPaperScroller) {
+    pPaperScroller.zoom(0.2, { max: 3 });
+}
+
+function zoomOut(pPaperScroller) {
+    pPaperScroller.zoom(-0.2, { min: 0.2 });
+}
 
 /**
- * Sets Max Absolute Time
+ * Helper function function for fontUp, fontDown, and defaultFont
+ * @param {int} new_font 
  */
-$('#max-abs-time').on('change', function(){
-    var maxTime = $('#max-abs-time');
-    if (maxTime.val() !== "") {
-        model.maxAbsTime = maxTime.val()
+function changeFont(new_font, pPaper) {
+    var elements = graph.getElements();
+    for (var i = 0; i < elements.length; i++) {
+        var cellView = elements[i].findView(pPaper);
+        cellView.model.attr(".name/font-size", new_font);
+    }
+    current_font = new_font;
+}
+
+/**
+ * Increases font size by 1
+ * @param {*} pPaper 
+ */
+function fontUp(pPaper) {
+    var new_font = current_font + 1;
+
+    if (new_font <= max_font) {
+        changeFont(new_font, pPaper)
+    }
+}
+
+/**
+ * Decreases font size by 1
+ * @param {*} pPaper 
+ */
+function fontDown(pPaper) {
+    var new_font = current_font - 1;
+
+    if (new_font >= min_font) {
+        changeFont(new_font, pPaper)
+    }
+}
+
+/**
+ * Changes font size to default (10)
+ * @param {*} pPaper 
+ */
+function defaultFont(pPaper) {
+    changeFont(default_font, pPaper)
+}
+
+function resizeWindow(sliderMax) {
+    $('#slider').css("margin-top", $(this).height() * 0.7);
+    $('#slider').width($('#paper').width() * 0.8);
+    adjustSliderWidth(sliderMax)
+}
+
+// End nav bar functions
+
+/**
+ * Set up Ctrl+c and Ctrl+v shortcut for macOS
+ *  
+ */
+{
+    // TODO: Outstanding problem from develop - copy/paste pastes twice
+    // Currently only one model can ever be selected at a time
+
+    var clipboard = new joint.ui.Clipboard();
+    var selection = new Backbone.Collection();
+
+    var selectionView = new joint.ui.SelectionView({
+        paper: paper,
+        graph: graph,
+        model: selection
+    });
+    // Check if the browser is on Mac
+    var macOS = navigator.platform.match(/(Mac|iPhone|iPod|iPad)/i) ? true : false;
+    if (macOS) {
+        KeyboardJS.on('command + c, ctrl + c', function () {
+            getSelection();
+            // Copy all selected elements and their associatedf links.
+            clipboard.copyElements(selection, graph, { translate: { dx: 20, dy: 20 }, useLocalStorage: true });
+        });
+        KeyboardJS.on('command + v, ctrl + v', function () {
+            clipboard.pasteCells(graph);
+
+            selectionView.cancelSelection();
+
+            clipboard.pasteCells(graph, { link: { z: -1 }, useLocalStorage: true });
+
+            // Make sure pasted elements get selected immediately. This makes the UX better as
+            // the user can immediately manipulate the pasted elements.
+            clipboard.each(function (cell) {
+                if (cell.get('type') === 'link') return;
+
+                // Push to the selection not to the model from the clipboard but put the model into the graph.
+                // Note that they are different models. There is no views associated with the models
+                // in clipboard.
+                selection.add(graph.get('cells').get(cell.id));
+            });
+
+            selection.each(function (cell) {
+                selectionView.createSelectionBox(paper.findViewByModel(cell));
+            });
+        });
+
     } else {
-        maxTime.val(model.maxAbsTime);
+
+        KeyboardJS.on('ctrl + c', function () {
+            getSelection();
+            // Copy all selected elements and their associatedf links.
+            clipboard.copyElements(selection, graph, { translate: { dx: 20, dy: 20 }, useLocalStorage: true });
+        });
+        KeyboardJS.on('ctrl + v', function () {
+            clipboard.pasteCells(graph);
+
+            selectionView.cancelSelection();
+
+            clipboard.pasteCells(graph, { link: { z: -1 }, useLocalStorage: true });
+
+            // Make sure pasted elements get selected immediately. This makes the UX better as
+            // the user can immediately manipulate the pasted elements.
+            clipboard.each(function (cell) {
+                if (cell.get('type') === 'link') return;
+
+                // Push to the selection not to the model from the clipboard but put the model into the graph.
+                // Note that they are different models. There is no views associated with the models
+                // in clipboard.
+                selection.add(graph.get('cells').get(cell.id));
+            });
+
+            selection.each(function (cell) {
+                selectionView.createSelectionBox(paper.findViewByModel(cell));
+            });
+        });
+
+    }
+
+    function getSelection() {
+        for (let element of graph.getElements()) {
+            if (element.findView(paper).el.children.length == 2 &&
+                element.findView(paper).el.children[1].className.baseVal
+                == 'joint-highlight-stroke joint-theme-default') {
+                selection.add(element);
+            }
+        }
+    }
+}
+// End of onFunctionsBothWindows.js functions
+
+/*** Event listeners for index.html toolbar functions ***/
+/**
+* Set up tool bar button on click functions
+*/
+
+$('#btn-undo').on('click', _.bind(commandManager.undo, commandManager));
+$('#btn-redo').on('click', _.bind(commandManager.redo, commandManager));
+$('#btn-clear-all').on('click', function () { clearAll() });
+$('#btn-clear-flabel').on('click', function () {
+    for (let element of graph.getElements()) {
+        var cellView = element.findView(paper);
+        var cell = cellView.model;
+        if (intention != null && intention.get('evolvingFunction').get('type') != 'NT') {
+            intention.removeFunction();
+            cell.attr(".funcvalue/text", "");
+        }
     }
 });
 
-/**
- * Add relative intention row
- */
-$('.addIntention').on('click', function(){
-    var intentions = model.intentions;
-        var epochHtml1 = '<div class="epochLists" id="epoch1List"><select><option selected>...</option>';
-        var epochHtml2 =  '<div class="epochLists" id="epoch2List"><select><option selected>...</option>';
-        for (var i = 0; i < intentions.length; i++) {
-
-            // if number of function segments >= 2, we have at least one transition
-            if (intentions[i].getNumOfFuncSegements() >= 2) {
-                var funcSegments = intentions[i].dynamicFunction.getFuncSegmentIterable();
-                for (var j = 0; j < funcSegments.length - 1; j++) {
-                    var epoch = funcSegments[j].funcStop;
-                    var newEpochHtml = '<option nodeID=' + intentions[i].nodeID + ' epoch=' + epoch + '>' + intentions[i].nodeName + ': ' + epoch + '</option>';
-                    epochHtml1 += newEpochHtml;
-                    epochHtml2 += newEpochHtml;
-                }
-            }
-        }
-
-        epochHtml1 += '</select></div>';
-        epochHtml2 += '</select></div>';
-
-
-        var relationship = '<div class="epochLists" id="relationshipLists"><select><option selected>...'+
-            '</option><option value="eq">=</option><option value="lt"><</option></select></div>'
-
-        $('#rel-intention-assignents').append('<tr><td>' + epochHtml1 + '</td><td>' + relationship +
-            '</td><td>'+ epochHtml2 +'</td><td><i class="fa fa-trash-o fa-2x" id="removeIntention" aria-hidden="true"></i></td></tr>');
+// Open as SVG
+$('#btn-svg').on('click', function () {
+    paper.openAsSVG();
 });
 
-$(document.body).on('click', '#removeIntention', function(){
-    var row = $(this).parent().parent();
-    var nodeID1 = row.find('#epoch1List select option:checked').attr('nodeID');
-    var epoch1 = row.find('#epoch1List select option:checked').attr('epoch');
-    var type = row.find('#relationshipLists select option:checked').text();
-    var nodeID2 = row.find('#epoch2List select option:checked').attr('nodeID');
-    var epoch2 = row.find('#epoch2List select option:checked').attr('epoch');
-    var constraint = new Constraint(type, nodeID1, epoch1, nodeID2, epoch2);
-
-    model.removeConstraint(constraint);
-    row.remove();
-});
+$('#btn-zoom-in').on('click', function () { zoomIn(paperScroller); });
+$('#btn-zoom-out').on('click', function () { zoomOut(paperScroller); });
+$('#btn-fnt').on('click', function () { defaultFont(paper); });
+$('#btn-fnt-up').on('click', function () { fontUp(paper); });
+$('#btn-fnt-down').on('click', function () { fontDown(paper); });
+$('#legend').on('click', function () { window.open('./userguides/legend.html', 'newwindow', 'width=300, height=250'); return false; });
+$('#evo-color-key').on('click', function () { window.open('./userguides/evo.html', 'newwindow', 'width=500, height=400'); return false; });
 
 /**
  * Displays the absolute and relative assignments modal for the user.
  */
-$('#btn-view-assignment').on('click', function() {
-	epochLists = [];
-	graph.constraintValues = [];
-	var modal = document.getElementById('assignmentsModal');
+$('#btn-view-assignment').on('click', function () {
+    removeHighlight();
+    clearInspector();
+    var assignmentsModal = new AssignmentsTable({ model: graph });
+    $('#assignments-list').append(assignmentsModal.el);
+    assignmentsModal.render();
+});
 
-	// Clear all previous table entries
-	$(".abs-table").find("tr:gt(0)").remove();
-
-	// Display the modal by setting it to block display
-	modal.style.display = "block";
-
-
-	displayAbsoluteIntentionAssignments();
-	displayAbsoluteRelationshipAssignments();
+$('#btn-view-intermediate').on('click', function () {
+    removeHighlight();
+    clearInspector();
+    var intermediateValuesTable = new IntermediateValuesTable({ model: graph });
+    $('#intermediate-table').append(intermediateValuesTable.el);
+    intermediateValuesTable.render();
 });
 
 /**
- * Saves absolute intention and relationship assignments to the graph object
- * TODO: Check if the times users put in are valid
+ * Switches to Analysis view if there are no cycles and no syntax errors.
  */
-$('#btn-save-assignment').on('click', function() {
-    saveAbsoluteTimePoints();
-    saveAbsoluteIntentionAssignments();
-    saveAbsoluteRelationshipAssignments();
-    saveRelativeIntentionAssignments();
-
-    // Dismiss the modal
-    var modal = document.getElementById('assignmentsModal');
-    modal.style.display = "none";
-    $("#epoch1List select").val();
-});
-
-/**
- * Switches to Analysis view iff there are no cycles and no syntax errors.
- */
-$('#analysis-btn').on('click', function() {
-    syntaxCheck();
-
+$('#analysis-btn').on('click', function () {
+    // Check if there are any syntax errors 
+    var isError = syntaxCheck();
+    /**
+     * If there are cycles, then display error message.
+     * Otherwise, remove any "red" elements.
+     */
     var cycleList = cycleSearch();
-    cycleResponse(cycleList); //If there are cycles, then display error message. Otherwise, remove any "red" elements.
-
-    if(!isACycle(cycleList)) {
+    // Alerts user if there are any cycles 
+    cycleResponse(cycleList);
+    if (!isACycle(cycleList) && !isError) {
         clearCycleHighlighting();
         switchToAnalysisMode();
     }
 });
 
+/** For Load Sample Model button */
+
+/** 
 $('#load-sample').on('click', function() {
 
     $.getJSON('http://www.cs.toronto.edu/~amgrubb/archive/REJ-Supplement/S1Frag.json', function(myData){		
@@ -127,1093 +243,201 @@ $('#load-sample').on('click', function() {
         reader.readAsText(newModel);  	
     });
 });
-
-/** Analysis Configuration Sidebar */
-
-/**
- * Adds a new AnalysisConfig
- */
- $('#addConfig').on('click', function(){
-    addNewAnalysisConfig();
-});
-
-/**
- * Allows user to rename configuration element on doubleclick
- */
-$(document).on('dblclick', '.config-elements', function(e){rename(e.target /** Config element */)});
-
-/**
- * Switches UI to clicked configuration element
- */
-$(document).on('click', '.config-elements', function(e){switchConfigs(e.target.closest('.analysis-configuration') /** Config element */)});
-   
-/**
- * Toggles results dropdown menu on click of dropdown arrow
- */
-$(document).on('click','.dropdown-button', function(e){toggleDropdown(e.target.closest('.analysis-configuration') /** Config element */)});
-
-/**
- * Deletes configuration from UI and analysisMap on click of delete button
- */
-$(document).on('click','.deleteconfig-button', function(e){removeConfiguration(e.target.closest('.analysis-configuration') /** Config element */)});
-
-/**
- * Switches to clicked result and it's corresponding configuration in UI
- */
-$(document).on('click', '.result-elements', function(e){switchResults(e.target /** Result element */, e.target.closest('.analysis-configuration') /** Config element */)})
-
-
-/**
- * Trigger when unassign button is pressed. 
- * Change the assigned time of the node/link in the same row to none
- */ 
-$(document).on('click', '.unassign-abs-rel-btn', function(e) {
-    var button = e.target;
-        var row = $(button).closest('tr');
-        var assignedTime = row.find('input[type=number]');
-        $(assignedTime).val('');
-
-        var linkID = row.attr('linkID');
-        var link = model.getLinkByID(linkID);
-        link.absoluteValue = -1;
-});
-
-$(document).on('click', '.unassign-abs-intent-btn', function(e) {
-    var button = e.target;
-    var row = $(button).closest('tr');
-    var assignedTime = row.find('input[type=number]');
-    $(assignedTime).val('');
-
-    var nodeID = row.attr('nodeID');
-    var srcEB = row.attr('srcEB');
-    var constraint = model.getAbsConstBySrcID(nodeID, srcEB);
-    constraint.absoluteValue = -1;
-});
-
-/**
- * Returns an array of numbers containing numbers that the
- * user has inputed in the Absolute Time Points input box.
- * @returns {Array.<Number>}
- */
-function getAbsoluteTimePoints() {
-    var absValues = document.getElementById('abs-time-pts').value;
-    var absTimeValues;
-    console.log("get has these time points: " + absTimeValues);
-    if (absValues != '') {
-        absTimeValues = absValues.split(' ');
-        absTimeValues.map(function (i) {
-            if (i != '') {
-                return parseInt(i, 10);
-            }
-        });
-
-        //Sort into ascending order
-        absTimeValues.sort(function (a, b) {
-            return a - b
-        });
-    } else {
-        absTimeValues = [];
-    }
-
-    return absTimeValues
-}
-
-/** 
- * Sets Absolute time points
- */
-function saveAbsoluteTimePoints() {
-    var regex = new RegExp("^(([1-9]0*)+\\s+)*([1-9]+0*)*$");
-    var absTime = $('#abs-time-pts');
-    if (regex.test(absTime.val())) {
-        analysisRequest.absTimePts = absTime.val().trim();
-        analysisRequest.changeTimePoints(getAbsoluteTimePoints());
-    } else {
-        absTime.val(analysisRequest.absTimePts);
-    }
-    
-    // Updates the analysis request time points based on the saved assignments
-    analysisRequest.changeTimePoints(getAbsoluteTimePoints());
-}
-
-/**
-* Displays the links for the Absolute Relationship Assignments for
-* the Absolute and Relative Assignments modal
 */
-function displayAbsoluteRelationshipAssignments() {
-	var btnHtml = '<td><button class="unassign-abs-rel-btn" > Unassign </button></td>';
-	// Get a list of links
-	var links = graph.getLinks();
-	for (var i = 0; i < model.links.length; i++) {
-		var link = model.links[i];
-		var sourceID = link.linkSrcID;
-		var targetID = link.linkDestID;
-
-		// If this link does not have a source and a target
-		if (sourceID == null || targetID == null) {
-			continue;
-		}
-
-		var sourceName = model.getIntentionByID(sourceID).nodeName;
-		var targetName = model.getIntentionByID(targetID).nodeName;
-
-
-		if (link.linkType == 'NBD' || link.linkType == 'NBT' || link.isEvolvingRelationship()) {
-			var linkAbsTime = link.absoluteValue;
-			var defaultValue = linkAbsTime == -1 ? '' : linkAbsTime;
-
-			$('#link-list').append('<tr linkID = ' + link.linkID + '><td>' + link.linkType + '</td><td>' + sourceName + '</td><td>' + targetName +
-				'</td><td><input type="number" name="sth" value=' + defaultValue + '></td>' + btnHtml +
-				'</tr>');
-		}
-
-	}
-}
-    
-/**
-* Displays the nodes for the Absolute Intention Assignments for
-* the Absolute and Relative Assignments modal
-*/
-function displayAbsoluteIntentionAssignments() {
-
-	var btnHtml = '<td><button class="unassign-abs-intent-btn"> Unassign </button></td>';
-
-	for (var i = 0; i < model.intentions.length; i++) {
-		var intention = model.intentions[i];
-		var funcType = intention.dynamicFunction.stringDynVis;
-		var intentionName = intention.nodeName;
-
-		// nameIdMapper[name] = intention.nodeID;
-		if (funcType == 'RC' || funcType == 'CR' || funcType == 'MP' ||
-			funcType == 'MN' || funcType == 'SD' || funcType == 'DS') {
-
-			var absTime = intention.getAbsConstTime('A');
-			// default value to display.
-			// -1 means abs time does not exist. So display empty string instead.
-			var defaultVal = absTime === -1 ? '' : absTime;
-
-			$('#node-list').append('<tr nodeID = ' + intention.nodeID + ' srcEB = A><td>' + intentionName + ': A' + '</td><td>' + funcType + '</td>' +
-				'<td><input type="number" name="sth" value="' + defaultVal + '"></td>' + btnHtml + '</tr>');
-		} else if (funcType == 'UD') {
-
-			// the number of function transitions, is the number of functions minus one
-			var funcTransitions = intention.dynamicFunction.functionSegList.length - 1;
-			var currBound = 'A';
-			for (var j = 0; j < funcTransitions; j++) {
-
-				// default value to display
-				var absTime = intention.getAbsConstTime(currBound);
-				var defaultVal = absTime === -1 ? '' : absTime;
-
-				$('#node-list').append('<tr nodeID = ' + intention.nodeID + ' srcEB = ' + currBound + '><td>' + intentionName + ': ' + currBound + '</td><td>' + funcType + '</td>' +
-					'<td><input type="number" name="sth" value=' + defaultVal + '></td>' + btnHtml + '</tr>');
-				currBound = String.fromCharCode(currBound.charCodeAt(0) + 1);
-			}
-		}
-	}
-}
-
-/**
-* Saves the Relative Intention Assignments from the
-* Absolute and Relative Assignments into the graph object
-*/
-function saveRelativeIntentionAssignments(){
-    $('.rel-intent-table tr').each(function () {
-        var nodeID1 = $(this).find('#epoch1List select option:checked').attr('nodeID');
-        var epoch1 = $(this).find('#epoch1List select option:checked').attr('epoch');
-        var type = $(this).find('#relationshipLists select option:checked').text();
-        var nodeID2 = $(this).find('#epoch2List select option:checked').attr('nodeID');
-        var epoch2 = $(this).find('#epoch2List select option:checked').attr('epoch');
-
-        if (!nodeID1 || !epoch1 || !type || !nodeID2 || !epoch2) {
-            return;
-        }
-
-        // create constraints object
-        var constraint = new Constraint(type, nodeID1, epoch1, nodeID2, epoch2);
-
-        if (!model.existsConstraint(constraint)) {
-            model.saveRelIntAssignment(type, nodeID1, epoch1, nodeID2, epoch2);
-        }
-    });
-}
-
-/**
-* Saves the Absolute Intention Assignments from the
-* Absolute and Relative Assignments to the graph object
-*/
-function saveAbsoluteIntentionAssignments(){
-    // Save absolute intention assignments
-    $.each($('#node-list').find("tr input[type=number]"), function(){
-        var newTime = parseInt($(this).val()); // ex 15
-        if (isNaN(newTime)) {
-            return;
-        }
-        var row = $(this).closest('tr');
-        var srcEB = row.attr('srcEB'); // ex. 'A'
-        var nodeID = row.attr('nodeID'); // ex. '0000'
-
-        model.setAbsConstBySrcID(nodeID, srcEB, newTime);
-    });
-}
-
-/**
-* Saves the Absolute Relationship Assignments from the
-* Absolute and Relative Assignments into the graph object
-*/
-function saveAbsoluteRelationshipAssignments(){
-    // Save absolute relationship assignment
-    $.each($('#link-list').find("tr input[type=number]"), function() {
-        var newTime = parseInt($(this).val());
-        if (isNaN(newTime)) {
-            return;
-        }
-        var row = $(this).closest('tr');
-        var linkID = row.attr('linkID');
-        var link = model.getLinkByID(linkID);
-        link.absoluteValue = newTime;
-    });
-}
-
-/**
- * Reassigned IDs if required.
- * If there are currently n intentions, and the nodeIDs of the intentions
- * are not exactly between 0000 and n - 1 inclusive, this function reassigns IDs 
- * so that the nodeIDs are all exactly between 0000 and n - 1 inclusive.
- *
- * For example: 
- * There are 2 intentions. The first intention has nodeID 0000 and the
- * second intention has nodeID 0002. This function will cause the 
- * the first intention to keep nodeID 0000 and the 
- * second intention to be assigned assigned nodeID 0001.
- */
-function reassignIntentionIDs() {
-	var elements = graph.getElements();
-	var intentions = model.intentions;
- 	var currID = 0;
-	var currIDStr;
-	for (var i = 0; i < intentions.length; i++) {
-		var intention = intentions[i];
- 		if (parseInt(intention.nodeID) !== currID) {
- 			// The current intention's ID must be reassigned
-		
-			// Find the intention's cell
-			var cell;
-			for (var j = 0; j < elements.length; j++) {
-				if (elements[j].attributes.nodeID === intention.nodeID) {
-					cell = elements[j];
-				}
-            }
-
- 			currIDStr = currID.toString();
- 			while (currIDStr.length < 4){
-	                currIDStr = '0' + currIDStr;
-	        }
-			cell.attributes.nodeID = currIDStr;
-			intention.setNewID(currIDStr);
-		}
- 		currID += 1;
-	}
- 	Intention.numOfCreatedInstances = currID;
-	Link.numOfCreatedInstances = currID;
-}
-
-
-/**
- * Helper function for switching to Analysis view.
- */
-var inAnalysis = false;
-function switchToAnalysisMode() {
-    setInteraction(false);
-    inAnalysis = true;
-	reassignIntentionIDs();
-	
-	// Clear the right panel
-	clearInspector();
-	
-	removeHighlight();
-
-    // clear results if changed model during modeling mode
-    let modelChanged = !(JSON.stringify(previousModel) === JSON.stringify(model));
-    if (modelChanged){
-        clearResults();
-    }
-
-    // Checks if the user assignments list has changed since last switching to Assignments mode
-    // If so, update UAL for all configs and then update defaultUAL 
-    if(analysisRequest.userAssignmentsList !== defaultUAL){
-        for(let config of analysisMap.values()){
-            config.updateUAL(analysisRequest.userAssignmentsList);
-        }
-        defaultUAL = [];
-        analysisRequest.userAssignmentsList.forEach(uAL => defaultUAL.push(uAL));
-    }
-
-	analysisInspector.render();
-	$('.inspector').append(analysisInspector.el);
-	$('#stencil').css("display", "none");
-    $('#analysis-sidebar').css("display","");
-
-    $('#analysis-btn').css("display", "none");
-	$('#symbolic-btn').css("display", "none");
-	$('#cycledetect-btn').css("display", "none");
-    $('#dropdown-model').css("display", "");
-    //$('#on-off').css("display", "none");
-
-    // hide extra tools from modelling mode
-    $('#model-toolbar').css("display", "none");
-    $('.model-clears').css("display", "none");
-    $('.analysis-clears').css("display", "");
-
-    // Show Analysis View tag
-	$('#modeText').text("Analysis View");
-
-	// Disable link settings
-	$('.link-tools .tool-remove').css("display", "none");
-    $('.link-tools .tool-options').css("display", "none");
-    
-    loadAnalysisConfig();
-
-	if (currentHalo) {
-		currentHalo.remove();
-	}
-    mode = "Analysis";
-    
-    IntentionColoring.refresh();
-}
 
 // Switches to modeling mode
-$('#model-cur-btn').on('click', function() {
-	switchToModellingMode();
+$('#modeling-btn').on('click', function () { switchToModellingMode(); });
 
-	// Cleaning the previous analysis data for new execution
-	//globalAnalysisResult.elementList = "";
-	savedAnalysisData.finalAssignedEpoch="";
-    savedAnalysisData.finalValueTimePoints="";
-    
-    analysisRequest.action = null;
+/*** Events for Rappid/JointJS objets ***/
 
-});
-
-
-/**
- * Sets each node/cellview in the paper to its initial 
- * satisfaction value and colours all text to black
- */
-function revertNodeValuesToInitial() {
-    // reset values
-    for (var i = 0; i < graph.elementsBeforeAnalysis.length; i++) {
-		var value = graph.elementsBeforeAnalysis[i]
-		updateNodeValues(i, value, "toInitModel");
-	}
-
-	var elements = graph.getElements();
-	var curr;
-	for (var i = 0; i < elements.length; i++) {
-		curr = elements[i].findView(paper).model;
-
-		if (curr.attributes.type !== 'basic.Goal' &&
-			curr.attributes.type !== 'basic.Task' &&
-			curr.attributes.type !== 'basic.Softgoal' &&
-			curr.attributes.type !== 'basic.Resource') {
-			continue;
-		}
-
-		var intention = model.getIntentionByID(curr.attributes.nodeID);
-
-		var initSatVal = intention.getInitialSatValue();
-		if (initSatVal === '(no value)') {
-            curr.attr('.satvalue/text', '');
-
-		} else {
-            curr.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
-		}
-        //curr.attr({text: {fill: 'black'}});
-        curr.attr({text: {fill: 'black',stroke:'none','font-weight' : 'normal','font-size': 10}});
-	}
-    // Remove slider
-    removeSlider();
-}
-
-/**
- * Switches back to Modelling Mode from Analysis Mode
- * and resets the Nodes' satValues to the values prior to analysis
- * Display the modeling mode page
- */
-function switchToModellingMode() {
-    setInteraction(true);
-    analysisResult.isPathSim = false; //reset isPathSim for color visualization slider
-	analysisRequest.previousAnalysis = null;
-	clearInspector();
-
-	// Reset to initial graph prior to analysis
-	revertNodeValuesToInitial();
-
-	graph.elementsBeforeAnalysis = [];
-
-    // store deep copy of model for detecting model changes
-    // switchToAnalysisMode compares the current model to previousModel
-    // and clears results if model changed during modelling mode
-    // previousModel is NOT of type Model
-    previousModel = JSON.parse(JSON.stringify(model));
-
-    $('#stencil').css("display","");
-    $('#analysis-sidebar').css("display","none");
-    $('#btn-view-assignment').css("display","");
-    $('#analysis-btn').css("display","");
-    $('#analysis-sidebar').css("display","none");
-	$('#symbolic-btn').css("display","");
-	$('#cycledetect-btn').css("display","");
-    $('#dropdown-model').css("display","none");
-    $('#on-off').css("display", "");
-
-    // show extra tools for modelling mode
-    $('#model-toolbar').css("display","");
-    $('.model-clears').css("display", "");
-    $('.analysis-clears').css("display", "none");
-
-    analysisResult.colorVis = [];
-
-    // Show Modelling View tag
-    $('#modeText').text("Modeling View");
-
-	// Reinstantiate link settings
-	$('.link-tools .tool-remove').css("display","");
-	$('.link-tools .tool-options').css("display","");
-
-	graph.allElements = null;
-    mode = "Modelling";
-    EVO.switchToModelingMode();
-
-    // Popup to warn user that changing model will clear results
-    // From analysis configuration sidebar
-    // Defaults to showing each time if user clicks out of box instead of selecting option
-    if (showEditingWarning){
-        const dialog = showAlert('Warning',
-        '<p>Changing the model will clear all ' +
-        'results from all configurations.</p><p>Do you wish to proceed?</p>' +
-        '<p><button type="button" class="model-editing"' +
-        ' id="repeat" style="width:100%">Yes' +
-        '</button><button type="button" ' +
-        'class="model-editing" id="singular" style="width:100%">Yes, please do not show this warning again ' +
-        '</button> <button type="button" class="model-editing"' +
-        ' id="decline" onclick="switchToAnalysisMode()" style="width:100%"> No, please return to analysis mode' +
-        '</button></p>',
-        window.innerWidth * 0.3, 'alert', 'warning');
-        document.querySelectorAll('.model-editing').forEach(function(button){
-            button.addEventListener('click', function(){dialog.close(); if(button.id == 'singular'){showEditingWarning = false;};});
-        });
-    }
-}
-
-/**
- * Source:https://www.w3schools.com/howto/howto_js_rangeslider.asp 
- * Two option modeling mode slider
- */
-var sliderModeling = document.getElementById("colorReset");
-//var sliderOption = sliderModeling.value;
-sliderModeling.oninput = function() { //turns slider on/off and refreshes
-  EVO.setSliderOption(this.value);
-}
-/**
- * Four option analysis mode slider
- */
-var sliderAnalysis = document.getElementById("colorResetAnalysis");
-sliderAnalysis.oninput = function() { //changes slider mode and refreshes
-    EVO.setSliderOption(this.value);
-}
-
-/**
- * Set up tool bar button on click functions
- */
-$('#btn-undo').on('click', _.bind(commandManager.undo, commandManager));
-$('#btn-redo').on('click', _.bind(commandManager.redo, commandManager));
-$('#btn-clear-all').on('click', function(){
-    graph.clear();
-    // reset to default analysisRequest
-    model.removeAnalysis();
-    // clear analysis sidebar
-    clearAnalysisConfigSidebar();
-    // remove all configs from analysisMap
-    analysisMap.clear();
-	// Delete cookie by setting expiry to past date
-	document.cookie='graph={}; expires=Thu, 18 Dec 2013 12:00:00 UTC';
-});
-
-$('#btn-clear-elabel').on('click', function(){
-	var elements = graph.getElements();
-	for (var i = 0; i < elements.length; i++){
-        var cellView = elements[i].findView(paper); 
-        var cell = cellView.model;
-        var intention = model.getIntentionByID(cellView.model.attributes.nodeID);
-
-        if(intention != null && intention.getInitialSatValue() != '(no value)') {
-            intention.removeInitialSatValue();
-     
-            cell.attr(".satvalue/text", "");
-            cell.attr(".funcvalue/text", "");
-     
-            elementInspector.$('#init-sat-value').val('(no value)');
-            elementInspector.$('.function-type').val('(no value)');
-        }
-    }
-    IntentionColoring.refresh();
-});
-
-$('#btn-clear-flabel').on('click', function(){
-    var elements = graph.getElements();
-    
-	for (var i = 0; i < elements.length; i++){
-        var cellView = elements[i].findView(paper); 
-        var cell = cellView.model;
-        var intention = model.getIntentionByID(cellView.model.attributes.nodeID);
-
-        if(intention != null) {
-            intention.removeFunction();
-            cell.attr(".funcvalue/text", "");
-            elementInspector.$('.function-type').val('(no value)');
-        }
-	}
-});
-
-/**
- * This is an option under clear button to clear red-highlight from
- * cycle detection function
- */
-$('#btn-clear-cycle').on('click',function(){
-    clearCycleHighlighting();
-});
-
-$('#btn-clear-analysis').on('click', function() {
-    // reset to default analysisRequest while preserving userAssignmentsList
-    resetToDefault();
-    // clear analysis sidebar
-    clearAnalysisConfigSidebar();
-    // remove all configs from analysisMap
-    analysisMap.clear();
-	// add back first default analysis config
-    addFirstAnalysisConfig();
-    // reset graph to initial values
-    revertNodeValuesToInitial();
-});
-
-$('#btn-clear-results').on('click', function() {
-    clearResults();
-    refreshAnalysisUI();
-});
-
-// Open as SVG
-$('#btn-svg').on('click', function() {
-	paper.openAsSVG();
-});
-
-// Save the current graph to json file
-$('#btn-save').on('click', function() {
-	var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
-	if (name){
-        clearCycleHighlighting();
-        EVO.deactivate();
-       // EVO.returnAllColors(graph.getElements(), paper);
-       // EVO.revertIntentionsText(graph.getElements(), paper);    
-		var fileName = name + ".json";
-		var obj = getModelJson();
-        download(fileName, JSON.stringify(obj));
-        //IntentionColoring.refresh();
-	}
-});
-
-// Save the current graph and analysis (without results) to json file
-$('#btn-save-analysis').on('click', function() {
-	var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
-	if (name){
-        clearCycleHighlighting();
-        EVO.deactivate();   
-		var fileName = name + ".json";
-		var obj = getModelAnalysisJson();
-        download(fileName, JSON.stringify(obj));
-	}
-});
-
-// Save the current graph and analysis (with results) to json file
-$('#btn-save-all').on('click', function() {
-	var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
-	if (name){
-        clearCycleHighlighting();
-        EVO.deactivate();   
-		var fileName = name + ".json";
-		var obj = getFullJson();
-        download(fileName, JSON.stringify(obj));
-	}
-});
-
-// Workaround for load, activates a hidden input element
-$('#btn-load').on('click', function(){
-	$('#loader').click();
-});
-
-$('#colorblind-mode-isOff').on('click', function(){ //activates colorblind mode
-    $('#colorblind-mode-isOff').css("display", "none");
-    $('#colorblind-mode-isOn').css("display", "");
-
-    IntentionColoring.toggleColorBlindMode(true);
-});
-
-$('#colorblind-mode-isOn').on('click', function(){ //turns off colorblind mode
-    $('#colorblind-mode-isOn').css("display", "none");
-    $('#colorblind-mode-isOff').css("display", "");
-
-    IntentionColoring.toggleColorBlindMode(false);
-});
-
-/**
- * Creates an instance of a Link object and saves it in the global model
- * variable
- *
- * @param {joint.dia.Cell} cell
- */
-function createLink(cell) {
-	var link = new Link('AND', cell.getSourceElement().attributes.nodeID,  -1);
-	cell.attributes.linkID = link.linkID;
-    cell.on("change:target", function () {
-    	var target = cell.getTargetElement();
-    	if (target === null) {
-    		link.linkDestID = null;
-    	} else {
-    		link.linkDestID = target.attributes.nodeID;
-    	}
-    });
-    cell.on("change:source", function () {
-		var source = cell.getSourceElement();
-		if (source === null) {
-			link.linkSrcID = null;
-		} else {
-			link.linkSrcID = source.attributes.nodeID;
-		}
-    });
-    model.links.push(link);
-}
-
-/**
- * Creates an instance of a Intention object and saves it in the
- * global model variable
- *
- * @param {joint.dia.Cell} cell
- */
-function createIntention(cell) {
-
-    var name = cell.attr(".name/text") + "_" + Intention.numOfCreatedInstances;
-    cell.attr(".name/text", name);
-
-    // create intention object
-    var type = cell.attributes.type;
-    var intention = new Intention('-', type, name);
-    model.intentions.push(intention);
-
-    // create intention evaluation object
-    var intentionEval = new UserEvaluation(intention.nodeID, '0', '(no value)');
-    analysisRequest.userAssignmentsList.push(intentionEval);
-
-    cell.attributes.nodeID = intention.nodeID;
-
-}
-
-/**
- * Creates an instance of an Actor object and saves it in the
- * global model variable
- * 
- * @param {joint.dia.Cell} cell
- */
-function createActor(cell) {
-	var name = cell.attr('.name/text') + "_" + Actor.numOfCreatedInstances;
-	var actor = new Actor(name);
-    cell.attr(".name/text", name);
-	cell.attributes.nodeID = actor.nodeID;
-	model.actors.push(actor);
-}
-
-/**
- * Set up on events for Rappid/JointJS objets
- */
-var element_counter = 0;
+/** Graph Events */
 
 // Whenever an element is added to the graph
-graph.on("add", function(cell) {
+graph.on("add", function (cell) {
+    // Find how many cells are created on the graph
+    var createdInstance = paper.findViewsInArea(paper.getArea())
 
-	if (cell instanceof joint.dia.Link){
-        if (graph.getCell(cell.get("source").id) instanceof joint.shapes.basic.Actor){
-            cell.prop("linktype", "actorlink");
-            cell.label(0,{attrs:{text:{text:"is-a"}}});
-		}
-        createLink(cell);
-    } else if (cell instanceof joint.shapes.basic.Intention){
-		createIntention(cell);
-		cell.attr('.funcvalue/text', ' ');
-	} else if (cell instanceof joint.shapes.basic.Actor) {
-		createActor(cell);
+    if (cell instanceof joint.shapes.basic.CellLink) {
+        if (graph.getCell(cell.get("source").id) instanceof joint.shapes.basic.Actor) {
+            cell.label(0, { attrs: { text: { text: "is-a" } } });
+            cell.set('link', new LinkBBM({ displayType: "actor", linkType: 'is-a' }));
+        } else {
+            cell.set('link', new LinkBBM({}));
+        }
+    } else if (cell instanceof joint.shapes.basic.Intention) {
+        // Creates an instance of a IntentionBBM from the cell
+        var newIntentionBBM = new IntentionBBM({})
+        cell.set('intention', newIntentionBBM);
+        cell.attr('.satvalue/text', '');
+        cell.attr('.funcvalue/text', ' ');
+        // Create intention evaluation object and add it to userEvaluationList 
+        newIntentionBBM.get('userEvaluationList').push(new UserEvaluationBBM({}));
+    } else if (cell instanceof joint.shapes.basic.Actor) {
+        // Find how many instances of the actor is created out of all the cells
+        createdInstance = createdInstance.filter(view => view.model instanceof joint.shapes.basic.Actor);
 
-		// Send actors to background so elements are placed on top
-		cell.toBack();
-	}
+        // Create placeholder name based on the number of instances
+        var name;
+        if (createdInstance.length >= 2) {
+            var lastactor = createdInstance[createdInstance.length - 2].model.attr('.name/text');
+            name = cell.attr('.name/text') + "_" + (Number.parseInt(lastactor.charAt(lastactor.length - 1)) + 1);
+        } else {
+            name = cell.attr('.name/text') + "_0";
+        }
 
-    // trigger click on cell to highlight, activate inspector, etc. 
+        cell.set('actor', new ActorBBM({ actorName: name }));
+        cell.attr(".name/text", name);
+
+        // Send actors to background so elements are placed on top
+        cell.toBack();
+    }
+
+    resetConfig()
+    // Trigger click on cell to highlight, activate inspector, etc. 
     paper.trigger("cell:pointerup", cell.findView(paper));
 });
 
-
-// used when reading form the database is needed
-function accessDatabaseWithRead(insert_query, read_query, type){
-    var queryString = "insert_query=" +  encodeURIComponent(insert_query) + "&type=" + type + "&read_query=" +  encodeURIComponent(read_query);
-    $.ajax({
-        type: "POST",
-        url: "./js/ajaxjs.php",
-        data: queryString,
-        cache: false,
-        success: function(html) {
-            //console.log(html);
-        },
-    });
-}
-
-function accessDatabase(sql_query, type) {
-    var queryString = "insert_query=" +  encodeURIComponent(sql_query) + "&type=" + type;
-    $.ajax({
-        type: "POST",
-        url: "./js/ajaxjs.php",
-        data: queryString,
-        cache: false,
-        success: function(html) {
-            //console.log(html);
-
-        },
-    });
-
-
-}
-
-// Generates file needed for backend analysis
-function updateDataBase(graph, timestamp){
-
-    //Step 0: Get elements from graph.
-    var all_elements = graph.getElements();
-    var savedLinks = [];
-    var savedConstraints = [];
-
-    if (linkMode == "View"){
-        savedConstraints = graph.intensionConstraints;
-        var links = graph.getLinks();
-        links.forEach(function(link){
-            if(!isLinkInvalid(link)){
-                if (link.attr('./display') != "none")
-                    savedLinks.push(link);
-            }
-            //else{link.remove();}
-        });
-    }else if (linkMode == "Constraints"){
-        savedLinks = graph.links;
-        var betweenIntensionConstraints = graph.getLinks();
-        betweenIntensionConstraints.forEach(function(link){
-            var linkStatus = link.attributes.labels[0].attrs.text.text.replace(/\s/g, '');
-            if(!isLinkInvalid(link) && (linkStatus != "constraint") && (linkStatus != "error")){
-                if (link.attr('./display') != "none")
-                    savedConstraints.push(link);
-            }
-            //else{link.remove();}
-        });
-    }
-
-    //Step 1: Filter out Actors
-    var elements = [];
-    var actors = [];
-    for (var e1 = 0; e1 < all_elements.length; e1++){
-        if (!(all_elements[e1] instanceof joint.shapes.basic.Actor)){
-            elements.push(all_elements[e1]);
-        }
-        else{
-            actors.push(all_elements[e1]);
-        }
-    }
-
-    //save elements in global variable for slider, used for toBackEnd funciton only
-    graph.allElements = elements;
-
-    //print each actor in the model
-    for (var a = 0; a < actors.length; a++){
-        var insert_query = "insert ignore into actors(session_id,id,name,action,timestamp) values " +
-            "(\'"+ session_id +"\',\'"+actors[a].id +"\',\'"+ actors[a].attr(".name/text") +"\', \'EDIT\',\'"+
-            timestamp + "\')";
-        var read_query = "select * from (select * from actors where id=\'" + actors[a].id +
-            "\' order by timestamp DESC limit 1) as temp where name=\'" +
-            actors[a].attr(".name/text") + "\'";
-        accessDatabaseWithRead(insert_query, read_query, 0);
-        accessDatabase("UPDATE ignore actors SET action=\'CREATE\' WHERE id=" + "\'" + actors[a].id + "\' ORDER BY timestamp ASC LIMIT 1",1);
-    }
-
-
-    // Step 2: Print each element in the model
-
-    // conversion between values used in Element Inspector with values used in backend
-    var satValueDict = {
-        "unknown": 5,
-        "satisfied": 3,
-        "partiallysatisfied": 2,
-        "partiallydenied": 1,
-        "denied": 0,
-        "conflict": 4,
-        "none": 6
-    }
-    for (var e = 0; e < elements.length; e++){
-
-        var actorid = '-';
-
-        if (elements[e].get("parent")){
-            actorid = elements[e].get("parent");
-        }
-
-        var type;
-        if (elements[e] instanceof joint.shapes.basic.Goal)
-            type = "G";
-        else if (elements[e] instanceof joint.shapes.basic.Task)
-            type = "T";
-        else if (elements[e] instanceof joint.shapes.basic.Softgoal)
-            type = "S";
-        else if (elements[e] instanceof joint.shapes.basic.Resource)
-            type = "R";
-        else
-            type = "I";
-
-        var v = elements[e].attr(".satvalue/value")
-
-        // treat satvalue as unknown if it is not yet defined
-        if((!v) || (v == "none"))
-            v = "none";
-        var insert_query = "insert ignore into intentions(session_id, id, actor_id,type,satValue,text,action,timestamp) values " +
-            "(\'"+ session_id +"\',\'"+elements[e].id +"\',\'"+ actorid + "\',\'" + type + "\',\'" + satValueDict[v] + "\',\'" +  elements[e].attr(".name/text").replace(/\n/g, " ") + "\', \'EDIT\',\'"+
-            timestamp + "\')";
-        var read_query = "select * from (select * from intentions where id=\'" + elements[e].id + "\' order by timestamp DESC limit 1) as temp where actor_id=\'"
-            + actorid + "\' and type=\'" + type + "\' and satValue=\'" + satValueDict[v] + "\' and text=\'" + elements[e].attr(".name/text").replace(/\n/g, " ") + "\'";
-        accessDatabaseWithRead(insert_query, read_query, 0);
-        accessDatabase("UPDATE intentions SET action=\'CREATE\' WHERE id=" + "\'" + elements[e].id + "\' ORDER BY timestamp ASC LIMIT 1",1);
-
-    }
-
-
-    //Step 3: Print each link in the model
-    for (var l = 0; l < savedLinks.length; l++){
-        var current = savedLinks[l];
-        var relationship = current.label(0).attrs.text.text.toUpperCase();
-
-        if (relationship.indexOf("|") > -1){
-            evolvRelationships = relationship.replace(/\s/g, '').split("|");
-
-            var insert_query = "insert ignore into links(session_id, id, type,source_id,target_id,evolvRelationships,action,timestamp) values " +
-                "(\'"+ session_id +"\',\'"+current.id +"\',\'"+ evolvRelationships[0] + "\',\'" + current.get("source").id + "\',\'" + current.get("target").id + "\',\'" +  evolvRelationships[1] + "\', \'EDIT\',\'"+
-                timestamp + "\') ";
-            var read_query = "select * from (select * from links where id=\'" + current.id+ "\' order by timestamp DESC limit 1) as temp where type=\'"
-                + evolvRelationships[0] + "\' and source_id=\'" + current.get("source").id + "\' and target_id=\'" + current.get("target").id + "\' and evolvRelationships=\'" + evolvRelationships[1] + "\'";
-            accessDatabaseWithRead(insert_query, read_query, 0);
-
-        }else{
-            var insert_query = "insert ignore into links(session_id,id,type,source_id,target_id,action,timestamp) values " +
-                "(\'"+ session_id +"\',\'"+current.id +"\',\'"+ relationship + "\',\'" + current.get("source").id + "\',\'" + current.get("target").id  + "\', \'EDIT\',\'"+
-                timestamp + "\')";
-            var read_query = "select * from (select * from links where id=\'" + current.id + "\' order by timestamp DESC limit 1) as temp where type=\'"
-                + relationship + "\' and source_id=\'" + current.get("source").id + "\' and target_id=\'" + current.get("target").id + "\' and evolvRelationships is NULL";
-            accessDatabaseWithRead(insert_query, read_query, 0);
-        }
-        accessDatabase("UPDATE links SET action=\'CREATE\' WHERE id=" + "\'" + current.id + "\' ORDER BY timestamp ASC LIMIT 1",1);
-
-    }
-
-    //Step 4: Print the dynamics of the intentions.
-    for (var e = 0; e < elements.length; e++){
-
-        var f = elements[e].attr(".funcvalue/text");
-        var init_value = elements[e].attr(".constraints/markedvalue");
-        var funcType = elements[e].attr(".constraints/function");
-        var funcTypeVal = elements[e].attr(".constraints/lastval");
-        var sat_value;
-        var function_string;
-        if  (f == " " || f == ""){
-            f = "NT";
-            sat_value = satValueDict[funcTypeVal];
-        }else if (f != "UD"){
-            sat_value = satValueDict[funcTypeVal];
-
-            // user defined constraints
-        }else{
-            var begin = elements[e].attr(".constraints/beginLetter");
-            var end = elements[e].attr(".constraints/endLetter");
-            var rBegin = elements[e].attr(".constraints/beginRepeat");
-            var rEnd = elements[e].attr(".constraints/endRepeat");
-            function_string = "";
-            sat_value = String(funcTypeVal.length);
-            for (var l = 0; l < funcTypeVal.length; l++){
-                if(l == funcTypeVal.length - 1){
-                    function_string += "\t" + begin[l] + "\t1\t" + funcType[l] + "\t" + satValueDict[funcTypeVal[l]];
-                }else{
-                    function_string += "\t" + begin[l] + "\t" + end[l] + "\t" + funcType[l] + "\t" + satValueDict[funcTypeVal[l]];
-                }
-            }
-
-            // repeating
-            if (elements[e].attr(".constraints/beginRepeat") && elements[e].attr(".constraints/endRepeat")){
-                // to infinity
-                if (rEnd == end[end.length - 1]){
-                    function_string += "\tR\t" + rBegin + "\t1";
-                }else{
-                    function_string += "\tR\t" + rBegin + "\t" + rEnd;
-                }
-            }else{
-                function_string += "\tN";
-            }
-
-        }
-        if (( typeof init_value !== 'undefined' ) && ( typeof sat_value !== 'undefined' )){
-            var insert_query;
-            var read_query;
-            if (typeof(function_string) !== 'undefined'){
-                insert_query = "insert ignore into dynamics(session_id,intention_id,function_type,init_value,sat_value,function_string,action,timestamp) values " +
-                    "(\'"+ session_id +"\',\'"+elements[e].id +"\',\'"+ f + "\',\'" + init_value + "\',\'" + sat_value + "\',\'" + function_string  + "\', \'EDIT\',\'"+
-                    timestamp + "\') ";
-                read_query = "select * from (select * from dynamics where intention_id=\'" + elements[e].id + "\' order by timestamp DESC limit 1) as temp where function_type=\'"
-                    + f + "\' and init_value=\'" + init_value + "\' and sat_value=\'" + sat_value + "\' and function_string=\'" + function_string + "\'";
-
-            } else{
-                insert_query = "insert ignore into dynamics(session_id,intention_id,function_type,init_value,sat_value,function_string,action,timestamp) values " +
-                    "(\'"+ session_id +"\',\'"+elements[e].id +"\',\'"+ f + "\',\'" + init_value + "\',\'" + sat_value + "\',\'NULL\', \'EDIT\',\'"+
-                    timestamp + "\') ";
-                read_query = "select * from (select * from dynamics where intention_id=\'" + elements[e].id + "\' order by timestamp DESC limit 1) as temp where function_type=\'"
-                    + f + "\' and init_value=\'" + init_value + "\' and sat_value=\'" + sat_value + "\' and function_string=\'NULL\'";
-            }
-            accessDatabaseWithRead(insert_query, read_query, 0);
-            accessDatabase("UPDATE dynamics SET action=\'CREATE\' WHERE intention_id=" + "\'" + elements[e].id + "\' ORDER BY timestamp ASC LIMIT 1",1);
-
-        }
-    }
-
-    //Step 5: Print constraints between intensions.
-    for (var e = 0; e < savedConstraints.length; e++){
-        var c = savedConstraints[e];
-        var type = c.attributes.labels[0].attrs.text.text.replace(/\s/g, '');
-        var source = c.getSourceElement().id;
-        var target = c.getTargetElement().id;
-        var sourceVar = c.attr('.constraintvar/src');
-        var targetVar = c.attr('.constraintvar/tar');
-
-        var insert_query = "insert ignore into constraints(session_id,type,source,sourceVar,target,targetVar,action,timestamp) values " +
-            "(\'"+ session_id +"\',\'"+type +"\',\'"+ source + "\',\'" + sourceVar + "\',\'" + target + "\',\'" + targetVar  + "\', \'EDIT\',\'"+
-            timestamp + "\') ";
-        var read_query = "select * from (select * from constraints where session_id=\'" + session_id + "\' and source=\'" + source+ "\' and target=\'" + target +"\' order by timestamp DESC limit 1) as temp where sourceVar=\'"
-            + sourceVar + "\' and targetVar=\'" + targetVar + "\'";
-        accessDatabaseWithRead(insert_query, read_query, 0);
-
-        accessDatabase("UPDATE constraints SET action=\'CREATE\' WHERE session_id=\'" + session_id + "\' and source=\'" + source+ "\' and target=\'" + target +"\'  ORDER BY timestamp ASC LIMIT 1",1);
-    }
-
-}
-
 // Auto-save the cookie whenever the graph is changed.
-graph.on("change", function(){
-	var graphtext = JSON.stringify(graph.toJSON());
-	document.cookie = "graph=" + graphtext;
-    if (Tracking){
-    	console.log("User Tracking - Recorded");
-        var timestamp = new Date().toUTCString();
-        updateDataBase(graph, timestamp);
-        accessDatabase("insert ignore into graphs(session_id,content,timestamp) values " +
-            "(\'"+ session_id +"\',\'"+graphtext +"\',\'"+ timestamp + "\') ",1);
+graph.on("change", function () {
+    var graphtext = graph.toJSON();
+    document.cookie = "graph=" + graphtext;
+});
 
+graph.on('change:size', function (cell, size) {
+    cell.attr(".label/cx", 0.25 * size.width);
+
+    // Calculate point on actor boundary for label (to always remain on boundary)
+    var b = size.height;
+    var c = -(size.height / 2 + (size.height / 2) * (size.height / 2) * (1 - (-0.75 * size.width / 2) * (-0.75 * size.width / 2) / ((size.width / 2) * (size.width / 2))));
+    var y_cord = (-b + Math.sqrt(b * b - 4 * c)) / 2;
+
+    cell.attr(".label/cy", y_cord);
+});
+
+
+graph.on('remove', function (cell) {
+    // Clear right inspector side panel
+    clearInspector();
+    // Clear Config view
+    resetConfig();
+
+    /**  TODO: Determine if we still need the rest of the code in this function. 
+     *   Figure out how to make the element inspector automatically update after the function 
+     *   label is changed to (no value) for the element. Currently the user needs to click the 
+     *   element again for it to update. 
+    */
+
+    // if (cell.isLink() && !(cell.prop("link-type") == 'NBT' || cell.prop("link-type") == 'NBD')) {
+    //     // To remove link
+    //     var link = cell;
+    //     // model.removeLink(link.linkID);
+    // }
+
+    if ((!cell.isLink()) && (!(cell.prop("type") == "basic.Actor"))) {
+        if (cell.get('parent')) {
+            graph.getCell(cell.get('parent')).unembed(cell);
+        }
+    }
+
+    else if (cell.isLink()) {
+        if (cell.get('link') !== null) {
+            if (cell.get('link').get("linkType") == 'NBT' || cell.get('link').get("linkType") == 'NBD') {
+                // Verify if is a Not both type. If it is remove labels from source and target node
+                var source = graph.getCell(cell.get('source').id);
+                var target = graph.getCell(cell.get('target').id);
+                // Verify if it is possible to remove the NB tag from source and target
+                if (source !== null && !checkForMultipleNB(source)) {
+                    source.get('intention').get('evolvingFunction').set('type', 'NT');
+                    source.get('intention').getUserEvaluationBBM(0).set('assignedEvidencePair', '(no value)');
+                    source.attr('.funcvalue/text', '');
+                    source.attr('.satvalue/text', '');
+                }
+                if (target !== null && !checkForMultipleNB(target)) {
+                    target.get('intention').get('evolvingFunction').set('type', 'NT');
+                    target.get('intention').getUserEvaluationBBM(0).set('assignedEvidencePair', '(no value)');
+                    target.attr('.funcvalue/text', '');
+                    target.attr('.satvalue/text', '');
+                }
+            }
+        }
     }
 });
 
-var selection = new Backbone.Collection();
-
-var selectionView = new joint.ui.SelectionView({
-	paper: paper,
-	graph: graph,
-	model: selection
-});
+/** Paper Events **/
 
 /**
  * Initiate selecting when the user grabs the blank area of the paper while the Shift key is pressed.
  * Otherwise, initiate paper pan.
  */
-paper.on('blank:pointerdown', function(evt, x, y) {
-	paperScroller.startPanning(evt, x, y);
+paper.on('blank:pointerdown', function (evt, x, y) {
+    paperScroller.startPanning(evt, x, y);
 });
 
 /**
  * Specifies behavior for clicking on cells and moving intentions/links
  */
+// TODO: Find better way to handle move instances than adding data to event and passing forward
 paper.on({
-    'cell:pointerdown': function(cellView, evt) {
-        var interact = true;
-        if(mode == "Analysis"){
-            interact = false;
-        }
-
+    'cell:pointerdown': function (cellView, evt) {
         // pass data to pointermove and pointerup
-        evt.data = {move: false, interact: interact};
+        evt.data = { move: false };
     },
-    'cell:pointermove': function(cellView, evt) {
-        if (!evt.data.move && evt.data.interact){
+    'cell:pointermove': function (cellView, evt) {
+        if (!evt.data.move) {
             // start of a click and drag
             evt.data.move = true;
         }
-      },
-    'cell:pointerup': function(cellView, evt) {
+    },
+    'cell:pointerup': function (cellView, evt) {
         // undefined event occurs due to paper.trigger("cell:pointerup"...
         // on adding new cell to paper
         if (evt == undefined) {
             // same highlighting, actor embedding, etc. behavior as dragging cell 
-            evt = {data: {move: true, interact: true}};
+            evt = { data: { move: true, interact: true } };
         }
-        
         // when interacting w/ cells on paper in modeling mode
-        if (evt.data.interact) {
+        if (cellView.model.findView(paper).options.interactive) {
             var cell = cellView.model;
-            if (cell instanceof joint.dia.Link) { // Link behavior
-                if (evt.data.move){
-                    // if link moved, reparent
+            if (cell instanceof joint.shapes.basic.CellLink) { // Link behavior
+                if (evt.data.move) {
+                    // If link moved, reparent
                     cell.reparent();
-                    // check if link still valid
-                    basicActorLink(cell);
                 }
             } else { // Non-Link behavior
-
-                // Element is selected
-                selection.reset();
-                selection.add(cell);
 
                 // Remove highlight of other elements
                 removeHighlight();
 
                 // Highlight when cell is clicked
                 cellView.highlight();
-
-                currentHalo = createHalo(cellView);
+                createHalo(cellView);
 
                 clearInspector();
 
-                // render actor/element inspector
+                // Render actor/element inspector
                 if (cell instanceof joint.shapes.basic.Actor) {
-                    actorInspector.render(cell);
+                    var actorInspector = new ActorInspector({ model: cell });
+                    $('.inspector').append(actorInspector.el);
+                    actorInspector.render();
                 } else {
-                    elementInspector.render(cell);
-                    // if user was dragging element
+                    var elementInspector = new ElementInspector({ model: cell });
+                    $('.inspector').append(elementInspector.el);
+                    elementInspector.render();
+                    // If user was dragging element
                     if (evt.data.move) {
-                        // unembed intention from old actor
+                        // Unembed intention from old actor
                         if (cell.get('parent')) {
                             graph.getCell(cell.get('parent')).unembed(cell);
-
-                            // remove nodeID from actor intentionIDs list
-                            var userIntention = model.getIntentionByID(cell.attributes.nodeID);
-                            if (userIntention.nodeActorID !== '-') {
-                                var actor = model.getActorByID(userIntention.nodeActorID);
-                                actor.removeIntentionID(userIntention.nodeID);
-                            }
                         }
-                        // embed element in new actor
-                        embedBasicActor(cell);
+                        // Embed element in new actor
+                        var overlapCells = paper.findViewsFromPoint(cell.getBBox().center());
+
+                        // Find actors which overlap with cell
+                        overlapCells = overlapCells.filter(view => view.model instanceof joint.shapes.basic.Actor);
+                        if (overlapCells.length > 0) {
+                            var actorCell = overlapCells[0].model;
+                            actorCell.embed(cell);
+                        }
                     }
                 }
             }
@@ -1222,53 +446,382 @@ paper.on({
 });
 
 // Unhighlight everything when blank is being clicked
-paper.on('blank:pointerclick', function(){
-	removeHighlight();
+paper.on('blank:pointerclick', function () {
+    removeHighlight();
+    if ($('.analysis-only').css("display") == "none") {
+        clearInspector();
+    }
 });
 
 // Link equivalent of the element editor
-paper.on("link:options", function(cell, evt){
-	if(mode == "Analysis") {
-		return;
-	}
+paper.on("link:options", function (cell) {
 
-	clearInspector();
-	linkInspector.render(cell.model);
+    clearInspector();
+
+    clearInspector();
+
+    if (cell.model.get('link').get('displayType') == 'error') {
+        alert('Sorry, this link is not valid. Links must be between two elements of the same type. Aka Actor->Actor or Intention->Intention');
+        return;
+    }
+
+    var linkInspector = new LinkInspector({ model: cell.model });
+    $('.inspector').append(linkInspector.el);
+    linkInspector.render();
 
 });
 
-/**
- * Check the relationship in the link. If the relationship is between
- * an Actor and anything other than an Actor then display the label as
- * "error". Otherwise, display it as "is-a" and prop "is-a" in the link-type
- * dropdown menu.
- *
- * @param {joint.dia.Link} link
- */
-function basicActorLink(link){
-    if (link.getSourceElement() != null) {
-        var sourceCell = link.getSourceElement().attributes.type;
+/*** Helper functions ***/
 
-    }
-    // Check if link is valid or not
-    if (link.getTargetElement()) {
-        var targetCell = link.getTargetElement().attributes.type;
+{
+    /** Initialize configCollection within scope of brackets */
+    let configCollection = new ConfigCollection([]);
+    let configInspector = null;
+    let selectResult = undefined;
 
-        // Links of actors must be paired with other actors
-        if (((sourceCell == "basic.Actor") && (targetCell != "basic.Actor")) ||
-            ((sourceCell != "basic.Actor") && (targetCell == "basic.Actor"))) {
-            link.label(0, {position: 0.5, attrs: {text: {text: 'error'}}});
-        } else if ((sourceCell == "basic.Actor") && (targetCell == "basic.Actor")) {
-            if (!link.prop("link-type")) {
-                link.label(0 ,{position: 0.5, attrs: {text: {text: 'is-a'}}});
-                link.prop("link-type", "is-a");
+    /** Simulate Single Path: 
+     * Selects the current configuration and passes to backendSimulationRequest()  */
+    $('#simulate-path-btn').on('click', function () {
+        var curRequest = configCollection.findWhere({ selected: true });
+        curRequest.set('action', 'singlePath');
+        backendSimulationRequest(curRequest);
+    });
+    /** All Next States:
+     * Selects the current configuration and prior results and passes them to backendSimulationRequest()  */
+    $('#next-state-btn').on('click', function () {
+        var curRequest = configCollection.findWhere({ selected: true });
+
+        // Checks to see if single path has been run by seeing if there are any results
+        if (typeof curRequest.previousAttributes().results === 'undefined' || curRequest.previousAttributes().results.length == 0) {
+            var singlePathRun = false;
+        } else {
+            var singlePathRun = true;
+        }
+
+        // If single path has been run backend analysis
+        if (singlePathRun === true) {
+            $("body").addClass("spinning"); // Adds spinner animation to page
+            var curResult = curRequest.previousAttributes().results.findWhere({ selected: true });
+            curRequest.set('action', 'allNextStates');
+            curRequest.set('previousAnalysis', curResult);
+
+            // If the last time point is selected, error message shows that you can't open Next State
+            if ((curResult.get('timePointPath').length - 1) === curResult.get('selectedTimePoint')) {
+                swal("Error: Cannot explore next states with last time point selected.", "", "error");
+                $("body").removeClass("spinning"); // Remove spinner from page
             } else {
-                link.label(0, {position: 0.5, attrs: {text: {text: link.prop("link-type")}}});
+                backendSimulationRequest(curRequest);
             }
+        } else { // If single path has not been run show error message
+            swal("Error: Cannot explore next states before simulating a single path.", "", "error");
+        }
+    });
+
+    function resetConfig() {
+        var model;
+        while (model = configCollection.first()) {
+            model.destroy();
         }
     }
-}
 
+    /**
+     * This is an option under clear button to clear red-highlight from
+     * cycle detection function
+     */
+
+    $('#btn-clear-analysis').on('click', function () {
+        resetConfig();
+        // Updates EVO slider
+        $('#modelingSlider').css("display", "");
+        $('#analysisSlider').css("display", "none");
+        EVO.switchToModelingMode(undefined);
+        revertNodeValuesToInitial();
+        // Creates new config
+        $('#configID').append(configInspector.el);
+        configInspector.render();
+    });
+
+    $('#btn-clear-results').on('click', function () {
+        var results;
+        for (var i = 0; i < configCollection.length; i++) {
+            while (results = configCollection.models[i].get('results').first()) {
+                results.destroy();
+            }
+        }
+        $('.result-elements').remove();
+        // Updates EVO slider
+        $('#modelingSlider').css("display", "");
+        $('#analysisSlider').css("display", "none");
+        EVO.switchToModelingMode(undefined);
+        revertNodeValuesToInitial();
+    });
+
+    /**
+     * Helper function for switching to Analysis view.
+     */
+    function switchToAnalysisMode() {
+        setInteraction(false);
+
+        document.getElementById("colorResetAnalysis").value = 1;
+        // Clear the right panel
+        clearInspector();
+
+        removeHighlight();
+        configInspector = new ConfigInspector({ collection: configCollection });
+        $('#configID').append(configInspector.el);
+        configInspector.render();
+        $('#analysisID').css("display", "");
+
+        // Remove model only elements 
+        $('.model-only').css("display", "none");
+        $('.inspector').css("display", "none");
+        $('#paper').css("right", "0px");
+
+        // Show extra tools for analysis mode
+        $('.analysis-only').css("display", "");
+
+        // TODO Show Analysis View tag
+        // $('#modeText').text("Analysis View");
+
+        // Disable link settings
+        $('.link-tools .tool-remove').css("display", "none");
+        $('.link-tools .tool-options').css("display", "none");
+        $('.attribution').css("display", "none");
+        $('.inspector').css("display", "none");
+
+        EVO.refresh(selectResult);
+
+        var configResults = configCollection.findWhere({ selected: true }).get('results');
+        if (configResults !== undefined) {
+            selectResult = configResults.findWhere({ selected: true });
+        }
+        EVO.refresh(selectResult);
+
+        // TODO: Add check for model changes to potentially clear configCollection back in
+    }
+
+    {
+        /** Initialize showEditingWarning within scope of brackets */
+        let showEditingWarning = true;
+
+        /**
+         * Switches back to Modelling Mode from Analysis Mode
+         * and resets the Nodes' satValues to the values prior to analysis
+         * Display the modeling mode page
+         */
+        function switchToModellingMode() {
+            setInteraction(true);
+            if (selectResult !== undefined) {
+                selectResult.set('selected', false);
+            }
+
+            // Remove Slider
+            removeSlider();
+
+            // Reset to initial graph prior to analysis
+            revertNodeValuesToInitial();
+
+            // Remove analysis only elements 
+            $('.analysis-only').css("display", "none");
+
+            // Show extra tools for modelling mode
+            $('.model-only').css("display", "");
+            $('.attribution').css("display", "");
+            $('.inspector').css("display", "");
+            $('#paper').css("right", "260px");
+            // TODO Show Modelling View tag
+            // $('#modeText').text("Modeling View");
+
+            // Reinstantiate link settings
+            $('.link-tools .tool-remove').css("display", "");
+            $('.link-tools .tool-options').css("display", "");
+            EVO.switchToModelingMode(selectResult);
+            // Remove configInspector and analysis view
+            configInspector.remove();
+            $('#analysisID').css("display", "none");
+            // TODO: Determine if we should be setting action to null on all configs
+            configCollection.findWhere({ selected: true }).set('action', null);
+
+            // Popup to warn user that changing model will clear results
+            // From analysis configuration sidebar
+            // Defaults to showing each time if user clicks out of box instead of selecting option
+            if (showEditingWarning) {
+                const dialog = showAlert('Warning',
+                    '<p>Changing the model will clear all ' +
+                    'results from all configurations.</p><p>Do you wish to proceed?</p>' +
+                    '<p><button type="button" class="model-editing"' +
+                    ' id="repeat" style="width:100%">Yes' +
+                    '</button><button type="button" ' +
+                    'class="model-editing" id="singular" style="width:100%">Yes, please do not show this warning again ' +
+                    '</button> <button type="button" class="model-editing"' +
+                    ' id="decline" onclick="switchToAnalysisMode()" style="width:100%"> No, please return to analysis mode' +
+                    '</button></p>',
+                    window.innerWidth * 0.3, 'alert', 'warning');
+                document.querySelectorAll('.model-editing').forEach(function (button) {
+                    button.addEventListener('click', function () { dialog.close(); if (button.id == 'singular') { showEditingWarning = false; }; });
+                });
+            }
+        }
+    } // End scope of showEditingWarning
+
+    function clearAll() {
+        graph.clear();
+        configCollection.reset();
+        // Delete cookie by setting expiry to past date
+        document.cookie = 'graph={}; expires=Thu, 18 Dec 2013 12:00:00 UTC';
+    }
+
+    // Save the current graph and analysis (without results) to json file
+    $('#btn-save-analysis').on('click', function () {
+        var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
+        if (name) {
+            clearCycleHighlighting(selectResult);
+            EVO.deactivate();
+            var fileName = name + ".json";
+            var obj = getModelAnalysisJson(configCollection);
+            download(fileName, stringifyCirc(obj));
+        }
+    });
+
+    // Save the current graph and analysis (with results) to json file
+    $('#btn-save-all').on('click', function () {
+        var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
+        if (name) {
+            clearCycleHighlighting(selectResult);
+            EVO.deactivate();
+            var fileName = name + ".json";
+            var obj = getFullJson(configCollection);
+            download(fileName, stringifyCirc(obj));
+        }
+    });
+
+    // Workaround for load, activates a hidden input element
+    $('#btn-load').on('click', function () {
+        $('#loader').click();
+    });
+
+    // Load ConfigCollection for display 
+    // TODO: modify it to read results after results can be shown
+    function loadConfig(loadedConfig) {
+        var selectedConfig;
+        var selectedResult;
+        // Clears current configCollection
+        resetConfig();
+
+        // Individually creates each ConfigBBM and add to collection
+        for (let config of loadedConfig) {
+            if (config.selected) { // If selected is true
+                selectedConfig = config.name; // Record the name of config
+            }
+            var configBBM = new ConfigBBM({ name: config.name, action: config.action, conflictLevel: config.conflictLevel, numRelTime: config.numRelTime, currentState: config.currentState, userAssignmentsList: config.userAssignmentsList, previousAnalysis: config.previousAnalysis, selected: config.selected })
+            if (config.results.length !== 0) { // Creates results if there applicable
+                var results = configBBM.get('results'); // Grabs the coolection from the configBBM
+                // Individually creates each ResultBBM and add to collection
+                for (let result of config.results) {
+                    if (result.selected) { // If selected is true
+                        selectedResult = result.name; // Record the name of result
+                    }
+                    var resultsBBM = new ResultBBM({ name: result.name, assignedEpoch: result.assignedEpoch, timePointPath: result.timePointPath, elementList: result.elementList, allSolution: result.allSolution, colorVis: result.colorVis, selectedTimePoint: result.selectedTimePoint, selected: result.selected });
+                    results.add(resultsBBM)
+                }
+                configCollection.add(configBBM);
+            }
+            configCollection.add(configBBM);
+        }
+
+        // Sets what the config/result the user was last on as selected
+        var configGroup = configCollection.filter(Config => Config.get('name') == selectedConfig); //Find the config with the same name as the selected that is read in
+        if (configGroup.length !== 0) {
+            configGroup[0].set('selected', true); // Set the selected to true
+        }
+
+        var currResult;
+        if (configGroup[0].get('results').length !== 0) { // Within that selected config
+            // Set selected of the selected result as true
+            currResult = configGroup[0].get('results').filter(selectedRes => selectedRes.get('name') == selectedResult)[0]
+            currResult.set('selected', true);
+        }
+    }
+
+    $(window).resize(function () {
+        var config = configCollection.findWhere({ selected: true });
+        if (config !== undefined) {
+            var configResults = config.get('results').findWhere({ selected: true });
+            resizeWindow(configResults.get('timePointPath').length - 1);
+        }
+    });
+    $('#btn-clear-cycle').on('click', function () {
+        clearCycleHighlighting(selectResult);
+    });
+
+    // Save the current graph to json file
+    $('#btn-save').on('click', function () {
+        var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
+        if (name) {
+            clearCycleHighlighting(selectResult);
+            EVO.deactivate();
+            // EVO.returnAllColors(graph.getElements(), paper);
+            // EVO.revertIntentionsText(graph.getElements(), paper);  
+            var fileName = name + ".json";
+            var obj = { graph: graph.toJSON() }; // Same structure as the other two save options
+            download(fileName, stringifyCirc(obj));
+            EVO.refresh(selectResult);
+        }
+    });
+
+
+    $('#btn-clear-elabel').on('click', function () {
+        for (let element of graph.getElements()) {
+            var cell = element.findView(paper).model;
+            var intention = cell.get('intention');
+            var initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair');
+            var funcType = intention.get('evolvingFunction').get('type');
+
+            // If the initsatVal is not empty and if funcType empty
+            if (intention != null && initSatVal != '(no value)' && funcType === 'NT') {
+                intention.removeInitialSatValue();
+                cell.attr(".satvalue/text", "");
+            }
+        }
+        EVO.refresh(selectResult);
+    });
+
+    $('#colorblind-mode-isOff').on('click', function () { //activates colorblind mode
+        $('#colorblind-mode-isOff').css("display", "none");
+        $('#colorblind-mode-isOn').css("display", "");
+
+        EVO.toggleColorBlindMode(true, selectResult);
+    });
+
+    $('#colorblind-mode-isOn').on('click', function () { //turns off colorblind mode
+        $('#colorblind-mode-isOn').css("display", "none");
+        $('#colorblind-mode-isOff').css("display", "");
+
+        EVO.toggleColorBlindMode(false, selectResult);
+    });
+
+    /**
+     * Source:https://www.w3schools.com/howto/howto_js_rangeslider.asp 
+     * Two option modeling mode slider
+     */
+    document.getElementById("colorReset").oninput = function () { //turns slider on/off and refreshes
+        EVO.setSliderOption(this.value, selectResult);
+    }
+    /**
+     * Four option analysis mode slider
+     */
+    document.getElementById("colorResetAnalysis").oninput = function () { //changes slider mode and refreshes
+        var selectConfig;
+        //TODO: Find out why the selectResult is empty before we reassign it
+        if (configCollection.length !== 0) {
+            selectConfig = configCollection.filter(Config => Config.get('selected') == true)[0];
+            if (selectConfig.get('results') !== undefined) {
+                selectResult = selectConfig.get('results').filter(resultModel => resultModel.get('selected') == true)[0];
+            }
+        }
+        EVO.setSliderOption(this.value, selectResult);
+    }
+} // End scope of configCollection and configInspector
 
 /**
  * Create a halo around the element that was just created
@@ -1276,17 +829,11 @@ function basicActorLink(link){
  * @param {joint.shapes} cellView
  * @returns {joint.ui.Halo} halo
  */
-function createHalo(cellView){
-	// var halo = new joint.ui.Halo({
- //        graph: graph,
- //        paper: paper,
- //        cellView: cellView,
- //    });
-
+function createHalo(cellView) {
     var halo = new joint.ui.Halo({
-    	type: 'toolbar',
-    	boxContent: false,
-        cellView: cellView
+        type: 'toolbar',
+        boxContent: false,
+        cellView: cellView,
     });
 
     halo.removeHandle('unlink');
@@ -1295,9 +842,14 @@ function createHalo(cellView){
     halo.removeHandle('rotate');
 
 
-    halo.on('action:resize:pointermove', function(cell) {
-    	cellView.unhighlight();
-		cellView.highlight();
+    halo.on('action:resize:pointermove', function () {
+        cellView.unhighlight();
+        cellView.highlight();
+    });
+
+    // Remove halo when cell is unhighlighted
+    halo.options.cellView.on('removeHalo', function () {
+        halo.remove();
     });
 
     halo.render();
@@ -1306,133 +858,22 @@ function createHalo(cellView){
 
 /**
  * Remove the highlight around all elements
- *
- * @param  {Array.<joint.dia.shapes>} elements
  */
-function removeHighlight(){
-	var cell;
-	var elements = graph.getElements();
+function removeHighlight() {
     // Unhighlight everything
-    for (var i = 0; i < elements.length; i++) {
-        cell = elements[i].findView(paper);
-        cell.unhighlight();
+    for (let element of graph.getElements()) {
+        element.findView(paper).unhighlight();
+        element.findView(paper).trigger('removeHalo');
     }
 }
 
 /**
- * Embeds an element into an actor boundary
- *
- * @param {joint.dia.cell} cell
- */
-function embedBasicActor(cell) {
-    // returns actors, intentions, etc. which overlap with this cell
-    // including the cell itself
-    var overlapCells = paper.findViewsFromPoint(cell.getBBox().center());
-
-    // find actors which overlap with cell
-    overlapCells = overlapCells.filter(view => view.model instanceof joint.shapes.basic.Actor);
-
-    // cell is over at least one actor
-    if (overlapCells.length > 0) {
-        for (var i = 0; i < overlapCells.length; i++) {
-            // embed intention in each actor
-            var actorCell = overlapCells[i].model;
-            actorCell.embed(cell);
-            var nodeID = cell.attributes.nodeID;
-            var actorID = actorCell.attributes.nodeID
-            model.getIntentionByID(nodeID).nodeActorID = actorID;
-            model.getActorByID(actorID).addIntentionID(nodeID);
-        }
-    } else {
-        // intention not over any actor
-        var nodeID = cell.attributes.nodeID;
-        model.getIntentionByID(nodeID).nodeActorID = "-";
-    }
-}
-
-
-graph.on('change:size', function(cell, size) {
-	cell.attr(".label/cx", 0.25 * size.width);
-
-	// Calculate point on actor boundary for label (to always remain on boundary)
-	var b = size.height;
-	var c = -(size.height/2 + (size.height/2) * (size.height/2) * (1 - (-0.75 * size.width/2) * (-0.75 * size.width/2)  / ((size.width/2) * (size.width/2)) ));
-	var y_cord = (-b + Math.sqrt(b*b - 4*c)) / 2;
-
-	cell.attr(".label/cy", y_cord);
-});
-
-
-graph.on('remove', function(cell) {
-    //TODO: What I have changed
-    if(cell.isLink() && !(cell.prop("link-type") == 'NBT' || cell.prop("link-type") == 'NBD')){
-        // To remove link
-        var link = cell;
-        clearInspector();
-        model.removeLink(link.linkID);
-    }
-
-    else if((!cell.isLink()) && (!(cell["attributes"]["type"]=="basic.Actor"))){
-        // To remove intentions
-        clearInspector();
-        var userIntention = model.getIntentionByID(cell.attributes.nodeID);
-        // remove this intention from the model
-        model.removedynamicFunction(userIntention.nodeID);
-        model.removeIntentionLinks(userIntention.nodeID);
-        // remove all intention evaluations associated with this intention
-        analysisRequest.removeIntention(userIntention.nodeID);
-        // if this intention has an actor, remove this intention's ID
-        // from the actor
-        if (userIntention.nodeActorID !== '-') {
-            var actor = model.getActorByID(userIntention.nodeActorID);
-            actor.removeIntentionID(userIntention.nodeID);
-        }
-        model.removeIntention(userIntention.nodeID);
-    }
-    else if((!cell.isLink()) && (cell["attributes"]["type"]=="basic.Actor")){
-        // To remove actor
-        model.removeActor(cell['attributes']['nodeID']);
-
-
-    }
-    
-    //TODO: What I have changed finished
-	else if (cell.isLink() && (cell.prop("link-type") == 'NBT' || cell.prop("link-type") == 'NBD')) {
-		// Verify if is a Not both type. If it is remove labels from source and target node
-		var link = cell;
-		var source = link.prop("source");
-		var target = link.prop("target");
-		var sourceId;
-		var targetId;
-
-	    for (var i = 0; i < graph.getElements().length; i++ ) {
-			if (graph.getElements()[i].prop("id") == source["id"]) {
-				 source = graph.getElements()[i];
-		   	}
-		  	if (graph.getElements()[i].prop("id") == target["id"]) {
-			   target = graph.getElements()[i];
-		   	}
-	   	}
-
-		//Verify if it is possible to remove the NB tag from source and target
-		if (source !== null && !checkForMultipleNB(source)) {
-			source.attrs(".funcvalue/text", "");
-		}
-		if (target !== null && !checkForMultipleNB(target)) {
-			target.attrs(".funcvalue/text", "");
-		}
-	}
-});
-
-
-/**
- * Clear the .inspector div
+ * Clear any analysis sidebar views
  */
 function clearInspector() {
-	elementInspector.clear();
-	linkInspector.clear();
-	analysisInspector.clear();
-	actorInspector.clear();
+    if ($('.inspector-views').length != 0) {
+        $('.inspector-views').trigger('clearInspector');
+    }
 }
 
 
@@ -1442,19 +883,46 @@ function clearInspector() {
  * @param {joint.dia.element} node
  * @returns {Boolean}
  */
-function checkForMultipleNB(node) {
-	var num = 0;
-	var localLinks = graph.getLinks();
-
-	for (var i = 0; i < localLinks.length; i++){
-        if (localLinks[i].prop("link-type")   == 'NBT' || localLinks[i].prop("link-type") == 'NBD'){
-            if (localLinks[i].getSourceElement().prop("id") == node["id"] || localLinks[i].getTargetElement().prop("id") == node["id"]){
-                num += 1;            
+function checkForMultipleNB(element) {
+    var num = 0;
+    var localLinks = graph.getConnectedLinks(element);
+    if (localLinks != null) {
+        for (var i = 0; i < localLinks.length; i++) {
+            if (localLinks[i].get('link').get("linkType") == 'NBT' || localLinks[i].get('link').get("linkType") == 'NBD') {
+                num += 1;
             }
         }
-	}
+    }
+    return num >= 1;
+}
 
-	return num >= 1;
+/**
+ * Creates and returns an alert dialog box
+ * 
+ * @param {String} title 
+ * @param {String} msg 
+ * @param {Number} width 
+ * @param {String} promptMsgType 
+ * @param {Sting} type 
+ * @returns joint.ui.Dialog box
+ */
+function showAlert(title, msg, width, promptMsgType, type) {
+    var dialog;
+    var alertType = 'alert';
+    if (type) {
+        alertType = type;
+    }
+    dialog = new joint.ui.Dialog(
+        {
+            type: alertType,
+            width: width,
+            title: title,
+            content: '<div class="creativity-dialog-wrapper" data-prompttype="' + promptMsgType + '">' + msg + '</div>',
+            modal: false
+        });
+
+    dialog.open();
+    return dialog;
 }
 
 /**
@@ -1462,8 +930,54 @@ function checkForMultipleNB(node) {
  * 
  * @param {boolean} interactionValue 
  */
-function setInteraction(interactionValue){
-    _.each(graph.getCells(), function(cell) {
+function setInteraction(interactionValue) {
+    _.each(graph.getCells(), function (cell) {
         cell.findView(paper).options.interactive = interactionValue;
     });
+}
+
+/**
+ * Sets each node/cellview in the paper to its initial 
+ * satisfaction value and colours all text to black
+ */
+function revertNodeValuesToInitial() {
+    var elements = graph.getElements();
+    var curr;
+    for (var i = 0; i < elements.length; i++) {
+        curr = elements[i].findView(paper).model;
+        if (curr.get('type') !== 'basic.Goal' &&
+            curr.get('type') !== 'basic.Task' &&
+            curr.get('type') !== 'basic.Softgoal' &&
+            curr.get('type') !== 'basic.Resource') {
+            continue;
+        }
+        var intention = curr.get('intention');
+        var initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair');
+
+        if (initSatVal === '(no value)') {
+            curr.attr('.satvalue/text', '');
+
+        } else {
+            curr.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
+        }
+        curr.attr({ text: { fill: 'black', stroke: 'none', 'font-weight': 'normal', 'font-size': 10 } });
+    }
+    // Remove slider
+    removeSlider();
+}
+
+/**
+ * Stringifies the code but avoids the circular structured components
+ */
+function stringifyCirc(obj) {
+    var skipKeys = ['_events', 'change:refEvidencePair', 'context', '_listeners']; // List of keys that contains circular structures
+    var graphtext = JSON.stringify(obj, function (key, value) {
+        if (skipKeys.includes(key)) { //if key is in the list
+            return null; // Replace with null
+        } else {
+            return value; // Otherwise return the value
+        }
+    });
+
+    return graphtext
 }
