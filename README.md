@@ -10,6 +10,20 @@ BloomingLeaf is developed primarily in [The Grubb Lab](https://amgrubb.github.io
 
 Review our [overview poster](http://www.cs.toronto.edu/~amgrubb/archive/RE18-Demo-Poster.pdf) to learn more about the original goals of BloomingLeaf Version 1.0. 
 
+## *Updates for Version 2.0*
+In Version 2.0, we refactored the code base to take advantage of the underlying backbone.js structure:
+
+* removed all global variables in `leaf-ui` and updated the graph data structure
+* created backbone models for actors, intentions, evolving functions, configurations, and results
+* created backbone views for all backbone models
+* allow users to assign absolute values for function segments in the Element Inspector view
+* updated and added functionality to the intermediate values table
+* updated the communication between the front and backend code
+* refactored the backend code base to take advantage of the new backbone models
+* fix bugs in the next state view
+* updated the look and feel of the tool
+
+See our [summary](https://amgrubb.github.io/posts/2021-08-13-backbone-refactor) for further details about these additions.
 
 ## *Updates for Version 1.5*
 In Version 1.5, we added the following model-management features (+ additional small features and fixes):
@@ -19,7 +33,6 @@ In Version 1.5, we added the following model-management features (+ additional s
 * save / load analysis results - including a tag
 * pair models with analysis results
 * clear propagated labels 
-* spinner for next states
 
 See our [poster](https://amgrubb.github.io/posts/2021-04-01-restructuring) for further details about these additions.
 
