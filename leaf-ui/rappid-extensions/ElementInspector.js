@@ -687,6 +687,16 @@ var ElementInspector = Backbone.View.extend({
                     functionSegView.render();
                     i++;
                 })
+        // Renders the chart if there is only an initial satisfaction value 
+        } else if (this.intention.get('evolvingFunction') != null && this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair') !== null && this.intention.get('evolvingFunction').get('type') === 'NT') {
+            // Clear previous chart values
+            this.chart.reset();
+            // Gets the chart canvas
+            var context = $("#chart").get(0).getContext("2d");
+            // Adds the initial satisfaction as a single point to the chart
+            this.chart.addDataSet(0, [satisfactionValuesDict[this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair')].chartVal], false);
+            // Renders the chart
+            this.chart.display(context);
         }
     },
 
@@ -1180,6 +1190,7 @@ var FuncSegView = Backbone.View.extend({
         }
         this.chart.display(context);
     },
+    // This is never used so ig we can delete it?? so add it somewhere
     /**
      * Modifies the passed in datasets with their default values
      * @param {Array.<Object>}
