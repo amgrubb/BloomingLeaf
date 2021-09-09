@@ -587,7 +587,6 @@ paper.on("link:options", function (cell) {
         $('.link-tools .tool-remove').css("display", "none");
         $('.link-tools .tool-options').css("display", "none");
         $('.attribution').css("display", "none");
-        $('.inspector').css("display", "none");
 
         EVO.refresh(selectResult);
 
