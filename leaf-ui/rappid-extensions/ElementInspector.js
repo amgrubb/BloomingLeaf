@@ -1101,7 +1101,7 @@ var FuncSegView = Backbone.View.extend({
             if (threeLabelFunc.includes(funcType)) {
                 this.chart.labels = ['0', 'A', 'Infinity'];
                 if (funcType === 'RC') {
-                    var satVal = satisfactionValuesDict[this.intention.getFuncSegments()[0].get('refEvidencePair')].chartVal;
+                    var satVal = satisfactionValuesDict[this.model.get('refEvidencePair')].chartVal;
                     this.chart.addDataSet(0, [initVal, initVal], true);
                     this.chart.addDataSet(1, [satVal, satVal], false);
                 } else if (funcType === 'CR') {
