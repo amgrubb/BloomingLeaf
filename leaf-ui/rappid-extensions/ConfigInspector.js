@@ -185,7 +185,9 @@ var Config = Backbone.View.extend({
             }
         }
         this.model.destroy();
-        IntentionColoring.setColorMode("EVO", undefined);
+        IntentionColoring.setColorMode("Model", undefined);
+        $('#modelingSlider').css("display", "");
+        $('#analysisSlider').css("display", "none");
     },
 
     /** If result is selected, update config **/
