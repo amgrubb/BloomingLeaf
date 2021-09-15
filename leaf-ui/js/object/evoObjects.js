@@ -25,9 +25,9 @@ class IntentionColoring {
     static setColorMode(newColorMode, analysisResult) {
         IntentionColoring.colorMode = newColorMode;
         if (newColorMode != "EVO") {
-            EVO.deactivate();
+            EVO.deactivate(analysisResult);
         }
-        EVO.refresh(analysisResult);
+        else{EVO.refresh(analysisResult)};
     }
 
     /**
@@ -428,7 +428,7 @@ class EVO {
                     if (EVO.sliderOption == 3) {
                         // Resets the satvalue back
                         colorVis = analysisResult.get('colorVis');
-                        satVal = colorVis.intentionListColorVis[0].timePoints[EVO.curTimePoint];
+                        satVal = colorVis.intentionListColorVis[i].timePoints[EVO.curTimePoint];
                         curr.attr('.satvalue/text', satisfactionValuesDict[satVal].satValue);
                         EVO.displaySlider(true);
                     }
