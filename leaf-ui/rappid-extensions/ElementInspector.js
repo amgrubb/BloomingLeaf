@@ -1190,20 +1190,6 @@ var FuncSegView = Backbone.View.extend({
         }
         this.chart.display(context);
     },
-    // This is never used so ig we can delete it?? so add it somewhere
-    /**
-     * Modifies the passed in datasets with their default values
-     * @param {Array.<Object>}
-     */
-    resetChartDatasets: function (datasets) {
-        for (var i = 0; i < datasets.length; i++) {
-            datasets[i].borderDash = [];
-            datasets[i].data = [];
-            datasets[i].pointBackgroundColor = ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"];
-            datasets[i].pointBorderColor = ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"];
-            datasets[i].borderColor = "rgba(220,220,220,1)";
-        }
-    },
 
     /**
      * Returns all of the start and stop time points of the existing fucntion segments for UD functions
