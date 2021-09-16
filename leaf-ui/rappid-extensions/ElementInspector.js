@@ -687,6 +687,16 @@ var ElementInspector = Backbone.View.extend({
                     functionSegView.render();
                     i++;
                 })
+        // Renders the chart if there is only an initial satisfaction value 
+        } else if (this.intention.get('evolvingFunction') != null && this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair') !== null && this.intention.get('evolvingFunction').get('type') === 'NT') {
+            // Clear previous chart values
+            this.chart.reset();
+            // Gets the chart canvas
+            var context = $("#chart").get(0).getContext("2d");
+            // Adds the initial satisfaction as a single point to the chart
+            this.chart.addDataSet(0, [satisfactionValuesDict[this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair')].chartVal], false);
+            // Renders the chart
+            this.chart.display(context);
         }
     },
 
@@ -1091,7 +1101,7 @@ var FuncSegView = Backbone.View.extend({
             if (threeLabelFunc.includes(funcType)) {
                 this.chart.labels = ['0', 'A', 'Infinity'];
                 if (funcType === 'RC') {
-                    var satVal = satisfactionValuesDict[this.intention.getFuncSegments()[0].get('refEvidencePair')].chartVal;
+                    var satVal = satisfactionValuesDict[this.model.get('refEvidencePair')].chartVal;
                     this.chart.addDataSet(0, [initVal, initVal], true);
                     this.chart.addDataSet(1, [satVal, satVal], false);
                 } else if (funcType === 'CR') {
@@ -1179,19 +1189,6 @@ var FuncSegView = Backbone.View.extend({
             this.chart.addDataSet(i, [data1, data2], currFunc === 'R' || currVal === '(no value)', coloured);
         }
         this.chart.display(context);
-    },
-    /**
-     * Modifies the passed in datasets with their default values
-     * @param {Array.<Object>}
-     */
-    resetChartDatasets: function (datasets) {
-        for (var i = 0; i < datasets.length; i++) {
-            datasets[i].borderDash = [];
-            datasets[i].data = [];
-            datasets[i].pointBackgroundColor = ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"];
-            datasets[i].pointBorderColor = ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"];
-            datasets[i].borderColor = "rgba(220,220,220,1)";
-        }
     },
 
     /**
