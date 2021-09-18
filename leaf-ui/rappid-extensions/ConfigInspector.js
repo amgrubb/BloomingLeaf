@@ -349,7 +349,7 @@ var ConfigInspector = Backbone.View.extend({
     addNewConfig: function () {
         var configModel; 
         if (this.collection.length < 1){
-                configModel = new ConfigBBM({ name: "Result " + 1, results: new ResultCollection([]) });
+                configModel = new ConfigBBM({ name: "Request " + 1, results: new ResultCollection([]) });
         } else { 
             var nameIndex = parseInt(this.collection.at(this.collection.length - 1 ).get('name').split(' ').pop()) + 1;
             configModel = new ConfigBBM({ name: (this.collection.at(this.collection.length - 1).get('name').split(' ')[0] + " " + nameIndex), results: new ResultCollection([]) })
