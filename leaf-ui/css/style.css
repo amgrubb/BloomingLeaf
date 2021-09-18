@@ -363,11 +363,11 @@ body {
 }
 
 #init-sat-value:disabled {
-  background-color: rgba(20, 85, 9, 1);
+  background-color: rgba(36, 150, 255, 1);
   color: white;
 }
 .function-type:disabled {
-  background-color: rgba(20, 85, 9, 1);
+  background-color: rgba(36, 150, 255, 1);
   color: white;
 }
 #repeat-begin2,#repeat-begin3 {
