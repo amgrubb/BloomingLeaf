@@ -25,9 +25,9 @@ class IntentionColoring {
     static setColorMode(newColorMode, analysisResult) {
         IntentionColoring.colorMode = newColorMode;
         if (newColorMode != "EVO") {
-            EVO.deactivate(analysisResult);
+            EVO.deactivate();
         }
-        else{EVO.refresh(analysisResult)};
+        EVO.refresh(analysisResult);
     }
 
     /**
@@ -387,7 +387,7 @@ class EVO {
     static changeIntentionsText(analysisResult) {
         var elements = graph.getElements();
         var curr;
-        var colorVis
+        var colorVis;
         var satVal;
         var intention;
         var initSatVal;
