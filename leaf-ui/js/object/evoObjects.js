@@ -1,47 +1,3 @@
-
-/**  
- * Prevents conflict in coloring modes. Refreshes when changes are made in the model.
- */
-class IntentionColoring {
-    // None, EVO, cycle
-    static colorMode = "none";
-    // Color blind mode
-    static isColorBlindMode = false;
-
-    /**
-     * Colors intentions by their mode
-     */
-    static refresh(analysisResult) {
-        if (IntentionColoring.colorMode == "EVO") {
-            EVO.refresh(analysisResult);
-        }
-    }
-
-    /**
-     * Change color mode
-     * @param {String} newColorMode 
-     */
-    static setColorMode(newColorMode, analysisResult) {
-        IntentionColoring.colorMode = newColorMode;
-        if (newColorMode != "EVO") {
-            EVO.deactivate();
-        }
-        // @ Catherine Kung - Do we need EVO.refresh here? We deleted it and did not see any differences
-        // When setColorMode is called, there's no analysisResult as a parameter 
-        EVO.refresh(analysisResult);
-    }
-
-    /**
-     * Toggles color blind mode
-     * @param {Boolean} isTurningOnColorBlindMode 
-     * @param {ResultBBM} analysisResult
-     */
-    static toggleColorBlindMode(isTurningOnColorBlindMode, analysisResult) {
-        IntentionColoring.isColorBlindMode = isTurningOnColorBlindMode;
-        EVO.refresh(analysisResult);
-    }
-}
-
 class IntentionColorVis {
     constructor() {
         this.id;
@@ -51,7 +7,7 @@ class IntentionColorVis {
     }
 
     initializeEvalDict() {
-        this.evals = {}; 
+        this.evals = {};
 
         this.evals = {
             "0000": 0.0,
@@ -564,6 +520,7 @@ class EVO {
     /**
      * Toggles color blind mode
      * @param {Boolean} isTurningOnColorBlindMode 
+     * @param {ResultBBM} analysisResult
      */
     static toggleColorBlindMode(isTurningOnColorBlindMode, analysisResult) {
         EVO.isColorBlindMode = isTurningOnColorBlindMode;
