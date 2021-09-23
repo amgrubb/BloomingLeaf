@@ -220,7 +220,7 @@ var ElementInspector = Backbone.View.extend({
             this.$('option[value=I]').prop('disabled', this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair') === '0011');
             this.$('option[value=D]').prop('disabled', this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair') === '1100');
             this.$('option[value=MP]').prop('disabled', this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair') === '0011');
-            this.$('option[value=MN]').prop('disabled', this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair') === '1100');     
+            this.$('option[value=MN]').prop('disabled', this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair') === '1100');  
         }
     },
 
@@ -288,7 +288,7 @@ var ElementInspector = Backbone.View.extend({
     funcTypeChanged: function (event) {
         this.intention.setEvolvingFunction(this.$('.function-type').val());
         this.updateCell();
-        // Disabling invalid functions are needed here b/c selecting a function type can change and init sat value
+        // Disabling invalid function types are needed here b/c selecting a function type can change the init sat value
         this.$('option[value=I]').prop('disabled', this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair') === '0011');
         this.$('option[value=D]').prop('disabled', this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair') === '1100');
         this.$('option[value=MP]').prop('disabled', this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair') === '0011');
