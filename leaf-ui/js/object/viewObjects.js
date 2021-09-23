@@ -6,24 +6,25 @@ class ChartObj {
 
 	constructor() {
 
-		this.labels;
-		this.dataSets = [];
+		this.labels; // Labels on x-axis of chart 
+		this.dataSets = []; // Contains information needed to graph line segments
 		this.options = {
-			// animation: false,
-			scaleOverride: true,
-			scaleSteps: 4,
-			scaleStepWidth: 1,
-			scaleStartValue: -2,
-			scaleFontSize: 10,
-			pointHitDetectionRadius: 5,
-			tooltipTemplate: "",
-			multiTooltipTemplate: "",
+			scaleOverride: true, //Boolean - true b/c we want a hard coded scale
+			scaleSteps: 4, // Number - The number of steps on the y-axis
+			scaleStepWidth: 1, // Number - The value increment of the y-axis
+			scaleStartValue: -2, // Number - The y-axis starting value
+			scaleFontSize: 10, // Number - y-axis label font size in pixels
+			// TODO: do we need this?? - the user shouldnt be able to click on the chart
+			// pointHitDetectionRadius: 5, // Number - Extra amount to add to the radius to cater for hit detection outside the drawn point
+			// TODO: do we need both of the tooltips??? - later they are set to false
+			// tooltipTemplate: "", // Sets template string for single tooltips to empty
+			// multiTooltipTemplate: "", // Sets template string for multi tooltips to empty
 			scales: {
 				yAxes: [{
-					ticks: {
+					ticks: { // Sets the end of the y-axis slightly below denied and above satisfied
 						min: -2.1,
 						max: 2.1,
-						callback: function (value, index, values) {
+						callback: function (value) {
 							if (value == 2) { return '(F, ⊥)' };
 							if (value == 1) { return '(P, ⊥)' };
 							if (value == 0) { return '(⊥, ⊥)' };
@@ -33,19 +34,27 @@ class ChartObj {
 					}
 				}]
 			},
+			// Disables legend that displays data about the datasets that are appearing on the chart.
 			legend: {
 				display: false
 			},
-
+			// Disables tooltips - labels that appear when you hover over data points on the chart
 			tooltips: {
 				enabled: false,
 			}
 		};
 	}
 
+	/**
+	 * Resets chart datapoints, labels, and destroys references to previous charts
+	 */
 	reset() {
 		this.labels = null;
 		this.dataSets = [];
+		// If there was already a chart, destroy it so there is no reference to previous data
+		if (this.chartObj) {
+			this.chartObj.destroy();
+		}
 	}
 
 	addDataSet(xValue, yValues, dashed, coloured = false) {
