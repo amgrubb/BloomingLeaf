@@ -24,6 +24,7 @@ class ChartObj {
 					ticks: { // Sets the end of the y-axis slightly below denied and above satisfied
 						min: -2.1,
 						max: 2.1,
+						// Returns the correct satisfaction value for the y-axis
 						callback: function (value) {
 							if (value == 2) { return '(F, ⊥)' };
 							if (value == 1) { return '(P, ⊥)' };
@@ -57,23 +58,44 @@ class ChartObj {
 		}
 	}
 
+	/**
+	 * Adds the information needed to draw one function segment onto the graph to the array this.dataSets
+	 * @param {*} xValue
+	 * The starting point of the function segment on the x-axis 
+	 * @param {*} yValues 
+	 * The starting and ending points of the function segment on the y-axis
+	 * @param {*} dashed 
+	 * Whether or noth the line should be dashed
+	 * @param {Boolean} coloured
+	 *  Whether or not the line should be colored
+	 * 
+	 * TODO: I don't think the color part is currently working (can we delete or implement is??) 
+	 */
 	addDataSet(xValue, yValues, dashed, coloured = false) {
+		// TODO: what exactly does this do??
+		// 
 		var data = Array(xValue).fill(null).concat(yValues);
+		console.log(data)
 		var dataSet = {
 			label: "Source",
 			fill: false, // no colouring underneath the line
 			borderColor: coloured ? "rgba(255, 110, 80, 1)" : "rgba(220,220,220,1)",
-			borderDash: dashed ? [5, 5] : null,
+			borderDash: dashed ? [5, 5] : null, // Sets stochastic line segments to dashed
 			pointBackgroundColor: coloured ? "rgba(255, 110, 80, 1)" : "rgba(220,220,220,1)",
-			pointRadius: 4,
+			pointRadius: 4, // Point size
 			pointBorderColor: "rgba(220,220,220,1)",
 			lineTension: 0, // set to 0 for straight lines
 			data: data
 		};
-
+		// Push dataSet object to dataSets array
 		this.dataSets.push(dataSet);
 	}
 
+	/**
+	 * Displays the dataSets onto the chart. Called whenever a function segment in element inspector changes.
+	 * @param {Object} context 
+	 * Object containing all of the display information needed for the graph
+	 */
 	display(context) {
 		this.chartObj = new Chart(context, {
 			type: 'line',
