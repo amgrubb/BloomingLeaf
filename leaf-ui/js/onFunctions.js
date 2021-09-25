@@ -211,6 +211,7 @@ $('#btn-view-intermediate').on('click', function () {
     var intermediateValuesTable = new IntermediateValuesTable({ model: graph });
     $('#intermediate-table').append(intermediateValuesTable.el);
     intermediateValuesTable.render();
+    $('.intermT').height($('#paper').height() * 0.9);
 });
 
 /**
@@ -746,8 +747,11 @@ paper.on("link:options", function (cell) {
         var config = configCollection.findWhere({ selected: true });
         if (config !== undefined) {
             var configResults = config.get('results').findWhere({ selected: true });
-            resizeWindow(configResults.get('timePointPath').length - 1);
+            if (configResults !== undefined) {
+                resizeWindow(configResults.get('timePointPath').length - 1);
+            }
         }
+        $('.intermT').height($('#paper').height() * 0.9);
     });
     $('#btn-clear-cycle').on('click', function () {
         clearCycleHighlighting(selectResult);
