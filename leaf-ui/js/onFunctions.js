@@ -66,7 +66,7 @@ function defaultFont(pPaper) {
 function resizeWindow(sliderMax) {
     $('#slider').css("margin-top", $(this).height() * 0.7);
     $('#slider').width($('#paper').width() * 0.8);
-    adjustSliderWidth(sliderMax)
+    SliderObj.adjustSliderWidth(sliderMax)
 }
 
 // End nav bar functions
@@ -616,7 +616,7 @@ paper.on("link:options", function (cell) {
             }
 
             // Remove Slider
-            removeSlider();
+            SliderObj.removeSlider();
 
             // Reset to initial graph prior to analysis
             revertNodeValuesToInitial();
@@ -966,7 +966,7 @@ function revertNodeValuesToInitial() {
         curr.attr({ text: { fill: 'black', stroke: 'none', 'font-weight': 'normal', 'font-size': 10 } });
     }
     // Remove slider
-    removeSlider();
+    SliderObj.removeSlider();
 }
 
 /**

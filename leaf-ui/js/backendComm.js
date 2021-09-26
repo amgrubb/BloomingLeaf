@@ -64,7 +64,7 @@ function responseFunc(analysisRequest, response) {
 			return;
 		} else if (analysisRequest.get('action') == 'singlePath' || analysisRequest.get('action') == 'updatePath') {
 			var analysisResult = convertToAnalysisResult(results); 	// {ResultBBM}
-			displayAnalysis(analysisResult, false);
+			SliderObj.displayAnalysis(analysisResult, false);
 			analysisRequest.addResult(analysisResult);
 		} else if (analysisRequest.get('action') == 'allNextStates') {
 			var allNextStatesResult = convertToAnalysisResult(results); 	// {ResultBBM}
@@ -93,6 +93,9 @@ function convertToAnalysisResult(results) {
 	var evoView = new EVO(results.elementList)
 	tempResult.set('colorVis', evoView);
 	evoView.singlePathResponse(results.elementList, tempResult, "analysis");
+	let sliderObj = new SliderObj()
+	console.log(sliderObj.sliderElement)
+	//$('#slider').append(sliderObj)
 	return tempResult;
 }
 
