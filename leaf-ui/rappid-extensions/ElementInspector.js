@@ -919,7 +919,7 @@ var FuncSegView = Backbone.View.extend({
                 this.$("#seg-sat-value").prop('disabled', true);
                 // If the function is UD, stochastic, and not current set html to (no value) 
                 if (this.model.get('type') == 'R') {
-                    this.$("#seg-sat-value").last().html(this.satValueOptionsAll())
+                    this.$("#seg-sat-value").last().html(this.satValueOptionsAll());
                     this.$("#seg-sat-value").val("(no value)");
                 }
             }
@@ -940,7 +940,7 @@ var FuncSegView = Backbone.View.extend({
 
         // Set stochastic functions to (no value)
         if (functionType == 'R') {
-            this.$("#seg-sat-value").last().html(this.satValueOptionsAll())
+            this.$("#seg-sat-value").last().html(this.satValueOptionsAll());
             this.$("#seg-sat-value").val("(no value)");
             this.model.get('refEvidencePair');
         } else if (this.intention.get('evolvingFunction').get('type') !== 'MP' && this.intention.get('evolvingFunction').get('type') !== 'MN' && this.intention.get('evolvingFunction').get('type') !== 'SD' && this.intention.get('evolvingFunction').get('type') !== 'DS' && functionType == 'C') {
@@ -977,7 +977,7 @@ var FuncSegView = Backbone.View.extend({
                 this.model.set('refEvidencePair', "1100");
             }
         } else if (func == 'R') {
-            this.$("#seg-sat-value").last().html(this.satValueOptionsAll())
+            this.$("#seg-sat-value").last().html(this.satValueOptionsAll());
             this.$("#seg-sat-value").val("(no value)");
             this.$("#seg-sat-value").prop('disabled', true);
             this.model.set('refEvidencePair', '(no value)');
