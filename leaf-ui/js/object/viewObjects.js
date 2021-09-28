@@ -5,11 +5,9 @@ class ChartObj {
 	 */
 
 	constructor() {
-
 		this.labels;
 		this.dataSets = [];
 		this.options = {
-			// animation: false,
 			scaleOverride: true,
 			scaleSteps: 4,
 			scaleStepWidth: 1,
@@ -23,7 +21,7 @@ class ChartObj {
 					ticks: {
 						min: -2.1,
 						max: 2.1,
-						callback: function (value, index, values) {
+						callback: function (value) {
 							if (value == 2) { return '(F, ⊥)' };
 							if (value == 1) { return '(P, ⊥)' };
 							if (value == 0) { return '(⊥, ⊥)' };
@@ -42,12 +40,17 @@ class ChartObj {
 			}
 		};
 	}
-
+	/**
+	 * Resets chart data 
+	 */
 	reset() {
 		this.labels = null;
 		this.dataSets = [];
 	}
 
+	/**
+	 * Adds data points to chart 
+	 */
 	addDataSet(xValue, yValues, dashed, coloured = false) {
 		var data = Array(xValue).fill(null).concat(yValues);
 		var dataSet = {
@@ -61,10 +64,12 @@ class ChartObj {
 			lineTension: 0, // set to 0 for straight lines
 			data: data
 		};
-
 		this.dataSets.push(dataSet);
 	}
 
+	/**
+	 * Creates chart 
+	 */
 	display(context) {
 		this.chartObj = new Chart(context, {
 			type: 'line',
