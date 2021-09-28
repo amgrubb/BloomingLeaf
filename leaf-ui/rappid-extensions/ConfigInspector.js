@@ -354,7 +354,9 @@ var ConfigInspector = Backbone.View.extend({
             var arr = "";
             for (let i = 1; i < this.collection.length + 1; i++){
                 var nameIndex = parseInt(this.collection.at(this.collection.length - i ).get('name').split(' ').pop()); 
-                arr += nameIndex + " ";
+                if (this.collection.at(this.collection.length - i ).get('name').split(' ').shift() == 'Request'){
+                    arr += nameIndex + " ";
+                }
             }
             arr = arr.split(" "); 
             for (var i = arr.length - 1; i >= 0; i--) {

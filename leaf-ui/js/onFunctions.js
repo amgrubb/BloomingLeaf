@@ -283,7 +283,9 @@ graph.on("add", function (cell) {
             var arr = "";
             for (let i = 2; i < createdInstance.length + 1; i++){
                 var nameIndex = parseInt(createdInstance[createdInstance.length - i].model.attr('.name/text').split('_').pop()); 
-                arr += nameIndex + " ";
+                if (createdInstance[createdInstance.length - i].model.attr('.name/text').split('_').shift() == "Actor"){
+                    arr += nameIndex + " "
+                };
             }
             arr = arr.split(" "); 
             for (var i = arr.length - 1; i >= 0; i--) {
