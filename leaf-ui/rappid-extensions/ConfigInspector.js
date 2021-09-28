@@ -347,25 +347,30 @@ var ConfigInspector = Backbone.View.extend({
 
     /** Create and add a new config model to the collection */
     addNewConfig: function () {
-        var configModel; 
-        if (this.collection.length < 1){
+        var configModel;
+        // Creates first config name
+        if (this.collection.length < 1) {
             configModel = new ConfigBBM({ name: "Request " + 1, results: new ResultCollection([]) });
-        } else { 
-            var arr = "";
-            for (let i = 1; i < this.collection.length + 1; i++){
-                var nameIndex = parseInt(this.collection.at(this.collection.length - i ).get('name').split(' ').pop()); 
-                if (this.collection.at(this.collection.length - i ).get('name').split(' ').shift() == 'Request'){
-                    arr += nameIndex + " ";
+        } else {
+            var numList = "";
+            for (let i = 1; i < this.collection.length + 1; i++) {
+                // Gets the number from a config's name 
+                var nameIndex = parseInt(this.collection.at(this.collection.length - i).get('name').split(' ').pop());
+                // If name has been changed 
+                if (this.collection.at(this.collection.length - i).get('name').split(' ').shift() == 'Request') {
+                    numList += nameIndex + " ";
                 }
             }
-            arr = arr.split(" "); 
-            for (var i = arr.length - 1; i >= 0; i--) {
-                if (isNaN(arr[i]) || arr[i] === 0 || arr[i] === false || arr[i] === "" || arr[i] === undefined || arr[i] === null) {
-                    arr.splice(i, 1);
+            numList = numList.split(" ");
+            // Removes non-number values from array
+            for (var i = numList.length - 1; i >= 0; i--) {
+                if (isNaN(numList[i]) || numList[i] === 0 || numList[i] === false || numList[i] === "" || numList[i] === undefined || numList[i] === null) {
+                    numList.splice(i, 1);
                 }
             }
-            var max = Math.max.apply(null, arr);
-            configModel = new ConfigBBM({ name: ("Request " + (max+1)), results: new ResultCollection([]) });   
+            // Gets highest number from array
+            var maxName = Math.max.apply(null, numList);
+            configModel = new ConfigBBM({ name: ("Request " + (maxName + 1)), results: new ResultCollection([]) });
         }
         this.collection.add(configModel);
     },

@@ -276,25 +276,29 @@ graph.on("add", function (cell) {
     } else if (cell instanceof joint.shapes.basic.Actor) {
         // Find how many instances of the actor is created out of all the cells
         createdInstance = createdInstance.filter(view => view.model instanceof joint.shapes.basic.Actor);
-
         // Create placeholder name based on the number of instances
         var name;
         if (createdInstance.length >= 2) {
-            var arr = "";
-            for (let i = 2; i < createdInstance.length + 1; i++){
-                var nameIndex = parseInt(createdInstance[createdInstance.length - i].model.attr('.name/text').split('_').pop()); 
-                if (createdInstance[createdInstance.length - i].model.attr('.name/text').split('_').shift() == "Actor"){
-                    arr += nameIndex + " "
+            var numList = "";
+            for (let i = 2; i < createdInstance.length + 1; i++) {
+                // Gets the number from an actor's name 
+                var nameIndex = parseInt(createdInstance[createdInstance.length - i].model.attr('.name/text').split('_').pop());
+                // If name has been changed 
+                if (createdInstance[createdInstance.length - i].model.attr('.name/text').split('_').shift() == "Actor") {
+                    numList += nameIndex + " "
                 };
             }
-            arr = arr.split(" "); 
-            for (var i = arr.length - 1; i >= 0; i--) {
-                if (isNaN(arr[i]) || arr[i] === 0 || arr[i] === false || arr[i] === "" || arr[i] === undefined || arr[i] === null) {
-                    arr.splice(i, 1);
+            numList = numList.split(" ");
+            // Removes non-number values from array
+            for (var i = numList.length - 1; i >= 0; i--) {
+                if (isNaN(numList[i]) || numList[i] === 0 || numList[i] === false || numList[i] === "" || numList[i] === undefined || numList[i] === null) {
+                    numList.splice(i, 1);
                 }
             }
-            var max = Math.max.apply(null, arr);
-            name = cell.attr('.name/text') + "_" + (max + 1);
+            // Gets highest number from array
+            var maxValue = Math.max.apply(null, numList);
+            name = cell.attr('.name/text') + "_" + (maxValue + 1);
+            // Creates first actor name
         } else {
             name = cell.attr('.name/text') + "_0";
         }
