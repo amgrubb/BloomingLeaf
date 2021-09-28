@@ -1,19 +1,17 @@
 class ChartObj {
-
 	/**
 	 * Defines chart object for rendering element inspector
 	 */
-
 	constructor() {
 
 		this.labels; // Labels on x-axis of chart 
 		this.dataSets = []; // Contains information needed to graph line segments
 		this.options = {
-			scaleOverride: true, //Boolean - true b/c we want a hard coded scale
-			scaleSteps: 4, // Number - The number of steps on the y-axis
-			scaleStepWidth: 1, // Number - The value increment of the y-axis
-			scaleStartValue: -2, // Number - The y-axis starting value
-			scaleFontSize: 10, // Number - y-axis label font size in pixels
+			scaleOverride: true, // True b/c we want a hard coded scale
+			scaleSteps: 4, // The number of steps on the y-axis
+			scaleStepWidth: 1, // The value increment of the y-axis
+			scaleStartValue: -2, // The y-axis starting value
+			scaleFontSize: 10, // The y-axis label font size
 			// TODO: do we need this?? - the user shouldnt be able to click on the chart
 			// pointHitDetectionRadius: 5, // Number - Extra amount to add to the radius to cater for hit detection outside the drawn point
 			// TODO: do we need both of the tooltips??? - later they are set to false
@@ -65,26 +63,21 @@ class ChartObj {
 	 * @param {*} yValues 
 	 * The starting and ending points of the function segment on the y-axis
 	 * @param {*} dashed 
-	 * Whether or noth the line should be dashed
+	 * Whether or not the line should be dashed
 	 * @param {Boolean} coloured
-	 *  Whether or not the line should be colored
-	 * 
-	 * TODO: I don't think the color part is currently working (can we delete or implement is??) 
+	 * Whether or not the line should be colored
 	 */
 	addDataSet(xValue, yValues, dashed, coloured = false) {
-		// TODO: what exactly does this do??
-		// 
 		var data = Array(xValue).fill(null).concat(yValues);
-		console.log(data)
 		var dataSet = {
 			label: "Source",
-			fill: false, // no colouring underneath the line
+			fill: false, // No colouring underneath the line
 			borderColor: coloured ? "rgba(255, 110, 80, 1)" : "rgba(220,220,220,1)",
 			borderDash: dashed ? [5, 5] : null, // Sets stochastic line segments to dashed
 			pointBackgroundColor: coloured ? "rgba(255, 110, 80, 1)" : "rgba(220,220,220,1)",
 			pointRadius: 4, // Point size
 			pointBorderColor: "rgba(220,220,220,1)",
-			lineTension: 0, // set to 0 for straight lines
+			lineTension: 0, // Set to 0 for straight lines
 			data: data
 		};
 		// Push dataSet object to dataSets array
