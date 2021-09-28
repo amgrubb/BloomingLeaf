@@ -211,6 +211,7 @@ $('#btn-view-intermediate').on('click', function () {
     var intermediateValuesTable = new IntermediateValuesTable({ model: graph });
     $('#intermediate-table').append(intermediateValuesTable.el);
     intermediateValuesTable.render();
+    $('.intermT').height($('#paper').height() * 0.9);
 });
 
 /**
@@ -746,8 +747,11 @@ paper.on("link:options", function (cell) {
         var config = configCollection.findWhere({ selected: true });
         if (config !== undefined) {
             var configResults = config.get('results').findWhere({ selected: true });
-            resizeWindow(configResults.get('timePointPath').length - 1);
+            if (configResults !== undefined) {
+                resizeWindow(configResults.get('timePointPath').length - 1);
+            }
         }
+        $('.intermT').height($('#paper').height() * 0.9);
     });
     $('#btn-clear-cycle').on('click', function () {
         clearCycleHighlighting(selectResult);
@@ -785,14 +789,14 @@ paper.on("link:options", function (cell) {
         EVO.refresh(selectResult);
     });
 
-    $('#colorblind-mode-isOff').on('click', function () { //activates colorblind mode
+    $('#colorblind-mode-isOff').on('click', function () { // Activates colorblind mode
         $('#colorblind-mode-isOff').css("display", "none");
         $('#colorblind-mode-isOn').css("display", "");
 
         EVO.toggleColorBlindMode(true, selectResult);
     });
 
-    $('#colorblind-mode-isOn').on('click', function () { //turns off colorblind mode
+    $('#colorblind-mode-isOn').on('click', function () { // Turns off colorblind mode
         $('#colorblind-mode-isOn').css("display", "none");
         $('#colorblind-mode-isOff').css("display", "");
 
@@ -803,13 +807,13 @@ paper.on("link:options", function (cell) {
      * Source:https://www.w3schools.com/howto/howto_js_rangeslider.asp 
      * Two option modeling mode slider
      */
-    document.getElementById("colorReset").oninput = function () { //turns slider on/off and refreshes
+    document.getElementById("colorReset").oninput = function () { // Turns slider on/off and refreshes
         EVO.setSliderOption(this.value, selectResult);
     }
     /**
      * Four option analysis mode slider
      */
-    document.getElementById("colorResetAnalysis").oninput = function () { //changes slider mode and refreshes
+    document.getElementById("colorResetAnalysis").oninput = function () { // Changes slider mode and refreshes
         var selectConfig;
         //TODO: Find out why the selectResult is empty before we reassign it
         if (configCollection.length !== 0) {
