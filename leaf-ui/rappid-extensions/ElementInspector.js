@@ -168,7 +168,7 @@ var ElementInspector = Backbone.View.extend({
             this.model.attr(".funcvalue/text", ' ');
         }
 
-        this.$('#init-sat-value').prop('disabled', true);
+        //this.$('#init-sat-value').prop('disabled', true);
         // Turn off repeating by default
         this.repeatOptionsDisplay = false;
         // Turn off display for repeat related elements and values
