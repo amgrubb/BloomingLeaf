@@ -283,7 +283,6 @@ graph.on("add", function (cell) {
             var arr = "";
             for (let i = 2; i < createdInstance.length + 1; i++){
                 var nameIndex = parseInt(createdInstance[createdInstance.length - i].model.attr('.name/text').split('_').pop()); 
-                console.log(nameIndex)
                 arr += nameIndex + " ";
             }
             arr = arr.split(" "); 

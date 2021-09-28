@@ -349,10 +349,21 @@ var ConfigInspector = Backbone.View.extend({
     addNewConfig: function () {
         var configModel; 
         if (this.collection.length < 1){
-                configModel = new ConfigBBM({ name: "Request " + 1, results: new ResultCollection([]) });
+            configModel = new ConfigBBM({ name: "Request " + 1, results: new ResultCollection([]) });
         } else { 
-            var nameIndex = parseInt(this.collection.at(this.collection.length - 1 ).get('name').split(' ').pop()) + 1;
-            configModel = new ConfigBBM({ name: (this.collection.at(this.collection.length - 1).get('name').split(' ')[0] + " " + nameIndex), results: new ResultCollection([]) })
+            var arr = "";
+            for (let i = 1; i < this.collection.length + 1; i++){
+                var nameIndex = parseInt(this.collection.at(this.collection.length - i ).get('name').split(' ').pop()); 
+                arr += nameIndex + " ";
+            }
+            arr = arr.split(" "); 
+            for (var i = arr.length - 1; i >= 0; i--) {
+                if (isNaN(arr[i]) || arr[i] === 0 || arr[i] === false || arr[i] === "" || arr[i] === undefined || arr[i] === null) {
+                    arr.splice(i, 1);
+                }
+            }
+            var max = Math.max.apply(null, arr);
+            configModel = new ConfigBBM({ name: ("Request " + (max+1)), results: new ResultCollection([]) });   
         }
         this.collection.add(configModel);
     },
