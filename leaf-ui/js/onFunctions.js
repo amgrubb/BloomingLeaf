@@ -280,8 +280,20 @@ graph.on("add", function (cell) {
         // Create placeholder name based on the number of instances
         var name;
         if (createdInstance.length >= 2) {
-            var lastactor = createdInstance[createdInstance.length - 2].model.attr('.name/text');
-            name = cell.attr('.name/text') + "_" + (Number.parseInt(lastactor.charAt(lastactor.length - 1)) + 1);
+            var arr = "";
+            for (let i = 2; i < createdInstance.length + 1; i++){
+                var nameIndex = parseInt(createdInstance[createdInstance.length - i].model.attr('.name/text').split('_').pop()); 
+                console.log(nameIndex)
+                arr += nameIndex + " ";
+            }
+            arr = arr.split(" "); 
+            for (var i = arr.length - 1; i >= 0; i--) {
+                if (isNaN(arr[i]) || arr[i] === 0 || arr[i] === false || arr[i] === "" || arr[i] === undefined || arr[i] === null) {
+                    arr.splice(i, 1);
+                }
+            }
+            var max = Math.max.apply(null, arr);
+            name = cell.attr('.name/text') + "_" + (max + 1);
         } else {
             name = cell.attr('.name/text') + "_0";
         }
