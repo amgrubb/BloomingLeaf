@@ -320,7 +320,7 @@ class EVO {
     static changeIntentionsText(analysisResult) {
         var elements = graph.getElements();
         var curr;
-        var colorVis
+        var colorVis;
         var satVal;
         var intention;
         var initSatVal;
@@ -360,7 +360,7 @@ class EVO {
                     if (EVO.sliderOption == 3) {
                         // Resets the satvalue back
                         colorVis = analysisResult.get('colorVis');
-                        satVal = colorVis.intentionListColorVis[0].timePoints[EVO.curTimePoint];
+                        satVal = colorVis.intentionListColorVis[i].timePoints[EVO.curTimePoint];
                         curr.attr('.satvalue/text', satisfactionValuesDict[satVal].satValue);
                         EVO.displaySlider(true);
                     }
