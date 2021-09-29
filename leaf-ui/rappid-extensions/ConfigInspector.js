@@ -348,6 +348,7 @@ var ConfigInspector = Backbone.View.extend({
     /** Create and add a new config model to the collection */
     addNewConfig: function () {
         var configModel;
+        var name; 
         // Creates first config name
         if (this.collection.length < 1) {
             configModel = new ConfigBBM({ name: "Request " + 1, results: new ResultCollection([]) });
@@ -368,9 +369,14 @@ var ConfigInspector = Backbone.View.extend({
                     numList.splice(i, 1);
                 }
             }
-            // Gets highest number from array
-            var maxName = Math.max.apply(null, numList);
-            configModel = new ConfigBBM({ name: ("Request " + (maxName + 1)), results: new ResultCollection([]) });
+            // If all config names have been changed
+            if (numList.length == 0){
+                name = "Request " + 1; 
+            } else {
+                // Gets highest number from array
+                name = "Request " + (Math.max.apply(null, numList) + 1);
+            }
+            configModel = new ConfigBBM({ name: name, results: new ResultCollection([]) });
         }
         this.collection.add(configModel);
     },

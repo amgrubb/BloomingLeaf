@@ -295,10 +295,14 @@ graph.on("add", function (cell) {
                     numList.splice(i, 1);
                 }
             }
-            // Gets highest number from array
-            var maxValue = Math.max.apply(null, numList);
-            name = cell.attr('.name/text') + "_" + (maxValue + 1);
-            // Creates first actor name
+            // If all actor names have been changed
+            if (numList.length == 0){
+                name = cell.attr('.name/text') + "_0";
+            } else {
+                // Gets highest number from array
+                name = cell.attr('.name/text') + "_" + (Math.max.apply(null, numList) + 1);
+            }
+        // Creates first actor name
         } else {
             name = cell.attr('.name/text') + "_0";
         }
