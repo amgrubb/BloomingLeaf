@@ -185,6 +185,7 @@ var Config = Backbone.View.extend({
             }
         }
         this.model.destroy();
+        EVO.switchToModelingMode(undefined);
     },
 
     /** If result is selected, update config **/

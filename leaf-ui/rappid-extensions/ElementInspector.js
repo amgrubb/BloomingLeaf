@@ -221,7 +221,7 @@ var ElementInspector = Backbone.View.extend({
             this.$('option[value=D]').prop('disabled', this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair') === '1100');
             this.$('option[value=MP]').prop('disabled', this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair') === '0011');
             this.$('option[value=MN]').prop('disabled', this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair') === '1100');
-        }
+        }    
     },
 
     /**
@@ -288,6 +288,11 @@ var ElementInspector = Backbone.View.extend({
     funcTypeChanged: function (event) {
         this.intention.setEvolvingFunction(this.$('.function-type').val());
         this.updateCell();
+        // Disabling invalid function types are needed here b/c selecting a function type can change the init sat value
+        this.$('option[value=I]').prop('disabled', this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair') === '0011');
+        this.$('option[value=D]').prop('disabled', this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair') === '1100');
+        this.$('option[value=MP]').prop('disabled', this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair') === '0011');
+        this.$('option[value=MN]').prop('disabled', this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair') === '1100');
         this.updateHTML(event);
     },
 
@@ -912,10 +917,9 @@ var FuncSegView = Backbone.View.extend({
             } else { // If the model is not the most recent model disable the function type and satisfaction value selectors 
                 this.$("#seg-function-type").prop('disabled', true);
                 this.$("#seg-sat-value").prop('disabled', true);
-                // If the function is UD, stochastic, and not current you have to append (no value) to the html
+                // If the function is UD, stochastic, and not current set html to (no value) 
                 if (this.model.get('type') == 'R') {
-                    this.$('#seg-sat-value').html(this.satValueOptionsNoRandom());
-                    this.$("#seg-sat-value").html('<option value="(no value)"> (no value) </option>');
+                    this.$("#seg-sat-value").last().html(this.satValueOptionsAll());
                     this.$("#seg-sat-value").val("(no value)");
                 }
             }
@@ -936,8 +940,7 @@ var FuncSegView = Backbone.View.extend({
 
         // Set stochastic functions to (no value)
         if (functionType == 'R') {
-            this.$('#seg-sat-value').html(this.satValueOptionsNoRandom());
-            this.$("#seg-sat-value").html('<option value="(no value)"> (no value) </option>');
+            this.$("#seg-sat-value").last().html(this.satValueOptionsAll());
             this.$("#seg-sat-value").val("(no value)");
             this.model.get('refEvidencePair');
         } else if (this.intention.get('evolvingFunction').get('type') !== 'MP' && this.intention.get('evolvingFunction').get('type') !== 'MN' && this.intention.get('evolvingFunction').get('type') !== 'SD' && this.intention.get('evolvingFunction').get('type') !== 'DS' && functionType == 'C') {
@@ -974,12 +977,12 @@ var FuncSegView = Backbone.View.extend({
                 this.model.set('refEvidencePair', "1100");
             }
         } else if (func == 'R') {
-            this.$("#seg-sat-value").html(this.satValueOptionsAll());
-            this.$("#seg-sat-value").val("(no value)");
-            this.model.set('refEvidencePair', '(no value)');
-            this.$("#seg-sat-value").prop('disabled', true);
-        } else if (func == 'C') {
             this.$("#seg-sat-value").last().html(this.satValueOptionsAll());
+            this.$("#seg-sat-value").val("(no value)");
+            this.$("#seg-sat-value").prop('disabled', true);
+            this.model.set('refEvidencePair', '(no value)');
+        } else if (func == 'C') {
+            this.$("#seg-sat-value").last().html(this.satValueOptionsNoRandom());
             // Restrict input to initial satisfaction value if it is the first constraint
             if (this.index == 0) {
                 this.$("#seg-sat-value").val(this.initSatValue);
@@ -1038,7 +1041,7 @@ var FuncSegView = Backbone.View.extend({
     */
     satValueOptionsNoRandom: function () {
         var result = '';
-        for (let value of ["0011", "0010", "0100", "1100"]) {
+        for (let value of ["0011", "0010", "0000", "0100", "1100"]) {
             result += this.binaryToOption(value);
         }
         return result;
