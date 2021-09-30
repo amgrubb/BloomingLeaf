@@ -56,11 +56,11 @@ class ChartObj {
 
 	/**
 	 * Adds the information needed to draw one function segment onto the graph to the array this.dataSets
-	 * @param {*} xValue
+	 * @param {Number} xValue
 	 * The starting point of the function segment on the x-axis 
-	 * @param {*} yValues 
+	 * @param {Object} yValues 
 	 * The starting and ending points of the function segment on the y-axis
-	 * @param {*} dashed 
+	 * @param {Boolean} dashed 
 	 * Whether or not the line should be dashed
 	 * @param {Boolean} coloured
 	 * Whether or not the line should be colored
