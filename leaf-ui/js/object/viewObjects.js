@@ -12,11 +12,9 @@ class ChartObj {
 			scaleStepWidth: 1, // The value increment of the y-axis
 			scaleStartValue: -2, // The y-axis starting value
 			scaleFontSize: 10, // The y-axis label font size
-			// TODO: do we need this?? - the user shouldnt be able to click on the chart
-			// pointHitDetectionRadius: 5, // Number - Extra amount to add to the radius to cater for hit detection outside the drawn point
-			// TODO: do we need both of the tooltips??? - later they are set to false
-			// tooltipTemplate: "", // Sets template string for single tooltips to empty
-			// multiTooltipTemplate: "", // Sets template string for multi tooltips to empty
+			pointHitDetectionRadius: 5, // Extra amount to add to the radius to cater for hit detection outside the drawn point
+			tooltipTemplate: "", // Sets template string for single tooltips to empty
+			multiTooltipTemplate: "", // Sets template string for multi tooltips to empty
 			scales: {
 				yAxes: [{
 					ticks: { // Sets the end of the y-axis slightly below denied and above satisfied
