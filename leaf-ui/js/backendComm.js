@@ -23,7 +23,7 @@ function backendSimulationRequest(analysisRequest) {
 
 	var data = backendStringifyCirc(jsObject);
 	console.log(data)
-	xhr.onreadystatechange = function () {
+	xhr.onload = function () {
 		// This function get called when the response is received.
 		console.log("Reading the response");
 		if (xhr.readyState == XMLHttpRequest.DONE) {
