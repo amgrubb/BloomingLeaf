@@ -91,11 +91,10 @@ function convertToAnalysisResult(results) {
 	tempResult.set('nextPossibleAbsValue', results.nextPossibleAbsValue);		//TODO: Add these values when other result BBMs are created.
 	tempResult.set('nextPossibleRndValue', results.nextPossibleRndValue);		//TODO: Add these values when other result BBMs are created.
 	var evoView = new EVO(results.elementList)
+	var slider = new SliderObj()
 	tempResult.set('colorVis', evoView);
+	tempResult.set('slider', slider)
 	evoView.singlePathResponse(results.elementList, tempResult, "analysis");
-	let sliderObj = new SliderObj()
-	console.log(sliderObj.sliderElement)
-	//$('#slider').append(sliderObj)
 	return tempResult;
 }
 

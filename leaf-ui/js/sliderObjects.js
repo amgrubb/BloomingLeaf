@@ -37,9 +37,8 @@ class SliderObj {
      */
     static displayAnalysis(analysisResult, isSwitch) {
         // Check if slider has already been initialized
-        console.log(SliderObj.sliderElement);
-        if (this.sliderElement.hasOwnProperty('noUiSlider')) {
-            this.sliderElement.noUiSlider.destroy();
+        if (analysisResult.get('slider').sliderElement.hasOwnProperty('noUiSlider')) {
+            analysisResult.get('slider').sliderElement.noUiSlider.destroy();
         }
         SliderObj.createSlider(analysisResult, isSwitch);
     }
@@ -58,7 +57,7 @@ class SliderObj {
         var sliderMax = currentAnalysis.get('timePointPath').length - 1; // .timeScale;
         var density = (sliderMax < 25) ? (100 / sliderMax) : 4;
 
-        noUiSlider.create(this.sliderElement, {
+        noUiSlider.create(currentAnalysis.get('slider').sliderElement, {
             start: 0,
             step: 1,
             behaviour: 'tap',
@@ -77,8 +76,8 @@ class SliderObj {
 
         // Set initial value of the slider
         // 0 if switching between existing results; sliderMax if new result
-        this.sliderElement.noUiSlider.set(isSwitch ? 0 : sliderMax);
-        this.sliderElement.noUiSlider.on('update', function (values, handle) {
+        currentAnalysis.get('slider').sliderElement.noUiSlider.set(isSwitch ? 0 : sliderMax);
+        currentAnalysis.get('slider').sliderElement.noUiSlider.on('update', function (values, handle) {
             SliderObj.updateSliderValues(parseInt(values[handle]), currentAnalysis);
         });
         EVO.setCurTimePoint(isSwitch ? 0 : sliderMax, currentAnalysis);
@@ -101,8 +100,8 @@ class SliderObj {
      */
     static removeSlider() {
         // if there's a slider, remove it
-        if (this.sliderElement.hasOwnProperty('noUiSlider')) {
-            this.sliderElement.noUiSlider.destroy();
+        if (analysisResult.get('slider').sliderElement.hasOwnProperty('noUiSlider')) {
+            analysisResult.get('slider').sliderElement.noUiSlider.destroy();
         }
         $('#sliderValue').text("");
     }
@@ -145,7 +144,7 @@ class SliderObj {
 
         $('#sliderValue').text(sliderValue);
         var tpPath = currentAnalysis.get('timePointPath');
-        this.sliderValueElement.innerHTML = sliderValue + "|" + tpPath[sliderValue];
+        currentAnalysis.get('slider').sliderValueElement.innerHTML = sliderValue + "|" + tpPath[sliderValue];
         // Update the analysisRequest current state.
         //analysisRequest.currentState = sliderObject.sliderValueElement.innerHTML;   //TODO: Perhalps this should be part of the call to simulate.
 
