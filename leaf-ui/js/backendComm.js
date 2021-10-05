@@ -171,7 +171,7 @@ function getErrorMessage(backendErrorMsg) {
 		}
 	}
 
-	s += 'and ' + names[numOfNames - 1] + ' (' + actorNames[numOfNames - 1] + ').';
+	s += numOfNames != 1 ? 'and ' : ' ' + names[numOfNames - 1] + ' (' + actorNames[numOfNames - 1] + ').';
 	s += '\n\nOriginal Error: ' + backendErrorMsg;
 	return s;
 }
@@ -191,7 +191,7 @@ function getElementByNum(num) {
 		if (elements[i].get('type')!== 'basic.Actor') {
 			count++;
 			if (count == num){
-				return elements[i]
+				return elements[i];
 			}
 		}
 	}
