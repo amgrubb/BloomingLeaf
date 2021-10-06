@@ -276,12 +276,33 @@ graph.on("add", function (cell) {
     } else if (cell instanceof joint.shapes.basic.Actor) {
         // Find how many instances of the actor is created out of all the cells
         createdInstance = createdInstance.filter(view => view.model instanceof joint.shapes.basic.Actor);
-
         // Create placeholder name based on the number of instances
         var name;
         if (createdInstance.length >= 2) {
-            var lastactor = createdInstance[createdInstance.length - 2].model.attr('.name/text');
-            name = cell.attr('.name/text') + "_" + (Number.parseInt(lastactor.charAt(lastactor.length - 1)) + 1);
+            var numList = "";
+            for (let i = 2; i < createdInstance.length + 1; i++) {
+                // Gets the number from an actor's name 
+                var nameIndex = parseInt(createdInstance[createdInstance.length - i].model.attr('.name/text').split('_').pop());
+                // If name has been changed 
+                if (createdInstance[createdInstance.length - i].model.attr('.name/text').split('_').shift() == "Actor") {
+                    numList += nameIndex + " "
+                };
+            }
+            numList = numList.split(" ");
+            // Removes non-number values from array
+            for (var i = numList.length - 1; i >= 0; i--) {
+                if (isNaN(numList[i]) || numList[i] === 0 || numList[i] === false || numList[i] === "" || numList[i] === undefined || numList[i] === null) {
+                    numList.splice(i, 1);
+                }
+            }
+            // If all actor names have been changed
+            if (numList.length == 0){
+                name = cell.attr('.name/text') + "_0";
+            } else {
+                // Gets highest number from array
+                name = cell.attr('.name/text') + "_" + (Math.max.apply(null, numList) + 1);
+            }
+        // Creates first actor name
         } else {
             name = cell.attr('.name/text') + "_0";
         }
