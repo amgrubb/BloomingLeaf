@@ -211,6 +211,7 @@ $('#btn-view-intermediate').on('click', function () {
     var intermediateValuesTable = new IntermediateValuesTable({ model: graph });
     $('#intermediate-table').append(intermediateValuesTable.el);
     intermediateValuesTable.render();
+    $('.intermT').height($('#paper').height() * 0.9);
 });
 
 /**
@@ -275,12 +276,33 @@ graph.on("add", function (cell) {
     } else if (cell instanceof joint.shapes.basic.Actor) {
         // Find how many instances of the actor is created out of all the cells
         createdInstance = createdInstance.filter(view => view.model instanceof joint.shapes.basic.Actor);
-
         // Create placeholder name based on the number of instances
         var name;
         if (createdInstance.length >= 2) {
-            var lastactor = createdInstance[createdInstance.length - 2].model.attr('.name/text');
-            name = cell.attr('.name/text') + "_" + (Number.parseInt(lastactor.charAt(lastactor.length - 1)) + 1);
+            var numList = "";
+            for (let i = 2; i < createdInstance.length + 1; i++) {
+                // Gets the number from an actor's name 
+                var nameIndex = parseInt(createdInstance[createdInstance.length - i].model.attr('.name/text').split('_').pop());
+                // If name has been changed 
+                if (createdInstance[createdInstance.length - i].model.attr('.name/text').split('_').shift() == "Actor") {
+                    numList += nameIndex + " "
+                };
+            }
+            numList = numList.split(" ");
+            // Removes non-number values from array
+            for (var i = numList.length - 1; i >= 0; i--) {
+                if (isNaN(numList[i]) || numList[i] === 0 || numList[i] === false || numList[i] === "" || numList[i] === undefined || numList[i] === null) {
+                    numList.splice(i, 1);
+                }
+            }
+            // If all actor names have been changed
+            if (numList.length == 0){
+                name = cell.attr('.name/text') + "_0";
+            } else {
+                // Gets highest number from array
+                name = cell.attr('.name/text') + "_" + (Math.max.apply(null, numList) + 1);
+            }
+        // Creates first actor name
         } else {
             name = cell.attr('.name/text') + "_0";
         }
@@ -746,8 +768,11 @@ paper.on("link:options", function (cell) {
         var config = configCollection.findWhere({ selected: true });
         if (config !== undefined) {
             var configResults = config.get('results').findWhere({ selected: true });
-            resizeWindow(configResults.get('timePointPath').length - 1);
+            if (configResults !== undefined) {
+                resizeWindow(configResults.get('timePointPath').length - 1);
+            }
         }
+        $('.intermT').height($('#paper').height() * 0.9);
     });
     $('#btn-clear-cycle').on('click', function () {
         clearCycleHighlighting(selectResult);
@@ -785,14 +810,14 @@ paper.on("link:options", function (cell) {
         EVO.refresh(selectResult);
     });
 
-    $('#colorblind-mode-isOff').on('click', function () { //activates colorblind mode
+    $('#colorblind-mode-isOff').on('click', function () { // Activates colorblind mode
         $('#colorblind-mode-isOff').css("display", "none");
         $('#colorblind-mode-isOn').css("display", "");
 
         EVO.toggleColorBlindMode(true, selectResult);
     });
 
-    $('#colorblind-mode-isOn').on('click', function () { //turns off colorblind mode
+    $('#colorblind-mode-isOn').on('click', function () { // Turns off colorblind mode
         $('#colorblind-mode-isOn').css("display", "none");
         $('#colorblind-mode-isOff').css("display", "");
 
@@ -803,13 +828,13 @@ paper.on("link:options", function (cell) {
      * Source:https://www.w3schools.com/howto/howto_js_rangeslider.asp 
      * Two option modeling mode slider
      */
-    document.getElementById("colorReset").oninput = function () { //turns slider on/off and refreshes
+    document.getElementById("colorReset").oninput = function () { // Turns slider on/off and refreshes
         EVO.setSliderOption(this.value, selectResult);
     }
     /**
      * Four option analysis mode slider
      */
-    document.getElementById("colorResetAnalysis").oninput = function () { //changes slider mode and refreshes
+    document.getElementById("colorResetAnalysis").oninput = function () { // Changes slider mode and refreshes
         var selectConfig;
         //TODO: Find out why the selectResult is empty before we reassign it
         if (configCollection.length !== 0) {
