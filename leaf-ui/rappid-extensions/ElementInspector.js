@@ -286,6 +286,12 @@ var ElementInspector = Backbone.View.extend({
      * This function is called on change for .function-type.
      */
     funcTypeChanged: function (event) {
+        var evolvingTypes = ["RC", "CR", "MP", "MN", "SD", "DS", "UD"];
+    
+        if (evolvingTypes.includes(this.intention.get('evolvingFunction').get('type'))) { // If the previous function is evolving and the current one is not
+            this.checkConstraints(); //Check for associated contraints
+        };
+
         this.intention.setEvolvingFunction(this.$('.function-type').val());
         this.updateCell();
         // Disabling invalid function types are needed here b/c selecting a function type can change the init sat value
@@ -294,6 +300,31 @@ var ElementInspector = Backbone.View.extend({
         this.$('option[value=MP]').prop('disabled', this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair') === '0011');
         this.$('option[value=MN]').prop('disabled', this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair') === '1100');
         this.updateHTML(event);
+    },
+
+    /**
+     * Check the constraints to see if there are any associated with the current intention and
+     * destroy the contraint if it is found
+     *
+     * This function is called in funcTypeChanged
+     */
+    checkConstraints: function () {
+        var indices = [];
+        var index = 0;
+        var constraints = graph.get('constraints');
+
+        // Finding the contraints that need to be deleted
+        constraints.forEach(
+            constraint => {
+                // If the contraints source or destination ID is the current intention's ID
+                if (constraint.get('srcID')===this.model.get('id') || constraint.get('destID')===this.model.get('id')){
+                    indices.push(index); // Record the index
+                };
+                index++;
+            });
+        for(var i = indices.length-1; i >=0 ; i--) { // Go through the indices backward to not disrupt the sequence
+            constraints.at(indices[i]).destroy(); // Destroy the contraint
+        }
     },
 
     /**
