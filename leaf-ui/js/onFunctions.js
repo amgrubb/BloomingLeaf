@@ -37,7 +37,6 @@ function changeFont(new_font, pPaper) {
  */
 function fontUp(pPaper) {
     var new_font = current_font + 1;
-
     if (new_font <= max_font) {
         changeFont(new_font, pPaper)
     }
@@ -49,7 +48,6 @@ function fontUp(pPaper) {
  */
 function fontDown(pPaper) {
     var new_font = current_font - 1;
-
     if (new_font >= min_font) {
         changeFont(new_font, pPaper)
     }
@@ -596,7 +594,6 @@ paper.on("link:options", function (cell) {
 
         // Remove model only elements 
         $('.model-only').css("display", "none");
-        $('.inspector').css("display", "none");
         $('#paper').css("right", "0px");
 
         // Show extra tools for analysis mode
@@ -606,9 +603,7 @@ paper.on("link:options", function (cell) {
         // $('#modeText').text("Analysis View");
 
         // Disable link settings
-        $('.link-tools .tool-remove').css("display", "none");
-        $('.link-tools .tool-options').css("display", "none");
-        $('.attribution').css("display", "none");
+        $('.link-tools').css("display", "none");
 
         EVO.refresh(selectResult);
 
@@ -647,15 +642,12 @@ paper.on("link:options", function (cell) {
 
             // Show extra tools for modelling mode
             $('.model-only').css("display", "");
-            $('.attribution').css("display", "");
-            $('.inspector').css("display", "");
             $('#paper').css("right", "260px");
             // TODO Show Modelling View tag
             // $('#modeText').text("Modeling View");
 
             // Reinstantiate link settings
-            $('.link-tools .tool-remove').css("display", "");
-            $('.link-tools .tool-options').css("display", "");
+            $('.link-tools').css("display", "");
             EVO.switchToModelingMode(selectResult);
             // Remove configInspector and analysis view
             configInspector.remove();
