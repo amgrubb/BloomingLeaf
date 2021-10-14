@@ -93,7 +93,7 @@ function convertToAnalysisResult(results) {
 	var evoView = new EVO(results.elementList)
 	var slider = new SliderObj()
 	tempResult.set('colorVis', evoView);
-	tempResult.set('slider', slider)
+	tempResult.set('slider', slider);
 	evoView.singlePathResponse(results.elementList, tempResult, "analysis");
 	return tempResult;
 }
