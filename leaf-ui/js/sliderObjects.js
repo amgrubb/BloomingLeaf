@@ -98,7 +98,7 @@ class SliderObj {
     /**
      * Removes the slider from the UI
      */
-    static removeSlider() {
+    static removeSlider(analysisResult) {
         // if there's a slider, remove it
         if (analysisResult.get('slider').sliderElement.hasOwnProperty('noUiSlider')) {
             analysisResult.get('slider').sliderElement.noUiSlider.destroy();
