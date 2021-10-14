@@ -3,9 +3,6 @@ This file contains all the jQuery functions that are associated with buttons and
 It also contains the setup for Rappid elements.
 */
 
-window.addEventListener("unload", function() {EVO.sliderOption = '0';});
-window.onunload = function() { EVO.sliderOption = '0';}
-
 // Used to be onFunctionsBothWindows.js
 // Navigation bar functions:
 var max_font = 20;
@@ -600,9 +597,6 @@ paper.on("link:options", function (cell) {
         // Show extra tools for analysis mode
         $('.analysis-only').css("display", "");
 
-        // TODO Show Analysis View tag
-        $('#modeText').text("Analysis View");
-
         // Disable link settings
         $('.link-tools').css("display", "none");
 
@@ -644,8 +638,6 @@ paper.on("link:options", function (cell) {
             // Show extra tools for modelling mode
             $('.model-only').css("display", "");
             $('#paper').css("right", "260px");
-            // TODO Show Modelling View tag
-            $('#modeText').text("Modeling View");
 
             // Reinstantiate link settings
             $('.link-tools').css("display", "");
