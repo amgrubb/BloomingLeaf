@@ -3,6 +3,8 @@ This file contains all the jQuery functions that are associated with buttons and
 It also contains the setup for Rappid elements.
 */
 
+window.addEventListener("unload", function() {EVO.sliderOption = '0';});
+
 // Used to be onFunctionsBothWindows.js
 // Navigation bar functions:
 var max_font = 20;
@@ -478,8 +480,6 @@ paper.on("link:options", function (cell) {
 
     clearInspector();
 
-    clearInspector();
-
     if (cell.model.get('link').get('displayType') == 'error') {
         alert('Sorry, this link is not valid. Links must be between two elements of the same type. Aka Actor->Actor or Intention->Intention');
         return;
@@ -600,7 +600,7 @@ paper.on("link:options", function (cell) {
         $('.analysis-only').css("display", "");
 
         // TODO Show Analysis View tag
-        // $('#modeText').text("Analysis View");
+        $('#modeText').text("Analysis View");
 
         // Disable link settings
         $('.link-tools').css("display", "none");
@@ -644,7 +644,7 @@ paper.on("link:options", function (cell) {
             $('.model-only').css("display", "");
             $('#paper').css("right", "260px");
             // TODO Show Modelling View tag
-            // $('#modeText').text("Modeling View");
+            $('#modeText').text("Modeling View");
 
             // Reinstantiate link settings
             $('.link-tools').css("display", "");
