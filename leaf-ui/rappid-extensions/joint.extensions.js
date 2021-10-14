@@ -241,7 +241,7 @@ joint.shapes.basic.CellLink = joint.dia.Link.extend({
 
 
 joint.shapes.basic.Actor = joint.shapes.basic.Generic.extend({
-    markup: '<g class="scalable"><circle class = "outer"/></g><circle class="label"/><path class="line"/><text class = "name"/>',
+    markup: '<g class="scalable"><rect class = "outer"/></g><circle class="label"/><path class="line"/><text class = "name"/>',
 
     defaults: joint.util.deepSupplement({
         type: "basic.Actor",
@@ -258,9 +258,10 @@ joint.shapes.basic.Actor = joint.shapes.basic.Generic.extend({
                 stroke: '#000000'
             },
             ".outer": {
-                r: 60,
-                cx: 60,
-                cy: 60,
+                width: 100,
+                height: 60,
+                rx: 20,
+                ry: 20,
                 fill: '#EBFFEA', //'#CCFFCC',
                 stroke: '#000000',
                 'stroke-dasharray': '5 2'
