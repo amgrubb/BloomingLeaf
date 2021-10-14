@@ -4,6 +4,7 @@ It also contains the setup for Rappid elements.
 */
 
 window.addEventListener("unload", function() {EVO.sliderOption = '0';});
+window.onunload = function() { EVO.sliderOption = '0';}
 
 // Used to be onFunctionsBothWindows.js
 // Navigation bar functions:
