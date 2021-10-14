@@ -64,7 +64,7 @@ function responseFunc(analysisRequest, response) {
 			return;
 		} else if (analysisRequest.get('action') == 'singlePath' || analysisRequest.get('action') == 'updatePath') {
 			var analysisResult = convertToAnalysisResult(results); 	// {ResultBBM}
-			displayAnalysis(analysisResult, false);
+			SliderObj.displayAnalysis(analysisResult, false);
 			analysisRequest.addResult(analysisResult);
 		} else if (analysisRequest.get('action') == 'allNextStates') {
 			var allNextStatesResult = convertToAnalysisResult(results); 	// {ResultBBM}
@@ -91,7 +91,9 @@ function convertToAnalysisResult(results) {
 	tempResult.set('nextPossibleAbsValue', results.nextPossibleAbsValue);		//TODO: Add these values when other result BBMs are created.
 	tempResult.set('nextPossibleRndValue', results.nextPossibleRndValue);		//TODO: Add these values when other result BBMs are created.
 	var evoView = new EVO(results.elementList)
+	var slider = new SliderObj()
 	tempResult.set('colorVis', evoView);
+	tempResult.set('slider', slider);
 	evoView.singlePathResponse(results.elementList, tempResult, "analysis");
 	return tempResult;
 }

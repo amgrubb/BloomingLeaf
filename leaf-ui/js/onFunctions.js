@@ -66,7 +66,7 @@ function defaultFont(pPaper) {
 function resizeWindow(sliderMax) {
     $('#slider').css("margin-top", $(this).height() * 0.7);
     $('#slider').width($('#paper').width() * 0.8);
-    adjustSliderWidth(sliderMax)
+    SliderObj.adjustSliderWidth(sliderMax);
 }
 
 // End nav bar functions
@@ -557,7 +557,7 @@ paper.on("link:options", function (cell) {
         $('#modelingSlider').css("display", "");
         $('#analysisSlider').css("display", "none");
         EVO.switchToModelingMode(undefined);
-        revertNodeValuesToInitial();
+        revertNodeValuesToInitial(selectResult);
         // Creates new config
         $('#configID').append(configInspector.el);
         configInspector.render();
@@ -575,7 +575,7 @@ paper.on("link:options", function (cell) {
         $('#modelingSlider').css("display", "");
         $('#analysisSlider').css("display", "none");
         EVO.switchToModelingMode(undefined);
-        revertNodeValuesToInitial();
+        revertNodeValuesToInitial(selectResult);
     });
 
     /**
@@ -636,11 +636,8 @@ paper.on("link:options", function (cell) {
                 selectResult.set('selected', false);
             }
 
-            // Remove Slider
-            removeSlider();
-
             // Reset to initial graph prior to analysis
-            revertNodeValuesToInitial();
+            revertNodeValuesToInitial(selectResult);
 
             // Remove analysis only elements 
             $('.analysis-only').css("display", "none");
@@ -964,7 +961,7 @@ function setInteraction(interactionValue) {
  * Sets each node/cellview in the paper to its initial 
  * satisfaction value and colours all text to black
  */
-function revertNodeValuesToInitial() {
+function revertNodeValuesToInitial(analysisResult) {
     var elements = graph.getElements();
     var curr;
     for (var i = 0; i < elements.length; i++) {
@@ -987,7 +984,9 @@ function revertNodeValuesToInitial() {
         curr.attr({ text: { fill: 'black', stroke: 'none', 'font-weight': 'normal', 'font-size': 10 } });
     }
     // Remove slider
-    removeSlider();
+    if (analysisResult !== undefined) {
+        SliderObj.removeSlider(analysisResult);
+    }
 }
 
 /**
