@@ -289,7 +289,7 @@ var ElementInspector = Backbone.View.extend({
     funcTypeChanged: function (event) {
         var evolvingTypes = ["RC", "CR", "MP", "MN", "SD", "DS", "UD"];
     
-        if (evolvingTypes.includes(this.intention.get('evolvingFunction').get('type'))) { // If the previous function is evolving and the current one is not
+        if (evolvingTypes.includes(this.intention.get('evolvingFunction').get('type'))) { // If the previous function is evolving
             this.checkConstraints(); //Check for associated contraints
         };
 
