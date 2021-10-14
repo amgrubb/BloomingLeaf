@@ -422,7 +422,7 @@ paper.on({
                     // If user was dragging actor 
                     if (evt.data.move) {
                         // AND actor doesn't overlap with other actors
-                        var overlapCells = paper.findViewsFromPoint(cell.getBBox().center());
+                        var overlapCells = paper.findViewsInArea(cell.getBBox());
                         console.log(overlapCells);
                         var overlapActors = overlapCells.filter(view => view.model instanceof joint.shapes.basic.Actor);
                         if (overlapActors.length == 1){
