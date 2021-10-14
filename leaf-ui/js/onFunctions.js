@@ -964,7 +964,7 @@ function revertNodeValuesToInitial(analysisResult) {
     }
     // Remove slider
     if (analysisResult !== undefined) {
-        SliderObj.removeSlider();
+        SliderObj.removeSlider(analysisResult);
     }
 }
 
