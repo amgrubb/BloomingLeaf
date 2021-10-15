@@ -421,12 +421,9 @@ paper.on({
                             // Embed each overlapping intention in actor
                             var actorCell = overlapActors[0].model;
                             var overlapIntentions = overlapCells.filter(view => view.model instanceof joint.shapes.basic.Intention);
-                            console.log("overlap intentions:");
-                            console.log(overlapIntentions);
 
                             for (var i=0; i < overlapIntentions.length; i++) {
                                 var intention = overlapIntentions[i].model;
-                                console.log(intention);
                                 // Unembed intention from old actor
                                 if (intention.get('parent')) {
                                     graph.getCell(intention.get('parent')).unembed(intention);
@@ -449,7 +446,6 @@ paper.on({
                         
                         // Find overlapping cells
                         var overlapCells = paper.findViewsFromPoint(cell.getBBox().center());
-                        console.log(overlapCells);
 
                         // Find actors which overlap with cell
                         // Embed element in new actor
