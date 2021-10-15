@@ -703,6 +703,9 @@ paper.on("link:options", function (cell) {
     // Workaround for load, activates a hidden input element
     $('#btn-load').on('click', function () {
         $('#loader').click();
+        // Sets EVO to off when you load a model
+        EVO.setSliderOption(0);
+        EVO.refreshSlider();
     });
 
     // Load ConfigCollection for display 

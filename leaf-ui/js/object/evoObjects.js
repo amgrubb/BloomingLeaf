@@ -495,7 +495,7 @@ class EVO {
 
     }
     /**
-     * Refresh the slider for when swtcihing between configs and results
+     * Refresh the slider for when switching between configs and results
      * @param {ResultBBM} analysisResult
      */
     static refreshSlider(analysisResult) {
