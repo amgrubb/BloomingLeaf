@@ -304,14 +304,7 @@ graph.on("change", function () {
 });
 
 graph.on('change:size', function (cell, size) {
-    cell.attr(".label/cx", 0.25 * size.width);
-
-    // Calculate point on actor boundary for label (to always remain on boundary)
-    var b = size.height;
-    var c = -(size.height / 2 + (size.height / 2) * (size.height / 2) * (1 - (-0.75 * size.width / 2) * (-0.75 * size.width / 2) / ((size.width / 2) * (size.width / 2))));
-    var y_cord = (-b + Math.sqrt(b * b - 4 * c)) / 2;
-
-    cell.attr(".label/cy", y_cord);
+    cell.attr(".label/cx", 0.1 * size.width);
 });
 
 
@@ -423,7 +416,6 @@ paper.on({
                     if (evt.data.move) {
                         // AND actor doesn't overlap with other actors
                         var overlapCells = paper.findViewsInArea(cell.getBBox());
-                        console.log(overlapCells);
                         var overlapActors = overlapCells.filter(view => view.model instanceof joint.shapes.basic.Actor);
                         if (overlapActors.length == 1){
                             // Embed each overlapping intention in actor

@@ -252,16 +252,16 @@ joint.shapes.basic.Actor = joint.shapes.basic.Generic.extend({
         attrs: {
             ".label": {
                 r: 30,
-                cx: 30,
-                cy: 30,
+                cx: 20,
+                cy: 20,
                 fill: '#FFFFA4',
                 stroke: '#000000'
             },
             ".outer": {
                 width: 100,
                 height: 60,
-                rx: 20,
-                ry: 20,
+                rx: 10,
+                ry: 10,
                 fill: '#EBFFEA', //'#CCFFCC',
                 stroke: '#000000',
                 'stroke-dasharray': '5 2'
