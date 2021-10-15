@@ -756,16 +756,6 @@ select > .select-placeholder {
   z-index: 3;
 }
 
-
-#modeText {
-  float: right;
-  position: fixed;
-  color: rgba(0,0,0,0.6);
-  font-size: 1.3em;
-  top: 50px;
-  right: 270px;
-}
-
 /* Attribution */
 div.attribution {
   position: absolute;
