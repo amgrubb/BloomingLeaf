@@ -325,18 +325,6 @@ graph.on("change", function () {
     document.cookie = "graph=" + graphtext;
 });
 
-graph.on('change:size', function (cell, size) {
-    cell.attr(".label/cx", 0.25 * size.width);
-
-    // Calculate point on actor boundary for label (to always remain on boundary)
-    var b = size.height;
-    var c = -(size.height / 2 + (size.height / 2) * (size.height / 2) * (1 - (-0.75 * size.width / 2) * (-0.75 * size.width / 2) / ((size.width / 2) * (size.width / 2))));
-    var y_cord = (-b + Math.sqrt(b * b - 4 * c)) / 2;
-
-    cell.attr(".label/cy", y_cord);
-});
-
-
 graph.on('remove', function (cell) {
     // Clear right inspector side panel
     clearInspector();
@@ -441,6 +429,27 @@ paper.on({
                     var actorInspector = new ActorInspector({ model: cell });
                     $('.inspector').append(actorInspector.el);
                     actorInspector.render();
+                    // If user was dragging actor 
+                    if (evt.data.move) {
+                        // AND actor doesn't overlap with other actors
+                        var overlapCells = paper.findViewsInArea(cell.getBBox());
+                        var overlapActors = overlapCells.filter(view => view.model instanceof joint.shapes.basic.Actor);
+                        if (overlapActors.length == 1){
+                            // Embed each overlapping intention in actor
+                            var actorCell = overlapActors[0].model;
+                            var overlapIntentions = overlapCells.filter(view => view.model instanceof joint.shapes.basic.Intention);
+
+                            for (var i=0; i < overlapIntentions.length; i++) {
+                                var intention = overlapIntentions[i].model;
+                                // Unembed intention from old actor
+                                if (intention.get('parent')) {
+                                    graph.getCell(intention.get('parent')).unembed(intention);
+                                }
+                                // Embed intention in new actor
+                                actorCell.embed(intention);
+                            }
+                        }
+                    }
                 } else {
                     var elementInspector = new ElementInspector({ model: cell });
                     $('.inspector').append(elementInspector.el);
@@ -451,10 +460,12 @@ paper.on({
                         if (cell.get('parent')) {
                             graph.getCell(cell.get('parent')).unembed(cell);
                         }
-                        // Embed element in new actor
+                        
+                        // Find overlapping cells
                         var overlapCells = paper.findViewsFromPoint(cell.getBBox().center());
 
                         // Find actors which overlap with cell
+                        // Embed element in new actor
                         overlapCells = overlapCells.filter(view => view.model instanceof joint.shapes.basic.Actor);
                         if (overlapCells.length > 0) {
                             var actorCell = overlapCells[0].model;
@@ -896,7 +907,6 @@ function clearInspector() {
         $('.inspector-views').trigger('clearInspector');
     }
 }
-
 
 /**
  * Returns true iff node has 1 or more NBT or NBD relationship
