@@ -303,11 +303,6 @@ graph.on("change", function () {
     document.cookie = "graph=" + graphtext;
 });
 
-graph.on('change:size', function (cell, size) {
-    cell.attr(".label/cx", 0.1 * size.width);
-});
-
-
 graph.on('remove', function (cell) {
     // Clear right inspector side panel
     clearInspector();
