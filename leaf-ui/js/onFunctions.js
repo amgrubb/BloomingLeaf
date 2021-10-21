@@ -172,6 +172,7 @@ $('#btn-clear-flabel').on('click', function () {
     for (let element of graph.getElements()) {
         var cellView = element.findView(paper);
         var cell = cellView.model;
+        var intention = cell.get('intention');
         if (intention != null && intention.get('evolvingFunction').get('type') != 'NT') {
             intention.removeFunction();
             cell.attr(".funcvalue/text", "");
