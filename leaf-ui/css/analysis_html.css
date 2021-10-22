@@ -592,3 +592,112 @@ div.attribution{
   font-size: 9px;
   margin: 5px;
 }
+
+/* beggining of representative color slider */
+
+.slidecontainer {
+  width: 100%; /* Width of the outside container */
+}
+#top-label {
+  background-color: #333;
+  border: none;
+  color: white;
+  text-shadow: none;
+  font-size: 0.75em;
+  margin: 0px;
+  padding: 0px;
+  position: relative;
+  top: -15px;
+  left: 5px;
+}
+
+#top-label-analysis {
+  background-color: #333;
+  border: none;
+  color: white;
+  text-shadow: none;
+  font-size: 0.75em;
+  margin: 0px;
+  padding: 0px;
+  position: relative;
+  top: -15px;
+  left: 105px;
+}
+
+.on-off {
+  font-size: 8px;
+  color: white;
+  position: relative;
+  top: 5px;
+  margin-top: -26px;
+  margin-bottom: 0px;
+  margin-left: 10px;
+  }
+#colorReset {
+  position: relative;
+  top: -20px;
+}
+#colorResetAnalysis {
+  position: relative;
+  top: -6px;
+  width: 92px; /* 92 */
+}
+.EVO-whole-button {
+  cursor: pointer;
+  display: inline-block;
+  height: 35px;
+  width: 100px;
+  margin-top: 0px;
+  margin-bottom: -20px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+
+/* portion of the code from: https://www.w3schools.com/howto/howto_js_rangeslider.asp */
+.EVO-slider {
+  -webkit-appearance: none;  /* Override default CSS styles */
+  appearance: none;
+  width: 50px; /* Full-width */
+  height: 10px; /* Specified height */
+  border-radius: 5px;
+  background: #E8E8E8; /* white background */
+  outline: none; /* Remove outline */
+  opacity: .9; /* Set transparency (for mouse-over effects on hover) */
+  -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+  transition: opacity .2s;
+}
+
+#nextStateSlider{
+  width: 140px;
+}
+
+#modelingSlider {
+  width: 100px;
+}
+
+#analysisSlider{
+  width: 140px;
+}
+
+/* Mouse-over effects */
+.EVO-slider:hover {
+  opacity: 1; /* Fully shown on mouse-over */
+}
+/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+.EVO-slider::-webkit-slider-thumb {
+  -webkit-appearance: none; /* Override default look */
+  appearance: none;
+  width: 25px; /* Set a specific slider handle width */
+  height: 10px; /* Slider handle height */
+  border-radius: 25%;
+  background: #27ae60; /* Green background */
+  cursor: pointer; /* Cursor on hover */
+}
+.EVO-slider::-moz-range-thumb {
+  width: 25px; /* Set a specific slider handle width */
+  height: 25px; /* Slider handle height */
+  background: #27ae60; /* Green background */
+  cursor: pointer; /* Cursor on hover */
+}
+
+/* end of representive slider styling */
