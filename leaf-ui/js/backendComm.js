@@ -131,7 +131,7 @@ function errorExists(analysisResults) {
 
 /*
  * Returns a user-readable error message, containing
- * user-defined node names instead of node ids.
+ * user-defined node names instead of node number.
  *
  * Example message:
  * The model is not solvable because of conflicting constraints
@@ -142,18 +142,18 @@ function errorExists(analysisResults) {
  * @returns {boolean}
  */
 function getErrorMessage(backendErrorMsg) {
-	// If node ids does not exist, just return the original error message for now
+	// If node number does not exist, just return the original error message for now
 	if (!nodeNumsExists(backendErrorMsg)) {
 		return backendErrorMsg;
 	}
 
-	var ids = getNums(backendErrorMsg);
+	var nums = getNums(backendErrorMsg);
 	var names = [];
 	var actorNames = [];
 	var element;
 	var parent;
-	for (var i = 0; i < ids.length; i++) {
-		element = getElementByNum(ids[i]);
+	for (var i = 0; i < nums.length; i++) {
+		element = getElementByNum(nums[i]);
 		parent = element.getParentCell();
 		names.push(element.attr('.name/text'));
 		parent ? actorNames.push(parent.attr('.name/text')) : actorNames.push('no actor');
@@ -177,11 +177,11 @@ function getErrorMessage(backendErrorMsg) {
 }
 
 /*
- * Returns the element with element id.
- * Returns null if no element with that element id exists.
+ * Returns the element with that was created in the sequence of the num.
+ * Returns null if no element with that sequence exists.
  *
- * @param {String} id
- *   element id of the element of interest
+ * @param {Integer} num
+ *   element number sequence of the element of interest
  * @returns {dia.Element | null}
  */
 function getElementByNum(num) {
@@ -199,7 +199,7 @@ function getElementByNum(num) {
 }
 
 /**
- * Returns true iff node ids exists in msg
+ * Returns true if node number exists in msg
  *
  * @param {String} msg
  * @returns {Boolean}
@@ -210,7 +210,7 @@ function nodeNumsExists(msg) {
 }
 
 /*
- * Returns an array of all node ids that are mentioned in
+ * Returns an array of all node numbers that are mentioned in
  * the backendErrorMsg, in the order they appear.
  *
  * @param {String} backendErrorMsg
@@ -218,11 +218,11 @@ function nodeNumsExists(msg) {
  * @returns {Array of String}
  */
 function getNums(backendErrorMsg) {
-	// this regex matches for an N, followed by 4 digits
+	// this regex matches for an N, followed by 3 digits
 	var pattern = /N\d{3}/g;
 	var arr = backendErrorMsg.match(pattern);
 
-	// remove the preceding N's to get each id
+	// remove the preceding N's to get each number of sequence
 	for (var i = 0; i < arr.length; i++) {
 		arr[i] = arr[i].substring(1);
 	}
