@@ -42,7 +42,7 @@ function cycleResponse(cycleList) {
 			var color = color_list[cycleIndex];
 			// For each element inside of a particular cycle
 			for (var l = 0; l < cycleList[k].length; l++) {
-				var cycleNode = getElementById(cycleList[k][l]);
+				var cycleNode = graph.getCell(cycleList[k][l]);
 				cellView = cycleNode.findView(paper);
 				cellView.model.attr({ '.outer': { 'fill': color } });
 			}

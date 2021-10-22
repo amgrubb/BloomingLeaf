@@ -133,7 +133,7 @@ function errorExists(analysisResults) {
 
 /*
  * Returns a user-readable error message, containing
- * user-defined node names instead of node ids.
+ * user-defined node names instead of node number.
  *
  * Example message:
  * The model is not solvable because of conflicting constraints
@@ -144,18 +144,21 @@ function errorExists(analysisResults) {
  * @returns {boolean}
  */
 function getErrorMessage(backendErrorMsg) {
-
-	// If node ids does not exist, just return the original error message for now
-	if (!nodeIDsExists(backendErrorMsg)) {
+	// If node number does not exist, just return the original error message for now
+	if (!nodeNumsExists(backendErrorMsg)) {
 		return backendErrorMsg;
 	}
 
-	var ids = getIDs(backendErrorMsg);
+	var nums = getNums(backendErrorMsg);
 	var names = [];
 	var actorNames = [];
-	for (var i = 0; i < ids.length; i++) {
-		names.push(getNodeName(ids[i]));
-		actorNames.push(getParentActorNameById(ids[i]));
+	var element;
+	var parent;
+	for (var i = 0; i < nums.length; i++) {
+		element = getElementByNum(nums[i]);
+		parent = element.getParentCell();
+		names.push(element.attr('.name/text'));
+		parent ? actorNames.push(parent.attr('.name/text')) : actorNames.push('no actor');
 	}
 
 	var s = 'The model is not solvable because of conflicting constraints involving nodes (with associated actors): ';
@@ -170,89 +173,58 @@ function getErrorMessage(backendErrorMsg) {
 		}
 	}
 
-	s += 'and ' + names[numOfNames - 1] + ' (' + actorNames[numOfNames - 1] + ').';
+	s += numOfNames != 1 ? 'and ' : ' ' + names[numOfNames - 1] + ' (' + actorNames[numOfNames - 1] + ').';
 	s += '\n\nOriginal Error: ' + backendErrorMsg;
 	return s;
 }
 
 /*
- * Returns the actor name for an actor
- * that embeds an element with element id id.
- * If element with element id id is not embedded within an actor
- * returns 'no actor'.
+ * Returns the element with that was created in the sequence of the num.
+ * Returns null if no element with that sequence exists.
  *
- * @param {String} id
- *   element id for the element of interest
- * @returns {String}
- */
-function getParentActorNameById(id) {
-	var actor = getParentActor(getElementById(id));
-	if (actor) {
-		return actor.attributes.attrs['.name'].text;
-	}
-	return 'no actor';
-}
-
-/*
- * Returns the actor which embeds the element of interest.
- * Returns null if there is no actor that embeds the element.
- * (If an actor embeds an element, the actor is the element's parent)
- *
- * @param {dia.Element} element
+ * @param {Integer} num
+ *   element number sequence of the element of interest
  * @returns {dia.Element | null}
  */
-function getParentActor(element) {
-	// get call the ancestors for the element
-	var ancestors = element.getAncestors();
-	if (ancestors.length == 0) {
-		return null;
-	}
-	// if there is an ancestor, there would only be one
-	return ancestors[0];
-}
-
-/*
- * Returns the element with element id.
- * Returns null if no element with that element id exists.
- *
- * @param {String} id
- *   element id of the element of interest
- * @returns {dia.Element | null}
- */
-function getElementById(id) {
+function getElementByNum(num) {
+	var count = -1;
 	var elements = graph.getElements();
 	for (var i = 0; i < elements.length; i++) {
-		if (id == elements[i].get('id')) {
-			return elements[i];
+		if (elements[i].get('type')!== 'basic.Actor') {
+			count++;
+			if (count == num){
+				return elements[i];
+			}
 		}
 	}
+	return null;
 }
 
 /**
- * Returns true iff node ids exists in msg
+ * Returns true if node number exists in msg
  *
  * @param {String} msg
  * @returns {Boolean}
  */
-function nodeIDsExists(msg) {
-	var pattern = /N\d{4}/g;
+function nodeNumsExists(msg) {
+	var pattern = /N\d{3}/g;
 	return msg.match(pattern) != null;
 }
 
 /*
- * Returns an array of all node ids that are mentioned in
+ * Returns an array of all node numbers that are mentioned in
  * the backendErrorMsg, in the order they appear.
  *
  * @param {String} backendErrorMsg
  *   error message from backend
  * @returns {Array of String}
  */
-function getIDs(backendErrorMsg) {
-	// this regex matches for an N, followed by 4 digits
-	var pattern = /N\d{4}/g;
+function getNums(backendErrorMsg) {
+	// this regex matches for an N, followed by 3 digits
+	var pattern = /N\d{3}/g;
 	var arr = backendErrorMsg.match(pattern);
 
-	// remove the preceding N's to get each id
+	// remove the preceding N's to get each number of sequence
 	for (var i = 0; i < arr.length; i++) {
 		arr[i] = arr[i].substring(1);
 	}
