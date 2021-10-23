@@ -537,7 +537,8 @@ class EVONextState {
      * This passes the color blind mode option through the Next State window
      */
     static setColorBlindFromPrevWindow() {
-        EVO.isColorBlindMode = window.opener.analysisResult.colorVis.isColorBlind;
+        EVONextState.isColorBlindMode = myInputJSObject.results.colorVis.isColorBlind;
+        // window.opener.analysisResult.colorVis.isColorBlind;
     }
 
     /**
@@ -560,17 +561,17 @@ class EVONextState {
         switch (this.sliderOptionNextState) {
             case '1':
                 EVONextState.colorIntentionsByState();
-                this.changeIntentionsText(analysis.elements, analysis.paper);
+                this.changeIntentionsText(analysis);
                 break;
 
             case '2':
                 EVONextState.colorIntentionsByPercents();
-                this.changeIntentionsText(analysis.elements, analysis.paper);
+                this.changeIntentionsText(analysis);
                 break;
 
             default: // ColorVis off
-                EVO.returnAllColors(analysis.elements, analysis.paper);
-                EVO.revertIntentionsText(analysis.elements, analysis.paper);
+                EVO.returnAllColors(analysis);
+                EVO.revertIntentionsText(analysis);
                 break;
         }
     }
@@ -583,12 +584,13 @@ class EVONextState {
         var cellView;
         var colorChange;
 
-        for (var i = 0; i < analysis.elements.length; i++) {
-            cell = analysis.elements[i];
+        for (var i = 0; i < analysis.intentions.length; i++) {
+            cell = analysis.intentions[i];
             value = cell.attributes.attrs[".satvalue"].value;
             cellView = cell.findView(analysis.paper);
             colorChange = EVO.getColor(value);
-            cellView.model.attr({ '.outer': { 'fill': colorChange } });
+            cellView.attr({ '.outer': { 'fill': colorChange } });
+            console.log(cellView);
         }
     }
 
@@ -655,12 +657,15 @@ class EVONextState {
     /**
      * Changes text color to white when EVO is on
      */
-    static changeIntentionsText(elements, paper) {
-        var curr;
-        for (var i = 0; i < elements.length; i++) {
-            curr = elements[i].findView(paper).model;
-            if (curr.attributes.type !== 'basic.Actor') {
-                curr.attr({ text: { fill: 'white', stroke: 'none' } });
+    static changeIntentionsText(analysis) {
+        
+        if (EVONextState.sliderOptionNextState != '0') {
+            for (let element of analysis.intentions) {
+                element.attr({ text: { fill: 'white' } });
+            }
+        } else {
+            for (let element of analysis.intentions) {
+                element.attr({ text: { fill: 'black' } });
             }
         }
     }
