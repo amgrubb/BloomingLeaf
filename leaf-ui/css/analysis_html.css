@@ -640,7 +640,7 @@ div.attribution{
 #colorResetAnalysis {
   position: relative;
   top: -6px;
-  width: 92px; /* 92 */
+  width: 69px; /* 92 */
 }
 .EVO-whole-button {
   cursor: pointer;
@@ -668,14 +668,6 @@ div.attribution{
 }
 
 #nextStateSlider{
-  width: 140px;
-}
-
-#modelingSlider {
-  width: 100px;
-}
-
-#analysisSlider{
   width: 140px;
 }
 
