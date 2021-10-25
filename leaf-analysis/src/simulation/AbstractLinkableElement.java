@@ -3,6 +3,8 @@
  */
 package simulation;
 
+import merge.VisualInfo;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +18,8 @@ public abstract class AbstractLinkableElement extends AbstractElement{
  
     List<AbstractElementLink> linksSrc = new ArrayList<AbstractElementLink>();
     List<AbstractElementLink> linksDest = new ArrayList<AbstractElementLink>();
+    
+    VisualInfo visual;
 	
 	public int getIdNum() {
 		return Integer.parseInt(id);
@@ -84,6 +88,16 @@ public abstract class AbstractLinkableElement extends AbstractElement{
 	 */
 	public void setLinksDest(List<AbstractElementLink> linksDest) {
 		this.linksDest = linksDest;
+	}
+	
+	/**
+	 * @param width the width on the paper
+	 * @param height the height on the paper
+	 * @param x the x position on the paper
+	 * @param y the y position on the paper
+	 */
+	public void setVisualInfo(VisualInfo visualInfo) {
+		this.visual = visualInfo;
 	}
 	
 }

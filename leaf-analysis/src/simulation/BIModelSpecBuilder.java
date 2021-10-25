@@ -15,7 +15,7 @@ public class BIModelSpecBuilder {
      * 	Note: this function depends on modelSpec.getNumIntentions() being set prior to being called.
      * @param aRequest - the request passed from the front end
      */
-    private static void readAnalysisParameters(ModelSpec modelSpec, IAnalysisRequest aRequest,
+    protected static void readAnalysisParameters(ModelSpec modelSpec, IAnalysisRequest aRequest,
     		int numIntentions) {
     	try {
 			// Type of analysis
@@ -45,7 +45,7 @@ public class BIModelSpecBuilder {
      * @param frontendModel
      * Note: Model constraints are assigned after intentions are established.
      */
-    private static void readOverallGraphParameters(ModelSpec modelSpec, IGraph frontendModel) {
+    protected static void readOverallGraphParameters(ModelSpec modelSpec, IGraph frontendModel) {
     	try {	
 			//Max Absolute Time
 			if(frontendModel.getMaxAbsTime() != null){
