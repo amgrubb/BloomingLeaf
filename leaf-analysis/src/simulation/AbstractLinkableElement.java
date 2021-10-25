@@ -19,7 +19,7 @@ public abstract class AbstractLinkableElement extends AbstractElement{
     List<AbstractElementLink> linksSrc = new ArrayList<AbstractElementLink>();
     List<AbstractElementLink> linksDest = new ArrayList<AbstractElementLink>();
     
-    VisualInfo visual;
+    VisualInfo visual = null;
 	
 	public int getIdNum() {
 		return Integer.parseInt(id);
@@ -98,6 +98,10 @@ public abstract class AbstractLinkableElement extends AbstractElement{
 	 */
 	public void setVisualInfo(VisualInfo visualInfo) {
 		this.visual = visualInfo;
+	}
+	
+	public VisualInfo getVisualInfo() {
+		return this.visual;
 	}
 	
 }

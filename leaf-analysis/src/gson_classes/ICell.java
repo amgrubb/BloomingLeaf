@@ -49,6 +49,9 @@ public class ICell {
 	public Integer getY() {
 		return position.y;
 	}
+	/**
+	 * @return whether the ICell contains visual information
+	 */
 	public Boolean isVisual() {
 		return (size != null && position != null);
 	}

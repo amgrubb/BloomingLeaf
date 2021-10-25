@@ -1,4 +1,4 @@
-package simulation;
+package merge;
 
 import java.io.File;
 import java.io.FileReader;
@@ -8,24 +8,26 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import gson_classes.IMain;
-import gson_classes.IOSolution;
+
+import simulation.ModelSpec;
+import simulation.BIModelSpecBuilder;
 
 /**
- * SolveModelTest 
- * This class is the main app class called in the backend.
- * It is responsible to get the json model file produced in the frontend and process into the model used in the backend.
- * Then it executes all analysis creating a output file that has the json analysed file to be send back to the frontend.
+ * MMain
+ * This class is the main app class for the model merge
+ * It is responsible to get two json model files produced in the frontend and process into the model used in the backend.
+ * Then it executes all model merge creating an output file with the json of the merged model.
  *
  */
 public class MMain {
 	public final static boolean DEBUG = false;
 
 	/**
-	 * This method is responsible to execute all steps to generate the analysis file.
+	 * This method is responsible to execute all steps to generate the merged model
 	 * @param args Default command line arguments.
 	 */
 	public static void main(String[] args) {
-		//This is the default filePath to be executed if no file is pass through parameters
+		//This is the default filePath to be executed if no file is passed through parameters
 		String filePath = "temp/";
 		String inputFile1 = "default1.json";
 		String inputFile2 = "default2.json";
@@ -41,10 +43,20 @@ public class MMain {
 			
 	    	//TODO: MERGE-Y THINGS
 			//ModelSpec mergedModel = things;
+			// test outputs
+			System.out.println("m1:");
+			System.out.println(modelSpec1);
 			
+			System.out.println("intentions:");
+			System.out.println(modelSpec1.getIntentions().get(0).getVisualInfo().toString());
+			
+			System.out.println("m2:");
+			System.out.println(modelSpec2);
+			
+			ModelSpec mergedModel = modelSpec1;
 			
 			//Create Output file that will be used by frontend
-			//createOutputFile(mergedModel, output.json);
+			// createOutputFile(mergedModel, filePath + outputFile);
 			
 		
 		} catch (RuntimeException e) {
@@ -122,7 +134,7 @@ public class MMain {
 			Gson gson = builder.create();
 			IMain frontendObject = gson.fromJson(new FileReader(filePath), IMain.class);
 
-			ModelSpec modelSpec =  VisualModelSpecBuilder.buildModelSpec(frontendObject);
+			ModelSpec modelSpec = BIModelSpecBuilder.buildModelSpec(frontendObject);
 			return modelSpec;
 			
 		} catch(Exception e) {

@@ -3,6 +3,7 @@ package simulation;
 import java.util.ArrayList;
 import java.util.List;
 import gson_classes.*;
+import merge.VisualInfo;
 
 /**
  * This class is responsible to get the front-end model and convert into the back-end model filling the necessary attributes.
@@ -112,8 +113,14 @@ public class BIModelSpecBuilder {
 				for(ICell dataActor: actors){
 					String backID = "A" + String.format("%03d", actorID);
 					actorID ++;
-					modelSpec.getActors().add(new Actor(backID,	dataActor.getActor().getActorName(), 
-							dataActor.getActor().getType(),	dataActor.getId()));
+					Actor newActor = new Actor(backID,	dataActor.getActor().getActorName(), 
+							dataActor.getActor().getType(),	dataActor.getId());
+					if (dataActor.isVisual()) { // actor contains visual information
+						VisualInfo visual = new VisualInfo(dataActor.getWidth(), dataActor.getHeight(),
+														   dataActor.getX(), dataActor.getY());
+						newActor.setVisualInfo(visual);
+					}
+					modelSpec.getActors().add(newActor);
 				}
 			}
 			if (Main.DEBUG) System.out.println("Read Actors");
@@ -123,6 +130,11 @@ public class BIModelSpecBuilder {
 			if(!intentions.isEmpty()){			
 				for (ICell dataIntention : intentions){
 					Intention newInt = Intention.createIntention(dataIntention, modelSpec);
+					if (dataIntention.isVisual()) { // intention contains visual information
+						VisualInfo visual = new VisualInfo(dataIntention.getWidth(), dataIntention.getHeight(),
+														   dataIntention.getX(), dataIntention.getY());
+						newInt.setVisualInfo(visual);
+					}
 					modelSpec.getIntentions().add(newInt); 
 				}
 			}

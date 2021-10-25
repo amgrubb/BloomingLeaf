@@ -12,4 +12,8 @@ public class VisualInfo {
 		this.x = x;
 		this.y = y;
 	}
+	
+	public String toString() {
+		return "width:" + String.valueOf(this.width) + " height:" + String.valueOf(this.height) + " x:" + String.valueOf(this.x) + " y:" + String.valueOf(this.y);
+	}
 }
