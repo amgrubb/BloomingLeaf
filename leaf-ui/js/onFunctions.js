@@ -284,7 +284,7 @@ graph.on("add", function (cell) {
                 var nameIndex = parseInt(createdInstance[createdInstance.length - i].model.attr('.name/text').split('_').pop());
                 // If name has been changed 
                 if (createdInstance[createdInstance.length - i].model.attr('.name/text').split('_').shift() == "Actor") {
-                    numList += nameIndex + " "
+                    numList += nameIndex + " ";
                 };
             }
             numList = numList.split(" ");
