@@ -33,8 +33,8 @@
             <div class="dropdown-toolbar">
                 <a id="btn-load" class="model-only">Load</a>
                 <a id="btn-save">Save Model</a>
-                <a id="btn-save-analysis">Save Model and Analysis Configuration</a>
-                <a id="btn-save-all">Save Model, Analysis Configuration, and Results</a>
+                <a id="btn-save-analysis">Save Model and Analysis Requests</a>
+                <a id="btn-save-all">Save Model, Analysis Requests, and Results</a>
                 <a id="btn-svg">Open as SVG</a>
             </div>
         </div>
@@ -49,7 +49,7 @@
                 <a id="btn-clear-flabel" class='model-only'>Clear Dynamic Function Labels</a>
                 <a id="btn-clear-cycle" class='model-only'>Clear Cycle Highlighting</a>
                 <a id="btn-clear-results" class='analysis-only' style="display: none;">Clear Results Only</a>
-                <a id="btn-clear-analysis" class='analysis-only' style="display: none;">Clear Configurations and
+                <a id="btn-clear-analysis" class='analysis-only' style="display: none;">Clear Requests and
                     Results</a>
             </div>
         </div>
@@ -128,17 +128,15 @@
     <div id='configID'>
     </div>
 
-    <div id='analysisID'>
+    <div id='analysisID' class='analysis-only'>
     </div>
 
     <div id="paper">
     </div>
 
-    <div class="inspector">
+    <div class="inspector model-only">
         <div id="layout"></div>
     </div>
-    <!-- TODO replace it with another format-->
-    <!-- <span id="modeText">Modeling View</span> -->
 
     <div id="slider"></div>
     <span id="sliderValue"></span>
@@ -190,7 +188,7 @@
 
     <!-- Front end scripts -->
     <script src="./js/initializeElements.js"></script>
-    <script src="./js/displayAnalysis.js"></script>
+    <script src="./js/sliderObjects.js"></script>
     <script src="./js/errorDetection.js"></script>
     <script src="./js/loadSaveFunctions.js"></script>
     <script src="./js/onFunctions.js"></script>
@@ -201,7 +199,7 @@
 
     <script src="./js/backendComm.js"></script>
 
-    <div class="attribution">
+    <div class="attribution model-only">
         <img src="./images/site-logo.PNG" style="width:25%;height:25%;float:left">
         Release 2.0 <br>
         Copyright 2015-2021.<br>Grubb Lab, Smith College<br>

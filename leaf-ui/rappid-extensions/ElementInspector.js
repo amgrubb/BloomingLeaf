@@ -76,7 +76,7 @@ var ElementInspector = Backbone.View.extend({
         '<textarea class="cell-attrs-text"></textarea>',
         '<label>Initial Satisfaction Value:</label>',
         '<select id="init-sat-value">',
-        '<option value="(no value)" disabled> (no value) </option>',
+        '<option value="(no value)"> (no value) </option>',
         '<option value="0000"> None (⊥, ⊥)</option>',
         '<option value="0011"> Satisfied (F, ⊥)</option>',
         '<option value="0010"> Partially Satisfied (P, ⊥) </option>',
@@ -168,7 +168,7 @@ var ElementInspector = Backbone.View.extend({
             this.model.attr(".funcvalue/text", ' ');
         }
 
-        this.$('#init-sat-value').prop('disabled', true);
+        
         // Turn off repeating by default
         this.repeatOptionsDisplay = false;
         // Turn off display for repeat related elements and values
@@ -221,7 +221,7 @@ var ElementInspector = Backbone.View.extend({
             this.$('option[value=D]').prop('disabled', this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair') === '1100');
             this.$('option[value=MP]').prop('disabled', this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair') === '0011');
             this.$('option[value=MN]').prop('disabled', this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair') === '1100');
-        }
+        }    
     },
 
     /**
@@ -275,6 +275,7 @@ var ElementInspector = Backbone.View.extend({
         this.checkInitialSatValue();
         this.updateCell();
         this.updateHTML(event);
+        this.checkConstraints();
         resetConfig();
     },
 
@@ -286,9 +287,45 @@ var ElementInspector = Backbone.View.extend({
      * This function is called on change for .function-type.
      */
     funcTypeChanged: function (event) {
+        var evolvingTypes = ["RC", "CR", "MP", "MN", "SD", "DS", "UD"];
+    
+        if (evolvingTypes.includes(this.intention.get('evolvingFunction').get('type'))) { // If the previous function is evolving
+            this.checkConstraints(); //Check for associated contraints
+        };
+
         this.intention.setEvolvingFunction(this.$('.function-type').val());
         this.updateCell();
+        // Disabling invalid function types are needed here b/c selecting a function type can change the init sat value
+        this.$('option[value=I]').prop('disabled', this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair') === '0011');
+        this.$('option[value=D]').prop('disabled', this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair') === '1100');
+        this.$('option[value=MP]').prop('disabled', this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair') === '0011');
+        this.$('option[value=MN]').prop('disabled', this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair') === '1100');
         this.updateHTML(event);
+    },
+
+    /**
+     * Check the constraints to see if there are any associated with the current intention and
+     * destroy the contraint if it is found
+     *
+     * This function is called in funcTypeChanged
+     */
+    checkConstraints: function () {
+        var indices = [];
+        var index = 0;
+        var constraints = graph.get('constraints');
+
+        // Finding the contraints that need to be deleted
+        constraints.forEach(
+            constraint => {
+                // If the contraints source or destination ID is the current intention's ID
+                if (constraint.get('srcID')===this.model.get('id') || constraint.get('destID')===this.model.get('id')){
+                    indices.push(index); // Record the index
+                };
+                index++;
+            });
+        for(var i = indices.length-1; i >=0 ; i--) { // Go through the indices backward to not disrupt the sequence
+            constraints.at(indices[i]).destroy(); // Destroy the contraint
+        }
     },
 
     /**
@@ -687,6 +724,16 @@ var ElementInspector = Backbone.View.extend({
                     functionSegView.render();
                     i++;
                 })
+        // Renders the chart if there is only an initial satisfaction value 
+        } else if (this.intention.get('evolvingFunction') != null && this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair') !== null && this.intention.get('evolvingFunction').get('type') === 'NT') {
+            // Clear previous chart values
+            this.chart.reset();
+            // Gets the chart canvas
+            var context = $("#chart").get(0).getContext("2d");
+            // Adds the initial satisfaction as a single point to the chart
+            this.chart.addDataSet(0, [satisfactionValuesDict[this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair')].chartVal], false);
+            // Renders the chart
+            this.chart.display(context);
         }
     },
 
@@ -902,10 +949,9 @@ var FuncSegView = Backbone.View.extend({
             } else { // If the model is not the most recent model disable the function type and satisfaction value selectors 
                 this.$("#seg-function-type").prop('disabled', true);
                 this.$("#seg-sat-value").prop('disabled', true);
-                // If the function is UD, stochastic, and not current you have to append (no value) to the html
+                // If the function is UD, stochastic, and not current set html to (no value) 
                 if (this.model.get('type') == 'R') {
-                    this.$('#seg-sat-value').html(this.satValueOptionsNoRandom());
-                    this.$("#seg-sat-value").html('<option value="(no value)"> (no value) </option>');
+                    this.$("#seg-sat-value").last().html(this.satValueOptionsAll());
                     this.$("#seg-sat-value").val("(no value)");
                 }
             }
@@ -926,8 +972,7 @@ var FuncSegView = Backbone.View.extend({
 
         // Set stochastic functions to (no value)
         if (functionType == 'R') {
-            this.$('#seg-sat-value').html(this.satValueOptionsNoRandom());
-            this.$("#seg-sat-value").html('<option value="(no value)"> (no value) </option>');
+            this.$("#seg-sat-value").last().html(this.satValueOptionsAll());
             this.$("#seg-sat-value").val("(no value)");
             this.model.get('refEvidencePair');
         } else if (this.intention.get('evolvingFunction').get('type') !== 'MP' && this.intention.get('evolvingFunction').get('type') !== 'MN' && this.intention.get('evolvingFunction').get('type') !== 'SD' && this.intention.get('evolvingFunction').get('type') !== 'DS' && functionType == 'C') {
@@ -964,12 +1009,12 @@ var FuncSegView = Backbone.View.extend({
                 this.model.set('refEvidencePair', "1100");
             }
         } else if (func == 'R') {
-            this.$("#seg-sat-value").html(this.satValueOptionsAll());
-            this.$("#seg-sat-value").val("(no value)");
-            this.model.set('refEvidencePair', '(no value)');
-            this.$("#seg-sat-value").prop('disabled', true);
-        } else if (func == 'C') {
             this.$("#seg-sat-value").last().html(this.satValueOptionsAll());
+            this.$("#seg-sat-value").val("(no value)");
+            this.$("#seg-sat-value").prop('disabled', true);
+            this.model.set('refEvidencePair', '(no value)');
+        } else if (func == 'C') {
+            this.$("#seg-sat-value").last().html(this.satValueOptionsNoRandom());
             // Restrict input to initial satisfaction value if it is the first constraint
             if (this.index == 0) {
                 this.$("#seg-sat-value").val(this.initSatValue);
@@ -1028,7 +1073,7 @@ var FuncSegView = Backbone.View.extend({
     */
     satValueOptionsNoRandom: function () {
         var result = '';
-        for (let value of ["0011", "0010", "0100", "1100"]) {
+        for (let value of ["0011", "0010", "0000", "0100", "1100"]) {
             result += this.binaryToOption(value);
         }
         return result;
@@ -1091,7 +1136,7 @@ var FuncSegView = Backbone.View.extend({
             if (threeLabelFunc.includes(funcType)) {
                 this.chart.labels = ['0', 'A', 'Infinity'];
                 if (funcType === 'RC') {
-                    var satVal = satisfactionValuesDict[this.intention.getFuncSegments()[0].get('refEvidencePair')].chartVal;
+                    var satVal = satisfactionValuesDict[this.model.get('refEvidencePair')].chartVal;
                     this.chart.addDataSet(0, [initVal, initVal], true);
                     this.chart.addDataSet(1, [satVal, satVal], false);
                 } else if (funcType === 'CR') {
@@ -1179,19 +1224,6 @@ var FuncSegView = Backbone.View.extend({
             this.chart.addDataSet(i, [data1, data2], currFunc === 'R' || currVal === '(no value)', coloured);
         }
         this.chart.display(context);
-    },
-    /**
-     * Modifies the passed in datasets with their default values
-     * @param {Array.<Object>}
-     */
-    resetChartDatasets: function (datasets) {
-        for (var i = 0; i < datasets.length; i++) {
-            datasets[i].borderDash = [];
-            datasets[i].data = [];
-            datasets[i].pointBackgroundColor = ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"];
-            datasets[i].pointBorderColor = ["rgba(220,220,220,1)", "rgba(220,220,220,1)", "rgba(220,220,220,1)"];
-            datasets[i].borderColor = "rgba(220,220,220,1)";
-        }
     },
 
     /**
