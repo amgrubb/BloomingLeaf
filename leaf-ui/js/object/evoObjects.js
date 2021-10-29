@@ -573,8 +573,8 @@ class EVONextState {
                 break;
 
             default: // ColorVis off
-                EVO.returnAllColors(analysis);
-                EVO.revertIntentionsText(analysis);
+                EVONextState.returnAllColors(analysis);
+                this.changeIntentionsText(analysis);
                 break;
         }
     }
@@ -647,11 +647,8 @@ class EVONextState {
         console.log(element)
         for (var j = 0; j < EVO.numEvals; ++j) {
             var intentionEval = EVO.colorVisOrder[j];
-            console.log(intentionEval)
             if (element.evals[intentionEval] > 0) {
-                console.log(element.evals[intentionEval])
                 currColor = EVO.getColor(intentionEval);
-                console.log(currColor)
                 // Before buffer
                 offsetTotal += 0.001;
                 gradientStops.push({
@@ -677,6 +674,16 @@ class EVONextState {
             stops: gradientStops
         });
         return gradientId;        
+    }
+
+    /**
+    * Returns element color to based on element type
+    */
+        static returnAllColors(analysis) {
+        for (var i = 0; i < analysis.intentions.length; i++) {
+            var cellView = analysis.intentions[i].findView(analysis.paper);
+            cellView.model.changeToOriginalColour();
+        }
     }
 
     /**
