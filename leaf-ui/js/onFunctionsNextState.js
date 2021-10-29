@@ -10,6 +10,7 @@ $('#btn-zoom-out').on('click', function () { zoomOut(analysis.paperScroller); })
 $('#btn-fnt').on('click', function () { defaultFont(analysis.paper); });
 $('#btn-fnt-up').on('click', function () { fontUp(analysis.paper); });
 $('#btn-fnt-down').on('click', function () { fontDown(analysis.paper); });
+$('#nextStateSlider').on('mouseup', function () { renderEVO(); })
 $('.inspector-btn-small').on('click', function () { goToState(); });
 $('.filter_checkbox').on('mousedown', function () { $("body").addClass("spinning"); }); // Adds waiting spinner to cursor
 $('.filter_checkbox').on('click', function () { add_filter() });

@@ -187,10 +187,15 @@
         updatePagination(currentPage);
         updateNodesValues(currentPage);
 
+        renderEVO();
+    }
+
+    function renderEVO() {
         // TODO: implement this back in eventually
         console.log(analysis);
         EVONextState.setColorBlindFromPrevWindow();
-        EVONextState.refresh();
+        EVONextState.setSliderOptionNextState();
+        //EVONextState.refresh();
     }
 
     /**
