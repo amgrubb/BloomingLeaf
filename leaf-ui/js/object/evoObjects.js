@@ -697,7 +697,12 @@ class EVONextState {
             }
         } else {
             for (let element of analysis.intentions) {
-                element.attr({ text: { fill: 'black' } });
+                var satValue = element.attr(".satvalue").value;
+                if ( (satValue == "0000") || (satValue == "0100") || (satValue == "1000") || (satValue == "1100") || (satValue == "0001") || (satValue == "0011") || (satValue == "0010")) {
+                    element.attr({ text: { fill: 'black' } });
+                } else {
+                    element.attr({ text: { fill: 'red' } });
+                }
             }
         }
     }
