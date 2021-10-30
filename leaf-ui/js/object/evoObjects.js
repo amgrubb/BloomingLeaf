@@ -533,12 +533,10 @@ class EVONextState {
     static sliderOptionNextState = 0;
 
     /**
-     * Next State window has new instance of EVO.
-     * This passes the color blind mode option through the Next State window
+     * This sets the color blind mode option to whatever it was in the previous window
      */
     static setColorBlindFromPrevWindow() {     
         EVONextState.isColorBlindMode = myInputJSObject.results.get('colorVis').isColorBlind;
-        console.log("Color Blind Mode: " + EVONextState.isColorBlindMode)
     }
 
     /**
@@ -559,8 +557,6 @@ class EVONextState {
      * Changes visual layout depending on slider option.
      */
     static refresh() {
-        console.log('refresh');
-        console.log(this.sliderOptionNextState)
         switch (this.sliderOptionNextState) {
             case '1':
                 EVONextState.colorIntentionsByPercents();
@@ -587,15 +583,12 @@ class EVONextState {
         var cellView;
         var colorChange;
 
-        // element.attr(".satvalue").value = satValue;
-
         for (var i = 0; i < analysis.intentions.length; i++) {
             var element = analysis.intentions[i];
             value = element.attr(".satvalue").value;
             cellView = element.findView(analysis.paper);
             colorChange = EVO.getColor(value);
             cellView.model.attr({ '.outer': { 'fill': colorChange } });
-            console.log(cellView);
         }
     }
 
@@ -604,9 +597,7 @@ class EVONextState {
      */
     static colorIntentionsByPercents() {
         var intentionPercents = [];
-        allSolutionArray = [];
-        // Acquire all next state info
-        // var percentPerEvaluation = 1.0 / analysis.analysisResult.allSolution.length; // Number of next states      
+        allSolutionArray = [];      
         // Iterates over the hashmap allSolutions and combines all of the solutions into one array
         for (var key in myInputJSObject.results.get('allSolutions')) {
             // Adds every element (which are arrays) in the old array to the new array
@@ -615,8 +606,7 @@ class EVONextState {
                     allSolutionArray.push(solution);
                 })
         }
-        var percentPerEvaluation = 1.0 / allSolutionArray.length;
-        var step = 0;
+        var percentPerEvaluation = 1.0 / allSolutionArray.length; // Total number of solutions
         // Store: ID + percents per eval
         for (var i = 0; i < analysis.intentions.length; i++) { // For each elements
             // Compile and calculate % for each node -> % must be updated every time a filter is applied
@@ -644,7 +634,6 @@ class EVONextState {
         var offsetTotal = 0.0;
         var currColor;
 
-        console.log(element)
         for (var j = 0; j < EVO.numEvals; ++j) {
             var intentionEval = EVO.colorVisOrder[j];
             if (element.evals[intentionEval] > 0) {

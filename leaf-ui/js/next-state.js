@@ -33,7 +33,6 @@
      * Initializes all of the components needed for the popup window
      */
     function init() {
-        console.log(myInputJSObject.results);
         //Page objects
         analysis.graph = new joint.dia.BloomingGraph();
         analysis.paper;
@@ -190,12 +189,12 @@
         renderEVO();
     }
 
+    /**
+     * Is called whenever the slider changes and when the sidebar is rendered.
+     */
     function renderEVO() {
-        // TODO: implement this back in eventually
-        console.log(analysis);
         EVONextState.setColorBlindFromPrevWindow();
         EVONextState.setSliderOptionNextState();
-        //EVONextState.refresh();
     }
 
     /**
