@@ -134,7 +134,7 @@ class EVO {
         this.numTimePoints = elementList[0].status.length;
         this.intentionListColorVis = [];
         // Assessable in next state window 
-        this.isColorBlind = false;
+        this.isColorBlind = EVO.isColorBlindMode;
         this.initializeIntentionList();
     }
 
@@ -587,7 +587,7 @@ class EVONextState {
             var element = analysis.intentions[i];
             value = element.attr(".satvalue").value;
             cellView = element.findView(analysis.paper);
-            colorChange = EVO.getColor(value);
+            colorChange = EVONextState.getColor(value);
             cellView.model.attr({ '.outer': { 'fill': colorChange } });
         }
     }
@@ -626,6 +626,16 @@ class EVONextState {
     }
 
     /**
+     * Returns color that corresponds to an intention eval. Checks for color blind mode first.
+     * @param {String} intentionEval four digit code that corresponds to evidence pair (ex. 0011)
+     */
+    static getColor(intentionEval) {
+        if (EVONextState.isColorBlindMode) {
+            return EVO.colorVisDictColorBlind[intentionEval];
+        }
+        return EVO.colorVisDict[intentionEval]; }
+
+    /**
      * Creates a gradient for an intention in colorIntentionsByPercents()
      * @param {Object} element 
      */
@@ -637,7 +647,7 @@ class EVONextState {
         for (var j = 0; j < EVO.numEvals; ++j) {
             var intentionEval = EVO.colorVisOrder[j];
             if (element.evals[intentionEval] > 0) {
-                currColor = EVO.getColor(intentionEval);
+                currColor = EVONextState.getColor(intentionEval);
                 // Before buffer
                 offsetTotal += 0.001;
                 gradientStops.push({
