@@ -515,6 +515,7 @@ paper.on("link:options", function (cell) {
         var curRequest = configCollection.findWhere({ selected: true });
         curRequest.set('action', 'singlePath');
         backendSimulationRequest(curRequest);
+        findSelectedResult();
     });
     /** All Next States:
      * Selects the current configuration and prior results and passes them to backendSimulationRequest()  */
@@ -610,15 +611,6 @@ paper.on("link:options", function (cell) {
 
         // Disable link settings
         $('.link-tools').css("display", "none");
-
-        EVO.refresh(selectResult);
-
-        var configResults = configCollection.findWhere({ selected: true }).get('results');
-        if (configResults !== undefined) {
-            selectResult = configResults.findWhere({ selected: true });
-        }
-        EVO.refresh(selectResult);
-
         // TODO: Add check for model changes to potentially clear configCollection back in
     }
 
@@ -685,38 +677,6 @@ paper.on("link:options", function (cell) {
         document.cookie = 'graph={}; expires=Thu, 18 Dec 2013 12:00:00 UTC';
     }
 
-    // Save the current graph and analysis (without results) to json file
-    $('#btn-save-analysis').on('click', function () {
-        var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
-        if (name) {
-            clearCycleHighlighting(selectResult);
-            EVO.deactivate();
-            var fileName = name + ".json";
-            var obj = getModelAnalysisJson(configCollection);
-            download(fileName, stringifyCirc(obj));
-        }
-    });
-
-    // Save the current graph and analysis (with results) to json file
-    $('#btn-save-all').on('click', function () {
-        var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
-        if (name) {
-            clearCycleHighlighting(selectResult);
-            EVO.deactivate();
-            var fileName = name + ".json";
-            var obj = getFullJson(configCollection);
-            download(fileName, stringifyCirc(obj));
-        }
-    });
-
-    // Workaround for load, activates a hidden input element
-    $('#btn-load').on('click', function () {
-        $('#loader').click();
-        // Sets EVO to off when you load a model
-        EVO.setSliderOption(0);
-        EVO.refreshSlider();
-    });
-
     // Load ConfigCollection for display 
     // TODO: modify it to read results after results can be shown
     function loadConfig(loadedConfig) {
@@ -759,6 +719,49 @@ paper.on("link:options", function (cell) {
             currResult.set('selected', true);
         }
     }
+
+    function findSelectedResult() {
+        if (selectResult == undefined) {
+            if (configCollection.length !== 0) {
+                selectConfig = configCollection.filter(Config => Config.get('selected') == true)[0];
+                if (selectConfig.get('results') !== undefined) {
+                    selectResult = selectConfig.get('results').filter(resultModel => resultModel.get('selected') == true)[0];
+                }
+            }
+        }
+    }
+
+    // Save the current graph and analysis (without results) to json file
+    $('#btn-save-analysis').on('click', function () {
+        var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
+        if (name) {
+            clearCycleHighlighting(selectResult);
+            EVO.deactivate();
+            var fileName = name + ".json";
+            var obj = getModelAnalysisJson(configCollection);
+            download(fileName, stringifyCirc(obj));
+        }
+    });
+
+    // Save the current graph and analysis (with results) to json file
+    $('#btn-save-all').on('click', function () {
+        var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
+        if (name) {
+            clearCycleHighlighting(selectResult);
+            EVO.deactivate();
+            var fileName = name + ".json";
+            var obj = getFullJson(configCollection);
+            download(fileName, stringifyCirc(obj));
+        }
+    });
+
+    // Workaround for load, activates a hidden input element
+    $('#btn-load').on('click', function () {
+        $('#loader').click();
+        // Sets EVO to off when you load a model
+        EVO.setSliderOption(0);
+        EVO.refreshSlider();
+    });
 
     $(window).resize(function () {
         var config = configCollection.findWhere({ selected: true });
@@ -809,14 +812,14 @@ paper.on("link:options", function (cell) {
     $('#colorblind-mode-isOff').on('click', function () { // Activates colorblind mode
         $('#colorblind-mode-isOff').css("display", "none");
         $('#colorblind-mode-isOn').css("display", "");
-
+        findSelectedResult();
         EVO.toggleColorBlindMode(true, selectResult);
     });
 
     $('#colorblind-mode-isOn').on('click', function () { // Turns off colorblind mode
         $('#colorblind-mode-isOn').css("display", "none");
         $('#colorblind-mode-isOff').css("display", "");
-
+        findSelectedResult()
         EVO.toggleColorBlindMode(false, selectResult);
     });
 
@@ -833,12 +836,7 @@ paper.on("link:options", function (cell) {
     document.getElementById("colorResetAnalysis").oninput = function () { // Changes slider mode and refreshes
         var selectConfig;
         //TODO: Find out why the selectResult is empty before we reassign it
-        if (configCollection.length !== 0) {
-            selectConfig = configCollection.filter(Config => Config.get('selected') == true)[0];
-            if (selectConfig.get('results') !== undefined) {
-                selectResult = selectConfig.get('results').filter(resultModel => resultModel.get('selected') == true)[0];
-            }
-        }
+        findSelectedResult();
         EVO.setSliderOption(this.value, selectResult);
     }
 } // End scope of configCollection and configInspector
