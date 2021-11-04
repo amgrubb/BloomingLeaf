@@ -515,7 +515,6 @@ paper.on("link:options", function (cell) {
         var curRequest = configCollection.findWhere({ selected: true });
         curRequest.set('action', 'singlePath');
         backendSimulationRequest(curRequest);
-        findSelectedResult();
     });
     /** All Next States:
      * Selects the current configuration and prior results and passes them to backendSimulationRequest()  */
@@ -720,15 +719,13 @@ paper.on("link:options", function (cell) {
         }
     }
 
-    function findSelectedResult() {
-        if (selectResult == undefined) {
-            if (configCollection.length !== 0) {
-                selectConfig = configCollection.filter(Config => Config.get('selected') == true)[0];
-                if (selectConfig.get('results') !== undefined) {
-                    selectResult = selectConfig.get('results').filter(resultModel => resultModel.get('selected') == true)[0];
-                }
-            }
-        }
+    /**
+     * 
+     * Set selectResult from functions outside of the parenthesis
+     * @param {*} result 
+     */
+    function setSelectResult(result) {
+        selectResult = result;
     }
 
     // Save the current graph and analysis (without results) to json file
@@ -812,14 +809,12 @@ paper.on("link:options", function (cell) {
     $('#colorblind-mode-isOff').on('click', function () { // Activates colorblind mode
         $('#colorblind-mode-isOff').css("display", "none");
         $('#colorblind-mode-isOn').css("display", "");
-        findSelectedResult();
         EVO.toggleColorBlindMode(true, selectResult);
     });
 
     $('#colorblind-mode-isOn').on('click', function () { // Turns off colorblind mode
         $('#colorblind-mode-isOn').css("display", "none");
         $('#colorblind-mode-isOff').css("display", "");
-        findSelectedResult()
         EVO.toggleColorBlindMode(false, selectResult);
     });
 
@@ -834,9 +829,6 @@ paper.on("link:options", function (cell) {
      * Four option analysis mode slider
      */
     document.getElementById("colorResetAnalysis").oninput = function () { // Changes slider mode and refreshes
-        var selectConfig;
-        //TODO: Find out why the selectResult is empty before we reassign it
-        findSelectedResult();
         EVO.setSliderOption(this.value, selectResult);
     }
 } // End scope of configCollection and configInspector

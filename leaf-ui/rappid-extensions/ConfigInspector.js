@@ -44,6 +44,7 @@ var ResultView = Backbone.View.extend({
         this.config.trigger('change:switchConfigs', this.config);
         SliderObj.displayAnalysis(this.model, true);
         EVO.refreshSlider(this.model);
+        setSelectResult(this.model);
     },
 
     /**
