@@ -134,6 +134,7 @@ var Config = Backbone.View.extend({
         'blur .config-input': 'setConfigName',
         'keyup .config-input': 'checkForEnter',
         'click .deleteconfig-button': 'removeConfig',
+        'outsideSetName .config-input': 'setConfigName',
     },
 
     /** Sets template and appends inner view */

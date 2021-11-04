@@ -482,6 +482,8 @@ paper.on('blank:pointerclick', function () {
     removeHighlight();
     if ($('.analysis-only').css("display") == "none") {
         clearInspector();
+    } else {
+        setName();
     }
 });
 
@@ -884,6 +886,14 @@ function clearInspector() {
     if ($('.inspector-views').length != 0) {
         $('.inspector-views').trigger('clearInspector');
     }
+}
+
+
+/**
+ * Trigger setConfigName outside ConfigInspector
+ */
+ function setName() {
+    $('.config-input').trigger('outsideSetName');
 }
 
 /**
