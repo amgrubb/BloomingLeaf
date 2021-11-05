@@ -604,7 +604,7 @@ class EVONextState {
             myInputJSObject.results.get('allSolutions')[key].forEach(
                 solution => {
                     allSolutionArray.push(solution);
-                })
+                });
         }
         var percentPerEvaluation = 1.0 / allSolutionArray.length; // Total number of solutions
         // Store: ID + percents per eval
