@@ -535,16 +535,22 @@ paper.on("link:options", function (cell) {
             curRequest.set('action', 'allNextStates');
             curRequest.set('previousAnalysis', curResult);
 
-            // If the last time point is selected, error message shows that you can't open Next State
-            if ((curResult.get('timePointPath').length - 1) === curResult.get('selectedTimePoint')) {
-                swal("Error: Cannot explore next states with last time point selected.", "", "error");
+            if (EVO.sliderOption == '1' || EVO.sliderOption == '2') {
+                swal("Error: Cannot explore next states from percent or time EVO options.", "", "error");
                 $("body").removeClass("spinning"); // Remove spinner from page
-            } else {
-                backendSimulationRequest(curRequest);
+            } else { 
+                // If the last time point is selected, error message shows that you can't open Next State
+                if ((curResult.get('timePointPath').length - 1) === curResult.get('selectedTimePoint')) {
+                    swal("Error: Cannot explore next states with last time point selected.", "", "error");
+                    $("body").removeClass("spinning"); // Remove spinner from page
+                } else {
+                    backendSimulationRequest(curRequest);
+                }
             }
         } else { // If single path has not been run show error message
             swal("Error: Cannot explore next states before simulating a single path.", "", "error");
         }
+        
     });
 
     function resetConfig() {
