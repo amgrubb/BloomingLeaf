@@ -798,13 +798,19 @@ paper.on("link:options", function (cell) {
         for (let element of graph.getElements()) {
             var cell = element.findView(paper).model;
             var intention = cell.get('intention');
-            var initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair');
-            var funcType = intention.get('evolvingFunction').get('type');
+            
+            if (intention != null) {
+                var initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair');
+                if (intention.get('evolvingFunction') != null) {
+                    var funcType = intention.get('evolvingFunction').get('type');
+                }
+            }
 
             // If the initsatVal is not empty and if funcType empty
             if (intention != null && initSatVal != '(no value)' && funcType === 'NT') {
                 intention.removeInitialSatValue();
                 cell.attr(".satvalue/text", "");
+                $('#init-sat-value').val('(no value)');
             }
         }
         EVO.refresh(selectResult);
