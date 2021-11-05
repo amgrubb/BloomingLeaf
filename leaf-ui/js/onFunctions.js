@@ -530,20 +530,18 @@ paper.on("link:options", function (cell) {
 
         // If single path has been run backend analysis
         if (singlePathRun === true) {
-            $("body").addClass("spinning"); // Adds spinner animation to page
             var curResult = curRequest.previousAttributes().results.findWhere({ selected: true });
             curRequest.set('action', 'allNextStates');
             curRequest.set('previousAnalysis', curResult);
 
             if (EVO.sliderOption == '1' || EVO.sliderOption == '2') {
                 swal("Error: Cannot explore next states from percent or time EVO options.", "", "error");
-                $("body").removeClass("spinning"); // Remove spinner from page
             } else { 
                 // If the last time point is selected, error message shows that you can't open Next State
                 if ((curResult.get('timePointPath').length - 1) === curResult.get('selectedTimePoint')) {
                     swal("Error: Cannot explore next states with last time point selected.", "", "error");
-                    $("body").removeClass("spinning"); // Remove spinner from page
                 } else {
+                    $("body").addClass("spinning"); // Adds spinner animation to page
                     backendSimulationRequest(curRequest);
                 }
             }
