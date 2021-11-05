@@ -226,7 +226,7 @@ $('#analysis-btn').on('click', function () {
     var cycleList = cycleSearch();
     // Alerts user if there are any cycles 
     cycleResponse(cycleList);
-    if (!isACycle(cycleList) && !isError) {
+    if (!isACycle(cycleList) && !isError && hasElements()) {
         clearCycleHighlighting();
         switchToAnalysisMode();
     }
