@@ -333,6 +333,10 @@ public class ModelSpec {
 		return intentions;
 	}
 	
+	public void setIntentions(List<Intention> intentions) {
+		this.intentions = intentions;
+	}
+	
 	public IOSolution getPrevResult() {
 		return prevResult;
 	}
@@ -343,6 +347,10 @@ public class ModelSpec {
 
 	public HashMap<String, String> getChangedTPNames() {
 		return changedTPNames;
+	}
+	
+	public void setChangedTPNames(HashMap<String, String> changedTPNames) {
+		this.changedTPNames = changedTPNames;
 	}
 
 	public List<ContributionLink> getContributionLinks() {
@@ -360,9 +368,21 @@ public class ModelSpec {
 	public void setDecompositionLinks(List<DecompositionLink> decompositionLinks) {
 		this.decompositionLinks = decompositionLinks;
 	}
+	
+	public List<NotBothLink> getNotBothLinks() {
+		return notBothLink;
+	}
+
+	public void setNotBothLinks(List<NotBothLink> notBothLinks) {
+		this.notBothLink = notBothLinks;
+	}
 
 	public List<TPConstraint> getLtTPconstraints() {
 		return ltTPconstraints;
+	}
+	
+	public void setLtTPconstraints(List<TPConstraint> ltTPconstraints) {
+		this.ltTPconstraints = ltTPconstraints;
 	}
 
 	public char getConflictAvoidLevel() {

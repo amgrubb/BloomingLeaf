@@ -11,6 +11,12 @@ import gson_classes.IMain;
 
 import simulation.ModelSpec;
 import simulation.BIModelSpecBuilder;
+import simulation.Intention;
+import simulation.ContributionLink;
+import simulation.DecompositionLink;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * MMain
@@ -20,7 +26,7 @@ import simulation.BIModelSpecBuilder;
  *
  */
 public class MMain {
-	public final static boolean DEBUG = false;
+	public final static boolean DEBUG = true;
 
 	/**
 	 * This method is responsible to execute all steps to generate the merged model
@@ -29,8 +35,8 @@ public class MMain {
 	public static void main(String[] args) {
 		//This is the default filePath to be executed if no file is passed through parameters
 		String filePath = "temp/";
-		String inputFile1 = "default1.json";
-		String inputFile2 = "default2.json";
+		String inputFile1 = "default2.json";
+		String inputFile2 = "default3.json";
 		String outputFile = "output.json";
 				
 		try {
@@ -40,23 +46,69 @@ public class MMain {
 			// Creating the 2nd back-end model to be merged
 			ModelSpec modelSpec2 = convertBackboneModelFromFile(filePath + inputFile2);
 			
+			// Take this in eventually
+			Integer delta = 5;
 			
 	    	//TODO: MERGE-Y THINGS
-			//ModelSpec mergedModel = things;
-			// test outputs
 			System.out.println("m1:");
-			System.out.println(modelSpec1);
+			System.out.println(modelSpec2);
 			
 			System.out.println("intentions:");
-			System.out.println(modelSpec1.getIntentions().get(0).getVisualInfo().toString());
+			System.out.println(modelSpec2.getIntentions().get(0).getVisualInfo().toString());
 			
 			System.out.println("m2:");
 			System.out.println(modelSpec2);
 			
-			ModelSpec mergedModel = modelSpec1;
+			ModelSpec mergedModel = MergeAlgorithm.mergeModels(modelSpec1, modelSpec2, delta);
 			
 			//Create Output file that will be used by frontend
-			// createOutputFile(mergedModel, filePath + outputFile);
+			Gson gson = new Gson();
+			// can i output modelspec2 w/o intentions and links?\
+			List<Intention> intentions = new ArrayList<Intention>();
+			//Intention intent1 = new Intention()
+			List<ContributionLink> contributions = new ArrayList<ContributionLink>();
+			List<DecompositionLink> decompositions = new ArrayList<DecompositionLink>();
+			modelSpec2.setIntentions(intentions);
+			modelSpec2.setContributionLinks(contributions);
+			modelSpec2.setDecompositionLinks(decompositions);
+			System.out.println(gson.toJson(modelSpec2));
+			
+			System.out.println("----------------");
+			System.out.println(gson.toJson(mergedModel));
+			// add items to empty modelspec until error
+			// actors
+			mergedModel.setActors(modelSpec1.getActors());
+			System.out.println(gson.toJson(mergedModel));
+			// intentions
+			//mergedModel.setIntentions(modelSpec1.getIntentions());
+			//System.out.println(gson.toJson(mergedModel));
+			// contribution links
+			//mergedModel.setContributionLinks(modelSpec1.getContributionLinks());
+			System.out.println(gson.toJson(mergedModel));
+			// decomposition links
+			//mergedModel.setDecompositionLinks(modelSpec1.getDecompositionLinks());
+			System.out.println(gson.toJson(mergedModel));
+			//not both links
+			mergedModel.setNotBothLinks(modelSpec1.getNotBothLinks());
+			System.out.println(gson.toJson(mergedModel));
+			// max time
+			mergedModel.setMaxTime(101);
+			// abs time points
+			int[] test = {1, 2, 3};
+			mergedModel.setAbsoluteTimePoints(test);
+			System.out.println(gson.toJson(mergedModel));
+			// lttimepoint constraints
+			mergedModel.setLtTPconstraints(modelSpec2.getLtTPconstraints());
+			System.out.println(gson.toJson(mergedModel));
+			
+			//changed tp names
+			mergedModel.setChangedTPNames(modelSpec2.getChangedTPNames());
+			System.out.println(gson.toJson(mergedModel));
+			
+			//changed tp elements
+			
+			//System.out.println(gson.toJson(modelSpec2));
+			createOutputFile(modelSpec2, filePath + outputFile);
 			
 		
 		} catch (RuntimeException e) {
@@ -102,7 +154,7 @@ public class MMain {
 	 * Name of the file to be read by CGI to be sent to frontend
 	 */
 	private static void createOutputFile(ModelSpec outputModel, String filePath) {
-		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		Gson gson = new Gson(); //new GsonBuilder().setPrettyPrinting().create();
 	
 		try {
 			File file;
@@ -111,6 +163,9 @@ public class MMain {
 				file.createNewFile();
 			}
 			PrintWriter printFile = new PrintWriter(file);
+			System.out.println("made writer");
+			//printFile.printf("{1:'A'}");
+			System.out.println(gson.toJson(outputModel));
 			printFile.printf(gson.toJson(outputModel));
 			printFile.close();
 		} catch (Exception e) {

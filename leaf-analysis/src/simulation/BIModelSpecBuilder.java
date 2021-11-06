@@ -2,6 +2,9 @@ package simulation;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.google.gson.Gson;
+
 import gson_classes.*;
 import merge.VisualInfo;
 
@@ -75,6 +78,10 @@ public class BIModelSpecBuilder {
 		try {
 			// Back-end Model
 			ModelSpec modelSpec = new ModelSpec();	
+			
+			Gson gson = new Gson();
+			System.out.println("icell version:");
+			System.out.println(gson.toJson(inObject));
 			
 			IGraph frontendModel = inObject.getGraph();
 			
