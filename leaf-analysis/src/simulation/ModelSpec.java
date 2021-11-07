@@ -376,6 +376,14 @@ public class ModelSpec {
 	public void setNotBothLinks(List<NotBothLink> notBothLinks) {
 		this.notBothLink = notBothLinks;
 	}
+	
+	public List<NotBothLink> getNotBothLink() {
+		return notBothLink;
+	}
+
+	public void setNotBothLink(List<NotBothLink> notBothLinks) {
+		this.notBothLink = notBothLinks;
+	}
 
 	public List<TPConstraint> getLtTPconstraints() {
 		return ltTPconstraints;
@@ -397,6 +405,10 @@ public class ModelSpec {
 		this.maxTime = maxTime;
 	}
 	
+	public HashMap<String, Integer> getAbsTP(){
+		return this.absTP;
+	}
+	
 	public int getNumRelativeTimePoints() {
 		return numRelativeTimePoints;
 	}
@@ -415,14 +427,6 @@ public class ModelSpec {
 
 	public void setConflictAvoidLevel(char conflictAvoidLevel) {
 		this.conflictAvoidLevel = conflictAvoidLevel;
-	}
-
-	public List<NotBothLink> getNotBothLink() {
-		return notBothLink;
-	}
-
-	public void setNotBothLink(List<NotBothLink> notBothLink) {
-		this.notBothLink = notBothLink;
 	}
 
 	public String getAnalysisType() {

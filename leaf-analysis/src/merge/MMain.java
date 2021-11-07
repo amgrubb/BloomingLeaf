@@ -40,11 +40,18 @@ public class MMain {
 		String outputFile = "output.json";
 				
 		try {
+			Gson gson = new Gson();
 			// Creating the 1st back-end model to be merged
 			ModelSpec modelSpec1 = convertBackboneModelFromFile(filePath + inputFile1);
 			
 			// Creating the 2nd back-end model to be merged
 			ModelSpec modelSpec2 = convertBackboneModelFromFile(filePath + inputFile2);
+			
+			System.out.println("----------------------");
+			System.out.println("Here we try building IMain");
+			IMain modelOut = IMainBuilder.buildIMain(modelSpec2);
+			System.out.println(gson.toJson(modelOut));
+			System.out.println("----------------------");
 			
 			// Take this in eventually
 			Integer delta = 5;
@@ -62,7 +69,6 @@ public class MMain {
 			ModelSpec mergedModel = MergeAlgorithm.mergeModels(modelSpec1, modelSpec2, delta);
 			
 			//Create Output file that will be used by frontend
-			Gson gson = new Gson();
 			// can i output modelspec2 w/o intentions and links?\
 			List<Intention> intentions = new ArrayList<Intention>();
 			//Intention intent1 = new Intention()
@@ -98,8 +104,8 @@ public class MMain {
 			mergedModel.setAbsoluteTimePoints(test);
 			System.out.println(gson.toJson(mergedModel));
 			// lttimepoint constraints
-			mergedModel.setLtTPconstraints(modelSpec2.getLtTPconstraints());
-			System.out.println(gson.toJson(mergedModel));
+			// mergedModel.setLtTPconstraints(modelSpec2.getLtTPconstraints());
+			// System.out.println(gson.toJson(mergedModel));
 			
 			//changed tp names
 			mergedModel.setChangedTPNames(modelSpec2.getChangedTPNames());
@@ -108,7 +114,7 @@ public class MMain {
 			//changed tp elements
 			
 			//System.out.println(gson.toJson(modelSpec2));
-			createOutputFile(modelSpec2, filePath + outputFile);
+			createOutputFile(modelOut, filePath + outputFile);
 			
 		
 		} catch (RuntimeException e) {
@@ -153,7 +159,7 @@ public class MMain {
 	 * @param filePath
 	 * Name of the file to be read by CGI to be sent to frontend
 	 */
-	private static void createOutputFile(ModelSpec outputModel, String filePath) {
+	private static void createOutputFile(IMain outputModel, String filePath) {
 		Gson gson = new Gson(); //new GsonBuilder().setPrettyPrinting().create();
 	
 		try {
@@ -188,6 +194,11 @@ public class MMain {
 		try {
 			Gson gson = builder.create();
 			IMain frontendObject = gson.fromJson(new FileReader(filePath), IMain.class);
+			
+			System.out.println("---------");
+			System.out.println("IMain back to JSON:");
+			System.out.println(gson.toJson(frontendObject));
+			System.out.println("---------");
 
 			ModelSpec modelSpec = BIModelSpecBuilder.buildModelSpec(frontendObject);
 			return modelSpec;

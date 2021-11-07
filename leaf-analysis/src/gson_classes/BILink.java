@@ -11,10 +11,14 @@ public class BILink {
 	public String getPostType() {
 		return attributes.postType;
 	}
+	public Boolean getEvolving() {
+		return attributes.evolving;
+	}
 	private class Attributes {
 		Integer absTime;
-        //Boolean evolving;
+        Boolean evolving;
         String linkType;
-        String postType;       
+        String postType;
+        // add String displayType; as well?
 	}
 }

@@ -14,6 +14,13 @@ public class IGraph {
 	private BIConstraint[] constraints;
 	private List<ICell> cells;
 	
+	public IGraph(String maxAbsTime, int[] absTimePtsArr, List<ICell> cells) {
+		// TODO: add constraints to constructor
+		this.maxAbsTime = maxAbsTime;
+		this.absTimePtsArr = absTimePtsArr;
+		this.cells = cells;
+	}
+	
 	public String getMaxAbsTime() {
 		return maxAbsTime;
 	}
@@ -25,5 +32,5 @@ public class IGraph {
 	}
 	public List<ICell> getCells() {
 		return cells;
-	}		
+	}	
 }
