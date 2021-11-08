@@ -44,6 +44,8 @@ public class MMain {
 			// Creating the 1st back-end model to be merged
 			ModelSpec modelSpec1 = convertBackboneModelFromFile(filePath + inputFile1);
 			
+			System.out.println(modelSpec1);
+			
 			// Creating the 2nd back-end model to be merged
 			ModelSpec modelSpec2 = convertBackboneModelFromFile(filePath + inputFile2);
 			
@@ -90,10 +92,10 @@ public class MMain {
 			//System.out.println(gson.toJson(mergedModel));
 			// contribution links
 			//mergedModel.setContributionLinks(modelSpec1.getContributionLinks());
-			System.out.println(gson.toJson(mergedModel));
+			//System.out.println(gson.toJson(mergedModel));
 			// decomposition links
 			//mergedModel.setDecompositionLinks(modelSpec1.getDecompositionLinks());
-			System.out.println(gson.toJson(mergedModel));
+			//System.out.println(gson.toJson(mergedModel));
 			//not both links
 			mergedModel.setNotBothLinks(modelSpec1.getNotBothLinks());
 			System.out.println(gson.toJson(mergedModel));

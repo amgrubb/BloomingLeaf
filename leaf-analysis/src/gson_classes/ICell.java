@@ -35,6 +35,16 @@ public class ICell {
 		this.actor = actor;
 	}
 	
+	/**
+	 * intention constructor
+	 */
+	public ICell(String type, String id, Integer z, BIIntention intention) { // add size/pos
+		this.type = type;
+		this.id = id;
+		this.z = z;
+		this.intention = intention;
+	}
+	
 	
 	// getters
 	public String getType() {

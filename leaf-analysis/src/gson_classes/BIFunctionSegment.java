@@ -3,6 +3,10 @@ package gson_classes;
 public class BIFunctionSegment {
 	private Attributes attributes;
 	
+	public BIFunctionSegment(String refEvidencePair, Integer startAT, String startTP, String type) {
+		this.attributes = new Attributes(refEvidencePair, startAT, startTP, type);
+	}
+	
 	public String getRefEvidencePair() {
 		return attributes.refEvidencePair;
 	}
@@ -20,6 +24,13 @@ public class BIFunctionSegment {
 		String refEvidencePair;
         Integer startAT;
         String startTP;
-        String type;        
+        String type; 
+        
+        public Attributes(String refEvidencePair, Integer startAT, String startTP, String type) {
+        	this.refEvidencePair = refEvidencePair;
+        	this.startAT = startAT;
+        	this.startTP = startTP;
+        	this.type = type;
+        }
 	}
 }

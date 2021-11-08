@@ -17,12 +17,13 @@ public class Intention extends AbstractLinkableElement {
 	
 	private HashMap<Integer, String> userEvals;
 	private FunctionSegment[] evolvingFunctions;
+	private String type;
 	
 	public Intention(String uniqueID, String nodeName, Actor nodeActor, String nodeType,
 			BIEvolvingFunction nodeFunctions, HashMap<Integer, String> nodeEvals){
 		super(Intention.getNewBackendID(), nodeName, uniqueID);
 		this.actor = nodeActor;
-		//this.type = IntentionalElementType.getByBBMName(nodeType);
+		this.type = nodeType;
 		this.userEvals = nodeEvals;
 		this.evolvingFunctions = unrollBIEvolvingFunction(nodeFunctions);
 	}
@@ -165,5 +166,8 @@ public class Intention extends AbstractLinkableElement {
 		return userEvals;
 	}
 	
+	public String getType() {
+		return type;
+	}
 	
 }

@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import gson_classes.*;
-import simulation.Actor;
-import simulation.ModelSpec;
+import simulation.*;
 
 /*
  * Converts from ModelSpec back to IMain
@@ -43,6 +43,25 @@ public class IMainBuilder {
 			}
 		}
 		
+		// intentions
+		List<Intention> intentions = inSpec.getIntentions();
+		
+		// add intentions to cells list
+		if (!intentions.isEmpty()) {
+			for (Intention specIntention: intentions) {
+				// inputs for ICell
+				String id = specIntention.getUniqueID();
+				String type = specIntention.getType();
+				BIIntention newIntention = buildBIIntention(specIntention);
+				
+				// add intention as ICell
+				ICell newCell = new ICell(type, id, z, newIntention);
+				cells.add(newCell);
+				
+				z++;
+			}
+		}
+		
 		System.out.println("cells:");
 		System.out.println(cells);
 		
@@ -56,6 +75,56 @@ public class IMainBuilder {
 		
 		return model;
 		
+	}
+	
+	private static BIIntention buildBIIntention(Intention specIntention) {
+		// create evolving function
+		BIEvolvingFunction evolvingFunction = rerollEvolvingFunctions(specIntention.getEvolvingFunctions());
+		
+		
+		// create user assignments list
+		List<BIUserEvaluation> userEvaluationList = new ArrayList<BIUserEvaluation>();
+		// make each user evaluation and add to list
+		for (Map.Entry<Integer, String> userEval : specIntention.getUserEvals().entrySet()) {
+			// add assignedEvidencePair, absTime to BIUserEvalutation
+			BIUserEvaluation newEval = new BIUserEvaluation(userEval.getValue(), userEval.getKey());
+			userEvaluationList.add(newEval);
+		}
+		
+		BIIntention newIntention = new BIIntention(evolvingFunction, specIntention.getName(), userEvaluationList);
+		
+		return newIntention;
+	}
+	
+	private static BIEvolvingFunction rerollEvolvingFunctions(FunctionSegment[] evolvingFunctions) {
+		// convert FunctionSegment[] into BIFunctionSegment[]
+		ArrayList<BIFunctionSegment> funcSegList = new ArrayList<BIFunctionSegment>();
+		for (FunctionSegment func : evolvingFunctions) {
+			BIFunctionSegment funcSeg = new BIFunctionSegment(func.getRefEvidencePair(), func.getStartAT(),
+															  func.getStartTP(), func.getType());
+			funcSegList.add(funcSeg);
+		}
+		// convert to array
+		BIFunctionSegment[] functionSegList = new BIFunctionSegment[funcSegList.size()];
+		functionSegList = funcSegList.toArray(functionSegList);
+		//BIFunctionSegment[] functionSegList = (BIFunctionSegment[]) funcSegList.toArray();
+		
+		// create evolving function - detect repeats?
+		
+		// no function segments is type NT
+		
+		// one function segment - C, stochastic, increase, decrease
+
+		// then convert to []
+		
+		// two function segments - ..., else user defined
+		
+		// 3+ function segments - user defined
+		
+		
+		BIEvolvingFunction evolvingFunction = new BIEvolvingFunction(functionSegList);
+
+		return evolvingFunction;
 	}
 	
 	/**
