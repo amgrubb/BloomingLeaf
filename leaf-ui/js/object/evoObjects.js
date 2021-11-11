@@ -134,7 +134,7 @@ class EVO {
         this.numTimePoints = elementList[0].status.length;
         this.intentionListColorVis = [];
         // Assessable in next state window 
-        this.isColorBlind = false;
+        this.isColorBlind = EVO.isColorBlindMode;
         this.initializeIntentionList();
     }
 
@@ -533,18 +533,18 @@ class EVONextState {
     static sliderOptionNextState = 0;
 
     /**
-     * Next State window has new instance of EVO.
-     * This passes the color blind mode option through the Next State window
+     * This sets the color blind mode option to whatever it was in the previous window
      */
-    static setColorBlindFromPrevWindow() {
-        EVO.isColorBlindMode = window.opener.analysisResult.colorVis.isColorBlind;
+    static setColorBlindFromPrevWindow() {     
+        EVONextState.isColorBlindMode = myInputJSObject.results.get('colorVis').isColorBlind;
     }
 
     /**
      * Sets new slider option and refreshes to make applicable changes
      * @param {String} newSliderOption 
      */
-    static setSliderOption(newSliderOption) {
+    static setSliderOptionNextState() {
+        var newSliderOption = $('#colorResetAnalysis').val();
         if (newSliderOption >= 0 && newSliderOption <= 2) {
             EVONextState.sliderOptionNextState = newSliderOption;
         } else {
@@ -559,18 +559,18 @@ class EVONextState {
     static refresh() {
         switch (this.sliderOptionNextState) {
             case '1':
-                EVONextState.colorIntentionsByState();
-                this.changeIntentionsText(analysis.elements, analysis.paper);
+                EVONextState.colorIntentionsByPercents();
+                this.changeIntentionsText(analysis);
                 break;
 
             case '2':
-                EVONextState.colorIntentionsByPercents();
-                this.changeIntentionsText(analysis.elements, analysis.paper);
+                EVONextState.colorIntentionsByState();
+                this.changeIntentionsText(analysis);
                 break;
 
             default: // ColorVis off
-                EVO.returnAllColors(analysis.elements, analysis.paper);
-                EVO.revertIntentionsText(analysis.elements, analysis.paper);
+                EVONextState.returnAllColors(analysis);
+                this.changeIntentionsText(analysis);
                 break;
         }
     }
@@ -583,11 +583,11 @@ class EVONextState {
         var cellView;
         var colorChange;
 
-        for (var i = 0; i < analysis.elements.length; i++) {
-            cell = analysis.elements[i];
-            value = cell.attributes.attrs[".satvalue"].value;
-            cellView = cell.findView(analysis.paper);
-            colorChange = EVO.getColor(value);
+        for (var i = 0; i < analysis.intentions.length; i++) {
+            var element = analysis.intentions[i];
+            value = element.attr(".satvalue").value;
+            cellView = element.findView(analysis.paper);
+            colorChange = EVONextState.getColor(value);
             cellView.model.attr({ '.outer': { 'fill': colorChange } });
         }
     }
@@ -597,25 +597,43 @@ class EVONextState {
      */
     static colorIntentionsByPercents() {
         var intentionPercents = [];
-        // Acquire all next state info
-        var percentPerEvaluation = 1.0 / analysis.analysisResult.allSolution.length; // Number of next states
-        var step = 0;
+        allSolutionArray = [];      
+        // Iterates over the hashmap allSolutions and combines all of the solutions into one array
+        for (var key in myInputJSObject.results.get('allSolutions')) {
+            // Adds every element (which are arrays) in the old array to the new array
+            myInputJSObject.results.get('allSolutions')[key].forEach(
+                solution => {
+                    allSolutionArray.push(solution);
+                });
+        }
+        var percentPerEvaluation = 1.0 / allSolutionArray.length; // Total number of solutions
         // Store: ID + percents per eval
-        for (var i = 0; i < analysis.elements.length; i++) { // For each elements
+        for (var i = 0; i < analysis.intentions.length; i++) { // For each elements
             // Compile and calculate % for each node -> % must be updated every time a filter is applied
             intentionPercents.push(new IntentionColorVis());
-            for (var j = 0; j < analysis.analysisResult.allSolution.length; j++) { // For each next state
-                var currEval = analysis.analysisResult.allSolution[j].intentionElements[i].status[step];
+            for (var j = 0; j < allSolutionArray.length; j++) { // For each next state
+                // tempResults.get('allSolutions')[solutionArray][solution_index][element_index];
+                var currEval = allSolutionArray[j][i];
                 var newPercent = intentionPercents[i].evals[currEval];
                 newPercent += percentPerEvaluation;
                 intentionPercents[i].evals[currEval] = newPercent;
             }
             var gradientID = this.defineGradient(intentionPercents[i]);
-            var cell = analysis.elements[i];
-            var cellView = cell.findView(analysis.paper);
+            var element = analysis.intentions[i];
+            var cellView = element.findView(analysis.paper);
             cellView.model.attr({ '.outer': { 'fill': 'url(#' + gradientID + ')' } });
         }
     }
+
+    /**
+     * Returns color that corresponds to an intention eval. Checks for color blind mode first.
+     * @param {String} intentionEval four digit code that corresponds to evidence pair (ex. 0011)
+     */
+    static getColor(intentionEval) {
+        if (EVONextState.isColorBlindMode) {
+            return EVO.colorVisDictColorBlind[intentionEval];
+        }
+        return EVO.colorVisDict[intentionEval]; }
 
     /**
      * Creates a gradient for an intention in colorIntentionsByPercents()
@@ -629,7 +647,7 @@ class EVONextState {
         for (var j = 0; j < EVO.numEvals; ++j) {
             var intentionEval = EVO.colorVisOrder[j];
             if (element.evals[intentionEval] > 0) {
-                currColor = EVO.getColor(intentionEval);
+                currColor = EVONextState.getColor(intentionEval);
                 // Before buffer
                 offsetTotal += 0.001;
                 gradientStops.push({
@@ -650,17 +668,40 @@ class EVONextState {
                 });
             }
         }
+        var gradientId = analysis.paper.defineGradient({
+            type: 'linearGradient',
+            stops: gradientStops
+        });
+        return gradientId;        
+    }
+
+    /**
+    * Returns element color to based on element type
+    */
+        static returnAllColors(analysis) {
+        for (var i = 0; i < analysis.intentions.length; i++) {
+            var cellView = analysis.intentions[i].findView(analysis.paper);
+            cellView.model.changeToOriginalColour();
+        }
     }
 
     /**
      * Changes text color to white when EVO is on
      */
-    static changeIntentionsText(elements, paper) {
-        var curr;
-        for (var i = 0; i < elements.length; i++) {
-            curr = elements[i].findView(paper).model;
-            if (curr.attributes.type !== 'basic.Actor') {
-                curr.attr({ text: { fill: 'white', stroke: 'none' } });
+    static changeIntentionsText(analysis) {
+        
+        if (EVONextState.sliderOptionNextState != '0') {
+            for (let element of analysis.intentions) {
+                element.attr({ text: { fill: 'white' } });
+            }
+        } else {
+            for (let element of analysis.intentions) {
+                var satValue = element.attr(".satvalue").value;
+                if ( (satValue == "0000") || (satValue == "0100") || (satValue == "1000") || (satValue == "1100") || (satValue == "0001") || (satValue == "0011") || (satValue == "0010")) {
+                    element.attr({ text: { fill: 'black' } });
+                } else {
+                    element.attr({ text: { fill: 'red' } });
+                }
             }
         }
     }
