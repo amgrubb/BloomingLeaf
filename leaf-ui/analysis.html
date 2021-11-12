@@ -111,24 +111,23 @@
     </div>
 
     <div id="paper">
-
-            <div class="inspector" id="right-inspector2">
-            <label>Node Name:</label>
-            <textarea class="cell-attrs-text"></textarea>
-            <label>Satisfaction Value:</label>
-            <select id="init-sat-value">
-            <option value="(no value)"> (no value) </option>
-            <option value="0000"> None (⊥, ⊥)</option>
-            <option value="0011"> Satisfied (F, ⊥)</option>
-            <option value="0010"> Partially Satisfied (P, ⊥) </option>
-            <option value="0100"> Partially Denied (⊥, P)</option>
-            <option value="1100"> Denied (⊥, F)</option>
-            </select>
-            <button style="margin-top:10px;" id="filter-apply" class="inspector-btn small-btn blue-btn">Apply</button>
-            </div>
-            <br>
-
     </div>
+
+    <div class="inspector" id="right-inspector2">
+        <label>Node Name:</label>
+        <textarea class="cell-attrs-text"></textarea>
+        <label>Satisfaction Value:</label>
+        <select id="init-sat-value">
+        <option value="(no value)"> (no value) </option>
+        <option value="0000"> None (⊥, ⊥)</option>
+        <option value="0011"> Satisfied (F, ⊥)</option>
+        <option value="0010"> Partially Satisfied (P, ⊥) </option>
+        <option value="0100"> Partially Denied (⊥, P)</option>
+        <option value="1100"> Denied (⊥, F)</option>
+        </select>
+        <button style="margin-top:10px;" id="filter-apply" class="inspector-btn small-btn blue-btn">Apply</button>
+    </div>
+    <br>
 
     <script type="text/javascript">
         SVGElement.prototype.getTransformToElement = SVGElement.prototype.getTransformToElement || function (toElement) {
