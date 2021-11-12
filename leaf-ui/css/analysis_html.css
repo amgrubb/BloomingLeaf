@@ -147,10 +147,11 @@ body {
 
 /* Right Panel */
 .inspector {
-  left: auto;
-  top: 40px;
-  width: 240px;
-  padding: 10px;
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  width: 260px;
+  height: 100%;
 
   background-color: #333;
   color: #bcbcbc;
@@ -611,3 +612,8 @@ div.attribution{
 }
 
 /* end of representive slider styling */
+
+
+#right-inspector{
+  margin-top: 50px;
+}
