@@ -7,13 +7,7 @@
 */
 
 body {
-  -webkit-user-select: none;
-  -moz-user-select: -moz-none;
-  -khtml-user-select: none;
-  -ms-user-select: none;
   user-select: none;
-  margin: 0;
-  padding: 0;
   font-family: Arial;
 }
 
@@ -109,11 +103,20 @@ body {
   top: 40px;
   bottom: 0;
   width: 200px;
-
-  background-color: #f9f9f9;
   box-shadow: 2px 0px 16px 0px rgba(0,0,0,0.2);
   /* Should be less than the modal pop-ups. TODO: Verify function with next state analysis. */ 
   z-index: 0;
+}
+
+.left-panel label {
+  display: block;
+  text-align: center;
+  font-size: 12px;
+  line-height: 18px;
+  height: 18px;
+  color: #bcbcbc;
+  text-shadow: 0 -1px 0 #000;
+  background-color: rgba(90, 90, 90, 1);
 }
 
 .stencil {
@@ -130,19 +133,6 @@ body {
   height: 380px;
   text-shadow: none;
   background-color: transparent;
-}
-
-.left-panel label {
-  display: block;
-  text-align: center;
-  font-size: 12px;
-  line-height: 18px;
-  height: 18px;
-
-  background-color: #333;
-  color: #bcbcbc;
-  text-shadow: 0 -1px 0 #000;
-  background-color: rgba(90, 90, 90, 1);
 }
 
 /* Right Panel */
@@ -194,20 +184,6 @@ body {
   width: 50px !important;
   font-size: 0.9em;
 }
-.sub-btn {
-  position: relative;
-  vertical-align: top;
-  width: 50px;
-  height: 23px;
-  padding: 0;
-  color: white;
-  text-align: center;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
-  border: 0;
-  cursor: pointer;
-  margin-left: 5px;
-}
-
 
 .dropdown-inspector {
   display: none;
@@ -589,10 +565,8 @@ div.attribution{
   width: 69px; /* 92 */
 }
 .EVO-whole-button {
-  cursor: pointer;
   display: inline-block;
   height: 35px;
-  width: 100px;
   margin-top: 0px;
   margin-bottom: -20px;
   padding-top: 0px;
@@ -603,13 +577,11 @@ div.attribution{
 .EVO-slider {
   -webkit-appearance: none;  /* Override default CSS styles */
   appearance: none;
-  width: 50px; /* Full-width */
   height: 10px; /* Specified height */
   border-radius: 5px;
   background: #E8E8E8; /* white background */
   outline: none; /* Remove outline */
   opacity: .9; /* Set transparency (for mouse-over effects on hover) */
-  -webkit-transition: .2s; /* 0.2 seconds transition on hover */
   transition: opacity .2s;
 }
 
@@ -623,7 +595,6 @@ div.attribution{
 }
 /* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
 .EVO-slider::-webkit-slider-thumb {
-  -webkit-appearance: none; /* Override default look */
   appearance: none;
   width: 25px; /* Set a specific slider handle width */
   height: 10px; /* Slider handle height */
