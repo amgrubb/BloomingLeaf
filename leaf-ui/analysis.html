@@ -114,10 +114,12 @@
     </div>
 
     <div class="inspector" id="right-inspector2">
+        <br>
         <label>Node Name:</label>
         <textarea class="cell-attrs-text"></textarea>
+        <br>
         <label>Satisfaction Value:</label>
-        <select id="init-sat-value">
+        <select id="sat-value">
         <option value="(no value)"> (no value) </option>
         <option value="0000"> None (⊥, ⊥)</option>
         <option value="0011"> Satisfied (F, ⊥)</option>
@@ -125,6 +127,7 @@
         <option value="0100"> Partially Denied (⊥, P)</option>
         <option value="1100"> Denied (⊥, F)</option>
         </select>
+        <div>
         <button style="margin-top:10px;" id="filter-apply" class="inspector-btn small-btn blue-btn">Apply</button>
     </div>
     <br>
