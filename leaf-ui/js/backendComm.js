@@ -66,6 +66,7 @@ function responseFunc(analysisRequest, response) {
 			var analysisResult = convertToAnalysisResult(results); 	// {ResultBBM}
 			SliderObj.displayAnalysis(analysisResult, false);
 			analysisRequest.addResult(analysisResult);
+			setSelectResult(analysisResult);
 		} else if (analysisRequest.get('action') == 'allNextStates') {
 			var allNextStatesResult = convertToAnalysisResult(results); 	// {ResultBBM}
 			open_next_state_viewer(analysisRequest, allNextStatesResult)
