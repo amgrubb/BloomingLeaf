@@ -27,10 +27,6 @@ body {
    padding: 0px;
 }
 
-#swal2-content b{
-  color: red;
-}
-
 #name {
   position: absolute;
   top: 0px;
@@ -52,8 +48,7 @@ body {
   display: inline-block;
 }
 
-.dropdown:hover .dropdown-toolbar,
-.dropdown:hover .dropdown-inspector {
+.dropdown:hover .dropdown-toolbar {
    display: block;
 }
 
@@ -119,22 +114,6 @@ body {
   background-color: rgba(90, 90, 90, 1);
 }
 
-.stencil {
-  position: absolute;
-  left: 0;
-  top: 14px;
-  bottom: 0;
-  right: 0;
-  width: 100%;
-  border: none;
-}
-
-.stencil .elements {
-  height: 380px;
-  text-shadow: none;
-  background-color: transparent;
-}
-
 /* Right Panel */
 .inspector {
   position: absolute;
@@ -160,7 +139,6 @@ body {
 
 #sat-value {
   background-color: rgba(36, 150, 255, 1);
-  border-color: rgba(31, 121, 101, 1);
   color: white;
   font-size: 11px;
   font-weight: 200;
@@ -177,138 +155,6 @@ body {
   display:block;
 }
 
-.sub-label{
-  font-size: 1em !important;
-}
-.sub-input{
-  width: 50px !important;
-  font-size: 0.9em;
-}
-
-.dropdown-inspector {
-  display: none;
-  background-color: #f9f9f9;
-  min-width: 240px;
-}
-
-.dropdown-inspector a {
-  color: black;
-  padding: 12px 16px;
-  display: block;
-}
-
-.dropdown-inspector a:hover {
-   background-color: #E8E8E8;
-}
-
-.dropdown:hover .dropdown-inspector {
-   display: block;
-}
-
-.element-inspector input,
-.element-inspector textarea {
-  width: 215px;
-  font-size: 0.9em;
-  margin-bottom: 28px;
-}
-
-#function-div, #intension-div, #link-div, #query-div{
-  width: 215px;
-  text-align: center;
-  margin: auto;
-}
-
-.actor-type, .function-type,
-.function-sat-value, .user-defined-select, .repeat-select,
-.relationship-select, .link-type, #conflict-level, #abs-vals,
-#assigned-vals{
-  background-color: rgba(31, 150, 125, 1);
-  border-color: rgba(31, 121, 101, 1);
-  color: white;
-  font-size: 10;
-  font-weight: 200;
-  width: 215px;
-  margin: auto;
-  border: 0;
-}
-
-#init-sat-value {
-  background-color: rgba(36, 150, 255, 1);
-  border-color: rgba(36, 150, 255, 1);
-  color: white;
-  font-size: 10;
-  font-weight: 200;
-  width: 215px;
-  margin: auto;
-  border: 0;
-}
-
-#init-sat-value:disabled {
-  background-color: rgba(36, 150, 255, 1);
-  color: white;
-}
-.function-type:disabled {
-  background-color: rgba(36, 150, 255, 1);
-  color: white;
-}
-
-.user-defined-select, .repeat-select, .relationship-select{
-  width: 104px;
-  margin-bottom: 8px;
-}
-
-.query-select{
-  float: right;
-}
-
-.user-defined-select:nth-child(1),
-.repeat-select:nth-of-type(1),
-#relationship-src{
-  float: left;
-  clear: left;
-}
-
-.user-defined-select:nth-child(2),
-.repeat-select:nth-of-type(2),
-#relationship-tar{
-  float: right;
-}
-
-.user-defined-select{
-  display: block;
-}
-
-.new-user-constraints:first-child{
-  width: 100px;
-  margin: 0 10px 10px 10px;
-  float: left;
-}
-
-select > .select-placeholder {
-  display: none;
-}
-
-.function-type{
-  background-color: rgba(36, 150, 255, 1);
-  border-color: rgba(29, 122, 208, 1);
-}
-
-.function-type, .function-sat-value{
-  margin: auto;
-  margin-bottom: 8px;
-}
-
-.inspector-error{
-  display: block;
-  font-size: 0.9em;
-  margin: 0 0 12px 0;
-  color: tomato;
-  font-weight: 200;
-}
-
-.link-tools{
-   display: block;
-}
 .inspector-btn-small {
     position: relative;
     vertical-align: top;
@@ -317,9 +163,12 @@ select > .select-placeholder {
     padding: 0;
     color: black;
     text-align: center;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
     border: 0;
     cursor: pointer;
+    border-radius: 6px;
+
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 .inspector-btn {
   position: relative;
@@ -327,7 +176,7 @@ select > .select-placeholder {
   width: 200px;
   height: 40px;
   padding: 0;
-  color: white;
+  color: black;
   text-align: center;
   border: 0;
   cursor: pointer;

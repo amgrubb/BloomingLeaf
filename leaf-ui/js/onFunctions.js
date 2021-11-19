@@ -315,7 +315,7 @@ graph.on("add", function (cell) {
 
     resetConfig()
     // Trigger click on cell to highlight, activate inspector, etc. 
-    paper.trigger("cell:pointerup", cell.findView(paper));
+   paper.trigger("cell:pointerup", cell.findView(paper));
 });
 
 // Auto-save the cookie whenever the graph is changed.

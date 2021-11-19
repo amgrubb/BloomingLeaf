@@ -52,7 +52,21 @@
                     '.marker-target': { stroke: '#000000', "d": 'M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5' }
                 },
                 'labels': [{ position: 0.5, attrs: { text: { text: "and" } } }]
-            })
+            }),
+            highlighting: {
+                default: {
+                    name: 'stroke',
+                    options: {
+                        padding: 10,
+                        rx: 5,
+                        ry: 5,
+                        attrs: {
+                            'stroke-width': 3,
+                            stroke: 'red'
+                        }
+                    }
+                }
+            }
         });
 
         // Add scroll feature to the paper.
@@ -83,6 +97,9 @@
         // Sets originalResults as a deep copy of myInputJSObject.results 
         // So originalResults does not contain references to myInputJSObject.results
         originalResults = $.extend(true, {}, myInputJSObject.results);
+
+        //paper.on 
+            //on pointerup cellview.highlight???
     }
 
     function combineAllSolutions() {
