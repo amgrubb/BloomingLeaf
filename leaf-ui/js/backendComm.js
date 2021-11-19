@@ -64,9 +64,14 @@ function responseFunc(analysisRequest, response) {
 			return;
 		} else if (analysisRequest.get('action') == 'singlePath' || analysisRequest.get('action') == 'updatePath') {
 			var analysisResult = convertToAnalysisResult(results); 	// {ResultBBM}
-			SliderObj.displayAnalysis(analysisResult, false);
-			analysisRequest.addResult(analysisResult);
-			setSelectResult(analysisResult);
+			var hasTimepoints = SliderObj.displayAnalysis(analysisResult, false);
+
+			if (hasTimepoints){
+				analysisRequest.addResult(analysisResult);
+				setSelectResult(analysisResult);
+			} else {
+				analysisResult.destroy();
+			}	
 		} else if (analysisRequest.get('action') == 'allNextStates') {
 			var allNextStatesResult = convertToAnalysisResult(results); 	// {ResultBBM}
 			open_next_state_viewer(analysisRequest, allNextStatesResult)

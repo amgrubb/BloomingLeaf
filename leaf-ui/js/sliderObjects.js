@@ -40,7 +40,7 @@ class SliderObj {
         if (analysisResult.get('slider').sliderElement.hasOwnProperty('noUiSlider')) {
             analysisResult.get('slider').sliderElement.noUiSlider.destroy();
         }
-        SliderObj.createSlider(analysisResult, isSwitch);
+        return SliderObj.createSlider(analysisResult, isSwitch);
     }
 
     /**
@@ -56,6 +56,10 @@ class SliderObj {
     static createSlider(currentAnalysis, isSwitch) {
         var sliderMax = currentAnalysis.get('timePointPath').length - 1; // .timeScale;
         var density = (sliderMax < 25) ? (100 / sliderMax) : 4;
+        if (sliderMax == 0) {
+            alert("There are no timepoints to simulate.");
+            return false;
+        }
 
         noUiSlider.create(currentAnalysis.get('slider').sliderElement, {
             start: 0,
@@ -82,6 +86,7 @@ class SliderObj {
         });
         EVO.setCurTimePoint(isSwitch ? 0 : sliderMax, currentAnalysis);
         SliderObj.adjustSliderWidth(sliderMax);
+        return true;
     }
 
     /**
