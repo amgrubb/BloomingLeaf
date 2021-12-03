@@ -173,7 +173,7 @@ $('#btn-clear-flabel').on('click', function () {
         var cellView = element.findView(paper);
         var cell = cellView.model;
         var intention = cell.get('intention');
-        if (intention != null && intention.get('evolvingFunction').get('type') != 'NT') {
+        if (intention != null && intention.get('evolvingFunction') != null && intention.get('evolvingFunction').get('type') != 'NT') {
             intention.removeFunction();
             cell.attr(".funcvalue/text", "");
         }
