@@ -57,7 +57,7 @@ class SliderObj {
         var sliderMax = currentAnalysis.get('timePointPath').length - 1; // .timeScale;
         var density = (sliderMax < 25) ? (100 / sliderMax) : 4;
         if (sliderMax == 0) {
-            alert("There are no timepoints to simulate.");
+            swal("Error: There are no timepoints to simulate.", "", "error");
             return false;
         }
 
