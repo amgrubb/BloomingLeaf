@@ -98,7 +98,6 @@ body {
   top: 40px;
   bottom: 0;
   width: 205px;
-  /* Should be less than the modal pop-ups. TODO: Verify function with next state analysis. */ 
   z-index: 0;
 }
 
@@ -133,6 +132,12 @@ body {
    resize: none;
 }
 
+.inspector label {
+  margin: 14px 0px 8px 0px;
+  font-size: 1.25em;
+  display: block;
+}
+
 #sat-value {
   background-color: rgba(36, 150, 255, 1);
   color: white;
@@ -145,25 +150,19 @@ body {
   border: 0;
 }
 
-.inspector label {
-  margin: 14px 0px 8px 0px;
-  font-size: 1.25em;
-  display:block;
-}
-
 .inspector-btn-small {
-    position: relative;
-    vertical-align: top;
-    width: 30px;
-    height: 23px;
-    padding: 0;
-    color: black;
-    text-align: center;
-    border: 0;
-    cursor: pointer;
-    border-radius: 5px;
-    margin-top: 2px;
-    margin-bottom: 5px;
+  position: relative;
+  vertical-align: top;
+  width: 30px;
+  height: 23px;
+  padding: 0;
+  color: black;
+  text-align: center;
+  border: 0;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-top: 2px;
+  margin-bottom: 5px;
 }
 
 .inspector-btn {
@@ -180,22 +179,19 @@ body {
   margin-top: 6px;
 }
 
-#filter-apply {
-  color: white;
-}
-
 .blue-btn{
   background-color: rgba(36, 150, 255, 1) !important;
   -webkit-box-shadow: inset 0 -2px rgba(29, 122, 208, 1);
   box-shadow: inset 0 -2px rgba(29, 122, 208, 1);
-}
-
-.small-btn{
   width: 160px;
   height: 25px;
   border-radius: 5px;
   font-size: 0.6em;
   margin-top: 12px;
+}
+
+#filter-apply {
+  color: white;
 }
 
 /* Halo */
