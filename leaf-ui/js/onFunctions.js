@@ -173,7 +173,7 @@ $('#btn-clear-flabel').on('click', function () {
         var cellView = element.findView(paper);
         var cell = cellView.model;
         var intention = cell.get('intention');
-        if (intention != null && intention.get('evolvingFunction').get('type') != 'NT') {
+        if (intention != null && intention.get('evolvingFunction') != null && intention.get('evolvingFunction').get('type') != 'NT') {
             intention.removeFunction();
             cell.attr(".funcvalue/text", "");
         }
@@ -532,21 +532,25 @@ paper.on("link:options", function (cell) {
 
         // If single path has been run backend analysis
         if (singlePathRun === true) {
-            $("body").addClass("spinning"); // Adds spinner animation to page
             var curResult = curRequest.previousAttributes().results.findWhere({ selected: true });
             curRequest.set('action', 'allNextStates');
             curRequest.set('previousAnalysis', curResult);
 
-            // If the last time point is selected, error message shows that you can't open Next State
-            if ((curResult.get('timePointPath').length - 1) === curResult.get('selectedTimePoint')) {
-                swal("Error: Cannot explore next states with last time point selected.", "", "error");
-                $("body").removeClass("spinning"); // Remove spinner from page
-            } else {
-                backendSimulationRequest(curRequest);
+            if (EVO.sliderOption == '1' || EVO.sliderOption == '2') {
+                swal("Error: Cannot explore next states from percent or time EVO options.", "", "error");
+            } else { 
+                // If the last time point is selected, error message shows that you can't open Next State
+                if ((curResult.get('timePointPath').length - 1) === curResult.get('selectedTimePoint')) {
+                    swal("Error: Cannot explore next states with last time point selected.", "", "error");
+                } else {
+                    $("body").addClass("spinning"); // Adds spinner animation to page
+                    backendSimulationRequest(curRequest);
+                }
             }
         } else { // If single path has not been run show error message
             swal("Error: Cannot explore next states before simulating a single path.", "", "error");
         }
+        
     });
 
     function resetConfig() {
@@ -796,13 +800,19 @@ paper.on("link:options", function (cell) {
         for (let element of graph.getElements()) {
             var cell = element.findView(paper).model;
             var intention = cell.get('intention');
-            var initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair');
-            var funcType = intention.get('evolvingFunction').get('type');
+            
+            if (intention != null) {
+                var initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair');
+                if (intention.get('evolvingFunction') != null) {
+                    var funcType = intention.get('evolvingFunction').get('type');
+                }
+            }
 
             // If the initsatVal is not empty and if funcType empty
             if (intention != null && initSatVal != '(no value)' && funcType === 'NT') {
                 intention.removeInitialSatValue();
                 cell.attr(".satvalue/text", "");
+                $('#init-sat-value').val('(no value)');
             }
         }
         EVO.refresh(selectResult);
@@ -979,7 +989,7 @@ function revertNodeValuesToInitial(analysisResult) {
         } else {
             curr.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
         }
-        curr.attr({ text: { fill: 'black', stroke: 'none', 'font-weight': 'normal', 'font-size': 10 } });
+        curr.attr({ text: { fill: 'black', stroke: 'none'} });
     }
     // Remove slider
     if (analysisResult !== undefined) {
