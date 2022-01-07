@@ -2,6 +2,11 @@ package gson_classes;
 
 public class BIEvolvingFunction {
 	private Attributes attributes;
+	
+	public BIEvolvingFunction(BIFunctionSegment[] functionSegList) {
+		this.attributes = new Attributes(functionSegList);
+	}
+	
 	public BIFunctionSegment[] getFunctionSegList() {
 		return attributes.functionSegList;
 	}
@@ -31,6 +36,10 @@ public class BIEvolvingFunction {
         Integer repCount;
         String repStart;
         String repStop;
-        String type;        
+        String type; 
+        
+        public Attributes(BIFunctionSegment[] functionSegList) {
+        	this.functionSegList = functionSegList;
+        }
 	}
 }
