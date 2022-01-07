@@ -4,6 +4,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import simulation.ModelSpec;
+import simulation.Intention;
+
+import java.util.*;
 
 public class MergeAlgorithm {
 	
@@ -18,29 +21,63 @@ public class MergeAlgorithm {
 		if (MMain.DEBUG) System.out.println("Starting: MergeAlgorithm");
 		ModelSpec mergedModel = new ModelSpec();
 		
-		// update model2's times to oldTime + delta
-		updateTimeline(model2, delta);
+		// update the models' times
+		updateTimeline(model1, model2, delta);
 		
-		Gson gson = new Gson();
+		
+		
+		//Gson gson = new Gson();
 		//System.out.println(gson.toJson(mergedModel));
 		//System.out.println(gson.toJson(model2));
 		
 		return mergedModel;
 	}
 	
-	public static void updateTimeline(ModelSpec model, Integer delta) {
+	/**
+	 * Updates two modelSpecs' absolute and max time points
+	 * @param model1
+	 * @param model2
+	 * @param delta
+	 */
+	public static void updateTimeline(ModelSpec model1, ModelSpec model2, Integer delta) {
 		if (MMain.DEBUG) System.out.println("Starting: updateTimeline");
 		
-		// update max time
-		Integer oldMax = model.getMaxTime();
+		// update max time for both models
+		Integer oldMax = model2.getMaxTime();
 		System.out.println(oldMax);
-		model.setMaxTime(oldMax + delta);
+		model1.setMaxTime(oldMax + delta);
+		model2.setMaxTime(oldMax + delta);
 		
-		// update absolute timepoints
+		// update absolute time points for model 2
+		for(Integer absTP: model2.getAbsTP().values()) {
+			absTP += delta;
+		}
 		
-		// where else is absolute time stored?
+		// update absolute time points for model 2 stored in intentions
+		for(Intention intention: model2.getIntentions()) {
+			for(Integer absTP: intention.getUserEvals().keySet()) {
+				absTP += delta;
+			}
+		}
+	}
+	
+	public static void mergeIntentions(ModelSpec model1, ModelSpec model2, ModelSpec newModel) {
+		ArrayList<Intention> mergedIntentions = new ArrayList<Intention>();
 		
-		System.out.println(model.getMaxTime());
+		for(Intention intention: model1.getIntentions()) {
+			//update intention's ID and with some kind of tracking flag
+			mergedIntentions.add(intention);
+		}
+		for(Intention intention: model2.getIntentions()) {
+			//if mergedIntentions does not contain, add
+			for(Intention mergedIntention: mergedIntentions) {
+				if(intention.getName().equals(mergedIntention.getName())) {
+					break;
+				}
+				
+			}
+		}
+		
 	}
 	
 }
