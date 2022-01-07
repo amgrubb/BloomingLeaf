@@ -10,22 +10,22 @@ import gson_classes.*;
 import simulation.*;
 
 /*
- * Converts from ModelSpec back to IMain
+ * Converts from ModelSpec back to IMain for output
  */
 
 public class IMainBuilder {
 	
 	/** Main function that generates the IMain
-	 * @param inSpec - a ModelSpec
+	 * @param outSpec - a ModelSpec
 	 * @return 
 	 */
-	public static IMain buildIMain(ModelSpec inSpec) {
+	public static IMain buildIMain(ModelSpec outSpec) {
 		
 		List<ICell> cells = new ArrayList<ICell>();
 		Integer z = 0; // unique counter for cells
 		
 		// actors
-		List<Actor> actors = inSpec.getActors();
+		List<Actor> actors = outSpec.getActors();
 		
 		// add actors to cells list
 		if (!actors.isEmpty()) {
@@ -44,7 +44,7 @@ public class IMainBuilder {
 		}
 		
 		// intentions
-		List<Intention> intentions = inSpec.getIntentions();
+		List<Intention> intentions = outSpec.getIntentions();
 		
 		// add intentions to cells list
 		if (!intentions.isEmpty()) {
@@ -66,8 +66,8 @@ public class IMainBuilder {
 		System.out.println(cells);
 		
 		// overall model variables
-		String maxAbsTime = String.valueOf(inSpec.getMaxTime());
-		int[] absTimePtsArr = convertAbsTimePtsArr(inSpec.getAbsTP());
+		String maxAbsTime = String.valueOf(outSpec.getMaxTime());
+		int[] absTimePtsArr = convertAbsTimePtsArr(outSpec.getAbsTP());
 		
 		// create model to return
 		IGraph graph = new IGraph(maxAbsTime, absTimePtsArr, cells); // TODO: add constraints
