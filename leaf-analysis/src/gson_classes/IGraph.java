@@ -9,19 +9,22 @@ import java.util.List;
  * the JSON attributes.
  */
 public class IGraph {
-	private String maxAbsTime;
+	private String type;
+	private Integer maxAbsTime;
 	private int[] absTimePtsArr;
 	private BIConstraint[] constraints;
 	private List<ICell> cells;
 	
-	public IGraph(String maxAbsTime, int[] absTimePtsArr, List<ICell> cells) {
+	public IGraph(Integer maxAbsTime, int[] absTimePtsArr, List<ICell> cells) {
 		// TODO: add constraints to constructor
+		this.type = "goalmodel.Graph";
 		this.maxAbsTime = maxAbsTime;
 		this.absTimePtsArr = absTimePtsArr;
+		this.constraints = new BIConstraint[0];
 		this.cells = cells;
 	}
 	
-	public String getMaxAbsTime() {
+	public Integer getMaxAbsTime() {
 		return maxAbsTime;
 	}
 	public int[] getAbsTimePtsArr() {

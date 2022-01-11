@@ -23,12 +23,6 @@ public class MergeAlgorithm {
 		// update the models' times
 		updateTimeline(model1, model2, delta);
 		
-		
-		
-		//Gson gson = new Gson();
-		//System.out.println(gson.toJson(mergedModel));
-		//System.out.println(gson.toJson(model2));
-		
 		return mergedModel;
 	}
 	

@@ -3,7 +3,7 @@ package simulation;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gson.Gson;
+// import com.google.gson.Gson;
 
 import gson_classes.*;
 import merge.VisualInfo;
@@ -53,7 +53,7 @@ public class BIModelSpecBuilder {
     	try {	
 			//Max Absolute Time
 			if(frontendModel.getMaxAbsTime() != null){
-				modelSpec.setMaxTime(Integer.parseInt(frontendModel.getMaxAbsTime()));
+				modelSpec.setMaxTime(frontendModel.getMaxAbsTime());
 			}
 
 			if(frontendModel.getAbsTimePtsArr() != null)
@@ -79,9 +79,9 @@ public class BIModelSpecBuilder {
 			// Back-end Model
 			ModelSpec modelSpec = new ModelSpec();	
 			
-			Gson gson = new Gson();
-			System.out.println("icell version:");
-			System.out.println(gson.toJson(inObject));
+			// Gson gson = new Gson();
+			// System.out.println("icell version:");
+			// System.out.println(gson.toJson(inObject));
 			
 			IGraph frontendModel = inObject.getGraph();
 			
@@ -107,11 +107,14 @@ public class BIModelSpecBuilder {
 						throw new IllegalArgumentException("Cell with unknown type: " + cell.getType());	
 				}
 			}
-			
-			
+						
 			// Read the parameters associated with the model.
-			readAnalysisParameters(modelSpec, inObject.getAnalysisRequest(),
-					intentions.size()); 
+			// analysisRequest may be null
+			IAnalysisRequest analysisRequest = inObject.getAnalysisRequest();
+			if (analysisRequest != null) {
+				readAnalysisParameters(modelSpec, analysisRequest,
+						intentions.size()); 
+			}
 			readOverallGraphParameters(modelSpec, frontendModel);	
 			
 			// **** ACTORS **** - Getting Actor Data
@@ -121,10 +124,9 @@ public class BIModelSpecBuilder {
 					String backID = "A" + String.format("%03d", actorID);
 					actorID ++;
 					Actor newActor = new Actor(backID,	dataActor.getActor().getActorName(), 
-							dataActor.getActor().getType(),	dataActor.getId());
+							dataActor.getActor().getType(),	dataActor.getEmbeds(), dataActor.getId());
 					if (dataActor.isVisual()) { // actor contains visual information
-						VisualInfo visual = new VisualInfo(dataActor.getWidth(), dataActor.getHeight(),
-														   dataActor.getX(), dataActor.getY());
+						VisualInfo visual = new VisualInfo(dataActor.getSize(), dataActor.getPosition());
 						newActor.setVisualInfo(visual);
 					}
 					modelSpec.getActors().add(newActor);
@@ -138,8 +140,7 @@ public class BIModelSpecBuilder {
 				for (ICell dataIntention : intentions){
 					Intention newInt = Intention.createIntention(dataIntention, modelSpec);
 					if (dataIntention.isVisual()) { // intention contains visual information
-						VisualInfo visual = new VisualInfo(dataIntention.getWidth(), dataIntention.getHeight(),
-														   dataIntention.getX(), dataIntention.getY());
+						VisualInfo visual = new VisualInfo(dataIntention.getSize(), dataIntention.getPosition());
 						newInt.setVisualInfo(visual);
 					}
 					modelSpec.getIntentions().add(newInt); 

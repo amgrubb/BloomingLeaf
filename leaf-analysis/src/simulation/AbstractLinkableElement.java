@@ -4,6 +4,8 @@
 package simulation;
 
 import merge.VisualInfo;
+import gson_classes.BISize;
+import gson_classes.BIPosition;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -102,6 +104,24 @@ public abstract class AbstractLinkableElement extends AbstractElement{
 	
 	public VisualInfo getVisualInfo() {
 		return this.visual;
+	}
+	
+	public BISize getSize() {
+		// return if visualInfo exists
+		if (this.visual != null) {
+			return this.visual.getSize();
+		} else {
+			return null;
+		}
+	}
+	
+	public BIPosition getPosition() {
+		// return if visualInfo exists
+		if (this.visual != null) {
+			return this.visual.getPosition();
+		} else {
+			return null;
+		}
 	}
 	
 }
