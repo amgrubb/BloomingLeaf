@@ -162,6 +162,10 @@ public class Intention extends AbstractLinkableElement {
 		return evolvingFunctions;
 	}
 
+	public void setEvolvingFunctions(FunctionSegment[] fsArr){
+		evolvingFunctions = fsArr;
+	}
+
 	public HashMap<Integer, String> getUserEvals() {
 		return userEvals;
 	}
