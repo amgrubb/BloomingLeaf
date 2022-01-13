@@ -37,7 +37,7 @@ public class MMain {
 		String filePath = "temp/";
 		String inputFile1 = "sandwich.json";
 		String inputFile2 = "sandwich-w-peach.json";
-		String outputFile = "output-1-10.json";
+		String outputFile = "output-1-11.json";
 				
 		try {
 			Gson gson = new Gson();

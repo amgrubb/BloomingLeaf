@@ -35,6 +35,10 @@ public class DecompositionLink extends AbstractElementLink {
 	public String getUniqueID() {
 		return "DECOMP";
 	}
+	
+	public List<String> getSubLinkUniqueIDList() {
+		return subLinkUniqueIDList;
+	}
 	public boolean isIDInDecompositionLink(String uID) {
 		for (String id : subLinkUniqueIDList)
 			if (id.equals(uID))

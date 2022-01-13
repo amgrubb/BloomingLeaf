@@ -72,8 +72,104 @@ public class IMainBuilder {
 			}
 		}
 		
-		// System.out.println("cells:");
-		// System.out.println(cells);
+		// links
+		List<ContributionLink> contributionLinks = outSpec.getContributionLinks();
+		List<DecompositionLink> decompositionLinks = outSpec.getDecompositionLinks();
+		List<NotBothLink> notBothLinks = outSpec.getNotBothLinks();
+		
+		if (!contributionLinks.isEmpty()) {
+			for (ContributionLink specLink: contributionLinks) {
+				// inputs for ICell
+				String id = specLink.getUniqueID();
+				String type = "basic.CellLink";
+				String source = specLink.getZeroSrcID();
+				String target = specLink.getDest().getUniqueID();
+				
+				// inputs for building BILink
+				Integer absTime = specLink.getAbsTime();
+				Boolean evolving = specLink.isEvolving();
+				String linkType = specLink.getPreContribution().getCode();
+				
+				BILink newLink; // build link w/ or w/o postType depending on evolving
+				if (evolving) {
+					String postType = specLink.getPostContribution().getCode();
+					newLink = new BILink(absTime, evolving, linkType, postType);
+				} else {
+					newLink = new BILink(absTime, evolving, linkType);
+				}
+				
+				// add Link as ICell
+				ICell newCell = new ICell(newLink, type, id, z, source, target);
+				cells.add(newCell);
+				
+				z++;
+			}
+		}
+		
+		// add decomposition links
+		if (!decompositionLinks.isEmpty()) {
+			for (DecompositionLink specLink: decompositionLinks) {
+				// inputs for ICell
+				String id;
+				String type = "basic.CellLink";
+				String source;
+				String target = specLink.getDest().getUniqueID();
+				
+				// inputs for building BILink
+				Integer absTime = specLink.getAbsTime();
+				Boolean evolving = specLink.isEvolving();
+				String linkType = specLink.getPreDecomposition().getCode().toLowerCase();  // lowercase: upper is invalid in frontend
+				
+				BILink newLink; // build link w/ or w/o postType depending on evolving
+				if (evolving) {
+					String postType = specLink.getPostDecomposition().getCode().toLowerCase();
+					newLink = new BILink(absTime, evolving, linkType, postType);
+				} else {
+					newLink = new BILink(absTime, evolving, linkType);
+				}
+				
+				// create separate ICell/link for each source
+				List<String> sources = specLink.getSrcIDs();
+				List<String> ids = specLink.getSubLinkUniqueIDList();
+				// TODO: throw error if sources.length != ids.length
+				
+				// different ICell/link for each source
+				for (int i = 0; i < sources.size(); i++) {
+					source = sources.get(i);
+					id = ids.get(i);
+					
+					// add Link as ICell
+					ICell newCell = new ICell(newLink, type, id, z, source, target);
+					cells.add(newCell);
+					
+					z++;
+				}
+			}
+		}
+		
+		// add not both links
+		if (!notBothLinks.isEmpty()) {
+			for (NotBothLink specLink: notBothLinks) {
+				// inputs for ICell
+				String id = specLink.getUniqueID();
+				String type = "basic.CellLink";
+				String source = specLink.getElement1().getUniqueID();
+				String target = specLink.getElement2().getUniqueID();
+				
+				// inputs for building BILink
+				Integer absTime = specLink.getAbsTime();
+				Boolean evolving = false;  // always false for NB links
+				String linkType = specLink.getLinkType();
+				
+				BILink newLink = new BILink(absTime, evolving, linkType);
+				
+				// add Link as ICell
+				ICell newCell = new ICell(newLink, type, id, z, source, target);
+				cells.add(newCell);
+				
+				z++;
+			}
+		}
 		
 		// overall model variables
 		Integer maxAbsTime = outSpec.getMaxTime();
@@ -144,7 +240,6 @@ public class IMainBuilder {
 				type = "MP";
 			} else if (type0.equals("D") && type1.equals("C")) {
 				// monotonic negative
-				System.out.println("ran");
 				type = "MN";
 			} else if (type0.equals("C") && type1.equals("C")) {
 				// SD or DS

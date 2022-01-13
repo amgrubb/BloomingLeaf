@@ -45,5 +45,13 @@ public class NotBothLink extends AbstractElement{
 	public void updateLinkTP(String newLinkTP) {
 		linkTP = newLinkTP;
 	}
+	public String getLinkType() {
+		// returns NBD or NBT
+		if (finalDenied) {
+			return "NBD";
+		} else {
+			return "NBT";
+		}
+	}
 	
 }
