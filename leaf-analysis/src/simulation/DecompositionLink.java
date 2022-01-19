@@ -27,9 +27,15 @@ public class DecompositionLink extends AbstractElementLink {
 	public DecompositionType getPreDecomposition() {
 		return preDecomposition;
 	}
+	public void setPreDecomposition(DecompositionType dt){
+		preDecomposition = dt;
+	}
 
 	public DecompositionType getPostDecomposition() {
 		return postDecomposition;
+	}
+	public void setPostDecomposition(DecompositionType dt){
+		postDecomposition = dt;
 	}
 	
 	public String getUniqueID() {

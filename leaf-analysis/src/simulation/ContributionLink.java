@@ -19,9 +19,15 @@ public class ContributionLink extends AbstractElementLink {
 	public ContributionType getPreContribution() {
 		return preContribution;
 	}
+	public void setPreContribution(ContributionType ct){
+		preContribution = ct;
+	}
 
 	public ContributionType getPostContribution() {
 		return postContribution;
+	}
+	public void setPosteContribution(ContributionType ct){
+		postContribution = ct;
 	}
 
 	/** Check if the relationship types are correct, then constructs a contribution link. 

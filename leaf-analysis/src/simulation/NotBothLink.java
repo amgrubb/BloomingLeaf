@@ -33,6 +33,12 @@ public class NotBothLink extends AbstractElement{
 	public Intention getElement2() {
 		return element2;
 	}
+	public void setElement1(Intention e1) {
+		element1 = e1;
+	}
+	public void setElement2(Intention e2) {
+		element2 = e2;
+	}
 	public Integer getAbsTime() {
 		return absTime;
 	}
