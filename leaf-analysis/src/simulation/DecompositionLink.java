@@ -1,6 +1,7 @@
 package simulation;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import gson_classes.ICell;
@@ -142,6 +143,21 @@ public class DecompositionLink extends AbstractElementLink {
 			}
 		}
 		return decompositionList;
+	}
+	
+	/*to add another source to the source list, as in create another decomposition relationship */
+	
+	public void addSrc(AbstractLinkableElement ale) {
+		ArrayList<AbstractLinkableElement> tempArrList = new ArrayList<>(Arrays.asList(getSrc()));
+		tempArrList.add(ale);
+		AbstractLinkableElement[] src = new AbstractLinkableElement[tempArrList.size()];
+		for(int i = 0; i < src.length; i++) {
+			src[i] = tempArrList.get(i);
+		}
+		setSrc(src);
+		//TODO: Sublink unique id list???
+		
+		
 	}
 	
 }

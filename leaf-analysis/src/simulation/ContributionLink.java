@@ -26,7 +26,7 @@ public class ContributionLink extends AbstractElementLink {
 	public ContributionType getPostContribution() {
 		return postContribution;
 	}
-	public void setPosteContribution(ContributionType ct){
+	public void setPostContribution(ContributionType ct){
 		postContribution = ct;
 	}
 

@@ -174,7 +174,7 @@ public class Intention extends AbstractLinkableElement {
 		return type;
 	}
 
-	public void setTYpe(String t){
+	public void setType(String t){
 		type = t;
 	}
 

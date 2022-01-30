@@ -35,8 +35,8 @@ public class MMain {
 	public static void main(String[] args) {
 		//This is the default filePath to be executed if no file is passed through parameters
 		String filePath = "temp/";
-		String inputFile1 = "default2.json";
-		String inputFile2 = "default3.json";
+		String inputFile1 = "default1.json";
+		String inputFile2 = "default2.json";
 		String outputFile = "output.json";
 				
 		try {

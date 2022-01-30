@@ -1,6 +1,7 @@
 package simulation;
 
 public class NotBothLink extends AbstractElement{
+	protected String id = "NO-ID";	//Format that maps to array ordering.
 	private static int linkTPcounter = 1;
 	private Intention element1;
 	private Intention element2;
@@ -51,5 +52,10 @@ public class NotBothLink extends AbstractElement{
 	public void updateLinkTP(String newLinkTP) {
 		linkTP = newLinkTP;
 	}
-	
+	public String getID() {
+		return id;
+	}
+	public void setID(String id) {
+		this.id = id;
+	}
 }

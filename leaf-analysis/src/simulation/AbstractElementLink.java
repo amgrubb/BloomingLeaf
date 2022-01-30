@@ -8,6 +8,8 @@ package simulation;
  *
  */
 public abstract class AbstractElementLink extends AbstractElement{
+	protected String id = "NO-ID";	//Format that maps to array ordering.
+	
 	private static int linkTPcounter = 1;
 	
 	private AbstractLinkableElement[] src = null;
@@ -77,6 +79,13 @@ public abstract class AbstractElementLink extends AbstractElement{
 	 */
 	public void setDest(AbstractLinkableElement dest) {
 		this.dest = dest;
+	}
+	
+	public String getID() {
+		return id;
+	}
+	public void setID(String id) {
+		this.id = id;
 	}
 
 }

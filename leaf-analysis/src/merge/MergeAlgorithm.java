@@ -2,8 +2,11 @@ package merge;
 
 import com.google.gson.Gson;
 
+
 import simulation.ModelSpec;
 import simulation.Intention;
+import simulation.FunctionSegment;
+import simulation.*;
 
 import java.util.*;
 
@@ -61,10 +64,9 @@ public class MergeAlgorithm {
 		}
 	}
 	
-	/*public static String createID(int x, int model, String oldID, String type){
-		//is this method for every kind of element? is there a new ID generator for each?
-		return type + String(x) + "model" + String(model) + oldID;
-	}*/
+	public static String createID(int x, int model, String oldID, String type){
+		return type + Integer.toString(model) + "model" + Integer.toString(model) + oldID;
+	}
 
 	// ******* Intention merging methods begin ******** //
 	public static void mergeIntentions(ModelSpec model1, ModelSpec model2, ModelSpec newModel) {
@@ -73,16 +75,14 @@ public class MergeAlgorithm {
 		int currIDCount = 0;
 		
 		for(Intention intention: model1.getIntentions()) {
-			//TODO: update intention with some kind of tracking flag
-			updateIntentionID(createID(currIDCount), intention.getID(), model1, intention);
+			updateIntentionID(createID(currIDCount, 1, intention.getId(), "intention"), intention.getId(), model1, intention);
 			mergedIntentions.add(intention);
 			mergedIntentionsNameSet.add(intention.getName());
 			currIDCount++;
 		}
 		for(Intention intention: model2.getIntentions()) {
-			if(!mergedIntentionsNameSet.contains(intention.getName)){
-				//TODO: update this intention with some kind of tracking flag
-				updateIntentionID(createID(currIDCount), intention.getID(), model2, intention);
+			if(!mergedIntentionsNameSet.contains(intention.getName())){
+				updateIntentionID(createID(currIDCount, 2, intention.getId(), "intention"), intention.getId(), model2, intention);
 				mergedIntentions.add(intention);
 				mergedIntentionsNameSet.add(intention.getName());
 				currIDCount++;
@@ -92,7 +92,7 @@ public class MergeAlgorithm {
 				for(Intention mergedIntention: mergedIntentions){
 					if(mergedIntention.getName().equals(intention.getName())){
 						//actor
-						if(!mergedIntention.getActor().getName().equals(intention.getActor().getName())){
+						if(!mergedIntention.getActor().equals(intention.getActor())){
 							//UNRESOLVABLE CONFLICT
 						}
 						//type
@@ -100,26 +100,25 @@ public class MergeAlgorithm {
 							mergedIntention.setType(intention.getType());
 						}
 						//valuation
-						userEvalsA = mergedIntention.getUserEvals();
-						userEvalsB = intention.getUserEvals();
+						HashMap<Integer, String> userEvalsA = mergedIntention.getUserEvals();
+						HashMap<Integer, String> userEvalsB = intention.getUserEvals();
 
-						for(int absTP: userEvalsA){
-							if(userEvalsB.hasKey(absTP)){
+						for(int absTP: userEvalsA.keySet()){
+							if(userEvalsB.containsKey(absTP)){
 								mergeValuationConsensus(userEvalsA.get(absTP).substring(1), userEvalsA.get(absTP).substring(2,4), userEvalsB.get(absTP).substring(1), userEvalsB.get(absTP).substring(2,4));
 							}
-
 						}
 
 						//evolvingfunction
 						/*if(mergedIntention.getEvolvingFunctions().length != 0 || intention.getEvolvingFunctions().length != 0){
 							//TODO: GUllibility so don't need anything??? but mb Add an "evolving function" that represents the staticness of intention to mergedIntention??? d
 						}*/
-						mergedIntention.setEvolvingFunctions(Array.concat(mergedIntention.getEvolvingFunctions(), intention.getEvolvingFunctions()));
-
+						//mergedIntention.setEvolvingFunctions(Array.concat(mergedIntention.getEvolvingFunctions(), intention.getEvolvingFunctions()));
+							//check absTP
 						//replace all mentions of intention with mergedIntention in Model2
 						updateRepeatedIntention(mergedIntention, intention, model2);
 
-
+						
 
 					}
 				}
@@ -129,13 +128,13 @@ public class MergeAlgorithm {
 		
 	}
 
-	public static void updateIntentionID(String newID, int curID, ModelSpec model, Intention intention){
+	public static void updateIntentionID(String newID, String curID, ModelSpec model, Intention intention){
 		//don't need to update links because they contain direct references to the intentions, not their IDs
 		//actors have no reference to intention IDs so don't have anything to update
-		intention.setID(newID);
-		for(FunctionSegment func: intentions.getEvolvingFunctions()){
+		intention.setId(newID);
+		for(FunctionSegment func: intention.getEvolvingFunctions()){
 			if(func.getStartTP().contains(curID)){
-				func.replace(curID, newID);
+				func.getStartTP().replace(curID, newID);
 			}
 		}
 	}
@@ -203,10 +202,59 @@ public class MergeAlgorithm {
 
 
 	// ******* Actor merging methods begin ******** //
+	public static Actor mergeToOneActor(Actor actorOne, Actor actorTwo, int actorNum) {
+		if(actorOne.getActorType().equals(actorTwo.getActorType()) || (actorOne.getActorType().equals("Agent")) || (actorOne.getActorType().equals("Role") && !actorTwo.getActorType().equals("Agent"))) {
+			String newId = createID(actorNum, 1, actorOne.getId(), "Actor");
+			actorOne.setId(newId);
+			actorTwo.setId(newId);
+			return actorOne;
+		}
+		String newId = createID(actorNum, 2, actorTwo.getId(), "Actor");
+		actorTwo.setId(newId);
+		actorOne.setId(newId);
+		return actorTwo;
+		
+	}
+	
+	public static void mergeActors(ModelSpec model1, ModelSpec model2, ModelSpec newModel) {
+		ArrayList<String> actorsNameSet = new ArrayList<>();
+		ArrayList<Actor> mergedActors = new ArrayList<>();
+		int actorCounter = 0;
+		for(Actor actor1: model1.getActors()) {
+			for(Actor actor2: model2.getActors()) {
+				if(actor1.getName().equals(actor2.getName())) {
+					//merge actors
+					mergedActors.add(mergeToOneActor(actor1, actor2, actorCounter));
+					actorCounter += 1;
+					
+				}
+			}
+		}
+		for(Actor actor1: model1.getActors()) {
+			if(!actorsNameSet.contains(actor1.getName())) {
+				String newId = createID(actorCounter, 1, actor1.getId(), "Actor");
+				actor1.setId(newId);
+				mergedActors.add(actor1);
+				actorCounter += 1;
+				
+			}
+		}
+		for(Actor actor2: model2.getActors()) {
+			if(!actorsNameSet.contains(actor2.getName())) {
+				String newId = createID(actorCounter, 2, actor2.getId(), "Actor");
+				actor2.setId(newId);
+				mergedActors.add(actor2);
+				actorCounter += 1;
+				
+			}
+		}
+		newModel.setActors(mergedActors);
+	}
+	
 
 	// ******* Link merging methods begin ******** //
 
-	public static void mergeLinks(model1, model2, newModel){
+	public static void mergeLinks(ModelSpec model1, ModelSpec model2, ModelSpec newModel){
 		//Question what if there are two different relationships connecting the same intentions
 
 		ArrayList<NotBothLink> mergedNBL = new ArrayList<>();
@@ -215,36 +263,38 @@ public class MergeAlgorithm {
 		int linkCount = 0;
 
 		for(NotBothLink nbl: model1.getNotBothLink()){
-			newID = createID(linkCount);
-			//NotBothLink doesn't have a id...
+			String newID = createID(linkCount, 1, "what's my old ID?", "NotBothLink");
+			
+			nbl.setID(newID);
 			linkCount++;
 			mergedNBL.add(nbl);
 		}
 		for(ContributionLink cl: model1.getContributionLinks()){
-			newID = createID(linkCount);
-			//NotBothLink doesn't have a id...
+			String newID = createID(linkCount, 1, "what's my old ID?", "ContributionLink");
+			
 			cl.setID(newID);
 			linkCount++;
 			mergedCL.add(cl);
 		}
 		for(DecompositionLink dl: model1.getDecompositionLinks()){
-			newID = createID(linkCount);
-			//NotBothLink doesn't have a id...
+			String newID = createID(linkCount, 1, "what's my old ID?", "DecompositionLink");
+			
 			dl.setID(newID);
 			linkCount++;
 			mergedDL.add(dl);
 		}
 
 		for(NotBothLink nbl: model2.getNotBothLink()){
-			boolean isNewLink = true; //changing it....
+			boolean isNewLink = true;
 			for(NotBothLink addednbl: mergedNBL){
 				if(isSameLink(addednbl, nbl)){ 
 					isNewLink = false;
 					//merge these links
 				}
-			if(isNewLink)
-				newID = createID(linkCount);
-				//NotBothLink doesn't have a unique id...
+			}
+			if(isNewLink) {
+				String newID = createID(linkCount, 2, "what's my old ID?", "NotBothLink");
+				nbl.setID(newID);
 				linkCount++;
 				mergedNBL.add(nbl);
 				//add link to intentions that it touches?
@@ -262,8 +312,9 @@ public class MergeAlgorithm {
 						//Conflict alert user
 					}
 				} 
-			if(isNewLink)
-				newID = createID(linkCount);
+			}
+			if(isNewLink) {
+				String newID = createID(linkCount, 2, "what's my old ID?", "ContributionLink");
 				cl.setID(newID);
 				linkCount++;
 				mergedCL.add(cl);
@@ -274,26 +325,41 @@ public class MergeAlgorithm {
 			}
 		}
 		for(DecompositionLink dl: model2.getDecompositionLinks()){
-			boolean isNewLink = true; //changing it....
+			boolean isNewLink = true; 
 			for(DecompositionLink addeddl: mergedDL){
 				if(isSameLink(addeddl, dl)){ 
 					isNewLink = false;
 					//merge these links
-					if(addeddl.getPreContribution() != dl.getPreContribution()){
-						addeddl.setPreContribution(DecompositionType.NONE);
+					if(addeddl.getPreDecomposition() != dl.getPreDecomposition()){
+						addeddl.setPreDecomposition(DecompositionType.NONE);
 						//Conflict alert user
 					}
-					if(addeddl.getPostContribution() != dl.getPostContribution()){
-						addeddl.setPostContribution(DecompositionType.NONE);
+					if(addeddl.getPostDecomposition() != dl.getPostDecomposition()){
+						addeddl.setPostDecomposition(DecompositionType.NONE);
 						//Conflict alert user
+					}
+					
+					for(AbstractLinkableElement source: dl.getSrc()) {
+						boolean newSource = true;
+						for(AbstractLinkableElement addedSource: addeddl.getSrc()) {
+							if(addedSource.getName().equals(source.getName())) {
+								newSource = false;
+							}
+						}
+						
+						if(newSource) {
+							addeddl.addSrc(source); 
+							source.addLinksAsSrc(addeddl);
+						}
 					}
 				}
-			if(isNewLink)
-				newID = createID(linkCount);
+			}
+			if(isNewLink) {
+				String newID = createID(linkCount, 2, "what's my old ID?", "DecompositionLink");
 				dl.setID(newID);
 				linkCount++;
 				mergedDL.add(dl);
-				//add link to intentions that it touches
+				//add link to intentions that it touches, TODO: Avoid repeat
 				for(AbstractLinkableElement src: dl.getSrc()){
 					src.addLinksAsSrc(dl);
 				}
@@ -315,10 +381,10 @@ public class MergeAlgorithm {
 		}
 		if(linkType1.contains("+")){
 			if(linkType1.contains("S") && linkType2.contains("D") || linkType2.contains("D") && linkType1.contains("S")){
-				if(linkType1.contains("++") && linkType2.contains("++"){
+				if(linkType1.contains("++") && linkType2.contains("++")){
 					return ContributionType.PP;
 				}
-				return contributionType.P;
+				return ContributionType.P;
 			}
 			String newLinkType = "";
 			if(linkType1.lastIndexOf("+") != linkType1.lastIndexOf("+")){
@@ -339,10 +405,10 @@ public class MergeAlgorithm {
 		}
 		if(linkType1.contains("-")){
 			if(linkType1.contains("S") && linkType2.contains("D") || linkType2.contains("D") && linkType1.contains("S")){
-				if(linkType1.contains("--") && linkType2.contains("--"){
+				if(linkType1.contains("--") && linkType2.contains("--")){
 					return ContributionType.PP;
 				}
-				return contributionType.P;
+				return ContributionType.P;
 			}
 			String newLinkType = "";
 			if(linkType1.lastIndexOf("-") != linkType1.lastIndexOf("-")){
@@ -371,26 +437,18 @@ public class MergeAlgorithm {
 	 */
 	public static boolean isSameLink(AbstractElement link1, AbstractElement link2){
 		if(link1 instanceof NotBothLink){
-			return link1.getElement1().getName().equals(link2.getElement1().getName()) && link1.getElement2().getName().equals(link2.getElement2().getName());
+			NotBothLink linkOne = (NotBothLink)link1;
+			NotBothLink linkTwo = (NotBothLink)link2;
+			return linkOne.getElement1().getName().equals(linkTwo.getElement1().getName()) && linkOne.getElement2().getName().equals(linkTwo.getElement2().getName());
 		}
 		if(link1 instanceof DecompositionLink){
-			if(link1.getSrc().length != link2.getSrc().length){
-				return false;
-			}
-			for(AbstractLinkableElement src1: link1.getSrc()){
-				boolean found = false;
-				for(AbstractLinkableElement src2: link2.getSrc()){
-					if(src1 == src2){
-						found = true;
-					}
-				}
-				if(!found){
-					return false;
-				}
-			}
-			return link1.getDest() == link2.getDest();
+			DecompositionLink linkOne = (DecompositionLink)link1;
+			DecompositionLink linkTwo = (DecompositionLink)link2;
+			return linkOne.getDest() == linkTwo.getDest();
 		}
-		return link1.getDest() == link2.getDest() && link1.getZeroSrc() == link2.getZeroSrc();
+		ContributionLink linkOne = (ContributionLink)link1;
+		ContributionLink linkTwo = (ContributionLink)link2;
+		return linkOne.getDest() == linkTwo.getDest() && linkOne.getZeroSrc() == linkTwo.getZeroSrc();
 	}
 
 	// ******* Evolving Functions merging methods begin ******** //
