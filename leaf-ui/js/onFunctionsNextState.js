@@ -21,6 +21,23 @@ $(window).resize(function () {
     resizeWindow();
 });
 
+$("#paper").on('click', function(){ cellHighlight(analysis.paper)});
+
+/**
+ * TODO: Be able to click on individual cell to highlight, not highlight all cells :o
+ * @param {*} pPaper 
+ */
+ function cellHighlight(pPaper){
+    console.log(pPaper)
+    console.log('highlight')
+    var elements = analysis.graph.getElements();
+    for (var i = 0; i < elements.length; i++) {
+        var cellView = elements[i].findView(pPaper);
+        console.log(cellView)
+        cellView.highlight();
+    }
+}
+
 // Navigation bar functions:
 var max_font = 20;
 var min_font = 6;
@@ -28,10 +45,18 @@ var current_font = 10;
 var default_font = 10;
 var graph = new joint.dia.BloomingGraph();
 
+/**
+ * 
+ * @param {*} pPaperScroller 
+ */
 function zoomIn(pPaperScroller) {
     pPaperScroller.zoom(0.2, { max: 3 });
 }
 
+/**
+ * 
+ * @param {*} pPaperScroller 
+ */
 function zoomOut(pPaperScroller) {
     pPaperScroller.zoom(-0.2, { min: 0.2 });
 }
@@ -39,6 +64,7 @@ function zoomOut(pPaperScroller) {
 /**
  * Helper function function for fontUp, fontDown, and defaultFont
  * @param {int} new_font 
+ * @param {*} pPaper
  */
 function changeFont(new_font, pPaper) {
     var elements = analysis.graph.getElements();
@@ -82,6 +108,10 @@ function defaultFont(pPaper) {
     changeFont(default_font, pPaper)
 }
 
+/**
+ * 
+ * @param {*} sliderMax 
+ */
 function resizeWindow(sliderMax) {
     $('#slider').css("margin-top", $(this).height() * 0.7);
     $('#slider').width($('#paper').width() * 0.8);
