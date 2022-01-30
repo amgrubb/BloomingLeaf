@@ -28,12 +28,9 @@ $("#paper").on('click', function(){ cellHighlight(analysis.paper)});
  * @param {*} pPaper 
  */
  function cellHighlight(pPaper){
-    console.log(pPaper)
-    console.log('highlight')
     var elements = analysis.graph.getElements();
     for (var i = 0; i < elements.length; i++) {
         var cellView = elements[i].findView(pPaper);
-        console.log(cellView)
         cellView.highlight();
     }
 }

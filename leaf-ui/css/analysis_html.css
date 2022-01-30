@@ -264,7 +264,7 @@ body {
 }
 
 .filter_checkbox{
-  margin-top: 4px;
+  margin-top: 5px;
 }
 
 /* beggining of representative color slider */
@@ -281,6 +281,12 @@ body {
   left: 80px;
 }
 
+#colorResetAnalysis {
+  position: relative;
+  top: -6px;
+  width: 69px; /* 92 */
+}
+
 .on-off {
   font-size: 8px;
   color: white;
@@ -291,11 +297,6 @@ body {
   margin-left: 10px;
   }
 
-#colorResetAnalysis {
-  position: relative;
-  top: -6px;
-  width: 69px; /* 92 */
-}
 
 .EVO-whole-button {
   display: inline-block;
@@ -318,10 +319,6 @@ body {
   transition: opacity .2s;
 }
 
-#nextStateSlider{
-  width: 140px;
-}
-
 /* Mouse-over effects */
 .EVO-slider:hover {
   opacity: 1; /* Fully shown on mouse-over */
@@ -340,5 +337,9 @@ body {
   height: 25px; /* Slider handle height */
   background: #27ae60; /* Green background */
   cursor: pointer; /* Cursor on hover */
+}
+
+#nextStateSlider{
+  width: 140px;
 }
 /* end of representive slider styling */

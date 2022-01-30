@@ -922,7 +922,7 @@ function checkForMultipleNB(element) {
  * @param {String} msg 
  * @param {Number} width 
  * @param {String} promptMsgType 
- * @param {Sting} type 
+ * @param {String} type 
  * @returns joint.ui.Dialog box
  */
 function showAlert(title, msg, width, promptMsgType, type) {
