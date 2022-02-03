@@ -795,8 +795,13 @@ paper.on("link:options", function (cell) {
             var cell = element.findView(paper).model;
             var intention = cell.get('intention');
             var initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair');
-            var funcType = intention.get('evolvingFunction').get('type');
-
+            var funcType;
+            if (intention.get('evolvingFunction')!= null) {
+                funcType = intention.get('evolvingFunction').get('type');
+            } else {
+                funcType = 'NT';
+            }
+            
             // If the initsatVal is not empty and if funcType empty
             if (intention != null && initSatVal != '(no value)' && funcType === 'NT') {
                 intention.removeInitialSatValue();
