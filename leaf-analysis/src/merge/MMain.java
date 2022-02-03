@@ -35,9 +35,9 @@ public class MMain {
 	public static void main(String[] args) {
 		//This is the default filePath to be executed if no file is passed through parameters
 		String filePath = "temp/";
-		String inputFile1 = "sandwich.json";
+		String inputFile1 = "acorn.json";
 		String inputFile2 = "sandwich-w-peach.json";
-		String outputFile = "output-1-11.json";
+		String outputFile = "output-1-31.json";
 				
 		try {
 			Gson gson = new Gson();

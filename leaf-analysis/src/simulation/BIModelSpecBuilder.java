@@ -173,6 +173,7 @@ public class BIModelSpecBuilder {
 					else if (linkType.equals("NBD"))	
 						notBothLink.add(new NotBothLink(intentElementSrc, intentElementDest, true, 
 								link.getLink().getAbsTime(), link.getId()));
+					// else if linkType is-a 
 					else {
 						ContributionLink tempCont = ContributionLink.createConstributionLink(intentElementSrc, 
 								intentElementDest, link.getLink(), link.getId());

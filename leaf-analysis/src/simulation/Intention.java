@@ -1,6 +1,8 @@
 package simulation;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
 
 import gson_classes.BIEvolvingFunction;
 import gson_classes.BIFunctionSegment;
@@ -176,6 +178,51 @@ public class Intention extends AbstractLinkableElement {
 		} else {
 			return null;
 		}
+	}
+	
+	public List<String> getEvolvingFunctionStartTPs() {
+		// TODO: handle compound timepoints from == constraints
+		// System.out.println("starting geteftp");
+		List<String> tps = new ArrayList<>();
+		for (FunctionSegment func: this.getEvolvingFunctions()) {
+			String startTP = func.getStartTP();
+			// System.out.println(startTP);
+			if (startTP.contains("TP")) {  // all but initial
+				// format E{id}TP{tp}
+				String[] timepoints = startTP.split("TP");
+				/**
+				System.out.println(this.getId());
+				System.out.println(timepoints[0]);  // should be "E" + this.getId();
+				System.out.println(timepoints[1]);
+				*/
+				startTP = timepoints[1];
+			}
+			tps.add(startTP);
+		}
+		// System.out.println(tps);
+		return tps;
+	}
+	
+	public List<Integer> getEvolvingFunctionStartATs() {
+		List<Integer> tps = new ArrayList<>();
+		for (FunctionSegment func: this.getEvolvingFunctions()) {
+			tps.add(func.getStartAT());
+		}
+		return tps;
+	}
+	
+	public List<String> getEvolvingFunctionRefEvidencePairs() {
+		List<String> tps = new ArrayList<>();
+		for (FunctionSegment func: this.getEvolvingFunctions()) {
+			tps.add(func.getRefEvidencePair());
+		}
+		return tps;
+	}
+	
+	public String getInitialUserEval() {
+		// TODO: search list for eval with time of initial
+		// TODO: return (no value) if not found
+		return userEvals.get(0);
 	}
 	
 }
