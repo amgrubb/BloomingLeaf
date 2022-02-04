@@ -21,19 +21,35 @@ $(window).resize(function () {
     resizeWindow();
 });
 
-$("#paper").on('click', function(){ cellHighlight(analysis.paper)});
+$("#paper").on('mousedown', function(){ cellHighlight(analysis.paper)});
 
 /**
- * TODO: Be able to click on individual cell to highlight, not highlight all cells :o
+ * Highlight an individual cell upon clicking
  * @param {*} pPaper 
  */
- function cellHighlight(pPaper){
-    var elements = analysis.graph.getElements();
-    for (var i = 0; i < elements.length; i++) {
-        var cellView = elements[i].findView(pPaper);
+ function cellHighlight(pPaper) {
+    // Unhighlight cells that are not the cell to be targeted
+    pPaper.on('cell:pointerup', function() {
+        pPaper.findViewsInArea(pPaper.getArea()).forEach(cell => {
+            cell.unhighlight();
+        });
+    });
+
+    // Highlight the targeted cell upon clicking
+    pPaper.on('cell:pointerclick', function(cellView) {
         cellView.highlight();
-    }
+    });
+
+
+    // Unhighlight all cells when blank paper is clicked on
+    pPaper.on('blank:pointerdown', function() {
+        pPaper.findViewsInArea(pPaper.getArea()).forEach(cell => {
+            cell.unhighlight();
+        });
+    });
+
 }
+
 
 // Navigation bar functions:
 var max_font = 20;
