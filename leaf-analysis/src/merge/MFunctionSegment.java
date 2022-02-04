@@ -99,7 +99,7 @@ public class MFunctionSegment extends FunctionSegment{
 		}
 		
 		// assign type based on comparison end ?= start
-		int compare = MergeAlgorithm.compareEvidencePairs(startEvidencePair, endEvidencePair);
+		int compare = MEPOperators.compare(endEvidencePair, startEvidencePair);
 		if (compare > 0) {
 			return "I";  // end > start
 		} else if (compare < 0) {

@@ -131,133 +131,56 @@ public class MergeAlgorithm {
 			return combined;
 		}
 		
-		// else, overlapping timeline info
-		int startOverlap = delta;
-		int endOverlap = maxTime1;
+		// TODO: timing (incl. changes in update timelines)
+		// overlapping timeline info
+		// have timing AB-time
+		// either: have parallel timing w/ old names
+		// or better: rename times on intentions
+		/*
+		 * Do two options: generate all times as A-  (B-)
+		 * or leave blank for user to enter
+		 * 
+		 * Print for every intention?
+		 * 
+		 * Intention: {name}
+		 * A current times: [~, ~, ~]
+		 * A new times:     []  # user enter here
+		 * 
+		 * B current times: [~, ~, ~]
+		 * B new times:     []  # user enter here
+		 * 
+		 * ordering of new times:
+		 * # [A-Initial, ... , B-MaxTime]
+		 * []
+		 */
+		List<String> timing = new ArrayList<>();
+		/*
+		timing.add("A-Initial");
+		timing.add("A-A");
+		timing.add("B-Initial");
+		timing.add("A-100");
+		timing.add("B-A");
+		timing.add("B-195");*/
 		
-		// unless delta is in timeline1 and maxtime1 is in timeline2, we're slicing intervals
+		timing.add("A-Initial");
+		timing.add("B-Initial");
+		timing.add("AB-A");
+		timing.add("A-100");
+		timing.add("B-105");
 		
+		List<MFunctionSegment> segsA = completeFunctionInfo(intention1.getEvolvingFunctions(), intention1.getInitialUserEval(), maxTime1);
+		List<MFunctionSegment> segsB = completeFunctionInfo(intention2.getEvolvingFunctions(), intention2.getInitialUserEval(), maxTime2);
 		
-		
-		// find overlap
-		// combine overlapping segments
-		// insert into whole timeline
-		
-		// find timelines of intention 1 and 2
-		List<String> tps1 = intention1.getEvolvingFunctionStartTPs();
-		List<String> tps2 = intention2.getEvolvingFunctionStartTPs();
-		tps1.add("Max");  // include max times
-		tps2.add("Max");
-		
-		List<Integer> ats1 = intention1.getEvolvingFunctionStartATs();
-		List<Integer> ats2 = intention2.getEvolvingFunctionStartATs();
-		ats1.add(maxTime1);
-		// increment second intention's timeline by delta
-		// TODO: can remove when we increment all evolving functions in updateTimeline()
-		for (int i = 0; i < ats2.size(); i++) {
-			if (ats2.get(i) != null) {
-				ats2.set(i, ats2.get(i) + delta);
-			}
-		}
-		ats2.add(maxTime2);
-		
-		List<String> evPairs1 = intention1.getEvolvingFunctionRefEvidencePairs();
-		List<String> evPairs2 = intention2.getEvolvingFunctionRefEvidencePairs();
-		evPairs1.add(0, intention1.getInitialUserEval()); // also need initial sat value
-		evPairs2.add(0, intention2.getInitialUserEval()); // in case first interval is increase/decrease
-		
-		System.out.println(tps1);
-		System.out.println(tps2);
-		System.out.println(ats1);
-		System.out.println(ats2);
-		System.out.println(evPairs1);
-		System.out.println(evPairs2);	
-		
-		// convert function segments to format with
-		// starttp (num or letter?)
-		// stop tp
-		// start eval
-		// stop eval
-		// type (not necessary?)
-		
-		List<MFunctionSegment> segs1 = completeFunctionInfo(intention1.getEvolvingFunctions(), intention1.getInitialUserEval(), maxTime1);
-		List<MFunctionSegment> segs2 = completeFunctionInfo(intention2.getEvolvingFunctions(), intention2.getInitialUserEval(), maxTime2);
-		String[] timing = {"0", "5", "A", "100", "105"};
-		
-		List<MFunctionSegment> mergedSegments = mergeFunctionSegments(segs1, segs2, timing, delta);
-		
-		System.out.println("int 1");
-		
-		for (MFunctionSegment seg: segs1) {
-			System.out.println(seg.getStartTP());
-			System.out.println(seg.getStartAT());
-			System.out.println(seg.getStartEvidencePair());
-			System.out.println(seg.getType());
-			System.out.println(seg.getEndTP());
-			System.out.println(seg.getEndAT());
-			System.out.println(seg.getRefEvidencePair());
-		}
-		
-		System.out.println("int 2");
-		
-		for (MFunctionSegment seg: segs2) {
-			System.out.println(seg.getStartTP());
-			System.out.println(seg.getStartAT());
-			System.out.println(seg.getStartEvidencePair());
-			System.out.println(seg.getType());
-			System.out.println(seg.getEndTP());
-			System.out.println(seg.getEndAT());
-			System.out.println(seg.getRefEvidencePair());
-		}
-		
-		/**
-		for (FunctionSegment func: intention1.getEvolvingFunctions()) {
-			System.out.println("intention1:");
-			System.out.println(func.getStartTP());
-			System.out.println(func.getStartAT());
-			System.out.println(func.getType());
-			System.out.println(func.getRefEvidencePair());
-		}
-		
-		for (FunctionSegment func: intention2.getEvolvingFunctions()) {
-			System.out.println("intention2:");
-			System.out.println(func.getStartTP());
-			System.out.println(func.getStartAT());
-			System.out.println(func.getType());
-			System.out.println(func.getRefEvidencePair());
-		}
-		
-		System.out.println(intention1.getEvolvingFunctions());
-		System.out.println(intention2.getEvolvingFunctions());
-		*/
-		
-		// then convert back to functionSegment
-		
-		return new FunctionSegment[2];
+		// merge functions
+		MergeEvolvingFunction merge = new MergeEvolvingFunction(segsA, segsB, timing);
+		return merge.outputMergedSegments();
 	}
 	
-	private static String consensus(String evPair1, String evPair2) {
-		// consensus of "(no value)" and evPair2 is evPair2
-		if (evPair1.equals("(no value)")) {
-			return evPair2;
-		} else if (evPair2.equals("(no value)")) {
-			return evPair1;
-		}
-		
-		// consensus: for each 0/1 in evpairs (e.g. "0010"),
-		// 1 if both 1, else 0
-		String result = "";
-		for(int i = 0; i < 4; i++) {
-			// append 1 if both 1, else 0
-		   if (evPair1.charAt(i) == '1' && evPair2.charAt(i) == '1') {
-			   result += "1";
-		   } else {
-			   result += "0";  
-		   }
-		}
-		
-		return result;
-	}
+	
+	/******************************************************************
+	 * For preparing MFunctionSegment lists with info from intention
+	 * to send into MergeEvolvingFunction
+	 ******************************************************************/
 	
 	/**
 	 * Determines start evidence pairs and end times for function segments
@@ -292,116 +215,5 @@ public class MergeAlgorithm {
 		
 		return newSegs;
 	}
-	
-	private static List<MFunctionSegment> mergeFunctionSegments(List<MFunctionSegment> segments1, List<MFunctionSegment> segments2, String[] timingInfo, Integer delta){
-		List<MFunctionSegment> newSegs = new ArrayList<>();
-		// String[] timing = {"0", "A", "95", "100", "195"};
-		// just 1 overlapping segment for now
-		
-		// for segment in m1?
-		// 
-		
-		// TODO: need comparison for sat values
-		
-		// find overlapping segments
-		
-		// add m1 before overlap
-		// resolve overlap
-		
-		// a, b, endAB
-		//MFunctionSegment seg1 = segments1.get(1);
-		//MFunctionSegment seg2 = segments2.get(0);
-		
-		// first seg starts same
-		// ends at [b or consensus b and closest part of interval]
-		
-		// second seg starts there
-		// and ends at orig end
-		
-		
-		
-		// loop over m1 timelines
-		// until reach overlap with start of m2
-		
-	
-		// counters for looping over segments from mA and mB
-		int segA = 0;
-		int segB = 0;
-		
-		// keep track of start of segment B
-		String startB = segments2.get(segB).getStartTime();
-		
-		// loop over A segments until reach overlap
-		for (/*segA = 0*/; segA < segments1.size(); segA++) {
-			MFunctionSegment seg = segments1.get(segA);
-			// first check for no overlap w/ B
-			String end = seg.getEndTime();
-			if (timing.indexOf(end) > timing.indexOf(startB)) {
-				break;
-			}
-			
-			// add to final segments
-			newSegs.add(seg);
-		}
-		
-		// now overlap for mA begins w/ segment at segA
-		// for now: assume end at same timepoint
 
-		
-		// three cases:
-		// perfect match
-		// overlap on right
-		// overlap on both sides
-		
-		// fourth case of overlap on left if multiple overlapping segments?
-		// for every pair of overlapping segments
-		
-		
-		// take the L segment of the first one
-		// and the overlapping segment
-		// but leave the R segmment for the next iteration?
-		
-		// this doesn't work because mB then overlaps with the next mA
-		
-		while (segA < segments1.size() && segB < segments2.size()) {
-			MFunctionSegment mA = segments1.get(segA);
-			MFunctionSegment mB = segments2.get(segB);
-			List<MFunctionSegment> resolvedOverlap = mergeOverlappingFunctionSegments(mA, mB);
-			newSegs.addAll(resolvedOverlap);
-		}
-		
-		
-		MFunctionSegment segggg = new MFunctionSegment(startTP, startEvidencePair, endTP, endEvidencePair);
-		
-		
-		// add m2 after overlap
-		
-		
-		
-		return newSegs;
-	}
-	
-	public static int compareEvidencePairs(String start, String end) {
-		/* is end > start (1 or above)
-		 * end == start (0)
-		 * or end < start (-1 and below)
-		 * */
-		
-		// first, return equals for stochastic
-		if (start.equals("(no value)") || end.equals("(no value)")) {
-			return 0;
-		}
-		
-		// hashmap for comparing evidence pairs
-		HashMap<String, Integer> compareEP = new HashMap<>();
-		compareEP.put("0011", 2);   // fully satisfied
-		compareEP.put("0010", 1);   // partially satisfied
-		compareEP.put("0000", 0);   // none
-		compareEP.put("0100", -1);  // partially denied
-		compareEP.put("1100", -2);  // fully denied
-		
-		// find difference between evidence pairs
-		return compareEP.get(end) - compareEP.get(start);
-	}
-	
 }
