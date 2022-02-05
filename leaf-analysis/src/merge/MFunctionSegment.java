@@ -111,13 +111,6 @@ public class MFunctionSegment extends FunctionSegment{
 	 * If not then name of timepoint
 	 * @return String
 	 */
-	public String getStartTime() {
-		if (this.getStartAT() != null) {
-			return Integer.toString(this.getStartAT());  // return string of abs time if exists
-		} else {
-			return this.getStartTP();  // else just name of relative time
-		}
-	}
 	public String getEndTime() {
 		if (this.getEndAT() != null) {
 			return Integer.toString(this.getEndAT());  // return string of abs time if exists

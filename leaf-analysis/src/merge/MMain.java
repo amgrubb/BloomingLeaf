@@ -8,7 +8,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import gson_classes.IMain;
-
+import premerge.TMain;
 import simulation.ModelSpec;
 import simulation.BIModelSpecBuilder;
 import simulation.Intention;
@@ -37,7 +37,9 @@ public class MMain {
 		String filePath = "temp/";
 		String inputFile1 = "sandwich.json";
 		String inputFile2 = "sandwich-w-peach.json";
-		String outputFile = "output-1-4.json";
+		String outputFile = "output-1-5.json";
+		String timingFile = "timing.json";
+		Integer delta = 5;  // new start B
 				
 		try {
 			Gson gson = new Gson();
@@ -57,10 +59,10 @@ public class MMain {
 			IMain m2IMain = IMainBuilder.buildIMain(modelSpec2);
 			System.out.println(gson.toJson(m2IMain));
 			
-			System.out.println("----------------------");
+			// Loading in timing info
+			TMain timings = convertTimingFromFile(filePath + timingFile);
 			
-			// Take this in eventually
-			Integer delta = 5;
+			System.out.println("----------------------");
 			
 			//TODO: MERGE-Y THINGS
 			ModelSpec mergedModel = MergeAlgorithm.mergeModels(modelSpec1, modelSpec2, delta);
@@ -140,13 +142,13 @@ public class MMain {
 	}
 
 	/**
-	 * This method converts the model file sent by the front-end into the ModelSpec using VisualModelSpecBuilder
+	 * This method converts the model file sent by the front-end into the ModelSpec using BIModelSpecBuilder
 	 * @param filePath
 	 * Path to the file with the front-end model
 	 * @return
 	 * ModelSpec back-end model
 	 */
-	private static ModelSpec convertBackboneModelFromFile(String filePath) {
+	public static ModelSpec convertBackboneModelFromFile(String filePath) {
 		GsonBuilder builder = new GsonBuilder();
 		//builder.registerTypeAdapter(FuncWrapper.class, new FuncWrapperDeserializer());
 
@@ -163,6 +165,25 @@ public class MMain {
 			
 		} catch(Exception e) {
 			throw new RuntimeException("Error in convertBackboneModelFromFile() method: \n " + e.getMessage());
+		}
+	} 
+	
+	public static TMain convertTimingFromFile(String filePath) {
+		GsonBuilder builder = new GsonBuilder();
+
+		try {
+			Gson gson = builder.create();
+			// read timing from JSON file (TimingMain holds list of Timing)
+			TMain timingMain = gson.fromJson(new FileReader(filePath), TMain.class);
+			System.out.println("made timing:");
+			System.out.println(gson.toJson(timingMain));
+			
+			/// here initialize timing mps
+			
+			return timingMain;
+			
+		} catch(Exception e) {
+			throw new RuntimeException("Error in convertTimingFromFile() method: \n " + e.getMessage());
 		}
 	} 
 }

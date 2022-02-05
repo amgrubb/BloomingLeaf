@@ -31,6 +31,7 @@ public class MergeAlgorithm {
 		System.out.println(intention2.getName());
 		System.out.println(intention1.getEvolvingFunctionStartTPsFull());
 		System.out.println(intention2.getEvolvingFunctionStartTPsFull());
+		System.out.println(originalMaxTime1);
 
 		
 		FunctionSegment[] mergedEF = mergeEvolvingFunctions(intention1, intention2, 5, originalMaxTime1, model2.getMaxTime());
@@ -60,14 +61,24 @@ public class MergeAlgorithm {
 			absTP += delta;
 		}
 		
-		// update absolute time points for model 2 stored in intentions
+		// update absolute time points for model 2 stored in intentions' UAL
 		for(Intention intention: model2.getIntentions()) {
 			for(Integer absTP: intention.getUserEvals().keySet()) {
 				absTP += delta;
 			}
 		}
 		
-		// TODO: update abs time points in evolving functions
+		// update absolute time points for model 2 stored in intentions' evolving functions
+		for(Intention intention: model2.getIntentions()) {
+			for(FunctionSegment func: intention.getEvolvingFunctions()) {
+				// if abs time exists, update it
+				func.incrementStartAT(delta);
+				
+				// rename start TPs as user suggested
+				func.setStartTP(/**/"");
+				
+			}
+		}
 	}
 	
 	public static void mergeIntentions(ModelSpec model1, ModelSpec model2, ModelSpec newModel) {
@@ -153,7 +164,7 @@ public class MergeAlgorithm {
 		 * B new times:     []  # user enter here
 		 * 
 		 * ordering of new times:
-		 * # [A-Initial, ... , B-MaxTime]
+		 * # e.g.: [A-Initial, ... , B-MaxTime]
 		 * []
 		 */
 		List<String> timing = new ArrayList<>();
@@ -173,7 +184,7 @@ public class MergeAlgorithm {
 		
 		List<String> timingShort = new ArrayList<>();
 		timingShort.add("0");
-		//timingShort.add("0"); "5"
+		timingShort.add("5");
 		timingShort.add("E002TPA");
 		timingShort.add("E005TPA");
 		timingShort.add("100");

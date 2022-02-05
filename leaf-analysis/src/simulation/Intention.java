@@ -223,6 +223,22 @@ public class Intention extends AbstractLinkableElement {
 		return tps;
 	}
 	
+	public List<String> getEvolvingFunctionStartTimes() {
+		List<String> tps = new ArrayList<>();
+		for (FunctionSegment func: this.getEvolvingFunctions()) {
+			tps.add(func.getStartTime());
+		}
+		return tps;
+	}
+	
+	public List<String> getEvolvingFunctionStartTimesIncremented(Integer delta) {
+		List<String> tps = new ArrayList<>();
+		for (FunctionSegment func: this.getEvolvingFunctions()) {
+			tps.add(func.getStartTimeIncremented(delta));
+		}
+		return tps;
+	}
+	
 	public List<String> getEvolvingFunctionRefEvidencePairs() {
 		List<String> tps = new ArrayList<>();
 		for (FunctionSegment func: this.getEvolvingFunctions()) {
