@@ -200,6 +200,7 @@
     function setInteraction(interactionValue, pPaper) {
         _.each(analysis.graph.getCells().filter(cell => (cell.get('type') == "basic.CellLink")), function (cell) {
             cell.findView(pPaper).options.interactive = interactionValue;
+            $('.link-tools').css("display", "none");
         });
     }
 
