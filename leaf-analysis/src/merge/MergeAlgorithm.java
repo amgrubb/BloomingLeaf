@@ -23,15 +23,29 @@ public class MergeAlgorithm {
 		if (MMain.DEBUG) System.out.println("Starting: MergeAlgorithm");
 		ModelSpec mergedModel = new ModelSpec();
 		
+		Gson gson = new Gson();
+		System.out.println(gson.toJson(mergedModel));
+		
 		// update the models' times
+		if (MMain.DEBUG) System.out.println("Starting: updateTimeline");
 		updateTimeline(model1, model2, delta);
+		if (MMain.DEBUG) System.out.println(gson.toJson(mergedModel));
+		
+		if (MMain.DEBUG) System.out.println("Starting: mergeIntentions");
 		mergeIntentions(model1, model2, mergedModel);
+		//if (MMain.DEBUG) System.out.println(gson.toJson(mergedModel));
+		
+		if (MMain.DEBUG) System.out.println("Starting: mergeActors");
+		mergeActors(model1, model2, mergedModel);
+		//if (MMain.DEBUG) System.out.println(gson.toJson(mergedModel));
+		
+		if (MMain.DEBUG) System.out.println("Starting: mergeLinks");
+		mergeLinks(model1, model2, mergedModel);
+		//if (MMain.DEBUG) System.out.println(gson.toJson(mergedModel));*/
 		
 		
 		
-		//Gson gson = new Gson();
-		//System.out.println(gson.toJson(mergedModel));
-		//System.out.println(gson.toJson(model2));
+		
 		
 		return mergedModel;
 	}
@@ -43,7 +57,7 @@ public class MergeAlgorithm {
 	 * @param delta
 	 */
 	public static void updateTimeline(ModelSpec model1, ModelSpec model2, Integer delta) {
-		if (MMain.DEBUG) System.out.println("Starting: updateTimeline");
+		//if (MMain.DEBUG) System.out.println("Starting: updateTimeline");
 		
 		// update max time for both models
 		Integer oldMax = model2.getMaxTime();
@@ -82,30 +96,44 @@ public class MergeAlgorithm {
 		}
 		for(Intention intention: model2.getIntentions()) {
 			if(!mergedIntentionsNameSet.contains(intention.getName())){
+				if (MMain.DEBUG) System.out.println("Adding a new intention from model 2");
 				updateIntentionID(createID(currIDCount, 2, intention.getId(), "intention"), intention.getId(), model2, intention);
 				mergedIntentions.add(intention);
 				mergedIntentionsNameSet.add(intention.getName());
 				currIDCount++;
+				
 			}
 			else{ 
 				//This section merges intentions from model1 and model2 that are considered the same because they have the same name. 
 				for(Intention mergedIntention: mergedIntentions){
 					if(mergedIntention.getName().equals(intention.getName())){
+						if (MMain.DEBUG) System.out.println("merging an intention");
 						//actor
-						if(!mergedIntention.getActor().equals(intention.getActor())){
+						if(!mergedIntention.getActor().getName().equals(intention.getActor().getName())){
 							//UNRESOLVABLE CONFLICT
+							if (MMain.DEBUG) System.out.println("Intentions in different actors");
 						}
 						//type
+						if (MMain.DEBUG) System.out.println("merging type");
 						if(mergedIntention.compareType(intention) < 0){
 							mergedIntention.setType(intention.getType());
 						}
 						//valuation
+						if (MMain.DEBUG) System.out.println("merging valuations");
 						HashMap<Integer, String> userEvalsA = mergedIntention.getUserEvals();
 						HashMap<Integer, String> userEvalsB = intention.getUserEvals();
-
+						
+						
 						for(int absTP: userEvalsA.keySet()){
 							if(userEvalsB.containsKey(absTP)){
-								mergeValuationConsensus(userEvalsA.get(absTP).substring(1), userEvalsA.get(absTP).substring(2,4), userEvalsB.get(absTP).substring(1), userEvalsB.get(absTP).substring(2,4));
+								String newEval = mergeValuationConsensus(userEvalsA.get(absTP), userEvalsB.get(absTP));
+								if (MMain.DEBUG) System.out.println(newEval);
+								userEvalsA.put(absTP, newEval);
+							}
+						}
+						for(int absTP:userEvalsB.keySet()) {
+							if(!userEvalsA.containsKey(absTP)) {
+								userEvalsA.put(absTP, userEvalsB.get(absTP));
 							}
 						}
 
@@ -175,12 +203,29 @@ public class MergeAlgorithm {
 
 	}
 
-	public static String mergeValuationConsensus(String sat1, String den1, String sat2, String den2){
+	public static String mergeValuationConsensus(String value1, String value2){
+		//dealing with no value:
+		//System.out.println(value1 + value2);
+		if(value1.equals("(no value)")){
+			//System.out.println("no value");
+			return value2;
+		}
+		if(value2.equals("(no value)")){
+			//System.out.println("no value");
+			return value1;
+		}
+		
+		//actual valuations:
+		String sat1 = value1.substring(0,2);
+		String den1 = value1.substring(2,4);
+		String sat2 = value2.substring(0,2);
+		String den2 = value2.substring(2,4);
+		//System.out.println(sat1 + den1);
+		
 		HashMap<String, Integer> valueRanks = new HashMap<>();
-		//not positive that i did these right!
 		valueRanks.put("00", 0);
 		valueRanks.put("11", 2);
-		valueRanks.put("01", 1);
+		valueRanks.put("10", 1);
 
 		String newSat = "";
 		String newDen = "";
@@ -196,7 +241,6 @@ public class MergeAlgorithm {
 		} else{
 			newDen = den2;
 		}
-
 		return newSat + newDen;
 	}
 
@@ -263,21 +307,21 @@ public class MergeAlgorithm {
 		int linkCount = 0;
 
 		for(NotBothLink nbl: model1.getNotBothLink()){
-			String newID = createID(linkCount, 1, "what's my old ID?", "NotBothLink");
+			String newID = createID(linkCount, 1, nbl.getID(), "NotBothLink");
 			
 			nbl.setID(newID);
 			linkCount++;
 			mergedNBL.add(nbl);
 		}
 		for(ContributionLink cl: model1.getContributionLinks()){
-			String newID = createID(linkCount, 1, "what's my old ID?", "ContributionLink");
+			String newID = createID(linkCount, 1, cl.getID(), "ContributionLink");
 			
 			cl.setID(newID);
 			linkCount++;
 			mergedCL.add(cl);
 		}
 		for(DecompositionLink dl: model1.getDecompositionLinks()){
-			String newID = createID(linkCount, 1, "what's my old ID?", "DecompositionLink");
+			String newID = createID(linkCount, 1, dl.getID(), "DecompositionLink");
 			
 			dl.setID(newID);
 			linkCount++;
@@ -290,10 +334,13 @@ public class MergeAlgorithm {
 				if(isSameLink(addednbl, nbl)){ 
 					isNewLink = false;
 					//merge these links
+					if(addednbl.isFinalDenied() != nbl.isFinalDenied()) {
+						addednbl.setFinalDenied(true);
+					}
 				}
 			}
 			if(isNewLink) {
-				String newID = createID(linkCount, 2, "what's my old ID?", "NotBothLink");
+				String newID = createID(linkCount, 2, nbl.getID(), "NotBothLink");
 				nbl.setID(newID);
 				linkCount++;
 				mergedNBL.add(nbl);
@@ -310,11 +357,12 @@ public class MergeAlgorithm {
 					addedcl.setPostContribution(mergeContributionTypesSemiGullible(addedcl.getPostContribution(), cl.getPostContribution()));
 					if(addedcl.getPostContribution() == ContributionType.NONE || addedcl.getPreContribution() == ContributionType.NONE){
 						//Conflict alert user
+						if (MMain.DEBUG) System.out.println("Contribution types were unresolvable");
 					}
 				} 
 			}
 			if(isNewLink) {
-				String newID = createID(linkCount, 2, "what's my old ID?", "ContributionLink");
+				String newID = createID(linkCount, 2, cl.getID(), "ContributionLink");
 				cl.setID(newID);
 				linkCount++;
 				mergedCL.add(cl);
@@ -333,10 +381,12 @@ public class MergeAlgorithm {
 					if(addeddl.getPreDecomposition() != dl.getPreDecomposition()){
 						addeddl.setPreDecomposition(DecompositionType.NONE);
 						//Conflict alert user
+						if (MMain.DEBUG) System.out.println("Decomp types unresolvable");
 					}
 					if(addeddl.getPostDecomposition() != dl.getPostDecomposition()){
 						addeddl.setPostDecomposition(DecompositionType.NONE);
 						//Conflict alert user
+						if (MMain.DEBUG) System.out.println("decomp types are different");
 					}
 					
 					for(AbstractLinkableElement source: dl.getSrc()) {
@@ -355,11 +405,11 @@ public class MergeAlgorithm {
 				}
 			}
 			if(isNewLink) {
-				String newID = createID(linkCount, 2, "what's my old ID?", "DecompositionLink");
+				String newID = createID(linkCount, 2, dl.getID(), "DecompositionLink");
 				dl.setID(newID);
 				linkCount++;
 				mergedDL.add(dl);
-				//add link to intentions that it touches, TODO: Avoid repeat
+				//add link to intentions that it touches
 				for(AbstractLinkableElement src: dl.getSrc()){
 					src.addLinksAsSrc(dl);
 				}
@@ -367,7 +417,37 @@ public class MergeAlgorithm {
 				//check that it's the only intention in the destination intention list?
 			}
 		}
+		//check that NBL is not conflicting with intentions
+		for(NotBothLink nbl: mergedNBL) {
+			String eval1 = nbl.getElement1().getUserEvals().get(0);
+			String eval2= nbl.getElement2().getUserEvals().get(0);
+			if(!eval1.equals("0000") && !eval1.equals("(no value)") || !eval2.equals("0000") && !eval2.equals("(no value)")) {
+				//Conflict!!
+				System.out.println("removed NBL");
+				mergedNBL.remove(nbl);
+			}
+			for(FunctionSegment funcSeg: nbl.getElement1().getEvolvingFunctions()) {
+				if(!funcSeg.getType().equals("R")) {
+					System.out.println("removed NBL");
+					mergedNBL.remove(nbl);
+				}
+			}
+			for(FunctionSegment funcSeg: nbl.getElement2().getEvolvingFunctions()) {
+				if(!funcSeg.getType().equals("R")) {
+					System.out.println("removed NBL");
+					mergedNBL.remove(nbl);
+				}
+			}
+		}
 
+		//TODO: check to make sure no other links exist for contribution links
+		//TODO: check to make sure no other links exist for decomposition links
+		
+		
+		
+		newModel.setContributionLinks(mergedCL);
+		newModel.setDecompositionLinks(mergedDL);
+		newModel.setNotBothLinks(mergedNBL);
 	}
 
 	public static ContributionType mergeContributionTypesSemiGullible(ContributionType ct1, ContributionType ct2){

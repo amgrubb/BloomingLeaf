@@ -178,18 +178,18 @@ public class Intention extends AbstractLinkableElement {
 		type = t;
 	}
 
-	public String getActor() {
+	public Actor getActor() {
 		return actor;
 	}
 
 	/** Compares types. If i's type is greater, then return will be less than 0.
 	 */
 	public int compareType(Intention i){
-		Hashmap<String, int> typeValues = new HashMap<>();
-		typeValues.put("Goal", 0);
-		typeValues.put("Task", 1);
-		typeValues.put("Softgoal", 2);
-		typeValues.put("Resource", 3);
+		HashMap<String, Integer> typeValues = new HashMap<String, Integer>();
+		typeValues.put("basic.Goal", 0);
+		typeValues.put("basic.Task", 1);
+		typeValues.put("basic.Softgoal", 2);
+		typeValues.put("basic.Resource", 3);
 		return typeValues.get(type) - typeValues.get(i.getType());
 	}
 	

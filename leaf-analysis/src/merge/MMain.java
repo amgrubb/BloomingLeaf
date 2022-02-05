@@ -69,6 +69,7 @@ public class MMain {
 			System.out.println(modelSpec2);
 			
 			ModelSpec mergedModel = MergeAlgorithm.mergeModels(modelSpec1, modelSpec2, delta);
+			System.out.println("Completed Merging.");
 			
 			//Create Output file that will be used by frontend
 			// can i output modelspec2 w/o intentions and links?\

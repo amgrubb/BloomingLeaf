@@ -46,6 +46,9 @@ public class NotBothLink extends AbstractElement{
 	public boolean isFinalDenied() {
 		return finalDenied;
 	}
+	public void setFinalDenied(boolean fd) {
+		finalDenied = fd;
+	}
 	public String getLinkTP() {
 		return linkTP;
 	}
