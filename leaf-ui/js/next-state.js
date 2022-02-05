@@ -197,9 +197,14 @@
         renderEVO();
     }
 
-    function setInteraction(interactionValue, pPaper) {
+    /**
+     * Disable link interaction
+     * @param {Boolean} interactionValue
+     * @param {Object} paper
+    */
+    function setInteraction(interactionValue, paper) {
         _.each(analysis.graph.getCells().filter(cell => (cell.get('type') == "basic.CellLink")), function (cell) {
-            cell.findView(pPaper).options.interactive = interactionValue;
+            cell.findView(paper).options.interactive = interactionValue;
             $('.link-tools').css("display", "none");
         });
     }
