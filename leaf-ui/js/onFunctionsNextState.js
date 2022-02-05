@@ -43,7 +43,6 @@ $("#paper").on('mousedown', function(){ cellHighlight(analysis.paper)});
         }
     });
 
-
     // Unhighlight all cells when blank paper is clicked on
     pPaper.on('blank:pointerdown', function() {
         pPaper.findViewsInArea(pPaper.getArea()).forEach(cell => {
@@ -52,7 +51,6 @@ $("#paper").on('mousedown', function(){ cellHighlight(analysis.paper)});
     });
 
 }
-
 
 // Navigation bar functions:
 var max_font = 20;
@@ -133,4 +131,3 @@ function resizeWindow(sliderMax) {
     $('#slider').width($('#paper').width() * 0.8);
     SliderObj.adjustSliderWidth(sliderMax);
 }
-

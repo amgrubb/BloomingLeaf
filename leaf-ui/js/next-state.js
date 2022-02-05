@@ -45,14 +45,6 @@
             gridSize: 10,
             perpendicularLinks: false,
             model: analysis.graph,
-            defaultLink: new joint.shapes.basic.CellLink({ //new joint.dia.Link({
-                'attrs': {
-                    '.connection': { stroke: '#000000' },
-                    '.marker-source': { 'd': '0' },
-                    '.marker-target': { stroke: '#000000', "d": 'M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5' }
-                },
-                'labels': [{ position: 0.5, attrs: { text: { text: "and" } } }]
-            }),
             highlighting: {
                 default: {
                     name: 'stroke',
@@ -98,8 +90,7 @@
         // So originalResults does not contain references to myInputJSObject.results
         originalResults = $.extend(true, {}, myInputJSObject.results);
 
-        //paper.on 
-            //on pointerup cellview.highlight???
+        setInteraction(false, analysis.paper)
     }
 
     function combineAllSolutions() {
@@ -204,6 +195,12 @@
         updateNodesValues(currentPage);
 
         renderEVO();
+    }
+
+    function setInteraction(interactionValue, pPaper) {
+        _.each(analysis.graph.getCells().filter(cell => (cell.get('type') == "basic.CellLink")), function (cell) {
+            cell.findView(pPaper).options.interactive = interactionValue;
+        });
     }
 
     /**
