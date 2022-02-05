@@ -66,6 +66,8 @@ $("#paper").on('mousedown', function(){ cellHighlight(analysis.paper)});
                     return $(".cell-attrs-text2").val("Denied (⊥, F)");
                 case "unknown":
                     return $(".cell-attrs-text2").val("(no value)");
+                default:
+                    return $(".cell-attrs-text2").val("conflict");   
             }
 
         }
