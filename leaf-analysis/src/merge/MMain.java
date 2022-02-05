@@ -49,14 +49,11 @@ public class MMain {
 			// Creating the 2nd back-end model to be merged
 			ModelSpec modelSpec2 = convertBackboneModelFromFile(filePath + inputFile2);
 			
-			System.out.println("----------------------");
+			/*System.out.println("----------------------");
 			System.out.println("Here we try building IMain");
 			IMain modelOut = IMainBuilder.buildIMain(modelSpec2);
 			System.out.println(gson.toJson(modelOut));
 			System.out.println("----------------------");
-			
-			// Take this in eventually
-			Integer delta = 5;
 			
 	    	//TODO: MERGE-Y THINGS
 			System.out.println("m1:");
@@ -66,12 +63,12 @@ public class MMain {
 			System.out.println(modelSpec2.getIntentions().get(0).getVisualInfo().toString());
 			
 			System.out.println("m2:");
-			System.out.println(modelSpec2);
-			
+			System.out.println(modelSpec2);*/
+			Integer delta = 5;
 			ModelSpec mergedModel = MergeAlgorithm.mergeModels(modelSpec1, modelSpec2, delta);
 			System.out.println("Completed Merging.");
 			
-			//Create Output file that will be used by frontend
+			/*//Create Output file that will be used by frontend
 			// can i output modelspec2 w/o intentions and links?\
 			List<Intention> intentions = new ArrayList<Intention>();
 			//Intention intent1 = new Intention()
@@ -116,7 +113,8 @@ public class MMain {
 			
 			//changed tp elements
 			
-			//System.out.println(gson.toJson(modelSpec2));
+			//System.out.println(gson.toJson(modelSpec2));*/
+			IMain modelOut = IMainBuilder.buildIMain(mergedModel);
 			createOutputFile(modelOut, filePath + outputFile);
 			
 		
