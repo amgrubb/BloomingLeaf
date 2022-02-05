@@ -35,9 +35,9 @@ public class MMain {
 	public static void main(String[] args) {
 		//This is the default filePath to be executed if no file is passed through parameters
 		String filePath = "temp/";
-		String inputFile1 = "acorn.json";
+		String inputFile1 = "sandwich.json";
 		String inputFile2 = "sandwich-w-peach.json";
-		String outputFile = "output-1-31.json";
+		String outputFile = "output-1-4.json";
 				
 		try {
 			Gson gson = new Gson();
@@ -68,12 +68,12 @@ public class MMain {
 			System.out.println("merged models");
 			
 			// Create Output file that will be used by frontend
-			// IMain mergedModelOut = IMainBuilder.buildIMain(mergedModel);
+			IMain mergedModelOut = IMainBuilder.buildIMain(mergedModel);
 			
-			// System.out.println("converted merged model to IMain");
+			System.out.println("converted merged model to IMain");
 			
-			// createOutputFile(mergedModelOut, filePath + outputFile);
-			createOutputFile(m1IMain, filePath + outputFile);
+			createOutputFile(mergedModelOut, filePath + outputFile);
+			//createOutputFile(m1IMain, filePath + outputFile);
 			
 			System.out.println("created output file");
 			

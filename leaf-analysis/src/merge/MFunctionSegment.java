@@ -22,7 +22,7 @@ public class MFunctionSegment extends FunctionSegment{
 	private String startEvidencePair;
 	
 	/**
-	 * For initial segment: Build from the segment, following segment, and starting evidence pair
+	 * For initial + middle segments: Build from the segment, following segment, and starting evidence pair
 	 */
 	public MFunctionSegment(FunctionSegment fSeg, FunctionSegment fSegNext, String startEvidencePair) {
 		super(fSeg.getType(), fSeg.getRefEvidencePair(), fSeg.getStartTP(), fSeg.getStartAT());
@@ -36,14 +36,13 @@ public class MFunctionSegment extends FunctionSegment{
 	 */
 	public MFunctionSegment(FunctionSegment fSeg, Integer maxTime, String startEvidencePair) {
 		super(fSeg.getType(), fSeg.getRefEvidencePair(), fSeg.getStartTP(), fSeg.getStartAT());
-		this.endTP = "Infinity";
-		this.endAT = maxTime + 1;
+		this.endTP = maxTime.toString();
+		this.endAT = maxTime;
 		if (this.getType().equals("I") || this.getType().equals("D")) {
 			this.startEvidencePair = startEvidencePair;  // for I or D functions, start != end
 		} else {
 			this.startEvidencePair = this.getRefEvidencePair();  // for C or stochastic functions, start == end
 		}
-		
 	}
 	
 	/**
@@ -63,9 +62,8 @@ public class MFunctionSegment extends FunctionSegment{
 	 * *returns the start value*
 	 */
 	private String assignStartValue(String startValue) {
-		String endValue = this.getRefEvidencePair();
-		
-		if ((this.getType().equals("I") || this.getType().equals("D")) && !startEvidencePair.equals("(no value)")) {
+		String endValue = this.getRefEvidencePair();		
+		if ((this.getType().equals("I") || this.getType().equals("D")) && !startValue.equals("(no value)")) {
 			// function is I/D and previous function != stochastic
 			return startValue;
 		} else if (this.getType().equals("I")) {
@@ -85,7 +83,6 @@ public class MFunctionSegment extends FunctionSegment{
 		} else {
 			return endValue;  // constant and stochastic start == end
 		}
-		
 	}
 	
 	/*

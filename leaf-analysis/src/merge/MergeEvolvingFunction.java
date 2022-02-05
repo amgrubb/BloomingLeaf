@@ -20,7 +20,16 @@ public class MergeEvolvingFunction {
 		this.funcB = new MEvolvingFunction(segsB, timing);
 		this.timing = timing;
 		
-		mergeEvolvingFunctions();
+		System.out.println("--------------------");
+		funcA.printMe();
+		funcB.printMe();
+		System.out.println("--------------------");
+		
+		doEvolvingFunctionMerge();
+		
+		System.out.println("--------------------");
+		funcMerged.printMe();
+		System.out.println("--------------------");
 	}
 	
 	/***************************
@@ -30,7 +39,9 @@ public class MergeEvolvingFunction {
 	/**
 	 * merge funcA and funcB into merged timeline
 	 */
-	private void mergeEvolvingFunctions() {
+	private void doEvolvingFunctionMerge() {
+		if (MMain.DEBUG) System.out.println("Starting: doEvolvingFunctionMerge");
+
 		HashMap<String, String> newTimeline = new HashMap<>();
 		String valueM;
 		
@@ -53,6 +64,8 @@ public class MergeEvolvingFunction {
 	 * merge values for A and B at specific time
 	 */
 	private String getMergedValueAtTime(String time) {
+		if (MMain.DEBUG) System.out.println("Starting: getMergedValueAtTime: " + time);
+
 		// get model A + B values at time
 		String valueA = funcA.getEvidencePair(time);
 		String valueB = funcB.getEvidencePair(time);
@@ -60,7 +73,8 @@ public class MergeEvolvingFunction {
 		// one value is mid and other is (no value), skip this timepoint
 		// (no info in middle of segment)
 		if ((valueA.equals("mid") && valueB.equals("(no value)")) ||
-			(valueB.equals("mid") && valueA.equals("(no value)"))) {
+			(valueB.equals("mid") && valueA.equals("(no value)")) ||
+			(valueA.equals("mid") && valueB.equals("mid"))) {
 			return "skip";
 		}
 		

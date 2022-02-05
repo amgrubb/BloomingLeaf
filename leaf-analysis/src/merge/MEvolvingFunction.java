@@ -19,6 +19,8 @@ public class MEvolvingFunction {
 	 * For input (Model A and Model B evolving functions)
 	 */
 	public MEvolvingFunction(List<MFunctionSegment> segments, List<String> timing) {
+		if (MMain.DEBUG) System.out.println("Starting: MEvolvingFunction");
+
 		this.segments = segments;
 		this.timing = timing;
 		
@@ -44,6 +46,8 @@ public class MEvolvingFunction {
 	 ******************************************************/
 	
 	private void buildTimeline() {
+		if (MMain.DEBUG) System.out.println("Starting: buildTimeline");
+
 		// find evolving function's value at each point in the union of model timelines
 		
 		// to hold timeline values
@@ -54,10 +58,10 @@ public class MEvolvingFunction {
 			// model is stochastic (no value) outside its segments' domain
 			if (!withinTimeline(time)) {
 				timeline.put(time, "(no value)");
+			} else {
+				// within timeline, look up timelineA value at that time
+				timeline.put(time, findTimelineValue(time));
 			}
-			
-			// within timeline, look up timelineA value at that time
-			timeline.put(time, findTimelineValue(time));
 		}
 		
 	}
@@ -66,6 +70,7 @@ public class MEvolvingFunction {
 		// whether a given time is within the timeline of model A
 		Boolean afterStarts = timing.indexOf(getTimelineStart()) <= timing.indexOf(time);
 		Boolean beforeEnds = timing.indexOf(getTimelineEnd()) >= timing.indexOf(time);
+
 		return afterStarts && beforeEnds;
 	}
 	
@@ -103,6 +108,8 @@ public class MEvolvingFunction {
 	 ******************************************************/
 	
 	private void buildSegments() {
+		if (MMain.DEBUG) System.out.println("Starting: buildSegments");
+
 		this.segments = new ArrayList<>();
 		// build function between each timepoint
 		for (int i = 0; i < timing.size()-1; i++) {
@@ -127,7 +134,7 @@ public class MEvolvingFunction {
 	public String mid(String time, String otherVal) {
 		String lowerBound = getIntervalLowerBound(time);
 		String upperBound = getIntervalUpperBound(time);
-		
+
 		// if otherVal is within interval, keep otherVal
 		if (MEPOperators.greater(otherVal, lowerBound) &&
 				MEPOperators.lt(otherVal, upperBound)) {
@@ -153,8 +160,8 @@ public class MEvolvingFunction {
 	 */
 	private String getIntervalLowerBound(String time) {
 		// decrement i until we find a time w/ value not "mid"
-		int i;
-		for (i = timing.indexOf(time); timeline.get(timing.get(i)).equals("mid"); i--) {}
+		int i = timing.indexOf(time);
+		for (; timeline.get(timing.get(i)).equals("mid"); i--) {}
 		
 		// return evidence pair at that time
 		return timeline.get(timing.get(i));
@@ -166,8 +173,8 @@ public class MEvolvingFunction {
 	 */
 	private String getIntervalUpperBound(String time) {
 		// increment i until we find a time w/ value not "mid"
-		int i;
-		for (i = timing.indexOf(time); timeline.get(timing.get(i)).equals("mid"); i++) {}
+		int i = timing.indexOf(time);
+		for (; timeline.get(timing.get(i)).equals("mid"); i++) {}
 		
 		// return evidence pair at that time
 		return timeline.get(timing.get(i));
@@ -190,5 +197,14 @@ public class MEvolvingFunction {
 	
 	public String getEvidencePair(String time) {
 		return timeline.get(time);
+	}
+	
+	public void printMe() {
+		System.out.println("timing:");
+		System.out.println(timing);
+		System.out.println("segments:");
+		System.out.println(segments);
+		System.out.println("timeline:");
+		System.out.println(timeline);
 	}
 }

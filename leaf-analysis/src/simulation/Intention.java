@@ -163,6 +163,10 @@ public class Intention extends AbstractLinkableElement {
 	public FunctionSegment[] getEvolvingFunctions() {
 		return evolvingFunctions;
 	}
+	
+	public void setEvolvingFunctions(FunctionSegment[] segments) {
+		evolvingFunctions = segments;
+	}
 
 	public HashMap<Integer, String> getUserEvals() {
 		return userEvals;
@@ -207,6 +211,14 @@ public class Intention extends AbstractLinkableElement {
 		List<Integer> tps = new ArrayList<>();
 		for (FunctionSegment func: this.getEvolvingFunctions()) {
 			tps.add(func.getStartAT());
+		}
+		return tps;
+	}
+	
+	public List<String> getEvolvingFunctionStartTPsFull() {
+		List<String> tps = new ArrayList<>();
+		for (FunctionSegment func: this.getEvolvingFunctions()) {
+			tps.add(func.getStartTP());
 		}
 		return tps;
 	}

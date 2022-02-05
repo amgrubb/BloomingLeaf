@@ -39,6 +39,8 @@ public class MEPOperators {
 		   }
 		}
 		
+		if (MMain.DEBUG) System.out.println("consensus of " + evPair1 + " and " + evPair2 + " is: " + result);
+
 		return result;
 	}
 	
@@ -55,7 +57,7 @@ public class MEPOperators {
 		if (a.equals("(no value)") || b.equals("(no value)")) {
 			return 0;
 		}
-		
+	
 		// find difference between evidence pairs
 		return compareEP.get(a) - compareEP.get(b);
 	}
