@@ -39,6 +39,7 @@ $("#paper").on('mousedown', function(){ cellHighlight(analysis.paper)});
     pPaper.on('cell:pointerclick', function(cellView) {
         if (cellView.model.attributes.intention) { // Only highlight intentions
             cellView.highlight();
+            $(".cell-attrs-text").val(cellView.model.attributes.intention.attributes.nodeName);
         }
     });
 
