@@ -39,7 +39,35 @@ $("#paper").on('mousedown', function(){ cellHighlight(analysis.paper)});
     pPaper.on('cell:pointerclick', function(cellView) {
         if (cellView.model.attributes.intention) { // Only highlight intentions
             cellView.highlight();
+            // Fills in nodeName text box with intention name
             $(".cell-attrs-text").val(cellView.model.attributes.intention.attributes.nodeName);
+            // TODO: if the page is changed or filters are added it does not update
+            // TODO: indexing by name "TNS-R" might be too brittle
+            originalResults2 = $.extend(true, {}, myInputJSObject.results);
+            
+            // Finds the element number of the selected intention
+            for (var element_index = 0; element_index < originalResults2.attributes.elementList.length; element_index++) {
+                if (originalResults2.attributes.elementList[element_index].id == cellView.model.attributes.id) {
+                    elementNum = element_index;
+                }
+            }
+  
+            // Fills in the current sat value text box
+            switch (originalResults2.get('allSolutions')["TNS-R"][parseInt($("#currentPage").val())][elementNum]) {
+                case "0000":
+                    return $(".cell-attrs-text2").val("None (⊥, ⊥)");
+                case "0011":
+                    return $(".cell-attrs-text2").val("Satisfied (F, ⊥)");
+                case "0010":
+                    return $(".cell-attrs-text2").val("Partially Satisfied (P, ⊥)");
+                case "0100":
+                    return $(".cell-attrs-text2").val("Partially Denied (⊥, P)");
+                case "1100":
+                    return $(".cell-attrs-text2").val("Denied (⊥, F)");
+                case "unknown":
+                    return $(".cell-attrs-text2").val("(no value)");
+            }
+
         }
     });
 
