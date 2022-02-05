@@ -5,6 +5,7 @@
  */
 
 // Only event listeners
+$("#paper").on('mousedown', function(){ cellHighlight(analysis.paper)});
 $('#btn-zoom-in').on('click', function () { zoomIn(analysis.paperScroller); });
 $('#btn-zoom-out').on('click', function () { zoomOut(analysis.paperScroller); });
 $('#btn-fnt').on('click', function () { defaultFont(analysis.paper); });
@@ -20,8 +21,6 @@ $("#close").on('click', function () { window.close(); });
 $(window).resize(function () {
     resizeWindow();
 });
-
-$("#paper").on('mousedown', function(){ cellHighlight(analysis.paper)});
 
 /**
  * Highlight an individual cell upon clicking
