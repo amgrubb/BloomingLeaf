@@ -10,22 +10,22 @@ import gson_classes.*;
 import simulation.*;
 
 /*
- * Converts from ModelSpec back to IMain
+ * Converts from ModelSpec back to IMain for output
  */
 
 public class IMainBuilder {
 	
 	/** Main function that generates the IMain
-	 * @param inSpec - a ModelSpec
+	 * @param outSpec - a ModelSpec
 	 * @return 
 	 */
-	public static IMain buildIMain(ModelSpec inSpec) {
+	public static IMain buildIMain(ModelSpec outSpec) {
 		
 		List<ICell> cells = new ArrayList<ICell>();
 		Integer z = 0; // unique counter for cells
 		
 		// actors
-		List<Actor> actors = inSpec.getActors();
+		List<Actor> actors = outSpec.getActors();
 		
 		// add actors to cells list
 		if (!actors.isEmpty()) {
@@ -33,10 +33,15 @@ public class IMainBuilder {
 				// inputs for ICell
 				String id = specActor.getUniqueID();
 				String type = "basic.Actor";
+				BISize size = specActor.getSize();
+				BIPosition position = specActor.getPosition();
+				String[] embeds = specActor.getEmbeds();
+				
 				BIActor newActor = new BIActor(specActor.getName(), specActor.getActorType());
+				String name = newActor.getActorName();
 				
 				// add actor as ICell
-				ICell newCell = new ICell(type, id, z, newActor);
+				ICell newCell = new ICell(newActor, type, id, z, size, position, embeds, name);
 				cells.add(newCell);
 				
 				z++;
@@ -44,7 +49,7 @@ public class IMainBuilder {
 		}
 		
 		// intentions
-		List<Intention> intentions = inSpec.getIntentions();
+		List<Intention> intentions = outSpec.getIntentions();
 		
 		// add intentions to cells list
 		if (!intentions.isEmpty()) {
@@ -52,22 +57,124 @@ public class IMainBuilder {
 				// inputs for ICell
 				String id = specIntention.getUniqueID();
 				String type = specIntention.getType();
+				String parent = specIntention.getParentID();
+				BISize size = specIntention.getSize();
+				BIPosition position = specIntention.getPosition();
+				
 				BIIntention newIntention = buildBIIntention(specIntention);
+				String name = newIntention.getNodeName();
 				
 				// add intention as ICell
-				ICell newCell = new ICell(type, id, z, newIntention);
+				ICell newCell = new ICell(newIntention, type, id, z, size, position, parent, name);
 				cells.add(newCell);
 				
 				z++;
 			}
 		}
 		
-		System.out.println("cells:");
-		System.out.println(cells);
+		// links
+		List<ContributionLink> contributionLinks = outSpec.getContributionLinks();
+		List<DecompositionLink> decompositionLinks = outSpec.getDecompositionLinks();
+		List<NotBothLink> notBothLinks = outSpec.getNotBothLinks();
+		
+		if (!contributionLinks.isEmpty()) {
+			for (ContributionLink specLink: contributionLinks) {
+				// inputs for ICell
+				String id = specLink.getUniqueID();
+				String type = "basic.CellLink";
+				String source = specLink.getZeroSrcID();
+				String target = specLink.getDest().getUniqueID();
+				
+				// inputs for building BILink
+				Integer absTime = specLink.getAbsTime();
+				Boolean evolving = specLink.isEvolving();
+				String linkType = specLink.getPreContribution().getCode();
+				
+				BILink newLink; // build link w/ or w/o postType depending on evolving
+				if (evolving) {
+					String postType = specLink.getPostContribution().getCode();
+					newLink = new BILink(absTime, evolving, linkType, postType);
+				} else {
+					newLink = new BILink(absTime, evolving, linkType);
+				}
+				
+				// add Link as ICell
+				ICell newCell = new ICell(newLink, type, id, z, source, target);
+				cells.add(newCell);
+				
+				z++;
+			}
+		}
+		
+		// add decomposition links
+		if (!decompositionLinks.isEmpty()) {
+			for (DecompositionLink specLink: decompositionLinks) {
+				// inputs for ICell
+				String id;
+				String type = "basic.CellLink";
+				String source;
+				String target = specLink.getDest().getUniqueID();
+				
+				// inputs for building BILink
+				Integer absTime = specLink.getAbsTime();
+				Boolean evolving = specLink.isEvolving();
+				String linkType = specLink.getPreDecomposition().getCode().toLowerCase();  // lowercase: upper is invalid in frontend
+				
+				BILink newLink; // build link w/ or w/o postType depending on evolving
+				if (evolving) {
+					String postType = specLink.getPostDecomposition().getCode().toLowerCase();
+					newLink = new BILink(absTime, evolving, linkType, postType);
+				} else {
+					newLink = new BILink(absTime, evolving, linkType);
+				}
+				
+				// create separate ICell/link for each source
+				List<String> sources = specLink.getSrcIDs();
+				List<String> ids = specLink.getSubLinkUniqueIDList();
+				// TODO: throw error if sources.length != ids.length
+				
+				// different ICell/link for each source
+				for (int i = 0; i < sources.size(); i++) {
+					source = sources.get(i);
+					id = ids.get(i);
+					
+					// add Link as ICell
+					ICell newCell = new ICell(newLink, type, id, z, source, target);
+					cells.add(newCell);
+					
+					z++;
+				}
+			}
+		}
+		
+		// add not both links
+		if (!notBothLinks.isEmpty()) {
+			for (NotBothLink specLink: notBothLinks) {
+				// inputs for ICell
+				String id = specLink.getUniqueID();
+				String type = "basic.CellLink";
+				String source = specLink.getElement1().getUniqueID();
+				String target = specLink.getElement2().getUniqueID();
+				
+				// inputs for building BILink
+				Integer absTime = specLink.getAbsTime();
+				Boolean evolving = false;  // always false for NB links
+				String linkType = specLink.getLinkType();
+				
+				BILink newLink = new BILink(absTime, evolving, linkType);
+				
+				// add Link as ICell
+				ICell newCell = new ICell(newLink, type, id, z, source, target);
+				cells.add(newCell);
+				
+				z++;
+			}
+		}
 		
 		// overall model variables
-		String maxAbsTime = String.valueOf(inSpec.getMaxTime());
-		int[] absTimePtsArr = convertAbsTimePtsArr(inSpec.getAbsTP());
+		Integer maxAbsTime = outSpec.getMaxTime();
+		//System.out.println(maxAbsTime);
+		int[] absTimePtsArr = convertAbsTimePtsArr(outSpec.getAbsTP());
 		
 		// create model to return
 		IGraph graph = new IGraph(maxAbsTime, absTimePtsArr, cells); // TODO: add constraints
@@ -107,22 +214,48 @@ public class IMainBuilder {
 		// convert to array
 		BIFunctionSegment[] functionSegList = new BIFunctionSegment[funcSegList.size()];
 		functionSegList = funcSegList.toArray(functionSegList);
-		//BIFunctionSegment[] functionSegList = (BIFunctionSegment[]) funcSegList.toArray();
 		
-		// create evolving function - detect repeats?
+		// type if none of the named cases below
+		String type = "UD";
 		
-		// no function segments is type NT
-		
-		// one function segment - C, stochastic, increase, decrease
-
-		// then convert to []
-		
-		// two function segments - ..., else user defined
-		
-		// 3+ function segments - user defined
-		
-		
-		BIEvolvingFunction evolvingFunction = new BIEvolvingFunction(functionSegList);
+		// detect type in named cases
+		if (functionSegList.length == 0) {
+			// no type w/ no segments
+			type = "NT";
+		} else if (functionSegList.length == 1) {
+			// segment is C, I, D, or R (stochastic)
+			type = functionSegList[0].getType();
+		} else if (functionSegList.length == 2) {
+			// potentially a 2-segment type
+			String type0 = functionSegList[0].getType();
+			String type1 = functionSegList[1].getType();
+			if (type0.equals("R") && type1.equals("C")) {
+				// stochastic-constant
+				type = "RC";
+			} else if (type0.equals("C") && type1.equals("R")) {
+				// constant-stochastic
+				type = "CR";
+			} else if (type0.equals("I") && type1.equals("C")) {
+				// monotonic positive
+				type = "MP";
+			} else if (type0.equals("D") && type1.equals("C")) {
+				// monotonic negative
+				type = "MN";
+			} else if (type0.equals("C") && type1.equals("C")) {
+				// SD or DS
+				String satValue0 = functionSegList[0].getRefEvidencePair();
+				String satValue1 = functionSegList[1].getRefEvidencePair();
+				if (satValue0.equals("0011") && satValue1.equals("1100")) {
+					// satisfied denied
+					type = "SD";
+				} else if (satValue0.equals("1100") && satValue1.equals("0011")) {
+					// denied satisfied
+					type = "DS";
+				}
+			}
+		}
+				
+		BIEvolvingFunction evolvingFunction = new BIEvolvingFunction(functionSegList, type);
 
 		return evolvingFunction;
 	}

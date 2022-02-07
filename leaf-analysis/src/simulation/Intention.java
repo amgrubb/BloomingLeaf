@@ -193,4 +193,12 @@ public class Intention extends AbstractLinkableElement {
 		return typeValues.get(type) - typeValues.get(i.getType());
 	}
 	
+	public String getParentID() {
+		if (actor != null) {
+			return actor.getUniqueID();
+		} else {
+			return null;
+		}
+	}
+	
 }

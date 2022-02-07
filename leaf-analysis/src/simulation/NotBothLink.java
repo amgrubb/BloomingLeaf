@@ -8,7 +8,7 @@ public class NotBothLink extends AbstractElement{
 	private Integer absTime = null; 					//	Optional absolute time of transition.
 	private String linkTP = null;
 	private	boolean finalDenied;			// True for NBD and False for NBT links.
-	
+
 	public NotBothLink(Intention element1, Intention element2, boolean finalValueDenied, Integer absoluteTime, String uniqueID){
 //		if (!(element1.getDynamicType() == IntentionalElementDynamicType.NB || element1.getDynamicType() == IntentionalElementDynamicType.NT))
 //			System.err.println("Error: NotBothLink of " + element1.id + " and " + element2.id + " has intention with incorrect type (element 1).");
@@ -55,16 +55,25 @@ public class NotBothLink extends AbstractElement{
 	public void updateLinkTP(String newLinkTP) {
 		linkTP = newLinkTP;
 	}
+	public String getLinkType() {
+		// returns NBD or NBT
+		if (finalDenied) {
+			return "NBD";
+		} else {
+			return "NBT";
+		}
+	}
 	public String getID() {
 		return id;
 	}
 	public void setID(String id) {
 		this.id = id;
 	}
-	
+
 	/**Method to describe link in written format as connection between two elements*/
 	public String getName() {
 		return element1.getName() + " <-NBL--> " + element2.getName();
+
 	}
-	
+
 }

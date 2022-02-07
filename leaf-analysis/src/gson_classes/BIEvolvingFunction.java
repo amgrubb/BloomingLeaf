@@ -3,8 +3,8 @@ package gson_classes;
 public class BIEvolvingFunction {
 	private Attributes attributes;
 	
-	public BIEvolvingFunction(BIFunctionSegment[] functionSegList) {
-		this.attributes = new Attributes(functionSegList);
+	public BIEvolvingFunction(BIFunctionSegment[] functionSegList, String type) {
+		this.attributes = new Attributes(functionSegList, type);
 	}
 	
 	public BIFunctionSegment[] getFunctionSegList() {
@@ -38,8 +38,14 @@ public class BIEvolvingFunction {
         String repStop;
         String type; 
         
-        public Attributes(BIFunctionSegment[] functionSegList) {
+        public Attributes(BIFunctionSegment[] functionSegList, String type) {
         	this.functionSegList = functionSegList;
+        	this.type = type;
+        	this.hasRepeat = false;
+        	this.repAbsTime = null;
+        	this.repCount = null;
+        	this.repStart = null;
+        	this.repStop = null;
         }
 	}
 }

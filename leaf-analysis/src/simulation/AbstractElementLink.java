@@ -3,6 +3,9 @@
  */
 package simulation;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author A.M.Grubb
  *
@@ -59,7 +62,19 @@ public abstract class AbstractElementLink extends AbstractElement{
 	public AbstractLinkableElement getZeroSrc() {
 		return src[0];
 	}
-	
+	/**
+	 * @return the src unique IDs
+	 */
+	public List<String> getSrcIDs() {
+		List<String> srcIDs = new ArrayList<>();
+		for (AbstractLinkableElement source: src) {
+			srcIDs.add(source.getUniqueID());
+		}
+		return srcIDs;
+	}
+	public String getZeroSrcID() {
+		return src[0].getUniqueID();
+	}
 	/**
 	 * @param src the src to set
 	 */

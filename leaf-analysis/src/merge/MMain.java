@@ -38,36 +38,48 @@ public class MMain {
 		String inputFile1 = "default1.json";
 		String inputFile2 = "default2.json";
 		String outputFile = "output.json";
-				
+
 		try {
 			Gson gson = new Gson();
 			// Creating the 1st back-end model to be merged
+			System.out.println("M1:");
 			ModelSpec modelSpec1 = convertBackboneModelFromFile(filePath + inputFile1);
-			
-			System.out.println(modelSpec1);
-			
+
+			// print M1 for reference
+			IMain m1IMain = IMainBuilder.buildIMain(modelSpec1);
+			System.out.println(gson.toJson(m1IMain));
+
 			// Creating the 2nd back-end model to be merged
+			System.out.println("M2:");
 			ModelSpec modelSpec2 = convertBackboneModelFromFile(filePath + inputFile2);
-			
+
 			/*System.out.println("----------------------");
 			System.out.println("Here we try building IMain");
 			IMain modelOut = IMainBuilder.buildIMain(modelSpec2);
 			System.out.println(gson.toJson(modelOut));
 			System.out.println("----------------------");
-			
+
 	    	//TODO: MERGE-Y THINGS
 			System.out.println("m1:");
 			System.out.println(modelSpec2);
-			
+
 			System.out.println("intentions:");
 			System.out.println(modelSpec2.getIntentions().get(0).getVisualInfo().toString());
-			
+
 			System.out.println("m2:");
 			System.out.println(modelSpec2);*/
+			// print M2 for reference
+			IMain m2IMain = IMainBuilder.buildIMain(modelSpec2);
+			System.out.println(gson.toJson(m2IMain));
+
+			System.out.println("----------------------");
+
+			// Take this in eventually
 			Integer delta = 5;
+
+			//TODO: MERGE-Y THINGS
 			ModelSpec mergedModel = MergeAlgorithm.mergeModels(modelSpec1, modelSpec2, delta);
 			System.out.println("Completed Merging.");
-			
 			/*//Create Output file that will be used by frontend
 			// can i output modelspec2 w/o intentions and links?\
 			List<Intention> intentions = new ArrayList<Intention>();
@@ -78,49 +90,25 @@ public class MMain {
 			modelSpec2.setContributionLinks(contributions);
 			modelSpec2.setDecompositionLinks(decompositions);
 			System.out.println(gson.toJson(modelSpec2));
-			
-			System.out.println("----------------");
-			System.out.println(gson.toJson(mergedModel));
-			// add items to empty modelspec until error
-			// actors
-			mergedModel.setActors(modelSpec1.getActors());
-			System.out.println(gson.toJson(mergedModel));
-			// intentions
-			//mergedModel.setIntentions(modelSpec1.getIntentions());
-			//System.out.println(gson.toJson(mergedModel));
-			// contribution links
-			//mergedModel.setContributionLinks(modelSpec1.getContributionLinks());
-			//System.out.println(gson.toJson(mergedModel));
-			// decomposition links
-			//mergedModel.setDecompositionLinks(modelSpec1.getDecompositionLinks());
-			//System.out.println(gson.toJson(mergedModel));
-			//not both links
-			mergedModel.setNotBothLinks(modelSpec1.getNotBothLinks());
-			System.out.println(gson.toJson(mergedModel));
-			// max time
-			mergedModel.setMaxTime(101);
-			// abs time points
-			int[] test = {1, 2, 3};
-			mergedModel.setAbsoluteTimePoints(test);
-			System.out.println(gson.toJson(mergedModel));
-			// lttimepoint constraints
-			// mergedModel.setLtTPconstraints(modelSpec2.getLtTPconstraints());
-			// System.out.println(gson.toJson(mergedModel));
-			
-			//changed tp names
-			mergedModel.setChangedTPNames(modelSpec2.getChangedTPNames());
-			System.out.println(gson.toJson(mergedModel));
-			
-			//changed tp elements
-			
+			System.out.println("merged models");
+
+			// Create Output file that will be used by frontend
+			// IMain mergedModelOut = IMainBuilder.buildIMain(mergedModel);
+
+			// System.out.println("converted merged model to IMain");
+
+			// createOutputFile(mergedModelOut, filePath + outputFile);
+			createOutputFile(m1IMain, filePath + outputFile);
+
 			//System.out.println(gson.toJson(modelSpec2));*/
 			IMain modelOut = IMainBuilder.buildIMain(mergedModel);
 			createOutputFile(modelOut, filePath + outputFile);
-			
-		
+			System.out.println("created output file");
+
+
 		} catch (RuntimeException e) {
 			try {
-				if (DEBUG) System.err.println(e.getMessage());	
+				if (DEBUG) System.err.println(e.getMessage());
 				File file;
 				file = new File(filePath + outputFile);
 				if (!file.exists()) {
@@ -136,7 +124,7 @@ public class MMain {
 			}
 		} catch (Exception e) {
 			try {
-				if (DEBUG) System.err.println(e.getMessage());	
+				if (DEBUG) System.err.println(e.getMessage());
 				File file;
 				file = new File(filePath + outputFile);
 				if (!file.exists()) {
@@ -150,9 +138,9 @@ public class MMain {
 			} catch (Exception f) {
 				throw new RuntimeException("Error while writing ErrorMessage: " + f.getMessage());
 			}
-		} 
+		}
 	}
-	
+
 	/**
 	 * This method converts the ModelSpec object with the merged model into a json object file to be sent to frontend.
 	 * @param outputModel
@@ -162,7 +150,7 @@ public class MMain {
 	 */
 	private static void createOutputFile(IMain outputModel, String filePath) {
 		Gson gson = new Gson(); //new GsonBuilder().setPrettyPrinting().create();
-	
+
 		try {
 			File file;
 			file = new File(filePath);
@@ -170,15 +158,13 @@ public class MMain {
 				file.createNewFile();
 			}
 			PrintWriter printFile = new PrintWriter(file);
-			System.out.println("made writer");
-			//printFile.printf("{1:'A'}");
 			System.out.println(gson.toJson(outputModel));
 			printFile.printf(gson.toJson(outputModel));
 			printFile.close();
 		} catch (Exception e) {
 			throw new RuntimeException("Error in createOutputFile: " + e.getMessage());
 		}
-		
+
 	}
 
 	/**
@@ -194,18 +180,17 @@ public class MMain {
 
 		try {
 			Gson gson = builder.create();
+			// read model from JSON file (IMain is frontend compatible)
 			IMain frontendObject = gson.fromJson(new FileReader(filePath), IMain.class);
-			
-			System.out.println("---------");
-			System.out.println("IMain back to JSON:");
+			System.out.println("made IMain:");
 			System.out.println(gson.toJson(frontendObject));
-			System.out.println("---------");
 
+			// convert model to ModelSpec format (for backend use)
 			ModelSpec modelSpec = BIModelSpecBuilder.buildModelSpec(frontendObject);
 			return modelSpec;
-			
+
 		} catch(Exception e) {
-			throw new RuntimeException("Error in convertModelFromFile() method: \n " + e.getMessage());
+			throw new RuntimeException("Error in convertBackboneModelFromFile() method: \n " + e.getMessage());
 		}
-	} 
+	}
 }
