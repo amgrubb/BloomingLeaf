@@ -61,4 +61,10 @@ public class NotBothLink extends AbstractElement{
 	public void setID(String id) {
 		this.id = id;
 	}
+	
+	/**Method to describe link in written format as connection between two elements*/
+	public String getName() {
+		return element1.getName() + " <-NBL--> " + element2.getName();
+	}
+	
 }

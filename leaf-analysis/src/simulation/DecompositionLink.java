@@ -160,4 +160,14 @@ public class DecompositionLink extends AbstractElementLink {
 		
 	}
 	
+	/**Method to describe link in written format as connection between elements*/
+	public String getName() {
+		String srcList = "";
+		for(AbstractLinkableElement ale: super.getSrc()) {
+			srcList += ale.getName() + ", ";
+		}
+		
+		return srcList + "---" + preDecomposition.getCode() + "-->" + super.getDest().getName();
+	}
+	
 }
