@@ -776,6 +776,80 @@
         renderNavigationSidebar();
     }
 
+    /**
+     * This function allows you to filter the next state solutions
+     * by specific satisfacion values for specific intentions
+     */
+    function intentionFilter() {
+        console.log("intention filter clicked");
+        // TODO: figure out resetting / storing results everytime the apply filter button is added
+        // TODO: selected element as parameter
+
+        // Everytime a box is clicked/unclicked the results are reset
+        myInputJSObject.results = originalResults;
+        // Deep copy of results so it doesn't contain references to the original object
+        tempResults = $.extend(true, {}, myInputJSObject.results);
+        // 4 digit sat value code selected from dropdown menu
+        var desiredSatVal = $("#sat-value").val();
+        console.log(desiredSatVal);
+        var elementNum = 0;
+
+                    // Iterates over every key/value pair in the hashmap
+                    for (var solutionArray in tempResults.get('allSolutions')) {
+                        var index_to_keep = [];
+                        var index_to_rm = [];
+
+                        var most_r_s = 0;
+                        // Iterates over all of the solutions in the key/value pair 
+                        for (var solution_index = 0; solution_index < tempResults.get('allSolutions')[solutionArray].length; solution_index++) {
+                            var num_r_s = 0;
+                            // Only checks for sat value of selected intention if the value satisfyies the conditions then the
+                                // Index is pushed to the index array
+                                var value = tempResults.get('allSolutions')[solutionArray][solution_index][elementNum];
+                                console.log(solution_index);
+                                console.log(value);
+                                if (value == desiredSatVal) {
+                                    num_r_s++;
+                                }
+
+                                if (most_r_s < num_r_s) {
+                                    most_r_s = num_r_s;
+                                    index_to_rm = index_to_rm.concat(index_to_keep);
+                                    index_to_keep = [];
+                                }
+                                if (num_r_s == most_r_s) {
+                                    index_to_keep.push(solution_index);
+                                }
+                                if (num_r_s < most_r_s) {
+                                    index_to_rm.push(solution_index);
+                                }        
+                        }
+                                                    if (most_r_s < num_r_s) {
+                                most_r_s = num_r_s;
+                                index_to_rm = index_to_rm.concat(index_to_keep);
+                                index_to_keep = [];
+                            }
+                            if (num_r_s == most_r_s) {
+                                index_to_keep.push(solution_index);
+                            }
+                            if (num_r_s < most_r_s) {
+                                index_to_rm.push(solution_index);
+                            }
+
+                        index_to_rm.sort(function (a, b) { return a - b });
+                        for (var to_rm = 0; to_rm < index_to_rm.length; to_rm++) {
+                            tempResults.get('allSolutions')[solutionArray].splice(index_to_rm[to_rm] - to_rm, 1);
+                        }
+                    }
+
+        $("body").removeClass("spinning"); // Remove spinner from cursor
+        // Set the new results with filters as the analysis object
+        myInputJSObject.results = tempResults;
+        // Creates array with all Solutions from new hashmap
+        combineAllSolutions();
+        renderNavigationSidebar();
+    }
+
     /*  This function should get the current state in the screen and 
     *   save in the original path, as well as generate the remainder
     *   of the simulation path.

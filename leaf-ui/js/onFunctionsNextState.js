@@ -21,6 +21,7 @@ $("#close").on('click', function () { window.close(); });
 $(window).resize(function () {
     resizeWindow();
 });
+$("#filter-apply").on('click', function () { intentionFilter(); });
 
 /**
  * Highlight an individual cell upon clicking
