@@ -343,3 +343,11 @@ body {
   width: 140px;
 }
 /* end of representive slider styling */
+
+.tableHeading{
+  /*display: block;*/
+  text-align: center;
+  font-size: 12px;
+  height: 15px;
+  color: #bcbcbc;
+}
