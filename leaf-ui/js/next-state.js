@@ -845,7 +845,33 @@
 
         $("body").removeClass("spinning"); // Remove spinner from cursor
         // Appends filter information to the intention filter table
-        $(".inspectorFilterTable").append('<tr><td class="tableData">' + $(".cell-attrs-text").val() + '</td><td class="tableData">' + $("#sat-value").val() + '</td><td class="tableData">Remove</td></tr>');
+
+            // Fills in the current sat value text box
+            switch ($("#sat-value").val()) {
+                case "0000":
+                    var tableSatVal = "None (⊥, ⊥)";
+                    break;
+                case "0011":
+                    var tableSatVal = "Satisfied (F, ⊥)";
+                    break;
+                case "0010":
+                    var tableSatVal = "Partially Satisfied (P, ⊥)";
+                    break;
+                case "0100":
+                    var tableSatVal = "Partially Denied (⊥, P)";
+                    break;
+                case "1100":
+                    var tableSatVal = "Denied (⊥, F)";
+                    break;
+                case "unknown":
+                    var tableSatVal = "(no value)";
+                    break;
+                default:
+                    var tableSatVal =  "error";   
+                    break;
+            }
+ 
+        $(".inspectorFilterTable").append('<tr><td class="tableData">' + $(".cell-attrs-text").val() + '</td><td class="tableData">' + tableSatVal + '</td><td class="tableData"><button class="table-btn-small">Remove</button></td></tr>');
 
         // Set the new results with filters as the analysis object
         myInputJSObject.results = tempResults;
