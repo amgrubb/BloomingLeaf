@@ -13,7 +13,7 @@ public class MergeAlgorithm {
 	ModelSpec model1, model2, mergedModel;
 	
 	// timing info
-	Integer delta, originalMaxTime1, maxTime;
+	Integer delta, maxTime1, maxTime2, maxTimeMerged;
 	TMain timings;
 	
 	// tracks elements that are deleted in the merge
@@ -31,14 +31,15 @@ public class MergeAlgorithm {
 		
 		// Tracks elements that are deleted in the merge
 		this.deletedElements = new ArrayList<ArrayList<? extends AbstractElement>>();
-		this.originalMaxTime1 = model1.getMaxTime();
+		this.maxTime1 = model1.getMaxTime();
+		this.maxTime2 = model2.getMaxTime() + delta;
 		
 		// set up timing
 		this.delta = delta;
 		this.timings = timings;
 		
 		// pre-process timing and rename maxTimes to ints
-		this.timings.initializeTiming(originalMaxTime1, model2.getMaxTime() + delta);
+		this.timings.initializeTiming(maxTime1, maxTime2);
 		
 		// run merge algorithm
 		mergeModels();
@@ -66,7 +67,6 @@ public class MergeAlgorithm {
 		if (MMain.DEBUG) System.out.println("Finished: mergeIntentions");
 		IMain modelOut = IMainBuilder.buildIMain(mergedModel);
 		System.out.println(gson.toJson(modelOut));
-		if (MMain.DEBUG) System.out.println(gson.toJson(mergedModel));
 
 		if (MMain.DEBUG) System.out.println("Starting: mergeActors");
 		mergeActors();
@@ -217,23 +217,12 @@ public class MergeAlgorithm {
 							}
 						}
 						
-						System.out.println("got this far");
-
-						if (timings.hasTiming(mergedIntention.getName())) {
-							TIntention intentionTiming = timings.getTiming(mergedIntention.getName());
-							System.out.println("intention timing?");
-							FunctionSegment[] mergedEF = mergeEvolvingFunctions(mergedIntention, intention,
-																				intentionTiming.getNewTimeOrder(), // new time order
-																				intentionTiming.getMaxTimeNameA(), intentionTiming.getMaxTimeNameB());
-	
-							System.out.println("merged those M EF ers");
-							//evolvingfunction
-							/*if(mergedIntention.getEvolvingFunctions().length != 0 || intention.getEvolvingFunctions().length != 0){
-								//TODO: GUllibility so don't need anything??? but mb Add an "evolving function" that represents the staticness of intention to mergedIntention??? d
-							}*/
-							mergedIntention.setEvolvingFunctions(mergedEF);
-						}
-							//check absTP
+						// merge evolving functions
+						System.out.println("merging evolving functions");
+						FunctionSegment[] mergedEF = mergeEvolvingFunctions(mergedIntention, intention);
+						System.out.println("merged those M EF ers");
+						mergedIntention.setEvolvingFunctions(mergedEF);
+						
 						//replace all mentions of intention with mergedIntention in Model2
 						if (MMain.DEBUG) System.out.println("updating repeated intentions");
 						updateRepeatedIntention(mergedIntention, intention, model2);
@@ -615,8 +604,9 @@ public class MergeAlgorithm {
 							addeddl.addSrc(source);
 							source.addLinksAsSrc(addeddl);
 
-							//TODO: add a better id for the sublink
-							addeddl.addNewSublinkID(dl.getSubLinkUniqueIDList().get(0));
+							//TODO: make sure id for the sublink is unique
+							// addeddl.addNewSublinkID(dl.getSubLinkUniqueIDList().get(dl.getSubLinkUniqueIDList().size()-1));
+							addeddl.addNewSublinkID("");
 							
 						}
 					}
@@ -764,25 +754,48 @@ public class MergeAlgorithm {
 	 * Begin merging evolving functions
 	 */
 
-	public FunctionSegment[] mergeEvolvingFunctions(Intention intention1, Intention intention2, List<String> newTimeOrder,
-														    String maxTimeName1, String maxTimeName2) {
+	public FunctionSegment[] mergeEvolvingFunctions(Intention intention1, Intention intention2) {
 		if (MMain.DEBUG) System.out.println("Starting: mergeEvolvingFunctions");
 		
+		// get evolving functions for both intentions
+		FunctionSegment[] funcSeg1 = intention1.getEvolvingFunctions();
+		FunctionSegment[] funcSeg2 = intention1.getEvolvingFunctions();
 		
+		// no evolving functions
+		if (funcSeg1.length == 0 && funcSeg2.length == 0) {
+			return new FunctionSegment[0];
+		}
 		
-		
-		// TODO: create newTimeOrder if not in timing
-		// TODO: hardcode maxtime names??? how get if not in timing
-		// String maxTimeName1 = "A-MaxTime";
+		// one intention is static
+		if (funcSeg1.length == 0) {
+			// if no user evaluations for intention, use other intention's functions
+			String userEval = intention1.getInitialUserEval();
+			if (userEval.equals("(no value)")) {
+				return funcSeg2;
+			}
+			
+			// if we have evaluation, treat as constant over model's entire timeline
+			FunctionSegment constValue = new FunctionSegment("C", userEval, "O", 0);
+			intention1.setEvolvingFunctions(new FunctionSegment[]{constValue});
+		} else if (funcSeg2.length == 0) {
+			// if no user evaluations for intention, use other intention's functions
+			String userEval = intention2.getInitialUserEval();
+			if (userEval.equals("(no value)")) {
+				return funcSeg1;
+			}
+			
+			// if we have evaluation, treat as constant over model's entire timeline
+			FunctionSegment constValue = new FunctionSegment("C", userEval, "O", 0);
+			intention2.setEvolvingFunctions(new FunctionSegment[]{constValue});
+		}
 
-		// TODO: one intention is static - treat as constant function
-		// TODO: make sure same system works for contigous and gap info
+		// for contiguous or gap timelines, save time by simply appending arrays
+		// (delta >= maxTime1, aka model 2 starts after model1 ends)
 		
-		// contiguous function info
-		if (originalMaxTime1 == delta) {
+		// merge evolving functions when model 2 starts where model 1 ends
+		// (contiguous function info)
+		if (maxTime1 == delta) {
 			// append evolving functions
-			FunctionSegment[] funcSeg1 = intention1.getEvolvingFunctions();
-			FunctionSegment[] funcSeg2 = intention2.getEvolvingFunctions();
 			FunctionSegment[] combined = new FunctionSegment[funcSeg1.length + funcSeg2.length]; // initialize array to hold info from both
 			System.arraycopy(funcSeg1, 0, combined, 0, funcSeg1.length);  // copy first array into combined
 			System.arraycopy(funcSeg1, 0, combined, funcSeg1.length, funcSeg2.length);  // copy second array ""
@@ -790,19 +803,17 @@ public class MergeAlgorithm {
 			System.out.println("num func segments in combined:");
 			System.out.println(combined.length);
 
-			// TODO: edit repeat timeline names like two As
-			// and rename initial in part 2
-			// and update times in function segments of 2
+			// future work: give user the option to rename timepoints
+			// when intention merge isn't automatically requested in timing.json
 
 			return combined;
 		}
 
-		// gap between function info
-		if (originalMaxTime1 < delta) {
+		// merge evolving functions w/ gap between model 1 and model 2
+		// (gap)
+		if (maxTime1 < delta) {
 			// create extra function segment for the gap, then copy rest of function segments over
-			FunctionSegment fillGap = new FunctionSegment("R", "(no value)", "A-MaxTime", originalMaxTime1);
-			FunctionSegment[] funcSeg1 = intention1.getEvolvingFunctions();
-			FunctionSegment[] funcSeg2 = intention2.getEvolvingFunctions();
+			FunctionSegment fillGap = new FunctionSegment("R", "(no value)", "A-MaxTime", maxTime1);
 			FunctionSegment[] combined = new FunctionSegment[funcSeg1.length + funcSeg2.length + 1]; // initialize array to hold info from both
 			System.arraycopy(funcSeg1, 0, combined, 0, funcSeg1.length);  // copy first array into combined
 			combined[funcSeg1.length] = fillGap;  // add gap segment in the middle
@@ -811,66 +822,88 @@ public class MergeAlgorithm {
 			System.out.println("num func segments in combined:");
 			System.out.println(combined.length);
 
-			// TODO: edit repeat timeline names like two As
-			// and rename initial in part 2
-			// and update times in function segments of 2
+			// future work: give user the option to rename timepoints
+			// when intention merge isn't automatically requested in timing.json
 
 			return combined;
 		}
-
-		// TODO: timing (incl. changes in update timelines)
-		// overlapping timeline info
-		// have timing AB-time
-		// either: have parallel timing w/ old names
-		// or better: rename times on intentions
-		/*
-		 * Do two options: generate all times as A-  (B-)
-		 * or leave blank for user to enter
-		 *
-		 * Print for every intention?
-		 *
-		 * Intention: {name}
-		 * A current times: [~, ~, ~]
-		 * A new times:     []  # user enter here
-		 *
-		 * B current times: [~, ~, ~]
-		 * B new times:     []  # user enter here
-		 *
-		 * ordering of new times:
-		 * # e.g.: [A-Initial, ... , B-MaxTime]
-		 * []
-		 */
-		/*List<String> timing = new ArrayList<>();
-
-		timing.add("A-Initial");
-		timing.add("A-A");
-		timing.add("B-Initial");
-		timing.add("A-100");
-		timing.add("B-A");
-		timing.add("B-195");
-
-		timing.add("A-Initial");
-		timing.add("B-Initial");
-		timing.add("AB-A");
-		timing.add("A-100");
-		timing.add("B-105");
-
-		List<String> timingShort = new ArrayList<>();
-		timingShort.add("0");
-		timingShort.add("5");
-		timingShort.add("E002TPA");
-		timingShort.add("E005TPA");
-		timingShort.add("100");
-		timingShort.add("105");
-
-		System.out.println("timing:");
-		System.out.println(timingShort);
-		*/
-		List<MFunctionSegment> segsA = completeFunctionInfo(intention1.getEvolvingFunctions(), intention1.getInitialUserEval(), originalMaxTime1, maxTimeName1);
-		List<MFunctionSegment> segsB = completeFunctionInfo(intention2.getEvolvingFunctions(), intention2.getInitialUserEval(), maxTime, maxTimeName2);
+	
+		// merge overlapping evolving functions
+		
+		// set maxtime names
+		String maxTimeName1, maxTimeName2;
+		Boolean modelMaxTimesMatch = (maxTime1 == maxTime2);
+		// models end at same maxtime
+		if (modelMaxTimesMatch) {
+			maxTimeName1 = "AB-MaxTime";
+			maxTimeName2 = "AB-MaxTime";
+		} else {
+			// models have diff maxtime names
+			maxTimeName1 = "A-MaxTime";
+			maxTimeName2 = "B-MaxTime";
+		}
+				
+		// resolve timing order (create if not given by user)
+		List<String> timeOrder = new ArrayList<>();
+		if (timings.hasTiming(intention1.getName())){
+			// get timing order from user input
+			TIntention intentionTiming = timings.getTiming(intention1.getName());
+			timeOrder = intentionTiming.getNewTimeOrder();
+		} else {
+			// doesn't have timing from user because simple merge
+			// (A or B is only one function, in which the other is entirely contained)
+			
+			// these conditions match the PreMerge conditions to skip outputting to timing file
+			// (other than skipping gap/continuous situations, as addressed above)
+			// B contained in A
+			if (funcSeg1.length == 1 && maxTime1 >= maxTime2) {
+				// start A
+				timeOrder.add("0");
+				
+				// add all of B's timepoints
+				intention2.getEvolvingFunctionStartTimes();
+				
+				// ending maxtimes
+				if (modelMaxTimesMatch) {
+					timeOrder.add("AB-MaxTime");
+				} else {
+					timeOrder.add("B-MaxTime");
+					timeOrder.add("A-MaxTime");
+				}
+				
+				System.out.println("new timeOrder is ");
+				System.out.println(timeOrder);
+			} // A contained in B
+			else if ((delta == 0) && (funcSeg2.length == 1) && (maxTime1 <= maxTime2)) {
+				// A and B start at 0
+				// add all of A's timepoints
+				intention1.getEvolvingFunctionStartTimes();
+			
+				// ending maxtimes
+				if (modelMaxTimesMatch) {
+					timeOrder.add("AB-MaxTime");
+				} else {
+					timeOrder.add("A-MaxTime");
+					timeOrder.add("B-MaxTime");
+				}
+				
+				System.out.println("new timeOrder is ");
+				System.out.println(timeOrder);
+			} else {
+				// if not simple merge, we should have had timing info in timing.json
+				// throw error
+				throw new RuntimeException("Error while merging " + intention1.getName() + ": ambigous timeline. Please order timepoints for this intention in timing.json");
+			}
+		}
+		
+		// obtain complete functions (w/ start and end times and evidence pairs)
+		List<MFunctionSegment> segsA = completeFunctionInfo(intention1.getEvolvingFunctions(), intention1.getInitialUserEval(), maxTime1, maxTimeName1);
+		List<MFunctionSegment> segsB = completeFunctionInfo(intention2.getEvolvingFunctions(), intention2.getInitialUserEval(), maxTime2, maxTimeName2);
 
 		// merge functions
-		MergeEvolvingFunction merge = new MergeEvolvingFunction(segsA, segsB, newTimeOrder);
+		MergeEvolvingFunction merge = new MergeEvolvingFunction(segsA, segsB, timeOrder);
+		
+		// output merged functions
 		return merge.outputMergedSegments();
 	}
 

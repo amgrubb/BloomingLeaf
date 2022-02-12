@@ -46,9 +46,14 @@ public class TIntention {
 	public void setMaxTimesNumeric(Integer maxTimeA, Integer maxTimeB) {
 		for (int i=0; i<newTimeOrder.size(); i++) {
 			if (newTimeOrder.get(i).equals("A-MaxTime")) {
+				// rename A-MaxTime
 				newTimeOrder.set(i, Integer.toString(maxTimeA));
 			} else if (newTimeOrder.get(i).equals("B-MaxTime")) {
+				// rename B-MaxTime
 				newTimeOrder.set(i, Integer.toString(maxTimeB));
+			} else if (newTimeOrder.get(i).equals("AB-MaxTime") && maxTimeA == maxTimeB) {
+				// models end at same time, rename AB-maxTime to numeric
+				newTimeOrder.set(i, Integer.toString(maxTimeA));
 			}
 		}
 	}

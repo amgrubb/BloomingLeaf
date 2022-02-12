@@ -271,9 +271,13 @@ public class Intention extends AbstractLinkableElement {
 	}
 	
 	public String getInitialUserEval() {
-		// TODO: search list for eval with time of initial
-		// TODO: return (no value) if not found
-		return userEvals.get(0);
+		// TODO: search list for eval with time of initial?
+		if (userEvals.size() > 0) {
+			return userEvals.get(0);
+		} else {
+			return "(no value)";
+		}
+		
 	}
 	
 }

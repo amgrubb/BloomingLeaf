@@ -1,8 +1,5 @@
 package simulation;
 
-import gson_classes.BILink;
-
-
 public class ActorLink extends AbstractElementLink {
 	private ActorLinkType prelinkType = null;
 

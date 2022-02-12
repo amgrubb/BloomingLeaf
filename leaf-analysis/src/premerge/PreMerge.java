@@ -25,8 +25,8 @@ public class PreMerge {
 	
 	public static void main(String[] args) {
 		String filePath = "temp/";
-		String inputFile1 = "Spadina opp before_3.json";
-		String inputFile2 = "Spadina plan before_3.json";
+		String inputFile1 = "me.json";
+		String inputFile2 = "measwell.json";
 		String timingFile = "timing.json";
 		Integer delta = 0;  // new start B
 		
@@ -40,32 +40,39 @@ public class PreMerge {
 	
 	public static void detectIntentionMerge(ModelSpec modelA, ModelSpec modelB, Integer delta, String timingFilePath) {
 		startTimingFile(timingFilePath);
+		// don't output timing if no overlap between A and B
+		if (modelA.getMaxTime() <= delta) {
+			endTimingFile(timingFilePath);
+			return;
+		}
+		
 		// compare every intention name in m1 to names in m2
 		for(Intention intentionA: modelA.getIntentions()) {
 			for(Intention intentionB: modelB.getIntentions()) {
 				// if intention names match, intentions will merge
 				
 				if(intentionA.getName().equals(intentionB.getName())) {
-					System.out.println("merging intentions");
+					System.out.println("matched intentions");
 					System.out.println(intentionA.getEvolvingFunctions().length);
 					System.out.println(intentionB.getEvolvingFunctions().length);
-					// don't output timing if 0 function segments
-					if ((intentionA.getEvolvingFunctions().length == 0) && (intentionB.getEvolvingFunctions().length == 0)) {
+					// don't output timing if 0 function segments in at least one intention
+					if ((intentionA.getEvolvingFunctions().length == 0) || (intentionB.getEvolvingFunctions().length == 0)) {
 						continue;
 					}
 					
-					// don't output timing if A has 1 function segment and maxtimeA >= maxtimeB
+					// don't output timing if A has 1 function segment and A ends after B
+					// (B is entirely contained within A)
 					if ((intentionA.getEvolvingFunctions().length == 1) && (modelA.getMaxTime() >= modelB.getMaxTime() + delta)) {
-						//continue;
+						continue;
 					}
 					
-					// don't output timing if B has 1 function segment and maxtimeA <= mintime B
-					if ((intentionB.getEvolvingFunctions().length == 1) && (modelA.getMaxTime() <= delta)) {
+					// don't output timing if B has 1 function segment and A ends before B
+					// (A is entirely contained within B)
+					if ((delta == 0) && (intentionB.getEvolvingFunctions().length == 1) && (modelA.getMaxTime() <= modelB.getMaxTime() + delta)) {
 						continue;
 					}
 					
 					// otherwise, output timing info to timing file for user to resolve
-					
 					printTiming(intentionA, intentionB, delta, timingFilePath);
 				}
 				

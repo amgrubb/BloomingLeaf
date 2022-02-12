@@ -34,9 +34,9 @@ public class MMain {
 	public static void main(String[] args) {
 		//This is the default filePath to be executed if no file is passed through parameters
 		String filePath = "temp/";
-		String inputFile1 = "Spadina opp before_3.json";
-		String inputFile2 = "Spadina plan before_3.json";
-		String outputFile = "output-2-11.json";
+		String inputFile1 = "mecopy.json";
+		String inputFile2 = "mecopy.json";
+		String outputFile = "output-2-12.json";
 		String timingFile = "timing.json";
 		Integer delta = 0;  // new start B
 
