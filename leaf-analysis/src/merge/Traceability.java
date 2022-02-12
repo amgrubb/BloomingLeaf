@@ -20,91 +20,88 @@ public class Traceability{
 		ArrayList<String> fromModel2 = new ArrayList<>();
 		ArrayList<String> mergedElements = new ArrayList<>();
 		
+		//add actors
 		for(Actor actor: mergedModel.getActors()) {
 			
 		    if(actor.getId().indexOf("model") != actor.getId().length() - 6) {
-		    	mergedElements.add(actor.getName());
+		    	mergedElements.add(actor.getName()+ "\t\tID: " + actor.getId());
 		    	
 		    }else if(actor.getId().contains("model1")) {
-				fromModel1.add(actor.getName());
+				fromModel1.add(actor.getName() + "\t\tID: " + actor.getId());
 			}
 			else {
-				fromModel2.add(actor.getName());
+				fromModel2.add(actor.getName()+ "\t\tID: " + actor.getId());
 			}
 		}
+		//add intentions
 		for(Intention intention: mergedModel.getIntentions()) {
 			
 			if(intention.getId().indexOf("model") != intention.getId().length() - 6) {
-		    	mergedElements.add(intention.getName());
+		    	mergedElements.add(intention.getName()+ "\t\tID: " + intention.getId());
 		    	
 		    } else if(intention.getId().contains("model1")) {
-				fromModel1.add(intention.getName());
+				fromModel1.add(intention.getName()+ "\t\tID: " + intention.getId());
 			}
 			else {
-				fromModel2.add(intention.getName());
+				fromModel2.add(intention.getName()+ "\t\tID: " + intention.getId());
 			}
 		}
+		//add contribution links
 		for(ContributionLink cl: mergedModel.getContributionLinks()) {
 			if(cl.getID().indexOf("model") != cl.getID().length() - 6) {
-		    	mergedElements.add(cl.getName());
+		    	mergedElements.add(cl.getName() + "\t\tID: " + cl.getID());
 		    	
 		    }else if(cl.getID().contains("model1")) {
-				fromModel1.add(cl.getName());
+				fromModel1.add(cl.getName()+ "\t\tID: " + cl.getID());
 			}
 			else {
-				fromModel2.add(cl.getName());
+				fromModel2.add(cl.getName()+ "\t\tID: " + cl.getID());
 			}
 		}
+		
+		//add decomposition links
 		for(DecompositionLink dl: mergedModel.getDecompositionLinks()) {
 			if(dl.getID().indexOf("model") != dl.getID().length() - 6) {
-		    	mergedElements.add(dl.getName());
+		    	mergedElements.add(dl.getName()+ "\t\tID: " + dl.getID());
 		    	
 		    }else if(dl.getID().contains("model1")) {
-				fromModel1.add(dl.getName());
+				fromModel1.add(dl.getName()+ "\t\tID: " + dl.getID());
 			}
 			else {
-				fromModel2.add(dl.getName());
-			}
-		}
-		for(NotBothLink nbl: mergedModel.getNotBothLinks()) {
-			if(nbl.getID().indexOf("model") != nbl.getID().length() - 6) {
-		    	mergedElements.add(nbl.getName());
-		    	
-		    }else if(nbl.getID().contains("model1")) {
-				fromModel1.add(nbl.getName());
-			}
-			else {
-				fromModel2.add(nbl.getName());
+				fromModel2.add(dl.getName()+ "\t\tID: " + dl.getID());
 			}
 		}
 		
+		//add notbothlinks
 		for(NotBothLink nbl: mergedModel.getNotBothLinks()) {
 			if(nbl.getID().indexOf("model") != nbl.getID().length() - 6) {
-		    	mergedElements.add(nbl.getName());
+		    	mergedElements.add(nbl.getName()+ "\t\tID: " + nbl.getID());
 		    	
 		    }else if(nbl.getID().contains("model1")) {
-				fromModel1.add(nbl.getName());
+				fromModel1.add(nbl.getName()+ "\t\tID: " + nbl.getID());
 			}
 			else {
-				fromModel2.add(nbl.getName());
+				fromModel2.add(nbl.getName()+ "\t\tID: " + nbl.getID());
 			}
 		}
 		
+		//add actorlinks
 		for(ActorLink al: mergedModel.getActorLinks()) {
 			if(al.getID().indexOf("model") != al.getID().length() - 6) {
-		    	mergedElements.add(al.getName());
+		    	mergedElements.add(al.getName() + "\t\tID: " + al.getID());
 		    	
 		    }else if(al.getID().contains("model1")) {
-				fromModel1.add(al.getName());
+				fromModel1.add(al.getName() + "\t\tID: " + al.getID());
 			}
 			else {
-				fromModel2.add(al.getName());
+				fromModel2.add(al.getName() + "\t\tID: " + al.getID());
 			}
 		}
 		
 		//System.out.println(fromModel1);
 		//System.out.println(fromModel2);
 		//System.out.println(mergedElements);
+		//print to file
 		try {
 			System.out.println("Printing to file...");
 			FileWriter fileWriter = new FileWriter(fileName, true);
@@ -112,19 +109,19 @@ public class Traceability{
 			fileWriter.write("From Model 1: "+ "\n");
 			fileWriter.write("--------------------------"+ "\n");
 			for(String name: fromModel1) {
-				fileWriter.write(name + "\n");
+				fileWriter.write("\t" + name + "\n");
 			}
 			
-			fileWriter.write("From Model 2: "+ "\n");
+			fileWriter.write("\\nFrom Model 2: "+ "\n");
 			fileWriter.write("--------------------------"+ "\n");
 			for(String name: fromModel2) {
-				fileWriter.write(name+ "\n");
+				fileWriter.write("\t" + name+ "\n");
 			}
 			
-			fileWriter.write("From Both Modeels: "+ "\n");
+			fileWriter.write("\nFrom Both Models: "+ "\n");
 			fileWriter.write("--------------------------"+ "\n");
 			for(String name: mergedElements) {
-				fileWriter.write(name+ "\n");
+				fileWriter.write("\t" + name+ "\n");
 			}
 			
 			fileWriter.close();
@@ -152,6 +149,25 @@ public class Traceability{
 					fileWriter.write("\t" + deletedElem.getName()+ "\n");
 	
 				}
+				
+			}
+			
+			fileWriter.close();
+			
+		}catch(IOException e) {
+			System.out.println("There was a problem in providing the traceability chart.");
+		}
+		
+	}
+	
+	public static void printConflictMessagesToFile(ArrayList<String> conflicts) {
+		try {
+			FileWriter fileWriter = new FileWriter("traceabilityOutput.txt", true);
+			
+			fileWriter.write("\nConflicts: "+ "\n");
+			fileWriter.write("--------------------------"+ "\n");
+			for(String message: conflicts) {
+				fileWriter.write("\t" + message + "\n");
 				
 			}
 			

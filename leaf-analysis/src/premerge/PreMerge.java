@@ -22,22 +22,22 @@ import simulation.ModelSpec;
  ***********/
 
 public class PreMerge {
-	
+
 	public static void main(String[] args) {
 		String filePath = "temp/";
-		String inputFile1 = "me.json";
-		String inputFile2 = "measwell.json";
-		String timingFile = "timing.json";
+		String inputFile1 = "testModel1.json";
+		String inputFile2 = "testModel2.json";
+		String timingFile = "timings.json";
 		Integer delta = 0;  // new start B
-		
+
 		ModelSpec modelSpec1 = MMain.convertBackboneModelFromFile(filePath + inputFile1);
 		ModelSpec modelSpec2 = MMain.convertBackboneModelFromFile(filePath + inputFile2);
-	
+
 		// pre-merge timing output
 		detectIntentionMerge(modelSpec1, modelSpec2, delta, filePath + timingFile);
 	}
-	
-	
+
+
 	public static void detectIntentionMerge(ModelSpec modelA, ModelSpec modelB, Integer delta, String timingFilePath) {
 		startTimingFile(timingFilePath);
 		// don't output timing if no overlap between A and B
@@ -45,12 +45,12 @@ public class PreMerge {
 			endTimingFile(timingFilePath);
 			return;
 		}
-		
+
 		// compare every intention name in m1 to names in m2
 		for(Intention intentionA: modelA.getIntentions()) {
 			for(Intention intentionB: modelB.getIntentions()) {
 				// if intention names match, intentions will merge
-				
+
 				if(intentionA.getName().equals(intentionB.getName())) {
 					System.out.println("matched intentions");
 					System.out.println(intentionA.getEvolvingFunctions().length);
@@ -59,52 +59,52 @@ public class PreMerge {
 					if ((intentionA.getEvolvingFunctions().length == 0) || (intentionB.getEvolvingFunctions().length == 0)) {
 						continue;
 					}
-					
+
 					// don't output timing if A has 1 function segment and A ends after B
 					// (B is entirely contained within A)
 					if ((intentionA.getEvolvingFunctions().length == 1) && (modelA.getMaxTime() >= modelB.getMaxTime() + delta)) {
 						continue;
 					}
-					
+
 					// don't output timing if B has 1 function segment and A ends before B
 					// (A is entirely contained within B)
 					if ((delta == 0) && (intentionB.getEvolvingFunctions().length == 1) && (modelA.getMaxTime() <= modelB.getMaxTime() + delta)) {
 						continue;
 					}
-					
+
 					// otherwise, output timing info to timing file for user to resolve
 					printTiming(intentionA, intentionB, delta, timingFilePath);
 				}
-				
+
 			}
 		}
 		endTimingFile(timingFilePath);
 	}
-	
+
 	private static void printTiming(Intention intentionA, Intention intentionB, Integer delta, String timingFilePath) {
 		Gson gson = new Gson(); //new GsonBuilder().setPrettyPrinting().create();
-		
-		try {			
+
+		try {
 			// set up printwriter in append mode
 			File file;
 			file = new File(timingFilePath);
 			FileWriter fw = new FileWriter(file, true);
 			BufferedWriter bw = new BufferedWriter(fw);
 			PrintWriter printFile = new PrintWriter(bw);
-			
-			
+
+
 			// first, print intention name
 			printFile.printf("{%n\t\"intention\": \"%s\",%n", intentionA.getName());
-			
+
 			// TODO: only output if A or B has more than 1 evolving function
 			// timing for intention A
 			List<String> startTimesA = intentionA.getEvolvingFunctionStartTimes();
 			printTimingIntention(startTimesA, "A", printFile);
-			
+
 			// timing for intention B
 			List<String> startTimesB = intentionB.getEvolvingFunctionStartTimesIncremented(delta);
 			printTimingIntention(startTimesB, "B", printFile);
-			
+
 			// space for user to order the times
 			printFile.printf("\t\"newTimeOrder\": [\"A-0\", ..., \"A-MaxTime\", ..., \"B-MaxTime\"]%n");
 			printFile.printf("},%n");
@@ -114,7 +114,7 @@ public class PreMerge {
 			throw new RuntimeException("Error in printTiming: " + e.getMessage());
 		}
 	}
-	
+
 	private static void printTimingIntention(List<String> startTimes, String modelChar, PrintWriter printFile) {
 		// print current times separated by ", "
 		printFile.printf("\t\"currentTimes%s\":  [", modelChar);
@@ -122,17 +122,17 @@ public class PreMerge {
 			printFile.printf("\"%s\", ", start);
 		}
 		printFile.printf("\"MaxTime\"],%n");
-		
+
 		// print times again, starting with A- or B-
 		printFile.printf("\t\"newTimes%s\": [", modelChar);
 		for (String start: startTimes) {
 			printFile.printf("\"%s-%s\", ", modelChar, start);
 		}
 		printFile.printf("\"%s-MaxTime\"],%n", modelChar);
-		
+
 	}
-	
-	private static void startTimingFile(String timingFilePath) {		
+
+	private static void startTimingFile(String timingFilePath) {
 		try {
 			// create new file if doesn't already exist
 			File file;
@@ -140,19 +140,19 @@ public class PreMerge {
 			if (!file.exists()) {
 				file.createNewFile();
 			}
-			
+
 			// set up printwriter NOT in append mode
 			// (clears file from last output)
 			PrintWriter printFile = new PrintWriter(file);
 			printFile.println("{\"timingList\": [");
-			
+
 			printFile.close();
 		} catch (Exception e) {
 			throw new RuntimeException("Error in printTimingHeader: " + e.getMessage());
 		}
 	}
-	
-	private static void endTimingFile(String timingFilePath) {		
+
+	private static void endTimingFile(String timingFilePath) {
 		try {
 			// set up printwriter in append mode
 			File file;
@@ -160,14 +160,14 @@ public class PreMerge {
 			FileWriter fw = new FileWriter(file, true);
 			BufferedWriter bw = new BufferedWriter(fw);
 			PrintWriter printFile = new PrintWriter(bw);
-			
+
 			printFile.println("{}]}");  // extra timing object at end so last , doesn't create problems
-			
-			
+
+
 			printFile.close();
 		} catch (Exception e) {
 			throw new RuntimeException("Error in printTimingHeader: " + e.getMessage());
 		}
-	}	
+	}
 
 }

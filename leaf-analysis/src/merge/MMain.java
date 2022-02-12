@@ -34,10 +34,10 @@ public class MMain {
 	public static void main(String[] args) {
 		//This is the default filePath to be executed if no file is passed through parameters
 		String filePath = "temp/";
-		String inputFile1 = "mecopy.json";
-		String inputFile2 = "mecopy.json";
-		String outputFile = "output-2-12.json";
-		String timingFile = "timing.json";
+		String inputFile1 = "testModel1.json";
+		String inputFile2 = "testModel2.json";
+		String outputFile = "output-2-11.json";
+		String timingFile = "timings.json";
 		Integer delta = 0;  // new start B
 
 		try {
@@ -67,7 +67,7 @@ public class MMain {
 			ModelSpec mergedModel = merge.getMergedModel();
 			System.out.println("Completed Merging.");
 			System.out.println("merged models");
-			
+
 			System.out.println("----------------------");
 
 			// Create Output file that will be used by frontend
