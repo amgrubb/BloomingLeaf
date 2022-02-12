@@ -36,7 +36,7 @@ public class MMain {
 		String filePath = "temp/";
 		String inputFile1 = "testModel1.json";
 		String inputFile2 = "testModel2.json";
-		String outputFile = "output-2-11.json";
+		String outputFile = "output-2-12.json";
 		String timingFile = "timings.json";
 		Integer delta = 0;  // new start B
 

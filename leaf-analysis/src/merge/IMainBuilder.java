@@ -88,6 +88,7 @@ public class IMainBuilder {
 		
 		if (!contributionLinks.isEmpty()) {
 			for (ContributionLink specLink: contributionLinks) {
+				System.out.println("outputting contr links");
 				// inputs for ICell
 				String id = specLink.getUniqueID();
 				String type = "basic.CellLink";
@@ -97,7 +98,9 @@ public class IMainBuilder {
 				// inputs for building BILink
 				Integer absTime = specLink.getAbsTime();
 				Boolean evolving = specLink.isEvolving();
+				System.out.println("outputting contr links");
 				String linkType = specLink.getPreContribution().getCode();
+				
 				
 				BILink newLink; // build link w/ or w/o postType depending on evolving
 				if (evolving) {

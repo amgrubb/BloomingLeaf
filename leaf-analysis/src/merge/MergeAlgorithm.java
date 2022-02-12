@@ -85,6 +85,7 @@ public class MergeAlgorithm {
 
 		if (MMain.DEBUG) System.out.println("Starting: mergeLinks");
 		mergeLinks();
+		System.out.println("finished mergelinks");
 
 		modelOut = IMainBuilder.buildIMain(mergedModel);
 		System.out.println("finished buiuldIamain");
@@ -713,6 +714,7 @@ public class MergeAlgorithm {
 		mergedModel.setDecompositionLinks(mergedDL);
 		mergedModel.setNotBothLinks(mergedNBL);
 		System.out.println("all links added");
+		System.out.println("finished mergelinks");
 	}
 
 	/**
@@ -756,13 +758,19 @@ public class MergeAlgorithm {
 				return ContributionType.P;
 			}
 			String newLinkType = "";
+			System.out.println("<------------");
+			System.out.println(linkType1);
+			System.out.println(linkType2);
+			System.out.println(linkType1.lastIndexOf("+"));
+			System.out.println(linkType2);
 			//if the two are ++/+ then the new link is +
 			if(linkType1.lastIndexOf("+") != linkType1.lastIndexOf("+")){
 				newLinkType = "+";
+				System.out.println("diff length");
 			}
 			//else the type is what they both are
 			else{
-				newLinkType = linkType1.substring(linkType1.lastIndexOf("+"));
+				newLinkType = linkType1.substring(0, linkType1.lastIndexOf("+")+1);
 			}
 
 			//if either have an S add it
