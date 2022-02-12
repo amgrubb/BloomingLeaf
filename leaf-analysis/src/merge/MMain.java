@@ -8,7 +8,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import gson_classes.IMain;
-import premerge.TMain;
 import simulation.ModelSpec;
 import simulation.BIModelSpecBuilder;
 import simulation.Intention;
@@ -65,7 +64,7 @@ public class MMain {
 			System.out.println("----------------------");
 			
 			//TODO: MERGE-Y THINGS
-			ModelSpec mergedModel = MergeAlgorithm.mergeModels(modelSpec1, modelSpec2, delta);
+			ModelSpec mergedModel = MergeAlgorithm.mergeModels(modelSpec1, modelSpec2, delta, timings);
 			
 			System.out.println("merged models");
 			
@@ -177,8 +176,6 @@ public class MMain {
 			TMain timingMain = gson.fromJson(new FileReader(filePath), TMain.class);
 			System.out.println("made timing:");
 			System.out.println(gson.toJson(timingMain));
-			
-			/// here initialize timing mps
 			
 			return timingMain;
 			

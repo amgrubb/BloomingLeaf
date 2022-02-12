@@ -12,7 +12,7 @@ public class MEvolvingFunction {
 	private List<String> timing;
 	
 	// calculated timeline info
-	private HashMap<String, String> timeline;
+	private HashMap<String, String> timeline;  // <time, evidence pair>
 	
 	/**
 	 * Builds timeline from segments + timing
@@ -47,6 +47,8 @@ public class MEvolvingFunction {
 	
 	private void buildTimeline() {
 		if (MMain.DEBUG) System.out.println("Starting: buildTimeline");
+		// adjust timing list to contain numeric times
+		cleanTiming();
 
 		// find evolving function's value at each point in the union of model timelines
 		
@@ -64,6 +66,23 @@ public class MEvolvingFunction {
 			}
 		}
 		
+	}
+	
+	/*
+	 * Convert numeric timepoint names to just the number
+	 */
+	private void cleanTiming() {
+		System.out.println(timing);
+		for (int i=0; i<timing.size(); i++) {
+			String time = timing.get(i);
+			// take timepoint name after "-"
+			String post = time.substring(time.indexOf('-')+1);
+			// numeric - replace with just numbers
+			if (MEPOperators.isNumeric(post)) {
+				timing.set(i, post);
+			}
+		}
+		System.out.println(timing);
 	}
 	
 	private Boolean withinTimeline(String time) {

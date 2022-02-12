@@ -16,6 +16,11 @@ import simulation.BIModelSpecBuilder;
 import simulation.Intention;
 import simulation.ModelSpec;
 
+/***********
+ * Precompute which intentions will merge and output their timing info to timing.json
+ * When the user needs to input manually merged or renamed timelines for evolving functions
+ ***********/
+
 public class PreMerge {
 	
 	public static void main(String[] args) {
@@ -89,7 +94,7 @@ public class PreMerge {
 			printTimingIntention(startTimesB, "B", printFile);
 			
 			// space for user to order the times
-			printFile.printf("\t\"newTimeOrder\": []%n");
+			printFile.printf("\t\"newTimeOrder\": [A-0, ..., A-MaxTime, ..., B-MaxTime]%n");
 			printFile.printf("},%n");
 
 			printFile.close();
@@ -127,7 +132,7 @@ public class PreMerge {
 			// set up printwriter NOT in append mode
 			// (clears file from last output)
 			PrintWriter printFile = new PrintWriter(file);
-			printFile.println("{\"timings\": [");
+			printFile.println("{\"timingList\": [");
 			
 			printFile.close();
 		} catch (Exception e) {

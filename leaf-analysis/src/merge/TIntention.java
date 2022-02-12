@@ -1,4 +1,4 @@
-package premerge;
+package merge;
 
 import java.util.HashMap;
 import java.util.List;
@@ -33,7 +33,25 @@ public class TIntention {
 	public HashMap<String, String> getRenameB(){
 		return renameB;
 	}
-	
+	public String getNewNameA(String currentTime) {
+		return renameA.get(currentTime);
+	}
+	public String getNewNameB(String currentTime) {
+		return renameB.get(currentTime);
+	}
+	/**
+	 * In newTimeOrder, replace strings for A-MaxTime and B-MaxTime
+	 * with the numeric maxTimes
+	 */
+	public void setMaxTimesNumeric(Integer maxTimeA, Integer maxTimeB) {
+		for (int i=0; i<newTimeOrder.size(); i++) {
+			if (newTimeOrder.get(i).equals("A-MaxTime")) {
+				newTimeOrder.set(i, Integer.toString(maxTimeA));
+			} else if (newTimeOrder.get(i).equals("B-MaxTime")) {
+				newTimeOrder.set(i, Integer.toString(maxTimeB));
+			}
+		}
+	}
 	/**********
 	 * Getters
 	 **********/
@@ -54,5 +72,11 @@ public class TIntention {
 	}
 	public List<String> getNewTimeOrder() {
 		return newTimeOrder;
+	}
+	public String getMaxTimeNameA() {
+		return newTimesA.get(newTimesA.size() - 1);
+	}
+	public String getMaxTimeNameB() {
+		return newTimesB.get(newTimesB.size() - 1);
 	}
 }

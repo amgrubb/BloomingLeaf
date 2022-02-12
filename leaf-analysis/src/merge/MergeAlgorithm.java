@@ -15,14 +15,16 @@ public class MergeAlgorithm {
 	 * @param delta - how much longer model2 starts after model1 starts
 	 * @return the merged model
 	 */
-	public static ModelSpec mergeModels(ModelSpec model1, ModelSpec model2, Integer delta){
+	public static ModelSpec mergeModels(ModelSpec model1, ModelSpec model2, Integer delta, TMain timings){
 		if (MMain.DEBUG) System.out.println("Starting: MergeAlgorithm");
 		ModelSpec mergedModel = new ModelSpec();
 		
 		int originalMaxTime1 = model1.getMaxTime();
+		// pre-process timing and rename maxTimes to ints
+		timings.initializeTiming(originalMaxTime1, model2.getMaxTime() + delta);
 		
 		// update the models' times
-		updateTimeline(model1, model2, delta);
+		updateTimeline(model1, model2, delta, timings);
 	
 		Intention intention1 = model1.getIntentions().get(2);
 		Intention intention2 = model2.getIntentions().get(2);
@@ -33,8 +35,11 @@ public class MergeAlgorithm {
 		System.out.println(intention2.getEvolvingFunctionStartTPsFull());
 		System.out.println(originalMaxTime1);
 
-		
-		FunctionSegment[] mergedEF = mergeEvolvingFunctions(intention1, intention2, 5, originalMaxTime1, model2.getMaxTime());
+		TIntention intentionTiming = timings.getTiming(intention1.getName());
+		FunctionSegment[] mergedEF = mergeEvolvingFunctions(intention1, intention2, delta,
+															intentionTiming.getNewTimeOrder(), // new time order
+															originalMaxTime1, model2.getMaxTime(),
+															intentionTiming.getMaxTimeNameA(), intentionTiming.getMaxTimeNameB());
 		
 		model1.getIntentions().get(2).setEvolvingFunctions(mergedEF);
 		return model1;
@@ -47,7 +52,7 @@ public class MergeAlgorithm {
 	 * @param model2
 	 * @param delta
 	 */
-	public static void updateTimeline(ModelSpec model1, ModelSpec model2, Integer delta) {
+	public static void updateTimeline(ModelSpec model1, ModelSpec model2, Integer delta, TMain timings) {
 		if (MMain.DEBUG) System.out.println("Starting: updateTimeline");
 		
 		// update max time for both models
@@ -57,26 +62,51 @@ public class MergeAlgorithm {
 		model2.setMaxTime(oldMax + delta);
 		
 		// update absolute time points for model 2
-		for(Integer absTP: model2.getAbsTP().values()) {
+		for (Integer absTP: model2.getAbsTP().values()) {
 			absTP += delta;
 		}
 		
 		// update absolute time points for model 2 stored in intentions' UAL
-		for(Intention intention: model2.getIntentions()) {
+		for (Intention intention: model2.getIntentions()) {
 			for(Integer absTP: intention.getUserEvals().keySet()) {
 				absTP += delta;
 			}
 		}
 		
 		// update absolute time points for model 2 stored in intentions' evolving functions
-		for(Intention intention: model2.getIntentions()) {
-			for(FunctionSegment func: intention.getEvolvingFunctions()) {
+		// and update timepoint names if available in timing file
+		for (Intention intention: model2.getIntentions()) {
+			FunctionSegment[] evFunctions = intention.getEvolvingFunctions();
+
+			// update each function's absolute time
+			for(FunctionSegment func: evFunctions) {
 				// if abs time exists, update it
 				func.incrementStartAT(delta);
-				
-				// rename start TPs as user suggested
-				func.setStartTP(/**/"");
-				
+			}
+			
+			// rename startTP names if info available in timing
+			if (timings.hasTiming(intention.getName())) {
+				TIntention timeIntention = timings.getTiming(intention.getName());
+				for (int i=0; i<evFunctions.length; i++) {
+					// rename start TPs as user suggested
+					String newTime = timeIntention.getNewNameB(evFunctions[i].getStartTime());
+					evFunctions[i].setStartTP(newTime);
+				}
+			}
+		}
+		
+		// and update timepoint names for model 1 if available in timing file
+		for (Intention intention: model1.getIntentions()) {
+			FunctionSegment[] evFunctions = intention.getEvolvingFunctions();
+			
+			// rename startTP names if info available in timing
+			if (timings.hasTiming(intention.getName())) {
+				TIntention timeIntention = timings.getTiming(intention.getName());
+				for (int i=0; i<evFunctions.length; i++) {
+					// rename start TPs as user suggested
+					String newTime = timeIntention.getNewNameA(evFunctions[i].getStartTime());
+					evFunctions[i].setStartTP(newTime);
+				}
 			}
 		}
 	}
@@ -100,11 +130,13 @@ public class MergeAlgorithm {
 		
 	}
 	
-	public static FunctionSegment[] mergeEvolvingFunctions(Intention intention1, Intention intention2, Integer delta, Integer maxTime1, Integer maxTime2) {
+	public static FunctionSegment[] mergeEvolvingFunctions(Intention intention1, Intention intention2, Integer delta, List<String> newTimeOrder,
+														   Integer maxTime1, Integer maxTime2, String maxTimeName1, String maxTimeName2) {
 		if (MMain.DEBUG) System.out.println("Starting: mergeEvolvingFunctions");
 
 		// TODO: one intention is static - treat as constant function
-		
+		// TODO: make sure same system works for contigous and gap info
+		/*
 		// contiguous function info
 		if (maxTime1 == delta) {
 			// append evolving functions
@@ -167,14 +199,14 @@ public class MergeAlgorithm {
 		 * # e.g.: [A-Initial, ... , B-MaxTime]
 		 * []
 		 */
-		List<String> timing = new ArrayList<>();
-		/*
+		/*List<String> timing = new ArrayList<>();
+
 		timing.add("A-Initial");
 		timing.add("A-A");
 		timing.add("B-Initial");
 		timing.add("A-100");
 		timing.add("B-A");
-		timing.add("B-195");*/
+		timing.add("B-195");
 		
 		timing.add("A-Initial");
 		timing.add("B-Initial");
@@ -192,12 +224,12 @@ public class MergeAlgorithm {
 		
 		System.out.println("timing:");
 		System.out.println(timingShort);
-		
-		List<MFunctionSegment> segsA = completeFunctionInfo(intention1.getEvolvingFunctions(), intention1.getInitialUserEval(), maxTime1);
-		List<MFunctionSegment> segsB = completeFunctionInfo(intention2.getEvolvingFunctions(), intention2.getInitialUserEval(), maxTime2);
+		*/
+		List<MFunctionSegment> segsA = completeFunctionInfo(intention1.getEvolvingFunctions(), intention1.getInitialUserEval(), maxTime1, maxTimeName1);
+		List<MFunctionSegment> segsB = completeFunctionInfo(intention2.getEvolvingFunctions(), intention2.getInitialUserEval(), maxTime2, maxTimeName2);
 		
 		// merge functions
-		MergeEvolvingFunction merge = new MergeEvolvingFunction(segsA, segsB, timingShort);
+		MergeEvolvingFunction merge = new MergeEvolvingFunction(segsA, segsB, newTimeOrder);
 		return merge.outputMergedSegments();
 	}
 	
@@ -210,7 +242,7 @@ public class MergeAlgorithm {
 	/**
 	 * Determines start evidence pairs and end times for function segments
 	 */
-	private static List<MFunctionSegment> completeFunctionInfo(FunctionSegment[] oldSegs, String initialEval, Integer maxTime){
+	private static List<MFunctionSegment> completeFunctionInfo(FunctionSegment[] oldSegs, String initialEval, Integer maxTime, String maxTimeName){
 		if (MMain.DEBUG) System.out.println("Starting: completeFunctionInfo");
 		System.out.println(oldSegs.length);
 		System.out.println(initialEval);
@@ -223,7 +255,7 @@ public class MergeAlgorithm {
 			return newSegs;
 		} else if (oldSegs.length == 1) {
 			// if only segment, uses both initialEval and maxTime 
-			MFunctionSegment onlySeg = new MFunctionSegment(oldSegs[0], maxTime, initialEval);
+			MFunctionSegment onlySeg = new MFunctionSegment(oldSegs[0], maxTime, maxTimeName, initialEval);
 			newSegs.add(onlySeg);
 			return newSegs;
 		}
@@ -240,7 +272,7 @@ public class MergeAlgorithm {
 		}
 		
 		// last segment uses maxTime
-		MFunctionSegment lastSeg = new MFunctionSegment(oldSegs[oldSegs.length-1], maxTime, oldSegs[oldSegs.length-2].getRefEvidencePair());
+		MFunctionSegment lastSeg = new MFunctionSegment(oldSegs[oldSegs.length-1], maxTime, maxTimeName, oldSegs[oldSegs.length-2].getRefEvidencePair());
 		newSegs.add(lastSeg);
 		
 		return newSegs;

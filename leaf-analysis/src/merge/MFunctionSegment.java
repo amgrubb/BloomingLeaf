@@ -34,9 +34,9 @@ public class MFunctionSegment extends FunctionSegment{
 	/**
 	 * For final segments: build from segment, maxTime, and starting evidence pair
 	 */
-	public MFunctionSegment(FunctionSegment fSeg, Integer maxTime, String startEvidencePair) {
+	public MFunctionSegment(FunctionSegment fSeg, Integer maxTime, String maxTimeName, String startEvidencePair) {
 		super(fSeg.getType(), fSeg.getRefEvidencePair(), fSeg.getStartTP(), fSeg.getStartAT());
-		this.endTP = maxTime.toString();
+		this.endTP = maxTimeName;
 		this.endAT = maxTime;
 		if (this.getType().equals("I") || this.getType().equals("D")) {
 			this.startEvidencePair = startEvidencePair;  // for I or D functions, start != end

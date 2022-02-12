@@ -3,6 +3,10 @@ package merge;
 import java.util.HashMap;
 import java.lang.Math;
 
+/********
+ * Merge evidence pair operators:
+ * consensus, comparison, and distance operators
+ ********/
 
 public class MEPOperators {
 	// initialize hashmap for comparing evidence pairs
@@ -79,5 +83,13 @@ public class MEPOperators {
 	 */
 	public static int dist(String a, String b) {
 		return Math.abs(compare(a, b));
+	}
+	
+	/**
+	 * isNumeric operator
+	 * from https://stackoverflow.com/questions/1102891/how-to-check-if-a-string-is-numeric-in-java
+	 */
+	public static Boolean isNumeric(String str) {
+		  return str.matches("-?\\d+(\\.\\d+)?");  //match a number with optional '-' and decimal.
 	}
 }

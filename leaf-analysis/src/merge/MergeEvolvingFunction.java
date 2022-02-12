@@ -65,11 +65,15 @@ public class MergeEvolvingFunction {
 	 */
 	private String getMergedValueAtTime(String time) {
 		if (MMain.DEBUG) System.out.println("Starting: getMergedValueAtTime: " + time);
-
+		System.out.println(time);
+		
 		// get model A + B values at time
 		String valueA = funcA.getEvidencePair(time);
 		String valueB = funcB.getEvidencePair(time);
 		
+		System.out.println(valueA);
+		System.out.println(valueB);
+
 		// one value is mid and other is (no value), skip this timepoint
 		// (no info in middle of segment)
 		if ((valueA.equals("mid") && valueB.equals("(no value)")) ||
