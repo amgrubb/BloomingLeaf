@@ -25,9 +25,9 @@ public class PreMerge {
 	
 	public static void main(String[] args) {
 		String filePath = "temp/";
-		String inputFile1 = "Spadina opp before_3.json";
-		String inputFile2 = "Spadina plan before_3.json";
-		String timingFile = "timing.json";
+		String inputFile1 = "testModel1.json";
+		String inputFile2 = "testModel2.json";
+		String timingFile = "timings.json";
 		Integer delta = 0;  // new start B
 		
 		ModelSpec modelSpec1 = MMain.convertBackboneModelFromFile(filePath + inputFile1);
