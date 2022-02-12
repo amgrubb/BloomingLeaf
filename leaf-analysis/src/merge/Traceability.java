@@ -109,16 +109,22 @@ public class Traceability{
 			System.out.println("Printing to file...");
 			FileWriter fileWriter = new FileWriter(fileName, true);
 			
-			fileWriter.write("From Model 1: ");
-			fileWriter.write("--------------------------");
+			fileWriter.write("From Model 1: "+ "\n");
+			fileWriter.write("--------------------------"+ "\n");
 			for(String name: fromModel1) {
-				fileWriter.write(name);
+				fileWriter.write(name + "\n");
 			}
 			
-			fileWriter.write("From Model 2: ");
-			fileWriter.write("--------------------------");
+			fileWriter.write("From Model 2: "+ "\n");
+			fileWriter.write("--------------------------"+ "\n");
 			for(String name: fromModel2) {
-				fileWriter.write(name);
+				fileWriter.write(name+ "\n");
+			}
+			
+			fileWriter.write("From Both Modeels: "+ "\n");
+			fileWriter.write("--------------------------"+ "\n");
+			for(String name: mergedElements) {
+				fileWriter.write(name+ "\n");
 			}
 			
 			fileWriter.close();
@@ -134,16 +140,16 @@ public class Traceability{
 			System.out.println("Printing to file...");
 			FileWriter fileWriter = new FileWriter("traceabilityOutput.txt");
 			
-			fileWriter.write("Deleted Elements: ");
-			fileWriter.write("--------------------------");
+			fileWriter.write("Deleted Elements: "+ "\n");
+			fileWriter.write("--------------------------"+ "\n");
 			for(ArrayList<? extends AbstractElement> deletedElemList: deletedElements) {
 				if(deletedElemList.size() == 0) {
 					continue;
 				}
-				fileWriter.write("\t" + deletedElemList.get(0).getClass().getName() + ":");
-				fileWriter.write("--------------------------");
+				fileWriter.write("\t" + deletedElemList.get(0).getClass().getName() + ":"+ "\n");
+				fileWriter.write("--------------------------"+ "\n");
 				for(AbstractElement deletedElem: deletedElemList) {
-					fileWriter.write("\t" + deletedElem.getName());
+					fileWriter.write("\t" + deletedElem.getName()+ "\n");
 	
 				}
 				

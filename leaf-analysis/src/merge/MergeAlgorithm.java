@@ -59,11 +59,13 @@ public class MergeAlgorithm {
 
 		if (MMain.DEBUG) System.out.println("Starting: mergeLinks");
 		mergeLinks(model1, model2, mergedModel, deletedElements);
-		//if (MMain.DEBUG) System.out.println(gson.toJson(mergedModel));*/
+		
 		modelOut = IMainBuilder.buildIMain(mergedModel);
+		System.out.println("finished buiuldIamain");
 		System.out.println(gson.toJson(modelOut));
 
 		Traceability.printDeletedToFile(deletedElements);
+		System.out.println("finished traceability");
 
 		return mergedModel;
 	}
@@ -192,18 +194,24 @@ public class MergeAlgorithm {
 								userEvalsA.put(absTP, userEvalsB.get(absTP));
 							}
 						}
+						
+						System.out.println("got this far");
 
-						TIntention intentionTiming = timings.getTiming(mergedIntention.getName());
-						FunctionSegment[] mergedEF = mergeEvolvingFunctions(mergedIntention, intention, delta,
-																			intentionTiming.getNewTimeOrder(), // new time order
-																			originalMaxTime1, model2.getMaxTime(),
-																			intentionTiming.getMaxTimeNameA(), intentionTiming.getMaxTimeNameB());
-
-						//evolvingfunction
-						/*if(mergedIntention.getEvolvingFunctions().length != 0 || intention.getEvolvingFunctions().length != 0){
-							//TODO: GUllibility so don't need anything??? but mb Add an "evolving function" that represents the staticness of intention to mergedIntention??? d
-						}*/
-						mergedIntention.setEvolvingFunctions(mergedEF);
+						if (timings.hasTiming(mergedIntention.getName())) {
+							TIntention intentionTiming = timings.getTiming(mergedIntention.getName());
+							System.out.println("intention timing?");
+							FunctionSegment[] mergedEF = mergeEvolvingFunctions(mergedIntention, intention, delta,
+																				intentionTiming.getNewTimeOrder(), // new time order
+																				originalMaxTime1, model2.getMaxTime(),
+																				intentionTiming.getMaxTimeNameA(), intentionTiming.getMaxTimeNameB());
+	
+							System.out.println("merged those M EF ers");
+							//evolvingfunction
+							/*if(mergedIntention.getEvolvingFunctions().length != 0 || intention.getEvolvingFunctions().length != 0){
+								//TODO: GUllibility so don't need anything??? but mb Add an "evolving function" that represents the staticness of intention to mergedIntention??? d
+							}*/
+							mergedIntention.setEvolvingFunctions(mergedEF);
+						}
 							//check absTP
 						//replace all mentions of intention with mergedIntention in Model2
 						if (MMain.DEBUG) System.out.println("updating repeated intentions");
@@ -504,6 +512,7 @@ public class MergeAlgorithm {
 			linkCount++;
 			mergedDL.add(dl);
 		}
+		System.out.println("finished puttimg in links from model ohne");
 
 		for(NotBothLink nbl: model2.getNotBothLink()){
 			boolean isNewLink = true;
@@ -525,6 +534,8 @@ public class MergeAlgorithm {
 				//add link to intentions that it touches?
 			}
 		}
+		
+		System.out.println("finished puttimg in other nbls");
 		for(ContributionLink cl: model2.getContributionLinks()){
 			boolean isNewLink = true; //changing it....
 			for(ContributionLink  addedcl: mergedCL){
@@ -552,6 +563,7 @@ public class MergeAlgorithm {
 				//check that it's the only intention in the destination intention list?
 			}
 		}
+		System.out.println("finished puttimg in other cls");
 		for(DecompositionLink dl: model2.getDecompositionLinks()){
 			boolean isNewLink = true;
 			for(DecompositionLink addeddl: mergedDL){
@@ -581,8 +593,13 @@ public class MergeAlgorithm {
 						if(newSource) {
 							addeddl.addSrc(source);
 							source.addLinksAsSrc(addeddl);
+
+							//TODO: add a better id for the sublink
+							addeddl.addNewSublinkID(dl.getSubLinkUniqueIDList().get(0));
+							
 						}
 					}
+					
 					addeddl.setID(addeddl.getID() + "2");
 				}
 			}
@@ -599,6 +616,7 @@ public class MergeAlgorithm {
 				//check that it's the only intention in the destination intention list?
 			}
 		}
+		System.out.println("finished puttimg in other decomps");
 		//check that NBL is not conflicting with intentions
 		ArrayList<NotBothLink> deletedNBL = new ArrayList<NotBothLink>();
 		for(NotBothLink nbl: mergedNBL) {
@@ -625,16 +643,19 @@ public class MergeAlgorithm {
 				}
 			}
 		}
+		System.out.println("deleted nbls");
 
 		//TODO: check to make sure no other links exist for contribution links
 		//TODO: check to make sure no other links exist for decomposition links
 		deletedElements.add((ArrayList<? extends AbstractElement>) deletedNBL);
+		System.out.println("deleted nbls added");
 
 
 
 		newModel.setContributionLinks(mergedCL);
 		newModel.setDecompositionLinks(mergedDL);
 		newModel.setNotBothLinks(mergedNBL);
+		System.out.println("all links added");
 	}
 
 	public static ContributionType mergeContributionTypesSemiGullible(ContributionType ct1, ContributionType ct2){

@@ -52,6 +52,10 @@ public class DecompositionLink extends AbstractElementLink {
 				return true;
 		return false;
 	}
+	
+	public void addNewSublinkID(String uniqueID) {
+		subLinkUniqueIDList.add(uniqueID);
+	}
 
 	public static List<DecompositionLink> createDecompositionLinks(ArrayList<ICell> allDecompositionLinks, ModelSpec modelSpec) {
 		List<DecompositionLink> decompositionList = new ArrayList<DecompositionLink>();

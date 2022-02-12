@@ -27,6 +27,8 @@ public class IMainBuilder {
 		// actors
 		List<Actor> actors = outSpec.getActors();
 		
+		System.out.println("st6arting actors");
+		
 		// add actors to cells list
 		if (!actors.isEmpty()) {
 			for (Actor specActor: actors) {
@@ -53,6 +55,8 @@ public class IMainBuilder {
 		// intentions
 		List<Intention> intentions = outSpec.getIntentions();
 		
+		System.out.println("intentions");
+		
 		// add intentions to cells list
 		if (!intentions.isEmpty()) {
 			for (Intention specIntention: intentions) {
@@ -75,6 +79,7 @@ public class IMainBuilder {
 		}
 		
 		//System.out.println("Finished making intentions");
+		System.out.println("links");
 		
 		// links
 		List<ContributionLink> contributionLinks = outSpec.getContributionLinks();
@@ -109,7 +114,7 @@ public class IMainBuilder {
 				z++;
 			}
 		}
-		
+		System.out.println("finished contribution links");
 		// add decomposition links
 		if (!decompositionLinks.isEmpty()) {
 			for (DecompositionLink specLink: decompositionLinks) {
@@ -135,6 +140,8 @@ public class IMainBuilder {
 				// create separate ICell/link for each source
 				List<String> sources = specLink.getSrcIDs();
 				List<String> ids = specLink.getSubLinkUniqueIDList();
+				System.out.println(sources);
+				System.out.println(ids);
 				// TODO: throw error if sources.length != ids.length
 				
 				// different ICell/link for each source
@@ -150,7 +157,7 @@ public class IMainBuilder {
 				}
 			}
 		}
-		
+		System.out.println("finished decomposition links");
 		// add not both links
 		if (!notBothLinks.isEmpty()) {
 			for (NotBothLink specLink: notBothLinks) {
@@ -174,6 +181,8 @@ public class IMainBuilder {
 				z++;
 			}
 		}
+		
+		System.out.println("actorlinks");
 		
 		
 		List<ActorLink> actorLinks = outSpec.getActorLinks();
@@ -200,7 +209,7 @@ public class IMainBuilder {
 			}
 		}
 		
-		//System.out.println("Finished making links");
+		System.out.println("Finished making links");
 		// overall model variables
 		Integer maxAbsTime = outSpec.getMaxTime();
 		System.out.println(maxAbsTime);
@@ -212,7 +221,7 @@ public class IMainBuilder {
 		IGraph graph = new IGraph(maxAbsTime, absTimePtsArr, cells); // TODO: add constraints
 
 		
-		//System.out.println("Finished graph");
+		System.out.println("Finished graph");
 		IMain model = new IMain(graph);
 		
 		return model;

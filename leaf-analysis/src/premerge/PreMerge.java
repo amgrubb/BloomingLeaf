@@ -25,10 +25,10 @@ public class PreMerge {
 	
 	public static void main(String[] args) {
 		String filePath = "temp/";
-		String inputFile1 = "sandwich.json";
-		String inputFile2 = "sandwich-w-peach.json";
+		String inputFile1 = "Spadina opp before_3.json";
+		String inputFile2 = "Spadina plan before_3.json";
 		String timingFile = "timing.json";
-		Integer delta = 5;  // new start B
+		Integer delta = 0;  // new start B
 		
 		ModelSpec modelSpec1 = MMain.convertBackboneModelFromFile(filePath + inputFile1);
 		ModelSpec modelSpec2 = MMain.convertBackboneModelFromFile(filePath + inputFile2);
@@ -44,7 +44,11 @@ public class PreMerge {
 		for(Intention intentionA: modelA.getIntentions()) {
 			for(Intention intentionB: modelB.getIntentions()) {
 				// if intention names match, intentions will merge
+				
 				if(intentionA.getName().equals(intentionB.getName())) {
+					System.out.println("merging intentions");
+					System.out.println(intentionA.getEvolvingFunctions().length);
+					System.out.println(intentionB.getEvolvingFunctions().length);
 					// don't output timing if 0 function segments
 					if ((intentionA.getEvolvingFunctions().length == 0) && (intentionB.getEvolvingFunctions().length == 0)) {
 						continue;
@@ -52,7 +56,7 @@ public class PreMerge {
 					
 					// don't output timing if A has 1 function segment and maxtimeA >= maxtimeB
 					if ((intentionA.getEvolvingFunctions().length == 1) && (modelA.getMaxTime() >= modelB.getMaxTime() + delta)) {
-						continue;
+						//continue;
 					}
 					
 					// don't output timing if B has 1 function segment and maxtimeA <= mintime B
@@ -61,6 +65,7 @@ public class PreMerge {
 					}
 					
 					// otherwise, output timing info to timing file for user to resolve
+					
 					printTiming(intentionA, intentionB, delta, timingFilePath);
 				}
 				
