@@ -99,7 +99,7 @@ public class PreMerge {
 			printTimingIntention(startTimesB, "B", printFile);
 			
 			// space for user to order the times
-			printFile.printf("\t\"newTimeOrder\": [A-0, ..., A-MaxTime, ..., B-MaxTime]%n");
+			printFile.printf("\t\"newTimeOrder\": [\"A-0\", ..., \"A-MaxTime\", ..., \"B-MaxTime\"]%n");
 			printFile.printf("},%n");
 
 			printFile.close();

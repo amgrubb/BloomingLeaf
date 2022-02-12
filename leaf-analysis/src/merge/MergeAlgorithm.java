@@ -6,8 +6,43 @@ import gson_classes.IMain;
 import simulation.*;
 
 import java.util.*;
+import static java.lang.Math.max;
 
 public class MergeAlgorithm {
+	// models
+	ModelSpec model1, model2, mergedModel;
+	
+	// timing info
+	Integer delta, originalMaxTime1, maxTime;
+	TMain timings;
+	
+	// tracks elements that are deleted in the merge
+	ArrayList<ArrayList<? extends AbstractElement>> deletedElements;
+	
+	/**
+	 * Initialize mergeAlgorithm and run mergeModels()
+	 */
+	public MergeAlgorithm(ModelSpec model1, ModelSpec model2, Integer delta, TMain timings) {
+		if (MMain.DEBUG) System.out.println("Starting: MergeAlgorithm");
+		// set up models
+		this.model1 = model1;
+		this.model2 = model2;
+		this.mergedModel = new ModelSpec();
+		
+		// Tracks elements that are deleted in the merge
+		this.deletedElements = new ArrayList<ArrayList<? extends AbstractElement>>();
+		this.originalMaxTime1 = model1.getMaxTime();
+		
+		// set up timing
+		this.delta = delta;
+		this.timings = timings;
+		
+		// pre-process timing and rename maxTimes to ints
+		this.timings.initializeTiming(originalMaxTime1, model2.getMaxTime() + delta);
+		
+		// run merge algorithm
+		mergeModels();
+	}
 
 	/**
 	 * Merges two modelSpecs
@@ -17,48 +52,34 @@ public class MergeAlgorithm {
 	 * @param timings
 	 * @return the merged model
 	 */
-	public static ModelSpec mergeModels(ModelSpec model1, ModelSpec model2, Integer delta, TMain timings){
-		if (MMain.DEBUG) System.out.println("Starting: MergeAlgorithm");
-
-		// Tracks elements that are deleted in the merge
-		ArrayList<ArrayList<? extends AbstractElement>> deletedElements = new ArrayList<ArrayList<? extends AbstractElement>>();
-		int originalMaxTime1 = model1.getMaxTime();
-
-		// initialize merged model
-		ModelSpec mergedModel = new ModelSpec();
-
+	public ModelSpec mergeModels(){
+		if (MMain.DEBUG) System.out.println("Starting: mergeModels");
 		Gson gson = new Gson();
-		System.out.println(gson.toJson(mergedModel));
-
-		// pre-process timing and rename maxTimes to ints
-		timings.initializeTiming(originalMaxTime1, model2.getMaxTime() + delta);
 
 		// update the models' times
 		if (MMain.DEBUG) System.out.println("Starting: updateTimeline");
-		updateTimeline(model1, model2, delta, timings);
-		if (MMain.DEBUG) System.out.println(gson.toJson(mergedModel));
+		updateTimeline();
+		//if (MMain.DEBUG) System.out.println(gson.toJson(mergedModel));
 
 		if (MMain.DEBUG) System.out.println("Starting: mergeIntentions");
-		mergeIntentions(model1, model2, mergedModel, delta, timings, originalMaxTime1);
+		mergeIntentions();
 		if (MMain.DEBUG) System.out.println("Finished: mergeIntentions");
 		IMain modelOut = IMainBuilder.buildIMain(mergedModel);
 		System.out.println(gson.toJson(modelOut));
-		//if (MMain.DEBUG) System.out.println(gson.toJson(mergedModel));
+		if (MMain.DEBUG) System.out.println(gson.toJson(mergedModel));
 
 		if (MMain.DEBUG) System.out.println("Starting: mergeActors");
-		mergeActors(model1, model2, mergedModel);
-		//if (MMain.DEBUG) System.out.println(gson.toJson(mergedModel));
+		mergeActors();
 		modelOut = IMainBuilder.buildIMain(mergedModel);
 		System.out.println(gson.toJson(modelOut));
 
 		if (MMain.DEBUG) System.out.println("Starting: mergeActorsLinks");
-		mergeActorLinks(model1, model2, mergedModel, deletedElements);
-		//if (MMain.DEBUG) System.out.println(gson.toJson(mergedModel));
+		mergeActorLinks();
 		modelOut = IMainBuilder.buildIMain(mergedModel);
 		System.out.println(gson.toJson(modelOut));
 
 		if (MMain.DEBUG) System.out.println("Starting: mergeLinks");
-		mergeLinks(model1, model2, mergedModel, deletedElements);
+		mergeLinks();
 		
 		modelOut = IMainBuilder.buildIMain(mergedModel);
 		System.out.println("finished buiuldIamain");
@@ -76,14 +97,15 @@ public class MergeAlgorithm {
 	 * @param model2
 	 * @param delta
 	 */
-	public static void updateTimeline(ModelSpec model1, ModelSpec model2, Integer delta, TMain timings) {
+	public void updateTimeline() {
 		if (MMain.DEBUG) System.out.println("Starting: updateTimeline");
 
 		// update max time for both models
-		Integer oldMax = model2.getMaxTime();
-		System.out.println(oldMax);
-		model1.setMaxTime(oldMax + delta);
-		model2.setMaxTime(oldMax + delta);
+		// greater of model1 and model2's new times
+		Integer newMax = Math.max(model1.getMaxTime(), model2.getMaxTime() + delta);
+		System.out.println(newMax);
+		model1.setMaxTime(newMax);
+		model2.setMaxTime(newMax);
 
 		// update absolute time points for model 2
 		for (Integer absTP: model2.getAbsTP().values()) {
@@ -140,7 +162,7 @@ public class MergeAlgorithm {
 	}
 
 	// ******* Intention merging methods begin ******** //
-	public static void mergeIntentions(ModelSpec model1, ModelSpec model2, ModelSpec newModel, Integer delta, TMain timings, Integer originalMaxTime1) {
+	public void mergeIntentions() {
 		ArrayList<Intention> mergedIntentions = new ArrayList<Intention>();
 		HashSet<String> mergedIntentionsNameSet = new HashSet<String>();
 		int currIDCount = 0;
@@ -200,9 +222,8 @@ public class MergeAlgorithm {
 						if (timings.hasTiming(mergedIntention.getName())) {
 							TIntention intentionTiming = timings.getTiming(mergedIntention.getName());
 							System.out.println("intention timing?");
-							FunctionSegment[] mergedEF = mergeEvolvingFunctions(mergedIntention, intention, delta,
+							FunctionSegment[] mergedEF = mergeEvolvingFunctions(mergedIntention, intention,
 																				intentionTiming.getNewTimeOrder(), // new time order
-																				originalMaxTime1, model2.getMaxTime(),
 																				intentionTiming.getMaxTimeNameA(), intentionTiming.getMaxTimeNameB());
 	
 							System.out.println("merged those M EF ers");
@@ -223,7 +244,7 @@ public class MergeAlgorithm {
 				}
 			}
 		}
-		newModel.setIntentions(mergedIntentions);
+		mergedModel.setIntentions(mergedIntentions);
 
 	}
 
@@ -333,7 +354,7 @@ public class MergeAlgorithm {
 
 	}
 
-	public static void mergeActors(ModelSpec model1, ModelSpec model2, ModelSpec newModel) {
+	public void mergeActors() {
 		ArrayList<String> actorsNameSet = new ArrayList<>();
 		ArrayList<Actor> mergedActors = new ArrayList<>();
 		int actorCounter = 0;
@@ -368,7 +389,7 @@ public class MergeAlgorithm {
 
 			}
 		}
-		newModel.setActors(mergedActors);
+		mergedModel.setActors(mergedActors);
 	}
 	/*when an actor from one model is accepted, the  instances of actors with the same names must be
 	 * replaced in the other model.
@@ -394,7 +415,7 @@ public class MergeAlgorithm {
 	}
 	// ******* Actor Link merging methods begin ******** //
 
-	public static void mergeActorLinks(ModelSpec model1, ModelSpec model2, ModelSpec newModel, ArrayList<ArrayList<? extends AbstractElement>> deletedElements) {
+	public void mergeActorLinks() {
 		ArrayList<ActorLink> mergedAL = new ArrayList<>();
 		ArrayList<ActorLink> deletedAL = new ArrayList<>();
 		int linkCount = 0;
@@ -445,7 +466,7 @@ public class MergeAlgorithm {
 			}
 		}
 
-		newModel.setActorLinks(mergedAL);
+		mergedModel.setActorLinks(mergedAL);
 		deletedElements.add((ArrayList<? extends AbstractElement>) deletedAL);
 	}
 
@@ -483,7 +504,7 @@ public class MergeAlgorithm {
 
 	// ******* Link merging methods begin ******** //
 
-	public static void mergeLinks(ModelSpec model1, ModelSpec model2, ModelSpec newModel, ArrayList<ArrayList<? extends AbstractElement>> deletedElements){
+	public void mergeLinks(){
 		//Question what if there are two different relationships connecting the same intentions
 
 		ArrayList<NotBothLink> mergedNBL = new ArrayList<>();
@@ -652,9 +673,9 @@ public class MergeAlgorithm {
 
 
 
-		newModel.setContributionLinks(mergedCL);
-		newModel.setDecompositionLinks(mergedDL);
-		newModel.setNotBothLinks(mergedNBL);
+		mergedModel.setContributionLinks(mergedCL);
+		mergedModel.setDecompositionLinks(mergedDL);
+		mergedModel.setNotBothLinks(mergedNBL);
 		System.out.println("all links added");
 	}
 
@@ -738,16 +759,27 @@ public class MergeAlgorithm {
 		ContributionLink linkTwo = (ContributionLink)link2;
 		return linkOne.getDest() == linkTwo.getDest() && linkOne.getZeroSrc() == linkTwo.getZeroSrc();
 	}
+	
+	/**
+	 * Begin merging evolving functions
+	 */
 
-	public static FunctionSegment[] mergeEvolvingFunctions(Intention intention1, Intention intention2, Integer delta, List<String> newTimeOrder,
-														   Integer maxTime1, Integer maxTime2, String maxTimeName1, String maxTimeName2) {
+	public FunctionSegment[] mergeEvolvingFunctions(Intention intention1, Intention intention2, List<String> newTimeOrder,
+														    String maxTimeName1, String maxTimeName2) {
 		if (MMain.DEBUG) System.out.println("Starting: mergeEvolvingFunctions");
+		
+		
+		
+		
+		// TODO: create newTimeOrder if not in timing
+		// TODO: hardcode maxtime names??? how get if not in timing
+		// String maxTimeName1 = "A-MaxTime";
 
 		// TODO: one intention is static - treat as constant function
 		// TODO: make sure same system works for contigous and gap info
-		/*
+		
 		// contiguous function info
-		if (maxTime1 == delta) {
+		if (originalMaxTime1 == delta) {
 			// append evolving functions
 			FunctionSegment[] funcSeg1 = intention1.getEvolvingFunctions();
 			FunctionSegment[] funcSeg2 = intention2.getEvolvingFunctions();
@@ -766,9 +798,9 @@ public class MergeAlgorithm {
 		}
 
 		// gap between function info
-		if (maxTime1 < delta) {
+		if (originalMaxTime1 < delta) {
 			// create extra function segment for the gap, then copy rest of function segments over
-			FunctionSegment fillGap = new FunctionSegment("R", "(no value)", "Max1", maxTime1);
+			FunctionSegment fillGap = new FunctionSegment("R", "(no value)", "A-MaxTime", originalMaxTime1);
 			FunctionSegment[] funcSeg1 = intention1.getEvolvingFunctions();
 			FunctionSegment[] funcSeg2 = intention2.getEvolvingFunctions();
 			FunctionSegment[] combined = new FunctionSegment[funcSeg1.length + funcSeg2.length + 1]; // initialize array to hold info from both
@@ -834,8 +866,8 @@ public class MergeAlgorithm {
 		System.out.println("timing:");
 		System.out.println(timingShort);
 		*/
-		List<MFunctionSegment> segsA = completeFunctionInfo(intention1.getEvolvingFunctions(), intention1.getInitialUserEval(), maxTime1, maxTimeName1);
-		List<MFunctionSegment> segsB = completeFunctionInfo(intention2.getEvolvingFunctions(), intention2.getInitialUserEval(), maxTime2, maxTimeName2);
+		List<MFunctionSegment> segsA = completeFunctionInfo(intention1.getEvolvingFunctions(), intention1.getInitialUserEval(), originalMaxTime1, maxTimeName1);
+		List<MFunctionSegment> segsB = completeFunctionInfo(intention2.getEvolvingFunctions(), intention2.getInitialUserEval(), maxTime, maxTimeName2);
 
 		// merge functions
 		MergeEvolvingFunction merge = new MergeEvolvingFunction(segsA, segsB, newTimeOrder);
@@ -885,6 +917,10 @@ public class MergeAlgorithm {
 		newSegs.add(lastSeg);
 
 		return newSegs;
+	}
+	
+	public ModelSpec getMergedModel() {
+		return mergedModel;
 	}
 
 }

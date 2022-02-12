@@ -54,21 +54,6 @@ public class MMain {
 			System.out.println("M2:");
 			ModelSpec modelSpec2 = convertBackboneModelFromFile(filePath + inputFile2);
 
-			/*System.out.println("----------------------");
-			System.out.println("Here we try building IMain");
-			IMain modelOut = IMainBuilder.buildIMain(modelSpec2);
-			System.out.println(gson.toJson(modelOut));
-			System.out.println("----------------------");
-
-	    	//TODO: MERGE-Y THINGS
-			System.out.println("m1:");
-			System.out.println(modelSpec2);
-
-			System.out.println("intentions:");
-			System.out.println(modelSpec2.getIntentions().get(0).getVisualInfo().toString());
-
-			System.out.println("m2:");
-			System.out.println(modelSpec2);*/
 			// print M2 for reference
 			IMain m2IMain = IMainBuilder.buildIMain(modelSpec2);
 			System.out.println(gson.toJson(m2IMain));
@@ -77,10 +62,13 @@ public class MMain {
 			TMain timings = convertTimingFromFile(filePath + timingFile);
 
 			System.out.println("----------------------");
-
-			ModelSpec mergedModel = MergeAlgorithm.mergeModels(modelSpec1, modelSpec2, delta, timings);
+			// run merge
+			MergeAlgorithm merge = new MergeAlgorithm(modelSpec1, modelSpec2, delta, timings);
+			ModelSpec mergedModel = merge.getMergedModel();
 			System.out.println("Completed Merging.");
 			System.out.println("merged models");
+			
+			System.out.println("----------------------");
 
 			// Create Output file that will be used by frontend
 			IMain mergedModelOut = IMainBuilder.buildIMain(mergedModel);
