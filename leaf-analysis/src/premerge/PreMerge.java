@@ -25,8 +25,8 @@ public class PreMerge {
 
 	public static void main(String[] args) {
 		String filePath = "temp/";
-		String inputFile1 = "testModel1.json";
-		String inputFile2 = "testModel2.json";
+		String inputFile1 = "contributionLink1.json";
+		String inputFile2 = "contributionLink2.json";
 		String timingFile = "timings.json";
 		Integer delta = 0;  // new start B
 

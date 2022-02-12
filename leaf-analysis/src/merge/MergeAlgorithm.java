@@ -583,7 +583,7 @@ public class MergeAlgorithm {
 					//merge these links
 					addedcl.setPreContribution(mergeContributionTypesSemiGullible(addedcl.getPreContribution(), cl.getPreContribution()));
 					addedcl.setPostContribution(mergeContributionTypesSemiGullible(addedcl.getPostContribution(), cl.getPostContribution()));
-
+					System.out.println(addedcl.getPreContribution());
 					//check if conflict has occurred
 					if(addedcl.getPostContribution() == ContributionType.NONE || addedcl.getPreContribution() == ContributionType.NONE){
 						//Conflict alert user
@@ -735,21 +735,22 @@ public class MergeAlgorithm {
 		//get string codes for types to compare easily
 		String linkType1 = ct1.getCode();
 		String linkType2 = ct2.getCode();
-		//System.out.println("merging cl types");
-		//System.out.println(linkType1);
-		//System.out.println(linkType2);
+		System.out.println("merging cl types");
+		System.out.println(linkType1);
+		System.out.println(linkType2);
 		//checks if link types are the same
 		if(linkType1.equals(linkType2)){
 			return ct1;
 		}
 		//checks if link types are opposing signs
-		if(linkType1.contains("-") && linkType2.contains("+") || linkType2.contains("+") && linkType1.contains("-")){
+		if(linkType1.contains("-") && linkType2.contains("+") || linkType1.contains("+") && linkType2.contains("-")){
+			//System.out.println("hi");
 			return ContributionType.NONE;
 		}
 		//if they are both positive...
 		if(linkType1.contains("+")){
 			//if link types are opposite
-			if(linkType1.contains("S") && linkType2.contains("D") || linkType2.contains("D") && linkType1.contains("S")){
+			if(linkType1.contains("S") && linkType2.contains("D") || linkType1.contains("D") && linkType2.contains("S")){
 				if(linkType1.contains("++") && linkType2.contains("++")){
 					return ContributionType.PP;
 				}
@@ -757,12 +758,12 @@ public class MergeAlgorithm {
 			}
 			String newLinkType = "";
 			//if the two are ++/+ then the new link is +
-			if(linkType1.lastIndexOf("+") != linkType1.lastIndexOf("+")){
+			if(linkType1.lastIndexOf("+") != linkType2.lastIndexOf("+")){
 				newLinkType = "+";
 			}
 			//else the type is what they both are
 			else{
-				newLinkType = linkType1.substring(linkType1.lastIndexOf("+"));
+				newLinkType = linkType1.substring(0,linkType1.lastIndexOf("+") + 1);
 			}
 
 			//if either have an S add it
@@ -779,7 +780,7 @@ public class MergeAlgorithm {
 		//if they are both negative...
 		if(linkType1.contains("-")){
 			//checks if link types are opposite
-			if(linkType1.contains("S") && linkType2.contains("D") || linkType2.contains("D") && linkType1.contains("S")){
+			if(linkType1.contains("S") && linkType2.contains("D") || linkType1.contains("D") && linkType2.contains("S")){
 				if(linkType1.contains("--") && linkType2.contains("--")){
 					return ContributionType.PP;
 				}
@@ -787,11 +788,11 @@ public class MergeAlgorithm {
 			}
 			String newLinkType = "";
 			//if they are different -- and - then it becomes a -
-			if(linkType1.lastIndexOf("-") != linkType1.lastIndexOf("-")){
+			if(linkType1.lastIndexOf("-") != linkType2.lastIndexOf("-")){
 				newLinkType = "-";
 			}
 			else{
-				newLinkType = linkType1.substring(linkType1.lastIndexOf("-"));
+				newLinkType = linkType1.substring(0,linkType1.lastIndexOf("-") + 1);
 			}
 			//if either have an S add it
 			if(linkType1.contains("S") || linkType2.contains("S")){

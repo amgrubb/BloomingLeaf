@@ -93,14 +93,20 @@ public class IMainBuilder {
 				String type = "basic.CellLink";
 				String source = specLink.getZeroSrcID();
 				String target = specLink.getDest().getUniqueID();
+				System.out.println("intention infos");
 				
 				// inputs for building BILink
 				Integer absTime = specLink.getAbsTime();
+				System.out.println("time infos");
 				Boolean evolving = specLink.isEvolving();
+				System.out.println("evolving");
+				System.out.println(specLink.getPreContribution());
 				String linkType = specLink.getPreContribution().getCode();
+				System.out.println(specLink.getPreContribution());
 				
 				BILink newLink; // build link w/ or w/o postType depending on evolving
 				if (evolving) {
+					System.out.println("is evolving");
 					String postType = specLink.getPostContribution().getCode();
 					newLink = new BILink(absTime, evolving, linkType, postType);
 				} else {
