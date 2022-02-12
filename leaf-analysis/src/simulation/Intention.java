@@ -168,12 +168,39 @@ public class Intention extends AbstractLinkableElement {
 		evolvingFunctions = segments;
 	}
 
+	public void setEvolvingFunctions(FunctionSegment[] fsArr){
+		evolvingFunctions = fsArr;
+	}
+
 	public HashMap<Integer, String> getUserEvals() {
 		return userEvals;
 	}
 	
 	public String getType() {
 		return type;
+	}
+
+	public void setType(String t){
+		type = t;
+	}
+
+	public Actor getActor() {
+		return actor;
+	}
+	
+	public void setActor(Actor actor) {
+		this.actor = actor;
+	}
+
+	/** Compares types. If i's type is greater, then return will be less than 0.
+	 */
+	public int compareType(Intention i){
+		HashMap<String, Integer> typeValues = new HashMap<String, Integer>();
+		typeValues.put("basic.Goal", 0);
+		typeValues.put("basic.Task", 1);
+		typeValues.put("basic.Softgoal", 2);
+		typeValues.put("basic.Resource", 3);
+		return typeValues.get(type) - typeValues.get(i.getType());
 	}
 	
 	public String getParentID() {

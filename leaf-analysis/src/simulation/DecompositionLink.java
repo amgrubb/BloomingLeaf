@@ -1,6 +1,7 @@
 package simulation;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import gson_classes.ICell;
@@ -27,9 +28,15 @@ public class DecompositionLink extends AbstractElementLink {
 	public DecompositionType getPreDecomposition() {
 		return preDecomposition;
 	}
+	public void setPreDecomposition(DecompositionType dt){
+		preDecomposition = dt;
+	}
 
 	public DecompositionType getPostDecomposition() {
 		return postDecomposition;
+	}
+	public void setPostDecomposition(DecompositionType dt){
+		postDecomposition = dt;
 	}
 	
 	public String getUniqueID() {
@@ -140,6 +147,31 @@ public class DecompositionLink extends AbstractElementLink {
 			}
 		}
 		return decompositionList;
+	}
+	
+	/*to add another source to the source list, as in create another decomposition relationship */
+	
+	public void addSrc(AbstractLinkableElement ale) {
+		ArrayList<AbstractLinkableElement> tempArrList = new ArrayList<>(Arrays.asList(getSrc()));
+		tempArrList.add(ale);
+		AbstractLinkableElement[] src = new AbstractLinkableElement[tempArrList.size()];
+		for(int i = 0; i < src.length; i++) {
+			src[i] = tempArrList.get(i);
+		}
+		setSrc(src);
+		//TODO: Sublink unique id list???
+		
+		
+	}
+	
+	/**Method to describe link in written format as connection between elements*/
+	public String getName() {
+		String srcList = "";
+		for(AbstractLinkableElement ale: super.getSrc()) {
+			srcList += ale.getName() + ", ";
+		}
+		
+		return "[" + srcList.substring(0, srcList.length() - 2) + "] ---" + preDecomposition.getCode() + "--> " + super.getDest().getName();
 	}
 	
 }
