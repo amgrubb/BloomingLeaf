@@ -4,18 +4,21 @@ import gson_classes.BILink;
 
 
 public class ActorLink extends AbstractElementLink {
-	private ActorLinkType linkType = null;
+	private ActorLinkType prelinkType = null;
 
 	public ActorLink(AbstractLinkableElement s, AbstractLinkableElement d, ActorLinkType r1, String uniqueID) {
 		super(new AbstractLinkableElement[]{s}, d, uniqueID);
-		this.linkType = r1;
+		this.prelinkType = r1;
 	}
 	
 	public ActorLinkType getType() {
-		return linkType;
+		return prelinkType;
 	}
 	public void setType(ActorLinkType alt){
-		linkType = alt;
+		prelinkType = alt;
+	}
+	public String getName() {
+		return super.getZeroSrc().getName() + " --" + prelinkType.getCode() + "--> " + super.getDest().getName();
 	}
 	
 }

@@ -22,6 +22,7 @@ public class ModelSpec {
 	private List<ContributionLink> contributionLinks = new ArrayList<ContributionLink>();
 	private List<DecompositionLink> decompositionLinks = new ArrayList<DecompositionLink>();
 	private List<NotBothLink> notBothLink = new ArrayList<NotBothLink>();
+	private List<ActorLink> actorLinks = new ArrayList<ActorLink>();
 
 	// Cross-Element Model Variables
     private int maxTime = 5;
@@ -419,6 +420,14 @@ public class ModelSpec {
 
 	public void setActors(List<Actor> actors) {
 		this.actors = actors;
+	}
+	
+	public List<ActorLink> getActorLinks() {
+		return actorLinks;
+	}
+
+	public void setActorLinks(List<ActorLink> actorLinks) {
+		this.actorLinks = actorLinks;
 	}
 
 	public void setNumRelativeTimePoints(int numRelativeTimePoints) {

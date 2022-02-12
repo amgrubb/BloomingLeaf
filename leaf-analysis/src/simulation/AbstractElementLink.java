@@ -75,6 +75,10 @@ public abstract class AbstractElementLink extends AbstractElement{
 	public String getZeroSrcID() {
 		return src[0].getUniqueID();
 	}
+	
+	public void setZeroSrc(AbstractLinkableElement src) {
+		this.src[0] = src;
+	}
 	/**
 	 * @param src the src to set
 	 */

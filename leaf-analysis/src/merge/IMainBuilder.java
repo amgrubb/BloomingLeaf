@@ -48,6 +48,8 @@ public class IMainBuilder {
 			}
 		}
 		
+		//System.out.println("Finished making actors");
+		
 		// intentions
 		List<Intention> intentions = outSpec.getIntentions();
 		
@@ -71,6 +73,8 @@ public class IMainBuilder {
 				z++;
 			}
 		}
+		
+		//System.out.println("Finished making intentions");
 		
 		// links
 		List<ContributionLink> contributionLinks = outSpec.getContributionLinks();
@@ -171,13 +175,44 @@ public class IMainBuilder {
 			}
 		}
 		
+		
+		List<ActorLink> actorLinks = outSpec.getActorLinks();
+		if (!actorLinks.isEmpty()) {
+			for (ActorLink specLink: actorLinks) {
+				// inputs for ICell
+				String id = specLink.getUniqueID();
+				String type = "basic.CellLink";
+				String source = specLink.getZeroSrcID();
+				String target = specLink.getDest().getUniqueID();
+				
+				// inputs for building BILink
+				Integer absTime = specLink.getAbsTime();
+				Boolean evolving = false; //Not evolving
+				String linkType = specLink.getType().getCode();
+				
+				BILink newLink = new BILink(absTime, evolving, linkType);
+				
+				// add Link as ICell
+				ICell newCell = new ICell(newLink, type, id, z, source, target);
+				cells.add(newCell);
+				
+				z++;
+			}
+		}
+		
+		//System.out.println("Finished making links");
 		// overall model variables
 		Integer maxAbsTime = outSpec.getMaxTime();
-		//System.out.println(maxAbsTime);
+		System.out.println(maxAbsTime);
+		//System.out.println("Finished making links");
 		int[] absTimePtsArr = convertAbsTimePtsArr(outSpec.getAbsTP());
+		System.out.println(absTimePtsArr);
 		
 		// create model to return
 		IGraph graph = new IGraph(maxAbsTime, absTimePtsArr, cells); // TODO: add constraints
+
+		
+		//System.out.println("Finished graph");
 		IMain model = new IMain(graph);
 		
 		return model;
@@ -268,15 +303,21 @@ public class IMainBuilder {
 	private static int[] convertAbsTimePtsArr(HashMap<String, Integer> absTP) {
 		// only keep integer timepoints
 		ArrayList<Integer> absTimePtsList = new ArrayList<>(absTP.values());
-		
+		if(absTimePtsList.size() == 0) {
+			return new int[0];
+		}
+			
 		// convert to int[]
 		int[] absTimePtsArrW0 = absTimePtsList.stream().mapToInt(i -> i).toArray();
 		
 		// remove the 0 we added in when loading from frontend
+		
 		Arrays.sort(absTimePtsArrW0);
 		int[] absTimePtsArr = Arrays.copyOfRange(absTimePtsArrW0, 1, absTimePtsArrW0.length);
 		
+		
 		return absTimePtsArr;
+		
 	}
 
 }

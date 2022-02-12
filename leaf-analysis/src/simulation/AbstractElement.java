@@ -9,4 +9,7 @@ public abstract class AbstractElement {
 	public String getUniqueID() {
 		return this.uniqueID;
 	}
+	public String getName() {
+		return this.uniqueID;
+	}
 }

@@ -171,7 +171,7 @@ public class DecompositionLink extends AbstractElementLink {
 			srcList += ale.getName() + ", ";
 		}
 		
-		return srcList + "---" + preDecomposition.getCode() + "-->" + super.getDest().getName();
+		return "[" + srcList.substring(0, srcList.length() - 2) + "] ---" + preDecomposition.getCode() + "--> " + super.getDest().getName();
 	}
 	
 }

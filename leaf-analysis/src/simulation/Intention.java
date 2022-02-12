@@ -181,6 +181,10 @@ public class Intention extends AbstractLinkableElement {
 	public Actor getActor() {
 		return actor;
 	}
+	
+	public void setActor(Actor actor) {
+		this.actor = actor;
+	}
 
 	/** Compares types. If i's type is greater, then return will be less than 0.
 	 */

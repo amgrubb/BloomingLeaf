@@ -35,8 +35,8 @@ public class MMain {
 	public static void main(String[] args) {
 		//This is the default filePath to be executed if no file is passed through parameters
 		String filePath = "temp/";
-		String inputFile1 = "default1.json";
-		String inputFile2 = "default2.json";
+		String inputFile1 = "game before.json";
+		String inputFile2 = "gate before.json";
 		String outputFile = "output.json";
 
 		try {
@@ -102,8 +102,11 @@ public class MMain {
 
 			//System.out.println(gson.toJson(modelSpec2));*/
 			IMain modelOut = IMainBuilder.buildIMain(mergedModel);
-			createOutputFile(modelOut, filePath + outputFile);
-			System.out.println("created output file");
+			//createOutputFile(modelOut, filePath + outputFile);
+			//System.out.println("created output file");
+			System.out.println(gson.toJson(modelOut));
+			Traceability.traceabilityOutput(mergedModel, "traceabilityOutput.txt");
+			System.out.println("created Traceability doc");
 
 
 		} catch (RuntimeException e) {

@@ -4,7 +4,7 @@
 package simulation;
 
 public enum ActorLinkType {
-	PI ("participates-in"), ISA ("is-a");
+	PI ("participates-in"), ISA ("is-a"), NONE ("no");
 	
 	private String code;
 

@@ -2,16 +2,13 @@ package merge;
 
 import com.google.gson.Gson;
 
-
-import simulation.ModelSpec;
-import simulation.Intention;
-import simulation.FunctionSegment;
+import gson_classes.IMain;
 import simulation.*;
 
 import java.util.*;
 
 public class MergeAlgorithm {
-
+	
 	/**
 	 * Merges two modelSpecs
 	 * @param model1
@@ -20,6 +17,9 @@ public class MergeAlgorithm {
 	 * @return the merged model
 	 */
 	public static ModelSpec mergeModels(ModelSpec model1, ModelSpec model2, Integer delta){
+		
+		ArrayList<ArrayList<? extends AbstractElement>> deletedElements = new ArrayList<ArrayList<? extends AbstractElement>>();
+		
 		if (MMain.DEBUG) System.out.println("Starting: MergeAlgorithm");
 		ModelSpec mergedModel = new ModelSpec();
 
@@ -33,16 +33,30 @@ public class MergeAlgorithm {
 
 		if (MMain.DEBUG) System.out.println("Starting: mergeIntentions");
 		mergeIntentions(model1, model2, mergedModel);
+		if (MMain.DEBUG) System.out.println("Finished: mergeIntentions");
+		IMain modelOut = IMainBuilder.buildIMain(mergedModel);
+		System.out.println(gson.toJson(modelOut));
 		//if (MMain.DEBUG) System.out.println(gson.toJson(mergedModel));
 
 		if (MMain.DEBUG) System.out.println("Starting: mergeActors");
 		mergeActors(model1, model2, mergedModel);
 		//if (MMain.DEBUG) System.out.println(gson.toJson(mergedModel));
+		modelOut = IMainBuilder.buildIMain(mergedModel);
+		System.out.println(gson.toJson(modelOut));
+		
+		if (MMain.DEBUG) System.out.println("Starting: mergeActorsLinks");
+		mergeActorLinks(model1, model2, mergedModel, deletedElements);
+		//if (MMain.DEBUG) System.out.println(gson.toJson(mergedModel));
+		modelOut = IMainBuilder.buildIMain(mergedModel);
+		System.out.println(gson.toJson(modelOut));
 
 		if (MMain.DEBUG) System.out.println("Starting: mergeLinks");
-		mergeLinks(model1, model2, mergedModel);
+		mergeLinks(model1, model2, mergedModel, deletedElements);
 		//if (MMain.DEBUG) System.out.println(gson.toJson(mergedModel));*/
-
+		modelOut = IMainBuilder.buildIMain(mergedModel);
+		System.out.println(gson.toJson(modelOut));
+		
+		Traceability.printDeletedToFile(deletedElements);
 
 		return mergedModel;
 	}
@@ -76,7 +90,7 @@ public class MergeAlgorithm {
 	}
 
 	public static String createID(int x, int model, String oldID, String type){
-		return type + Integer.toString(model) + "model" + Integer.toString(model) + oldID;
+		return type + Integer.toString(x) + "model" + Integer.toString(model);
 	}
 
 	// ******* Intention merging methods begin ******** //
@@ -105,6 +119,7 @@ public class MergeAlgorithm {
 				for(Intention mergedIntention: mergedIntentions){
 					if(mergedIntention.getName().equals(intention.getName())){
 						if (MMain.DEBUG) System.out.println("merging an intention");
+						mergedIntention.setId(mergedIntention.getId() + "2");
 						//actor
 						if(!mergedIntention.getActor().getName().equals(intention.getActor().getName())){
 							//UNRESOLVABLE CONFLICT
@@ -141,6 +156,7 @@ public class MergeAlgorithm {
 						//mergedIntention.setEvolvingFunctions(Array.concat(mergedIntention.getEvolvingFunctions(), intention.getEvolvingFunctions()));
 							//check absTP
 						//replace all mentions of intention with mergedIntention in Model2
+						if (MMain.DEBUG) System.out.println("updating repeated intentions");
 						updateRepeatedIntention(mergedIntention, intention, model2);
 
 
@@ -243,16 +259,18 @@ public class MergeAlgorithm {
 
 
 	// ******* Actor merging methods begin ******** //
-	public static Actor mergeToOneActor(Actor actorOne, Actor actorTwo, int actorNum) {
+	public static Actor mergeToOneActor(Actor actorOne, Actor actorTwo, int actorNum, ModelSpec model1, ModelSpec model2) {
 		if(actorOne.getActorType().equals(actorTwo.getActorType()) || (actorOne.getActorType().equals("Agent")) || (actorOne.getActorType().equals("Role") && !actorTwo.getActorType().equals("Agent"))) {
-			String newId = createID(actorNum, 1, actorOne.getId(), "Actor");
+			String newId = createID(actorNum, 12, actorOne.getId(), "Actor");
 			actorOne.setId(newId);
-			actorTwo.setId(newId);
+			//actorTwo.setId(newId);
+			updateRepeatedActor(actorOne, actorTwo, model2);
 			return actorOne;
 		}
-		String newId = createID(actorNum, 2, actorTwo.getId(), "Actor");
+		String newId = createID(actorNum, 21, actorTwo.getId(), "Actor");
 		actorTwo.setId(newId);
-		actorOne.setId(newId);
+		//actorOne.setId(newId);
+		updateRepeatedActor(actorTwo, actorOne, model1);
 		return actorTwo;
 
 	}
@@ -265,7 +283,8 @@ public class MergeAlgorithm {
 			for(Actor actor2: model2.getActors()) {
 				if(actor1.getName().equals(actor2.getName())) {
 					//merge actors
-					mergedActors.add(mergeToOneActor(actor1, actor2, actorCounter));
+					mergedActors.add(mergeToOneActor(actor1, actor2, actorCounter, model1, model2));
+					actorsNameSet.add(actor1.getName());
 					actorCounter += 1;
 
 				}
@@ -276,6 +295,7 @@ public class MergeAlgorithm {
 				String newId = createID(actorCounter, 1, actor1.getId(), "Actor");
 				actor1.setId(newId);
 				mergedActors.add(actor1);
+				actorsNameSet.add(actor1.getName());
 				actorCounter += 1;
 
 			}
@@ -285,17 +305,127 @@ public class MergeAlgorithm {
 				String newId = createID(actorCounter, 2, actor2.getId(), "Actor");
 				actor2.setId(newId);
 				mergedActors.add(actor2);
+				actorsNameSet.add(actor2.getName());
 				actorCounter += 1;
 
 			}
 		}
 		newModel.setActors(mergedActors);
 	}
+	/*when an actor from one model is accepted, the  instances of actors with the same names must be
+	 * replaced in the other model. 
+	 */
+	public static void updateRepeatedActor(Actor newActor, Actor oldActor, ModelSpec otherModel) {
+		//intentions
+		for(Intention intention: otherModel.getIntentions()) {
+			if(intention.getActor() == oldActor){
+				intention.setActor(newActor);
+			}
+		}
 
+		//links
+		for(ActorLink al: otherModel.getActorLinks()) {
+			if(al.getZeroSrc() == oldActor) {
+				al.setZeroSrc(newActor);
+			}
+			else if(al.getDest() == oldActor) {
+				al.setDest(newActor);
+			}
+			
+		}
+	}
+	// ******* Actor Link merging methods begin ******** //
+	
+	public static void mergeActorLinks(ModelSpec model1, ModelSpec model2, ModelSpec newModel, ArrayList<ArrayList<? extends AbstractElement>> deletedElements) {
+		ArrayList<ActorLink> mergedAL = new ArrayList<>();
+		ArrayList<ActorLink> deletedAL = new ArrayList<>();
+		int linkCount = 0;
+		for(ActorLink al: model1.getActorLinks()) {
+			if(isValidTypes((Actor)al.getZeroSrc(), (Actor)al.getDest(), al.getType())) {
+				String newID = createID(linkCount, 1, al.getID(), "ActorLink");
+				al.setID(newID);
+				
+				mergedAL.add(al);
+				linkCount++;
+			}
+			deletedAL.add(al);
+			
+		}
+		for(ActorLink al: model2.getActorLinks()) {
+			boolean isNewLink = true;
+			for(ActorLink addedal: mergedAL) {
+				if(isSameActorLink(al, addedal)) {
+					isNewLink = false;
+					updateALTypes(al, addedal);
+					addedal.setID(addedal.getID() + "2");
+					if(isValidTypes((Actor)addedal.getZeroSrc(), (Actor)addedal.getDest(), addedal.getType())) {
+						deletedAL.add(addedal);
+					}else if(deletedAL.contains(addedal)) {
+						deletedAL.remove(addedal);
+					}
+	
+					
+				}
+			}
+			if(isNewLink) {
+				if(isValidTypes((Actor)al.getZeroSrc(), (Actor)al.getDest(), al.getType())) {
+					String newID = createID(linkCount, 2, al.getID(), "ActorLink");
+					al.setID(newID);
+					mergedAL.add(al);
+					linkCount++;
+					//add link to the actor it touches
+					al.getZeroSrc().addLinksAsSrc(al);
+					al.getDest().addLinksAsDest(al);
+				}
+				deletedAL.add(al);
+			}
+		}
+		
+		for(ActorLink al: deletedAL) {
+			if(mergedAL.contains(al)) {
+				mergedAL.remove(al);
+			}
+		}
+		
+		newModel.setActorLinks(mergedAL);
+		deletedElements.add((ArrayList<? extends AbstractElement>) deletedAL);
+	}
+	
+	public static void updateALTypes(ActorLink al1, ActorLink al2) {
+		if(!al1.getType().getCode().equals(al2.getType().getCode())) {
+			al1.setType(ActorLinkType.PI);
+			al2.setType(ActorLinkType.PI);
+		}
+	}
+	
+	/**
+	 * Checks if the source and destination actor types conflict with themselves and the link type.
+	 */
+	
+	public static boolean isValidTypes(Actor source, Actor destination, ActorLinkType type) {
+		if(type.getCode().equals("is-a")) {
+			return !(source.getActorType().equals("basic.Agent") || destination.getActorType().equals("basic.Agent") ||
+			(source.getActorType().equals("basic.Role") && destination.getActorType().equals("basic.Actor"))||
+			(source.getActorType().equals("basic.Actor") && destination.getActorType().equals("basic.Role")));
+		}
+		if(type.getCode().equals("participates-in")) {
+			return !((source.getActorType().equals("basic.Actor") && destination.getActorType().equals("basic.Agent"))||
+			(source.getActorType().equals("basic.Role") && destination.getActorType().equals("basic.Agent")));
+		}
+		return false;
+	}
+	
+	
+	/** returns true if links connect the same actor */
+	
+	public static boolean isSameActorLink(ActorLink al1, ActorLink al2) {
+		return (al1.getZeroSrc().getName().equals(al2.getZeroSrc().getName()) && al1.getDest().getName().equals(al2.getDest().getName()));
+			
+	}
 
 	// ******* Link merging methods begin ******** //
 
-	public static void mergeLinks(ModelSpec model1, ModelSpec model2, ModelSpec newModel){
+	public static void mergeLinks(ModelSpec model1, ModelSpec model2, ModelSpec newModel, ArrayList<ArrayList<? extends AbstractElement>> deletedElements){
 		//Question what if there are two different relationships connecting the same intentions
 
 		ArrayList<NotBothLink> mergedNBL = new ArrayList<>();
@@ -334,6 +464,7 @@ public class MergeAlgorithm {
 					if(addednbl.isFinalDenied() != nbl.isFinalDenied()) {
 						addednbl.setFinalDenied(true);
 					}
+					addednbl.setID(addednbl.getID() + "2");
 				}
 			}
 			if(isNewLink) {
@@ -356,6 +487,8 @@ public class MergeAlgorithm {
 						//Conflict alert user
 						if (MMain.DEBUG) System.out.println("Contribution types were unresolvable");
 					}
+					
+					addedcl.setID(addedcl.getID() + "2");
 				}
 			}
 			if(isNewLink) {
@@ -385,6 +518,7 @@ public class MergeAlgorithm {
 						//Conflict alert user
 						if (MMain.DEBUG) System.out.println("decomp types are different");
 					}
+					
 
 					for(AbstractLinkableElement source: dl.getSrc()) {
 						boolean newSource = true;
@@ -399,6 +533,7 @@ public class MergeAlgorithm {
 							source.addLinksAsSrc(addeddl);
 						}
 					}
+					addeddl.setID(addeddl.getID() + "2");
 				}
 			}
 			if(isNewLink) {
@@ -415,6 +550,7 @@ public class MergeAlgorithm {
 			}
 		}
 		//check that NBL is not conflicting with intentions
+		ArrayList<NotBothLink> deletedNBL = new ArrayList<NotBothLink>();
 		for(NotBothLink nbl: mergedNBL) {
 			String eval1 = nbl.getElement1().getUserEvals().get(0);
 			String eval2= nbl.getElement2().getUserEvals().get(0);
@@ -422,23 +558,27 @@ public class MergeAlgorithm {
 				//Conflict!!
 				System.out.println("removed NBL");
 				mergedNBL.remove(nbl);
+				deletedNBL.add(nbl);
 			}
 			for(FunctionSegment funcSeg: nbl.getElement1().getEvolvingFunctions()) {
 				if(!funcSeg.getType().equals("R")) {
 					System.out.println("removed NBL");
 					mergedNBL.remove(nbl);
+					deletedNBL.add(nbl);
 				}
 			}
 			for(FunctionSegment funcSeg: nbl.getElement2().getEvolvingFunctions()) {
 				if(!funcSeg.getType().equals("R")) {
 					System.out.println("removed NBL");
 					mergedNBL.remove(nbl);
+					deletedNBL.add(nbl);
 				}
 			}
 		}
 
 		//TODO: check to make sure no other links exist for contribution links
 		//TODO: check to make sure no other links exist for decomposition links
+		deletedElements.add((ArrayList<? extends AbstractElement>) deletedNBL);
 
 
 
@@ -527,6 +667,7 @@ public class MergeAlgorithm {
 		ContributionLink linkTwo = (ContributionLink)link2;
 		return linkOne.getDest() == linkTwo.getDest() && linkOne.getZeroSrc() == linkTwo.getZeroSrc();
 	}
+	
 
 	// ******* Evolving Functions merging methods begin ******** //
 
