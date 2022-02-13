@@ -616,20 +616,6 @@ public class MergeAlgorithm {
 					isNewLink = false;
 					//merge these links
 
-					//check to make sure and/or types match
-					if(addeddl.getPreDecomposition() != dl.getPreDecomposition()){
-						addeddl.setPreDecomposition(DecompositionType.NONE);
-						//Conflict alert user
-						if (MMain.DEBUG) System.out.println("Decomp types unresolvable");
-						conflictMessages.add(addeddl.getName() + " had decomposition types that were unresolvable.");
-					}
-					if(addeddl.getPostDecomposition() != null && dl.getPostDecomposition() != null && addeddl.getPostDecomposition() != dl.getPostDecomposition()){
-						addeddl.setPostDecomposition(DecompositionType.NONE);
-						//Conflict alert user
-						if (MMain.DEBUG) System.out.println("decomp types are different");
-						conflictMessages.add(addeddl.getName() + " had decomposition types that were unresolvable.");
-					}
-
 					//add new sources to the dl
 					for(AbstractLinkableElement source: dl.getSrc()) {
 						boolean newSource = true;
@@ -647,6 +633,20 @@ public class MergeAlgorithm {
 							addeddl.addNewSublinkID("");
 
 						}
+					}
+					
+					//check to make sure and/or types match
+					if(addeddl.getPreDecomposition() != dl.getPreDecomposition()){
+						addeddl.setPreDecomposition(DecompositionType.NONE);
+						//Conflict alert user
+						if (MMain.DEBUG) System.out.println("Decomp types unresolvable");
+						conflictMessages.add(addeddl.getName() + " had decomposition types that were unresolvable.");
+					}
+					if(addeddl.getPostDecomposition() != null && dl.getPostDecomposition() != null && addeddl.getPostDecomposition() != dl.getPostDecomposition()){
+						addeddl.setPostDecomposition(DecompositionType.NONE);
+						//Conflict alert user
+						if (MMain.DEBUG) System.out.println("decomp types are different");
+						conflictMessages.add(addeddl.getName() + " had decomposition types that were unresolvable.");
 					}
 
 					//adjust ID for merged link
