@@ -85,7 +85,7 @@ $("#filter-apply").on('click', function () { intentionFilter(); });
 // Navigation bar functions:
 var max_font = 20;
 var min_font = 6;
-var current_font = 10;
+var current_font; 
 var default_font = 10;
 var graph = new joint.dia.BloomingGraph();
 
@@ -125,8 +125,14 @@ function changeFont(new_font, pPaper) {
  * @param {*} pPaper 
  */
 function fontUp(pPaper) {
-    var new_font = current_font + 1;
+    var elements = analysis.graph.getElements();
+    for (var i = 0; i < elements.length; i++) {
+        var cellView = elements[i].findView(pPaper);
+        // Get current font size from paper
+        current_font = cellView.model.attr(".name/font-size");
+    }
 
+    var new_font = current_font + 1;
     if (new_font <= max_font) {
         changeFont(new_font, pPaper)
     }
@@ -137,8 +143,14 @@ function fontUp(pPaper) {
  * @param {*} pPaper 
  */
 function fontDown(pPaper) {
-    var new_font = current_font - 1;
+    var elements = analysis.graph.getElements();
+    for (var i = 0; i < elements.length; i++) {
+        var cellView = elements[i].findView(pPaper);
+        // Get current font size from paper
+        current_font = cellView.model.attr(".name/font-size");
+    }
 
+    var new_font = current_font - 1;
     if (new_font >= min_font) {
         changeFont(new_font, pPaper)
     }
