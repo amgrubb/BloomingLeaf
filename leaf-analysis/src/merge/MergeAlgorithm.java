@@ -828,32 +828,56 @@ public class MergeAlgorithm {
 
 		// one intention is static
 		if (funcSeg1.length == 0) {
+			// A is static, use B's function segments
 			System.out.println("one intention static");
-			System.out.println(intention1.getUserEvals());
-			// if no user evaluations for intention, use other intention's functions
-			String userEval = intention1.getInitialUserEval();
-			System.out.println(userEval);
-			if (userEval.equals("(no value)")) {
+			// gullibility: accept other intention's evolving functions;
+			// stochastic outside range of other intention's functions
+			if ((delta > 0) && (maxTime1 > maxTime2)) {
+				// gaps at beginning and end
+				// new array 2 larger
+				FunctionSegment[] newSegs = new FunctionSegment[funcSeg2.length + 2];
+				newSegs[0] = new FunctionSegment("R", "(no value)", "0", 0);
+				System.arraycopy(funcSeg2, 0, newSegs, 1, funcSeg2.length);
+				newSegs[funcSeg2.length+1] = new FunctionSegment("R", "(no value)", "B-MaxTime", maxTime2);
+				return newSegs;
+			} else if ((delta > 0) && (maxTime1 > maxTime2)) {
+				// gap just at beginning
+				// new array 1 larger
+				FunctionSegment[] newSegs = new FunctionSegment[funcSeg2.length + 1];
+				newSegs[0] = new FunctionSegment("R", "(no value)", "0", 0);
+				System.arraycopy(funcSeg2, 0, newSegs, 1, funcSeg2.length);
+				return newSegs;
+			}
+			else if ((delta > 0) && (maxTime1 > maxTime2)) {
+				// gap just at end
+				// new array 1 larger
+				FunctionSegment[] newSegs = new FunctionSegment[funcSeg2.length + 1];
+				System.arraycopy(funcSeg2, 0, newSegs, 0, funcSeg2.length);
+				newSegs[funcSeg2.length] = new FunctionSegment("R", "(no value)", "B-MaxTime", maxTime2);
+				return newSegs;
+			} else {
+				// no gaps
 				return funcSeg2;
 			}
-
-			// if we have evaluation, treat as constant over model's entire timeline
-			FunctionSegment constValue = new FunctionSegment("C", userEval, "O", 0);
-			intention1.setEvolvingFunctions(new FunctionSegment[]{constValue});
-			funcSeg1 = intention1.getEvolvingFunctions();
-			System.out.println(funcSeg1.length);
 		} else if (funcSeg2.length == 0) {
-			// if no user evaluations for intention, use other intention's functions
-			String userEval = intention2.getUserEvalAt(delta);
-			if (userEval.equals("(no value)")) {
+			// B is static, use A's function segments
+			System.out.println("one intention static");
+			// gullibility: accept other intention's evolving functions;
+			// stochastic outside range of other intention's functions
+			if (maxTime1 < maxTime2) {
+				// A can only have gap at end
+				// new array 1 larger
+				FunctionSegment[] newSegs = new FunctionSegment[funcSeg1.length + 1];
+				System.arraycopy(funcSeg1, 0, newSegs, 0, funcSeg1.length);
+				newSegs[funcSeg1.length] = new FunctionSegment("R", "(no value)", "A-MaxTime", maxTime1);
+				return newSegs;
+			} else {
+				// no gaps
 				return funcSeg1;
 			}
-
-			// if we have evaluation, treat as constant over model's entire timeline
-			FunctionSegment constValue = new FunctionSegment("C", userEval, Integer.toString(delta), delta);
-			intention2.setEvolvingFunctions(new FunctionSegment[]{constValue});
-			funcSeg2 = intention1.getEvolvingFunctions();
 		}
+		
+		// begin evolving intentions where both have evolving functions
 
 		// for contiguous or gap timelines, save time by simply appending arrays
 		// (delta >= maxTime1, aka model 2 starts after model1 ends)
@@ -920,7 +944,7 @@ public class MergeAlgorithm {
 			// see PreMerge conditions to skip inputting timing
 			
 			// one intention was static, and the other is just one function
-			if (funcSeg1.length == 1 && funcSeg2.length ==1) {
+			if (funcSeg1.length == 1 && funcSeg2.length == 1) {
 				// start A and B
 				timeOrder.add("0");
 				timeOrder.add(Integer.toString(delta));
@@ -989,7 +1013,7 @@ public class MergeAlgorithm {
 		// output merged functions
 		return merge.outputMergedSegments();
 	}
-	
+
 	/**
 	 * Determines start evidence pairs and end times for function segments
 	 * For preparing MFunctionSegment lists with info from intention

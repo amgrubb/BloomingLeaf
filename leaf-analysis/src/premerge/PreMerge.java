@@ -58,25 +58,24 @@ public class PreMerge {
 					Integer evolFuncLenA = intentionA.getEvolvingFunctions().length;
 					Integer evolFuncLenB = intentionB.getEvolvingFunctions().length;
 					// don't output timing if 0 function segments in both intention
-					if ((evolFuncLenA == 0) && (evolFuncLenB == 0)) {
+					if ((evolFuncLenA == 0) || (evolFuncLenB == 0)) {
 						continue;
 					}
 
 					// don't output timing if A has 1 function segment and A ends after B
 					// (B is entirely contained within A)
-					// note: static A (len==0) with non-static B (len>0) will become 1 function segment in merge
-					if ((evolFuncLenA == 1 || evolFuncLenA == 0) && (modelA.getMaxTime() >= modelB.getMaxTime() + delta)) {
+					if ((evolFuncLenA == 1) && (modelA.getMaxTime() >= modelB.getMaxTime() + delta)) {
 						continue;
 					}
 
 					// don't output timing if B has 1 function segment and A ends before B
 					// (A is entirely contained within B)
-					if ((delta == 0) && (evolFuncLenB == 1 || evolFuncLenB == 0) && (modelA.getMaxTime() <= modelB.getMaxTime() + delta)) {
+					if ((delta == 0) && (evolFuncLenB == 1) && (modelA.getMaxTime() <= modelB.getMaxTime() + delta)) {
 						continue;
 					}
 					
-					// don't output timing if both have (or will have) 1 function segment in the merge
-					if ((evolFuncLenA == 1 || evolFuncLenA == 0) && (evolFuncLenB == 1 || evolFuncLenB == 0)) {
+					// don't output timing if both have 1 function segment in the merge
+					if ((evolFuncLenA == 1) && (evolFuncLenB == 1)) {
 						continue;
 					}
 
