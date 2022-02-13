@@ -18,6 +18,7 @@ public class MergeAlgorithm {
 
 	// tracks elements that are deleted in the merge
 	ArrayList<ArrayList<? extends AbstractElement>> deletedElements;
+	ArrayList<String> deletedTimings;
 	// collects messages about conflicts in the merge process that the user must remedy
 	ArrayList<String> conflictMessages;
 
@@ -33,6 +34,8 @@ public class MergeAlgorithm {
 
 		// Tracks elements that are deleted in the merge
 		this.deletedElements = new ArrayList<ArrayList<? extends AbstractElement>>();
+		this.deletedTimings = new ArrayList<String>();
+		
 		this.maxTime1 = model1.getMaxTime();
 		this.maxTime2 = model2.getMaxTime() + delta;
 
@@ -91,7 +94,7 @@ public class MergeAlgorithm {
 		System.out.println("finished buiuldIamain");
 		//System.out.println(gson.toJson(modelOut));
 
-		Traceability.printDeletedToFile(deletedElements);
+		Traceability.printDeletedToFile(deletedElements, deletedTimings);
 		Traceability.printConflictMessagesToFile(conflictMessages);
 		System.out.println("finished traceability");
 
@@ -644,11 +647,12 @@ public class MergeAlgorithm {
 				mergedNBL.remove(nbl);
 				deletedNBL.add(nbl);
 				conflictMessages.add(nbl.getName() + " conflicted with intentino absTP 0");
+				continue;
 			}
 
 			//conflict if any evolfuncs are stochastic
 			for(FunctionSegment funcSeg: nbl.getElement1().getEvolvingFunctions()) {
-				if(!funcSeg.getType().equals("R")) {
+				if(funcSeg.getType().equals("R")) {
 					System.out.println("removed NBL");
 					mergedNBL.remove(nbl);
 					deletedNBL.add(nbl);
@@ -656,7 +660,7 @@ public class MergeAlgorithm {
 				}
 			}
 			for(FunctionSegment funcSeg: nbl.getElement2().getEvolvingFunctions()) {
-				if(!funcSeg.getType().equals("R")) {
+				if(funcSeg.getType().equals("R")) {
 					System.out.println("removed NBL");
 					mergedNBL.remove(nbl);
 					deletedNBL.add(nbl);
@@ -1009,6 +1013,7 @@ public class MergeAlgorithm {
 
 		// merge functions
 		MergeEvolvingFunction merge = new MergeEvolvingFunction(segsA, segsB, timeOrder);
+		deletedTimings = merge.getDeletedTimings();
 
 		// output merged functions
 		return merge.outputMergedSegments();

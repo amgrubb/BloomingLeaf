@@ -132,13 +132,16 @@ public class Traceability{
 		
 	}
 	
-	public static void printDeletedToFile(ArrayList<ArrayList<? extends AbstractElement>> deletedElements) {
+	public static void printDeletedToFile(ArrayList<ArrayList<? extends AbstractElement>> deletedElements, ArrayList<String> deletedTimings) {
 		try {
 			System.out.println("Printing to file...");
 			FileWriter fileWriter = new FileWriter("traceabilityOutput.txt");
 			
 			fileWriter.write("Deleted Elements: "+ "\n");
 			fileWriter.write("--------------------------"+ "\n");
+			if(deletedTimings.size() != 0) {
+				fileWriter.write("\tDeleted Time Points" + deletedTimings);
+			}
 			for(ArrayList<? extends AbstractElement> deletedElemList: deletedElements) {
 				if(deletedElemList.size() == 0) {
 					continue;
