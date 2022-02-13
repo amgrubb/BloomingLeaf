@@ -25,10 +25,10 @@ public class PreMerge {
 
 	public static void main(String[] args) {
 		String filePath = "temp/";
-		String inputFile1 = "contributionLink1.json";
-		String inputFile2 = "contributionLink2.json";
+		String inputFile1 = "testModel1.json";
+		String inputFile2 = "testModel2.json";
 		String timingFile = "timings.json";
-		Integer delta = 0;  // new start B
+		Integer delta = 5;  // new start B
 
 		ModelSpec modelSpec1 = MMain.convertBackboneModelFromFile(filePath + inputFile1);
 		ModelSpec modelSpec2 = MMain.convertBackboneModelFromFile(filePath + inputFile2);
@@ -52,23 +52,31 @@ public class PreMerge {
 				// if intention names match, intentions will merge
 
 				if(intentionA.getName().equals(intentionB.getName())) {
-					System.out.println("matched intentions");
+					System.out.println("matched intentions: " + intentionA.getName());
 					System.out.println(intentionA.getEvolvingFunctions().length);
 					System.out.println(intentionB.getEvolvingFunctions().length);
-					// don't output timing if 0 function segments in at least one intention
-					if ((intentionA.getEvolvingFunctions().length == 0) || (intentionB.getEvolvingFunctions().length == 0)) {
+					Integer evolFuncLenA = intentionA.getEvolvingFunctions().length;
+					Integer evolFuncLenB = intentionB.getEvolvingFunctions().length;
+					// don't output timing if 0 function segments in both intention
+					if ((evolFuncLenA == 0) && (evolFuncLenB == 0)) {
 						continue;
 					}
 
 					// don't output timing if A has 1 function segment and A ends after B
 					// (B is entirely contained within A)
-					if ((intentionA.getEvolvingFunctions().length == 1) && (modelA.getMaxTime() >= modelB.getMaxTime() + delta)) {
+					// note: static A (len==0) with non-static B (len>0) will become 1 function segment in merge
+					if ((evolFuncLenA == 1 || evolFuncLenA == 0) && (modelA.getMaxTime() >= modelB.getMaxTime() + delta)) {
 						continue;
 					}
 
 					// don't output timing if B has 1 function segment and A ends before B
 					// (A is entirely contained within B)
-					if ((delta == 0) && (intentionB.getEvolvingFunctions().length == 1) && (modelA.getMaxTime() <= modelB.getMaxTime() + delta)) {
+					if ((delta == 0) && (evolFuncLenB == 1 || evolFuncLenB == 0) && (modelA.getMaxTime() <= modelB.getMaxTime() + delta)) {
+						continue;
+					}
+					
+					// don't output timing if both have (or will have) 1 function segment in the merge
+					if ((evolFuncLenA == 1 || evolFuncLenA == 0) && (evolFuncLenB == 1 || evolFuncLenB == 0)) {
 						continue;
 					}
 

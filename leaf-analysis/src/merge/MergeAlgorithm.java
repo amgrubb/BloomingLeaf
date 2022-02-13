@@ -120,11 +120,15 @@ public class MergeAlgorithm {
 		}
 
 		// update absolute time points for model 2 stored in intentions' UAL
+		
 		for (Intention intention: model2.getIntentions()) {
-			for(Integer absTP: intention.getUserEvals().keySet()) {
-				absTP += delta;
-			}
+			intention.incrementUserEvals(delta);
+			System.out.println("-----------------------------------");
+			System.out.println("Updating user evaluations for " + intention.getName());
+			System.out.println(intention.getUserEvals());
+			System.out.println("-----------------------------------");
 		}
+		
 
 		// update absolute time points for model 2 stored in intentions' evolving functions
 		// and update timepoint names if available in timing file
@@ -213,39 +217,43 @@ public class MergeAlgorithm {
 							mergedIntention.setType(intention.getType());
 						}
 
-						//valuation merging
-						if (MMain.DEBUG) System.out.println("merging valuations");
-						HashMap<Integer, String> userEvalsA = mergedIntention.getUserEvals();
-						HashMap<Integer, String> userEvalsB = intention.getUserEvals();
-
-
-						for(int absTP: userEvalsA.keySet()){
-							//if they both have a valuation for a certain time point, merge it in
-							if(userEvalsB.containsKey(absTP)){
-								String newEval = mergeValuationConsensus(userEvalsA.get(absTP), userEvalsB.get(absTP));
-								if (MMain.DEBUG) System.out.println(newEval);
-								userEvalsA.put(absTP, newEval);
-							}
-						}
-						//add all the other valuations that the mergedIntention doesn't contain
-						for(int absTP:userEvalsB.keySet()) {
-							if(!userEvalsA.containsKey(absTP)) {
-								userEvalsA.put(absTP, userEvalsB.get(absTP));
-							}
-						}
-
 						// merge evolving functions
 						System.out.println("merging evolving functions");
 						FunctionSegment[] mergedEF = mergeEvolvingFunctions(mergedIntention, intention);
 						System.out.println("merged those M EF ers");
 						mergedIntention.setEvolvingFunctions(mergedEF);
+						
+						// user evaluation merging
+						if (MMain.DEBUG) System.out.println("merging valuations");
+						HashMap<Integer, String> userEvalsA = mergedIntention.getUserEvals();
+						HashMap<Integer, String> userEvalsB = intention.getUserEvals();
+						
+						if ((userEvalsA.size() == 1) && (userEvalsB.size() == 1)) {
+							// both static intentions
+							// keep static at consensus of evaluations
+							String newStaticEval = MEPOperators.consensus(mergedIntention.getInitialUserEval(), intention.getUserEvalAt(delta));
+							userEvalsA.put(0, newStaticEval);
+						} else {
+							// otherwise merge UAL for all timepoints
+							for(int absTP: userEvalsA.keySet()){
+								//if they both have a valuation for a certain time point, merge it in
+								if(userEvalsB.containsKey(absTP)){
+									String newEval = MEPOperators.consensus(userEvalsA.get(absTP), userEvalsB.get(absTP));
+									if (MMain.DEBUG) System.out.println(newEval);
+									userEvalsA.put(absTP, newEval);
+								}
+							}
+							// add all the other valuations that the mergedIntention doesn't contain
+							for(int absTP:userEvalsB.keySet()) {
+								if(!userEvalsA.containsKey(absTP)) {
+									userEvalsA.put(absTP, userEvalsB.get(absTP));
+								}
+							}
+						}
 
 						//replace all mentions of intention with mergedIntention in Model2
 						if (MMain.DEBUG) System.out.println("updating repeated intentions");
 						updateRepeatedIntention(mergedIntention, intention, model2);
-
-
-
 					}
 				}
 			}
@@ -300,52 +308,6 @@ public class MergeAlgorithm {
 		}
 
 	}
-
-	public static String mergeValuationConsensus(String value1, String value2){
-		return MEPOperators.consensus(value1, value2);
-
-		/*//dealing with no value:
-		System.out.println(value1 + value2);
-		//if both are no vale then no value will be returned, otherwise value 2 will be returned
-		if(value1.equals("(no value)")){
-			//System.out.println("no value");
-			return value2;
-		}
-		//if value2 is no value then value1 will be returned
-		if(value2.equals("(no value)")){
-			//System.out.println("no value");
-			return value1;
-		}
-
-		//actual valuations:
-		String sat1 = value1.substring(0,2);
-		String den1 = value1.substring(2,4);
-		String sat2 = value2.substring(0,2);
-		String den2 = value2.substring(2,4);
-		//System.out.println(sat1 + den1);
-
-		HashMap<String, Integer> valueRanks = new HashMap<>();
-		valueRanks.put("00", 0);
-		valueRanks.put("11", 2);
-		valueRanks.put("10", 1);
-
-		String newSat = "";
-		String newDen = "";
-
-		if(valueRanks.get(sat1) < valueRanks.get(sat2)){
-			newSat = sat1;
-		} else{
-			newSat = sat2;
-		}
-
-		if(valueRanks.get(den1) < valueRanks.get(den2)){
-			newDen = den1;
-		} else{
-			newDen = den2;
-		}
-		return newSat + newDen;*/
-	}
-
 
 	// ******* Actor merging methods begin ******** //
 	public static Actor mergeToOneActor(Actor actorOne, Actor actorTwo, int actorNum, ModelSpec model1, ModelSpec model2) {
@@ -672,8 +634,8 @@ public class MergeAlgorithm {
 		ArrayList<NotBothLink> deletedNBL = new ArrayList<NotBothLink>();
 		for(NotBothLink nbl: mergedNBL) {
 			//absTP 0's
-			String eval1 = nbl.getElement1().getUserEvals().get(0);
-			String eval2= nbl.getElement2().getUserEvals().get(0);
+			String eval1 = nbl.getElement1().getInitialUserEval();
+			String eval2= nbl.getElement2().getUserEvalAt(delta);
 
 			//conflict if mismatching absTP 0's
 			if(!eval1.equals("0000") && !eval1.equals("(no value)") || !eval2.equals("0000") && !eval2.equals("(no value)")) {
@@ -852,8 +814,10 @@ public class MergeAlgorithm {
 		System.out.println("-----------------------------------");
 		System.out.println("Merging: " + intention1.getName());
 		System.out.println("len: " + Integer.toString(funcSeg1.length));
+		System.out.println(intention1.getUserEvals());
 		System.out.println(funcSeg1);
 		System.out.println("len: " + Integer.toString(funcSeg2.length));
+		System.out.println(intention2.getUserEvals());
 		System.out.println(funcSeg2);
 		System.out.println("-----------------------------------");
 
@@ -864,8 +828,11 @@ public class MergeAlgorithm {
 
 		// one intention is static
 		if (funcSeg1.length == 0) {
+			System.out.println("one intention static");
+			System.out.println(intention1.getUserEvals());
 			// if no user evaluations for intention, use other intention's functions
 			String userEval = intention1.getInitialUserEval();
+			System.out.println(userEval);
 			if (userEval.equals("(no value)")) {
 				return funcSeg2;
 			}
@@ -874,15 +841,16 @@ public class MergeAlgorithm {
 			FunctionSegment constValue = new FunctionSegment("C", userEval, "O", 0);
 			intention1.setEvolvingFunctions(new FunctionSegment[]{constValue});
 			funcSeg1 = intention1.getEvolvingFunctions();
+			System.out.println(funcSeg1.length);
 		} else if (funcSeg2.length == 0) {
 			// if no user evaluations for intention, use other intention's functions
-			String userEval = intention2.getInitialUserEval();
+			String userEval = intention2.getUserEvalAt(delta);
 			if (userEval.equals("(no value)")) {
 				return funcSeg1;
 			}
 
 			// if we have evaluation, treat as constant over model's entire timeline
-			FunctionSegment constValue = new FunctionSegment("C", userEval, "O", 0);
+			FunctionSegment constValue = new FunctionSegment("C", userEval, Integer.toString(delta), delta);
 			intention2.setEvolvingFunctions(new FunctionSegment[]{constValue});
 			funcSeg2 = intention1.getEvolvingFunctions();
 		}
@@ -949,17 +917,34 @@ public class MergeAlgorithm {
 			timeOrder = intentionTiming.getNewTimeOrder();
 		} else {
 			// doesn't have timing from user because simple merge
+			// see PreMerge conditions to skip inputting timing
+			
+			// one intention was static, and the other is just one function
+			if (funcSeg1.length == 1 && funcSeg2.length ==1) {
+				// start A and B
+				timeOrder.add("0");
+				timeOrder.add(Integer.toString(delta));
+				
+				// ending maxtimes
+				if (modelMaxTimesMatch) {
+					timeOrder.add("AB-MaxTime"); // end at same time
+				} else if (maxTime1 < maxTime2) {  
+					timeOrder.add("A-MaxTime");  // A ends first
+					timeOrder.add("B-MaxTime");
+				} else {  
+					timeOrder.add("B-MaxTime");  // B ends first
+					timeOrder.add("A-MaxTime");
+				}
+				
+			}
 			// (A or B is only one function, in which the other is entirely contained)
-
-			// these conditions match the PreMerge conditions to skip outputting to timing file
-			// (other than skipping gap/continuous situations, as addressed above)
 			// B contained in A
-			if (funcSeg1.length == 1 && maxTime1 >= maxTime2) {
+			else if (funcSeg1.length == 1 && maxTime1 >= maxTime2) {
 				// start A
 				timeOrder.add("0");
 
 				// add all of B's timepoints
-				intention2.getEvolvingFunctionStartTimes();
+				timeOrder.addAll(intention2.getEvolvingFunctionStartTimes());
 
 				// ending maxtimes
 				if (modelMaxTimesMatch) {
@@ -975,7 +960,7 @@ public class MergeAlgorithm {
 			else if ((delta == 0) && (funcSeg2.length == 1) && (maxTime1 <= maxTime2)) {
 				// A and B start at 0
 				// add all of A's timepoints
-				intention1.getEvolvingFunctionStartTimes();
+				timeOrder.addAll(intention1.getEvolvingFunctionStartTimes());
 
 				// ending maxtimes
 				if (modelMaxTimesMatch) {
@@ -990,13 +975,13 @@ public class MergeAlgorithm {
 			} else {
 				// if not simple merge, we should have had timing info in timing.json
 				// throw error
-				throw new RuntimeException("Error while merging " + intention1.getName() + ": ambigous timeline. Please order timepoints for this intention in timing.json");
+				throw new RuntimeException("Error while merging " + intention1.getName() + ": ambiguous timeline. Please order timepoints for this intention in timing.json");
 			}
 		}
 
 		// obtain complete functions (w/ start and end times and evidence pairs)
 		List<MFunctionSegment> segsA = completeFunctionInfo(intention1.getEvolvingFunctions(), intention1.getInitialUserEval(), maxTime1, maxTimeName1);
-		List<MFunctionSegment> segsB = completeFunctionInfo(intention2.getEvolvingFunctions(), intention2.getInitialUserEval(), maxTime2, maxTimeName2);
+		List<MFunctionSegment> segsB = completeFunctionInfo(intention2.getEvolvingFunctions(), intention2.getUserEvalAt(delta), maxTime2, maxTimeName2);
 
 		// merge functions
 		MergeEvolvingFunction merge = new MergeEvolvingFunction(segsA, segsB, timeOrder);
@@ -1004,15 +989,11 @@ public class MergeAlgorithm {
 		// output merged functions
 		return merge.outputMergedSegments();
 	}
-
-
-	/******************************************************************
-	 * For preparing MFunctionSegment lists with info from intention
-	 * to send into MergeEvolvingFunction
-	 ******************************************************************/
-
+	
 	/**
 	 * Determines start evidence pairs and end times for function segments
+	 * For preparing MFunctionSegment lists with info from intention
+	 * to send into MergeEvolvingFunction
 	 */
 	private static List<MFunctionSegment> completeFunctionInfo(FunctionSegment[] oldSegs, String initialEval, Integer maxTime, String maxTimeName){
 		if (MMain.DEBUG) System.out.println("Starting: completeFunctionInfo");

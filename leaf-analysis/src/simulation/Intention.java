@@ -153,6 +153,11 @@ public class Intention extends AbstractLinkableElement {
 		for (BIUserEvaluation eval : iNode.getIntention().getUserEvaluationList()) 
 			userEvaluations.put(eval.getAbsTime(), eval.getAssignedEvidencePair());
 		
+		System.out.println("-----------------------------------");
+		System.out.println("Building user evaluation for " + iNode.getIntention().getNodeName());
+		System.out.println(userEvaluations);
+		System.out.println("-----------------------------------");
+		
 		Intention element = new Intention(iNode.getId(), iNode.getIntention().getNodeName(), 
 				nodeActor, iNode.getType(), iNode.getIntention().getEvolvingFunction(), 
 				userEvaluations);
@@ -271,13 +276,29 @@ public class Intention extends AbstractLinkableElement {
 	}
 	
 	public String getInitialUserEval() {
-		// TODO: search list for eval with time of initial?
-		if (userEvals.size() > 0) {
+		if (userEvals.containsKey(0)) {
 			return userEvals.get(0);
 		} else {
 			return "(no value)";
 		}
-		
+	}
+	public String getUserEvalAt(Integer absTP) {
+		if (userEvals.containsKey(absTP)) {
+			return userEvals.get(absTP);
+		} else {
+			return "(no value)";
+		}
+	}
+	// add delta to each absTP in userEvals
+	public void incrementUserEvals(Integer delta) {
+		HashMap<Integer, String> newUserEvaluations = new HashMap<>();
+		for(Integer absTP: userEvals.keySet()) {
+			newUserEvaluations.put(absTP + delta, getUserEvalAt(absTP));
+		}
+		userEvals = newUserEvaluations;
+	}
+	public void setUserEvals(HashMap<Integer, String> newUserEvals) {
+		userEvals = newUserEvals;
 	}
 	
 }

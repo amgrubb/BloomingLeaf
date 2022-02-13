@@ -36,9 +36,9 @@ public class MMain {
 		String filePath = "temp/";
 		String inputFile1 = "testModel1.json";
 		String inputFile2 = "testModel2.json";
-		String outputFile = "output-2-12.json";
+		String outputFile = "output-2-13.json";
 		String timingFile = "timings.json";
-		Integer delta = 0;  // new start B
+		Integer delta = 5;  // new start B
 
 		try {
 			Gson gson = new Gson();
