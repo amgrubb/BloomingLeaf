@@ -14,21 +14,21 @@ import simulation.*;
  */
 
 public class IMainBuilder {
-	
+
 	/** Main function that generates the IMain
 	 * @param outSpec - a ModelSpec
-	 * @return 
+	 * @return
 	 */
 	public static IMain buildIMain(ModelSpec outSpec) {
-		
+
 		List<ICell> cells = new ArrayList<ICell>();
 		Integer z = 0; // unique counter for cells
-		
+
 		// actors
 		List<Actor> actors = outSpec.getActors();
-		
+
 		System.out.println("st6arting actors");
-		
+
 		// add actors to cells list
 		if (!actors.isEmpty()) {
 			for (Actor specActor: actors) {
@@ -38,25 +38,25 @@ public class IMainBuilder {
 				BISize size = specActor.getSize();
 				BIPosition position = specActor.getPosition();
 				String[] embeds = specActor.getEmbeds();
-				
+
 				BIActor newActor = new BIActor(specActor.getName(), specActor.getActorType());
 				String name = newActor.getActorName();
-				
+
 				// add actor as ICell
 				ICell newCell = new ICell(newActor, type, id, z, size, position, embeds, name);
 				cells.add(newCell);
-				
+
 				z++;
 			}
 		}
-		
+
 		//System.out.println("Finished making actors");
-		
+
 		// intentions
 		List<Intention> intentions = outSpec.getIntentions();
-		
+
 		System.out.println("intentions");
-		
+
 		// add intentions to cells list
 		if (!intentions.isEmpty()) {
 			for (Intention specIntention: intentions) {
@@ -66,35 +66,36 @@ public class IMainBuilder {
 				String parent = specIntention.getParentID();
 				BISize size = specIntention.getSize();
 				BIPosition position = specIntention.getPosition();
-				
+
 				BIIntention newIntention = buildBIIntention(specIntention);
 				String name = newIntention.getNodeName();
-				
+
 				// add intention as ICell
 				ICell newCell = new ICell(newIntention, type, id, z, size, position, parent, name);
 				cells.add(newCell);
-				
+
 				z++;
 			}
 		}
-		
+
 		//System.out.println("Finished making intentions");
 		System.out.println("links");
-		
+
 		// links
 		List<ContributionLink> contributionLinks = outSpec.getContributionLinks();
 		List<DecompositionLink> decompositionLinks = outSpec.getDecompositionLinks();
 		List<NotBothLink> notBothLinks = outSpec.getNotBothLinks();
-		
+
 		if (!contributionLinks.isEmpty()) {
 			for (ContributionLink specLink: contributionLinks) {
+				System.out.println("outputting contr links");
 				// inputs for ICell
 				String id = specLink.getUniqueID();
 				String type = "basic.CellLink";
 				String source = specLink.getZeroSrcID();
 				String target = specLink.getDest().getUniqueID();
 				System.out.println("intention infos");
-				
+
 				// inputs for building BILink
 				Integer absTime = specLink.getAbsTime();
 				System.out.println("time infos");
@@ -103,7 +104,8 @@ public class IMainBuilder {
 				System.out.println(specLink.getPreContribution());
 				String linkType = specLink.getPreContribution().getCode();
 				System.out.println(specLink.getPreContribution());
-				
+
+
 				BILink newLink; // build link w/ or w/o postType depending on evolving
 				if (evolving) {
 					System.out.println("is evolving");
@@ -112,11 +114,11 @@ public class IMainBuilder {
 				} else {
 					newLink = new BILink(absTime, evolving, linkType);
 				}
-				
+
 				// add Link as ICell
 				ICell newCell = new ICell(newLink, type, id, z, source, target);
 				cells.add(newCell);
-				
+
 				z++;
 			}
 		}
@@ -129,12 +131,12 @@ public class IMainBuilder {
 				String type = "basic.CellLink";
 				String source;
 				String target = specLink.getDest().getUniqueID();
-				
+
 				// inputs for building BILink
 				Integer absTime = specLink.getAbsTime();
 				Boolean evolving = specLink.isEvolving();
 				String linkType = specLink.getPreDecomposition().getCode().toLowerCase();  // lowercase: upper is invalid in frontend
-				
+
 				BILink newLink; // build link w/ or w/o postType depending on evolving
 				if (evolving) {
 					String postType = specLink.getPostDecomposition().getCode().toLowerCase();
@@ -142,23 +144,23 @@ public class IMainBuilder {
 				} else {
 					newLink = new BILink(absTime, evolving, linkType);
 				}
-				
+
 				// create separate ICell/link for each source
 				List<String> sources = specLink.getSrcIDs();
 				List<String> ids = specLink.getSubLinkUniqueIDList();
 				System.out.println(sources);
 				System.out.println(ids);
 				// TODO: throw error if sources.length != ids.length
-				
+
 				// different ICell/link for each source
 				for (int i = 0; i < sources.size(); i++) {
 					source = sources.get(i);
 					id = ids.get(i);
-					
+
 					// add Link as ICell
 					ICell newCell = new ICell(newLink, type, id, z, source, target);
 					cells.add(newCell);
-					
+
 					z++;
 				}
 			}
@@ -172,25 +174,25 @@ public class IMainBuilder {
 				String type = "basic.CellLink";
 				String source = specLink.getElement1().getUniqueID();
 				String target = specLink.getElement2().getUniqueID();
-				
+
 				// inputs for building BILink
 				Integer absTime = specLink.getAbsTime();
 				Boolean evolving = false;  // always false for NB links
 				String linkType = specLink.getLinkType();
-				
+
 				BILink newLink = new BILink(absTime, evolving, linkType);
-				
+
 				// add Link as ICell
 				ICell newCell = new ICell(newLink, type, id, z, source, target);
 				cells.add(newCell);
-				
+
 				z++;
 			}
 		}
-		
+
 		System.out.println("actorlinks");
-		
-		
+
+
 		List<ActorLink> actorLinks = outSpec.getActorLinks();
 		if (!actorLinks.isEmpty()) {
 			for (ActorLink specLink: actorLinks) {
@@ -199,22 +201,22 @@ public class IMainBuilder {
 				String type = "basic.CellLink";
 				String source = specLink.getZeroSrcID();
 				String target = specLink.getDest().getUniqueID();
-				
+
 				// inputs for building BILink
 				Integer absTime = specLink.getAbsTime();
 				Boolean evolving = false; //Not evolving
 				String linkType = specLink.getType().getCode();
-				
+
 				BILink newLink = new BILink(absTime, evolving, linkType);
-				
+
 				// add Link as ICell
 				ICell newCell = new ICell(newLink, type, id, z, source, target);
 				cells.add(newCell);
-				
+
 				z++;
 			}
 		}
-		
+
 		System.out.println("Finished making links");
 		// overall model variables
 		Integer maxAbsTime = outSpec.getMaxTime();
@@ -222,23 +224,23 @@ public class IMainBuilder {
 		//System.out.println("Finished making links");
 		int[] absTimePtsArr = convertAbsTimePtsArr(outSpec.getAbsTP());
 		System.out.println(absTimePtsArr);
-		
+
 		// create model to return
 		IGraph graph = new IGraph(maxAbsTime, absTimePtsArr, cells); // TODO: add constraints
 
-		
+
 		System.out.println("Finished graph");
 		IMain model = new IMain(graph);
-		
+
 		return model;
-		
+
 	}
-	
+
 	private static BIIntention buildBIIntention(Intention specIntention) {
 		// create evolving function
 		BIEvolvingFunction evolvingFunction = rerollEvolvingFunctions(specIntention.getEvolvingFunctions());
-		
-		
+
+
 		// create user assignments list
 		List<BIUserEvaluation> userEvaluationList = new ArrayList<BIUserEvaluation>();
 		// make each user evaluation and add to list
@@ -247,12 +249,12 @@ public class IMainBuilder {
 			BIUserEvaluation newEval = new BIUserEvaluation(userEval.getValue(), userEval.getKey());
 			userEvaluationList.add(newEval);
 		}
-		
+
 		BIIntention newIntention = new BIIntention(evolvingFunction, specIntention.getName(), userEvaluationList);
-		
+
 		return newIntention;
 	}
-	
+
 	private static BIEvolvingFunction rerollEvolvingFunctions(FunctionSegment[] evolvingFunctions) {
 		// convert FunctionSegment[] into BIFunctionSegment[]
 		ArrayList<BIFunctionSegment> funcSegList = new ArrayList<BIFunctionSegment>();
@@ -264,10 +266,10 @@ public class IMainBuilder {
 		// convert to array
 		BIFunctionSegment[] functionSegList = new BIFunctionSegment[funcSegList.size()];
 		functionSegList = funcSegList.toArray(functionSegList);
-		
+
 		// type if none of the named cases below
 		String type = "UD";
-		
+
 		// detect type in named cases
 		if (functionSegList.length == 0) {
 			// no type w/ no segments
@@ -304,12 +306,12 @@ public class IMainBuilder {
 				}
 			}
 		}
-				
+
 		BIEvolvingFunction evolvingFunction = new BIEvolvingFunction(functionSegList, type);
 
 		return evolvingFunction;
 	}
-	
+
 	/**
 	 * extracts integer time points from the absTP HashMap
 	 * @param absTP
@@ -321,18 +323,18 @@ public class IMainBuilder {
 		if(absTimePtsList.size() == 0) {
 			return new int[0];
 		}
-			
+
 		// convert to int[]
 		int[] absTimePtsArrW0 = absTimePtsList.stream().mapToInt(i -> i).toArray();
-		
+
 		// remove the 0 we added in when loading from frontend
-		
+
 		Arrays.sort(absTimePtsArrW0);
 		int[] absTimePtsArr = Arrays.copyOfRange(absTimePtsArrW0, 1, absTimePtsArrW0.length);
-		
-		
+
+
 		return absTimePtsArr;
-		
+
 	}
 
 }

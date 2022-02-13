@@ -85,6 +85,7 @@ public class MergeAlgorithm {
 
 		if (MMain.DEBUG) System.out.println("Starting: mergeLinks");
 		mergeLinks();
+		System.out.println("finished mergelinks");
 
 		modelOut = IMainBuilder.buildIMain(mergedModel);
 		System.out.println("finished buiuldIamain");
@@ -713,6 +714,7 @@ public class MergeAlgorithm {
 		mergedModel.setDecompositionLinks(mergedDL);
 		mergedModel.setNotBothLinks(mergedNBL);
 		System.out.println("all links added");
+		System.out.println("finished mergelinks");
 	}
 
 	/**
@@ -757,13 +759,19 @@ public class MergeAlgorithm {
 				return ContributionType.P;
 			}
 			String newLinkType = "";
+			System.out.println("<------------");
+			System.out.println(linkType1);
+			System.out.println(linkType2);
+			System.out.println(linkType1.lastIndexOf("+"));
+			System.out.println(linkType2);
 			//if the two are ++/+ then the new link is +
 			if(linkType1.lastIndexOf("+") != linkType2.lastIndexOf("+")){
 				newLinkType = "+";
+				System.out.println("diff length");
 			}
 			//else the type is what they both are
 			else{
-				newLinkType = linkType1.substring(0,linkType1.lastIndexOf("+") + 1);
+				newLinkType = linkType1.substring(0, linkType1.lastIndexOf("+")+1);
 			}
 
 			//if either have an S add it
@@ -782,9 +790,9 @@ public class MergeAlgorithm {
 			//checks if link types are opposite
 			if(linkType1.contains("S") && linkType2.contains("D") || linkType1.contains("D") && linkType2.contains("S")){
 				if(linkType1.contains("--") && linkType2.contains("--")){
-					return ContributionType.PP;
+					return ContributionType.MM;
 				}
-				return ContributionType.P;
+				return ContributionType.M;
 			}
 			String newLinkType = "";
 			//if they are different -- and - then it becomes a -
@@ -792,7 +800,7 @@ public class MergeAlgorithm {
 				newLinkType = "-";
 			}
 			else{
-				newLinkType = linkType1.substring(0,linkType1.lastIndexOf("-") + 1);
+				newLinkType = linkType1.substring(0, linkType1.lastIndexOf("-")+1);
 			}
 			//if either have an S add it
 			if(linkType1.contains("S") || linkType2.contains("S")){
@@ -840,7 +848,14 @@ public class MergeAlgorithm {
 
 		// get evolving functions for both intentions
 		FunctionSegment[] funcSeg1 = intention1.getEvolvingFunctions();
-		FunctionSegment[] funcSeg2 = intention1.getEvolvingFunctions();
+		FunctionSegment[] funcSeg2 = intention2.getEvolvingFunctions();
+		System.out.println("-----------------------------------");
+		System.out.println("Merging: " + intention1.getName());
+		System.out.println("len: " + Integer.toString(funcSeg1.length));
+		System.out.println(funcSeg1);
+		System.out.println("len: " + Integer.toString(funcSeg2.length));
+		System.out.println(funcSeg2);
+		System.out.println("-----------------------------------");
 
 		// no evolving functions
 		if (funcSeg1.length == 0 && funcSeg2.length == 0) {
@@ -858,6 +873,7 @@ public class MergeAlgorithm {
 			// if we have evaluation, treat as constant over model's entire timeline
 			FunctionSegment constValue = new FunctionSegment("C", userEval, "O", 0);
 			intention1.setEvolvingFunctions(new FunctionSegment[]{constValue});
+			funcSeg1 = intention1.getEvolvingFunctions();
 		} else if (funcSeg2.length == 0) {
 			// if no user evaluations for intention, use other intention's functions
 			String userEval = intention2.getInitialUserEval();
@@ -868,6 +884,7 @@ public class MergeAlgorithm {
 			// if we have evaluation, treat as constant over model's entire timeline
 			FunctionSegment constValue = new FunctionSegment("C", userEval, "O", 0);
 			intention2.setEvolvingFunctions(new FunctionSegment[]{constValue});
+			funcSeg2 = intention1.getEvolvingFunctions();
 		}
 
 		// for contiguous or gap timelines, save time by simply appending arrays
