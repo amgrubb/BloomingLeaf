@@ -670,7 +670,8 @@ public class MergeAlgorithm {
 
 		//check that NBL is not conflicting with intentions
 		ArrayList<NotBothLink> deletedNBL = new ArrayList<NotBothLink>();
-		for(NotBothLink nbl: mergedNBL) {
+		for(int x = 0; x < mergedNBL.size(); x++) {
+			NotBothLink nbl= mergedNBL.get(x);
 			//absTP 0's
 			String eval1 = nbl.getElement1().getUserEvals().get(0);
 			String eval2= nbl.getElement2().getUserEvals().get(0);
@@ -990,6 +991,8 @@ public class MergeAlgorithm {
 			} else {
 				// if not simple merge, we should have had timing info in timing.json
 				// throw error
+				System.out.println(funcSeg1.length);
+				System.out.println(funcSeg2.length);
 				throw new RuntimeException("Error while merging " + intention1.getName() + ": ambigous timeline. Please order timepoints for this intention in timing.json");
 			}
 		}

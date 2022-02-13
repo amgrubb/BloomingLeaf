@@ -144,7 +144,7 @@ public class Traceability{
 					continue;
 				}
 				fileWriter.write("\t" + deletedElemList.get(0).getClass().getName() + ":"+ "\n");
-				fileWriter.write("--------------------------"+ "\n");
+				fileWriter.write("\t" + "--------------------------"+ "\n");
 				for(AbstractElement deletedElem: deletedElemList) {
 					fileWriter.write("\t" + deletedElem.getName()+ "\n");
 	
