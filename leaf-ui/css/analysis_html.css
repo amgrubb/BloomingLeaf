@@ -351,3 +351,11 @@ body {
   height: 15px;
   color: #bcbcbc;
 }
+
+.disabled-textbox{
+  background-color:#FFF;
+}
+
+.disabled-textbox-clicked{
+  color: rgb(50, 50, 50) !important;
+}

@@ -67,6 +67,10 @@
             paper: analysis.paper
         });
         $('#paper').append(analysis.paperScroller.render().el);
+        
+        // Unable to interact with textboxes
+        $('.cell-attrs-text').addClass('disabled-textbox');
+        $('.cell-attrs-text2').addClass('disabled-textbox');
         analysis.paperScroller.center();
 
         // Make a copy of the graph and add it to the window.
@@ -844,6 +848,7 @@
                     }
 
         $("body").removeClass("spinning"); // Remove spinner from cursor
+        
         // Appends filter information to the intention filter table
 
             // Fills in the current sat value text box

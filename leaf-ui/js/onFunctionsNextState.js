@@ -39,6 +39,8 @@ $("#filter-apply").on('click', function () { intentionFilter(); });
     pPaper.on('cell:pointerclick', function(cellView) {
         if (cellView.model.attributes.intention) { // Only highlight intentions
             cellView.highlight();
+            $('.cell-attrs-text').addClass('disabled-textbox-clicked');
+            $('.cell-attrs-text2').addClass('disabled-textbox-clicked');
             // Fills in nodeName text box with intention name
             $(".cell-attrs-text").val(cellView.model.attributes.intention.attributes.nodeName);
             // TODO: if the page is changed or filters are added it does not update
@@ -77,9 +79,10 @@ $("#filter-apply").on('click', function () { intentionFilter(); });
     pPaper.on('blank:pointerdown', function() {
         pPaper.findViewsInArea(pPaper.getArea()).forEach(cell => {
             cell.unhighlight();
+            $('.cell-attrs-text').removeClass('disabled-textbox-clicked');
+            $('.cell-attrs-text2').removeClass('disabled-textbox-clicked');
         });
     });
-
 }
 
 // Navigation bar functions:
