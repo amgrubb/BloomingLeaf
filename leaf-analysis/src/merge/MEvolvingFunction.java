@@ -132,11 +132,13 @@ public class MEvolvingFunction {
 		this.segments = new ArrayList<>();
 		// build function between each timepoint
 		for (int i = 0; i < timing.size()-1; i++) {
+			if (MMain.DEBUG) System.out.println(i);
 			String startTime = timing.get(i);
 			String endTime = timing.get(i+1);
 			segments.add(new MFunctionSegment(startTime, timeline.get(startTime),
 												 endTime, timeline.get(endTime)));
 		}
+		if (MMain.DEBUG) System.out.println("Finished: buildSegments");
 	}
 	
 	/******************************************************
