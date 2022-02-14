@@ -88,7 +88,7 @@ public class MergeAlgorithm {
 		System.out.println("finished mergelinks");
 
 		modelOut = IMainBuilder.buildIMain(mergedModel);
-		System.out.println("finished buiuldIamain");
+		System.out.println("finished buildIamain");
 		//System.out.println(gson.toJson(modelOut));
 
 		Traceability.printDeletedToFile(deletedElements);
@@ -115,18 +115,12 @@ public class MergeAlgorithm {
 		model2.setMaxTime(newMax);
 
 		// update absolute time points for model 2
-		for (Integer absTP: model2.getAbsTP().values()) {
-			absTP += delta;
-		}
+		// future work: rename Initial in model B
+		model2.incrementAbsTP(delta);
 
 		// update absolute time points for model 2 stored in intentions' UAL
-		
 		for (Intention intention: model2.getIntentions()) {
 			intention.incrementUserEvals(delta);
-			System.out.println("-----------------------------------");
-			System.out.println("Updating user evaluations for " + intention.getName());
-			System.out.println(intention.getUserEvals());
-			System.out.println("-----------------------------------");
 		}
 		
 

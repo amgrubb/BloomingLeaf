@@ -2,6 +2,7 @@ package merge;
 
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.PrintWriter;
 
 import com.google.gson.Gson;
@@ -10,12 +11,6 @@ import com.google.gson.GsonBuilder;
 import gson_classes.IMain;
 import simulation.ModelSpec;
 import simulation.BIModelSpecBuilder;
-import simulation.Intention;
-import simulation.ContributionLink;
-import simulation.DecompositionLink;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * MMain
@@ -33,14 +28,30 @@ public class MMain {
 	 */
 	public static void main(String[] args) {
 		//This is the default filePath to be executed if no file is passed through parameters
-		String filePath = "temp/";
+		/*String filePath = "temp/";
 		String inputFile1 = "testModel1.json";
 		String inputFile2 = "testModel2.json";
 		String outputFile = "output-2-13.json";
 		String timingFile = "timings.json";
-		Integer delta = 5;  // new start B
+		Integer delta = 5;  // new start B*/
+		String filePath = "tests/";
+		String inputFile1 = "";
+		String inputFile2 = "";
+		String outputFile = "output.json";
+		String timingFile = "";
+		Integer delta = 0;
+		
+		try {			
+			if (args.length == 5) {
+				inputFile1 = args[0];
+				inputFile2 = args[1];
+				outputFile = args[2];
+				timingFile = args[3];
+				delta = Integer.parseInt(args[4]);
+			} else throw new IOException("Tool: Command Line Inputs Incorrect.");
+			
+			System.out.println("Merging: \t" + inputFile1 + " and " + inputFile2);
 
-		try {
 			Gson gson = new Gson();
 			// Creating the 1st back-end model to be merged
 			System.out.println("M1:");
