@@ -49,6 +49,7 @@ $("#filter-apply").on('click', function () { intentionFilter(); });
             for (var element_index = 0; element_index < originalResults2.attributes.elementList.length; element_index++) {
                 if (originalResults2.attributes.elementList[element_index].id == cellView.model.attributes.id) {
                     elementNum = element_index;
+                    selectedIntention = cellView.model.attributes.id;
                 }
             }
   

@@ -344,10 +344,22 @@ body {
 }
 /* end of representive slider styling */
 
+.inspectorFilterNames{
+  padding-top: 14px;
+}
+
 .tableHeading{
   /*display: block;*/
   text-align: center;
   font-size: 12px;
   height: 15px;
   color: #bcbcbc;
+  padding: 4px;
+}
+
+.tableData{
+  font-size: 11px;
+  color:#ffffff;
+  border-top: 1px solid #ddd;
+  padding: 0px;
 }

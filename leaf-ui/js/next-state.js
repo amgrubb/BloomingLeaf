@@ -22,6 +22,10 @@
     // are combined into allSolutionArray
     var allSolutionIndex;
 
+    // Object to keep track of all of the applied intention filters
+    var filterIntentionList = [];
+    var selectedIntention;
+
     //Executing scripts only when page is fully loaded
     window.onload = function () {
         analysis.page = jQuery.extend({}, window.opener.document);
@@ -783,101 +787,130 @@
     function intentionFilter() {
         console.log("intention filter clicked");
         // TODO: figure out resetting / storing results everytime the apply filter button is added
-        // TODO: selected element as parameter
+        // TODO: when more than one filter is added the filter doesnt work (doesnt show correct solutions)
+            // maybe iterate over original solutions, if true push to tempResults
 
-        // Everytime a box is clicked/unclicked the results are reset
+        // Clears previous html table entries
+        $(".inspectorFilterTable tr").remove();
+        // Appends the headings back to the table
+        // Probs a cleaner way to do this tbh
+        $(".inspectorFilterTable").append('<tr class ="tableHeading"><th class="tableHeading">Intention Name</th><th class="tableHeading">Satisfaction Value</th><th class="tableHeading">Remove</th></tr>');
+
+
+        // Everytime a filter is applied the results are reset
         myInputJSObject.results = originalResults;
         // Deep copy of results so it doesn't contain references to the original object
         tempResults = $.extend(true, {}, myInputJSObject.results);
         // 4 digit sat value code selected from dropdown menu
         var desiredSatVal = $("#sat-value").val();
-        console.log(desiredSatVal);
-        // TODO: update var below so it changes depending on the selected element
-        var elementNum = 0;
+        console.log(selectedIntention)
 
-                    // Iterates over every key/value pair in the hashmap
-                    for (var solutionArray in tempResults.get('allSolutions')) {
-                        var index_to_keep = [];
-                        var index_to_rm = [];
+        // FOR NOW (we might be able to just store the intention id)
+        filterIntentionList.push([selectedIntention, desiredSatVal]);
 
-                        var most_r_s = 0;
-                        // Iterates over all of the solutions in the key/value pair 
-                        for (var solution_index = 0; solution_index < tempResults.get('allSolutions')[solutionArray].length; solution_index++) {
-                            var num_r_s = 0;
-                            // Only checks for sat value of selected intention if the value satisfyies the conditions then the
-                            // Index is pushed to the index array
-                            var value = tempResults.get('allSolutions')[solutionArray][solution_index][elementNum];
-                            console.log(solution_index);
-                            console.log(value);
-                            if (value == desiredSatVal) {
-                                num_r_s++;
-                            }
-
-                            if (most_r_s < num_r_s) {
-                                most_r_s = num_r_s;
-                                index_to_rm = index_to_rm.concat(index_to_keep);
-                                index_to_keep = [];
-                            }
-                            if (num_r_s == most_r_s) {
-                                index_to_keep.push(solution_index);
-                            }
-                            if (num_r_s < most_r_s) {
-                                index_to_rm.push(solution_index);
-                            }        
-                        }
-                                                    if (most_r_s < num_r_s) {
-                                most_r_s = num_r_s;
-                                index_to_rm = index_to_rm.concat(index_to_keep);
-                                index_to_keep = [];
-                            }
-                            if (num_r_s == most_r_s) {
-                                index_to_keep.push(solution_index);
-                            }
-                            if (num_r_s < most_r_s) {
-                                index_to_rm.push(solution_index);
-                            }
-
-                        index_to_rm.sort(function (a, b) { return a - b });
-                        for (var to_rm = 0; to_rm < index_to_rm.length; to_rm++) {
-                            tempResults.get('allSolutions')[solutionArray].splice(index_to_rm[to_rm] - to_rm, 1);
-                        }
+            for(intention in filterIntentionList) {
+                // Finds the element index of the intentions
+                for (var element_index = 0; element_index < analysis.intentions.length; element_index++) {
+                    if (analysis.intentions[element_index].attributes.id == selectedIntention) {
+                        var elementNum = element_index;
                     }
+                }
+
+                // Iterates over every key/value pair in the hashmap
+                //
+                for (var solutionArray in tempResults.get('allSolutions')) {
+                    var index_to_keep = [];
+                    var index_to_rm = [];
+
+                    var most_r_s = 0;
+                    // Iterates over all of the solutions in the key/value pair 
+                    for (var solution_index = 0; solution_index < tempResults.get('allSolutions')[solutionArray].length; solution_index++) {
+                        var num_r_s = 0;
+                        // Only checks for sat value of selected intention if the value satisfyies the conditions then the
+                        // Index is pushed to the index array
+                        var value = tempResults.get('allSolutions')[solutionArray][solution_index][elementNum];
+                        console.log(filterIntentionList[intention][1])
+                        // TODO: change line below
+                        if (value == desiredSatVal) {
+                            num_r_s++;
+                        }
+
+                        if (most_r_s < num_r_s) {
+                            most_r_s = num_r_s;
+                            index_to_rm = index_to_rm.concat(index_to_keep);
+                            index_to_keep = [];
+                        }
+                        if (num_r_s == most_r_s) {
+                            index_to_keep.push(solution_index);
+                        }
+                        if (num_r_s < most_r_s) {
+                            index_to_rm.push(solution_index);
+                        }        
+                    }
+                                                if (most_r_s < num_r_s) {
+                            most_r_s = num_r_s;
+                            index_to_rm = index_to_rm.concat(index_to_keep);
+                            index_to_keep = [];
+                        }
+                        if (num_r_s == most_r_s) {
+                            index_to_keep.push(solution_index);
+                        }
+                        if (num_r_s < most_r_s) {
+                            index_to_rm.push(solution_index);
+                        }
+
+                    index_to_rm.sort(function (a, b) { return a - b });
+                    for (var to_rm = 0; to_rm < index_to_rm.length; to_rm++) {
+                        tempResults.get('allSolutions')[solutionArray].splice(index_to_rm[to_rm] - to_rm, 1);
+                    }
+                }
 
         $("body").removeClass("spinning"); // Remove spinner from cursor
+    
+        console.log(analysis.intentions[elementNum])
+        console.log(analysis.intentions[elementNum].attributes)
+        
+
+        // Finds corrects text sat value for table
+        switch (filterIntentionList[intention][1]) {
+            case "0000":
+                var tableSatVal = "None (⊥, ⊥)";
+                break;
+            case "0011":
+                var tableSatVal = "Satisfied (F, ⊥)";
+                break;
+            case "0010":
+                var tableSatVal = "Partially Satisfied (P, ⊥)";
+                break;
+            case "0100":
+                var tableSatVal = "Partially Denied (⊥, P)";
+                break;
+            case "1100":
+                var tableSatVal = "Denied (⊥, F)";
+                break;
+            case "unknown":
+                var tableSatVal = "(no value)";
+                break;
+            default:
+                var tableSatVal =  "error";   
+                break;
+        }
         // Appends filter information to the intention filter table
+        // TODO: add an id to each remove button so you can remove one filter but not all of them
+        $(".inspectorFilterTable").append('<tr class="tabelData"><td class="tableData">' + $(".cell-attrs-text").val() + '</td><td class="tableData">' + tableSatVal + '</td><td class="tableData"><button class="table-btn-small">Remove</button></td></tr>');
+        console.log(analysis.intentions)
+        console.log(originalResults)                
 
-            // Fills in the current sat value text box
-            switch ($("#sat-value").val()) {
-                case "0000":
-                    var tableSatVal = "None (⊥, ⊥)";
-                    break;
-                case "0011":
-                    var tableSatVal = "Satisfied (F, ⊥)";
-                    break;
-                case "0010":
-                    var tableSatVal = "Partially Satisfied (P, ⊥)";
-                    break;
-                case "0100":
-                    var tableSatVal = "Partially Denied (⊥, P)";
-                    break;
-                case "1100":
-                    var tableSatVal = "Denied (⊥, F)";
-                    break;
-                case "unknown":
-                    var tableSatVal = "(no value)";
-                    break;
-                default:
-                    var tableSatVal =  "error";   
-                    break;
             }
- 
-        $(".inspectorFilterTable").append('<tr><td class="tableData">' + $(".cell-attrs-text").val() + '</td><td class="tableData">' + tableSatVal + '</td><td class="tableData"><button class="table-btn-small">Remove</button></td></tr>');
 
-        // Set the new results with filters as the analysis object
-        myInputJSObject.results = tempResults;
-        // Creates array with all Solutions from new hashmap
-        combineAllSolutions();
-        renderNavigationSidebar();
+// Set the new results with filters as the analysis object
+myInputJSObject.results = tempResults;
+// Creates array with all Solutions from new hashmap
+combineAllSolutions();
+renderNavigationSidebar();
+
+        
+
     }
 
     /*  This function should get the current state in the screen and 
