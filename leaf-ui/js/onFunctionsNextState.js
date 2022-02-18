@@ -83,6 +83,7 @@ $("#filter-apply").on('mousedown', function () { $("body").addClass("spinning");
             $('.cell-attrs-text').removeClass('disabled-textbox-clicked');
             $('.cell-attrs-text2').removeClass('disabled-textbox-clicked');
         });
+        $(".cell-attrs-text2").val("N/A"); 
     });
 }
 
