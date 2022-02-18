@@ -21,7 +21,8 @@ $("#close").on('click', function () { window.close(); });
 $(window).resize(function () {
     resizeWindow();
 });
-$("#filter-apply").on('click', function () { intentionFilter(); });
+$("#filter-apply").on('mouseup', function () { intentionFilter(); });
+$("#filter-apply").on('mousedown', function () { $("body").addClass("spinning"); });
 
 /**
  * Highlight an individual cell upon clicking
