@@ -363,3 +363,11 @@ body {
   border-top: 1px solid #ddd;
   padding: 0px;
 }
+
+.disabled-textbox{
+  background-color:#FFF;
+}
+
+.disabled-textbox-clicked{
+  color: rgb(50, 50, 50) !important;
+}
