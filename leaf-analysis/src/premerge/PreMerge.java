@@ -2,6 +2,7 @@ package premerge;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.BufferedWriter;
 import java.io.PrintWriter;
 import java.util.List;
@@ -18,24 +19,69 @@ import simulation.ModelSpec;
  ***********/
 
 public class PreMerge {
+	public final static boolean DEBUG = true;
 
 	public static void main(String[] args) {
-		String filePath = "temp/";
-		String inputFile1 = "NBL1.json";
-		String inputFile2 = "NBL2.json";
-		String timingFile = "timings.json";
+		String inPath = "tests/models/";
+		String tPath = "tests/timing/";
+		String inputFile1 = ""; // "testModel1.json";
+		String inputFile2 = ""; // "testModel2.json";
+		String timingFile = "timing.json"; //"testModel-timing.json";
 		Integer delta = 5;  // new start B
-
-		ModelSpec modelSpec1 = MMain.convertBackboneModelFromFile(filePath + inputFile1);
-		ModelSpec modelSpec2 = MMain.convertBackboneModelFromFile(filePath + inputFile2);
-
-		// pre-merge timing output
-		detectIntentionMerge(modelSpec1, modelSpec2, delta, filePath + timingFile);
+		
+		try {
+			if (args.length == 4) {
+				inputFile1 = args[0];
+				inputFile2 = args[1];
+				timingFile = args[2];
+				delta = Integer.valueOf(args[3]);
+			} else throw new IOException("Tool: Command Line Inputs Incorrect.");
+	
+			ModelSpec modelSpec1 = MMain.convertBackboneModelFromFile(inPath + inputFile1);
+			ModelSpec modelSpec2 = MMain.convertBackboneModelFromFile(inPath + inputFile2);
+	
+			// pre-merge timing output
+			detectIntentionMerge(modelSpec1, modelSpec2, delta, tPath + timingFile);
+			
+		// exception handling
+		} catch (RuntimeException e) {
+			try {
+				if (DEBUG) System.err.println(e.getMessage());
+				File file;
+				file = new File(tPath + timingFile);
+				if (!file.exists()) {
+					file.createNewFile();
+				}
+				PrintWriter printFile = new PrintWriter(file);
+				String message = "{ \"errorMessage\" : \"RuntimeException: " + e.getMessage() + "\" }";
+				message = message.replaceAll("\\r\\n|\\r|\\n", " ");
+				printFile.printf(message);
+				printFile.close();
+			} catch (Exception f) {
+				throw new RuntimeException("Error while writing ErrorMessage: " + f.getMessage());
+			}
+		} catch (Exception e) {
+			try {
+				if (DEBUG) System.err.println(e.getMessage());
+				File file;
+				file = new File(tPath + timingFile);
+				if (!file.exists()) {
+					file.createNewFile();
+				}
+				PrintWriter printFile = new PrintWriter(file);
+				String message = "{ \"errorMessage\" : \"Exception: " + e.getMessage() + "\" }";
+				message = message.replaceAll("\\r\\n|\\r|\\n", " ");
+				printFile.printf(message);
+				printFile.close();
+			} catch (Exception f) {
+				throw new RuntimeException("Error while writing ErrorMessage: " + f.getMessage());
+			}
+		}
 	}
 
 
 	public static void detectIntentionMerge(ModelSpec modelA, ModelSpec modelB, Integer delta, String timingFilePath) {
-		startTimingFile(timingFilePath);
+		startTimingFile(timingFilePath, delta);
 		// don't output timing if no overlap between A and B
 		if (modelA.getMaxTime() <= delta) {
 			endTimingFile(timingFilePath);
@@ -135,7 +181,7 @@ public class PreMerge {
 
 	}
 
-	private static void startTimingFile(String timingFilePath) {
+	private static void startTimingFile(String timingFilePath, Integer delta) {
 		try {
 			// create new file if doesn't already exist
 			File file;
@@ -147,7 +193,8 @@ public class PreMerge {
 			// set up printwriter NOT in append mode
 			// (clears file from last output)
 			PrintWriter printFile = new PrintWriter(file);
-			printFile.println("{\"timingList\": [");
+			printFile.printf("{\"timingOffset\": \"%d\", %n", delta);
+			printFile.println("\"timingList\": [");
 
 			printFile.close();
 		} catch (Exception e) {

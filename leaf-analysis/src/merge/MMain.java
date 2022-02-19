@@ -34,20 +34,20 @@ public class MMain {
 		String outputFile = "output-2-13.json";
 		String timingFile = "timings.json";
 		Integer delta = 5;  // new start B*/
-		String filePath = "tests/";
+		String inPath = "tests/models/";
+		String tPath = "tests/timing/";
+		String outPath = "tests/mergedModels/";
 		String inputFile1 = "";
 		String inputFile2 = "";
-		String outputFile = "output.json";
 		String timingFile = "";
-		Integer delta = 0;
+		String outputFile = "output.json";
 		
 		try {			
-			if (args.length == 5) {
+			if (args.length == 4) {
 				inputFile1 = args[0];
 				inputFile2 = args[1];
-				outputFile = args[2];
-				timingFile = args[3];
-				delta = Integer.parseInt(args[4]);
+				timingFile = args[2];
+				outputFile = args[3];
 			} else throw new IOException("Tool: Command Line Inputs Incorrect.");
 			
 			System.out.println("Merging: \t" + inputFile1 + " and " + inputFile2);
@@ -55,7 +55,7 @@ public class MMain {
 			Gson gson = new Gson();
 			// Creating the 1st back-end model to be merged
 			System.out.println("M1:");
-			ModelSpec modelSpec1 = convertBackboneModelFromFile(filePath + inputFile1);
+			ModelSpec modelSpec1 = convertBackboneModelFromFile(inPath + inputFile1);
 
 			// print M1 for reference
 			IMain m1IMain = IMainBuilder.buildIMain(modelSpec1);
@@ -63,18 +63,19 @@ public class MMain {
 
 			// Creating the 2nd back-end model to be merged
 			System.out.println("M2:");
-			ModelSpec modelSpec2 = convertBackboneModelFromFile(filePath + inputFile2);
+			ModelSpec modelSpec2 = convertBackboneModelFromFile(inPath + inputFile2);
 
 			// print M2 for reference
 			IMain m2IMain = IMainBuilder.buildIMain(modelSpec2);
 			System.out.println(gson.toJson(m2IMain));
 
 			// Loading in timing info
-			TMain timings = convertTimingFromFile(filePath + timingFile);
+			TMain timings = convertTimingFromFile(tPath + timingFile);
+			System.out.println(timings.getTimingOffset());
 
 			System.out.println("----------------------");
 			// run merge
-			MergeAlgorithm merge = new MergeAlgorithm(modelSpec1, modelSpec2, delta, timings);
+			MergeAlgorithm merge = new MergeAlgorithm(modelSpec1, modelSpec2, timings);
 			ModelSpec mergedModel = merge.getMergedModel();
 			System.out.println("Completed Merging.");
 			System.out.println("merged models");
@@ -86,19 +87,19 @@ public class MMain {
 			System.out.println(gson.toJson(mergedModelOut));
 			System.out.println("converted merged model to IMain");
 
-			createOutputFile(mergedModelOut, filePath + outputFile);
+			createOutputFile(mergedModelOut, outPath + outputFile);
 			//createOutputFile(m1IMain, filePath + outputFile);
 
 			System.out.println("created output file");
 
-			Traceability.traceabilityOutput(mergedModel, "traceabilityOutput.txt");
+			Traceability.traceabilityOutput(mergedModel, outPath + "traceabilityOutput.txt");
 			System.out.println("created Traceability doc");
 
 		} catch (RuntimeException e) {
 			try {
 				if (DEBUG) System.err.println(e.getMessage());
 				File file;
-				file = new File(filePath + outputFile);
+				file = new File(outPath + outputFile);
 				if (!file.exists()) {
 					file.createNewFile();
 				}
@@ -114,7 +115,7 @@ public class MMain {
 			try {
 				if (DEBUG) System.err.println(e.getMessage());
 				File file;
-				file = new File(filePath + outputFile);
+				file = new File(outPath + outputFile);
 				if (!file.exists()) {
 					file.createNewFile();
 				}

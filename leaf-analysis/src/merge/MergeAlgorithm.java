@@ -25,7 +25,7 @@ public class MergeAlgorithm {
 	/**
 	 * Initialize mergeAlgorithm and run mergeModels()
 	 */
-	public MergeAlgorithm(ModelSpec model1, ModelSpec model2, Integer delta, TMain timings) {
+	public MergeAlgorithm(ModelSpec model1, ModelSpec model2, TMain timings) {
 		if (MMain.DEBUG) System.out.println("Starting: MergeAlgorithm");
 		// set up models
 		this.model1 = model1;
@@ -36,15 +36,14 @@ public class MergeAlgorithm {
 		this.deletedElements = new ArrayList<ArrayList<? extends AbstractElement>>();
 		this.deletedTimings = new ArrayList<String>();
 		
+		// set up timing
+		this.timings = timings;
+		this.delta = timings.getTimingOffset();
 		this.maxTime1 = model1.getMaxTime();
 		this.maxTime2 = model2.getMaxTime() + delta;
 
 		//collects messages about conflicts
 		this.conflictMessages = new ArrayList<String>();
-
-		// set up timing
-		this.delta = delta;
-		this.timings = timings;
 
 		// pre-process timing and rename maxTimes to ints
 		this.timings.initializeTiming(maxTime1, maxTime2);
