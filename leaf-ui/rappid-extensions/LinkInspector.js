@@ -87,6 +87,7 @@ var LinkInspector = Backbone.View.extend({
         '<option value="is-a">is-a</option>',
         '<option value="plays">plays</option>',
         '<option value="is-part-of">is-part-of</option>',
+        '<option value="participates-in">participates-in</option>',
         '</select><br>',
         '</div>',
     ].join(''),
@@ -236,7 +237,7 @@ var LinkInspector = Backbone.View.extend({
      * Updates linkType for the actor based on updated select value
      */
     updateActorLink: function () {
-        this.setValues($('#actor-link').val(), null, false)
+        this.setValues($('#actor-link').val(), null, false);
     },
 
     /**
