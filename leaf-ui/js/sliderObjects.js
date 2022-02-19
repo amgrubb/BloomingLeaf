@@ -4,27 +4,27 @@
  * It also contains functions for the analysis configuration sidebar
  */
 // TODO: Update these functions to take in a ResultBBM instead of an AnalysisResult
-{
-    class SliderObj {
-        /**
-         * TODO finish docstring by figuring out what type of var params are
-         * TODO see if we can move createSlider, removeSlider, updateSliderValues, etc. to the class definition
-         * TODO integrate with the HTML implementation of the noUISlider lib in a Backbone template?
-         * 
-         * Used for displaying, updating, and removing slider in analysis view.
-         * Holds the information displayed in the slider on the UI
-         * JavaScript range slider library [noUISlider]
-         * 
-         * @param {} sliderElement
-         * @param {} sliderValueElement
-         */
-        constructor() {
-            this.sliderElement = document.getElementById('slider');
-            this.sliderValueElement = document.getElementById('sliderValue');
-        }
+//{
+class SliderObj {
+    /**
+     * TODO finish docstring by figuring out what type of var params are
+     * TODO see if we can move createSlider, removeSlider, updateSliderValues, etc. to the class definition
+     * TODO integrate with the HTML implementation of the noUISlider lib in a Backbone template?
+     * 
+     * Used for displaying, updating, and removing slider in analysis view.
+     * Holds the information displayed in the slider on the UI
+     * JavaScript range slider library [noUISlider]
+     * 
+     * @param {} sliderElement
+     * @param {} sliderValueElement
+     */
+    constructor() {
+        this.sliderElement = document.getElementById('slider');
+        this.sliderValueElement = document.getElementById('sliderValue');
     }
 
-    let sliderObject = new SliderObj();
+
+    //let sliderObject = new SliderObj();
 
     /**
      * Displays the analysis to the web app, by creating the slider display
@@ -35,12 +35,12 @@
      *   True if we are switching analysis results,
      *   false if new result from the back end
      */
-    function displayAnalysis(analysisResult, isSwitch) {
+    static displayAnalysis(analysisResult, isSwitch) {
         // Check if slider has already been initialized
-        if (sliderObject.sliderElement.hasOwnProperty('noUiSlider')) {
-            sliderObject.sliderElement.noUiSlider.destroy();
+        if (analysisResult.get('slider').sliderElement.hasOwnProperty('noUiSlider')) {
+            analysisResult.get('slider').sliderElement.noUiSlider.destroy();
         }
-        createSlider(analysisResult, isSwitch);
+        SliderObj.createSlider(analysisResult, isSwitch);
     }
 
     /**
@@ -53,11 +53,11 @@
      *   True if the slider is being created when we are switching analysis results,
      *   false if new result from the back end
      */
-    function createSlider(currentAnalysis, isSwitch) {
+    static createSlider(currentAnalysis, isSwitch) {
         var sliderMax = currentAnalysis.get('timePointPath').length - 1; // .timeScale;
         var density = (sliderMax < 25) ? (100 / sliderMax) : 4;
 
-        noUiSlider.create(sliderObject.sliderElement, {
+        noUiSlider.create(currentAnalysis.get('slider').sliderElement, {
             start: 0,
             step: 1,
             behaviour: 'tap',
@@ -76,18 +76,18 @@
 
         // Set initial value of the slider
         // 0 if switching between existing results; sliderMax if new result
-        sliderObject.sliderElement.noUiSlider.set(isSwitch ? 0 : sliderMax);
-        sliderObject.sliderElement.noUiSlider.on('update', function (values, handle) {
-            updateSliderValues(parseInt(values[handle]), currentAnalysis);
+        currentAnalysis.get('slider').sliderElement.noUiSlider.set(isSwitch ? 0 : sliderMax);
+        currentAnalysis.get('slider').sliderElement.noUiSlider.on('update', function (values, handle) {
+            SliderObj.updateSliderValues(parseInt(values[handle]), currentAnalysis);
         });
         EVO.setCurTimePoint(isSwitch ? 0 : sliderMax, currentAnalysis);
-        adjustSliderWidth(sliderMax);
+        SliderObj.adjustSliderWidth(sliderMax);
     }
 
     /**
      * Reset display to default, before result is displayed
      */
-    function hideAnalysis(analysisResult) {
+    static hideAnalysis(analysisResult) {
         revertNodeValuesToInitial();
         EVO.switchToModelingMode(analysisResult);
         // show modeling mode EVO slider
@@ -98,10 +98,10 @@
     /**
      * Removes the slider from the UI
      */
-    function removeSlider() {
+    static removeSlider(analysisResult) {
         // if there's a slider, remove it
-        if (sliderObject.sliderElement.hasOwnProperty('noUiSlider')) {
-            sliderObject.sliderElement.noUiSlider.destroy();
+        if (analysisResult.get('slider').sliderElement.hasOwnProperty('noUiSlider')) {
+            analysisResult.get('slider').sliderElement.noUiSlider.destroy();
         }
         $('#sliderValue').text("");
     }
@@ -112,7 +112,7 @@
      * @param {Number} maxValue
      *   The maximum value for the current slider
      */
-    function adjustSliderWidth(maxValue) {
+    static adjustSliderWidth(maxValue) {
         // Min width of slider is 15% of paper's width
         var min = $('#paper').width() * 0.1;
         // Max width of slider is 90% of paper's width
@@ -139,17 +139,17 @@
      * @param {ResultBBM} currentAnalysis
      *  a ResultBBM object that contains data about the analysis that the back end performed
      */
-    function updateSliderValues(sliderValue, currentAnalysis) {
+    static updateSliderValues(sliderValue, currentAnalysis) {
         currentAnalysis.set('selectedTimePoint', sliderValue);
 
         $('#sliderValue').text(sliderValue);
         var tpPath = currentAnalysis.get('timePointPath');
-        sliderObject.sliderValueElement.innerHTML = sliderValue + "|" + tpPath[sliderValue];
+        currentAnalysis.get('slider').sliderValueElement.innerHTML = sliderValue + "|" + tpPath[sliderValue];
         // Update the analysisRequest current state.
         //analysisRequest.currentState = sliderObject.sliderValueElement.innerHTML;   //TODO: Perhalps this should be part of the call to simulate.
 
         currentAnalysis.get('elementList').forEach(element =>
-            updateNodeValues(element, sliderValue));
+            SliderObj.updateNodeValues(element, sliderValue));
 
         EVO.setCurTimePoint(sliderValue, currentAnalysis);
     }
@@ -161,7 +161,7 @@
      * @param {Number} sliderValue
      *   Current value of the slider
      */
-    function updateNodeValues(element, sliderValue) {
+    static updateNodeValues(element, sliderValue) {
         var satValue = element.status[sliderValue];
         var cell = graph.getCell(element.id);
         if ((cell != null) && (satValue in satisfactionValuesDict)) {
@@ -169,4 +169,5 @@
             cell.attr({ text: { fill: 'white' } }); //satisfactionValuesDict[satValue].color        // TODO: Does this need updating?
         }
     }
-} // End of sliderObj scope
+}
+// End of sliderObj scope

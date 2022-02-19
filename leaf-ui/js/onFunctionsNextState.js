@@ -84,5 +84,5 @@ function defaultFont(pPaper) {
 function resizeWindow(sliderMax) {
     $('#slider').css("margin-top", $(this).height() * 0.7);
     $('#slider').width($('#paper').width() * 0.8);
-    adjustSliderWidth(sliderMax)
+    SliderObj.adjustSliderWidth(sliderMax);
 }

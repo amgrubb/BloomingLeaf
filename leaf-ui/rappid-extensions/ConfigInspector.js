@@ -42,7 +42,7 @@ var ResultView = Backbone.View.extend({
         this.model.trigger('change:switchResults', this.model);
         this.config.set('selected', true);
         this.config.trigger('change:switchConfigs', this.config);
-        displayAnalysis(this.model, true);
+        SliderObj.displayAnalysis(this.model, true);
         EVO.refreshSlider(this.model);
     },
 
@@ -185,6 +185,7 @@ var Config = Backbone.View.extend({
             }
         }
         this.model.destroy();
+        EVO.switchToModelingMode(undefined);
     },
 
     /** If result is selected, update config **/
@@ -347,7 +348,37 @@ var ConfigInspector = Backbone.View.extend({
 
     /** Create and add a new config model to the collection */
     addNewConfig: function () {
-        var configModel = new ConfigBBM({ name: "Request " + (this.collection.length + 1), results: new ResultCollection([]) })
+        var configModel;
+        var name; 
+        // Creates first config name
+        if (this.collection.length < 1) {
+            configModel = new ConfigBBM({ name: "Request " + 1, results: new ResultCollection([]) });
+        } else {
+            var numList = "";
+            for (let i = 1; i < this.collection.length + 1; i++) {
+                // Gets the number from a config's name 
+                var nameIndex = parseInt(this.collection.at(this.collection.length - i).get('name').split(' ').pop());
+                // If name has been changed 
+                if (this.collection.at(this.collection.length - i).get('name').split(' ').shift() == 'Request') {
+                    numList += nameIndex + " ";
+                }
+            }
+            numList = numList.split(" ");
+            // Removes non-number values from array
+            for (var i = numList.length - 1; i >= 0; i--) {
+                if (isNaN(numList[i]) || numList[i] === 0 || numList[i] === false || numList[i] === "" || numList[i] === undefined || numList[i] === null) {
+                    numList.splice(i, 1);
+                }
+            }
+            // If all config names have been changed
+            if (numList.length == 0){
+                name = "Request " + 1; 
+            } else {
+                // Gets highest number from array
+                name = "Request " + (Math.max.apply(null, numList) + 1);
+            }
+            configModel = new ConfigBBM({ name: name, results: new ResultCollection([]) });
+        }
         this.collection.add(configModel);
     },
 });
