@@ -44,6 +44,7 @@ var ResultView = Backbone.View.extend({
         this.config.trigger('change:switchConfigs', this.config);
         SliderObj.displayAnalysis(this.model, true);
         EVO.refreshSlider(this.model);
+        setSelectResult(this.model);
     },
 
     /**
@@ -133,6 +134,7 @@ var Config = Backbone.View.extend({
         'blur .config-input': 'setConfigName',
         'keyup .config-input': 'checkForEnter',
         'click .deleteconfig-button': 'removeConfig',
+        'outsideSetName .config-input': 'setConfigName',
     },
 
     /** Sets template and appends inner view */
