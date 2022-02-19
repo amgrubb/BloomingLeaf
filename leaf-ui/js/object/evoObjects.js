@@ -1,51 +1,8 @@
-
-/**  
- * Prevents conflict in coloring modes. Refreshes when changes are made in the model.
- *
- */
-class IntentionColoring {
-    //none, EVO, cycle
-    static colorMode = "none";
-    //color blind mode
-    static isColorBlindMode = false;
-
-    /**
-     * Colors intentions by their mode
-     */
-    static refresh(analysisResult) {
-        if (IntentionColoring.colorMode == "EVO") {
-            EVO.refresh(analysisResult);
-        }
-    }
-
-    /**
-     * Change color mode
-     * @param {*} newColorMode 
-     */
-    static setColorMode(newColorMode, analysisResult) {
-        IntentionColoring.colorMode = newColorMode;
-        if (newColorMode != "EVO") {
-            EVO.deactivate();
-        }
-        EVO.refresh(analysisResult);
-    }
-
-    /**
-     * Toggles color blind mode
-     * @param {*} isTurningOnColorBlindMode 
-     */
-    static toggleColorBlindMode(isTurningOnColorBlindMode, analysisResult) {
-        IntentionColoring.isColorBlindMode = isTurningOnColorBlindMode;
-        EVO.refresh(analysisResult);
-    }
-
-}
-
 class IntentionColorVis {
     constructor() {
         this.id;
-        this.evals; //list of percentages that each evaluation holds
-        this.timePoints = []; //array of evals at each time point
+        this.evals; // List of percentages that each evaluation holds
+        this.timePoints = []; // Array of evals at each time point
         this.initializeEvalDict();
     }
 
@@ -66,13 +23,10 @@ class IntentionColorVis {
     }
 }
 
-
 /**
  * Colors the nodes based on the different EVO types 
- * 
  */
 class EVO {
-    //replaced white with grey for readability
     static colorVisDict = {
         "0000": "#D3D3D3",
         "0011": "#003fff",
@@ -84,6 +38,7 @@ class EVO {
         "1110": "#ca2c92",
         "1111": "#0D0221"
     };
+
     /**
      * Defines order of evaluations for filling intentions by %
      */
@@ -99,7 +54,7 @@ class EVO {
         5: "1111"
     };
 
-    //replaces all conflicting evals with dark grey
+    // Replaces all conflicting evals with dark grey
     static colorVisDictColorBlind = {
         "0000": "#D3D3D3",
         "0011": "#003fff",
@@ -112,18 +67,19 @@ class EVO {
         "1111": "#333333"
     };
 
-    //number of evaluation types
+    // Number of evaluation types
     static numEvals = Object.keys(EVO.colorVisDict).length + 1;
-    //current time point, defined by selection in lower time point slider after simulating a single path
+    // Current time point, defined by selection in lower time point slider after simulating a single path
     static curTimePoint = 0;
-    //user selected slider option
+    // User selected slider option
     static sliderOption = 0;
-    //whether color blind mode is activated
+    // Whether color blind mode is activated
     static isColorBlindMode = false;
 
     /**
      * Checks validity, sets sliderOption, and refreshes visualization
-     * @param {*} newSliderOption 
+     * @param {String} newSliderOption 
+     * @param {ResultBBM} analysisResult 
      */
     static setSliderOption(newSliderOption, analysisResult) {
         if (newSliderOption >= 0 && newSliderOption <= 3) {
@@ -132,13 +88,13 @@ class EVO {
         else {
             console.log("ERROR: invalid sliderOption");
         }
-
         EVO.refresh(analysisResult);
     }
 
     /**
      * Set new time point and refresh
-     * @param {*} newTimePoint 
+     * @param {Number} newTimePoint 
+     * @param {ResultBBM} analysisResult
      */
     static setCurTimePoint(newTimePoint, analysisResult) {
         EVO.curTimePoint = newTimePoint;
@@ -147,25 +103,24 @@ class EVO {
 
     /**
      * Runs after any event that may change visualization, such as setting a sat value, changing slider option, or selecting a time point
-     */
+     * @param {ResultBBM} analysisResult
+    */
     static refresh(analysisResult) {
         var isAnalysis;
         // If EVO is on
         if (EVO.sliderOption > 0) {
-            if (analysisResult !== undefined && analysisResult.get('selected')) {// If a result is selected
+            if (analysisResult !== undefined && analysisResult.get('selected')) { // If a result is selected
                 EVO.colorIntentionsAnalysis(analysisResult);
-            }
-            else {
+            } else {
                 EVO.colorIntentionsModeling();
             }
             EVO.changeIntentionsText(analysisResult);
         }
         // If EVO is off
         else {
-            if (analysisResult !== undefined && analysisResult.get('selected')) {// If a result is selected
+            if (analysisResult !== undefined && analysisResult.get('selected')) { // If a result is selected
                 isAnalysis = true;
-            }
-            else {
+            } else {
                 isAnalysis = false;
             }
             EVO.returnAllColors(graph.getElements(), paper);
@@ -179,13 +134,14 @@ class EVO {
         this.numTimePoints = elementList[0].status.length;
         this.intentionListColorVis = [];
         // Assessable in next state window 
-        this.isColorBlind = false;
+        this.isColorBlind = EVO.isColorBlindMode;
         this.initializeIntentionList();
     }
 
     /**
      * Switches to analysis slider, uses the single path analysis results to calculate evaluation percentages, stores time point info, prints info to console
-     * @param {*} elementList List of elements containing analysis results
+     * @param {Object} elementList Array of the elements that contains the element's ID and analysis results
+     * @param {ResultBBM} analysisResult
      */
     singlePathResponse(elementList, analysisResult) {
         $('#modelingSlider').css("display", "none");
@@ -194,7 +150,7 @@ class EVO {
 
         var percentPerEvaluation = 1.0 / this.numTimePoints;
 
-        //calculate evaluation percentages and other data for ColorVis
+        // Calculate evaluation percentages and other data for ColorVis
         for (var i = 0; i < this.numIntentions; ++i) {
             this.intentionListColorVis[i].id = elementList[i].id;
             for (var k = 0; k < this.numTimePoints; ++k) {
@@ -213,12 +169,12 @@ class EVO {
 
     /**
      * Turn off EVO
+     * @param {ResultBBM} analysisResult
      */
     static deactivate(analysisResult) {
         document.getElementById("colorResetAnalysis").value = 0;
         document.getElementById("colorReset").value = 0;
         EVO.sliderOption = 0;
-
         EVO.refresh(analysisResult);
     }
 
@@ -241,11 +197,10 @@ class EVO {
         for (var i = 0; i < this.numIntentions; ++i) {
             var intention = this.intentionListColorVis[i];
             console.log("Intention " + intention.id + ":");
-
             for (var j = 0; j < EVO.numEvals; ++j) {
                 var evalType = EVO.colorVisOrder[j];
                 if (intention.evals[evalType] > 0.0) {
-                    //output it to the console
+                    // Output it to the console
                     console.log(evalType
                         + " -> "
                         + Math.floor(intention.evals[evalType] * 1000) / 10
@@ -253,31 +208,11 @@ class EVO {
                 }
             }
         }
-        // Old Code
-        // if (analysisResult.colorVis != null) {
-        //     for (var i = 0; i < analysisResult.colorVis.numIntentions; ++i) {
-        //         var intention = analysisResult.colorVis.intentionListColorVis[i];
-        //         console.log("Intention " + intention.id + ":");
-
-        //         for (var j = 0; j < EVO.numEvals; ++j) {
-        //             var evalType = EVO.colorVisOrder[j];
-        //             if (intention.evals[evalType] > 0.0) {
-        //                 //output it to the console
-        //                 console.log(evalType
-        //                     + " -> "
-        //                     + Math.floor(intention.evals[evalType] * 1000) / 10
-        //                     + "%");
-        //             }
-        //         }
-        //     }
-        // } else {
-        //     console.log("ERROR: colorVis is undefined.");
-        // }
     }
 
     /**
      * Used for filling intentions by time points or %. Creates a stripe visualization using gradients with a before and after buffer.
-     * @param {*} element 
+     * @param {Object} element 
      * Returns gradientID 
      */
     static defineGradient(element) {
@@ -290,7 +225,6 @@ class EVO {
             var percentPerTimePoint = 1.0 / element.timePoints.length;
             for (var j = 0; j < element.timePoints.length; ++j) {
                 currColor = EVO.getColor(element.timePoints[j]);
-
                 // Before buffer
                 offsetTotal += 0.001;
                 gradientStops.push({
@@ -310,10 +244,9 @@ class EVO {
                     color: currColor
                 });
             }
-
         }
         else if (EVO.sliderOption == 1) {
-            //fill by %
+            // Fill by %
             for (var j = 0; j < EVO.numEvals; ++j) {
                 var intentionEval = EVO.colorVisOrder[j];
                 if (element.evals[intentionEval] > 0) {
@@ -339,17 +272,16 @@ class EVO {
                 }
             }
         }
-
         var gradientId = paper.defineGradient({
             type: 'linearGradient',
             stops: gradientStops
         });
-
         return gradientId;
     }
 
     /**
      * Colors intentions by their evaluation information and slider option after simulating single path
+     * @param {ResultBBM} analysisResult 
      */
     static colorIntentionsAnalysis(analysisResult) {
         var elements = graph.getElements();
@@ -383,36 +315,34 @@ class EVO {
 
     /**
      * Makes text on intentions white when EVO is activated
+     * @param {ResultBBM} analysisResult 
      */
     static changeIntentionsText(analysisResult) {
         var elements = graph.getElements();
         var curr;
-        var colorVis
+        var colorVis;
         var satVal;
         var intention;
         var initSatVal;
+        var actor = 0; // Counts the number of actor 
 
         // Shows .satvalue automatically
         $('.satvalue').css("display", "");
 
         for (var i = 0; i < elements.length; i++) {
             curr = elements[i].findView(paper).model;
-
-            if (curr.attributes.type !== 'basic.Goal' &&
-                curr.attributes.type !== 'basic.Task' &&
-                curr.attributes.type !== 'basic.Softgoal' &&
-                curr.attributes.type !== 'basic.Resource') {
+            if (curr.get('type') == 'basic.Actor') {
+                actor++;
                 continue;
             }
-
+            
             // Sets satvalue/text to the initSatVal
             intention = curr.get('intention');
             initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair');
             // If there is no initSatVal
             if (initSatVal === '(no value)') {
                 curr.attr('.satvalue/text', '');
-            }
-            else {
+            } else {
                 curr.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
             }
 
@@ -428,7 +358,7 @@ class EVO {
                     if (EVO.sliderOption == 3) {
                         // Resets the satvalue back
                         colorVis = analysisResult.get('colorVis');
-                        satVal = colorVis.intentionListColorVis[0].timePoints[EVO.curTimePoint];
+                        satVal = colorVis.intentionListColorVis[i-actor].timePoints[EVO.curTimePoint]; // Subtract actor from i to find intentionListColorVis for elements only
                         curr.attr('.satvalue/text', satisfactionValuesDict[satVal].satValue);
                         EVO.displaySlider(true);
                     }
@@ -451,6 +381,7 @@ class EVO {
 
     /** 
      * Makes slider dis/appear 
+     * @param {Boolean} isOn 
      */
     static displaySlider(isOn) {
         // If the sliderOption is set at state or off
@@ -466,7 +397,8 @@ class EVO {
     }
 
     /**
-     * returns text to black in modeling mode
+     * Returns text to black in modeling mode
+     * @param {Boolean} isAnalysis
      */
     static revertIntentionsText(elements, paper, isAnalysis) {
         var curr;
@@ -500,7 +432,7 @@ class EVO {
     }
 
     /**
-     * changes each intention by their initial user set satisfaction value in modeling mode
+     * Changes each intention by their initial user set satisfaction value in modeling mode
      */
     static colorIntentionsModeling() {
         var initSatVal;
@@ -518,8 +450,7 @@ class EVO {
                 var colorChange = EVO.getColor(initSatVal);
                 // Change intention color to match sat value
                 cellView.model.attr({ '.outer': { 'fill': colorChange } });
-            }
-            else {
+            } else {
                 cellView.model.changeToOriginalColour();
             }
         }
@@ -527,7 +458,7 @@ class EVO {
 
     /**
      * Returns color that corresponds to an intention eval. Checks for color blind mode first.
-     * @param {*} intentionEval four digit code that corresponds to evidence pair (ex. 0011)
+     * @param {String} intentionEval four digit code that corresponds to evidence pair (ex. 0011)
      */
     static getColor(intentionEval) {
         if (EVO.isColorBlindMode) {
@@ -548,6 +479,7 @@ class EVO {
 
     /**
      * Switch back to modeling slider, if EVO is on the visualization returns to filling by initial state.
+     * @param {ResultBBM} analysisResult
      */
     static switchToModelingMode(analysisResult) {
         $('#modelingSlider').css("display", "");
@@ -561,7 +493,8 @@ class EVO {
 
     }
     /**
-     * Refresh teh slider for when swtcihing between configs and results
+     * Refresh the slider for when switching between configs and results
+     * @param {ResultBBM} analysisResult
      */
     static refreshSlider(analysisResult) {
         // If switching to configs
@@ -584,7 +517,8 @@ class EVO {
 
     /**
      * Toggles color blind mode
-     * @param {*} isTurningOnColorBlindMode 
+     * @param {Boolean} isTurningOnColorBlindMode 
+     * @param {ResultBBM} analysisResult
      */
     static toggleColorBlindMode(isTurningOnColorBlindMode, analysisResult) {
         EVO.isColorBlindMode = isTurningOnColorBlindMode;
@@ -597,22 +531,21 @@ class EVONextState {
     static sliderOptionNextState = 0;
 
     /**
-     * Next State window has new instance of EVO.
-     * This passes the color blind mode option through the Next State window
+     * This sets the color blind mode option to whatever it was in the previous window
      */
-    static setColorBlindFromPrevWindow() {
-        EVO.isColorBlindMode = window.opener.analysisResult.colorVis.isColorBlind;
+    static setColorBlindFromPrevWindow() {     
+        EVONextState.isColorBlindMode = myInputJSObject.results.get('colorVis').isColorBlind;
     }
 
     /**
      * Sets new slider option and refreshes to make applicable changes
-     * @param {*} newSliderOption 
+     * @param {String} newSliderOption 
      */
-    static setSliderOption(newSliderOption) {
+    static setSliderOptionNextState() {
+        var newSliderOption = $('#colorResetAnalysis').val();
         if (newSliderOption >= 0 && newSliderOption <= 2) {
             EVONextState.sliderOptionNextState = newSliderOption;
-        }
-        else {
+        } else {
             console.log("ERROR: invalid sliderOption");
         }
         EVONextState.refresh();
@@ -624,35 +557,35 @@ class EVONextState {
     static refresh() {
         switch (this.sliderOptionNextState) {
             case '1':
-                EVONextState.colorIntentionsByState();
-                this.changeIntentionsText(analysis.elements, analysis.paper);
+                EVONextState.colorIntentionsByPercents();
+                this.changeIntentionsText(analysis);
                 break;
 
             case '2':
-                EVONextState.colorIntentionsByPercents();
-                this.changeIntentionsText(analysis.elements, analysis.paper);
+                EVONextState.colorIntentionsByState();
+                this.changeIntentionsText(analysis);
                 break;
 
-            default://colorVis off
-                EVO.returnAllColors(analysis.elements, analysis.paper);
-                EVO.revertIntentionsText(analysis.elements, analysis.paper);
+            default: // ColorVis off
+                EVONextState.returnAllColors(analysis);
+                this.changeIntentionsText(analysis);
                 break;
         }
     }
 
     /**
-     * changes each intention by their satisfaction value for the displayed state
+     * Changes each intention by their satisfaction value for the displayed state
      */
     static colorIntentionsByState() {
         var value;
         var cellView;
         var colorChange;
 
-        for (var i = 0; i < analysis.elements.length; i++) {
-            cell = analysis.elements[i];
-            value = cell.attributes.attrs[".satvalue"].value;
-            cellView = cell.findView(analysis.paper);
-            colorChange = EVO.getColor(value);
+        for (var i = 0; i < analysis.intentions.length; i++) {
+            var element = analysis.intentions[i];
+            value = element.attr(".satvalue").value;
+            cellView = element.findView(analysis.paper);
+            colorChange = EVONextState.getColor(value);
             cellView.model.attr({ '.outer': { 'fill': colorChange } });
         }
     }
@@ -662,29 +595,47 @@ class EVONextState {
      */
     static colorIntentionsByPercents() {
         var intentionPercents = [];
-        //acquire all next state info
-        var percentPerEvaluation = 1.0 / analysis.analysisResult.allSolution.length; //number of next states
-        var step = 0;
-        //store: ID + percents per eval
-        for (var i = 0; i < analysis.elements.length; i++) { // For each elements
+        allSolutionArray = [];      
+        // Iterates over the hashmap allSolutions and combines all of the solutions into one array
+        for (var key in myInputJSObject.results.get('allSolutions')) {
+            // Adds every element (which are arrays) in the old array to the new array
+            myInputJSObject.results.get('allSolutions')[key].forEach(
+                solution => {
+                    allSolutionArray.push(solution);
+                });
+        }
+        var percentPerEvaluation = 1.0 / allSolutionArray.length; // Total number of solutions
+        // Store: ID + percents per eval
+        for (var i = 0; i < analysis.intentions.length; i++) { // For each elements
             // Compile and calculate % for each node -> % must be updated every time a filter is applied
             intentionPercents.push(new IntentionColorVis());
-            for (var j = 0; j < analysis.analysisResult.allSolution.length; j++) { // For each next state
-                var currEval = analysis.analysisResult.allSolution[j].intentionElements[i].status[step];
+            for (var j = 0; j < allSolutionArray.length; j++) { // For each next state
+                // tempResults.get('allSolutions')[solutionArray][solution_index][element_index];
+                var currEval = allSolutionArray[j][i];
                 var newPercent = intentionPercents[i].evals[currEval];
                 newPercent += percentPerEvaluation;
                 intentionPercents[i].evals[currEval] = newPercent;
             }
             var gradientID = this.defineGradient(intentionPercents[i]);
-            var cell = analysis.elements[i];
-            var cellView = cell.findView(analysis.paper);
+            var element = analysis.intentions[i];
+            var cellView = element.findView(analysis.paper);
             cellView.model.attr({ '.outer': { 'fill': 'url(#' + gradientID + ')' } });
         }
     }
 
     /**
+     * Returns color that corresponds to an intention eval. Checks for color blind mode first.
+     * @param {String} intentionEval four digit code that corresponds to evidence pair (ex. 0011)
+     */
+    static getColor(intentionEval) {
+        if (EVONextState.isColorBlindMode) {
+            return EVO.colorVisDictColorBlind[intentionEval];
+        }
+        return EVO.colorVisDict[intentionEval]; }
+
+    /**
      * Creates a gradient for an intention in colorIntentionsByPercents()
-     * @param {*} element 
+     * @param {Object} element 
      */
     static defineGradient(element) {
         var gradientStops = [];
@@ -694,7 +645,7 @@ class EVONextState {
         for (var j = 0; j < EVO.numEvals; ++j) {
             var intentionEval = EVO.colorVisOrder[j];
             if (element.evals[intentionEval] > 0) {
-                currColor = EVO.getColor(intentionEval);
+                currColor = EVONextState.getColor(intentionEval);
                 // Before buffer
                 offsetTotal += 0.001;
                 gradientStops.push({
@@ -715,24 +666,40 @@ class EVONextState {
                 });
             }
         }
-
         var gradientId = analysis.paper.defineGradient({
             type: 'linearGradient',
             stops: gradientStops
         });
+        return gradientId;        
     }
 
     /**
-     * Changes text color to white when EVO is on.
-     * @param {*} elements 
-     * @param {*} paper 
+    * Returns element color to based on element type
+    */
+        static returnAllColors(analysis) {
+        for (var i = 0; i < analysis.intentions.length; i++) {
+            var cellView = analysis.intentions[i].findView(analysis.paper);
+            cellView.model.changeToOriginalColour();
+        }
+    }
+
+    /**
+     * Changes text color to white when EVO is on
      */
-    static changeIntentionsText(elements, paper) {
-        var curr;
-        for (var i = 0; i < elements.length; i++) {
-            curr = elements[i].findView(paper).model;
-            if (curr.attributes.type !== 'basic.Actor') {
-                curr.attr({ text: { fill: 'white', stroke: 'none' } });
+    static changeIntentionsText(analysis) {
+        
+        if (EVONextState.sliderOptionNextState != '0') {
+            for (let element of analysis.intentions) {
+                element.attr({ text: { fill: 'white' } });
+            }
+        } else {
+            for (let element of analysis.intentions) {
+                var satValue = element.attr(".satvalue").value;
+                if ( (satValue == "0000") || (satValue == "0100") || (satValue == "1000") || (satValue == "1100") || (satValue == "0001") || (satValue == "0011") || (satValue == "0010")) {
+                    element.attr({ text: { fill: 'black' } });
+                } else {
+                    element.attr({ text: { fill: 'red' } });
+                }
             }
         }
     }

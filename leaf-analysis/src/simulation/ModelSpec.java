@@ -410,6 +410,12 @@ public class ModelSpec {
 		return this.absTP;
 	}
 	
+	public void incrementAbsTP(Integer delta) {
+		for (String key: absTP.keySet()) {
+			absTP.put(key, absTP.get(key) + delta);
+		}
+	}
+	
 	public int getNumRelativeTimePoints() {
 		return numRelativeTimePoints;
 	}

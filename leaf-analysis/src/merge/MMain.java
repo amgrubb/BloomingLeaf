@@ -2,6 +2,7 @@ package merge;
 
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.PrintWriter;
 
 import com.google.gson.Gson;
@@ -10,12 +11,6 @@ import com.google.gson.GsonBuilder;
 import gson_classes.IMain;
 import simulation.ModelSpec;
 import simulation.BIModelSpecBuilder;
-import simulation.Intention;
-import simulation.ContributionLink;
-import simulation.DecompositionLink;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * MMain
@@ -33,18 +28,36 @@ public class MMain {
 	 */
 	public static void main(String[] args) {
 		//This is the default filePath to be executed if no file is passed through parameters
-		String filePath = "temp/";
-		String inputFile1 = "game before.json";
-		String inputFile2 = "gate before.json";
-		String outputFile = "output-2-11.json";
-		String timingFile = "timings.json";
-		Integer delta = 0;  // new start B
 
-		try {
+		/*String filePath = "temp/";
+		String inputFile1 = "testModel1.json";
+		String inputFile2 = "testModel2.json";
+		String outputFile = "output-2-13.json";
+		String timingFile = "timings.json";
+		Integer delta = 5;  // new start B*/
+		String inPath = "tests/models/";
+		String tPath = "tests/timing/";
+		String outPath = "tests/mergedModels/";
+		String inputFile1 = "";
+		String inputFile2 = "";
+		String timingFile = "";
+		String outputFile = "output.json";
+		Integer delta = 5; //added because delta disappeared in the merge?
+		
+		try {			
+			if (args.length == 4) {
+				inputFile1 = args[0];
+				inputFile2 = args[1];
+				timingFile = args[2];
+				outputFile = args[3];
+			} else throw new IOException("Tool: Command Line Inputs Incorrect.");
+			
+			System.out.println("Merging: \t" + inputFile1 + " and " + inputFile2);
+
 			Gson gson = new Gson();
 			// Creating the 1st back-end model to be merged
 			System.out.println("M1:");
-			ModelSpec modelSpec1 = convertBackboneModelFromFile(filePath + inputFile1);
+			ModelSpec modelSpec1 = convertBackboneModelFromFile(inPath + inputFile1);
 
 			// print M1 for reference
 			IMain m1IMain = IMainBuilder.buildIMain(modelSpec1);
@@ -52,18 +65,20 @@ public class MMain {
 
 			// Creating the 2nd back-end model to be merged
 			System.out.println("M2:");
-			ModelSpec modelSpec2 = convertBackboneModelFromFile(filePath + inputFile2);
+			ModelSpec modelSpec2 = convertBackboneModelFromFile(inPath + inputFile2);
 
 			// print M2 for reference
 			IMain m2IMain = IMainBuilder.buildIMain(modelSpec2);
 			System.out.println(gson.toJson(m2IMain));
 
 			// Loading in timing info
-			TMain timings = convertTimingFromFile(filePath + timingFile);
+			TMain timings = convertTimingFromFile(tPath + timingFile);
+			System.out.println(timings.getTimingOffset());
 
 			System.out.println("----------------------");
 			// run merge
 			MergeAlgorithm merge = new MergeAlgorithm(modelSpec1, modelSpec2, delta, timings, outputFile.replace(".json", "-Traceability.txt"));
+
 			ModelSpec mergedModel = merge.getMergedModel();
 			System.out.println("Completed Merging.");
 
@@ -76,18 +91,17 @@ public class MMain {
 			//System.out.println(gson.toJson(mergedModelOut));
 			//System.out.println("converted merged model to IMain");
 
-			createOutputFile(mergedModelOut, filePath + outputFile);
+			createOutputFile(mergedModelOut, outPath + outputFile);
 			//createOutputFile(m1IMain, filePath + outputFile);
 
 			System.out.println("created output file");
 
-		
 
 		} catch (RuntimeException e) {
 			try {
 				if (DEBUG) System.err.println(e.getMessage());
 				File file;
-				file = new File(filePath + outputFile);
+				file = new File(outPath + outputFile);
 				if (!file.exists()) {
 					file.createNewFile();
 				}
@@ -103,7 +117,7 @@ public class MMain {
 			try {
 				if (DEBUG) System.err.println(e.getMessage());
 				File file;
-				file = new File(filePath + outputFile);
+				file = new File(outPath + outputFile);
 				if (!file.exists()) {
 					file.createNewFile();
 				}

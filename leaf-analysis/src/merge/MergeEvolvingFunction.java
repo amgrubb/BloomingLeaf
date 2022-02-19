@@ -14,11 +14,17 @@ public class MergeEvolvingFunction {
 	private MEvolvingFunction funcMerged;
 	
 	private List<String> timing;
+	private ArrayList<String> deletedTimings;
 	
 	public MergeEvolvingFunction(List<MFunctionSegment> segsA, List<MFunctionSegment> segsB, List<String> timing) {
 		this.funcA = new MEvolvingFunction(segsA, timing);
+		if (MMain.DEBUG) System.out.println(timing);
+		if (MMain.DEBUG) System.out.println(segsA);
 		this.funcB = new MEvolvingFunction(segsB, timing);
+		if (MMain.DEBUG) System.out.println(timing);
+		if (MMain.DEBUG) System.out.println(segsB);
 		this.timing = timing;
+		this.deletedTimings = new ArrayList<String>();
 		
 		System.out.println("--------------------");
 		funcA.printMe();
@@ -43,18 +49,24 @@ public class MergeEvolvingFunction {
 		if (MMain.DEBUG) System.out.println("Starting: doEvolvingFunctionMerge");
 
 		HashMap<String, String> newTimeline = new HashMap<>();
+		ArrayList<String> timingsToDelete = new ArrayList<>();
 		String valueM;
 		
 		// create new timeline
 		for (String time: timing) {
 			// find merged value at time
 			valueM = getMergedValueAtTime(time);
-			
+			System.out.println(valueM);
 			// insert into new timeline
 			if (!valueM.equals("skip")){
 				newTimeline.put(time, valueM);
+			}else {
+				timingsToDelete.add(time);
 			}
 		}
+		
+		this.timing.removeAll(timingsToDelete);
+		this.deletedTimings = timingsToDelete;
 		
 		// construct MEvolvingFunction from new timeline
 		this.funcMerged = new MEvolvingFunction(newTimeline, timing);
@@ -116,6 +128,10 @@ public class MergeEvolvingFunction {
 		FunctionSegment[] segmentsArr = new FunctionSegment[segments.size()];
         segmentsArr = segments.toArray(segmentsArr);
 		return segmentsArr;
+	}
+	
+	public ArrayList<String> getDeletedTimings(){
+		return deletedTimings;
 	}
 	
 	/**********

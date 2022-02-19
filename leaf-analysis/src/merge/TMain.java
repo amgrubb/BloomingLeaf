@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class TMain {
+	private Integer timingOffset;
 	private List<TIntention> timingList;
 	private HashMap<String, TIntention> timingsMap;
 	
@@ -21,7 +22,9 @@ public class TMain {
 			timingsMap.put(timing.getIntention(), timing);
 		}
 	}
-
+	public Integer getTimingOffset() {
+		return timingOffset;
+	}
 	public List<TIntention> getTimingList() {
 		return timingList;
 	}

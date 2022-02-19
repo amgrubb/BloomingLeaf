@@ -19,13 +19,16 @@ public class MergeAlgorithm {
 	Traceability trace; 
 	// tracks elements that are deleted in the merge
 	ArrayList<ArrayList<? extends AbstractElement>> deletedElements;
+	ArrayList<String> deletedTimings;
 	// collects messages about conflicts in the merge process that the user must remedy
 	ArrayList<String> conflictMessages;
 
 	/**
 	 * Initialize mergeAlgorithm and run mergeModels()
 	 */
+
 	public MergeAlgorithm(ModelSpec model1, ModelSpec model2, Integer delta, TMain timings, String filename) {
+
 		if (MMain.DEBUG) System.out.println("Starting: MergeAlgorithm");
 		// set up models
 		this.model1 = model1;
@@ -34,15 +37,16 @@ public class MergeAlgorithm {
 
 		// Tracks elements that are deleted in the merge
 		this.deletedElements = new ArrayList<ArrayList<? extends AbstractElement>>();
+		this.deletedTimings = new ArrayList<String>();
+		
+		// set up timing
+		this.timings = timings;
+		this.delta = timings.getTimingOffset();
 		this.maxTime1 = model1.getMaxTime();
 		this.maxTime2 = model2.getMaxTime() + delta;
 
 		//collects messages about conflicts
 		this.conflictMessages = new ArrayList<String>();
-
-		// set up timing
-		this.delta = delta;
-		this.timings = timings;
 
 		// pre-process timing and rename maxTimes to ints
 		this.timings.initializeTiming(maxTime1, maxTime2);
@@ -98,10 +102,11 @@ public class MergeAlgorithm {
 		//System.out.println(gson.toJson(modelOut));
 		
 		//traceability
-		trace.printDeletedToFile(deletedElements);
+		trace.printDeletedToFile(deletedElements, deletedTimings);
 		trace.printConflictMessagesToFile(conflictMessages);
 		trace.traceabilityOutput(mergedModel);
 		trace.addLine("The merge took: " + Long.toString(runtime) + "milliseconds. ");
+
 		System.out.println("finished traceability");
 
 		return mergedModel;
@@ -124,16 +129,14 @@ public class MergeAlgorithm {
 		model2.setMaxTime(newMax);
 
 		// update absolute time points for model 2
-		for (Integer absTP: model2.getAbsTP().values()) {
-			absTP += delta;
-		}
+		// future work: rename Initial in model B
+		model2.incrementAbsTP(delta);
 
 		// update absolute time points for model 2 stored in intentions' UAL
 		for (Intention intention: model2.getIntentions()) {
-			for(Integer absTP: intention.getUserEvals().keySet()) {
-				absTP += delta;
-			}
+			intention.incrementUserEvals(delta);
 		}
+		
 
 		// update absolute time points for model 2 stored in intentions' evolving functions
 		// and update timepoint names if available in timing file
@@ -222,39 +225,43 @@ public class MergeAlgorithm {
 							mergedIntention.setType(intention.getType());
 						}
 
-						//valuation merging
-						if (MMain.DEBUG) System.out.println("merging valuations");
-						HashMap<Integer, String> userEvalsA = mergedIntention.getUserEvals();
-						HashMap<Integer, String> userEvalsB = intention.getUserEvals();
-
-
-						for(int absTP: userEvalsA.keySet()){
-							//if they both have a valuation for a certain time point, merge it in
-							if(userEvalsB.containsKey(absTP)){
-								String newEval = mergeValuationConsensus(userEvalsA.get(absTP), userEvalsB.get(absTP));
-								if (MMain.DEBUG) System.out.println(newEval);
-								userEvalsA.put(absTP, newEval);
-							}
-						}
-						//add all the other valuations that the mergedIntention doesn't contain
-						for(int absTP:userEvalsB.keySet()) {
-							if(!userEvalsA.containsKey(absTP)) {
-								userEvalsA.put(absTP, userEvalsB.get(absTP));
-							}
-						}
-
 						// merge evolving functions
 						System.out.println("merging evolving functions");
 						FunctionSegment[] mergedEF = mergeEvolvingFunctions(mergedIntention, intention);
 						System.out.println("merged those M EF ers");
 						mergedIntention.setEvolvingFunctions(mergedEF);
+						
+						// user evaluation merging
+						if (MMain.DEBUG) System.out.println("merging valuations");
+						HashMap<Integer, String> userEvalsA = mergedIntention.getUserEvals();
+						HashMap<Integer, String> userEvalsB = intention.getUserEvals();
+						
+						if ((userEvalsA.size() == 1) && (userEvalsB.size() == 1)) {
+							// both static intentions
+							// keep static at consensus of evaluations
+							String newStaticEval = MEPOperators.consensus(mergedIntention.getInitialUserEval(), intention.getUserEvalAt(delta));
+							userEvalsA.put(0, newStaticEval);
+						} else {
+							// otherwise merge UAL for all timepoints
+							for(int absTP: userEvalsA.keySet()){
+								//if they both have a valuation for a certain time point, merge it in
+								if(userEvalsB.containsKey(absTP)){
+									String newEval = MEPOperators.consensus(userEvalsA.get(absTP), userEvalsB.get(absTP));
+									if (MMain.DEBUG) System.out.println(newEval);
+									userEvalsA.put(absTP, newEval);
+								}
+							}
+							// add all the other valuations that the mergedIntention doesn't contain
+							for(int absTP:userEvalsB.keySet()) {
+								if(!userEvalsA.containsKey(absTP)) {
+									userEvalsA.put(absTP, userEvalsB.get(absTP));
+								}
+							}
+						}
 
 						//replace all mentions of intention with mergedIntention in Model2
 						if (MMain.DEBUG) System.out.println("updating repeated intentions");
 						updateRepeatedIntention(mergedIntention, intention, model2);
-
-
-
 					}
 				}
 			}
@@ -309,52 +316,6 @@ public class MergeAlgorithm {
 		}
 
 	}
-
-	public static String mergeValuationConsensus(String value1, String value2){
-		return MEPOperators.consensus(value1, value2);
-
-		/*//dealing with no value:
-		System.out.println(value1 + value2);
-		//if both are no vale then no value will be returned, otherwise value 2 will be returned
-		if(value1.equals("(no value)")){
-			//System.out.println("no value");
-			return value2;
-		}
-		//if value2 is no value then value1 will be returned
-		if(value2.equals("(no value)")){
-			//System.out.println("no value");
-			return value1;
-		}
-
-		//actual valuations:
-		String sat1 = value1.substring(0,2);
-		String den1 = value1.substring(2,4);
-		String sat2 = value2.substring(0,2);
-		String den2 = value2.substring(2,4);
-		//System.out.println(sat1 + den1);
-
-		HashMap<String, Integer> valueRanks = new HashMap<>();
-		valueRanks.put("00", 0);
-		valueRanks.put("11", 2);
-		valueRanks.put("10", 1);
-
-		String newSat = "";
-		String newDen = "";
-
-		if(valueRanks.get(sat1) < valueRanks.get(sat2)){
-			newSat = sat1;
-		} else{
-			newSat = sat2;
-		}
-
-		if(valueRanks.get(den1) < valueRanks.get(den2)){
-			newDen = den1;
-		} else{
-			newDen = den2;
-		}
-		return newSat + newDen;*/
-	}
-
 
 	// ******* Actor merging methods begin ******** //
 	public static Actor mergeToOneActor(Actor actorOne, Actor actorTwo, int actorNum, ModelSpec model1, ModelSpec model2) {
@@ -638,11 +599,14 @@ public class MergeAlgorithm {
 						}
 						//check for tp conflict
 						else if(addedcl.getAbsTime() != cl.getAbsTime() && cl.getAbsTime() != null) {
-							//TODO: add timings to timings deletion list
+							deletedTimings.add(addedcl.getLinkTP() + "=" + Integer.toString(addedcl.getAbsTime()) + ", "+ cl.getLinkTP() + "=" + Integer.toString(cl.getAbsTime()));
+							conflictMessages.add(addedcl.getName() + " had link abs time points that were unresolvable.");
 							addedcl.setAbsTime((Integer)null);
 							cl.setAbsTime((Integer) null);
 							addedcl.updateLinkTP(addedcl.getLinkTP() + cl.getLinkTP());
 							cl.updateLinkTP(addedcl.getLinkTP());
+							
+							
 						}
 					}
 					
@@ -758,6 +722,8 @@ public class MergeAlgorithm {
 						//check for tp info conflict
 						else if(addeddl.getAbsTime() != dl.getAbsTime() && dl.getAbsTime() != null) {
 							//TODO: add timings to timings deletion list
+							deletedTimings.add(addeddl.getLinkTP() + "=" + Integer.toString(addeddl.getAbsTime()) + ", "+ dl.getLinkTP() + "=" + Integer.toString(dl.getAbsTime()));
+							conflictMessages.add(addeddl.getName() + " had link abs time points that were unresolvable.");
 							addeddl.setAbsTime((Integer)null);
 							dl.setAbsTime((Integer) null);
 							addeddl.updateLinkTP(addeddl.getLinkTP() + dl.getLinkTP());
@@ -792,8 +758,8 @@ public class MergeAlgorithm {
 			NotBothLink nbl= mergedNBL.get(x);
 			boolean deleted = false;
 			//absTP 0's
-			String eval1 = nbl.getElement1().getUserEvals().get(0);
-			String eval2= nbl.getElement2().getUserEvals().get(0);
+			String eval1 = nbl.getElement1().getInitialUserEval();
+			String eval2= nbl.getElement2().getUserEvalAt(delta);
 
 			//conflict if mismatching absTP 0's
 			if(!eval1.equals("0000") && !eval1.equals("(no value)") || !eval2.equals("0000") && !eval2.equals("(no value)")) {
@@ -976,8 +942,10 @@ public class MergeAlgorithm {
 		System.out.println("-----------------------------------");
 		System.out.println("Merging: " + intention1.getName());
 		System.out.println("len: " + Integer.toString(funcSeg1.length));
+		System.out.println(intention1.getUserEvals());
 		System.out.println(funcSeg1);
 		System.out.println("len: " + Integer.toString(funcSeg2.length));
+		System.out.println(intention2.getUserEvals());
 		System.out.println(funcSeg2);
 		System.out.println("-----------------------------------");
 
@@ -988,28 +956,56 @@ public class MergeAlgorithm {
 
 		// one intention is static
 		if (funcSeg1.length == 0) {
-			// if no user evaluations for intention, use other intention's functions
-			String userEval = intention1.getInitialUserEval();
-			if (userEval.equals("(no value)")) {
+			// A is static, use B's function segments
+			System.out.println("one intention static");
+			// gullibility: accept other intention's evolving functions;
+			// stochastic outside range of other intention's functions
+			if ((delta > 0) && (maxTime1 > maxTime2)) {
+				// gaps at beginning and end
+				// new array 2 larger
+				FunctionSegment[] newSegs = new FunctionSegment[funcSeg2.length + 2];
+				newSegs[0] = new FunctionSegment("R", "(no value)", "0", 0);
+				System.arraycopy(funcSeg2, 0, newSegs, 1, funcSeg2.length);
+				newSegs[funcSeg2.length+1] = new FunctionSegment("R", "(no value)", "B-MaxTime", maxTime2);
+				return newSegs;
+			} else if ((delta > 0) && (maxTime1 > maxTime2)) {
+				// gap just at beginning
+				// new array 1 larger
+				FunctionSegment[] newSegs = new FunctionSegment[funcSeg2.length + 1];
+				newSegs[0] = new FunctionSegment("R", "(no value)", "0", 0);
+				System.arraycopy(funcSeg2, 0, newSegs, 1, funcSeg2.length);
+				return newSegs;
+			}
+			else if ((delta > 0) && (maxTime1 > maxTime2)) {
+				// gap just at end
+				// new array 1 larger
+				FunctionSegment[] newSegs = new FunctionSegment[funcSeg2.length + 1];
+				System.arraycopy(funcSeg2, 0, newSegs, 0, funcSeg2.length);
+				newSegs[funcSeg2.length] = new FunctionSegment("R", "(no value)", "B-MaxTime", maxTime2);
+				return newSegs;
+			} else {
+				// no gaps
 				return funcSeg2;
 			}
-
-			// if we have evaluation, treat as constant over model's entire timeline
-			FunctionSegment constValue = new FunctionSegment("C", userEval, "O", 0);
-			intention1.setEvolvingFunctions(new FunctionSegment[]{constValue});
-			funcSeg1 = intention1.getEvolvingFunctions();
 		} else if (funcSeg2.length == 0) {
-			// if no user evaluations for intention, use other intention's functions
-			String userEval = intention2.getInitialUserEval();
-			if (userEval.equals("(no value)")) {
+			// B is static, use A's function segments
+			System.out.println("one intention static");
+			// gullibility: accept other intention's evolving functions;
+			// stochastic outside range of other intention's functions
+			if (maxTime1 < maxTime2) {
+				// A can only have gap at end
+				// new array 1 larger
+				FunctionSegment[] newSegs = new FunctionSegment[funcSeg1.length + 1];
+				System.arraycopy(funcSeg1, 0, newSegs, 0, funcSeg1.length);
+				newSegs[funcSeg1.length] = new FunctionSegment("R", "(no value)", "A-MaxTime", maxTime1);
+				return newSegs;
+			} else {
+				// no gaps
 				return funcSeg1;
 			}
-
-			// if we have evaluation, treat as constant over model's entire timeline
-			FunctionSegment constValue = new FunctionSegment("C", userEval, "O", 0);
-			intention2.setEvolvingFunctions(new FunctionSegment[]{constValue});
-			funcSeg2 = intention1.getEvolvingFunctions();
 		}
+		
+		// begin evolving intentions where both have evolving functions
 
 		// for contiguous or gap timelines, save time by simply appending arrays
 		// (delta >= maxTime1, aka model 2 starts after model1 ends)
@@ -1073,17 +1069,34 @@ public class MergeAlgorithm {
 			timeOrder = intentionTiming.getNewTimeOrder();
 		} else {
 			// doesn't have timing from user because simple merge
+			// see PreMerge conditions to skip inputting timing
+			
+			// one intention was static, and the other is just one function
+			if (funcSeg1.length == 1 && funcSeg2.length == 1) {
+				// start A and B
+				timeOrder.add("0");
+				timeOrder.add(Integer.toString(delta));
+				
+				// ending maxtimes
+				if (modelMaxTimesMatch) {
+					timeOrder.add("AB-MaxTime"); // end at same time
+				} else if (maxTime1 < maxTime2) {  
+					timeOrder.add("A-MaxTime");  // A ends first
+					timeOrder.add("B-MaxTime");
+				} else {  
+					timeOrder.add("B-MaxTime");  // B ends first
+					timeOrder.add("A-MaxTime");
+				}
+				
+			}
 			// (A or B is only one function, in which the other is entirely contained)
-
-			// these conditions match the PreMerge conditions to skip outputting to timing file
-			// (other than skipping gap/continuous situations, as addressed above)
 			// B contained in A
-			if (funcSeg1.length == 1 && maxTime1 >= maxTime2) {
+			else if (funcSeg1.length == 1 && maxTime1 >= maxTime2) {
 				// start A
 				timeOrder.add("0");
 
 				// add all of B's timepoints
-				intention2.getEvolvingFunctionStartTimes();
+				timeOrder.addAll(intention2.getEvolvingFunctionStartTimes());
 
 				// ending maxtimes
 				if (modelMaxTimesMatch) {
@@ -1099,7 +1112,7 @@ public class MergeAlgorithm {
 			else if ((delta == 0) && (funcSeg2.length == 1) && (maxTime1 <= maxTime2)) {
 				// A and B start at 0
 				// add all of A's timepoints
-				intention1.getEvolvingFunctionStartTimes();
+				timeOrder.addAll(intention1.getEvolvingFunctionStartTimes());
 
 				// ending maxtimes
 				if (modelMaxTimesMatch) {
@@ -1114,31 +1127,28 @@ public class MergeAlgorithm {
 			} else {
 				// if not simple merge, we should have had timing info in timing.json
 				// throw error
-				System.out.println(funcSeg1.length);
-				System.out.println(funcSeg2.length);
-				throw new RuntimeException("Error while merging " + intention1.getName() + ": ambigous timeline. Please order timepoints for this intention in timing.json");
+
+				throw new RuntimeException("Error while merging " + intention1.getName() + ": ambiguous timeline. Please order timepoints for this intention in timing.json");
+
 			}
 		}
 
 		// obtain complete functions (w/ start and end times and evidence pairs)
 		List<MFunctionSegment> segsA = completeFunctionInfo(intention1.getEvolvingFunctions(), intention1.getInitialUserEval(), maxTime1, maxTimeName1);
-		List<MFunctionSegment> segsB = completeFunctionInfo(intention2.getEvolvingFunctions(), intention2.getInitialUserEval(), maxTime2, maxTimeName2);
+		List<MFunctionSegment> segsB = completeFunctionInfo(intention2.getEvolvingFunctions(), intention2.getUserEvalAt(delta), maxTime2, maxTimeName2);
 
 		// merge functions
 		MergeEvolvingFunction merge = new MergeEvolvingFunction(segsA, segsB, timeOrder);
+		deletedTimings = merge.getDeletedTimings();
 
 		// output merged functions
 		return merge.outputMergedSegments();
 	}
 
-
-	/******************************************************************
-	 * For preparing MFunctionSegment lists with info from intention
-	 * to send into MergeEvolvingFunction
-	 ******************************************************************/
-
 	/**
 	 * Determines start evidence pairs and end times for function segments
+	 * For preparing MFunctionSegment lists with info from intention
+	 * to send into MergeEvolvingFunction
 	 */
 	private static List<MFunctionSegment> completeFunctionInfo(FunctionSegment[] oldSegs, String initialEval, Integer maxTime, String maxTimeName){
 		if (MMain.DEBUG) System.out.println("Starting: completeFunctionInfo");

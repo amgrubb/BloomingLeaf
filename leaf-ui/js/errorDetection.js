@@ -21,7 +21,6 @@ function clearCycleHighlighting() {
 		cellView = elements[i].findView(paper);
 		cellView.model.changeToOriginalColour();
 	}
-	IntentionColoring.setColorMode("EVO");
 }
 
 /**
@@ -34,7 +33,6 @@ function cycleResponse(cycleList) {
 	// Remove all previous coloring, deactivate EVO
 	clearCycleHighlighting();
 	if (isACycle(cycleList)) {
-		IntentionColoring.setColorMode("cycle");
 		swal("Cycle in the graph", "", "error");
 		var color_list = initColorList();
 		var cycleIndex = 0;
@@ -44,7 +42,7 @@ function cycleResponse(cycleList) {
 			var color = color_list[cycleIndex];
 			// For each element inside of a particular cycle
 			for (var l = 0; l < cycleList[k].length; l++) {
-				var cycleNode = getElementById(cycleList[k][l]);
+				var cycleNode = graph.getCell(cycleList[k][l]);
 				cellView = cycleNode.findView(paper);
 				cellView.model.attr({ '.outer': { 'fill': color } });
 			}
@@ -493,4 +491,16 @@ function traverseGraphRecursive(linkMap, currNode, walkList, notVisited, cycleLi
 	}
 	// Done with function call, so take a "step back" in the graph
 	walkList.pop();
+}
+
+/**
+ * Creates an error message if there are no elements on the paper
+ * @returns boolean
+ */
+function hasElements() {
+	if (getElementList().length == 0) { 
+		swal("Needs Elements", "", "error"); 
+		return false;
+	}
+	return true;
 }

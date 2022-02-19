@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 public class Traceability{
-	String fileName = "traceabilityOutput.txt";
+	private String fileName = "traceabilityOutput.txt";
 	public Traceability(String fileName) {
 		this.fileName = fileName;
 	}
@@ -200,13 +200,17 @@ public class Traceability{
 		
 	}
 	
-	public void printDeletedToFile(ArrayList<ArrayList<? extends AbstractElement>> deletedElements) {
+
+	public void printDeletedToFile(ArrayList<ArrayList<? extends AbstractElement>> deletedElements, ArrayList<String> deletedTimings) {
 		try {
 			System.out.println("Printing to file...");
 			FileWriter fileWriter = new FileWriter(fileName);
 			
 			fileWriter.write("Deleted Elements: "+ "\n");
 			fileWriter.write("--------------------------"+ "\n");
+			if(deletedTimings.size() != 0) {
+				fileWriter.write("\tDeleted Time Points" + deletedTimings);
+			}
 			for(ArrayList<? extends AbstractElement> deletedElemList: deletedElements) {
 				if(deletedElemList.size() == 0) {
 					continue;

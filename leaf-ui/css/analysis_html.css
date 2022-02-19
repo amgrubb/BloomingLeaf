@@ -247,11 +247,11 @@ body {
 }
 
 #init-sat-value:disabled {
-  background-color: rgba(20, 85, 9, 1);
+  background-color: rgba(36, 150, 255, 1);
   color: white;
 }
 .function-type:disabled {
-  background-color: rgba(20, 85, 9, 1);
+  background-color: rgba(36, 150, 255, 1);
   color: white;
 }
 
@@ -309,7 +309,7 @@ select > .select-placeholder {
   font-weight: 200;
 }
 
-.link-tools .tool-options{
+.link-tools{
    display: block;
 }
 .inspector-btn-small {
@@ -490,14 +490,33 @@ select > .select-placeholder {
    border-bottom: 1px solid #333;
 }
 
+/* Slider */
+#slider{
+  margin-left: auto;
+  margin-right: auto;
+  -webkit-box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.25);
+  -moz-box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.25);
+  box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.25);
+  z-index: 3;
+}
+
+/* Attribution */
+div.attribution{
+  position: fixed;
+  bottom: 0;
+  left: 30;
+  color: #333333;
+  width: 190px;
+  font-size: 9px;
+  margin: 5px;
+}
 
 /* beggining of representative color slider */
 
 .slidecontainer {
   width: 100%; /* Width of the outside container */
 }
-
-#top-label-nextState{
+#top-label {
   background-color: #333;
   border: none;
   color: white;
@@ -507,10 +526,23 @@ select > .select-placeholder {
   padding: 0px;
   position: relative;
   top: -15px;
-  left: 7px;
+  left: 5px;
 }
 
-.on-off{
+#top-label-analysis {
+  background-color: #333;
+  border: none;
+  color: white;
+  text-shadow: none;
+  font-size: 0.75em;
+  margin: 0px;
+  padding: 0px;
+  position: relative;
+  top: -16px;
+  left: 80px;
+}
+
+.on-off {
   font-size: 8px;
   color: white;
   position: relative;
@@ -519,10 +551,14 @@ select > .select-placeholder {
   margin-bottom: 0px;
   margin-left: 10px;
   }
-#colorResetNextState{
+#colorReset {
   position: relative;
   top: -20px;
-  width: 66px;
+}
+#colorResetAnalysis {
+  position: relative;
+  top: -6px;
+  width: 69px; /* 92 */
 }
 .EVO-whole-button {
   cursor: pointer;
@@ -549,6 +585,10 @@ select > .select-placeholder {
   transition: opacity .2s;
 }
 
+#nextStateSlider{
+  width: 140px;
+}
+
 /* Mouse-over effects */
 .EVO-slider:hover {
   opacity: 1; /* Fully shown on mouse-over */
@@ -571,33 +611,3 @@ select > .select-placeholder {
 }
 
 /* end of representive slider styling */
-
-/* Slider */
-#slider{
-  margin-left: auto;
-  margin-right: auto;
-  -webkit-box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.25);
-  -moz-box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.25);
-  box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.25);
-  z-index: 3;
-}
-
-#modeText{
-   float: right;
-   position: fixed;
-   color: rgba(0,0,0,0.6);
-   font-size: 1.3em;
-   top: 50px;
-   right: 270px;
-}
-
-/* Attribution */
-div.attribution{
-  position: fixed;
-  bottom: 0;
-  left: 30;
-  color: #333333;
-  width: 190px;
-  font-size: 9px;
-  margin: 5px;
-}

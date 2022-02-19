@@ -1,18 +1,15 @@
 package premerge;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.BufferedWriter;
 import java.io.PrintWriter;
 import java.util.List;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
-import gson_classes.IMain;
 import merge.MMain;
-import simulation.BIModelSpecBuilder;
 import simulation.Intention;
 import simulation.ModelSpec;
 
@@ -22,24 +19,69 @@ import simulation.ModelSpec;
  ***********/
 
 public class PreMerge {
+	public final static boolean DEBUG = true;
 
 	public static void main(String[] args) {
-		String filePath = "temp/";
-		String inputFile1 = "game before.json";
-		String inputFile2 = "gate before.json";
-		String timingFile = "timings.json";
-		Integer delta = 0;  // new start B
-
-		ModelSpec modelSpec1 = MMain.convertBackboneModelFromFile(filePath + inputFile1);
-		ModelSpec modelSpec2 = MMain.convertBackboneModelFromFile(filePath + inputFile2);
-
-		// pre-merge timing output
-		detectIntentionMerge(modelSpec1, modelSpec2, delta, filePath + timingFile);
+		String inPath = "tests/models/";
+		String tPath = "tests/timing/";
+		String inputFile1 = ""; // "testModel1.json";
+		String inputFile2 = ""; // "testModel2.json";
+		String timingFile = "timing.json"; //"testModel-timing.json";
+		Integer delta = 5;  // new start B
+		
+		try {
+			if (args.length == 4) {
+				inputFile1 = args[0];
+				inputFile2 = args[1];
+				timingFile = args[2];
+				delta = Integer.valueOf(args[3]);
+			} else throw new IOException("Tool: Command Line Inputs Incorrect.");
+	
+			ModelSpec modelSpec1 = MMain.convertBackboneModelFromFile(inPath + inputFile1);
+			ModelSpec modelSpec2 = MMain.convertBackboneModelFromFile(inPath + inputFile2);
+	
+			// pre-merge timing output
+			detectIntentionMerge(modelSpec1, modelSpec2, delta, tPath + timingFile);
+			
+		// exception handling
+		} catch (RuntimeException e) {
+			try {
+				if (DEBUG) System.err.println(e.getMessage());
+				File file;
+				file = new File(tPath + timingFile);
+				if (!file.exists()) {
+					file.createNewFile();
+				}
+				PrintWriter printFile = new PrintWriter(file);
+				String message = "{ \"errorMessage\" : \"RuntimeException: " + e.getMessage() + "\" }";
+				message = message.replaceAll("\\r\\n|\\r|\\n", " ");
+				printFile.printf(message);
+				printFile.close();
+			} catch (Exception f) {
+				throw new RuntimeException("Error while writing ErrorMessage: " + f.getMessage());
+			}
+		} catch (Exception e) {
+			try {
+				if (DEBUG) System.err.println(e.getMessage());
+				File file;
+				file = new File(tPath + timingFile);
+				if (!file.exists()) {
+					file.createNewFile();
+				}
+				PrintWriter printFile = new PrintWriter(file);
+				String message = "{ \"errorMessage\" : \"Exception: " + e.getMessage() + "\" }";
+				message = message.replaceAll("\\r\\n|\\r|\\n", " ");
+				printFile.printf(message);
+				printFile.close();
+			} catch (Exception f) {
+				throw new RuntimeException("Error while writing ErrorMessage: " + f.getMessage());
+			}
+		}
 	}
 
 
 	public static void detectIntentionMerge(ModelSpec modelA, ModelSpec modelB, Integer delta, String timingFilePath) {
-		startTimingFile(timingFilePath);
+		startTimingFile(timingFilePath, delta);
 		// don't output timing if no overlap between A and B
 		if (modelA.getMaxTime() <= delta) {
 			endTimingFile(timingFilePath);
@@ -52,23 +94,30 @@ public class PreMerge {
 				// if intention names match, intentions will merge
 
 				if(intentionA.getName().equals(intentionB.getName())) {
-					System.out.println("matched intentions");
+					System.out.println("matched intentions: " + intentionA.getName());
 					System.out.println(intentionA.getEvolvingFunctions().length);
 					System.out.println(intentionB.getEvolvingFunctions().length);
-					// don't output timing if 0 function segments in at least one intention
-					if ((intentionA.getEvolvingFunctions().length == 0) || (intentionB.getEvolvingFunctions().length == 0)) {
+					Integer evolFuncLenA = intentionA.getEvolvingFunctions().length;
+					Integer evolFuncLenB = intentionB.getEvolvingFunctions().length;
+					// don't output timing if 0 function segments in both intention
+					if ((evolFuncLenA == 0) || (evolFuncLenB == 0)) {
 						continue;
 					}
 
 					// don't output timing if A has 1 function segment and A ends after B
 					// (B is entirely contained within A)
-					if ((intentionA.getEvolvingFunctions().length == 1) && (modelA.getMaxTime() >= modelB.getMaxTime() + delta)) {
+					if ((evolFuncLenA == 1) && (modelA.getMaxTime() >= modelB.getMaxTime() + delta)) {
 						continue;
 					}
 
 					// don't output timing if B has 1 function segment and A ends before B
 					// (A is entirely contained within B)
-					if ((delta == 0) && (intentionB.getEvolvingFunctions().length == 1) && (modelA.getMaxTime() <= modelB.getMaxTime() + delta)) {
+					if ((delta == 0) && (evolFuncLenB == 1) && (modelA.getMaxTime() <= modelB.getMaxTime() + delta)) {
+						continue;
+					}
+					
+					// don't output timing if both have 1 function segment in the merge
+					if ((evolFuncLenA == 1) && (evolFuncLenB == 1)) {
 						continue;
 					}
 
@@ -132,7 +181,7 @@ public class PreMerge {
 
 	}
 
-	private static void startTimingFile(String timingFilePath) {
+	private static void startTimingFile(String timingFilePath, Integer delta) {
 		try {
 			// create new file if doesn't already exist
 			File file;
@@ -144,7 +193,8 @@ public class PreMerge {
 			// set up printwriter NOT in append mode
 			// (clears file from last output)
 			PrintWriter printFile = new PrintWriter(file);
-			printFile.println("{\"timingList\": [");
+			printFile.printf("{\"timingOffset\": \"%d\", %n", delta);
+			printFile.println("\"timingList\": [");
 
 			printFile.close();
 		} catch (Exception e) {

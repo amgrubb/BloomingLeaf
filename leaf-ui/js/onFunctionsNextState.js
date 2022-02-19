@@ -10,6 +10,7 @@ $('#btn-zoom-out').on('click', function () { zoomOut(analysis.paperScroller); })
 $('#btn-fnt').on('click', function () { defaultFont(analysis.paper); });
 $('#btn-fnt-up').on('click', function () { fontUp(analysis.paper); });
 $('#btn-fnt-down').on('click', function () { fontDown(analysis.paper); });
+$('#nextStateSlider').on('mouseup', function () { renderEVO(); })
 $('.inspector-btn-small').on('click', function () { goToState(); });
 $('.filter_checkbox').on('mousedown', function () { $("body").addClass("spinning"); }); // Adds waiting spinner to cursor
 $('.filter_checkbox').on('click', function () { add_filter() });
@@ -23,7 +24,7 @@ $(window).resize(function () {
 // Navigation bar functions:
 var max_font = 20;
 var min_font = 6;
-var current_font = 10;
+var current_font; 
 var default_font = 10;
 var graph = new joint.dia.BloomingGraph();
 
@@ -54,8 +55,14 @@ function changeFont(new_font, pPaper) {
  * @param {*} pPaper 
  */
 function fontUp(pPaper) {
-    var new_font = current_font + 1;
+    var elements = analysis.graph.getElements();
+    for (var i = 0; i < elements.length; i++) {
+        var cellView = elements[i].findView(pPaper);
+        // Get current font size from paper
+        current_font = cellView.model.attr(".name/font-size");
+    }
 
+    var new_font = current_font + 1;
     if (new_font <= max_font) {
         changeFont(new_font, pPaper)
     }
@@ -66,8 +73,14 @@ function fontUp(pPaper) {
  * @param {*} pPaper 
  */
 function fontDown(pPaper) {
-    var new_font = current_font - 1;
+    var elements = analysis.graph.getElements();
+    for (var i = 0; i < elements.length; i++) {
+        var cellView = elements[i].findView(pPaper);
+        // Get current font size from paper
+        current_font = cellView.model.attr(".name/font-size");
+    }
 
+    var new_font = current_font - 1;
     if (new_font >= min_font) {
         changeFont(new_font, pPaper)
     }
@@ -84,5 +97,5 @@ function defaultFont(pPaper) {
 function resizeWindow(sliderMax) {
     $('#slider').css("margin-top", $(this).height() * 0.7);
     $('#slider').width($('#paper').width() * 0.8);
-    adjustSliderWidth(sliderMax)
+    SliderObj.adjustSliderWidth(sliderMax);
 }
