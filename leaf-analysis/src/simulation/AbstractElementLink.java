@@ -44,8 +44,17 @@ public abstract class AbstractElementLink extends AbstractElement{
 	public boolean isEvolving() {
 		return isEvolving;
 	}
+	public void noLongerEvolves() {
+		isEvolving = false;
+	}
+	public void nowEvolves() {
+		isEvolving = true;
+	}
 	public Integer getAbsTime() {
 		return absTime;
+	}
+	public void setAbsTime(int absTime) {
+		this.absTime = absTime;
 	}
 	public String getLinkTP() {
 		return linkTP;

@@ -15,7 +15,8 @@ public class MergeAlgorithm {
 	// timing info
 	Integer delta, maxTime1, maxTime2, maxTimeMerged;
 	TMain timings;
-
+	//Traceability obj
+	Traceability trace; 
 	// tracks elements that are deleted in the merge
 	ArrayList<ArrayList<? extends AbstractElement>> deletedElements;
 	// collects messages about conflicts in the merge process that the user must remedy
@@ -24,7 +25,7 @@ public class MergeAlgorithm {
 	/**
 	 * Initialize mergeAlgorithm and run mergeModels()
 	 */
-	public MergeAlgorithm(ModelSpec model1, ModelSpec model2, Integer delta, TMain timings) {
+	public MergeAlgorithm(ModelSpec model1, ModelSpec model2, Integer delta, TMain timings, String filename) {
 		if (MMain.DEBUG) System.out.println("Starting: MergeAlgorithm");
 		// set up models
 		this.model1 = model1;
@@ -45,6 +46,9 @@ public class MergeAlgorithm {
 
 		// pre-process timing and rename maxTimes to ints
 		this.timings.initializeTiming(maxTime1, maxTime2);
+		
+		//set up traceability obj
+		trace = new Traceability(filename);
 
 		// run merge algorithm
 		mergeModels();
@@ -59,6 +63,7 @@ public class MergeAlgorithm {
 	 * @return the merged model
 	 */
 	public ModelSpec mergeModels(){
+		long startTime= System.currentTimeMillis();
 		if (MMain.DEBUG) System.out.println("Starting: mergeModels");
 		Gson gson = new Gson();
 
@@ -86,13 +91,17 @@ public class MergeAlgorithm {
 		if (MMain.DEBUG) System.out.println("Starting: mergeLinks");
 		mergeLinks();
 		System.out.println("finished mergelinks");
+		long runtime = System.currentTimeMillis() - startTime;
 
 		modelOut = IMainBuilder.buildIMain(mergedModel);
-		System.out.println("finished buiuldIamain");
+		System.out.println("finished buildImain");
 		//System.out.println(gson.toJson(modelOut));
-
-		Traceability.printDeletedToFile(deletedElements);
-		Traceability.printConflictMessagesToFile(conflictMessages);
+		
+		//traceability
+		trace.printDeletedToFile(deletedElements);
+		trace.printConflictMessagesToFile(conflictMessages);
+		trace.traceabilityOutput(mergedModel);
+		trace.addLine("The merge took: " + Long.toString(runtime) + "milliseconds. ");
 		System.out.println("finished traceability");
 
 		return mergedModel;
@@ -547,7 +556,7 @@ public class MergeAlgorithm {
 			linkCount++;
 			mergedDL.add(dl);
 		}
-		System.out.println("finished puttimg in links from model ohne");
+		System.out.println("finished putting in links from model one");
 
 		//merged nbl from model2 onto model1
 		for(NotBothLink nbl: model2.getNotBothLink()){
@@ -582,19 +591,74 @@ public class MergeAlgorithm {
 					System.out.println("merging cl");
 					isNewLink = false;
 					//merge these links
-					addedcl.setPreContribution(mergeContributionTypesSemiGullible(addedcl.getPreContribution(), cl.getPreContribution()));
-					addedcl.setPostContribution(mergeContributionTypesSemiGullible(addedcl.getPostContribution(), cl.getPostContribution()));
-					System.out.println(addedcl.getPreContribution());
-					//check if conflict has occurred
-					if(addedcl.getPostContribution() == ContributionType.NONE || addedcl.getPreContribution() == ContributionType.NONE){
-						//Conflict alert user
-						//System.out.println("conflict");
-						if (MMain.DEBUG) System.out.println("Contribution types were unresolvable");
-						conflictMessages.add(addedcl.getName() + " had contribution types that were unresolvable.");
-					}
-
+					
 					//adjust ID for merged link
 					addedcl.setID(addedcl.getID() + "2");
+					
+					addedcl.setPreContribution(mergeContributionTypesSemiGullible(addedcl.getPreContribution(), cl.getPreContribution()));
+					//check if there was a problem in merging types
+					if(addedcl.getPreContribution() == ContributionType.NONE){
+						//Conflict alert user
+						//System.out.println("conflict");
+						if (MMain.DEBUG) System.out.println("preContribution types were unresolvable");
+						conflictMessages.add(addedcl.getName() + " had preContribution types that were unresolvable.");
+					}
+					
+					//both are static
+					if(!addedcl.isEvolving() && !cl.isEvolving()) {
+						continue;
+					}
+					
+					//just one is evolving
+					if(addedcl.isEvolving() ^ cl.isEvolving()) {
+						if(addedcl.isEvolving()) {
+							//merge pre of static cl and post of evolving addedcl
+							addedcl.setPostContribution(mergeContributionTypesSemiGullible(addedcl.getPostContribution(), cl.getPreContribution()));
+		
+						}
+						else {
+							//merge pre of static addedcl and post of evolving cl
+							addedcl.setPostContribution(mergeContributionTypesSemiGullible(addedcl.getPreContribution(), cl.getPostContribution()));
+							//add transition time point info if applicable
+							if(cl.getAbsTime() != null) {
+								addedcl.setAbsTime(cl.getAbsTime());
+								addedcl.updateLinkTP(cl.getLinkTP());
+								addedcl.nowEvolves();
+							}
+						}
+						
+					}
+					//both are evolving
+					else {
+						addedcl.setPostContribution(mergeContributionTypesSemiGullible(addedcl.getPostContribution(), cl.getPostContribution()));
+						//add tp info from cl if none already
+						if(addedcl.getAbsTime() == null && cl.getAbsTime() != null) {
+							addedcl.setAbsTime(cl.getAbsTime());
+							addedcl.updateLinkTP(cl.getLinkTP());
+						}
+						//check for tp conflict
+						else if(addedcl.getAbsTime() != cl.getAbsTime() && cl.getAbsTime() != null) {
+							//TODO: add timings to timings deletion list
+							addedcl.setAbsTime((Integer)null);
+							cl.setAbsTime((Integer) null);
+							addedcl.updateLinkTP(addedcl.getLinkTP() + cl.getLinkTP());
+							cl.updateLinkTP(addedcl.getLinkTP());
+						}
+					}
+					
+					//check if conflict has occurred
+					if(addedcl.getPostContribution() == ContributionType.NONE){
+						//Conflict alert user
+						//System.out.println("conflict");
+						if (MMain.DEBUG) System.out.println("postContribution types were unresolvable");
+						conflictMessages.add(addedcl.getName() + " had contribution types that were unresolvable.");
+					}
+					//check if it is no longer evolving
+					if(addedcl.getPostContribution() == addedcl.getPreContribution()) {
+						addedcl.noLongerEvolves();
+					}
+					
+
 				}
 			}
 			if(isNewLink) {
@@ -636,22 +700,76 @@ public class MergeAlgorithm {
 						}
 					}
 					
+					//adjust ID for merged link
+					addeddl.setID(addeddl.getID() + "2");
+					
 					//check to make sure and/or types match
 					if(addeddl.getPreDecomposition() != dl.getPreDecomposition()){
 						addeddl.setPreDecomposition(DecompositionType.NONE);
 						//Conflict alert user
-						if (MMain.DEBUG) System.out.println("Decomp types unresolvable");
-						conflictMessages.add(addeddl.getName() + " had decomposition types that were unresolvable.");
+						if (MMain.DEBUG) System.out.println("preDecomp types unresolvable");
+						conflictMessages.add(addeddl.getName() + " had preDecomposition types that were unresolvable.");
 					}
-					if(addeddl.getPostDecomposition() != null && dl.getPostDecomposition() != null && addeddl.getPostDecomposition() != dl.getPostDecomposition()){
-						addeddl.setPostDecomposition(DecompositionType.NONE);
-						//Conflict alert user
-						if (MMain.DEBUG) System.out.println("decomp types are different");
-						conflictMessages.add(addeddl.getName() + " had decomposition types that were unresolvable.");
+					
+					//both are static
+					if(!addeddl.isEvolving() && !dl.isEvolving()) {
+						continue;
 					}
-
-					//adjust ID for merged link
-					addeddl.setID(addeddl.getID() + "2");
+					
+					//just one is static
+					if(addeddl.isEvolving() ^ dl.isEvolving()) {
+						if(addeddl.isEvolving()) {
+							if(addeddl.getPostDecomposition() != dl.getPreDecomposition()){
+								addeddl.setPostDecomposition(DecompositionType.NONE);
+								//Conflict alert user
+								if (MMain.DEBUG) System.out.println("postdecomp types are different");
+								conflictMessages.add(addeddl.getName() + " had postdecomposition types that were unresolvable.");
+							}
+							
+						}else {
+							if(addeddl.getPreDecomposition() != dl.getPostDecomposition()){
+								addeddl.setPostDecomposition(DecompositionType.NONE);
+								//Conflict alert user
+								if (MMain.DEBUG) System.out.println("postdecomp types are different");
+								conflictMessages.add(addeddl.getName() + " had postdecomposition types that were unresolvable.");
+							}
+							//add transition time point info if applicable
+							if(dl.getAbsTime() != null) {
+								addeddl.setAbsTime(dl.getAbsTime());
+								addeddl.updateLinkTP(dl.getLinkTP());
+								addeddl.nowEvolves();
+							}
+							
+						}
+					}
+					//both are evolving
+					else {
+						if(addeddl.getPostDecomposition() != dl.getPostDecomposition()){
+							addeddl.setPostDecomposition(DecompositionType.NONE);
+							//Conflict alert user
+							if (MMain.DEBUG) System.out.println("decomp types are different");
+							conflictMessages.add(addeddl.getName() + " had decomposition types that were unresolvable.");
+						}
+						//if dl has any tp info need to add
+						if(addeddl.getAbsTime() == null && dl.getAbsTime() != null) {
+							addeddl.setAbsTime(dl.getAbsTime());
+							addeddl.updateLinkTP(dl.getLinkTP());
+						}
+						//check for tp info conflict
+						else if(addeddl.getAbsTime() != dl.getAbsTime() && dl.getAbsTime() != null) {
+							//TODO: add timings to timings deletion list
+							addeddl.setAbsTime((Integer)null);
+							dl.setAbsTime((Integer) null);
+							addeddl.updateLinkTP(addeddl.getLinkTP() + dl.getLinkTP());
+							dl.updateLinkTP(addeddl.getLinkTP());
+						}
+					}
+	
+					//check if it is no longer evolving
+					if(addeddl.getPostDecomposition() == addeddl.getPreDecomposition()) {
+						addeddl.noLongerEvolves();
+					}
+					
 				}
 			}
 			if(isNewLink) {
@@ -672,6 +790,7 @@ public class MergeAlgorithm {
 		ArrayList<NotBothLink> deletedNBL = new ArrayList<NotBothLink>();
 		for(int x = 0; x < mergedNBL.size(); x++) {
 			NotBothLink nbl= mergedNBL.get(x);
+			boolean deleted = false;
 			//absTP 0's
 			String eval1 = nbl.getElement1().getUserEvals().get(0);
 			String eval2= nbl.getElement2().getUserEvals().get(0);
@@ -680,30 +799,34 @@ public class MergeAlgorithm {
 			if(!eval1.equals("0000") && !eval1.equals("(no value)") || !eval2.equals("0000") && !eval2.equals("(no value)")) {
 				//Conflict!!
 				System.out.println("removed NBL");
-				mergedNBL.remove(nbl);
+				//mergedNBL.remove(nbl);
 				deletedNBL.add(nbl);
 				conflictMessages.add(nbl.getName() + " conflicted with intentino absTP 0");
+				deleted = true;
 			}
 
 			//conflict if any evolfuncs are stochastic
 			for(FunctionSegment funcSeg: nbl.getElement1().getEvolvingFunctions()) {
-				if(!funcSeg.getType().equals("R")) {
+				if(funcSeg.getType().equals("R") && !deleted) {
 					System.out.println("removed NBL");
-					mergedNBL.remove(nbl);
+					//mergedNBL.remove(nbl);
 					deletedNBL.add(nbl);
 					conflictMessages.add(nbl.getName() + " connected intention with stochastic func.");
+					deleted = true;
 				}
 			}
 			for(FunctionSegment funcSeg: nbl.getElement2().getEvolvingFunctions()) {
-				if(!funcSeg.getType().equals("R")) {
+				if(funcSeg.getType().equals("R") && !deleted) {
 					System.out.println("removed NBL");
-					mergedNBL.remove(nbl);
+					//mergedNBL.remove(nbl);
 					deletedNBL.add(nbl);
 					conflictMessages.add(nbl.getName() + " connected intention with stochastic func.");
+					deleted = true;
 				}
 			}
 		}
 		//add nbls to deleted elements
+		mergedNBL.removeAll(deletedNBL);
 		deletedElements.add((ArrayList<? extends AbstractElement>) deletedNBL);
 		System.out.println("deleted nbls");
 

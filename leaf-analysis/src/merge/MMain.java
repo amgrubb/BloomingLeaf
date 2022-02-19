@@ -34,8 +34,8 @@ public class MMain {
 	public static void main(String[] args) {
 		//This is the default filePath to be executed if no file is passed through parameters
 		String filePath = "temp/";
-		String inputFile1 = "NBL1.json";
-		String inputFile2 = "NBL2.json";
+		String inputFile1 = "game before.json";
+		String inputFile2 = "gate before.json";
 		String outputFile = "output-2-11.json";
 		String timingFile = "timings.json";
 		Integer delta = 0;  // new start B
@@ -63,25 +63,25 @@ public class MMain {
 
 			System.out.println("----------------------");
 			// run merge
-			MergeAlgorithm merge = new MergeAlgorithm(modelSpec1, modelSpec2, delta, timings);
+			MergeAlgorithm merge = new MergeAlgorithm(modelSpec1, modelSpec2, delta, timings, outputFile.replace(".json", "-Traceability.txt"));
 			ModelSpec mergedModel = merge.getMergedModel();
 			System.out.println("Completed Merging.");
-			System.out.println("merged models");
+
+			
 
 			System.out.println("----------------------");
 
 			// Create Output file that will be used by frontend
 			IMain mergedModelOut = IMainBuilder.buildIMain(mergedModel);
-			System.out.println(gson.toJson(mergedModelOut));
-			System.out.println("converted merged model to IMain");
+			//System.out.println(gson.toJson(mergedModelOut));
+			//System.out.println("converted merged model to IMain");
 
 			createOutputFile(mergedModelOut, filePath + outputFile);
 			//createOutputFile(m1IMain, filePath + outputFile);
 
 			System.out.println("created output file");
 
-			Traceability.traceabilityOutput(mergedModel, "traceabilityOutput.txt");
-			System.out.println("created Traceability doc");
+		
 
 		} catch (RuntimeException e) {
 			try {

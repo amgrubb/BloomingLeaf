@@ -25,8 +25,8 @@ public class PreMerge {
 
 	public static void main(String[] args) {
 		String filePath = "temp/";
-		String inputFile1 = "NBL1.json";
-		String inputFile2 = "NBL2.json";
+		String inputFile1 = "game before.json";
+		String inputFile2 = "gate before.json";
 		String timingFile = "timings.json";
 		Integer delta = 0;  // new start B
 
