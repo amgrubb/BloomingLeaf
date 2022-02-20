@@ -93,7 +93,7 @@ public class PreMerge {
 			for(Intention intentionB: modelB.getIntentions()) {
 				// if intention names match, intentions will merge
 
-				if(intentionA.getName().equals(intentionB.getName())) {
+				if(intentionA.getName().trim().equals(intentionB.getName().trim())) {
 					System.out.println("matched intentions: " + intentionA.getName());
 					System.out.println(intentionA.getEvolvingFunctions().length);
 					System.out.println(intentionB.getEvolvingFunctions().length);
@@ -143,7 +143,7 @@ public class PreMerge {
 
 
 			// first, print intention name
-			printFile.printf("{%n\t\"intention\": \"%s\",%n", intentionA.getName());
+			printFile.printf("{%n\t\"intention\": \"%s\",%n", intentionA.getName().trim());
 
 			// TODO: only output if A or B has more than 1 evolving function
 			// timing for intention A
