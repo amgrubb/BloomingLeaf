@@ -29,12 +29,12 @@ public abstract class AbstractLinkableElement extends AbstractElement{
 	public AbstractLinkableElement(String nodeID, String nodeName) {
 		super(null);
 		this.id = nodeID;
-		this.name = nodeName;
+		this.name = nodeName.trim();
 	}
 	public AbstractLinkableElement(String nodeID, String nodeName, String uniqueID) {
 		super(uniqueID);
 		this.id = nodeID;
-		this.name = nodeName;
+		this.name = nodeName.trim();
 	}
     public void addLinksAsSrc(AbstractElementLink iLink){
         linksSrc.add(iLink);
