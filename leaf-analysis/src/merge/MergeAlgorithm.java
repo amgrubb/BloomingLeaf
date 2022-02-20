@@ -1024,7 +1024,7 @@ public class MergeAlgorithm {
 			// append evolving functions
 			FunctionSegment[] combined = new FunctionSegment[funcSeg1.length + funcSeg2.length]; // initialize array to hold info from both
 			System.arraycopy(funcSeg1, 0, combined, 0, funcSeg1.length);  // copy first array into combined
-			System.arraycopy(funcSeg1, 0, combined, funcSeg1.length, funcSeg2.length);  // copy second array ""
+			System.arraycopy(funcSeg2, 0, combined, funcSeg1.length, funcSeg2.length);  // copy second array ""
 
 			System.out.println("num func segments in combined:");
 			System.out.println(combined.length);
@@ -1043,7 +1043,7 @@ public class MergeAlgorithm {
 			FunctionSegment[] combined = new FunctionSegment[funcSeg1.length + funcSeg2.length + 1]; // initialize array to hold info from both
 			System.arraycopy(funcSeg1, 0, combined, 0, funcSeg1.length);  // copy first array into combined
 			combined[funcSeg1.length] = fillGap;  // add gap segment in the middle
-			System.arraycopy(funcSeg1, 0, combined, funcSeg1.length+1, funcSeg2.length);  // copy second array ""
+			System.arraycopy(funcSeg2, 0, combined, funcSeg1.length+1, funcSeg2.length);  // copy second array ""
 
 			System.out.println("num func segments in combined:");
 			System.out.println(combined.length);
