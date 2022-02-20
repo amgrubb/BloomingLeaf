@@ -218,13 +218,19 @@ public class MergeAlgorithm {
 					if(mergedIntention.getName().equals(intention.getName())){
 						if (MMain.DEBUG) System.out.println("merging an intention");
 						//update ID to show that intention also exists in model2
+						
 						mergedIntention.setId(mergedIntention.getId() + "2");
+						System.out.println(mergedIntention.getId());
 
 						//actor merging
-						if(!mergedIntention.getActor().getName().equals(intention.getActor().getName())){
+						if((mergedIntention.hasActor() && intention.hasActor()) && !mergedIntention.getActor().getName().equals(intention.getActor().getName())){
 							//UNRESOLVABLE CONFLICT
 							if (MMain.DEBUG) System.out.println("!!!Intentions in different actors!!!");
 							conflictMessages.add(mergedIntention.getName() + " has different actors in each model.");
+						}
+						
+						if(!intention.hasActor()) {
+							mergedIntention.removeActor();
 						}
 
 						//type merging

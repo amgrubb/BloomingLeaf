@@ -311,5 +311,11 @@ public class Intention extends AbstractLinkableElement {
 	public void setUserEvals(HashMap<Integer, String> newUserEvals) {
 		userEvals = newUserEvals;
 	}
+	public boolean hasActor() {
+		return actor != null;
+	}
+	public void removeActor() {
+		actor = null;
+	}
 	
 }
