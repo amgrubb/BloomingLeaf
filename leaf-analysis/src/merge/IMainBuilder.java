@@ -237,8 +237,15 @@ public class IMainBuilder {
 	}
 
 	private static BIIntention buildBIIntention(Intention specIntention) {
-		// create evolving function
-		BIEvolvingFunction evolvingFunction = rerollEvolvingFunctions(specIntention.getEvolvingFunctions());
+		// create evolving functions
+		BIFunctionSegment[] functionSegs;
+		if (specIntention.getMEvolvingFunctions() != null) {
+			functionSegs = getFunctionSegsMerged(specIntention.getMEvolvingFunctions());
+		} else {
+			functionSegs = getFunctionSegs(specIntention.getEvolvingFunctions());
+		}
+		
+		BIEvolvingFunction evolvingFunction = getEvolvingFunction(functionSegs);
 
 
 		// create user assignments list
@@ -254,18 +261,46 @@ public class IMainBuilder {
 
 		return newIntention;
 	}
-
-	private static BIEvolvingFunction rerollEvolvingFunctions(FunctionSegment[] evolvingFunctions) {
-		// convert FunctionSegment[] into BIFunctionSegment[]
+	
+	private static BIFunctionSegment[] getFunctionSegs(FunctionSegment[] evolvingFunctions){
+		// for intentions w/o extra info on evolving functions (MFunctionSegment list)
+		
+		// convert FunctionSegment[] into List<BIFunctionSegment>
 		ArrayList<BIFunctionSegment> funcSegList = new ArrayList<BIFunctionSegment>();
 		for (FunctionSegment func : evolvingFunctions) {
 			BIFunctionSegment funcSeg = new BIFunctionSegment(func.getRefEvidencePair(), func.getStartAT(),
 															  func.getStartTP(), func.getType());
 			funcSegList.add(funcSeg);
 		}
-		// convert to array
+		
+		// convert to array BIFunctionSegment[]
 		BIFunctionSegment[] functionSegList = new BIFunctionSegment[funcSegList.size()];
 		functionSegList = funcSegList.toArray(functionSegList);
+		
+		return functionSegList;
+	}
+	
+	private static BIFunctionSegment[] getFunctionSegsMerged(List<MFunctionSegment> evolvingFunctions){
+		// for intentions w/o extra info on evolving functions (MFunctionSegment list)
+		
+		// convert List<MFunctionSegment> into List<BIFunctionSegment>
+		ArrayList<BIFunctionSegment> funcSegList = new ArrayList<BIFunctionSegment>();
+		for (MFunctionSegment func : evolvingFunctions) {
+			BIFunctionSegment funcSeg = new BIFunctionSegment(func.getStartEvidencePair(), func.getRefEvidencePair(), //(end pair)
+															  func.getRefEvidencePair(), func.getStartAT(),
+															  func.getStartTP(), func.getType());
+			funcSegList.add(funcSeg);
+		}
+		
+		// convert to array BIFunctionSegment[]
+		BIFunctionSegment[] functionSegList = new BIFunctionSegment[funcSegList.size()];
+		functionSegList = funcSegList.toArray(functionSegList);
+		
+		return functionSegList;
+	}
+
+	private static BIEvolvingFunction getEvolvingFunction(BIFunctionSegment[] functionSegList) {
+		// find type of evolving function
 
 		// type if none of the named cases below
 		String type = "UD";

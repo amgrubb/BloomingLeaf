@@ -18,15 +18,16 @@ public class MergeEvolvingFunction {
 	
 	public MergeEvolvingFunction(List<MFunctionSegment> segsA, List<MFunctionSegment> segsB, List<String> timing) {
 		this.funcA = new MEvolvingFunction(segsA, timing);
-		if (MMain.DEBUG) System.out.println(timing);
-		if (MMain.DEBUG) System.out.println(segsA);
+		//if (MMain.DEBUG) System.out.println(timing);
+		//if (MMain.DEBUG) System.out.println(segsA);
 		this.funcB = new MEvolvingFunction(segsB, timing);
-		if (MMain.DEBUG) System.out.println(timing);
-		if (MMain.DEBUG) System.out.println(segsB);
+		//if (MMain.DEBUG) System.out.println(timing);
+		//if (MMain.DEBUG) System.out.println(segsB);
 		this.timing = timing;
 		this.deletedTimings = new ArrayList<String>();
 		
 		System.out.println("--------------------");
+		System.out.println("Merging:");
 		funcA.printMe();
 		funcB.printMe();
 		System.out.println("--------------------");
@@ -34,8 +35,9 @@ public class MergeEvolvingFunction {
 		doEvolvingFunctionMerge();
 		
 		System.out.println("--------------------");
-		funcMerged.printMe();
-		System.out.println("--------------------");
+		System.out.println("Result:");
+		if (MMain.DEBUG) funcMerged.printMe();
+		if (MMain.DEBUG) System.out.println("--------------------");
 	}
 	
 	/***************************
@@ -48,78 +50,81 @@ public class MergeEvolvingFunction {
 	private void doEvolvingFunctionMerge() {
 		if (MMain.DEBUG) System.out.println("Starting: doEvolvingFunctionMerge");
 
-		HashMap<String, String> newTimeline = new HashMap<>();
+		HashMap<String, String> newStartingTimeline = new HashMap<>();
+		HashMap<String, String> newEndingTimeline = new HashMap<>();
 		ArrayList<String> timingsToDelete = new ArrayList<>();
-		String valueM;
+		String mergedEnd, mergedStart;
 		
 		// create new timeline
 		for (String time: timing) {
 			// find merged value at time
-			valueM = getMergedValueAtTime(time);
-			System.out.println(valueM);
+			mergedEnd = getMergedValueAtTime(time, funcA.getEndingEvidencePair(time), funcB.getEndingEvidencePair(time));
+			mergedStart = getMergedValueAtTime(time, funcA.getStartingEvidencePair(time), funcB.getStartingEvidencePair(time));
+			System.out.println(mergedEnd);
+			System.out.println(mergedStart);
+			
 			// insert into new timeline
-			if (!valueM.equals("skip")){
-				newTimeline.put(time, valueM);
+			newEndingTimeline.put(time, mergedEnd);
+			newStartingTimeline.put(time, mergedStart);
+			
+			// old skip value compatibility
+			/*if (!valueM.equals("skip")){
+				newStartingTimeline.put(time, valueM);
 			}else {
-				timingsToDelete.add(time);
-			}
+				timingsToDelete.add(time);  // removed skip values for now
+			}*/
 		}
 		
 		this.timing.removeAll(timingsToDelete);
 		this.deletedTimings = timingsToDelete;
 		
 		// construct MEvolvingFunction from new timeline
-		this.funcMerged = new MEvolvingFunction(newTimeline, timing);
+		this.funcMerged = new MEvolvingFunction(newStartingTimeline, newEndingTimeline, timing);
 	}
 	
 	/**
 	 * merge values for A and B at specific time
 	 */
-	private String getMergedValueAtTime(String time) {
+	private String getMergedValueAtTime(String time, String valueA, String valueB) {
 		if (MMain.DEBUG) System.out.println("Starting: getMergedValueAtTime: " + time);
 		System.out.println(time);
 		
-		// get model A + B values at time
-		String valueA = funcA.getEvidencePair(time);
-		String valueB = funcB.getEvidencePair(time);
-		
 		System.out.println(valueA);
 		System.out.println(valueB);
-
-		// one value is mid and other is (no value), skip this timepoint
-		// (no info in middle of segment)
-		if ((valueA.equals("mid") && valueB.equals("(no value)")) ||
-			(valueB.equals("mid") && valueA.equals("(no value)")) ||
-			(valueA.equals("mid") && valueB.equals("mid"))) {
-			return "skip";
-		}
 		
 		// note: should never have "mid" for both values
+		// (middle of function for both models)
+		if (valueA.equals("mid") && valueB.equals("mid")) {
+			System.out.println("warning: merging two mids");
+		}
 		
 		// if valueA or valueB is a mid value, use mid operator
-		// note: from above, we never need to mid() with (no value)
+		// note: from above, we don't need to calculate mid() with (no value)
 		if (valueA.equals("mid")) {
 			return funcA.mid(time, valueB);
 		} else if (valueB.equals("mid")) {
 			return funcB.mid(time, valueA);
 		}
+		
 		// otherwise, if we have values for both,
 		// use consensus operator
 		else {
 			return MEPOperators.consensus(valueA, valueB);
 		}
-		
 	}
 	
 	/****************************
 	 * Outputting merged timeline
 	 ****************************/
+	public List<MFunctionSegment> outputMergedSegments(){
+		return funcMerged.getSegments();
+	}
 	
 	/**
-	 * format evolving function segments for output	
+	 * convert evolving function segments to FunctionSegment[]
 	 * @return segmentsArr - FunctionSegment[] to store in merged intention
 	 */
-	public FunctionSegment[] outputMergedSegments() {
+	public FunctionSegment[] outputMergedSegmentsArr() {
 		// upcast the MFunctionSegments to FunctionSegment
 		List<FunctionSegment> segments = new ArrayList<>();
 		segments.addAll(funcMerged.getSegments());

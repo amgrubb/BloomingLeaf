@@ -9,6 +9,8 @@ import gson_classes.BIFunctionSegment;
 import gson_classes.BIUserEvaluation;
 import gson_classes.ICell;
 
+import merge.MFunctionSegment;
+
 public class Intention extends AbstractLinkableElement {
 	private static int idcounter = 0;
 	
@@ -19,6 +21,7 @@ public class Intention extends AbstractLinkableElement {
 	
 	private HashMap<Integer, String> userEvals;
 	private FunctionSegment[] evolvingFunctions;
+	private List<MFunctionSegment> mergedEvolvingFunctions;  // more complete function info
 	private String type;
 	
 	public Intention(String uniqueID, String nodeName, Actor nodeActor, String nodeType,
@@ -171,6 +174,14 @@ public class Intention extends AbstractLinkableElement {
 	
 	public void setEvolvingFunctions(FunctionSegment[] segments) {
 		evolvingFunctions = segments;
+	}
+	
+	public List<MFunctionSegment> getMEvolvingFunctions() {
+		return mergedEvolvingFunctions;
+	}
+	
+	public void setMergedEvolvingFunctions(List<MFunctionSegment> segments) {
+		mergedEvolvingFunctions = segments;
 	}
 
 	public HashMap<Integer, String> getUserEvals() {

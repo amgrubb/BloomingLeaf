@@ -27,7 +27,7 @@ public class PreMerge {
 		String inputFile1 = ""; // "testModel1.json";
 		String inputFile2 = ""; // "testModel2.json";
 		String timingFile = "timing.json"; //"testModel-timing.json";
-		Integer delta = 5;  // new start B
+		Integer delta = 0;  // new start B
 		
 		try {
 			if (args.length == 4) {

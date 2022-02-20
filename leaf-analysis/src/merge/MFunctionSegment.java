@@ -128,5 +128,21 @@ public class MFunctionSegment extends FunctionSegment{
 	public String getStartEvidencePair() {
 		return startEvidencePair;
 	}
+	
+	public String toString() {
+		this.startEvidencePair = assignStartValue(startEvidencePair);
+		String out = "----------\n";
+		out += "Start: " + this.startEvidencePair + " " + this.getStartTP();
+		if (this.getStartAT() != null) {
+			out += " (" + Integer.toString(this.getStartAT()) + ")";
+		}
+		out += "\nEnd: " + this.getRefEvidencePair() + " " + endTP;
+		if (endAT != null) {
+			out += " (" + Integer.toString(endAT) + ")";
+		}
+		out += "\nType: " + this.getType();
+		out += "\n----------";
+		return out;
+	}
 
 }

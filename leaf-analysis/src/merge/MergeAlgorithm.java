@@ -27,7 +27,7 @@ public class MergeAlgorithm {
 	 * Initialize mergeAlgorithm and run mergeModels()
 	 */
 
-	public MergeAlgorithm(ModelSpec model1, ModelSpec model2, Integer delta, TMain timings, String filename) {
+	public MergeAlgorithm(ModelSpec model1, ModelSpec model2, TMain timings, String filename) {
 
 		if (MMain.DEBUG) System.out.println("Starting: MergeAlgorithm");
 		// set up models
@@ -42,6 +42,9 @@ public class MergeAlgorithm {
 		// set up timing
 		this.timings = timings;
 		this.delta = timings.getTimingOffset();
+		System.out.println("---------------------------------------------------------------\ndelta:");
+		System.out.println(delta);
+		System.out.println("---------------------------------------------------------------");
 		this.maxTime1 = model1.getMaxTime();
 		this.maxTime2 = model2.getMaxTime() + delta;
 
@@ -127,6 +130,11 @@ public class MergeAlgorithm {
 		System.out.println(newMax);
 		model1.setMaxTime(newMax);
 		model2.setMaxTime(newMax);
+		mergedModel.setMaxTime(newMax);
+		
+		System.out.println("---------------------------------------------------------------\nnewMaxTime:");
+		System.out.println(newMax);
+		System.out.println("---------------------------------------------------------------\n");
 
 		// update absolute time points for model 2
 		// future work: rename Initial in model B
@@ -227,9 +235,9 @@ public class MergeAlgorithm {
 
 						// merge evolving functions
 						System.out.println("merging evolving functions");
-						FunctionSegment[] mergedEF = mergeEvolvingFunctions(mergedIntention, intention);
+						FunctionSegment[] mergeEF = mergeEvolvingFunctions(mergedIntention, intention);
 						System.out.println("merged those M EF ers");
-						mergedIntention.setEvolvingFunctions(mergedEF);
+						mergedIntention.setEvolvingFunctions(mergeEF);
 						
 						// user evaluation merging
 						if (MMain.DEBUG) System.out.println("merging valuations");
@@ -1136,13 +1144,25 @@ public class MergeAlgorithm {
 		// obtain complete functions (w/ start and end times and evidence pairs)
 		List<MFunctionSegment> segsA = completeFunctionInfo(intention1.getEvolvingFunctions(), intention1.getInitialUserEval(), maxTime1, maxTimeName1);
 		List<MFunctionSegment> segsB = completeFunctionInfo(intention2.getEvolvingFunctions(), intention2.getUserEvalAt(delta), maxTime2, maxTimeName2);
+		
+		System.out.println("--------------------");
+		System.out.println("SEGMENTS");
+		
+		System.out.println(segsA);
+		System.out.println(segsB);
+		
+		System.out.println("--------------------");
 
 		// merge functions
 		MergeEvolvingFunction merge = new MergeEvolvingFunction(segsA, segsB, timeOrder);
 		deletedTimings = merge.getDeletedTimings();
+		
+		// intention1 stores merged intention info;
+		// save MFunctionSegments for the additional info
+		intention1.setMergedEvolvingFunctions(merge.outputMergedSegments());
 
-		// output merged functions
-		return merge.outputMergedSegments();
+		// output merged functions as FunctionSegment[]
+		return merge.outputMergedSegmentsArr();
 	}
 
 	/**
