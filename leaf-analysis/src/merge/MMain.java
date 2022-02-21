@@ -38,6 +38,7 @@ public class MMain {
 		String inPath = "tests/models/";
 		String tPath = "tests/timing/";
 		String outPath = "tests/mergedModels/";
+		String tracePath = "tests/traceability/";
 		String inputFile1 = "";
 		String inputFile2 = "";
 		String timingFile = "";
@@ -76,7 +77,7 @@ public class MMain {
 
 			System.out.println("----------------------");
 			// run merge
-			MergeAlgorithm merge = new MergeAlgorithm(modelSpec1, modelSpec2, timings, outputFile.replace(".json", "-Traceability.txt"));
+			MergeAlgorithm merge = new MergeAlgorithm(modelSpec1, modelSpec2, timings, tracePath + outputFile.replace(".json", "-Traceability.txt"));
 
 			ModelSpec mergedModel = merge.getMergedModel();
 			System.out.println("Completed Merging.");
