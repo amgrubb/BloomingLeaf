@@ -333,7 +333,7 @@ public class MergeAlgorithm {
 
 	// ******* Actor merging methods begin ******** //
 	public static Actor mergeToOneActor(Actor actorOne, Actor actorTwo, int actorNum, ModelSpec model1, ModelSpec model2) {
-		if(actorOne.getActorType().equals(actorTwo.getActorType()) || (actorOne.getActorType().equals("Agent")) || (actorOne.getActorType().equals("Role") && !actorTwo.getActorType().equals("Agent"))) {
+		if(actorOne.getActorType().equals(actorTwo.getActorType()) || (actorOne.getActorType().equals("basic.Agent")) || (actorOne.getActorType().equals("basic.Role") && !actorTwo.getActorType().equals("basic.Agent"))) {
 			String newId = createID(actorNum, 12, actorOne.getId(), "Actor");
 			actorOne.setId(newId);
 			//actorTwo.setId(newId);
