@@ -23,9 +23,15 @@ reader.onload = function () {
 	}
 	clearInspector();
 	var result = JSON.parse(reader.result);
-	loadFromObject(result);
-	var graphtext = JSON.stringify(graph.toJSON());
-	document.cookie = "graph=" + graphtext;
+	if ( result.graph.type != undefined) {
+		loadFromObject(result);
+	} else {
+		console.log(result)
+		loadOldVersion(result)
+	}
+	
+	//var graphtext = JSON.stringify(graph.toJSON());
+	//document.cookie = "graph=" + graphtext;
 }
 
 /**
@@ -59,6 +65,22 @@ function loadFromObject(obj) {
 	}
 }
 
+function loadOldVersion(obj) {
+	graph.fromJSON(obj.graph);
+	var cells = graph.getCells();
+	for (var i = 0; i < cells.length; i++) {
+		cell = cells[i];
+		if (cell.get('type') == "basic.Actor") {
+			loadOldActor(cell) //Create actor
+		} else if (cell.get('type') == "link") {
+			loadOldLinks(cell, obj.model.links) //Create link
+		} else {
+			// Singled out functionSegList from obj as it doesn't show up in the graph after reading from JSON
+			//loadOldElement(cell, obj.model.intentions) //Create element
+		}
+	}
+}
+
 /**
  * Returns an array of Constraint objects with information from 
  * arr
@@ -79,69 +101,83 @@ function getConstArr(arr) {
 }
 
 /**
- * Returns an array of Actor objects with information from 
- * arr
- *
- * @param {Array.<Object>} arr
- * @returns {Array.<Actor>}
- *//*
-function getActorsArr(arr) {
-   var res = [];
-   var maxID = 0;
-   
-   for (var i = 0; i < arr.length; i++) {
-	   res.push(Object.assign(new Actor, arr[i]));
-	   maxID = Math.max(maxID, parseInt(arr[i].nodeID));
-   }
-   Actor.numOfCreatedInstances = maxID + 1;
-   return res;
-   
+ * Load the old actors into ActorBBM
+ */
+function loadOldActor(cell) {
+	var actorBBM = new ActorBBM({ type: 'basic.Actor', actorName: cell.attr(".name/text")});
+	cell.set('actor', actorBBM)
 }
 
 /**
-* Returns an array of Link objects with information from 
-* arr
-*
-* @param {Array.<Object>} arr
-* @returns {Array.<Link>}
-*//*
-function getLinksArr(arr) {
-   var res = [];
-   var maxID = 0;
+* Load the old links into LinkBBM
+*/
+function loadOldLinks(cell, arr) {
+	var target = cell.getTargetElement().get('type');
+	var source = cell.getSourceElement().get('type');
+	var oldDisplayType;
+	var oldEvolving;
 
-   for (var i = 0; i < arr.length; i++) {
-	   var link = new Link(arr[i].linkType, arr[i].linkSrcID, arr[i].absoluteValue);
-	   link.linkID = arr[i].linkID;
-	   link.postType = arr[i].postType;
-	   link.linkDestID = arr[i].linkDestID;
-	   maxID = Math.max(maxID, parseInt(arr[i].linkID));
-	   res.push(link);
-   }
-   Link.numOfCreatedInstances = maxID + 1;
+    if (((source === 'basic.Actor') && (target !== 'basic.Actor')) || ((source !== 'basic.Actor') && (target === 'basic.Actor'))) {
+        oldDisplayType = 'error';
+    } else if (source === "basic.Actor") {
+        oldDisplayType = 'Actor';
+    } else {
+        oldDisplayType = 'element'; //TODO: Should this be set to 'link'?
+    }
 
-   return res;
+
+	for (var i = 0; i < arr.length; i++) {
+		if (cell.get('linkID') == arr[i].linkID){
+			var oldLink = arr[i];
+			if (oldLink.postType != null) {
+				oldEvolving = true; 
+				var oldPostType = oldLink.postType.toLowerCase();
+			 }else {
+				 oldEvolving = false;
+				}
+		}
+	}
+
+	var oldLinkType = oldLink.linkType;
+	if (!((oldLinkType == 'NBT') || (oldLinkType == 'NBD'))){
+		oldLinkType = oldLinkType.toLowerCase();
+		if (oldLinkType == 'no') {
+			//cell.get('labels')[0].attr('text // TODO: find a way to set the links right
+		}
+	} else {
+		//cell.get('labels')[0].attr('text/text', oldLinkType)
+	}
+	
+
+	var linkBBM = new LinkBBM({ displayType: oldDisplayType, linkType: oldLinkType, postType: oldPostType, absTime: oldLink.absoluteValue, evolving: oldEvolving }); 
+	cell.set('link', linkBBM);
+	cell.attr()
 }
 
 /**
-* Returns an array of Intention objects with information from 
-* arr
+* Loads old elements into BB Models
 *
-* @param {Array.<Object>} arr
-* @returns {Array.<Intention>}
-*//*
-function getIntentionsArr(arr) {
-   var res = [];
-   var maxID = 0;
+*/
+function getIntentionsArr(cell, arr) {
 
-   for (var i = 0; i < arr.length; i++) {
-	   var intention = new Intention(arr[i].nodeType, arr[i].nodeName);	// nodeType has been removed.
-	   intention.nodeID = arr[i].nodeID;
-	   maxID = Math.max(maxID, parseInt(arr[i].nodeID));
-	   intention.dynamicFunction = getEvolvingFunction(arr[i].dynamicFunction);
-	   res.push(intention);
-   }
-   Intention.numOfCreatedInstances = maxID + 1;
-   return res;
+	for (var i = 0; i < arr.length; i++) {
+		if (cell.get('nodeID') == arr[i].nodeID){
+			var oldElement = arr[i];
+		}
+	}
+	var intentionBBM = new IntentionBBM({ nodeName: oldElement.nodeName });
+
+	var evolving = new EvolvingFunctionBBM({ type: oldElement.dynamicFunction.stringDynVis, hasRepeat: false, repStart: null, repStop: null, repCount: null, repAbsTime: null }); // TODO: figure how to read evolving Functions correctly
+	for (let funcseg of funcsegs) {
+		var funcsegBBM = new FunctionSegmentBBM({ type: funcseg.attributes.type, refEvidencePair: funcseg.attributes.refEvidencePair, startTP: funcseg.attributes.startTP, startAT: funcseg.attributes.startAT, current: funcseg.attributes.current });
+		evolving.get('functionSegList').push(funcsegBBM);
+	}
+	var userEvals = intention.attributes.userEvaluationList;
+	for (let userEval of userEvals) {
+		intentionBBM.get('userEvaluationList').push(new UserEvaluationBBM({ assignedEvidencePair: userEval.attributes.assignedEvidencePair, absTime: userEval.attributes.absTime }));
+	}
+	intentionBBM.set('evolvingFunction', evolving);
+	cell.set('intention', intentionBBM);
 }
 
 /**
@@ -261,7 +297,8 @@ function getModelAnalysisJson(configCollection) {
 	for (var i = 0; i < newConfig.length; i++) {
 		newConfig.at(i).set('results', new ResultCollection([]))
 	}
-	obj.configCollection = newConfig.toJSON()
+	obj.configCollection = newConfig.toJSON();
+	obj.version = "BloomingLeaf_2.0";
 
 	return obj;
 }
@@ -277,6 +314,7 @@ function getFullJson(configCollection) {
 	var obj = {};
 	obj.graph = graph.toJSON();
 	obj.configCollection = configCollection.toJSON();
+	obj.version = "BloomingLeaf_2.0";
 
 	return obj;
 }

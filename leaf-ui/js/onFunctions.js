@@ -784,6 +784,7 @@ paper.on("link:options", function (cell) {
             // EVO.revertIntentionsText(graph.getElements(), paper);  
             var fileName = name + ".json";
             var obj = { graph: graph.toJSON() }; // Same structure as the other two save options
+            obj.version = "BloomingLeaf_2.0";
             download(fileName, stringifyCirc(obj));
             EVO.refresh(selectResult);
         }
