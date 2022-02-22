@@ -187,10 +187,53 @@ public class Traceability{
 			
 			fileWriter.write("\nAttribute Counter Chart "+ "\n");
 			fileWriter.write("--------------------------"+ "\n");
-			fileWriter.write("\t|Both | M1 | M2 |"+ "\n");
+			fileWriter.write(" ".repeat(19) + "|Both | M1 | M2 |"+ "\n");
 			for(String attribute: attributeCounter.keySet()) {
+				fileWriter.write(" ".repeat(19 - attribute.length()));  // padding such that right side of table aligns
 				fileWriter.write(attribute + "|" + attributeCounter.get(attribute) + "\n");
 			}
+			
+			fileWriter.write("\nAttribute Counter Chart V2"+ "\n");
+			fileWriter.write("--------------------------"+ "\n");
+			fileWriter.write("Model A\t\t\t\tModel B\t\t\t\tMerged\n");
+			fileWriter.write("A\tG\tR\tEF\tA\tG\tR\tEF\tA\tG\tR\tEF\n");
+			Integer actors, intentions, links, evolvingFunctions;
+			
+			// Model A
+			// MA + Both
+			actors = attributeCounter.get("Actor").get(1) + attributeCounter.get("Actor").get(0);
+			intentions = attributeCounter.get("Intention").get(1) + attributeCounter.get("Intention").get(0);
+			// add all four types of relationships
+			links = attributeCounter.get("ContributionLink").get(1) + attributeCounter.get("ContributionLink").get(0);
+			links += attributeCounter.get("DecompositionLink").get(1) + attributeCounter.get("DecompositionLink").get(0);
+			links += attributeCounter.get("NotBothLink").get(1) + attributeCounter.get("NotBothLink").get(0);
+			links += attributeCounter.get("ActorLink").get(1) + attributeCounter.get("ActorLink").get(0);
+			evolvingFunctions = attributeCounter.get("Intention").get(1) + attributeCounter.get("Intention").get(0);
+			fileWriter.write(actors + "\t" + intentions + "\t" + links + "\t" + evolvingFunctions + "\t");
+			
+			// Model B
+			// MB + Both
+			actors = attributeCounter.get("Actor").get(2) + attributeCounter.get("Actor").get(0);
+			intentions = attributeCounter.get("Intention").get(2) + attributeCounter.get("Intention").get(0);
+			// add all four types of relationships
+			links = attributeCounter.get("ContributionLink").get(2) + attributeCounter.get("ContributionLink").get(0);
+			links += attributeCounter.get("DecompositionLink").get(2) + attributeCounter.get("DecompositionLink").get(0);
+			links += attributeCounter.get("NotBothLink").get(2) + attributeCounter.get("NotBothLink").get(0);
+			links += attributeCounter.get("ActorLink").get(2) + attributeCounter.get("ActorLink").get(0);
+			evolvingFunctions = attributeCounter.get("Intention").get(2) + attributeCounter.get("Intention").get(0);
+			fileWriter.write(actors + "\t" + intentions + "\t" + links + "\t" + evolvingFunctions + "\t");
+			
+			// Merged
+			// Both
+			actors = attributeCounter.get("Actor").get(0);
+			intentions = attributeCounter.get("Intention").get(0);
+			// add all four types of relationships
+			links = attributeCounter.get("ContributionLink").get(0);
+			links += attributeCounter.get("DecompositionLink").get(0);
+			links += attributeCounter.get("NotBothLink").get(0);
+			links += attributeCounter.get("ActorLink").get(0);
+			evolvingFunctions = attributeCounter.get("Intention").get(0);
+			fileWriter.write(actors + "\t" + intentions + "\t" + links + "\t" + evolvingFunctions + "\n");
 			
 			fileWriter.close();
 			
