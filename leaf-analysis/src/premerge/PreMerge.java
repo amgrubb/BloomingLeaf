@@ -93,7 +93,7 @@ public class PreMerge {
 			for(Intention intentionB: modelB.getIntentions()) {
 				// if intention names match, intentions will merge
 
-				if(intentionA.getName().equals(intentionB.getName())) {
+				if(isEqualToCleaned(intentionA.getName(),intentionB.getName())) {
 					System.out.println("matched intentions: " + intentionA.getName());
 					System.out.println(intentionA.getEvolvingFunctions().length);
 					System.out.println(intentionB.getEvolvingFunctions().length);
@@ -218,6 +218,18 @@ public class PreMerge {
 		} catch (Exception e) {
 			throw new RuntimeException("Error in printTimingHeader: " + e.getMessage());
 		}
+	}
+	
+	/**
+	 * 
+	 * @param s1
+	 * @param s2
+	 * @return if the strings are equal when cleaned
+	 */
+	public static boolean isEqualToCleaned(String s1, String s2) {
+		String cleanedS1 = s1.replace("\n", "").replace(" ", "").toUpperCase();
+		String cleanedS2 = s2.replace("\n", "").replace(" ", "").toUpperCase();
+		return cleanedS1.equals(cleanedS2);
 	}
 
 }

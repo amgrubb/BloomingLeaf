@@ -215,7 +215,7 @@ public class MergeAlgorithm {
 			else{
 			//else merge intentions from model1 and model2 that are considered the same because they have the same name.
 				for(Intention mergedIntention: mergedIntentions){
-					if(mergedIntention.getName().equals(intention.getName())){
+					if(isEqualToCleaned(mergedIntention.getName(),intention.getName())){
 						if (MMain.DEBUG) System.out.println("merging an intention");
 						//update ID to show that intention also exists in model2
 						
@@ -223,7 +223,7 @@ public class MergeAlgorithm {
 						System.out.println(mergedIntention.getId());
 
 						//actor merging
-						if((mergedIntention.hasActor() && intention.hasActor()) && !mergedIntention.getActor().getName().equals(intention.getActor().getName())){
+						if((mergedIntention.hasActor() && intention.hasActor()) && !isEqualToCleaned(mergedIntention.getActor().getName(),intention.getActor().getName())){
 							//UNRESOLVABLE CONFLICT
 							if (MMain.DEBUG) System.out.println("!!!Intentions in different actors!!!");
 							conflictMessages.add(mergedIntention.getName() + " has different actors in each model.");
@@ -354,7 +354,7 @@ public class MergeAlgorithm {
 		int actorCounter = 0;
 		for(Actor actor1: model1.getActors()) {
 			for(Actor actor2: model2.getActors()) {
-				if(actor1.getName().equals(actor2.getName())) {
+				if(isEqualToCleaned(actor1.getName(),actor2.getName())) {
 					//merge actors
 					mergedActors.add(mergeToOneActor(actor1, actor2, actorCounter, model1, model2));
 					actorsNameSet.add(actor1.getName());
@@ -493,7 +493,7 @@ public class MergeAlgorithm {
 	/** returns true if links connect the same actor */
 
 	public static boolean isSameActorLink(ActorLink al1, ActorLink al2) {
-		return (al1.getZeroSrc().getName().equals(al2.getZeroSrc().getName()) && al1.getDest().getName().equals(al2.getDest().getName()));
+		return (isEqualToCleaned(al1.getZeroSrc().getName(),al2.getZeroSrc().getName()) && isEqualToCleaned(al1.getDest().getName(),al2.getDest().getName()));
 
 	}
 
@@ -663,7 +663,7 @@ public class MergeAlgorithm {
 					for(AbstractLinkableElement source: dl.getSrc()) {
 						boolean newSource = true;
 						for(AbstractLinkableElement addedSource: addeddl.getSrc()) {
-							if(addedSource.getName().equals(source.getName())) {
+							if(isEqualToCleaned(addedSource.getName(),source.getName())) {
 								newSource = false;
 							}
 						}
@@ -931,7 +931,7 @@ public class MergeAlgorithm {
 		if(link1 instanceof NotBothLink){
 			NotBothLink linkOne = (NotBothLink)link1;
 			NotBothLink linkTwo = (NotBothLink)link2;
-			return linkOne.getElement1().getName().equals(linkTwo.getElement1().getName()) && linkOne.getElement2().getName().equals(linkTwo.getElement2().getName());
+			return isEqualToCleaned(linkOne.getElement1().getName(),linkTwo.getElement1().getName()) && isEqualToCleaned(linkOne.getElement2().getName(),linkTwo.getElement2().getName());
 		}
 		if(link1 instanceof DecompositionLink){
 			DecompositionLink linkOne = (DecompositionLink)link1;
@@ -1214,6 +1214,18 @@ public class MergeAlgorithm {
 
 	public ModelSpec getMergedModel() {
 		return mergedModel;
+	}
+	
+	/**
+	 * 
+	 * @param s1
+	 * @param s2
+	 * @return if the strings are equal when cleaned
+	 */
+	public static boolean isEqualToCleaned(String s1, String s2) {
+		String cleanedS1 = s1.replace("\n", "").replace(" ", "").toUpperCase();
+		String cleanedS2 = s2.replace("\n", "").replace(" ", "").toUpperCase();
+		return cleanedS1.equals(cleanedS2);
 	}
 
 }
