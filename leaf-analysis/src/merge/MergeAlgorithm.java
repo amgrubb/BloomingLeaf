@@ -333,17 +333,26 @@ public class MergeAlgorithm {
 
 	// ******* Actor merging methods begin ******** //
 	public static Actor mergeToOneActor(Actor actorOne, Actor actorTwo, int actorNum, ModelSpec model1, ModelSpec model2) {
-		if(actorOne.getActorType().equals(actorTwo.getActorType()) || (actorOne.getActorType().equals("Agent")) || (actorOne.getActorType().equals("Role") && !actorTwo.getActorType().equals("Agent"))) {
+		System.out.println(actorOne.getName());
+		System.out.println(actorOne.getActorType());
+		System.out.println(actorTwo.getName());
+		System.out.println(actorTwo.getActorType());
+		// type G > R > A (agent > role > actor)
+		// so use actorOne if >= type to actorTwo
+		if(actorOne.getActorType().equals(actorTwo.getActorType()) || (actorOne.getActorType().equals("G")) || (actorOne.getActorType().equals("R") && !actorTwo.getActorType().equals("G"))) {
 			String newId = createID(actorNum, 12, actorOne.getId(), "Actor");
 			actorOne.setId(newId);
 			//actorTwo.setId(newId);
 			updateRepeatedActor(actorOne, actorTwo, model2);
+			System.out.println("make type: " + actorOne.getActorType());
 			return actorOne;
 		}
+		// else use actorTwo if > type to actorOne
 		String newId = createID(actorNum, 21, actorTwo.getId(), "Actor");
 		actorTwo.setId(newId);
 		//actorOne.setId(newId);
 		updateRepeatedActor(actorTwo, actorOne, model1);
+		System.out.println("make type: " + actorTwo.getActorType());
 		return actorTwo;
 
 	}
@@ -352,8 +361,12 @@ public class MergeAlgorithm {
 		ArrayList<String> actorsNameSet = new ArrayList<>();
 		ArrayList<Actor> mergedActors = new ArrayList<>();
 		int actorCounter = 0;
+		System.out.println("-p-----------------------------------------------:)");
+		System.out.println("merging actors");
 		for(Actor actor1: model1.getActors()) {
+			System.out.println("actor1 id: " + actor1.getId());
 			for(Actor actor2: model2.getActors()) {
+				System.out.println("actor2 id: " + actor2.getId());
 				if(actor1.getName().equals(actor2.getName())) {
 					//merge actors
 					mergedActors.add(mergeToOneActor(actor1, actor2, actorCounter, model1, model2));
@@ -363,6 +376,7 @@ public class MergeAlgorithm {
 				}
 			}
 		}
+		System.out.println("-p-----------------------------------------------:)");
 		for(Actor actor1: model1.getActors()) {
 			if(!actorsNameSet.contains(actor1.getName())) {
 				String newId = createID(actorCounter, 1, actor1.getId(), "Actor");
@@ -372,6 +386,7 @@ public class MergeAlgorithm {
 				actorCounter += 1;
 
 			}
+			System.out.println("actor1 id: " + actor1.getId());
 		}
 		for(Actor actor2: model2.getActors()) {
 			if(!actorsNameSet.contains(actor2.getName())) {
@@ -382,6 +397,7 @@ public class MergeAlgorithm {
 				actorCounter += 1;
 
 			}
+			System.out.println("actor2 id: " + actor2.getId());
 		}
 		mergedModel.setActors(mergedActors);
 	}
@@ -389,14 +405,15 @@ public class MergeAlgorithm {
 	 * replaced in the other model.
 	 */
 	public static void updateRepeatedActor(Actor newActor, Actor oldActor, ModelSpec otherModel) {
-		//intentions
+		// replace oldActor with newActor for each intention + link in the other model
+		// intentions
 		for(Intention intention: otherModel.getIntentions()) {
 			if(intention.getActor() == oldActor){
 				intention.setActor(newActor);
 			}
 		}
 
-		//links
+		// links
 		for(ActorLink al: otherModel.getActorLinks()) {
 			if(al.getZeroSrc() == oldActor) {
 				al.setZeroSrc(newActor);

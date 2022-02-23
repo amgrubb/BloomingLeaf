@@ -40,6 +40,11 @@ public class ICell {
 		this.position = position;
 		this.embeds = embeds;
 		this.attrs = new Attrs(name);
+		
+		// display agent/role
+		if (actor.getType().equals("G") || actor.getType().equals("R")) {
+			this.attrs.addHat(actor.getType());
+		}
 	}
 	
 	/**
@@ -175,6 +180,8 @@ public class ICell {
 	private class Attrs {
 		// nested classes to achieve the JSON format "attrs":{".name":{"text":nodeName}}
 		@SerializedName(".name")  // outputs name as ".name" in JSON
+		
+		// intentions
 		TextField name;
 		@SerializedName(".satvalue")
 		TextField satvalue;  // (D, S) pairs on bottom right of intention
@@ -183,8 +190,13 @@ public class ICell {
 		
 		TextField text;
 		
+		// links
 		@SerializedName(".marker-target")
 		Path markerTarget;  // shows link arrow to dest
+		
+		// actors
+		@SerializedName(".line")
+		ActorHat line;
 		
 		private Attrs() {
 		}
@@ -220,6 +232,13 @@ public class ICell {
 		 */
 		private void addArrow() {
 			this.markerTarget = new Path();
+		}
+		
+		/**
+		 * For adding agent/role actor decoration ("hats")
+		 */
+		private void addHat(String type) {
+			this.line = new ActorHat(type);
 		}
 		
 		/**
@@ -263,6 +282,35 @@ public class ICell {
 			
 			private Path() {
 				this.d = "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5";
+			}
+		}
+		
+		/**
+		 * Agent/Role markings on actors
+		 */
+		private class ActorHat {
+			String ref;
+			@SerializedName("ref-x")
+			Integer refx;
+			@SerializedName("ref-y")
+			Double refy;
+			String d;
+			@SerializedName("stroke-width")
+			Integer strokewidth;
+			String stroke;
+			
+			private ActorHat(String type) {
+				this.ref = ".label";
+				this.refx = 0;
+				if (type.equals("G")) {  // agent hat
+					this.refy = 0.08;
+					this.d = "M 5 10 L 55 10";
+				} else {  // role hat
+					this.refy = 0.6;
+					this.d = "M 5 10 Q 30 20 55 10 Q 30 20 5 10";
+				}
+				this.strokewidth = 1;
+				this.stroke = "black";
 			}
 		}
 		

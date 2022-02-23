@@ -212,6 +212,8 @@ public class Intention extends AbstractLinkableElement {
 		typeValues.put("basic.Task", 1);
 		typeValues.put("basic.Softgoal", 2);
 		typeValues.put("basic.Resource", 3);
+		System.out.println(type);
+		System.out.println(i.getType());
 		return typeValues.get(type) - typeValues.get(i.getType());
 	}
 	
