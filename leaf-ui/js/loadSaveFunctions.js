@@ -26,7 +26,6 @@ reader.onload = function () {
 	if ( result.graph.type != undefined) {
 		loadFromObject(result);
 	} else {
-		console.log(result)
 		loadOldVersion(result)
 	}
 	
@@ -76,7 +75,7 @@ function loadOldVersion(obj) {
 			loadOldLinks(cell, obj.model.links) //Create link
 		} else {
 			// Singled out functionSegList from obj as it doesn't show up in the graph after reading from JSON
-			//loadOldElement(cell, obj.model.intentions) //Create element
+			loadOldElement(cell, obj.model.intentions, obj.model.constraints) //Create element
 		}
 	}
 }
@@ -105,6 +104,7 @@ function getConstArr(arr) {
  */
 function loadOldActor(cell) {
 	var actorBBM = new ActorBBM({ type: 'basic.Actor', actorName: cell.attr(".name/text")});
+	cell.attr({'.label': {'cx': 20, 'cy' : 20}})
 	cell.set('actor', actorBBM)
 }
 
@@ -142,56 +142,58 @@ function loadOldLinks(cell, arr) {
 	if (!((oldLinkType == 'NBT') || (oldLinkType == 'NBD'))){
 		oldLinkType = oldLinkType.toLowerCase();
 		if (oldLinkType == 'no') {
-			//cell.get('labels')[0].attr('text // TODO: find a way to set the links right
+			cell.label(0, { position: 0.5, attrs: { text: { text: 'no' } } });
 		}
 	} else {
-		//cell.get('labels')[0].attr('text/text', oldLinkType)
+		cell.label(0, { position: 0.5, attrs: { text: { text: oldLinkType } } });
 	}
 	
 
 	var linkBBM = new LinkBBM({ displayType: oldDisplayType, linkType: oldLinkType, postType: oldPostType, absTime: oldLink.absoluteValue, evolving: oldEvolving }); 
 	cell.set('link', linkBBM);
-	cell.attr()
 }
 
 /**
 * Loads old elements into BB Models
 *
 */
-function getIntentionsArr(cell, arr) {
-
-	for (var i = 0; i < arr.length; i++) {
-		if (cell.get('nodeID') == arr[i].nodeID){
-			var oldElement = arr[i];
+function loadOldElement(cell, oldElements, oldConstraints) {
+	for (var i = 0; i < oldElements.length; i++) {
+		if (cell.get('nodeID') == oldElements[i].nodeID){
+			var oldElement = oldElements[i];
 		}
 	}
-	var intentionBBM = new IntentionBBM({ nodeName: oldElement.nodeName });
 
-	var evolving = new EvolvingFunctionBBM({ type: oldElement.dynamicFunction.stringDynVis, hasRepeat: false, repStart: null, repStop: null, repCount: null, repAbsTime: null }); // TODO: figure how to read evolving Functions correctly
-	for (let funcseg of funcsegs) {
-		var funcsegBBM = new FunctionSegmentBBM({ type: funcseg.attributes.type, refEvidencePair: funcseg.attributes.refEvidencePair, startTP: funcseg.attributes.startTP, startAT: funcseg.attributes.startAT, current: funcseg.attributes.current });
-		evolving.get('functionSegList').push(funcsegBBM);
+	for (var i = 0; i < oldConstraints.length; i++) {
+		if (cell.get('nodeID') == oldConstraints[i].constraintSrcID){
+			var oldConstraint = oldConstraints[i];
+		}
 	}
-	var userEvals = intention.attributes.userEvaluationList;
-	for (let userEval of userEvals) {
-		intentionBBM.get('userEvaluationList').push(new UserEvaluationBBM({ assignedEvidencePair: userEval.attributes.assignedEvidencePair, absTime: userEval.attributes.absTime }));
-	}
-	intentionBBM.set('evolvingFunction', evolving);
+	var intentionBBM = new IntentionBBM({ nodeName: oldElement.nodeName, evolvingFunction: getOldEvolvingFunction(oldElement, oldConstraint) });
+	
+	intentionBBM.get('userEvaluationList').push(new UserEvaluationBBM({}));
+
 	cell.set('intention', intentionBBM);
 }
+
 
 /**
 * Given an object containing information about an EvolvingFunction,
 * returns a corresponding EvolvingFunction object
-*
+* TODO: Determine how necessary this function is
 * @param {Object} obj
 * @returns {EvolvingFunction}
-*//*
-function getEvolvingFunction(obj) {
-   var func = new EvolvingFunction(obj.intentionID);
-   func.stringDynVis = obj.stringDynVis;
-   func.functionSegList = getFuncSegList(obj.functionSegList);
-   return func;
+*/
+function getOldEvolvingFunction(obj, oldConstraint) {
+	var evolving
+	if (obj.dynamicFunction.functionSegList != undefined) {
+		var functionInfo = getFuncSegList(obj.dynamicFunction.functionSegList, oldConstraint);
+		evolving = new EvolvingFunctionBBM({ type: obj.dynamicFunction.stringDynVis, hasRepeat: functionInfo.hasRepeat, repStart: functionInfo.repStart, repStop: functionInfo.repStop, repCount: functionInfo.repCount, repAbsTime: functionInfo.repAbsTime, functionSegList: functionInfo.functionList });
+	} else {
+		evolving = new EvolvingFunctionBBM({});
+	}
+   
+   return evolving;
 }
 
 /**
@@ -201,27 +203,37 @@ function getEvolvingFunction(obj) {
 * @param {Array.<Object>} arr
 * @returns {Array.<FuncSegment|RepFuncSegment>}
 */
-/* TODO: Re-implement once we have finalized the functions segments.
-function getFuncSegList(arr) {
+function getFuncSegList(arr, constraint) {
 	var res = [];
+	res.functionList = [];
+	res.hasRepeat = false;
+	res.repStop = null;
+	res.repCount = null;
+	res.repabsTime = null;
 	for (var i = 0; i < arr.length; i++) {
-		
 		if (arr[i].repNum) {
 			// If this segment is a repeating segment
-			var repFunc = new RepFuncSegment();
-			repFunc.functionSegList = getFuncSegList(arr[i].functionSegList);
-			repFunc.repNum = arr[i].repNum;
-			repFunc.absTime = arr[i].absTime;
-			res.push(repFunc);
+			res.hasRepeat = true;
+
+			var repFuncSeg = arr[i].functionSegList;
+			res.repStart = repFuncSeg[0].funcStart;
+			for (var k = 0; k < repFuncSeg.length; k++) {
+				res.functionList.push(new FunctionSegmentBBM({ type: repFuncSeg[k].funcType, refEvidencePair: repFuncSeg[k].funcX, startTP: repFuncSeg[k].funcStart, startAT: repFuncSeg[k].funcStart === constraint.constraintSrcEB ? constraint.absoluteValue : null, current: k == (repFuncSeg.length - 1) ? true : false }));
+				if (k == repFuncSeg.length-1) {
+					res.repStop = repFuncSeg[k].funcStop;
+				}
+				res.repCount = parseInt(arr[i].repNum);
+				res.repabsTime = parseInt(arr[i].absTime);
+			}
 		} else {
 			// If this segment is not a repeating segment
-			res.push(new FuncSegment(arr[i].funcType, arr[i].funcX, arr[i].funcStart, arr[i].funcStop));
+			res.functionList.push(new FunctionSegmentBBM({ type: arr[i].funcType, refEvidencePair: arr[i].funcX, startTP: arr[i].funcStart, startAT: arr[i].funcStart === constraint.constraintSrcEB ? constraint.absoluteValue : null, current: i == (arr.length - 1) ? true : false }));
 		}
 	}
 	return res;
 }
 
-*/
+
 
 /**
  * Returns a backbone model Actor with information from the obj
