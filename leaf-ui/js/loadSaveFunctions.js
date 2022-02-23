@@ -71,13 +71,14 @@ function loadOldVersion(obj) {
 		cell = cells[i];
 		if (cell.get('type') == "basic.Actor") {
 			loadOldActor(cell) //Create actor
-		} else if (cell.get('type') == "link") {
+		} else if (cell.get('type') == "basic.CellLink") {
 			loadOldLinks(cell, obj.model.links) //Create link
 		} else {
 			// Singled out functionSegList from obj as it doesn't show up in the graph after reading from JSON
 			loadOldElement(cell, obj.model.intentions, obj.model.constraints) //Create element
 		}
 	}
+	//changeLinkType()
 }
 
 /**
@@ -97,6 +98,18 @@ function getConstArr(arr) {
 		res.push(constraint);
 	}
 	return res;
+}
+*/
+
+function changeLinkType() {
+	cellPaper = document.getElementsByClassName('joint-type-link');
+	for (var i = 0; i < cellPaper.length; i++) {
+		console.log(cellPaper[i].className.baseVal)
+		cellPaper[i].className.baseVal = "joint-cell joint-type-basic joint-type-basic-celllink joint-link joint-theme-default"
+		cellPaper[i].className.animVal = "joint-cell joint-type-basic joint-type-basic-celllink joint-link joint-theme-default"
+		cellPaper[i].dataset.type = 'basic.CellLink'
+		console.log(cellPaper[i].dataset.type)
+	}
 }
 
 /**
@@ -151,6 +164,8 @@ function loadOldLinks(cell, arr) {
 
 	var linkBBM = new LinkBBM({ displayType: oldDisplayType, linkType: oldLinkType, postType: oldPostType, absTime: oldLink.absoluteValue, evolving: oldEvolving }); 
 	cell.set('link', linkBBM);
+	cell.set('type', 'basic.CellLink')
+	
 }
 
 /**
@@ -243,6 +258,7 @@ function createBBActor(cell) {
 	var actor = cell.get('actor');
 	var actorBBM = new ActorBBM({ type: actor.attributes.type, actorName: actor.attributes.actorName });
 	cell.set('actor', actorBBM)
+	cell.attr({'.label': {'cx': 20, 'cy' : 20}})
 }
 
 /**
