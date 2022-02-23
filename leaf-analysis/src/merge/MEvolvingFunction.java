@@ -182,12 +182,7 @@ public class MEvolvingFunction {
 	 * 
 	 * @return - merged value at that time
 	 */
-	public String mid(String midtime, String otherVal) {
-		// if otherVal is (no value), use (no value)???
-		if (otherVal.equals("(no value)")) {
-			return "(no value)";
-		}
-		
+	public String mid(String midtime, String otherVal) {		
 		// get interval bounds
 		String lowerBound = getIntervalLowerBound(midtime);
 		String upperBound = getIntervalUpperBound(midtime);

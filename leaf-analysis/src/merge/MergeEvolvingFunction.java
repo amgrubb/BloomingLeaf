@@ -63,6 +63,16 @@ public class MergeEvolvingFunction {
 			System.out.println(mergedEnd);
 			System.out.println(mergedStart);
 			
+			// logic for using other value @ timepoint when calculating mid of stochastic value
+			if (mergedEnd == "other" && mergedStart == "other") {
+				mergedEnd = "no value";
+				mergedStart = "no value";
+			} else if (mergedEnd == "other") {
+				mergedEnd = mergedStart;
+			} else if (mergedStart == "other") {
+				mergedStart = mergedEnd;
+			}
+			
 			// insert into new timeline
 			newEndingTimeline.put(time, mergedEnd);
 			newStartingTimeline.put(time, mergedStart);
@@ -96,6 +106,11 @@ public class MergeEvolvingFunction {
 		// (middle of function for both models)
 		if (valueA.equals("mid") && valueB.equals("mid")) {
 			System.out.println("warning: merging two mids");
+		}
+		
+		// if stochastic with mid, use other value at point
+		if ((valueA.equals("(no value)") && valueB.equals("mid")) || (valueA.equals("mid") && valueB.equals("(no value)"))) {
+			return "other";  // other flag
 		}
 		
 		// if valueA or valueB is a mid value, use mid operator

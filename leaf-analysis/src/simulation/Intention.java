@@ -308,6 +308,9 @@ public class Intention extends AbstractLinkableElement {
 	public void setUserEvals(HashMap<Integer, String> newUserEvals) {
 		userEvals = newUserEvals;
 	}
+	public void addUserEval(Integer time, String userEval) {
+		userEvals.put(time, userEval);
+	}
 	public boolean hasActor() {
 		return actor != null;
 	}

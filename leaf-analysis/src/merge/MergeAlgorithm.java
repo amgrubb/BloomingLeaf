@@ -192,6 +192,7 @@ public class MergeAlgorithm {
 			if(!mergedIntentionsNameSet.contains(intention.getName())){
 				if (MMain.DEBUG) System.out.println("Adding a new intention from model 2");
 				updateIntentionID(createID(currIDCount, 2, intention.getId(), "intention"), intention.getId(), model2, intention);
+				intention.addUserEval(0, "(no value)"); // add eval at 0
 				mergedIntentions.add(intention);
 				mergedIntentionsNameSet.add(intention.getName());
 				currIDCount++;
