@@ -234,28 +234,17 @@ public class MergeAlgorithm {
 						HashMap<Integer, String> userEvalsA = mergedIntention.getUserEvals();
 						HashMap<Integer, String> userEvalsB = intention.getUserEvals();
 						
-						if ((userEvalsA.size() == 1) && (userEvalsB.size() == 1)) {
-							// both static intentions
-							// keep static at consensus of evaluations
-							String newStaticEval = MEPOperators.consensus(mergedIntention.getInitialUserEval(), intention.getUserEvalAt(delta));
-							userEvalsA.put(0, newStaticEval);
-						} else {
-							// otherwise merge UAL for all timepoints
-							for(int absTP: userEvalsA.keySet()){
-								//if they both have a valuation for a certain time point, merge it in
-								if(userEvalsB.containsKey(absTP)){
-									String newEval = MEPOperators.consensus(userEvalsA.get(absTP), userEvalsB.get(absTP));
-									if (MMain.DEBUG) System.out.println(newEval);
-									userEvalsA.put(absTP, newEval);
-								}
-							}
-							// add all the other valuations that the mergedIntention doesn't contain
-							for(int absTP:userEvalsB.keySet()) {
-								if(!userEvalsA.containsKey(absTP)) {
-									userEvalsA.put(absTP, userEvalsB.get(absTP));
-								}
+						// add UALs from B to those from A
+						for(int absTP:userEvalsB.keySet()) {
+							if (!userEvalsA.containsKey(absTP)) {  // eval is just in B
+								userEvalsA.put(absTP, userEvalsB.get(absTP));
+							} else {                               // eval is in A and B, keep consensus
+								String newEval = MEPOperators.consensus(userEvalsA.get(absTP), userEvalsB.get(absTP));
+								if (MMain.DEBUG) System.out.println(newEval);
+								userEvalsA.put(absTP, newEval);
 							}
 						}
+						mergedIntention.setUserEvals(userEvalsA);
 
 						//replace all mentions of intention with mergedIntention in Model2
 						if (MMain.DEBUG) System.out.println("updating repeated intentions");
@@ -1150,6 +1139,8 @@ public class MergeAlgorithm {
 		// merge functions
 		MergeEvolvingFunction merge = new MergeEvolvingFunction(segsA, segsB, timeOrder);
 		deletedTimings = merge.getDeletedTimings();
+		
+		System.out.println(merge.outputMergedSegments());
 		
 		// intention1 stores merged intention info;
 		// save MFunctionSegments for the additional info

@@ -74,8 +74,20 @@ public class MEPOperators {
 		return compare(a, b) < 0;
 	}
 	
+	public static Boolean greatereq(String a, String b) {
+		return compare(a, b) >= 0;
+	}
+	
+	public static Boolean lteq(String a, String b) {
+		return compare(a, b) <= 0;
+	}
+	
 	public static Boolean equal(String a, String b) {
 		return compare(a, b) == 0;
+	}
+	
+	public static Boolean inbounds(String a, String lowerBound, String upperBound) {
+		return greatereq(a, lowerBound) && lteq(a, upperBound);
 	}
 	
 	/**

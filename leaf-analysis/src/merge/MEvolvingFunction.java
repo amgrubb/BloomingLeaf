@@ -193,8 +193,7 @@ public class MEvolvingFunction {
 		String upperBound = getIntervalUpperBound(midtime);
 
 		// if otherVal is within interval, keep otherVal
-		if (MEPOperators.greater(otherVal, lowerBound) &&
-				MEPOperators.lt(otherVal, upperBound)) {
+		if (MEPOperators.inbounds(otherVal, lowerBound, upperBound)) {
 			return otherVal;
 		}
 		

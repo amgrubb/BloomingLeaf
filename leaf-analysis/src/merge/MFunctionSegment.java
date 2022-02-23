@@ -16,7 +16,6 @@ public class MFunctionSegment extends FunctionSegment{
 	 * String type;
 	 * String refEvidencePair;
 	 */
-	
 	private String endTP;
 	private Integer endAT;
 	private String startEvidencePair;
