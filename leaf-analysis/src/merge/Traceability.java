@@ -18,11 +18,105 @@ import java.util.HashMap;
 
 public class Traceability{
 	private String fileName = "traceabilityOutput.txt";
-	public Traceability(String fileName) {
+	
+	// element counts
+	private HashMap<String, Integer> eCountA;
+	private HashMap<String, Integer> eCountB;
+	private HashMap<String, Integer> eCountMatched;
+	private HashMap<String, Integer> eCountMerged;
+	
+	public Traceability(String fileName, ModelSpec modelA, ModelSpec modelB) {
 		this.fileName = fileName;
+		
+		// count model elements
+		this.eCountA = countElements(modelA);
+		this.eCountB = countElements(modelB);
+		
+		// count elements that match between the models
+		this.eCountMatched = countMatchedElements(modelA, modelB);
+	}
+	
+	public HashMap<String, Integer> countElements(ModelSpec model) {
+		/* count actors, intentions, relationships, and evolving functions in model */
+		HashMap<String, Integer> counts = new HashMap<>();
+		
+		counts.put("A", model.getActors().size());
+		counts.put("G", model.getIntentions().size());
+
+		// count relationships
+		// contribution + decomposition + not both + actor links
+		Integer relationships = model.getContributionLinks().size() + model.getDecompositionLinks().size() + model.getNotBothLinks().size();
+		counts.put("R", relationships + model.getActorLinks().size());
+		
+		// count intentions w/ evolving functions
+		Integer evolving = 0;
+		for (Intention intention: model.getIntentions()) {
+			if (intention.getEvolvingFunctions().length > 0) {
+				evolving++;
+			}
+		}
+		counts.put("EF", evolving);
+		
+		return counts;
+	}
+	
+	public HashMap<String, Integer> countMatchedElements(ModelSpec modelA, ModelSpec modelB) {
+		/* count actors and intentions which overlap between the models */
+		HashMap<String, Integer> counts = new HashMap<>();
+		
+		// count matched actors
+		Integer actors = 0;
+		for (Actor actorA: modelA.getActors()) {
+			for (Actor actorB: modelB.getActors()) {
+				// count actors w/ matching names
+				if (actorA.getName().equals(actorB.getName())) {
+					actors++;
+				}
+			}
+		}
+		counts.put("A", actors);
+		
+		// count matched intentions
+		Integer intentions = 0;
+		for (Intention intentionA: modelA.getIntentions()) {
+			for (Intention intentionB: modelB.getIntentions()) {
+				// count actors w/ matching names
+				if (intentionA.getName().equals(intentionB.getName())) {
+					intentions++;
+				}
+			}
+		}
+		counts.put("G", intentions);
+		
+		return counts;
 	}
 	
 	public void printElementCountsToFile(ModelSpec mergedModel) {
+		this.eCountMerged = countElements(mergedModel);
+		
+		try {
+			System.out.println("Printing to file...");
+			FileWriter fileWriter = new FileWriter(fileName, true);
+			
+			fileWriter.write("\nAttribute Counter Chart"+ "\n");
+			fileWriter.write("--------------------------"+ "\n");
+			fileWriter.write("Model A\t\t\t\tModel B\t\t\t\tMatched\t\tMerged\n");
+			fileWriter.write("A\tG\tR\tEF\tA\tG\tR\tEF\tA\tG\tA\tG\tR\tEF\n");
+			fileWriter.write(eCountA.get("A") + "\t" + eCountA.get("G") + "\t" + eCountA.get("R") + "\t" + eCountA.get("EF") + "\t");
+			fileWriter.write(eCountB.get("A") + "\t" + eCountB.get("G") + "\t" + eCountB.get("R") + "\t" + eCountB.get("EF") + "\t");
+			fileWriter.write(eCountMatched.get("A") + "\t" + eCountMatched.get("G") + "\t");
+			fileWriter.write(eCountMerged.get("A") + "\t" + eCountMerged.get("G") + "\t" + eCountMerged.get("R") + "\t" + eCountMerged.get("EF") + "\n");
+			
+			System.out.println("-------------------------------------------------:)");
+			
+			fileWriter.close();
+			
+		}catch(IOException e) {
+			System.out.println("There was a problem in providing the traceability chart.");
+		}
+	}
+	
+	public void printElementCountsOld(ModelSpec mergedModel) {
 		ArrayList<String> fromModel1 = new ArrayList<>();
 		int fromModel1Size = 0;
 		ArrayList<String> fromModel2 = new ArrayList<>();
@@ -56,9 +150,12 @@ public class Traceability{
 		//add intentions
 		int numEvolFuncBoth = 0, numEvolFuncM2 = 0, numEvolFuncM1 = 0;
 		for(Intention intention: mergedModel.getIntentions()) {
-			
+			System.out.println(intention.getId());
 			if(intention.getId().indexOf("model") != intention.getId().length() - 6) {
 		    	mergedElements.add(intention.getName()+ "\t\tID: " + intention.getId());
+		    	System.out.println(intention.getEvolvingFunctions());
+		    	System.out.println(intention.getEvolvingFunctions().length);
+		    	System.out.println(intention.getMEvolvingFunctions());
 		    	if(intention.getEvolvingFunctions().length > 0) {
 		    		numEvolFuncBoth += 1;
 		    	}

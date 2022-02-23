@@ -156,11 +156,6 @@ public class Intention extends AbstractLinkableElement {
 		for (BIUserEvaluation eval : iNode.getIntention().getUserEvaluationList()) 
 			userEvaluations.put(eval.getAbsTime(), eval.getAssignedEvidencePair());
 		
-		System.out.println("-----------------------------------");
-		System.out.println("Building user evaluation for " + iNode.getIntention().getNodeName());
-		System.out.println(userEvaluations);
-		System.out.println("-----------------------------------");
-		
 		Intention element = new Intention(iNode.getId(), iNode.getIntention().getNodeName(), 
 				nodeActor, iNode.getType(), iNode.getIntention().getEvolvingFunction(), 
 				userEvaluations);

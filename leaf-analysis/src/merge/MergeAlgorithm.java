@@ -52,7 +52,7 @@ public class MergeAlgorithm {
 		this.timings.initializeTiming(maxTime1, maxTime2);
 		
 		//set up traceability obj
-		trace = new Traceability(filename);
+		trace = new Traceability(filename, model1, model2);
 
 		// run merge algorithm
 		mergeModels();
@@ -93,7 +93,7 @@ public class MergeAlgorithm {
 		trace.printDeletedToFile(deletedElements, deletedTimings);
 		trace.printConflictMessagesToFile(conflictMessages);
 		trace.printElementCountsToFile(mergedModel);
-		trace.addLine("The merge took: " + Long.toString(runtime) + " milliseconds.");
+		trace.addLine("\nThe merge took: " + Long.toString(runtime) + " milliseconds.");
 
 		System.out.println("finished traceability");
 
@@ -991,7 +991,6 @@ public class MergeAlgorithm {
 			}
 		} else if (funcSeg2.length == 0) {
 			// B is static, use A's function segments
-			System.out.println("one intention static");
 			// gullibility: accept other intention's evolving functions;
 			// stochastic outside range of other intention's functions
 			if (maxTime1 < maxTime2) {
@@ -1000,6 +999,7 @@ public class MergeAlgorithm {
 				FunctionSegment[] newSegs = new FunctionSegment[funcSeg1.length + 1];
 				System.arraycopy(funcSeg1, 0, newSegs, 0, funcSeg1.length);
 				newSegs[funcSeg1.length] = new FunctionSegment("R", "(no value)", "A-MaxTime", maxTime1);
+								
 				return newSegs;
 			} else {
 				// no gaps
