@@ -22,7 +22,7 @@ public class Traceability{
 		this.fileName = fileName;
 	}
 	
-	public void traceabilityOutput(ModelSpec mergedModel) {
+	public void printElementCountsToFile(ModelSpec mergedModel) {
 		ArrayList<String> fromModel1 = new ArrayList<>();
 		int fromModel1Size = 0;
 		ArrayList<String> fromModel2 = new ArrayList<>();
@@ -31,10 +31,11 @@ public class Traceability{
 		int mergedElemsSize = 0;
 		//Counts up numbers of elements from [both models, model1, model2]
 		HashMap<String, ArrayList<Integer>> attributeCounter = new HashMap<String, ArrayList<Integer>>();
-		
+		System.out.println("-------------------------------------------------:)");
+		System.out.println("Starting traceability");
 		//add actors
 		for(Actor actor: mergedModel.getActors()) {
-			
+			System.out.println(actor.getId());
 		    if(actor.getId().indexOf("model") != actor.getId().length() - 6) {
 		    	mergedElements.add(actor.getName()+ "\t\tID: " + actor.getId());
 		    	
@@ -234,6 +235,8 @@ public class Traceability{
 			links += attributeCounter.get("ActorLink").get(0);
 			evolvingFunctions = attributeCounter.get("Intention").get(0);
 			fileWriter.write(actors + "\t" + intentions + "\t" + links + "\t" + evolvingFunctions + "\n");
+			
+			System.out.println("-------------------------------------------------:)");
 			
 			fileWriter.close();
 			

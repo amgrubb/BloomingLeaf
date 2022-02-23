@@ -1,8 +1,5 @@
 package merge;
 
-import com.google.gson.Gson;
-
-import gson_classes.IMain;
 import simulation.*;
 
 import java.util.*;
@@ -72,42 +69,30 @@ public class MergeAlgorithm {
 	public ModelSpec mergeModels(){
 		long startTime= System.currentTimeMillis();
 		if (MMain.DEBUG) System.out.println("Starting: mergeModels");
-		Gson gson = new Gson();
 
 		// update the models' times
 		if (MMain.DEBUG) System.out.println("Starting: updateTimeline");
 		updateTimeline();
-		//if (MMain.DEBUG) System.out.println(gson.toJson(mergedModel));
 
 		if (MMain.DEBUG) System.out.println("Starting: mergeIntentions");
 		mergeIntentions();
-		if (MMain.DEBUG) System.out.println("Finished: mergeIntentions");
-		IMain modelOut = IMainBuilder.buildIMain(mergedModel);
-		System.out.println(gson.toJson(modelOut));
 
 		if (MMain.DEBUG) System.out.println("Starting: mergeActors");
 		mergeActors();
-		modelOut = IMainBuilder.buildIMain(mergedModel);
-		//System.out.println(gson.toJson(modelOut));
 
 		if (MMain.DEBUG) System.out.println("Starting: mergeActorsLinks");
 		mergeActorLinks();
-		modelOut = IMainBuilder.buildIMain(mergedModel);
-		//System.out.println(gson.toJson(modelOut));
 
 		if (MMain.DEBUG) System.out.println("Starting: mergeLinks");
 		mergeLinks();
-		System.out.println("finished mergelinks");
-		long runtime = System.currentTimeMillis() - startTime;
 
-		modelOut = IMainBuilder.buildIMain(mergedModel);
-		System.out.println("finished buildImain");
-		//System.out.println(gson.toJson(modelOut));
+		// calculate runtime
+		long runtime = System.currentTimeMillis() - startTime;
 		
-		//traceability
+		// print traceability
 		trace.printDeletedToFile(deletedElements, deletedTimings);
 		trace.printConflictMessagesToFile(conflictMessages);
-		trace.traceabilityOutput(mergedModel);
+		trace.printElementCountsToFile(mergedModel);
 		trace.addLine("The merge took: " + Long.toString(runtime) + " milliseconds.");
 
 		System.out.println("finished traceability");
@@ -242,7 +227,6 @@ public class MergeAlgorithm {
 						// merge evolving functions
 						System.out.println("merging evolving functions");
 						FunctionSegment[] mergeEF = mergeEvolvingFunctions(mergedIntention, intention);
-						System.out.println("merged those M EF ers");
 						mergedIntention.setEvolvingFunctions(mergeEF);
 						
 						// user evaluation merging
@@ -361,12 +345,8 @@ public class MergeAlgorithm {
 		ArrayList<String> actorsNameSet = new ArrayList<>();
 		ArrayList<Actor> mergedActors = new ArrayList<>();
 		int actorCounter = 0;
-		System.out.println("-p-----------------------------------------------:)");
-		System.out.println("merging actors");
 		for(Actor actor1: model1.getActors()) {
-			System.out.println("actor1 id: " + actor1.getId());
 			for(Actor actor2: model2.getActors()) {
-				System.out.println("actor2 id: " + actor2.getId());
 				if(actor1.getName().equals(actor2.getName())) {
 					//merge actors
 					mergedActors.add(mergeToOneActor(actor1, actor2, actorCounter, model1, model2));
@@ -376,7 +356,6 @@ public class MergeAlgorithm {
 				}
 			}
 		}
-		System.out.println("-p-----------------------------------------------:)");
 		for(Actor actor1: model1.getActors()) {
 			if(!actorsNameSet.contains(actor1.getName())) {
 				String newId = createID(actorCounter, 1, actor1.getId(), "Actor");
@@ -386,7 +365,6 @@ public class MergeAlgorithm {
 				actorCounter += 1;
 
 			}
-			System.out.println("actor1 id: " + actor1.getId());
 		}
 		for(Actor actor2: model2.getActors()) {
 			if(!actorsNameSet.contains(actor2.getName())) {
@@ -397,7 +375,6 @@ public class MergeAlgorithm {
 				actorCounter += 1;
 
 			}
-			System.out.println("actor2 id: " + actor2.getId());
 		}
 		mergedModel.setActors(mergedActors);
 	}
@@ -548,8 +525,7 @@ public class MergeAlgorithm {
 			linkCount++;
 			mergedDL.add(dl);
 		}
-		System.out.println("finished putting in links from model one");
-
+		
 		//merged nbl from model2 onto model1
 		for(NotBothLink nbl: model2.getNotBothLink()){
 			boolean isNewLink = true;
@@ -574,7 +550,6 @@ public class MergeAlgorithm {
 			}
 		}
 
-		System.out.println("finished puttimg in other nbls");
 		//merge CLs from model2 onto model1
 		for(ContributionLink cl: model2.getContributionLinks()){
 			boolean isNewLink = true;
@@ -657,7 +632,6 @@ public class MergeAlgorithm {
 				}
 			}
 			if(isNewLink) {
-				System.out.println("mkaing new cl");
 				String newID = createID(linkCount, 2, cl.getID(), "ContributionLink");
 				cl.setID(newID);
 				linkCount++;
@@ -667,7 +641,7 @@ public class MergeAlgorithm {
 				cl.getDest().addLinksAsDest(cl);
 			}
 		}
-		System.out.println("finished puttimg in other cls");
+
 		//merge dl from model2 onto model1
 		for(DecompositionLink dl: model2.getDecompositionLinks()){
 			boolean isNewLink = true;
@@ -781,7 +755,6 @@ public class MergeAlgorithm {
 				dl.getDest().addLinksAsDest(dl);
 			}
 		}
-		System.out.println("finished puttimg in other decomps");
 
 		//check that NBL is not conflicting with intentions
 		ArrayList<NotBothLink> deletedNBL = new ArrayList<NotBothLink>();
@@ -834,8 +807,6 @@ public class MergeAlgorithm {
 		mergedModel.setContributionLinks(mergedCL);
 		mergedModel.setDecompositionLinks(mergedDL);
 		mergedModel.setNotBothLinks(mergedNBL);
-		System.out.println("all links added");
-		System.out.println("finished mergelinks");
 	}
 
 	/**

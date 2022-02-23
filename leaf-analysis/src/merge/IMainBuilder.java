@@ -27,8 +27,6 @@ public class IMainBuilder {
 		// actors
 		List<Actor> actors = outSpec.getActors();
 
-		System.out.println("st6arting actors");
-
 		// add actors to cells list
 		if (!actors.isEmpty()) {
 			for (Actor specActor: actors) {
@@ -50,12 +48,8 @@ public class IMainBuilder {
 			}
 		}
 
-		//System.out.println("Finished making actors");
-
 		// intentions
 		List<Intention> intentions = outSpec.getIntentions();
-
-		System.out.println("intentions");
 
 		// add intentions to cells list
 		if (!intentions.isEmpty()) {
@@ -78,9 +72,6 @@ public class IMainBuilder {
 			}
 		}
 
-		//System.out.println("Finished making intentions");
-		System.out.println("links");
-
 		// links
 		List<ContributionLink> contributionLinks = outSpec.getContributionLinks();
 		List<DecompositionLink> decompositionLinks = outSpec.getDecompositionLinks();
@@ -88,27 +79,19 @@ public class IMainBuilder {
 
 		if (!contributionLinks.isEmpty()) {
 			for (ContributionLink specLink: contributionLinks) {
-				System.out.println("outputting contr links");
 				// inputs for ICell
 				String id = specLink.getUniqueID();
 				String type = "basic.CellLink";
 				String source = specLink.getZeroSrcID();
 				String target = specLink.getDest().getUniqueID();
-				System.out.println("intention infos");
 
 				// inputs for building BILink
 				Integer absTime = specLink.getAbsTime();
-				System.out.println("time infos");
 				Boolean evolving = specLink.isEvolving();
-				System.out.println("evolving");
-				System.out.println(specLink.getPreContribution());
 				String linkType = specLink.getPreContribution().getCode();
-				System.out.println(specLink.getPreContribution());
-
 
 				BILink newLink; // build link w/ or w/o postType depending on evolving
 				if (evolving) {
-					System.out.println("is evolving");
 					String postType = specLink.getPostContribution().getCode();
 					newLink = new BILink(absTime, evolving, linkType, postType);
 				} else {
@@ -122,7 +105,6 @@ public class IMainBuilder {
 				z++;
 			}
 		}
-		System.out.println("finished contribution links");
 		// add decomposition links
 		if (!decompositionLinks.isEmpty()) {
 			for (DecompositionLink specLink: decompositionLinks) {
@@ -148,8 +130,6 @@ public class IMainBuilder {
 				// create separate ICell/link for each source
 				List<String> sources = specLink.getSrcIDs();
 				List<String> ids = specLink.getSubLinkUniqueIDList();
-				System.out.println(sources);
-				System.out.println(ids);
 				// TODO: throw error if sources.length != ids.length
 
 				// different ICell/link for each source
@@ -165,7 +145,6 @@ public class IMainBuilder {
 				}
 			}
 		}
-		System.out.println("finished decomposition links");
 		// add not both links
 		if (!notBothLinks.isEmpty()) {
 			for (NotBothLink specLink: notBothLinks) {
@@ -189,9 +168,6 @@ public class IMainBuilder {
 				z++;
 			}
 		}
-
-		System.out.println("actorlinks");
-
 
 		List<ActorLink> actorLinks = outSpec.getActorLinks();
 		if (!actorLinks.isEmpty()) {
@@ -217,19 +193,13 @@ public class IMainBuilder {
 			}
 		}
 
-		System.out.println("Finished making links");
 		// overall model variables
 		Integer maxAbsTime = outSpec.getMaxTime();
-		System.out.println(maxAbsTime);
-		//System.out.println("Finished making links");
 		int[] absTimePtsArr = convertAbsTimePtsArr(outSpec.getAbsTP());
-		System.out.println(absTimePtsArr);
 
 		// create model to return
 		IGraph graph = new IGraph(maxAbsTime, absTimePtsArr, cells); // TODO: add constraints
 
-
-		System.out.println("Finished graph");
 		IMain model = new IMain(graph);
 
 		return model;
