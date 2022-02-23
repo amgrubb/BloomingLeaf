@@ -1139,9 +1139,6 @@ public class MergeAlgorithm {
 
 		// merge functions
 		MergeEvolvingFunction merge = new MergeEvolvingFunction(segsA, segsB, timeOrder);
-		deletedTimings = merge.getDeletedTimings();
-		
-		System.out.println(merge.outputMergedSegments());
 		
 		// intention1 stores merged intention info;
 		// save MFunctionSegments for the additional info

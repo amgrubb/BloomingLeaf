@@ -14,7 +14,6 @@ public class MergeEvolvingFunction {
 	private MEvolvingFunction funcMerged;
 	
 	private List<String> timing;
-	private ArrayList<String> deletedTimings;
 	
 	public MergeEvolvingFunction(List<MFunctionSegment> segsA, List<MFunctionSegment> segsB, List<String> timing) {
 		this.funcA = new MEvolvingFunction(segsA, timing);
@@ -24,7 +23,6 @@ public class MergeEvolvingFunction {
 		//if (MMain.DEBUG) System.out.println(timing);
 		//if (MMain.DEBUG) System.out.println(segsB);
 		this.timing = timing;
-		this.deletedTimings = new ArrayList<String>();
 		
 		System.out.println("--------------------");
 		System.out.println("Merging:");
@@ -52,7 +50,6 @@ public class MergeEvolvingFunction {
 
 		HashMap<String, String> newStartingTimeline = new HashMap<>();
 		HashMap<String, String> newEndingTimeline = new HashMap<>();
-		ArrayList<String> timingsToDelete = new ArrayList<>();
 		String mergedEnd, mergedStart;
 		
 		// create new timeline
@@ -60,8 +57,6 @@ public class MergeEvolvingFunction {
 			// find merged value at time
 			mergedEnd = getMergedValueAtTime(time, funcA.getEndingEvidencePair(time), funcB.getEndingEvidencePair(time));
 			mergedStart = getMergedValueAtTime(time, funcA.getStartingEvidencePair(time), funcB.getStartingEvidencePair(time));
-			System.out.println(mergedEnd);
-			System.out.println(mergedStart);
 			
 			// logic for using other value @ timepoint when calculating mid of stochastic value
 			if (mergedEnd == "other" && mergedStart == "other") {
@@ -76,17 +71,7 @@ public class MergeEvolvingFunction {
 			// insert into new timeline
 			newEndingTimeline.put(time, mergedEnd);
 			newStartingTimeline.put(time, mergedStart);
-			
-			// old skip value compatibility
-			/*if (!valueM.equals("skip")){
-				newStartingTimeline.put(time, valueM);
-			}else {
-				timingsToDelete.add(time);  // removed skip values for now
-			}*/
 		}
-		
-		this.timing.removeAll(timingsToDelete);
-		this.deletedTimings = timingsToDelete;
 		
 		// construct MEvolvingFunction from new timeline
 		this.funcMerged = new MEvolvingFunction(newStartingTimeline, newEndingTimeline, timing);
@@ -148,10 +133,6 @@ public class MergeEvolvingFunction {
 		FunctionSegment[] segmentsArr = new FunctionSegment[segments.size()];
         segmentsArr = segments.toArray(segmentsArr);
 		return segmentsArr;
-	}
-	
-	public ArrayList<String> getDeletedTimings(){
-		return deletedTimings;
 	}
 	
 	/**********
