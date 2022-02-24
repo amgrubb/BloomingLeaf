@@ -69,7 +69,7 @@ public class Traceability{
 		for (Actor actorA: modelA.getActors()) {
 			for (Actor actorB: modelB.getActors()) {
 				// count actors w/ matching names
-				if (actorA.getName().equals(actorB.getName())) {
+				if (MergeAlgorithm.isEqualToCleaned(actorA.getName(), actorB.getName())) {
 					actors++;
 				}
 			}
@@ -81,7 +81,7 @@ public class Traceability{
 		for (Intention intentionA: modelA.getIntentions()) {
 			for (Intention intentionB: modelB.getIntentions()) {
 				// count actors w/ matching names
-				if (intentionA.getName().equals(intentionB.getName())) {
+				if (MergeAlgorithm.isEqualToCleaned(intentionA.getName(), intentionB.getName())) {
 					intentions++;
 				}
 			}
