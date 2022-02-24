@@ -55,8 +55,8 @@ public class MergeEvolvingFunction {
 			
 			// logic for using other value @ timepoint when calculating mid of stochastic value
 			if (mergedEnd == "other" && mergedStart == "other") {
-				mergedEnd = "no value";
-				mergedStart = "no value";
+				mergedEnd = "(no value)";
+				mergedStart = "(no value)";
 			} else if (mergedEnd == "other") {
 				mergedEnd = mergedStart;
 			} else if (mergedStart == "other") {

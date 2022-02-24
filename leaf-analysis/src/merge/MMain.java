@@ -20,7 +20,7 @@ import simulation.BIModelSpecBuilder;
  *
  */
 public class MMain {
-	public final static boolean DEBUG = true;
+	public final static boolean DEBUG = false;
 
 	/**
 	 * This method is responsible to execute all steps to generate the merged model
@@ -28,10 +28,10 @@ public class MMain {
 	 */
 	public static void main(String[] args) {
 		//This is the default filePath to be executed if no file is passed through parameters
-		String inPath = "tests/models/";
-		String tPath = "tests/timing/";
-		String outPath = "tests/mergedModels/";
-		String tracePath = "tests/traceability/";
+		String inPath = "data/models/";
+		String tPath = "data/timing/";
+		String outPath = "data/mergedModels/";
+		String tracePath = "data/traceability/";
 		String inputFile1 = "";
 		String inputFile2 = "";
 		String timingFile = "";

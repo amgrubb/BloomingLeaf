@@ -19,11 +19,11 @@ import simulation.ModelSpec;
  ***********/
 
 public class PreMerge {
-	public final static boolean DEBUG = true;
+	public final static boolean DEBUG = false;
 
 	public static void main(String[] args) {
-		String inPath = "tests/models/";
-		String tPath = "tests/timing/";
+		String inPath = "data/models/";
+		String tPath = "data/timing/";
 		String inputFile1 = ""; // "testModel1.json";
 		String inputFile2 = ""; // "testModel2.json";
 		String timingFile = "timing.json"; //"testModel-timing.json";
