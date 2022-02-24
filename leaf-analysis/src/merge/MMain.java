@@ -20,7 +20,7 @@ import simulation.BIModelSpecBuilder;
  *
  */
 public class MMain {
-	public final static boolean DEBUG = true;
+	public final static boolean DEBUG = false;
 
 	/**
 	 * This method is responsible to execute all steps to generate the merged model
