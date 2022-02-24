@@ -179,7 +179,7 @@ public class MergeAlgorithm {
 		//add/merge intentions from model2 onto model1
 		for(Intention intention: model2.getIntentions()) {
 			//if the intention is new...
-			if(!mergedIntentionsNameSet.contains(intention.getName())){
+			if(!containsCleaned(intention.getName(), mergedIntentionsNameSet)){
 				updateIntentionID(createID(currIDCount, 2, intention.getId(), "intention"), intention.getId(), model2, intention);
 				intention.addUserEval(0, "(no value)"); // add eval at 0
 				mergedIntentions.add(intention);
@@ -311,7 +311,7 @@ public class MergeAlgorithm {
 	}
 
 	public void mergeActors() {
-		ArrayList<String> actorsNameSet = new ArrayList<>();
+		HashSet<String> actorsNameSet = new HashSet<>();
 		ArrayList<Actor> mergedActors = new ArrayList<>();
 		int actorCounter = 0;
 		for(Actor actor1: model1.getActors()) {
@@ -326,7 +326,7 @@ public class MergeAlgorithm {
 			}
 		}
 		for(Actor actor1: model1.getActors()) {
-			if(!actorsNameSet.contains(actor1.getName())) {
+			if(!containsCleaned(actor1.getName(), actorsNameSet)) {
 				String newId = createID(actorCounter, 1, actor1.getId(), "Actor");
 				actor1.setId(newId);
 				mergedActors.add(actor1);
@@ -336,7 +336,7 @@ public class MergeAlgorithm {
 			}
 		}
 		for(Actor actor2: model2.getActors()) {
-			if(!actorsNameSet.contains(actor2.getName())) {
+			if(!containsCleaned(actor2.getName(), actorsNameSet)) {
 				String newId = createID(actorCounter, 2, actor2.getId(), "Actor");
 				actor2.setId(newId);
 				mergedActors.add(actor2);
@@ -1130,6 +1130,26 @@ public class MergeAlgorithm {
 		String cleanedS1 = s1.replace("\n", "").replace(" ", "").toUpperCase();
 		String cleanedS2 = s2.replace("\n", "").replace(" ", "").toUpperCase();
 		return cleanedS1.equals(cleanedS2);
+	}
+	
+	/**
+	 * 
+	 * @param s1
+	 * @param stringSet
+	 * @return if stringSet contains s1 when cleaned
+	 */
+	public static boolean containsCleaned(String s1, HashSet<String> stringSet) {
+		String cleanedS1 = s1.replace("\n", "").replace(" ", "").toUpperCase();
+		String cleanedS2;
+		
+		for (String s2: stringSet) {
+			cleanedS2 = s2.replace("\n", "").replace(" ", "").toUpperCase();
+			if (cleanedS1.equals(cleanedS2)) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 
 }
