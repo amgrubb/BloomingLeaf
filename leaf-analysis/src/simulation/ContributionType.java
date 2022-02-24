@@ -18,7 +18,6 @@ public enum ContributionType {
 		P, PP, M, MM, SP, SPP, SM, SMM, DP, DPP, DM, DMM, NONE};
 	
 	public static ContributionType getByCode(String code) {
-		System.out.println(code);
 		for (int i = 0; i < VALUES_ARRAY.length; ++i) {
 			ContributionType result = VALUES_ARRAY[i];
 			if (result.getCode().equals(code)) {

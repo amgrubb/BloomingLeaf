@@ -28,13 +28,6 @@ public class MMain {
 	 */
 	public static void main(String[] args) {
 		//This is the default filePath to be executed if no file is passed through parameters
-
-		/*String filePath = "temp/";
-		String inputFile1 = "testModel1.json";
-		String inputFile2 = "testModel2.json";
-		String outputFile = "output-2-13.json";
-		String timingFile = "timings.json";
-		Integer delta = 5;  // new start B*/
 		String inPath = "tests/models/";
 		String tPath = "tests/timing/";
 		String outPath = "tests/mergedModels/";
@@ -52,47 +45,48 @@ public class MMain {
 				outputFile = args[3];
 			} else throw new IOException("Tool: Command Line Inputs Incorrect.");
 			
-			System.out.println("Merging: \t" + inputFile1 + " and " + inputFile2);
+			if (DEBUG) System.out.println("Merging: \t" + inputFile1 + " and " + inputFile2);
 
 			Gson gson = new Gson();
+			
 			// Creating the 1st back-end model to be merged
-			System.out.println("M1:");
 			ModelSpec modelSpec1 = convertBackboneModelFromFile(inPath + inputFile1);
 
 			// print M1 for reference
-			IMain m1IMain = IMainBuilder.buildIMain(modelSpec1);
-			System.out.println(gson.toJson(m1IMain));
+			if (DEBUG) {
+				System.out.println("M1:");
+				IMain m1IMain = IMainBuilder.buildIMain(modelSpec1);
+				System.out.println(gson.toJson(m1IMain));
+			}
 
 			// Creating the 2nd back-end model to be merged
-			System.out.println("M2:");
 			ModelSpec modelSpec2 = convertBackboneModelFromFile(inPath + inputFile2);
 
 			// print M2 for reference
-			IMain m2IMain = IMainBuilder.buildIMain(modelSpec2);
-			System.out.println(gson.toJson(m2IMain));
+			if (DEBUG) {
+				System.out.println("M2:");
+				IMain m2IMain = IMainBuilder.buildIMain(modelSpec2);
+				System.out.println(gson.toJson(m2IMain));
+			}
 
 			// Loading in timing info
 			TMain timings = convertTimingFromFile(tPath + timingFile);
-			System.out.println(timings.getTimingOffset());
+			if (DEBUG) {
+				System.out.printf("Timing offset: %d%n", timings.getTimingOffset());
+			}
 
-			System.out.println("----------------------");
 			// run merge
 			MergeAlgorithm merge = new MergeAlgorithm(modelSpec1, modelSpec2, timings, tracePath + outputFile.replace(".json", "-Traceability.txt"));
 
 			ModelSpec mergedModel = merge.getMergedModel();
-			System.out.println("Completed Merging.");
-
-			System.out.println("----------------------");
+			if (DEBUG) System.out.println("Completed Merging.");
 
 			// Create Output file that will be used by frontend
 			IMain mergedModelOut = IMainBuilder.buildIMain(mergedModel);
-			//System.out.println(gson.toJson(mergedModelOut));
-			//System.out.println("converted merged model to IMain");
+			if (DEBUG) System.out.println(gson.toJson(mergedModelOut));
 
 			createOutputFile(mergedModelOut, outPath + outputFile);
-			//createOutputFile(m1IMain, filePath + outputFile);
-
-			System.out.println("created output file");
+			if (DEBUG) System.out.println("created output file");
 
 
 		} catch (RuntimeException e) {
@@ -147,7 +141,6 @@ public class MMain {
 				file.createNewFile();
 			}
 			PrintWriter printFile = new PrintWriter(file);
-			System.out.println(gson.toJson(outputModel));
 			printFile.printf(gson.toJson(outputModel));
 			printFile.close();
 		} catch (Exception e) {
@@ -171,8 +164,6 @@ public class MMain {
 			Gson gson = builder.create();
 			// read model from JSON file (IMain is frontend compatible)
 			IMain frontendObject = gson.fromJson(new FileReader(filePath), IMain.class);
-			System.out.println("made IMain:");
-			System.out.println(gson.toJson(frontendObject));
 
 			// convert model to ModelSpec format (for backend use)
 			ModelSpec modelSpec = BIModelSpecBuilder.buildModelSpec(frontendObject);
@@ -190,8 +181,10 @@ public class MMain {
 			Gson gson = builder.create();
 			// read timing from JSON file (TimingMain holds list of Timing)
 			TMain timingMain = gson.fromJson(new FileReader(filePath), TMain.class);
-			System.out.println("made timing:");
-			System.out.println(gson.toJson(timingMain));
+			if (DEBUG) {
+				System.out.println("made timing:");
+				System.out.println(gson.toJson(timingMain));
+			}
 
 			return timingMain;
 

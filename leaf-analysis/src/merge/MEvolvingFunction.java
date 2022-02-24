@@ -83,7 +83,6 @@ public class MEvolvingFunction {
 	 * Convert numeric timepoint names to just the number
 	 */
 	private void cleanTiming() {
-		System.out.println(timing);
 		for (int i=0; i<timing.size(); i++) {
 			String time = timing.get(i);
 			// take timepoint name after "-"
@@ -93,7 +92,6 @@ public class MEvolvingFunction {
 				timing.set(i, post);
 			}
 		}
-		System.out.println(timing);
 	}
 	
 	private Boolean withinTimeline(String time) {
@@ -162,13 +160,11 @@ public class MEvolvingFunction {
 		this.segments = new ArrayList<>();
 		// build function between each timepoint
 		for (int i = 0; i < timing.size()-1; i++) {
-			if (MMain.DEBUG) System.out.println(i);
 			String startTime = timing.get(i);
 			String endTime = timing.get(i+1);
 			segments.add(new MFunctionSegment(startTime, startTimes.get(startTime),
 												 endTime, endTimes.get(endTime)));
 		}
-		if (MMain.DEBUG) System.out.println("Finished: buildSegments");
 	}
 	
 	/******************************************************
@@ -258,25 +254,27 @@ public class MEvolvingFunction {
 		return endTimes.get(time);
 	}
 	
-	public void printMe() {
-		System.out.println("Timeline:");
+	public String toString() {
+		String out = "Timeline:\n";
 		String time;
 		
 		// print start time
 		time = timing.get(0);
-		System.out.printf("(%s)  %s<-", time, startTimes.get(time));
+		out += String.format("(%s)  %s<-", time, startTimes.get(time));
 		
 		// print middle times
 		for (int i=1; i<timing.size()-1; i++) {
 			time = timing.get(i);
-			System.out.printf("->%s  (%s)  %s<-", endTimes.get(time), time, startTimes.get(time));
+			out += String.format("->%s  (%s)  %s<-", endTimes.get(time), time, startTimes.get(time));
 		}
 		
 		// print end time
 		time = timing.get(timing.size()-1);
-		System.out.printf("->%s  (%s)", endTimes.get(time), time);
+		out += String.format("->%s  (%s)", endTimes.get(time), time);
 		
-		System.out.println("\nSegments:");
-		System.out.println(segments);
+		out += "\nSegments:\n";
+		out += segments.toString();
+		
+		return out;
 	}
 }

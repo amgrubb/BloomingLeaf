@@ -93,9 +93,9 @@ public class PreMerge {
 			for(Intention intentionB: modelB.getIntentions()) {
 				// if intention names match, intentions will merge
 				if(isEqualToCleaned(intentionA.getName(),intentionB.getName())) {
-					System.out.println("matched intentions: " + intentionA.getName());
-					System.out.println(intentionA.getEvolvingFunctions().length);
-					System.out.println(intentionB.getEvolvingFunctions().length);
+					if (PreMerge.DEBUG) System.out.println("matched intentions: " + intentionA.getName());
+					if (PreMerge.DEBUG) System.out.println(intentionA.getEvolvingFunctions().length);
+					if (PreMerge.DEBUG) System.out.println(intentionB.getEvolvingFunctions().length);
 					Integer evolFuncLenA = intentionA.getEvolvingFunctions().length;
 					Integer evolFuncLenB = intentionB.getEvolvingFunctions().length;
 					// don't output timing if 0 function segments in both intention

@@ -130,7 +130,7 @@ public class MFunctionSegment extends FunctionSegment{
 	
 	public String toString() {
 		this.startEvidencePair = assignStartValue(startEvidencePair);
-		String out = "----------\n";
+		String out = "--MFunctionSegment:--\n";
 		out += "Start: " + this.startEvidencePair + " " + this.getStartTP();
 		if (this.getStartAT() != null) {
 			out += " (" + Integer.toString(this.getStartAT()) + ")";
@@ -140,7 +140,6 @@ public class MFunctionSegment extends FunctionSegment{
 			out += " (" + Integer.toString(endAT) + ")";
 		}
 		out += "\nType: " + this.getType();
-		out += "\n----------";
 		return out;
 	}
 

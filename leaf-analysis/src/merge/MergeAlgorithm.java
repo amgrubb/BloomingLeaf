@@ -39,9 +39,6 @@ public class MergeAlgorithm {
 		// set up timing
 		this.timings = timings;
 		this.delta = timings.getTimingOffset();
-		System.out.println("---------------------------------------------------------------\ndelta:");
-		System.out.println(delta);
-		System.out.println("---------------------------------------------------------------");
 		this.maxTime1 = model1.getMaxTime();
 		this.maxTime2 = model2.getMaxTime() + delta;
 
@@ -95,7 +92,7 @@ public class MergeAlgorithm {
 		trace.printElementCountsToFile(mergedModel);
 		trace.addLine("\nThe merge took: " + Long.toString(runtime) + " milliseconds.");
 
-		System.out.println("finished traceability");
+		if (MMain.DEBUG) System.out.println("finished traceability");
 
 		return mergedModel;
 	}
@@ -107,19 +104,12 @@ public class MergeAlgorithm {
 	 * @param delta
 	 */
 	public void updateTimeline() {
-		if (MMain.DEBUG) System.out.println("Starting: updateTimeline");
-
 		// update max time for both models
 		// greater of model1 and model2's new times
 		Integer newMax = Math.max(model1.getMaxTime(), model2.getMaxTime() + delta);
-		System.out.println(newMax);
 		model1.setMaxTime(newMax);
 		model2.setMaxTime(newMax);
 		mergedModel.setMaxTime(newMax);
-		
-		System.out.println("---------------------------------------------------------------\nnewMaxTime:");
-		System.out.println(newMax);
-		System.out.println("---------------------------------------------------------------\n");
 
 		// update absolute time points for model 2
 		// future work: rename Initial in model B
@@ -190,7 +180,6 @@ public class MergeAlgorithm {
 		for(Intention intention: model2.getIntentions()) {
 			//if the intention is new...
 			if(!mergedIntentionsNameSet.contains(intention.getName())){
-				if (MMain.DEBUG) System.out.println("Adding a new intention from model 2");
 				updateIntentionID(createID(currIDCount, 2, intention.getId(), "intention"), intention.getId(), model2, intention);
 				intention.addUserEval(0, "(no value)"); // add eval at 0
 				mergedIntentions.add(intention);
@@ -202,11 +191,10 @@ public class MergeAlgorithm {
 			//else merge intentions from model1 and model2 that are considered the same because they have the same name.
 				for(Intention mergedIntention: mergedIntentions){
 					if(isEqualToCleaned(mergedIntention.getName(),intention.getName())){
-						if (MMain.DEBUG) System.out.println("merging an intention");
+						if (MMain.DEBUG) System.out.println("Merging intention: " + intention.getName());
 						//update ID to show that intention also exists in model2
 						
 						mergedIntention.setId(mergedIntention.getId() + "2");
-						System.out.println(mergedIntention.getId());
 
 						//actor merging
 						if((mergedIntention.hasActor() && intention.hasActor()) && !isEqualToCleaned(mergedIntention.getActor().getName(),intention.getActor().getName())){
@@ -220,18 +208,15 @@ public class MergeAlgorithm {
 						}
 
 						//type merging
-						if (MMain.DEBUG) System.out.println("merging type");
 						if(mergedIntention.compareType(intention) < 0){
 							mergedIntention.setType(intention.getType());
 						}
 
 						// merge evolving functions
-						System.out.println("merging evolving functions");
 						FunctionSegment[] mergeEF = mergeEvolvingFunctions(mergedIntention, intention);
 						mergedIntention.setEvolvingFunctions(mergeEF);
 						
 						// user evaluation merging
-						if (MMain.DEBUG) System.out.println("merging valuations");
 						HashMap<Integer, String> userEvalsA = mergedIntention.getUserEvals();
 						HashMap<Integer, String> userEvalsB = intention.getUserEvals();
 						
@@ -241,14 +226,12 @@ public class MergeAlgorithm {
 								userEvalsA.put(absTP, userEvalsB.get(absTP));
 							} else {                               // eval is in A and B, keep consensus
 								String newEval = MEPOperators.consensus(userEvalsA.get(absTP), userEvalsB.get(absTP));
-								if (MMain.DEBUG) System.out.println(newEval);
 								userEvalsA.put(absTP, newEval);
 							}
 						}
 						mergedIntention.setUserEvals(userEvalsA);
 
 						//replace all mentions of intention with mergedIntention in Model2
-						if (MMain.DEBUG) System.out.println("updating repeated intentions");
 						updateRepeatedIntention(mergedIntention, intention, model2);
 					}
 				}
@@ -307,26 +290,22 @@ public class MergeAlgorithm {
 
 	// ******* Actor merging methods begin ******** //
 	public static Actor mergeToOneActor(Actor actorOne, Actor actorTwo, int actorNum, ModelSpec model1, ModelSpec model2) {
-		System.out.println(actorOne.getName());
-		System.out.println(actorOne.getActorType());
-		System.out.println(actorTwo.getName());
-		System.out.println(actorTwo.getActorType());
 		// type G > R > A (agent > role > actor)
+		
 		// so use actorOne if >= type to actorTwo
 		if(actorOne.getActorType().equals(actorTwo.getActorType()) || (actorOne.getActorType().equals("G")) || (actorOne.getActorType().equals("R") && !actorTwo.getActorType().equals("G"))) {
 			String newId = createID(actorNum, 12, actorOne.getId(), "Actor");
 			actorOne.setId(newId);
 			//actorTwo.setId(newId);
 			updateRepeatedActor(actorOne, actorTwo, model2);
-			System.out.println("make type: " + actorOne.getActorType());
 			return actorOne;
 		}
+		
 		// else use actorTwo if > type to actorOne
 		String newId = createID(actorNum, 21, actorTwo.getId(), "Actor");
 		actorTwo.setId(newId);
 		//actorOne.setId(newId);
 		updateRepeatedActor(actorTwo, actorOne, model1);
-		System.out.println("make type: " + actorTwo.getActorType());
 		return actorTwo;
 
 	}
@@ -545,7 +524,6 @@ public class MergeAlgorithm {
 			boolean isNewLink = true;
 			for(ContributionLink  addedcl: mergedCL){
 				if(isSameLink(addedcl, cl)){
-					System.out.println("merging cl");
 					isNewLink = false;
 					//merge these links
 					
@@ -556,7 +534,6 @@ public class MergeAlgorithm {
 					//check if there was a problem in merging types
 					if(addedcl.getPreContribution() == ContributionType.NONE){
 						//Conflict alert user
-						//System.out.println("conflict");
 						if (MMain.DEBUG) System.out.println("preContribution types were unresolvable");
 						conflictMessages.add(addedcl.getName() + " had preContribution types that were unresolvable.");
 					}
@@ -609,7 +586,6 @@ public class MergeAlgorithm {
 					//check if conflict has occurred
 					if(addedcl.getPostContribution() == ContributionType.NONE){
 						//Conflict alert user
-						//System.out.println("conflict");
 						if (MMain.DEBUG) System.out.println("postContribution types were unresolvable");
 						conflictMessages.add(addedcl.getName() + " had contribution types that were unresolvable.");
 					}
@@ -758,9 +734,7 @@ public class MergeAlgorithm {
 			//conflict if mismatching absTP 0's
 			if(!eval1.equals("0000") && !eval1.equals("(no value)") || !eval2.equals("0000") && !eval2.equals("(no value)")) {
 				//Conflict!!
-				System.out.println("removed NBL");
-				//mergedNBL.remove(nbl);
-				deletedNBL.add(nbl);
+				deletedNBL.add(nbl);  // add to deletedNBL to delete outside loop
 				conflictMessages.add(nbl.getName() + " conflicted with intentino absTP 0");
 				deleted = true;
 			}
@@ -768,18 +742,14 @@ public class MergeAlgorithm {
 			//conflict if any evolfuncs are stochastic
 			for(FunctionSegment funcSeg: nbl.getElement1().getEvolvingFunctions()) {
 				if(funcSeg.getType().equals("R") && !deleted) {
-					System.out.println("removed NBL");
-					//mergedNBL.remove(nbl);
-					deletedNBL.add(nbl);
+					deletedNBL.add(nbl);  // add to deletedNBL to delete outside loop
 					conflictMessages.add(nbl.getName() + " connected intention with stochastic func.");
 					deleted = true;
 				}
 			}
 			for(FunctionSegment funcSeg: nbl.getElement2().getEvolvingFunctions()) {
 				if(funcSeg.getType().equals("R") && !deleted) {
-					System.out.println("removed NBL");
-					//mergedNBL.remove(nbl);
-					deletedNBL.add(nbl);
+					deletedNBL.add(nbl);  // add to deletedNBL to delete outside loop
 					conflictMessages.add(nbl.getName() + " connected intention with stochastic func.");
 					deleted = true;
 				}
@@ -788,7 +758,6 @@ public class MergeAlgorithm {
 		//add nbls to deleted elements
 		mergedNBL.removeAll(deletedNBL);
 		deletedElements.add((ArrayList<? extends AbstractElement>) deletedNBL);
-		System.out.println("deleted nbls");
 
 		//TODO: check to make sure no other links exist for contribution links
 		//TODO: check to make sure no other links exist for decomposition links
@@ -819,16 +788,13 @@ public class MergeAlgorithm {
 		//get string codes for types to compare easily
 		String linkType1 = ct1.getCode();
 		String linkType2 = ct2.getCode();
-		System.out.println("merging cl types");
-		System.out.println(linkType1);
-		System.out.println(linkType2);
+		
 		//checks if link types are the same
 		if(linkType1.equals(linkType2)){
 			return ct1;
 		}
 		//checks if link types are opposing signs
 		if(linkType1.contains("-") && linkType2.contains("+") || linkType1.contains("+") && linkType2.contains("-")){
-			//System.out.println("hi");
 			return ContributionType.NONE;
 		}
 		//if they are both positive...
@@ -841,15 +807,9 @@ public class MergeAlgorithm {
 				return ContributionType.P;
 			}
 			String newLinkType = "";
-			System.out.println("<------------");
-			System.out.println(linkType1);
-			System.out.println(linkType2);
-			System.out.println(linkType1.lastIndexOf("+"));
-			System.out.println(linkType2);
 			//if the two are ++/+ then the new link is +
 			if(linkType1.lastIndexOf("+") != linkType2.lastIndexOf("+")){
 				newLinkType = "+";
-				System.out.println("diff length");
 			}
 			//else the type is what they both are
 			else{
@@ -931,15 +891,6 @@ public class MergeAlgorithm {
 		// get evolving functions for both intentions
 		FunctionSegment[] funcSeg1 = intention1.getEvolvingFunctions();
 		FunctionSegment[] funcSeg2 = intention2.getEvolvingFunctions();
-		System.out.println("-----------------------------------");
-		System.out.println("Merging: " + intention1.getName());
-		System.out.println("len: " + Integer.toString(funcSeg1.length));
-		System.out.println(intention1.getUserEvals());
-		System.out.println(funcSeg1);
-		System.out.println("len: " + Integer.toString(funcSeg2.length));
-		System.out.println(intention2.getUserEvals());
-		System.out.println(funcSeg2);
-		System.out.println("-----------------------------------");
 
 		// no evolving functions
 		if (funcSeg1.length == 0 && funcSeg2.length == 0) {
@@ -949,7 +900,7 @@ public class MergeAlgorithm {
 		// one intention is static
 		if (funcSeg1.length == 0) {
 			// A is static, use B's function segments
-			System.out.println("one intention static");
+
 			// gullibility: accept other intention's evolving functions;
 			// stochastic outside range of other intention's functions
 			if ((delta > 0) && (maxTime1 > maxTime2)) {
@@ -1010,9 +961,6 @@ public class MergeAlgorithm {
 			System.arraycopy(funcSeg1, 0, combined, 0, funcSeg1.length);  // copy first array into combined
 			System.arraycopy(funcSeg2, 0, combined, funcSeg1.length, funcSeg2.length);  // copy second array ""
 
-			System.out.println("num func segments in combined:");
-			System.out.println(combined.length);
-
 			// future work: give user the option to rename timepoints
 			// when intention merge isn't automatically requested in timing.json
 
@@ -1028,9 +976,6 @@ public class MergeAlgorithm {
 			System.arraycopy(funcSeg1, 0, combined, 0, funcSeg1.length);  // copy first array into combined
 			combined[funcSeg1.length] = fillGap;  // add gap segment in the middle
 			System.arraycopy(funcSeg2, 0, combined, funcSeg1.length+1, funcSeg2.length);  // copy second array ""
-
-			System.out.println("num func segments in combined:");
-			System.out.println(combined.length);
 
 			// future work: give user the option to rename timepoints
 			// when intention merge isn't automatically requested in timing.json
@@ -1097,9 +1042,6 @@ public class MergeAlgorithm {
 					timeOrder.add("B-MaxTime");
 					timeOrder.add("A-MaxTime");
 				}
-
-				System.out.println("new timeOrder is ");
-				System.out.println(timeOrder);
 			} // A contained in B
 			else if ((delta == 0) && (funcSeg2.length == 1) && (maxTime1 <= maxTime2)) {
 				// A and B start at 0
@@ -1113,9 +1055,6 @@ public class MergeAlgorithm {
 					timeOrder.add("A-MaxTime");
 					timeOrder.add("B-MaxTime");
 				}
-
-				System.out.println("new timeOrder is ");
-				System.out.println(timeOrder);
 			} else {
 				// if not simple merge, we should have had timing info in timing.json
 				// throw error
@@ -1128,14 +1067,6 @@ public class MergeAlgorithm {
 		// obtain complete functions (w/ start and end times and evidence pairs)
 		List<MFunctionSegment> segsA = completeFunctionInfo(intention1.getEvolvingFunctions(), intention1.getInitialUserEval(), maxTime1, maxTimeName1);
 		List<MFunctionSegment> segsB = completeFunctionInfo(intention2.getEvolvingFunctions(), intention2.getUserEvalAt(delta), maxTime2, maxTimeName2);
-		
-		System.out.println("--------------------");
-		System.out.println("SEGMENTS");
-		
-		System.out.println(segsA);
-		System.out.println(segsB);
-		
-		System.out.println("--------------------");
 
 		// merge functions
 		MergeEvolvingFunction merge = new MergeEvolvingFunction(segsA, segsB, timeOrder);
@@ -1154,11 +1085,7 @@ public class MergeAlgorithm {
 	 * to send into MergeEvolvingFunction
 	 */
 	private static List<MFunctionSegment> completeFunctionInfo(FunctionSegment[] oldSegs, String initialEval, Integer maxTime, String maxTimeName){
-		if (MMain.DEBUG) System.out.println("Starting: completeFunctionInfo");
-		System.out.println(oldSegs.length);
-		System.out.println(initialEval);
-		System.out.println(maxTime);
-
+		// create List<MFunctionSegment> from FunctionSegment[]
 		List<MFunctionSegment> newSegs = new ArrayList<>();
 
 		// special cases: 0 or 1 oldSegs in list

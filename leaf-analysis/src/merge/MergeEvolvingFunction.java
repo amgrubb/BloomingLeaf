@@ -17,25 +17,20 @@ public class MergeEvolvingFunction {
 	
 	public MergeEvolvingFunction(List<MFunctionSegment> segsA, List<MFunctionSegment> segsB, List<String> timing) {
 		this.funcA = new MEvolvingFunction(segsA, timing);
-		//if (MMain.DEBUG) System.out.println(timing);
-		//if (MMain.DEBUG) System.out.println(segsA);
 		this.funcB = new MEvolvingFunction(segsB, timing);
-		//if (MMain.DEBUG) System.out.println(timing);
-		//if (MMain.DEBUG) System.out.println(segsB);
 		this.timing = timing;
 		
-		System.out.println("--------------------");
-		System.out.println("Merging:");
-		funcA.printMe();
-		funcB.printMe();
-		System.out.println("--------------------");
+		if (MMain.DEBUG) System.out.println("------------------------------------------------------------");
+		if (MMain.DEBUG) System.out.println("Merging Evolving Functions:");
+		if (MMain.DEBUG) System.out.println(funcA.toString());
+		if (MMain.DEBUG) System.out.println(funcB.toString());
 		
 		doEvolvingFunctionMerge();
 		
-		System.out.println("--------------------");
-		System.out.println("Result:");
-		if (MMain.DEBUG) funcMerged.printMe();
 		if (MMain.DEBUG) System.out.println("--------------------");
+		if (MMain.DEBUG) System.out.println("Result:");
+		if (MMain.DEBUG) System.out.println(funcMerged.toString());
+		if (MMain.DEBUG) System.out.println("------------------------------------------------------------");
 	}
 	
 	/***************************
@@ -82,15 +77,10 @@ public class MergeEvolvingFunction {
 	 */
 	private String getMergedValueAtTime(String time, String valueA, String valueB) {
 		if (MMain.DEBUG) System.out.println("Starting: getMergedValueAtTime: " + time);
-		System.out.println(time);
-		
-		System.out.println(valueA);
-		System.out.println(valueB);
-		
 		// note: should never have "mid" for both values
 		// (middle of function for both models)
 		if (valueA.equals("mid") && valueB.equals("mid")) {
-			System.out.println("warning: merging two mids");
+			if (MMain.DEBUG) System.out.println("Warning: merging two mids");
 		}
 		
 		// if stochastic with mid, use other value at point

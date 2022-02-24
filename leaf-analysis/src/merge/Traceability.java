@@ -95,7 +95,7 @@ public class Traceability{
 		this.eCountMerged = countElements(mergedModel);
 		
 		try {
-			System.out.println("Printing to file...");
+			if (MMain.DEBUG) System.out.println("Printing to file...");
 			FileWriter fileWriter = new FileWriter(fileName, true);
 			
 			fileWriter.write("\nAttribute Counter Chart"+ "\n");
@@ -106,9 +106,7 @@ public class Traceability{
 			fileWriter.write(eCountB.get("A") + "\t" + eCountB.get("G") + "\t" + eCountB.get("R") + "\t" + eCountB.get("EF") + "\t");
 			fileWriter.write(eCountMatched.get("A") + "\t" + eCountMatched.get("G") + "\t");
 			fileWriter.write(eCountMerged.get("A") + "\t" + eCountMerged.get("G") + "\t" + eCountMerged.get("R") + "\t" + eCountMerged.get("EF") + "\n");
-			
-			System.out.println("-------------------------------------------------:)");
-			
+						
 			fileWriter.close();
 			
 		}catch(IOException e) {
@@ -125,11 +123,9 @@ public class Traceability{
 		int mergedElemsSize = 0;
 		//Counts up numbers of elements from [both models, model1, model2]
 		HashMap<String, ArrayList<Integer>> attributeCounter = new HashMap<String, ArrayList<Integer>>();
-		System.out.println("-------------------------------------------------:)");
-		System.out.println("Starting traceability");
+
 		//add actors
 		for(Actor actor: mergedModel.getActors()) {
-			System.out.println(actor.getId());
 		    if(actor.getId().indexOf("model") != actor.getId().length() - 6) {
 		    	mergedElements.add(actor.getName()+ "\t\tID: " + actor.getId());
 		    	
@@ -150,12 +146,8 @@ public class Traceability{
 		//add intentions
 		int numEvolFuncBoth = 0, numEvolFuncM2 = 0, numEvolFuncM1 = 0;
 		for(Intention intention: mergedModel.getIntentions()) {
-			System.out.println(intention.getId());
 			if(intention.getId().indexOf("model") != intention.getId().length() - 6) {
 		    	mergedElements.add(intention.getName()+ "\t\tID: " + intention.getId());
-		    	System.out.println(intention.getEvolvingFunctions());
-		    	System.out.println(intention.getEvolvingFunctions().length);
-		    	System.out.println(intention.getMEvolvingFunctions());
 		    	if(intention.getEvolvingFunctions().length > 0) {
 		    		numEvolFuncBoth += 1;
 		    	}
@@ -257,12 +249,9 @@ public class Traceability{
 		fromModel2Size = fromModel2.size();
 		mergedElemsSize = mergedElements.size();
 		
-		//System.out.println(fromModel1);
-		//System.out.println(fromModel2);
-		//System.out.println(mergedElements);
 		//print to file
 		try {
-			System.out.println("Printing to file...");
+			if (MMain.DEBUG) System.out.println("Printing to file...");
 			FileWriter fileWriter = new FileWriter(fileName, true);
 			
 			fileWriter.write("From Model 1: "+ "\n");
@@ -332,9 +321,7 @@ public class Traceability{
 			links += attributeCounter.get("ActorLink").get(0);
 			evolvingFunctions = attributeCounter.get("Intention").get(0);
 			fileWriter.write(actors + "\t" + intentions + "\t" + links + "\t" + evolvingFunctions + "\n");
-			
-			System.out.println("-------------------------------------------------:)");
-			
+						
 			fileWriter.close();
 			
 		}catch(IOException e) {
@@ -346,7 +333,7 @@ public class Traceability{
 
 	public void printDeletedToFile(ArrayList<ArrayList<? extends AbstractElement>> deletedElements, ArrayList<String> deletedTimings) {
 		try {
-			System.out.println("Printing to file...");
+			if (MMain.DEBUG) System.out.println("Printing to file...");
 			FileWriter fileWriter = new FileWriter(fileName);
 			
 			fileWriter.write("Deleted Elements: "+ "\n");
