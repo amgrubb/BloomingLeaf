@@ -86,16 +86,25 @@ public class MergeAlgorithm {
 		// calculate runtime
 		long runtime = System.currentTimeMillis() - startTime;
 		
-		// print traceability
+		// print traceability report
+		if (MMain.DEBUG) System.out.println("Starting: printTraceability");
+	    printTraceability(runtime);
+		
+	    if (MMain.DEBUG) System.out.println("Merge complete.");
+
+		return mergedModel;
+	}
+	
+	/**
+	 * Print traceability merge results to file
+	 */
+	public void printTraceability(long runtime) {
 		trace.printDeletedToFile(deletedElements, deletedTimings);
 		trace.printConflictMessagesToFile(conflictMessages);
 		trace.printElementCountsToFile(mergedModel);
 		trace.addLine("\nThe merge took: " + Long.toString(runtime) + " milliseconds.");
-
-		if (MMain.DEBUG) System.out.println("finished traceability");
-
-		return mergedModel;
 	}
+	
 
 	/**
 	 * Updates two modelSpecs' absolute and max time points
