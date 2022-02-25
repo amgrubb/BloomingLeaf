@@ -996,7 +996,7 @@ public class MergeAlgorithm {
 
 		// set maxtime names
 		String maxTimeName1, maxTimeName2;
-		Boolean modelMaxTimesMatch = (maxTime1 == maxTime2);
+		Boolean modelMaxTimesMatch = (maxTime1.equals(maxTime2));
 		// models end at same maxtime
 		if (modelMaxTimesMatch) {
 			maxTimeName1 = "AB-MaxTime";
@@ -1071,6 +1071,14 @@ public class MergeAlgorithm {
 				throw new RuntimeException("Error while merging " + intention1.getName() + ": ambiguous timeline. Please order timepoints for this intention in timing.json");
 
 			}
+		}
+		
+		// replace maxtime names with maxtime ints in timeOrder
+		if (modelMaxTimesMatch) {
+			timeOrder.set(timeOrder.indexOf("AB-MaxTime"), maxTime1.toString());
+		} else {
+			timeOrder.set(timeOrder.indexOf("A-MaxTime"), maxTime1.toString());
+			timeOrder.set(timeOrder.indexOf("B-MaxTime"), maxTime2.toString());
 		}
 
 		// obtain complete functions (w/ start and end times and evidence pairs)
