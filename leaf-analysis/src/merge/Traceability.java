@@ -128,7 +128,7 @@ public class Traceability{
 		//System.out.println(mergedElements);
 		//print to file
 		try {
-			System.out.println("Printing to file...");
+			if (MMain.DEBUG) System.out.println("Printing to file...");
 			FileWriter fileWriter = new FileWriter(fileName, true);
 			
 			fileWriter.write("From Model 1: "+ "\n");
