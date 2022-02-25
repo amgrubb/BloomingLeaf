@@ -1075,10 +1075,16 @@ public class MergeAlgorithm {
 		
 		// replace maxtime names with maxtime ints in timeOrder
 		if (modelMaxTimesMatch) {
-			timeOrder.set(timeOrder.indexOf("AB-MaxTime"), maxTime1.toString());
+			if (timeOrder.contains("AB-MaxTime")) {
+				timeOrder.set(timeOrder.indexOf("AB-MaxTime"), maxTime1.toString());
+			}
 		} else {
-			timeOrder.set(timeOrder.indexOf("A-MaxTime"), maxTime1.toString());
-			timeOrder.set(timeOrder.indexOf("B-MaxTime"), maxTime2.toString());
+			if (timeOrder.contains("A-MaxTime")) {
+				timeOrder.set(timeOrder.indexOf("A-MaxTime"), maxTime1.toString());
+			}
+			if (timeOrder.contains("B-MaxTime")) {
+				timeOrder.set(timeOrder.indexOf("B-MaxTime"), maxTime2.toString());
+			}
 		}
 
 		// obtain complete functions (w/ start and end times and evidence pairs)
