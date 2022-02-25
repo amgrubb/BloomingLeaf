@@ -101,6 +101,7 @@ public class MergeAlgorithm {
 	public void printTraceability(long runtime) {
 		trace.printDeletedToFile(deletedElements, deletedTimings);
 		trace.printConflictMessagesToFile(conflictMessages);
+		trace.printOutput(mergedModel);
 		trace.printElementCountsToFile(mergedModel);
 		trace.addLine("\nThe merge took: " + Long.toString(runtime) + " milliseconds.");
 	}
