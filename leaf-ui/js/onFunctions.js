@@ -37,7 +37,6 @@ function changeFont(new_font, pPaper) {
  */
 function fontUp(pPaper) {
     var new_font = current_font + 1;
-
     if (new_font <= max_font) {
         changeFont(new_font, pPaper)
     }
@@ -49,7 +48,6 @@ function fontUp(pPaper) {
  */
 function fontDown(pPaper) {
     var new_font = current_font - 1;
-
     if (new_font >= min_font) {
         changeFont(new_font, pPaper)
     }
@@ -66,7 +64,7 @@ function defaultFont(pPaper) {
 function resizeWindow(sliderMax) {
     $('#slider').css("margin-top", $(this).height() * 0.7);
     $('#slider').width($('#paper').width() * 0.8);
-    adjustSliderWidth(sliderMax)
+    SliderObj.adjustSliderWidth(sliderMax);
 }
 
 // End nav bar functions
@@ -174,7 +172,8 @@ $('#btn-clear-flabel').on('click', function () {
     for (let element of graph.getElements()) {
         var cellView = element.findView(paper);
         var cell = cellView.model;
-        if (intention != null && intention.get('evolvingFunction').get('type') != 'NT') {
+        var intention = cell.get('intention');
+        if (intention != null && intention.get('evolvingFunction') != null && intention.get('evolvingFunction').get('type') != 'NT') {
             intention.removeFunction();
             cell.attr(".funcvalue/text", "");
         }
@@ -211,6 +210,7 @@ $('#btn-view-intermediate').on('click', function () {
     var intermediateValuesTable = new IntermediateValuesTable({ model: graph });
     $('#intermediate-table').append(intermediateValuesTable.el);
     intermediateValuesTable.render();
+    $('.intermT').height($('#paper').height() * 0.9);
 });
 
 /**
@@ -226,7 +226,7 @@ $('#analysis-btn').on('click', function () {
     var cycleList = cycleSearch();
     // Alerts user if there are any cycles 
     cycleResponse(cycleList);
-    if (!isACycle(cycleList) && !isError) {
+    if (!isACycle(cycleList) && !isError && hasElements()) {
         clearCycleHighlighting();
         switchToAnalysisMode();
     }
@@ -275,12 +275,33 @@ graph.on("add", function (cell) {
     } else if (cell instanceof joint.shapes.basic.Actor) {
         // Find how many instances of the actor is created out of all the cells
         createdInstance = createdInstance.filter(view => view.model instanceof joint.shapes.basic.Actor);
-
         // Create placeholder name based on the number of instances
         var name;
         if (createdInstance.length >= 2) {
-            var lastactor = createdInstance[createdInstance.length - 2].model.attr('.name/text');
-            name = cell.attr('.name/text') + "_" + (Number.parseInt(lastactor.charAt(lastactor.length - 1)) + 1);
+            var numList = "";
+            for (let i = 2; i < createdInstance.length + 1; i++) {
+                // Gets the number from an actor's name 
+                var nameIndex = parseInt(createdInstance[createdInstance.length - i].model.attr('.name/text').split('_').pop());
+                // If name has been changed 
+                if (createdInstance[createdInstance.length - i].model.attr('.name/text').split('_').shift() == "Actor") {
+                    numList += nameIndex + " ";
+                };
+            }
+            numList = numList.split(" ");
+            // Removes non-number values from array
+            for (var i = numList.length - 1; i >= 0; i--) {
+                if (isNaN(numList[i]) || numList[i] === 0 || numList[i] === false || numList[i] === "" || numList[i] === undefined || numList[i] === null) {
+                    numList.splice(i, 1);
+                }
+            }
+            // If all actor names have been changed
+            if (numList.length == 0){
+                name = cell.attr('.name/text') + "_0";
+            } else {
+                // Gets highest number from array
+                name = cell.attr('.name/text') + "_" + (Math.max.apply(null, numList) + 1);
+            }
+        // Creates first actor name
         } else {
             name = cell.attr('.name/text') + "_0";
         }
@@ -302,18 +323,6 @@ graph.on("change", function () {
     var graphtext = graph.toJSON();
     document.cookie = "graph=" + graphtext;
 });
-
-graph.on('change:size', function (cell, size) {
-    cell.attr(".label/cx", 0.25 * size.width);
-
-    // Calculate point on actor boundary for label (to always remain on boundary)
-    var b = size.height;
-    var c = -(size.height / 2 + (size.height / 2) * (size.height / 2) * (1 - (-0.75 * size.width / 2) * (-0.75 * size.width / 2) / ((size.width / 2) * (size.width / 2))));
-    var y_cord = (-b + Math.sqrt(b * b - 4 * c)) / 2;
-
-    cell.attr(".label/cy", y_cord);
-});
-
 
 graph.on('remove', function (cell) {
     // Clear right inspector side panel
@@ -419,6 +428,27 @@ paper.on({
                     var actorInspector = new ActorInspector({ model: cell });
                     $('.inspector').append(actorInspector.el);
                     actorInspector.render();
+                    // If user was dragging actor 
+                    if (evt.data.move) {
+                        // AND actor doesn't overlap with other actors
+                        var overlapCells = paper.findViewsInArea(cell.getBBox());
+                        var overlapActors = overlapCells.filter(view => view.model instanceof joint.shapes.basic.Actor);
+                        if (overlapActors.length == 1){
+                            // Embed each overlapping intention in actor
+                            var actorCell = overlapActors[0].model;
+                            var overlapIntentions = overlapCells.filter(view => view.model instanceof joint.shapes.basic.Intention);
+
+                            for (var i=0; i < overlapIntentions.length; i++) {
+                                var intention = overlapIntentions[i].model;
+                                // Unembed intention from old actor
+                                if (intention.get('parent')) {
+                                    graph.getCell(intention.get('parent')).unembed(intention);
+                                }
+                                // Embed intention in new actor
+                                actorCell.embed(intention);
+                            }
+                        }
+                    }
                 } else {
                     var elementInspector = new ElementInspector({ model: cell });
                     $('.inspector').append(elementInspector.el);
@@ -429,10 +459,12 @@ paper.on({
                         if (cell.get('parent')) {
                             graph.getCell(cell.get('parent')).unembed(cell);
                         }
-                        // Embed element in new actor
+                        
+                        // Find overlapping cells
                         var overlapCells = paper.findViewsFromPoint(cell.getBBox().center());
 
                         // Find actors which overlap with cell
+                        // Embed element in new actor
                         overlapCells = overlapCells.filter(view => view.model instanceof joint.shapes.basic.Actor);
                         if (overlapCells.length > 0) {
                             var actorCell = overlapCells[0].model;
@@ -450,13 +482,13 @@ paper.on('blank:pointerclick', function () {
     removeHighlight();
     if ($('.analysis-only').css("display") == "none") {
         clearInspector();
+    } else {
+        setName();
     }
 });
 
 // Link equivalent of the element editor
 paper.on("link:options", function (cell) {
-
-    clearInspector();
 
     clearInspector();
 
@@ -500,21 +532,25 @@ paper.on("link:options", function (cell) {
 
         // If single path has been run backend analysis
         if (singlePathRun === true) {
-            $("body").addClass("spinning"); // Adds spinner animation to page
             var curResult = curRequest.previousAttributes().results.findWhere({ selected: true });
             curRequest.set('action', 'allNextStates');
             curRequest.set('previousAnalysis', curResult);
 
-            // If the last time point is selected, error message shows that you can't open Next State
-            if ((curResult.get('timePointPath').length - 1) === curResult.get('selectedTimePoint')) {
-                swal("Error: Cannot explore next states with last time point selected.", "", "error");
-                $("body").removeClass("spinning"); // Remove spinner from page
-            } else {
-                backendSimulationRequest(curRequest);
+            if (EVO.sliderOption == '1' || EVO.sliderOption == '2') {
+                swal("Error: Cannot explore next states from percent or time EVO options.", "", "error");
+            } else { 
+                // If the last time point is selected, error message shows that you can't open Next State
+                if ((curResult.get('timePointPath').length - 1) === curResult.get('selectedTimePoint')) {
+                    swal("Error: Cannot explore next states with last time point selected.", "", "error");
+                } else {
+                    $("body").addClass("spinning"); // Adds spinner animation to page
+                    backendSimulationRequest(curRequest);
+                }
             }
         } else { // If single path has not been run show error message
             swal("Error: Cannot explore next states before simulating a single path.", "", "error");
         }
+        
     });
 
     function resetConfig() {
@@ -535,7 +571,7 @@ paper.on("link:options", function (cell) {
         $('#modelingSlider').css("display", "");
         $('#analysisSlider').css("display", "none");
         EVO.switchToModelingMode(undefined);
-        revertNodeValuesToInitial();
+        revertNodeValuesToInitial(selectResult);
         // Creates new config
         $('#configID').append(configInspector.el);
         configInspector.render();
@@ -553,7 +589,7 @@ paper.on("link:options", function (cell) {
         $('#modelingSlider').css("display", "");
         $('#analysisSlider').css("display", "none");
         EVO.switchToModelingMode(undefined);
-        revertNodeValuesToInitial();
+        revertNodeValuesToInitial(selectResult);
     });
 
     /**
@@ -570,33 +606,16 @@ paper.on("link:options", function (cell) {
         configInspector = new ConfigInspector({ collection: configCollection });
         $('#configID').append(configInspector.el);
         configInspector.render();
-        $('#analysisID').css("display", "");
 
         // Remove model only elements 
         $('.model-only').css("display", "none");
-        $('.inspector').css("display", "none");
         $('#paper').css("right", "0px");
 
         // Show extra tools for analysis mode
         $('.analysis-only').css("display", "");
 
-        // TODO Show Analysis View tag
-        // $('#modeText').text("Analysis View");
-
         // Disable link settings
-        $('.link-tools .tool-remove').css("display", "none");
-        $('.link-tools .tool-options').css("display", "none");
-        $('.attribution').css("display", "none");
-        $('.inspector').css("display", "none");
-
-        EVO.refresh(selectResult);
-
-        var configResults = configCollection.findWhere({ selected: true }).get('results');
-        if (configResults !== undefined) {
-            selectResult = configResults.findWhere({ selected: true });
-        }
-        EVO.refresh(selectResult);
-
+        $('.link-tools').css("display", "none");
         // TODO: Add check for model changes to potentially clear configCollection back in
     }
 
@@ -615,30 +634,22 @@ paper.on("link:options", function (cell) {
                 selectResult.set('selected', false);
             }
 
-            // Remove Slider
-            removeSlider();
-
             // Reset to initial graph prior to analysis
-            revertNodeValuesToInitial();
+            revertNodeValuesToInitial(selectResult);
 
             // Remove analysis only elements 
             $('.analysis-only').css("display", "none");
 
             // Show extra tools for modelling mode
             $('.model-only').css("display", "");
-            $('.attribution').css("display", "");
-            $('.inspector').css("display", "");
             $('#paper').css("right", "260px");
-            // TODO Show Modelling View tag
-            // $('#modeText').text("Modeling View");
 
             // Reinstantiate link settings
-            $('.link-tools .tool-remove').css("display", "");
-            $('.link-tools .tool-options').css("display", "");
+            $('.link-tools').css("display", "");
             EVO.switchToModelingMode(selectResult);
             // Remove configInspector and analysis view
             configInspector.remove();
-            $('#analysisID').css("display", "none");
+
             // TODO: Determine if we should be setting action to null on all configs
             configCollection.findWhere({ selected: true }).set('action', null);
 
@@ -670,35 +681,6 @@ paper.on("link:options", function (cell) {
         // Delete cookie by setting expiry to past date
         document.cookie = 'graph={}; expires=Thu, 18 Dec 2013 12:00:00 UTC';
     }
-
-    // Save the current graph and analysis (without results) to json file
-    $('#btn-save-analysis').on('click', function () {
-        var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
-        if (name) {
-            clearCycleHighlighting(selectResult);
-            EVO.deactivate();
-            var fileName = name + ".json";
-            var obj = getModelAnalysisJson(configCollection);
-            download(fileName, stringifyCirc(obj));
-        }
-    });
-
-    // Save the current graph and analysis (with results) to json file
-    $('#btn-save-all').on('click', function () {
-        var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
-        if (name) {
-            clearCycleHighlighting(selectResult);
-            EVO.deactivate();
-            var fileName = name + ".json";
-            var obj = getFullJson(configCollection);
-            download(fileName, stringifyCirc(obj));
-        }
-    });
-
-    // Workaround for load, activates a hidden input element
-    $('#btn-load').on('click', function () {
-        $('#loader').click();
-    });
 
     // Load ConfigCollection for display 
     // TODO: modify it to read results after results can be shown
@@ -743,12 +725,56 @@ paper.on("link:options", function (cell) {
         }
     }
 
+    /**
+     * 
+     * Set selectResult from functions outside of the parenthesis
+     * @param {*} result 
+     */
+    function setSelectResult(result) {
+        selectResult = result;
+    }
+
+    // Save the current graph and analysis (without results) to json file
+    $('#btn-save-analysis').on('click', function () {
+        var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
+        if (name) {
+            clearCycleHighlighting(selectResult);
+            EVO.deactivate();
+            var fileName = name + ".json";
+            var obj = getModelAnalysisJson(configCollection);
+            download(fileName, stringifyCirc(obj));
+        }
+    });
+
+    // Save the current graph and analysis (with results) to json file
+    $('#btn-save-all').on('click', function () {
+        var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
+        if (name) {
+            clearCycleHighlighting(selectResult);
+            EVO.deactivate();
+            var fileName = name + ".json";
+            var obj = getFullJson(configCollection);
+            download(fileName, stringifyCirc(obj));
+        }
+    });
+
+    // Workaround for load, activates a hidden input element
+    $('#btn-load').on('click', function () {
+        $('#loader').click();
+        // Sets EVO to off when you load a model
+        EVO.setSliderOption(0);
+        EVO.refreshSlider();
+    });
+
     $(window).resize(function () {
         var config = configCollection.findWhere({ selected: true });
         if (config !== undefined) {
             var configResults = config.get('results').findWhere({ selected: true });
-            resizeWindow(configResults.get('timePointPath').length - 1);
+            if (configResults !== undefined) {
+                resizeWindow(configResults.get('timePointPath').length - 1);
+            }
         }
+        $('.intermT').height($('#paper').height() * 0.9);
     });
     $('#btn-clear-cycle').on('click', function () {
         clearCycleHighlighting(selectResult);
@@ -774,29 +800,33 @@ paper.on("link:options", function (cell) {
         for (let element of graph.getElements()) {
             var cell = element.findView(paper).model;
             var intention = cell.get('intention');
-            var initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair');
-            var funcType = intention.get('evolvingFunction').get('type');
+            
+            if (intention != null) {
+                var initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair');
+                if (intention.get('evolvingFunction') != null) {
+                    var funcType = intention.get('evolvingFunction').get('type');
+                }
+            }
 
             // If the initsatVal is not empty and if funcType empty
             if (intention != null && initSatVal != '(no value)' && funcType === 'NT') {
                 intention.removeInitialSatValue();
                 cell.attr(".satvalue/text", "");
+                $('#init-sat-value').val('(no value)');
             }
         }
         EVO.refresh(selectResult);
     });
 
-    $('#colorblind-mode-isOff').on('click', function () { //activates colorblind mode
+    $('#colorblind-mode-isOff').on('click', function () { // Activates colorblind mode
         $('#colorblind-mode-isOff').css("display", "none");
         $('#colorblind-mode-isOn').css("display", "");
-
         EVO.toggleColorBlindMode(true, selectResult);
     });
 
-    $('#colorblind-mode-isOn').on('click', function () { //turns off colorblind mode
+    $('#colorblind-mode-isOn').on('click', function () { // Turns off colorblind mode
         $('#colorblind-mode-isOn').css("display", "none");
         $('#colorblind-mode-isOff').css("display", "");
-
         EVO.toggleColorBlindMode(false, selectResult);
     });
 
@@ -804,21 +834,13 @@ paper.on("link:options", function (cell) {
      * Source:https://www.w3schools.com/howto/howto_js_rangeslider.asp 
      * Two option modeling mode slider
      */
-    document.getElementById("colorReset").oninput = function () { //turns slider on/off and refreshes
+    document.getElementById("colorReset").oninput = function () { // Turns slider on/off and refreshes
         EVO.setSliderOption(this.value, selectResult);
     }
     /**
      * Four option analysis mode slider
      */
-    document.getElementById("colorResetAnalysis").oninput = function () { //changes slider mode and refreshes
-        var selectConfig;
-        //TODO: Find out why the selectResult is empty before we reassign it
-        if (configCollection.length !== 0) {
-            selectConfig = configCollection.filter(Config => Config.get('selected') == true)[0];
-            if (selectConfig.get('results') !== undefined) {
-                selectResult = selectConfig.get('results').filter(resultModel => resultModel.get('selected') == true)[0];
-            }
-        }
+    document.getElementById("colorResetAnalysis").oninput = function () { // Changes slider mode and refreshes
         EVO.setSliderOption(this.value, selectResult);
     }
 } // End scope of configCollection and configInspector
@@ -876,6 +898,13 @@ function clearInspector() {
     }
 }
 
+
+/**
+ * Trigger setConfigName outside ConfigInspector
+ */
+ function setName() {
+    $('.config-input').trigger('outsideSetName');
+}
 
 /**
  * Returns true iff node has 1 or more NBT or NBD relationship
@@ -940,7 +969,7 @@ function setInteraction(interactionValue) {
  * Sets each node/cellview in the paper to its initial 
  * satisfaction value and colours all text to black
  */
-function revertNodeValuesToInitial() {
+function revertNodeValuesToInitial(analysisResult) {
     var elements = graph.getElements();
     var curr;
     for (var i = 0; i < elements.length; i++) {
@@ -960,10 +989,12 @@ function revertNodeValuesToInitial() {
         } else {
             curr.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
         }
-        curr.attr({ text: { fill: 'black', stroke: 'none', 'font-weight': 'normal', 'font-size': 10 } });
+        curr.attr({ text: { fill: 'black', stroke: 'none'} });
     }
     // Remove slider
-    removeSlider();
+    if (analysisResult !== undefined) {
+        SliderObj.removeSlider(analysisResult);
+    }
 }
 
 /**

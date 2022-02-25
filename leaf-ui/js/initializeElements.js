@@ -126,17 +126,16 @@ $('#paper').append(paperScroller.render().el);
 paperScroller.center();
 
 // Disable context menu inside the paper.
-// TODO: Not sure what this does.
 paper.el.oncontextmenu = function (evt) { evt.preventDefault(); };
 
 $('#stencil').append(stencil.render().el);
 
+// Creates the stencils for the intentions for the left sidebar in Modeling Mode
 stencil.load([new joint.shapes.basic.Goal({ position: { x: 50, y: 20 } }),
 new joint.shapes.basic.Task({ position: { x: 50, y: 100 } }),
 new joint.shapes.basic.Softgoal({ position: { x: 50, y: 170 } }),
 new joint.shapes.basic.Resource({ position: { x: 50, y: 250 } }),
 new joint.shapes.basic.Actor({ position: { x: 40, y: 355 } })]);
-
 
 $('#slider').width($('#paper').width() * 0.8);
 $('#slider').css("margin-top", $(window).height() * 0.7);

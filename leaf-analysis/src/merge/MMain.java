@@ -2,13 +2,13 @@ package merge;
 
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.PrintWriter;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import gson_classes.IMain;
-
 import simulation.ModelSpec;
 import simulation.BIModelSpecBuilder;
 
@@ -28,42 +28,72 @@ public class MMain {
 	 */
 	public static void main(String[] args) {
 		//This is the default filePath to be executed if no file is passed through parameters
-		String filePath = "temp/";
-		String inputFile1 = "default1.json";
-		String inputFile2 = "default2.json";
+		String inPath = "data/models/";
+		String tPath = "data/timing/";
+		String outPath = "data/mergedModels/";
+		String tracePath = "data/traceability/";
+		String inputFile1 = "";
+		String inputFile2 = "";
+		String timingFile = "";
 		String outputFile = "output.json";
-				
-		try {
-			// Creating the 1st back-end model to be merged
-			ModelSpec modelSpec1 = convertBackboneModelFromFile(filePath + inputFile1);
-			
-			// Creating the 2nd back-end model to be merged
-			ModelSpec modelSpec2 = convertBackboneModelFromFile(filePath + inputFile2);
-			
-			
-	    	//TODO: MERGE-Y THINGS
-			//ModelSpec mergedModel = things;
-			// test outputs
-			System.out.println("m1:");
-			System.out.println(modelSpec1);
-			
-			System.out.println("intentions:");
-			System.out.println(modelSpec1.getIntentions().get(0).getVisualInfo().toString());
-			
-			System.out.println("m2:");
-			System.out.println(modelSpec2);
-			
-			ModelSpec mergedModel = modelSpec1;
-			
-			//Create Output file that will be used by frontend
-			// createOutputFile(mergedModel, filePath + outputFile);
-			
 		
+		try {			
+			if (args.length == 4) {
+				inputFile1 = args[0];
+				inputFile2 = args[1];
+				timingFile = args[2];
+				outputFile = args[3];
+			} else throw new IOException("Tool: Command Line Inputs Incorrect.");
+			
+			if (DEBUG) System.out.println("Merging: \t" + inputFile1 + " and " + inputFile2);
+
+			Gson gson = new Gson();
+			
+			// Creating the 1st back-end model to be merged
+			ModelSpec modelSpec1 = convertBackboneModelFromFile(inPath + inputFile1);
+
+			// print M1 for reference
+			if (DEBUG) {
+				System.out.println("M1:");
+				IMain m1IMain = IMainBuilder.buildIMain(modelSpec1);
+				System.out.println(gson.toJson(m1IMain));
+			}
+
+			// Creating the 2nd back-end model to be merged
+			ModelSpec modelSpec2 = convertBackboneModelFromFile(inPath + inputFile2);
+
+			// print M2 for reference
+			if (DEBUG) {
+				System.out.println("M2:");
+				IMain m2IMain = IMainBuilder.buildIMain(modelSpec2);
+				System.out.println(gson.toJson(m2IMain));
+			}
+
+			// Loading in timing info
+			TMain timings = convertTimingFromFile(tPath + timingFile);
+			if (DEBUG) {
+				System.out.printf("Timing offset: %d%n", timings.getTimingOffset());
+			}
+
+			// run merge
+			MergeAlgorithm merge = new MergeAlgorithm(modelSpec1, modelSpec2, timings, tracePath + outputFile.replace(".json", "-Traceability.txt"));
+
+			ModelSpec mergedModel = merge.getMergedModel();
+			if (DEBUG) System.out.println("Completed Merging.");
+
+			// Create Output file that will be used by frontend
+			IMain mergedModelOut = IMainBuilder.buildIMain(mergedModel);
+			if (DEBUG) System.out.println(gson.toJson(mergedModelOut));
+
+			createOutputFile(mergedModelOut, outPath + outputFile);
+			if (DEBUG) System.out.println("created output file");
+
+
 		} catch (RuntimeException e) {
 			try {
-				if (DEBUG) System.err.println(e.getMessage());	
+				if (DEBUG) System.err.println(e.getMessage());
 				File file;
-				file = new File(filePath + outputFile);
+				file = new File(outPath + outputFile);
 				if (!file.exists()) {
 					file.createNewFile();
 				}
@@ -77,9 +107,9 @@ public class MMain {
 			}
 		} catch (Exception e) {
 			try {
-				if (DEBUG) System.err.println(e.getMessage());	
+				if (DEBUG) System.err.println(e.getMessage());
 				File file;
-				file = new File(filePath + outputFile);
+				file = new File(outPath + outputFile);
 				if (!file.exists()) {
 					file.createNewFile();
 				}
@@ -91,9 +121,9 @@ public class MMain {
 			} catch (Exception f) {
 				throw new RuntimeException("Error while writing ErrorMessage: " + f.getMessage());
 			}
-		} 
+		}
 	}
-	
+
 	/**
 	 * This method converts the ModelSpec object with the merged model into a json object file to be sent to frontend.
 	 * @param outputModel
@@ -101,9 +131,9 @@ public class MMain {
 	 * @param filePath
 	 * Name of the file to be read by CGI to be sent to frontend
 	 */
-	private static void createOutputFile(ModelSpec outputModel, String filePath) {
-		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-	
+	private static void createOutputFile(IMain outputModel, String filePath) {
+		Gson gson = new Gson(); //new GsonBuilder().setPrettyPrinting().create();
+
 		try {
 			File file;
 			file = new File(filePath);
@@ -116,29 +146,50 @@ public class MMain {
 		} catch (Exception e) {
 			throw new RuntimeException("Error in createOutputFile: " + e.getMessage());
 		}
-		
+
 	}
 
 	/**
-	 * This method converts the model file sent by the front-end into the ModelSpec using VisualModelSpecBuilder
+	 * This method converts the model file sent by the front-end into the ModelSpec using BIModelSpecBuilder
 	 * @param filePath
 	 * Path to the file with the front-end model
 	 * @return
 	 * ModelSpec back-end model
 	 */
-	private static ModelSpec convertBackboneModelFromFile(String filePath) {
+	public static ModelSpec convertBackboneModelFromFile(String filePath) {
 		GsonBuilder builder = new GsonBuilder();
 		//builder.registerTypeAdapter(FuncWrapper.class, new FuncWrapperDeserializer());
 
 		try {
 			Gson gson = builder.create();
+			// read model from JSON file (IMain is frontend compatible)
 			IMain frontendObject = gson.fromJson(new FileReader(filePath), IMain.class);
 
+			// convert model to ModelSpec format (for backend use)
 			ModelSpec modelSpec = BIModelSpecBuilder.buildModelSpec(frontendObject);
 			return modelSpec;
-			
+
 		} catch(Exception e) {
-			throw new RuntimeException("Error in convertModelFromFile() method: \n " + e.getMessage());
+			throw new RuntimeException("Error in convertBackboneModelFromFile() method: \n " + e.getMessage());
 		}
-	} 
+	}
+
+	public static TMain convertTimingFromFile(String filePath) {
+		GsonBuilder builder = new GsonBuilder();
+
+		try {
+			Gson gson = builder.create();
+			// read timing from JSON file (TimingMain holds list of Timing)
+			TMain timingMain = gson.fromJson(new FileReader(filePath), TMain.class);
+			if (DEBUG) {
+				System.out.println("made timing:");
+				System.out.println(gson.toJson(timingMain));
+			}
+
+			return timingMain;
+
+		} catch(Exception e) {
+			throw new RuntimeException("Error in convertTimingFromFile() method: \n " + e.getMessage());
+		}
+	}
 }

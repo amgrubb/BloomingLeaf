@@ -47,7 +47,8 @@ function loadFromObject(obj) {
 			createBBLink(cell) //Create link
 		} else {
 			// Singled out functionSegList from obj as it doesn't show up in the graph after reading from JSON
-			var funcseg = obj.graph.cells[i].intention.attributes.evolvingFunction.attributes.functionSegList;
+			// var funcseg = obj.graph.cells[i].intention.attributes.evolvingFunction.attributes.functionSegList;
+			var funcseg = cell.attributes.intention.attributes.evolvingFunction.attributes.functionSegList;
 			createBBElement(cell, funcseg) //Create element
 		}
 	}

@@ -3,11 +3,16 @@
  */
 package simulation;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author A.M.Grubb
  *
  */
 public abstract class AbstractElementLink extends AbstractElement{
+	protected String id = "NO-ID";	//Format that maps to array ordering.
+	
 	private static int linkTPcounter = 1;
 	
 	private AbstractLinkableElement[] src = null;
@@ -39,8 +44,17 @@ public abstract class AbstractElementLink extends AbstractElement{
 	public boolean isEvolving() {
 		return isEvolving;
 	}
+	public void noLongerEvolves() {
+		isEvolving = false;
+	}
+	public void nowEvolves() {
+		isEvolving = true;
+	}
 	public Integer getAbsTime() {
 		return absTime;
+	}
+	public void setAbsTime(int absTime) {
+		this.absTime = absTime;
 	}
 	public String getLinkTP() {
 		return linkTP;
@@ -57,7 +71,23 @@ public abstract class AbstractElementLink extends AbstractElement{
 	public AbstractLinkableElement getZeroSrc() {
 		return src[0];
 	}
+	/**
+	 * @return the src unique IDs
+	 */
+	public List<String> getSrcIDs() {
+		List<String> srcIDs = new ArrayList<>();
+		for (AbstractLinkableElement source: src) {
+			srcIDs.add(source.getUniqueID());
+		}
+		return srcIDs;
+	}
+	public String getZeroSrcID() {
+		return src[0].getUniqueID();
+	}
 	
+	public void setZeroSrc(AbstractLinkableElement src) {
+		this.src[0] = src;
+	}
 	/**
 	 * @param src the src to set
 	 */
@@ -77,6 +107,13 @@ public abstract class AbstractElementLink extends AbstractElement{
 	 */
 	public void setDest(AbstractLinkableElement dest) {
 		this.dest = dest;
+	}
+	
+	public String getID() {
+		return id;
+	}
+	public void setID(String id) {
+		this.id = id;
 	}
 
 }

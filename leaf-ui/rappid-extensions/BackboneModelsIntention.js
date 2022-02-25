@@ -177,6 +177,7 @@ var IntentionBBM = Backbone.Model.extend({
 
     /**
      * Allows you to find the UserEvaluationBBM with the specified absTime
+     * If there is no absTime parameter passed into the function will return the first UserEvaluationBBM
      * If there is no UserEvaluationBBM with that absTime, return null
      * 
      * @param {Integer} absTime 
@@ -184,9 +185,20 @@ var IntentionBBM = Backbone.Model.extend({
      * @returns an UserEvaluationBBM or null
      */
     getUserEvaluationBBM: function (absTime) {
-        userEvals = this.get('userEvaluationList').filter(userEval => userEval.get('absTime') == absTime);
-        if (userEvals.length > 0) {
-            return userEvals[userEvals.length - 1]
+        // If absTime parameter is not passed in set it to null
+        absTime = absTime || null;
+
+        if (absTime != null) {
+            userEvals = this.get('userEvaluationList').filter(userEval => userEval.get('absTime') == absTime);
+            userEvals = this.get('userEvaluationList').at(0);
+            if (userEvals.length > 0) {
+                return userEvals[userEvals.length - 1]
+            }           
+        } 
+        // If there is no absTime passed in or there was no UserEvaluationBBM found for
+        // the absTime param, then return first UserEvaluationBBM added to the collection 
+        if (this.get('userEvaluationList')) {
+            return this.get('userEvaluationList').at(0);
         }
         return null;
     },

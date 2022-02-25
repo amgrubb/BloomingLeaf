@@ -119,9 +119,14 @@ body {
   bottom: 0;
   width: 200px;
   background-color: #f9f9f9;
-  box-shadow: 2px 0px 16px 0px rgba(0,0,0,0.2);
+  
   /* Should be less than the modal pop-ups */ 
   z-index: 0;
+}
+
+.left-panel.model-only{
+  bottom: 130px;
+  box-shadow: 2px 0px 16px 0px rgba(0,0,0,0.05);
 }
 
 .stencil {
@@ -363,11 +368,11 @@ body {
 }
 
 #init-sat-value:disabled {
-  background-color: rgba(20, 85, 9, 1);
+  background-color: rgba(36, 150, 255, 1);
   color: white;
 }
 .function-type:disabled {
-  background-color: rgba(20, 85, 9, 1);
+  background-color: rgba(36, 150, 255, 1);
   color: white;
 }
 #repeat-begin2,#repeat-begin3 {
@@ -440,7 +445,7 @@ select > .select-placeholder {
   font-weight: 200;
 }
 
-.link-tools .tool-options {
+.link-tools {
    display: block;
 }
 
@@ -749,16 +754,6 @@ select > .select-placeholder {
   -moz-box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.25);
   box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.25);
   z-index: 3;
-}
-
-
-#modeText {
-  float: right;
-  position: fixed;
-  color: rgba(0,0,0,0.6);
-  font-size: 1.3em;
-  top: 50px;
-  right: 270px;
 }
 
 /* Attribution */

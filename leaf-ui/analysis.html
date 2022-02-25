@@ -5,7 +5,7 @@
     <meta charset="utf8" />
 
     <title>BloomingLeaf: Explore Next State</title>
-
+    <link rel="shortcut icon" href="#">
     <link rel="stylesheet" type="text/css" href="./rappid/dist/joint.ui.stencil.css" />
     <link rel="stylesheet" type="text/css" href="./rappid/dist/joint.ui.halo.css" />
     <link rel="stylesheet" type="text/css" href="./rappid/dist/joint.ui.selection.css" />
@@ -52,7 +52,14 @@
                 <a id="btn-fnt-down">Decrease</a>
             </div>
         </div>
-
+            <!-- Next State slider: option to fill by percentage of solutions and selected state -->
+            <div class="EVO-whole-button" id='nextStateSlider'>
+                <!-- slider div -->
+                <input type="range" min="0" max="2" value="0" class="EVO-slider" id="colorResetAnalysis">
+                <!-- makes slider -->
+                <p id="top-label-analysis" style="display: inside">EVO</p> <!-- sat slider label -->
+                <p class="on-off"> Off &ensp; % &ensp; State </p> <!--  on/off label -->
+            </div>
     </div>
 
     <div id="navigation" class="left-panel" style="background-color: #333;">
@@ -143,7 +150,7 @@
     <script src="./js/next-state.js"></script>
 
     <!-- Frontend scripts -->
-    <script src="./js/displayAnalysis.js"></script>
+    <script src="./js/sliderObjects.js"></script>
     <script src="./js/backendComm.js"></script>
     <script src="./js/onFunctionsNextState.js"></script>
 
