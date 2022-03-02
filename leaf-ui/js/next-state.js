@@ -144,6 +144,10 @@
         for (let element of analysis.intentions) {
             satValue = allSolutionArray[currentPage][i];
             element.attr(".satvalue").value = satValue;
+            // Update the current sat value in the intention filter whenever page changes
+            if (element.attributes.id == selectedIntention) {
+                updateSatValueInfo(element, elementNum);
+            }
 
             // Sets attributes of element from the refEvidence pair from resultBBM
             if ((satValue == "0001") || (satValue == "0011")) {

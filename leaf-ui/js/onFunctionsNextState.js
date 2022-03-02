@@ -28,7 +28,7 @@ $("#filter-apply").on('mousedown', function () { $("body").addClass("spinning");
  * Highlight an individual cell upon clicking
  * @param {*} pPaper 
  */
- function cellHighlight(pPaper) {
+function cellHighlight(pPaper) {
     // Unhighlight cells that are not the cell to be targeted
     pPaper.on('cell:pointerup', function() {
         pPaper.findViewsInArea(pPaper.getArea()).forEach(cell => {
@@ -42,8 +42,8 @@ $("#filter-apply").on('mousedown', function () { $("body").addClass("spinning");
             cellView.highlight();
             $('.cell-attrs-text').addClass('disabled-textbox-clicked');
             $('.cell-attrs-text2').addClass('disabled-textbox-clicked');
-            // Fills in nodeName text box with intention name
-            $(".cell-attrs-text").val(cellView.model.attributes.intention.attributes.nodeName);
+            // // Fills in nodeName text box with intention name
+            // $(".cell-attrs-text").val(cellView.model.attributes.intention.attributes.nodeName);
             // TODO: if the page is changed or filters are added it does not update
             // TODO: indexing by name "TNS-R" might be too brittle
             originalResults2 = $.extend(true, {}, myInputJSObject.results);
@@ -55,24 +55,8 @@ $("#filter-apply").on('mousedown', function () { $("body").addClass("spinning");
                     selectedIntention = cellView.model.attributes.id;
                 }
             }
-  
-            // Fills in the current sat value text box
-            switch (originalResults2.get('allSolutions')["TNS-R"][parseInt($("#currentPage").val())][elementNum]) {
-                case "0000":
-                    return $(".cell-attrs-text2").val("None (⊥, ⊥)");
-                case "0011":
-                    return $(".cell-attrs-text2").val("Satisfied (F, ⊥)");
-                case "0010":
-                    return $(".cell-attrs-text2").val("Partially Satisfied (P, ⊥)");
-                case "0100":
-                    return $(".cell-attrs-text2").val("Partially Denied (⊥, P)");
-                case "1100":
-                    return $(".cell-attrs-text2").val("Denied (⊥, F)");
-                case "unknown":
-                    return $(".cell-attrs-text2").val("(no value)");
-                default:
-                    return $(".cell-attrs-text2").val("conflict");   
-            }
+            // Update the current sat value in the intention filter whenever an intention is selected
+            updateSatValueInfo(cellView.model, elementNum);
 
         }
     });
@@ -87,6 +71,34 @@ $("#filter-apply").on('mousedown', function () { $("body").addClass("spinning");
         $(".cell-attrs-text2").val("N/A"); 
     });
 }
+
+// Update satisfaction value in the text box
+function updateSatValueInfo(model, elementNum) {
+    // Fills in nodeName text box with intention name
+    $(".cell-attrs-text").val(model.attributes.intention.attributes.nodeName);
+    // TODO: avoid calling originalResults2 twice
+    originalResults2 = $.extend(true, {}, myInputJSObject.results);
+
+
+    // Fills in the current sat value text box
+    switch (originalResults2.get('allSolutions')["TNS-R"][parseInt($("#currentPage").val())][elementNum]) {
+        case "0000":
+            return $(".cell-attrs-text2").val("None (⊥, ⊥)");
+        case "0011":
+            return $(".cell-attrs-text2").val("Satisfied (F, ⊥)");
+        case "0010":
+            return $(".cell-attrs-text2").val("Partially Satisfied (P, ⊥)");
+        case "0100":
+            return $(".cell-attrs-text2").val("Partially Denied (⊥, P)");
+        case "1100":
+            return $(".cell-attrs-text2").val("Denied (⊥, F)");
+        case "unknown":
+            return $(".cell-attrs-text2").val("(no value)");
+        default:
+            return $(".cell-attrs-text2").val("conflict");   
+    }
+}
+
 
 // Navigation bar functions:
 var max_font = 20;
