@@ -42,8 +42,7 @@ function cellHighlight(pPaper) {
             cellView.highlight();
             $('.cell-attrs-text').addClass('disabled-textbox-clicked');
             $('.cell-attrs-text2').addClass('disabled-textbox-clicked');
-            // // Fills in nodeName text box with intention name
-            // $(".cell-attrs-text").val(cellView.model.attributes.intention.attributes.nodeName);
+            
             // TODO: if the page is changed or filters are added it does not update
             // TODO: indexing by name "TNS-R" might be too brittle
             originalResults2 = $.extend(true, {}, myInputJSObject.results);
@@ -56,7 +55,7 @@ function cellHighlight(pPaper) {
                 }
             }
             // Update the current sat value in the intention filter whenever an intention is selected
-            updateSatValueInfo(cellView.model, elementNum);
+            updateSatValueInfo(cellView.model, elementNum, originalResults2);
 
         }
     });
@@ -73,13 +72,10 @@ function cellHighlight(pPaper) {
 }
 
 // Update satisfaction value in the text box
-function updateSatValueInfo(model, elementNum) {
+function updateSatValueInfo(model, elementNum, originalResults2) {
     // Fills in nodeName text box with intention name
     $(".cell-attrs-text").val(model.attributes.intention.attributes.nodeName);
-    // TODO: avoid calling originalResults2 twice
-    originalResults2 = $.extend(true, {}, myInputJSObject.results);
-
-
+  
     // Fills in the current sat value text box
     switch (originalResults2.get('allSolutions')["TNS-R"][parseInt($("#currentPage").val())][elementNum]) {
         case "0000":
