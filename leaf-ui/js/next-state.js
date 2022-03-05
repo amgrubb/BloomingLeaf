@@ -275,7 +275,7 @@
         } else {
             value = currentPage - 1;
         }
-        pagination.innerHTML += '<a href="#" onclick="renderNavigationSidebar(' + value.toString() + ')">&laquo;</a>';
+        pagination.innerHTML += '<div><a href="#" onclick="renderNavigationSidebar(' + value.toString() + ')">&laquo;</a></div>';
     }
 
     /**
@@ -290,7 +290,7 @@
         } else {
             value = currentPage + 1;
         }
-        pagination.innerHTML += '<a href="#" onclick="renderNavigationSidebar(' + value.toString() + ')">&raquo;</a>';
+        pagination.innerHTML += '<div><a href="#" onclick="renderNavigationSidebar(' + value.toString() + ')">&raquo;</a></div>';
     }
 
     /**
@@ -299,9 +299,9 @@
     function render_pagination_values(currentPage, i) {
         var pagination = document.getElementById("pagination");
         if (currentPage == i) {
-            pagination.innerHTML += '<a href="#" class="active" onclick="renderNavigationSidebar(' + i.toString() + ')">' + i.toString() + '</a>';
+            pagination.innerHTML += '<div><a href="#" class="active" onclick="renderNavigationSidebar(' + i.toString() + ')">' + i.toString() + '</a></div>';
         } else {
-            pagination.innerHTML += '<a href="#" onclick="renderNavigationSidebar(' + i.toString() + ')">' + i.toString() + '</a>';
+            pagination.innerHTML += '<div><a href="#" onclick="renderNavigationSidebar(' + i.toString() + ')">' + i.toString() + '</a></div>';
         }
     }
 
@@ -813,6 +813,11 @@
         var desiredSatVal = $("#sat-value").val();
         console.log(selectedIntention)
 
+        console.log(tempResults)
+        tempResults2 = $.extend(true, {}, myInputJSObject.results);
+        tempResults2.get('allSolutions')["TNS-R"] = [];
+        console.log(tempResults2)
+
         // FOR NOW (we might be able to just store the intention id)
         filterIntentionList.push([selectedIntention, desiredSatVal]);
 
@@ -905,11 +910,14 @@
         }
         // Appends filter information to the intention filter table
         // TODO: add an id to each remove button so you can remove one filter but not all of them
-        $(".inspectorFilterTable").append('<tr class="tabelData"><td class="tableData">' + $(".cell-attrs-text").val() + '</td><td class="tableData">' + tableSatVal + '</td><td class="tableData"><button class="table-btn-small">Remove</button></td></tr>');
+        $(".inspectorFilterTable").append('<tr class="tabelData"><td class="tableData">' + $(".cell-attrs-text").val() + '</td><td class="tableData">' + tableSatVal + '</td><td id = remove-button-' + intention + ' class="tableData"><button class="table-btn-small" style="font-size:15px"><i class="fa fa-trash"></i></button></td>');
         console.log(analysis.intentions)
         console.log(originalResults)                
 
             }
+
+            //fa fa-trash-o
+            
 
 // Set the new results with filters as the analysis object
 myInputJSObject.results = tempResults;

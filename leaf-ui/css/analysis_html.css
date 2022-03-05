@@ -371,3 +371,11 @@ body {
 .disabled-textbox-clicked{
   color: rgb(50, 50, 50) !important;
 }
+
+.flex-container {
+  display: flex;
+  flex-direction: row;
+  font-size: 17px;
+  justify-content: center;
+  align-items: center;
+}
