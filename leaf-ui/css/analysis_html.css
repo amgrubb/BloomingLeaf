@@ -376,6 +376,7 @@ body {
   display: flex;
   flex-direction: row;
   font-size: 17px;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
+  text-overflow: ellipsis;
 }

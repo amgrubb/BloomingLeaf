@@ -245,13 +245,25 @@
                     render_pagination_values(currentPage, i);
                 }
             } else {
-                if (currentPage + 3 < nextSteps_array_size) {
-                    for (i = currentPage - 3; i < currentPage + 3; i++) {
-                        render_pagination_values(currentPage, i);
+                if (currentPage < 100) {
+                    if (currentPage + 3 < nextSteps_array_size) {
+                        for (i = currentPage - 3; i < currentPage + 3; i++) {
+                            render_pagination_values(currentPage, i);
+                        }
+                    } else {
+                        for (i = currentPage - 3; i < nextSteps_array_size; i++) {
+                            render_pagination_values(currentPage, i);
+                        }
                     }
                 } else {
-                    for (i = currentPage - 3; i < nextSteps_array_size; i++) {
-                        render_pagination_values(currentPage, i);
+                    if (currentPage + 2 < nextSteps_array_size) {
+                        for (i = currentPage - 2; i < currentPage + 3; i++) {
+                            render_pagination_values(currentPage, i);
+                        }
+                    } else {
+                        for (i = currentPage - 3; i < nextSteps_array_size; i++) {
+                            render_pagination_values(currentPage, i);
+                        }
                     }
                 }
             }
@@ -275,7 +287,7 @@
         } else {
             value = currentPage - 1;
         }
-        pagination.innerHTML += '<div><a href="#" onclick="renderNavigationSidebar(' + value.toString() + ')">&laquo;</a></div>';
+        pagination.innerHTML += '<a href="#" onclick="renderNavigationSidebar(' + value.toString() + ')">&laquo;</a>';
     }
 
     /**
@@ -290,7 +302,7 @@
         } else {
             value = currentPage + 1;
         }
-        pagination.innerHTML += '<div><a href="#" onclick="renderNavigationSidebar(' + value.toString() + ')">&raquo;</a></div>';
+        pagination.innerHTML += '<a href="#" onclick="renderNavigationSidebar(' + value.toString() + ')">&raquo;</a>';
     }
 
     /**
@@ -299,9 +311,9 @@
     function render_pagination_values(currentPage, i) {
         var pagination = document.getElementById("pagination");
         if (currentPage == i) {
-            pagination.innerHTML += '<div><a href="#" class="active" onclick="renderNavigationSidebar(' + i.toString() + ')">' + i.toString() + '</a></div>';
+            pagination.innerHTML += '<a href="#" class="active" onclick="renderNavigationSidebar(' + i.toString() + ')">' + i.toString() + '</a>';
         } else {
-            pagination.innerHTML += '<div><a href="#" onclick="renderNavigationSidebar(' + i.toString() + ')">' + i.toString() + '</a></div>';
+            pagination.innerHTML += '<a href="#" onclick="renderNavigationSidebar(' + i.toString() + ')">' + i.toString() + '</a>';
         }
     }
 
@@ -813,16 +825,8 @@
         var desiredSatVal = $("#sat-value").val();
         console.log(selectedIntention)
 
-        console.log(tempResults)
-        tempResults2 = $.extend(true, {}, myInputJSObject.results);
-        for (var solutionArray in originalResults.get('allSolutions')) {
-            tempResults2.get('allSolutions')[solutionArray] = [];
-        }
-        console.log(tempResults2)
-
         // FOR NOW (we might be able to just store the intention id)
         filterIntentionList.push([selectedIntention, desiredSatVal]);
-        console.log(filterIntentionList)
 
             for(intention in filterIntentionList) {
                 // Finds the element index of the intentions
@@ -834,52 +838,51 @@
 
                 // Iterates over every key/value pair in the hashmap
                 //
-                for (var solutionArray in originalResults.get('allSolutions')) {
-                    //var index_to_keep = [];
-                    //var index_to_rm = [];
+                for (var solutionArray in tempResults.get('allSolutions')) {
+                    var index_to_keep = [];
+                    var index_to_rm = [];
 
-                    //var most_r_s = 0;
+                    var most_r_s = 0;
                     // Iterates over all of the solutions in the key/value pair 
-                    for (var solution_index = 0; solution_index < originalResults.get('allSolutions')[solutionArray].length; solution_index++) {
-                        //var num_r_s = 0;
+                    for (var solution_index = 0; solution_index < tempResults.get('allSolutions')[solutionArray].length; solution_index++) {
+                        var num_r_s = 0;
                         // Only checks for sat value of selected intention if the value satisfyies the conditions then the
                         // Index is pushed to the index array
-                        var value = originalResults.get('allSolutions')[solutionArray][solution_index][elementNum];
+                        var value = tempResults.get('allSolutions')[solutionArray][solution_index][elementNum];
                         console.log(filterIntentionList[intention][1])
                         // TODO: change line below
-                        if (value == filterIntentionList[intention][1]) {
-                            //num_r_s++;
-                            tempResults2.get('allSolutions')[solutionArray].push(originalResults.get('allSolutions')[solutionArray][solution_index])
+                        if (value == desiredSatVal) {
+                            num_r_s++;
                         }
 
-                    //     if (most_r_s < num_r_s) {
-                    //         most_r_s = num_r_s;
-                    //         index_to_rm = index_to_rm.concat(index_to_keep);
-                    //         index_to_keep = [];
-                    //     }
-                    //     if (num_r_s == most_r_s) {
-                    //         index_to_keep.push(solution_index);
-                    //     }
-                    //     if (num_r_s < most_r_s) {
-                    //         index_to_rm.push(solution_index);
-                    //     }        
+                        if (most_r_s < num_r_s) {
+                            most_r_s = num_r_s;
+                            index_to_rm = index_to_rm.concat(index_to_keep);
+                            index_to_keep = [];
+                        }
+                        if (num_r_s == most_r_s) {
+                            index_to_keep.push(solution_index);
+                        }
+                        if (num_r_s < most_r_s) {
+                            index_to_rm.push(solution_index);
+                        }        
                     }
-                    //                             if (most_r_s < num_r_s) {
-                    //         most_r_s = num_r_s;
-                    //         index_to_rm = index_to_rm.concat(index_to_keep);
-                    //         index_to_keep = [];
-                    //     }
-                    //     if (num_r_s == most_r_s) {
-                    //         index_to_keep.push(solution_index);
-                    //     }
-                    //     if (num_r_s < most_r_s) {
-                    //         index_to_rm.push(solution_index);
-                    //     }
+                                                if (most_r_s < num_r_s) {
+                            most_r_s = num_r_s;
+                            index_to_rm = index_to_rm.concat(index_to_keep);
+                            index_to_keep = [];
+                        }
+                        if (num_r_s == most_r_s) {
+                            index_to_keep.push(solution_index);
+                        }
+                        if (num_r_s < most_r_s) {
+                            index_to_rm.push(solution_index);
+                        }
 
-                    // index_to_rm.sort(function (a, b) { return a - b });
-                    // for (var to_rm = 0; to_rm < index_to_rm.length; to_rm++) {
-                    //     tempResults.get('allSolutions')[solutionArray].splice(index_to_rm[to_rm] - to_rm, 1);
-                    // }
+                    index_to_rm.sort(function (a, b) { return a - b });
+                    for (var to_rm = 0; to_rm < index_to_rm.length; to_rm++) {
+                        tempResults.get('allSolutions')[solutionArray].splice(index_to_rm[to_rm] - to_rm, 1);
+                    }
                 }
 
         $("body").removeClass("spinning"); // Remove spinner from cursor
@@ -914,41 +917,19 @@
         }
         // Appends filter information to the intention filter table
         // TODO: add an id to each remove button so you can remove one filter but not all of them
-        $(".inspectorFilterTable").append('<tr class="tabelData"><td class="tableData">' + $(".cell-attrs-text").val() + '</td><td class="tableData">' + tableSatVal + '</td><td id = remove-btn-' + intention + ' class="tableData remove-btn"><button class="table-btn-small" style="font-size:15px"><i class="fa fa-trash"></i></button></td>');
+        $(".inspectorFilterTable").append('<tr class="tabelData"><td class="tableData">' + $(".cell-attrs-text").val() + '</td><td class="tableData">' + tableSatVal + '</td><td class="tableData"><button class="table-btn-small">Remove</button></td></tr>');
         console.log(analysis.intentions)
         console.log(originalResults)                
 
             }
-            
 
 // Set the new results with filters as the analysis object
-myInputJSObject.results = tempResults2;
+myInputJSObject.results = tempResults;
 // Creates array with all Solutions from new hashmap
 combineAllSolutions();
 renderNavigationSidebar();
 
         
-
-    }
-
-    /*
-    *
-    */
-    function removeIntentionFilter(event) {
-        // filterIntentionList.push([selectedIntention, desiredSatVal]);
-        console.log("hey")
-        console.log(event)
-        console.log(this.id, this.innerHTML);
-
-
-
-        // for (var filter in filterIntentionList) {
-
-        //     console.log(filter)
-        //     if (selectedIntention == ) {
-
-        //     }
-        // }
 
     }
 
