@@ -527,7 +527,6 @@ paper.on("link:options", function (cell) {
      * Selects the current configuration and prior results and passes them to backendSimulationRequest()  */
     $('#next-state-btn').on('click', function () {
         var curRequest = configCollection.findWhere({ selected: true });
-        console.log($('analysisSlider'));
         // Checks to see if single path has been run by seeing if there are any results
         if (typeof curRequest.previousAttributes().results === 'undefined' || curRequest.previousAttributes().results.length == 0) {
             var singlePathRun = false;
