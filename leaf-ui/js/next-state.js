@@ -186,9 +186,15 @@
         updatePagination(currentPage);
         updateNodesValues(currentPage);
 
-        // TODO: implement this back in eventually
-        // EVONextState.setColorBlindFromPrevWindow();
-        // EVONextState.refresh();
+        renderEVO();
+    }
+
+    /**
+     * Is called whenever the slider changes and when the sidebar is rendered.
+     */
+    function renderEVO() {
+        EVONextState.setColorBlindFromPrevWindow();
+        EVONextState.setSliderOptionNextState();
     }
 
     /**

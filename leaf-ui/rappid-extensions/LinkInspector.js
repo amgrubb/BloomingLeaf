@@ -87,6 +87,7 @@ var LinkInspector = Backbone.View.extend({
         '<option value="is-a">is-a</option>',
         '<option value="plays">plays</option>',
         '<option value="is-part-of">is-part-of</option>',
+        '<option value="participates-in">participates-in</option>',
         '</select><br>',
         '</div>',
     ].join(''),
@@ -174,6 +175,7 @@ var LinkInspector = Backbone.View.extend({
             target.get('intention').get('evolvingFunction').set('type', 'NB');
             target.get('intention').getUserEvaluationBBM(0).set('assignedEvidencePair', '0000');
 
+            EVO.refresh(undefined);
         } else {
             // Check if cells have any other NBT/NBD links
             // Clears the source if it doesn't have a NBT/NBD link
@@ -235,7 +237,7 @@ var LinkInspector = Backbone.View.extend({
      * Updates linkType for the actor based on updated select value
      */
     updateActorLink: function () {
-        this.setValues($('#actor-link').val(), null, false)
+        this.setValues($('#actor-link').val(), null, false);
     },
 
     /**
