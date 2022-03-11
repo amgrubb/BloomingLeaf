@@ -515,14 +515,18 @@ paper.on("link:options", function (cell) {
      * Selects the current configuration and passes to backendSimulationRequest()  */
     $('#simulate-path-btn').on('click', function () {
         var curRequest = configCollection.findWhere({ selected: true });
-        curRequest.set('action', 'singlePath');
-        backendSimulationRequest(curRequest);
+        var numRel = $('#num-rel-time'); 
+        //Can't simulate path when num-rel-time equals 0
+        if (numRel.val() == 0) {
+            swal("Num Relative Time Points cannot be 0", "", "error");
+        } else {
+            curRequest.set('action', 'singlePath');
+            backendSimulationRequest(curRequest); }
     });
     /** All Next States:
      * Selects the current configuration and prior results and passes them to backendSimulationRequest()  */
     $('#next-state-btn').on('click', function () {
         var curRequest = configCollection.findWhere({ selected: true });
-
         // Checks to see if single path has been run by seeing if there are any results
         if (typeof curRequest.previousAttributes().results === 'undefined' || curRequest.previousAttributes().results.length == 0) {
             var singlePathRun = false;
@@ -536,16 +540,15 @@ paper.on("link:options", function (cell) {
             curRequest.set('action', 'allNextStates');
             curRequest.set('previousAnalysis', curResult);
 
-            if (EVO.sliderOption == '1' || EVO.sliderOption == '2') {
-                swal("Error: Cannot explore next states from percent or time EVO options.", "", "error");
-            } else { 
-                // If the last time point is selected, error message shows that you can't open Next State
-                if ((curResult.get('timePointPath').length - 1) === curResult.get('selectedTimePoint')) {
-                    swal("Error: Cannot explore next states with last time point selected.", "", "error");
-                } else {
-                    $("body").addClass("spinning"); // Adds spinner animation to page
-                    backendSimulationRequest(curRequest);
-                }
+            // If the last time point is selected, error message shows that you can't open Next State
+            if (EVO.sliderOption==1 || EVO.sliderOption==2){ 
+                swal("Error: Cannot explore next states with EVO in % or Time.", "", "error");
+                $("body").removeClass("spinning"); // Remove spinner from page
+            } else if ((curResult.get('timePointPath').length - 1) === curResult.get('selectedTimePoint')) {
+                swal("Error: Cannot explore next states with last time point selected.", "", "error");
+                $("body").removeClass("spinning"); // Remove spinner from page
+            } else {
+                backendSimulationRequest(curRequest);
             }
         } else { // If single path has not been run show error message
             swal("Error: Cannot explore next states before simulating a single path.", "", "error");
