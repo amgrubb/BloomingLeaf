@@ -109,7 +109,7 @@ body {
   top: 40px;
   bottom: 0;
   width: 200px;
-
+  overflow-y: scroll;
   background-color: #f9f9f9;
   box-shadow: 2px 0px 16px 0px rgba(0,0,0,0.2);
   /* Should be less than the modal pop-ups. TODO: Verify function with next state analysis. */ 
@@ -327,7 +327,7 @@ select > .select-placeholder {
 .inspector-btn {
   position: relative;
   vertical-align: top;
-  width: 200px;
+  width: 181px;
   height: 32px;
   padding: 0;
   color: black;
