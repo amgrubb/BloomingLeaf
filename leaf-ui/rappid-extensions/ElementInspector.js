@@ -68,7 +68,7 @@ var ElementInspector = Backbone.View.extend({
         this.listenTo(this, 'change:intention', this.initSatValueChanged);
         // Saves this.model.get('intention) as a local variable to access it more easily
         this.intention = this.model.get('intention');
-        this.listenTo(this.intention, 'change:evolvingFunction', this.clearFunctionSegments)
+        this.listenTo(this.intention, 'change:evolvingFunction', this.clearFunctionSegments);
     },
 
     template: ['<script type="text/template" id="item-template">',
