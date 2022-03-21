@@ -926,7 +926,7 @@
         }
         // Appends filter information to the intention filter table
         // TODO: add an id to each remove button so you can remove one filter but not all of them
-        $(".inspectorFilterTable").append('<tr class="tabelData"><td class="tableData">' + $(".cell-attrs-text").val() + '</td><td class="tableData">' + tableSatVal + '</td><td id = remove-btn-' + intention + ' class="tableData remove-btn"><button class="table-btn-small" style="font-size:15px"><i class="fa fa-trash"></i></button></td>');
+        $(".inspectorFilterTable").append('<tr class="tabelData"><td class="tableData">' + $(".cell-attrs-text").val() + '</td><td class="tableData">' + tableSatVal + '</td><td id = remove-btn-' + intention + ' class="tableData remove-btn"><button class="table-btn-small" style="font-size:15px"><i class="fa fa-trash" style="color:white"></i></button></td>');
         console.log(analysis.intentions)
         console.log(originalResults)                
 

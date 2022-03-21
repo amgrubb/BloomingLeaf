@@ -151,6 +151,8 @@ body {
 }
 
 .inspector-btn-small {
+  -webkit-box-shadow: inset 0 -2px #dad8d8;
+  box-shadow: inset 0 -2px #dad8d8;
   position: relative;
   vertical-align: top;
   width: 30px;
@@ -163,6 +165,26 @@ body {
   border-radius: 5px;
   margin-top: 2px;
   margin-bottom: 5px;
+}
+
+.inspector-btn-small:hover {
+  background: #fffefe;
+}
+
+  /* Trash btn */
+ .table-btn-small {
+  background: #333333; 
+  -webkit-box-shadow: inset 0 -2px #292929;
+  box-shadow: inset 0 -2px #292929;
+  width: 30px;
+  height: 23px;
+  border: 0;
+  cursor: pointer;
+  border-radius: 5px;
+} 
+
+.table-btn-small:hover {
+  background: rgb(66, 66, 66);
 }
 
 .inspector-btn {
