@@ -806,6 +806,7 @@
      */
     function intentionFilter() {
         console.log("intention filter clicked");
+        console.log(filterIntentionList)
 
         // Clears previous html table entries
         $(".inspectorFilterTable tr").remove();
@@ -905,7 +906,15 @@
                 }
                 // Appends filter information to the intention filter table
                 // TODO: add an id to each remove button so you can remove one filter but not all of them
-                $(".inspectorFilterTable").append('<tr class="tabelData"><td class="tableData">' + filterIntentionList[i][0] + '</td><td class="tableData">' + tableSatVal + '</td><td id = remove-btn-' + '1' + ' class="tableData remove-btn"><button class="table-btn-small" style="font-size:15px"><i class="fa fa-trash" style="color:white"></i></button></td>'); 
+
+                var name; 
+                //console.log(analysis.graph.getCells())
+                for (let element of analysis.intentions) {
+                    name = element.attr(".name").text
+                }
+
+                $(".inspectorFilterTable").append('<tr class="tabelData"><td class="tableData">' + name + '</td><td class="tableData">' + tableSatVal + '</td><td id = remove-btn-' + '1' + ' class="tableData remove-btn"><button class="table-btn-small" style="font-size:15px"><i class="fa fa-trash" style="color:white"></i></button></td>'); 
+                //$(".inspectorFilterTable").append('<tr class="tabelData"><td class="tableData">' + filterIntentionList[i][0] + '</td><td class="tableData">' + tableSatVal + '</td><td id = remove-btn-' + '1' + ' class="tableData remove-btn"><button class="table-btn-small" style="font-size:15px"><i class="fa fa-trash" style="color:white"></i></button></td>'); 
         }    
     }
             
@@ -920,20 +929,23 @@
     *
     */
     function removeIntentionFilter(event) {
-        // filterIntentionList.push([selectedIntention, desiredSatVal]);
-        console.log("hey")
-        console.log(event)
-        console.log(this.id, this.innerHTML);
+        var desiredSatVal = $("#sat-value").val();
+        filterIntentionList.push([selectedIntention, desiredSatVal]);
+        //console.log(event)
+        //console.log(this.id, this.innerHTML);
+        console.log("pre pop  " + filterIntentionList)
 
+    
+        for (var i in filterIntentionList) {
+            if (selectedIntention == filterIntentionList[i][0]) {
+                //console.log(selectedIntention)
+                //console.log(filterIntentionList[i][0])
 
-
-        // for (var filter in filterIntentionList) {
-
-        //     console.log(filter)
-        //     if (selectedIntention == ) {
-
-        //     }
-        // }
+                // How to pop/filter/splice correctly lol
+                console.log("mid " + filterIntentionList[i])
+                console.log("post pop  " + filterIntentionList)
+            }
+        }
 
     }
 

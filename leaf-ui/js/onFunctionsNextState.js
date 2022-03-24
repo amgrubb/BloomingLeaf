@@ -24,9 +24,8 @@ $(window).resize(function () {
 $("#filter-apply").on('mouseup', function () { intentionFilter(); });
 $("#filter-apply").on('mousedown', function () { $("body").addClass("spinning"); });
 $(".remove-button").on('click', function (event) { removeIntentionFilter(event); });
-$(".inspectorFilterTable").on('click', '.table-btn-small', function () {
-    $(this).closest('tr').remove();
-})
+$(".inspectorFilterTable").on('mouseup', '.table-btn-small', function () { $(this).closest('tr').remove();})
+$(".inspectorFilterTable").on('mousedown', '.table-btn-small', function (event) { removeIntentionFilter(event);})
 
 /**
  * Highlight an individual cell upon clicking
