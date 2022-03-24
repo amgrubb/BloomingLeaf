@@ -23,11 +23,9 @@ reader.onload = function () {
 	}
 	clearInspector();
 	var result = JSON.parse(reader.result);
-	if ( result.graph.type != undefined) { // TODO: find a better way to distinguish the different versions
+	if ( result.graph.type != undefined) {
 		loadFromObject(result);
 	} else {
-		var text = reader.result.replaceAll('"link"', '"basic.CellLink"')
-		result = JSON.parse(text);
 		loadOldVersion(result)
 	}
 	
@@ -80,6 +78,7 @@ function loadOldVersion(obj) {
 			loadOldElement(cell, obj.model.intentions, obj.model.constraints) //Create element
 		}
 	}
+	//changeLinkType()
 }
 
 /**
@@ -101,6 +100,17 @@ function getConstArr(arr) {
 	return res;
 }
 */
+
+function changeLinkType() {
+	cellPaper = document.getElementsByClassName('joint-type-link');
+	for (var i = 0; i < cellPaper.length; i++) {
+		console.log(cellPaper[i].className.baseVal)
+		cellPaper[i].className.baseVal = "joint-cell joint-type-basic joint-type-basic-celllink joint-link joint-theme-default"
+		cellPaper[i].className.animVal = "joint-cell joint-type-basic joint-type-basic-celllink joint-link joint-theme-default"
+		cellPaper[i].dataset.type = 'basic.CellLink'
+		console.log(cellPaper[i].dataset.type)
+	}
+}
 
 /**
  * Load the old actors into ActorBBM
@@ -154,28 +164,27 @@ function loadOldLinks(cell, arr) {
 
 	var linkBBM = new LinkBBM({ displayType: oldDisplayType, linkType: oldLinkType, postType: oldPostType, absTime: oldLink.absoluteValue, evolving: oldEvolving }); 
 	cell.set('link', linkBBM);
+	cell.set('type', 'basic.CellLink')
+	
 }
 
 /**
 * Loads old elements into BB Models
 *
 */
-function loadOldElement(cell, oldElements, constraintList ) {
-	var oldElement;
-	var oldConstraints = [];
-
+function loadOldElement(cell, oldElements, oldConstraints) {
 	for (var i = 0; i < oldElements.length; i++) {
 		if (cell.get('nodeID') == oldElements[i].nodeID){
-			oldElement = oldElements[i];
+			var oldElement = oldElements[i];
 		}
 	}
 
-	for (var i = 0; i < constraintList.length; i++) {
-		if (cell.get('nodeID') == constraintList[i].constraintSrcID){
-			oldConstraints.push(constraintList[i]); // TODO: make sure it incorporates multiple constraints later 
+	for (var i = 0; i < oldConstraints.length; i++) {
+		if (cell.get('nodeID') == oldConstraints[i].constraintSrcID){
+			var oldConstraint = oldConstraints[i];
 		}
 	}
-	var intentionBBM = new IntentionBBM({ nodeName: oldElement.nodeName, evolvingFunction: getOldEvolvingFunction(oldElement, oldConstraints) });
+	var intentionBBM = new IntentionBBM({ nodeName: oldElement.nodeName, evolvingFunction: getOldEvolvingFunction(oldElement, oldConstraint) });
 	
 	intentionBBM.get('userEvaluationList').push(new UserEvaluationBBM({}));
 
@@ -206,50 +215,34 @@ function getOldEvolvingFunction(obj, oldConstraint) {
 * Returns an array of FuncSegment or RepFuncSegment objects with 
 * information from arr
 *
-* @param {Array.<Object>} functionseg
+* @param {Array.<Object>} arr
 * @returns {Array.<FuncSegment|RepFuncSegment>}
 */
-function getFuncSegList(functionseg, oldConstraints) {
+function getFuncSegList(arr, constraint) {
 	var res = [];
 	res.functionList = [];
 	res.hasRepeat = false;
 	res.repStop = null;
 	res.repCount = null;
 	res.repabsTime = null;
-	var AT = null;
-	for (var i = 0; i < functionseg.length; i++) {
-		if (functionseg[i].repNum) {
+	for (var i = 0; i < arr.length; i++) {
+		if (arr[i].repNum) {
 			// If this segment is a repeating segment
 			res.hasRepeat = true;
 
-			var repFuncSeg = functionseg[i].functionSegList;
+			var repFuncSeg = arr[i].functionSegList;
 			res.repStart = repFuncSeg[0].funcStart;
 			for (var k = 0; k < repFuncSeg.length; k++) {
-				if (oldConstraints.length > 0) {
-					for (var j = 0; j < oldConstraints.length; j++) {
-						if (repFuncSeg[k].funcStart === oldConstraints[j].constraintSrcEB) {
-							AT =  oldConstraints[j].absoluteValue;
-						}
-					}
-				}
 				res.functionList.push(new FunctionSegmentBBM({ type: repFuncSeg[k].funcType, refEvidencePair: repFuncSeg[k].funcX, startTP: repFuncSeg[k].funcStart, startAT: repFuncSeg[k].funcStart === constraint.constraintSrcEB ? constraint.absoluteValue : null, current: k == (repFuncSeg.length - 1) ? true : false }));
 				if (k == repFuncSeg.length-1) {
 					res.repStop = repFuncSeg[k].funcStop;
 				}
-				res.repCount = parseInt(functionseg[i].repNum);
-				res.repabsTime = parseInt(functionseg[i].absTime);
+				res.repCount = parseInt(arr[i].repNum);
+				res.repabsTime = parseInt(arr[i].absTime);
 			}
 		} else {
 			// If this segment is not a repeating segment
-			// startAT = start absolute time (int), startTP = start time point (string)
-			if (oldConstraints.length > 0) {
-				for (var j = 0; j < oldConstraints.length; j++) {
-					if (functionseg[i].funcStart === oldConstraints[j].constraintSrcEB) {
-						AT =  oldConstraints[j].absoluteValue;
-					}
-				}
-			} 	
-			res.functionList.push(new FunctionSegmentBBM({ type: functionseg[i].funcType, refEvidencePair: functionseg[i].funcX, startTP: functionseg[i].funcStart, startAT: AT, current: i == (functionseg.length - 1) ? true : false }));
+			res.functionList.push(new FunctionSegmentBBM({ type: arr[i].funcType, refEvidencePair: arr[i].funcX, startTP: arr[i].funcStart, startAT: arr[i].funcStart === constraint.constraintSrcEB ? constraint.absoluteValue : null, current: i == (arr.length - 1) ? true : false }));
 		}
 	}
 	return res;
