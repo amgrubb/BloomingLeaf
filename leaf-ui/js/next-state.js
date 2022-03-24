@@ -245,25 +245,13 @@
                     render_pagination_values(currentPage, i);
                 }
             } else {
-                if (currentPage < 100) {
-                    if (currentPage + 3 < nextSteps_array_size) {
-                        for (i = currentPage - 3; i < currentPage + 3; i++) {
-                            render_pagination_values(currentPage, i);
-                        }
-                    } else {
-                        for (i = currentPage - 3; i < nextSteps_array_size; i++) {
-                            render_pagination_values(currentPage, i);
-                        }
+                if (currentPage + 3 < nextSteps_array_size) {
+                    for (i = currentPage - 3; i < currentPage + 3; i++) {
+                        render_pagination_values(currentPage, i);
                     }
                 } else {
-                    if (currentPage + 2 < nextSteps_array_size) {
-                        for (i = currentPage - 2; i < currentPage + 3; i++) {
-                            render_pagination_values(currentPage, i);
-                        }
-                    } else {
-                        for (i = currentPage - 3; i < nextSteps_array_size; i++) {
-                            render_pagination_values(currentPage, i);
-                        }
+                    for (i = currentPage - 3; i < nextSteps_array_size; i++) {
+                        render_pagination_values(currentPage, i);
                     }
                 }
             }
@@ -287,7 +275,7 @@
         } else {
             value = currentPage - 1;
         }
-        pagination.innerHTML += '<a href="#" onclick="renderNavigationSidebar(' + value.toString() + ')">&laquo;</a>';
+        pagination.innerHTML += '<div><a href="#" onclick="renderNavigationSidebar(' + value.toString() + ')">&laquo;</a></div>';
     }
 
     /**
@@ -302,7 +290,7 @@
         } else {
             value = currentPage + 1;
         }
-        pagination.innerHTML += '<a href="#" onclick="renderNavigationSidebar(' + value.toString() + ')">&raquo;</a>';
+        pagination.innerHTML += '<div><a href="#" onclick="renderNavigationSidebar(' + value.toString() + ')">&raquo;</a></div>';
     }
 
     /**
@@ -311,9 +299,9 @@
     function render_pagination_values(currentPage, i) {
         var pagination = document.getElementById("pagination");
         if (currentPage == i) {
-            pagination.innerHTML += '<a href="#" class="active" onclick="renderNavigationSidebar(' + i.toString() + ')">' + i.toString() + '</a>';
+            pagination.innerHTML += '<div><a href="#" class="active" onclick="renderNavigationSidebar(' + i.toString() + ')">' + i.toString() + '</a></div>';
         } else {
-            pagination.innerHTML += '<a href="#" onclick="renderNavigationSidebar(' + i.toString() + ')">' + i.toString() + '</a>';
+            pagination.innerHTML += '<div><a href="#" onclick="renderNavigationSidebar(' + i.toString() + ')">' + i.toString() + '</a></div>';
         }
     }
 
@@ -806,130 +794,134 @@
      */
     function intentionFilter() {
         console.log("intention filter clicked");
-        // TODO: figure out resetting / storing results everytime the apply filter button is added
-        // TODO: when more than one filter is added the filter doesnt work (doesnt show correct solutions)
-            // maybe iterate over original solutions, if true push to tempResults
 
         // Clears previous html table entries
         $(".inspectorFilterTable tr").remove();
         // Appends the headings back to the table
-        // Probs a cleaner way to do this tbh
         $(".inspectorFilterTable").append('<tr class ="tableHeading"><th class="tableHeading">Intention Name</th><th class="tableHeading">Satisfaction Value</th><th class="tableHeading">Remove</th></tr>');
-
+      
+        // 4 digit sat value code selected from dropdown menu
+        var desiredSatVal = $("#sat-value").val();
 
         // Everytime a filter is applied the results are reset
         myInputJSObject.results = originalResults;
         // Deep copy of results so it doesn't contain references to the original object
-        tempResults = $.extend(true, {}, myInputJSObject.results);
-        // 4 digit sat value code selected from dropdown menu
-        var desiredSatVal = $("#sat-value").val();
-        console.log(selectedIntention)
-
-        // FOR NOW (we might be able to just store the intention id)
-        filterIntentionList.push([selectedIntention, desiredSatVal]);
-
-            for(intention in filterIntentionList) {
-                // Finds the element index of the intentions
-                for (var element_index = 0; element_index < analysis.intentions.length; element_index++) {
-                    if (analysis.intentions[element_index].attributes.id == selectedIntention) {
-                        var elementNum = element_index;
-                    }
-                }
-
-                // Iterates over every key/value pair in the hashmap
-                //
-                for (var solutionArray in tempResults.get('allSolutions')) {
-                    var index_to_keep = [];
-                    var index_to_rm = [];
-
-                    var most_r_s = 0;
-                    // Iterates over all of the solutions in the key/value pair 
-                    for (var solution_index = 0; solution_index < tempResults.get('allSolutions')[solutionArray].length; solution_index++) {
-                        var num_r_s = 0;
-                        // Only checks for sat value of selected intention if the value satisfyies the conditions then the
-                        // Index is pushed to the index array
-                        var value = tempResults.get('allSolutions')[solutionArray][solution_index][elementNum];
-                        console.log(filterIntentionList[intention][1])
-                        // TODO: change line below
-                        if (value == desiredSatVal) {
-                            num_r_s++;
-                        }
-
-                        if (most_r_s < num_r_s) {
-                            most_r_s = num_r_s;
-                            index_to_rm = index_to_rm.concat(index_to_keep);
-                            index_to_keep = [];
-                        }
-                        if (num_r_s == most_r_s) {
-                            index_to_keep.push(solution_index);
-                        }
-                        if (num_r_s < most_r_s) {
-                            index_to_rm.push(solution_index);
-                        }        
-                    }
-                                                if (most_r_s < num_r_s) {
-                            most_r_s = num_r_s;
-                            index_to_rm = index_to_rm.concat(index_to_keep);
-                            index_to_keep = [];
-                        }
-                        if (num_r_s == most_r_s) {
-                            index_to_keep.push(solution_index);
-                        }
-                        if (num_r_s < most_r_s) {
-                            index_to_rm.push(solution_index);
-                        }
-
-                    index_to_rm.sort(function (a, b) { return a - b });
-                    for (var to_rm = 0; to_rm < index_to_rm.length; to_rm++) {
-                        tempResults.get('allSolutions')[solutionArray].splice(index_to_rm[to_rm] - to_rm, 1);
-                    }
-                }
-
-        $("body").removeClass("spinning"); // Remove spinner from cursor
-    
-        console.log(analysis.intentions[elementNum])
-        console.log(analysis.intentions[elementNum].attributes)
-        
-
-        // Finds corrects text sat value for table
-        switch (filterIntentionList[intention][1]) {
-            case "0000":
-                var tableSatVal = "None (⊥, ⊥)";
-                break;
-            case "0011":
-                var tableSatVal = "Satisfied (F, ⊥)";
-                break;
-            case "0010":
-                var tableSatVal = "Partially Satisfied (P, ⊥)";
-                break;
-            case "0100":
-                var tableSatVal = "Partially Denied (⊥, P)";
-                break;
-            case "1100":
-                var tableSatVal = "Denied (⊥, F)";
-                break;
-            case "unknown":
-                var tableSatVal = "(no value)";
-                break;
-            default:
-                var tableSatVal =  "error";   
-                break;
+        tempResults2 = $.extend(true, {}, myInputJSObject.results);
+        // Sets the solution array to empty so only correct solutions can be added
+        for (var solutionArray in originalResults.get('allSolutions')) {
+            tempResults2.get('allSolutions')[solutionArray] = [];
         }
-        // Appends filter information to the intention filter table
-        // TODO: add an id to each remove button so you can remove one filter but not all of them
-        $(".inspectorFilterTable").append('<tr class="tabelData"><td class="tableData">' + $(".cell-attrs-text").val() + '</td><td class="tableData">' + tableSatVal + '</td><td class="tableData"><button class="table-btn-small">Remove</button></td></tr>');
-        console.log(analysis.intentions)
-        console.log(originalResults)                
 
+        // filterIntentionArray = [[id, [sat vals]], [id, [sat vals]], ...]
+        // If empty, create new array and push filter
+        if(filterIntentionList.length != 0) {
+            // Iterate over the filters and check if the selected intention already has a filter applied
+            for (var i = 0; i < filterIntentionList.length; i++) {
+                if (filterIntentionList[i][0].includes(selectedIntention)) {
+                    // Push new filter sat value to already existing array of filter sat vals
+                    filterIntentionList[i][1].push(desiredSatVal);
+                } else if (i == filterIntentionList.length-1) {
+                    // If the selected intention does not have a filter applied push new entry to array
+                    filterIntentionList.push([selectedIntention, [desiredSatVal]]);  
+                }
+            }
+        } else {
+            filterIntentionList = [];
+            filterIntentionList.push([selectedIntention, [desiredSatVal]]);
+        }
+
+        // Iterates over every key/value pair in the hashmap
+        for (var solutionArray in originalResults.get('allSolutions')) {
+            // Iterates over all of the solutions in the key/value pair 
+            for (var solution_index = 0; solution_index < originalResults.get('allSolutions')[solutionArray].length; solution_index++) {
+                // Iterate over array of filters
+                for (var i = 0; i < filterIntentionList.length; i++) {
+                    // Finds the element index of the intention by comparing intention id
+                    for (var element_index = 0; element_index < analysis.intentions.length; element_index++) {
+                        if (analysis.intentions[element_index].attributes.id == filterIntentionList[i][0]) {
+                            var elementNum = element_index;
+                        }
+                    }
+                    // Find the sat value of the solution at that element index 
+                    var value = originalResults.get('allSolutions')[solutionArray][solution_index][elementNum];
+                    
+                    // If the solution value is in the array of sat values and
+                    // This is the last filter in the array (AKA the solution is true for every filter)
+                    if (filterIntentionList[i][1].includes(value) && i == filterIntentionList.length-1) {
+                        
+                        // Push the solution to tempResults2
+                        tempResults2.get('allSolutions')[solutionArray].push(originalResults.get('allSolutions')[solutionArray][solution_index])
+                                       
+                    } else if (!filterIntentionList[i][1].includes(value)) {
+                        // If the solution value is not in the array of sat values break for loop
+                        break;
+                    }
+                }
             }
 
-// Set the new results with filters as the analysis object
-myInputJSObject.results = tempResults;
-// Creates array with all Solutions from new hashmap
-combineAllSolutions();
-renderNavigationSidebar();
+        $("body").removeClass("spinning"); // Remove spinner from cursor              
 
-        
+        }
+
+        // Adds the filter information to html
+        for(var i = 0; i < filterIntentionList.length; i++) {
+            for(var j = 0; j < filterIntentionList[i][1].length; j++) {
+
+                // Finds corrects text sat value for table
+                switch (filterIntentionList[i][1][j]) {
+                    case "0000":
+                        var tableSatVal = "None (⊥, ⊥)";
+                        break;
+                    case "0011":
+                        var tableSatVal = "Satisfied (F, ⊥)";
+                        break;
+                    case "0010":
+                        var tableSatVal = "Partially Satisfied (P, ⊥)";
+                        break;
+                    case "0100":
+                        var tableSatVal = "Partially Denied (⊥, P)";
+                        break;
+                    case "1100":
+                        var tableSatVal = "Denied (⊥, F)";
+                        break;
+                    case "unknown":
+                        var tableSatVal = "(no value)";
+                        break;
+                    default:
+                        var tableSatVal =  "error";   
+                        break;
+                }
+                // Appends filter information to the intention filter table
+                // TODO: add an id to each remove button so you can remove one filter but not all of them
+                $(".inspectorFilterTable").append('<tr class="tabelData"><td class="tableData">' + filterIntentionList[i][0] + '</td><td class="tableData">' + tableSatVal + '</td><td id = remove-btn-' + '1' + ' class="tableData remove-btn"><button class="table-btn-small" style="font-size:15px"><i class="fa fa-trash"></i></button></td>'); 
+        }    
+    }
+            
+    // Set the new results with filters as the analysis object
+    myInputJSObject.results = tempResults2;
+    // Creates array with all Solutions from new hashmap
+    combineAllSolutions();
+    renderNavigationSidebar();
+    }
+
+    /*
+    *
+    */
+    function removeIntentionFilter(event) {
+        // filterIntentionList.push([selectedIntention, desiredSatVal]);
+        console.log("hey")
+        console.log(event)
+        console.log(this.id, this.innerHTML);
+
+
+
+        // for (var filter in filterIntentionList) {
+
+        //     console.log(filter)
+        //     if (selectedIntention == ) {
+
+        //     }
+        // }
 
     }
 
