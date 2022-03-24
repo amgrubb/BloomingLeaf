@@ -245,13 +245,25 @@
                     render_pagination_values(currentPage, i);
                 }
             } else {
-                if (currentPage + 3 < nextSteps_array_size) {
-                    for (i = currentPage - 3; i < currentPage + 3; i++) {
-                        render_pagination_values(currentPage, i);
+                if (currentPage < 100) {
+                    if (currentPage + 3 < nextSteps_array_size) {
+                        for (i = currentPage - 3; i < currentPage + 3; i++) {
+                            render_pagination_values(currentPage, i);
+                        }
+                    } else {
+                        for (i = currentPage - 3; i < nextSteps_array_size; i++) {
+                            render_pagination_values(currentPage, i);
+                        }
                     }
                 } else {
-                    for (i = currentPage - 3; i < nextSteps_array_size; i++) {
-                        render_pagination_values(currentPage, i);
+                    if (currentPage + 2 < nextSteps_array_size) {
+                        for (i = currentPage - 2; i < currentPage + 3; i++) {
+                            render_pagination_values(currentPage, i);
+                        }
+                    } else {
+                        for (i = currentPage - 3; i < nextSteps_array_size; i++) {
+                            render_pagination_values(currentPage, i);
+                        }
                     }
                 }
             }
