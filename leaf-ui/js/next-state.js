@@ -60,6 +60,7 @@
             autoResizePaper: true,
             paper: analysis.paper
         });
+        $('#paper').css("right", "0px");
         $('#paper').append(analysis.paperScroller.render().el);
         analysis.paperScroller.center();
 
@@ -186,9 +187,15 @@
         updatePagination(currentPage);
         updateNodesValues(currentPage);
 
-        // TODO: implement this back in eventually
-        // EVONextState.setColorBlindFromPrevWindow();
-        // EVONextState.refresh();
+        renderEVO();
+    }
+
+    /**
+     * Is called whenever the slider changes and when the sidebar is rendered.
+     */
+    function renderEVO() {
+        EVONextState.setColorBlindFromPrevWindow();
+        EVONextState.setSliderOptionNextState();
     }
 
     /**
