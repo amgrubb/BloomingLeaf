@@ -70,6 +70,7 @@
             autoResizePaper: true,
             paper: analysis.paper
         });
+        $('#paper').css("right", "0px");
         $('#paper').append(analysis.paperScroller.render().el);
         
         // Unable to interact with textboxes
@@ -835,13 +836,16 @@
                     filterIntentionList[i][1].push(desiredSatVal);
                 } else if (i == filterIntentionList.length-1) {
                     // If the selected intention does not have a filter applied push new entry to array
-                    filterIntentionList.push([selectedIntention, [desiredSatVal]]);  
+                    filterIntentionList.push([selectedIntention, [desiredSatVal]]);
+                    // Break once added so for loop does not iterate over new entry 
+                    break; 
                 }
             }
         } else {
             filterIntentionList = [];
             filterIntentionList.push([selectedIntention, [desiredSatVal]]);
         }
+        console.log(filterIntentionList)
 
         // Iterates over every key/value pair in the hashmap
         for (var solutionArray in originalResults.get('allSolutions')) {
