@@ -70,6 +70,7 @@
             autoResizePaper: true,
             paper: analysis.paper
         });
+        $('#paper').css("right", "0px");
         $('#paper').append(analysis.paperScroller.render().el);
         
         // Unable to interact with textboxes
