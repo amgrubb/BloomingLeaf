@@ -38,6 +38,17 @@ class EVO {
         "1110": "#ca2c92",
         "1111": "#0D0221"
     };
+    static colorVisDict2 = {
+        "0000": "#bdaead",
+        "0011": "#d11a2d",
+        "0010": "#e16c96",
+        "0100": "#6e8b74",
+        "0110": "#ffd111",
+        "0111": "#862617",
+        "1100": "#1a6840",
+        "1110": "#887322",
+        "1111": "#000000"
+    };
 
     /**
      * Defines order of evaluations for filling intentions by %
@@ -73,6 +84,8 @@ class EVO {
     static curTimePoint = 0;
     // User selected slider option
     static sliderOption = 0;
+    // User selected color palette
+    static paletteOption = 1;
     // Whether color blind mode is activated
     static isColorBlindMode = false;
 
@@ -147,7 +160,6 @@ class EVO {
         $('#modelingSlider').css("display", "none");
         $('#analysisSlider').css("display", "");
         document.getElementById("colorResetAnalysis").value = EVO.sliderOption;
-
         var percentPerEvaluation = 1.0 / this.numTimePoints;
 
         // Calculate evaluation percentages and other data for ColorVis
@@ -464,7 +476,12 @@ class EVO {
         if (EVO.isColorBlindMode) {
             return EVO.colorVisDictColorBlind[intentionEval];
         }
-        return EVO.colorVisDict[intentionEval];
+        if (EVO.paletteOption == 1) {
+            return EVO.colorVisDict[intentionEval];
+        }
+        if (EVO.paletteOption == 2) {
+            return EVO.colorVisDict2[intentionEval];
+        }
     }
 
     /**

@@ -835,6 +835,15 @@ paper.on("link:options", function (cell) {
         EVO.toggleColorBlindMode(false, selectResult);
     });
 
+    $('#color-palatte-1').on('click', function () { // Activates colorblind mode
+        EVO.paletteOption = 1;
+        EVO.refresh(undefined);
+    });
+
+    $('#color-palatte-2').on('click', function () { // Activates colorblind mode
+        EVO.paletteOption = 2;
+        EVO.refresh(undefined);
+    });
     /**
      * Source:https://www.w3schools.com/howto/howto_js_rangeslider.asp 
      * Two option modeling mode slider
