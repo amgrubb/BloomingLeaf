@@ -82,14 +82,29 @@
         <button id="analysis-btn" class="green-btn btn model-only" style="border-radius:none;">Analysis</button>
         <button id="modeling-btn" class="red-btn btn analysis-only" style="display: none;">Modeling</button>
 
+        <!-- EVO dropdown menu for palette choices-->
+        <div class="dropdown">
+            <div class="btn" style="display: inline-block">EVO</div>
+            <div class="dropdown-toolbar">
+                <a id="color-palatte-1">Palette 1</a>
+                <a id="color-palatte-2">Palette 2</a>
+            </div>
+        </div>
         <!-- modeling mode slider: simple off/on option-->
-
         <div class="EVO-whole-button" id="modelingSlider">
             <!-- slider div -->
-            <input type="range" min="0" max="1" value="0" class="EVO-slider" id="colorReset"> <!-- makes slider -->
-            <p id="top-label" style="display: inline-block">EVO</p> <!-- sat slider label -->
-            <p class="on-off" class="analysis-only"> Off &ensp; On</p> <!--  on/off label -->
-        </div>
+            <input type="range" min="0" max="1" value="0" class="EVO-slider" id="colorReset">
+            <!-- makes slider -->
+            <p class="on-off" class="analysis-only"> Off &ensp; On</p>
+            <!--  on/off label -->
+            <!--</div>
+                                                                                                                                                                                                                                    <div class="dropdown">
+                                                                                                                                                                                                                                        <div class="btn">EVO</div>
+                                                                                                                                                                                                                                        <div class="dropdown-toolbar">
+                                                                                                                                                                                                                                            <a id="color-palatte-1">Palatte 1</a>
+                                                                                                                                                                                                                                            <a id="color-palatte-2">Palatte 2</a>
+                                                                                                                                                                                                                                        </div>-->
+            </div>
 
 
         <!-- Analysis mode slider: option to fill by percentage of timepoints -->

@@ -623,7 +623,7 @@ select > .select-placeholder {
   cursor: pointer;
   display: inline-block;
   height: 35px;
-  width: 100px;
+  width: 50px;
   margin-top: 0px;
   margin-bottom: -20px;
   padding-top: 0px;
@@ -645,7 +645,7 @@ select > .select-placeholder {
 }
 
 #modelingSlider {
-  width: 100px;
+  width: 65px;
 }
 
 #analysisSlider{
