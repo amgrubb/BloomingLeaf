@@ -835,12 +835,12 @@ paper.on("link:options", function (cell) {
         EVO.toggleColorBlindMode(false, selectResult);
     });
 
-    $('#color-palatte-1').on('click', function () { // Activates colorblind mode
+    $('#color-palette-1').on('click', function () { // Activates colorblind mode
         EVO.paletteOption = 1;
         EVO.refresh(undefined);
     });
 
-    $('#color-palatte-2').on('click', function () { // Activates colorblind mode
+    $('#color-palette-2').on('click', function () { // Activates colorblind mode
         EVO.paletteOption = 2;
         EVO.refresh(undefined);
     });

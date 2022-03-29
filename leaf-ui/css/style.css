@@ -616,8 +616,8 @@ select > .select-placeholder {
 }
 #colorResetAnalysis {
   position: relative;
-  top: -6px;
-  width: 92px; /* 92 */
+  top: -20px;
+  width: 120px; /* 120 */
 }
 .EVO-whole-button {
   cursor: pointer;
