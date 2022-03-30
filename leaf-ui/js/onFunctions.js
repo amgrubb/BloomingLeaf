@@ -835,14 +835,21 @@ paper.on("link:options", function (cell) {
         EVO.toggleColorBlindMode(false, selectResult);
     });
 
-    $('#color-palette-1').on('click', function () { // Activates colorblind mode
+    $('#color-palette-1').on('click', function () { // Choose color palettes
         EVO.paletteOption = 1;
         EVO.refresh(undefined);
     });
 
-    $('#color-palette-2').on('click', function () { // Activates colorblind mode
+    $('#color-palette-2').on('click', function () { // Choose color palettes
         EVO.paletteOption = 2;
         EVO.refresh(undefined);
+    });
+
+    $('#customerized-color-palette').on('click', function () { // Choose color palettes
+        EVO.paletteOption = 3;
+        //render a table
+        $('#color-input').css("display", "");
+        //EVO.refresh(undefined);
     });
     /**
      * Source:https://www.w3schools.com/howto/howto_js_rangeslider.asp 

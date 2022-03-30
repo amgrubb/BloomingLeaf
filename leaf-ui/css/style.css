@@ -629,7 +629,9 @@ select > .select-placeholder {
   padding-top: 0px;
   padding-bottom: 0px;
 }
-
+#color-input{
+  top: 20px;
+}
 /* portion of the code from: https://www.w3schools.com/howto/howto_js_rangeslider.asp */
 .EVO-slider {
   -webkit-appearance: none;  /* Override default CSS styles */
