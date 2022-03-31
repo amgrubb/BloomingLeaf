@@ -916,8 +916,8 @@
                     name = element.attr(".name").text
                 }
 
-                $(".inspectorFilterTable").append('<tr class="tableData"><td class="tableData">' + name + '</td><td class="tableData">' + tableSatVal + '</td><td id = ' + selectedIntention + ' class="tableData remove-btn"><button class="table-btn-small" style="font-size:15px"><i class="fa fa-trash" style="color:white"></i></button></td>'); 
-                //$(".inspectorFilterTable").append('<tr class="tableData"><td class="tableData">' + filterIntentionList[i][0] + '</td><td class="tableData">' + tableSatVal + '</td><td id = remove-btn-' + '1' + ' class="tableData remove-btn"><button class="table-btn-small" style="font-size:15px"><i class="fa fa-trash" style="color:white"></i></button></td>'); 
+                // $(".inspectorFilterTable").append('<tr class="tableData"><td class="tableData">' + name + '</td><td class="tableData">' + tableSatVal + '</td><td id = ' + selectedIntention + ' class="tableData remove-btn"><button class="table-btn-small" style="font-size:15px"><i class="fa fa-trash" style="color:white"></i></button></td>'); 
+                $(".inspectorFilterTable").append('<tr class="tableData" id=' + selectedIntention + '><td class="tableData">' + name + '</td><td class="tableData">' + tableSatVal + '</td><td class="tableData remove-btn"><button class="table-btn-small" style="font-size:15px"><i class="fa fa-trash" style="color:white"></i></button></td>'); 
         }    
     }
             
@@ -932,39 +932,62 @@
     *
     */
     function removeIntentionFilter() {
-        // desiredSatVal = $("#sat-value").val();
-        //console.log(event)
-        //console.log(this.id, this.innerHTML);
         console.log(filterIntentionList);
 
         $(".inspectorFilterTable").on('mouseup', '.table-btn-small', function () { 
             $(this).closest('tr').remove(); 
-            console.log(this.closest('tr'));
-            // var inspectorFilterTable = document.getElementsByClassName('inspectorFilterTable')[0];
-            // console.log(inspectorFilterTable);
-            var intentionToBeRemoved = this.closest('tr');
+
+            var intentionToBeRemoved = $(this).closest('tr');
             console.log(intentionToBeRemoved);
+            var selectedId = intentionToBeRemoved.attr('id');
+            console.log(selectedId);
+            var desiredSatVal = intentionToBeRemoved.find('td:eq(1)').text();
+            console.log(desiredSatVal);
+
+            // Finds corrects text sat value for table
+            switch (desiredSatVal) {
+                case "None (⊥, ⊥)":
+                    desiredSatVal = "0000";
+                    break;
+                case "Satisfied (F, ⊥)":
+                    desiredSatVal = "0011";
+                    break;
+                case "Partially Satisfied (P, ⊥)":
+                    desiredSatVal = "0010";
+                    break;
+                case "Partially Denied (⊥, P)":
+                    desiredSatVal = "0100";
+                    break;
+                case "Denied (⊥, F)":
+                    desiredSatVal = "1100";
+                    break;
+                case "(no value)":
+                    desiredSatVal = "unknown";
+                    break;
+                default:
+                    desiredSatVal =  "error";   
+                    break;
+            }
+            console.log(desiredSatVal);
+
+            // filterIntentionArray = [[id, [sat vals]], [id, [sat vals]], ...]
+            for (var i = 0; i < filterIntentionList.length; i++) {
+                if (selectedId == filterIntentionList[i][0]) {
+                    // Remove that particular sat value
+                    var index = filterIntentionList[i][1].indexOf(desiredSatVal);
+                    filterIntentionList[i][1].splice(index, 1);
+                    console.log(filterIntentionList[i]);
+                    // if the sat value array is empty, remove the filter from the table
+                    // altogether
+                    if (filterIntentionList[i][1].length == 0) {
+                        filterIntentionList.splice(i, 1);
+                    }
+                    console.log(filterIntentionList)
+                }
+            }
         })
 
-        // filterIntentionArray = [[id, [sat vals]], [id, [sat vals]], ...]
-        for (var i = 0; i < filterIntentionList.length; i++) {
-            // var selectedId = grab the intention ID from that particular td tag
-            if (selectedId == filterIntentionList[i][0]) {
-                //console.log(selectedIntention)
-                //console.log(filterIntentionList[i][0])
-
-                // Remove that particular sat value
-                filterIntentionList[i][1].splice(desiredSatVal, 1);
-                console.log(filterIntentionList[i]);
-                // if the sat value array is empty, remove the filter from the table
-                // altogether
-                if (filterIntentionList[i][1].length == 0) {
-                    filterIntentionList.splice(filterIntentionList[i]);
-                }
-                console.log(filterIntentionList)
-            }
-        }
-
+        
     }
 
     /*  This function should get the current state in the screen and 
