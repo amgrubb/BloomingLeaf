@@ -68,6 +68,12 @@ function loadFromObject(obj) {
 	}
 }
 
+/** 
+ * Loads old version of object obj by creating an actor, link, or element.
+ * Updates maxAbsTime of old version.
+ * 
+ * @param {Object} obj 
+ */
 function loadOldVersion(obj) {
 	graph.fromJSON(obj.graph);
 	var cells = graph.getCells();
@@ -85,6 +91,7 @@ function loadOldVersion(obj) {
 	graph.set("maxAbsTime", obj.model.maxAbsTime);
 	loadOldConfig(obj.analysisRequest)
 }
+
 /**
  * Load the old actors into ActorBBM
  */
