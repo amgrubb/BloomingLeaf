@@ -34,8 +34,8 @@ reader.onload = function () {
 		loadOldVersion(result)
 	}
 	
-	//var graphtext = JSON.stringify(graph.toJSON());
-	//document.cookie = "graph=" + graphtext;
+	var graphtext = JSON.stringify(graph.toJSON());
+	document.cookie = "graph=" + graphtext;
 }
 
 /**
@@ -82,9 +82,9 @@ function loadOldVersion(obj) {
 			loadOldElement(cell, obj.model.intentions, obj.model.constraints, obj.analysisRequest.userAssignmentsList); 
 		}
 	}
-	// TODO: determine if Config needs to be modified as well
+	graph.set("maxAbsTime", obj.model.maxAbsTime);
+	loadOldConfig(obj.analysisRequest)
 }
-
 /**
  * Load the old actors into ActorBBM
  */
@@ -119,8 +119,11 @@ function loadOldLinks(cell, arr) {
 			var oldLink = arr[i];
 			if (oldLink.postType != null) {
 				oldEvolving = true; 
-				var oldPostType = oldLink.postType.toLowerCase();
-			 }else {
+				var oldPostType = oldLink.postType;
+				if ((oldPostType == 'AND') || (oldPostType == 'OR') || (oldPostType == 'NO')) {
+					oldPostType = oldLink.postType.toLowerCase();
+				}
+			 } else {
 				 oldEvolving = false;
 				}
 		}
@@ -128,7 +131,7 @@ function loadOldLinks(cell, arr) {
 
 	var oldLinkType = oldLink.linkType;
 	// Modify the linktypes into formats that the current Linkinspector recognizes
-	if (!((oldLinkType == 'NBT') || (oldLinkType == 'NBD'))){
+	if ((oldLinkType == 'AND') || (oldLinkType == 'OR') || (oldLinkType == 'NO')){
 		oldLinkType = oldLinkType.toLowerCase();
 		if (oldLinkType == 'no') {
 			cell.label(0, { position: 0.5, attrs: { text: { text: 'no' } } });
@@ -140,6 +143,7 @@ function loadOldLinks(cell, arr) {
 	// Reassign linkBBM to cell
 	var linkBBM = new LinkBBM({ displayType: oldDisplayType, linkType: oldLinkType, postType: oldPostType, absTime: oldLink.absoluteValue, evolving: oldEvolving }); 
 	cell.set('link', linkBBM);
+	console.log(linkBBM)
 }
 
 /**
@@ -164,7 +168,7 @@ function loadOldElement(cell, oldElements, constraintList, userAssignmentsList) 
 			oldConstraints.push(constraintList[i]); 
 		}
 	}
-
+	// Find the old userevaluation information
 	for ( var i = 0; i < userAssignmentsList.length; i++) {
 		if (cell.get('nodeID') == userAssignmentsList[i].intentionID){
 			oldUserEval = userAssignmentsList[i];
