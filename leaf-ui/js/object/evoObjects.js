@@ -49,6 +49,17 @@ class EVO {
         "1110": "#887322",
         "1111": "#000000"
     };
+    static colorVisDict3 = {
+        "0000": "#d3d3d3",
+        "0011": "#39ff14",
+        "0010": "#00ced1",
+        "0100": "#035096",
+        "0110": "#008ecc",
+        "0111": "#ba0098",
+        "1100": "#616161",
+        "1110": "#900091",
+        "1111": "#790604"
+    };
 
     /**
      * Defines order of evaluations for filling intentions by %
@@ -481,6 +492,9 @@ class EVO {
         }
         if (EVO.paletteOption == 2) {
             return EVO.colorVisDict2[intentionEval];
+        }
+        if (EVO.paletteOption == 3) {
+            return EVO.colorVisDict3[intentionEval];
         }
     }
 
