@@ -25,6 +25,7 @@ class IntentionColorVis {
 
 /**
  * Colors the nodes based on the different EVO types 
+ * This order is created intentionally for the frontend. Please DO NOT change the order
  */
 class EVO {
     static colorVisDict = {

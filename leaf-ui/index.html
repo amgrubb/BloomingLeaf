@@ -92,7 +92,8 @@
                 <a id="customerized-color-palette">My Palette</a>
                 </div>
                 </div>
-                <div id="color-input" class="modal" style="display: none;">
+        <!-- EVO Create My Palette Table-->
+                <div id="color-input" class="modal" style="display: none;width: 1000px;">
                     <div id="page-mask"></div>
                     <div class="modal-content">
                         <div class="modal-header">
@@ -100,8 +101,44 @@
                             <h2>Create My Palette</h2>
                         </div>
                         <div class="modal-body">
-                            <h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Satisfied(F,F)</h3>
-                            <input type="text" id="my-satisfied" class="analysis-input" type="number" />
+                            <h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Initial Satisfied Value</h3>
+                            <table id="initial-satisfied-list" class="abs-table">
+                                <tbody>
+                                    <tr>
+                                        <th>None (⊥, ⊥)</th>
+                                        <th>Satisfied (F, ⊥)</th>
+                                        <th>Partially Satisfied (P, ⊥)</th>
+                                        <th>Partially Denied (⊥, P)</th>
+                                        <th>Denied (⊥, F)</th>
+                            
+                                    </tr>
+                                    <tr>
+                                        <td><input type="text" id="my-None" class="analysis-input" type="number" /></td>
+                                        <td><input type="text" id="my-Satisfied" class="analysis-input" type="number" /></td>
+                                        <td><input type="text" id="my-PS" class="analysis-input" type="number" /></td>
+                                        <td><input type="text" id="my-PD" class="analysis-input" type="number" /></td>
+                                        <td><input type="text" id="my-Denied" class="analysis-input" type="number" /></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Conflict Satisfied Value</h3>
+                            <table id="conflict-satisfied-list" class="abs-table">
+                                <tbody>
+                                    <tr>
+                                        <th>(P, P)</th>
+                                        <th>(F, P)</th>
+                                        <th>(P, F)</th>
+                                        <th>(F, F)</th>
+                            
+                                    </tr>
+                                    <tr>
+                                        <td><input type="text" id="my-PP" class="analysis-input" type="number" /></td>
+                                        <td><input type="text" id="my-FP" class="analysis-input" type="number" /></td>
+                                        <td><input type="text" id="my-PF" class="analysis-input" type="number" /></td>
+                                        <td><input type="text" id="my-FF" class="analysis-input" type="number" /></td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                     </div>
