@@ -834,6 +834,8 @@
                 if (filterIntentionList[i][0].includes(selectedIntention)) {
                     // Push new filter sat value to already existing array of filter sat vals
                     filterIntentionList[i][1].push(desiredSatVal);
+                    // Break once added so else if is not run
+                    break;
                 } else if (i == filterIntentionList.length-1) {
                     // If the selected intention does not have a filter applied push new entry to array
                     filterIntentionList.push([selectedIntention, [desiredSatVal]]);
@@ -970,21 +972,25 @@
             }
             console.log(desiredSatVal);
 
-            // filterIntentionArray = [[id, [sat vals]], [id, [sat vals]], ...]
+            // filterIntentionList = [[id, [sat vals]], [id, [sat vals]], ...]
+            console.log(filterIntentionList)
             for (var i = 0; i < filterIntentionList.length; i++) {
-                if (selectedId == filterIntentionList[i][0]) {
-                    // Remove that particular sat value
-                    var index = filterIntentionList[i][1].indexOf(desiredSatVal);
-                    filterIntentionList[i][1].splice(index, 1);
-                    console.log(filterIntentionList[i]);
-                    // if the sat value array is empty, remove the filter from the table
-                    // altogether
-                    if (filterIntentionList[i][1].length == 0) {
+                if(selectedId == filterIntentionList[i][0]) {
+                    // If there is only one filter applied to intention, delete whole entry
+                    if(filterIntentionList[i][1].length == 1) {
                         filterIntentionList.splice(i, 1);
+                        console.log(filterIntentionList)
+                        break;
+                    } else {
+                        var index = filterIntentionList[i][1].indexOf(desiredSatVal);
+                        filterIntentionList[i][1].splice(index, 1);
+                        console.log(filterIntentionList[i]);
+                        break;
                     }
-                    console.log(filterIntentionList)
                 }
             }
+            // We might want to just call filtering function here to set number of correct solutions again
+            console.log(filterIntentionList)
         })
 
         
