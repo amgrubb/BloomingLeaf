@@ -42,7 +42,7 @@
     <div class="name">
         <p id="name">BloomingLeaf</p>
     </div>
-    <div class="toolbar">
+    <div class="toolbar" style="height: 45px;">
         <button id="btn-zoom-in" class="btn">Zoom In</button>
         <button id="btn-zoom-out" class="btn">Zoom Out</button>
 
@@ -64,6 +64,39 @@
             </div>
     </div>
 
+    <div id="paper">
+    </div>
+
+    <div class="inspector" id="right-inspector2">
+        <label>Intention Filter</label>
+        <label style="font-size: 15px;">Node Name:</label>
+        <textarea disabled class="cell-attrs-text" placeholder="untitled"></textarea>
+        <label style="font-size: 15px;"> Current Sat Value:</label>
+        <textarea disabled style = "margin-top: 10px;" class="cell-attrs-text2" placeholder="N/A"></textarea>
+        <br>
+        <label style="font-size: 15px;">Satisfaction Value:</label>
+        <select id="sat-value">
+        <option value="(no value)"> (no value) </option>
+        <option value="0000"> None (⊥, ⊥)</option>
+        <option value="0011"> Satisfied (F, ⊥)</option>
+        <option value="0010"> Partially Satisfied (P, ⊥) </option>
+        <option value="0100"> Partially Denied (⊥, P)</option>
+        <option value="1100"> Denied (⊥, F)</option>
+        </select>
+        <button style="margin-top:15px;" id="filter-apply" class="inspector-btn blue-btn">Apply</button>
+        <div class="inspectorFilterNames">
+            <text class = "inspectorFilterNames">Applied Intention Filters</text>
+            <table class = inspectorFilterTable>
+                <tr class ="tableHeading">
+                    <th class="tableHeading">Intention Name</th>
+                    <th class="tableHeading">Satisfaction Value</th>
+                    <th class="tableHeading">Remove</th>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <br>
+
     <div id="navigation" class="left-panel" style="background-color: #333;">
         <br>
         <label style="font-size: 13px;"><i>Number of States</i></label>
@@ -72,7 +105,7 @@
         <input id="currentPage" type="hidden" value="">
         <div style="display: inline-block; margin-left: 6px;">
             <input id="requiredState" type="text" placeholder="Digit desired page"
-                style="width: 150px; padding: 3px;" />
+                style="width: 140px; padding: 2px;" />
             <button class="inspector-btn-small">Go</button>
         </div>
         <br>
@@ -111,40 +144,6 @@
         <button id="exploreNextStates" class="inspector-btn">Explore Next States</button>
         <button id="close" class="inspector-btn">Close</button>
     </div>
-
-    <div id="paper">
-    </div>
-
-    <div class="inspector" id="right-inspector2">
-        <br>
-        <label>Intention Filter</label>
-        <label style="font-size: 15px;">Node Name:</label>
-        <textarea disabled class="cell-attrs-text" placeholder="untitled"></textarea>
-        <label style="font-size: 15px;"> Current Sat Value:</label>
-        <textarea disabled style = "margin-top: 10px;" class="cell-attrs-text2" placeholder="N/A"></textarea>
-        <br>
-        <label style="font-size: 15px;">Satisfaction Value:</label>
-        <select id="sat-value">
-        <option value="(no value)"> (no value) </option>
-        <option value="0000"> None (⊥, ⊥)</option>
-        <option value="0011"> Satisfied (F, ⊥)</option>
-        <option value="0010"> Partially Satisfied (P, ⊥) </option>
-        <option value="0100"> Partially Denied (⊥, P)</option>
-        <option value="1100"> Denied (⊥, F)</option>
-        </select>
-        <button style="margin-top:15px;" id="filter-apply" class="inspector-btn blue-btn">Apply</button>
-        <div class="inspectorFilterNames">
-            <text class = "inspectorFilterNames">Applied Intention Filters</text>
-            <table class = inspectorFilterTable>
-                <tr class ="tableHeading">
-                    <th class="tableHeading">Intention Name</th>
-                    <th class="tableHeading">Satisfaction Value</th>
-                    <th class="tableHeading">Remove</th>
-                </tr>
-            </table>
-        </div>
-    </div>
-    <br>
 
     <script type="text/javascript">
         SVGElement.prototype.getTransformToElement = SVGElement.prototype.getTransformToElement || function (toElement) {

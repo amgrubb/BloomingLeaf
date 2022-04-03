@@ -8,7 +8,7 @@
 
 body {
   user-select: none;
-  font-family: Arial;
+  font-family: 'Trebuchet MS';
 }
 
 /* Disable pointer events */
@@ -36,7 +36,7 @@ body {
   height: 40px;
   text-align: center;
   margin: 0;
-  padding-top: 8px;
+  padding-top: 10px;
   background-color: #333;
   color: #CCFFCC;
   font-size: 1.4em;
@@ -95,14 +95,19 @@ body {
 .left-panel{
   position: absolute;
   left: 0;
-  top: 40px;
+  top: 45px;
   bottom: 0;
-  width: 200px;
+  width: 205px;
   overflow-y: scroll;
   background-color: #f9f9f9;
   box-shadow: 2px 0px 16px 0px rgba(0,0,0,0.2);
   /* Should be less than the modal pop-ups. TODO: Verify function with next state analysis. */ 
   z-index: 0;
+}
+
+/* Hides the left panel scroll bar */
+.left-panel::-webkit-scrollbar {
+  display: none;
 }
 
 .left-panel label {
@@ -118,17 +123,16 @@ body {
   position: absolute;
   right: 0px;
   top: 40px;
+  bottom: 0px;
   width: 260px;
-  height: 100%;
-
+  overflow-y: scroll;
   background-color: #333;
   color: #bcbcbc;
   text-shadow: 0 -1px 0 #000;
   text-align: center;
 }
 
-.inspector input,
-.inspector textarea {
+.inspector input, .inspector textarea {
    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.1),0px 0 0 1px rgba(255,255,255,0.1);
    border: 1px solid black;
    height: 20px;
@@ -142,8 +146,28 @@ body {
   display: block;
 }
 
+/* Customizes the right scroller */
+.inspector::-webkit-scrollbar-track
+{
+	border-radius: 10px;
+	background-color: #333;
+}
+
+.inspector::-webkit-scrollbar
+{
+	width: 10px;
+	background-color: #333;
+}
+
+.inspector::-webkit-scrollbar-thumb
+{
+	border-radius: 10px;
+  height: 20px;
+	background-color: #AAAAAA;
+}
+
 #sat-value {
-  background-color: rgba(36, 150, 255, 1);
+  background-color: rgb(108 114 120);
   color: white;
   font-size: 11px;
   font-weight: 200;
@@ -155,6 +179,7 @@ body {
 }
 
 .inspector-btn-small {
+  box-shadow: inset 0 -2px #dad8d8; /* Adds shadow  */
   position: relative;
   vertical-align: top;
   width: 30px;
@@ -183,10 +208,32 @@ body {
   cursor: pointer;
   border-radius: 10px;
   margin-top: 6px;
+  margin-left: 10px;  /* Aligns the 3 buttons at the bottom of the left panel to the center */
+  margin-right: 10px;
 }
 
+/* Add color overlay over the 3 buttons */
+.inspector-btn:hover {
+  background: #fffefe;
+}
+
+/*When the 3 buttons are clicked on a click effect happens */
+.inspector-btn:active {
+  background-color: #fffefe;
+  box-shadow: inset 0 -2px #dad8d8;
+  transform: translateY(2px);
+}
+
+/* Go button */
 .inspector-btn-small:hover {
   background: #fffefe;
+}
+
+/* Add color overlay over the go buttons and click effect */
+.inspector-btn-small:active {
+  background-color: #fffefe;
+  box-shadow: inset 0 -2px #dad8d8;
+  transform: translateY(2px);
 }
 
   /* Trash btn */
@@ -201,9 +248,18 @@ body {
   border-radius: 5px;
 } 
 
+/* Add color overlay over the trash buttons and click effect */
 .table-btn-small:hover {
-  background: rgb(66, 66, 66);
+  background: #424242;
 }
+
+/*Click effect */
+.table-btn-small:active {
+  background-color: #424242;
+  box-shadow: inset 0 -2px #292929;
+  transform: translateY(2px);
+}
+
 .blue-btn{
   background-color: rgba(36, 150, 255, 1) !important;
   -webkit-box-shadow: inset 0 -2px rgba(29, 122, 208, 1);
@@ -217,6 +273,14 @@ body {
 
 #filter-apply {
   color: white;
+  font-size: 15px;
+}
+
+/* Sets shadow for blue button right panel */
+#filter-apply:active {
+  background-color: rgba(36, 150, 255, 1);
+  box-shadow: inset 0 -2px rgba(29, 122, 208, 1);
+  transform: translateY(2px);
 }
 
 /* Halo */
@@ -238,7 +302,7 @@ body {
 .toolbar {
    position: absolute;
    top: 0px;
-   left: 201px;
+   left: 200px;
    right: 0;
    padding-left: 0px;
    z-index: 1;
@@ -247,11 +311,12 @@ body {
 }
 
 /* what's down here*/
+/* Buttons on the tool bar: zoom out, zoom in, font size, evo slider*/
 .btn {
-   padding: 5px 10px;
+   padding: 7px 10px;
    line-height: 30px;
    margin: 0;
-   margin-left: -5px;
+   margin-left: 4px;
    cursor: pointer;
 }
 
@@ -370,19 +435,49 @@ body {
 /* end of representive slider styling */
 
 .inspectorFilterNames{
-  padding-top: 14px;
+  padding-top: 20px;
 }
 
 .tableHeading{
-  /*display: block;*/
+  background-color: rgb(67, 67, 67); 
   text-align: center;
   font-size: 12px;
   height: 15px;
-  color: #bcbcbc;
+  color: white;
   padding: 4px;
 }
 
+
+.inspectorFilterTable {
+  margin: 15px 5px 0px 15px;
+  display:block;
+  height:300px;
+  overflow:auto;
+}
+
+/* Customizes the tables scroller */
+.inspectorFilterTable::-webkit-scrollbar-track
+{
+	border-radius: 10px;
+	background-color: rgb(74, 74, 74);
+}
+
+.inspectorFilterTable::-webkit-scrollbar
+{
+	width: 7px;
+	background-color: #333;
+}
+
+.inspectorFilterTable::-webkit-scrollbar-thumb
+{
+	border-radius: 10px;
+  height: 20px;
+	background-color: #ffffff;
+}
+
 .tableData{
+  border: 1px solid;
+  border-collapse: collapse;
   font-size: 11px;
   color:#ffffff;
   border-top: 1px solid #ddd;
