@@ -501,6 +501,15 @@ class EVO {
             return EVO.colorVisDictColorBlind[intentionEval];
         }
         if (EVO.paletteOption == 1) {
+            document.getElementById("my-None").value = EVO.colorVisDict["0000"];
+            document.getElementById("my-Satisfied").value = EVO.colorVisDict["0011"];
+            document.getElementById("my-PS").value = EVO.colorVisDict["0010"];
+            document.getElementById("my-PD").value = EVO.colorVisDict["0100"];
+            document.getElementById("my-PP").value = EVO.colorVisDict["0110"];
+            document.getElementById("my-FP").value = EVO.colorVisDict["0111"];
+            document.getElementById("my-Denied").value = EVO.colorVisDict["1100"];
+            document.getElementById("my-PF").value = EVO.colorVisDict["1110"];
+            document.getElementById("my-FF").value = EVO.colorVisDict["1111"];
             return EVO.colorVisDict[intentionEval];
         }
         if (EVO.paletteOption == 2) {
