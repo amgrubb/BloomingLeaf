@@ -511,7 +511,21 @@ class EVO {
         }
 
         if (EVO.paletteOption == 4) {
-            return EVO.colorVisDict4[intentionEval];
+            return EVO.colorVisDict4[intentionEval];}
+
+        if (EVO.paletteOption == 5) {
+            var selfColorVisDict = {
+                "0000": document.getElementById("my-None").value,
+                "0011": document.getElementById("my-Satisfied").value,
+                "0010": document.getElementById("my-PS").value,
+                "0100": document.getElementById("my-PD").value,
+                "0110": document.getElementById("my-PP").value,
+                "0111": document.getElementById("my-FP").value,
+                "1100": document.getElementById("my-Denied").value,
+                "1110": document.getElementById("my-PF").value,
+                "1111": document.getElementById("my-FF").value
+            };
+            return selfColorVisDict[intentionEval];
         }
     }
 
