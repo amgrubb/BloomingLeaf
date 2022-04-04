@@ -29,13 +29,13 @@ class IntentionColorVis {
  */
 class EVO {
     static colorVisDict = {
-        "0000": "#D3D3D3",
-        "0011": "#003fff",
-        "0010": "#8FB8DE",
-        "0100": "#fbaca8",
-        "0110": "#9400D3",
+        "0000": "#D3D3D3", // None
+        "0011": "#003fff", // Satisfied
+        "0010": "#8FB8DE", // Partially satisfied
+        "0100": "#fbaca8", // Partially denied
+        "0110": "#9400D3", // Conflict 
         "0111": "#5946b2",
-        "1100": "#FF2600",
+        "1100": "#FF2600", // Fully denied
         "1110": "#ca2c92",
         "1111": "#0D0221"
     };
@@ -60,6 +60,18 @@ class EVO {
         "1100": "#616161",
         "1110": "#900091",
         "1111": "#790604"
+    };
+
+    static colorVisDict4 = {
+        "0000": "#D3D3D3",
+        "0011": "#FFFF00",
+        "0010": "#fcf5bb",
+        "0100": "#d09eff",
+        "0110": "#d37f00",
+        "0111": "#d69d00",
+        "1100": "#A020F0",
+        "1110": "#5946b2",
+        "1111": "#0D0221"
     };
 
     /**
@@ -496,6 +508,10 @@ class EVO {
         }
         if (EVO.paletteOption == 3) {
             return EVO.colorVisDict3[intentionEval];
+        }
+
+        if (EVO.paletteOption == 4) {
+            return EVO.colorVisDict4[intentionEval];
         }
     }
 

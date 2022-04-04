@@ -849,8 +849,13 @@ paper.on("link:options", function (cell) {
         EVO.refresh(undefined);
     });
 
-    $('#customerized-color-palette').on('click', function () { // Choose color palettes
+    $('#color-palette-4').on('click', function () { // Choose color palettes
         EVO.paletteOption = 4;
+        EVO.refresh(undefined);
+    });
+
+    $('#customerized-color-palette').on('click', function () { // Choose color palettes
+        EVO.paletteOption = 5;
         //render a table
         $('#color-input').css("display", "");
         //EVO.refresh(undefined);
