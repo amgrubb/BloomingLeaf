@@ -883,8 +883,8 @@
         }
 
         // Adds the filter information to html
-        for(var i = 0; i < filterIntentionList.length; i++) {
-            for(var j = 0; j < filterIntentionList[i][1].length; j++) {
+        for (var i = 0; i < filterIntentionList.length; i++) {
+            for (var j = 0; j < filterIntentionList[i][1].length; j++) {
 
                 // Finds corrects text sat value for table
                 switch (filterIntentionList[i][1][j]) {
@@ -913,9 +913,13 @@
                 // Appends filter information to the intention filter table
 
                 var name; 
-                //console.log(analysis.graph.getCells())
-                for (let element of analysis.intentions) {
-                    name = element.attr(".name").text
+                // Finds the element name of all the intentions
+                for (var k = 0; k < analysis.intentions.length; k++) {
+                    console.log(analysis.intentions[k])
+                    console.log(analysis.intentions[k].attr(".name").text)
+                    if (analysis.intentions[k].attributes.id == filterIntentionList[i][0]) {
+                        name = analysis.intentions[k].attr(".name").text
+                    }
                 }
 
                 // $(".inspectorFilterTable").append('<tr class="tableData"><td class="tableData">' + name + '</td><td class="tableData">' + tableSatVal + '</td><td id = ' + selectedIntention + ' class="tableData remove-btn"><button class="table-btn-small" style="font-size:15px"><i class="fa fa-trash" style="color:white"></i></button></td>'); 
