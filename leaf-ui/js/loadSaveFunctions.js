@@ -22,6 +22,7 @@ reader.onload = function () {
 		return;
 	}
 	clearInspector();
+	console.log(reader);
 	var result = JSON.parse(reader.result);
 	if ( result.graph.type != undefined) { // TODO: find a better way to distinguish the different versions
 		loadFromObject(result);

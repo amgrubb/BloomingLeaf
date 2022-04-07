@@ -492,3 +492,15 @@ function traverseGraphRecursive(linkMap, currNode, walkList, notVisited, cycleLi
 	// Done with function call, so take a "step back" in the graph
 	walkList.pop();
 }
+
+/**
+ * Creates an error message if there are no elements on the paper
+ * @returns boolean
+ */
+function hasElements() {
+	if (getElementList().length == 0) { 
+		swal("Needs Elements", "", "error"); 
+		return false;
+	}
+	return true;
+}
