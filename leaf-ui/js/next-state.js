@@ -923,7 +923,7 @@
                 }
 
                 // $(".inspectorFilterTable").append('<tr class="tableData"><td class="tableData">' + name + '</td><td class="tableData">' + tableSatVal + '</td><td id = ' + selectedIntention + ' class="tableData remove-btn"><button class="table-btn-small" style="font-size:15px"><i class="fa fa-trash" style="color:white"></i></button></td>'); 
-                $(".inspectorFilterTable").append('<tr class="tableData" id=' + selectedIntention + '><td class="tableData">' + name + '</td><td class="tableData">' + tableSatVal + '</td><td class="tableData remove-btn"><button class="table-btn-small" style="font-size:15px"><i class="fa fa-trash" style="color:white"></i></button></td>'); 
+                $(".inspectorFilterTable").append('<tr class="tableData" id=' + filterIntentionList[i][0] + '><td class="tableData">' + name + '</td><td class="tableData">' + tableSatVal + '</td><td class="tableData remove-btn"><button class="table-btn-small" style="font-size:15px"><i class="fa fa-trash" style="color:white"></i></button></td>'); 
         }    
     }
             
@@ -979,12 +979,15 @@
             // filterIntentionList = [[id, [sat vals]], [id, [sat vals]], ...]
             console.log(filterIntentionList)
             for (var i = 0; i < filterIntentionList.length; i++) {
+                console.log(selectedId)
+                console.log(filterIntentionList[i][0])
+                console.log(filterIntentionList[i][1].length)
                 if(selectedId == filterIntentionList[i][0]) {
-                    // If there is only one filter applied to intention, delete whole entry
+                    //If there is only one filter applied to intention, delete whole entry
                     if(filterIntentionList[i][1].length == 1) {
-                        filterIntentionList.splice(i, 1);
-                        console.log(filterIntentionList)
-                        break;
+                            filterIntentionList.splice(i, 1);
+                            console.log(filterIntentionList)
+                            break;
                     } else {
                         var index = filterIntentionList[i][1].indexOf(desiredSatVal);
                         filterIntentionList[i][1].splice(index, 1);
