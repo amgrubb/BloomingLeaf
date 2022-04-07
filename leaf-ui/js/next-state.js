@@ -806,8 +806,7 @@
      * by specific satisfacion values for specific intentions
      */
     function intentionFilter() {
-        console.log("intention filter clicked");
-        console.log(filterIntentionList)
+        console.log("Intention filter clicked");
 
         // Clears previous html table entries
         $(".inspectorFilterTable tr").remove();
@@ -828,7 +827,7 @@
 
         // filterIntentionArray = [[id, [sat vals]], [id, [sat vals]], ...]
         // If empty, create new array and push filter
-        if(filterIntentionList.length != 0) {
+        if (filterIntentionList.length != 0) {
             // Iterate over the filters and check if the selected intention already has a filter applied
             for (var i = 0; i < filterIntentionList.length; i++) {
                 if (filterIntentionList[i][0].includes(selectedIntention)) {
@@ -847,7 +846,6 @@
             filterIntentionList = [];
             filterIntentionList.push([selectedIntention, [desiredSatVal]]);
         }
-        console.log(filterIntentionList)
 
         // Iterates over every key/value pair in the hashmap
         for (var solutionArray in originalResults.get('allSolutions')) {
@@ -915,8 +913,6 @@
                 var name; 
                 // Finds the element name of all the intentions
                 for (var k = 0; k < analysis.intentions.length; k++) {
-                    console.log(analysis.intentions[k])
-                    console.log(analysis.intentions[k].attr(".name").text)
                     if (analysis.intentions[k].attributes.id == filterIntentionList[i][0]) {
                         name = analysis.intentions[k].attr(".name").text
                     }
@@ -937,68 +933,62 @@
     /*
     *
     */
-    function removeIntentionFilter() {
+    function removeIntentionFilter(intentionToBeRemoved) {
         console.log(filterIntentionList);
+        var selectedId = intentionToBeRemoved.attr('id');
+        console.log(selectedId);
+        var desiredSatVal = intentionToBeRemoved.find('td:eq(1)').text();
+        console.log(desiredSatVal);
 
-        $(".inspectorFilterTable").on('mouseup', '.table-btn-small', function () { 
-            $(this).closest('tr').remove(); 
+        // Finds corrects text sat value for table
+        switch (desiredSatVal) {
+            case "None (⊥, ⊥)":
+                desiredSatVal = "0000";
+                break;
+            case "Satisfied (F, ⊥)":
+                desiredSatVal = "0011";
+                break;
+            case "Partially Satisfied (P, ⊥)":
+                desiredSatVal = "0010";
+                break;
+            case "Partially Denied (⊥, P)":
+                desiredSatVal = "0100";
+                break;
+            case "Denied (⊥, F)":
+                desiredSatVal = "1100";
+                break;
+            case "(no value)":
+                desiredSatVal = "unknown";
+                break;
+            default:
+                desiredSatVal =  "error";   
+                break;
+        }
+        console.log(desiredSatVal);
 
-            var intentionToBeRemoved = $(this).closest('tr');
-            console.log(intentionToBeRemoved);
-            var selectedId = intentionToBeRemoved.attr('id');
+        // filterIntentionList = [[id, [sat vals]], [id, [sat vals]], ...]
+        console.log(filterIntentionList)
+        for (var i = 0; i < filterIntentionList.length; i++) {
             console.log(selectedId);
-            var desiredSatVal = intentionToBeRemoved.find('td:eq(1)').text();
-            console.log(desiredSatVal);
-
-            // Finds corrects text sat value for table
-            switch (desiredSatVal) {
-                case "None (⊥, ⊥)":
-                    desiredSatVal = "0000";
+            console.log(filterIntentionList[i][0]);
+            console.log(filterIntentionList[i][1].length);
+            if (selectedId == filterIntentionList[i][0]) {
+                // If there is only one filter applied to intention, delete whole entry
+                if (filterIntentionList[i][1].length == 1) {
+                    filterIntentionList.splice(i, 1);
+                    console.log(filterIntentionList)
                     break;
-                case "Satisfied (F, ⊥)":
-                    desiredSatVal = "0011";
+                } else {
+                    var index = filterIntentionList[i][1].indexOf(desiredSatVal);
+                    filterIntentionList[i][1].splice(index, 1);
+                    console.log(filterIntentionList[i]);
                     break;
-                case "Partially Satisfied (P, ⊥)":
-                    desiredSatVal = "0010";
-                    break;
-                case "Partially Denied (⊥, P)":
-                    desiredSatVal = "0100";
-                    break;
-                case "Denied (⊥, F)":
-                    desiredSatVal = "1100";
-                    break;
-                case "(no value)":
-                    desiredSatVal = "unknown";
-                    break;
-                default:
-                    desiredSatVal =  "error";   
-                    break;
-            }
-            console.log(desiredSatVal);
-
-            // filterIntentionList = [[id, [sat vals]], [id, [sat vals]], ...]
-            console.log(filterIntentionList)
-            for (var i = 0; i < filterIntentionList.length; i++) {
-                console.log(selectedId)
-                console.log(filterIntentionList[i][0])
-                console.log(filterIntentionList[i][1].length)
-                if(selectedId == filterIntentionList[i][0]) {
-                    //If there is only one filter applied to intention, delete whole entry
-                    if(filterIntentionList[i][1].length == 1) {
-                            filterIntentionList.splice(i, 1);
-                            console.log(filterIntentionList)
-                            break;
-                    } else {
-                        var index = filterIntentionList[i][1].indexOf(desiredSatVal);
-                        filterIntentionList[i][1].splice(index, 1);
-                        console.log(filterIntentionList[i]);
-                        break;
-                    }
                 }
             }
-            // We might want to just call filtering function here to set number of correct solutions again
-            console.log(filterIntentionList)
-        })
+        }
+        // We might want to just call filtering function here to set number of correct solutions again
+        console.log(filterIntentionList);
+        // })
 
         
     }
