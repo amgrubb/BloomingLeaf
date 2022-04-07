@@ -45,6 +45,8 @@ function cellHighlight(pPaper) {
             cellView.highlight();
             $('.cell-attrs-text').addClass('disabled-textbox-clicked');
             $('.cell-attrs-text2').addClass('disabled-textbox-clicked');
+            $('#filter-apply').prop('disabled', false);
+            $('#filter-apply').removeClass("disabled-filter-clicked")
             
             // TODO: if the page is changed or filters are added it does not update
             // TODO: indexing by name "TNS-R" might be too brittle
@@ -69,6 +71,8 @@ function cellHighlight(pPaper) {
             cell.unhighlight();
             $('.cell-attrs-text').removeClass('disabled-textbox-clicked');
             $('.cell-attrs-text2').removeClass('disabled-textbox-clicked');
+            $('#filter-apply').prop('disabled', true);
+            $('#filter-apply').addClass("disabled-filter-clicked")
         });
         $(".cell-attrs-text2").val("N/A"); 
     });
