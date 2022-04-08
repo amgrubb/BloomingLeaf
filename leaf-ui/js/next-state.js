@@ -846,6 +846,7 @@
             filterIntentionList = [];
             filterIntentionList.push([selectedIntention, [desiredSatVal]]);
         }
+        console.log(filterIntentionList);
 
         // Iterates over every key/value pair in the hashmap
         for (var solutionArray in originalResults.get('allSolutions')) {
@@ -931,10 +932,11 @@
     }
 
     /*
-    *
+    * This function allows you to remove an intention's filter from the list
+    * of intention filters when the remove button is clicked
     */
     function removeIntentionFilter(intentionToBeRemoved) {
-        console.log(filterIntentionList);
+        console.log("Remove button clicked");
         var selectedId = intentionToBeRemoved.attr('id');
         console.log(selectedId);
         var desiredSatVal = intentionToBeRemoved.find('td:eq(1)').text();
@@ -967,30 +969,21 @@
         console.log(desiredSatVal);
 
         // filterIntentionList = [[id, [sat vals]], [id, [sat vals]], ...]
-        console.log(filterIntentionList)
         for (var i = 0; i < filterIntentionList.length; i++) {
-            console.log(selectedId);
-            console.log(filterIntentionList[i][0]);
-            console.log(filterIntentionList[i][1].length);
             if (selectedId == filterIntentionList[i][0]) {
                 // If there is only one filter applied to intention, delete whole entry
                 if (filterIntentionList[i][1].length == 1) {
                     filterIntentionList.splice(i, 1);
-                    console.log(filterIntentionList)
-                    break;
                 } else {
                     var index = filterIntentionList[i][1].indexOf(desiredSatVal);
                     filterIntentionList[i][1].splice(index, 1);
-                    console.log(filterIntentionList[i]);
-                    break;
                 }
+                break;
             }
         }
+
         // We might want to just call filtering function here to set number of correct solutions again
         console.log(filterIntentionList);
-        // })
-
-        
     }
 
     /*  This function should get the current state in the screen and 
