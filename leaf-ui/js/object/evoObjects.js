@@ -75,6 +75,16 @@ class EVO {
     };
 
     /**
+     * List of color visualization dictionaries
+     */
+    static colorVisDictCollection = [
+        EVO.colorVisDict,
+        EVO.colorVisDict2,
+        EVO.colorVisDict3,
+        EVO.colorVisDict4
+    ];
+
+    /**
      * Defines order of evaluations for filling intentions by %
      */
     static colorVisOrder = {
@@ -172,6 +182,7 @@ class EVO {
         this.intentionListColorVis = [];
         // Assessable in next state window 
         this.isColorBlind = EVO.isColorBlindMode;
+        this.paletteOption = EVO.paletteOption;
         this.initializeIntentionList();
     }
 
@@ -500,27 +511,48 @@ class EVO {
         if (EVO.isColorBlindMode) {
             return EVO.colorVisDictColorBlind[intentionEval];
         }
-        if (EVO.paletteOption == 1) {
-            document.getElementById("my-None").value = EVO.colorVisDict["0000"];
-            document.getElementById("my-Satisfied").value = EVO.colorVisDict["0011"];
-            document.getElementById("my-PS").value = EVO.colorVisDict["0010"];
-            document.getElementById("my-PD").value = EVO.colorVisDict["0100"];
-            document.getElementById("my-PP").value = EVO.colorVisDict["0110"];
-            document.getElementById("my-FP").value = EVO.colorVisDict["0111"];
-            document.getElementById("my-Denied").value = EVO.colorVisDict["1100"];
-            document.getElementById("my-PF").value = EVO.colorVisDict["1110"];
-            document.getElementById("my-FF").value = EVO.colorVisDict["1111"];
-            return EVO.colorVisDict[intentionEval];
+        //Assign intentions with chosen palette and set default values in Create My Palette the same as the chosen palette
+        if (EVO.paletteOption < 5) {
+            document.getElementById("my-None").value = EVO.colorVisDictCollection[EVO.paletteOption - 1]["0000"];
+            document.getElementById("my-Satisfied").value = EVO.colorVisDictCollection[EVO.paletteOption - 1]["0011"];
+            document.getElementById("my-PS").value = EVO.colorVisDictCollection[EVO.paletteOption - 1]["0010"];
+            document.getElementById("my-PD").value = EVO.colorVisDictCollection[EVO.paletteOption - 1]["0100"];
+            document.getElementById("my-PP").value = EVO.colorVisDictCollection[EVO.paletteOption - 1]["0110"];
+            document.getElementById("my-FP").value = EVO.colorVisDictCollection[EVO.paletteOption - 1]["0111"];
+            document.getElementById("my-Denied").value = EVO.colorVisDictCollection[EVO.paletteOption - 1]["1100"];
+            document.getElementById("my-PF").value = EVO.colorVisDictCollection[EVO.paletteOption - 1]["1110"];
+            document.getElementById("my-FF").value = EVO.colorVisDictCollection[EVO.paletteOption - 1]["1111"];
+            return EVO.colorVisDictCollection[EVO.paletteOption - 1][intentionEval];
         }
-        if (EVO.paletteOption == 2) {
-            return EVO.colorVisDict2[intentionEval];
-        }
-        if (EVO.paletteOption == 3) {
-            return EVO.colorVisDict3[intentionEval];
-        }
+        // if (EVO.paletteOption == 1) {
+        // }
+        // if (EVO.paletteOption == 2) {
+        //     document.getElementById("my-None").value = EVO.colorVisDict2["0000"];
+        //     document.getElementById("my-Satisfied").value = EVO.colorVisDict2["0011"];
+        //     document.getElementById("my-PS").value = EVO.colorVisDict2["0010"];
+        //     document.getElementById("my-PD").value = EVO.colorVisDict2["0100"];
+        //     document.getElementById("my-PP").value = EVO.colorVisDict2["0110"];
+        //     document.getElementById("my-FP").value = EVO.colorVisDict2["0111"];
+        //     document.getElementById("my-Denied").value = EVO.colorVisDict2["1100"];
+        //     document.getElementById("my-PF").value = EVO.colorVisDict2["1110"];
+        //     document.getElementById("my-FF").value = EVO.colorVisDict2["1111"];
+        //     return EVO.colorVisDict2[intentionEval];
+        // }
+        // if (EVO.paletteOption == 3) {
+        //     document.getElementById("my-None").value = EVO.colorVisDict3["0000"];
+        //     document.getElementById("my-Satisfied").value = EVO.colorVisDict3["0011"];
+        //     document.getElementById("my-PS").value = EVO.colorVisDict3["0010"];
+        //     document.getElementById("my-PD").value = EVO.colorVisDict3["0100"];
+        //     document.getElementById("my-PP").value = EVO.colorVisDict3["0110"];
+        //     document.getElementById("my-FP").value = EVO.colorVisDict3["0111"];
+        //     document.getElementById("my-Denied").value = EVO.colorVisDict3["1100"];
+        //     document.getElementById("my-PF").value = EVO.colorVisDict3["1110"];
+        //     document.getElementById("my-FF").value = EVO.colorVisDict3["1111"];
+        //     return EVO.colorVisDict3[intentionEval];
+        // }
 
-        if (EVO.paletteOption == 4) {
-            return EVO.colorVisDict4[intentionEval];}
+        // if (EVO.paletteOption == 4) {
+        //     return EVO.colorVisDict4[intentionEval];}
 
         if (EVO.paletteOption == 5) {
             var selfColorVisDict = {
@@ -535,7 +567,7 @@ class EVO {
                 "1111": document.getElementById("my-FF").value
             };
             return selfColorVisDict[intentionEval];
-        }
+        } 
     }
 
     /**
@@ -607,7 +639,12 @@ class EVONextState {
     static setColorBlindFromPrevWindow() {     
         EVONextState.isColorBlindMode = myInputJSObject.results.get('colorVis').isColorBlind;
     }
-
+    /**
+     * This sets the color palette option to whatever it was in the previous window
+     */
+    static setColorPaletteFromPrevWindow() {
+        EVONextState.paletteOption = myInputJSObject.results.get('colorVis').paletteOption;
+    }
     /**
      * Sets new slider option and refreshes to make applicable changes
      * @param {String} newSliderOption 
@@ -702,7 +739,15 @@ class EVONextState {
         if (EVONextState.isColorBlindMode) {
             return EVO.colorVisDictColorBlind[intentionEval];
         }
-        return EVO.colorVisDict[intentionEval]; }
+        console.log(EVONextState.paletteOption);
+        if (EVONextState.paletteOption < 5) {
+
+            return EVO.colorVisDictCollection[EVONextState.paletteOption - 1][intentionEval];
+        }
+
+    }
+
+        //return EVO.colorVisDict[intentionEval]; }
 
     /**
      * Creates a gradient for an intention in colorIntentionsByPercents()
