@@ -73,6 +73,7 @@ class EVO {
         "1110": "#5946b2",
         "1111": "#0D0221"
     };
+    static selfColorVisDict;
 
     /**
      * List of color visualization dictionaries
@@ -81,7 +82,8 @@ class EVO {
         EVO.colorVisDict,
         EVO.colorVisDict2,
         EVO.colorVisDict3,
-        EVO.colorVisDict4
+        EVO.colorVisDict4,
+        EVO.selfColorVisDict
     ];
 
     /**
@@ -555,7 +557,7 @@ class EVO {
         //     return EVO.colorVisDict4[intentionEval];}
 
         if (EVO.paletteOption == 5) {
-            var selfColorVisDict = {
+            EVO.selfColorVisDict = {
                 "0000": document.getElementById("my-None").value,
                 "0011": document.getElementById("my-Satisfied").value,
                 "0010": document.getElementById("my-PS").value,
@@ -566,7 +568,11 @@ class EVO {
                 "1110": document.getElementById("my-PF").value,
                 "1111": document.getElementById("my-FF").value
             };
-            return selfColorVisDict[intentionEval];
+            EVO.colorVisDictCollection[4] = EVO.selfColorVisDict;
+
+
+
+            return EVO.selfColorVisDict[intentionEval];
         } 
     }
 
@@ -739,9 +745,9 @@ class EVONextState {
         if (EVONextState.isColorBlindMode) {
             return EVO.colorVisDictColorBlind[intentionEval];
         }
-        console.log(EVONextState.paletteOption);
-        if (EVONextState.paletteOption < 5) {
 
+        else {
+            console.log(EVO.colorVisDictCollection);
             return EVO.colorVisDictCollection[EVONextState.paletteOption - 1][intentionEval];
         }
 
