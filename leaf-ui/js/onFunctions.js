@@ -837,51 +837,32 @@ paper.on("link:options", function (cell) {
 
     $('#color-palette-1').on('click', function () { // Choose color palettes
         EVO.paletteOption = 1;
-        $('#color-palette-1').css("background-color", "rgba(36, 150, 255, 1)"); //highlight the choice
-        $('#color-palette-2').css("background-color", "#f9f9f9");
-        $('#color-palette-3').css("background-color", "#f9f9f9");
-        $('#color-palette-4').css("background-color", "#f9f9f9");
-        $('#customerized-color-palette').css("background-color", "#f9f9f9");   
+        highlightPalette(EVO.paletteOption);
         EVO.refresh(undefined);
     });
 
     $('#color-palette-2').on('click', function () { // Choose color palettes
 
         EVO.paletteOption = 2;
-        $('#color-palette-2').css("background-color", "rgba(36, 150, 255, 1)"); //highlight the choice
-        $('#color-palette-1').css("background-color", "#f9f9f9");
-        $('#color-palette-3').css("background-color", "#f9f9f9");
-        $('#color-palette-4').css("background-color", "#f9f9f9");
-        $('#customerized-color-palette').css("background-color", "#f9f9f9");  
+        highlightPalette(EVO.paletteOption);
         EVO.refresh(undefined);
     });
     $('#color-palette-3').on('click', function () { // Choose color palettes
         EVO.paletteOption = 3;
-        $('#color-palette-3').css("background-color", "rgba(36, 150, 255, 1)"); //highlight the choice
-        $('#color-palette-2').css("background-color", "#f9f9f9");
-        $('#color-palette-1').css("background-color", "#f9f9f9");
-        $('#color-palette-4').css("background-color", "#f9f9f9");
-        $('#customerized-color-palette').css("background-color", "#f9f9f9");  
+        highlightPalette(EVO.paletteOption);
         EVO.refresh(undefined);
     });
 
     $('#color-palette-4').on('click', function () { // Choose color palettes
         EVO.paletteOption = 4;
-        $('#color-palette-4').css("background-color", "rgba(36, 150, 255, 1)"); //highlight the choice
-        $('#color-palette-2').css("background-color", "#f9f9f9");
-        $('#color-palette-3').css("background-color", "#f9f9f9");
-        $('#color-palette-1').css("background-color", "#f9f9f9");
-        $('#customerized-color-palette').css("background-color", "#f9f9f9");  
+
+        highlightPalette(EVO.paletteOption);
         EVO.refresh(undefined);
     });
 
     $('#customerized-color-palette').on('click', function () { // Choose color palettes
         EVO.paletteOption = 5;
-        $('#customerized-color-palette').css("background-color", "rgba(36, 150, 255, 1)"); //highlight the choice
-        $('#color-palette-2').css("background-color", "#f9f9f9");
-        $('#color-palette-3').css("background-color", "#f9f9f9");
-        $('#color-palette-4').css("background-color", "#f9f9f9");
-        $('#color-palette-1').css("background-color", "#f9f9f9");  
+        highlightPalette(EVO.paletteOption);
         //render a table
         $('#color-input').css("display", "");
         //EVO.refresh(undefined);
@@ -1068,3 +1049,23 @@ function stringifyCirc(obj) {
 
     return graphtext
 }
+
+/**
+* Highlights the chosen palette on the dropdown
+ */
+function highlightPalette(paletteOption) {
+
+    for (var i = 1; i <= 5; i++) {
+        var id = '#color-palette-'
+        id = id + i;
+        console.log(id);
+        if (i == paletteOption) {
+
+            $(id).css("background-color", "rgba(36, 150, 255, 1)"); //highlight the choice
+        }
+        else {
+            $(id).css("background-color", "#f9f9f9");
+        }
+    }
+}
+
