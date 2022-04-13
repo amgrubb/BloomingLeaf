@@ -826,30 +826,30 @@
 
         // If function is not called from removeIntentionFilter() push filter onto array
         if(!remove) {
-            // 4 digit sat value code selected from dropdown menu
-            var desiredSatVal = $("#sat-value").val();
+            // // 4 digit sat value code selected from dropdown menu
+            // var desiredSatVal = $("#sat-value").val();
 
-            // filterIntentionArray = [[id, [sat vals]], [id, [sat vals]], ...]
-            // If empty, create new array and push filter
-            if (filterIntentionList.length != 0) {
-                // Iterate over the filters and check if the selected intention already has a filter applied
-                for (var i = 0; i < filterIntentionList.length; i++) {
-                    if (filterIntentionList[i][0].includes(selectedIntention)) {
-                        // Push new filter sat value to already existing array of filter sat vals
-                        filterIntentionList[i][1].push(desiredSatVal);
-                        // Break once added so else if is not run
-                        break;
-                    } else if (i == filterIntentionList.length-1) {
-                        // If the selected intention does not have a filter applied push new entry to array
-                        filterIntentionList.push([selectedIntention, [desiredSatVal]]);
-                        // Break once added so for loop does not iterate over new entry 
-                        break; 
-                    }
-                }
-            } else {
-                filterIntentionList = [];
-                filterIntentionList.push([selectedIntention, [desiredSatVal]]);
-            }
+            // // filterIntentionArray = [[id, [sat vals]], [id, [sat vals]], ...]
+            // // If empty, create new array and push filter
+            // if (filterIntentionList.length != 0) {
+            //     // Iterate over the filters and check if the selected intention already has a filter applied
+            //     for (var i = 0; i < filterIntentionList.length; i++) {
+            //         if (filterIntentionList[i][0].includes(selectedIntention)) {
+            //             // Push new filter sat value to already existing array of filter sat vals
+            //             filterIntentionList[i][1].push(desiredSatVal);
+            //             // Break once added so else if is not run
+            //             break;
+            //         } else if (i == filterIntentionList.length-1) {
+            //             // If the selected intention does not have a filter applied push new entry to array
+            //             filterIntentionList.push([selectedIntention, [desiredSatVal]]);
+            //             // Break once added so for loop does not iterate over new entry 
+            //             break; 
+            //         }
+            //     }
+            // } else {
+            //     filterIntentionList = [];
+            //     filterIntentionList.push([selectedIntention, [desiredSatVal]]);
+            // }
         }
         console.log(filterIntentionList);
 
@@ -992,7 +992,8 @@
         console.log(filterIntentionList);
     }
 
-    function filter_helper() {
+    function filter_helper(intention) {
+        console.log(intention)
        // Everytime a filter is applied the results are reset
        myInputJSObject.results = originalResults;
        // Deep copy of results so it doesn't contain references to the original object

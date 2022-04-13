@@ -14,7 +14,7 @@ $('#btn-fnt-down').on('click', function () { fontDown(analysis.paper); });
 $('#nextStateSlider').on('mouseup', function () { renderEVO(); })
 $('.inspector-btn-small').on('click', function () { goToState(); });
 $('.filter_checkbox').on('mousedown', function () { $("body").addClass("spinning"); }); // Adds waiting spinner to cursor
-$('.filter_checkbox').on('click', function () { filter_helper() });
+$('.filter_checkbox').on('click', function () { filter_helper(intention = false) });
 $("#saveClose").on('click', function () { save_current_state(); });
 $("#exploreNextStates").on('click', function () { generate_next_states(); });
 $("#close").on('click', function () { window.close(); });
