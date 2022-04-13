@@ -14,7 +14,7 @@ $('#btn-fnt-down').on('click', function () { fontDown(analysis.paper); });
 $('#nextStateSlider').on('mouseup', function () { renderEVO(); })
 $('.inspector-btn-small').on('click', function () { goToState(); });
 $('.filter_checkbox').on('mousedown', function () { $("body").addClass("spinning"); }); // Adds waiting spinner to cursor
-$('.filter_checkbox').on('click', function () { add_filter() });
+$('.filter_checkbox').on('click', function () { filter_helper() });
 $("#saveClose").on('click', function () { save_current_state(); });
 $("#exploreNextStates").on('click', function () { generate_next_states(); });
 $("#close").on('click', function () { window.close(); });
@@ -22,7 +22,8 @@ $(window).resize(function () {
     resizeWindow();
 });
 $("#filter-apply").on('mouseup', function () { 
-    intentionFilter(false); });
+    filter_helper(intention = true);
+    /** intentionFilter(false); */ });
 $("#filter-apply").on('mousedown', function () { $("body").addClass("spinning"); });
 $(".inspectorFilterTable").on('mousedown', '.table-btn-small', function (event) { 
     $(this).closest('tr').remove(); 
