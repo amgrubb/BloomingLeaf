@@ -73,7 +73,7 @@ class EVO {
         "1110": "#5946b2",
         "1111": "#0D0221"
     };
-    static selfColorVisDict;
+    static selfColorVisDict;//Initialize user-created-palette
 
     /**
      * List of color visualization dictionaries
@@ -83,7 +83,6 @@ class EVO {
         EVO.colorVisDict2,
         EVO.colorVisDict3,
         EVO.colorVisDict4,
-        EVO.selfColorVisDict
     ];
 
     /**
@@ -185,6 +184,7 @@ class EVO {
         // Assessable in next state window 
         this.isColorBlind = EVO.isColorBlindMode;
         this.paletteOption = EVO.paletteOption;
+        this.selfColorVisDict = EVO.selfColorVisDict;
         this.initializeIntentionList();
     }
 
@@ -526,36 +526,8 @@ class EVO {
             document.getElementById("my-FF").value = EVO.colorVisDictCollection[EVO.paletteOption - 1]["1111"];
             return EVO.colorVisDictCollection[EVO.paletteOption - 1][intentionEval];
         }
-        // if (EVO.paletteOption == 1) {
-        // }
-        // if (EVO.paletteOption == 2) {
-        //     document.getElementById("my-None").value = EVO.colorVisDict2["0000"];
-        //     document.getElementById("my-Satisfied").value = EVO.colorVisDict2["0011"];
-        //     document.getElementById("my-PS").value = EVO.colorVisDict2["0010"];
-        //     document.getElementById("my-PD").value = EVO.colorVisDict2["0100"];
-        //     document.getElementById("my-PP").value = EVO.colorVisDict2["0110"];
-        //     document.getElementById("my-FP").value = EVO.colorVisDict2["0111"];
-        //     document.getElementById("my-Denied").value = EVO.colorVisDict2["1100"];
-        //     document.getElementById("my-PF").value = EVO.colorVisDict2["1110"];
-        //     document.getElementById("my-FF").value = EVO.colorVisDict2["1111"];
-        //     return EVO.colorVisDict2[intentionEval];
-        // }
-        // if (EVO.paletteOption == 3) {
-        //     document.getElementById("my-None").value = EVO.colorVisDict3["0000"];
-        //     document.getElementById("my-Satisfied").value = EVO.colorVisDict3["0011"];
-        //     document.getElementById("my-PS").value = EVO.colorVisDict3["0010"];
-        //     document.getElementById("my-PD").value = EVO.colorVisDict3["0100"];
-        //     document.getElementById("my-PP").value = EVO.colorVisDict3["0110"];
-        //     document.getElementById("my-FP").value = EVO.colorVisDict3["0111"];
-        //     document.getElementById("my-Denied").value = EVO.colorVisDict3["1100"];
-        //     document.getElementById("my-PF").value = EVO.colorVisDict3["1110"];
-        //     document.getElementById("my-FF").value = EVO.colorVisDict3["1111"];
-        //     return EVO.colorVisDict3[intentionEval];
-        // }
 
-        // if (EVO.paletteOption == 4) {
-        //     return EVO.colorVisDict4[intentionEval];}
-
+        //Update user created palette with user input
         if (EVO.paletteOption == 5) {
             EVO.selfColorVisDict = {
                 "0000": document.getElementById("my-None").value,
@@ -568,10 +540,6 @@ class EVO {
                 "1110": document.getElementById("my-PF").value,
                 "1111": document.getElementById("my-FF").value
             };
-            EVO.colorVisDictCollection[4] = EVO.selfColorVisDict;
-
-
-
             return EVO.selfColorVisDict[intentionEval];
         } 
     }
@@ -746,9 +714,14 @@ class EVONextState {
             return EVO.colorVisDictColorBlind[intentionEval];
         }
 
-        else {
-            console.log(EVO.colorVisDictCollection);
+        if (EVONextState.paletteOption < 5) {
+
             return EVO.colorVisDictCollection[EVONextState.paletteOption - 1][intentionEval];
+        }
+        if (EVONextState.paletteOption == 5) {
+            var selfVis = myInputJSObject.results.get('colorVis').selfColorVisDict;
+
+            return selfVis[intentionEval];
         }
 
     }

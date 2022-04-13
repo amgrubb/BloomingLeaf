@@ -842,7 +842,6 @@ paper.on("link:options", function (cell) {
     });
 
     $('#color-palette-2').on('click', function () { // Choose color palettes
-
         EVO.paletteOption = 2;
         highlightPalette(EVO.paletteOption);
         EVO.refresh(undefined);
@@ -855,12 +854,11 @@ paper.on("link:options", function (cell) {
 
     $('#color-palette-4').on('click', function () { // Choose color palettes
         EVO.paletteOption = 4;
-
         highlightPalette(EVO.paletteOption);
         EVO.refresh(undefined);
     });
 
-    $('#customerized-color-palette').on('click', function () { // Choose color palettes
+    $('#color-palette-5').on('click', function () { // Choose color palettes
         EVO.paletteOption = 5;
         highlightPalette(EVO.paletteOption);
         //render a table
@@ -1054,13 +1052,10 @@ function stringifyCirc(obj) {
 * Highlights the chosen palette on the dropdown
  */
 function highlightPalette(paletteOption) {
-
     for (var i = 1; i <= 5; i++) {
         var id = '#color-palette-'
         id = id + i;
-        console.log(id);
         if (i == paletteOption) {
-
             $(id).css("background-color", "rgba(36, 150, 255, 1)"); //highlight the choice
         }
         else {
