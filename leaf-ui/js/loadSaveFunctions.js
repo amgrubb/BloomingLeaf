@@ -22,7 +22,6 @@ reader.onload = function () {
 		return;
 	}
 	clearInspector();
-	console.log(reader);
 	var result = JSON.parse(reader.result);
 	if ( result.graph.type != undefined) { // TODO: find a better way to distinguish the different versions
 		loadFromObject(result);
@@ -31,7 +30,6 @@ reader.onload = function () {
 		// This can't be done with the current version as there is a link parameter
 		var text = reader.result.replaceAll('"link"', '"basic.CellLink"')
 		result = JSON.parse(text); // Reread the file
-		console.log(result)
 		loadOldVersion(result)
 	}
 	
@@ -151,7 +149,6 @@ function loadOldLinks(cell, arr) {
 	// Reassign linkBBM to cell
 	var linkBBM = new LinkBBM({ displayType: oldDisplayType, linkType: oldLinkType, postType: oldPostType, absTime: oldLink.absoluteValue, evolving: oldEvolving }); 
 	cell.set('link', linkBBM);
-	console.log(linkBBM)
 }
 
 /**
