@@ -21,7 +21,8 @@ $("#close").on('click', function () { window.close(); });
 $(window).resize(function () {
     resizeWindow();
 });
-$("#filter-apply").on('mouseup', function () { intentionFilter(); });
+$("#filter-apply").on('mouseup', function () { 
+    intentionFilter(false); });
 $("#filter-apply").on('mousedown', function () { $("body").addClass("spinning"); });
 $(".inspectorFilterTable").on('mousedown', '.table-btn-small', function (event) { 
     $(this).closest('tr').remove(); 

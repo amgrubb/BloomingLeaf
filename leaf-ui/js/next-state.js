@@ -805,16 +805,13 @@
      * This function allows you to filter the next state solutions
      * by specific satisfacion values for specific intentions
      */
-    function intentionFilter() {
+    function intentionFilter(remove) {
         console.log("Intention filter clicked");
 
         // Clears previous html table entries
         $(".inspectorFilterTable tr").remove();
         // Appends the headings back to the table
         $(".inspectorFilterTable").append('<tr class ="tableHeading"><th class="tableHeading">Intention Name</th><th class="tableHeading">Satisfaction Value</th><th class="tableHeading">Remove</th></tr>');
-      
-        // 4 digit sat value code selected from dropdown menu
-        var desiredSatVal = $("#sat-value").val();
 
         // Everytime a filter is applied the results are reset
         myInputJSObject.results = originalResults;
@@ -825,26 +822,34 @@
             tempResults2.get('allSolutions')[solutionArray] = [];
         }
 
-        // filterIntentionArray = [[id, [sat vals]], [id, [sat vals]], ...]
-        // If empty, create new array and push filter
-        if (filterIntentionList.length != 0) {
-            // Iterate over the filters and check if the selected intention already has a filter applied
-            for (var i = 0; i < filterIntentionList.length; i++) {
-                if (filterIntentionList[i][0].includes(selectedIntention)) {
-                    // Push new filter sat value to already existing array of filter sat vals
-                    filterIntentionList[i][1].push(desiredSatVal);
-                    // Break once added so else if is not run
-                    break;
-                } else if (i == filterIntentionList.length-1) {
-                    // If the selected intention does not have a filter applied push new entry to array
-                    filterIntentionList.push([selectedIntention, [desiredSatVal]]);
-                    // Break once added so for loop does not iterate over new entry 
-                    break; 
+        console.log(remove)
+        // If function is not called from removeIntentionFilter() push filter onto array
+        if(!remove) {
+            console.log("hi")
+            // 4 digit sat value code selected from dropdown menu
+            var desiredSatVal = $("#sat-value").val();
+
+            // filterIntentionArray = [[id, [sat vals]], [id, [sat vals]], ...]
+            // If empty, create new array and push filter
+            if (filterIntentionList.length != 0) {
+                // Iterate over the filters and check if the selected intention already has a filter applied
+                for (var i = 0; i < filterIntentionList.length; i++) {
+                    if (filterIntentionList[i][0].includes(selectedIntention)) {
+                        // Push new filter sat value to already existing array of filter sat vals
+                        filterIntentionList[i][1].push(desiredSatVal);
+                        // Break once added so else if is not run
+                        break;
+                    } else if (i == filterIntentionList.length-1) {
+                        // If the selected intention does not have a filter applied push new entry to array
+                        filterIntentionList.push([selectedIntention, [desiredSatVal]]);
+                        // Break once added so for loop does not iterate over new entry 
+                        break; 
+                    }
                 }
+            } else {
+                filterIntentionList = [];
+                filterIntentionList.push([selectedIntention, [desiredSatVal]]);
             }
-        } else {
-            filterIntentionList = [];
-            filterIntentionList.push([selectedIntention, [desiredSatVal]]);
         }
         console.log(filterIntentionList);
 
@@ -982,7 +987,8 @@
             }
         }
 
-        // We might want to just call filtering function here to set number of correct solutions again
+        // Call function to reset number of solutions after removing filter
+        intentionFilter(true);
         console.log(filterIntentionList);
     }
 
