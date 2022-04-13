@@ -73,7 +73,17 @@ class EVO {
         "1110": "#5946b2",
         "1111": "#0D0221"
     };
-    static selfColorVisDict;//Initialize user-created-palette
+    static selfColorVisDict = {//Initialize user-created-palette
+        "0000": "undefined",
+        "0011": "undefined",
+        "0010": "undefined",
+        "0100": "undefined",
+        "0110": "undefined",
+        "0111": "undefined",
+        "1100": "undefined",
+        "1110": "undefined",
+        "1111": "undefined"
+    };
 
     /**
      * List of color visualization dictionaries
@@ -540,10 +550,19 @@ class EVO {
                 "1110": document.getElementById("my-PF").value,
                 "1111": document.getElementById("my-FF").value
             };
+
+            //Use the palette only all colors are valid hex colors.
+            if (Object.values(EVO.selfColorVisDict).every((v) => EVO.validateColor(v) == true)) {
             return EVO.selfColorVisDict[intentionEval];
-        } 
+
+            } else { swal("Invalid Color", "", "error"); }
+        }
     }
 
+    static validateColor(color) {
+        const COLOR_PATTERN = new RegExp("^(#[a-zA-Z0-9]{6})$");
+        return COLOR_PATTERN.test(color);
+    }
     /**
      * Returns element color to based on element type
      */

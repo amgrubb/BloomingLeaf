@@ -863,8 +863,14 @@ paper.on("link:options", function (cell) {
         highlightPalette(EVO.paletteOption);
         //render a table
         $('#color-input').css("display", "");
-        //EVO.refresh(undefined);
+        EVO.refresh(undefined);
     });
+
+    //Show warning messages if use input invalid color
+    $('#submit-color').on('click', function () {
+        if (Object.values(EVO.selfColorVisDict).some((v) => EVO.validateColor(v) == false)) { swal("Invalid Color", "", "error"); }
+    });
+
     /**
      * Source:https://www.w3schools.com/howto/howto_js_rangeslider.asp 
      * Two option modeling mode slider
@@ -1049,7 +1055,7 @@ function stringifyCirc(obj) {
 }
 
 /**
-* Highlights the chosen palette on the dropdown
+ * Highlights the chosen palette on the dropdown
  */
 function highlightPalette(paletteOption) {
     for (var i = 1; i <= 5; i++) {
@@ -1062,5 +1068,12 @@ function highlightPalette(paletteOption) {
             $(id).css("background-color", "#f9f9f9");
         }
     }
+}
+/**
+ * Validates if the input colors are hexcolor
+ */
+function validateColor(color) {
+    const COLOR_PATTERN = new RegExp("^(#[a-zA-Z0-9]{6})$");
+    return COLOR_PATTERN.test(color);
 }
 
