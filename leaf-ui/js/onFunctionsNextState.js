@@ -23,7 +23,7 @@ $(window).resize(function () {
 });
 $("#filter-apply").on('mouseup', function () { 
     filter_helper(intention = true);
-    /** intentionFilter(false); */ });
+});
 $("#filter-apply").on('mousedown', function () { $("body").addClass("spinning"); });
 $(".inspectorFilterTable").on('mousedown', '.table-btn-small', function () { 
     $(this).closest('tr').remove(); 
@@ -31,7 +31,7 @@ $(".inspectorFilterTable").on('mousedown', '.table-btn-small', function () {
     removeIntentionFilter(intentionToBeRemoved);
     // Reset Number of solutions after filter is removed
     filter_helper(intention = false) 
-})
+});
 $("#clear-all").on('mousedown', function () { removeAllIntentionFilters() });
 $("#clear-all").on('mouseup', function () { $(".inspectorFilterTable tr").remove(); });
 
