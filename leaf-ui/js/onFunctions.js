@@ -700,7 +700,7 @@ paper.on("link:options", function (cell) {
             if (config.selected) { // If selected is true
                 selectedConfig = config.name; // Record the name of config
             }
-            var configBBM = new ConfigBBM({ name: config.name, action: config.action, conflictLevel: config.conflictLevel, numRelTime: config.numRelTime, currentState: config.currentState, userAssignmentsList: config.userAssignmentsList, previousAnalysis: config.previousAnalysis, selected: config.selected })
+            var configBBM = new ConfigBBM({ name: config.name, action: config.action, conflictLevel: config.conflictLevel, numRelTime: config.numRelTime, currentState: config.currentState, previousAnalysis: config.previousAnalysis, selected: config.selected })
             if (config.results.length !== 0) { // Creates results if there applicable
                 var results = configBBM.get('results'); // Grabs the coolection from the configBBM
                 // Individually creates each ResultBBM and add to collection
@@ -728,6 +728,11 @@ paper.on("link:options", function (cell) {
             currResult = configGroup[0].get('results').filter(selectedRes => selectedRes.get('name') == selectedResult)[0]
             currResult.set('selected', true);
         }
+    }
+
+    function loadOldConfig(oldAnalysisRequest) {
+        var configBBM = new ConfigBBM({conflictLevel: oldAnalysisRequest.conflictLevel, numRelTime: oldAnalysisRequest.numRelTime, currentState: oldAnalysisRequest.currentState})
+        configCollection.add(configBBM);
     }
 
     /**
@@ -795,6 +800,7 @@ paper.on("link:options", function (cell) {
             // EVO.revertIntentionsText(graph.getElements(), paper);  
             var fileName = name + ".json";
             var obj = { graph: graph.toJSON() }; // Same structure as the other two save options
+            obj.version = "BloomingLeaf_2.0";
             download(fileName, stringifyCirc(obj));
             EVO.refresh(selectResult);
         }
