@@ -868,7 +868,8 @@ paper.on("link:options", function (cell) {
 
     //Show warning messages if use input invalid color
     $('#submit-color').on('click', function () {
-        if (Object.values(EVO.selfColorVisDict).some((v) => EVO.validateColor(v) == false)) { swal("Invalid Color", "", "error"); }
+        EVO.fillInDictionary()
+        if (Object.values(EVO.selfColorVisDict).some((v) => validateColor(v) == false)) { swal("Invalid Color", "", "error"); }
     });
 
     /**
@@ -1073,7 +1074,6 @@ function highlightPalette(paletteOption) {
  * Validates if the input colors are hexcolor
  */
 function validateColor(color) {
-    const COLOR_PATTERN = new RegExp("^(#[a-zA-Z0-9]{6})$");
+    const COLOR_PATTERN = new RegExp("^(#[a-fA-F0-9]{6})$");
     return COLOR_PATTERN.test(color);
 }
-

@@ -93,6 +93,7 @@ class EVO {
         EVO.colorVisDict2,
         EVO.colorVisDict3,
         EVO.colorVisDict4,
+        EVO.selfColorVisDict
     ];
 
     /**
@@ -536,27 +537,6 @@ class EVO {
             document.getElementById("my-FF").value = EVO.colorVisDictCollection[EVO.paletteOption - 1]["1111"];
             return EVO.colorVisDictCollection[EVO.paletteOption - 1][intentionEval];
         }
-
-        //Update user created palette with user input
-        if (EVO.paletteOption == 5) {
-            EVO.selfColorVisDict = {
-                "0000": document.getElementById("my-None").value,
-                "0011": document.getElementById("my-Satisfied").value,
-                "0010": document.getElementById("my-PS").value,
-                "0100": document.getElementById("my-PD").value,
-                "0110": document.getElementById("my-PP").value,
-                "0111": document.getElementById("my-FP").value,
-                "1100": document.getElementById("my-Denied").value,
-                "1110": document.getElementById("my-PF").value,
-                "1111": document.getElementById("my-FF").value
-            };
-
-            //Use the palette only all colors are valid hex colors.
-            if (Object.values(EVO.selfColorVisDict).every((v) => EVO.validateColor(v) == true)) {
-            return EVO.selfColorVisDict[intentionEval];
-
-            } else { swal("Invalid Color", "", "error"); }
-        }
     }
 
     static validateColor(color) {
@@ -619,6 +599,25 @@ class EVO {
     static toggleColorBlindMode(isTurningOnColorBlindMode, analysisResult) {
         EVO.isColorBlindMode = isTurningOnColorBlindMode;
         EVO.refresh(analysisResult);
+    }
+
+    /**
+     * Fill in self-dictionary
+     */
+    static fillInDictionary() {
+        if (EVO.paletteOption == 5) {
+            EVO.selfColorVisDict = {
+                "0000": document.getElementById("my-None").value,
+                "0011": document.getElementById("my-Satisfied").value,
+                "0010": document.getElementById("my-PS").value,
+                "0100": document.getElementById("my-PD").value,
+                "0110": document.getElementById("my-PP").value,
+                "0111": document.getElementById("my-FP").value,
+                "1100": document.getElementById("my-Denied").value,
+                "1110": document.getElementById("my-PF").value,
+                "1111": document.getElementById("my-FF").value
+            }
+        }    
     }
 }
 
@@ -817,4 +816,6 @@ class EVONextState {
             }
         }
     }
+
+
 }
