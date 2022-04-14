@@ -998,10 +998,6 @@
                 break;
             }
         }
-
-        // Call function to reset number of solutions after removing filter
-        intentionFilter(true);
-        console.log(filterIntentionList);
     }
 
     function filter_helper(intention) {
@@ -1027,8 +1023,8 @@
                }
            }
        }
-       console.log(filterOrderQueue);
 
+       // If the function is called from intention filter, add filter to array 
        if (intention) {
             // 4 digit sat value code selected from dropdown menu
             var desiredSatVal = $("#sat-value").val();
@@ -1061,15 +1057,13 @@
             console.log("little filters")
             intentionFilter(false, tempResults2)
         }
-
-        console.log(filterOrderQueue.length)
+        // If there are any model filters, run function that finds correct solutions
         if (filterOrderQueue.length != 0) {
             console.log("big filters")
             add_filter(tempResults2)
         } 
         // If there are no filters applied, reset to original results and render it
         if (filterOrderQueue.length == 0 && filterIntentionList.length == 0) {
-            console.log("hi")
             $("body").removeClass("spinning"); // Remove spinner from cursor
             // Creates array with all Solutions from new hashmap
             combineAllSolutions();
