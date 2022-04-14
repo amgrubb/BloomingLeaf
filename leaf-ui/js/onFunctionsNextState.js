@@ -30,6 +30,8 @@ $(".inspectorFilterTable").on('mousedown', '.table-btn-small', function (event) 
     var intentionToBeRemoved = $(this).closest('tr');
     removeIntentionFilter(intentionToBeRemoved); 
 })
+$("#clear-all").on('mousedown', function () { removeAllIntentionFilters() });
+$("#clear-all").on('mouseup', function () { $(".inspectorFilterTable tr").remove(); });
 
 /**
  * Highlight an individual cell upon clicking
