@@ -338,31 +338,8 @@
      * This function checks which boxes in next State have been checked/unchecked and shows the correct results
      * based on this. The first switch case has been documented with comments.
      */
-    function add_filter(tempResults2) {
+    function add_filter(tempResults) {
         console.log("clicked");
-        // // Everytime a box is clicked/unclicked the results are reset
-        // myInputJSObject.results = originalResults;
-        // // Deep copy of results so it doesn't contain references to the original object
-        // tempResults = $.extend(true, {}, myInputJSObject.results);
-
-        tempResults = tempResults2;
-
-        var checkboxes = document.getElementsByClassName("filter_checkbox");
-        for (var i = 0; i < checkboxes.length; i++) {
-            var checkbox = checkboxes[i];
-            // check if something is just checked
-            if (checkbox.checked) {
-                if (filterOrderQueue.indexOf(checkbox.id) == -1) {
-                    filterOrderQueue.push(checkbox.id);
-                }
-            }
-            // check if something is just unchecked
-            else {
-                if (filterOrderQueue.indexOf(checkbox.id) != -1) {
-                    filterOrderQueue.splice(filterOrderQueue.indexOf(checkbox.id), 1);
-                }
-            }
-        }
         console.log(filterOrderQueue);
 
         // Iterates over all of the boxes that have been checked
@@ -807,7 +784,7 @@
      * This function allows you to filter the next state solutions
      * by specific satisfacion values for specific intentions
      */
-    function intentionFilter(remove, tempResults2) {
+    function intentionFilter(tempResults) {
         console.log("Intention filter clicked");
 
         // Clears previous html table entries
@@ -815,44 +792,11 @@
         // Appends the headings back to the table
         $(".inspectorFilterTable").append('<tr class ="tableHeading"><th class="tableHeading">Intention Name</th><th class="tableHeading">Satisfaction Value</th><th class="tableHeading">Remove</th></tr>');
 
-        // // Everytime a filter is applied the results are reset
-        // myInputJSObject.results = originalResults;
-        // // Deep copy of results so it doesn't contain references to the original object
-        // tempResults2 = $.extend(true, {}, myInputJSObject.results);
         // Sets the solution array to empty so only correct solutions can be added
         for (var solutionArray in originalResults.get('allSolutions')) {
-            tempResults2.get('allSolutions')[solutionArray] = [];
+            tempResults.get('allSolutions')[solutionArray] = [];
         }
-
-        // If function is not called from removeIntentionFilter() push filter onto array
-        if(!remove) {
-            // // 4 digit sat value code selected from dropdown menu
-            // var desiredSatVal = $("#sat-value").val();
-
-            // // filterIntentionArray = [[id, [sat vals]], [id, [sat vals]], ...]
-            // // If empty, create new array and push filter
-            // if (filterIntentionList.length != 0) {
-            //     // Iterate over the filters and check if the selected intention already has a filter applied
-            //     for (var i = 0; i < filterIntentionList.length; i++) {
-            //         if (filterIntentionList[i][0].includes(selectedIntention)) {
-            //             // Push new filter sat value to already existing array of filter sat vals
-            //             filterIntentionList[i][1].push(desiredSatVal);
-            //             // Break once added so else if is not run
-            //             break;
-            //         } else if (i == filterIntentionList.length-1) {
-            //             // If the selected intention does not have a filter applied push new entry to array
-            //             filterIntentionList.push([selectedIntention, [desiredSatVal]]);
-            //             // Break once added so for loop does not iterate over new entry 
-            //             break; 
-            //         }
-            //     }
-            // } else {
-            //     filterIntentionList = [];
-            //     filterIntentionList.push([selectedIntention, [desiredSatVal]]);
-            // }
-        }
-        console.log(filterIntentionList);
-
+  
         // Iterates over every key/value pair in the hashmap
         for (var solutionArray in originalResults.get('allSolutions')) {
             // Iterates over all of the solutions in the key/value pair 
@@ -872,8 +816,8 @@
                     // This is the last filter in the array (AKA the solution is true for every filter)
                     if (filterIntentionList[i][1].includes(value) && i == filterIntentionList.length-1) {
                         
-                        // Push the solution to tempResults2
-                        tempResults2.get('allSolutions')[solutionArray].push(originalResults.get('allSolutions')[solutionArray][solution_index])
+                        // Push the solution to tempResults
+                        tempResults.get('allSolutions')[solutionArray].push(originalResults.get('allSolutions')[solutionArray][solution_index])
                                        
                     } else if (!filterIntentionList[i][1].includes(value)) {
                         // If the solution value is not in the array of sat values break for loop
@@ -930,7 +874,7 @@
     }
             
     // Set the new results with filters as the analysis object
-    myInputJSObject.results = tempResults2;
+    myInputJSObject.results = tempResults;
     // Creates array with all Solutions from new hashmap
     combineAllSolutions();
     renderNavigationSidebar();
@@ -1000,32 +944,36 @@
         }
     }
 
+    /**
+     * Helper function so the two filtering functions are integrated together
+     * @param {Boolean} intention 
+     */
     function filter_helper(intention) {
-        console.log(intention)
-       // Everytime a filter is applied the results are reset
-       myInputJSObject.results = originalResults;
-       // Deep copy of results so it doesn't contain references to the original object
-       tempResults2 = $.extend(true, {}, myInputJSObject.results);
-       
-       var checkboxes = document.getElementsByClassName("filter_checkbox");
-       for (var i = 0; i < checkboxes.length; i++) {
-           var checkbox = checkboxes[i];
-           // check if something is just checked
-           if (checkbox.checked) {
-               if (filterOrderQueue.indexOf(checkbox.id) == -1) {
-                   filterOrderQueue.push(checkbox.id);
-               }
-           }
-           // check if something is just unchecked
-           else {
-               if (filterOrderQueue.indexOf(checkbox.id) != -1) {
-                   filterOrderQueue.splice(filterOrderQueue.indexOf(checkbox.id), 1);
-               }
-           }
-       }
+        // Everytime a filter is applied the results are reset
+        myInputJSObject.results = originalResults;
+        // Deep copy of results so it doesn't contain references to the original object
+        tempResults = $.extend(true, {}, myInputJSObject.results);
+        
+        // Figures out which model filters are checked
+        var checkboxes = document.getElementsByClassName("filter_checkbox");
+        for (var i = 0; i < checkboxes.length; i++) {
+            var checkbox = checkboxes[i];
+            // check if something is just checked
+            if (checkbox.checked) {
+                if (filterOrderQueue.indexOf(checkbox.id) == -1) {
+                    filterOrderQueue.push(checkbox.id);
+                }
+            }
+            // check if something is just unchecked
+            else {
+                if (filterOrderQueue.indexOf(checkbox.id) != -1) {
+                    filterOrderQueue.splice(filterOrderQueue.indexOf(checkbox.id), 1);
+                }
+            }
+        }
 
-       // If the function is called from intention filter, add filter to array 
-       if (intention) {
+        // If the function is called from intention filter, add filter to array 
+        if (intention) {
             // 4 digit sat value code selected from dropdown menu
             var desiredSatVal = $("#sat-value").val();
 
@@ -1046,21 +994,22 @@
                         break; 
                     }
                 }
-            } else {
+            } else { // If the array doesn't exist, create array and push first filter
                 filterIntentionList = [];
                 filterIntentionList.push([selectedIntention, [desiredSatVal]]);
             }
-            intentionFilter(false, tempResults2)
-       }
-       // If function is called from model filter see if there are any intention filters that should be applied 
-       else if(filterIntentionList.length != 0) {
+            // Call function that finds correct solutions
+            intentionFilter(false, tempResults)
+        }
+        // If function is called from model filter see if there are any intention filters that should be applied 
+        else if (filterIntentionList.length != 0) {
             console.log("little filters")
-            intentionFilter(false, tempResults2)
+            intentionFilter(false, tempResults)
         }
         // If there are any model filters, run function that finds correct solutions
         if (filterOrderQueue.length != 0) {
             console.log("big filters")
-            add_filter(tempResults2)
+            add_filter(tempResults)
         } 
         // If there are no filters applied, reset to original results and render it
         if (filterOrderQueue.length == 0 && filterIntentionList.length == 0) {
