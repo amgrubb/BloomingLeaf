@@ -998,7 +998,7 @@
        myInputJSObject.results = originalResults;
        // Deep copy of results so it doesn't contain references to the original object
        tempResults2 = $.extend(true, {}, myInputJSObject.results);
-
+       
        var checkboxes = document.getElementsByClassName("filter_checkbox");
        for (var i = 0; i < checkboxes.length; i++) {
            var checkbox = checkboxes[i];
@@ -1050,9 +1050,18 @@
             intentionFilter(false, tempResults2)
         }
 
+        console.log(filterOrderQueue.length)
         if (filterOrderQueue.length != 0) {
             console.log("big filters")
             add_filter(tempResults2)
+        } 
+        // If there are no filters applied, reset to original results and render it
+        if (filterOrderQueue.length == 0 && filterIntentionList.length == 0) {
+            console.log("hi")
+            $("body").removeClass("spinning"); // Remove spinner from cursor
+            // Creates array with all Solutions from new hashmap
+            combineAllSolutions();
+            renderNavigationSidebar();
         }
     }
 
