@@ -31,9 +31,15 @@ $(".inspectorFilterTable").on('mousedown', '.table-btn-small', function () {
     removeIntentionFilter(intentionToBeRemoved);
     // Reset Number of solutions after filter is removed
     filter_helper(intention = false) 
+})
+$("#clear-all").on('click', function () { 
+    removeAllIntentionFilters()
+    $(".inspectorFilterTable tr").remove();
+    // Appends the headings back to the table
+    $(".inspectorFilterTable").append('<tr class ="tableHeading"><th class="tableHeading">Intention Name</th><th class="tableHeading">Satisfaction Value</th><th class="tableHeading">Remove</th></tr>');
+    // Reset Number of solutions after filter is removed
+    filter_helper(intention = false) 
 });
-$("#clear-all").on('mousedown', function () { removeAllIntentionFilters() });
-$("#clear-all").on('mouseup', function () { $(".inspectorFilterTable tr").remove(); });
 
 /**
  * Highlight an individual cell upon clicking
