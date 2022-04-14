@@ -937,6 +937,18 @@
     }
 
     /*
+    * This function allows you to remove all intention filters applied from the 
+    * list of intention filters when the clear all button is clicked
+    */
+    function removeAllIntentionFilters(){
+        // filterIntentionList = [[id, [sat vals]], [id, [sat vals]], ...]
+        // Go over filterIntentionList and remove all entries
+        for (var i = 0; i < filterIntentionList.length; i++) {
+            filterIntentionList.splice(i, 1);
+        }
+    }
+
+    /*
     * This function allows you to remove an intention's filter from the list
     * of intention filters when the remove button is clicked
     */
