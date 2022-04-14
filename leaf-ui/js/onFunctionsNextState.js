@@ -18,12 +18,8 @@ $('.filter_checkbox').on('click', function () { filter_helper(intention = false)
 $("#saveClose").on('click', function () { save_current_state(); });
 $("#exploreNextStates").on('click', function () { generate_next_states(); });
 $("#close").on('click', function () { window.close(); });
-$(window).resize(function () {
-    resizeWindow();
-});
-$("#filter-apply").on('mouseup', function () { 
-    filter_helper(intention = true);
-});
+$(window).resize(function () { resizeWindow(); });
+$("#filter-apply").on('mouseup', function () { filter_helper(intention = true); });
 $("#filter-apply").on('mousedown', function () { $("body").addClass("spinning"); });
 $(".inspectorFilterTable").on('mousedown', '.table-btn-small', function () { 
     $(this).closest('tr').remove(); 

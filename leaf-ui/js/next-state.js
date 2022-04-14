@@ -949,31 +949,31 @@
      * @param {Boolean} intention 
      */
     function filter_helper(intention) {
-       // Everytime a filter is applied the results are reset
-       myInputJSObject.results = originalResults;
-       // Deep copy of results so it doesn't contain references to the original object
-       tempResults = $.extend(true, {}, myInputJSObject.results);
-       
-       // Figures out which model filters are checked
-       var checkboxes = document.getElementsByClassName("filter_checkbox");
-       for (var i = 0; i < checkboxes.length; i++) {
-           var checkbox = checkboxes[i];
-           // check if something is just checked
-           if (checkbox.checked) {
-               if (filterOrderQueue.indexOf(checkbox.id) == -1) {
-                   filterOrderQueue.push(checkbox.id);
-               }
-           }
-           // check if something is just unchecked
-           else {
-               if (filterOrderQueue.indexOf(checkbox.id) != -1) {
-                   filterOrderQueue.splice(filterOrderQueue.indexOf(checkbox.id), 1);
-               }
-           }
-       }
+        // Everytime a filter is applied the results are reset
+        myInputJSObject.results = originalResults;
+        // Deep copy of results so it doesn't contain references to the original object
+        tempResults = $.extend(true, {}, myInputJSObject.results);
+        
+        // Figures out which model filters are checked
+        var checkboxes = document.getElementsByClassName("filter_checkbox");
+        for (var i = 0; i < checkboxes.length; i++) {
+            var checkbox = checkboxes[i];
+            // check if something is just checked
+            if (checkbox.checked) {
+                if (filterOrderQueue.indexOf(checkbox.id) == -1) {
+                    filterOrderQueue.push(checkbox.id);
+                }
+            }
+            // check if something is just unchecked
+            else {
+                if (filterOrderQueue.indexOf(checkbox.id) != -1) {
+                    filterOrderQueue.splice(filterOrderQueue.indexOf(checkbox.id), 1);
+                }
+            }
+        }
 
-       // If the function is called from intention filter, add filter to array 
-       if (intention) {
+        // If the function is called from intention filter, add filter to array 
+        if (intention) {
             // 4 digit sat value code selected from dropdown menu
             var desiredSatVal = $("#sat-value").val();
 
@@ -1000,9 +1000,9 @@
             }
             // Call function that finds correct solutions
             intentionFilter(false, tempResults)
-       }
-       // If function is called from model filter see if there are any intention filters that should be applied 
-       else if(filterIntentionList.length != 0) {
+        }
+        // If function is called from model filter see if there are any intention filters that should be applied 
+        else if (filterIntentionList.length != 0) {
             console.log("little filters")
             intentionFilter(false, tempResults)
         }
