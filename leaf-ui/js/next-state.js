@@ -1000,7 +1000,7 @@
         }
 
         // Call function to reset number of solutions after removing filter
-        intentionFilter(true);
+        intentionFilter(true, tempResults2);
         console.log(filterIntentionList);
     }
 
