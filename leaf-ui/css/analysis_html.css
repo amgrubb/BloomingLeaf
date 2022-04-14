@@ -276,6 +276,14 @@ body {
   font-size: 15px;
 }
 
+#clear-all {
+  width: 120px;
+  height: 25px;
+  background-color: #fffefe;
+  color: black;
+  font-size: 15px;
+}
+
 .disabled-filter-clicked{
   background-color: #6C7278 !important;
   box-shadow: inset 0 -2px #6C7278 !important;;
