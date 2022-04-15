@@ -338,9 +338,11 @@
      * This function checks which boxes in next State have been checked/unchecked and shows the correct results
      * based on this. The first switch case has been documented with comments.
      */
-    function add_filter(tempResults) {
+    function add_filter(tempResults2) {
         console.log("clicked");
         console.log(filterOrderQueue);
+
+        tempResults = tempResults2;
 
         // Iterates over all of the boxes that have been checked
         for (var i = 0; i < filterOrderQueue.length; i++) {
@@ -784,7 +786,7 @@
      * This function allows you to filter the next state solutions
      * by specific satisfacion values for specific intentions
      */
-    function intentionFilter(tempResults) {
+    function intentionFilter(tempResults2) {
         console.log("Intention filter clicked");
 
         // Clears previous html table entries
@@ -792,9 +794,10 @@
         // Appends the headings back to the table
         $(".inspectorFilterTable").append('<tr class ="tableHeading"><th class="tableHeading">Intention Name</th><th class="tableHeading">Satisfaction Value</th><th class="tableHeading">Remove</th></tr>');
 
+        console.log(tempResults2)
         // Sets the solution array to empty so only correct solutions can be added
         for (var solutionArray in originalResults.get('allSolutions')) {
-            tempResults.get('allSolutions')[solutionArray] = [];
+            tempResults2.get('allSolutions')[solutionArray] = [];
         }
   
         // Iterates over every key/value pair in the hashmap
@@ -816,8 +819,8 @@
                     // This is the last filter in the array (AKA the solution is true for every filter)
                     if (filterIntentionList[i][1].includes(value) && i == filterIntentionList.length-1) {
                         
-                        // Push the solution to tempResults
-                        tempResults.get('allSolutions')[solutionArray].push(originalResults.get('allSolutions')[solutionArray][solution_index])
+                        // Push the solution to tempResults2
+                        tempResults2.get('allSolutions')[solutionArray].push(originalResults.get('allSolutions')[solutionArray][solution_index])
                                        
                     } else if (!filterIntentionList[i][1].includes(value)) {
                         // If the solution value is not in the array of sat values break for loop
@@ -874,7 +877,7 @@
     }
             
     // Set the new results with filters as the analysis object
-    myInputJSObject.results = tempResults;
+    myInputJSObject.results = tempResults2;
     // Creates array with all Solutions from new hashmap
     combineAllSolutions();
     renderNavigationSidebar();
@@ -952,7 +955,7 @@
         // Everytime a filter is applied the results are reset
         myInputJSObject.results = originalResults;
         // Deep copy of results so it doesn't contain references to the original object
-        tempResults = $.extend(true, {}, myInputJSObject.results);
+        tempResults2 = $.extend(true, {}, myInputJSObject.results);
         
         // Figures out which model filters are checked
         var checkboxes = document.getElementsByClassName("filter_checkbox");
@@ -999,17 +1002,17 @@
                 filterIntentionList.push([selectedIntention, [desiredSatVal]]);
             }
             // Call function that finds correct solutions
-            intentionFilter(false, tempResults)
+            intentionFilter(tempResults2)
         }
         // If function is called from model filter see if there are any intention filters that should be applied 
         else if (filterIntentionList.length != 0) {
             console.log("little filters")
-            intentionFilter(false, tempResults)
+            intentionFilter(tempResults2)
         }
         // If there are any model filters, run function that finds correct solutions
         if (filterOrderQueue.length != 0) {
             console.log("big filters")
-            add_filter(tempResults)
+            add_filter(tempResults2)
         } 
         // If there are no filters applied, reset to original results and render it
         if (filterOrderQueue.length == 0 && filterIntentionList.length == 0) {
