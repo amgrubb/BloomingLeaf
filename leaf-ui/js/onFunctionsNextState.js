@@ -29,7 +29,8 @@ $(".inspectorFilterTable").on('mousedown', '.table-btn-small', function () {
     filter_helper(intention = false) 
 })
 $("#clear-all").on('click', function () { 
-    removeAllIntentionFilters()
+    // Remove all intention filters and reset array
+    filterIntentionList = [];
     $(".inspectorFilterTable tr").remove();
     // Appends the headings back to the table
     $(".inspectorFilterTable").append('<tr class ="tableHeading"><th class="tableHeading">Intention Name</th><th class="tableHeading">Satisfaction Value</th><th class="tableHeading">Remove</th></tr>');

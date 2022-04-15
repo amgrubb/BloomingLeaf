@@ -338,9 +338,11 @@
      * This function checks which boxes in next State have been checked/unchecked and shows the correct results
      * based on this. The first switch case has been documented with comments.
      */
-    function add_filter(tempResults) {
+    function add_filter(tempResults2) {
         console.log("clicked");
         console.log(filterOrderQueue);
+
+        tempResults = tempResults2;
 
         // Iterates over all of the boxes that have been checked
         for (var i = 0; i < filterOrderQueue.length; i++) {
@@ -784,7 +786,7 @@
      * This function allows you to filter the next state solutions
      * by specific satisfacion values for specific intentions
      */
-    function intentionFilter(tempResults) {
+    function intentionFilter(tempResults2) {
         console.log("Intention filter clicked");
 
         // Clears previous html table entries
@@ -794,7 +796,7 @@
 
         // Sets the solution array to empty so only correct solutions can be added
         for (var solutionArray in originalResults.get('allSolutions')) {
-            tempResults.get('allSolutions')[solutionArray] = [];
+            tempResults2.get('allSolutions')[solutionArray] = [];
         }
   
         // Iterates over every key/value pair in the hashmap
@@ -816,8 +818,8 @@
                     // This is the last filter in the array (AKA the solution is true for every filter)
                     if (filterIntentionList[i][1].includes(value) && i == filterIntentionList.length-1) {
                         
-                        // Push the solution to tempResults
-                        tempResults.get('allSolutions')[solutionArray].push(originalResults.get('allSolutions')[solutionArray][solution_index])
+                        // Push the solution to tempResults2
+                        tempResults2.get('allSolutions')[solutionArray].push(originalResults.get('allSolutions')[solutionArray][solution_index])
                                        
                     } else if (!filterIntentionList[i][1].includes(value)) {
                         // If the solution value is not in the array of sat values break for loop
@@ -874,22 +876,10 @@
     }
             
     // Set the new results with filters as the analysis object
-    myInputJSObject.results = tempResults;
+    myInputJSObject.results = tempResults2;
     // Creates array with all Solutions from new hashmap
     combineAllSolutions();
     renderNavigationSidebar();
-    }
-
-    /*
-    * This function allows you to remove all intention filters applied from the 
-    * list of intention filters when the clear all button is clicked
-    */
-    function removeAllIntentionFilters(){
-        // filterIntentionList = [[id, [sat vals]], [id, [sat vals]], ...]
-        // Go over filterIntentionList and remove all entries
-        for (var i = 0; i < filterIntentionList.length; i++) {
-            filterIntentionList.splice(i, 1);
-        }
     }
 
     /*
@@ -898,12 +888,12 @@
     */
     function removeIntentionFilter(intentionToBeRemoved) {
         console.log("Remove button clicked");
+        // Find the intention id for the filter that should be removed
         var selectedId = intentionToBeRemoved.attr('id');
-        console.log(selectedId);
+        // Find the satisfaction for the filter that should be removed
         var desiredSatVal = intentionToBeRemoved.find('td:eq(1)').text();
-        console.log(desiredSatVal);
 
-        // Finds corrects text sat value for table
+        // Finds corrects binary value for the satisfaction value
         switch (desiredSatVal) {
             case "None (⊥, ⊥)":
                 desiredSatVal = "0000";
@@ -927,7 +917,6 @@
                 desiredSatVal =  "error";   
                 break;
         }
-        console.log(desiredSatVal);
 
         // filterIntentionList = [[id, [sat vals]], [id, [sat vals]], ...]
         for (var i = 0; i < filterIntentionList.length; i++) {
@@ -935,7 +924,7 @@
                 // If there is only one filter applied to intention, delete whole entry
                 if (filterIntentionList[i][1].length == 1) {
                     filterIntentionList.splice(i, 1);
-                } else {
+                } else { // If there is more than one filter for that intention only remove the deleted filter
                     var index = filterIntentionList[i][1].indexOf(desiredSatVal);
                     filterIntentionList[i][1].splice(index, 1);
                 }
@@ -946,13 +935,13 @@
 
     /**
      * Helper function so the two filtering functions are integrated together
-     * @param {Boolean} intention 
+     * @param {Boolean} intention Whether the function is called from the intention filter button or not
      */
     function filter_helper(intention) {
         // Everytime a filter is applied the results are reset
         myInputJSObject.results = originalResults;
         // Deep copy of results so it doesn't contain references to the original object
-        tempResults = $.extend(true, {}, myInputJSObject.results);
+        tempResults2 = $.extend(true, {}, myInputJSObject.results);
         
         // Figures out which model filters are checked
         var checkboxes = document.getElementsByClassName("filter_checkbox");
@@ -999,17 +988,15 @@
                 filterIntentionList.push([selectedIntention, [desiredSatVal]]);
             }
             // Call function that finds correct solutions
-            intentionFilter(false, tempResults)
+            intentionFilter(tempResults2);
         }
         // If function is called from model filter see if there are any intention filters that should be applied 
         else if (filterIntentionList.length != 0) {
-            console.log("little filters")
-            intentionFilter(false, tempResults)
+            intentionFilter(tempResults2);
         }
         // If there are any model filters, run function that finds correct solutions
         if (filterOrderQueue.length != 0) {
-            console.log("big filters")
-            add_filter(tempResults)
+            add_filter(tempResults2);
         } 
         // If there are no filters applied, reset to original results and render it
         if (filterOrderQueue.length == 0 && filterIntentionList.length == 0) {
