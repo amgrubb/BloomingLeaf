@@ -537,6 +537,10 @@ class EVO {
             document.getElementById("my-FF").value = EVO.colorVisDictCollection[EVO.paletteOption - 1]["1111"];
             return EVO.colorVisDictCollection[EVO.paletteOption - 1][intentionEval];
         }
+        if (EVO.paletteOption == 5) {
+            EVO.fillInDictionary();
+            return EVO.selfColorVisDict[intentionEval];
+        }
     }
 
     static validateColor(color) {

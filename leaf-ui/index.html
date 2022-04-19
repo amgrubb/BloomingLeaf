@@ -93,11 +93,48 @@
                 <a id="color-palette-5">My Palette</a>
                 </div>
                 </div>
+        <!-- modeling mode slider: simple off/on option-->
+        <div class="EVO-whole-button" id="modelingSlider">
+            <!-- slider div -->
+            <input type="range" min="0" max="1" value="0" class="EVO-slider" id="colorReset">
+            <!-- makes slider -->
+            <p class="on-off" class="analysis-only"> Off &ensp; On</p>
+            <!--  on/off label -->
+        </div>
+        
+        
+        <!-- Analysis mode slider: option to fill by percentage of timepoints -->
+        <div class="EVO-whole-button" id='analysisSlider' style='display: none'>
+            <!-- slider div -->
+            <input type="range" min="0" max="3" value="0" class="EVO-slider" id="colorResetAnalysis">
+            <!-- makes slider -->
+            <!--<p id="top-label-analysis" style="display: inside">EVO</p>-->
+            <!-- sat slider label -->
+            <p class="on-off"> Off &ensp; % &ensp; Time &ensp; State </p> <!--  on/off label -->
+        </div>
+        
+        <!--This is the modal box of assignments-->
+        <button id="btn-view-assignment" class="btn model-only" style="position:relative; border-radius:none;">View
+            Assignments List</button>
+        
+        <!--This is the modal box of Intermediate Values-->
+        <button id="btn-view-intermediate" class="btn model-only">Intermediate
+            Values</button>
+        
+        
+        <!-- This is simulate path button-->
+        <button id="simulate-path-btn" class="btn analysis-only" style="border-radius: none; display: none" ;>Simulate
+            Path</button>
+        <!-- This is explore states button-->
+        <button id="next-state-btn" class="btn analysis-only" style="border-radius: none; display: none">Explore
+            States</button>
         <!-- EVO Create My Palette Table-->
-                <div id="color-input" class="modal" style="display: none;width: 1000px;">
-                    <div id="page-mask"></div>
+        <div id="color-input" class="modal" style="display: none;width: 1000px;">
+            <div id="page-mask"></div>
                     <div class="modal-content">
+                    
                         <div class="modal-header">
+
                             <span id="submit-color" class="close" onclick=" $('#color-input').css('display', 'none');">&times;</span>
                             <h2>Create My Palette</h2>
                         </div>
@@ -142,38 +179,9 @@
                             </table>
                         </div>
                     </div>
-                    </div>
-        <!-- modeling mode slider: simple off/on option-->
-        <div class="EVO-whole-button" id="modelingSlider">
-            <!-- slider div -->
-            <input type="range" min="0" max="1" value="0" class="EVO-slider" id="colorReset">
-            <!-- makes slider -->
-            <p class="on-off" class="analysis-only"> Off &ensp; On</p>
-            <!--  on/off label -->
         </div>
-
-
-        <!-- Analysis mode slider: option to fill by percentage of timepoints -->
-        <div class="EVO-whole-button" id='analysisSlider' style='display: none'>
-            <!-- slider div -->
-            <input type="range" min="0" max="3" value="0" class="EVO-slider" id="colorResetAnalysis">
-            <!-- makes slider -->
-            <!--<p id="top-label-analysis" style="display: inside">EVO</p>-->
-            <!-- sat slider label -->
-            <p class="on-off"> Off &ensp; % &ensp; Time &ensp; State </p> <!--  on/off label -->
-        </div>
-
-        <button id="btn-view-assignment" class="btn model-only" style="position:relative; border-radius:none;">View
-            Assignments List</button>
-        <!--This is the modal box of assignments-->
-        <button id="btn-view-intermediate" class="btn model-only">Intermediate
-            Values</button>
-        <!--This is the modal box of Intermediate Values-->
-
-        <button id="simulate-path-btn" class="btn analysis-only" style="border-radius: none; display: none" ;>Simulate
-            Path</button>
-        <button id="next-state-btn" class="btn analysis-only" style="border-radius: none; display: none">Explore
-            States</button>
+    
+    
         <!-- <div id="dropdown-model" class="dropdown analysis-only" style="display: none">
             <button id="modeling-btn" class="red-btn btn">Model</button>
             <div class="dropdown-toolbar">
