@@ -72,6 +72,7 @@
         });
         $('#filter-apply').prop('disabled', true);
         $('#filter-apply').addClass('disabled-filter-clicked')
+        $("#noteApply").show("fast");
         $('#paper').css("right", "0px");
         $('#paper').append(analysis.paperScroller.render().el);
         
@@ -974,6 +975,9 @@
                 // Iterate over the filters and check if the selected intention already has a filter applied
                 for (var i = 0; i < filterIntentionList.length; i++) {
                     if (filterIntentionList[i][0].includes(selectedIntention)) {
+                        if (filterIntentionList[i][1].includes(desiredSatVal)) { // If same filter being applied to one intention
+                            break;
+                        }
                         // Push new filter sat value to already existing array of filter sat vals
                         filterIntentionList[i][1].push(desiredSatVal);
                         // Break once added so else if is not run
