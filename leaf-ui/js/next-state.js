@@ -144,8 +144,6 @@
             currentPage = 0;
 
         //Set the currentState variable so it can be sent back to the original path
-        //var i = 0; analysis.intentions[i]
-        //for (let element of analysis.intentions) {
         for (var i = 0; i < analysis.intentions.length; i++) {
             satValue = allSolutionArray[currentPage][i];
             element = analysis.intentions[i];
@@ -186,7 +184,6 @@
             } else {
                 element.removeAttr(".satvalue/d");
             }
-            //i++;
         }
     }
 
