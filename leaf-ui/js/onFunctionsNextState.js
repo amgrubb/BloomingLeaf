@@ -71,6 +71,7 @@ function cellHighlight(pPaper) {
                     selectedIntention = cellView.model.attributes.id;
                 }
             }
+            
             // Update the current sat value in the intention filter whenever an intention is selected
             updateSatValueInfo(cellView.model, elementNum, originalResults2);
 
@@ -97,7 +98,12 @@ function updateSatValueInfo(model, elementNum, originalResults2) {
     $(".cell-attrs-text").val(model.attributes.intention.attributes.nodeName);
   
     // Fills in the current sat value text box
-    switch (originalResults2.get('allSolutions')["TNS-R"][parseInt($("#currentPage").val())][elementNum]) {
+    //console.log(originalResults2)
+    //console.log(allSolutionArray)
+    // originalResults2.get('allSolutions')["TNS-R"][parseInt($("#currentPage").val())][elementNum]
+    //console.log(originalResults2.get('allSolutions')["TNS-R"][parseInt($("#currentPage").val())][elementNum])
+    console.log(allSolutionArray[parseInt($("#currentPage").val())][elementNum])
+    switch (allSolutionArray[parseInt($("#currentPage").val())][elementNum]) {
         case "0000":
             return $(".cell-attrs-text2").val("None (⊥, ⊥)");
         case "0011":
