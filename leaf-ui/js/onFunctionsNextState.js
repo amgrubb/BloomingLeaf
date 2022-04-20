@@ -97,11 +97,6 @@ function updateSatValueInfo(model, elementNum, originalResults2) {
     $(".cell-attrs-text").val(model.attributes.intention.attributes.nodeName);
   
     // Fills in the current sat value text box
-    //console.log(originalResults2)
-    //console.log(allSolutionArray)
-    // originalResults2.get('allSolutions')["TNS-R"][parseInt($("#currentPage").val())][elementNum]
-    //console.log(originalResults2.get('allSolutions')["TNS-R"][parseInt($("#currentPage").val())][elementNum])
-    console.log(allSolutionArray[parseInt($("#currentPage").val())][elementNum])
     switch (allSolutionArray[parseInt($("#currentPage").val())][elementNum]) {
         case "0000":
             return $(".cell-attrs-text2").val("None (⊥, ⊥)");
