@@ -739,7 +739,7 @@ paper.on("link:options", function (cell) {
             if (config.selected) { // If selected is true
                 selectedConfig = config.name; // Record the name of config
             }
-            var configBBM = new ConfigBBM({ name: config.name, action: config.action, conflictLevel: config.conflictLevel, numRelTime: config.numRelTime, currentState: config.currentState, userAssignmentsList: config.userAssignmentsList, previousAnalysis: config.previousAnalysis, selected: config.selected })
+            var configBBM = new ConfigBBM({ name: config.name, action: config.action, conflictLevel: config.conflictLevel, numRelTime: config.numRelTime, currentState: config.currentState, previousAnalysis: config.previousAnalysis, selected: config.selected })
             if (config.results.length !== 0) { // Creates results if there applicable
                 var results = configBBM.get('results'); // Grabs the coolection from the configBBM
                 // Individually creates each ResultBBM and add to collection
@@ -769,6 +769,52 @@ paper.on("link:options", function (cell) {
         }
     }
 
+    function loadOldConfig(oldAnalysisRequest) {
+        var configBBM = new ConfigBBM({conflictLevel: oldAnalysisRequest.conflictLevel, numRelTime: oldAnalysisRequest.numRelTime, currentState: oldAnalysisRequest.currentState})
+        configCollection.add(configBBM);
+    }
+
+    /**
+     * 
+     * Set selectResult from functions outside of the parenthesis
+     * @param {*} result 
+     */
+    function setSelectResult(result) {
+        selectResult = result;
+    }
+
+    // Save the current graph and analysis (without results) to json file
+    $('#btn-save-analysis').on('click', function () {
+        var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
+        if (name) {
+            clearCycleHighlighting(selectResult);
+            EVO.deactivate();
+            var fileName = name + ".json";
+            var obj = getModelAnalysisJson(configCollection);
+            download(fileName, stringifyCirc(obj));
+        }
+    });
+
+    // Save the current graph and analysis (with results) to json file
+    $('#btn-save-all').on('click', function () {
+        var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
+        if (name) {
+            clearCycleHighlighting(selectResult);
+            EVO.deactivate();
+            var fileName = name + ".json";
+            var obj = getFullJson(configCollection);
+            download(fileName, stringifyCirc(obj));
+        }
+    });
+
+    // Workaround for load, activates a hidden input element
+    $('#btn-load').on('click', function () {
+        $('#loader').click();
+        // Sets EVO to off when you load a model
+        EVO.setSliderOption(0);
+        EVO.refreshSlider();
+    });
+
     $(window).resize(function () {
         var config = configCollection.findWhere({ selected: true });
         if (config !== undefined) {
@@ -793,6 +839,7 @@ paper.on("link:options", function (cell) {
             // EVO.revertIntentionsText(graph.getElements(), paper);  
             var fileName = name + ".json";
             var obj = { graph: graph.toJSON() }; // Same structure as the other two save options
+            obj.version = "BloomingLeaf_2.0";
             download(fileName, stringifyCirc(obj));
             EVO.refresh(selectResult);
         }
