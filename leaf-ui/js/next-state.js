@@ -70,6 +70,8 @@
             autoResizePaper: true,
             paper: analysis.paper
         });
+        $('#filter-apply').prop('disabled', true);
+        $('#filter-apply').addClass('disabled-filter-clicked')
         $('#paper').css("right", "0px");
         $('#paper').append(analysis.paperScroller.render().el);
         
