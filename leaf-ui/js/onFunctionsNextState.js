@@ -87,6 +87,7 @@ function cellHighlight(pPaper) {
             $('#filter-apply').addClass("disabled-filter-clicked")
             $("#noteApply").show("fast");
         });
+        $(".cell-attrs-text").val("N/A"); 
         $(".cell-attrs-text2").val("N/A"); 
     });
 }
