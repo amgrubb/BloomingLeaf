@@ -861,6 +861,12 @@ paper.on("link:options", function (cell) {
     $('#color-palette-5').on('click', function () { // Choose color palettes
         EVO.paletteOption = 5;
         highlightPalette(EVO.paletteOption);
+        EVO.refresh(undefined);
+    });
+
+    $('#color-palette-6').on('click', function () { // Choose color palettes
+        EVO.paletteOption = 6;
+        highlightPalette(EVO.paletteOption);
         //render a table
         $('#color-input').css("display", "");
         EVO.refresh(undefined);

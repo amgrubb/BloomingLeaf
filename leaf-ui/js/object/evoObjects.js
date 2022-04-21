@@ -28,6 +28,7 @@ class IntentionColorVis {
  * This order is created intentionally for the frontend. Please DO NOT change the order
  */
 class EVO {
+
     static colorVisDict = {
         "0000": "#D3D3D3", // None
         "0011": "#003fff", // Satisfied
@@ -38,6 +39,19 @@ class EVO {
         "1100": "#FF2600", // Fully denied
         "1110": "#ca2c92",
         "1111": "#0D0221"
+    };
+
+    // Replaces all conflicting evals with dark grey
+    static colorVisDictColorBlind = {
+        "0000": "#D3D3D3",
+        "0011": "#003fff",
+        "0010": "#8FB8DE",
+        "0100": "#fbaca8",
+        "0110": "#333333",
+        "0111": "#333333",
+        "1100": "#FF2600",
+        "1110": "#333333",
+        "1111": "#333333"
     };
     static colorVisDict2 = {
         "0000": "#bdaead",
@@ -85,6 +99,7 @@ class EVO {
         "1111": "undefined"
     };
 
+    
     /**
      * List of color visualization dictionaries
      */
@@ -93,6 +108,7 @@ class EVO {
         EVO.colorVisDict2,
         EVO.colorVisDict3,
         EVO.colorVisDict4,
+        EVO.colorVisDictColorBlind,
         EVO.selfColorVisDict
     ];
 
@@ -111,18 +127,7 @@ class EVO {
         5: "1111"
     };
 
-    // Replaces all conflicting evals with dark grey
-    static colorVisDictColorBlind = {
-        "0000": "#D3D3D3",
-        "0011": "#003fff",
-        "0010": "#8FB8DE",
-        "0100": "#fbaca8",
-        "0110": "#333333",
-        "0111": "#333333",
-        "1100": "#FF2600",
-        "1110": "#333333",
-        "1111": "#333333"
-    };
+    
 
     // Number of evaluation types
     static numEvals = Object.keys(EVO.colorVisDict).length + 1;
@@ -521,11 +526,9 @@ class EVO {
      * @param {String} intentionEval four digit code that corresponds to evidence pair (ex. 0011)
      */
     static getColor(intentionEval) {
-        if (EVO.isColorBlindMode) {
-            return EVO.colorVisDictColorBlind[intentionEval];
-        }
+
         //Assign intentions with chosen palette and set default values in Create My Palette the same as the chosen palette
-        if (EVO.paletteOption < 5) {
+        if (EVO.paletteOption < 6) {
             document.getElementById("my-None").value = EVO.colorVisDictCollection[EVO.paletteOption - 1]["0000"];
             document.getElementById("my-Satisfied").value = EVO.colorVisDictCollection[EVO.paletteOption - 1]["0011"];
             document.getElementById("my-PS").value = EVO.colorVisDictCollection[EVO.paletteOption - 1]["0010"];
@@ -537,7 +540,8 @@ class EVO {
             document.getElementById("my-FF").value = EVO.colorVisDictCollection[EVO.paletteOption - 1]["1111"];
             return EVO.colorVisDictCollection[EVO.paletteOption - 1][intentionEval];
         }
-        if (EVO.paletteOption == 5) {
+
+        if (EVO.paletteOption == 6) {
             EVO.fillInDictionary();
             return EVO.selfColorVisDict[intentionEval];
         }
