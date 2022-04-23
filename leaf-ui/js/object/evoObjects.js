@@ -609,7 +609,7 @@ class EVO {
      * Fill in self-dictionary
      */
     static fillInDictionary() {
-        if (EVO.paletteOption == 5) {
+        if (EVO.paletteOption == 6) {
             EVO.selfColorVisDict = {
                 "0000": document.getElementById("my-None").value,
                 "0011": document.getElementById("my-Satisfied").value,
@@ -736,17 +736,28 @@ class EVONextState {
             return EVO.colorVisDictColorBlind[intentionEval];
         }
 
-        if (EVONextState.paletteOption < 5) {
+        if (EVONextState.paletteOption < 6) {
 
             return EVO.colorVisDictCollection[EVONextState.paletteOption - 1][intentionEval];
         }
-        if (EVONextState.paletteOption == 5) {
+        if (EVONextState.paletteOption == 6) {
             var selfVis = myInputJSObject.results.get('colorVis').selfColorVisDict;
 
             return selfVis[intentionEval];
         }
 
     }
+
+
+    /**
+     * Validates if the input colors are hexcolor
+     */
+    static validateColor(color) {
+        const COLOR_PATTERN = new RegExp("^(#[a-fA-F0-9]{6})$");
+        return COLOR_PATTERN.test(color);
+    }
+
+
 
     /**
      * Creates a gradient for an intention in colorIntentionsByPercents()
