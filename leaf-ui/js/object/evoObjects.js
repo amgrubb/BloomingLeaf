@@ -30,15 +30,15 @@ class IntentionColorVis {
 class EVO {
 
     static colorVisDict = {
-        "0000": "#D3D3D3", // None
-        "0011": "#003fff", // Satisfied
-        "0010": "#8FB8DE", // Partially satisfied
-        "0100": "#fbaca8", // Partially denied
-        "0110": "#9400D3", // Conflict 
-        "0111": "#5946b2",
-        "1100": "#FF2600", // Fully denied
-        "1110": "#ca2c92",
-        "1111": "#0D0221"
+        "0000": "#D3D3D3", // None (⊥, ⊥)
+        "0011": "#003fff", // Satisfied (F, ⊥)
+        "0010": "#8FB8DE", // Partially satisfied (P, ⊥)
+        "0100": "#fbaca8", // Partially denied (⊥, P)
+        "0110": "#9400D3", // Conflict (P, P)
+        "0111": "#5946b2", // Conflict (F, P)
+        "1100": "#FF2600", // Fully denied (⊥, F)
+        "1110": "#ca2c92", // Conflict (P, F)
+        "1111": "#0D0221"  // Conflict (F, F)
     };
 
     // Replaces all conflicting evals with dark grey
@@ -547,10 +547,6 @@ class EVO {
         }
     }
 
-    static validateColor(color) {
-        const COLOR_PATTERN = new RegExp("^(#[a-zA-Z0-9]{6})$");
-        return COLOR_PATTERN.test(color);
-    }
     /**
      * Returns element color to based on element type
      */
@@ -751,8 +747,6 @@ class EVONextState {
         }
 
     }
-
-        //return EVO.colorVisDict[intentionEval]; }
 
     /**
      * Creates a gradient for an intention in colorIntentionsByPercents()
