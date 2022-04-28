@@ -69,13 +69,16 @@
     <div id="paper">
     </div>
 
+    <!-- Right Element Inspector Filter Sidebar --> >
     <div class="inspector" id="right-inspector2">
+        <!-- Information about Selected Intention -->
         <label>Intention Filter</label>
         <label style="font-size: 15px;">Node Name:</label>
         <textarea disabled class="cell-attrs-text" placeholder="N/A"></textarea>
         <label style="font-size: 15px;"> Current Sat Value:</label>
         <textarea disabled style = "margin-top: 10px;" class="cell-attrs-text2" placeholder="N/A"></textarea>
         <br>
+         <!-- Dropdown Satisfaction Menu -->
         <label style="font-size: 15px;">Satisfaction Value:</label>
         <select id="sat-value">
         <option value="(no value)"> (no value) </option>
@@ -85,8 +88,10 @@
         <option value="0100"> Partially Denied (⊥, P)</option>
         <option value="1100"> Denied (⊥, F)</option>
         </select>
+        <!-- Filter Apply Button -->
         <button style="margin-top:15px;" id="filter-apply" class="inspector-btn blue-btn">Apply</button>
         <p id="noteApply" style="text-align:center; color:lightcoral; font-size:0.7em;">Select an Intention to Apply Filter</p>
+         <!-- Table for all of the Applied Intention Filters -->
         <div class="inspectorFilterNames">
             <text class = "inspectorFilterNames">Applied Intention Filters</text>
             <table class = inspectorFilterTable>
@@ -97,6 +102,7 @@
                 </tr>
             </table>
             <label style="font-size: 13px;"><i>Remove all Intention filters</i></label>
+            <!-- Button to clear all filters -->
             <button style="margin-top:1px;" id="clear-all" class="inspector-btn">Clear All</button>
         </div>
     </div>
