@@ -616,20 +616,22 @@ select > .select-placeholder {
 }
 #colorResetAnalysis {
   position: relative;
-  top: -6px;
-  width: 92px; /* 92 */
+  top: -20px;
+  width: 90px; /* 120 */
 }
 .EVO-whole-button {
   cursor: pointer;
   display: inline-block;
   height: 35px;
-  width: 100px;
+  width: 50px;
   margin-top: 0px;
   margin-bottom: -20px;
   padding-top: 0px;
   padding-bottom: 0px;
 }
-
+#color-input{
+  top: 20px;
+}
 /* portion of the code from: https://www.w3schools.com/howto/howto_js_rangeslider.asp */
 .EVO-slider {
   -webkit-appearance: none;  /* Override default CSS styles */
@@ -645,11 +647,11 @@ select > .select-placeholder {
 }
 
 #modelingSlider {
-  width: 100px;
+  width: 65px;
 }
 
 #analysisSlider{
-  width: 140px;
+  width: 100px;
 }
 
 /* Mouse-over effects */
