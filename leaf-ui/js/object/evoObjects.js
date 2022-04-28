@@ -80,7 +80,7 @@ class EVO {
         "0000": "#D3D3D3",
         "0011": "#FFFF00",
         "0010": "#fcf5bb",
-        "0100": "#d09eff",
+        "0100": "#e0bfff",
         "0110": "#d37f00",
         "0111": "#d69d00",
         "1100": "#A020F0",
@@ -528,16 +528,16 @@ class EVO {
     static getColor(intentionEval) {
 
         //Assign intentions with chosen palette and set default values in Create My Palette the same as the chosen palette
-        if (EVO.paletteOption < 6) {
-            document.getElementById("my-None").value = EVO.colorVisDictCollection[EVO.paletteOption - 1]["0000"];
-            document.getElementById("my-Satisfied").value = EVO.colorVisDictCollection[EVO.paletteOption - 1]["0011"];
-            document.getElementById("my-PS").value = EVO.colorVisDictCollection[EVO.paletteOption - 1]["0010"];
-            document.getElementById("my-PD").value = EVO.colorVisDictCollection[EVO.paletteOption - 1]["0100"];
-            document.getElementById("my-PP").value = EVO.colorVisDictCollection[EVO.paletteOption - 1]["0110"];
-            document.getElementById("my-FP").value = EVO.colorVisDictCollection[EVO.paletteOption - 1]["0111"];
-            document.getElementById("my-Denied").value = EVO.colorVisDictCollection[EVO.paletteOption - 1]["1100"];
-            document.getElementById("my-PF").value = EVO.colorVisDictCollection[EVO.paletteOption - 1]["1110"];
-            document.getElementById("my-FF").value = EVO.colorVisDictCollection[EVO.paletteOption - 1]["1111"];
+        if (EVO.paletteOption < 5) {
+            $("#my-None").val(EVO.colorVisDictCollection[EVO.paletteOption - 1]["0000"]);
+            $("#my-Satisfied").val(EVO.colorVisDictCollection[EVO.paletteOption - 1]["0011"]);
+            $("#my-PS").val(EVO.colorVisDictCollection[EVO.paletteOption - 1]["0010"]);
+            $("#my-PD").val(EVO.colorVisDictCollection[EVO.paletteOption - 1]["0100"]);
+            $("#my-PP").val(EVO.colorVisDictCollection[EVO.paletteOption - 1]["0110"]);
+            $("#my-FP").val(EVO.colorVisDictCollection[EVO.paletteOption - 1]["0111"]);
+            $("#my-Denied").val(EVO.colorVisDictCollection[EVO.paletteOption - 1]["1100"]);
+            $("#my-PF").val(EVO.colorVisDictCollection[EVO.paletteOption - 1]["1110"]);
+            $("#my-FF").val(EVO.colorVisDictCollection[EVO.paletteOption - 1]["1111"]);
             return EVO.colorVisDictCollection[EVO.paletteOption - 1][intentionEval];
         }
 
@@ -699,6 +699,7 @@ class EVONextState {
      */
     static colorIntentionsByPercents() {
         var intentionPercents = [];
+
         allSolutionArray = [];      
         // Iterates over the hashmap allSolutions and combines all of the solutions into one array
         for (var key in myInputJSObject.results.get('allSolutions')) {

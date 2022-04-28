@@ -617,7 +617,7 @@ select > .select-placeholder {
 #colorResetAnalysis {
   position: relative;
   top: -20px;
-  width: 120px; /* 120 */
+  width: 90px; /* 120 */
 }
 .EVO-whole-button {
   cursor: pointer;
@@ -651,7 +651,7 @@ select > .select-placeholder {
 }
 
 #analysisSlider{
-  width: 140px;
+  width: 100px;
 }
 
 /* Mouse-over effects */
