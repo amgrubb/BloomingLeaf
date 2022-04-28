@@ -25,19 +25,92 @@ class IntentionColorVis {
 
 /**
  * Colors the nodes based on the different EVO types 
+ * This order is created intentionally for the frontend. Please DO NOT change the order
  */
 class EVO {
+
     static colorVisDict = {
+        "0000": "#D3D3D3", // None (⊥, ⊥)
+        "0011": "#003fff", // Satisfied (F, ⊥)
+        "0010": "#8FB8DE", // Partially satisfied (P, ⊥)
+        "0100": "#fbaca8", // Partially denied (⊥, P)
+        "0110": "#9400D3", // Conflict (P, P)
+        "0111": "#5946b2", // Conflict (F, P)
+        "1100": "#FF2600", // Fully denied (⊥, F)
+        "1110": "#ca2c92", // Conflict (P, F)
+        "1111": "#0D0221"  // Conflict (F, F)
+    };
+
+    // Replaces all conflicting evals with dark grey
+    static colorVisDictColorBlind = {
         "0000": "#D3D3D3",
         "0011": "#003fff",
         "0010": "#8FB8DE",
         "0100": "#fbaca8",
-        "0110": "#9400D3",
-        "0111": "#5946b2",
+        "0110": "#333333",
+        "0111": "#333333",
         "1100": "#FF2600",
-        "1110": "#ca2c92",
+        "1110": "#333333",
+        "1111": "#333333"
+    };
+    static colorVisDict2 = {
+        "0000": "#bdaead",
+        "0011": "#d11a2d",
+        "0010": "#e16c96",
+        "0100": "#6e8b74",
+        "0110": "#ffd111",
+        "0111": "#862617",
+        "1100": "#1a6840",
+        "1110": "#887322",
+        "1111": "#000000"
+    };
+    static colorVisDict3 = {
+        "0000": "#d3d3d3",
+        "0011": "#39ff14",
+        "0010": "#b3f2f0",
+        "0100": "#035096",
+        "0110": "#008ecc",
+        "0111": "#ba0098",
+        "1100": "#616161",
+        "1110": "#900091",
+        "1111": "#790604"
+    };
+
+    static colorVisDict4 = {
+        "0000": "#D3D3D3",
+        "0011": "#FFFF00",
+        "0010": "#fcf5bb",
+        "0100": "#e0bfff",
+        "0110": "#d37f00",
+        "0111": "#d69d00",
+        "1100": "#A020F0",
+        "1110": "#5946b2",
         "1111": "#0D0221"
     };
+    static selfColorVisDict = {//Initialize user-created-palette
+        "0000": "undefined",
+        "0011": "undefined",
+        "0010": "undefined",
+        "0100": "undefined",
+        "0110": "undefined",
+        "0111": "undefined",
+        "1100": "undefined",
+        "1110": "undefined",
+        "1111": "undefined"
+    };
+
+    
+    /**
+     * List of color visualization dictionaries
+     */
+    static colorVisDictCollection = [
+        EVO.colorVisDict,
+        EVO.colorVisDict2,
+        EVO.colorVisDict3,
+        EVO.colorVisDict4,
+        EVO.colorVisDictColorBlind,
+        EVO.selfColorVisDict
+    ];
 
     /**
      * Defines order of evaluations for filling intentions by %
@@ -54,18 +127,7 @@ class EVO {
         5: "1111"
     };
 
-    // Replaces all conflicting evals with dark grey
-    static colorVisDictColorBlind = {
-        "0000": "#D3D3D3",
-        "0011": "#003fff",
-        "0010": "#8FB8DE",
-        "0100": "#fbaca8",
-        "0110": "#333333",
-        "0111": "#333333",
-        "1100": "#FF2600",
-        "1110": "#333333",
-        "1111": "#333333"
-    };
+    
 
     // Number of evaluation types
     static numEvals = Object.keys(EVO.colorVisDict).length + 1;
@@ -73,6 +135,8 @@ class EVO {
     static curTimePoint = 0;
     // User selected slider option
     static sliderOption = 0;
+    // User selected color palette
+    static paletteOption = 1;
     // Whether color blind mode is activated
     static isColorBlindMode = false;
 
@@ -135,6 +199,8 @@ class EVO {
         this.intentionListColorVis = [];
         // Assessable in next state window 
         this.isColorBlind = EVO.isColorBlindMode;
+        this.paletteOption = EVO.paletteOption;
+        this.selfColorVisDict = EVO.selfColorVisDict;
         this.initializeIntentionList();
     }
 
@@ -147,7 +213,6 @@ class EVO {
         $('#modelingSlider').css("display", "none");
         $('#analysisSlider').css("display", "");
         document.getElementById("colorResetAnalysis").value = EVO.sliderOption;
-
         var percentPerEvaluation = 1.0 / this.numTimePoints;
 
         // Calculate evaluation percentages and other data for ColorVis
@@ -461,10 +526,25 @@ class EVO {
      * @param {String} intentionEval four digit code that corresponds to evidence pair (ex. 0011)
      */
     static getColor(intentionEval) {
-        if (EVO.isColorBlindMode) {
-            return EVO.colorVisDictColorBlind[intentionEval];
+
+        //Assign intentions with chosen palette and set default values in Create My Palette the same as the chosen palette
+        if (EVO.paletteOption < 5) {
+            $("#my-None").val(EVO.colorVisDictCollection[EVO.paletteOption - 1]["0000"]);
+            $("#my-Satisfied").val(EVO.colorVisDictCollection[EVO.paletteOption - 1]["0011"]);
+            $("#my-PS").val(EVO.colorVisDictCollection[EVO.paletteOption - 1]["0010"]);
+            $("#my-PD").val(EVO.colorVisDictCollection[EVO.paletteOption - 1]["0100"]);
+            $("#my-PP").val(EVO.colorVisDictCollection[EVO.paletteOption - 1]["0110"]);
+            $("#my-FP").val(EVO.colorVisDictCollection[EVO.paletteOption - 1]["0111"]);
+            $("#my-Denied").val(EVO.colorVisDictCollection[EVO.paletteOption - 1]["1100"]);
+            $("#my-PF").val(EVO.colorVisDictCollection[EVO.paletteOption - 1]["1110"]);
+            $("#my-FF").val(EVO.colorVisDictCollection[EVO.paletteOption - 1]["1111"]);
+            return EVO.colorVisDictCollection[EVO.paletteOption - 1][intentionEval];
         }
-        return EVO.colorVisDict[intentionEval];
+
+        if (EVO.paletteOption == 6) {
+            EVO.fillInDictionary();
+            return EVO.selfColorVisDict[intentionEval];
+        }
     }
 
     /**
@@ -524,6 +604,25 @@ class EVO {
         EVO.isColorBlindMode = isTurningOnColorBlindMode;
         EVO.refresh(analysisResult);
     }
+
+    /**
+     * Fill in self-dictionary
+     */
+    static fillInDictionary() {
+        if (EVO.paletteOption == 6) {
+            EVO.selfColorVisDict = {
+                "0000": document.getElementById("my-None").value,
+                "0011": document.getElementById("my-Satisfied").value,
+                "0010": document.getElementById("my-PS").value,
+                "0100": document.getElementById("my-PD").value,
+                "0110": document.getElementById("my-PP").value,
+                "0111": document.getElementById("my-FP").value,
+                "1100": document.getElementById("my-Denied").value,
+                "1110": document.getElementById("my-PF").value,
+                "1111": document.getElementById("my-FF").value
+            }
+        }    
+    }
 }
 
 class EVONextState {
@@ -536,7 +635,12 @@ class EVONextState {
     static setColorBlindFromPrevWindow() {     
         EVONextState.isColorBlindMode = myInputJSObject.results.get('colorVis').isColorBlind;
     }
-
+    /**
+     * This sets the color palette option to whatever it was in the previous window
+     */
+    static setColorPaletteFromPrevWindow() {
+        EVONextState.paletteOption = myInputJSObject.results.get('colorVis').paletteOption;
+    }
     /**
      * Sets new slider option and refreshes to make applicable changes
      * @param {String} newSliderOption 
@@ -595,6 +699,7 @@ class EVONextState {
      */
     static colorIntentionsByPercents() {
         var intentionPercents = [];
+
         allSolutionArray = [];      
         // Iterates over the hashmap allSolutions and combines all of the solutions into one array
         for (var key in myInputJSObject.results.get('allSolutions')) {
@@ -631,7 +736,29 @@ class EVONextState {
         if (EVONextState.isColorBlindMode) {
             return EVO.colorVisDictColorBlind[intentionEval];
         }
-        return EVO.colorVisDict[intentionEval]; }
+
+        if (EVONextState.paletteOption < 6) {
+
+            return EVO.colorVisDictCollection[EVONextState.paletteOption - 1][intentionEval];
+        }
+        if (EVONextState.paletteOption == 6) {
+            var selfVis = myInputJSObject.results.get('colorVis').selfColorVisDict;
+
+            return selfVis[intentionEval];
+        }
+
+    }
+
+
+    /**
+     * Validates if the input colors are hexcolor
+     */
+    static validateColor(color) {
+        const COLOR_PATTERN = new RegExp("^(#[a-fA-F0-9]{6})$");
+        return COLOR_PATTERN.test(color);
+    }
+
+
 
     /**
      * Creates a gradient for an intention in colorIntentionsByPercents()
@@ -703,4 +830,6 @@ class EVONextState {
             }
         }
     }
+
+
 }

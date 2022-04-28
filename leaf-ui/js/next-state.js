@@ -229,6 +229,7 @@
      */
     function renderEVO() {
         EVONextState.setColorBlindFromPrevWindow();
+        EVONextState.setColorPaletteFromPrevWindow();
         EVONextState.setSliderOptionNextState();
     }
 
