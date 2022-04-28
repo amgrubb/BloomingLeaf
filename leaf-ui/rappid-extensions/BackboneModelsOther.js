@@ -45,6 +45,7 @@ var LinkBBM = Backbone.Model.extend({
 
 });
 
+//TODO: Determine if we still need this.
 /** 
  * Backbone Model of Constraints
  */
