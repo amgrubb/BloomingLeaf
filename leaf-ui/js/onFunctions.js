@@ -228,7 +228,7 @@ $('#analysis-btn').on('click', function () {
     var cycleList = cycleSearch();
     // Alerts user if there are any cycles 
     cycleResponse(cycleList);
-    if (!isACycle(cycleList) && !isError) {
+    if (!isACycle(cycleList) && !isError && hasElements()) {
         clearCycleHighlighting();
         switchToAnalysisMode();
     }
@@ -484,6 +484,8 @@ paper.on('blank:pointerclick', function () {
     removeHighlight();
     if ($('.analysis-only').css("display") == "none") {
         clearInspector();
+    } else {
+        setName();
     }
 });
 
@@ -620,14 +622,6 @@ paper.on("link:options", function (cell) {
         // Disable link settings
         $('.link-tools').css("display", "none");
 
-        EVO.refresh(selectResult);
-
-        var configResults = configCollection.findWhere({ selected: true }).get('results');
-        if (configResults !== undefined) {
-            selectResult = configResults.findWhere({ selected: true });
-        }
-        EVO.refresh(selectResult);
-
         // TODO: Add check for model changes to potentially clear configCollection back in
     }
 
@@ -693,38 +687,6 @@ paper.on("link:options", function (cell) {
         // Delete cookie by setting expiry to past date
         document.cookie = 'graph={}; expires=Thu, 18 Dec 2013 12:00:00 UTC';
     }
-
-    // Save the current graph and analysis (without results) to json file
-    $('#btn-save-analysis').on('click', function () {
-        var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
-        if (name) {
-            clearCycleHighlighting(selectResult);
-            EVO.deactivate();
-            var fileName = name + ".json";
-            var obj = getModelAnalysisJson(configCollection);
-            download(fileName, stringifyCirc(obj));
-        }
-    });
-
-    // Save the current graph and analysis (with results) to json file
-    $('#btn-save-all').on('click', function () {
-        var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
-        if (name) {
-            clearCycleHighlighting(selectResult);
-            EVO.deactivate();
-            var fileName = name + ".json";
-            var obj = getFullJson(configCollection);
-            download(fileName, stringifyCirc(obj));
-        }
-    });
-
-    // Workaround for load, activates a hidden input element
-    $('#btn-load').on('click', function () {
-        $('#loader').click();
-        // Sets EVO to off when you load a model
-        EVO.setSliderOption(0);
-        EVO.refreshSlider();
-    });
 
     // Load ConfigCollection for display 
     // TODO: modify it to read results after results can be shown
@@ -850,13 +812,19 @@ paper.on("link:options", function (cell) {
         for (let element of graph.getElements()) {
             var cell = element.findView(paper).model;
             var intention = cell.get('intention');
-            var initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair');
-            var funcType = intention.get('evolvingFunction').get('type');
+
+            if (intention != null) {
+                var initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair');
+                if (intention.get('evolvingFunction') != null) {
+                    var funcType = intention.get('evolvingFunction').get('type');
+                }
+            }
 
             // If the initsatVal is not empty and if funcType empty
             if (intention != null && initSatVal != '(no value)' && funcType === 'NT') {
                 intention.removeInitialSatValue();
                 cell.attr(".satvalue/text", "");
+                $('#init-sat-value').val('(no value)');
             }
         }
         EVO.refresh(selectResult);
@@ -887,14 +855,7 @@ paper.on("link:options", function (cell) {
      * Four option analysis mode slider
      */
     document.getElementById("colorResetAnalysis").oninput = function () { // Changes slider mode and refreshes
-        var selectConfig;
-        //TODO: Find out why the selectResult is empty before we reassign it
-        if (configCollection.length !== 0) {
-            selectConfig = configCollection.filter(Config => Config.get('selected') == true)[0];
-            if (selectConfig.get('results') !== undefined) {
-                selectResult = selectConfig.get('results').filter(resultModel => resultModel.get('selected') == true)[0];
-            }
-        }
+
         EVO.setSliderOption(this.value, selectResult);
     }
 } // End scope of configCollection and configInspector
@@ -950,6 +911,13 @@ function clearInspector() {
     if ($('.inspector-views').length != 0) {
         $('.inspector-views').trigger('clearInspector');
     }
+}
+
+/**
+ * Trigger setConfigName outside ConfigInspector 
+ */
+ function setName() {
+    $('.config-input').trigger('outsideSetName');
 }
 
 /**
