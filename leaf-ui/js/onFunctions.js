@@ -823,45 +823,53 @@ paper.on("link:options", function (cell) {
         EVO.refresh(selectResult);
     });
 
-    $('#colorblind-mode-isOff').on('click', function () { // Activates colorblind mode
-        $('#colorblind-mode-isOff').css("display", "none");
-        $('#colorblind-mode-isOn').css("display", "");
-        EVO.toggleColorBlindMode(true, selectResult);
-    });
-
-    $('#colorblind-mode-isOn').on('click', function () { // Turns off colorblind mode
-        $('#colorblind-mode-isOn').css("display", "none");
-        $('#colorblind-mode-isOff').css("display", "");
-        EVO.toggleColorBlindMode(false, selectResult);
-    });
-
     $('#color-palette-1').on('click', function () { // Choose color palettes
         EVO.paletteOption = 1;
         highlightPalette(EVO.paletteOption);
-        EVO.refresh(undefined);
+        if ($('#analysisSlider').css("display") == "none") {
+            EVO.refresh(undefined);
+        } else {
+            EVO.refresh(selectResult);
+        }
     });
 
     $('#color-palette-2').on('click', function () { // Choose color palettes
         EVO.paletteOption = 2;
         highlightPalette(EVO.paletteOption);
-        EVO.refresh(undefined);
+        if ($('#analysisSlider').css("display") == "none") {
+            EVO.refresh(undefined);
+        } else {
+            EVO.refresh(selectResult);
+        }
     });
     $('#color-palette-3').on('click', function () { // Choose color palettes
         EVO.paletteOption = 3;
         highlightPalette(EVO.paletteOption);
-        EVO.refresh(undefined);
+        if ($('#analysisSlider').css("display") == "none") {
+            EVO.refresh(undefined);
+        } else {
+            EVO.refresh(selectResult);
+        }
     });
 
     $('#color-palette-4').on('click', function () { // Choose color palettes
         EVO.paletteOption = 4;
         highlightPalette(EVO.paletteOption);
-        EVO.refresh(undefined);
+        if ($('#analysisSlider').css("display") == "none") {
+            EVO.refresh(undefined);
+        } else {
+            EVO.refresh(selectResult);
+        }
     });
 
     $('#color-palette-5').on('click', function () { // Choose color palettes
         EVO.paletteOption = 5;
         highlightPalette(EVO.paletteOption);
-        EVO.refresh(undefined);
+        if ($('#analysisSlider').css("display") == "none") {
+            EVO.refresh(undefined);
+        } else {
+            EVO.refresh(selectResult);
+        }
     });
 
     $('#color-palette-6').on('click', function () { // Choose color palettes
@@ -869,7 +877,11 @@ paper.on("link:options", function (cell) {
         highlightPalette(EVO.paletteOption);
         //render a table
         $('#color-input').css("display", "");
-        EVO.refresh(undefined);
+        if ($('#analysisSlider').css("display") == "none") {
+            EVO.refresh(undefined);
+        } else {
+            EVO.refresh(selectResult);
+        }
     });
 
     //Show warning messages if use input invalid color
