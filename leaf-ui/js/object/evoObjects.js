@@ -324,20 +324,18 @@ class EVO {
         var satVal;
         var intention;
         var initSatVal;
+        var actor = 0; // Counts the number of actor 
 
         // Shows .satvalue automatically
         $('.satvalue').css("display", "");
 
         for (var i = 0; i < elements.length; i++) {
             curr = elements[i].findView(paper).model;
-
-            if (curr.attributes.type !== 'basic.Goal' &&
-                curr.attributes.type !== 'basic.Task' &&
-                curr.attributes.type !== 'basic.Softgoal' &&
-                curr.attributes.type !== 'basic.Resource') {
+            if (curr.get('type') == 'basic.Actor') {
+                actor++;
                 continue;
             }
-
+            
             // Sets satvalue/text to the initSatVal
             intention = curr.get('intention');
             initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair');
@@ -360,7 +358,7 @@ class EVO {
                     if (EVO.sliderOption == 3) {
                         // Resets the satvalue back
                         colorVis = analysisResult.get('colorVis');
-                        satVal = colorVis.intentionListColorVis[i].timePoints[EVO.curTimePoint];
+                        satVal = colorVis.intentionListColorVis[i-actor].timePoints[EVO.curTimePoint]; // Subtract actor from i to find intentionListColorVis for elements only
                         curr.attr('.satvalue/text', satisfactionValuesDict[satVal].satValue);
                         EVO.displaySlider(true);
                     }
