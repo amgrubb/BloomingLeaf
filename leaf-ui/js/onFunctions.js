@@ -908,7 +908,14 @@ paper.on("link:options", function (cell) {
      * Four option analysis mode slider
      */
     document.getElementById("colorResetAnalysis").oninput = function () { // Changes slider mode and refreshes
-
+        var selectConfig;
+        //TODO: Find out why the selectResult is empty before we reassign it
+        if (configCollection.length !== 0) {
+            selectConfig = configCollection.filter(Config => Config.get('selected') == true)[0];
+            if (selectConfig.get('results') !== undefined) {
+                selectResult = selectConfig.get('results').filter(resultModel => resultModel.get('selected') == true)[0];
+            }
+        }
         EVO.setSliderOption(this.value, selectResult);
     }
 } // End scope of configCollection and configInspector
