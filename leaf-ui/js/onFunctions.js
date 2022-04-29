@@ -317,7 +317,7 @@ graph.on("add", function (cell) {
 
     resetConfig()
     // Trigger click on cell to highlight, activate inspector, etc. 
-    paper.trigger("cell:pointerup", cell.findView(paper));
+   paper.trigger("cell:pointerup", cell.findView(paper));
 });
 
 // Auto-save the cookie whenever the graph is changed.
@@ -538,6 +538,7 @@ paper.on("link:options", function (cell) {
 
         // If single path has been run backend analysis
         if (singlePathRun === true) {
+            $("body").addClass("spinning"); // Adds spinner animation to page
             var curResult = curRequest.previousAttributes().results.findWhere({ selected: true });
             curRequest.set('action', 'allNextStates');
             curRequest.set('previousAnalysis', curResult);
@@ -555,7 +556,6 @@ paper.on("link:options", function (cell) {
         } else { // If single path has not been run show error message
             swal("Error: Cannot explore next states before simulating a single path.", "", "error");
         }
-        
     });
 
     function resetConfig() {
@@ -621,6 +621,7 @@ paper.on("link:options", function (cell) {
 
         // Disable link settings
         $('.link-tools').css("display", "none");
+
         // TODO: Add check for model changes to potentially clear configCollection back in
     }
 
@@ -811,7 +812,7 @@ paper.on("link:options", function (cell) {
         for (let element of graph.getElements()) {
             var cell = element.findView(paper).model;
             var intention = cell.get('intention');
-            
+
             if (intention != null) {
                 var initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair');
                 if (intention.get('evolvingFunction') != null) {
@@ -907,6 +908,14 @@ paper.on("link:options", function (cell) {
      * Four option analysis mode slider
      */
     document.getElementById("colorResetAnalysis").oninput = function () { // Changes slider mode and refreshes
+        var selectConfig;
+        //TODO: Find out why the selectResult is empty before we reassign it
+        if (configCollection.length !== 0) {
+            selectConfig = configCollection.filter(Config => Config.get('selected') == true)[0];
+            if (selectConfig.get('results') !== undefined) {
+                selectResult = selectConfig.get('results').filter(resultModel => resultModel.get('selected') == true)[0];
+            }
+        }
         EVO.setSliderOption(this.value, selectResult);
     }
 } // End scope of configCollection and configInspector
@@ -964,9 +973,8 @@ function clearInspector() {
     }
 }
 
-
 /**
- * Trigger setConfigName outside ConfigInspector
+ * Trigger setConfigName outside ConfigInspector 
  */
  function setName() {
     $('.config-input').trigger('outsideSetName');
@@ -998,7 +1006,7 @@ function checkForMultipleNB(element) {
  * @param {String} msg 
  * @param {Number} width 
  * @param {String} promptMsgType 
- * @param {Sting} type 
+ * @param {String} type 
  * @returns joint.ui.Dialog box
  */
 function showAlert(title, msg, width, promptMsgType, type) {
@@ -1055,7 +1063,7 @@ function revertNodeValuesToInitial(analysisResult) {
         } else {
             curr.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
         }
-        curr.attr({ text: { fill: 'black', stroke: 'none'} });
+        curr.attr({ text: { fill: 'black', stroke: 'none', 'font-weight': 'normal', 'font-size': 10 } });
     }
     // Remove slider
     if (analysisResult !== undefined) {

@@ -7,14 +7,8 @@
 */
 
 body {
-  -webkit-user-select: none;
-  -moz-user-select: -moz-none;
-  -khtml-user-select: none;
-  -ms-user-select: none;
   user-select: none;
-  margin: 0;
-  padding: 0;
-  font-family: Arial;
+  font-family: 'Trebuchet MS';
 }
 
 /* Disable pointer events */
@@ -33,10 +27,6 @@ body {
    padding: 0px;
 }
 
-#swal2-content b{
-  color: red;
-}
-
 #name {
   position: absolute;
   top: 0px;
@@ -46,7 +36,7 @@ body {
   height: 40px;
   text-align: center;
   margin: 0;
-  padding-top: 8px;
+  padding-top: 10px;
   background-color: #333;
   color: #CCFFCC;
   font-size: 1.4em;
@@ -58,8 +48,7 @@ body {
   display: inline-block;
 }
 
-.dropdown:hover .dropdown-toolbar,
-.dropdown:hover .dropdown-inspector {
+.dropdown:hover .dropdown-toolbar {
    display: block;
 }
 
@@ -106,9 +95,9 @@ body {
 .left-panel{
   position: absolute;
   left: 0;
-  top: 40px;
+  top: 45px;
   bottom: 0;
-  width: 200px;
+  width: 205px;
   overflow-y: scroll;
   background-color: #f9f9f9;
   box-shadow: 2px 0px 16px 0px rgba(0,0,0,0.2);
@@ -116,215 +105,98 @@ body {
   z-index: 0;
 }
 
-.stencil {
-  position: absolute;
-  left: 0;
-  top: 14px;
-  bottom: 0;
-  right: 0;
-  width: 100%;
-  border: none;
-}
-
-.stencil .elements {
-  height: 380px;
-  text-shadow: none;
-  background-color: transparent;
+/* Hides the left panel scroll bar */
+.left-panel::-webkit-scrollbar {
+  display: none;
 }
 
 .left-panel label {
   display: block;
   text-align: center;
-  font-size: 12px;
-  line-height: 18px;
+  font-size: 15px;
   height: 18px;
-
-  background-color: #333;
   color: #bcbcbc;
-  text-shadow: 0 -1px 0 #000;
-  background-color: rgba(90, 90, 90, 1);
 }
 
 /* Right Panel */
 .inspector {
-  left: auto;
+  position: absolute;
+  right: 0px;
   top: 40px;
-  width: 240px;
-  padding: 10px;
-
+  bottom: 0px;
+  width: 260px;
+  overflow-y: scroll;
   background-color: #333;
   color: #bcbcbc;
   text-shadow: 0 -1px 0 #000;
   text-align: center;
 }
 
-.inspector input,
-.inspector textarea {
-   text-shadow: 0 -1px 0 #000;
-   color: #ddd;
+.inspector input, .inspector textarea {
    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.1),0px 0 0 1px rgba(255,255,255,0.1);
    border: 1px solid black;
-   background: transparent;
    height: 20px;
    line-height: 20px;
    resize: none;
-
 }
 
 .inspector label {
-  margin: 14px 0 8px 0;
+  margin: 14px 0px 8px 0px;
   font-size: 1.25em;
+  display: block;
 }
 
-.sub-label{
-  font-size: 1em !important;
+/* Customizes the right scroller */
+.inspector::-webkit-scrollbar-track
+{
+	border-radius: 10px;
+	background-color: #333;
 }
-.sub-input{
-  width: 50px !important;
-  font-size: 0.9em;
+
+.inspector::-webkit-scrollbar
+{
+	width: 10px;
+	background-color: #333;
 }
-.sub-btn {
+
+.inspector::-webkit-scrollbar-thumb
+{
+	border-radius: 10px;
+  height: 20px;
+	background-color: #AAAAAA;
+}
+
+#sat-value {
+  background-color: rgba(36, 150, 255, 1) !important;
+  color: white;
+  font-size: 11px;
+  font-weight: 200;
+  width: 200px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  border: 0;
+}
+
+.inspector-btn-small {
+  box-shadow: inset 0 -2px #dad8d8; /* Adds shadow  */
   position: relative;
   vertical-align: top;
-  width: 50px;
+  width: 30px;
   height: 23px;
   padding: 0;
-  color: white;
+  color: black;
   text-align: center;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
   border: 0;
   cursor: pointer;
-  margin-left: 5px;
+  border-radius: 5px;
+  margin-top: 2px;
+  margin-bottom: 5px;
 }
 
-
-.dropdown-inspector {
-  display: none;
-  background-color: #f9f9f9;
-  min-width: 240px;
-}
-
-.dropdown-inspector a {
-  color: black;
-  padding: 12px 16px;
-  display: block;
-}
-
-.dropdown-inspector a:hover {
-   background-color: #E8E8E8;
-}
-
-.dropdown:hover .dropdown-inspector {
-   display: block;
-}
-
-.element-inspector input,
-.element-inspector textarea {
-  width: 215px;
-  font-size: 0.9em;
-  margin-bottom: 28px;
-}
-
-#function-div, #intension-div, #link-div, #query-div{
-  width: 215px;
-  text-align: center;
-  margin: auto;
-}
-
-#init-sat-value, .actor-type, .function-type,
-.function-sat-value, .user-defined-select, .repeat-select,
-.relationship-select, .link-type, #conflict-level, #abs-vals,
-#assigned-vals{
-  background-color: rgba(31, 150, 125, 1);
-  border-color: rgba(31, 121, 101, 1);
-
-  color: white;
-  font-size: 10;
-  font-weight: 200;
-  width: 215px;
-  margin: auto;
-  border: 0;
-}
-
-#init-sat-value:disabled {
-  background-color: rgba(36, 150, 255, 1);
-  color: white;
-}
-.function-type:disabled {
-  background-color: rgba(36, 150, 255, 1);
-  color: white;
-}
-
-.user-defined-select, .repeat-select, .relationship-select{
-  width: 104px;
-  margin-bottom: 8px;
-}
-
-.query-select{
-  float: right;
-}
-
-.user-defined-select:nth-child(1),
-.repeat-select:nth-of-type(1),
-#relationship-src{
-  float: left;
-  clear: left;
-}
-
-.user-defined-select:nth-child(2),
-.repeat-select:nth-of-type(2),
-#relationship-tar{
-  float: right;
-}
-
-.user-defined-select{
-  display: block;
-}
-
-.new-user-constraints:first-child{
-  width: 100px;
-  margin: 0 10px 10px 10px;
-  float: left;
-}
-
-select > .select-placeholder {
-  display: none;
-}
-
-.function-type{
-  background-color: rgba(36, 150, 255, 1);
-  border-color: rgba(29, 122, 208, 1);
-}
-
-.function-type, .function-sat-value{
-  margin: auto;
-  margin-bottom: 8px;
-}
-
-.inspector-error{
-  display: block;
-  font-size: 0.9em;
-  margin: 0 0 12px 0;
-  color: tomato;
-  font-weight: 200;
-}
-
-.link-tools{
-   display: block;
-}
-.inspector-btn-small {
-    position: relative;
-    vertical-align: top;
-    width: 30px;
-    height: 23px;
-    padding: 0;
-    color: black;
-    text-align: center;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
-    border: 0;
-    cursor: pointer;
-}
 .inspector-btn {
+  -webkit-box-shadow: inset 0 -2px #dad8d8;
+  box-shadow: inset 0 -2px #dad8d8;
   position: relative;
   vertical-align: top;
   width: 181px;
@@ -332,66 +204,96 @@ select > .select-placeholder {
   padding: 0;
   color: black;
   text-align: center;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
   border: 0;
   cursor: pointer;
+  border-radius: 10px;
+  margin-top: 6px;
+  margin-left: 10px;  /* Aligns the 3 buttons at the bottom of the left panel to the center */
+  margin-right: 10px;
 }
 
+/* Add color overlay over the 3 buttons */
+.inspector-btn:hover {
+  background: #fffefe;
+}
+
+/*When the 3 buttons are clicked on a click effect happens */
 .inspector-btn:active {
-  top: 1px;
-  outline: none;
-  -webkit-box-shadow: none;
-  box-shadow: none;
+  background-color: #fffefe;
+  box-shadow: inset 0 -2px #dad8d8;
+  transform: translateY(2px);
 }
 
-.cell-labels{
-  margin: 0 6px 8px;
-  float: left;
-  font-size: 1em;
-  font-weight: lighter;
+/* Go button */
+.inspector-btn-small:hover {
+  background: #fffefe;
 }
 
-#clear-query-btn{
-  margin: 0;
+/* Add color overlay over the go buttons and click effect */
+.inspector-btn-small:active {
+  background-color: #fffefe;
+  box-shadow: inset 0 -2px #dad8d8;
+  transform: translateY(2px);
 }
 
-#query-btn{
-  margin: 16px 0;
+  /* Trash btn */
+ .table-btn-small {
+  background: #333333; 
+  -webkit-box-shadow: inset 0 -2px #292929;
+  box-shadow: inset 0 -2px #292929;
+  width: 30px;
+  height: 23px;
+  border: 0;
+  cursor: pointer;
+  border-radius: 5px;
+} 
+
+/* Add color overlay over the trash buttons and click effect */
+.table-btn-small:hover {
+  background: #424242;
 }
 
-.green-btn{
-  /*background: #27ae60;*/
-  background: #1E866A;
-  -webkit-box-shadow: inset 0 -2px #219d55;
-  box-shadow: inset 0 -2px #219d55;
+/*Click effect */
+.table-btn-small:active {
+  background-color: #424242;
+  box-shadow: inset 0 -2px #292929;
+  transform: translateY(2px);
 }
 
 .blue-btn{
   background-color: rgba(36, 150, 255, 1) !important;
   -webkit-box-shadow: inset 0 -2px rgba(29, 122, 208, 1);
   box-shadow: inset 0 -2px rgba(29, 122, 208, 1);
-}
-
-.red-btn{
-  background-color: #e74c3c !important;
-  -webkit-box-shadow: inset 0 -2px #db4334;
-  box-shadow: inset 0 -2px #db4334;
-}
-
-.small-btn{
   width: 160px;
   height: 25px;
   border-radius: 5px;
-  font-size: 0.8em;
+  font-size: 0.6em;
   margin-top: 12px;
 }
 
-#btn-forward-analysis{
-  margin: 0;
+#filter-apply {
+  color: white;
+  font-size: 15px;
 }
 
-#concatenate-btn{
-  margin-bottom: 12px;
+#clear-all {
+  width: 120px;
+  height: 25px;
+  background-color: #fffefe;
+  color: black;
+  font-size: 15px;
+}
+
+.disabled-filter-clicked{
+  background-color: #6C7278 !important;
+  box-shadow: inset 0 -2px #6C7278 !important;;
+}
+
+/* Sets shadow for blue button right panel */
+#filter-apply:active {
+  background-color: rgba(36, 150, 255, 1);
+  box-shadow: inset 0 -2px rgba(29, 122, 208, 1);
+  transform: translateY(2px);
 }
 
 /* Halo */
@@ -413,27 +315,21 @@ select > .select-placeholder {
 .toolbar {
    position: absolute;
    top: 0px;
-   left: 201px;
+   left: 200px;
    right: 0;
    padding-left: 0px;
    z-index: 1;
-   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.4);
    background-color: #333;
-}
-
-.toolbar, #stencil {
    border-top: none;
 }
 
-#model-toolbar{
-  display: inline;
-}
-
+/* what's down here*/
+/* Buttons on the tool bar: zoom out, zoom in, font size, evo slider*/
 .btn {
-   padding: 5px 10px;
+   padding: 7px 10px;
    line-height: 30px;
    margin: 0;
-   margin-left: -5px;
+   margin-left: 4px;
    cursor: pointer;
 }
 
@@ -447,21 +343,6 @@ select > .select-placeholder {
 
 .toolbar .btn:hover {
     background-color: #111;
-}
-
-#symbolic-btn {
-   color: white;
-   min-width: 80px;
-}
-
-#modeling-btn{
-   min-width: 80px;
-}
-
-#analysis-btn {
-  background: #27ae60;
-  color: white;
-  min-width: 80px;
 }
 
 .dropdown-toolbar {
@@ -485,50 +366,11 @@ select > .select-placeholder {
   background-color: #E8E8E8;
 }
 
-/* Force-Directed layout */
-#layout {
-   border-bottom: 1px solid #333;
-}
-
-/* Slider */
-#slider{
-  margin-left: auto;
-  margin-right: auto;
-  -webkit-box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.25);
-  -moz-box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.25);
-  box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.25);
-  z-index: 3;
-}
-
-/* Attribution */
-div.attribution{
-  position: fixed;
-  bottom: 0;
-  left: 30;
-  color: #333333;
-  width: 190px;
-  font-size: 9px;
-  margin: 5px;
+.filter_checkbox{
+  margin-top: 5px;
 }
 
 /* beggining of representative color slider */
-
-.slidecontainer {
-  width: 100%; /* Width of the outside container */
-}
-#top-label {
-  background-color: #333;
-  border: none;
-  color: white;
-  text-shadow: none;
-  font-size: 0.75em;
-  margin: 0px;
-  padding: 0px;
-  position: relative;
-  top: -15px;
-  left: 5px;
-}
-
 #top-label-analysis {
   background-color: #333;
   border: none;
@@ -542,6 +384,12 @@ div.attribution{
   left: 80px;
 }
 
+#colorResetAnalysis {
+  position: relative;
+  top: -6px;
+  width: 69px; /* 92 */
+}
+
 .on-off {
   font-size: 8px;
   color: white;
@@ -551,20 +399,11 @@ div.attribution{
   margin-bottom: 0px;
   margin-left: 10px;
   }
-#colorReset {
-  position: relative;
-  top: -20px;
-}
-#colorResetAnalysis {
-  position: relative;
-  top: -6px;
-  width: 69px; /* 92 */
-}
+
+
 .EVO-whole-button {
-  cursor: pointer;
   display: inline-block;
   height: 35px;
-  width: 100px;
   margin-top: 0px;
   margin-bottom: -20px;
   padding-top: 0px;
@@ -575,18 +414,12 @@ div.attribution{
 .EVO-slider {
   -webkit-appearance: none;  /* Override default CSS styles */
   appearance: none;
-  width: 50px; /* Full-width */
   height: 10px; /* Specified height */
   border-radius: 5px;
   background: #E8E8E8; /* white background */
   outline: none; /* Remove outline */
   opacity: .9; /* Set transparency (for mouse-over effects on hover) */
-  -webkit-transition: .2s; /* 0.2 seconds transition on hover */
   transition: opacity .2s;
-}
-
-#nextStateSlider{
-  width: 140px;
 }
 
 /* Mouse-over effects */
@@ -595,7 +428,6 @@ div.attribution{
 }
 /* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
 .EVO-slider::-webkit-slider-thumb {
-  -webkit-appearance: none; /* Override default look */
   appearance: none;
   width: 25px; /* Set a specific slider handle width */
   height: 10px; /* Slider handle height */
@@ -610,4 +442,74 @@ div.attribution{
   cursor: pointer; /* Cursor on hover */
 }
 
+#nextStateSlider{
+  width: 140px;
+}
 /* end of representive slider styling */
+
+.inspectorFilterNames{
+  padding-top: 20px;
+}
+
+.tableHeading{
+  background-color: rgb(67, 67, 67); 
+  text-align: center;
+  font-size: 12px;
+  height: 15px;
+  color: white;
+  padding: 4px;
+}
+
+
+.inspectorFilterTable {
+  margin: 15px 5px 0px 15px;
+  display:block;
+  height:300px;
+  overflow:auto;
+}
+
+/* Customizes the tables scroller */
+.inspectorFilterTable::-webkit-scrollbar-track
+{
+	border-radius: 10px;
+	background-color: rgb(74, 74, 74);
+}
+
+.inspectorFilterTable::-webkit-scrollbar
+{
+	width: 7px;
+	background-color: #333;
+}
+
+.inspectorFilterTable::-webkit-scrollbar-thumb
+{
+	border-radius: 10px;
+  height: 20px;
+	background-color: #ffffff;
+}
+
+.tableData{
+  border: 1px solid;
+  border-collapse: collapse;
+  font-size: 11px;
+  color:#ffffff;
+  border-top: 1px solid #ddd;
+  padding: 0px;
+}
+
+.disabled-textbox{
+  background-color:#FFF;
+}
+
+.disabled-textbox-clicked{
+  color: rgb(50, 50, 50) !important;
+}
+
+.flex-container {
+  display: flex;
+  flex-direction: row;
+  font-size: 17px;
+  justify-content: space-between;
+  align-items: center;
+  text-overflow: ellipsis;
+}

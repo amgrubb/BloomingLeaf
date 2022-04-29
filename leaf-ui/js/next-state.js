@@ -22,6 +22,10 @@
     // are combined into allSolutionArray
     var allSolutionIndex;
 
+    // Object to keep track of all of the applied intention filters
+    var filterIntentionList = [];
+    var selectedIntention;
+
     //Executing scripts only when page is fully loaded
     window.onload = function () {
         analysis.page = jQuery.extend({}, window.opener.document);
@@ -45,14 +49,20 @@
             gridSize: 10,
             perpendicularLinks: false,
             model: analysis.graph,
-            defaultLink: new joint.shapes.basic.CellLink({ //new joint.dia.Link({
-                'attrs': {
-                    '.connection': { stroke: '#000000' },
-                    '.marker-source': { 'd': '0' },
-                    '.marker-target': { stroke: '#000000', "d": 'M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5' }
-                },
-                'labels': [{ position: 0.5, attrs: { text: { text: "and" } } }]
-            })
+            highlighting: {
+                default: {
+                    name: 'stroke',
+                    options: {
+                        padding: 10,
+                        rx: 5,
+                        ry: 5,
+                        attrs: {
+                            'stroke-width': 3,
+                            stroke: 'red'
+                        }
+                    }
+                }
+            }
         });
 
         // Add scroll feature to the paper.
@@ -60,8 +70,15 @@
             autoResizePaper: true,
             paper: analysis.paper
         });
+        $('#filter-apply').prop('disabled', true);
+        $('#filter-apply').addClass('disabled-filter-clicked')
+        $("#noteApply").show("fast");
         $('#paper').css("right", "0px");
         $('#paper').append(analysis.paperScroller.render().el);
+        
+        // Unable to interact with textboxes
+        $('.cell-attrs-text').addClass('disabled-textbox');
+        $('.cell-attrs-text2').addClass('disabled-textbox');
         analysis.paperScroller.center();
 
         // Make a copy of the graph and add it to the window.
@@ -84,6 +101,8 @@
         // Sets originalResults as a deep copy of myInputJSObject.results 
         // So originalResults does not contain references to myInputJSObject.results
         originalResults = $.extend(true, {}, myInputJSObject.results);
+
+        setInteraction(false, analysis.paper)
     }
 
     function combineAllSolutions() {
@@ -125,10 +144,14 @@
             currentPage = 0;
 
         //Set the currentState variable so it can be sent back to the original path
-        var i = 0;
-        for (let element of analysis.intentions) {
+        for (var i = 0; i < analysis.intentions.length; i++) {
             satValue = allSolutionArray[currentPage][i];
+            element = analysis.intentions[i];
             element.attr(".satvalue").value = satValue;
+            // Update the current sat value in the intention filter whenever page changes
+            if (element.attributes.id == selectedIntention) {
+                updateSatValueInfo(element, elementNum, originalResults);
+            }
 
             // Sets attributes of element from the refEvidence pair from resultBBM
             if ((satValue == "0001") || (satValue == "0011")) {
@@ -161,7 +184,6 @@
             } else {
                 element.removeAttr(".satvalue/d");
             }
-            i++;
         }
     }
 
@@ -191,6 +213,18 @@
     }
 
     /**
+     * Disable link interaction
+     * @param {Boolean} interactionValue
+     * @param {Object} paper
+    */
+    function setInteraction(interactionValue, paper) {
+        _.each(analysis.graph.getCells().filter(cell => (cell.get('type') == "basic.CellLink")), function (cell) {
+            cell.findView(paper).options.interactive = interactionValue;
+            $('.link-tools').css("display", "none");
+        });
+    }
+
+    /**
      * Is called whenever the slider changes and when the sidebar is rendered.
      */
     function renderEVO() {
@@ -215,13 +249,25 @@
                     render_pagination_values(currentPage, i);
                 }
             } else {
-                if (currentPage + 3 < nextSteps_array_size) {
-                    for (i = currentPage - 3; i < currentPage + 3; i++) {
-                        render_pagination_values(currentPage, i);
+                if (currentPage < 100) {
+                    if (currentPage + 3 < nextSteps_array_size) {
+                        for (i = currentPage - 3; i < currentPage + 3; i++) {
+                            render_pagination_values(currentPage, i);
+                        }
+                    } else {
+                        for (i = currentPage - 3; i < nextSteps_array_size; i++) {
+                            render_pagination_values(currentPage, i);
+                        }
                     }
                 } else {
-                    for (i = currentPage - 3; i < nextSteps_array_size; i++) {
-                        render_pagination_values(currentPage, i);
+                    if (currentPage + 2 < nextSteps_array_size) {
+                        for (i = currentPage - 2; i < currentPage + 3; i++) {
+                            render_pagination_values(currentPage, i);
+                        }
+                    } else {
+                        for (i = currentPage - 3; i < nextSteps_array_size; i++) {
+                            render_pagination_values(currentPage, i);
+                        }
                     }
                 }
             }
@@ -245,7 +291,7 @@
         } else {
             value = currentPage - 1;
         }
-        pagination.innerHTML += '<a href="#" onclick="renderNavigationSidebar(' + value.toString() + ')">&laquo;</a>';
+        pagination.innerHTML += '<div><a href="#" onclick="renderNavigationSidebar(' + value.toString() + ')">&laquo;</a></div>';
     }
 
     /**
@@ -260,7 +306,7 @@
         } else {
             value = currentPage + 1;
         }
-        pagination.innerHTML += '<a href="#" onclick="renderNavigationSidebar(' + value.toString() + ')">&raquo;</a>';
+        pagination.innerHTML += '<div><a href="#" onclick="renderNavigationSidebar(' + value.toString() + ')">&raquo;</a></div>';
     }
 
     /**
@@ -269,9 +315,9 @@
     function render_pagination_values(currentPage, i) {
         var pagination = document.getElementById("pagination");
         if (currentPage == i) {
-            pagination.innerHTML += '<a href="#" class="active" onclick="renderNavigationSidebar(' + i.toString() + ')">' + i.toString() + '</a>';
+            pagination.innerHTML += '<div><a href="#" class="active" onclick="renderNavigationSidebar(' + i.toString() + ')">' + i.toString() + '</a></div>';
         } else {
-            pagination.innerHTML += '<a href="#" onclick="renderNavigationSidebar(' + i.toString() + ')">' + i.toString() + '</a>';
+            pagination.innerHTML += '<div><a href="#" onclick="renderNavigationSidebar(' + i.toString() + ')">' + i.toString() + '</a></div>';
         }
     }
 
@@ -295,30 +341,11 @@
      * This function checks which boxes in next State have been checked/unchecked and shows the correct results
      * based on this. The first switch case has been documented with comments.
      */
-    function add_filter() {
+    function add_filter(tempResults2) {
         console.log("clicked");
-        // Everytime a box is clicked/unclicked the results are reset
-        myInputJSObject.results = originalResults;
-        // Deep copy of results so it doesn't contain references to the original object
-        tempResults = $.extend(true, {}, myInputJSObject.results);
-
-        var checkboxes = document.getElementsByClassName("filter_checkbox");
-        for (var i = 0; i < checkboxes.length; i++) {
-            var checkbox = checkboxes[i];
-            // check if something is just checked
-            if (checkbox.checked) {
-                if (filterOrderQueue.indexOf(checkbox.id) == -1) {
-                    filterOrderQueue.push(checkbox.id);
-                }
-            }
-            // check if something is just unchecked
-            else {
-                if (filterOrderQueue.indexOf(checkbox.id) != -1) {
-                    filterOrderQueue.splice(filterOrderQueue.indexOf(checkbox.id), 1);
-                }
-            }
-        }
         console.log(filterOrderQueue);
+
+        tempResults = tempResults2;
 
         // Iterates over all of the boxes that have been checked
         for (var i = 0; i < filterOrderQueue.length; i++) {
@@ -756,6 +783,234 @@
         // Creates array with all Solutions from new hashmap
         combineAllSolutions();
         renderNavigationSidebar();
+    }
+
+    /**
+     * This function allows you to filter the next state solutions
+     * by specific satisfacion values for specific intentions
+     */
+    function intentionFilter(tempResults2) {
+        console.log("Intention filter clicked");
+
+        // Clears previous html table entries
+        $(".inspectorFilterTable tr").remove();
+        // Appends the headings back to the table
+        $(".inspectorFilterTable").append('<tr class ="tableHeading"><th class="tableHeading">Intention Name</th><th class="tableHeading">Satisfaction Value</th><th class="tableHeading">Remove</th></tr>');
+
+        // Sets the solution array to empty so only correct solutions can be added
+        for (var solutionArray in originalResults.get('allSolutions')) {
+            tempResults2.get('allSolutions')[solutionArray] = [];
+        }
+  
+        // Iterates over every key/value pair in the hashmap
+        for (var solutionArray in originalResults.get('allSolutions')) {
+            // Iterates over all of the solutions in the key/value pair 
+            for (var solution_index = 0; solution_index < originalResults.get('allSolutions')[solutionArray].length; solution_index++) {
+                // Iterate over array of filters
+                for (var i = 0; i < filterIntentionList.length; i++) {
+                    // Finds the element index of the intention by comparing intention id
+                    for (var element_index = 0; element_index < analysis.intentions.length; element_index++) {
+                        if (analysis.intentions[element_index].attributes.id == filterIntentionList[i][0]) {
+                            var elementNum = element_index;
+                        }
+                    }
+                    // Find the sat value of the solution at that element index 
+                    var value = originalResults.get('allSolutions')[solutionArray][solution_index][elementNum];
+                    
+                    // If the solution value is in the array of sat values and
+                    // This is the last filter in the array (AKA the solution is true for every filter)
+                    if (filterIntentionList[i][1].includes(value) && i == filterIntentionList.length-1) {
+                        
+                        // Push the solution to tempResults2
+                        tempResults2.get('allSolutions')[solutionArray].push(originalResults.get('allSolutions')[solutionArray][solution_index])
+                                       
+                    } else if (!filterIntentionList[i][1].includes(value)) {
+                        // If the solution value is not in the array of sat values break for loop
+                        break;
+                    }
+                }
+            }
+
+        $("body").removeClass("spinning"); // Remove spinner from cursor              
+
+        }
+
+        // Adds the filter information to html
+        for (var i = 0; i < filterIntentionList.length; i++) {
+            for (var j = 0; j < filterIntentionList[i][1].length; j++) {
+
+                // Finds corrects text sat value for table
+                switch (filterIntentionList[i][1][j]) {
+                    case "0000":
+                        var tableSatVal = "None (⊥, ⊥)";
+                        break;
+                    case "0011":
+                        var tableSatVal = "Satisfied (F, ⊥)";
+                        break;
+                    case "0010":
+                        var tableSatVal = "Partially Satisfied (P, ⊥)";
+                        break;
+                    case "0100":
+                        var tableSatVal = "Partially Denied (⊥, P)";
+                        break;
+                    case "1100":
+                        var tableSatVal = "Denied (⊥, F)";
+                        break;
+                    case "unknown":
+                        var tableSatVal = "(no value)";
+                        break;
+                    default:
+                        var tableSatVal =  "error";   
+                        break;
+                }
+                // Appends filter information to the intention filter table
+
+                var name; 
+                // Finds the element name of all the intentions
+                for (var k = 0; k < analysis.intentions.length; k++) {
+                    if (analysis.intentions[k].attributes.id == filterIntentionList[i][0]) {
+                        name = analysis.intentions[k].attr(".name").text
+                    }
+                }
+
+                // $(".inspectorFilterTable").append('<tr class="tableData"><td class="tableData">' + name + '</td><td class="tableData">' + tableSatVal + '</td><td id = ' + selectedIntention + ' class="tableData remove-btn"><button class="table-btn-small" style="font-size:15px"><i class="fa fa-trash" style="color:white"></i></button></td>'); 
+                $(".inspectorFilterTable").append('<tr class="tableData" id=' + filterIntentionList[i][0] + '><td class="tableData">' + name + '</td><td class="tableData">' + tableSatVal + '</td><td class="tableData remove-btn"><button class="table-btn-small" style="font-size:15px"><i class="fa fa-trash" style="color:white"></i></button></td>'); 
+        }    
+    }
+            
+    // Set the new results with filters as the analysis object
+    myInputJSObject.results = tempResults2;
+    // Creates array with all Solutions from new hashmap
+    combineAllSolutions();
+    renderNavigationSidebar();
+    }
+
+    /*
+    * This function allows you to remove an intention's filter from the list
+    * of intention filters when the remove button is clicked
+    */
+    function removeIntentionFilter(intentionToBeRemoved) {
+        console.log("Remove button clicked");
+        // Find the intention id for the filter that should be removed
+        var selectedId = intentionToBeRemoved.attr('id');
+        // Find the satisfaction for the filter that should be removed
+        var desiredSatVal = intentionToBeRemoved.find('td:eq(1)').text();
+
+        // Finds corrects binary value for the satisfaction value
+        switch (desiredSatVal) {
+            case "None (⊥, ⊥)":
+                desiredSatVal = "0000";
+                break;
+            case "Satisfied (F, ⊥)":
+                desiredSatVal = "0011";
+                break;
+            case "Partially Satisfied (P, ⊥)":
+                desiredSatVal = "0010";
+                break;
+            case "Partially Denied (⊥, P)":
+                desiredSatVal = "0100";
+                break;
+            case "Denied (⊥, F)":
+                desiredSatVal = "1100";
+                break;
+            case "(no value)":
+                desiredSatVal = "unknown";
+                break;
+            default:
+                desiredSatVal =  "error";   
+                break;
+        }
+
+        // filterIntentionList = [[id, [sat vals]], [id, [sat vals]], ...]
+        for (var i = 0; i < filterIntentionList.length; i++) {
+            if (selectedId == filterIntentionList[i][0]) {
+                // If there is only one filter applied to intention, delete whole entry
+                if (filterIntentionList[i][1].length == 1) {
+                    filterIntentionList.splice(i, 1);
+                } else { // If there is more than one filter for that intention only remove the deleted filter
+                    var index = filterIntentionList[i][1].indexOf(desiredSatVal);
+                    filterIntentionList[i][1].splice(index, 1);
+                }
+                break;
+            }
+        }
+    }
+
+    /**
+     * Helper function so the two filtering functions are integrated together
+     * @param {Boolean} intention Whether the function is called from the intention filter button or not
+     */
+    function filter_helper(intention) {
+        // Everytime a filter is applied the results are reset
+        myInputJSObject.results = originalResults;
+        // Deep copy of results so it doesn't contain references to the original object
+        tempResults2 = $.extend(true, {}, myInputJSObject.results);
+        
+        // Figures out which model filters are checked
+        var checkboxes = document.getElementsByClassName("filter_checkbox");
+        for (var i = 0; i < checkboxes.length; i++) {
+            var checkbox = checkboxes[i];
+            // check if something is just checked
+            if (checkbox.checked) {
+                if (filterOrderQueue.indexOf(checkbox.id) == -1) {
+                    filterOrderQueue.push(checkbox.id);
+                }
+            }
+            // check if something is just unchecked
+            else {
+                if (filterOrderQueue.indexOf(checkbox.id) != -1) {
+                    filterOrderQueue.splice(filterOrderQueue.indexOf(checkbox.id), 1);
+                }
+            }
+        }
+
+        // If the function is called from intention filter, add filter to array 
+        if (intention) {
+            // 4 digit sat value code selected from dropdown menu
+            var desiredSatVal = $("#sat-value").val();
+
+            // filterIntentionArray = [[id, [sat vals]], [id, [sat vals]], ...]
+            // If empty, create new array and push filter
+            if (filterIntentionList.length != 0) {
+                // Iterate over the filters and check if the selected intention already has a filter applied
+                for (var i = 0; i < filterIntentionList.length; i++) {
+                    if (filterIntentionList[i][0].includes(selectedIntention)) {
+                        if (filterIntentionList[i][1].includes(desiredSatVal)) { // If same filter being applied to one intention
+                            break;
+                        }
+                        // Push new filter sat value to already existing array of filter sat vals
+                        filterIntentionList[i][1].push(desiredSatVal);
+                        // Break once added so else if is not run
+                        break;
+                    } else if (i == filterIntentionList.length-1) {
+                        // If the selected intention does not have a filter applied push new entry to array
+                        filterIntentionList.push([selectedIntention, [desiredSatVal]]);
+                        // Break once added so for loop does not iterate over new entry 
+                        break; 
+                    }
+                }
+            } else { // If the array doesn't exist, create array and push first filter
+                filterIntentionList = [];
+                filterIntentionList.push([selectedIntention, [desiredSatVal]]);
+            }
+            // Call function that finds correct solutions
+            intentionFilter(tempResults2);
+        }
+        // If function is called from model filter see if there are any intention filters that should be applied 
+        else if (filterIntentionList.length != 0) {
+            intentionFilter(tempResults2);
+        }
+        // If there are any model filters, run function that finds correct solutions
+        if (filterOrderQueue.length != 0) {
+            add_filter(tempResults2);
+        } 
+        // If there are no filters applied, reset to original results and render it
+        if (filterOrderQueue.length == 0 && filterIntentionList.length == 0) {
+            $("body").removeClass("spinning"); // Remove spinner from cursor
+            // Creates array with all Solutions from new hashmap
+            combineAllSolutions();
+            renderNavigationSidebar();
+        }
     }
 
     /*  This function should get the current state in the screen and 
