@@ -130,7 +130,6 @@ public class IMainBuilder {
 				// create separate ICell/link for each source
 				List<String> sources = specLink.getSrcIDs();
 				List<String> ids = specLink.getSubLinkUniqueIDList();
-				// TODO: throw error if sources.length != ids.length
 
 				// different ICell/link for each source
 				for (int i = 0; i < sources.size(); i++) {
@@ -198,7 +197,7 @@ public class IMainBuilder {
 		int[] absTimePtsArr = convertAbsTimePtsArr(outSpec.getAbsTP());
 
 		// create model to return
-		IGraph graph = new IGraph(maxAbsTime, absTimePtsArr, cells); // TODO: add constraints
+		IGraph graph = new IGraph(maxAbsTime, absTimePtsArr, cells); 
 
 		IMain model = new IMain(graph);
 

@@ -123,9 +123,6 @@ public class Traceability{
 			}
 		}
 		
-		//System.out.println(fromModel1);
-		//System.out.println(fromModel2);
-		//System.out.println(mergedElements);
 		//print to file
 		try {
 			if (MMain.DEBUG) System.out.println("Printing to file...");
@@ -165,7 +162,7 @@ public class Traceability{
 		counts.put("G", model.getIntentions().size());
 
 		// count relationships
-		// contribution + decomposition + not both + actor links
+		// num of contribution + decomposition + not both + actor links
 		Integer relationships = model.getContributionLinks().size() + model.getDecompositionLinks().size() + model.getNotBothLinks().size();
 		counts.put("R", relationships + model.getActorLinks().size());
 		
@@ -182,7 +179,7 @@ public class Traceability{
 	}
 	
 	public HashMap<String, Integer> countMatchedElements(ModelSpec modelA, ModelSpec modelB) {
-		/* count actors and intentions which overlap between the models */
+		// count actors and intentions which overlap between the models 
 		HashMap<String, Integer> counts = new HashMap<>();
 		
 		// count matched actors

@@ -114,15 +114,13 @@ public class MergeAlgorithm {
 	 * @param delta
 	 */
 	public void updateTimeline() {
-		// update max time for both models
-		// greater of model1 and model2's new times
+		// update max time for both models as the greater of model1 and model2's new times
 		Integer newMax = Math.max(model1.getMaxTime(), model2.getMaxTime() + delta);
 		model1.setMaxTime(newMax);
 		model2.setMaxTime(newMax);
 		mergedModel.setMaxTime(newMax);
 
 		// update absolute time points for model 2
-		// future work: rename Initial in model B
 		model2.incrementAbsTP(delta);
 
 		// update absolute time points for model 2 stored in intentions' UAL
@@ -186,7 +184,7 @@ public class MergeAlgorithm {
 			mergedIntentionsNameSet.add(intention.getName());
 			currIDCount++;
 		}
-		//add/merge intentions from model2 onto model1
+		//merge intentions from model2 onto model1
 		for(Intention intention: model2.getIntentions()) {
 			//if the intention is new...
 			if(!containsCleaned(intention.getName(), mergedIntentionsNameSet)){
@@ -250,10 +248,10 @@ public class MergeAlgorithm {
 		mergedModel.setIntentions(mergedIntentions);
 
 	}
-
+	/**
+	* Replaces mentions of the current ID with the new ID
+	*/
 	public static void updateIntentionID(String newID, String curID, ModelSpec model, Intention intention){
-		//don't need to update links because they contain direct references to the intentions, not their IDs
-		//actors have no reference to intention IDs so don't have anything to update
 		intention.setId(newID);
 		for(FunctionSegment func: intention.getEvolvingFunctions()){
 			if(func.getStartTP().contains(curID)){
@@ -263,7 +261,7 @@ public class MergeAlgorithm {
 	}
 
 	/**
-     * Add old links to new intentions and vice versa
+     * Attach old links to new intentions and vice versa
 	 */
 	public static void updateRepeatedIntention(Intention newIntention, Intention oldIntention, ModelSpec model2){
 
@@ -302,7 +300,7 @@ public class MergeAlgorithm {
 	public static Actor mergeToOneActor(Actor actorOne, Actor actorTwo, int actorNum, ModelSpec model1, ModelSpec model2) {
 		// type G > R > A (agent > role > actor)
 		
-		// so use actorOne if >= type to actorTwo
+		// use actorOne if >= type to actorTwo
 		if(actorOne.getActorType().equals(actorTwo.getActorType()) || (actorOne.getActorType().equals("G")) || (actorOne.getActorType().equals("R") && !actorTwo.getActorType().equals("G"))) {
 			String newId = createID(actorNum, 12, actorOne.getId(), "Actor");
 			actorOne.setId(newId);
@@ -357,12 +355,12 @@ public class MergeAlgorithm {
 		}
 		mergedModel.setActors(mergedActors);
 	}
-	/*when an actor from one model is accepted, the  instances of actors with the same names must be
+	/*
+	 * when an actor from one model is accepted, the  instances of actors with the same names must be
 	 * replaced in the other model.
 	 */
 	public static void updateRepeatedActor(Actor newActor, Actor oldActor, ModelSpec otherModel) {
-		// replace oldActor with newActor for each intention + link in the other model
-		// intentions
+		// replace oldActor with newActor for each intention + link in the other model's intentions
 		for(Intention intention: otherModel.getIntentions()) {
 			if(intention.getActor() == oldActor){
 				intention.setActor(newActor);
@@ -380,12 +378,18 @@ public class MergeAlgorithm {
 
 		}
 	}
+
 	// ******* Actor Link merging methods begin ******** //
 
+	/**
+	 * Merges actor links and deletes links if they conflict with actor types
+	 */
+
 	public void mergeActorLinks() {
-		ArrayList<ActorLink> mergedAL = new ArrayList<>();
-		ArrayList<ActorLink> deletedAL = new ArrayList<>();
+		ArrayList<ActorLink> mergedAL = new ArrayList<>(); //ALs that will be preserved
+		ArrayList<ActorLink> deletedAL = new ArrayList<>(); //ALs that will be logged as deleted
 		int linkCount = 0;
+
 		for(ActorLink al: model1.getActorLinks()) {
 			if(isValidTypes((Actor)al.getZeroSrc(), (Actor)al.getDest(), al.getType())) {
 				String newID = createID(linkCount, 1, al.getID(), "ActorLink");
@@ -394,7 +398,11 @@ public class MergeAlgorithm {
 				mergedAL.add(al);
 				linkCount++;
 			}
-			deletedAL.add(al);
+			//else conflicts, so delete
+			else{
+				deletedAL.add(al);
+			}
+			
 
 		}
 		for(ActorLink al: model2.getActorLinks()) {
@@ -402,18 +410,18 @@ public class MergeAlgorithm {
 			for(ActorLink addedal: mergedAL) {
 				if(isSameActorLink(al, addedal)) {
 					isNewLink = false;
+					//merge the AL types
 					updateALTypes(al, addedal);
 					addedal.setID(addedal.getID() + "2");
-					if(isValidTypes((Actor)addedal.getZeroSrc(), (Actor)addedal.getDest(), addedal.getType())) {
+					//check for conflicts
+					if(!isValidTypes((Actor)addedal.getZeroSrc(), (Actor)addedal.getDest(), addedal.getType())) {
 						deletedAL.add(addedal);
-					}else if(deletedAL.contains(addedal)) {
-						deletedAL.remove(addedal);
+						mergedAL.remove(addedal)
 					}
-
-
 				}
 			}
 			if(isNewLink) {
+				//check for conflicts
 				if(isValidTypes((Actor)al.getZeroSrc(), (Actor)al.getDest(), al.getType())) {
 					String newID = createID(linkCount, 2, al.getID(), "ActorLink");
 					al.setID(newID);
@@ -423,15 +431,18 @@ public class MergeAlgorithm {
 					al.getZeroSrc().addLinksAsSrc(al);
 					al.getDest().addLinksAsDest(al);
 				}
-				deletedAL.add(al);
+				//else conflict, so delete
+				else{
+					deletedAL.add(al);
+				}
 			}
 		}
 
 		for(ActorLink al: deletedAL) {
 			if(mergedAL.contains(al)) {
 				mergedAL.remove(al);
-				conflictMessages.add(al.getName() + " conflicted with actor types.");
 			}
+			conflictMessages.add(al.getName() + " conflicted with actor types.");
 		}
 
 		mergedModel.setActorLinks(mergedAL);
@@ -463,7 +474,9 @@ public class MergeAlgorithm {
 	}
 
 
-	/** returns true if links connect the same actor */
+	/** 
+	* returns true if links connect the same actor 
+	*/
 
 	public static boolean isSameActorLink(ActorLink al1, ActorLink al2) {
 		return (isEqualToCleaned(al1.getZeroSrc().getName(),al2.getZeroSrc().getName()) && isEqualToCleaned(al1.getDest().getName(),al2.getDest().getName()));
@@ -473,7 +486,6 @@ public class MergeAlgorithm {
 	// ******* Link merging methods begin ******** //
 
 	public void mergeLinks(){
-		//Question what if there are two different relationships connecting the same intentions
 
 		ArrayList<NotBothLink> mergedNBL = new ArrayList<>();
 		ArrayList<ContributionLink> mergedCL = new ArrayList<>();
@@ -637,9 +649,6 @@ public class MergeAlgorithm {
 						if(newSource) {
 							addeddl.addSrc(source);
 							source.addLinksAsSrc(addeddl);
-
-							//TODO: make sure id for the sublink is unique
-							// addeddl.addNewSublinkID(dl.getSubLinkUniqueIDList().get(dl.getSubLinkUniqueIDList().size()-1));
 							addeddl.addNewSublinkID("");
 
 						}
@@ -702,7 +711,6 @@ public class MergeAlgorithm {
 						}
 						//check for tp info conflict
 						else if(addeddl.getAbsTime() != dl.getAbsTime() && dl.getAbsTime() != null) {
-							//TODO: add timings to timings deletion list
 							deletedTimings.add(addeddl.getLinkTP() + "=" + Integer.toString(addeddl.getAbsTime()) + ", "+ dl.getLinkTP() + "=" + Integer.toString(dl.getAbsTime()));
 							conflictMessages.add(addeddl.getName() + " had link abs time points that were unresolvable.");
 							addeddl.setAbsTime((Integer)null);
@@ -768,9 +776,6 @@ public class MergeAlgorithm {
 		//add nbls to deleted elements
 		mergedNBL.removeAll(deletedNBL);
 		deletedElements.add((ArrayList<? extends AbstractElement>) deletedNBL);
-
-		//TODO: check to make sure no other links exist for contribution links
-		//TODO: check to make sure no other links exist for decomposition links
 
 		//add links to model
 		mergedModel.setContributionLinks(mergedCL);
@@ -987,7 +992,6 @@ public class MergeAlgorithm {
 			combined[funcSeg1.length] = fillGap;  // add gap segment in the middle
 			System.arraycopy(funcSeg2, 0, combined, funcSeg1.length+1, funcSeg2.length);  // copy second array ""
 
-			// future work: give user the option to rename timepoints
 			// when intention merge isn't automatically requested in timing.json
 
 			return combined;

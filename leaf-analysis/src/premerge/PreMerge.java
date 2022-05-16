@@ -24,9 +24,9 @@ public class PreMerge {
 	public static void main(String[] args) {
 		String inPath = "data/models/";
 		String tPath = "data/timing/";
-		String inputFile1 = ""; // "testModel1.json";
-		String inputFile2 = ""; // "testModel2.json";
-		String timingFile = "timing.json"; //"testModel-timing.json";
+		String inputFile1 = ""; 
+		String inputFile2 = ""; 
+		String timingFile = "timing.json"; 
 		Integer delta = 0;  // new start B
 		
 		try {
@@ -130,7 +130,7 @@ public class PreMerge {
 	}
 
 	private static void printTiming(Intention intentionA, Intention intentionB, Integer delta, String timingFilePath) {
-		Gson gson = new Gson(); //new GsonBuilder().setPrettyPrinting().create();
+		Gson gson = new Gson(); 
 
 		try {
 			// set up printwriter in append mode
@@ -144,7 +144,6 @@ public class PreMerge {
 			// first, print intention name
 			printFile.printf("{%n\t\"intention\": \"%s\",%n", intentionA.getName().trim());
 
-			// TODO: only output if A or B has more than 1 evolving function
 			// timing for intention A
 			List<String> startTimesA = intentionA.getEvolvingFunctionStartTimes();
 			printTimingIntention(startTimesA, "A", printFile);
