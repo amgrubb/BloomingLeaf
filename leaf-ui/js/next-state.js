@@ -1137,15 +1137,15 @@
         console.log(myInputJSObject.results);
         console.log(myInputJSObject.request.get('numRelTime'));
         console.log(myInputJSObject.results.get('selectedTimePoint'));
-        // TODO: Fix: This is incorrect...should be the length of the original path or if there are any timepoints left.
-        // if ((myInputJSObject.results.get('selectedTimePoint') + 1)>= myInputJSObject.request.get('numRelTime')) {   
-        //     swal("Error: Cannot explore next state past this time point.", "", "error");
-        // } else {
-        $("body").addClass("spinning"); // Adds spinner animation to page
-        updateAnalysisRequestWithCurrentState();
-        window.opener.backendSimulationRequest(myInputJSObject.request);
-        window.close();
-        // }
+        // Prevent user from exploring next state beyond allowed time points
+        if (myInputJSObject.results.get('timePointPath').length == myInputJSObject.results.totalNumTimePoints.length - 1) {   
+            swal("Error: Cannot explore next state past this time point.", "", "error");
+        } else {
+            $("body").addClass("spinning"); // Adds spinner animation to page
+            updateAnalysisRequestWithCurrentState();
+            window.opener.backendSimulationRequest(myInputJSObject.request);
+            window.close();
+        }
     }
 
     /**
