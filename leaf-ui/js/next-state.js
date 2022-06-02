@@ -405,12 +405,12 @@
                 case "leastTasksSatisfied":
                     console.log("leastTasksSatisfied");
                     var taskCount = 0;
-                    for (var i = 0; i < analysis.intentions.length; i++) {
-                        if (analysis.intentions[i].get('type') === 'basic.Task') {  
+                    for (var j = 0; j < analysis.intentions.length; j++) {
+                        if (analysis.intentions[j].get('type') === 'basic.Task') {  
                             // TODO: Figure out how to break without looping through all intentions 
                             // the first time it encounters a Task in order to optimize
                             taskCount++;
-                        } else if (i == analysis.intentions.length - 1 && taskCount == 0) {
+                        } else if (j == analysis.intentions.length - 1 && taskCount == 0) {
                             swal("Error: Cannot apply this filter with no tasks.", "", "error");
                             $('#leastTasksSatisfied').prop('checked', false);
                         } 
@@ -457,12 +457,12 @@
                 case "mostTasksSatisfied":
                     console.log('mostTasksSatisfied');
                     var taskCount = 0;
-                    for (var i = 0; i < analysis.intentions.length; i++) {
-                        if (analysis.intentions[i].get('type') === 'basic.Task') {  
+                    for (var j = 0; j < analysis.intentions.length; j++) {
+                        if (analysis.intentions[j].get('type') === 'basic.Task') {  
                             // TODO: Figure out how to break without looping through all intentions 
                             // the first time it encounters a Task in order to optimize
                             taskCount++;
-                        } else if (i == analysis.intentions.length - 1 && taskCount == 0) {
+                        } else if (j == analysis.intentions.length - 1 && taskCount == 0) {
                             swal("Error: Cannot apply this filter with no tasks.", "", "error");
                             $('#mostTasksSatisfied').prop('checked', false);
                         } 
@@ -509,12 +509,12 @@
                 case "leastResource":
                     console.log("leastResource");
                     var resCount = 0; 
-                    for (var i = 0; i < analysis.intentions.length; i++) {
-                        if (analysis.intentions[i].get('type') === 'basic.Resource') {  
+                    for (var j = 0; j < analysis.intentions.length; j++) {
+                        if (analysis.intentions[j].get('type') === 'basic.Resource') {  
                             // TODO: Figure out how to break without looping through all intentions 
                             // the first time it encounters a Resource in order to optimize
                             resCount++;
-                        } else if (i == analysis.intentions.length - 1 && resCount == 0) {
+                        } else if (j == analysis.intentions.length - 1 && resCount == 0) {
                             swal("Error: Cannot apply this filter with no resources.", "", "error");
                             $('#leastResource').prop('checked', false);
                         } 
@@ -562,15 +562,15 @@
                 case "mostResource":
                     console.log("mostResource");
                     var resCount = 0; 
-                    for (var i = 0; i < analysis.intentions.length; i++) {
-                        if (analysis.intentions[i].get('type') === 'basic.Resource') {  
+                    for (var j = 0; j < analysis.intentions.length; j++) {
+                        if (analysis.intentions[j].get('type') === 'basic.Resource') {  
                             // TODO: Figure out how to break without looping through all intentions 
                             // the first time it encounters a Resource in order to optimize
                             resCount++;
-                        } else if (i == analysis.intentions.length - 1 && resCount == 0) {
+                        } else if (j == analysis.intentions.length - 1 && resCount == 0) {
                             swal("Error: Cannot apply this filter with no resources.", "", "error");
                             $('#mostResource').prop('checked', false);
-                        } 
+                        }
                     } 
                     if (filterOrderQueue.includes("leastResource")) {
                         swal("Error: Cannot apply this filter when Most Resource is applied", "", "error");
@@ -614,12 +614,12 @@
                 case "leastGoalSatisfied":
                     console.log("leastGoalSatisfied");
                     var goalCount = 0; 
-                    for (var i = 0; i < analysis.intentions.length; i++) {
-                        if (analysis.intentions[i].get('type') === 'basic.Goal') {  
+                    for (var j = 0; j < analysis.intentions.length; j++) {
+                        if (analysis.intentions[j].get('type') === 'basic.Goal') {  
                             // TODO: Figure out how to break without looping through all intentions 
                             // the first time it encounters a Goal in order to optimize
                             goalCount++;
-                        } else if (i == analysis.intentions.length - 1 && goalCount == 0) {
+                        } else if (j == analysis.intentions.length - 1 && goalCount == 0) {
                             swal("Error: Cannot apply this filter with no goals.", "", "error");
                             $('#leastGoalSatisfied').prop('checked', false);
                         } 
@@ -666,12 +666,12 @@
                 case "mostGoalSatisfied":
                     console.log("mostGoalSatisfied");
                     var goalCount = 0; 
-                    for (var i = 0; i < analysis.intentions.length; i++) {
-                        if (analysis.intentions[i].get('type') === 'basic.Goal') {  
+                    for (var j = 0; j < analysis.intentions.length; j++) {
+                        if (analysis.intentions[j].get('type') === 'basic.Goal') {  
                             // TODO: Figure out how to break without looping through all intentions 
                             // the first time it encounters a Goal in order to optimize
                             goalCount++;
-                        } else if (i == analysis.intentions.length - 1 && goalCount == 0) {
+                        } else if (j == analysis.intentions.length - 1 && goalCount == 0) {
                             swal("Error: Cannot apply this filter with no goals.", "", "error");
                             $('#mostGoalSatisfied').prop('checked', false);
                         } 
@@ -980,7 +980,7 @@
                 $(".inspectorFilterTable").append('<tr class="tableData" id=' + filterIntentionList[i][0] + '><td class="tableData">' + name + '</td><td class="tableData">' + tableSatVal + '</td><td class="tableData remove-btn"><button class="table-btn-small" style="font-size:15px"><i class="fa fa-trash" style="color:white"></i></button></td>'); 
         }    
     }
-            
+
     // Set the new results with filters as the analysis object
     myInputJSObject.results = tempResults2;
     // Creates array with all Solutions from new hashmap
