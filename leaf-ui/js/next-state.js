@@ -403,20 +403,24 @@
                     }
                     break;
                 case "leastTasksSatisfied":
-                    console.log("leastTasksSatisfied");           
+                    console.log("leastTasksSatisfied");
+                    var LSchecksexistence = 0;
                     for (var j = 0; j < analysis.intentions.length; j++) {
                         if (analysis.intentions[j].get('type') === 'basic.Task') {
+                            LSchecksexistence = 1
                             break;
-                        } else if (j == analysis.intentions.length - 1) {
-                            swal("Error: Cannot apply this filter with no tasks.", "", "error");
-                            $('#leastTasksSatisfied').prop('checked', false);
-                        } 
+                        }
                     }
                     if (filterOrderQueue.includes("mostTasksSatisfied")) {
                         swal("Error: Cannot apply this filter when Most Task Satisfied is applied", "", "error");
                         $('#mostTasksSatisfied').prop('checked', false);
                         $('#leastTasksSatisfied').prop('checked', false);
-                    } else {
+                    }
+                    if (LSchecksexistence == 0) {
+                        swal("Error: Cannot apply this filter with no tasks.", "", "error");
+                        $('#leastTasksSatisfied').prop('checked', false);
+                    }
+                    else {
                         for (var solutionArray in tempResults.get('allSolutions')) {
                             var index_to_keep = [];
                             var index_to_rm = [];
@@ -453,19 +457,23 @@
                     break;
                 case "mostTasksSatisfied":
                     console.log('mostTasksSatisfied');
+                    var MSchecksexistence = 0;
                     for (var j = 0; j < analysis.intentions.length; j++) {
-                        if (analysis.intentions[j].get('type') === 'basic.Task') {  
+                        if (analysis.intentions[j].get('type') === 'basic.Task') { 
+                            MSchecksexistence = 1
                             break;
-                        } else if (j == analysis.intentions.length - 1) {
-                            swal("Error: Cannot apply this filter with no tasks.", "", "error");
-                            $('#mostTasksSatisfied').prop('checked', false);
-                        } 
+                        }  
                     } 
                     if (filterOrderQueue.includes("leastTasksSatisfied")) {
                         swal("Error: Cannot apply this filter when Least Task Satisfied is applied", "", "error");
                         $('#mostTasksSatisfied').prop('checked', false);
                         $('#leastTasksSatisfied').prop('checked', false);
-                    } else {
+                    } 
+                    if (MSchecksexistence == 0) {
+                        swal("Error: Cannot apply this filter with no tasks.", "", "error");
+                        $('#mostTasksSatisfied').prop('checked', false);
+                    }
+                    else {
                         for (var solutionArray in tempResults.get('allSolutions')) {
                             var index_to_keep = [];
                             var index_to_rm = [];
@@ -502,19 +510,23 @@
                     break;
                 case "leastResource":
                     console.log("leastResource");
+                    var LRchecksexistence = 0;
                     for (var j = 0; j < analysis.intentions.length; j++) {
-                        if (analysis.intentions[j].get('type') === 'basic.Resource') {  
+                        if (analysis.intentions[j].get('type') === 'basic.Resource') { 
+                            LRchecksexistence = 1;
                             break;
-                        } else if (j == analysis.intentions.length - 1) {
-                            swal("Error: Cannot apply this filter with no resources.", "", "error");
-                            $('#leastResource').prop('checked', false);
                         } 
                     } 
                     if (filterOrderQueue.includes("mostResource")) {
                         swal("Error: Cannot apply this filter when Most Resource is applied", "", "error");
                         $('#mostResource').prop('checked', false);
                         $('#leastResource').prop('checked', false);
-                    } else {
+                    } 
+                    if (LRchecksexistence == 0) {
+                        swal("Error: Cannot apply this filter with no resources.", "", "error");
+                        $('#leastResource').prop('checked', false);
+                    }
+                    else {
                         for (var solutionArray in tempResults.get('allSolutions')) {
                             var index_to_keep = [];
                             var index_to_rm = [];
@@ -552,19 +564,23 @@
                     break;
                 case "mostResource":
                     console.log("mostResource");
+                    var MRchecksexistence = 0;
                     for (var j = 0; j < analysis.intentions.length; j++) {
                         if (analysis.intentions[j].get('type') === 'basic.Resource') {  
+                            MRchecksexistence = 1;
                             break;
-                        } else if (j == analysis.intentions.length - 1) {
-                            swal("Error: Cannot apply this filter with no resources.", "", "error");
-                            $('#mostResource').prop('checked', false);
                         }
                     } 
                     if (filterOrderQueue.includes("leastResource")) {
                         swal("Error: Cannot apply this filter when Least Resource is applied", "", "error");
                         $('#mostResource').prop('checked', false);
                         $('#leastResource').prop('checked', false);
-                    } else {
+                    } 
+                    if (MRchecksexistence == 0) {
+                        swal("Error: Cannot apply this filter with no resources.", "", "error");
+                        $('#mostResource').prop('checked', false);
+                    }
+                    else {
                         for (var solutionArray in tempResults.get('allSolutions')) {
                             var index_to_keep = [];
                             var index_to_rm = [];
@@ -600,20 +616,24 @@
                     }
                     break;
                 case "leastGoalSatisfied":
-                    console.log("leastGoalSatisfied"); 
+                    console.log("leastGoalSatisfied");
+                    var LGSchecksexistence = 0;
                     for (var j = 0; j < analysis.intentions.length; j++) {
-                        if (analysis.intentions[j].get('type') === 'basic.Goal') {  
+                        if (analysis.intentions[j].get('type') === 'basic.Goal') { 
+                            LGSchecksexistence = 1;
                             break;
-                        } else if (j == analysis.intentions.length - 1) {
-                            swal("Error: Cannot apply this filter with no goals.", "", "error");
-                            $('#leastGoalSatisfied').prop('checked', false);
                         } 
                     } 
                     if (filterOrderQueue.includes("mostGoalSatisfied")) {
                         swal("Error: Cannot apply this filter when Most Goal Satisfied is applied", "", "error");
                         $('#mostGoalSatisfied').prop('checked', false);
                         $('#leastGoalSatisfied').prop('checked', false);
-                    } else {
+                    } 
+                    if (LGSchecksexistence == 0) {
+                        swal("Error: Cannot apply this filter with no goals.", "", "error");
+                        $('#leastGoalSatisfied').prop('checked', false);
+                    }
+                    else {
                         for (var solutionArray in tempResults.get('allSolutions')) {
                             var index_to_keep = [];
                             var index_to_rm = [];
@@ -650,19 +670,23 @@
                     break;
                 case "mostGoalSatisfied":
                     console.log("mostGoalSatisfied");
+                    var MGSchecksexistence = 0;
                     for (var j = 0; j < analysis.intentions.length; j++) {
                         if (analysis.intentions[j].get('type') === 'basic.Goal') {  
+                            MGSchecksexistence = 1;
                             break;
-                        } else if (j == analysis.intentions.length - 1) {
-                            swal("Error: Cannot apply this filter with no goals.", "", "error");
-                            $('#mostGoalSatisfied').prop('checked', false);
-                        } 
+                        }
                     } 
                     if (filterOrderQueue.includes("leastGoalSatisfied")) {
                         swal("Error: Cannot apply this filter when Least Goal Satisfied is applied", "", "error");
                         $('#mostGoalSatisfied').prop('checked', false);
                         $('#leastGoalSatisfied').prop('checked', false);
-                    } else {
+                    } 
+                    if (MGSchecksexistence == 0) {
+                        swal("Error: Cannot apply this filter with no goals.", "", "error");
+                        $('#mostGoalSatisfied').prop('checked', false);
+                    }
+                    else {
                         for (var solutionArray in tempResults.get('allSolutions')) {
                             var index_to_keep = [];
                             var index_to_rm = [];
