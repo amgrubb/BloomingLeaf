@@ -1,0 +1,842 @@
+{
+    "analysisRequest": {
+        "name": "Request 1",
+        "action": "singlePath",
+        "conflictLevel": "S",
+        "numRelTime": "1",
+        "selected": true,
+        "results": null
+    },
+    "graph": {
+        "type": "goalmodel.Graph",
+        "maxAbsTime": 100,
+        "absTimePtsArr": [
+            3,
+            5,
+            8,
+            22
+        ],
+        "constraints": [],
+        "cells": [
+            {
+                "type": "basic.Actor",
+                "size": {
+                    "width": 230,
+                    "height": 180
+                },
+                "actor": {
+                    "cid": "c328",
+                    "attributes": {
+                        "type": "A",
+                        "actorName": "Actor_1"
+                    },
+                    "_changing": false,
+                    "_previousAttributes": null,
+                    "changed": {},
+                    "_pending": false
+                },
+                "position": {
+                    "x": 730,
+                    "y": 160
+                },
+                "angle": 0,
+                "id": "3031e67a-5212-4e1d-b901-d61dfea6e39c",
+                "z": 0,
+                "attrs": {
+                    ".label": {
+                        "cx": 57.5,
+                        "cy": 18.322435349284873
+                    },
+                    ".name": {
+                        "text": "Actor_1"
+                    }
+                }
+            },
+            {
+                "type": "basic.Actor",
+                "size": {
+                    "width": 700,
+                    "height": 580
+                },
+                "actor": {
+                    "cid": "c52",
+                    "attributes": {
+                        "type": "A",
+                        "actorName": "Actor_0"
+                    },
+                    "_changing": false,
+                    "_previousAttributes": null,
+                    "changed": {},
+                    "_pending": false
+                },
+                "position": {
+                    "x": 140,
+                    "y": 270
+                },
+                "angle": 0,
+                "id": "71914ec7-4f42-4677-b8de-315657edfd19",
+                "z": 1,
+                "embeds": [
+                    "3dc16be5-e8be-4b8d-bb48-189846e1857f",
+                    "dd5d8dfc-ce63-4b91-a382-2f9d8353f5a0",
+                    "2b45603b-267a-4734-af97-e982e2956b12",
+                    "a644241e-ec5f-45b1-9f39-839fc76fc4be",
+                    "fad6cb27-8bda-4da9-9139-c8d3e711347f",
+                    "9098e07b-ce1b-4524-bd9e-da3ff46c52d8",
+                    "d2fb4c90-99cd-42b3-be7a-5129f9891dba",
+                    "25d9e5d8-8d67-4787-ae04-6cc4446b5e0e",
+                    "310f7fe2-8d72-4b55-a4bd-c9129b60c432"
+                ],
+                "attrs": {
+                    ".label": {
+                        "cx": 175,
+                        "cy": 58.114564475547354
+                    },
+                    ".name": {
+                        "text": "Actor_0"
+                    }
+                }
+            },
+            {
+                "type": "basic.Goal",
+                "size": {
+                    "width": 100,
+                    "height": 60
+                },
+                "intention": {
+                    "cid": "c192",
+                    "attributes": {
+                        "nodeName": "untitled",
+                        "evolvingFunction": {
+                            "cid": "c200",
+                            "attributes": {
+                                "type": "NT",
+                                "functionSegList": [],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": null,
+                            "changed": {},
+                            "_pending": false
+                        },
+                        "userEvaluationList": [
+                            {
+                                "cid": "c193",
+                                "attributes": {
+                                    "assignedEvidencePair": "(no value)",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": null,
+                                "changed": {},
+                                "_pending": false
+                            }
+                        ]
+                    },
+                    "_changing": false,
+                    "_previousAttributes": null,
+                    "changed": {
+                        "evolvingFunction": {
+                            "cid": "c200",
+                            "attributes": {
+                                "type": "NT",
+                                "functionSegList": [],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": null,
+                            "changed": {},
+                            "_pending": false
+                        }
+                    },
+                    "_pending": false
+                },
+                "position": {
+                    "x": 370,
+                    "y": 460
+                },
+                "angle": 0,
+                "id": "d2fb4c90-99cd-42b3-be7a-5129f9891dba",
+                "z": 2,
+                "parent": "71914ec7-4f42-4677-b8de-315657edfd19",
+                "attrs": {
+                    ".satvalue": {
+                        "text": "(⊥, ⊥)"
+                    },
+                    "text": {
+                        "fill": "black",
+                        "stroke": "none",
+                        "font-weight": "normal",
+                        "font-size": 10
+                    }
+                }
+            },
+            {
+                "type": "basic.Task",
+                "size": {
+                    "width": 100,
+                    "height": 60
+                },
+                "intention": {
+                    "cid": "c209",
+                    "attributes": {
+                        "nodeName": "untitled",
+                        "evolvingFunction": {
+                            "cid": "c310",
+                            "attributes": {
+                                "type": "MP",
+                                "functionSegList": [
+                                    {
+                                        "cid": "c311",
+                                        "attributes": {
+                                            "type": "I",
+                                            "refEvidencePair": "0011",
+                                            "startTP": "0",
+                                            "startAT": 0,
+                                            "current": true
+                                        },
+                                        "_changing": false,
+                                        "_previousAttributes": null,
+                                        "changed": {},
+                                        "_pending": false,
+                                        "_listenId": "l314",
+                                        "_events": null,
+                                        "_listeners": null
+                                    },
+                                    {
+                                        "cid": "c312",
+                                        "attributes": {
+                                            "type": "C",
+                                            "refEvidencePair": "0011",
+                                            "startTP": "A",
+                                            "startAT": 5,
+                                            "current": true
+                                        },
+                                        "_changing": false,
+                                        "_previousAttributes": null,
+                                        "changed": {
+                                            "startAT": 5
+                                        },
+                                        "_pending": false,
+                                        "_listenId": "l318",
+                                        "_events": null,
+                                        "_listeners": null
+                                    }
+                                ],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": null,
+                            "changed": {},
+                            "_pending": false
+                        },
+                        "userEvaluationList": [
+                            {
+                                "cid": "c210",
+                                "attributes": {
+                                    "assignedEvidencePair": "0100",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": null,
+                                "changed": {
+                                    "assignedEvidencePair": "0100"
+                                },
+                                "_pending": false,
+                                "_listenId": "l316",
+                                "_events": null,
+                                "_listeners": null
+                            }
+                        ]
+                    },
+                    "_changing": false,
+                    "_previousAttributes": null,
+                    "changed": {
+                        "evolvingFunction": {
+                            "cid": "c310",
+                            "attributes": {
+                                "type": "MP",
+                                "functionSegList": [
+                                    {
+                                        "cid": "c311",
+                                        "attributes": {
+                                            "type": "I",
+                                            "refEvidencePair": "0011",
+                                            "startTP": "0",
+                                            "startAT": 0,
+                                            "current": true
+                                        },
+                                        "_changing": false,
+                                        "_previousAttributes": null,
+                                        "changed": {},
+                                        "_pending": false,
+                                        "_listenId": "l314",
+                                        "_events": null,
+                                        "_listeners": null
+                                    },
+                                    {
+                                        "cid": "c312",
+                                        "attributes": {
+                                            "type": "C",
+                                            "refEvidencePair": "0011",
+                                            "startTP": "A",
+                                            "startAT": 5,
+                                            "current": true
+                                        },
+                                        "_changing": false,
+                                        "_previousAttributes": null,
+                                        "changed": {
+                                            "startAT": 5
+                                        },
+                                        "_pending": false,
+                                        "_listenId": "l318",
+                                        "_events": null,
+                                        "_listeners": null
+                                    }
+                                ],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": null,
+                            "changed": {},
+                            "_pending": false
+                        }
+                    },
+                    "_pending": false
+                },
+                "position": {
+                    "x": 320,
+                    "y": 630
+                },
+                "angle": 0,
+                "id": "25d9e5d8-8d67-4787-ae04-6cc4446b5e0e",
+                "z": 3,
+                "parent": "71914ec7-4f42-4677-b8de-315657edfd19",
+                "attrs": {
+                    ".satvalue": {
+                        "text": "(F, ⊥)"
+                    },
+                    ".funcvalue": {
+                        "text": "MP"
+                    },
+                    "text": {
+                        "fill": "black",
+                        "stroke": "none",
+                        "font-weight": "normal",
+                        "font-size": 10
+                    }
+                }
+            },
+            {
+                "type": "basic.CellLink",
+                "link": {
+                    "cid": "c222",
+                    "attributes": {
+                        "displayType": "element",
+                        "linkType": "and",
+                        "postType": null,
+                        "absTime": null,
+                        "evolving": false
+                    },
+                    "_changing": false,
+                    "_previousAttributes": null,
+                    "changed": {},
+                    "_pending": false
+                },
+                "labels": [
+                    {
+                        "position": 0.5,
+                        "attrs": {
+                            "text": {
+                                "text": "and"
+                            }
+                        }
+                    }
+                ],
+                "id": "a644241e-ec5f-45b1-9f39-839fc76fc4be",
+                "source": {
+                    "id": "25d9e5d8-8d67-4787-ae04-6cc4446b5e0e"
+                },
+                "target": {
+                    "id": "d2fb4c90-99cd-42b3-be7a-5129f9891dba"
+                },
+                "z": 4,
+                "parent": "71914ec7-4f42-4677-b8de-315657edfd19",
+                "attrs": {
+                    ".connection": {
+                        "stroke": "black",
+                        "stroke-width": 1
+                    },
+                    ".marker-source": {
+                        "d": "0"
+                    },
+                    ".marker-target": {
+                        "stroke": "black",
+                        "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5",
+                        "stroke-width": 1
+                    }
+                }
+            },
+            {
+                "type": "basic.Task",
+                "size": {
+                    "width": 100,
+                    "height": 60
+                },
+                "intention": {
+                    "cid": "c239",
+                    "attributes": {
+                        "nodeName": "untitled",
+                        "evolvingFunction": {
+                            "cid": "c247",
+                            "attributes": {
+                                "type": "NT",
+                                "functionSegList": [],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": null,
+                            "changed": {},
+                            "_pending": false
+                        },
+                        "userEvaluationList": [
+                            {
+                                "cid": "c240",
+                                "attributes": {
+                                    "assignedEvidencePair": "(no value)",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": null,
+                                "changed": {},
+                                "_pending": false
+                            }
+                        ]
+                    },
+                    "_changing": false,
+                    "_previousAttributes": null,
+                    "changed": {
+                        "evolvingFunction": {
+                            "cid": "c247",
+                            "attributes": {
+                                "type": "NT",
+                                "functionSegList": [],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": null,
+                            "changed": {},
+                            "_pending": false
+                        }
+                    },
+                    "_pending": false
+                },
+                "position": {
+                    "x": 620,
+                    "y": 630
+                },
+                "angle": 0,
+                "id": "fad6cb27-8bda-4da9-9139-c8d3e711347f",
+                "z": 5,
+                "parent": "71914ec7-4f42-4677-b8de-315657edfd19",
+                "attrs": {
+                    ".satvalue": {
+                        "text": "(⊥, ⊥)"
+                    },
+                    "text": {
+                        "fill": "black",
+                        "stroke": "none",
+                        "font-weight": "normal",
+                        "font-size": 10
+                    }
+                }
+            },
+            {
+                "type": "basic.CellLink",
+                "link": {
+                    "cid": "c252",
+                    "attributes": {
+                        "displayType": "element",
+                        "linkType": "and",
+                        "postType": null,
+                        "absTime": null,
+                        "evolving": false
+                    },
+                    "_changing": false,
+                    "_previousAttributes": null,
+                    "changed": {},
+                    "_pending": false
+                },
+                "labels": [
+                    {
+                        "position": 0.5,
+                        "attrs": {
+                            "text": {
+                                "text": "and"
+                            }
+                        }
+                    }
+                ],
+                "id": "2b45603b-267a-4734-af97-e982e2956b12",
+                "source": {
+                    "id": "fad6cb27-8bda-4da9-9139-c8d3e711347f"
+                },
+                "target": {
+                    "id": "d2fb4c90-99cd-42b3-be7a-5129f9891dba"
+                },
+                "z": 6,
+                "parent": "71914ec7-4f42-4677-b8de-315657edfd19",
+                "attrs": {
+                    ".connection": {
+                        "stroke": "black",
+                        "stroke-width": 1
+                    },
+                    ".marker-source": {
+                        "d": "0"
+                    },
+                    ".marker-target": {
+                        "stroke": "black",
+                        "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5",
+                        "stroke-width": 1
+                    }
+                }
+            },
+            {
+                "type": "basic.Task",
+                "size": {
+                    "width": 100,
+                    "height": 60
+                },
+                "intention": {
+                    "cid": "c265",
+                    "attributes": {
+                        "nodeName": "untitled",
+                        "evolvingFunction": {
+                            "cid": "c292",
+                            "attributes": {
+                                "type": "D",
+                                "functionSegList": [
+                                    {
+                                        "cid": "c293",
+                                        "attributes": {
+                                            "type": "D",
+                                            "refEvidencePair": "0100",
+                                            "startTP": "0",
+                                            "startAT": 0,
+                                            "current": true
+                                        },
+                                        "_changing": false,
+                                        "_previousAttributes": null,
+                                        "changed": {
+                                            "refEvidencePair": "0100"
+                                        },
+                                        "_pending": false,
+                                        "_listenId": "l295",
+                                        "_events": null,
+                                        "_listeners": null
+                                    }
+                                ],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": null,
+                            "changed": {},
+                            "_pending": false
+                        },
+                        "userEvaluationList": [
+                            {
+                                "cid": "c266",
+                                "attributes": {
+                                    "assignedEvidencePair": "0011",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": null,
+                                "changed": {
+                                    "assignedEvidencePair": "0011"
+                                },
+                                "_pending": false,
+                                "_listenId": "l297",
+                                "_events": null,
+                                "_listeners": null
+                            }
+                        ]
+                    },
+                    "_changing": false,
+                    "_previousAttributes": null,
+                    "changed": {
+                        "evolvingFunction": {
+                            "cid": "c292",
+                            "attributes": {
+                                "type": "D",
+                                "functionSegList": [
+                                    {
+                                        "cid": "c293",
+                                        "attributes": {
+                                            "type": "D",
+                                            "refEvidencePair": "0100",
+                                            "startTP": "0",
+                                            "startAT": 0,
+                                            "current": true
+                                        },
+                                        "_changing": false,
+                                        "_previousAttributes": null,
+                                        "changed": {
+                                            "refEvidencePair": "0100"
+                                        },
+                                        "_pending": false,
+                                        "_listenId": "l295",
+                                        "_events": null,
+                                        "_listeners": null
+                                    }
+                                ],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": null,
+                            "changed": {},
+                            "_pending": false
+                        }
+                    },
+                    "_pending": false
+                },
+                "position": {
+                    "x": 650,
+                    "y": 420
+                },
+                "angle": 0,
+                "id": "9098e07b-ce1b-4524-bd9e-da3ff46c52d8",
+                "z": 7,
+                "parent": "71914ec7-4f42-4677-b8de-315657edfd19",
+                "attrs": {
+                    ".satvalue": {
+                        "text": "(⊥, ⊥)"
+                    },
+                    ".funcvalue": {
+                        "text": "D"
+                    },
+                    "text": {
+                        "fill": "black",
+                        "stroke": "none",
+                        "font-weight": "normal",
+                        "font-size": 10
+                    }
+                }
+            },
+            {
+                "type": "basic.CellLink",
+                "link": {
+                    "cid": "c278",
+                    "attributes": {
+                        "displayType": "element",
+                        "linkType": "-",
+                        "postType": null,
+                        "absTime": null,
+                        "evolving": false
+                    },
+                    "_changing": false,
+                    "_previousAttributes": null,
+                    "changed": {},
+                    "_pending": false
+                },
+                "labels": [
+                    {
+                        "position": 0.5,
+                        "attrs": {
+                            "text": {
+                                "text": "-"
+                            }
+                        }
+                    }
+                ],
+                "id": "dd5d8dfc-ce63-4b91-a382-2f9d8353f5a0",
+                "source": {
+                    "id": "9098e07b-ce1b-4524-bd9e-da3ff46c52d8"
+                },
+                "target": {
+                    "id": "fad6cb27-8bda-4da9-9139-c8d3e711347f"
+                },
+                "z": 8,
+                "parent": "71914ec7-4f42-4677-b8de-315657edfd19",
+                "attrs": {
+                    ".connection": {
+                        "stroke": "black",
+                        "stroke-width": 1
+                    },
+                    ".marker-source": {
+                        "d": "0"
+                    },
+                    ".marker-target": {
+                        "stroke": "black",
+                        "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5",
+                        "stroke-width": 1
+                    }
+                }
+            },
+            {
+                "type": "basic.Task",
+                "size": {
+                    "width": 100,
+                    "height": 60
+                },
+                "intention": {
+                    "cid": "c407",
+                    "attributes": {
+                        "nodeName": "untitled",
+                        "evolvingFunction": {
+                            "cid": "c415",
+                            "attributes": {
+                                "type": "NT",
+                                "functionSegList": [],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": null,
+                            "changed": {},
+                            "_pending": false
+                        },
+                        "userEvaluationList": [
+                            {
+                                "cid": "c408",
+                                "attributes": {
+                                    "assignedEvidencePair": "(no value)",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": null,
+                                "changed": {},
+                                "_pending": false
+                            }
+                        ]
+                    },
+                    "_changing": false,
+                    "_previousAttributes": null,
+                    "changed": {
+                        "evolvingFunction": {
+                            "cid": "c415",
+                            "attributes": {
+                                "type": "NT",
+                                "functionSegList": [],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": null,
+                            "changed": {},
+                            "_pending": false
+                        }
+                    },
+                    "_pending": false
+                },
+                "position": {
+                    "x": 780,
+                    "y": 240
+                },
+                "angle": 0,
+                "id": "310f7fe2-8d72-4b55-a4bd-c9129b60c432",
+                "z": 9,
+                "parent": "71914ec7-4f42-4677-b8de-315657edfd19",
+                "attrs": {
+                    ".satvalue": {
+                        "text": "(⊥, ⊥)"
+                    },
+                    "text": {
+                        "fill": "black",
+                        "stroke": "none",
+                        "font-weight": "normal",
+                        "font-size": 10
+                    }
+                }
+            },
+            {
+                "type": "basic.CellLink",
+                "link": {
+                    "cid": "c439",
+                    "attributes": {
+                        "displayType": "element",
+                        "linkType": "++D",
+                        "postType": null,
+                        "absTime": null,
+                        "evolving": false
+                    },
+                    "_changing": false,
+                    "_previousAttributes": null,
+                    "changed": {},
+                    "_pending": false
+                },
+                "labels": [
+                    {
+                        "position": 0.5,
+                        "attrs": {
+                            "text": {
+                                "text": "++D"
+                            }
+                        }
+                    }
+                ],
+                "id": "3dc16be5-e8be-4b8d-bb48-189846e1857f",
+                "source": {
+                    "id": "310f7fe2-8d72-4b55-a4bd-c9129b60c432"
+                },
+                "target": {
+                    "id": "9098e07b-ce1b-4524-bd9e-da3ff46c52d8"
+                },
+                "z": 10,
+                "parent": "71914ec7-4f42-4677-b8de-315657edfd19",
+                "attrs": {
+                    ".connection": {
+                        "stroke": "black",
+                        "stroke-width": 1
+                    },
+                    ".marker-source": {
+                        "d": "0"
+                    },
+                    ".marker-target": {
+                        "stroke": "black",
+                        "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5",
+                        "stroke-width": 1
+                    }
+                }
+            }
+        ]
+    }
+}
