@@ -1,7 +1,8 @@
 import simulation.*;
+import merge.*;
 
 import java.util.*;
-import static java.lang.Math.max;
+import static java.lang.Math.*;
 
 public class LayoutAlgorithm {
 	// models
@@ -27,31 +28,76 @@ public class LayoutAlgorithm {
         // TODO: some logging object init with filename
 	}
 
+    /**
+        Main Layout method
+     */
 	public ModelSpec layoutModels(){
-        //list nodePositions = model.actorlistPositions + model.intentionlistPositions
+        VisualInfo[] nodePositions = initNodePositions();
+        int c = .2; //constant for adjustment
+        int a = .05; //constant for error
 
-		//for i < maxIter:
-
+		for(int i = 0; i < maxIter; i++){
             //sum up forces for the X and Y directions
-            //list forceX = new int list[nodePositions.size()]
-            //list forceY = new int list[nodePositions.size()]
-            //for j < len nodePosition:
-                //for k < len nodePosition:
-                    //if j ==k: continue
+            Integer[] forceX = new int[nodePositions.length];
+            Integer[] forceY = new int[nodePositions.length];
+            for(int j = 0; j < nodePositions.length; j++){
+                for(int k = 0; k < nodePositions.length; k++){
+                    if j ==k: continue
 
-                    //int theta = angleBetween(nodeposition[j], nodePosition[k])
-                    //int attraction = getAttraction(nodeposition[j], nodePosition[k])
-                    //int repulsion = getRepulsion(nodeposition[j], nodePosition[k])
+                    int theta = angleBetween(nodeposition[j], nodePosition[k]);
+                    int attraction = getAttraction(nodeposition[j], nodePosition[k]);
+                    int repulsion = getRepulsion(nodeposition[j], nodePosition[k]);
 
-                    //forceX[i] += attraction*cos(theta) + repulsion*cos(theta)
-                    //forceY[i] += attraction*sin(theta) + repulsion*sin(theta)
+                    forceX[j] += attraction*Math.cos(theta) + repulsion*Math.cos(theta);
+                    forceY[j] += attraction*Math.sin(theta) + repulsion*Math.sin(theta);
+                }
+            }
             
-            //Adjust the positions
-            //for j < len nodePosition:
-                //nodePosition[j].getX += .2forceX[j]
-                //nodePosition[j].getY += .2forceY[j]
+            //adjust the positions
+            for(int j = 0; j < nodePositions.length; j++){
+                nodePosition[j].setX(nodePosition.getX() + c*forceX[j]);
+                nodePosition[j].setY(nodePosition.getY() + c*forceY[j]);
+            }
 
-            //calculate error 
+            //calculate error
+            //TODO: figure out a good stopping condition
+            if Math.abs(sum(forceX)) < a && Math.abs(sum(forceY)) < a: break;
+        }
+            
 	}
+    /**
+        Intialize the node position array
+        Collect VisualInfo objects from modelSpec's Actors and Intentions
+     */
+    public VisualInfo[] initNodePositions(){
+        VisualInfo[] nodePositions = new VisualInfo[ModelSpec.getActors().size() + ModelSpec.getIntentions().size()];
+        int index = 0;
+
+        //get Actor visual info
+        for(Actor a: ModelSpec.getActors()){
+            nodePositions[index] = a.getVisualInfo());
+            index++;
+        }
+        //get Intention visual info
+        for(Intention i: ModelSpec.getIntentions()){
+            nodePositions[index] = i.getVisualInfo());
+            index++;
+        }
+
+        return nodePositions;
+    }
+
+    /**
+        Array Sum Helper
+     */
+     public int sum(Integer[] arr){
+         int sum = 0;
+         for(Integer i: arr){
+             sum += i;
+         }
+         return sum;
+     }
+
+
 }
 
