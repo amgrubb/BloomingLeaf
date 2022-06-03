@@ -19,7 +19,23 @@ public class VisualInfo {
 	public BIPosition getPosition() {
 		return position;
 	}
+
+	public Integer getX() {
+		return position.getX();
+	}
+
+	public Integer getY() {
+		return position.getY();
+	}
+
+	public void setX(Integer x) {
+		this.position.setX();
+	}
 	
+	public void setY(Integer y) {
+		this.position.setY();
+	}
+
 	public String toString() {
 		return "width:" + String.valueOf(this.size.getWidth()) + " height:" + String.valueOf(this.size.getHeight()) + " x:" + String.valueOf(this.position.getX()) + " y:" + String.valueOf(this.position.getY());
 	}

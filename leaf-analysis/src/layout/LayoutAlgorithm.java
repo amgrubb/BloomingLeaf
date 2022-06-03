@@ -68,7 +68,7 @@ public class LayoutAlgorithm {
      * Calculate the angle between two nodes
      * 
      */
-    public double angleBetween(n1,n2) {
+    public double angleBetween(Node<T> n1,Node<T> n2) {
         if(n1 != n2){
             double distX = Math.abs(n1.getX() - n2.getX());
             double distY = Math.abs(n1.getY() - n2.getY());
