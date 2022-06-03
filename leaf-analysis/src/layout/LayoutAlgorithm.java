@@ -13,7 +13,7 @@ public class LayoutAlgorithm {
 	 * Initialize LayoutAlgorithm and run layoutModels
 	 */
 
-	public MergeAlgorithm(ModelSpec model, String filename, int maxIter) {
+	public LayoutAlgorithm(ModelSpec model, String filename, int maxIter) {
 
 		if (MMain.DEBUG) System.out.println("Starting: UCG Layout");
 		// set up models
@@ -31,22 +31,22 @@ public class LayoutAlgorithm {
     /**
         Main Layout method
      */
-	public ModelSpec layoutModels(){
+	public ModelSpec layoutModel(){
         VisualInfo[] nodePositions = initNodePositions();
-        int c = .2; //constant for adjustment
-        int a = .05; //constant for error
+        double c = .2; //constant for adjustment
+        double a = .05; //constant for error
 
 		for(int i = 0; i < maxIter; i++){
             //sum up forces for the X and Y directions
-            Integer[] forceX = new int[nodePositions.length];
-            Integer[] forceY = new int[nodePositions.length];
+            Double[] forceX = new Double[nodePositions.length];
+            Double[] forceY = new Double[nodePositions.length];
             for(int j = 0; j < nodePositions.length; j++){
                 for(int k = 0; k < nodePositions.length; k++){
-                    if j ==k: continue
+                    if(j ==k) continue;
 
-                    int theta = angleBetween(nodeposition[j], nodePosition[k]);
-                    int attraction = getAttraction(nodeposition[j], nodePosition[k]);
-                    int repulsion = getRepulsion(nodeposition[j], nodePosition[k]);
+                    int theta = angleBetween(nodePositions[j], nodePositions[k]);
+                    int attraction = getAttraction(nodePositions[j], nodePositions[k]);
+                    int repulsion = getRepulsion(nodePositions[j], nodePositions[k]);
 
                     forceX[j] += attraction*Math.cos(theta) + repulsion*Math.cos(theta);
                     forceY[j] += attraction*Math.sin(theta) + repulsion*Math.sin(theta);
@@ -55,13 +55,13 @@ public class LayoutAlgorithm {
             
             //adjust the positions
             for(int j = 0; j < nodePositions.length; j++){
-                nodePosition[j].setX(nodePosition.getX() + c*forceX[j]);
-                nodePosition[j].setY(nodePosition.getY() + c*forceY[j]);
+                nodePositions[j].setX(nodePositions[j].getX() + c*forceX[j]);
+                nodePositions[j].setY(nodePositions[j].getY() + c*forceY[j]);
             }
 
             //calculate error
             //TODO: figure out a good stopping condition
-            if Math.abs(sum(forceX)) < a && Math.abs(sum(forceY)) < a: break;
+            if (Math.abs(sum(forceX)) < a && Math.abs(sum(forceY)) < a) break;
         }
             
 	}
@@ -70,17 +70,17 @@ public class LayoutAlgorithm {
         Collect VisualInfo objects from modelSpec's Actors and Intentions
      */
     public VisualInfo[] initNodePositions(){
-        VisualInfo[] nodePositions = new VisualInfo[ModelSpec.getActors().size() + ModelSpec.getIntentions().size()];
+        VisualInfo[] nodePositions = new VisualInfo[model.getActors().size() + model.getIntentions().size()];
         int index = 0;
 
         //get Actor visual info
-        for(Actor a: ModelSpec.getActors()){
-            nodePositions[index] = a.getVisualInfo());
+        for(Actor a: model.getActors()){
+            nodePositions[index] = a.getVisualInfo();
             index++;
         }
         //get Intention visual info
-        for(Intention i: ModelSpec.getIntentions()){
-            nodePositions[index] = i.getVisualInfo());
+        for(Intention i: model.getIntentions()){
+            nodePositions[index] = i.getVisualInfo();
             index++;
         }
 
@@ -90,9 +90,9 @@ public class LayoutAlgorithm {
     /**
         Array Sum Helper
      */
-     public int sum(Integer[] arr){
+     public double sum(Double[] arr){
          int sum = 0;
-         for(Integer i: arr){
+         for(Double i: arr){
              sum += i;
          }
          return sum;
