@@ -77,7 +77,6 @@ public class LayoutAlgorithm {
         return theta;
     }
 
-    public ModelSpec layoutModels(){
     /*
         Main Layout method
      */ 
@@ -125,12 +124,12 @@ public class LayoutAlgorithm {
 
         //get Actor visual info
         for(Actor a: ModelSpec.getActors()){
-            nodePositions[index] = a.getVisualInfo());
+            nodePositions[index] = a.getVisualInfo();
             index++;
         }
         //get Intention visual info
         for(Intention i: ModelSpec.getIntentions()){
-            nodePositions[index] = i.getVisualInfo());
+            nodePositions[index] = i.getVisualInfo();
             index++;
         }
 
@@ -148,6 +147,6 @@ public class LayoutAlgorithm {
          return sum;
      }
 
-
+    
 }
 
