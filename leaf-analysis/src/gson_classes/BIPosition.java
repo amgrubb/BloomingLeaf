@@ -11,4 +11,8 @@ public class BIPosition {
 	public Integer getY() {
 		return y;
 	}
+	
+	public void setX(Integer x) {
+		this.x = x;
+	}
 }
