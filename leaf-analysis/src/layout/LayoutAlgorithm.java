@@ -7,7 +7,7 @@ import static java.lang.Math.*;
 public class LayoutAlgorithm {
 	// models
 	ModelSpec model;
-    int maxIter = 20;
+    int maxIter;
 
 	/**
 	 * Initialize LayoutAlgorithm and run layoutModels
@@ -112,8 +112,7 @@ public class LayoutAlgorithm {
             //TODO: figure out a good stopping condition
             if Math.abs(sum(forceX)) < a && Math.abs(sum(forceY)) < a: break;
         }
-            
-	}
+
     /**
         Intialize the node position array
         Collect VisualInfo objects from modelSpec's Actors and Intentions
