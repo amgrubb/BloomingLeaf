@@ -33,7 +33,7 @@ public class LayoutAlgorithm {
      * the expression (d*d/Cn)
      * @return the force attraction between two elements
      */
-    private double[] getAttraction(Node<T> n1, Node<T> n2) {
+    private double getAttraction(Node<T> n1, Node<T> n2) {
         if (n1 != n2) {
             double distX = n1.getX() - n2.getX();
             double distY = n1.getY() - n2.getY();
@@ -51,7 +51,7 @@ public class LayoutAlgorithm {
      * the expression (Cn*Cn/d)
      * @return the force repulsion between two elements
      */
-    private double[] getRepulsion(Node<T> n1, Node<T> n2) {
+    private double getRepulsion(Node<T> n1, Node<T> n2) {
         if (n1 != n2) {
             double distX = n1.getX() - n2.getX();
             double distY = n1.getY() - n2.getY();
