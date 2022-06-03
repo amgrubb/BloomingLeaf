@@ -33,7 +33,7 @@ public class LayoutAlgorithm {
      * the expression (d*d/Cn)
      * @return the force attraction between two elements
      */
-    private double getAttraction(Node<T> n1, Node<T> n2) {
+    private double getAttraction(VisualInfo n1, VisualInfo n2) {
         if (n1 != n2) {
             double distX = n1.getX() - n2.getX();
             double distY = n1.getY() - n2.getY();
@@ -51,7 +51,7 @@ public class LayoutAlgorithm {
      * the expression (Cn*Cn/d)
      * @return the force repulsion between two elements
      */
-    private double getRepulsion(Node<T> n1, Node<T> n2) {
+    private double getRepulsion(VisualInfo n1, VisualInfo n2) {
         if (n1 != n2) {
             double distX = n1.getX() - n2.getX();
             double distY = n1.getY() - n2.getY();
@@ -68,7 +68,7 @@ public class LayoutAlgorithm {
      * Calculate the angle between two nodes
      * 
      */
-    public double angleBetween(Node<T> n1,Node<T> n2) {
+    public double angleBetween(VisualInfo n1, VisualInfo n2) {
         if(n1 != n2){
             double distX = Math.abs(n1.getX() - n2.getX());
             double distY = Math.abs(n1.getY() - n2.getY());
@@ -83,19 +83,19 @@ public class LayoutAlgorithm {
         
 	public ModelSpec layoutModels(){
         VisualInfo[] nodePositions = initNodePositions();
-        int c = .2; //constant for adjustment
-        int a = .05; //constant for error
+        double c = .2; //constant for adjustment
+        double a = .05; //constant for error
 		for(int i = 0; i < maxIter; i++){
             //sum up forces for the X and Y directions
-            Integer[] forceX = new int[nodePositions.length];
-            Integer[] forceY = new int[nodePositions.length];
+            Double[] forceX = new double[nodePositions.length];
+            Double[] forceY = new double[nodePositions.length];
             for(int j = 0; j < nodePositions.length; j++){
                 for(int k = 0; k < nodePositions.length; k++){
                     if j ==k: continue
 
-                    int theta = angleBetween(nodePositions[j], nodePositions[k]);
-                    int attraction = getAttraction(nodePositions[j], nodePositions[k]);
-                    int repulsion = getRepulsion(nodePositions[j], nodePositions[k]);
+                    double theta = angleBetween(nodePositions[j], nodePositions[k]);
+                    double attraction = getAttraction(nodePositions[j], nodePositions[k]);
+                    double repulsion = getRepulsion(nodePositions[j], nodePositions[k]);
 
                     forceX[j] += attraction*Math.cos(theta) + repulsion*Math.cos(theta);
                     forceY[j] += attraction*Math.sin(theta) + repulsion*Math.sin(theta);
