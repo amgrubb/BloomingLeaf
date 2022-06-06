@@ -6,8 +6,6 @@ import gson_classes.BIPosition;
 public class VisualInfo {
 	BISize size;
 	BIPosition position;
-	Integer x;
-	Integer y;
 
 	public VisualInfo(BISize size, BIPosition position) {
 		this.size = size;
@@ -21,23 +19,23 @@ public class VisualInfo {
 	public BIPosition getPosition() {
 		return position;
 	}
-	
-	public Integer getX() {
-		return x;
+
+	public Double getX() {
+		return position.getX();
 	}
 
-	public Integer getY() {
-		return y;
+	public Double getY() {
+		return position.getY();
 	}
 
-	public void setX(Integer x) {
-		this.x = x;
-	}
-
-	public void setY(Integer y) {
-		this.y = y;
+	public void setX(Double x) {
+		this.position.setX(x);
 	}
 	
+	public void setY(Double y) {
+		this.position.setY(y);
+	}
+
 	public String toString() {
 		return "width:" + String.valueOf(this.size.getWidth()) + " height:" + String.valueOf(this.size.getHeight()) + " x:" + String.valueOf(this.position.getX()) + " y:" + String.valueOf(this.position.getY());
 	}
