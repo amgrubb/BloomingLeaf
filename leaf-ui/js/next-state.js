@@ -344,7 +344,6 @@
     function add_filter(tempResults2) {
         console.log("clicked");
         console.log(filterOrderQueue);
-
         tempResults = tempResults2;
 
         // Iterates over all of the boxes that have been checked
@@ -405,218 +404,320 @@
                     break;
                 case "leastTasksSatisfied":
                     console.log("leastTasksSatisfied");
+                    var LSchecksexistence = 0;
+                    for (var j = 0; j < analysis.intentions.length; j++) {
+                        if (analysis.intentions[j].get('type') === 'basic.Task') {
+                            LSchecksexistence = 1
+                            break;
+                        }
+                    }
+                    if (filterOrderQueue.includes("mostTasksSatisfied")) {
+                        swal("Error: Cannot apply this filter when Most Task Satisfied is applied", "", "error");
+                        $('#mostTasksSatisfied').prop('checked', false);
+                        $('#leastTasksSatisfied').prop('checked', false);
+                    }
+                    if (LSchecksexistence == 0) {
+                        swal("Error: Cannot apply this filter with no tasks.", "", "error");
+                        $('#leastTasksSatisfied').prop('checked', false);
+                    }
+                    else {
+                        for (var solutionArray in tempResults.get('allSolutions')) {
+                            var index_to_keep = [];
+                            var index_to_rm = [];
 
-                    for (var solutionArray in tempResults.get('allSolutions')) {
-                        var index_to_keep = [];
-                        var index_to_rm = [];
-
-                        var least_t_s = tempResults.get('allSolutions')[solutionArray].length;
-                        for (var solution_index = 0; solution_index < tempResults.get('allSolutions')[solutionArray].length; solution_index++) {
-                            var num_t_s = 0;
-                            for (var element_index = 0; element_index < tempResults.get('allSolutions')[solutionArray][solution_index].length; element_index++) {
-                                if (analysis.intentions[element_index].get('type') === 'basic.Task') {
-                                    var value = tempResults.get('allSolutions')[solutionArray][solution_index][element_index];
-                                    if ((value == "0010" || value == "0011")) {
-                                        num_t_s++;
+                            var least_t_s = tempResults.get('allSolutions')[solutionArray].length;
+                            for (var solution_index = 0; solution_index < tempResults.get('allSolutions')[solutionArray].length; solution_index++) {
+                                var num_t_s = 0;
+                                for (var element_index = 0; element_index < tempResults.get('allSolutions')[solutionArray][solution_index].length; element_index++) {
+                                    if (analysis.intentions[element_index].get('type') === 'basic.Task') {
+                                        var value = tempResults.get('allSolutions')[solutionArray][solution_index][element_index];
+                                        if ((value == "0010" || value == "0011")) {
+                                            num_t_s++;
+                                        }
                                     }
                                 }
+                                if (least_t_s > num_t_s) {
+                                    least_t_s = num_t_s;
+                                    index_to_rm = index_to_rm.concat(index_to_keep);
+                                    index_to_keep = [];
+                                }
+                                if (num_t_s == least_t_s) {
+                                    index_to_keep.push(solution_index);
+                                }
+                                if (num_t_s > least_t_s) {
+                                    index_to_rm.push(solution_index);
+                                }
                             }
-                            if (least_t_s > num_t_s) {
-                                least_t_s = num_t_s;
-                                index_to_rm = index_to_rm.concat(index_to_keep);
-                                index_to_keep = [];
+                            index_to_rm.sort(function (a, b) { return a - b });
+                            for (var to_rm = 0; to_rm < index_to_rm.length; to_rm++) {
+                                tempResults.get('allSolutions')[solutionArray].splice(index_to_rm[to_rm] - to_rm, 1);
                             }
-                            if (num_t_s == least_t_s) {
-                                index_to_keep.push(solution_index);
-                            }
-                            if (num_t_s > least_t_s) {
-                                index_to_rm.push(solution_index);
-                            }
-                        }
-                        index_to_rm.sort(function (a, b) { return a - b });
-                        for (var to_rm = 0; to_rm < index_to_rm.length; to_rm++) {
-                            tempResults.get('allSolutions')[solutionArray].splice(index_to_rm[to_rm] - to_rm, 1);
                         }
                     }
                     break;
                 case "mostTasksSatisfied":
                     console.log('mostTasksSatisfied');
+                    var MSchecksexistence = 0;
+                    for (var j = 0; j < analysis.intentions.length; j++) {
+                        if (analysis.intentions[j].get('type') === 'basic.Task') { 
+                            MSchecksexistence = 1
+                            break;
+                        }  
+                    } 
+                    if (filterOrderQueue.includes("leastTasksSatisfied")) {
+                        swal("Error: Cannot apply this filter when Least Task Satisfied is applied", "", "error");
+                        $('#mostTasksSatisfied').prop('checked', false);
+                        $('#leastTasksSatisfied').prop('checked', false);
+                    } 
+                    if (MSchecksexistence == 0) {
+                        swal("Error: Cannot apply this filter with no tasks.", "", "error");
+                        $('#mostTasksSatisfied').prop('checked', false);
+                    }
+                    else {
+                        for (var solutionArray in tempResults.get('allSolutions')) {
+                            var index_to_keep = [];
+                            var index_to_rm = [];
 
-                    for (var solutionArray in tempResults.get('allSolutions')) {
-                        var index_to_keep = [];
-                        var index_to_rm = [];
-
-                        var most_t_s = 0;
-                        for (var solution_index = 0; solution_index < tempResults.get('allSolutions')[solutionArray].length; solution_index++) {
-                            var num_t_s = 0;
-                            for (var element_index = 0; element_index < tempResults.get('allSolutions')[solutionArray][solution_index].length; element_index++) {
-                                if (analysis.intentions[element_index].get('type') === 'basic.Task') {
-                                    var value = tempResults.get('allSolutions')[solutionArray][solution_index][element_index];
-                                    if ((value == "0010" || value == "0011")) {
-                                        num_t_s++;
+                            var most_t_s = 0;
+                            for (var solution_index = 0; solution_index < tempResults.get('allSolutions')[solutionArray].length; solution_index++) {
+                                var num_t_s = 0;
+                                for (var element_index = 0; element_index < tempResults.get('allSolutions')[solutionArray][solution_index].length; element_index++) {
+                                    if (analysis.intentions[element_index].get('type') === 'basic.Task') {
+                                        var value = tempResults.get('allSolutions')[solutionArray][solution_index][element_index];
+                                        if ((value == "0010" || value == "0011")) {
+                                            num_t_s++;
+                                        }
                                     }
                                 }
+                                if (most_t_s < num_t_s) {
+                                    most_t_s = num_t_s;
+                                    index_to_rm = index_to_rm.concat(index_to_keep);
+                                    index_to_keep = [];
+                                }
+                                if (num_t_s == most_t_s) {
+                                    index_to_keep.push(solution_index);
+                                }
+                                if (num_t_s < most_t_s) {
+                                    index_to_rm.push(solution_index);
+                                }
                             }
-                            if (most_t_s < num_t_s) {
-                                most_t_s = num_t_s;
-                                index_to_rm = index_to_rm.concat(index_to_keep);
-                                index_to_keep = [];
+                            index_to_rm.sort(function (a, b) { return a - b });
+                            for (var to_rm = 0; to_rm < index_to_rm.length; to_rm++) {
+                                tempResults.get('allSolutions')[solutionArray].splice(index_to_rm[to_rm] - to_rm, 1);
                             }
-                            if (num_t_s == most_t_s) {
-                                index_to_keep.push(solution_index);
-                            }
-                            if (num_t_s < most_t_s) {
-                                index_to_rm.push(solution_index);
-                            }
-                        }
-                        index_to_rm.sort(function (a, b) { return a - b });
-                        for (var to_rm = 0; to_rm < index_to_rm.length; to_rm++) {
-                            tempResults.get('allSolutions')[solutionArray].splice(index_to_rm[to_rm] - to_rm, 1);
                         }
                     }
                     break;
                 case "leastResource":
                     console.log("leastResource");
+                    var LRchecksexistence = 0;
+                    for (var j = 0; j < analysis.intentions.length; j++) {
+                        if (analysis.intentions[j].get('type') === 'basic.Resource') { 
+                            LRchecksexistence = 1;
+                            break;
+                        } 
+                    } 
+                    if (filterOrderQueue.includes("mostResource")) {
+                        swal("Error: Cannot apply this filter when Most Resource is applied", "", "error");
+                        $('#mostResource').prop('checked', false);
+                        $('#leastResource').prop('checked', false);
+                    } 
+                    if (LRchecksexistence == 0) {
+                        swal("Error: Cannot apply this filter with no resources.", "", "error");
+                        $('#leastResource').prop('checked', false);
+                    }
+                    else {
+                        for (var solutionArray in tempResults.get('allSolutions')) {
+                            var index_to_keep = [];
+                            var index_to_rm = [];
 
-                    for (var solutionArray in tempResults.get('allSolutions')) {
-                        var index_to_keep = [];
-                        var index_to_rm = [];
-
-                        var least_r_s = tempResults.get('allSolutions')[solutionArray].length;
-                        for (var solution_index = 0; solution_index < tempResults.get('allSolutions')[solutionArray].length; solution_index++) {
-                            var num_r_s = 0;
-                            for (var element_index = 0; element_index < tempResults.get('allSolutions')[solutionArray][solution_index].length; element_index++) {
-                                if (analysis.intentions[element_index].get('type') === 'basic.Resource') {
-                                    // if (selectedResult.allSolution[solution_index].intentionElements[element_index].type === "RESOURCE"){
-                                    var value = tempResults.get('allSolutions')[solutionArray][solution_index][element_index];
-                                    if ((value == "0010" || value == "0011")) {
-                                        num_r_s++;
+                            var least_r_s = tempResults.get('allSolutions')[solutionArray].length;
+                            for (var solution_index = 0; solution_index < tempResults.get('allSolutions')[solutionArray].length; solution_index++) {
+                                var num_r_s = 0;
+                                for (var element_index = 0; element_index < tempResults.get('allSolutions')[solutionArray][solution_index].length; element_index++) {
+                                    if (analysis.intentions[element_index].get('type') === 'basic.Resource') {
+                                        // if (selectedResult.allSolution[solution_index].intentionElements[element_index].type === "RESOURCE"){
+                                        var value = tempResults.get('allSolutions')[solutionArray][solution_index][element_index];
+                                        if ((value == "0010" || value == "0011")) {
+                                            num_r_s++;
+                                        }
                                     }
                                 }
+                                if (least_r_s > num_r_s) {
+                                    least_r_s = num_r_s;
+                                    index_to_rm = index_to_rm.concat(index_to_keep);
+                                    index_to_keep = [];
+                                }
+                                if (num_r_s == least_r_s) {
+                                    index_to_keep.push(solution_index);
+                                }
+                                if (num_r_s > least_r_s) {
+                                    index_to_rm.push(solution_index);
+                                }
                             }
-                            if (least_r_s > num_r_s) {
-                                least_r_s = num_r_s;
-                                index_to_rm = index_to_rm.concat(index_to_keep);
-                                index_to_keep = [];
+                            index_to_rm.sort(function (a, b) { return a - b });
+                            for (var to_rm = 0; to_rm < index_to_rm.length; to_rm++) {
+                                tempResults.get('allSolutions')[solutionArray].splice(index_to_rm[to_rm] - to_rm, 1);
                             }
-                            if (num_r_s == least_r_s) {
-                                index_to_keep.push(solution_index);
-                            }
-                            if (num_r_s > least_r_s) {
-                                index_to_rm.push(solution_index);
-                            }
-                        }
-                        index_to_rm.sort(function (a, b) { return a - b });
-                        for (var to_rm = 0; to_rm < index_to_rm.length; to_rm++) {
-                            tempResults.get('allSolutions')[solutionArray].splice(index_to_rm[to_rm] - to_rm, 1);
                         }
                     }
                     break;
                 case "mostResource":
                     console.log("mostResource");
+                    var MRchecksexistence = 0;
+                    for (var j = 0; j < analysis.intentions.length; j++) {
+                        if (analysis.intentions[j].get('type') === 'basic.Resource') {  
+                            MRchecksexistence = 1;
+                            break;
+                        }
+                    } 
+                    if (filterOrderQueue.includes("leastResource")) {
+                        swal("Error: Cannot apply this filter when Least Resource is applied", "", "error");
+                        $('#mostResource').prop('checked', false);
+                        $('#leastResource').prop('checked', false);
+                    } 
+                    if (MRchecksexistence == 0) {
+                        swal("Error: Cannot apply this filter with no resources.", "", "error");
+                        $('#mostResource').prop('checked', false);
+                    }
+                    else {
+                        for (var solutionArray in tempResults.get('allSolutions')) {
+                            var index_to_keep = [];
+                            var index_to_rm = [];
 
-                    for (var solutionArray in tempResults.get('allSolutions')) {
-                        var index_to_keep = [];
-                        var index_to_rm = [];
-
-                        var most_r_s = 0;
-                        for (var solution_index = 0; solution_index < tempResults.get('allSolutions')[solutionArray].length; solution_index++) {
-                            var num_r_s = 0;
-                            for (var element_index = 0; element_index < tempResults.get('allSolutions')[solutionArray][solution_index].length; element_index++) {
-                                if (analysis.intentions[element_index].get('type') === 'basic.Resource') {
-                                    var value = tempResults.get('allSolutions')[solutionArray][solution_index][element_index];
-                                    if ((value == "0010" || value == "0011")) {
-                                        num_r_s++;
+                            var most_r_s = 0;
+                            for (var solution_index = 0; solution_index < tempResults.get('allSolutions')[solutionArray].length; solution_index++) {
+                                var num_r_s = 0;
+                                for (var element_index = 0; element_index < tempResults.get('allSolutions')[solutionArray][solution_index].length; element_index++) {
+                                    if (analysis.intentions[element_index].get('type') === 'basic.Resource') {
+                                        var value = tempResults.get('allSolutions')[solutionArray][solution_index][element_index];
+                                        if ((value == "0010" || value == "0011")) {
+                                            num_r_s++;
+                                        }
                                     }
                                 }
+                                if (most_r_s < num_r_s) {
+                                    most_r_s = num_r_s;
+                                    index_to_rm = index_to_rm.concat(index_to_keep);
+                                    index_to_keep = [];
+                                }
+                                if (num_r_s == most_r_s) {
+                                    index_to_keep.push(solution_index);
+                                }
+                                if (num_r_s < most_r_s) {
+                                    index_to_rm.push(solution_index);
+                                }
                             }
-                            if (most_r_s < num_r_s) {
-                                most_r_s = num_r_s;
-                                index_to_rm = index_to_rm.concat(index_to_keep);
-                                index_to_keep = [];
+                            index_to_rm.sort(function (a, b) { return a - b });
+                            for (var to_rm = 0; to_rm < index_to_rm.length; to_rm++) {
+                                tempResults.get('allSolutions')[solutionArray].splice(index_to_rm[to_rm] - to_rm, 1);
                             }
-                            if (num_r_s == most_r_s) {
-                                index_to_keep.push(solution_index);
-                            }
-                            if (num_r_s < most_r_s) {
-                                index_to_rm.push(solution_index);
-                            }
-                        }
-                        index_to_rm.sort(function (a, b) { return a - b });
-                        for (var to_rm = 0; to_rm < index_to_rm.length; to_rm++) {
-                            tempResults.get('allSolutions')[solutionArray].splice(index_to_rm[to_rm] - to_rm, 1);
                         }
                     }
                     break;
                 case "leastGoalSatisfied":
                     console.log("leastGoalSatisfied");
+                    var LGSchecksexistence = 0;
+                    for (var j = 0; j < analysis.intentions.length; j++) {
+                        if (analysis.intentions[j].get('type') === 'basic.Goal') { 
+                            LGSchecksexistence = 1;
+                            break;
+                        } 
+                    } 
+                    if (filterOrderQueue.includes("mostGoalSatisfied")) {
+                        swal("Error: Cannot apply this filter when Most Goal Satisfied is applied", "", "error");
+                        $('#mostGoalSatisfied').prop('checked', false);
+                        $('#leastGoalSatisfied').prop('checked', false);
+                    } 
+                    if (LGSchecksexistence == 0) {
+                        swal("Error: Cannot apply this filter with no goals.", "", "error");
+                        $('#leastGoalSatisfied').prop('checked', false);
+                    }
+                    else {
+                        for (var solutionArray in tempResults.get('allSolutions')) {
+                            var index_to_keep = [];
+                            var index_to_rm = [];
 
-                    for (var solutionArray in tempResults.get('allSolutions')) {
-                        var index_to_keep = [];
-                        var index_to_rm = [];
-
-                        var least_goal_s = tempResults.get('allSolutions')[solutionArray].length;
-                        for (var solution_index = 0; solution_index < tempResults.get('allSolutions')[solutionArray].length; solution_index++) {
-                            var num_g_s = 0;
-                            for (var element_index = 0; element_index < tempResults.get('allSolutions')[solutionArray][solution_index].length; element_index++) {
-                                if (analysis.intentions[element_index].get('type') === 'basic.Goal') {
-                                    var value = tempResults.get('allSolutions')[solutionArray][solution_index][element_index];
-                                    if ((value == "0010" || value == "0011")) {
-                                        num_g_s++;
+                            var least_goal_s = tempResults.get('allSolutions')[solutionArray].length;
+                            for (var solution_index = 0; solution_index < tempResults.get('allSolutions')[solutionArray].length; solution_index++) {
+                                var num_g_s = 0;
+                                for (var element_index = 0; element_index < tempResults.get('allSolutions')[solutionArray][solution_index].length; element_index++) {
+                                    if (analysis.intentions[element_index].get('type') === 'basic.Goal') {
+                                        var value = tempResults.get('allSolutions')[solutionArray][solution_index][element_index];
+                                        if ((value == "0010" || value == "0011")) {
+                                            num_g_s++;
+                                        }
                                     }
                                 }
+                                if (least_goal_s > num_g_s) {
+                                    least_goal_s = num_g_s;
+                                    index_to_rm = index_to_rm.concat(index_to_keep);
+                                    index_to_keep = [];
+                                }
+                                if (num_g_s == least_goal_s) {
+                                    index_to_keep.push(solution_index);
+                                }
+                                if (num_g_s > least_goal_s) {
+                                    index_to_rm.push(solution_index);
+                                }
                             }
-                            if (least_goal_s > num_g_s) {
-                                least_goal_s = num_g_s;
-                                index_to_rm = index_to_rm.concat(index_to_keep);
-                                index_to_keep = [];
+                            index_to_rm.sort(function (a, b) { return a - b });
+                            for (var to_rm = 0; to_rm < index_to_rm.length; to_rm++) {
+                                tempResults.get('allSolutions')[solutionArray].splice(index_to_rm[to_rm] - to_rm, 1);
                             }
-                            if (num_g_s == least_goal_s) {
-                                index_to_keep.push(solution_index);
-                            }
-                            if (num_g_s > least_goal_s) {
-                                index_to_rm.push(solution_index);
-                            }
-                        }
-                        index_to_rm.sort(function (a, b) { return a - b });
-                        for (var to_rm = 0; to_rm < index_to_rm.length; to_rm++) {
-                            tempResults.get('allSolutions')[solutionArray].splice(index_to_rm[to_rm] - to_rm, 1);
                         }
                     }
                     break;
                 case "mostGoalSatisfied":
                     console.log("mostGoalSatisfied");
+                    var MGSchecksexistence = 0;
+                    for (var j = 0; j < analysis.intentions.length; j++) {
+                        if (analysis.intentions[j].get('type') === 'basic.Goal') {  
+                            MGSchecksexistence = 1;
+                            break;
+                        }
+                    } 
+                    if (filterOrderQueue.includes("leastGoalSatisfied")) {
+                        swal("Error: Cannot apply this filter when Least Goal Satisfied is applied", "", "error");
+                        $('#mostGoalSatisfied').prop('checked', false);
+                        $('#leastGoalSatisfied').prop('checked', false);
+                    } 
+                    if (MGSchecksexistence == 0) {
+                        swal("Error: Cannot apply this filter with no goals.", "", "error");
+                        $('#mostGoalSatisfied').prop('checked', false);
+                    }
+                    else {
+                        for (var solutionArray in tempResults.get('allSolutions')) {
+                            var index_to_keep = [];
+                            var index_to_rm = [];
 
-                    for (var solutionArray in tempResults.get('allSolutions')) {
-                        var index_to_keep = [];
-                        var index_to_rm = [];
-
-                        var most_goal_s = 0;
-                        for (var solution_index = 0; solution_index < tempResults.get('allSolutions')[solutionArray].length; solution_index++) {
-                            var num_g_s = 0;
-                            for (var element_index = 0; element_index < tempResults.get('allSolutions')[solutionArray][solution_index].length; element_index++) {
-                                if (analysis.intentions[element_index].get('type') === 'basic.Goal') {
-                                    var value = tempResults.get('allSolutions')[solutionArray][solution_index][element_index];
-                                    if ((value == "0010" || value == "0011")) {
-                                        num_g_s++;
+                            var most_goal_s = 0;
+                            for (var solution_index = 0; solution_index < tempResults.get('allSolutions')[solutionArray].length; solution_index++) {
+                                var num_g_s = 0;
+                                for (var element_index = 0; element_index < tempResults.get('allSolutions')[solutionArray][solution_index].length; element_index++) {
+                                    if (analysis.intentions[element_index].get('type') === 'basic.Goal') {
+                                        var value = tempResults.get('allSolutions')[solutionArray][solution_index][element_index];
+                                        if ((value == "0010" || value == "0011")) {
+                                            num_g_s++;
+                                        }
                                     }
                                 }
+                                if (most_goal_s < num_g_s) {
+                                    most_goal_s = num_g_s;
+                                    index_to_rm = index_to_rm.concat(index_to_keep);
+                                    index_to_keep = [];
+                                }
+                                if (num_g_s == most_goal_s) {
+                                    index_to_keep.push(solution_index);
+                                }
+                                if (num_g_s < most_goal_s) {
+                                    index_to_rm.push(solution_index);
+                                }
                             }
-                            if (most_goal_s < num_g_s) {
-                                most_goal_s = num_g_s;
-                                index_to_rm = index_to_rm.concat(index_to_keep);
-                                index_to_keep = [];
+                            index_to_rm.sort(function (a, b) { return a - b });
+                            for (var to_rm = 0; to_rm < index_to_rm.length; to_rm++) {
+                                tempResults.get('allSolutions')[solutionArray].splice(index_to_rm[to_rm] - to_rm, 1);
                             }
-                            if (num_g_s == most_goal_s) {
-                                index_to_keep.push(solution_index);
-                            }
-                            if (num_g_s < most_goal_s) {
-                                index_to_rm.push(solution_index);
-                            }
-                        }
-                        index_to_rm.sort(function (a, b) { return a - b });
-                        for (var to_rm = 0; to_rm < index_to_rm.length; to_rm++) {
-                            tempResults.get('allSolutions')[solutionArray].splice(index_to_rm[to_rm] - to_rm, 1);
                         }
                     }
                     break;
@@ -625,6 +726,10 @@
                     if (analysis.intentions.length === analysis.graph.getElements().length) {
                         swal("Error: Cannot apply this filter with no actors.", "", "error");
                         $('#LeastActor').prop('checked', false);
+                    } else if (filterOrderQueue.includes("mostActor")) {
+                        swal("Error: Cannot apply this filter when Most Actor is applied", "", "error");
+                        $('#LeastActor').prop('checked', false);
+                        $('#mostActor').prop('checked', false);
                     } else {
                         for (var solutionArray in tempResults.get('allSolutions')) {
                             var index_to_keep = [];
@@ -678,6 +783,10 @@
                     if (analysis.intentions.length === analysis.graph.getElements().length) {
                         swal("Error: Cannot apply this filter with no actors.", "", "error");
                         $('#mostActor').prop('checked', false);
+                    } else if (filterOrderQueue.includes("LeastActor")) {
+                        swal("Error: Cannot apply this filter when Least Actor is applied", "", "error");
+                        $('#LeastActor').prop('checked', false);
+                        $('#mostActor').prop('checked', false); 
                     } else {
                         for (var solutionArray in tempResults.get('allSolutions')) {
                             var most_actor = 0;
@@ -877,7 +986,7 @@
                 $(".inspectorFilterTable").append('<tr class="tableData" id=' + filterIntentionList[i][0] + '><td class="tableData">' + name + '</td><td class="tableData">' + tableSatVal + '</td><td class="tableData remove-btn"><button class="table-btn-small" style="font-size:15px"><i class="fa fa-trash" style="color:white"></i></button></td>'); 
         }    
     }
-            
+
     // Set the new results with filters as the analysis object
     myInputJSObject.results = tempResults2;
     // Creates array with all Solutions from new hashmap
@@ -1034,15 +1143,15 @@
         console.log(myInputJSObject.results);
         console.log(myInputJSObject.request.get('numRelTime'));
         console.log(myInputJSObject.results.get('selectedTimePoint'));
-        // TODO: Fix: This is incorrect...should be the length of the original path or if there are any timepoints left.
-        // if ((myInputJSObject.results.get('selectedTimePoint') + 1)>= myInputJSObject.request.get('numRelTime')) {   
-        //     swal("Error: Cannot explore next state past this time point.", "", "error");
-        // } else {
-        $("body").addClass("spinning"); // Adds spinner animation to page
-        updateAnalysisRequestWithCurrentState();
-        window.opener.backendSimulationRequest(myInputJSObject.request);
-        window.close();
-        // }
+        // Prevent user from exploring next state beyond allowed time points
+        if (myInputJSObject.results.get('timePointPath').length == myInputJSObject.results.totalNumTimePoints.length - 1) {   
+            swal("Error: Cannot explore next state past this time point.", "", "error");
+        } else {
+            $("body").addClass("spinning"); // Adds spinner animation to page
+            updateAnalysisRequestWithCurrentState();
+            window.opener.backendSimulationRequest(myInputJSObject.request);
+            window.close();
+        }
     }
 
     /**
