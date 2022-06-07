@@ -29,15 +29,26 @@ public class LayoutAlgorithm {
 	}
 
     /**
+     * Calculate the distance between two elements
+     * @param x
+     * @param y
+     * @return distance
+     */
+    private double getDist(VisualInfo n1, VisualInfo n2){
+        double distX = n1.getX() - n2.getY();
+        double distY = n1.getY() - n2.getY();
+        double dist = Math.sqrt(distX * distX + distY * distY);
+        return dist;
+    }
+
+    /**
      * Calculate the force attraciton given by
      * the expression (d*d/Cn)
      * @return the force attraction between two elements
      */
     private double getAttraction(VisualInfo n1, VisualInfo n2) {
         if (n1 != n2) {
-            double distX = n1.getX() - n2.getX();
-            double distY = n1.getY() - n2.getY();
-            double dist = Math.sqrt(distX * distX + distY * distY);
+            double dist = getDist(n1,n2);
             double k; // default coefficient, set a value to it
             double area; // set a value to it
             double coef = k * Math.sqrt(area/nodePosition.size()); // area?
@@ -45,7 +56,7 @@ public class LayoutAlgorithm {
         }
         return forceSum;
     }
-
+    
     /**
      * Calculate the force repulsion given by
      * the expression (Cn*Cn/d)
@@ -53,9 +64,7 @@ public class LayoutAlgorithm {
      */
     private double getRepulsion(VisualInfo n1, VisualInfo n2) {
         if (n1 != n2) {
-            double distX = n1.getX() - n2.getX();
-            double distY = n1.getY() - n2.getY();
-            double dist = Math.sqrt(distX * distX + distY * distY);
+            double dist = getDist(n1,n2);
             double k; /// default coefficient, set a value to it
             double area; // set a value to it
             double coef = k * Math.sqrt(area/nodePosition.size()); // area?
