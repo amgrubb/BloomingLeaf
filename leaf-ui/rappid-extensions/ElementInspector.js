@@ -68,7 +68,7 @@ var ElementInspector = Backbone.View.extend({
         this.listenTo(this, 'change:intention', this.initSatValueChanged);
         // Saves this.model.get('intention) as a local variable to access it more easily
         this.intention = this.model.get('intention');
-        this.listenTo(this.intention, 'change:evolvingFunction', this.clearFunctionSegments);
+        //this.listenTo(this.intention, 'change:evolvingFunction', this.clearFunctionSegments);
     },
 
     template: ['<script type="text/template" id="item-template">',
@@ -418,7 +418,7 @@ var ElementInspector = Backbone.View.extend({
         if (funcSegList.length > 1) {
             funcSegList[funcSegList.length - 2].set('current', false);
         }
-        this.clearFunctionSegments();
+        //this.clearFunctionSegments();
         this.renderFunctionSegments();
 
         if (this.repeatOptionsDisplay) {
@@ -703,31 +703,36 @@ var ElementInspector = Backbone.View.extend({
         this.$el.html('');
     },
 
-    clearFunctionSegments: function () {
-        var type = this.intention.get('evolvingFunction').get('type');
-        $(".function-type").val(type);
-        // Removes functions segments that are currently displayed
-        $('#segment-functions').empty();
-        if (type == 'NT') {
-            $(".text-label").css("visibility", "hidden");
-        }
-        // Clear previous chart values
-        if (this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair') !== null && type === 'NT') {
-            // Clear previous chart values
-            this.chart.reset();
-            // Gets the chart canvas
-            var context = $("#chart").get(0).getContext("2d");
-            // Adds the initial satisfaction as a single point to the chart
-            this.chart.addDataSet(0, [satisfactionValuesDict[this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair')].chartVal], false);
-            // Renders the chart
-            this.chart.display(context);
-        }
-    },
+    // clearFunctionSegments: function () {
+    //     var type = this.intention.get('evolvingFunction').get('type');
+    //     $(".function-type").val(type);
+    //     // Removes functions segments that are currently displayed
+    //     $('#segment-functions').empty();
+    //     if (type == 'NT') {
+    //         $(".text-label").css("visibility", "hidden");
+    //     }
+    //     // Clear previous chart values
+    //     if (this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair') !== null && type === 'NT') {
+    //         // Clear previous chart values
+    //         this.chart.reset();
+    //         // Gets the chart canvas
+    //         var context = $("#chart").get(0).getContext("2d");
+    //         // Adds the initial satisfaction as a single point to the chart
+    //         this.chart.addDataSet(0, [satisfactionValuesDict[this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair')].chartVal], false);
+    //         // Renders the chart
+    //         this.chart.display(context);
+    //     }
+    // },
 
-    /**
+     /**
      * Renders a view for all of the existing FunctionSegmentBBMs that are part of the element
      */
-    renderFunctionSegments: function () {
+      renderFunctionSegments: function () {
+        // Removes functions segments that are currently displayed
+        $('#segment-functions').empty();
+        if (this.intention.get('evolvingFunction').get('type') == 'NT') {
+            $(".text-label").css("visibility", "hidden");
+        }
         // Only creates the FunctionSegmentView if there is a function segment
         if (this.intention.get('evolvingFunction') != null && this.intention.get('evolvingFunction').get('type') != 'NT') {
 
@@ -742,6 +747,15 @@ var ElementInspector = Backbone.View.extend({
                     i++;
                 })
         // Renders the chart if there is only an initial satisfaction value 
+    } else if (this.intention.get('evolvingFunction') != null && this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair') !== null && this.intention.get('evolvingFunction').get('type') === 'NT') {
+        // Clear previous chart values
+        this.chart.reset();
+        // Gets the chart canvas
+        var context = $("#chart").get(0).getContext("2d");
+        // Adds the initial satisfaction as a single point to the chart
+        this.chart.addDataSet(0, [satisfactionValuesDict[this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair')].chartVal], false);
+        // Renders the chart
+        this.chart.display(context);
         }
     },
 
@@ -754,7 +768,7 @@ var ElementInspector = Backbone.View.extend({
             $(".text-label").css("visibility", "visible");
         }
         // Renders all of the FuncSegViews
-        this.clearFunctionSegments();
+        //this.clearFunctionSegments();
         this.renderFunctionSegments();
         return this;
     },
