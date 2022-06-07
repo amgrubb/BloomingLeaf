@@ -176,8 +176,10 @@ $('#btn-clear-flabel').on('click', function () {
 
         if (intention != null && intention.get('evolvingFunction').get('type') != 'NT') {
             intention.setEvolvingFunction('NT');
-
             cell.attr(".funcvalue/text", "");
+            // Rerender elementInspector for clearing Dynamic Labels
+            var elementInspector = new ElementInspector({ model: cell });
+            elementInspector.render();
         }
     }
 });
