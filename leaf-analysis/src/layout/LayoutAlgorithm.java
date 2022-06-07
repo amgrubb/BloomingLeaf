@@ -41,16 +41,29 @@ public class LayoutAlgorithm {
      */
     private double getAttraction(VisualInfo n1, VisualInfo n2) {
     	if (LMain.DEBUG) System.out.println("Starting: getAttraction");
-        if (n1 != n2) {
-            double distX = n1.getX() - n2.getX();
-            double distY = n1.getY() - n2.getY();
-            double dist = Math.sqrt(distX * distX + distY * distY);
-            //double k; // default coefficient, set a value to it
-            //ouble area; // set a value to it
-            //double coef = k * Math.sqrt(area/nodePosition.size()); // area?
-            double forceSum = dist * dist / constant;
-            return forceSum;
-        }
+// 		Attraction based on simplified spring force using area
+//        if (n1 != n2) {
+//            double distX = n1.getX() - n2.getX();
+//            double distY = n1.getY() - n2.getY();
+//            double dist = Math.sqrt(distX * distX + distY * distY);
+//            //double k; // default coefficient, set a value to it
+//            //ouble area; // set a value to it
+//            //double coef = k * Math.sqrt(area/nodePosition.size()); // area?
+//            double forceSum = dist * dist / constant;
+//            return forceSum;
+//        }
+    	
+    	//Spring force attraction
+    	//TODO: figure out the values of these constants
+    	if (n1 != n2) {
+    		double idealLength = 20;
+        	double elasticityConstant = 5;
+        	
+        	double dist = getDist(n1, n2);
+        	double forceSum = (idealLength - dist)*(idealLength - dist)*dist/elasticityConstant;
+        	return forceSum;
+    	}
+    
         return 0;
     }
 
