@@ -57,7 +57,7 @@ public class LayoutAlgorithm {
     	//TODO: figure out the values of these constants
     	if (n1 != n2) {
     		double idealLength = 20;
-        	double elasticityConstant = 5;
+        	double elasticityConstant = 5; //increasing it means the spring is stiffer
         	
         	double dist = getDist(n1, n2);
         	double forceSum = (idealLength - dist)*(idealLength - dist)*dist/elasticityConstant;
