@@ -20,20 +20,20 @@ public class VisualInfo {
 		return position;
 	}
 
-	public Integer getX() {
+	public Double getX() {
 		return position.getX();
 	}
 
-	public Integer getY() {
+	public Double getY() {
 		return position.getY();
 	}
 
-	public void setX(Integer x) {
-		this.position.setX();
+	public void setX(Double x) {
+		this.position.setX(x);
 	}
 	
-	public void setY(Integer y) {
-		this.position.setY();
+	public void setY(Double y) {
+		this.position.setY(y);
 	}
 
 	public String toString() {

@@ -1,0 +1,368 @@
+{
+    "graph": {
+        "type": "goalmodel.Graph",
+        "maxAbsTime": 100,
+        "absTimePtsArr": [],
+        "constraints": [],
+        "cells": [
+            {
+                "type": "basic.Actor",
+                "size": {
+                    "width": 450,
+                    "height": 410
+                },
+                "actor": {
+                    "cid": "c57",
+                    "attributes": {
+                        "type": "A",
+                        "actorName": "Actor_0"
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                },
+                "position": {
+                    "x": 380,
+                    "y": 330
+                },
+                "angle": 0,
+                "id": "51249215-d5c1-40d4-8250-93f811d2f94a",
+                "z": 1,
+                "embeds": [
+                    "5c6a06e8-9f7a-48da-b316-41e519e9a9dd",
+                    "13791722-8fb2-469e-b1a6-031911e7bac6"
+                ],
+                "attrs": {
+                    ".label": {
+                        "cx": 112.5,
+                        "cy": 41.20304120786162
+                    },
+                    ".name": {
+                        "text": "Actor_0"
+                    }
+                }
+            },
+            {
+                "type": "basic.Goal",
+                "size": {
+                    "width": 100,
+                    "height": 60
+                },
+                "intention": {
+                    "cid": "c215",
+                    "attributes": {
+                        "nodeName": "intention1",
+                        "evolvingFunction": {
+                            "cid": "c447",
+                            "attributes": {
+                                "type": "R",
+                                "functionSegList": [
+                                    {
+                                        "cid": "c448",
+                                        "attributes": {
+                                            "type": "R",
+                                            "refEvidencePair": "(no value)",
+                                            "startTP": "0",
+                                            "startAT": 0,
+                                            "current": true
+                                        },
+                                        "_changing": false,
+                                        "_previousAttributes": {
+                                            "type": "R",
+                                            "refEvidencePair": "(no value)",
+                                            "startTP": "0",
+                                            "startAT": 0,
+                                            "current": true
+                                        },
+                                        "changed": {},
+                                        "_pending": false,
+                                        "_listenId": "l450",
+                                        "_events": null,
+                                        "_listeners": null
+                                    }
+                                ],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        },
+                        "userEvaluationList": [
+                            {
+                                "cid": "c216",
+                                "attributes": {
+                                    "assignedEvidencePair": "(no value)",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {
+                                    "assignedEvidencePair": "0000",
+                                    "absTime": 0
+                                },
+                                "changed": {
+                                    "assignedEvidencePair": "(no value)"
+                                },
+                                "_pending": false,
+                                "_listenId": "l452",
+                                "_events": null,
+                                "_listeners": null
+                            }
+                        ]
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {
+                        "nodeName": "intention1",
+                        "evolvingFunction": {
+                            "cid": "c223",
+                            "attributes": {
+                                "type": "NT",
+                                "functionSegList": [],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {
+                                "type": "NB",
+                                "functionSegList": [],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "changed": {
+                                "type": "NT"
+                            },
+                            "_pending": false
+                        },
+                        "userEvaluationList": [
+                            {
+                                "cid": "c216",
+                                "attributes": {
+                                    "assignedEvidencePair": "(no value)",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {
+                                    "assignedEvidencePair": "0000",
+                                    "absTime": 0
+                                },
+                                "changed": {
+                                    "assignedEvidencePair": "(no value)"
+                                },
+                                "_pending": false,
+                                "_listenId": "l452",
+                                "_events": null,
+                                "_listeners": null
+                            }
+                        ]
+                    },
+                    "changed": {
+                        "evolvingFunction": {
+                            "cid": "c447",
+                            "attributes": {
+                                "type": "R",
+                                "functionSegList": [
+                                    {
+                                        "cid": "c448",
+                                        "attributes": {
+                                            "type": "R",
+                                            "refEvidencePair": "(no value)",
+                                            "startTP": "0",
+                                            "startAT": 0,
+                                            "current": true
+                                        },
+                                        "_changing": false,
+                                        "_previousAttributes": {
+                                            "type": "R",
+                                            "refEvidencePair": "(no value)",
+                                            "startTP": "0",
+                                            "startAT": 0,
+                                            "current": true
+                                        },
+                                        "changed": {},
+                                        "_pending": false,
+                                        "_listenId": "l450",
+                                        "_events": null,
+                                        "_listeners": null
+                                    }
+                                ],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        }
+                    },
+                    "_pending": false
+                },
+                "position": {
+                    "x": 420,
+                    "y": 580
+                },
+                "angle": 0,
+                "id": "13791722-8fb2-469e-b1a6-031911e7bac6",
+                "z": 2,
+                "parent": "51249215-d5c1-40d4-8250-93f811d2f94a",
+                "attrs": {
+                    ".satvalue": {
+                        "text": ""
+                    },
+                    ".name": {
+                        "text": "intention1"
+                    },
+                    ".funcvalue": {
+                        "text": "R"
+                    },
+                    "text": {
+                        "fill": "black",
+                        "stroke": "none"
+                    }
+                }
+            },
+            {
+                "type": "basic.Goal",
+                "size": {
+                    "width": 100,
+                    "height": 60
+                },
+                "intention": {
+                    "cid": "c232",
+                    "attributes": {
+                        "nodeName": "intention2",
+                        "evolvingFunction": {
+                            "cid": "c240",
+                            "attributes": {
+                                "type": "NT",
+                                "functionSegList": [],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {
+                                "type": "NB",
+                                "functionSegList": [],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "changed": {
+                                "type": "NT"
+                            },
+                            "_pending": false
+                        },
+                        "userEvaluationList": [
+                            {
+                                "cid": "c233",
+                                "attributes": {
+                                    "assignedEvidencePair": "(no value)",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {
+                                    "assignedEvidencePair": "0000",
+                                    "absTime": 0
+                                },
+                                "changed": {
+                                    "assignedEvidencePair": "(no value)"
+                                },
+                                "_pending": false
+                            }
+                        ]
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {
+                        "nodeName": "intention",
+                        "evolvingFunction": {
+                            "cid": "c240",
+                            "attributes": {
+                                "type": "NT",
+                                "functionSegList": [],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {
+                                "type": "NB",
+                                "functionSegList": [],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "changed": {
+                                "type": "NT"
+                            },
+                            "_pending": false
+                        },
+                        "userEvaluationList": [
+                            {
+                                "cid": "c233",
+                                "attributes": {
+                                    "assignedEvidencePair": "(no value)",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {
+                                    "assignedEvidencePair": "0000",
+                                    "absTime": 0
+                                },
+                                "changed": {
+                                    "assignedEvidencePair": "(no value)"
+                                },
+                                "_pending": false
+                            }
+                        ]
+                    },
+                    "changed": {
+                        "nodeName": "intention2"
+                    },
+                    "_pending": false
+                },
+                "position": {
+                    "x": 530,
+                    "y": 400
+                },
+                "angle": 0,
+                "id": "5c6a06e8-9f7a-48da-b316-41e519e9a9dd",
+                "z": 3,
+                "parent": "51249215-d5c1-40d4-8250-93f811d2f94a",
+                "attrs": {
+                    ".satvalue": {
+                        "text": ""
+                    },
+                    ".name": {
+                        "text": "intention2"
+                    },
+                    "text": {
+                        "fill": "black",
+                        "stroke": "none"
+                    }
+                }
+            }
+        ]
+    }
+}

@@ -1,22 +1,23 @@
 package gson_classes;
 
 public class BIPosition {
-	Integer x;
-	Integer y;
+	Double x;
+	Double y;
 	
-	public Integer getX() {
+	public Double getX() {
 		return x;
 	}
 	
-	public Integer getY() {
+	public Double getY() {
 		return y;
 	}
-
-	public void setX(){
+	
+	public void setX(Double x) {
 		this.x = x;
 	}
-
-	public void setY(){
+	
+	public void setY(Double y) {
 		this.y = y;
 	}
+
 }

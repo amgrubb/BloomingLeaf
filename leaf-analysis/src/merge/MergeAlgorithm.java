@@ -416,7 +416,7 @@ public class MergeAlgorithm {
 					//check for conflicts
 					if(!isValidTypes((Actor)addedal.getZeroSrc(), (Actor)addedal.getDest(), addedal.getType())) {
 						deletedAL.add(addedal);
-						mergedAL.remove(addedal)
+						mergedAL.remove(addedal);
 					}
 				}
 			}

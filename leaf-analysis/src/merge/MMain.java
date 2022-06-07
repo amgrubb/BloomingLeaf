@@ -131,7 +131,7 @@ public class MMain {
 	 * @param filePath
 	 * Name of the file to be read by CGI to be sent to frontend
 	 */
-	private static void createOutputFile(IMain outputModel, String filePath) {
+	public static void createOutputFile(IMain outputModel, String filePath) {
 		Gson gson = new Gson(); //new GsonBuilder().setPrettyPrinting().create();
 
 		try {

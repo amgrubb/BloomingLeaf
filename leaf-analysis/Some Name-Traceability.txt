@@ -1,0 +1,104 @@
+Deleted Elements: 
+--------------------------
+
+Conflicts: 
+--------------------------
+From Model 1: 
+--------------------------
+	User		ID: Actor1model1
+	Add friend		ID: intention0model1
+	View player profile		ID: intention1model1
+	Swnd M message		ID: intention2model1
+	Updated - Profile page		ID: intention3model1
+	Access profile page		ID: intention4model1
+	Profile page		ID: intention5model1
+	Updated - Games page		ID: intention6model1
+	Access games page		ID: intention7model1
+	View game 
+reccomendations		ID: intention8model1
+	Play game		ID: intention9model1
+	Availability - Game		ID: intention10model1
+	Access game page 3		ID: intention11model1
+	Game page		ID: intention12model1
+	View player profile 2		ID: intention13model1
+	Add friend 2		ID: intention14model1
+	Access profile page 2		ID: intention15model1
+	Send message 2		ID: intention16model1
+	Updated - profile 
+page 2		ID: intention17model1
+	Access game page 2		ID: intention18model1
+	untitled		ID: intention19model1
+	Availability - game 2		ID: intention20model1
+	Swnd M message --+--> Add friend		ID: ContributionLink0model1
+	Access profile page --++--> View player profile		ID: ContributionLink1model1
+	Profile page --++--> Access profile page		ID: ContributionLink2model1
+	Game page --++--> Access game page 3		ID: ContributionLink3model1
+	Access profile page 2 --++--> View player profile 2		ID: ContributionLink4model1
+	Access profile page 2 --++--> Profile page		ID: ContributionLink5model1
+	Send message 2 --++--> Add friend 2		ID: ContributionLink6model1
+	Access game page 2 --++--> Game page		ID: ContributionLink7model1
+	Access game page 2 --++--> untitled		ID: ContributionLink8model1
+	[Add friend, View player profile] ---AND--> Updated - Profile page		ID: DecompositionLink9model1
+	[Updated - Games page, Access games page] ---AND--> View game 
+reccomendations		ID: DecompositionLink10model1
+	[Availability - Game, Access game page 3] ---AND--> Play game		ID: DecompositionLink11model1
+	[View player profile 2, Add friend 2] ---AND--> Updated - profile 
+page 2		ID: DecompositionLink12model1
+	[Availability - game 2] ---AND--> untitled		ID: DecompositionLink13model1
+\nFrom Model 2: 
+--------------------------
+	Gate Control		ID: Actor2model2
+	Turn on Light		ID: intention21model2
+	Open Gate		ID: intention22model2
+	Detect Sensor		ID: intention23model2
+	Show Display		ID: intention24model2
+	Register Entry		ID: intention25model2
+	Register Exit		ID: intention26model2
+	Register Passage		ID: intention27model2
+	Response Time		ID: intention28model2
+	Accuracy 		ID: intention29model2
+	Active ID		ID: intention30model2
+	Valid ID		ID: intention31model2
+	Verify ID		ID: intention33model2
+	Receive ID to 
+    Validate		ID: intention34model2
+	Integrity		ID: intention35model2
+	Integrity - Data		ID: intention36model2
+	Create New Client		ID: intention37model2
+	Register Client		ID: intention38model2
+	Generate ID Number		ID: intention39model2
+	Accuracy		ID: intention40model2
+	Active ID --++--> Valid ID		ID: ContributionLink14model2
+	Accuracy  --+--> Show Display		ID: ContributionLink15model2
+	Response Time --+--> Show Display		ID: ContributionLink16model2
+	Response Time --+--> Open Gate		ID: ContributionLink17model2
+	Response Time --+--> Turn on Light		ID: ContributionLink18model2
+	Accuracy --+--> Generate ID Number		ID: ContributionLink19model2
+	Integrity --++--> Integrity - Data		ID: ContributionLink20model2
+	Register Client --++--> Integrity - Data		ID: ContributionLink21model2
+	Validate ID --++--> Integrity - Data		ID: ContributionLink22model2
+	Validate ID --++--> Validate ID		ID: ContributionLink23model2
+	Accuracy  --++--> Integrity		ID: ContributionLink24model2
+	Valid ID --++--> Validate ID		ID: ContributionLink25model2
+	[Register Entry, Register Exit, Valid ID] ---AND--> Register Passage		ID: DecompositionLink26model2
+	[Show Display, Detect Sensor, Open Gate] ---AND--> Register Exit		ID: DecompositionLink27model2
+	[Open Gate, Turn on Light] ---AND--> Register Entry		ID: DecompositionLink28model2
+	[Create New Client, Generate ID Number] ---AND--> Register Client		ID: DecompositionLink29model2
+	[Verify ID, Receive ID to 
+    Validate] ---AND--> Validate ID		ID: DecompositionLink30model2
+
+From Both Models: 
+--------------------------
+	System		ID: Actor0model12
+	Validate ID		ID: intention32model22
+
+Attribute Counter Chart 
+--------------------------
+	|Both | M1 | M2 |
+ContributionLink|[0, 9, 12]
+ActorLink|[0, 0, 0]
+Actor|[1, 1, 1]
+NotBothLink|[0, 0, 0]
+Intention|[1, 21, 19]
+Evolving Function|[0, 0, 0]
+DecompositionLink|[0, 5, 5]

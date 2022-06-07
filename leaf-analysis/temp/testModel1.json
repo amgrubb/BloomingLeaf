@@ -1,0 +1,947 @@
+{
+    "graph": {
+        "type": "goalmodel.Graph",
+        "maxAbsTime": 100,
+        "absTimePtsArr": [],
+        "constraints": [],
+        "cells": [
+            {
+                "type": "basic.Actor",
+                "size": {
+                    "width": 450,
+                    "height": 440
+                },
+                "actor": {
+                    "cid": "c359",
+                    "attributes": {
+                        "type": "A",
+                        "actorName": "Actor_1"
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                },
+                "position": {
+                    "x": 520,
+                    "y": 290
+                },
+                "angle": 0,
+                "id": "3e54eeb7-651c-494d-b1c9-cf2d1be1094d",
+                "z": 0,
+                "embeds": [
+                    "c012aca3-39b6-44f4-9471-b2b43b116be2",
+                    "c419f26b-ab3b-4d63-b182-783e52cff48c",
+                    "c4d6c819-aa25-4651-b6d8-5ff934334e35",
+                    "d19c702d-97f1-4e30-bace-9027cbe0dd1c",
+                    "40e6208f-c63d-46df-912c-5267ec65529d"
+                ],
+                "attrs": {
+                    ".label": {
+                        "cx": 112.5,
+                        "cy": 44.18743346344087
+                    },
+                    ".name": {
+                        "text": "Actor_1"
+                    }
+                }
+            },
+            {
+                "type": "basic.Actor",
+                "size": {
+                    "width": 360,
+                    "height": 360
+                },
+                "actor": {
+                    "cid": "c52",
+                    "attributes": {
+                        "type": "A",
+                        "actorName": "Actor_0"
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                },
+                "position": {
+                    "x": 70,
+                    "y": 310
+                },
+                "angle": 0,
+                "id": "6b6642be-8066-44d5-bf8e-ce1edd203de2",
+                "z": 1,
+                "embeds": [
+                    "5776d917-fe53-4f6b-b0da-1a7b220859a1",
+                    "dabb001d-3f27-4f36-b23b-7673bf0f27f6",
+                    "da19db0c-ff7f-480e-ae56-1605081dc304",
+                    "82e3a296-01bc-484d-b1d4-0c8b7c011cf1",
+                    "b661e1a9-e459-426d-b9cc-602474fcdef7"
+                ],
+                "attrs": {
+                    ".label": {
+                        "cx": 90,
+                        "cy": 36.22904522750869
+                    },
+                    ".name": {
+                        "text": "Actor_0"
+                    }
+                }
+            },
+            {
+                "type": "basic.Goal",
+                "size": {
+                    "width": 100,
+                    "height": 60
+                },
+                "intention": {
+                    "cid": "c697",
+                    "attributes": {
+                        "nodeName": "intention0",
+                        "evolvingFunction": {
+                            "cid": "c705",
+                            "attributes": {
+                                "type": "NT",
+                                "functionSegList": [],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        },
+                        "userEvaluationList": [
+                            {
+                                "cid": "c698",
+                                "attributes": {
+                                    "assignedEvidencePair": "(no value)",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {},
+                                "changed": {},
+                                "_pending": false
+                            }
+                        ]
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {
+                        "nodeName": "untitled",
+                        "evolvingFunction": null,
+                        "userEvaluationList": [
+                            {
+                                "cid": "c698",
+                                "attributes": {
+                                    "assignedEvidencePair": "(no value)",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {},
+                                "changed": {},
+                                "_pending": false
+                            }
+                        ]
+                    },
+                    "changed": {
+                        "evolvingFunction": {
+                            "cid": "c705",
+                            "attributes": {
+                                "type": "NT",
+                                "functionSegList": [],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        }
+                    },
+                    "_pending": false
+                },
+                "position": {
+                    "x": 250,
+                    "y": 380
+                },
+                "angle": 0,
+                "id": "b661e1a9-e459-426d-b9cc-602474fcdef7",
+                "z": 2,
+                "parent": "6b6642be-8066-44d5-bf8e-ce1edd203de2",
+                "attrs": {
+                    ".satvalue": {
+                        "text": ""
+                    },
+                    "text": {
+                        "fill": "black",
+                        "stroke": "none"
+                    }
+                }
+            },
+            {
+                "type": "basic.Goal",
+                "size": {
+                    "width": 110,
+                    "height": 70
+                },
+                "intention": {
+                    "cid": "c719",
+                    "attributes": {
+                        "nodeName": "intention1",
+                        "evolvingFunction": {
+                            "cid": "c727",
+                            "attributes": {
+                                "type": "NT",
+                                "functionSegList": [],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        },
+                        "userEvaluationList": [
+                            {
+                                "cid": "c720",
+                                "attributes": {
+                                    "assignedEvidencePair": "(no value)",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {},
+                                "changed": {},
+                                "_pending": false
+                            }
+                        ]
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {
+                        "nodeName": "untitled",
+                        "evolvingFunction": null,
+                        "userEvaluationList": [
+                            {
+                                "cid": "c720",
+                                "attributes": {
+                                    "assignedEvidencePair": "(no value)",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {},
+                                "changed": {},
+                                "_pending": false
+                            }
+                        ]
+                    },
+                    "changed": {
+                        "evolvingFunction": {
+                            "cid": "c727",
+                            "attributes": {
+                                "type": "NT",
+                                "functionSegList": [],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        }
+                    },
+                    "_pending": false
+                },
+                "position": {
+                    "x": 90,
+                    "y": 480
+                },
+                "angle": 0,
+                "id": "82e3a296-01bc-484d-b1d4-0c8b7c011cf1",
+                "z": 3,
+                "parent": "6b6642be-8066-44d5-bf8e-ce1edd203de2",
+                "attrs": {
+                    ".satvalue": {
+                        "text": ""
+                    },
+                    "text": {
+                        "fill": "black",
+                        "stroke": "none"
+                    },
+                    ".label": {
+                        "cx": 27.5,
+                        "cy": 7.378502805077957
+                    }
+                }
+            },
+            {
+                "type": "basic.Task",
+                "size": {
+                    "width": 100,
+                    "height": 60
+                },
+                "intention": {
+                    "cid": "c736",
+                    "attributes": {
+                        "nodeName": "intention2",
+                        "evolvingFunction": {
+                            "cid": "c744",
+                            "attributes": {
+                                "type": "NT",
+                                "functionSegList": [],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        },
+                        "userEvaluationList": [
+                            {
+                                "cid": "c737",
+                                "attributes": {
+                                    "assignedEvidencePair": "(no value)",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {},
+                                "changed": {},
+                                "_pending": false
+                            }
+                        ]
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {
+                        "nodeName": "untitled",
+                        "evolvingFunction": null,
+                        "userEvaluationList": [
+                            {
+                                "cid": "c737",
+                                "attributes": {
+                                    "assignedEvidencePair": "(no value)",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {},
+                                "changed": {},
+                                "_pending": false
+                            }
+                        ]
+                    },
+                    "changed": {
+                        "evolvingFunction": {
+                            "cid": "c744",
+                            "attributes": {
+                                "type": "NT",
+                                "functionSegList": [],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        }
+                    },
+                    "_pending": false
+                },
+                "position": {
+                    "x": 290,
+                    "y": 530
+                },
+                "angle": 0,
+                "id": "da19db0c-ff7f-480e-ae56-1605081dc304",
+                "z": 4,
+                "parent": "6b6642be-8066-44d5-bf8e-ce1edd203de2",
+                "attrs": {
+                    ".satvalue": {
+                        "text": ""
+                    },
+                    "text": {
+                        "fill": "black",
+                        "stroke": "none"
+                    }
+                }
+            },
+            {
+                "type": "basic.Goal",
+                "size": {
+                    "width": 100,
+                    "height": 60
+                },
+                "intention": {
+                    "cid": "c753",
+                    "attributes": {
+                        "nodeName": "intention3",
+                        "evolvingFunction": {
+                            "cid": "c761",
+                            "attributes": {
+                                "type": "NT",
+                                "functionSegList": [],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        },
+                        "userEvaluationList": [
+                            {
+                                "cid": "c754",
+                                "attributes": {
+                                    "assignedEvidencePair": "(no value)",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {},
+                                "changed": {},
+                                "_pending": false
+                            }
+                        ]
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {
+                        "nodeName": "untitled",
+                        "evolvingFunction": null,
+                        "userEvaluationList": [
+                            {
+                                "cid": "c754",
+                                "attributes": {
+                                    "assignedEvidencePair": "(no value)",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {},
+                                "changed": {},
+                                "_pending": false
+                            }
+                        ]
+                    },
+                    "changed": {
+                        "evolvingFunction": {
+                            "cid": "c761",
+                            "attributes": {
+                                "type": "NT",
+                                "functionSegList": [],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        }
+                    },
+                    "_pending": false
+                },
+                "position": {
+                    "x": 710,
+                    "y": 370
+                },
+                "angle": 0,
+                "id": "40e6208f-c63d-46df-912c-5267ec65529d",
+                "z": 5,
+                "parent": "3e54eeb7-651c-494d-b1c9-cf2d1be1094d",
+                "attrs": {
+                    ".satvalue": {
+                        "text": ""
+                    },
+                    "text": {
+                        "fill": "black",
+                        "stroke": "none"
+                    }
+                }
+            },
+            {
+                "type": "basic.Goal",
+                "size": {
+                    "width": 100,
+                    "height": 60
+                },
+                "intention": {
+                    "cid": "c770",
+                    "attributes": {
+                        "nodeName": "intention4",
+                        "evolvingFunction": {
+                            "cid": "c778",
+                            "attributes": {
+                                "type": "NT",
+                                "functionSegList": [],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        },
+                        "userEvaluationList": [
+                            {
+                                "cid": "c771",
+                                "attributes": {
+                                    "assignedEvidencePair": "(no value)",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {},
+                                "changed": {},
+                                "_pending": false
+                            }
+                        ]
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {
+                        "nodeName": "untitled",
+                        "evolvingFunction": null,
+                        "userEvaluationList": [
+                            {
+                                "cid": "c771",
+                                "attributes": {
+                                    "assignedEvidencePair": "(no value)",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {},
+                                "changed": {},
+                                "_pending": false
+                            }
+                        ]
+                    },
+                    "changed": {
+                        "evolvingFunction": {
+                            "cid": "c778",
+                            "attributes": {
+                                "type": "NT",
+                                "functionSegList": [],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        }
+                    },
+                    "_pending": false
+                },
+                "position": {
+                    "x": 780,
+                    "y": 530
+                },
+                "angle": 0,
+                "id": "d19c702d-97f1-4e30-bace-9027cbe0dd1c",
+                "z": 6,
+                "parent": "3e54eeb7-651c-494d-b1c9-cf2d1be1094d",
+                "attrs": {
+                    ".satvalue": {
+                        "text": ""
+                    },
+                    "text": {
+                        "fill": "black",
+                        "stroke": "none"
+                    }
+                }
+            },
+            {
+                "type": "basic.Goal",
+                "size": {
+                    "width": 100,
+                    "height": 60
+                },
+                "intention": {
+                    "cid": "c787",
+                    "attributes": {
+                        "nodeName": "intention5",
+                        "evolvingFunction": {
+                            "cid": "c795",
+                            "attributes": {
+                                "type": "NT",
+                                "functionSegList": [],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        },
+                        "userEvaluationList": [
+                            {
+                                "cid": "c788",
+                                "attributes": {
+                                    "assignedEvidencePair": "(no value)",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {},
+                                "changed": {},
+                                "_pending": false
+                            }
+                        ]
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {
+                        "nodeName": "untitled",
+                        "evolvingFunction": null,
+                        "userEvaluationList": [
+                            {
+                                "cid": "c788",
+                                "attributes": {
+                                    "assignedEvidencePair": "(no value)",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {},
+                                "changed": {},
+                                "_pending": false
+                            }
+                        ]
+                    },
+                    "changed": {
+                        "evolvingFunction": {
+                            "cid": "c795",
+                            "attributes": {
+                                "type": "NT",
+                                "functionSegList": [],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        }
+                    },
+                    "_pending": false
+                },
+                "position": {
+                    "x": 600,
+                    "y": 490
+                },
+                "angle": 0,
+                "id": "c4d6c819-aa25-4651-b6d8-5ff934334e35",
+                "z": 7,
+                "parent": "3e54eeb7-651c-494d-b1c9-cf2d1be1094d",
+                "attrs": {
+                    ".satvalue": {
+                        "text": ""
+                    },
+                    "text": {
+                        "fill": "black",
+                        "stroke": "none"
+                    }
+                }
+            },
+            {
+                "type": "basic.CellLink",
+                "link": {
+                    "cid": "c1011",
+                    "attributes": {
+                        "displayType": "element",
+                        "linkType": "and",
+                        "postType": null,
+                        "absTime": null,
+                        "evolving": false
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {
+                        "displayType": "element",
+                        "linkType": "and",
+                        "postType": null,
+                        "absTime": null,
+                        "evolving": false
+                    },
+                    "changed": {},
+                    "_pending": false
+                },
+                "labels": [
+                    {
+                        "position": 0.5,
+                        "attrs": {
+                            "text": {
+                                "text": "and"
+                            }
+                        }
+                    }
+                ],
+                "id": "dabb001d-3f27-4f36-b23b-7673bf0f27f6",
+                "source": {
+                    "id": "82e3a296-01bc-484d-b1d4-0c8b7c011cf1"
+                },
+                "target": {
+                    "id": "b661e1a9-e459-426d-b9cc-602474fcdef7"
+                },
+                "z": 8,
+                "parent": "6b6642be-8066-44d5-bf8e-ce1edd203de2",
+                "vertices": [
+                    {
+                        "x": 250,
+                        "y": 450
+                    }
+                ],
+                "attrs": {
+                    ".connection": {
+                        "stroke": "#000000"
+                    },
+                    ".marker-source": {
+                        "d": "0"
+                    },
+                    ".marker-target": {
+                        "stroke": "#000000",
+                        "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+                    }
+                }
+            },
+            {
+                "type": "basic.CellLink",
+                "link": {
+                    "cid": "c1026",
+                    "attributes": {
+                        "displayType": "element",
+                        "linkType": "and",
+                        "postType": null,
+                        "absTime": null,
+                        "evolving": false
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {
+                        "displayType": "element",
+                        "linkType": "and",
+                        "postType": null,
+                        "absTime": null,
+                        "evolving": false
+                    },
+                    "changed": {},
+                    "_pending": false
+                },
+                "labels": [
+                    {
+                        "position": 0.5,
+                        "attrs": {
+                            "text": {
+                                "text": "and"
+                            }
+                        }
+                    }
+                ],
+                "id": "5776d917-fe53-4f6b-b0da-1a7b220859a1",
+                "source": {
+                    "id": "da19db0c-ff7f-480e-ae56-1605081dc304"
+                },
+                "target": {
+                    "id": "b661e1a9-e459-426d-b9cc-602474fcdef7"
+                },
+                "z": 9,
+                "parent": "6b6642be-8066-44d5-bf8e-ce1edd203de2",
+                "attrs": {
+                    ".connection": {
+                        "stroke": "#000000"
+                    },
+                    ".marker-source": {
+                        "d": "0"
+                    },
+                    ".marker-target": {
+                        "stroke": "#000000",
+                        "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+                    }
+                }
+            },
+            {
+                "type": "basic.CellLink",
+                "link": {
+                    "cid": "c1110",
+                    "attributes": {
+                        "displayType": "element",
+                        "linkType": "and",
+                        "postType": null,
+                        "absTime": null,
+                        "evolving": false
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {
+                        "displayType": "element",
+                        "linkType": "and",
+                        "postType": null,
+                        "absTime": null,
+                        "evolving": false
+                    },
+                    "changed": {},
+                    "_pending": false
+                },
+                "labels": [
+                    {
+                        "position": 0.5,
+                        "attrs": {
+                            "text": {
+                                "text": "and"
+                            }
+                        }
+                    }
+                ],
+                "id": "c419f26b-ab3b-4d63-b182-783e52cff48c",
+                "source": {
+                    "id": "c4d6c819-aa25-4651-b6d8-5ff934334e35"
+                },
+                "target": {
+                    "id": "40e6208f-c63d-46df-912c-5267ec65529d"
+                },
+                "z": 12,
+                "parent": "3e54eeb7-651c-494d-b1c9-cf2d1be1094d",
+                "attrs": {
+                    ".connection": {
+                        "stroke": "#000000"
+                    },
+                    ".marker-source": {
+                        "d": "0"
+                    },
+                    ".marker-target": {
+                        "stroke": "#000000",
+                        "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+                    }
+                }
+            },
+            {
+                "type": "basic.CellLink",
+                "link": {
+                    "cid": "c1125",
+                    "attributes": {
+                        "displayType": "element",
+                        "linkType": "and",
+                        "postType": null,
+                        "absTime": null,
+                        "evolving": false
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {
+                        "displayType": "element",
+                        "linkType": "and",
+                        "postType": null,
+                        "absTime": null,
+                        "evolving": false
+                    },
+                    "changed": {},
+                    "_pending": false
+                },
+                "labels": [
+                    {
+                        "position": 0.5,
+                        "attrs": {
+                            "text": {
+                                "text": "and"
+                            }
+                        }
+                    }
+                ],
+                "id": "c012aca3-39b6-44f4-9471-b2b43b116be2",
+                "source": {
+                    "id": "d19c702d-97f1-4e30-bace-9027cbe0dd1c"
+                },
+                "target": {
+                    "id": "40e6208f-c63d-46df-912c-5267ec65529d"
+                },
+                "z": 13,
+                "parent": "3e54eeb7-651c-494d-b1c9-cf2d1be1094d",
+                "attrs": {
+                    ".connection": {
+                        "stroke": "#000000"
+                    },
+                    ".marker-source": {
+                        "d": "0"
+                    },
+                    ".marker-target": {
+                        "stroke": "#000000",
+                        "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+                    }
+                }
+            },
+            {
+                "type": "basic.CellLink",
+                "link": {
+                    "cid": "c1254",
+                    "attributes": {
+                        "displayType": "element",
+                        "linkType": "++",
+                        "postType": null,
+                        "absTime": null,
+                        "evolving": false
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {
+                        "displayType": "element",
+                        "linkType": "++",
+                        "postType": null,
+                        "absTime": null,
+                        "evolving": false
+                    },
+                    "changed": {},
+                    "_pending": false
+                },
+                "labels": [
+                    {
+                        "position": 0.5,
+                        "attrs": {
+                            "text": {
+                                "text": "++"
+                            }
+                        }
+                    }
+                ],
+                "id": "4dc3b2c2-63a1-415b-a880-4a180ea5c35a",
+                "source": {
+                    "id": "da19db0c-ff7f-480e-ae56-1605081dc304"
+                },
+                "target": {
+                    "id": "c4d6c819-aa25-4651-b6d8-5ff934334e35"
+                },
+                "z": 14,
+                "attrs": {
+                    ".connection": {
+                        "stroke": "#000000"
+                    },
+                    ".marker-source": {
+                        "d": "0"
+                    },
+                    ".marker-target": {
+                        "stroke": "#000000",
+                        "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+                    }
+                }
+            }
+        ]
+    }
+}
