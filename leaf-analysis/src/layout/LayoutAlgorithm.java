@@ -152,8 +152,8 @@ public class LayoutAlgorithm {
                     double attraction = makeSmall(getAttraction(nodePositions[j], nodePositions[k]));
                     double repulsion = makeSmall(getRepulsion(nodePositions[j], nodePositions[k]));
                     //if (LMain.DEBUG) System.out.println(theta);
-                    if (LMain.DEBUG) System.out.println(attraction);
-                    if (LMain.DEBUG) System.out.println(repulsion);
+                    //if (LMain.DEBUG) System.out.println(attraction);
+                    //if (LMain.DEBUG) System.out.println(repulsion);
                     
                     if(Double.isNaN(theta) ||Double.isNaN(attraction) || Double.isNaN(repulsion)) {
                     	return model;
@@ -178,7 +178,7 @@ public class LayoutAlgorithm {
                     nodePositions[k].setX(nodePositions[k].getX() - c*(attraction*Math.cos(theta) - repulsion*Math.cos(theta)));
                     nodePositions[k].setY(nodePositions[k].getY() - c*(attraction*Math.sin(theta) - repulsion*Math.sin(theta)));
                     
-                    if (LMain.DEBUG) System.out.println(Arrays.toString(nodePositions));
+                    //if (LMain.DEBUG) System.out.println(Arrays.toString(nodePositions));
                     
                 }
                 
@@ -196,10 +196,10 @@ public class LayoutAlgorithm {
             //if (LMain.DEBUG) System.out.println("Starting: layoutModel calculating error");
             //if (Math.abs(sum(forceX)) < a && Math.abs(sum(forceY)) < a) break;
             
-//            if(checkConds(nodePositions, nodePositions[0])) {
-//            	if (LMain.DEBUG) System.out.println("Conditions Met");
-//            	return model;
-//            }
+            if(checkConds(nodePositions, nodePositions[0])) {
+            	if (LMain.DEBUG) System.out.println("Conditions Met");
+            	return model;
+            }
         }
 		if (LMain.DEBUG) System.out.println(Arrays.toString(nodePositions));
 		if (LMain.DEBUG) System.out.println("Finished: layoutModel");
@@ -278,6 +278,62 @@ public class LayoutAlgorithm {
      }
      
      /**
+      * This method determines if the nodes are close enough to each other. 
+      * We construct a graph from the nodes, and if the graph is connected then it is close enough.
+      * @param nodePositions
+      * @return
+      */
+     public boolean isCloseEnough(VisualInfo[] nodePositions) {
+    	 //heuristic for distance between nodes
+    	 double edgeLength_max = 500/(1 + 1000*Math.pow(Math.E, nodePositions.length * -1)) + 200;
+    	 
+    	//Make a graph 
+    	 HashSet<Integer[]> edgeSet = new HashSet<Integer[]>();
+    	 
+    	 for(int i = 0; i < nodePositions.length; i++) {
+    		 for(int j = 0; j < nodePositions.length; j++) {
+    			 if(i == j) continue;
+    			 if(getDist(nodePositions[i], nodePositions[j]) <= edgeLength_max) {
+    				edgeSet.add(new Integer[]{i,j});
+    			 }
+    		 }
+    	 }
+    	 if (LMain.DEBUG) {
+    		 System.out.println("Edge Heuristic: "+ edgeLength_max);
+    		 System.out.println("Number of Nodes: "+ nodePositions.length);
+    		 System.out.print("EdgeSet: {");
+    		 for(Integer[] edge: edgeSet) System.out.print(Arrays.toString(edge) + ", ");
+    	 }
+    	 
+    	 //traverse the graph; if all the nodes are visited, the graph is connected.
+    	 return DFS(edgeSet, new HashSet<Integer>(), 0).size() == nodePositions.length;
+     }
+     
+     /**
+      * Traverse the graph
+      * @param edgeSet
+      * @param visitedSet
+      * @param currentVertex
+      * @return visitedSet
+      */
+     public HashSet<Integer> DFS(HashSet<Integer[]> edgeSet, HashSet<Integer> visitedSet, Integer currentVertex) {
+    	 //label the current node as visited
+    	 visitedSet.add(currentVertex);
+    	 if (LMain.DEBUG) System.out.println("visitedSet: " + visitedSet);
+    	 HashSet<Integer> neighborSet = new HashSet<>();
+    	 for(Integer[] edge: edgeSet) {
+    		 if(edge[0] == currentVertex) neighborSet.add(edge[1]);
+    	 }
+    	 
+    	 for(Integer neighbor: neighborSet) {
+    		 if(visitedSet.contains(neighbor)) continue;
+    		 visitedSet = DFS(edgeSet, visitedSet, neighbor);
+    	 }
+    	
+    	 return visitedSet;
+     }
+     
+     /**
       * TODO: How to check for correctness? and how to correct for incorrectness
       * Checks conditions and if goal model positions satisfies them;
       * @param nodePositions
@@ -285,14 +341,14 @@ public class LayoutAlgorithm {
       * @return
       */
      public boolean checkConds(VisualInfo[] nodePositions, VisualInfo border) {
-    	 
+    	 if (LMain.DEBUG) System.out.println("Checking COnditions");
     	 for(VisualInfo n1: nodePositions) {
     		 for(VisualInfo n2: nodePositions) {
     			 if(n1 == n2) continue;
     			 if(isOverlapped(n1, n2)) return false;
     		 }
     	 }
-    	 return true;
+    	 return isCloseEnough(nodePositions);
      }
      
      public double makeSmall(Double num) {
