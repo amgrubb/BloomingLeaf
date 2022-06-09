@@ -71,8 +71,8 @@ public class LayoutAlgorithm {
         	
         	double dist = getDist(n1, n2);
         	//if (LMain.DEBUG) System.out.println(dist);
-        	double forceSum = (idealLength - dist)*(idealLength - dist) * dist/elasticityConstant; //cubing distance too big, but this is the wrong formula
-        	if (LMain.DEBUG) System.out.println("Attraction " + forceSum);
+        	double forceSum = (idealLength - dist)*(idealLength - dist)/elasticityConstant; //cubing distance too big, but this is the wrong formula
+        	//if (LMain.DEBUG) System.out.println("Attraction " + forceSum);
         	return forceSum;
     	}
     
@@ -93,9 +93,10 @@ public class LayoutAlgorithm {
             //double k; /// default coefficient, set a value to it
             //double area; // set a value to it
             //double coef = k * Math.sqrt(area/nodePosition.size()); // area?
-            double alpha = 20000; // repulsion constant
+            double alpha = 200000; // repulsion constant
             double forceSum = alpha / (dist * dist) * dist; 
             //double forceSum = constant * constant / dist;
+            //if (LMain.DEBUG) System.out.println("Repulsion " + forceSum);
             return forceSum;
 
         }
@@ -112,6 +113,7 @@ public class LayoutAlgorithm {
             double distX = Math.abs(n1.getX() - n2.getX());
             double distY = Math.abs(n1.getY() - n2.getY());
             double theta = Math.atan(distY/distX);
+            //if they are at the same position:
             if(Double.isNaN(theta)) return Math.random();
             return theta;
         }
@@ -126,6 +128,8 @@ public class LayoutAlgorithm {
 		if (LMain.DEBUG) System.out.println("Starting: layoutModel");
 		
         VisualInfo[] nodePositions = initNodePositions();
+        LayoutVisualizer lV = new LayoutVisualizer(nodePositions);
+        
         double c = .2; //constant for adjustment
         double a = .05; //constant for error
         
@@ -148,11 +152,12 @@ public class LayoutAlgorithm {
                     
                    //TODO: Force constants, sizes? How to know...
                     //if (LMain.DEBUG) System.out.println("Starting: layoutModel Calculations");
+                    double dist = getDist(nodePositions[j], nodePositions[k]);
                     double theta = angleBetween(nodePositions[j], nodePositions[k]);
                     double attraction = makeSmall(getAttraction(nodePositions[j], nodePositions[k]));
                     double repulsion = makeSmall(getRepulsion(nodePositions[j], nodePositions[k]));
-                    //if (LMain.DEBUG) System.out.println(theta);
-                    //if (LMain.DEBUG) System.out.println(attraction);
+                    if (LMain.DEBUG) System.out.println("Distance: " + dist);
+                    //if (LMain.DEBUG) System.out.println("Adjust Attraction: " + attraction);
                     //if (LMain.DEBUG) System.out.println(repulsion);
                     
                     if(Double.isNaN(theta) ||Double.isNaN(attraction) || Double.isNaN(repulsion)) {
@@ -160,23 +165,23 @@ public class LayoutAlgorithm {
                     }
                     
                     //if (LMain.DEBUG) System.out.println("Starting: layoutModel adding to sum");
-                    forceX[j] += (attraction*Math.cos(theta) - repulsion*Math.cos(theta));
-                    forceY[j] += (attraction*Math.sin(theta) - repulsion*Math.sin(theta));
-                    
-                    forceX[k] -= (attraction*Math.cos(theta) - repulsion*Math.cos(theta));
-                    forceY[k] -= (attraction*Math.sin(theta) - repulsion*Math.sin(theta));
+//                    forceX[j] += (attraction*Math.cos(theta) - repulsion*Math.cos(theta));
+//                    forceY[j] += (attraction*Math.sin(theta) - repulsion*Math.sin(theta));
+//                    
+//                    forceX[k] -= (attraction*Math.cos(theta) - repulsion*Math.cos(theta));
+//                    forceY[k] -= (attraction*Math.sin(theta) - repulsion*Math.sin(theta));
                     
                     double x_shift = c*(attraction*Math.cos(theta) - repulsion*Math.cos(theta));
                     double y_shift = c*(attraction*Math.sin(theta) - repulsion*Math.sin(theta));
                     
-                    //if (LMain.DEBUG) System.out.println(x_shift);
-                    //if (LMain.DEBUG) System.out.println(y_shift);
+                    if (LMain.DEBUG) System.out.println("x_shift" + x_shift);
+                    if (LMain.DEBUG) System.out.println("y_shift" + y_shift);
                     
-                    nodePositions[j].setX(nodePositions[j].getX() + c*(attraction*Math.cos(theta) - repulsion*Math.cos(theta)));
-                    nodePositions[j].setY(nodePositions[j].getY() + c*(attraction*Math.sin(theta) - repulsion*Math.sin(theta)));
+                    nodePositions[j].setX(nodePositions[j].getX() + x_shift);
+                    nodePositions[j].setY(nodePositions[j].getY() + y_shift);
                     
-                    nodePositions[k].setX(nodePositions[k].getX() - c*(attraction*Math.cos(theta) - repulsion*Math.cos(theta)));
-                    nodePositions[k].setY(nodePositions[k].getY() - c*(attraction*Math.sin(theta) - repulsion*Math.sin(theta)));
+                    nodePositions[k].setX(nodePositions[k].getX() - x_shift);
+                    nodePositions[k].setY(nodePositions[k].getY() - y_shift);
                     
                     //if (LMain.DEBUG) System.out.println(Arrays.toString(nodePositions));
                     
@@ -200,6 +205,8 @@ public class LayoutAlgorithm {
             	if (LMain.DEBUG) System.out.println("Conditions Met");
             	return model;
             }
+            
+            lV.update();
         }
 		if (LMain.DEBUG) System.out.println(Arrays.toString(nodePositions));
 		if (LMain.DEBUG) System.out.println("Finished: layoutModel");
@@ -284,8 +291,8 @@ public class LayoutAlgorithm {
       * @return
       */
      public boolean isCloseEnough(VisualInfo[] nodePositions) {
-    	 //heuristic for distance between nodes
-    	 double edgeLength_max = 500/(1 + 1000*Math.pow(Math.E, nodePositions.length * -1)) + 200;
+    	 //TODO: limits for heuristic for distance between nodes
+    	 double edgeLength_max = 200/(1 + 1000*Math.pow(Math.E, nodePositions.length * -1)) + 100;
     	 
     	//Make a graph 
     	 HashSet<Integer[]> edgeSet = new HashSet<Integer[]>();
@@ -351,10 +358,15 @@ public class LayoutAlgorithm {
     	 return isCloseEnough(nodePositions);
      }
      
+     /**
+      * TODO: what's a good way to do this?
+      * @param num
+      * @param distance?
+      * @return
+      */
      public double makeSmall(Double num) {
-    	 while(Math.abs(num) > 500) {
-    		 if(num < 0) return -100;
-    		 return 100;
+    	 while(num > 100) {
+    		 num = num / 10;
     	 }
     	 return num;
      }
