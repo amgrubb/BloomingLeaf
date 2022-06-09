@@ -4,6 +4,11 @@ public class BIPosition {
 	Double x;
 	Double y;
 	
+	public BIPosition(Double x, Double y) {
+		this.x = x;
+		this.y = y;
+	}
+	
 	public Double getX() {
 		return x;
 	}

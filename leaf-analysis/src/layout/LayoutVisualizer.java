@@ -24,13 +24,16 @@ public class LayoutVisualizer {
             @Override
             public void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                Color myColor = new Color((float)(Math.random()), (float)(Math.random()), (float)(Math.random()));
+                //Color myColor = new Color((float)(Math.random()), (float)(Math.random()), (float)(Math.random()));
                 g.setColor(Color.BLUE);
-                
                 for(VisualInfo n: nodes) {
                 	
                 	g.fillRect((int)Math.round(n.getX()), (int)Math.round(n.getY()), 50, 30);
                 }
+                
+                g.setColor(Color.RED);
+
+                g.fillRect((int)Math.round(500.0), (int)Math.round(500.0), 10, 10);
                 
             }
         };

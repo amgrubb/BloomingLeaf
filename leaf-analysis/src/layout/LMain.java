@@ -20,10 +20,12 @@ public class LMain {
 	public final static boolean DEBUG = true;
 
 	public static void main(String[] args) {
+//	    String inPath = "temp/";
+//	    String outPath = "temp/";
 	    String inPath = "temp/";
 	    String outPath = "temp/";
 	    String tracePath = "";
-	    String inputFile = "nextTo.json";
+	    String inputFile = "Bike-lanes-out.json";
 	    String outputFile = "output.json";
 	
 	    try {			
