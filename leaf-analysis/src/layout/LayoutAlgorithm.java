@@ -33,9 +33,6 @@ public class LayoutAlgorithm {
         smallDistConstant = .0000000002;
         largeDistConstant = 200000;
 
-		// run merge algorithm
-		layoutModel();
-
         // TODO: some logging object init with filename
 	}
 
@@ -58,7 +55,7 @@ public class LayoutAlgorithm {
      * @return the force attraction between two elements
      */
     private double getAttraction(VisualInfo n1, VisualInfo n2) {
-    	if (LMain.DEBUG) System.out.println("Starting: getAttraction");
+    	//if (LMain.DEBUG) System.out.println("Starting: getAttraction");
 // 		Attraction based on simplified spring force using area
 //        if (n1 != n2) {
 //            double distX = n1.getX() - n2.getX();
@@ -75,13 +72,15 @@ public class LayoutAlgorithm {
     	//TODO: figure out the values of these constants
     	if (n1 != n2) {
     		double idealLength = 20;
-        	double elasticityConstant = 5;
+        	double elasticityConstant = 5000; //increasing it means the spring is stiffer
         	
         	double dist = getDist(n1, n2);
         	if (dist > 100) {
         		elasticityConstant = largeDistConstant;
         	}
-        	double forceSum = (idealLength - dist)*(idealLength - dist)*dist/elasticityConstant;
+        	//if (LMain.DEBUG) System.out.println(dist);
+        	double forceSum = (idealLength - dist)*(idealLength - dist) * dist/elasticityConstant; //cubing distance too big, but this is the wrong formula
+        	if (LMain.DEBUG) System.out.println("Attraction " + forceSum);
         	return forceSum;
     	}
     
@@ -95,18 +94,19 @@ public class LayoutAlgorithm {
      */
 
     private double getRepulsion(VisualInfo n1, VisualInfo n2) {
-    	if (LMain.DEBUG) System.out.println("Starting: getRepulsion");
+    	//if (LMain.DEBUG) System.out.println("Starting: getRepulsion");
         if (n1 != n2) {
             double dist = getDist(n1,n2);
+            if(dist == 0) return 99;
             //double k; /// default coefficient, set a value to it
             //double area; // set a value to it
             //double coef = k * Math.sqrt(area/nodePosition.size()); // area?
             double alpha = 2;
-            if (dist < 20) {
+            if (dist < 50) {
                 alpha = smallDistConstant;
             }
-             // repulsion constant
-            double forceSum = alpha / (dist * dist); 
+            //double alpha = 20000; // repulsion constant
+            double forceSum = alpha / (dist * dist) * dist; 
             //double forceSum = constant * constant / dist;
             return forceSum;
 
@@ -119,11 +119,12 @@ public class LayoutAlgorithm {
      * 
      */
     public double angleBetween(VisualInfo n1, VisualInfo n2) {
-    	if (LMain.DEBUG) System.out.println("Starting: angleBetween");
+    	//if (LMain.DEBUG) System.out.println("Starting: angleBetween");
         if(n1 != n2){
             double distX = Math.abs(n1.getX() - n2.getX());
             double distY = Math.abs(n1.getY() - n2.getY());
             double theta = Math.atan(distY/distX);
+            if(Double.isNaN(theta)) return Math.random();
             return theta;
         }
         return 0;
@@ -258,19 +259,20 @@ public class LayoutAlgorithm {
 		if (LMain.DEBUG) System.out.println("Starting: layoutModel");
 		
         VisualInfo[] nodePositions = initNodePositions();
-        double c = .00000002; //constant for adjustment
+        double c = .2; //constant for adjustment
         double a = .05; //constant for error
         double gravitation = 3; // fixed gravitation forces
 		for(int i = 0; i < maxIter; i++){
 			if (LMain.DEBUG) System.out.println("\n" + i + "th Iteration");
 			if (LMain.DEBUG) System.out.println(Arrays.toString(nodePositions));
+			
             //sum up forces for the X and Y directions
             Double[] forceX = new Double[nodePositions.length];
             Arrays.fill(forceX, 0.0);
             Double[] forceY = new Double[nodePositions.length];
             Arrays.fill(forceY, 0.0);
             
-            //fill out indicies of forceX and forceY
+            //fill out indices of forceX and forceY
             for(int j = 0; j < nodePositions.length; j++){
             	if (LMain.DEBUG) System.out.println(j + "th Node\n");
             	if (LMain.DEBUG) System.out.println(Arrays.toString(forceX));
@@ -278,36 +280,66 @@ public class LayoutAlgorithm {
 
             	double phi = angleBetween(findCenter(nodePositions),nodePositions[j]); 
                 
+            	//if (LMain.DEBUG) System.out.println("\n" + j + "th Node\n");
+
                 for(int k = 0; k < nodePositions.length; k++){
                     if(j ==k) continue;  
                    //TODO: Force constants, sizes? How to know...
-                    if (LMain.DEBUG) System.out.println("Starting: layoutModel Calculations");
+                    //if (LMain.DEBUG) System.out.println("Starting: layoutModel Calculations");
                     double theta = angleBetween(nodePositions[j], nodePositions[k]);
-                    double attraction = getAttraction(nodePositions[j], nodePositions[k]);
-                    double repulsion = getRepulsion(nodePositions[j], nodePositions[k]);       
-                    if (LMain.DEBUG) System.out.println(theta);
-                    if (LMain.DEBUG) System.out.println(attraction);
-                    if (LMain.DEBUG) System.out.println(repulsion);
+                    double attraction = makeSmall(getAttraction(nodePositions[j], nodePositions[k]));
+                    double repulsion = makeSmall(getRepulsion(nodePositions[j], nodePositions[k]));
+                    //if (LMain.DEBUG) System.out.println(theta);
+                    //if (LMain.DEBUG) System.out.println(attraction);
+                    //if (LMain.DEBUG) System.out.println(repulsion);
                     
-                    if (LMain.DEBUG) System.out.println("Starting: layoutModel adding to sum");
-                    forceX[j] += (attraction*Math.cos(theta) + repulsion*Math.cos(theta));
-                    forceY[j] += (attraction*Math.sin(theta) + repulsion*Math.sin(theta));
+                    if(Double.isNaN(theta) ||Double.isNaN(attraction) || Double.isNaN(repulsion)) {
+                    	return model;
+                    }
+                    
+                    //if (LMain.DEBUG) System.out.println("Starting: layoutModel adding to sum");
+                    forceX[j] += (attraction*Math.cos(theta) - repulsion*Math.cos(theta));
+                    forceY[j] += (attraction*Math.sin(theta) - repulsion*Math.sin(theta));
+                    
+                    forceX[k] -= (attraction*Math.cos(theta) - repulsion*Math.cos(theta));
+                    forceY[k] -= (attraction*Math.sin(theta) - repulsion*Math.sin(theta));
+                    
+                    double x_shift = c*(attraction*Math.cos(theta) - repulsion*Math.cos(theta));
+                    double y_shift = c*(attraction*Math.sin(theta) - repulsion*Math.sin(theta));
+                    
+                    //if (LMain.DEBUG) System.out.println(x_shift);
+                    //if (LMain.DEBUG) System.out.println(y_shift);
+                    
+                    nodePositions[j].setX(nodePositions[j].getX() + c*(attraction*Math.cos(theta) - repulsion*Math.cos(theta)));
+                    nodePositions[j].setY(nodePositions[j].getY() + c*(attraction*Math.sin(theta) - repulsion*Math.sin(theta)));
+                    
+                    nodePositions[k].setX(nodePositions[k].getX() - c*(attraction*Math.cos(theta) - repulsion*Math.cos(theta)));
+                    nodePositions[k].setY(nodePositions[k].getY() - c*(attraction*Math.sin(theta) - repulsion*Math.sin(theta)));
+                    
+                    //if (LMain.DEBUG) System.out.println(Arrays.toString(nodePositions));
+                    
                 }
+                
             }
             
             //adjust the positions
-            if (LMain.DEBUG) System.out.println("Starting: layoutModel Adjustments");
-            for(int j = 0; j < nodePositions.length; j++){
-                nodePositions[j].setX(nodePositions[j].getX() + c*forceX[j]);
-                nodePositions[j].setY(nodePositions[j].getY() + c*forceY[j]);
-            }
+//            if (LMain.DEBUG) System.out.println("Starting: layoutModel Adjustments");
+//            for(int j = 0; j < nodePositions.length; j++){
+//                nodePositions[j].setX(nodePositions[j].getX() + c/forceX[j]);
+//                nodePositions[j].setY(nodePositions[j].getY() + c*forceY[j]);
+//            }
 
             //calculate error
             //TODO: figure out a good stopping condition
             //if (LMain.DEBUG) System.out.println("Starting: layoutModel calculating error");
             //if (Math.abs(sum(forceX)) < a && Math.abs(sum(forceY)) < a) break;
+            
+            if(checkConds(nodePositions, nodePositions[0])) {
+            	if (LMain.DEBUG) System.out.println("Conditions Met");
+            	return model;
+            }
         }
-		
+		if (LMain.DEBUG) System.out.println(Arrays.toString(nodePositions));
 		if (LMain.DEBUG) System.out.println("Finished: layoutModel");
 		return model;
 	}
@@ -343,6 +375,126 @@ public class LayoutAlgorithm {
              sum += i;
          }
          return sum;
+     }
+     
+     /**
+      * boolean method for the overlap of two nodes
+      */
+     public boolean isOverlapped(VisualInfo n1, VisualInfo n2) {
+    	 double n1_xmin = n1.getX() - n1.getSize().getWidth()/2;
+    	 double n1_xmax = n1.getX() + n1.getSize().getWidth()/2;
+    	 double n1_ymin = n1.getY() - n1.getSize().getHeight()/2;
+    	 double n1_ymax = n1.getY() + n1.getSize().getHeight()/2;
+    	 
+    	 double n2_xmin = n2.getX() - n2.getSize().getWidth()/2;
+    	 double n2_xmax = n2.getX() + n2.getSize().getWidth()/2;
+    	 double n2_ymin = n2.getY() - n2.getSize().getHeight()/2;
+    	 double n2_ymax = n2.getY() + n2.getSize().getHeight()/2;
+    	 
+    	 return !(n1_xmin >= n2_xmax || n1_xmax <= n2_xmin || n1_ymin >= n2_ymax || n1_ymax <= n2_ymin);
+     }
+     
+     /**
+      * boolean method to determine if the node is outside of a border
+      * @param n1 the node
+      * @param n2 the border
+      * @return
+      */
+     public boolean isOutside(VisualInfo n1, VisualInfo n2) {
+    	 double n1_xmin = n1.getX() - n1.getSize().getWidth()/2;
+    	 double n1_xmax = n1.getX() + n1.getSize().getWidth()/2;
+    	 double n1_ymin = n1.getY() - n1.getSize().getHeight()/2;
+    	 double n1_ymax = n1.getY() + n1.getSize().getHeight()/2;
+    	 
+    	 double n2_xmin = n2.getX() - n2.getSize().getWidth()/2;
+    	 double n2_xmax = n2.getX() + n2.getSize().getWidth()/2;
+    	 double n2_ymin = n2.getY() - n2.getSize().getHeight()/2;
+    	 double n2_ymax = n2.getY() + n2.getSize().getHeight()/2;
+    	 
+    	 return (n1_xmin < n2_xmin || n1_ymin < n2_ymin || n1_xmax > n2_xmax || n1_ymax > n2_ymax);
+    	 
+     }
+     
+     /**
+      * This method determines if the nodes are close enough to each other. 
+      * We construct a graph from the nodes, and if the graph is connected then it is close enough.
+      * @param nodePositions
+      * @return
+      */
+     public boolean isCloseEnough(VisualInfo[] nodePositions) {
+    	 //heuristic for distance between nodes
+    	 double edgeLength_max = 500/(1 + 1000*Math.pow(Math.E, nodePositions.length * -1)) + 200;
+    	 
+    	//Make a graph 
+    	 HashSet<Integer[]> edgeSet = new HashSet<Integer[]>();
+    	 
+    	 for(int i = 0; i < nodePositions.length; i++) {
+    		 for(int j = 0; j < nodePositions.length; j++) {
+    			 if(i == j) continue;
+    			 if(getDist(nodePositions[i], nodePositions[j]) <= edgeLength_max) {
+    				edgeSet.add(new Integer[]{i,j});
+    			 }
+    		 }
+    	 }
+    	 if (LMain.DEBUG) {
+    		 System.out.println("Edge Heuristic: "+ edgeLength_max);
+    		 System.out.println("Number of Nodes: "+ nodePositions.length);
+    		 System.out.print("EdgeSet: {");
+    		 for(Integer[] edge: edgeSet) System.out.print(Arrays.toString(edge) + ", ");
+    	 }
+    	 
+    	 //traverse the graph; if all the nodes are visited, the graph is connected.
+    	 return DFS(edgeSet, new HashSet<Integer>(), 0).size() == nodePositions.length;
+     }
+     
+     /**
+      * Traverse the graph
+      * @param edgeSet
+      * @param visitedSet
+      * @param currentVertex
+      * @return visitedSet
+      */
+     public HashSet<Integer> DFS(HashSet<Integer[]> edgeSet, HashSet<Integer> visitedSet, Integer currentVertex) {
+    	 //label the current node as visited
+    	 visitedSet.add(currentVertex);
+    	 if (LMain.DEBUG) System.out.println("visitedSet: " + visitedSet);
+    	 HashSet<Integer> neighborSet = new HashSet<>();
+    	 for(Integer[] edge: edgeSet) {
+    		 if(edge[0] == currentVertex) neighborSet.add(edge[1]);
+    	 }
+    	 
+    	 for(Integer neighbor: neighborSet) {
+    		 if(visitedSet.contains(neighbor)) continue;
+    		 visitedSet = DFS(edgeSet, visitedSet, neighbor);
+    	 }
+    	
+    	 return visitedSet;
+     }
+     
+     /**
+      * TODO: How to check for correctness? and how to correct for incorrectness
+      * Checks conditions and if goal model positions satisfies them;
+      * @param nodePositions
+      * @param border
+      * @return
+      */
+     public boolean checkConds(VisualInfo[] nodePositions, VisualInfo border) {
+    	 if (LMain.DEBUG) System.out.println("Checking COnditions");
+    	 for(VisualInfo n1: nodePositions) {
+    		 for(VisualInfo n2: nodePositions) {
+    			 if(n1 == n2) continue;
+    			 if(isOverlapped(n1, n2)) return false;
+    		 }
+    	 }
+    	 return isCloseEnough(nodePositions);
+     }
+     
+     public double makeSmall(Double num) {
+    	 while(Math.abs(num) > 500) {
+    		 if(num < 0) return -100;
+    		 return 100;
+    	 }
+    	 return num;
      }
 
     
