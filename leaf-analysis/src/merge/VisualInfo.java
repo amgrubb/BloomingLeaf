@@ -7,8 +7,9 @@ public class VisualInfo {
 	BISize size;
 	BIPosition position;
 	
-	public VisualInfo() {
-		
+	public VisualInfo(Integer width, Integer height, Double x, Double y) {
+		this.size = new BISize(width, height);
+		this.position = new BIPosition(x, y);
 	}
 
 	public VisualInfo(BISize size, BIPosition position) {

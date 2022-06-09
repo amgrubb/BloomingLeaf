@@ -12,7 +12,7 @@ public class LayoutVisualizer {
 	JFrame frame;
 	JPanel panel;
 	
-    public LayoutVisualizer(VisualInfo[] nodes){
+    public LayoutVisualizer(VisualInfo[] nodes, VisualInfo center){
         this.frame = new JFrame();
         this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.frame.setVisible(true);
@@ -31,9 +31,9 @@ public class LayoutVisualizer {
                 	g.fillRect((int)Math.round(n.getX()), (int)Math.round(n.getY()), 50, 30);
                 }
                 
+                //set center
                 g.setColor(Color.RED);
-
-                g.fillRect((int)Math.round(500.0), (int)Math.round(500.0), 10, 10);
+                g.fillRect((int)Math.round(center.getX()), (int)Math.round(center.getY()), 10, 10);
                 
             }
         };

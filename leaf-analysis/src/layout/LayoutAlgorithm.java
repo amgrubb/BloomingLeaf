@@ -15,8 +15,6 @@ public class LayoutAlgorithm {
 	ModelSpec model;
     int maxIter;
     double constant;
-    //double smallDistConstant;
-    //double largeDistConstant;
 
 	/**
 	 * Initialize LayoutAlgorithm and run layoutModels
@@ -30,15 +28,6 @@ public class LayoutAlgorithm {
 
         // set up timeout
         this.maxIter = maxIter;
-        
-        // set up constant
-        constant = .2 * Math.sqrt(6/(model.getActors().size() + model.getIntentions().size()));
-        
-        //smallDistConstant = .0000000002;
-        //largeDistConstant = 200000;
-        
-        
-
         // TODO: some logging object init with filename
 	}
 
@@ -61,19 +50,6 @@ public class LayoutAlgorithm {
      * @return the force attraction between two elements
      */
     private double getAttraction(VisualInfo n1, VisualInfo n2) {
-    	//if (LMain.DEBUG) System.out.println("Starting: getAttraction");
-// 		Attraction based on simplified spring force using area
-//        if (n1 != n2) {
-//            double distX = n1.getX() - n2.getX();
-//            double distY = n1.getY() - n2.getY();
-//            double dist = Math.sqrt(distX * distX + distY * distY);
-//            //double k; // default coefficient, set a value to it
-//            //ouble area; // set a value to it
-//            //double coef = k * Math.sqrt(area/nodePosition.size()); // area?
-//            double forceSum = dist * dist / constant;
-//            return forceSum;
-//        }
-    	
     	//Spring force attraction
     	//TODO: figure out the values of these constants
     	if (n1 != n2) {
@@ -81,12 +57,7 @@ public class LayoutAlgorithm {
         	double elasticityConstant = 5000; //increasing it means the spring is stiffer
         	
         	double dist = getDist(n1, n2);
-        	//if (dist > 1000) {
-        	//	elasticityConstant = largeDistConstant;
-        	//}
-        	//if (LMain.DEBUG) System.out.println(dist);
         	double forceSum = (idealLength - dist)*(idealLength - dist)/elasticityConstant; //cubing distance too big, but this is the wrong formula
-        	//if (LMain.DEBUG) System.out.println("Attraction " + forceSum);
         	return forceSum;
     	}
     
@@ -104,19 +75,9 @@ public class LayoutAlgorithm {
         if (n1 != n2) {
             double dist = getDist(n1,n2);
             if(dist == 0) return 99;
-            //double k; /// default coefficient, set a value to it
-            //double area; // set a value to it
-            //double coef = k * Math.sqrt(area/nodePosition.size()); // area?
-
             double alpha = 20000;
-            //if (dist < 50) {
-            //    alpha = smallDistConstant;
-            //}
-            //double alpha = 20000; // repulsion constant
-
             double forceSum = alpha / (dist * dist) * dist; 
-            //double forceSum = constant * constant / dist;
-            //if (LMain.DEBUG) System.out.println("Repulsion " + forceSum);
+            if (LMain.DEBUG) System.out.println("Repulsion " + forceSum);
             return forceSum;
 
         }
@@ -145,25 +106,6 @@ public class LayoutAlgorithm {
         return 0;
     }
     
-    /**
-     * Find the upper left node
-     */
-    // public VisualInfo findUpperLeftNode(VisualInfo[] nodePositions) {
-    // 	VisualInfo mostUpperLeft = null;
-    // 	for(VisualInfo nodePosition: nodePositions) {
-    // 		if(mostUpperLeft == null) {
-    // 			mostUpperLeft = nodePosition;
-    // 		} else {
-    // 			double diffX = mostUpperLeft.getX() - nodePosition.getX();
-    // 			double diffY = nodePosition.getY() - mostUpperLeft.getY();
-    // 			if(diffX + diffY > 0) {
-    // 				mostUpperLeft = nodePosition;
-    // 			}
-    // 		}
-    // 	}
-    // 	return mostUpperLeft;
-    // }
-    
     /*
      * Find center of the model
      * using the formula which finds the intersection of two lines 
@@ -189,35 +131,15 @@ public class LayoutAlgorithm {
             
         }
         
-        VisualInfo center = new VisualInfo();
-
         double x_left = mostLeft.getX() - mostLeft.getSize().getWidth()/2;
-        double y_left = mostLeft.getY();
         double x_right = mostRight.getX() + mostRight.getSize().getWidth()/2;
-        double y_right = mostRight.getY();
-        double x_upper = mostUpper.getX();
-        double y_upper = mostUpper.getY() + mostLeft.getSize().getHeight()/2; // + or - ? double check symbol
-        double x_bottom = mostLeft.getX();
+        double y_upper = mostUpper.getY() + mostLeft.getSize().getHeight()/2; 
         double y_bottom = mostLeft.getY() - mostLeft.getSize().getHeight()/2;
-        // if ((x1 == x2 && y1 == y2) || (x3 == x4 && y3 == y4)) {
-        //     return false ;
-        // }
-        double denominator = ((y_bottom - y_upper) * (x_right - x_left) - (x_bottom - x_upper) * (y_right - y_left));
-        double ua = ((x_bottom - x_upper) * (y_left - y_upper) - (y_bottom - y_upper) * (x_left - x_upper)) / denominator ;
-        double ua = ((x_right - x_left) * (y_left - y_upper) - (y_right - y_left) * (x_left - x_upper)) / denominator ;
-        // denominator = ((y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1));// ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / denominator ;
-        // ub = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / denominator ;
-
-      // Return a object with the x and y coordinates of the intersection
-        double x = x_left + ua * (x_right - x_left);
-        double y = y_left + ua * (y_right - y_left);
-        // double x = x1 + ua * (x2 - x1);
-        // double y = y1 + ua * (y2 - y1);
-        center.setX(x);
-        center.setY(y);
-        //set the size of the canvas
-        center.setWidth((int)(2*Math.abs(x1-x2)));
-        center.setHeight((int)(2*Math.abs(y1-y2)));
+        
+        double x = (x_left + x_right) / 2;
+        double y = (y_upper + y_bottom) / 2;
+        
+        VisualInfo center = new VisualInfo((int)(2*Math.abs(x_left + x_right)), (int)(2*Math.abs(y_upper + y_bottom)), x, y);
         return center;
     }
 
@@ -230,9 +152,8 @@ public class LayoutAlgorithm {
 		if (LMain.DEBUG) System.out.println("Starting: layoutModel");
 		
         VisualInfo[] nodePositions = initNodePositions();
-        LayoutVisualizer lV = new LayoutVisualizer(nodePositions);
-        VisualInfo center = new VisualInfo(new BISize(500,500), new BIPosition(500.0, 500.0));//findCenter(nodePositions);
-		//if (LMain.DEBUG) System.out.println(center);
+        VisualInfo center = findCenter(nodePositions);
+        LayoutVisualizer lV = new LayoutVisualizer(nodePositions, center);
         
         //constants
         double c = .2; //adjustment
@@ -242,13 +163,6 @@ public class LayoutAlgorithm {
 		for(int i = 0; i < maxIter; i++){
 			if (LMain.DEBUG) System.out.println("\n" + i + "th Iteration");
 			if (LMain.DEBUG) System.out.println(Arrays.toString(nodePositions));
-			
-//            //sum up forces for the X and Y directions
-//            Double[] forceX = new Double[nodePositions.length];
-//            Double[] forceY = new Double[nodePositions.length];
-//            //fill out indices of forceX and forceY
-//            Arrays.fill(forceX, 0.0);
-//            Arrays.fill(forceY, 0.0);
             
             
             for(int j = 0; j < nodePositions.length; j++){
@@ -274,11 +188,6 @@ public class LayoutAlgorithm {
                     }
                     
                     //if (LMain.DEBUG) System.out.println("Starting: layoutModel adding to sum");
-//                    forceX[j] += (attraction*Math.cos(theta) - repulsion*Math.cos(theta));
-//                    forceY[j] += (attraction*Math.sin(theta) - repulsion*Math.sin(theta));
-//                    
-//                    forceX[k] -= (attraction*Math.cos(theta) - repulsion*Math.cos(theta));
-//                    forceY[k] -= (attraction*Math.sin(theta) - repulsion*Math.sin(theta));
                     
                     double x_shift = c*(attraction*Math.cos(theta) - repulsion*Math.cos(theta));
                     double y_shift = c*(attraction*Math.sin(theta) - repulsion*Math.sin(theta));
@@ -301,18 +210,8 @@ public class LayoutAlgorithm {
                 if (LMain.DEBUG) System.out.println("phi: " + phi);
                 nodePositions[j].setX(nodePositions[j].getX() + gravitation*Math.cos(phi));
                 nodePositions[j].setY(nodePositions[j].getY() + gravitation*Math.sin(phi));
-                
-            }
-            
-            
-            
-            //adjust the positions
-//            if (LMain.DEBUG) System.out.println("Starting: layoutModel Adjustments");
-//            for(int j = 0; j < nodePositions.length; j++){
-//                nodePositions[j].setX(nodePositions[j].getX() + c/forceX[j]);
-//                nodePositions[j].setY(nodePositions[j].getY() + c*forceY[j]);
-//            }
 
+            }
             //calculate error
             //TODO: figure out a good stopping condition
             //if (LMain.DEBUG) System.out.println("Starting: layoutModel calculating error");
