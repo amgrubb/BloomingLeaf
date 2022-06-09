@@ -11,4 +11,13 @@ public class BISize {
 	public Integer getHeight() {
 		return height;
 	}
+
+	public void setWidth(Integer width) {
+		this.width = width;
+	}
+
+	public void setHeight(Integer height) {
+		this.height = height;
+	}
+
 }

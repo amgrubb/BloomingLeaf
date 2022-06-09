@@ -28,12 +28,32 @@ public class VisualInfo {
 		return position.getY();
 	}
 
+	public Integer getWidth() {
+		return size.getWidth();
+	}
+
+	public Integer getHeight() {
+		return size.getHeight();
+	}
+
 	public void setX(Double x) {
 		this.position.setX(x);
 	}
 	
 	public void setY(Double y) {
 		this.position.setY(y);
+	}
+
+	public void setSize(BISize size) {
+		this.size = size; 
+	}
+
+	public void setWidth(Integer width) {
+		this.width = width;
+	}
+
+	public void setHeight(Integer height) {
+		this.height = height;
 	}
 
 	public String toString() {
