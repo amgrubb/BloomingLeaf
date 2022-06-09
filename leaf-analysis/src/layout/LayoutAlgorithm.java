@@ -169,57 +169,28 @@ public class LayoutAlgorithm {
      * using the formula which finds the intersection of two lines 
      */
     public VisualInfo findCenter(VisualInfo[] nodePositions) {
-        VisualInfo mostLeft = null;
-        VisualInfo mostRight = null;
-        VisualInfo mostUpper = null;
-        VisualInfo mostBottom = null;
+        VisualInfo mostLeft = nodePositions[0];
+        VisualInfo mostRight = nodePositions[0];
+        VisualInfo mostUpper = nodePositions[0];
+        VisualInfo mostBottom = nodePositions[0];
         for(VisualInfo nodePosition: nodePositions) {
-            if(mostLeft == null) {
-                mostLeft = nodePosition;
-            } else {
-                if(nodePositon.getX() < mosLeft.getX()){
-                mostLeft = nodePosition;
-                }
+            if(nodePosition.getX() < mostLeft.getX()){
+            	mostLeft = nodePosition;
             }
-            if(mostRight == null) {
-                mostRight = nodePosition;
-            } else {
-                if(nodePositon.getX() > mosRight.getX()){
-                mostRight = nodePosition;
-                }
+            if(nodePosition.getX() > mostRight.getX()){
+            	mostRight = nodePosition;
             }
-            if(mostUpper == null) {
-                mostUpper = nodePosition;
-            } else {
-                if(nodePositon.getY() < mosUpper.getY()){
-                mostUpper = nodePosition;
-                }
+            if(nodePosition.getY() < mostUpper.getY()){
+            	mostUpper = nodePosition;
             }
-            if(mostBottom == null) {
-                mostBottom = nodePosition;
-            } else {
-                if(nodePositon.getY() > mosBottom.getY()){
-                mostBottom = nodePosition;
-                }
+            if(nodePosition.getY() > mostBottom.getY()){
+            	mostBottom = nodePosition;
             }
-        }   
-        VisualInfo center = new VisualInfo();
-<<<<<<< HEAD
-        double x1 = findBottomLeftNode(nodePositions).getX();
-        double x2 = findUpperRightNode(nodePositions).getX();
-        double x3 = findUpperLeftNode(nodePositions).getX();
-        double x4 = findBottomRightNode(nodePositions).getX();
-        double y1 = findBottomLeftNode(nodePositions).getY();
-        double y2 = findUpperRightNode(nodePositions).getY();
-        double y3 = findUpperLeftNode(nodePositions).getY();
-        double y4 = findBottomRightNode(nodePositions).getY();
-        if ((x1 == x2 && y1 == y2) || (x3 == x4 && y3 == y4)) {
-            return null;
+            
         }
-        double denominator = ((y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1));
-        double ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / denominator ;
-        double ub = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / denominator ;
-=======
+        
+        VisualInfo center = new VisualInfo();
+
         double x_left = mostLeft.getX() - mostLeft.getSize().getWidth()/2;
         double y_left = mostLeft.getY();
         double x_right = mostRight.getX() + mostRight.getSize().getWidth()/2;
@@ -236,7 +207,7 @@ public class LayoutAlgorithm {
         double ua = ((x_right - x_left) * (y_left - y_upper) - (y_right - y_left) * (x_left - x_upper)) / denominator ;
         // denominator = ((y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1));// ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / denominator ;
         // ub = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / denominator ;
->>>>>>> bd592d252cc91188244dc5e0830a753e4abf23e4
+
       // Return a object with the x and y coordinates of the intersection
         double x = x_left + ua * (x_right - x_left);
         double y = y_left + ua * (y_right - y_left);
