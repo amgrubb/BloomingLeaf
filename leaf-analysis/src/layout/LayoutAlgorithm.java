@@ -200,16 +200,8 @@ public class LayoutAlgorithm {
         // if ((x1 == x2 && y1 == y2) || (x3 == x4 && y3 == y4)) {
         //     return false ;
         // }
-        double denominator = ((y_bottom - y_upper) * (x_right - x_left) - (x_bottom - x_upper) * (y_right - y_left));
-        double ua = ((x_bottom - x_upper) * (y_left - y_upper) - (y_bottom - y_upper) * (x_left - x_upper)) / denominator ;
-        double ua = ((x_right - x_left) * (y_left - y_upper) - (y_right - y_left) * (x_left - x_upper)) / denominator ;
-        // denominator = ((y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1));// ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / denominator ;
-        // ub = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / denominator ;
-      // Return a object with the x and y coordinates of the intersection
-        double x = x_left + ua * (x_right - x_left);
-        double y = y_left + ua * (y_right - y_left);
-        // double x = x1 + ua * (x2 - x1);
-        // double y = y1 + ua * (y2 - y1);
+        double x = (x_left + x_right) / 2;
+        double y = (y_upper + y_bottom) / 2;
         center.setX(x);
         center.setY(y);
         //set the size of the canvas
