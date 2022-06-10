@@ -47,15 +47,6 @@ public class LayoutAlgorithm {
 			//resize actor
 			resizeActor(a, a_intentions);
 		}
-<<<<<<< HEAD
-		//	//level 0
-		//  VisualInfo[] level_zero = model.getActors + model.IntentionsWithoutActors
-        //	run layout on level_zero // if a node is an actor, propagate changes, visualize elements as actors
-		//
-		//
-		//
-	} */
-=======
 		//  level 0
 		//  get nodes on the zeroth level
 		ArrayList<AbstractLinkableElement> temp_arrayList = new ArrayList<>();
@@ -73,8 +64,6 @@ public class LayoutAlgorithm {
 		//
 		return model;
 	}
-	
->>>>>>> e0b8df90b87ed0a61bec810610d835bfc72c50d5
 	
     /**
      * a boolean method to determine whether the node is a child of an actor
@@ -95,20 +84,25 @@ public class LayoutAlgorithm {
         }
     }
 
-    // get a list of children nodes 
-
-	public propogateAdjust (VisualInfo actor, double adjust_x, double adjust_y) {
-        // return type ? 
-
-        for(Intention intent : model.getIntentions()) {
-
+	public void propogateAdjustments (Actor actor, double x_shift, double y_shift) { 
+        for(Intention intent : actor.getEmbedObjects(model)) {
+            intent.setX(intent.getX() + x_shift);
+            intent.setY(intent.getY() + y_shift);
         }
         // for all children of an actor 
         //     children update (adjustment)
     }
 
-    public VisualInfo resizeActor (VisualInfo actor) {
-
+    /*
+     * a method to adjust the size of the actor as intentions change
+     */
+    public VisualInfo resizeActor (Actor actor, Intention[] intentions) {
+        VisualInfo center = findCenter(intentions);
+        double width = center.getX() * 2;
+        double height = center.getY() * 2;
+        double margin = 10; //space between the edge of intentions and the actor 
+        actor.setSize().setWidth(width + margin);
+        actor.setSize().setHeight(height + margin);
     }
 
     /**
