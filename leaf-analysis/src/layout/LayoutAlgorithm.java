@@ -32,22 +32,13 @@ public class LayoutAlgorithm {
 	}
 	
 	
-	public ModelSpec layout(){
+	/*public model layout(){
 		//nested level
-		for(Actor a: model.getActors()) { 
-			//this is so ugly i'm so sorry 
-			Intention[] a_intentions = a.getEmbedObjects(model);
-			ArrayList<AbstractLinkableElement> temp_arrayList = new ArrayList<>();
-			for(Intention i: a_intentions) {
-				temp_arrayList.add((AbstractLinkableElement)i);
-			}
-			VisualInfo[] intention_nodePos = initNodePositions(temp_arrayList);
-			//layout intentions
-			layoutModel(intention_nodePos, false);
-			//resize actor
+		for(Actor a: model.getActors()) {
+			VisualInfo[] a_intentions = initNodePositions(a.getEmbedObjects(model));
+			layoutModel(a_intentions);
 			resizeActor(a, a_intentions);
 		}
-<<<<<<< HEAD
 		//	//level 0
 		//  VisualInfo[] level_zero = model.getActors + model.IntentionsWithoutActors
         //	run layout on level_zero // if a node is an actor, propagate changes, visualize elements as actors
@@ -55,26 +46,6 @@ public class LayoutAlgorithm {
 		//
 		//
 	} */
-=======
-		//  level 0
-		//  get nodes on the zeroth level
-		ArrayList<AbstractLinkableElement> temp_arrayList = new ArrayList<>();
-		for(Intention i: model.getActorlessIntentions()) {
-			temp_arrayList.add((AbstractLinkableElement)i);
-		}
-		for(Actor a: model.getActors()) {
-			temp_arrayList.add((AbstractLinkableElement)a);
-		}
-		VisualInfo[] lvl0_nodePos = initNodePositions(temp_arrayList);
-		//	run layout on level_zero // if a node is an actor, propagate changes, visualize elements as actors
-		layoutModel(lvl0_nodePos, true);
-		//
-		//
-		//
-		return model;
-	}
-	
->>>>>>> e0b8df90b87ed0a61bec810610d835bfc72c50d5
 	
     /**
      * a boolean method to determine whether the node is a child of an actor
@@ -97,9 +68,14 @@ public class LayoutAlgorithm {
 
     // get a list of children nodes 
 
-	public propogateAdjust (VisualInfo actor, double adjust_x, double adjust_y) {
-        // return type ? 
-
+    /**
+     * Propagate all the adjustment of actor to its embedded intentions
+     * @param actor
+     * @param adjust_x
+     * @param adjust_y
+     */
+	public void propogateAdjust (VisualInfo actor, double adjust_x, double adjust_y) {
+        actor.findCenter()
         for(Intention intent : model.getIntentions()) {
 
         }
@@ -228,12 +204,12 @@ public class LayoutAlgorithm {
         Main Layout method
      */ 
         
-	public ModelSpec layoutModel(VisualInfo[] nodePositions, boolean hasActors){
+	public ModelSpec layoutModel(){
 		if (LMain.DEBUG) System.out.println("Starting: layoutModel");
 		
+        VisualInfo[] nodePositions = initNodePositions();
         VisualInfo center = findCenter(nodePositions);
-        int numActors = model.getActors().size();
-        LayoutVisualizer lV = new LayoutVisualizer(nodePositions, center, numActors);
+        LayoutVisualizer lV = new LayoutVisualizer(nodePositions, center);
         
         //constants
         double c = .2; //adjustment
@@ -247,6 +223,9 @@ public class LayoutAlgorithm {
             
             for(int j = 0; j < nodePositions.length; j++){
             	if (LMain.DEBUG) System.out.println(j + "th Node\n");
+            	//if (LMain.DEBUG) System.out.println(Arrays.toString(forceX));
+            	//if (LMain.DEBUG) System.out.println(Arrays.toString(forceY));
+            	//if (LMain.DEBUG) System.out.println("\n" + j + "th Node\n");
 
                 for(int k = 0; k < nodePositions.length; k++){
                     if(j ==k) continue;  
@@ -280,14 +259,6 @@ public class LayoutAlgorithm {
                     
                     //if (LMain.DEBUG) System.out.println(Arrays.toString(nodePositions));
                     
-                    if(j < numActors) {
-                    	propagateAdjustments(model.getActors().get(j), x_shift, y_shift);
-                    }
-                    
-                    if(k < numActors) {
-                    	propagateAdjustments(model.getActors().get(k), -x_shift, -y_shift);
-                    }
-                    
                 }
                 
                 //adjust positions based on gravity from the center
@@ -295,10 +266,6 @@ public class LayoutAlgorithm {
                 if (LMain.DEBUG) System.out.println("phi: " + phi);
                 nodePositions[j].setX(nodePositions[j].getX() + gravitation*Math.cos(phi));
                 nodePositions[j].setY(nodePositions[j].getY() + gravitation*Math.sin(phi));
-                
-                if(j < numActors) {
-                	propagateAdjustments(model.getActors().get(j), gravitation*Math.cos(phi), gravitation*Math.sin(phi));
-                }
 
             }
             //calculate error
@@ -320,27 +287,23 @@ public class LayoutAlgorithm {
 
     /**
         Initialize the node position array
-        Collect VisualInfo objects
+        Collect VisualInfo objects from modelSpec's Actors and Intentions
      */
-    public VisualInfo[] initNodePositions(List<AbstractLinkableElement> nodes){
-        VisualInfo[] nodePositions = new VisualInfo[nodes.size()];
-//        int index = 0;
+    public VisualInfo[] initNodePositions(){
+        VisualInfo[] nodePositions = new VisualInfo[model.getActors().size() + model.getIntentions().size()];
+        int index = 0;
 
-//        //get Actor visual info
-//        for(Actor a: model.getActors()){
-//            nodePositions[index] = a.getVisualInfo();
-//            index++;
-//        }
-//        //get Intention visual info
-//        for(Intention i: model.getIntentions()){
-//            nodePositions[index] = i.getVisualInfo();
-//            index++;
-//        }
-        
-        for(int i = 0; i < nodes.size(); i++) {
-        	nodePositions[i] = nodes.get(i).getVisualInfo();
+        //get Actor visual info
+        for(Actor a: model.getActors()){
+            nodePositions[index] = a.getVisualInfo();
+            index++;
         }
-        
+        //get Intention visual info
+        for(Intention i: model.getIntentions()){
+            nodePositions[index] = i.getVisualInfo();
+            index++;
+        }
+
         return nodePositions;
     }
 
