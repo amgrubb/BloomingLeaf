@@ -37,6 +37,11 @@ public class Actor extends AbstractLinkableElement {
 		return embeds;
 	}
 	
+	/**
+	 * Find the intention objects that the actor contains
+	 * @param myModel - the model the actor belongs to 
+	 * @return the intention objects that the actor contains in an array
+	 */
 	public Intention[] getEmbedObjects(ModelSpec myModel) {
 		Intention[] myIntentions = new Intention[embeds.length];
 		for(Intention intention: myModel.getIntentions()) {

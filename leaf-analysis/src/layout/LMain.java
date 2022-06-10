@@ -53,7 +53,7 @@ public class LMain {
 	
 	        // run auto-layout
 	        LayoutAlgorithm layerOuter = new LayoutAlgorithm(modelSpec, "trace.txt", 10000);
-	        ModelSpec layedOutModel = layerOuter.layoutModel();
+	        ModelSpec layedOutModel = layerOuter.layout();
 	
 	        // Create output file that will be used by frontend
 	        IMain modelOut = IMainBuilder.buildIMain(layedOutModel);
