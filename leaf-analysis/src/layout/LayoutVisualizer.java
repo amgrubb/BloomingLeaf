@@ -12,11 +12,11 @@ public class LayoutVisualizer {
 	JFrame frame;
 	JPanel panel;
 	
-    public LayoutVisualizer(VisualInfo[] nodes, VisualInfo center){
+    public LayoutVisualizer(VisualInfo[] nodes, VisualInfo center, int numActors){
         this.frame = new JFrame();
         this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.frame.setVisible(true);
-        this.frame.setSize(600, 400);
+        this.frame.setSize(center.getWidth(), center.getHeight());
         
         this.nodes = nodes;
 
@@ -25,10 +25,18 @@ public class LayoutVisualizer {
             public void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 //Color myColor = new Color((float)(Math.random()), (float)(Math.random()), (float)(Math.random()));
-                g.setColor(Color.BLUE);
+                g.setColor(Color.GREEN);
+       
+                int actorCounter = numActors;
                 for(VisualInfo n: nodes) {
+                	int height = n.getHeight()/4;
+                    int width = n.getWidth()/4;
+                	if(actorCounter == 0) {
+                		g.setColor(Color.BLUE);	
+                	}
                 	
-                	g.fillRect((int)Math.round(n.getX()), (int)Math.round(n.getY()), 50, 30);
+                	g.fillRect((int)Math.round(n.getX()), (int)Math.round(n.getY()), width, height);
+                	actorCounter--;
                 }
                 
                 //set center
