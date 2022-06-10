@@ -30,6 +30,24 @@ public class LayoutAlgorithm {
         this.maxIter = maxIter;
         // TODO: some logging object init with filename
 	}
+	
+	
+	/*public model layout(){
+		//nested level
+		for(Actor a: model.getActors()) {
+			VisualInfo[] a_intentions = initNodePositions(a.getEmbedObjects(model));
+			layoutModel(a_intentions);
+			resizeActor(a, a_intentions);
+		}
+		//	//level 0
+		//  VisualInfo[] level_zero = model.getActors + model.IntentionsWithoutActors
+		//	run layout on level_zero // if a node is an actor, propagate changes, visualize elements as actors
+		//
+		//
+		//
+	}
+	
+	
 
     /**
      * Calculate the distance between two elements

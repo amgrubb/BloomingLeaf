@@ -36,4 +36,16 @@ public class Actor extends AbstractLinkableElement {
 	public String[] getEmbeds() {
 		return embeds;
 	}
+	
+	public Intention[] getEmbedObjects(ModelSpec myModel) {
+		Intention[] myIntentions = new Intention[embeds.length];
+		for(Intention intention: myModel.getIntentions()) {
+			for(int i = 0; i < embeds.length; i++) {
+				if(intention.getId().equals(embeds[i])) myIntentions[i] = intention;
+			}
+			
+		}
+		
+		return myIntentions;
+	}
 }

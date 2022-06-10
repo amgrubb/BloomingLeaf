@@ -452,4 +452,16 @@ public class ModelSpec {
 		this.analysisType = analysisType;
 	}
 	
+	/**
+	 * get all the intentions at level 0
+	 * @return
+	 */
+	public List<Intention> getActorlessIntentions(){
+		List<Intention> actorlessIntentions = new ArrayList<Intention>();
+		for(Intention intention: this.intentions) {
+			if(!intention.hasActor()) actorlessIntentions.add(intention);
+		}
+		return actorlessIntentions;
+	}
+	
 }
