@@ -41,13 +41,46 @@ public class LayoutAlgorithm {
 		}
 		//	//level 0
 		//  VisualInfo[] level_zero = model.getActors + model.IntentionsWithoutActors
-		//	run layout on level_zero // if a node is an actor, propagate changes, visualize elements as actors
+        //	run layout on level_zero // if a node is an actor, propagate changes, visualize elements as actors
 		//
 		//
 		//
-	}
+	} */
 	
-	
+    /**
+     * a boolean method to determine whether the node is a child of an actor
+     * @param nodePositions the list of nodes
+     * @param node the potential child of an actor
+     * 
+     */
+    public boolean isChild(VisualInfo[] nodePositions) { 
+        for(VisualInfo nodePosition: nodePositions) {
+            if(isOutside(nodePosition, node) == false)
+                return true;
+        }
+    }
+
+    public VisualInfo theChildOf(VisualInfo[] nodePositions) {
+        if(node.isChild(nodePositions)) {
+            return nodePositions;
+        }
+    }
+
+    // get a list of children nodes 
+
+	public propogateAdjust (VisualInfo actor, double adjust_x, double adjust_y) {
+        // return type ? 
+
+        for(Intention intent : model.getIntentions()) {
+
+        }
+        // for all children of an actor 
+        //     children update (adjustment)
+    }
+
+    public VisualInfo resizeActor (VisualInfo actor) {
+
+    }
 
     /**
      * Calculate the distance between two elements
