@@ -3,6 +3,8 @@
  */
 package simulation;
 
+import layout.LMain;
+
 /**
  * @author A.M.Grubb
  *
@@ -31,7 +33,7 @@ public class Actor extends AbstractLinkableElement {
 	}
 	
 	/*
-	 * Return ids of intentions embedded in the actor
+	 * Return *unique* ids of intentions embedded in the actor
 	 */
 	public String[] getEmbeds() {
 		return embeds;
@@ -43,14 +45,20 @@ public class Actor extends AbstractLinkableElement {
 	 * @return the intention objects that the actor contains in an array
 	 */
 	public Intention[] getEmbedObjects(ModelSpec myModel) {
+		//if there are no embeds
+		if (embeds == null) return new Intention[0];
+		
 		Intention[] myIntentions = new Intention[embeds.length];
 		for(Intention intention: myModel.getIntentions()) {
 			for(int i = 0; i < embeds.length; i++) {
-				if(intention.getId().equals(embeds[i])) myIntentions[i] = intention;
+				if(intention.getUniqueID().equals(embeds[i])) {
+					myIntentions[i] = intention;
+				}
+				
 			}
 			
 		}
-		
+	
 		return myIntentions;
 	}
 }

@@ -14,7 +14,6 @@ public class LayoutAlgorithm {
 	// models
 	ModelSpec model;
     int maxIter;
-    double constant;
 
 	/**
 	 * Initialize LayoutAlgorithm and run layoutModels
@@ -22,7 +21,7 @@ public class LayoutAlgorithm {
 
 	public LayoutAlgorithm(ModelSpec model, String filename, int maxIter) {
 
-		if (LMain.DEBUG) System.out.println("Starting: UCG Layout");
+		if (LMain.DEBUG) System.out.println("Creating Layout Object");
 		// set up models
 		this.model = model;
 
@@ -33,38 +32,52 @@ public class LayoutAlgorithm {
 	
 	
 	public ModelSpec layout(){
+
+		if (LMain.DEBUG) System.out.println("Starting Full Layout");
+		
 		//nested level
+		if (LMain.DEBUG) System.out.println("Starting Nested Level");
 		for(Actor a: model.getActors()) { 
-			//this is so ugly i'm so sorry 
+			
+			// get nodes in this actor (this is so ugly i'm so sorry)
 			Intention[] a_intentions = a.getEmbedObjects(model);
+			if(a_intentions.length == 0) continue;
 			ArrayList<AbstractLinkableElement> temp_arrayList = new ArrayList<>();
 			for(Intention i: a_intentions) {
 				temp_arrayList.add((AbstractLinkableElement)i);
 			}
 			VisualInfo[] intention_nodePos = initNodePositions(temp_arrayList);
+			if (LMain.DEBUG) System.out.println(Arrays.toString(intention_nodePos));
+			
 			//layout intentions
 			layoutModel(intention_nodePos, false);
+			
 			//resize actor
-			resizeActor(a, a_intentions);
+			//resizeActor(a, intention_nodePos);
+
+			
 		}
 		//  level 0
+		if (LMain.DEBUG) System.out.println("Starting 0th Level");
+		
+
 		//  get nodes on the zeroth level
 		ArrayList<AbstractLinkableElement> temp_arrayList = new ArrayList<>();
-		for(Intention i: model.getActorlessIntentions()) {
-			temp_arrayList.add((AbstractLinkableElement)i);
-		}
+		// actors are first in the list !!!!!!
 		for(Actor a: model.getActors()) {
 			temp_arrayList.add((AbstractLinkableElement)a);
 		}
+		for(Intention i: model.getActorlessIntentions()) {
+			temp_arrayList.add((AbstractLinkableElement)i);
+		}
 		VisualInfo[] lvl0_nodePos = initNodePositions(temp_arrayList);
-		//	run layout on level_zero // if a node is an actor, propagate changes, visualize elements as actors
+		
+		//	run layout on level_zero (if a node is an actor, propagate changes)
 		layoutModel(lvl0_nodePos, true);
-		//
-		//
-		//
 		return model;
 	}
 	
+<<<<<<< HEAD
 	/*
 	 * a method to propagate changes from actor to its children nodes
 	 */
@@ -88,6 +101,47 @@ public class LayoutAlgorithm {
         actor.setSize().setWidth(width + margin);
         actor.setSize().setHeight(height + margin);
     }
+=======
+    /**
+     * a boolean method to determine whether the node is a child of an actor
+     * @param nodePositions the list of nodes
+     * @param node the potential child of an actor
+     * 
+     */
+//    public boolean isChild(VisualInfo[] nodePositions) { 
+//        for(VisualInfo nodePosition: nodePositions) {
+//            if(isOutside(nodePosition, node) == false)
+//                return true;
+//        }
+//    }
+//
+//    public VisualInfo theChildOf(VisualInfo[] nodePositions) {
+//        if(node.isChild(nodePositions)) {
+//            return nodePositions;
+//        }
+//    }
+//
+//	public void propagateAdjustments (Actor actor, double x_shift, double y_shift) { 
+//        for(Intention intent : actor.getEmbedObjects(model)) {
+//            intent.setX(intent.getX() + x_shift);
+//            intent.setY(intent.getY() + y_shift);
+//        }
+//        // for all children of an actor 
+//        //     children update (adjustment)
+//    }
+//
+//    /*
+//     * a method to adjust the size of the actor as intentions change
+//     */
+//    public VisualInfo resizeActor (Actor actor, Intention[] intentions) {
+//        VisualInfo center = findCenter(intentions);
+//        double width = center.getX() * 2;
+//        double height = center.getY() * 2;
+//        double margin = 10; //space between the edge of intentions and the actor 
+//        actor.setSize().setWidth(width + margin);
+//        actor.setSize().setHeight(height + margin);
+//    }
+>>>>>>> 20083ac592ee2c47ff8f1cf82e40bc9433b851f1
 
     /**
      * Calculate the distance between two elements
@@ -179,10 +233,10 @@ public class LayoutAlgorithm {
             if(nodePosition.getX() > mostRight.getX()){
             	mostRight = nodePosition;
             }
-            if(nodePosition.getY() < mostUpper.getY()){
+            if(nodePosition.getY() > mostUpper.getY()){
             	mostUpper = nodePosition;
             }
-            if(nodePosition.getY() > mostBottom.getY()){
+            if(nodePosition.getY() < mostBottom.getY()){
             	mostBottom = nodePosition;
             }
             
@@ -210,6 +264,7 @@ public class LayoutAlgorithm {
 		
         VisualInfo center = findCenter(nodePositions);
         int numActors = model.getActors().size();
+        if(!hasActors) numActors = 0;
         LayoutVisualizer lV = new LayoutVisualizer(nodePositions, center, numActors);
         
         //constants
@@ -258,11 +313,11 @@ public class LayoutAlgorithm {
                     //if (LMain.DEBUG) System.out.println(Arrays.toString(nodePositions));
                     
                     if(j < numActors) {
-                    	propagateAdjustments(model.getActors().get(j), x_shift, y_shift);
+                    	//propagateAdjustments(model.getActors().get(j), x_shift, y_shift);
                     }
                     
                     if(k < numActors) {
-                    	propagateAdjustments(model.getActors().get(k), -x_shift, -y_shift);
+                    	//propagateAdjustments(model.getActors().get(k), -x_shift, -y_shift);
                     }
                     
                 }
@@ -274,7 +329,7 @@ public class LayoutAlgorithm {
                 nodePositions[j].setY(nodePositions[j].getY() + gravitation*Math.sin(phi));
                 
                 if(j < numActors) {
-                	propagateAdjustments(model.getActors().get(j), gravitation*Math.cos(phi), gravitation*Math.sin(phi));
+                	//propagateAdjustments(model.getActors().get(j), gravitation*Math.cos(phi), gravitation*Math.sin(phi));
                 }
 
             }
@@ -283,7 +338,7 @@ public class LayoutAlgorithm {
             //if (LMain.DEBUG) System.out.println("Starting: layoutModel calculating error");
             //if (Math.abs(sum(forceX)) < a && Math.abs(sum(forceY)) < a) break;
             
-            if(checkConds(nodePositions, center)) {
+            if(checkConds(nodePositions, center, numActors)) {
             	if (LMain.DEBUG) System.out.println("Conditions Met");
             	return model;
             }
@@ -376,7 +431,7 @@ public class LayoutAlgorithm {
       * @param nodePositions
       * @return
       */
-     public boolean isCloseEnough(VisualInfo[] nodePositions) {
+     public boolean isCloseEnough(VisualInfo[] nodePositions, int numActors) {
     	 //TODO: limits for heuristic for distance between nodes
     	 double edgeLength_max = 200/(1 + 1000*Math.pow(Math.E, nodePositions.length * -1)) + 100;
     	 
@@ -386,7 +441,20 @@ public class LayoutAlgorithm {
     	 for(int i = 0; i < nodePositions.length; i++) {
     		 for(int j = 0; j < nodePositions.length; j++) {
     			 if(i == j) continue;
-    			 if(getDist(nodePositions[i], nodePositions[j]) <= edgeLength_max) {
+    			 double adjust_ELM = 0;
+    			 //if either i or j are actors
+    			 if(i < numActors && j < numActors) {
+    				 double dist1 = getHypotenuse(nodePositions[i].getWidth()/2, nodePositions[i].getHeight()/2);
+    				 double dist2 = getHypotenuse(nodePositions[j].getWidth()/2, nodePositions[j].getHeight()/2);
+    				 adjust_ELM += dist1 + dist2;
+    			 }
+    			 else if(i < numActors) {
+    				 adjust_ELM += getHypotenuse(nodePositions[i].getWidth()/2, nodePositions[i].getHeight()/2);
+    			 }
+    			 else if(j < numActors) {
+    				 adjust_ELM = getHypotenuse(nodePositions[j].getWidth()/2, nodePositions[j].getHeight()/2);
+    			 }
+    			 if(getDist(nodePositions[i], nodePositions[j]) <= (edgeLength_max + 1.5*adjust_ELM)) {
     				edgeSet.add(new Integer[]{i,j});
     			 }
     		 }
@@ -433,7 +501,7 @@ public class LayoutAlgorithm {
       * @param border
       * @return
       */
-     public boolean checkConds(VisualInfo[] nodePositions, VisualInfo border) {
+     public boolean checkConds(VisualInfo[] nodePositions, VisualInfo border, int numActors) {
     	 if (LMain.DEBUG) System.out.println("Checking COnditions");
     	 for(VisualInfo n1: nodePositions) {
     		 for(VisualInfo n2: nodePositions) {
@@ -441,7 +509,7 @@ public class LayoutAlgorithm {
     			 if(isOverlapped(n1, n2)) return false;
     		 }
     	 }
-    	 return isCloseEnough(nodePositions);
+    	 return isCloseEnough(nodePositions, numActors);
      }
      
      /**
@@ -455,6 +523,16 @@ public class LayoutAlgorithm {
     		 num = num / 10;
     	 }
     	 return num;
+     }
+     
+     /**
+      * find the hypotenuse of a right triangle using the pythagorean theorem
+      * @param base
+      * @param height
+      * @return
+      */
+     public double getHypotenuse(double base, double height) {
+    	 return Math.sqrt(base*base + height*height);
      }
 
     

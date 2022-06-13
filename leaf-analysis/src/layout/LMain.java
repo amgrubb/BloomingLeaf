@@ -25,8 +25,12 @@ public class LMain {
 	    String inPath = "temp/";
 	    String outPath = "temp/";
 	    String tracePath = "";
+<<<<<<< HEAD
 	    String inputFile = "game before.json";
 //	    String inputFile = "Bike-lanes-out.json";
+=======
+	    String inputFile = "only_lvl0.json";
+>>>>>>> 20083ac592ee2c47ff8f1cf82e40bc9433b851f1
 	    String outputFile = "output.json";
 	
 	    try {			
