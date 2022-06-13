@@ -1,3 +1,7 @@
+/**
+ * Next State Window Css.
+ */
+
 /* Layout Hierachy: represented by z-index
    Paper: 0
       - Stencils: 1
@@ -6,9 +10,10 @@
       - Toolbars: 1
 */
 
+/* Sets attributes for any child of the body tag */
 body {
-  user-select: none;
-  font-family: 'Trebuchet MS';
+  user-select: none; /* Any text that is a child of the body tag will not be able to be clicked on nor highlighted */
+  font-family: 'Trebuchet MS'; /* Sets the font of text */
 }
 
 /* Disable pointer events */
@@ -20,13 +25,10 @@ body {
 /* Adds waiting spinner to cursor */
 .spinning *
 {
-    cursor: wait !important;
+  cursor: wait !important;
 }
 
-.header {
-   padding: 0px;
-}
-
+/* Sets attributes for BloomingLeaf title */
 #name {
   position: absolute;
   top: 0px;
@@ -43,56 +45,68 @@ body {
   font-style: italic;
 }
 
+/* Sets attributes for how the dropdown menu appears */
 .dropdown {
   position: relative;
   display: inline-block;
 }
 
+/* Sets attributes for the dropdown menu */
+.dropdown-toolbar {
+  left: 0;
+  z-index: 1;
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 180px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+}
+
+/* Sets attributes for each box in the dropdown menu */
+.dropdown-toolbar a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+/* When text is hovered, background color changes */
+.dropdown-toolbar a:hover {
+  background-color: #E8E8E8;
+}
+
+/* When Font Size btn is hovered on the dropdown menu is displayed */
 .dropdown:hover .dropdown-toolbar {
-   display: block;
+  display: block;
 }
 
-/* Paper */
+/* Sets attributes for Paper */
 #paper {
-   position: absolute;
-   top: 40px;
-   left: 201px;
-   right: 10px;
-   bottom: 0;
-   overflow: hidden;
-   background-color: hsla(220,11%,97%,.95);
+  position: absolute;
+  top: 40px;
+  left: 201px;
+  right: 10px;
+  bottom: 0;
+  overflow: hidden;
+  background-color: hsla(220,11%,97%,.95);
 }
 
-#paper .paper-scroller {
-   width: 100%;
-   height: 100%;
+/* Sets width and height for paper and adds a scroller */
+.paper-scroller {
+  width: 100%;
+  height: 100%;
 }
 
+ /* Sets the attributes of the smaller paper */
 #paper svg {
-   /* Grid background image */
-   background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAHUlEQVQYV2NkYGAwBuKzQIwXMBJSAJMfVUidcAQAnUQBC6jEGBUAAAAASUVORK5CYII=');
-   background-color: white;
-   box-shadow: 1px 1px 1px lightgray;
+  /* Grid background image */
+  background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAHUlEQVQYV2NkYGAwBuKzQIwXMBJSAJMfVUidcAQAnUQBC6jEGBUAAAAASUVORK5CYII=');
+  background-color: white;
+  box-shadow: 1px 1px 1px lightgray;
 }
 
-#paper svg .drawable {
-   /* Grid background image */
-   fill: white;
-   stroke: black;
-   stroke-width: 1px;
-}
-
-.element.basic.Rect rect,
-.element.basic.Circle circle,
-.element.devs.Model rect {
-   -webkit-svg-shadow: 2px 2px 5px gray;
-}
-
-.element.basic.Path path { -webkit-svg-shadow: 1px 1px 2px gray; }
-.element.basic.Path path { fill: #3e3f47; }
-
-/* Left panel */
-.left-panel{
+/* Sets attributes for the left panel */
+.left-panel {
   position: absolute;
   left: 0;
   top: 45px;
@@ -110,6 +124,7 @@ body {
   display: none;
 }
 
+/* Sets the attributes for every label within the left panel, labels are the text headers */
 .left-panel label {
   display: block;
   text-align: center;
@@ -118,7 +133,7 @@ body {
   color: #bcbcbc;
 }
 
-/* Right Panel */
+/* Sets attributes for the right panel */
 .inspector {
   position: absolute;
   right: 0px;
@@ -132,33 +147,34 @@ body {
   text-align: center;
 }
 
+/* Sets attributes for input text boxes on the right panel */
 .inspector input, .inspector textarea {
-   box-shadow: inset 0 0 0 1px rgba(0,0,0,0.1),0px 0 0 1px rgba(255,255,255,0.1);
-   border: 1px solid black;
-   height: 20px;
-   line-height: 20px;
-   resize: none;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.1),0px 0 0 1px rgba(255,255,255,0.1);
+  border: 1px solid black;
+  height: 20px;
+  line-height: 20px;
+  resize: none;
 }
 
+/* Sets the attributes for every label within the right panel */
 .inspector label {
   margin: 14px 0px 8px 0px;
   font-size: 1.25em;
   display: block;
 }
 
-/* Customizes the right scroller */
-.inspector::-webkit-scrollbar-track
-{
-	border-radius: 10px;
+/* Customizes the right scroller track (track = path that scrollbar thumb takes) */
+.inspector::-webkit-scrollbar-track {
 	background-color: #333;
 }
 
+/* Customizes the right scroller */
 .inspector::-webkit-scrollbar
 {
 	width: 10px;
-	background-color: #333;
 }
 
+/* Sets attributes for the right scroller thumb*/
 .inspector::-webkit-scrollbar-thumb
 {
 	border-radius: 10px;
@@ -166,8 +182,9 @@ body {
 	background-color: #AAAAAA;
 }
 
+/* Sets attributes for the Dropdown Satisfaction Menu */
 #sat-value {
-  background-color: rgba(36, 150, 255, 1) !important;
+  background-color: rgb(36, 150, 255, 1) !important;
   color: white;
   font-size: 11px;
   font-weight: 200;
@@ -178,8 +195,9 @@ body {
   border: 0;
 }
 
+/* Sets attributes for the "Go" btn */
 .inspector-btn-small {
-  box-shadow: inset 0 -2px #dad8d8; /* Adds shadow  */
+  box-shadow: inset 0 -2px #dad8d8;
   position: relative;
   vertical-align: top;
   width: 30px;
@@ -194,6 +212,12 @@ body {
   margin-bottom: 5px;
 }
 
+/* Add color overlay when hovered over to "Go" btn */
+.inspector-btn-small:hover {
+  background: #fffefe;
+}
+
+/* Sets attributes for the 3 Action btns */
 .inspector-btn {
   -webkit-box-shadow: inset 0 -2px #dad8d8;
   box-shadow: inset 0 -2px #dad8d8;
@@ -212,21 +236,16 @@ body {
   margin-right: 10px;
 }
 
-/* Add color overlay over the 3 buttons */
+/* Add color overlay over the 3 buttons when hovered over */
 .inspector-btn:hover {
   background: #fffefe;
 }
 
-/*When the 3 buttons are clicked on a click effect happens */
+/* When the 3 buttons are clicked, a click effect happens */
 .inspector-btn:active {
   background-color: #fffefe;
   box-shadow: inset 0 -2px #dad8d8;
   transform: translateY(2px);
-}
-
-/* Go button */
-.inspector-btn-small:hover {
-  background: #fffefe;
 }
 
 /* Add color overlay over the go buttons and click effect */
@@ -236,7 +255,7 @@ body {
   transform: translateY(2px);
 }
 
-  /* Trash btn */
+/* Sets attributes for Trash btn */
  .table-btn-small {
   background: #333333; 
   -webkit-box-shadow: inset 0 -2px #292929;
@@ -253,29 +272,26 @@ body {
   background: #424242;
 }
 
-/*Click effect */
+/* When trash btn is click on click effect */
 .table-btn-small:active {
   background-color: #424242;
   box-shadow: inset 0 -2px #292929;
   transform: translateY(2px);
 }
 
+/* Sets attributes for blue btn is set, Filter apply btn is a child of blue-btn */
 .blue-btn{
   background-color: rgba(36, 150, 255, 1) !important;
-  -webkit-box-shadow: inset 0 -2px rgba(29, 122, 208, 1);
   box-shadow: inset 0 -2px rgba(29, 122, 208, 1);
+  color: white;
   width: 160px;
   height: 25px;
   border-radius: 5px;
-  font-size: 0.6em;
+  font-size: 15px;
   margin-top: 12px;
 }
 
-#filter-apply {
-  color: white;
-  font-size: 15px;
-}
-
+/* Overides attributes for clear all btn, clear btn is a child of inspector-btn */
 #clear-all {
   width: 120px;
   height: 25px;
@@ -284,55 +300,42 @@ body {
   font-size: 15px;
 }
 
-.disabled-filter-clicked{
+/* Sets attributes for when filter apply btn is clicked while disabled */
+.disabled-filter-clicked {
   background-color: #6C7278 !important;
   box-shadow: inset 0 -2px #6C7278 !important;;
 }
 
-/* Sets shadow for blue button right panel */
+/* When filter applied is clicked on when intention is selected, click effect is made */
 #filter-apply:active {
   background-color: rgba(36, 150, 255, 1);
   box-shadow: inset 0 -2px rgba(29, 122, 208, 1);
   transform: translateY(2px);
 }
 
-/* Halo */
-.halo .box {
-   display: none;
-   color: #bcbcbc;
-   font-size: 8px;
-   background-color: #333;
-   text-shadow: 0 -1px 0 #000;
-   border: 1px solid #4f4f4f;
-}
-
-.paper .halo{
-   background-color: transparent;
-   box-shadow: none;
-}
-
-/* Toolbar */
+/* Toolbar at the very top of the page containing, "Zoom in, Zoom out, Font Size btn, EVO slider btns"  */
 .toolbar {
-   position: absolute;
-   top: 0px;
-   left: 200px;
-   right: 0;
-   padding-left: 0px;
-   z-index: 1;
-   background-color: #333;
-   border-top: none;
+  height: 50px;
+  position: absolute;
+  top: 0px;
+  left: 200px;
+  right: 0;
+  padding-left: 0px;
+  z-index: 1;
+  background-color: #333;
+  border-top: none;
 }
 
-/* what's down here*/
-/* Buttons on the tool bar: zoom out, zoom in, font size, evo slider*/
+/* Sets attributes for buttons on the tool bar: "Zoom in, Zoom out, Font Size btn, EVO slider" */
 .btn {
-   padding: 7px 10px;
-   line-height: 30px;
-   margin: 0;
-   margin-left: 4px;
-   cursor: pointer;
+  padding: 7px 10px;
+  line-height: 30px;
+  margin: 0;
+  margin-left: 4px;
+  cursor: pointer;
 }
 
+/* Sets attributes for both the toolbar and the btns on it */
 .toolbar .btn {
   background-color: #333;
   border: none;
@@ -341,36 +344,19 @@ body {
   font-size: 0.75em;
 }
 
-.toolbar .btn:hover {
-    background-color: #111;
+/* Add color overlay over the toolbar buttons and click effect */
+.btn:hover {
+  background-color: #111;
 }
 
-.dropdown-toolbar {
-  left: 0;
-  z-index: 1;
-  display: none;
-  position: absolute;
-  background-color: #f9f9f9;
-  min-width: 180px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-}
-
-.dropdown-toolbar a {
-  color: black;
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
-}
-
-.dropdown-toolbar a:hover {
-  background-color: #E8E8E8;
-}
-
+/* Sets attributes for filter check boxes */
 .filter_checkbox{
   margin-top: 5px;
 }
 
-/* beggining of representative color slider */
+/* beginning of representative color slider */
+
+/* "EVO" text on toolbar */
 #top-label-analysis {
   background-color: #333;
   border: none;
@@ -384,12 +370,14 @@ body {
   left: 80px;
 }
 
+/* Sets position & size for the slider on the toolbar */
 #colorResetAnalysis {
   position: relative;
   top: -6px;
   width: 69px; /* 92 */
 }
 
+/* Sets attributes for the text under thr slider on the toolbar */
 .on-off {
   font-size: 8px;
   color: white;
@@ -400,7 +388,7 @@ body {
   margin-left: 10px;
   }
 
-
+/* Sets attributes for the entire slider selection including the slider and text on the toolbar */
 .EVO-whole-button {
   display: inline-block;
   height: 35px;
@@ -411,6 +399,7 @@ body {
 }
 
 /* portion of the code from: https://www.w3schools.com/howto/howto_js_rangeslider.asp */
+/* Creates slider and sets attributes for the slider */
 .EVO-slider {
   -webkit-appearance: none;  /* Override default CSS styles */
   appearance: none;
@@ -426,6 +415,7 @@ body {
 .EVO-slider:hover {
   opacity: 1; /* Fully shown on mouse-over */
 }
+
 /* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
 .EVO-slider::-webkit-slider-thumb {
   appearance: none;
@@ -435,23 +425,16 @@ body {
   background: #27ae60; /* Green background */
   cursor: pointer; /* Cursor on hover */
 }
-.EVO-slider::-moz-range-thumb {
-  width: 25px; /* Set a specific slider handle width */
-  height: 25px; /* Slider handle height */
-  background: #27ae60; /* Green background */
-  cursor: pointer; /* Cursor on hover */
-}
 
-#nextStateSlider{
-  width: 140px;
-}
 /* end of representive slider styling */
 
-.inspectorFilterNames{
+/* Sets attributes for Applied Intention Filter text */
+.inspectorFilterNames {
   padding-top: 20px;
 }
 
-.tableHeading{
+/* Sets attributes for Applied Intention Filter table headings */
+.tableHeading {
   background-color: rgb(67, 67, 67); 
   text-align: center;
   font-size: 12px;
@@ -460,7 +443,7 @@ body {
   padding: 4px;
 }
 
-
+/* Sets attributes for Applied Intention Filter table */
 .inspectorFilterTable {
   margin: 15px 5px 0px 15px;
   display:block;
@@ -468,27 +451,27 @@ body {
   overflow:auto;
 }
 
-/* Customizes the tables scroller */
-.inspectorFilterTable::-webkit-scrollbar-track
-{
+/* Customizes the Applied Intention Filter table scroller track (track = path that scrollbar thumb takes) */
+.inspectorFilterTable::-webkit-scrollbar-track {
 	border-radius: 10px;
 	background-color: rgb(74, 74, 74);
 }
 
-.inspectorFilterTable::-webkit-scrollbar
-{
+/* Customizes the Applied Intention Filter table scroller */
+.inspectorFilterTable::-webkit-scrollbar {
 	width: 7px;
 	background-color: #333;
 }
 
-.inspectorFilterTable::-webkit-scrollbar-thumb
-{
+/* Sets attributes for the Applied Intention Filter table scroller thumb*/
+.inspectorFilterTable::-webkit-scrollbar-thumb {
 	border-radius: 10px;
   height: 20px;
 	background-color: #ffffff;
 }
 
-.tableData{
+/* Sets attributes for the  data within the Applied Intention Filter table */
+.tableData {
   border: 1px solid;
   border-collapse: collapse;
   font-size: 11px;
@@ -497,14 +480,17 @@ body {
   padding: 0px;
 }
 
-.disabled-textbox{
+/* Sets attributes for text boxes (Node name & Current Sat val boxes) when disabled*/
+.disabled-textbox {
   background-color:#FFF;
 }
 
-.disabled-textbox-clicked{
+/* Sets attributes for when text boxes are enabled (enabled when an intention is selected) */
+.disabled-textbox-clicked {
   color: rgb(50, 50, 50) !important;
 }
 
+/* Sets attributes for pagination*/
 .flex-container {
   display: flex;
   flex-direction: row;
