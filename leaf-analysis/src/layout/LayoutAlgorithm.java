@@ -65,25 +65,9 @@ public class LayoutAlgorithm {
 		return model;
 	}
 	
-    /**
-     * a boolean method to determine whether the node is a child of an actor
-     * @param nodePositions the list of nodes
-     * @param node the potential child of an actor
-     * 
-     */
-    public boolean isChild(VisualInfo[] nodePositions) { 
-        for(VisualInfo nodePosition: nodePositions) {
-            if(isOutside(nodePosition, node) == false)
-                return true;
-        }
-    }
-
-    public VisualInfo theChildOf(VisualInfo[] nodePositions) {
-        if(node.isChild(nodePositions)) {
-            return nodePositions;
-        }
-    }
-
+	/*
+	 * a method to propagate changes from actor to its children nodes
+	 */
 	public void propagateAdjustments (Actor actor, double x_shift, double y_shift) { 
         for(Intention intent : actor.getEmbedObjects(model)) {
             intent.setX(intent.getX() + x_shift);
