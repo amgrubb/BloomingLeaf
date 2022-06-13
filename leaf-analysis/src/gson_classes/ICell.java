@@ -146,10 +146,10 @@ public class ICell {
 	public BIPosition getPosition() {
 		return position;
 	}
-	public Integer getX() {
+	public Double getX() {
 		return position.getX();
 	}
-	public Integer getY() {
+	public Double getY() {
 		return position.getY();
 	}
 	/**

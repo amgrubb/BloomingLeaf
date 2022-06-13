@@ -77,7 +77,45 @@ public class LayoutAlgorithm {
 		return model;
 	}
 	
-	
+    /**
+     * a boolean method to determine whether the node is a child of an actor
+     * @param nodePositions the list of nodes
+     * @param node the potential child of an actor
+     * 
+     */
+//    public boolean isChild(VisualInfo[] nodePositions) { 
+//        for(VisualInfo nodePosition: nodePositions) {
+//            if(isOutside(nodePosition, node) == false)
+//                return true;
+//        }
+//    }
+//
+//    public VisualInfo theChildOf(VisualInfo[] nodePositions) {
+//        if(node.isChild(nodePositions)) {
+//            return nodePositions;
+//        }
+//    }
+//
+//	public void propagateAdjustments (Actor actor, double x_shift, double y_shift) { 
+//        for(Intention intent : actor.getEmbedObjects(model)) {
+//            intent.setX(intent.getX() + x_shift);
+//            intent.setY(intent.getY() + y_shift);
+//        }
+//        // for all children of an actor 
+//        //     children update (adjustment)
+//    }
+//
+//    /*
+//     * a method to adjust the size of the actor as intentions change
+//     */
+//    public VisualInfo resizeActor (Actor actor, Intention[] intentions) {
+//        VisualInfo center = findCenter(intentions);
+//        double width = center.getX() * 2;
+//        double height = center.getY() * 2;
+//        double margin = 10; //space between the edge of intentions and the actor 
+//        actor.setSize().setWidth(width + margin);
+//        actor.setSize().setHeight(height + margin);
+//    }
 
     /**
      * Calculate the distance between two elements
@@ -123,11 +161,10 @@ public class LayoutAlgorithm {
         if (n1 != n2) {
             double dist = getDist(n1,n2);
             if(dist == 0) return 99;
-            double alpha = 20000;
+            double alpha = 20000; 
             double forceSum = alpha / (dist * dist) * dist; 
             if (LMain.DEBUG) System.out.println("Repulsion " + forceSum);
             return forceSum;
-
         }
         return 0;
     }
@@ -170,10 +207,10 @@ public class LayoutAlgorithm {
             if(nodePosition.getX() > mostRight.getX()){
             	mostRight = nodePosition;
             }
-            if(nodePosition.getY() < mostUpper.getY()){
+            if(nodePosition.getY() > mostUpper.getY()){
             	mostUpper = nodePosition;
             }
-            if(nodePosition.getY() > mostBottom.getY()){
+            if(nodePosition.getY() < mostBottom.getY()){
             	mostBottom = nodePosition;
             }
             
@@ -187,7 +224,7 @@ public class LayoutAlgorithm {
         double x = (x_left + x_right) / 2;
         double y = (y_upper + y_bottom) / 2;
         
-        VisualInfo center = new VisualInfo((int)(2*Math.abs(x_left + x_right)), (int)(2*Math.abs(y_upper + y_bottom)), x, y);
+        VisualInfo center = new VisualInfo((int)(2 * Math.abs(x_left + x_right)), (int)(2*Math.abs(y_upper + y_bottom)), x, y);
         return center;
     }
 
@@ -235,8 +272,8 @@ public class LayoutAlgorithm {
                     
                     //if (LMain.DEBUG) System.out.println("Starting: layoutModel adding to sum");
                     
-                    double x_shift = c*(attraction*Math.cos(theta) - repulsion*Math.cos(theta));
-                    double y_shift = c*(attraction*Math.sin(theta) - repulsion*Math.sin(theta));
+                    double x_shift = c * (attraction*Math.cos(theta) - repulsion*Math.cos(theta));
+                    double y_shift = c * (attraction*Math.sin(theta) - repulsion*Math.sin(theta));
                     
                     if (LMain.DEBUG) System.out.println("x_shift" + x_shift);
                     if (LMain.DEBUG) System.out.println("y_shift" + y_shift);
