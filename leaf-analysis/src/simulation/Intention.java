@@ -23,6 +23,8 @@ public class Intention extends AbstractLinkableElement {
 	private FunctionSegment[] evolvingFunctions;
 	private List<MFunctionSegment> mergedEvolvingFunctions;  // more complete function info
 	private String type;
+
+	public boolean length;
 	
 	public Intention(String uniqueID, String nodeName, Actor nodeActor, String nodeType,
 			BIEvolvingFunction nodeFunctions, HashMap<Integer, String> nodeEvals){

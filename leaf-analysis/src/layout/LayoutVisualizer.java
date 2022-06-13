@@ -24,15 +24,19 @@ public class LayoutVisualizer {
             @Override
             public void paintComponent(Graphics g) {
                 super.paintComponent(g);
+                Color myNewGreen = new Color (122, 179, 89); 
+                Color myNewBlue = new Color (118, 148, 214);
+                Color myNewRed = new Color (240, 135, 146);
                 //Color myColor = new Color((float)(Math.random()), (float)(Math.random()), (float)(Math.random()));
-                g.setColor(Color.GREEN);
+                g.setColor(myNewGreen);
+                //g.setColor(Color.GREEN);
        
                 int actorCounter = numActors;
                 for(VisualInfo n: nodes) {
                 	int height = (int)(n.getHeight());
                     int width = (int)(n.getWidth());
                 	if(actorCounter == 0) {
-                		g.setColor(Color.BLUE);	
+                		g.setColor(myNewBlue);	
                 	}
                 	
                 	g.fillRect((int)Math.round(n.getX()), (int)Math.round(n.getY()), width, height);
@@ -40,7 +44,7 @@ public class LayoutVisualizer {
                 }
                 
                 //set center
-                g.setColor(Color.RED);
+                g.setColor(myNewRed);
                 g.fillRect((int)Math.round(center.getX()), (int)Math.round(center.getY()), 10, 10);
                 
             }

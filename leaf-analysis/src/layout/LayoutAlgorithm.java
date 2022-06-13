@@ -40,7 +40,8 @@ public class LayoutAlgorithm {
 		for(Actor a: model.getActors()) { 
 			
 			// get nodes in this actor (this is so ugly i'm so sorry)
-			Intention[] a_intentions = a.getEmbedObjects(model);
+			Intention[] a_intentions = a.getEmbedIntentions(model);
+			System.out.println(Arrays.toString(a_intentions));
 			if(a_intentions.length == 0) continue;
 			ArrayList<AbstractLinkableElement> temp_arrayList = new ArrayList<>();
 			for(Intention i: a_intentions) {
@@ -77,7 +78,6 @@ public class LayoutAlgorithm {
 		return model;
 	}
 	
-<<<<<<< HEAD
 	/*
 	 * a method to propagate changes from actor to its children nodes
 	 */
@@ -93,55 +93,15 @@ public class LayoutAlgorithm {
     /*
      * a method to adjust the size of the actor as intentions change
      */
-    public VisualInfo resizeActor (Actor actor, Intention[] intentions) {
-        VisualInfo center = findCenter(intentions);
-        double width = center.getX() * 2;
-        double height = center.getY() * 2;
-        double margin = 10; //space between the edge of intentions and the actor 
-        actor.setSize().setWidth(width + margin);
-        actor.setSize().setHeight(height + margin);
+    public Actor resizeActor (Actor actor, VisualInfo[] intentions) {
+        VisualInfo center = findCenter(intentions); 
+        Integer margin = 10; //space between the edge of intentions and the actor 
+        actor.setX(center.getX());
+        actor.setY(center.getY());
+        actor.setWidth(center.getWidth() + margin);
+        actor.setHeight(center.getHeight() + margin);
+        return actor;
     }
-=======
-    /**
-     * a boolean method to determine whether the node is a child of an actor
-     * @param nodePositions the list of nodes
-     * @param node the potential child of an actor
-     * 
-     */
-//    public boolean isChild(VisualInfo[] nodePositions) { 
-//        for(VisualInfo nodePosition: nodePositions) {
-//            if(isOutside(nodePosition, node) == false)
-//                return true;
-//        }
-//    }
-//
-//    public VisualInfo theChildOf(VisualInfo[] nodePositions) {
-//        if(node.isChild(nodePositions)) {
-//            return nodePositions;
-//        }
-//    }
-//
-//	public void propagateAdjustments (Actor actor, double x_shift, double y_shift) { 
-//        for(Intention intent : actor.getEmbedObjects(model)) {
-//            intent.setX(intent.getX() + x_shift);
-//            intent.setY(intent.getY() + y_shift);
-//        }
-//        // for all children of an actor 
-//        //     children update (adjustment)
-//    }
-//
-//    /*
-//     * a method to adjust the size of the actor as intentions change
-//     */
-//    public VisualInfo resizeActor (Actor actor, Intention[] intentions) {
-//        VisualInfo center = findCenter(intentions);
-//        double width = center.getX() * 2;
-//        double height = center.getY() * 2;
-//        double margin = 10; //space between the edge of intentions and the actor 
-//        actor.setSize().setWidth(width + margin);
-//        actor.setSize().setHeight(height + margin);
-//    }
->>>>>>> 20083ac592ee2c47ff8f1cf82e40bc9433b851f1
 
     /**
      * Calculate the distance between two elements
@@ -250,7 +210,9 @@ public class LayoutAlgorithm {
         double x = (x_left + x_right) / 2;
         double y = (y_upper + y_bottom) / 2;
         
-        VisualInfo center = new VisualInfo((int)(2 * Math.abs(x_left + x_right)), (int)(2*Math.abs(y_upper + y_bottom)), x, y);
+        
+        VisualInfo center = new VisualInfo((int)(Math.abs(x_left - x_right)), (int)(Math.abs(y_upper - y_bottom)), x, y);
+        //width, height, x, y
         return center;
     }
 
@@ -354,7 +316,8 @@ public class LayoutAlgorithm {
         Initialize the node position array
         Collect VisualInfo objects
      */
-    public VisualInfo[] initNodePositions(List<AbstractLinkableElement> nodes){
+    public VisualInfo[] initNodePositions(ArrayList<AbstractLinkableElement> nodes){
+    	System.out.println(nodes);
         VisualInfo[] nodePositions = new VisualInfo[nodes.size()];
 //        int index = 0;
 

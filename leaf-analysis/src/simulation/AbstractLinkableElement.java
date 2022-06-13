@@ -115,6 +115,42 @@ public abstract class AbstractLinkableElement extends AbstractElement{
 		}
 	}
 	
+	public Double getX() {
+		return visual.getX();
+	}
+
+	public Double getY() {
+		return visual.getY();
+	}
+
+	public void setX(Double x) {
+		this.visual.setX(x);
+	}
+	
+	public void setY(Double y) {
+		this.visual.setY(y);
+	}
+	
+	public Integer getWidth() {
+		return visual.getWidth();
+	}
+
+	public Integer getHeight() {
+		return visual.getHeight();
+	}
+	
+	public void setSize(BISize size) {
+		this.visual.setSize(size);
+	}
+	
+	public void setWidth(Integer width) {
+		this.visual.setWidth(width);
+	}
+
+	public void setHeight(Integer height) {
+		this.visual.setHeight(height);
+	}
+	
 	public BIPosition getPosition() {
 		// return if visualInfo exists
 		if (this.visual != null) {
