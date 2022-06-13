@@ -29,8 +29,8 @@ public class LayoutVisualizer {
        
                 int actorCounter = numActors;
                 for(VisualInfo n: nodes) {
-                	int height = n.getHeight()/4;
-                    int width = n.getWidth()/4;
+                	int height = (int)(n.getHeight());
+                    int width = (int)(n.getWidth());
                 	if(actorCounter == 0) {
                 		g.setColor(Color.BLUE);	
                 	}
