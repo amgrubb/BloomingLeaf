@@ -25,7 +25,8 @@ public class LMain {
 	    String inPath = "temp/";
 	    String outPath = "temp/";
 	    String tracePath = "";
-	    String inputFile = "Bike-lanes-out.json";
+	    String inputFile = "Bike Lanes Before.json";
+//	    String inputFile = "Bike-lanes-out.json";
 	    String outputFile = "output.json";
 	
 	    try {			

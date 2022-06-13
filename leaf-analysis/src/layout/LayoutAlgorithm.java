@@ -84,7 +84,7 @@ public class LayoutAlgorithm {
         }
     }
 
-	public void propogateAdjustments (Actor actor, double x_shift, double y_shift) { 
+	public void propagateAdjustments (Actor actor, double x_shift, double y_shift) { 
         for(Intention intent : actor.getEmbedObjects(model)) {
             intent.setX(intent.getX() + x_shift);
             intent.setY(intent.getY() + y_shift);
@@ -149,11 +149,10 @@ public class LayoutAlgorithm {
         if (n1 != n2) {
             double dist = getDist(n1,n2);
             if(dist == 0) return 99;
-            double alpha = 20000;
+            double alpha = 20000; 
             double forceSum = alpha / (dist * dist) * dist; 
             if (LMain.DEBUG) System.out.println("Repulsion " + forceSum);
             return forceSum;
-
         }
         return 0;
     }
@@ -213,7 +212,7 @@ public class LayoutAlgorithm {
         double x = (x_left + x_right) / 2;
         double y = (y_upper + y_bottom) / 2;
         
-        VisualInfo center = new VisualInfo((int)(2*Math.abs(x_left + x_right)), (int)(2*Math.abs(y_upper + y_bottom)), x, y);
+        VisualInfo center = new VisualInfo((int)(2 * Math.abs(x_left + x_right)), (int)(2*Math.abs(y_upper + y_bottom)), x, y);
         return center;
     }
 
@@ -260,8 +259,8 @@ public class LayoutAlgorithm {
                     
                     //if (LMain.DEBUG) System.out.println("Starting: layoutModel adding to sum");
                     
-                    double x_shift = c*(attraction*Math.cos(theta) - repulsion*Math.cos(theta));
-                    double y_shift = c*(attraction*Math.sin(theta) - repulsion*Math.sin(theta));
+                    double x_shift = c * (attraction*Math.cos(theta) - repulsion*Math.cos(theta));
+                    double y_shift = c * (attraction*Math.sin(theta) - repulsion*Math.sin(theta));
                     
                     if (LMain.DEBUG) System.out.println("x_shift" + x_shift);
                     if (LMain.DEBUG) System.out.println("y_shift" + y_shift);
