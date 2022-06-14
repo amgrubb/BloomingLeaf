@@ -37,11 +37,13 @@ public class LayoutAlgorithm {
 		
 		//nested level
 		if (LMain.DEBUG) System.out.println("Starting Nested Level");
+		
 		for(Actor a: model.getActors()) { 
+
+			System.out.println(a.getName());
 			
 			// get nodes in this actor (this is so ugly i'm so sorry)
 			Intention[] a_intentions = a.getEmbedIntentions(model);
-			System.out.println(Arrays.toString(a_intentions));
 			if(a_intentions.length == 0) continue;
 			ArrayList<AbstractLinkableElement> temp_arrayList = new ArrayList<>();
 			for(Intention i: a_intentions) {
@@ -54,17 +56,23 @@ public class LayoutAlgorithm {
 			layoutModel(intention_nodePos, false);
 			
 			//resize actor
-			//resizeActor(a, intention_nodePos);
+			resizeActor(a, intention_nodePos);
 
 			
 		}
 		//  level 0
 		if (LMain.DEBUG) System.out.println("Starting 0th Level");
+		//if (LMain.DEBUG) return model;
 		
 
 		//  get nodes on the zeroth level
 		ArrayList<AbstractLinkableElement> temp_arrayList = new ArrayList<>();
-		// actors are first in the list !!!!!!
+		// note that actors are first in the list !!!!!!
+		
+		if (LMain.DEBUG) {
+			System.out.println(model.getActors());
+			return model;
+		}
 		for(Actor a: model.getActors()) {
 			temp_arrayList.add((AbstractLinkableElement)a);
 		}
@@ -73,7 +81,7 @@ public class LayoutAlgorithm {
 		}
 		VisualInfo[] lvl0_nodePos = initNodePositions(temp_arrayList);
 		
-		//	run layout on level_zero (if a node is an actor, propagate changes)
+		//	run layout on level_zero (if a node is an actor, propagate changes to its children)
 		layoutModel(lvl0_nodePos, true);
 		return model;
 	}
@@ -82,7 +90,7 @@ public class LayoutAlgorithm {
 	 * a method to propagate changes from actor to its children nodes
 	 */
 	public void propagateAdjustments (Actor actor, double x_shift, double y_shift) { 
-        for(Intention intent : actor.getEmbedObjects(model)) {
+        for(Intention intent : actor.getEmbedIntentions(model)) {
             intent.setX(intent.getX() + x_shift);
             intent.setY(intent.getY() + y_shift);
         }
@@ -95,9 +103,9 @@ public class LayoutAlgorithm {
      */
     public Actor resizeActor (Actor actor, VisualInfo[] intentions) {
         VisualInfo center = findCenter(intentions); 
-        Integer margin = 10; //space between the edge of intentions and the actor 
-        actor.setX(center.getX());
-        actor.setY(center.getY());
+        Integer margin = 50; //space between the edge of intentions and the actor 
+        actor.setX(center.getX() - center.getWidth()/2);
+        actor.setY(center.getY() - center.getHeight()/2);
         actor.setWidth(center.getWidth() + margin);
         actor.setHeight(center.getHeight() + margin);
         return actor;
@@ -129,7 +137,7 @@ public class LayoutAlgorithm {
         	double elasticityConstant = 5000; //increasing it means the spring is stiffer
         	
         	double dist = getDist(n1, n2);
-        	double forceSum = (idealLength - dist)*(idealLength - dist)/elasticityConstant; //cubing distance too big, but this is the wrong formula
+        	double forceSum = (idealLength - dist)*(idealLength - dist)*dist/elasticityConstant; //cubing distance too big, but this is the wrong formula
         	return forceSum;
     	}
     
@@ -204,8 +212,8 @@ public class LayoutAlgorithm {
         
         double x_left = mostLeft.getX() - mostLeft.getSize().getWidth()/2;
         double x_right = mostRight.getX() + mostRight.getSize().getWidth()/2;
-        double y_upper = mostUpper.getY() + mostLeft.getSize().getHeight()/2; 
-        double y_bottom = mostLeft.getY() - mostLeft.getSize().getHeight()/2;
+        double y_upper = mostUpper.getY() + mostUpper.getSize().getHeight()/2; 
+        double y_bottom = mostBottom.getY() - mostBottom.getSize().getHeight()/2;
         
         double x = (x_left + x_right) / 2;
         double y = (y_upper + y_bottom) / 2;
@@ -232,7 +240,7 @@ public class LayoutAlgorithm {
         //constants
         double c = .2; //adjustment
         double a = .05; //error
-        double gravitation = .1; //gravitation forces
+        double gravitation = 2; //gravitation forces
         
 		for(int i = 0; i < maxIter; i++){
 			if (LMain.DEBUG) System.out.println("\n" + i + "th Iteration");
@@ -275,11 +283,11 @@ public class LayoutAlgorithm {
                     //if (LMain.DEBUG) System.out.println(Arrays.toString(nodePositions));
                     
                     if(j < numActors) {
-                    	//propagateAdjustments(model.getActors().get(j), x_shift, y_shift);
+                    	propagateAdjustments(model.getActors().get(j), x_shift, y_shift);
                     }
                     
                     if(k < numActors) {
-                    	//propagateAdjustments(model.getActors().get(k), -x_shift, -y_shift);
+                    	propagateAdjustments(model.getActors().get(k), -x_shift, -y_shift);
                     }
                     
                 }
@@ -291,7 +299,7 @@ public class LayoutAlgorithm {
                 nodePositions[j].setY(nodePositions[j].getY() + gravitation*Math.sin(phi));
                 
                 if(j < numActors) {
-                	//propagateAdjustments(model.getActors().get(j), gravitation*Math.cos(phi), gravitation*Math.sin(phi));
+                	propagateAdjustments(model.getActors().get(j), gravitation*Math.cos(phi), gravitation*Math.sin(phi));
                 }
 
             }

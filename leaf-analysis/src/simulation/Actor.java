@@ -35,7 +35,7 @@ public class Actor extends AbstractLinkableElement {
 	}
 	
 	/*
-	 * Return *unique* ids of intentions embedded in the actor
+	 * Return *unique* ids of intentions and links embedded in the actor
 	 */
 	public String[] getEmbeds() {
 		return embeds;
@@ -49,30 +49,21 @@ public class Actor extends AbstractLinkableElement {
 	public Intention[] getEmbedIntentions(ModelSpec myModel) {
 		//if there are no embeds
 		if (embeds == null) return new Intention[0];
+
+		List<Intention> listOfIntentions = new ArrayList<Intention>();
 		
-		Intention[] myIntentions = new Intention[embeds.length];
-		
-		System.out.println(embeds.length);
-		System.out.println(Arrays.toString(embeds));
+		//System.out.println(embeds.length);
+		//System.out.println(Arrays.toString(embeds));
 		
 		for(Intention intention: myModel.getIntentions()) {
 			for(int i = 0; i < embeds.length; i++) {
 				if(intention.getUniqueID().equals(embeds[i]) && intention.getUniqueID() != null) {	
-					myIntentions[i] = intention;
-					System.out.println(intention.getName());
+					listOfIntentions.add(intention);
+					//System.out.println(intention.getName());
 				}
 			}
 		}
 		
-		List<Intention> listOfIntentions = new ArrayList<Intention>();
-		for(Intention i: myIntentions) {
-			if(i != null ) {
-				listOfIntentions.add(i);
-				System.out.println(listOfIntentions);
-			}
-		}
-		myIntentions = listOfIntentions.toArray(new Intention[listOfIntentions.size()]);
-	
-		return myIntentions;
+		return listOfIntentions.toArray(new Intention[listOfIntentions.size()]);
 	}
 }
