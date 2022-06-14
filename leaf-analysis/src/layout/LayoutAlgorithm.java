@@ -67,12 +67,15 @@ public class LayoutAlgorithm {
 
 		//  get nodes on the zeroth level
 		ArrayList<AbstractLinkableElement> temp_arrayList = new ArrayList<>();
-		// note that actors are first in the list !!!!!!
-		
-		
-		for(Actor a: model.getActors()) {
+		for(Actor a: model.getActors()) { // note that actors are first in the list 
 			temp_arrayList.add((AbstractLinkableElement)a);
+			if (LMain.DEBUG) System.out.println(a.getEmbedIntentions(model).length);
 		}
+		if (LMain.DEBUG) System.out.println(model.getActorlessIntentions().size());
+		if (LMain.DEBUG) System.out.println(model.getIntentions().size());
+		
+
+		if (LMain.DEBUG) return model;
 		for(Intention i: model.getActorlessIntentions()) {
 			temp_arrayList.add((AbstractLinkableElement)i);
 		}
@@ -100,11 +103,11 @@ public class LayoutAlgorithm {
      */
     public Actor resizeActor (Actor actor, VisualInfo[] intentions) {
         VisualInfo center = findCenter(intentions); 
-        Integer margin = 50; //space between the edge of intentions and the actor 
-        actor.setX(center.getX() - center.getWidth()/2);
-        actor.setY(center.getY() - center.getHeight()/2);
-        actor.setWidth(center.getWidth() + margin);
-        actor.setHeight(center.getHeight() + margin);
+        Integer margin = 100; //space between the edge of intentions and the actor 
+        actor.setX(center.getX() - center.getWidth()/2 - margin);
+        actor.setY(center.getY() - center.getHeight()/2 - margin);
+        actor.setWidth(center.getWidth() + 2*margin);
+        actor.setHeight(center.getHeight() + 2*margin);
         return actor;
     }
 
@@ -126,12 +129,12 @@ public class LayoutAlgorithm {
      * the expression (d*d/Cn)
      * @return the force attraction between two elements
      */
-    private double getAttraction(VisualInfo n1, VisualInfo n2) {
+    private double getAttraction(VisualInfo n1, VisualInfo n2, double constant) {
     	//Spring force attraction
     	//TODO: figure out the values of these constants
     	if (n1 != n2) {
     		double idealLength = 200;
-        	double elasticityConstant = 50000; //increasing it means the spring is stiffer
+        	double elasticityConstant = 50000 * constant; //increasing it means the spring is stiffer
         	
         	double dist = getDist(n1, n2);
         	double forceSum = (idealLength - dist)*(idealLength - dist)*dist/elasticityConstant; //cubing distance too big, but this is the wrong formula
@@ -148,12 +151,12 @@ public class LayoutAlgorithm {
      * @return the force repulsion between two elements
      */
 
-    private double getRepulsion(VisualInfo n1, VisualInfo n2) {
+    private double getRepulsion(VisualInfo n1, VisualInfo n2, double constant) {
     	//if (LMain.DEBUG) System.out.println("Starting: getRepulsion");
         if (n1 != n2) {
             double dist = getDist(n1,n2);
             if(dist == 0) return 99;
-            double alpha = 20000; 
+            double alpha = 20000 * constant; 
             double forceSum = alpha / (dist * dist) * dist; 
             if (LMain.DEBUG) System.out.println("Repulsion " + forceSum);
             return forceSum;
@@ -199,10 +202,10 @@ public class LayoutAlgorithm {
             if(nodePosition.getX() + nodePosition.getWidth() > mostRight.getX() + mostRight.getWidth()){
             	mostRight = nodePosition;
             }
-            if(nodePosition.getY() > mostUpper.getY()){
+            if(nodePosition.getY() < mostUpper.getY()){
             	mostUpper = nodePosition;
             }
-            if(nodePosition.getY() - nodePosition.getHeight() < mostBottom.getY() - nodePosition.getHeight()){
+            if(nodePosition.getY() + nodePosition.getHeight() > mostBottom.getY() + nodePosition.getHeight()){
             	mostBottom = nodePosition;
             }
             
@@ -211,12 +214,7 @@ public class LayoutAlgorithm {
         double x_left = mostLeft.getX();
         double x_right = mostRight.getX() + mostRight.getSize().getWidth();
         double y_upper = mostUpper.getY(); 
-        double y_bottom = mostBottom.getY() - mostBottom.getSize().getHeight();
-        
-//        double x_left = mostLeft.getX() - mostLeft.getSize().getWidth()/2;
-//        double x_right = mostRight.getX() + mostRight.getSize().getWidth()/2;
-//        double y_upper = mostUpper.getY() + mostUpper.getSize().getHeight()/2; 
-//        double y_bottom = mostBottom.getY() - mostBottom.getSize().getHeight()/2;
+        double y_bottom = mostBottom.getY() + mostBottom.getSize().getHeight();
         
         double x = (x_left + x_right) / 2;
         double y = (y_upper + y_bottom) / 2;
@@ -243,7 +241,18 @@ public class LayoutAlgorithm {
         //constants
         double c = .2; //adjustment
         double a = .05; //error
-        double gravitation = 5; //gravitation forces
+        double constant = Math.pow(nodePositions.length, .25); // increasing the constant decreases attraction and gravitation, but increases repulsion
+        if(hasActors) {
+        	for(Actor actor: model.getActors()) {
+        		
+        		constant += Math.pow(actor.getHeight()*actor.getWidth(), .25);
+        	}
+        }
+        
+        if (LMain.DEBUG) System.out.println(constant);
+        //if (LMain.DEBUG) return model;
+        
+        double gravitation = 9.8/Math.sqrt(constant); //gravitation forces
         
 		for(int i = 0; i < maxIter; i++){
 			if (LMain.DEBUG) System.out.println("\n" + i + "th Iteration");
@@ -259,8 +268,8 @@ public class LayoutAlgorithm {
                     //if (LMain.DEBUG) System.out.println("Starting: layoutModel Calculations");
                     double dist = getDist(nodePositions[j], nodePositions[k]);
                     double theta = angleBetween(nodePositions[k], nodePositions[j]);
-                    double attraction = (getAttraction(nodePositions[j], nodePositions[k]));
-                    double repulsion = (getRepulsion(nodePositions[j], nodePositions[k]));
+                    double attraction = makeSmall(getAttraction(nodePositions[j], nodePositions[k], constant));
+                    double repulsion = (getRepulsion(nodePositions[j], nodePositions[k], constant));
                     if (LMain.DEBUG) System.out.println("Distance: " + dist);
                     //if (LMain.DEBUG) System.out.println("Adjust Attraction: " + attraction);
                     //if (LMain.DEBUG) System.out.println(repulsion);
@@ -330,18 +339,6 @@ public class LayoutAlgorithm {
     public VisualInfo[] initNodePositions(ArrayList<AbstractLinkableElement> nodes){
     	System.out.println(nodes);
         VisualInfo[] nodePositions = new VisualInfo[nodes.size()];
-//        int index = 0;
-
-//        //get Actor visual info
-//        for(Actor a: model.getActors()){
-//            nodePositions[index] = a.getVisualInfo();
-//            index++;
-//        }
-//        //get Intention visual info
-//        for(Intention i: model.getIntentions()){
-//            nodePositions[index] = i.getVisualInfo();
-//            index++;
-//        }
         
         for(int i = 0; i < nodes.size(); i++) {
         	nodePositions[i] = nodes.get(i).getVisualInfo();

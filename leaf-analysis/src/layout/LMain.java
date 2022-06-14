@@ -25,7 +25,7 @@ public class LMain {
 	    String inPath = "temp/";
 	    String outPath = "temp/";
 	    String tracePath = "";
-	    String inputFile = "modelTest1.json";
+	    String inputFile = "S1-out.json";
 //	    String inputFile = "Bike-lanes-out.json";
 	    String outputFile = "output.json";
 	

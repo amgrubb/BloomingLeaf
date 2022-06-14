@@ -460,6 +460,7 @@ public class ModelSpec {
 		List<Intention> actorlessIntentions = new ArrayList<Intention>();
 		for(Intention intention: this.intentions) {
 			if(!intention.hasActor()) actorlessIntentions.add(intention);
+			else System.out.println(intention.getActor().getName());
 		}
 		return actorlessIntentions;
 	}

@@ -33,8 +33,8 @@ public class LayoutVisualizer {
        
                 int actorCounter = numActors;
                 for(VisualInfo n: nodes) {
-                	int height = (int)(n.getHeight());
-                    int width = (int)(n.getWidth());
+                	int height = (int)(n.getHeight()/2);
+                    int width = (int)(n.getWidth()/2);
                 	if(actorCounter == 0) {
                 		g.setColor(myNewBlue);	
                 	}
