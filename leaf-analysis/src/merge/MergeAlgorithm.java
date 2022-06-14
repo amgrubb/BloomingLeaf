@@ -366,6 +366,11 @@ public class MergeAlgorithm {
 		for(Intention intention: otherModel.getIntentions()) {
 			if(intention.getActor() == oldActor){
 				intention.setActor(newActor);
+				//add intention to new actor
+				boolean added = newActor.addEmbed((AbstractElement)intention);
+
+				if(MMain.DEBUG && added) System.out.println("intention " + intention.getName() + " added to newActor " + newActor.getName());
+				
 			}
 		}
 
