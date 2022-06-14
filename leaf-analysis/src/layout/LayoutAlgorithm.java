@@ -368,15 +368,15 @@ public class LayoutAlgorithm {
       */
      public boolean isOverlapped(VisualInfo n1, VisualInfo n2) {
     	 
-    	 double n1_xmin = n1.getX() - n1.getSize().getWidth()/2;
-    	 double n1_xmax = n1.getX() + n1.getSize().getWidth()/2;
-    	 double n1_ymin = n1.getY() - n1.getSize().getHeight()/2;
-    	 double n1_ymax = n1.getY() + n1.getSize().getHeight()/2;
+    	 double n1_xmin = n1.getX() ;
+    	 double n1_xmax = n1.getX() + n1.getSize().getWidth();
+    	 double n1_ymin = n1.getY() ;
+    	 double n1_ymax = n1.getY() + n1.getSize().getHeight();
     	 
-    	 double n2_xmin = n2.getX() - n2.getSize().getWidth()/2;
-    	 double n2_xmax = n2.getX() + n2.getSize().getWidth()/2;
-    	 double n2_ymin = n2.getY() - n2.getSize().getHeight()/2;
-    	 double n2_ymax = n2.getY() + n2.getSize().getHeight()/2;
+    	 double n2_xmin = n2.getX() ;
+    	 double n2_xmax = n2.getX() + n2.getSize().getWidth();
+    	 double n2_ymin = n2.getY() ;
+    	 double n2_ymax = n2.getY() + n2.getSize().getHeight();
     	 
     	 return !(n1_xmin >= n2_xmax || n1_xmax <= n2_xmin || n1_ymin >= n2_ymax || n1_ymax <= n2_ymin);
      }
@@ -388,15 +388,15 @@ public class LayoutAlgorithm {
       * @return
       */
      public boolean isOutside(VisualInfo n1, VisualInfo n2) {
-    	 double n1_xmin = n1.getX() - n1.getSize().getWidth()/2;
-    	 double n1_xmax = n1.getX() + n1.getSize().getWidth()/2;
-    	 double n1_ymin = n1.getY() - n1.getSize().getHeight()/2;
-    	 double n1_ymax = n1.getY() + n1.getSize().getHeight()/2;
+    	 double n1_xmin = n1.getX() ;
+    	 double n1_xmax = n1.getX() + n1.getSize().getWidth();
+    	 double n1_ymin = n1.getY() ;
+    	 double n1_ymax = n1.getY() + n1.getSize().getHeight();
     	 
-    	 double n2_xmin = n2.getX() - n2.getSize().getWidth()/2;
-    	 double n2_xmax = n2.getX() + n2.getSize().getWidth()/2;
-    	 double n2_ymin = n2.getY() - n2.getSize().getHeight()/2;
-    	 double n2_ymax = n2.getY() + n2.getSize().getHeight()/2;
+    	 double n2_xmin = n2.getX() ;
+    	 double n2_xmax = n2.getX() + n2.getSize().getWidth();
+    	 double n2_ymin = n2.getY() ;
+    	 double n2_ymax = n2.getY() + n2.getSize().getHeight();
     	 
     	 return (n1_xmin < n2_xmin || n1_ymin < n2_ymin || n1_xmax > n2_xmax || n1_ymax > n2_ymax);
     	 
