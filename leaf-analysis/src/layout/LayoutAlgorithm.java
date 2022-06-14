@@ -69,10 +69,7 @@ public class LayoutAlgorithm {
 		ArrayList<AbstractLinkableElement> temp_arrayList = new ArrayList<>();
 		// note that actors are first in the list !!!!!!
 		
-		if (LMain.DEBUG) {
-			System.out.println(model.getActors());
-			return model;
-		}
+		
 		for(Actor a: model.getActors()) {
 			temp_arrayList.add((AbstractLinkableElement)a);
 		}
@@ -134,10 +131,11 @@ public class LayoutAlgorithm {
     	//TODO: figure out the values of these constants
     	if (n1 != n2) {
     		double idealLength = 200;
-        	double elasticityConstant = 5000; //increasing it means the spring is stiffer
+        	double elasticityConstant = 50000; //increasing it means the spring is stiffer
         	
         	double dist = getDist(n1, n2);
         	double forceSum = (idealLength - dist)*(idealLength - dist)*dist/elasticityConstant; //cubing distance too big, but this is the wrong formula
+        	if (LMain.DEBUG) System.out.println("Attraction " + forceSum);
         	return forceSum;
     	}
     
@@ -240,7 +238,7 @@ public class LayoutAlgorithm {
         //constants
         double c = .2; //adjustment
         double a = .05; //error
-        double gravitation = 2; //gravitation forces
+        double gravitation = 5; //gravitation forces
         
 		for(int i = 0; i < maxIter; i++){
 			if (LMain.DEBUG) System.out.println("\n" + i + "th Iteration");
@@ -362,15 +360,15 @@ public class LayoutAlgorithm {
       * boolean method for the overlap of two nodes
       */
      public boolean isOverlapped(VisualInfo n1, VisualInfo n2) {
-    	 double n1_xmin = n1.getX() - n1.getSize().getWidth()/2;
-    	 double n1_xmax = n1.getX() + n1.getSize().getWidth()/2;
-    	 double n1_ymin = n1.getY() - n1.getSize().getHeight()/2;
-    	 double n1_ymax = n1.getY() + n1.getSize().getHeight()/2;
+    	 double n1_xmin = n1.getX();
+    	 double n1_xmax = n1.getX() + n1.getSize().getWidth();
+    	 double n1_ymin = n1.getY();
+    	 double n1_ymax = n1.getY() + n1.getSize().getHeight();
     	 
-    	 double n2_xmin = n2.getX() - n2.getSize().getWidth()/2;
-    	 double n2_xmax = n2.getX() + n2.getSize().getWidth()/2;
-    	 double n2_ymin = n2.getY() - n2.getSize().getHeight()/2;
-    	 double n2_ymax = n2.getY() + n2.getSize().getHeight()/2;
+    	 double n2_xmin = n2.getX();
+    	 double n2_xmax = n2.getX() + n2.getSize().getWidth();
+    	 double n2_ymin = n2.getY();
+    	 double n2_ymax = n2.getY() + n2.getSize().getHeight();
     	 
     	 return !(n1_xmin >= n2_xmax || n1_xmax <= n2_xmin || n1_ymin >= n2_ymax || n1_ymax <= n2_ymin);
      }
@@ -382,15 +380,15 @@ public class LayoutAlgorithm {
       * @return
       */
      public boolean isOutside(VisualInfo n1, VisualInfo n2) {
-    	 double n1_xmin = n1.getX() - n1.getSize().getWidth()/2;
-    	 double n1_xmax = n1.getX() + n1.getSize().getWidth()/2;
-    	 double n1_ymin = n1.getY() - n1.getSize().getHeight()/2;
-    	 double n1_ymax = n1.getY() + n1.getSize().getHeight()/2;
+    	 double n1_xmin = n1.getX();
+    	 double n1_xmax = n1.getX() + n1.getSize().getWidth();
+    	 double n1_ymin = n1.getY();
+    	 double n1_ymax = n1.getY() + n1.getSize().getHeight();
     	 
-    	 double n2_xmin = n2.getX() - n2.getSize().getWidth()/2;
-    	 double n2_xmax = n2.getX() + n2.getSize().getWidth()/2;
-    	 double n2_ymin = n2.getY() - n2.getSize().getHeight()/2;
-    	 double n2_ymax = n2.getY() + n2.getSize().getHeight()/2;
+    	 double n2_xmin = n2.getX();
+    	 double n2_xmax = n2.getX() + n2.getSize().getWidth();
+    	 double n2_ymin = n2.getY();
+    	 double n2_ymax = n2.getY() + n2.getSize().getHeight();
     	 
     	 return (n1_xmin < n2_xmin || n1_ymin < n2_ymin || n1_xmax > n2_xmax || n1_ymax > n2_ymax);
     	 
@@ -415,15 +413,15 @@ public class LayoutAlgorithm {
     			 double adjust_ELM = 0;
     			 //if either i or j are actors
     			 if(i < numActors && j < numActors) {
-    				 double dist1 = getHypotenuse(nodePositions[i].getWidth()/2, nodePositions[i].getHeight()/2);
-    				 double dist2 = getHypotenuse(nodePositions[j].getWidth()/2, nodePositions[j].getHeight()/2);
+    				 double dist1 = getHypotenuse(nodePositions[i].getWidth(), nodePositions[i].getHeight());
+    				 double dist2 = getHypotenuse(nodePositions[j].getWidth(), nodePositions[j].getHeight());
     				 adjust_ELM += dist1 + dist2;
     			 }
     			 else if(i < numActors) {
-    				 adjust_ELM += getHypotenuse(nodePositions[i].getWidth()/2, nodePositions[i].getHeight()/2);
+    				 adjust_ELM += getHypotenuse(nodePositions[i].getWidth(), nodePositions[i].getHeight());
     			 }
     			 else if(j < numActors) {
-    				 adjust_ELM = getHypotenuse(nodePositions[j].getWidth()/2, nodePositions[j].getHeight()/2);
+    				 adjust_ELM = getHypotenuse(nodePositions[j].getWidth(), nodePositions[j].getHeight());
     			 }
     			 if(getDist(nodePositions[i], nodePositions[j]) <= (edgeLength_max + 1.5*adjust_ELM)) {
     				edgeSet.add(new Integer[]{i,j});
