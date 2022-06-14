@@ -204,7 +204,7 @@ public class LayoutAlgorithm {
             if(nodePosition.getY() > mostUpper.getY()){
             	mostUpper = nodePosition;
             }
-            if(nodePosition.getY() - nodePosition.getHeight() < mostBottom.getY() - nodePosition.getHeight()){
+            if(nodePosition.getY() + nodePosition.getHeight() < mostBottom.getY() + nodePosition.getHeight()){
             	mostBottom = nodePosition;
             }
             
@@ -213,7 +213,7 @@ public class LayoutAlgorithm {
         double x_left = mostLeft.getX();
         double x_right = mostRight.getX() + mostRight.getSize().getWidth();
         double y_upper = mostUpper.getY(); 
-        double y_bottom = mostBottom.getY() - mostBottom.getSize().getHeight();
+        double y_bottom = mostBottom.getY() + mostBottom.getSize().getHeight();
         
 //        double x_left = mostLeft.getX() - mostLeft.getSize().getWidth()/2;
 //        double x_right = mostRight.getX() + mostRight.getSize().getWidth()/2;
@@ -367,6 +367,7 @@ public class LayoutAlgorithm {
       * boolean method for the overlap of two nodes
       */
      public boolean isOverlapped(VisualInfo n1, VisualInfo n2) {
+    	 
     	 double n1_xmin = n1.getX() - n1.getSize().getWidth()/2;
     	 double n1_xmax = n1.getX() + n1.getSize().getWidth()/2;
     	 double n1_ymin = n1.getY() - n1.getSize().getHeight()/2;
