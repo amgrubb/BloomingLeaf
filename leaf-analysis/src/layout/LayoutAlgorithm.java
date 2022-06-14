@@ -198,22 +198,27 @@ public class LayoutAlgorithm {
             if(nodePosition.getX() < mostLeft.getX()){
             	mostLeft = nodePosition;
             }
-            if(nodePosition.getX() > mostRight.getX()){
+            if(nodePosition.getX() + nodePosition.getWidth() > mostRight.getX() + mostRight.getWidth()){
             	mostRight = nodePosition;
             }
             if(nodePosition.getY() > mostUpper.getY()){
             	mostUpper = nodePosition;
             }
-            if(nodePosition.getY() < mostBottom.getY()){
+            if(nodePosition.getY() - nodePosition.getHeight() < mostBottom.getY() - nodePosition.getHeight()){
             	mostBottom = nodePosition;
             }
             
         }
         
-        double x_left = mostLeft.getX() - mostLeft.getSize().getWidth()/2;
-        double x_right = mostRight.getX() + mostRight.getSize().getWidth()/2;
-        double y_upper = mostUpper.getY() + mostUpper.getSize().getHeight()/2; 
-        double y_bottom = mostBottom.getY() - mostBottom.getSize().getHeight()/2;
+        double x_left = mostLeft.getX();
+        double x_right = mostRight.getX() + mostRight.getSize().getWidth();
+        double y_upper = mostUpper.getY(); 
+        double y_bottom = mostBottom.getY() - mostBottom.getSize().getHeight();
+        
+//        double x_left = mostLeft.getX() - mostLeft.getSize().getWidth()/2;
+//        double x_right = mostRight.getX() + mostRight.getSize().getWidth()/2;
+//        double y_upper = mostUpper.getY() + mostUpper.getSize().getHeight()/2; 
+//        double y_bottom = mostBottom.getY() - mostBottom.getSize().getHeight()/2;
         
         double x = (x_left + x_right) / 2;
         double y = (y_upper + y_bottom) / 2;
