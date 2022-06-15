@@ -42,6 +42,11 @@ public class Actor extends AbstractLinkableElement {
 		return embeds;
 	} 
 	
+	/**
+	 * Add a new element to be embedded in this Actor
+	 * @param newEmbed
+	 * @return if it has been added
+	 */
 	public boolean addEmbed(AbstractElement newEmbed) {
 		
 		for(String id: embeds) {

@@ -20,7 +20,7 @@ import simulation.BIModelSpecBuilder;
  *
  */
 public class MMain {
-	public final static boolean DEBUG = true;
+	public final static boolean DEBUG = false;
 
 	/**
 	 * This method is responsible to execute all steps to generate the merged model
@@ -32,18 +32,18 @@ public class MMain {
 		String tPath = "data/timing/";
 		String outPath = "data/mergedModels/";
 		String tracePath = "data/traceability/";
-		String inputFile1 = "S1-Part4.json";
-		String inputFile2 = "S1-Pre-Auto.json";
-		String timingFile = "S1-timing.json";
+		String inputFile1 = "";
+		String inputFile2 = "";
+		String timingFile = "";
 		String outputFile = "output.json";
 		
 		try {			
-//			if (args.length == 4) {
-//				inputFile1 = args[0];
-//				inputFile2 = args[1];
-//				timingFile = args[2];
-//				outputFile = args[3];
-//			} else throw new IOException("Tool: Command Line Inputs Incorrect.");
+			if (args.length == 4) {
+				inputFile1 = args[0];
+				inputFile2 = args[1];
+				timingFile = args[2];
+				outputFile = args[3];
+			} else throw new IOException("Tool: Command Line Inputs Incorrect.");
 			
 			if (DEBUG) System.out.println("Merging: \t" + inputFile1 + " and " + inputFile2);
 
@@ -80,7 +80,6 @@ public class MMain {
 
 			ModelSpec mergedModel = merge.getMergedModel();
 			if (DEBUG) System.out.println("Completed Merging.");
-			
 
 			// Create Output file that will be used by frontend
 			IMain mergedModelOut = IMainBuilder.buildIMain(mergedModel);
