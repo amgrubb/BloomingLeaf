@@ -15,10 +15,12 @@ public class LayoutAlgorithm {
 	ModelSpec model;
     int maxIter;
 
-	/**
-	 * Initialize LayoutAlgorithm and run layoutModels
-	 */
-
+    /**
+     * Initialize LayoutAlgorithm
+     * @param model - model to be layed out
+     * @param filename - file for tracking changes
+     * @param maxIter - limit for iterating over changes
+     */
 	public LayoutAlgorithm(ModelSpec model, String filename, int maxIter) {
 
 		if (LMain.DEBUG) System.out.println("Creating Layout Object");
@@ -30,7 +32,10 @@ public class LayoutAlgorithm {
         // TODO: some logging object init with filename
 	}
 	
-	
+	/**
+	 * Method for laying out the entire model
+	 * @return model
+	 */
 	public ModelSpec layout(){
 
 		if (LMain.DEBUG) System.out.println("Starting Full Layout");
@@ -61,9 +66,7 @@ public class LayoutAlgorithm {
 			
 		}
 		//  level 0
-		if (LMain.DEBUG) System.out.println("Starting 0th Level");
-		//if (LMain.DEBUG) return model;
-		
+		if (LMain.DEBUG) System.out.println("Starting 0th Level");	
 
 		//  get nodes on the zeroth level
 		ArrayList<AbstractLinkableElement> temp_arrayList = new ArrayList<>();
@@ -71,36 +74,38 @@ public class LayoutAlgorithm {
 			temp_arrayList.add((AbstractLinkableElement)a);
 			if (LMain.DEBUG) System.out.println(a.getEmbedIntentions(model).length);
 		}
-		if (LMain.DEBUG) System.out.println(model.getActorlessIntentions().size());
-		if (LMain.DEBUG) System.out.println(model.getIntentions().size());
-		
-
-		if (LMain.DEBUG) return model;
 		for(Intention i: model.getActorlessIntentions()) {
 			temp_arrayList.add((AbstractLinkableElement)i);
 		}
 		VisualInfo[] lvl0_nodePos = initNodePositions(temp_arrayList);
 		
 		//	run layout on level_zero (if a node is an actor, propagate changes to its children)
-		layoutModel(lvl0_nodePos, true);
+		if(model.getActors().size() == 0) layoutModel(lvl0_nodePos, false);
+		else layoutModel(lvl0_nodePos, true);
+		
 		return model;
 	}
 	
-	/*
-	 * a method to propagate changes from actor to its children nodes
+	
+	/**
+	 * Propagate changes from actor to its children nodes
+	 * @param actor
+	 * @param x_shift
+	 * @param y_shift
 	 */
 	public void propagateAdjustments (Actor actor, double x_shift, double y_shift) { 
         for(Intention intent : actor.getEmbedIntentions(model)) {
             intent.setX(intent.getX() + x_shift);
             intent.setY(intent.getY() + y_shift);
         }
-        // for all children of an actor 
-        //     children update (adjustment)
     }
 
-    /*
-     * a method to adjust the size of the actor as intentions change
-     */
+	/**
+	 * Adjust the size of the actor to fit intentions 
+	 * @param actor
+	 * @param intentions
+	 * @return
+	 */
     public Actor resizeActor (Actor actor, VisualInfo[] intentions) {
         VisualInfo center = findCenter(intentions); 
         Integer margin = 100; //space between the edge of intentions and the actor 
@@ -134,7 +139,7 @@ public class LayoutAlgorithm {
     	//TODO: figure out the values of these constants
     	if (n1 != n2) {
     		double idealLength = 200;
-        	double elasticityConstant = 50000 * constant; //increasing it means the spring is stiffer
+        	double elasticityConstant = 50000000 * constant; //increasing it means the spring is stiffer
         	
         	double dist = getDist(n1, n2);
         	double forceSum = (idealLength - dist)*(idealLength - dist)*dist/elasticityConstant; //cubing distance too big, but this is the wrong formula
@@ -156,7 +161,7 @@ public class LayoutAlgorithm {
         if (n1 != n2) {
             double dist = getDist(n1,n2);
             if(dist == 0) return 99;
-            double alpha = 20000 * constant; 
+            double alpha = 200000 * constant; 
             double forceSum = alpha / (dist * dist) * dist; 
             if (LMain.DEBUG) System.out.println("Repulsion " + forceSum);
             return forceSum;
@@ -164,9 +169,12 @@ public class LayoutAlgorithm {
         return 0;
     }
     
-    /*
-     * Calculate the angle between two nodes
-     * 
+
+    /**
+     * Calculate the angle between two VisualInfo objects
+     * @param n1
+     * @param n2 - from the perspective of n2
+     * @return
      */
     public double angleBetween(VisualInfo n1, VisualInfo n2) {
     	//if (LMain.DEBUG) System.out.println("Starting: angleBetween");
@@ -186,9 +194,11 @@ public class LayoutAlgorithm {
         return 0;
     }
     
-    /*
-     * Find center of the model
-     * using the formula which finds the intersection of two lines 
+ 
+    /**
+     * Find the center of the VisualInfo objects
+     * @param nodePositions
+     * @return VisualInfo object at the center who's height and width is the height and width of all the nodes
      */
     public VisualInfo findCenter(VisualInfo[] nodePositions) {
         VisualInfo mostLeft = nodePositions[0];
@@ -226,10 +236,13 @@ public class LayoutAlgorithm {
     }
 
 
-    /*
-        Main Layout method
-     */ 
-        
+
+    /**
+     * Lays out nodePositions, all nodePositions apply forces on each other
+     * @param nodePositions
+     * @param hasActors - will change constants and conditions
+     * @return
+     */
 	public ModelSpec layoutModel(VisualInfo[] nodePositions, boolean hasActors){
 		if (LMain.DEBUG) System.out.println("Starting: layoutModel");
 		
@@ -239,14 +252,14 @@ public class LayoutAlgorithm {
         LayoutVisualizer lV = new LayoutVisualizer(nodePositions, center, numActors);
         
         //constants
-        double c = .2; //adjustment
+        double c = .0002; //adjustment -- the speed at which actors move
+        //TODO: solid peice wise function for c
+        if(nodePositions.length < 10) c = .002;
         double a = .05; //error
-        double constant = Math.pow(nodePositions.length, .25); // increasing the constant decreases attraction and gravitation, but increases repulsion
+        double constant = Math.pow(nodePositions.length, .5); // increasing the constant decreases attraction and gravitation, but increases repulsion
+        
         if(hasActors) {
-        	for(Actor actor: model.getActors()) {
-        		
-        		constant += Math.pow(actor.getHeight()*actor.getWidth(), .25);
-        	}
+        	c = .02;
         }
         
         if (LMain.DEBUG) System.out.println(constant);
@@ -310,6 +323,8 @@ public class LayoutAlgorithm {
                 nodePositions[j].setX(nodePositions[j].getX() + gravitation*Math.cos(phi));
                 nodePositions[j].setY(nodePositions[j].getY() + gravitation*Math.sin(phi));
                 
+                //gravitation = getDist(nodePositions[j], center) * .2;
+                
                 if(j < numActors) {
                 	propagateAdjustments(model.getActors().get(j), gravitation*Math.cos(phi), gravitation*Math.sin(phi));
                 }
@@ -326,16 +341,19 @@ public class LayoutAlgorithm {
             }
             
             lV.update();
+            if (LMain.DEBUG) System.out.println(constant);
         }
 		if (LMain.DEBUG) System.out.println(Arrays.toString(nodePositions));
 		if (LMain.DEBUG) System.out.println("Finished: layoutModel");
 		return model;
 	}
 
-    /**
-        Initialize the node position array
-        Collect VisualInfo objects
-     */
+
+	/**
+	 * Initialize the node position array, collect VisualInfo objects
+	 * @param nodes - elements that will be arranged, like actors and intentions
+	 * @return
+	 */
     public VisualInfo[] initNodePositions(ArrayList<AbstractLinkableElement> nodes){
     	System.out.println(nodes);
         VisualInfo[] nodePositions = new VisualInfo[nodes.size()];
@@ -358,8 +376,12 @@ public class LayoutAlgorithm {
          return sum;
      }
      
+
      /**
-      * boolean method for the overlap of two nodes
+      *  boolean method for the overlap of two nodes
+      * @param n1
+      * @param n2
+      * @return
       */
      public boolean isOverlapped(VisualInfo n1, VisualInfo n2) {
     	 double n1_xmin = n1.getX();
@@ -400,6 +422,7 @@ public class LayoutAlgorithm {
       * This method determines if the nodes are close enough to each other. 
       * We construct a graph from the nodes, and if the graph is connected then it is close enough.
       * @param nodePositions
+      * @param numActors - to know which nodes are actors
       * @return
       */
      public boolean isCloseEnough(VisualInfo[] nodePositions, int numActors) {

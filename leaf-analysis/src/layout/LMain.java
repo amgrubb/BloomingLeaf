@@ -15,6 +15,7 @@ import merge.MMain;
 
 import simulation.ModelSpec;
 import simulation.BIModelSpecBuilder;
+import simulation.Intention;
 
 public class LMain {
 	public final static boolean DEBUG = true;
@@ -25,7 +26,7 @@ public class LMain {
 	    String inPath = "temp/";
 	    String outPath = "temp/";
 	    String tracePath = "";
-	    String inputFile = "S1-out.json";
+	    String inputFile = "S6-out.json";
 //	    String inputFile = "Bike-lanes-out.json";
 	    String outputFile = "output.json";
 	
@@ -44,6 +45,11 @@ public class LMain {
 	        
 	        // Creating the back-end model
 	        ModelSpec modelSpec = MMain.convertBackboneModelFromFile(inPath + inputFile);
+	        
+	        // When merge models don't store intentions properly
+	        for(Intention i: modelSpec.getIntentions()) {
+	        	if(i.hasActor()) i.getActor().addEmbed(i);
+	        }
 	
 	        // print model for reference
 	        if (DEBUG) {
@@ -53,14 +59,14 @@ public class LMain {
 	        }
 	
 	        // run auto-layout
-	        LayoutAlgorithm layerOuter = new LayoutAlgorithm(modelSpec, "trace.txt", 10000);
+	        LayoutAlgorithm layerOuter = new LayoutAlgorithm(modelSpec, "trace.txt", 5000);
 	        ModelSpec layedOutModel = layerOuter.layout();
 	
 	        // Create output file that will be used by frontend
 	        IMain modelOut = IMainBuilder.buildIMain(layedOutModel);
 	        if (DEBUG) System.out.println(gson.toJson(modelOut));
 	
-	        MMain.createOutputFile(modelOut, outPath + outputFile);
+	        MMain.createOutputFile(modelOut, outPath + inputFile.replace(".json", "-output.json"));
 	        if (DEBUG) System.out.println("created output file");
 	
 	        // Traceability
