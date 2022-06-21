@@ -92,7 +92,7 @@ body {
 /* Sets the attributes of the smaller paper */
 #paper svg {
   /* Grid background image */
-  /*background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAHUlEQVQYV2NkYGAwBuKzQIwXMBJSAJMfVUidcAQAnUQBC6jEGBUAAAAASUVORK5CYII=');*/
+  /* background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAHUlEQVQYV2NkYGAwBuKzQIwXMBJSAJMfVUidcAQAnUQBC6jEGBUAAAAASUVORK5CYII='); */
   background-color: white;
 }
 
@@ -114,7 +114,7 @@ body {
   box-shadow: 2px 0px 16px 0px rgba(0,0,0,0.05);
 }
 
-/*Deals with the height & position of Stencil */
+/* Deals with the height & position of Stencil */
 #stencil .elements {
   height: 380px;
   text-shadow: none;
@@ -146,6 +146,11 @@ body {
   text-align: center;
 }
 
+/* Sets Margin distance for the right panel */
+#right-inspector {
+  margin-top: 50px;
+}
+
 /* Sets attributes for input text boxes on the right panel */
 .inspector input, .inspector textarea {
   color: black;
@@ -158,11 +163,6 @@ body {
   resize: none;
   display: block;
   margin: 0 auto 0 auto;
-}
-
-/* Sets attributes for the right panel */
-#right-inspector {
-  margin-top: 50px;
 }
 
 /* Sets attributes for every label within the left panel, labels are the text headers */
@@ -332,6 +332,7 @@ body {
   border-radius: 5px;
 }
 
+
 /* This section deals with the repeat section when function type on right panel is set to userdefine*/
 
 .user-defined-select, .repeat-select-begin, .repeat-select-end, .repeat-select2, .relationship-select{
@@ -376,11 +377,13 @@ select > .select-placeholder {
   display: none;
 }
 
+/* Sets color of Function Type dropdown  */
 .function-type {
   background-color: rgba(36, 150, 255, 1);
   border-color: rgba(29, 122, 208, 1);
 }
 
+/* Sets margin for the bottom of the Function Type dropdown */
 .function-type, .function-sat-value {
   margin: auto;
   margin-bottom: 8px;
@@ -473,11 +476,6 @@ select > .select-placeholder {
   border: 1px solid #4f4f4f;
 }
 
-.paper .halo {
-  background-color: transparent;
-  box-shadow: none;
-}
-
 /* Sets attributes for Toolbar */
 .toolbar-div {
   position: fixed;
@@ -499,7 +497,7 @@ select > .select-placeholder {
   display: inline;
 }
 
-/* beggining of representative color slider */
+/* Beginning of representative color slider */
 
 .slidecontainer {
   width: 100%; /* Width of the outside container */
@@ -544,6 +542,7 @@ select > .select-placeholder {
   margin-left: 10px;
   }
 
+  /* Sets position of EVO slider */
 #colorReset {
   position: relative;
   top: -20px;
@@ -569,7 +568,7 @@ select > .select-placeholder {
 }
 
 /* Sets the position for the "Create My Palette window" */
-#color-input{
+#color-input {
   top: 20px;
 }
 
@@ -646,11 +645,7 @@ select > .select-placeholder {
   color:black;
 }
 
-#symbolic-btn {
-  color: white;
-  min-width: 80px;
-}
-
+/* Sets width of modeling btn */
 #modeling-btn {
   min-width: 80px;
 }
@@ -718,14 +713,12 @@ div.attribution {
   margin: 5px;
 }
 
-
 /* Rappid selection box */
 .selection-box {
   display: none;
 }
 
 /* Sets padding for images on bottom left corner */
-.bot-img
-{
+.bot-img {
 padding: 0px 20px 0px 0px;
 }

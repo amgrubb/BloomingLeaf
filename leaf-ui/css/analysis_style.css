@@ -66,7 +66,6 @@
 .intermHeader {
     padding: 2px 16px;
     background: #1E85F7;
-    /*background-color: #5cb85c;*/
     color: white;
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
@@ -176,12 +175,14 @@
 
 /* Ends this section*/
 
+
 /*Begins Interm table design section */
 .intermBody {
     overflow: auto;
     border-radius: 20px;
 }
 
+/* Structures the "IVT" table in the popup  */
 .interm-table {
     font-family: arial, sans-serif;
     border-collapse: collapse;
@@ -190,6 +191,7 @@
     table-layout: inherit;
 }
 
+/* Provides padding and organizes the intentions in the table */
 .interm-table td, .interm-table th {
     border-top: 1px solid #dddddd;
     border-right: 1px solid #dddddd;
@@ -199,6 +201,7 @@
     height: 30px;
 }
 
+/* Provides padding and organizes the intention and its names in the table */
 .intention-name {
     border-top: 1px solid #dddddd;
     border-right: 1px solid #dddddd;
@@ -235,16 +238,18 @@
 .rel-intent-table tr:nth-child(even) {
     background-color: #dddddd;
 }
+
 .intermBody tr:nth-child(even) {
     background-color: #dddddd;
 }
+
 .rel-intent-table tr td input {
     width: 4em;
     font-size: 100%;
     color: black;
 }
 
-/* Places text "Intention" inside Interm modal */
+/* Places the text "Intention" inside Interm modal */
 .intentionPlace {
     z-index:9999;position:relative;top:23px;
 }
@@ -260,6 +265,7 @@
 }
 
 /* End of Interm table design*/
+
 
 /* Sets width of tables aka horizontal lines on modal popup */
 #link-list {
@@ -320,7 +326,6 @@ select::-ms-expand {
     top: 5px;
     padding: 0 0 2px;
     border-bottom: 1px solid #999;
-    /*left line */
     position: absolute;
     pointer-events: none;
 }
