@@ -528,7 +528,7 @@ class EVO {
     static getColor(intentionEval) {
 
         //Assign intentions with chosen palette and set default values in Create My Palette the same as the chosen palette
-        if (EVO.paletteOption < 5) {
+        if (EVO.paletteOption <= 5) {
             $("#my-None").val(EVO.colorVisDictCollection[EVO.paletteOption - 1]["0000"]);
             $("#my-Satisfied").val(EVO.colorVisDictCollection[EVO.paletteOption - 1]["0011"]);
             $("#my-PS").val(EVO.colorVisDictCollection[EVO.paletteOption - 1]["0010"]);
