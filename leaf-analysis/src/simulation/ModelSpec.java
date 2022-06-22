@@ -459,10 +459,74 @@ public class ModelSpec {
 	public List<Intention> getActorlessIntentions(){
 		List<Intention> actorlessIntentions = new ArrayList<Intention>();
 		for(Intention intention: this.intentions) {
-			if(!intention.hasActor()) actorlessIntentions.add(intention);
-			else System.out.println(intention.getActor().getName());
+			if(!intention.hasActor()) {
+				actorlessIntentions.add(intention);
+				System.out.println(intention.getName() + intention.getUniqueID());
+			}
 		}
 		return actorlessIntentions;
 	}
+	
+	/**
+	 * 
+	 * @return goals in the model 
+	 */
+	public List<Intention> getGoals(){
+		List<Intention> goals = new ArrayList<Intention>();
+		
+		for(Intention intention: this.intentions) {
+			if(intention.getType().equals("basic.Goal")) goals.add(intention);
+		}
+		
+		return goals;
+		
+	}
+	
+	/**
+	 * 
+	 * @return tasks in the model 
+	 */
+	public List<Intention> getTasks(){
+		List<Intention> tasks = new ArrayList<Intention>();
+		
+		for(Intention intention: this.intentions) {
+			if(intention.getType().equals("basic.Task")) tasks.add(intention);
+		}
+		
+		return tasks;
+		
+	}
+	
+	/**
+	 * 
+	 * @return soft goals in the model 
+	 */
+	public List<Intention> getSoftGoals(){
+		List<Intention> softGoals = new ArrayList<Intention>();
+		
+		for(Intention intention: this.intentions) {
+			if(intention.getType().equals("basic.Softgoal")) softGoals.add(intention);
+		}
+		
+		return softGoals;
+		
+	}
+	
+	/**
+	 * 
+	 * @return goals in the model 
+	 */
+	public List<Intention> getResources(){
+		List<Intention> resources = new ArrayList<Intention>();
+		
+		for(Intention intention: this.intentions) {
+			if(intention.getType().equals("basic.Resource")) resources.add(intention);
+		}
+		
+		return resources;
+		
+	}
+	
+	
 	
 }

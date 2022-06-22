@@ -58,6 +58,7 @@ public class Actor extends AbstractLinkableElement {
 		for(Intention intention: myModel.getIntentions()) {
 			for(int i = 0; i < embeds.length; i++) {
 				if(intention.getUniqueID().equals(embeds[i])) {	
+					intention.setActor(this);
 					listOfIntentions.add(intention);
 					//System.out.println(intention.getName());
 				}
