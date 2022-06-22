@@ -3,6 +3,11 @@
  */
 package simulation;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import merge.MMain;
+
 /**
  * @author A.M.Grubb
  *
@@ -31,9 +36,28 @@ public class Actor extends AbstractLinkableElement {
 	}
 	
 	/*
-	 * Return ids of intentions embedded in the actor
+	 * Return ids of intentions (and links, for some reason) embedded in the actor
 	 */
 	public String[] getEmbeds() {
 		return embeds;
+	} 
+	
+	/**
+	 * Add a new element to be embedded in this Actor
+	 * @param newEmbed
+	 * @return if it has been added
+	 */
+	public boolean addEmbed(AbstractElement newEmbed) {
+		
+		for(String id: embeds) {
+			if(id.equals(newEmbed.getUniqueID())) return false;
+		}
+		ArrayList<String> temp_embeds = new ArrayList<String>(Arrays.asList(embeds));
+		temp_embeds.add(newEmbed.getUniqueID());
+		embeds = new String[temp_embeds.size()];
+		for(int i = 0; i < embeds.length; i ++) {
+			embeds[i] = temp_embeds.get(i);
+		}
+		return true;
 	}
 }
