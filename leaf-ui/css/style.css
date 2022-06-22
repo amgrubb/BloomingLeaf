@@ -48,7 +48,7 @@ body {
   font-style: italic;
 }
 
-/** Dims the entire page when behind the"Create My Palette" popup**/ 
+/** Dims the entire page when behind the "Create My Palette" popup **/ 
 #page-mask {
   background: rgba(0, 0, 0, 0.5); /* Sets background color to gray */
   position: fixed;
@@ -151,11 +151,10 @@ body {
   margin-top: 50px;
 }
 
-/* Sets attributes for input text boxes on the right panel */
+/* Sets attributes for input text boxes on the right panel ex. "Node Name" text box on right panel*/
 .inspector input, .inspector textarea {
   color: black;
   text-shadow: none;
-  /* box-shadow: inset 0 0 0 1px rgba(0,0,0,0.1),0px 0 0 1px rgba(255,255,255,0.1); */
   border: 1px solid black;
   background: white;
   height: 20px;
@@ -201,7 +200,7 @@ body {
   text-align: center; 
 }
 
-/* Attributes for "Num Relative TIme Point" input box on left panel on Analysis mode */
+/* Attributes for "Num Relative Time Point" input box on left panel on Analysis mode */
 .analysis-input {
   font-size: 0.7em;
   width: 165px;
@@ -332,8 +331,7 @@ body {
   border-radius: 5px;
 }
 
-
-/* This section deals with the repeat section when function type on right panel is set to userdefine*/
+/* This section deals with the repeat section when function type on right panel is set to "User defined" */
 
 .user-defined-select, .repeat-select-begin, .repeat-select-end, .repeat-select2, .relationship-select{
   width: 104px;
@@ -408,18 +406,9 @@ select > .select-placeholder {
   font-weight: lighter;
 }
 
-#clear-query-btn {
-  margin: 0;
-}
+/* This section ends the repeat section when function type on right panel is set to "User defined" */
 
-#query-btn {
-  margin: 16px 0;
-}
-
-/* This section ends the repeat section when function type on right panel is set to userdefine */
-
-
-/* Sets attributes for any child element of inspector-btn; currently there are no such elements*/
+/* Sets attributes for any child element of inspector-btn ex. "Add", "Set Repeats" and "Clear" btn when function type on right panel is set to "User defined"*/
 .inspector-btn {
   position: relative;
   vertical-align: top;
@@ -450,14 +439,14 @@ select > .select-placeholder {
   box-shadow: inset 0 -2px rgba(29, 122, 208, 1);
 }
 
-/* Any child of this class makes btns blue, ex."Clear" btn on right panel */
+/* Any child of this class makes btns red, ex."Clear" btn on right panel and "Modeling btn" on toolbar  */
 .red-btn {
   background-color: #e74c3c !important;
   -webkit-box-shadow: inset 0 -2px #db4334;
   box-shadow: inset 0 -2px #db4334;
 }
 
-/* Sets attributes for any child elements of small-btn (eg. clear btn on right panel when funtion type, user define is selected) */
+/* Sets attributes for any child elements of small-btn (eg. clear btn on right panel when funtion type, "User defined" is selected) */
 .small-btn {
   width: 160px;
   height: 25px;
@@ -503,34 +492,6 @@ select > .select-placeholder {
   width: 100%; /* Width of the outside container */
 }
 
-/* Sets attributes for text labels on the toolbar on modeling mode, no text labels are using this id.. */
-#top-label {
-  background-color: #333;
-  border: none;
-  color: white;
-  text-shadow: none;
-  font-size: 0.75em;
-  margin: 0px;
-  padding: 0px;
-  position: relative;
-  top: -15px;
-  left: 5px;
-}
-
-/* Sets attributes for text labels on the toolbar on analysis mode, no text labels are using this id.. */
-#top-label-analysis {
-  background-color: #333;
-  border: none;
-  color: white;
-  text-shadow: none;
-  font-size: 0.75em;
-  margin: 0px;
-  padding: 0px;
-  position: relative;
-  top: -15px;
-  left: 105px;
-}
-
 /* Sets attributes for the text under the on & off slider on the toolbar */
 .on-off {
   font-size: 8px;
@@ -542,7 +503,7 @@ select > .select-placeholder {
   margin-left: 10px;
   }
 
-  /* Sets position of EVO slider */
+/* Sets position of EVO slider */
 #colorReset {
   position: relative;
   top: -20px;
@@ -620,7 +581,7 @@ select > .select-placeholder {
 
 /* end of representive slider styling */
 
-/* Sets atrributes for all children of btn class including "File, Edit, View, Help, and etc.."  */
+/* Sets attributes for all children of btn class including "File, Edit, View, Help, and etc.."  */
 .btn {
   position: relative;
   padding: 5px 10px;
@@ -682,7 +643,7 @@ select > .select-placeholder {
   display: block;
 }
 
-/* When btn on dropdown menus are hovered above,  bg color is darkened */
+/* When btn on dropdown menus are hovered above, background color is darkened */
 .dropdown-toolbar a:hover {
   background-color: #E8E8E8;
 }

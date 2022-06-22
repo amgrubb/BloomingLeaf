@@ -273,7 +273,7 @@
 }
 
 /* Sets cursor as a pointer when trying to add an Intention to modal */
-#addIntent{
+#addIntent {
     cursor:pointer
 }
 
@@ -294,6 +294,7 @@
     border-radius: 6px;
 }
 
+/* Whenever an element is selected that element is focused on in Bloomingleaf, aka Input text when focused gets highlighted */
 #relationshipList:focus{
     -webkit-box-shadow: 0 0 3px 1px #c00;
     -moz-box-shadow: 0 0 3px 1px #c00;
@@ -393,7 +394,7 @@ select::-ms-expand {
     float: left;
     }
 
-/* Sets attributes and look of dropdown btns carrot symbol on left panel on Analysis mode */  
+/* Sets attributes and look of dropdown btns caret symbol on left panel on Analysis mode */  
 .dropdown-container {
     display:block;
     width: 100%;
@@ -417,7 +418,7 @@ select::-ms-expand {
     cursor: pointer;
 }
 
-/* Sets margin for "Absolute Time Points" text input box on "Absolute and Relative ASsignments modal" */
+/* Sets margin for "Absolute Time Points" text input box on "Absolute and Relative Assignments modal" */
 #abs-time-pts {
     margin-bottom:5px;
 }

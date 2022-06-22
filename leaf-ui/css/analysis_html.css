@@ -59,7 +59,7 @@ body {
   position: absolute;
   background-color: #f9f9f9;
   min-width: 180px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
 }
 
 /* Sets attributes for each box in the dropdown menu */
@@ -184,7 +184,7 @@ body {
 
 /* Sets attributes for the Dropdown Satisfaction Menu */
 #sat-value {
-  background-color: rgb(36, 150, 255, 1) !important;
+  background-color: rgb(36, 150, 255) !important;
   color: white;
   font-size: 11px;
   font-weight: 200;
@@ -272,17 +272,17 @@ body {
   background: #424242;
 }
 
-/* When trash btn is click on click effect */
+/* When trash icon is pressed on, the color is changed creating a click effect */
 .table-btn-small:active {
   background-color: #424242;
   box-shadow: inset 0 -2px #292929;
   transform: translateY(2px);
 }
 
-/* Sets attributes for blue btn is set, Filter apply btn is a child of blue-btn */
+/* Sets attributes for blue btn, Filter apply btn is a child of blue-btn */
 .blue-btn {
-  background-color: rgba(36, 150, 255, 1) !important;
-  box-shadow: inset 0 -2px rgba(29, 122, 208, 1);
+  background-color: rgb(36, 150, 255) !important;
+  box-shadow: inset 0 -2px rgb(29, 122, 208);
   color: white;
   width: 160px;
   height: 25px;
@@ -308,8 +308,8 @@ body {
 
 /* When filter applied is clicked on when intention is selected, click effect is made */
 #filter-apply:active {
-  background-color: rgba(36, 150, 255, 1);
-  box-shadow: inset 0 -2px rgba(29, 122, 208, 1);
+  background-color: rgb(36, 150, 255);
+  box-shadow: inset 0 -2px rgb(29, 122, 208);
   transform: translateY(2px);
 }
 
