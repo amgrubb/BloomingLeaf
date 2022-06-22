@@ -1,3 +1,8 @@
+/**
+ * Modal popup windows CSS.
+ */
+
+/* Sets position on modal popups aka "Create My Palette window" and "View Assignments List window" and also stops them from effecting background */
 .modal {
     position: fixed; /* Stay in place */
     padding-top: 25px; /* Location of the box */
@@ -8,7 +13,7 @@
     overflow: auto; /* Enable scroll if needed */
 }
 
-/* Modal Content */
+/* Sets attributes for Modal Content, structures View Assignments List Modal */
 .modal-content {
     z-index: 4; /** Sit on top **/ 
     position: relative;
@@ -25,28 +30,8 @@
     color: black;
     border-radius: 20px;
 }
-/***/
-#interm-list select{
-    /*Don't really need this just for demo styling*/
-    width: 140px;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    /* Add some styling */
-    display: block;
-    height: 30px;
-    float: right;
-    font-size: 13px;
-    line-height: 1.75;
-    color: #333;
-    background-color: #ffffff;
-    background-image: none;
-    border: 1px solid #cccccc;
-    -ms-word-break: normal;
-    word-break: normal;
-}
 
-/*Hide the intermTable dialog by default*/
+/* Sets position and how the "Intermediate Values window" stops the popup from effecting the background */
 .intermT {
     position: fixed; /* Stay in place */
     z-index: 1; /* Sit on top */
@@ -59,8 +44,8 @@
     overflow: scroll; /* Enable scroll if needed */
 }
 
-/*Intermediate Values Content*/
-.intermContent{
+/* Intermediate Values popup Content */
+.intermContent {
     z-index: 4; /** Sit on top **/ 
     position: relative;
     background-color: #fefefe;
@@ -77,25 +62,28 @@
     border-radius: 20px;
 }
 
+/* Sets attributes for header of interm popup. Makes it blue and rounded */
 .intermHeader {
     padding: 2px 16px;
     background: #1E85F7;
-    /*background-color: #5cb85c;*/
     color: white;
-    border-top-radius: 40px;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
 }
-/* Add Animation */
+
+/* Adds sliding Animation for popup window */
 @-webkit-keyframes animatetop {
     from {top:-300px; opacity:0}
     to {top:0; opacity:1}
 }
 
+/* Adds sliding Animation for popup window */
 @keyframes animatetop {
     from {top:-300px; opacity:0}
     to {top:0; opacity:1}
 }
 
-/* The Close Button */
+/* Sets position and color of the Close button on "CMP" and "VAL" popups */
 .close {
     color: white;
     float: right;
@@ -103,6 +91,7 @@
     font-weight: bold;
 }
 
+/* When Close btn on modal popup is hovered over cursor is changed and text color */
 .close:hover,
 .close:focus {
     color: #000;
@@ -110,7 +99,7 @@
     cursor: pointer;
 }
 
-/* The Close Intermtable Button */
+/* Sets position and color of the Close Intermtable Button */
 .closeIntermT {
     color: white;
     float: right;
@@ -118,6 +107,7 @@
     font-weight: bold;
 }
 
+/* When Close btn on Interm popup is hovered over cursor is changed and text color */
 .closeIntermT:hover,
 .closeIntermT:focus {
     color: #000;
@@ -125,28 +115,31 @@
     cursor: pointer;
 }
 
+/* Sets attributes for header of modal popups. Makes it blue and rounded */
 .modal-header {
     padding: 2px 16px;
     background: #1E85F7;
-    /*background-color: #5cb85c;*/
     color: white;
-    border-top-radius: 40px;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
 }
 
+/* Sets attributes for body of modal popups. Adds padding around modal */
 .modal-body {padding: 2px 16px;}
 
+/* Sets attributes for footer of modal popups */
 .modal-footer {
     padding: 2px 16px;
-    /*background-color: #5cb85c;*/
     color: white;
 }
-.intermTfooter{
+
+/* Sets attributes for footer of intermT modal popup */
+.intermTfooter {
     padding: 2px 16px;
-    /*background-color: #5cb85c;*/
     color: white;
 }
 
-
+/* This section sets attributes for table within "View Assignments List" modal */
 .abs-table {
     font-family: arial, sans-serif;
     border-collapse: collapse;
@@ -155,6 +148,7 @@
     margin-bottom : 35px;
 }
 
+/* Sets padding and aligns entire "Absolute Intention Assignments" section */
 .abs-table td, .abs-table th {
     border-top: 1px solid #dddddd;
     border-bottom: 1px solid #dddddd;
@@ -162,10 +156,12 @@
     padding: 8px;
 }
 
+/* Sets background color of Epoch Boundary Name row */
 .abs-table tr:nth-child(even) {
     background-color: #dddddd;
 }
 
+/* Sets up the look of the input box, size and position */
 .abs-table tr td input {
     width: 7em;
     font-size: 100%;
@@ -177,24 +173,25 @@
     padding: 12px 5px;
 }
 
-/*Interm table design*/
-.intermBody{
-    /*verflow-x: scroll;*/
+/* Ends this section*/
+
+
+/*Begins Interm table design section */
+.intermBody {
     overflow: auto;
     border-radius: 20px;
 }
 
-
+/* Structures the "IVT" table in the popup  */
 .interm-table {
     font-family: arial, sans-serif;
     border-collapse: collapse;
     width: 100%;
-    /*margin: auto;*/
     margin-bottom : 35px;
     table-layout: inherit;
-
 }
 
+/* Provides padding and organizes the intentions in the table */
 .interm-table td, .interm-table th {
     border-top: 1px solid #dddddd;
     border-right: 1px solid #dddddd;
@@ -204,6 +201,7 @@
     height: 30px;
 }
 
+/* Provides padding and organizes the intention and its names in the table */
 .intention-name {
     border-top: 1px solid #dddddd;
     border-right: 1px solid #dddddd;
@@ -212,7 +210,6 @@
     padding: 8px;
     height: 30px;
 }
-
 
 .interm-table tr td input {
     font-size: 100%;
@@ -224,7 +221,6 @@
     padding: 12px 5px;
 }
 
-/**/
 .rel-intent-table {
     font-family: arial, sans-serif;
     border-collapse: collapse;
@@ -242,32 +238,47 @@
 .rel-intent-table tr:nth-child(even) {
     background-color: #dddddd;
 }
+
 .intermBody tr:nth-child(even) {
     background-color: #dddddd;
 }
+
 .rel-intent-table tr td input {
     width: 4em;
     font-size: 100%;
     color: black;
 }
 
-.intentionPlace{
+/* Places the text "Intention" inside Interm modal */
+.intentionPlace {
     z-index:9999;position:relative;top:23px;
 }
-.timePlace{
+
+/* Places text "Timeline" inside Interm modal */
+.timePlace {
     z-index:9999;position:relative;top:-20px;left:100px;
 }
-.diag { position: relative; width: 50px; height: 5px; }
-/*.outerdivslant { position: relative; top: -44px; left: -8px; width: 100%; border-color: transparent transparent transparent #dddddd; border-width: 57px 0px 0px 203px;}
-.innerdivslant {position: relative; top: -100px; left: -10px; border-color: transparent transparent transparent #fff; border-width: 56px 0px 0px 200px;}*/
+
+/* Places Diagonal line inside Interm modal */
+.diag { 
+    position: relative; width: 50px; height: 5px; 
+}
+
+/* End of Interm table design*/
+
+
+/* Sets width of tables aka horizontal lines on modal popup */
 #link-list {
     width: 100%;
 }
-#addIntent{
+
+/* Sets cursor as a pointer when trying to add an Intention to modal */
+#addIntent {
     cursor:pointer
 }
 
-#relationshipList{
+/* Sets attributes on "Relationship" colum on "Absolute and Relative Assignments Modal"  */
+#relationshipList {
     display: inline-block;
     border: 2px solid #bbb;
     padding: 4px 3px 3px 5px;
@@ -278,19 +289,21 @@
     background: #f8f8f8;
     width: 96px;
     -webkit-appearance:none; /* remove the strong OSX influence from Webkit */
-
     -webkit-border-radius: 6px;
     -moz-border-radius: 6px;
     border-radius: 6px;
 }
+
+/* Whenever an element is selected that element is focused on in Bloomingleaf, aka Input text when focused gets highlighted */
 #relationshipList:focus{
     -webkit-box-shadow: 0 0 3px 1px #c00;
     -moz-box-shadow: 0 0 3px 1px #c00;
     box-shadow: 0 0 3px 1px
 }
+
+/* Positions the Relative Intention Assignemnts section to be grid like and organized */
 .epochLists {
     position: relative;
-    /*Don't really need this just for demo styling*/
     float: left;
     min-width: 200px;
 }
@@ -300,6 +313,7 @@ select::-ms-expand {
     display: none;
 }
 
+/* on epochList, after each text "<>" is inserted right after on "View Assignments List" modal */
 .epochLists:after {
     content: '<>';
     font: 17px "Consolas", monospace;
@@ -310,22 +324,18 @@ select::-ms-expand {
     transform: rotate(90deg);
     right: 11px;
     /*Adjust for position however you want*/
-
     top: 5px;
     padding: 0 0 2px;
     border-bottom: 1px solid #999;
-    /*left line */
-
     position: absolute;
     pointer-events: none;
 }
 
+/* Sets attributes for epoch section when element is selected, on "View Assignments List" modal */
 .epochLists select {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-    /* Add some styling */
-
     display: block;
     width: 100%;
     max-width: 180px;
@@ -342,6 +352,7 @@ select::-ms-expand {
     word-break: normal;
 }
 
+/* Sets attributes for "Requests" that are simulated on Analysis mode on the left panel*/
 .result-elements {
     height: 30px;
     font-size: 16px; 
@@ -352,6 +363,7 @@ select::-ms-expand {
     margin-bottom: 1px;
 }
 
+/* Sets size and attribute of Requests & trash btns on left panel on Analysis mode */
 .config-elements {
     height: 42px;
     font-size: 16px; 
@@ -362,6 +374,7 @@ select::-ms-expand {
     margin-bottom: 1px;
 }
 
+/* Sets attributes for inputs on left panel on Analysis mode */
 .config-input {
     padding: 10px; 
     font-size: 16px; 
@@ -370,6 +383,7 @@ select::-ms-expand {
     outline: none;  
 }
 
+/* Sets attributes of dropdown btns carrot symbol on left panel on Analysis mode */
 .dropdown-button {
     padding: 2px 7px 4px 7px; 
     font-size: 15px; 
@@ -380,12 +394,14 @@ select::-ms-expand {
     float: left;
     }
 
+/* Sets attributes and look of dropdown btns caret symbol on left panel on Analysis mode */  
 .dropdown-container {
     display:block;
     width: 100%;
 }
 
-.deleteconfig-button{
+/* Sets attributes for trash btn on left panel on Analysis mode */
+.deleteconfig-button {
     padding: 7px; 
     font-size: 16px; 
     height: 42px; 
@@ -397,22 +413,29 @@ select::-ms-expand {
     cursor: pointer;
 }
 
-#removeConstraint{
+/* Changes cursor to pointer when removing a constraint on "View Assignemnt List modal" */
+#removeConstraint {
     cursor: pointer;
 }
 
-#abs-time-pts{
+/* Sets margin for "Absolute Time Points" text input box on "Absolute and Relative Assignments modal" */
+#abs-time-pts {
     margin-bottom:5px;
 }
-#header th{
+
+#header th {
     min-width: 200px;
     height: 30px;
     text-align: center;
 }
-#intentionRows th:nth-child(n + 2){
+
+/* Aligns 0 digit on "IVT" table on the right top corner*/
+#intentionRows th:nth-child(n + 2) {
     text-align: center;
 }
-.divisionLine{
+
+/* Creates division line on interm popup between "timeline" and "intention" labels */
+.divisionLine {
     position: relative;
     z-index: 1;
     left: -12px;
