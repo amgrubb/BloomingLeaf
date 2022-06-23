@@ -14,6 +14,7 @@ public class LayoutAlgorithm {
 	// models
 	ModelSpec model;
     int maxIter;
+    HashMap<VisualInfo, HashMap<VisualInfo,String>> nodesLink;
 
     /**
      * Initialize LayoutAlgorithm
@@ -30,14 +31,25 @@ public class LayoutAlgorithm {
         // set up timeout
         this.maxIter = maxIter;
         // TODO: some logging object init with filename
-	}
+        this.nodesLink = new HashMap<VisualInfo, HashMap<VisualInfo,String>>();
+        for(Intention intention_1: model.getIntentions()){ 
+            HashMap<VisualInfo, String> nestedLink = new HashMap<VisualInfo, String>(); //nested hashmap
+            for(Intention intention_2: model.getIntentions()){
+            	AbstractElementLink link = intention_1.getLinkBetween(intention_2);
+            	if(link == null) continue;
+                nestedLink.put(intention_2.getVisualInfo(),intention_1.getLinkBetween(intention_2).getClass().getName());
+            } 
+            nodesLink.put(intention_1.getVisualInfo(),nestedLink);
+        }
+        System.out.println("map"+nodesLink);
+}
 	
 	/**
 	 * Method for laying out the entire model
 	 * @return model
 	 */
 	public ModelSpec layout(){
-
+        
 		if (LMain.DEBUG) System.out.println("Starting Full Layout");
 		
 		//nested level
@@ -139,7 +151,8 @@ public class LayoutAlgorithm {
     	//TODO: figure out the values of these constants
     	if (n1 != n2) {
     		double idealLength = 200;
-        	double elasticityConstant = 50000000 * constant; //increasing it means the spring is stiffer
+        	double elasticityConstant = 50000000 * constant * addLinkAttraction(
+               n1 , n2); //increasing it means the spring is stiffer
         	
         	double dist = getDist(n1, n2);
         	double forceSum = (idealLength - dist)*(idealLength - dist)*dist/elasticityConstant; //cubing distance too big, but this is the wrong formula
@@ -496,7 +509,7 @@ public class LayoutAlgorithm {
       * @return
       */
      public boolean checkConds(VisualInfo[] nodePositions, VisualInfo border, int numActors) {
-    	 if (LMain.DEBUG) System.out.println("Checking COnditions");
+    	 if (LMain.DEBUG) System.out.println("Checking Conditions");
     	 for(VisualInfo n1: nodePositions) {
     		 for(VisualInfo n2: nodePositions) {
     			 if(n1 == n2) continue;
@@ -527,6 +540,28 @@ public class LayoutAlgorithm {
       */
      public double getHypotenuse(double base, double height) {
     	 return Math.sqrt(base*base + height*height);
+     }
+
+    /*
+     * if findRelationshipBetween(nodeA, nodeB) not equals null
+     *     attraction * c1; (increase)
+     *     if getLinkBetween(nodeA, nodeB) equals decomposition
+     *         attraction * c2; (more increment)
+     */
+ 
+    /*
+     * add attraction between two nodes which have links between them
+     */
+     public double addLinkAttraction(VisualInfo n1, VisualInfo n2) {
+        if(nodesLink.containsKey(n1) && nodesLink.get(n1).containsKey(n2)) {
+            String linkType = nodesLink.get(n1).get(n2);
+    	    if(linkType.equals("simulation.DecompositionLink")){
+                return .08;
+            } else if (linkType.equals("simulation.ContributionLink")) {
+                return .05;
+            }
+        } 
+        return 1;
      }
 
     

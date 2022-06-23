@@ -22,7 +22,7 @@ public abstract class AbstractLinkableElement extends AbstractElement{
     List<AbstractElementLink> linksDest = new ArrayList<AbstractElementLink>();
     
     VisualInfo visual = null;
-	
+
 	public int getIdNum() {
 		return Integer.parseInt(id);
 	}
@@ -91,7 +91,14 @@ public abstract class AbstractLinkableElement extends AbstractElement{
 	public void setLinksDest(List<AbstractElementLink> linksDest) {
 		this.linksDest = linksDest;
 	}
-	
+
+	public AbstractElementLink getLinkBetween(AbstractLinkableElement n){
+		for(AbstractElementLink linkSrc: linksSrc){
+			if(linkSrc.getDest() == n) return linkSrc;
+		}
+		return null;
+	}
+
 	/**
 	 * @param width the width on the paper
 	 * @param height the height on the paper
