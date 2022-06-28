@@ -247,7 +247,6 @@ var ElementInspector = Backbone.View.extend({
      */
     renderUserDefined: function () {
         $(".function-type").val('UD');
-
         this.rerender();
 
         if (this.intention.get('evolvingFunction').get('hasRepeat')) {
@@ -594,7 +593,6 @@ var ElementInspector = Backbone.View.extend({
             $("#noteRepeat").hide();
             this.$("#repeat-error").hide();
             this.repeatOptionsDisplay = false;
-            this.rerender();
 
             // Update all repeat related display and values
         } else if (mode == "Update") {
@@ -704,7 +702,7 @@ var ElementInspector = Backbone.View.extend({
      /**
      * Renders a view for all of the existing FunctionSegmentBBMs that are part of the element
      */
-      renderFunctionSegments: function () {
+    renderFunctionSegments: function () {
         // Removes functions segments that are currently displayed
         $('#segment-functions').empty();
         if (this.intention.get('evolvingFunction').get('type') == 'NT') {
@@ -712,12 +710,11 @@ var ElementInspector = Backbone.View.extend({
         }
         // Only creates the FunctionSegmentView if there is a function segment
         if (this.intention.get('evolvingFunction') != null && this.intention.get('evolvingFunction').get('type') != 'NT') {
-
             var funcSegList = this.intention.getFuncSegments();
             var i = 0;
             // Creates a FuncSegView for each of the function segment in the functionSegList
             funcSegList.forEach(
-                funcSeg => {
+                funcSeg => {    
                     var functionSegView = new FuncSegView({ model: funcSeg, intention: this.intention, index: i, initSatValue: this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair'), chart: this.chart });
                     $('#segment-functions').append(functionSegView.el);
                     functionSegView.render();
@@ -889,7 +886,7 @@ var FuncSegView = Backbone.View.extend({
      * Sets the FunctionSegmentBBM's refEvidencePair to the value selected by the html
      */
     setFuncSatValue: function () {
-        this.model.set('refEvidencePair', this.$('#seg-sat-value').val()) // 4 digit representation
+        this.model.set('refEvidencePair', this.$('#seg-sat-value').val()); // 4 digit representation
 
         // For MP, MN, RC, and CR functions sets the second refEvidencePair to the value selected by the html 
         if (this.intention.getFuncSegments().length >= 2 && this.hasUD == false) {
@@ -898,7 +895,6 @@ var FuncSegView = Backbone.View.extend({
             }
         }
     },
-
     /**
      * Sets the FunctionSegmentBBM's function type to the type selected in the html.
      * Also sets the satisfaction value depending on the different function types.
@@ -909,18 +905,15 @@ var FuncSegView = Backbone.View.extend({
         // Disable the function satisfaction dropdown for constant and stochastic functions
         if (this.model.get('type') == 'C' || this.model.get('type') == 'R') {
             this.$('#seg-sat-value').prop('disabled', 'disabled');
-            if (this.intention.get('evolvingFunction').get('type') !== 'MP' && this.intention.get('evolvingFunction').get('type') !== 'MN' && (this.model.get('type') == 'C')) {
+            if (this.intention.get('evolvingFunction').get('type') !== 'MP' && this.intention.get('evolvingFunction').get('type') !== 'MN' && (this.model.get('type') == 'C')) {               
                 if (this.intention.get('evolvingFunction').get('type') == 'SD' || this.intention.get('evolvingFunction').get('type') == 'DS') {
                     this.$("#seg-sat-value").val(this.model.get('refEvidencePair'));
-                } else if (!this.hasUD) {
-                    this.$("#seg-sat-value").val(this.initSatValue);
-                    this.model.set('refEvidencePair', this.initSatValue);
                 }
             }
         } else {
-            this.$('#seg-sat-value').prop('disabled', '');
+            this.$('#seg-sat-value').prop('disabled', '');   
         }
-
+        
         // Disable the satisfaction value for the constant segment of RC functions
         if (this.intention.get('evolvingFunction').get('type') == 'RC' && this.model.get('type') == 'C') {
             this.$('#seg-sat-value').prop('disabled', '');
@@ -956,7 +949,7 @@ var FuncSegView = Backbone.View.extend({
             }
         }
         else {
-            this.checkSatValue();
+           this.checkSatValue();
         }
     },
 
@@ -973,8 +966,7 @@ var FuncSegView = Backbone.View.extend({
         if (functionType == 'R') {
             this.$("#seg-sat-value").last().html(this.satValueOptionsAll());
             this.$("#seg-sat-value").val("(no value)");
-            this.model.get('refEvidencePair');
-        } else if (this.intention.get('evolvingFunction').get('type') !== 'MP' && this.intention.get('evolvingFunction').get('type') !== 'MN' && this.intention.get('evolvingFunction').get('type') !== 'SD' && this.intention.get('evolvingFunction').get('type') !== 'DS' && functionType == 'C') {
+        } else if (this.intention.get('evolvingFunction').get('type') == 'CR' && this.intention.get('evolvingFunction').get('type') == 'C' && functionType == 'C') {
             this.$("#seg-sat-value").val(this.initSatValue);
             this.model.set('refEvidencePair', this.initSatValue);
             // Set correct dropdown values for an increasing function depending on the initial sat value    
@@ -984,7 +976,7 @@ var FuncSegView = Backbone.View.extend({
         } else if (functionType == 'D') {
             this.$('#seg-sat-value').html(this.satValueOptionsPositiveOrNegative(initValue, false));
         }
-        this.$('#seg-sat-value').change();
+        this.$('#seg-sat-value').val(this.model.get('refEvidencePair'));      
         return;
     },
 
