@@ -395,6 +395,10 @@ var ElementInspector = Backbone.View.extend({
                     var newValue = validPair[functionType]['defaultValue'];
                     if (funcTypeChanged) { this.$('#init-sat-value').val(newValue); }
                 }
+                //Changes initial satisfaction value to no value for stochastic and stochastic constant functions
+                if (funcTypeChanged && functionType == 'R' || functionType == 'RC') {
+                    this.$('#init-sat-value').val('(no value)');
+                }
             }
         }
     },
