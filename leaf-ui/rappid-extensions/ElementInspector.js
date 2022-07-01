@@ -185,6 +185,7 @@ var ElementInspector = Backbone.View.extend({
                 }
             } else {
                 this.updateHTML();
+                console.log("runs");
             }
 
         }
@@ -336,6 +337,7 @@ var ElementInspector = Backbone.View.extend({
     updateHTML: function (event) {
         // Check if selected init sat value and functionType pair is illegal
         // Only runs if evolvingFunction is defined and therefore there is a function type
+        console.log("issue");
         this.validityCheck(event);
 
         if (this.intention.get('evolvingFunction') != null) {
@@ -348,7 +350,6 @@ var ElementInspector = Backbone.View.extend({
             this.$('.function-type').val(functionType);
             this.$('#user-constraints').show("fast");
         } else {
-
             if (functionType == 'NB') {
                 $('#init-sat-value').prop('disabled', true);
                 $('#init-sat-value').css('background-color', 'grey');
@@ -360,6 +361,12 @@ var ElementInspector = Backbone.View.extend({
                 this.$('#init-sat-value').prop('disabled', false);
             }
         }
+
+        //Changes initial satisfaction value to no value for stochastic and stochastic constant functions
+        if (functionType == 'RC') {
+            console.log("test");
+            this.$('#init-sat-value').val('(no value)');
+        } 
         this.rerender();
     },
 
@@ -383,6 +390,7 @@ var ElementInspector = Backbone.View.extend({
         var funcTypeChanged = event.target.className == 'function-type';
 
         if (functionType !== null && initValue !== null) {
+            console.log("when does this run");
             // Perform check
             // If not UD, just do a regular check
             if (functionType != "UD") {
@@ -394,10 +402,6 @@ var ElementInspector = Backbone.View.extend({
                     if (initValueChanged && initValue == "(no value)") { this.$('.function-type').val('C'); }
                     var newValue = validPair[functionType]['defaultValue'];
                     if (funcTypeChanged) { this.$('#init-sat-value').val(newValue); }
-                }
-                //Changes initial satisfaction value to no value for stochastic and stochastic constant functions
-                if (funcTypeChanged && functionType == 'R' || functionType == 'RC') {
-                    this.$('#init-sat-value').val('(no value)');
                 }
             }
         }
