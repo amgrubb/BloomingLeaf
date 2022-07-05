@@ -185,7 +185,6 @@ var ElementInspector = Backbone.View.extend({
                 }
             } else {
                 this.updateHTML();
-                console.log("runs");
             }
 
         }
@@ -337,7 +336,6 @@ var ElementInspector = Backbone.View.extend({
     updateHTML: function (event) {
         // Check if selected init sat value and functionType pair is illegal
         // Only runs if evolvingFunction is defined and therefore there is a function type
-        console.log("issue");
         this.validityCheck(event);
 
         if (this.intention.get('evolvingFunction') != null) {
@@ -363,8 +361,7 @@ var ElementInspector = Backbone.View.extend({
         }
 
         //Changes initial satisfaction value to no value for stochastic and stochastic constant functions
-        if (functionType == 'RC') {
-            console.log("test");
+        if (functionType == 'RC' || functionType == 'R') {
             this.$('#init-sat-value').val('(no value)');
         } 
         this.rerender();
@@ -390,7 +387,6 @@ var ElementInspector = Backbone.View.extend({
         var funcTypeChanged = event.target.className == 'function-type';
 
         if (functionType !== null && initValue !== null) {
-            console.log("when does this run");
             // Perform check
             // If not UD, just do a regular check
             if (functionType != "UD") {
@@ -722,7 +718,7 @@ var ElementInspector = Backbone.View.extend({
             var i = 0;
             // Creates a FuncSegView for each of the function segment in the functionSegList
             funcSegList.forEach(
-                funcSeg => {    
+                funcSeg => {
                     var functionSegView = new FuncSegView({ model: funcSeg, intention: this.intention, index: i, initSatValue: this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair'), chart: this.chart });
                     $('#segment-functions').append(functionSegView.el);
                     functionSegView.render();
@@ -913,13 +909,13 @@ var FuncSegView = Backbone.View.extend({
         // Disable the function satisfaction dropdown for constant and stochastic functions
         if (this.model.get('type') == 'C' || this.model.get('type') == 'R') {
             this.$('#seg-sat-value').prop('disabled', 'disabled');
-            if (this.intention.get('evolvingFunction').get('type') !== 'MP' && this.intention.get('evolvingFunction').get('type') !== 'MN' && (this.model.get('type') == 'C')) {               
+            if (this.intention.get('evolvingFunction').get('type') !== 'MP' && this.intention.get('evolvingFunction').get('type') !== 'MN' && (this.model.get('type') == 'C')) {
                 if (this.intention.get('evolvingFunction').get('type') == 'SD' || this.intention.get('evolvingFunction').get('type') == 'DS') {
                     this.$("#seg-sat-value").val(this.model.get('refEvidencePair'));
                 }
             }
         } else {
-            this.$('#seg-sat-value').prop('disabled', '');   
+            this.$('#seg-sat-value').prop('disabled', '');
         }
         
         // Disable the satisfaction value for the constant segment of RC functions
