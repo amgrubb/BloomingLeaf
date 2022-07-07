@@ -83,10 +83,36 @@ class SliderObj {
         currentAnalysis.get('slider').sliderElement.noUiSlider.set(isSwitch ? 0 : sliderMax);
         currentAnalysis.get('slider').sliderElement.noUiSlider.on('update', function (values, handle) {
             SliderObj.updateSliderValues(parseInt(values[handle]), currentAnalysis);
+            var t = parseInt(values[handle])%2;
+            console.log(t);
+            if (t == 0) {
+                console.log("EVEN");
+                SliderObj.dissapearIntention(true,'#j_7');
+            }
+            else {
+                console.log("ODD");
+                SliderObj.dissapearIntention(false,'#j_7');
+            }
         });
         EVO.setCurTimePoint(isSwitch ? 0 : sliderMax, currentAnalysis);
         SliderObj.adjustSliderWidth(sliderMax);
         return true;
+    }
+
+    /**
+     * 
+     */
+    static dissapearIntention(bool,word) {
+        if (bool) {
+            $(word).css("display", "none");
+            $('#j_12').css("display", "none");
+            $('#j_13').css("display", "none");
+        }
+        else {
+            $('#j_12').css("display", "");
+            $('#j_13').css("display", "");
+            $(word).css("display", "");
+        }
     }
 
     /**
@@ -155,7 +181,9 @@ class SliderObj {
 
         currentAnalysis.get('elementList').forEach(element =>
             SliderObj.updateNodeValues(element, sliderValue));
-
+            
+        console.log(currentAnalysis.get('elementList'));
+        console.log(currentAnalysis.get('elementList').getElementById);    
         EVO.setCurTimePoint(sliderValue, currentAnalysis);
     }
 
