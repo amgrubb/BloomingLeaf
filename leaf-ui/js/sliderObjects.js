@@ -84,14 +84,15 @@ class SliderObj {
         currentAnalysis.get('slider').sliderElement.noUiSlider.on('update', function (values, handle) {
             SliderObj.updateSliderValues(parseInt(values[handle]), currentAnalysis);
             var t = parseInt(values[handle])%2;
+            var intentions = ['#j_14','#j_15','#j_16','#j_17','#j_18','#j_19','#j_20','#j_21','#j_22','#j_23','#j_24','#j_25','#j_26'];
             console.log(t);
             if (t == 0) {
                 console.log("EVEN");
-                SliderObj.dissapearIntention(true,'#j_7');
+                SliderObj.dissapearIntention(true,'#j_27');
             }
             else {
                 console.log("ODD");
-                SliderObj.dissapearIntention(false,'#j_7');
+                SliderObj.dissapearIntention(false,'#j_27');
             }
         });
         EVO.setCurTimePoint(isSwitch ? 0 : sliderMax, currentAnalysis);
@@ -103,15 +104,29 @@ class SliderObj {
      * 
      */
     static dissapearIntention(bool,word) {
+        var intentions = ['#j_14','#j_15','#j_16','#j_17','#j_18','#j_19','#j_20','#j_21','#j_22','#j_23','#j_24','#j_25','#j_26'];
+        var links = ['#j_29','#j_30','#j_31','#j_32','#j_33','#j_34','#j_35','#j_36','#j_37','#j_38','#j_40','#j_44'];
+        var intentionsLength = intentions.length;
+        var linksLength = links.length;
         if (bool) {
+            for(var i = 0; i<intentionsLength; i++){
+                $(intentions[i]).css("display", "none");
+            }
+            for(var i = 0; i<linksLength; i++){
+                $(links[i]).css("display", "none");
+            }
             $(word).css("display", "none");
-            $('#j_12').css("display", "none");
-            $('#j_13').css("display", "none");
+            
         }
         else {
-            $('#j_12').css("display", "");
-            $('#j_13').css("display", "");
+            for(var i = 0; i<intentionsLength; i++){
+                $(intentions[i]).css("display", "");
+            }
+            for(var i = 0; i<linksLength; i++){
+                $(links[i]).css("display", "");
+            }
             $(word).css("display", "");
+            
         }
     }
 
