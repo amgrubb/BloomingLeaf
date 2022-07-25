@@ -84,8 +84,15 @@ class SliderObj {
         currentAnalysis.get('slider').sliderElement.noUiSlider.on('update', function (values, handle) {
             SliderObj.updateSliderValues(parseInt(values[handle]), currentAnalysis);
             var t = parseInt(values[handle])%2;
-            var intentions = ['#j_14','#j_15','#j_16','#j_17','#j_18','#j_19','#j_20','#j_21','#j_22','#j_23','#j_24','#j_25','#j_26'];
+            //var intentions = ['#j_14','#j_15','#j_16','#j_17','#j_18','#j_19','#j_20','#j_21','#j_22','#j_23','#j_24','#j_25','#j_26'];
             console.log(t);
+
+            var elementList = currentAnalysis.get('elementList');
+            console.log(elementList);
+            
+            SliderObj.getActors();
+            SliderObj.getIntentionsList();
+
             if (t == 0) {
                 console.log("EVEN");
                 SliderObj.dissapearIntention(true,'#j_27');
@@ -101,6 +108,29 @@ class SliderObj {
     }
 
     /**
+     * get actors of the model
+     */
+    static getActors() {
+        var elements = graph.getElements();
+        var actors = elements.filter(element => element.get('type') == 'basic.Actor');
+        console.log(actors);
+    }
+
+    /**
+     * a method that prints out all the intentions of the model
+     */
+    static getIntentionsList() {
+        var elements = graph.getElements();
+        var intentionsList = [];
+        for(var i = 0; i<elements.length; i++ ){
+            if(!(elements[i] instanceof joint.shapes.basic.Actor)) {
+                intentionsList.push(elements[i]);
+            }
+        }
+        console.log(intentionsList);
+    }
+
+    /**
      * 
      */
     static dissapearIntention(bool,word) {
@@ -111,9 +141,11 @@ class SliderObj {
         if (bool) {
             for(var i = 0; i<intentionsLength; i++){
                 $(intentions[i]).css("display", "none");
+                console.log(intentions[i]);
             }
             for(var i = 0; i<linksLength; i++){
                 $(links[i]).css("display", "none");
+                console.log(links[i]);
             }
             $(word).css("display", "none");
             
@@ -198,6 +230,7 @@ class SliderObj {
             SliderObj.updateNodeValues(element, sliderValue));
             
         console.log(currentAnalysis.get('elementList'));
+        console.log(currentAnalysis.get('basic.Actor'));
         console.log(currentAnalysis.get('elementList').getElementById);    
         EVO.setCurTimePoint(sliderValue, currentAnalysis);
     }
