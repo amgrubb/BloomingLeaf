@@ -1488,6 +1488,7 @@
 
 			this.ctx.font = this.titleFont;
 
+			//var titleWdith = 10;
 			var titleWidth = this.ctx.measureText(this.title).width,
 				//Label has a legend square as well so account for this.
 				labelWidth = longestText(this.ctx,this.font,this.labels) + this.fontSize + 3,

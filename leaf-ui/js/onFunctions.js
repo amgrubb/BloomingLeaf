@@ -7,8 +7,8 @@ It also contains the setup for Rappid elements.
 // Navigation bar functions:
 var max_font = 20;
 var min_font = 6;
-var current_font = 10;
-var default_font = 10;
+var current_font = 12;
+var default_font = 12;
 
 function zoomIn(pPaperScroller) {
     pPaperScroller.zoom(0.2, { max: 3 });
@@ -54,7 +54,7 @@ function fontDown(pPaper) {
 }
 
 /**
- * Changes font size to default (10)
+ * Changes font size to default (12)
  * @param {*} pPaper 
  */
 function defaultFont(pPaper) {
