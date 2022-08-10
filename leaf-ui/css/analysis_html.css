@@ -1,3 +1,7 @@
+/**
+ * Next State Window Css.
+ */
+
 /* Layout Hierachy: represented by z-index
    Paper: 0
       - Stencils: 1
@@ -6,15 +10,10 @@
       - Toolbars: 1
 */
 
+/* Sets attributes for any child of the body tag */
 body {
-  -webkit-user-select: none;
-  -moz-user-select: -moz-none;
-  -khtml-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  margin: 0;
-  padding: 0;
-  font-family: Arial;
+  user-select: none; /* Any text that is a child of the body tag will not be able to be clicked on nor highlighted */
+  font-family: 'Trebuchet MS'; /* Sets the font of text */
 }
 
 /* Disable pointer events */
@@ -26,17 +25,10 @@ body {
 /* Adds waiting spinner to cursor */
 .spinning *
 {
-    cursor: wait !important;
+  cursor: wait !important;
 }
 
-.header {
-   padding: 0px;
-}
-
-#swal2-content b{
-  color: red;
-}
-
+/* Sets attributes for BloomingLeaf title */
 #name {
   position: absolute;
   top: 0px;
@@ -46,69 +38,80 @@ body {
   height: 40px;
   text-align: center;
   margin: 0;
-  padding-top: 8px;
+  padding-top: 10px;
   background-color: #333;
   color: #CCFFCC;
   font-size: 1.4em;
   font-style: italic;
 }
 
+/* Sets attributes for how the dropdown menu appears */
 .dropdown {
   position: relative;
   display: inline-block;
 }
 
-.dropdown:hover .dropdown-toolbar,
-.dropdown:hover .dropdown-inspector {
-   display: block;
+/* Sets attributes for the dropdown menu on the toolbar*/
+.dropdown-toolbar {
+  left: 0;
+  z-index: 1;
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 180px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
 }
 
-/* Paper */
+/* Sets attributes for each box in the dropdown menu */
+.dropdown-toolbar a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+/* When text is hovered, background color changes */
+.dropdown-toolbar a:hover {
+  background-color: #E8E8E8;
+}
+
+/* When Font Size btn is hovered on the dropdown menu is displayed */
+.dropdown:hover .dropdown-toolbar {
+  display: block;
+}
+
+/* Sets attributes for Paper */
 #paper {
-   position: absolute;
-   top: 40px;
-   left: 201px;
-   right: 10px;
-   bottom: 0;
-   overflow: hidden;
-   background-color: hsla(220,11%,97%,.95);
+  position: absolute;
+  top: 40px;
+  left: 201px;
+  right: 10px;
+  bottom: 0;
+  overflow: hidden;
+  background-color: hsla(220,11%,97%,.95);
 }
 
-#paper .paper-scroller {
-   width: 100%;
-   height: 100%;
+/* Sets width and height for paper and adds a scroller */
+.paper-scroller {
+  width: 100%;
+  height: 100%;
 }
 
+ /* Sets the attributes of the smaller paper */
 #paper svg {
-   /* Grid background image */
-   background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAHUlEQVQYV2NkYGAwBuKzQIwXMBJSAJMfVUidcAQAnUQBC6jEGBUAAAAASUVORK5CYII=');
-   background-color: white;
-   box-shadow: 1px 1px 1px lightgray;
+  /* Grid background image */
+  background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAHUlEQVQYV2NkYGAwBuKzQIwXMBJSAJMfVUidcAQAnUQBC6jEGBUAAAAASUVORK5CYII=');
+  background-color: white;
+  box-shadow: 1px 1px 1px lightgray;
 }
 
-#paper svg .drawable {
-   /* Grid background image */
-   fill: white;
-   stroke: black;
-   stroke-width: 1px;
-}
-
-.element.basic.Rect rect,
-.element.basic.Circle circle,
-.element.devs.Model rect {
-   -webkit-svg-shadow: 2px 2px 5px gray;
-}
-
-.element.basic.Path path { -webkit-svg-shadow: 1px 1px 2px gray; }
-.element.basic.Path path { fill: #3e3f47; }
-
-/* Left panel */
-.left-panel{
+/* Sets attributes for the left panel */
+.left-panel {
   position: absolute;
   left: 0;
-  top: 40px;
+  top: 45px;
   bottom: 0;
-  width: 200px;
+  width: 205px;
   overflow-y: scroll;
   background-color: #f9f9f9;
   box-shadow: 2px 0px 16px 0px rgba(0,0,0,0.2);
@@ -116,215 +119,108 @@ body {
   z-index: 0;
 }
 
-.stencil {
-  position: absolute;
-  left: 0;
-  top: 14px;
-  bottom: 0;
-  right: 0;
-  width: 100%;
-  border: none;
+/* Hides the left panel scroll bar */
+.left-panel::-webkit-scrollbar {
+  display: none;
 }
 
-.stencil .elements {
-  height: 380px;
-  text-shadow: none;
-  background-color: transparent;
-}
-
+/* Sets the attributes for every label within the left panel, labels are the text headers */
 .left-panel label {
   display: block;
   text-align: center;
-  font-size: 12px;
-  line-height: 18px;
+  font-size: 15px;
   height: 18px;
-
-  background-color: #333;
   color: #bcbcbc;
-  text-shadow: 0 -1px 0 #000;
-  background-color: rgba(90, 90, 90, 1);
 }
 
-/* Right Panel */
+/* Sets attributes for the right panel */
 .inspector {
-  left: auto;
+  position: absolute;
+  right: 0px;
   top: 40px;
-  width: 240px;
-  padding: 10px;
-
+  bottom: 0px;
+  width: 260px;
+  overflow-y: scroll;
   background-color: #333;
   color: #bcbcbc;
   text-shadow: 0 -1px 0 #000;
   text-align: center;
 }
 
-.inspector input,
-.inspector textarea {
-   text-shadow: 0 -1px 0 #000;
-   color: #ddd;
-   box-shadow: inset 0 0 0 1px rgba(0,0,0,0.1),0px 0 0 1px rgba(255,255,255,0.1);
-   border: 1px solid black;
-   background: transparent;
-   height: 20px;
-   line-height: 20px;
-   resize: none;
-
+/* Sets attributes for input text boxes on the right panel */
+.inspector input, .inspector textarea {
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.1),0px 0 0 1px rgba(255,255,255,0.1);
+  border: 1px solid black;
+  height: 20px;
+  line-height: 20px;
+  resize: none;
 }
 
+/* Sets the attributes for every label within the right panel */
 .inspector label {
-  margin: 14px 0 8px 0;
+  margin: 14px 0px 8px 0px;
   font-size: 1.25em;
+  display: block;
 }
 
-.sub-label{
-  font-size: 1em !important;
+/* Customizes the right scroller track (track = path that scrollbar thumb takes) */
+.inspector::-webkit-scrollbar-track {
+	background-color: #333;
 }
-.sub-input{
-  width: 50px !important;
-  font-size: 0.9em;
+
+/* Customizes the right scroller */
+.inspector::-webkit-scrollbar
+{
+	width: 10px;
 }
-.sub-btn {
+
+/* Sets attributes for the right scroller thumb*/
+.inspector::-webkit-scrollbar-thumb
+{
+	border-radius: 10px;
+  height: 20px;
+	background-color: #AAAAAA;
+}
+
+/* Sets attributes for the Dropdown Satisfaction Menu */
+#sat-value {
+  background-color: rgb(36, 150, 255) !important;
+  color: white;
+  font-size: 11px;
+  font-weight: 200;
+  width: 200px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  border: 0;
+}
+
+/* Sets attributes for the "Go" btn */
+.inspector-btn-small {
+  box-shadow: inset 0 -2px #dad8d8;
   position: relative;
   vertical-align: top;
-  width: 50px;
+  width: 30px;
   height: 23px;
   padding: 0;
-  color: white;
+  color: black;
   text-align: center;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
   border: 0;
   cursor: pointer;
-  margin-left: 5px;
+  border-radius: 5px;
+  margin-top: 2px;
+  margin-bottom: 5px;
 }
 
-
-.dropdown-inspector {
-  display: none;
-  background-color: #f9f9f9;
-  min-width: 240px;
+/* Add color overlay when hovered over to "Go" btn */
+.inspector-btn-small:hover {
+  background: #fffefe;
 }
 
-.dropdown-inspector a {
-  color: black;
-  padding: 12px 16px;
-  display: block;
-}
-
-.dropdown-inspector a:hover {
-   background-color: #E8E8E8;
-}
-
-.dropdown:hover .dropdown-inspector {
-   display: block;
-}
-
-.element-inspector input,
-.element-inspector textarea {
-  width: 215px;
-  font-size: 0.9em;
-  margin-bottom: 28px;
-}
-
-#function-div, #intension-div, #link-div, #query-div{
-  width: 215px;
-  text-align: center;
-  margin: auto;
-}
-
-#init-sat-value, .actor-type, .function-type,
-.function-sat-value, .user-defined-select, .repeat-select,
-.relationship-select, .link-type, #conflict-level, #abs-vals,
-#assigned-vals{
-  background-color: rgba(31, 150, 125, 1);
-  border-color: rgba(31, 121, 101, 1);
-
-  color: white;
-  font-size: 10;
-  font-weight: 200;
-  width: 215px;
-  margin: auto;
-  border: 0;
-}
-
-#init-sat-value:disabled {
-  background-color: rgba(36, 150, 255, 1);
-  color: white;
-}
-.function-type:disabled {
-  background-color: rgba(36, 150, 255, 1);
-  color: white;
-}
-
-.user-defined-select, .repeat-select, .relationship-select{
-  width: 104px;
-  margin-bottom: 8px;
-}
-
-.query-select{
-  float: right;
-}
-
-.user-defined-select:nth-child(1),
-.repeat-select:nth-of-type(1),
-#relationship-src{
-  float: left;
-  clear: left;
-}
-
-.user-defined-select:nth-child(2),
-.repeat-select:nth-of-type(2),
-#relationship-tar{
-  float: right;
-}
-
-.user-defined-select{
-  display: block;
-}
-
-.new-user-constraints:first-child{
-  width: 100px;
-  margin: 0 10px 10px 10px;
-  float: left;
-}
-
-select > .select-placeholder {
-  display: none;
-}
-
-.function-type{
-  background-color: rgba(36, 150, 255, 1);
-  border-color: rgba(29, 122, 208, 1);
-}
-
-.function-type, .function-sat-value{
-  margin: auto;
-  margin-bottom: 8px;
-}
-
-.inspector-error{
-  display: block;
-  font-size: 0.9em;
-  margin: 0 0 12px 0;
-  color: tomato;
-  font-weight: 200;
-}
-
-.link-tools{
-   display: block;
-}
-.inspector-btn-small {
-    position: relative;
-    vertical-align: top;
-    width: 30px;
-    height: 23px;
-    padding: 0;
-    color: black;
-    text-align: center;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
-    border: 0;
-    cursor: pointer;
-}
+/* Sets attributes for the 3 Action btns */
 .inspector-btn {
+  -webkit-box-shadow: inset 0 -2px #dad8d8;
+  box-shadow: inset 0 -2px #dad8d8;
   position: relative;
   vertical-align: top;
   width: 181px;
@@ -332,111 +228,114 @@ select > .select-placeholder {
   padding: 0;
   color: black;
   text-align: center;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
   border: 0;
   cursor: pointer;
+  border-radius: 10px;
+  margin-top: 6px;
+  margin-left: 10px;  /* Aligns the 3 buttons at the bottom of the left panel to the center */
+  margin-right: 10px;
 }
 
+/* Add color overlay over the 3 buttons when hovered over */
+.inspector-btn:hover {
+  background: #fffefe;
+}
+
+/* When the 3 buttons are clicked, a click effect happens */
 .inspector-btn:active {
-  top: 1px;
-  outline: none;
-  -webkit-box-shadow: none;
-  box-shadow: none;
+  background-color: #fffefe;
+  box-shadow: inset 0 -2px #dad8d8;
+  transform: translateY(2px);
 }
 
-.cell-labels{
-  margin: 0 6px 8px;
-  float: left;
-  font-size: 1em;
-  font-weight: lighter;
+/* Add color overlay over the go buttons and click effect */
+.inspector-btn-small:active {
+  background-color: #fffefe;
+  box-shadow: inset 0 -2px #dad8d8;
+  transform: translateY(2px);
 }
 
-#clear-query-btn{
-  margin: 0;
+/* Sets attributes for Trash btn */
+ .table-btn-small {
+  background: #333333; 
+  -webkit-box-shadow: inset 0 -2px #292929;
+  box-shadow: inset 0 -2px #292929;
+  width: 30px;
+  height: 23px;
+  border: 0;
+  cursor: pointer;
+  border-radius: 5px;
+} 
+
+/* Add color overlay over the trash buttons and click effect */
+.table-btn-small:hover {
+  background: #424242;
 }
 
-#query-btn{
-  margin: 16px 0;
+/* When trash icon is pressed on, the color is changed creating a click effect */
+.table-btn-small:active {
+  background-color: #424242;
+  box-shadow: inset 0 -2px #292929;
+  transform: translateY(2px);
 }
 
-.green-btn{
-  /*background: #27ae60;*/
-  background: #1E866A;
-  -webkit-box-shadow: inset 0 -2px #219d55;
-  box-shadow: inset 0 -2px #219d55;
-}
-
-.blue-btn{
-  background-color: rgba(36, 150, 255, 1) !important;
-  -webkit-box-shadow: inset 0 -2px rgba(29, 122, 208, 1);
-  box-shadow: inset 0 -2px rgba(29, 122, 208, 1);
-}
-
-.red-btn{
-  background-color: #e74c3c !important;
-  -webkit-box-shadow: inset 0 -2px #db4334;
-  box-shadow: inset 0 -2px #db4334;
-}
-
-.small-btn{
+/* Sets attributes for blue btn, Filter apply btn is a child of blue-btn */
+.blue-btn {
+  background-color: rgb(36, 150, 255) !important;
+  box-shadow: inset 0 -2px rgb(29, 122, 208);
+  color: white;
   width: 160px;
   height: 25px;
   border-radius: 5px;
-  font-size: 0.8em;
+  font-size: 15px;
   margin-top: 12px;
 }
 
-#btn-forward-analysis{
-  margin: 0;
+/* Overides attributes for clear all btn, clear btn is a child of inspector-btn */
+#clear-all {
+  width: 120px;
+  height: 25px;
+  background-color: #fffefe;
+  color: black;
+  font-size: 15px;
 }
 
-#concatenate-btn{
-  margin-bottom: 12px;
+/* Sets attributes for when filter apply btn is clicked while disabled */
+.disabled-filter-clicked {
+  background-color: #6C7278 !important;
+  box-shadow: inset 0 -2px #6C7278 !important;;
 }
 
-/* Halo */
-.halo .box {
-   display: none;
-   color: #bcbcbc;
-   font-size: 8px;
-   background-color: #333;
-   text-shadow: 0 -1px 0 #000;
-   border: 1px solid #4f4f4f;
+/* When filter applied is clicked on when intention is selected, click effect is made */
+#filter-apply:active {
+  background-color: rgb(36, 150, 255);
+  box-shadow: inset 0 -2px rgb(29, 122, 208);
+  transform: translateY(2px);
 }
 
-.paper .halo{
-   background-color: transparent;
-   box-shadow: none;
-}
-
-/* Toolbar */
+/* Toolbar at the very top of the page containing, "Zoom in, Zoom out, Font Size btn, EVO slider btns"  */
 .toolbar {
-   position: absolute;
-   top: 0px;
-   left: 201px;
-   right: 0;
-   padding-left: 0px;
-   z-index: 1;
-   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.4);
-   background-color: #333;
+  height: 50px;
+  position: absolute;
+  top: 0px;
+  left: 200px;
+  right: 0;
+  padding-left: 0px;
+  z-index: 1;
+  background-color: #333;
+  border-top: none;
 }
 
-.toolbar, #stencil {
-   border-top: none;
-}
-
-#model-toolbar{
-  display: inline;
-}
-
+/* Sets attributes for buttons on the tool bar: "Zoom in, Zoom out, Font Size btn, EVO slider" */
 .btn {
-   padding: 5px 10px;
-   line-height: 30px;
-   margin: 0;
-   margin-left: -5px;
-   cursor: pointer;
+  padding: 7px 10px;
+  line-height: 30px;
+  margin: 0;
+  margin-left: 4px;
+  cursor: pointer;
 }
 
+/* Sets attributes for both the toolbar and the btns on it */
 .toolbar .btn {
   background-color: #333;
   border: none;
@@ -445,90 +344,19 @@ select > .select-placeholder {
   font-size: 0.75em;
 }
 
-.toolbar .btn:hover {
-    background-color: #111;
+/* Add color overlay over the toolbar buttons and click effect */
+.btn:hover {
+  background-color: #111;
 }
 
-#symbolic-btn {
-   color: white;
-   min-width: 80px;
+/* Sets attributes for filter check boxes */
+.filter_checkbox{
+  margin-top: 5px;
 }
 
-#modeling-btn{
-   min-width: 80px;
-}
+/* beginning of representative color slider */
 
-#analysis-btn {
-  background: #27ae60;
-  color: white;
-  min-width: 80px;
-}
-
-.dropdown-toolbar {
-  left: 0;
-  z-index: 1;
-  display: none;
-  position: absolute;
-  background-color: #f9f9f9;
-  min-width: 180px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-}
-
-.dropdown-toolbar a {
-  color: black;
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
-}
-
-.dropdown-toolbar a:hover {
-  background-color: #E8E8E8;
-}
-
-/* Force-Directed layout */
-#layout {
-   border-bottom: 1px solid #333;
-}
-
-/* Slider */
-#slider{
-  margin-left: auto;
-  margin-right: auto;
-  -webkit-box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.25);
-  -moz-box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.25);
-  box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.25);
-  z-index: 3;
-}
-
-/* Attribution */
-div.attribution{
-  position: fixed;
-  bottom: 0;
-  left: 30;
-  color: #333333;
-  width: 190px;
-  font-size: 9px;
-  margin: 5px;
-}
-
-/* beggining of representative color slider */
-
-.slidecontainer {
-  width: 100%; /* Width of the outside container */
-}
-#top-label {
-  background-color: #333;
-  border: none;
-  color: white;
-  text-shadow: none;
-  font-size: 0.75em;
-  margin: 0px;
-  padding: 0px;
-  position: relative;
-  top: -15px;
-  left: 5px;
-}
-
+/* "EVO" text on toolbar */
 #top-label-analysis {
   background-color: #333;
   border: none;
@@ -542,6 +370,14 @@ div.attribution{
   left: 80px;
 }
 
+/* Sets position & size for the slider on the toolbar */
+#colorResetAnalysis {
+  position: relative;
+  top: -6px;
+  width: 69px; /* 92 */
+}
+
+/* Sets attributes for the text under the slider on the toolbar */
 .on-off {
   font-size: 8px;
   color: white;
@@ -551,20 +387,11 @@ div.attribution{
   margin-bottom: 0px;
   margin-left: 10px;
   }
-#colorReset {
-  position: relative;
-  top: -20px;
-}
-#colorResetAnalysis {
-  position: relative;
-  top: -6px;
-  width: 69px; /* 92 */
-}
+
+/* Sets attributes for the entire slider selection including the slider and text on the toolbar */
 .EVO-whole-button {
-  cursor: pointer;
   display: inline-block;
   height: 35px;
-  width: 100px;
   margin-top: 0px;
   margin-bottom: -20px;
   padding-top: 0px;
@@ -572,30 +399,25 @@ div.attribution{
 }
 
 /* portion of the code from: https://www.w3schools.com/howto/howto_js_rangeslider.asp */
+/* Creates slider and sets attributes for the slider */
 .EVO-slider {
   -webkit-appearance: none;  /* Override default CSS styles */
   appearance: none;
-  width: 50px; /* Full-width */
   height: 10px; /* Specified height */
   border-radius: 5px;
   background: #E8E8E8; /* white background */
   outline: none; /* Remove outline */
   opacity: .9; /* Set transparency (for mouse-over effects on hover) */
-  -webkit-transition: .2s; /* 0.2 seconds transition on hover */
   transition: opacity .2s;
-}
-
-#nextStateSlider{
-  width: 140px;
 }
 
 /* Mouse-over effects */
 .EVO-slider:hover {
   opacity: 1; /* Fully shown on mouse-over */
 }
+
 /* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
 .EVO-slider::-webkit-slider-thumb {
-  -webkit-appearance: none; /* Override default look */
   appearance: none;
   width: 25px; /* Set a specific slider handle width */
   height: 10px; /* Slider handle height */
@@ -603,11 +425,77 @@ div.attribution{
   background: #27ae60; /* Green background */
   cursor: pointer; /* Cursor on hover */
 }
-.EVO-slider::-moz-range-thumb {
-  width: 25px; /* Set a specific slider handle width */
-  height: 25px; /* Slider handle height */
-  background: #27ae60; /* Green background */
-  cursor: pointer; /* Cursor on hover */
-}
 
 /* end of representive slider styling */
+
+/* Sets attributes for Applied Intention Filter text */
+.inspectorFilterNames {
+  padding-top: 20px;
+}
+
+/* Sets attributes for Applied Intention Filter table headings */
+.tableHeading {
+  background-color: rgb(67, 67, 67); 
+  text-align: center;
+  font-size: 12px;
+  height: 15px;
+  color: white;
+  padding: 4px;
+}
+
+/* Sets attributes for Applied Intention Filter table */
+.inspectorFilterTable {
+  margin: 15px 5px 0px 15px;
+  display:block;
+  height:300px;
+  overflow:auto;
+}
+
+/* Customizes the Applied Intention Filter table scroller track (track = path that scrollbar thumb takes) */
+.inspectorFilterTable::-webkit-scrollbar-track {
+	border-radius: 10px;
+	background-color: rgb(74, 74, 74);
+}
+
+/* Customizes the Applied Intention Filter table scroller */
+.inspectorFilterTable::-webkit-scrollbar {
+	width: 7px;
+	background-color: #333;
+}
+
+/* Sets attributes for the Applied Intention Filter table scroller thumb*/
+.inspectorFilterTable::-webkit-scrollbar-thumb {
+	border-radius: 10px;
+  height: 20px;
+	background-color: #ffffff;
+}
+
+/* Sets attributes for the  data within the Applied Intention Filter table */
+.tableData {
+  border: 1px solid;
+  border-collapse: collapse;
+  font-size: 11px;
+  color:#ffffff;
+  border-top: 1px solid #ddd;
+  padding: 0px;
+}
+
+/* Sets attributes for text boxes (Node name & Current Sat val boxes) when disabled*/
+.disabled-textbox {
+  background-color:#FFF;
+}
+
+/* Sets attributes for when text boxes are enabled (enabled when an intention is selected) */
+.disabled-textbox-clicked {
+  color: rgb(50, 50, 50) !important;
+}
+
+/* Sets attributes for pagination*/
+.flex-container {
+  display: flex;
+  flex-direction: row;
+  font-size: 17px;
+  justify-content: space-between;
+  align-items: center;
+  text-overflow: ellipsis;
+}
