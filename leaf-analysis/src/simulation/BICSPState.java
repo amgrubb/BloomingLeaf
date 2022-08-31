@@ -121,7 +121,7 @@ public class BICSPState {
 	
 	private void finishInitialization() {
 		CSPNode.initializeConflictPrevention(this.spec, this.sat, this.values, this.zero);
-   		CSPNode.initializePrevResults(this.spec, this.constraints, this.timePoints, this.values, this.uniqueIDToValueIndex);
+   		CSPNode.initializePrevResults(this.spec, this.constraints, this.timePoints, this.values, this.uniqueIDToValueIndex, this.timePointMap);
     	CSPLinks.initializeLinkConstraints(this.constraints, this.spec, this.values, 
     			this.uniqueIDToValueIndex, this.timePoints, this.timePointMap);
     	CSPIntentions.initializeEvolvingFunctionsForIntentions(this.constraints, this.spec, this.values, 
