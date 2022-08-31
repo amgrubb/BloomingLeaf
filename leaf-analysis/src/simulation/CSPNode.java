@@ -152,7 +152,13 @@ public class CSPNode {
 	   		for (Map.Entry<String,Integer> mapElement : prevTPMap.entrySet()) {
 	   			String key = mapElement.getKey();
 	   			int value = mapElement.getValue();
-	   			IntVar refTP = CSPPath.getTimePoint(timePointMap, key);
+	   			boolean extraRandomFound = false;
+	   			if (key.equals("TNS-R")) {
+	   				extraRandomFound = true;	//TODO: Need to account for the new random time point.
+	   				//TODO: Fix Me!!! HERE
+	   				continue;
+	   			} 
+	   			IntVar refTP = CSPPath.getTimePoint(timePointMap, key);	//Does not contain TNS-R
 	   			
 	   			// Update the range of the timepoint that has already be assigned.
 	   			if (refTP.min() != refTP.max()) {
@@ -189,7 +195,7 @@ public class CSPNode {
 	   			}	
 	   		}	
    		}
-   		//System.out.print("Test");   		
+   		System.out.print("Test");   		
 
 
    		
