@@ -1145,7 +1145,8 @@
         console.log(myInputJSObject.results.get('selectedTimePoint'));
         // Prevent user from exploring next state beyond allowed time points
         if (myInputJSObject.results.get('timePointPath').length == myInputJSObject.results.totalNumTimePoints.length - 1) {   
-            swal("Error: Cannot explore next state past this time point.", "", "error");
+            swal("Path Complete", "You've already completed the path and will be returned will your simulation result.", "success");
+            save_current_state()
         } else {
             $("body").addClass("spinning"); // Adds spinner animation to page
             updateAnalysisRequestWithCurrentState();
