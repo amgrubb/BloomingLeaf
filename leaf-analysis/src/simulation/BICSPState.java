@@ -1,9 +1,11 @@
 package simulation;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.jacop.constraints.*;
 import org.jacop.core.*;
@@ -161,10 +163,67 @@ public class BICSPState {
 			String[][] answer = algo.getNextStateData(stateLabel);
 			allSolutions.put(algo.timePoints[algo.timePoints.length - 1].id, answer);
 		}
+		List<String> removedTimePoints = pruneAllSolutions(allSolutions);
+		for (String item: removedTimePoints) {
+			allSolutions.remove(item);
+			nextStateTPHash.remove(item);
+		}
+		
 		return spec.getPrevResult().getNewIOSolutionFromSelected(allSolutions, nextStateTPHash, minKey, spec.getMaxTime());
 		
 	}
 
+	
+	private static List<String> pruneAllSolutions(HashMap<String, String[][]> allSolutions) {
+		List<String> removedTimePoints = new ArrayList<String>();
+		Set<String> keysToVerify = allSolutions.keySet();
+		for (String keyToVerify: keysToVerify) {
+			if (keyToVerify.contains("TNS") && !keyToVerify.equals("TNS-A"))
+				continue;
+			String[][] testSet = allSolutions.get(keyToVerify);
+			boolean updatesMade = false;
+			
+			for (String keyToCheck: allSolutions.keySet()) {
+				if (keyToVerify.equals(keyToCheck))
+					continue;
+				
+				String[][] checkSet = allSolutions.get(keyToCheck);
+				List<Integer> indexToRemove = new ArrayList<Integer>();
+				
+				if (Main.DEBUG)	System.out.println("Checked:" +  keyToVerify + " size " + testSet.length + " and " + keyToCheck + " size " + checkSet.length );
+				
+				for (int i = 0; i < testSet.length; i ++) {
+					for (int j = 0; j < checkSet.length; j ++) {
+						if (Arrays.equals(testSet[i],checkSet[j])) {
+							if (Main.DEBUG)	System.out.println("Dup:" + keyToVerify + " index " + i + Arrays.toString(testSet[i]) + keyToCheck + Arrays.toString(checkSet[j]));
+							indexToRemove.add(i);							
+						}
+					}
+				}
+				
+				if (indexToRemove.size() > 0){
+					updatesMade = true;
+					String[][] newSet = new String[testSet.length - indexToRemove.size()][testSet[0].length];
+					int newCount = 0;
+					for (int oldCount = 0; oldCount < testSet.length; oldCount ++) {
+						if (!indexToRemove.contains(oldCount)) {
+							newSet[newCount] = testSet[oldCount];
+							newCount++;		
+						}
+					}
+					testSet = newSet;
+				}
+			}
+			//After we are done checking each value.
+			if (updatesMade) {
+				if (testSet.length == 0) 
+					removedTimePoints.add(keyToVerify);
+				allSolutions.put(keyToVerify, testSet);
+			}
+		}
+		return removedTimePoints;
+		
+	}
 /**
  * 
  * @param spec

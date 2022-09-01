@@ -92,13 +92,6 @@ public class CSPNode {
 	
 	/**
 	 * Called on both the state and path. 
-	 * 	TODO: After updated for path, make sure it still works for state.
-	 * @param spec
-	 * @param constraints
-	 * @param timePoints
-	 * @param values
-	 * @param uniqueIDToValueIndex
-	 * @param timePointMap
 	 */
 	public static void initializePrevResults(ModelSpec spec, List<Constraint> constraints, 
 			IntVar[] timePoints, BooleanVar[][][] values,
