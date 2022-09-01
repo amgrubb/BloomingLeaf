@@ -152,18 +152,25 @@ public class CSPNode {
 	   		for (Map.Entry<String,Integer> mapElement : prevTPMap.entrySet()) {
 	   			String key = mapElement.getKey();
 	   			int value = mapElement.getValue();
-	   			boolean extraRandomFound = false;
+	   			IntVar refTP = null;
 	   			if (key.equals("TNS-R")) {
-	   				extraRandomFound = true;	//TODO: Need to account for the new random time point.
-	   				//TODO: Fix Me!!! HERE
-	   				continue;
-	   			} 
-	   			IntVar refTP = CSPPath.getTimePoint(timePointMap, key);	//Does not contain TNS-R
+	   				// Find random time point that does not have an assigned value.
+	   				for (IntVar indTP: timePoints) {
+	   					String testID = indTP.id;
+	   					if (testID.contains("TR") && !prevTPMap.containsKey(testID)) {
+	   						refTP = indTP;
+	   						break;
+	   					}
+	   				}
+	   			} else 
+	   				refTP = CSPPath.getTimePoint(timePointMap, key);	//Does not contain TNS-R
 	   			
 	   			// Update the range of the timepoint that has already be assigned.
-	   			if (refTP.min() != refTP.max()) {
+	   			if (refTP == null)
+	   				throw new RuntimeException("\n In initializePrevResults, a previous time point was not matched.");
+	   			else if (refTP.min() != refTP.max()) 
 	   				refTP.setDomain(value, value);
-	   			} else if ((refTP.min() == refTP.max()) && refTP.min() != value)
+	   			else if ((refTP.min() == refTP.max()) && refTP.min() != value)
 	   				throw new RuntimeException("\n In initializePrevResults, a previous time point cannot be set.");
 	   				
 	   			
