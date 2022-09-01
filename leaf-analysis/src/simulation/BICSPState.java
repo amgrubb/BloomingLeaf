@@ -63,7 +63,7 @@ public class BICSPState {
    			throw new RuntimeException("\n Previous results required, but null.");
    		
 		// **************  Create time point path.   ***************
-//		this.timePoints = createNextStateTimePoint(this.spec, this.store, this.timePointMap, this.nextStateTPHash, this.maxTime);
+   		// Note: `createNextStateTimePoint` has already been called.
    		// Add previous time point path.
 		Integer[] prevTP = prev.getSelectedTimePointPath();
 		this.timePoints = new IntVar[prevTP.length + 1];
@@ -185,10 +185,10 @@ public class BICSPState {
 		List<String> unassignedTimePoint = modelAbsTime.get(-1);
 		modelAbsTime.remove(-1);
 		
-		int numRelTP = spec.getNumRelativeTimePoints(); 
+//		int numRelTP = spec.getNumRelativeTimePoints(); 
 		HashMap<String, Integer> prevTPAssignments = prev.getSelectedTPAssignments();
 		Integer[] prevTP = prev.getSelectedTimePointPath();
-		
+				
 		Integer tpCounter = 0;
 		for (Integer i : prevTP) {		// Last Time Points
     		List<String> affectedKeys = new ArrayList<String>();
@@ -209,8 +209,9 @@ public class BICSPState {
 				if (unassignedTimePoint.contains(key)) 
 					unassignedTimePoint.remove(key);
 			if (affectedKeys.isEmpty()) {
-				affectedKeys.add("TR" + tpCounter);
-				numRelTP--;
+//				affectedKeys.add("TR" + tpCounter);
+//				numRelTP--;
+				throw new RuntimeException("\n ERROR: createNextStateTimePoint has code that is not dead code.");
 			}
     		pathTPNames.add(affectedKeys);
     		tpCounter++;
@@ -241,10 +242,17 @@ public class BICSPState {
 		}
 		
 		// Add a relative time point if available.
-		if (numRelTP > 0) {
-    		List<String> toAdd = new ArrayList<String>();
-    		toAdd.add("TNS-R");
-    		newTPHash.put("TNS-R", toAdd);
+		if (spec.getNumRelativeTimePoints() > 0) {
+			int numRelTP = spec.getNumRelativeTimePoints();
+			prevTPAssignments = prev.getSelectedTPAssignments();
+			for (int i = 0; i < numRelTP; i ++)
+				if (!prevTPAssignments.containsKey("TR"+i)) {
+					// Find random time point that does not have an assigned value.
+		    		List<String> toAdd = new ArrayList<String>();
+		    		toAdd.add("TR"+i);
+		    		newTPHash.put("TR"+i, toAdd);
+		    		break;
+				}    		
 		}
 		
 		List<String> prunedList = pruneExtraUDTPforNextState(spec, unassignedTimePoint);

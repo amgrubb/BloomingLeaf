@@ -111,8 +111,7 @@ public class CSPNode {
    		if (prev == null)
    			throw new RuntimeException("\n Previous results required, but null.");
    		
-   		//The logic in this function is broken.
-   		Integer[] prevTPPath = prev.getSelectedTimePointPath();		//These time points are already assigned. [0,11,26]
+   		Integer[] prevTPPath = prev.getSelectedTimePointPath();		
    		HashMap<String, Integer> prevTPMap = prev.getSelectedTPAssignments();
    		HashMap<String, boolean[][]> prevIntVal = prev.getSelectedPreviousValues(); 
    		
@@ -120,12 +119,10 @@ public class CSPNode {
    			throw new RuntimeException("\n The length of the previous time point path and the number of assigned time points, do not match.");
 
    		if (spec.getAnalysisType().equals("allNextStates")) {
-	   		for (int tp = 0; tp < timePoints.length; tp ++) {
+	   		for (int tp = 0; tp < timePoints.length -1; tp ++) {
 	
-	   			if (timePoints[tp].min() == timePoints[tp].max()) {	// This condition is incorrect.
-	
-	   				// time point is already assigned.
-	   				// get tIndexVal
+	   			if (timePoints[tp].min() == timePoints[tp].max()) {	
+	   				// For time points is already assigned, get the index value.
 	   				Integer tRef = null;
 	   				for (int t = 0; t < prevTPPath.length; t++) 
 	   					if (prevTPPath[t] == timePoints[tp].min()) {
@@ -152,18 +149,7 @@ public class CSPNode {
 	   		for (Map.Entry<String,Integer> mapElement : prevTPMap.entrySet()) {
 	   			String key = mapElement.getKey();
 	   			int value = mapElement.getValue();
-	   			IntVar refTP = null;
-	   			if (key.equals("TNS-R")) {
-	   				// Find random time point that does not have an assigned value.
-	   				for (IntVar indTP: timePoints) {
-	   					String testID = indTP.id;
-	   					if (testID.contains("TR") && !prevTPMap.containsKey(testID)) {
-	   						refTP = indTP;
-	   						break;
-	   					}
-	   				}
-	   			} else 
-	   				refTP = CSPPath.getTimePoint(timePointMap, key);	//Does not contain TNS-R
+	   			IntVar refTP = CSPPath.getTimePoint(timePointMap, key);	
 	   			
 	   			// Update the range of the timepoint that has already be assigned.
 	   			if (refTP == null)
@@ -201,8 +187,7 @@ public class CSPNode {
 	   				}
 	   			}	
 	   		}	
-   		}
-   		System.out.print("Test");   		
+   		}   		
 
 
    		
