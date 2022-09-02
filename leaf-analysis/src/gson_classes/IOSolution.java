@@ -54,7 +54,7 @@ public class IOSolution {
 			newObj.nextPossibleAbsValue = nextAbsVal; //this.timePointAssignments.get(newObj.nextStateTPs.get("TNS-A").get(0));
 			upper = Math.min(upper, nextAbsVal);
 		} 
-		if (upper != nextAbsVal)
+		if (lower != nextAbsVal)
 			newObj.nextPossibleRndValue = (int)Math.floor(Math.random()*(upper - lower + 1) + lower);
 		return newObj;	
 	}
