@@ -226,10 +226,11 @@ public class BICSPState {
 	}
 /**
  * 
- * @param spec
- * @param pathTPNames
- * @param newTPHash
- * @param prunedTimePoints
+ * @param spec				Model Spec
+ * @param pathTPNames		Time points that have already been solved in the path.
+ * @param newTPHash			Time points for each possible next state.
+ * @param prunedTimePoints 	Used for any time point in an evolving function that must occur after the next state.
+ * @return minKey			The minimum value for the next time point.
  */
 	private static Integer createNextStateTimePoint(ModelSpec spec, //Store store, 
 			List<List<String>> pathTPNames, 
@@ -243,8 +244,7 @@ public class BICSPState {
 		HashMap<Integer, List<String>> modelAbsTime = spec.getAbsTimePoints();
 		List<String> unassignedTimePoint = modelAbsTime.get(-1);
 		modelAbsTime.remove(-1);
-		
-//		int numRelTP = spec.getNumRelativeTimePoints(); 
+		 
 		HashMap<String, Integer> prevTPAssignments = prev.getSelectedTPAssignments();
 		Integer[] prevTP = prev.getSelectedTimePointPath();
 				
@@ -267,22 +267,14 @@ public class BICSPState {
 			for (String key : affectedKeys)
 				if (unassignedTimePoint.contains(key)) 
 					unassignedTimePoint.remove(key);
-			if (affectedKeys.isEmpty()) {
-//				affectedKeys.add("TR" + tpCounter);
-//				numRelTP--;
-				throw new RuntimeException("\n ERROR: createNextStateTimePoint has code that is not dead code.");
-			}
+			if (affectedKeys.isEmpty()) 
+				throw new RuntimeException("\n In createNextStateTimePoint there is a mismatch between the time points and values.");
     		pathTPNames.add(affectedKeys);
     		tpCounter++;
 		}
 		
-		
-		@SuppressWarnings("unused")
+		// Determine which are the potential next state time points and add them to newTPHash
 		boolean guarenteeNextAbs = false;
-		// TODO: If the current time is 19 and the next absTime is 20, then we only 
-		// want to generate states for the absTime point.
-		// Update algorithm so if guarenteeNextAbs == true then other time points
-		// will be pruned.
 		
 		// Add next absolute time point.
 		Integer minKey = null;
@@ -300,33 +292,40 @@ public class BICSPState {
 			}
 		}
 		
-		// Add a relative time point if available.
-		if (spec.getNumRelativeTimePoints() > 0) {
-			int numRelTP = spec.getNumRelativeTimePoints();
-			prevTPAssignments = prev.getSelectedTPAssignments();
-			for (int i = 0; i < numRelTP; i ++)
-				if (!prevTPAssignments.containsKey("TR"+i)) {
-					// Find random time point that does not have an assigned value.
-		    		List<String> toAdd = new ArrayList<String>();
-		    		toAdd.add("TR"+i);
-		    		newTPHash.put("TR"+i, toAdd);
-		    		break;
-				}    		
-		}
-		
-		List<String> prunedList = pruneExtraUDTPforNextState(spec, unassignedTimePoint);
-		for (String item : prunedList)
-			prunedTimePoints.add(item);
-		
-		if (unassignedTimePoint.size() > 0) {		
-			int c = 0; 
-			for (String newVal: unassignedTimePoint) {
-	    		List<String> toAdd = new ArrayList<String>();
-	    		toAdd.add(newVal);
-	    		newTPHash.put("TNS-" + c, toAdd);
-	    		c++;
+		// If the next time point must be an absolute value, then we add all remaining values to the pruned list,
+		//	otherwise we add each value as a potential solution.
+		if (guarenteeNextAbs) 
+			for (String newVal: unassignedTimePoint) 
+				prunedTimePoints.add(newVal);	
+		else {
+			// Add a relative time point if available.
+			if (spec.getNumRelativeTimePoints() > 0) {
+				int numRelTP = spec.getNumRelativeTimePoints();
+				prevTPAssignments = prev.getSelectedTPAssignments();
+				for (int i = 0; i < numRelTP; i ++)
+					if (!prevTPAssignments.containsKey("TR"+i)) {
+						// Find random time point that does not have an assigned value.
+			    		List<String> toAdd = new ArrayList<String>();
+			    		toAdd.add("TR"+i);
+			    		newTPHash.put("TR"+i, toAdd);
+			    		break;
+					}    		
 			}
-		}
+			
+			List<String> prunedList = pruneExtraUDTPforNextState(spec, unassignedTimePoint);
+			for (String item : prunedList)
+				prunedTimePoints.add(item);
+			
+			if (unassignedTimePoint.size() > 0) {		
+				int c = 0; 
+				for (String newVal: unassignedTimePoint) {
+		    		List<String> toAdd = new ArrayList<String>();
+		    		toAdd.add(newVal);
+		    		newTPHash.put("TNS-" + c, toAdd);
+		    		c++;
+				}
+			}
+		}		
 		return minKey;
 	}
 
