@@ -118,15 +118,14 @@ public class LayoutAlgorithm {
         
         //constants
         double c = .0002; //adjustment -- the speed at which actors move
-        //TODO: solid peice wise function for c
-        if(nodePositions.length < 10) c = .0008;
-        if(nodePositions.length < 3) c = .002;
-        
+        //TODO: solid piece wise function for c
+        if(nodePositions.length < 7 && nodePositions.length > 3) c = .0006;
+        else if(nodePositions.length < 4) c = .001;
         double a = .05; //error
         double constant = Math.pow(nodePositions.length, .5); // increasing the constant decreases attraction and gravitation, but increases repulsion
         
         if(hasActors) {
-        	c = .005;
+        	c = .02;
         }
         
         if (LMain.DEBUG) System.out.println(constant);
