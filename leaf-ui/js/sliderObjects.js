@@ -116,11 +116,11 @@ class SliderObj {
 
             if (t == 0) {
                 console.log("EVEN");
-                SliderObj.dissapearIntention(true,'#j_27');
+                SliderObj.disappearIntentionn(true,'#j_27');
             }
             else {
                 console.log("ODD");
-                SliderObj.dissapearIntention(false,'#j_27');
+                SliderObj.disappearIntentionn(false,'#j_27');
             }
         });
         EVO.setCurTimePoint(isSwitch ? 0 : sliderMax, currentAnalysis);
@@ -154,7 +154,7 @@ class SliderObj {
     /**
      * 
      */
-    static dissapearIntention(bool,word) {
+    static disappearIntentionn(bool,word) {
         var intentions = ['#j_14','#j_15','#j_16','#j_17','#j_18','#j_19','#j_20','#j_21','#j_22','#j_23','#j_24','#j_25','#j_26'];
         var links = ['#j_29','#j_30','#j_31','#j_32','#j_33','#j_34','#j_35','#j_36','#j_37','#j_38','#j_40','#j_44'];
         var intentionsLength = intentions.length;
@@ -217,10 +217,10 @@ class SliderObj {
         //         console.log(cellz.id);
         //     }
         //     // if (satValue == '0000') {
-        //     //     SliderObj.dissapearIntention(true,'#j_7');
+        //     //     SliderObj.disappearIntentionn(true,'#j_7');
         //     // }
         //     // else {
-        //     //     SliderObj.dissapearIntention(false,'#j_7');
+        //     //     SliderObj.disappearIntentionn(false,'#j_7');
         //     // }
         // }    
 
