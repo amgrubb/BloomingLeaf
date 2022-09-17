@@ -1,0 +1,4309 @@
+{
+  "graph": {
+    "type": "goalmodel.Graph",
+    "maxAbsTime": 1,
+    "absTimePtsArr": [],
+    "constraints": [],
+    "cells": [
+      {
+        "type": "basic.Actor",
+        "size": {
+          "width": 270,
+          "height": 290
+        },
+        "actor": {
+          "cid": "c356",
+          "attributes": {
+            "type": "basic.Actor",
+            "actorName": "lazarus center"
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 1770,
+          "y": 890
+        },
+        "angle": 0,
+        "id": "8880ffe1-ba6f-4cbf-8c8b-49ad0ad322a2",
+        "z": -4,
+        "nodeID": "a005",
+        "embeds": [
+          "7987a807-cd2d-4066-bd05-be33559253f5"
+        ],
+        "attrs": {
+          ".name": {
+            "text": "lazarus center"
+          }
+        }
+      },
+      {
+        "type": "basic.Actor",
+        "size": {
+          "width": 220,
+          "height": 190
+        },
+        "actor": {
+          "cid": "c357",
+          "attributes": {
+            "type": "basic.Actor",
+            "actorName": "alums"
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 1100,
+          "y": 1000
+        },
+        "angle": 0,
+        "id": "59ea0bea-8d01-4407-aad4-6011a398dbf1",
+        "z": -3,
+        "nodeID": "a004",
+        "embeds": [
+          "867ce41f-3b34-4eea-8a1c-0f9d12de7383"
+        ],
+        "attrs": {
+          ".name": {
+            "text": "alums"
+          }
+        }
+      },
+      {
+        "type": "basic.Actor",
+        "size": {
+          "width": 310,
+          "height": 280
+        },
+        "actor": {
+          "cid": "c358",
+          "attributes": {
+            "type": "basic.Actor",
+            "actorName": "advisor \nprofessor in \nchemistry"
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 1910,
+          "y": 470
+        },
+        "angle": 0,
+        "id": "15bf1d73-dce4-470f-8b74-d95f5c5162f8",
+        "z": -2,
+        "nodeID": "a003",
+        "embeds": [
+          "3163bc14-6471-4290-a84e-78efe0687b26",
+          "d1c7a1ef-bd90-464b-bec6-a04321b23ff0"
+        ],
+        "attrs": {
+          ".name": {
+            "text": "advisor \nprofessor in \nchemistry"
+          }
+        }
+      },
+      {
+        "type": "basic.Actor",
+        "size": {
+          "width": 170,
+          "height": 170
+        },
+        "actor": {
+          "cid": "c359",
+          "attributes": {
+            "type": "basic.Actor",
+            "actorName": "friends"
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 470,
+          "y": 230
+        },
+        "angle": 0,
+        "id": "16531d5f-31ac-4819-b0e5-af4c3698809b",
+        "z": -1,
+        "nodeID": "a002",
+        "embeds": [
+          "9b12db23-d8af-4c45-bd23-3eb224c810b3"
+        ],
+        "attrs": {
+          ".name": {
+            "text": "friends"
+          }
+        }
+      },
+      {
+        "type": "basic.Actor",
+        "size": {
+          "width": 240,
+          "height": 230
+        },
+        "actor": {
+          "cid": "c360",
+          "attributes": {
+            "type": "basic.Actor",
+            "actorName": "parents"
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 380,
+          "y": 800
+        },
+        "angle": 0,
+        "id": "9b29453f-507c-480b-9397-958a14e09cf3",
+        "z": 0,
+        "nodeID": "a001",
+        "embeds": [
+          "61e549b5-0ef2-4ce2-924f-72e439095f86"
+        ],
+        "attrs": {
+          ".name": {
+            "text": "parents"
+          }
+        }
+      },
+      {
+        "type": "basic.Actor",
+        "size": {
+          "width": 970,
+          "height": 810
+        },
+        "actor": {
+          "cid": "c361",
+          "attributes": {
+            "type": "basic.Actor",
+            "actorName": "self\n"
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 810,
+          "y": -10
+        },
+        "angle": 0,
+        "id": "d4e4998a-2c3b-4ed7-9fdd-2564cee91bbe",
+        "z": 1,
+        "nodeID": "a000",
+        "embeds": [
+          "a08232e9-3a01-4077-bb35-fa96ec53b7eb",
+          "6494904a-d0de-4141-a27a-8a209c15a6ea",
+          "963369eb-fe4d-49ae-ade7-a8a19919b3e7",
+          "be8cc328-72e1-4e77-8cfd-4db1e020c28d",
+          "fab32d0e-a066-4b71-848b-75d78ed023db",
+          "427ec408-6395-4754-a185-04d0f311bb21",
+          "bb49ce6d-8c0d-471e-8c27-8d448e517b47",
+          "3fabd203-c122-432a-b36e-867e17e59afd",
+          "364b84c1-7234-421d-85e0-0c8112f2c56d",
+          "16ae8826-72bd-4097-b6d6-d901e8d0b988",
+          "95e2f563-c45b-4a8d-9ef9-854d4fd38ec6",
+          "e44d6c85-b660-445a-a112-265a9817eaab",
+          "6c74ccf0-c51d-44ca-883d-5f848bb4658e",
+          "63d5f11f-7be4-4561-9c96-ab0c6ff2f4a8",
+          "a118b116-1e29-4d59-a3c7-f59ca003968a",
+          "038f81e0-a4b1-4a28-9fb9-f4b08a5ec34c",
+          "5dceca85-4868-46d2-b29d-831a2efeb47d",
+          "ea4f02ad-8421-4091-88ca-95e676bb84bc",
+          "e2892d75-ed51-479d-9073-bb9dd4e90dc7",
+          "8d95b8df-8675-410e-80e7-7bcb62aa8e34",
+          "2a9189cd-0061-4a25-87ad-468de31f03b2",
+          "944847a6-5230-4328-8791-ab980e81d688",
+          "bc65da76-02d3-45ae-b380-e77742f654bb",
+          "b550b28a-de38-4c80-841c-bb2187012226",
+          "9c5d4ed7-0277-4597-b594-a4d3d0ed0b21",
+          "7afba660-c1e0-4e3f-88fc-2cde7cc6aed4",
+          "0f24f834-d2cc-4da7-8d64-15d8ce2483f1",
+          "6c1e0733-713b-44b5-b492-6ce0ffe008e6"
+        ],
+        "attrs": {
+          ".name": {
+            "text": "self\n"
+          }
+        }
+      },
+      {
+        "type": "basic.Goal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c363",
+          "attributes": {
+            "nodeName": "becoming biochemistry research assistant",
+            "evolvingFunction": {
+              "cid": "c362",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c364",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 1010,
+          "y": 390
+        },
+        "angle": 0,
+        "id": "9c5d4ed7-0277-4597-b594-a4d3d0ed0b21",
+        "z": 2,
+        "nodeID": "0000",
+        "parent": "d4e4998a-2c3b-4ed7-9fdd-2564cee91bbe",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "becoming biochemistry research assistant"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Goal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c366",
+          "attributes": {
+            "nodeName": "Full Time Job",
+            "evolvingFunction": {
+              "cid": "c365",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c367",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 1220,
+          "y": 420
+        },
+        "angle": 0,
+        "id": "b550b28a-de38-4c80-841c-bb2187012226",
+        "z": 3,
+        "nodeID": "0001",
+        "parent": "d4e4998a-2c3b-4ed7-9fdd-2564cee91bbe",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Full Time Job"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Goal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c369",
+          "attributes": {
+            "nodeName": "working in research and developement",
+            "evolvingFunction": {
+              "cid": "c368",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c370",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 1490,
+          "y": 380
+        },
+        "angle": 0,
+        "id": "bc65da76-02d3-45ae-b380-e77742f654bb",
+        "z": 4,
+        "nodeID": "0002",
+        "parent": "d4e4998a-2c3b-4ed7-9fdd-2564cee91bbe",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "working in research and developement"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Softgoal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c372",
+          "attributes": {
+            "nodeName": "interested in solving \nproblems",
+            "evolvingFunction": {
+              "cid": "c371",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c373",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 1030,
+          "y": 240
+        },
+        "angle": 0,
+        "id": "bb49ce6d-8c0d-471e-8c27-8d448e517b47",
+        "z": 5,
+        "nodeID": "0003",
+        "parent": "d4e4998a-2c3b-4ed7-9fdd-2564cee91bbe",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "interested in solving \nproblems"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Softgoal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c375",
+          "attributes": {
+            "nodeName": "getting decent\n salary and benefits",
+            "evolvingFunction": {
+              "cid": "c374",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c376",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 1460,
+          "y": 100
+        },
+        "angle": 0,
+        "id": "95e2f563-c45b-4a8d-9ef9-854d4fd38ec6",
+        "z": 6,
+        "nodeID": "0005",
+        "parent": "d4e4998a-2c3b-4ed7-9fdd-2564cee91bbe",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "getting decent\n salary and benefits"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c378",
+          "attributes": {
+            "nodeName": "Complete \nSmith Biochem\nDegree",
+            "evolvingFunction": {
+              "cid": "c377",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c379",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 1120,
+          "y": 580
+        },
+        "angle": 0,
+        "id": "a118b116-1e29-4d59-a3c7-f59ca003968a",
+        "z": 7,
+        "nodeID": "0006",
+        "parent": "d4e4998a-2c3b-4ed7-9fdd-2564cee91bbe",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Complete \nSmith Biochem\nDegree"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c381",
+          "attributes": {
+            "nodeName": "background in research",
+            "evolvingFunction": {
+              "cid": "c380",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c382",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 1670,
+          "y": 490
+        },
+        "angle": 0,
+        "id": "63d5f11f-7be4-4561-9c96-ab0c6ff2f4a8",
+        "z": 8,
+        "nodeID": "0007",
+        "parent": "d4e4998a-2c3b-4ed7-9fdd-2564cee91bbe",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "background in research"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Softgoal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c384",
+          "attributes": {
+            "nodeName": " kind coworkers",
+            "evolvingFunction": {
+              "cid": "c383",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c385",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 1340,
+          "y": -10
+        },
+        "angle": 0,
+        "id": "16ae8826-72bd-4097-b6d6-d901e8d0b988",
+        "z": 10,
+        "nodeID": "0009",
+        "parent": "d4e4998a-2c3b-4ed7-9fdd-2564cee91bbe",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": " kind coworkers"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Softgoal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c387",
+          "attributes": {
+            "nodeName": "enough space\n from manager\n to do job effectively",
+            "evolvingFunction": {
+              "cid": "c386",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c388",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 950,
+          "y": 140
+        },
+        "angle": 0,
+        "id": "3fabd203-c122-432a-b36e-867e17e59afd",
+        "z": 11,
+        "nodeID": "0010",
+        "parent": "d4e4998a-2c3b-4ed7-9fdd-2564cee91bbe",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "enough space\n from manager\n to do job effectively"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Softgoal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c390",
+          "attributes": {
+            "nodeName": "work within biking distance",
+            "evolvingFunction": {
+              "cid": "c389",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c391",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 1080,
+          "y": 140
+        },
+        "angle": 0,
+        "id": "2a9189cd-0061-4a25-87ad-468de31f03b2",
+        "z": 12,
+        "nodeID": "0011",
+        "parent": "d4e4998a-2c3b-4ed7-9fdd-2564cee91bbe",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "work within biking distance"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Goal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c393",
+          "attributes": {
+            "nodeName": "salary between 40-50k_14",
+            "evolvingFunction": {
+              "cid": "c392",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c394",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 1410,
+          "y": 260
+        },
+        "angle": 0,
+        "id": "944847a6-5230-4328-8791-ab980e81d688",
+        "z": 13,
+        "nodeID": "0014",
+        "parent": "d4e4998a-2c3b-4ed7-9fdd-2564cee91bbe",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "salary between 40-50k_14"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Goal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c396",
+          "attributes": {
+            "nodeName": "want a high-achieving child",
+            "evolvingFunction": {
+              "cid": "c395",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c397",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 450,
+          "y": 880
+        },
+        "angle": 0,
+        "id": "61e549b5-0ef2-4ce2-924f-72e439095f86",
+        "z": 14,
+        "nodeID": "0013",
+        "parent": "9b29453f-507c-480b-9397-958a14e09cf3",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "want a high-achieving child"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c398",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "++",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "63d5f11f-7be4-4561-9c96-ab0c6ff2f4a8"
+        },
+        "target": {
+          "id": "bc65da76-02d3-45ae-b380-e77742f654bb"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "51cb792a-792c-44c5-ac74-b2d1c0b90234",
+        "z": 15,
+        "linkID": "0003",
+        "link-type": "++",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c399",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "and",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "a118b116-1e29-4d59-a3c7-f59ca003968a"
+        },
+        "target": {
+          "id": "9c5d4ed7-0277-4597-b594-a4d3d0ed0b21"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "b10fd5e7-55dd-46fc-b5c1-be75876e3ee8",
+        "z": 16,
+        "linkID": "0004",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c400",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "and",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "9c5d4ed7-0277-4597-b594-a4d3d0ed0b21"
+        },
+        "target": {
+          "id": "944847a6-5230-4328-8791-ab980e81d688"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "-"
+              }
+            }
+          }
+        ],
+        "id": "963369eb-fe4d-49ae-ade7-a8a19919b3e7",
+        "z": 17,
+        "linkID": "0019",
+        "link-type": "-",
+        "parent": "d4e4998a-2c3b-4ed7-9fdd-2564cee91bbe",
+        "vertices": [
+          {
+            "x": 1270,
+            "y": 380
+          }
+        ],
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c401",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "and",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "b550b28a-de38-4c80-841c-bb2187012226"
+        },
+        "target": {
+          "id": "944847a6-5230-4328-8791-ab980e81d688"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "+"
+              }
+            }
+          }
+        ],
+        "id": "dddc0096-df80-4348-af34-5d500798ba68",
+        "z": 18,
+        "linkID": "0018",
+        "link-type": "+",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c402",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "and",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "bc65da76-02d3-45ae-b380-e77742f654bb"
+        },
+        "target": {
+          "id": "944847a6-5230-4328-8791-ab980e81d688"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "+"
+              }
+            }
+          }
+        ],
+        "id": "27684384-c29d-4a28-938a-6546fbb16514",
+        "z": 19,
+        "linkID": "0017",
+        "link-type": "+",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c403",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "and",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "944847a6-5230-4328-8791-ab980e81d688"
+        },
+        "target": {
+          "id": "95e2f563-c45b-4a8d-9ef9-854d4fd38ec6"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "22e1ae17-35e9-474e-b446-d7bab80154b7",
+        "z": 23,
+        "linkID": "0021",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c404",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "++",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "9c5d4ed7-0277-4597-b594-a4d3d0ed0b21"
+        },
+        "target": {
+          "id": "bb49ce6d-8c0d-471e-8c27-8d448e517b47"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "607525c6-d80d-40c0-861f-9d8053bcce9a",
+        "z": 25,
+        "linkID": "0014",
+        "link-type": "++",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c405",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "++",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "b550b28a-de38-4c80-841c-bb2187012226"
+        },
+        "target": {
+          "id": "bb49ce6d-8c0d-471e-8c27-8d448e517b47"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "9926f9a0-704c-470a-9abb-d5768057d54b",
+        "z": 26,
+        "linkID": "0015",
+        "link-type": "++",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c406",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "++",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "bc65da76-02d3-45ae-b380-e77742f654bb"
+        },
+        "target": {
+          "id": "bb49ce6d-8c0d-471e-8c27-8d448e517b47"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "0bff7d05-8e57-47c3-a2ed-d9c6057d5ddd",
+        "z": 27,
+        "linkID": "0022",
+        "link-type": "++",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.Softgoal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c408",
+          "attributes": {
+            "nodeName": "positive work env",
+            "evolvingFunction": {
+              "cid": "c407",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c409",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 1180,
+          "y": 40
+        },
+        "angle": 0,
+        "id": "364b84c1-7234-421d-85e0-0c8112f2c56d",
+        "z": 28,
+        "nodeID": "0015",
+        "parent": "d4e4998a-2c3b-4ed7-9fdd-2564cee91bbe",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "positive work env"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c410",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "++",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "16ae8826-72bd-4097-b6d6-d901e8d0b988"
+        },
+        "target": {
+          "id": "364b84c1-7234-421d-85e0-0c8112f2c56d"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "e81fd322-e1b6-470a-86ec-e9d361b95dc9",
+        "z": 29,
+        "linkID": "0023",
+        "link-type": "++",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c411",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "++",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "3fabd203-c122-432a-b36e-867e17e59afd"
+        },
+        "target": {
+          "id": "364b84c1-7234-421d-85e0-0c8112f2c56d"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "36cbd371-a56a-4579-90cc-0007addf4a0b",
+        "z": 30,
+        "linkID": "0024",
+        "link-type": "++",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c412",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "++",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "2a9189cd-0061-4a25-87ad-468de31f03b2"
+        },
+        "target": {
+          "id": "364b84c1-7234-421d-85e0-0c8112f2c56d"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "3e47808c-1613-4b25-abcb-5740268067f2",
+        "z": 31,
+        "linkID": "0025",
+        "link-type": "++",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c413",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "+",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "9c5d4ed7-0277-4597-b594-a4d3d0ed0b21"
+        },
+        "target": {
+          "id": "61e549b5-0ef2-4ce2-924f-72e439095f86"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "+"
+              }
+            }
+          }
+        ],
+        "id": "058ee9df-0ae8-4026-9f95-7d0def9160ca",
+        "z": 32,
+        "linkID": "0026",
+        "link-type": "+",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c414",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "++",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "b550b28a-de38-4c80-841c-bb2187012226"
+        },
+        "target": {
+          "id": "61e549b5-0ef2-4ce2-924f-72e439095f86"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "788c5126-90cf-400a-9770-e5fd18a5a9c4",
+        "z": 33,
+        "linkID": "0027",
+        "vertices": [],
+        "link-type": "++",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.Goal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c416",
+          "attributes": {
+            "nodeName": "have good\nrec letters",
+            "evolvingFunction": {
+              "cid": "c415",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c417",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 1430,
+          "y": 590
+        },
+        "angle": 0,
+        "id": "6c74ccf0-c51d-44ca-883d-5f848bb4658e",
+        "z": 34,
+        "nodeID": "0016",
+        "parent": "d4e4998a-2c3b-4ed7-9fdd-2564cee91bbe",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "have good\nrec letters"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c418",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "--",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "95e2f563-c45b-4a8d-9ef9-854d4fd38ec6"
+        },
+        "target": {
+          "id": "364b84c1-7234-421d-85e0-0c8112f2c56d"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "--"
+              }
+            }
+          }
+        ],
+        "id": "07e69e8a-51a1-462e-9f5d-94205994cf34",
+        "z": 35,
+        "linkID": "0028",
+        "link-type": "--",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c420",
+          "attributes": {
+            "nodeName": "ask for\nrec letters",
+            "evolvingFunction": {
+              "cid": "c419",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c421",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 1620,
+          "y": 600
+        },
+        "angle": 0,
+        "id": "e44d6c85-b660-445a-a112-265a9817eaab",
+        "z": 36,
+        "nodeID": "0017",
+        "parent": "d4e4998a-2c3b-4ed7-9fdd-2564cee91bbe",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "ask for\nrec letters"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Goal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c423",
+          "attributes": {
+            "nodeName": "advisee succeed",
+            "evolvingFunction": {
+              "cid": "c422",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c424",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 2120,
+          "y": 520
+        },
+        "angle": 0,
+        "id": "d1c7a1ef-bd90-464b-bec6-a04321b23ff0",
+        "z": 37,
+        "nodeID": "0018",
+        "parent": "15bf1d73-dce4-470f-8b74-d95f5c5162f8",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "advisee succeed"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c426",
+          "attributes": {
+            "nodeName": "write recommendation",
+            "evolvingFunction": {
+              "cid": "c425",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c427",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 1950,
+          "y": 620
+        },
+        "angle": 0,
+        "id": "3163bc14-6471-4290-a84e-78efe0687b26",
+        "z": 38,
+        "nodeID": "0019",
+        "parent": "15bf1d73-dce4-470f-8b74-d95f5c5162f8",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "write recommendation"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c428",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "++",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "e44d6c85-b660-445a-a112-265a9817eaab"
+        },
+        "target": {
+          "id": "3163bc14-6471-4290-a84e-78efe0687b26"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "c398a688-eeb1-412f-9948-246f7af85804",
+        "z": 39,
+        "linkID": "0029",
+        "link-type": "++",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c429",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "++",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "3163bc14-6471-4290-a84e-78efe0687b26"
+        },
+        "target": {
+          "id": "6c74ccf0-c51d-44ca-883d-5f848bb4658e"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "4cbacefc-c149-4c89-b900-40ecad5455d9",
+        "z": 40,
+        "linkID": "0030",
+        "link-type": "++",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c430",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "+",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "3163bc14-6471-4290-a84e-78efe0687b26"
+        },
+        "target": {
+          "id": "d1c7a1ef-bd90-464b-bec6-a04321b23ff0"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "+"
+              }
+            }
+          }
+        ],
+        "id": "0d7e19a8-b9f3-4e4c-9810-81c7a4288ea6",
+        "z": 41,
+        "linkID": "0031",
+        "link-type": "+",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c431",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "and",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "6c74ccf0-c51d-44ca-883d-5f848bb4658e"
+        },
+        "target": {
+          "id": "bc65da76-02d3-45ae-b380-e77742f654bb"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "04841e55-9773-4606-a821-828b86fc7ebc",
+        "z": 42,
+        "linkID": "0032",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c432",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "and",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "6c74ccf0-c51d-44ca-883d-5f848bb4658e"
+        },
+        "target": {
+          "id": "b550b28a-de38-4c80-841c-bb2187012226"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "089b4b72-76c7-4616-b972-65adb758e629",
+        "z": 43,
+        "linkID": "0033",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c433",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "and",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "6c74ccf0-c51d-44ca-883d-5f848bb4658e"
+        },
+        "target": {
+          "id": "9c5d4ed7-0277-4597-b594-a4d3d0ed0b21"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "427ec408-6395-4754-a185-04d0f311bb21",
+        "z": 44,
+        "linkID": "0034",
+        "parent": "d4e4998a-2c3b-4ed7-9fdd-2564cee91bbe",
+        "vertices": [
+          {
+            "x": 1260,
+            "y": 510
+          }
+        ],
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c434",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "and",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "a118b116-1e29-4d59-a3c7-f59ca003968a"
+        },
+        "target": {
+          "id": "b550b28a-de38-4c80-841c-bb2187012226"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "c3818add-495e-4d5f-9f85-6bd00331c4a4",
+        "z": 45,
+        "linkID": "0035",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c435",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "and",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "a118b116-1e29-4d59-a3c7-f59ca003968a"
+        },
+        "target": {
+          "id": "bc65da76-02d3-45ae-b380-e77742f654bb"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "fab32d0e-a066-4b71-848b-75d78ed023db",
+        "z": 46,
+        "linkID": "0036",
+        "parent": "d4e4998a-2c3b-4ed7-9fdd-2564cee91bbe",
+        "vertices": [],
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c437",
+          "attributes": {
+            "nodeName": "decide on job",
+            "evolvingFunction": {
+              "cid": "c436",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c438",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 1180,
+          "y": 710
+        },
+        "angle": 0,
+        "id": "8d95b8df-8675-410e-80e7-7bcb62aa8e34",
+        "z": 47,
+        "nodeID": "0020",
+        "parent": "d4e4998a-2c3b-4ed7-9fdd-2564cee91bbe",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "decide on job"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c440",
+          "attributes": {
+            "nodeName": "apply to job ",
+            "evolvingFunction": {
+              "cid": "c439",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c441",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 1300,
+          "y": 700
+        },
+        "angle": 0,
+        "id": "e2892d75-ed51-479d-9073-bb9dd4e90dc7",
+        "z": 48,
+        "nodeID": "0021",
+        "parent": "d4e4998a-2c3b-4ed7-9fdd-2564cee91bbe",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "apply to job "
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c443",
+          "attributes": {
+            "nodeName": "get hired",
+            "evolvingFunction": {
+              "cid": "c442",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c444",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 1240,
+          "y": 610
+        },
+        "angle": 0,
+        "id": "038f81e0-a4b1-4a28-9fb9-f4b08a5ec34c",
+        "z": 49,
+        "nodeID": "0022",
+        "parent": "d4e4998a-2c3b-4ed7-9fdd-2564cee91bbe",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "get hired"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c446",
+          "attributes": {
+            "nodeName": "make resume",
+            "evolvingFunction": {
+              "cid": "c445",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c447",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 1050,
+          "y": 670
+        },
+        "angle": 0,
+        "id": "5dceca85-4868-46d2-b29d-831a2efeb47d",
+        "z": 50,
+        "nodeID": "0023",
+        "parent": "d4e4998a-2c3b-4ed7-9fdd-2564cee91bbe",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "make resume"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c448",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "and",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "038f81e0-a4b1-4a28-9fb9-f4b08a5ec34c"
+        },
+        "target": {
+          "id": "bc65da76-02d3-45ae-b380-e77742f654bb"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "85dba912-9499-47c2-80f0-4800c49ffaff",
+        "z": 51,
+        "linkID": "0037",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c449",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "and",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "038f81e0-a4b1-4a28-9fb9-f4b08a5ec34c"
+        },
+        "target": {
+          "id": "b550b28a-de38-4c80-841c-bb2187012226"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "a033e3fe-5383-447c-92b2-9ebe43a84518",
+        "z": 52,
+        "linkID": "0038",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c450",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "and",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "038f81e0-a4b1-4a28-9fb9-f4b08a5ec34c"
+        },
+        "target": {
+          "id": "9c5d4ed7-0277-4597-b594-a4d3d0ed0b21"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "e6418bfd-bea8-4859-9527-3210a9dbdc35",
+        "z": 53,
+        "linkID": "0039",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c451",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "and",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "5dceca85-4868-46d2-b29d-831a2efeb47d"
+        },
+        "target": {
+          "id": "038f81e0-a4b1-4a28-9fb9-f4b08a5ec34c"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "9676a65d-63cb-4de6-8c2f-23e876d90d42",
+        "z": 54,
+        "linkID": "0040",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c452",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "and",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "8d95b8df-8675-410e-80e7-7bcb62aa8e34"
+        },
+        "target": {
+          "id": "e2892d75-ed51-479d-9073-bb9dd4e90dc7"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "ece900f5-f340-4704-9345-bf8ff6ac0593",
+        "z": 55,
+        "linkID": "0041",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c454",
+          "attributes": {
+            "nodeName": "interview",
+            "evolvingFunction": {
+              "cid": "c453",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c455",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 1420,
+          "y": 680
+        },
+        "angle": 0,
+        "id": "ea4f02ad-8421-4091-88ca-95e676bb84bc",
+        "z": 56,
+        "nodeID": "0024",
+        "parent": "d4e4998a-2c3b-4ed7-9fdd-2564cee91bbe",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "interview"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c456",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "and",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "e2892d75-ed51-479d-9073-bb9dd4e90dc7"
+        },
+        "target": {
+          "id": "ea4f02ad-8421-4091-88ca-95e676bb84bc"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "2f7e1220-f13f-47d5-b922-8841d40449a9",
+        "z": 57,
+        "linkID": "0043",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c457",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "and",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "ea4f02ad-8421-4091-88ca-95e676bb84bc"
+        },
+        "target": {
+          "id": "038f81e0-a4b1-4a28-9fb9-f4b08a5ec34c"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "b54e960e-1fb9-4593-aa6b-fdb71e3c6a0b",
+        "z": 58,
+        "linkID": "0044",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c458",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "and",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "e2892d75-ed51-479d-9073-bb9dd4e90dc7"
+        },
+        "target": {
+          "id": "038f81e0-a4b1-4a28-9fb9-f4b08a5ec34c"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "ffffffe8-470d-41bb-b2d1-f2cbab646f3e",
+        "z": 59,
+        "linkID": "0045",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c459",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "and",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "8d95b8df-8675-410e-80e7-7bcb62aa8e34"
+        },
+        "target": {
+          "id": "038f81e0-a4b1-4a28-9fb9-f4b08a5ec34c"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "41465476-f959-470d-baf8-50eb7c7601d9",
+        "z": 60,
+        "linkID": "0046",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.Softgoal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c461",
+          "attributes": {
+            "nodeName": "east coast",
+            "evolvingFunction": {
+              "cid": "c460",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c462",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 1340,
+          "y": 140
+        },
+        "angle": 0,
+        "id": "0f24f834-d2cc-4da7-8d64-15d8ce2483f1",
+        "z": 61,
+        "nodeID": "0025",
+        "parent": "d4e4998a-2c3b-4ed7-9fdd-2564cee91bbe",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "east coast"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c463",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "++",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "0f24f834-d2cc-4da7-8d64-15d8ce2483f1"
+        },
+        "target": {
+          "id": "364b84c1-7234-421d-85e0-0c8112f2c56d"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "c80155e6-cbb0-4973-9c4f-3586439c2159",
+        "z": 62,
+        "linkID": "0047",
+        "link-type": "++",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.Softgoal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c465",
+          "attributes": {
+            "nodeName": "west coast",
+            "evolvingFunction": {
+              "cid": "c464",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c466",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 1190,
+          "y": 190
+        },
+        "angle": 0,
+        "id": "6c1e0733-713b-44b5-b492-6ce0ffe008e6",
+        "z": 63,
+        "nodeID": "0026",
+        "parent": "d4e4998a-2c3b-4ed7-9fdd-2564cee91bbe",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "west coast"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c467",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "++",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "6c1e0733-713b-44b5-b492-6ce0ffe008e6"
+        },
+        "target": {
+          "id": "364b84c1-7234-421d-85e0-0c8112f2c56d"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "80597543-2f73-4c90-8893-c0e3a6ac57d5",
+        "z": 64,
+        "linkID": "0048",
+        "link-type": "++",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c468",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "+",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "0f24f834-d2cc-4da7-8d64-15d8ce2483f1"
+        },
+        "target": {
+          "id": "944847a6-5230-4328-8791-ab980e81d688"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "+"
+              }
+            }
+          }
+        ],
+        "id": "c77ff4a9-c8e8-4386-8501-7b816a721f63",
+        "z": 65,
+        "linkID": "0050",
+        "link-type": "+",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c469",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "+",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "bc65da76-02d3-45ae-b380-e77742f654bb"
+        },
+        "target": {
+          "id": "0f24f834-d2cc-4da7-8d64-15d8ce2483f1"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "+"
+              }
+            }
+          }
+        ],
+        "id": "be8cc328-72e1-4e77-8cfd-4db1e020c28d",
+        "z": 66,
+        "linkID": "0051",
+        "parent": "d4e4998a-2c3b-4ed7-9fdd-2564cee91bbe",
+        "vertices": [
+          {
+            "x": 1630,
+            "y": 250
+          }
+        ],
+        "link-type": "+",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c470",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "+",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "b550b28a-de38-4c80-841c-bb2187012226"
+        },
+        "target": {
+          "id": "0f24f834-d2cc-4da7-8d64-15d8ce2483f1"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "+"
+              }
+            }
+          }
+        ],
+        "id": "77b45a6f-8f77-4ca7-90fc-8fffd168a1cc",
+        "z": 67,
+        "linkID": "0052",
+        "link-type": "+",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c471",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "+",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "9c5d4ed7-0277-4597-b594-a4d3d0ed0b21"
+        },
+        "target": {
+          "id": "0f24f834-d2cc-4da7-8d64-15d8ce2483f1"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "+"
+              }
+            }
+          }
+        ],
+        "id": "a2ebea99-82f7-45bd-aac3-72582b655f24",
+        "z": 68,
+        "linkID": "0053",
+        "link-type": "+",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.Softgoal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c473",
+          "attributes": {
+            "nodeName": "time with friends",
+            "evolvingFunction": {
+              "cid": "c472",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c474",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 890,
+          "y": 250
+        },
+        "angle": 0,
+        "id": "7afba660-c1e0-4e3f-88fc-2cde7cc6aed4",
+        "z": 69,
+        "nodeID": "0027",
+        "parent": "d4e4998a-2c3b-4ed7-9fdd-2564cee91bbe",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "time with friends"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c475",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "+",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "0f24f834-d2cc-4da7-8d64-15d8ce2483f1"
+        },
+        "target": {
+          "id": "7afba660-c1e0-4e3f-88fc-2cde7cc6aed4"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "+"
+              }
+            }
+          }
+        ],
+        "id": "6494904a-d0de-4141-a27a-8a209c15a6ea",
+        "z": 70,
+        "linkID": "0054",
+        "parent": "d4e4998a-2c3b-4ed7-9fdd-2564cee91bbe",
+        "vertices": [
+          {
+            "x": 1230,
+            "y": 350
+          }
+        ],
+        "link-type": "+",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c476",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "-",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "6c1e0733-713b-44b5-b492-6ce0ffe008e6"
+        },
+        "target": {
+          "id": "7afba660-c1e0-4e3f-88fc-2cde7cc6aed4"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "-"
+              }
+            }
+          }
+        ],
+        "id": "a08232e9-3a01-4077-bb35-fa96ec53b7eb",
+        "z": 71,
+        "linkID": "0055",
+        "parent": "d4e4998a-2c3b-4ed7-9fdd-2564cee91bbe",
+        "vertices": [
+          {
+            "x": 1040,
+            "y": 220
+          }
+        ],
+        "link-type": "-",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c478",
+          "attributes": {
+            "nodeName": "provide resources",
+            "evolvingFunction": {
+              "cid": "c477",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c479",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 1790,
+          "y": 1000
+        },
+        "angle": 0,
+        "id": "7987a807-cd2d-4066-bd05-be33559253f5",
+        "z": 72,
+        "nodeID": "0028",
+        "parent": "8880ffe1-ba6f-4cbf-8c8b-49ad0ad322a2",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "provide resources"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c480",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "++",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "7987a807-cd2d-4066-bd05-be33559253f5"
+        },
+        "target": {
+          "id": "8d95b8df-8675-410e-80e7-7bcb62aa8e34"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "95b4bc03-51a4-4c1f-9944-d305c21159e6",
+        "z": 73,
+        "linkID": "0056",
+        "vertices": [
+          {
+            "x": 1400,
+            "y": 830
+          }
+        ],
+        "link-type": "++",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c481",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "++",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "7987a807-cd2d-4066-bd05-be33559253f5"
+        },
+        "target": {
+          "id": "5dceca85-4868-46d2-b29d-831a2efeb47d"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "02b89ecc-bc08-4f0d-92aa-7c560821ffab",
+        "z": 74,
+        "linkID": "0057",
+        "vertices": [
+          {
+            "x": 1230,
+            "y": 870
+          }
+        ],
+        "link-type": "++",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c483",
+          "attributes": {
+            "nodeName": "internal recruitment",
+            "evolvingFunction": {
+              "cid": "c482",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c484",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 1200,
+          "y": 1070
+        },
+        "angle": 0,
+        "id": "867ce41f-3b34-4eea-8a1c-0f9d12de7383",
+        "z": 75,
+        "nodeID": "0029",
+        "parent": "59ea0bea-8d01-4407-aad4-6011a398dbf1",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "internal recruitment"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c485",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "++",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "867ce41f-3b34-4eea-8a1c-0f9d12de7383"
+        },
+        "target": {
+          "id": "8d95b8df-8675-410e-80e7-7bcb62aa8e34"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "05625f80-091a-4c32-bbd6-b086647642c9",
+        "z": 76,
+        "linkID": "0058",
+        "link-type": "++",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c487",
+          "attributes": {
+            "nodeName": "being cool ",
+            "evolvingFunction": {
+              "cid": "c486",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c488",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 510,
+          "y": 290
+        },
+        "angle": 0,
+        "id": "9b12db23-d8af-4c45-bd23-3eb224c810b3",
+        "z": 77,
+        "nodeID": "0030",
+        "parent": "16531d5f-31ac-4819-b0e5-af4c3698809b",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "being cool "
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c489",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "++",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "9b12db23-d8af-4c45-bd23-3eb224c810b3"
+        },
+        "target": {
+          "id": "7afba660-c1e0-4e3f-88fc-2cde7cc6aed4"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "9c0ee919-2c36-4936-b701-1bb32d561258",
+        "z": 78,
+        "linkID": "0059",
+        "link-type": "++",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      }
+    ]
+  },
+  "version": "BloomingLeaf_2.0"
+}
