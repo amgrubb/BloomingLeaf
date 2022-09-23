@@ -683,3 +683,53 @@ div.attribution {
 .bot-img {
 padding: 0px 20px 0px 0px;
 }
+
+/*Sets attributes for hoverable icons (the question mark) */
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+}
+
+/* Sets attributes for the displayed text */
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 150px;
+  font-size: 12px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  padding: 10px 0;
+  border-radius: 10px;
+
+  /* Position the tooltip text */
+  position: absolute;
+  z-index: 1;
+  bottom: -240%;
+  left: 70%;
+  margin-left: -60px;
+
+  /* Fade in tooltip */
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+/* Tooltip arrow */
+.tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  transform: scale(1, -1);
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+  cursor: help;
+}

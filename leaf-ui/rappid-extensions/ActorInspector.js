@@ -8,9 +8,9 @@ var ActorInspector = Backbone.View.extend({
     template: [
         '<script type="text/template" id="item-template">',
         '<div class="inspector-views" id="right-inspector">',
-        '<label>Actor name</label>',
+        '<div class="tooltip" style="font-size: 20px"> Actor Name <span class="tooltiptext">Choose your actor name here </span> </div>',
         '<textarea class="cell-attrs-text" maxlength=100> <%= actorName %> </textarea>',
-        '<label> Actor type </label>',
+        '<div class="tooltip" style="font-size: 20px">Actor Type <span class="tooltiptext">Select your actor type here </span> </div>',,
         '<select id="actor-type-ID" class="actor-type">',
         '<option value=A <%if (type === "A")  { %> selected <%} %>> Actor </option>',
         '<option value=G <%if (type === "G")  { %> selected <%} %>> Agent </option>',
