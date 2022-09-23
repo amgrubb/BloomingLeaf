@@ -222,6 +222,23 @@ $('#btn-view-intermediate').on('click', function () {
 });
 
 /**
+ *  Display BloomingLeaf help popups
+ */
+ $('#BL-help-1').on('click', function () {
+    const dialog = showAlert('Testing',
+                    'Testing',
+                    window.innerWidth * 0.3, 'alert', 'warning');
+});
+
+$('#BL-help-2').on('click', function () {
+    removeHighlight();
+    clearInspector();
+    var intermediateValuesTable = new IntermediateValuesTable({ model: graph });
+    $('#intermediate-table').append(intermediateValuesTable.el);
+    intermediateValuesTable.render();
+});
+
+/**
  * Switches to Analysis view if there are no cycles and no syntax errors.
  */
 $('#analysis-btn').on('click', function () {
