@@ -684,11 +684,11 @@ div.attribution {
 padding: 0px 20px 0px 0px;
 }
 
-/*Sets attributes for hoverable icons (the question mark) */
+/*Sets attributes for hoverable icon (question mark) */
 .tooltip {
   position: relative;
   display: inline-block;
-  border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+  text-align: right;
 }
 
 /* Sets attributes for the displayed text */

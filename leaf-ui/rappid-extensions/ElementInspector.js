@@ -72,7 +72,8 @@ var ElementInspector = Backbone.View.extend({
 
     template: ['<script type="text/template" id="item-template">',
         '<div class="inspector-views" id="right-inspector">',
-        '<label>Node Name:</label>',
+        // '<label>Node Name:</label>',
+        '<div> <span class="label" style="font-size: 20px"> Node name</span> <span class="tooltip"> ? <span class="tooltiptext"> Type the name of your element here </span> </span> </div> ',
         '<textarea class="cell-attrs-text"></textarea>',
         '<label>Initial Satisfaction Value:</label>',
         '<select id="init-sat-value">',

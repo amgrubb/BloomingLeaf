@@ -202,6 +202,57 @@ $('#legend').on('click', function () { window.open('./userguides/legend.html', '
 $('#evo-color-key').on('click', function () { window.open('./userguides/evo.html', 'newwindow', 'width=500, height=400'); return false; });
 
 /**
+ * Guide me instructions
+*/
+    /** About BloomingLeaf button */
+    $('#about-BloomingLeaf').on('click', function () { 
+    const dialog1 = showAlert('About',
+        '<p> BloomingLeaf is a browser-based tool that uses precise semantics (with Tropos) to model goals and ' +
+        'relationships that evolve over time. Simulation techniques are used to enable stakeholders to choose between ' +
+        'design alternatives, ask what-if questions, and plan for software evolution in an ever-changing world. '+
+        'BloomingLeaf implements the Evolving Intentions framework.</p>',
+        window.innerWidth * 0.5, 'alert', 'warning');      
+    });
+   
+    /** Model Creation button */
+   $('#help-model-creation').on('click', function () { 
+        const dialog2 = showAlert('Model Creation',
+        '<p> We recommend going through the documentation first to get yourself used to notions of actor, goal, soft goal, resource, and task. </p>' +
+        '<p> Once you have done that, click on next to go through the steps of model creation.</p>' +
+        '<div> <button type="button" class="help-buttons" style= "width:50%" id="next"> Next </button>' +
+        '<button type="button" style= "width:50%" class="help-buttons" > Cancel </button> </div>',
+        window.innerWidth * 0.5, 'alert', 'warning');
+        document.querySelectorAll('.help-buttons').forEach(function (button) {
+            button.addEventListener('click', function () { 
+                dialog2.close(); 
+                if (button.id=='next') {showDialog3();};
+            });
+        });
+    });
+   
+
+    function showDialog3() {
+        const dialog3 = showAlert('Model Creation',
+        '<p> Now let us get you ....</p>' +
+        '<div> <button type="button" class="help-buttons" style= "width:50%" id="next"> Next </button>' +
+        '<button type="button" style= "width:50%" class="help-buttons"> Cancel </button> </div>',
+        window.innerWidth * 0.5, 'alert', 'warning');
+        document.querySelectorAll('.help-buttons').forEach(function (button) {
+            button.addEventListener('click', function () { 
+                dialog3.close(); 
+            });
+        });
+    } 
+   
+
+
+
+   $('#Other-help').on('click', function () { 
+    let question = prompt("Please enter your question here", "I need help with ...");
+    //register the question here 
+   });
+
+/**
  * Displays the absolute and relative assignments modal for the user.
  */
 $('#btn-view-assignment').on('click', function () {
@@ -221,22 +272,22 @@ $('#btn-view-intermediate').on('click', function () {
     $('.intermT').height($('#paper').height() * 0.9);
 });
 
-/**
- *  Display BloomingLeaf help popups
- */
- $('#BL-help-1').on('click', function () {
-    const dialog = showAlert('Testing',
-                    'Testing',
-                    window.innerWidth * 0.3, 'alert', 'warning');
-});
+// /**
+//  *  Display BloomingLeaf help popups
+//  */
+//  $('#BL-help-1').on('click', function () {
+//     const dialog = showAlert('Testing',
+//                     'Testing',
+//                     window.innerWidth * 0.3, 'alert', 'warning');
+// });
 
-$('#BL-help-2').on('click', function () {
-    removeHighlight();
-    clearInspector();
-    var intermediateValuesTable = new IntermediateValuesTable({ model: graph });
-    $('#intermediate-table').append(intermediateValuesTable.el);
-    intermediateValuesTable.render();
-});
+// $('#BL-help-2').on('click', function () {
+//     removeHighlight();
+//     clearInspector();
+//     var intermediateValuesTable = new IntermediateValuesTable({ model: graph });
+//     $('#intermediate-table').append(intermediateValuesTable.el);
+//     intermediateValuesTable.render();
+// });
 
 /**
  * Switches to Analysis view if there are no cycles and no syntax errors.
