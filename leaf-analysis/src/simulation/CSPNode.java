@@ -89,42 +89,101 @@ public class CSPNode {
 	}
 
 	
+	
+	/**
+	 * Called on both the state and path. 
+	 */
 	public static void initializePrevResults(ModelSpec spec, List<Constraint> constraints, 
 			IntVar[] timePoints, BooleanVar[][][] values,
-			HashMap<String, Integer> uniqueIDToValueIndex) {
+			HashMap<String, Integer> uniqueIDToValueIndex,
+			HashMap<IntVar, List<String>> timePointMap) {
+		
+		
 		if (Main.DEBUG) System.out.println("\nMethod: func");
    		IOSolution prev = spec.getPrevResult();
    		if (prev == null)
    			throw new RuntimeException("\n Previous results required, but null.");
    		
-   		Integer[] prevTPPath = prev.getSelectedTimePointPath();
-   		HashMap<String, boolean[][]> prevIntVal = prev.getSelectedPreviousValues();
+   		Integer[] prevTPPath = prev.getSelectedTimePointPath();		
+   		HashMap<String, Integer> prevTPMap = prev.getSelectedTPAssignments();
+   		HashMap<String, boolean[][]> prevIntVal = prev.getSelectedPreviousValues(); 
    		
-   		for (int tp = 0; tp < timePoints.length; tp ++) {
-   			if (timePoints[tp].min() == timePoints[tp].max()) {
-   				// time point is already assigned.
-   				// get tIndexVal
-   				Integer tRef = null;
-   				for (int t = 0; t < prevTPPath.length; t++) 
-   					if (prevTPPath[t] == timePoints[tp].min()) {
-   						tRef = t;
-   						break;
-   					}
-   				if (tRef != null) {
-   					// Loop through intentions and assign.
-   					for	(Map.Entry<String, Integer> entry : uniqueIDToValueIndex.entrySet()) {
-   						int i = entry.getValue();
-   						boolean[][] toAssignVals = prevIntVal.get(entry.getKey());
-   						if (toAssignVals != null) {
-   							constraints.add(new XeqC(values[i][tp][0], boolToInt(toAssignVals[tRef][0])));
-   							constraints.add(new XeqC(values[i][tp][1], boolToInt(toAssignVals[tRef][1])));
-   							constraints.add(new XeqC(values[i][tp][2], boolToInt(toAssignVals[tRef][2])));
-   							constraints.add(new XeqC(values[i][tp][3], boolToInt(toAssignVals[tRef][3])));
-   						}
-   					}
-   				}
-   			}
-   		}
+   		if (prevTPPath.length != prevTPMap.size())
+   			throw new RuntimeException("\n The length of the previous time point path and the number of assigned time points, do not match.");
+
+   		if (spec.getAnalysisType().equals("allNextStates")) {
+	   		for (int tp = 0; tp < timePoints.length -1; tp ++) {
+	
+	   			if (timePoints[tp].min() == timePoints[tp].max()) {	
+	   				// For time points is already assigned, get the index value.
+	   				Integer tRef = null;
+	   				for (int t = 0; t < prevTPPath.length; t++) 
+	   					if (prevTPPath[t] == timePoints[tp].min()) {
+	   						tRef = t;
+	   						break;
+	   					}
+	   				if (tRef != null) {
+	   					// Loop through intentions and assign.
+	   					for	(Map.Entry<String, Integer> entry : uniqueIDToValueIndex.entrySet()) {
+	   						int i = entry.getValue();
+	   						boolean[][] toAssignVals = prevIntVal.get(entry.getKey());
+	   						if (toAssignVals != null) {
+	   							constraints.add(new XeqC(values[i][tp][0], boolToInt(toAssignVals[tRef][0])));
+	   							constraints.add(new XeqC(values[i][tp][1], boolToInt(toAssignVals[tRef][1])));
+	   							constraints.add(new XeqC(values[i][tp][2], boolToInt(toAssignVals[tRef][2])));
+	   							constraints.add(new XeqC(values[i][tp][3], boolToInt(toAssignVals[tRef][3])));
+	   						}
+	   					}
+	   				}
+	   			}
+	   		}
+		} else {
+	   		// This may be specifically for paths.
+	   		for (Map.Entry<String,Integer> mapElement : prevTPMap.entrySet()) {
+	   			String key = mapElement.getKey();
+	   			int value = mapElement.getValue();
+	   			IntVar refTP = CSPPath.getTimePoint(timePointMap, key);	
+	   			
+	   			// Update the range of the timepoint that has already be assigned.
+	   			if (refTP == null)
+	   				throw new RuntimeException("\n In initializePrevResults, a previous time point was not matched.");
+	   			else if (refTP.min() != refTP.max()) 
+	   				refTP.setDomain(value, value);
+	   			else if ((refTP.min() == refTP.max()) && refTP.min() != value)
+	   				throw new RuntimeException("\n In initializePrevResults, a previous time point cannot be set.");
+	   				
+	   			
+	   			// Assign the intention valuations associated with this time point.
+	   			for (int indexAbsVal = 0; indexAbsVal < prevTPPath.length; indexAbsVal++) {
+	   				if (prevTPPath[indexAbsVal] == value) {
+	   					
+	   					int tp = -1;
+	   			   		for (int t = 0; t < timePoints.length; t ++) {
+	   			   			if (timePoints[t] == refTP)
+	   			   				tp = t;
+	   			   		}
+	   			   		if (tp == -1)
+	   			   			throw new RuntimeException("\n In initializePrevResults, a time point IntVar was not found.");
+	   					
+	   					// Update individual values.
+	   					for	(Map.Entry<String, Integer> entry : uniqueIDToValueIndex.entrySet()) {
+	   						int i = entry.getValue();
+	   						boolean[][] toAssignVals = prevIntVal.get(entry.getKey());
+	   						if (toAssignVals != null) {
+	   							constraints.add(new XeqC(values[i][tp][0], boolToInt(toAssignVals[indexAbsVal][0])));
+	   							constraints.add(new XeqC(values[i][tp][1], boolToInt(toAssignVals[indexAbsVal][1])));
+	   							constraints.add(new XeqC(values[i][tp][2], boolToInt(toAssignVals[indexAbsVal][2])));
+	   							constraints.add(new XeqC(values[i][tp][3], boolToInt(toAssignVals[indexAbsVal][3])));
+	   						}
+	   					}		
+	   					break;
+	   				}
+	   			}	
+	   		}	
+   		}   		
+
+
+   		
 	}
 
 	/**

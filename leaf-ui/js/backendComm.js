@@ -7,6 +7,7 @@
  */
 
 var url = "http://localhost:8080/untitled.html";	// Hardcoded URL for Node calls. 
+var globalAnalysisResult; 
 
 /** Makes a request for the backend and calls the response function.
  * {ConfigBBM} analysisRequest
@@ -64,16 +65,14 @@ function responseFunc(analysisRequest, response) {
 			return;
 		} else if (analysisRequest.get('action') == 'singlePath' || analysisRequest.get('action') == 'updatePath') {
 			var analysisResult = convertToAnalysisResult(results); 	// {ResultBBM}
-			var hasTimepoints = SliderObj.displayAnalysis(analysisResult, false);
-
-			if (hasTimepoints){
-				analysisRequest.addResult(analysisResult);
-				setSelectResult(analysisResult);
-			} else {
-				analysisResult.destroy();
-			}	
+			// Copy of single path result to be able to access total slider time points in Next State 
+			globalAnalysisResult = analysisResult;
+			SliderObj.displayAnalysis(analysisResult, false);
+			analysisRequest.addResult(analysisResult);
 		} else if (analysisRequest.get('action') == 'allNextStates') {
 			var allNextStatesResult = convertToAnalysisResult(results); 	// {ResultBBM}
+			// New attribute: total time points in slider in original window 
+			allNextStatesResult.totalNumTimePoints = globalAnalysisResult.get('timePointPath')
 			open_next_state_viewer(analysisRequest, allNextStatesResult)
 		} else {
 			alert("Error: Unknown analysis request type.");

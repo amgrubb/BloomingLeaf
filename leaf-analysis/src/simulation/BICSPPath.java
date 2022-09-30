@@ -96,7 +96,7 @@ public class BICSPPath {
 		CSPNode.initializeConflictPrevention(this.spec, this.sat, this.values, this.zero);
     	if (problemType == SearchType.UPDATE_PATH) { 
     		// Assign past values with initialization?
-    		CSPNode.initializePrevResults(this.spec, this.constraints, this.timePoints, this.values, this.uniqueIDToValueIndex);
+    		CSPNode.initializePrevResults(this.spec, this.constraints, this.timePoints, this.values, this.uniqueIDToValueIndex, this.timePointMap);
     	}
     	
     	CSPLinks.initializeLinkConstraints(this.constraints, this.spec, this.values, 
