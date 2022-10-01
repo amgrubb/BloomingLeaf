@@ -1,0 +1,4984 @@
+{
+  "graph": {
+    "type": "goalmodel.Graph",
+    "maxAbsTime": 1,
+    "absTimePtsArr": [],
+    "constraints": [],
+    "cells": [
+      {
+        "type": "basic.Actor",
+        "size": {
+          "width": 220,
+          "height": 210
+        },
+        "actor": {
+          "cid": "c344",
+          "attributes": {
+            "type": "A",
+            "actorName": "Smith Alumi"
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 1170,
+          "y": 310
+        },
+        "angle": 0,
+        "id": "2d16e38d-3840-4399-a061-198a9df524f0",
+        "z": -1,
+        "embeds": [
+          "446d591a-c777-4cbf-8def-85365dac138e"
+        ],
+        "attrs": {
+          ".name": {
+            "text": "Smith Alumi"
+          }
+        }
+      },
+      {
+        "type": "basic.Actor",
+        "size": {
+          "width": 220,
+          "height": 170
+        },
+        "actor": {
+          "cid": "c345",
+          "attributes": {
+            "type": "A",
+            "actorName": "S-O"
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 1130,
+          "y": -20
+        },
+        "angle": 0,
+        "id": "93452abc-d4ad-47c0-8a4e-68e12496221b",
+        "z": 0,
+        "embeds": [
+          "478b5fed-6de9-4d72-86f5-b34f3b22e948"
+        ],
+        "attrs": {
+          ".name": {
+            "text": "S-O"
+          }
+        }
+      },
+      {
+        "type": "basic.Actor",
+        "size": {
+          "width": 890,
+          "height": 710
+        },
+        "actor": {
+          "cid": "c346",
+          "attributes": {
+            "type": "A",
+            "actorName": " Self "
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 140,
+          "y": 100
+        },
+        "angle": 0,
+        "id": "9896c25a-2704-4a07-84a2-f35213492e12",
+        "z": 1,
+        "embeds": [
+          "2e683710-baa4-4a21-9294-90225ddb3a5e",
+          "c1b03916-4ce8-4fed-a951-39d3412ed88a",
+          "c71cc95c-f5e3-412b-b361-312b677ee9b3",
+          "ffe86dc4-9b7b-41ed-b1aa-9664af376b89",
+          "f1a9f9ac-9edf-4906-a084-613114feb7a8",
+          "7381cac6-6f39-4bb5-89d1-30f435f5c27d",
+          "23a0d994-fd18-4276-8fc5-f7ae500cd0f0",
+          "f893ecaf-8b3d-42f7-a937-16dffa58e9df",
+          "a230b241-c832-480f-82ab-27d1c17207cc",
+          "85c94ab2-1a56-4115-a23c-1aebe80210af",
+          "d29078a3-eb25-4e4a-a027-35b9479b0eba",
+          "cd430984-27ba-4716-8e15-6ab7dd127a6b",
+          "272e1b4d-08c7-435c-ac04-cbeb96db87f7",
+          "bcf83a1b-1ffd-4538-9e6a-4d723691a4f2",
+          "81bd2aa4-0a95-40de-9316-2ea05499da10",
+          "5a9d59ea-250e-4bda-b345-5f7c43e516c1",
+          "86371c7d-5eae-4ed9-8a52-f70d7ebba6c2",
+          "8cadc3ae-53f3-410f-aaa9-febcd1e984bf",
+          "9deb8848-1bda-43ea-a866-ce36b7c30ba9",
+          "ffe8f287-ce3a-40b2-a7dc-6218f27921f8",
+          "8e615e67-394c-47d4-b5c1-5de974a2dd04",
+          "26df617a-5190-46c3-af6d-b846cb6e84fd",
+          "74cedd60-750a-422c-b087-116e5c4c8787",
+          "c74685f2-dc65-40c4-a957-e107b89e73e4",
+          "a7f3e7b8-f67a-4dba-b0b9-d7e5fe06988a",
+          "9c61f85f-c186-408b-9039-196b24634920",
+          "578c4607-dbdc-437c-9305-bff5b5309349",
+          "ea6803f2-01a9-4ae9-80e4-b26bed92e238",
+          "96a0a59f-a34b-412f-994f-49fe0170a592",
+          "b68e152e-2860-4b94-8d34-1e6182f9fa1b",
+          "722ed634-9a4c-4e0c-ba98-022f12602526",
+          "cfbf716d-5cc5-41e6-a535-00d6962ba98e",
+          "6b1c80a4-8c3c-4718-98d7-e0fded3ace9a",
+          "6bd330be-675e-4083-8d9f-752842a4e1a2",
+          "9d9e4a00-74e2-4788-bb09-da5cdaa72647",
+          "285c6632-c3b5-4cdb-8f71-044761ba1e2e",
+          "28506cca-7977-48fb-985a-6e53c5a9ab9a",
+          "8c035c50-0fa8-420c-8212-fcf4cd7246bc",
+          "2fe5b8ed-c35e-43f7-bdc0-bac882a1f7b3",
+          "fe021b23-2e48-4e6b-b7d2-5a9f80b00bd9",
+          "1ad28c02-1554-4a61-b66b-b95e4a9c2b7a",
+          "d52ea5ef-3936-4317-9f72-069ab2044c87",
+          "e1f97006-348d-4f1a-8e68-2e176d3f3dff",
+          "98af7bc9-8fa6-417b-af6e-dc85ea7cd871",
+          "eb822dbe-f72d-4009-b8c2-9c11ca0b7f0b",
+          "fc61b1aa-e45d-4a7f-bf0d-1e40fb363fac",
+          "ac63a0e8-a574-4609-a0c4-8f784bbc7469",
+          "d9928a1b-46ae-4c33-aa9e-3c5834238c01",
+          "7442a02a-ec78-40fb-8e1d-06ff3b9c7413",
+          "706d2533-811b-4e85-a2fb-dcb29644ed79",
+          "a3487fef-b457-44ff-951e-bfb5e1aed934",
+          "698847eb-d096-403f-8ad4-beb6186a2609",
+          "6c708602-b789-4105-ae35-fdaaacf07d50"
+        ],
+        "attrs": {
+          ".name": {
+            "text": " Self "
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c347",
+          "attributes": {
+            "nodeName": "Help students\nfind jobs",
+            "evolvingFunction": {
+              "cid": "c348",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c349",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {
+            "nodeName": "Help students\nfind jobs",
+            "evolvingFunction": null,
+            "userEvaluationList": [
+              {
+                "cid": "c349",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "changed": {
+            "evolvingFunction": {
+              "cid": "c348",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            }
+          },
+          "_pending": false
+        },
+        "position": {
+          "x": 1230,
+          "y": 380
+        },
+        "angle": 0,
+        "id": "446d591a-c777-4cbf-8def-85365dac138e",
+        "z": 2,
+        "parent": "2d16e38d-3840-4399-a061-198a9df524f0",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Help students\nfind jobs"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Goal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c350",
+          "attributes": {
+            "nodeName": "Partner is happy",
+            "evolvingFunction": {
+              "cid": "c351",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c352",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {
+            "nodeName": "Partner is happy",
+            "evolvingFunction": null,
+            "userEvaluationList": [
+              {
+                "cid": "c352",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "changed": {
+            "evolvingFunction": {
+              "cid": "c351",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            }
+          },
+          "_pending": false
+        },
+        "position": {
+          "x": 1190,
+          "y": 30
+        },
+        "angle": 0,
+        "id": "478b5fed-6de9-4d72-86f5-b34f3b22e948",
+        "z": 3,
+        "parent": "93452abc-d4ad-47c0-8a4e-68e12496221b",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Partner is happy"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Resource",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c353",
+          "attributes": {
+            "nodeName": "Connections",
+            "evolvingFunction": {
+              "cid": "c354",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c355",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {
+            "nodeName": "Connections",
+            "evolvingFunction": null,
+            "userEvaluationList": [
+              {
+                "cid": "c355",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "changed": {
+            "evolvingFunction": {
+              "cid": "c354",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            }
+          },
+          "_pending": false
+        },
+        "position": {
+          "x": 1140,
+          "y": 690
+        },
+        "angle": 0,
+        "id": "e0b19f9b-a73e-4ee4-be83-f8d27a4e4fc1",
+        "z": 4,
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Connections"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Resource",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c356",
+          "attributes": {
+            "nodeName": "Job search websites",
+            "evolvingFunction": {
+              "cid": "c357",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c358",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {
+            "nodeName": "Job search websites",
+            "evolvingFunction": null,
+            "userEvaluationList": [
+              {
+                "cid": "c358",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "changed": {
+            "evolvingFunction": {
+              "cid": "c357",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            }
+          },
+          "_pending": false
+        },
+        "position": {
+          "x": 660,
+          "y": 730
+        },
+        "angle": 0,
+        "id": "7442a02a-ec78-40fb-8e1d-06ff3b9c7413",
+        "z": 5,
+        "parent": "9896c25a-2704-4a07-84a2-f35213492e12",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Job search websites"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Resource",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c359",
+          "attributes": {
+            "nodeName": "Self-started\nvideography business",
+            "evolvingFunction": {
+              "cid": "c360",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c361",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {
+            "nodeName": "Self-started\nvideography business",
+            "evolvingFunction": null,
+            "userEvaluationList": [
+              {
+                "cid": "c361",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "changed": {
+            "evolvingFunction": {
+              "cid": "c360",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            }
+          },
+          "_pending": false
+        },
+        "position": {
+          "x": 340,
+          "y": 730
+        },
+        "angle": 0,
+        "id": "1ad28c02-1554-4a61-b66b-b95e4a9c2b7a",
+        "z": 6,
+        "parent": "9896c25a-2704-4a07-84a2-f35213492e12",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Self-started\nvideography business"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Resource",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c362",
+          "attributes": {
+            "nodeName": "Time",
+            "evolvingFunction": {
+              "cid": "c363",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c364",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {
+            "nodeName": "Time",
+            "evolvingFunction": null,
+            "userEvaluationList": [
+              {
+                "cid": "c364",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "changed": {
+            "evolvingFunction": {
+              "cid": "c363",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            }
+          },
+          "_pending": false
+        },
+        "position": {
+          "x": 20,
+          "y": 690
+        },
+        "angle": 0,
+        "id": "e0b880a6-c19f-4b68-889f-60f6d4ea0da2",
+        "z": 7,
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Time"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Resource",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c365",
+          "attributes": {
+            "nodeName": "Money",
+            "evolvingFunction": {
+              "cid": "c366",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c367",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {
+            "nodeName": "Money",
+            "evolvingFunction": null,
+            "userEvaluationList": [
+              {
+                "cid": "c367",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "changed": {
+            "evolvingFunction": {
+              "cid": "c366",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            }
+          },
+          "_pending": false
+        },
+        "position": {
+          "x": -150,
+          "y": 420
+        },
+        "angle": 0,
+        "id": "8fdd97c1-f545-4556-967c-bdcb762ad88c",
+        "z": 8,
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Money"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Softgoal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c368",
+          "attributes": {
+            "nodeName": "Time and money for\nrock climbing",
+            "evolvingFunction": {
+              "cid": "c369",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c370",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {
+            "nodeName": "Time and money for\nrock climbing",
+            "evolvingFunction": null,
+            "userEvaluationList": [
+              {
+                "cid": "c370",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "changed": {
+            "evolvingFunction": {
+              "cid": "c369",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            }
+          },
+          "_pending": false
+        },
+        "position": {
+          "x": -40,
+          "y": 150
+        },
+        "angle": 0,
+        "id": "ef76a2f8-e81a-4ccb-85b7-6c6464dc12bb",
+        "z": 9,
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Time and money for\nrock climbing"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Softgoal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c371",
+          "attributes": {
+            "nodeName": "Be happy with career",
+            "evolvingFunction": {
+              "cid": "c372",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c373",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {
+            "nodeName": "Be happy with career",
+            "evolvingFunction": null,
+            "userEvaluationList": [
+              {
+                "cid": "c373",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "changed": {
+            "evolvingFunction": {
+              "cid": "c372",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            }
+          },
+          "_pending": false
+        },
+        "position": {
+          "x": 550,
+          "y": 70
+        },
+        "angle": 0,
+        "id": "285c6632-c3b5-4cdb-8f71-044761ba1e2e",
+        "z": 10,
+        "parent": "9896c25a-2704-4a07-84a2-f35213492e12",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Be happy with career"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Goal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c374",
+          "attributes": {
+            "nodeName": "Become a \nsuccessful filmmaker",
+            "evolvingFunction": {
+              "cid": "c375",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c376",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {
+            "nodeName": "Become a \nsuccessful filmmaker",
+            "evolvingFunction": null,
+            "userEvaluationList": [
+              {
+                "cid": "c376",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "changed": {
+            "evolvingFunction": {
+              "cid": "c375",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            }
+          },
+          "_pending": false
+        },
+        "position": {
+          "x": 250,
+          "y": 120
+        },
+        "angle": 0,
+        "id": "2fe5b8ed-c35e-43f7-bdc0-bac882a1f7b3",
+        "z": 11,
+        "parent": "9896c25a-2704-4a07-84a2-f35213492e12",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Become a \nsuccessful filmmaker"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Goal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c377",
+          "attributes": {
+            "nodeName": "Live near work",
+            "evolvingFunction": {
+              "cid": "c378",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c379",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {
+            "nodeName": "Live near work",
+            "evolvingFunction": null,
+            "userEvaluationList": [
+              {
+                "cid": "c379",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "changed": {
+            "evolvingFunction": {
+              "cid": "c378",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            }
+          },
+          "_pending": false
+        },
+        "position": {
+          "x": 820,
+          "y": 120
+        },
+        "angle": 0,
+        "id": "706d2533-811b-4e85-a2fb-dcb29644ed79",
+        "z": 12,
+        "parent": "9896c25a-2704-4a07-84a2-f35213492e12",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Live near work"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Goal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c380",
+          "attributes": {
+            "nodeName": "Become a news \ncameraperson",
+            "evolvingFunction": {
+              "cid": "c381",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c382",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {
+            "nodeName": "Become a news \ncameraperson",
+            "evolvingFunction": null,
+            "userEvaluationList": [
+              {
+                "cid": "c382",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "changed": {
+            "evolvingFunction": {
+              "cid": "c381",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            }
+          },
+          "_pending": false
+        },
+        "position": {
+          "x": 320,
+          "y": 260
+        },
+        "angle": 0,
+        "id": "98af7bc9-8fa6-417b-af6e-dc85ea7cd871",
+        "z": 13,
+        "parent": "9896c25a-2704-4a07-84a2-f35213492e12",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Become a news \ncameraperson"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Goal",
+        "size": {
+          "width": 120,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c383",
+          "attributes": {
+            "nodeName": "Become a documentary\nfilmmaker",
+            "evolvingFunction": {
+              "cid": "c384",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c385",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {
+            "nodeName": "Become a documentary\nfilmmaker",
+            "evolvingFunction": null,
+            "userEvaluationList": [
+              {
+                "cid": "c385",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "changed": {
+            "evolvingFunction": {
+              "cid": "c384",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            }
+          },
+          "_pending": false
+        },
+        "position": {
+          "x": 500,
+          "y": 250
+        },
+        "angle": 0,
+        "id": "eb822dbe-f72d-4009-b8c2-9c11ca0b7f0b",
+        "z": 14,
+        "parent": "9896c25a-2704-4a07-84a2-f35213492e12",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Become a documentary\nfilmmaker"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Goal",
+        "size": {
+          "width": 120,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c386",
+          "attributes": {
+            "nodeName": "Become a cameraperson\nfor movies or TV",
+            "evolvingFunction": {
+              "cid": "c387",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c388",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {
+            "nodeName": "Become a cameraperson\nfor movies or TV",
+            "evolvingFunction": null,
+            "userEvaluationList": [
+              {
+                "cid": "c388",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "changed": {
+            "evolvingFunction": {
+              "cid": "c387",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            }
+          },
+          "_pending": false
+        },
+        "position": {
+          "x": 690,
+          "y": 240
+        },
+        "angle": 0,
+        "id": "fc61b1aa-e45d-4a7f-bf0d-1e40fb363fac",
+        "z": 15,
+        "parent": "9896c25a-2704-4a07-84a2-f35213492e12",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Become a cameraperson\nfor movies or TV"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Goal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c389",
+          "attributes": {
+            "nodeName": "Become a wedding\nvideographer",
+            "evolvingFunction": {
+              "cid": "c390",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c391",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {
+            "nodeName": "Become a wedding\nvideographer",
+            "evolvingFunction": null,
+            "userEvaluationList": [
+              {
+                "cid": "c391",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "changed": {
+            "evolvingFunction": {
+              "cid": "c390",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            }
+          },
+          "_pending": false
+        },
+        "position": {
+          "x": 880,
+          "y": 230
+        },
+        "angle": 0,
+        "id": "28506cca-7977-48fb-985a-6e53c5a9ab9a",
+        "z": 16,
+        "parent": "9896c25a-2704-4a07-84a2-f35213492e12",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Become a wedding\nvideographer"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c392",
+          "attributes": {
+            "nodeName": "Reach out to news\nstations",
+            "evolvingFunction": {
+              "cid": "c393",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c394",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {
+            "nodeName": "Reach out to news\nstations",
+            "evolvingFunction": null,
+            "userEvaluationList": [
+              {
+                "cid": "c394",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "changed": {
+            "evolvingFunction": {
+              "cid": "c393",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            }
+          },
+          "_pending": false
+        },
+        "position": {
+          "x": 150,
+          "y": 280
+        },
+        "angle": 0,
+        "id": "d52ea5ef-3936-4317-9f72-069ab2044c87",
+        "z": 17,
+        "parent": "9896c25a-2704-4a07-84a2-f35213492e12",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Reach out to news\nstations"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c395",
+          "attributes": {
+            "nodeName": "Build a portfolio",
+            "evolvingFunction": {
+              "cid": "c396",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c397",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {
+            "nodeName": "Build a portfolio",
+            "evolvingFunction": null,
+            "userEvaluationList": [
+              {
+                "cid": "c397",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "changed": {
+            "evolvingFunction": {
+              "cid": "c396",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            }
+          },
+          "_pending": false
+        },
+        "position": {
+          "x": 350,
+          "y": 500
+        },
+        "angle": 0,
+        "id": "6c708602-b789-4105-ae35-fdaaacf07d50",
+        "z": 18,
+        "parent": "9896c25a-2704-4a07-84a2-f35213492e12",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Build a portfolio"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c398",
+          "attributes": {
+            "nodeName": "Acquire video \nskills",
+            "evolvingFunction": {
+              "cid": "c399",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c400",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {
+            "nodeName": "Acquire video \nskills",
+            "evolvingFunction": null,
+            "userEvaluationList": [
+              {
+                "cid": "c400",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "changed": {
+            "evolvingFunction": {
+              "cid": "c399",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            }
+          },
+          "_pending": false
+        },
+        "position": {
+          "x": 650,
+          "y": 570
+        },
+        "angle": 0,
+        "id": "ac63a0e8-a574-4609-a0c4-8f784bbc7469",
+        "z": 19,
+        "parent": "9896c25a-2704-4a07-84a2-f35213492e12",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Acquire video \nskills"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c401",
+          "attributes": {
+            "nodeName": "Reach out to \nfilm or TV studios",
+            "evolvingFunction": {
+              "cid": "c402",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c403",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {
+            "nodeName": "Reach out to \nfilm or TV studios",
+            "evolvingFunction": null,
+            "userEvaluationList": [
+              {
+                "cid": "c403",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "changed": {
+            "evolvingFunction": {
+              "cid": "c402",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            }
+          },
+          "_pending": false
+        },
+        "position": {
+          "x": 790,
+          "y": 440
+        },
+        "angle": 0,
+        "id": "a3487fef-b457-44ff-951e-bfb5e1aed934",
+        "z": 20,
+        "parent": "9896c25a-2704-4a07-84a2-f35213492e12",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Reach out to \nfilm or TV studios"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 120,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c404",
+          "attributes": {
+            "nodeName": "Network with wedding\nfilmmakers",
+            "evolvingFunction": {
+              "cid": "c405",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c406",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {
+            "nodeName": "Network with wedding\nfilmmakers",
+            "evolvingFunction": null,
+            "userEvaluationList": [
+              {
+                "cid": "c406",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "changed": {
+            "evolvingFunction": {
+              "cid": "c405",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            }
+          },
+          "_pending": false
+        },
+        "position": {
+          "x": 880,
+          "y": 410
+        },
+        "angle": 0,
+        "id": "698847eb-d096-403f-8ad4-beb6186a2609",
+        "z": 21,
+        "parent": "9896c25a-2704-4a07-84a2-f35213492e12",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Network with wedding\nfilmmakers"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 130,
+          "height": 70
+        },
+        "intention": {
+          "cid": "c407",
+          "attributes": {
+            "nodeName": "Film more weddings",
+            "evolvingFunction": {
+              "cid": "c408",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c409",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {
+            "nodeName": "Film more weddings",
+            "evolvingFunction": null,
+            "userEvaluationList": [
+              {
+                "cid": "c409",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "changed": {
+            "evolvingFunction": {
+              "cid": "c408",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            }
+          },
+          "_pending": false
+        },
+        "position": {
+          "x": 810,
+          "y": 610
+        },
+        "angle": 0,
+        "id": "fe021b23-2e48-4e6b-b7d2-5a9f80b00bd9",
+        "z": 22,
+        "parent": "9896c25a-2704-4a07-84a2-f35213492e12",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Film more weddings"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c410",
+          "attributes": {
+            "nodeName": "Take film classes",
+            "evolvingFunction": {
+              "cid": "c411",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c412",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {
+            "nodeName": "Take film classes",
+            "evolvingFunction": null,
+            "userEvaluationList": [
+              {
+                "cid": "c412",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "changed": {
+            "evolvingFunction": {
+              "cid": "c411",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            }
+          },
+          "_pending": false
+        },
+        "position": {
+          "x": 470,
+          "y": 620
+        },
+        "angle": 0,
+        "id": "d9928a1b-46ae-4c33-aa9e-3c5834238c01",
+        "z": 23,
+        "parent": "9896c25a-2704-4a07-84a2-f35213492e12",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Take film classes"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c413",
+          "attributes": {
+            "nodeName": "Create films \nfor practice",
+            "evolvingFunction": {
+              "cid": "c414",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c415",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {
+            "nodeName": "Create films \nfor practice",
+            "evolvingFunction": null,
+            "userEvaluationList": [
+              {
+                "cid": "c415",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "changed": {
+            "evolvingFunction": {
+              "cid": "c414",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            }
+          },
+          "_pending": false
+        },
+        "position": {
+          "x": 190,
+          "y": 420
+        },
+        "angle": 0,
+        "id": "e1f97006-348d-4f1a-8e68-2e176d3f3dff",
+        "z": 24,
+        "parent": "9896c25a-2704-4a07-84a2-f35213492e12",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Create films \nfor practice"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 130,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c416",
+          "attributes": {
+            "nodeName": "Network with \ndocumentary filmmakers",
+            "evolvingFunction": {
+              "cid": "c417",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c418",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {
+            "nodeName": "Network with \ndocumentary filmmakers",
+            "evolvingFunction": null,
+            "userEvaluationList": [
+              {
+                "cid": "c418",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "changed": {
+            "evolvingFunction": {
+              "cid": "c417",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            }
+          },
+          "_pending": false
+        },
+        "position": {
+          "x": 150,
+          "y": 620
+        },
+        "angle": 0,
+        "id": "8c035c50-0fa8-420c-8212-fcf4cd7246bc",
+        "z": 25,
+        "parent": "9896c25a-2704-4a07-84a2-f35213492e12",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Network with \ndocumentary filmmakers"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c419",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "++",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "5a739145-6d5b-440e-b718-3809b5b96a54",
+        "source": {
+          "id": "446d591a-c777-4cbf-8def-85365dac138e"
+        },
+        "target": {
+          "id": "e0b19f9b-a73e-4ee4-be83-f8d27a4e4fc1"
+        },
+        "z": 26,
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c420",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "++",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "b97cfa91-cfcc-4681-a5ee-dd3c7da0a1c0",
+        "source": {
+          "id": "e0b19f9b-a73e-4ee4-be83-f8d27a4e4fc1"
+        },
+        "target": {
+          "id": "698847eb-d096-403f-8ad4-beb6186a2609"
+        },
+        "z": 27,
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c421",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "++",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "c54bf67b-b42d-43e1-b798-cf05d9030af2",
+        "source": {
+          "id": "e0b19f9b-a73e-4ee4-be83-f8d27a4e4fc1"
+        },
+        "target": {
+          "id": "a3487fef-b457-44ff-951e-bfb5e1aed934"
+        },
+        "z": 28,
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c422",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "++",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "aee8434f-9e15-43a0-b1a0-1823e9b1419b",
+        "source": {
+          "id": "e0b19f9b-a73e-4ee4-be83-f8d27a4e4fc1"
+        },
+        "target": {
+          "id": "d52ea5ef-3936-4317-9f72-069ab2044c87"
+        },
+        "z": 29,
+        "vertices": [
+          {
+            "x": 1060,
+            "y": 50
+          },
+          {
+            "x": 200,
+            "y": 50
+          }
+        ],
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c423",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "++",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "db381289-47d5-48c0-8cfd-67af36e02450",
+        "source": {
+          "id": "e0b19f9b-a73e-4ee4-be83-f8d27a4e4fc1"
+        },
+        "target": {
+          "id": "8c035c50-0fa8-420c-8212-fcf4cd7246bc"
+        },
+        "z": 30,
+        "vertices": [
+          {
+            "x": 500,
+            "y": 690
+          }
+        ],
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c424",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "++",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "9d9e4a00-74e2-4788-bb09-da5cdaa72647",
+        "source": {
+          "id": "7442a02a-ec78-40fb-8e1d-06ff3b9c7413"
+        },
+        "target": {
+          "id": "698847eb-d096-403f-8ad4-beb6186a2609"
+        },
+        "z": 31,
+        "parent": "9896c25a-2704-4a07-84a2-f35213492e12",
+        "vertices": [
+          {
+            "x": 800,
+            "y": 600
+          }
+        ],
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c425",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "++",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "6bd330be-675e-4083-8d9f-752842a4e1a2",
+        "source": {
+          "id": "7442a02a-ec78-40fb-8e1d-06ff3b9c7413"
+        },
+        "target": {
+          "id": "8c035c50-0fa8-420c-8212-fcf4cd7246bc"
+        },
+        "z": 32,
+        "parent": "9896c25a-2704-4a07-84a2-f35213492e12",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c426",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "++",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "2e683710-baa4-4a21-9294-90225ddb3a5e",
+        "source": {
+          "id": "7442a02a-ec78-40fb-8e1d-06ff3b9c7413"
+        },
+        "target": {
+          "id": "d52ea5ef-3936-4317-9f72-069ab2044c87"
+        },
+        "z": 33,
+        "parent": "9896c25a-2704-4a07-84a2-f35213492e12",
+        "vertices": [
+          {
+            "x": 640,
+            "y": 630
+          },
+          {
+            "x": 510,
+            "y": 510
+          }
+        ],
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c427",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "++",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "6b1c80a4-8c3c-4718-98d7-e0fded3ace9a",
+        "source": {
+          "id": "7442a02a-ec78-40fb-8e1d-06ff3b9c7413"
+        },
+        "target": {
+          "id": "a3487fef-b457-44ff-951e-bfb5e1aed934"
+        },
+        "z": 34,
+        "parent": "9896c25a-2704-4a07-84a2-f35213492e12",
+        "vertices": [],
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c428",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "++",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "cfbf716d-5cc5-41e6-a535-00d6962ba98e",
+        "source": {
+          "id": "1ad28c02-1554-4a61-b66b-b95e4a9c2b7a"
+        },
+        "target": {
+          "id": "6c708602-b789-4105-ae35-fdaaacf07d50"
+        },
+        "z": 35,
+        "parent": "9896c25a-2704-4a07-84a2-f35213492e12",
+        "vertices": [],
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c429",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "and",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "b0126a40-f940-483f-babd-a7cc3c5801d8",
+        "source": {
+          "id": "e0b880a6-c19f-4b68-889f-60f6d4ea0da2"
+        },
+        "target": {
+          "id": "ac63a0e8-a574-4609-a0c4-8f784bbc7469"
+        },
+        "z": 37,
+        "vertices": [
+          {
+            "x": 100,
+            "y": 590
+          }
+        ],
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c430",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "and",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "2579f6c8-7702-4ea5-82dc-83543c86a53d",
+        "source": {
+          "id": "e0b880a6-c19f-4b68-889f-60f6d4ea0da2"
+        },
+        "target": {
+          "id": "6c708602-b789-4105-ae35-fdaaacf07d50"
+        },
+        "z": 38,
+        "vertices": [
+          {
+            "x": 80,
+            "y": 540
+          }
+        ],
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c431",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "and",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "9f5fcd14-0e6e-4bc6-8192-d6b4aa28a18b",
+        "source": {
+          "id": "e0b880a6-c19f-4b68-889f-60f6d4ea0da2"
+        },
+        "target": {
+          "id": "e1f97006-348d-4f1a-8e68-2e176d3f3dff"
+        },
+        "z": 39,
+        "vertices": [
+          {
+            "x": 60,
+            "y": 480
+          }
+        ],
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c432",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "and",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "15ac7e4d-26ca-45f3-8fa1-1da98fd2954e",
+        "source": {
+          "id": "e0b880a6-c19f-4b68-889f-60f6d4ea0da2"
+        },
+        "target": {
+          "id": "d9928a1b-46ae-4c33-aa9e-3c5834238c01"
+        },
+        "z": 40,
+        "vertices": [
+          {
+            "x": 280,
+            "y": 710
+          }
+        ],
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c433",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "and",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "f21680d0-85aa-40b3-9151-827faf65a33c",
+        "source": {
+          "id": "e0b880a6-c19f-4b68-889f-60f6d4ea0da2"
+        },
+        "target": {
+          "id": "fe021b23-2e48-4e6b-b7d2-5a9f80b00bd9"
+        },
+        "z": 41,
+        "vertices": [
+          {
+            "x": 70,
+            "y": 830
+          },
+          {
+            "x": 880,
+            "y": 830
+          }
+        ],
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c434",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "++",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "722ed634-9a4c-4e0c-ba98-022f12602526",
+        "source": {
+          "id": "e1f97006-348d-4f1a-8e68-2e176d3f3dff"
+        },
+        "target": {
+          "id": "98af7bc9-8fa6-417b-af6e-dc85ea7cd871"
+        },
+        "z": 42,
+        "parent": "9896c25a-2704-4a07-84a2-f35213492e12",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c435",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "++",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "b68e152e-2860-4b94-8d34-1e6182f9fa1b",
+        "source": {
+          "id": "e1f97006-348d-4f1a-8e68-2e176d3f3dff"
+        },
+        "target": {
+          "id": "28506cca-7977-48fb-985a-6e53c5a9ab9a"
+        },
+        "z": 44,
+        "parent": "9896c25a-2704-4a07-84a2-f35213492e12",
+        "vertices": [
+          {
+            "x": 510,
+            "y": 410
+          }
+        ],
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c436",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "++",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "96a0a59f-a34b-412f-994f-49fe0170a592",
+        "source": {
+          "id": "8c035c50-0fa8-420c-8212-fcf4cd7246bc"
+        },
+        "target": {
+          "id": "eb822dbe-f72d-4009-b8c2-9c11ca0b7f0b"
+        },
+        "z": 45,
+        "parent": "9896c25a-2704-4a07-84a2-f35213492e12",
+        "vertices": [],
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c437",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "++",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "ea6803f2-01a9-4ae9-80e4-b26bed92e238",
+        "source": {
+          "id": "d52ea5ef-3936-4317-9f72-069ab2044c87"
+        },
+        "target": {
+          "id": "98af7bc9-8fa6-417b-af6e-dc85ea7cd871"
+        },
+        "z": 46,
+        "parent": "9896c25a-2704-4a07-84a2-f35213492e12",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c438",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "and",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "f893ecaf-8b3d-42f7-a937-16dffa58e9df",
+        "source": {
+          "id": "6c708602-b789-4105-ae35-fdaaacf07d50"
+        },
+        "target": {
+          "id": "98af7bc9-8fa6-417b-af6e-dc85ea7cd871"
+        },
+        "z": 47,
+        "parent": "9896c25a-2704-4a07-84a2-f35213492e12",
+        "vertices": [],
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c439",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "and",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "7381cac6-6f39-4bb5-89d1-30f435f5c27d",
+        "source": {
+          "id": "6c708602-b789-4105-ae35-fdaaacf07d50"
+        },
+        "target": {
+          "id": "eb822dbe-f72d-4009-b8c2-9c11ca0b7f0b"
+        },
+        "z": 48,
+        "parent": "9896c25a-2704-4a07-84a2-f35213492e12",
+        "vertices": [
+          {
+            "x": 540,
+            "y": 360
+          }
+        ],
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c440",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "and",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "ffe86dc4-9b7b-41ed-b1aa-9664af376b89",
+        "source": {
+          "id": "6c708602-b789-4105-ae35-fdaaacf07d50"
+        },
+        "target": {
+          "id": "fc61b1aa-e45d-4a7f-bf0d-1e40fb363fac"
+        },
+        "z": 49,
+        "parent": "9896c25a-2704-4a07-84a2-f35213492e12",
+        "vertices": [
+          {
+            "x": 580,
+            "y": 410
+          }
+        ],
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c441",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "and",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "578c4607-dbdc-437c-9305-bff5b5309349",
+        "source": {
+          "id": "6c708602-b789-4105-ae35-fdaaacf07d50"
+        },
+        "target": {
+          "id": "28506cca-7977-48fb-985a-6e53c5a9ab9a"
+        },
+        "z": 50,
+        "parent": "9896c25a-2704-4a07-84a2-f35213492e12",
+        "vertices": [],
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c442",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "+",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "+"
+              }
+            }
+          }
+        ],
+        "id": "9c61f85f-c186-408b-9039-196b24634920",
+        "source": {
+          "id": "d9928a1b-46ae-4c33-aa9e-3c5834238c01"
+        },
+        "target": {
+          "id": "28506cca-7977-48fb-985a-6e53c5a9ab9a"
+        },
+        "z": 52,
+        "parent": "9896c25a-2704-4a07-84a2-f35213492e12",
+        "vertices": [],
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c443",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "and",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {
+            "displayType": "element",
+            "linkType": "and",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "d29078a3-eb25-4e4a-a027-35b9479b0eba",
+        "source": {
+          "id": "d9928a1b-46ae-4c33-aa9e-3c5834238c01"
+        },
+        "target": {
+          "id": "fc61b1aa-e45d-4a7f-bf0d-1e40fb363fac"
+        },
+        "z": 53,
+        "parent": "9896c25a-2704-4a07-84a2-f35213492e12",
+        "vertices": [
+          {
+            "x": 670,
+            "y": 460
+          },
+          {
+            "x": 710,
+            "y": 410
+          }
+        ],
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c444",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "and",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {
+            "displayType": "element",
+            "linkType": "and",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "a230b241-c832-480f-82ab-27d1c17207cc",
+        "source": {
+          "id": "d9928a1b-46ae-4c33-aa9e-3c5834238c01"
+        },
+        "target": {
+          "id": "eb822dbe-f72d-4009-b8c2-9c11ca0b7f0b"
+        },
+        "z": 54,
+        "parent": "9896c25a-2704-4a07-84a2-f35213492e12",
+        "vertices": [
+          {
+            "x": 610,
+            "y": 500
+          },
+          {
+            "x": 640,
+            "y": 450
+          }
+        ],
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c445",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "+",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "+"
+              }
+            }
+          }
+        ],
+        "id": "23a0d994-fd18-4276-8fc5-f7ae500cd0f0",
+        "source": {
+          "id": "d9928a1b-46ae-4c33-aa9e-3c5834238c01"
+        },
+        "target": {
+          "id": "98af7bc9-8fa6-417b-af6e-dc85ea7cd871"
+        },
+        "z": 55,
+        "parent": "9896c25a-2704-4a07-84a2-f35213492e12",
+        "vertices": [
+          {
+            "x": 460,
+            "y": 450
+          }
+        ],
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c446",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "and",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "85c94ab2-1a56-4115-a23c-1aebe80210af",
+        "source": {
+          "id": "ac63a0e8-a574-4609-a0c4-8f784bbc7469"
+        },
+        "target": {
+          "id": "28506cca-7977-48fb-985a-6e53c5a9ab9a"
+        },
+        "z": 56,
+        "parent": "9896c25a-2704-4a07-84a2-f35213492e12",
+        "vertices": [
+          {
+            "x": 800,
+            "y": 400
+          }
+        ],
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c447",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "and",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "c71cc95c-f5e3-412b-b361-312b677ee9b3",
+        "source": {
+          "id": "ac63a0e8-a574-4609-a0c4-8f784bbc7469"
+        },
+        "target": {
+          "id": "fc61b1aa-e45d-4a7f-bf0d-1e40fb363fac"
+        },
+        "z": 57,
+        "parent": "9896c25a-2704-4a07-84a2-f35213492e12",
+        "vertices": [
+          {
+            "x": 760,
+            "y": 440
+          }
+        ],
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c448",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "and",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "cd430984-27ba-4716-8e15-6ab7dd127a6b",
+        "source": {
+          "id": "ac63a0e8-a574-4609-a0c4-8f784bbc7469"
+        },
+        "target": {
+          "id": "eb822dbe-f72d-4009-b8c2-9c11ca0b7f0b"
+        },
+        "z": 58,
+        "parent": "9896c25a-2704-4a07-84a2-f35213492e12",
+        "vertices": [
+          {
+            "x": 680,
+            "y": 460
+          }
+        ],
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c449",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "and",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "f1a9f9ac-9edf-4906-a084-613114feb7a8",
+        "source": {
+          "id": "ac63a0e8-a574-4609-a0c4-8f784bbc7469"
+        },
+        "target": {
+          "id": "98af7bc9-8fa6-417b-af6e-dc85ea7cd871"
+        },
+        "z": 59,
+        "parent": "9896c25a-2704-4a07-84a2-f35213492e12",
+        "vertices": [
+          {
+            "x": 490,
+            "y": 450
+          }
+        ],
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c450",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "++",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "a7f3e7b8-f67a-4dba-b0b9-d7e5fe06988a",
+        "source": {
+          "id": "a3487fef-b457-44ff-951e-bfb5e1aed934"
+        },
+        "target": {
+          "id": "fc61b1aa-e45d-4a7f-bf0d-1e40fb363fac"
+        },
+        "z": 60,
+        "parent": "9896c25a-2704-4a07-84a2-f35213492e12",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c451",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "and",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "c1b03916-4ce8-4fed-a951-39d3412ed88a",
+        "source": {
+          "id": "fe021b23-2e48-4e6b-b7d2-5a9f80b00bd9"
+        },
+        "target": {
+          "id": "28506cca-7977-48fb-985a-6e53c5a9ab9a"
+        },
+        "z": 61,
+        "parent": "9896c25a-2704-4a07-84a2-f35213492e12",
+        "vertices": [
+          {
+            "x": 1030,
+            "y": 430
+          }
+        ],
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c452",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "++",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "c74685f2-dc65-40c4-a957-e107b89e73e4",
+        "source": {
+          "id": "698847eb-d096-403f-8ad4-beb6186a2609"
+        },
+        "target": {
+          "id": "28506cca-7977-48fb-985a-6e53c5a9ab9a"
+        },
+        "z": 62,
+        "parent": "9896c25a-2704-4a07-84a2-f35213492e12",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c453",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "++",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "95bb885f-9a5e-4d9a-bc10-92a4e6db7691",
+        "source": {
+          "id": "285c6632-c3b5-4cdb-8f71-044761ba1e2e"
+        },
+        "target": {
+          "id": "478b5fed-6de9-4d72-86f5-b34f3b22e948"
+        },
+        "z": 63,
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c454",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "++",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "74cedd60-750a-422c-b087-116e5c4c8787",
+        "source": {
+          "id": "2fe5b8ed-c35e-43f7-bdc0-bac882a1f7b3"
+        },
+        "target": {
+          "id": "285c6632-c3b5-4cdb-8f71-044761ba1e2e"
+        },
+        "z": 64,
+        "parent": "9896c25a-2704-4a07-84a2-f35213492e12",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c455",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "+",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "+"
+              }
+            }
+          }
+        ],
+        "id": "20952378-d6fa-45dd-8fc7-8390c2726980",
+        "source": {
+          "id": "2fe5b8ed-c35e-43f7-bdc0-bac882a1f7b3"
+        },
+        "target": {
+          "id": "ef76a2f8-e81a-4ccb-85b7-6c6464dc12bb"
+        },
+        "z": 65,
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c456",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "and",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "ccac5e78-8c8b-4d60-8ac7-9209fe2673b6",
+        "source": {
+          "id": "8fdd97c1-f545-4556-967c-bdcb762ad88c"
+        },
+        "target": {
+          "id": "d9928a1b-46ae-4c33-aa9e-3c5834238c01"
+        },
+        "z": 66,
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c457",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "or",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "or"
+              }
+            }
+          }
+        ],
+        "id": "26df617a-5190-46c3-af6d-b846cb6e84fd",
+        "source": {
+          "id": "98af7bc9-8fa6-417b-af6e-dc85ea7cd871"
+        },
+        "target": {
+          "id": "2fe5b8ed-c35e-43f7-bdc0-bac882a1f7b3"
+        },
+        "z": 67,
+        "parent": "9896c25a-2704-4a07-84a2-f35213492e12",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c458",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "or",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "or"
+              }
+            }
+          }
+        ],
+        "id": "8e615e67-394c-47d4-b5c1-5de974a2dd04",
+        "source": {
+          "id": "eb822dbe-f72d-4009-b8c2-9c11ca0b7f0b"
+        },
+        "target": {
+          "id": "2fe5b8ed-c35e-43f7-bdc0-bac882a1f7b3"
+        },
+        "z": 68,
+        "parent": "9896c25a-2704-4a07-84a2-f35213492e12",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c459",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "or",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "or"
+              }
+            }
+          }
+        ],
+        "id": "ffe8f287-ce3a-40b2-a7dc-6218f27921f8",
+        "source": {
+          "id": "fc61b1aa-e45d-4a7f-bf0d-1e40fb363fac"
+        },
+        "target": {
+          "id": "2fe5b8ed-c35e-43f7-bdc0-bac882a1f7b3"
+        },
+        "z": 69,
+        "parent": "9896c25a-2704-4a07-84a2-f35213492e12",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c460",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "or",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "or"
+              }
+            }
+          }
+        ],
+        "id": "9deb8848-1bda-43ea-a866-ce36b7c30ba9",
+        "source": {
+          "id": "28506cca-7977-48fb-985a-6e53c5a9ab9a"
+        },
+        "target": {
+          "id": "2fe5b8ed-c35e-43f7-bdc0-bac882a1f7b3"
+        },
+        "z": 70,
+        "parent": "9896c25a-2704-4a07-84a2-f35213492e12",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c461",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "-",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "-"
+              }
+            }
+          }
+        ],
+        "id": "8cadc3ae-53f3-410f-aaa9-febcd1e984bf",
+        "source": {
+          "id": "98af7bc9-8fa6-417b-af6e-dc85ea7cd871"
+        },
+        "target": {
+          "id": "706d2533-811b-4e85-a2fb-dcb29644ed79"
+        },
+        "z": 71,
+        "parent": "9896c25a-2704-4a07-84a2-f35213492e12",
+        "vertices": [],
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c462",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "--",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "--"
+              }
+            }
+          }
+        ],
+        "id": "86371c7d-5eae-4ed9-8a52-f70d7ebba6c2",
+        "source": {
+          "id": "eb822dbe-f72d-4009-b8c2-9c11ca0b7f0b"
+        },
+        "target": {
+          "id": "706d2533-811b-4e85-a2fb-dcb29644ed79"
+        },
+        "z": 72,
+        "parent": "9896c25a-2704-4a07-84a2-f35213492e12",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c463",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "++",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "5a9d59ea-250e-4bda-b345-5f7c43e516c1",
+        "source": {
+          "id": "e1f97006-348d-4f1a-8e68-2e176d3f3dff"
+        },
+        "target": {
+          "id": "eb822dbe-f72d-4009-b8c2-9c11ca0b7f0b"
+        },
+        "z": 73,
+        "parent": "9896c25a-2704-4a07-84a2-f35213492e12",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c464",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "-",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "-"
+              }
+            }
+          }
+        ],
+        "id": "81bd2aa4-0a95-40de-9316-2ea05499da10",
+        "source": {
+          "id": "fc61b1aa-e45d-4a7f-bf0d-1e40fb363fac"
+        },
+        "target": {
+          "id": "706d2533-811b-4e85-a2fb-dcb29644ed79"
+        },
+        "z": 74,
+        "parent": "9896c25a-2704-4a07-84a2-f35213492e12",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c465",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "++",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "bcf83a1b-1ffd-4538-9e6a-4d723691a4f2",
+        "source": {
+          "id": "e1f97006-348d-4f1a-8e68-2e176d3f3dff"
+        },
+        "target": {
+          "id": "fc61b1aa-e45d-4a7f-bf0d-1e40fb363fac"
+        },
+        "z": 75,
+        "parent": "9896c25a-2704-4a07-84a2-f35213492e12",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c466",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "--",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "--"
+              }
+            }
+          }
+        ],
+        "id": "272e1b4d-08c7-435c-ac04-cbeb96db87f7",
+        "source": {
+          "id": "28506cca-7977-48fb-985a-6e53c5a9ab9a"
+        },
+        "target": {
+          "id": "706d2533-811b-4e85-a2fb-dcb29644ed79"
+        },
+        "z": 76,
+        "parent": "9896c25a-2704-4a07-84a2-f35213492e12",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      }
+    ]
+  },
+  "version": "BloomingLeaf_2.0"
+}

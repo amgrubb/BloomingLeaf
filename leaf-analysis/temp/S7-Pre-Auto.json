@@ -1,0 +1,2037 @@
+{
+  "graph": {
+    "type": "goalmodel.Graph",
+    "maxAbsTime": 1,
+    "absTimePtsArr": [],
+    "constraints": [],
+    "cells": [
+      {
+        "type": "basic.Actor",
+        "size": {
+          "width": 170,
+          "height": 180
+        },
+        "actor": {
+          "cid": "c188",
+          "attributes": {
+            "type": "basic.Actor",
+            "actorName": "S-O"
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 60,
+          "y": 580
+        },
+        "angle": 0,
+        "id": "4f7295e7-9c99-46ec-a3fb-deb92f22ce35",
+        "z": -2,
+        "nodeID": "aNaN",
+        "embeds": [
+          "df62a654-4866-46e2-b752-7db884fc6177"
+        ],
+        "attrs": {
+          ".name": {
+            "text": "S-O"
+          }
+        }
+      },
+      {
+        "type": "basic.Actor",
+        "size": {
+          "width": 220,
+          "height": 190
+        },
+        "actor": {
+          "cid": "c189",
+          "attributes": {
+            "type": "basic.Actor",
+            "actorName": "Advisor"
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 310,
+          "y": 670
+        },
+        "angle": 0,
+        "id": "5dfc9cdc-bf8d-4df4-b71e-99bb6d76fbee",
+        "z": -1,
+        "nodeID": "aNaN",
+        "embeds": [
+          "dc6448bf-a214-4314-9f4b-f44a74b24bac"
+        ],
+        "attrs": {
+          ".name": {
+            "text": "Advisor"
+          }
+        }
+      },
+      {
+        "type": "basic.Actor",
+        "size": {
+          "width": 240,
+          "height": 230
+        },
+        "actor": {
+          "cid": "c190",
+          "attributes": {
+            "type": "basic.Actor",
+            "actorName": "Smith Alumni"
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 540,
+          "y": 580
+        },
+        "angle": 0,
+        "id": "83482404-1ee8-4a7f-8c7d-ee85784f39cf",
+        "z": 0,
+        "nodeID": "aNaN",
+        "embeds": [
+          "276b7087-e6c6-4c4f-9b57-5d3f7f8bda7d",
+          "e0e6ac07-6166-456e-ad9b-5eedb58d5c70"
+        ],
+        "attrs": {
+          ".name": {
+            "text": "Smith Alumni"
+          }
+        }
+      },
+      {
+        "type": "basic.Actor",
+        "size": {
+          "width": 550,
+          "height": 500
+        },
+        "actor": {
+          "cid": "c191",
+          "attributes": {
+            "type": "basic.Actor",
+            "actorName": "Self"
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 120,
+          "y": 130
+        },
+        "angle": 0,
+        "id": "9945edf8-7e0d-4014-9166-735f7c85a9be",
+        "z": 1,
+        "nodeID": "aNaN",
+        "embeds": [
+          "b753bb61-30f4-439b-aba8-85665de20b64",
+          "f5ea9a66-3269-402a-8292-417cad027799",
+          "d8e53c20-7e78-47c5-92d2-7958707361ec",
+          "52f7e984-2c64-40d0-a462-d16d65636229",
+          "2fb64a7b-4494-41be-ada8-4bbbfdab13be",
+          "70111958-0ce4-4ad1-b961-b7296e327559",
+          "ff47716b-1c90-417a-9512-f56ba43db020",
+          "ea7a0d10-b833-48bd-90d9-e98e1987b6f7",
+          "e314a8ac-795e-4f2f-b4e9-acd18d09af7d",
+          "876ca82c-016b-4c47-ab77-f5c04b9e7914",
+          "cd698a52-6a01-48cc-a60f-3930299f0177",
+          "ae1ed943-5a8c-403d-913e-ee6248b439d0",
+          "59a31a0e-2460-44c2-a31d-6589665a4db2"
+        ],
+        "attrs": {
+          ".name": {
+            "text": "Self"
+          }
+        }
+      },
+      {
+        "type": "basic.Goal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c193",
+          "attributes": {
+            "nodeName": "Job in Film Production",
+            "evolvingFunction": {
+              "cid": "c192",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c194",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 280,
+          "y": 300
+        },
+        "angle": 0,
+        "id": "70111958-0ce4-4ad1-b961-b7296e327559",
+        "z": 2,
+        "nodeID": "0046",
+        "parent": "9945edf8-7e0d-4014-9166-735f7c85a9be",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Job in Film Production"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Softgoal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c196",
+          "attributes": {
+            "nodeName": "Use Imagination\nin Job",
+            "evolvingFunction": {
+              "cid": "c195",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c197",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 120,
+          "y": 250
+        },
+        "angle": 0,
+        "id": "f5ea9a66-3269-402a-8292-417cad027799",
+        "z": 3,
+        "nodeID": "0047",
+        "parent": "9945edf8-7e0d-4014-9166-735f7c85a9be",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Use Imagination\nin Job"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Softgoal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c199",
+          "attributes": {
+            "nodeName": "Be Happy with Career",
+            "evolvingFunction": {
+              "cid": "c198",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c200",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 90,
+          "y": 340
+        },
+        "angle": 0,
+        "id": "e314a8ac-795e-4f2f-b4e9-acd18d09af7d",
+        "z": 4,
+        "nodeID": "0048",
+        "parent": "9945edf8-7e0d-4014-9166-735f7c85a9be",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Be Happy with Career"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Goal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c202",
+          "attributes": {
+            "nodeName": "Have Good Video\nPortfolio",
+            "evolvingFunction": {
+              "cid": "c201",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c203",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 400,
+          "y": 210
+        },
+        "angle": 0,
+        "id": "d8e53c20-7e78-47c5-92d2-7958707361ec",
+        "z": 5,
+        "nodeID": "0049",
+        "parent": "9945edf8-7e0d-4014-9166-735f7c85a9be",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Have Good Video\nPortfolio"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Goal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c205",
+          "attributes": {
+            "nodeName": "Have Media\nProduction Job\nExperience",
+            "evolvingFunction": {
+              "cid": "c204",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c206",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 410,
+          "y": 320
+        },
+        "angle": 0,
+        "id": "52f7e984-2c64-40d0-a462-d16d65636229",
+        "z": 6,
+        "nodeID": "0050",
+        "parent": "9945edf8-7e0d-4014-9166-735f7c85a9be",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Have Media\nProduction Job\nExperience"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Softgoal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c208",
+          "attributes": {
+            "nodeName": "Work Close to Home",
+            "evolvingFunction": {
+              "cid": "c207",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c209",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 180,
+          "y": 470
+        },
+        "angle": 0,
+        "id": "876ca82c-016b-4c47-ab77-f5c04b9e7914",
+        "z": 7,
+        "nodeID": "0052",
+        "parent": "9945edf8-7e0d-4014-9166-735f7c85a9be",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Work Close to Home"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Resource",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c211",
+          "attributes": {
+            "nodeName": "Job Search\nWebsites ",
+            "evolvingFunction": {
+              "cid": "c210",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c212",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 670,
+          "y": 180
+        },
+        "angle": 0,
+        "id": "cd772c2a-6296-497f-8ac2-8edd0f98da92",
+        "z": 8,
+        "nodeID": "0053",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Job Search\nWebsites "
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Goal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c214",
+          "attributes": {
+            "nodeName": "Smith Degree",
+            "evolvingFunction": {
+              "cid": "c213",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c215",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 410,
+          "y": 430
+        },
+        "angle": 0,
+        "id": "2fb64a7b-4494-41be-ada8-4bbbfdab13be",
+        "z": 9,
+        "nodeID": "0054",
+        "parent": "9945edf8-7e0d-4014-9166-735f7c85a9be",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Smith Degree"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Goal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c217",
+          "attributes": {
+            "nodeName": "Smith Students\nLand Good Jobs",
+            "evolvingFunction": {
+              "cid": "c216",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c218",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 540,
+          "y": 720
+        },
+        "angle": 0,
+        "id": "276b7087-e6c6-4c4f-9b57-5d3f7f8bda7d",
+        "z": 10,
+        "nodeID": "0055",
+        "parent": "83482404-1ee8-4a7f-8c7d-ee85784f39cf",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Smith Students\nLand Good Jobs"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c220",
+          "attributes": {
+            "nodeName": "Apply to Jobs and \nInternships",
+            "evolvingFunction": {
+              "cid": "c219",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c221",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 590,
+          "y": 330
+        },
+        "angle": 0,
+        "id": "ea7a0d10-b833-48bd-90d9-e98e1987b6f7",
+        "z": 11,
+        "nodeID": "0056",
+        "parent": "9945edf8-7e0d-4014-9166-735f7c85a9be",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Apply to Jobs and \nInternships"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c223",
+          "attributes": {
+            "nodeName": "Help Student\nGet Jobs",
+            "evolvingFunction": {
+              "cid": "c222",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c224",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 660,
+          "y": 610
+        },
+        "angle": 0,
+        "id": "e0e6ac07-6166-456e-ad9b-5eedb58d5c70",
+        "z": 12,
+        "nodeID": "0057",
+        "parent": "83482404-1ee8-4a7f-8c7d-ee85784f39cf",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Help Student\nGet Jobs"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c226",
+          "attributes": {
+            "nodeName": "Build Video \nPortfolio",
+            "evolvingFunction": {
+              "cid": "c225",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c227",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 540,
+          "y": 190
+        },
+        "angle": 0,
+        "id": "ff47716b-1c90-417a-9512-f56ba43db020",
+        "z": 13,
+        "nodeID": "0058",
+        "parent": "9945edf8-7e0d-4014-9166-735f7c85a9be",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Build Video \nPortfolio"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c228",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "++",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "ff47716b-1c90-417a-9512-f56ba43db020"
+        },
+        "target": {
+          "id": "d8e53c20-7e78-47c5-92d2-7958707361ec"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "aa2aa426-d8d1-4bff-8ef6-91809d6ecbf4",
+        "z": 14,
+        "linkID": "0071",
+        "link-type": "++",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c229",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "+",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "cd772c2a-6296-497f-8ac2-8edd0f98da92"
+        },
+        "target": {
+          "id": "ea7a0d10-b833-48bd-90d9-e98e1987b6f7"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "+"
+              }
+            }
+          }
+        ],
+        "id": "2c2902d6-ef75-486e-ba75-194fbb42e866",
+        "z": 15,
+        "linkID": "0072",
+        "link-type": "+",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c230",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "+",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "ea7a0d10-b833-48bd-90d9-e98e1987b6f7"
+        },
+        "target": {
+          "id": "52f7e984-2c64-40d0-a462-d16d65636229"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "+"
+              }
+            }
+          }
+        ],
+        "id": "f8afa58b-4701-490a-9ad1-d0c3153d752c",
+        "z": 16,
+        "linkID": "0073",
+        "link-type": "+",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c231",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "and",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "d8e53c20-7e78-47c5-92d2-7958707361ec"
+        },
+        "target": {
+          "id": "70111958-0ce4-4ad1-b961-b7296e327559"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "1cc83ab4-d67f-4cec-b287-ceffb01bc7aa",
+        "z": 17,
+        "linkID": "0074",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c232",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "and",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "52f7e984-2c64-40d0-a462-d16d65636229"
+        },
+        "target": {
+          "id": "70111958-0ce4-4ad1-b961-b7296e327559"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "78ae0aab-a7af-48d2-9c92-43e43b794969",
+        "z": 18,
+        "linkID": "0075",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c233",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "and",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "2fb64a7b-4494-41be-ada8-4bbbfdab13be"
+        },
+        "target": {
+          "id": "70111958-0ce4-4ad1-b961-b7296e327559"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "26f5a337-e9e2-465c-8948-401185921d40",
+        "z": 19,
+        "linkID": "0076",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c234",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "+",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "e0e6ac07-6166-456e-ad9b-5eedb58d5c70"
+        },
+        "target": {
+          "id": "276b7087-e6c6-4c4f-9b57-5d3f7f8bda7d"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "+"
+              }
+            }
+          }
+        ],
+        "id": "65f13b62-854b-4494-85bc-9822959d2a2e",
+        "z": 20,
+        "linkID": "0077",
+        "link-type": "+",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c235",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "+",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "e0e6ac07-6166-456e-ad9b-5eedb58d5c70"
+        },
+        "target": {
+          "id": "52f7e984-2c64-40d0-a462-d16d65636229"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "+"
+              }
+            }
+          }
+        ],
+        "id": "fab86fdf-77c7-48a0-ade2-50c5838c1792",
+        "z": 21,
+        "linkID": "0078",
+        "link-type": "+",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c236",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "++",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "70111958-0ce4-4ad1-b961-b7296e327559"
+        },
+        "target": {
+          "id": "f5ea9a66-3269-402a-8292-417cad027799"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "3974cac0-55cd-4b5a-8b07-ad6b0bae6c3b",
+        "z": 22,
+        "linkID": "0079",
+        "link-type": "++",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c237",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "++",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "70111958-0ce4-4ad1-b961-b7296e327559"
+        },
+        "target": {
+          "id": "e314a8ac-795e-4f2f-b4e9-acd18d09af7d"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "da34e17a-9032-4279-be80-3334878d386a",
+        "z": 23,
+        "linkID": "0080",
+        "link-type": "++",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c238",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "+",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "70111958-0ce4-4ad1-b961-b7296e327559"
+        },
+        "target": {
+          "id": "876ca82c-016b-4c47-ab77-f5c04b9e7914"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "+"
+              }
+            }
+          }
+        ],
+        "id": "3fb52e14-df4f-4124-a088-ffcedc97a86d",
+        "z": 24,
+        "linkID": "0081",
+        "link-type": "+",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.Goal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c240",
+          "attributes": {
+            "nodeName": "help student \nwith career path",
+            "evolvingFunction": {
+              "cid": "c239",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c241",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 390,
+          "y": 720
+        },
+        "angle": 0,
+        "id": "dc6448bf-a214-4314-9f4b-f44a74b24bac",
+        "z": 25,
+        "nodeID": "0059",
+        "parent": "5dfc9cdc-bf8d-4df4-b71e-99bb6d76fbee",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "help student \nwith career path"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c242",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "+",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "dc6448bf-a214-4314-9f4b-f44a74b24bac"
+        },
+        "target": {
+          "id": "70111958-0ce4-4ad1-b961-b7296e327559"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "+"
+              }
+            }
+          }
+        ],
+        "id": "6c06b4c2-df08-4113-bbbb-3f9aae44c751",
+        "z": 26,
+        "linkID": "0082",
+        "link-type": "+",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.Goal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c244",
+          "attributes": {
+            "nodeName": "partner\nto be happy",
+            "evolvingFunction": {
+              "cid": "c243",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c245",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 110,
+          "y": 630
+        },
+        "angle": 0,
+        "id": "df62a654-4866-46e2-b752-7db884fc6177",
+        "z": 27,
+        "nodeID": "0060",
+        "parent": "4f7295e7-9c99-46ec-a3fb-deb92f22ce35",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "partner\nto be happy"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c246",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "++",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "e314a8ac-795e-4f2f-b4e9-acd18d09af7d"
+        },
+        "target": {
+          "id": "df62a654-4866-46e2-b752-7db884fc6177"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "5ebc3209-d55c-44e5-9bcc-35946969bc6b",
+        "z": 28,
+        "linkID": "0083",
+        "link-type": "++",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.Softgoal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c248",
+          "attributes": {
+            "nodeName": "Time for \nVacation",
+            "evolvingFunction": {
+              "cid": "c247",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c249",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 300,
+          "y": 120
+        },
+        "angle": 0,
+        "id": "cd698a52-6a01-48cc-a60f-3930299f0177",
+        "z": 29,
+        "nodeID": "0061",
+        "parent": "9945edf8-7e0d-4014-9166-735f7c85a9be",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Time for \nVacation"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Softgoal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c251",
+          "attributes": {
+            "nodeName": "make decent\nliving",
+            "evolvingFunction": {
+              "cid": "c250",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c252",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 280,
+          "y": 550
+        },
+        "angle": 0,
+        "id": "ae1ed943-5a8c-403d-913e-ee6248b439d0",
+        "z": 30,
+        "nodeID": "0062",
+        "parent": "9945edf8-7e0d-4014-9166-735f7c85a9be",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "make decent\nliving"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Resource",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c254",
+          "attributes": {
+            "nodeName": "Self-started\nvideography\nbusiness",
+            "evolvingFunction": {
+              "cid": "c253",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c255",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 550,
+          "y": 450
+        },
+        "angle": 0,
+        "id": "59a31a0e-2460-44c2-a31d-6589665a4db2",
+        "z": 31,
+        "nodeID": "0063",
+        "parent": "9945edf8-7e0d-4014-9166-735f7c85a9be",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Self-started\nvideography\nbusiness"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c256",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "++",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "59a31a0e-2460-44c2-a31d-6589665a4db2"
+        },
+        "target": {
+          "id": "ff47716b-1c90-417a-9512-f56ba43db020"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "b753bb61-30f4-439b-aba8-85665de20b64",
+        "z": 32,
+        "linkID": "0084",
+        "link-type": "++",
+        "parent": "9945edf8-7e0d-4014-9166-735f7c85a9be",
+        "vertices": [
+          {
+            "x": 560,
+            "y": 310
+          }
+        ],
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c257",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "+",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "59a31a0e-2460-44c2-a31d-6589665a4db2"
+        },
+        "target": {
+          "id": "ae1ed943-5a8c-403d-913e-ee6248b439d0"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "+"
+              }
+            }
+          }
+        ],
+        "id": "9a952bc6-d52f-4092-a76d-dd72d4e401e8",
+        "z": 33,
+        "linkID": "0085",
+        "link-type": "+",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      }
+    ]
+  },
+  "version": "BloomingLeaf_2.0"
+}
