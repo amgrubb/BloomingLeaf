@@ -51,10 +51,11 @@ public class CSPPath {
     	}
     	
     	// Relative Time Points
+    	// Note: Start Relative Time Points back at 0, for ease of communication with Next State.
     	for (int i = 0; i < numRelTP; i++) {
-          	timePoints[tpCounter] = new IntVar(store, "TR" + tpCounter, 1, maxTime);	    		
+          	timePoints[tpCounter] = new IntVar(store, "TR" + i, 1, maxTime);	    		
     		List<String> toAdd = new ArrayList<String>();
-    		toAdd.add("TR" + tpCounter);
+    		toAdd.add("TR" + i);
     		timePointMap.put(timePoints[tpCounter], toAdd);
     		tpCounter++; 
     	}
