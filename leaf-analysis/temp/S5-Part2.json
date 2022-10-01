@@ -1,0 +1,2174 @@
+{
+  "graph": {
+    "type": "goalmodel.Graph",
+    "maxAbsTime": 1,
+    "absTimePtsArr": [],
+    "constraints": [],
+    "cells": [
+      {
+        "type": "basic.Actor",
+        "size": {
+          "width": 120,
+          "height": 120
+        },
+        "actor": {
+          "cid": "c704",
+          "attributes": {
+            "type": "basic.Actor",
+            "actorName": "Parents"
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 580,
+          "y": -140
+        },
+        "angle": 0,
+        "id": "1ea2f317-1893-4138-8fe5-d8f3cefc0bf2",
+        "z": 0,
+        "nodeID": "aNaN",
+        "embeds": [
+          "ccbf0da3-34e6-4931-bafc-56a439982a0d"
+        ],
+        "attrs": {
+          ".name": {
+            "text": "Parents",
+            "font-size": 14
+          }
+        }
+      },
+      {
+        "type": "basic.Actor",
+        "size": {
+          "width": 580,
+          "height": 540
+        },
+        "actor": {
+          "cid": "c705",
+          "attributes": {
+            "type": "basic.Actor",
+            "actorName": "Self"
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 310,
+          "y": 340
+        },
+        "angle": 0,
+        "id": "02dae55b-8514-4f37-b41a-efe143444f13",
+        "z": 1,
+        "nodeID": "aNaN",
+        "embeds": [
+          "9b5ed44d-12f7-491c-8e7d-af1e54e68b24",
+          "ea179298-4abd-4f15-a2f9-b7712085b674",
+          "be84bd94-2bb0-4fd3-80fe-8cf97930d923",
+          "4b7e653e-350e-4337-9746-ec66526ec222",
+          "eda3f572-ddd1-4940-9e3d-416a5731a716",
+          "9cc2c4fc-8120-411a-b5f9-88669b86e657",
+          "4a1e48ef-aaea-4929-b8ab-72d168cb8398",
+          "0e1196fd-1aa8-4893-9046-356e60325824",
+          "84df6553-d1b9-48bb-a2a6-8f08e04d8cb0",
+          "e59adbf3-a6b7-4de5-98fa-d25ce24a99eb",
+          "24d77397-e676-4fde-93e8-400fb46fd71c",
+          "d61b32d8-dc9c-4509-bfad-6120b32bf16d"
+        ],
+        "attrs": {
+          ".name": {
+            "text": "Self",
+            "font-size": 14
+          }
+        }
+      },
+      {
+        "type": "basic.Goal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c707",
+          "attributes": {
+            "nodeName": "Get Into dental school",
+            "evolvingFunction": {
+              "cid": "c706",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c708",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 520,
+          "y": 380
+        },
+        "angle": 0,
+        "id": "be84bd94-2bb0-4fd3-80fe-8cf97930d923",
+        "z": 2,
+        "nodeID": "0012",
+        "parent": "02dae55b-8514-4f37-b41a-efe143444f13",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Get Into dental school",
+            "font-size": 14
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Softgoal",
+        "size": {
+          "width": 120,
+          "height": 80
+        },
+        "intention": {
+          "cid": "c710",
+          "attributes": {
+            "nodeName": "Have fun with friends",
+            "evolvingFunction": {
+              "cid": "c709",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c711",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 320,
+          "y": 480
+        },
+        "angle": 0,
+        "id": "4b7e653e-350e-4337-9746-ec66526ec222",
+        "z": 3,
+        "nodeID": "0013",
+        "parent": "02dae55b-8514-4f37-b41a-efe143444f13",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Have fun with friends",
+            "font-size": 14
+          },
+          ".label": {
+            "cx": 30,
+            "cy": 8.373546489791295
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c713",
+          "attributes": {
+            "nodeName": "classes",
+            "evolvingFunction": {
+              "cid": "c712",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c714",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 500,
+          "y": 530
+        },
+        "angle": 0,
+        "id": "eda3f572-ddd1-4940-9e3d-416a5731a716",
+        "z": 4,
+        "nodeID": "0014",
+        "parent": "02dae55b-8514-4f37-b41a-efe143444f13",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "classes",
+            "font-size": 14
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 100,
+          "height": 70
+        },
+        "intention": {
+          "cid": "c716",
+          "attributes": {
+            "nodeName": "shadowing exp",
+            "evolvingFunction": {
+              "cid": "c715",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c717",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 550,
+          "y": 620
+        },
+        "angle": 0,
+        "id": "9cc2c4fc-8120-411a-b5f9-88669b86e657",
+        "z": 5,
+        "nodeID": "0015",
+        "parent": "02dae55b-8514-4f37-b41a-efe143444f13",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "shadowing exp",
+            "font-size": 14
+          },
+          ".label": {
+            "cx": 25,
+            "cy": 7.378502805077957
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c718",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "and",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "eda3f572-ddd1-4940-9e3d-416a5731a716"
+        },
+        "target": {
+          "id": "be84bd94-2bb0-4fd3-80fe-8cf97930d923"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "938a2704-7877-412f-a88f-413d9cdbe83a",
+        "z": 7,
+        "linkID": "0017",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c719",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "and",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "9cc2c4fc-8120-411a-b5f9-88669b86e657"
+        },
+        "target": {
+          "id": "be84bd94-2bb0-4fd3-80fe-8cf97930d923"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "ea179298-4abd-4f15-a2f9-b7712085b674",
+        "z": 8,
+        "linkID": "0018",
+        "parent": "02dae55b-8514-4f37-b41a-efe143444f13",
+        "vertices": [
+          {
+            "x": 640,
+            "y": 530
+          }
+        ],
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.Goal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c721",
+          "attributes": {
+            "nodeName": "Chemistry major",
+            "evolvingFunction": {
+              "cid": "c720",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c722",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 340,
+          "y": 630
+        },
+        "angle": 0,
+        "id": "4a1e48ef-aaea-4929-b8ab-72d168cb8398",
+        "z": 9,
+        "nodeID": "0016",
+        "parent": "02dae55b-8514-4f37-b41a-efe143444f13",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Chemistry major",
+            "font-size": 14
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c723",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "++",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "eda3f572-ddd1-4940-9e3d-416a5731a716"
+        },
+        "target": {
+          "id": "4a1e48ef-aaea-4929-b8ab-72d168cb8398"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "5f72c760-97bd-4cf2-bbcf-b8c4e3673a79",
+        "z": 10,
+        "linkID": "0019",
+        "link-type": "++",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c724",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "-",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "eda3f572-ddd1-4940-9e3d-416a5731a716"
+        },
+        "target": {
+          "id": "4b7e653e-350e-4337-9746-ec66526ec222"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "-"
+              }
+            }
+          }
+        ],
+        "id": "d74b0dd2-2e54-4ece-aa52-e43b1621f82a",
+        "z": 11,
+        "linkID": "0020",
+        "link-type": "-",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c725",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "-",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "9cc2c4fc-8120-411a-b5f9-88669b86e657"
+        },
+        "target": {
+          "id": "4b7e653e-350e-4337-9746-ec66526ec222"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "-"
+              }
+            }
+          }
+        ],
+        "id": "741a8d6e-5eff-41e7-a177-b6704393ae8e",
+        "z": 12,
+        "linkID": "0023",
+        "link-type": "-",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.Resource",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c727",
+          "attributes": {
+            "nodeName": "Professors",
+            "evolvingFunction": {
+              "cid": "c726",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c728",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 460,
+          "y": 730
+        },
+        "angle": 0,
+        "id": "0e1196fd-1aa8-4893-9046-356e60325824",
+        "z": 13,
+        "nodeID": "0017",
+        "parent": "02dae55b-8514-4f37-b41a-efe143444f13",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Professors",
+            "font-size": 14
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c729",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "+",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "0e1196fd-1aa8-4893-9046-356e60325824"
+        },
+        "target": {
+          "id": "4a1e48ef-aaea-4929-b8ab-72d168cb8398"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "+"
+              }
+            }
+          }
+        ],
+        "id": "84b362fe-58d2-4c41-ab43-e7e49ec2121d",
+        "z": 14,
+        "linkID": "0024",
+        "link-type": "+",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.Resource",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c731",
+          "attributes": {
+            "nodeName": "Prehealth advisors",
+            "evolvingFunction": {
+              "cid": "c730",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c732",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 680,
+          "y": 460
+        },
+        "angle": 0,
+        "id": "84df6553-d1b9-48bb-a2a6-8f08e04d8cb0",
+        "z": 15,
+        "nodeID": "0018",
+        "parent": "02dae55b-8514-4f37-b41a-efe143444f13",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Prehealth advisors",
+            "font-size": 14
+          },
+          ".label": {
+            "cx": 25,
+            "cy": 6.3833753244527855
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c733",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "+",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "84df6553-d1b9-48bb-a2a6-8f08e04d8cb0"
+        },
+        "target": {
+          "id": "be84bd94-2bb0-4fd3-80fe-8cf97930d923"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "+"
+              }
+            }
+          }
+        ],
+        "id": "0963d313-9b6f-4dc9-a530-5093102dedb3",
+        "z": 16,
+        "linkID": "0025",
+        "link-type": "+",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.Resource",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c735",
+          "attributes": {
+            "nodeName": "free time",
+            "evolvingFunction": {
+              "cid": "c734",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c736",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 300,
+          "y": 400
+        },
+        "angle": 0,
+        "id": "e59adbf3-a6b7-4de5-98fa-d25ce24a99eb",
+        "z": 17,
+        "nodeID": "0019",
+        "parent": "02dae55b-8514-4f37-b41a-efe143444f13",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "free time",
+            "font-size": 14
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c737",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "++",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "e59adbf3-a6b7-4de5-98fa-d25ce24a99eb"
+        },
+        "target": {
+          "id": "4b7e653e-350e-4337-9746-ec66526ec222"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "b4f038fe-d3da-424c-9a43-97059e5b806b",
+        "z": 18,
+        "linkID": "0026",
+        "link-type": "++",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c738",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "--",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "eda3f572-ddd1-4940-9e3d-416a5731a716"
+        },
+        "target": {
+          "id": "e59adbf3-a6b7-4de5-98fa-d25ce24a99eb"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "--"
+              }
+            }
+          }
+        ],
+        "id": "fdb4d52c-66a5-4e4b-af8a-955e22a23480",
+        "z": 19,
+        "linkID": "0027",
+        "link-type": "--",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.Resource",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c740",
+          "attributes": {
+            "nodeName": "Letter of R",
+            "evolvingFunction": {
+              "cid": "c739",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c741",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 700,
+          "y": 670
+        },
+        "angle": 0,
+        "id": "24d77397-e676-4fde-93e8-400fb46fd71c",
+        "z": 20,
+        "nodeID": "0020",
+        "parent": "02dae55b-8514-4f37-b41a-efe143444f13",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Letter of R",
+            "font-size": 14
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c742",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "and",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "0e1196fd-1aa8-4893-9046-356e60325824"
+        },
+        "target": {
+          "id": "24d77397-e676-4fde-93e8-400fb46fd71c"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "2c46aa53-1572-49bf-b5ed-ef879681c8dc",
+        "z": 21,
+        "linkID": "0028",
+        "link-type": "AND",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c743",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "and",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "9cc2c4fc-8120-411a-b5f9-88669b86e657"
+        },
+        "target": {
+          "id": "24d77397-e676-4fde-93e8-400fb46fd71c"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "e3683a04-9c7b-4f41-9138-786185be83b5",
+        "z": 22,
+        "linkID": "0029",
+        "link-type": "AND",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.Softgoal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c745",
+          "attributes": {
+            "nodeName": "wish M happy",
+            "evolvingFunction": {
+              "cid": "c744",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c746",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 630,
+          "y": -80
+        },
+        "angle": 0,
+        "id": "ccbf0da3-34e6-4931-bafc-56a439982a0d",
+        "z": 23,
+        "nodeID": "0021",
+        "parent": "1ea2f317-1893-4138-8fe5-d8f3cefc0bf2",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "wish M happy",
+            "font-size": 14
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 130,
+          "height": 100
+        },
+        "intention": {
+          "cid": "c748",
+          "attributes": {
+            "nodeName": "talks and financial support",
+            "evolvingFunction": {
+              "cid": "c747",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c749",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 750,
+          "y": 110
+        },
+        "angle": 0,
+        "id": "98cd1522-5527-40f3-a694-74106b9004ea",
+        "z": 24,
+        "nodeID": "0022",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "talks and financial support",
+            "font-size": 14
+          },
+          ".label": {
+            "cx": 32.5,
+            "cy": 10.363482338248183
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c750",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "and",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "98cd1522-5527-40f3-a694-74106b9004ea"
+        },
+        "target": {
+          "id": "be84bd94-2bb0-4fd3-80fe-8cf97930d923"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "c902a513-041f-44af-a25e-f84fa10c2aaf",
+        "z": 25,
+        "linkID": "0031",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c751",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "++",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "ccbf0da3-34e6-4931-bafc-56a439982a0d"
+        },
+        "target": {
+          "id": "98cd1522-5527-40f3-a694-74106b9004ea"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "4c63ccb9-4fa9-4a51-8722-e92ec0c5c39d",
+        "z": 26,
+        "linkID": "0032",
+        "link-type": "++",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.Goal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c753",
+          "attributes": {
+            "nodeName": "Travel to Japan",
+            "evolvingFunction": {
+              "cid": "c752",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c754",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 60,
+          "y": 360
+        },
+        "angle": 0,
+        "id": "34bd6e71-0aa2-4ad4-9dfb-cdf520c0be44",
+        "z": 27,
+        "nodeID": "0023",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Travel to Japan",
+            "font-size": 14
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c755",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "+",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "4b7e653e-350e-4337-9746-ec66526ec222"
+        },
+        "target": {
+          "id": "34bd6e71-0aa2-4ad4-9dfb-cdf520c0be44"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "+"
+              }
+            }
+          }
+        ],
+        "id": "4bba7774-93ca-496b-b4d4-34bdd1537684",
+        "z": 28,
+        "linkID": "0033",
+        "link-type": "+",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.Goal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c757",
+          "attributes": {
+            "nodeName": "Money",
+            "evolvingFunction": {
+              "cid": "c756",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c758",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 170,
+          "y": 120
+        },
+        "angle": 0,
+        "id": "33bfda42-c5ef-4c7e-a782-e71764dbcffe",
+        "z": 29,
+        "nodeID": "0024",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Money",
+            "font-size": 14
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c759",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "and",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {
+            "displayType": "element",
+            "linkType": "--",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "changed": {
+            "linkType": "and"
+          },
+          "_pending": false
+        },
+        "source": {
+          "id": "be84bd94-2bb0-4fd3-80fe-8cf97930d923"
+        },
+        "target": {
+          "id": "33bfda42-c5ef-4c7e-a782-e71764dbcffe"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "8fcacbde-e877-4fe1-861e-6aeb2ac0de3f",
+        "z": 30,
+        "linkID": "0034",
+        "link-type": "--",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c760",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "-",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "34bd6e71-0aa2-4ad4-9dfb-cdf520c0be44"
+        },
+        "target": {
+          "id": "33bfda42-c5ef-4c7e-a782-e71764dbcffe"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "-"
+              }
+            }
+          }
+        ],
+        "id": "5582b237-0c44-4c6c-9bfc-606a34454816",
+        "z": 31,
+        "linkID": "0035",
+        "link-type": "-",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.Goal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c762",
+          "attributes": {
+            "nodeName": "Become a dentist",
+            "evolvingFunction": {
+              "cid": "c761",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c763",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 380,
+          "y": 70
+        },
+        "angle": 0,
+        "id": "b1d50f3e-edb7-4914-8348-3a5cc38218d8",
+        "z": 32,
+        "nodeID": "0025",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Become a dentist",
+            "font-size": 14
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c764",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "and",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "be84bd94-2bb0-4fd3-80fe-8cf97930d923"
+        },
+        "target": {
+          "id": "b1d50f3e-edb7-4914-8348-3a5cc38218d8"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "6b1d42b6-843c-4a3f-bbd3-feaa318d1a50",
+        "z": 33,
+        "linkID": "0037",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c765",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "++",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "b1d50f3e-edb7-4914-8348-3a5cc38218d8"
+        },
+        "target": {
+          "id": "33bfda42-c5ef-4c7e-a782-e71764dbcffe"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "73dd14f8-fe3c-488d-b65c-704f69f71563",
+        "z": 34,
+        "linkID": "0038",
+        "link-type": "++",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.Resource",
+        "size": {
+          "width": 120,
+          "height": 80
+        },
+        "intention": {
+          "cid": "c767",
+          "attributes": {
+            "nodeName": "Interest",
+            "evolvingFunction": {
+              "cid": "c766",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c768",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 810,
+          "y": 560
+        },
+        "angle": 0,
+        "id": "d61b32d8-dc9c-4509-bfad-6120b32bf16d",
+        "z": 35,
+        "nodeID": "0026",
+        "parent": "02dae55b-8514-4f37-b41a-efe143444f13",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Interest",
+            "font-size": 14
+          },
+          ".label": {
+            "cx": 30,
+            "cy": 8.373546489791295
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c769",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "++",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "d61b32d8-dc9c-4509-bfad-6120b32bf16d"
+        },
+        "target": {
+          "id": "4a1e48ef-aaea-4929-b8ab-72d168cb8398"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "7340564f-c6e8-4a81-a78d-a2179d5749a5",
+        "z": 36,
+        "linkID": "0039",
+        "link-type": "++",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c770",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "++",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "d61b32d8-dc9c-4509-bfad-6120b32bf16d"
+        },
+        "target": {
+          "id": "be84bd94-2bb0-4fd3-80fe-8cf97930d923"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "9b5ed44d-12f7-491c-8e7d-af1e54e68b24",
+        "z": 37,
+        "linkID": "0040",
+        "parent": "02dae55b-8514-4f37-b41a-efe143444f13",
+        "vertices": [
+          {
+            "x": 710,
+            "y": 550
+          }
+        ],
+        "link-type": "++",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c771",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "and",
+            "postType": null,
+            "absTime": -1,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "source": {
+          "id": "e59adbf3-a6b7-4de5-98fa-d25ce24a99eb"
+        },
+        "target": {
+          "id": "34bd6e71-0aa2-4ad4-9dfb-cdf520c0be44"
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "8591d8e3-cb83-43ef-9b38-6ac08b694485",
+        "z": 38,
+        "linkID": "0041",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      }
+    ]
+  },
+  "version": "BloomingLeaf_2.0"
+}

@@ -1,0 +1,3848 @@
+{
+    "graph": {
+        "type": "goalmodel.Graph",
+        "maxAbsTime": 52,
+        "absTimePtsArr": [],
+        "constraints": [],
+        "cells": [
+            {
+                "type": "basic.Goal",
+                "size": {
+                    "width": 100,
+                    "height": 60
+                },
+                "intention": {
+                    "cid": "c228",
+                    "attributes": {
+                        "nodeName": "Bike Lane Usage",
+                        "evolvingFunction": {
+                            "cid": "c229",
+                            "attributes": {
+                                "type": "MP",
+                                "functionSegList": [
+                                    {
+                                        "cid": "c230",
+                                        "attributes": {
+                                            "type": "I",
+                                            "refEvidencePair": "0011",
+                                            "startTP": "0",
+                                            "startAT": 0,
+                                            "current": true
+                                        },
+                                        "_changing": false,
+                                        "_previousAttributes": {},
+                                        "changed": {},
+                                        "_pending": false
+                                    },
+                                    {
+                                        "cid": "c231",
+                                        "attributes": {
+                                            "type": "C",
+                                            "refEvidencePair": "0011",
+                                            "startTP": "A",
+                                            "startAT": null,
+                                            "current": true
+                                        },
+                                        "_changing": false,
+                                        "_previousAttributes": {},
+                                        "changed": {},
+                                        "_pending": false
+                                    }
+                                ],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        },
+                        "userEvaluationList": [
+                            {
+                                "cid": "c232",
+                                "attributes": {
+                                    "assignedEvidencePair": "1100",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {},
+                                "changed": {},
+                                "_pending": false
+                            }
+                        ]
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {
+                        "nodeName": "Bike Lane Usage",
+                        "evolvingFunction": null,
+                        "userEvaluationList": [
+                            {
+                                "cid": "c232",
+                                "attributes": {
+                                    "assignedEvidencePair": "1100",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {},
+                                "changed": {},
+                                "_pending": false
+                            }
+                        ]
+                    },
+                    "changed": {
+                        "evolvingFunction": {
+                            "cid": "c229",
+                            "attributes": {
+                                "type": "MP",
+                                "functionSegList": [
+                                    {
+                                        "cid": "c230",
+                                        "attributes": {
+                                            "type": "I",
+                                            "refEvidencePair": "0011",
+                                            "startTP": "0",
+                                            "startAT": 0,
+                                            "current": true
+                                        },
+                                        "_changing": false,
+                                        "_previousAttributes": {},
+                                        "changed": {},
+                                        "_pending": false
+                                    },
+                                    {
+                                        "cid": "c231",
+                                        "attributes": {
+                                            "type": "C",
+                                            "refEvidencePair": "0011",
+                                            "startTP": "A",
+                                            "startAT": null,
+                                            "current": true
+                                        },
+                                        "_changing": false,
+                                        "_previousAttributes": {},
+                                        "changed": {},
+                                        "_pending": false
+                                    }
+                                ],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        }
+                    },
+                    "_pending": false
+                },
+                "position": {
+                    "x": 410,
+                    "y": 590
+                },
+                "angle": 0,
+                "id": "227eb444-125c-43e5-a917-8c1ada35f61e",
+                "z": 1,
+                "attrs": {
+                    ".satvalue": {
+                        "text": "(⊥, F)"
+                    },
+                    ".name": {
+                        "text": "Bike Lane Usage"
+                    },
+                    ".funcvalue": {
+                        "text": "MP"
+                    },
+                    "text": {
+                        "fill": "black",
+                        "stroke": "none"
+                    }
+                }
+            },
+            {
+                "type": "basic.Goal",
+                "size": {
+                    "width": 100,
+                    "height": 60
+                },
+                "intention": {
+                    "cid": "c233",
+                    "attributes": {
+                        "nodeName": "Decrease Carbon \n   Emissions",
+                        "evolvingFunction": {
+                            "cid": "c234",
+                            "attributes": {
+                                "type": "NT",
+                                "functionSegList": [],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        },
+                        "userEvaluationList": [
+                            {
+                                "cid": "c235",
+                                "attributes": {
+                                    "assignedEvidencePair": "(no value)",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {},
+                                "changed": {},
+                                "_pending": false
+                            }
+                        ]
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {
+                        "nodeName": "Decrease Carbon \n   Emissions",
+                        "evolvingFunction": null,
+                        "userEvaluationList": [
+                            {
+                                "cid": "c235",
+                                "attributes": {
+                                    "assignedEvidencePair": "(no value)",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {},
+                                "changed": {},
+                                "_pending": false
+                            }
+                        ]
+                    },
+                    "changed": {
+                        "evolvingFunction": {
+                            "cid": "c234",
+                            "attributes": {
+                                "type": "NT",
+                                "functionSegList": [],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        }
+                    },
+                    "_pending": false
+                },
+                "position": {
+                    "x": 190,
+                    "y": 350
+                },
+                "angle": 0,
+                "id": "a3c7f287-b8b1-4f13-adb0-353c3335e7a3",
+                "z": 2,
+                "attrs": {
+                    ".satvalue": {
+                        "text": ""
+                    },
+                    ".name": {
+                        "text": "Decrease Carbon \n   Emissions"
+                    },
+                    "text": {
+                        "fill": "black",
+                        "stroke": "none"
+                    }
+                }
+            },
+            {
+                "type": "basic.Task",
+                "size": {
+                    "width": 100,
+                    "height": 60
+                },
+                "intention": {
+                    "cid": "c236",
+                    "attributes": {
+                        "nodeName": "Add Bike Share\n    System",
+                        "evolvingFunction": {
+                            "cid": "c237",
+                            "attributes": {
+                                "type": "NT",
+                                "functionSegList": [],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        },
+                        "userEvaluationList": [
+                            {
+                                "cid": "c238",
+                                "attributes": {
+                                    "assignedEvidencePair": "(no value)",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {},
+                                "changed": {},
+                                "_pending": false
+                            }
+                        ]
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {
+                        "nodeName": "Add Bike Share\n    System",
+                        "evolvingFunction": null,
+                        "userEvaluationList": [
+                            {
+                                "cid": "c238",
+                                "attributes": {
+                                    "assignedEvidencePair": "(no value)",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {},
+                                "changed": {},
+                                "_pending": false
+                            }
+                        ]
+                    },
+                    "changed": {
+                        "evolvingFunction": {
+                            "cid": "c237",
+                            "attributes": {
+                                "type": "NT",
+                                "functionSegList": [],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        }
+                    },
+                    "_pending": false
+                },
+                "position": {
+                    "x": 220,
+                    "y": 590
+                },
+                "angle": 0,
+                "id": "49026a2b-59ef-4d70-81b4-a719a1c6c9ac",
+                "z": 3,
+                "attrs": {
+                    ".satvalue": {
+                        "text": ""
+                    },
+                    ".name": {
+                        "text": "Add Bike Share\n    System"
+                    },
+                    "text": {
+                        "fill": "black",
+                        "stroke": "none"
+                    }
+                }
+            },
+            {
+                "type": "basic.CellLink",
+                "link": {
+                    "cid": "c239",
+                    "attributes": {
+                        "displayType": "element",
+                        "linkType": "++",
+                        "postType": "+",
+                        "absTime": null,
+                        "evolving": true
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                },
+                "labels": [
+                    {
+                        "position": 0.5,
+                        "attrs": {
+                            "text": {
+                                "text": "++ | +"
+                            }
+                        }
+                    }
+                ],
+                "id": "9b3e815a-e747-451f-8228-b507fc5024ce",
+                "source": {
+                    "id": "49026a2b-59ef-4d70-81b4-a719a1c6c9ac"
+                },
+                "target": {
+                    "id": "227eb444-125c-43e5-a917-8c1ada35f61e"
+                },
+                "z": 4,
+                "attrs": {
+                    ".connection": {
+                        "stroke": "#000000"
+                    },
+                    ".marker-source": {
+                        "d": "0"
+                    },
+                    ".marker-target": {
+                        "stroke": "#000000",
+                        "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+                    }
+                }
+            },
+            {
+                "type": "basic.Goal",
+                "size": {
+                    "width": 100,
+                    "height": 60
+                },
+                "intention": {
+                    "cid": "c240",
+                    "attributes": {
+                        "nodeName": "Have Bike Lanes",
+                        "evolvingFunction": {
+                            "cid": "c241",
+                            "attributes": {
+                                "type": "DS",
+                                "functionSegList": [
+                                    {
+                                        "cid": "c242",
+                                        "attributes": {
+                                            "type": "C",
+                                            "refEvidencePair": "1100",
+                                            "startTP": "0",
+                                            "startAT": 0,
+                                            "current": true
+                                        },
+                                        "_changing": false,
+                                        "_previousAttributes": {},
+                                        "changed": {},
+                                        "_pending": false
+                                    },
+                                    {
+                                        "cid": "c243",
+                                        "attributes": {
+                                            "type": "C",
+                                            "refEvidencePair": "0011",
+                                            "startTP": "A",
+                                            "startAT": 52,
+                                            "current": true
+                                        },
+                                        "_changing": false,
+                                        "_previousAttributes": {},
+                                        "changed": {},
+                                        "_pending": false
+                                    }
+                                ],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        },
+                        "userEvaluationList": [
+                            {
+                                "cid": "c244",
+                                "attributes": {
+                                    "assignedEvidencePair": "1100",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {},
+                                "changed": {},
+                                "_pending": false
+                            }
+                        ]
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {
+                        "nodeName": "Have Bike Lanes",
+                        "evolvingFunction": null,
+                        "userEvaluationList": [
+                            {
+                                "cid": "c244",
+                                "attributes": {
+                                    "assignedEvidencePair": "1100",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {},
+                                "changed": {},
+                                "_pending": false
+                            }
+                        ]
+                    },
+                    "changed": {
+                        "evolvingFunction": {
+                            "cid": "c241",
+                            "attributes": {
+                                "type": "DS",
+                                "functionSegList": [
+                                    {
+                                        "cid": "c242",
+                                        "attributes": {
+                                            "type": "C",
+                                            "refEvidencePair": "1100",
+                                            "startTP": "0",
+                                            "startAT": 0,
+                                            "current": true
+                                        },
+                                        "_changing": false,
+                                        "_previousAttributes": {},
+                                        "changed": {},
+                                        "_pending": false
+                                    },
+                                    {
+                                        "cid": "c243",
+                                        "attributes": {
+                                            "type": "C",
+                                            "refEvidencePair": "0011",
+                                            "startTP": "A",
+                                            "startAT": 52,
+                                            "current": true
+                                        },
+                                        "_changing": false,
+                                        "_previousAttributes": {},
+                                        "changed": {},
+                                        "_pending": false
+                                    }
+                                ],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        }
+                    },
+                    "_pending": false
+                },
+                "position": {
+                    "x": 410,
+                    "y": 260
+                },
+                "angle": 0,
+                "id": "3e17c3ab-e48d-4206-9f48-7b6223f5ac91",
+                "z": 5,
+                "attrs": {
+                    ".satvalue": {
+                        "text": "(⊥, F)"
+                    },
+                    ".name": {
+                        "text": "Have Bike Lanes"
+                    },
+                    ".funcvalue": {
+                        "text": "DS"
+                    },
+                    "text": {
+                        "fill": "black",
+                        "stroke": "none"
+                    }
+                }
+            },
+            {
+                "type": "basic.CellLink",
+                "link": {
+                    "cid": "c245",
+                    "attributes": {
+                        "displayType": "element",
+                        "linkType": "+",
+                        "postType": null,
+                        "absTime": null,
+                        "evolving": false
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                },
+                "labels": [
+                    {
+                        "position": 0.5,
+                        "attrs": {
+                            "text": {
+                                "text": "+"
+                            }
+                        }
+                    }
+                ],
+                "id": "84c457a5-af3b-41b8-8c1a-bece3bed34ce",
+                "source": {
+                    "id": "3e17c3ab-e48d-4206-9f48-7b6223f5ac91"
+                },
+                "target": {
+                    "id": "a3c7f287-b8b1-4f13-adb0-353c3335e7a3"
+                },
+                "z": 6,
+                "attrs": {
+                    ".connection": {
+                        "stroke": "#000000"
+                    },
+                    ".marker-source": {
+                        "d": "0"
+                    },
+                    ".marker-target": {
+                        "stroke": "#000000",
+                        "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+                    }
+                }
+            },
+            {
+                "type": "basic.Goal",
+                "size": {
+                    "width": 100,
+                    "height": 60
+                },
+                "intention": {
+                    "cid": "c246",
+                    "attributes": {
+                        "nodeName": "Cyclist Safety",
+                        "evolvingFunction": {
+                            "cid": "c247",
+                            "attributes": {
+                                "type": "NT",
+                                "functionSegList": [],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        },
+                        "userEvaluationList": [
+                            {
+                                "cid": "c248",
+                                "attributes": {
+                                    "assignedEvidencePair": "(no value)",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {},
+                                "changed": {},
+                                "_pending": false
+                            }
+                        ]
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {
+                        "nodeName": "Cyclist Safety",
+                        "evolvingFunction": null,
+                        "userEvaluationList": [
+                            {
+                                "cid": "c248",
+                                "attributes": {
+                                    "assignedEvidencePair": "(no value)",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {},
+                                "changed": {},
+                                "_pending": false
+                            }
+                        ]
+                    },
+                    "changed": {
+                        "evolvingFunction": {
+                            "cid": "c247",
+                            "attributes": {
+                                "type": "NT",
+                                "functionSegList": [],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        }
+                    },
+                    "_pending": false
+                },
+                "position": {
+                    "x": 100,
+                    "y": 430
+                },
+                "angle": 0,
+                "id": "a460c992-efd0-4775-80d5-8ce5004d635b",
+                "z": 7,
+                "attrs": {
+                    ".satvalue": {
+                        "text": ""
+                    },
+                    ".name": {
+                        "text": "Cyclist Safety"
+                    },
+                    "text": {
+                        "fill": "black",
+                        "stroke": "none"
+                    }
+                }
+            },
+            {
+                "type": "basic.Goal",
+                "size": {
+                    "width": 100,
+                    "height": 60
+                },
+                "intention": {
+                    "cid": "c249",
+                    "attributes": {
+                        "nodeName": "Pedestrian Safety",
+                        "evolvingFunction": {
+                            "cid": "c250",
+                            "attributes": {
+                                "type": "I",
+                                "functionSegList": [
+                                    {
+                                        "cid": "c251",
+                                        "attributes": {
+                                            "type": "I",
+                                            "refEvidencePair": "0011",
+                                            "startTP": "0",
+                                            "startAT": 0,
+                                            "current": true
+                                        },
+                                        "_changing": false,
+                                        "_previousAttributes": {},
+                                        "changed": {},
+                                        "_pending": false
+                                    }
+                                ],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        },
+                        "userEvaluationList": [
+                            {
+                                "cid": "c252",
+                                "attributes": {
+                                    "assignedEvidencePair": "0100",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {},
+                                "changed": {},
+                                "_pending": false
+                            }
+                        ]
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {
+                        "nodeName": "Pedestrian Safety",
+                        "evolvingFunction": null,
+                        "userEvaluationList": [
+                            {
+                                "cid": "c252",
+                                "attributes": {
+                                    "assignedEvidencePair": "0100",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {},
+                                "changed": {},
+                                "_pending": false
+                            }
+                        ]
+                    },
+                    "changed": {
+                        "evolvingFunction": {
+                            "cid": "c250",
+                            "attributes": {
+                                "type": "I",
+                                "functionSegList": [
+                                    {
+                                        "cid": "c251",
+                                        "attributes": {
+                                            "type": "I",
+                                            "refEvidencePair": "0011",
+                                            "startTP": "0",
+                                            "startAT": 0,
+                                            "current": true
+                                        },
+                                        "_changing": false,
+                                        "_previousAttributes": {},
+                                        "changed": {},
+                                        "_pending": false
+                                    }
+                                ],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        }
+                    },
+                    "_pending": false
+                },
+                "position": {
+                    "x": 610,
+                    "y": 700
+                },
+                "angle": 0,
+                "id": "edded08f-bdc0-49c7-bdd4-6acc5ae3219b",
+                "z": 8,
+                "attrs": {
+                    ".satvalue": {
+                        "text": "(⊥, P)"
+                    },
+                    ".name": {
+                        "text": "Pedestrian Safety"
+                    },
+                    ".funcvalue": {
+                        "text": "I"
+                    },
+                    "text": {
+                        "fill": "black",
+                        "stroke": "none"
+                    }
+                }
+            },
+            {
+                "type": "basic.Resource",
+                "size": {
+                    "width": 100,
+                    "height": 60
+                },
+                "intention": {
+                    "cid": "c253",
+                    "attributes": {
+                        "nodeName": "Money",
+                        "evolvingFunction": {
+                            "cid": "c254",
+                            "attributes": {
+                                "type": "R",
+                                "functionSegList": [
+                                    {
+                                        "cid": "c255",
+                                        "attributes": {
+                                            "type": "R",
+                                            "refEvidencePair": "(no value)",
+                                            "startTP": "0",
+                                            "startAT": 0,
+                                            "current": true
+                                        },
+                                        "_changing": false,
+                                        "_previousAttributes": {},
+                                        "changed": {},
+                                        "_pending": false
+                                    }
+                                ],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        },
+                        "userEvaluationList": [
+                            {
+                                "cid": "c256",
+                                "attributes": {
+                                    "assignedEvidencePair": "(no value)",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {},
+                                "changed": {},
+                                "_pending": false
+                            }
+                        ]
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {
+                        "nodeName": "Money",
+                        "evolvingFunction": null,
+                        "userEvaluationList": [
+                            {
+                                "cid": "c256",
+                                "attributes": {
+                                    "assignedEvidencePair": "(no value)",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {},
+                                "changed": {},
+                                "_pending": false
+                            }
+                        ]
+                    },
+                    "changed": {
+                        "evolvingFunction": {
+                            "cid": "c254",
+                            "attributes": {
+                                "type": "R",
+                                "functionSegList": [
+                                    {
+                                        "cid": "c255",
+                                        "attributes": {
+                                            "type": "R",
+                                            "refEvidencePair": "(no value)",
+                                            "startTP": "0",
+                                            "startAT": 0,
+                                            "current": true
+                                        },
+                                        "_changing": false,
+                                        "_previousAttributes": {},
+                                        "changed": {},
+                                        "_pending": false
+                                    }
+                                ],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        }
+                    },
+                    "_pending": false
+                },
+                "position": {
+                    "x": -10,
+                    "y": 640
+                },
+                "angle": 0,
+                "id": "8fc2d349-f5fc-4808-9b1c-b51fb353514f",
+                "z": 9,
+                "attrs": {
+                    ".satvalue": {
+                        "text": ""
+                    },
+                    ".name": {
+                        "text": "Money"
+                    },
+                    ".funcvalue": {
+                        "text": "R"
+                    },
+                    "text": {
+                        "fill": "black",
+                        "stroke": "none"
+                    }
+                }
+            },
+            {
+                "type": "basic.CellLink",
+                "link": {
+                    "cid": "c257",
+                    "attributes": {
+                        "displayType": "element",
+                        "linkType": "-",
+                        "postType": null,
+                        "absTime": null,
+                        "evolving": false
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                },
+                "labels": [
+                    {
+                        "position": 0.5,
+                        "attrs": {
+                            "text": {
+                                "text": "-"
+                            }
+                        }
+                    }
+                ],
+                "id": "70570b52-90aa-44e5-a780-45f6fc83cd54",
+                "source": {
+                    "id": "49026a2b-59ef-4d70-81b4-a719a1c6c9ac"
+                },
+                "target": {
+                    "id": "8fc2d349-f5fc-4808-9b1c-b51fb353514f"
+                },
+                "z": 10,
+                "attrs": {
+                    ".connection": {
+                        "stroke": "#000000"
+                    },
+                    ".marker-source": {
+                        "d": "0"
+                    },
+                    ".marker-target": {
+                        "stroke": "#000000",
+                        "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+                    }
+                }
+            },
+            {
+                "type": "basic.Task",
+                "size": {
+                    "width": 100,
+                    "height": 60
+                },
+                "intention": {
+                    "cid": "c258",
+                    "attributes": {
+                        "nodeName": "Obtain Approval \nfor Bike Share \n     System",
+                        "evolvingFunction": {
+                            "cid": "c259",
+                            "attributes": {
+                                "type": "NT",
+                                "functionSegList": [],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        },
+                        "userEvaluationList": [
+                            {
+                                "cid": "c260",
+                                "attributes": {
+                                    "assignedEvidencePair": "(no value)",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {},
+                                "changed": {},
+                                "_pending": false
+                            }
+                        ]
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {
+                        "nodeName": "Obtain Approval \nfor Bike Share \n     System",
+                        "evolvingFunction": null,
+                        "userEvaluationList": [
+                            {
+                                "cid": "c260",
+                                "attributes": {
+                                    "assignedEvidencePair": "(no value)",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {},
+                                "changed": {},
+                                "_pending": false
+                            }
+                        ]
+                    },
+                    "changed": {
+                        "evolvingFunction": {
+                            "cid": "c259",
+                            "attributes": {
+                                "type": "NT",
+                                "functionSegList": [],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        }
+                    },
+                    "_pending": false
+                },
+                "position": {
+                    "x": 130,
+                    "y": 720
+                },
+                "angle": 0,
+                "id": "b2ca4e93-1bb0-43b3-97e8-1e27bf1dea2f",
+                "z": 11,
+                "attrs": {
+                    ".satvalue": {
+                        "text": ""
+                    },
+                    ".name": {
+                        "text": "Obtain Approval \nfor Bike Share \n     System"
+                    },
+                    "text": {
+                        "fill": "black",
+                        "stroke": "none"
+                    }
+                }
+            },
+            {
+                "type": "basic.CellLink",
+                "link": {
+                    "cid": "c261",
+                    "attributes": {
+                        "displayType": "element",
+                        "linkType": "+",
+                        "postType": null,
+                        "absTime": null,
+                        "evolving": false
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                },
+                "labels": [
+                    {
+                        "position": 0.5,
+                        "attrs": {
+                            "text": {
+                                "text": "+"
+                            }
+                        }
+                    }
+                ],
+                "id": "1231b193-339d-4f68-b1fc-2e320b14ec4d",
+                "source": {
+                    "id": "b2ca4e93-1bb0-43b3-97e8-1e27bf1dea2f"
+                },
+                "target": {
+                    "id": "49026a2b-59ef-4d70-81b4-a719a1c6c9ac"
+                },
+                "z": 12,
+                "attrs": {
+                    ".connection": {
+                        "stroke": "#000000"
+                    },
+                    ".marker-source": {
+                        "d": "0"
+                    },
+                    ".marker-target": {
+                        "stroke": "#000000",
+                        "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+                    }
+                }
+            },
+            {
+                "type": "basic.Goal",
+                "size": {
+                    "width": 100,
+                    "height": 60
+                },
+                "intention": {
+                    "cid": "c262",
+                    "attributes": {
+                        "nodeName": "Build Bike Lanes",
+                        "evolvingFunction": {
+                            "cid": "c263",
+                            "attributes": {
+                                "type": "DS",
+                                "functionSegList": [
+                                    {
+                                        "cid": "c264",
+                                        "attributes": {
+                                            "type": "C",
+                                            "refEvidencePair": "1100",
+                                            "startTP": "0",
+                                            "startAT": 0,
+                                            "current": true
+                                        },
+                                        "_changing": false,
+                                        "_previousAttributes": {
+                                            "type": "C",
+                                            "refEvidencePair": "1100",
+                                            "startTP": "0",
+                                            "startAT": 0,
+                                            "current": true
+                                        },
+                                        "changed": {},
+                                        "_pending": false,
+                                        "_listenId": "l362",
+                                        "_events": null,
+                                        "_listeners": null
+                                    },
+                                    {
+                                        "cid": "c265",
+                                        "attributes": {
+                                            "type": "C",
+                                            "refEvidencePair": "0011",
+                                            "startTP": "A",
+                                            "startAT": 52,
+                                            "current": true
+                                        },
+                                        "_changing": false,
+                                        "_previousAttributes": {
+                                            "type": "C",
+                                            "refEvidencePair": "0011",
+                                            "startTP": "A",
+                                            "startAT": 52,
+                                            "current": true
+                                        },
+                                        "changed": {},
+                                        "_pending": false,
+                                        "_listenId": "l366",
+                                        "_events": null,
+                                        "_listeners": null
+                                    }
+                                ],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        },
+                        "userEvaluationList": [
+                            {
+                                "cid": "c266",
+                                "attributes": {
+                                    "assignedEvidencePair": "1100",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {},
+                                "changed": {},
+                                "_pending": false,
+                                "_listenId": "l364",
+                                "_events": null,
+                                "_listeners": null
+                            }
+                        ]
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {
+                        "nodeName": "Build Bike Lanes",
+                        "evolvingFunction": null,
+                        "userEvaluationList": [
+                            {
+                                "cid": "c266",
+                                "attributes": {
+                                    "assignedEvidencePair": "1100",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {},
+                                "changed": {},
+                                "_pending": false,
+                                "_listenId": "l364",
+                                "_events": null,
+                                "_listeners": null
+                            }
+                        ]
+                    },
+                    "changed": {
+                        "evolvingFunction": {
+                            "cid": "c263",
+                            "attributes": {
+                                "type": "DS",
+                                "functionSegList": [
+                                    {
+                                        "cid": "c264",
+                                        "attributes": {
+                                            "type": "C",
+                                            "refEvidencePair": "1100",
+                                            "startTP": "0",
+                                            "startAT": 0,
+                                            "current": true
+                                        },
+                                        "_changing": false,
+                                        "_previousAttributes": {
+                                            "type": "C",
+                                            "refEvidencePair": "1100",
+                                            "startTP": "0",
+                                            "startAT": 0,
+                                            "current": true
+                                        },
+                                        "changed": {},
+                                        "_pending": false,
+                                        "_listenId": "l362",
+                                        "_events": null,
+                                        "_listeners": null
+                                    },
+                                    {
+                                        "cid": "c265",
+                                        "attributes": {
+                                            "type": "C",
+                                            "refEvidencePair": "0011",
+                                            "startTP": "A",
+                                            "startAT": 52,
+                                            "current": true
+                                        },
+                                        "_changing": false,
+                                        "_previousAttributes": {
+                                            "type": "C",
+                                            "refEvidencePair": "0011",
+                                            "startTP": "A",
+                                            "startAT": 52,
+                                            "current": true
+                                        },
+                                        "changed": {},
+                                        "_pending": false,
+                                        "_listenId": "l366",
+                                        "_events": null,
+                                        "_listeners": null
+                                    }
+                                ],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        }
+                    },
+                    "_pending": false
+                },
+                "position": {
+                    "x": 390,
+                    "y": 430
+                },
+                "angle": 0,
+                "id": "4f0f0fcc-f4fb-46f3-aa0a-8c312e8c0385",
+                "z": 14,
+                "attrs": {
+                    ".satvalue": {
+                        "text": "(⊥, F)"
+                    },
+                    ".name": {
+                        "text": "Build Bike Lanes"
+                    },
+                    ".funcvalue": {
+                        "text": "DS"
+                    },
+                    "text": {
+                        "fill": "black",
+                        "stroke": "none"
+                    }
+                }
+            },
+            {
+                "type": "basic.CellLink",
+                "link": {
+                    "cid": "c267",
+                    "attributes": {
+                        "displayType": "element",
+                        "linkType": "and",
+                        "postType": null,
+                        "absTime": null,
+                        "evolving": false
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                },
+                "labels": [
+                    {
+                        "position": 0.5,
+                        "attrs": {
+                            "text": {
+                                "text": "and"
+                            }
+                        }
+                    }
+                ],
+                "id": "4244fbab-f304-4b98-b672-c702a892b615",
+                "source": {
+                    "id": "4f0f0fcc-f4fb-46f3-aa0a-8c312e8c0385"
+                },
+                "target": {
+                    "id": "3e17c3ab-e48d-4206-9f48-7b6223f5ac91"
+                },
+                "z": 15,
+                "attrs": {
+                    ".connection": {
+                        "stroke": "#000000"
+                    },
+                    ".marker-source": {
+                        "d": "0"
+                    },
+                    ".marker-target": {
+                        "stroke": "#000000",
+                        "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+                    }
+                }
+            },
+            {
+                "type": "basic.Goal",
+                "size": {
+                    "width": 100,
+                    "height": 60
+                },
+                "intention": {
+                    "cid": "c268",
+                    "attributes": {
+                        "nodeName": "Operate Bike Lanes",
+                        "evolvingFunction": {
+                            "cid": "c269",
+                            "attributes": {
+                                "type": "NT",
+                                "functionSegList": [],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        },
+                        "userEvaluationList": [
+                            {
+                                "cid": "c270",
+                                "attributes": {
+                                    "assignedEvidencePair": "(no value)",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {},
+                                "changed": {},
+                                "_pending": false
+                            }
+                        ]
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {
+                        "nodeName": "Operate Bike Lanes",
+                        "evolvingFunction": null,
+                        "userEvaluationList": [
+                            {
+                                "cid": "c270",
+                                "attributes": {
+                                    "assignedEvidencePair": "(no value)",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {},
+                                "changed": {},
+                                "_pending": false
+                            }
+                        ]
+                    },
+                    "changed": {
+                        "evolvingFunction": {
+                            "cid": "c269",
+                            "attributes": {
+                                "type": "NT",
+                                "functionSegList": [],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        }
+                    },
+                    "_pending": false
+                },
+                "position": {
+                    "x": 530,
+                    "y": 400
+                },
+                "angle": 0,
+                "id": "e716fe6d-5e93-4378-9c59-76df5b5a5bf1",
+                "z": 16,
+                "attrs": {
+                    ".satvalue": {
+                        "text": ""
+                    },
+                    ".name": {
+                        "text": "Operate Bike Lanes"
+                    },
+                    "text": {
+                        "fill": "black",
+                        "stroke": "none"
+                    }
+                }
+            },
+            {
+                "type": "basic.CellLink",
+                "link": {
+                    "cid": "c271",
+                    "attributes": {
+                        "displayType": "element",
+                        "linkType": "and",
+                        "postType": null,
+                        "absTime": null,
+                        "evolving": false
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                },
+                "labels": [
+                    {
+                        "position": 0.5,
+                        "attrs": {
+                            "text": {
+                                "text": "and"
+                            }
+                        }
+                    }
+                ],
+                "id": "18e04fa0-20fb-4e72-a110-8c1944db6fb2",
+                "source": {
+                    "id": "e716fe6d-5e93-4378-9c59-76df5b5a5bf1"
+                },
+                "target": {
+                    "id": "3e17c3ab-e48d-4206-9f48-7b6223f5ac91"
+                },
+                "z": 17,
+                "attrs": {
+                    ".connection": {
+                        "stroke": "#000000"
+                    },
+                    ".marker-source": {
+                        "d": "0"
+                    },
+                    ".marker-target": {
+                        "stroke": "#000000",
+                        "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+                    }
+                }
+            },
+            {
+                "type": "basic.Goal",
+                "size": {
+                    "width": 100,
+                    "height": 60
+                },
+                "intention": {
+                    "cid": "c272",
+                    "attributes": {
+                        "nodeName": "Road Maintenance",
+                        "evolvingFunction": {
+                            "cid": "c273",
+                            "attributes": {
+                                "type": "C",
+                                "functionSegList": [
+                                    {
+                                        "cid": "c274",
+                                        "attributes": {
+                                            "type": "C",
+                                            "refEvidencePair": "0010",
+                                            "startTP": "0",
+                                            "startAT": 0,
+                                            "current": true
+                                        },
+                                        "_changing": false,
+                                        "_previousAttributes": {
+                                            "type": "C",
+                                            "refEvidencePair": "0010",
+                                            "startTP": "0",
+                                            "startAT": 0,
+                                            "current": true
+                                        },
+                                        "changed": {},
+                                        "_pending": false,
+                                        "_listenId": "l461",
+                                        "_events": null,
+                                        "_listeners": null
+                                    }
+                                ],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        },
+                        "userEvaluationList": [
+                            {
+                                "cid": "c275",
+                                "attributes": {
+                                    "assignedEvidencePair": "0010",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {},
+                                "changed": {},
+                                "_pending": false,
+                                "_listenId": "l463",
+                                "_events": null,
+                                "_listeners": null
+                            }
+                        ]
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {
+                        "nodeName": "Road Maintenance",
+                        "evolvingFunction": null,
+                        "userEvaluationList": [
+                            {
+                                "cid": "c275",
+                                "attributes": {
+                                    "assignedEvidencePair": "0010",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {},
+                                "changed": {},
+                                "_pending": false,
+                                "_listenId": "l463",
+                                "_events": null,
+                                "_listeners": null
+                            }
+                        ]
+                    },
+                    "changed": {
+                        "evolvingFunction": {
+                            "cid": "c273",
+                            "attributes": {
+                                "type": "C",
+                                "functionSegList": [
+                                    {
+                                        "cid": "c274",
+                                        "attributes": {
+                                            "type": "C",
+                                            "refEvidencePair": "0010",
+                                            "startTP": "0",
+                                            "startAT": 0,
+                                            "current": true
+                                        },
+                                        "_changing": false,
+                                        "_previousAttributes": {
+                                            "type": "C",
+                                            "refEvidencePair": "0010",
+                                            "startTP": "0",
+                                            "startAT": 0,
+                                            "current": true
+                                        },
+                                        "changed": {},
+                                        "_pending": false,
+                                        "_listenId": "l461",
+                                        "_events": null,
+                                        "_listeners": null
+                                    }
+                                ],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        }
+                    },
+                    "_pending": false
+                },
+                "position": {
+                    "x": 600,
+                    "y": 260
+                },
+                "angle": 0,
+                "id": "ab643cf4-b2be-4820-a6e9-1a01417f04ec",
+                "z": 18,
+                "attrs": {
+                    ".satvalue": {
+                        "text": "(P, ⊥)"
+                    },
+                    ".name": {
+                        "text": "Road Maintenance"
+                    },
+                    ".funcvalue": {
+                        "text": "C"
+                    },
+                    "text": {
+                        "fill": "black",
+                        "stroke": "none"
+                    }
+                }
+            },
+            {
+                "type": "basic.Task",
+                "size": {
+                    "width": 100,
+                    "height": 60
+                },
+                "intention": {
+                    "cid": "c276",
+                    "attributes": {
+                        "nodeName": "Connect Bike Lanes\n      to Rail Trail",
+                        "evolvingFunction": {
+                            "cid": "c277",
+                            "attributes": {
+                                "type": "NT",
+                                "functionSegList": [],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        },
+                        "userEvaluationList": [
+                            {
+                                "cid": "c278",
+                                "attributes": {
+                                    "assignedEvidencePair": "(no value)",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {},
+                                "changed": {},
+                                "_pending": false
+                            }
+                        ]
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {
+                        "nodeName": "Connect Bike Lanes\n      to Rail Trail",
+                        "evolvingFunction": null,
+                        "userEvaluationList": [
+                            {
+                                "cid": "c278",
+                                "attributes": {
+                                    "assignedEvidencePair": "(no value)",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {},
+                                "changed": {},
+                                "_pending": false
+                            }
+                        ]
+                    },
+                    "changed": {
+                        "evolvingFunction": {
+                            "cid": "c277",
+                            "attributes": {
+                                "type": "NT",
+                                "functionSegList": [],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        }
+                    },
+                    "_pending": false
+                },
+                "position": {
+                    "x": 320,
+                    "y": 720
+                },
+                "angle": 0,
+                "id": "05ae206f-f033-447a-a66e-7f6ce5b48d36",
+                "z": 19,
+                "attrs": {
+                    ".satvalue": {
+                        "text": ""
+                    },
+                    ".name": {
+                        "text": "Connect Bike Lanes\n      to Rail Trail"
+                    },
+                    "text": {
+                        "fill": "black",
+                        "stroke": "none"
+                    }
+                }
+            },
+            {
+                "type": "basic.CellLink",
+                "link": {
+                    "cid": "c279",
+                    "attributes": {
+                        "displayType": "element",
+                        "linkType": "++",
+                        "postType": "+",
+                        "absTime": null,
+                        "evolving": true
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                },
+                "labels": [
+                    {
+                        "position": 0.5,
+                        "attrs": {
+                            "text": {
+                                "text": "++ | +"
+                            }
+                        }
+                    }
+                ],
+                "id": "76fdbf64-ff79-4974-81cc-9c14ca8ebfb5",
+                "source": {
+                    "id": "05ae206f-f033-447a-a66e-7f6ce5b48d36"
+                },
+                "target": {
+                    "id": "227eb444-125c-43e5-a917-8c1ada35f61e"
+                },
+                "z": 20,
+                "attrs": {
+                    ".connection": {
+                        "stroke": "#000000"
+                    },
+                    ".marker-source": {
+                        "d": "0"
+                    },
+                    ".marker-target": {
+                        "stroke": "#000000",
+                        "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+                    }
+                }
+            },
+            {
+                "type": "basic.CellLink",
+                "link": {
+                    "cid": "c280",
+                    "attributes": {
+                        "displayType": "element",
+                        "linkType": "+",
+                        "postType": null,
+                        "absTime": null,
+                        "evolving": false
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                },
+                "labels": [
+                    {
+                        "position": 0.5,
+                        "attrs": {
+                            "text": {
+                                "text": "+"
+                            }
+                        }
+                    }
+                ],
+                "id": "b03bbab2-dfed-4af7-8f91-2b6657d48f09",
+                "source": {
+                    "id": "ab643cf4-b2be-4820-a6e9-1a01417f04ec"
+                },
+                "target": {
+                    "id": "e716fe6d-5e93-4378-9c59-76df5b5a5bf1"
+                },
+                "z": 21,
+                "attrs": {
+                    ".connection": {
+                        "stroke": "#000000"
+                    },
+                    ".marker-source": {
+                        "d": "0"
+                    },
+                    ".marker-target": {
+                        "stroke": "#000000",
+                        "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+                    }
+                }
+            },
+            {
+                "type": "basic.Goal",
+                "size": {
+                    "width": 100,
+                    "height": 60
+                },
+                "intention": {
+                    "cid": "c281",
+                    "attributes": {
+                        "nodeName": "Costs Jurisdiction",
+                        "evolvingFunction": {
+                            "cid": "c282",
+                            "attributes": {
+                                "type": "NT",
+                                "functionSegList": [],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        },
+                        "userEvaluationList": [
+                            {
+                                "cid": "c283",
+                                "attributes": {
+                                    "assignedEvidencePair": "(no value)",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {},
+                                "changed": {},
+                                "_pending": false
+                            }
+                        ]
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {
+                        "nodeName": "Costs Jurisdiction",
+                        "evolvingFunction": null,
+                        "userEvaluationList": [
+                            {
+                                "cid": "c283",
+                                "attributes": {
+                                    "assignedEvidencePair": "(no value)",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {},
+                                "changed": {},
+                                "_pending": false
+                            }
+                        ]
+                    },
+                    "changed": {
+                        "evolvingFunction": {
+                            "cid": "c282",
+                            "attributes": {
+                                "type": "NT",
+                                "functionSegList": [],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        }
+                    },
+                    "_pending": false
+                },
+                "position": {
+                    "x": 680,
+                    "y": 620
+                },
+                "angle": 0,
+                "id": "924dc27e-8fc7-440f-a985-106ddb375032",
+                "z": 22,
+                "attrs": {
+                    ".satvalue": {
+                        "text": ""
+                    },
+                    ".name": {
+                        "text": "Costs Jurisdiction"
+                    },
+                    "text": {
+                        "fill": "black",
+                        "stroke": "none"
+                    }
+                }
+            },
+            {
+                "type": "basic.Goal",
+                "size": {
+                    "width": 100,
+                    "height": 60
+                },
+                "intention": {
+                    "cid": "c284",
+                    "attributes": {
+                        "nodeName": "Remove Bollards",
+                        "evolvingFunction": {
+                            "cid": "c285",
+                            "attributes": {
+                                "type": "NT",
+                                "functionSegList": [],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        },
+                        "userEvaluationList": [
+                            {
+                                "cid": "c286",
+                                "attributes": {
+                                    "assignedEvidencePair": "(no value)",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {},
+                                "changed": {},
+                                "_pending": false
+                            }
+                        ]
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {
+                        "nodeName": "Remove Bollards",
+                        "evolvingFunction": null,
+                        "userEvaluationList": [
+                            {
+                                "cid": "c286",
+                                "attributes": {
+                                    "assignedEvidencePair": "(no value)",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {},
+                                "changed": {},
+                                "_pending": false
+                            }
+                        ]
+                    },
+                    "changed": {
+                        "evolvingFunction": {
+                            "cid": "c285",
+                            "attributes": {
+                                "type": "NT",
+                                "functionSegList": [],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        }
+                    },
+                    "_pending": false
+                },
+                "position": {
+                    "x": 660,
+                    "y": 460
+                },
+                "angle": 0,
+                "id": "fae45096-242d-4dd5-84b0-c5ad84fafb5d",
+                "z": 23,
+                "attrs": {
+                    ".satvalue": {
+                        "text": ""
+                    },
+                    ".name": {
+                        "text": "Remove Bollards"
+                    },
+                    "text": {
+                        "fill": "black",
+                        "stroke": "none"
+                    }
+                }
+            },
+            {
+                "type": "basic.CellLink",
+                "link": {
+                    "cid": "c287",
+                    "attributes": {
+                        "displayType": "element",
+                        "linkType": "++",
+                        "postType": null,
+                        "absTime": null,
+                        "evolving": false
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                },
+                "labels": [
+                    {
+                        "position": 0.5,
+                        "attrs": {
+                            "text": {
+                                "text": "++"
+                            }
+                        }
+                    }
+                ],
+                "id": "534641ae-0ae8-41a5-942f-5aaf736eac21",
+                "source": {
+                    "id": "227eb444-125c-43e5-a917-8c1ada35f61e"
+                },
+                "target": {
+                    "id": "924dc27e-8fc7-440f-a985-106ddb375032"
+                },
+                "z": 24,
+                "attrs": {
+                    ".connection": {
+                        "stroke": "#000000"
+                    },
+                    ".marker-source": {
+                        "d": "0"
+                    },
+                    ".marker-target": {
+                        "stroke": "#000000",
+                        "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+                    }
+                }
+            },
+            {
+                "type": "basic.CellLink",
+                "link": {
+                    "cid": "c288",
+                    "attributes": {
+                        "displayType": "element",
+                        "linkType": "-S",
+                        "postType": null,
+                        "absTime": null,
+                        "evolving": false
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                },
+                "labels": [
+                    {
+                        "position": 0.5,
+                        "attrs": {
+                            "text": {
+                                "text": "-S"
+                            }
+                        }
+                    }
+                ],
+                "id": "365e18d5-9be3-40dc-acca-ddb138807b69",
+                "source": {
+                    "id": "fae45096-242d-4dd5-84b0-c5ad84fafb5d"
+                },
+                "target": {
+                    "id": "924dc27e-8fc7-440f-a985-106ddb375032"
+                },
+                "z": 25,
+                "attrs": {
+                    ".connection": {
+                        "stroke": "#000000"
+                    },
+                    ".marker-source": {
+                        "d": "0"
+                    },
+                    ".marker-target": {
+                        "stroke": "#000000",
+                        "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+                    }
+                }
+            },
+            {
+                "type": "basic.CellLink",
+                "link": {
+                    "cid": "c289",
+                    "attributes": {
+                        "displayType": "element",
+                        "linkType": "and",
+                        "postType": null,
+                        "absTime": null,
+                        "evolving": false
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                },
+                "labels": [
+                    {
+                        "position": 0.5,
+                        "attrs": {
+                            "text": {
+                                "text": "and"
+                            }
+                        }
+                    }
+                ],
+                "id": "3c960117-b612-4e00-a068-b1bcc3e136fc",
+                "source": {
+                    "id": "fae45096-242d-4dd5-84b0-c5ad84fafb5d"
+                },
+                "target": {
+                    "id": "ab643cf4-b2be-4820-a6e9-1a01417f04ec"
+                },
+                "z": 26,
+                "attrs": {
+                    ".connection": {
+                        "stroke": "#000000"
+                    },
+                    ".marker-source": {
+                        "d": "0"
+                    },
+                    ".marker-target": {
+                        "stroke": "#000000",
+                        "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+                    }
+                }
+            },
+            {
+                "type": "basic.CellLink",
+                "link": {
+                    "cid": "c290",
+                    "attributes": {
+                        "displayType": "element",
+                        "linkType": "++S",
+                        "postType": null,
+                        "absTime": null,
+                        "evolving": false
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                },
+                "labels": [
+                    {
+                        "position": 0.5,
+                        "attrs": {
+                            "text": {
+                                "text": "++S"
+                            }
+                        }
+                    }
+                ],
+                "id": "168bc90f-60d9-4810-964d-1ac2bb9186d7",
+                "source": {
+                    "id": "4f0f0fcc-f4fb-46f3-aa0a-8c312e8c0385"
+                },
+                "target": {
+                    "id": "a460c992-efd0-4775-80d5-8ce5004d635b"
+                },
+                "z": 27,
+                "attrs": {
+                    ".connection": {
+                        "stroke": "#000000"
+                    },
+                    ".marker-source": {
+                        "d": "0"
+                    },
+                    ".marker-target": {
+                        "stroke": "#000000",
+                        "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+                    }
+                }
+            },
+            {
+                "type": "basic.Goal",
+                "size": {
+                    "width": 100,
+                    "height": 60
+                },
+                "intention": {
+                    "cid": "c291",
+                    "attributes": {
+                        "nodeName": "Prevent Dooring \n      Incident",
+                        "evolvingFunction": {
+                            "cid": "c292",
+                            "attributes": {
+                                "type": "NT",
+                                "functionSegList": [],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        },
+                        "userEvaluationList": [
+                            {
+                                "cid": "c293",
+                                "attributes": {
+                                    "assignedEvidencePair": "(no value)",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {},
+                                "changed": {},
+                                "_pending": false
+                            }
+                        ]
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {
+                        "nodeName": "Prevent Dooring \n      Incident",
+                        "evolvingFunction": null,
+                        "userEvaluationList": [
+                            {
+                                "cid": "c293",
+                                "attributes": {
+                                    "assignedEvidencePair": "(no value)",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {},
+                                "changed": {},
+                                "_pending": false
+                            }
+                        ]
+                    },
+                    "changed": {
+                        "evolvingFunction": {
+                            "cid": "c292",
+                            "attributes": {
+                                "type": "NT",
+                                "functionSegList": [],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        }
+                    },
+                    "_pending": false
+                },
+                "position": {
+                    "x": 40,
+                    "y": 280
+                },
+                "angle": 0,
+                "id": "fc6e902a-a9dc-4899-b460-051934842485",
+                "z": 28,
+                "attrs": {
+                    ".satvalue": {
+                        "text": ""
+                    },
+                    ".name": {
+                        "text": "Prevent Dooring \n      Incident"
+                    },
+                    "text": {
+                        "fill": "black",
+                        "stroke": "none"
+                    }
+                }
+            },
+            {
+                "type": "basic.Goal",
+                "size": {
+                    "width": 100,
+                    "height": 60
+                },
+                "intention": {
+                    "cid": "c294",
+                    "attributes": {
+                        "nodeName": "Parking",
+                        "evolvingFunction": {
+                            "cid": "c295",
+                            "attributes": {
+                                "type": "NT",
+                                "functionSegList": [],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        },
+                        "userEvaluationList": [
+                            {
+                                "cid": "c296",
+                                "attributes": {
+                                    "assignedEvidencePair": "(no value)",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {},
+                                "changed": {},
+                                "_pending": false
+                            }
+                        ]
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {
+                        "nodeName": "Parking",
+                        "evolvingFunction": null,
+                        "userEvaluationList": [
+                            {
+                                "cid": "c296",
+                                "attributes": {
+                                    "assignedEvidencePair": "(no value)",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {},
+                                "changed": {},
+                                "_pending": false
+                            }
+                        ]
+                    },
+                    "changed": {
+                        "evolvingFunction": {
+                            "cid": "c295",
+                            "attributes": {
+                                "type": "NT",
+                                "functionSegList": [],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        }
+                    },
+                    "_pending": false
+                },
+                "position": {
+                    "x": -80,
+                    "y": 390
+                },
+                "angle": 0,
+                "id": "d8f7d3da-ce0f-4947-909a-ec058246c163",
+                "z": 29,
+                "attrs": {
+                    ".satvalue": {
+                        "text": ""
+                    },
+                    ".name": {
+                        "text": "Parking"
+                    },
+                    "text": {
+                        "fill": "black",
+                        "stroke": "none"
+                    }
+                }
+            },
+            {
+                "type": "basic.CellLink",
+                "link": {
+                    "cid": "c297",
+                    "attributes": {
+                        "displayType": "element",
+                        "linkType": "+",
+                        "postType": null,
+                        "absTime": null,
+                        "evolving": false
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                },
+                "labels": [
+                    {
+                        "position": 0.5,
+                        "attrs": {
+                            "text": {
+                                "text": "+"
+                            }
+                        }
+                    }
+                ],
+                "id": "80f13de4-e097-420b-83dd-da15052ffbb1",
+                "source": {
+                    "id": "fc6e902a-a9dc-4899-b460-051934842485"
+                },
+                "target": {
+                    "id": "a460c992-efd0-4775-80d5-8ce5004d635b"
+                },
+                "z": 30,
+                "attrs": {
+                    ".connection": {
+                        "stroke": "#000000"
+                    },
+                    ".marker-source": {
+                        "d": "0"
+                    },
+                    ".marker-target": {
+                        "stroke": "#000000",
+                        "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+                    }
+                }
+            },
+            {
+                "type": "basic.Task",
+                "size": {
+                    "width": 100,
+                    "height": 60
+                },
+                "intention": {
+                    "cid": "c298",
+                    "attributes": {
+                        "nodeName": "Build Parking \n    Garage",
+                        "evolvingFunction": {
+                            "cid": "c299",
+                            "attributes": {
+                                "type": "DS",
+                                "functionSegList": [
+                                    {
+                                        "cid": "c300",
+                                        "attributes": {
+                                            "type": "C",
+                                            "refEvidencePair": "1100",
+                                            "startTP": "0",
+                                            "startAT": 0,
+                                            "current": true
+                                        },
+                                        "_changing": false,
+                                        "_previousAttributes": {
+                                            "type": "C",
+                                            "refEvidencePair": "1100",
+                                            "startTP": "0",
+                                            "startAT": 0,
+                                            "current": true
+                                        },
+                                        "changed": {},
+                                        "_pending": false,
+                                        "_listenId": "l432",
+                                        "_events": null,
+                                        "_listeners": null
+                                    },
+                                    {
+                                        "cid": "c301",
+                                        "attributes": {
+                                            "type": "C",
+                                            "refEvidencePair": "0011",
+                                            "startTP": "A",
+                                            "startAT": 40,
+                                            "current": true
+                                        },
+                                        "_changing": false,
+                                        "_previousAttributes": {
+                                            "type": "C",
+                                            "refEvidencePair": "0011",
+                                            "startTP": "A",
+                                            "startAT": 40,
+                                            "current": true
+                                        },
+                                        "changed": {},
+                                        "_pending": false,
+                                        "_listenId": "l436",
+                                        "_events": null,
+                                        "_listeners": null
+                                    }
+                                ],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        },
+                        "userEvaluationList": [
+                            {
+                                "cid": "c302",
+                                "attributes": {
+                                    "assignedEvidencePair": "1100",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {},
+                                "changed": {},
+                                "_pending": false,
+                                "_listenId": "l434",
+                                "_events": null,
+                                "_listeners": null
+                            }
+                        ]
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {
+                        "nodeName": "Build Parking \n    Garage",
+                        "evolvingFunction": null,
+                        "userEvaluationList": [
+                            {
+                                "cid": "c302",
+                                "attributes": {
+                                    "assignedEvidencePair": "1100",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {},
+                                "changed": {},
+                                "_pending": false,
+                                "_listenId": "l434",
+                                "_events": null,
+                                "_listeners": null
+                            }
+                        ]
+                    },
+                    "changed": {
+                        "evolvingFunction": {
+                            "cid": "c299",
+                            "attributes": {
+                                "type": "DS",
+                                "functionSegList": [
+                                    {
+                                        "cid": "c300",
+                                        "attributes": {
+                                            "type": "C",
+                                            "refEvidencePair": "1100",
+                                            "startTP": "0",
+                                            "startAT": 0,
+                                            "current": true
+                                        },
+                                        "_changing": false,
+                                        "_previousAttributes": {
+                                            "type": "C",
+                                            "refEvidencePair": "1100",
+                                            "startTP": "0",
+                                            "startAT": 0,
+                                            "current": true
+                                        },
+                                        "changed": {},
+                                        "_pending": false,
+                                        "_listenId": "l432",
+                                        "_events": null,
+                                        "_listeners": null
+                                    },
+                                    {
+                                        "cid": "c301",
+                                        "attributes": {
+                                            "type": "C",
+                                            "refEvidencePair": "0011",
+                                            "startTP": "A",
+                                            "startAT": 40,
+                                            "current": true
+                                        },
+                                        "_changing": false,
+                                        "_previousAttributes": {
+                                            "type": "C",
+                                            "refEvidencePair": "0011",
+                                            "startTP": "A",
+                                            "startAT": 40,
+                                            "current": true
+                                        },
+                                        "changed": {},
+                                        "_pending": false,
+                                        "_listenId": "l436",
+                                        "_events": null,
+                                        "_listeners": null
+                                    }
+                                ],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        }
+                    },
+                    "_pending": false
+                },
+                "position": {
+                    "x": 80,
+                    "y": 510
+                },
+                "angle": 0,
+                "id": "39178b78-861a-4ba1-b9e5-c5a198b9e32b",
+                "z": 31,
+                "attrs": {
+                    ".satvalue": {
+                        "text": "(⊥, F)"
+                    },
+                    ".funcvalue": {
+                        "text": "DS"
+                    },
+                    ".name": {
+                        "text": "Build Parking \n    Garage"
+                    },
+                    "text": {
+                        "fill": "black",
+                        "stroke": "none"
+                    }
+                }
+            },
+            {
+                "type": "basic.CellLink",
+                "link": {
+                    "cid": "c303",
+                    "attributes": {
+                        "displayType": "element",
+                        "linkType": "or",
+                        "postType": null,
+                        "absTime": null,
+                        "evolving": false
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                },
+                "labels": [
+                    {
+                        "position": 0.5,
+                        "attrs": {
+                            "text": {
+                                "text": "or"
+                            }
+                        }
+                    }
+                ],
+                "id": "d93a804c-def8-440f-bc80-965157040a7e",
+                "source": {
+                    "id": "39178b78-861a-4ba1-b9e5-c5a198b9e32b"
+                },
+                "target": {
+                    "id": "d8f7d3da-ce0f-4947-909a-ec058246c163"
+                },
+                "z": 32,
+                "attrs": {
+                    ".connection": {
+                        "stroke": "#000000"
+                    },
+                    ".marker-source": {
+                        "d": "0"
+                    },
+                    ".marker-target": {
+                        "stroke": "#000000",
+                        "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+                    }
+                }
+            },
+            {
+                "type": "basic.Task",
+                "size": {
+                    "width": 100,
+                    "height": 60
+                },
+                "intention": {
+                    "cid": "c304",
+                    "attributes": {
+                        "nodeName": "Build Parking \n        Lot",
+                        "evolvingFunction": {
+                            "cid": "c305",
+                            "attributes": {
+                                "type": "DS",
+                                "functionSegList": [
+                                    {
+                                        "cid": "c306",
+                                        "attributes": {
+                                            "type": "C",
+                                            "refEvidencePair": "1100",
+                                            "startTP": "0",
+                                            "startAT": 0,
+                                            "current": true
+                                        },
+                                        "_changing": false,
+                                        "_previousAttributes": {
+                                            "type": "C",
+                                            "refEvidencePair": "1100",
+                                            "startTP": "0",
+                                            "startAT": 0,
+                                            "current": true
+                                        },
+                                        "changed": {},
+                                        "_pending": false,
+                                        "_listenId": "l415",
+                                        "_events": null,
+                                        "_listeners": null
+                                    },
+                                    {
+                                        "cid": "c307",
+                                        "attributes": {
+                                            "type": "C",
+                                            "refEvidencePair": "0011",
+                                            "startTP": "A",
+                                            "startAT": 15,
+                                            "current": true
+                                        },
+                                        "_changing": false,
+                                        "_previousAttributes": {
+                                            "type": "C",
+                                            "refEvidencePair": "0011",
+                                            "startTP": "A",
+                                            "startAT": 15,
+                                            "current": true
+                                        },
+                                        "changed": {},
+                                        "_pending": false,
+                                        "_listenId": "l419",
+                                        "_events": null,
+                                        "_listeners": null
+                                    }
+                                ],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        },
+                        "userEvaluationList": [
+                            {
+                                "cid": "c308",
+                                "attributes": {
+                                    "assignedEvidencePair": "1100",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {},
+                                "changed": {},
+                                "_pending": false,
+                                "_listenId": "l417",
+                                "_events": null,
+                                "_listeners": null
+                            }
+                        ]
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {
+                        "nodeName": "Build Parking \n        Lot",
+                        "evolvingFunction": null,
+                        "userEvaluationList": [
+                            {
+                                "cid": "c308",
+                                "attributes": {
+                                    "assignedEvidencePair": "1100",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {},
+                                "changed": {},
+                                "_pending": false,
+                                "_listenId": "l417",
+                                "_events": null,
+                                "_listeners": null
+                            }
+                        ]
+                    },
+                    "changed": {
+                        "evolvingFunction": {
+                            "cid": "c305",
+                            "attributes": {
+                                "type": "DS",
+                                "functionSegList": [
+                                    {
+                                        "cid": "c306",
+                                        "attributes": {
+                                            "type": "C",
+                                            "refEvidencePair": "1100",
+                                            "startTP": "0",
+                                            "startAT": 0,
+                                            "current": true
+                                        },
+                                        "_changing": false,
+                                        "_previousAttributes": {
+                                            "type": "C",
+                                            "refEvidencePair": "1100",
+                                            "startTP": "0",
+                                            "startAT": 0,
+                                            "current": true
+                                        },
+                                        "changed": {},
+                                        "_pending": false,
+                                        "_listenId": "l415",
+                                        "_events": null,
+                                        "_listeners": null
+                                    },
+                                    {
+                                        "cid": "c307",
+                                        "attributes": {
+                                            "type": "C",
+                                            "refEvidencePair": "0011",
+                                            "startTP": "A",
+                                            "startAT": 15,
+                                            "current": true
+                                        },
+                                        "_changing": false,
+                                        "_previousAttributes": {
+                                            "type": "C",
+                                            "refEvidencePair": "0011",
+                                            "startTP": "A",
+                                            "startAT": 15,
+                                            "current": true
+                                        },
+                                        "changed": {},
+                                        "_pending": false,
+                                        "_listenId": "l419",
+                                        "_events": null,
+                                        "_listeners": null
+                                    }
+                                ],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        }
+                    },
+                    "_pending": false
+                },
+                "position": {
+                    "x": -140,
+                    "y": 540
+                },
+                "angle": 0,
+                "id": "0b876bb6-a6a9-42af-be98-4053f97a46bd",
+                "z": 33,
+                "attrs": {
+                    ".satvalue": {
+                        "text": "(⊥, F)"
+                    },
+                    ".funcvalue": {
+                        "text": "DS"
+                    },
+                    ".name": {
+                        "text": "Build Parking \n        Lot"
+                    },
+                    "text": {
+                        "fill": "black",
+                        "stroke": "none"
+                    }
+                }
+            },
+            {
+                "type": "basic.CellLink",
+                "link": {
+                    "cid": "c309",
+                    "attributes": {
+                        "displayType": "element",
+                        "linkType": "or",
+                        "postType": null,
+                        "absTime": null,
+                        "evolving": false
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                },
+                "labels": [
+                    {
+                        "position": 0.5,
+                        "attrs": {
+                            "text": {
+                                "text": "or"
+                            }
+                        }
+                    }
+                ],
+                "id": "7c013a81-0010-4516-921e-572e6ab8273e",
+                "source": {
+                    "id": "0b876bb6-a6a9-42af-be98-4053f97a46bd"
+                },
+                "target": {
+                    "id": "d8f7d3da-ce0f-4947-909a-ec058246c163"
+                },
+                "z": 34,
+                "attrs": {
+                    ".connection": {
+                        "stroke": "#000000"
+                    },
+                    ".marker-source": {
+                        "d": "0"
+                    },
+                    ".marker-target": {
+                        "stroke": "#000000",
+                        "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+                    }
+                }
+            },
+            {
+                "type": "basic.CellLink",
+                "link": {
+                    "cid": "c310",
+                    "attributes": {
+                        "displayType": "element",
+                        "linkType": "--",
+                        "postType": null,
+                        "absTime": null,
+                        "evolving": false
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                },
+                "labels": [
+                    {
+                        "position": 0.5,
+                        "attrs": {
+                            "text": {
+                                "text": "--"
+                            }
+                        }
+                    }
+                ],
+                "id": "6e1ba22a-97ed-4d4d-834e-6fe3765ff28a",
+                "source": {
+                    "id": "39178b78-861a-4ba1-b9e5-c5a198b9e32b"
+                },
+                "target": {
+                    "id": "8fc2d349-f5fc-4808-9b1c-b51fb353514f"
+                },
+                "z": 35,
+                "attrs": {
+                    ".connection": {
+                        "stroke": "#000000"
+                    },
+                    ".marker-source": {
+                        "d": "0"
+                    },
+                    ".marker-target": {
+                        "stroke": "#000000",
+                        "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+                    }
+                }
+            },
+            {
+                "type": "basic.CellLink",
+                "link": {
+                    "cid": "c311",
+                    "attributes": {
+                        "displayType": "element",
+                        "linkType": "-",
+                        "postType": null,
+                        "absTime": null,
+                        "evolving": false
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                },
+                "labels": [
+                    {
+                        "position": 0.5,
+                        "attrs": {
+                            "text": {
+                                "text": "-"
+                            }
+                        }
+                    }
+                ],
+                "id": "b7b5724c-36a3-4a28-a293-b25b44e024c4",
+                "source": {
+                    "id": "0b876bb6-a6a9-42af-be98-4053f97a46bd"
+                },
+                "target": {
+                    "id": "8fc2d349-f5fc-4808-9b1c-b51fb353514f"
+                },
+                "z": 36,
+                "attrs": {
+                    ".connection": {
+                        "stroke": "#000000"
+                    },
+                    ".marker-source": {
+                        "d": "0"
+                    },
+                    ".marker-target": {
+                        "stroke": "#000000",
+                        "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+                    }
+                }
+            },
+            {
+                "type": "basic.Task",
+                "size": {
+                    "width": 100,
+                    "height": 60
+                },
+                "intention": {
+                    "cid": "c312",
+                    "attributes": {
+                        "nodeName": "Finish Construction",
+                        "evolvingFunction": {
+                            "cid": "c313",
+                            "attributes": {
+                                "type": "NT",
+                                "functionSegList": [],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        },
+                        "userEvaluationList": [
+                            {
+                                "cid": "c314",
+                                "attributes": {
+                                    "assignedEvidencePair": "(no value)",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {},
+                                "changed": {},
+                                "_pending": false
+                            }
+                        ]
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {
+                        "nodeName": "Finish Construction",
+                        "evolvingFunction": null,
+                        "userEvaluationList": [
+                            {
+                                "cid": "c314",
+                                "attributes": {
+                                    "assignedEvidencePair": "(no value)",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {},
+                                "changed": {},
+                                "_pending": false
+                            }
+                        ]
+                    },
+                    "changed": {
+                        "evolvingFunction": {
+                            "cid": "c313",
+                            "attributes": {
+                                "type": "NT",
+                                "functionSegList": [],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        }
+                    },
+                    "_pending": false
+                },
+                "position": {
+                    "x": 220,
+                    "y": 490
+                },
+                "angle": 0,
+                "id": "43112dcf-96f9-4cf2-94a6-9daf155d0954",
+                "z": 37,
+                "attrs": {
+                    ".satvalue": {
+                        "text": ""
+                    },
+                    ".name": {
+                        "text": "Finish Construction"
+                    },
+                    "text": {
+                        "fill": "black",
+                        "stroke": "none"
+                    }
+                }
+            },
+            {
+                "type": "basic.CellLink",
+                "link": {
+                    "cid": "c315",
+                    "attributes": {
+                        "displayType": "element",
+                        "linkType": "+",
+                        "postType": null,
+                        "absTime": null,
+                        "evolving": false
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                },
+                "labels": [
+                    {
+                        "position": 0.5,
+                        "attrs": {
+                            "text": {
+                                "text": "+"
+                            }
+                        }
+                    }
+                ],
+                "id": "1fdd284e-9642-4a52-9b61-89a4f6d30fa6",
+                "source": {
+                    "id": "43112dcf-96f9-4cf2-94a6-9daf155d0954"
+                },
+                "target": {
+                    "id": "4f0f0fcc-f4fb-46f3-aa0a-8c312e8c0385"
+                },
+                "z": 38,
+                "attrs": {
+                    ".connection": {
+                        "stroke": "#000000"
+                    },
+                    ".marker-source": {
+                        "d": "0"
+                    },
+                    ".marker-target": {
+                        "stroke": "#000000",
+                        "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+                    }
+                }
+            },
+            {
+                "type": "basic.Softgoal",
+                "size": {
+                    "width": 100,
+                    "height": 60
+                },
+                "intention": {
+                    "cid": "c316",
+                    "attributes": {
+                        "nodeName": "Have Healthier\n    Citizens",
+                        "evolvingFunction": {
+                            "cid": "c317",
+                            "attributes": {
+                                "type": "NT",
+                                "functionSegList": [],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        },
+                        "userEvaluationList": [
+                            {
+                                "cid": "c318",
+                                "attributes": {
+                                    "assignedEvidencePair": "(no value)",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {},
+                                "changed": {},
+                                "_pending": false
+                            }
+                        ]
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {
+                        "nodeName": "Have Healthier\n    Citizens",
+                        "evolvingFunction": null,
+                        "userEvaluationList": [
+                            {
+                                "cid": "c318",
+                                "attributes": {
+                                    "assignedEvidencePair": "(no value)",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {},
+                                "changed": {},
+                                "_pending": false
+                            }
+                        ]
+                    },
+                    "changed": {
+                        "evolvingFunction": {
+                            "cid": "c317",
+                            "attributes": {
+                                "type": "NT",
+                                "functionSegList": [],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        }
+                    },
+                    "_pending": false
+                },
+                "position": {
+                    "x": 190,
+                    "y": 220
+                },
+                "angle": 0,
+                "id": "5a9ac438-5d14-4de4-a6d1-396af1dfc8c5",
+                "z": 39,
+                "attrs": {
+                    ".satvalue": {
+                        "text": ""
+                    },
+                    ".name": {
+                        "text": "Have Healthier\n    Citizens"
+                    },
+                    "text": {
+                        "fill": "black",
+                        "stroke": "none"
+                    }
+                }
+            },
+            {
+                "type": "basic.CellLink",
+                "link": {
+                    "cid": "c319",
+                    "attributes": {
+                        "displayType": "element",
+                        "linkType": "+",
+                        "postType": null,
+                        "absTime": null,
+                        "evolving": false
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                },
+                "labels": [
+                    {
+                        "position": 0.5,
+                        "attrs": {
+                            "text": {
+                                "text": "+"
+                            }
+                        }
+                    }
+                ],
+                "id": "55d2e2dd-6558-4a64-b3f6-8a02b1c639de",
+                "source": {
+                    "id": "3e17c3ab-e48d-4206-9f48-7b6223f5ac91"
+                },
+                "target": {
+                    "id": "5a9ac438-5d14-4de4-a6d1-396af1dfc8c5"
+                },
+                "z": 40,
+                "attrs": {
+                    ".connection": {
+                        "stroke": "#000000"
+                    },
+                    ".marker-source": {
+                        "d": "0"
+                    },
+                    ".marker-target": {
+                        "stroke": "#000000",
+                        "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+                    }
+                }
+            },
+            {
+                "type": "basic.CellLink",
+                "link": {
+                    "cid": "c320",
+                    "attributes": {
+                        "displayType": "element",
+                        "linkType": "+",
+                        "postType": null,
+                        "absTime": null,
+                        "evolving": false
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                },
+                "labels": [
+                    {
+                        "position": 0.5,
+                        "attrs": {
+                            "text": {
+                                "text": "+"
+                            }
+                        }
+                    }
+                ],
+                "id": "dfbbe600-2ac1-46f9-95f7-4b691a16b3b2",
+                "source": {
+                    "id": "a3c7f287-b8b1-4f13-adb0-353c3335e7a3"
+                },
+                "target": {
+                    "id": "5a9ac438-5d14-4de4-a6d1-396af1dfc8c5"
+                },
+                "z": 41,
+                "attrs": {
+                    ".connection": {
+                        "stroke": "#000000"
+                    },
+                    ".marker-source": {
+                        "d": "0"
+                    },
+                    ".marker-target": {
+                        "stroke": "#000000",
+                        "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+                    }
+                }
+            },
+            {
+                "type": "basic.Resource",
+                "size": {
+                    "width": 100,
+                    "height": 60
+                },
+                "intention": {
+                    "cid": "c321",
+                    "attributes": {
+                        "nodeName": "Construction Workers",
+                        "evolvingFunction": {
+                            "cid": "c322",
+                            "attributes": {
+                                "type": "NT",
+                                "functionSegList": [],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        },
+                        "userEvaluationList": [
+                            {
+                                "cid": "c323",
+                                "attributes": {
+                                    "assignedEvidencePair": "0010",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {},
+                                "changed": {},
+                                "_pending": false
+                            }
+                        ]
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {
+                        "nodeName": "Construction Workers",
+                        "evolvingFunction": null,
+                        "userEvaluationList": [
+                            {
+                                "cid": "c323",
+                                "attributes": {
+                                    "assignedEvidencePair": "0010",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {},
+                                "changed": {},
+                                "_pending": false
+                            }
+                        ]
+                    },
+                    "changed": {
+                        "evolvingFunction": {
+                            "cid": "c322",
+                            "attributes": {
+                                "type": "NT",
+                                "functionSegList": [],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        }
+                    },
+                    "_pending": false
+                },
+                "position": {
+                    "x": 520,
+                    "y": 500
+                },
+                "angle": 0,
+                "id": "bc536d9d-c528-4081-866f-46658603deed",
+                "z": 42,
+                "attrs": {
+                    ".satvalue": {
+                        "text": "(P, ⊥)"
+                    },
+                    ".name": {
+                        "text": "Construction Workers"
+                    },
+                    "text": {
+                        "fill": "black",
+                        "stroke": "none"
+                    }
+                }
+            },
+            {
+                "type": "basic.CellLink",
+                "link": {
+                    "cid": "c324",
+                    "attributes": {
+                        "displayType": "element",
+                        "linkType": "-",
+                        "postType": null,
+                        "absTime": null,
+                        "evolving": false
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                },
+                "labels": [
+                    {
+                        "position": 0.5,
+                        "attrs": {
+                            "text": {
+                                "text": "-"
+                            }
+                        }
+                    }
+                ],
+                "id": "e6b03e5d-0920-47cd-be7f-2cd4dba63f64",
+                "source": {
+                    "id": "43112dcf-96f9-4cf2-94a6-9daf155d0954"
+                },
+                "target": {
+                    "id": "bc536d9d-c528-4081-866f-46658603deed"
+                },
+                "z": 43,
+                "attrs": {
+                    ".connection": {
+                        "stroke": "#000000"
+                    },
+                    ".marker-source": {
+                        "d": "0"
+                    },
+                    ".marker-target": {
+                        "stroke": "#000000",
+                        "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+                    }
+                }
+            },
+            {
+                "type": "basic.CellLink",
+                "link": {
+                    "cid": "c325",
+                    "attributes": {
+                        "displayType": "element",
+                        "linkType": "-",
+                        "postType": null,
+                        "absTime": null,
+                        "evolving": false
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                },
+                "labels": [
+                    {
+                        "position": 0.5,
+                        "attrs": {
+                            "text": {
+                                "text": "-"
+                            }
+                        }
+                    }
+                ],
+                "id": "9e2af4fe-50b7-491c-971b-304ae4fa6e41",
+                "source": {
+                    "id": "43112dcf-96f9-4cf2-94a6-9daf155d0954"
+                },
+                "target": {
+                    "id": "8fc2d349-f5fc-4808-9b1c-b51fb353514f"
+                },
+                "z": 44,
+                "attrs": {
+                    ".connection": {
+                        "stroke": "#000000"
+                    },
+                    ".marker-source": {
+                        "d": "0"
+                    },
+                    ".marker-target": {
+                        "stroke": "#000000",
+                        "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+                    }
+                }
+            },
+            {
+                "type": "basic.Goal",
+                "size": {
+                    "width": 100,
+                    "height": 60
+                },
+                "intention": {
+                    "cid": "c326",
+                    "attributes": {
+                        "nodeName": "Prevent Unloading\n   in Bike Lane",
+                        "evolvingFunction": {
+                            "cid": "c327",
+                            "attributes": {
+                                "type": "NT",
+                                "functionSegList": [],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        },
+                        "userEvaluationList": [
+                            {
+                                "cid": "c328",
+                                "attributes": {
+                                    "assignedEvidencePair": "(no value)",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {},
+                                "changed": {},
+                                "_pending": false
+                            }
+                        ]
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {
+                        "nodeName": "Prevent Unloading\n   in Bike Lane",
+                        "evolvingFunction": null,
+                        "userEvaluationList": [
+                            {
+                                "cid": "c328",
+                                "attributes": {
+                                    "assignedEvidencePair": "(no value)",
+                                    "absTime": 0
+                                },
+                                "_changing": false,
+                                "_previousAttributes": {},
+                                "changed": {},
+                                "_pending": false
+                            }
+                        ]
+                    },
+                    "changed": {
+                        "evolvingFunction": {
+                            "cid": "c327",
+                            "attributes": {
+                                "type": "NT",
+                                "functionSegList": [],
+                                "hasRepeat": false,
+                                "repStart": null,
+                                "repStop": null,
+                                "repCount": null,
+                                "repAbsTime": null
+                            },
+                            "_changing": false,
+                            "_previousAttributes": {},
+                            "changed": {},
+                            "_pending": false
+                        }
+                    },
+                    "_pending": false
+                },
+                "position": {
+                    "x": -100,
+                    "y": 310
+                },
+                "angle": 0,
+                "id": "28d68d4b-fc2d-4904-9982-a0ac134a48a0",
+                "z": 45,
+                "attrs": {
+                    ".satvalue": {
+                        "text": ""
+                    },
+                    ".name": {
+                        "text": "Prevent Unloading\n   in Bike Lane"
+                    },
+                    "text": {
+                        "fill": "black",
+                        "stroke": "none"
+                    }
+                }
+            },
+            {
+                "type": "basic.CellLink",
+                "link": {
+                    "cid": "c329",
+                    "attributes": {
+                        "displayType": "element",
+                        "linkType": "+",
+                        "postType": null,
+                        "absTime": null,
+                        "evolving": false
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                },
+                "labels": [
+                    {
+                        "position": 0.5,
+                        "attrs": {
+                            "text": {
+                                "text": "+"
+                            }
+                        }
+                    }
+                ],
+                "id": "3f714445-16aa-4289-8005-25b688c97645",
+                "source": {
+                    "id": "28d68d4b-fc2d-4904-9982-a0ac134a48a0"
+                },
+                "target": {
+                    "id": "a460c992-efd0-4775-80d5-8ce5004d635b"
+                },
+                "z": 46,
+                "attrs": {
+                    ".connection": {
+                        "stroke": "#000000"
+                    },
+                    ".marker-source": {
+                        "d": "0"
+                    },
+                    ".marker-target": {
+                        "stroke": "#000000",
+                        "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+                    }
+                }
+            },
+            {
+                "type": "basic.CellLink",
+                "link": {
+                    "cid": "c330",
+                    "attributes": {
+                        "displayType": "element",
+                        "linkType": "+",
+                        "postType": null,
+                        "absTime": null,
+                        "evolving": false
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                },
+                "labels": [
+                    {
+                        "position": 0.5,
+                        "attrs": {
+                            "text": {
+                                "text": "+"
+                            }
+                        }
+                    }
+                ],
+                "id": "3e5cc3d2-64f4-4d64-81b2-8911c204e46d",
+                "source": {
+                    "id": "227eb444-125c-43e5-a917-8c1ada35f61e"
+                },
+                "target": {
+                    "id": "edded08f-bdc0-49c7-bdd4-6acc5ae3219b"
+                },
+                "z": 47,
+                "attrs": {
+                    ".connection": {
+                        "stroke": "#000000"
+                    },
+                    ".marker-source": {
+                        "d": "0"
+                    },
+                    ".marker-target": {
+                        "stroke": "#000000",
+                        "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+                    }
+                }
+            }
+        ]
+    }
+}

@@ -1,0 +1,3613 @@
+{
+  "graph": {
+    "type": "goalmodel.Graph",
+    "maxAbsTime": 78,
+    "absTimePtsArr": [],
+    "constraints": [],
+    "cells": [
+      {
+        "type": "basic.Actor",
+        "size": {
+          "width": 350,
+          "height": 510
+        },
+        "actor": {
+          "cid": "c224",
+          "attributes": {
+            "type": "A",
+            "actorName": "Citizens"
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 920,
+          "y": 180
+        },
+        "angle": 0,
+        "id": "d2a12759-13dc-4aee-97c9-27494f36d6fa",
+        "z": 0,
+        "embeds": [
+          "e2d0cbb4-b04e-4d90-9a3a-9bdc251049fe",
+          "9576f1e8-3a55-4460-9fd2-5bd4a93fe2c4",
+          "96be4793-13e5-4252-bfc1-7b5aa2c84b37",
+          "0f63ddd1-be3e-4ee6-9627-afb5e4845994",
+          "bfa940df-4f07-45b6-bcf2-32aa171114b1",
+          "b8ffda89-404c-4e99-a3db-db5c8aecca17",
+          "a5734694-b9b9-4dbc-a592-3abcd4354ba2",
+          "e4208a15-c885-4f76-a868-f2f808d356f6",
+          "a6d6737f-ff76-4abe-8d2c-52c53ec8c294"
+        ],
+        "attrs": {
+          ".name": {
+            "text": "Citizens"
+          }
+        }
+      },
+      {
+        "type": "basic.Actor",
+        "size": {
+          "width": 600,
+          "height": 520
+        },
+        "actor": {
+          "cid": "c225",
+          "attributes": {
+            "type": "A",
+            "actorName": " City "
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "position": {
+          "x": 180,
+          "y": 170
+        },
+        "angle": 0,
+        "id": "32fc4aa7-8dc5-444a-9f1c-ed5cf559c499",
+        "z": 1,
+        "embeds": [
+          "0c4ec04b-7b54-4066-af73-d80d010c1d1a",
+          "3aa47fea-1b2d-4b37-ac93-31fb8ef515f5",
+          "a29f7be4-1cd9-4f23-a9dc-f8f0838940bc",
+          "7f9a906f-9ae6-4e67-9d64-b97c826657b1",
+          "70b77342-d3c7-4fec-9006-9a08522cdf04",
+          "4e1ffe44-a464-40a4-85b2-4078cf352633",
+          "f6371ad0-2abb-4bb2-ae72-f672b17640f2",
+          "4992a394-d41b-4e0f-96eb-f22990d8296d",
+          "6f506d04-024b-4e44-80f1-88c92226595b",
+          "0cfdf01f-d359-4dd6-bbd5-3c620c21fcd2",
+          "25fba254-f4a5-4fe3-af91-9aa9156f3749",
+          "db58cf2a-8690-4d3b-828d-ad2e22e76a99",
+          "0ec303a5-073f-478f-98cf-acfcacb71e86",
+          "95148b2f-eb94-4daf-8169-685fd4c51d37",
+          "55b8f288-331d-4515-a577-4a0e81fd7ebd",
+          "131e1ed5-b087-459c-98ef-de2a7f7a8d56",
+          "ac7b012b-6eea-49fc-95ca-2408e5740ad7",
+          "45d5469b-f159-4800-9932-23cd86e93887",
+          "9610f210-8b14-4ed4-b3c0-80cf2c96b6d8",
+          "9401b8fb-4867-463f-8ec7-9d3b04aa54d6",
+          "3e25ead2-27e5-407f-9d3e-9f7d394314b2",
+          "789087be-4e5b-4446-b7b8-8a48fc82ef36",
+          "5228e3dc-117c-4259-bb16-95c041efff4b",
+          "6d3b12da-1dfa-4dcb-a12e-06d60484b90d",
+          "36976b1b-2834-4067-8446-8b20f49475b3",
+          "da314dd0-153a-4bae-914f-d7e4dab867f0",
+          "db80bc2c-7afd-4d48-aa15-c5b7529537ee",
+          "4f394258-5f4f-46a6-a754-28ae204b2705",
+          "2e7a3b3e-f569-4ede-8f38-4c84bc286cde"
+        ],
+        "attrs": {
+          ".name": {
+            "text": " City "
+          }
+        }
+      },
+      {
+        "type": "basic.Resource",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c226",
+          "attributes": {
+            "nodeName": "Space to Dump",
+            "evolvingFunction": {
+              "cid": "c227",
+              "attributes": {
+                "type": "MP",
+                "functionSegList": [
+                  {
+                    "cid": "c228",
+                    "attributes": {
+                      "type": "I",
+                      "refEvidencePair": "0011",
+                      "startTP": "0",
+                      "startAT": 0,
+                      "current": true
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                  },
+                  {
+                    "cid": "c229",
+                    "attributes": {
+                      "type": "C",
+                      "refEvidencePair": "0011",
+                      "startTP": "A",
+                      "startAT": null,
+                      "current": true
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                  }
+                ],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c230",
+                "attributes": {
+                  "assignedEvidencePair": "0010",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {
+            "nodeName": "Space to Dump",
+            "evolvingFunction": null,
+            "userEvaluationList": [
+              {
+                "cid": "c230",
+                "attributes": {
+                  "assignedEvidencePair": "0010",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "changed": {
+            "evolvingFunction": {
+              "cid": "c227",
+              "attributes": {
+                "type": "MP",
+                "functionSegList": [
+                  {
+                    "cid": "c228",
+                    "attributes": {
+                      "type": "I",
+                      "refEvidencePair": "0011",
+                      "startTP": "0",
+                      "startAT": 0,
+                      "current": true
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                  },
+                  {
+                    "cid": "c229",
+                    "attributes": {
+                      "type": "C",
+                      "refEvidencePair": "0011",
+                      "startTP": "A",
+                      "startAT": null,
+                      "current": true
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                  }
+                ],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            }
+          },
+          "_pending": false
+        },
+        "position": {
+          "x": 480,
+          "y": 610
+        },
+        "angle": 0,
+        "id": "6d3b12da-1dfa-4dcb-a12e-06d60484b90d",
+        "z": 2,
+        "parent": "32fc4aa7-8dc5-444a-9f1c-ed5cf559c499",
+        "attrs": {
+          ".satvalue": {
+            "text": "(P, ⊥)"
+          },
+          ".name": {
+            "text": "Space to Dump"
+          },
+          ".funcvalue": {
+            "text": "MP"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c231",
+          "attributes": {
+            "nodeName": "untitled",
+            "evolvingFunction": {
+              "cid": "c232",
+              "attributes": {
+                "type": "I",
+                "functionSegList": [
+                  {
+                    "cid": "c233",
+                    "attributes": {
+                      "type": "I",
+                      "refEvidencePair": "0011",
+                      "startTP": "0",
+                      "startAT": 0,
+                      "current": true
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                  }
+                ],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c234",
+                "attributes": {
+                  "assignedEvidencePair": "1100",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {
+            "nodeName": "untitled",
+            "evolvingFunction": null,
+            "userEvaluationList": [
+              {
+                "cid": "c234",
+                "attributes": {
+                  "assignedEvidencePair": "1100",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "changed": {
+            "evolvingFunction": {
+              "cid": "c232",
+              "attributes": {
+                "type": "I",
+                "functionSegList": [
+                  {
+                    "cid": "c233",
+                    "attributes": {
+                      "type": "I",
+                      "refEvidencePair": "0011",
+                      "startTP": "0",
+                      "startAT": 0,
+                      "current": true
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                  }
+                ],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            }
+          },
+          "_pending": false
+        },
+        "position": {
+          "x": 510,
+          "y": 200
+        },
+        "angle": 0,
+        "id": "ac7b012b-6eea-49fc-95ca-2408e5740ad7",
+        "z": 5,
+        "parent": "32fc4aa7-8dc5-444a-9f1c-ed5cf559c499",
+        "attrs": {
+          ".satvalue": {
+            "text": "(⊥, F)"
+          },
+          ".funcvalue": {
+            "text": "I"
+          },
+          ".name": {
+            "text": "Process Green\nWaste"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c235",
+          "attributes": {
+            "nodeName": "Use New Dump",
+            "evolvingFunction": {
+              "cid": "c236",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c237",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {
+            "nodeName": "Use New Dump",
+            "evolvingFunction": null,
+            "userEvaluationList": [
+              {
+                "cid": "c237",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "changed": {
+            "evolvingFunction": {
+              "cid": "c236",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            }
+          },
+          "_pending": false
+        },
+        "position": {
+          "x": 220,
+          "y": 420
+        },
+        "angle": 0,
+        "id": "da314dd0-153a-4bae-914f-d7e4dab867f0",
+        "z": 6,
+        "parent": "32fc4aa7-8dc5-444a-9f1c-ed5cf559c499",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Use New Dump"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Softgoal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c238",
+          "attributes": {
+            "nodeName": "Environmental \nConcern",
+            "evolvingFunction": {
+              "cid": "c239",
+              "attributes": {
+                "type": "I",
+                "functionSegList": [
+                  {
+                    "cid": "c240",
+                    "attributes": {
+                      "type": "I",
+                      "refEvidencePair": "0011",
+                      "startTP": "0",
+                      "startAT": 0,
+                      "current": true
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                  }
+                ],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c241",
+                "attributes": {
+                  "assignedEvidencePair": "1100",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {
+            "nodeName": "Environmental \nConcern",
+            "evolvingFunction": null,
+            "userEvaluationList": [
+              {
+                "cid": "c241",
+                "attributes": {
+                  "assignedEvidencePair": "1100",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "changed": {
+            "evolvingFunction": {
+              "cid": "c239",
+              "attributes": {
+                "type": "I",
+                "functionSegList": [
+                  {
+                    "cid": "c240",
+                    "attributes": {
+                      "type": "I",
+                      "refEvidencePair": "0011",
+                      "startTP": "0",
+                      "startAT": 0,
+                      "current": true
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                  }
+                ],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            }
+          },
+          "_pending": false
+        },
+        "position": {
+          "x": 1130,
+          "y": 430
+        },
+        "angle": 0,
+        "id": "a6d6737f-ff76-4abe-8d2c-52c53ec8c294",
+        "z": 8,
+        "parent": "d2a12759-13dc-4aee-97c9-27494f36d6fa",
+        "attrs": {
+          ".satvalue": {
+            "text": "(⊥, F)"
+          },
+          ".funcvalue": {
+            "text": "I"
+          },
+          ".name": {
+            "text": "Environmental \nConcern"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Softgoal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c242",
+          "attributes": {
+            "nodeName": "Willingness of \nWaste\nSeparation",
+            "evolvingFunction": {
+              "cid": "c243",
+              "attributes": {
+                "type": "D",
+                "functionSegList": [
+                  {
+                    "cid": "c244",
+                    "attributes": {
+                      "type": "D",
+                      "refEvidencePair": "0010",
+                      "startTP": "0",
+                      "startAT": 0,
+                      "current": true
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                  }
+                ],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c245",
+                "attributes": {
+                  "assignedEvidencePair": "0011",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {
+            "nodeName": "Willingness of \nWaste\nSeparation",
+            "evolvingFunction": null,
+            "userEvaluationList": [
+              {
+                "cid": "c245",
+                "attributes": {
+                  "assignedEvidencePair": "0011",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "changed": {
+            "evolvingFunction": {
+              "cid": "c243",
+              "attributes": {
+                "type": "D",
+                "functionSegList": [
+                  {
+                    "cid": "c244",
+                    "attributes": {
+                      "type": "D",
+                      "refEvidencePair": "0010",
+                      "startTP": "0",
+                      "startAT": 0,
+                      "current": true
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                  }
+                ],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            }
+          },
+          "_pending": false
+        },
+        "position": {
+          "x": 970,
+          "y": 350
+        },
+        "angle": 0,
+        "id": "e4208a15-c885-4f76-a868-f2f808d356f6",
+        "z": 10,
+        "parent": "d2a12759-13dc-4aee-97c9-27494f36d6fa",
+        "attrs": {
+          ".satvalue": {
+            "text": "(F, ⊥)"
+          },
+          ".funcvalue": {
+            "text": "D"
+          },
+          ".name": {
+            "text": "Willingness of \nWaste\nSeparation"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Resource",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c246",
+          "attributes": {
+            "nodeName": "Local Recycling \nCenter",
+            "evolvingFunction": {
+              "cid": "c247",
+              "attributes": {
+                "type": "C",
+                "functionSegList": [
+                  {
+                    "cid": "c248",
+                    "attributes": {
+                      "type": "C",
+                      "refEvidencePair": "1100",
+                      "startTP": "0",
+                      "startAT": 0,
+                      "current": true
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                  }
+                ],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c249",
+                "attributes": {
+                  "assignedEvidencePair": "1100",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {
+            "nodeName": "Local Recycling \nCenter",
+            "evolvingFunction": null,
+            "userEvaluationList": [
+              {
+                "cid": "c249",
+                "attributes": {
+                  "assignedEvidencePair": "1100",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "changed": {
+            "evolvingFunction": {
+              "cid": "c247",
+              "attributes": {
+                "type": "C",
+                "functionSegList": [
+                  {
+                    "cid": "c248",
+                    "attributes": {
+                      "type": "C",
+                      "refEvidencePair": "1100",
+                      "startTP": "0",
+                      "startAT": 0,
+                      "current": true
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                  }
+                ],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            }
+          },
+          "_pending": false
+        },
+        "position": {
+          "x": 970,
+          "y": 480
+        },
+        "angle": 0,
+        "id": "a5734694-b9b9-4dbc-a592-3abcd4354ba2",
+        "z": 11,
+        "parent": "d2a12759-13dc-4aee-97c9-27494f36d6fa",
+        "attrs": {
+          ".satvalue": {
+            "text": "(⊥, F)"
+          },
+          ".name": {
+            "text": "Local Recycling \nCenter"
+          },
+          ".funcvalue": {
+            "text": "C"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Softgoal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c250",
+          "attributes": {
+            "nodeName": "untitled",
+            "evolvingFunction": {
+              "cid": "c251",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c252",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {
+            "nodeName": "untitled",
+            "evolvingFunction": null,
+            "userEvaluationList": [
+              {
+                "cid": "c252",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "changed": {
+            "evolvingFunction": {
+              "cid": "c251",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            }
+          },
+          "_pending": false
+        },
+        "position": {
+          "x": 1050,
+          "y": 220
+        },
+        "angle": 0,
+        "id": "bfa940df-4f07-45b6-bcf2-32aa171114b1",
+        "z": 13,
+        "parent": "d2a12759-13dc-4aee-97c9-27494f36d6fa",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Quality of\nWaste Separation"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c253",
+          "attributes": {
+            "nodeName": "GW Education \nProgram",
+            "evolvingFunction": {
+              "cid": "c254",
+              "attributes": {
+                "type": "D",
+                "functionSegList": [
+                  {
+                    "cid": "c255",
+                    "attributes": {
+                      "type": "D",
+                      "refEvidencePair": "0010",
+                      "startTP": "0",
+                      "startAT": 0,
+                      "current": true
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                  }
+                ],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c256",
+                "attributes": {
+                  "assignedEvidencePair": "0011",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {
+            "nodeName": "GW Education \nProgram",
+            "evolvingFunction": null,
+            "userEvaluationList": [
+              {
+                "cid": "c256",
+                "attributes": {
+                  "assignedEvidencePair": "0011",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "changed": {
+            "evolvingFunction": {
+              "cid": "c254",
+              "attributes": {
+                "type": "D",
+                "functionSegList": [
+                  {
+                    "cid": "c255",
+                    "attributes": {
+                      "type": "D",
+                      "refEvidencePair": "0010",
+                      "startTP": "0",
+                      "startAT": 0,
+                      "current": true
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                  }
+                ],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            }
+          },
+          "_pending": false
+        },
+        "position": {
+          "x": 650,
+          "y": 260
+        },
+        "angle": 0,
+        "id": "9401b8fb-4867-463f-8ec7-9d3b04aa54d6",
+        "z": 15,
+        "parent": "32fc4aa7-8dc5-444a-9f1c-ed5cf559c499",
+        "attrs": {
+          ".satvalue": {
+            "text": "(F, ⊥)"
+          },
+          ".funcvalue": {
+            "text": "D"
+          },
+          ".name": {
+            "text": "GW Education \nProgram"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c257",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "++",
+            "postType": null,
+            "absTime": null,
+            "evolving": true
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "d80d7713-ea2d-4465-9b1d-0b5044156b4c",
+        "source": {
+          "id": "9401b8fb-4867-463f-8ec7-9d3b04aa54d6"
+        },
+        "target": {
+          "id": "e4208a15-c885-4f76-a868-f2f808d356f6"
+        },
+        "z": 16,
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c258",
+          "attributes": {
+            "nodeName": "Build \nGreen\nCentre",
+            "evolvingFunction": {
+              "cid": "c259",
+              "attributes": {
+                "type": "MP",
+                "functionSegList": [
+                  {
+                    "cid": "c260",
+                    "attributes": {
+                      "type": "I",
+                      "refEvidencePair": "0011",
+                      "startTP": "0",
+                      "startAT": 0,
+                      "current": true
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                  },
+                  {
+                    "cid": "c261",
+                    "attributes": {
+                      "type": "C",
+                      "refEvidencePair": "0011",
+                      "startTP": "A",
+                      "startAT": null,
+                      "current": true
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                  }
+                ],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c262",
+                "attributes": {
+                  "assignedEvidencePair": "0010",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {
+            "nodeName": "Build \nGreen\nCentre",
+            "evolvingFunction": null,
+            "userEvaluationList": [
+              {
+                "cid": "c262",
+                "attributes": {
+                  "assignedEvidencePair": "0010",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "changed": {
+            "evolvingFunction": {
+              "cid": "c259",
+              "attributes": {
+                "type": "MP",
+                "functionSegList": [
+                  {
+                    "cid": "c260",
+                    "attributes": {
+                      "type": "I",
+                      "refEvidencePair": "0011",
+                      "startTP": "0",
+                      "startAT": 0,
+                      "current": true
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                  },
+                  {
+                    "cid": "c261",
+                    "attributes": {
+                      "type": "C",
+                      "refEvidencePair": "0011",
+                      "startTP": "A",
+                      "startAT": null,
+                      "current": true
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                  }
+                ],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            }
+          },
+          "_pending": false
+        },
+        "position": {
+          "x": 640,
+          "y": 370
+        },
+        "angle": 0,
+        "id": "45d5469b-f159-4800-9932-23cd86e93887",
+        "z": 17,
+        "parent": "32fc4aa7-8dc5-444a-9f1c-ed5cf559c499",
+        "attrs": {
+          ".satvalue": {
+            "text": "(P, ⊥)"
+          },
+          ".funcvalue": {
+            "text": "MP"
+          },
+          ".name": {
+            "text": "Build \nGreen\nCentre"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c263",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "++",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "0f63ddd1-be3e-4ee6-9627-afb5e4845994",
+        "source": {
+          "id": "e4208a15-c885-4f76-a868-f2f808d356f6"
+        },
+        "target": {
+          "id": "bfa940df-4f07-45b6-bcf2-32aa171114b1"
+        },
+        "z": 18,
+        "parent": "d2a12759-13dc-4aee-97c9-27494f36d6fa",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c264",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "++",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "96be4793-13e5-4252-bfc1-7b5aa2c84b37",
+        "source": {
+          "id": "a6d6737f-ff76-4abe-8d2c-52c53ec8c294"
+        },
+        "target": {
+          "id": "bfa940df-4f07-45b6-bcf2-32aa171114b1"
+        },
+        "z": 19,
+        "parent": "d2a12759-13dc-4aee-97c9-27494f36d6fa",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c265",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "and",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "2b85f648-d4f9-4423-a07a-57518e03dcb8",
+        "source": {
+          "id": "45d5469b-f159-4800-9932-23cd86e93887"
+        },
+        "target": {
+          "id": "a5734694-b9b9-4dbc-a592-3abcd4354ba2"
+        },
+        "z": 20,
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c266",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "and",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "131e1ed5-b087-459c-98ef-de2a7f7a8d56",
+        "source": {
+          "id": "45d5469b-f159-4800-9932-23cd86e93887"
+        },
+        "target": {
+          "id": "ac7b012b-6eea-49fc-95ca-2408e5740ad7"
+        },
+        "z": 22,
+        "parent": "32fc4aa7-8dc5-444a-9f1c-ed5cf559c499",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c267",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "++",
+            "postType": null,
+            "absTime": null,
+            "evolving": true
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "40aa3f9b-b3d7-4b44-a200-42fc3c3b7a09",
+        "source": {
+          "id": "bfa940df-4f07-45b6-bcf2-32aa171114b1"
+        },
+        "target": {
+          "id": "ac7b012b-6eea-49fc-95ca-2408e5740ad7"
+        },
+        "z": 23,
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c268",
+          "attributes": {
+            "nodeName": "Update\nTrucks",
+            "evolvingFunction": {
+              "cid": "c269",
+              "attributes": {
+                "type": "C",
+                "functionSegList": [
+                  {
+                    "cid": "c270",
+                    "attributes": {
+                      "type": "C",
+                      "refEvidencePair": "0011",
+                      "startTP": "0",
+                      "startAT": 0,
+                      "current": true
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                  }
+                ],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c271",
+                "attributes": {
+                  "assignedEvidencePair": "0011",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {
+            "nodeName": "Update\nTrucks",
+            "evolvingFunction": null,
+            "userEvaluationList": [
+              {
+                "cid": "c271",
+                "attributes": {
+                  "assignedEvidencePair": "0011",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "changed": {
+            "evolvingFunction": {
+              "cid": "c269",
+              "attributes": {
+                "type": "C",
+                "functionSegList": [
+                  {
+                    "cid": "c270",
+                    "attributes": {
+                      "type": "C",
+                      "refEvidencePair": "0011",
+                      "startTP": "0",
+                      "startAT": 0,
+                      "current": true
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                  }
+                ],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            }
+          },
+          "_pending": false
+        },
+        "position": {
+          "x": 320,
+          "y": 200
+        },
+        "angle": 0,
+        "id": "9610f210-8b14-4ed4-b3c0-80cf2c96b6d8",
+        "z": 24,
+        "parent": "32fc4aa7-8dc5-444a-9f1c-ed5cf559c499",
+        "attrs": {
+          ".satvalue": {
+            "text": "(F, ⊥)"
+          },
+          ".funcvalue": {
+            "text": "C"
+          },
+          ".name": {
+            "text": "Update\nTrucks"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Goal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c272",
+          "attributes": {
+            "nodeName": "Manage City\nWaste",
+            "evolvingFunction": {
+              "cid": "c273",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c274",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {
+            "nodeName": "Manage City\nWaste",
+            "evolvingFunction": null,
+            "userEvaluationList": [
+              {
+                "cid": "c274",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "changed": {
+            "evolvingFunction": {
+              "cid": "c273",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            }
+          },
+          "_pending": false
+        },
+        "position": {
+          "x": 200,
+          "y": 260
+        },
+        "angle": 0,
+        "id": "36976b1b-2834-4067-8446-8b20f49475b3",
+        "z": 26,
+        "parent": "32fc4aa7-8dc5-444a-9f1c-ed5cf559c499",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Manage City\nWaste"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c275",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "and",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "55b8f288-331d-4515-a577-4a0e81fd7ebd",
+        "source": {
+          "id": "da314dd0-153a-4bae-914f-d7e4dab867f0"
+        },
+        "target": {
+          "id": "36976b1b-2834-4067-8446-8b20f49475b3"
+        },
+        "z": 28,
+        "parent": "32fc4aa7-8dc5-444a-9f1c-ed5cf559c499",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c276",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "and",
+            "postType": null,
+            "absTime": null,
+            "evolving": true
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "95148b2f-eb94-4daf-8169-685fd4c51d37",
+        "source": {
+          "id": "9610f210-8b14-4ed4-b3c0-80cf2c96b6d8"
+        },
+        "target": {
+          "id": "ac7b012b-6eea-49fc-95ca-2408e5740ad7"
+        },
+        "z": 31,
+        "parent": "32fc4aa7-8dc5-444a-9f1c-ed5cf559c499",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c277",
+          "attributes": {
+            "nodeName": "Bury Existing\nDump in Landfill",
+            "evolvingFunction": {
+              "cid": "c278",
+              "attributes": {
+                "type": "I",
+                "functionSegList": [
+                  {
+                    "cid": "c279",
+                    "attributes": {
+                      "type": "I",
+                      "refEvidencePair": "0011",
+                      "startTP": "0",
+                      "startAT": 0,
+                      "current": true
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                  }
+                ],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c280",
+                "attributes": {
+                  "assignedEvidencePair": "0010",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {
+            "nodeName": "Bury Existing\nDump in Landfill",
+            "evolvingFunction": null,
+            "userEvaluationList": [
+              {
+                "cid": "c280",
+                "attributes": {
+                  "assignedEvidencePair": "0010",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "changed": {
+            "evolvingFunction": {
+              "cid": "c278",
+              "attributes": {
+                "type": "I",
+                "functionSegList": [
+                  {
+                    "cid": "c279",
+                    "attributes": {
+                      "type": "I",
+                      "refEvidencePair": "0011",
+                      "startTP": "0",
+                      "startAT": 0,
+                      "current": true
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                  }
+                ],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            }
+          },
+          "_pending": false
+        },
+        "position": {
+          "x": 510,
+          "y": 460
+        },
+        "angle": 0,
+        "id": "db80bc2c-7afd-4d48-aa15-c5b7529537ee",
+        "z": 34,
+        "parent": "32fc4aa7-8dc5-444a-9f1c-ed5cf559c499",
+        "attrs": {
+          ".satvalue": {
+            "text": "(P, ⊥)"
+          },
+          ".funcvalue": {
+            "text": "I"
+          },
+          ".name": {
+            "text": "Bury Existing\nDump in Landfill"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c281",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "++",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "0ec303a5-073f-478f-98cf-acfcacb71e86",
+        "source": {
+          "id": "db80bc2c-7afd-4d48-aa15-c5b7529537ee"
+        },
+        "target": {
+          "id": "6d3b12da-1dfa-4dcb-a12e-06d60484b90d"
+        },
+        "z": 35,
+        "parent": "32fc4aa7-8dc5-444a-9f1c-ed5cf559c499",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c282",
+          "attributes": {
+            "nodeName": "Build Large\nDump",
+            "evolvingFunction": {
+              "cid": "c283",
+              "attributes": {
+                "type": "DS",
+                "functionSegList": [
+                  {
+                    "cid": "c284",
+                    "attributes": {
+                      "type": "C",
+                      "refEvidencePair": "1100",
+                      "startTP": "0",
+                      "startAT": 0,
+                      "current": true
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                  },
+                  {
+                    "cid": "c285",
+                    "attributes": {
+                      "type": "C",
+                      "refEvidencePair": "0011",
+                      "startTP": "A",
+                      "startAT": null,
+                      "current": true
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                  }
+                ],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c286",
+                "attributes": {
+                  "assignedEvidencePair": "1100",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {
+            "nodeName": "Build Large\nDump",
+            "evolvingFunction": null,
+            "userEvaluationList": [
+              {
+                "cid": "c286",
+                "attributes": {
+                  "assignedEvidencePair": "1100",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "changed": {
+            "evolvingFunction": {
+              "cid": "c283",
+              "attributes": {
+                "type": "DS",
+                "functionSegList": [
+                  {
+                    "cid": "c284",
+                    "attributes": {
+                      "type": "C",
+                      "refEvidencePair": "1100",
+                      "startTP": "0",
+                      "startAT": 0,
+                      "current": true
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                  },
+                  {
+                    "cid": "c285",
+                    "attributes": {
+                      "type": "C",
+                      "refEvidencePair": "0011",
+                      "startTP": "A",
+                      "startAT": null,
+                      "current": true
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                  }
+                ],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            }
+          },
+          "_pending": false
+        },
+        "position": {
+          "x": 230,
+          "y": 580
+        },
+        "angle": 0,
+        "id": "5228e3dc-117c-4259-bb16-95c041efff4b",
+        "z": 39,
+        "parent": "32fc4aa7-8dc5-444a-9f1c-ed5cf559c499",
+        "attrs": {
+          ".satvalue": {
+            "text": "(⊥, F)"
+          },
+          ".funcvalue": {
+            "text": "DS"
+          },
+          ".name": {
+            "text": "Build Large\nDump"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c287",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "or",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "or"
+              }
+            }
+          }
+        ],
+        "id": "db58cf2a-8690-4d3b-828d-ad2e22e76a99",
+        "source": {
+          "id": "5228e3dc-117c-4259-bb16-95c041efff4b"
+        },
+        "target": {
+          "id": "da314dd0-153a-4bae-914f-d7e4dab867f0"
+        },
+        "z": 40,
+        "parent": "32fc4aa7-8dc5-444a-9f1c-ed5cf559c499",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c288",
+          "attributes": {
+            "nodeName": "Protest Landfills\nBeing Filled \nLocally",
+            "evolvingFunction": {
+              "cid": "c289",
+              "attributes": {
+                "type": "C",
+                "functionSegList": [
+                  {
+                    "cid": "c290",
+                    "attributes": {
+                      "type": "C",
+                      "refEvidencePair": "0100",
+                      "startTP": "0",
+                      "startAT": 0,
+                      "current": true
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                  }
+                ],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c291",
+                "attributes": {
+                  "assignedEvidencePair": "0100",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {
+            "nodeName": "Protest Landfills\nBeing Filled \nLocally",
+            "evolvingFunction": null,
+            "userEvaluationList": [
+              {
+                "cid": "c291",
+                "attributes": {
+                  "assignedEvidencePair": "0100",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "changed": {
+            "evolvingFunction": {
+              "cid": "c289",
+              "attributes": {
+                "type": "C",
+                "functionSegList": [
+                  {
+                    "cid": "c290",
+                    "attributes": {
+                      "type": "C",
+                      "refEvidencePair": "0100",
+                      "startTP": "0",
+                      "startAT": 0,
+                      "current": true
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                  }
+                ],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            }
+          },
+          "_pending": false
+        },
+        "position": {
+          "x": 1030,
+          "y": 600
+        },
+        "angle": 0,
+        "id": "b8ffda89-404c-4e99-a3db-db5c8aecca17",
+        "z": 42,
+        "parent": "d2a12759-13dc-4aee-97c9-27494f36d6fa",
+        "attrs": {
+          ".satvalue": {
+            "text": "(⊥, P)"
+          },
+          ".funcvalue": {
+            "text": "C"
+          },
+          ".name": {
+            "text": "Protest Landfills\nBeing Filled \nLocally"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Softgoal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c292",
+          "attributes": {
+            "nodeName": "Keep Local \nEnvironment Clean",
+            "evolvingFunction": {
+              "cid": "c293",
+              "attributes": {
+                "type": "R",
+                "functionSegList": [
+                  {
+                    "cid": "c294",
+                    "attributes": {
+                      "type": "R",
+                      "refEvidencePair": "(no value)",
+                      "startTP": "0",
+                      "startAT": 0,
+                      "current": true
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                  }
+                ],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c295",
+                "attributes": {
+                  "assignedEvidencePair": "0100",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {
+            "nodeName": "Keep Local \nEnvironment Clean",
+            "evolvingFunction": null,
+            "userEvaluationList": [
+              {
+                "cid": "c295",
+                "attributes": {
+                  "assignedEvidencePair": "0100",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "changed": {
+            "evolvingFunction": {
+              "cid": "c293",
+              "attributes": {
+                "type": "R",
+                "functionSegList": [
+                  {
+                    "cid": "c294",
+                    "attributes": {
+                      "type": "R",
+                      "refEvidencePair": "(no value)",
+                      "startTP": "0",
+                      "startAT": 0,
+                      "current": true
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                  }
+                ],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            }
+          },
+          "_pending": false
+        },
+        "position": {
+          "x": 640,
+          "y": 590
+        },
+        "angle": 0,
+        "id": "3e25ead2-27e5-407f-9d3e-9f7d394314b2",
+        "z": 43,
+        "parent": "32fc4aa7-8dc5-444a-9f1c-ed5cf559c499",
+        "attrs": {
+          ".satvalue": {
+            "text": "(⊥, P)"
+          },
+          ".funcvalue": {
+            "text": "R"
+          },
+          ".name": {
+            "text": "Keep Local \nEnvironment Clean"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c296",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "--",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "--"
+              }
+            }
+          }
+        ],
+        "id": "25fba254-f4a5-4fe3-af91-9aa9156f3749",
+        "source": {
+          "id": "db80bc2c-7afd-4d48-aa15-c5b7529537ee"
+        },
+        "target": {
+          "id": "3e25ead2-27e5-407f-9d3e-9f7d394314b2"
+        },
+        "z": 44,
+        "parent": "32fc4aa7-8dc5-444a-9f1c-ed5cf559c499",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c297",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "+",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "+"
+              }
+            }
+          }
+        ],
+        "id": "0cfdf01f-d359-4dd6-bbd5-3c620c21fcd2",
+        "source": {
+          "id": "ac7b012b-6eea-49fc-95ca-2408e5740ad7"
+        },
+        "target": {
+          "id": "3e25ead2-27e5-407f-9d3e-9f7d394314b2"
+        },
+        "z": 47,
+        "parent": "32fc4aa7-8dc5-444a-9f1c-ed5cf559c499",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c298",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "++",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "9576f1e8-3a55-4460-9fd2-5bd4a93fe2c4",
+        "source": {
+          "id": "a6d6737f-ff76-4abe-8d2c-52c53ec8c294"
+        },
+        "target": {
+          "id": "b8ffda89-404c-4e99-a3db-db5c8aecca17"
+        },
+        "z": 48,
+        "parent": "d2a12759-13dc-4aee-97c9-27494f36d6fa",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.Task",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c299",
+          "attributes": {
+            "nodeName": "Build Small\nDump",
+            "evolvingFunction": {
+              "cid": "c300",
+              "attributes": {
+                "type": "D",
+                "functionSegList": [
+                  {
+                    "cid": "c301",
+                    "attributes": {
+                      "type": "D",
+                      "refEvidencePair": "1100",
+                      "startTP": "0",
+                      "startAT": 0,
+                      "current": true
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                  }
+                ],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c302",
+                "attributes": {
+                  "assignedEvidencePair": "0100",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {
+            "nodeName": "Build Small\nDump",
+            "evolvingFunction": null,
+            "userEvaluationList": [
+              {
+                "cid": "c302",
+                "attributes": {
+                  "assignedEvidencePair": "0100",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "changed": {
+            "evolvingFunction": {
+              "cid": "c300",
+              "attributes": {
+                "type": "D",
+                "functionSegList": [
+                  {
+                    "cid": "c301",
+                    "attributes": {
+                      "type": "D",
+                      "refEvidencePair": "1100",
+                      "startTP": "0",
+                      "startAT": 0,
+                      "current": true
+                    },
+                    "_changing": false,
+                    "_previousAttributes": {},
+                    "changed": {},
+                    "_pending": false
+                  }
+                ],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            }
+          },
+          "_pending": false
+        },
+        "position": {
+          "x": 400,
+          "y": 510
+        },
+        "angle": 0,
+        "id": "789087be-4e5b-4446-b7b8-8a48fc82ef36",
+        "z": 49,
+        "parent": "32fc4aa7-8dc5-444a-9f1c-ed5cf559c499",
+        "attrs": {
+          ".satvalue": {
+            "text": "(⊥, P)"
+          },
+          ".funcvalue": {
+            "text": "D"
+          },
+          ".name": {
+            "text": "Build Small\nDump"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c303",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "or",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "or"
+              }
+            }
+          }
+        ],
+        "id": "6f506d04-024b-4e44-80f1-88c92226595b",
+        "source": {
+          "id": "789087be-4e5b-4446-b7b8-8a48fc82ef36"
+        },
+        "target": {
+          "id": "da314dd0-153a-4bae-914f-d7e4dab867f0"
+        },
+        "z": 50,
+        "parent": "32fc4aa7-8dc5-444a-9f1c-ed5cf559c499",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c304",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "++",
+            "postType": "+",
+            "absTime": null,
+            "evolving": true
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++ | +"
+              }
+            }
+          }
+        ],
+        "id": "4992a394-d41b-4e0f-96eb-f22990d8296d",
+        "source": {
+          "id": "6d3b12da-1dfa-4dcb-a12e-06d60484b90d"
+        },
+        "target": {
+          "id": "5228e3dc-117c-4259-bb16-95c041efff4b"
+        },
+        "z": 52,
+        "parent": "32fc4aa7-8dc5-444a-9f1c-ed5cf559c499",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c305",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "+",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "+"
+              }
+            }
+          }
+        ],
+        "id": "f6371ad0-2abb-4bb2-ae72-f672b17640f2",
+        "source": {
+          "id": "6d3b12da-1dfa-4dcb-a12e-06d60484b90d"
+        },
+        "target": {
+          "id": "789087be-4e5b-4446-b7b8-8a48fc82ef36"
+        },
+        "z": 53,
+        "parent": "32fc4aa7-8dc5-444a-9f1c-ed5cf559c499",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c306",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "+",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "+"
+              }
+            }
+          }
+        ],
+        "id": "4e1ffe44-a464-40a4-85b2-4078cf352633",
+        "source": {
+          "id": "9401b8fb-4867-463f-8ec7-9d3b04aa54d6"
+        },
+        "target": {
+          "id": "3e25ead2-27e5-407f-9d3e-9f7d394314b2"
+        },
+        "z": 54,
+        "parent": "32fc4aa7-8dc5-444a-9f1c-ed5cf559c499",
+        "vertices": [
+          {
+            "x": 760,
+            "y": 390
+          },
+          {
+            "x": 740,
+            "y": 540
+          }
+        ],
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c307",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "-",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "-"
+              }
+            }
+          }
+        ],
+        "id": "52197f5c-8f61-423a-8eb2-1dac80541b4c",
+        "source": {
+          "id": "b8ffda89-404c-4e99-a3db-db5c8aecca17"
+        },
+        "target": {
+          "id": "db80bc2c-7afd-4d48-aa15-c5b7529537ee"
+        },
+        "z": 55,
+        "vertices": [],
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c308",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "+",
+            "postType": "-",
+            "absTime": null,
+            "evolving": true
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "+ | -"
+              }
+            }
+          }
+        ],
+        "id": "76538a7b-4ea3-402a-92d5-e822e645cbe6",
+        "source": {
+          "id": "b8ffda89-404c-4e99-a3db-db5c8aecca17"
+        },
+        "target": {
+          "id": "3e25ead2-27e5-407f-9d3e-9f7d394314b2"
+        },
+        "z": 56,
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c309",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "++",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "++"
+              }
+            }
+          }
+        ],
+        "id": "e2d0cbb4-b04e-4d90-9a3a-9bdc251049fe",
+        "source": {
+          "id": "a5734694-b9b9-4dbc-a592-3abcd4354ba2"
+        },
+        "target": {
+          "id": "e4208a15-c885-4f76-a868-f2f808d356f6"
+        },
+        "z": 57,
+        "parent": "d2a12759-13dc-4aee-97c9-27494f36d6fa",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.Resource",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c310",
+          "attributes": {
+            "nodeName": "Government Budget",
+            "evolvingFunction": {
+              "cid": "c311",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c312",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {
+            "nodeName": "Government Budget",
+            "evolvingFunction": null,
+            "userEvaluationList": [
+              {
+                "cid": "c312",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "changed": {
+            "evolvingFunction": {
+              "cid": "c311",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            }
+          },
+          "_pending": false
+        },
+        "position": {
+          "x": 320,
+          "y": 340
+        },
+        "angle": 0,
+        "id": "4f394258-5f4f-46a6-a754-28ae204b2705",
+        "z": 58,
+        "parent": "32fc4aa7-8dc5-444a-9f1c-ed5cf559c499",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Government Budget"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.Softgoal",
+        "size": {
+          "width": 100,
+          "height": 60
+        },
+        "intention": {
+          "cid": "c313",
+          "attributes": {
+            "nodeName": "Reduce \nOperating\nCosts",
+            "evolvingFunction": {
+              "cid": "c314",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            },
+            "userEvaluationList": [
+              {
+                "cid": "c315",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "_changing": false,
+          "_previousAttributes": {
+            "nodeName": "Reduce \nOperating\nCosts",
+            "evolvingFunction": null,
+            "userEvaluationList": [
+              {
+                "cid": "c315",
+                "attributes": {
+                  "assignedEvidencePair": "(no value)",
+                  "absTime": 0
+                },
+                "_changing": false,
+                "_previousAttributes": {},
+                "changed": {},
+                "_pending": false
+              }
+            ]
+          },
+          "changed": {
+            "evolvingFunction": {
+              "cid": "c314",
+              "attributes": {
+                "type": "NT",
+                "functionSegList": [],
+                "hasRepeat": false,
+                "repStart": null,
+                "repStop": null,
+                "repCount": null,
+                "repAbsTime": null
+              },
+              "_changing": false,
+              "_previousAttributes": {},
+              "changed": {},
+              "_pending": false
+            }
+          },
+          "_pending": false
+        },
+        "position": {
+          "x": 480,
+          "y": 340
+        },
+        "angle": 0,
+        "id": "2e7a3b3e-f569-4ede-8f38-4c84bc286cde",
+        "z": 60,
+        "parent": "32fc4aa7-8dc5-444a-9f1c-ed5cf559c499",
+        "attrs": {
+          ".satvalue": {
+            "text": ""
+          },
+          ".name": {
+            "text": "Reduce \nOperating\nCosts"
+          },
+          "text": {
+            "fill": "black",
+            "stroke": "none"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c316",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "-",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "-"
+              }
+            }
+          }
+        ],
+        "id": "70b77342-d3c7-4fec-9006-9a08522cdf04",
+        "source": {
+          "id": "ac7b012b-6eea-49fc-95ca-2408e5740ad7"
+        },
+        "target": {
+          "id": "2e7a3b3e-f569-4ede-8f38-4c84bc286cde"
+        },
+        "z": 61,
+        "parent": "32fc4aa7-8dc5-444a-9f1c-ed5cf559c499",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c317",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "+",
+            "postType": "++",
+            "absTime": null,
+            "evolving": true
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "+ | ++"
+              }
+            }
+          }
+        ],
+        "id": "7f9a906f-9ae6-4e67-9d64-b97c826657b1",
+        "source": {
+          "id": "789087be-4e5b-4446-b7b8-8a48fc82ef36"
+        },
+        "target": {
+          "id": "2e7a3b3e-f569-4ede-8f38-4c84bc286cde"
+        },
+        "z": 62,
+        "parent": "32fc4aa7-8dc5-444a-9f1c-ed5cf559c499",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c318",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "-",
+            "postType": "--",
+            "absTime": null,
+            "evolving": true
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "- | --"
+              }
+            }
+          }
+        ],
+        "id": "a29f7be4-1cd9-4f23-a9dc-f8f0838940bc",
+        "source": {
+          "id": "5228e3dc-117c-4259-bb16-95c041efff4b"
+        },
+        "target": {
+          "id": "2e7a3b3e-f569-4ede-8f38-4c84bc286cde"
+        },
+        "z": 63,
+        "parent": "32fc4aa7-8dc5-444a-9f1c-ed5cf559c499",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c319",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "and",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "and"
+              }
+            }
+          }
+        ],
+        "id": "3aa47fea-1b2d-4b37-ac93-31fb8ef515f5",
+        "source": {
+          "id": "4f394258-5f4f-46a6-a754-28ae204b2705"
+        },
+        "target": {
+          "id": "9610f210-8b14-4ed4-b3c0-80cf2c96b6d8"
+        },
+        "z": 64,
+        "parent": "32fc4aa7-8dc5-444a-9f1c-ed5cf559c499",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      },
+      {
+        "type": "basic.CellLink",
+        "link": {
+          "cid": "c320",
+          "attributes": {
+            "displayType": "element",
+            "linkType": "+",
+            "postType": null,
+            "absTime": null,
+            "evolving": false
+          },
+          "_changing": false,
+          "_previousAttributes": {},
+          "changed": {},
+          "_pending": false
+        },
+        "labels": [
+          {
+            "position": 0.5,
+            "attrs": {
+              "text": {
+                "text": "+"
+              }
+            }
+          }
+        ],
+        "id": "0c4ec04b-7b54-4066-af73-d80d010c1d1a",
+        "source": {
+          "id": "4f394258-5f4f-46a6-a754-28ae204b2705"
+        },
+        "target": {
+          "id": "2e7a3b3e-f569-4ede-8f38-4c84bc286cde"
+        },
+        "z": 65,
+        "parent": "32fc4aa7-8dc5-444a-9f1c-ed5cf559c499",
+        "attrs": {
+          ".connection": {
+            "stroke": "#000000"
+          },
+          ".marker-source": {
+            "d": "0"
+          },
+          ".marker-target": {
+            "stroke": "#000000",
+            "d": "M 10 0 L 0 5 L 10 10 L 0 5 L 10 10 L 0 5 L 10 5 L 0 5"
+          }
+        }
+      }
+    ]
+  }
+}
