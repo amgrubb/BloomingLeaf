@@ -66,7 +66,7 @@ public class LayoutAlgorithm {
 			if (LMain.DEBUG) System.out.println(Arrays.toString(intention_nodePos));
 			
 			//sort intentions
-			organizeIntentionTypes(intention_nodePos, a);
+			// organizeIntentionTypes(intention_nodePos, a);
 			
 			//layout intentions
 			layoutModel(intention_nodePos, false);
