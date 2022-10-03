@@ -11,6 +11,8 @@ import com.google.gson.GsonBuilder;
 import gson_classes.IMain;
 import simulation.ModelSpec;
 import simulation.BIModelSpecBuilder;
+import simulation.Intention;
+import layout.LayoutAlgorithm;
 
 /**
  * MMain
@@ -80,9 +82,18 @@ public class MMain {
 
 			ModelSpec mergedModel = merge.getMergedModel();
 			if (DEBUG) System.out.println("Completed Merging.");
-
+			
+			// When merge models don't store intentions properly
+	        for(Intention i: mergedModel.getIntentions()) {
+	        	if(i.hasActor()) i.getActor().addEmbed(i);
+	        }
+	        
+			// run auto-layout
+			LayoutAlgorithm layerOuter = new LayoutAlgorithm(mergedModel, "trace.txt", 5000);
+			ModelSpec layedOutModel = layerOuter.layout();
+			
 			// Create Output file that will be used by frontend
-			IMain mergedModelOut = IMainBuilder.buildIMain(mergedModel);
+			IMain mergedModelOut = IMainBuilder.buildIMain(layedOutModel);
 			if (DEBUG) System.out.println(gson.toJson(mergedModelOut));
 
 			createOutputFile(mergedModelOut, outPath + outputFile);

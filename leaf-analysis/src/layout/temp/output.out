@@ -1,0 +1,65 @@
+{
+  "elementList": [
+    {
+      "id": "5b80150b-290f-43c7-9d20-027a7ffead67",
+      "status": [
+        "1110"
+      ]
+    },
+    {
+      "id": "f0eb0f0c-cd39-4abf-af4f-d1646d83f42f",
+      "status": [
+        "1110"
+      ]
+    }
+  ],
+  "timePointAssignments": {
+    "Initial": 0
+  },
+  "timePointPath": [
+    0
+  ],
+  "selectedTimePoint": 0,
+  "nextStateTPs": {
+    "TNS-R": [
+      "TNS-R"
+    ]
+  },
+  "allSolutions": {
+    "TNS-R": [
+      [
+        "1100",
+        "1100"
+      ],
+      [
+        "1110",
+        "1110"
+      ],
+      [
+        "0011",
+        "0011"
+      ],
+      [
+        "0010",
+        "0010"
+      ],
+      [
+        "0000",
+        "0000"
+      ],
+      [
+        "0100",
+        "0100"
+      ],
+      [
+        "0111",
+        "0111"
+      ],
+      [
+        "0110",
+        "0110"
+      ]
+    ]
+  },
+  "nextPossibleRndValue": 12
+}

@@ -543,7 +543,7 @@ public class LayoutAlgorithm {
   	 * @return
   	 */
       public VisualInfo[] initNodePositions(ArrayList<AbstractLinkableElement> nodes){
-      	System.out.println(nodes);
+        if (LMain.DEBUG) System.out.println(nodes);
           VisualInfo[] nodePositions = new VisualInfo[nodes.size()];
           
           for(int i = 0; i < nodes.size(); i++) {

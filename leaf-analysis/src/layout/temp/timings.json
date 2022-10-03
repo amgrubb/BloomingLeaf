@@ -1,0 +1,10 @@
+{"timingList": [
+{
+	"intention": "intention1",
+	"currentTimesA":  ["0", "NBTP1", "MaxTime"],
+	"newTimesA": ["A-0", "A-NBTP1", "A-MaxTime"],
+	"currentTimesB":  ["5", "MaxTime"],
+	"newTimesB": ["B-5", "B-MaxTime"],
+	"newTimeOrder": ["A-0", "B-5", "A-NBTP1", "A-MaxTime",  "B-MaxTime"]
+},
+{}]}

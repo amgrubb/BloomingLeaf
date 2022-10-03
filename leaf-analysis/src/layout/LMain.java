@@ -23,11 +23,11 @@ public class LMain {
 	public static void main(String[] args) {
 //	    String inPath = "temp/";
 //	    String outPath = "temp/";
-	    String inPath = "temp/";
-	    String outPath = "temp/";
+	    String inPath = "src/layout/temp/";
+	    String outPath = "src/layout/temp/";
 	    String tracePath = "";
 //	    String inputFile = "S7-out.json";
-	    String inputFile = "Bike-lanes-out.json";
+	    String inputFile = "S6-out.json";
 	    String outputFile = "output.json";
 	
 	    try {			
