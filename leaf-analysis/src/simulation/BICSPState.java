@@ -240,6 +240,12 @@ public class BICSPState {
    		IOSolution prev = spec.getPrevResult();
    		if (prev == null)	throw new RuntimeException("\n Previous results required, but null.");
 		
+		// Add all `less than' constraints to a HashMap for checking and removal.
+		HashMap<String, String> ltConstHash = new HashMap<String, String>();
+		List<TPConstraint> constraints = spec.getLtTPconstraints();
+		for (TPConstraint ltConst: constraints) 
+			ltConstHash.put(ltConst.getRefTP1(), ltConst.getRefTP2());
+   		
 		// Get the Unique Set of Time Point from the Model
 		HashMap<Integer, List<String>> modelAbsTime = spec.getAbsTimePoints();
 		List<String> unassignedTimePoint = modelAbsTime.get(-1);
@@ -247,7 +253,7 @@ public class BICSPState {
 		 
 		HashMap<String, Integer> prevTPAssignments = prev.getSelectedTPAssignments();
 		Integer[] prevTP = prev.getSelectedTimePointPath();
-				
+		
 		Integer tpCounter = 0;
 		for (Integer i : prevTP) {		// Last Time Points
     		List<String> affectedKeys = new ArrayList<String>();
@@ -264,9 +270,12 @@ public class BICSPState {
 						affectedKeys.add(v);
 				modelAbsTime.remove(i);			// Removes no longer needed entries.
 			}
-			for (String key : affectedKeys)
+			for (String key : affectedKeys) {
+				if (ltConstHash.containsKey(key))
+					ltConstHash.remove(key);
 				if (unassignedTimePoint.contains(key)) 
 					unassignedTimePoint.remove(key);
+			}
 			if (affectedKeys.isEmpty()) 
 				throw new RuntimeException("\n In createNextStateTimePoint there is a mismatch between the time points and values.");
     		pathTPNames.add(affectedKeys);
@@ -285,8 +294,10 @@ public class BICSPState {
 				if (key < minKey)  
 					minKey = key;
 			if (minKey != maxTime + 1) {
+				//TODO: Check if ABS value is TP1 or TP2 in ltConstHash.
 	    		List<String> toAdd = modelAbsTime.get(minKey);
 	    		newTPHash.put("TNS-A", toAdd);
+	    		modelAbsTime.remove(minKey);
 	    		if (minKey == prevTP[prevTP.length-1] + 1)
 	    			guarenteeNextAbs = true;
 			}
@@ -318,6 +329,17 @@ public class BICSPState {
 			
 			if (unassignedTimePoint.size() > 0) {		
 				int c = 0; 
+				for (String lt1: ltConstHash.keySet()) {	//Handle Less Than Constraints.
+					// Move the second time point in a lt relationship to the pruned list.
+					if (unassignedTimePoint.contains(lt1)){
+						String lt2 = ltConstHash.get(lt1);
+						if (unassignedTimePoint.contains(lt2)) {
+							prunedTimePoints.add(lt2);
+							unassignedTimePoint.remove(lt2);
+							ltConstHash.remove(lt1);		//TODO Does this work while iterating over the item?
+						}//TODO Add else if in lt2 is in the model spec?
+					}						
+				}
 				for (String newVal: unassignedTimePoint) {
 		    		List<String> toAdd = new ArrayList<String>();
 		    		toAdd.add(newVal);
@@ -325,7 +347,15 @@ public class BICSPState {
 		    		c++;
 				}
 			}
-		}		
+		}
+		
+		// Remove any model time points that are outside the range.
+		if (modelAbsTime.size() > 0) 
+			for	(Integer key : modelAbsTime.keySet()) {
+				List<String> toAdd = modelAbsTime.get(key);
+				for(String item: toAdd)
+					prunedTimePoints.add(item);				
+			}
 		return minKey;
 	}
 
