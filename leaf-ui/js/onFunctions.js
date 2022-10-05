@@ -199,7 +199,57 @@ $('#btn-fnt').on('click', function () { defaultFont(paper); });
 $('#btn-fnt-up').on('click', function () { fontUp(paper); });
 $('#btn-fnt-down').on('click', function () { fontDown(paper); });
 $('#legend').on('click', function () { window.open('./userguides/legend.html', 'newwindow', 'width=300, height=250'); return false; });
-$('#evo-color-key').on('click', function () { window.open('./userguides/evo.html', 'newwindow', 'width=500, height=400'); return false; });
+// $('#show-palette-1').on('click', function () { window.open('./userguides/evo.html', 'newwindow', 'width=500, height=400'); return false; });
+
+
+/**
+ * displays the color palette
+ * @param {*} palette_number 
+ */
+function displayPalette(palette_number ) {
+    switch(palette_number) {
+        case 1:
+            window.open('./userguides/defaultPalette.html', 'newwindow', 'width=500, height=400')
+          break;
+        case 2:
+          window.open('./userguides/RedGreenPalette.html', 'newwindow', 'width=500, height=400')
+          break;
+        case 3:
+            window.open('./userguides/GreenBlackPalette.html', 'newwindow', 'width=500, height=400')
+            break;
+        case 4:
+          window.open('./userguides/YellowPurplePalette.html', 'newwindow', 'width=500, height=400')
+          break;
+       
+    }
+}
+
+
+
+/** displays the color palettes */
+$('#evo-color-key').on('click', function () {
+    removeHighlight();
+    clearInspector();
+    showAlert('EVO Color Key',
+        '<p>What color key do you ' +
+        'want to see?</p> ' +
+        '<p><button type="button" class="modal-editing"' +
+        ' id="show-palette-1" onclick="displayPalette(1)" style="width:100%">Default Palette' +
+        '</button><button type="button" ' +
+        'class="model-editing" id="show-palette-2" onclick="displayPalette(2)" style="width:100%">Red-Green-Palette ' +
+        '</button> <button type="button" class="model-editing"' +
+        ' id="show-palette-3" onclick="displayPalette(3)" style="width:100%"> Green-Black Palette' +
+        '</button><button type="button" class="model-editing"' +
+        ' id="show-palette-4" onclick="displayPalette(4)" style="width:100%"> Yellow-Purple Palette' +
+        '</button><button type="button" class="model-editing"' +
+        ' id="show-palette-5" style="width:100%"> My Palette' +
+        '</button><button type="button" class="model-editing"' +
+        ' id="show-palette-6" style="width:100%"> Color-Blind Palette' +
+        '</button></p>',
+        window.innerWidth * 0.3, 'alert', 'warning');
+});
+
+
 
 /**
  * Displays the absolute and relative assignments modal for the user.
