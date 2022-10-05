@@ -529,16 +529,18 @@ class EVO {
 
         //Assign intentions with chosen palette and set default values in Create My Palette the same as the chosen palette
         if (EVO.paletteOption <= 5) {
-            $("#my-None").val(EVO.colorVisDictCollection[EVO.paletteOption - 1]["0000"]);
-            $("#my-Satisfied").val(EVO.colorVisDictCollection[EVO.paletteOption - 1]["0011"]);
-            $("#my-PS").val(EVO.colorVisDictCollection[EVO.paletteOption - 1]["0010"]);
-            $("#my-PD").val(EVO.colorVisDictCollection[EVO.paletteOption - 1]["0100"]);
-            $("#my-PP").val(EVO.colorVisDictCollection[EVO.paletteOption - 1]["0110"]);
-            $("#my-FP").val(EVO.colorVisDictCollection[EVO.paletteOption - 1]["0111"]);
-            $("#my-Denied").val(EVO.colorVisDictCollection[EVO.paletteOption - 1]["1100"]);
-            $("#my-PF").val(EVO.colorVisDictCollection[EVO.paletteOption - 1]["1110"]);
-            $("#my-FF").val(EVO.colorVisDictCollection[EVO.paletteOption - 1]["1111"]);
-            return EVO.colorVisDictCollection[EVO.paletteOption - 1][intentionEval];
+            let index = EVO.paletteOption - 1;
+            
+            $("#my-None").val(EVO.colorVisDictCollection[index]["0000"]);
+            $("#my-Satisfied").val(EVO.colorVisDictCollection[index]["0011"]);
+            $("#my-PS").val(EVO.colorVisDictCollection[index]["0010"]);
+            $("#my-PD").val(EVO.colorVisDictCollection[index]["0100"]);
+            $("#my-PP").val(EVO.colorVisDictCollection[index]["0110"]);
+            $("#my-FP").val(EVO.colorVisDictCollection[index]["0111"]);
+            $("#my-Denied").val(EVO.colorVisDictCollection[index]["1100"]);
+            $("#my-PF").val(EVO.colorVisDictCollection[index]["1110"]);
+            $("#my-FF").val(EVO.colorVisDictCollection[index]["1111"]);
+            return EVO.colorVisDictCollection[index][intentionEval];
         }
 
         if (EVO.paletteOption == 6) {
