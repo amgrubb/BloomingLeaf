@@ -294,12 +294,31 @@ public class BICSPState {
 				if (key < minKey)  
 					minKey = key;
 			if (minKey != maxTime + 1) {
-				//TODO: Check if ABS value is TP1 or TP2 in ltConstHash.
 	    		List<String> toAdd = modelAbsTime.get(minKey);
-	    		newTPHash.put("TNS-A", toAdd);
-	    		modelAbsTime.remove(minKey);
-	    		if (minKey == prevTP[prevTP.length-1] + 1)
-	    			guarenteeNextAbs = true;
+	    		
+	    		// check
+	    		boolean validTP = true;
+	    		for (String lt2: toAdd)
+	    			if (ltConstHash.containsValue(lt2))
+	    				validTP = false;
+	    		if (validTP) {
+		    		for (String lt1: toAdd) 	//TODO: Make sure this applies to all the elements in the list.
+			    		if (ltConstHash.containsKey(lt1)){
+							String lt2 = ltConstHash.get(lt1);
+							if (unassignedTimePoint.contains(lt2)) {
+								prunedTimePoints.add(lt2);
+								unassignedTimePoint.remove(lt2);
+								ltConstHash.remove(lt1);		//TODO Does this work while iterating over the item?
+							}	    			
+			    		}
+		    		
+		    		newTPHash.put("TNS-A", toAdd);
+		    		modelAbsTime.remove(minKey);
+		    		if (minKey == prevTP[prevTP.length-1] + 1)
+		    			guarenteeNextAbs = true;
+	    		}else {
+	    			throw new RuntimeException("\n TODO: Figure out what to do with invalid TPs");
+	    		}
 			}
 		}
 		
@@ -327,8 +346,7 @@ public class BICSPState {
 			for (String item : prunedList)
 				prunedTimePoints.add(item);
 			
-			if (unassignedTimePoint.size() > 0) {		
-				int c = 0; 
+			if (unassignedTimePoint.size() > 0) {		 
 				for (String lt1: ltConstHash.keySet()) {	//Handle Less Than Constraints.
 					// Move the second time point in a lt relationship to the pruned list.
 					if (unassignedTimePoint.contains(lt1)){
@@ -336,10 +354,11 @@ public class BICSPState {
 						if (unassignedTimePoint.contains(lt2)) {
 							prunedTimePoints.add(lt2);
 							unassignedTimePoint.remove(lt2);
-							ltConstHash.remove(lt1);		//TODO Does this work while iterating over the item?
-						}//TODO Add else if in lt2 is in the model spec?
+							ltConstHash.remove(lt1);
+						}
 					}						
 				}
+				int c = 0;
 				for (String newVal: unassignedTimePoint) {
 		    		List<String> toAdd = new ArrayList<String>();
 		    		toAdd.add(newVal);
