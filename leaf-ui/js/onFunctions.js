@@ -220,6 +220,10 @@ function displayPalette(palette_number ) {
         case 4:
           window.open('./userguides/YellowPurplePalette.html', 'newwindow', 'width=500, height=400')
           break;
+        case 6:
+            window.open('./userguides/palette.html', 'newwindow', 'width=500, height=400')
+            break;
+
        
     }
 }
@@ -242,9 +246,9 @@ $('#evo-color-key').on('click', function () {
         '</button><button type="button" class="model-editing"' +
         ' id="show-palette-4" onclick="displayPalette(4)" style="width:100%"> Yellow-Purple Palette' +
         '</button><button type="button" class="model-editing"' +
-        ' id="show-palette-5" style="width:100%"> My Palette' +
+        ' id="show-palette-5" style="width:100%"> Color-Blind Palette' +
         '</button><button type="button" class="model-editing"' +
-        ' id="show-palette-6" style="width:100%"> Color-Blind Palette' +
+        ' id="show-palette-6" onclick="displayPalette(6)" style="width:100%"> My Palette' +
         '</button></p>',
         window.innerWidth * 0.3, 'alert', 'warning');
 });
@@ -938,6 +942,7 @@ paper.on("link:options", function (cell) {
     $('#color-palette-6').on('click', function () { // Choose color palettes
         EVO.paletteOption = 6;
         highlightPalette(EVO.paletteOption);
+
         //render a table
         $('#color-input').css("display", "");
         if ($('#analysisSlider').css("display") == "none") {
@@ -949,8 +954,11 @@ paper.on("link:options", function (cell) {
 
     //Show warning messages if use input invalid color
     $('#submit-color').on('click', function () {
+        // Sets EVO to off when you change color palette options 
+        EVO.setSliderOption(0);
+        EVO.refreshSlider();
+        //fill in the dictionary
         EVO.fillInDictionary();
-
         if (Object.values(EVO.selfColorVisDict).some((v) => validateColor(v) == false)) { swal("Invalid Color", "", "error"); }
     });
 

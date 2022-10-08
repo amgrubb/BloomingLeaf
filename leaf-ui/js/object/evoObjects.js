@@ -544,7 +544,7 @@ class EVO {
         }
 
         if (EVO.paletteOption == 6) {
-            EVO.fillInDictionary();
+            // EVO.fillInDictionary();
             return EVO.selfColorVisDict[intentionEval];
         }
     }
