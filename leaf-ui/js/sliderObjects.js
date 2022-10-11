@@ -105,8 +105,8 @@ class SliderObj {
             //End of what I added
 
             var t = parseInt(values[handle])%2;
-            //var intentions = ['#j_14','#j_15','#j_16','#j_17','#j_18','#j_19','#j_20','#j_21','#j_22','#j_23','#j_24','#j_25','#j_26'];
-            console.log(t);
+            // var intentions = ['#j_14','#j_15','#j_16','#j_17','#j_18','#j_19','#j_20','#j_21','#j_22','#j_23','#j_24','#j_25','#j_26'];
+            // console.log(t); // t == 0 indicates EVEN, t == 1 indicates ODD
 
             var elementList = currentAnalysis.get('elementList');
             console.log(elementList);
@@ -134,7 +134,7 @@ class SliderObj {
     static getActors() {
         var elements = graph.getElements();
         var actors = elements.filter(element => element.get('type') == 'basic.Actor');
-        console.log(actors);
+        console.log("List of actors: " + actors); // TODO: this isn't printing out helpful info 
     }
 
     /**
@@ -148,7 +148,7 @@ class SliderObj {
                 intentionsList.push(elements[i]);
             }
         }
-        console.log(intentionsList);
+        console.log("List of intentions: " + intentionsList); // TODO: this isn't printing out helpful info 
     }
 
     /**
@@ -159,15 +159,22 @@ class SliderObj {
         var links = ['#j_29','#j_30','#j_31','#j_32','#j_33','#j_34','#j_35','#j_36','#j_37','#j_38','#j_40','#j_44'];
         var intentionsLength = intentions.length;
         var linksLength = links.length;
+        var removedIntentions = [];
+        var removedLinks = [];
         if (bool) {
+            
             for(var i = 0; i<intentionsLength; i++){
                 $(intentions[i]).css("display", "none");
-                console.log(intentions[i]);
+                removedIntentions.push(intentions[i])
+                // console.log(intentions[i]);
             }
             for(var i = 0; i<linksLength; i++){
                 $(links[i]).css("display", "none");
-                console.log(links[i]);
+                removedLinks.push(links[i])
+                // console.log(links[i]);
             }
+            console.log("Removed intentions: " + removedIntentions);
+            console.log("Removed links: " + removedLinks);
             $(word).css("display", "none");
             
         }
@@ -178,6 +185,8 @@ class SliderObj {
             for(var i = 0; i<linksLength; i++){
                 $(links[i]).css("display", "");
             }
+            console.log("Removed intentions: " + removedIntentions);
+            console.log("Removed links: " + removedLinks);
             $(word).css("display", "");
             
         }
@@ -194,9 +203,10 @@ class SliderObj {
      *   Array of Sat values
      */
         static checkSatVal(element, sliderValue, SatList) { //Deals with finding satVal for each individual intention
-        var satValue = element.status[sliderValue]; //accesses sat value of current intention
-        console.log("satVallll: "+ satValue);
-        SatList.push(satValue);
+            var satValue = element.status[sliderValue]; //accesses sat value of current intention
+            console.log(element); // to view details of the current intention
+            console.log("satVallll: "+ satValue);
+            SatList.push(satValue);
         }
         
         /**
