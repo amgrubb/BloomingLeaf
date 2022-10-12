@@ -954,12 +954,12 @@ paper.on("link:options", function (cell) {
 
     //Show warning messages if use input invalid color
     $('#submit-color').on('click', function () {
-        // Sets EVO to off when you change color palette options 
-        EVO.setSliderOption(0);
-        EVO.refreshSlider();
         //fill in the dictionary
         EVO.fillInDictionary();
         if (Object.values(EVO.selfColorVisDict).some((v) => validateColor(v) == false)) { swal("Invalid Color", "", "error"); }
+
+        // refresh the visual overlay on the model
+        EVO.refreshSlider();
     });
 
     /**
