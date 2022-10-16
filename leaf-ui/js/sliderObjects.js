@@ -102,6 +102,20 @@ class SliderObj {
         
             SliderObj.getActors();
             SliderObj.getIntentionsList();
+            
+            // Testing of disappearIntention() for j_id of #j_27. 
+            // IMPORTANT: Comment out later, do not delete for now.
+            var t = parseInt(values[handle])%2;
+
+            if (t == 0) {
+                console.log("EVEN");
+                SliderObj.disappearIntention(true,'#j_27');
+            }
+            else {
+                console.log("ODD");
+                SliderObj.disappearIntention(false,'#j_27');
+            }
+
 
         });
         EVO.setCurTimePoint(isSwitch ? 0 : sliderMax, currentAnalysis);
@@ -185,33 +199,33 @@ class SliderObj {
      * @param {Array} SatList
      *   Array of Sat values
      */
-        static checkSatVal(element, sliderValue, SatList) { //Deals with finding satVal for each individual intention
-            var satValue = element.status[sliderValue]; //accesses sat value of current intention
-            console.log(element); // to view details of the current intention
-            console.log("Current satValue: "+ satValue);
-            SatList.push(satValue);
-        }
-        
-        /**
-         * Method that will look through both SatList and ElList arrays and based on if an intention matches with a satVal then make those intentions dissapear
-         * WIP
-         */
-        
-        //  static compareSatVal(element, sliderValue, SatList, ElList) { //Deals with checking which satVal corresponds to which element.id currently being worked on
-        //     // var satValue = element.status[sliderValue];
-        //     // console.log("satVallll: "+ satValue);
-        //     // SatList.push(satValue);
-        //     for (var i = 0; i < SatList.length; i++) {
-        //         var cellz = SatList[i];
-        //         console.log(cellz.id);
-        //     }
-        //     // if (satValue == '0000') {
-        //     //     SliderObj.disappearIntention(true,'#j_7');
-        //     // }
-        //     // else {
-        //     //     SliderObj.disappearIntention(false,'#j_7');
-        //     // }
-        // }    
+    static checkSatVal(element, sliderValue, SatList) { //Deals with finding satVal for each individual intention
+        var satValue = element.status[sliderValue]; //accesses sat value of current intention
+        console.log(element); // to view details of the current intention
+        console.log("Current satValue: "+ satValue);
+        SatList.push(satValue);
+    }
+    
+    /**
+     * Method that will look through both SatList and ElList arrays and based on if an intention matches with a satVal then make those intentions dissapear
+     * WIP
+     */
+    
+    //  static compareSatVal(element, sliderValue, SatList, ElList) { //Deals with checking which satVal corresponds to which element.id currently being worked on
+    //     // var satValue = element.status[sliderValue];
+    //     // console.log("satVallll: "+ satValue);
+    //     // SatList.push(satValue);
+    //     for (var i = 0; i < SatList.length; i++) {
+    //         var cellz = SatList[i];
+    //         console.log(cellz.id);
+    //     }
+    //     // if (satValue == '0000') {
+    //     //     SliderObj.disappearIntention(true,'#j_7');
+    //     // }
+    //     // else {
+    //     //     SliderObj.disappearIntention(false,'#j_7');
+    //     // }
+    // }    
 
     /**
      * Reset display to default, before result is displayed
