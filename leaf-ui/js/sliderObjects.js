@@ -84,9 +84,7 @@ class SliderObj {
         currentAnalysis.get('slider').sliderElement.noUiSlider.on('update', function (values, handle) {
             SliderObj.updateSliderValues(parseInt(values[handle]), currentAnalysis);
 
-            //This section here is what I added.. Runs whenever the slider is moved
-
-            const elList = []; //Empty array for elements id's ex: j_7, j_9, j_11
+            const ElList = []; //Empty array for elements id's ex: j_7, j_9, j_11
             const SatList = []; //Empty array for elements sat vals ex: 0111, 1100, 1110
 
             //Goes through each element in elementlist and runs checkSatVal method that prints out each sat val for each element
@@ -94,34 +92,17 @@ class SliderObj {
                 SliderObj.checkSatVal(element,parseInt(values[handle]),SatList)); //prints each sat val individually and pushes them into SatList array
             console.log("Sat Value array: " + SatList); //prints entire arrray of sat values
 
-
+            //Goes through each element on the graph and pushes it into ElList array
             var cells = paper.findViewsInArea(paper.getArea()); //cells is an array containing all intentions on graph
-            cells.forEach(elements => //goes through each elements in "cells" array and pushes each element id into elList. "elements.id" gets access to the "j_7" ids
-                elList.push(elements.id));
-            console.log("Element id array: " + elList); //prints entire arrray of elements id
+            cells.forEach(elements => //goes through each elements in "cells" array and pushes each element id into ElList. "elements.id" gets access to the "j_7" ids
+                ElList.push(elements.id));
+            console.log("Element id array: " + ElList); //prints entire arrray of elements id
 
-            // SliderObj.checkcheck(element,parseInt(values[handle]), SatList, elList); //Method that is not finished..
-
-            //End of what I added
-
-            var t = parseInt(values[handle])%2;
-            // var intentions = ['#j_14','#j_15','#j_16','#j_17','#j_18','#j_19','#j_20','#j_21','#j_22','#j_23','#j_24','#j_25','#j_26'];
-            // console.log(t); // t == 0 indicates EVEN, t == 1 indicates ODD
-
-            var elementList = currentAnalysis.get('elementList');
-            console.log(elementList);
-            
+            // SliderObj.compareSatVal(element,parseInt(values[handle]), SatList, ElList); //Method here is not finished but when calls the compareSatVal to compare  
+        
             SliderObj.getActors();
             SliderObj.getIntentionsList();
 
-            if (t == 0) {
-                console.log("EVEN");
-                SliderObj.disappearIntention(true,'#j_27');
-            }
-            else {
-                console.log("ODD");
-                SliderObj.disappearIntention(false,'#j_27');
-            }
         });
         EVO.setCurTimePoint(isSwitch ? 0 : sliderMax, currentAnalysis);
         SliderObj.adjustSliderWidth(sliderMax);
@@ -154,7 +135,7 @@ class SliderObj {
     }
 
     /**
-     * 
+     * a Method that makes actors, intentions and links dissapear
      */
     static disappearIntention(bool,word) {
         var intentions = ['#j_14','#j_15','#j_16','#j_17','#j_18','#j_19','#j_20','#j_21','#j_22','#j_23','#j_24','#j_25','#j_26'];
@@ -207,20 +188,16 @@ class SliderObj {
         static checkSatVal(element, sliderValue, SatList) { //Deals with finding satVal for each individual intention
             var satValue = element.status[sliderValue]; //accesses sat value of current intention
             console.log(element); // to view details of the current intention
-            console.log("satVallll: "+ satValue);
+            console.log("Current satValue: "+ satValue);
             SatList.push(satValue);
         }
         
         /**
-         * @param {map} element
-         *  Map between element id and result data. 
-         *   Satisfaction value in string form. ie: '0011' for satisfied
-         *   Current value of the slider
-         * @param {Number} sliderValue
-         *   Current value of the slider
+         * Method that will look through both SatList and ElList arrays and based on if an intention matches with a satVal then make those intentions dissapear
+         * WIP
          */
         
-        //  static checkcheck(element, sliderValue, SatList, elList) { //Deals with checking which satVal corresponds to which element.id currently being worked on
+        //  static compareSatVal(element, sliderValue, SatList, ElList) { //Deals with checking which satVal corresponds to which element.id currently being worked on
         //     // var satValue = element.status[sliderValue];
         //     // console.log("satVallll: "+ satValue);
         //     // SatList.push(satValue);
@@ -301,11 +278,7 @@ class SliderObj {
         //analysisRequest.currentState = sliderObject.sliderValueElement.innerHTML;   //TODO: Perhalps this should be part of the call to simulate.
 
         currentAnalysis.get('elementList').forEach(element =>
-            SliderObj.updateNodeValues(element, sliderValue));
-            
-        console.log(currentAnalysis.get('elementList'));
-        console.log(currentAnalysis.get('basic.Actor'));
-        console.log(currentAnalysis.get('elementList').getElementById);    
+            SliderObj.updateNodeValues(element, sliderValue));   
         EVO.setCurTimePoint(sliderValue, currentAnalysis);
     }
 
