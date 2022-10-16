@@ -130,15 +130,17 @@ class SliderObj {
 
     /**
      * get actors of the model
+     * TODO: This method doesn't seem to print out helpful info now
      */
     static getActors() {
         var elements = graph.getElements();
         var actors = elements.filter(element => element.get('type') == 'basic.Actor');
-        console.log("List of actors: " + actors); // TODO: this isn't printing out helpful info 
+        console.log("List of actors: " + actors); 
     }
 
     /**
      * a method that prints out all the intentions of the model
+     * TODO: This method doesn't seem to print out helpful info now
      */
     static getIntentionsList() {
         var elements = graph.getElements();
@@ -148,7 +150,7 @@ class SliderObj {
                 intentionsList.push(elements[i]);
             }
         }
-        console.log("List of intentions: " + intentionsList); // TODO: this isn't printing out helpful info 
+        console.log("List of intentions: " + intentionsList); 
     }
 
     /**
