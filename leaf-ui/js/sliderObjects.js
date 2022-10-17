@@ -101,7 +101,7 @@ class SliderObj {
             // SliderObj.compareSatVal(element,parseInt(values[handle]), SatList, ElList); //Method here is not finished but when calls the compareSatVal to compare  
         
             SliderObj.getActors();
-            SliderObj.getIntentionsList();
+            //SliderObj.getIntentionsList();
             
             // Testing of disappearIntention() for j_id of #j_27. 
             // IMPORTANT: Comment out later, do not delete for now.
@@ -128,9 +128,46 @@ class SliderObj {
      * TODO: This method doesn't seem to print out helpful info now
      */
     static getActors() {
-        var elements = graph.getElements();
+        var elements = graph.getElements();//intentions+actors only, no links
+        console.log('list of elements');
+        console.log(elements);
         var actors = elements.filter(element => element.get('type') == 'basic.Actor');
-        console.log("List of actors: " + actors); 
+        console.log("List of actors");
+        console.log(actors); 
+
+        var links = graph.getLinks();
+        console.log('links');
+        console.log(links);
+            // if (cell instanceof joint.shapes.basic.CellLink) {
+
+        var intentionsList = [];
+        for(var i = 0; i<elements.length; i++ ){
+            if(!(elements[i] instanceof joint.shapes.basic.Actor)) {
+                intentionsList.push(elements[i]);
+            }
+        }
+        //hard codes to get the embeds of first actor
+        var embeds = actors[1].attributes.embeds;
+        console.log("The embeds are:");
+        console.log(embeds);
+        //console.log(actors[0].collection._byId);
+        console.log("The types of embeds are:");
+        for(var i = 0; i < embeds.length; i++){
+            for(var j = 0; j < intentionsList.length; j++){
+                if(embeds[i] === intentionsList[j].id){
+                    console.log(intentionsList[j].attributes.type);
+                }
+            }
+        }
+        console.log("embedded links");
+        for(var i = 0; i < embeds.length; i++){
+            for(var j = 0; j < links.length; j++){
+                if(embeds[i] === links[j].attributes.id){
+                    console.log(links[j]);
+                }
+            }
+        }
+
     }
 
     /**
@@ -145,11 +182,13 @@ class SliderObj {
                 intentionsList.push(elements[i]);
             }
         }
-        console.log("List of intentions: " + intentionsList); 
+        console.log('list of intentions');
+        console.log(intentionsList); 
     }
-
+    
     /**
      * a Method that makes actors, intentions and links dissapear
+     * TODO: try to obtain the j_id from the correspoding model_id (long id)
      */
     static disappearIntention(bool,word) {
         var intentions = ['#j_14','#j_15','#j_16','#j_17','#j_18','#j_19','#j_20','#j_21','#j_22','#j_23','#j_24','#j_25','#j_26'];
