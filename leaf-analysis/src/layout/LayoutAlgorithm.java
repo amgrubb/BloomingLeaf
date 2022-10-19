@@ -121,7 +121,6 @@ public class LayoutAlgorithm {
         //TODO: solid piece wise function for c
         if(nodePositions.length < 7 && nodePositions.length > 3) c = .0006;
         else if(nodePositions.length < 4) c = .001;
-        double a = .05; //error
         double constant = Math.pow(nodePositions.length, .5); // increasing the constant decreases attraction and gravitation, but increases repulsion
         
         if(hasActors) {
@@ -196,11 +195,7 @@ public class LayoutAlgorithm {
                 }
 
             }
-            //calculate error
-            //TODO: figure out a good stopping condition
-            //if (LMain.DEBUG) System.out.println("Starting: layoutModel calculating error");
-            //if (Math.abs(sum(forceX)) < a && Math.abs(sum(forceY)) < a) break;
-            
+
             if(checkConds(nodePositions, center, numActors)) {
             	if (LMain.DEBUG) System.out.println("Conditions Met");
             	return model;
