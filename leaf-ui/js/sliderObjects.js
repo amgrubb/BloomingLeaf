@@ -134,6 +134,11 @@ class SliderObj {
         var actors = elements.filter(element => element.get('type') == 'basic.Actor');
         console.log("List of actors");
         console.log(actors); 
+        var j_id = joint.util.guid(actors[0]);
+        console.log("j_id is " + j_id);
+
+        $("#"+j_id).css("display", "none");
+        $("#j_9").css("display", "none");
 
         var links = graph.getLinks();
         console.log('links');
@@ -146,6 +151,11 @@ class SliderObj {
                 intentionsList.push(elements[i]);
             }
         }
+
+        var j_id2 = joint.util.guid(intentionsList[0]);
+        console.log("j_id2 is " + j_id2);
+        $("#"+j_id2).css("display", "none");
+
         //hard codes to get the embeds of first actor
         var embeds = actors[1].attributes.embeds;
         console.log("The embeds are:");
@@ -191,6 +201,8 @@ class SliderObj {
      * TODO: try to obtain the j_id from the correspoding model_id (long id)
      */
     static disappearIntention(bool,word) {
+        SliderObj.getActors();
+        
         var intentions = ['#j_14','#j_15','#j_16','#j_17','#j_18','#j_19','#j_20','#j_21','#j_22','#j_23','#j_24','#j_25','#j_26'];
         var links = ['#j_29','#j_30','#j_31','#j_32','#j_33','#j_34','#j_35','#j_36','#j_37','#j_38','#j_40','#j_44'];
         var intentionsLength = intentions.length;
