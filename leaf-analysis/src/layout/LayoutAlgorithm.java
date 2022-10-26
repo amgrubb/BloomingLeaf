@@ -36,9 +36,9 @@ public class LayoutAlgorithm {
 
 		if (LMain.DEBUG) System.out.println("Starting Full Layout");
 		
-		//trying the actor around actorless intention method
+		//actorless intention method, create temporary actor
 		Actor temp_actor = new Actor("temp-actor", "temp-actor", "basic.Actor", new String[0], "temp-actor");
-		
+		//add intentions w/o actor into temporary actor
 		for(Intention i: model.getActorlessIntentions()) {
 			temp_actor.addEmbed((AbstractElement)i);
 		}
@@ -46,22 +46,25 @@ public class LayoutAlgorithm {
 		model.getActors().add(temp_actor);
 		
 		if (LMain.DEBUG) System.out.println(temp_actor.getEmbedIntentions(model).length);
-		//if (LMain.DEBUG) return model;
 		
-		//nested level
+		//nested levels (intention level)
 		if (LMain.DEBUG) System.out.println("Starting Nested Level");
 		
 		for(Actor a: model.getActors()) { 
 
-			System.out.println(a.getName());
+			if (LMain.DEBUG) System.out.println(a.getName());
 			
-			// get nodes in this actor (this is so ugly i'm so sorry)
+			// get nodes in this actor a
 			Intention[] a_intentions = a.getEmbedIntentions(model);
 			if(a_intentions.length == 0) continue;
+
+            //Cast all objects to abstractlinkableelement for initnodepositions method
 			ArrayList<AbstractLinkableElement> temp_arrayList = new ArrayList<>();
 			for(Intention i: a_intentions) {
 				temp_arrayList.add((AbstractLinkableElement)i);
 			}
+
+            //Get VisualInfo objects for layout
 			VisualInfo[] intention_nodePos = initNodePositions(temp_arrayList);
 			if (LMain.DEBUG) System.out.println(Arrays.toString(intention_nodePos));
 			
@@ -82,9 +85,9 @@ public class LayoutAlgorithm {
 		//  level 0
 		if (LMain.DEBUG) System.out.println("Starting 0th Level");	
 
-		//  get nodes on the zeroth level
+		//  get nodes (actors) on the zeroth level
 		ArrayList<AbstractLinkableElement> temp_arrayList = new ArrayList<>();
-		for(Actor a: model.getActors()) { // note that actors are first in the list 
+		for(Actor a: model.getActors()) { 
 			temp_arrayList.add((AbstractLinkableElement)a);
 			if (LMain.DEBUG) System.out.println(a.getEmbedIntentions(model).length);
 		}
@@ -111,9 +114,12 @@ public class LayoutAlgorithm {
 	public ModelSpec layoutModel(VisualInfo[] nodePositions, boolean hasActors){
 		if (LMain.DEBUG) System.out.println("Starting: layoutModel");
 		
+        //center is where gravity force comes from 
         VisualInfo center = findCenter(nodePositions);
+
         int numActors = model.getActors().size();
         if(!hasActors) numActors = 0;
+        //visualizer tool to see how nodes are moving
         LayoutVisualizer lV = new LayoutVisualizer(nodePositions, center, numActors);
         
         //constants
@@ -122,35 +128,31 @@ public class LayoutAlgorithm {
         if(nodePositions.length < 7 && nodePositions.length > 3) c = .0006;
         else if(nodePositions.length < 4) c = .001;
         double constant = Math.pow(nodePositions.length, .5); // increasing the constant decreases attraction and gravitation, but increases repulsion
-        
         if(hasActors) {
         	c = .02;
         }
-        
         if (LMain.DEBUG) System.out.println(constant);
-        //if (LMain.DEBUG) return model;
-        
         double gravitation = 9.8/Math.sqrt(constant); //gravitation forces
         
+        //Layout forces applied maxIter times
 		for(int i = 0; i < maxIter; i++){
 			if (LMain.DEBUG) System.out.println("\n" + i + "th Iteration");
 			if (LMain.DEBUG) System.out.println(Arrays.toString(nodePositions));
             
-            
             for(int j = 0; j < nodePositions.length; j++){
             	if (LMain.DEBUG) System.out.println(j + "th Node\n");
-
                 for(int k = 0; k < nodePositions.length; k++){
                     if(j ==k) continue;  
                     //TODO: Force constants, sizes? How to know...
-                    //if (LMain.DEBUG) System.out.println("Starting: layoutModel Calculations");
+                    if (LMain.DEBUG) System.out.println("Starting: layoutModel Calculations");
+
                     double dist = getDist(nodePositions[j], nodePositions[k]);
                     double theta = angleBetween(nodePositions[k], nodePositions[j]);
+
+                    //calculate attraction and repulsion force
                     double attraction = makeSmall(getAttraction(nodePositions[j], nodePositions[k], constant));
-                    double repulsion = (getRepulsion(nodePositions[j], nodePositions[k], constant));
-                    if (LMain.DEBUG) System.out.println("Distance: " + dist);
-                    //if (LMain.DEBUG) System.out.println("Adjust Attraction: " + attraction);
-                    //if (LMain.DEBUG) System.out.println(repulsion);
+                    double repulsion = getRepulsion(nodePositions[j], nodePositions[k], constant);
+        
                     if(Double.isNaN(theta) ||Double.isNaN(attraction) || Double.isNaN(repulsion)) {
                     	//TODO: Throw error
                     	return model;
@@ -158,20 +160,22 @@ public class LayoutAlgorithm {
                     
                     //if (LMain.DEBUG) System.out.println("Starting: layoutModel adding to sum");
                     
+                    //decompose attraction and repulsion, scale forces
                     double x_shift = c * (attraction*Math.cos(theta) - repulsion*Math.cos(theta));
                     double y_shift = c * (attraction*Math.sin(theta) - repulsion*Math.sin(theta));
                     
                     if (LMain.DEBUG) System.out.println("x_shift" + x_shift);
                     if (LMain.DEBUG) System.out.println("y_shift" + y_shift);
                     
+                    //apply forces to node j
                     nodePositions[j].setX(nodePositions[j].getX() + x_shift);
                     nodePositions[j].setY(nodePositions[j].getY() + y_shift);
                     
+                    //apply forces to node k in opposite direction
                     nodePositions[k].setX(nodePositions[k].getX() - x_shift);
                     nodePositions[k].setY(nodePositions[k].getY() - y_shift);
                     
-                    //if (LMain.DEBUG) System.out.println(Arrays.toString(nodePositions));
-                    
+                    //if either is an actor, add adjust to children nodes
                     if(j < numActors) {
                     	propagateAdjustments(model.getActors().get(j), x_shift, y_shift);
                     }
@@ -190,22 +194,27 @@ public class LayoutAlgorithm {
                 
                 //gravitation = getDist(nodePositions[j], center) * .2;
                 
+                //if j is an actor, add adjust to children nodes
                 if(j < numActors) {
                 	propagateAdjustments(model.getActors().get(j), gravitation*Math.cos(phi), gravitation*Math.sin(phi));
                 }
 
             }
 
+            //check if the layout is looking good --> if if it is, return model 
             if(checkConds(nodePositions, center, numActors)) {
             	if (LMain.DEBUG) System.out.println("Conditions Met");
             	return model;
             }
             
+            //update the visualizer
             lV.update();
             if (LMain.DEBUG) System.out.println(constant);
         }
 		if (LMain.DEBUG) System.out.println(Arrays.toString(nodePositions));
 		if (LMain.DEBUG) System.out.println("Finished: layoutModel");
+
+        //maximum iterations completed
 		return model;
 	}
 	
@@ -244,8 +253,8 @@ public class LayoutAlgorithm {
 
     /**
      * Calculate the distance between two elements
-     * @param x
-     * @param y
+     * @param n1
+     * @param n2
      * @return distance
      */
     private double getDist(VisualInfo n1, VisualInfo n2){
@@ -331,6 +340,8 @@ public class LayoutAlgorithm {
         VisualInfo mostRight = nodePositions[0];
         VisualInfo mostUpper = nodePositions[0];
         VisualInfo mostBottom = nodePositions[0];
+
+        //find the most {left, right, upper, bottom} nodes
         for(VisualInfo nodePosition: nodePositions) {
             if(nodePosition.getX() < mostLeft.getX()){
             	mostLeft = nodePosition;
@@ -355,9 +366,10 @@ public class LayoutAlgorithm {
         double x = (x_left + x_right) / 2;
         double y = (y_upper + y_bottom) / 2;
         
-        
-        VisualInfo center = new VisualInfo((int)(Math.abs(x_left - x_right)), (int)(Math.abs(y_upper - y_bottom)), x, y);
+        //create a visualInfo object that encompasses all the nodes and has its center in the center of the nodes
         //width, height, x, y
+        VisualInfo center = new VisualInfo((int)(Math.abs(x_left - x_right)), (int)(Math.abs(y_upper - y_bottom)), x, y);
+        
         return center;
     }
 
@@ -381,6 +393,7 @@ public class LayoutAlgorithm {
     	 double n2_ymin = n2.getY();
     	 double n2_ymax = n2.getY() + n2.getSize().getHeight();
     	 
+         //asking: is it NOT completely outside?
     	 return !(n1_xmin >= n2_xmax || n1_xmax <= n2_xmin || n1_ymin >= n2_ymax || n1_ymax <= n2_ymin);
      }
      
@@ -423,7 +436,7 @@ public class LayoutAlgorithm {
     		 for(int j = 0; j < nodePositions.length; j++) {
     			 if(i == j) continue;
     			 double adjust_ELM = 0;
-    			 //if either i or j are actors
+    			 //if either i or j are actors, increase the edgeLengthMax
     			 if(i < numActors && j < numActors) {
     				 double dist1 = getHypotenuse(nodePositions[i].getWidth(), nodePositions[i].getHeight());
     				 double dist2 = getHypotenuse(nodePositions[j].getWidth(), nodePositions[j].getHeight());
@@ -435,6 +448,7 @@ public class LayoutAlgorithm {
     			 else if(j < numActors) {
     				 adjust_ELM = getHypotenuse(nodePositions[j].getWidth(), nodePositions[j].getHeight());
     			 }
+                 //if they are close enough, then add an edge between the nodes
     			 if(getDist(nodePositions[i], nodePositions[j]) <= (edgeLength_max + adjust_ELM)) {
     				edgeSet.add(new Integer[]{i,j});
     			 }
@@ -462,11 +476,14 @@ public class LayoutAlgorithm {
     	 //label the current node as visited
     	 visitedSet.add(currentVertex);
     	 if (LMain.DEBUG) System.out.println("visitedSet: " + visitedSet);
+
+         //get the neighbors of the currentVertex
     	 HashSet<Integer> neighborSet = new HashSet<>();
     	 for(Integer[] edge: edgeSet) {
     		 if(edge[0] == currentVertex) neighborSet.add(edge[1]);
     	 }
     	 
+         //do DFS on all the non-visited neighbors
     	 for(Integer neighbor: neighborSet) {
     		 if(visitedSet.contains(neighbor)) continue;
     		 visitedSet = DFS(edgeSet, visitedSet, neighbor);
@@ -484,12 +501,14 @@ public class LayoutAlgorithm {
       */
      public boolean checkConds(VisualInfo[] nodePositions, VisualInfo border, int numActors) {
     	 if (LMain.DEBUG) System.out.println("Checking COnditions");
+         //check that no nodes are overlapped
     	 for(VisualInfo n1: nodePositions) {
     		 for(VisualInfo n2: nodePositions) {
     			 if(n1 == n2) continue;
     			 if(isOverlapped(n1, n2)) return false;
     		 }
     	 }
+         //check that nodes aren't too far away
     	 return isCloseEnough(nodePositions, numActors);
      }
      
