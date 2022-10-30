@@ -128,8 +128,8 @@ class SliderObj {
      * TODO: This method doesn't seem to print out helpful info now
      */
     static getActors() {
-        var elements = graph.getElements();//intentions+actors only, no links
-        console.log('list of elements');
+        var elements = graph.getElements(); // intentions + actors only, no links
+        console.log('List of elements');
         console.log(elements);
         var actors = elements.filter(element => element.get('type') == 'basic.Actor');
         console.log("List of actors");
@@ -141,13 +141,14 @@ class SliderObj {
         $("#j_9").css("display", "none");
 
         var links = graph.getLinks();
-        console.log('links');
+        console.log('List of links'); // both internal and cross-actor links
         console.log(links);
-            // if (cell instanceof joint.shapes.basic.CellLink) {
 
         var intentionsList = [];
         for(var i = 0; i<elements.length; i++ ){
             if(!(elements[i] instanceof joint.shapes.basic.Actor)) {
+                var j_id = joint.util.guid(elements[i]);
+                console.log(j_id); // testing
                 intentionsList.push(elements[i]);
             }
         }
@@ -158,9 +159,8 @@ class SliderObj {
 
         //hard codes to get the embeds of first actor
         var embeds = actors[1].attributes.embeds;
-        console.log("The embeds are:");
+        console.log("The embeds are:"); // embeds == intentions + internal links within that actor
         console.log(embeds);
-        //console.log(actors[0].collection._byId);
         console.log("The types of embeds are:");
         for(var i = 0; i < embeds.length; i++){
             for(var j = 0; j < intentionsList.length; j++){
@@ -169,7 +169,7 @@ class SliderObj {
                 }
             }
         }
-        console.log("embedded links");
+        console.log("Embedded links");
         for(var i = 0; i < embeds.length; i++){
             for(var j = 0; j < links.length; j++){
                 if(embeds[i] === links[j].attributes.id){
@@ -192,7 +192,7 @@ class SliderObj {
                 intentionsList.push(elements[i]);
             }
         }
-        console.log('list of intentions');
+        console.log('List of intentions');
         console.log(intentionsList); 
     }
     
