@@ -140,11 +140,9 @@ public class PreMerge {
 			BufferedWriter bw = new BufferedWriter(fw);
 			PrintWriter printFile = new PrintWriter(bw);
 
-
 			// first, print intention name
 			printFile.printf("{%n\t\"intention\": \"%s\",%n", intentionA.getName().trim());
 
-			// TODO: only output if A or B has more than 1 evolving function
 			// timing for intention A
 			List<String> startTimesA = intentionA.getEvolvingFunctionStartTimes();
 			printTimingIntention(startTimesA, "A", printFile);

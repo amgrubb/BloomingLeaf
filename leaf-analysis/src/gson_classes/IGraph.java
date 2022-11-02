@@ -16,7 +16,6 @@ public class IGraph {
 	private List<ICell> cells;
 	
 	public IGraph(Integer maxAbsTime, int[] absTimePtsArr, List<ICell> cells) {
-		// TODO: add constraints to constructor
 		this.type = "goalmodel.Graph";
 		this.maxAbsTime = maxAbsTime;
 		this.absTimePtsArr = absTimePtsArr;

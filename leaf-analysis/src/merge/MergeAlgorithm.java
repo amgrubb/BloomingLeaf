@@ -642,9 +642,6 @@ public class MergeAlgorithm {
 						if(newSource) {
 							addeddl.addSrc(source);
 							source.addLinksAsSrc(addeddl);
-
-							//TODO: make sure id for the sublink is unique
-							// addeddl.addNewSublinkID(dl.getSubLinkUniqueIDList().get(dl.getSubLinkUniqueIDList().size()-1));
 							addeddl.addNewSublinkID("");
 
 						}
@@ -707,7 +704,6 @@ public class MergeAlgorithm {
 						}
 						//check for tp info conflict
 						else if(addeddl.getAbsTime() != dl.getAbsTime() && dl.getAbsTime() != null) {
-							//TODO: add timings to timings deletion list
 							deletedTimings.add(addeddl.getLinkTP() + "=" + Integer.toString(addeddl.getAbsTime()) + ", "+ dl.getLinkTP() + "=" + Integer.toString(dl.getAbsTime()));
 							conflictMessages.add(addeddl.getName() + " had link abs time points that were unresolvable.");
 							addeddl.setAbsTime((Integer)null);
@@ -773,10 +769,7 @@ public class MergeAlgorithm {
 		//add nbls to deleted elements
 		mergedNBL.removeAll(deletedNBL);
 		deletedElements.add((ArrayList<? extends AbstractElement>) deletedNBL);
-
-		//TODO: check to make sure no other links exist for contribution links
-		//TODO: check to make sure no other links exist for decomposition links
-
+		
 		//add links to model
 		mergedModel.setContributionLinks(mergedCL);
 		mergedModel.setDecompositionLinks(mergedDL);
