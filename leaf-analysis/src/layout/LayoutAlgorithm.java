@@ -569,6 +569,7 @@ public class LayoutAlgorithm {
         return (n1_xmin < n2_xmin || n1_ymin < n2_ymin || n1_xmax > n2_xmax || n1_ymax > n2_ymax);
 
     }
+ /********* Start of methods not being used currently ******************/
 
       /*These are methods trying to improve the layout
        *according to the heurstic of setting hierarchy for elements
