@@ -90,13 +90,13 @@ class SliderObj {
             //Goes through each element in elementlist and runs checkSatVal method that prints out each sat val for each element
             currentAnalysis.get('elementList').forEach(element =>
                 SliderObj.checkSatVal(element,parseInt(values[handle]),SatList)); //prints each sat val individually and pushes them into SatList array
-            console.log("Sat Value array: " + SatList); //prints entire arrray of sat values
+            console.log("Sat value array: " + SatList); // prints array of sat values of all intentions
 
             //Goes through each element on the graph and pushes it into ElList array
             var cells = paper.findViewsInArea(paper.getArea()); //cells is an array containing all intentions on graph
             cells.forEach(elements => //goes through each elements in "cells" array and pushes each element id into ElList. "elements.id" gets access to the "j_7" ids
                 ElList.push(elements.id));
-            console.log("Element id array: " + ElList); //prints entire arrray of elements id
+            console.log("Element j_id array: " + ElList); // prints array of j_ids of actors + intentions
 
             // SliderObj.compareSatVal(element,parseInt(values[handle]), SatList, ElList); //Method here is not finished but when calls the compareSatVal to compare  
         
@@ -128,39 +128,55 @@ class SliderObj {
      * TODO: This method doesn't seem to print out helpful info now
      */
     static getActors() {
-        var elements = graph.getElements();//intentions+actors only, no links
-        console.log('list of elements');
-        console.log(elements);
-        var actors = elements.filter(element => element.get('type') == 'basic.Actor');
-        console.log("List of actors");
-        console.log(actors); 
-        var j_id = joint.util.guid(actors[0]);
-        console.log("j_id is " + j_id);
+        var jIdList = []
+        var cells = paper.findViewsInArea(paper.getArea()); //cells is an array containing all intentions on graph
+        console.log("Cells:");
+        console.log(cells);
+        cells.forEach(cell => //goes through each elements in "cells" array and pushes each element id into ElList. "elements.id" gets access to the "j_7" ids
+            jIdList.push(cell.id)
+        );
+        console.log("Element j_id array (1): " + jIdList); // prints array of j_ids of actors + intentions
+        cells.forEach(cell => 
+            console.log("Cell j_id? " + cell.id)
+        );
+        cells.forEach(cell => 
+            console.log("Cell mode_id? " + cell.model.id)
+        );
 
-        $("#"+j_id).css("display", "none");
-        $("#j_9").css("display", "none");
+        var elements = graph.getElements(); // intentions + actors only, no links
+        // console.log('List of elements');
+        // console.log(elements);
+        var actors = elements.filter(element => element.get('type') == 'basic.Actor');
+        // console.log("List of actors");
+        // console.log(actors); 
+        // var j_id = joint.util.guid(actors[0]);
+        // console.log("j_id is " + j_id); // not working because model_id is already defined, 
+        //                                 // returns model_id instead of j_id
+
+        // $("#"+j_id).css("display", "none");
+        // $("#j_9").css("display", "none");
 
         var links = graph.getLinks();
-        console.log('links');
+        console.log('List of links'); // both internal and cross-actor links
         console.log(links);
-            // if (cell instanceof joint.shapes.basic.CellLink) {
 
         var intentionsList = [];
         for(var i = 0; i<elements.length; i++ ){
             if(!(elements[i] instanceof joint.shapes.basic.Actor)) {
+                var j_id = joint.util.guid(elements[i]);
+                console.log(j_id); // testing
                 intentionsList.push(elements[i]);
             }
         }
 
-        var j_id2 = joint.util.guid(intentionsList[0]);
-        console.log("j_id2 is " + j_id2);
-        $("#"+j_id2).css("display", "none");
+        // var j_id2 = joint.util.guid(intentionsList[0]);
+        // console.log("j_id2 is " + j_id2);
+        // $("#"+j_id2).css("display", "none");
 
         //hard codes to get the embeds of first actor
         var embeds = actors[1].attributes.embeds;
-        console.log("The embeds are:");
+        console.log("The embeds are:"); // embeds == intentions + internal links within that actor
         console.log(embeds);
-        //console.log(actors[0].collection._byId);
         console.log("The types of embeds are:");
         for(var i = 0; i < embeds.length; i++){
             for(var j = 0; j < intentionsList.length; j++){
@@ -169,7 +185,7 @@ class SliderObj {
                 }
             }
         }
-        console.log("embedded links");
+        console.log("Embedded links");
         for(var i = 0; i < embeds.length; i++){
             for(var j = 0; j < links.length; j++){
                 if(embeds[i] === links[j].attributes.id){
@@ -192,7 +208,7 @@ class SliderObj {
                 intentionsList.push(elements[i]);
             }
         }
-        console.log('list of intentions');
+        console.log('List of intentions');
         console.log(intentionsList); 
     }
     
