@@ -136,25 +136,19 @@ class SliderObj {
             jIdList.push(cell.id)
         );
         console.log("Element j_id array (1): " + jIdList); // prints array of j_ids of actors + intentions
+        console.log("Cell j_id:");
         cells.forEach(cell => 
-            console.log("Cell j_id? " + cell.id)
+            console.log(cell.id)
         );
+        console.log("Cell model_id:");
         cells.forEach(cell => 
-            console.log("Cell mode_id? " + cell.model.id)
+            console.log(cell.model.id)
         );
 
         var elements = graph.getElements(); // intentions + actors only, no links
         // console.log('List of elements');
         // console.log(elements);
         var actors = elements.filter(element => element.get('type') == 'basic.Actor');
-        // console.log("List of actors");
-        // console.log(actors); 
-        // var j_id = joint.util.guid(actors[0]);
-        // console.log("j_id is " + j_id); // not working because model_id is already defined, 
-        //                                 // returns model_id instead of j_id
-
-        // $("#"+j_id).css("display", "none");
-        // $("#j_9").css("display", "none");
 
         var links = graph.getLinks();
         console.log('List of links'); // both internal and cross-actor links
@@ -169,22 +163,23 @@ class SliderObj {
             }
         }
 
+        //set all intentions disappear 
+        // for(var i = 0; i < cells.length; i++){
+        //     for(var j = 0; j<intentionsList.length; j++ ){
+        //         if(cells[i].model.id === intentionsList[j].id){
+        //             console.log("Cell matched j_id "+ cells[i].id);
+        //             $("#"+cells[i].id).css("display", "none");
+        //         }
+        //     }
+        // };
+
         // var j_id2 = joint.util.guid(intentionsList[0]);
         // console.log("j_id2 is " + j_id2);
         // $("#"+j_id2).css("display", "none");
 
         //hard codes to get the embeds of first actor
         var embeds = actors[1].attributes.embeds;
-        console.log("The embeds are:"); // embeds == intentions + internal links within that actor
-        console.log(embeds);
-        console.log("The types of embeds are:");
-        for(var i = 0; i < embeds.length; i++){
-            for(var j = 0; j < intentionsList.length; j++){
-                if(embeds[i] === intentionsList[j].id){
-                    console.log(intentionsList[j].attributes.type);
-                }
-            }
-        }
+        console.log("The embeds are:" + embeds); // embeds == intentions + internal links within that actor
         console.log("Embedded links");
         for(var i = 0; i < embeds.length; i++){
             for(var j = 0; j < links.length; j++){
@@ -193,6 +188,18 @@ class SliderObj {
                 }
             }
         }
+        //todo: make internal links and source/target links disappear
+
+        //get the embedded intentions of the second actor disappear
+        console.log("Cell matched j_id:");
+        for(var i = 0; i < cells.length; i++){
+            for(var j = 0; j<embeds.length; j++ ){
+                if(cells[i].model.id === embeds[j]){
+                    console.log(cells[i].id);
+                    $("#"+cells[i].id).css("display", "none");
+                }
+            }
+        };
 
     }
 
