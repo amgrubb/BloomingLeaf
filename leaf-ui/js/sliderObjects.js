@@ -173,10 +173,6 @@ class SliderObj {
         //     }
         // };
 
-        // var j_id2 = joint.util.guid(intentionsList[0]);
-        // console.log("j_id2 is " + j_id2);
-        // $("#"+j_id2).css("display", "none");
-
         //hard codes to get the embeds of first actor
         var embeds = actors[1].attributes.embeds;
         console.log("The embeds are:" + embeds); // embeds == intentions + internal links within that actor
