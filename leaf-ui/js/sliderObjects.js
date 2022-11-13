@@ -102,6 +102,7 @@ class SliderObj {
         
             SliderObj.getActors();
             SliderObj.getEmbeddedElements();
+            SliderObj.getLinkModelIds();
             
             // Testing of disappearIntention() for j_id of #j_27. 
             // IMPORTANT: Comment out later, do not delete for now.
@@ -132,14 +133,14 @@ class SliderObj {
         cells.forEach(cell => 
             jIdList.push(cell.id)
         );
-        console.log("Element j_id array (1): " + jIdList); // prints array of j_ids of actors + intentions
+        console.log("j_ids of actors and intentions: " + jIdList); // prints array of j_ids of actors + intentions
         // cells.forEach(cell => 
         //     console.log("Cell j_id? " + cell.id)
         // );
         // cells.forEach(cell => 
         //     console.log("Cell model_id? " + cell.model.id)
         // );
-        return cells
+        return cells;
 
     }
 
@@ -147,15 +148,34 @@ class SliderObj {
      * Returns the list of embedded elements (intentions + internal links) of an actor
      */
     static getEmbeddedElements() {
-        var elements = graph.getElements(); // intentions + actors only, no links
-        var actors = elements.filter(element => element.get('type') == 'basic.Actor');
-
-        // Hard code to get the embeds of first actor (merge1: self)
+        var cells = SliderObj.getIntentionsAndActors();
+        // Hard code to get the embeds of first actor (merge1: self) j_10
         // TODO: remove the hard code
-        var embeds = actors[1].attributes.embeds;
-        // console.log("The embeds are:"); // embeds == intentions + internal links within that actor
-        // console.log(embeds);
-        return embeds;
+        for (var i = 0; i < cells.length; i++) {
+            if (cells[i].id == "j_10" && cells[i].model.attributes.type == 'basic.Actor') {
+                return cells[i].model.attributes.embeds;
+            }
+        }
+
+        // var elements = graph.getElements(); // intentions + actors only, no links
+        // var actors = elements.filter(element => element.get('type') == 'basic.Actor');
+
+        // // Hard code to get the embeds of first actor (merge1: self)
+        // // TODO: remove the hard code
+        // var embeds = actors[1].attributes.embeds;
+        // // console.log("The embeds are:"); // embeds == intentions + internal links within that actor
+        // // console.log(embeds);
+        // return embeds;
+    }
+
+    /**
+     * Returns model ids of links (embedded + cross-actor links) of the current model
+     * TODO: needs to get j_id of links!
+     */
+    static getLinkModelIds() { // both embedded and cross-actor links?
+        var links = graph.getLinks();
+        console.log('List of links'); // both internal and cross-actor links
+        return links;
     }
 
     /**
@@ -206,16 +226,16 @@ class SliderObj {
         }
         //todo: make internal links and source/target links disappear
 
-        //get the embedded intentions of the second actor disappear
-        console.log("Cell matched j_id:");
-        for(var i = 0; i < cells.length; i++){
-            for(var j = 0; j<embeds.length; j++ ){
-                if(cells[i].model.id === embeds[j]){
-                    console.log(cells[i].id);
-                    $("#"+cells[i].id).css("display", "none");
-                }
-            }
-        };
+        // //get the embedded intentions of the second actor disappear
+        // console.log("Cell matched j_id:");
+        // for(var i = 0; i < cells.length; i++){
+        //     for(var j = 0; j<embeds.length; j++ ){
+        //         if(cells[i].model.id === embeds[j]){
+        //             console.log(cells[i].id);
+        //             $("#"+cells[i].id).css("display", "none");
+        //         }
+        //     }
+        // };
 
         // return actors;
 
@@ -238,8 +258,7 @@ class SliderObj {
     }
     
     /**
-     * a Method that makes actors, intentions and links dissapear
-     * TODO: try to obtain the j_id from the correspoding model_id (long id)
+     * Makes actors, intentions and links dissapear
      */
     static disappearIntention(bool) {
         SliderObj.getActors();
@@ -259,96 +278,104 @@ class SliderObj {
         console.log("First actor's embeds: ");
         console.log(firstActorEmbeds);
 
+        var links = SliderObj.getLinkModelIds();
+        console.log("Model's links: ");
+        console.log(links);
+
         if (bool) {
-            // Works for links -- hardcoded
-            // TODO: replace hardcoded part
-            $("#j_12").css("display", "none");
-            $("#j_13").css("display", "none");
-            $("#j_14").css("display", "none");
+            // // Works for links -- hardcoded
+            // // TODO: replace hardcoded part
+            // $("#j_12").css("display", "none");
+            // $("#j_13").css("display", "none");
+            // $("#j_14").css("display", "none");
 
-            var valid_j_id = "#";
-            // Works for a single goal
-            for (var i = 0; i < cells.length; i++) {
-                console.log(cells[i].model.attributes.type);
-                if (cells[i].model.attributes.type == 'basic.Goal') {
-                    // console.log(cells[i].id);
-                    valid_j_id += cells[i].id;
-                    console.log(valid_j_id);
-                }
-                
-            } 
-            $(valid_j_id).css("display", "none");
+            var actor1_j_id = "#";
 
-            // Works for a list of tasks
-            var tasksToRemove = [];
-            for (var i = 0; i < cells.length; i++) {
-                valid_j_id = "#";
-                console.log(cells[i].model.attributes.type);
-                if (cells[i].model.attributes.type == 'basic.Task') {
-                    // console.log(cells[i].id);
-                    valid_j_id += cells[i].id;
-                    console.log(valid_j_id);
-                    tasksToRemove.push(valid_j_id);
-                }
-            } 
-            console.log("Tasks to remove: " + tasksToRemove);
-            for (var i = 0; i < tasksToRemove.length; i++) {
-                $(tasksToRemove[i]).css("display", "none");
-            }
-
-            // Actor 1 (self j_10 in merge1)??? expected j_6, j_7, j_8
-            // TODO: embed list appears strange
+            // Works for actor 1 embedded intentions (self j_10 in merge1) expected j_6, j_7, j_8
             var elementsToRemove = [];
             for (var i = 0; i < firstActorEmbeds.length; i++) {
                 console.log(firstActorEmbeds[i]);
 
                 for (var j = 0; j < cells.length; j ++) {
                     if (firstActorEmbeds[i] == cells[j].model.id) {
-                        console.log(cells[j].model.id);
-                        valid_j_id = "#";
-                        valid_j_id += cells[i].id;
-                        console.log(valid_j_id);
-                        elementsToRemove.push(valid_j_id);
+                        console.log("Cell model i_d matched: " + cells[j].model.id);
+                        console.log("Since matched, j_id is " + cells[j].id);
+                        elementsToRemove.push(cells[j].id);
                     }
                 }
             }
+
+            // TODO: Does it work for actor 1's embedded links???
+            
             console.log("Actor 1 elements to remove: " + elementsToRemove);
+            // Convert into valid j_ids
+            for (var i = 0; i < elementsToRemove.length; i++) {
+                elementsToRemove[i] = "#" + elementsToRemove[i];
+            }
+            console.log("Modified actor 1 elements to remove: " + elementsToRemove);
+            for (var i = 0; i < elementsToRemove.length; i++) {
+                $(elementsToRemove[i]).css("display", "none");
+            }
+
+            // Works for actor 1
+            // TODO: replace hard codes
+            for (var i = 0; i < cells.length; i++) {
+                console.log(cells[i].model.attributes.type);
+                if (cells[i].model.attributes.type == 'basic.Actor' && cells[i].id == "j_10") {
+                    // console.log(cells[i].id);
+                    actor1_j_id += cells[i].id;
+                    console.log(actor1_j_id);
+                }
+            }
+            $(actor1_j_id).css("display", "none");
         }
         else {
-            // Works for links -- hardcoded
-            // TODO: replace hardcoded part
-            $("#j_12").css("display", "");
-            $("#j_13").css("display", "");
-            $("#j_14").css("display", "");
+            // // Works for links -- hardcoded
+            // // TODO: replace hardcoded part
+            // $("#j_12").css("display", "");
+            // $("#j_13").css("display", "");
+            // $("#j_14").css("display", "");
 
-            var valid_j_id = "#";
-            // Works for a single goal
+            // Works for actor 1 embedded intentions (self j_10 in merge1) expected j_6, j_7, j_8
+            var elementsToRemove = [];
+            for (var i = 0; i < firstActorEmbeds.length; i++) {
+                console.log(firstActorEmbeds[i]);
+
+                for (var j = 0; j < cells.length; j ++) {
+                    if (firstActorEmbeds[i] == cells[j].model.id) {
+                        console.log("Cell model i_d matched: " + cells[j].model.id);
+                        console.log("Since matched, j_id is " + cells[j].id);
+                        elementsToRemove.push(cells[j].id);
+                    }
+                }
+            }
+
+            // TODO: Does it work for actor 1's embedded links???
+
+            console.log("Actor 1 elements to remove: " + elementsToRemove);
+            // Convert into valid j_ids
+            for (var i = 0; i < elementsToRemove.length; i++) {
+                elementsToRemove[i] = "#" + elementsToRemove[i];
+            }
+            console.log("Modified actor 1 elements to remove: " + elementsToRemove);
+            for (var i = 0; i < elementsToRemove.length; i++) {
+                $(elementsToRemove[i]).css("display", "");
+            }
+
+            // Works for Actor 1
+            // TODO: replace hard codes
+            var actor1_j_id = "#";
             for (var i = 0; i < cells.length; i++) {
                 console.log(cells[i].model.attributes.type);
-                if (cells[i].model.attributes.type == 'basic.Goal') {
+                if (cells[i].model.attributes.type == 'basic.Actor' && cells[i].id == "j_10") {
                     // console.log(cells[i].id);
-                    valid_j_id += cells[i].id;
-                    console.log(valid_j_id);
+                    actor1_j_id += cells[i].id;
+                    console.log(actor1_j_id);
                 }
-            }  
-            $(valid_j_id).css("display", "");
+            }
+            $(actor1_j_id).css("display", "");
 
-            // Works for a list of tasks
-            var tasksToReappear = [];
-            for (var i = 0; i < cells.length; i++) {
-                valid_j_id = "#";
-                console.log(cells[i].model.attributes.type);
-                if (cells[i].model.attributes.type == 'basic.Task') {
-                    // console.log(cells[i].id);
-                    valid_j_id += cells[i].id;
-                    console.log(valid_j_id);
-                    tasksToReappear.push(valid_j_id);
-                }
-            } 
-            console.log("Tasks to reappear: " + tasksToReappear);
-            for (var i = 0; i < tasksToReappear.length; i++) {
-                $(tasksToReappear[i]).css("display", "");
-            } 
+            
         }
     }
 
