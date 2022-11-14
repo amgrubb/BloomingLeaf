@@ -13,7 +13,7 @@ public class LayoutVisualizer {
 	JPanel panel;
 	
     public LayoutVisualizer(VisualInfo[] nodes, VisualInfo center, int numActors){
-        this.frame = new JFrame();
+    	if(LMain.DEBUG) this.frame = new JFrame();
         this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.frame.setVisible(true);
         this.frame.setSize(center.getWidth(), center.getHeight());
@@ -49,15 +49,15 @@ public class LayoutVisualizer {
                 
             }
         };
-        frame.add(panel);
+        if(LMain.DEBUG) frame.add(panel);
 
 
-        frame.validate();
-        frame.repaint(); 
+        if(LMain.DEBUG) frame.validate();
+        if(LMain.DEBUG) frame.repaint(); 
     }
     
     public void update() {
-    	frame.repaint(); 
+    	if(LMain.DEBUG) frame.repaint(); 
     }
 }
 
