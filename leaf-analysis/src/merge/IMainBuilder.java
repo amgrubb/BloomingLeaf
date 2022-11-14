@@ -44,6 +44,7 @@ public class IMainBuilder {
 				ICell newCell = new ICell(newActor, type, id, z, size, position, embeds, name);
 				cells.add(newCell);
 
+				// increment cell counter
 				z++;
 			}
 		}
@@ -205,6 +206,13 @@ public class IMainBuilder {
 
 	}
 
+	/**
+	 * Create BIIntention in (frontend) IMain-compatible format
+	 * from the backend Intention object
+	 * Creates BIEvolvingFunction from the evolvingFunctions, and creates user assignments list from the userEvals
+	 * @param specIntention
+	 * @return
+	 */
 	private static BIIntention buildBIIntention(Intention specIntention) {
 		// create evolving functions
 		BIFunctionSegment[] functionSegs;
@@ -231,6 +239,12 @@ public class IMainBuilder {
 		return newIntention;
 	}
 	
+	/* 
+	 * for converting FunctionSegments into a (frontend) format compatible with IMain objects
+	 * input: list of evolving function segments - FunctionSegment[]
+	 * output: list of BIFunctionSegments - BIFunctionSegment[]
+	 * we use these BIFunctionSegments to put one BIEvolvingFunction on the BIIntention
+	 */
 	private static BIFunctionSegment[] getFunctionSegs(FunctionSegment[] evolvingFunctions){
 		// for intentions w/o extra info on evolving functions (MFunctionSegment list)
 		
@@ -249,6 +263,12 @@ public class IMainBuilder {
 		return functionSegList;
 	}
 	
+	/* 
+	 * for converting our Merge brand of FunctionSegments (MFunctionSegment) into a (frontend) format compatible with IMain objects
+	 * input: list of evolving function segments in MFunctionSegment format - List<MFunctionSegment>
+	 * output: list of BIFunctionSegments - BIFunctionSegment[]
+	 * we use these BIFunctionSegments to put one BIEvolvingFunction on the BIIntention
+	 */
 	private static BIFunctionSegment[] getFunctionSegsMerged(List<MFunctionSegment> evolvingFunctions){
 		// for intentions w/o extra info on evolving functions (MFunctionSegment list)
 		
@@ -267,6 +287,15 @@ public class IMainBuilder {
 		
 		return functionSegList;
 	}
+	
+	/*
+	 * for putting one BIEvolvingFunction on the BIIntention
+	 * based on BIFunctionSegment[] as returned from getFunctionSegs() or getFunctionSegsMerged()
+	 * detects evolving function type for the frontend
+	 * 
+	 * input: BIFunctionSegment[] as returned from getFunctionSegs() or getFunctionSegsMerged()
+	 * output: BIEvolvingFunction
+	 */
 
 	private static BIEvolvingFunction getEvolvingFunction(BIFunctionSegment[] functionSegList) {
 		// find type of evolving function

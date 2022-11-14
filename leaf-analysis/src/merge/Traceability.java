@@ -16,6 +16,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
+/**
+ * Outputs records of merged elements, deleted elements, merge conflicts, and element counts
+ * For user review
+ */
+
 public class Traceability{
 	private String fileName = "traceabilityOutput.txt";
 	
