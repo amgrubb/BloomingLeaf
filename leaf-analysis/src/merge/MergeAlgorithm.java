@@ -261,34 +261,44 @@ public class MergeAlgorithm {
 	}
 
 	/**
-     * Attach old links to new intentions and vice versa
+     * Attach old links to new intentions 
 	 */
 	public static void updateRepeatedIntention(Intention newIntention, Intention oldIntention, ModelSpec model2){
-
+		
+		//not both links
 		for(NotBothLink nbl: model2.getNotBothLink()){
+			//Check source intention
 			if(nbl.getElement1() == oldIntention){
 				nbl.setElement1(newIntention);
 			}
+			//check destination intention
 			if(nbl.getElement2() == oldIntention){
 				nbl.setElement2(newIntention);
 			}
 		}
+		
+		//contributionLinks
 		for(ContributionLink cl: model2.getContributionLinks()){
+			//Check all source intentions
 			for(int i = 0; i < cl.getSrc().length; i++){
 				if(cl.getSrc()[i] instanceof Intention && ((Intention)cl.getSrc()[i]) == oldIntention){
 					cl.getSrc()[i] = newIntention;
 				}
 			}
+			//check destination intention
 			if(cl.getDest() == oldIntention){
 				cl.setDest(newIntention);
 			}
 		}
+		//DecompositionLinks
 		for(DecompositionLink dl: model2.getDecompositionLinks()){
 			for(int i = 0; i < dl.getSrc().length; i++){
+				//Check all source intentions
 				if(dl.getSrc()[i] instanceof Intention && ((Intention)dl.getSrc()[i]) == oldIntention){
 					dl.getSrc()[i] = newIntention;
 				}
 			}
+			//check destination intention
 			if(dl.getDest() == oldIntention){
 				dl.setDest(newIntention);
 			}
@@ -304,7 +314,8 @@ public class MergeAlgorithm {
 		if(actorOne.getActorType().equals(actorTwo.getActorType()) || (actorOne.getActorType().equals("G")) || (actorOne.getActorType().equals("R") && !actorTwo.getActorType().equals("G"))) {
 			String newId = createID(actorNum, 12, actorOne.getId(), "Actor");
 			actorOne.setId(newId);
-			//actorTwo.setId(newId);
+			
+			//transfer all children/attachments to actor 1
 			updateRepeatedActor(actorOne, actorTwo, model2);
 			return actorOne;
 		}
@@ -312,47 +323,70 @@ public class MergeAlgorithm {
 		// else use actorTwo if > type to actorOne
 		String newId = createID(actorNum, 21, actorTwo.getId(), "Actor");
 		actorTwo.setId(newId);
-		//actorOne.setId(newId);
+		
+		//transfer all children/attachments to actor 1
 		updateRepeatedActor(actorTwo, actorOne, model1);
 		return actorTwo;
 
 	}
 
 	public void mergeActors() {
+		//to keep track of all the actors
 		HashSet<String> actorsNameSet = new HashSet<>();
 		ArrayList<Actor> mergedActors = new ArrayList<>();
+		
+		//for id'ing
 		int actorCounter = 0;
+		
+		//check for matches between actors based on name
 		for(Actor actor1: model1.getActors()) {
 			for(Actor actor2: model2.getActors()) {
 				if(isEqualToCleaned(actor1.getName(),actor2.getName())) {
 					//merge actors
 					mergedActors.add(mergeToOneActor(actor1, actor2, actorCounter, model1, model2));
+					
+					//add actors
 					actorsNameSet.add(actor1.getName());
+					
 					actorCounter += 1;
 
 				}
 			}
 		}
+		
+		//add any unique actors from model 1
 		for(Actor actor1: model1.getActors()) {
 			if(!containsCleaned(actor1.getName(), actorsNameSet)) {
+				//change id
 				String newId = createID(actorCounter, 1, actor1.getId(), "Actor");
 				actor1.setId(newId);
+				
+				//add actor
 				mergedActors.add(actor1);
 				actorsNameSet.add(actor1.getName());
+				
 				actorCounter += 1;
 
 			}
 		}
+		
+		//add any unique actors from model 2
 		for(Actor actor2: model2.getActors()) {
 			if(!containsCleaned(actor2.getName(), actorsNameSet)) {
+				//change id
 				String newId = createID(actorCounter, 2, actor2.getId(), "Actor");
 				actor2.setId(newId);
+				
+				//add actor
 				mergedActors.add(actor2);
 				actorsNameSet.add(actor2.getName());
+				
 				actorCounter += 1;
 
 			}
 		}
+		
+		//add merged actors to model
 		mergedModel.setActors(mergedActors);
 	}
 	/*
@@ -388,9 +422,13 @@ public class MergeAlgorithm {
 	public void mergeActorLinks() {
 		ArrayList<ActorLink> mergedAL = new ArrayList<>(); //ALs that will be preserved
 		ArrayList<ActorLink> deletedAL = new ArrayList<>(); //ALs that will be logged as deleted
+		
+		//for id'ing
 		int linkCount = 0;
 
+		//add all actorlinks from model 1
 		for(ActorLink al: model1.getActorLinks()) {
+			//check that types match up with actor + link
 			if(isValidTypes((Actor)al.getZeroSrc(), (Actor)al.getDest(), al.getType())) {
 				String newID = createID(linkCount, 1, al.getID(), "ActorLink");
 				al.setID(newID);
@@ -405,8 +443,12 @@ public class MergeAlgorithm {
 			
 
 		}
+		
+		//begin merging actorLinks from model 2 on top of model 1
 		for(ActorLink al: model2.getActorLinks()) {
 			boolean isNewLink = true;
+			
+			//check if its a unique link or needs to be merged in
 			for(ActorLink addedal: mergedAL) {
 				if(isSameActorLink(al, addedal)) {
 					isNewLink = false;
@@ -420,6 +462,7 @@ public class MergeAlgorithm {
 					}
 				}
 			}
+			//if its unique
 			if(isNewLink) {
 				//check for conflicts
 				if(isValidTypes((Actor)al.getZeroSrc(), (Actor)al.getDest(), al.getType())) {
@@ -437,19 +480,25 @@ public class MergeAlgorithm {
 				}
 			}
 		}
-
+		
+		//log conflict messages for all deletions
 		for(ActorLink al: deletedAL) {
 			if(mergedAL.contains(al)) {
 				mergedAL.remove(al);
 			}
 			conflictMessages.add(al.getName() + " conflicted with actor types.");
 		}
-
+		
+		//add merged AL to merged model
 		mergedModel.setActorLinks(mergedAL);
+		
+		//add deleted ALs to deleted elements list for logging
 		deletedElements.add((ArrayList<? extends AbstractElement>) deletedAL);
 	}
 
 	public static void updateALTypes(ActorLink al1, ActorLink al2) {
+		
+		//convert the AL types to PI if they aren't the same
 		if(!al1.getType().getCode().equals(al2.getType().getCode())) {
 			al1.setType(ActorLinkType.PI);
 			al2.setType(ActorLinkType.PI);
@@ -479,6 +528,7 @@ public class MergeAlgorithm {
 	*/
 
 	public static boolean isSameActorLink(ActorLink al1, ActorLink al2) {
+		//checking that source and destination of both actorlinks are the same
 		return (isEqualToCleaned(al1.getZeroSrc().getName(),al2.getZeroSrc().getName()) && isEqualToCleaned(al1.getDest().getName(),al2.getDest().getName()));
 
 	}
