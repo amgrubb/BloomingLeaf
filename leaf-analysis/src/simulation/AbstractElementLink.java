@@ -11,16 +11,23 @@ import java.util.List;
  *
  */
 public abstract class AbstractElementLink extends AbstractElement{
-	protected String id = "NO-ID";	//Format that maps to array ordering.
+	protected String id = "NO-ID";	//  Format that maps to array ordering.
+	// placeholder where AbstractLinkableElement has a backend ID
 	
 	private static int linkTPcounter = 1;
 	
 	private AbstractLinkableElement[] src = null;
 	private AbstractLinkableElement dest = null;
-	private boolean isEvolving = false;			// 	Whether link has a post relationship type.
-	private Integer absTime = null; 					//	Optional absolute time of transition.
+	private boolean isEvolving = false;				// 	Whether link has a post relationship type.
+	private Integer absTime = null; 				//	Optional absolute time of transition.
 	private String linkTP = null;
 	
+	/**
+	 * @param s - source linkable element
+	 * @param d - destination linkable element
+	 * @param uniqueID - frontend ID, unique among all cell-types (actor, intention, link)
+	 * @param absoluteTime - time at which link evolves relationship type -> if present, link is evolving!
+	 */
 	public AbstractElementLink(AbstractLinkableElement[] s, AbstractLinkableElement d, String uniqueID) {
 		super(uniqueID);
 		src = s;
@@ -41,6 +48,10 @@ public abstract class AbstractElementLink extends AbstractElement{
 		return tp;
 	}
 
+	/*
+	 * isEvolving represents whether the link has a post relationship type
+	 * example evolving link: contribution evolves from ++ to +
+	 */
 	public boolean isEvolving() {
 		return isEvolving;
 	}
@@ -109,6 +120,9 @@ public abstract class AbstractElementLink extends AbstractElement{
 		this.dest = dest;
 	}
 	
+	/**
+	 * id is backendID; uniqueID is frontendID
+	 */
 	public String getID() {
 		return id;
 	}

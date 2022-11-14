@@ -26,15 +26,20 @@ public abstract class AbstractLinkableElement extends AbstractElement{
 	public int getIdNum() {
 		return Integer.parseInt(id);
 	}
+	/**
+	 * @param nodeID - backend ID
+	 * @param nodeName - name in words
+	 * @param uniqueID - frontend ID, unique among all cell-types (actor, intention, link)
+	 */
 	public AbstractLinkableElement(String nodeID, String nodeName) {
 		super(null);
-		this.id = nodeID;
-		this.name = nodeName.trim();
+		this.id = nodeID;				// backend ID, created in BIModelSpecBuilder (actors) or Intention.getNewBackendID() (during Intention.createIntention())
+		this.name = nodeName.trim();  	// name in words, as set by the user (e.g. 'actor1' or 'go to grad school')
 	}
 	public AbstractLinkableElement(String nodeID, String nodeName, String uniqueID) {
 		super(uniqueID);
-		this.id = nodeID;
-		this.name = nodeName.trim();
+		this.id = nodeID;				// backend ID, created in BIModelSpecBuilder (actors) or Intention.getNewBackendID() (during Intention.createIntention())
+		this.name = nodeName.trim();  	// name in words, as set by the user (e.g. 'actor1' or 'go to grad school')
 	}
     public void addLinksAsSrc(AbstractElementLink iLink){
         linksSrc.add(iLink);

@@ -11,6 +11,8 @@ import simulation.*;
 
 /*
  * Converts from ModelSpec back to IMain for output
+ * (Backend format -> frontend format)
+ * Reverse of BIModelSpecBuilder
  */
 
 public class IMainBuilder {
