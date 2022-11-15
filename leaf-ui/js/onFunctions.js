@@ -207,26 +207,41 @@ $('#legend').on('click', function () { window.open('./userguides/legend.html', '
  * @param {*} palette_number 
  */
 function displayPalette(palette_number ) {
-    switch(palette_number) {
-        case 1:
-            window.open('./userguides/defaultPalette.html', 'newwindow', 'width=500, height=400')
-          break;
-        case 2:
-          window.open('./userguides/RedGreenPalette.html', 'newwindow', 'width=500, height=400')
-          break;
-        case 3:
-            window.open('./userguides/GreenBlackPalette.html', 'newwindow', 'width=500, height=400')
-            break;
-        case 4:
-          window.open('./userguides/YellowPurplePalette.html', 'newwindow', 'width=500, height=400')
-          break;
-        case 6:
-            window.open('./userguides/palette.html', 'newwindow', 'width=500, height=400')
-            break;
 
-       
+    //creates the color key layout
+    showAlert('Evaluation Visualisation Overlay Color Key',
+        '<div style = "margin-top:40px; margin-inline-start:40%">  <span class = "s_value_box" id = "FS" style="background-color:"c> (F, ⊥) </span> </div>'+
+        '<div style = "margin-top:40px; margin-inline-start: 20%">  <span class = "s_value_box" id = "FP"> (F, P) </span> <span style="margin-right:140px"></span> <span class = "s_value_box" id = "PS"> (P, ⊥) </span> </div>'+
+        '<div style = "margin-top:40px" >  <span class = "s_value_box" id = "FF"> (F, F) </span> <span style="margin-right:135px"></span> <span class = "s_value_box" id = "PP"> (P, P) </span> <span style="margin-right:135px"></span> <span class = "s_value_box" id = "nn"> (⊥, ⊥) </span> </div> '+
+        '<div style = "margin-top:40px; margin-inline-start: 20%"> <span class = "s_value_box" id = "PF"> (P, F) </span> <span style="margin-right:140px"></span> <span class = "s_value_box" id = "PD"> (⊥, P) </span> </div>'+
+        '<div style = "margin-top:40px;  margin-inline-start: 40%">  <span class = "s_value_box" id = "FD"> (⊥, F) </span> </div>',
+    410, 'alert', 'warning');
+   
+    //updates the color chart based on the color preferences
+    if(palette_number<6){
+        document.getElementById("FS").style.backgroundColor= EVO.colorVisDictCollection[palette_number-1]["0011"];
+        document.getElementById("FP").style.backgroundColor= EVO.colorVisDictCollection[palette_number-1]["0111"];
+        document.getElementById("PS").style.backgroundColor= EVO.colorVisDictCollection[palette_number-1]["0010"];
+        document.getElementById("FF").style.backgroundColor= EVO.colorVisDictCollection[palette_number-1]["1111"];
+        document.getElementById("PP").style.backgroundColor= EVO.colorVisDictCollection[palette_number-1]["0110"];
+        document.getElementById("nn").style.backgroundColor= EVO.colorVisDictCollection[palette_number-1]["0000"];
+        document.getElementById("PF").style.backgroundColor= EVO.colorVisDictCollection[palette_number-1]["1110"];
+        document.getElementById("PD").style.backgroundColor= EVO.colorVisDictCollection[palette_number-1]["0100"];
+        document.getElementById("FD").style.backgroundColor= EVO.colorVisDictCollection[palette_number-1]["1100"];
+    } else{
+        document.getElementById("FS").style.backgroundColor= EVO.selfColorVisDict["0011"];
+        document.getElementById("FP").style.backgroundColor= EVO.selfColorVisDict["0111"];
+        document.getElementById("PS").style.backgroundColor= EVO.selfColorVisDict["0010"];
+        document.getElementById("FF").style.backgroundColor= EVO.selfColorVisDict["1111"];
+        document.getElementById("PP").style.backgroundColor= EVO.selfColorVisDict["0110"];
+        document.getElementById("nn").style.backgroundColor= EVO.selfColorVisDict["0000"];
+        document.getElementById("PF").style.backgroundColor= EVO.selfColorVisDict["1110"];
+        document.getElementById("PD").style.backgroundColor= EVO.selfColorVisDict["0100"];
+        document.getElementById("FD").style.backgroundColor= EVO.selfColorVisDict["1100"];
     }
+       
 }
+
 
 
 
@@ -245,8 +260,6 @@ $('#evo-color-key').on('click', function () {
         ' id="show-palette-3" onclick="displayPalette(3)" style="width:100%"> Green-Black Palette' +
         '</button><button type="button" class="model-editing"' +
         ' id="show-palette-4" onclick="displayPalette(4)" style="width:100%"> Yellow-Purple Palette' +
-        '</button><button type="button" class="model-editing"' +
-        ' id="show-palette-5" style="width:100%"> Color-Blind Palette' +
         '</button><button type="button" class="model-editing"' +
         ' id="show-palette-6" onclick="displayPalette(6)" style="width:100%"> My Palette' +
         '</button></p>',
