@@ -49,11 +49,13 @@ public class LayoutAlgorithm {
 		//nested levels (intention level)
 		if (LMain.DEBUG) System.out.println("Starting Nested Level");
 
+
 		for(Actor a: model.getActors()) {
 
 			if (LMain.DEBUG) System.out.println(a.getName());
 
 			// get nodes in this actor
+
 			Intention[] a_intentions = a.getEmbedIntentions(model);
 			if(a_intentions.length == 0) continue;
 
@@ -112,8 +114,8 @@ public class LayoutAlgorithm {
      */
 	public ModelSpec layoutModel(VisualInfo[] nodePositions, boolean hasActors){
 		if (LMain.DEBUG) System.out.println("Starting: layoutModel");
+        //center is where gravity force comes from 
 
-        //center is where gravity force comes from
         VisualInfo center = findCenter(nodePositions);
 
         int numActors = model.getActors().size();
@@ -154,14 +156,6 @@ public class LayoutAlgorithm {
                     double attraction = makeSmall(getAttraction(nodePositions[j], nodePositions[k], constant));
                     double repulsion = getRepulsion(nodePositions[j], nodePositions[k], constant);
 
-                    if(Double.isNaN(theta) ||Double.isNaN(attraction) || Double.isNaN(repulsion)) {
-                    	//TODO: Throw error
-                    	return model;
-                    }
-                    if (LMain.DEBUG) System.out.println("Distance: " + dist);
-                    //if (LMain.DEBUG) System.out.println("Adjust Attraction: " + attraction);
-                    //if (LMain.DEBUG) System.out.println(repulsion);
-                    //if (LMain.DEBUG) System.out.println("Starting: layoutModel adding to sum");
 
                     //decompose attraction and repulsion, scale forces
                     double x_shift = c * (attraction*Math.cos(theta) - repulsion*Math.cos(theta));
@@ -170,13 +164,15 @@ public class LayoutAlgorithm {
                     if (LMain.DEBUG) System.out.println("x_shift" + x_shift);
                     if (LMain.DEBUG) System.out.println("y_shift" + y_shift);
 
+                    
                     //apply forces to node j
                     nodePositions[j].setX(nodePositions[j].getX() + x_shift);
                     nodePositions[j].setY(nodePositions[j].getY() + y_shift);
-
+                    
                     //apply forces to node k in opposite direction
                     nodePositions[k].setX(nodePositions[k].getX() - x_shift);
                     nodePositions[k].setY(nodePositions[k].getY() - y_shift);
+                    
 
                     //if either is an actor, add adjust to children nodes
                     if(j < numActors) {
@@ -204,7 +200,7 @@ public class LayoutAlgorithm {
 
             }
 
-            //check if the layout is looking good --> if if it is, return model
+            //check if the layout is looking good --> if if it is, return model 
             if(checkConds(nodePositions, center, numActors)) {
             	if (LMain.DEBUG) System.out.println("Conditions Met");
             	return model;
@@ -368,7 +364,7 @@ public class LayoutAlgorithm {
 
         double x = (x_left + x_right) / 2;
         double y = (y_upper + y_bottom) / 2;
-
+        
         //create a visualInfo object that encompasses all the nodes and has its center in the center of the nodes
         //width, height, x, y
         VisualInfo center = new VisualInfo((int)(Math.abs(x_left - x_right)), (int)(Math.abs(y_upper - y_bottom)), x, y);
@@ -464,7 +460,6 @@ public class LayoutAlgorithm {
     	 for(Integer[] edge: edgeSet) {
     		 if(edge[0] == currentVertex) neighborSet.add(edge[1]);
     	 }
-
          //do DFS on all the non-visited neighbors
     	 for(Integer neighbor: neighborSet) {
     		 if(visitedSet.contains(neighbor)) continue;
