@@ -205,7 +205,7 @@ class SliderObj {
         }
 
         //hard codes to get the embeds of first actor
-        var embeds = actors[0].attributes.embeds;
+        var embeds = actors[1].attributes.embeds;
         // console.log("The embeds are:"); // embeds == intentions + internal links within that actor
         // console.log(embeds);
         console.log("The types of embeds are:");
@@ -219,8 +219,9 @@ class SliderObj {
         console.log("Embedded links");
         for(var i = 0; i < embeds.length; i++){
             for(var j = 0; j < links.length; j++){
-                if(embeds[i] === links[j].attributes.id){
-                    console.log(links[j]);
+                console.log(links[j].attributes.source.id);
+                if(embeds[i] === links[j].attributes.source.id || embeds[i] === links[j].attributes.target.id ){
+                    links[j].remove();
                 }
             }
         }
@@ -273,7 +274,7 @@ class SliderObj {
         var cells = SliderObj.getIntentionsAndActors();
         console.log("Cells: ");
         console.log(cells);
-
+        
         var firstActorEmbeds = SliderObj.getEmbeddedElements();
         console.log("First actor's embeds: ");
         console.log(firstActorEmbeds);
