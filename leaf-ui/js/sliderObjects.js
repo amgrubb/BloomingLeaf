@@ -100,9 +100,9 @@ class SliderObj {
 
             // SliderObj.compareSatVal(element,parseInt(values[handle]), SatList, ElList); //Method here is not finished but when calls the compareSatVal to compare  
         
-            SliderObj.getActors();
-            SliderObj.getEmbeddedElements();
-            SliderObj.getLinkModelIds();
+            // SliderObj.getEmbeddedElements();
+            // SliderObj.getIntentionsAndActorsView();
+            // SliderObj.getLinksView();
             
             // Testing of disappearIntention() for j_id of #j_27. 
             // IMPORTANT: Comment out later, do not delete for now.
@@ -127,28 +127,38 @@ class SliderObj {
     /**
      * Returns the list of j_ids of intentions and actors in the current model
      */
-    static getIntentionsAndActors() {
-        var jIdList = []
-        var cells = paper.findViewsInArea(paper.getArea()); 
-        cells.forEach(cell => 
-            jIdList.push(cell.id)
-        );
-        console.log("j_ids of actors and intentions: " + jIdList); // prints array of j_ids of actors + intentions
-        // cells.forEach(cell => 
-        //     console.log("Cell j_id? " + cell.id)
-        // );
-        // cells.forEach(cell => 
-        //     console.log("Cell model_id? " + cell.model.id)
-        // );
-        return cells;
-
+    static getIntentionsAndActorsView() {
+        var elements = graph.getElements();
+        var cellsView = []
+        for (var i = 0; i < elements.length; i++) {
+            var cellView = elements[i].findView(paper);
+            // console.log("Cell view: ");
+            // console.log(cellView);
+            cellsView.push(cellView);
+        } 
+        return cellsView;
     }
 
     /**
-     * Returns the list of embedded elements (intentions + internal links) of an actor
+     * Returns the list of j_ids of intentions and actors in the current model
+     */
+    static getLinksView() {
+        var links = graph.getLinks();
+        var linksView = []
+        for (var i = 0; i < links.length; i++) {
+            var linkView = links[i].findView(paper);
+            // console.log("Link view: ");
+            // console.log(linkView);
+            linksView.push(linkView);
+        } 
+        return linksView;
+    }
+
+    /**
+     * Returns the list of embedded elements (intentions + internal links) model ids of an actor
      */
     static getEmbeddedElements() {
-        var cells = SliderObj.getIntentionsAndActors();
+        var cells = SliderObj.getIntentionsAndActorsView();
         // Hard code to get the embeds of first actor (merge1: self) j_10
         // TODO: remove the hard code
         for (var i = 0; i < cells.length; i++) {
@@ -156,113 +166,44 @@ class SliderObj {
                 return cells[i].model.attributes.embeds;
             }
         }
-
-        // var elements = graph.getElements(); // intentions + actors only, no links
-        // var actors = elements.filter(element => element.get('type') == 'basic.Actor');
-
-        // // Hard code to get the embeds of first actor (merge1: self)
-        // // TODO: remove the hard code
-        // var embeds = actors[1].attributes.embeds;
-        // // console.log("The embeds are:"); // embeds == intentions + internal links within that actor
-        // // console.log(embeds);
-        // return embeds;
     }
 
-    /**
-     * Returns model ids of links (embedded + cross-actor links) of the current model
-     * TODO: needs to get j_id of links!
-     */
-    static getLinkModelIds() { // both embedded and cross-actor links?
-        var links = graph.getLinks();
-        console.log('List of links'); // both internal and cross-actor links
-        return links;
-    }
 
     /**
-     * Returns actors of the model
+     * Remove links
+     * TODO: I don't think this works. This method seems to remove links permanently.
+     * I think this is what might work:
+     * - Get the links on the graph: var links= graph.getLinks();
+     * - Using the model id of links, find the j_id of links by traversing through
      */
-    static getActors() {
-        
+    static removeLinks() { // both embedded and cross-actor links?
         var elements = graph.getElements(); // intentions + actors only, no links
         // console.log('List of elements');
         // console.log(elements);
-        var actors = elements.filter(element => element.get('type') == 'basic.Actor');
-        console.log("List of actors");
-        console.log(actors); 
-        
-
         var links = graph.getLinks();
-        console.log('List of links'); // both internal and cross-actor links
-        console.log(links);
-
-        var intentionsList = [];
-        for(var i = 0; i<elements.length; i++ ){
-            if(!(elements[i] instanceof joint.shapes.basic.Actor)) {
-                var j_id = joint.util.guid(elements[i]);
-                console.log(j_id); // testing
-                intentionsList.push(elements[i]);
-            }
-        }
-
-        //hard codes to get the embeds of first actor
+        // console.log('List of links'); // both internal and cross-actor links
+        // console.log(links);
+        var actors = elements.filter(element => element.get('type') == 'basic.Actor');
+        // console.log("List of actors");
+        // console.log(actors);
         var embeds = actors[1].attributes.embeds;
-        // console.log("The embeds are:"); // embeds == intentions + internal links within that actor
-        // console.log(embeds);
-        console.log("The types of embeds are:");
-        for(var i = 0; i < embeds.length; i++){
-            for(var j = 0; j < intentionsList.length; j++){
-                if(embeds[i] === intentionsList[j].id){
-                    console.log(intentionsList[j].attributes.type);
-                }
-            }
-        }
-        console.log("Embedded links");
-        for(var i = 0; i < embeds.length; i++){
+        for (var i = 0; i < embeds.length; i++) {
             for(var j = 0; j < links.length; j++){
+                console.log("Link attribute source id: ");
                 console.log(links[j].attributes.source.id);
-                if(embeds[i] === links[j].attributes.source.id || embeds[i] === links[j].attributes.target.id ){
+                if (embeds[i] === links[j].attributes.source.id || embeds[i] === links[j].attributes.target.id) {
                     links[j].remove();
                 }
             }
         }
-        //todo: make internal links and source/target links disappear
-
-        // //get the embedded intentions of the second actor disappear
-        // console.log("Cell matched j_id:");
-        // for(var i = 0; i < cells.length; i++){
-        //     for(var j = 0; j<embeds.length; j++ ){
-        //         if(cells[i].model.id === embeds[j]){
-        //             console.log(cells[i].id);
-        //             $("#"+cells[i].id).css("display", "none");
-        //         }
-        //     }
-        // };
-
-        // return actors;
-
     }
 
-    /**
-     * a method that prints out all the intentions of the model
-     * TODO: This method doesn't seem to print out helpful info now
-     */
-    static getIntentionsList() {
-        var elements = graph.getElements();
-        var intentionsList = [];
-        for(var i = 0; i<elements.length; i++ ){
-            if(!(elements[i] instanceof joint.shapes.basic.Actor)) {
-                intentionsList.push(elements[i]);
-            }
-        }
-        console.log('List of intentions');
-        console.log(intentionsList); 
-    }
     
     /**
      * Makes actors, intentions and links dissapear
      */
     static disappearIntention(bool) {
-        SliderObj.getActors();
+
 
         // Testing merge1.json
         // links: j_12, j_13, j_14
@@ -271,25 +212,21 @@ class SliderObj {
         // tasks: j_7, j_8
         // goals: j_6
 
-        var cells = SliderObj.getIntentionsAndActors();
+        var cells = SliderObj.getIntentionsAndActorsView();
         console.log("Cells: ");
         console.log(cells);
+
+        var links = SliderObj.getLinksView();
+        console.log("Model's links: ");
+        console.log(links);
         
         var firstActorEmbeds = SliderObj.getEmbeddedElements();
         console.log("First actor's embeds: ");
         console.log(firstActorEmbeds);
 
-        var links = SliderObj.getLinkModelIds();
-        console.log("Model's links: ");
-        console.log(links);
+        // TODO: move stuff to their helper functions. Shouldn't put everything here because it gets messy.
 
         if (bool) {
-            // // Works for links -- hardcoded
-            // // TODO: replace hardcoded part
-            // $("#j_12").css("display", "none");
-            // $("#j_13").css("display", "none");
-            // $("#j_14").css("display", "none");
-
             var actor1_j_id = "#";
 
             // Works for actor 1 embedded intentions (self j_10 in merge1) expected j_6, j_7, j_8
@@ -305,17 +242,39 @@ class SliderObj {
                     }
                 }
             }
-
-            // TODO: Does it work for actor 1's embedded links???
             
-            console.log("Actor 1 elements to remove: " + elementsToRemove);
             // Convert into valid j_ids
             for (var i = 0; i < elementsToRemove.length; i++) {
                 elementsToRemove[i] = "#" + elementsToRemove[i];
             }
-            console.log("Modified actor 1 elements to remove: " + elementsToRemove);
+            console.log("Actor 1 elements to remove: " + elementsToRemove);
             for (var i = 0; i < elementsToRemove.length; i++) {
                 $(elementsToRemove[i]).css("display", "none");
+            }
+
+            // Works for any links related to actor 1's embeds?
+            var linksToRemove = []
+            outerloop:
+            for (var i = 0; i < links.length; i++) {
+                for (var j = 0; j < firstActorEmbeds.length; j++){
+                    // console.log("Link attribute source id: ");
+                    // console.log(links[j].attributes.source.id);
+                    if (links[i].model.attributes.source.id == firstActorEmbeds[j] || links[i].model.attributes.target.id == firstActorEmbeds[j]) {
+                        console.log("Link model i_d matched: " + links[i].model.id);
+                        console.log("Since matched, j_id is " + links[i].id);
+                        linksToRemove.push(links[i].id)
+                        continue outerloop;
+                    }
+                }
+            }
+            
+            // Convert into valid j_ids
+            for (var i = 0; i < linksToRemove.length; i++) {
+                linksToRemove[i] = "#" + linksToRemove[i];
+            }
+            console.log("Links to remove: " + linksToRemove);
+            for (var i = 0; i < elementsToRemove.length; i++) {
+                $(linksToRemove[i]).css("display", "none");
             }
 
             // Works for actor 1
@@ -331,12 +290,6 @@ class SliderObj {
             $(actor1_j_id).css("display", "none");
         }
         else {
-            // // Works for links -- hardcoded
-            // // TODO: replace hardcoded part
-            // $("#j_12").css("display", "");
-            // $("#j_13").css("display", "");
-            // $("#j_14").css("display", "");
-
             // Works for actor 1 embedded intentions (self j_10 in merge1) expected j_6, j_7, j_8
             var elementsToRemove = [];
             for (var i = 0; i < firstActorEmbeds.length; i++) {
@@ -351,16 +304,38 @@ class SliderObj {
                 }
             }
 
-            // TODO: Does it work for actor 1's embedded links???
-
-            console.log("Actor 1 elements to remove: " + elementsToRemove);
             // Convert into valid j_ids
             for (var i = 0; i < elementsToRemove.length; i++) {
                 elementsToRemove[i] = "#" + elementsToRemove[i];
             }
-            console.log("Modified actor 1 elements to remove: " + elementsToRemove);
+            console.log("Actor 1 elements to remove: " + elementsToRemove);
             for (var i = 0; i < elementsToRemove.length; i++) {
                 $(elementsToRemove[i]).css("display", "");
+            }
+
+            // Works for any links related to actor 1's embeds?
+            var linksToRemove = []
+            outerloop:
+            for (var i = 0; i < links.length; i++) {
+                for (var j = 0; j < firstActorEmbeds.length; j++){
+                    // console.log("Link attribute source id: ");
+                    // console.log(links[j].attributes.source.id);
+                    if (links[i].model.attributes.source.id == firstActorEmbeds[j] || links[i].model.attributes.target.id == firstActorEmbeds[j]) {
+                        console.log("Link model i_d matched: " + links[i].model.id);
+                        console.log("Since matched, j_id is " + links[i].id);
+                        linksToRemove.push(links[i].id)
+                        continue outerloop;
+                    }
+                }
+            }
+            
+            // Convert into valid j_ids
+            for (var i = 0; i < linksToRemove.length; i++) {
+                linksToRemove[i] = "#" + linksToRemove[i];
+            }
+            console.log("Links to remove: " + linksToRemove);
+            for (var i = 0; i < elementsToRemove.length; i++) {
+                $(linksToRemove[i]).css("display", "");
             }
 
             // Works for Actor 1
