@@ -169,33 +169,42 @@ class SliderObj {
     }
 
 
-    /**
-     * Remove links
-     * TODO: I don't think this works. This method seems to remove links permanently.
-     * I think this is what might work:
-     * - Get the links on the graph: var links= graph.getLinks();
-     * - Using the model id of links, find the j_id of links by traversing through
-     */
-    static removeLinks() { // both embedded and cross-actor links?
-        var elements = graph.getElements(); // intentions + actors only, no links
-        // console.log('List of elements');
-        // console.log(elements);
-        var links = graph.getLinks();
-        // console.log('List of links'); // both internal and cross-actor links
-        // console.log(links);
-        var actors = elements.filter(element => element.get('type') == 'basic.Actor');
-        // console.log("List of actors");
-        // console.log(actors);
-        var embeds = actors[1].attributes.embeds;
-        for (var i = 0; i < embeds.length; i++) {
-            for(var j = 0; j < links.length; j++){
-                console.log("Link attribute source id: ");
-                console.log(links[j].attributes.source.id);
-                if (embeds[i] === links[j].attributes.source.id || embeds[i] === links[j].attributes.target.id) {
-                    links[j].remove();
-                }
-            }
-        }
+    // /**
+    //  * Remove links
+    //  * TODO: This works, but how do you bring back the link when bool is set to false?
+    //  */
+    // static removeLinks() { // both embedded and cross-actor links?
+    //     var elements = graph.getElements(); // intentions + actors only, no links
+    //     // console.log('List of elements');
+    //     // console.log(elements);
+    //     var links = graph.getLinks();
+    //     // console.log('List of links'); // both internal and cross-actor links
+    //     // console.log(links);
+    //     var actors = elements.filter(element => element.get('type') == 'basic.Actor');
+    //     // console.log("List of actors");
+    //     // console.log(actors);
+    //     var embeds = actors[1].attributes.embeds;
+    //     for (var i = 0; i < embeds.length; i++) {
+    //         for(var j = 0; j < links.length; j++){
+    //             console.log("Link attribute source id: ");
+    //             console.log(links[j].attributes.source.id);
+    //             if (embeds[i] === links[j].attributes.source.id || embeds[i] === links[j].attributes.target.id) {
+    //                 links[j].remove();
+    //             }
+    //         }
+    //     }
+    // }
+
+    static removeEmbeddedElements() {
+
+    }
+
+    static removeLinks() {
+
+    }
+
+    static removeActors() {
+        
     }
 
     
