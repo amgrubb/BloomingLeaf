@@ -99,10 +99,6 @@ class SliderObj {
             console.log("Element j_id array: " + ElList); // prints array of j_ids of actors + intentions
 
             // SliderObj.compareSatVal(element,parseInt(values[handle]), SatList, ElList); //Method here is not finished but when calls the compareSatVal to compare  
-        
-            // SliderObj.getEmbeddedElements();
-            // SliderObj.getIntentionsAndActorsView();
-            // SliderObj.getLinksView();
             
             // Testing of disappearIntention() for j_id of #j_27. 
             // IMPORTANT: Comment out later, do not delete for now.
@@ -195,16 +191,101 @@ class SliderObj {
     //     }
     // }
 
-    static removeEmbeddedElements() {
 
-    }
+    /**
+     * Hides/Displays the embedded elements of an actor
+     */
+    static removeEmbeddedElements(cells, embeds, bool) {
+        var elementsToRemove = [];
+        for (var i = 0; i < embeds.length; i++) {
+            console.log(embeds[i]);
 
-    static removeLinks() {
-
-    }
-
-    static removeActors() {
+            for (var j = 0; j < cells.length; j ++) {
+                if (embeds[i] == cells[j].model.id) {
+                    console.log("Cell model i_d matched: " + cells[j].model.id);
+                    console.log("Since matched, j_id is " + cells[j].id);
+                    elementsToRemove.push(cells[j].id);
+                }
+            }
+        }
         
+        // Convert into valid j_ids
+        for (var i = 0; i < elementsToRemove.length; i++) {
+            elementsToRemove[i] = "#" + elementsToRemove[i];
+        }
+        console.log("Actor 1 elements to remove: " + elementsToRemove);
+
+        if (bool) {
+            for (var i = 0; i < elementsToRemove.length; i++) {
+                $(elementsToRemove[i]).css("display", "none");
+            }
+        }
+        else {
+            for (var i = 0; i < elementsToRemove.length; i++) {
+                $(elementsToRemove[i]).css("display", "");
+            }
+        }
+    }
+
+
+    /**
+     * Hides/Displays the links associated with the actor to be hidden/displayed
+     */
+    static removeLinks(links, embeds, bool) {
+        var linksToRemove = []
+        outerloop:
+        for (var i = 0; i < links.length; i++) {
+            for (var j = 0; j < embeds.length; j++){
+                // console.log("Link attribute source id: ");
+                // console.log(links[j].attributes.source.id);
+                if (links[i].model.attributes.source.id == embeds[j] || links[i].model.attributes.target.id == embeds[j]) {
+                    console.log("Link model i_d matched: " + links[i].model.id);
+                    console.log("Since matched, j_id is " + links[i].id);
+                    linksToRemove.push(links[i].id)
+                    continue outerloop;
+                }
+            }
+        }
+        
+        // Convert into valid j_ids
+        for (var i = 0; i < linksToRemove.length; i++) {
+            linksToRemove[i] = "#" + linksToRemove[i];
+        }
+        console.log("Links to remove: " + linksToRemove);
+        if (bool) {
+            for (var i = 0; i < linksToRemove.length; i++) {
+                $(linksToRemove[i]).css("display", "none");
+            }
+        }
+        else {
+            for (var i = 0; i < linksToRemove.length; i++) {
+                $(linksToRemove[i]).css("display", "");
+            }
+        }
+        
+    }
+
+
+    /**
+     * Hides/Displays a specific actor
+     */
+    static removeActor(cells, bool) {
+        // TODO: replace hard codes (j_10)
+        var actor1_j_id = "#";
+        for (var i = 0; i < cells.length; i++) {
+            console.log(cells[i].model.attributes.type);
+            if (cells[i].model.attributes.type == 'basic.Actor' && cells[i].id == "j_10") {
+                // console.log(cells[i].id);
+                actor1_j_id += cells[i].id;
+                console.log(actor1_j_id);
+            }
+        }
+        if (bool) {
+            $(actor1_j_id).css("display", "none");
+        }
+        else {
+            $(actor1_j_id).css("display", "");
+        }
     }
 
     
@@ -212,8 +293,6 @@ class SliderObj {
      * Makes actors, intentions and links dissapear
      */
     static disappearIntention(bool) {
-
-
         // Testing merge1.json
         // links: j_12, j_13, j_14
         // actors: j_10 (self), j_11 (parents)
@@ -233,135 +312,11 @@ class SliderObj {
         console.log("First actor's embeds: ");
         console.log(firstActorEmbeds);
 
-        // TODO: move stuff to their helper functions. Shouldn't put everything here because it gets messy.
-
-        if (bool) {
-            var actor1_j_id = "#";
-
-            // Works for actor 1 embedded intentions (self j_10 in merge1) expected j_6, j_7, j_8
-            var elementsToRemove = [];
-            for (var i = 0; i < firstActorEmbeds.length; i++) {
-                console.log(firstActorEmbeds[i]);
-
-                for (var j = 0; j < cells.length; j ++) {
-                    if (firstActorEmbeds[i] == cells[j].model.id) {
-                        console.log("Cell model i_d matched: " + cells[j].model.id);
-                        console.log("Since matched, j_id is " + cells[j].id);
-                        elementsToRemove.push(cells[j].id);
-                    }
-                }
-            }
-            
-            // Convert into valid j_ids
-            for (var i = 0; i < elementsToRemove.length; i++) {
-                elementsToRemove[i] = "#" + elementsToRemove[i];
-            }
-            console.log("Actor 1 elements to remove: " + elementsToRemove);
-            for (var i = 0; i < elementsToRemove.length; i++) {
-                $(elementsToRemove[i]).css("display", "none");
-            }
-
-            // Works for any links related to actor 1's embeds?
-            var linksToRemove = []
-            outerloop:
-            for (var i = 0; i < links.length; i++) {
-                for (var j = 0; j < firstActorEmbeds.length; j++){
-                    // console.log("Link attribute source id: ");
-                    // console.log(links[j].attributes.source.id);
-                    if (links[i].model.attributes.source.id == firstActorEmbeds[j] || links[i].model.attributes.target.id == firstActorEmbeds[j]) {
-                        console.log("Link model i_d matched: " + links[i].model.id);
-                        console.log("Since matched, j_id is " + links[i].id);
-                        linksToRemove.push(links[i].id)
-                        continue outerloop;
-                    }
-                }
-            }
-            
-            // Convert into valid j_ids
-            for (var i = 0; i < linksToRemove.length; i++) {
-                linksToRemove[i] = "#" + linksToRemove[i];
-            }
-            console.log("Links to remove: " + linksToRemove);
-            for (var i = 0; i < elementsToRemove.length; i++) {
-                $(linksToRemove[i]).css("display", "none");
-            }
-
-            // Works for actor 1
-            // TODO: replace hard codes
-            for (var i = 0; i < cells.length; i++) {
-                console.log(cells[i].model.attributes.type);
-                if (cells[i].model.attributes.type == 'basic.Actor' && cells[i].id == "j_10") {
-                    // console.log(cells[i].id);
-                    actor1_j_id += cells[i].id;
-                    console.log(actor1_j_id);
-                }
-            }
-            $(actor1_j_id).css("display", "none");
-        }
-        else {
-            // Works for actor 1 embedded intentions (self j_10 in merge1) expected j_6, j_7, j_8
-            var elementsToRemove = [];
-            for (var i = 0; i < firstActorEmbeds.length; i++) {
-                console.log(firstActorEmbeds[i]);
-
-                for (var j = 0; j < cells.length; j ++) {
-                    if (firstActorEmbeds[i] == cells[j].model.id) {
-                        console.log("Cell model i_d matched: " + cells[j].model.id);
-                        console.log("Since matched, j_id is " + cells[j].id);
-                        elementsToRemove.push(cells[j].id);
-                    }
-                }
-            }
-
-            // Convert into valid j_ids
-            for (var i = 0; i < elementsToRemove.length; i++) {
-                elementsToRemove[i] = "#" + elementsToRemove[i];
-            }
-            console.log("Actor 1 elements to remove: " + elementsToRemove);
-            for (var i = 0; i < elementsToRemove.length; i++) {
-                $(elementsToRemove[i]).css("display", "");
-            }
-
-            // Works for any links related to actor 1's embeds?
-            var linksToRemove = []
-            outerloop:
-            for (var i = 0; i < links.length; i++) {
-                for (var j = 0; j < firstActorEmbeds.length; j++){
-                    // console.log("Link attribute source id: ");
-                    // console.log(links[j].attributes.source.id);
-                    if (links[i].model.attributes.source.id == firstActorEmbeds[j] || links[i].model.attributes.target.id == firstActorEmbeds[j]) {
-                        console.log("Link model i_d matched: " + links[i].model.id);
-                        console.log("Since matched, j_id is " + links[i].id);
-                        linksToRemove.push(links[i].id)
-                        continue outerloop;
-                    }
-                }
-            }
-            
-            // Convert into valid j_ids
-            for (var i = 0; i < linksToRemove.length; i++) {
-                linksToRemove[i] = "#" + linksToRemove[i];
-            }
-            console.log("Links to remove: " + linksToRemove);
-            for (var i = 0; i < elementsToRemove.length; i++) {
-                $(linksToRemove[i]).css("display", "");
-            }
-
-            // Works for Actor 1
-            // TODO: replace hard codes
-            var actor1_j_id = "#";
-            for (var i = 0; i < cells.length; i++) {
-                console.log(cells[i].model.attributes.type);
-                if (cells[i].model.attributes.type == 'basic.Actor' && cells[i].id == "j_10") {
-                    // console.log(cells[i].id);
-                    actor1_j_id += cells[i].id;
-                    console.log(actor1_j_id);
-                }
-            }
-            $(actor1_j_id).css("display", "");
-
-            
-        }
+        // Call helper functions to remove embedded elements, links, and the actor itself
+        // Testing for j_10 (self)
+        SliderObj.removeEmbeddedElements(cells, firstActorEmbeds, bool);
+        SliderObj.removeLinks(links, firstActorEmbeds, bool);
+        SliderObj.removeActor(cells, bool);
     }
 
     /**
