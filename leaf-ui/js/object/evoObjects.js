@@ -29,6 +29,19 @@ class IntentionColorVis {
  */
 class EVO {
 
+    static charSatValueToNum = {
+        "FS" : "0011",
+        "FP" : "0111",
+        "PS" : "0010",
+        "FF" : "1111",
+        "PP" : "0110",
+        "nn" : "0000",
+        "PF" : "1110",
+        "PD" : "0100",
+        "FD" : "1100"
+    
+    }
+
     static colorVisDict = {
         "0000": "#D3D3D3", // None (⊥, ⊥)
         "0011": "#003fff", // Satisfied (F, ⊥)

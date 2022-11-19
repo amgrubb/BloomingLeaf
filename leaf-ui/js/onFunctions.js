@@ -201,6 +201,19 @@ $('#btn-fnt-down').on('click', function () { fontDown(paper); });
 $('#legend').on('click', function () { window.open('./userguides/legend.html', 'newwindow', 'width=300, height=250'); return false; });
 // $('#show-palette-1').on('click', function () { window.open('./userguides/evo.html', 'newwindow', 'width=500, height=400'); return false; });
 
+/**
+ * returns whether or not a color is bright
+ * @param {*} color 
+ * @returns 
+ */
+function isDark(color){
+    const hex = color.replace('#', '');
+    const c_r = parseInt(hex.substr(0, 2), 16);
+    const c_g = parseInt(hex.substr(2, 2), 16);
+    const c_b = parseInt(hex.substr(4, 2), 16);
+    const brightness = ((c_r * 299) + (c_g * 587) + (c_b * 114)) / 1000;
+    return brightness < 155;
+}
 
 /**
  * displays the color palette
@@ -210,36 +223,33 @@ function displayPalette(palette_number ) {
 
     //creates the color key layout
     showAlert('Evaluation Visualisation Overlay Color Key',
-        '<div style = "margin-top:40px; margin-inline-start:40%">  <span class = "s_value_box" id = "FS" style="background-color:"c> (F, ⊥) </span> </div>'+
-        '<div style = "margin-top:40px; margin-inline-start: 20%">  <span class = "s_value_box" id = "FP"> (F, P) </span> <span style="margin-right:140px"></span> <span class = "s_value_box" id = "PS"> (P, ⊥) </span> </div>'+
-        '<div style = "margin-top:40px" >  <span class = "s_value_box" id = "FF"> (F, F) </span> <span style="margin-right:135px"></span> <span class = "s_value_box" id = "PP"> (P, P) </span> <span style="margin-right:135px"></span> <span class = "s_value_box" id = "nn"> (⊥, ⊥) </span> </div> '+
-        '<div style = "margin-top:40px; margin-inline-start: 20%"> <span class = "s_value_box" id = "PF"> (P, F) </span> <span style="margin-right:140px"></span> <span class = "s_value_box" id = "PD"> (⊥, P) </span> </div>'+
-        '<div style = "margin-top:40px;  margin-inline-start: 40%">  <span class = "s_value_box" id = "FD"> (⊥, F) </span> </div>',
-    410, 'alert', 'warning');
+        '<div style = "margin-top:40px; margin-inline-start:42%">  <span class = "s_value_box" id = "FS" style="background-color:"c>  (F, ⊥)  </span> </div>'+
+        '<div style = "margin-top:40px; margin-inline-start: 20%">  <span class = "s_value_box" id = "FP">  (F, P)  </span> <span style="margin-right:140px"></span> <span class = "s_value_box" id = "PS">  (P, ⊥)  </span> </div>'+
+        '<div style = "margin-top:40px" >  <span class = "s_value_box" id = "FF">  (F, F)  </span> <span style="margin-right:135px"></span> <span class = "s_value_box" id = "PP">  (P, P)  </span> <span style="margin-right:135px"></span> <span class = "s_value_box" id = "nn">  (⊥, ⊥)  </span> </div> '+
+        '<div style = "margin-top:40px; margin-inline-start: 20%"> <span class = "s_value_box" id = "PF">  (P, F)  </span> <span style="margin-right:140px"></span> <span class = "s_value_box" id = "PD">  (⊥, P)  </span> </div>'+
+        '<div style = "margin-top:40px;  margin-inline-start: 42%">  <span class = "s_value_box" id = "FD">  (⊥, F)  </span> </div>',
+    450, 'alert', 'warning');
    
     //updates the color chart based on the color preferences
     if(palette_number<6){
-        document.getElementById("FS").style.backgroundColor= EVO.colorVisDictCollection[palette_number-1]["0011"];
-        document.getElementById("FP").style.backgroundColor= EVO.colorVisDictCollection[palette_number-1]["0111"];
-        document.getElementById("PS").style.backgroundColor= EVO.colorVisDictCollection[palette_number-1]["0010"];
-        document.getElementById("FF").style.backgroundColor= EVO.colorVisDictCollection[palette_number-1]["1111"];
-        document.getElementById("PP").style.backgroundColor= EVO.colorVisDictCollection[palette_number-1]["0110"];
-        document.getElementById("nn").style.backgroundColor= EVO.colorVisDictCollection[palette_number-1]["0000"];
-        document.getElementById("PF").style.backgroundColor= EVO.colorVisDictCollection[palette_number-1]["1110"];
-        document.getElementById("PD").style.backgroundColor= EVO.colorVisDictCollection[palette_number-1]["0100"];
-        document.getElementById("FD").style.backgroundColor= EVO.colorVisDictCollection[palette_number-1]["1100"];
+        for (let charVal in EVO.charSatValueToNum){
+            let color = EVO.colorVisDictCollection[palette_number-1][EVO.charSatValueToNum[charVal]];
+            document.getElementById(charVal).style.backgroundColor= color;
+            if (isDark(color)) {
+                document.getElementById(charVal).style.color = "white";
+            }
+            
+        }
+    
     } else{
-        document.getElementById("FS").style.backgroundColor= EVO.selfColorVisDict["0011"];
-        document.getElementById("FP").style.backgroundColor= EVO.selfColorVisDict["0111"];
-        document.getElementById("PS").style.backgroundColor= EVO.selfColorVisDict["0010"];
-        document.getElementById("FF").style.backgroundColor= EVO.selfColorVisDict["1111"];
-        document.getElementById("PP").style.backgroundColor= EVO.selfColorVisDict["0110"];
-        document.getElementById("nn").style.backgroundColor= EVO.selfColorVisDict["0000"];
-        document.getElementById("PF").style.backgroundColor= EVO.selfColorVisDict["1110"];
-        document.getElementById("PD").style.backgroundColor= EVO.selfColorVisDict["0100"];
-        document.getElementById("FD").style.backgroundColor= EVO.selfColorVisDict["1100"];
-    }
-       
+        for (let charVal in EVO.charSatValueToNum){
+            let color = EVO.selfColorVisDict[EVO.charSatValueToNum[charVal]];
+            document.getElementById(charVal).style.backgroundColor= color;
+            if (isDark(color)) {
+                document.getElementById(charVal).style.color = "white";
+            }
+        }
+    }       
 }
 
 
