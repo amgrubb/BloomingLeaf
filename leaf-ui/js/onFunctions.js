@@ -223,12 +223,43 @@ function displayPalette(palette_number ) {
 
     //creates the color key layout
     showAlert('Evaluation Visualisation Overlay Color Key',
-        '<div style = "margin-top:40px; margin-inline-start:42%">  <span class = "s_value_box" id = "FS" style="background-color:"c>  (F, ⊥)  </span> </div>'+
-        '<div style = "margin-top:40px; margin-inline-start: 20%">  <span class = "s_value_box" id = "FP">  (F, P)  </span> <span style="margin-right:140px"></span> <span class = "s_value_box" id = "PS">  (P, ⊥)  </span> </div>'+
-        '<div style = "margin-top:40px" >  <span class = "s_value_box" id = "FF">  (F, F)  </span> <span style="margin-right:135px"></span> <span class = "s_value_box" id = "PP">  (P, P)  </span> <span style="margin-right:135px"></span> <span class = "s_value_box" id = "nn">  (⊥, ⊥)  </span> </div> '+
-        '<div style = "margin-top:40px; margin-inline-start: 20%"> <span class = "s_value_box" id = "PF">  (P, F)  </span> <span style="margin-right:140px"></span> <span class = "s_value_box" id = "PD">  (⊥, P)  </span> </div>'+
-        '<div style = "margin-top:40px;  margin-inline-start: 42%">  <span class = "s_value_box" id = "FD">  (⊥, F)  </span> </div>',
-    450, 'alert', 'warning');
+            '<table class="abs-table">'+
+            '<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Initial Satisfaction Values</h3>'+
+            '<tbody>'+
+                '<tr>'+
+                '    <th>None</th>'+
+                '    <th>Satisfied</th>'+
+                '    <th>Partially Satisfied </th>'+
+                '    <th>Partially Denied</th>'+
+                '    <th>Denied</th>'+
+                '</tr>'+
+                '<tr style= "background-color: #FFFFFF;">'+
+                '    <td style="text-align:center"> <span class = "s_value_box" id = "nn"> (⊥, ⊥) </span> </td>'+
+                '    <td style="text-align:center"> <span class = "s_value_box" id = "FS"> (F ,⊥) </span> </td>'+
+                '    <td style="text-align:center"> <span class = "s_value_box" id = "PS"> (P ,⊥) </span> </td>'+
+                '    <td style="text-align:center"> <span class = "s_value_box" id = "PD"> (⊥ ,P) </span> </td>'+
+                '    <td style="text-align:center"> <span class = "s_value_box" id = "FD"> (⊥ ,F) </span> </td>'+
+                '</tr>'+
+            '</tbody>'+
+        '</table>'+
+        ' <h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Conflict Values </h3>'+
+        '<table id="conflict-satisfied-list" class="abs-table">'+
+        '<tbody>'+
+        '<tr>'+
+        '<th> Partially Satisfied/ Partially Denied </th>'+
+        '<th> Fully Satisfied/ Partially Denied</th>'+
+        '<th> Partially Satisfied/ Fully Denied</th>'+
+        '<th> Fully Satisfied/ Fully Denied</th>'+
+        '</tr>'+
+        '<tr style= "background-color: #FFFFFF;">'+
+        '<td style= "text-align:center"> <span class = "s_value_box" id = "PP"> (P, P) </span> </td>'+
+        '<td style= "text-align:center"> <span class = "s_value_box" id = "FP"> (F, P) </span> </td>'+
+        '<td style= "text-align:center"> <span class = "s_value_box" id = "PF"> (P, F) </span> </td>'+
+        '<td style= "text-align:center"> <span class = "s_value_box" id = "FF"> (F, F) </span> </td>'+
+        '</tr>'+
+        '</tbody>'+
+        '</table>',
+    550, 'alert', 'warning');
    
     //updates the color chart based on the color preferences
     if(palette_number<6){
@@ -238,7 +269,6 @@ function displayPalette(palette_number ) {
             if (isDark(color)) {
                 document.getElementById(charVal).style.color = "white";
             }
-            
         }
     
     } else{
