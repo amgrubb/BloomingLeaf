@@ -28,7 +28,8 @@ class IntentionColorVis {
  * This order is created intentionally for the frontend. Please DO NOT change the order
  */
 class EVO {
-
+    
+    // Gives the numerical representation of a given satisfaction value
     static charSatValueToNum = {
         "FS" : "0011",
         "FP" : "0111",
@@ -41,7 +42,8 @@ class EVO {
         "FD" : "1100"
     
     }
-
+    
+    //default palette
     static colorVisDict = {
         "0000": "#D3D3D3", // None (⊥, ⊥)
         "0011": "#003fff", // Satisfied (F, ⊥)
@@ -66,6 +68,8 @@ class EVO {
         "1110": "#333333",
         "1111": "#333333"
     };
+
+    // The Red-Green Palette
     static colorVisDict2 = {
         "0000": "#bdaead",
         "0011": "#d11a2d",
@@ -77,6 +81,8 @@ class EVO {
         "1110": "#887322",
         "1111": "#000000"
     };
+
+    // The Green-Black Palette
     static colorVisDict3 = {
         "0000": "#d3d3d3",
         "0011": "#39ff14",
@@ -89,6 +95,7 @@ class EVO {
         "1111": "#790604"
     };
 
+    // The Yellow-Purple Palette
     static colorVisDict4 = {
         "0000": "#D3D3D3",
         "0011": "#FFFF00",
@@ -100,7 +107,9 @@ class EVO {
         "1110": "#5946b2",
         "1111": "#0D0221"
     };
-    static selfColorVisDict = {//Initialize user-created-palette as default palette
+
+    //Initialize user-created-palette as default palette
+    static selfColorVisDict = {
         "0000": "#D3D3D3", // None (⊥, ⊥)
         "0011": "#003fff", // Satisfied (F, ⊥)
         "0010": "#8FB8DE", // Partially satisfied (P, ⊥)

@@ -202,7 +202,7 @@ $('#legend').on('click', function () { window.open('./userguides/legend.html', '
 // $('#show-palette-1').on('click', function () { window.open('./userguides/evo.html', 'newwindow', 'width=500, height=400'); return false; });
 
 /**
- * returns whether or not a color is bright
+ * returns whether or not a color is dark
  * @param {*} color 
  * @returns 
  */
@@ -221,7 +221,7 @@ function isDark(color){
  */
 function displayPalette(palette_number ) {
 
-    //creates the color key layout
+    //creates the table that contains all satisfaction values 
     showAlert('Evaluation Visualisation Overlay Color Key',
             '<table class="abs-table">'+
             '<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Initial Satisfaction Values</h3>'+
@@ -261,8 +261,9 @@ function displayPalette(palette_number ) {
         '</table>',
     550, 'alert', 'warning');
    
-    //updates the color chart based on the color preferences
+    //updates the color key based on the chosen palette 
     if(palette_number<6){
+        //pre-made palettes
         for (let charVal in EVO.charSatValueToNum){
             let color = EVO.colorVisDictCollection[palette_number-1][EVO.charSatValueToNum[charVal]];
             document.getElementById(charVal).style.backgroundColor= color;
@@ -272,6 +273,7 @@ function displayPalette(palette_number ) {
         }
     
     } else{
+        //personalized palette
         for (let charVal in EVO.charSatValueToNum){
             let color = EVO.selfColorVisDict[EVO.charSatValueToNum[charVal]];
             document.getElementById(charVal).style.backgroundColor= color;
@@ -285,7 +287,7 @@ function displayPalette(palette_number ) {
 
 
 
-/** displays the color palettes */
+/** displays the color palette options*/
 $('#evo-color-key').on('click', function () {
     removeHighlight();
     clearInspector();
