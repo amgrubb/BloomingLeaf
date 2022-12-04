@@ -339,7 +339,7 @@ class SliderObj {
         // console.log("Intention List: "+ SliderObj.getIntentionsList());
         for (var i = 0; i < SatList.length; i++) {
             $("#"+ElList[i]).css("display", "");
-            if (SatList[i] == '0000') {
+            if (SatList[i] == '1110' || SatList[i] == '0111'|| SatList[i] == '0110'|| SatList[i] == '1001') {
                 console.log("Found");
                 console.log(i);
                 console.log("Element: " + ElList[i]);
