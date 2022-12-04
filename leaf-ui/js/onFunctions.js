@@ -1018,7 +1018,7 @@ paper.on("link:options", function (cell) {
         }, 1000);
     
         // refresh the visual overlay on the model
-        EVO.refreshSlider();
+        EVO.refresh();
     });
 
     /**
