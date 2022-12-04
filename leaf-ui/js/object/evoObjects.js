@@ -108,7 +108,7 @@ class EVO {
         "1111": "#0D0221"
     };
 
-    //Initialize user-created-palette as default palette
+    //Initialize user-created-palette as Red-Blue
     static selfColorVisDict = {
         "0000": "#D3D3D3", // None (⊥, ⊥)
         "0011": "#003fff", // Satisfied (F, ⊥)
@@ -200,7 +200,7 @@ class EVO {
             } else {
                 EVO.colorIntentionsModeling();
             }
-            EVO.changeIntentionsText(analysisResult);
+            // EVO.changeIntentionsText(analysisResult);
         }
         // If EVO is off
         else {
@@ -394,6 +394,16 @@ class EVO {
                         var intentionEval = element.timePoints[timepoint];
                         var color = EVO.getColor(intentionEval);
                         cellView.model.attr({ '.outer': { 'fill': color } });
+
+                        //update text font to white if the chosen color is dark 
+                        if (color != undefined){
+                            if (isDark(color)) {
+                                cellView.model.attr({ 'text': { 'fill': "white" } });
+                            }else {
+                                cellView.model.attr({ 'text': { 'fill': "black" } });
+                            }
+                        }
+                        
                     }
                 }
             }
@@ -535,8 +545,20 @@ class EVO {
                     cellView.model.changeToOriginalColour();
                 }
                 var colorChange = EVO.getColor(initSatVal);
+
                 // Change intention color to match sat value
                 cellView.model.attr({ '.outer': { 'fill': colorChange } });
+
+                //update text font to white if the chosen color is dark 
+                if (colorChange != undefined){
+                    if (isDark(colorChange)) {
+                        cellView.model.attr({ 'text': { 'fill': "white" } });
+                    }else {
+                        cellView.model.attr({ 'text': { 'fill': "black" } });
+                    }
+                }
+                
+                
             } else {
                 cellView.model.changeToOriginalColour();
             }

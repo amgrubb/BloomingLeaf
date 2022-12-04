@@ -199,7 +199,6 @@ $('#btn-fnt').on('click', function () { defaultFont(paper); });
 $('#btn-fnt-up').on('click', function () { fontUp(paper); });
 $('#btn-fnt-down').on('click', function () { fontDown(paper); });
 $('#legend').on('click', function () { window.open('./userguides/legend.html', 'newwindow', 'width=300, height=250'); return false; });
-// $('#show-palette-1').on('click', function () { window.open('./userguides/evo.html', 'newwindow', 'width=500, height=400'); return false; });
 
 /**
  * returns whether or not a color is dark
@@ -227,11 +226,11 @@ function displayPalette(palette_number ) {
             '<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Initial Satisfaction Values</h3>'+
             '<tbody>'+
                 '<tr>'+
-                '    <th>None</th>'+
-                '    <th>Satisfied</th>'+
-                '    <th>Partially Satisfied </th>'+
-                '    <th>Partially Denied</th>'+
-                '    <th>Denied</th>'+
+                '    <th style= "text-align:center"> None</th>'+
+                '    <th style= "text-align:center"> Satisfied</th>'+
+                '    <th style= "text-align:center"> Partially Satisfied </th>'+
+                '    <th style= "text-align:center"> Partially Denied</th>'+
+                '    <th style= "text-align:center"> Denied</th>'+
                 '</tr>'+
                 '<tr style= "background-color: #FFFFFF;">'+
                 '    <td style="text-align:center"> <span class = "s_value_box" id = "nn"> (⊥, ⊥) </span> </td>'+
@@ -246,10 +245,10 @@ function displayPalette(palette_number ) {
         '<table id="conflict-satisfied-list" class="abs-table">'+
         '<tbody>'+
         '<tr>'+
-        '<th> Partially Satisfied/ Partially Denied </th>'+
-        '<th> Fully Satisfied/ Partially Denied</th>'+
-        '<th> Partially Satisfied/ Fully Denied</th>'+
-        '<th> Fully Satisfied/ Fully Denied</th>'+
+        '<th style= "text-align:center"> Partially Satisfied/ Partially Denied </th>'+
+        '<th style= "text-align:center"> Fully Satisfied/ Partially Denied</th>'+
+        '<th style= "text-align:center"> Partially Satisfied/ Fully Denied</th>'+
+        '<th style= "text-align:center"> Fully Satisfied/ Fully Denied</th>'+
         '</tr>'+
         '<tr style= "background-color: #FFFFFF;">'+
         '<td style= "text-align:center"> <span class = "s_value_box" id = "PP"> (P, P) </span> </td>'+
@@ -290,12 +289,11 @@ function displayPalette(palette_number ) {
 /** displays the color palette options*/
 $('#evo-color-key').on('click', function () {
     removeHighlight();
-    clearInspector();
     showAlert('EVO Color Key',
         '<p>What color key do you ' +
         'want to see?</p> ' +
         '<p><button type="button" class="modal-editing"' +
-        ' id="show-palette-1" onclick="displayPalette(1)" style="width:100%">Default Palette' +
+        ' id="show-palette-1" onclick="displayPalette(1)" style="width:100%">Red-Blue Palette' +
         '</button><button type="button" ' +
         'class="model-editing" id="show-palette-2" onclick="displayPalette(2)" style="width:100%">Red-Green-Palette ' +
         '</button> <button type="button" class="model-editing"' +
@@ -911,9 +909,7 @@ paper.on("link:options", function (cell) {
         var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
         if (name) {
             clearCycleHighlighting(selectResult);
-            EVO.deactivate();
-            // EVO.returnAllColors(graph.getElements(), paper);
-            // EVO.revertIntentionsText(graph.getElements(), paper);  
+            EVO.deactivate();  
             var fileName = name + ".json";
             var obj = { graph: graph.toJSON() }; // Same structure as the other two save options
             obj.version = "BloomingLeaf_2.0";
@@ -1011,8 +1007,16 @@ paper.on("link:options", function (cell) {
     $('#submit-color').on('click', function () {
         //fill in the dictionary
         EVO.fillInDictionary();
-        if (Object.values(EVO.selfColorVisDict).some((v) => validateColor(v) == false)) { swal("Invalid Color", "", "error"); }
 
+        //check that the entered colors are different
+        if (validateColor(EVO.selfColorVisDict) == false) { swal("Please make sure to select different colors", "", "error"); }
+
+        // Display a message to tell the user their selection is saved
+        $("#saved-options-message").css("display", "");
+        setTimeout(function(){
+            $("#saved-options-message").css("display", "none");
+        }, 1000);
+    
         // refresh the visual overlay on the model
         EVO.refreshSlider();
     });
@@ -1222,10 +1226,18 @@ function highlightPalette(paletteOption) {
         }
     }
 }
+
 /**
- * Validates if the input colors are hexcolor
+ * Checks if the color selections are different from one another
+ * @param {*} colorDict 
+ * @returns {boolean}
  */
-function validateColor(color) {
-    const COLOR_PATTERN = new RegExp("^(#[a-fA-F0-9]{6})$");
-    return COLOR_PATTERN.test(color);
+function validateColor(colorDict) {
+    for (let index in Object.values(colorDict)){
+        if(Object.keys(colorDict).filter(key => colorDict[key] === Object.values(colorDict)[index]).length>1){
+            return false;
+        };
+    }
+    return true;
 }
+    
