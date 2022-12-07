@@ -1009,7 +1009,7 @@ paper.on("link:options", function (cell) {
         EVO.fillInDictionary();
 
         //check that the entered colors are different
-        if (validateColor(EVO.selfColorVisDict) == false) { swal("Please make sure to select different colors", "", "error"); }
+        if (validateColor(EVO.selfColorVisDict) == false) { swal("Please make sure your satisfied and denied values are different", "", "error"); }
 
         // Display a message to tell the user their selection is saved
         $("#saved-options-message").css("display", "");
@@ -1018,7 +1018,12 @@ paper.on("link:options", function (cell) {
         }, 1000);
     
         // refresh the visual overlay on the model
-        EVO.refresh();
+        if ($('#analysisSlider').css("display") == "none") {
+            EVO.refresh(undefined);
+        } else {
+            EVO.refresh(selectResult);
+        }
+        
     });
 
     /**
@@ -1228,16 +1233,11 @@ function highlightPalette(paletteOption) {
 }
 
 /**
- * Checks if the color selections are different from one another
+ * Checks if the color selections for satisfied and denied are different
  * @param {*} colorDict 
  * @returns {boolean}
  */
 function validateColor(colorDict) {
-    for (let index in Object.values(colorDict)){
-        if(Object.keys(colorDict).filter(key => colorDict[key] === Object.values(colorDict)[index]).length>1){
-            return false;
-        };
-    }
-    return true;
+    return colorDict[ "0011"] != colorDict["1100"];
 }
     

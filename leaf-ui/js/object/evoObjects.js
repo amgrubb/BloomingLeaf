@@ -200,7 +200,6 @@ class EVO {
             } else {
                 EVO.colorIntentionsModeling();
             }
-            // EVO.changeIntentionsText(analysisResult);
         }
         // If EVO is off
         else {
