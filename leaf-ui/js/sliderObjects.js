@@ -94,14 +94,15 @@ class SliderObj {
 
             //Goes through each element on the graph and pushes it into ElList array
             var cells = paper.findViewsInArea(paper.getArea()); //cells is an array containing all intentions on graph
-            cells.forEach(elements => //goes through each elements in "cells" array and pushes each element id into ElList. "elements.id" gets access to the "j_7" ids
-                ElList.push(elements.id));
-            console.log("Element j_id array: " + ElList); // prints array of j_ids of actors + intentions
+            // cells.forEach(elements => //goes through each elements in "cells" array and pushes each element id into ElList. "elements.id" gets access to the "j_7" ids
+            //     ElList.push(elements.id));
+            // console.log("Element j_id array: " + ElList); // prints array of j_ids of actors + intentions
 
-            // SliderObj.compareSatVal(element,parseInt(values[handle]), SatList, ElList); //Method here is not finished but when calls the compareSatVal to compare  
+            SliderObj.getIntentionsList(ElList);
+            console.log("List: "+ ElList);
+            SliderObj.compareSatVal(SatList, ElList); //Method here is not finished but when calls the compareSatVal to compare  
             
-            // Testing of disappearIntention() for j_id of #j_27. 
-            // IMPORTANT: Comment out later, do not delete for now.
+            // Testing of disappearIntention()
             var t = parseInt(values[handle])%2;
 
             if (t == 0) {
@@ -165,31 +166,24 @@ class SliderObj {
     }
 
 
-    // /**
-    //  * Remove links
-    //  * TODO: This works, but how do you bring back the link when bool is set to false?
-    //  */
-    // static removeLinks() { // both embedded and cross-actor links?
-    //     var elements = graph.getElements(); // intentions + actors only, no links
-    //     // console.log('List of elements');
-    //     // console.log(elements);
-    //     var links = graph.getLinks();
-    //     // console.log('List of links'); // both internal and cross-actor links
-    //     // console.log(links);
-    //     var actors = elements.filter(element => element.get('type') == 'basic.Actor');
-    //     // console.log("List of actors");
-    //     // console.log(actors);
-    //     var embeds = actors[1].attributes.embeds;
-    //     for (var i = 0; i < embeds.length; i++) {
-    //         for(var j = 0; j < links.length; j++){
-    //             console.log("Link attribute source id: ");
-    //             console.log(links[j].attributes.source.id);
-    //             if (embeds[i] === links[j].attributes.source.id || embeds[i] === links[j].attributes.target.id) {
-    //                 links[j].remove();
-    //             }
-    //         }
-    //     }
-    // }
+    /**
+     * a method that prints out all the intentions of the model
+     * TODO: This method doesn't seem to print out helpful info now
+     */
+    static getIntentionsList(List) {
+        var cells = paper.findViewsInArea(paper.getArea());
+        var elements = graph.getElements();
+        var intentionsList = [];
+        for(var i = 0; i<cells.length; i++ ){
+            console.log(cells[i].model.attributes.type);
+            console.log(cells[i] instanceof joint.shapes.basic.Actor);
+            if(!(cells[i].model.attributes.type == "basic.Actor")) {
+                List.push(cells[i].id);
+            }
+        }
+        console.log('LIST OF INTENTIONS:');
+        console.log("Intenions array: "+ intentionsList); 
+    }
 
 
     /**
@@ -341,21 +335,18 @@ class SliderObj {
      * WIP
      */
     
-    //  static compareSatVal(element, sliderValue, SatList, ElList) { //Deals with checking which satVal corresponds to which element.id currently being worked on
-    //     // var satValue = element.status[sliderValue];
-    //     // console.log("satVallll: "+ satValue);
-    //     // SatList.push(satValue);
-    //     for (var i = 0; i < SatList.length; i++) {
-    //         var cellz = SatList[i];
-    //         console.log(cellz.id);
-    //     }
-    //     // if (satValue == '0000') {
-    //     //     SliderObj.disappearIntention(true,'#j_7');
-    //     // }
-    //     // else {
-    //     //     SliderObj.disappearIntention(false,'#j_7');
-    //     // }
-    // }    
+    static compareSatVal(SatList, ElList) { //Deals with checking which satVal corresponds to which element.id currently being worked on
+        // console.log("Intention List: "+ SliderObj.getIntentionsList());
+        for (var i = 0; i < SatList.length; i++) {
+            $("#"+ElList[i]).css("display", "");
+            if (SatList[i] == '1110' || SatList[i] == '0111'|| SatList[i] == '0110'|| SatList[i] == '1001') {
+                console.log("Found");
+                console.log(i);
+                console.log("Element: " + ElList[i]);
+                $("#"+ElList[i]).css("display", "none");
+            }       
+        }
+    }    
 
     /**
      * Reset display to default, before result is displayed
