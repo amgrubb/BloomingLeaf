@@ -2,7 +2,11 @@ package simulation;
 
 import java.util.ArrayList;
 import java.util.List;
+
+// import com.google.gson.Gson;
+
 import gson_classes.*;
+import merge.VisualInfo;
 
 /**
  * This class is responsible to get the front-end model and convert into the back-end model filling the necessary attributes.
@@ -15,7 +19,7 @@ public class BIModelSpecBuilder {
      * 	Note: this function depends on modelSpec.getNumIntentions() being set prior to being called.
      * @param aRequest - the request passed from the front end
      */
-    private static void readAnalysisParameters(ModelSpec modelSpec, IAnalysisRequest aRequest,
+    protected static void readAnalysisParameters(ModelSpec modelSpec, IAnalysisRequest aRequest,
     		int numIntentions) {
     	try {
 			// Type of analysis
@@ -45,11 +49,11 @@ public class BIModelSpecBuilder {
      * @param frontendModel
      * Note: Model constraints are assigned after intentions are established.
      */
-    private static void readOverallGraphParameters(ModelSpec modelSpec, IGraph frontendModel) {
+    protected static void readOverallGraphParameters(ModelSpec modelSpec, IGraph frontendModel) {
     	try {	
 			//Max Absolute Time
 			if(frontendModel.getMaxAbsTime() != null){
-				modelSpec.setMaxTime(Integer.parseInt(frontendModel.getMaxAbsTime()));
+				modelSpec.setMaxTime(frontendModel.getMaxAbsTime());
 			}
 
 			if(frontendModel.getAbsTimePtsArr() != null)
@@ -75,6 +79,10 @@ public class BIModelSpecBuilder {
 			// Back-end Model
 			ModelSpec modelSpec = new ModelSpec();	
 			
+			// Gson gson = new Gson();
+			// System.out.println("icell version:");
+			// System.out.println(gson.toJson(inObject));
+			
 			IGraph frontendModel = inObject.getGraph();
 			
 			// Collection of Cells
@@ -99,11 +107,14 @@ public class BIModelSpecBuilder {
 						throw new IllegalArgumentException("Cell with unknown type: " + cell.getType());	
 				}
 			}
-			
-			
+						
 			// Read the parameters associated with the model.
-			readAnalysisParameters(modelSpec, inObject.getAnalysisRequest(),
-					intentions.size()); 
+			// analysisRequest may be null
+			IAnalysisRequest analysisRequest = inObject.getAnalysisRequest();
+			if (analysisRequest != null) {
+				readAnalysisParameters(modelSpec, analysisRequest,
+						intentions.size()); 
+			}
 			readOverallGraphParameters(modelSpec, frontendModel);	
 			
 			// **** ACTORS **** - Getting Actor Data
@@ -112,8 +123,13 @@ public class BIModelSpecBuilder {
 				for(ICell dataActor: actors){
 					String backID = "A" + String.format("%03d", actorID);
 					actorID ++;
-					modelSpec.getActors().add(new Actor(backID,	dataActor.getActor().getActorName(), 
-							dataActor.getActor().getType(),	dataActor.getId()));
+					Actor newActor = new Actor(backID,	dataActor.getActor().getActorName(), 
+							dataActor.getActor().getType(),	dataActor.getEmbeds(), dataActor.getId());
+					if (dataActor.isVisual()) { // actor contains visual information
+						VisualInfo visual = new VisualInfo(dataActor.getSize(), dataActor.getPosition());
+						newActor.setVisualInfo(visual);
+					}
+					modelSpec.getActors().add(newActor);
 				}
 			}
 			if (Main.DEBUG) System.out.println("Read Actors");
@@ -123,6 +139,10 @@ public class BIModelSpecBuilder {
 			if(!intentions.isEmpty()){			
 				for (ICell dataIntention : intentions){
 					Intention newInt = Intention.createIntention(dataIntention, modelSpec);
+					if (dataIntention.isVisual()) { // intention contains visual information
+						VisualInfo visual = new VisualInfo(dataIntention.getSize(), dataIntention.getPosition());
+						newInt.setVisualInfo(visual);
+					}
 					modelSpec.getIntentions().add(newInt); 
 				}
 			}
@@ -153,6 +173,7 @@ public class BIModelSpecBuilder {
 					else if (linkType.equals("NBD"))	
 						notBothLink.add(new NotBothLink(intentElementSrc, intentElementDest, true, 
 								link.getLink().getAbsTime(), link.getId()));
+					// else if linkType is-a 
 					else {
 						ContributionLink tempCont = ContributionLink.createConstributionLink(intentElementSrc, 
 								intentElementDest, link.getLink(), link.getId());
