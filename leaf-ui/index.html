@@ -69,8 +69,8 @@
         <div class="dropdown">
             <div class="btn">Help</div>
             <div class="dropdown-toolbar">
-                <a href="./userguides/documentation.pdf" download='documentation.pdf'">Download Documentation</a>
-                <a id="legend">Legend</a>
+                <a href="./userguides/documentation.pdf" download='documentation.pdf'>Download Documentation</a>
+                <a id="legend">Evolving Function Legend</a>
                 <a id="evo-color-key">EVO Color Key</a>
                 <!-- <a id="load-sample">Load Sample Model</a> -->
 
@@ -84,13 +84,13 @@
         <!-- EVO dropdown menu for palette choices-->
         <div class="dropdown">
             <div class="btn" style="display: inline-block">EVO</div>
-            <div class="dropdown-toolbar">
-                <a id="color-palette-1"> Default Palette</a>
+            <div class="dropdown-toolbar" id="palette-selection">
+                <a id="color-palette-1"> Red-Blue Palette</a>
                 <a id="color-palette-2"> Red-Green Palette</a>
                 <a id="color-palette-3"> Green-Black Palette</a>
                 <a id="color-palette-4"> Yellow-Purple Palette</a>
                 <a id="color-palette-5"> EVO Colorblind Mode</a>
-                <a id="color-palette-6">My Palette</a>     
+                <a id="color-palette-6"> My Palette</a>     
                 </div>
                 </div>
         <!-- modeling mode slider: simple off/on option-->
@@ -127,13 +127,12 @@
         <button id="next-state-btn" class="btn analysis-only" style="border-radius: none; display: none">Explore
             States</button>
         <!-- EVO Create My Palette Table-->
-        <div id="color-input" class="modal" style="display: none;width: 1000px;">
+        <div id="color-input" class="modal" style="display: none;width: 1000px; z-index: 4;">
             <div id="page-mask"></div>
                     <div class="modal-content">
                     
                         <div class="modal-header">
-
-                            <span id="submit-color" class="close" onclick=" $('#color-input').css('display', 'none');">&times;</span>
+                            <span class="close" onclick=" $('#color-input').css('display', 'none');">&times;</span>
                             <h2>Create My Palette</h2>
                         </div>
                         <div class="modal-body">
@@ -149,11 +148,11 @@
                             
                                     </tr>
                                     <tr>
-                                        <td><input type="text" id="my-None" class="analysis-input" /></td>
-                                        <td><input type="text" id="my-Satisfied" class="analysis-input" /></td>
-                                        <td><input type="text" id="my-PS" class="analysis-input" /></td>
-                                        <td><input type="text" id="my-PD" class="analysis-input" /></td>
-                                        <td><input type="text" id="my-Denied" class="analysis-input" /></td>
+                                        <td><input type="color" value="#D3D3D3" id="my-None" class="analysis-input" /></td>
+                                        <td><input type="color" value="#003fff" id="my-Satisfied" class="analysis-input" /></td>
+                                        <td><input type="color" value="#8FB8DE" id="my-PS" class="analysis-input" /></td>
+                                        <td><input type="color" value="#fbaca8" id="my-PD" class="analysis-input" /></td>
+                                        <td><input type="color" value="#9400D3" id="my-Denied" class="analysis-input" /></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -165,16 +164,20 @@
                                         <th>(F, P)</th>
                                         <th>(P, F)</th>
                                         <th>(F, F)</th>
-                            
                                     </tr>
                                     <tr>
-                                        <td><input type="text" id="my-PP" class="analysis-input" type="number" /></td>
-                                        <td><input type="text" id="my-FP" class="analysis-input" type="number" /></td>
-                                        <td><input type="text" id="my-PF" class="analysis-input" type="number" /></td>
-                                        <td><input type="text" id="my-FF" class="analysis-input" type="number" /></td>
+                                        <td><input type="color" value="#5946b2" id="my-PP" class="analysis-input" type="number" /></td>
+                                        <td><input type="color" value="#FF2600" id="my-FP" class="analysis-input" type="number" /></td>
+                                        <td><input type="color" value="#ca2c92" id="my-PF" class="analysis-input" type="number" /></td>
+                                        <td><input type="color" value="#0D0221" id="my-FF" class="analysis-input" type="number" /></td>
                                     </tr>
                                 </tbody>
                             </table>
+                            <div class="button" style="text-align: right;  padding: 10px">
+                               <span id="saved-options-message" style = "display: none;">   Your options are now saved! </span>
+                               <span>  <button id="submit-color" style="background-color: #1E85F7; color: white; padding: 8px 20px; font-size:15px"> Save my palette </button> </span>
+                             
+                            </div>
                         </div>
                     </div>
         </div>

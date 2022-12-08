@@ -173,6 +173,10 @@
     padding: 12px 5px;
 }
 
+.abs-table tr td input[type=color] {
+    padding: 0px !important;
+}
+
 /* Ends this section*/
 
 
