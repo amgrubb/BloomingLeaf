@@ -990,10 +990,18 @@ paper.on("link:options", function (cell) {
         }
     });
 
-    $('#color-palette-6').on('click', function () { // Choose color palettes
+    $('#color-palette-6').on('click', function () { // Apply Chosen Colors
         EVO.paletteOption = 6;
         highlightPalette(EVO.paletteOption);
+        if ($('#analysisSlider').css("display") == "none") {
+            EVO.refresh(undefined);
+        } else {
+            EVO.refresh(selectResult);
+        }
+    });
 
+    $('#color-palette-7').on('click', function () { // Choose color palettes
+        EVO.paletteOption = 7;
         //render a table
         $('#color-input').css("display", "");
         if ($('#analysisSlider').css("display") == "none") {
@@ -1220,7 +1228,7 @@ function stringifyCirc(obj) {
  * Highlights the chosen palette on the dropdown
  */
 function highlightPalette(paletteOption) {
-    for (var i = 1; i <= 5; i++) {
+    for (var i = 1; i <= 6; i++) {
         var id = '#color-palette-'
         id = id + i;
         if (i == paletteOption) {
