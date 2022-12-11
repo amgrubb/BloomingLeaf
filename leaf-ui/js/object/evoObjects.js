@@ -574,7 +574,7 @@ class EVO {
             return EVO.colorVisDictCollection[EVO.paletteOption - 1][intentionEval];
         }
 
-        if (EVO.paletteOption == 6) {
+        if (EVO.paletteOption >= 6) {
             return EVO.selfColorVisDict[intentionEval];
         }
     }

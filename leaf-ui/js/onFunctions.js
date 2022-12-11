@@ -1004,11 +1004,6 @@ paper.on("link:options", function (cell) {
         EVO.paletteOption = 7;
         //render a table
         $('#color-input').css("display", "");
-        if ($('#analysisSlider').css("display") == "none") {
-            EVO.refresh(undefined);
-        } else {
-            EVO.refresh(selectResult);
-        }
     });
 
     //Show warning messages if use input invalid color
@@ -1023,9 +1018,13 @@ paper.on("link:options", function (cell) {
         $("#saved-options-message").css("display", "");
         setTimeout(function(){
             $("#saved-options-message").css("display", "none");
-        }, 1000);
+            //close the color input
+            $('#color-input').css("display", "none");
+        }, 500);
     
-        // refresh the visual overlay on the model
+        // refresh the visual overlay on the model and the palette dropdown
+        EVO.paletteOption =6;
+        highlightPalette(EVO.paletteOption);
         if ($('#analysisSlider').css("display") == "none") {
             EVO.refresh(undefined);
         } else {
@@ -1040,6 +1039,13 @@ paper.on("link:options", function (cell) {
      */
     document.getElementById("colorReset").oninput = function () { // Turns slider on/off and refreshes
         EVO.setSliderOption(this.value, selectResult);
+        //highlight the first palette by default  if EVO is on 
+        if(EVO.sliderOption ==1){
+            highlightPalette(EVO.paletteOption);
+        } else{
+        //unhighlights all palettes if EVO is off
+          unhighlightPalettes();
+        }
     }
     /**
      * Four option analysis mode slider
@@ -1237,6 +1243,17 @@ function highlightPalette(paletteOption) {
         else {
             $(id).css("background-color", "#f9f9f9");
         }
+    }
+}
+
+/**
+ * UnHighlights the chosen palette on the dropdown
+ */
+function unhighlightPalettes() {
+    for (var i = 1; i <= 6; i++) {
+        var id = '#color-palette-'
+        id = id + i;
+        $(id).css("background-color", "#f9f9f9"); //unhighlight the choice
     }
 }
 
