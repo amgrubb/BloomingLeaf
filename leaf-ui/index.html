@@ -127,16 +127,16 @@
         <button id="next-state-btn" class="btn analysis-only" style="border-radius: none; display: none">Explore
             States</button>
         <!-- EVO Create My Palette Table-->
-        <div id="color-input" class="modal" style="display: none;width: 1000px;">
+        <div id="color-input" class="popup_frame" style="display: none;width: 1000px;">
             <div id="page-mask"></div>
-                    <div class="modal-content">
+                    <div class="popup_content">
                     
-                        <div class="modal-header">
+                        <div class="popup_header">
 
                             <span id="submit-color" class="close" onclick=" $('#color-input').css('display', 'none');">&times;</span>
                             <h2>Create My Palette</h2>
                         </div>
-                        <div class="modal-body">
+                        <div class="popup_body">
                             <h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Initial Satisfied Value</h3>
                             <table id="initial-satisfied-list" class="abs-table">
                                 <tbody>
@@ -186,10 +186,9 @@
                 <a id="model-cur-btn">From Initial State</a>
             </div>
         </div>-->
-
-        <div id="assignments-list"></div>
-        <div id="intermediate-table"></div>
     </div>
+    <div id="assignments-list"></div>
+    <div id="intermediate-table"></div>
 
     <div id="stencil" class="left-panel model-only"><label>Stencil</label></div>
 

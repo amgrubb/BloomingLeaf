@@ -2,39 +2,9 @@
  * Modal popup windows CSS.
  */
 
-/* Sets position on modal popups aka "Create My Palette window" and "View Assignments List window" and also stops them from effecting background */
-.modal {
+ .popup_frame {
     position: fixed; /* Stay in place */
-    padding-top: 25px; /* Location of the box */
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    height: 90%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-}
-
-/* Sets attributes for Modal Content, structures View Assignments List Modal */
-.modal-content {
-    z-index: 4; /** Sit on top **/ 
-    position: relative;
-    background-color: #fefefe;
-    margin: auto;
-    padding: 0;
-    border: 1px solid #888;
-    width: 70%;
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
-    -webkit-animation-name: animatetop;
-    -webkit-animation-duration: 0.4s;
-    animation-name: animatetop;
-    animation-duration: 0.4s;
-    color: black;
-    border-radius: 20px;
-}
-
-/* Sets position and how the "Intermediate Values window" stops the popup from effecting the background */
-.intermT {
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
+    z-index: 10; /* Sit on top */
     padding-top: 100px; /* Location of the box */
     padding-bottom: 100px; /* Location of the box */
     left: 0;
@@ -42,11 +12,10 @@
     width: 100%; /* Full width */
     height: 90%; /* Full height */
     overflow: scroll; /* Enable scroll if needed */
-}
+ }
 
-/* Intermediate Values popup Content */
-.intermContent {
-    z-index: 4; /** Sit on top **/ 
+ .popup_content {
+    z-index: 10; /** Sit on top **/ 
     position: relative;
     background-color: #fefefe;
     margin: auto;
@@ -60,16 +29,19 @@
     animation-duration: 0.4s;
     color: black;
     border-radius: 20px;
-}
+ }
 
-/* Sets attributes for header of interm popup. Makes it blue and rounded */
-.intermHeader {
+ .popup_header {
     padding: 2px 16px;
     background: #1E85F7;
     color: white;
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
-}
+ }
+
+ .popup_body {
+    padding: 2px 16px;
+ }
 
 /* Adds sliding Animation for popup window */
 @-webkit-keyframes animatetop {
@@ -115,30 +87,6 @@
     cursor: pointer;
 }
 
-/* Sets attributes for header of modal popups. Makes it blue and rounded */
-.modal-header {
-    padding: 2px 16px;
-    background: #1E85F7;
-    color: white;
-    border-top-left-radius: 20px;
-    border-top-right-radius: 20px;
-}
-
-/* Sets attributes for body of modal popups. Adds padding around modal */
-.modal-body {padding: 2px 16px;}
-
-/* Sets attributes for footer of modal popups */
-.modal-footer {
-    padding: 2px 16px;
-    color: white;
-}
-
-/* Sets attributes for footer of intermT modal popup */
-.intermTfooter {
-    padding: 2px 16px;
-    color: white;
-}
-
 /* This section sets attributes for table within "View Assignments List" modal */
 .abs-table {
     font-family: arial, sans-serif;
@@ -174,7 +122,6 @@
 }
 
 /* Ends this section*/
-
 
 /*Begins Interm table design section */
 .intermBody {
