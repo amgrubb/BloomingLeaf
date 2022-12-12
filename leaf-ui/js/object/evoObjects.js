@@ -131,7 +131,6 @@ class EVO {
         EVO.colorVisDict3,
         EVO.colorVisDict4,
         EVO.colorVisDictColorBlind,
-        EVO.selfColorVisDict
     ];
 
     /**
