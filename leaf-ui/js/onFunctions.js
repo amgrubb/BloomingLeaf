@@ -292,7 +292,7 @@ $('#evo-color-key').on('click', function () {
     showAlert('EVO Color Key',
         '<p>What color key do you ' +
         'want to see?</p> ' +
-        '<p><button type="button" class="modal-editing"' +
+        '<p><button type="button" class="model-editing"' +
         ' id="show-palette-1" onclick="displayPalette(1)" style="width:100%">Red-Blue Palette' +
         '</button><button type="button" ' +
         'class="model-editing" id="show-palette-2" onclick="displayPalette(2)" style="width:100%">Red-Green-Palette ' +
