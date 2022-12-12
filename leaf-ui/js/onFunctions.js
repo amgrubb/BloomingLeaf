@@ -292,16 +292,16 @@ $('#evo-color-key').on('click', function () {
     showAlert('EVO Color Key',
         '<p>What color key do you ' +
         'want to see?</p> ' +
-        '<p><button type="button" class="model-editing"' +
-        ' id="show-palette-1" onclick="displayPalette(1)" style="width:100%">Red-Blue Palette' +
+        '<p><button type="button" class="model-editing" ' +
+        'onclick="displayPalette(1)" style="width:100%">Red-Blue Palette' +
         '</button><button type="button" ' +
-        'class="model-editing" id="show-palette-2" onclick="displayPalette(2)" style="width:100%">Red-Green-Palette ' +
-        '</button> <button type="button" class="model-editing"' +
-        ' id="show-palette-3" onclick="displayPalette(3)" style="width:100%"> Green-Black Palette' +
-        '</button><button type="button" class="model-editing"' +
-        ' id="show-palette-4" onclick="displayPalette(4)" style="width:100%"> Yellow-Purple Palette' +
-        '</button><button type="button" class="model-editing"' +
-        ' id="show-palette-6" onclick="displayPalette(6)" style="width:100%"> My Palette' +
+        'class="model-editing" onclick="displayPalette(2)" style="width:100%">Red-Green-Palette ' +
+        '</button> <button type="button" class="model-editing" ' +
+        'onclick="displayPalette(3)" style="width:100%"> Green-Black Palette' +
+        '</button><button type="button" class="model-editing" ' +
+        'onclick="displayPalette(4)" style="width:100%"> Yellow-Purple Palette' +
+        '</button><button type="button" class="model-editing" ' +
+        'onclick="displayPalette(6)" style="width:100%"> My Palette' +
         '</button></p>',
         window.innerWidth * 0.3, 'alert', 'warning');
 });
