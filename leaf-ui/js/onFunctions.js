@@ -199,7 +199,114 @@ $('#btn-fnt').on('click', function () { defaultFont(paper); });
 $('#btn-fnt-up').on('click', function () { fontUp(paper); });
 $('#btn-fnt-down').on('click', function () { fontDown(paper); });
 $('#legend').on('click', function () { window.open('./userguides/legend.html', 'newwindow', 'width=300, height=250'); return false; });
-$('#evo-color-key').on('click', function () { window.open('./userguides/evo.html', 'newwindow', 'width=500, height=400'); return false; });
+
+/**
+ * returns whether or not a color is dark
+ * @param {*} color 
+ * @returns 
+ */
+function isDark(color){
+    const hex = color.replace('#', '');
+    const c_r = parseInt(hex.substr(0, 2), 16);
+    const c_g = parseInt(hex.substr(2, 2), 16);
+    const c_b = parseInt(hex.substr(4, 2), 16);
+    const brightness = ((c_r * 299) + (c_g * 587) + (c_b * 114)) / 1000;
+    return brightness < 155;
+}
+
+/**
+ * displays the color palette
+ * @param {*} palette_number 
+ */
+function displayPalette(palette_number ) {
+
+    //creates the table that contains all satisfaction values 
+    showAlert('Evaluation Visualisation Overlay Color Key',
+            '<table class="abs-table">'+
+            '<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Initial Satisfaction Values</h3>'+
+            '<tbody>'+
+                '<tr>'+
+                '    <th style= "text-align:center"> None</th>'+
+                '    <th style= "text-align:center"> Satisfied</th>'+
+                '    <th style= "text-align:center"> Partially Satisfied </th>'+
+                '    <th style= "text-align:center"> Partially Denied</th>'+
+                '    <th style= "text-align:center"> Denied</th>'+
+                '</tr>'+
+                '<tr style= "background-color: #FFFFFF;">'+
+                '    <td style="text-align:center"> <span class = "s_value_box" id = "nn"> (⊥, ⊥) </span> </td>'+
+                '    <td style="text-align:center"> <span class = "s_value_box" id = "FS"> (F ,⊥) </span> </td>'+
+                '    <td style="text-align:center"> <span class = "s_value_box" id = "PS"> (P ,⊥) </span> </td>'+
+                '    <td style="text-align:center"> <span class = "s_value_box" id = "PD"> (⊥ ,P) </span> </td>'+
+                '    <td style="text-align:center"> <span class = "s_value_box" id = "FD"> (⊥ ,F) </span> </td>'+
+                '</tr>'+
+            '</tbody>'+
+        '</table>'+
+        ' <h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Conflict Values </h3>'+
+        '<table id="conflict-satisfied-list" class="abs-table">'+
+        '<tbody>'+
+        '<tr>'+
+        '<th style= "text-align:center"> Partially Satisfied/ Partially Denied </th>'+
+        '<th style= "text-align:center"> Fully Satisfied/ Partially Denied</th>'+
+        '<th style= "text-align:center"> Partially Satisfied/ Fully Denied</th>'+
+        '<th style= "text-align:center"> Fully Satisfied/ Fully Denied</th>'+
+        '</tr>'+
+        '<tr style= "background-color: #FFFFFF;">'+
+        '<td style= "text-align:center"> <span class = "s_value_box" id = "PP"> (P, P) </span> </td>'+
+        '<td style= "text-align:center"> <span class = "s_value_box" id = "FP"> (F, P) </span> </td>'+
+        '<td style= "text-align:center"> <span class = "s_value_box" id = "PF"> (P, F) </span> </td>'+
+        '<td style= "text-align:center"> <span class = "s_value_box" id = "FF"> (F, F) </span> </td>'+
+        '</tr>'+
+        '</tbody>'+
+        '</table>',
+    550, 'alert', 'warning');
+   
+    //updates the color key based on the chosen palette 
+    if(palette_number<6){
+        //pre-made palettes
+        for (let charVal in EVO.charSatValueToNum){
+            let color = EVO.colorVisDictCollection[palette_number-1][EVO.charSatValueToNum[charVal]];
+            document.getElementById(charVal).style.backgroundColor= color;
+            if (isDark(color)) {
+                document.getElementById(charVal).style.color = "white";
+            }
+        }
+    
+    } else{
+        //personalized palette
+        for (let charVal in EVO.charSatValueToNum){
+            let color = EVO.selfColorVisDict[EVO.charSatValueToNum[charVal]];
+            document.getElementById(charVal).style.backgroundColor= color;
+            if (isDark(color)) {
+                document.getElementById(charVal).style.color = "white";
+            }
+        }
+    }       
+}
+
+
+
+
+/** displays the color palette options*/
+$('#evo-color-key').on('click', function () {
+    removeHighlight();
+    showAlert('EVO Color Key',
+        '<p>What color key do you ' +
+        'want to see?</p> ' +
+        '<p><button type="button" class="model-editing" ' +
+        'onclick="displayPalette(1)" style="width:100%">Red-Blue Palette' +
+        '</button><button type="button" ' +
+        'class="model-editing" onclick="displayPalette(2)" style="width:100%">Red-Green-Palette ' +
+        '</button> <button type="button" class="model-editing" ' +
+        'onclick="displayPalette(3)" style="width:100%"> Green-Black Palette' +
+        '</button><button type="button" class="model-editing" ' +
+        'onclick="displayPalette(4)" style="width:100%"> Yellow-Purple Palette' +
+        '</button><button type="button" class="model-editing" ' +
+        'onclick="displayPalette(6)" style="width:100%"> My Palette' +
+        '</button></p>',
+        window.innerWidth * 0.3, 'alert', 'warning');
+});
+
+
 
 /**
  * Displays the absolute and relative assignments modal for the user.
@@ -802,9 +909,7 @@ paper.on("link:options", function (cell) {
         var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
         if (name) {
             clearCycleHighlighting(selectResult);
-            EVO.deactivate();
-            // EVO.returnAllColors(graph.getElements(), paper);
-            // EVO.revertIntentionsText(graph.getElements(), paper);  
+            EVO.deactivate();  
             var fileName = name + ".json";
             var obj = { graph: graph.toJSON() }; // Same structure as the other two save options
             obj.version = "BloomingLeaf_2.0";
@@ -885,11 +990,9 @@ paper.on("link:options", function (cell) {
         }
     });
 
-    $('#color-palette-6').on('click', function () { // Choose color palettes
+    $('#color-palette-6').on('click', function () { // Apply Chosen Colors
         EVO.paletteOption = 6;
         highlightPalette(EVO.paletteOption);
-        //render a table
-        $('#color-input').css("display", "");
         if ($('#analysisSlider').css("display") == "none") {
             EVO.refresh(undefined);
         } else {
@@ -897,10 +1000,37 @@ paper.on("link:options", function (cell) {
         }
     });
 
+    $('#color-palette-7').on('click', function () { // Choose color palettes
+        EVO.paletteOption = 7;
+        //render a table
+        $('#color-input').css("display", "");
+    });
+
     //Show warning messages if use input invalid color
     $('#submit-color').on('click', function () {
+        //fill in the dictionary
+        EVO.fillInDictionary();
 
-        if (Object.values(EVO.selfColorVisDict).some((v) => validateColor(v) == false)) { swal("Invalid Color", "", "error"); }
+        //check that the entered colors are different
+        if (validateColor(EVO.selfColorVisDict) == false) { swal("Please make sure your satisfied and denied values are different", "", "error"); }
+
+        // Display a message to tell the user their selection is saved
+        $("#saved-options-message").css("display", "");
+        setTimeout(function(){
+            $("#saved-options-message").css("display", "none");
+            //close the color input
+            $('#color-input').css("display", "none");
+        }, 500);
+    
+        // refresh the visual overlay on the model and the palette dropdown
+        EVO.paletteOption =6;
+        highlightPalette(EVO.paletteOption);
+        if ($('#analysisSlider').css("display") == "none") {
+            EVO.refresh(undefined);
+        } else {
+            EVO.refresh(selectResult);
+        }
+        
     });
 
     /**
@@ -909,6 +1039,13 @@ paper.on("link:options", function (cell) {
      */
     document.getElementById("colorReset").oninput = function () { // Turns slider on/off and refreshes
         EVO.setSliderOption(this.value, selectResult);
+        //highlight the first palette by default  if EVO is on 
+        if(EVO.sliderOption ==1){
+            highlightPalette(EVO.paletteOption);
+        } else{
+        //unhighlights all palettes if EVO is off
+          unhighlightPalettes();
+        }
     }
     /**
      * Four option analysis mode slider
@@ -1097,7 +1234,7 @@ function stringifyCirc(obj) {
  * Highlights the chosen palette on the dropdown
  */
 function highlightPalette(paletteOption) {
-    for (var i = 1; i <= 5; i++) {
+    for (var i = 1; i <= 6; i++) {
         var id = '#color-palette-'
         id = id + i;
         if (i == paletteOption) {
@@ -1108,10 +1245,24 @@ function highlightPalette(paletteOption) {
         }
     }
 }
+
 /**
- * Validates if the input colors are hexcolor
+ * UnHighlights the chosen palette on the dropdown
  */
-function validateColor(color) {
-    const COLOR_PATTERN = new RegExp("^(#[a-fA-F0-9]{6})$");
-    return COLOR_PATTERN.test(color);
+function unhighlightPalettes() {
+    for (var i = 1; i <= 6; i++) {
+        var id = '#color-palette-'
+        id = id + i;
+        $(id).css("background-color", "#f9f9f9"); //unhighlight the choice
+    }
 }
+
+/**
+ * Checks if the color selections for satisfied and denied are different
+ * @param {*} colorDict 
+ * @returns {boolean}
+ */
+function validateColor(colorDict) {
+    return colorDict[ "0011"] != colorDict["1100"];
+}
+    
