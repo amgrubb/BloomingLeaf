@@ -1,4 +1,4 @@
-package gson_classes;
+ package gson_classes;
 
 import java.util.List;
 
@@ -9,12 +9,21 @@ import java.util.List;
  * the JSON attributes.
  */
 public class IGraph {
-	private String maxAbsTime;
+	private String type;
+	private Integer maxAbsTime;
 	private int[] absTimePtsArr;
 	private BIConstraint[] constraints;
 	private List<ICell> cells;
 	
-	public String getMaxAbsTime() {
+	public IGraph(Integer maxAbsTime, int[] absTimePtsArr, List<ICell> cells) {
+		this.type = "goalmodel.Graph";
+		this.maxAbsTime = maxAbsTime;
+		this.absTimePtsArr = absTimePtsArr;
+		this.constraints = new BIConstraint[0];
+		this.cells = cells;
+	}
+	
+	public Integer getMaxAbsTime() {
 		return maxAbsTime;
 	}
 	public int[] getAbsTimePtsArr() {
@@ -25,5 +34,5 @@ public class IGraph {
 	}
 	public List<ICell> getCells() {
 		return cells;
-	}		
+	}	
 }
