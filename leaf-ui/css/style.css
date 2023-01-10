@@ -683,3 +683,9 @@ div.attribution {
 .bot-img {
 padding: 0px 20px 0px 0px;
 }
+
+/** sets the font color for the text inside the color legend */
+.s_value_box {
+  padding: 5px;
+  text-align: center;
+}
