@@ -131,7 +131,7 @@ public class BICSPState {
     	CSPIntentions.initializeUserEvaluationsForIntentions(this.constraints, this.spec, this.values, 
     			this.uniqueIDToValueIndex, this.timePoints); 
     	CSPIntentions.addNBFunctions(this.constraints, this.spec, this.values, 
-    			this.uniqueIDToValueIndex, this.timePoints, this.timePointMap, this.infinity);
+    			this.uniqueIDToValueIndex, this.timePoints, this.timePointMap, this.infinity, this.store);
     	CSPPath.createLTConstraintsBetweenTimePoint(this.constraints, this.spec, 
     			this.timePoints, this.timePointMap);
     	if (Main.DEBUG)	System.out.println("\nEnd of Init Procedure");	

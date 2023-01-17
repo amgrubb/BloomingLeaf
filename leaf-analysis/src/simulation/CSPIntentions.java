@@ -7,6 +7,7 @@ import java.util.Map;
 import org.jacop.constraints.*;
 import org.jacop.core.BooleanVar;
 import org.jacop.core.IntVar;
+import org.jacop.core.Store;
 
 public class CSPIntentions {
 
@@ -373,7 +374,7 @@ public class CSPIntentions {
 			List<Constraint> constraints, ModelSpec spec,  
 			BooleanVar[][][] values, HashMap<String, Integer> uniqueIDToValueIndex,
 			IntVar[] timePoints, HashMap<IntVar, List<String>> timePointMap,
-			IntVar infinity) {
+			IntVar infinity, Store store) {
 
     	// Not Both Dynamic Functions.
     	List<NotBothLink> notBothLinkList = spec.getNotBothLink();	
@@ -383,17 +384,18 @@ public class CSPIntentions {
     		Integer ele2 = uniqueIDToValueIndex.get(link.getElement2().getUniqueID());
     		IntVar refTP = CSPPath.getTimePoint(timePointMap, link.getLinkTP());
 
+    		BooleanVar newbool = new BooleanVar(store, "NBV" + link.getElement1().getId() + ":" + link.getElement2().getId());
     		for (int t = 0; t < values[ele1].length; t++){
-            	if(link.isFinalDenied())
+        		if(link.isFinalDenied()) {		
             		constraints.add(new IfThenElse(new XgtY(refTP, timePoints[t]), 
-            				new And(new And(createXeqC(values[ele1][t], boolTT)), new And(createXeqC(values[ele2][t], boolTT))),
-            				new Or(new And(new And(createXeqC(values[ele1][t], boolFS)), new And(createXeqC(values[ele2][t], boolFD))),
-            					   new And(new And(createXeqC(values[ele1][t], boolFD)), new And(createXeqC(values[ele2][t], boolFS))))));
-            	else
+            				new And(new And(createXeqC(values[ele1][t], boolTT)), new And(createXeqC(values[ele2][t], boolTT))),	// before the time point
+            				new Or(new And(new And(new And(createXeqC(values[ele1][t], boolFS)), new And(createXeqC(values[ele2][t], boolFD))), new XeqC(newbool, 0)),
+            					   new And(new And(new And(createXeqC(values[ele1][t], boolFD)), new And(createXeqC(values[ele2][t], boolFS))), new XneqC(newbool, 0)))));
+            	}else
             		constraints.add(new IfThenElse(new XgtY(refTP, timePoints[t]), 
-            				new And(new And(createXeqC(values[ele1][t], boolTT)), new And(createXeqC(values[ele2][t], boolTT))),
-            				new Or(new And(new And(createXeqC(values[ele1][t], boolFS)), new And(createXeqC(values[ele2][t], boolTT))),
-            					   new And(new And(createXeqC(values[ele1][t], boolTT)), new And(createXeqC(values[ele2][t], boolFS))))));            		
+    				new And(new And(createXeqC(values[ele1][t], boolTT)), new And(createXeqC(values[ele2][t], boolTT))),
+    				new Or(new And(new And(new And(createXeqC(values[ele1][t], boolFS)), new And(createXeqC(values[ele2][t], boolTT))), new XeqC(newbool, 0)),
+    					   new And(new And(new And(createXeqC(values[ele1][t], boolTT)), new And(createXeqC(values[ele2][t], boolFS))), new XneqC(newbool, 0)))));		
             }
     	}
 
