@@ -176,13 +176,13 @@ class SliderObj {
         var intentionsList = [];
         for(var i = 0; i<cells.length; i++ ){
             console.log(cells[i].model.attributes.type);
-            console.log(cells[i] instanceof joint.shapes.basic.Actor);
             if(!(cells[i].model.attributes.type == "basic.Actor")) {
-                List.push(cells[i].id);
+                intentionsList.push(cells[i].model.id);
             }
         }
         console.log('LIST OF INTENTIONS:');
-        console.log("Intenions array: "+ intentionsList); 
+        console.log("Intentions array: ");
+        console.log(intentionsList); 
     }
 
 
