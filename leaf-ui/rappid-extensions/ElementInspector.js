@@ -1016,6 +1016,7 @@ var FuncSegView = Backbone.View.extend({
                 this.model.set('refEvidencePair', this.initSatValue);
             } else if (this.index != 0 && this.model.get('current')) {
                 this.$("#seg-sat-value").prop('disabled', '');
+                this.model.set('refEvidencePair', "0000");
                 this.$("#seg-sat-value").val(this.model.get('refEvidencePair'));
             } else {
                 this.$("#seg-sat-value").prop('disabled', true);
