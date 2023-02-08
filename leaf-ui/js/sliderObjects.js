@@ -84,8 +84,8 @@ class SliderObj {
         currentAnalysis.get('slider').sliderElement.noUiSlider.on('update', function (values, handle) {
             SliderObj.updateSliderValues(parseInt(values[handle]), currentAnalysis);
 
-            const ElList = []; //Empty array for elements id's ex: j_7, j_9, j_11
-            const SatList = []; //Empty array for elements sat vals ex: 0111, 1100, 1110
+            var ElList = []; //Empty array for elements id's ex: j_7, j_9, j_11
+            var SatList = []; //Empty array for elements sat vals ex: 0111, 1100, 1110
 
             //Goes through each element in elementlist and runs checkSatVal method that prints out each sat val for each element
             currentAnalysis.get('elementList').forEach(element =>
@@ -94,12 +94,14 @@ class SliderObj {
 
             //Goes through each element on the graph and pushes it into ElList array
             var cells = paper.findViewsInArea(paper.getArea()); //cells is an array containing all intentions on graph
-            cells.forEach(elements => //goes through each elements in "cells" array and pushes each element id into ElList. "elements.id" gets access to the "j_7" ids
-                ElList.push(elements.id));
-            console.log("Element j_id array: " + ElList); // prints array of j_ids of actors + intentions
+            // cells.forEach(elements => //goes through each elements in "cells" array and pushes each element id into ElList. "elements.id" gets access to the "j_7" ids
+            //     ElList.push(elements.id));
+            // console.log("Element j_id array: " + ElList); // prints array of j_ids of actors + intentions
 
+            ElList = SliderObj.getIntentionsList();
+            console.log("Element List1:  ");
+            console.log(ElList);
             // SliderObj.getIntentionsList(ElList);
-            console.log("List: "+ ElList);
             SliderObj.compareSatVal(SatList, ElList); //Method here is not finished but when calls the compareSatVal to compare  
             
             // Testing of disappearIntention()
@@ -170,14 +172,14 @@ class SliderObj {
      * a method that prints out all the intentions of the model
      * TODO: This method doesn't seem to print out helpful info now
      */
-    static getIntentionsList(List) {
+    static getIntentionsList() {
         var cells = paper.findViewsInArea(paper.getArea());
         // var elements = graph.getElements();
         var intentionsList = [];
         for(var i = 0; i<cells.length; i++ ){
             console.log(cells[i].model.attributes.type);
             if(!(cells[i].model.attributes.type == "basic.Actor")) {
-                intentionsList.push(cells[i].model.id);
+                intentionsList.push(cells[i].id);
             }
         }
         return intentionsList; 
