@@ -94,11 +94,8 @@ class SliderObj {
 
             //Goes through each element on the graph and pushes it into ElList array
             var cells = paper.findViewsInArea(paper.getArea()); //cells is an array containing all intentions on graph
-            // cells.forEach(elements => //goes through each elements in "cells" array and pushes each element id into ElList. "elements.id" gets access to the "j_7" ids
-            //     ElList.push(elements.id));
-            // console.log("Element j_id array: " + ElList); // prints array of j_ids of actors + intentions
 
-            ElList = SliderObj.getIntentionsList();
+            ElList = SliderObj.getIntentionsList(); // get j_ids of intentions only
             console.log("Element List1:  ");
             console.log(ElList);
             // SliderObj.getIntentionsList(ElList);
