@@ -94,11 +94,11 @@ class SliderObj {
 
             //Goes through each element on the graph and pushes it into ElList array
             var cells = paper.findViewsInArea(paper.getArea()); //cells is an array containing all intentions on graph
-            // cells.forEach(elements => //goes through each elements in "cells" array and pushes each element id into ElList. "elements.id" gets access to the "j_7" ids
-            //     ElList.push(elements.id));
-            // console.log("Element j_id array: " + ElList); // prints array of j_ids of actors + intentions
+            cells.forEach(elements => //goes through each elements in "cells" array and pushes each element id into ElList. "elements.id" gets access to the "j_7" ids
+                ElList.push(elements.id));
+            console.log("Element j_id array: " + ElList); // prints array of j_ids of actors + intentions
 
-            SliderObj.getIntentionsList(ElList);
+            // SliderObj.getIntentionsList(ElList);
             console.log("List: "+ ElList);
             SliderObj.compareSatVal(SatList, ElList); //Method here is not finished but when calls the compareSatVal to compare  
             
@@ -172,7 +172,7 @@ class SliderObj {
      */
     static getIntentionsList(List) {
         var cells = paper.findViewsInArea(paper.getArea());
-        var elements = graph.getElements();
+        // var elements = graph.getElements();
         var intentionsList = [];
         for(var i = 0; i<cells.length; i++ ){
             console.log(cells[i].model.attributes.type);
@@ -180,9 +180,7 @@ class SliderObj {
                 intentionsList.push(cells[i].model.id);
             }
         }
-        console.log('LIST OF INTENTIONS:');
-        console.log("Intentions array: ");
-        console.log(intentionsList); 
+        return intentionsList; 
     }
 
 
@@ -336,10 +334,16 @@ class SliderObj {
      */
     
     static compareSatVal(SatList, ElList) { //Deals with checking which satVal corresponds to which element.id currently being worked on
-        // console.log("Intention List: "+ SliderObj.getIntentionsList());
+        var intentionsList = SliderObj.getIntentionsList();
+        console.log("List of intentions: ");
+        console.log(intentionsList);
+        console.log("ElList is: ");
+        console.log(ElList);
+        console.log("SatList is: ");
+        console.log(SatList);
         for (var i = 0; i < SatList.length; i++) {
             $("#"+ElList[i]).css("display", "");
-            if (SatList[i] == '1110' || SatList[i] == '0111'|| SatList[i] == '0110'|| SatList[i] == '1001') {
+            if (SatList[i] == '1110' || SatList[i] == '1010' || SatList[i] == '0111'|| SatList == '0101' || SatList[i] == '0110'|| SatList[i] == '1111'|| SatList[i] == '1001' || SatList[i] == '1101' || SatList[i] == '1011') {
                 console.log("Found");
                 console.log(i);
                 console.log("Element: " + ElList[i]);
