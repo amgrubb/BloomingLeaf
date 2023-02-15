@@ -350,47 +350,56 @@ class SliderObj {
         console.log("SatList is: ");
         console.log(SatList);
 
-        var linksRemoved = [];
+        var linksRemoved = new Set();
         for (var i = 0; i < SatList.length; i++) {
-            // Make intentions reappear
-            $("#"+ElList[i]).css("display", "");
+            // Make intention reappear
+            $("#"+intentionsJIdList[i]).css("display", "");
 
             // Make links reappear
-            if (linksRemoved.length > 0) {
-                for (var i = 0; i < linksRemoved.length; i++) {
-                    $(linksRemoved[i]).css("display", "");
+            console.log("Links removed set ");
+            console.log(linksRemoved);
+            var linksRemovedArr = Array.from(linksRemoved);
+            console.log("Links removed array converted from set:");
+            console.log(linksRemovedArr);
+            // TODO: links reappearing not working yet
+            // if (linksRemoved.size > 0) {
+                for (var k = 0; k < linksRemovedArr.length; k++) {
+                    $(linksRemovedArr[k]).css("display", "");
                 }
-            }
+            // }
             
-            linksRemoved = [];
+            linksRemoved = new Set();
 
             // Make elements with conflicting values disappear
             // TODO: double-check the conflicting values, seems a bit off here
             if (SatList[i] == '1110' || SatList[i] == '1010' || SatList[i] == '0111'|| SatList == '0101' || SatList[i] == '0110'|| SatList[i] == '1111'|| SatList[i] == '1001' || SatList[i] == '1101' || SatList[i] == '1011') {
                 console.log("Found");
                 console.log(i);
-                console.log("Element: " + ElList[i]);
+                console.log("Element: ");
+                console.log(intentionsJIdList[i]);
 
                 // Make intention with conflicting values disappear
-                $("#"+ElList[i]).css("display", "none");
-                // intentionsConflictingVals.push(intentionsModelIdList[i]);
+                $("#"+intentionsJIdList[i]).css("display", "none");
 
-                // // Make links connecting conflicting values disappear
-                // for (var j = 0; j < links.length; j++) {
-                //     if (links[j].model.attributes.source.id == intentionsModelIdList[i] || links[j].model.attributes.target.id == intentionsModelIdList[i]) {
-                //         console.log("Link model i_d matched: " + links[i].model.id);
-                //         console.log("Since matched, j_id is " + links[i].id);
-                //         var linksId = "#" + links[j].id;
-                //         console.log("Correct link id to be removed: ");
-                //         console.log(linksId);
-                //         if (!linksRemoved.includes(linksId)) {
-                //             linksRemoved.push(linksId);
-                //         }
-                //         console.log("List of links removed so far:");
-                //         console.log(linksRemoved);
-                //         $(linksId).css("display", "none");
-                //     }
-                // }
+                // Make links connecting conflicting values disappear
+                for (var j = 0; j < links.length; j++) {
+                    console.log(links[j]);
+
+                if (links[j].model.attributes.source.id == intentionsModelIdList[i] || links[j].model.attributes.target.id == intentionsModelIdList[i]) {
+                    console.log("Link model i_d matched: " + links[j].model.id);
+                    console.log("Since matched, j_id is " + links[j].id);
+                    var linksId = "#" + links[j].id;
+                    console.log("Correct link id to be removed: ");
+                    console.log(linksId);
+                    // if (!linksRemoved.includes(linksId)) {
+                        console.log("Pushed");
+                        linksRemoved.add(linksId);
+                    // }
+                    console.log("List of links removed so far:");
+                    console.log(linksRemoved);
+                    $(linksId).css("display", "none");
+                    }
+                }
             }    
         }
     }    
