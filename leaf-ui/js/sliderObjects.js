@@ -171,15 +171,16 @@ class SliderObj {
      */
     static getIntentionsList() {
         var cells = paper.findViewsInArea(paper.getArea());
-        // var elements = graph.getElements();
-        var intentionsList = [];
-        for(var i = 0; i<cells.length; i++ ){
+        var intentionsJIds = [];
+        var intentionsModelIds = [];
+        for(var i = 0; i < cells.length; i++ ){
             console.log(cells[i].model.attributes.type);
             if(!(cells[i].model.attributes.type == "basic.Actor")) {
-                intentionsList.push(cells[i].id);
+                intentionsJIds.push(cells[i].id);
+                intentionsModelIds.push(cells[i].model.id)
             }
         }
-        return intentionsList; 
+        return [intentionsJIds, intentionsModelIds]; 
     }
 
 
@@ -282,6 +283,8 @@ class SliderObj {
     
     /**
      * Makes actors, intentions and links dissapear
+     * TODO: Need to handle the case where the embedded intentions with conflicting values disappear,
+     * regardless of timepoint.
      */
     static disappearIntention(bool) {
         // Testing merge1.json
@@ -329,25 +332,66 @@ class SliderObj {
     
     /**
      * Method that will look through both SatList and ElList arrays and based on if an intention matches with a satVal then make those intentions dissapear
-     * WIP
+     * TODO: make links between intentions with conflicting values disappear
      */
     
     static compareSatVal(SatList, ElList) { //Deals with checking which satVal corresponds to which element.id currently being worked on
-        var intentionsList = SliderObj.getIntentionsList();
-        console.log("List of intentions: ");
-        console.log(intentionsList);
+        var intentionsJIdList = SliderObj.getIntentionsList()[0];
+        var intentionsModelIdList = SliderObj.getIntentionsList()[1];
+        var links = SliderObj.getLinksView();
+        console.log("List of intentions j_ids: ");
+        console.log(intentionsJIdList);
+        console.log("List of intentions model ids:");
+        console.log(intentionsModelIdList);
+        console.log("List of links: ");
+        console.log(links);
         console.log("ElList is: ");
         console.log(ElList);
         console.log("SatList is: ");
         console.log(SatList);
+
+        var linksRemoved = [];
         for (var i = 0; i < SatList.length; i++) {
+            // Make intentions reappear
             $("#"+ElList[i]).css("display", "");
+
+            // Make links reappear
+            if (linksRemoved.length > 0) {
+                for (var i = 0; i < linksRemoved.length; i++) {
+                    $(linksRemoved[i]).css("display", "");
+                }
+            }
+            
+            linksRemoved = [];
+
+            // Make elements with conflicting values disappear
+            // TODO: double-check the conflicting values, seems a bit off here
             if (SatList[i] == '1110' || SatList[i] == '1010' || SatList[i] == '0111'|| SatList == '0101' || SatList[i] == '0110'|| SatList[i] == '1111'|| SatList[i] == '1001' || SatList[i] == '1101' || SatList[i] == '1011') {
                 console.log("Found");
                 console.log(i);
                 console.log("Element: " + ElList[i]);
+
+                // Make intention with conflicting values disappear
                 $("#"+ElList[i]).css("display", "none");
-            }       
+                // intentionsConflictingVals.push(intentionsModelIdList[i]);
+
+                // // Make links connecting conflicting values disappear
+                // for (var j = 0; j < links.length; j++) {
+                //     if (links[j].model.attributes.source.id == intentionsModelIdList[i] || links[j].model.attributes.target.id == intentionsModelIdList[i]) {
+                //         console.log("Link model i_d matched: " + links[i].model.id);
+                //         console.log("Since matched, j_id is " + links[i].id);
+                //         var linksId = "#" + links[j].id;
+                //         console.log("Correct link id to be removed: ");
+                //         console.log(linksId);
+                //         if (!linksRemoved.includes(linksId)) {
+                //             linksRemoved.push(linksId);
+                //         }
+                //         console.log("List of links removed so far:");
+                //         console.log(linksRemoved);
+                //         $(linksId).css("display", "none");
+                //     }
+                // }
+            }    
         }
     }    
 
