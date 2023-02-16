@@ -71,9 +71,26 @@ public class LayoutAlgorithm {
 
 			//sort intentions
 			// organizeIntentionTypes(intention_nodePos, a);
-
+			
+			//create hashmap of links
+			HashMap<Integer, HashSet<Integer>> linkMap = new HashMap<Integer, HashSet<Integer>>();
+			for(AbstractLinkableElement elem: temp_arrayList) {
+				List<AbstractLinkableElement> connectedElems = elem.getConnectedElems();
+				//make set of connectedElems
+				int elemPos = temp_arrayList.indexOf(elem);
+				HashSet<Integer> connectedPosSet = new HashSet<Integer>();
+				for(AbstractLinkableElement connectedElem: connectedElems) {
+					
+					//connection might not be in the array, but it's okay because indexOf returns -1
+					connectedPosSet.add(temp_arrayList.indexOf(connectedElem));
+				}
+				
+				linkMap.put(elemPos, connectedPosSet);
+			}
+			
 			//layout intentions
-			layoutModel(intention_nodePos, false);
+			layoutModel(intention_nodePos, linkMap, false);
+			layoutModelP2(intention_nodePos, false);
 
 			//resize actor
 			resizeActor(a, intention_nodePos);
@@ -93,10 +110,32 @@ public class LayoutAlgorithm {
 			if (LMain.DEBUG) System.out.println(a.getEmbedIntentions(model).length);
 		}
 		VisualInfo[] lvl0_nodePos = initNodePositions(temp_arrayList);
+		
+		//create hashmap of links
+		HashMap<Integer, HashSet<Integer>> linkMap = new HashMap<Integer, HashSet<Integer>>();
+		for(AbstractLinkableElement elem: temp_arrayList) {
+			List<AbstractLinkableElement> connectedElems = elem.getConnectedElems();
+			//make set of connectedElems
+			int elemPos = temp_arrayList.indexOf(elem);
+			HashSet<Integer> connectedPosSet = new HashSet<Integer>();
+			for(AbstractLinkableElement connectedElem: connectedElems) {
+				
+				//connection might not be in the array, but it's okay because indexOf returns -1
+				connectedPosSet.add(temp_arrayList.indexOf(connectedElem));
+			}
+			
+			linkMap.put(elemPos, connectedPosSet);
+		}
 
 		//	run layout on level_zero (if a node is an actor, propagate changes to its children)
-		if(model.getActors().size() == 0) layoutModel(lvl0_nodePos, false);
-		else layoutModel(lvl0_nodePos, true);
+		if(model.getActors().size() == 0) {
+			layoutModel(lvl0_nodePos, linkMap, false);
+			//layoutModelP2(lvl0_nodePos, false);
+		}
+		else {
+			layoutModel(lvl0_nodePos, linkMap, true);
+			//layoutModelP2(lvl0_nodePos, true);
+		}
 
 		//delete the temp actor
 		model.getActors().remove(temp_actor);
@@ -109,10 +148,11 @@ public class LayoutAlgorithm {
     /**
      * Lays out nodePositions, all nodePositions apply forces on each other
      * @param nodePositions
+     * @param linkmap - mapping of all links
      * @param hasActors - will change constants and conditions
      * @return
      */
-	public ModelSpec layoutModel(VisualInfo[] nodePositions, boolean hasActors){
+	public ModelSpec layoutModel(VisualInfo[] nodePositions, HashMap<Integer, HashSet<Integer>> linkMap, boolean hasActors){
 		if (LMain.DEBUG) System.out.println("Starting: layoutModel");
         //center is where gravity force comes from 
 
@@ -138,7 +178,7 @@ public class LayoutAlgorithm {
         double gravitation = 9.8/Math.sqrt(constant); //gravitation forces
 
         //Layout forces applied maxIter times
-		for(int i = 0; i < maxIter; i++){
+		for(int i = 0; i < 500; i++){ // Hard coded max for part 1
 			if (LMain.DEBUG) System.out.println("\n" + i + "th Iteration");
 			if (LMain.DEBUG) System.out.println(Arrays.toString(nodePositions));
 
@@ -153,8 +193,25 @@ public class LayoutAlgorithm {
                     double theta = angleBetween(nodePositions[k], nodePositions[j]);
 
                     //calculate attraction and repulsion force
-                    double attraction = makeSmall(getAttraction(nodePositions[j], nodePositions[k], constant));
+                    
+                    //if they share a link, increase the attraction
+                    
+                    double attraction;
+                    if(linkMap.get(j).contains(k)) {
+                    	attraction = getAttraction(nodePositions[j], nodePositions[k], constant/1000000);
+                    	//attraction = makeSmall(getAttraction(nodePositions[j], nodePositions[k], constant));
+                    	System.out.println(attraction);
+                    } else {
+                    	attraction = getAttraction(nodePositions[j], nodePositions[k], constant);
+                    }
                     double repulsion = getRepulsion(nodePositions[j], nodePositions[k], constant);
+                    
+                    if(Double.isNaN(attraction)) {
+
+                    	System.out.println(nodePositions.length);
+                    	System.out.println("reached nan in part 1");
+                    	return model;
+                    }
 
 
                     //decompose attraction and repulsion, scale forces
@@ -216,6 +273,121 @@ public class LayoutAlgorithm {
         //maximum iterations completed
 		return model;
 	}
+	
+	/** normal layour model **/
+	public ModelSpec layoutModelP2(VisualInfo[] nodePositions, boolean hasActors){
+		if (LMain.DEBUG) System.out.println("Starting: layoutModel");
+        //center is where gravity force comes from 
+
+        VisualInfo center = findCenter(nodePositions);
+
+        int numActors = model.getActors().size();
+        if(!hasActors) numActors = 0;
+        //visualizer tool to see how nodes are moving
+        LayoutVisualizer lV = new LayoutVisualizer(nodePositions, center, numActors);
+
+        //constants
+        double c = .0002; //adjustment -- the speed at which actors move
+        //TODO: solid piece wise function for c (scalable for big model)
+        //if (nodePositions.length >= 7) c = .0001;
+        if(nodePositions.length < 7 && nodePositions.length > 3) c = .0006;
+        else if(nodePositions.length < 4) c = .0015;
+        double constant = Math.pow(nodePositions.length, .5); // increasing the constant decreases attraction and gravitation, but increases repulsion
+        if(hasActors) {
+            c = .01;
+        	//c = .02;
+        }
+        if (LMain.DEBUG) System.out.println(constant);
+        double gravitation = 9.8/Math.sqrt(constant); //gravitation forces
+
+        //Layout forces applied maxIter times
+		for(int i = 0; i < maxIter; i++){
+			if (LMain.DEBUG) System.out.println("\n" + i + "th Iteration");
+			if (LMain.DEBUG) System.out.println(Arrays.toString(nodePositions));
+
+            for(int j = 0; j < nodePositions.length; j++){
+            	if (LMain.DEBUG) System.out.println(j + "th Node\n");
+                for(int k = 0; k < nodePositions.length; k++){
+                    if(j ==k) continue;
+                    //TODO: Force constants, sizes? How to know...
+                    if (LMain.DEBUG) System.out.println("Starting: layoutModel Calculations");
+
+                    double dist = getDist(nodePositions[j], nodePositions[k]);
+                    double theta = angleBetween(nodePositions[k], nodePositions[j]);
+
+                    //calculate attraction and repulsion force
+                    
+                    //if they share a link, increase the attraction
+                    
+                    double attraction = getAttraction(nodePositions[j], nodePositions[k], constant/1000);
+                    
+                    
+                    double repulsion = getRepulsion(nodePositions[j], nodePositions[k], constant);
+                    
+                    if(Double.isNaN(attraction) || Double.isNaN(repulsion)) {
+                    	System.out.println("reached nan in part 2");
+                    	return model;
+                    }
+
+                    //decompose attraction and repulsion, scale forces
+                    double x_shift = c * (attraction*Math.cos(theta) - repulsion*Math.cos(theta));
+                    double y_shift = c * (attraction*Math.sin(theta) - repulsion*Math.sin(theta));
+
+                    if (LMain.DEBUG) System.out.println("x_shift" + x_shift);
+                    if (LMain.DEBUG) System.out.println("y_shift" + y_shift);
+
+                    
+                    //apply forces to node j
+                    nodePositions[j].setX(nodePositions[j].getX() + x_shift);
+                    nodePositions[j].setY(nodePositions[j].getY() + y_shift);
+                    
+                    //apply forces to node k in opposite direction
+                    nodePositions[k].setX(nodePositions[k].getX() - x_shift);
+                    nodePositions[k].setY(nodePositions[k].getY() - y_shift);
+                    
+
+                    //if either is an actor, add adjust to children nodes
+                    if(j < numActors) {
+                    	propagateAdjustments(model.getActors().get(j), x_shift, y_shift);
+                    }
+
+                    if(k < numActors) {
+                    	propagateAdjustments(model.getActors().get(k), -x_shift, -y_shift);
+                    }
+
+                }
+
+                //adjust positions based on gravity from the center
+                double phi = angleBetween(center, nodePositions[j]);
+                if (LMain.DEBUG) System.out.println("phi: " + phi);
+                nodePositions[j].setX(nodePositions[j].getX() + gravitation*Math.cos(phi));
+                nodePositions[j].setY(nodePositions[j].getY() + gravitation*Math.sin(phi));
+
+                //gravitation = getDist(nodePositions[j], center) * .2;
+
+                //if j is an actor, add adjust to children nodes
+                if(j < numActors) {
+                	propagateAdjustments(model.getActors().get(j), gravitation*Math.cos(phi), gravitation*Math.sin(phi));
+                }
+
+            }
+
+            //check if the layout is looking good --> if if it is, return model 
+            if(checkConds(nodePositions, center, numActors)) { //run at least 50 times before terminating
+            	if (LMain.DEBUG) System.out.println("Conditions Met");
+            	return model;
+            }
+
+            //update the visualizer
+            lV.update();
+            if (LMain.DEBUG) System.out.println(constant);
+        }
+		if (LMain.DEBUG) System.out.println(Arrays.toString(nodePositions));
+		if (LMain.DEBUG) System.out.println("Finished: layoutModel");
+
+        //maximum iterations completed
+		return model;
+	}
 
 	/*************** start of helper methods *******************/
 
@@ -260,6 +432,12 @@ public class LayoutAlgorithm {
         double distX = n1.getX() - n2.getX();
         double distY = n1.getY() - n2.getY();
         double dist = Math.sqrt(distX * distX + distY * distY);
+        if(Double.isNaN(dist)) {
+    		System.out.println("dist: " + dist);
+    		System.out.println("n1: " + n1.toString());
+    		System.out.println("n2: " + n2.toString());
+    		
+    	}
         return dist;
     }
 

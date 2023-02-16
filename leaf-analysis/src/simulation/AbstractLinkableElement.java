@@ -18,8 +18,8 @@ public abstract class AbstractLinkableElement extends AbstractElement{
 	protected String name = "NAME";
     protected String id = "NO-ID";	//Format that maps to array ordering.
  
-    List<AbstractElementLink> linksSrc = new ArrayList<AbstractElementLink>();
-    List<AbstractElementLink> linksDest = new ArrayList<AbstractElementLink>();
+    List<AbstractElementLink> linksSrc = new ArrayList<AbstractElementLink>(); //links where this is the src
+    List<AbstractElementLink> linksDest = new ArrayList<AbstractElementLink>(); //links where this is the dest
     
     VisualInfo visual = null;
 	
@@ -83,6 +83,24 @@ public abstract class AbstractLinkableElement extends AbstractElement{
 	}
 	public List<AbstractElementLink> getLinksDest() {
 		return linksDest;
+	}
+	
+	public List<AbstractLinkableElement> getConnectedElems(){
+		List<AbstractLinkableElement> myConnections = new ArrayList<AbstractLinkableElement>();
+		
+		//get the dest for the links where this is the src
+		for(AbstractElementLink link: this.linksSrc) {
+			myConnections.add(link.getDest());
+		}
+		
+		//get the src's for the links where this is the dest
+		for(AbstractElementLink link: this.linksDest) {
+			for(AbstractLinkableElement srcElem: link.getSrc()) {
+				myConnections.add(srcElem);
+			}
+		}
+		
+		return myConnections;
 	}
 
 	/**
@@ -158,6 +176,10 @@ public abstract class AbstractLinkableElement extends AbstractElement{
 		} else {
 			return null;
 		}
+	}
+	
+	public String toString() {
+		return name;
 	}
 	
 }

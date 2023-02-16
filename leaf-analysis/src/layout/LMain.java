@@ -26,8 +26,9 @@ public class LMain {
 	    String inPath = "src/layout/temp/";
 	    String outPath = "src/layout/temp/";
 	    String tracePath = "";
-//	    String inputFile = "S7-out.json";
-	    String inputFile = "S6-out.json";
+//	    String inputFile = "S3-out.json";
+//	    String inputFile = "bike-lanes-out.json";
+	    String inputFile = "Spadina3-out.json";
 	    String outputFile = "output.json";
 	
 	    try {			
@@ -59,7 +60,7 @@ public class LMain {
 	        }
 	
 	        // run auto-layout
-	        LayoutAlgorithm layerOuter = new LayoutAlgorithm(modelSpec, "trace.txt", 5000);
+	        LayoutAlgorithm layerOuter = new LayoutAlgorithm(modelSpec, "trace.txt", 1000);
 	        ModelSpec layedOutModel = layerOuter.layout();
 	
 	        // Create output file that will be used by frontend
