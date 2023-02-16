@@ -68,6 +68,7 @@ var ElementInspector = Backbone.View.extend({
         this.listenTo(this, 'change:intention', this.initSatValueChanged);
         // Saves this.model.get('intention) as a local variable to access it more easily
         this.intention = this.model.get('intention');
+        this.isNewSegment = false;
     },
 
     template: ['<script type="text/template" id="item-template">',
@@ -412,6 +413,7 @@ var ElementInspector = Backbone.View.extend({
      * constraints from previously stored.
      */
     addSegment: function () {
+        this.isNewSegment = true;
         // Adds a new FunctionSegmentBBM to the functionSegList
         this.intention.addUserDefinedSeg("C", "0000");
         var funcSegList = this.intention.getFuncSegments();
@@ -719,7 +721,7 @@ var ElementInspector = Backbone.View.extend({
             // Creates a FuncSegView for each of the function segment in the functionSegList
             funcSegList.forEach(
                 funcSeg => {
-                    var functionSegView = new FuncSegView({ model: funcSeg, intention: this.intention, index: i, initSatValue: this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair'), chart: this.chart });
+                    var functionSegView = new FuncSegView({ model: funcSeg, intention: this.intention, index: i, initSatValue: this.intention.getUserEvaluationBBM(0).get('assignedEvidencePair'), chart: this.chart, isNewSegment: this.isNewSegment });
                     $('#segment-functions').append(functionSegView.el);
                     functionSegView.render();
                     i++;
@@ -741,6 +743,7 @@ var ElementInspector = Backbone.View.extend({
      * Called whenever the html is updated. Renders the views for the FunctionSegmentBBMs and adds an absTime label
      */
     rerender: function () {
+        this.isNewSegment = false;
         // Adds absTime label
         if (this.intention.getFuncSegments().length != 0) {
             $(".text-label").css("visibility", "visible");
@@ -776,6 +779,7 @@ var FuncSegView = Backbone.View.extend({
         }
         this.index = options.index;
         this.initSatValue = options.initSatValue;
+        this.isNewSegment = options.isNewSegment;
 
         // Listens to if the current parameter in the FunctionSegmentBBMs changes
         this.listenTo(this.model, 'change:refEvidencePair', this.updateNextFuncSeg);
@@ -941,7 +945,10 @@ var FuncSegView = Backbone.View.extend({
                     // If the initial satisfaction value is denied you can't select decreasing
                     this.$('option[value=D]').prop('disabled', this.initSatValue === '1100');
                 }
-                this.checkUDFunctionValues()
+                if(this.isNewSegment)
+                {
+                    this.checkUDFunctionValues();
+                }
             } else { // If the model is not the most recent model disable the function type and satisfaction value selectors 
                 this.$("#seg-function-type").prop('disabled', true);
                 this.$("#seg-sat-value").prop('disabled', true);
