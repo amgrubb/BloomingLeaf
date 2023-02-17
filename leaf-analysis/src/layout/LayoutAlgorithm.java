@@ -10,7 +10,7 @@ public class LayoutAlgorithm {
 	ModelSpec model;
     int maxIter;
 
-    /**
+    /**ƒ
      * Initialize LayoutAlgorithm
      * @param model - model to be layed out
      * @param filename - file for tracking changes
@@ -137,10 +137,17 @@ public class LayoutAlgorithm {
         if (LMain.DEBUG) System.out.println(constant);
         double gravitation = 9.8/Math.sqrt(constant); //gravitation forces
 
+        ArrayList<Double> x_means = new ArrayList<Double>();
+        ArrayList<Double> y_means = new ArrayList<Double>();
+
         //Layout forces applied maxIter times
 		for(int i = 0; i < maxIter; i++){
 			if (LMain.DEBUG) System.out.println("\n" + i + "th Iteration");
 			if (LMain.DEBUG) System.out.println(Arrays.toString(nodePositions));
+
+            
+            double x_sum = 0;
+            double y_sum = 0;
 
             for(int j = 0; j < nodePositions.length; j++){
             	if (LMain.DEBUG) System.out.println(j + "th Node\n");
@@ -164,7 +171,9 @@ public class LayoutAlgorithm {
                     if (LMain.DEBUG) System.out.println("x_shift" + x_shift);
                     if (LMain.DEBUG) System.out.println("y_shift" + y_shift);
 
-                    
+                    x_sum = x_sum + Math.abs(x_shift);
+                    y_sum = y_sum + Math.abs(y_shift);
+
                     //apply forces to node j
                     nodePositions[j].setX(nodePositions[j].getX() + x_shift);
                     nodePositions[j].setY(nodePositions[j].getY() + y_shift);
@@ -199,6 +208,28 @@ public class LayoutAlgorithm {
                 }
 
             }
+
+            int count = nodePositions.length;
+            if (LMain.DEBUG) System.out.println("number of nodes" + count);
+            double x_mean = x_sum / count;
+            double y_mean = y_sum / count;
+
+            if (LMain.DEBUG) System.out.println(i + "th iteration \n" + "x_mean" + x_mean);
+            if (LMain.DEBUG) System.out.println("y_mean" + y_mean);
+
+
+            
+            if(i % 100 == 0) {
+                x_means.add(x_mean);
+                y_means.add(y_mean);
+            }
+
+            // for(Double x:x_means){
+            //     if (LMain.DEBUG) System.out.println(x);
+            // }
+            
+            if (LMain.DEBUG) System.out.println("x_means: "+x_means);
+            if (LMain.DEBUG) System.out.println("y_means: "+y_means);
 
             //check if the layout is looking good --> if if it is, return model 
             if(checkConds(nodePositions, center, numActors)) {
@@ -482,7 +513,7 @@ public class LayoutAlgorithm {
     	 for(VisualInfo n1: nodePositions) {
     		 for(VisualInfo n2: nodePositions) {
     			 if(n1 == n2) continue;
-    			 if(isOverlapped(n1, n2)) return false;
+    			 if(isOverlapped(n1, n2))return false;
     		 }
     	 }
          //check that nodes aren't too far away
