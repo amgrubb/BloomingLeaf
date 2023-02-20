@@ -84,33 +84,23 @@ class SliderObj {
         currentAnalysis.get('slider').sliderElement.noUiSlider.on('update', function (values, handle) {
             SliderObj.updateSliderValues(parseInt(values[handle]), currentAnalysis);
 
-            var ElList = []; //Empty array for elements id's ex: j_7, j_9, j_11
             var SatList = []; //Empty array for elements sat vals ex: 0111, 1100, 1110
 
             //Goes through each element in elementlist and runs checkSatVal method that prints out each sat val for each element
             currentAnalysis.get('elementList').forEach(element =>
                 SliderObj.checkSatVal(element,parseInt(values[handle]),SatList)); //prints each sat val individually and pushes them into SatList array
             console.log("Sat value array: " + SatList); // prints array of sat values of all intentions
-
-            //Goes through each element on the graph and pushes it into ElList array
-            var cells = paper.findViewsInArea(paper.getArea()); //cells is an array containing all intentions on graph
-
-            ElList = SliderObj.getIntentionsList(); // get j_ids of intentions only
-            console.log("Element List1:  ");
-            console.log(ElList);
-            // SliderObj.getIntentionsList(ElList);
-            SliderObj.compareSatVal(SatList, ElList); //Method here is not finished but when calls the compareSatVal to compare  
             
             // Testing of disappearIntention()
             var t = parseInt(values[handle])%2;
 
             if (t == 0) {
                 console.log("EVEN");
-                SliderObj.disappearIntention(true);
+                SliderObj.disappearIntention(true, SatList);
             }
             else {
                 console.log("ODD");
-                SliderObj.disappearIntention(false);
+                SliderObj.disappearIntention(false, SatList);
             }
 
 
@@ -286,7 +276,7 @@ class SliderObj {
      * TODO: Need to handle the case where the embedded intentions with conflicting values disappear,
      * regardless of timepoint.
      */
-    static disappearIntention(bool) {
+    static disappearIntention(bool, SatList) {
         // Testing merge1.json
         // links: j_12, j_13, j_14
         // actors: j_10 (self), j_11 (parents)
@@ -308,9 +298,21 @@ class SliderObj {
 
         // Call helper functions to remove embedded elements, links, and the actor itself
         // Testing for j_10 (self)
-        SliderObj.removeEmbeddedElements(cells, firstActorEmbeds, bool);
-        SliderObj.removeLinks(links, firstActorEmbeds, bool);
         SliderObj.removeActor(cells, bool);
+        // SliderObj.removeEmbeddedElements(cells, firstActorEmbeds, bool);
+        // SliderObj.removeLinks(links, firstActorEmbeds, bool);
+        
+
+        SliderObj.compareSatVal(SatList);
+
+        // TODO: actor (j_10) is still hardcoded
+        if ($('#j_10').css("display") == "none") {
+            console.log("Actor has disappeared!");
+            SliderObj.removeEmbeddedElements(cells, firstActorEmbeds, bool);
+            SliderObj.removeLinks(links, firstActorEmbeds, bool);
+        } else {
+            SliderObj.compareSatVal(SatList);
+        }
     }
 
     /**
@@ -331,11 +333,11 @@ class SliderObj {
     }
     
     /**
-     * Method that will look through both SatList and ElList arrays and based on if an intention matches with a satVal then make those intentions dissapear
+     * Method that will look through SatList array and based on if an intention matches with a satVal then make those intentions dissapear
      * TODO: make links between intentions with conflicting values disappear
      */
     
-    static compareSatVal(SatList, ElList) { //Deals with checking which satVal corresponds to which element.id currently being worked on
+    static compareSatVal(SatList) { //Deals with checking which satVal corresponds to which element.id currently being worked on
         var intentionsJIdList = SliderObj.getIntentionsList()[0];
         var intentionsModelIdList = SliderObj.getIntentionsList()[1];
         var links = SliderObj.getLinksView();
@@ -344,9 +346,6 @@ class SliderObj {
         console.log("List of intentions model ids:");
         console.log(intentionsModelIdList);
         console.log("List of links: ");
-        console.log(links);
-        console.log("ElList is: ");
-        console.log(ElList);
         console.log("SatList is: ");
         console.log(SatList);
 
