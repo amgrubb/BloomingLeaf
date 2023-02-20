@@ -350,28 +350,18 @@ class SliderObj {
         console.log("SatList is: ");
         console.log(SatList);
 
-        var linksRemoved = new Set();
+        // var linksRemoved = new Set();
+
+        // Make all links reappear
+        // TODO: Will need to watch out for any potential bugs
+        for (var k = 0; k < links.length; k++) {
+            console.log(links[k].id);
+            $("#"+links[k].id).css("display", "");
+        }
+
         for (var i = 0; i < SatList.length; i++) {
             // Make intention reappear
             $("#"+intentionsJIdList[i]).css("display", "");
-            for (var k = 0; k < links.length; k++) {
-                console.log(links[k].id);
-                $("#"+links[k].id).css("display", "");
-            }
-            // Make links reappear
-            console.log("Links removed set ");
-            console.log(linksRemoved);
-            var linksRemovedArr = Array.from(linksRemoved);
-            console.log("Links removed array converted from set:");
-            console.log(linksRemovedArr);
-            // TODO: links reappearing not working yet
-            // if (linksRemoved.size > 0) {
-                for (var k = 0; k < linksRemovedArr.length; k++) {
-                    $(linksRemovedArr[k]).css("display", "");
-                }
-            // }
-            
-            linksRemoved = new Set();
 
             // Make elements with conflicting values disappear
             // TODO: double-check the conflicting values, seems a bit off here
@@ -394,12 +384,6 @@ class SliderObj {
                     var linksId = "#" + links[j].id;
                     console.log("Correct link id to be removed: ");
                     console.log(linksId);
-                    // if (!linksRemoved.includes(linksId)) {
-                        console.log("Pushed");
-                        linksRemoved.add(linksId);
-                    // }
-                    console.log("List of links removed so far:");
-                    console.log(linksRemoved);
                     $(linksId).css("display", "none");
                     }
                 }
