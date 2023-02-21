@@ -86,12 +86,12 @@ class SliderObj {
 
             var SatList = []; //Empty array for elements sat vals ex: 0111, 1100, 1110
 
-            //Goes through each element in elementlist and runs checkSatVal method that prints out each sat val for each element
+            // Goes through each element in elementlist and runs checkSatVal method that prints out each sat val for each element
             currentAnalysis.get('elementList').forEach(element =>
                 SliderObj.checkSatVal(element,parseInt(values[handle]),SatList)); //prints each sat val individually and pushes them into SatList array
             console.log("Sat value array: " + SatList); // prints array of sat values of all intentions
             
-            // Testing of disappearIntention()
+            // Presence conditions behavior
             var t = parseInt(values[handle])%2;
 
             if (t == 0) {
@@ -111,37 +111,34 @@ class SliderObj {
     }
 
     /**
-     * Returns the list of j_ids of intentions and actors in the current model
+     * Returns the list of j_ids of all intentions and actors in the current model
      */
     static getIntentionsAndActorsView() {
         var elements = graph.getElements();
         var cellsView = []
         for (var i = 0; i < elements.length; i++) {
             var cellView = elements[i].findView(paper);
-            // console.log("Cell view: ");
-            // console.log(cellView);
             cellsView.push(cellView);
         } 
         return cellsView;
     }
 
     /**
-     * Returns the list of j_ids of intentions and actors in the current model
+     * Returns the list of j_ids of all links in the current model
      */
     static getLinksView() {
         var links = graph.getLinks();
         var linksView = []
         for (var i = 0; i < links.length; i++) {
             var linkView = links[i].findView(paper);
-            // console.log("Link view: ");
-            // console.log(linkView);
             linksView.push(linkView);
         } 
         return linksView;
     }
 
     /**
-     * Returns the list of embedded elements (intentions + internal links) model ids of an actor
+     * Returns the list of embedded elements (intentions + internal links) model_ids
+     * of an actor
      */
     static getEmbeddedElements() {
         var cells = SliderObj.getIntentionsAndActorsView();
@@ -156,8 +153,7 @@ class SliderObj {
 
 
     /**
-     * a method that prints out all the intentions of the model
-     * TODO: This method doesn't seem to print out helpful info now
+     * Returns the list of j_ids and the list of model_ids of all intentions of the model
      */
     static getIntentionsList() {
         var cells = paper.findViewsInArea(paper.getArea());
@@ -217,9 +213,7 @@ class SliderObj {
         var linksToRemove = []
         outerloop:
         for (var i = 0; i < links.length; i++) {
-            for (var j = 0; j < embeds.length; j++){
-                // console.log("Link attribute source id: ");
-                // console.log(links[j].attributes.source.id);
+            for (var j = 0; j < embeds.length; j++) {
                 if (links[i].model.attributes.source.id == embeds[j] || links[i].model.attributes.target.id == embeds[j]) {
                     console.log("Link model i_d matched: " + links[i].model.id);
                     console.log("Since matched, j_id is " + links[i].id);
@@ -346,10 +340,9 @@ class SliderObj {
         console.log("List of intentions model ids:");
         console.log(intentionsModelIdList);
         console.log("List of links: ");
+        console.log(links);
         console.log("SatList is: ");
         console.log(SatList);
-
-        // var linksRemoved = new Set();
 
         // Make all links reappear
         // TODO: Will need to watch out for any potential bugs
@@ -391,7 +384,7 @@ class SliderObj {
     }    
 
     /**
-     * Reset display to default, before result is displayed
+     * Resets display to default, before result is displayed
      */
     static hideAnalysis(analysisResult) {
         revertNodeValuesToInitial();
