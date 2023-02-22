@@ -354,7 +354,10 @@ class SliderObj {
         for (var i = 0; i < SatList.length; i++) {
             // Make intention reappear
             $("#"+intentionsJIdList[i]).css("display", "");
-
+            for (var k = 0; k < links.length; k++) {
+                console.log(links[k].id);
+                $("#"+links[k].id).css("display", "");
+            }
             // Make links reappear
             console.log("Links removed set ");
             console.log(linksRemoved);
