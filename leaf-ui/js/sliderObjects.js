@@ -84,14 +84,14 @@ class SliderObj {
         currentAnalysis.get('slider').sliderElement.noUiSlider.on('update', function (values, handle) {
             SliderObj.updateSliderValues(parseInt(values[handle]), currentAnalysis);
 
-            var SatList = []; //Empty array for elements sat vals ex: 0111, 1100, 1110
+            //Empty array for elements sat vals ex: 0111, 1100, 1110
+            var SatList = [];
 
-            // Goes through each element in elementlist and runs checkSatVal method that prints out each sat val for each element
+            //Loops through each intention on the paper and pushes each sat val into the array
             currentAnalysis.get('elementList').forEach(element =>
-                SliderObj.checkSatVal(element,parseInt(values[handle]),SatList)); //prints each sat val individually and pushes them into SatList array
-            console.log("Sat value array: " + SatList); // prints array of sat values of all intentions
-            
-            // Presence conditions behavior
+                SliderObj.checkSatVal(element,parseInt(values[handle]),SatList)); 
+    
+            // Presence conditions behavior: Based on whether the timepoint is odd or even a selected actor should disappear or appear
             var t = parseInt(values[handle])%2;
 
             if (t == 0) {
@@ -145,7 +145,7 @@ class SliderObj {
         // Hard code to get the embeds of first actor (merge1: self) j_10
         // TODO: remove the hard code
         for (var i = 0; i < cells.length; i++) {
-            if (cells[i].id == "j_10" && cells[i].model.attributes.type == 'basic.Actor') {
+            if (cells[i].id == "j_27" && cells[i].model.attributes.type == 'basic.Actor') {
                 return cells[i].model.attributes.embeds;
             }
         }
@@ -250,7 +250,7 @@ class SliderObj {
         var actor1_j_id = "#";
         for (var i = 0; i < cells.length; i++) {
             console.log(cells[i].model.attributes.type);
-            if (cells[i].model.attributes.type == 'basic.Actor' && cells[i].id == "j_10") {
+            if (cells[i].model.attributes.type == 'basic.Actor' && cells[i].id == "j_27") {
                 // console.log(cells[i].id);
                 actor1_j_id += cells[i].id;
                 console.log(actor1_j_id);
@@ -272,7 +272,7 @@ class SliderObj {
      */
     static disappearIntention(bool, SatList) {
         // Testing merge1.json
-        // links: j_12, j_13, j_14
+        // links: j_27, j_13, j_14
         // actors: j_10 (self), j_11 (parents)
         // resource: j_9
         // tasks: j_7, j_8
@@ -300,7 +300,7 @@ class SliderObj {
         SliderObj.compareSatVal(SatList);
 
         // TODO: actor (j_10) is still hardcoded
-        if ($('#j_10').css("display") == "none") {
+        if ($('#j_27').css("display") == "none") {
             console.log("Actor has disappeared!");
             SliderObj.removeEmbeddedElements(cells, firstActorEmbeds, bool);
             SliderObj.removeLinks(links, firstActorEmbeds, bool);
@@ -310,10 +310,11 @@ class SliderObj {
     }
 
     /**
+     * 
+     * Given an intention push the sat val into the given SatList array
      * @param {map} element
      *  Map between element id and result data. 
      *   Satisfaction value in string form. ie: '0011' for satisfied
-     *   Current value of the slider
      * @param {Number} sliderValue
      *   Current value of the slider
      * @param {Array} SatList
@@ -321,28 +322,28 @@ class SliderObj {
      */
     static checkSatVal(element, sliderValue, SatList) { //Deals with finding satVal for each individual intention
         var satValue = element.status[sliderValue]; //accesses sat value of current intention
-        console.log(element); // to view details of the current intention
-        console.log("Current satValue: "+ satValue);
+        //console.log(element); // to view details of the current intention
+        //console.log("Current satValue: "+ satValue);
         SatList.push(satValue);
     }
     
-    /**
-     * Method that will look through SatList array and based on if an intention matches with a satVal then make those intentions dissapear
-     * TODO: make links between intentions with conflicting values disappear
-     */
     
-    static compareSatVal(SatList) { //Deals with checking which satVal corresponds to which element.id currently being worked on
+    /**
+     * Method that will look through SatList array and based on if an intention's sat val is conflicting then make those intentions dissapear
+     * along with the links related to the conflicting intention
+     */
+    static compareSatVal(SatList) {
         var intentionsJIdList = SliderObj.getIntentionsList()[0];
         var intentionsModelIdList = SliderObj.getIntentionsList()[1];
         var links = SliderObj.getLinksView();
-        console.log("List of intentions j_ids: ");
-        console.log(intentionsJIdList);
-        console.log("List of intentions model ids:");
-        console.log(intentionsModelIdList);
-        console.log("List of links: ");
-        console.log(links);
-        console.log("SatList is: ");
-        console.log(SatList);
+        // console.log("List of intentions j_ids: ");
+        // console.log(intentionsJIdList);
+        // console.log("List of intentions model ids:");
+        // console.log(intentionsModelIdList);
+        // console.log("List of links: ");
+        // console.log(links);
+        // console.log("SatList is: ");
+        // console.log(SatList);
 
         // Make all links reappear
         // TODO: Will need to watch out for any potential bugs
