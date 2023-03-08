@@ -96,11 +96,9 @@ class SliderObj {
             var t = parseInt(values[handle])%2;
 
             if (t == 0) {
-                console.log("EVEN");
                 SliderObj.disappearIntention(true, SatList);
             }
             else {
-                console.log("ODD");
                 SliderObj.disappearIntention(false, SatList);
             }
 
@@ -246,7 +244,6 @@ class SliderObj {
         var intentionsJIds = [];
         var intentionsModelIds = [];
         for(var i = 0; i < cells.length; i++ ){
-            console.log(cells[i].model.attributes.type);
             if(!(cells[i].model.attributes.type == "basic.Actor")) {
                 intentionsJIds.push(cells[i].id);
                 intentionsModelIds.push(cells[i].model.id)
@@ -267,12 +264,11 @@ class SliderObj {
     static removeEmbeddedElements(cells, embeds, bool) {
         var elementsToRemove = [];
         for (var i = 0; i < embeds.length; i++) {
-            console.log(embeds[i]);
 
             for (var j = 0; j < cells.length; j ++) {
                 if (embeds[i] == cells[j].model.id) {
-                    console.log("Cell model i_d matched: " + cells[j].model.id);
-                    console.log("Since matched, j_id is " + cells[j].id);
+                    //console.log("Cell model i_d matched: " + cells[j].model.id);
+                    //console.log("Since matched, j_id is " + cells[j].id);
                     elementsToRemove.push(cells[j].id);
                 }
             }
@@ -282,7 +278,7 @@ class SliderObj {
         for (var i = 0; i < elementsToRemove.length; i++) {
             elementsToRemove[i] = "#" + elementsToRemove[i];
         }
-        console.log("Actor 1 elements to remove: " + elementsToRemove);
+        //console.log("Actor 1 elements to remove: " + elementsToRemove);
 
         if (bool) {
             for (var i = 0; i < elementsToRemove.length; i++) {
@@ -311,8 +307,8 @@ class SliderObj {
         for (var i = 0; i < links.length; i++) {
             for (var j = 0; j < embeds.length; j++) {
                 if (links[i].model.attributes.source.id == embeds[j] || links[i].model.attributes.target.id == embeds[j]) {
-                    console.log("Link model i_d matched: " + links[i].model.id);
-                    console.log("Since matched, j_id is " + links[i].id);
+                    // console.log("Link model i_d matched: " + links[i].model.id);
+                    // console.log("Since matched, j_id is " + links[i].id);
                     linksToRemove.push(links[i].id)
                     continue outerloop;
                 }
@@ -323,7 +319,7 @@ class SliderObj {
         for (var i = 0; i < linksToRemove.length; i++) {
             linksToRemove[i] = "#" + linksToRemove[i];
         }
-        console.log("Links to remove: " + linksToRemove);
+        //console.log("Links to remove: " + linksToRemove);
         if (bool) {
             for (var i = 0; i < linksToRemove.length; i++) {
                 $(linksToRemove[i]).css("display", "none");
@@ -349,7 +345,6 @@ class SliderObj {
     static removeActor(cells, bool, actor_j_id) {
         var actor_full_j_id = "#";
         for (var i = 0; i < cells.length; i++) {
-            console.log(cells[i].model.attributes.type);
             if (cells[i].model.attributes.type == 'basic.Actor' && cells[i].id == actor_j_id) {
                 // console.log(cells[i].id);
                 actor_full_j_id += cells[i].id;
@@ -404,7 +399,6 @@ class SliderObj {
         SliderObj.compareSatVal(SatList);
 
         if ($("#" + target_actor_j_id).css("display") == "none") {
-            console.log("Actor has disappeared!");
             SliderObj.removeEmbeddedElements(cells, firstActorEmbeds, bool);
             SliderObj.removeLinks(links, firstActorEmbeds, bool);
         } else {
@@ -424,8 +418,6 @@ class SliderObj {
      */
     static checkSatVal(element, sliderValue, SatList) { //Deals with finding satVal for each individual intention
         var satValue = element.status[sliderValue]; //accesses sat value of current intention
-        //console.log(element); // to view details of the current intention
-        //console.log("Current satValue: "+ satValue);
         SatList.push(satValue);
     }
     
@@ -439,18 +431,10 @@ class SliderObj {
         var intentionsJIdList = SliderObj.getIntentionsList()[0];
         var intentionsModelIdList = SliderObj.getIntentionsList()[1];
         var links = SliderObj.getLinksView();
-        // console.log("List of intentions j_ids: ");
-        // console.log(intentionsJIdList);
-        // console.log("List of intentions model ids:");
-        // console.log(intentionsModelIdList);
-        // console.log("List of links: ");
-        // console.log(links);
-        // console.log("SatList is: ");
-        // console.log(SatList);
 
         // Make all links reappear
         for (var k = 0; k < links.length; k++) {
-            console.log(links[k].id);
+            //console.log(links[k].id);
             $("#"+links[k].id).css("display", "");
         }
 
@@ -461,24 +445,24 @@ class SliderObj {
             // Make elements with conflicting values disappear
             // TODO: double-check the conflicting values, might be a bit off here
             if (SatList[i] == '1110' || SatList[i] == '1010' || SatList[i] == '0111'|| SatList == '0101' || SatList[i] == '0110'|| SatList[i] == '1111'|| SatList[i] == '1001' || SatList[i] == '1101' || SatList[i] == '1011') {
-                console.log("Found");
-                console.log(i);
-                console.log("Element: ");
-                console.log(intentionsJIdList[i]);
+                // console.log("Found");
+                // console.log(i);
+                // console.log("Element: ");
+                // console.log(intentionsJIdList[i]);
 
                 // Make intention with conflicting values disappear
                 $("#"+intentionsJIdList[i]).css("display", "none");
 
                 // Make links connecting conflicting values disappear
                 for (var j = 0; j < links.length; j++) {
-                    console.log(links[j]);
+                    //console.log(links[j]);
 
                 if (links[j].model.attributes.source.id == intentionsModelIdList[i] || links[j].model.attributes.target.id == intentionsModelIdList[i]) {
-                    console.log("Link model i_d matched: " + links[j].model.id);
-                    console.log("Since matched, j_id is " + links[j].id);
+                    // console.log("Link model i_d matched: " + links[j].model.id);
+                    // console.log("Since matched, j_id is " + links[j].id);
                     var linksId = "#" + links[j].id;
-                    console.log("Correct link id to be removed: ");
-                    console.log(linksId);
+                    // console.log("Correct link id to be removed: ");
+                    // console.log(linksId);
                     $(linksId).css("display", "none");
                     }
                 }
