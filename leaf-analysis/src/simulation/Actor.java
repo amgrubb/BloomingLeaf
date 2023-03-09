@@ -93,23 +93,5 @@ public class Actor extends AbstractLinkableElement {
 		return listOfIntentions.toArray(new Intention[listOfIntentions.size()]);
 	}
 	
-	
-	/**
-	 * Method to add an embed in the actor
-	 * @param newEmbed embed to be added
-	 * @return if it was added
-	 */
-	public boolean addEmbed(AbstractElement newEmbed) {
-		
-		for(String id: embeds) {
-			if(id.equals(newEmbed.getUniqueID())) return false;
-		}
-		ArrayList<String> temp_embeds = new ArrayList<String>(Arrays.asList(embeds));
-		temp_embeds.add(newEmbed.getUniqueID());
-		embeds = new String[temp_embeds.size()];
-		for(int i = 0; i < embeds.length; i ++) {
-			embeds[i] = temp_embeds.get(i);
-		}
-		return true;
-	}
+
 }
