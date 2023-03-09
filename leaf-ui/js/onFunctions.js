@@ -7,8 +7,8 @@ It also contains the setup for Rappid elements.
 // Navigation bar functions:
 var max_font = 20;
 var min_font = 6;
-var current_font = 10;
-var default_font = 10;
+var current_font = 12;
+var default_font = 12;
 
 function zoomIn(pPaperScroller) {
     pPaperScroller.zoom(0.2, { max: 3 });
@@ -54,7 +54,7 @@ function fontDown(pPaper) {
 }
 
 /**
- * Changes font size to default (10)
+ * Changes font size to default (12)
  * @param {*} pPaper 
  */
 function defaultFont(pPaper) {
@@ -173,9 +173,14 @@ $('#btn-clear-flabel').on('click', function () {
         var cellView = element.findView(paper);
         var cell = cellView.model;
         var intention = cell.get('intention');
-        if (intention != null && intention.get('evolvingFunction') != null && intention.get('evolvingFunction').get('type') != 'NT') {
-            intention.removeFunction();
+
+        if (intention != null && intention.get('evolvingFunction').get('type') != 'NT') {
+            intention.setEvolvingFunction('NT');
+            $(".function-type").val('NT');
             cell.attr(".funcvalue/text", "");
+
+            // Rerender elementInspector for clearing Dynamic Labels
+            resetInspectorView(cell);
         }
     }
 });
@@ -191,7 +196,114 @@ $('#btn-fnt').on('click', function () { defaultFont(paper); });
 $('#btn-fnt-up').on('click', function () { fontUp(paper); });
 $('#btn-fnt-down').on('click', function () { fontDown(paper); });
 $('#legend').on('click', function () { window.open('./userguides/legend.html', 'newwindow', 'width=300, height=250'); return false; });
-$('#evo-color-key').on('click', function () { window.open('./userguides/evo.html', 'newwindow', 'width=500, height=400'); return false; });
+
+/**
+ * returns whether or not a color is dark
+ * @param {*} color 
+ * @returns 
+ */
+function isDark(color){
+    const hex = color.replace('#', '');
+    const c_r = parseInt(hex.substr(0, 2), 16);
+    const c_g = parseInt(hex.substr(2, 2), 16);
+    const c_b = parseInt(hex.substr(4, 2), 16);
+    const brightness = ((c_r * 299) + (c_g * 587) + (c_b * 114)) / 1000;
+    return brightness < 155;
+}
+
+/**
+ * displays the color palette
+ * @param {*} palette_number 
+ */
+function displayPalette(palette_number ) {
+
+    //creates the table that contains all satisfaction values 
+    showAlert('Evaluation Visualisation Overlay Color Key',
+            '<table class="abs-table">'+
+            '<h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Initial Satisfaction Values</h3>'+
+            '<tbody>'+
+                '<tr>'+
+                '    <th style= "text-align:center"> None</th>'+
+                '    <th style= "text-align:center"> Satisfied</th>'+
+                '    <th style= "text-align:center"> Partially Satisfied </th>'+
+                '    <th style= "text-align:center"> Partially Denied</th>'+
+                '    <th style= "text-align:center"> Denied</th>'+
+                '</tr>'+
+                '<tr style= "background-color: #FFFFFF;">'+
+                '    <td style="text-align:center"> <span class = "s_value_box" id = "nn"> (⊥, ⊥) </span> </td>'+
+                '    <td style="text-align:center"> <span class = "s_value_box" id = "FS"> (F ,⊥) </span> </td>'+
+                '    <td style="text-align:center"> <span class = "s_value_box" id = "PS"> (P ,⊥) </span> </td>'+
+                '    <td style="text-align:center"> <span class = "s_value_box" id = "PD"> (⊥ ,P) </span> </td>'+
+                '    <td style="text-align:center"> <span class = "s_value_box" id = "FD"> (⊥ ,F) </span> </td>'+
+                '</tr>'+
+            '</tbody>'+
+        '</table>'+
+        ' <h3 style="text-align:left; color:#1E85F7; margin-bottom:5px;">Conflict Values </h3>'+
+        '<table id="conflict-satisfied-list" class="abs-table">'+
+        '<tbody>'+
+        '<tr>'+
+        '<th style= "text-align:center"> Partially Satisfied/ Partially Denied </th>'+
+        '<th style= "text-align:center"> Fully Satisfied/ Partially Denied</th>'+
+        '<th style= "text-align:center"> Partially Satisfied/ Fully Denied</th>'+
+        '<th style= "text-align:center"> Fully Satisfied/ Fully Denied</th>'+
+        '</tr>'+
+        '<tr style= "background-color: #FFFFFF;">'+
+        '<td style= "text-align:center"> <span class = "s_value_box" id = "PP"> (P, P) </span> </td>'+
+        '<td style= "text-align:center"> <span class = "s_value_box" id = "FP"> (F, P) </span> </td>'+
+        '<td style= "text-align:center"> <span class = "s_value_box" id = "PF"> (P, F) </span> </td>'+
+        '<td style= "text-align:center"> <span class = "s_value_box" id = "FF"> (F, F) </span> </td>'+
+        '</tr>'+
+        '</tbody>'+
+        '</table>',
+    550, 'alert', 'warning');
+   
+    //updates the color key based on the chosen palette 
+    if(palette_number<6){
+        //pre-made palettes
+        for (let charVal in EVO.charSatValueToNum){
+            let color = EVO.colorVisDictCollection[palette_number-1][EVO.charSatValueToNum[charVal]];
+            document.getElementById(charVal).style.backgroundColor= color;
+            if (isDark(color)) {
+                document.getElementById(charVal).style.color = "white";
+            }
+        }
+    
+    } else{
+        //personalized palette
+        for (let charVal in EVO.charSatValueToNum){
+            let color = EVO.selfColorVisDict[EVO.charSatValueToNum[charVal]];
+            document.getElementById(charVal).style.backgroundColor= color;
+            if (isDark(color)) {
+                document.getElementById(charVal).style.color = "white";
+            }
+        }
+    }       
+}
+
+
+
+
+/** displays the color palette options*/
+$('#evo-color-key').on('click', function () {
+    removeHighlight();
+    showAlert('EVO Color Key',
+        '<p>What color key do you ' +
+        'want to see?</p> ' +
+        '<p><button type="button" class="model-editing" ' +
+        'onclick="displayPalette(1)" style="width:100%">Red-Blue Palette' +
+        '</button><button type="button" ' +
+        'class="model-editing" onclick="displayPalette(2)" style="width:100%">Red-Green-Palette ' +
+        '</button> <button type="button" class="model-editing" ' +
+        'onclick="displayPalette(3)" style="width:100%"> Green-Black Palette' +
+        '</button><button type="button" class="model-editing" ' +
+        'onclick="displayPalette(4)" style="width:100%"> Yellow-Purple Palette' +
+        '</button><button type="button" class="model-editing" ' +
+        'onclick="displayPalette(6)" style="width:100%"> My Palette' +
+        '</button></p>',
+        window.innerWidth * 0.3, 'alert', 'warning');
+});
+
+
 
 /**
  * Displays the absolute and relative assignments modal for the user.
@@ -210,7 +322,7 @@ $('#btn-view-intermediate').on('click', function () {
     var intermediateValuesTable = new IntermediateValuesTable({ model: graph });
     $('#intermediate-table').append(intermediateValuesTable.el);
     intermediateValuesTable.render();
-    $('.intermT').height($('#paper').height() * 0.9);
+    $('.popup_frame').height($('#paper').height() * 0.9);
 });
 
 /**
@@ -315,7 +427,7 @@ graph.on("add", function (cell) {
 
     resetConfig()
     // Trigger click on cell to highlight, activate inspector, etc. 
-    paper.trigger("cell:pointerup", cell.findView(paper));
+   paper.trigger("cell:pointerup", cell.findView(paper));
 });
 
 // Auto-save the cookie whenever the graph is changed.
@@ -515,14 +627,18 @@ paper.on("link:options", function (cell) {
      * Selects the current configuration and passes to backendSimulationRequest()  */
     $('#simulate-path-btn').on('click', function () {
         var curRequest = configCollection.findWhere({ selected: true });
-        curRequest.set('action', 'singlePath');
-        backendSimulationRequest(curRequest);
+        var numRel = $('#num-rel-time'); 
+        //Can't simulate path when num-rel-time equals 0
+        if (numRel.val() == 0) {
+            swal("Num Relative Time Points cannot be 0", "", "error");
+        } else {
+            curRequest.set('action', 'singlePath');
+            backendSimulationRequest(curRequest); }
     });
     /** All Next States:
      * Selects the current configuration and prior results and passes them to backendSimulationRequest()  */
     $('#next-state-btn').on('click', function () {
         var curRequest = configCollection.findWhere({ selected: true });
-
         // Checks to see if single path has been run by seeing if there are any results
         if (typeof curRequest.previousAttributes().results === 'undefined' || curRequest.previousAttributes().results.length == 0) {
             var singlePathRun = false;
@@ -532,25 +648,24 @@ paper.on("link:options", function (cell) {
 
         // If single path has been run backend analysis
         if (singlePathRun === true) {
+            $("body").addClass("spinning"); // Adds spinner animation to page
             var curResult = curRequest.previousAttributes().results.findWhere({ selected: true });
             curRequest.set('action', 'allNextStates');
             curRequest.set('previousAnalysis', curResult);
 
-            if (EVO.sliderOption == '1' || EVO.sliderOption == '2') {
-                swal("Error: Cannot explore next states from percent or time EVO options.", "", "error");
-            } else { 
-                // If the last time point is selected, error message shows that you can't open Next State
-                if ((curResult.get('timePointPath').length - 1) === curResult.get('selectedTimePoint')) {
-                    swal("Error: Cannot explore next states with last time point selected.", "", "error");
-                } else {
-                    $("body").addClass("spinning"); // Adds spinner animation to page
-                    backendSimulationRequest(curRequest);
-                }
+            // If the last time point is selected, error message shows that you can't open Next State
+            if (EVO.sliderOption==1 || EVO.sliderOption==2){ 
+                swal("Error: Cannot explore next states with EVO in % or Time.", "", "error");
+                $("body").removeClass("spinning"); // Remove spinner from page
+            } else if ((curResult.get('timePointPath').length - 1) === curResult.get('selectedTimePoint')) {
+                swal("Error: Cannot explore next states with last time point selected.", "", "error");
+                $("body").removeClass("spinning"); // Remove spinner from page
+            } else {
+                backendSimulationRequest(curRequest);
             }
         } else { // If single path has not been run show error message
             swal("Error: Cannot explore next states before simulating a single path.", "", "error");
         }
-        
     });
 
     function resetConfig() {
@@ -616,6 +731,7 @@ paper.on("link:options", function (cell) {
 
         // Disable link settings
         $('.link-tools').css("display", "none");
+
         // TODO: Add check for model changes to potentially clear configCollection back in
     }
 
@@ -695,7 +811,7 @@ paper.on("link:options", function (cell) {
             if (config.selected) { // If selected is true
                 selectedConfig = config.name; // Record the name of config
             }
-            var configBBM = new ConfigBBM({ name: config.name, action: config.action, conflictLevel: config.conflictLevel, numRelTime: config.numRelTime, currentState: config.currentState, userAssignmentsList: config.userAssignmentsList, previousAnalysis: config.previousAnalysis, selected: config.selected })
+            var configBBM = new ConfigBBM({ name: config.name, action: config.action, conflictLevel: config.conflictLevel, numRelTime: config.numRelTime, currentState: config.currentState, previousAnalysis: config.previousAnalysis, selected: config.selected })
             if (config.results.length !== 0) { // Creates results if there applicable
                 var results = configBBM.get('results'); // Grabs the coolection from the configBBM
                 // Individually creates each ResultBBM and add to collection
@@ -723,6 +839,11 @@ paper.on("link:options", function (cell) {
             currResult = configGroup[0].get('results').filter(selectedRes => selectedRes.get('name') == selectedResult)[0]
             currResult.set('selected', true);
         }
+    }
+
+    function loadOldConfig(oldAnalysisRequest) {
+        var configBBM = new ConfigBBM({conflictLevel: oldAnalysisRequest.conflictLevel, numRelTime: oldAnalysisRequest.numRelTime, currentState: oldAnalysisRequest.currentState})
+        configCollection.add(configBBM);
     }
 
     /**
@@ -774,7 +895,7 @@ paper.on("link:options", function (cell) {
                 resizeWindow(configResults.get('timePointPath').length - 1);
             }
         }
-        $('.intermT').height($('#paper').height() * 0.9);
+        $('.popup_frame').height($('#paper').height() * 0.9);
     });
     $('#btn-clear-cycle').on('click', function () {
         clearCycleHighlighting(selectResult);
@@ -785,11 +906,10 @@ paper.on("link:options", function (cell) {
         var name = window.prompt("Please enter a name for your file. \nIt will be saved in your Downloads folder. \n.json will be added as the file extension.", "<file name>");
         if (name) {
             clearCycleHighlighting(selectResult);
-            EVO.deactivate();
-            // EVO.returnAllColors(graph.getElements(), paper);
-            // EVO.revertIntentionsText(graph.getElements(), paper);  
+            EVO.deactivate();  
             var fileName = name + ".json";
             var obj = { graph: graph.toJSON() }; // Same structure as the other two save options
+            obj.version = "BloomingLeaf_2.0";
             download(fileName, stringifyCirc(obj));
             EVO.refresh(selectResult);
         }
@@ -800,34 +920,117 @@ paper.on("link:options", function (cell) {
         for (let element of graph.getElements()) {
             var cell = element.findView(paper).model;
             var intention = cell.get('intention');
-            
+
             if (intention != null) {
                 var initSatVal = intention.getUserEvaluationBBM(0).get('assignedEvidencePair');
                 if (intention.get('evolvingFunction') != null) {
                     var funcType = intention.get('evolvingFunction').get('type');
                 }
-            }
 
-            // If the initsatVal is not empty and if funcType empty
-            if (intention != null && initSatVal != '(no value)' && funcType === 'NT') {
-                intention.removeInitialSatValue();
-                cell.attr(".satvalue/text", "");
-                $('#init-sat-value').val('(no value)');
+                // If the initsatVal is not empty and if funcType empty
+                if (initSatVal != '(no value)' && funcType === 'NT') {
+                    intention.removeInitialSatValue();
+                    cell.attr(".satvalue/text", "");
+                    $('#init-sat-value').val('(no value)');
+
+                    // Rerender elementInspector for clearing Evaluation Labels
+                    resetInspectorView(cell);
+                }
             }
         }
         EVO.refresh(selectResult);
     });
 
-    $('#colorblind-mode-isOff').on('click', function () { // Activates colorblind mode
-        $('#colorblind-mode-isOff').css("display", "none");
-        $('#colorblind-mode-isOn').css("display", "");
-        EVO.toggleColorBlindMode(true, selectResult);
+    $('#color-palette-1').on('click', function () { // Choose color palettes
+        EVO.paletteOption = 1;
+        highlightPalette(EVO.paletteOption);
+        if ($('#analysisSlider').css("display") == "none") {
+            EVO.refresh(undefined);
+        } else {
+            EVO.refresh(selectResult);
+        }
     });
 
-    $('#colorblind-mode-isOn').on('click', function () { // Turns off colorblind mode
-        $('#colorblind-mode-isOn').css("display", "none");
-        $('#colorblind-mode-isOff').css("display", "");
-        EVO.toggleColorBlindMode(false, selectResult);
+    $('#color-palette-2').on('click', function () { // Choose color palettes
+        EVO.paletteOption = 2;
+        highlightPalette(EVO.paletteOption);
+        if ($('#analysisSlider').css("display") == "none") {
+            EVO.refresh(undefined);
+        } else {
+            EVO.refresh(selectResult);
+        }
+    });
+    $('#color-palette-3').on('click', function () { // Choose color palettes
+        EVO.paletteOption = 3;
+        highlightPalette(EVO.paletteOption);
+        if ($('#analysisSlider').css("display") == "none") {
+            EVO.refresh(undefined);
+        } else {
+            EVO.refresh(selectResult);
+        }
+    });
+
+    $('#color-palette-4').on('click', function () { // Choose color palettes
+        EVO.paletteOption = 4;
+        highlightPalette(EVO.paletteOption);
+        if ($('#analysisSlider').css("display") == "none") {
+            EVO.refresh(undefined);
+        } else {
+            EVO.refresh(selectResult);
+        }
+    });
+
+    $('#color-palette-5').on('click', function () { // Choose color palettes
+        EVO.paletteOption = 5;
+        highlightPalette(EVO.paletteOption);
+        if ($('#analysisSlider').css("display") == "none") {
+            EVO.refresh(undefined);
+        } else {
+            EVO.refresh(selectResult);
+        }
+    });
+
+    $('#color-palette-6').on('click', function () { // Apply Chosen Colors
+        EVO.paletteOption = 6;
+        highlightPalette(EVO.paletteOption);
+        if ($('#analysisSlider').css("display") == "none") {
+            EVO.refresh(undefined);
+        } else {
+            EVO.refresh(selectResult);
+        }
+    });
+
+    $('#color-palette-7').on('click', function () { // Choose color palettes
+        EVO.paletteOption = 7;
+        //render a table
+        $('#color-input').css("display", "");
+    });
+
+    //Show warning messages if use input invalid color
+    $('#submit-color').on('click', function () {
+        //fill in the dictionary
+        EVO.fillInDictionary();
+
+        //check that the entered colors are different
+        if (validateColor(EVO.selfColorVisDict) == false) { swal("Please make sure your satisfied and denied values are different", "", "error"); }
+
+        // Display a message to tell the user their selection is saved
+        $("#saved-options-message").css("display", "");
+        setTimeout(function(){
+            $("#saved-options-message").css("display", "none");
+            //close the color input
+            $('#color-input').css("display", "none");
+        }, 500);
+    
+        // refresh the visual overlay on the model and the palette dropdown
+        EVO.paletteOption =6;
+        highlightPalette(EVO.paletteOption);
+        if ($('#analysisSlider').css("display") == "none") {
+            EVO.refresh(undefined);
+        } else {
+            EVO.refresh(selectResult);
+        }
+        
     });
 
     /**
@@ -836,11 +1039,26 @@ paper.on("link:options", function (cell) {
      */
     document.getElementById("colorReset").oninput = function () { // Turns slider on/off and refreshes
         EVO.setSliderOption(this.value, selectResult);
+        //highlight the first palette by default  if EVO is on 
+        if(EVO.sliderOption ==1){
+            highlightPalette(EVO.paletteOption);
+        } else{
+        //unhighlights all palettes if EVO is off
+          unhighlightPalettes();
+        }
     }
     /**
      * Four option analysis mode slider
      */
     document.getElementById("colorResetAnalysis").oninput = function () { // Changes slider mode and refreshes
+        var selectConfig;
+        //TODO: Find out why the selectResult is empty before we reassign it
+        if (configCollection.length !== 0) {
+            selectConfig = configCollection.filter(Config => Config.get('selected') == true)[0];
+            if (selectConfig.get('results') !== undefined) {
+                selectResult = selectConfig.get('results').filter(resultModel => resultModel.get('selected') == true)[0];
+            }
+        }
         EVO.setSliderOption(this.value, selectResult);
     }
 } // End scope of configCollection and configInspector
@@ -898,9 +1116,18 @@ function clearInspector() {
     }
 }
 
+/**
+ * Reinstantiate the inspector panel for a selected cellView
+ */
+function resetInspectorView(cell) {
+    if ($('.inspector-views').length != 0) {
+        var elementInspector = new ElementInspector({ model: cell });
+        elementInspector.render();
+    }
+}
 
 /**
- * Trigger setConfigName outside ConfigInspector
+ * Trigger setConfigName outside ConfigInspector 
  */
  function setName() {
     $('.config-input').trigger('outsideSetName');
@@ -932,7 +1159,7 @@ function checkForMultipleNB(element) {
  * @param {String} msg 
  * @param {Number} width 
  * @param {String} promptMsgType 
- * @param {Sting} type 
+ * @param {String} type 
  * @returns joint.ui.Dialog box
  */
 function showAlert(title, msg, width, promptMsgType, type) {
@@ -989,7 +1216,7 @@ function revertNodeValuesToInitial(analysisResult) {
         } else {
             curr.attr('.satvalue/text', satisfactionValuesDict[initSatVal].satValue);
         }
-        curr.attr({ text: { fill: 'black', stroke: 'none'} });
+        
     }
     // Remove slider
     if (analysisResult !== undefined) {
@@ -1012,3 +1239,40 @@ function stringifyCirc(obj) {
 
     return graphtext
 }
+
+/**
+ * Highlights the chosen palette on the dropdown
+ */
+function highlightPalette(paletteOption) {
+    for (var i = 1; i <= 6; i++) {
+        var id = '#color-palette-'
+        id = id + i;
+        if (i == paletteOption) {
+            $(id).css("background-color", "rgba(36, 150, 255, 1)"); //highlight the choice
+        }
+        else {
+            $(id).css("background-color", "#f9f9f9");
+        }
+    }
+}
+
+/**
+ * UnHighlights the chosen palette on the dropdown
+ */
+function unhighlightPalettes() {
+    for (var i = 1; i <= 6; i++) {
+        var id = '#color-palette-'
+        id = id + i;
+        $(id).css("background-color", "#f9f9f9"); //unhighlight the choice
+    }
+}
+
+/**
+ * Checks if the color selections for satisfied and denied are different
+ * @param {*} colorDict 
+ * @returns {boolean}
+ */
+function validateColor(colorDict) {
+    return colorDict[ "0011"] != colorDict["1100"];
+}
+    

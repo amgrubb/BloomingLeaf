@@ -19,7 +19,13 @@ import layout.LayoutAlgorithm;
  * This class is the main app class for the model merge
  * It is responsible to get two json model files produced in the frontend and process into the model used in the backend.
  * Then it executes all model merge creating an output file with the json of the merged model.
- *
+ * 
+ * Arguments:
+ * inputFile1.json  -  BloomingLeaf model
+ * inputFile2.json  -  BloomingLeaf model
+ * timingFile.json  -  generated from PreMerge.ava
+ * outputFile.json  -  destination for output
+ * 
  */
 public class MMain {
 	public final static boolean DEBUG = false;
@@ -184,6 +190,14 @@ public class MMain {
 			throw new RuntimeException("Error in convertBackboneModelFromFile() method: \n " + e.getMessage());
 		}
 	}
+	
+	/**
+	 * This method converts the timing file into a TMain object
+	 * @param filePath
+	 * Path to the timing file
+	 * @return
+	 * TMain - timing info as a TMain object
+	 */
 
 	public static TMain convertTimingFromFile(String filePath) {
 		GsonBuilder builder = new GsonBuilder();

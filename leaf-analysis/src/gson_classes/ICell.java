@@ -6,7 +6,7 @@ public class ICell {
 	private String type;
 	private String id;
 	private Integer z; // unique counter of cells
-	private Attrs attrs; // TODO: output attributes despite .varnames
+	private Attrs attrs;
 	
 	// one contains info, rest are null
 	private BIActor actor;
@@ -18,7 +18,7 @@ public class ICell {
 	private BIPosition position;
 	
 	// intentions
-	private String parent;  // and links?
+	private String parent;
 	
 	// actors
 	private String[] embeds;

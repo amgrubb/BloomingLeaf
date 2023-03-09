@@ -1,3 +1,7 @@
+/**
+ * Main Window CSS.
+ */
+
 /* Layout Hierachy: represented by z-index
    Paper: 0
       - Stencils: 1
@@ -6,6 +10,7 @@
       - Toolbars: 1
 */
 
+/* Sets attributes for any child of the body tag including text on toolbar and on Analysis left panel*/
 body {
   -webkit-user-select: none;
   -moz-user-select: -moz-none;
@@ -18,19 +23,11 @@ body {
 }
 
 /* Adds waiting spinner to cursor */
-.spinning *
-{
-    cursor: wait !important;
+.spinning * {
+  cursor: wait !important;
 }
 
-.header {
-   padding: 0px;
-}
-
-#swal2-content b{
-  color: red;
-}
-
+/* Sets attributes for elements that are children to class "name" (BloomingLeaf title) */
 .name {
   position: fixed;
   top: 0px;
@@ -42,6 +39,7 @@ body {
   z-index: 2; /* To make it above the left panel */
 }
 
+/* Sets attributes for BloomingLeaf title specifically */
 #name-text {
   margin-top: 9px; /* Mathematically calculated the margin */
   text-align: center;
@@ -50,7 +48,7 @@ body {
   font-style: italic;
 }
 
-/** Dims the entire page **/ 
+/** Dims the entire page when behind the "Create My Palette" popup **/ 
 #page-mask {
   background: rgba(0, 0, 0, 0.5); /* Sets background color to gray */
   position: fixed;
@@ -61,57 +59,44 @@ body {
   z-index: 3; /* Make sure it sits just under assignments table and IVT */ 
 }
 
+/* Sets attributes for how the dropdown menu appears */
 .dropdown {
   position: relative;
   display: inline-block;
 }
 
+/* Allows dropdown menu to appear when btns are hovered over */
 .dropdown:hover .dropdown-toolbar,
 .dropdown:hover .dropdown-inspector {
-   display: block;
+  display: block;
 }
 
-/* Paper */
+/* Sets attributes for Paper */
 #paper {
-   position: absolute;
-   top: 40px;
-   left: 200px;
-   right: 260px;
-   bottom: 0;
-   overflow: hidden;
-   background-color: hsla(220,11%,97%,.95);
+  position: absolute;
+  top: 40px;
+  left: 200px;
+  right: 260px;
+  bottom: 0;
+  overflow: hidden;
+  background-color: hsla(220,11%,97%,.95);
 }
 
+/* Sets width and height for paper and adds a scroller */
 .joint-paper-scroller {
   padding: 0;
   width: 100%;
   height: 100%;
 }
 
+/* Sets the attributes of the smaller paper */
 #paper svg {
-   /* Grid background image */
-   /*background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAHUlEQVQYV2NkYGAwBuKzQIwXMBJSAJMfVUidcAQAnUQBC6jEGBUAAAAASUVORK5CYII=');*/
-   background-color: white;
+  /* Grid background image */
+  /* background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAHUlEQVQYV2NkYGAwBuKzQIwXMBJSAJMfVUidcAQAnUQBC6jEGBUAAAAASUVORK5CYII='); */
+  background-color: white;
 }
 
-#paper svg .drawable {
-   /* Grid background image */
-   fill: white;
-   stroke: black;
-   stroke-width: 1px;
-}
-
-.element.basic.Rect rect,
-.element.basic.Circle circle,
-.element.devs.Model rect {
-   -webkit-svg-shadow: 2px 2px 5px gray;
-}
-
-.element.basic.Path path { -webkit-svg-shadow: 1px 1px 2px gray; }
-.element.basic.Path path { fill: #3e3f47; }
-
-
-/* Left panel */
+/* Sets attributes for the left panel */
 .left-panel {
   position: absolute;
   left: 0;
@@ -119,86 +104,74 @@ body {
   bottom: 0;
   width: 200px;
   background-color: #f9f9f9;
-  
   /* Should be less than the modal pop-ups */ 
   z-index: 0;
 }
 
-.left-panel.model-only{
-  bottom: 130px;
+/* Sets attributes for the model containing all the intentions on the left panel */
+.left-panel.model-only {
+  bottom: 150px;
   box-shadow: 2px 0px 16px 0px rgba(0,0,0,0.05);
 }
 
-.stencil {
-  position: absolute;
-  left: 0;
-  top: 14px;
-  bottom: 0;
-  right: 0;
-  width: 100%;
-  border: none;
-}
-
-.stencil .elements {
+/* Deals with the height & position of Stencil */
+#stencil .elements {
   height: 380px;
   text-shadow: none;
   background-color: transparent;
 }
 
+/* Sets the attributes for every label within the left panel, labels are the text headers */
 .left-panel label {
   display: block;
   text-align: center;
   font-size: 12px;
   line-height: 18px;
   height: 18px;
-
   background-color: #333;
   color: #bcbcbc;
   text-shadow: 0 -1px 0 #000;
   background-color: rgba(90, 90, 90, 1);
 }
 
-/* Right Panel */
+/* Sets attributes for the right panel */
 .inspector {
   position: absolute;
   right: 0px;
   top: 0px;
   width: 260px;
   height: 100%;
-  /*padding: 10px;*/
   background-color: #333;
   color: #bcbcbc;
   text-align: center;
 }
 
-.inspector input,
-.inspector textarea {
-   color: black;
-   text-shadow: none;
-   /* box-shadow: inset 0 0 0 1px rgba(0,0,0,0.1),0px 0 0 1px rgba(255,255,255,0.1); */
-   border: 1px solid black;
-   background: white;
-   height: 20px;
-   line-height: 20px;
-   resize: none;
-   display: block;
-   margin: 0 auto 0 auto;
-/*   margin-left: auto;
-   margin-right: auto;*/
-
-}
-#right-inspector{
+/* Sets Margin distance for the right panel */
+#right-inspector {
   margin-top: 50px;
 }
 
+/* Sets attributes for input text boxes on the right panel ex. "Node Name" text box on right panel*/
+.inspector input, .inspector textarea {
+  color: black;
+  text-shadow: none;
+  border: 1px solid black;
+  background: white;
+  height: 20px;
+  line-height: 20px;
+  resize: none;
+  display: block;
+  margin: 0 auto 0 auto;
+}
+
+/* Sets attributes for every label within the left panel, labels are the text headers */
 .inspector label {
-/*  margin: 14px 0 8px 0;*/
   margin: 14px 0px 8px 0px;
   font-size: 1.25em;
   display: block;
 }
 
-/* The left panel */
+/* Sets attributes for the left panel when on Analysis mode*/
 .container-sidebar { 
   left: auto; 
   width: 200px; 
@@ -207,6 +180,7 @@ body {
   background-color: #f9f9f9;
 }
 
+/* Sets attributes for the second half of the Analysis left sidebar, Analysis & Request btns */
 #config-sidebar { 
   margin-top: 104px; 
   width: 200px; 
@@ -215,70 +189,32 @@ body {
   position: absolute; 
 }
 
+/* Sets margin for the first half of the left panel on Analysis mode ("Analysis Parameters section..) */
 #analysis-sidebar { 
   margin-top: -10px; 
 }
 
-#analysis-sidebar a {
-  padding: 16px;
-  display: block;
-}
-
-#analysis-sidebar a:hover {
-  background-color: #E8E8E8;
-}
-
+/* Sets attributes for the top bit of the Analysis left panel, Analysis Parameters */
 .sub-label {
   font-size: 0.6em !important;
   text-align: center; 
 }
 
-.sub-input {
-  width: 20px !important;
-  font-size: 0.5em;
-}
-
-.sub-btn {
-  position: relative;
-  vertical-align: top;
-  width: 50px;
-  height: 23px;
-  padding: 0;
-  color: white;
-  text-align: center;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
-  border: 0;
-  cursor: pointer;
-  margin-left: 5px;
-}
-
+/* Attributes for "Num Relative Time Point" input box on left panel on Analysis mode */
 .analysis-input {
   font-size: 0.7em;
   width: 165px;
   margin-bottom: 0px;
 }
 
-
+/* Sets attributes for dropdown menus on right panel, */
 .dropdown-inspector {
   display: none;
   background-color: #f9f9f9;
   min-width: 240px;
 }
 
-.dropdown-inspector a {
-  color: black;
-  padding: 12px 16px;
-  display: block;
-}
-
-.dropdown-inspector a:hover {
-   background-color: #E8E8E8;
-}
-
-.dropdown:hover .dropdown-inspector {
-   display: block;
-}
-
+/* Sets attributes for text input on right panel, Currently no elements are children of this class */
 .element-inspector input,
 .element-inspector textarea {
   width: 215px;
@@ -286,18 +222,21 @@ body {
   margin-bottom: 28px;
 }
 
+/* Sets up attributes for elements when "Function Type" is selected as "User defined" on right panel*/
 #intension-div, #link-div, #query-div,#valuesDiv{
   width: 215px;
   text-align: center;
   margin: auto;
 }
 
+/* Sets attributes for any children for function-div (aka "function type" on right panel in modeling mode) */
 #function-div {
   width: 250px;
   text-align: center;
   margin: auto;
 }
 
+/* Sets attributes for Actor right panel when an Actor is selected */
 .actor-type, .function-type,
 .function-sat-value, .user-defined-select,
 .relationship-select, .link-type, #conflict-level, #abs-vals,
@@ -305,7 +244,6 @@ body {
   background-color: rgba(36, 150, 255, 1);
   border-color: rgba(31, 121, 101, 1);
   color: white;
-  font-size: 10;
   font-weight: 200;
   width: 200px;
   display: block;
@@ -314,6 +252,7 @@ body {
   border: 0;
 }
 
+/* Attributes for Initial Sat Val and Function Type dropdown on right panel*/
 #init-sat-value, .function-type, .repeat-select-begin, .repeat-select-end {
   background-color: rgba(36, 150, 255, 1);
   border-color: rgba(31, 121, 101, 1);
@@ -327,6 +266,7 @@ body {
   border: 0;
 }
 
+/* Sets attributes for dropdowns when Funtion Type and an Initial Sat Val is selected  */
 .seg-class {
   background-color: rgba(36, 150, 255, 1);
   color: white;
@@ -338,6 +278,7 @@ body {
   border-style: solid;
 }
 
+/* Aligns text for dropdown when Function Type and an Initial Sat Val is selected "absTime" */
 .text-label {
   visibility:hidden;
   vertical-align: top;
@@ -348,43 +289,49 @@ body {
   visibility:hidden;
 }
 
+/* Text boxes for absTime on right panel */
 .seg-time {
-  background-color: rgba(36, 150, 255, 1);
-  color: white;
   font-size: 0.7em;
   font-weight: 200;
-  height: 10px;
   width:14px;
-  border: 4px;
-  border-color: #333;
-  border-style: solid;
   position:absolute;
   text-align: center;
 }
 
+/* Sets color of startTP and stopTP beside seg function type and seg sat value */
 #startTP-out, #stopTP-out {
   background-color: #333;
   color: white;
 }
 
+/* Disables attributes for Initial Sat Val dropdown on right panel */
 #init-sat-value:disabled {
   background-color: rgba(36, 150, 255, 1);
   color: white;
 }
+
+/* Disables attributes for function-type dropdown on right panel */
 .function-type:disabled {
   background-color: rgba(36, 150, 255, 1);
   color: white;
 }
+
+/* Sets margins and alignments on repeat-begin2 & 3 inputs and btns while on repeat mode on right panel when on modeling mode */
 #repeat-begin2,#repeat-begin3 {
   margin: 10px 0 8px 0;
   text-align: left;
 }
+
+/* Sets attributes for error messages on the right panel "repeat-error" */
 #repeat-end2, #repeat-end3 {
   width: 101px;
   margin-top: 4px;
   margin-bottom: 8px;
   border-radius: 5px;
 }
+
+/* This section deals with the repeat section when function type on right panel is set to "User defined" */
+
 .user-defined-select, .repeat-select-begin, .repeat-select-end, .repeat-select2, .relationship-select{
   width: 104px;
   margin-bottom: 8px;
@@ -399,7 +346,7 @@ body {
 .repeat-select-end:nth-of-type(1),
 .repeat-select2:nth-of-type(3),
 .repeat-select3:nth-of-type(5),
-#relationship-src{
+#relationship-src {
   float: left;
   clear: left;
 }
@@ -409,7 +356,7 @@ body {
 .repeat-select-end:nth-of-type(2),
 .repeat-select2:nth-of-type(4),
 .repeat-select3:nth-of-type(6),
-#relationship-tar{
+#relationship-tar {
   float: right;
 }
 
@@ -427,11 +374,13 @@ select > .select-placeholder {
   display: none;
 }
 
+/* Sets color of Function Type dropdown  */
 .function-type {
   background-color: rgba(36, 150, 255, 1);
   border-color: rgba(29, 122, 208, 1);
 }
 
+/* Sets margin for the bottom of the Function Type dropdown */
 .function-type, .function-sat-value {
   margin: auto;
   margin-bottom: 8px;
@@ -446,9 +395,19 @@ select > .select-placeholder {
 }
 
 .link-tools {
-   display: block;
+  display: block;
 }
 
+.cell-labels {
+  margin: 0 6px 8px;
+  float: left;
+  font-size: 1em;
+  font-weight: lighter;
+}
+
+/* This section ends the repeat section when function type on right panel is set to "User defined" */
+
+/* Sets attributes for any child element of inspector-btn ex. "Add", "Set Repeats" and "Clear" btn when function type on right panel is set to "User defined"*/
 .inspector-btn {
   position: relative;
   vertical-align: top;
@@ -460,11 +419,11 @@ select > .select-placeholder {
   border: 0;
   cursor: pointer;
   border-radius: 6px;
-
   margin-top: 5px;
   margin-bottom: 5px;
 }
 
+/* When child element of this class is clicked on, a click animation is created */
 .inspector-btn:active {
   top: 1px;
   outline: none;
@@ -472,54 +431,21 @@ select > .select-placeholder {
   box-shadow: none;
 }
 
-.cell-labels {
-  margin: 0 6px 8px;
-  float: left;
-  font-size: 1em;
-  font-weight: lighter;
-}
-
-#clear-query-btn {
-  margin: 0;
-}
-
-#query-btn {
-  margin: 16px 0;
-}
-
-.green-btn { /*This button is actually blue.*/
-  /*background: #27ae60;*/
-  background: #1E85F7;
-}
-
-.dark-green-btn { 
-  background-color: rgb(19, 156, 19) !important;
-  -webkit-box-shadow: inset 0 -2px rgb(19, 156, 19);
-  box-shadow: inset 0 -2px rgb(14, 102, 14);
-}
-
-.light-green-btn { 
-  background-color: rgb(26, 201, 26) !important;
-  -webkit-box-shadow: inset 0 -2px rgb(26, 201, 26);
-  box-shadow: inset 0 -2px rgb(24, 172, 24);
-}
-
-.ice-btn {
-  background: #00FFFF;
-}
-
+/* Any child of this class makes btns blue, ex. "Add", "Set Repeats" btn on right panel */
 .blue-btn {
   background-color: rgba(36, 150, 255, 1) !important;
   -webkit-box-shadow: inset 0 -2px rgba(29, 122, 208, 1);
   box-shadow: inset 0 -2px rgba(29, 122, 208, 1);
 }
 
+/* Any child of this class makes btns red, ex."Clear" btn on right panel and "Modeling btn" on toolbar  */
 .red-btn {
   background-color: #e74c3c !important;
   -webkit-box-shadow: inset 0 -2px #db4334;
   box-shadow: inset 0 -2px #db4334;
 }
 
+/* Sets attributes for any child elements of small-btn (eg. clear btn on right panel when funtion type, "User defined" is selected) */
 .small-btn {
   width: 160px;
   height: 25px;
@@ -528,79 +454,44 @@ select > .select-placeholder {
   margin-top: 12px;
 }
 
-#btn-forward-analysis {
-  margin: 0;
-}
-
-#concatenate-btn {
-  margin-bottom: 12px;
-}
-
 /* Halo */
 .halo .box {
-   display: none;
-   color: #bcbcbc;
-   font-size: 8px;
-   background-color: #333;
-   text-shadow: 0 -1px 0 #000;
-   border: 1px solid #4f4f4f;
+  display: none;
+  color: #bcbcbc;
+  font-size: 8px;
+  background-color: #333;
+  text-shadow: 0 -1px 0 #000;
+  border: 1px solid #4f4f4f;
 }
 
-.paper .halo {
-   background-color: transparent;
-   box-shadow: none;
-}
-
-/* Toolbar */
+/* Sets attributes for Toolbar */
 .toolbar-div {
-   position: fixed;
-   top: 0px;
-   left: 201px;
-   right: 0;
-   padding-left: 0px;
-   z-index: 1;
-   background-color: #333;
+  position: fixed;
+  top: 0px;
+  left: 201px;
+  right: 0;
+  padding-left: 0px;
+  z-index: 1;
+  background-color: #333;
 }
 
+/* Sets border for both stencil and Toolbar on modeling mode */
 .toolbar-div, #stencil {
-   border-top: none;
+  border-top: none;
 }
 
+/* Sets attributes for toolbar on modeling mode */
 #model-toolbar {
   display: inline;
 }
 
-/* beggining of representative color slider */
+/* Beginning of representative color slider */
 
 .slidecontainer {
   width: 100%; /* Width of the outside container */
 }
-#top-label {
-  background-color: #333;
-  border: none;
-  color: white;
-  text-shadow: none;
-  font-size: 0.75em;
-  margin: 0px;
-  padding: 0px;
-  position: relative;
-  top: -15px;
-  left: 5px;
-}
 
-#top-label-analysis {
-  background-color: #333;
-  border: none;
-  color: white;
-  text-shadow: none;
-  font-size: 0.75em;
-  margin: 0px;
-  padding: 0px;
-  position: relative;
-  top: -15px;
-  left: 105px;
-}
-
+/* Sets attributes for the text under the on & off slider on the toolbar */
 .on-off {
   font-size: 8px;
   color: white;
@@ -610,27 +501,39 @@ select > .select-placeholder {
   margin-bottom: 0px;
   margin-left: 10px;
   }
+
+/* Sets position of EVO slider */
 #colorReset {
   position: relative;
   top: -20px;
 }
+
+/* Sets position for the EVO slider on the toolbar when simulating path */
 #colorResetAnalysis {
   position: relative;
-  top: -6px;
-  width: 92px; /* 92 */
+  top: -20px;
+  width: 90px; /* 120 */
 }
+
+/* Sets attributes for the EVO slider on the toolbar */
 .EVO-whole-button {
   cursor: pointer;
   display: inline-block;
   height: 35px;
-  width: 100px;
+  width: 50px;
   margin-top: 0px;
   margin-bottom: -20px;
   padding-top: 0px;
   padding-bottom: 0px;
 }
 
+/* Sets the position for the "Create My Palette window" */
+#color-input {
+  top: 20px;
+}
+
 /* portion of the code from: https://www.w3schools.com/howto/howto_js_rangeslider.asp */
+/* Creates slider and sets attributes for the slider */
 .EVO-slider {
   -webkit-appearance: none;  /* Override default CSS styles */
   appearance: none;
@@ -644,15 +547,17 @@ select > .select-placeholder {
   transition: opacity .2s;
 }
 
+/* Sets width of entire EVO slider including off & on btn while on Modeling mode*/
 #modelingSlider {
+  width: 65px;
+}
+
+/* Sets width of entire EVO slider including off & on btn while on Analysis mode & trying to simulate*/
+#analysisSlider{
   width: 100px;
 }
 
-#analysisSlider{
-  width: 140px;
-}
-
-/* Mouse-over effects */
+/* When EVO slider is hovered set Mouse-over effects */
 .EVO-slider:hover {
   opacity: 1; /* Fully shown on mouse-over */
 }
@@ -675,8 +580,7 @@ select > .select-placeholder {
 
 /* end of representive slider styling */
 
-/* end of representive slider styling */
-
+/* Sets attributes for all children of btn class including "File, Edit, View, Help, and etc.."  */
 .btn {
   position: relative;
   padding: 5px 10px;
@@ -686,6 +590,7 @@ select > .select-placeholder {
   cursor: pointer;
 }
 
+/* Sets attributes for btns only on toolbar */
 .toolbar-div .btn {
   background-color: #333;
   border: none;
@@ -694,20 +599,18 @@ select > .select-placeholder {
   font-size: 0.75em;
 }
 
+/* Whenever any btn is hovered over on the toolbar then bg color changes */
 .toolbar-div .btn:hover {
   background-color: #DCDCDC;
   color:black;
 }
 
-#symbolic-btn {
-  color: white;
-  min-width: 80px;
-}
-
+/* Sets width of modeling btn */
 #modeling-btn {
   min-width: 80px;
 }
 
+/* Sets attributes for Analysis btn */
 #analysis-btn {
   background: #27ae60;
   color: white;
@@ -720,6 +623,7 @@ select > .select-placeholder {
   min-width: 80px;
 }
 
+/* Sets attributes for dropdowns on the toolbar */
 .dropdown-toolbar {
   left: 0;
   z-index: 1;
@@ -730,6 +634,7 @@ select > .select-placeholder {
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
 }
 
+/* Sets attributes for each btn on dropdowns on the toolbar */
 .dropdown-toolbar a {
   color: black;
   padding: 12px 16px;
@@ -737,6 +642,7 @@ select > .select-placeholder {
   display: block;
 }
 
+/* When btn on dropdown menus are hovered above, background color is darkened */
 .dropdown-toolbar a:hover {
   background-color: #E8E8E8;
 }
@@ -746,7 +652,7 @@ select > .select-placeholder {
   border-bottom: 1px solid #333;
 }
 
-/* Slider */
+/* Sets attributes for Analysis Slider */
 #slider {
   margin-left: auto;
   margin-right: auto;
@@ -767,8 +673,18 @@ div.attribution {
   margin: 5px;
 }
 
-
 /* Rappid selection box */
 .selection-box {
   display: none;
+}
+
+/* Sets padding for images on bottom left corner */
+.bot-img {
+padding: 0px 20px 0px 0px;
+}
+
+/** sets the font color for the text inside the color legend */
+.s_value_box {
+  padding: 5px;
+  text-align: center;
 }

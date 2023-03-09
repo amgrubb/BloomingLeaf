@@ -3,6 +3,11 @@ package merge;
 import gson_classes.BISize;
 import gson_classes.BIPosition;
 
+/**
+ * Represents positional information from the frontend
+ * which is irrelevant to analysis, but important to merge/autolayout
+ */
+
 public class VisualInfo {
 	BISize size;
 	BIPosition position;

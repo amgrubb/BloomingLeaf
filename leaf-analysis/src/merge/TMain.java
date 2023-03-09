@@ -3,6 +3,12 @@ package merge;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * This class stores timing information as imported from PreMerge's output json
+ * @author krh
+ *
+ */
+
 public class TMain {
 	private Integer timingOffset;
 	private List<TIntention> timingList;

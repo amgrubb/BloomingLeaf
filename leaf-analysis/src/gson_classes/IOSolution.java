@@ -54,10 +54,10 @@ public class IOSolution {
 			newObj.nextPossibleAbsValue = nextAbsVal; //this.timePointAssignments.get(newObj.nextStateTPs.get("TNS-A").get(0));
 			upper = Math.min(upper, nextAbsVal);
 		} 
-		newObj.nextPossibleRndValue = (int)Math.floor(Math.random()*(upper - lower + 1) + lower);
+		if (nextAbsVal == null || lower != nextAbsVal)
+			newObj.nextPossibleRndValue = (int)Math.floor(Math.random()*(upper - lower + 1) + lower);
 		return newObj;	
 	}
-	
 	// *********** End of Returning The Solution *********** 
 	
 	// *** Start Input DATA ***
@@ -116,7 +116,7 @@ public class IOSolution {
 		return previousValuesMap;	
 	}	
 	
-	public ArrayList<ElementData> getElementList(){
+	public List<ElementData> getElementList(){
 		return elementList;
 	}
 	
@@ -125,6 +125,7 @@ public class IOSolution {
 	
 	
 	// *** End Input DATA ***
+	
 	/**
 	 * Holds the mapping between the unique ID for each intention and 
 	 * the simulation path results.
