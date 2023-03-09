@@ -370,7 +370,7 @@ public class ModelSpec {
 		this.decompositionLinks = decompositionLinks;
 	}
 	
-	public List<NotBothLink> getNotBothLinks() {
+	public List<NotBothLink> getNotBothLinks() {		// TODO: Merge getNotBothLink with getNotBothLinks...they appear to be the same function.
 		return notBothLink;
 	}
 

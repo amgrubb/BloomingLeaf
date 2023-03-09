@@ -58,6 +58,7 @@ public class ContributionLink extends AbstractElementLink {
 				case "or":
 				case "AND":
 				case "OR":
+				case "no":
 					return null;
 				default:
 					throw new IllegalArgumentException("(Simple) Invalid relationship type: " + linkType);

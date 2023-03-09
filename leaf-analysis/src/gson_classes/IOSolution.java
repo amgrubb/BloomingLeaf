@@ -116,7 +116,7 @@ public class IOSolution {
 		return previousValuesMap;	
 	}	
 	
-	public ArrayList<ElementData> getElementList(){
+	public List<ElementData> getElementList(){
 		return elementList;
 	}
 	
