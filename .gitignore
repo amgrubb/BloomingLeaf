@@ -9,6 +9,7 @@ leaf-ui/cgi-bin/temp/output.*
 leaf-analysis/doc/*
 
 leaf-analysis/temp/default.json
+leaf-analysis/temp/*.*
 
 *.class
 *.idea
