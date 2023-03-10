@@ -887,6 +887,11 @@ paper.on("link:options", function (cell) {
         EVO.refreshSlider();
     });
 
+    // Workaround for load, activates a hidden input element
+    $('#btn-load-layout').on('click', function () {
+        console.log("here");
+    });
+
     $(window).resize(function () {
         var config = configCollection.findWhere({ selected: true });
         if (config !== undefined) {
