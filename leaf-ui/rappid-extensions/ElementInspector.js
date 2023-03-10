@@ -945,10 +945,7 @@ var FuncSegView = Backbone.View.extend({
                     // If the initial satisfaction value is denied you can't select decreasing
                     this.$('option[value=D]').prop('disabled', this.initSatValue === '1100');
                 }
-                if(this.isNewSegment)
-                {
-                    this.checkUDFunctionValues();
-                }
+                this.checkUDFunctionValues(this.isNewSegment);
             } else { // If the model is not the most recent model disable the function type and satisfaction value selectors 
                 this.$("#seg-function-type").prop('disabled', true);
                 this.$("#seg-sat-value").prop('disabled', true);
@@ -995,41 +992,50 @@ var FuncSegView = Backbone.View.extend({
     * Adds appropriate satisfaction values option tags
     * for .user-sat-value, which is the select tag used to
     * indicate satisfaction values when creating a user defined function.
+    * 
+    * If the UD Segment is newly added, set the evidence pair to the function type's default:
+    * Increasing -> Fully Satisfied, Decreasing -> Fully Denied, Stocastic -> (no value), Constant -> initial sat val if first segment, none otherwise
     */
-    checkUDFunctionValues: function () {
+    checkUDFunctionValues: function (isNewSegment) {
         var func = this.$("#seg-function-type").val();
 
         if (func == 'I' || func == 'D') {
             var prevVal = this.intention.get('evolvingFunction').getNthRefEvidencePair(2);
             if (func == 'I') {
                 this.$("#seg-sat-value").html(this.satValueOptionsPositiveOrNegative(prevVal, true));
-                this.$("#seg-sat-value").val("0011");
-                this.model.set('refEvidencePair', "0011");
+                if(isNewSegment) {
+                    this.model.set('refEvidencePair', "0011");
+                }
             } else {
                 this.$("#seg-sat-value").html(this.satValueOptionsPositiveOrNegative(prevVal, false));
-                this.$("#seg-sat-value").val("1100");
-                this.model.set('refEvidencePair', "1100");
+                if(isNewSegment) {
+                    this.model.set('refEvidencePair', "1100");
+                }
             }
         } else if (func == 'R') {
             this.$("#seg-sat-value").last().html(this.satValueOptionsAll());
-            this.$("#seg-sat-value").val("(no value)");
             this.$("#seg-sat-value").prop('disabled', true);
-            this.model.set('refEvidencePair', '(no value)');
+            if(isNewSegment) {
+                this.model.set('refEvidencePair', '(no value)');
+            }
         } else if (func == 'C') {
             this.$("#seg-sat-value").last().html(this.satValueOptionsNoRandom());
             // Restrict input to initial satisfaction value if it is the first constraint
             if (this.index == 0) {
-                this.$("#seg-sat-value").val(this.initSatValue);
-                this.model.set('refEvidencePair', this.initSatValue);
+                if(isNewSegment) {
+                    this.model.set('refEvidencePair', this.initSatValue);
+                }
             } else if (this.index != 0 && this.model.get('current')) {
                 this.$("#seg-sat-value").prop('disabled', '');
-                this.model.set('refEvidencePair', "0000")
-                this.$("#seg-sat-value").val(this.model.get('refEvidencePair'));
+                if(isNewSegment) {
+                    this.model.set('refEvidencePair', "0000");
+                }
             } else {
                 this.$("#seg-sat-value").prop('disabled', true);
-                this.$("#seg-sat-value").val(this.model.get('refEvidencePair'));
             }
         }
+        // Update the dropdown to display the UD segment's satisfaction value
+        this.$("#seg-sat-value").val(this.model.get('refEvidencePair')); 
         return;
     },
 
