@@ -184,7 +184,7 @@ public class BIModelSpecBuilder {
 							allDecompositionLinks.add(link);
 					}
 				}
-				modelSpec.setNotBothLink(notBothLink);
+				modelSpec.setNotBothLinks(notBothLink);
 				modelSpec.setContributionLinks(contributionLinks); 
 				modelSpec.setDecompositionLinks(DecompositionLink.createDecompositionLinks(allDecompositionLinks, 
 						modelSpec));

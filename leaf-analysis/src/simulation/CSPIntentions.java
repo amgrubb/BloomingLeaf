@@ -377,7 +377,7 @@ public class CSPIntentions {
 			IntVar infinity, Store store) {
 
     	// Not Both Dynamic Functions.
-    	List<NotBothLink> notBothLinkList = spec.getNotBothLink();	
+    	List<NotBothLink> notBothLinkList = spec.getNotBothLinks();	
     	for(NotBothLink link : notBothLinkList){		
 
     		Integer ele1 = uniqueIDToValueIndex.get(link.getElement1().getUniqueID());

@@ -266,7 +266,7 @@ public class MergeAlgorithm {
 	public static void updateRepeatedIntention(Intention newIntention, Intention oldIntention, ModelSpec model2){
 
 		//not both links
-		for(NotBothLink nbl: model2.getNotBothLink()){
+		for(NotBothLink nbl: model2.getNotBothLinks()){
 			//Check source intention
 			if(nbl.getElement1() == oldIntention){
 				nbl.setElement1(newIntention);
@@ -549,7 +549,7 @@ public class MergeAlgorithm {
 		int linkCount = 0;
 
 		//add nbls from model1
-		for(NotBothLink nbl: model1.getNotBothLink()){
+		for(NotBothLink nbl: model1.getNotBothLinks()){
 			String newID = createID(linkCount, 1, nbl.getID(), "NotBothLink");
 
 			nbl.setID(newID);
@@ -574,7 +574,7 @@ public class MergeAlgorithm {
 		}
 
 		//merged nbl from model2 onto model1
-		for(NotBothLink nbl: model2.getNotBothLink()){
+		for(NotBothLink nbl: model2.getNotBothLinks()){
 			boolean isNewLink = true;
 			for(NotBothLink addednbl: mergedNBL){
 				if(isSameLink(addednbl, nbl)){
