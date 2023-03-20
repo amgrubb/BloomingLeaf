@@ -52,7 +52,7 @@ public class ContributionLink extends AbstractElementLink {
 			switch (linkType) {
 				case "++":  case "+":  case "-":  case "--":
 				case "++S": case "+S": case "-S": case "--S":
-				case "++D": case "+D": case "-D": case "--D":
+				case "++D": case "+D": case "-D": case "--D": case "no":
 					return new ContributionLink(s, d, ContributionType.getByCode(linkType), uniqueID);
 				case "and":
 				case "or":
