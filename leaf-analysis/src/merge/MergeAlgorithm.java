@@ -310,14 +310,11 @@ public class MergeAlgorithm {
 	public static Actor mergeToOneActor(Actor actorOne, Actor actorTwo, int actorNum, ModelSpec model1, ModelSpec model2) {
 		// type G > R > A (agent > role > actor)
 		
-		// use actorOne if >= type to actorTwo
+		// use actorOne if >= type to actorTwo 
+		// either the actor types are equal, OR actorOne is the greatest type, OR actor one is the second greatest type and actor two isn't the greatest
 		if(actorOne.getActorType().equals(actorTwo.getActorType()) || (actorOne.getActorType().equals("G")) || (actorOne.getActorType().equals("R") && !actorTwo.getActorType().equals("G"))) {
-	//	if(actorOne.getActorType().equals(actorTwo.getActorType()) || (actorOne.getActorType().equals("G")) || (actorOne.getActorType().equals("R") && !actorTwo.getActorType().equals("G"))) {
-	// TODO: Verify that current conditionals are correct.
 			String newId = createID(actorNum, 12, actorOne.getId(), "Actor");
 			actorOne.setId(newId);
-		
-		
 
 			//transfer all children/attachments to actor 1
 			updateRepeatedActor(actorOne, actorTwo, model2);
