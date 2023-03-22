@@ -1,11 +1,15 @@
 package simulation;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
 
 import gson_classes.BIEvolvingFunction;
 import gson_classes.BIFunctionSegment;
 import gson_classes.BIUserEvaluation;
 import gson_classes.ICell;
+
+import merge.MFunctionSegment;
 
 public class Intention extends AbstractLinkableElement {
 	private static int idcounter = 0;
@@ -17,12 +21,14 @@ public class Intention extends AbstractLinkableElement {
 	
 	private HashMap<Integer, String> userEvals;
 	private FunctionSegment[] evolvingFunctions;
+	private List<MFunctionSegment> mergedEvolvingFunctions;  // more complete function info
+	private String type;
 	
 	public Intention(String uniqueID, String nodeName, Actor nodeActor, String nodeType,
 			BIEvolvingFunction nodeFunctions, HashMap<Integer, String> nodeEvals){
 		super(Intention.getNewBackendID(), nodeName, uniqueID);
 		this.actor = nodeActor;
-		//this.type = IntentionalElementType.getByBBMName(nodeType);
+		this.type = nodeType;
 		this.userEvals = nodeEvals;
 		this.evolvingFunctions = unrollBIEvolvingFunction(nodeFunctions);
 	}
@@ -160,10 +166,148 @@ public class Intention extends AbstractLinkableElement {
 	public FunctionSegment[] getEvolvingFunctions() {
 		return evolvingFunctions;
 	}
+	
+	public void setEvolvingFunctions(FunctionSegment[] segments) {
+		evolvingFunctions = segments;
+	}
+	
+	public List<MFunctionSegment> getMEvolvingFunctions() {
+		return mergedEvolvingFunctions;
+	}
+	
+	public void setMergedEvolvingFunctions(List<MFunctionSegment> segments) {
+		mergedEvolvingFunctions = segments;
+	}
 
 	public HashMap<Integer, String> getUserEvals() {
 		return userEvals;
 	}
 	
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String t){
+		type = t;
+	}
+
+	public Actor getActor() {
+		return actor;
+	}
+	
+	public void setActor(Actor actor) {
+		this.actor = actor;
+	}
+
+	/** Compares types. If i's type is greater, then return will be less than 0.
+	 */
+	public int compareType(Intention i){
+		HashMap<String, Integer> typeValues = new HashMap<String, Integer>();
+		typeValues.put("basic.Goal", 0);
+		typeValues.put("basic.Task", 1);
+		typeValues.put("basic.Softgoal", 2);
+		typeValues.put("basic.Resource", 3);
+		return typeValues.get(type) - typeValues.get(i.getType());
+	}
+	
+	public String getParentID() {
+		if (actor != null) {
+			return actor.getUniqueID();
+		} else {
+			return null;
+		}
+	}
+	
+	public List<String> getEvolvingFunctionStartTPs() {
+		// TODO: handle compound timepoints from == constraints
+		List<String> tps = new ArrayList<>();
+		
+		for (FunctionSegment func: this.getEvolvingFunctions()) {
+			String startTP = func.getStartTP();
+			if (startTP.contains("TP")) {  // all but initial
+				// format E{id}TP{tp}
+				String[] timepoints = startTP.split("TP");
+				startTP = timepoints[1];
+			}
+			tps.add(startTP);
+		}
+		
+		return tps;
+	}
+	
+	public List<Integer> getEvolvingFunctionStartATs() {
+		List<Integer> tps = new ArrayList<>();
+		for (FunctionSegment func: this.getEvolvingFunctions()) {
+			tps.add(func.getStartAT());
+		}
+		return tps;
+	}
+	
+	public List<String> getEvolvingFunctionStartTPsFull() {
+		List<String> tps = new ArrayList<>();
+		for (FunctionSegment func: this.getEvolvingFunctions()) {
+			tps.add(func.getStartTP());
+		}
+		return tps;
+	}
+	
+	public List<String> getEvolvingFunctionStartTimes() {
+		List<String> tps = new ArrayList<>();
+		for (FunctionSegment func: this.getEvolvingFunctions()) {
+			tps.add(func.getStartTime());
+		}
+		return tps;
+	}
+	
+	public List<String> getEvolvingFunctionStartTimesIncremented(Integer delta) {
+		List<String> tps = new ArrayList<>();
+		for (FunctionSegment func: this.getEvolvingFunctions()) {
+			tps.add(func.getStartTimeIncremented(delta));
+		}
+		return tps;
+	}
+	
+	public List<String> getEvolvingFunctionRefEvidencePairs() {
+		List<String> tps = new ArrayList<>();
+		for (FunctionSegment func: this.getEvolvingFunctions()) {
+			tps.add(func.getRefEvidencePair());
+		}
+		return tps;
+	}
+	
+	public String getInitialUserEval() {
+		if (userEvals.containsKey(0)) {
+			return userEvals.get(0);
+		} else {
+			return "(no value)";
+		}
+	}
+	public String getUserEvalAt(Integer absTP) {
+		if (userEvals.containsKey(absTP)) {
+			return userEvals.get(absTP);
+		} else {
+			return "(no value)";
+		}
+	}
+	// add delta to each absTP in userEvals
+	public void incrementUserEvals(Integer delta) {
+		HashMap<Integer, String> newUserEvaluations = new HashMap<>();
+		for(Integer absTP: userEvals.keySet()) {
+			newUserEvaluations.put(absTP + delta, getUserEvalAt(absTP));
+		}
+		userEvals = newUserEvaluations;
+	}
+	public void setUserEvals(HashMap<Integer, String> newUserEvals) {
+		userEvals = newUserEvals;
+	}
+	public void addUserEval(Integer time, String userEval) {
+		userEvals.put(time, userEval);
+	}
+	public boolean hasActor() {
+		return actor != null;
+	}
+	public void removeActor() {
+		actor = null;
+	}
 	
 }

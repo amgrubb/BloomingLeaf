@@ -3,19 +3,31 @@
  */
 package simulation;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author A.M.Grubb
  *
  */
 public abstract class AbstractElementLink extends AbstractElement{
+	protected String id = "NO-ID";	//  Format that maps to array ordering.
+	// placeholder where AbstractLinkableElement has a backend ID
+	
 	private static int linkTPcounter = 1;
 	
 	private AbstractLinkableElement[] src = null;
 	private AbstractLinkableElement dest = null;
-	private boolean isEvolving = false;			// 	Whether link has a post relationship type.
-	private Integer absTime = null; 					//	Optional absolute time of transition.
+	private boolean isEvolving = false;				// 	Whether link has a post relationship type.
+	private Integer absTime = null; 				//	Optional absolute time of transition.
 	private String linkTP = null;
 	
+	/**
+	 * @param s - source linkable element
+	 * @param d - destination linkable element
+	 * @param uniqueID - frontend ID, unique among all cell-types (actor, intention, link)
+	 * @param absoluteTime - time at which link evolves relationship type -> if present, link is evolving!
+	 */
 	public AbstractElementLink(AbstractLinkableElement[] s, AbstractLinkableElement d, String uniqueID) {
 		super(uniqueID);
 		src = s;
@@ -36,11 +48,24 @@ public abstract class AbstractElementLink extends AbstractElement{
 		return tp;
 	}
 
+	/*
+	 * isEvolving represents whether the link has a post relationship type
+	 * example evolving link: contribution evolves from ++ to +
+	 */
 	public boolean isEvolving() {
 		return isEvolving;
 	}
+	public void noLongerEvolves() {
+		isEvolving = false;
+	}
+	public void nowEvolves() {
+		isEvolving = true;
+	}
 	public Integer getAbsTime() {
 		return absTime;
+	}
+	public void setAbsTime(int absTime) {
+		this.absTime = absTime;
 	}
 	public String getLinkTP() {
 		return linkTP;
@@ -57,7 +82,23 @@ public abstract class AbstractElementLink extends AbstractElement{
 	public AbstractLinkableElement getZeroSrc() {
 		return src[0];
 	}
+	/**
+	 * @return the src unique IDs
+	 */
+	public List<String> getSrcIDs() {
+		List<String> srcIDs = new ArrayList<>();
+		for (AbstractLinkableElement source: src) {
+			srcIDs.add(source.getUniqueID());
+		}
+		return srcIDs;
+	}
+	public String getZeroSrcID() {
+		return src[0].getUniqueID();
+	}
 	
+	public void setZeroSrc(AbstractLinkableElement src) {
+		this.src[0] = src;
+	}
 	/**
 	 * @param src the src to set
 	 */
@@ -77,6 +118,16 @@ public abstract class AbstractElementLink extends AbstractElement{
 	 */
 	public void setDest(AbstractLinkableElement dest) {
 		this.dest = dest;
+	}
+	
+	/**
+	 * id is backendID; uniqueID is frontendID
+	 */
+	public String getID() {
+		return id;
+	}
+	public void setID(String id) {
+		this.id = id;
 	}
 
 }
