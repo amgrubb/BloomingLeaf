@@ -4,6 +4,7 @@
  */
 // Simulator
 loader = document.getElementById("loader");
+layout_loader = document.getElementById("layout-loader");
 reader = new FileReader();
 
 // Whenever the input is changed, read the file.
@@ -12,6 +13,11 @@ loader.onchange = function () {
 	// Resets loader value so that the onchange event will still be triggered 
 	// if the same file is cleared and then loaded again
 	loader.value = "";
+};
+
+layout_loader.onchange = function () {
+	backendLayoutRequest(layout_loader.files.item(0));
+	
 };
 
 // When read is performed, if successful, load that file.

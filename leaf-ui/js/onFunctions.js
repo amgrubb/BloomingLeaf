@@ -889,7 +889,7 @@ paper.on("link:options", function (cell) {
 
     // Workaround for load, activates a hidden input element
     $('#btn-load-layout').on('click', function () {
-        console.log("here");
+        $('#layout-loader').click();
     });
 
     $(window).resize(function () {

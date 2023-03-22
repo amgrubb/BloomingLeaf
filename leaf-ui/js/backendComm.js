@@ -35,6 +35,11 @@ function backendSimulationRequest(analysisRequest) {
 	xhr.send(data);	// Why is this sent down here? What is this send function.
 }
 
+function backendLayoutRequest(file) {
+
+	//console.log(file)
+}
+
 function backendStringifyCirc(obj) {
 	var skipKeys = ['_events', 'results', 'colorVis', 'change:refEvidencePair', 'context', '_listeners', '_previousAttributes']; // List of keys that contains circular structures
 	var graphtext = JSON.stringify(obj, function (key, value) {
