@@ -4,8 +4,8 @@
 
 // Name of .jar file for BloomingLeaf project must be Blooming.jar
 //var userPath = "/Users/<your user path here>/BloomingLeaf"
-//var userPath = "/Users/judySmith/git/BloomingLeaf"
-var userPath = "/Users/stardess/Desktop/BloomingLeaf"
+// var userPath = "/Users/judySmith/git/BloomingLeaf"
+var userPath = "/Users/meganvarnum/GitHub/BloomingLeaf"
 
 
 var http = require('http'),
@@ -58,7 +58,8 @@ function processPost(queryObj,req,res) {
             qs.processQuery(queryObj,res);
         }
     fs.writeFileSync(userPath+"/leaf-analysis/temp/default.json",body);
-    passIntoJar(res);
+    //passIntoJar(res);
+    passIntoLayoutJar(res);
 
     // //TODO: Can this function be written in an asynchronous call?
     // wait(1000);         
@@ -106,6 +107,30 @@ function passIntoJar(res) {
                 res.writeHead(200, { "Content-Type" : 'text/plain'});
                 // send data
                 res.write(analysisFileString);
+                res.end();
+            
+                return stdout;
+            }
+        });
+    return child;
+}
+
+function passIntoLayoutJar(res) {
+    child = exec('java -jar '+userPath+'/leaf-analysis/src/layout/Layout.jar ',
+        function (error, stdout, stderr){
+            console.log("right before if!")
+            if(error !== null){
+                console.log('exec error: ' + error);
+            }
+            else{
+                //Analysis return code.
+                //analysisFile = fs.readFileSync(userPath+"/leaf-analysis/src/layout/temp/S6-out-output.json");
+                //analysisFileString = String(analysisFile);
+
+                utils.sendJSONObj(res,404,"hello world")
+                res.writeHead(200, { "Content-Type" : 'text/plain'});
+                // send data
+                res.write("hello 123");
                 res.end();
             
                 return stdout;

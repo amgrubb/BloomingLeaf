@@ -28,7 +28,7 @@ public class LMain {
 	    String tracePath = "";
 //	    String inputFile = "S7-out.json";
 	    String inputFile = "S6-out.json";
-	    String outputFile = "output.json";
+	    String outputFile = "S6-out-output.json";
 	
 	    try {			
 	        /*if (args.length == 6) {
