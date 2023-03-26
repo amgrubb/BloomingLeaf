@@ -48,7 +48,11 @@ function backendLayoutRequest(file) {
 		if (xhr.readyState == XMLHttpRequest.DONE) {
 			//console.log(xhr);
 			var response = xhr.responseText;
-			console.log(response);
+			var result = JSON.parse(response);
+			console.log("About to load the File");
+			loadFromObject(result);
+			// reader.readAsText(response);
+			// console.log(response);
 			//responseFunc(analysisRequest, response);
 		}
 	}

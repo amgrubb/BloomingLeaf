@@ -52,6 +52,7 @@ reader.onload = function () {
  * @param {Object} obj
  */
 function loadFromObject(obj) {
+	console.log("Inside loadFromObject");
 	graph.fromJSON(obj.graph);
 	var cells = graph.getCells();
 	for (var i = 0; i < cells.length; i++) {

@@ -21,14 +21,14 @@ public class LMain {
 	public final static boolean DEBUG = true;
 
 	public static void main(String[] args) {
-//	    String inPath = "temp/";
-//	    String outPath = "temp/";
-	    String inPath = "src/layout/temp/";
-	    String outPath = "src/layout/temp/";
+	    String inPath = "temp/";
+	    String outPath = "temp/";
+	    // String inPath = "src/layout/temp/";
+	    // String outPath = "src/layout/temp/";
 	    String tracePath = "";
 //	    String inputFile = "S7-out.json";
-	    String inputFile = "S6-out.json";
-	    String outputFile = "S6-out-output.json";
+	    String inputFile = "default.json";
+	    String outputFile = "default-output.json";
 	
 	    try {			
 	        /*if (args.length == 6) {

@@ -5,7 +5,8 @@
 // Name of .jar file for BloomingLeaf project must be Blooming.jar
 //var userPath = "/Users/<your user path here>/BloomingLeaf"
 // var userPath = "/Users/judySmith/git/BloomingLeaf"
-var userPath = "/Users/meganvarnum/GitHub/BloomingLeaf"
+// var userPath = "/Users/meganvarnum/GitHub/BloomingLeaf"
+var userPath = "/Users/stardess/Desktop/BloomingLeaf"
 
 
 var http = require('http'),
@@ -116,7 +117,7 @@ function passIntoJar(res) {
 }
 
 function passIntoLayoutJar(res) {
-    child = exec('java -jar '+userPath+'/leaf-analysis/src/layout/Layout.jar ',
+    child = exec('java -jar '+userPath+'/leaf-analysis/src/layout/Layout.jar ', {maxBuffer: 20480 * 20480} ,
         function (error, stdout, stderr){
             console.log("right before if!")
             if(error !== null){
@@ -124,13 +125,13 @@ function passIntoLayoutJar(res) {
             }
             else{
                 //Analysis return code.
-                //analysisFile = fs.readFileSync(userPath+"/leaf-analysis/src/layout/temp/S6-out-output.json");
-                //analysisFileString = String(analysisFile);
+                analysisFile = fs.readFileSync(userPath+"/leaf-analysis/temp/default-output.json");
+                analysisFileString = String(analysisFile);
 
-                utils.sendJSONObj(res,404,"hello world")
+                // utils.sendJSONObj(res,404,"hello world")
                 res.writeHead(200, { "Content-Type" : 'text/plain'});
                 // send data
-                res.write("hello 123");
+                res.write(analysisFileString);
                 res.end();
             
                 return stdout;
