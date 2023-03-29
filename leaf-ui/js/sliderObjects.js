@@ -417,16 +417,16 @@ class SliderObj {
 
         // Make all links reappear
         for (var k = 0; k < links.length; k++) {
-            //console.log(links[k].id);
+            
             $("#"+links[k].id).css("display", "");
         }
 
         for (var i = 0; i < SatList.length; i++) {
             // Make intention reappear
             $("#"+intentionsJIdList[i]).css("display", "");
+
             // Make elements with conflicting values disappear
-            // TODO: double-check the conflicting values, might be a bit off here
-            if (SatList[i] == '1110' || SatList[i] == '1010' || SatList[i] == '0111'|| SatList == '0101' || SatList[i] == '0110'|| SatList[i] == '1111'|| SatList[i] == '1001' || SatList[i] == '1101' || SatList[i] == '1011') {
+            if (SatList[i] == '1110' || SatList[i] == '1111' || SatList[i] == '0111'|| SatList[i] == '0110') {
                 // Make intention with conflicting values disappear
                 $("#"+intentionsJIdList[i]).css("display", "none");
 
