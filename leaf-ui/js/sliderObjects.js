@@ -84,15 +84,15 @@ class SliderObj {
         currentAnalysis.get('slider').sliderElement.noUiSlider.on('update', function (values, handle) {
             SliderObj.updateSliderValues(parseInt(values[handle]), currentAnalysis);
 
-            // Initialize an empty array for elements sat vals ex: 0111, 1100, 1110
+            // Initialize an empty array for elements sat vals ex: 0111, 1100, 1110, 0110
             var SatList = [];
 
             // Loops through each intention on the paper and pushes each sat val into the array
             currentAnalysis.get('elementList').forEach(element =>
                 SliderObj.storeSatVals(element,parseInt(values[handle]),SatList)); 
     
-            // Presence conditions behavior: Based on whether the timepoint is odd or even, a selected actor
-            // should disappear or appear
+            // Presence conditions behavior: Based on whether the timepoint is odd or even, 
+            // a selected actor should disappear or appear
             var t = parseInt(values[handle])%2;
 
             if (t == 0) {
