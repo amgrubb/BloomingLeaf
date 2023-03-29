@@ -40,25 +40,16 @@ function backendLayoutRequest(file) {
 	xhr.open("POST", url, true);
 	xhr.setRequestHeader("Content-Type", "application/json");
 
-	//var data = backendStringifyCirc(jsObject);
-	//console.log(data)
 	xhr.onload = function () {
 		// This function get called when the response is received.
 		console.log("Reading the response");
 		if (xhr.readyState == XMLHttpRequest.DONE) {
-			//console.log(xhr);
 			var response = xhr.responseText;
 			var result = JSON.parse(response);
-			console.log("About to load the File");
 			loadFromObject(result);
-			// reader.readAsText(response);
-			// console.log(response);
-			//responseFunc(analysisRequest, response);
 		}
 	}
-	console.log("about to send!");
 	xhr.send(file);
-	//console.log(file)
 }
 
 function backendStringifyCirc(obj) {

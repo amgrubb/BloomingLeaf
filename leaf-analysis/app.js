@@ -5,8 +5,8 @@
 // Name of .jar file for BloomingLeaf project must be Blooming.jar
 //var userPath = "/Users/<your user path here>/BloomingLeaf"
 // var userPath = "/Users/judySmith/git/BloomingLeaf"
-// var userPath = "/Users/meganvarnum/GitHub/BloomingLeaf"
-var userPath = "/Users/stardess/Desktop/BloomingLeaf"
+var userPath = "/Users/meganvarnum/GitHub/BloomingLeaf"
+// var userPath = "/Users/stardess/Desktop/BloomingLeaf"
 
 
 var http = require('http'),
@@ -58,9 +58,15 @@ function processPost(queryObj,req,res) {
             queryObj.message = body; // specific to the chat application
             qs.processQuery(queryObj,res);
         }
+    
     fs.writeFileSync(userPath+"/leaf-analysis/temp/default.json",body);
-    //passIntoJar(res);
-    passIntoLayoutJar(res);
+
+    if(body.includes("{\"analysisRequest\":")) {
+        passIntoJar(res);
+    }
+    else {
+        passIntoLayoutJar(res);
+    }
 
     // //TODO: Can this function be written in an asynchronous call?
     // wait(1000);         
@@ -119,18 +125,15 @@ function passIntoJar(res) {
 function passIntoLayoutJar(res) {
     child = exec('java -jar '+userPath+'/leaf-analysis/src/layout/Layout.jar ', {maxBuffer: 20480 * 20480} ,
         function (error, stdout, stderr){
-            console.log("right before if!")
             if(error !== null){
                 console.log('exec error: ' + error);
             }
             else{
-                //Analysis return code.
                 analysisFile = fs.readFileSync(userPath+"/leaf-analysis/temp/default-output.json");
                 analysisFileString = String(analysisFile);
+                console.log(analysisFileString);
 
-                // utils.sendJSONObj(res,404,"hello world")
                 res.writeHead(200, { "Content-Type" : 'text/plain'});
-                // send data
                 res.write(analysisFileString);
                 res.end();
             
