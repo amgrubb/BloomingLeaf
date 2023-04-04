@@ -299,9 +299,10 @@ class SliderObj {
      */
     static hideLinks(links, embeds, bool) {
         var linksToHide = []
-        outerloop:
         for (var i = 0; i < links.length; i++) {
-            if(embeds.includes(links[i].model.attributes.source.id) || embeds.includes(links[i].model.attributes.target.id))  linksToHide.push(links[i].id);
+            if (embeds.includes(links[i].model.attributes.source.id) || embeds.includes(links[i].model.attributes.target.id))  {
+                linksToHide.push(links[i].id);
+            }
         }
 
         // Convert into valid j_ids
