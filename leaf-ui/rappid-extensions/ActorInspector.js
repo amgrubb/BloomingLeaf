@@ -16,6 +16,8 @@ var ActorInspector = Backbone.View.extend({
         '<option value=G <%if (type === "G")  { %> selected <%} %>> Agent </option>',
         '<option value=R <%if (type === "R")  { %> selected <%} %>> Role </option>',
         '</select>',
+        '<label> Actor ID </label>',
+        '<textarea class="cell-attrs-text" maxlength=100> <%= actorName %> </textarea>',
         '</div>',
         '</script>'
     ].join(''),
