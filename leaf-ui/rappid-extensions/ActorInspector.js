@@ -9,7 +9,7 @@ var ActorInspector = Backbone.View.extend({
         '<script type="text/template" id="item-template">',
         '<div class="inspector-views" id="right-inspector">',
         '<label>Actor name</label>',
-        '<textarea class="cell-attrs-text" maxlength=100> <%= actorName %> </textarea>',
+        '<textarea readonly class="cell-attrs-text" maxlength=100> <%= actorName %> </textarea>',
         '<label> Actor type </label>',
         '<select id="actor-type-ID" class="actor-type">',
         '<option value=A <%if (type === "A")  { %> selected <%} %>> Actor </option>',
@@ -17,7 +17,7 @@ var ActorInspector = Backbone.View.extend({
         '<option value=R <%if (type === "R")  { %> selected <%} %>> Role </option>',
         '</select>',
         '<label> Actor ID </label>',
-        '<textarea class="cell-attrs-text" maxlength=100> <%= actorName %> </textarea>',
+        '<textarea readonly class="cell-attrs-text" maxlength=100> <%= actorName %> </textarea>',
         '</div>',
         '</script>'
     ].join(''),
