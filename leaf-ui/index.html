@@ -33,6 +33,7 @@
             <div class="dropdown-toolbar">
                 <a id="btn-load" class="model-only">Load</a>
                 <a id="btn-load-layout" class="model-only">Load and Layout</a>
+                <a id="btn-premerge" class="model-only">PreMerge</a>
                 <a id="btn-save">Save Model</a>
                 <a id="btn-save-analysis">Save Model and Analysis Requests</a>
                 <a id="btn-save-all">Save Model, Analysis Requests, and Results</a>
@@ -67,6 +68,7 @@
 
         <input type="file" id="loader" style="display:none">
         <input type="file" id="layout-loader" style="display:none">
+        <input type="file" id="premerge-loader" style="display:none">
 
         <div class="dropdown">
             <div class="btn">Help</div>
@@ -187,6 +189,26 @@
                         </div>
                     </div>
         </div>
+
+        <!-- Create Dual File Picker for Merge -->
+        <div id="merge-file-picker" class="popup_frame" style="display: none;width: 1000px;">
+
+            <div id="page-mask"></div>
+                    <div class="popup_content">
+                    
+                        <div class="popup_header">
+
+                            <span id="submit-color" class="close" onclick=" $('#merge-file-picker').css('display', 'none');">&times;</span>
+
+                            <h2>Select Two Models</h2>
+                        </div>
+                        <div class="popup_body">
+                            <input type="file" id="merge-model1">
+                            <input type="file" id="merge-model2">
+                        </div>
+                    </div>
+        </div>
+        
       
         <!-- <div id="dropdown-model" class="dropdown analysis-only" style="display: none">
             <button id="modeling-btn" class="red-btn btn">Model</button>

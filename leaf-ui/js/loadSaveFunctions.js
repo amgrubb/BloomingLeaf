@@ -5,6 +5,7 @@
 // Simulator
 loader = document.getElementById("loader");
 layout_loader = document.getElementById("layout-loader");
+premerge_loader = document.getElementById("premerge-loader");
 reader = new FileReader();
 
 // Whenever the input is changed, read the file.
@@ -18,6 +19,11 @@ loader.onchange = function () {
 layout_loader.onchange = function () {
 	backendLayoutRequest(layout_loader.files.item(0));
 	
+};
+
+premerge_loader.onchange = function () {
+	console.log("hello");
+	// backendLayoutRequest(layout_loader.files.item(0));
 };
 
 // When read is performed, if successful, load that file.

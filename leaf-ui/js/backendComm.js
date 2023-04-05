@@ -52,6 +52,23 @@ function backendLayoutRequest(file) {
 	xhr.send(file);
 }
 
+function backendMergeRequest(file) {
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", url, true);
+	xhr.setRequestHeader("Content-Type", "application/json");
+
+	xhr.onload = function () {
+		// This function get called when the response is received.
+		console.log("Reading the response");
+		if (xhr.readyState == XMLHttpRequest.DONE) {
+			var response = xhr.responseText;
+			var result = JSON.parse(response);
+			loadFromObject(result);
+		}
+	}
+	xhr.send(file);
+}
+
 function backendStringifyCirc(obj) {
 	var skipKeys = ['_events', 'results', 'colorVis', 'change:refEvidencePair', 'context', '_listeners', '_previousAttributes']; // List of keys that contains circular structures
 	var graphtext = JSON.stringify(obj, function (key, value) {

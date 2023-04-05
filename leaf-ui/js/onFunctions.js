@@ -892,6 +892,13 @@ paper.on("link:options", function (cell) {
         $('#layout-loader').click();
     });
 
+    // Workaround for load, activates a hidden input element
+    $('#btn-premerge').on('click', function () {
+        // $('#premerge-loader').click();
+        $('#merge-file-picker').css("display", "");
+        
+    });
+
     $(window).resize(function () {
         var config = configCollection.findWhere({ selected: true });
         if (config !== undefined) {
