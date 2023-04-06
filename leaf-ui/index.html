@@ -33,7 +33,7 @@
             <div class="dropdown-toolbar">
                 <a id="btn-load" class="model-only">Load</a>
                 <a id="btn-load-layout" class="model-only">Load and Layout</a>
-                <a id="btn-premerge" class="model-only">PreMerge</a>
+                <a id="btn-merge" class="model-only">Merge Models</a>
                 <a id="btn-save">Save Model</a>
                 <a id="btn-save-analysis">Save Model and Analysis Requests</a>
                 <a id="btn-save-all">Save Model, Analysis Requests, and Results</a>
@@ -68,8 +68,7 @@
 
         <input type="file" id="loader" style="display:none">
         <input type="file" id="layout-loader" style="display:none">
-        <input type="file" id="premerge-loader" style="display:none">
-
+        
         <div class="dropdown">
             <div class="btn">Help</div>
             <div class="dropdown-toolbar">
@@ -205,6 +204,10 @@
                         <div class="popup_body">
                             <input type="file" id="merge-model1">
                             <input type="file" id="merge-model2">
+                            <h3>Timing Offset</h3>
+                            <input type="text" id="merge-timingOffset" value="0">
+                            <button id= "merge-button"> Merge Models </button>
+                            <!-- <input style=“float:left;” ;=“” id=“abs-time-pts” class=“analysis-input” type=“text” value=“”> -->
                         </div>
                     </div>
         </div>

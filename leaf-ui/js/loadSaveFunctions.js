@@ -5,7 +5,7 @@
 // Simulator
 loader = document.getElementById("loader");
 layout_loader = document.getElementById("layout-loader");
-premerge_loader = document.getElementById("premerge-loader");
+merge_button = document.getElementById("merge-button");
 reader = new FileReader();
 
 // Whenever the input is changed, read the file.
@@ -21,9 +21,26 @@ layout_loader.onchange = function () {
 	
 };
 
-premerge_loader.onchange = function () {
-	console.log("hello");
-	// backendLayoutRequest(layout_loader.files.item(0));
+merge_button.onclick = function () {
+	// console.log("hello");
+	
+	model1 = document.getElementById("merge-model1").files.item(0);
+	// console.log(model1);
+	model2 = document.getElementById("merge-model2").files.item(0);
+	timingOffset = document.getElementById("merge-timingOffset").value;
+
+	// Checking if the inputs are valid
+
+	if (isNaN(timingOffset)){
+		timingOffset = 0;
+		swal("Error: Invalid Timing Offset. (Must be a number)", "", "error");
+	}
+
+	else if (model1 != null && model2 != null){
+		backendMergeRequest(model1, model2, timingOffset);
+	}
+
+	
 };
 
 // When read is performed, if successful, load that file.

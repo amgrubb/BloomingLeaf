@@ -5,8 +5,7 @@
 // Name of .jar file for BloomingLeaf project must be Blooming.jar
 //var userPath = "/Users/<your user path here>/BloomingLeaf"
 // var userPath = "/Users/judySmith/git/BloomingLeaf"
-var userPath = "/Users/meganvarnum/GitHub/BloomingLeaf"
-// var userPath = "/Users/stardess/Desktop/BloomingLeaf"
+var userPath = "/Users/stardess/Desktop/BloomingLeaf"
 
 
 var http = require('http'),
@@ -68,6 +67,10 @@ function processPost(queryObj,req,res) {
         passIntoLayoutJar(res);
     }
 
+    // console.log(queryObj.message.model1);
+
+
+
     // //TODO: Can this function be written in an asynchronous call?
     // wait(1000);         
     
@@ -79,7 +82,7 @@ function processPost(queryObj,req,res) {
     // // send data
     // res.write(analysisFileString);
     // res.end();
-    });
+    });
     
 }
 
@@ -123,6 +126,27 @@ function passIntoJar(res) {
 }
 
 function passIntoLayoutJar(res) {
+    child = exec('java -jar '+userPath+'/leaf-analysis/src/layout/Layout.jar ', {maxBuffer: 20480 * 20480} ,
+        function (error, stdout, stderr){
+            if(error !== null){
+                console.log('exec error: ' + error);
+            }
+            else{
+                analysisFile = fs.readFileSync(userPath+"/leaf-analysis/temp/default-output.json");
+                analysisFileString = String(analysisFile);
+                console.log(analysisFileString);
+
+                res.writeHead(200, { "Content-Type" : 'text/plain'});
+                res.write(analysisFileString);
+                res.end();
+            
+                return stdout;
+            }
+        });
+    return child;
+}
+
+function passIntoPreMergeJar(res) { 
     child = exec('java -jar '+userPath+'/leaf-analysis/src/layout/Layout.jar ', {maxBuffer: 20480 * 20480} ,
         function (error, stdout, stderr){
             if(error !== null){

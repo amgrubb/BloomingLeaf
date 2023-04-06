@@ -893,8 +893,8 @@ paper.on("link:options", function (cell) {
     });
 
     // Workaround for load, activates a hidden input element
-    $('#btn-premerge').on('click', function () {
-        // $('#premerge-loader').click();
+    $('#btn-merge').on('click', function () {
+       
         $('#merge-file-picker').css("display", "");
         
     });

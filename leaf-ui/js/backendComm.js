@@ -52,7 +52,7 @@ function backendLayoutRequest(file) {
 	xhr.send(file);
 }
 
-function backendMergeRequest(file) {
+function backendMergeRequest(file1, file2, timing_offset) {
 	var xhr = new XMLHttpRequest();
 	xhr.open("POST", url, true);
 	xhr.setRequestHeader("Content-Type", "application/json");
@@ -66,7 +66,9 @@ function backendMergeRequest(file) {
 			loadFromObject(result);
 		}
 	}
-	xhr.send(file);
+	var data = {model1: file1, model2: file2, timingOffset: timing_offset};
+	// console.log(data)
+	xhr.send(data);
 }
 
 function backendStringifyCirc(obj) {
