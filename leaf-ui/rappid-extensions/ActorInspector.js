@@ -3,6 +3,8 @@ var ActorInspector = Backbone.View.extend({
 
     initialize: function () {
         this.actor = this.model.get('actor');
+     
+    
     },
 
     template: [
@@ -40,6 +42,31 @@ var ActorInspector = Backbone.View.extend({
             this.actor.set('isHidden', false);
             this.$('.cell-attrs-hidden').val(false);
         }
+        var elements = graph.getElements();
+        var cellsView = []
+        for (var i = 0; i < elements.length; i++) {
+        
+            var cellView = elements[i].findView(paper);
+            cellsView.push(cellView);
+            
+        } 
+
+        for (var i = 0; i < elements.length; i++) {
+            //console.log(cellsView[i].model.attributes.actor.cid);
+            if(cellsView[i].model.attributes.type == "basic.Actor" && cellsView[i].model.attributes.actor.cid == this.actor.cid){
+                console.log(cellsView[i].id);
+                console.log(cellsView[i].model.attributes.actor.attributes.isHidden);
+                if(cellsView[i].model.attributes.actor.attributes.isHidden){
+                    $("#"+cellsView[i].id).css("display", "none");
+                } else{
+                    $("#"+cellsView[i].id).css("display", "");
+                }
+            }
+        } 
+
+        console.log("cells!");
+        console.log(cellsView);
+
     },
 
     /**

@@ -78,6 +78,8 @@ class SliderObj {
             }
         });
 
+
+        
         // Set initial value of the slider
         // 0 if switching between existing results; sliderMax if new result
         currentAnalysis.get('slider').sliderElement.noUiSlider.set(isSwitch ? 0 : sliderMax);
@@ -93,8 +95,21 @@ class SliderObj {
     
             // Presence conditions behavior: Based on whether the timepoint is odd or even, 
             // a selected actor should disappear or appear
-            var t = parseInt(values[handle])%2;
+           
+            // var cells = SliderObj.getIntentionsAndActorsView();
+            // console.log("print out intentions and actors");
+            // console.log(cells);
+            // for (var i = 0; i < cells.length; i++) {
+            //     if (cells[i].model.attributes.type == 'basic.Actor' && cells[i].model.attributes.actor.attributes.isHidden == true) {
+            //         console.log(cells[i].model.attributes.actor.attributes.isHidden);
+            //         SliderObj.hideElements(true, SatList);
+            //     } else {
+            //         console.log(cells[i].model.attributes.actor.attributes.isHidden);
+            //         SliderObj.hideElements(false, SatList);
+            //     }
+            // }
 
+            var t = parseInt(values[handle])%2;
             if (t == 0) {
                 SliderObj.hideElements(true, SatList);
             }
