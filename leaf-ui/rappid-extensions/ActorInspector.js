@@ -27,7 +27,19 @@ var ActorInspector = Backbone.View.extend({
     events: {
         'keyup .cell-attrs-text': 'nameAction',
         'change #actor-type-ID': 'updateType',
-        'clearInspector .inspector-views': 'removeView',
+        'change #actor-hidden' : 'updateHidden',
+        'clearInspector .inspector-views': 'removeView'
+    },
+
+    updateHidden: function (event){
+        var isHidden = event.target.checked;
+        if(isHidden){
+            this.actor.set('isHidden', true);
+            this.$('.cell-attrs-hidden').val(true);
+        } else {
+            this.actor.set('isHidden', false);
+            this.$('.cell-attrs-hidden').val(false);
+        }
     },
 
     /**
