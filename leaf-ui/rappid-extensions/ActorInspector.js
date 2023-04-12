@@ -16,8 +16,11 @@ var ActorInspector = Backbone.View.extend({
         '<option value=G <%if (type === "G")  { %> selected <%} %>> Agent </option>',
         '<option value=R <%if (type === "R")  { %> selected <%} %>> Role </option>',
         '</select>',
-        '<label> Actor ID </label>',
-        '<textarea class="cell-attrs-text" maxlength=100> <%= actorName %> </textarea>',
+        '<textarea readonly class="cell-attrs-hidden" maxlength=100> <%= isHidden %> </textarea>',
+        '<input type=“checkbox” id=“actor-hidden” name=“hidden" value=“true”>',
+        '<label for=“hidden"> Actor is hidden? </label><br>',
+        '<input type=“checkbox” id=“vehicle1” name=“vehicle1" value=“Bike”>',
+        '<label for=“vehicle1"> I have a bike</label><br>',
         '</div>',
         '</script>'
     ].join(''),
@@ -54,6 +57,7 @@ var ActorInspector = Backbone.View.extend({
         this.actor.set('actorName', text);
 
     },
+
     /**
      * Removes the view so we don't have multiple ones in the sidebar
      */

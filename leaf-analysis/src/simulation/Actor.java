@@ -14,6 +14,7 @@ import merge.MMain;
  */
 public class Actor extends AbstractLinkableElement {
 	String actorType;
+	boolean isHidden;
 	String[] embeds;
 
 	public Actor(String nodeID, String nodeName, String nodeType, String[] embeds){
@@ -33,6 +34,10 @@ public class Actor extends AbstractLinkableElement {
 
 	public String getActorType() {
 		return actorType;
+	}
+	
+	public boolean getIsHidden() {
+		return isHidden;
 	}
 	
 	/*
