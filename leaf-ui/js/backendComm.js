@@ -36,6 +36,7 @@ function backendSimulationRequest(analysisRequest) {
 }
 
 function backendLayoutRequest(file) {
+	// TODO: create javascript object with analysisRequest = "layout", then stringify and send result to backend
 
 	var xhr = new XMLHttpRequest();
 	xhr.open("POST", url, true);
@@ -56,9 +57,9 @@ function backendLayoutRequest(file) {
 function backendMergeRequest(model1, model2, timing_offset) {
 	var jsObject = {};
 	jsObject.analysisRequest = "merge";
-	jsObject.graph1 = model1;
-	jsObject.graph2 = model2;
-	jsObject.timing_offset = timing_offset;
+	jsObject.model1 = model1;
+	jsObject.model2 = model2;
+	jsObject.timingOffset = timing_offset;
 
 	var xhr = new XMLHttpRequest();
 	xhr.open("POST", url, true);
@@ -66,7 +67,6 @@ function backendMergeRequest(model1, model2, timing_offset) {
 
 	var data = backendStringifyCirc(jsObject);
 	console.log(jsObject);
-	console.log(data);
 
 	xhr.onload = function () {
 		// This function get called when the response is received.
@@ -77,7 +77,6 @@ function backendMergeRequest(model1, model2, timing_offset) {
 			loadFromObject(result);
 		}
 	}
-	
 	xhr.send(data);
 }
 

@@ -5,7 +5,8 @@
 // Name of .jar file for BloomingLeaf project must be Blooming.jar
 //var userPath = "/Users/<your user path here>/BloomingLeaf"
 // var userPath = "/Users/judySmith/git/BloomingLeaf"
-var userPath = "/Users/stardess/Desktop/BloomingLeaf"
+// var userPath = "/Users/stardess/Desktop/BloomingLeaf"
+var userPath = "/Users/meganvarnum/GitHub/BloomingLeaf"
 
 
 var http = require('http'),
@@ -58,14 +59,31 @@ function processPost(queryObj,req,res) {
             qs.processQuery(queryObj,res);
         }
     
-    fs.writeFileSync(userPath+"/leaf-analysis/temp/default.json",body);
+    obj = JSON.parse(body);
 
-    if(body.includes("{\"analysisRequest\":")) {
-        passIntoJar(res);
+    if(obj.analysisRequest == "merge") {
+        var model1_json = JSON.stringify(obj.model1);
+        var model2_json = JSON.stringify(obj.model2);
+
+        fs.writeFileSync(userPath+"/leaf-analysis/data/models/merge_model1.json",model1_json);
+        fs.writeFileSync(userPath+"/leaf-analysis/data/models/merge_model2.json",model2_json);
+
+        passIntoPreMergeJar(res, obj.timingOffset);
     }
-    else {
+    else if(obj.analysisRequest == "layout") {
         passIntoLayoutJar(res);
     }
+    else {
+        fs.writeFileSync(userPath+"/leaf-analysis/temp/default.json",body);
+        passIntoJar(res);
+    }
+    
+    // if(body.includes("{\"analysisRequest\":")) {
+    //     passIntoJar(res);
+    // }
+    // else {
+    //     passIntoLayoutJar(res);
+    // }
 
     // console.log(queryObj.message.model1);
 
@@ -146,22 +164,37 @@ function passIntoLayoutJar(res) {
     return child;
 }
 
-function passIntoPreMergeJar(res) { 
-    child = exec('java -jar '+userPath+'/leaf-analysis/src/layout/Layout.jar ', {maxBuffer: 20480 * 20480} ,
+function passIntoPreMergeJar(res, timingOffset) { 
+    child = exec('java -jar '+userPath+'/leaf-analysis/src/premerge/PreMerge.jar '+'merge_model1.json merge_model2.json timing.json '+timingOffset, 
+    {maxBuffer: 20480 * 20480} ,
         function (error, stdout, stderr){
             if(error !== null){
                 console.log('exec error: ' + error);
             }
             else{
-                analysisFile = fs.readFileSync(userPath+"/leaf-analysis/temp/default-output.json");
-                analysisFileString = String(analysisFile);
-                console.log(analysisFileString);
+                passIntoMergeJar(res)
+            }
+        });
+    return child;
+}
 
-                res.writeHead(200, { "Content-Type" : 'text/plain'});
-                res.write(analysisFileString);
-                res.end();
-            
-                return stdout;
+function passIntoMergeJar(res) {
+    child = exec('java -jar '+userPath+'/leaf-analysis/src/merge/Merge.jar '+'merge_model1.json merge_model2.json timing.json output.json', 
+    {maxBuffer: 20480 * 20480} ,
+        function (error, stdout, stderr){
+            if(error !== null){
+                console.log('exec error: ' + error);
+            }
+            else{
+                fs.readFile(userPath+'/leaf-analysis/data/mergedModels/output.json', 'utf8', (err, data) => {
+                    if (err) {
+                      console.error(err);
+                      return;
+                    }
+                    fs.writeFileSync(userPath+"/leaf-analysis/temp/default.json",data);
+                  });
+                  
+                passIntoLayoutJar(res)
             }
         });
     return child;
