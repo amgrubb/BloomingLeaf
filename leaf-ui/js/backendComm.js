@@ -36,6 +36,7 @@ function backendSimulationRequest(analysisRequest) {
 }
 
 function backendLayoutRequest(file) {
+
 	var xhr = new XMLHttpRequest();
 	xhr.open("POST", url, true);
 	xhr.setRequestHeader("Content-Type", "application/json");
@@ -52,10 +53,20 @@ function backendLayoutRequest(file) {
 	xhr.send(file);
 }
 
-function backendMergeRequest(file1, file2, timing_offset) {
+function backendMergeRequest(model1, model2, timing_offset) {
+	var jsObject = {};
+	jsObject.analysisRequest = "merge";
+	jsObject.graph1 = model1;
+	jsObject.graph2 = model2;
+	jsObject.timing_offset = timing_offset;
+
 	var xhr = new XMLHttpRequest();
 	xhr.open("POST", url, true);
 	xhr.setRequestHeader("Content-Type", "application/json");
+
+	var data = backendStringifyCirc(jsObject);
+	console.log(jsObject);
+	console.log(data);
 
 	xhr.onload = function () {
 		// This function get called when the response is received.
@@ -66,8 +77,7 @@ function backendMergeRequest(file1, file2, timing_offset) {
 			loadFromObject(result);
 		}
 	}
-	var data = {model1: file1, model2: file2, timingOffset: timing_offset};
-	// console.log(data)
+	
 	xhr.send(data);
 }
 

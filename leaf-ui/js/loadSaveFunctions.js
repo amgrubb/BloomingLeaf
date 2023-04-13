@@ -8,6 +8,9 @@ layout_loader = document.getElementById("layout-loader");
 merge_button = document.getElementById("merge-button");
 reader = new FileReader();
 
+reader_merge_file1 = new FileReader();
+reader_merge_file2 = new FileReader();
+
 // Whenever the input is changed, read the file.
 loader.onchange = function () {
 	reader.readAsText(loader.files.item(0));
@@ -21,26 +24,39 @@ layout_loader.onchange = function () {
 	
 };
 
-merge_button.onclick = function () {
-	// console.log("hello");
-	
-	model1 = document.getElementById("merge-model1").files.item(0);
-	// console.log(model1);
-	model2 = document.getElementById("merge-model2").files.item(0);
-	timingOffset = document.getElementById("merge-timingOffset").value;
+merge_button.onclick = function () {	
+	var file1 = document.getElementById("merge-model1").files.item(0);
+	var file2 = document.getElementById("merge-model2").files.item(0);
+	var timingOffset = document.getElementById("merge-timingOffset").value;
 
-	// Checking if the inputs are valid
+	var model1, model2;
 
+	// Timing offset must be a number
 	if (isNaN(timingOffset)){
 		timingOffset = 0;
 		swal("Error: Invalid Timing Offset. (Must be a number)", "", "error");
 	}
+	else if (file1 != null && file2 != null){ // two files must be uploaded
+		reader_merge_file1.readAsText(file1);
 
-	else if (model1 != null && model2 != null){
-		backendMergeRequest(model1, model2, timingOffset);
+		reader_merge_file1.onload = function() {
+			model1 = JSON.parse(reader_merge_file1.result);
+			reader_merge_file2.readAsText(file2);
+
+			reader_merge_file2.onload = function() {
+				model2 = JSON.parse(reader_merge_file2.result);
+				backendMergeRequest(model1, model2, timingOffset);
+			}
+
+			reader_merge_file2.onerror = function() {
+				console.log(reader_merge_file2.error);
+			}
+		}
+
+		reader_merge_file1.onerror = function() {
+			console.log(reader_merge_file1.error);
+		}
 	}
-
-	
 };
 
 // When read is performed, if successful, load that file.
