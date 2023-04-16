@@ -5,8 +5,8 @@
 // Name of .jar file for BloomingLeaf project must be Blooming.jar
 //var userPath = "/Users/<your user path here>/BloomingLeaf"
 // var userPath = "/Users/judySmith/git/BloomingLeaf"
-// var userPath = "/Users/stardess/Desktop/BloomingLeaf"
-var userPath = "/Users/meganvarnum/GitHub/BloomingLeaf"
+var userPath = "/Users/stardess/Desktop/BloomingLeaf"
+//var userPath = "/Users/meganvarnum/GitHub/BloomingLeaf"
 
 
 var http = require('http'),
@@ -65,8 +65,8 @@ function processPost(queryObj,req,res) {
         var model1_json = JSON.stringify(obj.model1);
         var model2_json = JSON.stringify(obj.model2);
 
-        fs.writeFileSync(userPath+"/leaf-analysis/data/models/merge_model1.json",model1_json);
-        fs.writeFileSync(userPath+"/leaf-analysis/data/models/merge_model2.json",model2_json);
+        fs.writeFileSync(userPath+"/leaf-analysis/temp/merge_model1.json",model1_json);
+        fs.writeFileSync(userPath+"/leaf-analysis/temp/merge_model2.json",model2_json);
 
         passIntoPreMergeJar(res, obj.timingOffset);
     }
@@ -186,13 +186,13 @@ function passIntoMergeJar(res) {
                 console.log('exec error: ' + error);
             }
             else{
-                fs.readFile(userPath+'/leaf-analysis/data/mergedModels/output.json', 'utf8', (err, data) => {
-                    if (err) {
-                      console.error(err);
-                      return;
-                    }
-                    fs.writeFileSync(userPath+"/leaf-analysis/temp/default.json",data);
-                  });
+                // fs.readFile(userPath+'/leaf-analysis/data/mergedModels/output.json', 'utf8', (err, data) => {
+                //     if (err) {
+                //       console.error(err);
+                //       return;
+                //     }
+                //     fs.writeFileSync(userPath+"/leaf-analysis/temp/default.json",data);
+                //   });
                   
                 passIntoLayoutJar(res)
             }

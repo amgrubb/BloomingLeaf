@@ -36,14 +36,14 @@ public class MMain {
 	 */
 	public static void main(String[] args) {
 		//This is the default filePath to be executed if no file is passed through parameters
-		String inPath = "data/models/";
-		String tPath = "data/timing/";
-		String outPath = "data/mergedModels/";
-		String tracePath = "data/traceability/";
+		String inPath = "temp/";
+		String tPath = "temp/";
+		String outPath = "temp/";
+		String tracePath = "temp/";
 		String inputFile1 = "";
 		String inputFile2 = "";
 		String timingFile = "";
-		String outputFile = "output.json";
+		String outputFile = "default.json";
 		
 		try {			
 			if (args.length == 4) {

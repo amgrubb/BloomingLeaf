@@ -22,14 +22,14 @@ public class PreMerge {
 	public final static boolean DEBUG = false;
 
 	public static void main(String[] args) {
-		String inPath = "data/models/";
-		String tPath = "data/timing/";
+		String inPath = "temp/";
+		String tPath = "temp/";
 		String inputFile1 = ""; 
-		String inputFile2 = ""; 
+		String inputFile2 = "";  
 		String timingFile = "timing.json"; 
 		Integer delta = 0;  // new start B
 		
-		try {
+		try { 
 			if (args.length == 4) {
 				inputFile1 = args[0];
 				inputFile2 = args[1];

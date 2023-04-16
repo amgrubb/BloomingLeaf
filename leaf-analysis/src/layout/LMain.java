@@ -18,7 +18,7 @@ import simulation.BIModelSpecBuilder;
 import simulation.Intention;
 
 public class LMain {
-	public final static boolean DEBUG = true;
+	public final static boolean DEBUG = false;
 
 	public static void main(String[] args) {
 	    String inPath = "temp/";
