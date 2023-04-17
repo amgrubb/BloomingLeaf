@@ -179,7 +179,7 @@ function passIntoPreMergeJar(res, timingOffset) {
 }
 
 function passIntoMergeJar(res) {
-    child = exec('java -jar '+userPath+'/leaf-analysis/src/merge/Merge.jar '+'merge_model1.json merge_model2.json timing.json output.json', 
+    child = exec('java -jar '+userPath+'/leaf-analysis/src/merge/Merge.jar '+'merge_model1.json merge_model2.json timing.json default.json', 
     {maxBuffer: 20480 * 20480} ,
         function (error, stdout, stderr){
             if(error !== null){
