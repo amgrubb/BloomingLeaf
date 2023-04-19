@@ -6,6 +6,7 @@
 loader = document.getElementById("loader");
 layout_loader = document.getElementById("layout-loader");
 merge_button = document.getElementById("merge-button");
+merge_file_picker = document.getElementById("merge-file-picker");
 reader = new FileReader();
 
 reader_merge_file1 = new FileReader();
@@ -46,6 +47,7 @@ merge_button.onclick = function () {
 			reader_merge_file2.onload = function() {
 				model2 = JSON.parse(reader_merge_file2.result);
 				backendMergeRequest(model1, model2, timingOffset);
+				merge_file_picker.style.display = "none";
 			}
 
 			reader_merge_file2.onerror = function() {
