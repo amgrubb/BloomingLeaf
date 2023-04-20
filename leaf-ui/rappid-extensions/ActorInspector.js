@@ -6,6 +6,7 @@ var ActorInspector = Backbone.View.extend({
     },
 
     template: [
+        //'<link rel="stylesheet" type="text/css" href="../css/actor.css">',
         '<script type="text/template" id="item-template">',
         '<div class="inspector-views" id="right-inspector">',
         '<label>Actor name</label>',
@@ -20,6 +21,12 @@ var ActorInspector = Backbone.View.extend({
         '<input type="checkbox" id="actor-hidden" name="hidden" value="true">',
         '<label for="hidden"> Actor is hidden? </label><br>',
         '<textarea readonly class="cell-attrs-hidden" maxlength=100> <%= isHidden %> </textarea>',
+        '<label for="interval"> Intervals </label><br>',
+        '<textarea readonly class="cell-attrs-intervals" maxlength=100> <%= intervals %> </textarea>',
+        '<input type="range" min="0" max="10" value="30", id="slider-1">',
+        '<input type="range" min="0" max="10" value="70", id="slider-2">',
+        //'<label class="sub-label">Num Relative Time Points</label>',
+		//'<input id="num-rel-time" class="analysis-input" type="number" min="0" max="20" step="1" value="<%= numRelTime %>"> </input>',
         '</div>',
         '</script>'
     ].join(''),
@@ -28,6 +35,7 @@ var ActorInspector = Backbone.View.extend({
         'keyup .cell-attrs-text': 'nameAction',
         'change #actor-type-ID': 'updateType',
         'change #actor-hidden' : 'updateHidden',
+        //'change #num-rel-time': 'addRelTime',
         'clearInspector .inspector-views': 'removeView'
     },
 
@@ -134,5 +142,5 @@ var ActorInspector = Backbone.View.extend({
         else if (actorType == 'A') {
             this.model.attr({ '.line': { 'stroke-width': 0 } });
         }
-    },
+    }
 });

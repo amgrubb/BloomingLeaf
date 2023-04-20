@@ -15,6 +15,7 @@ import merge.MMain;
 public class Actor extends AbstractLinkableElement {
 	String actorType;
 	boolean isHidden;
+	ArrayList<Integer[]> intervals;
 	String[] embeds;
 
 	public Actor(String nodeID, String nodeName, String nodeType, String[] embeds){
@@ -38,6 +39,10 @@ public class Actor extends AbstractLinkableElement {
 	
 	public boolean getIsHidden() {
 		return isHidden;
+	}
+
+	public ArrayList<Integer[]> getIntervals() {
+		return intervals;
 	}
 	
 	/*
