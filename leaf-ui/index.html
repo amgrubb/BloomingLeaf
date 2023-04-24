@@ -183,7 +183,7 @@
                             </table>
                             <div class="button" style="text-align: right;  padding: 10px">
                                <span id="saved-options-message" style = "display: none;">   Your options are now saved! </span>
-                               <span>  <button id="submit-color" style="background-color: #1E85F7; color: white; padding: 8px 20px; font-size:15px"> Save my palette </button> </span>
+                               <span>  <button id="submit-color" class="popup_button"> Save my palette </button> </span>
                             </div>
                         </div>
                     </div>
@@ -196,18 +196,36 @@
                     <div class="popup_content">
                     
                         <div class="popup_header">
-
-                            <span id="submit-color" class="close" onclick=" $('#merge-file-picker').css('display', 'none');">&times;</span>
-
-                            <h2>Select Two Models</h2>
+                            <span class="close" onclick=" $('#merge-file-picker').css('display', 'none');">&times;</span>
+                            <h2>Merge Models</h2>
                         </div>
                         <div class="popup_body">
-                            <input type="file" id="merge-model1">
-                            <input type="file" id="merge-model2">
+                            <h3>Models To Merge</h3><br>
+                            <!-- <div style="display: flex; justify-content: space-around; align-items: center"> -->
+                            <label for="merge-model1">
+                                <div>
+                                    <span class="popup_button">
+                                        Select Model 1
+                                    </span>&nbsp;
+                                    <span id="name-merge-model1"></span>
+                                </div>
+                            </label>
+                            <input type="file" id="merge-model1" onchange="{document.getElementById('name-merge-model1').innerHTML = this.files[0].name}">
+                            <br><br>
+                            <div>
+                                <label for="merge-model2">
+                                    <div>
+                                        <span class="popup_button">
+                                            Select Model 2
+                                        </span>&nbsp;
+                                        <span id="name-merge-model2"></span>
+                                    </div>
+                                </label>
+                                <input type="file" id="merge-model2" onchange="{document.getElementById('name-merge-model2').innerHTML = this.files[0].name}">
+                            </div><!-- </div> -->
                             <h3>Timing Offset</h3>
-                            <input type="text" id="merge-timingOffset" value="0">
-                            <button id= "merge-button"> Merge Models </button>
-                            <!-- <input style=“float:left;” ;=“” id=“abs-time-pts” class=“analysis-input” type=“text” value=“”> -->
+                            <input type="text" id="merge-timingOffset" value="0"><br><br>
+                            <button id= "merge-button" class="popup_button"> Merge Models </button><br><br>
                         </div>
                     </div>
         </div>

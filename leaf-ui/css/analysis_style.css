@@ -43,6 +43,29 @@
     padding: 2px 16px;
  }
 
+ .popup_button {
+    background-color: #1E85F7;
+    color: white; 
+    padding: 10px 20px;
+    font-size:16px
+ }
+
+ .popup_button:hover,
+ .popup_button:focus {
+    background-color: black;
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+ }
+
+ .popup_frame input[type="file"] {
+    visibility: hidden;
+}
+
+.popup_file {
+
+}
+
 /* Adds sliding Animation for popup window */
 @-webkit-keyframes animatetop {
     from {top:-300px; opacity:0}
