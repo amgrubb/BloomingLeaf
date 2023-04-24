@@ -892,7 +892,7 @@ paper.on("link:options", function (cell) {
         $('#layout-loader').click();
     });
 
-    // Workaround for load, activates a hidden input element
+    // Workaround for merge, activates a hidden input element
     $('#btn-merge').on('click', function () {
        
         $('#merge-file-picker').css("display", "");

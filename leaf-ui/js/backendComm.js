@@ -35,8 +35,12 @@ function backendSimulationRequest(analysisRequest) {
 	xhr.send(data);	// Why is this sent down here? What is this send function.
 }
 
-function backendLayoutRequest(file) {
+function backendLayoutRequest(model) {
 	// TODO: create javascript object with analysisRequest = "layout", then stringify and send result to backend
+	var jsObject = {};
+	jsObject.analysisRequest = "layout";
+	jsObject.model = model;
+	var data = backendStringifyCirc(jsObject);
 
 	var xhr = new XMLHttpRequest();
 	xhr.open("POST", url, true);
@@ -51,7 +55,7 @@ function backendLayoutRequest(file) {
 			loadFromObject(result);
 		}
 	}
-	xhr.send(file);
+	xhr.send(data);
 }
 
 function backendMergeRequest(model1, model2, timing_offset) {
@@ -60,13 +64,11 @@ function backendMergeRequest(model1, model2, timing_offset) {
 	jsObject.model1 = model1;
 	jsObject.model2 = model2;
 	jsObject.timingOffset = timing_offset;
+	var data = backendStringifyCirc(jsObject);
 
 	var xhr = new XMLHttpRequest();
 	xhr.open("POST", url, true);
 	xhr.setRequestHeader("Content-Type", "application/json");
-
-	var data = backendStringifyCirc(jsObject);
-	console.log(jsObject);
 
 	xhr.onload = function () {
 		// This function get called when the response is received.

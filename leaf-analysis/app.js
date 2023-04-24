@@ -71,6 +71,9 @@ function processPost(queryObj,req,res) {
         passIntoPreMergeJar(res, obj.timingOffset);
     }
     else if(obj.analysisRequest == "layout") {
+        var model_json = JSON.stringify(obj.model);
+        fs.writeFileSync(userPath+"/leaf-analysis/temp/default.json",model_json);
+
         passIntoLayoutJar(res);
     }
     else {

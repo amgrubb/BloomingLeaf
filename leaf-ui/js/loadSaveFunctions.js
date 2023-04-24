@@ -9,9 +9,6 @@ merge_button = document.getElementById("merge-button");
 merge_file_picker = document.getElementById("merge-file-picker");
 reader = new FileReader();
 
-reader_merge_file1 = new FileReader();
-reader_merge_file2 = new FileReader();
-
 // Whenever the input is changed, read the file.
 loader.onchange = function () {
 	reader.readAsText(loader.files.item(0));
@@ -21,8 +18,18 @@ loader.onchange = function () {
 };
 
 layout_loader.onchange = function () {
-	backendLayoutRequest(layout_loader.files.item(0));
-	
+	var file = layout_loader.files.item(0);
+	var reader_layout = new FileReader();
+
+	reader_layout.readAsText(file);
+	reader_layout.onload = function() {
+		var model = JSON.parse(reader_layout.result);
+		backendLayoutRequest(model);
+	}
+
+	reader_layout.onerror = function() {
+		console.log(reader_layout.error);
+	}
 };
 
 merge_button.onclick = function () {	
@@ -31,6 +38,9 @@ merge_button.onclick = function () {
 	var timingOffset = document.getElementById("merge-timingOffset").value;
 
 	var model1, model2;
+
+	var reader_merge_file1 = new FileReader();
+	var reader_merge_file2 = new FileReader();
 
 	// Timing offset must be a number
 	if (isNaN(timingOffset)){
